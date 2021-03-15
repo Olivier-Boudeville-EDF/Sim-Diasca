@@ -2,13 +2,13 @@
 
 ## Purpose of this repository
 
-This is the official repository of the Sim-Diasca simulation engine, which is developed and release by [EDF R&D](https://www.edf.fr/en/the-edf-group/inventing-the-future-of-energy/r-d-global-expertise).
+This is the official repository of the Sim-Diasca simulation engine, which is developed and released by [EDF R&D](https://www.edf.fr/en/the-edf-group/inventing-the-future-of-energy/r-d-global-expertise).
 
 Note that this repository is currently not operational (work in progress). It is to complement the [main official page](https://www.edf.fr/en/the-edf-group/world-s-largest-power-company/activities/research-and-development/scientific-communities/simulation-softwares?logiciel=10832) of Sim-Diasca.
 
 ## Sim-Diasca in a nutshell
 
-Sim-Diasca (Simulation of Discrete Systems of All Scales) is a discrete-time simulation engine aiming for maximum concurrency, relying on a mode of operation that is both parallel and distributed.
+Sim-Diasca (*Simulation of Discrete Systems of All Scales*) is a discrete-time simulation engine aiming for maximum concurrency, relying on a mode of operation that is both parallel and distributed.
 
 Sim-Diasca focuses notably on scalability, in order to handle simulation cases which may be very large (potentially involving millions of interacting instances of models), while still preserving essential simulation properties, like causality, total reproducibility and some kind of ergodicity.
 
