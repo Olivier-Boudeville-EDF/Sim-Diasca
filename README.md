@@ -4,7 +4,8 @@
 
 This is the official repository of the Sim-Diasca simulation engine, which is developed and released by [EDF R&D](https://www.edf.fr/en/the-edf-group/inventing-the-future-of-energy/r-d-global-expertise).
 
-Note that this repository is currently not operational (work in progress). It is to complement the [main official page](https://www.edf.fr/en/the-edf-group/world-s-largest-power-company/activities/research-and-development/scientific-communities/simulation-softwares?logiciel=10832) of Sim-Diasca.
+Note that this repository is currently not operational yet (work in progress). It is to complement the [main official page](https://www.edf.fr/en/the-edf-group/world-s-largest-power-company/activities/research-and-development/scientific-communities/simulation-softwares?logiciel=10832) of Sim-Diasca.
+
 
 ## Sim-Diasca in a nutshell
 
