@@ -21,4 +21,8 @@ For more information, please refer to the *Sim-Diasca Technical Manual*.
 
 Until the various elements are available online, please [contact us](https://www.edf.fr/en/the-edf-group/world-s-largest-power-company/activities/research-and-development/scientific-communities/simulation-softwares?logiciel=10832) for an archived copy of the last stable version and its related documentation.
 
+## Sim-Diasca documentation
+
+One may first have a look at the [Sim-Diasca wiki](https://github.com/Olivier-Boudeville-EDF/Sim-Diasca/wiki).
+
 Please refer to the upcoming [Sim-Diasca official documentation](http://olivier-boudeville-edf.github.io/Sim-Diasca/) for further information.
