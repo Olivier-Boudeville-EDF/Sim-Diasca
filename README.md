@@ -27,4 +27,4 @@ One may first have a look at the [Sim-Diasca wiki](https://github.com/Olivier-Bo
 
 Please refer to the upcoming [Sim-Diasca official documentation](http://olivier-boudeville-edf.github.io/Sim-Diasca/) for further information.
 
-This branch corresponds to the version **2.3.13** of Sim-Diasca, the first publicly released as clone.
+This branch corresponds to the version **2.3.13** of Sim-Diasca, the first publicly released as a directly available clone.

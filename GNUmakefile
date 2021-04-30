@@ -305,10 +305,11 @@ release-in-clone:
 	@if [ ! -d "$(SIM_DIASCA_PUBLIC_CLONE_ROOT)/.git" ]; then echo "Error, the SIM_DIASCA_PUBLIC_CLONE_ROOT=$(SIM_DIASCA_PUBLIC_CLONE_ROOT) directory is not a GIT clone." 1>&2 ; exit 57 ; fi
 	@echo "     Releasing Sim-Diasca public version in the 'sim-diasca-$(SIM_DIASCA_BASE_VERSION)' branch in clone '$(SIM_DIASCA_PUBLIC_CLONE_ROOT)'"
 	@cd $(SIM_DIASCA_PUBLIC_CLONE_ROOT) && ( (git checkout -b sim-diasca-$(SIM_DIASCA_BASE_VERSION) 2>/dev/null || true) ; (git rm -rf * 2>/dev/null || true) ; /bin/rm -rf $(SIM_DIASCA_PUBLIC_CLONE_ROOT)/*)
-	@cd $(SIM_DIASCA_PUBLIC_CLONE_ROOT) && (git reset HEAD README.md LICENSE; git checkout README.md LICENSE; echo "\nThis branch corresponds to the version *$(SIM_DIASCA_VERSION)* of Sim-Diasca." >> README.md)
+	@cd $(SIM_DIASCA_PUBLIC_CLONE_ROOT) && (git reset HEAD README.md LICENSE; git checkout README.md LICENSE; sed -i "s|This branch corresponds.*$$|This branch corresponds to the version **$(SIM_DIASCA_VERSION)** of Sim-Diasca.|1" README.md)
 	@/bin/rm -f $(SIM_DIASCA_PUBLIC_CLONE_ROOT)/sim-diasca/doc/installation-guide/internal-version/*.rst
 	@$(MAKE) -s prepare-release SIM_DIASCA_RELEASE_BASE=$(SIM_DIASCA_PUBLIC_CLONE_ROOT) && cd $(SIM_DIASCA_PUBLIC_CLONE_ROOT) && git add .
-	@echo "After a check, you can run, from $(SIM_DIASCA_PUBLIC_CLONE_ROOT): git ci -m \"Sharing the public version $(SIM_DIASCA_VERSION) of Sim-Diasca.\""
+	@echo "After a check, you can run, from $(SIM_DIASCA_PUBLIC_CLONE_ROOT): 'git commit -m \"Sharing of the public version $(SIM_DIASCA_VERSION) of Sim-Diasca.\"', then after some testing: 'git tag -a sim-diasca-version-$(SIM_DIASCA_VERSION) -m \"Release of the public version $(SIM_DIASCA_VERSION) of Sim-Diasca.\"'; finally you might consider: 'git checkout master && git rebase sim-diasca-version-$(SIM_DIASCA_VERSION) && git push --all'."
+
 
 release-doc:
 	@cd $(SIM_DIASCA_TOP)/doc && $(MAKE) -s doc-package
@@ -338,16 +339,18 @@ clean-file-release:
 # The '-L' option with cp is used so that symbolic links are replaced by their
 # actual target file, otherwise tar would include dead links in releases.
 #
-prepare-release: real-clean
+# sim-diasca.png is added back as it is needed by for example the web manager.
+#
+prepare-release: #real-clean
 	@echo "     Preparing release for Sim-Diasca $(SIM_DIASCA_VERSION) in $(SIM_DIASCA_RELEASE_BASE)"
 	@mkdir -p $(SIM_DIASCA_RELEASE_BASE) && \
 	/bin/cp -L -r $(SIM_DIASCA_PACKAGE_ELEMENTS) $(SIM_DIASCA_RELEASE_BASE)
 	@/bin/rm -rf $(SIM_DIASCA_RELEASE_BASE)/sim-diasca/src/core/src/dataflow/bindings/python/src/sim-diasca-dataflow-env
 	-@cd $(SIM_DIASCA_RELEASE_BASE) && /bin/rm -rf */_checkouts && /bin/rm -rf */_build
-	-@find $(SIM_DIASCA_RELEASE_BASE) -type f -a              \
+	-@cd $(SIM_DIASCA_RELEASE_BASE) && find . -type f -a \
 	\( -name '*.beam' -o -name 'sim-diasca-host-candidates*.txt'           \
 	-o -name '*.png' -o -name 'erl_crash.dump' -o -name '*.dia~' -o -name '*.log' -o -name '*.aux' -o -name '*.toc' -o -name '*.tex' -o -name rebar.lock \) -exec /bin/rm -f '{}' ';' 2>/dev/null || true
-	@/bin/cp -f $(HOST_SAMPLE_FILE) $(SIM_DIASCA_RELEASE_BASE)/$(HOST_SAMPLE_PATH)
+	@for f in $(HOST_SAMPLE_FILE) sim-diasca/doc/common-elements/edf-related/sim-diasca.png; do /bin/cp -f $$f $(SIM_DIASCA_RELEASE_BASE)/$$f ; done
 	@cat sim-diasca/README.txt.template | sed -s "s|SIM_DIASCA_VERSION|$(SIM_DIASCA_VERSION)|g" > $(SIM_DIASCA_RELEASE_BASE)/README.txt
 	@echo "Release generated in $$(realpath $(SIM_DIASCA_RELEASE_BASE))."
 
