@@ -1,0 +1,1 @@
+This file is only intended to prevent the 'ADD licence.* XXX' command from failing if a command is not available.

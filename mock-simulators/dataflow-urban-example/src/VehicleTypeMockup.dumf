@@ -1,0 +1,98 @@
+%
+% This DUMF file defines the mock-up version of the unit named:
+% class_VehicleTypeUnit
+%
+%
+% Please refer to the 'Sim-Diasca Dataflow HOWTO' for more information about
+% Mock-up Units.
+%
+% Generated on 22/03/2017 9:19:31, by user foobar.
+%
+
+{ dumf_version, "0.3.1" }.
+
+{ unit_type, 'class_VehicleTypeUnit' }.
+
+{ mockup_author, "Robin Huart" }.
+{ mockup_author_contact, "robin-externe.huart@edf.fr" }.
+
+{ mockup_version, "1.0.0" }.
+{ mockup_date, "16/03/2017" }.
+
+{ activation_policy, 'activate_when_all_set' }.
+
+
+{ input_port_specs, [
+
+	[
+		{ input_port_name, "energy_demand_estimates" },
+		{ comment, "Each of these iterated ports tracks a source of energy demand (estimated)" },
+		{ is_iteration, 'true' },
+		{ value_semantics, [ "http://foobar.org/urban/1.1/energy/demand" ] },
+		{ value_unit, "kW.h" },
+		{ value_type_description, "float" },
+		{ value_constraints, [positive] }
+	],
+
+	[
+		{ input_port_name, "pollution_estimates" },
+		{ comment, "Each of these iterated ports tracks a source of pollution (estimated)" },
+		{ is_iteration, 'true' },
+		{ value_semantics, [ "http://foobar.org/urban/1.1/pollution/emission" ] },
+		{ value_unit, "g.cm^-3" },
+		{ value_type_description, "float" },
+		{ value_constraints, [positive] }
+	]
+
+] }.
+
+
+{ output_port_specs, [
+
+	[
+		{ output_port_name, "actual_energy_need" },
+		{ comment, "Aggregated energy need of households sharing a same vehicle model" },
+		{ is_iteration, 'false' },
+		{ value_semantics, [ "http://foobar.org/urban/1.1/energy/demand" ] },
+		{ value_unit, "kW.h" },
+		{ value_type_description, "float" },
+		{ value_constraints, [positive] }
+	],
+
+	[
+		{ output_port_name, "actual_pollution" },
+		{ comment, "Aggregated pollution emitted by households sharing a same vehicle model" },
+		{ is_iteration, 'false' },
+		{ value_semantics, [ "http://foobar.org/urban/1.1/pollution/emission" ] },
+		{ value_unit, "g.cm^-3" },
+		{ value_type_description, "float" },
+		{ value_constraints, [positive] }
+	]
+
+] }.
+
+
+{ mockup_clauses, [
+
+  { 5,
+	[
+		{ "energy_demand_estimates_iterated_1", { around, 100.0, 1.0e4 } },
+		{ "pollution_estimates_iterated_1", set }
+	],
+	[
+		{ "actual_energy_need", unset },
+		{ "actual_pollution", { set, 42.0 } }
+	] },
+
+  { any_time,
+	[
+		{ "energy_demand_estimates_iterated_1", { between, 1.0, 100.0 } },
+		{ "pollution_estimates_iterated_1", set }
+	],
+	[
+		{ "actual_energy_need",
+		  { state_of, "energy_demand_estimates_iterated_1" } },
+		{ "actual_pollution", reassign }
+	] }
+
+] }.

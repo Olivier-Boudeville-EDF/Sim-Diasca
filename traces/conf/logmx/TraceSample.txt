@@ -1,0 +1,10 @@
+<0.32.0>|Object-17|Actor.Theme.Object.XYZObject|3168318240200|08/04/2008 04:41:14|trace_test@myhost.org|Execution.Topic.EventB|0|Object XXX initialised as emergency.
+<0.31.0>|Object-17|Actor.Theme.Object.XYZObject|3168318240219|08/04/2008 04:41:24|trace_test@myhost.org|Execution.Topic.EventB|1|Object XXX linked again; alert!
+<0.31.0>|Object-17|Actor.Theme.Object.XYZObject|3168318240218|08/04/2008 04:41:24|trace_test@myhost.org|Execution.Topic.EventA|2|No answer from object XXX, this is becoming critical.
+<0.34.0>|Object-14|Actor.Theme.Object.XYZObject|3168318240210|08/04/2008 04:41:25|trace_other@myhost.org|Execution.Topic.EventB|3|Testing some special characters: àéèïîôùû (should be displayed fine, otherwise it is an error).
+<0.34.0>|Object-14|Actor.Theme.Object.XYZObject|3168318240210|08/04/2008 04:41:25|trace_other@myhost.org|Execution.Topic.EventB|4|Last warning: object XXX linked again.
+<0.34.0>|Object-14|Actor.Theme.Object.XYZObject|3168318240211|08/04/2008 04:41:25|trace_other@myhost.org|Execution.Topic.EventB|5|Hello has been noticed.
+
+<0.34.0>|Object-14|Actor.Theme.Object.XYZObject|3168318240213|08/04/2008 04:41:25|trace_other@myhost.org|Execution.Topic.EventB|6|This is an info message in one part. Please stand by to authenticate.
+
+<0.34.0>|Object-14|Actor.Theme.Object.XYZObject|3168318240213|08/04/2008 04:41:25|trace_other@myhost.org|Execution.Topic.EventB|7|Last message is a debug one.

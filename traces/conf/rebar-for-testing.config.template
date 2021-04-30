@@ -1,0 +1,103 @@
+% This is a configuration file of rebar3, so that Ceylan-Traces can be directly
+% tested separately (i.e. without needing to install upper layers, i.e. software
+% depending on it): emulates a user of the Traces library.
+%
+% If the name of this file is 'rebar.config', then it is a generated file,
+% otherwise it is a template (located in conf/rebar.config.template), meant to
+% be filled by information determined at build time or coming from
+% GNUmakevars.inc.
+
+
+% To be run through the 'test-hex-package' make target.
+
+% Note that this testing relates just to the ability of bringing up the
+% specified Traces version as a dependency; there is no actual test involved,
+% i.e. no depending sources that would make use here of Traces.
+
+
+
+% Settings for the 'default' profile follow.
+
+% As an hex-package dependency:
+%
+% Implied:
+% - {myriad, "MYRIAD_VERSION_FOR_REBAR"}
+% - {wooper, "WOOPER_VERSION_FOR_REBAR" }
+%
+{deps, [ {traces, "VERSION_FOR_REBAR" } ] }.
+
+
+% This testing just targets to trigger the build of Traces (and its Myriad and
+% WOOPER dependencies), not of specific tests making use of it.
+
+% Include directories found in INC:
+{erl_opts, [ {d,myriad_debug_mode}, {d,wooper_debug_mode}, {d,traces_debug_mode}, {d,tracing_activated}, debug_info, {debug_info_key,"DEBUG_KEY_FOR_REBAR"}, report_warnings, warn_export_all, warn_export_vars, warn_shadow_vars, warn_obsolete_guards, warn_unused_import, warnings_as_errors, {parse_transform,wooper_parse_transform}, INCS_FOR_REBAR ]}.
+
+{pre_hooks, [ {compile, "echo 'Traces testing pre-compile hook!'"} ]}.
+
+{post_hooks, [
+	{compile, "echo 'Traces testing post-compile hook!'"} ]}.
+
+
+
+% For release generation:
+%
+% (defaults are for the development mode)
+%
+% With relx, only direct dependencies need to be listed, and version constraints
+% can be used, instead of exact, specific versions.
+%
+% Probably that these releases are superfluous, in the sense that they are
+% defined the same as the ones already included in WOOPER's
+% rebar.config.template.
+%
+{relx, [
+
+  {release, {traces_test_release, "VERSION_FOR_REBAR"},
+			[sasl, traces]},
+
+  %{sys_config, "conf/sys.config"},
+  %{vm_args, "conf/vm.args"},
+
+  {dev_mode, true},
+  {include_erts, false},
+
+  {extended_start_script, true},
+  {include_src, false}
+
+]}.
+
+
+{profiles, [
+
+  % Production mode (the default one when used as a dependency):
+  {prod, [
+
+	% No specific erl_opts.
+
+	% For the build makefiles:
+	{env, [ { 'REBAR_PROFILE', "prod" } ] },
+
+	{relx, [
+
+	  % Not wanting the release to contain symlinks to applications:
+	  {dev_mode, false},
+
+	  % Creating a full target system:
+	  {include_erts, true},
+
+	  {extended_start_script, true},
+	  {include_src, false}
+
+ ]} ] }
+
+ % No test profile currently needed.
+
+]}.
+
+
+% For Hex packages (see https://hex.pm/):
+%
+% (use 'rebar3 update' to enable the hex plugin)
+%
+{plugins, [rebar3_hex]}.

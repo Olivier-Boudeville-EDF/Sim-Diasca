@@ -1,0 +1,98 @@
+% This is a configuration file of rebar3, so that Ceylan-WOOPER can be directly
+% tested separately (i.e. without needing to install upper layers, i.e. software
+% depending on it): emulates a user of the WOOPER library.
+%
+% If the name of this file is 'rebar.config', then it is a generated file,
+% otherwise it is a template (located in conf/rebar.config.template), meant to
+% be filled by information determined at build time or coming from
+% GNUmakevars.inc.
+
+
+% To be run through the 'test-hex-package' make target.
+
+% Note that this testing relates just to the ability of bringing up the
+% specified WOOPER version as a dependency; there is no actual test involved,
+% i.e. no depending sources that would make use here of WOOPER.
+
+
+
+% Settings for the 'default' profile follow.
+
+% As an hex-package dependency:
+%
+% Implied: {myriad, "MYRIAD_VERSION_FOR_REBAR"}
+%
+{deps, [ {wooper, "VERSION_FOR_REBAR" } ] }.
+
+
+% This testing just targets to trigger the build of WOOPER (and its Myriad
+% dependency), not of specific tests making use of it.
+
+{pre_hooks, [ {compile, "echo 'WOOPER testing pre-compile hook!'"} ]}.
+
+{post_hooks, [
+	{compile, "echo 'WOOPER testing post-compile hook!'"} ]}.
+
+
+
+% For release generation:
+%
+% (defaults are for the development mode)
+%
+% With relx, only direct dependencies need to be listed, and version constraints
+% can be used, instead of exact, specific versions.
+%
+% Probably that these releases are superfluous, in the sense that they are
+% defined the same as the ones already included in WOOPER's
+% rebar.config.template.
+%
+{relx, [
+
+  {release, {wooper_test_release, "VERSION_FOR_REBAR"},
+			[sasl, wooper]},
+
+  %{sys_config, "./config/sys.config"},
+  %{vm_args, "./config/vm.args"},
+
+  {dev_mode, true},
+  {include_erts, false},
+
+  {extended_start_script, true},
+  {include_src, false}
+
+]}.
+
+
+{profiles, [
+
+  % Production mode (the default one when used as a dependency):
+  {prod, [
+
+	% No specific erl_opts.
+
+	% For the build makefiles:
+	{env, [ { 'REBAR_PROFILE', "prod" } ] },
+
+	{relx, [
+
+	  % Not wanting the release to contain symlinks to applications:
+	  {dev_mode, false},
+
+	  % Creating a full target system:
+	  {include_erts, true},
+
+	  {extended_start_script, true},
+	  {include_src, false}
+
+  ]} ] }
+
+  % No test profile currently needed.
+
+]}.
+
+
+% For Hex packages (see https://hex.pm/):
+%
+% (use 'rebar3 update' to enable the hex plugin)
+%
+{plugins, [rebar3_hex]}.

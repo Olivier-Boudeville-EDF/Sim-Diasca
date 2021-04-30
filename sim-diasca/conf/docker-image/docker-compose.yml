@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  devenv:
+    build: .
+    hostname: fooname.bardomain
+    environment:
+     - DISPLAY=${DISPLAY}
+    volumes:
+     - userhome:/home/dev
+
+volumes:
+    userhome:
+	external: true

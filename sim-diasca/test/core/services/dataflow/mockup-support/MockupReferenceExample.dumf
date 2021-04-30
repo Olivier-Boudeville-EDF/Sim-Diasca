@@ -1,0 +1,143 @@
+%
+% This DUMF file defines the mock-up version of the unit named:
+% class_MyExampleUnit
+%
+%
+% Please refer to the 'Sim-Diasca Dataflow HOWTO' for more information about
+% Mock-up Units.
+%
+% Generated on 06/04/2017 14:37:33, by user 'rh3f80dn'.
+%
+
+{ dumf_version, "0.3.1" }.
+
+{ unit_type, 'class_MyExampleUnit' }.
+
+{ mockup_author, "Jiminy Cricket" }.
+{ mockup_author_contact, "jc@fantasy-world.org" }.
+
+{ mockup_version, "1.0.0" }.
+{ mockup_date, "16/02/2017" }.
+
+{ activation_policy, 'activate_when_all_set' }.
+
+
+{ input_port_specs, [
+
+	[
+		{ input_port_name, "ip_1" },
+		{ comment, "This is my first input port" },
+		{ is_iteration, 'false' },
+		{ value_semantics, 'http://foo.org/energy' },
+		{ value_unit, "kW.h" },
+		{ value_type_description, "integer" },
+		{ value_constraints, [positive] }
+	],
+
+	[
+		{ input_port_name, "ip_2" },
+		{ comment, "This is my second input port" },
+		{ is_iteration, 'false' },
+		{ value_semantics, 'http://foo.org/pollution' },
+		{ value_unit, "g.cm^-3" },
+		{ value_type_description, "float" },
+		{ value_constraints, [] }
+	],
+
+	[
+		{ input_port_name, "ip_3" },
+		{ comment, "This is my third input port" },
+		{ is_iteration, 'true' },
+		{ value_semantics, 'http://foo.org/length' },
+		{ value_unit, "m" },
+		{ value_type_description, "integer" },
+		{ value_constraints, [non_null] }
+	]
+
+] }.
+
+
+{ output_port_specs, [
+
+	[
+		{ output_port_name, "op_1" },
+		{ comment, "This is my first output port" },
+		{ is_iteration, 'false' },
+		{ value_semantics, 'http://foo.org/adult_count' },
+		{ value_unit, "dimensionless" },
+		{ value_type_description, "integer" },
+		{ value_constraints, [positive] }
+	],
+
+	[
+		{ output_port_name, "op_2" },
+		{ comment, "This is my second output port" },
+		{ is_iteration, 'true' },
+		{ value_semantics, 'http://foo.org/operation_status' },
+		{ value_unit, "dimensionless" },
+		{ value_type_description, "boolean" },
+		{ value_constraints, [] }
+	],
+
+	[
+		{ output_port_name, "op_3" },
+		{ comment, "This is my third output port" },
+		{ is_iteration, 'false' },
+		{ value_semantics, 'http://foo.org/operation_status' },
+		{ value_unit, "dimensionless" },
+		{ value_type_description, "boolean" },
+		{ value_constraints, [] }
+	],
+
+	[
+		{ output_port_name, "op_4" },
+		{ comment, "This is my fourth output port" },
+		{ is_iteration, 'false' },
+		{ value_semantics, 'http://foo.org/pollution' },
+		{ value_unit, "g.cm^-3" },
+		{ value_type_description, "float" },
+		{ value_constraints, [] }
+	]
+
+] }.
+
+
+{ mockup_clauses, [
+
+  { 0,
+	[
+		{ "ip_1", { between, 2, 5 } },
+		{ "ip_3", { set, 3 } }
+	],
+	[
+		{ "op_2", { set, false } },
+		{ "op_4", { set, 89.5 } }
+	] },
+
+  { 0,
+	[
+		{ "ip_2", { around, 42.0, 0.0001 } }
+	],
+	[
+		{ "op_1", { set, 1 } },
+		{ "op_2", unset }
+	] },
+
+  { 1,
+	[
+		{ "ip_3", { among, [1,2,3] } }
+	],
+	[
+		{ "op_4",
+		  { state_of, "ip_2" } }
+	] },
+
+  { any_time,
+	[
+		{ "ip_1", unset }
+	],
+	[
+		{ "op_2", { set, true } }
+	] }
+
+] }.

@@ -1,0 +1,81 @@
+# Sim-Diasca Simulation Ontology
+#
+# Created by Olivier Boudeville on Thursday, April 16, 2015
+
+
+digraph SimDiascaOntology {
+
+		label = "Sim-Diasca Simulation Ontology"
+
+		fontname = "Bitstream Vera Sans"
+		fontsize = 8
+
+		node [
+				fontname = "Bitstream Vera Sans"
+				fontsize = 8
+				shape = "record"
+		]
+
+		edge [
+				fontname = "Bitstream Vera Sans"
+				fontsize = 8
+		]
+
+		"Abstraction"
+		"Actor"
+		"Experiment\nsettings"
+		"Model"
+		"Modlet"
+		"Probe"
+		"Scenario"
+		"Scenario\ninstance"
+		"Schedulable"
+		"Simulated\nworld"
+		"Simulation"
+		"Simulation\ncase"
+		"Simulation\nengine"
+		"Simulation\ninputs"
+		"Simulation\noutputs"
+		"Simulation\nresults"
+		"Simulation\ntime"
+		"Simulation\ntraces"
+		"System\ncontext"
+		"Target\nsystem"
+
+		"Actor" -> "Modlet" [ label = "is an\ninstance of" ]
+		"Scenario\ninstance" -> "Scenario" [ label = "is an\ninstance of" ]
+
+		"Modlet" -> "Model" [ label = "is part\nof" ]
+
+		"Modlet"     ->		"Abstraction" [ label = "is a" ]
+		"Scenario"  ->		"Abstraction" [ label = "is a" ]
+
+		"Abstraction" -> "Schedulable" [ label = "is a" ]
+		"Abstraction" -> "Probe"       [ label = "feeds" ]
+
+		"Schedulable" -> "Simulation\nengine" [ label = "is scheduled\nby" ]
+		"Simulation\nengine" -> "Simulation\ntime" [ label = "drives" ]
+
+		"Probe" -> "Simulation\nresults" [ label = "produces" ]
+
+		"Simulation" -> "Simulation\ninputs" [ label = "requires" ]
+		"Simulation" -> "Simulation\noutputs" [ label = "produces" ]
+
+		"Simulation\nresults" -> "Simulation\noutputs" [ label = "is part\nof" ]
+		"Simulation\ntraces" -> "Simulation\noutputs" [ label = "is part\nof" ]
+
+		"Actor" -> "Target\nsystem" [ label = "is part\nof" ]
+		"Scenario\ninstance" -> "System\ncontext" [ label = "is part\nof" ]
+
+		"Target\nsystem"  -> "Simulated\nworld" [ label = "is part\nof" ]
+		"System\ncontext" -> "Simulated\nworld" [ label = "is part\nof" ]
+
+		"Simulation\ncase" -> "Simulation" [ label = "defines" ]
+		"Experiment\nsettings" -> "Simulation\ncase" [ label = "modify" ]
+
+		"Simulation\ntime" -> "Simulation" [ label = "animates" ]
+
+		"Simulation\ncase" -> "Simulated\nworld" [ label = "specifies" ]
+
+		"Simulated\nworld" -> "Simulation" [ label = "is evaluated\nby" ]
+}

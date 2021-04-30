@@ -1,0 +1,210 @@
+#!/bin/sh
+
+usage="Usage: $(basename $0) [-v|--verbose] [-q|--quiet] [-f|--filenames-only] [-i|--insensitive] EXPR [TARGET_BASE_DIR]: recursive grep in Erlang source files in order to search for the specified expression in the target sources, either from the TARGET_BASE_DIR directory, if specified, otherwise from the current directory.
+
+  Options:
+   -v or --verbose: be specifically verbose
+   -q or --quiet: be specifically quiet, just listing matches
+   -f or --filenames-only: display only filenames, not also the matched patterns, and if there are multiple matches in the same file, its filename will be output only once (implies quiet); useful for scripts
+   -i or --insensitive: perform case-insensitive searches in the content of files, and also in the searched Erlang filenames
+
+  Example: $(basename $0) -i 'list_to_form(' /tmp"
+
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+
+	echo "  ${usage}"
+	exit
+
+fi
+
+
+find="$(which find 2>/dev/null)"
+grep="$(which grep 2>/dev/null)"
+
+#echo "grep = ${grep}"
+#echo "find = ${find}"
+
+
+if [ ! -x "${grep}" ]; then
+	echo "Error, no executable grep found." 1>&2
+	exit 5
+fi
+
+
+if [ ! -x "${find}" ]; then
+	echo "Error, no executable find found." 1>&2
+	exit 6
+fi
+
+
+# Both are false by default:
+verbose=1
+quiet=1
+
+insensitive_opt=""
+filenames_only=1
+
+
+# A useless file to ensure grep always has multiple files to scan.
+# Done to force grep to display the filename (otherwise it will not)
+# No need to create it, however.
+#
+force_multi_files="$HOME/.$(basename $0).to-delete.tmp"
+
+name_opt="-name"
+
+if [ $# -eq 0 ]; then
+	echo "  Error, too few parameters.
+${usage}" 1>&2
+	exit 1
+fi
+
+
+if [ $# -ge 4 ]; then
+	echo "  Error, too many parameters ($*).
+${usage}" 1>&2
+	exit 2
+fi
+
+
+
+# Read all known options:
+
+token_eaten=0
+
+while [ ${token_eaten} -eq 0 ]; do
+
+	read_parameter="$1"
+	#echo "read_parameter = ${read_parameter}"
+
+	token_eaten=1
+
+	if [ "${read_parameter}" = "--verbose" -o "${read_parameter}" = "-v" ]; then
+		verbose=0
+		quiet=1
+		echo "Verbose mode activated."
+		token_eaten=0
+	fi
+
+
+	if [ "${read_parameter}" = "--quiet" -o "${read_parameter}" = "-q" ]; then
+		verbose=1
+		quiet=0
+		#echo "Quiet mode activated."
+		token_eaten=0
+	fi
+
+	if [ "${read_parameter}" = "--filenames-only" -o "${read_parameter}" = "-f" ]; then
+
+		verbose=1
+		quiet=0
+		filenames_only=0
+		[ ${quiet} -eq 0 ] || echo "Only filenames will be displayed, not found patterns."
+		token_eaten=0
+
+	fi
+
+
+	if [ "${read_parameter}" = "--insensitive" -o "${read_parameter}" = "-i" ];	then
+
+		insensitive_opt="-i"
+		name_opt="-iname"
+		[ ${quiet} -eq 0 ] || echo "Case-insensitive mode activated."
+		token_eaten=0
+
+	fi
+
+	if [ -n "${read_parameter}" ]; then
+		shift
+	fi
+
+done
+
+if [ -z "${read_parameter}" ]; then
+
+	echo "  Error, too few parameters.
+${usage}" 1>&2
+	exit 3
+
+fi
+
+
+# full_base_dir is meant to be longer (too long to display before matches) yet
+# more precise:
+#
+target_base_dir="$1"
+
+if [ -z "${target_base_dir}" ]; then
+
+	target_base_dir="."
+	full_base_dir="$(realpath .)"
+	#[ ${verbose} -eq 0 ] || echo "Proceeding from current directory ('${full_base_dir}')."
+else
+	full_base_dir=$(realpath "${target_base_dir}")
+	#[ ${verbose} -eq 0 ] || echo "Proceeding from specified directory ('${full_base_dir}')."
+	shift
+
+fi
+
+if [ ! -d "${target_base_dir}" ]; then
+
+	echo "  Error, target base directory ('${target_base_dir}') does not exist." 1>&2
+
+	exit 10
+
+fi
+
+#echo "target_base_dir = ${target_base_dir}"
+
+
+searched_expr="${read_parameter}"
+#echo "searched_expr = ${searched_expr}"
+
+
+# Then check no parameter remains:
+
+if [ $# -ge 1 ]; then
+
+	echo "  Error, too many parameters (remaining: '$*').
+${usage}" 1>&2
+	exit 4
+
+fi
+
+
+base_grep_opt="--color"
+
+# NEVER surround these single quotes by double ones:
+filter_erl='*.?rl'
+
+# Unable to properly define a correctly-protected variable:
+#filter_expr="${name_opt} ${filter_erl}"
+
+if [ ${verbose} -eq 0 ]; then
+
+	#echo "Will search in following files from '${target_base_dir}' based on: ${find} . ${filter_expr}:"
+	echo "Will search in following files from '${target_base_dir}' based on: ${find} . ${name_opt} ${filter_erl}:"
+	${find} "${target_base_dir}" ${name_opt} "${filter_erl}"
+
+fi
+
+
+
+[ ${quiet} -eq 0 ] || echo "
+  Recursive grep for expression <${searched_expr}> in all Erlang files from '${full_base_dir}' (i.e. '${target_base_dir}'):
+	"
+
+if [ ${filenames_only} -eq 1 ]; then
+
+	# Most usual case:
+	${find} "${target_base_dir}" ${name_opt} "${filter_erl}" -exec ${grep} ${base_grep_opt} ${insensitive_opt} "${searched_expr}" '{}' ${force_multi_files} ';' 2>/dev/null
+
+else
+
+	${find} "${target_base_dir}" ${name_opt} "${filter_erl}" -exec ${grep} ${base_grep_opt} ${insensitive_opt} "${searched_expr}" '{}' ${force_multi_files} ';' 2>/dev/null | sed 's|:.*$||1' | uniq
+
+fi
+
+[ ${quiet} -eq 0 ] || echo "
+  End of search."

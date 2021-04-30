@@ -1,0 +1,19 @@
+graph LR;
+
+  EXP(Define experiment)-->SCN;
+  EXP(Define experiment)-->MET;
+  EXP(Define experiment)-->MODSPEC;
+  EXP(Define experiment)-->TECH;
+
+  TECH(Define technical settings)-->RUN;
+  SCN(Define scenarios)-->INIT;
+  SCN(Define scenarios)-->DYN;
+  MODSPEC(Specify models)-->MODIMPL;
+  MODIMPL(Implement models)-->RUN;
+  MET(Define expected metrics)-->PRO;
+
+  PRO(Define probes)-->RUN;
+  INIT(Define initial conditions)-->RUN;
+  DYN(Define context dynamics)-->RUN;
+  RUN(Run the corresponding simulations)-->INT;
+  INT(Interpret the results)

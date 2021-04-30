@@ -26,3 +26,4 @@ Until the various elements are available online, please [contact us](https://www
 One may first have a look at the [Sim-Diasca wiki](https://github.com/Olivier-Boudeville-EDF/Sim-Diasca/wiki).
 
 Please refer to the upcoming [Sim-Diasca official documentation](http://olivier-boudeville-edf.github.io/Sim-Diasca/) for further information.
+\nThis branch corresponds to the version *2.3.13* of Sim-Diasca.

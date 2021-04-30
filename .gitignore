@@ -1,0 +1,22 @@
+# Listing path patterns that shall be ignored by git:
+*.beam
+*.traces
+*.log
+*.plt
+*.sdar
+*~
+*.config
+*erlang.log.*
+declared-types-in-*.txt
+sim-diasca/package-versions.hrl
+sim-diasca/doc/dataflow-howto/README.txt
+sim-diasca/doc/dataflow-howto/dataflow-diagram-toolbox.zip
+sim-diasca/src/core/services/dataflow/mockup-support/examples/MockupReferenceExample.dumf
+*__pycache__/
+.*.swp
+erl_crash.dump
+*.pyc
+launch-erl-input-command.sh
+sim-diasca/include/*.hrl
+/dao1_0/
+*/ebin/*.app

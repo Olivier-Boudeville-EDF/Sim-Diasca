@@ -1,0 +1,74 @@
+% Note: with the newer rebar-based build, there is no more need for an
+% hex-dedicated rebar configuration file, or for a custom hook such as
+% hex-compile-hook-script.sh.
+%
+% So this file is mostly obsolete and is scheduled for removal.
+
+
+% This is a configuration file of rebar3, so that Ceylan-Traces can better
+% integrate in the current OTP ecosystem, despite its (more complex, probably
+% more flexible) native build based on GNU make.
+
+% If the name of this file is 'rebar.config', then it is a generated file,
+% otherwise it is a template (in conf/rebar.config.template), meant to be filled
+% by information coming from GNUmakevars.inc.
+%
+% See the Myriad counterpart file (same name) for more explanations.
+
+
+% Base layout was obtained thanks to: 'rebar3 new app traces', as Traces is an
+% active OTP application (not a mere library).
+
+% To be taken into account, from the library root, through 'make
+%  rebar3-application' or 'make rebar3-release'.
+
+
+% Settings for the 'default' profile follow.
+
+
+% Directly depends on the Ceylan-WOOPER OTP active application (Erlang and
+% Ceylan-Myriad implied):
+
+
+% As a GIT-based dependency:
+%
+% (not working properly, as the hex plugin expects a flat source tree
+% apparently, so the build of the dependency fails)
+%
+%{deps, [ {myriad, {git, "git://github.com/Olivier-Boudeville/Ceylan-Myriad",
+%					{branch, "master"}}},
+%		 {wooper, {git, "git://github.com/Olivier-Boudeville/Ceylan-WOOPER",
+%					{branch, "master"} } } ] }.
+
+
+% As an hex-package dependency:
+%
+% (works if the package uses a specific hook script, see
+% hex-compile-hook-script.sh, to compensate for the GNUmake* root files that the
+% package archive will not include at their location)
+%
+{deps, [ {wooper, "WOOPER_VERSION_FOR_REBAR"} ] }.
+
+
+
+
+% Include directories found in INC:
+{erl_opts, [ {d,myriad_debug_mode}, {d,wooper_debug_mode}, {d,traces_debug_mode}, debug_info, {debug_info_key,"DEBUG_KEY_FOR_REBAR"}, report_warnings, warn_export_all, warn_export_vars, warn_shadow_vars, warn_obsolete_guards, warn_unused_import, warnings_as_errors, {parse_transform,wooper_parse_transform}, INCS_FOR_REBAR ]}.
+
+
+% Bootstrapped modules (from BOOTSTRAP_MODULES):
+{erl_first_files, [ FIRST_FILES_FOR_REBAR ]}.
+
+% Could not set REBAR_PROFILE=$(REBAR_PROFILE):
+%{pre_hooks,  [ {compile, "make -s rebar3-compile-pre-hook"} ]}.
+%{post_hooks, [ {compile, "make -s rebar3-compile-post-hook"} ]}.
+
+
+% No release section, only present in the base rebar.config.
+
+
+% For packages:
+%
+% (use 'rebar3 update' to enable the hex plugin)
+%
+{plugins, [rebar3_hex]}.

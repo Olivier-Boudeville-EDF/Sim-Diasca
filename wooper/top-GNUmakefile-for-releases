@@ -1,0 +1,5 @@
+WOOPER_TOP = wooper
+
+MODULES_DIRS = myriad wooper
+
+include $(WOOPER_TOP)/GNUmakesettings.inc

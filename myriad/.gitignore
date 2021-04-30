@@ -1,0 +1,29 @@
+# Listing path patterns that shall be ignored by git:
+*.beam
+include/*.hrl
+src/scripts/myriad-example-tree
+*.traces
+*.log
+*.plt
+*erlang.log.*
+declared-types-in-*.txt
+.eunit
+erl_crash.dump
+doc/index.html
+
+# For Emacs temporary files:
+*.#*
+
+*~
+
+# Added in relation to rebar3:
+.rebar
+rebar3.crashdump
+.rebar3
+_*
+
+# Mere symlink:
+src/myriad.app.src
+
+# Generated:
+conf/rebar.config

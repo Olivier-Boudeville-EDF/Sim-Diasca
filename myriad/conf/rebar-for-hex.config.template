@@ -1,0 +1,55 @@
+% Note: with the newer rebar-based build, there is no more need for an
+% hex-dedicated rebar configuration file, or for a custom hook such as
+% hex-compile-hook-script.sh.
+%
+% So this file is mostly obsolete and is scheduled for removal.
+
+
+% This is a (manually crafted) configuration file of rebar3 *in the context of
+% an hex package* (ex: in this case only src/ is packaged, and none of the root
+% GNUmake* files), so that Ceylan-Myriad can better integrate in the current OTP
+% ecosystem, despite its (more complex) build based on GNU make.
+%
+% This is also a template, so that version numbers can be updated from a
+% centralized place (namely GNUmakevars.inc).
+
+
+% Base layout was obtained thanks to: 'rebar3 new lib myriad', as Myriad is a
+% library OTP application (without supervision trees).
+
+% To be run from the library root as 'rebar3 compile' or 'rebar3 release'.
+
+
+% See also:
+% - http://erlang.org/doc/design_principles/release_structure.html
+% - https://www.rebar3.org/docs/releases
+% - https://learnyousomeerlang.com/release-is-the-word
+
+
+
+% Settings for the 'default' profile follow.
+
+
+% No dependency (except Erlang of course):
+{deps, []}.
+
+
+% We need to rely on our dedicated build procedure (ex: for the parse transforms
+% involved):
+%
+% Could not set REBAR_PROFILE=$(REBAR_PROFILE):
+%
+{pre_hooks, [ {compile, "priv/hex-packaging/hex-compile-hook-script.sh"} ]}.
+
+%{post_hooks, [
+%	{compile, "echo 'Myriad hex post-compile hook!'"} ]}.
+
+
+% No release section, only present in the base rebar.config.
+
+
+% For packages:
+%
+% (use 'rebar3 update' to enable the hex plugin)
+%
+{plugins, [rebar3_hex]}.

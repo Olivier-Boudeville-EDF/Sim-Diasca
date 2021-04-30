@@ -1,0 +1,54 @@
+% Add your standard header here.
+%
+-module(class_MY_CLASS).
+
+
+% Determines what are the mother classes of this class (if any):
+-define( superclasses, [ class_TraceEmitter ] ).
+
+% Class-specific attributes of an instance of MY_CLASS are:
+-define( class_attributes, [ my_attribute, ... ] ).
+
+
+% Allows to define WOOPER base variables and methods for that class:
+-include("wooper.hrl").
+
+
+% Used by the trace_categorize/1 macro to use the right emitter:
+% (must be included before class_TraceEmitter header)
+-define( trace_emitter_categorization, "MY_CATEG.MY_SUB_CATEG" ).
+
+% Allows to use macros for trace sending:
+-include("class_TraceEmitter.hrl").
+
+
+% Constructs a new instance of MY_CLASS.
+%
+% Construction parameters are:
+%
+% - Name: the name of this instance, specified as a plain string
+% -
+%
+construct( State, Name, ... ) ->
+
+	% First the direct mother classes:
+	TraceState = class_TraceEmitter:construct( State,
+									  ?trace_categorize( Name ) ),
+
+	% Then the class-specific attributes:
+	setAttributes( TraceState, [
+		 { foo, 42},
+		 [...]
+							   ] ).
+
+
+% Possibly a destruct/1.
+
+
+% Member methods section.
+
+
+% Static methods section.
+
+
+% Helper functions section.

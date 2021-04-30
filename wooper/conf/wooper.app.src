@@ -1,0 +1,55 @@
+% Description of the WOOPER OTP active application, typically used by rebar3.
+
+% Note: if this file is named wooper.app, it is a *generated* file, whose real
+% source is conf/wooper.app.src, from which _build/lib/wooper/ebin/wooper.app is
+% obtained and copied to ebin/wooper.app; finally src/wooper.app.src is a mere
+% symlink to this last file, so we have:
+%
+% ./conf/wooper.app.src [only real source]
+% ./_build/lib/wooper/ebin/wooper.app
+% ./ebin/wooper.app
+% ./src/wooper.app.src -> ../ebin/wooper.app
+%
+% For more information see the Ceylan-Myriad 'rebar3-create-app-file' make
+% target and its associated comments.
+
+
+% See also:
+% - http://erlang.org/doc/man/app.html
+% - https://learnyousomeerlang.com/building-otp-applications
+
+
+{application, wooper,
+ [{description, "Ceylan-WOOPER, a Wrapper for Object-Oriented Programming in Erlang, as an OTP active application here (see http://wooper.esperide.org)"},
+  {vsn, "VERSION_FOR_REBAR"},
+
+  % See wooper_class_manager.hrl:
+  {registered, [wooper_class_manager]},
+
+  % Regarding Myriad, see http://myriad.esperide.org/myriad.html#otp:
+  % (however myriad is a library application, not an active one)
+  {applications, [kernel, stdlib, myriad]},
+
+  %{env,[]},
+
+  % Flat hierarchy in ebin here:
+  {modules, [MODULES_FOR_REBAR]},
+
+  {licenses, ["Ceylan-WOOPER is licensed by its author (Olivier Boudeville) under a disjunctive tri-license, giving you the choice of one of the three following sets of free software/open source licensing terms:
+	- the Mozilla Public License (MPL), version 1.1 or later (very close to the former Erlang Public License, except aspects regarding Ericsson and/or the Swedish law)
+	- the GNU General Public License (GPL), version 3.0 or later
+	- the GNU Lesser General Public License (LGPL), version 3.0 or later"]},
+
+  % Active application (yet would still work without thanks to automatic launch
+  % of the class manager):
+  %
+  % (no specific relevant startup argument to specify here)
+  %
+  {mod, {wooper_app, []}},
+
+  { links, [ {"Official website", "http://wooper.esperide.org" },
+			 {"Github", "https://github.com/Olivier-Boudeville/Ceylan-WOOPER"} ]}
+
+  %{exclude_files, []}
+
+ ]}.

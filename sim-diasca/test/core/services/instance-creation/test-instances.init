@@ -1,0 +1,19 @@
+% This is an example of initialisation file.
+
+% Simple creation:
+{ class_TestActor, [ "First Data-based actor", {erratic,2}, no_creation, 60 ] }.
+
+
+% Simple creation with the definition of a user identifier:
+"My alpha user id" <- { class_TestActor, [ "Second Data-based actor", {erratic,2}, no_creation, 65 ] }.
+
+
+% Creation with placement:
+{ class_TestActor, [ "Third Data-based actor", {erratic,2}, no_creation, 60 ], my_first_placement_hint }.
+
+
+% Creation with the definition of a user identifier (and thus with no placement):
+"My beta user id" <- { class_TestActor, [ "Fourth Data-based actor", {erratic,2}, no_creation, 65 ] }.
+
+
+% (no creation can define both a user identifier and a placement)

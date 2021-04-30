@@ -1,0 +1,153 @@
+% This is a configuration file of rebar3, so that Ceylan-Myriad can better
+% integrate in the current OTP ecosystem, despite its (more complex, probably
+% more flexible) native build based on GNU make.
+%
+% If the name of this file is 'rebar.config', then it is a generated file,
+% otherwise it is a template (located in conf/rebar.config.template), meant to
+% be filled by information determined at build time or coming from
+% GNUmakevars.inc.
+%
+% The previous version of this file used a compile pre-hook (triggering the
+% 'rebar3-compile' make target), however having BEAM files that were more recent
+% than their sources was not sufficient to prevent rebar from attempting to
+% recompile them (and fail).
+%
+% As the option of writing a custom rebar compile module and/or plugin was not
+% deemed so relevant (long, complicated and risky), we also tried with no luck
+% the generation of a separate, fake, non-nested, already fully-built
+% OTP-standard layout (see the 'create-fake-otp-project' make target), however
+% rebar was still attempting to perform extraneous, failing recompilations.
+%
+% Finally we created from scratch a direct rebar structure with 'rebar3 new lib
+% myriad' and filled by hand the resulting rebar.config until it became
+% satisfactory enough; then we automated (at least most of) its generation from
+% Make, so that upper layers could integrate similarly.
+
+
+% Base layout obtained thanks to: 'rebar3 new lib myriad', as Myriad is a
+% library OTP application (without supervision trees), and to be taken into
+% account, from the library root, through 'make rebar3-application' or 'make
+% rebar3-release'.
+
+
+% See also:
+% - http://erlang.org/doc/design_principles/release_structure.html
+% - https://www.rebar3.org/docs/releases
+% - https://learnyousomeerlang.com/release-is-the-word
+
+
+% We try to stick close to the latest stable OTP version:
+{minimum_otp_vsn, "23.2"}.
+
+
+% Settings for the 'default' profile follow.
+
+
+% No dependency (except Erlang of course):
+{deps, []}.
+
+
+% Include directories found in INC:
+%
+% No need to select here a JSON backend (i.e. neither use_jsx_json_backend nor
+% use_jiffy_json_backend is useful), as their look-up is now done at runtime.
+%
+{erl_opts, [ {d,myriad_debug_mode}, debug_info, {debug_info_key,"DEBUG_KEY_FOR_REBAR"}, report_warnings, warn_export_all, warn_export_vars, warn_shadow_vars, warn_obsolete_guards, warn_unused_import, warnings_as_errors, {parse_transform,myriad_parse_transform}, INCS_FOR_REBAR ]}.
+
+
+% Bootstrapped modules (from BOOTSTRAP_MODULES):
+{erl_first_files, [ FIRST_FILES_FOR_REBAR ]}.
+
+
+% (hooks needed, for example to create the include symlinks and for the build
+% itself)
+%
+% Previously 'MYRIAD_REBAR_PROFILE=${REBAR_PROFILE}' was added, yet
+% REBAR_PROFILE is actually not set, so we rely on our default value instead.
+%
+{pre_hooks,  [ {compile, "make -s rebar3-compile-pre-hook"} ]}.
+{post_hooks, [ {compile, "make -s rebar3-compile-post-hook"} ]}.
+
+% Was deemed likely needed sooner or later to prevent spurious, ill-configured
+% compilations that would be attempted by rebar3, when used as a dependency,
+% however the opposite happened (for projects based on Myriad, with bulletproof
+% hooks rebar3 started to attempt such a failing rebuild, whereas with the base
+% hooks not).
+%
+%{pre_hooks,  [ {compile, "make -s rebar3-bulletproof-compile-pre-hook"} ]}.
+%{post_hooks, [ {compile, "make -s rebar3-bulletproof-compile-post-hook"} ]}.
+
+
+% For release generation:
+%
+% (defaults are for the development mode)
+%
+% With relx, only direct dependencies need to be listed, and version constraints
+% can be used, instead of exact, specific versions.
+%
+{relx, [
+
+  {release, {myriad_release, "VERSION_FOR_REBAR"},
+			[sasl, myriad]},
+
+  %{sys_config, "./config/sys.config"},
+  %{vm_args, "./config/vm.args"},
+
+  % Base, development version:
+  {dev_mode, true},
+  {include_erts, false},
+
+  {extended_start_script, true},
+  {include_src, false}
+
+]}.
+
+
+{profiles, [
+
+  % Production mode (the default one when used as a dependency):
+  {prod, [
+
+	% Like for the default profile, except for removed {d,myriad_debug_mode} and
+	% added {d,exec_target_is_production}:
+	%
+	{erl_opts, [ {d,exec_target_is_production}, debug_info, {debug_info_key,"DEBUG_KEY_FOR_REBAR"}, report_warnings, warn_export_all, warn_export_vars, warn_shadow_vars, warn_obsolete_guards, warn_unused_import, warnings_as_errors, {parse_transform,myriad_parse_transform}, INCS_FOR_REBAR ]},
+
+	% For the build makefiles:
+	{env, [ { 'REBAR_PROFILE', "prod" } ] },
+
+	{relx, [
+
+	  % Not wanting the release to contain symlinks to applications:
+	  {dev_mode, false},
+
+	  % Creating a full target system:
+	  {include_erts, true},
+
+	  {extended_start_script, true},
+	  {include_src, false}
+
+	]} ] },
+
+
+  {test, [
+
+	% Test profile, like the production one except for the three, final,
+	% token-related defines:
+	%
+	% No need to select here a JSON backend (i.e. neither use_jsx_json_backend
+	% nor use_jiffy_json_backend is useful), as their look-up is now done at
+	% runtime.
+	%
+	{erl_opts, [ {d,exec_target_is_production}, debug_info, {debug_info_key,"DEBUG_KEY_FOR_REBAR"}, report_warnings, warn_export_all, warn_export_vars, warn_shadow_vars, warn_obsolete_guards, warn_unused_import, warnings_as_errors, {parse_transform,myriad_parse_transform}, INCS_FOR_REBAR, {d,my_first_test_token}, {d,my_second_test_token,200}, {d,my_third_test_token,some_text} ]}
+
+  ]}
+
+]}.
+
+
+% For Hex packages (see https://hex.pm/):
+%
+% (use 'rebar3 update' to enable the hex plugin)
+%
+{plugins, [rebar3_hex]}.

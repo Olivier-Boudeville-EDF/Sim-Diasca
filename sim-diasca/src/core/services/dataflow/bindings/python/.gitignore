@@ -1,0 +1,4 @@
+# Ignore our own virtualenv:
+env
+# And the various top-level generated elements:
+Sim-Diasca-Python-Dataflow-API-*.*

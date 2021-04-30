@@ -1,0 +1,69 @@
+% This is a Sim-Diasca initialisation file for the 'Dataflow Urban Example',
+% crafted manually on Monday, July 25, 2016.
+%
+
+% Refer to the 'Interactions Between Managers' section of the 'Sim-Diasca
+% Dataflow HOWTO' for the associated description of this example case.
+
+
+% Note that actors that are not meant to be referenced by others may or may not
+% have their user identifier defined (we chose not).
+
+
+%
+% Let's define first the simulated world.
+%
+
+% The root thereof:
+"my_world_manager" <- { class_WorldManager, [] }.
+
+
+% For clarity, defining the instance managers breadth-first:
+
+"my_city_manager" <- { class_CityManager, [ { user_id, "my_world_manager" } ] }.
+
+{ class_RoadManager, [ { user_id, "my_world_manager" } ] }.
+
+
+"my_district_manager" <- { class_DistrictManager,
+					  [ { user_id, "my_city_manager" } ] }.
+
+"my_precinct_manager" <- { class_PrecinctManager,
+					  [ { user_id, "my_district_manager" } ] }.
+
+
+{ class_BuildingManager, [ { user_id, "my_precinct_manager" } ] }.
+
+{ class_DwellingManager, [ { user_id, "my_precinct_manager" } ] }.
+
+
+
+%
+% Let's then define the computations that shall be operated on that simulated
+% world:
+%
+
+% Root of the computations, and bridge to the simulated world:
+"my_experiment_manager" <- { class_ExperimentManager,
+			 [ "Urban Experiment Manager", { user_id, "my_world_manager" } ] }.
+
+
+% Dataflow definitions:
+
+"my_energy_dataflow" <- { class_Dataflow, [ "Urban Energy Dataflow",
+									 { user_id, "my_experiment_manager" } ] }.
+
+"my_network_dataflow" <- { class_Dataflow, [ "Urban Network Dataflow",
+									 { user_id, "my_experiment_manager" } ] }
+
+
+% Definitions of the block managers, each linked to its list of dataflows:
+
+{ class_EnergyPovertyManager, [ [ { user_id, "my_energy_dataflow" } ] ] }.
+
+{ class_EnergyDemandManager, [ [ { user_id, "my_energy_dataflow" } ] ] }.
+
+{ class_EnergyProductionManager, [ [ { user_id, "my_energy_dataflow" },
+									 { user_id, "my_network_dataflow" } ] ] }.
+
+{ class_LandUseManager, [ [ { user_id, "my_network_dataflow" } ] }.

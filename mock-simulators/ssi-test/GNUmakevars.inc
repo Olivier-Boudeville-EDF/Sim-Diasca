@@ -1,0 +1,6 @@
+
+
+INC += -I$(SSI_TEST_TOP)/include
+
+
+MOCK_SIMULATORS_TOP = $(SSI_TEST_TOP)/..

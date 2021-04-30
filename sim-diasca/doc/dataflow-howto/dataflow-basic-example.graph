@@ -1,0 +1,57 @@
+# Example of dataflow-like diagram.
+#
+# The goal is to preserve as much as possible the dataflow graphical conventions
+# detailed in the HOWTO (and typically available in the Dia files).
+#
+# Created by Olivier Boudeville on Monday, January 23, 2017
+
+
+digraph G {
+
+
+
+		/* Header section (basic settings) */
+
+		fontname = "Bitstream Vera Sans"
+		fontsize = 8
+
+		node [
+				fontname = "Bitstream Vera Sans"
+				fontsize = 8
+				shape = "record"
+				color = "#000000"
+				fillcolor = "#add8e6"
+				style = filled
+		]
+
+		edge [
+				fontname = "Bitstream Vera Sans"
+				fontsize = 8
+		]
+
+
+		/* Package section */
+
+		subgraph clusterUrban_ObjectPackage {
+				label = "Package dataflow.example"
+
+				Building [
+						label = "{Building||+ height\l}"
+				fillcolor = "#add8e6"
+				]
+
+				Dwelling [
+						label = "{Dwelling||+ surface|+ person_count\l}"
+				]
+		}
+
+		UrbanObject [
+				label = "{foobar||\l}"
+		]
+
+		Building -> UrbanObject [ color = "#ff7200" ]
+		UrbanObject -> Dwelling [ color = "#82ae82" ]
+
+
+
+}
