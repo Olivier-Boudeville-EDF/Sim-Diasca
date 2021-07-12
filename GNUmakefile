@@ -9,6 +9,7 @@
 	clean-all-results real-clean real-clean-local                       \
 	install to-archive to-archive-full vcs-archive archive              \
 	update-third-party-mirror release stats                             \
+	info-context info-versions                                          \
 	info info-files info-local-files info-paths info-build              \
 	info-archive info-version info-release
 
@@ -485,7 +486,17 @@ update-third-party-mirror:
 
 
 stats:
-	@$(MAKE_CODE_STATS) $(PWD)
+	@$(MAKE_CODE_STATS) $(SIM_DIASCA_TOP)
+
+
+# Typically useful to know the software context for continuous integration:
+info-context: info-platform info-versions
+
+
+info-versions:
+	@echo "MYRIAD_VERSION = $(MYRIAD_VERSION)"
+	@echo "WOOPER_VERSION = $(WOOPER_VERSION)"
+	@echo "TRACES_VERSION = $(TRACES_VERSION)"
 
 
 info: info-files info-paths info-archive info-release
