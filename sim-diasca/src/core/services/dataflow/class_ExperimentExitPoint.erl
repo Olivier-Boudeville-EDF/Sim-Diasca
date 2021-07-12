@@ -19,6 +19,9 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Class implementing the <b>exit point of an experiment</b>, which collects
+% the final values produces by the associated dataflow.
+%
 -module(class_ExperimentExitPoint).
 
 
@@ -27,7 +30,7 @@
 		 "the (logical) stopping point that terminates the evaluation of the "
 		 "registered dataflows, possibly at each timestep; technically it is "
 		 "run first (spontaneously), and once done triggers the experiment "
-		 "entry point." ).
+		 "entry point for the next evaluation step." ).
 
 
 % Determines what are the direct mother classes of this class (if any):
@@ -93,7 +96,9 @@
 
 
 
-% Constructs the experiment exit point, from:
+% @doc Constructs the experiment exit point.
+%
+% Parameters are:
 %
 % - ActorSettings describes the actor abstract identifier (AAI) and seed of this
 % actor, as assigned by the load balancer
@@ -145,7 +150,7 @@ construct( State, ActorSettings, Dataflows, ExperimentEntryPointPid,
 % Methods section.
 
 
-% Callback executed on the first diasca of existence of this exit point.
+% @doc Callback executed on the first diasca of existence of this exit point.
 -spec onFirstDiasca( wooper:state(), pid() ) -> actor_oneway_return().
 onFirstDiasca( State, _CallerPid ) ->
 
@@ -188,8 +193,8 @@ onFirstDiasca( State, _CallerPid ) ->
 
 
 
-% Initiates the evaluation of the known dataflows, supposing all initial blocks
-% have already registered themselves to their respective dataflows.
+% @doc Initiates the evaluation of the known dataflows, supposing all initial
+% blocks have already registered themselves to their respective dataflows.
 %
 -spec initiateDataflowEvaluation( wooper:state(), sending_actor_pid() ) ->
 										actor_oneway_return().
@@ -210,7 +215,7 @@ initiateDataflowEvaluation( State, _SendingActorPid ) ->
 
 
 
-% The core of the behaviour of this exit point.
+% @doc The core of the behaviour of this exit point.
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
@@ -258,7 +263,7 @@ actSpontaneous( State ) ->
 
 
 
-% Declares the termination of the experiment.
+% @doc Declares the termination of the experiment.
 %
 % Note: usually this is determined internally.
 %
@@ -285,7 +290,7 @@ declareExperimentTermination( State ) ->
 % Helper functions.
 
 
-% Returns a textual description of this exit point.
+% @doc Returns a textual description of this exit point.
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 

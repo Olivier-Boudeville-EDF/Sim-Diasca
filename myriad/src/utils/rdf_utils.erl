@@ -28,12 +28,14 @@
 
 
 
-% Gathering of various facilities in relation with RDF, i.e. 'Resource
-% Description Framework'.
+% @doc Gathering of various facilities in relation with <b>RDF</b>,
+% namely <em>Resource Description Framework</em>.
 %
 % See also:
-% - https://en.wikipedia.org/wiki/Resource_Description_Framework
-% - https://www.w3.org/TR/rdf11-primer/
+%
+% - [https://en.wikipedia.org/wiki/Resource_Description_Framework]
+%
+% - [https://www.w3.org/TR/rdf11-primer/]
 %
 % See rdf_utils_test.erl for the corresponding test.
 %
@@ -41,74 +43,75 @@
 
 
 % See also:
-% - a RDF N-Triples reader: https://github.com/tim/erlang-rdf-ntriples
+%
+% - a RDF N-Triples reader: [https://github.com/tim/erlang-rdf-ntriples]
+%
 % - a distributed framework for large scale graph processing:
-% https://github.com/xslogic/phoebus
+% [https://github.com/xslogic/phoebus]
+%
 % - bindings for the Raptor RDF Parser Library:
-% https://github.com/jonasp/erlang-raptor
+% [https://github.com/jonasp/erlang-raptor]
 
 
 
+-type iri() :: text_utils:bin_string().
 % International Resource Identifier, in charge of, well, identifying a resource.
 %
 % This is a generalization of the URIs (Uniform Resource Identifier), allowing
 % non-ASCII characters to be used; specified in RFC 3987 (see
-% http://www.ietf.org/rfc/rfc3987.txt).
+% [http://www.ietf.org/rfc/rfc3987.txt]).
 %
 % (note: type to be used internally, for efficiency)
-%
--type iri() :: text_utils:bin_string().
 
 
+
+-type string_iri() :: text_utils:ustring().
 % Version of an IRI specified (typically by the user) as a plain (Unicode)
 % string.
-%
--type string_iri() :: text_utils:ustring().
 
 
-% Any type of IRI:
+
 -type any_iri () :: iri() | string_iri().
+% Any type of IRI.
 
 
+-type literal() :: any().
 % Designates all basic values that are not IRIs, often in a textual version.
 %
 % Examples of literals include strings such as "La Joconde", dates such as "the
 % 4th of July, 1990" and numbers such as "3.14159".
 %
-% See: https://www.w3.org/TR/2014/REC-rdf11-concepts-20140225/#section-Datatypes
-%
--type literal() :: any().
+% See
+% [https://www.w3.org/TR/2014/REC-rdf11-concepts-20140225/#section-Datatypes].
 
 
-% Identifies uniquely what resource a RDF triplet is describing (input node).
 -type subject() :: iri().
+% Identifies uniquely what resource a RDF triplet is describing (input node).
 
 
+-type predicate() :: iri().
 % Defines some attribute of the subject, the nature of the relationship between
 % the subject and the object (directed edge).
-%
--type predicate() :: iri().
 
 
+-type object() :: iri() | literal().
 % The actual value specified in the triplet; defines how the subject and object
 % are related (output edge).
-%
--type object() :: iri() | literal().
 
 
-% A RDF statement, a property triplet (named triple as more usual here):
 -type triple() :: { subject(), predicate(), object() }.
+% A RDF statement, a property triplet (named triple as more usual here).
 
 
 -type content() :: [ triple() ].
 
 
-% Vocabulary, typically to be used for internal purposes.
 -type vocabulary() :: set_utils:set( iri() ).
+% Vocabulary, typically to be used for internal purposes.
 
 
-% Vocabulary, typically to be specified by the user (simpler form).
 -type user_vocabulary() :: [ string_iri() ].
+% Vocabulary, typically to be specified by the user (simpler form).
 
 
 -export_type([ iri/0, string_iri/0, any_iri/0,
@@ -126,14 +129,14 @@
 
 
 
-% Tells whether specified term is an IRI.
+% @doc Tells whether specified term is an IRI.
 -spec is_iri( term() ) -> boolean().
 is_iri( Term ) ->
 	text_utils:is_bin_string( Term ).
 
 
 
-% Tells whether specified term is a (RDF) literal.
+% @doc Tells whether specified term is a (RDF) literal.
 -spec is_literal( term() ) -> boolean().
 is_literal( _Term ) ->
 	%text_utils:is_bin_string( Term ).
@@ -142,28 +145,28 @@ is_literal( _Term ) ->
 
 
 
-% Tells whether specified term is a RDF subject.
+% @doc Tells whether specified term is a RDF subject.
 -spec is_subject( term() ) -> boolean().
 is_subject( Term ) ->
 	is_iri( Term ).
 
 
 
-% Tells whether specified term is a RDF predicate.
+% @doc Tells whether specified term is a RDF predicate.
 -spec is_predicate( term() ) -> boolean().
 is_predicate( Term ) ->
 	is_iri( Term ).
 
 
 
-% Tells whether specified term is a RDF object.
+% @doc Tells whether specified term is a RDF object.
 -spec is_object( term() ) -> boolean().
 is_object( Term ) ->
 	is_iri( Term ) orelse is_literal( Term ).
 
 
 
-% Evaluates specified statement, and returns whether it holds.
+% @doc Evaluates specified statement, and returns whether it holds.
 -spec evaluate_statement( subject(), predicate(), object() ) -> boolean().
 evaluate_statement( _Subject, _Predicate= <<"is_a">>, _Object ) ->
 	% Not implemented yet:
@@ -174,8 +177,8 @@ evaluate_statement( _Subject, Predicate, _Object ) ->
 
 
 
-% Tells whether the first vocabulary is a subset of the second, i.e. whether the
-% first properties imply that the second ones are met.
+% @doc Tells whether the first vocabulary is a subset of the second,
+% that is whether the first properties imply that the second ones are met.
 %
 -spec implies( vocabulary(), vocabulary() ) -> boolean().
 implies( FirstVocabulary, SecondVocabulary ) ->
@@ -183,14 +186,14 @@ implies( FirstVocabulary, SecondVocabulary ) ->
 
 
 
-% Returns a textual representation of specified vocabulary.
+% @doc Returns a textual representation of specified vocabulary.
 -spec vocabulary_to_string( vocabulary() ) -> ustring().
 vocabulary_to_string( Vocabulary ) ->
 	vocabulary_to_string( Vocabulary, _IndentationLevel=0 ).
 
 
 
-% Returns a textual representation of specified vocabulary, with specified
+% @doc Returns a textual representation of specified vocabulary, with specified
 % indentation level.
 %
 -spec vocabulary_to_string( vocabulary(), text_utils:indentation_level() ) ->

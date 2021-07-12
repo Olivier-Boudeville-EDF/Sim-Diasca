@@ -14,8 +14,10 @@ DOC_DIRS := installation-guide $(DOC_ELEMENTS_COMMON)
 
 
 .PHONY: all release-doc doc-release doc-package doc-elements $(DOC_DIRS) \
-		info-doc info-common-doc info-internal-doc info-public-doc
-		clean clean-doc \
+		create-lower-layer-referentials create-myriad-referential        \
+		create-wooper-referential create-traces-referential              \
+		info-doc info-common-doc info-internal-doc info-public-doc       \
+		clean clean-doc clean-doc-local
 
 
 MODULES_DIRS = $(DOC_DIRS) training
@@ -57,10 +59,18 @@ DOC_TARGET_PUBLIC_DIR = $(DOC_PACKAGE_PREFIX_PUBLIC)
 #PUBLIC_PDF_ELEMENTS = \
 #	$(SD_INST_GUIDE_DIR)/tmp-rst/$(SD_INST_PUBLIC_GUIDE_PDF)
 
-#website_extensions := {html,css,png,jpeg}
-#website_content := tmp-rst/*.$(website_extensions)
 
-website_extensions := html css png jpeg
+#WEBSITE_EXTENSIONS := {html,css,png,jpeg}
+#WEBSITE_CONTENT := tmp-rst/*.$(WEBSITE_EXTENSIONS)
+
+WEBSITE_EXTENSIONS := pdf html css png jpeg
+
+
+COMMON_SUBDIRS = $(SD_TECH_MANUAL_DIR) $(SD_DEV_GUIDE_DIR) $(SD_MOD_GUIDE_DIR) $(SD_COUPLING_HOWTO_DIR) $(SD_DATAFLOW_HOWTO_DIR)
+
+INTERNAL_SUBDIRS = $(SD_INST_GUIDE_INTERNAL_DIR) $(COMMON_SUBDIRS)
+
+PUBLIC_SUBDIRS = $(SD_INST_GUIDE_PUBLIC_DIR) $(COMMON_SUBDIRS)
 
 
 
@@ -140,36 +150,31 @@ dataflow-howto:
 	@cd $(SD_DATAFLOW_HOWTO_DIR) && $(MAKE) -s full-doc
 
 
+# For /bin/cp, the -L option allows to transform symlinks in their targets
+# (otherwise CSS files will be dead links as they are relative to an out-of-tree
+# target)
+#
 populate-doc-dir-common: generate-doc-common
-	@if [ -z $(DOC_TARGET_DIR) ]; then echo "Error, 'DOC_TARGET_DIR' not set." 1>&2 ; exit 5 ; fi
+	@if [ -z $(DOC_TARGET_DIR) ]; then echo "Error, 'DOC_TARGET_DIR' not set." 1>&2; exit 5; fi
 	@echo "  Populating $(DOC_TARGET_DIR) with common elements"
-	@for d in $(DOC_DIRS); do /bin/mkdir -p $(DOC_TARGET_DIR)/$$d ; done
-	@for ext in $(website_extensions); do ( /bin/cp -r $(SD_TECH_MANUAL_DIR)/tmp-rst/*.$$ext $(DOC_TARGET_DIR)/$(SD_TECH_MANUAL_DIR) 2>/dev/null || true ) ; done
-	@for ext in $(website_extensions); do ( /bin/cp -r $(SD_DEV_GUIDE_DIR)/tmp-rst/*.$$ext $(DOC_TARGET_DIR)/$(SD_DEV_GUIDE_DIR) 2>/dev/null || true ) ; done
-	@for ext in $(website_extensions); do ( /bin/cp -r $(SD_MOD_GUIDE_DIR)/tmp-rst/*.$$ext $(DOC_TARGET_DIR)/$(SD_MOD_GUIDE_DIR) 2>/dev/null || true ) ; done
-	@for ext in $(website_extensions); do ( /bin/cp -r $(SD_COUPLING_HOWTO_DIR)/tmp-rst/*.$$ext $(DOC_TARGET_DIR)/$(SD_COUPLING_HOWTO_DIR) 2>/dev/null || true ) ; done
-	@for ext in $(website_extensions); do ( /bin/cp -r $(SD_DATAFLOW_HOWTO_DIR)/tmp-rst/*.$$ext $(DOC_TARGET_DIR)/$(SD_DATAFLOW_HOWTO_DIR) 2>/dev/null || true ) ; done
+	@for d in $(DOC_DIRS); do /bin/mkdir -p $(DOC_TARGET_DIR)/$$d; done
+	@for ext in $(WEBSITE_EXTENSIONS); do (/bin/cp -rL $(SD_TECH_MANUAL_DIR)/tmp-rst/*.$$ext $(DOC_TARGET_DIR)/$(SD_TECH_MANUAL_DIR) 2>/dev/null || true); done
+	@for ext in $(WEBSITE_EXTENSIONS); do (/bin/cp -rL $(SD_DEV_GUIDE_DIR)/tmp-rst/*.$$ext $(DOC_TARGET_DIR)/$(SD_DEV_GUIDE_DIR) 2>/dev/null || true); done
+	@for ext in $(WEBSITE_EXTENSIONS); do (/bin/cp -rL $(SD_MOD_GUIDE_DIR)/tmp-rst/*.$$ext $(DOC_TARGET_DIR)/$(SD_MOD_GUIDE_DIR) 2>/dev/null || true); done
+	@for ext in $(WEBSITE_EXTENSIONS); do (/bin/cp -rL $(SD_COUPLING_HOWTO_DIR)/tmp-rst/*.$$ext $(DOC_TARGET_DIR)/$(SD_COUPLING_HOWTO_DIR) 2>/dev/null || true); done
+	@for ext in $(WEBSITE_EXTENSIONS); do (/bin/cp -rL $(SD_DATAFLOW_HOWTO_DIR)/tmp-rst/*.$$ext $(DOC_TARGET_DIR)/$(SD_DATAFLOW_HOWTO_DIR) 2>/dev/null || true); done
 
 
 populate-doc-dir-internal: generate-doc-internal
 	@echo "  Populating $(DOC_TARGET_INTERNAL_DIR) with internal elements"
 	@/bin/mkdir -p $(DOC_TARGET_INTERNAL_DIR)/$(SD_INST_GUIDE_BASE_DIR)
-	@for ext in $(website_extensions); do ( /bin/cp -r $(SD_INST_GUIDE_INTERNAL_DIR)/tmp-rst/*.$$ext $(DOC_TARGET_INTERNAL_DIR)/$(SD_INST_GUIDE_BASE_DIR) 2>/dev/null || true ) ; done
+	@for ext in $(WEBSITE_EXTENSIONS); do (/bin/cp -rL $(SD_INST_GUIDE_INTERNAL_DIR)/tmp-rst/*.$$ext $(DOC_TARGET_INTERNAL_DIR)/$(SD_INST_GUIDE_BASE_DIR) 2>/dev/null || true); done
 
 
 populate-doc-dir-public: generate-doc-public
 	@echo "  Populating $(DOC_TARGET_PUBLIC_DIR) with public elements"
 	@/bin/mkdir -p $(DOC_TARGET_PUBLIC_DIR)/$(SD_INST_GUIDE_BASE_DIR)
-	@for ext in $(website_extensions); do ( /bin/cp -r $(SD_INST_GUIDE_PUBLIC_DIR)/tmp-rst/*.$$ext $(DOC_TARGET_PUBLIC_DIR)/$(SD_INST_GUIDE_BASE_DIR) 2>/dev/null || true ) ; done
-
-
-
-clean-doc-dir-internal:
-	-@/bin/rm -rf $(DOC_TARGET_INTERNAL_DIR)
-
-
-clean-doc-dir-public:
-	-@/bin/rm -rf $(DOC_TARGET_PUBLIC_DIR)
+	@for ext in $(WEBSITE_EXTENSIONS); do (/bin/cp -rL $(SD_INST_GUIDE_PUBLIC_DIR)/tmp-rst/*.$$ext $(DOC_TARGET_PUBLIC_DIR)/$(SD_INST_GUIDE_BASE_DIR) 2>/dev/null || true); done
 
 
 # Actually the PDF generation triggers the HTML one as well:
@@ -179,6 +184,39 @@ generate-doc-internal: $(DOC_ELEMENTS_INTERNAL)
 
 generate-doc-public: $(DOC_ELEMENTS_PUBLIC)
 
+
+create-lower-layer-referentials:
+	@echo "  Creating documentation for lower-layers in $(DOC_TARGET_DIR)"
+	@$(MAKE) -s create-myriad-referential
+
+
+create-myriad-referential:
+	@echo "  Creating myriad documentation in $(DOC_TARGET_DIR) tree"
+	@myriad_target_dir=$(realpath $(DOC_TARGET_DIR)/myriad); mkdir -p $$myriad_target_dir && cd $(MYRIAD_TOP)/doc && $(MAKE) -s create-local-referential DOC_TARGET_DIR="$$myriad_target_dir"
+
+
+
+# Main page at the root:
+clean-doc-dir-internal:
+	-@for d in $(INTERNAL_SUBDIRS); do /bin/rm -rf $(DOC_TARGET_INTERNAL_DIR)/$$d; done
+	-@for ext in $(WEBSITE_EXTENSIONS); do /bin/rm -f $(DOC_TARGET_INTERNAL_DIR)/*.$$ext; done
+
+
+clean-doc-dir-public:
+	-@for d in $(PUBLIC_SUBDIRS); do /bin/rm -rf $(DOC_TARGET_PUBLIC_DIR)/$$d; done
+	-@for ext in $(WEBSITE_EXTENSIONS); do /bin/rm -f $(DOC_TARGET_INTERNAL_DIR)/*.$$ext; done
+
+
+clean: clean-doc
+
+
+clean-doc: clean-doc-local
+
+
+# Not using DOC_PACKAGE_* as any version must be removed:
+clean-doc-local:
+	-@/bin/rm -f Sim-Diasca-*-doc.zip Sim-Diasca-*-doc.tar.bz2 Sim-Diasca-*-doc.tar.xz
+	-@/bin/rm -rf Sim-Diasca-*-doc
 
 
 info-doc: info-common-doc info-internal-doc info-public-doc
@@ -205,15 +243,6 @@ info-public-doc:
 	@echo "DOC_ELEMENTS_PUBLIC = $(DOC_ELEMENTS_PUBLIC)"
 	@echo "DOC_TARGET_PUBLIC_DIR = $(DOC_TARGET_PUBLIC_DIR)"
 
-
-clean: clean-doc
-
-
-# Not using DOC_PACKAGE_* as any version must be removed:
-clean-doc:
-	-@/bin/rm -f Sim-Diasca-*-doc.zip Sim-Diasca-*-doc.tar.bz2 \
-		Sim-Diasca-*-doc.tar.xz
-	-@/bin/rm -rf Sim-Diasca-*-doc
 
 
 # Root specified as we want to catch the doc in src/core as well:

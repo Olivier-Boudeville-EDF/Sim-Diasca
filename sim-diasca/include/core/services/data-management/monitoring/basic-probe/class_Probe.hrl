@@ -19,11 +19,14 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-% The name of a probe (ex: to be checked against a result specification):
 -type probe_name() :: class_ResultProducer:producer_name().
+% The name of a probe (ex: to be checked against a result specification).
+
+
 -type bin_probe_name() :: class_ResultProducer:bin_producer_name().
 
 
+-type probe_tick() :: class_TimeManager:tick().
 % The tick, for a probe, corresponds to an (absolute) tick (not a tick offset).
 %
 % Note that if no tick duration is specified to a given probe (thus using
@@ -31,33 +34,28 @@
 % offset for it (see class_Probe:setTickOffset/2) allows to subtract that offset
 % to all recorded ticks, and thus to display tick offsets rather than absolute
 % ticks.
-%
--type probe_tick() :: class_TimeManager:tick().
 
 
-
-% Corresponds to the 2D coordinates of the label on the plot:
 -type label_location() :: linear_2D:point().
+% Corresponds to the 2D coordinates of the label on the plot.
 
 
-% Actual text of the label:
 -type label_text() :: text_utils:bin_string().
+% Actual text of the label.
 
 
-% Color of the text (default: "blue"):
 -type label_color() :: gui_color:color().
+% Color of the text (default: "blue").
 
 
-% Describes the position of the text based on to the specified location for the
-% label:
-%
 -type label_position() :: 'left' | 'center' | 'right'.
+% Describes the position of the text based on to the specified location for the
+% label.
 
 
-% Describes whether the text of the label should be rendered with an angle from
-% the abscissa axis:
-%
 -type label_orientation() :: 'upright' | unit_utils:int_degrees().
+% Describes whether the text of the label should be rendered with an angle from
+% the abscissa axis.
 
 
 % Defaults:
@@ -67,7 +65,6 @@
 
 
 
-% Fully defines a label on a probe rendering:
 -record( probe_label, {
 
 		% 2D coordinates of the label on the plot:
@@ -87,14 +84,11 @@
 
 } ).
 
+
 -type probe_label() :: #probe_label{}.
+% Fully defines a label on a probe rendering.
 
 
-
-% Records the (rendering) settings of a probe.
-%
-% Used by plain probes and by the datalogger.
-%
 -record( probe_settings, {
 
 	% Title of any probe report (as a binary):
@@ -184,10 +178,12 @@
 
 
 -type probe_settings() :: #probe_settings{}.
+% Records the (rendering) settings of a probe.
+%
+% Used by plain probes and by the datalogger.
 
 
 
-% Describes management (not rendering) options that apply to (basic) probes.
 -record( probe_options, {
 
 
@@ -220,16 +216,17 @@
 }).
 
 -type probe_options() :: #probe_options{}.
+% Describes management (not rendering) options that apply to (basic) probes.
 
 
-% The external name for a curve:
 -type string_curve_name() :: text_utils:ustring().
+% The external name for a curve.
 
-% The internal name for a curve:
+
 -type curve_name() :: text_utils:bin_string().
+% The internal name for a curve:
 
 
-% A tuple of data (numbers) to be sent as sample to a probe-like result
-% producer:
-%
 -type sample_data() :: tuple().
+% A tuple of data (numbers) to be sent as sample to a probe-like result
+% producer.

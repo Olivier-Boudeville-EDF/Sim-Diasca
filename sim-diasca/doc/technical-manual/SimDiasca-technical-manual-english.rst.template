@@ -23,14 +23,19 @@ Technical Manual of the **Sim-Diasca** Simulation Engine
 :raw-latex:`\begin{center} \begin{tabular}{c c c} \multicolumn{2}{c}{\includegraphics[scale=0.3]{sim-diasca.png}} \\  \includegraphics[scale=0.4]{logo-EDF-english.png} & \includegraphics[scale=0.8]{lgpl-v3-logo-bordered.png} \\ \end{tabular} \end{center}`
 
 
+:raw-html:`<a name="sim_diasca_top"></a>`
+
+:raw-html:`<div class="banner"><p><em>Sim-Diasca Technical Manual</em> <a href="https://olivier-boudeville-edf.github.io/Sim-Diasca/">browse latest</a> <a href="Ceylan-Myriad-Layer-technical-manual-english.pdf">get PDF</a> <a href="#myriad_top">go to top</a> <a href="#myriad_toc">go to toc</a> <a href="#myriad_bottom">go to bottom</a> <a href="api-doc/index.html">browse API</a> <a href="https://github.com/Olivier-Boudeville/Ceylan-Myriad">go to project</a> <a href="mailto:about(dash)myriad(at)esperide(dot)com?subject=[Ceylan-Myriad]%20Remark">email us</a></p></div>`
+
+
 
 :Organisation: Copyright (C) 2008-2021 EDF R&D
 :Author: Olivier Boudeville
-:Contact: olivier.boudeville@edf.fr
-:Lastly updated: Friday, February 19, 2021
+:Contact: olivier (dot) boudeville (at) edf (dot) fr
 :Creation date: Monday, February 8, 2010
+:Lastly updated: GENERATION_DATE
+:Version: PROJECT_VERSION
 :Status: Work in progress
-:Version: 0.9.25
 :Website: `http://sim-diasca.com <http://sim-diasca.com>`_
 :Dedication:
 
@@ -51,7 +56,7 @@ Technical Manual of the **Sim-Diasca** Simulation Engine
 
 :raw-latex:`\pagebreak`
 
-.. contents:: Table of Contents
+.. contents:: **Table of Contents**
 	:depth: 2
 
 .. section-numbering::

@@ -19,6 +19,9 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Class in charge, as a dataflow exit point, to <b>manage simulation
+% steps</b>.
+%
 -module(class_ExperimentStepsExitPoint).
 
 -define( class_description,
@@ -85,7 +88,9 @@
 -type ustring() :: text_utils:ustring().
 
 
-% Constructs such experiment exit point, from:
+% @doc Constructs such experiment exit point.
+%
+% Parameters are:
 %
 % - ActorSettings describes the actor abstract identifier (AAI) and seed of this
 % actor, as assigned by the load balancer
@@ -110,8 +115,8 @@
 		experiment_entry_point_pid(), experiment_manager_pid(),
 		world_manager_pid() ) -> wooper:state().
 construct( State, ActorSettings, Dataflows, ExperimentStepStart,
-		ExperimentStepStop, ExperimentEntryPointPid, ExperimentManagerPid, 
-        WorldManagerPid ) ->
+		ExperimentStepStop, ExperimentEntryPointPid, ExperimentManagerPid,
+		WorldManagerPid ) ->
 
 	% First the direct mother class:
 	ActorState = class_ExperimentExitPoint:construct( State, ActorSettings,
@@ -127,9 +132,9 @@ construct( State, ActorSettings, Dataflows, ExperimentStepStart,
 % Methods section.
 
 
-% Callback executed on the first diasca of existence of this exit point.
+% @doc Callback executed on the first diasca of existence of this exit point.
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
-						    actor_oneway_return().
+							actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 
 	?debug_fmt( "Created ~ts.", [ to_string( State ) ] ),
@@ -141,7 +146,7 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-% The core of the behaviour of this exit point.
+% @doc The core of the behaviour of this exit point.
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
@@ -179,7 +184,7 @@ actSpontaneous( State ) ->
 
 
 
-% Declares the termination of the experiment.
+% @doc Declares the termination of the experiment.
 %
 % Note: usually this is determined internally.
 %
@@ -206,7 +211,7 @@ actSpontaneous( State ) ->
 % Helper functions.
 
 
-% Returns a textual description of this exit point.
+% @doc Returns a textual description of this exit point.
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 

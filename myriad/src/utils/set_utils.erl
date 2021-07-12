@@ -26,7 +26,7 @@
 % Creation date: July 1, 2016.
 
 
-% Gathering of various facilities about sets.
+% @doc Gathering of various facilities about <b>sets</b>.
 %
 % A set is a container that:
 %
@@ -72,21 +72,22 @@
 %
 -define( set_impl, gb_sets ).
 
+
 %-type set() :: gb_sets:set().
 -type set() :: ?set_impl:set().
 
 
-% For homogeneous sets:
 %-type set( T ) :: gb_sets:set( T ).
 -type set( T ) :: ?set_impl:set( T ).
+% For homogeneous sets.
 
 
-% Element of a set:
 -type element() :: term().
+% Element of a set.
 
 
-% Internally, a kind of enumeration (list) of the elements in the set:
 -type iterator() :: ?set_impl:iter().
+% Internally, a kind of enumeration (list) of the elements in the set.
 
 
 -export_type([ set/0, set/1, element/0, iterator/0 ]).
@@ -108,15 +109,15 @@
 
 
 
-% Returns a new, empty, set.
+% @doc Returns a new, empty, set.
 -spec new() -> set().
 new() ->
 	?set_impl:new().
 
 
-% Returns a set comprising only specified element.
+% @doc Returns a set comprising only specified element.
 %
-% More elegant than set_utils:add( Foo, set_utils:new() ).
+% More elegant than set_utils:add(Foo, set_utils:new()).
 %
 -spec singleton( element() ) -> set().
 singleton( Element ) ->
@@ -125,7 +126,7 @@ singleton( Element ) ->
 	?set_impl:add_element( Element, ?set_impl:new() ).
 
 
-% Returns a new set, containing the elements of specified list (possibly
+% @doc Returns a new set, containing the elements of specified list (possibly
 % unordered and containing duplicates).
 %
 % See singleton/1 if wanting to create a set with one element.
@@ -137,8 +138,8 @@ new( ElementList ) ->
 
 
 
-% Tells whether the two specified sets are equal (i.e. contain exactly the same
-% elements).
+% @doc Tells whether the two specified sets are equal (meaning that they contain
+% exactly the same elements).
 %
 % Note: depending on set_impl, this function may or may not be useless, as
 % using the basic '==' term-level operator may be sufficient to compare some
@@ -152,7 +153,7 @@ are_equal( Set1, Set2 ) ->
 
 
 
-% Returns a new set formed from the specified one with specified element
+% @doc Returns a new set formed from the specified one with specified element
 % inserted. If this element is already in the specified set, the returned set is
 % the same.
 %
@@ -162,7 +163,7 @@ add( Element, Set ) ->
 
 
 
-% Returns a new set formed from the specified one with specified element
+% @doc Returns a new set formed from the specified one with specified element
 % inserted, checking that this element was not already in the original set
 % (otherwise a batmatch exception is thrown).
 %
@@ -180,8 +181,8 @@ add_as_new( Element, Set ) ->
 
 
 
-% Returns a set made of the specified set to which the elements of the specified
-% plain list have been added.
+% @doc Returns a set made of the specified set to which the elements of the
+% specified plain list have been added.
 %
 -spec add_element_list( [ element() ], set() ) -> set().
 %add_element_list( _PlainList=[], Set ) ->
@@ -196,43 +197,43 @@ add_element_list( Elements, Set ) ->
 
 
 
-% Returns the union of the two specified sets.
+% @doc Returns the union of the two specified sets.
 -spec union( set(), set() ) -> set().
 union( FirstSet, SecondSet ) ->
 	?set_impl:union( FirstSet, SecondSet ).
 
 
-% Returns the union of the specified sets.
+% @doc Returns the union of the specified sets.
 -spec union( [ set() ] ) -> set().
 union( ListOfSets ) ->
 	?set_impl:union( ListOfSets ).
 
 
 
-% Returns the intersection of the two specified sets.
+% @doc Returns the intersection of the two specified sets.
 -spec intersection( set(), set() ) -> set().
 intersection( FirstSet, SecondSet ) ->
 	?set_impl:intersection( FirstSet, SecondSet ).
 
 
-% Returns the intersection of the specified sets.
+% @doc Returns the intersection of the specified sets.
 -spec intersection( [ set() ] ) -> set().
 intersection( ListOfSets ) ->
 	?set_impl:intersection( ListOfSets ).
 
 
 
-% Returns the difference between the first specified set and the second,
-% i.e. the elements of the first set that are not in the second one.
+% @doc Returns the difference between the first specified set and the second,
+% that is the elements of the first set that are not in the second one.
 %
 -spec difference( set(), set() ) -> set().
 difference( FirstSet, SecondSet ) ->
 	?set_impl:difference( FirstSet, SecondSet ).
 
 
-% Returns the differences between the first specified set and the second, as a
-% pair, whose first element corresponds to the elements of the first set that
-% are not in the second one, and whose second element corresponds to the
+% @doc Returns the differences between the first specified set and the second,
+% as a pair, whose first element corresponds to the elements of the first set
+% that are not in the second one, and whose second element corresponds to the
 % elements of the second set that are not in the first one.
 %
 -spec differences( set(), set() ) -> { set(), set() }.
@@ -242,14 +243,13 @@ differences( FirstSet, SecondSet ) ->
 
 
 
-% Returns whether the specified term appears to be a legit set.
+% @doc Returns whether the specified term appears to be a legit set.
 -spec is_set( term() ) -> boolean().
 is_set( Term ) ->
 	?set_impl:is_set( Term ).
 
 
-
-% Ensures that the specified term is a set, throws an exception if not.
+% @doc Ensures that the specified term is a set, throws an exception if not.
 -spec check_set( term() ) -> void().
 check_set( Term ) ->
 	case is_set( Term ) of
@@ -263,9 +263,8 @@ check_set( Term ) ->
 	end.
 
 
-
-% Tells whether the first set is a subset of the second, i.e. if each element of
-% the first is also in the second.
+% @doc Tells whether the first set is a subset of the second, that is if each
+% element of the first is also in the second.
 %
 -spec is_subset( set(), set() ) -> boolean().
 is_subset( FirstSet, SecondSet ) ->
@@ -273,28 +272,30 @@ is_subset( FirstSet, SecondSet ) ->
 
 
 
-% Returns a set created from specified list of elements.
+% @doc Returns a set created from the specified list of elements.
 -spec from_list( [ element() ] ) -> set().
 from_list( List ) ->
 	?set_impl:from_list( List ).
 
 
 
-% Returns a list created from the elements of specified set.
+% @doc Returns a list created from the elements of the specified set.
 -spec to_list( set() ) -> [ element() ].
 to_list( Set ) ->
 	?set_impl:to_list( Set ).
 
 
 
-% Returns true iff specified element is an element of specified set.
+% @doc Returns true iff the specified element is an element of the specified
+% set.
+%
 -spec member( element(), set() ) -> boolean().
 member( Element, Set ) ->
 	?set_impl:is_member( Element, Set ).
 
 
 
-% Returns whether the specified set is empty.
+% @doc Returns whether the specified set is empty.
 -spec is_empty( set() ) -> boolean().
 is_empty( Set ) ->
 	% Not defined for ordsets:
@@ -303,7 +304,7 @@ is_empty( Set ) ->
 
 
 
-% Returns the number of elements in specified set.
+% @doc Returns the number of elements in the specified set.
 -spec size( set() ) -> count().
 size( Set ) ->
 	?set_impl:size( Set ).
@@ -313,7 +314,7 @@ size( Set ) ->
 % Note: iterating could be done with a fold as well (ordsets).
 
 
-% Returns an iterator that can be used for traversing the entries of the
+% @doc Returns an iterator that can be used for traversing the entries of the
 % specified set.
 %
 % Note: the iterator is *not* the first iterated element of a set: next/1 shall
@@ -328,18 +329,20 @@ iterator( Set ) ->
 %-spec iterator_from( element(), set() ) ->
 %iterator_from( Element, Set ) ->
 
+% @doc Returns the next element and iterator, as obtained from the specified
+% iterator.
+%
 % Allows the iterators to be gone through.
+%
 -spec next( iterator() ) -> { element(), iterator() } | 'none'.
 next( Iterator ) ->
 	?set_impl:next( Iterator ).
 
 
 
-% Extracts specified element (if any) from specified set, i.e. removes it from
-% the returned set.
-%
-% Otherwise, i.e. if that element does not exist in the specified set, returns
-% false.
+% @doc Extracts specified element (if any) from specified set: removes it from
+% the returned set; otherwise (that is: if that element does not exist in the
+% specified set), returns false.
 %
 -spec extract_if_existing( element(), set() ) -> 'false' | set().
 extract_if_existing( Element, Set ) ->
@@ -356,8 +359,8 @@ extract_if_existing( Element, Set ) ->
 
 
 
-% Removes the specified element (if any) from the specified set, and returns the
-% resulting set.
+% @doc Removes the specified element (if any) from the specified set, and
+% returns the resulting set.
 %
 % Note: does not fail if the element was not in the set; use delete_existing/2
 % to ensure that the element was present.
@@ -368,7 +371,7 @@ delete( Element, Set ) ->
 
 
 
-% Ensures that the specified element was indeed in the specified set before
+% @doc Ensures that the specified element was indeed in the specified set before
 % removing it, and returning the resulting set.
 %
 % Note: use delete/2 to delete an element without checking whether the element
@@ -389,8 +392,7 @@ delete_existing( Element, Set ) ->
 	end.
 
 
-
-% Returns a textual representation of the specified set.
+% @doc Returns a textual representation of the specified set.
 -spec to_string( set() ) -> ustring().
 to_string( Set ) ->
 

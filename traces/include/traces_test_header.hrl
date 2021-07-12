@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2021 Olivier Boudeville
+% Copyright (C) 2007-2021 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -23,7 +23,7 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
-% Creation date: Tuesday, January 11, 2011
+% Creation date: Tuesday, January 11, 2011.
 
 
 % Defines some macros and functions useful for trace-using tests.
@@ -124,7 +124,7 @@
 
 -define( test_notice_fmt( MessageFormat, FormatValues ),
 		 class_TraceEmitter:send_standalone_safe( notice,
-					  text_utils:format( MessageFormat, FormatValues ) )
+						text_utils:format( MessageFormat, FormatValues ) )
 ).
 
 
@@ -137,7 +137,7 @@
 
 -define( test_info_fmt( MessageFormat, FormatValues ),
 		 class_TraceEmitter:send_standalone_safe( info,
-					  text_utils:format( MessageFormat, FormatValues ) )
+						text_utils:format( MessageFormat, FormatValues ) )
 ).
 
 
@@ -149,7 +149,7 @@
 
 -define( test_debug_fmt( MessageFormat, FormatValues ),
 		 class_TraceEmitter:send_standalone_safe( debug,
-					  text_utils:format( MessageFormat, FormatValues ) )
+						text_utils:format( MessageFormat, FormatValues ) )
 ).
 
 

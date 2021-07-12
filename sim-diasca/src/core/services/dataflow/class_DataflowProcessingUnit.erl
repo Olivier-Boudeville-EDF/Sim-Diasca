@@ -19,6 +19,8 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+
+% @doc Mother class of all <b>processing units</b>.
 -module(class_DataflowProcessingUnit).
 
 
@@ -96,8 +98,8 @@
 
 
 
-% Name of an instance of processing unit:
--type unit_name() :: string().
+-type unit_name() :: ustring().
+% Name of an instance of processing unit.
 
 
 
@@ -176,7 +178,9 @@
 
 
 
-% Constructs a new dataflow processing unit:
+% @doc Constructs a new dataflow processing unit.
+%
+% Parameters are:
 %
 % - ActorSettings describes the actor abstract identifier (AAI) and seed of this
 % actor, as automatically assigned by the load balancer
@@ -216,7 +220,8 @@ construct( State, ActorSettings, ProcessingUnitName, ActivationPolicy,
 % Methods section.
 
 
-% Callback executed on the first diasca of existence of this processing unit.
+% @doc Callback executed on the first diasca of existence of this processing
+% unit.
 %
 % Note: should this method be overridden in a child class, this version should
 % be called from there as well (as must be called in all cases).
@@ -239,7 +244,7 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-% Sets explicitly the specified input port to the specified fully-specified
+% @doc Sets explicitly the specified input port to the specified fully-specified
 % channel value.
 %
 % Note: calling this method bypasses the (channel-based) dataflow system; it is
@@ -305,9 +310,9 @@ setInputPortValue( _State, Unexpected, _ChannelValue, _SendingActorPid ) ->
 
 
 
-% Notifies this dataflow unit that, for the specified input port, one of its
-% upstream blocks just emitted a new (channel) value, possibly resulting in an
-% activation being triggered.
+% @doc Notifies this dataflow unit that, for the specified input port, one of
+% its upstream blocks just emitted a new (channel) value, possibly resulting in
+% an activation being triggered.
 %
 % Note: an immediate value (with no specific metadata) could have sufficed, as
 % they are supposed to have been checked at channel creation.
@@ -360,8 +365,8 @@ notifyNewInput( _State, InputPortName, _ChannelValue, _UpstreamBlockPid ) ->
 
 
 
-% Considers whether the activation criteria are met for this processing unit,
-% knowing that an input port has just been set.
+% @doc Considers whether the activation criteria are met for this processing
+% unit, knowing that an input port has just been set.
 %
 % (helper)
 %
@@ -419,7 +424,7 @@ consider_activation_after_input( State ) ->
 
 
 
-% Tells whether all input ports are set.
+% @doc Tells whether all input ports are set.
 %
 % Note: should there be no input port, this property (actually telling whether
 % none is unset) is thus considered true.
@@ -431,7 +436,7 @@ are_all_input_ports_set( State ) ->
 
 
 
-% Lists the input ports that are not (yet) set.
+% @doc Lists the input ports that are not (yet) set.
 %
 % (helper)
 %
@@ -454,7 +459,7 @@ list_unset_input_ports( State ) ->
 
 
 
-% Tells whether all specified input ports are set.
+% @doc Tells whether all specified input ports are set.
 -spec are_all_set( [ input_port() ] ) -> boolean().
 are_all_set( _InputPorts=[] ) ->
 	% As a result, a unit with no input port could be activated, if not called
@@ -471,7 +476,7 @@ are_all_set( _InputPorts=[ #input_port{ value_status={ set, _V } } | T ] ) ->
 
 
 
-% Unsets all the input ports of this processing unit.
+% @doc Unsets all the input ports of this processing unit.
 -spec unset_all_input_ports( wooper:state() ) -> wooper:state().
 unset_all_input_ports( State ) ->
 
@@ -485,7 +490,7 @@ unset_all_input_ports( State ) ->
 
 
 
-% Returns a reset version of the specified list of pairs.
+% @doc Returns a reset version of the specified list of port pairs.
 reset_ports( _InputPorts=[], Acc ) ->
 	Acc;
 
@@ -497,10 +502,10 @@ reset_ports( _InputPorts=[ { PortName, Port } | T ], Acc ) ->
 
 
 
-% Delayed activation, so that by design all input ports that may have been set
-% during the previous diasca have already been recorded: then (at the following
-% diasca) this unit is activated only once, regardless of the number of the
-% previous input port assignments.
+% @doc Delayed activation, so that by design all input ports that may have been
+% set during the previous diasca have already been recorded: then (at the
+% following diasca) this unit is activated only once, regardless of the number
+% of the previous input port assignments.
 %
 % (self-triggered actor oneway)
 %
@@ -554,7 +559,8 @@ triggerActivation( State, _SelfSendingActorPid ) ->
 
 
 
-% Callback executed automatically whenever the processing unit is activated.
+% @doc Callback executed automatically whenever the processing unit is
+% activated.
 %
 % Meant to be overridden.
 %
@@ -570,7 +576,7 @@ activate( State ) ->
 
 
 
-% Triggers the destruction of this processing unit.
+% @doc Triggers the destruction of this processing unit.
 %
 % Typically called from its unit manager when having to destruct a unit after
 % being notified that an associated dataflow object has been destructed.
@@ -615,7 +621,7 @@ triggerDestruction( State, ActionId, SendingActorPid ) ->
 % Helper functions.
 
 
-% Checks the processing unit activation policy provided by the user.
+% @doc Checks the processing unit activation policy provided by the user.
 -spec check_policy( basic_utils:user_data() ) -> activation_policy().
 check_policy( P=activate_on_new_set ) ->
 	P;
@@ -638,7 +644,7 @@ check_policy( P ) ->
 
 
 
-% Returns a textual description of this processing unit.
+% @doc Returns a textual description of this processing unit.
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 

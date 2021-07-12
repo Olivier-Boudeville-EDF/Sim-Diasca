@@ -20,9 +20,9 @@
 
 
 
-% Module gathering the helper functions introduced to facilitate the support of
-% the binding APIs, for all the runtime programming languages supported by the
-% engine.
+% @doc Module gathering the helper functions introduced to facilitate the
+% <b>support of the binding APIs</b>, for all the runtime programming languages
+% supported by the engine.
 %
 -module(binding_utils).
 
@@ -50,7 +50,7 @@
 
 
 
-% Returns the binding manager for the specified language.
+% @doc Returns the binding manager for the specified language.
 -spec get_binding_manager( language() ) -> binding_manager_pid().
 get_binding_manager( Language ) ->
 
@@ -64,7 +64,7 @@ get_binding_manager( Language ) ->
 
 
 
-% Returns the binding manager associated to the specified foreign language,
+% @doc Returns the binding manager associated to the specified bound language,
 % based on a binding manager record.
 %
 -spec get_binding_manager( language(), binding_managers() ) ->
@@ -84,8 +84,8 @@ get_binding_manager( InvalidLanguageSpec, _BindingManagers ) ->
 
 
 
-% Returns the name of the class of the binding manager that is associated to
-% specified foreign language.
+% @doc Returns the name of the class of the binding manager that is associated
+% to specified bound language.
 %
 -spec get_binding_manager_class( language() ) -> wooper:classname().
 get_binding_manager_class( python ) ->
@@ -102,7 +102,9 @@ get_binding_manager_class( InvalidLanguageSpec ) ->
 
 
 
-% Generates the binding manager record, federating all known foreign languages.
+% @doc Generates the binding manager record, federating all known binding
+% languages.
+%
 -spec set_binding_managers_record(
 		[ { language(), binding_manager_pid() } ] ) -> binding_managers().
 set_binding_managers_record( [] ) ->
@@ -111,10 +113,10 @@ set_binding_managers_record( [] ) ->
 	#binding_managers{};
 
 set_binding_managers_record( BindingManagerPairs )
-  when is_list( BindingManagerPairs ) ->
+						when is_list( BindingManagerPairs ) ->
 
 	%trace_utils:debug_fmt( "Following binding manager pairs declared: ~p.",
-	%					   [ BindingManagerPairs ] ),
+	%						[ BindingManagerPairs ] ),
 
 	% Also ensures uniqueness:
 	BindingsTable = table:new( BindingManagerPairs ),
@@ -128,12 +130,12 @@ set_binding_managers_record( BindingManagerPairs )
 			ok;
 
 		_ ->
-			throw( { binding_multiple_declaration, BindingManagerPairs } )
+			throw( { multiple_binding_declarations, BindingManagerPairs } )
 
 	end,
 
-	PythonBindingManagerPid = case table:lookup_entry( python,
-													   BindingsTable ) of
+	PythonBindingManagerPid =
+			case table:lookup_entry( python, BindingsTable ) of
 
 		key_not_found ->
 			none;
@@ -158,9 +160,9 @@ set_binding_managers_record( BindingManagerPairs )
 
 
 
-% Checks the availability of the language bindings necessary for instantiation
-% specifications which declare an implementation language (the expected specs
-% take the form of a 2-tuple {Classname, Language}).
+% @doc Checks the availability of the language bindings necessary for the
+% specified instantiation specifications declaring an implementation language
+% (the expected specs take the form of a {Classname, Language} pair).
 %
 % This availability is tested through the presence of a valid PID in a
 % binding_managers record.

@@ -26,7 +26,7 @@
 % Creation date: Monday, February 15, 2010.
 
 
-% Gathering of various facilities for color management.
+% @doc Gathering of various facilities for <b>color management</b>.
 -module(gui_color).
 
 
@@ -44,16 +44,14 @@
 		  get_random_colors/1 ]).
 
 
-
 % For related defines:
 -include("gui.hrl").
 
 
-
 -type color_by_name() :: atom().
 
-% No alpha coordinate here:
 -type color_by_decimal() :: { byte(), byte(), byte() } | 'none'.
+% No alpha coordinate here.
 
 -type color_by_decimal_with_alpha() :: { byte(), byte(), byte(), byte() }
 									 | 'none'.
@@ -81,7 +79,7 @@
 
 
 
-% Returns a list of known {color_name, ColorDefinition} associations.
+% @doc Returns a list of known {color_name, ColorDefinition} associations.
 -spec get_colors() -> [ { color_by_name(), color_by_decimal() } ].
 get_colors() ->
 
@@ -232,8 +230,8 @@ get_colors() ->
 
 
 
-% Returns the RGB definition of the color specified by name (atom) or directly
-% as a triplet of color components.
+% @doc Returns the RGB definition of the color specified by name (atom) or
+% directly as a triplet of color components.
 %
 -spec get_color( color() | 'none' ) -> color_by_decimal().
 get_color( Color={ _R, _G, _B } ) ->
@@ -243,7 +241,6 @@ get_color( Color={ _R, _G, _B } ) ->
 get_color( none ) ->
 	% none is a special case, for example to disable filling (transparent):
 	none;
-
 
 get_color( ColorName ) when is_atom( ColorName ) ->
 	case proplists:get_value( ColorName, get_colors() ) of
@@ -258,7 +255,7 @@ get_color( ColorName ) when is_atom( ColorName ) ->
 
 
 
-% Returns a stringified representation for gnuplot of the specified color.
+% @doc Returns a stringified representation for gnuplot of the specified color.
 -spec get_color_for_gnuplot( color() ) -> ustring().
 get_color_for_gnuplot( _Color={ _R, _G, _B } ) ->
 	throw( hexadecimal_conversion_not_implemented );
@@ -268,7 +265,7 @@ get_color_for_gnuplot( ColorName ) ->
 
 
 
-% Returns a list of the specified number of different colors.
+% @doc Returns a list of the specified number of different colors.
 -spec get_random_colors( basic_utils:count() ) -> [ color_by_decimal() ].
 get_random_colors( ColorCount ) ->
 

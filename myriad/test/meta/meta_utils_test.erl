@@ -26,7 +26,7 @@
 % Creation date: Friday, December 19, 2014.
 
 
-% Unit tests for the meta utils toolbox.
+% @doc Unit tests for the <b>meta_utils</b> toolbox.
 %
 % See the meta_utils.erl tested module.
 %
@@ -128,13 +128,13 @@ run() ->
 
 	ModuleAST = ast_utils:beam_to_ast( BeamFilename ),
 
-	io:format( "AST= ~p~n", [ ModuleAST ] ),
+	test_facilities:display( "AST= ~p", [ ModuleAST ] ),
 
 	ModuleInfo = ast_info:extract_module_info_from_ast( ModuleAST ),
 
-	TermString = "[ {tiger,[lion,leopard]} ]",
+	TermString = "[ {tiger, [lion, leopard]} ]",
 
-	[ {tiger, [ lion, leopard ] } ] = ast_utils:string_to_value( TermString ),
+	[ { tiger, [ lion, leopard ] } ] = ast_utils:string_to_value( TermString ),
 
 	test_facilities:display( ast_info:module_info_to_string( ModuleInfo ) ),
 

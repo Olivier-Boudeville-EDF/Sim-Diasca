@@ -33,10 +33,9 @@ run( IsDebug ) ->
 	wooper_utils:start_for_test(),
 
 	test_facilities:display( "Debug mode: ~ts.",
-		[ class_OvoviviparousBeing:is_wooper_debug() ] ),
+							 [ class_OvoviviparousBeing:is_wooper_debug() ] ),
 
-
-	MyV = class_OvoviviparousBeing:synchronous_new(),
+	MyV = class_OvoviviparousBeing:synchronous_new_link(),
 
 	MyV ! { getClassname, [], self() },
 	receive

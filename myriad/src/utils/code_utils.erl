@@ -26,8 +26,8 @@
 % Creation date: July 1, 2007.
 
 
-% Gathering of various facilities regarding the management of Erlang code
-% (typically BEAM files).
+% @doc Gathering of various facilities regarding the management of <b>Erlang
+% code</b> (typically BEAM files).
 %
 % See code_utils_test.erl for the corresponding test.
 %
@@ -50,36 +50,47 @@
 		  interpret_stacktrace/0,
 		  interpret_stacktrace/1,
 		  interpret_stacktrace/2,
-		  interpret_stack_item/2,
 		  interpret_shortened_stacktrace/1,
 		  display_stacktrace/0,
-		  interpret_undef_exception/3, stack_location_to_string/1 ]).
+		  interpret_error/2, interpret_undef_exception/3,
+		  stack_info_to_string/1 ]).
 
 
 
-% The code path used by a language, i.e. a list of directories to scan for
-% runtime elements (Erlang -pa/-pz, Python sys.path with PYTHONPATH, Java
-% classpath, etc.)
-%
 -type code_path() :: [ directory_path() ].
+% The code path used by a language, i.e. a list of directories (as plain
+% strings) to scan for runtime elements (Erlang -pa/-pz, Python sys.path with
+% PYTHONPATH, Java classpath, etc.).
+
 
 -type code_path_position() :: 'first_position' | 'last_position'.
 
-%-type stack_location() :: [ { file, file_path() },
-%							 { line, meta_utils:line() } ].
 
--type stack_location() :: [ { atom(), any() } ].
+-type stack_info() :: map_hashtable:map_hashtable( atom(), term() )
+					  | list_table:list_table( atom(), term() ).
+% The last element of a stack item.
+%
+% Ex: [ { file, file_path() }, { line, meta_utils:line() } ].
 
 
 -type stack_item() :: { module_name(), function_name(), arity(),
-						stack_location() }.
+						stack_info() }.
 
 
 -type stack_trace() :: [ stack_item() ].
 
 
+
+-type error_map() :: map_hashtable:map_hashtable( count(), ustring() ).
+% Argument-level error information in a stacktrace, typicially associated to the
+% 'error_info' key in an error_info() term.
+%
+% Defined as #{pos_integer() => unicode:chardata()} by the erl_erts_errors
+% module.
+
+
 -export_type([ code_path/0, code_path_position/0,
-			   stack_location/0, stack_item/0, stack_trace/0 ]).
+			   stack_info/0, stack_item/0, stack_trace/0, error_map/0 ]).
 
 
 % The file extension of a BEAM file:
@@ -95,10 +106,14 @@
 -type module_name() :: basic_utils:module_name().
 -type function_name() :: basic_utils:function_name().
 -type count() :: basic_utils:count().
+-type error_reason() :: basic_utils:error_reason().
+-type error_term() :: basic_utils:error_term().
 
 -type ustring() :: text_utils:ustring().
 
 -type directory_path() :: file_utils:directory_path().
+-type any_directory_path() :: file_utils:any_directory_path().
+
 -type file_name() :: file_utils:file_name().
 -type file_path() :: file_utils:file_path().
 
@@ -111,12 +126,13 @@
 -type md5_sum() :: executable_utils:md5_sum().
 
 
+
 % Code-related functions.
 
 
-% Returns, by searching the code path, the in-file object code for specified
-% module, i.e. a {ModuleBinary, ModuleFilename} pair for the module specified as
-% an atom, or throws an exception.
+% @doc Returns, by searching the code path, the in-file object code for
+% specified module, ie a {ModuleBinary, ModuleFilename} pair for the module
+% specified as an atom, or throws an exception.
 %
 -spec get_code_for( module_name() ) -> { binary(), file_path() }.
 get_code_for( ModuleName ) ->
@@ -148,7 +164,8 @@ get_code_for( ModuleName ) ->
 
 
 
-% Returns the MD5 for the specified loaded (in-memory, used by the VM) module.
+% @doc Returns the MD5 for the specified loaded (in-memory, used by the VM)
+% module.
 %
 % Otherwise returns a undefined function exception (ModuleName:module_info/1).
 %
@@ -158,8 +175,8 @@ get_md5_for_loaded_module( ModuleName ) ->
 
 
 
-% Returns the MD5 for the specified stored (on filesystem, found through the
-% code path) module.
+% @doc Returns the MD5 for the specified stored (on filesystem, found through
+% the code path) module.
 %
 -spec get_md5_for_stored_module( module_name() ) -> md5_sum().
 get_md5_for_stored_module( ModuleName ) ->
@@ -169,8 +186,8 @@ get_md5_for_stored_module( ModuleName ) ->
 
 
 
-% Tells whether the specified (supposedly loaded) module is the same as the one
-% found through the code path.
+% @doc Tells whether the specified (supposedly loaded) module is the same as the
+% one found through the code path.
 %
 -spec is_loaded_module_same_on_filesystem( module_name() ) -> boolean().
 is_loaded_module_same_on_filesystem( ModuleName ) ->
@@ -187,7 +204,7 @@ is_loaded_module_same_on_filesystem( ModuleName ) ->
 
 
 
-% Deploys the specified list of modules on the specified list of nodes
+% @doc Deploys the specified list of modules on the specified list of nodes
 % (specified as atoms): sends them these modules (as a binary), and loads them
 % so that they are ready for future use, using a default time-out.
 %
@@ -201,7 +218,7 @@ deploy_modules( Modules, Nodes ) ->
 
 
 
-% Deploys the specified list of modules on the specified list of nodes
+% @doc Deploys the specified list of modules on the specified list of nodes
 % (specified as atoms): sends them these modules (as a binary), and loads them
 % so that they are ready for future use.
 %
@@ -311,22 +328,22 @@ deploy_module( ModuleName, { ModuleBinary, ModuleFilename }, Nodes, Timeout ) ->
 
 
 
-% Declares specified directory as an additional code path where BEAM files will
-% be looked up by the VM, adding it at first position in the code path.
+% @doc Declares specified directory as an additional code path where BEAM files
+% will be looked up by the VM, adding it at first position in the code path.
 %
 % If this directory is already present in the code path, it is removed from its
 % old position and put first.
 %
 % Throws an exception if the directory does not exist.
 %
--spec declare_beam_directory( directory_path() ) -> void().
+-spec declare_beam_directory( any_directory_path() ) -> void().
 declare_beam_directory( Dir ) ->
 	declare_beam_directory( Dir, first_position ).
 
 
 
-% Declares specified directory as an additional code path where BEAM files will
-% be looked up by the VM, adding it as specified, at either first or last
+% @doc Declares specified directory as an additional code path where BEAM files
+% will be looked up by the VM, adding it as specified, at either first or last
 % position in the code path.
 %
 % These functions ensure not to offset any given directory that was already in
@@ -339,7 +356,7 @@ declare_beam_directory( Dir ) ->
 %
 % Throws an exception if the directory does not exist.
 %
--spec declare_beam_directory( directory_path(), code_path_position() ) ->
+-spec declare_beam_directory( any_directory_path(), code_path_position() ) ->
 									void().
 declare_beam_directory( Dir, first_position ) ->
 
@@ -347,14 +364,17 @@ declare_beam_directory( Dir, first_position ) ->
 		trace_utils:debug_fmt( "Declaring in first position BEAM directory "
 			"'~ts' in VM code path.", [ Dir ] ) ),
 
+	% Plain string needed:
+	DirStr = text_utils:ensure_string( Dir ),
+
 	% No need to check directory for existence, code:add_patha/1 will do it:
-	case code:add_patha( Dir ) of
+	case code:add_patha( DirStr ) of
 
 		true ->
 			ok;
 
 		{ error, bad_directory } ->
-			throw( { non_existing_beam_directory, Dir } )
+			throw( { non_existing_beam_directory, DirStr } )
 
 	end;
 
@@ -364,21 +384,24 @@ declare_beam_directory( Dir, last_position ) ->
 	  trace_utils:debug_fmt( "Declaring in last position BEAM directory '~ts' "
 							 "in VM code path.", [ Dir ] ) ),
 
+	% Plain string needed:
+	DirStr = text_utils:ensure_string( Dir ),
+
 	% No need to check directory for existence, code:add_pathz/1 will do it:
-	case code:add_pathz( Dir ) of
+	case code:add_pathz( DirStr ) of
 
 		true ->
 			ok;
 
 		{ error, bad_directory } ->
-			throw( { non_existing_beam_directory, Dir } )
+			throw( { non_existing_beam_directory, DirStr } )
 
 	end.
 
 
 
-% Declares specified directories as additional code paths where BEAM files will
-% be looked up by the VM, adding them at first position in the code path.
+% @doc Declares specified directories as additional code paths where BEAM files
+% will be looked up by the VM, adding them at first position in the code path.
 %
 % Throws an exception if at least one of the directories does not exist.
 %
@@ -388,9 +411,9 @@ declare_beam_directories( Dirs ) ->
 
 
 
-% Declares specified directories as additional code paths where BEAM files will
-% be looked up by the VM, adding them either at first or last position in the
-% code path.
+% @doc Declares specified directories as additional code paths where BEAM files
+% will be looked up by the VM, adding them either at first or last position in
+% the code path.
 %
 % Throws an exception if at least one of the directories does not exist.
 %
@@ -420,7 +443,7 @@ declare_beam_directories( Dirs, last_position ) ->
 
 
 
-% Checks that specified directories exist.
+% @doc Checks that specified directories exist.
 %
 % (helper)
 %
@@ -442,8 +465,8 @@ check_beam_dirs( _Dirs=[ D | T ] ) ->
 
 
 
-% Removes specified directory (either specified verbatim or designated as the
-% ebin directory of a specified application) from the current code path.
+% @doc Removes specified directory (either specified verbatim or designated as
+% the ebin directory of a specified application) from the current code path.
 %
 % Throws an exception if the operation failed, including if it was not already
 % set.
@@ -471,9 +494,9 @@ remove_beam_directory( NameOrDir ) ->
 
 
 
-% Removes specified directory (either specified verbatim or designated as the
-% ebin directory of a specified application) from the current code path, if it
-% was already set (otherwise does nothing).
+% @doc Removes specified directory (either specified verbatim or designated as
+% the ebin directory of a specified application) from the current code path, if
+% it was already set (otherwise does nothing).
 %
 % Throws an exception if the operation failed otherwise.
 %
@@ -500,9 +523,9 @@ remove_beam_directory_if_set( NameOrDir ) ->
 
 
 
-% Returns the (ordered) list of (absolute) runtime BEAM directories obtained
-% from the build system located in the directory designated as the value
-% associated to the specified environment variable name.
+% @doc Returns the (ordered) list of (absolute) runtime BEAM directories
+% obtained from the build system located in the directory designated as the
+% value associated to the specified environment variable name.
 %
 % Allows to obtain the code path that shall be declared to the VM so that all
 % the corresponding BEAMs become available.
@@ -552,8 +575,8 @@ get_beam_dirs_for( VariableName ) ->
 
 
 
-% Returns the (ordered) list of (absolute) runtime BEAM directories
-% corresponding to this layer (i.e. the Ceylan-Myriad one).
+% @doc Returns the (ordered) list of (absolute) runtime BEAM directories
+% corresponding to this layer (ie the Ceylan-Myriad one).
 %
 % Allows to obtain the code path that shall be declared to the VM so that all
 % the corresponding BEAMs become available.
@@ -574,9 +597,9 @@ get_beam_dirs_for_myriad() ->
 
 
 
-% Declares automatically the relevant BEAM directories in the code path so that
-% the layer whose base directory is designated as the value associated to the
-% specified environment variable name is fully usable from then on.
+% @doc Declares automatically the relevant BEAM directories in the code path so
+% that the layer whose base directory is designated as the value associated to
+% the specified environment variable name is fully usable from then on.
 %
 % Note: the determined directories are not specifically checked for existence,
 % and are added at the end of the code path.
@@ -587,8 +610,8 @@ declare_beam_dirs_for( VariableName ) ->
 
 
 
-% Declares automatically the relevant BEAM directories in the code path so that
-% Ceylan-Myriad can be fully usable from then on.
+% @doc Declares automatically the relevant BEAM directories in the code path so
+% that Ceylan-Myriad can be fully usable from then on.
 %
 % Note:
 %
@@ -604,8 +627,11 @@ declare_beam_dirs_for_myriad() ->
 
 
 
-% Returns a normalised, sorted list of directories in the current code path
-% (without duplicates).
+% @doc Returns a normalised, representation of the current code path, sorted in
+% alphabetical order (without duplicates).
+%
+% Note that the sorting is more convenient for inspection yet implies that the
+% actual lookup order through these directories is most probably different.
 %
 -spec get_code_path() -> code_path().
 get_code_path() ->
@@ -617,21 +643,31 @@ get_code_path() ->
 
 
 
-% Returns a textual representation of the current code path.
+% @doc Returns a textual representation of the current code path, sorted in
+% alphabetical order.
+%
+% Note that the sorting is more convenient for inspection yet implies that the
+% actual lookup order through these directories is most probably different.
+%
 -spec get_code_path_as_string() -> ustring().
 get_code_path_as_string() ->
-	text_utils:format( "current code path is: ~ts",
+	text_utils:format( "current code path (in alphabetical order) is: ~ts",
 					   [ text_utils:strings_to_string( get_code_path() ) ] ).
 
 
 
-% Returns a textual description of the current code path.
+% @doc Returns a textual description of the current code path, sorted in
+% alphabetical order.
+%
+% Note that the sorting is more convenient for inspection yet implies that the
+% actual lookup order through these directories is most probably different.
+%
 -spec code_path_to_string() -> ustring().
 code_path_to_string() ->
 	code_path_to_string( get_code_path() ).
 
 
-% Returns a textual description of the specified code path.
+% @doc Returns a textual description of the specified code path.
 -spec code_path_to_string( code_path() ) -> ustring().
 code_path_to_string( _CodePath=[] ) ->
 	% Initial space intended for caller-side consistency:
@@ -642,8 +678,13 @@ code_path_to_string( CodePath ) ->
 
 
 
-% Lists (in alphabetical order) all modules that exist in the current
+% @doc Lists (in alphabetical order) all modules that exist in the current
 % code path, based on the BEAM files found.
+%
+% Note that the sorting is more convenient for inspection yet implies that,
+% should a BEAM file be listed more than once (then being available in multiple
+% paths), the actual version that would be selected by the VM cannot be
+% determined. See is_beam_in_path/1 for that.
 %
 -spec list_beams_in_path() -> [ module_name() ].
 list_beams_in_path() ->
@@ -659,7 +700,9 @@ list_beams_in_path() ->
 
 
 
-% Returns the filename of the BEAM file corresponding to specified module.
+% @doc Returns the filename of the BEAM file corresponding to the specified
+% module.
+%
 -spec get_beam_filename( module_name() ) -> file_name().
 get_beam_filename( ModuleName ) when is_atom( ModuleName ) ->
 
@@ -669,12 +712,19 @@ get_beam_filename( ModuleName ) when is_atom( ModuleName ) ->
 
 
 
-
-% Tells whether specified module has its BEAM file in the current code path.
+% @doc Tells whether specified module has its BEAM file in the current code
+% path.
 %
 % Returns either a list of its absolute, canonicalised, unordered paths (if
-% being available at least once), or 'not_found' (hence: this is not a boolean
-% return!).
+% being available at least once), or 'not_found'.
+%
+% Note:
+%
+%  - hence this function does not return a boolean
+%
+%  - the returned list (if any) of paths respects the order in the code path; as
+%  a result, its first element corresponds to the path containing the BEAM file
+%  that would be loaded for the specified module
 %
 -spec is_beam_in_path( module_name() ) -> 'not_found' | [ directory_path() ].
 is_beam_in_path( ModuleName ) when is_atom( ModuleName ) ->
@@ -693,10 +743,10 @@ is_beam_in_path( ModuleName ) when is_atom( ModuleName ) ->
 	% Includes normalisation:
 	VetPaths = list_utils:uniquify( [ file_utils:ensure_path_is_absolute(
 		file_utils:join( P, ModuleFilename ), _BasePath=CurDirPath )
-									  || P <- code:get_path() ] ),
+										|| P <- code:get_path() ] ),
 
-	ExistingFilePaths = [ P || P <- VetPaths,
-							   file_utils:is_existing_file_or_link( P ) ],
+	ExistingFilePaths =
+		[ P || P <- VetPaths, file_utils:is_existing_file_or_link( P ) ],
 
 	case ExistingFilePaths of
 
@@ -713,7 +763,7 @@ is_beam_in_path( Other ) ->
 
 
 
-% Returns the root directory of Erlang/OTP, where it is installed.
+% @doc Returns the root directory of Erlang/OTP, where it is installed.
 %
 % Ex: "/home/joe/Software/Erlang/Erlang-23.1/lib/erlang" or
 % "/usr/local/otp/lib".
@@ -724,7 +774,7 @@ get_erlang_root_path() ->
 
 
 
-% Returns (without crashing the program) the current stack trace.
+% @doc Returns (without crashing the program) the current stack trace.
 %
 % A replacement for deprecated erlang:get_stacktrace/0.
 %
@@ -734,7 +784,7 @@ get_stacktrace() ->
 
 
 
-% Returns (without crashing the program) the current stack trace, whose
+% @doc Returns (without crashing the program) the current stack trace, whose
 % SkipLastElemCount first elements have been dropped (to output a cleaner, more
 % relevant stacktrace).
 %
@@ -744,50 +794,81 @@ get_stacktrace( SkipLastElemCount ) ->
 
 		throw( generate_stacktrace )
 
-	catch throw:generate_stacktrace:StackTrace ->
+	catch throw:generate_stacktrace:Stacktrace ->
+
+		%trace_utils:debug_fmt( "Got stacktrace: ~p", [ Stacktrace ] ),
 
 		% To remove the initial code_utils:get_stacktrace/0, by design at the
 		% top of the stack:
 		%
-		list_utils:remove_first_elements( StackTrace, SkipLastElemCount+1 )
+		list_utils:remove_first_elements( Stacktrace, SkipLastElemCount+1 )
 
 	end.
 
 
 
-% Returns a "smart" textual representation of the current stacktrace.
+% @doc Returns a "smart" textual representation of the current stacktrace.
 -spec interpret_stacktrace() -> ustring().
 interpret_stacktrace() ->
 
 	% We do not want to include interpret_stacktrace/0 in the stack:
-	StackTrace = get_stacktrace( _SkipLastElemCount=1 ),
+	Stacktrace = get_stacktrace( _SkipLastElemCount=1 ),
 
-	interpret_stacktrace( StackTrace ).
+	interpret_stacktrace( Stacktrace ).
 
 
-% Returns a "smart" textual representation of specified stacktrace.
+
+% @doc Returns a "smart" textual representation of specified stacktrace.
 -spec interpret_stacktrace( stack_trace() ) -> ustring().
-interpret_stacktrace( StackTrace ) ->
-	interpret_stacktrace( StackTrace, _FullPathsWanted=false ).
+interpret_stacktrace( Stacktrace ) ->
+	interpret_stacktrace( Stacktrace, _ErrorTerm=undefined ).
 
 
-% Returns a "smart" textual representation of specified stacktrace, listing
+
+
+% @doc Returns a "smart", complete textual description of the specified error
+% stacktrace, including any argument-level analysis of the failure, listing just
+% the filename of the corresponding source files (no full path wanted).
+%
+-spec interpret_stacktrace( stack_trace(), maybe( error_term() ) ) -> ustring().
+interpret_stacktrace( Stacktrace, MaybeErrorTerm ) ->
+	interpret_stacktrace( Stacktrace, MaybeErrorTerm, _FullPathsWanted=false ).
+
+
+
+% @doc Returns a "smart", complete textual description of the specified error
+% stacktrace, including any argument-level analysis of the failure, listing
 % either the full path of the corresponding source files, or just their
 % filename.
 %
--spec interpret_stacktrace( stack_trace(), boolean() ) -> ustring().
-interpret_stacktrace( StackTrace, FullPathsWanted ) ->
+-spec interpret_stacktrace( stack_trace(), maybe( error_term() ), boolean() ) ->
+									ustring().
+% At least one stack item expected:
+interpret_stacktrace( Stacktrace=[ FirstStackItem | OtherStackItems ],
+					  MaybeErrorTerm, FullPathsWanted ) ->
 
-	%io:format( "Interpreting stack trace:~n~p~n", [ StackTrace ] ),
+	% Use any error diagnosis regarding top-level stack item:
+	ErrorStr = interpret_stack_item( FirstStackItem, FullPathsWanted )
+		++ case MaybeErrorTerm of
 
-	StringItems = [ interpret_stack_item( I, FullPathsWanted )
-					|| I <- StackTrace ],
+			   undefined ->
+				   "";
+
+			   ErrorTerm ->
+				   interpret_error( ErrorTerm, Stacktrace )
+
+		   end,
+
+	OtherItemStrs = [ interpret_stack_item( I, FullPathsWanted )
+							|| I <- OtherStackItems ],
+
+	StringItems = [ ErrorStr | OtherItemStrs ],
 
 	text_utils:strings_to_enumerated_string( StringItems ).
 
 
 
-% Returns a "smart" textual representation of the current stacktrace, once
+% @doc Returns a "smart" textual representation of the current stacktrace, once
 % specified extra depth has been skipped (not counting this call).
 %
 % Removing the specified number of last calls allows to skip unwanted
@@ -800,60 +881,199 @@ interpret_shortened_stacktrace( SkipLastElemCount ) ->
 
 
 % Helper:
-interpret_stack_item( { Module, Function, Arity,
-						[ { file, FilePath }, { line, Line } ] },
-					  _FullPathsWanted=true ) when is_integer( Arity ) ->
-	text_utils:format( "~ts:~ts/~B   [defined in ~ts (line ~B)]",
-		[ Module, Function, Arity, file_utils:normalise_path( FilePath ),
-		  Line ] );
+interpret_stack_item( { Module, Function, Arity, StackInfo },
+					  FullPathsWanted ) when is_integer( Arity ) ->
+	text_utils:format( "~ts:~ts/~B~ts", [ Module, Function, Arity,
+				get_location_from( StackInfo, FullPathsWanted ) ] );
 
-interpret_stack_item( { Module, Function, Arity,
-						[ { file, FilePath }, { line, Line } ] },
-					  _FullPathsWanted=false ) when is_integer( Arity ) ->
-	text_utils:format( "~ts:~ts/~B   [defined in ~ts (line ~B)]",
-		[ Module, Function, Arity, filename:basename( FilePath ), Line ] );
-
-interpret_stack_item( { Module, Function, Args,
-						[ { file, FilePath }, { line, Line } ] },
-					  _FullPathsWanted=false ) when is_list( Args ) ->
-	text_utils:format( "~ts:~ts/~B   [defined in ~ts (line ~B)]",
-		[ Module, Function, length( Args ), filename:basename( FilePath ),
-		  Line ] );
-
-interpret_stack_item( { Module, Function, Arity, Location },
-					  _FullPathsWanted ) when is_integer( Arity ) ->
-	text_utils:format( "~ts:~ts/~B located in ~p",
-					   [ Module, Function, Arity, Location ] );
-
-interpret_stack_item( { Module, Function, Arguments, _Location=[] },
-					  _FullPathsWanted ) when is_list( Arguments ) ->
-	text_utils:format( "~ts:~ts/~B",
-					   [ Module, Function, length( Arguments ) ] );
-
-interpret_stack_item( { Module, Function, Arguments, Location },
-					  _FullPathsWanted ) when is_list( Arguments ) ->
-	text_utils:format( "~ts:~ts/~B located in ~p",
-					   [ Module, Function, length( Arguments ), Location ] );
+% Here we have not a raw arity, but the list of actual arguments (thus a lot
+% more informative):
+%
+interpret_stack_item( { Module, Function, Args, StackInfo }, FullPathsWanted )
+  when is_list( Args ) ->
+	text_utils:format( "~ts:~ts/~B called with following arguments:"
+					   "~n  ~p~ts",
+		[ Module, Function, length( Args ), Args,
+		  get_location_from( StackInfo, FullPathsWanted ) ] );
 
 % Never fail:
 interpret_stack_item( I, _FullPathsWanted ) ->
-	text_utils:format( "~p", [ I ] ).
+	text_utils:format( "~p (error: unexpected stack item)", [ I ] ).
 
 
 
-% Displays the current stacktrace (not stopping the execution).
+% @doc Returns a textual description of the location (if any) found from
+% specified error information.
+%
+-spec get_location_from( stack_info(), boolean() ) -> ustring().
+get_location_from( StackInfo, FullPathsWanted )
+  when is_map( StackInfo ) ->
+	get_location_from( map_hashtable:enumerate( StackInfo ), FullPathsWanted );
+
+get_location_from( StackInfo, FullPathsWanted ) ->
+
+	%trace_utils:format( "get_location_from: StackInfo is ~p", [ StackInfo ] ).
+
+	% Not wanted here (succeeds even if key not found):
+	NoErrInfo = list_table:remove_entry( error_info, StackInfo ),
+
+	{ MaybeFilePath, FileLessInfo } =
+		case list_table:extract_entry_with_defaults( file, undefined,
+													 NoErrInfo ) of
+
+			P={ undefined, _SInfo } ->
+				P;
+
+			{ SetFilePath, SInfo } ->
+				Path = case FullPathsWanted of
+
+					true ->
+						file_utils:normalise_path( SetFilePath );
+
+					false ->
+						filename:basename( SetFilePath )
+
+				end,
+				{ Path, SInfo }
+
+		end,
+
+	{ MaybeLine, LineLessInfo } = list_table:extract_entry_with_defaults( line,
+									undefined, FileLessInfo ),
+
+	ExtraStr = case LineLessInfo of
+
+		[] ->
+			"";
+
+		_ ->
+			text_utils:format( " (warning: following stack information was "
+							   "ignored: ~p)", [ LineLessInfo ] )
+
+	end,
+
+	case { MaybeFilePath, MaybeLine } of
+
+		{ undefined, undefined } ->
+			text_utils:format( "~ts", [ ExtraStr ] );
+
+		{ FilePath, undefined } ->
+			text_utils:format( "   [defined in ~ts]", [ FilePath ] );
+
+		{ undefined, Line } ->
+			text_utils:format( "   [defined at line ~B]", [ Line ] );
+
+		{ FilePath, Line } ->
+			text_utils:format( "   [defined in ~ts (line ~B)]",
+							   [ FilePath, Line ] )
+
+	end.
+
+
+
+
+
+
+% @doc Displays the current stacktrace (not stopping the execution).
 -spec display_stacktrace() -> void().
 display_stacktrace() ->
 
 	% We do not want to include display_stacktrace/0 in the stack:
-	StackTrace = get_stacktrace( _SkipLastElemCount=1 ),
+	Stacktrace = get_stacktrace( _SkipLastElemCount=1 ),
 
 	trace_utils:info_fmt( "Current stacktrace is (latest calls first): ~ts~n",
-						  [ interpret_stacktrace( StackTrace ) ] ).
+						  [ interpret_stacktrace( Stacktrace ) ] ).
 
 
 
-% Interprets an undef exception, typically after it has been raised.
+% @doc Interprets specified error.
+-spec interpret_error( error_term(), stack_trace() ) -> ustring().
+interpret_error( ErrorTerm, Stacktrace=[
+		StackInfo={ _Module, _Function, _Arguments, InfoListTable } | _ ] ) ->
+
+	%trace_utils:debug_fmt( "interpret_error: Reason=~p, Stacktrace=~n ~p",
+	%						[ Reason, Stacktrace ] ),
+
+	case list_table:lookup_entry( error_info, InfoListTable ) of
+
+		{ value, ErrorInfoMap } ->
+			case map_hashtable:lookup_entry( module, ErrorInfoMap ) of
+
+				% Typically erl_erts_errors for BIFs:
+				{ value, ErrorInfoModule } ->
+					DiagnoseMap =
+						ErrorInfoModule:format_error( ErrorTerm, Stacktrace ),
+					error_map_to_string( DiagnoseMap, ErrorTerm );
+
+				key_not_found ->
+					"(no module set for error_info) "
+						++ stack_info_to_string( StackInfo )
+
+			end;
+
+		key_not_found ->
+			% No extra information lies here:
+			%"(no error_info set) " ++ stack_info_to_string( StackInfo )
+			""
+
+	end.
+
+
+
+% @doc Returns a textual description of specified stack information.
+-spec stack_info_to_string( stack_info() ) -> ustring().
+stack_info_to_string( [ { file, Filename }, { line, Line } ] ) ->
+	text_utils:format( "in file ~ts, at line ~B", [ Filename, Line ] );
+
+% Catch-all:
+stack_info_to_string( StackInfo ) ->
+
+	% We could look up here also any error_info entry, yet any error module
+	% found there would require to have its format_error/2 function be called
+	% with the error reason and the full stacktrace, both of which are
+	% unavailable in this context.
+
+	text_utils:format( "~p", [ StackInfo ] ).
+
+
+
+% @doc Returns a textual description of the specified error map.
+-spec error_map_to_string( error_map(), error_reason() ) -> ustring().
+error_map_to_string( ErrorMap, Reason ) ->
+
+	case lists:sort( map_hashtable:enumerate( ErrorMap ) ) of
+
+		[] ->
+			text_utils:format( "~ts (whereas no error listed - abnormal)",
+				[ error_reason_to_string( Reason ), ErrorMap ] );
+
+		% Special case as with the next one two ':' in the same sentence would
+		% be used:
+		%
+		[ { N, Diag } ] ->
+			text_utils:format( "~ts due to invalid argument #~B: ~ts",
+							   [ error_reason_to_string( Reason ), N, Diag ] );
+
+		NumberedErrors ->
+			ErrorStrs = [ text_utils:format( "invalid argument #~B: ~ts",
+							[ N, Diag ] ) || { N, Diag } <- NumberedErrors ],
+
+			text_utils:format( "~ts due to: ~ts",
+				[ error_reason_to_string( Reason ),
+				  text_utils:strings_to_string( ErrorStrs, _IndentLevel=1 ) ] )
+
+	end.
+
+
+
+% @doc Returns a textual description of the specified error reason.
+-spec error_reason_to_string( error_reason() ) -> ustring().
+error_reason_to_string( Reason ) ->
+	text_utils:format( " that failed with ~p", [ Reason ] ).
+
+
+
+% @doc Interprets an undef exception, typically after it has been raised.
 -spec interpret_undef_exception( module_name(),
 			basic_utils:function_name(), arity() ) -> ustring().
 interpret_undef_exception( ModuleName, FunctionName, Arity ) ->
@@ -922,13 +1142,3 @@ interpret_arities( ModuleName, FunctionName, Arity, Arities ) ->
 				[ ModuleName, FunctionName, Arity, ArStr ] )
 
 	end.
-
-
-% Returns a textual description of specified stack location.
--spec stack_location_to_string( stack_location() ) -> ustring().
-stack_location_to_string( [ { file, Filename }, { line, Line } ] ) ->
-	text_utils:format( "in file ~ts, at line ~B", [ Filename, Line ] );
-
-% Catch-all:
-stack_location_to_string( OtherLoc ) ->
-	text_utils:format( "~p", [ OtherLoc ] ).

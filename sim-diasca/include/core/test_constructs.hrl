@@ -44,7 +44,9 @@
 
 
 % For deployment_settings:
--include("class_DeploymentManager.hrl").
+-include("class_DeploymentManager.h%% l
+%% l
+rl").
 
 
 % For load_balancing_settings:

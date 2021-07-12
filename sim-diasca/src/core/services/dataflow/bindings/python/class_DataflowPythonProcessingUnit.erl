@@ -19,6 +19,8 @@
 % Author: Robin Huart (robin-externe.huart@edf.fr)
 
 
+
+% @doc Base class for all the <b>Python-based processing units</b>.
 -module(class_DataflowPythonProcessingUnit).
 
 
@@ -33,11 +35,9 @@
 -define( superclasses, [ class_DataflowProcessingUnit ] ).
 
 
-
-% Designates the Python reference corresponding to a processing unit instance
-% (relatively to its interpreter):
-%
 -type python_ref() :: basic_utils:count().
+% Designates the Python reference corresponding to a processing unit instance
+% (relatively to its interpreter).
 
 
 -export_type([ python_ref/0 ]).
@@ -117,7 +117,9 @@
 
 
 
-% Constructs a new dataflow Python processing unit:
+% Constructs a new dataflow Python processing unit.
+%
+% Parameters:
 %
 % - ActorSettings describes the actor abstract identifier (AAI) and seed of this
 % actor, as automatically assigned by the load balancer
@@ -137,8 +139,8 @@
 % of that actor
 %
 -spec construct( wooper:state(), class_Actor:actor_settings(),
-		 dataflow_unit_type(), construction_parameters(),
-		 dataflow_pid(), python_binding_manager_pid() ) -> wooper:state().
+		dataflow_unit_type(), construction_parameters(),
+		dataflow_pid(), python_binding_manager_pid() ) -> wooper:state().
 construct( State, ActorSettings, UnitClassname,
 		   PythonConstructionParameters=[ UnitName | OtherParams ],
 		   DataflowPid, PythonBindingManagerPid ) ->
@@ -154,8 +156,8 @@ construct( State, ActorSettings, UnitClassname,
 		get_python_module_and_class_for( UnitClassname ),
 
 	% Gets the Python interpreter in charge of that unit:
-	InterpreterPid = class_PythonBindingManager:get_interpreter(
-						PythonBindingManagerPid ),
+	InterpreterPid =
+		class_PythonBindingManager:get_interpreter(	PythonBindingManagerPid ),
 
 	% Instantiates the Python processing unit in its interpreter, and gets back
 	% the initial data (attributes or not) needed in the Erlang world:
@@ -199,8 +201,8 @@ construct( State, ActorSettings, UnitClassname,
 
 	% Constructs then the corresponding direct mother class:
 	UnitState = class_DataflowProcessingUnit:construct( State, ActorSettings,
-					TraceEmitterInfo, ActivationPolicy,
-					InputPortSpecs, OutputPortSpecs, DataflowPid ),
+		TraceEmitterInfo, ActivationPolicy, InputPortSpecs, OutputPortSpecs,
+		DataflowPid ),
 
 	?send_debug_fmt( UnitState, "Created a Python-based processing unit "
 		"instance named '~ts' (extra construction parameters: ~p) "
@@ -223,7 +225,8 @@ construct( State, ActorSettings, UnitClassname,
 % Methods section.
 
 
-% Callback executed automatically whenever the processing unit is activated.
+% @doc Callback executed automatically whenever the processing unit is
+% activated.
 %
 % Meant to be overridden.
 %
@@ -309,10 +312,10 @@ activate( State ) ->
 
 
 
-% Returns the Python module and class that correspond to the specified (Erlang)
-% unit type, i.e. a WOOPER classname, like
+% @doc Returns the Python module and class that correspond to the specified
+% (Erlang) unit type, that is a WOOPER classname, like
 % 'class_BigPackage__MyPackage__MyExample', resulting in:
-% { 'big_package.my_package.my_example', 'MyExample' }.
+% {'big_package.my_package.my_example', 'MyExample'}.
 %
 -spec get_python_module_and_class_for( dataflow_unit_type() ) ->
 		{ python_utils:pep8_class_module(), python_utils:pep8_classname() }.
@@ -345,7 +348,7 @@ get_python_module_and_class_for( UnitType ) ->
 % Textual helpers section.
 
 
-% Returns a textual description of this processing unit.
+% @doc Returns a textual description of this processing unit.
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 

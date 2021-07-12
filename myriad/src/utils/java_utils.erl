@@ -28,11 +28,12 @@
 %		   Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-% Gathering of some convenient facilities for the binding to the Java language.
+% @doc Gathering of some convenient facilities for the <b>binding to the Java
+% language</b>.
 %
 % See java_utils_test.erl for the corresponding tests.
 %
-% See also: python_utils.erl for a similar binding.
+% See also python_utils.erl for a similar binding.
 %
 -module(java_utils).
 
@@ -53,61 +54,65 @@
 % management.
 
 
-% PID associated to a Java mailbox (a Java-based pseudo-process):
 -type java_mbox_pid() :: pid().
+% PID associated to a Java mailbox (a Java-based pseudo-process).
 
 
-
-% Designates a method to trigger on the Java side:
 -type method_name() :: atom().
+% Designates a method to trigger on the Java side.
 
-% Designates a oneway to trigger on the Java side:
+
 -type oneway_name() :: method_name().
+% Designates a oneway to trigger on the Java side.
 
-% Designates a request to trigger on the Java side:
+
 -type request_name() :: method_name().
+% Designates a request to trigger on the Java side.
 
 
-
-% The parameters of a method triggered on the Java side:
 -type method_parameters() :: [ any() ].
+% The parameters of a method triggered on the Java side.
 
-% The parameters of a oneway triggered on the Java side:
+
 -type oneway_parameters() :: [ any() ].
+% The parameters of a oneway triggered on the Java side.
 
-% The parameters of a request triggered on the Java side:
+
 -type request_parameters() :: [ any() ].
+% The parameters of a request triggered on the Java side.
 
 
-% The result from a request that was sent to Java:
 -type request_result() :: any().
+% The result from a request that was sent to Java.
 
 
-% The name of a Java package (ex: 'org.foobar.research.someteam'):
 -type java_package_name() :: atom().
+% The name of a Java package (ex: 'org.foobar.research.someteam').
 
-% The name of a Java package, as a string (ex: "org.foobar.research.someteam"):
+
 -type java_string_package_name() :: atom().
+% The name of a Java package, as a string (ex: "org.foobar.research.someteam").
 
 
-% The name of a Java class (ex: 'Foobar'):
 -type java_classname() :: atom().
+% The name of a Java class (ex: 'Foobar').
 
-% The name of a Java class, as a string (ex: "Foobar"):
+
 -type java_string_classname() :: ustring().
+% The name of a Java class, as a string (ex: "Foobar").
 
 
-% Designates as precisely as possible a Java class:
--type java_fully_qualified_classname() :: java_classname() |
-								  { java_package_name(), java_classname() }.
+-type java_fully_qualified_classname() ::
+		java_classname() | { java_package_name(), java_classname() }.
+% Designates as precisely as possible a Java class.
 
 
-% The name of a Java source file (ex: "Foobar.java"):
--type java_source_filename() :: file_utils:file_name().
+-type java_source_filename() :: file_name().
+% The name of a Java source file (ex: "Foobar.java").
 
 
-% The name of a Java compiled file (ex: "Foobar.class"):
--type java_bytecode_filename() :: file_utils:file_name().
+-type java_bytecode_filename() :: file_name().
+% The name of a Java compiled file (ex: "Foobar.class").
 
 
 -export_type([ java_mbox_pid/0,
@@ -123,6 +128,9 @@
 % Shorthands:
 
 -type ustring() :: text_utils:ustring().
+
+-type file_name() :: file_utils:file_name().
+-type directory_path() :: file_utils:directory_path().
 
 
 
@@ -147,17 +155,16 @@
 
 
 
-% Finds the BEAM locations of all the dependencies required for binding to
+% @doc Finds the BEAM locations of all the dependencies required for binding to
 % Java.
 %
--spec get_beam_directories_for_binding() -> [ file_utils:directory_name() ].
+-spec get_beam_directories_for_binding() -> [ directory_path() ].
 get_beam_directories_for_binding() ->
 	[].
 
 
 
-% Sends the specified oneway to the specified Java pseudo-process.
-%
+% @doc Sends the specified oneway to the specified Java pseudo-process.
 -spec send_oneway( java_mbox_pid(), oneway_name(), oneway_parameters() ) ->
 							void().
 send_oneway( MailboxPid, OnewayName, OnewayParameters )
@@ -172,8 +179,7 @@ send_oneway( MailboxPid, OnewayName, OnewayParameters )
 
 
 
-% Sends the specified request to the specified Java pseudo-process.
-%
+% @doc Sends the specified request to the specified Java pseudo-process.
 -spec send_request( java_mbox_pid(), request_name(), request_parameters() ) ->
 							void().
 send_request( MailboxPid, RequestName, RequestParameters )
@@ -183,7 +189,7 @@ send_request( MailboxPid, RequestName, RequestParameters )
 
 
 
-% Sends for execution the specified request to the specified Java
+% @doc Sends for execution the specified request to the specified Java
 % pseudo-process, and collects (synchronously) the corresponding result.
 %
 -spec execute_request( java_mbox_pid(), request_name(),
@@ -201,9 +207,9 @@ execute_request( MailboxPid, RequestName, RequestParameters ) ->
 
 
 
-% Receives a message from the Java world, usually in answer to a send_oneway/3
-% call having used the same MethodName argument, and tries to match it
-% with the different accepted types of messages.
+% @doc Receives a message from the Java world, usually in answer to a
+% send_oneway/3 call having used the same MethodName argument, and tries to
+% match it with the different accepted types of messages.
 %
 -spec wait_for_request_result( java_mbox_pid(), method_name() ) -> any().
 wait_for_request_result( MailboxPid, MethodName )
@@ -233,14 +239,12 @@ wait_for_request_result( MailboxPid, MethodName )
 
 			TraceMessage;
 
-
 		% Exception raised from Java:
 		ExceptionMessage = { exception_raised, ExceptionType,
 							 _ExceptionFormattedMessage }
 		  when is_atom( ExceptionType ) ->
 
 			ExceptionMessage;
-
 
 		% Catch-all clause for message receiving:
 		OtherMessage ->
@@ -254,8 +258,8 @@ wait_for_request_result( MailboxPid, MethodName )
 
 
 
-% Deduces the (root) name of a Java bytecode file from the name of the class it
-% implements, according to the naming conventions used by the language.
+% @doc Deduces the (root) name of a Java bytecode file from the name of the
+% class it implements, according to the naming conventions used by the language.
 %
 % With Java, both names are identical except the extension, hence we just check
 % if the name looks CamelCased, i.e. if at least its first letter is in upper
@@ -280,8 +284,8 @@ classname_to_bytecode_filename( ClassnameString )
 	end.
 
 
-% Returns a textual description of specified fully qualified classname.
-%
+
+% @doc Returns a textual description of specified fully qualified classname.
 -spec fully_qualified_classname_to_string( java_fully_qualified_classname() ) ->
 													ustring().
 fully_qualified_classname_to_string( { PackageName, Classname } ) ->

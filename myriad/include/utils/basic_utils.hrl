@@ -43,9 +43,10 @@
 
 
 
-% Returns the execution target this module (hence, probably, that layer as a
-% whole) was compiled with, i.e. either the atom 'development' or 'production'.
-
+% @doc Returns the execution target this module (hence, probably, that layer as
+% a whole) was compiled with, that is either the atom 'development' or
+% 'production'.
+%
 % Dispatched in actual clauses, otherwise Dialyzer will detect an
 % underspecification:
 %

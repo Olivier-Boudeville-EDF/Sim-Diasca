@@ -26,8 +26,9 @@
 % Creation date: Wednesday, October 24, 2012.
 
 
-% Gathering of unit management facilities, first in a simple, ad hoc, limited
-% form, then on a more formal, heavyweight one.
+% @doc Gathering of <b>unit management</b> facilities, to denote quantities
+% first in a simple, ad hoc, limited form, then on a more formal, heavyweight
+% one.
 %
 % All kinds of units are listed here, alongside the reference ones (ex: the
 % meter is the unit of length in the International System of Units).
@@ -63,8 +64,9 @@
 % Time-related section.
 
 
-% 10^6 seconds:
 -type megasecond()  :: integer().
+% 10^6 seconds.
+
 -type megaseconds() :: integer().
 
 
@@ -74,11 +76,12 @@
 -type month()        :: integer().
 -type months()       :: integer().
 
-% Month in the year; could be calendar:month():
 -type canonical_month() :: 1..12.
+% Month in the year; could be calendar:month().
 
-% Absolute months:
+
 -type absolute_month() :: { year(), canonical_month() }.
+% Absolute months.
 
 -type weeks()        :: integer().
 -type week()         :: integer().
@@ -87,70 +90,71 @@
 -type days()         :: integer().
 
 
-% Day in the month:
 -type canonical_day() :: 1..31.
+% Day in the month.
 
 
 -type hour()         :: integer().
 -type hours()        :: integer().
 
-% Hour in the day:
 -type canonical_hour() :: 0..23.
+% Hour in the day.
 
 
 -type minute()       :: integer().
 -type minutes()      :: integer().
 
-% Minute in the hour:
 -type canonical_minute() :: 0..59.
+% Minute in the hour.
 
 -type second()       :: integer().
 -type seconds()      :: integer().
 
 
-% Second in the minute:
 -type canonical_second() :: 0..59.
+% Second in the minute.
 
 -type float_second()  :: float().
 -type float_seconds() :: float().
 
 
-% Any type of second (integer or float):
 -type any_second()  :: second()  | float_second().
+% Any type of second (integer or float).
+
 -type any_seconds() :: seconds() | float_seconds().
 
 
-% Square seconds (s^2):
 -type square_seconds() :: float().
+% Square seconds (s^2).
 
 
 -type millisecond()  :: integer().
 -type milliseconds() :: integer().
 
-% Millisecond in the second:
 -type canonical_millisecond()  :: 0..999.
+% Millisecond in the second.
 
 
 -type microsecond()  :: integer().
 -type microseconds() :: integer().
 
-% Microsecond in the second:
 -type canonical_microsecond() :: 0..999999.
+% Microsecond in the second.
 
 
-% Mean Time To Failure:
 -type mttf() :: time_utils:dhms_duration().
+% Mean Time To Failure.
 
 
-% Frequency:
 -type hertz() :: float().
+% Frequency.
 
 -type time_reference_unit() :: 'seconds'.
 
-% Months and weeks not specifically useful here:
+
 -type time_units() :: time_reference_unit() | 'years' | 'days' | 'hours'
 					| 'minutes' | 'milliseconds' | 'microseconds'.
-
+% Months and weeks not specifically useful here.
 
 
 -export_type([ megasecond/0, megaseconds/0,
@@ -258,8 +262,8 @@
 
 % Temperature units.
 
-% In degree Celsius (°C):
 -type celsius() :: float().
+% In degree Celsius (°C).
 
 
 -export_type([ celsius/0 ]).
@@ -271,18 +275,17 @@
 -type radians() :: float().
 
 
+-type degrees() :: float().
 % Angle in degrees.
 %
 % Preferably to be kept in [0.0,360.0[.
-%
--type degrees() :: float().
 
 
+-type int_degrees() :: integer().
 % Angle in degrees.
 %
 % Strictly expected to be in [0,360[.
-%
--type int_degrees() :: integer().
+
 
 
 -type angle_reference_unit() :: 'radians'.
@@ -295,9 +298,21 @@
 
 
 
-% All kinds of units:
+% Miscellaneous section.
+
+-type rpm() :: float().
+% Revolutions per minute (also known as RPM, rev/min, r/min, or with the
+% notation min−1) is the number of turns in one minute; a unit of rotational
+% speed or the frequency of rotation around a fixed axis.
+
+-type misc_units() :: rpm().
+
+
+
 -type units() :: time_units() | length_units() | volume_units() | mass_units()
-			   | energy_units() | angle_units().
+			   | energy_units() | angle_units() | misc_units().
+% All kinds of units.
+
 
 -export_type([ units/0 ]).
 
@@ -316,16 +331,6 @@
 % possible prefix (ex: kilo, mega, etc.).
 
 
-% The seven SI base units are:
-% - meter, for length [m]
-% - kilogram, for mass [kg]; we use gram ([g]) instead, as no prefix is wanted
-% here
-% - second, for time [s]
-% - ampere, for electric current [A]
-% - kelvin, for thermodynamic temperature [K]
-% - mole, for the amount of substance [mol]
-% - candela, for luminous intensity [cd]
-%
 -type base_unit_symbol() :: 'm'
 						  | 'g'
 						  | 's'
@@ -333,32 +338,24 @@
 						  | 'K'
 						  | 'mol'
 						  | 'cd'.
-
-
-
-% The derived base units currently supported:
-% - hertz, for frequency [Hz]
-% - radian, for angle [rad]
-% - steradian, for solid angle [sr]
-% - newton, for force, weight [N]
-% - pascal, forpressure, stress [Pa]
-% - joule, for energy, work, heat [J]
-% - watt, for power, radiant flux [W]
-% - coulomb, for electric charge or quantity of electricity [C]
-% - volt, for voltage, electrical potential difference, electromotive force [V]
-% - farad, for electrical capacitance [F]
-% - ohm, for electrical resistance, impedance, reactance [ohm]
-% - siemens, for electrical conductance [S]
-% - tesla, for magnetic field strength, magnetic flux density [T]
-% - henry, for inductance [H]
-% - degree Celsius, for temperature relative to 273.15 K [°C]
-% - lumen, for luminous flux [lm]
-% - lux, for illuminance [lx]
-% - becquerel, for radioactive decays per unit time [Bq]
-% - gray, for absorbed dose of ionizing radiation [Gy]
-% - sievert, for equivalent dose of ionizing radiation [Sv]
-% - katal, for catalytic activity [kat]
+% The seven SI base units are:
 %
+% - meter, for length [m]
+%
+% - kilogram, for mass [kg]; we use gram ([g]) instead, as no prefix is wanted
+% here
+%
+% - second, for time [s]
+%
+% - ampere, for electric current [A]
+%
+% - kelvin, for thermodynamic temperature [K]
+%
+% - mole, for the amount of substance [mol]
+%
+% - candela, for luminous intensity [cd]
+
+
 -type derived_unit_symbol() :: 'Hz'
 							 | 'rad'
 							 | 'sr'
@@ -380,53 +377,101 @@
 							 | 'Gy'
 							 | 'Sv'
 							 | 'kat'.
-
-
-% The units widely used in conjunction with SI units:
-% - minute, for 60-second durations [min]
-% - hour, for 60-minute durations [h]
-% - litre, for 10^-3 m^3 volumes [L]
-% - tonne, for 1,000 kilogram masses [t]
-% - electronvolt, for 1.602176565(35).10-19 joule energies  [eV]
+% The derived base units currently supported:
 %
+% - hertz, for frequency [Hz]
+%
+% - radian, for angle [rad]
+%
+% - steradian, for solid angle [sr]
+%
+% - newton, for force, weight [N]
+%
+% - pascal, forpressure, stress [Pa]
+%
+% - joule, for energy, work, heat [J]
+%
+% - watt, for power, radiant flux [W]
+%
+% - coulomb, for electric charge or quantity of electricity [C]
+%
+% - volt, for voltage, electrical potential difference, electromotive force [V]
+%
+% - farad, for electrical capacitance [F]
+%
+% - ohm, for electrical resistance, impedance, reactance [ohm]
+%
+% - siemens, for electrical conductance [S]
+%
+% - tesla, for magnetic field strength, magnetic flux density [T]
+%
+% - henry, for inductance [H]
+%
+% - degree Celsius, for temperature relative to 273.15 K [°C]
+%
+% - lumen, for luminous flux [lm]
+%
+% - lux, for illuminance [lx]
+%
+% - becquerel, for radioactive decays per unit time [Bq]
+%
+% - gray, for absorbed dose of ionizing radiation [Gy]
+%
+% - sievert, for equivalent dose of ionizing radiation [Sv]
+%
+% - katal, for catalytic activity [kat]
+
+
 -type widely_used_unit_symbol() :: 'min'
 								 | 'h'
 								 | 'L'
 								 | 't'
 								 | 'eV'.
-
-
-
-% The special units, designating:
-% - dimension-less quantities (ex: a count), [dimensionless] (most probably
-% clearer than m/m)
-% - currencies, either [$] (US Dollar) or [euros] (Euro)
-% - values whose unit has not been specified [unspecified_unit]
+% The units widely used in conjunction with SI units:
 %
+% - minute, for 60-second durations [min]
+%
+% - hour, for 60-minute durations [h]
+%
+% - litre, for 10^-3 m^3 volumes [L]
+%
+% - tonne, for 1,000 kilogram masses [t]
+%
+% - electronvolt, for 1.602176565(35).10-19 joule energies  [eV]
+
+
+
 -type special_unit_symbol() :: 'dimensionless'
 							 | '$'
 							 | 'euros'
 							 | 'unspecified_unit'.
-
-
-% For non-SI units that cannot be anticipated (ex: teqCO2, singaporean dollar of
-% 2012, number of people, etc.)
+% The special units, designating:
 %
+% - dimension-less quantities (ex: a count), [dimensionless] (most probably
+% clearer than m/m)
+%
+% - currencies, either [$] (US Dollar) or [euros] (Euro)
+%
+% - values whose unit has not been specified [unspecified_unit]
+
+
+
 -type non_standard_unit_symbol() :: atom().
+% For non-SI units that cannot be anticipated (ex: teqCO2, singaporean dollar of
+% 2012, number of people, etc.).
 
 
-% All unit symbols (actually not used as such):
 -type unit_symbol() :: base_unit_symbol()
 					 | derived_unit_symbol()
 					 | widely_used_unit_symbol()
 					 | special_unit_symbol()
 					 | non_standard_unit_symbol().
+% All unit symbols (actually not used as such).
 
 
-% The string counterparts of unit symbols (ex: "eV" instead of 'eV'), used for
-% parsing:
-%
 -type unit_string_symbol() :: ustring().
+% The string counterparts of unit symbols (ex: "eV" instead of 'eV'), used for
+% parsing.
 
 
 -export_type([ base_unit_symbol/0, derived_unit_symbol/0,
@@ -434,7 +479,6 @@
 			   non_standard_unit_symbol/0, unit_symbol/0 ]).
 
 
-% Metric prefix (like 'kilo', to specify kilograms from grams):
 -type metric_prefix() :: 'yotta'
 					   | 'zetta'
 					   | 'exa'
@@ -456,40 +500,36 @@
 					   | 'atto'
 					   | 'zepto'
 					   | 'yocto'.
+% Metric prefix (like 'kilo', to specify kilograms from grams):
 
 
-% Symbol of metric prefix (ex: "da" for 'deca'):
 -type prefix_symbol() :: ustring().
+% Symbol of metric prefix (ex: "da" for 'deca').
 
 
-% Order of magnitude (exponent of 10):
 -type magnitude_order() :: integer().
+% Order of magnitude (exponent of 10).
 
 
-% Multiplying factor:
 -type multiplying_factor() :: float().
+% Multiplying factor.
 
 
-% Exponentiation of a unit (ex: 2 for square meters, m^2).
 -type exponent() :: integer().
+% Exponentiation of a unit (ex: 2 for square meters, m^2).
 
 
+-type unit_string() :: ustring().
 % String containing a unit, in standard form (ex: "km/h", "mW.m^-3").
 %
 % Read the 'Management of Units' section of the technical manual of the Myriad
 % Layer for more information.
-%
--type unit_string() :: ustring().
 
 
-% Binary counterpart of a unit string:
 -type unit_bin_string() :: text_utils:bin_string().
+% Binary counterpart of a unit string.
 
 
-
-% Actual internal, canonical form for any unit (relying on the 7 SI base units,
-% an order of magnitude and a multiplying factor):
-%
 -record( canonical_unit, {
 
 	meter   = 0 :: exponent(),
@@ -514,6 +554,8 @@
 
 
 -type canonical_unit() :: #canonical_unit{}.
+% Actual internal, canonical form for any unit (relying on the 7 SI base units,
+% an order of magnitude and a multiplying factor).
 
 
 -type base_unit_name() :: 'meter' | 'gram' | 'second' | 'ampere' | 'kelvin'
@@ -539,9 +581,8 @@
 				   | widely_used_unit_name() | special_unit_name().
 
 
-
-% The actual value whose unit may be associated to.
 -type numerical_value() :: float().
+% The actual value whose unit may be associated to.
 
 
 -export_type([ unit_string/0, unit_bin_string/0, canonical_unit/0,
@@ -575,15 +616,21 @@
 
 
 
+% Stringification section.
+
+-export([ temperature_to_string/1, maybe_temperature_to_string/1 ]).
+
+
+
 % Internal types.
 
 
 % Unit component:
 -type unit_component() :: ustring().
 
-% The various supported kinds of component operators:
-%
+
 -type operator_kind() :: 'multiply' | 'divide'.
+% The various supported kinds of component operators:
 
 
 % Shorthands:
@@ -595,11 +642,13 @@
 % Converting speeds.
 
 
+% @doc Converts km/h to m/s.
 -spec km_per_hour_to_meters_per_second( km_per_hour() ) -> meters_per_second().
 km_per_hour_to_meters_per_second( K ) ->
 	( K * 1000 ) / 3600.
 
 
+% @doc Converts m/s to km/h.
 -spec meters_per_second_to_km_per_hour( meters_per_second() ) -> km_per_hour().
 meters_per_second_to_km_per_hour( M ) ->
 	M * 3600 / 1000.
@@ -609,9 +658,9 @@ meters_per_second_to_km_per_hour( M ) ->
 % Converting durations.
 
 
-% Converts specified duration, expressed in a user-friendly time (for humans,
-% typically obtained from time_utils:duration_to_string/1) into an integer
-% number of milliseconds.
+% @doc Converts specified duration, expressed in a user-friendly time (for
+% humans, typically obtained from time_utils:duration_to_string/1) into an
+% integer number of milliseconds.
 %
 % Ex: "1 day, 12 hours, 31 minutes, 9 seconds and 235 milliseconds" translates
 % to {1, 12, 31, 9, 235} which, applied to this function, returns milliseconds.
@@ -624,13 +673,30 @@ human_time_to_milliseconds( Day, Hour, Minute, Second, Millisecond ) ->
 
 
 
+% Stringification section.
+
+
+% Returns a textual description of the specified temperature.
+-spec temperature_to_string( celsius() ) -> ustring().
+temperature_to_string( Temp ) ->
+	text_utils:float_to_string( Temp, [ { decimals, 1 }, compact ] ) ++ " °C".
+
+
+% Returns a textual description of the specified temperature (if any).
+-spec maybe_temperature_to_string( maybe( celsius() ) ) -> ustring().
+maybe_temperature_to_string( _Temp=undefined ) ->
+	"undefined";
+
+maybe_temperature_to_string( Temp ) ->
+	temperature_to_string( Temp ).
+
 
 
 % Implementations for the more elaborate form of units:
 
 
-% Returns a list of all metric prefixes, together with their symbol and order of
-% magnitude.
+% @doc Returns a list of all metric prefixes, together with their symbol and
+% order of magnitude.
 %
 % For example: {'kilo', "k", 3} means that there are 10^3 grams in a kilogram,
 % and that this prefix is represented as "k".
@@ -665,23 +731,21 @@ get_prefix_information() ->
 
 
 
+-type unit_measure() :: ustring().
 % Type of measure corresponding to a unit (ex: "length").
 %
 % In some cases, multiple measures can apply (ex: a Coulomb is a measure of
 % electric charge or quantity of electricity); we retain here only the most
 % usual one.
-%
--type unit_measure() :: ustring().
 
 
-% Information about a unit, i.e. its name, symbol and associated measure.
-%
 -type unit_information() ::
 		{ unit_name(), unit_string_symbol(), unit_measure() }.
+% Information about a unit, i.e. its name, symbol and associated measure.
 
 
-% Returns information about all units, i.e. their name, symbol and corresponding
-% measure.
+% @doc Returns information about all units, that is their name, symbol and
+% corresponding measure.
 %
 -spec get_unit_information() -> [ unit_information() ].
 get_unit_information() ->
@@ -689,9 +753,9 @@ get_unit_information() ->
 		++ get_widely_used_unit_information() ++ get_special_unit_information().
 
 
-% Returns information about a base unit.
+% @doc Returns information about a base unit.
 %
-% More info: https://en.wikipedia.org/wiki/SI_base_unit
+% More info: [https://en.wikipedia.org/wiki/SI_base_unit].
 %
 -spec get_base_unit_information() -> [ unit_information() ].
 get_base_unit_information() ->
@@ -705,9 +769,9 @@ get_base_unit_information() ->
 
 
 
-% Returns information about a derived unit.
+% @doc Returns information about a derived unit.
 %
-% More info: https://en.wikipedia.org/wiki/SI_derived_unit
+% More info: [https://en.wikipedia.org/wiki/SI_derived_unit].
 %
 -spec get_derived_unit_information() -> [ unit_information() ].
 get_derived_unit_information() ->
@@ -746,7 +810,7 @@ get_derived_unit_information() ->
 
 
 
-% Returns information about a widely used unit.
+% @doc Returns information about a widely used unit.
 -spec get_widely_used_unit_information() -> [ unit_information() ].
 get_widely_used_unit_information() ->
 	[ { 'minute',       "min", "time"   },
@@ -757,7 +821,7 @@ get_widely_used_unit_information() ->
 
 
 
-% Returns information about a special unit.
+% @doc Returns information about a special unit.
 -spec get_special_unit_information() -> [ unit_information() ].
 get_special_unit_information() ->
 	[ { 'dimensionless',    "dimensionless",      "none"     },
@@ -767,8 +831,8 @@ get_special_unit_information() ->
 
 
 
-% Returns the metric prefix (if any) corresponding to the specified magnitude
-% order.
+% @doc Returns the metric prefix (if any) corresponding to the specified
+% magnitude order.
 %
 % Note: could be predetermined at build time.
 %
@@ -789,8 +853,8 @@ get_prefix_for_order( Order ) ->
 
 
 
-% Returns the magnitude order corresponding to the specified symbol (string) of
-% metric prefix.
+% @doc Returns the magnitude order corresponding to the specified symbol
+% (string) of metric prefix.
 %
 % Note: could be predetermined at build time.
 %
@@ -816,10 +880,10 @@ get_order_for_prefix( PrefixSymbol ) ->
 
 
 
-% Parses specified string (expected to be a unit_string()) containing a value
-% and its unit (ex: "-8.15 kW.m/h^2"), and returns them in a program-tractable
-% form, i.e. a pair made of the value (as a float) and the corresponding unit,
-% in canonical form.
+% @doc Parses specified string (expected to be a unit_string()) containing a
+% value and its unit (ex: "-8.15 kW.m/h^2"), and returns them in a
+% program-tractable form, that is a pair made of the value (as a float) and the
+% corresponding unit, in canonical form.
 %
 % The input format is the following (in order):
 %
@@ -885,9 +949,8 @@ parse_value_with_unit( InputString ) ->
 
 
 
-
-% Parses specified string, expected to contain a number (either an integer or a
-% float), as a float, which is returned.
+% @doc Parses specified string, expected to contain a number (either an integer
+% or a float), as a float, which is returned.
 %
 -spec parse_as_float( ustring() ) -> float().
 parse_as_float( StringValue ) ->
@@ -915,7 +978,7 @@ parse_as_float( StringValue ) ->
 
 
 
-% Parses specified string, expected to contain a unit (ex: "kW.m/h^2"), and
+% @doc Parses specified string, expected to contain a unit (ex: "kW.m/h^2"), and
 % returns a canonical unit.
 %
 -spec parse_unit( ustring() ) -> canonical_unit().
@@ -945,9 +1008,9 @@ parse_unit( UnitString ) ->
 
 
 
-% Splits specified string, expected to contain a unit (ex: "kW.m/h^2"), into a
-% list of strings corresponding to multiplying unit components (ex: [ "kw", "m"
-% ]) and dividing ones (ex: [ "h^2" ]), and returns both lists.
+% @doc Splits specified string, expected to contain a unit (ex: "kW.m/h^2"),
+% into a list of strings corresponding to multiplying unit components (ex:
+% ["kw", "m"]) and dividing ones (ex: ["h^2"]), and returns both lists.
 %
 -spec split_unit_components( ustring() ) ->
 					{ [ unit_component() ], [ unit_component() ] }.
@@ -991,7 +1054,7 @@ parse_components( _UnitString=[ H | T ], MultList, DivList,
 
 
 
-% Stores the parsed component into the relevant list.
+% @doc Stores the parsed component into the relevant list.
 %
 % (helper)
 %
@@ -1009,7 +1072,8 @@ store_component_acc( ComponentString, _Kind=divide, MultList, DivList ) ->
 
 
 
-% Updates the specified canonical unit from the list of multiplying components.
+% @doc Updates the specified canonical unit from the list of multiplying
+% components.
 %
 % (fold)
 %
@@ -1022,7 +1086,7 @@ interpret_components( _Components=[ C | T ], Kind, CanonicalUnit ) ->
 
 
 
-% Integrates specified string component into specified canonical unit, and
+% @doc Integrates specified string component into specified canonical unit, and
 % returns an updated one.
 %
 integrate_component( ComponentString, Kind, CanonicalUnit ) ->
@@ -1057,7 +1121,7 @@ integrate_component( ComponentString, Kind, CanonicalUnit ) ->
 
 
 
-% Returns {ActualOrder, UnitName, Exponent}:
+% @doc Returns {ActualOrder, UnitName, Exponent}:
 -spec parse_component( ustring() ) ->
 							{ magnitude_order(), unit_name(), exponent() }.
 parse_component( ComponentString ) ->
@@ -1097,7 +1161,7 @@ parse_component( ComponentString ) ->
 
 
 
-% Extracts the prefix and unit from specified exponent-less string (ex:
+% @doc Extracts the prefix and unit from specified exponent-less string (ex:
 % "decaA").
 %
 % We have to scan backward, starting from the unit then only its prefix, as some
@@ -1173,8 +1237,8 @@ scan_for_unit_symbol( RevPrefixedUnitString, [ RevUnitSymbol | T ] ) ->
 
 
 
-% Returns a list of all the known units, as reversed strings, from the longest
-% to the shortest.
+% @doc Returns a list of all the known units, as reversed strings, from the
+% longest to the shortest.
 %
 get_reversed_ordered_symbols_of_units() ->
 
@@ -1189,7 +1253,7 @@ get_reversed_ordered_symbols_of_units() ->
 
 
 
-% Updates specified canonical unit with specified information.
+% @doc Updates specified canonical unit with specified information.
 %
 % To support a new unit, simply add its dedicated clause.
 %
@@ -1433,7 +1497,6 @@ integrate_to_canonical_unit( _UnitName=henry, ActualOrder, NormalisedExponent,
 								  order= Order + ActualOrder
 										+ NormalisedExponent * 3 };
 
-
 % Not supported yet: degree Celsius; problem is that it is not a multiple of the
 % K (Kelvin) unit; so even the 'factor' field would not be sufficient to support
 % this affine, very unusual relationship between these units).
@@ -1444,7 +1507,6 @@ integrate_to_canonical_unit( _UnitName=henry, ActualOrder, NormalisedExponent,
 %
 % There could even be pre- and post-offsets (ex: ActualValue = ( Value +
 % PreOffset) * Factor * (exponent and all) + PostOffset.
-
 
 integrate_to_canonical_unit( _UnitName=lumen, ActualOrder, NormalisedExponent,
 							 CanonicalUnit=#canonical_unit{ candela=CandelaExp,
@@ -1510,7 +1572,6 @@ integrate_to_canonical_unit( _UnitName=katal, ActualOrder,
 	CanonicalUnit#canonical_unit{ mole= MoleExp + NormalisedExponent * 1,
 								  second= SecondExp + NormalisedExponent * -1,
 								  order= Order + ActualOrder };
-
 
 
 
@@ -1605,7 +1666,7 @@ integrate_to_canonical_unit( UnitName, _ActualOrder, NormalisedExponent,
 
 
 
-% Tells whether specified term is an actual, canonical unit.
+% @doc Tells whether specified term is an actual, canonical unit.
 -spec is_canonical_unit( canonical_unit() ) -> boolean().
 is_canonical_unit( Term ) when is_record( Term, canonical_unit ) ->
 	true;
@@ -1615,13 +1676,13 @@ is_canonical_unit( _Term ) ->
 
 
 
-% Converts a unit symbol, as a string (ex: "Cd") into a unit name (ex:
+% @doc Converts a unit symbol, as a string (ex: "Cd") into a unit name (ex:
 % 'candela'):
 %
 -spec unit_symbol_to_name( unit_string_symbol() ) -> unit_name().
 unit_symbol_to_name( UnitSymbol ) ->
 
-	% Tuple example: { 'meter', "m", "length" }:
+	% Tuple example: {'meter', "m", "length"}
 	case lists:keyfind( _K=UnitSymbol, _Index=2, get_unit_information() ) of
 
 		{ UnitName, _UnitSymbol, _UnitMeasure } ->
@@ -1635,7 +1696,7 @@ unit_symbol_to_name( UnitSymbol ) ->
 
 
 
-% Returns a textual representation of the raw unit only (factor and order
+% @doc Returns a textual representation of the raw unit only (factor and order
 % ignored) for the specified canonical unit.
 %
 % Note: unit_to_string/1 shall be the relevant function for most uses.
@@ -1763,21 +1824,21 @@ pure_unit_to_string( Unit ) ->
 
 
 
-% Returns the magnitude order of the specified unit.
+% @doc Returns the magnitude order of the specified unit.
 -spec get_order( canonical_unit() ) -> magnitude_order().
 get_order( _Unit=#canonical_unit{ order=Order } ) ->
 	Order.
 
 
 
-% Returns the multiplying factor of the specified unit.
+% @doc Returns the multiplying factor of the specified unit.
 -spec get_factor( canonical_unit() ) -> multiplying_factor().
 get_factor( _Unit=#canonical_unit{ factor=Factor } ) ->
 	Factor.
 
 
 
-% Tells whether the two specified units are strictly the same.
+% @doc Tells whether the two specified units are strictly the same.
 -spec are_units_identical( canonical_unit(), canonical_unit() ) -> boolean().
 are_units_identical( Unit, Unit ) ->
 	% Relying on a canonical form simplifies much the comparisons:
@@ -1788,7 +1849,7 @@ are_units_identical( _FirstUnit, _SecondUnit ) ->
 
 
 
-% Returns a textual representation of the specified canonical unit.
+% @doc Returns a textual representation of the specified canonical unit.
 -spec unit_to_string( canonical_unit() ) -> ustring().
 unit_to_string( Unit ) ->
 
@@ -1829,7 +1890,7 @@ unit_to_string( Unit ) ->
 
 
 
-% Returns a textual description of specified unit with a value.
+% @doc Returns a textual description of specified unit with a value.
 -spec value_with_unit_to_string( numerical_value(), canonical_unit() ) ->
 										ustring().
 value_with_unit_to_string( Value, Unit ) ->

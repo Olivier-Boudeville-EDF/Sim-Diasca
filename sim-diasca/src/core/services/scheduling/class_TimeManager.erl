@@ -157,7 +157,7 @@
 % Note: these are strictly positive floating-point values; ex: 0.001 seconds
 % (1ms).
 %
--type virtual_seconds() :: float().
+-type virtual_seconds() :: unit_utils:float_seconds().
 
 
 

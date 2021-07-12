@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2021 Olivier Boudeville
+% Copyright (C) 2007-2021 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -108,6 +108,8 @@
 
 
 
+% @doc Executes specified method.
+%
 % If the method is not found (either in the class module or in its ancestor
 % trees), an error tuple whose first element is an atom in
 % 'wooper_{request,oneway}_not_found' is returned along with an unchanged state.
@@ -137,6 +139,8 @@
 
 
 
+% @doc Executes specified method, as specified class.
+%
 % Exactly as wooper_execute_method, except that the target module (class) is
 % directly specified, instead of being determined from the instance virtual
 % table.
@@ -144,7 +148,6 @@
 -spec wooper_execute_method_as( classname(), method_name(),
 								method_arguments(), wooper:state() ) ->
 		  { wooper:state(), method_internal_result() }.
-
 
 
 
@@ -162,7 +165,7 @@ wooper_execute_method( MethodAtom, Parameters, State )
 	   andalso is_record( State, state_holder ) ->
 
 	%trace_utils:debug_fmt( "wooper_execute_method: looking up ~ts(~w) "
-	%   "from ~ts (A).",	[ MethodAtom, Parameters, ?MODULE ] ),
+	%   "from ~ts (A).", [ MethodAtom, Parameters, ?MODULE ] ),
 
 	% +1: take into account the State additional parameter:
 	MethodArity = length( Parameters ) + 1,
@@ -194,7 +197,7 @@ wooper_execute_method( MethodAtom, Parameters, State )
 					% is displayed as a list:
 					%
 					wooper:log_error(
-					  "oneway ~ts:~ts/~B not found, parameters were:~n~p~n",
+					  "Oneway ~ts:~ts/~B not found, parameters were:~n~p~n",
 					  [ Classname, MethodAtom, MethodArity, Parameters ],
 					  State ),
 
@@ -209,7 +212,7 @@ wooper_execute_method( MethodAtom, Parameters, State )
 					% send back a relevant answer):
 					%
 					wooper:log_error(
-					  "request ~ts:~ts/~B not found, parameters were:~n~p~n",
+					  "Request ~ts:~ts/~B not found, parameters were:~n~p~n",
 					  [ Classname, MethodAtom, MethodArity, Parameters ],
 					  State ),
 
@@ -242,8 +245,8 @@ wooper_execute_method( MethodAtom, Parameters, State ) ->
 		{ value, LocatedModule } ->
 
 			%trace_utils:debug_fmt( "wooper_execute_method: executing ~ts:~ts"
-			% "(~w) from ~ts.",
-			% [ ?MODULE, MethodAtom, Parameters, LocatedModule ] ),
+			%    "(~w) from ~ts.",
+			%    [ ?MODULE, MethodAtom, Parameters, LocatedModule ] ),
 
 			wooper_effective_method_execution( LocatedModule, MethodAtom,
 											   State, Parameters );
@@ -264,7 +267,7 @@ wooper_execute_method( MethodAtom, Parameters, State ) ->
 					% as a list:
 					%
 					wooper:log_error(
-					  "oneway ~ts:~ts/~B not found, parameters were:~n~p",
+					  "Oneway ~ts:~ts/~B not found, parameters were:~n~p",
 					  [ Classname, MethodAtom, MethodArity, Parameters ] ),
 
 					throw( { wooper_oneway_not_found, self(), Classname,
@@ -278,7 +281,7 @@ wooper_execute_method( MethodAtom, Parameters, State ) ->
 					% back a relevant answer):
 					%
 					wooper:log_error(
-					  "request ~ts:~ts/~B not found, parameters were:~n~p~n",
+					  "Request ~ts:~ts/~B not found, parameters were:~n~p~n",
 					  [ Classname, MethodAtom, MethodArity, Parameters ] ),
 
 					throw( { wooper_request_not_found, self(), Classname,
@@ -295,9 +298,11 @@ wooper_execute_method( MethodAtom, Parameters, State ) ->
 
 
 
-% Looks-up specified method (Method/Arity, ex: toString/1) to be found in
-% inheritance tree and returns either { 'value', Module } with Module
-% corresponding to the class that implements that method, or 'key_not_found'.
+% @doc Looks-up specified method (Method/Arity, ex: toString/1) to be found in
+% inheritance tree.
+%
+% Returns either {'value', Module} with Module corresponding to the class that
+% implements that method, or 'key_not_found'.
 %
 % Note: uses the pre-built virtual table for this class.
 %
@@ -318,7 +323,16 @@ wooper_lookup_method( State, MethodAtom, Arity ) ->
 % (same implementation in debug or not)
 
 
-
+% @doc Looks-up specified method (Method/Arity, ex: toString/1) to be found in
+% the inheritance tree of specified parent class.
+%
+% Returns either {'value', Module} with Module corresponding to the class that
+% implements that method, or 'key_not_found'.
+%
+% Note: uses the pre-built virtual table for this class.
+%
+% (helper)
+%
 wooper_execute_method_as( Classname, MethodAtom, Parameters, State )
   when is_atom( Classname ) andalso is_atom( MethodAtom )
 	   andalso is_list( Parameters )
@@ -339,7 +353,7 @@ wooper_execute_method_as( Classname, MethodAtom, Parameters, State )
 
 
 
-% Triggers the actual method execution.
+% @doc Triggers the actual method execution.
 %
 % In case of runtime error, this function can log and throw both for oneways and
 % requests, as the former have no specific action to take in that case, and the
@@ -385,10 +399,11 @@ wooper_effective_method_execution( SelectedModule, MethodAtom, State,
 				undefined ->
 
 					% This is a oneway, so log and crash:
-					wooper:log_error( "oneway ~ts:~ts/~B made a faulty return "
-					  "'~p', parameters were:~n~p",
-					  [ SelectedModule, MethodAtom, MethodArity, Other,
-						Parameters ] ),
+					wooper:log_error( "Oneway ~ts:~ts/~B made a faulty "
+						"return, which is:~n  ~p~n"
+						"  while its parameters were:~n    ~p",
+						[ SelectedModule, MethodAtom, MethodArity, Other,
+						  Parameters ] ),
 
 					throw( { wooper_oneway_faulty_return, self(),
 							 SelectedModule, MethodAtom, MethodArity,
@@ -399,10 +414,11 @@ wooper_effective_method_execution( SelectedModule, MethodAtom, State,
 					% This is a request, log and throw, the try/catch clause of
 					% the main loop will intercept it, log and rethrow:
 					%
-					wooper:log_error( "request ~ts:~ts/~B made a faulty return "
-					  "'~p', parameters were:~n~p",
-					  [ SelectedModule, MethodAtom, MethodArity, Other,
-						Parameters ] ),
+					wooper:log_error( "Request ~ts:~ts/~B made a faulty "
+						"return, which is:~n  ~p~n"
+						"  while its parameters were:~n    ~p",
+						[ SelectedModule, MethodAtom, MethodArity, Other,
+						  Parameters ] ),
 
 					% We do not include anymore 'Other', as it is best kept
 					% internal (and not sent back to the caller):
@@ -425,7 +441,7 @@ wooper_effective_method_execution( SelectedModule, MethodAtom, State,
 								   Parameters ) ->
 
 	%trace_utils:debug_fmt( "WOOPER: effective execution of ~p:~p.~n",
-	%					   [ SelectedModule, MethodAtom ] ),
+	%						[ SelectedModule, MethodAtom ] ),
 
 	case apply( SelectedModule, MethodAtom, [ State | Parameters ] ) of
 
@@ -457,8 +473,8 @@ wooper_effective_method_execution( SelectedModule, MethodAtom, State,
 
 
 
-% Executes the specified remotely-triggered request: returns an updated state
-% and sends back the result to the caller.
+% @doc Executes the specified remotely-triggered request: returns an updated
+% state and sends back the result to the caller.
 %
 % A specific function is used for *remote* request execution, as local ones have
 % a different structure (they return the result, they do not send it; they do
@@ -504,7 +520,7 @@ wooper_handle_remote_request_execution( RequestAtom, State, ArgumentList,
 			ExecState;
 
 		{ _ExecState, wooper_method_returns_void } ->
-			wooper:log_error( "method ~ts:~ts/~B, which was called (by ~w) "
+			wooper:log_error( "Method ~ts:~ts/~B, which was called (by ~w) "
 				"with parameters ~p, did not return a result whereas, "
 				"according to its call, it was expected to be a request.~n"
 				"Either the request implementation is incorrect or it is a "
@@ -527,11 +543,11 @@ wooper_handle_remote_request_execution( RequestAtom, State, ArgumentList,
 
 	catch
 
-		Reason:ErrorTerm:Stacktrace ->
+		ExceptionClass:ExceptionTerm:Stacktrace ->
 
 			% Reports it (to console and caller), and exits:
 			wooper:on_failed_request( RequestAtom, ArgumentList, CallerPid,
-									  Reason, ErrorTerm, Stacktrace, State )
+				ExceptionClass, ExceptionTerm, Stacktrace, State )
 
 	end,
 
@@ -562,11 +578,11 @@ wooper_handle_remote_request_execution( RequestAtom, State, ArgumentList,
 
 	catch
 
-		Reason:ErrorTerm:StackTrace ->
+		ExceptionClass:ExceptionTerm:Stacktrace ->
 
 			% Reports it (to console and caller), and exits:
 			wooper:on_failed_request( RequestAtom, ArgumentList, CallerPid,
-									  Reason, ErrorTerm, StackTrace, State )
+				ExceptionClass, ExceptionTerm, Stacktrace, State )
 
 	end,
 
@@ -581,8 +597,8 @@ wooper_handle_remote_request_execution( RequestAtom, State, ArgumentList,
 % Section for wooper_handle_local_request_execution/3.
 
 
-% Executes the specified locally-triggered request: returns an updated state and
-% the corresponding result.
+% @doc Executes the specified locally-triggered request: returns an updated
+% state and the corresponding result.
 %
 % A specific function is used for *local* request executions, as they must have
 % a different structure (ex: not sending messages back, restoring the previous
@@ -617,7 +633,7 @@ wooper_handle_local_request_execution( RequestAtom, State, ArgumentList ) ->
 			R;
 
 		wooper_method_returns_void ->
-			wooper:log_error( "method ~ts/~B, which was called with "
+			wooper:log_error( "Method ~ts/~B, which was called with "
 				"parameters ~p, did not return a result whereas, according to "
 				"its call, it was expected to be a request.~n"
 				"Either the request implementation is incorrect or it is a "
@@ -665,8 +681,8 @@ wooper_handle_local_request_execution( RequestAtom, State, ArgumentList ) ->
 
 
 
-% Executes the specified locally-triggered request, using an explicit class to
-% select its implementation: returns an updated state and the corresponding
+% @doc Executes the specified locally-triggered request, using an explicit class
+% to select its implementation: returns an updated state and the corresponding
 % result.
 %
 % Only local calls can select their implementation class.
@@ -701,7 +717,7 @@ wooper_handle_local_request_execution_as( RequestAtom, State, ArgumentList,
 			R;
 
 		wooper_method_returns_void ->
-			wooper:log_error( "method explicitly called as ~ts:~ts/~B, "
+			wooper:log_error( "Method explicitly called as ~ts:~ts/~B, "
 				"which was called with parameters ~p, "
 				"did not return a result whereas, according to "
 				"its call, it was expected to be a request.~n"
@@ -757,7 +773,7 @@ wooper_handle_local_request_execution_as( RequestAtom, State, ArgumentList,
 
 
 
-% Executes the specified remotely-triggered oneway, and returns an updated
+% @doc Executes the specified remotely-triggered oneway, and returns an updated
 % state.
 %
 -spec wooper_handle_remote_oneway_execution( method_name(), wooper:state(),
@@ -804,7 +820,7 @@ wooper_handle_remote_oneway_execution( OnewayAtom, State, ArgumentList ) ->
 			Class = State#state_holder.actual_class,
 			Arity = length( ArgumentList ) + 1,
 
-			wooper:log_error( "method ~ts:~ts/~B, which was called with "
+			wooper:log_error( "Method ~ts:~ts/~B, which was called with "
 				"following parameters:~n~p~n returned a result (~p) whereas, "
 				"according to its call, it was expected to be a oneway.~n"
 				"So either the oneway implementation of ~ts:~ts/~B is "
@@ -819,11 +835,11 @@ wooper_handle_remote_oneway_execution( OnewayAtom, State, ArgumentList ) ->
 
 	catch
 
-		Reason:ErrorTerm:StackTrace ->
+		ExceptionClass:ExceptionTerm:StackTrace ->
 
 			% Reports it to console and exits:
-			wooper:on_failed_oneway( OnewayAtom, ArgumentList, Reason,
-									 ErrorTerm, StackTrace, State )
+			wooper:on_failed_oneway( OnewayAtom, ArgumentList, ExceptionClass,
+									 ExceptionTerm, StackTrace, State )
 
 	end,
 
@@ -852,11 +868,11 @@ wooper_handle_remote_oneway_execution( OnewayAtom, State, ArgumentList ) ->
 
 	 catch
 
-		 Reason:ErrorTerm:Stacktrace ->
+		ExceptionClass:ExceptionTerm:Stacktrace ->
 
 			% Reports it to console and exits:
-			 wooper:on_failed_oneway( OnewayAtom, ArgumentList, Reason,
-									  ErrorTerm, Stacktrace, State )
+			wooper:on_failed_oneway( OnewayAtom, ArgumentList, ExceptionClass,
+									 ExceptionTerm, Stacktrace, State )
 
 	end,
 
@@ -871,7 +887,9 @@ wooper_handle_remote_oneway_execution( OnewayAtom, State, ArgumentList ) ->
 
 % Section for wooper_handle_local_oneway_execution/3.
 
-% Executes the specified locally-triggered oneway, and returns an updated state.
+% @doc Executes the specified locally-triggered oneway, and returns an updated
+% state.
+%
 -spec wooper_handle_local_oneway_execution( method_name(), wooper:state(),
 								method_arguments() ) -> wooper:state().
 
@@ -904,7 +922,7 @@ wooper_handle_local_oneway_execution( OnewayAtom, State, ArgumentList ) ->
 		% This is a oneway/request mismatch apparently:
 		{ _OnewayState, { wooper_result, UnexpectedResult } } ->
 
-			wooper:log_error( "method ~ts/~B, which was called with "
+			wooper:log_error( "Method ~ts/~B, which was called with "
 				"parameters ~p, returned a result (~p) whereas, according to "
 				"its call, it was expected to be a oneway.~n"
 				"Either the oneway implementation is incorrect "
@@ -948,8 +966,8 @@ wooper_handle_local_oneway_execution( OnewayAtom, State, ArgumentList ) ->
 % Section for wooper_handle_local_oneway_execution_as/4.
 
 
-% Executes the specified locally-triggered oneway, using an explicit class to
-% select its implementation, and returns an updated state.
+% @doc Executes the specified locally-triggered oneway, using an explicit class
+% to select its implementation, and returns an updated state.
 %
 % No 'when is_list(ArgumentList) -> ...' as the caller must have ensured that
 % we have already a list.
@@ -988,7 +1006,7 @@ wooper_handle_local_oneway_execution_as( OnewayAtom, State, ArgumentList,
 
 		% This is a oneway/request mismatch apparently:
 		{ _OnewayState, { wooper_result, UnexpectedResult } } ->
-			wooper:log_error( "method explicitly called as ~ts:~ts/~B, "
+			wooper:log_error( "Method explicitly called as ~ts:~ts/~B, "
 				"which was called with parameters ~p, "
 				"returned a result (~p) whereas, according to "
 				"its call, it was expected to be a oneway.~n"

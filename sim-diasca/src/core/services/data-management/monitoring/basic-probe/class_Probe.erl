@@ -19,6 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Basic <b>probe class</b>, in charge of generating results.
 -module(class_Probe).
 
 
@@ -108,6 +109,7 @@
 
 -type ustring() :: text_utils:ustring().
 -type bin_string() :: text_utils:bin_string().
+-type format_string() :: text_utils:format_string().
 -type title() :: text_utils:title().
 -type label() :: text_utils:label().
 
@@ -291,9 +293,9 @@
 -define( base_open_flags, [ write, exclusive ] ).
 
 
-% Name information about a probe:
 -type probe_name_init() :: probe_name()
-						 | { probe_name(), traces:emitter_categorization() }.
+							| { probe_name(), traces:emitter_categorization() }.
+% Name information about a probe.
 
 
 
@@ -311,26 +313,26 @@
 		{ declared_extended_curve_name(), declared_extended_curve_name() } }.
 
 
-% Plot style (default being 'linespoints'):
-%
-% (see http://gnuplot.sourceforge.net/docs_4.2/node145.html)
-%
 -type plot_style() :: 'linespoints'
 					| 'boxes'
 					| atom(). % As many others exist.
+% Plot style (default being 'linespoints'):
+%
+% (see http://gnuplot.sourceforge.net/docs_4.2/node145.html)
+
 
 
 % Type section for internal data:
 
 
-% Extended to allow for zone definitions:
-% (knowing that the name of a curve is a binary)
-%
 -type extended_curve_name() :: curve_index() | special_curve_names().
+% Extended to allow for zone definitions.
+%
+% (knowing that the name of a curve is a binary)
 
 
-% The factor by which the default point size should be multiplied:
 -type point_size_factor() :: pos_integer().
+% The factor by which the default point size should be multiplied.
 
 
 -type name_options() :: probe_name() | { probe_name(), probe_options() }.
@@ -338,20 +340,21 @@
 
 -type probe_pid() :: class_ResultProducer:producer_pid().
 
-% A probe may not be a wanted result producer:
+
 -type probe_ref() :: 'non_wanted_probe' | probe_pid().
+% A probe may not be a wanted result producer.
 
 
-% Curves are numbered internally, and correspond to the position of data in sent
-% samples:
-%
 -type curve_index() :: curve_count().
+% Curves are numbered internally, and correspond to the position of data in sent
+% samples.
 
 
-% A (binary string) suffix (ex: <<"noenhanced with filledcurves">>, or <<"with
-% boxes">>) to be added to the plot command of the corresponding curve:
-%
 -type curve_plot_suffix() :: bin_string().
+% A (binary string) suffix (ex: <<"noenhanced with filledcurves">>, <<"with
+% boxes">> or <<"with boxes lt rgb '#f0f0f0'">>) to be added to the plot command
+% of the corresponding curve.
+
 
 -type zone_name() :: bin_string().
 
@@ -360,30 +363,29 @@
 		{ zone_name(), { extended_curve_name(), extended_curve_name() } }.
 
 
-% Information specific to the rendering of a curve:
 -type curve_entry() :: { curve_index(), curve_name(), curve_plot_suffix() }.
+% Information specific to the rendering of a curve.
+
 
 -type curve_entries() :: [ curve_entry() ].
 
 
-% Ex: "3ab001" for lightgreen:
 -type rgb_color_spec() :: ustring().
+% Ex: "3ab001" for lightgreen.
 
 -type extra_curve_settings() :: rgb_color_spec().
 
 
-% Option applying to label ticks:
 -type tick_option() :: maybe( 'rotate' ).
+% Option applying to label ticks.
 
 
+-type ticks_option() :: maybe( ustring() ).
 % Option applying to ticks:
 %
 % (ex: see Xtics, in http://gensoft.pasteur.fr/docs/gnuplot/5.0.4/node360.html)
-%
--type ticks_option() :: maybe( ustring() ).
 
 
-% The display time format to use for timestamped axes:
 -type timestamp_time_format() ::
 
 		% Time then date, on a single line:
@@ -391,25 +393,25 @@
 
 		% Time, newline, date, hence on two lines:
 	  | 'double_line'.
+% The display time format to use for timestamped axes.
 
 
-% Applies notably if using timestamps that account for more than one field in
-% data:
-%
 -type curve_offset() :: count().
+% Applies notably if using timestamps that account for more than one field in
+% data.
 
 
 -type zone_entries()  :: [ zone_definition() ].
 
 
-% Element of a gnuplot command:
 -type command_element() :: ustring().
+% Element of a gnuplot command.
 
 
-% String describing a simulated time (typically either a tick or a textual
-% timestamp):
-%
 -type timestamp_string() :: ustring().
+% String describing a simulated time (typically either a tick or a textual
+% timestamp).
+
 
 -type timestamp_bin_string() :: bin_string().
 
@@ -420,13 +422,13 @@
 -type setting_value() :: plot_style() | term().
 
 
-% To store any extra probe settings of interest, as plenty options might be
+-type settings_table() :: table( setting_id(), setting_value() ).
+% To store any extra probe settings of interest, as plenty of options might be
 % relevant for probes.
 %
 % Possible setting pairs (setting_id() -> setting_value()):
 %  - global_plot_style -> plot_style()
-%
--type settings_table() :: table( setting_id(), setting_value() ).
+
 
 
 % Exported so that for example class_Actor can reference them:
@@ -476,9 +478,11 @@
 
 
 
-% Constructs a new (basic) probe, from following parameters: NameOptions,
+% @doc Constructs a new (basic) probe, from following parameters: NameOptions,
 % CurveNames, Title, Zones, MaybeXLabel, YLabel (no tick duration nor extra
-% settings specified here), where:
+% settings specified here).
+%
+% Construction parameters:
 %
 % - NameOptions is either:
 %
@@ -497,7 +501,7 @@
 %   as the memory footprint might become significant) where Bool is true or
 %   false
 %
-% - CurveNames :: [ustring()] is an (ordered) list containing the names (as
+% - CurveNames :: [ ustring() ] is an (ordered) list containing the names (as
 % plain strings) of each curve to be drawn (hence the probe will expect
 % receiving data in the form of {Tick, {V1,V2,..}} afterwards). For example,
 % CurveNames=["First curve", "Second curve"] will lead to expect receiving
@@ -535,7 +539,7 @@ construct( State, NameTerm, CurveNames, Zones, Title,
 
 
 
-% Constructs a new (basic) probe, from following parameters: NameOptions,
+% @doc Constructs a new (basic) probe, from following parameters: NameOptions,
 % CurveNames, Title, Zones, MaybeXLabel, YLabel, ExtraSettingsTable, where:
 %
 % - NameOptions is either:
@@ -555,7 +559,7 @@ construct( State, NameTerm, CurveNames, Zones, Title,
 %   as the memory footprint might become significant) where Bool is true or
 %   false
 %
-% - CurveNames :: [ustring()] is an (ordered) list containing the names (as
+% - CurveNames :: [ ustring() ] is an (ordered) list containing the names (as
 % plain strings) of each curve to be drawn (hence the probe will expect
 % receiving data in the form of {Tick, {V1,V2,..}} afterwards). For example,
 % CurveNames=["First curve", "Second curve"] will lead to expect receiving
@@ -610,7 +614,7 @@ construct( State, { NameInit, ProbeOptions }, CurveNames, Zones, Title,
 
 	% Then the class-specific actions:
 
-	% Results in [ {curve_index(), curve_name(), curve_plot_suffix()} ]:
+	% Results in [{curve_index(), curve_name(), curve_plot_suffix()}]:
 	CurveEntries = transform_curve_names( CurveNames ),
 
 	%trace_utils:debug_fmt( "Initial curve entries: ~p.", [ CurveEntries ] ),
@@ -636,8 +640,8 @@ construct( State, { NameInit, ProbeOptions }, CurveNames, Zones, Title,
 
 	% For an increased interleaving:
 	getAttribute( ProducerState, result_manager_pid ) ! { declareProbe,
-			[ text_utils:string_to_binary( ProbeName ), IsTrackedProducer,
-			  MaybeBinProbeDir ], self() },
+		[ text_utils:string_to_binary( ProbeName ), IsTrackedProducer,
+		  MaybeBinProbeDir ], self() },
 
 	CurveCount = length( CurveNames ),
 
@@ -731,7 +735,7 @@ construct( State, Name, CurveNames, Zones, Title, MaybeXLabel, YLabel, MetaData,
 
 
 
-% Overridden destructor.
+% @doc Overridden destructor.
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -791,8 +795,8 @@ destruct( State ) ->
 
 
 
-% Sets the tick offset that will be subtracted from the tick of all samples that
-% will be received next. Then the abscissa axis will at least start with
+% @doc Sets the tick offset that will be subtracted from the tick of all samples
+% that will be received next. Then the abscissa axis will at least start with
 % clearer, shorter, more tractable labels.
 %
 % For an example, refer to the soda vending machine test: these machines manage
@@ -804,7 +808,7 @@ setTickOffset( State, Offset ) ->
 
 
 
-% Registers specified samples in the probe.
+% @doc Registers specified samples in the probe.
 %
 % Samples is a tuple that contains the value (either integer or floating-point)
 % corresponding to the specified tick (not tick offset) for each known curve.
@@ -812,11 +816,16 @@ setTickOffset( State, Offset ) ->
 % Should a curve have no relevant sample to be defined, the 'undefined' atom
 % should be specified instead.
 %
+% Note that, by default, the ticks specified to a probe are absolute ones - not
+% tick offsets - as, still by default, a probe is not told about the simulation
+% start tick. So one may either specify (absolute) ticks here, or declare once
+% for all an offset (see the setTickOffset/2 oneway for that).
+%
 -spec setData( wooper:state(), probe_tick(), sample_data() ) -> oneway_return().
 setData( State, Tick, Samples ) ->
 
 	%?debug_fmt( "setData called for tick ~B with samples ~p.",
-	%  [ Tick, Samples ] ),
+	%            [ Tick, Samples ] ),
 
 	ExpectedCount = ?getAttr(curve_count),
 
@@ -838,7 +847,7 @@ setData( State, Tick, Samples ) ->
 
 		TickDuration ->
 			Secs = class_Actor:convert_ticks_to_seconds_explicit( Tick,
-														   TickDuration ),
+															TickDuration ),
 			IntegerSecs = round( Secs ),
 			Timestamp = calendar:gregorian_seconds_to_datetime( IntegerSecs ),
 
@@ -884,8 +893,7 @@ setData( State, Tick, Samples ) ->
 
 
 
-
-% Declares an additional curve, whose name is specified as a plain string.
+% @doc Declares an additional curve, whose name is specified as a plain string.
 %
 % By default it will be rendered after the already declared curves.
 %
@@ -896,7 +904,7 @@ setData( State, Tick, Samples ) ->
 addCurve( State, CurveName ) ->
 
 	%trace_utils:debug_fmt( "addCurve '~ts' for probe '~ts'.",
-	%		  [ CurveName, ?getAttr(name) ] ),
+	%						[ CurveName, ?getAttr(name) ] ),
 
 	{ NewCurveCount, NewCurveEntries } =
 		add_curve( CurveName, ?getAttr(curve_count), ?getAttr(curve_entries) ),
@@ -911,7 +919,7 @@ addCurve( State, CurveName ) ->
 
 
 
-% Declares additional curves, whose names are specified as plain strings.
+% @doc Declares additional curves, whose names are specified as plain strings.
 %
 % By default they will be rendered in their specified order, after the already
 % declared curves.
@@ -924,7 +932,7 @@ addCurve( State, CurveName ) ->
 addCurves( State, CurveNames ) ->
 
 	%trace_utils:debug_fmt( "addCurves '~p' for probe '~ts'.",
-	%						 [ CurveNames, ?getAttr(name) ] ),
+	%						[ CurveNames, ?getAttr(name) ] ),
 
 	{ NewCurveCount, NewCurveEntries } = lists:foldl(
 			fun( CurveName, _Acc={ CurveCount, CurveEntries } ) ->
@@ -959,8 +967,83 @@ add_curve( CurveName, CurveCount, CurveEntries ) ->
 
 
 
-% Returns the list of curve names, as plain strings, sorted according to the
-% current rendering order.
+% @doc Sets the specified curve to the specified color.
+-spec setCurveColor( wooper:state(), string_curve_name(), rgb_color_spec() ) ->
+			oneway_return().
+setCurveColor( State, CurveName, RGBColorSpecStr ) ->
+
+	UpdateState = updateCurveEntry( State, CurveName,
+									_ExtraCurveSettings=RGBColorSpecStr ),
+
+	wooper:return_state( UpdateState ).
+
+
+
+% @doc Updates the entry of the specified curve with the specified extra
+% settings (currently a RGB color specified as a plain string, like "FFC0CB").
+%
+-spec updateCurveEntry( wooper:state(), string_curve_name(),
+						extra_curve_settings() ) -> oneway_return().
+updateCurveEntry( State, CurveName, ExtraCurveSettings ) ->
+
+	BinCurveName = text_utils:string_to_binary( CurveName ),
+
+	CurveEntries = ?getAttr(curve_entries),
+
+	NewCurveEntries = update_curve_entry_for( BinCurveName, ExtraCurveSettings,
+											  CurveEntries, _Acc=[], State ),
+
+	wooper:return_state(
+		setAttribute( State, curve_entries, NewCurveEntries ) ).
+
+
+
+% Updates the specified curve entry.
+update_curve_entry_for( BinCurveName, _ExtraCurveSettings, _CurveEntries=[],
+						Acc, State ) ->
+
+	?error_fmt( "Requested to update curve '~ts' whereas it is not known "
+		"of this probe (known curves: ~ts).",
+		[ BinCurveName, text_utils:strings_to_string(
+		  [ CName || { _CIndex, CName, _CSuff } <- lists:reverse( Acc ) ] ) ] ),
+
+	throw( { curve_not_known, text_utils:binary_to_string( BinCurveName ) } );
+
+
+% Curve name matches here:
+update_curve_entry_for( BinCurveName, ExtraCurveSettings,
+		_CurveEntries=[ { CIndex, BinCurveName, CPlotSuffix } | T ], Acc,
+		_State ) ->
+
+	% Currently we expect only a color string:
+	case is_list( ExtraCurveSettings ) of
+
+		true ->
+			NewCPlotSuffix = text_utils:bin_format( "~ts lt rgb \"#~ts\"",
+										[ CPlotSuffix, ExtraCurveSettings ] ),
+
+			NewCurveEntry = { CIndex, BinCurveName, NewCPlotSuffix },
+
+			% Recreates original order, as it matters:
+			lists:reverse( Acc ) ++ [ NewCurveEntry | T ];
+
+		false ->
+			throw( { unexpected_curve_settings, ExtraCurveSettings,
+					 text_utils:binary_to_string( BinCurveName ) } )
+
+	end;
+
+
+% Curve name does not match here:
+update_curve_entry_for( BinCurveName, ExtraCurveSettings,
+						_CurveEntries=[ E | T ], Acc, State ) ->
+	update_curve_entry_for( BinCurveName, ExtraCurveSettings, T, [ E | Acc ],
+							State ).
+
+
+
+% @doc Returns the list of curve names, as plain strings, sorted according to
+% the current rendering order.
 %
 % Useful then to reorder them and then to set them back thanks to
 % setCurveRenderOrder/2.
@@ -973,7 +1056,7 @@ getCurveRenderOrder( State ) ->
 
 	% Extract the curve name (order preserved):
 	PlainNames = [ text_utils:binary_to_string( element( 2, CurveEntry ) )
-				   || CurveEntry <- CurveEntries ],
+					|| CurveEntry <- CurveEntries ],
 
 	%trace_utils:debug_fmt( "Returned curve render order: ~p", [ PlainNames ] ),
 
@@ -981,7 +1064,8 @@ getCurveRenderOrder( State ) ->
 
 
 
-% Sets the list of curve names, sorted according to the desired rendering order.
+% @doc Sets the list of curve names, sorted according to the desired rendering
+% order.
 %
 % Names is a list of plain strings that must correspond to a permutation of the
 % list which would be returned by getCurveEntries/1.
@@ -1016,7 +1100,7 @@ setCurveRenderOrder( State, Names ) ->
 
 
 
-% Sets the plot settings to the ones specified as a plain string (ex:
+% @doc Sets the plot settings to the ones specified as a plain string (ex:
 % "histograms", "linespoints"; "lines" is the default).
 %
 -spec setPlotStyle( wooper:state(), ustring() ) -> oneway_return().
@@ -1034,7 +1118,7 @@ setPlotStyle( State, NewPlotStyle ) ->
 
 
 
-% Sets the plot settings to the ones specified as a plain string (ex:
+% @doc Sets the plot settings to the ones specified as a plain string (ex:
 % "histograms", "linespoints"; "lines" is the default) and determines whether
 % the command file shall be regenerated in order to take into account the new
 % settings.
@@ -1055,8 +1139,8 @@ setPlotStyle( State, NewPlotStyle, GenerateFile ) ->
 
 
 
-% Sets the fill settings, specified as a plain string (ex: "solid 1.0 border
-% -1").
+% @doc Sets the fill settings, specified as a plain string (ex: "solid 1.0
+% border -1").
 %
 -spec setFillStyle( wooper:state(), ustring() ) -> oneway_return().
 setFillStyle( State, NewFillStyle ) ->
@@ -1073,9 +1157,9 @@ setFillStyle( State, NewFillStyle ) ->
 
 
 
-% Sets the fill settings, specified as a plain string (ex: "solid 1.0 border
-% -1") and determines whether the command file shall be regenerated in order to
-% take into account the new settings.
+% @doc Sets the fill settings, specified as a plain string (ex: "solid 1.0
+% border -1") and determines whether the command file shall be regenerated in
+% order to take into account the new settings.
 %
 -spec setFillStyle( wooper:state(), ustring(), boolean() ) -> oneway_return().
 setFillStyle( State, NewFillStyle, GenerateFile ) ->
@@ -1084,7 +1168,7 @@ setFillStyle( State, NewFillStyle, GenerateFile ) ->
 
 	UpdatedState = setAttribute( State, settings,
 		Settings#probe_settings{
-		  fill_style=text_utils:string_to_binary( NewFillStyle ) } ),
+			fill_style=text_utils:string_to_binary( NewFillStyle ) } ),
 
 	% Forces the regeneration of the command file if requested:
 	CommandState = trigger_command_file_update( GenerateFile, UpdatedState ),
@@ -1093,7 +1177,7 @@ setFillStyle( State, NewFillStyle, GenerateFile ) ->
 
 
 
-% Sets the size of the probe reports (canvas), in pixels.
+% @doc Sets the size of the probe reports (canvas), in pixels.
 -spec setCanvasSize( wooper:state(), length(), length() ) -> oneway_return().
 setCanvasSize( State, NewWidth, NewHeight ) ->
 
@@ -1109,7 +1193,7 @@ setCanvasSize( State, NewWidth, NewHeight ) ->
 
 
 
-% Sets the size of the probe reports (canvas), in pixels and forces to
+% @doc Sets the size of the probe reports (canvas), in pixels and forces to
 % regenerate the command file for taking into account these new settings, if
 % requested.
 %
@@ -1130,7 +1214,7 @@ setCanvasSize( State, NewWidth, NewHeight, GenerateFile ) ->
 
 
 
-% Sets the size of the plot point.
+% @doc Sets the size of the plot point.
 %
 % Point size means that the shown points will be of PointSize times the default
 % point size.
@@ -1149,8 +1233,8 @@ setPointSize( State, PointSize ) ->
 
 
 
-% Sets the size of the plot point and forces to regenerate the command file in
-% order to take into account the new settings.
+% @doc Sets the size of the plot point and forces to regenerate the command file
+% in order to take into account the new settings.
 %
 % Point size means that the shown points will be of PointSize times the default
 % point size.
@@ -1171,7 +1255,7 @@ setPointSize( State, PointSize, GenerateFile ) ->
 
 
 
-% Sets the key (legend) settings, specified as a plain string (ex: "inside
+% @doc Sets the key (legend) settings, specified as a plain string (ex: "inside
 % left", "bottom center").
 %
 -spec setKeyOptions( wooper:state(), ustring() ) -> oneway_return().
@@ -1185,7 +1269,7 @@ setKeyOptions( State, NewOptions ) ->
 
 
 
-% Sets the key (legend) settings, specified as a plain string (ex: "inside
+% @doc Sets the key (legend) settings, specified as a plain string (ex: "inside
 % left", "bottom center") and forces to regenerate the command file for taking
 % into account the new settings, if requested.
 %
@@ -1205,7 +1289,7 @@ setKeyOptions( State, NewOptions, GenerateFile ) ->
 
 
 
-% Sets the abscissa range for the plot.
+% @doc Sets the abscissa range for the plot.
 %
 % MinX and MaxX are integers.
 %
@@ -1219,8 +1303,8 @@ setAbscissaRange( State, MinX, MaxX ) ->
 
 
 
-% Sets the abscissa range for the plot and forces to regenerate the command file
-% for taking into account the new settings if requested.
+% @doc Sets the abscissa range for the plot and forces to regenerate the command
+% file for taking into account the new settings if requested.
 %
 % MinX and MaxX are integers.
 %
@@ -1240,7 +1324,7 @@ setAbscissaRange( State, MinX, MaxX, GenerateFile ) ->
 
 
 
-% Sets the ordinate range for the plot.
+% @doc Sets the ordinate range for the plot.
 %
 %  MinY and MaxY are integers.
 %
@@ -1255,8 +1339,8 @@ setOrdinateRange( State, MinY, MaxY ) ->
 
 
 
-% Sets the ordinate range for the plot and forces to regenerate the command file
-% for taking into account the new settings, if requested.
+% @doc Sets the ordinate range for the plot and forces to regenerate the command
+% file for taking into account the new settings, if requested.
 %
 % MinY and MaxY are integers.
 %
@@ -1276,8 +1360,8 @@ setOrdinateRange( State, MinY, MaxY, GenerateFile ) ->
 
 
 
-% Ensures that the generated reports will rely on rotated tick labels, so that
-% labels will never overlap, however long they are.
+% @doc Ensures that the generated reports will rely on rotated tick labels, so
+% that labels will never overlap, however long they are.
 %
 -spec setRotatedTickLabels( wooper:state() ) -> oneway_return().
 setRotatedTickLabels( State ) ->
@@ -1298,9 +1382,9 @@ setRotatedTickLabels( State ) ->
 
 
 
-% Ensures that the generated reports will rely on rotated tick labels, so that
-% labels will never overlap, however long they are, and regenerates the command
-% file if requested.
+% @doc Ensures that the generated reports will rely on rotated tick labels, so
+% that labels will never overlap, however long they are, and regenerates the
+% command file if requested.
 %
 -spec setRotatedTickLabels( wooper:state(), boolean() ) -> oneway_return().
 setRotatedTickLabels( State, GenerateFile ) ->
@@ -1309,7 +1393,7 @@ setRotatedTickLabels( State, GenerateFile ) ->
 
 	UpdatedState = setAttribute( State, settings, Settings#probe_settings{
 			x_tick=text_utils:string_to_binary(
-					 ?rotate_cw_tick_label_option ) } ),
+						?rotate_cw_tick_label_option ) } ),
 
 	% Forces the regeneration of the command file if requested:
 	CommandState = trigger_command_file_update( GenerateFile, UpdatedState ),
@@ -1318,8 +1402,7 @@ setRotatedTickLabels( State, GenerateFile ) ->
 
 
 
-
-% Adds a specific text label, specified as a plain string, at the specified
+% @doc Adds a specific text label, specified as a plain string, at the specified
 % location ({X,Y} integer coordinates).
 %
 -spec addLabel( wooper:state(), ustring(), point() ) -> oneway_return().
@@ -1341,12 +1424,12 @@ addLabel( State, Text, Location ) ->
 
 
 
-% Adds a specific text label, specified as a plain string, at specified location
-% ({X,Y} integer coordinates), with specified color (ex: 'magenta', or
+% @doc Adds a specific text label, specified as a plain string, at specified
+% location ({X,Y} integer coordinates), with specified color (ex: 'magenta', or
 % "#4B00820").
 %
 -spec addLabel( wooper:state(), ustring(), point(), color() ) ->
-						oneway_return().
+			oneway_return().
 addLabel( State, Text, Location, Color ) ->
 
 	Settings = ?getAttr(settings),
@@ -1365,10 +1448,10 @@ addLabel( State, Text, Location, Color ) ->
 
 
 
-% Adds a specific text label, specified as a plain string, at specified location
-% ({X,Y} integer coordinates), with specified color (ex: magenta, or "#4B00820")
-% and orientation, either 'upright' (the default), or {rotate, Angle}, Angle
-% being an angle in degrees (as a floating-point value).
+% @doc Adds a specific text label, specified as a plain string, at specified
+% location ({X,Y} integer coordinates), with specified color (ex: magenta, or
+% "#4B00820") and orientation, either 'upright' (the default), or {rotate,
+% Angle}, Angle being an angle in degrees (as a floating-point value).
 %
 -spec addLabel( wooper:state(), ustring(), point(), color(),
 				label_orientation() ) -> oneway_return().
@@ -1390,11 +1473,11 @@ addLabel( State, Text, Location, Color, Orientation ) ->
 
 
 
-% Adds a specific text label, specified as a plain string, at specified Location
-% ({X,Y} integer coordinates), with specified color (ex: magenta), orientation,
-% either 'upright' (the default), or {rotate, Angle}, Angle being an angle in
-% degrees (as a floating-point value) and position (an atom, either left, center
-% or right, the default being center).
+% @doc Adds a specific text label, specified as a plain string, at specified
+% Location ({X,Y} integer coordinates), with specified color (ex: magenta),
+% orientation, either 'upright' (the default), or {rotate, Angle}, Angle being
+% an angle in degrees (as a floating-point value) and position (an atom, either
+% left, center or right, the default being center).
 %
 -spec addLabel( wooper:state(), ustring(), point(), color(),
 				label_orientation(), label_position() ) -> oneway_return().
@@ -1416,7 +1499,7 @@ addLabel( State, Text, Location, Color, Orientation, Position ) ->
 
 
 
-% Sets the extra verbatim defines (ex: [ "set xlabel offset character 15" ]).
+% @doc Sets the extra verbatim defines (ex: ["set xlabel offset character 15"]).
 -spec setExtraDefines( wooper:state(), [ ustring() ] ) -> oneway_return().
 setExtraDefines( State, ExtraDefs ) ->
 
@@ -1430,8 +1513,8 @@ setExtraDefines( State, ExtraDefs ) ->
 
 
 
-% Adds (appends at first position) the specified extra verbatim defines (ex:
-% [ "set xlabel offset character 15" ]).
+% @doc Adds (appends at first position) the specified extra verbatim defines
+% (ex: ["set xlabel offset character 15"]).
 %
 -spec addExtraDefines( wooper:state(), [ ustring() ] ) -> oneway_return().
 addExtraDefines( State, ExtraDefs ) ->
@@ -1448,7 +1531,7 @@ addExtraDefines( State, ExtraDefs ) ->
 
 
 
-% Generates the appropriate gnuplot command file.
+% @doc Generates the appropriate gnuplot command file.
 %
 % (oneway, so that it can be overridden)
 %
@@ -1459,7 +1542,7 @@ generateCommandFile( State ) ->
 
 
 
-% Generates a report corresponding to the current state of this probe, and
+% @doc Generates a report corresponding to the current state of this probe, and
 % displays the result (the image) to the user.
 %
 -spec generateReport( wooper:state() ) ->
@@ -1470,7 +1553,7 @@ generateReport( State ) ->
 
 
 
-% Generates a report corresponding to the current state of this probe.
+% @doc Generates a report corresponding to the current state of this probe.
 %
 % DisplayWanted is a boolean telling whether the generated report will be
 % displayed to the user (if true).
@@ -1503,7 +1586,7 @@ generateReport( State, DisplayWanted ) ->
 
 
 
-% Sets the probe directory: all further probe files (command, data, locally
+% @doc Sets the probe directory: all further probe files (command, data, locally
 % generated plots) will be created there.
 %
 -spec setDirectory( wooper:state(), any_directory_path() ) -> oneway_return().
@@ -1534,13 +1617,13 @@ setDirectory( State, NewProbeDirectory ) ->
 
 
 
-% Sends the specified type of (tracked) results to the caller (generally the
-% result manager).
+% @doc Sends the specified type of (tracked) results to the caller (generally
+% the result manager).
 %
 % (request, notably for synchronous operations)
 %
 -spec sendResults( wooper:state(), class_ResultProducer:producer_options() ) ->
-				request_return( class_ResultProducer:producer_result() ).
+					request_return( class_ResultProducer:producer_result() ).
 sendResults( State, [ data_only ] ) ->
 
 	% Here we will send an archive term containing the data and command files:
@@ -1721,7 +1804,7 @@ sendResults( State, [ data_and_rendering ] ) ->
 
 
 
-% Returns a textual description of this probe instance.
+% @doc Returns a textual description of this probe instance.
 -spec toString( wooper:state() ) -> const_request_return( ustring() ).
 toString( State ) ->
 
@@ -1761,8 +1844,8 @@ toString( State ) ->
 % Static methods.
 
 
-% Declares (synchronously) a new (basic) probe, to be seen as a result producer,
-% and be created either from an actor or from a test case.
+% @doc Declares (synchronously) a new (basic) probe, to be seen as a result
+% producer, and be created either from an actor or from a test case.
 %
 % - NameOptions is either:
 %
@@ -1809,7 +1892,7 @@ toString( State ) ->
 % 'non_wanted_probe' atom.
 %
 -spec declare_result_probe( name_options(), [ declared_curve_name() ],
-		 [ declared_zone() ], title(), label(), label() ) ->
+			[ declared_zone() ], title(), label(), label() ) ->
 									static_return( probe_ref() ).
 declare_result_probe( NameOptions, CurveEntries, ZoneEntries, Title,
 					  MaybeXLabel, YLabel ) ->
@@ -1822,8 +1905,8 @@ declare_result_probe( NameOptions, CurveEntries, ZoneEntries, Title,
 
 
 
-% Declares (synchronously) a new (basic) probe, to be seen as a result producer,
-% and be created either from an actor or from a test case.
+% @doc Declares (synchronously) a new (basic) probe, to be seen as a result
+% producer, and be created either from an actor or from a test case.
 %
 % - NameOptions is either:
 %
@@ -1887,8 +1970,8 @@ declare_result_probe( NameOptions, CurveEntries, ZoneEntries, Title,
 
 
 
-% Declares (synchronously) a new (basic) probe, to be seen as a result producer,
-% and be created either from an actor or from a test case.
+% @doc Declares (synchronously) a new (basic) probe, to be seen as a result
+% producer, and be created either from an actor or from a test case.
 %
 % - NameOptions is either:
 %
@@ -1962,7 +2045,7 @@ declare_result_probe( NameOptions, CurveEntries, ZoneEntries, Title,
 	ResultManagerPid = class_ResultManager:get_result_manager(),
 
 	ResultManagerPid ! { isResultProducerWanted,
-						 [ ActualBinName, _Nature=basic_probe ], self() },
+							[ ActualBinName, _Nature=basic_probe ], self() },
 
 	Res = receive
 
@@ -1987,8 +2070,8 @@ declare_result_probe( NameOptions, CurveEntries, ZoneEntries, Title,
 
 
 
-% Declares (synchronously) a new (basic) probe, to be seen as a result producer,
-% and be created directly from a test case.
+% @doc Declares (synchronously) a new (basic) probe, to be seen as a result
+% producer, and be created directly from a test case.
 %
 % - NameOptions is either:
 %
@@ -2049,13 +2132,13 @@ declare_test_probe( NameOptions, CurveEntries, ZoneEntries, Title,
 
 
 
-% Declares (synchronously) a new (basic) probe, to be seen as a result producer,
-% and be created directly from a simulation case.
+% @doc Declares (synchronously) a new (basic) probe, to be seen as a result
+% producer, and be created directly from a simulation case.
 %
 % See declare_test_probe/6 (just above) for more information.
 %
 -spec declare_case_probe( name_options(), [ declared_curve_name() ],
-		 [ declared_zone() ], title(), label(), label() ) ->
+			[ declared_zone() ], title(), label(), label() ) ->
 								static_return( probe_ref() ).
 declare_case_probe( NameOptions, CurveEntries, ZoneEntries, Title,
 					MaybeXLabel, YLabel ) ->
@@ -2068,8 +2151,8 @@ declare_case_probe( NameOptions, CurveEntries, ZoneEntries, Title,
 
 
 
-% Declares (synchronously) a new (basic) probe, to be seen as a result producer,
-% and be created directly from a simulation case.
+% @doc Declares (synchronously) a new (basic) probe, to be seen as a result
+% producer, and be created directly from a simulation case.
 %
 % See declare_test_probe/6 (above) for more information.
 %
@@ -2088,8 +2171,8 @@ declare_test_probe( NameOptions, CurveEntries, ZoneEntries, Title,
 
 
 
-% Declares (synchronously) a new (basic) probe, to be seen as a result producer,
-% and be created directly from a simulation case.
+% @doc Declares (synchronously) a new (basic) probe, to be seen as a result
+% producer, and be created directly from a simulation case.
 %
 % See declare_test_probe/6 (above) for more information.
 %
@@ -2143,8 +2226,8 @@ declare_case_probe( NameOptions, CurveEntries, ZoneEntries, Title,
 
 
 
-% Deletes specified test probe (as returned by declare_test_probe/*,
-% i.e. actually created or not).
+% @doc Deletes specified test probe (as returned by declare_test_probe/*,
+% whether actually created or not).
 %
 -spec delete_test_probe( probe_ref() ) -> static_void_return().
 delete_test_probe( Any ) ->
@@ -2154,8 +2237,8 @@ delete_test_probe( Any ) ->
 
 
 
-% Deletes specified case probe (as returned by declare_case_probe/*,
-% i.e. actually created or not).
+% @doc Deletes specified case probe (as returned by declare_case_probe/*,
+% whether actually created or not).
 %
 -spec delete_case_probe( probe_ref() ) -> static_void_return().
 delete_case_probe( non_wanted_probe ) ->
@@ -2167,9 +2250,9 @@ delete_case_probe( Pid ) ->
 
 
 
-% Creates in the current directory a facility probe, i.e. a lingering probe, to
-% be created (unilaterally) from a test case, and that will not be considered as
-% a result.
+% @doc Creates in the current directory a facility probe, that is a lingering
+% probe, to be created (unilaterally) from a test case, and that will not be
+% considered as a result.
 %
 % - NameOptions is either:
 %
@@ -2228,9 +2311,9 @@ create_facility_probe( NameOptions, CurveEntries, ZoneEntries, Title,
 
 
 
-% Creates a facility probe in the specified directory, i.e. a lingering probe,
-% to be created (unilaterally) from a test case, and that will not to considered
-% as a result.
+% @doc Creates a facility probe in the specified directory, that is a lingering
+% probe, to be created (unilaterally) from a test case, and that will not to
+% considered as a result.
 %
 % - NameOptions is either:
 %
@@ -2287,8 +2370,8 @@ create_facility_probe( { Name, Options }, CurveEntries, ZoneEntries, Title,
 	NewOptions = Options#probe_options{ register_as_tracked_producer=false,
 										probe_directory=ProbeDirectory },
 
-	Pid = synchronous_new_link( { Name, NewOptions }, CurveEntries,
-					ZoneEntries, Title, MaybeXLabel, YLabel, _MetaData=[] ),
+	Pid = synchronous_new_link( { Name, NewOptions }, CurveEntries,	ZoneEntries,
+								Title, MaybeXLabel, YLabel, _MetaData=[] ),
 
 	wooper:return_static( Pid );
 
@@ -2299,16 +2382,15 @@ create_facility_probe( Name, CurveEntries, ZoneEntries, Title,
 	Options = #probe_options{ register_as_tracked_producer=false,
 							  probe_directory=ProbeDirectory },
 
-	Pid = synchronous_new_link( { Name, Options }, CurveEntries,
-				ZoneEntries, Title, MaybeXLabel, YLabel, _MetaData=[] ),
+	Pid = synchronous_new_link( { Name, Options }, CurveEntries, ZoneEntries,
+								Title, MaybeXLabel, YLabel, _MetaData=[] ),
 
 	wooper:return_static( Pid ).
 
 
 
-
-% Deletes specified facility probe (knowing that the other kinds of probes are
-% results, and thus their life cycles are managed by the result manager).
+% @doc Deletes specified facility probe (knowing that the other kinds of probes
+% are results, and thus their life cycles are managed by the result manager).
 %
 -spec delete_facility_probe( probe_pid() ) -> static_void_return().
 delete_facility_probe( ProbePid ) when is_pid( ProbePid ) ->
@@ -2327,11 +2409,10 @@ delete_facility_probe( ProbePid ) when is_pid( ProbePid ) ->
 
 
 
-
-% Sends the specified sample data for the specified tick (not tick offset) to
-% the targeted probe, based on the specified probe reference (first parameter),
-% which is the value returned by the result manager in answer to the initial
-% creation request for that probe.
+% @doc Sends the specified sample data for the specified tick (not tick offset)
+% to the targeted probe, based on the specified probe reference (first
+% parameter), which is the value returned by the result manager in answer to the
+% initial creation request for that probe.
 %
 % This parameter is either an actual PID (then data will be sent by this method)
 % or the 'non_wanted_probe' atom (as potentially sent back by the result
@@ -2351,8 +2432,8 @@ send_data( ProbePid, Tick, Samples ) when is_pid( ProbePid ) ->
 
 
 
-% Allows to define whether the probe report should be displayed to the user,
-% after generation.
+% @doc Allows to define whether the probe report should be displayed to the
+% user, after generation.
 %
 % Now superseded by the use of the result manager.
 %
@@ -2386,10 +2467,9 @@ generate_report_for( ProbePid ) ->
 
 
 
-
-% Returns an actual, suitable probe name deriving from the specified one.
+% @doc Returns an actual, suitable probe name deriving from the specified one.
 -spec get_actual_probe_name( probe_name_init() ) ->
-									static_return( probe_name() ).
+			static_return( probe_name() ).
 get_actual_probe_name( { EmitterName, _EmitterCategorization } ) ->
 
 	% A preliminary version of the trace_categorize/1 macro: we extract the base
@@ -2414,15 +2494,15 @@ get_actual_probe_name( EmitterName ) ->
 % Section for helper functions (not methods).
 
 
-% Waits for the feedback of the result manager, after this probe declared itself
-% to it (after a call to its declareProbe/4 request).
+% @doc Waits for the feedback of the result manager, after this probe declared
+% itself to it (after a call to its declareProbe/4 request).
 %
 -spec wait_result_declaration_outcome( probe_name(), wooper:state() ) ->
 												wooper:state().
 wait_result_declaration_outcome( ProbeName, State ) ->
 
 	%trace_utils:info_fmt( "Waiting for the result declaration outcome for "
-	%						"probe '~ts'.", [ ProbeName ] ),
+	%					   "probe '~ts'.", [ ProbeName ] ),
 
 	% Finally waits the answer from the result manager to a prior declareProbe/2
 	% call or similar:
@@ -2452,7 +2532,7 @@ wait_result_declaration_outcome( ProbeName, State ) ->
 
 
 
-% Returns a probe_settings record with specified informations (expressed as
+% @doc Returns a probe_settings record with specified informations (expressed as
 % plain strings) and default values for the other fields.
 %
 -spec get_probe_settings( title(), label(), label(),
@@ -2486,7 +2566,7 @@ get_probe_settings( Title, MaybeXLabel, YLabel, GnuplotVersion ) ->
 
 
 
-% Returns some basic options, depending on the current gnuplot version.
+% @doc Returns some basic options, depending on the current gnuplot version.
 %
 % (helper, for code sharing)
 %
@@ -2534,8 +2614,8 @@ get_basic_options( GnuplotVersion ) ->
 
 
 
-% Adds back the index in the Names list, as read from the CurveEntries list,
-% without changing the order of the Names list.
+% @doc Adds back the index in the Names list, as read from the CurveEntries
+% list, without changing the order of the Names list.
 %
 % Transforms plain strings in binaries as well.
 %
@@ -2552,6 +2632,7 @@ add_probe_index_back( Names, CurveEntries ) ->
 	add_probe_index_back( Names, CurveEntries, _Acc=[] ).
 
 
+% (helper)
 add_probe_index_back( _Names=[], _CurveEntries, Acc ) ->
 	lists:reverse( Acc );
 
@@ -2569,13 +2650,13 @@ add_probe_index_back( [ Name | T ], CurveEntries, Acc ) ->
 
 		{ Index, _Name, PlotSuffix } ->
 			add_probe_index_back( T, CurveEntries,
-				  [ { Index, BinName, PlotSuffix } | Acc ] )
+					[ { Index, BinName, PlotSuffix } | Acc ] )
 
 	end.
 
 
 
-% Interprets the creation-time probe options:
+% @doc Interprets the creation-time probe options:
 -spec interpret_options( probe_options() ) ->
 			{ boolean(), boolean(), boolean(), maybe( directory_path() ) }.
 interpret_options( _ProbeOptions=#probe_options{
@@ -2611,10 +2692,10 @@ interpret_options( _ProbeOptions=#probe_options{
 
 
 
-% Updates specified probe settings with any extra settings specified.
+% @doc Updates specified probe settings with any extra settings specified.
 -spec apply_extra_settings( maybe( settings_table() ), probe_settings(),
 							wooper:state() ) ->
-				  { probe_settings(), maybe( [ extra_curve_settings() ] ) }.
+					{ probe_settings(), maybe( [ extra_curve_settings() ] ) }.
 apply_extra_settings( _MaybeExtraSettingsTable=undefined, ProbeSettings,
 					  _State ) ->
 	{ ProbeSettings, _ExtraCurveSettings=undefined };
@@ -2624,21 +2705,21 @@ apply_extra_settings( ExtraSettingsTable, ProbeSettings, State ) ->
 	% For plot style:
 	{ GlobalPlotStyle, StyleShrunkTable } =
 		table:extract_entry_with_defaults( _Key=global_plot_style,
-						   _DefaultValue=linespoints, ExtraSettingsTable ),
+							_DefaultValue=linespoints, ExtraSettingsTable ),
 
 	StyleProbeSettings = case GlobalPlotStyle of
 
 		boxes ->
 			NewExtraDefs = [
 				text_utils:string_to_binary( "set style fill solid 0.5" )
-							 | ProbeSettings#probe_settings.extra_defines ],
+								| ProbeSettings#probe_settings.extra_defines ],
 			ProbeSettings#probe_settings{
-			  plot_style=text_utils:atom_to_binary( boxes ),
-			  extra_defines=NewExtraDefs };
+				plot_style=text_utils:atom_to_binary( boxes ),
+				extra_defines=NewExtraDefs };
 
 		OtherPlotStyle ->
 			ProbeSettings#probe_settings{
-			  plot_style=text_utils:atom_to_binary( OtherPlotStyle ) }
+				plot_style=text_utils:atom_to_binary( OtherPlotStyle ) }
 
 	end,
 
@@ -2733,7 +2814,8 @@ apply_extra_settings( ExtraSettingsTable, ProbeSettings, State ) ->
 	end.
 
 
-% Updates the probe settings based on specified tick options.
+
+% @doc Updates the probe settings based on specified tick options.
 -spec update_tick_options( { tick_option(), tick_option() },
 						   probe_settings() ) -> probe_settings().
 update_tick_options( _TickOptions={ XtickOpt, YtickOpt },
@@ -2752,7 +2834,7 @@ update_tick_options( TickOptions, _ProbeSettings ) ->
 
 
 
-% Returns the string setting corresponding to specified tick option.
+% @doc Returns the string setting corresponding to specified tick option.
 -spec get_tick_option( maybe( tick_option() ) ) -> ustring().
 get_tick_option( _MaybeTickOption=undefined ) ->
 	"";
@@ -2768,7 +2850,7 @@ get_tick_option( OtherTickOption ) ->
 
 
 
-% Updates the probe settings based on specified ticks options.
+% @doc Updates the probe settings based on specified ticks options.
 -spec update_ticks_options( { ticks_option(), ticks_option() },
 							probe_settings() ) -> probe_settings().
 update_ticks_options( _TicksOptions={ MaybeXticksOpt, MaybeYticksOpt },
@@ -2798,14 +2880,18 @@ update_ticks_options( _TicksOptions={ MaybeXticksOpt, MaybeYticksOpt },
 
 
 
-% Updates the curve entries with any specified extra settings.
+% @doc Updates the curve entries with any specified extra settings, to be
+% specified according to the current order of curves.
+%
 -spec update_curve_entries( [ curve_entry() ],
 			maybe( [ extra_curve_settings() ] ) ) -> [ curve_entry() ].
 update_curve_entries( CurveEntries, _MaybeExtraCurveSettings=undefined ) ->
 	CurveEntries;
 
 update_curve_entries( CurveEntries, ExtraCurveSettings ) ->
+
 	CurveCount = length( CurveEntries ),
+
 	case length( ExtraCurveSettings ) of
 
 		CurveCount ->
@@ -2816,27 +2902,33 @@ update_curve_entries( CurveEntries, ExtraCurveSettings ) ->
 					 CurveEntries, { ExtraSetCount, CurveCount } } )
 	end,
 
-	[ update_curve_entry( CurveE, MaybeExtraSet )
-	  || { CurveE, MaybeExtraSet } <- lists:zip( CurveEntries,
-												 ExtraCurveSettings ) ].
+	[ update_curve_entry( CurveE, MaybeExtraSet ) || { CurveE, MaybeExtraSet }
+							<- lists:zip( CurveEntries, ExtraCurveSettings ) ].
+
 
 
 % (helper)
 update_curve_entry( CurveE, _MaybeExtraSet=undefined ) ->
 	CurveE;
 
-update_curve_entry( _CurveE={ CIdnex, CName, CPlotSuffix }, ExtraSetStr )
+
+% Currently one a single extra information is supported, a string describing the
+% color of the corresponding curve (as RGB coordinates):
+%
+update_curve_entry( _CurveE={ CIndex, CName, CPlotSuffix }, ExtraSetStr )
   when is_list( ExtraSetStr ) ->
+
 	NewCPlotSuffix = text_utils:bin_format( "~ts lt rgb \"#~ts\"",
 											[ CPlotSuffix, ExtraSetStr ] ),
-	{ CIdnex, CName, NewCPlotSuffix };
+
+	{ CIndex, CName, NewCPlotSuffix };
 
 update_curve_entry( _CurveE, ExtraSet ) ->
 	throw( { invalid_extra_curve_setting, ExtraSet } ).
 
 
 
-% Checks that the specified variable is a boolean.
+% @doc Checks that the specified variable is a boolean.
 check_is_boolean( Var, _VarName ) when is_boolean( Var ) ->
 	ok;
 
@@ -2845,7 +2937,7 @@ check_is_boolean( Var, VarName ) ->
 
 
 
-% Generates the appropriate gnuplot command file.
+% @doc Generates the appropriate gnuplot command file.
 %
 % Returns an updated state.
 %
@@ -2894,27 +2986,25 @@ generate_command_file( State ) ->
 
 
 
-
-
-% Generates unconditionally the appropriate gnuplot command file.
+% @doc Generates unconditionally the appropriate gnuplot command file.
 %
 % Returns the name, as a plain string, of the command file.
 %
 % Helper function defined to be shared with the data-logger.
 %
 -spec generate_command_file( ustring(), probe_settings(), curve_entries(),
-	   zone_entries(), boolean(), directory_path() ) -> file_name().
+		zone_entries(), boolean(), directory_path() ) -> file_name().
 generate_command_file( Name, Settings, CurveEntries, ZoneEntries,
 					   IsTimestamped, ProbeDir ) ->
 
 	%trace_utils:debug_fmt( "generate_command_file for probe '~ts'.",
-	%   [ Name ] ),
+	%                       [ Name ] ),
 
 	LabelDefs = get_label_definitions( Settings#probe_settings.labels ),
 
 	ExtraDefs = text_utils:join( _Sep="\n",
 		[ text_utils:binary_to_string( D )
-		  || D <- Settings#probe_settings.extra_defines ] ),
+			|| D <- Settings#probe_settings.extra_defines ] ),
 
 	DataFilename = get_data_filename( Name ),
 
@@ -3016,7 +3106,8 @@ generate_command_file( Name, Settings, CurveEntries, ZoneEntries,
 
 
 
-% Returns the full path to the command file corresponding to specified settings.
+% @doc Returns the full path to the command file corresponding to specified
+% settings.
 %
 % (helper)
 %
@@ -3025,7 +3116,7 @@ get_command_filename( Name, ProbeDir ) ->
 
 
 
-% Generates the appropriate file containing probe data.
+% @doc Generates the appropriate file containing probe data.
 generate_data_file( State ) ->
 
 	%trace_utils:debug_fmt( "Generating data file '~ts'.",
@@ -3081,7 +3172,7 @@ generate_data_file( State ) ->
 
 
 
-% Writes the probe header to the data file.
+% @doc Writes the probe header to the data file.
 -spec write_header( file(), curve_entries(), zone_entries(),
 					probe_settings(), probe_name(),
 					class_ResultManager:meta_data() ) -> void().
@@ -3146,8 +3237,8 @@ format_zone_info( _ZoneInfoList=[] ) ->
 
 format_zone_info( ZoneInfoList ) ->
 	text_utils:format( "Following zones were defined:~n"
-				  ++ format_zone_info( ZoneInfoList, _Acc=[] )
-				  ++ text_utils:format( "~n~n", [] ), [] ).
+		++ format_zone_info( ZoneInfoList, _Acc=[] )
+		++ text_utils:format( "~n~n", [] ), [] ).
 
 
 
@@ -3162,7 +3253,7 @@ format_zone_info( [ { BinName, {FirstBound, SecondBound} } | T ], Acc ) ->
 
 
 
-% Triggers unconditionally an update of the command file, if requested, and
+% @doc Triggers unconditionally an update of the command file, if requested, and
 % returns an updated state.
 %
 % (helper)
@@ -3171,28 +3262,27 @@ trigger_command_file_update( _UpdateRequested=false, State ) ->
 	State;
 
 trigger_command_file_update( _UpdateRequested=true, State ) ->
-
 	% Forces the update:
 	generate_command_file(
 		setAttribute( State, command_file_up_to_date, false ) ).
 
 
 
-% Returns the gnuplot command filename.
+% @doc Returns the gnuplot command filename.
 -spec get_command_filename( probe_name() ) -> file_name().
 get_command_filename( Name ) ->
 	file_utils:convert_to_filename( Name ++ ".p" ).
 
 
 
-% Returns the gnuplot data filename.
+% @doc Returns the gnuplot data filename.
 -spec get_data_filename( probe_name() ) -> file_name().
 get_data_filename( Name ) ->
 	file_utils:convert_to_filename( Name ++ ".dat" ).
 
 
 
-% Returns the report filename.
+% @doc Returns the report filename.
 -spec get_report_filename( probe_name() ) -> file_name().
 get_report_filename( Name ) ->
 	file_utils:convert_to_filename( Name ++ ".png" ).
@@ -3200,9 +3290,10 @@ get_report_filename( Name ) ->
 
 
 
-% Returns a format string suitable for the writing of corresponding samples.
--spec forge_format_string_for( curve_count() ) ->
-									text_utils:format_string().
+% @doc Returns a format string suitable for the writing of corresponding
+% samples.
+%
+-spec forge_format_string_for( curve_count() ) -> format_string().
 forge_format_string_for( CurveCount ) ->
 
 	% Timestamp (binary) string (corresponding to raw tick or actual textual
@@ -3214,7 +3305,7 @@ forge_format_string_for( CurveCount ) ->
 
 
 
-% Formats specified rows according to specified format.
+% @doc Formats specified rows according to specified format.
 format_rows( DataTable, CurveCount, RowFormatString ) ->
 
 	%trace_utils:debug_fmt(
@@ -3232,7 +3323,6 @@ format_rows( _DataTable=[], _CurveCount, _RowFormatString, Acc ) ->
 format_rows( _DataTable=[ { TimestampBinStr, Sample } | T ], CurveCount,
 			 RowFormatString, Acc ) ->
 
-
 	RowStr = format_row( TimestampBinStr, Sample, CurveCount, RowFormatString ),
 
 	%trace_utils:debug_fmt( "RowStr: ~ts", [ RowStr ] ),
@@ -3241,12 +3331,12 @@ format_rows( _DataTable=[ { TimestampBinStr, Sample } | T ], CurveCount,
 
 
 
-% Returns a formatted version of specified sample row.
+% @doc Returns a formatted version of specified sample row.
 %
 % Defined also for reuse (ex: by the datalogger).
 %
--spec format_row( ustring(), sample_data(), curve_count(),
-				  text_utils:format_string() ) -> ustring().
+-spec format_row( ustring(), sample_data(), curve_count(), format_string() ) ->
+			ustring().
 format_row( TimestampString, Sample, CurveCount, RowFormatString ) ->
 
 	SampleValues = tuple_to_list( Sample ),
@@ -3275,24 +3365,23 @@ format_row( TimestampString, Sample, CurveCount, RowFormatString ) ->
 
 
 
-% Used by third-party modules.
--spec write_row( file(), timestamp_bin_string(), sample_data() ) ->
-							void().
+% @doc Used by third-party modules.
+-spec write_row( file(), timestamp_bin_string(), sample_data() ) ->	void().
 write_row( File, TimestampBinString, DataTuple ) ->
 	RowFormatString = forge_format_string_for( size( DataTuple ) ),
 	write_row( File, RowFormatString, TimestampBinString, DataTuple ).
 
 
-% Used for direct data writing.
--spec write_row( file(), text_utils:format_string(),
-				 timestamp_bin_string(), sample_data() ) -> void().
+% @doc Used for direct data writing.
+-spec write_row( file(), format_string(), timestamp_bin_string(),
+				 sample_data() ) -> void().
 write_row( File, RowFormatString, TimestampBinString, DataTuple ) ->
 	file_utils:write_ustring( File, RowFormatString,
 		[ TimestampBinString | tuple_to_list( DataTuple ) ] ).
 
 
 
-% Creates or updates an entry for the specified curve.
+% @doc Creates or updates an entry for the specified curve.
 -spec setFilledCurvesOptions( wooper:state(), ustring(), curve_index() ) ->
 									oneway_return().
 setFilledCurvesOptions( State, CurveName, ColumnSpecifier ) ->
@@ -3302,8 +3391,7 @@ setFilledCurvesOptions( State, CurveName, ColumnSpecifier ) ->
 
 
 
-
-% Creates or updates an entry for the specified curve.
+% @doc Creates or updates an entry for the specified curve.
 -spec setFilledCurvesOptions( wooper:state(), ustring(), curve_index(),
 							  boolean() ) -> oneway_return().
 setFilledCurvesOptions( State, CurveName, ColumnSpecifier, GenerateFile ) ->
@@ -3339,7 +3427,7 @@ setFilledCurvesOptions( State, CurveName, ColumnSpecifier, GenerateFile ) ->
 
 
 
-% Returns the Gnuplot command appropriate to render all registered labels.
+% @doc Returns the Gnuplot command appropriate to render all registered labels.
 -spec get_label_definitions( [ probe_label() ] ) -> command_element().
 get_label_definitions( Labels ) ->
 	text_utils:join( _Separator="\n",
@@ -3369,7 +3457,7 @@ get_label_definitions( [ #probe_label{ location={ X, Y }, text=BinText,
 
 
 
-% Returns the settings for fine control of the major (labeled) ticks on the
+% @doc Returns the settings for fine control of the major (labeled) ticks on the
 % abscissa axis, as read from the specified settings.
 %
 -spec get_xticks_option( probe_settings() ) -> command_element().
@@ -3385,7 +3473,7 @@ get_xticks_option( #probe_settings{ x_ticks=Other } ) ->
 
 
 
-% Returns the settings for fine control of the major (labeled) ticks on the
+% @doc Returns the settings for fine control of the major (labeled) ticks on the
 % ordinate axis, as read from the specified settings.
 %
 -spec get_yticks_option( probe_settings() ) -> command_element().
@@ -3401,7 +3489,7 @@ get_yticks_option( #probe_settings{ y_ticks=Other } ) ->
 
 
 
-% Returns the abscissa range options as read from the specified settings.
+% @doc Returns the abscissa range options as read from the specified settings.
 -spec get_x_range_option( probe_settings() ) -> command_element().
 get_x_range_option( Settings ) ->
 
@@ -3417,7 +3505,7 @@ get_x_range_option( Settings ) ->
 
 
 
-% Returns the ordinate range options as read from the specified settings.
+% @doc Returns the ordinate range options as read from the specified settings.
 -spec get_y_range_option( probe_settings() ) -> command_element().
 get_y_range_option( Settings ) ->
 
@@ -3433,8 +3521,8 @@ get_y_range_option( Settings ) ->
 
 
 
-% Returns the option to control the labels of the major ticks on the x axis, as
-% read from the specified settings.
+% @doc Returns the option to control the labels of the major ticks on the x
+% axis, as read from the specified settings.
 %
 -spec get_x_ticks_option( probe_settings() ) -> command_element().
 get_x_ticks_option( Settings ) ->
@@ -3451,8 +3539,8 @@ get_x_ticks_option( Settings ) ->
 
 
 
-% Returns the option to control the labels of the major ticks on the y axis, as
-% read from the specified settings.
+% @doc Returns the option to control the labels of the major ticks on the y
+% axis, as read from the specified settings.
 %
 -spec get_y_ticks_option( probe_settings() ) -> command_element().
 get_y_ticks_option( Settings ) ->
@@ -3469,7 +3557,7 @@ get_y_ticks_option( Settings ) ->
 
 
 
-% Returns the appropriate settings, depending on whether the abscissa axis
+% @doc Returns the appropriate settings, depending on whether the abscissa axis
 % gathers timestamps or not.
 %
 -spec get_timestamp_settings( probe_settings(), boolean() ) ->
@@ -3522,7 +3610,7 @@ get_timestamp_settings( _Probe_settings, _IsTimestamped=false ) ->
 
 
 
-% Returns the Gnuplot command appropriate to render that probe output.
+% @doc Returns the Gnuplot command appropriate to render that probe output.
 %
 % Defines one plot curve per declared curve, with current plot settings, and
 % defines as well any specified zone.
@@ -3571,8 +3659,8 @@ get_plot_command( Settings, CurveEntries, CurveOffset, ZoneEntries,
 
 
 
-% Returns a list of curve entries in which there are no more curves that are
-% used to define a zone among the ones specified.
+% @doc Returns a list of curve entries in which there are no more curves that
+% are used to define a zone among the ones specified.
 %
 -spec remove_zone_specific_curves( curve_entries(), zone_entries() ) ->
 											curve_entries().
@@ -3587,7 +3675,7 @@ remove_zone_specific_curves( CurveEntries, ZoneEntries ) ->
 
 
 
-% Selects all curve indexes that are mentioned (possibly with duplicates).
+% @doc Selects all curve indexes that are mentioned (possibly with duplicates).
 select_curves( _ZoneEntries=[], Acc ) ->
 	Acc;
 
@@ -3603,6 +3691,7 @@ select_curves( _ZoneEntries=[ { _ZoneName, { C1, C2 } } | T ], Acc ) ->
 
 
 
+% @doc Returns the plot commands corresponding to specified curves.
 -spec get_plot_commands_for_curves( curve_entries(), curve_offset(),
 									probe_settings() ) -> [ command_element() ].
 get_plot_commands_for_curves( CurveEntries, CurveOffset, Settings ) ->
@@ -3620,7 +3709,7 @@ get_plot_commands_for_curves( CurveEntries, CurveOffset, Settings ) ->
 
 
 
-% Returns a command element suitable to render specified curve.
+% @doc Returns a command element suitable to render specified curve.
 %
 % (helper)
 %
@@ -3637,8 +3726,7 @@ get_curve_command( { CurveIndex, BinCurveName, BinPlotSuffix }, CurveOffset,
 
 
 
-
-% Returns command elements suitable to render specified zones.
+% @doc Returns command elements suitable to render specified zones.
 %
 % (helper)
 %
@@ -3657,7 +3745,7 @@ get_plot_commands_for_zones( ZoneEntries, CurveOffset, Settings ) ->
 
 
 
-% Returns a command element suitable to render specified zone.
+% @doc Returns a command element suitable to render specified zone.
 %
 % (helper)
 %
@@ -3698,7 +3786,7 @@ get_zone_command( _ZoneEntry={ BinZoneName,
 
 
 
-% Returns a Gnuplot-compatible rotation specification.
+% @doc Returns a Gnuplot-compatible rotation specification.
 %
 % (helper)
 %
@@ -3711,7 +3799,7 @@ get_formatted_orientation( Angle ) when is_number( Angle ) ->
 
 
 
-% Actual (synchronous) generation of the report.
+% @doc Actual (synchronous) generation of the report.
 %
 % Returns an updated state.
 %
@@ -3767,7 +3855,7 @@ generate_report( Name, State ) ->
 	CommandFilename = get_command_filename( Name ),
 
 	%trace_utils:debug_fmt( "Generating plot based on ~ts.",
-	%                      [ GeneratingFile ] ),
+	%                       [ GeneratingFile ] ),
 
 	% We must change the current directory (in the command, as we do not want to
 	% interfere at the level of the whole VM) otherwise the PNG will be created
@@ -3775,7 +3863,7 @@ generate_report( Name, State ) ->
 	% absolute path for the PNG is not an option either, as we are to move the
 	% files to the result directory afterwards.
 	%
-	Command = executable_utils:get_gnuplot_path() ++  " '" ++ CommandFilename
+	Command = executable_utils:get_gnuplot_path() ++ " '" ++ CommandFilename
 		++ "'",
 
 	OutputMessage = case system_utils:run_command( Command,
@@ -3838,8 +3926,7 @@ generate_report( Name, State ) ->
 
 
 
-
-% Ensures that the command file for this probe is available.
+% @doc Ensures that the command file for this probe is available.
 %
 % Returns an updated state.
 %
@@ -3866,8 +3953,7 @@ ensure_command_file_available( State ) ->
 
 
 
-
-% Ensures that the data file for this probe is available.
+% @doc Ensures that the data file for this probe is available.
 %
 % (const helper function, not returning anything useful)
 %
@@ -3888,7 +3974,7 @@ ensure_data_file_available( State ) ->
 
 
 
-% Returns the Gnuplot reference version for us.
+% @doc Returns the Gnuplot reference version for us.
 -spec get_gnuplot_reference_version() ->
 					static_return( basic_utils:two_digit_version() ).
 get_gnuplot_reference_version() ->
@@ -3902,7 +3988,8 @@ get_gnuplot_reference_version() ->
 % customised for probes.
 
 
-% Triggered just before serialisation.
+
+% @doc Triggered just before serialisation.
 %
 % We are to fix file handles here. The PIDs (none is internal to a probe) will
 % be converted later by the entry transformer.
@@ -3927,7 +4014,7 @@ pre_serialise_hook( State ) ->
 
 
 
-% Triggered just after serialisation, based on the selected entries.
+% @doc Triggered just after serialisation, based on the selected entries.
 %
 % The value returned by this hook will be converted "as is" into a binary, that
 % will be written.
@@ -3974,9 +4061,7 @@ post_serialise_hook( Classname, Entries, State ) ->
 
 
 
-
-
-% Triggered just before deserialisation.
+% @doc Triggered just before deserialisation.
 %
 % Here we mostly perform the reverse operations done in post_serialise_hook/3.
 %
@@ -3988,14 +4073,14 @@ pre_deserialise_hook( _SerialisationTerm={ _Classname, _Entries, _BinCommand,
 	throw( fixme_not_implemented_yet ).
 
 
-% Triggered just after deserialisation.
+% @doc Triggered just after deserialisation.
 -spec post_deserialise_hook( wooper:state() ) -> wooper:state().
 post_deserialise_hook( State ) ->
 	State.
 
 
 
-% Deserialises a probe from specified binaries.
+% @doc Deserialises a probe from specified binaries.
 %
 % Never returns: the probe takes ownership of the process.
 %
@@ -4015,8 +4100,8 @@ deserialise( BinContent, BinCommand, _BinData, ReaderPid ) ->
 	% Will never return:
 	%
 	Classname:wooper_deserialise( RawEntries,
-			_EntryTransformer=undefined, _UserData=undefined,
-			_ListenerPid=ReaderPid ),
+		_EntryTransformer=undefined, _UserData=undefined,
+		_ListenerPid=ReaderPid ),
 
 	throw( fixme_not_implemented_yet ).
 
@@ -4026,7 +4111,7 @@ deserialise( BinContent, BinCommand, _BinData, ReaderPid ) ->
 % Helper section.
 
 
-% Returns the default per-curve plot suffix, as a binary.
+% @doc Returns the default per-curve plot suffix, as a binary.
 -spec get_default_plot_suffix() -> static_return( curve_plot_suffix() ).
 get_default_plot_suffix() ->
 
@@ -4037,7 +4122,7 @@ get_default_plot_suffix() ->
 
 
 
-% Transforms a list of names into a list of {Number, Name, CurvePlotSuffix}
+% @doc Transforms a list of names into a list of {Number, Name, CurvePlotSuffix}
 % curve entries, where Number is the index of the name in the list (starting at
 % 1), Name is a binary name, and CurvePlotSuffix is the curve-specific default
 % plot suffix.
@@ -4045,13 +4130,13 @@ get_default_plot_suffix() ->
 % Respects the order of specified names.
 %
 % Ex: transform_curve_names(["a", "b", "c"]) should result in: [
-% {1,<<"a">>,DefaultBinPlotSuffix}, {2,<<"b">>,DefaultBinPlotSuffix},
-% {3,<<"c">>,DefaultBinPlotSuffix} ].
+%      {1,<<"a">>,DefaultBinPlotSuffix}, {2,<<"b">>,DefaultBinPlotSuffix},
+%      {3,<<"c">>,DefaultBinPlotSuffix} ].
 %
 -spec transform_curve_names( [ declared_curve_name() ] ) -> curve_entries().
 transform_curve_names( NameList ) ->
-	transform_curve_names( NameList, get_default_plot_suffix(),
-						   _Acc=[], _Count=1 ).
+	transform_curve_names( NameList, get_default_plot_suffix(), _Acc=[],
+						   _Count=1 ).
 
 
 % (helper)
@@ -4068,7 +4153,7 @@ transform_curve_names( _NameList=[ CurveName | T ], BinPlotSuffix, Acc,
 
 
 
-% Transforms a list of zone declarations into actual zone entries, while
+% @doc Transforms a list of zone declarations into actual zone entries, while
 % checking them against the curve names.
 %
 -spec transform_declared_zones( [ declared_zone() ], curve_entries() ) ->
@@ -4128,8 +4213,7 @@ transform_declared_zones( [ Z={ ZoneName,
 
 
 
-
-% Returns an appropriate curve index to define internally a zone.
+% @doc Returns an appropriate curve index to define internally a zone.
 -spec get_curve_index_for( declared_extended_curve_name(), curve_entries() ) ->
 									extended_curve_name().
 get_curve_index_for( CurveName='abscissa_top', _CurveEntries ) ->
@@ -4154,7 +4238,7 @@ get_curve_index_for( CurveName, CurveEntries ) ->
 
 
 
-% Checks that the (specified) probe directory is indeed existing.
+% @doc Checks that the (specified) probe directory is indeed existing.
 check_probe_directory( ProbeDir ) ->
 
 	case file_utils:is_existing_directory( ProbeDir ) of

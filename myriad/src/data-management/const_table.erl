@@ -29,9 +29,9 @@
 
 
 
-% This module allows to generate a read-only associative table whose key/value
-% pairs can be read from any number (potentially extremely large) of readers
-% very efficiently (possibly the most efficient way in Erlang).
+% @doc This module allows to generate a <b>read-only associative table whose
+% key/value pairs can be read from any number (potentially extremely large) of
+% readers very efficiently</b> (possibly the most efficient way in Erlang).
 %
 % No ETS table, replication (ex: per-user table copy) or message sending is
 % involved: thanks to meta-programming, a module is generated on-the-fly,
@@ -39,10 +39,10 @@
 % interest; calling a function corresponding to a key returns the associated
 % value.
 %
-% More precisely, a module name (ex: 'foobar') and a table:table( atom(), any()
-% ) are provided to const_table:generate/2; for each key/value pair in the
-% specified table (ex: { 'foo', 42.0 }), a 0-arity function is generated and
-% exported in that module, as if we had:
+% More precisely, a module name (ex: 'foobar') and a `table:table(atom(),
+% any())' are provided to `const_table:generate/2'; for each key/value pair in
+% the specified table (ex: `{'foo', 42.0}'), a 0-arity function is generated and
+% exported in that module, as if we had:```
 %
 % -module(foobar).
 %
@@ -52,23 +52,23 @@
 %
 % -spec foo() -> term().
 % foo() ->
-%    42.0.
+%    42.0.'''
 %
-% Then third-party code can call for example 'foobar:foo()' and have 42.0
+% Then third-party code can call for example `foobar:foo()' and have `42.0'
 % returned. This is presumably the most efficient way of sharing constants in
 % Erlang.
 %
 % Keys must be atoms, and the table of interest shall be immutable (const), even
 % if, thanks to hot code upgrade, one may imagine updating the table at
 % will, having any number of successive versions of it.
-
+%
 % However generating a table of the same name more than once should be done with
 % care, as if a given table is generated three times, the initial table would
 % become 'current', then 'old', and then be removed. Any process that would
 % linger in it would then be terminated (see
-% http://www.erlang.org/doc/reference_manual/code_loading.html). However, due to
-% the nature of these tables (just one-shot fully-qualified calls, no recursion
-% or message-waiting construct), this is not expected to happen.
+% [http://www.erlang.org/doc/reference_manual/code_loading.html]). However, due
+% to the nature of these tables (just one-shot fully-qualified calls, no
+% recursion or message-waiting construct), this is not expected to happen.
 %
 -module(const_table).
 
@@ -76,9 +76,9 @@
 -export([ generate/2 ]).
 
 
-% Generates and loads a pseudo-module sharing the entries of specified table by
-% exporting as many functions named according to the keys and returning the
-% value corresponding to the selected key.
+% @doc Generates and loads a pseudo-module sharing the entries of specified
+% table by exporting as many functions named according to the keys and returning
+% the value corresponding to the selected key.
 %
 % Note that no actual module file is generated (ex: no 'foobar.beam'), the
 % operation remains fully in-memory.

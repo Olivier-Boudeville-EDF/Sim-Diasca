@@ -6,8 +6,8 @@ WOOPER_TOP = .
 		add-prerequisite-plts link-plt                                 \
 		release release-zip release-bz2 release-xz                     \
 		prepare-release clean-release clean-archive stats              \
-		info-paths info-compile info-parse-transform info-conditionals \
-		info-deps
+		info-context info-versions info-paths                          \
+		info-compile info-conditionals info-deps
 
 
 MODULES_DIRS = src doc conf test priv
@@ -112,32 +112,20 @@ stats:
 	@$(MAKE_CODE_STATS) $(WOOPER_TOP)
 
 
+# Typically useful to know the software context for continuous integration:
+info-context: info-platform info-versions info-source-layout
+
+
+info-versions:
+	@echo "MYRIAD_VERSION = $(MYRIAD_VERSION)"
+	@echo "WOOPER_VERSION = $(WOOPER_VERSION)"
+
+
 info-paths:
 	@echo "BEAM_PATH_OPT = $(BEAM_PATH_OPT)"
 
 
-info-compile:
-	@echo "ERLANG_COMPILER_BASE_OPT = $(ERLANG_COMPILER_BASE_OPT)"
-	@echo "BEAM_DIRS = $(BEAM_DIRS)"
-	@echo "INC = $(INC)"
-	@echo "ERLANG_COMPILER_EXEC_TARGET_OPT = $(ERLANG_COMPILER_EXEC_TARGET_OPT)"
-	@echo "ERLANG_COMPILER_DEBUG_OPT = $(ERLANG_COMPILER_DEBUG_OPT)"
-	@echo "ERLANG_COMPILER_NATIVE_COMPILATION_OPT = $(ERLANG_COMPILER_NATIVE_COMPILATION_OPT)"
-	@echo "ERLANG_COMPILER_WARNING_OPT = $(ERLANG_COMPILER_WARNING_OPT)"
-	@echo "ERLANG_COMPILER_OPT_BASE = $(ERLANG_COMPILER_OPT_BASE)"
-	@echo "OVERALL_PZ_OPT = $(OVERALL_PZ_OPT)"
-	@echo "ERLANG_COMPILER_OPT_FOR_STANDARD_MODULES = $(ERLANG_COMPILER_OPT_FOR_STANDARD_MODULES)"
-	@echo "COMPILER_OPT_FOR_WOOPER_CLASSES = $(COMPILER_OPT_FOR_WOOPER_CLASSES)"
-	@echo "EXECUTION_TARGET = $(EXECUTION_TARGET)"
-	@echo "ENABLE_DEBUG = $(ENABLE_DEBUG)"
-	@echo "ENABLE_WOOPER_DEBUG_OPT = $(ENABLE_WOOPER_DEBUG_OPT)"
-
-
-info-parse-transform:
-	@echo "BOOTSTRAP_MODULES = $(BOOTSTRAP_MODULES)"
-	@echo "ERLANG_COMPILER_OPT_FOR_PT = $(ERLANG_COMPILER_OPT_FOR_PT)"
-	@echo "META_BEAM_FILES = $(META_BEAM_FILES)"
-	@echo "ERLANG_COMPILER_PARSE_TRANSFORM_OPT = $(ERLANG_COMPILER_PARSE_TRANSFORM_OPT)"
+info-compile: info-compile-wooper
 
 
 info-conditionals:

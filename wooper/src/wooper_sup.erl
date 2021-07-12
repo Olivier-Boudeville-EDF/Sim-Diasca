@@ -26,7 +26,7 @@
 % Creation date: Sunday, July 14, 2019.
 
 
-% Module implementing the root supervisor of WOOPER.
+% Module implementing the <b>root (OTP) supervisor</b> of WOOPER.
 %
 % In practice, it will supervise a single process, the one of the (singleton)
 % WOOPER class manager (which implements the gen_server behaviour).
@@ -49,7 +49,7 @@
 -define( wooper_supervisor_name, ?MODULE ).
 
 
-% Starts and links the WOOPER root supervisor.
+% @doc Starts and links the WOOPER root supervisor.
 -spec start_link() -> supervisor:startlink_ret().
 start_link() ->
 
@@ -61,7 +61,7 @@ start_link() ->
 
 
 
-% Callback to initialise this supervisor.
+% @doc Callback to initialise this supervisor.
 -spec init( boolean() ) -> { 'ok',
 	   { supervisor:sup_flags(), [ supervisor:child_spec() ] } } | 'ignore'.
 init( Args=undefined ) ->

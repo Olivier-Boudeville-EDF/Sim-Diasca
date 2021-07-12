@@ -26,7 +26,7 @@
 % Creation date: Saturday, July 20, 2019.
 
 
-% Module implementing the Traces (active) application behaviour.
+% @doc Module implementing the <b>Traces (active) OTP application</b> behaviour.
 %
 % Note that, thanks to the automatic creation of the class manager, Traces will
 % still work flawlessly even if not specifically started (typically then out of
@@ -47,7 +47,7 @@
 
 
 
-% Starts the Traces services.
+% @doc Starts the Traces services.
 %
 % Note: RestartType and StartArgs at least currently ignored.
 %
@@ -85,7 +85,7 @@ start( RestartType, StartArgs ) ->
 
 
 
-% Stops the Traces services.
+% @doc Stops the Traces services.
 -spec stop( State :: term() ) -> void().
 stop( State ) ->
 

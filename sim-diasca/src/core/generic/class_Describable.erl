@@ -19,6 +19,9 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Class for all instances able to output a <b>textual description of their
+% state</b>.
+%
 -module(class_Describable).
 
 
@@ -34,7 +37,7 @@
 % Declaration of class-specific attributes:
 -define( class_attributes, [
 
-			 { description, description(), "description held by this instance" }
+			{ description, description(), "description held by this instance" }
 
 						   ] ).
 
@@ -47,7 +50,8 @@
 -include_lib("wooper/include/wooper.hrl").
 
 
--type description() :: string().
+-type description() :: text_utils:ustring().
+% The description of interest.
 
 
 % Implementation notes:
@@ -56,9 +60,7 @@
 % diamond-shaped multiple inheritance.
 
 
-% Constructs a new describable instance, based on a record of an in-world
-% location.
-%
+% @doc Constructs a new describable instance, based on specified description.
 -spec construct( wooper:state(), description() ) -> wooper:state().
 construct( State, Description ) ->
 	% First the direct mother classes, then this class-specific actions:
@@ -69,27 +71,26 @@ construct( State, Description ) ->
 % Methods section.
 
 
-% Returns the description of this Describable.
+% @doc Returns the description of this Describable.
 -spec getDescription( wooper:state() ) -> const_request_return( description() ).
 getDescription( State ) ->
 	wooper:const_return_result( ?getAttr(description) ).
 
 
 
-% Sets the description of this Describable.
+% @doc Sets the description of this Describable.
 -spec setDescription( wooper:state(), description() ) -> oneway_return().
 setDescription( State, NewDescription ) ->
-	wooper:return_state(
-	   setAttribute( State, description, NewDescription ) ).
+	wooper:return_state( setAttribute( State, description, NewDescription ) ).
 
 
 
 % Section for helper functions (not methods).
 
 
-% Returns the description of this Describable.
+% @doc Returns the description of this Describable.
 %
-% Note: is never and cannot be overloaded.
+% Note: is never, and cannot be, overloaded.
 %
 % (helper)
 %

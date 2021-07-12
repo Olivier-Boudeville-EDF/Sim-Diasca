@@ -20,8 +20,9 @@
 %          Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-% Module storing all the helper functions facilitating the support of the Java
-% binding API, relying on JInterface.
+
+% @doc Module storing all the helper functions facilitating the support of the
+% <b>Java binding API</b>, relying on JInterface.
 %
 -module(java_binding_utils).
 
@@ -57,8 +58,8 @@
 
 
 
-% Sends a request to the specified Java OtpMailbox (i.e. typically a worker
-% mailbox, otherwise the controller one).
+% @doc Sends a request to the specified Java OtpMailbox (that is typically a
+% worker mailbox, otherwise the controller one).
 %
 % Note: trace messages received while this request is being processed are
 % managed on the fly (directly, i.e. their processing is not postponed).
@@ -90,8 +91,8 @@ execute_request( MailboxPid, RequestName, RequestParams, State ) ->
 
 
 
-% Executes the same kind of request as above, but in any locally-available Java
-% worker mailbox.
+% @doc Executes the same kind of request as above, but in any locally-available
+% Java worker mailbox.
 %
 % Hence this function is only relevant for "stateless" requests, i.e. requests
 % that do not rely on the state of a particular Jinterface mailbox (ex: static
@@ -110,8 +111,8 @@ execute_request_locally( RequestName, RequestParams, TraceCatOrState ) ->
 
 
 
-% Executes the same kind of request as above, but in any locally-available Java
-% worker mailbox.
+% @doc Executes the same kind of request as above, but in any locally-available
+% Java worker mailbox.
 %
 % Hence this function is only relevant for requests that do not rely on the
 % state of a particular Jinterface mailbox (ex: static methods only).
@@ -141,7 +142,7 @@ execute_request_locally( RequestName, RequestParams, JavaBindingManagerPid,
 
 
 
-% Recursive listener transmitting trace messages sent from Java, to be used
+% @doc Recursive listener transmitting trace messages sent from Java, to be used
 % while performing a request to a Java mailbox in order to wait for its
 % corresponding answer.
 %
@@ -153,14 +154,14 @@ execute_request_locally( RequestName, RequestParams, JavaBindingManagerPid,
 handle_request_results( MailboxPid, RequestName, TraceEmitterCategorization )
   when is_list( TraceEmitterCategorization ) ->
 
-	trace_utils:debug_fmt( "Waiting for the result of request '~ts', from ~w.",
-						   [ RequestName, MailboxPid ] ),
+	%trace_utils:debug_fmt( "Waiting for the result of request '~ts', from ~w.",
+	%						[ RequestName, MailboxPid ] ),
 
 	case java_utils:wait_for_request_result( MailboxPid, RequestName ) of
 
 		{ request_completed, ReceivedData } ->
-			trace_utils:debug_fmt( "Result from ~w, for request '~ts':~p.",
-								   [ MailboxPid, RequestName, ReceivedData ] ),
+			%trace_utils:debug_fmt( "Result from ~w, for request '~ts':~p.",
+			%					   [ MailboxPid, RequestName, ReceivedData ] ),
 			ReceivedData;
 
 		{ trace_emitted, debug, TraceFormattedMessage } ->

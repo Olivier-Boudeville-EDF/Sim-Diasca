@@ -19,12 +19,15 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc The data exchanger offers to actors <b>extra communication patterns</b>
+% within the simulation.
+%
 -module(class_DataExchanger).
 
 
 -define( class_description,
-		 "The data exchanger offers extra communication patterns within the "
-		 "simulation (in addition to pure actor oneways). "
+		 "The data exchanger offers to actors extra communication patterns "
+		 "within the simulation (in addition to pure actor oneways). "
 		 "For all general documentation regarding the data-exchanging "
 		 "service, please refer to the 'Data Exchange' section of the "
 		 "Sim-Diasca Technical Manual." ).
@@ -59,7 +62,7 @@
 	  "*all* nodes are expected to have this support enabled for this feature "
 	  "to be deemed available)" },
 
-	{ feeder_files, [ file_utils:bin_file_name() ], "a list of the paths "
+	{ feeder_files, [ bin_file_path() ], "a list of the paths "
 	  "(as binary strings) relative to the root of the simulation archive, "
 	  "corresponding to the static information stored in deployed files, "
 	  "that were read by all exchangers" },
@@ -114,8 +117,9 @@
 -type data_table() :: table( key(), qualified_value() ).
 
 
-% Designates the PID of a data-exchanger:
 -type data_exchanger_pid() :: sim_diasca:agent_pid().
+% Designates the PID of a data-exchanger.
+
 
 % Could be changed later in, say, a record:
 -opaque exchange_settings() :: { data_exchanger_pid(), data_exchanger_pid() }.

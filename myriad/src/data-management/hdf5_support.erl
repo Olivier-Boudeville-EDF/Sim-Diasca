@@ -27,25 +27,25 @@
 
 
 
-% This module centralises the support for HDF5 (Hierarchical Data Format version
-% 5), a file format designed to store and organize large amounts of numerical
-% data.
+% @doc This module centralises the support for <b>HDF5</b> (<em>Hierarchical
+% Data Format version 5</em>), a file format designed to store and organize
+% large amounts of numerical data.
 %
-% More information: https://en.wikipedia.org/wiki/Hierarchical_Data_Format#HDF5
+% <a href="https://en.wikipedia.org/wiki/Hierarchical_Data_Format#HDF5">More
+% information</a>.
 %
 % Some installation conventions should have been respected, typically so that
-% the libraries can be located. For that, refer to the 'Installation
-% Instructions' section of our fork, i.e.
-% https://github.com/Olivier-Boudeville-EDF/erlhdf5#installation-instructions
+% the libraries can be located. For that, refer to the <a
+% href="https://github.com/Olivier-Boudeville-EDF/erlhdf5#installation-instructions">
+% Installation Instructions</a> section of our fork.
 %
-% See also raw_hdf5_test.erl for a lower-level, more direct access to HDF5.
+% See also `raw_hdf5_test.erl' for a lower-level, more direct access to HDF5.
 %
 -module(hdf5_support).
 
 
 
 % User API:
-%
 -export([ get_supported_datatypes/0, check_data/1, get_element_count/1,
 
 		  start/0, stop/0,
@@ -90,7 +90,6 @@
 
 
 % By default HDF5 files are opened as read-only and will not be overwritten:
-%
 -type open_option() ::
 		check_non_existing % 'H5F_ACC_EXCL'   (fail if file already exists)
 	  | read_write           % 'H5F_ACC_RDWR'   (otherwise read-only)
@@ -101,46 +100,41 @@
 
 
 
-% An HDF5 dataspace, i.e. metadata:
 -type dataspace() :: handle().
+% An HDF5 dataspace, ie metadata.
 
 
-% Rank of a dataspace, i.e. its number of dimensions (dimensionality):
-% (up to 32 in the general case; usually 1, 2 or 3)
-%
 -type rank() :: basic_utils:count().
+% Rank of a dataspace, namely its number of dimensions (dimensionality): (up to
+% 32 in the general case; usually 1, 2 or 3).
 
 
-% Index of a dimension:
 -type dimension() :: basic_utils:count().
+% Index of a dimension.
 
 
-% Number of elements of a dimension:
 -type dimension_size() :: basic_utils:count() | 'unlimited'.
+% Number of elements of a dimension.
 
 
-% Current and maximum number of elements of a dimension (of course current
-% cannot exceed maximum):
-%
 -type dimension_extension() :: { dimension_size(), dimension_size() }.
+% Current and maximum number of elements of a dimension (of course current
+% cannot exceed maximum).
 
 
-% Dimensions of a dataspace (number of elements of each dimension).
-%
-% Typically, for monodimensional data (ex: [ 4.0, 5.2 ]), we have dimensions ::
-% dimension(), which corresponds to the number of elements (here, 2).
-%
-% For bidimensional data (ex: [ {1,2,3}, {4,5,6} ], we have Dimensions :: {
-% TupleCount :: dimension_size(), TupleSize :: dimension_size() }
-% (corresponding here to {2,3}).
-%
 -type dimensions() :: dimension_size()
 					%| tuple( dimension_size() ).
 					| tuple().
-
-
-% A class designates a kind of HDF5 objects:
+% Dimensions of a dataspace (number of elements of each dimension).
 %
+% Typically, for monodimensional data (ex: [4.0, 5.2]), we have dimensions ::
+% dimension(), which corresponds to the number of elements (here, 2).
+%
+% For bidimensional data (ex: [{1,2,3}, {4,5,6} ], we have Dimensions ::
+% {TupleCount :: dimension_size(), TupleSize :: dimension_size()} (corresponding
+% here to {2,3}).
+
+
 -type class() ::  'attribute_creation' | 'dataset_access'  | 'dataset_creation'
 				 | 'dataset_transfer'  | 'datatype_access' | 'datatype_creation'
 				 | 'file_access'       | 'file_creation'   | 'file_mounting'
@@ -148,39 +142,37 @@
 				 | 'link_access'       | 'link_creation'
 				 | 'object_copying'    | 'object_creation'
 				 | 'string_creation'.
+% A class designates a kind of HDF5 objects:
 
 
-% A property list is created according to a class and then possibly updated:
-%
 -type property_list() :: handle().
+% A property list is created according to a class and then possibly updated:
 
 
+-type predefined_datatype() :: 'native_integer'      % ie C int
+							 | 'native_long_integer' % ie C long
+							 | 'native_float'        % ie C float
+							 | 'native_long_float'.  % ie C double
 % Defines the built-in types for the cells of an array:
 %
 % HDF5 defines a very wide range of types, cf
-% https://www.hdfgroup.org/HDF5/doc/RM/PredefDTypes.html
-%
--type predefined_datatype() :: 'native_integer'      % i.e. C int
-							 | 'native_long_integer' % i.e. C long
-							 | 'native_float'        % i.e. C float
-							 | 'native_long_float'.  % i.e. C double
+% [https://www.hdfgroup.org/HDF5/doc/RM/PredefDTypes.html]
 
 
-% Currently this binding supports only native ints and native long floats.
-%
 -type supported_datatypes() :: 'native_integer' | 'native_long_float'.
+% Currently this binding supports only native ints and native long floats.
 
 
-% Corresponds to a double in C, with Not-a-Number and Infinite:
 -type native_long_float() :: float() | 'nan' | 'inf'.
+% Corresponds to a double in C, with Not-a-Number and Infinite.
 
 
-% Datatype identifier as such:
 -type datatype() :: handle().
+% Datatype identifier as such.
 
 
-% Specified to obtain datatypes:
 -type datatype_specifier() :: predefined_datatype() | datatype() | dataset().
+% Specified to obtain datatypes.
 
 
 % Class identifier of a datatype:
@@ -190,22 +182,22 @@
 								   | 'variable_length' | 'array'.
 
 
-% Byte order of an atomic datatype:
 -type byte_order() :: 'little_endian' | 'big_endian' | 'vax_mixed' | 'mixed'
 					| 'none'.
+% Byte order of an atomic datatype.
 
 
-% The name of a HDF5 dataset:
 -type dataset_name() :: string().
+% The name of a HDF5 dataset.
 
 
-% An HDF5 dataset, i.e. the actual data:
 -type dataset() :: binary().
+% An HDF5 dataset, ie the actual data.
 
 
-% Allocation status of a dataset:
 -type allocation_status() :: 'not_allocated' | 'partially_allocated'
 						   | 'fully_allocated'.
+% Allocation status of a dataset.
 
 
 % Binding-level types, mostly for internal use:
@@ -213,27 +205,26 @@
 -type hdf5_open_option() :: atom().
 -type hdf5_class_flag() :: atom().
 
+
+-type hdf5_predefined_datatype() :: atom().
 % Note: such a datatype is an atom here (ex: 'H5T_NATIVE_DOUBLE'), for actual
 % HDF5 use it must be translated into an integer (using convert_type, defined in
-% erlh5t.c);
--type hdf5_predefined_datatype() :: atom().
+% erlh5t.c).
+
 
 -type hdf5_class_identifier() :: integer().
 -type hdf5_byte_order() :: integer().
 
 
+-type data() :: [ tuple() ].
 % Array of vectors.
 %
 % Note that:
-%
 % - all tuples must have the same number of elements
-%
 % - that these elements must be all of the same type
-%
 % - that this must be a supported type for that binding (see
 % supported_datatypes())
-%
--type data() :: [ tuple() ].
+
 
 
 -export_type([ hdf5_file/0, open_option/0,
@@ -253,9 +244,36 @@
 
 
 
+
+-ifdef(has_erlhdf5).
+
 % For the H5T_INTEGER define and all:
-%
 -include("erlhdf5.hrl").
+
+-else. % has_erlhdf5
+
+% Dummy defines, to compile even if the include just above is not enabled:
+
+-define( 'H5T_NO_CLASS', dummy_no_class ).
+-define( 'H5T_INTEGER', dummy_integer ).
+-define( 'H5T_FLOAT', dummy_float ).
+-define( 'H5T_TIME', dummy_time ).
+-define( 'H5T_STRING', dummy_string ).
+-define( 'H5T_BITFIELD', dummy_bitfield ).
+-define( 'H5T_OPAQUE', dummy_opaque ).
+-define( 'H5T_COMPOUND', dummy_compound ).
+-define( 'H5T_REFERENCE', dummy_reference ).
+-define( 'H5T_ENUM', dummy_enum ).
+-define( 'H5T_VLEN', dummy_vlen ).
+-define( 'H5T_ARRAY', dummy_array ).
+
+-define( 'H5T_ORDER_LE', dummy_le ).
+-define( 'H5T_ORDER_BE', dummy_be ).
+-define( 'H5T_ORDER_VAX', dummy_vaw ).
+-define( 'H5T_ORDER_MIXED', dummy_mixed ).
+-define( 'H5T_ORDER_NONE', dummy_none ).
+
+-endif. % has_erlhdf5
 
 
 
@@ -264,7 +282,7 @@
 % To manage HDF5 files, we rely on our fork
 % (https://github.com/Olivier-Boudeville-EDF/erlhdf5) of the Erlang binding,
 % erlhdf5 ( https://github.com/RomanShestakov/erlhdf5), which itself relies on
-% libhdf5 (http://www.hdfgroup.org/HDF5/).
+% libhdf5 ([http://www.hdfgroup.org/HDF5/]).
 %
 % Both are expected to be already built and installed, respectively in
 % ~/Software/erlhdf5 and in any location (ex: ~/Software/HDF/) that was found
@@ -279,12 +297,11 @@
 
 
 % Known binding limitations: see the 'User Notes' in
-% https://github.com/Olivier-Boudeville-EDF/erlhdf5
+% [https://github.com/Olivier-Boudeville-EDF/erlhdf5].
 
 
 
-% Returns a list of the datatypes that this binding is expected to support.
-%
+% @doc Returns a list of the datatypes that this binding is expected to support.
 -spec get_supported_datatypes() -> [ supported_datatypes() ].
 get_supported_datatypes() ->
 	% In Erlang, floating-point values are based on C double, not C floats:
@@ -292,19 +309,19 @@ get_supported_datatypes() ->
 
 
 
-% Checks the format and typing of specified data, i.e. ensures that it is a
+% @doc Checks the format and typing of specified data, ie ensures that it is a
 % non-empty list of tuples of the same size (or unitary elements), with elements
 % of the same type, this type being a supported one, and determines its
 % structure.
 %
-% Returns { Datatype, Dimensions } where Datatype designates the type of the
+% Returns {Datatype, Dimensions} where Datatype designates the type of the
 % atomic data elements (type among the ones known of the binding) and Dimensions
 % lists the number of elements in each dimension (as soon as there are at least
 % two dimensions, it is a tuple; it is just directly the number of elements
 % itself for one dimension).
 %
--spec check_data( data() ) -> { Datatype :: supported_datatypes(),
-								Dimensions :: dimensions() }.
+-spec check_data( data() ) ->
+		{ Datatype :: supported_datatypes(), Dimensions :: dimensions() }.
 check_data( _Data=[] ) ->
 	throw( { invalid_data, empty_list } );
 
@@ -450,7 +467,7 @@ check_data_helper( _Data=[ H | T ], TupleSize, BindingElemType,
 
 
 
-% Returns { BindingElemType, MetaElemType }.
+% Returns {BindingElemType, MetaElemType}.
 %
 % We keep meta_utils conventions to avoid plenty of conversions.
 %
@@ -460,24 +477,24 @@ get_types_of( Element ) ->
 
 	case meta_utils:get_type_of( Element ) of
 
-					  integer ->
-						  { native_integer, integer };
+		integer ->
+			{ native_integer, integer };
 
-					  float ->
-						  { native_long_float, float };
+		float ->
+			{ native_long_float, float };
 
-					  % Special cases managed by the mapping to double:
-					  atom when Element =:= 'nan' orelse Element =:= 'inf' ->
-						  { native_long_float, float };
+		% Special cases managed by the mapping to double:
+		atom when Element =:= 'nan' orelse Element =:= 'inf' ->
+			{ native_long_float, float };
 
-					  % Most probably unsupported:
-					  Other ->
-						  { Other, Other }
+		% Most probably unsupported:
+		Other ->
+			{ Other, Other }
 
 	end.
 
 
-% Tells whether specified tuple is made of doubles, i.e. either Erlang floats
+% Tells whether specified tuple is made of doubles, ie either Erlang floats
 % and/or special values ('nan' and 'inf').
 %
 is_tuple_of_doubles( Tuple ) ->
@@ -504,8 +521,7 @@ is_tuple_of_doubles( Tuple ) ->
 
 
 
-% Returns the number of elements corresponding to specified dimensions.
-%
+% @doc Returns the number of elements corresponding to specified dimensions.
 -spec get_element_count( dimensions() ) -> basic_utils:count().
 get_element_count( Dimensions ) when is_tuple( Dimensions ) ->
 
@@ -527,8 +543,7 @@ get_element_count( Dimension ) when is_integer( Dimension ) ->
 % General support section, regarding the HDF5 service itself.
 
 
-% Starts (checks and inits) the HDF5 service support.
-%
+% @doc Starts (checks and inits) the HDF5 service support.
 -spec start() -> void().
 start() ->
 
@@ -541,8 +556,7 @@ start() ->
 	% ~/Software/HDF/hdf5-1.8.15-install/lib/libhdf5*.so)
 	%
 	ExpectedBindingRoot = file_utils:join( [
-							  system_utils:get_user_home_directory(),
-							  "Software", "erlhdf5" ] ),
+		system_utils:get_user_home_directory(), "Software", "erlhdf5" ] ),
 
 	% We want to display a proper error message if necessary:
 	case file_utils:is_existing_directory( ExpectedBindingRoot ) of
@@ -589,8 +603,7 @@ start() ->
 
 
 
-% Stops the HDF5 support.
-%
+% @doc Stops the HDF5 support.
 -spec stop() -> void().
 stop() ->
 	% No specific action needed:
@@ -601,7 +614,8 @@ stop() ->
 % HDF5 file manipulation section, regarding the overall data file.
 
 
-% Creates an HDF5 file, of specified name, and expected not to exist already.
+% @doc Creates an HDF5 file, of specified name, and expected not to exist
+% already.
 %
 -spec create_file( file_utils:file_name() ) -> hdf5_file().
 create_file( Filename ) ->
@@ -609,8 +623,8 @@ create_file( Filename ) ->
 
 
 
-% Creates an HDF5 file with specified options, of specified name, and expected
-% not to exist already.
+% @doc Creates an HDF5 file with specified options, of specified name, and
+% expected not to exist already.
 %
 -spec create_file( file_utils:file_name(), [ open_option() ] ) -> hdf5_file().
 create_file( Filename, CreateFlags ) ->
@@ -644,15 +658,13 @@ create_file( Filename, CreateFlags ) ->
 
 
 
-% Opens an HDF5 file, of specified name, in read-only mode.
-%
+% @doc Opens an HDF5 file, of specified name, in read-only mode.
 -spec open_file( file_utils:file_name() ) -> hdf5_file().
 open_file( Filename ) ->
 	open_file( Filename, _OpenFlags=[ read_only ] ).
 
 
-% Opens an HDF5 file, of specified name, with specified options.
-%
+% @doc Opens an HDF5 file, of specified name, with specified options.
 -spec open_file( file_utils:file_name(), [ open_option() ] ) -> hdf5_file().
 open_file( Filename, OpenFlags ) ->
 
@@ -681,8 +693,7 @@ open_file( Filename, OpenFlags ) ->
 
 
 
-% Closes specified opened HDF5 file.
-%
+% @doc Closes specified opened HDF5 file.
 -spec close_file( hdf5_file() ) -> void().
 close_file( HDF5File ) ->
 
@@ -711,9 +722,9 @@ close_file( HDF5File ) ->
 
 
 
-% Creates specified dataspace, with specified dimensions of specified maximum
-% size, and opens it for access.
-
+% @doc Creates specified dataspace, with specified dimensions of specified
+% maximum size, and opens it for access.
+%
 % Ex: to create a dataspace with two dimensions, of size 5 and 9 (hence with
 % 5x9=45 elements), use: hdf5_support:create_dataspace( { 5, 9 } ).
 %
@@ -740,8 +751,7 @@ create_dataspace( Dimensions ) when is_tuple( Dimensions ) ->
 
 
 
-% Closes specified dataspace.
-%
+% @doc Closes specified dataspace.
 -spec close_dataspace( dataspace() ) -> void().
 close_dataspace( Dataspace ) ->
 
@@ -757,8 +767,7 @@ close_dataspace( Dataspace ) ->
 
 
 
-% Returns the rank (dimensionality) of the specified dataspace.
-%
+% @doc Returns the rank (dimensionality) of the specified dataspace.
 -spec get_rank( dataspace() ) -> rank().
 get_rank( Dataspace ) ->
 
@@ -768,8 +777,8 @@ get_rank( Dataspace ) ->
 
 
 
-% Returns, for specified dataspace, an ordered list of, for each dimension, a
-% pair of current and maximum size.
+% @doc Returns, for specified dataspace, an ordered list of, for each dimension,
+% a pair of current and maximum size.
 %
 % Ex: may return, for a dataspace of dimension { 5, 9 }, [ {5,5}, {9,9} ].
 %
@@ -782,8 +791,8 @@ get_dimension_extensions( Dataspace ) ->
 
 
 
-% Returns, for specified dataspace of specified rank, an ordered list of, for
-% each dimension, a pair of current and maximum size.
+% @doc Returns, for specified dataspace of specified rank, an ordered list of,
+% for each dimension, a pair of current and maximum size.
 %
 % Ex: may return, for a dataspace of dimension { 5, 9 } (and thus rank 2), [
 % {5,5}, {9,9} ].
@@ -806,8 +815,7 @@ get_dimension_extensions( Rank, Dataspace ) ->
 
 
 
-% Creates a property list for specified class.
-%
+% @doc Creates a property list for specified class.
 -spec create_property_list_for( class() ) -> property_list().
 create_property_list_for( Class ) ->
 
@@ -819,8 +827,7 @@ create_property_list_for( Class ) ->
 
 
 
-% Closes specified property list.
-%
+% @doc Closes specified property list.
 -spec close_property_list( property_list() ) -> void().
 close_property_list( PropertyList ) ->
 	ok = erlhdf5:h5pclose( PropertyList ).
@@ -831,8 +838,8 @@ close_property_list( PropertyList ) ->
 % Datatype subsection.
 
 
-% Returns the specified datatype, from a specification of a predefined datatype,
-% an already existing datatype or a dataset.
+%@doc Returns the specified datatype, from a specification of a predefined
+% datatype, an already existing datatype or a dataset.
 %
 -spec create_datatype( datatype_specifier() ) -> datatype().
 create_datatype( DatatypeSpecifier ) when is_atom( DatatypeSpecifier ) ->
@@ -840,11 +847,11 @@ create_datatype( DatatypeSpecifier ) when is_atom( DatatypeSpecifier ) ->
 	BindingDatatype = case lists:member( DatatypeSpecifier,
 										 get_known_datatypes() ) of
 
-						  true ->
-							  convert_datatype( DatatypeSpecifier );
+		true ->
+			convert_datatype( DatatypeSpecifier );
 
-						  false ->
-							  DatatypeSpecifier
+		false ->
+			DatatypeSpecifier
 
 	end,
 
@@ -858,16 +865,14 @@ create_datatype( DatatypeSpecifier ) ->
 
 
 
-% Closes specified datatype.
-%
+% @doc Closes specified datatype.
 -spec close_datatype( datatype() ) -> void().
 close_datatype( Datatype ) ->
 	ok = erlhdf5:h5tclose( Datatype ).
 
 
 
-% Returns the class identifier of the specified datatype.
-%
+% @doc Returns the class identifier of the specified datatype.
 -spec get_datatype_class( datatype() ) -> datatype_class_identifier().
 get_datatype_class( Datatype ) ->
 	{ ok, BindingClass } = erlhdf5:h5tget_class( Datatype ),
@@ -875,8 +880,7 @@ get_datatype_class( Datatype ) ->
 
 
 
-% Returns the byte order of the specified atomic datatype.
-%
+% @doc Returns the byte order of the specified atomic datatype.
 -spec get_byte_order( datatype() ) -> byte_order().
 get_byte_order( Datatype ) ->
 	{ ok, BindingOrder } = erlhdf5:h5tget_order( Datatype ),
@@ -884,8 +888,7 @@ get_byte_order( Datatype ) ->
 
 
 
-% Returns the size, in bytes, of the specified datatype.
-%
+% @doc Returns the size, in bytes, of the specified datatype.
 -spec get_size( datatype_specifier() ) -> system_utils:byte_size().
 get_size( DatatypeHandle ) when is_integer( DatatypeHandle ) ->
 	{ ok, Size } = erlhdf5:h5tget_size( DatatypeHandle ),
@@ -900,8 +903,6 @@ get_size( DatatypeName ) when is_atom( DatatypeName ) ->
 	{ ok, BindingDatatypeHandle } = erlhdf5:datatype_name_to_handle(
 								BindingDatatypeName ),
 
-
-
 	get_size( BindingDatatypeHandle ).
 
 
@@ -913,8 +914,8 @@ get_size( DatatypeName ) when is_atom( DatatypeName ) ->
 
 
 
-% Creates specified dataset in specified HDF5 file, with specified name, type
-% for its elements, metadata (dataspace) and property list.
+% @doc Creates specified dataset in specified HDF5 file, with specified name,
+% type for its elements, metadata (dataspace) and property list.
 %
 -spec create_dataset( dataset_name(), datatype(), dataspace(), property_list(),
 					  hdf5_file() ) -> dataset().
@@ -932,8 +933,7 @@ create_dataset( DatasetName, Datatype, Dataspace, PropertyList, File ) ->
 	end.
 
 
-% Opens an existing dataset.
-%
+% @doc Opens an existing dataset.
 -spec open_dataset( dataset_name(), hdf5_file() ) -> dataset().
 open_dataset( DatasetName, File ) ->
 
@@ -951,16 +951,14 @@ open_dataset( DatasetName, File ) ->
 
 
 
-% Closes specified dataset.
-%
+% @doc Closes specified dataset.
 -spec close_dataset( dataset() ) -> void().
 close_dataset( Dataset ) ->
 	ok = erlhdf5:h5dclose( Dataset ).
 
 
 
-% Returns the allocation status of specified dataset.
-%
+% @doc Returns the allocation status of specified dataset.
 -spec get_allocation_status( dataset() ) -> allocation_status().
 get_allocation_status( Dataset ) ->
 
@@ -981,8 +979,7 @@ get_allocation_status( Dataset ) ->
 
 
 
-% Returns the size, in bytes, used to store specified dataset.
-%
+% @doc Returns the size, in bytes, used to store specified dataset.
 -spec get_storage_size( dataset() ) -> system_utils:byte_size().
 get_storage_size( Dataset ) ->
 
@@ -992,7 +989,8 @@ get_storage_size( Dataset ) ->
 
 
 
-% Writes specified data (without checking it specifically) in specified dataset.
+% @doc Writes specified data (without checking it specifically) in specified
+% dataset.
 %
 -spec write( data(), dataset() ) -> void().
 write( Data, Dataset ) ->
@@ -1001,8 +999,8 @@ write( Data, Dataset ) ->
 
 
 
-% Writes specified data (after having checked it, if requested) in specified
-% dataset.
+% @doc Writes specified data (after having checked it, if requested) in
+% specified dataset.
 %
 -spec write( data(), dataset(), boolean() ) -> void().
 write( Data, Dataset, CheckData ) ->
@@ -1022,7 +1020,7 @@ write( Data, Dataset, CheckData ) ->
 
 
 
-% Updates the specified dataset at specified index (starting at #0) with
+% @doc Updates the specified dataset at specified index (starting at #0) with
 % specified data.
 %
 -spec update( data(), basic_utils:count(), dataset() ) -> void().
@@ -1048,7 +1046,6 @@ update( Data, Index, Dataset ) ->
 			{ Data, 1, 1, 1 }
 
 	end,
-
 
 	{ Offset, Stride, Count, Block } = case Dim of
 
@@ -1080,21 +1077,21 @@ update( Data, Index, Dataset ) ->
 
 
 
-% Reads the specified named dataset of specified type and tuple size from
+% @doc Reads the specified named dataset of specified type and tuple size from
 % specified file, returning it as a list of tuples of specified size.
 %
--spec read( string(), supported_datatypes(), basic_utils:count(), hdf5_file() )
-		  -> data().
+-spec read( string(), supported_datatypes(), basic_utils:count(),
+			hdf5_file() ) -> data().
 read( DatasetName, DataType, TupleSize, File ) ->
 
 	% Reads dataset:
 	{ ok, RawReadData } = case DataType of
 
-			native_integer ->
-				erlhdf5:h5lt_read_dataset_int( File, DatasetName );
+		native_integer ->
+			erlhdf5:h5lt_read_dataset_int( File, DatasetName );
 
-			native_long_float ->
-				erlhdf5:h5lt_read_dataset_double( File, DatasetName )
+		native_long_float ->
+			erlhdf5:h5lt_read_dataset_double( File, DatasetName )
 
 	end,
 
@@ -1102,8 +1099,8 @@ read( DatasetName, DataType, TupleSize, File ) ->
 
 
 
-% Reads the specified named dataset expected to contain strings, and returns an
-% (ordered) list of these strings.
+% @doc Reads the specified named dataset expected to contain strings, and
+% returns an (ordered) list of these strings.
 %
 read_strings( DatasetName, File ) ->
 
@@ -1128,8 +1125,7 @@ read_strings( DatasetName, File ) ->
 % Apparently exactly one option supported by the binding:
 
 
-% Converts our higher-level identifiers into binding ones:
-%
+% @doc Converts our higher-level identifiers into binding ones.
 -spec convert_open_options( [ open_option() ] ) -> hdf5_open_option().
 convert_open_options( _Opts=[] ) ->
 	'H5F_ACC_RDONLY';
@@ -1185,8 +1181,7 @@ convert_open_options( _Opts=Other ) ->
 
 
 
-% Converts our higher-level identifiers into binding ones:
-%
+% @doc Converts our higher-level identifiers into binding ones.
 -spec convert_class( class() ) -> hdf5_class_flag().
 convert_class( attribute_creation ) ->
 	'H5P_ATTRIBUTE_CREATE';
@@ -1241,8 +1236,8 @@ convert_class( Other ) ->
 
 
 
-% Converts our higher-level identifiers into binding ones (HDF5 ones - as atoms,
-% not as their final form as integer handles):
+% @doc Converts our higher-level identifiers into binding ones (HDF5 ones - as
+% atoms, not as their final form as integer handles).
 %
 -spec convert_datatype( predefined_datatype() ) -> hdf5_predefined_datatype().
 convert_datatype( native_integer ) ->
@@ -1262,18 +1257,16 @@ convert_datatype( Other ) ->
 
 
 
-% Returns the high-level datatypes that are known.
-%
+% @doc Returns the high-level datatypes that are known.
 -spec get_known_datatypes() -> [ predefined_datatype() ].
 get_known_datatypes() ->
 	[ native_integer, native_long_integer, native_float, native_long_float ].
 
 
 
-% Converts our higher-level identifiers into binding ones:
-%
+% @doc Converts our higher-level identifiers into binding ones.
 -spec convert_datatype_class_identifier( datatype_class_identifier() ) ->
-											   hdf5_class_identifier().
+												hdf5_class_identifier().
 convert_datatype_class_identifier( no_class ) ->
 	% Looks like an error case:
 	%'H5T_NO_CLASS';
@@ -1328,8 +1321,7 @@ convert_datatype_class_identifier( Other ) ->
 
 
 
-% Converts binding identifiers into our higher-level ones:
-%
+% @doc Converts binding identifiers into our higher-level ones.
 -spec deconvert_datatype_class_identifier( hdf5_class_identifier() ) ->
 												 datatype_class_identifier().
 %deconvert_datatype_class_identifier( 'H5T_NO_CLASS' ) ->
@@ -1385,8 +1377,7 @@ deconvert_datatype_class_identifier( Other ) ->
 
 
 
-% Converts our higher-level identifiers into binding ones:
-%
+% @doc Converts our higher-level identifiers into binding ones.
 -spec convert_byte_order( byte_order() ) -> hdf5_byte_order().
 convert_byte_order( little_endian ) ->
 	?H5T_ORDER_LE;
@@ -1409,8 +1400,7 @@ convert_byte_order( Other ) ->
 
 
 
-% Converts binding identifiers to our higher-level ones:
-%
+% @doc Converts binding identifiers to our higher-level ones.
 deconvert_byte_order( ?H5T_ORDER_LE ) ->
 	little_endian;
 

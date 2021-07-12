@@ -19,6 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Base class for all the <b>Java-based processing units</b>.
 -module(class_DataflowJavaProcessingUnit).
 
 
@@ -33,10 +34,9 @@
 
 
 
-% Designates the Java reference corresponding to a processing unit instance
-% (relatively to its worker thread):
-%
 -type java_ref() :: basic_utils:count().
+% Designates the Java reference corresponding to a processing unit instance
+% (relatively to its worker thread).
 
 
 -export_type([ java_ref/0 ]).
@@ -108,7 +108,9 @@
 
 
 
-% Constructs a new dataflow Java processing unit:
+% @doc Constructs a new dataflow Java processing unit.
+%
+% Parameters:
 %
 % - ActorSettings describes the actor abstract identifier (AAI) and seed of this
 % actor, as automatically assigned by the load balancer
@@ -223,7 +225,8 @@ construct( State, ActorSettings, UnitClassname,
 % Methods section.
 
 
-% Callback executed automatically whenever the processing unit is activated.
+% @doc Callback executed automatically whenever the processing unit is
+% activated.
 %
 % Meant to be overridden.
 %
@@ -306,8 +309,8 @@ activate( State ) ->
 % Static section.
 
 
-% To denote traces (typically error ones) that are sent from a Java unit yet
-% in a static context (hence with no sensible trace emitter name).
+% @doc To denote traces (typically error ones) that are sent from a Java unit
+% yet in a static context (hence with no sensible trace emitter name).
 %
 -spec get_static_trace_info( dataflow_unit_type() ) ->
 									static_return( traces:emitter_info() ).
@@ -321,8 +324,8 @@ get_static_trace_info( UnitType ) ->
 
 
 
-% Returns the specifications for the input and output ports of that dataflow
-% processing unit.
+% @doc Returns the specifications for the input and output ports of that
+% dataflow processing unit.
 %
 -spec get_port_specifications( dataflow_unit_type() ) ->
 	static_return( { [ input_port_spec() ], [ output_port_spec() ] }
@@ -379,7 +382,7 @@ get_port_specifications( UnitType ) ->
 
 
 
-% Returns the semantics statically declared by this unit.
+% @doc Returns the semantics statically declared by this unit.
 %
 % Defining this method allows to ensure that all the ports ever created by this
 % unit will use semantics among this explicitly stated list.
@@ -401,8 +404,8 @@ get_declared_semantics( UnitType ) ->
 		get_declared_semantics, [ JavaFullClass ],
 		get_static_trace_info( UnitType ) ),
 
-	trace_utils:debug_fmt( "get_declared_semantics returned '~ts' type (~p).",
-		[ type_utils:get_type_of( RequestResult ), RequestResult ] ),
+	%trace_utils:debug_fmt( "get_declared_semantics returned '~ts' type (~p).",
+	%	[ type_utils:get_type_of( RequestResult ), RequestResult ] ),
 
 	% Returns the 'no_semantics_declared' atom if no static declaration of
 	% semantics has been found in Java, or decodes the received one otherwise:
@@ -438,7 +441,7 @@ get_declared_semantics( UnitType ) ->
 
 
 
-% Returns the types statically declared by this unit.
+% @doc Returns the types statically declared by this unit.
 -spec get_declared_types( dataflow_unit_type() ) -> static_return(
 		'no_types_declared' | class_TypeServer:type_entries() ).
 get_declared_types( UnitType ) ->
@@ -494,7 +497,7 @@ get_declared_types( UnitType ) ->
 % Textual helpers section.
 
 
-% Returns a textual description of this processing unit.
+% @doc Returns a textual description of this processing unit.
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 

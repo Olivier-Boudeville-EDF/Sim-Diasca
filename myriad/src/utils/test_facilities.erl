@@ -25,8 +25,8 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 
 
-% This module defines a few basic facilities for tests, at the level of the
-% 'Myriad' layer.
+% @doc This module defines a few <b>basic facilities for tests</b>, at the level
+% of the 'Myriad' layer.
 %
 -module(test_facilities).
 
@@ -47,7 +47,7 @@
 
 
 
-% Starts a test; expected to be the first test statement.
+% @doc Starts a test; expected to be the first test statement.
 %
 % Here we disable explicitly the trapping of EXIT events, as a function run
 % through "erl -eval" (like our tests) or through "erl -run" will be executed in
@@ -90,7 +90,7 @@ start_common() ->
 
 
 
-% Stops a test; expected to be the last test statement in the normal case.
+% @doc Stops a test; expected to be the last test statement in the normal case.
 -spec stop() -> no_return().
 stop() ->
 	basic_utils:display( "\n--> Successful end of test.\n" ),
@@ -98,7 +98,7 @@ stop() ->
 
 
 
-% Displays a test message.
+% @doc Displays a test message.
 -spec display( ustring() ) -> void().
 display( Message ) ->
 	% Carriage return already added in basic_utils:display/1:
@@ -107,7 +107,7 @@ display( Message ) ->
 
 
 
-% Displays a test message, once formatted.
+% @doc Displays a test message, once formatted.
 %
 % FormatString is an io:format-style format string, ValueList is the
 % corresponding list of field values.
@@ -117,7 +117,7 @@ display( FormatString, ValueList ) ->
 	basic_utils:display( FormatString, ValueList ).
 
 
-% Displays a test message, once formatted.
+% @doc Displays a test message, once formatted.
 %
 % Defined for consistency.
 %
@@ -135,6 +135,7 @@ display_fmt( FormatString, ValueList ) ->
 %
 -define( exit_after_test, ).
 
+% @doc To be called when finishing successfully the execution of a test.
 -spec finished() -> no_return().
 
 
@@ -177,7 +178,7 @@ finished() ->
 
 
 
-% To be called whenever a test is to fail (crash on error) immediately.
+% @doc To be called whenever a test is to fail (crash on error) immediately.
 %
 % Ex: test_facilities:fail( "server on strike" )
 %
@@ -204,12 +205,12 @@ fail( Reason ) ->
 
 
 
-% To be called whenever a test is to fail (crash on error) immediately.
+% @doc To be called whenever a test is to fail (crash on error) immediately.
 %
 % FormatString is an io:format-style format string, ValueList is the
 % corresponding list of field values.
 %
-% Ex: test_facilities:fail( "server ~ts on strike", [ "foobar.org" ] )
+% Ex: test_facilities:fail("server ~ts on strike", ["foobar.org"])
 %
 -spec fail( format_string(), format_values() ) -> no_return().
 fail( FormatString, ValueList ) ->

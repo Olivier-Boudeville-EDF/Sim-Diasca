@@ -10,6 +10,10 @@ RUN_OPT := CMD_LINE_OPT="--batch"
 
 ALL_TESTS := $$(/bin/ls *test.erl | sed 's|test.erl|run|1')
 
+
+DOC_SRC := unit-tests-overview.rst
+
+
 all:
 
 test: test-local
@@ -20,8 +24,9 @@ test-local:
 
 doc: doc-local
 
+
 doc-local:
-	@generate-pdf-from-rst.sh unit-tests-overview.rst
+	@$(RST_GENERATOR) $(DOC_SRC)
 
 
 

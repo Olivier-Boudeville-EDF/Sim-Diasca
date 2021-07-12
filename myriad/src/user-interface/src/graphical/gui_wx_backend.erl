@@ -26,8 +26,9 @@
 % Creation date: Wednesday, October 4, 2017.
 
 
-
-% Gathers all elements relative to the wx backend (itself based on WxWidgets).
+% @doc Gathers all elements relative to the (Erlang) <b>wx backend</b> (itself
+% based on WxWidgets).
+%
 -module(gui_wx_backend).
 
 
@@ -136,11 +137,11 @@
 		  to_wx_event_type/1, from_wx_event_type/1,
 		  to_wx_debug_level/1,
 		  window_style_to_bitmask/1,
-		  get_window_options/1, get_window_options/2,
+		  get_window_options/1,
 		  frame_style_to_bitmask/1,
 		  get_panel_options/1,
 		  button_style_to_bitmask/1,
-		  to_wx_sizer_options/1, to_wx_sizer_options/2,
+		  to_wx_sizer_options/1,
 		  sizer_flag_to_bitmask/1,
 		  to_wx_id/1, to_wx_parent/1, to_wx_position/1, to_wx_size/1,
 		  to_wx_orientation/1, wx_id_to_window/1, wx_id_to_string/1,
@@ -177,13 +178,14 @@
 -type wx_orientation() :: ?wxVERTICAL | ?wxHORIZONTAL.
 
 
+-type wx_id() :: maybe( integer() ).
 % The identifier (ID) of a wx element is an integer (positive or not).
 %
 % It allows to specify a 'void' (null) ID of a GUI element.
 %
 % Sometimes the ID may be directly provided by the user or have a predefined
 % value, such as wxID_OPEN; see
-% http://docs.wxwidgets.org/2.8.12/wx_stockitems.html#stockitems for a list
+% [http://docs.wxwidgets.org/2.8.12/wx_stockitems.html#stockitems] for a list
 % thereof.
 %
 % Often, however, the value of the ID is unimportant and in this case it is
@@ -196,20 +198,17 @@
 % More generally, wx identifiers (rather than wx references) should be used only
 % internally.
 %
-% (note: this type is defined and exported, yet reported unknown by Dialyzer)
-%
--type wx_id() :: maybe( integer() ).
+% Note: this type is defined and exported, yet reported unknown by Dialyzer.
 
 
 % See any_id, no_parent, etc. as defined in gui.hrl.
 
 
 
+-type wx_native_object_type() :: atom().
 % Native wx object types.
 %
-% No enumeration like 'wxWindow' | 'wxFrame' | ... found in wx, so:
-%
--type wx_native_object_type() :: atom().
+% No enumeration like 'wxWindow' | 'wxFrame' | ... found in wx.
 
 
 % Shorthands:
@@ -245,7 +244,7 @@
 % Object type section.
 
 
-% Converts a MyriadGUI type of object into a wx one.
+% @doc Converts a MyriadGUI type of object into a wx one.
 -spec to_wx_object_type( myriad_object_type() ) -> wx_object_type().
 to_wx_object_type( object ) ->
 	wxObject;
@@ -292,7 +291,7 @@ to_wx_object_type( Other ) ->
 
 
 
-% Converts a wx type of object into a MyriadGUI one.
+% @doc Converts a wx type of object into a MyriadGUI one.
 -spec from_wx_object_type( wx_object_type() ) -> myriad_object_type().
 from_wx_object_type( wxObject ) ->
 	object;
@@ -344,7 +343,7 @@ from_wx_object_type( Other ) ->
 % Event type section.
 
 
-% Converts a MyriadGUI type of event into a wx one.
+% @doc Converts a MyriadGUI type of event into a wx one.
 -spec to_wx_event_type( event_type() ) -> gui_event:wx_event_type().
 to_wx_event_type( onWindowClosed ) ->
 	close_window;
@@ -364,7 +363,7 @@ to_wx_event_type( Other ) ->
 
 
 
-% Converts a wx type of event into a MyriadGUI one.
+% @doc onverts a wx type of event into a MyriadGUI one.
 -spec from_wx_event_type( gui_event:wx_event_type() ) -> event_type().
 from_wx_event_type( close_window ) ->
 	onWindowClosed;
@@ -384,7 +383,6 @@ from_wx_event_type( Other ) ->
 
 
 
-
 %
 % Section for the conversions from MyriadGUI to wx.
 %
@@ -393,7 +391,7 @@ from_wx_event_type( Other ) ->
 % Debug section.
 
 
-% Converts the debug level from MyriadGUI to the one of wx.
+% @doc Converts the debug level from MyriadGUI to the one of wx.
 %
 % (helper)
 %
@@ -412,8 +410,8 @@ to_wx_debug_level( _DebugLevel=life_cycle ) ->
 % Windows section.
 
 
-% Converts specified MyriadGUI window style into the appropriate wx-specific bit
-% mask.
+% @doc Converts specified MyriadGUI window style into the appropriate
+% wx-specific bit mask.
 %
 % (helper)
 %
@@ -474,8 +472,8 @@ window_style_to_bitmask( _Style=full_repaint_on_resize ) ->
 
 
 
-% Converts specified MyriadGUI window options into the appropriate wx-specific
-% options.
+% @doc Converts specified MyriadGUI window options into the appropriate
+% wx-specific options.
 %
 % (exported helper)
 %
@@ -498,8 +496,8 @@ get_window_options( _Options=[ H | T ], Acc ) ->
 % Frames section.
 
 
-% Converts specified MyriadGUI frame style into the appropriate wx-specific bit
-% mask.
+% @doc Converts specified MyriadGUI frame style into the appropriate wx-specific
+% bit mask.
 %
 % (helper)
 %
@@ -551,8 +549,8 @@ frame_style_to_bitmask( _Style=no_taskbar ) ->
 % Panels section.
 
 
-% Converts specified MyriadGUI panel options into the appropriate wx-specific
-% options.
+% @doc Converts specified MyriadGUI panel options into the appropriate
+% wx-specific options.
 %
 % (exported helper)
 %
@@ -565,8 +563,8 @@ get_panel_options( Options ) ->
 % Buttons section.
 
 
-% Converts specified MyriadGUI button style into the appropriate wx-specific bit
-% mask.
+% @doc Converts specified MyriadGUI button style into the appropriate
+% wx-specific bit mask.
 %
 % (helper)
 %
@@ -601,12 +599,11 @@ button_style_to_bitmask( _Style=flat ) ->
 
 
 
-
 % Sizers section.
 
 
 
-% Converts specified sizer options into wx-specific ones.
+% @doc Converts specified sizer options into wx-specific ones.
 %
 % (helper)
 %
@@ -625,8 +622,8 @@ to_wx_sizer_options(_Options=[ H | T ], Acc ) ->
 
 
 
-% Converts specified MyriadGUI sizer flag into the appropriate wx-specific bit
-% mask.
+% @doc Converts specified MyriadGUI sizer flag into the appropriate wx-specific
+% bit mask.
 %
 % (helper)
 %
@@ -690,7 +687,8 @@ sizer_flag_to_bitmask( _Flag=align_center_horizontal ) ->
 
 
 
-% Converts specified MyriadGUI identifier in a wx-specific widget identifier.
+% @doc Converts specified MyriadGUI identifier in a wx-specific widget
+% identifier.
 %
 % (helper)
 %
@@ -702,7 +700,7 @@ to_wx_id( Other ) ->
 	Other.
 
 
-% Converts specified MyriadGUI identifier in a wx-specific parent widget
+% @doc Converts specified MyriadGUI identifier in a wx-specific parent widget
 % identifier.
 %
 % (helper)
@@ -716,7 +714,7 @@ to_wx_parent( Other ) ->
 
 
 
-% Converts specified MyriadGUI position in a wx-specific position (with
+% @doc Converts specified MyriadGUI position in a wx-specific position (with
 % defaults).
 %
 % (helper)
@@ -730,8 +728,7 @@ to_wx_position( Position ) ->
 
 
 
-
-% Converts specified MyriadGUI size in a wx-specific size (with defaults).
+% @doc Converts specified MyriadGUI size in a wx-specific size (with defaults).
 %
 % (helper)
 %
@@ -745,9 +742,7 @@ to_wx_size( Size ) ->
 
 
 
-
-
-% Converts to back-end orientation.
+% @doc Converts to back-end orientation.
 %
 % (helper)
 %
@@ -772,7 +767,7 @@ to_wx_orientation( horizontal ) ->
 %
 
 
-% Returns the widget corresponding to the specified wx identifier.
+% @doc Returns the widget corresponding to the specified wx identifier.
 %
 % (internal use only)
 %
@@ -781,7 +776,9 @@ wx_id_to_window( Id ) ->
 	wxWindow:findWindowById( Id ).
 
 
-% Returns a textual representation of the specified GUI object wx identifier.
+% @doc Returns a textual representation of the specified GUI object wx
+% identifier.
+%
 -spec wx_id_to_string( wx_id() ) -> ustring().
 wx_id_to_string( _Id=undefined ) ->
 	"no id defined";
@@ -794,9 +791,8 @@ wx_id_to_string( Id ) ->
 
 
 
-
-% Subscribes the current process to the specified type of event of the specified
-% object (receiving for that a message).
+% @doc Subscribes the current process to the specified type of event of the
+% specified object (receiving for that a message).
 %
 % Said otherwise: requests the specified widget to send a message-based event
 % when the specified kind of event happens, overriding its default behaviour.
@@ -812,8 +808,8 @@ connect( EventSource, EventType ) ->
 
 
 
-% Subscribes the current process to the specified type of event of the specified
-% object (receiving for that a message).
+% @doc Subscribes the current process to the specified type of event of the
+% specified object (receiving for that a message).
 %
 % Said otherwise: requests the specified widget to send a message-based event
 % when the specified kind of event happens, overriding its default behaviour
@@ -837,7 +833,7 @@ connect( SourceObject, EventType, Options ) ->
 
 
 
-% Unsubscribes the event source, for all event types.
+% @doc Unsubscribes the event source, for all event types.
 -spec disconnect( event_source() ) -> boolean().
 disconnect( #canvas_state{ panel=Panel } ) ->
 	disconnect( Panel );

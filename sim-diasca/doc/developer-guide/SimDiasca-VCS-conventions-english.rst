@@ -44,5 +44,5 @@ Tags should be set on a regular basis, and should be regarded more generally as 
 TO-DO
 -----
 
- - discuss the "rebase" frequency, the release or feature branches
- - consider using ``svn hooks``, to be triggered automatically whenever a certain type of SVN operation occurs (ex: mail-based check-in notification, check-in rejected if its message does not respect constraints like minimum length, etc.)
+- discuss the "rebase" frequency, the release or feature branches
+- consider using ``svn hooks``, to be triggered automatically whenever a certain type of SVN operation occurs (ex: mail-based check-in notification, check-in rejected if its message does not respect constraints like minimum length, etc.)

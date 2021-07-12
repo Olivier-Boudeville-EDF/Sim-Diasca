@@ -92,15 +92,13 @@
 
 
 % The type of list_impl, for specifications:
-%
 -define( list_impl_type, list() ).
 
 -define( list_impl_type( T ), [ T ] ).
 
 
-% Any kind of lists:
-%
 -type any_list() :: list() | ?list_impl_type.
+% Any kind of lists.
 
 
 
@@ -130,7 +128,6 @@
 
 
 % The type of set_impl, for specifications:
-%
 -define( set_impl_type, ordsets:ordset( any() ) ).
 
 -define( set_impl_type(T), ordsets:ordset( T ) ).

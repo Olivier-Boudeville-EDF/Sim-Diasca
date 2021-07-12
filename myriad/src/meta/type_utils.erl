@@ -27,12 +27,12 @@
 
 
 
-% Management of datatypes.
+% @doc Module helping to manage <b>datatypes</b>, notably in ASTs.
 %
-% See type_utils_test.erl for the corresponding test.
+% See `type_utils_test.erl' for the corresponding test.
 %
-% See also meta_utils for all topics regarding metaprogrammng, parse-transforms,
-% etc.
+% See also `meta_utils' for all topics regarding metaprogramming,
+% parse-transforms, etc.
 %
 -module(type_utils).
 
@@ -43,16 +43,16 @@
 % Types may be defined according to three forms, from the most human-focused to
 % the most computer-native one:
 %
-% F1. type-as-a-string, i.e. a textual specification possibly entered from a
+% F1. type-as-a-string, ie a textual specification possibly entered from a
 % user interface; for example, a type "my_type" may be specified as:
 % "foo|bar|[integer]"
 %
-% F2. type-as-a-contextual-term, i.e. an Erlang term that defines a type, yet
-% may still be contextual (i.e. it may depend on other non-builtin types); the
+% F2. type-as-a-contextual-term, ie an Erlang term that defines a type, yet
+% may still be contextual (ie it may depend on other non-builtin types); the
 % same example may then be defined as: { union, [ foo, bar, {list,[integer]} ]
 % }, where foo and bar are expected to be defined in the context
 %
-% F3. explicit-type, i.e. a fully explicit, self-standing term defining a type
+% F3. explicit-type, ie a fully explicit, self-standing term defining a type
 % (therefore relying only on built-in types and type constructs); for example,
 % supposing that the type foo is an alias for float, and that the type bar is
 % specified as "'hello'|'goodbye'", the same example translates to the following
@@ -79,10 +79,10 @@
 % A type signature is made from the type name and from a list of the type names
 % (if any) it depends upon.
 
-% For monomorphic types (i.e. types that are not parametrised by other types),
+% For monomorphic types (ie types that are not parametrised by other types),
 % their signature is their sole name. Ex: "foo" ("foo()" is also accepted).
 
-% The signature of polymorphic types (i.e. types that are parametrised by other
+% The signature of polymorphic types (ie types that are parametrised by other
 % types) is made of their name immediately followed by a list of the names of
 % the types they depend upon, enclosed in parentheses.
 %
@@ -196,7 +196,7 @@
 % it may be).
 %
 % One can note that the foo type can also be replaced by its actual definition
-% in order to fully resolve my_type (i.e. to go from form F2 to form F3)
+% in order to fully resolve my_type (ie to go from form F2 to form F3)
 %
 % We can see here that the boolean type is nothing but the 'true'|'false' union
 % and is not in an irreducible form (yet it is still considered as being fully
@@ -276,27 +276,34 @@
 %        {tuple,[integer,float]}
 
 
-
+-type type_name() :: atom().
 % Describes the name of a type (without the names of the types it depends on,
 % for polymorphic ones).
 %
-% Ex: 'my_count'
-%
--type type_name() :: atom().
+% Ex: 'my_count'.
 
 
+-type type_arity() :: count().
 % Number of types a (possibly polymorphic) type depends on (possibly zero for
 % plain types).
-%
--type type_arity() :: count().
 
 
-% Analoguous to function_id/0:
 -type type_id() :: { type_name(), type_arity() }.
+% Analoguous to function_id/0.
 
 
-
-
+-type primitive_type_description() :: 'atom'
+									| 'binary'
+									| 'boolean'
+									| 'float'
+									| 'function'
+									| 'integer'
+									| 'list'
+									| 'pid'
+									| 'port'
+									| 'record'
+									| 'reference'
+									| 'tuple'.
 % The "most precise" description of a primitive, simple type (ex: 'boolean' and
 % 'atom') coexist, 'number' are not used, etc.
 %
@@ -311,19 +318,6 @@
 % Polymorphic types (ex: lists) are described with no mention of the types they
 % may depend on (ex: 'list' can be specified, not 'list(float())' or anything
 % like that).
-%
--type primitive_type_description() :: 'atom'
-									| 'binary'
-									| 'boolean'
-									| 'float'
-									| 'function'
-									| 'integer'
-									| 'list'
-									| 'pid'
-									| 'port'
-									| 'record'
-									| 'reference'
-									| 'tuple'.
 
 
 % The description of any given type is based on primitive_type_description/0)
@@ -332,27 +326,26 @@
 
 
 
+-type type_description() :: ustring().
 % Textual type description: type-as-a-string, inspired from the syntax used for
-% type specifications (http://erlang.org/doc/reference_manual/typespec.html),
+% type specifications ([http://erlang.org/doc/reference_manual/typespec.html]),
 % yet different. Notably, monomorphic types do not end with empty parentheses
 % (ex: "integer", not "integer()") and atoms are always surrounded by simple
 % quotes (ex: "'an_atom'|'another_one'").
 %
 % For example: "[{float, boolean}]".
-%
--type type_description() :: ustring().
 
 
 
+-type nesting_depth() :: { count(), count() }.
 % Description of a nesting depth reached when parsing a type description.
 %
-% It is in pratice a {P,B} pair, where P is the parenthesis depth (i.e. the
+% It is in pratice a {P,B} pair, where P is the parenthesis depth (ie the
 % number of the parentheses that have been opened and not closed yet) and B is
-% the bracket depth (i.e. the same principle, for "[]" instead of for "()"):
-%
--type nesting_depth() :: { count(), count() }.
+% the bracket depth (ie the same principle, for "[]" instead of for "()").
 
 
+-type type() :: term().
 % Internal, "formal", actual programmatic description of a type according to our
 % conventions: type-as-a-term (either contextual or explicit, F2 or F3), relying
 % on a translated version of the textual type (which is for example:
@@ -429,7 +422,7 @@
 % Ex: "-type a() :: [foobar()]." yields: '{attribute,1,type, {a,{type,1,
 %    list,[{user_type,1,foobar,[]}]},[]}}'.
 %
-% See also: http://erlang.org/doc/apps/erts/absform.html
+% See also [http://erlang.org/doc/apps/erts/absform.html].
 %
 % Finally, a direct string representation can be converted into a type(); maybe
 % writing a parser may not mandatory, as "{float(), atom()}" may be a string
@@ -443,31 +436,28 @@
 % Note that such a type may not be fully explicit, as it may contain unresolved
 % references to other types; for example: {list, [{count, []}]} does not specify
 % what the count() type is.
-%
--type type() :: term().
 
 
-
+-type explicit_type() :: type().
 % An explicit type is a type that has been fully resolved in terms of built-in
 % constructs; it is thus autonomous, self-standing.
-%
--type explicit_type() :: type().
 
 
 
 % Tuploids. See also augment_tuploid/2.
 
-% We name tuploid a pseudo-tuple, i.e. a value that is either an actual tuple or
+
+-type tuploid() :: tuploid( term() ).
+% We name tuploid a pseudo-tuple, ie a value that is either an actual tuple or
 % a single, standalone term, designated as a "basic tuploid".
 %
 % That is, a tuploid is a tuple of any size, except that the tuploid of size 1
 % is MyTerm, not {MYterm}.
 %
--type tuploid() :: tuploid( term() ).
 
 
-% Probably that such a tuple would contain at least an element of type T:
 -type tuploid( T ) :: tuple() | T.
+% Probably that such a tuple would contain at least an element of type T.
 
 
 -export_type([ type_name/0, type_arity/0, type_id/0,
@@ -502,7 +492,9 @@
 
 
 % Checking:
--export([ check_atom/1, check_boolean/1, check_pid/1, check_list/1,
+-export([ check_atom/1, check_boolean/1, check_pid/1,
+		  check_integer/1, check_float/1,
+		  check_list/1,
 		  check_binary/1, check_binaries/1, check_tuple/1 ]).
 
 
@@ -523,8 +515,8 @@
 
 
 
-% Returns the actual type corresponding to specified type description: parses
-% the specified string to determine the type described therein.
+% @doc Returns the actual type corresponding to specified type description:
+% parses the specified string to determine the type described therein.
 %
 % Note: returns a correct type, but currently rarely the expected, most precise
 % one.
@@ -540,6 +532,8 @@ description_to_type( TypeDescription ) ->
 
 
 
+% @doc Scans specified type description.
+%
 % To perform its parsing, we must split the full description recursively.
 %
 % The worst (and thus first) top-level construct to detect is the union. We
@@ -559,8 +553,7 @@ description_to_type( TypeDescription ) ->
 	%	UnionisedTypes ->
 	%		{ union, [ scan_type( T ) || T <- UnionisedTypes ] }
 
-	%end.
-
+	%end;
 % Last: all other types.
 scan_type( _TypeDescription ) ->
 	% Most imprecise (yet correct) type (commented-out as may hide issues):
@@ -570,7 +563,8 @@ scan_type( _TypeDescription ) ->
 	%throw( { type_interpretation_failed, TypeDescription } ).
 
 
-% Splits the specified type description according to union delimiters
+
+% @doc Splits the specified type description according to union delimiters
 -spec tokenise_per_union( type_description() ) -> [ type_description() ].
 tokenise_per_union( TypeDescription ) ->
 
@@ -596,8 +590,8 @@ parse_nesting( _TypeDescription, _NestingDepth ) ->
 
 
 
-% Returns the type description (in canonical form, notably without whitespaces)
-% corresponding to specified type.
+% @doc Returns the type description (in canonical form, notably without
+% whitespaces) corresponding to specified type.
 %
 % Note: currently does not return a really relevant type description; basically
 % meant to be the function reciprocal to scan_type/1.
@@ -628,7 +622,6 @@ type_to_description( _Type=none ) ->
 
 % Then polymorphic constructs:
 
-
 % No "list()"-like (with no specific type) supported.
 
 type_to_description( _Type={ list, T } ) ->
@@ -647,7 +640,6 @@ type_to_description( _Type={ table, [ Tk, Tv ] } ) ->
 	"table(" ++ type_to_description( Tk ) ++ "," ++ type_to_description( Tv )
 		++ ")";
 
-
 type_to_description( Type ) ->
 
 	% Could be misleading (ex: any() not matching any()):
@@ -659,15 +651,15 @@ type_to_description( Type ) ->
 
 
 
-% Returns a textual representation of the specified type.
+% @doc Returns a textual representation of the specified type.
 -spec type_to_string( type() ) -> ustring().
 type_to_string( Type ) ->
 	type_to_description( Type ).
 
 
 
-% Returns an atom describing, as precisely as possible, the overall type of the
-% specified primitive term.
+% @doc Returns an atom describing, as precisely as possible, the overall type of
+% the specified primitive term.
 %
 % Note: limited to primitive types, not compounded ones (like [float()]).
 %
@@ -740,7 +732,7 @@ get_type_of( Term ) ->
 
 
 
-% Returns a string describing, in a user-friendly manner, the type of the
+% @doc Returns a string describing, in a user-friendly manner, the type of the
 % specified term (up to one level of nesting detailed).
 %
 -spec interpret_type_of( term() ) -> ustring().
@@ -749,7 +741,7 @@ interpret_type_of( Term ) ->
 						   _MaxNestingLevel=1 ).
 
 
-% Returns a string describing, in a user-friendly manner, the type of the
+% @doc Returns a string describing, in a user-friendly manner, the type of the
 % specified term, up to the specified nesting level (either a positive integer
 % or the 'infinite' atom, to go as deep as possible in the term structure).
 %
@@ -759,7 +751,7 @@ interpret_type_of( Term, MaxNestingLevel ) when MaxNestingLevel >= 0 ->
 
 
 
-% Returns a string describing, in a user-friendly manner, the type of the
+% @doc Returns a string describing, in a user-friendly manner, the type of the
 % specified term, describing any nested subterms up to the specified level.
 %
 -spec interpret_type_helper( term(), level(), level() ) -> ustring().
@@ -851,7 +843,6 @@ interpret_type_helper( Term, CurrentNestingLevel, MaxNestingLevel )
 
 	end;
 
-
 interpret_type_helper( _Term={ _A, _B }, _CurrentNestingLevel=MaxNestingLevel,
 					   MaxNestingLevel ) ->
 	"pair";
@@ -878,7 +869,6 @@ interpret_type_helper( Term, CurrentNestingLevel, MaxNestingLevel )
 		text_utils:strings_to_enumerated_string( Elems,
 												 CurrentNestingLevel ) ] );
 
-
 interpret_type_helper( Term, _CurrentNestingLevel, _MaxNestingLevel )
   when is_port( Term ) ->
 	text_utils:format( "port of value '~p'", [ Term ] );
@@ -893,7 +883,7 @@ interpret_type_helper( Term, _CurrentNestingLevel, _MaxNestingLevel ) ->
 
 
 
-% Returns a list of the possible types for immediate values.
+% @doc Returns a list of the possible types for immediate values.
 -spec get_immediate_types() -> [ type_name() ].
 get_immediate_types() ->
 	% Not sure this list is very accurate or relevant:
@@ -901,10 +891,10 @@ get_immediate_types() ->
 
 
 
-% Returns a list of the possible types for immediate values (typically found in
-% an AST like, like 'undefined' in: {atom,42,undefined}).
+% @doc Returns a list of the possible types for immediate values (typically
+% found in an AST like, like 'undefined' in: {atom,42,undefined}).
 %
-% From http://erlang.org/doc/apps/erts/absform.html:
+% From [http://erlang.org/doc/apps/erts/absform.html]:
 %
 % "There are five kinds of atomic literals, which are represented in the same
 % way in patterns, expressions, and guards:
@@ -937,7 +927,7 @@ get_ast_simple_builtin_types() ->
 
 
 
-% Returns a list of the elementary, "atomic" types.
+% @doc Returns a list of the elementary, "atomic" types.
 -spec get_elementary_types() -> [ type_name() ].
 get_elementary_types() ->
 	get_immediate_types() ++
@@ -945,8 +935,8 @@ get_elementary_types() ->
 		  'any' ].
 
 
-% Returns a list of the built-in, non-polymorphic types that can be typically
-% found in AST forms.
+% @doc Returns a list of the built-in, non-polymorphic types that can be
+% typically found in AST forms.
 %
 -spec get_simple_builtin_types() -> [ type_name() ].
 get_simple_builtin_types() ->
@@ -955,8 +945,7 @@ get_simple_builtin_types() ->
 
 
 
-
-% Tells whether specified term designates a type (i.e. a type() instance).
+% @doc Tells whether specified term designates a type (ie a type() instance).
 %
 % (only the elementary types are currently recognised)
 %
@@ -973,7 +962,7 @@ is_type( _T ) ->
 
 
 
-% Tells whether specified term is of specified type (predicate).
+% @doc Tells whether specified term is of specified type (predicate).
 %
 % Note: currently only a very partial checking is made, based on top-level
 % primitive types; later the type will be recursed into, in order to check
@@ -1000,7 +989,8 @@ is_of_type( Term, Type ) ->
 
 
 
-% Tells whether the specified term is of specified textually-described type.
+% @doc Tells whether the specified term is of specified textually-described
+% type.
 %
 % Note: currently no checking is made and the test always succeeds.
 %
@@ -1016,8 +1006,9 @@ is_of_described_type( _Term, _TypeDescription ) ->
 
 
 
-% Tells whether specified non-empty container (list or tuple) is homogeneous in
-% terms of type, i.e. whether all its elements are of the same type.
+% @doc Tells whether specified non-empty container (list or tuple) is
+% homogeneous in terms of type, ie whether all its elements are of the same
+% type.
 %
 % If true, returns the common type.
 % If false, returns two of the different types found in the container.
@@ -1043,9 +1034,9 @@ is_homogeneous( Tuple ) when is_tuple( Tuple ) ->
 
 
 
-% Tells whether specified non-empty container (list or tuple) is homogeneous in
-% terms of type, i.e. whether all its elements are of the same, specified,
-% primitive type.
+% @doc Tells whether specified non-empty container (list or tuple) is
+% homogeneous in terms of type, ie whether all its elements are of the same,
+% specified, primitive type.
 %
 -spec is_homogeneous( list() | tuple(), primitive_type_description() ) ->
 							boolean().
@@ -1087,7 +1078,7 @@ is_homogeneous_helper( Elems, Type ) ->
 
 
 
-% Tells whether the two specified types are the same (i.e. designate the same
+% @doc Tells whether the two specified types are the same (ie designate the same
 % actual type, are aliases).
 %
 -spec are_types_identical( type(), type() ) -> boolean().
@@ -1110,7 +1101,7 @@ are_types_identical( _FirstType, _SecondType ) ->
 
 
 
-% Ensures that specified term is an integer, and returns it.
+% @doc Ensures that the specified term is an integer, and returns it.
 %
 % If it is a float, will return a truncated (integer) version of it.
 %
@@ -1126,7 +1117,7 @@ ensure_integer( N ) ->
 
 
 
-% Ensures that specified term is a float, and returns it.
+% @doc Ensures that the specified term is a float, and returns it.
 %
 % If it is an integer, will return a floating-point version of it.
 %
@@ -1142,7 +1133,7 @@ ensure_float( N ) ->
 
 
 
-% Ensures that specified term is a number, and returns it.
+% @doc Ensures that the specified term is a number, and returns it.
 -spec ensure_number( number() ) -> number().
 ensure_number( N ) when is_number( N ) ->
 	N;
@@ -1152,7 +1143,7 @@ ensure_number( N ) ->
 
 
 
-% Ensures that specified term is a boolean, and returns it.
+% @doc Ensures that the specified term is a boolean, and returns it.
 -spec ensure_boolean( term() ) -> boolean().
 ensure_boolean( B ) when is_boolean( B ) ->
 	B;
@@ -1162,21 +1153,21 @@ ensure_boolean( B ) ->
 
 
 
-% Ensures that specified term is a string, and returns it.
+% @doc Ensures that the specified term is a string, and returns it.
 -spec ensure_string( term() ) -> ustring().
 ensure_string( S ) ->
 	text_utils:ensure_string( S ).
 
 
 
-% Ensures that specified term is a binary string, and returns it.
+% @doc Ensures that the specified term is a binary string, and returns it.
 -spec ensure_binary( term() ) -> ustring().
 ensure_binary( S ) ->
 	text_utils:ensure_binary( S ).
 
 
 
-% Checks that specified term is an atom indeed, and returns it.
+% @doc Checks that the specified term is an atom indeed, and returns it.
 -spec check_atom( term() ) -> atom().
 check_atom( Atom ) when is_atom( Atom ) ->
 	Atom;
@@ -1186,7 +1177,7 @@ check_atom( Other ) ->
 
 
 
-% Checks that specified term is a boolean indeed, and returns it.
+% @doc Checks that the specified term is a boolean indeed, and returns it.
 -spec check_boolean( term() ) -> atom().
 check_boolean( true ) ->
 	true;
@@ -1199,7 +1190,7 @@ check_boolean( Other ) ->
 
 
 
-% Checks that specified term is a PID indeed, and returns it.
+% @doc Checks that the specified term is a PID indeed, and returns it.
 -spec check_pid( term() ) -> pid().
 check_pid( Pid ) when is_pid( Pid ) ->
 	Pid;
@@ -1208,8 +1199,27 @@ check_pid( Other ) ->
 	throw( { not_pid, Other } ).
 
 
+% @doc Checks that the specified term is an integer indeed, and returns it.
+-spec check_integer( term() ) -> integer().
+check_integer( Int ) when is_integer( Int ) ->
+	Int;
 
-% Checks that specified term is a list indeed, and returns it.
+check_integer( Other ) ->
+	throw( { not_integer, Other } ).
+
+
+
+% @doc Checks that the specified term is a float indeed, and returns it.
+-spec check_float( term() ) -> float().
+check_float( Float ) when is_float( Float ) ->
+	Float;
+
+check_float( Other ) ->
+	throw( { not_float, Other } ).
+
+
+
+% @doc Checks that the specified term is a list indeed, and returns it.
 -spec check_list( term() ) -> list().
 check_list( List ) when is_list( List ) ->
 	List;
@@ -1219,7 +1229,7 @@ check_list( Other ) ->
 
 
 
-% Checks that specified term is a binary indeed, and returns it.
+% @doc Checks that the specified term is a binary indeed, and returns it.
 -spec check_binary( term() ) -> binary().
 check_binary( Binary ) when is_binary( Binary ) ->
 	Binary;
@@ -1228,15 +1238,16 @@ check_binary( Other ) ->
 	throw( { not_binary, Other } ).
 
 
-% Checks that specified term is a list of binaries indeed, and returns it.
+% @doc Checks that the specified term is a list of binaries indeed, and returns
+% it.
+%
 -spec check_binaries( term() ) -> [ binary() ].
 check_binaries( Binaries ) ->
 	[ check_binary( B ) || B <- Binaries ].
 
 
 
-
-% Checks that specified term is a tuple indeed, and returns it.
+% @doc Checks that the specified term is a tuple indeed, and returns it.
 -spec check_tuple( term() ) -> tuple().
 check_tuple( Tuple ) when is_tuple( Tuple ) ->
 	Tuple;
@@ -1247,7 +1258,7 @@ check_tuple( Other ) ->
 
 
 
-% Augments the specified tuploid with specified term.
+% @doc Augments the specified tuploid with specified term.
 %
 % Ex: augment_tuploid(a, 2.0) = {a, 2.0}
 %     augment_tuploid({foo, 42}, 2.0) = {foo, 42, 2.0}

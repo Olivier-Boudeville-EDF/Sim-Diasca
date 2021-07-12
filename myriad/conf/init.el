@@ -1,11 +1,48 @@
 ;; This is an initialization script written in elisp.
 ;; Refer to https://www.gnu.org/software/emacs/manual/html_node/elisp/
 
+;; Inspired from https://github.com/erlang-ls/erlang_ls/blob/main/misc/dotemacs
+;; This configuration can be compared with the exammple one, ex:
+;; emacs -q -l ~/Software/erlang_ls/misc/dotemacs XXX.erl
+
+
+;; Temporarily added, to silence 'Package cl is deprecated':
+(setq byte-compile-warnings '(cl-functions))
 
 ;; Use our 'update-emacs-modules.sh' script to update the *.el files of
 ;; interest.
+;;
+;; (disabled, as now preferring the Emacs 'packages' system)
+;;
+;;(setq load-path (cons "~/.emacs.d/my-modules" load-path))
 
-(setq load-path (cons "~/.emacs.d/my-modules" load-path))
+(require 'package)
+
+(add-to-list 'package-archives
+			 '("melpa" . "https://melpa.org/packages/") t)
+
+(package-initialize)
+
+;; Not necessarily a good idea, as launching Emacs becomes slow and dependent
+;; on the availability of network for the lookup of the package referential:
+;;
+;;(package-refresh-contents)
+
+
+;; Utility function that either installs a package (if it is
+;; missing) or requires it (if it already installed).
+;;
+(defun package-require (pkg &optional require-name)
+  "Install a package iff it is not already installed."
+  (when (not (package-installed-p pkg))
+	(package-install pkg))
+  (if require-name
+	  (require require-name)
+	(require pkg)))
+
+(require 'package)
+
+
 
 ;; No more annoying, unmutable bell (ex: when reaching buffer bounds):
 (setq ring-bell-function 'ignore)
@@ -39,6 +76,8 @@
 ;; or complaints about free variables:
 ;;(byte-recompile-directory "~/.emacs.d" 0)
 
+(add-hook 'after-init-hook #'global-flycheck-mode)
+
 
 ;; RST files support section.
 
@@ -47,6 +86,7 @@
 (setq auto-mode-alist
 	  (append '(("\\.txt$"  . rst-mode)
 				("\\.rst$"  . rst-mode)
+				("\\.rst.template$"  . rst-mode)
 				("\\.rest$" . rst-mode)) auto-mode-alist))
 
 
@@ -74,10 +114,9 @@
 ;; Adapted from the README distributed with the OTP tarballs:
 
 ;; Note: 'emacs' is here a symbolic link typically created by our
-;; install-erlang.sh script, so that upgrading Erlang does not risk
-;; to make this directory (ex: lib/tools-2.8.2/emacs) vanish because
-;; of a change in the 'tools' version (thus requiring the current file
-;; to be endlessly modified)
+;; install-erlang.sh script, so that upgrading Erlang does not risk to make this
+;; directory (ex: lib/tools-2.8.2/emacs) vanish because of a change in the
+;; 'tools' version (thus requiring the current file to be endlessly modified)
 
 ;; Two possible conventional locations for an Erlang install:
 ;;  - either in the user account (in ~/Software/Erlang/Erlang-current-install)
@@ -92,21 +131,165 @@
 (setq exec-path (cons "~/Software/Erlang/Erlang-current-install/lib/erlang/bin" exec-path))
 (setq exec-path (cons "/usr/local/lib/erlang/bin" exec-path))
 
-;; erlang-electric-semicolon removed, as more a nuisance than a help (function
-;; headers generally pasted from first):
-;;
-(setq erlang-electric-commands '(erlang-electric-comma
-								 erlang-electric-g))
-
 
 ;; Only in some language modes, not all text modes nor even all programming
 ;; modes where it is more of a nuisance:
+;;
 ;;(add-hook 'text-mode-hook 'turn-on-auto-fill)
 ;;(add-hook 'prog-mode-hook 'turn-on-auto-fill)
 ;; Not so useful even here:
 ;;(add-hook 'erlang-mode-hook 'turn-on-auto-fill)
 
-(require 'erlang-start)
+;;(require 'erlang-start)
+
+
+;; Not wanting single '%' to be set at the default column 48:
+(add-hook 'erlang-mode-hook (lambda () (setq-local comment-column 0)))
+
+;; erlang-electric-semicolon removed, as more a nuisance than a help (function
+;; headers generally pasted from first):
+;;
+;;(setq erlang-electric-commands '(erlang-electric-comma
+;;								 erlang-electric-g))
+
+;; Install the official Erlang mode:
+(package-require 'erlang)
+
+;; erlang-electric-semicolon removed, as more a nuisance than a help (function
+;; headers generally pasted from first):
+;;
+;;(setq erlang-electric-commands '(erlang-electric-comma
+;;								 erlang-electric-g))
+
+
+
+;; Section to show line and column numbers on the left border:
+;; more info: https://www.emacswiki.org/emacs/LineNumbers
+
+;; (obsolete now; see also 'longlines')
+;;(require 'linum)
+;;(add-hook 'find-file-hook (lambda () (linum-mode 1)))
+
+;;(add-hook 'erlang-mode-hook 'linum-mode)
+;;(add-hook 'erlang-mode-hook 'column-number-mode)
+
+
+;; Now:
+(package-require 'display-line-numbers)
+
+;; List of a major modes on which to disable line numbers:
+(defcustom display-line-numbers-exempt-modes
+  '(vterm-mode eshell-mode shell-mode term-mode ansi-term-mode rst-mode)
+  "Major modes :."
+  :group 'display-line-numbers
+  :type 'list
+  :version "green")
+
+(defun display-line-numbers--turn-on ()
+  "Turn on line numbers except for certain major modes.
+Exempt major modes are defined in `display-line-numbers-exempt-modes'."
+  (unless (or (minibufferp)
+			  (member major-mode display-line-numbers-exempt-modes))
+	(display-line-numbers-mode)))
+
+(global-display-line-numbers-mode)
+
+
+
+;; LSP-related section
+;; See ~/Software/erlang_ls/misc/dotemacs for a configuration example.
+
+;; Requires erlang_ls, typically obtained with:
+;; cd ~/Software
+;; git clone https://github.com/erlang-ls/
+;; cd erlang_ls && make && mkdir bin && cd bin
+;;   && ln -s ../_build/default/bin/erlang_ls
+;; Then add ${HOME}/Software/erlang_ls/bin to your PATH.
+
+;; Include the Language Server Protocol Clients:
+(package-require 'lsp-mode)
+
+;; Customize prefix for key-bindings:
+;; (would clash with "Go to line")
+;;(setq lsp-keymap-prefix "C-l")
+
+;; Enable LSP for Erlang files:
+;;
+;; (to be disabled if too many usability concerns)
+;;
+(add-hook 'erlang-mode-hook #'lsp)
+
+;; Require and enable the Yasnippet templating system:
+(package-require 'yasnippet)
+(yas-global-mode t)
+
+;; Enable logging for lsp-mode:
+;;(setq lsp-log-io t)
+(setq lsp-log-io nil)
+
+;; To select options, see:
+;; https://emacs-lsp.github.io/lsp-mode/tutorials/how-to-turn-off/
+
+;; Enable and configure the LSP UI Package:
+;; See https://github.com/emacs-lsp/lsp-ui
+;;(package-require 'lsp-ui)
+(use-package lsp-ui)
+
+;; Regarding sideline:
+(setq lsp-ui-sideline-show-diagnostics t)
+(setq lsp-ui-sideline-show-hover t)
+
+;;(setq lsp-ui-sideline-show-code-actions t)
+(setq lsp-ui-sideline-show-code-actions nil)
+
+;;(setq lsp-ui-sideline-update-mode 'line)
+;;(setq lsp-ui-sideline-delay ...
+
+(setq lsp-ui-sideline-enable t)
+
+
+;; Regarding peek:
+(setq lsp-ui-peek-enable t)
+(setq lsp-ui-peek-show-directory t)
+
+
+;; Regarding lsp-ui-doc:
+(setq lsp-ui-doc-enable t)
+(setq lsp-ui-doc-position 'bottom)
+;;(setq lsp-ui-doc-delay Number of seconds before showing the doc...
+(setq lsp-ui-doc-show-with-cursor t)
+(setq lsp-ui-doc-show-with-mouse t)
+
+
+;; Enable LSP Origami Mode (for folding ranges):
+(package-require 'lsp-origami)
+(add-hook 'origami-mode-hook #'lsp-origami-mode)
+(add-hook 'erlang-mode-hook #'origami-mode)
+
+;; Provide commands for type completion, to list workspace symbols:
+;; - helm-lsp-workspace-symbol
+;; - helm-lsp-global-workspace-symbol
+(package-install 'helm-lsp)
+
+(add-hook 'after-init-hook 'global-company-mode)
+
+(setq company-minimum-prefix-length 1
+	  company-idle-delay 0.0) ;; default is 0.2
+
+;; Which-key integration:
+(package-require 'which-key)
+(add-hook 'erlang-mode-hook 'which-key-mode)
+(with-eval-after-load 'lsp-mode
+  (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration))
+
+;; Always show diagnostics at the bottom, using 1/3 of the available space:
+(add-to-list 'display-buffer-alist
+			 `(,(rx bos "*LSP errors*" eos)
+			  (display-buffer-reuse-window
+			   display-buffer-in-side-window)
+			  (side            . bottom)
+			  (reusable-frames . visible)
+			  (window-height   . 0.33)))
 
 
 
@@ -119,7 +302,7 @@
 ;;
 (windmove-default-keybindings)
 
-;; No limit:
+;; No limit in the buffer list:
 (setq buffers-menu-max-size nil)
 
 
@@ -141,7 +324,8 @@
 					  (bury-buffer buf)
 					  (switch-to-prev-buffer (get-buffer-window buf) 'kill))
 					buffer)))
-(add-hook 'compilation-finish-functions 'bury-compile-buffer-if-successful)
+
+;;(add-hook 'compilation-finish-functions 'bury-compile-buffer-if-successful)
 
 
 (setq auto-mode-alist
@@ -164,26 +348,17 @@
 		;; Otherwise parameters are aligned with the first, whereas we want a
 		;; fixed offset:
 		(arglist-cont-nonempty . 2)
-		(arglist-intro . 2)
-						)
-)
+		(arglist-intro . 2)))
 
 
 ;; Support for C-like languages:
 ;; (customizations for all of c-mode, c++-mode, objc-mode, java-mode)
 (defun my-c-mode-common-hook ()
   (setq cc-default-style "bsd")
-  (c-set-offset 'substatement-open 0)
-  )
+  (c-set-offset 'substatement-open 0))
 
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 (add-hook 'cc-mode-common-hook 'my-c-mode-common-hook)
-
-
-;; Displaying of line number on the left:
-;; (see also 'longlines')
-(require 'linum)
-(add-hook 'find-file-hook (lambda () (linum-mode 1)))
 
 
 ;; Not working apparently with emacs 22.2.1:
@@ -240,7 +415,6 @@
   (setq-local whitespace-style '(face
 	tabs trailing space-before-tab newline
 	indentation space-after-tab))
-
   )
 
 (add-hook 'text-mode-hook 'fix-behaviours-for-text-modes)
@@ -248,15 +422,16 @@
 
 
 ;; Indenting buffers as a whole:
+;; more info: https://www.emacswiki.org/emacs/DeletingWhitespace#h5o-11
 (defun indent-whole-buffer ()
-  "indent whole buffer"
+  "Indent whole buffer."
   (interactive)
   (delete-trailing-whitespace)
   (indent-region (point-min) (point-max) nil)
-  )
+)
 
 ;;(add-hook 'find-file-hook 'indent-whole-buffer)
-;;(add-hook 'find-file-hook 'whitespace-cleanup)
+(add-hook 'find-file-hook 'whitespace-cleanup)
 
 
 
@@ -273,7 +448,7 @@
 	(let ((new (point)))
 	  (if (< orig new)
 		  (goto-char orig))))
-  )
+)
 
 
 (require 'uniquify)
@@ -353,39 +528,39 @@
 )
 
 (defun default-f8 ()
-  (interactive)
-  (message "Default for F8")
+ (interactive)
+ (message "Default for F8")
 )
 
 (defun default-f9 ()
-  (interactive)
-  (message "Default for F9")
+ (interactive)
+ (message "Default for F9")
 )
 
 (defun default-shift-f9 ()
-  (interactive)
-  (message "Default for Shift-F9")
+ (interactive)
+ (message "Default for Shift-F9")
 )
 
 (defun default-f10 ()
-  (interactive)
-  (message "Default for F10")
+ (interactive)
+ (message "Default for F10")
 )
 
 (defun default-f11 ()
-  (interactive)
-  (message "Default for F11")
+ (interactive)
+ (message "Default for F11")
 )
 
 (defun default-f12 ()
-  (interactive)
-  (message "Default for F12")
+ (interactive)
+ (message "Default for F12")
 )
 
 (defun save-and-close ()
-  (interactive)
-  (save-buffer)
-  (kill-this-buffer)
+ (interactive)
+ (save-buffer)
+ (kill-this-buffer)
 )
 
 
@@ -422,8 +597,7 @@
   (message "F10       -> save-buffers-kill-emacs" )
   (message "F11       -> (does nothing)" )
   (message "F12       -> (does nothing)" )
-
-  )
+)
 
 
 ;; Curiously hitting F1 triggers default-f12:
@@ -621,10 +795,10 @@
 
 
 
-;; Show line-number in the mode line
+;; Show line-number in the mode line:
 (line-number-mode 1)
 
-;; Show column-number in the mode line
+;; Show column-number in the mode line:
 (column-number-mode 1)
 
 (setq-default fill-column 80)
@@ -645,9 +819,9 @@
 
 
 ;; For proper mouse search:
-(require 'acme-search)
-(global-set-key [(mouse-3)] 'acme-search-forward)
-(global-set-key [(shift mouse-3)] 'acme-search-backward)
+;;(require 'acme-search)
+;;(global-set-key [(mouse-3)] 'acme-search-forward)
+;;(global-set-key [(shift mouse-3)] 'acme-search-backward)
 
 
 
@@ -743,24 +917,27 @@
 
 
 
+;; '(package-selected-packages '(flycheck))
 
 (custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(blink-cursor-mode nil)
  '(column-number-mode t)
+ '(package-selected-packages
+   '(yasnippet which-key use-package lsp-ui lsp-origami helm-lsp flycheck erlang))
  '(show-paren-mode t)
  '(tool-bar-mode nil))
 
 
 ;; :height 95 for some resolutions:
 (custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(default ((t (:inherit nil :stipple nil :background "black" :foreground "white" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 105 :width normal :foundry "unknown" :family "DejaVu Sans Mono"))))
  '(rst-level-1-face ((t (:background "#00f" :foreground "#fff"))) t)
  '(rst-level-2-face ((t (:background "#00a" :foreground "#ddd"))) t)

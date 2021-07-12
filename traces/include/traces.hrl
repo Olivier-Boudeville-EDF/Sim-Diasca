@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2021 Olivier Boudeville
+% Copyright (C) 2007-2021 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -27,7 +27,6 @@
 
 
 % Include guard:
-%
 -ifndef(traces_hrl_guard).
 -define(traces_hrl_guard,).
 
@@ -38,7 +37,6 @@
 
 
 % Per-test trace file (must be defined before the TraceSupervisor include):
-%
 -define( TraceFilename, ( atom_to_list( ?MODULE ) ++ ?TraceExtension ) ).
 
 
@@ -172,7 +170,7 @@
 %
 -define( notify_emergency_fmt( Message, FormatValues ),
 		 class_TraceEmitter:send_standalone_safe( emergency,
-							  text_utils:format( Message, FormatValues ) )
+								text_utils:format( Message, FormatValues ) )
 ).
 
 
@@ -180,7 +178,8 @@
 % To send traces neither from a TraceEmitter instance nor from a test (ex: in a
 % static method):
 %
--define( notify_emergency_fmt_cat( Message, FormatValues, EmitterCategorization ),
+-define( notify_emergency_fmt_cat( Message, FormatValues,
+								   EmitterCategorization ),
 		 class_TraceEmitter:send_standalone_safe( emergency,
 							  text_utils:format( Message, FormatValues ),
 							  EmitterCategorization )
@@ -191,8 +190,8 @@
 % To send traces neither from a TraceEmitter instance nor from a test (ex: in a
 % static method):
 %
--define( notify_emergency_fmt_full( Message, FormatValues, EmitterCategorization,
-								ApplicationTimestamp ),
+-define( notify_emergency_fmt_full( Message, FormatValues,
+						EmitterCategorization, ApplicationTimestamp ),
 		 class_TraceEmitter:send_standalone_safe( emergency,
 							  text_utils:format( Message, FormatValues ),
 							  EmitterCategorization, ApplicationTimestamp )
@@ -337,7 +336,7 @@
 % according to the application.
 %
 -define( notify_critical_full( Message, EmitterCategorization,
-							ApplicationTimestamp ),
+							   ApplicationTimestamp ),
 		 class_TraceEmitter:send_standalone_safe( critical, Message,
 								EmitterCategorization, ApplicationTimestamp )
 ).
@@ -361,7 +360,8 @@
 % To send traces neither from a TraceEmitter instance nor from a test (ex: in a
 % static method):
 %
--define( notify_critical_fmt_cat( Message, FormatValues, EmitterCategorization ),
+-define( notify_critical_fmt_cat( Message, FormatValues,
+								  EmitterCategorization ),
 		 class_TraceEmitter:send_standalone_safe( critical,
 							  text_utils:format( Message, FormatValues ),
 							  EmitterCategorization )
@@ -373,7 +373,7 @@
 % static method):
 %
 -define( notify_critical_fmt_full( Message, FormatValues, EmitterCategorization,
-								ApplicationTimestamp ),
+								   ApplicationTimestamp ),
 		 class_TraceEmitter:send_standalone_safe( critical,
 							  text_utils:format( Message, FormatValues ),
 							  EmitterCategorization, ApplicationTimestamp )
@@ -441,7 +441,7 @@
 %
 -define( notify_error_fmt( Message, FormatValues ),
 		 class_TraceEmitter:send_standalone_safe( error,
-							  text_utils:format( Message, FormatValues ) )
+								text_utils:format( Message, FormatValues ) )
 ).
 
 
@@ -451,8 +451,8 @@
 %
 -define( notify_error_fmt_cat( Message, FormatValues, EmitterCategorization ),
 		 class_TraceEmitter:send_standalone_safe( error,
-							  text_utils:format( Message, FormatValues ),
-							  EmitterCategorization )
+								text_utils:format( Message, FormatValues ),
+								EmitterCategorization )
 ).
 
 
@@ -463,8 +463,8 @@
 -define( notify_error_fmt_full( Message, FormatValues, EmitterCategorization,
 								ApplicationTimestamp ),
 		 class_TraceEmitter:send_standalone_safe( error,
-							  text_utils:format( Message, FormatValues ),
-							  EmitterCategorization, ApplicationTimestamp )
+								text_utils:format( Message, FormatValues ),
+								EmitterCategorization, ApplicationTimestamp )
 ).
 
 
@@ -516,7 +516,7 @@
 -define( notify_warning_full( Message, EmitterCategorization,
 							  ApplicationTimestamp ),
 		 class_TraceEmitter:send_standalone_safe( warning, Message,
-								 EmitterCategorization, ApplicationTimestamp )
+								EmitterCategorization, ApplicationTimestamp )
 ).
 
 
@@ -532,7 +532,7 @@
 %
 -define( notify_warning_fmt( Message, FormatValues ),
 		 class_TraceEmitter:send_standalone_safe( warning,
-							  text_utils:format( Message, FormatValues ) )
+								text_utils:format( Message, FormatValues ) )
 ).
 
 
@@ -542,8 +542,8 @@
 %
 -define( notify_warning_fmt_cat( Message, FormatValues, EmitterCategorization ),
 		 class_TraceEmitter:send_standalone_safe( warning,
-							  text_utils:format( Message, FormatValues ),
-							  EmitterCategorization )
+								text_utils:format( Message, FormatValues ),
+								EmitterCategorization )
 ).
 
 
@@ -554,8 +554,8 @@
 -define( notify_warning_fmt_full( Message, FormatValues, EmitterCategorization,
 								  ApplicationTimestamp ),
 		 class_TraceEmitter:send_standalone_safe( warning,
-							  text_utils:format( Message, FormatValues ),
-							  EmitterCategorization, ApplicationTimestamp )
+								text_utils:format( Message, FormatValues ),
+								EmitterCategorization, ApplicationTimestamp )
 ).
 
 
@@ -563,11 +563,7 @@
 
 
 
-
-
 -ifdef(tracing_activated).
-
-
 
 
 
@@ -606,7 +602,7 @@
 -define( notify_notice_em( Message, EmitterName, EmitterCategorization,
 						 MessageCategorization ),
 		 class_TraceEmitter:send_standalone( notice, Message, EmitterName,
-							 EmitterCategorization, MessageCategorization )
+								EmitterCategorization, MessageCategorization )
 ).
 
 
@@ -645,7 +641,7 @@
 %
 -define( notify_notice_fmt( Message, FormatValues ),
 		 class_TraceEmitter:send_standalone( notice,
-							  text_utils:format( Message, FormatValues ) )
+								text_utils:format( Message, FormatValues ) )
 ).
 
 
@@ -666,8 +662,8 @@
 -define( notify_notice_fmt_em( Message, FormatValues, EmitterName,
 							 EmitterCategorization, MessageCategorization ),
 		 class_TraceEmitter:send_standalone( notice,
-					  text_utils:format( Message, FormatValues ), EmitterName,
-					  EmitterCategorization, MessageCategorization )
+						text_utils:format( Message, FormatValues ), EmitterName,
+						EmitterCategorization, MessageCategorization )
 ).
 
 
@@ -677,8 +673,8 @@
 -define( notify_notice_fmt_full( Message, FormatValues, EmitterCategorization,
 							   ApplicationTimestamp ),
 		 class_TraceEmitter:send_standalone( notice,
-							  text_utils:format( Message, FormatValues ),
-							  EmitterCategorization, ApplicationTimestamp )
+								text_utils:format( Message, FormatValues ),
+								EmitterCategorization, ApplicationTimestamp )
 ).
 
 
@@ -720,7 +716,7 @@
 -define( notify_info_em( Message, EmitterName, EmitterCategorization,
 						 MessageCategorization ),
 		 class_TraceEmitter:send_standalone( info, Message, EmitterName,
-							 EmitterCategorization, MessageCategorization )
+								EmitterCategorization, MessageCategorization )
 ).
 
 
@@ -759,7 +755,7 @@
 %
 -define( notify_info_fmt( Message, FormatValues ),
 		 class_TraceEmitter:send_standalone( info,
-							  text_utils:format( Message, FormatValues ) )
+								text_utils:format( Message, FormatValues ) )
 ).
 
 
@@ -769,8 +765,8 @@
 %
 -define( notify_info_fmt_cat( Message, FormatValues, EmitterCategorization ),
 		 class_TraceEmitter:send_standalone( info,
-							  text_utils:format( Message, FormatValues ),
-							  EmitterCategorization )
+								text_utils:format( Message, FormatValues ),
+								EmitterCategorization )
 ).
 
 
@@ -780,8 +776,8 @@
 -define( notify_info_fmt_em( Message, FormatValues, EmitterName,
 							 EmitterCategorization, MessageCategorization ),
 		 class_TraceEmitter:send_standalone( info,
-					  text_utils:format( Message, FormatValues ), EmitterName,
-					  EmitterCategorization, MessageCategorization )
+						text_utils:format( Message, FormatValues ), EmitterName,
+						EmitterCategorization, MessageCategorization )
 ).
 
 
@@ -791,8 +787,8 @@
 -define( notify_info_fmt_full( Message, FormatValues, EmitterCategorization,
 							   ApplicationTimestamp ),
 		 class_TraceEmitter:send_standalone( info,
-							  text_utils:format( Message, FormatValues ),
-							  EmitterCategorization, ApplicationTimestamp )
+								text_utils:format( Message, FormatValues ),
+								EmitterCategorization, ApplicationTimestamp )
 ).
 
 
@@ -859,7 +855,7 @@
 %
 -define( notify_debug_fmt( Message, FormatValues ),
 		 class_TraceEmitter:send_standalone( debug,
-							  text_utils:format( Message, FormatValues ) )
+								text_utils:format( Message, FormatValues ) )
 ).
 
 
@@ -868,8 +864,8 @@
 %
 -define( notify_debug_fmt_cat( Message, FormatValues, EmitterCategorization ),
 		 class_TraceEmitter:send_standalone( debug,
-							  text_utils:format( Message, FormatValues ),
-							  EmitterCategorization )
+								text_utils:format( Message, FormatValues ),
+								EmitterCategorization )
 ).
 
 
@@ -879,8 +875,8 @@
 -define( notify_debug_fmt_full( Message, FormatValues, EmitterCategorization,
 								ApplicationTimestamp ),
 		 class_TraceEmitter:send_standalone( debug,
-							  text_utils:format( Message, FormatValues ),
-							  EmitterCategorization, ApplicationTimestamp )
+								text_utils:format( Message, FormatValues ),
+								EmitterCategorization, ApplicationTimestamp )
 ).
 
 

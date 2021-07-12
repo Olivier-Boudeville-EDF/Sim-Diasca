@@ -7,6 +7,10 @@
 %
 % Released as LGPL software.
 
+% @doc A Myriad application to <b>generate strong, safe passwords</b>.
+%
+% @hidden Not useful to list in API.
+%
 -module(generate_password_app).
 
 
@@ -18,9 +22,7 @@
 
 
 
-% Runs the merge service, directly from a module, hence with proper debug
-% support.
-%
+% @doc Executes this password-generating application.
 -spec exec() -> void().
 exec() ->
 

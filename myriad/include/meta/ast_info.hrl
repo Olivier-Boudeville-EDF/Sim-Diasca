@@ -33,9 +33,10 @@
 
 
 
-% Description of a module name:
--type module_entry() :: basic_utils:maybe( { basic_utils:module_name(),
-											 ast_info:located_form() } ).
+-type module_entry() ::
+	basic_utils:maybe( { basic_utils:module_name(), ast_info:located_form() } ).
+% Description of a module name.
+
 
 
 % A record to store and centralise information gathered about an Erlang
@@ -46,12 +47,12 @@
 %
 % For that, ASTs and forms are used, in a located version of them, as the form
 % order matters (to the actual compilation) and is a different, complementary
-% information to the original line numbers, which are kept for source reference
-% purposes.
+% information to the original in-file line and column numbers, which are kept
+% for source reference purposes.
 %
 % We store the located forms verbatim whenever possible (depending on the case,
 % either directly in the same field, or in *_def* counterpart fields), notably
-% to preserve the line numbers within.
+% to preserve the line and column numbers within.
 %
 % In the former case, a single field (ex: 'module') contains a pair of
 % information, whose first element is the higher level, syntax-free information
@@ -129,7 +130,8 @@
 		% given attribute name may be used multiple times).
 		%
 		% Such attributes, also named "wild attributes", mostly correspond to
-		% user-defined ones.
+		% user-defined ones (yet they include also for example 'behaviour'
+		% attributes).
 		%
 		parse_attributes :: ast_info:attribute_table(),
 
@@ -177,7 +179,8 @@
 		% types are recorded here.
 		%
 		% Note: it is better that way, as a type export attribute may define any
-		% number of exports, and we need to record its definition line.
+		% number of exports, and we need to record the in-file location of its
+		% definition.
 		%
 		% Note: this field must be kept synchronised with the table in the
 		% 'types' field.
@@ -226,7 +229,8 @@
 		% the exports of all functions are recorded here.
 		%
 		% Note: it is better that way, as a function export attribute may define
-		% any number of exports, and we need to record its definition line.
+		% any number of exports, and we need to record the in-file location of
+		% its definition.
 		%
 		% As empty exports are allowed (i.e. '-export([]).'), by default at the
 		% 'export_functions_marker' marker such an empty export is automatically
@@ -260,12 +264,13 @@
 		optional_callbacks_defs = [] :: [ ast_info:located_form() ],
 
 
-		% The definition of the last line in the original source file:
+		% The definition of the last in-file location in the original source
+		% file:
 		%
-		% (we keep it as a located form rather than a simple meta_utils:line()
-		% to avoid a costly addition in last position)
+		% (we keep it as a located form rather than as a simple
+		% ast_utils:file_loc() to avoid a costly addition in last position)
 		%
-		last_line :: ast_info:located_form(),
+		last_file_location :: ast_info:located_form(),
 
 
 		% Section markers, offering reference locations to AST transformations.
@@ -279,13 +284,12 @@
 		% List of all the located forms that are unhandled, which are typically
 		% errors, like:
 		%
-		% '{error,{LineNumber,erl_parse, ["syntax error before: ","')'"]}}''.
+		% '{error,{FileLoc,erl_parse, ["syntax error before: ","')'"]}}''.
 		%
 		% or forms meant to trigger errors (ex: if resulting in defining a
 		% function more than once)
 		%
 		unhandled_forms = [] :: [ ast_info:located_form() ]
-
 
 } ).
 
@@ -300,30 +304,32 @@
 		   name = undefined :: type_utils:type_name(),
 
 
-		   % The (ordered) list of variable definitions (ex: [ { var, Line, 'X'
-		   % } ]) of this type:
+		   % The (ordered) list of variable definitions (ex: [{var, FileLoc, 'X'
+		   % }]) of this type:
 		   %
 		   % Note: set purposedly not to an empty list by default (to convey a
 		   % different meaning)
 		   %
 		   variables = undefined ::
-			 basic_utils:maybe( [ ast_type:ast_variable_pattern() ] ),
+				basic_utils:maybe( [ ast_type:ast_variable_pattern() ] ),
 
 
 		   % Tells whether this type is defined as opaque:
 		   opaque = undefined :: boolean(),
 
 
-		   % Corresponds to the location of the full form for the definition of
-		   % this type:
+		   % Corresponds to the in-AST sortable location of the full form for
+		   % the definition of this type:
 		   %
-		   location = undefined :: basic_utils:maybe( ast_info:location() ),
+		   ast_location = undefined ::
+				basic_utils:maybe( ast_info:ast_location() ),
 
 
-		   % Corresponds to the line where this type is defined (in its source
-		   % file):
+		   % Corresponds to the in-file location (line/column) where this type
+		   % is defined (in its source file):
 		   %
-		   line = undefined :: basic_utils:maybe( ast_base:line() ),
+		   file_location = undefined ::
+				basic_utils:maybe( ast_base:file_loc() ),
 
 
 		   % Type actual definition, a (non-located) abstract form:
@@ -334,7 +340,7 @@
 		   % empty) list of the location(s) of its actual export(s), knowing
 		   % that a type can be exported more than once, or never:
 		   %
-		   exported = [] :: [ ast_info:location() ]
+		   exported = [] :: [ ast_info:ast_location() ]
 
 } ).
 
@@ -355,21 +361,23 @@
 		   arity = undefined :: arity(),
 
 
-		   % Corresponds to the location of the full form for the definition
-		   % (first clause) of this function (not of the spec, which has its
-		   % specific field below):
+		   % Corresponds to the in-AST sortable location of the full form for
+		   % the definition (first clause) of this function (not of its spec,
+		   % which has its specific field below):
 		   %
-		   location = undefined :: basic_utils:maybe( ast_info:location() ),
+		   ast_location = undefined ::
+				basic_utils:maybe( ast_info:ast_location() ),
 
 
-		   % Corresponds to the line of the first defined clause (in its source
-		   % file):
+		   % Corresponds to the in-file location of the first defined clause (in
+		   % its source file) of this function:
 		   %
 		   % (this information is a priori redundant with the one in the first
 		   % clause, yet present in the forms, thus kept here; note that the
 		   % linter will not accept an 'undefined' value)
 		   %
-		   line = undefined :: basic_utils:maybe( ast_base:line() ),
+		   file_location = undefined ::
+				basic_utils:maybe( ast_base:file_loc() ),
 
 
 		   % Function actual definition, a (non-located) list of the abstract
@@ -382,7 +390,7 @@
 		   % form:
 		   %
 		   spec = undefined ::
-			 basic_utils:maybe( ast_info:located_function_spec() ),
+				basic_utils:maybe( ast_info:located_function_spec() ),
 
 
 		   % Tells whether the function is a callback (hence declared as such
@@ -400,9 +408,9 @@
 		   %
 		   % Note that, provided a legit location is specified here (i.e. the
 		   % location of an actual export form), this function will be
-		   % automatically declared in that export form, should it be not already)
+		   % automatically declared in that export form, should it be not
+		   % already)
 		   %
-		   exported = [] :: [ ast_info:location() ]
-
+		   exported = [] :: [ ast_info:ast_location() ]
 
 } ).

@@ -26,7 +26,7 @@
 % Creation date: Friday, November 1, 2013.
 
 
-% Gathering of various cipher-related facilities.
+% @doc Gathering of various <b>cipher-related facilities</b>.
 %
 % We focus on symmetric ciphering here.
 %
@@ -105,8 +105,8 @@
 % for more information: https://en.wikipedia.org/wiki/Mealy_machine
 
 
-% Just for testing:
 -type id_transform() :: 'id'.
+% Just for testing.
 
 
 -type offset_transform() :: { 'offset', integer() }.
@@ -138,26 +138,26 @@
 
 % Mealy transform section.
 
-% Designates a state of the Mealy machine, starting from 1:
 -type state() :: pos_integer().
+% Designates a state of the Mealy machine, starting from 1.
 
 
-% A letter (of both alphabets, i.e. input and output):
 -type letter() :: byte().
+% A letter (of both alphabets, i.e. input and output).
 
 
-% A cell of any inner array, each of these arrays being relative to a given
-% input letter and being indexed by the possible machine states:
-%
 -type cell() :: { state(), letter() }.
+% A cell of any inner array, each of these arrays being relative to a given
+% input letter and being indexed by the possible machine states.
 
 
-% Each array of this type is relative to an input letter, and its cell are
-% indexed by states:
-%
 -type inner_array() :: array:array( cell() ).
+% Each array of this type is relative to an input letter, and its cell are
+% indexed by states.
 
 
+
+-type mealy_table() :: array:array( inner_array() ).
 % A Mealy table can be seen as a two-dimensional array, whose first dimension is
 % the states of the Machine (in [1,StateCount]) and second is the input alphabet
 % (here letters are bytes, in [0,255]).
@@ -171,16 +171,13 @@
 % size of the input alphabet, hence 256 of them, in [0,255].
 %
 % Each element of these inner arrays corresponds to the aforementioned cell.
-%
--type mealy_table() :: array:array( inner_array() ).
 
 
-% A state is defined by a strictly positive integer:
 -type mealy_state() :: pos_integer().
+% A state is defined by a strictly positive integer.
 
 
 -type mealy_transform() :: { 'mealy', mealy_state(), mealy_table() }.
-
 
 
 -type cipher_transform() :: id_transform()
@@ -193,18 +190,18 @@
 						  | mealy_transform().
 
 
-% For ciphers which require specific reverse transformations:
 -type decipher_transform() :: decompress_transform()
 							| extract_random_transform()
 							| delta_combine_reverse_transform()
 							| reciprocal_shuffle_transform().
+% For ciphers which require specific reverse transformations.
 
 
 -type any_transform() :: cipher_transform() | decipher_transform().
 
 
-% User may specify either some licit transform, or possibly mistakes:
 -type user_specified_transform() :: any().
+% User may specify either some licit transform, or possibly mistakes.
 
 
 -type key() :: [ any_transform() ].
@@ -234,7 +231,7 @@
 
 
 
-% Generates a key file.
+% @doc Generates a key file.
 -spec generate_key( file_path(), [ cipher_transform() ] ) -> void().
 generate_key( KeyFilePath, Transforms ) ->
 
@@ -266,7 +263,7 @@ generate_key( KeyFilePath, Transforms ) ->
 
 
 
-% Returns a description of the specified key.
+% @doc Returns a description of the specified key.
 -spec key_to_string( key() ) -> ustring().
 key_to_string( Key ) ->
 	text_utils:format( "Key composed of following ~B cipher(s): ~ts",
@@ -283,8 +280,8 @@ key_to_strings( [ _Cipher={ mealy, InitialState, Table } | T ], Acc ) ->
 
 	% Much info:
 	%CipherString = text_utils:format(
-	%	"Mealy cipher with initial state S~B and a ~ts",
-	%	[ InitialState, mealy_table_to_string( Table ) ] ),
+	%   "Mealy cipher with initial state S~B and a ~ts",
+	%   [ InitialState, mealy_table_to_string( Table ) ] ),
 
 	% Shorter:
 
@@ -306,8 +303,8 @@ key_to_strings( [ Cipher | T ], Acc ) ->
 
 
 
-% Encrypts specified source file using specified key file, and writes the result
-% in specified target file.
+% @doc Encrypts specified source file using specified key file, and writes the
+% result in specified target file.
 %
 % The original file is kept as is.
 %
@@ -352,9 +349,8 @@ encrypt( SourceFilePath, TargetFilePath, KeyFilePath ) ->
 
 
 
-
-% Decrypts specified source file using specified key file, and writes the result
-% in specified target file.
+% @doc Decrypts specified source file using specified key file, and writes the
+% result in specified target file.
 %
 % The ciphered file is kept as is.
 %
@@ -408,7 +404,7 @@ decrypt( SourceFilePath, TargetFilePath, KeyFilePath ) ->
 % Helper section.
 
 
-% Reads key from specified filename, and returns it.
+% @doc Reads key from specified filename, and returns it.
 %
 % (helper)
 %
@@ -438,7 +434,7 @@ read_key( KeyFilePath ) ->
 
 
 
-% Returns the reverse key of specified one.
+% @doc Returns the reverse key of specified one.
 %
 % (helper)
 %
@@ -461,7 +457,7 @@ get_reverse_key_from( _KeyInfos=[ K | H ], Acc ) ->
 
 
 
-% Applies specified key to specified file.
+% @doc Applies specified key to specified file.
 %
 % Returns the filename of the resulting file.
 %
@@ -498,7 +494,7 @@ apply_key( _KeyInfos=[ C | H ], SourceFilePath, CipherCount ) ->
 
 
 
-% Table way too big to be displayed:
+% @doc Table way too big to be displayed:
 get_cipher_description( { mealy, InitialState, _Table } ) ->
 	text_utils:format( "Mealy transform, with initial state ~p",
 					   [ InitialState ] );
@@ -509,7 +505,7 @@ get_cipher_description( OtherCipher ) ->
 
 
 
-% Applies specified cipher to specified file.
+% @doc Applies specified cipher to specified file.
 %
 % Some ciphers are better managed if special-cased, whereas others can rely on
 % base (yet generic) mechanisms.
@@ -651,8 +647,8 @@ reverse_cipher( C ) ->
 % Cipher section.
 
 
-% For all ciphers that can be expressed by a byte-level, stateful transformation
-% fun.
+%  @doc For all ciphers that can be expressed by a byte-level, stateful
+%  transformation fun.
 %
 apply_byte_level_cipher( SourceFilePath, CipheredFilePath, CipherFun,
 						 CipherInitialState ) ->
@@ -714,7 +710,8 @@ transform_bytes( _A = << InputByte:8, T/binary >>, CipherFun,
 
 
 
-
+% @doc No-op cipher.
+%
 % We must though create a new file, as the semantics is to create an additional
 % file in all cases.
 %
@@ -1023,7 +1020,7 @@ generate_filename() ->
 
 
 
-% Generates a Mealy table for the specified number of states.
+% @doc Generates a Mealy table for the specified number of states.
 %
 % Relies on the current random state.
 %
@@ -1110,8 +1107,7 @@ fill_inner_array( Array, Index, FinalIndex, _Letters=[ L | T ], StateCount ) ->
 
 
 
-
-% Returns the inverse Mealy table of the specified one.
+% @doc Returns the inverse Mealy table of the specified one.
 -spec compute_inverse_mealy_table( mealy_table() ) -> mealy_table().
 compute_inverse_mealy_table( Table ) ->
 
@@ -1177,7 +1173,7 @@ inverse_cells( _Cells=[ { NextState, OutputLetter } | T ], Index, AccArray ) ->
 
 
 
-% Returns a textual representation of this mealy table.
+% @doc Returns a textual representation of this mealy table.
 -spec mealy_table_to_string( mealy_table() ) -> ustring().
 mealy_table_to_string( Table ) ->
 

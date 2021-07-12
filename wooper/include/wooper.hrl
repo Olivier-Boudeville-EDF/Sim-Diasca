@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2021 Olivier Boudeville
+% Copyright (C) 2007-2021 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -23,20 +23,12 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
-
+% Creation date: Friday, July 6, 2007.
 
 
 % WOOPER: Wrapper for OOP in ERlang.
+% See documentation at http://wooper.esperide.org.
 
-% See documentation at:
-% http://ceylan.sourceforge.net/main/documentation/wooper/
-
-
-% Creation date: Friday, July 6, 2007.
-% Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
-
-% Licensed under a disjunctive tri-license: MPL/GPL/LGPL, see:
-% http://ceylan.sourceforge.net/main/documentation/wooper/index.html#license
 
 
 % Provides most classical constructs: new/delete operators, remote method

@@ -25,11 +25,11 @@
 % Adapted from code kindly contributed by EDF R&D.
 %
 % Authors: Robin Huart (robin-externe.huart@edf.fr)
-%		   Samuel Thiriot (samuel.thiriot@edf.fr)
+%          Samuel Thiriot (samuel.thiriot@edf.fr)
 
 
-% Gathering of some convenient facilities for the binding to the Python
-% language.
+% @doc Gathering of some convenient facilities for the <b>binding to the Python
+% language</b>.
 %
 % See python_utils_test.erl for the corresponding tests.
 %
@@ -45,29 +45,28 @@
 		  pep8_class_to_pep8_module/1 ]).
 
 
-
-% PID corresponding to a Python interpreter:
 -type interpreter_pid() :: pid().
+% PID corresponding to a Python interpreter.
 
 
-% The title of a request sent to Python.
 -type title() :: atom().
+% The title of a request sent to Python.
 
 
-% The parameters of a request sent to Python.
 -type body() :: [ any() ].
+% The parameters of a request sent to Python.
 
 
-% The result from a request that was sent to Python.
 -type result() :: any().
+% The result from a request that was sent to Python.
 
 
-% The name of a Python class, according to the PEP8:
 -type pep8_classname() :: atom().
+% The name of a Python class, according to the PEP8.
 
 
-% The name of a Python module, according to the PEP8:
 -type pep8_class_module() :: atom().
+% The name of a Python module, according to the PEP8.
 
 
 -export_type([ interpreter_pid/0, title/0, body/0, result/0,
@@ -90,7 +89,7 @@
 
 
 
-% Finds the BEAM locations of all the dependencies required for binding to
+% @doc Finds the BEAM locations of all the dependencies required for binding to
 % Python.
 %
 -spec get_beam_directories_for_binding() -> [ file_utils:directory_name() ].
@@ -110,7 +109,7 @@ get_beam_directories_for_binding() ->
 
 
 
-% Requests specified interpreter to execute specified oneway.
+% @doc Requests specified interpreter to execute specified oneway.
 -spec send_oneway( interpreter_pid(), title(), body() ) -> void().
 send_oneway( InterpreterPid, MessageTitle, MessageBody )
   when is_atom( MessageTitle ) ->
@@ -119,9 +118,9 @@ send_oneway( InterpreterPid, MessageTitle, MessageBody )
 
 
 
-% Receives a message from the Python world, usually in answer to a send_oneway/3
-% call having used the same MessageTitle argument, and tries to match it with
-% the different accepted types of messages.
+% @doc Receives a message from the Python world, usually in answer to a
+% send_oneway/3 call having used the same MessageTitle argument, and tries to
+% match it with the different accepted types of messages.
 %
 -spec wait_for_request_result( interpreter_pid(), title() ) -> result().
 wait_for_request_result( InterpreterPid, MessageTitle )
@@ -168,7 +167,7 @@ wait_for_request_result( InterpreterPid, MessageTitle )
 
 
 
-% Deduces the name of the Python module from the name of the Python class
+% @doc Deduces the name of the Python module from the name of the Python class
 % (possibly prefixed with package names) that it implements, according notably
 % to the naming conventions adopted in PEP 8.
 %

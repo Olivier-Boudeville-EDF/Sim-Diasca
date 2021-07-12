@@ -33,7 +33,7 @@
 -compile({parse_transform, myriad_parse_transform}).
 
 
-% Overall parse transform for the WOOPER layer.
+% @doc The <b>overall parse transform</b> for the WOOPER layer.
 %
 % It is meant to be applied to ASTs describing (WOOPER) classes (not standard
 % modules).
@@ -124,8 +124,8 @@
 %       -static_spec get_mean_count(foo()) -> count().
 
 
-% Used for iterated (re)composition of class information:
 -type compose_pair() :: { ast_info:function_table(), class_info() }.
+% Used for iterated (re)composition of class information.
 
 
 % For clarity:
@@ -189,8 +189,8 @@
 
 
 
-% Runs the WOOPER parse transform defined here in a standalone way (i.e. without
-% being triggered by the usual, integrated compilation process), with no
+% @doc Runs the WOOPER parse transform defined here in a standalone way (that is
+% without being triggered by the usual, integrated compilation process), with no
 % specific preprocessor option.
 %
 % This allows to benefit from all compilation error and warning messages,
@@ -204,9 +204,9 @@ run_standalone( FileToTransform ) ->
 
 
 
-% Runs the WOOPER parse transform defined here in a standalone way (i.e. without
-% being triggered by the usual, integrated compilation process), with specified
-% preprocessor options.
+% @doc Runs the WOOPER parse transform defined here in a standalone way (that is
+% without being triggered by the usual, integrated compilation process), with
+% specified preprocessor options.
 %
 % This allows to benefit from all compilation error and warning messages,
 % whereas they are seldom available from a code directly run as a parse
@@ -224,9 +224,9 @@ run_standalone( FileToTransform, PreprocessorOptions ) ->
 
 
 
-% The parse transform itself, transforming the specified (WOOPER-based) Abstract
-% Format code first into a Myriad-based information being itself converted in
-% turn into an Erlang-compliant Abstract Format code.
+% @doc The parse transform itself, transforming the specified (WOOPER-based)
+% Abstract Format code first into a Myriad-based information being itself
+% converted in turn into an Erlang-compliant Abstract Format code.
 %
 -spec parse_transform( ast(), parse_transform_options() ) -> ast().
 parse_transform( InputAST, Options ) ->
@@ -250,7 +250,7 @@ parse_transform( InputAST, Options ) ->
 
 
 
-% Transforms specified AST for WOOPER.
+% @doc Transforms specified AST for WOOPER.
 %
 % Depending on the nature of the AST (WOOPER class or mere module), returns a
 % class information or a module information.
@@ -268,7 +268,7 @@ apply_wooper_transform( InputAST, Options ) ->
 
 	% This allows to compare input and output ASTs more easily:
 	%ast_utils:write_ast_to_file( lists:sort( InputAST ),
-	%							 "WOOPER-input-AST-sorted.txt" ),
+	%							  "WOOPER-input-AST-sorted.txt" ),
 
 	% First preprocesses the AST based on the Myriad parse transform, in order
 	% to benefit from its corresponding module_info record:
@@ -365,8 +365,8 @@ apply_wooper_transform( InputAST, Options ) ->
 
 
 
-% Tells whether the specified module_info corresponds to a WOOPER class or to a
-% standard module.
+% @doc Tells whether the specified module_info corresponds to a WOOPER class or
+% to a standard module.
 %
 -spec is_wooper_class( module_info() ) -> boolean().
 is_wooper_class( #module_info{  module={ ModuleName, _LocForm } } ) ->
@@ -383,7 +383,7 @@ is_wooper_class( #module_info{  module={ ModuleName, _LocForm } } ) ->
 
 
 
-% Returns the class-level information that were gathered from the specified
+% @doc Returns the class-level information that were gathered from the specified
 % module-level ones.
 %
 % (reciprocal of generate_module_info_from/1)
@@ -402,7 +402,7 @@ generate_class_info_from( ModuleInfo ) ->
 
 
 
-% Recomposes (WOOPER) class information from (Myriad) module-level ones.
+% @doc Recomposes (WOOPER) class information from (Myriad) module-level ones.
 %
 % The goal is to pick the relevant WOOPER-level information (from the module
 % info), to transform them and to populate the specified class information with
@@ -428,7 +428,7 @@ create_class_info_from(
 							function_exports=FunctionExportTable,
 							functions=FunctionTable,
 							optional_callbacks_defs=OptCallbacksDefs,
-							last_line=LastLine,
+							last_file_location=LastFileLoc,
 							markers=MarkerTable,
 							errors=Errors,
 							unhandled_forms=UnhandledForms } ) ->
@@ -471,7 +471,7 @@ create_class_info_from(
 						  %static_exports
 						  %statics
 						  optional_callbacks_defs=OptCallbacksDefs,
-						  last_line=LastLine,
+						  last_file_location=LastFileLoc,
 						  markers=MarkerTable,
 						  errors=Errors,
 						  unhandled_forms=UnhandledForms },
@@ -491,7 +491,7 @@ create_class_info_from(
 	% We extract elements (ex: constructors) from the function table, yet we do
 	% not modify specifically the other related information (ex: exports).
 
-	% We manage here { FunctionTable, ClassInfo } pairs, in which the first
+	% We manage here {FunctionTable, ClassInfo} pairs, in which the first
 	% element is the reference, most up-to-date version of the function table
 	% that shall be used (extracted-out for convenience) - not any counterpart
 	% that could be found in the second element and that will be updated later
@@ -514,8 +514,8 @@ create_class_info_from(
 
 	_FinalPair = { FinalFunctionTable, FinalClassInfo } = MethodPair,
 
-	ReturnedClassInfo = FinalClassInfo#class_info{
-							functions=FinalFunctionTable },
+	ReturnedClassInfo =
+		FinalClassInfo#class_info{ functions=FinalFunctionTable },
 
 	%trace_utils:debug_fmt( "Recomposed class information: ~ts",
 	%	   [ wooper_info:class_info_to_string( ReturnedClassInfo ) ] ),
@@ -546,7 +546,7 @@ create_class_info_from(
 % For the moment, we stick to requiring a
 % -module(class_XXX) declaration.
 %
-%% get_info( _AST=[ { 'attribute', Line, 'classname', Classname } | T ],
+%% get_info( _AST=[ { 'attribute', FileLoc, 'classname', Classname } | T ],
 %%		  C=#class_info{ class=undefined, class_def=undefined } ) ->
 
 %%	trace_utils:debug_fmt( "Intercepting WOOPER classname declaration for "
@@ -555,7 +555,7 @@ create_class_info_from(
 %%	check_classname( Classname ),
 
 %%	% Transforms that in a standard module definition:
-%%	NewDef = { 'attribute', Line, 'module', Classname },
+%%	NewDef = { 'attribute', FileLoc, 'module', Classname },
 
 %%	get_info( T, C#class_info{ class=Classname, class_def=NewDef } );
 
@@ -563,7 +563,7 @@ create_class_info_from(
 %% % We accept (only) the Erlang-standard, direct '-module(XXX).' declaration
 %% for % now:
 
-%% get_info( _AST=[ F={ 'attribute', _Line, 'module', Classname } | T ],
+%% get_info( _AST=[ F={ 'attribute', _FileLoc, 'module', Classname } | T ],
 %%		  C=#class_info{ class=undefined, class_def=undefined } ) ->
 
 %%	%trace_utils:debug_fmt( "Intercepting module-based classname declaration "
@@ -578,7 +578,7 @@ create_class_info_from(
 %% % forms such as {error,{85,epp,{undefined,'MODULE',none}}} that we want to
 %% % filter-out, as we will introduce a relevant module form afterwards:
 %% %
-%% get_info( _AST=[ F={ 'error',{ _Line, 'epp',
+%% get_info( _AST=[ F={ 'error',{ _FileLoc, 'epp',
 %%								 { 'undefined', 'MODULE', 'none' } } } | T ],
 %%		  C ) ->
 
@@ -589,7 +589,7 @@ create_class_info_from(
 
 
 
-% Adds specified function into the corresponding table.
+% @doc Adds specified function into the corresponding table.
 -spec add_function( meta_utils:function_name(), arity(), form(),
 					function_table() ) -> function_table().
 add_function( Name, Arity, Form, FunctionTable ) ->
@@ -601,17 +601,17 @@ add_function( Name, Arity, Form, FunctionTable ) ->
 	FunInfo = case table:lookup_entry( FunId, FunctionTable ) of
 
 		key_not_found ->
-					  % New entry then:
-					  #function_info{ name=Name,
-									  arity=Arity,
-									  location=undefined,
-									  line=undefined,
-									  clauses=Form
-									  % Implicit:
-									  %spec=undefined
-									  %callback=undefined
-									  %exported=[]
-									 };
+			% New entry then:
+			#function_info{ name=Name,
+							arity=Arity,
+							ast_location=undefined,
+							file_location=undefined,
+							clauses=Form
+							% Implicit:
+							%spec=undefined
+							%callback=undefined
+							%exported=[]
+						  };
 
 		{ value, F=#function_info{ clauses=undefined } } ->
 			% Just add the form then:
@@ -620,7 +620,7 @@ add_function( Name, Arity, Form, FunctionTable ) ->
 		% Here a definition was already set:
 		_ ->
 			wooper_internals:raise_usage_error(
-			  "multiple definition for ~ts/~B.", pair:to_list( FunId ) )
+				"multiple definitions for ~ts/~B.", pair:to_list( FunId ) )
 
 	end,
 
@@ -628,7 +628,7 @@ add_function( Name, Arity, Form, FunctionTable ) ->
 
 
 
-% Adds specified request into the corresponding table.
+% @doc Adds specified request into the corresponding table.
 -spec add_request( wooper:request_name(), arity(), form(), request_table() ) ->
 							request_table().
 add_request( Name, Arity, Form, RequestTable ) ->
@@ -644,8 +644,8 @@ add_request( Name, Arity, Form, RequestTable ) ->
 			#request_info{ name=Name,
 						   arity=Arity,
 						   qualifiers=[],
-						   location=undefined,
-						   line=undefined,
+						   ast_location=undefined,
+						   file_location=undefined,
 						   clauses=Form
 							% Implicit:
 							%spec=undefined
@@ -666,7 +666,7 @@ add_request( Name, Arity, Form, RequestTable ) ->
 
 
 
-% Adds specified oneway into the corresponding table.
+% @doc Adds specified oneway into the corresponding table.
 -spec add_oneway( wooper:oneway_name(), arity(), form(), oneway_table() ) ->
 						oneway_table().
 add_oneway( Name, Arity, Form, OnewayTable ) ->
@@ -682,8 +682,8 @@ add_oneway( Name, Arity, Form, OnewayTable ) ->
 			#oneway_info{ name=Name,
 						  arity=Arity,
 						  qualifiers=[],
-						  location=undefined,
-						  line=undefined,
+						  ast_location=undefined,
+						  file_location=undefined,
 						  clauses=Form
 						  % Implicit:
 						  %spec=undefined
@@ -704,7 +704,7 @@ add_oneway( Name, Arity, Form, OnewayTable ) ->
 
 
 
-% Adds specified static method into the corresponding table.
+% @doc Adds specified static method into the corresponding table.
 -spec add_static_method( wooper:static_name(), arity(), form(),
 						 static_table() ) -> static_table().
 add_static_method( Name, Arity, Form, StaticTable ) ->
@@ -739,9 +739,9 @@ add_static_method( Name, Arity, Form, StaticTable ) ->
 
 
 
-% Ensures that the described class respects appropriate constraints for WOOPER
-% generation, besides the ones checked during the AST exploration and the ones
-% that will be checked by the compiler.
+% @doc Ensures that the described class respects appropriate constraints for
+% WOOPER generation, besides the ones checked during the AST exploration and the
+% ones that will be checked by the compiler.
 %
 -spec check_class_info( class_info() ) -> void().
 check_class_info( #class_info{ class={ Classname, _LocForm },
@@ -764,9 +764,9 @@ check_class_info( #class_info{ class={ Classname, _LocForm },
 
 
 
-% Returns a list of the names of the class_X:*new* operators that are generated
-% by WOOPER to branch on the construct/N and thus shall not be defined by the
-% user.
+% @doc Returns a list of the names of the class_X:*new* operators that are
+% generated by WOOPER to branch on the construct/N and thus shall not be defined
+% by the user.
 %
 get_new_variation_names() ->
 	[ new_link, synchronous_new, synchronous_new_link, synchronous_timed_new,
@@ -777,7 +777,7 @@ get_new_variation_names() ->
 
 
 
-% Transforms (at the WOOPER level) specified class information.
+% @doc Transforms (at the WOOPER level) specified class information.
 -spec transform_class_info( class_info() ) -> class_info().
 transform_class_info( ClassInfo ) ->
 	% Nothing specific done currently!
@@ -785,7 +785,7 @@ transform_class_info( ClassInfo ) ->
 
 
 
-% Generates back (Myriad-level) module-level information from specified
+% @doc Generates back (Myriad-level) module-level information from specified
 % class-level information.
 %
 % (reciprocal of generate_class_info_from/1)
@@ -836,7 +836,7 @@ generate_module_info_from( #class_info{
 
 				 optional_callbacks_defs=OptCallbackDefs,
 
-				 last_line=LastLine,
+				 last_file_location=LastFileLoc,
 
 				 markers=MarkerTable,
 
@@ -900,7 +900,7 @@ generate_module_info_from( #class_info{
 	AllFunctionTable = WithMthdFunTable,
 
 	%trace_utils:debug_fmt( "Complete function table: ~ts",
-	%					   [ table:to_string( AllFunctionTable ) ] ),
+	%						[ table:to_string( AllFunctionTable ) ] ),
 
 	% Directly returned (many fields can be copied verbatim):
 	#module_info{
@@ -924,22 +924,22 @@ generate_module_info_from( #class_info{
 		function_exports=AllExportTable,
 		functions=AllFunctionTable,
 		optional_callbacks_defs=OptCallbackDefs,
-		last_line=LastLine,
+		last_file_location=LastFileLoc,
 		markers=MarkerTable,
 		errors=Errors,
 		unhandled_forms=UnhandledForms }.
 
 
 
-% Registers specified functions in specified (function) table, detecting
+% @doc Registers specified functions in specified (function) table, detecting
 % properly any clash.
 %
 -spec register_functions( [ { meta_utils:function_id(), function_info() } ],
 							function_table() ) -> function_table().
-register_functions( [], FunctionTable ) ->
+register_functions( _FPairs=[], FunctionTable ) ->
 	FunctionTable;
 
-register_functions( [ { FunId, FunInfo } | T ], FunctionTable ) ->
+register_functions( _FPairs=[ { FunId, FunInfo } | T ], FunctionTable ) ->
 	case table:lookup_entry( FunId, FunctionTable ) of
 
 		key_not_found ->

@@ -28,11 +28,14 @@
 
 
 
-% Gathering of various facilities for OpenGL rendering, done through WxWidgets.
+% Gathering of various facilities for <b>OpenGL rendering</b>, done through
+% WxWidgets.
 %
 % See gui_opengl_test.erl for the corresponding test.
 %
 % See gui.erl for more general rendering topics.
+%
+% @hidden Still to be done.
 %
 -module(gui_opengl).
 

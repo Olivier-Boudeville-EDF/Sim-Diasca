@@ -26,7 +26,7 @@
 % Creation date: July 1, 2007.
 
 
-% Gathering of various random-related facilities.
+% @doc Gathering of various <b>random-related</b> facilities.
 %
 % See random_utils_test.erl for the corresponding test.
 %
@@ -47,19 +47,17 @@
 		  get_random_seed/0, check_random_seed/1 ]).
 
 
-% Not future-proof enough (ex: not compliant with other solutions like
-% SIMD-oriented Fast Mersenne Twister):
-%
 -type seed_element() :: integer().
+% Not future-proof enough (ex: not compliant with other solutions like
+% SIMD-oriented Fast Mersenne Twister).
 
 -type seed() :: { seed_element(), seed_element(), seed_element() }.
 
 
-% For simpler generators, the state is just a seed, for all the others the state
-% is much more complex:
-%
 % random:ran/0 does not seem exported, replaced by seed/0:
 -type random_state() :: seed() | rand:state() | any().
+% For simpler generators, the state is just a seed, for all the others the state
+% is much more complex.
 
 
 
@@ -94,7 +92,7 @@
 %
 % Currently the crypto module is not used by default, as:
 %
-% - not all Erlang VM can be built with the proper SSH support
+% - not all Erlang VMs can be built with the proper SSH support
 %
 % - it is unclear whether the crypto module can be seeded like the random module
 % can be (probably it cannot be)
@@ -123,6 +121,14 @@
 -type count() :: basic_utils:count().
 
 
+% Apparently, as soon as functions are defined within preprocessor guards, their
+% definition is ignored by edoc, resulting in edoc failing because of multiple
+% 'doc' tags at the first function defined outsmart of these guards.
+%
+% As if we copied their documentation there this would not work either (the
+% corresponding functions not being found), we just disabled their 'doc' tags
+% ('at' doc being replaced with 'doc:').
+
 
 % Specs gathered here, because of macro guards.
 -spec start_random_source( seed_element(), seed_element(), seed_element() ) ->
@@ -130,7 +136,6 @@
 
 -spec start_random_source( 'default_seed' | 'time_based_seed' | seed() ) ->
 								void().
-
 
 -spec can_be_seeded() -> boolean().
 
@@ -153,7 +158,7 @@
 -spec set_random_state( random_state() ) -> void().
 
 
-% Generates a list of Count elements uniformly drawn in [1,N].
+% @doc Generates a list of Count elements uniformly drawn in [1,N].
 -spec get_random_values( pos_integer(), count() ) ->
 								[ pos_integer() ].
 get_random_values( N, Count ) ->
@@ -168,7 +173,7 @@ get_random_values_helper( N, Count, Acc ) ->
 
 
 
-% Generates a list of Count elements uniformly drawn in [Nmin;Nmax].
+% @doc Generates a list of Count elements uniformly drawn in [Nmin;Nmax].
 -spec get_random_values( integer(), integer(), count() ) ->
 								[ integer() ].
 get_random_values( Nmin, Nmax, Count ) ->
@@ -188,7 +193,9 @@ get_random_values_helper( Nmin, Nmax, Count, Acc ) ->
 %-define(use_crypto_module,).
 
 
-% Now crypto is hardly used anymore:
+% Now crypto is hardly used anymore; however these are the doc tags that edoc
+% read.
+%
 -ifdef(use_crypto_module).
 
 
@@ -198,13 +205,13 @@ get_random_values_helper( Nmin, Nmax, Count, Acc ) ->
 % per-process).
 
 
-% Starts the random source with specified seeding.
+% @doc Starts the random source with specified seeding.
 start_random_source( _A, _B, _C ) ->
 	throw( crypto_module_cannot_be_seeded ).
 
 
 
-% Starts the random source with specified seeding.
+% @doc Starts the random source with specified seeding.
 start_random_source( default_seed ) ->
 
 	?trace_random( "~w starting random source with crypto.", [ self() ] ),
@@ -215,24 +222,27 @@ start_random_source( time_based_seed ) ->
 	throw( crypto_module_cannot_be_seeded ).
 
 
-% crypto cannot be seeded:
+% @doc Tells whether this random source can be seeded.
+%
+% crypto cannot be seeded, but rand can.
+%
 can_be_seeded() ->
 	false.
 
 
-% Resets the random source with a new seed.
+% @doc Resets the random source with a new seed.
 reset_random_source( _Seed ) ->
 	throw( crypto_module_cannot_be_reset ).
 
 
-% Stops the random source.
+% @doc Stops the random source.
 stop_random_source() ->
 	ok = crypto:stop().
 
 
 
-% Returns a random float uniformly distributed between 0.0 and 1.0, updating the
-% random state in the process dictionary.
+% @doc Returns a random float uniformly distributed between 0.0 and 1.0,
+% updating the random state in the process dictionary.
 %
 % Spec already specified, for all random settings.
 %
@@ -242,7 +252,7 @@ get_random_value() ->
 
 
 
-% Returns an integer random value generated from an uniform distribution.
+% @doc Returns an integer random value generated from an uniform distribution.
 %
 % Given an integer N >= 1, returns a random integer uniformly distributed
 % between 1 and N (both included), updating the random state in the process
@@ -255,8 +265,8 @@ get_random_value( N ) ->
 
 
 
-% Returns an integer random value generated from an uniform distribution in
-% [Nmin;Nmax] (i.e. both bounds included), updating the random state in the
+% @doc Returns an integer random value generated from an uniform distribution in
+% [Nmin;Nmax] (thus with both bounds included), updating the random state in the
 % process dictionary.
 %
 % Spec already specified, for all random settings.
@@ -265,8 +275,8 @@ get_random_value( Nmin, Nmax ) when Nmin =< Nmax ->
 	crypto:rand_uniform( Nmin, Nmax+1 ).
 
 
-% Returns a floating-point random value in [0.0;N[ generated from an uniform
-% distribution.
+% @doc Returns a floating-point random value in [0.0;N[ generated from an
+% uniform distribution.
 %
 % Given a number (integer or float) N (positive or not), returns a random
 % floating-point value uniformly distributed between 0.0 (included) and N
@@ -278,7 +288,7 @@ get_uniform_floating_point_value( N ) ->
 	throw( not_available ).
 
 
-% Returns a floating-point random value in [Nmin, Nmax[ generated from an
+% @doc Returns a floating-point random value in [Nmin, Nmax[ generated from an
 % uniform distribution.
 %
 % Given two numbers (integer or float) Nmin and Nmax (each being positive or
@@ -293,7 +303,7 @@ get_uniform_floating_point_value( Nmin, Nmax ) ->
 
 
 
-% Returns the name of the module managing the random generation.
+% @doc Returns the name of the module managing the random generation.
 %
 % Spec already specified, for all random settings.
 %
@@ -303,8 +313,8 @@ get_random_module_name() ->
 
 
 
-% Returns the random state of this process (it is useful for example for process
-% serialisations).
+% @doc Returns the random state of this process (it is useful for example for
+% process serialisations).
 %
 % Spec already specified, for all random settings.
 %
@@ -314,8 +324,8 @@ get_random_state() ->
 
 
 
-% Sets the random state of this process (it is useful for example for process
-% serialisations).
+% @doc Sets the random state of this process (it is useful for example for
+% process serialisations).
 %
 % Spec already specified, for all random settings.
 %
@@ -390,7 +400,7 @@ set_random_state( _NewState ) ->
 
 
 
-% Starts the random source with specified seeding.
+% doc: Starts the random source with specified seeding.
 %
 % Note: if a process does not explicitly select a seed, with 'rand' a
 % non-constant seed will be assigned. For reproducibility, start your random
@@ -408,7 +418,7 @@ start_random_source( A, B, C ) ->
 
 
 
-% Seeds the random number generator, with specified seeding., or with a
+% doc: Seeds the random number generator, with specified seeding, or with a
 % default seed (if wanting to obtain the same random series at each run) or with
 % current time (if wanting "real", non-reproducible randomness).
 %
@@ -459,27 +469,27 @@ start_random_source( time_based_seed ) ->
 
 
 
-% rand can be seeded:
+% doc rand can be seeded.
 can_be_seeded() ->
 	true.
 
 
 
-% Resets the random source with a new seed.
+% doc: Resets the random source with a new seed.
 reset_random_source( Seed ) ->
 	% New seeding, as opposed to the setting of a previously defined state:
 	rand:seed( ?rand_algorithm, Seed ).
 
 
 
-% Stops the random source.
+% doc: Stops the random source.
 stop_random_source() ->
 	ok.
 
 
 
-% Returns a random float uniformly distributed between 0.0 (included) and 1.0
-% (excluded), updating the random state in the process dictionary.
+% doc: Returns a random float uniformly distributed between 0.0 (included) and
+% 1.0 (excluded), updating the random state in the process dictionary.
 %
 % Spec already specified, for all random settings.
 %
@@ -489,7 +499,7 @@ get_random_value() ->
 
 
 
-% Returns an integer random value generated from an uniform distribution.
+% doc: Returns an integer random value generated from an uniform distribution.
 %
 % Given an integer N >= 1, returns a random integer uniformly distributed
 % between 1 and N (both included), updating the random state in the process
@@ -506,7 +516,7 @@ get_random_value( N ) ->
 
 
 
-% Returns an integer random value generated from an uniform distribution in
+% doc: Returns an integer random value generated from an uniform distribution in
 % [Nmin;Nmax] (i.e. both bounds included), updating the random state in the
 % process dictionary.
 %
@@ -529,9 +539,8 @@ get_random_value( Nmin, Nmax ) ->
 
 
 
-
-% Returns a floating-point random value in [0.0;N[ generated from an uniform
-% distribution.
+% doc: Returns a floating-point random value in [0.0;N[ generated from an
+% uniform distribution.
 %
 % Given a number (integer or float) N (positive or not), returns a random
 % floating-point value uniformly distributed between 0.0 (included) and N
@@ -544,7 +553,7 @@ get_uniform_floating_point_value( N ) ->
 	N * rand:uniform().
 
 
-% Returns a floating-point random value in [Nmin, Nmax[ generated from an
+% doc: Returns a floating-point random value in [Nmin, Nmax[ generated from an
 % uniform distribution.
 %
 % Given two numbers (integer or float) Nmin and Nmax (each being positive or
@@ -560,7 +569,7 @@ get_uniform_floating_point_value( Nmin, Nmax ) ->
 
 
 
-% Returns the name of the module managing the random generation.
+% doc: Returns the name of the module managing the random generation.
 %
 % Spec already specified, for all random settings.
 %
@@ -570,8 +579,8 @@ get_random_module_name() ->
 	rand.
 
 
-% Returns the random state of the current process (it is useful for example for
-% process serialisations).
+% doc: Returns the random state of the current process (it is useful for example
+% for process serialisations).
 %
 % Spec already specified, for all random settings.
 %
@@ -599,8 +608,8 @@ get_random_state() ->
 
 
 
-% Sets the random state of this process (it is useful for example for process
-% serialisations).
+% doc: Sets the random state of this process (it is useful for example for
+% process serialisations).
 %
 % Spec already specified, for all random settings.
 %
@@ -621,8 +630,8 @@ set_random_state( RandomState ) ->
 
 
 
-% Returns a list of the specified number of unique elements drawn from input
-% list (i.e. so that there is no duplicate in the returned list).
+% @doc Returns a list of the specified number of unique elements drawn from
+% input list (so that there is no duplicate in the returned list).
 %
 % Note: defined to ease interface look-up, use directly
 % list_utils:draw_elements_from/2 instead.
@@ -637,7 +646,7 @@ get_random_subset( ValueCount, InputList ) ->
 -define( seed_upper_bound, 65500 ).
 
 
-% Returns a seed obtained from the random source in use.
+% @doc Returns a seed obtained from the random source in use.
 %
 % This is a randomly-determined seed, meant to be used to create another random
 % generator.
@@ -650,7 +659,7 @@ get_random_seed() ->
 
 
 
-% Checks that the specified seed is valid.
+% @doc Checks that the specified seed is valid.
 %
 % Ex: at least with some algorithms, {0, 0, 0} does not yield a correct random
 % series.

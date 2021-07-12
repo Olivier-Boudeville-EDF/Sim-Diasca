@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2021 Olivier Boudeville
+% Copyright (C) 2018-2021 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -35,3 +35,7 @@
 % Normal setting:
 -define( rec_guard, ).
 -define( andalso_rec_guard, ).
+
+
+% The default in-file location ({Line, Column}) for generated forms:
+-define( default_generation_location, {0,1} ).

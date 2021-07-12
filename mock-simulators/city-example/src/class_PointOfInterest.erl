@@ -239,24 +239,21 @@ to_string( State ) ->
 
 	end,
 
-	InStrings = lists:foldl( RoadFun, _Acc0=[], _InList=Inbounds ),
+	InStrings = lists:foldl( RoadFun, _AccIn0=[], _InList=Inbounds ),
 
 	InString = text_utils:join( ", ", lists:reverse( InStrings ) ),
 
-	OutStrings = lists:foldl( RoadFun, _Acc0=[], _OutList=Outbounds ),
+	OutStrings = lists:foldl( RoadFun, _AccOut0=[], _OutList=Outbounds ),
 
 	OutString = text_utils:join( ", ", lists:reverse( OutStrings ) ),
 
 
 	text_utils:format( "Point of interest '~s' located at ~s, "
-					   "having ~B inbound road(s) (i.e. ~s) and "
-					   "~B outbound road(s) (i.e. ~s)",
-					   [ ?getAttr(name),
-						 class_GeolocalizedElement:interpret_location( State ),
-						 length( Inbounds ),
-						 InString,
-						 length( Outbounds ),
-						 OutString ] ).
+		"having ~B inbound road(s) (i.e. ~s) and "
+		"~B outbound road(s) (i.e. ~s)",
+		[ ?getAttr(name),
+		  class_GeolocalizedElement:interpret_location( State ),
+		  length( Inbounds ), InString, length( Outbounds ), OutString ] ).
 
 
 

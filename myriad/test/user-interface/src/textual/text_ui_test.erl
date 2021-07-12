@@ -48,6 +48,9 @@ run_test_ui() ->
 
 	text_ui:display( "My text to display!" ),
 
+	text_ui:display_instant( "A non-modal (auto-disappearing) display!" ),
+	timer:sleep( 1500 ),
+
 	text_ui:display_error( "My error to display!" ),
 
 

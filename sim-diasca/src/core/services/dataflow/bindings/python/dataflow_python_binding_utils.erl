@@ -19,8 +19,8 @@
 % Author: Robin Huart (robin-externe.huart@edf.fr)
 
 
-% Module storing all the helper functions to facilitate the support of the
-% binding APIs for the Python language.
+% @doc Module storing all the helper functions to facilitate the support of the
+% <b>binding APIs for the Python language</b>.
 %
 -module(dataflow_python_binding_utils).
 
@@ -37,8 +37,8 @@
 
 
 
-% Returns the default Erlang-based unit type that is associated with any Python
-% unit type.
+% @doc Returns the default Erlang-based unit type that is associated with any
+% Python unit type.
 %
 -spec get_erlang_unit_type() -> dataflow_unit_type().
 get_erlang_unit_type() ->

@@ -26,9 +26,9 @@
 % Creation date: Wednesday, May 6, 2020.
 
 
-% Module implementing the supervisor bridge of Traces, so that the (singleton)
-% trace aggregator is attached to the Traces supervision tree, through the
-% Traces root supervisor, defined in the traces_sup module.
+% @doc Module implementing the <b>OTP supervisor bridge of Traces</b>, so that
+% the (singleton) trace aggregator is attached to the Traces supervision tree,
+% through the Traces root supervisor, defined in the traces_sup module.
 %
 -module(traces_bridge_sup).
 
@@ -70,7 +70,7 @@
 
 
 
-% Starts and links the Traces supervision bridge to the trace aggregator.
+% @doc Starts and links the Traces supervision bridge to the trace aggregator.
 %
 % Note: typically spawned as a supervised child of the Traces root supervisor
 % (see traces_sup:init/1), hence generally triggered by the application
@@ -88,7 +88,7 @@ start_link( TraceSupervisorWanted ) ->
 
 
 
-% Callback to initialise this supervisor bridge, typically in answer to
+% @doc Callback to initialise this supervisor bridge, typically in answer to
 % start_link/1 above being executed.
 %
 -spec init( boolean() ) -> { 'ok', pid(), State :: term() }
@@ -140,7 +140,7 @@ init( TraceSupervisorWanted ) ->
 
 
 
-% Callback to terminate this supervisor bridge.
+% @doc Callback to terminate this supervisor bridge.
 -spec terminate( Reason :: 'shutdown' | term(), State :: term() ) -> void().
 terminate( Reason, _State=TraceAggregatorPid )
   when is_pid( TraceAggregatorPid ) ->

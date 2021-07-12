@@ -84,7 +84,7 @@ ifndef PROJECT_NAME
 endif
 
 
-SIM_DIASCA_BASE_VERSION := 2.3.13
+SIM_DIASCA_BASE_VERSION := 2.4.0
 
 #SIM_DIASCA_VERSION := $(SIM_DIASCA_BASE_VERSION)-beta-$(date '+%Y%m%d-%Hh%M')
 #SIM_DIASCA_VERSION := $(SIM_DIASCA_BASE_VERSION)-for-foobar
@@ -100,8 +100,7 @@ endif
 ifndef PROJECT_RELEASE_DATE
 	# To be set only at release time:
 	#PROJECT_RELEASE_DATE := "(not set yet)"
-	PROJECT_RELEASE_DATE := "Wednesday, March 10, 2021"
-
+	PROJECT_RELEASE_DATE := "Monday, July 12, 2021"
 endif
 
 
@@ -145,11 +144,9 @@ endif
 
 # Starting from this layer, nodes are not started as distributed ones, as, for
 # the purpose of run uniqueness (see SII), Sim-Diasca has to change the name of
-# the user node at runtime - hence this non-distributed flag:
+# the user node at runtime - hence this non-distributed flag (that is forced now):
 #
-ifndef NODE_NAMING
-	NODE_NAMING="--nn"
-endif
+NODE_NAMING := "--nn"
 
 
 WORK_ARCHIVE_FILE  := \
@@ -444,14 +441,22 @@ SPREADSHEETS_TO_DUMF_SCRIPT := $(MOCKUP_BASE_DIR)/mockup_spreadsheet_to_dumf.esc
 # Must be available from the user's path:
 LOGMX := $$(which logmx.sh 2>/dev/null)
 
+
 # Whence the reference CSS files come:
-CSS_ROOT = $(SIM_DIASCA_TOP)/doc/common-elements/css
+ifndef CSS_ROOT
+	CSS_ROOT := $(SIM_DIASCA_TOP)/doc/common-elements/css
+endif
+
 
 # Expected to have been copied/symlinked and thus to be local:
-PROJECT_CSS := pygments-default.css,sim-diasca.css
+ifndef PROJECT_CSS
+	PROJECT_CSS := pygments-default.css,sim-diasca.css
+endif
 
 
-#PROJECT_ICON := sim-diasca-icon.png
+ifndef PROJECT_ICON
+	PROJECT_ICON := $(SIM_DIASCA_TOP)/doc/common-elements/edf-related/sim-diasca-icon.png
+endif
 
 
 # For later reuse in the next layer of the software stack:

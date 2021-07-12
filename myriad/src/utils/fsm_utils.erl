@@ -28,7 +28,11 @@
 
 % Gathering of various Finite State Machine related facilities.
 %
+% Should rely on gen_statem.
+%
 % See fsm_utils_test.erl for the corresponding test.
+%
+% @hidden Not ready.
 %
 -module(fsm_utils).
 
@@ -55,9 +59,8 @@ create_blank_fsm_state() ->
 
 
 % Sets specified FSM state attribute.
-%
 -spec setFsmAttribute( table:table(), table:key(), table:value() ) ->
-							 table:table().
+								table:table().
 setFsmAttribute( FsmState, AttributeName, AttributeValue ) ->
 	table:add_entry( AttributeName, AttributeValue, FsmState ).
 
@@ -69,8 +72,8 @@ setFsmAttribute( FsmState, AttributeName, AttributeValue ) ->
 % Returns either a {value,Value} pair, if the attribute is found, or
 % 'attribute_not_found'.
 %
--spec getFsmAttribute( table:table(), table:key() )
-					 -> table:value() | 'attribute_not_found'.
+-spec getFsmAttribute( table:table(), table:key() ) ->
+								table:value() | 'attribute_not_found'.
 getFsmAttribute( FsmState, AttributeName ) ->
 
 	case table:lookup_entry( AttributeName, FsmState ) of

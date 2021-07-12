@@ -26,8 +26,7 @@
 % Creation date: Thursday, April 30, 2015.
 
 
-
-% Minor utilities to manage pairs (2-element tuples).
+% @doc Minor utilities to manage <b>pairs</b> (that is 2-element tuples).
 -module(pair).
 
 -export([ first/1, second/1, swap/1, to_list/1, to_string/1 ]).
@@ -42,34 +41,36 @@
 -export_type([ pair/0 ]).
 
 
-% Returns the first element of the specified pair.
+% @doc Returns the first element of the specified pair.
 -spec first( pair() ) -> element().
 first( { X, _Y } ) ->
 	X.
 
 
 
-% Returns the second element of the specified pair.
+% @doc Returns the second element of the specified pair.
 -spec second( pair() ) -> element().
 second( { _X, Y } ) ->
 	Y.
 
 
 
-% Returns a pair whose elements have been swapped compared to specified one.
+% @doc Returns a pair whose elements have been swapped compared to the specified
+% one.
+%
 -spec swap( pair() ) -> pair().
 swap( { X, Y } ) ->
 	{ Y, X }.
 
 
 
-% Returns a list of two elements corresponding to the specified pair.
+% @doc Returns a list of two elements corresponding to the specified pair.
 -spec to_list( pair() ) -> [ element() ].
 to_list( { F, S } ) ->
 	[ F, S ].
 
 
-% Returns a textual description of the specified pair.
+% @doc Returns a textual description of the specified pair.
 -spec to_string( pair() ) -> text_utils:ustring().
 to_string( { X, Y } ) ->
 	text_utils:format( "{ ~p, ~p }", [ X, Y ] ).

@@ -1,0 +1,50 @@
+name: Erlang CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    # See https://hub.docker.com/_/erlang:
+    container:
+      image: erlang:latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Compile
+      run: |
+        echo "Checking distribution and version"
+        cat /etc/*-release
+        # Actually does not look as an Ubuntu but a Debian:
+        echo "## Listing repositories: $(cat /etc/apt/sources.list)"
+        #echo "## Updating packages (1/2)"
+        #apt-get update
+        #echo "## Installing add-apt-repository"
+        #apt-get install --assume-yes software-properties-common
+        #echo "## Adding universe"
+        #add-apt-repository universe
+        #echo "## Updating packages (2/2)"
+        #apt-get update
+        echo "## Updating packages"
+        apt-get update
+        apt-get install --assume-yes tree gnuplot-nox
+        rebar3 compile
+        echo " - building from: $(pwd)"
+        echo " - content of parent directory: $(ls .. 2>/dev/null | tr '\n' ' ')"
+        echo " - content of _checkouts directory: $(ls _checkouts 2>/dev/null)"
+        echo " - content of _build/default/lib directory: $(ls _build/default/lib 2>/dev/null)"
+        make info-context
+    - name: Run tests
+      run: |
+        echo "Building and testing all first in the 'development' execution target:"
+        make test NODE_NAMING="--sn"
+        echo
+        echo "Then building and testing all in the 'production' execution target:"
+        make test-production NODE_NAMING="--sn"

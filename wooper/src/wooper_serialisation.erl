@@ -26,8 +26,8 @@
 
 
 
-% Module containing facilities for the serialisation and deserialisation of
-% WOOPER instances.
+% @doc Module containing facilities for the <b>serialisation and deserialisation
+% of WOOPER instances</b>.
 %
 % Note: offseting as much as possible code from the counterpart class header in
 % this module allows for smaller, cache-friendly BEAMs, and short compilation
@@ -39,6 +39,8 @@
 
 
 % First, all kinds of exports:
+
+% Not working: at headerfile "wooper_state_functions.hrl"
 
 
 % For getAttr/1, and for setAttributes/2 and all being unused:
@@ -90,27 +92,25 @@
 
 
 
-% Any function that is able to transform the state of an instance.
-%
-% Note: see basic_utils:traverse_term/4, which may be useful in that context.
-%
 -type entry_transformer() :: maybe(
 			fun( ( attribute_entry(), basic_utils:user_data() ) ->
 					 { attribute_entry(), basic_utils:user_data() } ) ).
+% Any function that is able to transform the state of an instance.
+%
+% Note: see basic_utils:traverse_term/4, which may be useful in that context.
 
 
 
-% The serialisation form of an instance, as an Erlang term:
 -type term_serialisation() :: [ attribute_entry() ].
+% The serialisation form of an instance, as an Erlang term.
 
 
+-type bin_serialisation() :: binary().
 % The serialisation form of an instance, as an ext_binary, i.e. a binary data
 % object, structured according to the Erlang external term format:
 %
 % However erlang:ext_binary/0 is not exported:
 %-type bin_serialisation() :: erlang:ext_binary().
-%
--type bin_serialisation() :: binary().
 
 
 -export_type([ entry_transformer/0, term_serialisation/0,
@@ -147,7 +147,6 @@
 
 
 
-
 % In this section, we define for the current class load counterparts to new
 % operators, i.e. the various ways of creating an instance of it not through a
 % normal construction process, but from a deserialisation one (loading).
@@ -162,8 +161,7 @@
 
 
 
-
-% Spawns a new instance of this class, based on the specified serialisation
+% @doc Spawns a new instance of this class, based on the specified serialisation
 % information.
 %
 % Returns the PID of the created instance for this loading.
@@ -177,7 +175,7 @@ load( BinSerialisation ) ->
 
 
 
-% Spawns a new instance of this class, based on the specified serialisation
+% @doc Spawns a new instance of this class, based on the specified serialisation
 % information, entry transformer and user data.
 %
 % Returns the PID of the created instance for this loading.
@@ -190,13 +188,13 @@ load( BinSerialisation ) ->
 load( BinSerialisation, EntryTransformer, UserData ) ->
 
 	?myriad_spawn( fun() ->
-						   deserialise( BinSerialisation, EntryTransformer,
-										UserData, _ListenerPid=undefined )
+						deserialise( BinSerialisation, EntryTransformer,
+									 UserData, _ListenerPid=undefined )
 				   end ).
 
 
 
-% Spawns a new instance of this class, based on the specified serialisation
+% @doc Spawns a new instance of this class, based on the specified serialisation
 % information, and links it to the current process.
 %
 % Returns the PID of the created instance for this loading.
@@ -211,7 +209,7 @@ load_link( BinSerialisation ) ->
 
 
 
-% Spawns a new instance of this class, based on the specified serialisation
+% @doc Spawns a new instance of this class, based on the specified serialisation
 % information, entry transformer and user data, and links it to the current
 % process.
 %
@@ -224,13 +222,13 @@ load_link( BinSerialisation ) ->
 				 basic_utils:user_data() ) -> instance_pid().
 load_link( BinSerialisation, EntryTransformer, UserData ) ->
 	?myriad_spawn_link( fun() ->
-								deserialise( BinSerialisation, EntryTransformer,
-											 UserData, _ListenerPid=undefined )
+							deserialise( BinSerialisation, EntryTransformer,
+										 UserData, _ListenerPid=undefined )
 						end ).
 
 
 
-% Spawns a new instance of this class, based on the specified serialisation
+% @doc Spawns a new instance of this class, based on the specified serialisation
 % information.
 %
 % Returns the PID of the created instance for this loading.
@@ -245,7 +243,7 @@ synchronous_load( BinSerialisation ) ->
 
 
 
-% Spawns a new instance of this class, based on the specified serialisation
+% @doc Spawns a new instance of this class, based on the specified serialisation
 % information, entry transformer and user data.
 %
 % Returns the PID of the created instance for this loading.
@@ -274,8 +272,7 @@ synchronous_load( BinSerialisation, EntryTransformer, UserData ) ->
 
 
 
-
-% Spawns a new instance of this class, based on the specified serialisation
+% @doc Spawns a new instance of this class, based on the specified serialisation
 % information, and links it to the current process.
 %
 % Returns the PID of the created instance for this loading.
@@ -290,7 +287,7 @@ synchronous_load_link( BinSerialisation ) ->
 
 
 
-% Spawns a new instance of this class, based on the specified serialisation
+% @doc Spawns a new instance of this class, based on the specified serialisation
 % information, entry transformer and user data, and links it to the current
 % process.
 %
@@ -319,7 +316,6 @@ synchronous_load_link( BinSerialisation, EntryTransformer, UserData ) ->
 	end.
 
 
-
 % We did not feel the specific need to define:
 %
 % - synchronous_timed_load
@@ -334,9 +330,8 @@ synchronous_load_link( BinSerialisation, EntryTransformer, UserData ) ->
 
 
 
-
-% Spawns on specified node a new instance of this class, based on the specified
-% serialisation information and links it to the current process.
+% @doc Spawns on specified node a new instance of this class, based on the
+% specified serialisation information and links it to the current process.
 %
 % Returns the PID of the created instance.
 %
@@ -352,9 +347,9 @@ remote_synchronisable_load_link( Node, BinSerialisation ) ->
 					_EntryTransformer=undefined, _UserData=undefined ).
 
 
-% Spawns on specified node a new instance of this class, based on the specified
-% serialisation information, entry transformer and user data, and links it to
-% the current process.
+% @doc Spawns on specified node a new instance of this class, based on the
+% specified serialisation information, entry transformer and user data, and
+% links it to the current process.
 %
 % Returns the PID of the created instance.
 %
@@ -379,9 +374,9 @@ remote_synchronisable_load_link( Node, BinSerialisation, EntryTransformer,
 
 
 
-% Spawns on specified node a new instance of this class, based on the specified
-% serialisation information, entry transformer and user data, and links it to
-% the current process.
+% @doc Spawns on specified node a new instance of this class, based on the
+% specified serialisation information, entry transformer and user data, and
+% links it to the current process.
 %
 % Returns the PID of the created instance for this loading, or the time_out
 % atom.
@@ -397,9 +392,9 @@ remote_synchronous_timed_load_link( Node, BinSerialisation ) ->
 
 
 
-% Spawns on specified node a new instance of this class, based on the specified
-% serialisation information, entry transformer and user data, and links it to
-% the current process.
+% @doc Spawns on specified node a new instance of this class, based on the
+% specified serialisation information, entry transformer and user data, and
+% links it to the current process.
 %
 % Returns the PID of the created instance for this loading, or the time_out
 % atom.
@@ -439,9 +434,8 @@ remote_synchronous_timed_load_link( Node, BinSerialisation, EntryTransformer,
 
 
 
-
-% Deserialises the specified instance from its serialised form (as a term, not
-% as a binary), to obtain its corresponding state, using specified entry
+% @doc Deserialises the specified instance from its serialised form (as a term,
+% not as a binary), to obtain its corresponding state, using specified entry
 % transformer and user data, then having the current executing process embody
 % this instance from then on.
 %
@@ -535,10 +529,10 @@ deserialise( BinSerialisation, EntryTransformer, UserData, ListenerPid ) ->
 
 
 
-% Handles private processes (through the name of the corresponding attributes),
-% i.e. processes that are internal to an instance that is to be serialised, so
-% that any next serialisation will see instead of their (former) PID a
-% serialisation marker.
+% @doc Handles private processes (through the name of the corresponding
+% attributes), that is processes that are internal to an instance that is to be
+% serialised, so that any next serialisation will see instead of their (former)
+% PID a serialisation marker.
 %
 % Returns an updated state.
 %
@@ -574,9 +568,9 @@ handle_private_processes( PrivateAttributeNames, State ) ->
 
 
 
-% Mutes specified attributes (i.e. replaces any attribute value not equal to
-% 'undefined' by a term restoration marker), for example so that they can escape
-% the serialisation process.
+% @doc Mutes specified attributes (that is replaces any attribute value not
+% equal to 'undefined' by a term restoration marker), for example so that they
+% can escape the serialisation process.
 %
 % Typically used in pre_serialise_hook/2, to store only relevant, useful
 % information.
@@ -615,7 +609,7 @@ mute_attributes( AttributeNameList, State ) ->
 
 
 
-% Checks that the specified attributes have the same value in the specified
+% @doc Checks that the specified attributes have the same value in the specified
 % state and in the specified entries, otherwise throws an exception.
 %
 % (helper)
@@ -644,8 +638,8 @@ check_attributes_equal( _AttributeNames=[ AttributeName | T ], AttributeEntries,
 
 
 
-% Replaces the value held in the specified state by the one of the specified
-% attribute found in specified entry.
+% @doc Replaces the value held in the specified state by the one of the
+% specified attribute found in specified entry.
 %
 % (helper)
 %
@@ -672,8 +666,8 @@ replace_attribute( AttributeName, AttributeEntries, State ) ->
 
 
 
-% Replaces the values held in the specified state by the ones of the specified
-% attributes found in specified entries.
+% @doc Replaces the values held in the specified state by the ones of the
+% specified attributes found in specified entries.
 %
 % (helper)
 %
@@ -689,9 +683,9 @@ replace_attributes( AttributeNames, AttributeEntries, State ) ->
 
 
 
-% Extracts the value (supposedly, any type of list) of specified attribute from
-% specified entries, and append that list to the corresponding one found in the
-% specified state, stored under the same attribute name.
+% @doc Extracts the value (supposedly, any type of list) of specified attribute
+% from specified entries, and append that list to the corresponding one found in
+% the specified state, stored under the same attribute name.
 %
 % Returns the remaining entries, and an updated state.
 %
@@ -721,9 +715,10 @@ merge_list_for( AttributeName, AttributeEntries, State ) ->
 
 
 
-% Extracts the value (supposedly, any type of list) of each of the specified
-% attributes from specified entries, and append that list to the corresponding
-% one found in the specified state, stored under the same attribute name.
+% @doc Extracts the value (supposedly, any type of list) of each of the
+% specified attributes from specified entries, and append that list to the
+% corresponding one found in the specified state, stored under the same
+% attribute name.
 %
 % Returns the remaining entries, and an updated state.
 %
@@ -740,7 +735,7 @@ merge_lists_for( AttributeNames, AttributeEntries, State ) ->
 
 
 
-% Returns a list of the known restoration markers.
+% @doc Returns a list of the known restoration markers.
 %
 % (helper)
 %

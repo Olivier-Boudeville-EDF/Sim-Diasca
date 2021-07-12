@@ -23,6 +23,10 @@
 -module(class_WorldManager).
 
 
+% @doc The World Manager is a singleton instance in charge of <b>federating all
+% the object managers</b> that collectively account, in a dataflow context, for
+% the simulated world.
+%
 -define( class_description,
 		 "The World Manager (WM) is a singleton instance in charge of "
 		 "federating all the object managers that account, in a dataflow "
@@ -40,7 +44,7 @@
 % object manager (as it has sufficiently different features to cover), yet it
 % is, directly or not, the parent of all of them.
 
-%
+
 % This singleton additionally interacts with its computational counterpart, the
 % experiment manager (see class_ExperimentManager), which is expected to declare
 % itself to this world manager.
@@ -78,33 +82,28 @@
 
 
 
-% To determine the object manager in charge of a given object type, to dispatch
-% events:
-%
 -type object_type_table() ::
 		table( dataflow_object_type(), [ object_manager_pid() ] ).
+% To determine the object manager in charge of a given object type, to dispatch
+% events.
 
 
-
+-type dispatch_table() ::
+		table( object_manager_pid(), [ world_event() ] ).
 % Table allowing to keep track of the world events that have been dispatched to
 % a given object manager (and hence are waited for their report completion).
 %
 % Note: keeping track of the events *per object manager* is not necessary (a
-% direct, plain list of events could have sufficed)
-%
--type dispatch_table() ::
-		table( object_manager_pid(), [ world_event() ] ).
+% direct, plain list of events could have sufficed).
 
 
-
-% A set of dataflow objects that shall be suspended:
 -type suspend_set() :: [ object_pid() ].
+% A set of dataflow objects that shall be suspended:
 
 
+-type suspend_table() :: list_table:list_table( dataflow_pid(), suspend_set() ).
 % Allows to maintain, for each of the listed dataflow, which of their (dataflow)
 % objects are to be suspended.
-%
--type suspend_table() :: list_table:list_table( dataflow_pid(), suspend_set() ).
 
 
 % Class-specific attributes:
@@ -157,12 +156,14 @@
 
 
 
+-type creation_completion_extra_info() :: object_pid().
 % The extra information that an object manager sends back once a creation event
 % has been processed: the PID of a created dataflow object.
-%
--type creation_completion_extra_info() :: object_pid().
 
 
+
+-type binary_association_completion_extra_info() ::
+		{ object_pid(), object_pid() }.
 % The extra information that an object manager sends back once a binary
 % association (having thus a source and a target) event has been processed,
 % listing (in that order):
@@ -174,22 +175,17 @@
 % (no external identifier of the source dataflow object of the association is
 % specified, as the information is already provided with the event)
 
--type binary_association_completion_extra_info() ::
-		{ object_pid(), object_pid() }.
 
-
-% The extra information that an object manager sends back once an association
-% event (of any kind) has been processed.
-%
 -type association_completion_extra_info() ::
 		binary_association_completion_extra_info() | any().
+% The extra information that an object manager sends back once an association
+% event (of any kind) has been processed.
 
 
+-type completion_extra_info() :: basic_utils:maybe(
+	creation_completion_extra_info() | association_completion_extra_info() ).
 % The extra information that an object manager may send back once a world event
 % has been processed (ex: the PID of a created dataflow object).
-%
--type completion_extra_info() :: basic_utils:maybe(
-	 creation_completion_extra_info() | association_completion_extra_info() ).
 
 
 -export_type([ completion_extra_info/0, external_id/0 ]).
@@ -215,12 +211,12 @@
 
 
 
-% Constructs the world manager, from ActorSettingsn which describes the actor
-% abstract identifier (AAI) and seed of this actor, as assigned by the load
-% balancer.
+% @doc Constructs the world manager, from ActorSettingsn which describes the
+% actor abstract identifier (AAI) and seed of this actor, as assigned by the
+% load balancer.
 %
 -spec construct( wooper:state(), class_Actor:actor_settings() ) ->
-						wooper:state().
+			wooper:state().
 construct( State, ActorSettings ) ->
 
 	% First the direct mother class:
@@ -248,7 +244,7 @@ construct( State, ActorSettings ) ->
 
 
 
-% Overridden destructor.
+% @doc Overridden destructor.
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -267,7 +263,7 @@ destruct( State ) ->
 % Methods section.
 
 
-% Callback executed on the first diasca of existence of this manager.
+% @doc Callback executed on the first diasca of existence of this manager.
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
 							const_actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
@@ -278,7 +274,7 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-% Declares the specified experiment manager.
+% @doc Declares the specified experiment manager.
 -spec setExperimentManager( wooper:state(), experiment_manager_pid() ) ->
 									actor_oneway_return().
 setExperimentManager( State, ExperimentManagerPid ) ->
@@ -294,7 +290,7 @@ setExperimentManager( State, ExperimentManagerPid ) ->
 
 
 
-% Registers (synchronously) specified (optional) experiment entry point.
+% @doc Registers (synchronously) specified (optional) experiment entry point.
 -spec registerExperimentEntryPoint( wooper:state() ) ->
 						request_return( 'experiment_entry_point_registered' ).
 registerExperimentEntryPoint( State ) ->
@@ -310,7 +306,7 @@ registerExperimentEntryPoint( State ) ->
 
 
 
-% Registers (synchronously) specified (optional) experiment exit point.
+% @doc Registers (synchronously) specified (optional) experiment exit point.
 -spec registerExperimentExitPoint( wooper:state() ) ->
 						request_return( 'experiment_exit_point_registered' ).
 registerExperimentExitPoint( State ) ->
@@ -326,7 +322,8 @@ registerExperimentExitPoint( State ) ->
 
 
 
-% Registers specified object manager, in charge of the specified object types.
+% @doc Registers specified object manager, in charge of the specified object
+% types.
 %
 % One might register several managers for the same type; in this case they will
 % be randomly used when an event has to be processed. In this case, the object
@@ -372,7 +369,7 @@ registerObjectManager( State, ManagedObjectTypes ) ->
 
 
 
-% Registers the associations regarding specified object types.
+% @doc Registers the associations regarding specified object types.
 -spec register_type_associations( [ dataflow_object_type() ],
 		object_manager_pid(), object_type_table() ) -> object_type_table().
 register_type_associations( _ManagedObjectTypes=[], _ObjectManagerPid,
@@ -414,8 +411,8 @@ register_type_associations( _ManagedObjectTypes=[ ObjectType | T ],
 % Actor oneways.
 
 
-% Injects the specified incoming changeset (a list of world events, possibly
-% including induced, nested ones).
+% @doc Injects the specified incoming changeset (a list of world events,
+% possibly including induced, nested ones).
 %
 % This changeset is usually directly sent by the experiment entry point.
 %
@@ -509,8 +506,8 @@ injectChangeset( State, Changeset, SendingActorPid ) ->
 
 
 
-% Assigns identifiers to all top-level events (and only them) in the specified
-% changeset.
+% @doc Assigns identifiers to all top-level events (and only them) in the
+% specified changeset.
 %
 % Also sets timestamps and normalises external identifiers.
 %
@@ -674,9 +671,9 @@ assign_identifiers_to_top_level_events( _Changeset=[ Event | _T ], _LastId,
 
 
 
-% Dispatches specified top-level events to their respective object managers,
-% prepare to wait for their completion - and send then their induced events (if
-% any).
+% @doc Dispatches specified top-level events to their respective object
+% managers, prepare to wait for their completion - and send then their induced
+% events (if any).
 %
 % Returns an updated state, comprising an updated list of the identifiers of the
 % (top-level) dispatched events (that will be then waited for).
@@ -707,7 +704,7 @@ dispatch_top_level_events( _Changeset=[ E | T ], DispatchTable,
 
 
 
-% Puts specified external identifier in canonical form.
+% @doc Puts specified external identifier in canonical form.
 %
 % The special case of strings results in returning binaries.
 %
@@ -732,8 +729,8 @@ normalise_external_id( ExtId ) ->
 
 
 
-% Notifies this world manager that all changesets have been transmitted for this
-% tick.
+% @doc Notifies this world manager that all changesets have been transmitted for
+% this tick.
 %
 % Allows to detect, afterwards, that all changesets have been processed,
 % allowing to notify in turn the experiment manager with a single, complete list
@@ -811,7 +808,7 @@ notifyAllChangesetsInjected( State, _SendingActorPid ) ->
 
 
 
-% Checks whether at least a world event remains to be fully processed.
+% @doc Checks whether at least a world event remains to be fully processed.
 %
 % Called by the world manager itself, so that this check is done at the diasca
 % immediately following the notification that all changesets were injected, to
@@ -864,7 +861,7 @@ checkChangesetsCompletion( State, _SendingActorPid ) ->
 
 
 
-% Reports (from an object manager most probably) that specified events
+% @doc Reports (from an object manager most probably) that specified events
 % (designated by their identifier) have completed (these events have been
 % applied for good, opening the possibility of applying their induced events in
 % turn), and possibly reports new events that shall be injected as well.
@@ -950,10 +947,10 @@ reportChangesetCompletion( State, CompletedEventInfos, InjectedChangeset,
 
 
 
-% Extracts, for a given object manager, the events specified by their identifier
-% from the entry of the specified dispatch table (this entry being handled by
-% this object manager), and completes them with the specified extra information
-% (specific to that event type).
+% @doc Extracts, for a given object manager, the events specified by their
+% identifier from the entry of the specified dispatch table (this entry being
+% handled by this object manager), and completes them with the specified extra
+% information (specific to that event type).
 %
 % Returns the requested events, an updated dispatch table and a newly created
 % suspend table.
@@ -990,7 +987,7 @@ extract_and_complete_events( _EventInfos=[ { Id, ExtraInfo } | T ],
 
 	% Applies these information, returns an updated event and suspend table:
 	{ FullEvent, NewSuspendedTable } =
-		case finalise_event( TargetEvent, ExtraInfo ) of
+			case finalise_event( TargetEvent, ExtraInfo ) of
 
 		{ CompletedEvent, DataflowPid, SuspendSet } ->
 			{ CompletedEvent, list_table:append_list_to_entry( DataflowPid,
@@ -1006,11 +1003,11 @@ extract_and_complete_events( _EventInfos=[ { Id, ExtraInfo } | T ],
 
 
 
-% Finalises (completes) the specified event with specified extra information: we
-% kept the full event here, at the level of the world manager, yet during its
-% actual processing (done by an object manager), extra information may be
-% available, in which case we update accordingly that reference view based on
-% said event, so that it becomes complete.
+% @doc Finalises (completes) the specified event with specified extra
+% information: we kept the full event here, at the level of the world manager,
+% yet during its actual processing (done by an object manager), extra
+% information may be available, in which case we update accordingly that
+% reference view based on said event, so that it becomes complete.
 %
 -spec finalise_event( world_event(), completion_extra_info() ) ->
 							{ world_event(), [ object_pid() ] }.
@@ -1109,8 +1106,8 @@ finalise_event( Event, ExtraInfo ) ->
 
 
 
-% Declares to specified dataflows (the keys of the table) which of their objects
-% (the values) have been suspended (so that they can be resumed later).
+% @doc Declares to specified dataflows (the keys of the table) which of their
+% objects (the values) have been suspended (so that they can be resumed later).
 %
 -spec declare_suspensions( suspend_table(), wooper:state() ) -> wooper:state().
 declare_suspensions( SuspendTable, State ) ->
@@ -1129,7 +1126,7 @@ declare_suspensions( SuspendTable, State ) ->
 
 
 
-% Partitions specified list of events: returns a pair made of a list of the
+% @doc Partitions specified list of events: returns a pair made of a list of the
 % top-level events (stripped from their induced ones) and a (flat) list of their
 % induced ones, as subtrees.
 %
@@ -1153,20 +1150,20 @@ split_events( _Changeset=[ E=#destruction_event{ induced_events=Induced } | T ],
 				  Induced ++ AccInduced );
 
 split_events( _Changeset=[
-					 E=#association_event{ induced_events=Induced } | T ],
+					E=#association_event{ induced_events=Induced } | T ],
 			  AccTop, AccInduced ) ->
 	split_events( T, [ E#association_event{ induced_events=[] } | AccTop ],
 				  Induced ++ AccInduced );
 
 split_events( _Changeset=[
-				 E=#binary_association_event{ induced_events=Induced } | T ],
+				E=#binary_association_event{ induced_events=Induced } | T ],
 			  AccTop, AccInduced ) ->
 	split_events( T,
 				  [ E#binary_association_event{ induced_events=[] } | AccTop ],
 				  Induced ++ AccInduced );
 
 split_events( _Changeset=[
-					 E=#disassociation_event{ induced_events=Induced } | T ],
+					E=#disassociation_event{ induced_events=Induced } | T ],
 			  AccTop, AccInduced ) ->
 	split_events( T, [ E#disassociation_event{ induced_events=[] } | AccTop ],
 				  Induced ++ AccInduced );
@@ -1177,7 +1174,7 @@ split_events( _Changeset=[ E=#connection_event{ induced_events=Induced } | T ],
 				  Induced ++ AccInduced );
 
 split_events( _Changeset=[
-					 E=#disconnection_event{ induced_events=Induced } | T ],
+					E=#disconnection_event{ induced_events=Induced } | T ],
 			  AccTop, AccInduced ) ->
 	split_events( T, [ E#disconnection_event{ induced_events=[] } | AccTop ],
 				  Induced ++ AccInduced );
@@ -1189,8 +1186,8 @@ split_events( _Changeset=[ E=#update_event{ induced_events=Induced } | T ],
 
 
 
-% Predicate to tell whether there is no more already dispatched event in the
-% specified table.
+% @doc Predicate to tell whether there is no more already dispatched event in
+% the specified table.
 %
 -spec no_more_dispatched_event( dispatch_table() ) -> boolean().
 no_more_dispatched_event( DispatchTable ) ->
@@ -1214,8 +1211,8 @@ are_all_empty( _ ) ->
 
 
 
-% Called whenever all changesets have been fully processed by this world manager
-% for this tick.
+% @doc Called whenever all changesets have been fully processed by this world
+% manager for this tick.
 %
 -spec on_all_changesets_processed( changeset(), wooper:state() ) ->
 											wooper:state().
@@ -1248,8 +1245,8 @@ on_all_changesets_processed( FullChangeset, State ) ->
 % Helper functions.
 
 
-% Determines, repeatedly, which object manager shall be in charge of specified
-% external identifier.
+% @doc Determines, repeatedly, which object manager shall be in charge of
+% specified external identifier.
 %
 select_object_manager_for_event( ExternalId, ListOfManagerPids ) ->
 
@@ -1265,7 +1262,7 @@ select_object_manager_for_event( ExternalId, ListOfManagerPids ) ->
 
 
 
-% Dispatches the specified world event, by sending it to the right object
+% @doc Dispatches the specified world event, by sending it to the right object
 % manager (based on its specified object type), if appropriate.
 %
 % Induced events will be tackled once their parent one will have completed.
@@ -1539,9 +1536,9 @@ dispatch_event( Event=#update_event{ object_type=ObjectType,
 
 
 
-% Handles world events that are to be managed later in the chain (than in object
-% managers; typically to be dispatched by the next-to-come experiment manager,
-% to the unit managers).
+% @doc Handles world events that are to be managed later in the chain (than in
+% object managers; typically to be dispatched by the next-to-come experiment
+% manager, to the unit managers).
 %
 -spec handle_pass_through_event( world_event(), [ world_event() ],
 								 wooper:state() ) -> wooper:state().
@@ -1599,7 +1596,7 @@ handle_pass_through_event( PassThroughEvent, InducedEvents, State ) ->
 
 
 
-% Returns a textual description of this world manager.
+% @doc Returns a textual description of this world manager.
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
@@ -1685,7 +1682,7 @@ to_string( State ) ->
 		Events ->
 			RevEvents = lists:reverse( Events ),
 			EventStrings = [ dataflow_support:world_event_to_string( E )
-							 || E <- RevEvents ],
+								|| E <- RevEvents ],
 			text_utils:format( "following ~B world events are reported as "
 				"completed: ~ts", [ length( Events ),
 				text_utils:strings_to_string( EventStrings ) ] )
@@ -1700,8 +1697,8 @@ to_string( State ) ->
 
 
 
-% Returns a textual description of the object type associations known of this
-% world manager.
+% @doc Returns a textual description of the object type associations known of
+% this world manager.
 %
 -spec object_type_to_string( object_type_table() ) -> ustring().
 object_type_to_string( TypeTable ) ->

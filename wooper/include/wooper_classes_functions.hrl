@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2021 Olivier Boudeville
+% Copyright (C) 2007-2021 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -36,7 +36,8 @@
 % to have them registered (known of the WOOPER parse transforms) as methods (ex:
 % so that they are themselves transformed, since they use method terminators).
 
-% Request returning the classname of the instance.
+
+% @doc Request returning the classname of the instance.
 %
 % Always accurate, in all constructors, methods and destructors.
 %
@@ -46,12 +47,12 @@ getClassname( State ) ->
 
 
 
-% Method that returns the (direct) superclasses of the instance.
+% @doc Request returning the (direct) superclasses of the instance.
 %
 % Always accurate, in all constructors, methods and destructors.
 %
 -spec getSuperclasses( wooper:state() ) ->
-							 const_request_return( [ classname() ] ).
+								const_request_return( [ classname() ] ).
 getSuperclasses( State ) ->
 	ActualModule = State#state_holder.actual_class,
 	SuperClasses = ActualModule:get_superclasses(),
@@ -62,8 +63,8 @@ getSuperclasses( State ) ->
 -ifdef(wooper_debug_mode).
 
 
-% Returns a full textual description of this instance, including its state and
-% virtual table.
+% @doc Returns a full textual description of this instance, including its state
+% and virtual table.
 %
 % This is a method for debug purpose, only activated if wooper_debug_mode is
 % defined.

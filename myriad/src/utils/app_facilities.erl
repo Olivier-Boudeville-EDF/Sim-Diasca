@@ -25,8 +25,8 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 
 
-% This module defines a few basic facilities for applications, at the level of
-% the 'Myriad' layer.
+% @doc This module defines a few basic facilities for <b>applications</b> (in
+% the Myriad sense, not OTP one).
 %
 -module(app_facilities).
 
@@ -42,10 +42,10 @@
 
 
 
-% Starts an application; expected to be the first application statement.
+% @doc Starts an application; expected to be the first application statement.
 %
 % Here we disable explicitly the trapping of EXIT events, as a function run
-% through "erl -eval" (like our cases) or through "erl -run" will be executed in
+% through `erl -eval' (like our cases) or through `erl -run' will be executed in
 % a process which will silently trap EXIT events, which would mean that the
 % crash of any process created from the case, even thanks to spawn_link, would
 % most probably remain unnoticed (just leading to an EXIT message happily
@@ -62,8 +62,8 @@ start( Modules ) when is_list( Modules ) ->
 
 
 
-% Stops an application; expected to be the last application statement in the
-% normal case.
+% @doc Stops an application; expected to be the last application statement in
+% the normal case.
 %
 -spec stop() -> no_return().
 stop() ->
@@ -72,7 +72,7 @@ stop() ->
 
 
 
-% Displays an application message.
+% @doc Displays an application message.
 -spec display( ustring() ) -> void().
 display( Message ) ->
 	% Carriage return already added in basic_utils:display/1:
@@ -83,9 +83,9 @@ display( Message ) ->
 	basic_utils:display( lists:flatten( Message ), _ValueList=[] ).
 
 
-% Displays an application message, once formatted.
+% @doc Displays an application message, once formatted.
 %
-% FormatString is an io:format-style format string, ValueList is the
+% @param FormatString an io:format-style format string, ValueList is the
 % corresponding list of field values.
 %
 -spec display( format_string(), format_values() ) -> void().
@@ -96,6 +96,7 @@ display( FormatString, ValueList ) ->
 % Comment out to be able to use the interpreter after the app:
 -define(exit_after_app,).
 
+% @doc Called whenever the execution is finished.
 -spec finished() -> no_return().
 
 
@@ -132,9 +133,10 @@ finished() ->
 
 
 
-% To be called whenever an application is to fail (crash on error) immediately.
+% @doc To be called whenever an application is to fail (crash on error)
+% immediately.
 %
-% Ex: app_facilities:fail( "server on strike" )
+% Ex: `app_facilities:fail( "server on strike" )'
 %
 -spec fail( ustring() ) -> no_return().
 fail( Reason ) ->
@@ -159,12 +161,14 @@ fail( Reason ) ->
 
 
 
-% To be called whenever an application is to fail (crash on error) immediately.
+% @doc To be called whenever an application is to fail (crash on error)
+% immediately.
 %
-% FormatString is an io:format-style format string, ValueList is the
-% corresponding list of field values.
+% @param FormatString an io:format-style format string.
 %
-% Ex: app_facilities:fail( "server ~ts on strike", [ "foobar.org" ] )
+% @param ValueList the corresponding list of field values.
+%
+% Ex: `app_facilities:fail("server ~ts on strike", ["foobar.org"])'.
 %
 -spec fail( format_string(), format_values() ) -> no_return().
 fail( FormatString, ValueList ) ->

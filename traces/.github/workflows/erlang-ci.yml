@@ -12,12 +12,34 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    # See https://hub.docker.com/_/erlang:
     container:
-      image: erlang:23.2.0
+      image: erlang:latest
 
     steps:
     - uses: actions/checkout@v2
     - name: Compile
-      run: rebar3 compile
+      run: |
+        echo "Checking distribution and version"
+        cat /etc/*-release
+        # Actually does not look as an Ubuntu but a Debian:
+        #echo "## Listing repositories: $(cat /etc/apt/sources.list)"
+        #echo "## Updating packages (1/2)"
+        #apt-get update
+        #echo "## Installing add-apt-repository"
+        #apt-get install --assume-yes software-properties-common
+        #echo "## Adding universe"
+        #add-apt-repository universe
+        #echo "## Updating packages (2/2)"
+        #apt-get update
+        echo "## Updating packages"
+        apt-get update
+        apt-get install --assume-yes tree
+        rebar3 compile
+        echo " - building from: $(pwd)"
+        echo " - content of parent directory: $(ls .. 2>/dev/null | tr '\n' ' ')"
+        echo " - content of _checkouts directory: $(ls _checkouts 2>/dev/null)"
+        echo " - content of _build/default/lib directory: $(ls _build/default/lib 2>/dev/null)"
+        make info-context
     - name: Run tests
       run: make test NODE_NAMING="--sn"

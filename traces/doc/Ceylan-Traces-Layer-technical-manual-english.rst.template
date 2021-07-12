@@ -6,6 +6,11 @@
 .. comment stylesheet specified through GNUmakefile
 
 
+===============================================
+Technical Manual of the ``Ceylan-Traces`` Layer
+===============================================
+
+
 .. role:: raw-html(raw)
    :format: html
 
@@ -15,53 +20,52 @@
 
 :raw-html:`<a name="traces_top"></a>`
 
-:raw-html:`<div class="banner"><p><em>Traces documentation</em> <a href="http://traces.esperide.org">browse latest</a> <a href="https://olivier-boudeville.github.io/Ceylan-Traces/">browse mirror</a> <a href="Ceylan-Traces-Layer-technical-manual-english.pdf">get PDF</a> <a href="#traces_top">go to top</a> <a href="#traces_bottom">go to bottom</a> <a href="https://github.com/Olivier-Boudeville/Ceylan-Traces">go to project</a> <a href="mailto:about(dash)traces(at)esperide(dot)com?subject=[Ceylan-Traces]%20Remark">email us</a></p></div>`
+:raw-html:`<div class="banner"><p><em>Traces documentation</em> <a href="http://traces.esperide.org">browse latest</a> <a href="https://olivier-boudeville.github.io/Ceylan-Traces/">browse mirror</a> <a href="Ceylan-Traces-Layer-technical-manual-english.pdf">get PDF</a> <a href="#traces_top">go to top</a> <a href="#traces_toc">go to toc</a> <a href="#traces_bottom">go to bottom</a> <a href="api-doc/index.html">browse API</a> <a href="https://github.com/Olivier-Boudeville/Ceylan-Traces">go to project</a> <a href="mailto:about(dash)traces(at)esperide(dot)com?subject=[Ceylan-Traces]%20Remark">email us</a></p></div>`
 
 
 
-:raw-html:`<center><img src="traces-title.png" width="40%"></img></center>`
+:raw-html:`<center><img src="traces-title.png" id="responsive-image-small"></img>`
 :raw-latex:`\centering \includegraphics[scale=0.35]{traces-title.png}`
 
 
 
-===============================================
-Technical Manual of the ``Ceylan-Traces`` Layer
-===============================================
-
-
-:Organisation: Copyright (C) 2010-2021 Olivier Boudeville
+:Organisation: Copyright (C) 2010-GENERATION_YEAR_TAG Olivier Boudeville
 :Contact: about (dash) traces (at) esperide (dot) com
 :Creation date: Sunday, August 15, 2010
-:Lastly updated: Friday, March 12, 2021
-:Status: Work in progress
-:Version: 0.9.18
+:Lastly updated: GENERATION_DATE_TAG
+:Version: PROJECT_VERSION_TAG
+:Status: Stable
 :Dedication: Users and maintainers of the ``Traces`` layer.
 :Abstract:
 
 	The role of the `Traces <http://traces.esperide.org/>`_ layer (part of the `Ceylan <https://github.com/Olivier-Boudeville/Ceylan>`_ project) is to provide Erlang applications with advanced trace services, so that the user can efficiently log, browse and search through detailed runtime messages that may be emitted concurrently (i.e. in a parallel, distributed way) by all kinds of processes.
 
 	We present here a short overview of these services, to introduce them to newcomers.
-	The next level of information is to read the corresponding `source files <https://github.com/Olivier-Boudeville/Ceylan-Traces>`_, which are intensely commented and generally straightforward.
+	The next level of information is either to browse the `Traces API documentation <api-doc/index.html>`_ or simply to read the corresponding `source files <https://github.com/Olivier-Boudeville/Ceylan-Traces>`_, which are intensely commented and generally straightforward.
 
 
 .. meta::
    :keywords: Traces, log, browse, emit, layer, generic, general-purpose, helper code, library, layer
+
+:raw-html:`</center>`
 
 
 The latest version of this documentation is to be found at the `official Traces website <http://traces.esperide.org>`_ (``http://traces.esperide.org``).
 
 :raw-html:`This Traces documentation is also available in the PDF format (see <a href="Ceylan-Traces-Layer-technical-manual-english.pdf">Ceylan-Traces-Layer-technical-manual-english.pdf</a>), and mirrored <a href="http://olivier-boudeville.github.io/Ceylan-Traces/">here</a>.`
 
-:raw-latex:`The documentation is also mirrored \href{https://olivier-boudeville.github.io/Ceylan-Traces/}{here}.`
+:raw-latex:`This documentation is also mirrored \href{https://olivier-boudeville.github.io/Ceylan-Traces/}{here}.`
 
 
 
 
 :raw-latex:`\pagebreak`
 
+:raw-html:`<a name="traces_toc"></a>`
+
 .. _`table of contents`:
 
-.. contents:: Table of Contents
+.. contents:: **Table of Contents**
 	:depth: 3
 
 
@@ -144,15 +148,15 @@ For example the traces for a test named ``my_foobar_test`` are typically stored 
 
 Following data is associated to a given trace:
 
- #. **technical identifier of the emitter**, as a string (ex: ``<9097.51.0>`` for the PID of a distributed Erlang process)
- #. **name of the emitter** (ex: ``"Instance tracker"``)
- #. **dotted categorization of the emitter** (ex: ``"Core.Tracker.Instances"``); here for example the emitter is an element of the service in charge of the instances, which itself belongs to the tracker services, which themselves belong to the (even more general) core services
- #. **application-level timestamp** (ex: operation count, relative tick, absolute timestep, or any complex, application-specific timestamp, etc.), possibly ``none``, or ``undefined`` if not applicable (ex: a simulation that would not be started yet)
- #. **wall-clock timestamp**, in the ``"Year/Month/Day Hour:Minute:Second"`` format (ex: ``"2016/6/10 15:43:31"``); this is an emitter-side timestamp (hence not related to the wallclock time known of the trace aggregator)
- #. **emitter location**, as a string (ex: the name of the Erlang node, possibly including the name of the application use case, of the user and of the host; ex: ``my_foobar_test_john@hurricane.org``)
- #. **dotted categorization of the trace message** itself (ex: ``MyApp.MyTopic.MyTheme``)
- #. **severity of the trace message** (mapped to an integer level, as discussed above)
- #. the **trace message** itself, an arbitrary text of arbitrary length
+#. **technical identifier of the emitter**, as a string (ex: ``<9097.51.0>`` for the PID of a distributed Erlang process)
+#. **name of the emitter** (ex: ``"Instance tracker"``)
+#. **dotted categorization of the emitter** (ex: ``"Core.Tracker.Instances"``); here for example the emitter is an element of the service in charge of the instances, which itself belongs to the tracker services, which themselves belong to the (even more general) core services
+#. **application-level timestamp** (ex: operation count, relative tick, absolute timestep, or any complex, application-specific timestamp, etc.), possibly ``none``, or ``undefined`` if not applicable (ex: a simulation that would not be started yet)
+#. **wall-clock timestamp**, in the ``"Year/Month/Day Hour:Minute:Second"`` format (ex: ``"2016/6/10 15:43:31"``); this is an emitter-side timestamp (hence not related to the wallclock time known of the trace aggregator)
+#. **emitter location**, as a string (ex: the name of the Erlang node, possibly including the name of the application use case, of the user and of the host; ex: ``my_foobar_test_john@hurricane.org``)
+#. **dotted categorization of the trace message** itself (ex: ``MyApp.MyTopic.MyTheme``)
+#. **severity of the trace message** (mapped to an integer level, as discussed above)
+#. the **trace message** itself, an arbitrary text of arbitrary length
 
 
 
@@ -302,11 +306,15 @@ Then, once the most basic bugs are fixed (ex: the program is not crashing anymor
 
 To output (basic) console traces, one may use the `trace_utils <https://github.com/Olivier-Boudeville/Ceylan-Myriad/blob/master/src/utils/trace_utils.erl>`_ module of the ``Myriad`` layer. For example:
 
-  ``trace_utils:debug_fmt("Hello world #~B",[2])``
+.. code:: erlang
+
+   trace_utils:debug_fmt("Hello world #~B",[2])
 
 Then switching to the more advanced traces discussed here is just a matter of replacing, for a given trace type ``T`` (ex: ``debug``), ``trace_utils:T`` with ``?T``, like in:
 
-  ``?debug_fmt("Hello world #~B",[2])``
+.. code:: erlang
+
+   ?debug_fmt("Hello world #~B",[2])
 
 (with no further change in the trace parameters).
 
@@ -364,13 +372,13 @@ Trace Supervision & Browsing
 
 Indeed the tool that generally we use for trace browsing is `LogMX <http://www.logmx.com/>`_ (the only tool that we use that is not free software, as we find it convenient), which we integrated:
 
-:raw-html:`<center><img src="logmx-interface.png" width="70%"></img></center>`
+:raw-html:`<center><img src="logmx-interface.png" id="responsive-image-full"></img></center>`
 :raw-latex:`\includegraphics[scale=0.20]{logmx-interface.png}`
 
 
 We implemented a Java-based parser of our trace format for LogMX (see ``CeylanTraceParser.java``):
 
-:raw-html:`<center><img src="logmx-levels.png" width="70%"></img></center>`
+:raw-html:`<center><img src="logmx-levels.png" id="responsive-image-large"></img></center>`
 :raw-latex:`\includegraphics[scale=0.28]{logmx-levels.png}`
 
 
@@ -628,7 +636,7 @@ Ending Word
 
 Have fun with Ceylan-Traces!
 
-:raw-html:`<center><img src="traces-title.png" width="30%"></img></center>`
+:raw-html:`<center><img src="traces-title.png" id="responsive-image-small"></img></center>`
 :raw-latex:`\begin{figure}[h] \centering \includegraphics[scale=0.2]{traces-title.png} \end{figure}`
 
 :raw-html:`<a name="traces_bottom"></a>`

@@ -65,8 +65,9 @@
 % Previously 'MYRIAD_REBAR_PROFILE=${REBAR_PROFILE}' was added, yet
 % REBAR_PROFILE is actually not set, so we rely on our default value instead.
 %
-{pre_hooks,  [ {compile, "make -s rebar3-compile-pre-hook"} ]}.
-{post_hooks, [ {compile, "make -s rebar3-compile-post-hook"} ]}.
+%{pre_hooks,  [ {compile, "make -s rebar3-compile-pre-hook"} ]}.
+%{post_hooks, [ {compile, "make -s rebar3-compile-post-hook"} ]}.
+
 
 % Was deemed likely needed sooner or later to prevent spurious, ill-configured
 % compilations that would be attempted by rebar3, when used as a dependency,
@@ -74,8 +75,9 @@
 % hooks rebar3 started to attempt such a failing rebuild, whereas with the base
 % hooks not).
 %
-%{pre_hooks,  [ {compile, "make -s rebar3-bulletproof-compile-pre-hook"} ]}.
-%{post_hooks, [ {compile, "make -s rebar3-bulletproof-compile-post-hook"} ]}.
+% Not hiding Myriad build elements seems the way to go:
+{pre_hooks,  [ {compile, "make -s rebar3-bulletproof-compile-pre-hook REBAR_HOOK_EXTRA_OPTS='--no-hiding-for-rebar --verbose'"} ]}.
+{post_hooks, [ {compile, "make -s rebar3-bulletproof-compile-post-hook REBAR_HOOK_EXTRA_OPTS='--no-hiding-for-rebar --verbose'"} ]}.
 
 
 % For release generation:

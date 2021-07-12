@@ -27,7 +27,7 @@
 
 
 
-% Service dedicated to the management of user-defined preferences.
+% @doc Service dedicated to the <b>management of user-defined preferences</b>.
 %
 % A preferences element is designated by a key (an atom), associated to a value
 % (that can be any term).
@@ -39,16 +39,15 @@
 % them conveniently (ex: for passwords, settings).
 %
 % The format of preferences is a series of Erlang terms as strings, each ended
-% with a dot (i.e. the format understood by file:consult/1).
+% with a dot (ie the format understood by `file:consult/1').
 %
 % Example of content of a preferences file:
-% """
+% ```
 % {my_first_color, red}.
 % {myheight, 1.80}.
 % {myName, "Sylvester the cat"}.
-% """
+% '''
 %
-% (of course without the quotes and the leading percent sign)
 %
 -module(preferences).
 
@@ -67,17 +66,16 @@
 -type key() :: atom().
 
 
-% Can be 'undefined' (no difference between a non-registered key and a key
-% registered to 'undefined'):
-%
 -type value() :: table:value().
+% Can be 'undefined' (no difference between a non-registered key and a key
+% registered to 'undefined').
 
 
 -type entry() :: table:entry().
 -type entries() :: table:entries().
 
-% The PID of a preferences server:
 -type preferences_pid() :: pid().
+% The PID of a preferences server.
 
 
 -export_type([ key/0, value/0, entry/0, entries/0, preferences_pid/0 ]).
@@ -88,7 +86,6 @@
 
 
 % Shorthands:
-
 -type file_path() :: file_utils:file_path().
 -type ustring() :: text_utils:ustring().
 
@@ -121,7 +118,7 @@
 
 
 
-% Ensures that, if not done already, the preferences service is started and
+% @doc Ensures that, if not done already, the preferences service is started and
 % initialised immediately (based on the default preferences path), if wanting an
 % explicit start rather than one implied by the use of an operation onto it.
 %
@@ -132,7 +129,7 @@ start() ->
 	start( get_default_preferences_path() ).
 
 
-% Ensures that, if not done already, the preferences service is started and
+% @doc Ensures that, if not done already, the preferences service is started and
 % linked, and initialised immediately (based on the default preferences path),
 % if wanting an explicit start rather than one implied by the use of an
 % operation onto it.
@@ -145,7 +142,7 @@ start_link() ->
 
 
 
-% Ensures that, if not done already, the preferences service is started and
+% @doc Ensures that, if not done already, the preferences service is started and
 % initialised immediately with the specified filename.
 %
 % Returns in any case the PID of the corresponding preferences server.
@@ -185,7 +182,7 @@ start( FileName ) ->
 
 
 
-% Ensures that, if not done already, the preferences service is started and
+% @doc Ensures that, if not done already, the preferences service is started and
 % linked, and initialised immediately with the specified filename.
 %
 % Returns in any case the PID of the corresponding preferences server.
@@ -225,9 +222,9 @@ start_link( FileName ) ->
 
 
 
-% Returns the value associated to specified key in the preferences (if any),
-% otherwise 'undefined', based on the default preferences file, and possibly
-% launching a corresponding preferences server if needed.
+% @doc Returns the value associated to specified key in the preferences (if
+% any), otherwise 'undefined', based on the default preferences file, and
+% possibly launching a corresponding preferences server if needed.
 %
 -spec get( key() ) -> maybe( value() ).
 get( Key ) ->
@@ -235,9 +232,9 @@ get( Key ) ->
 
 
 
-% Returns the value associated to specified key in the preferences (if any),
-% otherwise 'undefined', based on the specified preferences file, and possibly
-% launching a corresponding preferences server if needed.
+% @doc Returns the value associated to specified key in the preferences (if
+% any), otherwise 'undefined', based on the specified preferences file, and
+% possibly launching a corresponding preferences server if needed.
 %
 -spec get( key(), file_path() ) -> maybe( value() ).
 get( Key, FileName ) ->
@@ -255,8 +252,8 @@ get( Key, FileName ) ->
 
 
 
-% Associates, in default preferences, specified value to specified key (possibly
-% overwriting any previous value).
+% @doc Associates, in default preferences, specified value to specified key
+% (possibly overwriting any previous value).
 %
 -spec set( key(), value() ) -> void().
 set( Key, Value ) ->
@@ -264,7 +261,7 @@ set( Key, Value ) ->
 
 
 
-% Associates, in specified preferences, specified value to specified key
+% @doc Associates, in specified preferences, specified value to specified key
 % (possibly overwriting any previous value).
 %
 -spec set( key(), value(), file_path() ) -> void().
@@ -277,7 +274,7 @@ set( Key, Value, FilePath ) ->
 
 
 
-% Returns a textual description of the preferences server (if any), for
+% @doc Returns a textual description of the preferences server (if any), for
 % the default preferences file.
 %
 -spec to_string() -> ustring().
@@ -286,7 +283,7 @@ to_string() ->
 
 
 
-% Returns a textual description of the preferences server (if any), for
+% @doc Returns a textual description of the preferences server (if any), for
 % specified preferences file.
 %
 -spec to_string( file_path() ) -> ustring().
@@ -313,7 +310,7 @@ to_string( FilePath ) ->
 
 
 
-% Returns the full, absolute path to the default preferences filename.
+% @doc Returns the full, absolute path to the default preferences filename.
 -spec get_default_preferences_path() -> file_utils:path().
 get_default_preferences_path() ->
 	file_utils:join( system_utils:get_user_home_directory(),
@@ -321,8 +318,8 @@ get_default_preferences_path() ->
 
 
 
-% Returns the automatic naming used for registering the process (deduced from
-% the preferences filename).
+% @doc Returns the automatic naming used for registering the process (deduced
+% from the preferences filename).
 %
 -spec get_registration_name( file_path() ) -> registration_name().
 get_registration_name( FilePath ) ->
@@ -332,7 +329,9 @@ get_registration_name( FilePath ) ->
 
 
 
-% Returns whether the default preferences file is available and its full path.
+% @doc Returns whether the default preferences file is available and its full
+% path.
+%
 -spec is_preferences_default_file_available() -> { boolean(), file_path() }.
 is_preferences_default_file_available() ->
 
@@ -344,7 +343,7 @@ is_preferences_default_file_available() ->
 
 
 
-% Checks that the default preferences file exists, throws an exception
+% @doc Checks that the default preferences file exists, throws an exception
 % otherwise.
 %
 -spec check_preferences_default_file() -> void().
@@ -362,7 +361,7 @@ check_preferences_default_file() ->
 
 
 
-% Stops (asynchronously) the preferences server, if it is running.
+% @doc Stops (asynchronously) the preferences server, if it is running.
 %
 % Never fails.
 %
@@ -371,6 +370,11 @@ stop() ->
 	stop( get_default_preferences_path() ).
 
 
+% @doc Stops (asynchronously) the preferences server designated by specified
+% file, if it is running.
+%
+% Never fails.
+%
 -spec stop( file_path() ) -> void().
 stop( FilePath ) ->
 

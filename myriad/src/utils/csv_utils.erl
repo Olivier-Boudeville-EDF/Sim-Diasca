@@ -28,13 +28,13 @@
 
 
 
-% Management of CSV (Comma-Separated Values) data.
+% @doc Management of <b>CSV</b> (Comma-Separated Values) data.
 %
 % Note that such a data format is not at the state of the art: it is very basic
 % if not rudimentary, not formalised and quite limited (no meta-data, escaping
 % being required, etc.).
 %
-% See also: https://en.wikipedia.org/wiki/Comma-separated_values.
+% See also [https://en.wikipedia.org/wiki/Comma-separated_values].
 %
 % See csv_utils_test.erl for the corresponding test.
 %
@@ -45,49 +45,45 @@
 -define( csv_extension, ".csv" ).
 
 
-% The field separator (delimiter) used between the values in a row (often
-% comma, sometimes semicolon or alike):
-%
 -type separator() :: char().
+% The field separator (delimiter) used between the values in a row (often
+% comma, sometimes semicolon or alike).
 
 
 % The default separator of CSV is, well, a comma:
 -define( default_separator, $, ).
 
 
-
-% The value V, in "CSV":
 -type value() :: any().
+% The value V, in "CSV".
 
 
-% A row of a CSV content, as a tuple of values:
-%
-% (logically a tuple, often more convenient as a list, yet kept as a tuple as
-% more compact in memory)
-%
 -type row() :: tuple().  % tuple( value() ).
+% A row of a CSV content, as a tuple of values.
+%
+% Logically a tuple, often more convenient as a list, yet kept as a tuple as
+% more compact in memory.
 
 
 % The line number of a row in a file.
 %-type row_number() :: basic_utils:count().
 
 
-% A CSV content, as an (ordered) list of rows:
 -type content() :: [ row() ].
+% A CSV content, as an (ordered) list of rows.
 
 
-% A CSV content, as an (ordered) list of rows that match a row spec (ex:
-% expected number of fields) or not (then represented as a mere list of values):
-%
 -type mixed_content() :: [ row() | [ value() ] ].
+% A CSV content, as an (ordered) list of rows that match a row spec (ex:
+% expected number of fields) or not (then represented as a mere list of values).
 
 
-% Number of rows:
 -type row_count() :: basic_utils:count().
+% Number of rows.
 
 
-% Number of fields:
 -type field_count() :: basic_utils:count().
+% Number of fields.
 
 
 -export_type([ separator/0, value/0, row/0, content/0, row_count/0,
@@ -214,7 +210,7 @@
 
 
 
-% Reads specified file, expected to be in CSV format and supposed to be
+% @doc Reads specified file, expected to be in CSV format and supposed to be
 % homogeneous (all non-dropping rows having the same number of fields -
 % otherwise an exception is raised), using the default separator.
 %
@@ -230,7 +226,7 @@ read_file( Filename ) ->
 
 
 
-% Reads specified file, expected to be in CSV format and supposed to be
+% @doc Reads specified file, expected to be in CSV format and supposed to be
 % homogeneous (all non-dropped rows having the same number of fields - otherwise
 % an exception is raised), using the specified separator.
 %
@@ -256,8 +252,10 @@ read_file( FilePath, Separator ) when is_integer( Separator ) ->
 
 
 
-% Interprets specified file, based on specified separator and number of fields
-% per row; returns {MixedContent, MatchCount, UnmatchCount, DropCount}, i.e.:
+% @doc Interprets specified file, based on specified separator and number of
+% fields per row.
+%
+% Returns {MixedContent, MatchCount, UnmatchCount, DropCount}, i.e.:
 %
 % - a list (respecting the in-file order) whose elements are either a list of
 % the specified number of fields, or a pair whose first element is the
@@ -294,9 +292,10 @@ interpret_file( FilePath, Separator, ExpectedFieldCount )
 
 
 
-% Interprets specified file, based on specified separator, with no prior
-% knowledge about the number of fields per row; returns {FieldCount,
-% MixedContent, MatchCount, UnmatchCount, DropCount}, i.e.:
+% @doc Interprets specified file, based on specified separator, with no prior
+% knowledge about the number of fields per row.
+%
+% Returns {FieldCount, MixedContent, MatchCount, UnmatchCount, DropCount}, i.e.:
 %
 % - the number of fields in each row, based on the first one
 %
@@ -315,7 +314,8 @@ interpret_file( FilePath, Separator, ExpectedFieldCount )
 % empty or containing a comment)
 %
 -spec interpret_file( file_utils:any_file_path(), separator() ) ->
-		{ field_count(), mixed_content(), row_count(), row_count(), row_count() }.
+		{ field_count(), mixed_content(), row_count(), row_count(),
+		  row_count() }.
 interpret_file( FilePath, Separator ) when is_integer( Separator ) ->
 
 	File = get_file_for_reading( FilePath ),
@@ -338,9 +338,11 @@ interpret_file( FilePath, Separator ) when is_integer( Separator ) ->
 
 
 
-% Interprets specified file, with no prior knowledge about the separator or the
-% number of fields per row; returns {Separator, FieldCount, MixedContent,
-% MatchCount, UnmatchCount, DropCount}, i.e.:
+% @doc Interprets specified file, with no prior knowledge about the separator or
+% the number of fields per row.
+%
+% Returns {Separator, FieldCount, MixedContent, MatchCount, UnmatchCount,
+% DropCount}, i.e.:
 %
 % - the most likely separator in use
 %
@@ -402,13 +404,12 @@ interpret_file( FilePath ) ->
 % Helper section.
 
 
-% Returns the context read from specified device/file.
+% @doc Returns the context read from specified device/file.
 -spec read_rows( file_utils:file(), separator() ) ->
 					   { content(), row_count(), field_count() }.
 read_rows( File, Separator ) ->
 	read_rows( _Device=File, Separator, _RowCount=0, _FieldCount=undefined,
 			   _Acc=[] ).
-
 
 
 % (helper)
@@ -467,8 +468,8 @@ read_rows( Device, Separator, RowCount, FieldCount, Acc ) ->
 
 
 
-% Guesses the number of fields per row, and returns also the first read line so
-% that the rest of the file can be read in the same movement.
+% @doc Guesses the number of fields per row, and returns also the first read
+% line so that the rest of the file can be read in the same movement.
 %
 % (helper)
 %
@@ -500,8 +501,8 @@ guess_field_count( Device, Separator, DropCount ) ->
 
 
 
-% Guesses the separator and number of fields per row, and returns also the first
-% read line so that the rest of the file can be read in the same movement.
+% @doc Guesses the separator and number of fields per row, and returns also the
+% first read line so that the rest of the file can be read in the same movement.
 %
 % (helper)
 %
@@ -533,7 +534,7 @@ guess_separator_and_field_count( Device, DropCount ) ->
 
 
 
-% Returns the context read from specified device/file.
+% @doc Returns the context read from specified device/file.
 -spec interpret_rows( file_utils:file(), separator(), field_count() ) ->
 				{ mixed_content(), row_count(), row_count(), row_count() }.
 interpret_rows( File, Separator, ExpectedFieldCount ) ->
@@ -593,7 +594,7 @@ interpret_rows( Device, Separator, ExpectedFieldCount, MatchCount, UnmatchCount,
 
 
 
-% Parses the specified line into a proper row, guessing the most likely
+% @doc Parses the specified line into a proper row, guessing the most likely
 % separator (that is that not known).
 %
 -spec parse_row_no_separator( line() ) ->
@@ -612,14 +613,14 @@ parse_row_no_separator( Line ) ->
 
 		[ $# | _ ] ->
 			%trace_utils:debug_fmt( "Dropped following comment: '~ts'.",
-			%					   [ Line ] ),
+			%                       [ Line ] ),
 			dropped;
 
 		_ ->
 			GuessedSep = guess_separator_from( TrimmedLine ),
 
 			%trace_utils:debug_fmt( "Guessed separator: '~ts'.",
-			%					   [ [GuessedSep] ] ),
+			%                       [ [GuessedSep] ] ),
 
 			Values = parse_line( TrimmedLine, GuessedSep ),
 
@@ -630,7 +631,9 @@ parse_row_no_separator( Line ) ->
 
 
 
-% Parses the specified line into a proper row, based on the specified separator.
+% @doc Parses the specified line into a proper row, based on the specified
+% separator.
+%
 -spec parse_row( line(), separator() ) -> maybe( { row(), field_count() } ).
 parse_row( Line, Separator ) ->
 
@@ -646,7 +649,7 @@ parse_row( Line, Separator ) ->
 
 		[ $# | _ ] ->
 			%trace_utils:debug_fmt( "Dropped following comment: '~ts'.",
-			%					   [ Line ] ),
+			%                       [ Line ] ),
 			dropped;
 
 		_ ->
@@ -658,8 +661,8 @@ parse_row( Line, Separator ) ->
 
 
 
-% Parsing allows to see quoted sequences as a single, opaque element in which
-% any presence of the separator is ignored.
+% @doc Parsing allows to see quoted sequences as a single, opaque element in
+% which any presence of the separator is ignored.
 %
 -spec parse_line( line(), separator() ) -> [ value() ].
 parse_line( Line, Separator ) ->
@@ -677,8 +680,8 @@ parse_line( Line, Separator ) ->
 
 
 
-% Checks that specified row or list of values (typically coming from a row of
-% unspecified field count) contains only empty values (empty strings).
+% @doc Checks that specified row or list of values (typically coming from a row
+% of unspecified field count) contains only empty values (empty strings).
 %
 -spec check_all_empty( row() | [ value() ] ) -> void().
 check_all_empty( Row ) when is_tuple( Row ) ->
@@ -695,7 +698,7 @@ check_all_empty( _List=[ H | _T ] ) ->
 
 
 
-% Returns whether the specified list of values contains only empty ones.
+% @doc Returns whether the specified list of values contains only empty ones.
 -spec are_all_empty( row() | [ value() ] ) -> boolean().
 are_all_empty( Row ) when is_tuple( Row ) ->
 	are_all_empty( tuple_to_list( Row ) );
@@ -711,13 +714,13 @@ are_all_empty( [ _H | _T ] ) ->
 
 
 
-% Returns the most usual separators used in CSV files.
+% @doc Returns the most usual separators used in CSV files.
 -spec get_usual_separators() -> [ separator() ].
 get_usual_separators() ->
 	[ $,, $; ].
 
 
-% Determines the separator used in specified line.
+% @doc Determines the separator used in specified line.
 -spec guess_separator_from( line() ) -> separator().
 guess_separator_from( Line ) ->
 	%trace_utils:debug_fmt( "Guessing separator used in '~ts'...", [ Line ] ),
@@ -752,8 +755,8 @@ select_most_likely_separator( SepPairs ) ->
 
 
 
-% Writes specified content (i.e. a list of homogeneous row tuples) in specified
-% CSV file, using the default separator for that.
+% @doc Writes specified content (ie a list of homogeneous row tuples) in
+% specified CSV file, using the default separator for that.
 %
 -spec write_file( content(), file_utils:any_file_path() ) -> void().
 write_file( Content, TargetFilePath ) ->
@@ -761,8 +764,8 @@ write_file( Content, TargetFilePath ) ->
 
 
 
-% Writes specified content (i.e. a list of homogeneous row tuples) in specified
-% CSV file, using specified separator for that.
+% @doc Writes specified content (ie a list of homogeneous row tuples) in
+% specified CSV file, using specified separator for that.
 %
 -spec write_file( content(), file_utils:any_file_path(), separator() ) ->
 						void().
@@ -804,7 +807,7 @@ write_rows( _Content=[ Row | T ], Separator, File ) ->
 
 
 
-% Returns a file handle to read specified file.
+% @doc Returns a file handle to read specified file.
 -spec get_file_for_reading( file_utils:any_file_path() ) -> file_utils:file().
 get_file_for_reading( FilePath ) ->
 
@@ -833,7 +836,7 @@ get_file_for_reading( FilePath ) ->
 
 
 
-% Returns a textual representation of specified content.
+% @doc Returns a textual representation of specified content.
 -spec content_to_string( content() ) -> text_utils:ustring().
 content_to_string( Content ) ->
 	text_utils:format( "content of ~B rows: ~ts", [ length( Content ),

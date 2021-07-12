@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2021 Olivier Boudeville
+% Copyright (C) 2007-2021 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -32,9 +32,15 @@
 % This header mostly defines functions, so it should be included late in source
 % files, not to prevent them from declaring exports afterwards.
 
+% Note: a @headerfile "wooper_state_functions.hrl" tag was added in various
+% places of wooper.erl with no luck (doc tags were always ignored).
 
 
-% Voluntary underspecification, to be able to toggle:
+
+% @doc Tells whether the debug mode of WOOPER is enabled.
+%
+% Voluntary underspecification, to be able to toggle.
+%
 -spec is_wooper_debug() -> boolean().
 
 
@@ -79,8 +85,8 @@ is_wooper_debug() ->
 
 
 
-% Sets specified attribute of the instance to the specified value, based from
-% specified state.
+% @doc Sets the specified attribute of the instance to the specified value,
+% based from specified state.
 %
 % Returns an updated state.
 %
@@ -99,7 +105,7 @@ setAttribute( State, AttributeName, AttributeValue ) ->
 
 
 
-% Sets a list of attribute/value pairs in specified state.
+% @doc Sets a list of attribute/value pairs in the specified state.
 %
 % The expected parameter is a list of pairs (2-element tuples), each pair
 % containing in first position the attribute name and in second one the
@@ -121,8 +127,8 @@ setAttributes( State, ListOfAttributePairs ) ->
 
 
 
-% Swaps in specified state the current value of the specified attribute with the
-% specified value.
+% @doc Swaps in specified state the current value of the specified attribute
+% with the specified value.
 %
 % Returns an updated state and the previous value of that attribute.
 %
@@ -145,7 +151,7 @@ swapInAttribute( State=#state_holder{ attribute_table=AttrTable },
 
 
 
-% Tells whether specified attribute exists, returns true or false.
+% @doc Tells whether specified attribute exists, returns true or false.
 %
 % Note: usually the best practise is to set all possible attributes from the
 % constructor, either to an appropriate value or to 'undefined', instead of
@@ -162,7 +168,7 @@ hasAttribute( State, AttributeName ) ->
 
 
 
-% Returns the value associated to specified named-designated attribute, if
+% @doc Returns the value associated to specified named-designated attribute, if
 % found, otherwise triggers a case clause error.
 %
 % Note: not used very frequently verbatim, as either the attribute value can be
@@ -179,12 +185,12 @@ getAttribute( State, AttributeName ) ->
 
 
 
-% Returns the value associated to each of the specified named-designated
+% @doc Returns the value associated to each of the specified named-designated
 % attributes (if found, otherwise triggers a case clause error), in the order of
 % their specification.
 %
-% Ex: [MyCount, MyAge, MyIdeas] = getAttribute( SomeState,
-%                                               [count, age, ideas] )
+% Ex: [MyCount, MyAge, MyIdeas] =
+%            getAttribute( SomeState,[count, age, ideas] )
 %
 % Note: not used very frequently verbatim, as either the attributes can be
 % obtained with the getAttr/1 macro, using the original state, named as 'State'
@@ -194,14 +200,14 @@ getAttribute( State, AttributeName ) ->
 % See also: the getAttr/1 shorthand.
 %
 -spec getAttributes( wooper:state(), [ attribute_name() ] ) ->
-						   [ attribute_value() ].
+							[ attribute_value() ].
 getAttributes( State, AttributeNameList ) ->
 	?wooper_table_type:get_values( AttributeNameList,
 								   State#state_holder.attribute_table ).
 
 
 
-% Returns an updated state not having anymore specified attribute.
+% @doc Returns an updated state not having anymore specified attribute.
 %
 % No error is triggered if the specified attribute was not existing.
 %
@@ -217,7 +223,7 @@ removeAttribute( State, AttributeName ) ->
 
 
 
-% Adds specified value to specified attribute, supposed to be a number.
+% @doc Adds specified value to the specified attribute, supposed to be a number.
 %
 % Returns an updated state.
 %
@@ -236,7 +242,8 @@ addToAttribute( State, AttributeName, Value ) ->
 
 
 
-% Subtracts specified value from specified attribute, supposed to be a number.
+% @doc Subtracts specified value from specified attribute, supposed to be a
+% number.
 %
 % Returns an updated state.
 %
@@ -255,7 +262,7 @@ subtractFromAttribute( State, AttributeName, Value ) ->
 
 
 
-% Increments specified attribute, supposed to be a number.
+% @doc Increments specified attribute, supposed to be a number.
 %
 % Returns an updated state.
 %
@@ -274,7 +281,7 @@ incrementAttribute( State, AttributeName ) ->
 
 
 
-% Decrements specified attribute, supposed to be a number.
+% @doc Decrements specified attribute, supposed to be a number.
 %
 % Returns an updated state.
 %
@@ -293,8 +300,8 @@ decrementAttribute( State, AttributeName ) ->
 
 
 
-% Returns an updated state in which specified boolean attribute is toggled: if
-% true will be false, if false will be true.
+% @doc Returns an updated state in which specified boolean attribute is toggled:
+% if true will be false, if false will be true.
 %
 % A case clause is triggered if the attribute does not exist or it is not a
 % boolean value.
@@ -309,7 +316,7 @@ toggleAttribute( State, BooleanAttributeName ) ->
 
 
 
-% Appends specified element to specified attribute, supposed to be a list.
+% @doc Appends specified element to specified attribute, supposed to be a list.
 % A case clause is triggered if the attribute did not exist.
 %
 % Returns an updated state.
@@ -329,12 +336,13 @@ appendToAttribute( State, AttributeName, Element ) ->
 
 
 
-% Concatenes (on the left) specified list to specified attribute, supposed to be
-% a list as well. A case clause is triggered if the attribute did not exist.
+% @doc Concatenes (on the left) specified prefix list to specified attribute,
+% supposed to be a list as well. A case clause is triggered if the attribute did
+% not exist.
 %
 % If that attirbute is not already defined, it will be created and associated to
 % the specified list (as if beforehand it was associated to an empty list).
-
+%
 % Returns an updated state.
 %
 % Note: no check is performed to ensure the attribute is a list indeed, and the
@@ -352,7 +360,7 @@ concatToAttribute( State, AttributeName, List ) ->
 
 
 
-% Deletes the first match of specified element from specified attribute,
+% @doc Deletes the first match of specified element from specified attribute,
 % supposed to be a list.
 %
 % A case clause is triggered if the attribute did not exist.
@@ -372,7 +380,7 @@ deleteFromAttribute( State, AttributeName, Element ) ->
 
 
 
-% Assumes the specified attribute is a hashtable and adds the specified
+% @doc Assumes the specified attribute is an hashtable and adds the specified
 % key/value pair to it.
 %
 % Returns an updated state.
@@ -401,12 +409,12 @@ addKeyValueToAttribute( State, AttributeName, Key, Value ) ->
 
 
 
-% Removes the head from specified attribute, supposed to be a list, and returns
-% a tuple { NewState, PoppedHead }.
+% @doc Removes the head from specified attribute, supposed to be a list, and
+% returns a tuple {NewState, PoppedHead}.
 %
 % For example, if the attribute 'my_list' contains [5,8,3], executing:
-% '{PoppedState, Head} = ?popFromAttribute( State, my_list )'
-% returns a state whose my_list attribute is [8,3] and a value Head = 5.
+% '{PoppedState, Head} = ?popFromAttribute(State, my_list)' returns a state
+% whose my_list attribute is [8,3] and a value Head=5.
 %
 % A case clause is triggered if the attribute did not exist.
 %

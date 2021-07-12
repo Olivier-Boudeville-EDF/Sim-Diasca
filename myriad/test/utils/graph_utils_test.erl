@@ -69,8 +69,8 @@ run() ->
 					{ g, [ a ] },
 					{ h, [] } ],
 
-	test_facilities:display( "Using following cyclic test graph: ~p.",
-							[ LetterGraph ] ),
+	test_facilities:display( "Using following cyclic test graph:~n ~p.",
+							 [ LetterGraph ] ),
 
 	% Predicate to find h:
 	HPredicate = fun( h, _Graph ) -> true ;
@@ -83,8 +83,12 @@ run() ->
 				Children
 			 end,
 
-	HRes = graph_utils:find_breadth_first( _InitialVertex=a, HPredicate, Feeder,
-					_UserData=LetterGraph ),
+	InitialVertex = a,
+
+	UserData = LetterGraph,
+
+	HRes = graph_utils:find_breadth_first( InitialVertex, HPredicate, Feeder,
+										   UserData ),
 
 	test_facilities:display( "Path from a to h: ~p.", [ HRes ] ),
 
@@ -94,8 +98,8 @@ run() ->
 					( _OtherLetter, _Graph ) -> false
 				 end,
 
-	ZRes = graph_utils:find_breadth_first( _InitialVertex=a, ZPredicate, Feeder,
-					_UserData=LetterGraph ),
+	ZRes = graph_utils:find_breadth_first( InitialVertex, ZPredicate, Feeder,
+										   UserData ),
 
 	test_facilities:display( "Path from a to z: ~p.", [ ZRes ] ),
 

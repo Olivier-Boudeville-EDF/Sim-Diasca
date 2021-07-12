@@ -26,7 +26,8 @@ Its purpose is to preserve the simulation properties (ex: uncoupling of the virt
 
 It must induce as little constraint on the models as possible (ex: in terms of fan-in, fan-out, look-ahead, etc.) and, as a bonus, it can evaluate them efficiently.
 
-A scheduler can certainly be "ad hoc" (written in a per-simulation basis), but in the general cases we do not consider that this is a relevant option. Indeed much duplication of efforts would be involved, as such a scheduling feature would have to be repeatedly developed, from a simulation case to another, most probably in a very limited and limiting way.
+A scheduler can certainly be "ad hoc" (written in a per-simulation basis), but in the general cases we do not consider that this is a relevant option. Indeed much duplication of efforts would be involved, as such a scheduling feature would have to be repeatedly
+developed, from a simulation case to another, most probably in a very limited and limiting way.
 
 Moreover ad hoc scheduling often results in *static* scheduling, where the modeller unwinds by himself the logic of the interaction of the various models federated by the simulation, and hardcodes it. We believe that much of the added value of a simulation is then lost in this case, the modeller removing many degrees of freedom and independence by emulating manually the role of a scheduler: in the general case, semantically the behaviour of a target system is best described as the natural by-product of several autonomous interacting entities, rather than as a predetermined series of events.
 
@@ -717,7 +718,7 @@ One of these time managers is selected (by the deployment manager) as the root t
 
 Other kinds of trees could be chosen: they might be unbalanced, have a different heights (ex: to account for multiple clusters/processors/cores), etc., as shown in the physical diagram below:
 
-:raw-html:`<center><img src=SimDiasca-physical-dispatching-english.png></img></center>`
+:raw-html:`<center><img src="SimDiasca-physical-dispatching-english.png"></img></center>`
 :raw-latex:`\includegraphics[scale=0.24]{SimDiasca-physical-dispatching-english.png}`
 
 
@@ -732,13 +733,14 @@ Two protocols are involved in terms of scheduling exchanges, as shown in the log
 - another for lower-level actor scheduling, between a local time manager and the actors it drives
 
 
-:raw-html:`<center><img src=SimDiasca-logical-dispatching-english.png></img></center>`
+
+:raw-html:`<center><img src="SimDiasca-logical-dispatching-english.png"></img></center>`
 :raw-latex:`\includegraphics[scale=0.32]{SimDiasca-logical-dispatching-english.png}`
 
 
 .. comment To be updated:
   A corresponding sequence diagram can be the following:
-  :raw-html:`<center><img src=SimDiasca-placement-scheduling-sequence.png></img></center>`
+  :raw-html:`<center><img src="SimDiasca-placement-scheduling-sequence.png"></img></center>`
   :raw-latex:`\includegraphics[scale=0.27]{SimDiasca-placement-scheduling-sequence.png}`
 
 

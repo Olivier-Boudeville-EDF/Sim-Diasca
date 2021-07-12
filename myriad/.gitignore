@@ -9,6 +9,7 @@ src/scripts/myriad-example-tree
 declared-types-in-*.txt
 .eunit
 erl_crash.dump
+overview.edoc
 doc/index.html
 
 # For Emacs temporary files:

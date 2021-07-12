@@ -472,7 +472,7 @@
 % on the same node as the root time manager, its time manager is the root one.
 %
 -spec construct( wooper:state(), placement_policy(), [ atom_node_name() ],
-    node_availability_tolerance(), evaluation_mode(), boolean(), 
+	node_availability_tolerance(), evaluation_mode(), boolean(),
 	[ file_path() ] ) -> wooper:state().
 construct( State, PlacementPolicy, Nodes, NodeAvailabilityTolerance,
 		   SimulationMode, TroubleshootingMode, InitialisationFiles ) ->
@@ -1989,8 +1989,10 @@ expand_seed_table( FromAAI, ToAAI, SeedTable ) ->
 % Adds a seed for specified AAI, and returns { NewSeedTable, ActorSeed }.
 add_seed_for( AAI, SeedTable ) ->
 
+	Key = AAI,
+
 	% Check:
-	case table:has_entry( _K=AAI, SeedTable ) of
+	case table:has_entry( Key, SeedTable ) of
 
 		true ->
 			throw( { not_overriding_aai, AAI } );
@@ -2002,7 +2004,7 @@ add_seed_for( AAI, SeedTable ) ->
 
 	ActorSeed = random_utils:get_random_seed(),
 
-	NewSeedTable = table:add_entry( _K=AAI, _V=ActorSeed, SeedTable ),
+	NewSeedTable = table:add_entry( Key, _V=ActorSeed, SeedTable ),
 
 	{ NewSeedTable, ActorSeed }.
 

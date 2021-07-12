@@ -29,8 +29,9 @@
 % Directly obtained from traces_for_tests.erl.
 
 
-% This module gathers all code that allows to lighten the trace macros for
-% cases.
+
+% @doc This module gathers all code that allows to lighten the <b>trace macros
+% for cases</b>.
 %
 -module(traces_for_cases).
 
@@ -70,7 +71,7 @@
 
 
 
-% To be called from the counterpart macro.
+% @doc To be called from the counterpart macro.
 %
 % Here we disable explicitly the trapping of EXIT events, as a function run
 % through "erl -eval" (like our cases) or through "erl -run" will be executed in
@@ -128,7 +129,7 @@ case_start( ModuleName, InitTraceSupervisor ) ->
 
 
 
-% To be called from the counterpart macro.
+% @doc To be called from the counterpart macro.
 %
 % Here we disable explicitly the trapping of EXIT events, as a function run
 % through "erl -eval" (like our cases) or through "erl -run" will be executed in
@@ -220,9 +221,9 @@ case_start( ModuleName, _InitTraceSupervisor=false, TraceType ) ->
 % Stopping of cases.
 
 
-% To be called from the counterpart macro.
+% @doc To be called from the counterpart macro.
 -spec case_stop( module_name(), trace_aggregator_pid(), boolean() ) ->
-						no_return().
+									no_return().
 case_stop( ModuleName, TraceAggregatorPid, WaitForTraceSupervisor ) ->
 
 	%trace_utils:info_fmt( "Case stopping (aggregator: ~w, wait supervisor: "
@@ -245,7 +246,7 @@ case_stop( ModuleName, TraceAggregatorPid, WaitForTraceSupervisor ) ->
 
 
 
-% To be called from the counterpart macro.
+% @doc To be called from the counterpart macro.
 -spec case_immediate_stop( module_name(), trace_aggregator_pid() ) ->
 								no_return().
 case_immediate_stop( ModuleName, TraceAggregatorPid ) ->
@@ -256,7 +257,7 @@ case_immediate_stop( ModuleName, TraceAggregatorPid ) ->
 
 
 
-% To be called from the counterpart macro.
+% @doc To be called from the counterpart macro.
 -spec case_stop_on_shell( module_name(), trace_aggregator_pid() ) ->
 								no_return().
 case_stop_on_shell( ModuleName, TraceAggregatorPid ) ->

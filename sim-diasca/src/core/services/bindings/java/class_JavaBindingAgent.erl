@@ -19,6 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Class managing locally, on a given node, the <b>Java binding</b>.
 -module(class_JavaBindingAgent).
 
 
@@ -53,11 +54,12 @@
 -type agent_pid() :: class_EngineBaseObject:object_pid().
 
 
-% PID of a controller mailbox:
 -type controller_mbox_pid() :: java_utils:java_mbox_pid().
+% PID of a controller mailbox.
 
-% PID of a worker mailbox:
+
 -type worker_mbox_pid() :: java_utils:java_mbox_pid().
+% PID of a worker mailbox.
 
 
 -export_type([ agent_pid/0, controller_mbox_pid/0, worker_mbox_pid/0 ]).
@@ -168,7 +170,9 @@
 
 
 
-% Constructs a new binding agent managing, on a given node, the use of Java.
+% @doc Constructs a new binding agent managing, on a given node, the use of
+% Java.
+%
 -spec construct( wooper:state(), net_utils:tcp_port(), code_path(),
 				 class_JavaBindingManager:manager_pid() ) -> wooper:state().
 construct( State, EpmdPort, ClassPath, JavaBindingManagerPid ) ->
@@ -205,7 +209,7 @@ construct( State, EpmdPort, ClassPath, JavaBindingManagerPid ) ->
 
 
 
-% Overridden destructor.
+% @doc Overridden destructor.
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -226,9 +230,9 @@ destruct( State ) ->
 % Methods section.
 
 
-% Notifies this agent of a handshake request, expected to come from the just
-% locally-launched JVM, specifying the PID of its main, controller mailbox, and
-% the ones of its workers.
+% @doc Notifies this agent of a handshake request, expected to come from the
+% just locally-launched JVM, specifying the PID of its main, controller mailbox,
+% and the ones of its workers.
 %
 -spec handshakeRequest( wooper:state(), controller_mbox_pid(),
 						[ worker_mbox_pid() ] ) -> oneway_return().
@@ -242,8 +246,8 @@ handshakeRequest( State, MainMboxPid, WorkerMboxPids ) ->
 	MainMboxPid ! { handshakeConfirmed, self() },
 
 	% Allows the overall binding manager to complete its tables:
-	?getAttr(binding_manager_pid) ! { notifyNodeMailboxes,
-									  [ MainMboxPid, WorkerMboxPids, self() ] },
+	?getAttr(binding_manager_pid) !
+		{ notifyNodeMailboxes, [ MainMboxPid, WorkerMboxPids, self() ] },
 
 	ReadyState = setAttributes( State, [ { controller_mbox, MainMboxPid },
 										 { worker_mboxes, WorkerMboxPids } ] ),
@@ -252,9 +256,8 @@ handshakeRequest( State, MainMboxPid, WorkerMboxPids ) ->
 
 
 
-% Notifies this agent that the Java side sent a debug message.
--spec onJavaDebugMessage( wooper:state(), ustring() ) ->
-								const_oneway_return().
+% @doc Notifies this agent that the Java side sent a debug message.
+-spec onJavaDebugMessage( wooper:state(), ustring() ) -> const_oneway_return().
 onJavaDebugMessage( State, DebugMessage ) ->
 
 	?debug_fmt( "[Forwarded from Java runtime container] ~ts",
@@ -264,9 +267,8 @@ onJavaDebugMessage( State, DebugMessage ) ->
 
 
 
-% Notifies this agent that the Java side sent a info message.
--spec onJavaInfoMessage( wooper:state(), ustring() ) ->
-								const_oneway_return().
+% @doc Notifies this agent that the Java side sent a info message.
+-spec onJavaInfoMessage( wooper:state(), ustring() ) -> const_oneway_return().
 onJavaInfoMessage( State, InfoMessage ) ->
 
 	?info_fmt( "[Forwarded from Java runtime container] ~ts",
@@ -276,9 +278,8 @@ onJavaInfoMessage( State, InfoMessage ) ->
 
 
 
-% Notifies this agent that the Java side sent a trace message.
--spec onJavaNoticeMessage( wooper:state(), ustring() ) ->
-								const_oneway_return().
+% @doc Notifies this agent that the Java side sent a trace message.
+-spec onJavaNoticeMessage( wooper:state(), ustring() ) -> const_oneway_return().
 onJavaNoticeMessage( State, TraceMessage ) ->
 
 	?notice_fmt( "[Forwarded from Java runtime container] ~ts",
@@ -287,9 +288,10 @@ onJavaNoticeMessage( State, TraceMessage ) ->
 	wooper:const_return().
 
 
-% Notifies this agent that the Java side sent a warning message.
+
+% @doc Notifies this agent that the Java side sent a warning message.
 -spec onJavaWarningMessage( wooper:state(), ustring() ) ->
-								const_oneway_return().
+		  const_oneway_return().
 onJavaWarningMessage( State, WarningMessage ) ->
 
 	?warning_fmt( "[Forwarded from Java runtime container] ~ts",
@@ -299,9 +301,8 @@ onJavaWarningMessage( State, WarningMessage ) ->
 
 
 
-% Notifies this agent that the Java side sent a error message.
--spec onJavaErrorMessage( wooper:state(), ustring() ) ->
-								const_oneway_return().
+% @doc Notifies this agent that the Java side sent a error message.
+-spec onJavaErrorMessage( wooper:state(), ustring() ) -> const_oneway_return().
 onJavaErrorMessage( State, ErrorMessage ) ->
 
 	?error_fmt( "[Forwarded from Java runtime container] ~ts",
@@ -311,9 +312,9 @@ onJavaErrorMessage( State, ErrorMessage ) ->
 
 
 
-% Notifies this agent that the Java side sent an critical message.
+% @doc Notifies this agent that the Java side sent an critical message.
 -spec onJavaCriticalMessage( wooper:state(), ustring() ) ->
-								const_oneway_return().
+		  const_oneway_return().
 onJavaCriticalMessage( State, CriticalMessage ) ->
 
 	?critical_fmt( "[Forwarded from Java runtime container] ~ts",
@@ -323,9 +324,8 @@ onJavaCriticalMessage( State, CriticalMessage ) ->
 
 
 
-% Notifies this agent that the Java side sent an alert message.
--spec onJavaAlertMessage( wooper:state(), ustring() ) ->
-								const_oneway_return().
+% @doc Notifies this agent that the Java side sent an alert message.
+-spec onJavaAlertMessage( wooper:state(), ustring() ) -> const_oneway_return().
 onJavaAlertMessage( State, AlertMessage ) ->
 
 	?alert_fmt( "[Forwarded from Java runtime container] ~ts",
@@ -335,9 +335,9 @@ onJavaAlertMessage( State, AlertMessage ) ->
 
 
 
-% Notifies this agent that the Java side sent an emergency message.
+% @doc Notifies this agent that the Java side sent an emergency message.
 -spec onJavaEmergencyMessage( wooper:state(), ustring() ) ->
-								const_oneway_return().
+		  const_oneway_return().
 onJavaEmergencyMessage( State, EmergencyMessage ) ->
 
 	?emergency_fmt( "[Forwarded from Java runtime container] ~ts",
@@ -348,9 +348,9 @@ onJavaEmergencyMessage( State, EmergencyMessage ) ->
 
 
 
-% Notifies this agent that an exception was thrown from the Java side.
+% @doc Notifies this agent that an exception was thrown from the Java side.
 -spec onJavaExceptionThrown( wooper:state(), ustring() ) ->
-								const_oneway_return().
+		  const_oneway_return().
 onJavaExceptionThrown( State, ExceptionString ) ->
 
 	?error_fmt( "Java exception thrown: '~ts', terminating.",
@@ -363,7 +363,8 @@ onJavaExceptionThrown( State, ExceptionString ) ->
 
 
 
-% Returns the Java Virtual Machine associated to the sender of this request.
+% @doc Returns the Java Virtual Machine associated to the sender of this
+% request.
 %
 % In practice the returned binding container is the Java VM running on the same
 % node as the sender, to lighten the load induced by their exchanges.
@@ -386,20 +387,20 @@ getAssociatedJavaMailbox( State ) ->
 % Static section.
 
 
-% Returns the atom corresponding to the name the Java binding agent should be
-% registered as.
+% @doc Returns the atom corresponding to the name the Java binding agent should
+% be registered as.
 %
 % Note: executed on the caller node.
 %
 -spec get_registration_name() ->
-						 static_return( naming_utils:registration_name() ).
+							static_return( naming_utils:registration_name() ).
 get_registration_name() ->
 	% Ex: 'sim_diasca_java_binding_agent':
 	wooper:return_static( ?java_binding_agent_name ).
 
 
 
-% Returns the PID of the (unique) local Java binding agent.
+% @doc Returns the PID of the (unique) local Java binding agent.
 %
 % To be used by clients of the Java binding agent.
 %
@@ -418,9 +419,9 @@ get_registered_agent() ->
 
 
 
-% Returns the path to the binding support code, relatively to the engine root
-% (either the build one, typically from the user node, or the deployment one,
-% from the computing nodes).
+% @doc Returns the path to the binding support code, relatively to the engine
+% root (either the build one, typically from the user node, or the deployment
+% one, from the computing nodes).
 %
 -spec get_engine_relative_binding_path() -> static_return( directory_path() ).
 get_engine_relative_binding_path() ->
@@ -428,7 +429,8 @@ get_engine_relative_binding_path() ->
 				"services", "dataflow", "bindings", "java", "api" ] ) ).
 
 
-% Returns the name of the binding main class.
+
+% @doc Returns the name of the binding main class.
 -spec get_binding_classname() -> static_return( java_utils:java_classname() ).
 get_binding_classname() ->
 
@@ -440,22 +442,23 @@ get_binding_classname() ->
 
 
 
-% Returns the implementation file (*.class) corresponding to the binding main
-% class.
+% @doc Returns the implementation file (*.class) corresponding to the binding
+% main class.
 %
 -spec get_binding_class_filename() ->
 					static_return( java_utils:java_bytecode_filename() ).
 get_binding_class_filename() ->
 	wooper:return_static(
-	  java_utils:classname_to_bytecode_filename( get_binding_classname() ) ).
+		java_utils:classname_to_bytecode_filename( get_binding_classname() ) ).
+
 
 
 
 % Helpers section.
 
 
-% Launches specified JVM (as a separate UNIX process), with proper settings for
-% interconnection, so that the handshake can proceed.
+% @doc Launches the specified JVM (as a separate UNIX process), with proper
+% settings for interconnection, so that the handshake can proceed.
 %
 -spec launch_jvm( net_utils:tcp_port(), code_path(), wooper:state() ) ->
 						wooper:state().
@@ -541,7 +544,7 @@ launch_jvm( EpmdPort, UserClassPath, State ) ->
 
 
 
-% Returns a textual description of this binding agent.
+% @doc Returns a textual description of this binding agent.
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 

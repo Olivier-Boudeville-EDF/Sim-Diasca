@@ -69,14 +69,14 @@ run() ->
 	MyH3 = map_hashtable:add_entry( ?MyFirstKey, MyFirstValue, MyH2 ),
 	false = map_hashtable:is_empty( MyH3 ),
 
-	_MyUpdatedH3 = 
+	_MyUpdatedH3 =
 		map_hashtable:update_entry( ?MyFirstKey, MyFirstValue, MyH3 ),
 
 	MySecondValue = [ 1, 2, 3 ],
 	MyH4 = map_hashtable:add_entry( ?MySecondKey, MySecondValue, MyH3 ),
 	false = map_hashtable:is_empty( MyH4 ),
 
-	MyUpdatedH4 = map_hashtable:update_entry( ?MySecondKey, MyFirstValue, 
+	MyUpdatedH4 = map_hashtable:update_entry( ?MySecondKey, MyFirstValue,
 											  MyH4 ),
 
 	MyFirstValue = map_hashtable:get_value( ?MySecondKey, MyUpdatedH4 ),
@@ -118,7 +118,7 @@ run() ->
 	% return an identical table.
 
 	MyHRemoved = map_hashtable:remove_existing_entries(
-				    [ ?MyFirstKey, ?MySecondKey ], MyH4 ),
+					[ ?MyFirstKey, ?MySecondKey ], MyH4 ),
 
 	true = map_hashtable:is_empty( MyHRemoved ),
 
@@ -194,9 +194,11 @@ run() ->
 					AccCount + 1
 			   end,
 
-	2 = map_hashtable:fold_on_entries( FunCount, _InitialCount=0, MyH4 ),
+	InitialCount = 0,
 
-	0 = map_hashtable:fold_on_entries( FunCount, _InitialCount=0, MyH1 ),
+	2 = map_hashtable:fold_on_entries( FunCount, InitialCount, MyH4 ),
+
+	0 = map_hashtable:fold_on_entries( FunCount, InitialCount, MyH1 ),
 
 
 	true = list_utils:unordered_compare( [ ?MyFirstKey, ?MySecondKey ],

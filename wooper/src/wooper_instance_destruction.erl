@@ -26,8 +26,8 @@
 % Creation date: Wednesday, December 24, 2014.
 
 
-% Centralizes, on behalf of the WOOPER parse transform, the support for instance
-% destruction.
+% @doc Centralizes, on behalf of the WOOPER parse transform, the support for
+% <b>instance destruction</b>.
 %
 -module(wooper_instance_destruction).
 
@@ -51,8 +51,8 @@
 
 
 
-% Extracts any destructor found in the specified function table, interprets that
-% information to update the specified class information.
+% @doc Extracts any destructor found in the specified function table, interprets
+% that information to update the specified class information.
 %
 % Returns an updated pair thereof.
 %
@@ -85,11 +85,11 @@ manage_destructor( { FunctionTable, ClassInfo } ) ->
 						MarkerTable = ClassInfo#class_info.markers,
 
 						ExportLocation =
-								 ast_info:get_default_export_function_location(
-								   MarkerTable ),
+								ast_info:get_default_export_function_location(
+									MarkerTable ),
 
 						DestrFunInfo#function_info{
-						  exported=[ ExportLocation ] };
+							exported=[ ExportLocation ] };
 
 					_ ->
 						DestrFunInfo
@@ -114,9 +114,8 @@ manage_destructor( { FunctionTable, ClassInfo } ) ->
 
 
 
-
-% Checks arities and extracts any destruct/1 found, returning it and the list of
-% remaining pairs, if found, otherwise undefined.
+% @doc Checks arities and extracts any destruct/1 found, returning it and the
+% list of remaining pairs, if found, otherwise undefined.
 %
 % (helper)
 %
@@ -161,17 +160,19 @@ scan_for_destructors( _FunIdInfos=[ Other | T ],
 
 
 
-% Returns a function information corresponding to the default destructor, which
-% is:
+% @doc Returns a function information corresponding to the default destructor.
 %
+% This is:
+%```
 % -spec destruct( wooper:state() ) -> wooper:state().
 % destruct( State ) ->
 %	State.
+%'''
 %
 -spec get_default_destructor_info( marker_table() ) -> function_info().
 get_default_destructor_info( MarkerTable ) ->
 
-	Line = 0,
+	FileLoc = 0,
 
 	% First, let's define the destructor spec, which is:
 	%   -spec destruct( wooper:state() ) -> wooper:state().
@@ -179,9 +180,10 @@ get_default_destructor_info( MarkerTable ) ->
 	% Corresponds to wooper:state():
 	StateType = wooper_parse_utils:get_state_type(),
 
-	SpecForm = { attribute, Line, spec, { {destruct,1},
-	   [ { type, Line, 'fun',
-		   [ { type, Line, product, _Params=[ StateType ] }, _Result=StateType ]
+	SpecForm = { attribute, FileLoc, spec, { {destruct,1},
+	   [ { type, FileLoc, 'fun',
+		   [ { type, FileLoc, product, _Params=[ StateType ] },
+			 _Result=StateType ]
 		 } ] } },
 
 	% Then let's define the destructor function itself, based on:
@@ -190,27 +192,29 @@ get_default_destructor_info( MarkerTable ) ->
 
 	StateVar = wooper_parse_utils:get_state_var(),
 
-	% In AST, we shall have { function, Line, destruct, 1, [ DestructClause ] }:
-	DestructClause = { clause, Line, _Pattern=[ StateVar ], [],
+	% In AST, we shall have:
+	% {function, FileLoc, destruct, 1, [ DestructClause ]}:
+	%
+	DestructClause = { clause, FileLoc, _Pattern=[ StateVar ], [],
 					   _Body=[ StateVar ] },
 
 	% The spec and definition are to be placed together at this definition
 	% marker:
 	%
-	DefLocation = ast_info:get_default_definition_function_location(
-					MarkerTable ),
+	DefASTLoc =
+		ast_info:get_default_definition_function_location( MarkerTable ),
 
 	% While the export is to be done in (and will be automatically declared in
 	% that export form):
 	%
-	ExportLocation = ast_info:get_default_export_function_location(
-						MarkerTable ),
+	ExportLocation =
+		ast_info:get_default_export_function_location( MarkerTable ),
 
 	#function_info{ name=destruct,
 					arity=1,
-					location=DefLocation,
-					line=Line,
+					ast_location=DefASTLoc,
+					file_location=FileLoc,
 					clauses=[ DestructClause ],
-					spec={ DefLocation, SpecForm },
+					spec={ DefASTLoc, SpecForm },
 					callback=false,
 					exported=[ ExportLocation ] }.

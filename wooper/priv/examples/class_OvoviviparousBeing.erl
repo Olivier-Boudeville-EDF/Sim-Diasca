@@ -34,7 +34,10 @@
 % Constructs a new Ovoviviparous being (parameter-less constructor).
 -spec construct( wooper:state() ) -> wooper:state() .
 construct( State ) ->
-	% In order to test the crash of a constructor: non_existing:crash(),
+
+	% In order to test the crash of a constructor:
+	%non_existing:crash(),
+
 	setAttribute( State, eggs_count, 0 ).
 
 
@@ -45,7 +48,10 @@ construct( State ) ->
 %
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
-	% In order to test the crash of a destructor: non_existing:crash(),
+
+	% In order to test the crash of a destructor:
+	%non_existing:crash(),
+
 	State.
 
 

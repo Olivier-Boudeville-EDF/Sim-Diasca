@@ -819,7 +819,7 @@ shutdown( GISPid ) ->
 % Helper section.
 
 
-% Common part for all constructors:
+% Common part for all constructors.
 %
 % (helper)
 %
@@ -827,7 +827,7 @@ construct_common( ActorSettings, PrepareRendering, State ) ->
 
 	% First the direct mother classes:
 	TraceState = class_Actor:construct( State, ActorSettings,
-									?trace_categorize( _Name="GIS service" ) ),
+										?trace_categorize("GIS service") ),
 
 	% Then the class-specific actions:
 

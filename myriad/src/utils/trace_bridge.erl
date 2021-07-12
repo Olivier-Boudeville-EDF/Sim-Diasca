@@ -27,15 +27,15 @@
 
 
 
-% The trace bridge allows a software to depend only on the Ceylan-Myriad layer,
-% yet to be able (optionally) to be using another piece of software (possibly
-% the Ceylan-Traces layer, refer to http://traces.esperide.org/) at runtime for
-% its logging, so that in all cases exactly one (and the most appropriate)
-% logging system is used, even when lower-level libraries are involved, and with
-% no change of source code to be operated on that software.
+% @doc The trace bridge allows a software to depend only on the Ceylan-Myriad
+% layer, yet to be able (optionally) to be using another piece of software
+% (possibly the Ceylan-Traces layer, refer to [http://traces.esperide.org/]) at
+% runtime for <b>its logging</b>, so that in all cases exactly one (and the most
+% appropriate) logging system is used, even when lower-level libraries are
+% involved, and with no change of source code to be operated on that software.
 %
 % It is useful to provide native, integrated, higher-level logging to basic
-% libraries (ex: LEEC, see https://github.com/Olivier-Boudeville/Ceylan-LEEC),
+% libraries (ex: LEEC, see [https://github.com/Olivier-Boudeville/Ceylan-LEEC]),
 % should their user require it - while being able to remain lean and mean if
 % wanted (e.g while keeping the dependency to Ceylan-Traces optional).
 %
@@ -43,8 +43,10 @@
 % matter of having the process of interest call the register/3 function below.
 %
 % For usage examples, refer to:
+%
 %  - Ceylan-Myriad: trace_bridge_test.erl (directly tracing through basic
 %  trace_utils)
+%
 %  - Ceylan-Traces: trace_bridging_test.erl (using then our advanced trace
 %  system)
 %
@@ -56,8 +58,9 @@
 %-type trace_emitter_name() :: bin_string().
 %-type trace_categorization() :: bin_string().
 
-% Possibly a class_TraceAggregator:aggregator_pid():
 -type bridge_pid() :: pid().
+% Possibly a class_TraceAggregator:aggregator_pid().
+
 
 % An actual trace message:
 -type trace_message() :: ustring().
@@ -107,31 +110,31 @@
 % No special-casing the 'void' severity, as not used frequently enough.
 
 
-% Typically the information transmitted by a trace emitter when creating a
-% lower-level process that may or may not use fancy tracing:
-%
 -opaque bridge_spec() :: { TraceEmitterName :: bin_string(),
 						   TraceCategory :: bin_string(),
 						   BridgePid :: bridge_pid() }.
+% Typically the information transmitted by a trace emitter when creating a
+% lower-level process that may or may not use fancy tracing.
+
 
 -export_type([ bridge_spec/0 ]).
 
 
-
-% The bridging information stored in the target process dictionary:
 -opaque bridge_info() :: { TraceEmitterName :: bin_string(),
 						   TraceCategory :: bin_string(),
 						   Location :: bin_string(),
 						   BridgePid :: bridge_pid(),
 						   ApplicationTimestamp :: maybe( trace_timestamp() ) }.
+% The bridging information stored in the target process dictionary.
+
 
 % To silence warning:
 -export_type([ bridge_info/0 ]).
 
 
 
-% Returns the information to pass to a process so that it can register to the
-% corresponding trace bridge and use it automatically from then.
+% @doc Returns the information to pass to a process so that it can register to
+% the corresponding trace bridge and use it automatically from then.
 %
 -spec get_bridge_spec( any_string(), any_string(), bridge_pid() ) ->
 							bridge_spec().
@@ -141,7 +144,7 @@ get_bridge_spec( TraceEmitterName, TraceCategory, BridgePid ) ->
 
 
 
-% Registers the current process to the specified trace bridge (if any).
+% @doc Registers the current process to the specified trace bridge (if any).
 %
 % To be called by the process wanting to use such a trace bridge.
 %
@@ -178,7 +181,7 @@ register( BridgeSpec ) ->
 
 
 
-% Registers the current process to the specified trace bridge (if any), and
+% @doc Registers the current process to the specified trace bridge (if any), and
 % provided that no bridge was already registered (otherwise maintains the
 % previous bridge and ignores silently that extraneous call).
 %
@@ -212,7 +215,6 @@ register_if_not_already( BridgeSpec ) ->
 
 
 % (helper)
-%
 -spec bridge_spec_to_info( bridge_spec() ) -> bridge_info().
 bridge_spec_to_info( _BridgeSpec={ BinTraceEmitterName, BinTraceCategory,
 								   BridgePid } ) when is_pid( BridgePid ) ->
@@ -229,7 +231,7 @@ bridge_spec_to_info( OtherBridgeSpec ) ->
 
 
 
-% Returns the bridge information of the current process.
+% @doc Returns the bridge information of the current process.
 %
 % May be useful for example if spawning processes and wanting that they use the
 % same bridge.
@@ -239,7 +241,7 @@ get_bridge_info() ->
 	process_dictionary:get( ?myriad_trace_bridge_key ).
 
 
-% Sets the specified bridge information for the current process.
+% @doc Sets the specified bridge information for the current process.
 %
 % May be useful for example for a spawned process to adopt the same bridge as
 % the one of its caller (obtained thanks to get_bridge_info/0).
@@ -252,7 +254,7 @@ set_bridge_info( MaybeBridgeInfo ) ->
 
 
 
-% Sets the current application timestamp.
+% @doc Sets the current application timestamp.
 %
 % Note: if no trace bridge is registered, does nothing.
 %
@@ -276,7 +278,9 @@ set_application_timestamp( NewAppTimestamp ) ->
 
 
 
-% Unregisters the current process, which acted as a trace bridge; never fails.
+% @doc Unregisters the current process, which acted as a trace bridge; never
+% fails.
+%
 -spec unregister() -> void().
 unregister() ->
 	% No-op if not set:
@@ -287,117 +291,117 @@ unregister() ->
 % Primitives for trace emission.
 
 
-% Outputs specified debug message.
+% @doc Outputs specified debug message.
 -spec debug( trace_message() ) -> void().
 debug( Message ) ->
 	send( debug, Message ).
 
 
-% Outputs specified debug message to format.
+% @doc Outputs specified debug message to format.
 -spec debug_fmt( format_string(), format_values() ) -> void().
 debug_fmt( MessageFormat, MessageValues ) ->
 	send( debug, MessageFormat, MessageValues ).
 
 
 
-% Outputs specified info message.
+% @doc Outputs specified info message.
 -spec info( trace_message() ) -> void().
 info( Message ) ->
 	send( info, Message ).
 
 
-% Outputs specified info message to format.
+% @doc Outputs specified info message to format.
 -spec info_fmt( format_string(), format_values() ) -> void().
 info_fmt( MessageFormat, MessageValues ) ->
 	send( info, MessageFormat, MessageValues ).
 
 
 
-% Outputs specified notice message.
+% @doc Outputs specified notice message.
 -spec notice( trace_message() ) -> void().
 notice( Message ) ->
 	send( notice, Message ).
 
 
-% Outputs specified notice message to format.
+% @doc Outputs specified notice message to format.
 -spec notice_fmt( format_string(), format_values() ) -> void().
 notice_fmt( MessageFormat, MessageValues ) ->
 	send( notice, MessageFormat, MessageValues ).
 
 
 
-% Outputs specified warning message.
+% @doc Outputs specified warning message.
 -spec warning( trace_message() ) -> void().
 warning( Message ) ->
 	send( warning, Message ).
 
 
-% Outputs specified warning message to format.
+% @doc Outputs specified warning message to format.
 -spec warning_fmt( format_string(), format_values() ) -> void().
 warning_fmt( MessageFormat, MessageValues ) ->
 	send( warning, MessageFormat, MessageValues ).
 
 
 
-% Outputs specified error message.
+% @doc Outputs specified error message.
 -spec error( trace_message() ) -> void().
 error( Message ) ->
 	send( error, Message ).
 
 
-% Outputs specified error message to format.
+% @doc Outputs specified error message to format.
 -spec error_fmt( format_string(), format_values() ) -> void().
 error_fmt( MessageFormat, MessageValues ) ->
 	send( error, MessageFormat, MessageValues ).
 
 
 
-% Outputs specified critical message.
+% @doc Outputs specified critical message.
 -spec critical( trace_message() ) -> void().
 critical( Message ) ->
 	send( critical, Message ).
 
 
-% Outputs specified critical message to format.
+% @doc Outputs specified critical message to format.
 -spec critical_fmt( format_string(), format_values() ) -> void().
 critical_fmt( MessageFormat, MessageValues ) ->
 	send( critical, MessageFormat, MessageValues ).
 
 
 
-% Outputs specified critical message.
+% @doc Outputs specified critical message.
 -spec alert( trace_message() ) -> void().
 alert( Message ) ->
 	send( alert, Message ).
 
 
-% Outputs specified alert message to format.
+% @doc Outputs specified alert message to format.
 -spec alert_fmt( format_string(), format_values() ) -> void().
 alert_fmt( MessageFormat, MessageValues ) ->
 	send( alert, MessageFormat, MessageValues ).
 
 
 
-% Outputs specified emergency message.
+% @doc Outputs specified emergency message.
 -spec emergency( trace_message() ) -> void().
 emergency( Message ) ->
 	send( emergency, Message ).
 
 
-% Outputs specified emergency message to format.
+% @doc Outputs specified emergency message to format.
 -spec emergency_fmt( format_string(), format_values() ) -> void().
 emergency_fmt( MessageFormat, MessageValues ) ->
 	send( emergency, MessageFormat, MessageValues ).
 
 
 
-% "Outputs" specified void message.
+% @doc "Outputs" specified void message.
 -spec void( trace_message() ) -> void().
 void( _Message ) ->
 	ok.
 
 
-% "Outputs" specified void message to format.
+% @doc "Outputs" specified void message to format.
 -spec void_fmt( format_string(), format_values() ) -> void().
 void_fmt( _MessageFormat, _MessageValues ) ->
 	ok.

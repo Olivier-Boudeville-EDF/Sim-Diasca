@@ -4640,7 +4640,7 @@ interpret_firewall_options(_Opts= [ { epmd_port, Port } | _T ],
 	throw( { incorrect_firewall_restriction, invalid_epmd_port, Port } );
 
 interpret_firewall_options( _Opts=[ { epmd_port, _Port } | _T ],
-							{ _Port, _Range } ) ->
+							{ _AnyPort, _Range } ) ->
 	throw( { incorrect_firewall_restriction,
 			 epmd_port_defined_more_than_once } );
 

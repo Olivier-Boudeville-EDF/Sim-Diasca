@@ -27,11 +27,11 @@
 
 
 
-% Gathering of various facilities for polygon management.
+% @doc Gathering of various facilities for <b>polygon</b> management.
 %
-% Coordinates are expected to be often integers, when used for rendering.
+% When used for rendering, coordinates are expected to be often integers.
 %
-% See polygon_test.erl for the corresponding test.
+% See `polygon_test.erl' for the corresponding test.
 %
 -module(polygon).
 
@@ -68,7 +68,6 @@
 
 
 % Shorthands:
-
 -type point() :: linear_2D:point().
 -type color() :: gui_color:color().
 
@@ -77,8 +76,8 @@
 % Construction-related section.
 
 
-% Returns a triangle (defined as a polygon) corresponding to the specified three
-% vertices.
+% @doc Returns a triangle (defined as a polygon) corresponding to the specified
+% three vertices.
 %
 -spec get_triangle( point(), point(), point() ) -> polygon().
 get_triangle( V1, V2, V3 ) ->
@@ -86,7 +85,7 @@ get_triangle( V1, V2, V3 ) ->
 
 
 
-% Returns an upright square corresponding to the specified center and edge
+% @doc Returns an upright square corresponding to the specified center and edge
 % length.
 %
 -spec get_upright_square( point(), linear:distance() ) -> polygon().
@@ -100,7 +99,7 @@ get_upright_square( _Center={Xc,Yc}, EdgeLength ) ->
 
 
 
-% Returns a new polygon whose vertices are the specified ones.
+% @doc Returns a new polygon whose vertices are the specified ones.
 -spec get_polygon( [ point() ] ) -> polygon().
 get_polygon( Vertices ) ->
 	#polygon{ vertices=Vertices }.
@@ -110,14 +109,14 @@ get_polygon( Vertices ) ->
 % Operations on polygons.
 
 
-% Returns a polygon diameter, i.e. two points in the polygon which are at the
+% @doc Returns a polygon diameter, ie two points in the polygon which are at the
 % maximum distance one of the other.
 %
 % Returns {V1,V2,D} when V1 and V2 are the endpoints of a diameter and D is its
-% square length: D = square_distance( V1, V2 ).
+% square length: `D = square_distance(V1, V2)'.
 %
 -spec get_diameter( polygon() ) ->
-						  { point(), point(), linear:square_distance() }.
+							{ point(), point(), linear:square_distance() }.
 get_diameter( Polygon ) ->
 
 	case Polygon#polygon.vertices of
@@ -136,7 +135,7 @@ get_diameter( Polygon ) ->
 
 
 
-% Returns the smallest upright rectangle which encompasses the specified
+% @doc Returns the smallest upright rectangle which encompasses the specified
 % polygon.
 %
 % More precisely, {TopLeftCorner, BottomRightCorner} is returned, which defines
@@ -161,8 +160,8 @@ get_smallest_enclosing_rectangle( Polygon ) ->
 
 
 
-% Returns the area enclosed of the polygon, supposed to be non-self-intersecting
-% and having at least two vertices.
+% @doc Returns the (unsigned) area enclosed of the polygon, supposed to be
+% non-self-intersecting and having at least two vertices.
 %
 % Vertices can be listed clockwise or counter-clockwise.
 %
@@ -170,7 +169,7 @@ get_smallest_enclosing_rectangle( Polygon ) ->
 % then the area would be positive iff vertices were listed in counter-clockwise
 % order.
 %
-% See: http://en.wikipedia.org/wiki/Polygon#Area_and_centroid
+% See [http://en.wikipedia.org/wiki/Polygon#Area_and_centroid].
 %
 -spec get_area( polygon() ) -> linear:area().
 get_area( Polygon ) ->
@@ -178,7 +177,7 @@ get_area( Polygon ) ->
 
 
 
-% Tells whether the specified polygon has its vertices in clockwise order
+% @doc Tells whether the specified polygon has its vertices in clockwise order
 % (otherwise they are in counter-clockwise order).
 %
 -spec is_in_clockwise_order( polygon() ) -> boolean().
@@ -195,7 +194,7 @@ is_in_clockwise_order( Polygon ) ->
 
 
 
-% Tells whether the specified polygon is convex (iff true) or concave
+% @doc Tells whether the specified polygon is convex (iff true) or concave
 % (otherwise).
 %
 % Polygon must have at least one vertex.
@@ -209,7 +208,7 @@ is_convex( Polygon ) ->
 
 
 
-% Helper function:
+% (helper)
 is_convex( [], _Previous, _Sign ) ->
 	% Not interrupted, thus convex (includes polygon having only one vertex):
 	true;
@@ -218,7 +217,7 @@ is_convex( [ P={X,Y} | T ], _Previous={Xp,Yp}, _Sign=undefined ) ->
 
 	% Setting the first sign:
 	%trace_utils:debug_fmt( "initial: previous= ~w, next= ~w, sum=~w.~n",
-	%		   [ {Xp,Yp}, P, Xp*Y-X*Y ] ),
+	%						[ {Xp,Yp}, P, Xp*Y-X*Y ] ),
 
 	FirstSign = case Xp*Y-X*Yp of
 
@@ -235,22 +234,22 @@ is_convex( [ P={X,Y} | T ], _Previous={Xp,Yp}, _Sign=undefined ) ->
 
 is_convex( [ P={X,Y} | T ], _Previous={Xp,Yp}, Sign ) ->
 
-	%io:format( "iterated: previous= ~w, next= ~w, sum=~w.~n",
-	%		   [ {Xp,Yp}, P, Xp*Y-X*Yp ] ),
+	%trace_utils:debug_fmt( "Iteration points: previous= ~w, next= ~w, "
+	%                       "sum=~w.~n", [ {Xp,Yp}, P, Xp*Y-X*Yp ] ),
 
 	% Checking if still obtaining the same sign:
 	NewSign = case Xp*Y-X*Yp of
 
-				  PositiveSum when PositiveSum > 0 ->
-					  positive;
+		PositiveSum when PositiveSum > 0 ->
+			positive;
 
-				  _NegativeSum ->
-					  negative
+		 _NegativeSum ->
+			negative
 
-			  end,
+	end,
 
 	%trace_utils:debug_fmt( "Current sign: ~ts, new one: ~ts.~n",
-	%    [ Sign, NewSign ] ),
+	%                       [ Sign, NewSign ] ),
 
 	case NewSign of
 
@@ -270,7 +269,7 @@ is_convex( [ P={X,Y} | T ], _Previous={Xp,Yp}, Sign ) ->
 % Color-related section.
 
 
-% Sets the edge color of specified polygon.
+% @doc Sets the edge color of specified polygon.
 -spec set_edge_color( color(), polygon() ) -> polygon().
 set_edge_color( Color, Polygon ) ->
 	Polygon#polygon{ rendering=option_list:set(
@@ -279,7 +278,7 @@ set_edge_color( Color, Polygon ) ->
 
 
 
-% Returns the current edge color of the specified polygon, if specified,
+% @doc Returns the current edge color of the specified polygon, if specified,
 % otherwise 'undefined'.
 %
 -spec get_edge_color( polygon() ) -> maybe( color() ).
@@ -288,7 +287,7 @@ get_edge_color( Polygon ) ->
 
 
 
-% Sets the fill color of specified polygon.
+% @doc Sets the fill color of specified polygon.
 %
 % Use 'none' to disable filling.
 %
@@ -300,7 +299,7 @@ set_fill_color( Color, Polygon ) ->
 
 
 
-% Returns the current fill color of the specified polygon, if specified,
+% @doc Returns the current fill color of the specified polygon, if specified,
 % otherwise 'undefined'.
 %
 -spec get_fill_color( polygon() ) -> maybe( color() ).
@@ -309,8 +308,8 @@ get_fill_color( Polygon ) ->
 
 
 
-% Returns options for the rendering of this polygon that can be directly passed
-% to the graphical back-end.
+% @doc Returns options for the rendering of this polygon that can be directly
+% passed to the graphical back-end.
 %
 -spec get_rendering_options( polygon() ) -> option_list:option_list().
 get_rendering_options( Polygon ) ->
@@ -318,7 +317,7 @@ get_rendering_options( Polygon ) ->
 
 
 
-% Renders specified polygon in specified canvas.
+% @doc Renders specified polygon in specified canvas.
 %
 % Throws an exception if the polygon is not valid.
 %
@@ -363,7 +362,6 @@ render( Polygon, Canvas ) ->
 
 			gui:draw_polygon( Canvas, Vertices ),
 
-
 			case Polygon#polygon.bounding_box of
 
 				{ circle, Center, SquareRadius } ->
@@ -380,7 +378,7 @@ render( Polygon, Canvas ) ->
 
 
 
-% Returns a textual description of the specified polygon.
+% @doc Returns a textual description of the specified polygon.
 -spec to_string( polygon() ) -> text_utils:ustring().
 to_string( Polygon ) ->
 
@@ -407,20 +405,22 @@ to_string( Polygon ) ->
 % Bounding-box related section.
 
 
-% Updates, for the specified polygon, its internal bounding-box, with regard to
-% the specified bounding-box request.
+% @doc Updates, for the specified polygon, its internal bounding-box, with
+% regard to the specified bounding-box request.
 %
 % Returns a polygon with updated information.
+%
+% @end
 %
 % The lazy circle bounding box is fast to determine, but not optimal:
 -spec update_bounding_box( 'lazy_circle', polygon() ) -> polygon().
 update_bounding_box( lazy_circle, Polygon ) ->
 
-	{ Center, SquareRadius } = bounding_box:get_lazy_circle_box(
-							  Polygon#polygon.vertices ),
+	{ Center, SquareRadius } =
+		bounding_box:get_lazy_circle_box( Polygon#polygon.vertices ),
 
 	Polygon#polygon{ bounding_box=#circle{ center=Center,
-										  square_radius=SquareRadius } }.
+										   square_radius=SquareRadius } }.
 
 
 
@@ -428,7 +428,7 @@ update_bounding_box( lazy_circle, Polygon ) ->
 % Helper functions.
 
 
-% Returns the signed area enclosed of the polygon, supposed to be
+% @doc Returns the signed area enclosed of the polygon, supposed to be
 % non-self-intersecting and having at least two vertices.
 %
 % Vertices can be listed clockwise or counter-clockwise.

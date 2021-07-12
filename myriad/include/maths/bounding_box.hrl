@@ -33,10 +33,7 @@
 
 
 % Circle-based 2D bounding box.
-%
 -record( circle, {
-
-
 
 			% The center of the circle:
 			center :: linear_2D:point(),
@@ -44,7 +41,7 @@
 			% The square of the radius (R^2) of this circle:
 			square_radius :: linear:square_distance()
 
-							}).
+} ).
 
 
 

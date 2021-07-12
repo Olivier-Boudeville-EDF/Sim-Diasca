@@ -148,9 +148,11 @@ run() ->
 					   AccCount + 1
 			   end,
 
-	2 = table:fold_on_entries( FunCount, _InitialCount=0, MyH4 ),
+	InitialCount = 0,
 
-	0 = table:fold_on_entries( FunCount, _InitialCount=0, MyH1 ),
+	2 = table:fold_on_entries( FunCount, InitialCount, MyH4 ),
+
+	0 = table:fold_on_entries( FunCount, InitialCount, MyH1 ),
 
 	true = list_utils:unordered_compare( [ ?MyFirstKey, ?MySecondKey ],
 										 table:keys( MyH4 ) ),

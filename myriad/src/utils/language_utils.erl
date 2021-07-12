@@ -26,40 +26,36 @@
 % Creation date: Saturday, July 12, 2008.
 
 
-% Gathering of various convenient facilities regarding the support of various
-% programming languages.
+% @doc Gathering of various convenient facilities regarding the <b>support of
+% various programming or communication languages</b>.
 %
 % See language_utils_test.erl for the corresponding test.
 %
 -module(language_utils).
 
 
-
-% Type to designate all known programming languages:
 -type language() :: 'erlang' | 'python' | 'java'.
+% Type to designate all known programming languages.
 
 
-% Type to designate all supported human languages:
 -type human_language() :: 'english' | 'french' | 'spanish' | 'german'
 						| 'italian' | 'russian' | 'chinese' | 'japanese'.
+% Type to designate all supported human languages.
 
 
+-type runtime_container_pid() :: pid().
 % Type to designate an (Erlang) process driving a runtime container (ex: a
 % Python interpreter or a Java virtual machine) of a given language runtime
 % (typically on a given node).
-%
--type runtime_container_pid() :: pid().
 
 
-% The PID of a Python interpreter runtime container:
 -type python_interpreter_container_pid() :: python_utils:interpreter_pid().
+% The PID of a Python interpreter runtime container.
 
 
-% The PID of a Java virtual machine runtime container:
-% (ex: it can be a binding agent, otherwise directly a controller mbox)
-%
 -type java_vm_container_pid() :: runtime_container_pid().
-
+% The PID of a Java virtual machine runtime container (ex: it can be a binding
+% agent, otherwise directly a controller mbox).
 
 
 -export_type([ language/0, human_language/0,
@@ -79,7 +75,7 @@
 -type directory_path() :: file_utils:directory_path().
 
 
-% Returns a list of the supported foreign (non-native, i.e. non-Erlang)
+% @doc Returns a list of the supported foreign (non-native, meaning non-Erlang)
 % programming languages.
 %
 -spec get_supported_foreign_languages() -> [ language() ].
@@ -88,20 +84,20 @@ get_supported_foreign_languages() ->
 
 
 
-% Returns a list of all supported programming languages (including Erlang).
+% @doc Returns a list of all supported programming languages (including Erlang).
 -spec get_supported_languages() -> [ language() ].
 get_supported_languages() ->
 	[ erlang | get_supported_foreign_languages() ].
 
 
 
-% Returns a string describing the specified language.
+% @doc Returns a textual description of the specified language.
 -spec language_to_string( language() ) -> ustring().
 language_to_string( Language ) ->
 	language_to_string( Language, _IndentationLevel=0 ).
 
 
-% Returns a string describing the specified language.
+% @doc Returns an indented textual description of the specified language.
 -spec language_to_string( language(), text_utils:indentation_level() ) ->
 								ustring().
 language_to_string( erlang, _IndentationLevel ) ->
@@ -127,8 +123,8 @@ language_to_string( LanguageInvalidArg, _IndentationLevel ) ->
 
 
 
-% Returns the BEAM locations of all the dependencies related to the specified
-% language bindings.
+% @doc Returns the BEAM locations of all the dependencies related to the
+% specified language bindings.
 %
 -spec get_additional_beam_directories_for( [ language() ] ) ->
 												[ directory_path() ].

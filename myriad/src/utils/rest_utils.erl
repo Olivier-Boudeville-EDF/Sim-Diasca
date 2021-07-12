@@ -29,8 +29,8 @@
 
 
 
-% Gathering of management facilities for REST architectures (Representational
-% State Transfer).
+% @doc Gathering of management facilities for <b>REST architectures</b>
+% (<em>Representational State Transfer</em>).
 %
 % See rest_utils_test.erl for the corresponding test.
 %
@@ -68,13 +68,14 @@
 -define( retry_delay_max, 5000 ).
 
 
-
-% HTTP/1.1 method:
 -type method() :: 'get' | 'head' | 'post' | 'options' | 'connect' | 'trace'
 				| 'put' | 'patch' | 'delete'.
+% HTTP/1.1 method.
 
-% Content type (ex: "text/html;charset=utf-8", "application/json"):
+
 -type content_type() :: ustring().
+% Content type (ex: "text/html;charset=utf-8", "application/json").
+
 
 -type field() :: ustring().
 
@@ -90,9 +91,12 @@
 
 -type status_line() :: { ustring(), status_code(), ustring() }.
 
-% Type of a request for httpc:request, see http://erlang.org/doc/man/httpc.html:
+
 -type request() :: { web_utils:url(), headers(), content_type(), body() }
 				 | { web_utils:url(), headers() }.
+% Type of a request for httpc:request, see
+% [http://erlang.org/doc/man/httpc.html].
+
 
 -type http_option() :: { atom(), term() }.
 -type http_options() :: [ http_option() ].
@@ -101,14 +105,15 @@
 -type options() :: [ option() ].
 
 
-% Type of a result from httpc:request, see http://erlang.org/doc/man/httpc.html:
 -type result() :: { status_line(), headers(), body() }
 				| { status_code(), body() }
 				| reference().
+% Type of a result from httpc:request, see
+% [http://erlang.org/doc/man/httpc.html].
 
 
-% Context of a REST exchange:
 -type context() :: { web_utils:url_info(), headers() }.
+% Context of a REST exchange.
 
 -type retries_count() :: basic_utils:count().
 
@@ -125,20 +130,20 @@
 
 
 
-% Starts the REST service, with default settings.
+% @doc Starts the REST service, with default settings.
 -spec start() -> void().
 start() ->
 	start( no_ssl ).
 
 
-% Starts the REST service.
+% @doc Starts the REST service, with specified option.
 -spec start( ssl_opt() ) -> json_utils:parser_state().
 start( Option ) ->
 	web_utils:start( Option ),
 	json_utils:start_parser().
 
 
-% Stops the REST service.
+% @doc Stops the REST service.
 -spec stop() -> void().
 stop() ->
 	json_utils:stop_parser(),
@@ -150,9 +155,9 @@ stop() ->
 % REST requests section.
 
 
-% Lists all the possible request methods defined by the HTTP/1.1 standard,
+% @doc Lists all the possible request methods defined by the HTTP/1.1 standard,
 % except the 'CONNECT' method that seems not to be part of the function clauses
-% appearing in httpc:request:
+% appearing in httpc:request.
 %
 -spec get_supported_http_methods() -> [ method() ].
 get_supported_http_methods() ->
@@ -160,7 +165,7 @@ get_supported_http_methods() ->
 
 
 
-% Lists all the supported HTTP/1.1 standard methods whose implementation in
+% @doc Lists all the supported HTTP/1.1 standard methods whose implementation in
 % httpc:request does not allow the Body and (thus) ContentType arguments: they
 % must be associated with requests of the form {URL, Headers}.
 %
@@ -170,7 +175,7 @@ get_no_body_http_methods() ->
 
 
 
-% Lists all the supported HTTP/1.1 standard methods whose implementation in
+% @doc Lists all the supported HTTP/1.1 standard methods whose implementation in
 % httpc:request expects the Body and (thus) ContentType arguments: they must be
 % associated with requests of the form {URL, Headers, ContentType, Body}.
 %
@@ -180,34 +185,43 @@ get_body_allowing_http_methods() ->
 
 
 
-% Shorthands for sending GET HTTP requests:
+% @doc Sends a HTTP GET request.
 -spec http_get( request() ) -> { status_code(), term() }.
 http_get( Request ) ->
 	http_get( Request, _HTTPOpts=[], _Opts=[], _Retries=0 ).
 
 
+% @doc Sends a HTTP GET request, with the specified number of retries.
 -spec http_get( request(), retries_count() ) -> { status_code(), term() }.
 http_get( Request, Retries ) ->
 	http_get( Request, _HTTPOpts=[], _Opts=[], Retries ).
 
 
+% @doc Sends a HTTP GET request, with the specified number of retries and (HTTP
+% or not) options.
+%
 -spec http_get( request(), http_options(), options(), retries_count() ) ->
 						term().
 http_get( Request, HTTPOptions, Options, Retries ) ->
 	http_request( get, Request, HTTPOptions, Options, Retries ).
 
 
-% Shorthands for sending POST HTTP requests:
+
+% @doc Sends a HTTP POST request.
 -spec http_post( request() ) -> { status_code(), term() }.
 http_post( Request ) ->
 	http_post( Request, _HTTPOpts=[], _Opts=[], _Retries=0 ).
 
 
+% @doc Sends a HTTP POST request, with the specified number of retries.
 -spec http_post( request(), retries_count() ) -> { status_code(), term() }.
 http_post( Request, Retries ) ->
 	http_post( Request, _HTTPOpts=[], _Opts=[], Retries ).
 
 
+% @doc Sends a HTTP POST request, with the specified number of retries and (HTTP
+% or not) options.
+%
 -spec http_post( request(), http_options(), options(), retries_count() ) ->
 						term().
 http_post( Request, HTTPOptions, Options, Retries ) ->
@@ -215,35 +229,42 @@ http_post( Request, HTTPOptions, Options, Retries ) ->
 
 
 
-% Shorthands for sending PUT HTTP requests:
+% @doc Sends a HTTP PUT request.
 -spec http_put( request() ) -> { status_code(), term() }.
 http_put( Request ) ->
 	http_put( Request, _HTTPOpts=[], _Opts=[], _Retries=0 ).
 
 
+% @doc Sends a HTTP PUT request, with the specified number of retries.
 -spec http_put( request(), retries_count() ) -> { status_code(), term() }.
 http_put( Request, Retries ) ->
 	http_put( Request, _HTTPOpts=[], _Opts=[], Retries ).
 
 
+% @doc Sends a HTTP PUT request, with the specified number of retries and (HTTP
+% or not) options.
+%
 -spec http_put( request(), http_options(), options(), retries_count() ) ->
 						term().
 http_put( Request, HTTPOptions, Options, Retries ) ->
 	http_request( put, Request, HTTPOptions, Options, Retries ).
 
 
-
-% Shorthands for sending DELETE HTTP requests:
+% @doc Sends a HTTP PUT request.
 -spec http_delete( request() ) -> { status_code(), term() }.
 http_delete( Request ) ->
 	http_delete( Request, _HTTPOpts=[], _Opts=[], _Retries=0 ).
 
 
+% @doc Sends a HTTP PUT request, with the specified number of retries.
 -spec http_delete( request(), retries_count() ) -> { status_code(), term() }.
 http_delete( Request, Retries ) ->
 	http_delete( Request, _HTTPOpts=[], _Opts=[], Retries ).
 
 
+% @doc Sends a HTTP PUT request, with the specified number of retries and (HTTP
+% or not) options.
+%
 -spec http_delete( request(), http_options(), options(), retries_count() ) ->
 							term().
 http_delete( Request, HTTPOptions, Options, Retries ) ->
@@ -251,8 +272,8 @@ http_delete( Request, HTTPOptions, Options, Retries ) ->
 
 
 
-% Another shorthand for sending GET HTTP requests, as suggested by the standard
-% 'httpc' module of Erlang:
+% @doc Sends a HTTP GET requests, as an alternate solution as suggested by the
+% standard 'httpc' module of Erlang.
 %
 -spec http_request( web_utils:url() ) -> { status_code(), term() }.
 http_request( URL ) ->
@@ -260,7 +281,8 @@ http_request( URL ) ->
 
 
 
-% Sends a generic HTTP request.
+% @doc Sends a generic HTTP request, as an alternate solution as suggested by
+% the standard 'httpc' module of Erlang.
 %
 % (Basically just a call to httpc:request/4 surrounded by checking steps)
 %
@@ -269,6 +291,11 @@ http_request( Method, Request ) ->
 	http_request( Method, Request, _HTTPOpts=[], _Opts=[], _Retries=0 ).
 
 
+
+% @doc Sends a generic HTTP request, with the specified number of retries.
+%
+% (Basically just a call to httpc:request/4 surrounded by checking steps)
+%
 -spec http_request( method(), request(), retries_count() ) ->
 							{ status_code(), term() }.
 http_request( Method, Request, Retries ) ->
@@ -276,7 +303,11 @@ http_request( Method, Request, Retries ) ->
 
 
 
-
+% @doc Sends a generic HTTP request, with the specified number of retries and
+% (HTTP or not) options.
+%
+% (Basically just a call to httpc:request/4 surrounded by checking steps)
+%
 -spec http_request( method(), request(), http_options(), options(),
 					retries_count() ) -> term().
 http_request( Method, Request, HTTPOptions, Options, Retries ) ->
@@ -340,8 +371,8 @@ http_request( Method, Request, HTTPOptions, Options, Retries ) ->
 
 
 
-% Converts the Body string of an error message, possibly with a stack trace, to
-% a text that is easier to understand, with actual carriage returns.
+% @doc Converts the Body string of an error message, possibly with a stack
+% trace, to a text that is easier to understand, with actual carriage returns.
 %
 -spec format_body_error( ustring() ) -> ustring().
 format_body_error( ContentBody ) ->
@@ -360,7 +391,9 @@ format_body_error( ContentBody ) ->
 
 
 
-% Checks and returns the result of an HTTP request (or throws an exception).
+% @doc Checks and returns the result of an HTTP request (or throws an
+% exception).
+%
 -spec return_checked_result( result() ) -> { status_code(), term() }.
 return_checked_result( _Result={ StatusLine, _Headers, Body } ) ->
 
@@ -413,7 +446,7 @@ return_checked_result( Result ) ->
 
 
 
-% Checks the basic structure of an HTTP request, as needed by httpc.
+% @doc Checks the basic structure of an HTTP request, as needed by httpc.
 -spec check_http_request( method(), request() ) -> void().
 check_http_request( Method, _Request={ URL, Headers } )
   when is_list( Headers ) ->

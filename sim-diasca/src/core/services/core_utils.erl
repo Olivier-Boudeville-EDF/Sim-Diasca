@@ -19,8 +19,8 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-% This module gathers some facilities for all core classes and for all
-% test/simulation cases.
+% @doc This module gathers some <b>facilities for all core classes and for all
+% test/simulation cases</b>.
 %
 -module(core_utils).
 
@@ -31,6 +31,10 @@
 		  draw_item_from/2, draw_items_from/3 ]).
 
 
+% Shorthands:
+-type ustring() :: text_utils:ustring().
+
+
 % For notify_debug_fmt and al:
 -include_lib("traces/include/traces.hrl").
 
@@ -38,8 +42,10 @@
 -include("engine_common_defines.hrl").
 
 
-% Returns a case-specific argument table, i.e. whose engine-specified arguments
-% have been removed so that only the ones interesting the current case remain.
+
+% @doc Returns a case-specific argument table, that is. whose engine-specified
+% arguments have been removed so that only the ones interesting the current case
+% remain.
 %
 % Allows to remove all engine-specific options besides the Erlang ones.
 %
@@ -55,14 +61,14 @@ get_case_arguments() ->
 	% interpretation of argument names:
 	%
 	%trace_utils:debug_fmt( "Got, regarding arguments, ~p, whereas keys to "
-	%					   "ignore are ~p.", [ AllArgs, KeysToIgnore ] ),
+	%						"ignore are ~p.", [ AllArgs, KeysToIgnore ] ),
 
 	list_table:remove_entries( KeysToIgnore, AllArgs ).
 
 
 
-% Returns a textual description of the version of Sim-Diasca being used.
--spec get_title() -> string().
+% @doc Returns a textual description of the version of Sim-Diasca being used.
+-spec get_title() -> ustring().
 get_title() ->
 
 	case shell_utils:get_command_arguments_for_option(
@@ -81,7 +87,7 @@ get_title() ->
 
 
 
-% Waits until an actor is ready, and acknowledges its notification.
+% @doc Waits until an actor is ready, and acknowledges its notification.
 -spec wait_ready() -> void().
 wait_ready() ->
 
@@ -100,7 +106,7 @@ wait_ready() ->
 
 
 
-% Suspends the simulation until the Enter key is pressed.
+% @doc Suspends the simulation until the Enter key is pressed.
 -spec suspend_simulation_until_enter_pressed( time_manager_pid() ) -> void().
 suspend_simulation_until_enter_pressed( TimeManagerPid ) ->
 
@@ -125,10 +131,10 @@ suspend_simulation_until_enter_pressed( TimeManagerPid ) ->
 
 
 
-% Draws one item from specified list using a random law and the specified random
-% manager, and returns a pair made of the drawn item and of the resulting list,
-% which is the specified one with the first instance of that drawn item removed:
-% { DrawnItem, RemainingList }.
+% @doc Draws one item from the specified list using a random, uniform law and
+% the specified random manager, and returns a pair made of the drawn item and of
+% the resulting list, which is the specified one with the first instance of this
+% drawn item removed: {DrawnItem, RemainingList}.
 %
 % Expects the specified list to be non-empty.
 %
@@ -156,18 +162,18 @@ draw_item_from( DrawableList, RandomManagerPid ) when DrawableList =/= [] ->
 
 
 
-% Draws ItemCount items from specified list using a random law and the specified
-% random manager, and returns either the 'too_many_drawn_items' atom is the
-% specified list is too short, or a pair made of the list of drawn items and of
-% the resulting list, which is the specified one with the first instance of all
-% drawn items removed: { DrawnItemList, RemainingList }.
+% @doc Draws ItemCount items from specified list using a random, uniform law and
+% the specified random manager, and returns either the 'too_many_drawn_items'
+% atom is the specified list is too short, or a pair made of the list of drawn
+% items and of the resulting list, which is the specified one with the first
+% instance of all drawn items removed: {DrawnItemList, RemainingList}.
 %
 % Note: this function is mostly deprecated, as now stochastic values can
 % generally (ex: for actors) be obtained without direct exchange with a random
 % manager).
 %
 -spec draw_items_from( [ T ], basic_utils:count(), random_manager_pid() ) ->
-							 'too_many_drawn_items' | { [ T ], [ T ] }.
+								'too_many_drawn_items' | { [ T ], [ T ] }.
 draw_items_from( DrawableList, ItemCount, RandomManagerPid ) ->
 	draw_items_from( DrawableList, ItemCount, RandomManagerPid, _Acc=[] ).
 

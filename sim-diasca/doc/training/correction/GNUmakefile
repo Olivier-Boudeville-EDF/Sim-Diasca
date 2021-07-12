@@ -13,15 +13,16 @@ CORRECTION_ARCHIVE = $(CORRECTION_PREFIX)
 CORRECTION_ARCHIVE_FILENAME = $(CORRECTION_ARCHIVE).tar.bz2
 
 
+.PHONY: doc generate-correction-archive clean clean-correction
 
-info-doc:
-	@echo "  Use 'make full-doc' to generate the corrections corresponding to the Sim-Diasca Training material (in english)."
+doc:
+	@echo "  Run 'make full-doc' to generate the corrections corresponding to the Sim-Diasca Training material (in english)."
 
 
 generate-correction-archive: clean full-doc
 	@mkdir $(CORRECTION_DIR)
-	@cp tmp-rst/*.pdf $(CORRECTION_DIR)
-	@cp -r ex_* $(CORRECTION_DIR)
+	@/bin/cp tmp-rst/*.pdf $(CORRECTION_DIR)
+	@/bin/cp -r ex_* $(CORRECTION_DIR)
 	@tar cvjf $(CORRECTION_ARCHIVE_FILENAME) $(CORRECTION_PREFIX)
 	@echo ; echo "$(CORRECTION_ARCHIVE_FILENAME) is ready!"
 

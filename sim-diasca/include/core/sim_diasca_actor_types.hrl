@@ -23,20 +23,24 @@
 % name):
 
 
-% PID of an actor:
 -type actor_pid() :: class_Actor:actor_pid().
+% PID of an actor.
 
-% PID of an actor having sent a message to the current actor:
 -type sending_actor_pid() :: class_Actor:sending_actor_pid().
+% PID of an actor having sent a message to the current actor.
 
-% PID of a just created actor:
 -type created_actor_pid() :: class_Actor:created_actor_pid().
+% PID of a just created actor.
 
 
 
 % Possible result types for the specs of actor oneways:
+
 -type actor_oneway_return() :: class_Actor:actor_oneway_return().
+% A type designating the (non-const) returns of actor oneways.
+
 -type const_actor_oneway_return() :: class_Actor:const_actor_oneway_return().
+% A type designating the const returns of actor oneways.
 
 
 -export_type([ actor_pid/0, sending_actor_pid/0, created_actor_pid/0,

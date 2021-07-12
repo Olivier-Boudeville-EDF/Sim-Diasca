@@ -19,6 +19,11 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Class defining a <b>binding manager</b> for a given programming language.
+%
+% Note that bindings are currently supported specifically (only) in a dataflow
+% context.
+%
 -module(class_LanguageBindingManager).
 
 
@@ -26,8 +31,8 @@
 		 "Abstract class defining a binding manager for a given programming "
 		 "language, i.e. facilities in order to drive a set of distributed "
 		 "runtime containers for that language (ex: virtual machines, "
-		 "interpreters, etc.), each running on a distinct computing node."
-		 " This class defines the mother class of all (singleton) per-language "
+		 "interpreters, etc.), each running on a distinct computing node. "
+		 "This class defines the mother class of all (singleton) per-language "
 		 "manager (each driving its set of runtime containers).").
 
 
@@ -114,31 +119,33 @@
 -include("class_DataflowBlock_defines.hrl").
 
 
-% Describes (as a binary) the semantics associated to a dataflow value:
 -type binary_value_semantics() :: binary().
+% Describes (as a binary) the semantics associated to a dataflow value.
 
 
-% Describes (as a binary) the unit associated to a dataflow value:
 -type binary_value_unit() :: binary().
+% Describes (as a binary) the unit associated to a dataflow value.
 
 
-% Describes (as a binary) the type associated to a dataflow value:
 -type binary_value_type() :: binary().
+% Describes (as a binary) the type associated to a dataflow value.
 
 
-% A list of the changes to perform on the output ports of a binding-implemented
-% processing unit after its activation (i.e. the execution of its activate/1
-% method, done in a runtime container of a binding):
-%
 -type activation_result() :: { output_port_name(),
 							   { actual_value(), binary_value_semantics(),
 								 binary_value_unit(), binary_value_type() } }.
+% A list of the changes to perform on the output ports of a binding-implemented
+% processing unit after its activation (i.e. the execution of its activate/1
+% method, done in a runtime container of a binding).
+
 
 -type activation_results() :: [ activation_result() ].
 
 
 
 % Shorthands:
+
+-type ustring() :: text_utils:ustring().
 
 -type directory_path() :: file_utils:directory_path().
 
@@ -153,7 +160,7 @@
 % Each actual manager for a language Foobar is expected to register itself
 % globally, by defining:
 %
-% -define( foobar_binding_manager_name, sim_diasca_foobar_binding_manager ).
+%   -define( foobar_binding_manager_name, sim_diasca_foobar_binding_manager ).
 %
 % The process is to create all (Erlang) actors regardless of their relying or
 % not on a language binding, knowing that some of them may internally rely on
@@ -166,7 +173,9 @@
 
 
 
-% Constructs a new, abstract, named, language binding manager, from:
+% @doc Constructs a new, abstract, named, language binding manager.
+%
+% Parameters:
 %
 % - BindingManagerName, the name of that binding manager
 %
@@ -198,7 +207,7 @@ construct( State, BindingManagerName, EngineRootDir, EpmdPort, CodePath,
 
 
 
-% Overridden destructor.
+% @doc Overridden destructor.
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -217,6 +226,7 @@ destruct( State ) ->
 
 			% Container destruction is language-specific, it is already too
 			% late, we leave the node_table as it is.
+
 			State
 
 	end.
@@ -226,7 +236,7 @@ destruct( State ) ->
 % Methods section.
 
 
-% Returns the runtime container of the binding associated to the specified
+% @doc Returns the runtime container of the binding associated to the specified
 % actor.
 %
 % In practice the returned runtime container is the one running on the same node
@@ -253,17 +263,18 @@ getAssociatedRuntimeContainer( State, ActorPid ) ->
 
 
 
+
 % Helpers section.
 
 
-% Returns a textual description of this language manager.
--spec to_string( wooper:state() ) -> string().
+% @doc Returns a textual description of this language manager.
+-spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
 	NodePairs = table:enumerate( ?getAttr(node_table) ),
 
 	NodeStrings = [ text_utils:format( "container ~w running on node '~ts'",
-		   [ ContainerPid, Node ] ) || { Node, ContainerPid } <- NodePairs ],
+		[ ContainerPid, Node ] ) || { Node, ContainerPid } <- NodePairs ],
 
 	EpmdString = case ?getAttr(epmd_port) of
 
@@ -292,7 +303,7 @@ to_string( State ) ->
 
 
 
-% Builds the exhaustive list of all port statuses, with their names.
+% @doc Builds the exhaustive list of all port statuses, with their names.
 -spec get_encoded_input_ports_data( wooper:state() ) ->
 									[ { input_port_name(), value_status() } ].
 get_encoded_input_ports_data( State ) ->
@@ -318,8 +329,8 @@ get_encoded_input_ports_data( State ) ->
 
 
 
-% Builds the encoded list of all input data needed for activation and related to
-% input port iterations.
+% @doc Builds the encoded list of all input data needed for activation and
+% related to input port iterations.
 %
 -spec get_encoded_input_port_iterations_data( wooper:state() ) ->
 	[ { input_port_name(), iteration_multiplicity(), [ iterated_index() ] } ].
@@ -343,8 +354,8 @@ get_encoded_input_port_iterations_data( State ) ->
 
 
 
-% Builds the encoded list of all output data needed for activation and related
-% to output port iterations.
+% @doc Builds an encoded list of all output data needed for activation and
+% related to output port iterations.
 %
 -spec get_encoded_output_port_iterations_data( wooper:state() ) ->
 	[ { output_port_name(), iteration_multiplicity(), [ iterated_index() ] } ].
@@ -368,8 +379,8 @@ get_encoded_output_port_iterations_data( State ) ->
 
 
 
-% Interprets the specified activation results as a list of tasks to achieve on
-% the output ports, then performs them.
+% @doc Interprets the specified activation results as a list of tasks to achieve
+% on the output ports, then performs them.
 %
 -spec apply_activation_results( activation_results(), wooper:state() ) ->
 										wooper:state().
@@ -400,8 +411,8 @@ apply_activation_results( ActivationResults, State ) ->
 
 
 
-% Turns all the binaries in the encoded input port specs (keys and values as
-% well) into the types expected by the 'parse_raw_input_port_spec' function.
+% @doc Turns all the binaries in the encoded input port specs (keys and values
+% as well) into the types expected by the 'parse_raw_input_port_spec' function.
 %
 -spec decode_input_port_specs( [ { binary(), term() } ] ) ->
 										[ { atom(), term() } ].
@@ -432,11 +443,11 @@ decode_input_port_specs_values( [ { <<"comment">>, BinComment } | T ], Acc )
 	decode_input_port_specs_values( T, NewAcc );
 
 
-decode_input_port_specs_values( [ _IterSpec={ <<"is_iteration">>, IterSpecVal }
-								  | T ], Acc ) ->
+decode_input_port_specs_values(
+			[ _IterSpec={ <<"is_iteration">>, IterSpecVal } | T ], Acc ) ->
 
 	% An iteration specification from a binding can only be a boolean, or an
-	% int, or a tuple, or imbricated tuples containing integers.
+	% integer, or a tuple, or imbricated tuples containing integers.
 	%
 	% All of these possible types of specification are transmitted as they are
 	% in Erlang, and do not need any conversion:
@@ -448,7 +459,7 @@ decode_input_port_specs_values( [ { <<"value_semantics">>, BinSemList } | T ],
 								Acc ) when is_list( BinSemList ) ->
 
 	StringSems = [ text_utils:binary_to_string( BinSem )
-				   || BinSem <- BinSemList ],
+					|| BinSem <- BinSemList ],
 
 	NewAcc = [ { value_semantics, StringSems } | Acc ],
 
@@ -494,8 +505,8 @@ decode_input_port_specs_values( [
 
 	end,
 
-	DecodedConstraints = [ text_utils:binary_to_string( C )
-						   || C <- BinConstraints ],
+	DecodedConstraints =
+		[ text_utils:binary_to_string( C ) || C <- BinConstraints ],
 
 	NewAcc = [ { value_constraints, [ { in, DecodedConstraints } ]  } | Acc ],
 
@@ -503,8 +514,9 @@ decode_input_port_specs_values( [
 
 
 % Processes the other constrainsts, where they should all be binary:
-decode_input_port_specs_values( [ { <<"value_constraints">>, BinConstraints }
-								  | T ], Acc ) when is_list( BinConstraints ) ->
+decode_input_port_specs_values(
+			[ { <<"value_constraints">>, BinConstraints } | T ], Acc )
+					when is_list( BinConstraints ) ->
 
 	% Checking:
 	case lists:all( fun( C ) -> is_binary( C ) end, BinConstraints ) of
@@ -519,7 +531,7 @@ decode_input_port_specs_values( [ { <<"value_constraints">>, BinConstraints }
 	end,
 
 	DecodedConstraints = [ text_utils:binary_to_atom( C )
-						   || C <- BinConstraints ],
+							|| C <- BinConstraints ],
 
 	NewAcc = [ { value_constraints, DecodedConstraints } | Acc ],
 
@@ -535,8 +547,8 @@ decode_input_port_specs_values( [ OtherSpec | _T ], _Acc ) ->
 
 
 
-% Turns all the binaries in the encoded output port specs (keys and values as
-% well) into the types expected by the 'parse_raw_output_port_spec' function:
+% @doc Turns all the binaries in the encoded output port specs (keys and values
+% as well) into the types expected by the 'parse_raw_output_port_spec' function.
 %
 -spec decode_output_port_specs( [ { binary(), term() } ] ) ->
 										[ { atom(), term() } ].

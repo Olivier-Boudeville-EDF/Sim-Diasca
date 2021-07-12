@@ -26,8 +26,8 @@
 % Creation date: Wednesday, December 24, 2014.
 
 
-% Centralises, on behalf of the WOOPER parse transform, the support for classes,
-% inheritance, etc.
+% @doc Module centralising, on behalf of the WOOPER parse transform, the support
+% for <b>classes, inheritance</b>, etc.
 %
 -module(wooper_class_management).
 
@@ -80,7 +80,7 @@
 % the -define method is the recommended one, for homogeneity reasons.
 
 
-% Ensures that specified name is a legit class name, and returns it.
+% @doc Ensures that specified name is a legit class name, and returns it.
 -spec check_classname( any() ) -> atom().
 check_classname( Name ) when is_atom( Name ) ->
 
@@ -101,7 +101,7 @@ check_classname( Other ) ->
 
 
 
-% Registers the corresponding classname into specified class information.
+% @doc Registers the corresponding classname into specified class information.
 -spec manage_classname( module_entry(), class_info() ) -> class_info().
 manage_classname( _ModuleEntry=undefined, _ClassInfo ) ->
 	wooper_internals:raise_usage_error( "no module name was defined" );
@@ -114,7 +114,9 @@ manage_classname( _ModuleEntry={ _ModuleName=Classname, ModuleDef },
 
 
 
-% Registers the declared superclasses (if any) into specified class information.
+% @doc Registers the declared superclasses (if any) into specified class
+% information.
+%
 -spec manage_superclasses( class_info() ) -> class_info().
 manage_superclasses( ClassInfo=#class_info{ class={ Classname, _ClassLocForm },
 											functions=FunctionTable } ) ->
@@ -159,7 +161,7 @@ manage_superclasses( ClassInfo=#class_info{ class={ Classname, _ClassLocForm },
 		catch _:_ ->
 
 			%wooper_internals:raise_usage_error( "invalid superclasses define: "
-			%	"a list of atoms was expected.", Classname, _NoLine=0 )
+			%   "a list of atoms was expected.", Classname, _NoLine=0 )
 
 			wooper_internals:raise_usage_error( "invalid superclasses define: "
 				"a list of atoms was expected, not ~p.", [ AtomListForm ],

@@ -26,21 +26,22 @@
 % Creation date: Monday, February 15, 2010.
 
 
-% Gathering of various facilities for bounding box management.
+% @doc Gathering of various facilities for <b>bounding box</b> management.
 %
 % Currently the types of supported bounding boxes are:
 %
-%  - circle, either obtained from the 'lazy' algorithm or the 'mec' algorithm
-%  - cuboid, see http://en.wikipedia.org/wiki/Cuboid
+% - circle, either obtained from the 'lazy' algorithm or the 'mec' algorithm
+%
+% - <a href="http://en.wikipedia.org/wiki/Cuboid">cuboid</a>
 %
 % With the lazy algorithm, circle parameters are simply deduced from the
 % smallest enclosing rectangle; it is fast and easy, yet less precis than MEC.
 %
-% MEC leads to determine the Minimal Enclosing Circle. The operation involves
-% computing the convex hull of the points. It is expensive, but not a problem
-% when precomputing.
+% MEC leads to determine the <em>Minimal Enclosing Circle</em>. The operation
+% involves computing the convex hull of the points. It is expensive, but not a
+% problem when precomputing.
 %
-% See bounding_box_test.erl for the corresponding test.
+% See `bounding_box_test.erl' for the corresponding test.
 %
 -module(bounding_box).
 
@@ -59,8 +60,8 @@
 -type right_cuboid() :: #right_cuboid{}.
 
 
-% All known types of bounding boxes:
 -type bounding_box() :: circle() | right_cuboid().
+% All supported types of bounding boxes.
 
 
 -export_type([ circle/0, right_cuboid/0, bounding_box/0 ]).
@@ -71,8 +72,9 @@
 -type point() :: linear_2D:point().
 
 
-% Returns a disc which is a bounding-box for the specified list of points, which
-% must not be empty.
+
+% @doc Returns a disc which is a bounding-box for the specified list of points,
+% which must not be empty.
 %
 % Note: this bounding box is not the smallest one, but is very lightweight to
 % compute.
@@ -95,7 +97,7 @@ get_lazy_circle_box( PointList ) ->
 
 
 
-% Returns {Center, SquareRadius} which defines a bounding-box consisting on
+% @doc Returns {Center, SquareRadius} which defines a bounding-box consisting on
 % the minimal enclosing circle (MEC) for the specified list of points.
 %
 % Note: this bounding box is the smallest possible circle, but requires quite a
@@ -104,7 +106,7 @@ get_lazy_circle_box( PointList ) ->
 % Apparently there is now way of adding a point to an existing MEC without
 % recomputing everything from scratch. So we do not rely on an 'updateMEC'
 % function.
-
+%
 -spec get_minimal_enclosing_circle_box( [ point() ] ) ->
 		{ point(), linear:square_distance() }.
 get_minimal_enclosing_circle_box( _PointList=[] ) ->
@@ -175,8 +177,8 @@ get_minimal_enclosing_circle_box( PointList ) ->
 
 
 
-% Returns {MinAngle, MinVertex}, the minimum angle subtended by the segment [P1,
-% P2] among points in the Points list.
+% @doc Returns {MinAngle, MinVertex}, the minimum angle subtended by the segment
+% [P1, P2] among points in the Points list.
 %
 -spec find_minimal_angle( point(), point(), [ point() ] ) ->
 		{ number(), 'undefined' } | { integer(), point() }.
@@ -247,7 +249,7 @@ try_side( P1, P2, H ) ->
 
 						true ->
 							% Here we try the new S, defined by the opposite
-							% points of P2, i.e. MinVertex and P1.
+							% points of P2, ie MinVertex and P1.
 
 							% We must however reconstruct beforehand the list of
 							% remaining points. H contains MinVertex but not P2:
@@ -259,7 +261,7 @@ try_side( P1, P2, H ) ->
 
 				true ->
 					% Here we try the new S, defined by the opposite points of
-					% P1, i.e. MinVertex and P2.
+					% P1, ie MinVertex and P2.
 
 					% We must however reconstruct beforehand the list of
 					% remaining points. H contains MinVertex but not P1:
@@ -273,16 +275,15 @@ try_side( P1, P2, H ) ->
 
 
 
-% Returns a textual description of the specified bounding box.
+% @doc Returns a textual description of the specified bounding box.
 -spec to_string( bounding_box() ) -> text_utils:ustring().
 to_string( #circle{ center=Center, square_radius=SquareRadius } ) ->
-	io_lib:format( "circle whose center is ~w and square radius is ~w",
-				   [ Center, SquareRadius ] );
+	text_utils:format( "circle whose center is ~w and square radius is ~w",
+					   [ Center, SquareRadius ] );
 
 
 to_string( #right_cuboid{ base_vertex=BaseVertex, abscissa_length=XLen,
 						 ordinate_length=YLen, elevation_length=ZLen } ) ->
-
-	io_lib:format( "right cuboid whose base vertex is ~ts, and lengths along "
-		"the X, Y and Z axes are respectively ~w, ~w and ~w",
+	text_utils:format( "right cuboid whose base vertex is ~ts, "
+		"and lengths along the X, Y and Z axes are respectively ~w, ~w and ~w",
 		[ linear_3D:to_string( BaseVertex ), XLen, YLen, ZLen ] ).

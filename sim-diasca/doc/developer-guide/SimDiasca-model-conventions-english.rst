@@ -15,7 +15,7 @@ The Sim-Diasca services should be used whenever applicable. Notably, bypassing t
 
 Such a short-time "simplification" would be considered still more harmful than others like the use of the ``goto`` statement in ``C``:
 
-:raw-html:`<img src="xkcd-goto.png"></img>`
+:raw-html:`<center><img src="xkcd-goto.png"></img></center>`
 :raw-latex:`\includegraphics[scale=5.5]{xkcd-goto.png}`
 
 
@@ -186,7 +186,7 @@ For examples, in ``my_creation_test.erl``, we could have::
   [...]
 
 
-Note that ``test_receive/0`` corresponds to a safer form than ``receive { wooper_result, R } -> R end``. It is logically equivalent, but immune to interfering messages that could be sent to the simulation case by other Sim-Diasca services (ex: notifications from the trace supervisor).
+Note that ``test_receive/0`` corresponds to a safer form than ``receive {wooper_result, R} -> R end``. It is logically equivalent, but immune to interfering messages that could be sent to the simulation case by other Sim-Diasca services (ex: notifications from the trace supervisor).
 
 
 
@@ -203,7 +203,7 @@ The creating actor should call the ``class_Actor:create_actor/3`` helper functio
   [...]
 
 
-If called at simulation timestamp ``{ T, D }``, then the specified actor will be actually created (by the load-balancer) at ``{ T, D + 1 }``, and at ``{ T, D + 2 }`` the creating actor will know (as its ``onActorCreated/5`` method will be called) the PID of the just created actor.
+If called at simulation timestamp ``{T,D}``, then the specified actor will be actually created (by the load-balancer) at ``{T,D+1}``, and at ``{T,D+2}`` the creating actor will know (as its ``onActorCreated/5`` method will be called) the PID of the just created actor.
 
 The creating actor - and any other actor that will be given the returned PID - can then freely interact with the created actor (of course thanks to actor messages), exactly as with any other actor (once its creation is performed, there is no difference between an actor created in the course of the simulation and an initial actor).
 
@@ -224,9 +224,9 @@ A placement hint can be any Erlang term (atoms are generally used for that purpo
 
 So Sim-Diasca provides a counterpart to its basic creation API, whose functions are just expecting one extra parameter, the aforementioned placement hint:
 
- - ``class_Actor:create_initial_actor/{2,3}`` have ``class_Actor:create_initial_placed_actor/{3,4}`` counterparts
+- ``class_Actor:create_initial_actor/{2,3}`` have ``class_Actor:create_initial_placed_actor/{3,4}`` counterparts
 
- - ``class_Actor:create_actor/3`` has a ``class_Actor:create_placed_actor/4`` counterpart
+- ``class_Actor:create_actor/3`` has a ``class_Actor:create_placed_actor/4`` counterpart
 
 Except the hint specification, these functions work exactly as their counterpart (ex: w.r.t. the call to ``onActorCreated/5``).
 
@@ -255,11 +255,11 @@ An actor A should not decide that another actor B is to be removed immediately f
 
 Instead the actor A should send an actor message to actor B (if ever B is not just to terminate solely on its own purpose), resulting on the corresponding oneway of B to be triggered. Then B may or may not choose to terminate, immediately or not. Alternatively B may, by itself, determine it is time for it to be removed from the simulation.
 
-In any case, B will decide that it terminates, at ``{ T, D }``. The main conditions for its deletion is that:
+In any case, B will decide that it terminates, at ``{T,D}``. The main conditions for its deletion is that:
 
- - there is no more spontaneous action that is planned for it: actor B should not plan anymore a future action, and it should withdraw from its time manager any already-planned future action(s); on termination this will be checked by the time manager, which would then trigger a fatal error if at least one spontaneous action was found for the terminating actor
+- there is no more spontaneous action that is planned for it: actor B should not plan anymore a future action, and it should withdraw from its time manager any already-planned future action(s); on termination this will be checked by the time manager, which would then trigger a fatal error if at least one spontaneous action was found for the terminating actor
 
- - no other actor will ever try to interact with it (i.e. with B) once it will have terminated; for that, usually B has to notify other actors of its termination, so that they can "forget" it (to ensure that they will never attempt to interact with B again); it is up to the corresponding models to ensure of such an agreement, based on the deferred termination allowed by the API detailed below
+- no other actor will ever try to interact with it (i.e. with B) once it will have terminated; for that, usually B has to notify other actors of its termination, so that they can "forget" it (to ensure that they will never attempt to interact with B again); it is up to the corresponding models to ensure of such an agreement, based on the deferred termination allowed by the API detailed below
 
 
 To emphasize more, the model developer should ensure that, once an actor is terminated, no other actor expects to interact with it anymore (i.e. that all other actors should stop sending actor messages to it). The objective is therefore to delay appropriately the triggering of the termination of an actor until all possibilities of outside interactions are extinguished.
@@ -270,9 +270,9 @@ The smallest duration for a termination procedure cannot be automatically determ
 
 Two options exist for a proper termination procedure:
 
- - either to simply postpone the deletion of B until the end of the current *tick* (``T``), letting all diascas that are needed in-between elapse, so that the aforementioned forgetting can take place
+- either to simply postpone the deletion of B until the end of the current *tick* (``T``), letting all diascas that are needed in-between elapse, so that the aforementioned forgetting can take place
 
- - or to finely tune the waiting over diascas so that *B is deleted as soon as strictly needed* (i.e. as soon as all potential actors aware of B know now that B is terminating), before even the end of the current tick; in this case the number of diascas to wait depends on the length of the chain of actors knowing B (i.e. actor C may know B and may have transmitted this knowledge to D, etc.)
+- or to finely tune the waiting over diascas so that *B is deleted as soon as strictly needed* (i.e. as soon as all potential actors aware of B know now that B is terminating), before even the end of the current tick; in this case the number of diascas to wait depends on the length of the chain of actors knowing B (i.e. actor C may know B and may have transmitted this knowledge to D, etc.)
 
 The first option is by far the simplest and most common: B simply calls ``class_Actor:declareTermination/1``, and, starting from the same diasca, notifies any actor of its deletion. The notification chain will unfold on as many diascas as needed, and once all the diascas for the current tick will be over, a new tick will be scheduled and B will then be deleted automatically.
 
@@ -280,7 +280,7 @@ The second option is more precise but more demanding, as it requires B to be abl
 
 Such a feature is provided so that, during a tick, any number of actor creations, deletions and interactions may happen, "instantaneously", and according to any complex pattern.
 
-For example, B may know that only actor C knows it, in which case B will notify C of its termination immediately, implying that starting from ``{ T, D + 2 }`` C is expected to never interact with B anymore (C will receive and process the message at ``{ T, D + 1 }`` but due to message reordering C might already have sent a message to B at this timestamp - in the general case B should ignore it).
+For example, B may know that only actor C knows it, in which case B will notify C of its termination immediately, implying that starting from ``{T,D+2}`` C is expected to never interact with B anymore (C will receive and process the message at ``{T,D+1}`` but due to message reordering C might already have sent a message to B at this timestamp - in the general case B should ignore it).
 
 In this context B is to call ``class_Actor:declareTermination/2``, with a termination delay of 2 diascas. A larger delay would have to be specified if C had to notify in turn D, and so on...
 
@@ -288,9 +288,9 @@ With both termination options, once ``class_Actor:declareTermination/{1,2}`` is 
 
 Note that:
 
- - should a too short termination delay be chosen by mistake, the simulation engine will do its best to detect it
+- should a too short termination delay be chosen by mistake, the simulation engine will do its best to detect it
 
- - if setting up a proper termination happens to be too cumbersome on to many cases, an automatic system might be designed, in order to keep track of inter-model references (ex: like a garbage collector operated on actors, based on reference counting - either PID or AAI); however this mechanism would probably have some major drawbacks by design (complex, expensive because of reference indirections, etc.); moreover having an implicit, dynamic, flexible communication graph is probably more a feature than a limitation
+- if setting up a proper termination happens to be too cumbersome on to many cases, an automatic system might be designed, in order to keep track of inter-model references (ex: like a garbage collector operated on actors, based on reference counting - either PID or AAI); however this mechanism would probably have some major drawbacks by design (complex, expensive because of reference indirections, etc.); moreover having an implicit, dynamic, flexible communication graph is probably more a feature than a limitation
 
 
 .. Note::
@@ -370,7 +370,7 @@ A simulation tick is split into any number of logical moments, named ``diascas``
 
 Both ticks and diascas are positive unbounded integers.
 
-So a typical simulation timestamp is a tick/diasca pair, typically noted as ``{ T, D }``.
+So a typical simulation timestamp is a tick/diasca pair, typically noted as ``{T,D}``.
 
 
 Time Managers
@@ -407,13 +407,13 @@ __________
 
 Then a very basic procedure will rule the life of each actor:
 
- #. when a new simulation tick ``T`` is scheduled, this tick starts at diasca ``D=0``
- #. as the tick was to be scheduled, there was at least one actor which had planned to develop a spontaneous behaviour at this tick; all such actors have their ``actSpontaneous/1`` oneway executed
- #. as soon as at least one actor sent an actor message, the next diasca, ``D+1``, is scheduled [#]_
- #. All actors targeted by such a message (sent at ``D``) process their messages at ``D+1``; possibly they may send in turn other messages
- #. increasing diascas will be created, as long as new actor messages are exchanged
- #. once no more actor message is sent, the tick ``T`` is over, and the next is scheduled (possibly ``T+1``, or any later tick, depending on the spontaneous ticks planned previously)
- #. simulation ends either when no spontaneous tick is planned anymore or when a termination criteria is met (often, a timestamp in virtual time having been reached)
+#. when a new simulation tick ``T`` is scheduled, this tick starts at diasca ``D=0``
+#. as the tick was to be scheduled, there was at least one actor which had planned to develop a spontaneous behaviour at this tick; all such actors have their ``actSpontaneous/1`` oneway executed
+#. as soon as at least one actor sent an actor message, the next diasca, ``D+1``, is scheduled [#]_
+#. all actors targeted by such a message (sent at ``D``) process their messages at ``D+1``; possibly they may send in turn other messages
+#. increasing diascas will be created, as long as new actor messages are exchanged
+#. once no more actor message is sent, the tick ``T`` is over, and the next is scheduled (possibly ``T+1``, or any later tick, depending on the spontaneous ticks planned previously)
+#. simulation ends either when no spontaneous tick is planned anymore or when a termination criteria is met (often, a timestamp in virtual time having been reached)
 
 .. [#] Actually there are other reasons for a diasca to be created, like the termination of an actor, but they are transparent for the model developer.
 
@@ -434,11 +434,11 @@ The basic granularity in virtual time is the tick, further split on as many dias
 
 The engine is able to automatically:
 
-  - jump over as many ticks as needed: ticks determined to be idle, i.e. in which no actor message is to be processed, are safely skipped
+- jump over as many ticks as needed: ticks determined to be idle, i.e. in which no actor message is to be processed, are safely skipped
 
-  - trigger only the appropriate actors once a diasca is scheduled, i.e. either the ones which planned a spontaneous behaviour or the ones having received an actor message during the last diasca or being terminating
+- trigger only the appropriate actors once a diasca is scheduled, i.e. either the ones which planned a spontaneous behaviour or the ones having received an actor message during the last diasca or being terminating
 
-  - create as many diascas during a tick as strictly needed, i.e. exactly as long as actor messages are exchanged or actors are still terminating
+- create as many diascas during a tick as strictly needed, i.e. exactly as long as actor messages are exchanged or actors are still terminating
 
 
 Indeed the simulation engine keeps track both of the sendings of actor messages [#]_ and of the planned future actions for each actor. It can thus determine, once a diasca is over, if all next diascas or even a number of ticks can be safely skipped, and then simply schedule the first next timestamp to come.

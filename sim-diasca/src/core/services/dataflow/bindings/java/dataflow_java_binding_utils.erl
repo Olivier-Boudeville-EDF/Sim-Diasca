@@ -37,8 +37,8 @@
 
 
 
-% Returns the default Erlang-based unit type that is associated with any Java
-% unit type.
+% @doc Returns the default Erlang-based unit type that is associated with any
+% Java unit type.
 %
 -spec get_erlang_unit_type() -> dataflow_unit_type().
 get_erlang_unit_type() ->

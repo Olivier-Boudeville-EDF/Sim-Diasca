@@ -19,7 +19,9 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-% Centralisation of actor-level information.
+% Module centralising most <b>actor-level</b> information, in the context of the
+% Sim-Diasca parse transform.
+%
 -module(actor_info).
 
 
@@ -33,19 +35,17 @@
 
 
 
+-type actor_oneway_export_table() :: table( ast_info:location(),
+							{ ast_base:line(), [ actor_oneway_id() ] } ).
 % Table storing the export declarations for actor oneways.
 %
 % Quite similar to wooper_info:oneway_export_table().
-%
--type actor_oneway_export_table() :: table( ast_info:location(),
-						   { ast_base:line(), [ actor_oneway_id() ] } ).
 
 
-
+-type actor_oneway_table() :: table( actor_oneway_id(), actor_oneway_info() ).
 % Table storing reference definitions of actor oneways.
 %
 % Quite similar to wooper_info:oneway_table().
--type actor_oneway_table() :: table( actor_oneway_id(), actor_oneway_info() ).
 
 
 -export_type([ actor_oneway_info/0, actor_class_info/0, actor_oneway_id/0,
@@ -60,10 +60,15 @@
 		  actor_oneways_to_string/3, actor_oneway_info_to_string/3 ]).
 
 
+% Shorthands:
+
+-type ustring() :: text_utils:ustring().
+-type indentation_level() :: text_utils:indentation_level().
 
 
-% Returns a new, blank instance of the actor_class_info record, typically to be
-% fed with an input AST afterwards.
+
+% @doc Returns a new, blank instance of the actor_class_info record, typically
+% to be fed with an input AST afterwards.
 %
 -spec init_actor_class_info() -> actor_class_info().
 init_actor_class_info() ->
@@ -111,35 +116,34 @@ init_actor_class_info() ->
 
 
 
-% Returns a textual description of specified actor information, not including
-% forms, and based on a default indentation level.
+% @doc Returns a textual description of specified actor information, not
+% including forms, and based on a default indentation level.
 %
 % Note: here the location information is dropped for all located definitions.
 %
--spec actor_class_info_to_string( actor_class_info() ) -> text_utils:ustring().
+-spec actor_class_info_to_string( actor_class_info() ) -> ustring().
 actor_class_info_to_string( ActorInfo ) ->
 	actor_class_info_to_string( ActorInfo, _DoIncludeForms=false ).
 
 
-% Returns a textual description of specified actor information, including forms
-% if requested, and with specified indentation level.
+% @doc Returns a textual description of specified actor information, including
+% forms if requested, and with specified indentation level.
 %
 % Note: here the location information is dropped for all located definitions.
 %
--spec actor_class_info_to_string( actor_class_info(), boolean() ) ->
-										text_utils:ustring().
+-spec actor_class_info_to_string( actor_class_info(), boolean() ) -> ustring().
 actor_class_info_to_string( ActorInfo, DoIncludeForms ) ->
 	actor_class_info_to_string( ActorInfo, DoIncludeForms,
 								_IndentationLevel=0 ).
 
 
-% Returns a textual description of specified actor information, including forms
-% if requested, and with specified indentation level.
+% @doc Returns a textual description of specified actor information, including
+% forms if requested, and with specified indentation level.
 %
 % Note: here the location information is dropped for all located definitions.
 %
 -spec actor_class_info_to_string( actor_class_info(), boolean(),
-					 text_utils:indentation_level() ) -> text_utils:ustring().
+								  indentation_level() ) -> ustring().
 actor_class_info_to_string( #actor_class_info{
 							   class=ClassEntry,
 							   superclasses=SuperclassesEntry,
@@ -171,7 +175,7 @@ actor_class_info_to_string( #actor_class_info{
 							   statics=StaticTable,
 							   optional_callbacks_defs=OptCallbacksDefs,
 							   debug_mode=IsDebugMode,
-							   last_line=LastLineLocDef,
+							   last_file_location=LastLineLocDef,
 							   markers=MarkerTable,
 							   errors=Errors,
 							   unhandled_forms=UnhandledForms },
@@ -204,27 +208,27 @@ actor_class_info_to_string( #actor_class_info{
 						DoIncludeForms, NextIndentationLevel ),
 
 			  wooper_info:class_specific_attributes_to_string( AttributeTable,
-									   DoIncludeForms, NextIndentationLevel ),
+									DoIncludeForms, NextIndentationLevel ),
 
 			  wooper_info:inherited_attributes_to_string( InheritedAttributes,
-									   DoIncludeForms, NextIndentationLevel ),
+									DoIncludeForms, NextIndentationLevel ),
 
 			  ast_info:compilation_options_to_string( CompileOpts,
 						CompileOptDefs, DoIncludeForms, NextIndentationLevel ),
 
 			  ast_info:optional_callbacks_to_string( OptCallbacksDefs,
-								   DoIncludeForms, NextIndentationLevel ),
+								DoIncludeForms, NextIndentationLevel ),
 
 			  DebugString,
 
 			  ast_info:parse_attribute_table_to_string( ParseAttributeTable,
-										 DoIncludeForms, NextIndentationLevel ),
+										DoIncludeForms, NextIndentationLevel ),
 
 			  ast_info:remote_spec_definitions_to_string( RemoteSpecDefs,
 										DoIncludeForms, NextIndentationLevel ),
 
 			  ast_info:includes_to_string( Includes, IncludeDefs,
-										DoIncludeForms, NextIndentationLevel ),
+									DoIncludeForms, NextIndentationLevel ),
 
 			  % No form to manage:
 			  ast_info:type_exports_to_string( TypeExportTable,
@@ -242,7 +246,7 @@ actor_class_info_to_string( #actor_class_info{
 											NextIndentationLevel ),
 
 			  wooper_info:constructors_to_string( ConstructorTable,
-							  DoIncludeForms, NextIndentationLevel ),
+								DoIncludeForms, NextIndentationLevel ),
 
 			  "regarding new operators, " ++ ast_info:functions_to_string(
 				   NewOperatorTable, DoIncludeForms, NextIndentationLevel ),
@@ -251,36 +255,37 @@ actor_class_info_to_string( #actor_class_info{
 									NextIndentationLevel ),
 
 			  wooper_info:requests_to_string( RequestTable, DoIncludeForms,
-								  NextIndentationLevel ),
+									NextIndentationLevel ),
 
 			  wooper_info:oneways_to_string( OnewayTable, DoIncludeForms,
-								 NextIndentationLevel ),
+									NextIndentationLevel ),
 
 			  actor_oneways_to_string( ActorOnewayTable, DoIncludeForms,
 									   NextIndentationLevel ),
 
 			  wooper_info:static_methods_to_string( StaticTable, DoIncludeForms,
-										NextIndentationLevel ),
+													NextIndentationLevel ),
 
-			  ast_info:last_line_to_string( LastLineLocDef ),
+			  ast_info:last_file_location_to_string( LastLineLocDef ),
 
 			  ast_info:markers_to_string( MarkerTable, NextIndentationLevel ),
 
 			  ast_info:errors_to_string( Errors, NextIndentationLevel ),
 
 			  ast_info:unhandled_forms_to_string( UnhandledForms,
-							 DoIncludeForms, NextIndentationLevel ) ],
+								DoIncludeForms, NextIndentationLevel ) ],
 
-		text_utils:format( "Information about actor ~s: ~s", [ ClassnameString,
-				 text_utils:strings_to_string( Infos, IndentationLevel ) ] ).
+		text_utils:format( "Information about actor ~ts: ~ts",
+			[ ClassnameString,
+			  text_utils:strings_to_string( Infos, IndentationLevel ) ] ).
 
 
 
-% Returns a textual representation of the specified information about actor
+% @doc Returns a textual representation of the specified information about actor
 % oneways.
 %
 -spec actor_oneways_to_string( actor_oneway_table(), boolean(),
-					   text_utils:indentation_level() ) -> text_utils:ustring().
+							   indentation_level() ) -> ustring().
 actor_oneways_to_string( ActorOnewayTable, DoIncludeForms, IndentationLevel ) ->
 
 	case table:values( ActorOnewayTable ) of
@@ -294,71 +299,44 @@ actor_oneways_to_string( ActorOnewayTable, DoIncludeForms, IndentationLevel ) ->
 						   IndentationLevel ) || ActInfo <- ActInfos ],
 													  IndentationLevel ),
 
-			text_utils:format( "~B actor oneway(s) defined: ~s",
+			text_utils:format( "~B actor oneway(s) defined: ~ts",
 							   [ length( ActInfos ), ActString ] )
 
 	end.
 
 
 
-% Returns a textual representation of the specified oneway information.
+% @doc Returns a textual representation of the specified actor oneway
+% information.
+%
 -spec actor_oneway_info_to_string( actor_oneway_info(), boolean(),
-				   text_utils:indentation_level() ) -> text_utils:ustring().
+								   indentation_level() ) -> ustring().
 actor_oneway_info_to_string( #actor_oneway_info{ name=Name,
 												 arity=Arity,
 												 qualifiers=Qualifiers,
-												 location=_Location,
-												 line=Line,
+												 %ast_location=_ASTLocation,
+												 file_location=FileLoc,
 												 clauses=Clauses,
 												 spec=LocatedSpec },
 							 DoIncludeForms,
 							 IndentationLevel ) ->
 
-	QualString = case Qualifiers of
+	% Very close to wooper_info:oneway_info_to_string/3:
 
-	  Q when Q =:= [] orelse Q =:= none ->
-		  "no qualifier";
-
-	  [ SingleQualifier ] ->
-		  text_utils:format( "the ~w qualifier", [ SingleQualifier ] );
-
-	  Qualifiers ->
-		  text_utils:format( "the ~w qualifiers", [ Qualifiers ] )
-
-	end,
-
-	DefString = case Line of
-
-		undefined ->
-			text_utils:format( "with ~B clause(s) defined",
-							   [ length( Clauses ) ] );
-
-		_ ->
-			text_utils:format( "defined from line #~B, with "
-			   "~B clause(s) specified", [ Line, length( Clauses ) ] )
-
-	end,
-
-	SpecString = case LocatedSpec of
-
-		undefined ->
-			"no type specification";
-
-		_ ->
-			"a type specification"
-
-	end,
+	QualString = wooper_info:qualifiers_to_string( Qualifiers ),
+	DefString = wooper_info:definition_to_string( Clauses, FileLoc ),
+	SpecString = wooper_info:located_spec_to_string( LocatedSpec ),
 
 	BaseString = text_utils:format(
-				   "actor oneway ~s/~B with ~s defined, ~s and ~s",
-				   [ Name, Arity, QualString, DefString, SpecString ] ),
+		"actor oneway ~ts/~B with ~ts defined, ~ts and ~ts",
+		[ Name, Arity, QualString, DefString, SpecString ] ),
 
 	case DoIncludeForms of
 
 		true ->
-			text_utils:format( "~s~n~s",
-							   [ BaseString, ast_function:clauses_to_string(
-										  Clauses, IndentationLevel + 1 ) ] );
+			text_utils:format( "~ts~n~ts", [ BaseString,
+				ast_function:clauses_to_string( Clauses,
+												IndentationLevel+1 ) ] );
 
 		false ->
 			BaseString

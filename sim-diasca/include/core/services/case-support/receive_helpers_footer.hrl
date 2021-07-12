@@ -50,9 +50,9 @@
 -define( test_receive( AnyMessage ), case_receive( AnyMessage ) ).
 
 
-% Helper function to write receive clauses in cases which cannot interfere with
-% trace supervision, as a case may also receive trace control message the case
-% code should be unware of.
+% @doc Helper function to write receive clauses in cases which cannot interfere
+% with trace supervision, as a case may also receive trace control message the
+% case code should be unware of.
 %
 % Returns the received value.
 %
@@ -79,8 +79,8 @@ case_receive() ->
 
 
 
-% Helper function to write receive clauses for specific messages in cases while
-% not interfering with trace supervision.
+% @doc Helper function to write receive clauses for specific messages in cases
+% while not interfering with trace supervision.
 %
 -spec case_receive( any() ) -> void().
 case_receive( Message ) ->
@@ -88,7 +88,7 @@ case_receive( Message ) ->
 
 
 
-% Test support:
+% @doc Test support.
 -spec test_receive() -> any().
 test_receive() ->
 	case_receive().

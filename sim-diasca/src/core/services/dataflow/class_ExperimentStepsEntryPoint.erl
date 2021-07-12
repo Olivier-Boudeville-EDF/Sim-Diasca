@@ -19,6 +19,9 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Class in charge, as a dataflow entry point, to <b>manage simulation
+% steps</b>.
+%
 -module(class_ExperimentStepsEntryPoint).
 
 -define( class_description,
@@ -91,7 +94,9 @@
 
 
 
-% Constructs this experiment entry point, from:
+% @doc Constructs this experiment entry point.
+%
+% Parameters are:
 %
 % - ActorSettings describes the actor abstract identifier (AAI) and seed of this
 % actor, as assigned by the load balancer
@@ -125,7 +130,7 @@ construct( State, ActorSettings, Dataflows, ExperimentStepStart,
 % Methods section.
 
 
-% Callback executed on the first diasca of existence of this entry point.
+% @doc Callback executed on the first diasca of existence of this entry point.
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
 							const_actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
@@ -136,7 +141,7 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-% Starts the evaluation of the experiment for the current tick.
+% @doc Starts the evaluation of the experiment for the current tick.
 %
 % Typically called by the experiment exit point.
 %
@@ -176,7 +181,7 @@ startExperimentTick( State, _SenderActorPid ) ->
 % Helper functions.
 
 
-% Returns a textual description of this entry point.
+% @doc Returns a textual description of this entry point.
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 

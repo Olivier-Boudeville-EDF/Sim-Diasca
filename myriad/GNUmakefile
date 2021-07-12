@@ -5,8 +5,8 @@ MYRIAD_TOP = .
 		register-version-in-header register-myriad list-beam-dirs             \
 		add-prerequisite-plts prepare-base-plt add-erlhdf5-plt add-jsx-plt    \
 		add-sqlite3-plt link-plt clean-ast-outputs clean-local stats          \
-		info-paths info-settings info-compile info-parse-transform info-sync  \
-		info-check info-conditionals info-rebar3
+		info-context info-versions info-paths info-settings                   \
+		info-parse-transform-local info-conditionals
 
 
 #MODULES_DIRS = contrib src doc conf
@@ -125,6 +125,13 @@ stats:
 	@$(MAKE_CODE_STATS) $(MYRIAD_TOP)
 
 
+# Typically useful to know the software context for continuous integration:
+info-context: info-platform info-versions info-source-layout
+
+info-versions:
+	@echo "MYRIAD_VERSION = $(MYRIAD_VERSION)"
+
+
 info-paths:
 	@echo "BEAM_PATH_OPT = $(BEAM_PATH_OPT)"
 
@@ -138,54 +145,11 @@ info-settings:
 	@echo "USE_SQLITE = $(USE_SQLITE)"
 
 
-info-compile:
-	@echo "ERLANG_COMPILER_BASE_OPT = $(ERLANG_COMPILER_BASE_OPT)"
-	@echo "ABS_BEAM_DIRS = $(ABS_BEAM_DIRS)"
-	@echo "BEAM_DIRS = $(BEAM_DIRS)"
-	@echo "BEAM_PATH_OPT = $(BEAM_PATH_OPT)"
-	@echo "INC = $(INC)"
-	@echo "ERLANG_COMPILER_EXEC_TARGET_OPT = $(ERLANG_COMPILER_EXEC_TARGET_OPT)"
-	@echo "ERLANG_COMPILER_DEBUG_OPT = $(ERLANG_COMPILER_DEBUG_OPT)"
-	@echo "ERLANG_COMPILER_NATIVE_COMPILATION_OPT = $(ERLANG_COMPILER_NATIVE_COMPILATION_OPT)"
-	@echo "ERLANG_COMPILER_WARNING_OPT = $(ERLANG_COMPILER_WARNING_OPT)"
-	@echo "ERLANG_COMPILER_OPT_BASE = $(ERLANG_COMPILER_OPT_BASE)"
-	@echo "OVERALL_PZ_OPT = $(OVERALL_PZ_OPT)"
-	@echo "ERLANG_COMPILER_OPT_FOR_STANDARD_MODULES = $(ERLANG_COMPILER_OPT_FOR_STANDARD_MODULES)"
-	@echo "ERLANG_INTERPRETER = $(ERLANG_INTERPRETER)"
-	@echo "UNSUPPORTED_SOURCES = $(UNSUPPORTED_SOURCES)"
-	@echo "NOTIFIER_TOOL = $(NOTIFIER_TOOL)"
+info-parse-transform: info-parse-transform-local
 
-
-info-parse-transform:
-	@echo "BOOTSTRAP_MODULES = $(BOOTSTRAP_MODULES)"
-	@echo "ERLANG_COMPILER_OPT_FOR_PT = $(ERLANG_COMPILER_OPT_FOR_PT)"
+info-parse-transform-local:
 	@echo "META_BEAM_FILES = $(META_BEAM_FILES)"
-	@echo "ERLANG_COMPILER_PARSE_TRANSFORM_OPT = $(ERLANG_COMPILER_PARSE_TRANSFORM_OPT)"
-
 
 info-conditionals:
 	@echo "MYRIAD_DEBUG_FLAGS = $(MYRIAD_DEBUG_FLAGS)"
 	@echo "MYRIAD_CHECK_FLAGS = $(MYRIAD_CHECK_FLAGS)"
-
-
-info-sync:
-	@echo "SYNC_TOOL = $(SYNC_TOOL)"
-	@echo "SSH_PORT = $(SSH_PORT)"
-	@echo "SSH_OPT = $(SSH_OPT)"
-	@echo "SYNC_OPT = $(SYNC_OPT)"
-	@echo "WEB_SRV = $(WEB_SRV)"
-	@echo "CEYLAN_SYNC_TARGET_ROOT = $(CEYLAN_SYNC_TARGET_ROOT)"
-
-
-info-check:
-	@echo "DIALYZER = $(DIALYZER)"
-	@echo "DIALYZER_OPT = $(DIALYZER_OPT)"
-
-
-# Useful to extract information to be specified in a parallel rebar.config:
-info-rebar3:
-	@echo "BOOTSTRAP_MODULES = $(BOOTSTRAP_MODULES)"
-	@echo "INC = $(INC)"
-	@echo "MYRIAD_REBAR_INCS = $(MYRIAD_REBAR_INCS)"
-	@echo "MYRIAD_REBAR_FIND_SRC_EXCLUDES = $(MYRIAD_REBAR_FIND_SRC_EXCLUDES)"
-	@echo "MYRIAD_REBAR_FIND_SRC_OPT = $(MYRIAD_REBAR_FIND_SRC_OPT)"

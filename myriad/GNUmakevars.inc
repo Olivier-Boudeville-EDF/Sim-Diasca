@@ -182,16 +182,22 @@ ifndef PROJECT_NAME
 endif
 
 
-# PROJECT_NAME_FOR_REBAR should be defined on a per-project basis.
+# PROJECT_SHORT_NAME should be defined on a per-project basis.
+ifndef PROJECT_SHORT_NAME
+	PROJECT_SHORT_NAME := myriad
+endif
+
+
+# PROJECT_NAME_FOR_REBAR may be defined on a per-project basis.
 ifndef PROJECT_NAME_FOR_REBAR
-	PROJECT_NAME_FOR_REBAR := myriad
+	PROJECT_NAME_FOR_REBAR := $(PROJECT_SHORT_NAME)
 endif
 
 
 # The uniquely-defined version of this layer, for all uses (including rebar and
 # hex):
 #
-MYRIAD_VERSION := 1.0.17
+MYRIAD_VERSION := 1.0.19
 
 
 # PROJECT_VERSION should be defined on a per-project basis.
@@ -355,7 +361,9 @@ BOOTSTRAP_INCLUDES := -I$(MYRIAD_TOP)/../../include/meta      \
 #
 # (for them, we do not force the corresponding variable here, in order to let
 # the upper layers be able to decide; if not, the defaults apply)
-
+#
+# We chose the USE_* variables to be set with '=' rather than with ':=' yet it
+# is not believed to really matter in this case.
 
 # For the reading and writing of large, often scientific-oriented data:
 #USE_HDF5 = false
@@ -423,12 +431,12 @@ ifeq ($(USE_JSON),true)
 
 	 # At least one parser backend shall then be selected:
 
-	# Default choice:
-	USE_JSX := true
-	#USE_JSX := false
+	# Default choice, should the JSON support be enabled:
+	USE_JSX = true
+	#USE_JSX = false
 
-	#USE_JIFFY := true
-	USE_JIFFY := false
+	#USE_JIFFY = true
+	USE_JIFFY = false
 
 	ifeq ($(USE_JSX),true)
 
@@ -447,16 +455,24 @@ ifeq ($(USE_JSON),true)
 		# Actually not used, as decided at runtime rather than at compile time:
 		#JSON_OPT = -Duse_jsx_json_backend
 
-		JSX_BASE := $$HOME/Software/jsx/jsx-current-install
 
-		JSX_INSTALL_BASE := $(JSX_BASE)/_build/default/lib/jsx
+		# A rebar convention, if jsx is listed in rebar.config (and then is a
+		# sibling prerequisite of Myriad):
+		#
+		JSX_REBAR_BASE := $(MYRIAD_TOP)/../jsx
+		JSX_REBAR_INSTALL_BASE := $(JSX_REBAR_BASE)
+
+		# A convention of our own that one may want to respect:
+		JSX_SOFTWARE_BASE := $$HOME/Software/jsx/jsx-current-install
+		JSX_SOFTWARE_INSTALL_BASE := $(JSX_SOFTWARE_BASE)/_build/default/lib/jsx
 
 		# No includes for JSX:
-		#INC += -I$(JSX_INSTALL_BASE)/include
+		#INC += -I$(JSX_REBAR_INSTALL_BASE)/include -I$(JSX_SOFTWARE_INSTALL_BASE)/include
 
-		# ($(JSX_INSTALL_BASE)/ebin/*.beam found at runtime)
+		# ($(JSX_*_INSTALL_BASE)/ebin/*.beam found at runtime)
 
-		ABS_BEAM_DIRS += $(JSX_INSTALL_BASE)/ebin
+		BEAM_DIRS += $(JSX_REBAR_INSTALL_BASE)/ebin
+		ABS_BEAM_DIRS += $(JSX_SOFTWARE_INSTALL_BASE)/ebin
 
 	endif
 
@@ -493,7 +509,7 @@ ifeq ($(USE_JSON),true)
 	endif
 
 	ifeq ($(USE_JSX),false)
-		 ifeq ($(USE_JIFFY),false)
+		ifeq ($(USE_JIFFY),false)
 			$(error JSON use enabled, yet no corresponding backend selected.)
 		endif
 	endif
@@ -522,7 +538,7 @@ ifeq ($(USE_SQLITE),true)
 
 	# ($(SQLITE3_BASE)/ebin/*.beam found at runtime)
 
-	ABS_BEAM_DIRS += $(SQLITE3_BASE)/ebin/
+	ABS_BEAM_DIRS += $(SQLITE3_BASE)/ebin
 
 endif
 
@@ -857,11 +873,17 @@ MYRIAD_BEAM_DIRS := $(MYRIAD_BEAM)/apps/generate-password       \
 # Myriad is expected to reference its (public) headers thanks to, for example,
 # '-include_lib("myriad/include/ast_info.hrl").'; knowing that -include_lib
 # relies on the code path, not the header file path, we thus add Myriad's
-# include directory to the code path.
+# parent directory to the code path.
 #
 # We also add the ebin directory, typically so that tests run with our make
 # system yet from a rebar3 context can nevertheless find the Myriad BEAMs they
 # rely on.
+#
+# Note however that, if relying on our build system after a rebar3-based build
+# was done (thus populating the layer's ebin), the BEAMs there will eclipse the
+# BEAMs directly in the source tree - whereas the latter ones may have been
+# updated since then. So use the 'clean-layer-ebin' target to wipe the former
+# one in ebin first, in order to avoid sticking to obsolete BEAMs.
 #
 BEAM_DIRS += $(MYRIAD_BEAM_DIRS) $(MYRIAD_TOP)/.. $(MYRIAD_TOP)/ebin
 
@@ -1086,15 +1108,20 @@ ERLANG_COMPILER_OPT_FOR_BOOTSTRAPPED = $(ERLANG_COMPILER_OPT_FOR_PT) \
 									   $(BOOTSTRAP_INCLUDES)
 
 
-
-# Conditionally defined so that upper layers may update these settings (ex:
-# adding pz directories):
+# Conditionally defined so that upper layers may update (ex: adding pz
+# directories) or redefine these settings as a whole.
+#
+# As for ERLANG_COMPILER_EXTRA_OPTS, this variable is useful for mere additions,
+# for example in order to add compilation flags or to declare extra ebin paths
+# so that modules introducing behaviours can be found when compiling modules of
+# interest.
 #
 ifndef ERLANG_COMPILER_OPT_FOR_STANDARD_MODULES
 
 	ERLANG_COMPILER_OPT_FOR_STANDARD_MODULES =                          \
 		$(ERLANG_COMPILER_OPT_BASE)                                     \
-		$(ERLANG_COMPILER_PARSE_TRANSFORM_OPT_FOR_STANDARD_MODULES)
+		$(ERLANG_COMPILER_PARSE_TRANSFORM_OPT_FOR_STANDARD_MODULES)     \
+		$(ERLANG_COMPILER_EXTRA_OPTS)
 
 endif
 
@@ -1309,13 +1336,44 @@ EXEC_INTERNAL_OPTIONS := $(INTERNAL_OPTIONS) -start-verbatim-options -noinput
 ALL_CMD_LINE_OPTIONS := $(EXEC_INTERNAL_OPTIONS) -extra $(EXEC_EXTERNAL_OPTIONS) $(CMD_LINE_OPT)
 
 
+## Documentation section.
+
 # Available in Ceylan-Hull:
 DOC_TRACKER := $$(which track-make-automatic-source.sh)
 
 
+# PROJECT_ICON is a path to an icon file that will be copied on HTML generation:
 ifdef PROJECT_ICON
 	PROJECT_ICON_OPT := --icon-file $(PROJECT_ICON)
 endif
+
+
+# When relying directly on edoc (the default):
+
+ifndef API_DOC_ROOT
+	API_DOC_ROOT := $(LAYER_TOP)/doc/api-doc
+endif
+
+
+ifndef EDOC_OPTS
+	EDOC_OPTS = '[{dir,"$(API_DOC_ROOT)"}, {def,{vsn,"$(PROJECT_VERSION)"}}, {preprocess,true}, {macros,[{use_crypto_module, false}]}, {includes,["$(LAYER_TOP)/include"]}, {overview, "$(LAYER_TOP)/overview.edoc"}]'
+endif
+
+
+# When relying directly on erldocs:
+
+API_DOC_ALT_ROOT := $(LAYER_TOP)/doc/api-doc-alt
+
+
+# We tested erldocs (see https://github.com/erldocs/erldocs), yet vanilla edoc
+# seems to generate a lot more informational content so is preferred now:
+#
+# (commented out as was misleading)
+#ifndef API_DOC_GENERATOR
+#	API_DOC_GENERATOR := $$(which erldocs 2>/dev/null)
+#endif
+
+
 
 
 
@@ -1336,6 +1394,20 @@ endif
 # Toggle for additional logs (this is a rebar-specific variable):
 REBAR_DEBUG =
 #REBAR_DEBUG = DEBUG=1
+
+
+# Now set directly through the command-line (see rebar.config) to avoid
+# inheriting values through layers:
+#
+# See the 'rebar3-bulletproof-compile-pre-hook' for details:
+#ifndef REBAR_HOOK_EXTRA_OPTS
+#
+#	# Default is to hide erl/hrl files once built, to avoid at least some
+#	# spurious rebuilds done by rebar:
+#	#
+#	REBAR_HOOK_EXTRA_OPTS := --hiding-for-rebar --verbose
+#
+#endif
 
 
 # Relative to the usual root of this layer:

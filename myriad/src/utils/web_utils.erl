@@ -27,8 +27,8 @@
 
 
 
-% Gathering of services for web-related uses, notably for HTML generation or
-% HTTP management.
+% @doc Gathering of services for <b>web-related</b> uses, notably for <b>HTML
+% generation</b> or <b>HTTP management</b>.
 %
 % See web_utils_test.erl for the corresponding test.
 %
@@ -48,9 +48,8 @@
 % example thereof.
 
 
-
-% Tells whether the SSL support is needed (typically for https):
 -type ssl_opt() :: 'no_ssl' | 'ssl'.
+% Tells whether the SSL support is needed (typically for https).
 
 -type url() :: ustring().
 
@@ -66,44 +65,40 @@
 -type any_uri() :: uri() | bin_uri().
 
 
-% The possible protocols (schemes) for an URL:
-%
-% (use uri_string:parse/1 to extract it)
-%
 -type protocol_type() :: 'http' | 'https' | 'ftp'.
+% The possible protocols (schemes) for an URL (use uri_string:parse/1 to extract
+% it).
 
 
-% Path of an URL (ex: 'access/login'):
 -type path() :: ustring().
+% Path of an URL (ex: 'access/login').
 
 
 % For the (deprecated) url_info record:
 -include("web_utils.hrl").
 
 
-% Full information about an URL:
-%
-% (prefer uri_string:uri_map() now)
-%
 -type url_info() :: #url_info{}.
+% Full information about an URL (prefer uri_string:uri_map() now).
 
 
 -type body() :: ustring() | binary().
 
-% Encoded in JSON:
 -type json_body() :: body().
+% Encoded in JSON.
 
 -type content_type() :: ustring().
 
 
-% [ {field() :: ustring(), value() :: ustring()} ]:
 -type old_style_options() :: [ { ustring(), ustring() } ].
+% [{field() :: ustring(), value() :: ustring()}].
 
 -type new_style_options() :: maps:maps( bin_string(), bin_string() ).
 
 
-% Example: {"content-type", "application/jose+json"}.
 -type headers_as_list() :: old_style_options().
+% Example: {"content-type", "application/jose+json"}.
+
 
 -type headers_httpc_style() :: headers_as_list().
 
@@ -121,26 +116,27 @@
 -type http_options() :: options_for_httpc() | maps:maps( atom(), term() ).
 
 
-% Keys:
-% - body :: body()
-% - headers :: headers()
-% - status_code: http_status_code()
-%
 %-type _result() :: maps:map( atom(), term() ).
 -type request_result() :: { http_status_code(), headers_as_maps(), body() }
 						| { 'error', basic_utils:error_reason() }.
+% Keys:
+%
+% - body :: body()
+%
+% - headers :: headers()
+%
+% - status_code: http_status_code()
+
 
 -type location() :: atom().
 
 -type nonce() :: bin_string().
 
 
-
-% Ex: "<p>Hello!</p>":
 -type html_element() :: any_string().
+% Ex: "<p>Hello!</p>".
 
 
-% There are five classes defined by the standard for HTTP status codes:
 -type http_status_class() ::
 
 	% 1xx informational response: the request was received, continuing process:
@@ -161,10 +157,10 @@
 
 	% 5xx server error: the server failed to fulfill an apparently valid request
 	| 'server_error'.
+% There are five classes defined by the standard for HTTP status codes.
 
 
 -type http_status_code() :: non_neg_integer().
-
 
 
 -export_type([ ssl_opt/0,
@@ -240,11 +236,12 @@
 % webservers seem to insist on having the second (in which case escape/1 and
 % escape_element/1 shall be used).
 %
-% See also: http://www.javascripter.net/faq/accentedcharacters.htm
+% See also [http://www.javascripter.net/faq/accentedcharacters.htm].
 
 
 
-% Encodes specified list of {Key, Value} pairs so that it can used into an URL.
+% @doc Encodes specified list of {Key, Value} pairs so that it can used into an
+% URL.
 %
 % Full example:
 %
@@ -275,7 +272,7 @@ encode_as_url( [ { Key, Value } | T ], Acc ) ->
 				   ++ encode_element_as_url( Value ) ).
 
 
-% Encodes specified element so that it can be used in an URL.
+% @doc Encodes specified element so that it can be used in an URL.
 -spec encode_element_as_url( ustring() ) -> ustring().
 encode_element_as_url( E ) ->
 	% They seem to produce quite similar results in our few test cases:
@@ -284,7 +281,8 @@ encode_element_as_url( E ) ->
 
 
 
-% Escapes specified list of {Key,Value} pairs so that it can used into some URL.
+% @doc Escapes specified list of {Key,Value} pairs so that it can used into some
+% URL.
 %
 % Note: apparently useful only for quite specific websites; encode_as_url/1
 % should be preferred in most cases.
@@ -307,7 +305,7 @@ escape_as_url( [ { Key, Value } | T ], Acc ) ->
 
 
 
-% Escapes specified element so that it can be used in some URL.
+% @doc Escapes specified element so that it can be used in some URL.
 -spec escape_key( option_list:key() ) -> ustring().
 escape_key( Key ) when is_atom( Key ) ->
 	text_utils:atom_to_string( Key ).
@@ -321,7 +319,7 @@ escape_value( String ) ->
 
 
 
-% Escapes specified character.
+% @doc Escapes specified character.
 %
 % Alphanumerical characters left as are:
 escape_char( C ) when C >= 48 andalso C =< 57 ->
@@ -342,7 +340,8 @@ escape_char( C ) ->
 
 
 
-% Returns the last element, the final path "filename" pointed by specified URL.
+% @doc Returns the last element, the final path "filename" pointed by specified
+% URL.
 %
 % Ex: "hello.txt" = web_utils:get_last_path_element(
 %                         "http://www.foobar.org/baz/hello.txt" )
@@ -354,7 +353,7 @@ get_last_path_element( Url ) ->
 
 
 
-% Returns a string describing the specified URL information.
+% @doc Returns a string describing the specified URL information.
 -spec url_info_to_string( url_info() ) -> ustring().
 url_info_to_string( #url_info{ protocol=Protocol, host_identifier=Host,
 							   port=Port, path=Path } ) ->
@@ -364,7 +363,7 @@ url_info_to_string( #url_info{ protocol=Protocol, host_identifier=Host,
 
 
 
-% Decodes specified string into an url_info record, by extracting protocol
+% @doc Decodes specified string into an url_info record, by extracting protocol
 % (scheme), host, port and path information.
 %
 % Note that other information (fragment, query, userinfo) will be ignored and
@@ -405,7 +404,7 @@ string_to_url_info( String ) ->
 
 
 
-% Decodes specified string into an URI map, by extracting all relevant
+% @doc Decodes specified string into an URI map, by extracting all relevant
 % information: protocol (scheme), user information, host, port, path and
 % fragment.
 %
@@ -430,21 +429,21 @@ string_to_uri_map( String ) ->
 % HTML-related section.
 
 
-% Returns the HTML code of an ordered (numbered bullets) list corresponding to
-% specified list of elements.
+% @doc Returns the HTML code of an ordered (numbered bullets) list corresponding
+% to specified list of elements.
 %
 -spec get_ordered_list( [ html_element() ] ) -> html_element().
 get_ordered_list( Elements ) ->
 
 	HTMLElems = [ text_utils:format( "    <li>~ts</li>~n", [ E ] )
-				  || E <- Elements ],
+					|| E <- Elements ],
 
 	text_utils:format( "  <ol>~n~ts  </ol>~n", [ lists:flatten( HTMLElems ) ] ).
 
 
 
-% Returns the HTML code of an unordered list corresponding to specified list of
-% elements.
+% @doc Returns the HTML code of an unordered list corresponding to specified
+% list of elements.
 %
 -spec get_unordered_list( [ html_element() ] ) -> html_element().
 get_unordered_list( Elements ) ->
@@ -456,7 +455,9 @@ get_unordered_list( Elements ) ->
 
 
 
-% Escapes specified text, so that it can be included safely as an HTML content.
+% @doc Escapes specified text, so that it can be included safely as an HTML
+% content.
+%
 -spec escape_as_html_content( any_string() ) -> html_element().
 escape_as_html_content( BinString ) when is_binary( BinString ) ->
 	escape_as_html_content( text_utils:binary_to_string( BinString ) );
@@ -480,7 +481,6 @@ escape_as_html_content( _String=[ $< | T ], Acc ) ->
 escape_as_html_content( _String=[ $> | T ], Acc ) ->
 	escape_as_html_content( T, [ ";tg&" | Acc ] ) ;
 
-
 % These two clauses apply only inside of attribute values, yet are a general,
 % safer measure:
 %
@@ -490,7 +490,6 @@ escape_as_html_content( _String=[ $" | T ], Acc ) ->
 escape_as_html_content( _String=[ $' | T ], Acc ) ->
 	escape_as_html_content( T, [ ";93#&" | Acc ] ) ;
 
-
 % All others:
 escape_as_html_content( _String=[ Other | T ], Acc ) ->
 	escape_as_html_content( T, [ Other | Acc ] ).
@@ -498,16 +497,16 @@ escape_as_html_content( _String=[ Other | T ], Acc ) ->
 
 
 
-% Escapes specified term (most probably non-string), so that it can be included
-% safely as an HTML content.
+% @doc Escapes specified term (most probably non-string), so that it can be
+% included safely as an HTML content.
 %
 -spec escape_term_as_html_content( term() ) -> html_element().
 escape_term_as_html_content( Term ) ->
 	escape_as_html_content( text_utils:term_to_string( Term ) ).
 
 
-% Returns the status class (if any) corresponding to the specified HTTP status
-% code.
+% @doc Returns the status class (if any) corresponding to the specified HTTP
+% status code.
 %
 -spec get_http_status_class( http_status_code() ) ->
 								maybe( http_status_class() ).
@@ -538,7 +537,7 @@ get_http_status_class( StatusCode ) ->
 	throw( { invalid_status_code, StatusCode } ).
 
 
-% Returns a textual description of specified HTTP status class.
+% @doc Returns a textual description of specified HTTP status class.
 -spec http_status_class_to_string( maybe( http_status_class() ) ) -> ustring().
 http_status_class_to_string( informational_response ) ->
 	"informational response";
@@ -563,9 +562,9 @@ http_status_class_to_string( Other ) ->
 
 
 
-% Returns a textual description of specified HTTP code.
+% @doc Returns a textual description of specified HTTP code.
 %
-% Source: https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
+% Source: [https://en.wikipedia.org/wiki/List_of_HTTP_status_codes].
 %
 -spec interpret_http_status_code( http_status_code() ) -> ustring().
 interpret_http_status_code( StatusCode ) ->
@@ -772,7 +771,6 @@ interpret_http_status_code_helper( _StatusCode=510 ) ->
 interpret_http_status_code_helper( _StatusCode=511 ) ->
 	"network authentication required";
 
-
 % Unexpected class:
 interpret_http_status_code_helper( _StatusCode ) ->
 	"unknown HTTP status class".
@@ -783,14 +781,14 @@ interpret_http_status_code_helper( _StatusCode ) ->
 % http-related operations.
 
 
-% Starts the HTTP support, with default settings.
+% @doc Starts the HTTP support, with default settings.
 -spec start() -> void().
 start() ->
 	start( no_ssl ).
 
 
 
-% Starts the HTTP support, with specified settings.
+% @doc Starts the HTTP support, with specified settings.
 %
 % Does not fail if already started, throws an exception in case of unrecoverable
 % error.
@@ -843,7 +841,7 @@ start( Option ) ->
 
 
 
-% Sends a (synchronous) HTTP/1.1 client request (GET or POST).
+% @doc Sends a (synchronous) HTTP/1.1 client request (GET or POST).
 %
 % The HTTP support (possibly with SSL if needed) must be started.
 %
@@ -870,7 +868,7 @@ request( Method, Uri, _Headers, _HttpOptions, _MaybeBody, _MaybeContentType ) ->
 
 
 
-% Sends a (synchronous) HTTP/1.1 client GET request.
+% @doc Sends a (synchronous) HTTP/1.1 client GET request.
 %
 % The HTTP support (possibly with SSL if needed) must be started.
 %
@@ -929,7 +927,7 @@ get( Uri, Headers, HttpOptions ) ->
 
 
 
-% Sends a (synchronous, body-less) HTTP/1.1 client POST request.
+% @doc Sends a (synchronous, body-less) HTTP/1.1 client POST request.
 %
 % The HTTP support (possibly with SSL if needed) must be started.
 %
@@ -942,7 +940,7 @@ post( Uri, Headers, HttpOptions ) ->
 
 
 
-% Sends a (synchronous) HTTP/1.1 client POST request.
+% @doc Sends a (synchronous) HTTP/1.1 client POST request.
 %
 % If a body is specified, ?default_content_type will be used.
 %
@@ -958,7 +956,7 @@ post( Uri, Headers, HttpOptions, MaybeBody ) ->
 
 
 
-% Sends a (synchronous) HTTP/1.1 client POST request.
+% @doc Sends a (synchronous) HTTP/1.1 client POST request.
 %
 % If a body is specified yet no content-type is set, ?default_content_type will
 % be used.
@@ -1028,7 +1026,6 @@ post( Uri, Headers, HttpOptions, MaybeBody, MaybeContentType ) ->
 
 			{ ReqStatusCode, MapHeaders, ReqBody };
 
-
 		Err={ error, ErrorReason } ->
 			cond_utils:if_defined( myriad_debug_web_exchanges,
 				trace_bridge:error_fmt( "[~w] POST failed: ~p ",
@@ -1039,7 +1036,7 @@ post( Uri, Headers, HttpOptions, MaybeBody, MaybeContentType ) ->
 	end.
 
 
-% Converts headers into suitable ones for httpc.
+% @doc Converts headers into suitable ones for httpc.
 -spec to_httpc_headers( headers() ) -> headers_httpc_style().
 to_httpc_headers( Headers ) when is_list( Headers ) ->
 	Headers;
@@ -1050,7 +1047,7 @@ to_httpc_headers( Headers ) when is_map( Headers ) ->
 
 
 
-% Converts httpc headers into map-based ones.
+% @doc Converts httpc headers into map-based ones.
 -spec from_httpc_headers( headers_httpc_style() ) -> headers_as_maps().
 from_httpc_headers( Headers ) ->
 	maps:from_list( [ { text_utils:string_to_binary( K ),
@@ -1058,7 +1055,7 @@ from_httpc_headers( Headers ) ->
 					  || { K, V } <- Headers ] ).
 
 
-% Returns http options suitable for httpc.
+% @doc Returns http options suitable for httpc.
 -spec to_httpc_options( http_options() ) -> options_for_httpc().
 to_httpc_options( HttpOptions ) when is_list( HttpOptions ) ->
 	HttpOptions;
@@ -1069,9 +1066,9 @@ to_httpc_options( HttpOptionMap ) when is_map( HttpOptionMap ) ->
 
 
 
-% Downloads the file designated by specified URL, in the specified directory
-% (under its name in URL), and returns the corresponding full path of that
-% file.
+% @doc Downloads the file designated by specified URL, in the specified
+% directory (under its name in URL), and returns the corresponding full path of
+% that file.
 %
 % Ex: web_utils:download_file( _Url="https://foobar.org/baz.txt",
 %                    _TargetDir="/tmp" ) shall result in a "/tmp/baz.txt" file.
@@ -1125,8 +1122,8 @@ download_file( Url, TargetDir ) ->
 		{ ok, { { _HTTTP, ErrorCode, Msg }, _RecHeaders, _Body } } ->
 
 			%trace_bridge:error_fmt( "Downloading from '~ts' failed; "
-			%	"reason: ~ts, '~ts'.",
-			%	[ Url, interpret_http_status_code( ErrorCode ), Msg ] ),
+			%   "reason: ~ts, '~ts'.",
+			%   [ Url, interpret_http_status_code( ErrorCode ), Msg ] ),
 
 			throw( { download_failed, ErrorCode, Msg, Url } );
 
@@ -1137,8 +1134,7 @@ download_file( Url, TargetDir ) ->
 
 
 
-
-% Stops the HTTP support.
+% @doc Stops the HTTP support.
 stop() ->
 
 	% Maybe not launched, hence not pattern matched:

@@ -19,6 +19,9 @@
 % Author: Robin Huart (robin-externe.huart@edf.fr)
 
 
+% @doc Class in charge of managing a set of <b>Python interpreters, to be used
+% as binding containers</b>.
+%
 -module(class_PythonBindingManager).
 
 
@@ -73,10 +76,14 @@
 -include_lib("traces/include/traces.hrl").
 
 
+
 % Shorthands:
 
+-type ustring() :: text_utils:ustring().
 -type code_path() :: code_utils:code_path().
 -type atom_node_name() :: net_utils:atom_node_name().
+-type interpreter_pid() :: python_utils:interpreter_pid().
+
 
 
 % Implementation notes:
@@ -120,7 +127,9 @@
 
 
 
-% Constructs a new manager of a set of Python interpreters, from:
+% @doc Constructs a new manager of a set of Python interpreters.
+%
+% Parameters:
 %
 % - ComputingNodes, a list of the computing nodes on each of which a Python
 % interpreter is to be created
@@ -144,8 +153,8 @@ construct( State, ComputingNodes, EngineRootDir, EpmdPort, CodePath,
 
 	% First the direct mother class:
 	LangState = class_LanguageBindingManager:construct( State,
-		  ?trace_categorize("PythonBindingManager"), EngineRootDir,
-		  EpmdPort, CodePath, DeploymentManagerPid ),
+		?trace_categorize("PythonBindingManager"), EngineRootDir,
+		EpmdPort, CodePath, DeploymentManagerPid ),
 
 	% Any language-specific binding manager might be registered that way:
 	% (enforces uniqueness, and provides global access)
@@ -165,8 +174,9 @@ construct( State, ComputingNodes, EngineRootDir, EpmdPort, CodePath,
 
 
 
-
-% Launches and initializes a Python interpreter on each of the specified nodes.
+% @doc Launches and initializes a Python interpreter on each of the specified
+% nodes.
+%
 -spec initialise_interpreters( [ atom_node_name() ], code_path(),
 			wooper:state() ) -> class_LanguageBindingManager:node_table().
 initialise_interpreters( TargetNodes, CodePath, State ) ->
@@ -319,13 +329,13 @@ initialise_interpreters( TargetNodes, CodePath, State ) ->
 	%
 	PythonVersionCodePaths = [ python:call( Pid, 'common.erlang_binding_entry',
 											init_binding, [ self() ] )
-							   || Pid <- InterpreterPids ],
+								|| Pid <- InterpreterPids ],
 
 	NodeAndVersionPathPairs = lists:zip( TargetNodes, PythonVersionCodePaths ),
 
 	InterpreterStrings = [
 	  interpret_python_settings( Node, Version, CurrentDir, ActualLocalPath )
-						  || { Node,
+								|| { Node,
 		{ Version, CurrentDir, ActualLocalPath } } <- NodeAndVersionPathPairs ],
 
 	% Check:
@@ -363,11 +373,11 @@ interpret_python_settings( Node, Version, CurrentDir, CodePath ) ->
 	text_utils:format( "for computing node '~ts', using Python version ~ts, "
 		"from current directory '~ts', with following code path: ~ts",
 		[ Node, Version, CurrentDir, text_utils:strings_to_enumerated_string(
-									   DescribedPath, _IndentationLevel=1 ) ] ).
+									DescribedPath, _IndentationLevel=1 ) ] ).
 
 
 
-% Overridden destructor.
+% @doc Overridden destructor.
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -392,8 +402,8 @@ destruct( State ) ->
 						"(corresponding to following runtime containers: ~w).",
 						[ length( InterpreterPids ), InterpreterPids ] ),
 
-					% python:stop/1 returns 'ok' in all cases:
-					[ python:stop( IntPid ) || IntPid <- InterpreterPids ],
+					% python:stop/1 returns 'ok' in all cases anyway:
+					[ ok = python:stop( IntPid ) || IntPid <- InterpreterPids ],
 
 					?info( "Manager destructed." ),
 
@@ -409,7 +419,7 @@ destruct( State ) ->
 % Methods section.
 
 
-% Returns the Python interpreter associated to the sender of this request.
+% @doc Returns the Python interpreter associated to the sender of this request.
 %
 % In practice the returned binding container is the Python interpreter running
 % on the same (computing) host as the request sender, to lighten the load
@@ -435,8 +445,8 @@ getAssociatedPythonInterpreter( State ) ->
 
 
 
-% Returns the atom corresponding to the name the Python binding manager should
-% be registered as.
+% @doc Returns the atom corresponding to the name the Python binding manager
+% should be registered as.
 %
 % Note: executed on the caller node.
 %
@@ -447,7 +457,7 @@ get_registration_name() ->
 
 
 
-% Returns the PID of the (unique) Python binding manager.
+% @doc Returns the PID of the (unique) Python binding manager.
 %
 % To be used by clients of the Python binding manager.
 %
@@ -477,24 +487,23 @@ get_registered_manager() ->
 
 
 
-% Returns the PID corresponding to the (local) Python interpreter.
+% @doc Returns the PID corresponding to the (local) Python interpreter.
 %
 % To be used by clients of the Python binding manager.
 %
--spec get_interpreter() -> static_return( python_utils:interpreter_pid() ).
+-spec get_interpreter() -> static_return( interpreter_pid() ).
 get_interpreter() ->
 	InterpreterPid = get_interpreter( get_registered_manager() ),
 	wooper:return_static( InterpreterPid ).
 
 
 
-% Returns the PID corresponding to the (local) Python interpreter, based on the
-% specified Python binding manager.
+% @doc Returns the PID corresponding to the (local) Python interpreter, based on
+% the specified Python binding manager.
 %
 % To be used by clients of the Python binding manager.
 %
--spec get_interpreter( manager_pid() ) ->
-							static_return( python_utils:interpreter_pid() ).
+-spec get_interpreter( manager_pid() ) -> static_return( interpreter_pid() ).
 get_interpreter( PythonBindingManagerPid ) ->
 
 	PythonBindingManagerPid ! { getAssociatedPythonInterpreter, [], self() },
@@ -512,14 +521,14 @@ get_interpreter( PythonBindingManagerPid ) ->
 % Helpers section.
 
 
-% Returns a textual description of this manager.
--spec to_string( wooper:state() ) -> string().
+% @doc Returns a textual description of this manager.
+-spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
 	NodePairs = table:enumerate( ?getAttr(node_table) ),
 
 	NodeStrings = [ text_utils:format( "interpreter ~w running on node '~ts'",
-		   [ ContainerPid, Node ] ) || { Node, ContainerPid } <- NodePairs ],
+			[ ContainerPid, Node ] ) || { Node, ContainerPid } <- NodePairs ],
 
 	text_utils:format( "Python binding manager federating ~B interpreters: ~ts",
 	   [ length( NodeStrings ), text_utils:strings_to_string( NodeStrings ) ] ).

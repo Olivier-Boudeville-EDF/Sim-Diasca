@@ -26,8 +26,8 @@
 % Creation date: Tuesday, December 25, 2018.
 
 
-% Management of conditional compilation - like generalized, limitation-less
-% macros.
+% @doc Management of <b>conditional compilation</b> - like generalised,
+% limitation-less macros.
 %
 -module(cond_utils).
 
@@ -35,7 +35,7 @@
 
 % Implementation notes:
 %
-% A large part of this module consists of stubs, i.e. of placeholder definitions
+% A large part of this module consists of stubs, ie of placeholder definitions
 % of the pseudo-functions (such as cond_utils:if_debug/1) meant to be replaced
 % at compile time by user-specified conditional code.
 %
@@ -139,36 +139,36 @@
 
 
 
+-type token() :: atom().
 % A token (defined through the command-line), whose definition enables the
 % conditional execution of associated code.
 %
 % Ex: a 'debug_gui' token would enable, if defined, associated code, like in:
-% cond_utils:if_defined(debug_gui, [f(), A=B, g(C)])
-%
--type token() :: atom().
+% cond_utils:if_defined(debug_gui, [f(), A=B, g(C)]).
 
 
-% An (immediate) value associated to a token can actually of various types
-% (ex: atom, integer; as a form of course), as translated by the compiler:
-%
 -type value() :: term().
+% An (immediate) value associated to a token can actually of various types
+% (ex: atom, integer; as a form of course), as translated by the compiler.
 
 
-% An expression that is conditionally enabled:
 -type expression() :: any().
+% An expression that is conditionally enabled.
 
-% The conditional code injected is either a single expression or a list thereof:
+
 -type expressions() :: expression() | [ expression() ].
+% The conditional code injected is either a single expression or a list thereof.
 
-% A table used to associate expression(s) to token values:
+
 -type token_expr_table() :: [ { token(), expressions() } ].
+% A table used to associate expression(s) to token values.
 
 
+-type token_table() :: ?table:?table( token(), basic_utils:maybe( term() ) ).
 % Table to establish easily whether a token has been defined and, if yes, a
 % value (if any; otherwise it is set to 'undefined') that has been associated to
 % it.
-%
--type token_table() :: ?table:?table( token(), basic_utils:maybe( term() ) ).
+
 
 -export_type([ token/0, expression/0, expressions/0, token_expr_table/0,
 			   token_table/0 ]).
@@ -179,7 +179,7 @@
 
 
 
-% Returns the tokens declared among the compile options.
+% @doc Returns the tokens declared among the compile options.
 -spec get_token_table_from( ast_info:compile_option_table() ) ->
 									token_table().
 get_token_table_from( OptionTable ) ->
@@ -254,16 +254,17 @@ register_tokens( _L=[ Token | T ], TokenTable ) when is_atom( Token ) ->
 %                      {var,_,'B'},
 %                      {op,_,'+',{var,_,'A'},{integer,_,1}}},
 %
-%    (i.e. we "uncons" said expression list)
+%    (ie we "uncons" said expression list)
 %
 % or, should my_token not be defined: exactly nothing.
 
 
 
 
-% Conditional execution of specified expression or list thereof, enabled iff the
-% debug mode has been set (i.e. iff the 'myriad_debug_mode' token has been
-% defined through the command-line).
+% @doc Conditional execution of specified expression or list thereof.
+%
+% Enabled iff the debug mode has been set (ie iff the 'myriad_debug_mode'
+% token has been defined through the command-line).
 %
 -spec if_debug( expressions() ) -> void().
 if_debug( ExpressionsIfDebug ) ->
@@ -271,10 +272,12 @@ if_debug( ExpressionsIfDebug ) ->
 
 
 
-% Conditional execution, enabled iff the specified token has been specified
-% (i.e. iff its token has been defined through the command-line), in which case
-% the specified expression(s) are injected (otherwise they are simply dismissed
-% as a whole).
+% @doc Conditional execution, enabled iff the specified token has been
+% specified.
+%
+% It is enabled iff its token has been defined through the command-line, in
+% which case the specified expression(s) are injected (otherwise they are simply
+% dismissed as a whole).
 %
 % Note: the first parameter, Token, must be an immediate value, an atom (not
 % even a variable whose value happens to be an atom).
@@ -309,7 +312,7 @@ if_defined( Token, _ExpressionsIfDefined ) ->
 
 
 
-% Conditional execution of one of the two specified expressions or lists
+% @doc Conditional execution of one of the two specified expressions or lists
 % thereof, depending on whether the specified token has been defined through the
 % command-line.
 %
@@ -328,9 +331,9 @@ if_defined( Token, _ExpressionsIfDefined, _ExpressionsIfNotDefined ) ->
 
 
 
-% Conditional execution of the specified expression or list thereof, depending
-% on whether the specified token has been defined through the command-line *and*
-% has been set to the specified (immediate) value.
+% @doc Conditional execution of the specified expression or list thereof,
+% depending on whether the specified token has been defined through the
+% command-line *and* has been set to the specified (immediate) value.
 %
 % The specified list of expressions is injected iff the token has been defined
 % and set to the specified value.
@@ -347,7 +350,7 @@ if_set_to( Token, _Value, _ExpressionsIfSetTo ) ->
 
 
 
-% Conditional execution of one of the two specified expressions or lists
+% @doc Conditional execution of one of the two specified expressions or lists
 % thereof, depending on whether the specified token has been defined through the
 % command-line *and* has been set to the specified (immediate) value.
 %
@@ -367,10 +370,10 @@ if_set_to( Token, _Value, _ExpressionsIfMatching, _ExpressionsOtherwise ) ->
 
 
 
-% Conditional execution of one of the specified expressions or lists thereof
-% listed in the token-expression table, depending on whether the specified token
-% has been defined through the command-line *and* has been set to one of the
-% specified (immediate) values.
+% @doc Conditional execution of one of the specified expressions or lists
+% thereof listed in the token-expression table, depending on whether the
+% specified token has been defined through the command-line *and* has been set
+% to one of the specified (immediate) values.
 %
 % If the token has been defined and set to one the values specified in the
 % table, the expression(s) associated to this value are injected.
@@ -390,10 +393,10 @@ switch_set_to( Token, _TokenExprTable ) ->
 
 
 
-% Conditional execution of one of the specified expressions or lists thereof
-% listed in the token-expression table, depending on whether the specified token
-% has been defined through the command-line *and* has been set to one of the
-% specified (immediate) values.
+% @doc Conditional execution of one of the specified expressions or lists
+% thereof listed in the token-expression table, depending on whether the
+% specified token has been defined through the command-line *and* has been set
+% to one of the specified (immediate) values.
 %
 % If the token has been defined and set to one the values specified in the
 % table, the expression(s) associated to this value are injected.
@@ -413,8 +416,8 @@ switch_set_to( Token, _TokenExprTable, _DefaultTokenValue ) ->
 
 
 
-% If in debug mode, asserts that the specified expression is true,
-% i.e. evaluates it at runtime and matches it with the atom 'true'.
+% @doc If in debug mode, asserts that the specified expression is true,
+% ie evaluates it at runtime and matches it with the atom 'true'.
 %
 % In debug mode (i.e when the 'myriad_debug_mode' token has been defined), and
 % only in that mode, the check will be done (at runtime), and possibly will fail
@@ -433,9 +436,9 @@ assert( _Expression ) ->
 
 
 
-% If the specified token has been defined through the command-line, asserts that
-% the specified expression is true, i.e. evaluates it at runtime and matches it
-% with the atom 'true'.
+% @doc If the specified token has been defined through the command-line, asserts
+% that the specified expression is true, ie evaluates it at runtime and
+% matches it with the atom 'true'.
 %
 % See assert/1 for use and caveats.
 %
@@ -449,9 +452,9 @@ assert( Token, _Expression ) ->
 
 
 
-% If the specified token has been defined through the command-line and set to
-% the specified value, asserts that the specified expression is true,
-% i.e. evaluates it at runtime and matches it with the atom 'true'.
+% @doc If the specified token has been defined through the command-line and set
+% to the specified value, asserts that the specified expression is true, ie
+% evaluates it at runtime and matches it with the atom 'true'.
 %
 % See assert/1 for use and caveats.
 %

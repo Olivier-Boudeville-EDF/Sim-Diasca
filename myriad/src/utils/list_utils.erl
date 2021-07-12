@@ -26,7 +26,7 @@
 % Creation date: July 1, 2007.
 
 
-% Gathering of various facilities about lists.
+% @doc Gathering of various facilities about <b>lists</b>.
 %
 % See list_utils_test.erl for the corresponding test.
 %
@@ -80,15 +80,14 @@
 		  draw_elements_from/2, extract_elements_from/2 ]).
 
 
-% An element of a list:
 -type element() :: term().
+% An element of a list.
 
 
+-type maybe_list( T ) :: [ T ] | T.
 % Either a list of terms, or a term by itself.
 %
-% Note: different from maybe( list() ).
-%
--type maybe_list( T ) :: [ T ] | T.
+% Note: different from maybe(list()).
 
 
 -export_type([ maybe_list/1 ]).
@@ -97,14 +96,17 @@
 % Shorthands:
 
 -type count() :: basic_utils:count().
+
 -type positive_index() :: basic_utils:positive_index().
+% These indexes start at 1.
+
 
 
 % Section for the checking of lists.
 
 
-% Ensures that the specified argument is a list: encloses it in a list of its
-% own if not already a list.
+% @doc Ensures that the specified argument is a list: encloses it in a list of
+% its own if not already a list.
 %
 % Note: not to be applied on strings for example.
 %
@@ -117,8 +119,8 @@ ensure_list( Term ) ->
 
 
 
-% Ensures that the specified argument is a list of atoms: encloses any atom in
-% a list of its own if not already a list, or check that this list is only
+% @doc Ensures that the specified argument is a list of atoms: encloses any atom
+% in a list of its own if not already a list, or check that this list is only
 % populated of atoms.
 %
 ensure_atoms( Atom ) when is_atom( Atom ) ->
@@ -140,9 +142,9 @@ ensure_atoms( Other ) ->
 
 
 
-% Ensures that the specified argument is a list of tuples: encloses any tuple in
-% a list of its own if not already a list, or check that this list is only
-% populated of tuples.
+% @doc Ensures that the specified argument is a list of tuples: encloses any
+% tuple in a list of its own if not already a list, or check that this list is
+% only populated of tuples.
 %
 ensure_tuples( Tuple ) when is_tuple( Tuple ) ->
 	[ Tuple ];
@@ -163,8 +165,8 @@ ensure_tuples( Other ) ->
 
 
 
-% Ensures that the specified argument is a list of PIDs: encloses any PID in a
-% list of its own if not already a list, or check that this list is only
+% @doc Ensures that the specified argument is a list of PIDs: encloses any PID
+% in a list of its own if not already a list, or check that this list is only
 % populated of PIDs.
 %
 ensure_pids( Pid ) when is_pid( Pid ) ->
@@ -191,7 +193,8 @@ ensure_pids( Other ) ->
 
 % Index start at position #1, not #0.
 
-% Returns the element in the list at the specified index, in [1..length(List)].
+% @doc Returns the element in the list at the specified index, in
+% `[1..length(List)]'.
 %
 % If the index is out of bounds, a function_clause is raised.
 %
@@ -213,7 +216,7 @@ get_element_at( List, Index ) ->
 
 
 
-% Inserts specified element at specified position in specified list.
+% @doc Inserts specified element at specified position in specified list.
 %
 % For example, insert_element_at(foo, [a,b,c,d], 3) will return
 % [a, b, foo, c, d].
@@ -242,7 +245,7 @@ insert_element_at( Element, _List=[ H | T ], Index, Acc ) ->
 
 
 
-% Extracts element from the specified list, at the specified index.
+% @doc Extracts element from the specified list, at the specified index.
 %
 % Returns that element and the resulting, shrunk list.
 %
@@ -267,9 +270,9 @@ extract_element_at( _List=[ H | T ], Index, Acc ) ->
 
 
 
-% Removes the specified number first elements.
+% @doc Removes the specified number first elements.
 %
-% Ex: [c, d , e  = list_utils:remove_first_elements([a, b, c, d, e], 2).
+% Ex: [c, d, e] = list_utils:remove_first_elements([a, b, c, d, e], 2).
 %
 -spec remove_first_elements( list(), count() ) -> list().
 remove_first_elements( List, _Count=0 ) ->
@@ -280,7 +283,7 @@ remove_first_elements( List, Count ) ->
 
 
 
-% Returns a list corresponding to the specified one with the element at
+% @doc Returns a list corresponding to the specified one with the element at
 % specified index removed.
 %
 % If the index is out of bounds, a function_clause like
@@ -299,7 +302,7 @@ remove_first_elements( List, Count ) ->
 %remove_element_at( [ H | T ], _Index=N ) ->
 %   [ H | remove_element_at( T, _NextIndex=N-1 ) ].
 %
-% Tail recursive version:
+% Tail recursive version.
 %
 -spec remove_element_at( list(), positive_index() ) -> list().
 remove_element_at( List, Index ) ->
@@ -313,7 +316,7 @@ remove_element_at( [ H | RemainingList ], Index, Result ) ->
 
 
 
-% Removes the last element of the specified list.
+% @doc Removes the last element of the specified list.
 %
 % Crashes (with 'no function clause') if the input list is empty.
 %
@@ -335,7 +338,7 @@ remove_last_element( List ) ->
 
 
 
-% Returns the last element of the specified list.
+% @doc Returns the last element of the specified list.
 %
 % Note: not computationnally efficient, usually having to retrieve the last
 % element suggests a bad code design.
@@ -351,8 +354,9 @@ get_last_element( _List=[ _H | T ] ) ->
 
 
 
-% Extracts the last element of the specified (non-empty) list, returning a pair
-% made of that element and of the remainder of the list (in its original order).
+% @doc Extracts the last element of the specified (non-empty) list, returning a
+% pair made of that element and of the remainder of the list (in its original
+% order).
 %
 % Note: not computationnally efficient, usually having to retrieve the last
 % element suggests a bad code design.
@@ -384,8 +388,8 @@ extract_last_element( List ) ->
 
 
 
-% Returns the index, in [1..length(List)], of the (first occurrence of the)
-% specified element in the specified list.
+% @doc Returns the index, in `[1..length(List)]', of the (first occurrence of
+% the) specified element in the specified list.
 %
 % Throws an exception if the element is not found.
 %
@@ -405,13 +409,13 @@ get_index_of( Element, List ) ->
 
 
 
-% Returns the index, in [1..length(List)], of the (first occurrence of the)
-% specified element in the specified list, or 'undefined' if the element is not
-% found.
+% @doc Returns the index, in `[1..length(List)]', of the (first occurrence of
+% the) specified element in the specified list, or 'undefined' if the element is
+% not found.
 %
 % Ex:
-%   3 = get_maybe_index_of( bar, [ foo, ugh, bar, baz ] )
-%   undefined = get_maybe_index_of( xxx, [ foo, ugh, bar, baz ] )
+%   3 = get_maybe_index_of(bar, [foo, ugh, bar, baz])
+%   undefined = get_maybe_index_of(xxx, [foo, ugh, bar, baz])
 %
 -spec get_maybe_index_of( element(), list() ) -> maybe( count() ).
 get_maybe_index_of( Element, List ) ->
@@ -429,7 +433,7 @@ get_maybe_index_of( Element, _List=[ _H | T ], Count ) ->
 
 
 
-% Splits the specified (plain) list in two parts (two plain lists, that are
+% @doc Splits the specified (plain) list in two parts (two plain lists, that are
 % returned): the first contains the first elements, up to MaxLen included (in
 % reverse order), and the second the others (if any).
 %
@@ -445,10 +449,9 @@ split_at( InputList, _Count=MaxLen, MaxLen, AccList ) ->
 	% Max len reached, stopping here:
 	{ AccList, InputList };
 
-split_at( _InputList=[], _Count, _MaxLen, AccList ) ->
+split_at( InputList=[], _Count, _MaxLen, AccList ) ->
 	% Input list exhausted:
-	{ AccList, _InputList=[] };
-
+	{ AccList, InputList };
 
 split_at( _List=[ H | T ], Count, MaxLen, Acc ) ->
 	split_at( T, Count+1, MaxLen, [ H | Acc ] ).
@@ -456,8 +459,8 @@ split_at( _List=[ H | T ], Count, MaxLen, Acc ) ->
 
 
 
-% Returns a list whose elements are the ones of the specified list, except that
-% they are unique (all their duplicates have been removed).
+% @doc Returns a list whose elements are the ones of the specified list, except
+% that they are unique (all their duplicates have been removed).
 %
 % No specific order is respected in the returned list.
 %
@@ -470,9 +473,9 @@ uniquify( List ) ->
 	sets:to_list( sets:from_list( List ) ).
 
 
-% Returns a list whose elements are the ones of the specified list, except that
-% they are unique (all their duplicates have been removed), while the order in
-% the kept elements is preserved.
+% @doc Returns a list whose elements are the ones of the specified list, except
+% that they are unique (all their duplicates have been removed), while the order
+% in the kept elements is preserved.
 %
 % Expected to be a bit slower than uniquify/1.
 %
@@ -501,8 +504,8 @@ uniquify_ordered( [ H | T ], Acc, KnownSet ) ->
 
 
 
-% Ensures that specified element is included once in specified unordered list
-% (supposed to contain it already up to once).
+% @doc Ensures that specified element is included once in specified unordered
+% list (supposed to contain it already up to once).
 %
 % Note: refer to set_utils for a more proper implementation of set.
 %
@@ -521,17 +524,18 @@ ensure_is_once_in( Elem, List ) ->
 
 
 
-% Tells whether there are in the specified list elements that are present more
-% than once.
+% @doc Tells whether there are in the specified list elements that are present
+% more than once.
 %
 has_duplicates( List ) ->
 	length( uniquify( List ) ) =/= length( List ).
 
 
 
-% Counts the number of occurences of all elements in the specified list: returns
-% an (unordered) list of {Term,Count} pairs, where each term is associated to
-% the total number of its occurrences (1 or above) in the specified list.
+% @doc Counts the number of occurences of all elements in the specified list:
+% returns an (unordered) list of {Term,Count} pairs, where each term is
+% associated to the total number of its occurrences (1 or above) in the
+% specified list.
 %
 -spec count_occurrences( list() ) -> [ { element(), count() } ].
 count_occurrences( List ) ->
@@ -560,9 +564,9 @@ count_occurrences( _List=[ Term | T ], Acc ) ->
 
 
 
-% Returns the duplicates in the specified list: returns an (unordered) list of
-% {DuplicatedTerm,DuplicationCount} pairs, where each duplicated term (i.e. a
-% term present more than once) is specified, alongside the total number of
+% @doc Returns the duplicates in the specified list: returns an (unordered) list
+% of {DuplicatedTerm,DuplicationCount} pairs, where each duplicated term (that
+% is a term present more than once) is specified, alongside the total number of
 % occurrences of that term in the specified list.
 %
 % Note: as a consequence, a term that is not in the specified list, or that is
@@ -598,7 +602,6 @@ get_duplicates( _List=[ Term | T ], Acc ) ->
    end.
 
 
-
 % (helper)
 count_and_filter_term( _Term, _List=[], _FilteredList, _CurrentCount=0 ) ->
 	not_found;
@@ -618,8 +621,8 @@ count_and_filter_term( Term, _List=[ OtherTerm | H ], FilteredList,
 
 
 
-% Returns the union of the two specified lists, i.e. the list of all elements
-% that are in either list.
+% @doc Returns the union of the two specified lists, that is the list of all
+% elements that are in either list.
 %
 -spec union( list(), list() ) -> list().
 union( L1, L2 ) ->
@@ -629,8 +632,8 @@ union( L1, L2 ) ->
 
 
 
-% Returns the intersection of the two specified lists, i.e. the list of all
-% elements that are in both lists.
+% @doc Returns the intersection of the two specified lists, that is the list of
+% all elements that are in both lists.
 %
 % See also: subtract_all_duplicates/2.
 %
@@ -642,8 +645,8 @@ intersection( L1, L2 ) ->
 
 
 
-% Returns the difference between the first specified list and the second,
-% i.e. the elements of the first list that are not in the second one.
+% @doc Returns the difference between the first specified list and the second,
+% that is the elements of the first list that are not in the second one.
 %
 -spec difference( list(), list() ) -> list().
 difference( L1, L2 ) ->
@@ -652,9 +655,9 @@ difference( L1, L2 ) ->
 
 
 
-% Returns the differences between the first specified list and the second, as a
-% pair, whose first element corresponds to the elements of the first list that
-% are not in the second one, and whose second element corresponds to the
+% @doc Returns the differences between the first specified list and the second,
+% as a pair, whose first element corresponds to the elements of the first list
+% that are not in the second one, and whose second element corresponds to the
 % elements of the second list that are not in the first one.
 %
 -spec differences( list(), list() ) -> { list(), list() }.
@@ -665,11 +668,11 @@ differences( L1, L2 ) ->
 
 
 
-% Returns the cartesian product of the specified lists (collected in a top-level
-% list).
+% @doc Returns the cartesian product of the specified lists (collected in a
+% top-level list).
 %
-% Ex: cartesian_product( [ [a,b,c], [d,e], [f] ] ) =
-% [ [a,d,f], [a,e,f], [b,d,f], [b,e,f], [c,d,f], [c,e,f] ]
+% Ex: cartesian_product([[a,b,c], [d,e], [f]]) =
+%     [[a,d,f], [a,e,f], [b,d,f], [b,e,f], [c,d,f], [c,e,f]]
 %
 -spec cartesian_product( [ [ T ] ] ) -> [ [ T ] ].
 cartesian_product( [ SingleList ] ) ->
@@ -681,7 +684,7 @@ cartesian_product( [ List | OtherLists ] ) ->
 
 
 
-% Returns a list equal to L1 except that all elements found in L2 have been
+% @doc Returns a list equal to L1 except that all elements found in L2 have been
 % removed, even if in L1 they were duplicated.
 %
 % Note: like lists:subtract/2, except that *all* occurences from L2 in L1 (not
@@ -698,8 +701,8 @@ subtract_all_duplicates( L1, L2 ) ->
 
 
 
-% Returns a copy of the specified list where the first element matching Elem is
-% deleted, ensuring at least one of these elements exists (as opposed to
+% @doc Returns a copy of the specified list where the first element matching
+% Elem is deleted, ensuring at least one of these elements exists (as opposed to
 % lists:delete/2). The order of the specified list is preserved.
 %
 -spec delete_existing( element(), list() ) -> list().
@@ -723,10 +726,10 @@ delete_existing( Elem, _List=[ H | T ], OriginalList, Acc ) ->
 
 
 
-% Deletes the first matching of specified element from specified list, returning
-% whether an element has been removed: either the 'not_found' atom (in which
-% case the list remained the same) or the corresponding new list (same order and
-% content, except first occurrence removed).
+% @doc Deletes the first matching of specified element from specified list,
+% returning whether an element has been removed: either the 'not_found' atom (in
+% which case the list remained the same) or the corresponding new list (same
+% order and content, except first occurrence removed).
 %
 % Note: allows to perform only one traversal of the list (compared for example
 % to a lists:member/2 then a lists:delete/2).
@@ -747,7 +750,7 @@ delete_if_existing( Elem, _List=[ H | T ], Acc ) ->
 
 
 
-% Returns a copy of the specified list where all elements matching Elem are
+% @doc Returns a copy of the specified list where all elements matching Elem are
 % deleted, whether or not there is any.
 %
 % The element order of the specified list is preserved.
@@ -772,8 +775,8 @@ delete_all_in( Elem, _List=[ H | T ], Acc ) ->
 
 
 
-% Appends specified element at the end of specified list, without changing the
-% order of the list.
+% @doc Appends specified element at the end of specified list, without changing
+% the order of the list.
 %
 % Ex: append_at_end(d, [a,b,c]) returns [a,b,c,d].
 %
@@ -795,7 +798,7 @@ append_at_end( Elem, L ) when is_list( L ) ->
 
 
 
-% Returns whether the specified list contains only integers.
+% @doc Returns whether the specified list contains only integers.
 -spec are_integers( term() ) -> boolean().
 are_integers( [] ) ->
 	true;
@@ -807,13 +810,13 @@ are_integers( _ ) ->
 	false.
 
 
-% Checks that specified argument is a list of integers.
+% @doc Checks that specified argument is a list of integers.
 -spec check_integers( term() ) -> void().
 check_integers( Any ) ->
 	true = are_integers( Any ).
 
 
-% Returns whether the specified list contains only PIDs.
+% @doc Returns whether the specified list contains only PIDs.
 -spec are_pids( term() ) -> boolean().
 are_pids( [] ) ->
 	true;
@@ -826,7 +829,7 @@ are_pids( _ ) ->
 
 
 
-% Compares the two specified lists with no regard to the order of their
+% @doc Compares the two specified lists with no regard to the order of their
 % elements: returns true iff they have the exact same elements (differentiating
 % between 1 and 1.0 for example), possibly in a different order.
 %
@@ -836,9 +839,9 @@ unordered_compare( L1, L2 ) ->
 
 
 
-% Flattens specified list of lists only once (i.e. on a single level), as
-% opposed to indefinitively (as done recursively by lists:flatten/1); provides
-% more control than a recursive counterpart.
+% @doc Flattens specified list of lists only once (that is on a single level),
+% as opposed to indefinitively (as done recursively by lists:flatten/1);
+% provides more control than a recursive counterpart.
 %
 % Element order is preserved.
 %
@@ -866,7 +869,7 @@ flatten_once( [ Unexpected | _T ], _Acc ) ->
 
 
 
-% Removes (filters out) all elements equal to 'undefined'; preserves order.
+% @doc Removes (filters out) all elements equal to 'undefined'; preserves order.
 -spec filter_out_undefined( list() ) -> list().
 filter_out_undefined( L ) ->
 	% Or: delete_all_in( undefined, L ).
@@ -874,9 +877,9 @@ filter_out_undefined( L ) ->
 
 
 
-% Determines tuple-related information about specified datastructure: returns
-% {TupleCount, TupleSize}, supposing the list is made of tuples of uniform
-% sizes.
+% @doc Determines tuple-related information about specified datastructure:
+% returns {TupleCount, TupleSize}, supposing the list is made of tuples of
+% uniform sizes.
 %
 -spec determine_tuple_info( [ tuple() ] ) -> { count(), count() }.
 determine_tuple_info( _TupleList=[] ) ->
@@ -908,7 +911,7 @@ check_tuple_length( _TupleList=[ Tuple | T ], TupleSize, AccCount ) ->
 
 
 
-% Flattens a list of tuples into a simple list of their elements, without
+% @doc Flattens a list of tuples into a simple list of their elements, without
 % tuples and in the same order.
 %
 % Ex: flatten_tuples([{1, 2, 3}, {4, 5, 6}]) = [1, 2, 3, 4, 5, 6])
@@ -927,7 +930,8 @@ flatten_tuples( [ H | T ], Acc ) ->
 
 
 
-% Reconstructs a list of tuples of specified size from the specified flat list.
+% @doc Reconstructs a list of tuples of specified size from the specified flat
+% list.
 %
 % Ex: reconstruct_tuples([ 1, 2, 3, 4, 5, 6 ], 3) = [{1, 2, 3}, {4, 5, 6}]
 %
@@ -952,7 +956,7 @@ reconstruct_tuples( List, TupleSize, Acc ) ->
 % Section to perform random operations on lists.
 
 
-% Returns a random uniform permutation of the specified list.
+% @doc Returns a random uniform permutation of the specified list.
 %
 % Inspired from http://paste.lisp.org/display/74804.
 %
@@ -989,7 +993,7 @@ random_permute( List, RemainingLen ) ->
 
 
 
-% Returns a reciprocal random uniform permutation of the specified list,
+% @doc Returns a reciprocal random uniform permutation of the specified list,
 % compared to random_permute/1.
 %
 % Consists on the reciprocal operation, so that, if starting from a random state
@@ -1025,8 +1029,8 @@ random_permute_reciprocal( _List=[ H | T ], _ReciprocalIndex=[ I | Is ],
 
 
 
-% Draws one element at random of the specified list, knowing that they all have
-% the same probability of being drawn (uniform probability).
+% @doc Draws one element at random of the specified list, knowing that they all
+% have the same probability of being drawn (uniform probability).
 %
 -spec draw_element( list() ) -> element().
 draw_element( _ElementList=[] ) ->
@@ -1038,9 +1042,10 @@ draw_element( ElementList ) ->
 
 
 
-% Draws one element at random of the specified list, whose length must be the
-% specified one (allows to precompute it once for multiple drawings), knowing
-% all elements have the same probability of being drawn (uniform probability).
+% @doc Draws one element at random of the specified list, whose length must be
+% the specified one (allows to precompute it once for multiple drawings),
+% knowing all elements have the same probability of being drawn (uniform
+% probability).
 %
 -spec draw_element( list(), count() ) -> element().
 draw_element( ElementList, Length ) ->
@@ -1057,18 +1062,18 @@ draw_element( ElementList, Length ) ->
 
 
 
-% Draws one element at random of the specified list, which is a list of {
-% Element, Probability } pairs: returns the drawn element, knowing that it will
+% @doc Draws one element at random of the specified list, which is a list of
+% {Element, Probability} pairs: returns the drawn element, knowing that it will
 % be chosen according to the probability associated to each element.
 %
 % Probabilities are managed as positive (possibly null) numbers (integer or
 % floating-point values) defined relatively to each other (they do not have to
 % sum up to 1.0).
 %
-% Ex: ElementList = [ {first,1}, {second,2}, {third,1} ] is excepted to return
-% on average 'second' twice as frequently as 'first' or 'third'.
+% Ex: ElementList = [{first,1}, {second,2}, {third,1}] is excepted to return on
+% average 'second' twice as frequently as 'first' or 'third'.
 %
-% Using [ {first,1}, {second,0}, {third,1} ] instead would mean that 'second'
+% Using [{first,1}, {second,0}, {third,1}] instead would mean that 'second'
 % would never be drawn.
 %
 -spec draw_element_weighted( [ { element(), number() } ] ) -> element().
@@ -1099,7 +1104,7 @@ draw_element_weighted( ElementList, Sum ) ->
 	select_element( ElementList, DrawnValue, _CurrentSum=0 ).
 
 
-
+% (helper)
 select_element( [ { Element, Probability } | _T ], DrawnValue, CurrentSum )
 		when Probability + CurrentSum >= DrawnValue ->
 	% Just gone past the probability range:
@@ -1111,7 +1116,7 @@ select_element( [ { _Element, Probability } | T ], DrawnValue, CurrentSum ) ->
 
 
 
-% Draws the specified number of elements at random of the specified list,
+% @doc Draws the specified number of elements at random of the specified list,
 % knowing that they all have the same probability of being drawn initially, but
 % when an element is drawn, it is removed from the candidate list so that the
 % next drawing operates on the resulting shortened list, so that any element is
@@ -1130,11 +1135,11 @@ draw_elements_from( ElementList, Count ) ->
 
 
 
-% Extracts the specified number of elements at random from the specified list,
-% knowing that they all have the same probability of being extracted initially,
-% but when an element is extracted, it is removed from the candidate list so
-% that the next extracting operates on the resulting shortened list (i.e. a
-% subset with no duplicates is returned).
+% @doc Extracts the specified number of elements at random from the specified
+% list, knowing that they all have the same probability of being extracted
+% initially, but when an element is extracted, it is removed from the candidate
+% list so that the next extracting operates on the resulting shortened list
+% (that is a subset with no duplicates is returned).
 %
 % Returns the list of extracted elements, and the list of the remaining
 % elements.
@@ -1148,6 +1153,7 @@ extract_elements_from( ElementList, Count ) ->
 	extract_elements_from( ElementList, Count, _AccExtract=[] ).
 
 
+% (helper)
 extract_elements_from( RemainingElems, _Count=0, AccExtract ) ->
 	{ AccExtract, RemainingElems };
 

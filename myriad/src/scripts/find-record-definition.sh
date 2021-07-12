@@ -1,12 +1,21 @@
 #!/bin/sh
 
-usage="  Usage: $(basename $0) [-h|--help] A_RECORD_NAME [A_DIR]: attempts to find the definition of the specified Erlang record from the specified directory (if any), otherwise from the current one."
+usage="Usage: $(basename $0) [-h|--help] A_RECORD_NAME [A_DIR]: attempts to find the definition of the specified Erlang record from the specified directory (if any), otherwise from the current one."
 
 
-if [ "$1" = "-h" ] || [ "$1" = "--help" ] || [ -z "$1" ]; then
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
 
 	echo "  ${usage}"
 	exit
+
+fi
+
+
+if [ -z "$1" ]; then
+
+	echo "Error, at least one parameter expected.
+${usage}" 1>&2
+	exit 4
 
 fi
 
@@ -43,8 +52,8 @@ echo
 
 
 # Finally better with no context (file will probably have to be opened anyway):
-#context_opt="--after-context=15"
-context_opt=""
+context_opt="--after-context=15"
+#context_opt=""
 
 # DUMMY to force the display of the corresponding file.
-cd ${base_dir} && find . -name '*.?rl' -exec /bin/grep --after-context=50 --color ${context_opt} -e "[[:space:]]\?-record([[:space:]]\+${record_name}" DUMMY '{}' ';' 2>/dev/null
+cd ${base_dir} && find . -name '*.?rl' -exec /bin/grep --color ${context_opt} -e "[[:space:]]\?-record([[:space:]]*${record_name}" DUMMY '{}' ';' 2>/dev/null

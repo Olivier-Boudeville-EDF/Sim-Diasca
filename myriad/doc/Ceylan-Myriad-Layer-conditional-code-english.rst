@@ -81,7 +81,7 @@ or, to illustrate expression blocks:
  cond_utils:if_debug(begin
 						 C=B+1,
 						 io:format("Goodbye ~p",[C])
-					   end)
+					 end)
 
 
 These constructs will be replaced by the expression they specify for injection, at their location in the program, iff the ``myriad_debug_mode`` token has been defined, otherwise they will be replaced by nothing at all (hence with exactly *no* runtime penalty; and the result of the evaluation of ``if_debug/1`` is then not an expression).
@@ -181,11 +181,11 @@ A variation of this primitive exists that applies a default token value if none 
 .. code:: erlang
 
   cond_utils:switch_set_to(TOKEN,
-							 [ {VALUE_1, EXPR_1},
-							   {VALUE_2, EXPR_2},
-							   % [...]
-							   {VALUE_N, EXPR_N}],
-							 DEFAULT_VALUE)
+						   [ {VALUE_1, EXPR_1},
+							 {VALUE_2, EXPR_2},
+							 % [...]
+							 {VALUE_N, EXPR_N}],
+						   DEFAULT_VALUE)
 
 
 As always with primitives that define a default, alternate branch, they always inject an expression and thus can be considered as such.
@@ -237,8 +237,8 @@ This may be useful for example to control, on a per-theme basis, the level of ch
 .. code:: erlang
 
  cond_utils:assert(debug_gui,1,basic_testing()),
-   cond_utils:assert(debug_gui,2,more_involved_testing()),
-   cond_utils:assert(debug_gui,3,paranoid_testing()),
+ cond_utils:assert(debug_gui,2,more_involved_testing()),
+ cond_utils:assert(debug_gui,3,paranoid_testing()),
 
 Note that, in this case, a given level of checking should include the one just below it (ex: ``more_involved_testing()`` should call ``basic_testing()``).
 

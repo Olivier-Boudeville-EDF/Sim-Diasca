@@ -285,9 +285,9 @@ define_junctions( _Junctioncount=0, GISInfo, Acc ) ->
 
 define_junctions( JunctionCount, GISInfo, Acc ) ->
 
-	% Defines the build parameters for a new junction; we want to end up with
-	% a list of { class_RoadJunction,
-	%   [ Name, Location, InboundCount, OutboundCount, GISInfo ] } elements.
+	% Defines the build parameters for a new junction; we want to end up with a
+	%   list of {class_RoadJunction, [Name, Location, InboundCount,
+	%                                 OutboundCount, GISInfo]} elements.
 
 	Name = text_utils:format( "RoadJunction-~B", [ JunctionCount ] ),
 
@@ -297,19 +297,22 @@ define_junctions( JunctionCount, GISInfo, Acc ) ->
 	% - at least 1
 	% - on average, 3
 	% - no more than 5 each
-	%
+
+	Mean = 2,
+	StdDeviation = 2,
+
 	DrawnInboundCount = min( 5,
 			  1 + class_RandomManager:get_positive_integer_gaussian_value(
-											   _Mean=2, _StdDeviation=2 ) ),
+												Mean, StdDeviation ) ),
 	DrawnOutboundCount = min( 1,
 			  1 + class_RandomManager:get_positive_integer_gaussian_value(
-											   _Mean=2, _StdDeviation=2 ) ),
+												Mean, StdDeviation ) ),
 
 
 	% Location and GIS PID to be added later:
 	NewAcc = [ { Name, DrawnInboundCount, DrawnOutboundCount } | Acc ],
 
-	define_junctions( JunctionCount - 1, GISInfo, NewAcc ).
+	define_junctions( JunctionCount-1, GISInfo, NewAcc ).
 
 
 

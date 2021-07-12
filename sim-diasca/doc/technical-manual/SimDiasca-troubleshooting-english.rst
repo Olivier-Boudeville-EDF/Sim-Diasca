@@ -374,7 +374,7 @@ Common Misconceptions
 :raw-latex:`\includegraphics[scale=0.6]{xkcd-misconceptions.png}`
 
 
-Here is the list of most common misconceptions we spotted:
+Here is the list of most common misconceptions that we spotted:
 
 
 **Traces are part of simulation results**

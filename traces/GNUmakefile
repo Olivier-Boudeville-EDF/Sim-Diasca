@@ -4,7 +4,9 @@ TRACES_TOP = .
 .PHONY: help help-intro help-traces                                   \
 		all register-version-in-header register-traces list-beam-dirs \
 		add-prerequisite-plts link-plt                                \
-		stats info-traces info-compile info-conditionals info-deps
+		stats                                                         \
+		info-context info-versions info-traces info-compile           \
+		info-conditionals info-deps
 
 
 MODULES_DIRS = src doc conf test examples
@@ -28,9 +30,9 @@ help-traces:
 
 
 register-version-in-header:
-	@if [ -z "$(VERSION_FILE)" ] ; then \
-	echo "Error, no version file defined." 1>&2 ; exit 52 ; else \
-	$(MAKE) register-traces ; fi
+	@if [ -z "$(VERSION_FILE)" ]; then \
+	echo "Error, no version file defined." 1>&2; exit 52; else \
+	$(MAKE) register-traces; fi
 
 
 register-traces:
@@ -39,7 +41,7 @@ register-traces:
 
 # Useful to extract internal layout for re-use in upper layers:
 list-beam-dirs:
-	@for d in $(TRACES_BEAM_DIRS) ; do echo $$(readlink -f $$d) ; done
+	@for d in $(TRACES_BEAM_DIRS); do echo $$(readlink -f $$d); done
 
 
 add-prerequisite-plts: link-plt
@@ -47,20 +49,28 @@ add-prerequisite-plts: link-plt
 
 # As upper layers may rely on the 'traces' naming:
 link-plt:
-	@if [ ! "$(PLT_FILE)" = "$(TRACES_PLT_FILE)" ]; then /bin/ln -s --force $(PLT_FILE) $(TRACES_PLT_FILE) ; fi
+	@if [ ! "$(PLT_FILE)" = "$(TRACES_PLT_FILE)" ]; then /bin/ln -s --force $(PLT_FILE) $(TRACES_PLT_FILE); fi
 
 
 stats:
 	@$(MAKE_CODE_STATS) $(TRACES_TOP)
 
 
+# Typically useful to know the software context for continuous integration:
+info-context: info-platform info-versions
+
+
+info-versions:
+	@echo "MYRIAD_VERSION = $(MYRIAD_VERSION)"
+	@echo "WOOPER_VERSION = $(WOOPER_VERSION)"
+	@echo "TRACES_VERSION = $(TRACES_VERSION)"
+
+
 info-traces:
 	@echo "ENABLE_TRACE_OPT = $(ENABLE_TRACE_OPT)"
 
 
-info-compile:
-	@echo "ERLANG_COMPILER_OPT_FOR_STANDARD_MODULES = $(ERLANG_COMPILER_OPT_FOR_STANDARD_MODULES)"
-	@echo "COMPILER_OPT_FOR_WOOPER_CLASSES = $(COMPILER_OPT_FOR_WOOPER_CLASSES)"
+info-compile: info-compile-wooper
 
 
 info-conditionals:

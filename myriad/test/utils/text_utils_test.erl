@@ -184,7 +184,7 @@ run() ->
 	test_facilities:display( "Displaying text '~ts' once formatted "
 		"for a width of ~B:~n~p",
 		[ JustWideEnoughLine, NewTargetWidth, text_utils:format_text_for_width(
-								 JustWideEnoughLine, NewTargetWidth ) ] ),
+								    JustWideEnoughLine, NewTargetWidth ) ] ),
 
 
 	test_facilities:display( "Displaying atom list, obtained from string "
@@ -341,7 +341,7 @@ run() ->
 
 	ResultStrings = [ text_utils:format( "'~ts': ~B", [ S,
 			text_utils:get_lexicographic_distance( RefString, S ) ] )
-					  || S <- CompareStrings ],
+					    || S <- CompareStrings ],
 
 	test_facilities:display( "Lexicographic distance between '~ts' and: ~ts",
 		[ RefString, text_utils:strings_to_string( ResultStrings ) ] ),
@@ -446,6 +446,9 @@ run() ->
 		text_utils:ellipse( LongerText, _SecondMaxLen=28 ),
 
 
+	ToQuote = [ "Tu", <<"quoque">>, "mi", "fili" ],
+	test_facilities:display( "Double-quoting '~p' results in:~n~p",
+		[ ToQuote, text_utils:double_quote_strings( ToQuote ) ] ),
 
 	EscapeString = "I *am* to be \"escaped\", as 'I shall be escaped'",
 

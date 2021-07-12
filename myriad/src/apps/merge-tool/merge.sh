@@ -10,7 +10,10 @@ merge_dir="$(dirname $0)"
 
 cd "${merge_dir}"
 
+# Using --nn to spawn a non-named VM (i.e. a non-distributed node), to allow for
+# multiple instances of this script/application to run concurrently.
+#
 # Any argument(s) specified to this script shall be interpreted as a plain,
 # extra one:
 #
-make -s merge_exec CMD_LINE_OPT="--base-dir ${base_dir} $*"
+make -s merge_utils.beam merge_exec NODE_NAMING="--nn" CMD_LINE_OPT="--base-dir ${base_dir} $*"

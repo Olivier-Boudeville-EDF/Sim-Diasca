@@ -45,7 +45,7 @@ run() ->
 	% Examples of configuration files:
 
 	LocalPath = file_utils:join( [ "test", "core", "services",
-						   "data-management", "data-exchange" ] ),
+								   "data-management", "data-exchange" ] ),
 
 	_ValidConfigurationFilename = file_utils:join( LocalPath,
 		"valid_example_configuration_file.cfg" ),
@@ -105,7 +105,7 @@ run() ->
 
 	% Directly created on the user node:
 	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-								 DeploymentSettings, LoadBalancingSettings ),
+								DeploymentSettings, LoadBalancingSettings ),
 
 	?test_info( "Deployment manager created, "
 				"retrieving the root data exchanger." ),
@@ -128,10 +128,10 @@ run() ->
 
 	% We can use a data list as well:
 	class_DataExchanger:define_initial_data( [
-			 { example_key_2, example_value_2 },
-			 { example_key_3, example_value_3 },
-			 { example_key_5, example_value_5, mutable },
-			 { example_key_for_actors, 1, mutable } ] ),
+			{ example_key_2, example_value_2 },
+			{ example_key_3, example_value_3 },
+			{ example_key_5, example_value_5, mutable },
+			{ example_key_for_actors, 1, mutable } ] ),
 
 	% Trying to define an already defined data:
 	%class_DataExchanger:define_initial_data( example_key_1, whatever ),
@@ -175,8 +175,8 @@ run() ->
 	?test_info( "Now testing the reading of initial data." ),
 
 	% Successful reading of an updated data:
-	other_example_value_4 = class_DataExchanger:read_initial_data(
-													example_key_4 ),
+	other_example_value_4 =
+		class_DataExchanger:read_initial_data( example_key_4 ),
 
 	% Reading a non-existing data will fail:
 	%non_existing_value =

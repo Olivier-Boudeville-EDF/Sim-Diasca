@@ -33,7 +33,7 @@
 -compile( {parse_transform, myriad_parse_transform } ).
 
 
-% Centralisation of class-level information.
+% @doc Centralisation of <b>class-level information</b>.
 -module(wooper_info).
 
 
@@ -48,21 +48,24 @@
 -type class_description() :: ustring().
 
 
-% Mother classes (usually direct ones):
 -type superclasses() :: [ wooper:classname() ].
+% Mother classes (usually direct ones).
 
 
-% Shorthand:
+% Shorthands:
+-type clause_def() :: meta_utils:clause_def().
+-type file_loc() :: ast_base:file_loc().
+
 -type attribute_qualifier() :: wooper:attribute_qualifier().
 
 
--type attribute_qualifiers() :: attribute_qualifier()
-							  | [ attribute_qualifier() ].
+
+-type attribute_qualifiers() ::
+		attribute_qualifier() | [ attribute_qualifier() ].
 
 -type attribute_description() :: ustring().
 
 
-% How attributes are to be specified by the user:
 -type attribute_spec() ::
 
 		wooper:attribute_name()
@@ -74,22 +77,23 @@
 
 	  | { wooper:attribute_name(), wooper:attribute_type(),
 		  attribute_qualifiers(), attribute_description() }.
+% How attributes are to be specified by the user.
 
 
 -type attribute_info() :: #attribute_info{}.
 
+
+-type attribute_table() :: table( attribute_name(), attribute_info() ).
 % Stores all class-level information (i.e. metadata) regarding attributes (class
 % ones, not parse ones).
-%
--type attribute_table() :: table( attribute_name(), attribute_info() ).
 
 
-% The form corresponding to a method specification:
 -type method_spec() :: ast_base:form().
+% The form corresponding to a method specification.
 
 
-% The type specification of a method:
 -type located_method_spec() :: { ast_info:location(), method_spec() }.
+% The type specification of a method.
 
 
 -type request_info() :: #request_info{}.
@@ -102,69 +106,55 @@
 % Method export tables.
 
 
+-type oneway_export_table() :: table( ast_info:location(),
+								{ ast_base:line(), [ wooper:oneway_id() ] } ).
 % Table storing the export declarations for oneway methods.
 %
 % Quite similar to ast_info:function_export_table().
-%
--type oneway_export_table() :: table( ast_info:location(),
-						   { ast_base:line(), [ wooper:oneway_id() ] } ).
 
 
 
+-type request_export_table() :: table( ast_info:location(),
+							{ ast_base:line(), [ wooper:request_id() ] } ).
 % Table storing the export declarations for request methods.
 %
 % Quite similar to ast_info:function_export_table().
-%
--type request_export_table() :: table( ast_info:location(),
-						   { ast_base:line(), [ wooper:request_id() ] } ).
 
 
 
+-type static_export_table() :: table( ast_info:location(),
+							{ ast_base:line(), [ wooper:static_id() ] } ).
 % Table storing the export declarations for static methods.
 %
 % Quite similar to ast_info:function_export_table().
-%
--type static_export_table() :: table( ast_info:location(),
-						   { ast_base:line(), [ wooper:static_id() ] } ).
 
 
 
-
-% A table storing information about the constructors involved, regarding a
-% class:
-%
 -type constructor_table() :: table( arity(), ast_info:function_info() ).
-
+% A table storing information about the constructors involved, regarding a
+% class.
 
 
 
 % Method definition tables.
 
 
-
+-type oneway_table() :: table( wooper:oneway_id(), oneway_info() ).
 % Table storing reference definitions of oneway methods.
 %
 % Quite similar to ast_info:function_table().
-%
--type oneway_table() :: table( wooper:oneway_id(), oneway_info() ).
 
 
-
+-type request_table() :: table( wooper:request_id(), request_info() ).
 % Table storing reference definitions of request methods.
 %
 % Quite similar to ast_info:function_table().
-%
--type request_table() :: table( wooper:request_id(), request_info() ).
 
 
-
+-type static_table() :: table( wooper:static_id(), static_info() ).
 % Table storing reference definitions of static methods.
 %
 % Quite similar to ast_info:function_table().
-%
--type static_table() :: table( wooper:static_id(), static_info() ).
-
-
 
 
 -export_type([ class_info/0, class_description/0, class_entry/0,
@@ -185,7 +175,6 @@
 
 -type attribute_name() :: wooper:attribute_name().
 -type function_id() :: meta_utils:function_id().
-
 
 
 -export([ init_class_info/0,
@@ -211,8 +200,8 @@
 
 
 
-% Returns a new, blank instance of the class_info record, typically to be fed
-% with an input AST afterwards.
+% @doc Returns a new, blank instance of the class_info record, typically to be
+% fed with an input AST afterwards.
 %
 -spec init_class_info() -> class_info().
 init_class_info() ->
@@ -258,8 +247,8 @@ init_class_info() ->
 
 
 
-% Returns a textual description of specified class information, not including
-% forms, and based on a default indentation level.
+% @doc Returns a textual description of specified class information, not
+% including forms, and based on a default indentation level.
 %
 % Note: here the location information is dropped for all located definitions.
 %
@@ -268,8 +257,9 @@ class_info_to_string( ClassInfo ) ->
 	class_info_to_string( ClassInfo, _DoIncludeForms=false ).
 
 
-% Returns a textual description of specified class information, including forms
-% if requested, and with specified indentation level.
+
+% @doc Returns a textual description of specified class information, including
+% forms if requested, and with specified indentation level.
 %
 % Note: here the location information is dropped for all located definitions.
 %
@@ -278,8 +268,8 @@ class_info_to_string( ClassInfo, DoIncludeForms ) ->
 	class_info_to_string( ClassInfo, DoIncludeForms, _IndentationLevel=0 ).
 
 
-% Returns a textual description of specified class information, including forms
-% if requested, and with specified indentation level.
+% @doc Returns a textual description of specified class information, including
+% forms if requested, and with specified indentation level.
 %
 % Note: here the location information is dropped for all located definitions.
 %
@@ -314,7 +304,7 @@ class_info_to_string( #class_info{
 						 statics=StaticTable,
 						 optional_callbacks_defs=OptCallbacksDefs,
 						 debug_mode=IsDebugMode,
-						 last_line=LastLineLocDef,
+						 last_file_location=LastLineLocDef,
 						 markers=MarkerTable,
 						 errors=Errors,
 						 unhandled_forms=UnhandledForms },
@@ -346,21 +336,21 @@ class_info_to_string( #class_info{
 									  NextIndentationLevel ),
 
 			  class_specific_attributes_to_string( AttributeTable,
-									   DoIncludeForms, NextIndentationLevel ),
+										DoIncludeForms, NextIndentationLevel ),
 
 			  inherited_attributes_to_string( InheritedAttributes,
-									   DoIncludeForms, NextIndentationLevel ),
+										DoIncludeForms, NextIndentationLevel ),
 
 			  ast_info:compilation_options_to_string( CompileOpts,
 						CompileOptDefs, DoIncludeForms, NextIndentationLevel ),
 
 			  ast_info:optional_callbacks_to_string( OptCallbacksDefs,
-								   DoIncludeForms, NextIndentationLevel ),
+									DoIncludeForms, NextIndentationLevel ),
 
 			  DebugString,
 
 			  ast_info:parse_attribute_table_to_string( ParseAttributeTable,
-										 DoIncludeForms, NextIndentationLevel ),
+										DoIncludeForms, NextIndentationLevel ),
 
 			  ast_info:remote_spec_definitions_to_string( RemoteSpecDefs,
 										DoIncludeForms, NextIndentationLevel ),
@@ -378,7 +368,7 @@ class_info_to_string( #class_info{
 			  ast_info:records_to_string( RecordTable, NextIndentationLevel ),
 
 			  ast_info:function_imports_to_string( FunctionImportTable,
-				  FunctionImportDefs, DoIncludeForms, NextIndentationLevel ),
+					FunctionImportDefs, DoIncludeForms, NextIndentationLevel ),
 
 			  ast_info:functions_to_string( FunctionTable, DoIncludeForms,
 											NextIndentationLevel ),
@@ -408,7 +398,7 @@ class_info_to_string( #class_info{
 			  ast_info:errors_to_string( Errors, NextIndentationLevel ),
 
 			  ast_info:unhandled_forms_to_string( UnhandledForms,
-							 DoIncludeForms, NextIndentationLevel ) ],
+								DoIncludeForms, NextIndentationLevel ) ],
 
 		text_utils:format( "Information about class ~ts: ~ts",
 			[ ClassnameString,
@@ -417,12 +407,8 @@ class_info_to_string( #class_info{
 
 
 
-
-
-
-
-% Returns a textual representation of the name of the class corresponding to
-% specified entry, possibly with forms.
+% @doc Returns a textual representation of the name of the class corresponding
+% to specified entry, possibly with forms.
 %
 -spec class_entry_to_string( class_entry(), boolean() ) -> ustring().
 class_entry_to_string( _ClassEntry=undefined, _DoIncludeForms ) ->
@@ -439,7 +425,7 @@ class_entry_to_string( _ClassEntry={ ThisClassname,
 
 
 
-% Returns a textual representation of the specified superclasses.
+% @doc Returns a textual representation of the specified superclasses.
 -spec superclasses_to_string( superclasses(), boolean(),
 							  indentation_level() ) -> ustring().
 superclasses_to_string( _Superclasses=[], _DoIncludeForms,
@@ -453,7 +439,9 @@ superclasses_to_string( Superclasses, _DoIncludeForms,
 
 
 
-% Returns a textual representation of the specified class-specific attributes.
+% @doc Returns a textual representation of the specified class-specific
+% attributes.
+%
 -spec class_specific_attributes_to_string( attribute_table(), boolean(),
 										   indentation_level() ) -> ustring().
 class_specific_attributes_to_string( AttributeTable, DoIncludeForms,
@@ -479,7 +467,7 @@ class_specific_attributes_to_string( AttributeTable, DoIncludeForms,
 
 
 
-% Returns a textual representation of the specified inherited (class)
+% @doc Returns a textual representation of the specified inherited (class)
 % attributes.
 %
 -spec inherited_attributes_to_string( attribute_table(), boolean(),
@@ -507,14 +495,16 @@ inherited_attributes_to_string( AttributeTable, DoIncludeForms,
 
 
 
-% Returns a textual representation of the specified attribute information.
+% @doc Returns a textual representation of the specified attribute information.
 -spec attribute_info_to_string( attribute_info(), boolean() ) -> ustring().
 attribute_info_to_string( _AttributeInfo, _DoIncludeForms ) ->
 	"attribute info".
 
 
 
-% Returns a textual representation of the specified constructor information.
+% @doc Returns a textual representation of the specified constructor
+% information.
+%
 -spec constructors_to_string( constructor_table(), boolean(),
 							  indentation_level() ) -> ustring().
 constructors_to_string( ConstructorTable, DoIncludeForms, IndentationLevel ) ->
@@ -533,7 +523,7 @@ constructors_to_string( ConstructorTable, DoIncludeForms, IndentationLevel ) ->
 				begin
 
 					FunString = ast_info:function_info_to_string(
-						  ConstructFunInfo, DoIncludeForms, IndentationLevel ),
+						ConstructFunInfo, DoIncludeForms, IndentationLevel ),
 
 					text_utils:format( "of arity ~B, implemented as: ~ts",
 									   [ Arity, FunString ] )
@@ -547,7 +537,7 @@ constructors_to_string( ConstructorTable, DoIncludeForms, IndentationLevel ) ->
 
 
 
-% Returns a textual representation of the specified destructor information.
+% @doc Returns a textual representation of the specified destructor information.
 -spec destructor_to_string( maybe( ast_info:function_info() ), boolean(),
 							indentation_level() ) -> ustring().
 destructor_to_string( _DestructorInfo=undefined, _DoIncludeForms,
@@ -557,11 +547,13 @@ destructor_to_string( _DestructorInfo=undefined, _DoIncludeForms,
 destructor_to_string( DestructorFunInfo, DoIncludeForms, IndentationLevel ) ->
 	text_utils:format( "following destructor defined: ~ts",
 		[ ast_info:function_info_to_string( DestructorFunInfo,
-			DoIncludeForms, IndentationLevel ) ] ).
+										DoIncludeForms, IndentationLevel ) ] ).
 
 
 
-% Returns a textual representation of the specified information about requests.
+% @doc Returns a textual representation of the specified information about
+% requests.
+%
 -spec requests_to_string( request_table(), boolean(), indentation_level() ) ->
 								ustring().
 requests_to_string( RequestTable, DoIncludeForms, IndentationLevel ) ->
@@ -585,63 +577,32 @@ requests_to_string( RequestTable, DoIncludeForms, IndentationLevel ) ->
 
 
 
-% Returns a textual representation of the specified request information.
+% @doc Returns a textual representation of the specified request information.
 -spec request_info_to_string( request_info(), boolean(),
 							  indentation_level() ) -> ustring().
 request_info_to_string( #request_info{ name=Name,
 									   arity=Arity,
 									   qualifiers=Qualifiers,
-									   location=_Location,
-									   line=Line,
+									   %ast_location=_ASTLoc,
+									   file_location=FileLoc,
 									   clauses=Clauses,
 									   spec=LocatedSpec },
 						DoIncludeForms, IndentationLevel ) ->
 
-	QualString = case Qualifiers of
-
-	  Q when Q =:= [] orelse Q =:= none ->
-		  "no qualifier";
-
-	  [ SingleQualifier ] ->
-		  text_utils:format( "the ~w qualifier", [ SingleQualifier ] );
-
-	  Qualifiers ->
-		  text_utils:format( "the ~w qualifiers", [ Qualifiers ] )
-
-	end,
-
-	DefString = case Line of
-
-		undefined ->
-			text_utils:format( "with ~B clause(s) defined",
-							   [ length( Clauses ) ] );
-
-		_ ->
-			text_utils:format( "defined from line #~B, with "
-			   "~B clause(s) specified", [ Line, length( Clauses ) ] )
-
-	end,
-
-	SpecString = case LocatedSpec of
-
-		undefined ->
-			"no type specification";
-
-		_ ->
-			"a type specification"
-
-	end,
+	QualString = qualifiers_to_string( Qualifiers ),
+	DefString = definition_to_string( Clauses, FileLoc ),
+	SpecString = located_spec_to_string( LocatedSpec ),
 
 	BaseString = text_utils:format(
-				   "request ~ts/~B with ~ts defined, ~ts and ~ts",
-				   [ Name, Arity, QualString, DefString, SpecString ] ),
+		"request ~ts/~B with ~ts defined, ~ts and ~ts",
+		[ Name, Arity, QualString, DefString, SpecString ] ),
 
 	case DoIncludeForms of
 
 		true ->
-			text_utils:format( "~ts~n~ts",
-							   [ BaseString, ast_function:clauses_to_string(
-										  Clauses, IndentationLevel + 1 ) ] );
+			text_utils:format( "~ts~n~ts", [ BaseString,
+				ast_function:clauses_to_string( Clauses,
+												IndentationLevel+1 ) ] );
 
 		false ->
 			BaseString
@@ -650,10 +611,11 @@ request_info_to_string( #request_info{ name=Name,
 
 
 
-
-% Returns a textual representation of the specified information about oneways.
+% @doc Returns a textual representation of the specified information about
+% oneways.
+%
 -spec oneways_to_string( oneway_table(), boolean(), indentation_level() ) ->
-							   ustring().
+								ustring().
 oneways_to_string( OnewayTable, DoIncludeForms, IndentationLevel ) ->
 
 	case table:values( OnewayTable ) of
@@ -675,64 +637,33 @@ oneways_to_string( OnewayTable, DoIncludeForms, IndentationLevel ) ->
 
 
 
-% Returns a textual representation of the specified oneway information.
+% @doc Returns a textual representation of the specified oneway information.
 -spec oneway_info_to_string( oneway_info(), boolean(), indentation_level() ) ->
 								   ustring().
 oneway_info_to_string( #oneway_info{ name=Name,
 									 arity=Arity,
 									 qualifiers=Qualifiers,
-									 location=_Location,
-									 line=Line,
+									 %ast_location=_ASTLoc,
+									 file_location=FileLoc,
 									 clauses=Clauses,
 									 spec=LocatedSpec },
 						DoIncludeForms,
 						IndentationLevel ) ->
 
-	QualString = case Qualifiers of
-
-	  Q when Q =:= [] orelse Q =:= none ->
-		  "no qualifier";
-
-	  [ SingleQualifier ] ->
-		  text_utils:format( "the ~w qualifier", [ SingleQualifier ] );
-
-	  Qualifiers ->
-		  text_utils:format( "the ~w qualifiers", [ Qualifiers ] )
-
-	end,
-
-	DefString = case Line of
-
-		undefined ->
-			text_utils:format( "with ~B clause(s) defined",
-							   [ length( Clauses ) ] );
-
-		_ ->
-			text_utils:format( "defined from line #~B, with "
-			   "~B clause(s) specified", [ Line, length( Clauses ) ] )
-
-	end,
-
-	SpecString = case LocatedSpec of
-
-		undefined ->
-			"no type specification";
-
-		_ ->
-			"a type specification"
-
-	end,
+	QualString = qualifiers_to_string( Qualifiers ),
+	DefString = definition_to_string( Clauses, FileLoc ),
+	SpecString = located_spec_to_string( LocatedSpec ),
 
 	BaseString = text_utils:format(
-				   "oneway ~ts/~B with ~ts defined, ~ts and ~ts",
-				   [ Name, Arity, QualString, DefString, SpecString ] ),
+		"oneway ~ts/~B with ~ts defined, ~ts and ~ts",
+		[ Name, Arity, QualString, DefString, SpecString ] ),
 
 	case DoIncludeForms of
 
 		true ->
 			text_utils:format( "~ts~n~ts", [ BaseString,
 				ast_function:clauses_to_string( Clauses,
-												IndentationLevel + 1 ) ] );
+												IndentationLevel+1 ) ] );
 
 		false ->
 			BaseString
@@ -741,8 +672,8 @@ oneway_info_to_string( #oneway_info{ name=Name,
 
 
 
-% Returns a textual representation of the specified information about static
-% methods.
+% @doc Returns a textual representation of the specified information about
+% static methods.
 %
 -spec static_methods_to_string( static_table(), boolean(),
 								indentation_level() ) -> ustring().
@@ -757,7 +688,7 @@ static_methods_to_string( StaticTable, DoIncludeForms, IndentationLevel ) ->
 
 			StatString = text_utils:strings_to_string( [
 				static_method_info_to_string( StatInfo, DoIncludeForms,
-							 IndentationLevel ) || StatInfo <- StatInfos ],
+								IndentationLevel ) || StatInfo <- StatInfos ],
 													   IndentationLevel ),
 
 			text_utils:format( "~B static method(s) defined: ~ts",
@@ -767,71 +698,40 @@ static_methods_to_string( StaticTable, DoIncludeForms, IndentationLevel ) ->
 
 
 
-% Returns a textual representation of the specified static method information.
+% @doc Returns a textual representation of the specified static method
+% information.
+%
 -spec static_method_info_to_string( static_info(), boolean(),
 									indentation_level() ) -> ustring().
 static_method_info_to_string( #static_info{ name=Name,
 											arity=Arity,
 											qualifiers=Qualifiers,
-											location=_Location,
-											line=Line,
+											%ast_location=_ASTLoc,
+											file_location=FileLoc,
 											clauses=Clauses,
 											spec=LocatedSpec },
 							  DoIncludeForms,
 							  IndentationLevel ) ->
 
-	QualString = case Qualifiers of
-
-	  Q when Q =:= [] orelse Q =:= none ->
-		  "no qualifier";
-
-	  [ SingleQualifier ] ->
-		  text_utils:format( "the ~w qualifier", [ SingleQualifier ] );
-
-	  Qualifiers ->
-		  text_utils:format( "the ~w qualifiers", [ Qualifiers ] )
-
-	end,
-
-	DefString = case Line of
-
-		undefined ->
-			text_utils:format( "with ~B clause(s) defined",
-							   [ length( Clauses ) ] );
-
-		_ ->
-			text_utils:format( "defined from line #~B, with "
-			   "~B clause(s) specified", [ Line, length( Clauses ) ] )
-
-	end,
-
-	SpecString = case LocatedSpec of
-
-		undefined ->
-			"no type specification";
-
-		_ ->
-			"a type specification"
-
-	end,
+	QualString = qualifiers_to_string( Qualifiers ),
+	DefString = definition_to_string( Clauses, FileLoc ),
+	SpecString = located_spec_to_string( LocatedSpec ),
 
 	BaseString = text_utils:format(
-				   "static method ~ts/~B with ~ts defined, ~ts and ~ts",
-				   [ Name, Arity, QualString, DefString, SpecString ] ),
+		"static method ~ts/~B with ~ts defined, ~ts and ~ts",
+		[ Name, Arity, QualString, DefString, SpecString ] ),
 
 	case DoIncludeForms of
 
 		true ->
-			text_utils:format( "~ts~n~ts",
-							   [ BaseString, ast_function:clauses_to_string(
-										  Clauses, IndentationLevel + 1 ) ] );
+			text_utils:format( "~ts~n~ts", [ BaseString,
+				ast_function:clauses_to_string( Clauses,
+												IndentationLevel+1 ) ] );
 
 		false ->
 			BaseString
 
 	end.
-
-
 
 
 
@@ -841,7 +741,7 @@ static_method_info_to_string( #static_info{ name=Name,
 % WOOPER parse trandsform, and thus are to disappear from here.
 
 
-% Returns the function identifiers of all WOOPER builtins.
+% @doc Returns the function identifiers of all WOOPER builtins.
 -spec get_wooper_builtins() -> [ function_id() ].
 get_wooper_builtins() ->
 	get_metadata_builtins() ++ get_state_builtins() ++ get_execution_builtins()
@@ -850,7 +750,7 @@ get_wooper_builtins() ->
 
 
 
-% Returns the function identifiers of the WOOPER builtins regarding class
+% @doc Returns the function identifiers of the WOOPER builtins regarding class
 % metadata.
 %
 -spec get_metadata_builtins() -> [ function_id() ].
@@ -870,7 +770,7 @@ get_metadata_builtins() ->
 
 
 
-% Returns the function identifiers of the WOOPER builtins regarding state.
+% @doc Returns the function identifiers of the WOOPER builtins regarding state.
 -spec get_state_builtins() -> [ function_id() ].
 get_state_builtins() ->
 	[ {hasAttribute,2},
@@ -903,8 +803,8 @@ get_state_builtins() ->
 
 
 
-% Returns the function identifiers of the WOOPER builtins regarding behaviour
-% (execution).
+% @doc Returns the function identifiers of the WOOPER builtins regarding
+% behaviour (execution).
 %
 -spec get_execution_builtins() -> [ function_id() ].
 get_execution_builtins() ->
@@ -920,8 +820,8 @@ get_execution_builtins() ->
 
 
 
-% Returns the function identifiers of the WOOPER inner builtins (defined for its
-% own mode of operation).
+% @doc Returns the function identifiers of the WOOPER inner builtins (defined
+% for its own mode of operation).
 %
 -spec get_inner_builtins() -> [ function_id() ].
 get_inner_builtins() ->
@@ -947,14 +847,14 @@ get_inner_builtins() ->
 
 
 
-% Returns the function identifiers of the WOOPER helper builtins.
+% @doc Returns the function identifiers of the WOOPER helper builtins.
 -spec get_helper_builtins() -> [ function_id() ].
 get_helper_builtins() ->
 	[ {is_wooper_debug,0} ].
 
 
 
-% Returns the function identifiers of the WOOPER serialisation builtins.
+% @doc Returns the function identifiers of the WOOPER serialisation builtins.
 -spec get_serialisation_builtins() -> [ function_id() ].
 get_serialisation_builtins() ->
 	[ {pre_serialise_hook,1},
@@ -964,3 +864,40 @@ get_serialisation_builtins() ->
 	  {post_serialise_hook,3},
 
 	  {pre_deserialise_hook,2} ].
+
+
+
+% @doc Returns a textual description of the specified qualifiers.
+-spec qualifiers_to_string( [ attribute_qualifier() ] ) -> ustring().
+qualifiers_to_string( _Qualifiers=[] ) ->
+	"no qualifier";
+
+qualifiers_to_string( _Qualifiers=none ) ->
+	"no qualifier";
+
+qualifiers_to_string( [ SingleQualifier ] ) ->
+	text_utils:format( "the ~w qualifier", [ SingleQualifier ] );
+
+qualifiers_to_string( Qualifiers ) ->
+	text_utils:format( "the ~w qualifiers", [ Qualifiers ] ).
+
+
+
+% @doc Returns a textual description of the specified method definition.
+-spec definition_to_string( [ clause_def() ], maybe( file_loc() ) ) ->
+									ustring().
+definition_to_string( Clauses, _FileLoc=undefined ) ->
+	text_utils:format( "with ~B clause(s) defined", [ length( Clauses ) ] );
+
+definition_to_string( Clauses, FileLoc ) ->
+	text_utils:format( "defined from ~ts, with ~B clause(s) specified",
+		[ ast_utils:file_loc_to_string( FileLoc ), length( Clauses ) ] ).
+
+
+% @doc Returns a textual description of the specified located method spec.
+-spec located_spec_to_string( maybe( located_method_spec() ) ) -> ustring().
+located_spec_to_string( _LocatedSpec=undefined ) ->
+	"no type specification";
+
+located_spec_to_string( _LocatedSpec ) ->
+	"a type specification".

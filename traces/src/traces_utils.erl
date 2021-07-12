@@ -26,7 +26,8 @@
 % Creation date: Saturday, May 9, 2020.
 
 
-% Module gathering various trace-related facitilies, notably in link with OTP.
+% @doc Module gathering various <b>trace-related facilities</b>, notably in link
+% with OTP.
 %
 % Note: not to be mixed up with the trace_utils module from Myriad.
 %
@@ -40,8 +41,8 @@
 -include("class_TraceAggregator.hrl").
 
 
-% Names the trace file currently managed by the trace aggregator according to
-% specified name.
+% @doc Names the trace file currently managed by the trace aggregator according
+% to specified name.
 %
 % Note: the aggregator is supposed to have been launched with the 'later'
 % initial supervision setting.

@@ -53,6 +53,9 @@ run_test_ui() ->
 
 	term_ui:display( "My second text to display!" ),
 
+	term_ui:display_instant( "A non-modal (auto-disappearing) display!" ),
+	timer:sleep( 1500 ),
+
 	case term_ui:choose_designated_item_with_default(
 		   "Please choose a color among:",
 		   [ { red, "Reddish" }, { blue, "Blueish" }, { green, "Greenish" } ],

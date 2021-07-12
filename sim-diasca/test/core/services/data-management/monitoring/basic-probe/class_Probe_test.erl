@@ -20,7 +20,7 @@
 
 
 
-% Unit tests for the Probe class implementation.
+% @doc Unit tests for the Probe class implementation.
 %
 % Note: unlike the probe_rendering_test, this test uses the full simulation
 % framework (ex: the result manager).
@@ -47,11 +47,15 @@
 -include("class_Probe.hrl").
 
 
+% Shorthands:
+-type ustring() :: text_utils:ustring().
 
-% Creates a basic facility probe (hence not seen as a result) directly from the
-% simulation test case.
+
+
+% @doc Creates a basic facility probe (hence not seen as a result) directly from
+% the simulation test case.
 %
--spec manage_facility_probe( string(), boolean() ) -> probe_pid().
+-spec manage_facility_probe( ustring(), boolean() ) -> probe_pid().
 manage_facility_probe( ProbeName, UseTickOffsets ) ->
 
 	% Will be overridden anyway:
@@ -60,9 +64,9 @@ manage_facility_probe( ProbeName, UseTickOffsets ) ->
 	% To test different settings:
 	%
 	ProbeOptions = #probe_options{
-					  create_command_file_initially=false,
-					  deferred_data_writes=true,
-					  probe_directory=TargetDir },
+						create_command_file_initially=false,
+						deferred_data_writes=true,
+						probe_directory=TargetDir },
 
 	% Corresponds to the first second of Y2K (with default settings):
 	InitialTick = 3155695200000,
@@ -136,16 +140,16 @@ manage_facility_probe( ProbeName, UseTickOffsets ) ->
 	ProbePid ! { getCurveRenderOrder, [], self() },
 	CurveNames = test_receive(),
 
-	?test_notice_fmt( "Original curve names: ~s.",
-					[ text_utils:strings_to_string( CurveNames ) ] ),
+	?test_notice_fmt( "Original curve names: ~ts.",
+					  [ text_utils:strings_to_string( CurveNames ) ] ),
 
 	% Let's suppose we want to reorder these curves:
 	[ N1, N2, N3, N4 ] = CurveNames,
 
 	NewCurveNames = [ N1, N4, N2, N3 ],
 
-	?test_notice_fmt( "Curve names after reordering: ~s.",
-					[ text_utils:strings_to_string( NewCurveNames ) ] ),
+	?test_notice_fmt( "Curve names after reordering: ~ts.",
+					  [ text_utils:strings_to_string( NewCurveNames ) ] ),
 
 	ProbePid ! { setCurveRenderOrder, [ NewCurveNames ] },
 
@@ -155,9 +159,15 @@ manage_facility_probe( ProbeName, UseTickOffsets ) ->
 							 _SecondLocation={8,5}, _SecondColor="#FF00FF",
 							 _Orientation=45, _Position=right ] },
 
-	% Now the dynamic curve is the third, and the so-called "last" is indeed the
-	% last.
+	% Let's make so that the curve named "Second curve" is in pink now (was
+	% originally probably blue)
+	%
+	ProbePid ! { setCurveColor,
+					[ "Second curve", _ExtraCurveColorSettings="FFC0CB" ] },
 
+	% Now the dynamic curve is the third, and the so-called "last" is indeed the
+	% last:
+	%
 	class_Probe:send_data( ProbePid, InitialTick+13, {4,3,5,2} ),
 
 	ProbePid.
@@ -165,12 +175,10 @@ manage_facility_probe( ProbeName, UseTickOffsets ) ->
 
 
 
-
-
 % Creates a basic test probe (hence, seen as a result) directly from the
 % simulation test case.
 %
--spec manage_test_probe( string() ) -> probe_ref().
+-spec manage_test_probe( ustring() ) -> probe_ref().
 manage_test_probe( ProbeName ) ->
 
 	% To test different settings:
@@ -240,7 +248,7 @@ manage_test_probe( ProbeName ) ->
 			ProbePid ! { getCurveRenderOrder, [], self() },
 			CurveNames = test_receive(),
 
-			?test_notice_fmt( "Original curve names: ~s.",
+			?test_notice_fmt( "Original curve names: ~ts.",
 							[ text_utils:strings_to_string( CurveNames ) ] ),
 
 			% Let's suppose we want to reorder these curves:
@@ -248,7 +256,7 @@ manage_test_probe( ProbeName ) ->
 
 			NewCurveNames = [ N1, N2, N3 ],
 
-			?test_notice_fmt( "Curve names after reordering: ~s.",
+			?test_notice_fmt( "Curve names after reordering: ~ts.",
 							[ text_utils:strings_to_string( NewCurveNames ) ] ),
 
 			ProbePid ! { setCurveRenderOrder, [ NewCurveNames ] },

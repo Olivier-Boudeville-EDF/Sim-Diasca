@@ -44,3 +44,8 @@ Some simple maths-related operations are defined in the ``myriad/src/maths`` dir
 - **bounding-boxes in general** are supported in ``bounding_box.erl``, including ``get_lazy_circle_box/1``, ``get_minimal_enclosing_circle_box/1``, etc.
 
 - a minimalist `Runge-Kutta solver <https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods#The_Runge.E2.80.93Kutta_method>`_ is defined in ``rk4_solver.erl``
+
+A few geometry-related conventions used in Myriad:
+
+- implicit homogeneous `w` coordinates are ``1.0``
+- front-facing polygons are the ones whose signed area is strictly positive: their vertices shall be seen in counter-clockwise winding order when front-facing towards the viewer (as in OpenGL's ``GL_CCW``); see also: ``polygon:{get_area,get_signed_area}/1``

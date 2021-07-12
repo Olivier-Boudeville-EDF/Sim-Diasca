@@ -278,15 +278,17 @@
 construct( State, ActorSettings, Width, Height, BorderSettings ) ->
 
 	ActorState = class_Actor:construct( State, ActorSettings,
-						?trace_categorize(_Name="Environment") ),
+										?trace_categorize("Environment") ),
+
+	EmptyTable = table:new(),
 
 	setAttributes( ActorState, [
 			{ width, Width },
 			{ height, Height },
 			{ border_settings, BorderSettings },
-			{ entities, table:new() },
-			{ query_table, table:new() },
-			{ request_table, table:new() } ] ).
+			{ entities, EmptyTable },
+			{ query_table, EmptyTable },
+			{ request_table, EmptyTable } ] ).
 
 
 
@@ -300,7 +302,7 @@ construct( State, ActorSettings, Width, Height, BorderSettings ) ->
 
 % First scheduling on an environment.
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
-						   const_actor_oneway_return().
+							const_actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 
 	% No specific planned scheduling, an environment is mostly passive.
@@ -325,8 +327,8 @@ actSpontaneous( State ) ->
 % actor message.
 %
 -spec declareEntity( wooper:state(), position(),
-				 maybe( unit_utils:meters_per_second() ), classname(),
-				 actor_pid() ) -> actor_oneway_return().
+			maybe( unit_utils:meters_per_second() ), classname(), actor_pid() ) ->
+								actor_oneway_return().
 declareEntity( State, CurrentPosition, MaxSpeed, Classname,
 			   SpatialisedActorPid ) ->
 

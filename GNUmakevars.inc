@@ -15,14 +15,14 @@ VERSION_FILE := $(SIM_DIASCA_TOP)/include/package-versions.hrl
 
 # Does not include on purpose the optional, not-for-distribution directories:
 SIM_DIASCA_PACKAGE_ELEMENTS = myriad wooper traces sim-diasca mock-simulators \
-				  GNUmakefile GNUmakesettings.inc GNUmakevars.inc \
-				  .gitignore
+				GNUmakefile GNUmakesettings.inc GNUmakevars.inc               \
+				.gitignore
 
 
 SERVER :=
 
 ARCHIVE_SERVER := $(SERVER)
-PRINT_SERVER   := $(SERVER)
+PRINT_SERVER := $(SERVER)
 
 
 #ARCHIVE_USER := $$(whoami)

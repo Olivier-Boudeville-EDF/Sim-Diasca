@@ -1693,32 +1693,35 @@ merge_data( ProbeTable, Tick, Sample ) ->
 
 	F = fun() ->
 
+		Tab = ProbeTable,
+		LockKind = write,
+
 		% We are thinking to an update, so we aim at at least a write lock (as
 		% not currently replicated, not using sticky writes):
-		case mnesia:read( _Tab=ProbeTable, _Key=Tick, _LockKind=write ) of
+		%
+		case mnesia:read( Tab, _Key=Tick, LockKind ) of
 
 			[] ->
 
 				% No previous record, just write unconditionally (we could have
 				% used a dirty write instead, if we had known):
+				%
 				SampleEntry = #probe_sample{ sample_tick=Tick,
 											 sample_data=Sample },
 
-				mnesia:write( _Tab=ProbeTable, _Record=SampleEntry,
-							  _LockKind=write );
+				mnesia:write( Tab, _Record=SampleEntry, LockKind );
 
 
 			[ PreviousEntry ] ->
 
 				% Merging newer into older:
 				MergedSample = merge_samples( _New=Sample,
-								  _Old=PreviousEntry#probe_sample.sample_data ),
+									_Old=PreviousEntry#probe_sample.sample_data ),
 
 				SampleEntry = #probe_sample{ sample_tick=Tick,
 											 sample_data=MergedSample },
 
-				mnesia:write( _Tab=ProbeTable, _Record=SampleEntry,
-							  _LockKind=write )
+				mnesia:write( Tab, _Record=SampleEntry, LockKind )
 
 		end
 

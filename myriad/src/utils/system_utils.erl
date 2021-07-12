@@ -26,7 +26,8 @@
 % Creation date: Thursday, February 11, 2010.
 
 
-% Gathering of various system convenient facilities.
+% @doc Gathering of various <b>system-level</b> (operating system) convenient
+% facilities.
 %
 % See system_utils_test.erl for the corresponding test.
 %
@@ -77,6 +78,10 @@
 
 		  get_environment_prefix/1, get_actual_expression/2,
 		  get_environment_variable/1, set_environment_variable/2,
+
+		  get_environment_variable_for_executable_lookup/0,
+		  get_environment_variable_for_library_lookup/0,
+
 		  add_path_for_executable_lookup/1, add_paths_for_executable_lookup/1,
 		  add_path_for_library_lookup/1, add_paths_for_library_lookup/1,
 		  get_environment/0, environment_to_string/0, environment_to_string/1,
@@ -116,10 +121,17 @@
 		  has_graphical_output/0 ]).
 
 
+-define( executable_search_path_variable, "PATH" ).
+
+-define( library_search_path_variable, "LD_LIBRARY_PATH" ).
+
+
+
 % Prerequisite-related section.
 
-% Name of a (third-party) prerequisite package (ex: "ErlPort", "jsx", etc.).
 -type package_name() :: ustring().
+% Name of a (third-party) prerequisite package (ex: "ErlPort", "jsx", etc.).
+
 
 -export_type([ package_name/0 ]).
 
@@ -133,8 +145,8 @@
 
 
 
-% Size, in number of bytes:
 -type byte_size() :: integer().
+% Size, as a number of bytes.
 
 
 -opaque cpu_usage_info() ::
@@ -149,29 +161,28 @@
 -include("system_utils.hrl").
 
 
-% Describes the static information about a computing host:
 -type host_static_info() :: #host_static_info{}.
+% Describes the static information about a computing host.
 
 
-% Describes the dynamic information about a computing host:
 -type host_dynamic_info() :: #host_dynamic_info{}.
+% Describes the dynamic information about a computing host.
 
 
-
-% Known real, actual types of filesystems:
 -type actual_filesystem_type() :: 'ext2' | 'ext3' | 'ext4' | 'vfat'.
+% Known real, actual types of filesystems.
 
 
-% Known pseudo filesystems:
 -type pseudo_filesystem_type() :: 'devtmpfs' | 'tmpfs'.
+% Known pseudo filesystems.
 
 
-% All the known types of filesystems (atom, to capture even lacking ones):
 -type filesystem_type() :: actual_filesystem_type() | pseudo_filesystem_type()
 						 | 'unknown' | atom().
+% All the known types of filesystems (atom() type used to capture even lacking
+% ones).
 
 
-% Stores information about a filesystem:
 -record( fs_info, {
 
 		   % Device name (ex: /dev/sda5):
@@ -198,96 +209,105 @@
 } ).
 
 -type fs_info() :: #fs_info{}.
+% Stores information about a filesystem.
 
 
 
-% Describes a command to be run (i.e. path to an executable, with possibly
-% command-line arguments):
-%
 -type command() :: text_utils:any_string().
+% Describes a command to be run (i.e. path to an executable, with possibly
+% command-line arguments).
 
 -type command_line_argument() :: text_utils:any_string().
+% Describes a (single) command-line argument.
 
-% An option used to spawn a port (others managed through specific parameters):
+
+
+-type execution_pair() ::
+		{ bin_executable_path(), [ command_line_argument() ] }.
+% A pair specifying a complete command-line ready to be executed by
+% run_executable/n (convenient to store once for all if needing to launch it
+% repeatedly).
+
+
 -type port_option() :: { 'packet', 1 | 2 | 4 }
 					 | 'stream'
 					 | { 'line', count() }
 					 | atom()
 					 | { atom(), term() }.
+% An option used to spawn a port (others managed through specific parameters).
 
 
+-type return_code() :: count().
 % Return the (positive integer) return code of an executable being run
-% (a.k.a. exit status):
+% (a.k.a. exit status).
 %
 % (0 means success, while a strictly positive value means error)
-%
--type return_code() :: count().
 
 
-% Output of the run of an executable:
 -type command_output() :: ustring().
+% Output of the run of an executable.
 
 
-% All information returned by a shell command:
 -type execution_outcome() :: { return_code(), command_output() }.
+% All information returned by a shell command.
 
 
-
-% Describes a shell expression:
 -type shell_expression() :: ustring().
+% Describes a shell expression.
 
 
-% Output of the evaluation of a shell expression (at least currently, only its
-% standard output; no exit status):
-%
 -type expression_outcome() :: ustring().
+% Output of the evaluation of a shell expression (at least currently, only its
+% standard output; no exit status).
 
 
-
-% Name of a shell environment variable:
 -type env_variable_name() :: ustring().
+% Name of a shell environment variable.
 
 
-% Value of a shell environment variable ('false' meaning that the corresponding
-% variable is not set)
-%
 -type env_variable_value() :: ustring() | 'false'.
+% Value of a shell environment variable ('false' meaning that the corresponding
+% variable is not set).
 
 
-% Represents a shell environment (a set of variables):
 -type environment() :: [ { env_variable_name(), env_variable_value() } ].
+% Represents a shell environment (a set of variables).
 
 
-% Working directory of an executed command:
 -type working_dir() :: maybe( any_directory_path() ).
+% Working directory of an executed command.
 
 
 -type encoding() :: atom() | pair:pair().
 
-% Subset of file:mode/0:
 -type encoding_option() :: { 'encoding', encoding() }.
+% Subset of file:mode/0.
 
 -type encoding_options() :: [ encoding_option() ].
 
 
 % Basic authentication information:
 
-% For example in UNIX terms:
 -type user_name() :: ustring().
+% For example in UNIX terms.
+
 
 -type password() :: ustring().
 
+
 -type basic_credential() :: { user_name(), password() }.
 
-% For example in UNIX terms:
+
 -type group_name() :: ustring().
+% For example in UNIX terms.
 
 
-% The user identifier (uid) of a filesystem element:
 -type user_id() :: non_neg_integer().
+% The user identifier (uid) of a filesystem element.
 
-% The group identifier (gid) of a filesystem element:
+
 -type group_id() :: non_neg_integer().
+% The group identifier (gid) of a filesystem element.
 
 
 -export_type([ byte_size/0, cpu_usage_info/0, cpu_usage_percentages/0,
@@ -296,7 +316,8 @@
 			   actual_filesystem_type/0, pseudo_filesystem_type/0,
 			   filesystem_type/0, fs_info/0,
 
-			   command/0, command_line_argument/0, port_option/0,
+			   command/0, command_line_argument/0, execution_pair/0,
+			   port_option/0,
 			   return_code/0, command_output/0, execution_outcome/0,
 
 			   shell_expression/0, expression_outcome/0,
@@ -323,6 +344,7 @@
 -type directory_path() :: file_utils:directory_path().
 -type any_directory_path() :: file_utils:any_directory_path().
 -type executable_path() :: file_utils:executable_path().
+-type bin_executable_path() :: file_utils:bin_executable_path().
 
 -type percent() :: math_utils:percent().
 
@@ -334,7 +356,7 @@
 % User-related functions.
 
 
-% Returns the name of the current user, as a plain string.
+% @doc Returns the name of the current user, as a plain string.
 -spec get_user_name() -> ustring().
 get_user_name() ->
 
@@ -366,7 +388,7 @@ get_user_name() ->
 
 
 
-% Returns the name of the current user, as a plain string.
+% @doc Returns the name of the current user, as a plain string.
 %
 % Not expected to fail.
 %
@@ -386,7 +408,7 @@ get_user_name_safe() ->
 
 
 
-% Returns a textual description of the name of the current user.
+% @doc Returns a textual description of the name of the current user.
 %
 % Note: to be flattened caller-side.
 %
@@ -408,7 +430,7 @@ get_user_name_string() ->
 
 
 
-% Returns the (system) identifier of the current user.
+% @doc Returns the (system) identifier of the current user.
 -spec get_user_id() -> user_id().
 get_user_id() ->
 
@@ -424,7 +446,7 @@ get_user_id() ->
 
 
 
-% Returns the (system) group identifier of the current user.
+% @doc Returns the (system) group identifier of the current user.
 -spec get_group_id() -> group_id().
 get_group_id() ->
 
@@ -441,7 +463,7 @@ get_group_id() ->
 
 
 
-% Returns the home directory of the current user, as a plain string.
+% @doc Returns the home directory of the current user, as a plain string.
 -spec get_user_home_directory() -> directory_path() .
 get_user_home_directory() ->
 
@@ -469,14 +491,14 @@ get_user_home_directory() ->
 
 
 
-% Returns the home directory of the specified user, as a plain string.
+% @doc Returns the home directory of the specified user, as a plain string.
 -spec get_user_home_directory( basic_utils:user_name() ) -> directory_path().
 get_user_home_directory( Username ) ->
 	text_utils:format( "/home/~ts", [ Username ] ).
 
 
 
-% Returns a textual description of the home directory of the current user.
+% @doc Returns a textual description of the home directory of the current user.
 %
 % Cannot crash.
 %
@@ -497,7 +519,7 @@ get_user_home_directory_string() ->
 
 
 
-% Returns the name of the current group, as a plain string.
+% @doc Returns the name of the current group, as a plain string.
 -spec get_group_name() -> ustring().
 get_group_name() ->
 
@@ -517,8 +539,8 @@ get_group_name() ->
 % Unicode support.
 
 
-% Returns the default recommended encoding, for example when needing to open a
-% file for writing.
+% @doc Returns the default recommended encoding, for example when needing to
+% open a file for writing.
 %
 % See the notes in the 'Regarding encodings and Unicode' section of the
 % file_utils module, notably about the consequences of specifying an encoding at
@@ -530,7 +552,7 @@ get_default_encoding() ->
 	?default_encoding.
 
 
-% Returns the default recommended option encoding option, for example when
+% @doc Returns the default recommended option encoding option, for example when
 % needing to open a file for writing - should such an option be used.
 %
 % See the notes in the 'Regarding encodings and Unicode' section of the
@@ -544,7 +566,7 @@ get_default_encoding_option() ->
 
 
 
-% Forces the enabling of Unicode support.
+% @doc Forces the enabling of Unicode support.
 -spec force_unicode_support() -> void().
 force_unicode_support() ->
 
@@ -564,7 +586,7 @@ force_unicode_support() ->
 % Lower-level services.
 
 
-% Awaits the completion of an output operation (ex: io:format/2).
+% @doc Awaits the completion of an output operation (ex: io:format/2).
 %
 % Especially useful when displaying an error message on the standard output and
 % then immediately halting the VM, in order to avoid a race condition between
@@ -588,7 +610,7 @@ await_output_completion() ->
 -else. % myriad_debug_mode
 
 
-% Extended time-out (2.5 seconds), if for example being in production, on a
+% doc: Extended time-out (2.5 seconds), if for example being in production, on a
 % possibly heavily loaded system:
 %
 % (warning: this may impact adversely the timing if intensive logging is used)
@@ -601,8 +623,8 @@ await_output_completion() ->
 
 
 
-% Awaits the completion of a io:format request, with a specified time-out, in
-% milliseconds.
+% @doc Awaits the completion of a io:format request, with a specified time-out,
+% in milliseconds.
 %
 % Especially useful when displaying an error message on the standard output and
 % then immediately halting the VM, in order to avoid a race condition between
@@ -651,7 +673,6 @@ await_output_completion( _TimeOut ) ->
 
 
 
-
 % Functions relative to the local Erlang system.
 
 
@@ -676,19 +697,19 @@ await_output_completion( _TimeOut ) ->
 
 
 
-% Runs (synchronously) specified command (an executable path possibly followed
-% with command-line arguments; specified as a single, standalone string), with
-% no specific port option, with a standard environment, from the current working
-% directory, and returns its return code (exit status) and its outputs (both the
-% standard and the error ones): {ReturnCode,CmdOutput}.
+% @doc Runs (synchronously) specified command (an executable path possibly
+% followed with command-line arguments; specified as a single, standalone
+% string), with no specific port option, with a standard environment, from the
+% current working directory, and returns its return code (exit status) and its
+% outputs (both the standard and the error ones): {ReturnCode,CmdOutput}.
 %
 % This function will run a specific executable, not evaluate a shell expression
 % (that would possibly run executables); see evaluate_shell_expression/{1,2} for
 % that.
 %
-% So one should not try to abuse this function by adding '&' at the end to
-% trigger a background launch - this would just be interpreted as a last
-% argument. Use run_background_command/{1,2,3} in this module instead.
+% So one should not try to abuse this function by adding an ampersand (`&') at
+% the end to trigger a background launch - this would just be interpreted as a
+% last argument. Use run_background_command/{1,2,3} in this module instead.
 %
 -spec run_command( command() ) -> execution_outcome().
 run_command( Command ) ->
@@ -696,7 +717,7 @@ run_command( Command ) ->
 
 
 
-% Executes (synchronously) specified command (an executable path possibly
+% @doc Executes (synchronously) specified command (an executable path possibly
 % followed with command-line arguments; specified as a single, standalone
 % string), with no specific port option, in specified shell environment and from
 % the current working directory, and returns its return code (exit status) and
@@ -705,9 +726,9 @@ run_command( Command ) ->
 % This function will run a specific executable, not evaluate a shell expression
 % (that would possibly run executables).
 %
-% So one should not try to abuse this function by adding '&' at the end to
-% trigger a background launch - this would just be interpreted as a last
-% argument. Use run_background_command/{1,2,3} in this module instead.
+% So one should not try to abuse this function by adding an ampersand (`&') at
+% the end to trigger a background launch - this would just be interpreted as a
+% last argument. Use run_background_command/{1,2,3} in this module instead.
 %
 -spec run_command( command(), environment() ) -> execution_outcome().
 run_command( Command, Environment ) ->
@@ -715,7 +736,7 @@ run_command( Command, Environment ) ->
 
 
 
-% Executes (synchronously) specified command (an executable path possibly
+% @doc Executes (synchronously) specified command (an executable path possibly
 % followed with command-line arguments; specified as a single, standalone
 % string), with no specific port option, in specified shell environment and
 % working directory, and returns its return code (exit status) and its outputs
@@ -724,9 +745,9 @@ run_command( Command, Environment ) ->
 % This function will run a specific executable, not evaluate a shell expression
 % (that would possibly run executables).
 %
-% So one should not try to abuse this function by adding '&' at the end to
-% trigger a background launch - this would just be interpreted as a last
-% argument. Use run_background_command/{1,2,3} in this module instead.
+% So one should not try to abuse this function by adding an ampersand (`&') at
+% the end to trigger a background launch - this would just be interpreted as a
+% last argument. Use run_background_command/{1,2,3} in this module instead.
 %
 -spec run_command( command(), environment(), maybe( working_dir() ) ) ->
 							execution_outcome().
@@ -736,11 +757,11 @@ run_command( Command, Environment, MaybeWorkingDir ) ->
 
 
 
-% Executes (synchronously) specified executable (an executable path possibly
-% followed with command-line arguments; specified as a single, standalone
-% string), in specified shell environment and working directory, with specified
-% extra port options (possibly containing any relevant command-line arguments;
-% see http://erlang.org/doc/man/erlang.html#open_port-2).
+% @doc Executes (synchronously) specified executable (an executable path
+% possibly followed with command-line arguments; specified as a single,
+% standalone string), in specified shell environment and working directory, with
+% specified extra port options (possibly containing any relevant command-line
+% arguments; see [http://erlang.org/doc/man/erlang.html#open_port-2]).
 %
 % Returns its return code (exit status) and its outputs (both the standard and
 % the error ones): {ReturnCode,CmdOutput}.
@@ -776,12 +797,13 @@ run_command( Command, Environment, MaybeWorkingDir, PortOptions ) ->
 
 
 
-% Executes (synchronously) specified executable, whose path is exactly the
-% specified one (i.e. taken verbatim, not looked-up through any PATH environment
-% variable; use, in the executable_utils module, lookup_executable/{1,2} or
-% find_executable/1 for that; not using any intermediary shell either) with no
-% specific command-line argument, with a standard environment, from the current
-% working directory, using the default port options.
+% @doc Executes (synchronously) specified executable, whose path is exactly the
+% specified one (that is: taken verbatim, not looked-up through any PATH
+% environment variable; use, in the executable_utils module,
+% lookup_executable/{1,2} or find_executable/1 for that; not using any
+% intermediary shell either) with no specific command-line argument, with a
+% standard environment, from the current working directory, using the default
+% port options.
 %
 % Returns its return code (exit status) and its outputs (both the standard and
 % the error ones): {ReturnCode,CmdOutput}.
@@ -793,12 +815,13 @@ run_executable( ExecPath ) ->
 
 
 
-% Executes (synchronously) specified executable, whose path is exactly the
-% specified one (i.e. taken verbatim, not looked-up through any PATH environment
-% variable; use, in the executable_utils module, lookup_executable/{1,2} or
-% find_executable/1 for that; not using any intermediary shell either) with
-% specified command-line arguments, with a standard environment, from the
-% current working directory, using the default port options.
+% @doc Executes (synchronously) specified executable, whose path is exactly the
+% specified one (that is: taken verbatim, not looked-up through any PATH
+% environment variable; use, in the executable_utils module,
+% lookup_executable/{1,2} or find_executable/1 for that; not using any
+% intermediary shell either) with specified command-line arguments, with a
+% standard environment, from the current working directory, using the default
+% port options.
 %
 % Returns its return code (exit status) and its outputs (both the standard and
 % the error ones): {ReturnCode,CmdOutput}.
@@ -811,12 +834,13 @@ run_executable( ExecPath, Arguments ) ->
 
 
 
-% Executes (synchronously) specified executable, whose path is exactly the
-% specified one (i.e. taken verbatim, not looked-up through any PATH environment
-% variable; use, in the executable_utils module, lookup_executable/{1,2} or
-% find_executable/1 for that; not using any intermediary shell either) with
-% specified command-line arguments and environment variable, from the current
-% working directory, using the default port options.
+% @doc Executes (synchronously) specified executable, whose path is exactly the
+% specified one (that is: taken verbatim, not looked-up through any PATH
+% environment variable; use, in the executable_utils module,
+% lookup_executable/{1,2} or find_executable/1 for that; not using any
+% intermediary shell either) with specified command-line arguments and
+% environment variable, from the current working directory, using the default
+% port options.
 %
 % Returns its return code (exit status) and its outputs (both the standard and
 % the error ones): {ReturnCode,CmdOutput}.
@@ -829,12 +853,13 @@ run_executable( ExecPath, Arguments, Environment ) ->
 
 
 
-% Executes (synchronously) specified executable, whose path is exactly the
-% specified one (i.e. taken verbatim, not looked-up through any PATH environment
-% variable; use, in the executable_utils module, lookup_executable/{1,2} or
-% find_executable/1 for that; not using any intermediary shell either) with
-% specified command-line arguments and environment variable, from any specified
-% working directory, using the default port options.
+% @doc Executes (synchronously) specified executable, whose path is exactly the
+% specified one (that is: taken verbatim, not looked-up through any PATH
+% environment variable; use, in the executable_utils module,
+% lookup_executable/{1,2} or find_executable/1 for that; not using any
+% intermediary shell either) with specified command-line arguments and
+% environment variable, from any specified working directory, using the default
+% port options.
 %
 % Returns its return code (exit status) and its outputs (both the standard and
 % the error ones): {ReturnCode,CmdOutput}.
@@ -847,12 +872,13 @@ run_executable( ExecPath, Arguments, Environment, MaybeWorkingDir ) ->
 
 
 
-% Executes (synchronously) specified executable, whose path is exactly the
-% specified one (i.e. taken verbatim, not looked-up through any PATH environment
-% variable; use, in the executable_utils module, lookup_executable/{1,2} or
-% find_executable/1 for that; not using any intermediary shell either) with
-% specified command-line arguments and environment variable, from any specified
-% working directory and any extra port options.
+% @doc Executes (synchronously) specified executable, whose path is exactly the
+% specified one (that is: taken verbatim, not looked-up through any PATH
+% environment variable; use, in the executable_utils module,
+% lookup_executable/{1,2} or find_executable/1 for that; not using any
+% intermediary shell either) with specified command-line arguments and
+% environment variable, from any specified working directory and any extra port
+% options.
 %
 % Returns its return code (exit status) and its outputs (both the standard and
 % the error ones): {ReturnCode,CmdOutput}.
@@ -865,7 +891,7 @@ run_executable( ExecPath, Arguments, Environment, MaybeWorkingDir,
 
 	%trace_utils:debug_fmt( "Running executable: '~ts' with arguments ~p "
 	%   "and with ~ts from working directory '~ts', with options ~w.",
-	%	[ ExecPath, Arguments, environment_to_string( Environment ),
+	%   [ ExecPath, Arguments, environment_to_string( Environment ),
 	%     MaybeWorkingDir, PortOptions ] ), timer:sleep( 200 ),
 
 	PortOptsWithEnv =
@@ -884,14 +910,13 @@ run_executable( ExecPath, Arguments, Environment, MaybeWorkingDir,
 	Port = open_port( { spawn_executable, ExecPath }, PortOptsWithPath ),
 
 	%trace_utils:debug_fmt( "Spawned port ~p for executable '~ts'.",
-	%					   [ Port, ExecPath ] ),
+	%						[ Port, ExecPath ] ),
 
 	read_port( Port, _Data=[] ).
 
 
 
-
-% Returns the default options to be used for open_port/2.
+% @doc Returns the default options to be used for open_port/2.
 -spec get_default_port_options() -> [ port_option() ].
 get_default_port_options() ->
 	% Removed: 'in'
@@ -978,9 +1003,9 @@ read_port( Port, Data ) ->
 
 
 
-% Our version of io:get_line/1, as an external program so that the VM can be run
-% with -noinput (and thus so that {text,term}_ui can be used with the same VM
-% settings).
+% @doc Our version of io:get_line/1, as an external program so that the VM can
+% be run with -noinput (and thus so that {text,term}_ui can be used with the
+% same VM settings).
 %
 -spec get_line( ustring() ) -> ustring().
 get_line( Prompt ) ->
@@ -988,9 +1013,9 @@ get_line( Prompt ) ->
 
 
 
-% Our version of io:get_line/1, as an external program so that the VM can be run
-% with -noinput (and thus so that {text,term}_ui can be used with the same VM
-% settings).
+% @doc Our version of io:get_line/1, as an external program so that the VM can
+% be run with -noinput (and thus so that {text,term}_ui can be used with the
+% same VM settings).
 %
 -spec get_line( ustring(), executable_path() ) -> ustring().
 get_line( Prompt, GetLineScriptPath ) ->
@@ -1022,8 +1047,7 @@ get_line( Prompt, GetLineScriptPath ) ->
 
 
 
-
-% Returns the path to the Myriad helper script for get_line/1 operations.
+% @doc Returns the path to the Myriad helper script for get_line/1 operations.
 -spec get_line_helper_script() -> executable_path().
 get_line_helper_script() ->
 
@@ -1051,9 +1075,9 @@ get_line_helper_script() ->
 
 
 
-% Returns a default, standard environment for "porcelain"-like executions,
-% i.e. executions that are, as much as possible, reproducible in various runtime
-% contexts (typically: with locale-independent outputs).
+% @doc Returns a default, standard environment for "porcelain"-like executions,
+% that is executions that are, as much as possible, reproducible in various
+% runtime contexts (typically: with locale-independent outputs).
 %
 % To be used with run_{command,executable}/n.
 %
@@ -1077,7 +1101,9 @@ get_standard_environment() ->
 
 
 
-% Monitors a port: reads command data and signals from a port, and reports it.
+% @doc Monitors a port: reads command data and signals from a port, and reports
+% it.
+%
 monitor_port( Port, Data ) ->
 
 	%trace_utils:debug_fmt( "Process ~p starting the monitoring of "
@@ -1150,8 +1176,8 @@ monitor_port( Port, Data ) ->
 
 
 
-% Evaluates specified shell (ex: sh, bash, etc. - not Erlang) expression, in
-% a standard environment.
+% @doc Evaluates specified shell (ex: sh, bash, etc - not Erlang) expression,
+% in a standard environment.
 %
 % No return code is available with this approach, only the output of the
 % expression.
@@ -1162,8 +1188,8 @@ evaluate_shell_expression( Expression ) ->
 
 
 
-% Evaluates specified shell (ex: sh, bash, etc. - not Erlang) expression, in
-% specified environment.
+% @doc Evaluates specified shell (ex: sh, bash, etc - not Erlang) expression,
+% in specified environment.
 %
 % No return code is available with this approach, only the output of the
 % expression.
@@ -1186,7 +1212,7 @@ evaluate_shell_expression( Expression, Environment ) ->
 
 
 
-% Executes asynchronously, in the background, specified executable (with no
+% @doc Executes asynchronously, in the background, specified executable (with no
 % specific parameter nor port option, and from the current directory), in a
 % standard shell environment.
 %
@@ -1205,7 +1231,7 @@ run_background_command( ExecPath ) ->
 
 
 
-% Executes asynchronously, in the background, specified executable (with no
+% @doc Executes asynchronously, in the background, specified executable (with no
 % specific parameter nor port option, and from the current directory), in the
 % specified shell environment.
 %
@@ -1224,7 +1250,7 @@ run_background_command( ExecPath, Environment ) ->
 
 
 
-% Executes asynchronously, in the background, specified executable (with no
+% @doc Executes asynchronously, in the background, specified executable (with no
 % specific parameter nor port option), in the specified shell environment and
 % from the specified working directory.
 %
@@ -1245,10 +1271,10 @@ run_background_command( ExecPath, Environment, MaybeWorkingDir ) ->
 
 
 
-% Executes asynchronously, in the background, specified executable, in the
+% @doc Executes asynchronously, in the background, specified executable, in the
 % specified shell environment and working directory, with specified options
 % (possibly containing any relevant command-line arguments; see
-% http://erlang.org/doc/man/erlang.html#open_port-2).
+% [http://erlang.org/doc/man/erlang.html#open_port-2]).
 %
 % As a consequence it returns no return code (exit status) nor output.
 %
@@ -1284,8 +1310,8 @@ run_background_command( Command, Environment, MaybeWorkingDir,
 
 
 
-% Executes asynchronously, in the background, specified shell expression with
-% specified environment, in current directory.
+% @doc Executes asynchronously, in the background, specified shell expression
+% with specified environment, in current directory.
 %
 % As a consequence it returns no return code (exit status) nor output.
 %
@@ -1296,8 +1322,8 @@ evaluate_background_shell_expression( Expression ) ->
 
 
 
-% Executes asynchronously, in the background, specified shell expression with
-% specified environment, in current directory.
+% @doc Executes asynchronously, in the background, specified shell expression
+% with specified environment, in current directory.
 %
 % As a consequence it returns no return code (exit status) nor output.
 %
@@ -1315,8 +1341,8 @@ evaluate_background_shell_expression( Expression, Environment ) ->
 
 
 
-% Returns a string that can be used as a shell prefix for commands, based on
-% specified environment.
+% @doc Returns a string that can be used as a shell prefix for commands, based
+% on specified environment.
 %
 -spec get_environment_prefix( environment() ) -> ustring().
 get_environment_prefix( Environment ) ->
@@ -1344,7 +1370,7 @@ get_environment_prefix( Environment ) ->
 
 
 
-% Returns the full, actual shell expression corresponding to specified
+% @doc Returns the full, actual shell expression corresponding to specified
 % expression and environment.
 %
 -spec get_actual_expression( shell_expression(), environment() ) ->
@@ -1358,8 +1384,8 @@ get_actual_expression( Expression, Environment ) ->
 
 
 
-% Returns the value associated to the specified environment variable (if any),
-% otherwise 'false'.
+% @doc Returns the value associated to the specified environment variable (if
+% any), otherwise 'false'.
 %
 -spec get_environment_variable( env_variable_name() ) -> env_variable_value().
 get_environment_variable( VarName ) ->
@@ -1367,7 +1393,7 @@ get_environment_variable( VarName ) ->
 
 
 
-% Sets the specified environment variable to the specified value, possibly
+% @doc Sets the specified environment variable to the specified value, possibly
 % overwriting a past value.
 %
 -spec set_environment_variable( env_variable_name(), env_variable_value() ) ->
@@ -1382,7 +1408,27 @@ set_environment_variable( VarName, VarValue ) ->
 
 
 
-% Adds the specified directory to the system's executable search paths
+% @doc Returns the environment variable (if any) used by the system for the
+% lookup of executables.
+%
+-spec get_environment_variable_for_executable_lookup() ->
+									maybe( env_variable_name() ).
+get_environment_variable_for_executable_lookup() ->
+	?executable_search_path_variable.
+
+
+% @doc Returns the environment variable (if any) used by the system for the
+% lookup of (shared) libraries.
+%
+-spec get_environment_variable_for_library_lookup() ->
+									maybe( env_variable_name() ).
+get_environment_variable_for_library_lookup() ->
+	?library_search_path_variable.
+
+
+
+
+% @doc Adds the specified directory to the system's executable search paths
 % (typically the PATH environment variable), in first position.
 %
 % A relative path will be transformed into an absolute one (based on current
@@ -1393,7 +1439,7 @@ add_path_for_executable_lookup( PathName ) ->
 	add_paths_for_executable_lookup( [ PathName ] ).
 
 
-% Adds the specified directories to the system's executable search paths
+% @doc Adds the specified directories to the system's executable search paths
 % (typically (typically the PATH environment variable), in first position,
 % respecting the specified path order.
 %
@@ -1407,7 +1453,7 @@ add_paths_for_executable_lookup( Paths ) ->
 
 add_paths_for_executable_lookup( _Paths=[], Acc ) ->
 
-	ExecOptVarName = "PATH",
+	ExecOptVarName = ?executable_search_path_variable,
 
 	BaseExecOpt = case get_environment_variable( ExecOptVarName ) of
 
@@ -1434,8 +1480,8 @@ add_paths_for_executable_lookup( [ Path | T ], Acc ) ->
 
 
 
-% Adds the specified directory to the system's library search paths (typically
-% the LD_LIBRARY_PATH environment variable), in first position.
+% @doc Adds the specified directory to the system's library search paths
+% (typically the LD_LIBRARY_PATH environment variable), in first position.
 %
 % A relative path will be transformed into an absolute one (based on current
 % directory) first.
@@ -1445,9 +1491,9 @@ add_path_for_library_lookup( PathName ) ->
 	add_paths_for_library_lookup( [ PathName ] ).
 
 
-% Adds the specified directories to the system's library search paths (typically
-% the LD_LIBRARY_PATH environment variable), in first position, respecting the
-% specified path order.
+% @doc Adds the specified directories to the system's library search paths
+% (typically the LD_LIBRARY_PATH environment variable), in first position,
+% respecting the specified path order.
 %
 % Any relative path will be transformed into an absolute one (based on current
 % directory) first.
@@ -1459,7 +1505,7 @@ add_paths_for_library_lookup( Paths ) ->
 
 add_paths_for_library_lookup( _Paths=[], Acc ) ->
 
-	LibOptVarName = "LD_LIBRARY_PATH",
+	LibOptVarName = ?library_search_path_variable,
 
 	BaseLibOpt = case get_environment_variable( LibOptVarName ) of
 
@@ -1486,7 +1532,7 @@ add_paths_for_library_lookup( [ Path | T ], Acc ) ->
 
 
 
-% Returns the current shell environment, sorted by variable names.
+% @doc Returns the current shell environment, sorted by variable names.
 -spec get_environment() -> environment().
 get_environment() ->
 
@@ -1496,14 +1542,14 @@ get_environment() ->
 
 
 
-% Returns a textual description of the current shell environment.
+% @doc Returns a textual description of the current shell environment.
 -spec environment_to_string() -> ustring().
 environment_to_string() ->
 	environment_to_string( get_environment() ).
 
 
 
-% Returns a textual description of the specified shell environment.
+% @doc Returns a textual description of the specified shell environment.
 -spec environment_to_string( environment() ) -> ustring().
 environment_to_string( _Environment=[] ) ->
 	"an empty shell environment";
@@ -1511,14 +1557,14 @@ environment_to_string( _Environment=[] ) ->
 environment_to_string( Environment ) ->
 
 	{ SetVars, UnsetVars } = lists:partition(
-							   fun( { _Name, _Value=false } ) ->
-									   false;
+		fun( { _Name, _Value=false } ) ->
+			false;
 
-								  ( _ ) ->
-									   true
+		   ( _ ) ->
+			true
 
-							   end,
-							   Environment ),
+		end,
+		Environment ),
 
 	VariableStrings = [ text_utils:format( "~ts = ~ts", [ Name, Value ] )
 						|| { Name, Value } <- SetVars ],
@@ -1543,8 +1589,8 @@ environment_to_string( Environment ) ->
 
 
 
-% Returns the version information of the current Erlang interpreter (actually
-% the one of the whole environment, including the VM) being used.
+% @doc Returns the version information of the current Erlang interpreter
+% (actually the one of the whole environment, including the VM) being used.
 %
 % Returns a full version name (ex: "R13B04") or, if not available, a shorter one
 % (ex: "R11B").
@@ -1586,8 +1632,8 @@ get_interpreter_version() ->
 
 
 
-% Returns the version information (as a 2 or 3-part tuple) corresponding to the
-% specified Erlang application (ex: for 'kernel', could return {3,0} or
+% @doc Returns the version information (as a 2 or 3-part tuple) corresponding to
+% the specified Erlang application (ex: for 'kernel', could return {3,0} or
 % {2,16,3}).
 %
 % Throws an exception if the information could not be retrieved.
@@ -1608,14 +1654,14 @@ get_application_version( Application ) ->
 
 
 
-% Returns the size, in bytes, of a word of this Virtual Machine.
+% @doc Returns the size, in bytes, of a word of this Virtual Machine.
 -spec get_size_of_vm_word() -> count().
 get_size_of_vm_word() ->
 	erlang:system_info( wordsize ).
 
 
 
-% Returns a textual description of the size of a VM word.
+% @doc Returns a textual description of the size of a VM word.
 %
 % Cannot crash.
 %
@@ -1636,7 +1682,7 @@ get_size_of_vm_word_string() ->
 
 
 
-% Returns the size of specified term, in bytes, on the heap.
+% @doc Returns the size of specified term, in bytes, on the heap.
 %
 % Note that off-heap data (such as binaries larger than 64 bytes) is not counted
 % here. The (flat) size is incremented to account for the top term word (which
@@ -1652,12 +1698,12 @@ get_size( Term ) ->
 
 
 
-% Returns a string containing a user-friendly description of the specified size
-% expressed in bytes, using multipliers of 2^10=1024 (hence not SI kilos,
-% i.e. 1000-based multipliers): GiB (Gibibytes, not Gigabytes), MiB (Mebibytes,
-% not Megabytes), KiB (Kibibytes, not Kilobytes) and bytes.
+% @doc Returns a string containing a user-friendly description of the specified
+% size expressed in bytes, using multipliers of 2^10=1024 (hence not SI kilos,
+% that is 1000-based multipliers): GiB (Gibibytes, not Gigabytes), MiB
+% (Mebibytes, not Megabytes), KiB (Kibibytes, not Kilobytes) and bytes.
 %
-% See http://en.wikipedia.org/wiki/Kibibyte
+% See [http://en.wikipedia.org/wiki/Kibibyte].
 %
 -spec interpret_byte_size( byte_size() ) -> ustring().
 interpret_byte_size( SizeInBytes ) ->
@@ -1736,13 +1782,13 @@ interpret_byte_size( SizeInBytes ) ->
 
 
 
-% Returns a string containing a user-friendly description of the specified size
-% expressed in bytes, using the most appropriate unit among GiB (Gibibytes, not
-% Gigabytes), MiB (Mebibytes, not Megabytes), KiB (Kibibytes, not Kilobytes) and
-% bytes, rounding that value to 1 figure after the comma (this is thus an
+% @doc Returns a string containing a user-friendly description of the specified
+% size expressed in bytes, using the most appropriate unit among GiB (Gibibytes,
+% not Gigabytes), MiB (Mebibytes, not Megabytes), KiB (Kibibytes, not Kilobytes)
+% and bytes, rounding that value to 1 figure after the comma (this is thus an
 % approximate value).
 %
-% See http://en.wikipedia.org/wiki/Kibibyte
+% See [http://en.wikipedia.org/wiki/Kibibyte].
 %
 -spec interpret_byte_size_with_unit( byte_size() ) -> ustring().
 interpret_byte_size_with_unit( Size ) ->
@@ -1779,8 +1825,8 @@ interpret_byte_size_with_unit( Size ) ->
 
 
 
-% Converts the specified size, in bytes, as a value expressed in an appropriate
-% size unit.
+% @doc Converts the specified size, in bytes, as a value expressed in an
+% appropriate size unit.
 %
 % Returns a { Unit, Value } pair, in which:
 %
@@ -1792,8 +1838,8 @@ interpret_byte_size_with_unit( Size ) ->
 % - Value is the converted byte size, in the specified returned unit, expressed
 % either as an integer (for bytes) or as a float
 %
-% Ex: 1023 (bytes) translates to { byte, 1023 }, 1025 translates to
-% { kib, 1.0009765625 }.
+% Ex: 1023 (bytes) translates to {byte, 1023}, 1025 translates to {kib,
+% 1.0009765625}.
 %
 % Note that the returned value cannot be expected to be exact (rounded),
 % therefore this function is mostly useful for user output.
@@ -1838,8 +1884,8 @@ convert_byte_size_with_unit( SizeInBytes ) ->
 
 
 
-% Returns a summary of the dynamically allocated memory currently being used by
-% the Erlang emulator.
+% @doc Returns a summary of the dynamically allocated memory currently being
+% used by the Erlang emulator.
 %
 -spec display_memory_summary() -> void().
 display_memory_summary() ->
@@ -1859,7 +1905,7 @@ display_memory_summary() ->
 
 
 
-% Returns the total installed physical volatile memory (RAM) of the local
+% @doc Returns the total installed physical volatile memory (RAM) of the local
 % computer, expressed in bytes.
 %
 -spec get_total_physical_memory() -> byte_size().
@@ -1871,7 +1917,7 @@ get_total_physical_memory() ->
 
 	case run_command( UnitCommand ) of
 
-		 { _ExitCode=0, _Output="kB" } ->
+		 { _UnitExitCode=0, _Output="kB" } ->
 
 			% Ok, using kB indeed.
 
@@ -1883,7 +1929,7 @@ get_total_physical_memory() ->
 			%
 			case run_command( ValueCommand ) of
 
-				{ _ExitCode=0, MemSizeString } ->
+				{ _ValueExitCode=0, MemSizeString } ->
 
 					% They were probably kiB:
 					list_to_integer( MemSizeString ) * 1024;
@@ -1902,7 +1948,7 @@ get_total_physical_memory() ->
 
 
 
-% Returns a textual description of the total installed physical memory.
+% @doc Returns a textual description of the total installed physical memory.
 %
 % Cannot crash.
 %
@@ -1923,8 +1969,9 @@ get_total_physical_memory_string() ->
 
 
 
-% Returns the total installed physical volatile memory (RAM) of the computer on
-% which specified node (specified as an atom) is running, expressed in bytes.
+% @doc Returns the total installed physical volatile memory (RAM) of the
+% computer on which specified node (specified as an atom) is running, expressed
+% in bytes.
 %
 -spec get_total_physical_memory_on( net_utils:atom_node_name() ) -> byte_size().
 get_total_physical_memory_on( Node ) ->
@@ -1949,9 +1996,9 @@ get_total_physical_memory_on( Node ) ->
 
 
 
-% Returns the total memory used, in bytes, by this instance of the Erlang VM,
-% i.e. the total amount of memory currently allocated by the Erlang processes
-% and by this emulator.
+% @doc Returns the total memory used, in bytes, by this instance of the Erlang
+% VM, that is the total amount of memory currently allocated by the Erlang
+% processes and by this emulator.
 %
 -spec get_memory_used_by_vm() -> byte_size().
 get_memory_used_by_vm() ->
@@ -1959,8 +2006,8 @@ get_memory_used_by_vm() ->
 
 
 
-% Returns {UsedRAM, TotalRAM} where UsedRAM is the actual total memory used on
-% the current host by all applications, in bytes, and TotalRAM is the total
+% @doc Returns {UsedRAM, TotalRAM} where UsedRAM is the actual total memory used
+% on the current host by all applications, in bytes, and TotalRAM is the total
 % installed RAM, in bytes.
 %
 % The cached memory and the buffers used by the kernel are not taken into
@@ -2097,7 +2144,7 @@ get_total_memory_used() ->
 
 
 
-% Returns a textual description of the current RAM status.
+% @doc Returns a textual description of the current RAM status.
 %
 % Cannot crash.
 %
@@ -2128,8 +2175,7 @@ get_ram_status_string() ->
 
 
 
-
-% Returns { UsedSwap, TotalSwap } where UsedSwap is the size of the used swap
+% @doc Returns {UsedSwap, TotalSwap} where UsedSwap is the size of the used swap
 % and TotalSwap is the total amount of swap space on the local host, both
 % expressed in bytes.
 %
@@ -2179,7 +2225,7 @@ get_swap_status() ->
 
 
 
-% Returns a textual description of the current swap status.
+% @doc Returns a textual description of the current swap status.
 %
 % Cannot crash.
 %
@@ -2210,8 +2256,7 @@ get_swap_status_string() ->
 
 
 
-
-% Returns the number of cores available on the local host.
+% @doc Returns the number of cores available on the local host.
 %
 % Throws an exception on failure.
 %
@@ -2242,7 +2287,8 @@ get_core_count() ->
 
 
 
-% Returns a textual description of the number of the local processing cores.
+% @doc Returns a textual description of the number of the local processing
+% cores.
 %
 % Cannot crash.
 %
@@ -2263,15 +2309,15 @@ get_core_count_string() ->
 
 
 
-% Returns the number of live Erlang processes on the current node.
+% @doc Returns the number of live Erlang processes on the current node.
 -spec get_process_count() -> count().
 get_process_count() ->
 	erlang:system_info( process_count ).
 
 
 
-% Returns a textual description of the number of live Erlang processes on the
-% current node.
+% @doc Returns a textual description of the number of live Erlang processes on
+% the current node.
 %
 % Cannot crash.
 %
@@ -2292,9 +2338,9 @@ get_process_count_string() ->
 
 
 
-% Returns an aggregated view of the CPU usage (a float in [0;100]) based on the
-% two specified sets of CPU counters, i.e. the average (on all cores of all
-% processors of the local host) percentage of CPU utilization (all kinds of
+% @doc Returns an aggregated view of the CPU usage (a float in [0;100]) based on
+% the two specified sets of CPU counters, that is the average (on all cores of
+% all processors of the local host) percentage of CPU utilization (all kinds of
 % usage except idle) during the period which elapsed between the start and end
 % measures (in that order).
 %
@@ -2317,9 +2363,9 @@ compute_cpu_usage_between( StartCounters, EndCounters ) ->
 
 
 
-% Returns an aggregated view of the CPU usage (a float in [0;100]) based on the
-% specified detailed CPU percentages, i.e. the average (on all cores of all
-% processors of the local host) percentage of CPU utilization (all kinds of
+% @doc Returns an aggregated view of the CPU usage (a float in [0;100]) based on
+% the specified detailed CPU percentages, that is the average (on all cores of
+% all processors of the local host) percentage of CPU utilization (all kinds of
 % usage except idle) during the period the input percentages correspond to.
 %
 % Returns 'undefined' iff the specified usage is itself undefined.
@@ -2337,12 +2383,12 @@ compute_cpu_usage_for( { UserPercent, NicePercent, SystemPercent, _IdlePercent,
 
 
 
-% Returns a detailed view of the CPU usage, i.e. the average (on all cores of
-% all processors of the local host) percentage of the various kinds of CPU
-% utilization: { UserPercent, NicePercent, SystemPercent, IdlePercent,
-% OtherPercent }, respectively for user mode, user mode with low priority
-% (nice), system mode, idle task and all other usages (if any), between the two
-% sets of measures.
+% @doc Returns a detailed view of the CPU usage, that is the average (on all
+% cores of all processors of the local host) percentage of the various kinds of
+% CPU utilization: {UserPercent, NicePercent, SystemPercent, IdlePercent,
+% OtherPercent}, respectively for user mode, user mode with low priority (nice),
+% system mode, idle task and all other usages (if any), between the two sets of
+% measures.
 %
 % If the two sets of specified counters are equal, returns 'undefined', as no
 % usage can be quantified then.
@@ -2399,7 +2445,7 @@ compute_detailed_cpu_usage( _StartCounters={ U1, N1, S1, I1, O1 },
 
 
 
-% Returns the instantaneous CPU counters, as maintained from boot.
+% @doc Returns the instantaneous CPU counters, as maintained from boot.
 %
 % Note: mostly useful in terms of differences over time.
 %
@@ -2442,7 +2488,7 @@ get_cpu_usage_counters() ->
 
 
 
-% Returns the current usage of disks, as a human-readable string.
+% @doc Returns the current usage of disks, as a human-readable string.
 -spec get_disk_usage() -> ustring().
 get_disk_usage() ->
 
@@ -2459,7 +2505,7 @@ get_disk_usage() ->
 
 
 
-% Returns a textual description of the current disk usage.
+% @doc Returns a textual description of the current disk usage.
 %
 % Cannot crash.
 %
@@ -2479,8 +2525,7 @@ get_disk_usage_string() ->
 
 
 
-
-% Returns a list of the known types of pseudo-filesystems.
+% @doc Returns a list of the known types of pseudo-filesystems.
 -spec get_known_pseudo_filesystems() -> [ pseudo_filesystem_type() ].
 get_known_pseudo_filesystems() ->
 
@@ -2489,7 +2534,7 @@ get_known_pseudo_filesystems() ->
 
 
 
-% Returns a list of the current, local mount points (excluding the
+% @doc Returns a list of the current, local mount points (excluding the
 % pseudo-filesystems).
 %
 -spec get_mount_points() -> [ directory_path() ].
@@ -2526,7 +2571,6 @@ get_mount_points() ->
 	end.
 
 
-
 % (helper for df)
 get_exclude_pseudo_fs_opt() ->
 
@@ -2536,8 +2580,7 @@ get_exclude_pseudo_fs_opt() ->
 	text_utils:join( _Sep=" ", Excludes ).
 
 
-
-% Returns information about the specified filesystem.
+% @doc Returns information about the specified filesystem.
 -spec get_filesystem_info( any_directory_path() ) -> fs_info().
 get_filesystem_info( BinFilesystemPath ) when is_binary( BinFilesystemPath ) ->
 	get_filesystem_info( text_utils:binary_to_string( BinFilesystemPath ) );
@@ -2585,7 +2628,6 @@ get_filesystem_info( FilesystemPath ) ->
 
 
 
-
 % Alternate version, if the base version failed.
 get_filesystem_info_alternate( FilesystemPath ) ->
 
@@ -2613,7 +2655,7 @@ get_filesystem_info_alternate( FilesystemPath ) ->
 					  type=unknown,
 					  used_size = 1024 * text_utils:string_to_integer( USize ),
 					  available_size = 1024 *
-						  text_utils:string_to_integer( ASize ),
+							text_utils:string_to_integer( ASize ),
 					  used_inodes = 0,
 					  available_inodes = 0
 					};
@@ -2632,7 +2674,7 @@ get_filesystem_info_alternate( FilesystemPath ) ->
 
 
 
-% Returns a textual description of the specified filesystem information.
+% @doc Returns a textual description of the specified filesystem information.
 -spec filesystem_info_to_string( fs_info() ) -> ustring().
 filesystem_info_to_string( #fs_info{ filesystem=Fs, mount_point=Mount,
 									 type=Type,
@@ -2664,6 +2706,9 @@ filesystem_info_to_string( #fs_info{ filesystem=Fs, mount_point=Mount,
 
 
 
+% Returns the actual, internal filesystem type corresponding to the specified
+% one.
+%
 -spec get_filesystem_type( ustring() ) -> filesystem_type().
 get_filesystem_type( TypeString ) ->
 	% Better for now than relying on an uncomplete list:
@@ -2671,14 +2716,14 @@ get_filesystem_type( TypeString ) ->
 
 
 
-% Returns a (probably system-dependent) base temporary directory.
+% @doc Returns a (probably system-dependent) base temporary directory.
 -spec get_default_temporary_directory() -> directory_path() .
 get_default_temporary_directory() ->
 	"/tmp".
 
 
 
-% Returns a textual description of the current working directory.
+% @doc Returns a textual description of the current working directory.
 %
 % Cannot crash.
 %
@@ -2699,8 +2744,8 @@ get_current_directory_string() ->
 
 
 
-% Returns a textual description of the current limits (ulimit) in terms of local
-% system resources.
+% @doc Returns a textual description of the current limits (ulimit) in terms of
+% local system resources.
 %
 -spec get_resource_limits() -> ustring().
 get_resource_limits() ->
@@ -2713,8 +2758,8 @@ get_resource_limits() ->
 
 
 
-% Returns a textual description of the current limits (ulimit) in terms of local
-% system resources.
+% @doc Returns a textual description of the current limits (ulimit) in terms of
+% local system resources.
 %
 % Cannot crash.
 %
@@ -2734,7 +2779,7 @@ get_resource_limits_string() ->
 
 
 
-% Returns a string describing the current operating system.
+% @doc Returns a string describing the current operating system.
 -spec get_operating_system_description() -> ustring().
 get_operating_system_description() ->
 
@@ -2762,6 +2807,9 @@ get_operating_system_description() ->
 	end.
 
 
+% @doc Returns (as an alternate solution) a string describing the current
+% operating system.
+%
 get_operating_system_description_alternate() ->
 
 	IdentifierPath = "/etc/issue.net",
@@ -2780,7 +2828,7 @@ get_operating_system_description_alternate() ->
 
 
 
-% Returns a textual description of the operating system being used.
+% @doc Returns a textual description of the operating system being used.
 %
 % Cannot crash.
 %
@@ -2801,7 +2849,7 @@ get_operating_system_description_string() ->
 
 
 
-% Returns a string describing the current state of the local system.
+% @doc Returns a string describing the current state of the local system.
 %
 % Will not crash, even if some information could not be retrieved.
 %
@@ -2828,7 +2876,9 @@ get_system_description() ->
 
 
 
-% Tells whether this host has graphical output (typically a running X server).
+% @doc Tells whether this host has graphical output (typically a running X
+% server).
+%
 -spec has_graphical_output() -> boolean().
 has_graphical_output() ->
 
@@ -2868,7 +2918,7 @@ has_graphical_output() ->
 % successive versions thereof over time).
 
 
-% Returns the (expected, conventional) base installation directory of the
+% @doc Returns the (expected, conventional) base installation directory of the
 % specified third-party, prerequisite package (ex: "Foobar").
 %
 -spec get_dependency_base_directory( package_name() ) -> directory_path().
@@ -2887,7 +2937,6 @@ get_dependency_base_directory( PackageName="ErlPort" ) ->
 	% '~/Software/ErlPort/erlport' directory
 
 	case get_environment_variable( "ERLPORT_BASE_DIR" ) of
-
 
 		false ->
 
@@ -2965,7 +3014,7 @@ get_dependency_base_directory( PackageName ) ->
 
 
 
-% Returns the (expected, conventional) code installation directory of the
+% @doc Returns the (expected, conventional) code installation directory of the
 % specified third-party, prerequisite, Erlang package (ex: "Foobar").
 %
 -spec get_dependency_code_directory( package_name() ) -> directory_path().
@@ -2978,7 +3027,7 @@ get_dependency_code_directory( PackageName ) ->
 
 
 
-% Tells whether a JSON support is available.
+% @doc Tells whether a JSON support is available.
 -spec is_json_support_available() -> boolean().
 is_json_support_available() ->
 	% This module can be built and executed in all cases:
@@ -2986,7 +3035,7 @@ is_json_support_available() ->
 
 
 
-% Returns a string explaining what to do in order to have the JSON support
+% @doc Returns a string explaining what to do in order to have the JSON support
 % available.
 %
 -spec get_json_unavailability_hint() -> ustring().
@@ -2994,15 +3043,15 @@ get_json_unavailability_hint() ->
 	get_json_unavailability_hint( _Backend=undefined ).
 
 
-% Returns a string explaining what to do in order to have the JSON support with
-% the specified backend available.
+% @doc Returns a string explaining what to do in order to have the JSON support
+% with the specified backend available.
 %
 -spec get_json_unavailability_hint( json_utils:parser_backend_name() ) ->
 										ustring().
 get_json_unavailability_hint( _Backend=undefined ) ->
 	% Note: the hints are *not* truncated here, this is normal:
 	"Hint: inspect, in myriad/GNUmakevars.inc, the USE_JSON and "
-	"*_BASE variables, knowing that the "
+	"JSX_BASE / JIFFY_BASE variables, knowing that the "
 		++ code_utils:get_code_path_as_string();
 
 get_json_unavailability_hint( _Backend=jsx ) ->
@@ -3017,7 +3066,7 @@ get_json_unavailability_hint( _Backend=jiffy ) ->
 
 
 
-% Tells whether an HDF5 support is available.
+% @doc Tells whether an HDF5 support is available.
 -spec is_hdf5_support_available() -> boolean().
 is_hdf5_support_available() ->
 
@@ -3042,7 +3091,7 @@ is_hdf5_support_available() ->
 
 
 
-% Returns a string explaining what to do in order to have the HDF5 support
+% @doc Returns a string explaining what to do in order to have the HDF5 support
 % available.
 %
 -spec get_hdf5_unavailability_hint() -> ustring().

@@ -46,6 +46,9 @@
 # Standard general rules:
 
 
+# We consider that, for tests, header files are to lie in the same (test)
+# directory as the corresponding sources:
+#
 %_test.beam: %_test.erl %_test.hrl
 	@echo "		Compiling test module with header $<"
 	@#echo $(ERLANG_COMPILER) $(ERLANG_COMPILER_OPT_FOR_STANDARD_MODULES) $(ERLANG_COMPILER_OPT_FOR_TESTS) -o $@ $<
@@ -59,7 +62,7 @@
 
 
 # You probably want to uncomment the next rule, not this one.
-%.beam: %.erl %.hrl
+%.beam: %.erl $(LAYER_TOP)/%.hrl
 	@echo "		Compiling standard module with header $<"
 	@#echo $(ERLANG_COMPILER) $(ERLANG_COMPILER_OPT_FOR_STANDARD_MODULES) -o $@ $<
 	@$(ERLANG_COMPILER) $(ERLANG_COMPILER_OPT_FOR_STANDARD_MODULES) -o $@ $<
@@ -93,7 +96,7 @@
 
 %_exec: %_app.beam %.beam
 	@echo "		Executing application $^ (first form)"
-	#$(ERL_PARAMETERIZED_LAUNCHER) $(NODE_NAMING) $@-$$USER --eval $$(echo $@|sed 's|_exec$$|_app:exec()|1') $(ALL_CMD_LINE_OPTIONS)
+	@#echo $(ERL_PARAMETERIZED_LAUNCHER) $(NODE_NAMING) $@-$$USER --eval $$(echo $@|sed 's|_exec$$|_app:exec()|1') $(ALL_CMD_LINE_OPTIONS)
 	@$(ERL_PARAMETERIZED_LAUNCHER) $(NODE_NAMING) $@-$$USER --eval $$(echo $@|sed 's|_exec$$|_app:exec()|1') $(ALL_CMD_LINE_OPTIONS)
 
 
@@ -256,7 +259,9 @@
 
 
 
-# Not wanting here the options for standard executions (such as -noinput or alike):
+# Not wanting here the options for standard executions (such as -noinput or
+# alike):
+#
 %_shell: %_test
 	@echo "		Launching a shell for test $@ from $^"
 	@echo "  (one may then enter: '$<:run().' to execute the test)"

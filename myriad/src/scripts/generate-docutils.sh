@@ -10,7 +10,6 @@
 # layers upward, and we do not want to introduce an extra dependency to
 # Ceylan-Hull.
 
-
 # Notes:
 #
 #  - docutils has been finally preferred to txt2tags
@@ -147,7 +146,7 @@ if [ "$1" = "--icon-file" ]; then
 
    if [ ! -f "${icon_file}" ]; then
 
-	   echo "${begin_marker} Error, specified icon file (${icon_file}) does not exist." 1>&2
+	   echo "${begin_marker} Error, specified icon file (${icon_file}) does not exist (current directory being $(pwd))." 1>&2
 	   exit 55
 
    else
@@ -234,14 +233,16 @@ manage_rst_to_html()
 
 	fi
 
-	# Better suffixed than prefixed as there may be a leading directory:
+	# Better suffixed than prefixed, as a leading directory may be specified:
 	tmp_file="${target}.tmp"
 
 	if [ -n "${icon_file}" ]; then
 
-		echo "  Referencing the icon"
+		icon_filename="$(basename ${icon_file})"
 
-		/bin/cat "${target}" | sed "s|</head>$|<link href=\"${icon_file}\" rel=\"icon\">\n</head>|1" > "${tmp_file}"
+		echo "  Referencing the ${icon_filename} icon."
+
+		/bin/cat "${target}" | sed "s|</head>$|<link href=\"${icon_filename}\" rel=\"icon\">\n</head>|1" > "${tmp_file}"
 
 		if [ ! -f "${tmp_file}" ]; then
 
@@ -252,9 +253,20 @@ manage_rst_to_html()
 
 		/bin/mv -f "${tmp_file}" "${target}"
 
+		# We also have to copy the referenced icon file in the target location:
+
+		target_dir="$(dirname ${target})"
+		target_icon_path="${target_dir}/${icon_filename}"
+
+		# As they can be the same path:
+		if [ ! -f "${target_icon_path}" ]; then
+			/bin/cp -f "${icon_file}" "${target_icon_path}"
+
+		fi
+
 	fi
 
-	echo "  Adding the viewport settings"
+	echo "  Adding the viewport settings."
 	#echo "  Adding the viewport settings (from '${target}' to '${tmp_file}')."
 
 	# Apparently the viewport settings are strongly recommended in all cases,
@@ -297,6 +309,7 @@ manage_rst_to_pdf()
 
 	# Input extension is generally '.rst' (allows to remove only the final
 	# extension, even if there were dots in the base name):
+	#
 	tex_file=$(echo ${source} | sed 's|\.[^\.]*$|.tex|1')
 
 
@@ -376,15 +389,15 @@ manage_rst_to_pdf()
 
 	fi
 
+	#echo "target = ${target}"
+
 	if [ -f "${target}" ]; then
 
-		abs_target="$(realpath ${target})"
-		echo "  PDF generated, '${abs_target}' ready!"
+		echo "PDF ready, in '$(pwd)/${target}'."
 
 	else
 
-		echo "  Error, the '${abs_target}' PDF could not be generated." 1>&2
-		exit 35
+		echo "Error, no PDF obtained (no '$(pwd)/${target}')."
 
 	fi
 

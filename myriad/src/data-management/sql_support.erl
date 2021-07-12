@@ -27,19 +27,27 @@
 
 
 
-% Gathering of various facilities regarding the management of SQL databases from
-% Erlang.
+% @doc Gathering of various facilities regarding the management of <b>SQL
+% databases</b>.
 %
-% The current implementation is mostly geared towards the use of SQLite3 (an
-% optional dependency), through the erlang-sqlite3 binding (see
-% https://github.com/alexeyr/erlang-sqlite3).
+% The current implementation is mostly geared towards the use of `SQLite3' (an
+% optional dependency), through the <a
+% href="https://github.com/alexeyr/erlang-sqlite3">erlang-sqlite3</a> binding.
 %
-% See sql_support_test.erl for the corresponding test.
+% Note: currently mostly empty.
+%
+% See `sql_support_test.erl' for the corresponding test.
 %
 -module(sql_support).
 
+
+
+-ifdef(has_sqlite3).
+
 % For the various types defined:
 -include("sqlite3.hrl").
+
+-endif. % has_sqlite3
 
 
 % Implementation notes:
@@ -55,8 +63,7 @@
 % General support section, regarding the SQL service itself.
 
 
-% Starts (checks and inits) the SQL (in practice: SQLite3) service support.
-%
+% @doc Starts (checks and inits) the SQL (in practice: SQLite3) service support.
 -spec start() -> void().
 start() ->
 
@@ -68,8 +75,7 @@ start() ->
 	ok.
 
 
-% Stops the SQL support.
-%
+% @doc Stops the SQL support.
 -spec stop() -> void().
 stop() ->
 	%io:format( "Stopping SQL support.").

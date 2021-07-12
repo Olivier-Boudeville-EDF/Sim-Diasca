@@ -1,0 +1,30 @@
+@author Olivier Boudeville <olivier (dot) boudeville (at) esperide (dot) com>
+
+@copyright 2021 Olivier Boudeville
+
+@version API PROJECT_VERSION
+
+@title Welcome to the documentation of the Ceylan-WOOPER API
+
+@doc <h3>Overview</h3>
+
+<p>`Ceylan-WOOPER' is a free software lightweight layer on top of the <a href="http://erlang.org" target="_blank">Erlang</a> language that provides <b>constructs dedicated to <em>Object-Oriented Programming</em> (OOP)</b>.
+</p>
+
+<p>This website presents the documentation of the API (<em>Application Programming Interface</em>) of WOOPER version PROJECT_VERSION (as of GENERATION_DATE).
+</p>
+
+<p>Note though that WOOPER is closer to being a language than to being a library; thus this API documentation exists mostly for reference purpose and does not teach much about the use of WOOPER. Users should therefore refer primarily to its <a href="http://wooper.esperide.org" target="_blank">main documentation</a>.
+</p>
+
+<p>Ceylan-WOOPER relies on the <a href="http://myriad.esperide.org" target="_blank">Myriad layer</a>, a generic Erlang toolbox.
+</p>
+
+
+@reference See the <a href="http://wooper.esperide.org" target="_blank">WOOPER official website</a> or <a href="https://olivier-boudeville.github.io/Ceylan-WOOPER/index.html" target="_blank">its mirror</a>
+
+@reference In terms of dependency, for additional information one may refer to:
+<ul>
+  <li>the <a href="http://myriad.esperide.org" target="_blank">Myriad official website</a> or <a href="https://olivier-boudeville.github.io/Ceylan-Myriad/index.html" target="_blank">its mirror</a>, notably its <a href="https://myriad.esperide.org/api-doc/index.html" target="_blank">API documentation</a></li>
+  <li>the <a href="http://erlang.org" target="_blank">Erlang official website</a>, notably its <a href="https://erlang.org/doc/man_index.html">API documentation</a></li>
+</ul>

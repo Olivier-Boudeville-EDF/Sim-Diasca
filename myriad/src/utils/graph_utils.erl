@@ -23,11 +23,10 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
-% Creation date: Tuesday, March 5, 2013
+% Creation date: Tuesday, March 5, 2013.
 
 
-
-% Gathering of various convenient facilities regarding graphs.
+% @doc Gathering of various convenient facilities regarding <b>graphs</b>.
 %
 % See graph_utils_test.erl for the corresponding test.
 %
@@ -36,7 +35,6 @@
 
 
 % Pathfinding-related operations.
-%
 -export([ find_breadth_first/3, find_breadth_first/4 ]).
 
 
@@ -51,17 +49,16 @@
 % Type declarations:
 
 
-% The node of a graph of interest (any type):
 -type vertex() :: any().
+% The node of a graph of interest (can be any type).
 
 
-
-% Tells whether the specified node can be considered as a solution:
 -type predicate() :: fun( ( vertex(), basic_utils:user_data() ) -> boolean() ).
+% Tells whether the specified node can be considered as a solution.
 
 
-% Lists the children nodes of the specified one:
 -type feeder() :: fun( ( vertex(), basic_utils:user_data() ) -> [ vertex() ] ).
+% Lists the children nodes of the specified one.
 
 
 -export_type([ vertex/0, predicate/0, feeder/0 ]).
@@ -76,14 +73,14 @@
 % Breadth-first look-up in an implicit graph.
 %
 % Based on a queue.
-
+%
 % See: http://en.wikipedia.org/wiki/Breadth-first_search
 
 
 
-% Tries to find, breadth-first, the first vertex to satisfy specified predicate,
-% from specified initial vertex, relying on the specified feeder function to
-% obtain outbound edges of a vertex of interest.
+% @doc Tries to find, breadth-first, the first vertex to satisfy specified
+% predicate, from specified initial vertex, relying on the specified feeder
+% function to obtain outbound edges of a vertex of interest.
 %
 % Returns the path found, i.e. the ordered list of vertices, from the initial
 % vertex to the found one.
@@ -95,9 +92,9 @@ find_breadth_first( InitialVertex, Predicate, Feeder ) ->
 
 
 
-% Tries to find, breadth-first, the first vertex to satisfy specified predicate,
-% from specified initial vertex, relying on the specified feeder function to
-% obtain outbound edges of a vertex of interest.
+% @doc Tries to find, breadth-first, the first vertex to satisfy specified
+% predicate, from specified initial vertex, relying on the specified feeder
+% function to obtain outbound edges of a vertex of interest.
 %
 % Returns the path found, i.e. the ordered list of vertices, from the initial
 % vertex to the found one.
@@ -119,8 +116,7 @@ find_breadth_first( InitialVertex, Predicate, Feeder, UserData ) ->
 	% would prevent termination):
 	Explored = ?list_impl:new(),
 
-	find_bfs_helper( Predicate, Feeder, InitialQueue, Explored,
-					 UserData ).
+	find_bfs_helper( Predicate, Feeder, InitialQueue, Explored, UserData ).
 
 
 

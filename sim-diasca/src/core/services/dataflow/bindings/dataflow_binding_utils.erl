@@ -20,10 +20,11 @@
 
 
 
-% Module storing all the helper functions defined to facilitate the definition
-% and use of the binding APIs, for all the supported implementation languages
-% (nothing is expected to be language-specific in this module, in the sense that
-% if a language is involved somewhere, others should also be, aside).
+% @doc Module storing all the helper functions defined to facilitate the
+% <b>definition and use of the binding APIs</b>, for all the supported
+% implementation languages (nothing is expected to be language-specific in this
+% module, in the sense that if a language is involved somewhere, others should
+% also be, aside).
 %
 -module(dataflow_binding_utils).
 
@@ -49,7 +50,7 @@
 
 
 
-% Returns the default unit types (classes) that are the Erlang-based
+% @doc Returns the default unit types (classes) that are the Erlang-based
 % counterparts to all units implemented in a foreign programming language.
 %
 -spec get_all_erlang_unit_types() -> [ dataflow_unit_type() ].
@@ -59,7 +60,7 @@ get_all_erlang_unit_types() ->
 
 
 
-% Returns the default Erlang unit type associated with specified programming
+% @doc Returns the default Erlang unit type associated to specified programming
 % language.
 %
 -spec get_erlang_unit_type( language_utils:language() ) -> dataflow_unit_type().
@@ -74,8 +75,8 @@ get_erlang_unit_type( Other ) ->
 
 
 
-% Returns the types (Erlang classnames) of units listed in the specified unit
-% specifications.
+% @doc Returns the types (Erlang classnames) of units listed in the specified
+% unit specifications.
 %
 % Note: checks also that their declared implementation language (if any is
 % specified) is supported.

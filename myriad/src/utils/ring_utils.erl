@@ -26,8 +26,8 @@
 % Creation date: July 1, 2007.
 
 
-% Gathering of various facilities about rings (infinite lists, looping on
-% themselves).
+% @doc Gathering of various facilities about <b>rings</b> (infinite lists,
+% looping on themselves).
 %
 % See ring_utils_test.erl for the corresponding test.
 %
@@ -35,13 +35,13 @@
 
 
 
+-opaque ring() :: { list(), list() }.
 % A ring behaves as an (infinite) list whose next element after its last is its
 % first again.
 %
 % Internally, the first list is the working one (from which elements may be
 % extracted), while the second is a copy of the full reference one.
-%
--opaque ring() :: { list(), list() }.
+
 
 -opaque ring( T ) :: { [ T ], [ T ] }.
 
@@ -67,21 +67,21 @@
 
 
 
-% Returns a ring corresponding to the specified list.
+% @doc Returns a ring corresponding to the specified list.
 -spec from_list( list() ) -> ring().
 from_list( InputList ) ->
 	{ InputList, InputList }.
 
 
 
-% Returns a list corresponding to the current state of specified ring.
+% @doc Returns a list corresponding to the current state of specified ring.
 -spec to_list( ring() ) -> list().
 to_list( Ring={ _WorkingList, ReferenceList } ) ->
 	{ List, _NewRing } = get_next( _Count=length( ReferenceList ), Ring ),
 	List.
 
 
-% Pops the head of specified ring: returns {Head,UpdatedRing}.
+% @doc Pops the head of specified ring: returns {Head,UpdatedRing}.
 -spec head( ring() ) -> { term(), ring() }.
 head( _Ring={ _WorkingList=[], ReferenceList } ) ->
 	% Replenish:
@@ -95,8 +95,8 @@ head( _Ring={ _WorkingList=[ H | T ], ReferenceList } ) ->
 
 
 
-% Returns a list of the Count popped elements (in their order in the ring), and
-% the corresponding updated ring.
+% @doc Returns a list of the Count popped elements (in their order in the ring),
+% and the corresponding updated ring.
 %
 % Ex: for a new ring based on [a, b, c, d], if Count=6 then
 % [a, b, c, d, a, b] will be returned.
@@ -116,20 +116,20 @@ get_next_helper( Count, Ring, Acc ) ->
 
 
 
-% Returns the list from which the ring was created (in its original order).
+% @doc Returns the list from which the ring was created (in its original order).
 -spec get_reference_list( ring() ) -> [ term() ].
 get_reference_list( _Ring={ _WorkingList, ReferenceList } ) ->
 	ReferenceList.
 
 
-% Returns the number of elements in the specified ring.
+% @doc Returns the number of elements in the specified ring.
 -spec size( ring() ) -> count().
 size( _Ring={ _WorkingList, ReferenceList } ) ->
 	length( ReferenceList ).
 
 
 
-% Returns a textual representation of the specified ring.
+% @doc Returns a textual representation of the specified ring.
 -spec to_string( ring() ) -> ustring().
 to_string( Ring ) ->
 
@@ -139,13 +139,12 @@ to_string( Ring ) ->
 			"empty ring";
 
 		[ Element ] ->
-			text_utils:format( "ring with a single element, ~p",
-							   [ Element ] );
+			text_utils:format( "ring with a single element, ~p", [ Element ] );
 
 		Elements ->
 
 			ElemString = text_utils:strings_to_string( [
-				   text_utils:format( "~p", [ E ] ) || E <- Elements ] ),
+					text_utils:format( "~p", [ E ] ) || E <- Elements ] ),
 
 			text_utils:format( "ring with following ~B elements: ~ts",
 							   [ length( Elements ), ElemString ] )

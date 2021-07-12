@@ -19,6 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Class in charge of representing a <b>full, overall dataflow</b>.
 -module(class_Dataflow).
 
 
@@ -63,8 +64,8 @@
 % Dataflow instances shall be created before the simulation is started.
 
 
-% Name of a dataflow:
--type dataflow_name() :: string().
+-type dataflow_name() :: ustring().
+% Name of a dataflow.
 
 
 
@@ -102,7 +103,9 @@
 
 
 
-% Constructs a new dataflow, to account for an actual dataflow:
+% @doc Constructs a new dataflow, to account for an actual dataflow.
+%
+% Parameters are:
 %
 % - ActorSettings describes actor-specific elements assigned by the load
 % balancer, including the actor abstract identifier (AAI) and the seed of this
@@ -144,7 +147,7 @@ construct( State, ActorSettings, DataflowName, ExperimentManagerPid ) ->
 
 
 
-% Overidden destructor.
+% @doc Overidden destructor.
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -184,7 +187,7 @@ destruct( State ) ->
 % Actor oneways.
 
 
-% Callback executed on the first diasca of existence of this dataflow.
+% @doc Callback executed on the first diasca of existence of this dataflow.
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
 							const_actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
@@ -195,7 +198,7 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-% Declares a list of suspended blocks, so that they can be resumed later.
+% @doc Declares a list of suspended blocks, so that they can be resumed later.
 -spec declareSuspendedBlocks( wooper:state(), [ block_pid() ],
 							  sending_actor_pid() ) -> actor_oneway_return().
 declareSuspendedBlocks( State, SuspendedBlocks, _SendingActorPid ) ->
@@ -217,7 +220,7 @@ declareSuspendedBlocks( State, SuspendedBlocks, _SendingActorPid ) ->
 
 
 
-% Resumes the blocks of this dataflow that were suspended.
+% @doc Resumes the blocks of this dataflow that were suspended.
 -spec resumeSuspendedBlocks( wooper:state(), sending_actor_pid() ) ->
 									actor_oneway_return().
 resumeSuspendedBlocks( State, _SendingActorPid ) ->
@@ -254,9 +257,10 @@ resumeSuspendedBlocks( State, _SendingActorPid ) ->
 
 
 
-% Registers the specified dataflow object.
+% @doc Registers the specified dataflow object.
 %
 % A newly registered dataflow object starts implicitly in the suspended state.
+%
 -spec registerDataflowObject( wooper:state(), wooper:classname(),
 							  object_pid() ) -> actor_oneway_return().
 registerDataflowObject( State, Classname, RegisteredObjectPid ) ->
@@ -282,13 +286,13 @@ registerDataflowObject( State, Classname, RegisteredObjectPid ) ->
 
 
 
-% Unregisters the specified dataflow object.
+% @doc Unregisters the specified dataflow object.
 -spec unregisterDataflowObject( wooper:state(), wooper:classname(),
 								object_pid() ) -> actor_oneway_return().
 unregisterDataflowObject( State, Classname, UnregisteredObjectPid ) ->
 
 	?void_fmt( "Dataflow unregistering object ~p of class ~ts.",
-				[ UnregisteredObjectPid, Classname ] ),
+			   [ UnregisteredObjectPid, Classname ] ),
 
 	% May leave an empty entry:
 	NewObjectTable = table:delete_from_entry( Classname, UnregisteredObjectPid,
@@ -306,7 +310,7 @@ unregisterDataflowObject( State, Classname, UnregisteredObjectPid ) ->
 
 
 
-% Registers the specified dataflow processing unit.
+% @doc Registers the specified dataflow processing unit.
 -spec registerDataflowUnit( wooper:state(), wooper:classname(), unit_pid() ) ->
 									actor_oneway_return().
 registerDataflowUnit( State, Classname, RegisteredUnitPid ) ->
@@ -326,7 +330,7 @@ registerDataflowUnit( State, Classname, RegisteredUnitPid ) ->
 
 
 
-% Unregisters the specified dataflow unit.
+% @doc Unregisters the specified dataflow unit.
 -spec unregisterDataflowUnit( wooper:state(), wooper:classname(),
 							  unit_pid() ) -> actor_oneway_return().
 unregisterDataflowUnit( State, Classname, UnregisteredUnitPid ) ->
@@ -355,8 +359,8 @@ unregisterDataflowUnit( State, Classname, UnregisteredUnitPid ) ->
 % Static section.
 
 
-% Creates a dataflow value, based on the specified direct value. No metadata is
-% specifically set (hence the returned channel value is incomplete).
+% @doc Creates a dataflow value, based on the specified direct value. No
+% metadata is specifically set (hence the returned channel value is incomplete).
 %
 -spec create_channel_value( actual_value() ) ->
 									static_return( channel_value() ).
@@ -365,7 +369,7 @@ create_channel_value( ActualValue ) ->
 
 
 
-% Creates a dataflow value that can be conveyed over a channel, either from
+% @doc Creates a dataflow value that can be conveyed over a channel, either from
 % user-supplied information or from internal ones (typically obtained then from
 % class_DataflowBlock:get_output_port_metadata/2).
 %
@@ -407,7 +411,6 @@ create_channel_value( ActualValue, UserSemantics, UnitString, Type )
 	wooper:return_static( ChannelValue );
 
 
-
 % Here the semantics are already a set of binaries:
 create_channel_value( ActualValue, Semantics,
 		Unit={ _UnitBinString, _CanonicalUnit }, TypeDescription ) ->
@@ -432,7 +435,7 @@ create_channel_value( _ActualValue, UserSemantics, Unit, _Type ) ->
 
 
 
-% Creates a dataflow value that can be conveyed over a channel, using a
+% @doc Creates a dataflow value that can be conveyed over a channel, using a
 % pre-processed semantics (set of binaries), unit (a pair) and type
 % (type-as-term, rather than a type-as-a-string) for that (ex: the one already
 % associated to a given port).
@@ -440,7 +443,7 @@ create_channel_value( _ActualValue, UserSemantics, Unit, _Type ) ->
 % Note: low-level direct assignment, minimum checking, for internal use only.
 %
 -spec create_direct_channel_value( actual_value(), value_semantics(),
-		  value_unit(), value_type() ) -> static_return( channel_value() ).
+			value_unit(), value_type() ) -> static_return( channel_value() ).
 create_direct_channel_value( ActualValue, Semantics,
 		Unit={ _UnitBinString, _CanonicalUnit }, ActualType ) ->
 
@@ -455,7 +458,7 @@ create_direct_channel_value( ActualValue, Semantics,
 % Helper section.
 
 
-% Ensures that operations make sense, time-wise.
+% @doc Ensures that operations make sense, time-wise.
 %
 % Returns the current, new suspension tick, once checked.
 %
@@ -502,7 +505,7 @@ ensure_tick_consistency( State ) ->
 
 
 
-% Returns a textual description of this dataflow.
+% @doc Returns a textual description of this dataflow.
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
@@ -515,7 +518,7 @@ to_string( State ) ->
 			ObjectListString = text_utils:strings_to_string(
 				[ text_utils:format( "~B instances of object type '~ts': ~w",
 									 [ length( ObjList ), ObjType, ObjList ] )
-				  || { ObjType, ObjList } <- ObjectPairs ] ),
+					|| { ObjType, ObjList } <- ObjectPairs ] ),
 			text_utils:format( "referencing ~B types of dataflow objects: ~ts",
 							   [ length( ObjectPairs ), ObjectListString ] )
 
@@ -530,7 +533,7 @@ to_string( State ) ->
 			UnitListString = text_utils:strings_to_string(
 				[ text_utils:format( "~B instances of unit type '~ts': ~w",
 									 [ length( ObjList ), ObjType, ObjList ] )
-				  || { ObjType, ObjList } <- UnitPairs ] ),
+					|| { ObjType, ObjList } <- UnitPairs ] ),
 			text_utils:format( "referencing ~B types of dataflow units: ~ts",
 							   [ length( UnitPairs ), UnitListString ] )
 

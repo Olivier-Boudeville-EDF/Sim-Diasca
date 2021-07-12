@@ -15,24 +15,27 @@ TRAINING_ARCHIVE = $(TRAINING_PREFIX)-elements
 TRAINING_ARCHIVE_FILENAME = $(TRAINING_ARCHIVE).tar.bz2
 
 
-info-doc:
-	@echo "  Use 'make full-doc' to generate the Sim-Diasca Training material (in english)."
+.PHONY: doc generate-training-archive clean clean-training
+
+
+doc:
+	@echo "  Run 'make full-doc' to generate the Sim-Diasca Training material (in english)."
 
 
 generate-training-archive: clean full-doc
 	@mkdir $(TRAINING_DIR)
-	@cp tmp-rst/*.pdf $(TRAINING_DIR)
-	@cp -r exercises $(TRAINING_DIR)
-	-@cd $(TRAINING_DIR) && \
-	find . -name '.svn' -exec /bin/rm -rf '{}' ';' 2>/dev/null
+	@/bin/cp tmp-rst/*.pdf $(TRAINING_DIR)
+	@/bin/cp -r exercises $(TRAINING_DIR)
 	@tar cvjf $(TRAINING_ARCHIVE_FILENAME) $(TRAINING_PREFIX)
-	@echo ; echo "$(TRAINING_ARCHIVE_FILENAME) is ready!"
+	@echo; echo "$(TRAINING_ARCHIVE_FILENAME) is ready!"
 
 
 clean: clean-training
 
+
 clean-training:
 	-@/bin/rm -rf $(TRAINING_DIR) $(TRAINING_ARCHIVE_FILENAME)
+
 
 
 DOCUTILS_TOP = ..

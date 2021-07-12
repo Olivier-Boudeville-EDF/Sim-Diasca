@@ -3,10 +3,11 @@ SIM_DIASCA_TOP = .
 
 .PHONY: help help-intro help-sim-diasca                               \
 		all register-version-in-header register-sim-diasca            \
-		info-local info-tools info-network info-versions info-compile \
+		info-local info-tools info-network info-versions              \
 		info-conditionals                                             \
-		clean clean-local clean-host-candidate-files stats
-
+		clean clean-local clean-host-candidate-files stats            \
+		info-context info-versions info-sim-diasca info-compile       \
+		info-conditionals info-deps
 
 
 MODULES_DIRS = src test doc
@@ -65,22 +66,6 @@ info-network:
 	@echo "FQDN = $(FQDN)"
 
 
-info-versions:
-	@echo "SIM_DIASCA_VERSION = $(SIM_DIASCA_VERSION)"
-
-
-info-compile:
-	@echo "EXECUTION_TARGET          = $(EXECUTION_TARGET)"
-	@echo "ENABLE_NATIVE_COMPILATION = $(ENABLE_NATIVE_COMPILATION)"
-	@echo "ENABLE_TRACES             = $(ENABLE_TRACES)"
-	@echo "ENABLE_DEBUG              = $(ENABLE_DEBUG)"
-	@echo "BEAM_DIRS                 = $(BEAM_DIRS)"
-
-
-info-conditionals:
-	@echo "SIM_DIASCA_DEBUG_FLAGS = $(SIM_DIASCA_DEBUG_FLAGS)"
-	@echo "SIM_DIASCA_CHECK_FLAGS = $(SIM_DIASCA_CHECK_FLAGS)"
-
 
 clean: clean-local
 
@@ -108,6 +93,34 @@ clean-host-candidate-files:
 
 stats:
 	@$(MAKE_CODE_STATS) $(SIM_DIASCA_TOP)
+
+
+# Typically useful to know the software context for continuous integration:
+info-context: info-platform info-versions
+
+
+info-versions:
+	@echo "MYRIAD_VERSION = $(MYRIAD_VERSION)"
+	@echo "WOOPER_VERSION = $(WOOPER_VERSION)"
+	@echo "TRACES_VERSION = $(TRACES_VERSION)"
+	@echo "SIM_DIASCA_VERSION = $(SIM_DIASCA_VERSION)"
+
+
+info-sim-diasca:
+
+
+info-compile: info-compile-traces
+
+
+info-conditionals:
+	@echo "SIM_DIASCA_DEBUG_FLAGS = $(SIM_DIASCA_DEBUG_FLAGS)"
+	@echo "SIM_DIASCA_CHECK_FLAGS = $(SIM_DIASCA_CHECK_FLAGS)"
+
+
+info-deps:
+	@echo "MYRIAD_TOP = $(MYRIAD_TOP) (i.e. $$(realpath $(MYRIAD_TOP)))"
+	@echo "WOOPER_TOP = $(WOOPER_TOP)) (i.e. $$(realpath $(WOOPER_TOP)))"
+	@echo "TRACES_TOP = $(TRACES_TOP)) (i.e. $$(realpath $(TRACES_TOP)))"
 
 
 include $(SIM_DIASCA_TOP)/GNUmakesettings.inc

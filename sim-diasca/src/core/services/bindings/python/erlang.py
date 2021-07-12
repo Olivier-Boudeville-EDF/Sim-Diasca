@@ -26,7 +26,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 
-# Tentative fix to support various versions of Python 3.X:
+# Workaround to support various versions of Python 3.X:
 try:
     from inspect import getfullargspec
 except ImportError:

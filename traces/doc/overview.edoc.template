@@ -1,0 +1,32 @@
+@author Olivier Boudeville <olivier (dot) boudeville (at) esperide (dot) com>
+
+@copyright 2021 Olivier Boudeville
+
+@version API PROJECT_VERSION
+
+@title Welcome to the documentation of the Ceylan-Traces API
+
+@doc <h3>Overview</h3>
+
+<p>`Ceylan-Traces' provides Erlang applications with advanced trace services, so that the user can efficiently log, browse and search through detailed runtime messages that may be emitted concurrently (i.e. in a parallel, distributed way) by all kinds of processes.
+</p>
+
+<p>This website presents the documentation of the API (<em>Application Programming Interface</em>) of Traces version PROJECT_VERSION (as of GENERATION_DATE).
+</p>
+
+
+<p>Ceylan-Traces relies on the <a href="http://wooper.esperide.org" target="_blank">WOOPER layer</a> (for object-oriented constructs) and on the <a href="http://myriad.esperide.org" target="_blank">Myriad layer</a> (as a generic Erlang toolbox).
+</p>
+
+<p>
+<b>Note that, currently, code based on WOOPER is not correctly taken into account by edoc</b>: due to limitations, most of the listed functions lack their documentation, and all methods and also generated code, such as constructors are invisible to edoc, respectively as it is not aware that they are actually exported in, or added to, the AST. However the full Traces codebase <em>is</em> intensely documented, refer to <a href="https://github.com/Olivier-Boudeville/Ceylan-Traces/tree/master/src" target="_blank">this repository</a> for full information.
+</p>
+
+@reference See the <a href="http://traces.esperide.org" target="_blank">Traces official website</a> or <a href="https://olivier-boudeville.github.io/Ceylan-Traces/index.html" target="_blank">its mirror</a>
+
+@reference In terms of dependency, for additional information one may refer to:
+<ul>
+  <li>the <a href="http://wooper.esperide.org" target="_blank">WOOPER official website</a> or <a href="https://olivier-boudeville.github.io/Ceylan-WOOPER/index.html" target="_blank">its mirror</a>, notably its <a href="https://wooper.esperide.org/api-doc/index.html" target="_blank">API documentation</a></li>
+  <li>the <a href="http://myriad.esperide.org" target="_blank">Myriad official website</a> or <a href="https://olivier-boudeville.github.io/Ceylan-Myriad/index.html" target="_blank">its mirror</a>, notably its <a href="https://myriad.esperide.org/api-doc/index.html" target="_blank">API documentation</a></li>
+  <li>to the <a href="http://erlang.org" target="_blank">Erlang official website</a>, notably its <a href="https://erlang.org/doc/man_index.html">API documentation</a></li>
+</ul>

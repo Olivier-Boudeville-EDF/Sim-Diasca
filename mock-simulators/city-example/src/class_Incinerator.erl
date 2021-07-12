@@ -151,10 +151,10 @@ construct( State, ActorSettings, Name, Location, CapacityInformation,
 										?trace_categorize(Name) ),
 
 	LoadState = class_WasteLoadingPoint:construct( ActorState, Location,
-												  _CapacityInformation=[] ),
+											_CapacityInformationLoad=[] ),
 
 	UnloadState = class_WasteUnloadingPoint:construct( LoadState, Location,
-												   _CapacityInformation=[] ),
+											_CapacityInformationUnload=[] ),
 
 	PointState = class_PointOfInterest:construct( UnloadState, Name, Location,
 												  GISPid ),

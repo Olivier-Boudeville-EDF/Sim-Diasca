@@ -23,13 +23,16 @@
 
 
 % Copied verbatim from Ceylan-Myriad/src/utils/script_utils.erl, for bootstrap:
+% Functions are declared private as they are included within each escript.
 
-
-% Returns the base directory of that script, i.e. where it is stored (regardless
-% of the possibly relative path whence it was launched).
+% @doc Returns the base directory of that script, i.e. where it is stored
+% (regardless of the possibly relative path whence it was launched).
 %
 % Note: useful to locate resources (ex: other modules, header files) defined
 % with that script and needed by it.
+%
+% @private
+% @hidden
 %
 -spec get_script_base_directory() -> file_utils:path().
 get_script_base_directory() ->
@@ -52,16 +55,18 @@ get_script_base_directory() ->
 
 
 
-% Returns the root directory of the Myriad layer.
+% @doc Returns the root directory of the Myriad layer.
 %
 % (note that a double path conversion between root and script directories can
 % hardly be avoided)
 %
+% @private
+%
 -spec get_myriad_base_directory() -> file_utils:path().
 get_myriad_base_directory() ->
 
-	% We cannot use file_utils:normalise_path/1 here: Myriad not usable from
-	% that point yet.
+	% We cannot use file_utils:normalise_path/1 here, as Myriad is not usable
+	% from that point yet.
 	%
 	% Two main possibilities here: the current escript is located in src/scripts
 	% or in src/apps/SOME_APP; trying them in turn, using src/meta as an
@@ -78,16 +83,16 @@ get_myriad_base_directory() ->
 		{ ok, #file_info{ type=directory } } ->
 			FirstBaseCandidate;
 
-		{ error, _Reason } ->
+		{ error, _FirstReason } ->
 			% Maybe in src/apps/SOME_APP then:
 			SecondBaseCandidate = filename:join( FirstBaseCandidate, ".." ),
-			SecondMetaPath = filename:join(
-								[ SecondBaseCandidate, "src", "meta" ] ),
+			SecondMetaPath =
+				filename:join( [ SecondBaseCandidate, "src", "meta" ] ),
 			case file:read_file_info( SecondMetaPath ) of
 				{ ok, #file_info{ type=directory } } ->
 					SecondBaseCandidate;
 
-				{ error, _Reason } ->
+				{ error, _SecondReason } ->
 					throw( { myriad_base_directory_not_found,
 							 FirstBaseCandidate, SecondBaseCandidate } )
 
@@ -97,7 +102,7 @@ get_myriad_base_directory() ->
 
 
 
-% Updates the VM code path so that all modules of the 'Myriad' layer can be
+% @doc Updates the VM code path so that all modules of the 'Myriad' layer can be
 % readily used from an escript.
 %
 % Note: this function and its helpers might be copied verbatim to the target
@@ -106,14 +111,18 @@ get_myriad_base_directory() ->
 %
 % (original version located in script_utils.erl, copied verbatim here)
 %
+% @private
+%
 -spec update_code_path_for_myriad() -> basic_utils:void().
 update_code_path_for_myriad() ->
 	update_code_path_for_myriad( get_myriad_base_directory() ).
 
 
 
-% Updates the VM code path so that all modules of the 'Myriad' layer can be
+% @doc Updates the VM code path so that all modules of the 'Myriad' layer can be
 % readily used from a module run as an escript.
+%
+% @private
 %
 -spec update_code_path_for_myriad_from_module() -> basic_utils:void().
 update_code_path_for_myriad_from_module() ->
@@ -122,7 +131,7 @@ update_code_path_for_myriad_from_module() ->
 	update_code_path_for_myriad( MyriadBaseDirectory ).
 
 
-% Updates the VM code path so that all modules of the 'Myriad' layer can be
+% @doc Updates the VM code path so that all modules of the 'Myriad' layer can be
 % readily used from an escript.
 %
 % The specified root directory is supposed correct (no further checking made).

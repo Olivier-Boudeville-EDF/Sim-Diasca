@@ -265,7 +265,6 @@ onNotEnoughMoney( State, MachinePid ) ->
 % synchronicity) are allowed to be used in such context (typically from the
 % simulation case, whereas the simulation is not started yet).
 
-
 % Requests this customer to display its name on the console.
 -spec sayName( wooper:state() ) -> const_request_return( text_utils:ustring() ).
 sayName( State ) ->

@@ -27,7 +27,9 @@
 
 
 
-% Management of various identifiers.
+% @doc Management of various <b>identifiers</b>, such as UUIDs or ones not only
+% sortable but also for which any number of identifiers may be inserted between
+% any two of them.
 %
 % See id_utils_test.erl for the corresponding test.
 %
@@ -40,9 +42,8 @@
 
 % UUID section.
 
-
-% A string UUID (ex: "ed64ffd4-74ee-43dc-adba-be37ed8735aa"):
 -type uuid() :: text_utils:ustring().
+% A string UUID (ex: "ed64ffd4-74ee-43dc-adba-be37ed8735aa").
 
 -export_type([ uuid/0 ]).
 
@@ -65,6 +66,7 @@
 -define( upper_bound_id, <<"Max">> ).
 
 
+-type sortable_id() :: [ integer() ] | text_utils:bin_string().
 % Corresponds to smart (sortable, insertion-friendly) identifiers, typically
 % represented (externally) as {1}, {2}, {2,1}, {4}, etc.
 %
@@ -79,16 +81,16 @@
 %
 % The Erlang default ordering for this datatype corresponds to this need.
 %
-% For example, if having defined two identifiers defined internally as [7,2] and
-% [7,3], we can introduce two identifiers between them, typically [7,2,1] and
-% [7,2,2], since the Erlang term ordering tells us that [7,2] < [7,2,1] <
-% [7,2,2] < [7,3].
+% For example, if having defined two identifiers defined internally as `[7,2]'
+% and `[7,3]', we can introduce two identifiers between them, typically
+% `[7,2,1]' and `[7,2,2]', since the Erlang term ordering tells us that `[7,2] <
+% [7,2,1] < [7,2,2] < [7,3]'.
 %
-% As a result, no need to define specific comparison operators, '=:=', '<' and
-% '>', and thus 'lists:sort/1', 'lists:keysort/2' are already adequate for that.
+% As a result, no need to define specific comparison operators, `=:=', `<' and
+% `>', and thus `lists:sort/1', `lists:keysort/2' are already adequate for that.
 %
-% Example: lists:sort( [ [7,3], [7,2,1], [7,2,2], [7,2] ] ) =
-%   [ [7,2], [7,2,1], [7,2,2], [7,3] ].
+% Example: `lists:sort([[7,3], [7,2,1], [7,2,2], [7,2]]) =
+%   [[7,2], [7,2,1], [7,2,2], [7,3]]'.
 %
 % The maximum lower bound is conventionally chosen to be [0] - which is not a
 % valid sortable identifier (as it terminates with zero).
@@ -103,17 +105,16 @@
 %  -type sortable_id() ::
 %     [ non_neg_integer() ] | ?lower_bound_id | ?upper_bound_id.
 %
-% To include bounds as well:
--type sortable_id() :: [ integer() ] | text_utils:bin_string().
+% Designed to include bounds as well.
 
 
-% Any type of element to which an identifier could be associated:
 -type identifiable_element() :: any().
+% Any type of element to which an identifier could be associated.
 
 
-% A table associating, to an element, its sortable identifier.
 -type identifier_table() ::
 		?table:?table( identifiable_element(), sortable_id() ).
+% A table associating, to an element, its sortable identifier.
 
 
 -export_type([ sortable_id/0, identifiable_element/0, identifier_table/0 ]).
@@ -137,9 +138,9 @@
 % UUID section.
 
 
-% Returns a string containing a new universally unique identifier (UUID), based
-% on a random source and/or the system clock plus the system's ethernet hardware
-% address, if present.
+% @doc Returns a string containing a new universally unique identifier (UUID),
+% based on a random source and/or the system clock plus the system's ethernet
+% hardware address, if present.
 %
 -spec generate_uuid() -> uuid().
 generate_uuid() ->
@@ -170,7 +171,9 @@ generate_uuid() ->
 
 
 
-% Quick and dirty replacement:
+% @hidden
+%
+% Our own replacement as fallback:
 uuidgen_internal() ->
 
 	% Using /dev/random instead would incur waiting of a few seconds that were
@@ -216,24 +219,26 @@ uuidgen_internal() ->
 % Sortable identifier section.
 
 
-% Returns a relevant, well-chosen initial low sortable identifier, yet not the
-% lowest possible so that we can still introduce, if needed, an arbitrary number
-% of identifiers lower than this one.
+% @doc Returns a relevant, well-chosen initial low sortable identifier, yet not
+% the lowest possible so that we can still introduce, if needed, an arbitrary
+% number of identifiers lower than this one.
 %
 -spec get_initial_sortable_id() -> sortable_id().
 get_initial_sortable_id() ->
 	[ 1 ].
 
 
-% Returns a relevant sortable identifier that is superior to the specified one.
+% @doc Returns a relevant sortable identifier that is superior to the specified
+% one.
+%
 -spec get_next_sortable_id( sortable_id() ) -> sortable_id().
 get_next_sortable_id( Id ) ->
 	get_higher_same_depth_sortable_id( Id ).
 
 
 
-% Returns a sortable identifier that can be inserted between the two specified
-% ones, which are presumably ordered.
+% @doc Returns a sortable identifier that can be inserted between the two
+% specified ones, which are presumably ordered.
 %
 % Note: most probably the most useful function in order to create new sortable
 % identifiers.
@@ -339,8 +344,8 @@ get_sortable_id_between( _LowerId=[], _HigherId=[], Acc ) ->
 
 
 
-% Returns the maximum lower bound of sortable identifiers - knowing that this
-% value does not pertain to sortable identifiers.
+% @doc Returns the maximum lower bound of sortable identifiers - knowing that
+% this value does not pertain to sortable identifiers.
 %
 -spec get_sortable_id_lower_bound() -> sortable_id().
 get_sortable_id_lower_bound() ->
@@ -348,8 +353,8 @@ get_sortable_id_lower_bound() ->
 
 
 
-% Returns the minimum upper bound of sortable identifiers - knowing that this
-% value does not pertain to sortable identifiers.
+% @doc Returns the minimum upper bound of sortable identifiers - knowing that
+% this value does not pertain to sortable identifiers.
 %
 -spec get_sortable_id_upper_bound() -> sortable_id().
 get_sortable_id_upper_bound() ->
@@ -358,7 +363,7 @@ get_sortable_id_upper_bound() ->
 
 
 
-% Checks that the specified sortable identifier is legit.
+% @doc Checks that the specified sortable identifier is legit.
 -spec check_sortable_id( sortable_id() ) -> basic_utils:void().
 check_sortable_id( _Id=[] ) ->
 	throw( { invalid_sortable_identifier, empty_list } );
@@ -368,7 +373,6 @@ check_sortable_id( Id ) when is_list( Id ) ->
 
 check_sortable_id( Id ) ->
 	throw( { non_list_sortable_identifier, Id } ).
-
 
 
 % (helper)
@@ -384,9 +388,8 @@ check_only_non_neg_integers( _, Id ) ->
 
 
 
-
-% Returns the immediate successor sortable identifier of the specified one,
-% i.e. the one that is immediately superior to it.
+% @doc Returns the immediate successor sortable identifier of the specified one,
+% that is the one that is immediately superior to it.
 %
 % Note: generally *not* to be used, as by design no sortable identifier can be
 % inserted between these two - which defeats the purpose of this datatype.
@@ -400,8 +403,8 @@ get_successor_sortable_id( SortId ) ->
 
 
 
-% Returns a sortable identifier higher than (i.e. coming after) the specified
-% one, yet not finer (i.e. at the same depth).
+% @doc Returns a sortable identifier higher than (meaning coming after) the
+% specified one, yet not finer (that is at the same depth).
 %
 % For example, if [1,4,2] is specified, then [1,4,3] is returned (rather than,
 % say, [1,4,2,1]).
@@ -419,8 +422,8 @@ get_higher_same_depth_sortable_id( SortId ) ->
 
 
 
-% Returns a sortable identifier higher than (i.e. coming after) the specified
-% one, at a next depth.
+% @doc Returns a sortable identifier higher than (meaning coming after) the
+% specified one, at a next depth.
 %
 % For example, if [1,4,2] is specified, then [1,4,2,1] is returned (rather than,
 % say, [1,4,3]).
@@ -444,15 +447,15 @@ get_higher_next_depth_sortable_id( SortId ) ->
 
 
 
-% Assigns sorted identifiers to the specified elements not being already
+% @doc Assigns sorted identifiers to the specified elements not being already
 % identified (in the specified table, supposedly having its initial elements
 % appropriately sorted), so that the order of these elements is respected by
 % their identifiers in the returned table.
 %
-% Ex: if ElementsToIdentify=[ 'a', 'b', 'c', 'd' ] and, in IdentifierTable, 'a'
-% is associated to La and 'd' to Ld, supposing La < Ld, whereas 'b' and 'c' are
-% not already associated, then the returned table will also associate some Lc to
-% 'c' and some Ld to 'd' so that La < Lb < Lc < Ld.
+% Ex: if `ElementsToIdentify=['a', 'b', 'c', 'd']' and, in IdentifierTable, 'a'
+% is associated to La and 'd' to Ld, supposing `La < Ld', whereas 'b' and 'c'
+% are not already associated, then the returned table will also associate some
+% Lc to 'c' and some Ld to 'd' so that `La < Lb < Lc < Ld'.
 %
 % Throws an exception if no correct mapping could be devised.
 %
@@ -522,7 +525,7 @@ assign_sorted_identifiers( _ElementsToIdentify=[ E | T ], IdentifierTable ) ->
 
 
 
-% Returns the lowest identifier associated to the specified elements (whose
+% @doc Returns the lowest identifier associated to the specified elements (whose
 % order does not matter).
 %
 % (helper)
@@ -536,7 +539,6 @@ find_lowest_identifier_in( Elements, IdentifierTable ) ->
 						   [ identifier_table_to_string( IdentifierTable ),
 							 sortable_id_to_string( LowestId ) ] ),
 	LowestId.
-
 
 
 find_lowest_identifier_in( _Elements=[], _IdentifierTable, LowestId ) ->
@@ -566,9 +568,9 @@ find_lowest_identifier_in( _Elements=[ E | T ], IdentifierTable, LowestId ) ->
 
 
 
-% Accumulates non-identified elements until, in addition to the specified lower
-% bound, and upper bound is found or no element remains; then assigns ordered
-% identifiers to all these elements.
+% @doc Accumulates non-identified elements until, in addition to the specified
+% lower bound, and upper bound is found or no element remains; then assigns
+% ordered identifiers to all these elements.
 %
 % (helper)
 %
@@ -615,7 +617,7 @@ assign_ranged_identifiers( _RemainingElems=[ E | T ], ToIdentifyRev, LowerId,
 
 
 
-% Assigns an identifier to each of the specified elements, using specified
+% @doc Assigns an identifier to each of the specified elements, using specified
 % (excluded) identifier bounds for that.
 %
 % (helper)
@@ -643,7 +645,7 @@ assign_in_turn_ids( LowerId, HigherId, _ElemsToIdentify=[ E | T ],
 
 
 
-% Returns a textual representation of specified sortable identifier.
+% @doc Returns a textual representation of specified sortable identifier.
 -spec sortable_id_to_string( sortable_id() ) -> ustring().
 sortable_id_to_string( _Id=?lower_bound_id ) ->
 	"lower bound";
@@ -657,7 +659,7 @@ sortable_id_to_string( Id ) ->
 
 
 
-% Returns a textual representation of specified sortable identifiers.
+% @doc Returns a textual representation of specified sortable identifiers.
 -spec sortable_ids_to_string( [ sortable_id() ] ) -> ustring().
 sortable_ids_to_string( _Ids=[] ) ->
 	"(no sortable id)";
@@ -668,7 +670,9 @@ sortable_ids_to_string( Ids ) ->
 
 
 
-% Returns a textual representation of specified table of sortable identifiers.
+% @doc Returns a textual representation of specified table of sortable
+% identifiers.
+%
 -spec identifier_table_to_string( identifier_table() ) -> ustring().
 identifier_table_to_string( IdentifierTable ) ->
 

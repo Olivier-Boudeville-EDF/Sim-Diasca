@@ -47,8 +47,7 @@ manage_facility_probe( ProbeName ) ->
 
 		non_wanted_virtual_probe ->
 			?test_info( "The virtual probe directly created from the test case "
-						"did not match the result specification, "
-						"thus was not created." ),
+				"did not match the result specification, thus was not created." ),
 			 non_wanted_virtual_probe;
 
 		% Depending on the result specification, this virtual probe ID may or
@@ -63,7 +62,7 @@ manage_facility_probe( ProbeName ) ->
 			ProbeTable = test_receive(),
 
 			?test_notice_fmt( "Retrieved table for virtual probe ~B: ~p.",
-							[ MyVirtualProbeID, ProbeTable ] ),
+							  [ MyVirtualProbeID, ProbeTable ] ),
 
 			?test_info( "Feeding the test virtual probe with no regard for "
 				"chronological order, and with non-consecutive ticks." ),
@@ -78,12 +77,16 @@ manage_facility_probe( ProbeName ) ->
 										 _Sample3={2,1} ] },
 
 			?test_info( "Testing the merge of samples, at the same tick." ),
-			DataLoggerPid ! { setData, [ MyVirtualProbeID, _Tick4=10,
+
+			Tick4 = 10,
+
+			DataLoggerPid ! { setData, [ MyVirtualProbeID, Tick4,
 										 _Sample4={7,undefined} ] },
 
 			% Try defining _Sample5={1,8} to check conflicts are detected:
-			DataLoggerPid ! { mergeData, [ MyVirtualProbeID, _Tick4=10,
+			DataLoggerPid ! { mergeData, [ MyVirtualProbeID, Tick4,
 										   _Sample5={undefined,8} ] },
+
 
 			?test_info( "Adding dynamically a curve, "
 						"that will be reordered later." ),
@@ -99,15 +102,18 @@ manage_facility_probe( ProbeName ) ->
 
 
 			?test_info( "Performing a synchronous setting." ),
-			DataLoggerPid ! { setDataSynchronous, [ MyVirtualProbeID, _Tick7=14,
+
+			Tick7 = 14,
+
+			DataLoggerPid ! { setDataSynchronous, [ MyVirtualProbeID, Tick7,
 				   _Sample8={ undefined, undefined, 8 } ], self() },
 			datalogging_set_done = test_receive(),
 
 			?test_info( "Performing a synchronous merge "
 						"(first values remain undefined)." ),
 
-			DataLoggerPid ! { mergeDataSynchronous, [ MyVirtualProbeID,
-				   _Tick7=14, _Sample9={ undefined, 3, undefined } ], self() },
+			DataLoggerPid ! { mergeDataSynchronous, [ MyVirtualProbeID, Tick7,
+							_Sample9={ undefined, 3, undefined } ], self() },
 			datalogging_merge_done = test_receive(),
 
 
@@ -115,18 +121,21 @@ manage_facility_probe( ProbeName ) ->
 						"based on the already retrieved table identifier." ),
 
 			?test_info( "Performing direct asynchronous sample setting." ),
-			class_DataLogger:set_data_synchronous( ProbeTable, _Tick8=16,
-								   _Sample10={ -1, 8, undefined } ),
+
+			Tick8 = 16,
+
+			class_DataLogger:set_data_synchronous( ProbeTable, Tick8,
+											_Sample10={ -1, 8, undefined } ),
 
 
 			?test_info( "Performing direct asynchronous sample merging." ),
-			class_DataLogger:merge_data_synchronous( ProbeTable, _Tick8=16,
-							   _Sample11={ undefined, undefined, -2 } ),
+			class_DataLogger:merge_data_synchronous( ProbeTable, Tick8,
+								_Sample11={ undefined, undefined, -2 } ),
 
 			?test_info( "Performing direct (conditional) asynchronous "
 						"sample setting." ),
 			class_DataLogger:send_data( ProbeTable, _Tick9=17,
-							   _Sample12={ 4, 4, 4 } ),
+										_Sample12={ 4, 4, 4 } ),
 
 
 			?test_info( "Reordering curves." ),
@@ -142,7 +151,7 @@ manage_facility_probe( ProbeName ) ->
 			NewOrderedCurves = [ C1, C3, C2 ],
 
 			DataLoggerPid ! { setCurveRenderOrder,
-							  [ MyVirtualProbeID, NewOrderedCurves ] },
+								[ MyVirtualProbeID, NewOrderedCurves ] },
 
 			?test_info( "Changing the canvas size." ),
 			DataLoggerPid ! { setCanvasSize, [ MyVirtualProbeID, 600, 300 ] },
@@ -153,7 +162,7 @@ manage_facility_probe( ProbeName ) ->
 
 	% We can also plan to send data, with bothering testing explicitly whether
 	% the probe creation has been acknowledged (we specify here the virtual
-	% probe reference, i.e. a { DataLoggerPid, ProbeID } pair or a
+	% probe reference, i.e. a {DataLoggerPid, ProbeID} pair or a
 	% non_wanted_virtual_probe atom, not a direct probe table):
 	%
 	class_DataLogger:send_data( ProbeRef, _Tick10=18, _Sample13={ 0, 0, 0 } ).

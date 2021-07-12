@@ -26,7 +26,7 @@
 % Creation date: Monday, February 15, 2010.
 
 
-% Gathering of various facilities for linear operations.
+% @doc Gathering of various facilities for <b>linear</b> operations.
 -module(linear).
 
 
@@ -54,29 +54,28 @@
 % numbers.
 
 
-% Cartesian (floating-point) coordinates in a referential:
 -type coordinate() :: float().
+% Cartesian (floating-point) coordinates in a referential.
 
 
-% Cartesian integer coordinates in a referential:
 -type integer_coordinate() :: integer().
+% Cartesian integer coordinates in a referential.
 
 
-% Cartesian coordinates in a referential:
 -type any_coordinate() :: number().
+% Cartesian coordinates in a referential.
 
 
-
-% Usually multipliers involved in equations:
 -type factor() :: float().
+% Usually (floating-point) multipliers involved in equations.
 
 
-% Usually multipliers involved in equations:
 -type integer_factor() :: integer().
+% Usually multipliers involved in equations.
 
 
-% Usually multipliers involved in equations:
 -type any_factor() :: number().
+% Usually multipliers involved in equations.
 
 
 
@@ -84,51 +83,51 @@
 -type distance() :: float().
 
 
-% Integer distance between two points (ex: to express lengths):
 -type integer_distance() :: integer().
+% Integer distance between two points (ex: to express lengths).
 
 
-% Distance between two points (ex: to express lengths):
 -type any_distance() :: number().
+% Distance between two points (ex: to express lengths).
 
 
 
 % Mostly for clarity:
 
-% Radius (as floating-point):
 -type radius() :: distance().
+% Radius (as floating-point).
 
 
-% Radius (as integer):
 -type integer_radius() :: integer_distance().
+% Radius (as integer).
 
-% Radius:
+
 -type any_radius() :: any_distance().
+% Radius.
 
 
 
 % Square of a distance between two points, as a floating-point value (cheaper to
 % compute, when applying the square root operator is not needed, like when
-% comparing distances):
+% comparing distances).
 %
 -type square_distance() :: float().
 
 
+-type integer_square_distance() :: integer().
 % Square of a distance between two points, as an integer value (cheaper to
 % compute, when applying the square root operator is not needed, like when
-% comparing distances):
-%
--type integer_square_distance() :: integer().
+% comparing distances).
 
 
-% Square of a distance between two points (cheaper to compute, when applying the
-% square root operator is not needed, like when comparing distances):
-%
+
 -type any_square_distance() :: number().
+% Square of a distance between two points (cheaper to compute, when applying the
+% square root operator is not needed, like when comparing distances).
 
 
-% Area of a surface:
 -type area() :: float().
+% Area of a surface.
 
 
 -export_type([ coordinate/0, integer_coordinate/0, any_coordinate/0,
@@ -147,7 +146,8 @@
 -type ustring() :: text_utils:ustring().
 
 
-% Returns a textual representation of a coordinate.
+
+% @doc Returns a textual representation of a coordinate.
 -spec coord_to_string( any_coordinate() ) -> ustring().
 coord_to_string( Coord ) when is_float( Coord ) ->
 

@@ -26,8 +26,8 @@
 % Creation date: July 1, 2007.
 
 
-% Gathering of various facilities related to the monitoring of processes, ports,
-% time changes or nodes.
+% @doc Gathering of various facilities related to the <b>monitoring of
+% processes, ports, time changes or nodes</b>.
 %
 % See monitor_utils_test.erl for the corresponding test.
 %
@@ -38,41 +38,41 @@
 % Monitoring section.
 
 
-% Not allowed to be shortened into a local reference/0 type:
 -type monitor_reference() :: reference().
+% Not allowed to be shortened into a local reference/0 type.
 
 
-% The types of elements that can be monitored:
 -type monitored_element_type() :: 'process' | 'port' | 'clock'.
+% The types of elements that can be monitored.
 
 
-% Monitoring an Erlang process:
 
 % (not exported yet by the 'erlang' module)
 %-type monitored_process() :: erlang:monitor_process_identifier().
 -type monitored_process() :: pid() | registered_process_identifier().
+% Monitoring an Erlang process.
+
 
 -type registered_process_identifier() ::
 		registered_name() | { registered_name(), node() }.
 
 
-% Monitoring an Erlang port:
-%
 % (not exported yet by the 'erlang' module)
 %-type monitored_port() :: erlang:monitor_port_identifier().
 -type monitored_port() :: port() | registered_name().
+% Monitoring an Erlang port.
 
 
-
-% Monitoring time offsets:
 -type monitored_clock() :: 'clock_service'.
+% Monitoring time offsets.
 
 
-% An actual element being monitored:
 -type monitored_element() :: monitored_process() | monitored_port()
 						   | monitored_clock().
+% An actual element being monitored.
 
 
+-type monitor_info() :: basic_utils:exit_reason() | 'noproc' | 'noconnection'.
 % This information may be:
 %
 % - the exit reason of the process
@@ -81,16 +81,14 @@
 %
 % - or 'noconnection' (no connection to the node where the monitored process
 % resides)
-%
--type monitor_info() :: basic_utils:exit_reason() | 'noproc' | 'noconnection'.
 
 
-% See net_kernel:monitor_nodes/2 for more information:
 -type monitor_node_info() :: list_table:list_table().
+% See net_kernel:monitor_nodes/2 for more information.
 
 
 -type monitor_node_option() :: { 'node_type', net_utils:node_type() }
-							 | 'nodedown_reason'.
+								 | 'nodedown_reason'.
 
 
 -export_type([ monitor_reference/0, monitored_element_type/0,
@@ -107,7 +105,8 @@
 
 
 
-% Subscribes or unsubscribes the calling process to node status change messages.
+% @doc Subscribes or unsubscribes the calling process to node status change
+% messages.
 %
 % See net_kernel:monitor_nodes/2 for more information.
 %
@@ -117,7 +116,8 @@ monitor_nodes( DoStartNewSubscription ) ->
 
 
 
-% Subscribes or unsubscribes the calling process to node status change messages.
+% @doc Subscribes or unsubscribes the calling process to node status change
+% messages.
 %
 % See net_kernel:monitor_nodes/2 for more information.
 %

@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2021 Olivier Boudeville
+% Copyright (C) 2007-2021 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -45,14 +45,16 @@
 -type oneway_name()  :: wooper:oneway_name().
 
 
-% List of arguments, or non-list standalone one:
 -type method_argument() :: wooper:method_argument().
+% List of arguments, or non-list standalone one.
 
-% Standalone (non-list) arguments may be specified:
+
 -type method_arguments() :: wooper:method_arguments().
+% Standalone (non-list) arguments may also be specified.
 
-% Special case of construction parameters:
+
 -type construction_parameters() :: wooper:construction_parameters().
+% Special case of construction parameters.
 
 
 -type request_call() :: wooper:request_call().
@@ -62,30 +64,44 @@
 -type method_internal_result() :: wooper:method_internal_result().
 
 
-% The actual value of interest returned by a request:
 -type request_result( T ) :: wooper:request_result( T ).
+% Just an internal convenience type (not to be mixed up with the lot more
+% essential request_return/1 type).
 
 
+-type requests_outcome() :: wooper:requests_outcome().
 % Describes the outcome of a set of requests: either all succeeded, or some
 % failed (that are then specified).
-%
--type requests_outcome() :: wooper:requests_outcome().
 
 
-% The result of the execution of a request:
 -type request_result() :: any().
+% Convenience type to designate the result of the execution of a request.
 
 
 
 -type request_return( T ) :: wooper:request_result( T ).
+% To specify the type of the actual value of interest returned by a (non-const)
+% request.
+
+
 -type const_request_return( T ) :: wooper:const_request_return( T ).
+% To specify the type of the actual value of interest returned by a const
+% request.
+
 
 -type oneway_return() :: wooper:oneway_return().
+% To specify the return type of a (non-const) oneway.
+
 -type const_oneway_return() :: wooper:const_oneway_return().
+% To specify the return type of a const oneway.
+
 
 -type static_return( T ) :: wooper:static_return( T ).
+% To specify the type of the actual value of interest returned by a static
+% request.
 
 -type static_void_return() :: static_return( 'wooper_void_return' ).
+% To specify that a static request does not return any value of use.
 
 
 
@@ -95,8 +111,8 @@
 -type attribute_entry() :: { attribute_name(), attribute_value() }.
 
 
-% PID of a WOOPER instance.
 -type instance_pid() :: pid().
+% Designates the PID of a WOOPER instance.
 
 
 % A request is typically:

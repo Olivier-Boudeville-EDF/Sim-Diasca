@@ -26,7 +26,7 @@
 % Creation date: Friday, December 19, 2014.
 
 
-% Unit tests for the AST generation services.
+% @doc Unit tests for the <b>AST generation services</b>.
 %
 % See the ast_generation.erl tested module.
 %
@@ -47,10 +47,19 @@ run() ->
 
 	AtomListForm = ast_generation:atoms_to_form( AtomList ),
 
-	% Check:
-	AtomListForm = { cons, 0, {atom,0,a}, { cons, 0, {atom,0,b},
-					   { cons, 0, {atom,0,c}, { nil,0 } } } },
+	FileGenLoc = ast_utils:get_generated_code_location(),
 
+	case AtomListForm of
+
+		{cons, FileGenLoc, {atom,FileGenLoc,a},
+		 {cons, FileGenLoc, {atom,FileGenLoc,b},
+		  {cons, FileGenLoc, {atom,FileGenLoc,c}, { nil,FileGenLoc } } } } ->
+			ok;
+
+		AtomUnexpectedForm ->
+			throw( { unexpected_form_for_atoms, AtomList, AtomUnexpectedForm } )
+
+	end,
 
 	test_facilities:display( "The form version of ~p is:~n~p",
 							 [ AtomList, AtomListForm ] ),
@@ -71,11 +80,20 @@ run() ->
 
 	Vars = ast_generation:enumerated_variables_to_form( VarCount ),
 
-
 	test_facilities:display( "Listing ~B variables:~n~p", [ VarCount, Vars ] ),
 
 	% Check:
-	Vars = { cons, 0, {var,0,'Myriad_Param_1'},
-			 { cons, 0, {var,0,'Myriad_Param_2'}, {nil,0} } },
+	case Vars of
+
+		{cons, FileGenLoc, {var,FileGenLoc,'Myriad_Param_1'},
+		 {cons, FileGenLoc, {var,FileGenLoc,'Myriad_Param_2'},
+		  {nil,FileGenLoc}}} ->
+			ok;
+
+		VarsUnexpectedForm ->
+			throw( { unexpected_form_for_variables, VarCount,
+					 VarsUnexpectedForm } )
+
+	end,
 
 	test_facilities:stop().

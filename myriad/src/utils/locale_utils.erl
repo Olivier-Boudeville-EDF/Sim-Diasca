@@ -26,8 +26,10 @@
 % Creation date: Thursday, July 16, 2020.
 
 
-% Gathering of various convenient facilities regarding the support of various
-% locales (ex: for the management of per-country bank holidays).
+% @doc Gathering of various convenient facilities regarding the support of
+% various <b>locales</b> (ex: for the management of per-country bank holidays).
+%
+% @hidden Not ready.
 %
 -module(locale_utils).
 

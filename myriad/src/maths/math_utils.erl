@@ -26,9 +26,9 @@
 % Creation date: Monday, February 15, 2010.
 
 
-% Gathering of various general purpose basic math facilities.
+% @doc Gathering of various <b>general-purpose basic math</b> facilities.
 %
-% See math_utils_test.erl for the corresponding test.
+% See `math_utils_test.erl' for the corresponding test.
 %
 -module(math_utils).
 
@@ -69,34 +69,33 @@
 -type non_zero_integer() :: pos_integer() | neg_integer().
 
 
-% Standard deviation, as used to describe a Gaussian curve:
 -type standard_deviation() :: float().
+% Standard deviation, as used to describe a Gaussian curve.
 
-% Variance, the square of a standard deviation:
+
 -type variance() :: float().
+% Variance, the square of a standard deviation.
 
 
-% For percentages (1.0 corresponding to 100%):
+-type percent() :: float().
+% For percentages (1.0 corresponding to 100%).
 %
 % See also: text_utils:percent_to_string/{1,2}.
-%
--type percent() :: float().
 
 
-% For integer percentages (in [0..100] generally):
 -type integer_percent() :: integer().
+% For integer percentages (in [0..100] generally).
 
 
-% For probabilities:
 -type probability() :: float().
+% For probabilities.
 
 
+-type conversion_type() :: 'exact' | 'absolute' | { 'absolute', float() }
+						 | 'relative' | { 'relative', float() }.
 % Describes a desired conversion, which is either exact or approximate, based on
 % an absolute or relative comparison, with a default epsilon threshold or a
 % user-defined one.
-%
--type conversion_type() :: 'exact' | 'absolute' | { 'absolute', float() }
-						 | 'relative' | { 'relative', float() }.
 
 
 -export_type([ non_zero_integer/0, standard_deviation/0, variance/0,
@@ -109,11 +108,10 @@
 % General section.
 
 
+% @doc Floor returns the biggest integer smaller than the specified
+% floating-point value.
 %
-% Floor returns the biggest integer smaller than the specified floating-point
-% value.
-%
-% Inspired from http://schemecookbook.org/Erlang/NumberRounding.
+% Inspired from [http://schemecookbook.org/Erlang/NumberRounding].
 %
 % Note: used to be deprecated in favor of math:floor/1, yet we prefer the
 % version here, which returns an integer rather than a float.
@@ -143,10 +141,13 @@ floor( X ) ->
 
 
 
-% Ceiling returns the smallest integer bigger than the specified floating-point
-% value.
+% @doc Ceiling returns the smallest integer bigger than the specified
+% floating-point value.
 %
-% Inspired from http://schemecookbook.org/Erlang/NumberRounding.
+% Inspired from [http://schemecookbook.org/Erlang/NumberRounding].
+%
+% Note: used to be deprecated in favor of math:ceil/1, yet we prefer the version
+% here, which returns an integer rather than a float.
 %
 -spec ceiling( number() ) -> integer().
 ceiling( X ) ->
@@ -168,7 +169,7 @@ ceiling( X ) ->
 
 
 
-% Rounds the specified floating-point number at specified offset after the
+% @doc Rounds the specified floating-point number at specified offset after the
 % decimal point.
 %
 % Ex: round_after( 12.3456, 3 ) = 12.346.
@@ -185,7 +186,7 @@ round_after( F, DigitCount ) ->
 
 
 
-% Converts specified float to integer.
+% @doc Converts specified float to integer.
 %
 % The float must exactly match the integer value.
 %
@@ -198,7 +199,9 @@ float_to_integer( F ) ->
 
 
 
-% Converts specified float to integer, using specified conversion tolerance.
+% @doc Converts specified float to integer, using specified conversion
+% tolerance.
+%
 -spec float_to_integer( float(), conversion_type() ) -> integer().
 float_to_integer( F, _ConversionType=exact ) ->
 
@@ -251,7 +254,7 @@ float_to_integer( F, _ConversionType={ relative, Epsilon } ) ->
 
 
 
-% Returns the positive remainder of the division of X by Y, in [0;Y[.
+% @doc Returns the positive remainder of the division of X by Y, in [0;Y[.
 %
 % In Erlang, -5 rem 3 is -2, whereas this function will return 1,
 % since -5 = -2 * 3 + 1.
@@ -275,10 +278,10 @@ modulo( 0, _Y ) ->
 
 
 
-% Clamps specified value between specified bounds: the returned value V is in
-% [Min,Max].
+% @doc Clamps specified value between specified bounds: the returned value V is
+% in [Min, Max].
 %
-% We expect that Min <= Max.
+% We expect that `Min <= Max'.
 %
 -spec clamp( number(), number(), number() ) -> number().
 clamp( Min, _Max, Value ) when Value < Min ->
@@ -292,7 +295,9 @@ clamp( _Min, _Max, Value ) ->
 
 
 
-% Returns the square, augmented of a little margin, of the specified element.
+% @doc Returns the square, augmented of a little margin, of the specified
+% element.
+%
 squarify( L ) ->
 	% "Taylor series", square( epsilon ) is negligible here:
 	L * ( L + ?epsilon ).
@@ -303,16 +308,16 @@ squarify( L ) ->
 % Floating-point section.
 
 
-% Returns true iff the two specified floating-point numbers are deemed close
-% enough to be equal, based on default epsilon threshold.
+% @doc Returns true iff the two specified floating-point numbers are deemed
+% close enough to be equal, based on default epsilon threshold.
 %
 -spec are_close( number(), number() ) -> boolean().
 are_close( X, Y ) ->
 	erlang:abs( X - Y ) < ?epsilon.
 
 
-% Returns true iff the two specified floating-point numbers are deemed close
-% enough to be equal, based on specified epsilon threshold.
+% @doc Returns true iff the two specified floating-point numbers are deemed
+% close enough to be equal, based on specified epsilon threshold.
 %
 -spec are_close( number(), number(), number() ) -> boolean().
 are_close( X, Y, Epsilon ) ->
@@ -320,11 +325,11 @@ are_close( X, Y, Epsilon ) ->
 
 
 
-% Returns true iff the two specified floating-point numbers are deemed close
-% enough, relatively, to be equal.
+% @doc Returns true iff the two specified floating-point numbers are deemed
+% close enough, relatively, to be equal.
 %
 % The difference between these numbers, divided by their average (a.k.a. the
-% relative error), must be smaller than the default epsilon threshold, i.e. the
+% relative error), must be smaller than the default epsilon threshold, ie the
 % maximum tolerance.
 %
 -spec are_relatively_close( number(), number() ) -> boolean().
@@ -333,12 +338,12 @@ are_relatively_close( X, Y ) ->
 
 
 
-% Returns true iff the two specified (usually floating-point) numbers are deemed
-% close enough, relatively, to be equal.
+% @doc Returns true iff the two specified (usually floating-point) numbers are
+% deemed close enough, relatively, to be equal.
 %
 % The difference between these numbers, divided by their average (a.k.a. the
 % relative error), must be smaller than the specified epsilon threshold,
-% i.e. the maximum tolerance.
+% ie the maximum tolerance.
 %
 % Ex: to know whether X and Y are equal with a 5% tolerance, use:
 % math_utils:are_relatively_close( X, Y, _Tolerance=0.05 ).
@@ -363,7 +368,7 @@ are_relatively_close( X, Y, Epsilon ) ->
 
 
 
-% Returns the relative difference between the two specified numbers.
+% @doc Returns the relative difference between the two specified numbers.
 %
 % We consider that if both number are null, then their relative difference is
 % also null.
@@ -408,7 +413,7 @@ get_relative_difference( X, Y ) ->
 
 
 
-% Returns true iff the specified number (floating-point or even integer) is
+% @doc Returns true iff the specified number (floating-point or even integer) is
 % deemed close enough to zero to be null.
 %
 -spec is_null( number() ) -> boolean().
@@ -423,17 +428,19 @@ is_null( X ) ->
 % As we try to remain as much as possible with integer computations, for angle
 % we tend to prefer expressing them in degrees rather than in radians.
 
-% Angles in degrees are preferably kept in the [0;360[ interval, i.e. as
+% Angles in degrees are preferably kept in the [0;360[ interval, ie as
 % positive integers.
 
 
-% Converts specified angle in radian into the same angle expressed in degrees.
+% @doc Converts specified angle in radian into the same angle expressed in
+% degrees.
+%
 -spec radian_to_degree( unit_utils:radians() ) -> unit_utils:degrees().
 radian_to_degree( AngleInRadians ) ->
 	AngleInRadians * 180 / math:pi().
 
 
-% Canonifies specified angle in degrees, i.e. ensures the returned value that
+% @doc Canonifies specified angle in degrees, ie ensures the returned value that
 % corresponds to the specified angle is in the [0;360[ interval.
 %
 -spec canonify( number() ) -> unit_utils:int_degrees().

@@ -27,42 +27,33 @@
 
 
 
-% Gathering of facilities to manage trees that may be unbalanced.
-%
+% @doc Gathering of facilities to manage <b>trees</b> that may be unbalanced.
 -module(tree).
 
 
 % So that we can defined our own size/1:
-%
 -compile( { no_auto_import, [ size/1 ] } ).
 
 
-% The content of a node of a tree ('undefined' means empty content):
-%
 -type node_content() :: maybe( any() ).
+% The content of a node of a tree ('undefined' means empty content).
 
 
-% Any tree is made of the content of its root and of any number of (ordered)
-% subtrees (children trees):
-%
 -opaque tree() :: { node_content(), [ tree() ] }.
+% Any tree is made of the content of its root and of any number of (ordered)
+% subtrees (children trees).
 
-
-% A typed tree is polymorphic according to its node content:
-%
 -opaque tree( T ) :: { T, [ tree(T) ] }.
+% A typed tree is polymorphic according to its node content?
 
 
-
-% Describes a function that can be folded onto the content of trees:
-%
 -type content_fold_fun() :: fun( ( node_content(), basic_utils:accumulator() )
-								 -> basic_utils:accumulator() ).
+									-> basic_utils:accumulator() ).
+% Describes a function that can be folded onto the content of trees.
 
 
-% Height of a tree:
-%
 -type height() :: basic_utils:count().
+% Height of a tree.
 
 
 -export_type([ tree/0, tree/1, node_content/0, content_fold_fun/0, height/0 ]).
@@ -73,48 +64,48 @@
 		  height/1, size/1, to_string/1 ]).
 
 
+% Shorthands:
+-type accumulator() :: basic_utils:accumulator().
 
-% Creates a new, single-node, empty, tree.
-%
+
+
+% @doc Creates a new, single-node, empty, tree.
 -spec new() -> tree().
 new() ->
 	{ _NodeContent=undefined, _Subtrees=[] }.
 
 
 
-% Creates a new tree with a single node containing specified content.
-%
+% @doc Creates a new tree with a single node containing specified content.
 -spec new( node_content() ) -> tree().
 new( NodeContent ) ->
 	{ NodeContent, _Subtrees=[] }.
 
 
 
-% Creates a new tree with specified content and child trees.
-%
+% @doc Creates a new tree with specified content and child trees.
 -spec new( node_content(), [ tree() ] ) -> tree().
 new( NodeContent, Subtrees ) ->
 	{ NodeContent, Subtrees }.
 
 
 
-% Sets the content of specified node.
-%
+% @doc Sets the content of specified node.
 -spec set_content( node_content(), tree() ) -> tree().
 set_content( Content, _Tree= { _PastContent, ChildrenTrees } ) ->
 	{ Content, ChildrenTrees }.
 
 
 
-% Appends specified child tree as first child of specified tree.
-%
+% @doc Appends the specified child tree as first child of the specified tree.
 -spec append_child( tree(), tree() ) -> tree().
 append_child( NewChildTree, _TargetTree={ Content, ChildrenTrees } ) ->
 	{ Content, [ NewChildTree | ChildrenTrees ] }.
 
 
 
-% Appends specified child trees as first children of specified tree.
+% @doc Appends the specified child trees as first children of the specified
+% tree.
 %
 -spec append_children( [ tree() ], tree() ) -> tree().
 append_children( NewChildTrees, _TargetTree={ Content, ChildrenTrees } ) ->
@@ -122,7 +113,7 @@ append_children( NewChildTrees, _TargetTree={ Content, ChildrenTrees } ) ->
 
 
 
-% Maps specified function to the content of all nodes of specified tree.
+% @doc Maps specified function to the content of all nodes of specified tree.
 %
 % Performs breadth-first mapping.
 %
@@ -133,14 +124,14 @@ map( Fun, _Tree={ Content, Subtrees } ) ->
 
 
 
-% Folds specified function breadth-first onto the content of all nodes of
+% @doc Folds specified function breadth-first onto the content of all nodes of
 % specified tree, and returns the corresponding result.
 %
 % At a given height, siblings will be traversed from most recent to oldest
 % attached.
 %
--spec fold_breadth_first( content_fold_fun(), basic_utils:accumulator(),
-						  tree() ) -> basic_utils:accumulator().
+-spec fold_breadth_first( content_fold_fun(), accumulator(), tree() ) ->
+								accumulator().
 fold_breadth_first( ContentFun, InitialAcc, _Tree={ Content, Subtrees } ) ->
 
 	NodeAcc = ContentFun( Content, InitialAcc ),
@@ -152,14 +143,14 @@ fold_breadth_first( ContentFun, InitialAcc, _Tree={ Content, Subtrees } ) ->
 
 
 
-% Folds specified function depth-first onto the content of all nodes of
+% @doc Folds specified function depth-first onto the content of all nodes of
 % specified tree, and returns the corresponding result.
 %
 % In case of unbalanced trees, there is no guarantee that the deepest element is
 % examined first, as the first branch examined may not be the deepest.
 %
--spec fold_depth_first( content_fold_fun(), basic_utils:accumulator(),
-						tree() ) -> basic_utils:accumulator().
+-spec fold_depth_first( content_fold_fun(), accumulator(), tree() ) ->
+								accumulator().
 fold_depth_first( ContentFun, InitialAcc, _Tree={ Content, Subtrees } ) ->
 
 	ChildAcc = lists:foldl( fun( ChildTree, Acc ) ->
@@ -170,8 +161,8 @@ fold_depth_first( ContentFun, InitialAcc, _Tree={ Content, Subtrees } ) ->
 
 
 
-% Returns the height (maximum depth) of specified tree, i.e. the number of edges
-% on the longest downward path between the root and a leaf.
+% @doc Returns the height (maximum depth) of specified tree, ie the number of
+% edges on the longest downward path between the root and a leaf.
 %
 -spec height( tree() ) -> height().
 height( _Tree={ _Content, _Subtrees=[] } ) ->
@@ -191,7 +182,7 @@ height( _Tree={ _Content, Subtrees } ) ->
 
 
 
-% Returns the total number of nodes that specified tree contains.
+% @doc Returns the total number of nodes that specified tree contains.
 %
 -spec size( tree() ) -> basic_utils:count().
 %size( _Tree={ _Content, _Subtrees=[] } ) ->
@@ -211,8 +202,7 @@ size( _Tree={ _Content, Subtrees }, Acc ) ->
 
 
 
-% Returns a textual description of specified tree.
-%
+% @doc Returns a textual description of specified tree.
 -spec to_string( tree() ) -> text_utils:ustring().
 to_string( Tree ) ->
 	% Is an io_list():

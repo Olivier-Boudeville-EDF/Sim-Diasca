@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2021 Olivier Boudeville
+% Copyright (C) 2007-2021 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -26,7 +26,6 @@
 
 
 
-
 % Describes a member attribute of the state of a given class: stores all
 % class-level information (i.e. metadata) regarding this attribute.
 %
@@ -40,7 +39,7 @@
 	% The type of this attribute, currently as an atom (later: as
 	% type_utils:type()).
 	%
-	% Ex: '{ atom(), [ float() ] }'.
+	% Ex: '{atom(), [float()]}'.
 	%
 	type = undefined :: maybe( type_utils:type_description() ),
 
@@ -85,19 +84,23 @@
 		   qualifiers = [] :: wooper:method_qualifiers(),
 
 
-		   % Corresponds to (our view of) the location of the full form for the
-		   % definition (first clause) of this request (not of the spec):
+		   % Corresponds to (our view of) the in-AST sortable location of the
+		   % full form for the definition (first clause) of this request method
+		   % (not of its spec, which has its specific field below):
 		   %
-		   location = undefined :: maybe( ast_info:location() ),
+		   ast_location = undefined :: maybe( ast_info:location() ),
 
 
-		   % Corresponds to the line of the first defined clause (in its source
-		   % file):
+		   % Corresponds to the in-file location of the first defined clause (in
+		   % its source file) of this request method:
 		   %
 		   % (this information is not redundant with the previous field, as they
-		   % are different types of locations)
+		   % are different types of locations; however it is a priori redundant
+		   % with the one in the first clause, yet present in the forms, thus
+		   % kept here; note that the linter will not accept an 'undefined'
+		   % value)
 		   %
-		   line = undefined :: maybe( ast_base:line() ),
+		   file_location = undefined :: maybe( ast_base:file_loc() ),
 
 
 		   % Request actual definition, a (non-located) list of the abstract
@@ -136,19 +139,23 @@
 		   qualifiers = [] :: wooper:method_qualifiers(),
 
 
-		   % Corresponds to (our view of) the location of the full form for the
-		   % definition (first clause) of this oneway (not of the spec):
+		   % Corresponds to (our view of) the in-AST sortable location of the
+		   % full form for the definition (first clause) of this oneway method
+		   % (not of its spec, which has its specific field below):
 		   %
-		   location = undefined :: maybe( ast_info:location() ),
+		   ast_location = undefined :: maybe( ast_info:location() ),
 
 
-		   % Corresponds to the line of the first defined clause (in its source
-		   % file):
+		   % Corresponds to the in-file location of the first defined clause (in
+		   % its source file) of this oneway method:
 		   %
 		   % (this information is not redundant with the previous field, as they
-		   % are different types of locations)
+		   % are different types of locations; however it is a priori redundant
+		   % with the one in the first clause, yet present in the forms, thus
+		   % kept here; note that the linter will not accept an 'undefined'
+		   % value)
 		   %
-		   line = undefined :: maybe( ast_base:line() ),
+		   file_location = undefined :: maybe( ast_base:file_loc() ),
 
 
 		   % Oneway actual definition, a (non-located) list of the abstract
@@ -188,19 +195,23 @@
 		   qualifiers = [] :: wooper:method_qualifiers(),
 
 
-		   % Corresponds to (our view of) the location of the full form for the
-		   % definition (first clause) of this static (not of the spec):
+		   % Corresponds to (our view of) the in-AST sortable location of the
+		   % full form for the definition (first clause) of this static method
+		   % (not of its spec, which has its specific field below):
 		   %
-		   location = undefined :: maybe( ast_info:location() ),
+		   ast_location = undefined :: maybe( ast_info:location() ),
 
 
-		   % Corresponds to the line of the first defined clause (in its source
-		   % file):
+		   % Corresponds to the in-file location of the first defined clause (in
+		   % its source file) of this static method:
 		   %
 		   % (this information is not redundant with the previous field, as they
-		   % are different types of locations)
+		   % are different types of locations; however it is a priori redundant
+		   % with the one in the first clause, yet present in the forms, thus
+		   % kept here; note that the linter will not accept an 'undefined'
+		   % value)
 		   %
-		   line = undefined :: maybe( ast_base:line() ),
+		   file_location = undefined :: maybe( ast_base:file_loc() ),
 
 
 		   % Static actual definition, a (non-located) list of the abstract
@@ -217,9 +228,9 @@
 } ).
 
 
-
-% Description of the class name:
 -type class_entry() :: maybe( { wooper:classname(), ast_info:located_form() } ).
+% Description of the class name.
+
 
 
 % Stores and centralises WOOPER-level information gathered about a given class.
@@ -452,11 +463,13 @@
 		debug_mode = true :: boolean(),
 
 
-		% The number of the last line in the original source file:
+		% The definition of the last in-file location in the original source
+		% file; any added code will be put afterwards.
 		%
-		% (any added code will be put afterwards)
+		% (we keep it as a located form rather than as a simple
+		% ast_utils:file_loc() to avoid a costly addition in last position)
 		%
-		last_line :: ast_base:line(),
+		last_file_location :: ast_info:located_form(),
 
 
 		% Section markers, offering reference locations to AST transformations.
@@ -473,6 +486,5 @@
 		% '{error,{LineNumber,erl_parse, ["syntax error before: ","')'"]}}''.
 		%
 		unhandled_forms = [] :: [ ast_info:located_form() ]
-
 
 } ).

@@ -194,7 +194,7 @@
 
 
 % Handles a case failure, using specified string as advertised reason.
--spec case_failed( string() ) -> no_return().
+-spec case_failed( text_utils:ustring() ) -> no_return().
 case_failed( Reason ) ->
 
 	% For some reason erlang:error is unable to interpret strings as strings,
@@ -219,7 +219,7 @@ case_failed( Reason ) ->
 % formatted.
 %
 -spec case_failed( text_utils:format_string(), [ any() ] ) ->
-						 no_return().
+							no_return().
 case_failed( Reason, FormattedValue ) ->
 	case_failed( io_lib:format( Reason, FormattedValue ) ).
 
@@ -227,12 +227,12 @@ case_failed( Reason, FormattedValue ) ->
 
 % Test support:
 
--spec test_failed( string() ) -> no_return().
+-spec test_failed( text_utils:ustring() ) -> no_return().
 test_failed( Reason ) ->
 	case_failed( Reason ).
 
 
 -spec test_failed( text_utils:format_string(), text_utils:format_values() ) ->
-						 no_return().
+							no_return().
 test_failed( Reason, FormatValues ) ->
 	case_failed( Reason, FormatValues ).

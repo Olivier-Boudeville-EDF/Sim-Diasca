@@ -26,8 +26,8 @@
 % Creation date: Wednesday, May 20, 2020.
 
 
-% Gathering of various convenient facilities regarding the management of the
-% shells and command lines (ex: specified arguments).
+% @doc Gathering of various convenient facilities regarding the management of
+% the <b>shells and command lines</b> (ex: specified arguments).
 %
 % See shell_utils_test.erl for the corresponding test.
 %
@@ -46,12 +46,9 @@
 % The command-line is mostly managed like init:get_argument/1.
 
 
-% The name of a command-line option (ex: '-color', for an actual option that is
-% "--color").
-%
-% (a "flag", for the init standard module)
-%
 -type actual_command_line_option() :: atom().
+% The name of a command-line option; ex: '-color', for an actual option that is
+% "--color". This is named a "flag", for the init standard module.
 
 
 % To designate command-line arguments that are specified directly as such, not
@@ -65,40 +62,39 @@
 -define( no_option_key, '(none)' ).
 
 
-% Note the special value ?no_option_key that is associated to option-less
-% arguments:
-%
 -type command_line_option() :: actual_command_line_option() | ?no_option_key.
+% Note the special value ?no_option_key that is associated to option-less
+% arguments.
 
 
-% A unitary value specified in link to a command-line option:
 -type command_line_value() :: text_utils:ustring().
+% A unitary value specified in link to a command-line option.
 
 
-% The command-line values specified after an occurrence of a given option (ex:
-% ["blue", "red"]):
-%
 -type command_line_values() :: [ command_line_value() ].
+% The command-line values specified after an occurrence of a given option (ex:
+% ["blue", "red"]).
 
 
+-type command_line_argument() ::
+		% Yes, a *list* of command-line valueS:
+		{ command_line_option(), [ command_line_values() ] }.
 % The association between a command-line option and the various values
 % associated to its various occurrences, in a (non-unique) argument table.
 %
 % Ex: if arguments were "--color blue red [...] --color yellow", then the
-% corresponding argument entry is { '-color', [ [ "blue", "red" ], [ "yellow" ]
-% ] } (i.e. with, associated to a command-line option, a list whose elements are
+% corresponding argument entry is {'-color', [["blue", "red"], ["yellow"]]}
+% (i.e. with, associated to a command-line option, a list whose elements are
 % *lists* of strings; in their order on the command-line).
 %
 % Note that keys are atoms (with one leading dash removed), and it is advisable
 % to use only the executable_utils module support rather than mixing and
 % matching it with the one of the 'init' module (different keys).
-%
--type command_line_argument() ::
-		% Yes, a *list* of command-line valueS:
-		{ command_line_option(), [ command_line_values() ] }.
 
 
 
+-type argument_table() ::
+	?arg_table:?arg_table( command_line_option(), [ command_line_values() ] ).
 % A table storing command-line user (plain, i.e arguments specified after either
 % "--" or, preferably, "-extra") arguments conveniently (a bit like getopt), in
 % a format exactly in the spirit of init:get_arguments/0, allowing to record
@@ -111,7 +107,7 @@
 % Note: to account for repeated options (i.e. options specified more than once
 % on the command-line), a list of *lists* of values is associated to each option
 % in such argument tables.
-
+%
 % For example, for actual command-line options such as:
 %   some_value --foo --bar a b --width 15 --bar c
 % a corresponding argument table would contain following entries:
@@ -120,10 +116,10 @@
 %    '-width -> [ [ "15" ] ]
 %     ?no_option_key -> [ "some_value" ]
 %
--type argument_table() ::
-	?arg_table:?arg_table( command_line_option(), [ command_line_values() ] ).
 
 
+-type unique_argument_table() ::
+		?arg_table:?arg_table( command_line_option(), command_line_values() ).
 % A table associating to a given option a (single) list of values (thus not
 % having repeated options).
 %
@@ -136,22 +132,17 @@
 %     ?no_option_key -> [ "some_value" ]
 %
 % For convenience, "standard" argument tables may be converted into unique ones.
-%
--type unique_argument_table() ::
-		?arg_table:?arg_table( command_line_option(), command_line_values() ).
 
 
-% Non-null expected (otherwise meaningless):
 -type actual_value_count() :: count().
+% Non-null expected (otherwise meaningless).
 
 
-% How many values (possibly any number thereof - possibly none) are expected
-% after a given command-line option:
-%
 -type value_count() :: actual_value_count() | 'any'.
+% How many values (possibly any number thereof - possibly none) are expected
+% after a given command-line option.
 
 
-% Describes the expected number of values associated to a given option:
 -type value_spec() ::
 
 			% Exact count requested:
@@ -159,10 +150,11 @@
 
 			% A (possibly unlimited) range of counts accepted (bounds included):
 			| { actual_value_count(), value_count() }.
+% Describes the expected number of values associated to a given option.
 
 
-% A specification of how many values are expected after specified option:
 -type option_spec() :: { actual_command_line_option(), value_spec() }.
+% A specification of how many values are expected after specified option.
 
 
 
@@ -204,7 +196,7 @@
 % Section for command-line facilities.
 
 
-% Protects specified argument from shell parsing, typically if specifying a
+% @doc Protects specified argument from shell parsing, typically if specifying a
 % filename including a single quote.
 %
 % Note: currently does not transform binary arguments (double conversion with
@@ -246,7 +238,7 @@ protect_from_shell_helper( _Text=[ C | T ], Acc ) ->
 % Command-line argument section.
 
 
-% Returns a canonical argument table, obtained from the user command-line
+% @doc Returns a canonical argument table, obtained from the user command-line
 % arguments supplied to the interpreter.
 %
 % Note:
@@ -277,10 +269,10 @@ get_argument_table() ->
 
 
 
-% Returns the specified command-line arguments (simply transmitted as a list of
-% the corresponding strings) once transformed into our "canonical", more
+% @doc Returns the specified command-line arguments (simply transmitted as a
+% list of the corresponding strings) once transformed into our "canonical", more
 % convenient form, which is quite similar to the one used by Erlang for its
-% user/system flags (i.e. for all its non-plain options).
+% user/system flags (that is for all its non-plain options).
 %
 % In this form, options start with a dash, may have any number of arguments, and
 % may be specified more than once in the command-line; non-option arguments are
@@ -298,7 +290,6 @@ get_argument_table_from_strings( ArgStrings ) ->
 	system_utils:force_unicode_support(),
 
 	get_arguments_from_strings( ArgStrings, _OptionTable=?arg_table:new() ).
-
 
 
 % (helper)
@@ -397,9 +388,8 @@ collect_values_for_option( _Args=[ OptValue | T ], AccValues ) ->
 
 
 
-
-% Returns a canonical argument table, obtained from the specified single string
-% containing all options, verbatim ; ex: "--color red --set-foo".
+% @doc Returns a canonical argument table, obtained from the specified single
+% string containing all options, verbatim; ex: "--color red --set-foo".
 %
 % Note: useful for testing, to introduce specific command lines.
 %
@@ -413,9 +403,9 @@ generate_argument_table( ArgString ) ->
 
 
 
-% Returns, if this option was specified on the command-line, the in-order list
-% of the various (lists of) values (if any; no value at all being specified for
-% an option resulting thus in [ [] ]) associated to the specified option; if
+% @doc Returns, if this option was specified on the command-line, the in-order
+% list of the various (lists of) values (if any; no value at all being specified
+% for an option resulting thus in [ [] ]) associated to the specified option; if
 % this option was not specified on the command-line, returns 'undefined'.
 %
 % Note: generally the extract_command_arguments_for_option/{1,2} functions are
@@ -432,8 +422,8 @@ get_command_arguments_for_option( Option ) ->
 
 
 
-% Returns the in-order list of the arguments that were directly (i.e. not in the
-% context of an option) specified on the command-line.
+% @doc Returns the in-order list of the arguments that were directly (that is
+% not in the context of an option) specified on the command-line.
 %
 % Note: generally the extract_non_option_command_argument/{0,1} functions are
 % more relevant to use.
@@ -451,9 +441,9 @@ get_optionless_command_arguments() ->
 
 
 
-% Extracts, for specified command-line option (if any was specified; otherwise
-% returns 'undefined') its various in-order lists of associated values, from the
-% arguments specified to this executable.
+% @doc Extracts, for specified command-line option (if any was specified;
+% otherwise returns 'undefined') its various in-order lists of associated
+% values, from the arguments specified to this executable.
 %
 % Returns a pair made of these lists of (lists of) values and of the shrunk
 % corresponding argument table.
@@ -472,9 +462,9 @@ extract_command_arguments_for_option( Option ) ->
 
 
 
-% Extracts, for specified command-line option (if any was specified; otherwise
-% returns 'undefined') its various in-order lists of associated values, from the
-% specified argument table.
+% @doc Extracts, for specified command-line option (if any was specified;
+% otherwise returns 'undefined') its various in-order lists of associated
+% values, from the specified argument table.
 %
 % Returns a pair made of these lists of (lists of) values and of the shrunk
 % corresponding argument table.
@@ -492,8 +482,9 @@ extract_command_arguments_for_option( Option, ArgumentTable ) ->
 
 
 
-% Extracts the in-order list of the arguments that were directly (i.e. not in
-% the context of an option) specified on the command-line for this executable.
+% @doc Extracts the in-order list of the arguments that were directly (that is
+% not in the context of an option) specified on the command-line for this
+% executable.
 %
 % Returns a pair made of these lists of values and of the shrunk corresponding
 % argument table.
@@ -508,9 +499,9 @@ extract_optionless_command_arguments() ->
 
 
 
-% Extracts, for specified command-line option (if any was specified; otherwise
-% returns 'undefined') its various in-order lists of associated values, from the
-% specified argument table.
+% @doc Extracts, for specified command-line option (if any was specified;
+% otherwise returns 'undefined') its various in-order lists of associated
+% values, from the specified argument table.
 %
 % Returns a pair made of these lists of (lists of) values and of the shrunk
 % corresponding argument table.
@@ -540,8 +531,8 @@ extract_optionless_command_arguments( ArgumentTable ) ->
 
 
 
-% Transforms specified argument table (possibly with repeated options) into a
-% unique argument table (thus with just a list of values associated to each
+% @doc Transforms specified argument table (possibly with repeated options) into
+% a unique argument table (thus with just a list of values associated to each
 % option).
 %
 % Should options be repeated in the specified table, their values will be merged
@@ -568,9 +559,9 @@ uniquify_argument_table( _Args=[ { Opt, ListOfLists } | T ], AccTable ) ->
 
 
 
-% Generates a table from the arguments that were specified on the command-line
-% for this executable, assigning to each of the specified command-line options
-% the corresponding number of values.
+% @doc Generates a table from the arguments that were specified on the
+% command-line for this executable, assigning to each of the specified
+% command-line options the corresponding number of values.
 %
 % Should, for a given option, less values be found on the command-line than
 % declared, an error will be raised; should more values be found, the extra ones
@@ -589,8 +580,8 @@ get_command_line_arguments( OptionlessSpec, OptionSpecs ) ->
 
 
 
-% Reorganizes specified argument table, assigning to each of its command-line
-% options the corresponding number of values.
+% @doc Reorganizes specified argument table, assigning to each of its
+% command-line options the corresponding number of values.
 %
 % Should, for a given option, less values be found than declared, an error will
 % be raised; should more values be found, the extra ones will be considered as
@@ -809,9 +800,9 @@ sort_arguments( OptionlessSpec, _OptionSpecs=[ { Opt, ExactCount } | T ],
 
 				OtherCount when OtherCount > ExactCount ->
 					%trace_utils:error_fmt( "For command-line option '-~ts', "
-					%	"exactly ~B values were expected, whereas ~B "
-					%	"(i.e. ~p) were specified.",
-					%	[ Opt, ExactCount, OtherCount, ValueList ] ),
+					%   "exactly ~B values were expected, whereas ~B "
+					%   "(i.e. ~p) were specified.",
+					%   [ Opt, ExactCount, OtherCount, ValueList ] ),
 					%throw( { mismatching_value_count_for_option, Opt,
 					%		 { expected, ExactCount },
 					%		 { got, OtherCount, ValueList } } )
@@ -873,7 +864,7 @@ sort_arguments( _OptionlessSpec, _OptionSpecs=[ { Opt, VCount } | _T ],
 
 
 
-% Returns a textual representation of the specified argument table.
+% @doc Returns a textual representation of the specified argument table.
 -spec argument_table_to_string( argument_table() ) -> ustring().
 argument_table_to_string( ArgTable ) ->
 

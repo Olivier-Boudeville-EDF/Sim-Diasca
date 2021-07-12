@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2021 Olivier Boudeville
+% Copyright (C) 2007-2021 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -35,7 +35,7 @@
 -ifdef(wooper_debug_mode).
 
 
-% Calls recursively the destructors through the inheritance tree.
+% @doc Calls recursively the destructors through the inheritance tree.
 %
 % Each destructor (destruct/1 function) is purely local to the current module.
 %
@@ -67,8 +67,8 @@ wooper_destruct( State ) ->
 			% All destructors, including user-defined ones, must return a
 			% (possibly updated) state:
 
-			%io:format( "Deleting ~w (overridden destructor for ~w).~n",
-			%		   [ self(), ?MODULE ] ),
+			%trace_utils:debug_fmt( "Deleting ~w "
+			%    "(overridden destructor for ~w).", [ self(), ?MODULE ] ),
 
 
 			% ?MODULE is always the real class name here:
@@ -99,8 +99,8 @@ wooper_destruct( State ) ->
 
 			% Destructor not overridden, using default one:
 
-			%io:format( "Deleting ~w (default do-nothing destructor "
-			%		   "for class ~w).~n", [ self(), ?MODULE ] ),
+			%trace_utils:debug_fmt( "Deleting ~w (default do-nothing "
+			%    "destructor for class ~w).", [ self(), ?MODULE ] ),
 
 			% State unchanged here:
 			State
@@ -152,8 +152,8 @@ wooper_destruct( State ) ->
 
 			% Destructor not overridden, using default one:
 
-			%io:format( "Deleting ~w (default do-nothing destructor "
-			%   "for class ~w).~n", [ self(), ?MODULE ] )
+			%trace_utils:debug_fmt( "Deleting ~w (default do-nothing "
+			%    "destructor for class ~w).", [ self(), ?MODULE ] ),
 
 			% State unchanged:
 			State
@@ -168,7 +168,7 @@ wooper_destruct( State ) ->
 
 
 
-% Triggers a destruction-related error.
+% @doc Triggers a destruction-related error.
 %
 % (helper)
 %
@@ -196,7 +196,7 @@ trigger_destruct_error( Reason, ErrorTerm, StackTrace, State ) ->
 
 
 
-% Calls recursively the destructor of all direct superclasses.
+% @doc Calls recursively the destructor of all direct superclasses.
 %
 % (helper)
 %

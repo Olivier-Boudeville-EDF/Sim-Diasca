@@ -781,7 +781,7 @@ fi
 #echo "$0 running final command: ${final_command}, with use_run_erl = $use_run_erl" > launch-erl-command.txt
 
 # Log to console:
-#echo "$0 running final command: '${final_command}', with use_run_erl = $use_run_erl"
+#echo; echo "##### $0 running final command: '${final_command}', with use_run_erl = $use_run_erl"
 
 
 if [ $use_run_erl -eq 0 ]; then
@@ -805,15 +805,15 @@ if [ $use_run_erl -eq 0 ]; then
 	# have to find its PID.
 	#erl_pid=""
 
-	# while [ -z "$erl_pid" ]; do
+	# while [ -z "${erl_pid}" ]; do
 
 	# erl_pid=$(ps -edf -w -w | grep beam.smp | grep "launch-erl-pid" | awk '{print $2}')
 	# ps -edf | grep beam.smp
-	# echo "erl_pid = $erl_pid"
+	# echo "erl_pid = ${erl_pid}"
 
 	# done
 
-	#echo "erl_pid = $erl_pid"
+	#echo "erl_pid = ${erl_pid}"
 
 else
 
@@ -835,11 +835,11 @@ fi
 res=$?
 
 # However run_erl may return 0 despite errors:
-if [ ! $res -eq 0 ]; then
+if [ ! ${res} -eq 0 ]; then
 
 	reset_keyboard
-	echo "(command failed, with error result $res)" 1>&2
-	exit $res
+	echo "(command failed, with error result ${res})" 1>&2
+	exit ${res}
 
 elif [ $use_run_erl -eq 1 ]; then
 

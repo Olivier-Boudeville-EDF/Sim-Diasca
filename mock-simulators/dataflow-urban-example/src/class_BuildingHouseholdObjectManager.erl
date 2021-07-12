@@ -83,14 +83,14 @@
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 class_DataflowObjectManager:parent_pid(), load_balancer_pid(),
 				 basic_utils:maybe( identification_server_pid() ) ) ->
-					   wooper:state().
+						wooper:state().
 construct( State, ActorSettings, WorldManagerPid, LoadBalancerPid,
 		   IdentificationServerPid ) ->
 
 	ManagedObjectTypes = [ class_Building, class_Household ],
 
 	class_DataflowObjectManager:construct( State, ActorSettings,
-		?trace_categorize( _AtomEmitterName=?MODULE ), ManagedObjectTypes,
+		?trace_categorize(?MODULE), ManagedObjectTypes,
 		WorldManagerPid, LoadBalancerPid, IdentificationServerPid ).
 
 
@@ -108,14 +108,14 @@ applyChangeset( State, Changeset, SendingActorPid ) ->
 	% managed:
 	%
 	?debug_fmt( "Applying ~s (received from ~w)",
-				[ dataflow_support:changeset_to_string( Changeset ),
-				  SendingActorPid ] ),
+		[ dataflow_support:changeset_to_string( Changeset ),
+		  SendingActorPid ] ),
 
 	% Delegates all other events to the mother, generic class (always done even
 	% if no event remains, as this base implementation performs additional
 	% checks):
 	%
-	{ RemainingEvents, FilteredState } = 
+	{ RemainingEvents, FilteredState } =
 		filter_world_events( Changeset, State ),
 
 	DelegatedState = executeOnewayAs( FilteredState,

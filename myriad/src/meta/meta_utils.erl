@@ -27,9 +27,8 @@
 
 
 
-
-% Gathering of various higher-level, convenient meta-related facilities, notably
-% regarding metaprogramming, types and parse transforms.
+% @doc Gathering of various higher-level, convenient <b>meta-related
+% facilities</b>, notably regarding metaprogramming, types and parse transforms.
 %
 % See meta_utils_test.erl for the corresponding test, and ast_info.erl for the
 % more basic services used by this module.
@@ -52,7 +51,6 @@
 
 
 
-
 % For table macro, etc.:
 -include("meta_utils.hrl").
 
@@ -63,7 +61,6 @@
 
 % For ast_transforms record:
 -include("ast_transform.hrl").
-
 
 
 
@@ -151,61 +148,55 @@
 
 
 
+-type parse_transform_options() :: proplists:proplist().
 % Options specified to a parse transform at runtime, like: report_warnings,
 % beam,report_errors, {cwd,"X"}, {outdir,"Y"}, {i,"Z"}, {parse_transform,P},
 % debug_info, warnings_as_errors, etc.
 %
 % (hence not a list_table, anyway not available here)
-%
--type parse_transform_options() :: proplists:proplist().
+
 
 
 
 %% Module subsection.
 
-% The name of a module:
 -type module_name() :: basic_utils:module_name().
-
+% The name of a module.
 
 
 %% Function subsection.
 
-
-% The name of a function:
 -type function_name() :: basic_utils:function_name().
+% The name of a function.
 
 
-% The arity of a function:
 -type function_arity() :: arity().
+% The arity of a function.
 
 
-% Declaration of a function based on a name with an arity (unique function
-% signature within a module):
-%
 -type function_id() :: { function_name(), function_arity() }.
+% Declaration of a function based on a name with an arity (unique function
+% signature within a module).
 
 
-% The type of a function (currenty: unclear semantics).
 -type function_type() :: any().
+% The type of a function (currenty: unclear semantics).
 
 
-% The form corresponding to the definition of a clause of a function, typically
-% { clause, LINE, Rep(Ps), Rep(Gs), Rep(B) } for '( Ps ) when Gs -> B':
-%
 -type clause_def() :: form().
+% The form corresponding to the definition of a clause of a function, typically
+% {clause, LINE, Rep(Ps), Rep(Gs), Rep(B)} for '( Ps ) when Gs -> B'.
 
 
-
+-type function_spec() :: form().
 % The full type specification (if any) of that function, as an abstract form;
 % typically:
 %
-% { attribute, L, spec, { {foobar,Arity}, [{type,L,'fun', [{type,L,...
-%
--type function_spec() :: form().
+% {attribute, L, spec, { {foobar,Arity}, [{type,L,'fun', [{type,L,...
 
 
-% The name of a variable (ex: 'X', or '_' in some cases):
 -type variable_name() :: atom().
+% The name of a variable (ex: 'X', or '_' in some cases).
 
 
 -export_type([ parse_transform_options/0,
@@ -244,8 +235,8 @@
 % Function addition/removal section.
 
 
-% Registers (includes exporting) specified (spec-less) function in specified
-% module.
+% @doc Registers (includes exporting) specified (spec-less) function in
+% specified module.
 %
 -spec add_function( function_id(), [ clause_def() ], module_info() ) ->
 							module_info().
@@ -253,8 +244,8 @@ add_function( _FunId={ FunctionName, FunctionArity }, Clauses, ModuleInfo ) ->
 	add_function( FunctionName, FunctionArity, Clauses, ModuleInfo ).
 
 
-% Registers (includes exporting) specified (spec-less) function in specified
-% module.
+% @doc Registers (includes exporting) specified (spec-less) function in
+% specified module.
 %
 -spec add_function( basic_utils:function_name(), meta_utils:function_arity(),
 					[ clause_def() ], module_info() ) -> module_info().
@@ -270,8 +261,8 @@ add_function( FunctionName, FunctionArity, Clauses,
 
 		true ->
 			CurrentFunInfo = ?table:get_value( FunId, FunTable ),
-			CurrentFunString = ast_info:function_info_to_string(
-								 CurrentFunInfo ),
+			CurrentFunString =
+				ast_info:function_info_to_string( CurrentFunInfo ),
 
 			ast_utils:display_error( "Function ~p already defined, as ~ts.",
 									 [ FunId, CurrentFunString ] ),
@@ -283,20 +274,20 @@ add_function( FunctionName, FunctionArity, Clauses,
 
 	end,
 
-	DefLoc = ?table:get_value( definition_functions_marker, MarkerTable ),
+	DefASTLoc = ?table:get_value( definition_functions_marker, MarkerTable ),
 
-	ExportLoc = ast_info:get_default_export_function_location(),
+	ExportASTLoc = ast_info:get_default_export_function_location(),
 
 	FunInfo = #function_info{ name=FunctionName,
 							  arity=FunctionArity,
-							  location=DefLoc,
-							  line=0,
+							  ast_location=DefASTLoc,
+							  file_location=0,
 							  clauses=Clauses,
 							  spec=undefined,
 							  callback=false,
 
 							  % Will be auto-exported once module is recomposed:
-							  exported=[ ExportLoc ] },
+							  exported=[ ExportASTLoc ] },
 
 	NewFunTable = ?table:add_entry( FunId, FunInfo, FunTable ),
 
@@ -311,8 +302,7 @@ add_function( FunctionName, FunctionArity, Clauses,
 
 
 
-
-% Unregisters specified function from specified module.
+% @doc Unregisters specified function from specified module.
 -spec remove_function( function_info(), module_info() ) -> module_info().
 remove_function( FunInfo=#function_info{ exported=ExportLocs },
 				 ModuleInfo=#module_info{ function_exports=ExportTable,
@@ -340,12 +330,10 @@ remove_function( FunInfo=#function_info{ exported=ExportLocs },
 
 
 
-
 % Type addition/removal section.
 
 
-
-% Registers the specified, fully-described type in specified module.
+% @doc Registers the specified, fully-described type in specified module.
 -spec add_type( type_info(), module_info() ) -> module_info().
 add_type( TypeInfo=#type_info{ variables=TypeVariables,
 							   exported=ExportLocs },
@@ -387,8 +375,7 @@ add_type( TypeInfo=#type_info{ variables=TypeVariables,
 
 
 
-
-% Unregisters specified type from specified module.
+% @doc Unregisters specified type from specified module.
 -spec remove_type( type_info(), module_info() ) -> module_info().
 remove_type( TypeInfo=#type_info{ variables=TypeVariables,
 								  exported=ExportLocs },
@@ -419,8 +406,8 @@ remove_type( TypeInfo=#type_info{ variables=TypeVariables,
 
 
 
-% Applies specified AST transformations (mostly depth-first) to the specified
-% module information.
+% @doc Applies specified AST transformations (mostly depth-first) to the
+% specified module information.
 %
 % (helper)
 %
@@ -457,8 +444,9 @@ apply_ast_transforms( ModuleInfo=#module_info{ types=TypeTable,
 
 
 
-% Lists (in the order of their definition) all the functions ({Name,Arity}) that
-% are exported by the specified module, expected to be found in the code path.
+% @doc Lists (in the order of their definition) all the functions ({Name,Arity})
+% that are exported by the specified module, expected to be found in the code
+% path.
 %
 -spec list_exported_functions( module_name() ) -> [ function_id() ].
 list_exported_functions( ModuleName ) ->
@@ -490,7 +478,7 @@ list_exported_functions( ModuleName ) ->
 
 
 
-% Returns a list of the arities for which the specified function of the
+% @doc Returns a list of the arities for which the specified function of the
 % specified module is exported.
 %
 -spec get_arities_for( module_name(), function_name() ) -> [ arity() ].
@@ -503,18 +491,18 @@ get_arities_for( ModuleName, FunctionName ) ->
 
 
 
-% Tells whether the specified function (name with arity) is exported by the
+% @doc Tells whether the specified function (name with arity) is exported by the
 % specified module.
 %
 -spec is_function_exported( module_name(), function_name(), arity() ) ->
-								  boolean().
+									boolean().
 is_function_exported( ModuleName, FunctionName, Arity ) ->
 	lists:member( { FunctionName, Arity },
 				  list_exported_functions( ModuleName ) ).
 
 
 
-% Checks whether a potential upcoming call to the specified MFA
+% @doc Checks whether a potential upcoming call to the specified MFA
 % (Module,Function,Arguments) has a chance of succeeding.
 %
 -spec check_potential_call( module_name(), function_name(),

@@ -11,7 +11,8 @@
 		create-wooper-checkout                                        \
 		rebar3-local-update rebar3-local-update-for-wooper            \
 		rebar3-local-checkout-update-for-wooper                       \
-		rebar3-local-sibling-update-for-wooper
+		rebar3-local-sibling-update-for-wooper                        \
+		info-compile-wooper
 
 
 # The first non-generic, therefore default, rule:
@@ -75,6 +76,10 @@ rebar3-local-sibling-update-for-wooper:
 	@mkdir -p $(MYRIAD_LOCAL_EBIN)
 	@/bin/cp -f $(MYRIAD_SIBLING_BUILD)/_build/default/lib/myriad/ebin/* $(MYRIAD_LOCAL_EBIN)
 
+
+info-compile-wooper:
+	@echo "COMPILER_OPT_FOR_WOOPER_CLASSES = $(COMPILER_OPT_FOR_WOOPER_CLASSES)"
+	@echo "ENABLE_WOOPER_DEBUG_OPT = $(ENABLE_WOOPER_DEBUG_OPT)"
 
 
 # Bootstrap section.

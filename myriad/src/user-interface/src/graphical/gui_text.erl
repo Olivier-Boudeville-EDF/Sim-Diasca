@@ -26,13 +26,12 @@
 % Creation date: Monday, February 15, 2010.
 
 
-% Gathering of various facilities for text rendering.
+% @doc Gathering of various facilities for <b>text rendering</b>.
 -module(gui_text).
 
 
 
 % Operations for static labels-related.
-%
 -export([ create_static/2, create_static/3, create_static/4 ]).
 
 
@@ -52,8 +51,7 @@
 -type text_options() :: [ text_option() ].
 
 
--export_type([ static_text/0, style_option/0, text_option/0,
-			   text_options/0 ]).
+-export_type([ static_text/0, style_option/0, text_option/0, text_options/0 ]).
 
 
 % For related defines:
@@ -68,21 +66,21 @@
 
 
 
-% Creates a static text, based on specified identifier and plain string.
+% @doc Creates a static text, based on specified identifier and plain string.
 -spec create_static( gui:window(), ustring() ) -> static_text().
 create_static( Parent, Label ) ->
 	create_static( _DefaultId=-1, Parent, Label ).
 
 
 
-% Creates a static text, based on specified identifier and plain string.
+% @doc Creates a static text, based on specified identifier and plain string.
 -spec create_static( gui:id(), gui:window(), ustring() ) -> static_text().
 create_static( Id, Parent, Label ) ->
 	create_static( Id, Parent, Label, _Options=[] ).
 
 
 
-% Creates a static text, based on specified identifier, plain string and
+% @doc Creates a static text, based on specified identifier, plain string and
 % options.
 %
 -spec create_static( gui:id(), gui:window(), ustring(), text_options() ) ->
@@ -95,7 +93,7 @@ create_static( Id, Parent, Label, Options ) ->
 
 
 
-% Converts specified text options into the appropriate back-end specific
+% @doc Converts specified text options into the appropriate back-end specific
 % options.
 %
 % (helper)
@@ -116,7 +114,8 @@ get_text_options( [ H | T ], Acc ) ->
 
 
 
-% Converts specified text style into the appropriate back-end specific bit mask.
+% @doc Converts specified text style into the appropriate back-end specific bit
+% mask.
 %
 % (helper)
 %

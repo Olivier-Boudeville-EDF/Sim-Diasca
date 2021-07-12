@@ -19,6 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc This is the mother class of <b>all actors</b>.
 -module(class_Actor).
 
 
@@ -37,9 +38,8 @@
 
 -type tick_offset() :: class_TimeManager:tick_offset().
 
-% A duration expressed as a difference of ticks:
 -type tick_duration() :: class_TimeManager:tick_duration().
-
+% A duration expressed as a difference of ticks.
 
 
 % Shorthands:
@@ -149,22 +149,25 @@
 	  "between two simulation ticks" } ] ).
 
 
-% PID of an actor:
 -type actor_pid() :: pid().
+% PID of an actor.
 
-% PID of an actor having sent a message to the current actor:
+
 -type sending_actor_pid() :: actor_pid().
+% PID of an actor having sent a message to the current actor.
 
-% PID of a just created actor:
+
 -type created_actor_pid() :: actor_pid().
+% PID of a just created actor.
 
 
-% A number of actors:
 -type actor_count() :: basic_utils:count().
+% A number of actors.
 
 
-% A number of diascas (counting them generally leads to bad practices)
 -type diasca_count() :: basic_utils:count().
+% A number of diascas (counting them generally leads to bad practices, as they
+% account for the sorting out of causality - they do not represent durations).
 
 
 % For #actor_settings:
@@ -179,17 +182,20 @@
 -include("class_InstanceTracker.hrl").
 
 
-% The record is defined in class_LoadBalancer.hrl:
 -type actor_settings() :: #actor_settings{}.
+% The record is defined in class_LoadBalancer.hrl:
 
 
-% To designate more specialised classname afterwards:
 -type actor_classname() :: wooper:classname().
+% To designate more specialised classnames afterwards.
 
 
-% Return types for the specification of actor oneways:
 -type actor_oneway_return() :: wooper:state().
+% Return types for the specification of non-const actor oneways.
+
+
 -type const_actor_oneway_return() :: wooper:state().
+% Return types for the specification of const actor oneways.
 
 
 % Re-exporting some types from class_TimeManager, for a better model-level
@@ -289,42 +295,43 @@
 
 
 
+-type aai() :: non_neg_integer().
 % Abstract Actor Identifier (AAI).
 %
 % Live actors have non-null AAI (starting at 1, the AAI of the load balancer); a
 % null AAI designates a "zombi" actor, i.e. information about an actor that does
 % not exist anymore.
-%
--type aai() :: non_neg_integer().
 
 
+-type name() :: class_TraceEmitter:emitter_init().
 % Name of an actor, as supplied by the user:
 %
 % This is either a (plain or binary) string, or a pair made of two (plain or
 % binary) strings, respectively the emitter name and categorization.
 %
 % Once fully constructed, both the name and categorization are binary strings.
-%
--type name() :: class_TraceEmitter:emitter_init().
 
 
-% Name of an actor, as stored internally:
 -type internal_name() :: binary().
+% Name of an actor, as stored internally.
 
 
+-type termination_delay() :: diasca() | 'unlimited'.
 % Specifies how an actor organises its termination process, from its declaration
 % to its realisation: either a positive count of diascas (possibly zero) to
 % wait, or 'unlimited', so that the actor is deleted only at the next tick.
 %
 % In most cases, the default, 'unlimited', is the best setting.
-%
--type termination_delay() :: diasca() | 'unlimited'.
 
 
-% Tells whether a next diasca is requested (shorthand for clarity):
 -type diasca_maybe() :: 'no_diasca_requested' | 'new_diasca_needed'.
+% Tells whether a next diasca is requested (shorthand for clarity).
 
 
+-type next_actor_action() ::
+		diasca_maybe()
+	  | { 'terminating', termination_delay(), diasca_maybe() }
+	  | { 'terminated', diasca_maybe() }.
 % Used by actors internally, to record the new next action that they plan (in
 % their next_action attribute); this can be:
 %
@@ -335,22 +342,9 @@
 % - or when having decided to terminate (either being in the course of, or
 % considering having terminated for good), in both cases with or without having
 % sent at least one actor message (hence in that case needing a new diasca)
-%
--type next_actor_action() ::
-		diasca_maybe()
-	  | { 'terminating', termination_delay(), diasca_maybe() }
-	  | { 'terminated', diasca_maybe() }.
 
 
 
-% Used by actors in their dialog with their time manager, to notify it of the
-% next action they plan: respectively, either nothing, or needing a new diasca
-% to manage messages, or terminating with intermediary diascas, or terminating
-% with no specific limit in terms of diascas, or having terminated for good.
-%
-% (difference with next_actor_action/0: the time manager does not have to know
-% how many diascas, if any, remain until a planned termination)
-%
 -type next_reported_action() ::
 
 		diasca_maybe()
@@ -360,13 +354,18 @@
 
 	  | { 'terminating_unlimited', diasca_maybe() }
 	  | { 'terminated', diasca_maybe() }.
-
-
-
-% Ordered list of tick offsets at which this actor expects to develop a
-% spontaneous behaviour:
+% Used by actors in their dialog with their time manager, to notify it of the
+% next action they plan: respectively, either nothing, or needing a new diasca
+% to manage messages, or terminating with intermediary diascas, or terminating
+% with no specific limit in terms of diascas, or having terminated for good.
 %
+% (difference with next_actor_action/0: the time manager does not have to know
+% how many diascas, if any, remain until a planned termination)
+
+
 -type agenda() :: [ tick_offset() ].
+% Ordered list of tick offsets at which this actor expects to develop a
+% spontaneous behaviour.
 
 
 -type actor_oneway_name() :: oneway_name().
@@ -375,10 +374,6 @@
 
 
 
-
-% Describes a pending actor message, as stored by an actor once having received
-% it.
-%
 -record( actor_message, {
 
 		% The tick offset at which this actor message has been sent and is to be
@@ -402,32 +397,33 @@
 
 
 -type actor_message() :: #actor_message{}.
+% Describes a pending actor message, as stored by an actor once having received
+% it.
 
 
-
-
-% Describes the information needed in order to create (without tag) an actor:
 -type instance_creation_spec() :: { classname(), [ method_argument() ] }
   | { classname(), [ method_argument() ], class_LoadBalancer:placement_hint() }.
+% Describes the information needed in order to create (without tag) an actor:
 
 
+-type tag() :: any().
 % A tag is a means of identifying the origin of a call on the client side
 % (caller), i.e. to identify to which initial oneway an answer corresponds (can
 % be freely defined by the user).
-%
--type tag() :: any().
 
 
-% Describes the information needed in order to create, thanks to a tag, an
-% actor:
-%
 -type tagged_instance_creation_spec() ::
 		{ classname(), [ method_argument() ], tag() }
 	  | { classname(), [ method_argument() ], tag(),
 		  class_LoadBalancer:placement_hint() }.
+% Describes the information needed in order to create, thanks to a tag, an
+% actor.
 
 
 
+-type message_ordering_mode() :: 'unordered'
+							   | 'constant_arbitrary_order'
+							   | 'constant_permuted_order'.
 % Tells what kind of reordering of actor messages is wanted, among:
 %
 % - 'unordered': the actor processes messages in their arrival order; smallest
@@ -446,10 +442,6 @@
 %
 % Note: the overhead induced by this last, more advanced order is sufficiently
 % low that it is used as the default order.
-%
--type message_ordering_mode() :: 'unordered'
-							   | 'constant_arbitrary_order'
-							   | 'constant_permuted_order'.
 
 
 
@@ -745,17 +737,16 @@
 
 
 
-
 -compile({ inline, [ get_trace_timestamp/3 ] } ).
 
 
-% Returns a rather detailed (hence more expensive) timestamp to be included in
-% traces.
+% @doc Returns a rather detailed (hence more expensive) timestamp to be included
+% in traces.
 %
 % Meant to be inlined as much as possible to lessen the cost of such traces.
 %
 -spec get_trace_timestamp( tick_offset(), diasca(), wooper:state() ) ->
-									ustring().
+			ustring().
 get_trace_timestamp( TickOffset, Diasca, State ) ->
 
 	CurrentTick = ?getAttr(initial_tick) + TickOffset,
@@ -763,8 +754,8 @@ get_trace_timestamp( TickOffset, Diasca, State ) ->
 	% Only relies on the simulation_tick_duration attribute:
 	CurrentSecond = convert_ticks_to_seconds( CurrentTick, State ),
 
-	Timestamp = calendar:gregorian_seconds_to_datetime(
-				  round( CurrentSecond ) ),
+	Timestamp =
+		calendar:gregorian_seconds_to_datetime( round( CurrentSecond ) ),
 
 	% Cannot include a newline as it would break the trace format:
 	text_utils:format( "~ts {~B,~B}",
@@ -773,7 +764,9 @@ get_trace_timestamp( TickOffset, Diasca, State ) ->
 
 
 
-% Constructs a new simulation actor, from:
+% @doc Constructs a new simulation actor.
+%
+% Construction parameters:
 %
 % - ActorSettings describes the actor abstract identifier (AAI) and seed of this
 % actor, as assigned by the load balancer
@@ -944,8 +937,8 @@ construct( State,
 			% simulationStarted/3 atomically:
 			%
 			{ StartedState, { actor_started, _SelfPid } } = executeRequest(
-					  TickState, simulationStarted,
-					  [ ActualInitialTick, FirstScheduledOffset ] ),
+					TickState, simulationStarted,
+					[ ActualInitialTick, FirstScheduledOffset ] ),
 			StartedState
 
 	end.
@@ -953,7 +946,7 @@ construct( State,
 
 
 
-% Overridden destructor.
+% @doc Overridden destructor.
 %
 % Unsubscribing from the time manager supposed already done, thanks to a
 % termination message.
@@ -968,7 +961,7 @@ destruct( State ) ->
 	%?info( "Deleting actor." ),
 
 	%trace_utils:debug_fmt( "Deleting actor ~w, while it was at ~p.",
-	%					   [ self(), get_current_logical_timestamp( State ) ] ),
+	%    [ self(), get_current_logical_timestamp( State ) ] ),
 
 	InstanceTrackerPid = class_InstanceTracker:get_local_tracker(),
 
@@ -991,7 +984,8 @@ destruct( State ) ->
 % Management section of the actor.
 
 
-
+% @doc Notifies this initial actor that the simulation just started.
+%
 % Request called:
 %
 % - by the time manager when this actor enters the simulation while it was not
@@ -1014,9 +1008,9 @@ simulationStarted( State, SimulationInitialTick,
 			 _CurrentTimestamp={ CurrentTickOffset, CurrentDiasca } ) ->
 
 	%?info_fmt( "This initial actor is notified of simulation start, "
-	%            "with a simulation initial tick of ~B, "
-	%            "while current tick offset is #~B and diasca ~B.",
-	%			 [ SimulationInitialTick, CurrentTickOffset, CurrentDiasca ] ),
+	%           "with a simulation initial tick of ~B, "
+	%           "while current tick offset is #~B and diasca ~B.",
+	%			[ SimulationInitialTick, CurrentTickOffset, CurrentDiasca ] ),
 
 	%trace_utils:debug_fmt( "class_Actor:simulationStarted called for ~w, "
 	%			"with simulation initial tick ~p, with current tick #~B "
@@ -1047,7 +1041,7 @@ simulationStarted( State, SimulationInitialTick,
 
 
 
-% Notifies this actor that the simulation ended.
+% @doc Notifies this actor that the simulation ended.
 %
 % For the vast majority of actors (but unlike the load balancer for example),
 % this means deletion (overridden for the load balancer, which has a different
@@ -1063,9 +1057,9 @@ simulationEnded( State ) ->
 
 
 
-% This actor oneway is automatically called the next diasca after an actor is
-% created or, if the simulation was not running, on diasca 1 (i.e. just after
-% the spontaneous behaviours) of tick offset #0.
+% @doc This actor oneway is automatically called the next diasca after an actor
+% is created or, if the simulation was not running, on diasca 1 (that is just
+% after the spontaneous behaviours) of tick offset #0.
 %
 % This method is meant to be overridden, knowing that otherwise the created
 % actor will be scheduled only once (this time), and never again.
@@ -1117,8 +1111,8 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-% Called by the local time manager in order to schedule this actor for a new
-% tick, starting with its spontaneous behaviour (diasca 0).
+% @doc Called by the local time manager in order to schedule this actor for a
+% new tick, starting with its spontaneous behaviour (diasca 0).
 %
 % Returns an updated state, and triggers back a notification to the
 % corresponding time manager when the spontaneous action has been completed.
@@ -1177,7 +1171,7 @@ beginTick( State, NewTickOffset ) ->
 
 
 
-% Checkings, in the case of the beginning of a new tick.
+% @doc Performs checks, in the case of the beginning of a new tick.
 check_spontaneous_tick_consistency( NewTickOffset, State ) ->
 
 	% First, time must always progress:
@@ -1191,7 +1185,7 @@ check_spontaneous_tick_consistency( NewTickOffset, State ) ->
 
 
 
-% Checks that this scheduling returned a sensible result.
+% @doc Checks that this scheduling returned a sensible result.
 validate_scheduling_outcome( State ) ->
 
 	AddedTicks = ?getAttr(added_spontaneous_ticks),
@@ -1261,8 +1255,8 @@ validate_scheduling_outcome( State ) ->
 
 
 
-% Ensures that all specified ticks are in the future and that none is added and
-% withdrawn at the same time.
+% @doc Ensures that all specified ticks are in the future and that none is added
+% and withdrawn at the same time.
 %
 validate_new_ticks( AddedTicks, WithdrawnTicks, CurrentTickOffset ) ->
 
@@ -1278,8 +1272,8 @@ validate_new_ticks( AddedTicks, WithdrawnTicks, CurrentTickOffset ) ->
 					ok;
 
 				false ->
-					FaultyAddedTicks = [ T
-								   || T <- AddedTicks, T =< CurrentTickOffset ],
+					FaultyAddedTicks =
+						[ T || T <- AddedTicks, T =< CurrentTickOffset ],
 					throw( { added_spontaneous_ticks_must_be_in_future,
 							 FaultyAddedTicks, CurrentTickOffset } )
 
@@ -1299,8 +1293,8 @@ validate_new_ticks( AddedTicks, WithdrawnTicks, CurrentTickOffset ) ->
 					ok;
 
 				false ->
-					FaultyWithdrawnTicks = [ T
-						   || T <- WithdrawnTicks, T =< CurrentTickOffset ],
+					FaultyWithdrawnTicks =
+						[ T || T <- WithdrawnTicks, T =< CurrentTickOffset ],
 					throw( { withdrawn_spontaneous_ticks_must_be_in_future,
 							 FaultyWithdrawnTicks, CurrentTickOffset } )
 
@@ -1321,8 +1315,8 @@ validate_new_ticks( AddedTicks, WithdrawnTicks, CurrentTickOffset ) ->
 
 
 
-% Called by the local time manager in order to schedule this actor for a new
-% non-null diasca, after its spontaneous behaviour.
+% @doc Called by the local time manager in order to schedule this actor for a
+% new non-null diasca, after its spontaneous behaviour.
 %
 % Returns an updated state, and triggers back a notification to the
 % corresponding time manager when the triggered actions have been completed.
@@ -1377,7 +1371,7 @@ beginDiasca( State, TickOffset, NewDiasca ) ->
 
 
 
-% Checks diasca consistency, when an actor begins a new diasca.
+% @doc Checks diasca consistency, when an actor begins a new diasca.
 %
 % (optional checkings)
 %
@@ -1441,7 +1435,9 @@ check_diasca_consistency( TickOffset, NewDiasca, State ) ->
 
 
 
-% Checkings, in the case of a triggered tick.
+% @doc Performs check, in the case of a new, triggered (i.e. non-spontaneous)
+% diasca (D>0).
+%
 check_trigger_tick_consistency( TickOffset, NewDiasca, State ) ->
 
 	% First, time must always progress:
@@ -1457,8 +1453,8 @@ check_trigger_tick_consistency( TickOffset, NewDiasca, State ) ->
 
 
 
-% Helps to check whether the actor is scheduled for a new diasca as expected, by
-% ensuring that the causality always progresses.
+% @doc Helps checking whether the actor is scheduled for a new diasca as
+% expected, by ensuring that the causality always progresses.
 %
 check_time_consistency_at_new_diasca( TickOffset, NewDiasca, State ) ->
 
@@ -1474,7 +1470,7 @@ check_time_consistency_at_new_diasca( TickOffset, NewDiasca, State ) ->
 	case ?getAttr(previous_schedule) of
 
 		{ PreviousTickOffset, _AnyDiasca }
-		  when PreviousTickOffset < TickOffset ->
+				when PreviousTickOffset < TickOffset ->
 			ok;
 
 		% Same tick:
@@ -1484,6 +1480,7 @@ check_time_consistency_at_new_diasca( TickOffset, NewDiasca, State ) ->
 		undefined ->
 			% When an actor is just created, it shows up directly at a non-zero
 			% diasca:
+			%
 			ok;
 
 		% Same diasca:
@@ -1498,14 +1495,14 @@ check_time_consistency_at_new_diasca( TickOffset, NewDiasca, State ) ->
 
 		WrongTimestamp ->
 			throw( { wrong_timestamp, WrongTimestamp,
-					 { TickOffset, NewDiasca } } )
+						{ TickOffset, NewDiasca } } )
 
 	end.
 
 
 
-% Called by the time manager in order to schedule this actor a last time, so
-% that it can safely terminate.
+% @doc Called by the time manager in order to schedule this actor a last time,
+% so that it can safely terminate.
 %
 -spec beginTerminationDiasca( wooper:state(), tick_offset(), diasca() ) ->
 									const_oneway_return().
@@ -1568,7 +1565,7 @@ beginTerminationDiasca( State, TickOffset, NewDiasca ) ->
 
 
 
-% Checkings, in the case of a termination tick.
+% @doc Performs checks, in the case of a termination tick.
 check_termination_time_consistency( TickOffset, NewDiasca, State ) ->
 
 	% A termination can *only* happen just afterwards the previous diasca on the
@@ -1581,8 +1578,8 @@ check_termination_time_consistency( TickOffset, NewDiasca, State ) ->
 
 
 
-% Helps to check whether the actor is scheduled for a new tick as expected, by
-% ensuring time always progresses.
+% @doc Helps checking whether the actor is scheduled for a new tick as expected,
+% by ensuring time always progresses.
 %
 check_time_consistency_at_new_tick( NewTickOffset, State ) ->
 
@@ -1609,7 +1606,7 @@ check_time_consistency_at_new_tick( NewTickOffset, State ) ->
 
 
 
-% Checks that no pending actor message targets an impossible future for
+% @doc Checks that no pending actor message targets an impossible future for the
 % specified new tick.
 %
 % To be called just once this actor was scheduled for a new tick.
@@ -1660,8 +1657,8 @@ check_messages_at_new_tick_helper( [ M | _T ], CurrentTickOffset ) ->
 
 
 
-% Checks that no pending actor message targets an impossible future for
-% specified diasca at specified tick.
+% @doc Checks that no pending actor message targets an impossible future for
+% the specified diasca at the specified tick.
 %
 % To be called just once this actor was scheduled for a new diasca.
 %
@@ -1709,11 +1706,9 @@ check_messages_at_new_diasca_helper( [ M | _T ], CurrentTickOffset,
 
 
 
-
-
-% Throws an exception iff the specified tick offset was actually not registered
-% as a schedule tick for this actor, or if was registered, but not as the first
-% deadline.
+% @doc Throws an exception iff the specified tick offset was actually not
+% registered as a schedule tick for this actor, or if was registered, but not as
+% the first deadline.
 %
 check_spontaneous_indeed( NewTickOffset, State ) ->
 
@@ -1753,8 +1748,8 @@ check_spontaneous_indeed( NewTickOffset, State ) ->
 
 
 
-% Throws an exception iff there is no pending actor messages for this diasca of
-% the current tick, for this actor.
+% @doc Throws an exception iff there is no pending actor messages for this
+% diasca of the current tick, for this actor.
 %
 check_triggered_indeed( TickOffset, NewDiasca, State ) ->
 
@@ -1773,7 +1768,7 @@ check_triggered_indeed( TickOffset, NewDiasca, State ) ->
 			case ?getAttr(next_action) of
 
 				{ terminating, DiascaCount, no_diasca_requested }
-				  when is_integer( DiascaCount ) ->
+						when is_integer( DiascaCount ) ->
 					ok;
 
 				Unexpected ->
@@ -1786,7 +1781,7 @@ check_triggered_indeed( TickOffset, NewDiasca, State ) ->
 
 
 
-% Determines whether there is at least one pending actor message for the
+% @doc Determines whether there is at least one pending actor message for the
 % specified timestamp.
 %
 % Intercepts as well actor messages in the past.
@@ -1815,8 +1810,8 @@ find_message_for_timestamp( TickOffset, Diasca, [ _H | T ] ) ->
 
 
 
-% Requests the next tick to be added (if not already registered) to the future
-% spontaneous ticks of this actor.
+% @doc Requests the next tick to be added (if not already registered) to the
+% future spontaneous ticks of this actor.
 %
 -spec scheduleNextSpontaneousTick( wooper:state() ) -> oneway_return().
 scheduleNextSpontaneousTick( State ) ->
@@ -1827,7 +1822,8 @@ scheduleNextSpontaneousTick( State ) ->
 
 
 
-% Adds the specified spontaneous tick offset to the already registered ones.
+% @doc Adds the specified spontaneous tick offset to the already registered
+% ones.
 %
 % Note: adding a given tick more than once is allowed (and will result of course
 % in a single spontaneous scheduling at that tick).
@@ -1841,7 +1837,8 @@ addSpontaneousTick( State, SpontaneousTickToAdd ) ->
 
 
 
-% Adds the specified spontaneous tick offsets to the already registered ones.
+% @doc Adds the specified spontaneous tick offsets to the already registered
+% ones.
 %
 % Note: adding a given tick more than once is allowed (and will result of course
 % in a single spontaneous scheduling at that tick).
@@ -1856,8 +1853,8 @@ addSpontaneousTicks( State, SpontaneousTicksToAdd ) ->
 
 
 
-% Adds the specified spontaneous tick offset to the already registered ones, and
-% returns an updated state.
+% @doc Adds the specified spontaneous tick offset to the already registered
+% ones, and returns an updated state.
 %
 % Note: adding a given tick more than once is allowed (and will result of course
 % for that actor in a single spontaneous scheduling at that tick).
@@ -1875,8 +1872,8 @@ add_spontaneous_tick( Other, _State ) ->
 
 
 
-% Adds the specified spontaneous tick offsets to the already registered ones,
-% and returns an updated state.
+% @doc Adds the specified spontaneous tick offsets to the already registered
+% ones, and returns an updated state.
 %
 % Note: adding a given tick more than once is allowed (and will result of course
 % for that actor in a single spontaneous scheduling at that tick).
@@ -1899,7 +1896,7 @@ add_spontaneous_ticks( SpontaneousTicksToAdd, State ) ->
 
 
 
-% Adds the spontaneous tick offset determined from the current one plus the
+% @doc Adds the spontaneous tick offset determined from the current one plus the
 % specified one to the already registered ones, and returns an updated state.
 %
 % Note: adding a given tick more than once is allowed (and will result of course
@@ -1921,8 +1918,8 @@ add_spontaneous_tick_in( Other, _State ) ->
 
 
 
-% Adds the spontaneous tick offset corresponding to specified timestamp to the
-% already registered ones, and returns an updated state.
+% @doc Adds the spontaneous tick offset corresponding to specified timestamp to
+% the already registered ones, and returns an updated state.
 %
 % Note: adding a given tick more than once is allowed (and will result of course
 % for that actor in a single spontaneous scheduling at that tick).
@@ -1938,8 +1935,8 @@ add_spontaneous_timestamp( Timestamp, State ) ->
 
 
 
-% Withdraws the specified spontaneous tick offset from the already registered
-% ones.
+% @doc Withdraws the specified spontaneous tick offset from the already
+% registered ones.
 %
 -spec withdrawSpontaneousTick( wooper:state(), tick_offset() ) ->
 									oneway_return().
@@ -1951,10 +1948,8 @@ withdrawSpontaneousTick( State, SpontaneousTickToWithdraw ) ->
 
 
 
-
-
-% Withdraws the specified spontaneous tick offsets from the already registered
-% ones.
+% @doc Withdraws the specified spontaneous tick offsets from the already
+% registered ones.
 %
 -spec withdrawSpontaneousTicks( wooper:state(), [ tick_offset() ] ) ->
 										oneway_return().
@@ -1966,8 +1961,8 @@ withdrawSpontaneousTicks( State, SpontaneousTicksToWithdraw ) ->
 
 
 
-% Withdraws the specified spontaneous tick offset from the already registered
-% ones, and returns an updated state.
+% @doc Withdraws the specified spontaneous tick offset from the already
+% registered ones, and returns an updated state.
 %
 -spec withdraw_spontaneous_tick( tick_offset(), wooper:state() ) ->
 										wooper:state().
@@ -1982,8 +1977,8 @@ withdraw_spontaneous_tick( Other, _State ) ->
 
 
 
-% Withdraws the specified spontaneous tick offsets to the already registered
-% ones, and returns an updated state.
+% @doc Withdraws the specified spontaneous tick offsets to the already
+% registered ones, and returns an updated state.
 %
 -spec withdraw_spontaneous_ticks( [ tick_offset() ], wooper:state() ) ->
 										wooper:state().
@@ -2003,10 +1998,10 @@ withdraw_spontaneous_ticks( SpontaneousTicksToWithdraw, State ) ->
 
 
 
-% Called by an actor when it determines it is to be removed from the simulation
-% and deleted: starts its termination procedure, with no specific upper bound in
-% terms of diascas until actual termination (so this actor will be actually
-% deleted at the next tick (diasca 0).
+% @doc Called by an actor when it determines it is to be removed from the
+% simulation and deleted: starts its termination procedure, with no specific
+% upper bound in terms of diascas until actual termination (so this actor will
+% be actually deleted at the next tick (diasca 0).
 %
 -spec declareTermination( wooper:state() ) -> oneway_return().
 declareTermination( State ) ->
@@ -2022,10 +2017,10 @@ declareTermination( State ) ->
 
 
 
-% Called by an actor when it determines it is to be removed from the simulation
-% and deleted: starts its termination procedure, waiting for exactly the
-% specified number of diascas (supposedly sufficient so that all actors knowing
-% it become aware of its termination) until performing its actual
+% @doc Called by an actor when it determines it is to be removed from the
+% simulation and deleted: starts its termination procedure, waiting for exactly
+% the specified number of diascas (supposedly sufficient so that all actors
+% knowing it become aware of its termination) until performing its actual
 % termination.
 %
 % Of course it is up to this actor to notify appropriately the relevant actors
@@ -2048,8 +2043,8 @@ declareTermination( State, TerminationDelay ) ->
 
 
 
-% Called by an actor when it determines it is to be removed from the simulation
-% and deleted, which could be done on the very next diasca.
+% @doc Called by an actor when it determines it is to be removed from the
+% simulation and deleted, which could be done on the very next diasca.
 %
 % (helper)
 %
@@ -2080,7 +2075,6 @@ declare_termination( _IntercalaryDiasca=0, State ) ->
 	end,
 
 	setAttribute( State, next_action, NextAction );
-
 
 
 % Includes the 'unlimited' case (here we will wait the specified number of
@@ -2122,7 +2116,7 @@ declare_termination( IntercalaryDiasca, State ) ->
 
 
 
-% Reacts to a notification of time manager shutdown by deleting this actor.
+% @doc Reacts to a notification of time manager shutdown by deleting this actor.
 -spec timeManagerShutdown( wooper:state() ) -> const_oneway_return().
 timeManagerShutdown( State ) ->
 
@@ -2136,7 +2130,7 @@ timeManagerShutdown( State ) ->
 
 
 
-% The definition of the actor spontaneous behaviour.
+% @doc Defines the spontaneous behaviour of this actor.
 %
 % The actSpontaneous/1 oneway is expected to update the actor state, send any
 % relevant actor message(s) and/or update the spontaneous agenda of this actor.
@@ -2156,9 +2150,9 @@ actSpontaneous( State ) ->
 
 
 
-% Oneway called by another actor (A) to send to this current actor (S=self()) a
-% behaviour-specific message: this S actor stores this message for later
-% processing, but acknowleges it immediately to A.
+% @doc Oneway called by another actor (A) to send to this current actor
+% (S=self()) a behaviour-specific message: this S actor stores this message for
+% a later processing, but acknowleges it immediately to A.
 %
 -spec receiveActorMessage( wooper:state(), tick_offset(), diasca(),
 					oneway_call(), actor_pid(), aai() ) -> oneway_return().
@@ -2366,8 +2360,8 @@ receiveActorMessage( State, MessageTickOffset, MessageTargetDiasca,
 
 
 
-% Callback triggered by the reception of an acknowledgement of an actor to which
-% this actor sent a message.
+% @doc Callback triggered by the reception of an acknowledgement from an actor
+% to which this actor sent a message.
 %
 -spec acknowledgeMessage( wooper:state(), actor_pid() ) -> oneway_return().
 acknowledgeMessage( State, CalledActorPid ) ->
@@ -2415,7 +2409,8 @@ acknowledgeMessage( State, CalledActorPid ) ->
 
 
 
-% Sends to the local time manager a notification that the current diasca ended.
+% @doc Sends to the local time manager a notification that the current diasca
+% ended.
 %
 % Returns an updated state.
 %
@@ -2494,7 +2489,7 @@ notify_diasca_ended( State ) ->
 
 		0 ->
 			{ notifySpontaneousActionsCompleted, [ CurrentTickOffset, self(),
-					 NextReportedAction, AddedTicks, WithdrawnTicks ] };
+					NextReportedAction, AddedTicks, WithdrawnTicks ] };
 
 		_ ->
 			{ notifyTriggeredActionsCompleted, [ CurrentTickOffset,
@@ -2519,8 +2514,8 @@ notify_diasca_ended( State ) ->
 
 
 
-% Returns the current simulation time of this actor, expressed as an offset of
-% simulation ticks relative to the beginning of the simulation.
+% @doc Returns the current simulation time of this actor, expressed as an offset
+% of simulation ticks relative to the beginning of the simulation.
 %
 -spec getSimulationTickOffset( wooper:state() ) ->
 									const_request_return( tick_offset() ).
@@ -2529,8 +2524,8 @@ getSimulationTickOffset( State ) ->
 
 
 
-% Returns the current simulation time of this actor, expressed as an absolute
-% number of simulation ticks.
+% @doc Returns the current simulation time of this actor, expressed as an
+% absolute number of simulation ticks.
 %
 -spec getSimulationTick( wooper:state() ) -> const_request_return( tick() ).
 getSimulationTick( State ) ->
@@ -2538,7 +2533,7 @@ getSimulationTick( State ) ->
 
 
 
-% Returns the current simulation time of this actor, structured as follows:
+% @doc Returns the current simulation time of this actor, structured as follows:
 % {{SimYear,SimMonth,SimDay}, {SimHour,SimMinute,SimSecond}}.
 %
 % This date might be less precise than the actual simulation tick, so the latter
@@ -2548,22 +2543,25 @@ getSimulationTick( State ) ->
 								const_request_return( timestamp() ).
 getSimulationDate( State ) ->
 
-	IntegerSeconds = round( convert_ticks_to_seconds( get_current_tick( State ),
-													  State ) ),
+	IntegerSeconds = round(
+		convert_ticks_to_seconds( get_current_tick( State ), State ) ),
 
 	wooper:const_return_result(
 		calendar:gregorian_seconds_to_datetime( IntegerSeconds ) ).
 
 
 
-% Returns a textual description of the simulation and real time, for this actor.
+% @doc Returns a textual description of the simulation and real time, for this
+% actor.
+%
 -spec getTextualTimings( wooper:state() ) -> const_request_return( ustring() ).
 getTextualTimings( State ) ->
 	wooper:const_return_result( get_textual_timings( State ) ).
 
 
 
-% Returns an atom corresponding to the Erlang node on which this actor runs.
+% @doc Returns an atom corresponding to the Erlang node on which this actor
+% runs.
 %
 % Note: mostly useful for the test of the placement heuristics.
 %
@@ -2574,34 +2572,34 @@ getHostingNode( State ) ->
 
 
 
-% Converts the specified duration in seconds (expressed as an integer or a
+% @doc Converts the specified duration in seconds (expressed as an integer or a
 % floating point value) into an integer (rounded) number of simulation ticks,
 % which is at least equal to one tick.
 %
 % Ex: convertSecondsToTicks( State, 0.001 )
 % Note: the convert_seconds_to_ticks helper function can be used as well.
 %
--spec convertSecondsToTicks( wooper:state(), unit_utils:seconds() ) ->
+-spec convertSecondsToTicks( wooper:state(), unit_utils:any_seconds() ) ->
 								const_request_return( tick_offset() ).
 convertSecondsToTicks( State, Seconds ) ->
 	wooper:const_return_result( convert_seconds_to_ticks( Seconds, State ) ).
 
 
 
-% Converts the specified tick count into a fractional (floating-point) number of
-% seconds.
+% @doc Converts the specified tick count into a fractional (floating-point)
+% number of seconds.
 %
 % Note: the convert_ticks_to_seconds helper function can be used as well.
 %
 -spec convertTicksToSeconds( wooper:state(), tick_offset() ) ->
-								const_request_return( float() ).
+						const_request_return( unit_utils:float_second() ).
 convertTicksToSeconds( State, Ticks ) ->
 	wooper:const_return_result( convert_ticks_to_seconds( Ticks, State ) ).
 
 
 
-% Returns (asynchronously, to avoid deadlocks) the current list of waited actors
-% (if any) for that actor.
+% @doc Returns (asynchronously, to avoid deadlocks) the current list of waited
+% actors (if any) for that actor.
 %
 % Allows the TimeManager to know why this actor may be stalling the simulation,
 % and who it is.
@@ -2616,14 +2614,14 @@ nudge( State, SenderPid ) ->
 
 
 
-% Returns the AAI of that instance.
+% @doc Returns the AAI of that instance.
 -spec getAAI( wooper:state() ) -> const_request_return( aai() ).
 getAAI( State ) ->
 	wooper:const_return_result( ?getAttr(actor_abstract_id) ).
 
 
 
-% Returns an information record about this actor.
+% @doc Returns an information record about this actor.
 -spec getActorInfo( wooper:state() ) -> const_request_return( actor_info() ).
 getActorInfo( State ) ->
 
@@ -2638,10 +2636,9 @@ getActorInfo( State ) ->
 
 
 
-
-% Called automatically after (generally after two diascas) this actor called
-% create_actor/{3,4} or create_placed_actor/{4,5}, to notify it the creation
-% was done, resulting in a newly created actor.
+% @doc Called automatically after (generally after two diascas) this actor
+% called create_actor/{3,4} or create_placed_actor/{4,5}, to notify it the
+% creation was done, resulting in a newly created actor.
 %
 % Parameters are:
 %
@@ -2662,9 +2659,9 @@ getActorInfo( State ) ->
 onActorCreated( State, CreatedActorPid, CreatedActorTag, _SendingActorPid ) ->
 
 	%?debug_fmt(
-	%	"Default non-overridden onActorCreated/4 method called: "
-	%   "actor ~w was created from tag '~p'.",
-	%	[ CreatedActorPid, CreatedActorTag ] ),
+	%    "Default non-overridden onActorCreated/4 method called: "
+	%    "actor ~w was created from tag '~p'.",
+	%    [ CreatedActorPid, CreatedActorTag ] ),
 
 	trace_utils:debug_fmt( "Default non-overridden onActorCreated/4 method "
 		"called: actor ~w was created from tag '~p'.",
@@ -2674,7 +2671,7 @@ onActorCreated( State, CreatedActorPid, CreatedActorTag, _SendingActorPid ) ->
 
 
 
-% Requires the caller (generally the time manager) to be notified
+% @doc Requires the caller (generally the time manager) to be notified
 % (asynchronously) of the name (as a binary) of this actor.
 %
 -spec triggerNameNotification( wooper:state(), wooper:caller_pid() ) ->
@@ -2687,7 +2684,7 @@ triggerNameNotification( State, CallerPid ) ->
 
 
 
-% Relinks this actor, supposing it was just deserialised.
+% @doc Relinks this actor, supposing it was just deserialised.
 %
 % (request, for synchronicity)
 %
@@ -2702,7 +2699,7 @@ relink( State ) ->
 % Section for helper functions (not methods).
 
 
-% Returns the (supposed opaque) identifier (AAI) of that actor.
+% @doc Returns the (supposed opaque) identifier (AAI) of that actor.
 %
 % During a given simulation, an actor bears a unique identifier, and this
 % identifier will be the same from one simulation to another.
@@ -2715,7 +2712,7 @@ get_abstract_identifier( State ) ->
 
 
 
-% Returns a path to the root directory of the deployed elements, as a plain
+% @doc Returns a path to the root directory of the deployed elements, as a plain
 % string.
 %
 % Useful to be able to look-up and read third-party (simulation-specific)
@@ -2735,7 +2732,7 @@ get_deployed_root_directory( _State ) ->
 	% to be recorded, possibly in each actor):
 	%
 	file_utils:join(
-	  [ file_utils:get_current_directory(), "..", "deployed-elements" ] ).
+		[ file_utils:get_current_directory(), "..", "deployed-elements" ] ).
 
 
 
@@ -2744,15 +2741,15 @@ get_deployed_root_directory( _State ) ->
 % the time manager.
 
 
-% Converts the specified duration in virtual seconds (expressed as an integer or
-% a floating-point value) into an integer (non-negative, rounded) number of
-% simulation ticks.
+% @doc Converts the specified duration in virtual seconds (expressed as an
+% integer or a floating-point value) into an integer (non-negative, rounded)
+% number of simulation ticks.
 %
 % Note: this time conversion will be checked for accuracy based on the default
 % threshold in terms of relative error, and thus may fail at runtime, should it
-% be deemed to inaccurate.
+% be deemed too inaccurate.
 %
-% Ex: TickCount = class_Actor:convert_seconds_to_ticks( _Secs=0.001, State )
+% Ex: TickCount = class_Actor:convert_seconds_to_ticks(_Secs=0.001, State)
 %
 % This function can be called as soon as the class_Actor constructor has been
 % executed.
@@ -2760,23 +2757,23 @@ get_deployed_root_directory( _State ) ->
 % (helper function)
 %
 -spec convert_seconds_to_ticks( any_seconds(), wooper:state() ) ->
-									tick_duration().
+													tick_duration().
 convert_seconds_to_ticks( Seconds, State ) ->
 	% Less than 1.5% of relative error tolerated by default:
 	convert_seconds_to_ticks( Seconds, _DefaultMaxRelativeError=0.015, State ).
 
 
 
-% Converts the specified duration in virtual seconds (expressed as an integer or
-% a floating-point value) into an integer (non-negative, rounded) number of
-% simulation ticks.
+% @doc Converts the specified duration in virtual seconds (expressed as an
+% integer or a floating-point value) into an integer (non-negative, rounded)
+% number of simulation ticks.
 %
 % Note: this time conversion will be checked for accuracy based on the default
 % threshold in terms of relative error, and thus may fail, should it be deemed
 % to inaccurate.
 %
-% Ex: TickCount = class_Actor:convert_seconds_to_ticks_explicit( _Secs=5,
-%          _TickDur=0.01 )
+% Ex: TickCount = class_Actor:convert_seconds_to_ticks_explicit(_Secs=5,
+%                                       _TickDur=0.01)
 %
 % This function can be called as soon as the class_Actor constructor has been
 % executed.
@@ -2791,7 +2788,7 @@ convert_seconds_to_ticks_explicit( Seconds, TickDuration )  ->
 
 
 
-% Converts the specified number of (floating-point) seconds into an integer
+% @doc Converts the specified number of (floating-point) seconds into an integer
 % (rounded) number of ticks, checking that any rounding error stays within
 % specified maximum relative error.
 %
@@ -2807,7 +2804,7 @@ convert_seconds_to_ticks( Seconds, MaxRelativeError, State ) ->
 
 
 
-% Converts the specified number of (floating-point) seconds into an integer
+% @doc Converts the specified number of (floating-point) seconds into an integer
 % (rounded) number of ticks, checking that any rounding error stays within
 % specified maximum relative error.
 %
@@ -2838,8 +2835,8 @@ convert_seconds_to_ticks_explicit( Seconds, MaxRelativeError, TickDuration )
 														CorrespondingSeconds ),
 
 			throw( { too_inaccurate_duration_conversion, TickCount,
-					 { Seconds, CorrespondingSeconds }, TickDuration,
-					 { MaxRelativeError, ActualError } } )
+						{ Seconds, CorrespondingSeconds }, TickDuration,
+						{ MaxRelativeError, ActualError } } )
 
 	end;
 
@@ -2854,7 +2851,7 @@ convert_seconds_to_ticks_explicit( Seconds, _MaxRelativeError,
 
 
 
-% Converts the specified duration in seconds (expressed as an integer or a
+% @doc Converts the specified duration in seconds (expressed as an integer or a
 % floating point value) into an integer (strictly positive, rounded) number of
 % simulation ticks, which is at least equal to one tick.
 %
@@ -2881,13 +2878,13 @@ convert_seconds_to_non_null_ticks( Seconds, State ) ->
 
 
 
-% Converts the specified duration in seconds (expressed as an integer or a
+% @doc Converts the specified duration in seconds (expressed as an integer or a
 % floating point value) into an integer (strictly positive, rounded) number of
 % simulation ticks, checking that any rounding error stays within specified
 % maximum relative error and then ensuring the returned duration is at least
 % equal to one tick.
 %
-% Ex: TickCount = convert_seconds_to_non_null_ticks( 0.001, 0.01, State )
+% Ex: TickCount = convert_seconds_to_non_null_ticks(0.001, 0.01, State)
 %
 % (helper function)
 %
@@ -2907,8 +2904,8 @@ convert_seconds_to_non_null_ticks( Seconds, MaxRelativeError, State ) ->
 
 
 
-% Converts the specified tick count into a duration expressed as a fractional
-% (floating-point) number of seconds.
+% @doc Converts the specified tick count into a duration expressed as a
+% fractional (floating-point) number of seconds.
 %
 % This function can be called as soon as the class_Actor constructor has been
 % executed.
@@ -2923,8 +2920,8 @@ convert_ticks_to_seconds( Ticks, State ) ->
 
 
 
-% Converts the specified tick count into a duration expressed as a fractional
-% (floating-point) number of seconds.
+% @doc Converts the specified tick count into a duration expressed as a
+% fractional (floating-point) number of seconds.
 %
 % This function may be called from any context (possibly non-actor ones).
 %
@@ -2938,14 +2935,14 @@ convert_ticks_to_seconds_explicit( Ticks, TickDuration ) ->
 	Res = Ticks * TickDuration,
 
 	%trace_utils:debug_fmt( "Ticks: ~p, tick duration: ~p, secs: ~p.",
-	%					   [ Ticks, TickDuration, Res ] ),
+	%						[ Ticks, TickDuration, Res ] ),
 
 	Res.
 
 
 
 
-% Returns a textual description of the real and simulated time.
+% @doc Returns a textual description of the real and simulated time.
 %
 % (helper function)
 %
@@ -2970,7 +2967,7 @@ get_textual_timings( State ) ->
 
 
 
-% Returns the current (numerical) simulation tick offset this actor is in,
+% @doc Returns the current (numerical) simulation tick offset this actor is in,
 % relatively to the simulation initial time (initial_tick), expressed in
 % simulation ticks.
 %
@@ -2980,7 +2977,7 @@ get_current_tick_offset( State ) ->
 
 
 
-% Returns the current diasca.
+% @doc Returns the current diasca.
 %
 % Note: this function is defined for completeness, we see little reason for the
 % user code to call it (except for debugging purposes).
@@ -2991,7 +2988,8 @@ get_current_diasca( State ) ->
 
 
 
-% Returns the current logical timestamp, i.e. a tick offset and diasca pair.
+% @doc Returns the current logical timestamp, that is a tick offset and diasca
+% pair.
 %
 % Note: this function is defined for completeness, we see little reason for the
 % user code to call it (except for debugging purposes), as the actual value of a
@@ -3003,8 +3001,8 @@ get_current_logical_timestamp( State ) ->
 
 
 
-% Returns the current simulation timestamp (i.e. absolute date and time, with a
-% 1 second accuracy) at which this actor is.
+% @doc Returns the current simulation timestamp (that is absolute date and time,
+% with a 1-second accuracy) at which this actor is.
 %
 % Note that, depending on the simulation frequency, the timestamp granularity
 % might be finer or coarser than the one of ticks.
@@ -3019,8 +3017,8 @@ get_current_timestamp( State ) ->
 
 
 
-% Returns, as the string, the current simulation timestamp (i.e. absolute date
-% and time, with a 1 second accuracy), at which this actor is.
+% @doc Returns, as the string, the current simulation timestamp (that is the
+% absolute date and time, with a 1-second accuracy), at which this actor is.
 %
 % Note that, depending on the simulation frequency, the timestamp granularity
 % might be finer or coarser than the one of ticks.
@@ -3033,7 +3031,7 @@ get_current_timestamp_as_string( State ) ->
 
 
 
-% Converts the specified absolute tick into a tick offset.
+% @doc Converts the specified absolute tick into a tick offset.
 %
 % (helper function)
 %
@@ -3044,8 +3042,8 @@ convert_absolute_tick_to_tick_offset( AbsoluteTick, State ) ->
 
 
 
-% Converts the specified timestamp (i.e. absolute date and time) into a tick
-% offset.
+% @doc Converts the specified timestamp (that is absolute date and time) into a
+% tick offset.
 %
 % Note that, depending on the simulation frequency, the timestamp granularity
 % might be finer or coarser than the one of ticks.
@@ -3058,7 +3056,7 @@ convert_timestamp_to_tick_offset( Timestamp, State )
   when is_tuple( Timestamp ) ->
 
 	%trace_utils:debug_fmt( "Converting to tick offset timestamp '~p'.",
-	%					   [ Timestamp ] ),
+	%						[ Timestamp ] ),
 
 	Seconds = calendar:datetime_to_gregorian_seconds( Timestamp ),
 
@@ -3071,8 +3069,8 @@ convert_timestamp_to_tick_offset( Timestamp, _State ) ->
 
 
 
-% Converts the specified tick offset in a corresponding timestamp (i.e. absolute
-% date and time), with an accuracy of one second.
+% @doc Converts the specified tick offset in a corresponding timestamp (that is
+% absolute date and time), with an accuracy of one second.
 %
 % Note that, depending on the simulation frequency, the timestamp granularity
 % might be finer or coarser than the one of ticks.
@@ -3091,8 +3089,8 @@ convert_tick_offset_to_timestamp( TickOffset, State ) ->
 
 
 
-% Converts the specified tick offset in a corresponding textual timestamp
-% (i.e. absolute date and time, as a string), with an accuracy of one second.
+% @doc Converts the specified tick offset in a corresponding textual timestamp
+% (that is absolute date and time, as a string), with an accuracy of one second.
 %
 % Note that, depending on the simulation frequency, the timestamp granularity
 % might be finer or coarser than the one of ticks.
@@ -3109,8 +3107,8 @@ convert_tick_offset_to_timestamp_as_string( TickOffset, State ) ->
 
 
 
-% Converts the specified tick offset in a corresponding timestamp (i.e. absolute
-% date and time), with an accuracy of one second.
+% @doc Converts the specified tick offset in a corresponding timestamp (that is
+% absolute date and time), with an accuracy of one second.
 %
 % Note that, depending on the simulation frequency, the timestamp granularity
 % might be finer or coarser than the one of ticks.
@@ -3130,8 +3128,8 @@ convert_tick_offset_to_timestamp_explicit( TickOffset, InitialTick,
 
 
 
-% Converts the specified tick offset in a corresponding textual timestamp
-% (i.e. absolute date and time, as a string), with an accuracy of one second.
+% @doc Converts the specified tick offset in a corresponding textual timestamp
+% (that is absolute date and time, as a string), with an accuracy of one second.
 %
 % Note that, depending on the simulation frequency, the timestamp granularity
 % might be finer or coarser than the one of ticks.
@@ -3151,8 +3149,8 @@ convert_tick_offset_to_timestamp_as_string_explicit( TickOffset, InitialTick,
 
 
 
-% Returns the current (numerical) absolute (i.e. relative to year #0 of the
-% Gregorian calendar) simulation tick this actor is in.
+% @doc Returns the current (numerical) absolute (that is relative to year #0 of
+% the Gregorian calendar) simulation tick this actor is in.
 %
 % Note: class_TraceEmitter:get_current_tick/1 could be used as well. This
 % version, to be called only when this actor is synchronized, must be slightly
@@ -3171,8 +3169,8 @@ get_current_tick( State ) ->
 
 
 
-% Sends specified (actor) message to the specified actor, records this sending
-% to wait for its acknowledgement, and returns an updated state. These
+% @doc Sends specified (actor) message to the specified actor, records this
+% sending to wait for its acknowledgement, and returns an updated state. These
 % inter-actor messages exchanged during simulation are the only allowed way of
 % communicating between actors.
 %
@@ -3286,10 +3284,10 @@ send_actor_message( Unexpected, _ActorOneway, _State ) ->
 
 
 
-% Sends specified message to the specified listed actors, records these sendings
-% to wait for the corresponding acknowledgements, and returns an updated
-% state. These inter-actor messages exchanged during simulation are the only
-% allowed way of communicating between actors.
+% @doc Sends specified message to the specified listed actors, records these
+% sendings to wait for the corresponding acknowledgements, and returns an
+% updated state. These inter-actor messages exchanged during simulation are the
+% only allowed way of communicating between actors.
 %
 % An actor message parameter describes the behaviour (actor oneway, translating
 % to an Erlang function) to trigger when this message will be taken into account
@@ -3408,7 +3406,7 @@ send_actor_messages( ActorPidList, ActorOneway, State ) ->
 
 
 
-% Executes the specified actor oneway of this actor: executes a (often
+% @doc Executes the specified actor oneway of this actor: executes a (often
 % inherited) actor oneway from the current actor oneway.
 %
 -spec execute_actor_oneway( oneway_name(), wooper:state() ) -> wooper:state().
@@ -3418,7 +3416,7 @@ execute_actor_oneway( Onewayname, State ) ->
 
 
 
-% Executes the specified actor oneway of this actor: executes a (often
+% @doc Executes the specified actor oneway of this actor: executes a (often
 % inherited) actor oneway from the current actor oneway.
 %
 -spec execute_actor_oneway( oneway_name(), method_arguments(),
@@ -3429,7 +3427,7 @@ execute_actor_oneway( Onewayname, MethodArgs, State ) ->
 
 
 
-% Executes the specified actor oneway of this actor: executes, as specified
+% @doc Executes the specified actor oneway of this actor: executes, as specified
 % class, an actor oneway from the current actor oneway.
 %
 -spec execute_actor_oneway_as( classname(), oneway_name(), wooper:state() ) ->
@@ -3440,7 +3438,7 @@ execute_actor_oneway_as( Classname, Onewayname, State ) ->
 
 
 
-% Executes the specified actor oneway of this actor: executes, as specified
+% @doc Executes the specified actor oneway of this actor: executes, as specified
 % class, an actor oneway from the current actor oneway.
 %
 -spec execute_actor_oneway_as( classname(), oneway_name(), method_arguments(),
@@ -3452,7 +3450,7 @@ execute_actor_oneway_as( Classname, Onewayname, MethodArgs, State ) ->
 
 
 
-% Self-triggers specified actor message in the specified number of diascas:
+% @doc Self-triggers specified actor message in the specified number of diascas:
 % allows for a deferred actor oneway execution by this actor, through diascas in
 % the current tick.
 %
@@ -3513,8 +3511,8 @@ sd_reserved_selfTrigger( State, DiascaCount, ActorOneway,
 
 
 
-% Makes this actor search for its messages associated to its current tick and
-% diasca, sorts them in a particular order, and requests to process them.
+% @doc Makes this actor search for its messages associated to its current tick
+% and diasca, sorts them in a particular order, and requests to process them.
 %
 % Returns an updated state.
 %
@@ -3569,7 +3567,7 @@ process_last_diasca_messages( CurrentTickOffset, CurrentDiasca, State ) ->
 
 
 
-% Checks that actor messages in the future are legitimate:
+% @doc Checks that actor messages in the future are legitimate:
 check_future_messages( _FutureMessages=[], _CurrentTickOffset,
 					   _CurrentDiasca ) ->
 	ok;
@@ -3596,12 +3594,12 @@ check_future_messages( _FutureMessages=[ #actor_message{
 
 
 
-
-% Sends in turn the specified oneways (here no third parameter is specified,
-% like for requests, however the sender PID is specified in the parameters
-% nevertheless, as last argument) to this same process. Appending it at end
-% (rather than at beginning) is a bit more expensive, but it is far clearer for
-% the implementor of the methods corresponding to the received actor messages.
+% @doc Sends in turn the specified oneways (here no third parameter is
+% specified, like for requests, however the sender PID is specified in the
+% parameters nevertheless, as last argument) to this same process. Appending it
+% at end (rather than at beginning) is a bit more expensive, but it is far
+% clearer for the implementor of the methods corresponding to the received actor
+% messages.
 %
 % (AAI is ignored here, as not useful anymore here)
 %
@@ -3613,7 +3611,7 @@ execute_reordered_oneways( _Messages=[], State ) ->
 % List parameter here:
 execute_reordered_oneways( _Messages=[
 	   { SenderPid, SenderAAI, { OnewayName, OnewayArgList } }
-									  | MessageTuples ],
+										| MessageTuples ],
 		State ) when is_list( OnewayArgList ) ->
 
 	FullArgs = list_utils:append_at_end( SenderPid, OnewayArgList ),
@@ -3646,8 +3644,8 @@ execute_reordered_oneways( _Messages=[
 							Arity = length( Args ),
 
 							DiagnoseString =
-							   code_utils:interpret_undef_exception( M, F,
-																	 Arity ),
+								code_utils:interpret_undef_exception( M, F,
+																	  Arity ),
 
 							% Call needed for newline:
 							text_utils:format( "undef exception raised: ~ts "
@@ -3723,7 +3721,7 @@ execute_reordered_oneways( _Messages=[
 
 						CoreParamCount ->
 							ArgStrings = [ text_utils:format( "~p", [ Arg ] )
-										   || Arg <- OnewayArgList ],
+											|| Arg <- OnewayArgList ],
 
 							ArgString = text_utils:strings_to_enumerated_string(
 											ArgStrings ),
@@ -3848,7 +3846,7 @@ execute_reordered_oneways( _Messages=[
 
 
 
-% Returns the best description of the location found for that error.
+% @doc Returns the best description of the location found for that error.
 %
 % (we want to avoid specifying multiple times the same MFA if matching)
 
@@ -3899,12 +3897,13 @@ location_to_string( Other ) ->
 	text_utils:format( ", refer to ~p", [ Other ] ).
 
 
-% Returns the best user-level stacktrace we can produce, i.e. a purely
+
+% @doc Returns the best user-level stacktrace we can produce, that is a purely
 % user-level one, stripped from the engine internals.
 %
 % (helper)
 %
--spec get_user_stacktrace( code_utils:stack_trace() ) -> string().
+-spec get_user_stacktrace( code_utils:stack_trace() ) -> ustring().
 get_user_stacktrace( StackTrace ) ->
 
 	% Typically we have:
@@ -3931,7 +3930,8 @@ get_user_stacktrace( StackTrace ) ->
 	code_utils:interpret_stacktrace( FilteredTrace ).
 
 
-% Removes all calls from the k level (if found):
+
+% @doc Removes all calls from the k level (if found):
 filter_stacktrace( _Trace=[], Acc ) ->
 	lists:reverse( Acc );
 
@@ -3955,7 +3955,7 @@ filter_stacktrace( _Trace=[ StackItem | T ], Acc ) ->
 % Actor-side management.
 
 
-% Updates this actor's agenda for checking with specified future action.
+% @doc Updates this actor's agenda for checking with specified future action.
 %
 % Returns an updated agenda.
 %
@@ -3975,14 +3975,14 @@ update_agenda_with( AddedTicks, WithdrawnTicks, Agenda ) ->
 	%lists:sort( list_utils:uniquify( WithdrawAgenda ++ AddedTicks ) ),
 
 	lists:foldl( fun( Tick, AccAgenda ) ->
-						 insert_in_agenda( Tick, AccAgenda )
+						insert_in_agenda( Tick, AccAgenda )
 				 end,
 				 _AddAcc0=WithdrawAgenda,
 				 _AddList=AddedTicks ).
 
 
 
-% Inserts the specified tick offset into specified agenda.
+% @doc Inserts the specified tick offset into specified agenda.
 insert_in_agenda( TickOffset, Agenda ) ->
 	insert_in_agenda( TickOffset, Agenda, _FirstAgendaEntries=[] ).
 
@@ -4021,9 +4021,9 @@ insert_in_agenda( TickOffset, [ H | T ], FirstAgendaEntries ) ->
 
 
 
-% Sorts the specified list of messages into three lists (returned as a triplet):
-% the messages corresponding to the specified tick, the ones in the future of
-% that tick, and the ones in its past.
+% @doc Sorts the specified list of messages into three lists (returned as a
+% triplet): the messages corresponding to the specified tick, the ones in the
+% future of that tick, and the ones in its past.
 %
 % For messages corresponding to the current tick, the tick information is
 % removed: instead of a 4-element tuple, a {Pid,Aai,Message} triplet is
@@ -4034,10 +4034,11 @@ split_messages_over_time( Messages, CurrentTickOffset, CurrentDiasca ) ->
 							  _CurrentOnes=[], _FutureOnes=[], _PastOnes=[] ).
 
 
-
+% (helper)
 split_messages_over_time( _Messages=[], _CurrentTickOffset, _CurrentDiasca,
 						  CurrentOnes, FutureOnes, PastOnes ) ->
 	{ CurrentOnes, FutureOnes, PastOnes };
+
 
 split_messages_over_time(
 		[ H=#actor_message{ tick_offset=MessageTickOffset } | T ],
@@ -4052,6 +4053,7 @@ split_messages_over_time(
   when MessageTickOffset > CurrentTickOffset ->
 	split_messages_over_time( T, CurrentTickOffset, CurrentDiasca,
 							  CurrentOnes, [ H | FutureOnes ], PastOnes );
+
 
 % Here 'when MessageTickOffset =:= CurrentTickOffset' is implied by
 % pattern-matching, now taking into account the diascas:
@@ -4070,6 +4072,7 @@ split_messages_over_time(
 	split_messages_over_time( T, CurrentTickOffset, CurrentDiasca,
 							  CurrentOnes, [ H | FutureOnes ], PastOnes );
 
+
 % Here 'when MessageTickOffset =:= CurrentTickOffset andalso MessageDiasca =:=
 % CurrentDiasca' is implied by pattern-matching:
 %
@@ -4081,7 +4084,7 @@ split_messages_over_time( [ #actor_message{ sender_pid=Pid, sender_aai=Aai,
 						 CurrentOnes, FutureOnes, PastOnes ) ->
 	% No timestamp kept in the 'current list':
 	split_messages_over_time( T, CurrentTickOffset, CurrentDiasca,
-		   [ { Pid, Aai, Message } | CurrentOnes ], FutureOnes, PastOnes ).
+			[ { Pid, Aai, Message } | CurrentOnes ], FutureOnes, PastOnes ).
 
 
 
@@ -4091,8 +4094,8 @@ split_messages_over_time( [ #actor_message{ sender_pid=Pid, sender_aai=Aai,
 
 
 
-% Creates synchronously a new initial actor, whereas the simulation has not been
-% started yet.
+% @doc Creates synchronously a new initial actor, whereas the simulation has not
+% been started yet.
 %
 % This must be called only directly from test/simulation cases, to create the
 % initial situation before the simulation time starts progressing.
@@ -4130,8 +4133,8 @@ create_initial_actor( ActorClassname ) ->
 
 
 
-% Creates synchronously a new initial actor, whereas the simulation has not been
-% started yet.
+% @doc Creates synchronously a new initial actor, whereas the simulation has not
+% been started yet.
 %
 % This must be called only directly from test/simulation cases, to create the
 % initial situation before the simulation time starts progressing.
@@ -4176,8 +4179,8 @@ create_initial_actor( ActorClassname, ActorConstructionParameters ) ->
 
 
 
-% Creates synchronously a new initial actor, whereas the simulation has not been
-% started yet.
+% @doc Creates synchronously a new initial actor, whereas the simulation has not
+% been started yet.
 %
 % Behaves exactly like the create_initial_actor/2 static method, except it
 % relies on a user-specified PID for the load balancer.
@@ -4232,8 +4235,8 @@ create_initial_actor( ActorClassname, ActorConstructionParameters,
 
 
 
-% Creates synchronously a new, placed, initial actor, whereas the simulation has
-% not been started yet.
+% @doc Creates synchronously a new, placed, initial actor, whereas the
+% simulation has not been started yet.
 %
 % This must be called only directly from test/simulation cases, to create the
 % initial situation before the simulation time starts to progress.
@@ -4286,9 +4289,8 @@ create_initial_placed_actor( ActorClassname, ActorConstructionParameters,
 
 
 
-
-% Creates synchronously a new initial actor, whereas the simulation has not been
-% started yet.
+% @doc Creates synchronously a new initial actor, whereas the simulation has not
+% been started yet.
 %
 % Behaves exactly like the create_initial_placed_actor/3 static method, except
 % it relies on a user-specified PID for the load balancer.
@@ -4340,8 +4342,8 @@ create_initial_placed_actor( ActorClassname, ActorConstructionParameters,
 
 
 
-% Creates synchronously - and in parallel - the specified list of new initial
-% actors, whereas the simulation has not been started yet.
+% @doc Creates synchronously - and in parallel - the specified list of new
+% initial actors, whereas the simulation has not been started yet.
 %
 % Each actor is created based on the specified class name and construction
 % parameters, possibly augmented of a placement hint. For example: {class_X,
@@ -4367,9 +4369,8 @@ create_initial_actors( ActorConstructionList ) ->
 
 
 
-
-% Creates synchronously - and in parallel - the specified list of new initial
-% actors, whereas the simulation has not been started yet.
+% @doc Creates synchronously - and in parallel - the specified list of new
+% initial actors, whereas the simulation has not been started yet.
 %
 % Each actor is created based on the specified class name and construction
 % parameters, possibly augmented of a placement hint. For example: {class_X,
@@ -4396,7 +4397,7 @@ create_initial_actors( ActorConstructionList, LoadBalancerPid )
 	cond_utils:if_defined( simdiasca_debug_initial_creations, [
 
 	   ActorLines = [ text_utils:format( "~p", [ CP ] )
-					  || CP <- ActorConstructionList ],
+						|| CP <- ActorConstructionList ],
 
 		trace_utils:debug_fmt( "~w requesting the creation of ~B initial "
 			"actors, construction parameters being: ~ts",
@@ -4430,7 +4431,7 @@ create_initial_actors( ActorConstructionList, LoadBalancerPid )
 % Helper functions.
 
 
-% Returns the name of this actor, as a binary.
+% @doc Returns the name of this actor, as a binary.
 %
 % Note: is never and cannot be overridden.
 %
@@ -4444,8 +4445,8 @@ get_name( State ) ->
 
 
 
-% Returns true iff this actor is running, i.e. if it has been synchronised to
-% the simulation, that thus has already been started.
+% @doc Returns true iff this actor is running, that is if it has been
+% synchronised to the simulation, that thus has already been started.
 %
 % Note: there are very few legitimate reasons for using this helper. Hint: do
 % not try to abuse the engine, for example by special-casing initial actors
@@ -4469,8 +4470,8 @@ is_running( State ) ->
 
 
 
-% Triggers the creation of a new actor, while the simulation is running, with no
-% user tag specified.
+% @doc Triggers the creation of a new actor, while the simulation is running,
+% with no user tag specified.
 %
 % This is an actor-level helper function, which takes care automatically of the
 % sending (at this tick T, diasca D) of the createActor actor message to the
@@ -4521,12 +4522,12 @@ create_actor( ActorClassname, ActorConstructionParameters, State )
 	cond_utils:if_defined( simdiasca_debug_runtime_creations,
 		trace_utils:info_fmt(
 			"Actor '~ts' (~w) creating at runtime a new instance of ~p.",
-		  [ ?getAttr(name), self(), ActorClassname ] ) ),
+			[ ?getAttr(name), self(), ActorClassname ] ) ),
 
 	% The load balancer is an actor, thus two diascas will be requested.
 
 	% No user tag specified, thus using implicitly a tag equal to:
-	% { ActorClassname, ActorConstructionParameters }.
+	% {ActorClassname, ActorConstructionParameters}.
 	%
 	% Will trigger back, on this actor, onActorCreated/4 in two diascas:
 	%
@@ -4536,8 +4537,8 @@ create_actor( ActorClassname, ActorConstructionParameters, State )
 
 
 
-% Triggers the creation of a new actor, while the simulation is running, using
-% the specified user tag for that.
+% @doc Triggers the creation of a new actor, while the simulation is running,
+% using the specified user tag for that.
 %
 % This is an actor-level helper function, which takes care automatically of the
 % sending (at this tick T, diasca D) of the createActor actor message to the
@@ -4562,7 +4563,7 @@ create_actor( ActorClassname, ActorConstructionParameters, State )
 % the 'class_TestActor' atom)
 %
 % - ActorConstructionParameters is the list of parameters that will be used to
-% construct that actor (ex: [ "MyActorName", 50 ])
+% construct that actor (ex: ["MyActorName", 50])
 %
 % - CreatedActorTag can be any term chosen by the user (ex: an atom like
 % 'my_building_147')
@@ -4595,13 +4596,13 @@ create_actor( ActorClassname, ActorConstructionParameters, ActorTag, State )
 	% Will trigger back, on this actor, onActorCreated/4 in two diascas:
 	send_actor_message( ?getAttr(load_balancer_pid),
 		{ createRuntimeActor,
-		  [ ActorClassname, ActorConstructionParameters, ActorTag ] },
+			[ ActorClassname, ActorConstructionParameters, ActorTag ] },
 		State ).
 
 
 
-% Triggers the creation of a set of new actors, while the simulation is running,
-% each instance creation being able to include a creation tag.
+% @doc Triggers the creation of a set of new actors, while the simulation is
+% running, each instance creation being able to include a creation tag.
 %
 % This is an actor-level helper function, which takes care automatically of the
 % sending (at this tick T, diasca D) of the createActor actor messages to the
@@ -4650,7 +4651,7 @@ create_actors( ActorConstructionList, State )
 			"whose creation list is: ~ts",
 			[ ?getAttr(name), self(), length( ActorConstructionList ),
 			  text_utils:strings_to_string( [ text_utils:format( "~p",
-				 [ Spec ] ) || Spec <- ActorConstructionList ] ) ] ) ),
+					[ Spec ] ) || Spec <- ActorConstructionList ] ) ] ) ),
 
 	LoadBalancerPid = ?getAttr(load_balancer_pid),
 
@@ -4670,7 +4671,7 @@ create_actors( ActorConstructionList, State )
 
 
 
-% Triggers the creation of a new actor with a placement hint, while the
+% @doc Triggers the creation of a new actor with a placement hint, while the
 % simulation is running.
 %
 % This is an actor-level helper function, which takes care automatically of the
@@ -4720,12 +4721,12 @@ create_placed_actor( ActorClassname, ActorConstructionParameters,
 	% Will trigger back, on this actor, onActorCreated/4 in two diascas:
 	send_actor_message( ?getAttr(load_balancer_pid),
 		{ createRuntimePlacedActor, [ ActorClassname,
-					 ActorConstructionParameters, PlacementHint ] }, State ).
+					ActorConstructionParameters, PlacementHint ] }, State ).
 
 
 
-% Triggers the creation of a new actor with a user-defined tag and a placement
-% hint, while the simulation is running.
+% @doc Triggers the creation of a new actor with a user-defined tag and a
+% placement hint, while the simulation is running.
 %
 % This is an actor-level helper function, which takes care automatically of the
 % sending (at this tick T, diasca D) of the createActor actor message to the
@@ -4746,7 +4747,7 @@ create_placed_actor( ActorClassname, ActorConstructionParameters,
 % 'class_TestActor')
 %
 % - ActorConstructionParameters is the list of parameters that will be used to
-% construct that actor (ex: [ "MyActorName", 50 ])
+% construct that actor (ex: ["MyActorName", 50])
 %
 % - CreatedActorTag can be any term chosen by the user (ex: an atom like
 % 'my_building_147')
@@ -4765,7 +4766,7 @@ create_placed_actor( ActorClassname, ActorConstructionParameters,
 % (exported helper function, used by actors)
 %
 -spec create_placed_actor( classname(), [ method_argument() ], tag(),
-		   class_LoadBalancer:placement_hint(), wooper:state() ) ->
+			class_LoadBalancer:placement_hint(), wooper:state() ) ->
 								wooper:state().
 create_placed_actor( ActorClassname, ActorConstructionParameters, ActorTag,
 					 PlacementHint, State )
@@ -4782,7 +4783,7 @@ create_placed_actor( ActorClassname, ActorConstructionParameters, ActorTag,
 
 
 
-% Allows an actor to declare a probe, whose timestamps will be expressed in
+% @doc Allows an actor to declare a probe, whose timestamps will be expressed in
 % ticks, with specified parameters.
 %
 % The probe creation may or may not be accepted by the result manager.
@@ -4807,7 +4808,7 @@ declare_probe( NameOptions, CurveNames, Zones, Title, MaybeXLabel, YLabel ) ->
 
 
 
-% Allows an actor to declare a probe, whose timestamps will be expressed as
+% @doc Allows an actor to declare a probe, whose timestamps will be expressed as
 % actual times and dates, with specified parameters.
 %
 % The probe creation may or may not be accepted by the result manager.
@@ -4843,7 +4844,8 @@ declare_probe( NameOptions, CurveNames, Zones, Title, MaybeXLabel, YLabel,
 									  MaybeXLabel, YLabel, TickDuration ).
 
 
-% Allows an actor to declare a probe, whose timestamps will be expressed as
+
+% @doc Allows an actor to declare a probe, whose timestamps will be expressed as
 % actual times and dates, with specified parameters and extra settings.
 %
 % The probe creation may or may not be accepted by the result manager.
@@ -4882,8 +4884,7 @@ declare_probe( NameOptions, CurveNames, Zones, Title, MaybeXLabel, YLabel,
 
 
 
-
-% Allows to enable this actor to make use of the data-exchange service.
+% @doc Allows to enable this actor to make use of the data-exchange service.
 %
 % Returns an updated state.
 %
@@ -4900,7 +4901,7 @@ enable_data_exchange( State ) ->
 
 
 
-% Allows this actor to define a new set of data entries.
+% @doc Allows this actor to define a new set of data entries.
 %
 % A data not specifying a qualifier will be defined with the default one.
 %
@@ -4928,7 +4929,7 @@ define_data( EntryList, State ) ->
 
 
 
-% Allows this actor to define a new data entry.
+% @doc Allows this actor to define a new data entry.
 %
 % The data will be defined with the default qualifier.
 %
@@ -4956,7 +4957,7 @@ define_data( Key, Value, State ) ->
 
 
 
-% Allows this actor to define a new data entry.
+% @doc Allows this actor to define a new data entry.
 %
 % Note: this is a synchronous operation to avoid race conditions.
 %
@@ -4982,7 +4983,7 @@ define_data( Key, Value, Qualifier, State ) ->
 
 
 
-% Allows this actor to modify a new set of data entries.
+% @doc Allows this actor to modify a new set of data entries.
 %
 % A data not specifying a qualifier will be defined with the default one.
 %
@@ -5010,7 +5011,7 @@ modify_data( EntryList, State ) ->
 
 
 
-% Allows this actor to define a new data entry.
+% @doc Allows this actor to define a new data entry.
 %
 % The data will be defined with the default qualifier.
 %
@@ -5038,7 +5039,7 @@ modify_data( Key, Value, State ) ->
 
 
 
-% Allows this actor to define a new data entry.
+% @doc Allows this actor to define a new data entry.
 %
 % Note: this is a synchronous operation to avoid race conditions.
 %
@@ -5065,7 +5066,7 @@ modify_data( Key, Value, Qualifier, State ) ->
 
 
 
-% Returns the value associated to the specified key (an atom).
+% @doc Returns the value associated to the specified key (an atom).
 %
 % Actors can read directly any number of data without any particular precautions
 % on the same tick, and these operations will be as cheap as reasonably
@@ -5093,8 +5094,8 @@ read_data( Key, State ) ->
 
 
 
-% Returns the value and qualifier (as a {Value,Qualifier} pair) associated to
-% the specified key (an atom).
+% @doc Returns the value and qualifier (as a {Value,Qualifier} pair) associated
+% to the specified key (an atom).
 %
 % Actors can read directly any number of data without any particular precautions
 % on the same tick, and these operations will be as cheap as reasonably
@@ -5106,6 +5107,7 @@ read_qualified_data( Key, State ) ->
 
 	% Reads are purely local (and enable_data_exchange/1 must have been called
 	% beforehand):
+	%
 	{ _RootExchangerPid, LocalExchangerPid } = ?getAttr(exchange_settings),
 
 	% The data-exchanger service has been designed so that this reading can be
@@ -5121,9 +5123,8 @@ read_qualified_data( Key, State ) ->
 
 
 
-
-% Returns a reordered version of the specified list of messages for the current
-% diasca, to obtain an order satisfying the expected properties for the
+% @doc Returns a reordered version of the specified list of messages for the
+% current diasca, to obtain an order satisfying the expected properties for the
 % simulation.
 %
 % Depending on the simulator settings (second parameter of this function), the
@@ -5191,7 +5192,7 @@ apply_reordering( MessagesForCurrentDiasca, constant_permuted_order ) ->
 
 
 
-% Returns a textual representation of the specified state, listing only the
+% @doc Returns a textual representation of the specified state, listing only the
 % attributes specifically introduced to specialise the actor generic class
 % (omitting all technical ones introduced by the engine).
 %
@@ -5211,11 +5212,9 @@ state_to_string( State ) ->
 
 
 
-
-
-% Returns a list of the state attribute entries of this instance, from which all
-% the ones inherited through class_Actor and above (mother classes) have been
-% removed.
+% @doc Returns a list of the state attribute entries of this instance, from
+% which all the ones inherited through class_Actor and above (mother classes)
+% have been removed.
 %
 % As a consequence, only the ones specific to the current type of actor remain.
 %
@@ -5233,8 +5232,8 @@ get_actor_specialised_attributes( State ) ->
 
 
 
-% Returns the names of all the base state attributes (be they defined by this
-% class or inherited).
+% @doc Returns the names of all the base state attributes (be they defined by
+% this class or inherited).
 %
 -spec get_all_base_attribute_names() ->
 								static_return( [ wooper:attribute_name() ] ).
@@ -5243,14 +5242,14 @@ get_all_base_attribute_names() ->
 	AttrNames =
 		wooper_introspection:get_class_specific_attribute_names( ?MODULE )
 		++ list_utils:flatten_once(
-			 [ wooper_introspection:get_class_specific_attribute_names( C )
-			   || C <- ?superclasses ] ),
+				[ wooper_introspection:get_class_specific_attribute_names( C )
+					|| C <- ?superclasses ] ),
 
 	wooper:return_static( AttrNames ).
 
 
 
-% Returns the highest acceptable idle duration, in milliseconds, for the
+% @doc Returns the highest acceptable idle duration, in milliseconds, for the
 % completion of the subscription process.
 %
 -spec get_maximum_subscription_duration() -> milliseconds().

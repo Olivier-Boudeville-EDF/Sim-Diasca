@@ -3,13 +3,6 @@ Sim-Diasca Dataflow HOWTO
 =========================
 
 
-+---------------------------------------------------------------------------------+
-| .. image:: sim-diasca.png                                                       |
-|   :scale: 40                                                                    |
-|   :align: center                                                                |
-+---------------------------------------------------------------------------------+
-
-
 .. role:: raw-html(raw)
    :format: html
 
@@ -17,30 +10,56 @@ Sim-Diasca Dataflow HOWTO
    :format: latex
 
 
-:Organisation: Copyright (C) 2016-2018 EDF R&D
+:raw-html:`<a name="sim_diasca_top"></a>`
+
+
+.. Unable to have proper table formatting without specialising:
+
+
+.. Scale does not seem taken into account:
+:raw-html:`<center><table><tr colspan="2"><center><img src="sim-diasca.png" style="width:500px"></center></tr><tr><td><center><img src="logo-EDF-english.png" style="width:150px"></center></td><td><center><img src="lgpl-v3-logo-bordered.png" style="width:140px"></center></td></tr></table>`
+
+:raw-latex:`\begin{center} \begin{tabular}{c c c} \multicolumn{2}{c}{\includegraphics[scale=0.3]{sim-diasca.png}} \\  \includegraphics[scale=0.4]{logo-EDF-english.png} & \includegraphics[scale=0.8]{lgpl-v3-logo-bordered.png} \\ \end{tabular} \end{center}`
+
+
+
+:raw-html:`<div class="banner"><p><em>Sim-Diasca Dataflow HOWTO</em> <a href="https://olivier-boudeville-edf.github.io/Sim-Diasca/">browse latest</a> <a href="SimDiasca-dataflow-howto-english.pdf">get PDF</a> <a href="#sim_diasca_top">go to top</a> <a href="#sim_diasca_toc">go to toc</a> <a href="#sim_diasca_bottom">go to bottom</a> <a href="https://github.com/Olivier-Boudeville-EDF/Sim-Diasca">go to project</a> <a href="mailto:olivier(dot)boudeville(at)edf(dot)fr?subject=[Sim-Diasca]%20Remark">email us</a></p></div>`
+
+
+
+:Organisation: Copyright (C) 2016-GENERATION_YEAR_TAG EDF R&D
+:Contact: olivier (dot) boudeville (at) edf (dot) fr
 :Authors: Olivier Boudeville, Samuel Thiriot
-:Contact: olivier.boudeville@edf.fr, samuel.thiriot@edf.fr
 :Creation Date: Thursday, February 25, 2016
-:Lastly Updated on: Friday, July 17, 2020
+:Lastly updated: GENERATION_DATE_TAG
+:Version: PROJECT_VERSION_TAG
+:Status: Stable
+:Website: `http://sim-diasca.com <http://sim-diasca.com>`_
+:Dedication:
 
+	For the implementers for Sim-Diasca dataflow-based models.
 
-:Status: Work in progress
-:Version: 0.4.5
-:Dedication: Sim-Diasca model implementers
 :Abstract:
 
 	This document describes how dataflows, i.e. data-driven graphs of blocks, are to be defined and evaluated in the Sim-Diasca simulations relying on them.
 
+:raw-html:`</center>`
+
+   
 .. meta::
    :keywords: Sim-Diasca, dataflow, how-to, block
 
 
 :raw-latex:`\pagebreak`
 
-.. contents:: Table of Contents
+:raw-html:`<a name="sim_diasca_toc"></a>`
+
+.. contents:: **Table of Contents**
 	:depth: 2
 
 .. section-numbering::
+
+
 
 
 
@@ -112,8 +131,8 @@ The graph can be explicit or not: either it is described as a whole (as a single
 
 Dataflows of course have an immediate graphical counterpart. The conventional symbols we elected are represented in this key:
 
-:raw-html:`<img src="">dataflow-legend.png</img>`
-:raw-latex:`\includegraphics[scale=0.33]{dataflow-legend.png}`
+:raw-html:`<center><img src="dataflow-legend.png" id="responsive-image-intermediate"></img></center>`
+:raw-latex:`\includegraphics[scale=0.3]{dataflow-legend.png}`
 
 
 By convention, input ports are in orange, output ports in green, dataflow objects in light purple, dataflow units (ex: processing or mock-up ones) are in light blue and comprise the symbol of their activation policy, and channels are in various shades of blue [#]_.
@@ -145,8 +164,8 @@ The dataflow objects are specifically discussed in a section of their own later 
 
 As a result, a dataflow, which shall be interpreted as **a graph of computations**, may look as this (meaningless) example:
 
-:raw-html:`<img src="">dataflow-example.png</img>`
-:raw-latex:`\includegraphics[scale=0.2]{dataflow-example.png}`
+:raw-html:`<center><img src="dataflow-example.png" id="responsive-image-full"></img></center>`
+:raw-latex:`\includegraphics[width=\textwidth]{dataflow-example.png}`
 
 
 We can see that a dataflow does not need to be fully connected (the blocks may form disjoint subgraphs) and that ports (input and output ones alike) may not be connected either.
@@ -236,9 +255,9 @@ Following rules apply:
 - conversely, this status matters for **input** ports: a block starts with all its input ports to ``unset``, and, each time an input port is notified by an output port, this input port switches to ``set``; how a block is to react depending on none, one, some or all of its input ports being set is discussed below
 - an **output port will send downstream the value it holds** whenever:
 
- - it gets **set**: exactly one sending will be performed per setting (regardless of the value that is set) to each of the input ports it is linked to; as a result, setting explicitly a port to a value that happens to be the same as the one that it was already holding will nevertheless trigger a sending (therefore "not setting a value" vs "setting the current value again" are operations that differ semantically)
+  - it gets **set**: exactly one sending will be performed per setting (regardless of the value that is set) to each of the input ports it is linked to; as a result, setting explicitly a port to a value that happens to be the same as the one that it was already holding will nevertheless trigger a sending (therefore "not setting a value" vs "setting the current value again" are operations that differ semantically)
 
- - it gets **connected** (i.e. a channel is created from this output port to an input port) *whereas this output port has already been set at least once in the past*; then, on channel creation, the latest value it sent will be re-emitted, only to the newly connected input port
+  - it gets **connected** (i.e. a channel is created from this output port to an input port) *whereas this output port has already been set at least once in the past*; then, on channel creation, the latest value it sent will be re-emitted, only to the newly connected input port
 
 - ports can convey arbitrary data (i.e. any Erlang term), yet any given port has a **type**, which defines what are the licit the values that it can hold (ex: "this port can be set to any pair of non-negative floats") [#]_
 - **a block can declare any number of output ports** (possibly none, in which case it is an *exit block*, a sink)
@@ -624,7 +643,7 @@ Either a bulk update may follow (the unit taking them into account as a whole), 
 
 It is up to the unit to reset the input ports (i.e. to set each of them back to the ``unset`` state) when deemed appropriate.
 
-:raw-html:`<img src="">activate-on-new-set-policy.png</img>`
+:raw-html:`<center><img src="activate-on-new-set-policy.png" id="responsive-image-tiny"></img></center>`
 :raw-latex:`\includegraphics[scale=0.33]{activate-on-new-set-policy.png}`
 
 This *Activate On New Set* policy (sometimes shortened as the "On New" policy) is graphically symbolized as an arrow, to denote that any update of an input port directly triggers the associated unit computation.
@@ -643,7 +662,7 @@ The second built-in activation policy, named ``activate_when_all_set``, is to up
 
 
 
-:raw-html:`<img src="">activate-when-all-set-policy.png</img>`
+:raw-html:`<center><img src="activate-when-all-set-policy.png" id="responsive-image-tiny"></img></center>`
 :raw-latex:`\includegraphics[scale=0.33]{activate-when-all-set-policy.png}`
 
 This *Activate When All Set* policy (sometimes shortened as the "When All" policy) is graphically symbolized as a star resembling to a lock, to denote that no associated unit computation will take place until all input ports have been enabled (i.e. are set).
@@ -664,7 +683,7 @@ This policy may for example also be used to account for units having fixed, acti
 
 So dataflows can federate mixed temporalities, knowing that the use of this policy of explicit activation is fully optional (as by default a dataflow is fully passive and is only driven by changes in its input ports) and shall be regarded only as a last resort, should the built-in policies be insufficient.
 
-:raw-html:`<img src="">custom-activation-policy.png</img>`
+:raw-html:`<center><img src="custom-activation-policy.png" id="responsive-image-tiny"></img></center>`
 :raw-latex:`\includegraphics[scale=0.33]{custom-activation-policy.png}`
 
 This *Custom* policy is graphically symbolized as a sheet of paper, to denote that the unit activation is driven by a freely chosen user-specified logic.
@@ -692,7 +711,7 @@ To a dataflow attribute is indeed generally associated a pair of ports, an input
 
 A dataflow object is represented with the light-blue background that is common to all dataflow blocks, while each of its attributes is associated to an input and/or an output port (typically both), like in:
 
-:raw-html:`<img src="">dataflow-objects-example.png</img>`
+:raw-html:`<center><img src="dataflow-objects-example.png" id="responsive-image-small"></img></center>`
 :raw-latex:`\includegraphics[scale=0.5]{dataflow-objects-example.png}`
 
 In this example, all attributes are standard, "bidirectional" attributes (they can be read and/or written by other dataflow blocks), except the maintenance cost, which is a "terminal" attribute (in the sense that it can be set, yet cannot be read by other blocks of the dataflow).
@@ -814,8 +833,8 @@ As a result, this example simulation consists on the **intersection of two mostl
 This intersection is implemented thanks to *dataflow objects* and the related channels (in blue), since they are making the bridge between the two planes.
 
 
-:raw-html:`<img src="dataflow-city-example.png"></img>`
-:raw-latex:`\includegraphics[scale=0.2]{dataflow-city-example.png}`
+:raw-html:`<center><img src="dataflow-city-example.png" id="responsive-image-full"></img></center>`
+:raw-latex:`\includegraphics[width=\textwidth]{dataflow-city-example.png}`
 
 One can also notice:
 
@@ -831,8 +850,8 @@ A View Onto an Actual Simulation
 
 The following instance-level diagram describes the simulation case whose sources are available in the ``mock-simulators/dataflow-urban-example`` directory:
 
-:raw-html:`<img src="urban-example-dataflow.png">`
-:raw-latex:`\includegraphics[scale=0.14]{urban-example-dataflow.png}`
+:raw-html:`<center><img src="urban-example-dataflow.png" id="responsive-image-full"></img></center>`
+:raw-latex:`\includegraphics[width=\textwidth]{urban-example-dataflow.png}`
 
 This case demonstrates the following elements:
 
@@ -995,7 +1014,7 @@ Use of the Binding
 
 Let's take the example of a user-defined processing unit, let's say in ``my_example_unit.py``, that may be graphically described as:
 
-:raw-html:`<img src="python-unit-example.png">`
+:raw-html:`<center><img src="python-unit-example.png" id="responsive-image-reduced"></img></center>`
 :raw-latex:`\includegraphics[scale=0.4]{python-unit-example.png}`
 
 
@@ -1257,7 +1276,7 @@ All these elements shall be of the same color as the one of the port. Any common
 
 An example of these conventions is the following processing unit, featuring two input and and two output port iterations:
 
-:raw-html:`<img src="port-iteration.png">`
+:raw-html:`<center><img src="port-iteration.png" id="responsive-image-medium"></img></center>`
 :raw-latex:`\includegraphics[scale=0.4]{port-iteration.png}`
 
 
@@ -1406,7 +1425,7 @@ Let's introduce first, and in a few words only, the main elements that are provi
 
 The diagram below gives a synthetic, example view of the overall mode of operation in action:
 
-:raw-html:`<img src="">manager-interactions.png</img>`
+:raw-html:`<center><img src="manager-interactions.png" id="responsive-image-large"></img></center>`
 :raw-latex:`\includegraphics[scale=0.28]{manager-interactions.png}`
 
 
@@ -1458,7 +1477,7 @@ Expressing Dataflow Changes Through World Events
 
 These changes are expressed at the dataflow level thanks to **world (synchronisation) events**. Following types of world events [#]_ have been defined:
 
-:raw-html:`<img src="">dataflow-world-events.png</img>`
+:raw-html:`<center><img src="dataflow-world-events.png" id="responsive-image-small"></img></center>`
 :raw-latex:`\includegraphics[scale=0.4]{dataflow-world-events.png}`
 
 .. [#] Refer to ``dataflow_changesets_defines.hrl`` for their actual definitions: for each type of event, a corresponding datastructure is defined in order to store the identifier of each event, the type of dataflow object it refers to, the external and internal identifier of the instance(s) involved, extra type-specific information, etc.
@@ -1485,7 +1504,7 @@ Changetrees and Changesets
 
 As a result, we define the concept of *changetree* (an event and all the ones it induces, directly or not) and of *changeset* (a list of changetrees):
 
-:raw-html:`<img src="">dataflow-changes.png</img>`
+:raw-html:`<center><img src="dataflow-changes.png" id="responsive-image-large"></img></center>`
 :raw-latex:`\includegraphics[scale=0.27]{dataflow-changes.png}`
 
 
@@ -1694,7 +1713,7 @@ One should note that the result returned by this function (the actual state of t
 
 The general form of this mock-up function is::
 
-  f( time(), input_match_spec() ) -> output_state()
+  f(time(), input_match_spec()) -> output_state()
 
 This means that the purpose of this mock-up function is **to tell, for a given simulation time and for a configuration of the input ports that matches the supplied specification, what is the corresponding updated state of at least some of the output ports of that unit**.
 
@@ -1822,14 +1841,14 @@ Examples of a Mock-up Function
 
 Now such a definition should be quite easy to interpret::
 
-  f( 0, [ {"ip_1",{set,true}},{"ip_3",{set,3}} ] ) ->
-	[ {"op_2",{set,89}}, {"op_4",{set,false}} ];
-  f( 0, [] ) ->
-	[ {"op_1",{set,1}}, {"op_2",unset} ];
-  f( 1, [] ) ->
-	[ {"op_2",{state_of,"ip_7"}} ];
-  f( any_time, [] ) ->
-	[ {"op_4",{set,true}} ].
+  f(0, [{"ip_1", {set,true}}, {"ip_3",{set,3}}]) ->
+	[{"op_2", {set,89}}, {"op_4", {set,false}}];
+  f(0, []) ->
+	[{"op_1", {set,1}}, {"op_2",unset}];
+  f(1, []) ->
+	[{"op_2", {state_of, "ip_7"}}];
+  f(any_time, []) ->
+	[{"op_4", {set,true}}].
 
 Indeed that mock-up function ``f`` is defined thanks to four clauses, to be read as detailed below.
 
@@ -1918,9 +1937,9 @@ So the full, data-based version of a unit relying on the same clauses as specifi
 
 These two forms (these ``mockup_clauses`` and the previous function ``f/2``) are basically the same.
 
-As a result, this DUMF file fully describes a mock-up unit that may represented as:
+As a result, this DUMF file fully describes a mock-up unit that may be represented as:
 
-:raw-html:`<img src="mock-up-unit-example.png">`
+:raw-html:`<center><img src="mock-up-unit-example.png" id="responsive-image-medium"></img></center>`
 :raw-latex:`\includegraphics[scale=0.4]{mock-up-unit-example.png}`
 
 Once the clauses are expressed according to this format, one may think of creating mock-up units directly from such a stream of information, without writing any code.
@@ -2122,19 +2141,19 @@ Here is the reference Excel spreadsheet cited above, consisting of four workshee
 
 First, the metadata associated to a mock-up unit:
 
-:raw-html:`<img src="excel-mockup-metadata.png"></img>`
+:raw-html:`<center><img src="excel-mockup-metadata.png" id="responsive-image-full"></img></center>`
 :raw-latex:`\includegraphics[scale=0.2]{excel-mockup-metadata.png}`
 
 Second, the definition of its input ports:
-:raw-html:`<img src="excel-mockup-input-port-specs.png"></img>`
+:raw-html:`<center><img src="excel-mockup-input-port-specs.png" id="responsive-image-full"></img></center>`
 :raw-latex:`\includegraphics[scale=0.2]{excel-mockup-input-port-specs.png}`
 
 Third, the definition of its output ports:
-:raw-html:`<img src="excel-mockup-output-port-specs.png"></img>`
+:raw-html:`<center><img src="excel-mockup-output-port-specs.png" id="responsive-image-full"></img></center>`
 :raw-latex:`\includegraphics[scale=0.2]{excel-mockup-output-port-specs.png}`
 
 Finally, the definition of its mock-up clauses, specifying the outputs that shall correspond to specific times and inputs:
-:raw-html:`<img src="excel-mockup-clauses.png"></img>`
+:raw-html:`<center><img src="excel-mockup-clauses.png" id="responsive-image-full"></img></center>`
 :raw-latex:`\includegraphics[scale=0.2]{excel-mockup-clauses.png}`
 
 
@@ -2342,7 +2361,7 @@ The overall **dataflow** could have remained implicit (in the sense that no spec
 
 So we end up with the following dataflow-related class hierarchy:
 
-:raw-html:`<img src="">dataflow-class-hierarchy.png</img>`
+:raw-html:`<center><img src="dataflow-class-hierarchy.png" id="responsive-image-large"></img></center>`
 :raw-latex:`\includegraphics[scale=0.33]{dataflow-class-hierarchy.png}`
 
 
@@ -2474,8 +2493,8 @@ Annex 1: Design Questions
 - As not all state changes/operations are instantaneous, should **delays** (in diascas or ticks) induced by a block be managed? (ex: ignition spark received, explosion happening 4 milliseconds afterwards)
 - Would it be possible and useful that units can be **composed**, i.e. that a given unit can actually be recursively made of sub-units? If such a feature was wanted, then `ecore <http://www.eclipse.org/ecoretools/two approaches>`_ could be used to define the corresponding system, and two different approaches could be considered:
 
- - either defining, directly at this dataflow level, *nested units*, and manage the consequences thereof (ex: when the inputs of a "macro" unit would change, its outputs would change in turn accordingly, yet only *after some delay in terms of logical moments* (i.e. only once some of them elapsed, with state transitions that may be arbitrarily deferred)
- - or introduce new, higher-level concepts, such as the one of *assemblies* that can be nested; an assembly would ultimately translate to a basic, non-nested dataflow, by collapsing a (multi-level, compounded, compact) assembly into a (single-layer, uniform, intricate) dataflow; for that assemblies (either user-defined or generated) would be recursively unboxed and expanded into their parts until only standard dataflow blocks are found (a bit like when going from a higher-level electronic schematics to its full, elementary counterpart at the level of the logic gates)
+  - either defining, directly at this dataflow level, *nested units*, and manage the consequences thereof (ex: when the inputs of a "macro" unit would change, its outputs would change in turn accordingly, yet only *after some delay in terms of logical moments* (i.e. only once some of them elapsed, with state transitions that may be arbitrarily deferred)
+  - or introduce new, higher-level concepts, such as the one of *assemblies* that can be nested; an assembly would ultimately translate to a basic, non-nested dataflow, by collapsing a (multi-level, compounded, compact) assembly into a (single-layer, uniform, intricate) dataflow; for that assemblies (either user-defined or generated) would be recursively unboxed and expanded into their parts until only standard dataflow blocks are found (a bit like when going from a higher-level electronic schematics to its full, elementary counterpart at the level of the logic gates)
 - Should large datastructures have to be carried by channels, maybe these data currently pushed by an output port shall be pulled by the input ports instead? (anyway this will most probably lead to a term duplication anyway)
 - If a model deals with a currency (ex: euros, or US dollars of year 2012), is the best approach to have its unit flagged as ``dimensionless`` (hence, not ``euro``) and complement this information at the semantics level?
 
@@ -2555,3 +2574,6 @@ Many thanks, among others, to:
 - Omar Benhamid, for rich exchanges about the entry and exit points of a dataflow
 - Robin Huart, notably for the mock-up units, the language bindings and the platform integration
 - Karel Redon, for thoughts about the buses and their graphical representation, and for the Python workbench
+
+
+:raw-html:`<a name="sim_diasca_bottom"></a>`

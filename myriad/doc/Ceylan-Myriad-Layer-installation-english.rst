@@ -20,9 +20,11 @@ Whereas Erlang supports ``Windows`` and we tried to be as cross-platform as poss
 
 .. _getting-erlang:
 
-The main tool prerequisite is of course having the `Erlang <http://erlang.org>`_ environment available, in its ``23.0`` version [#]_ or more recent.
+The main tool prerequisite is of course having the `Erlang <http://erlang.org>`_ environment available, in its ``24.0`` version [#]_ or more recent.
 
 .. [#] Most probably that older versions of Erlang would be more than sufficient in order to build Myriad (possibly at the expense of minor changes in a few calls to standard modules having been deprecated since then). It is just that in general we prefer to stick to the latest stable versions of software such as Erlang, and advise you to do so.
+
+	   To determine the recommended version of Myriad-based code, just execute our `install-erlang.sh <https://github.com/Olivier-Boudeville/Ceylan-Myriad/blob/master/conf/install-erlang.sh>`_ script with its ``--version`` option.
 
 
 There are various ways of obtaining it (from your distribution, from prebuilt packages, directly from the sources), one of which being the `install-erlang.sh <https://github.com/Olivier-Boudeville/Ceylan-Myriad/blob/master/conf/install-erlang.sh>`_ script that we devised.
@@ -69,9 +71,12 @@ The parallel build of the whole layer (services and tests alike) shall complete 
 
 One may just run ``make`` by itself in order to list the main available options.
 
-One may run ``make create-myriad-checkout`` in order to create, based on our conventions, a suitable ``_checkouts`` directory so that rebar3 can directly take into account local, directly available (in-development) dependencies (although Myriad does not have any, beside Erlang itself).
+Note that by default our native, make-based, build system is used. Alternatively, a rebar3-based build can be done (see the `OTP Build`_ section for more details).
 
-Alternatively to using ``make`` directly, one may execute ``rebar3 compile`` instead.
+In this case one may run ``make create-myriad-checkout`` in order to create, based on our conventions, a suitable ``_checkouts`` directory so that rebar3 can directly take into account local, directly available (in-development) dependencies (although Myriad does not have any, beside Erlang itself - this make target is useful for the layers built on top of Myriad).
+
+So, alternatively to using ``make`` directly, one may execute ``rebar3 compile`` instead.
+
 
 
 .. _testing:
@@ -186,11 +191,14 @@ Despite the kind support of the rebar3 authors and much time spent on its integr
 
 Now we believe that all pending issues have been solved (rebar3 is a neat tool), yet being able to switch back to another lighter, ad-hoc, more controlled build system is sometimes a relief - at least a welcome security. Anyway the user can choose between these two (native vs rebar3) build machineries. As for us, we still prefer our native build system, even if it leaves to the developer the task of installing the needed prerequisites by him/herself.
 
+
 .. So most of the time one can choose between these two build machineries.
 
 .. Nevertheless, as of end of 2020, after insisting a lot on using rebar3, we mainly switched back and relied on our own, native build system instead, so that we could concentrate on the code itself rather than on the build.
 
 .. Since then the rebar3 support remains as it is (a priori at least mostly functional); maybe in the future we will reintroduce it as a native, possibly main, build option - but not today.
+
+One might refer to our `install-rebar3.sh <https://github.com/Olivier-Boudeville/Ceylan-Hull/blob/master/install-rebar3.sh>`_ script for the installation of rebar3.
 
 
 ..
@@ -241,9 +249,11 @@ Then, from the root of a Myriad clone, to obtain the Ceylan-Myriad library *appl
 
  $ make rebar3-application
 
-It will trigger ``rebar3``, resulting [#]_ in a full, OTP-compliant build tree created in ``_build`` (including a properly-generated ``_build/default/lib/myriad/ebin/myriad.app`` file), and more generally in a proper OTP application.
+It will trigger ``rebar3``, resulting in a full, OTP-compliant build tree created in ``_build`` (including a properly-generated ``_build/default/lib/myriad/ebin/myriad.app`` file), and more generally in a proper OTP application [#]_.
 
-.. [#] The operation was previously done through a rebar pre-compile hook, so that the our native build system could be relied upon before injecting the produced BEAMs into rebar's ``_build`` tree. Because of extraneous, failing recompilations being triggered by rebar, now we rely on a build system parallel to - and directly inspired by - our native one, directly done from within rebar (once properly triggered by our user-oriented Make targets).
+A full, autonomous, functional by design build procedure can be also found in Myriad's `continuous integration <https://github.com/Olivier-Boudeville/Ceylan-Myriad/blob/master/.github/workflows/erlang-ci.yml>`_ script.
+
+.. [#] The rebar-based build relies, thanks to {pre,post}-compile hooks, on our native build system. Because of extraneous, failing recompilations being nevertheless triggered by rebar, we had to introduce bullet-proof hooks (refer to `1 <https://github.com/Olivier-Boudeville/Ceylan-Myriad/blob/master/conf/fix-rebar-compile-pre-hook.sh>`_, `2 <https://github.com/Olivier-Boudeville/Ceylan-Myriad/blob/master/conf/fix-rebar-compile-post-hook.sh>`_).
 
 
 Testing Ceylan-Myriad

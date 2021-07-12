@@ -105,16 +105,22 @@ ifndef PROJECT_NAME
 endif
 
 
+# PROJECT_SHORT_NAME should be defined on a per-project basis.
+ifndef PROJECT_SHORT_NAME
+	PROJECT_SHORT_NAME := wooper
+endif
+
+
 # PROJECT_NAME_FOR_REBAR should be defined on a per-project basis.
 ifndef PROJECT_NAME_FOR_REBAR
-	PROJECT_NAME_FOR_REBAR := wooper
+	PROJECT_NAME_FOR_REBAR := $(PROJECT_SHORT_NAME)
 endif
 
 
 # The uniquely-defined version of this layer, for all uses (including rebar and
 # hex):
 #
-WOOPER_VERSION := 2.0.10
+WOOPER_VERSION := 2.0.12
 
 
 # PROJECT_VERSION should be defined on a per-project basis.
@@ -153,20 +159,11 @@ WOOPER_RELEASE_ARCHIVE_XZ  := $(WOOPER_RELEASE_BASE).tar.xz
 WOOPER_SRC := $(WOOPER_TOP)/src
 
 # BEAM path section.
-WOOPER_BEAM := $(WOOPER_TOP)/src
-
-
-# In an OTP/rebar3-style application layout, at compilation time, libraries
-# making use of Myriad will expect its includes to be located in:
-#
-MYRIAD_OTP_INC := -I$(WOOPER_TOP)/../myriad/include/
-
-
-INC += $(MYRIAD_OTP_INC)
+WOOPER_BEAM_DIR := $(WOOPER_TOP)/src
 
 
 # See Myriad counterpart variable (MYRIAD_BEAM_DIRS) for explanations:
-WOOPER_BEAM_DIRS := $(WOOPER_BEAM)
+WOOPER_BEAM_DIRS := $(WOOPER_BEAM_DIR) $(WOOPER_TOP)/..
 
 
 # For OTP releases and all:
@@ -268,17 +265,8 @@ ifndef ERLANG_COMPILER_PARSE_TRANSFORM_OPT_FOR_STANDARD_MODULES
 endif
 
 
-# Conditionally defined so that upper layer may update these settings (ex:
-# adding pz directories):
-#
-ifndef ERLANG_COMPILER_OPT_FOR_STANDARD_MODULES
+ERLANG_COMPILER_EXTRA_OPTS += $(ENABLE_WOOPER_DEBUG_OPT)
 
-	ERLANG_COMPILER_OPT_FOR_STANDARD_MODULES =                      \
-		$(ERLANG_COMPILER_OPT_BASE)                                 \
-		$(ERLANG_COMPILER_PARSE_TRANSFORM_OPT_FOR_STANDARD_MODULES) \
-		$(ENABLE_WOOPER_DEBUG_OPT)
-
-endif
 
 
 ## Parse-transform related section.
@@ -305,8 +293,13 @@ ERLANG_COMPILER_OPT_FOR_PT = $(ERLANG_COMPILER_PARSE_TRANSFORM_OPT_FOR_MYRIAD) \
 # Variable defined to be re-usable by upper layers, so that compiling their own
 # parse transforms can take advantage of the WOOPER one:
 #
+# (to find wooper_parse_transform.beam, both the WOOPER 'src' and 'ebin'
+# directories are specified: the former for our native build, the latter for a
+# rebar3-based one)
+#
 ERLANG_COMPILER_PARSE_TRANSFORM_OPT_FOR_WOOPER = \
 	$(OVERALL_PZ_OPT)                            \
+	-pz $(WOOPER_TOP)/ebin                       \
 	-pz $(WOOPER_TOP)/src                        \
 	$(MYRIAD_PARSE_TRANSFORMS_PZ_OPT)            \
 	'+{parse_transform,wooper_parse_transform}'
@@ -340,6 +333,16 @@ ifndef PREDECESSOR_PLT
 endif
 
 
+
+# Documentation section.
+
+
+ifndef EDOC_OPTS
+	EDOC_OPTS = '[{dir,"$(API_DOC_ROOT)"}, {def,{vsn,"$(PROJECT_VERSION)"}}, {preprocess,true}, {includes,["$(LAYER_TOP)/include", "$(MYRIAD_TOP)/.."]}, {overview, "$(LAYER_TOP)/overview.edoc"}]'
+endif
+
+
+
 # We define the path to the Myriad layer (possibly available as a symbolic
 # link).
 #
@@ -368,7 +371,7 @@ else
 		ifneq ($(wildcard $(WOOPER_TOP)/_build/default/lib/myriad/.),)
 			MYRIAD_TOP = $(WOOPER_TOP)/_build/default/lib/myriad
 		else
-			FORCE_EVAL := $(error Unable to find the build root of Ceylan-Myriad from $(realpath .).)
+			FORCE_EVAL := $(error Unable to find the build root of Ceylan-Myriad from '$(realpath .)'.)
 		endif
 	endif
 endif

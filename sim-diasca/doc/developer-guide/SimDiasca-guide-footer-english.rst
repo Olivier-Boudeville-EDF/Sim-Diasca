@@ -21,7 +21,7 @@ What To Do Next?
 
 Congratulations, you reached the end of this developer guide!
 
-:raw-html:`<img src="xkcd-anti_mind_virus.png"></img>`
+:raw-html:`<center><img src="xkcd-anti_mind_virus.png"></img></center>`
 :raw-latex:`\includegraphics[scale=0.9]{xkcd-anti_mind_virus.png}`
 
 
@@ -29,7 +29,7 @@ Now you should write your own test models, getting inspiration from the *Sim-Dia
 
 Writing such toy models is surely the shortest path to the understanding of Sim-Diasca conventions, no matter how fruitless an activity it may seem:
 
-:raw-html:`<img src="xkcd-not_enough_work.png"></img>`
+:raw-html:`<center><img src="xkcd-not_enough_work.png"></img></center>`
 :raw-latex:`\includegraphics[scale=0.6]{xkcd-not_enough_work.png}`
 
 

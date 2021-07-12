@@ -130,7 +130,7 @@ construct( State, ActorSettings, StochasticActorName, ListOfRandomLaws ) ->
 
 	% First the direct mother classes:
 	ActorState = class_Actor:construct( State, ActorSettings,
-							    ?trace_categorize(StochasticActorName) ),
+								?trace_categorize(StochasticActorName) ),
 
 	% Then the class-specific actions:
 
@@ -250,12 +250,15 @@ remove_law( LawIdentifier, State ) ->
 
 	CurrentLaws = ?getAttr(random_laws),
 
-	case lists:keymember( _Key=LawIdentifier, _Index=1, CurrentLaws ) of
+	Key = LawIdentifier,
+
+	Index = 1,
+
+	case lists:keymember( Key, Index, CurrentLaws ) of
 
 		true ->
 
-			NewLaws = lists:keydelete( _Key=LawIdentifier, _Index=1,
-									   CurrentLaws ),
+			NewLaws = lists:keydelete( Key, Index, CurrentLaws ),
 
 			setAttribute( State, random_laws, NewLaws );
 

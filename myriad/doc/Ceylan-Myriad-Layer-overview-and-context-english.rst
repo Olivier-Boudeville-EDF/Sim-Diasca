@@ -12,9 +12,8 @@ This layer provides its (generally lightweight, simple) services just on top of 
 
 .. [#] If needing to discover/learn Erlang, we recommend browsing `Learn You Some Erlang for great good! <https://learnyousomeerlang.com>`_ or, even better, buying their book!
 
-These services tend to stay away from introducing any new dependency. Should a key, generic service need a third-party prerequisite (ex: library to manage a complex data format, or to process specific data), that dependency should be made fully optional [#]_ (then, should that dependency be found not available at build or run time, the corresponding service would be transparently disabled).
+These services tend to stay away from introducing any new dependency. Should a key, generic service need a third-party prerequisite (ex: library to manage a complex data format, or to process specific data), that dependency should be made fully optional (see the `Third-Party Dependencies`_ section for more details).
 
-.. [#] One may refer for example to what we did respectively for HDF5 and for JSON parsers in the context of REST support, with the ``USE_HDF5`` and ``USE_REST`` Make variables.
 
 .. comment Line count computed with: wc -l $(find . -name '*.?rl')`
 

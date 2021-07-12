@@ -2,7 +2,9 @@ SIM_DIASCA_TOP = ../../../../../..
 
 
 .PHONY: generate-internal-api-src-archive generate-standalone-api-src-archive \
-		generate-api-doc generate-api-doc-archive info-doc clean clean-doc
+		generate-api-doc generate-api-doc-archive info-doc info-doc-local     \
+		clean-local clean-doc-local
+
 
 MODULES_DIRS = api
 
@@ -13,8 +15,7 @@ DOXYGEN_CONF := doxygen-for-python-api.conf
 ZIP := $$(which zip)
 
 
-# The *only* place where the API version is defined:
-#
+# The *only* place where the API version ought to be defined:
 PYTHON_API_VERSION := 0.1.1
 
 
@@ -69,7 +70,6 @@ generate-api-src-archive:
 
 
 # Generates the documentation of the API:
-#
 generate-api-doc:
 	-@/bin/rm -rf latex html doxygen_sqlite3.db
 	@( cat  $(DOXYGEN_CONF) ; echo "PROJECT_NUMBER=$(PYTHON_API_VERSION)" ) | $(DOXYGEN) - && echo -e "\n  The documentation of the Python Dataflow API has been generated, you can point your browser to file://$$PWD/html/index.html"
@@ -89,30 +89,30 @@ generate-api-doc-archive: generate-api-doc
 
 # -x $(ARCHIVE_EXCLUDED)
 
-info-doc:
+info-doc: info-doc-local
+
+info-doc-local:
 	@echo "  INTERNAL_SRC_ARCHIVE_NAME = $(INTERNAL_SRC_ARCHIVE_NAME)"
 	@echo "  STANDALONE_SRC_ARCHIVE_NAME = $(STANDALONE_SRC_ARCHIVE_NAME)"
 	@echo "  DOC_ARCHIVE_NAME = $(DOC_ARCHIVE_NAME)"
 	@echo "  DOC_PDF_NAME = $(DOC_PDF_NAME)"
 
 
-clean: clean-doc
-
-
-clean-doc:
-	@echo "   Cleaning the generated API documentation"
-	-@/bin/rm -rf $(INTERNAL_SRC_ARCHIVE_NAME) $(STANDALONE_SRC_ARCHIVE_NAME) \
-				  $(DOC_ARCHIVE_NAME) $(DOC_PDF_NAME) latex html \
-				  doxygen_sqlite3.db
-
-
-.PHONY: clean-local
-
-include $(SIM_DIASCA_TOP)/GNUmakesettings.inc
-
-
-clean: clean-local
+clean: clean-local clean-doc
 
 
 clean-local:
 	-@/bin/find . -name '__pycache__' -exec /bin/rm -rf '{}' ';' 2>/dev/null || true
+
+clean-doc: clean-doc-local
+
+
+clean-doc-local:
+	@echo "   Cleaning the generated API documentation"
+	-@/bin/rm -f $(INTERNAL_SRC_ARCHIVE_NAME) $(STANDALONE_SRC_ARCHIVE_NAME) \
+				  $(DOC_ARCHIVE_NAME) $(DOC_PDF_NAME) doxygen_sqlite3.db
+	-@/bin/rm -rf latex html
+
+
+
+include $(SIM_DIASCA_TOP)/GNUmakesettings.inc

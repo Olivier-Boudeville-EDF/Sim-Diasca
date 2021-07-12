@@ -1,11 +1,20 @@
 % Copyright (C) 2020-2021 Olivier Boudeville
 %
-% Better here than in myriad-build.escript to benefit from a more user-friendly
-% debugging.
-%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 %
 % Released as LGPL software.
+
+
+% @doc An experimental (not functional yet) module to <b>explore alternate build
+% systems</b>.
+%
+% We finally stick to our make-based build system that we found more suitable
+% than (for example) rebar3.
+%
+% Better here than in `myriad-build.escript' to benefit from a more
+% user-friendly debugging.
+%
+% @hidden Most empty currently.
 %
 -module(myriad_build).
 
@@ -17,7 +26,7 @@
 
 
 
-% Typically for testing:
+% @doc Typically for testing.
 -spec run() -> void().
 run() ->
 	ArgTable = shell_utils:get_argument_table(),
@@ -26,6 +35,8 @@ run() ->
 
 % Defaults:
 
+
+% @doc Returns the usage information of the corresponding application.
 -spec get_usage() -> void().
 get_usage() ->
 	text_utils:format( "Usage: ~ts MBDR_PROJECT_FILE.mbdr"
@@ -36,8 +47,8 @@ get_usage() ->
 
 
 
-% Sole entry point for this build service, either triggered by run/0 or by the
-% associated escript.
+% @doc Sole entry point for this generation service, either triggered by `run/0'
+% or by the associated escript.
 %
 -spec main( shell_utils:argument_table() ) -> void().
 main( ArgTable ) ->
@@ -67,8 +78,6 @@ main( ArgTable ) ->
 			ok
 
 	end,
-
-
 
 	%{ IsInteractive, InterTable } = case
 	% list_table:extract_entry_with_defaults( InteractiveRefKey,
@@ -106,7 +115,7 @@ main( ArgTable ) ->
 	basic_utils:stop( _ErrorCode=0 ).
 
 
-% Displays the usage of this service, and stops (with no error).
+% @doc Displays the usage of this service, and stops (with no error).
 display_usage() ->
 	io:format( get_usage(), [] ),
 	basic_utils:stop( _ErrorCode=0 ).

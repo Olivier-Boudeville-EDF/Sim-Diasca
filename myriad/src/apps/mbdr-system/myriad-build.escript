@@ -1,6 +1,7 @@
 #!/usr/bin/env escript
 %% -*- erlang -*-
 
+% @doc Prefer using directly the `myriad-build.sh' script.
 
 %% Not used: ! -pz ../../../src/utils
 
@@ -8,7 +9,7 @@
 % directory...
 
 
-% Copyright (C) 2020-2020 Olivier Boudeville
+% Copyright (C) 2020-2021 Olivier Boudeville
 % [olivier (dot) boudeville (at) esperide (dot) com]
 
 
@@ -29,7 +30,7 @@
 -include_lib("../../../include/scripts/myriad_script_include.hrl").
 
 
-% Entry point of this escript.
+% @doc Entry point of this escript.
 main( ArgList ) ->
 
 	% First, enable all possible helper code (hence to be done first of all):

@@ -7,17 +7,27 @@
 %
 % Released as LGPL software.
 %
+
+
+% @doc Module in charge of the actual <b>launch of the Myriad merge tool</b>.
+%
+% Transferred from `merge-tree.escript' in order to benefit from a more
+% user-friendly debugging.
+%
+% @hidden (not an API).
+%
 -module(merge_app).
 
 
 -export([ exec/0 ]).
+
 
 % For update_code_path_for_myriad/0 and all:
 -include("myriad_script_include.hrl").
 
 
 
-% Runs the merge service, directly from a module.
+% @doc Runs the merge service, directly from a module.
 -spec exec() -> void().
 exec() ->
 

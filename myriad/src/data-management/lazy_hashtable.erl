@@ -26,16 +26,15 @@
 % Author: Jingxuan Ma (jingxuan.ma@edf.fr)
 
 
-% Implementation of an hashtable which optimizes itself lazily: the decision to
-% perform a check for optimization is made based on the number of operations
-% triggered since last check. It allows to avoid triggering these checkings too
-% frequently or to spend too much resources determining whether a check should
-% be done.
+% @doc Implementation of an <b>hashtable that optimises itself lazily</b>: the
+% decision to perform a check for optimization is made based on the number of
+% operations triggered since last check. It allows to avoid triggering these
+% checkings too frequently or to spend too much resources determining whether a
+% check should be done.
 %
-% See lazy_table_test.erl for the corresponding test.
-% See hashtable.erl
-
-
+% See `lazy_table_test.erl' for the corresponding test.
+% See `hashtable.erl'.
+%
 % A lazy_hashtable is a {Hashtable, NumberOfOperations} pair where:
 %
 % - Hashtable is an hashtable, refer to hashtable.erl for more detail
@@ -69,8 +68,7 @@
 % Directly depends on the hashtable module.
 
 
-% Exact same API as the one of hashtable:
-%
+% Mostly the same API as the one of hashtable:
 -export([ new/0, new/1, add_entry/3, add_entries/2,
 		  remove_entry/2, lookup_entry/2, has_entry/2, get_value/2,
 		  extract_entry/2,
@@ -93,10 +91,9 @@
 -export([ new_with_buckets/1 ]).
 
 
-% Records the number of changes operated on this hashtable since its last
-% optimisation:
-%
 -type operation_count() :: non_neg_integer().
+% Records the number of changes operated on this hashtable since its last
+% optimisation.
 
 
 -type key() :: hashtable:key().
@@ -128,11 +125,10 @@
 
 
 % Shorthands:
-
 -type accumulator() :: basic_utils:accumulator().
-
 -type ustring() :: text_utils:ustring().
--type entries() :: hashtable:entries().
+-type bucket_count() :: hashtable:bucket_count().
+
 
 
 % Implementation notes:
@@ -147,7 +143,7 @@
 -include("lazy_hashtable.hrl").
 
 
-% Returns a new empty lazy table.
+% @doc Returns a new empty lazy table.
 -spec new() -> lazy_hashtable().
 new() ->
 
@@ -160,11 +156,11 @@ new() ->
 
 
 
-% As lazy hashtables manage by themselves their size, no need to specify any
-% target size. This function is only defined so that we can transparently switch
-% APIs with the hashtable module.
+% @doc As lazy hashtables manage by themselves their size, no need to specify
+% any target size. This function is only defined so that we can transparently
+% switch APIs with the hashtable module.
 %
--spec new( hashtable:entry_count() | entries() ) -> lazy_hashtable().
+-spec new( entry_count() | entries() ) -> lazy_hashtable().
 new( ExpectedNumberOfEntries ) when is_integer( ExpectedNumberOfEntries ) ->
 	new();
 
@@ -176,17 +172,17 @@ new( InitialEntries ) when is_list( InitialEntries ) ->
 
 
 
-% Defined also to allow seamless change of hashtable modules:
+% @doc Defined also to allow seamless change of hashtable modules.
 %
 % (helper)
 %
--spec new_with_buckets( hashtable:bucket_count() ) -> lazy_hashtable().
+-spec new_with_buckets( bucket_count() ) -> lazy_hashtable().
 new_with_buckets( _NumberOfBuckets ) ->
 	new().
 
 
 
-% Adds specified key/value pair into the specified lazy hashtable.
+% @doc Adds specified key/value pair into the specified lazy hashtable.
 %
 % If there is already a pair with this key, then its previous value will be
 % replaced by the specified one.
@@ -205,7 +201,7 @@ add_entry( Key, Value, _LazyHashtable={ Hashtable, OpCount } ) ->
 
 
 
-% Adds specified list of key/value pairs into the specified lazy table.
+% @doc Adds specified list of key/value pairs into the specified lazy table.
 %
 % If there is already a pair with this key, then its previous value will be
 % replaced by the specified one.
@@ -224,8 +220,8 @@ add_entries( EntryList, _LazyHashtable={ Hashtable, OpCount } ) ->
 
 
 
-% Removes specified key/value pair, as designated by the key, from the specified
-% lazy hashtable.
+% @doc Removes specified key/value pair, as designated by the key, from the
+% specified lazy hashtable.
 %
 % Does nothing if the key is not found.
 %
@@ -240,10 +236,10 @@ remove_entry( Key, _LazyHashtable={ Hashtable, OpCount } ) ->
 
 
 
-% Looks-up specified entry (designated by its key) in specified lazy table.
+% @doc Looks-up specified entry (designated by its key) in specified lazy table.
 %
 % Returns either 'key_not_found' if no such key is registered in the
-% table, or { value, Value }, with Value being the value associated to the
+% table, or {value, Value}, with Value being the value associated to the
 % specified key.
 %
 -spec lookup_entry( key(), lazy_hashtable() ) ->
@@ -253,15 +249,17 @@ lookup_entry( Key, _LazyHashtable={ Hashtable, _OpCount } ) ->
 
 
 
-% Tells whether the specified key exists in the table: returns true or false.
+% @doc Tells whether the specified key exists in the table: returns true or
+% false.
+%
 -spec has_entry( key(), lazy_hashtable() ) -> boolean().
 has_entry( Key, _LazyHashtable={ Hashtable, _OpCount } ) ->
 	hashtable:has_entry( Key, Hashtable ).
 
 
 
-% Retrieves the value corresponding to specified (existing) key and returns it
-% directly.
+% @doc Retrieves the value corresponding to specified (existing) key and returns
+% it directly.
 %
 % The key/value pair is expected to exist already, otherwise a bad match is
 % triggered.
@@ -272,8 +270,8 @@ get_value( Key, _LazyHashtable={ Hashtable, _OpCount } ) ->
 
 
 
-% Extracts specified entry from specified hashtable, i.e. returns the associated
-% value and removes that entry from the table.
+% @doc Extracts specified entry from specified hashtable, ie returns the
+% associated value and removes that entry from the table.
 %
 % The key/value pair is expected to exist already, otherwise an exception is
 % raised.
@@ -286,7 +284,7 @@ extract_entry( Key, _LazyHashtable={ Hashtable, OpCount } ) ->
 
 
 
-% Looks for specified entry in specified table and, if found, returns the
+% @doc Looks for specified entry in specified table and, if found, returns the
 % associated value; otherwise returns the specified default value.
 %
 -spec get_value_with_defaults( key(), value(), lazy_hashtable() ) -> value().
@@ -296,14 +294,14 @@ get_value_with_defaults( Key, DefaultValue,
 
 
 
-% Returns the (ordered) list of values that correspond to the specified
+% @doc Returns the (ordered) list of values that correspond to the specified
 % (ordered) list of keys of this table.
 %
 % The key/value pairs are expected to exist already, otherwise an exception is
 % raised.
 %
 % Ex: [Color, Age, Mass] = lazy_hashtable:get_values([color, age, mass],
-%   MyLazyTable])
+%  MyLazyTable])
 %
 -spec get_values( [ key() ], lazy_hashtable() ) -> [ value() ].
 get_values( Keys, Hashtable ) ->
@@ -323,7 +321,7 @@ get_values( Keys, Hashtable ) ->
 
 
 
-% Returns the (ordered) list of values that correspond to the specified
+% @doc Returns the (ordered) list of values that correspond to the specified
 % (ordered) list of keys of this table, ensuring all entries have been read,
 % otherwise throwing an exception.
 %
@@ -358,7 +356,7 @@ get_all_values( Keys, Hashtable ) ->
 
 
 
-% Applies (maps) the specified anonymous function to each of the key-value
+% @doc Applies (maps) the specified anonymous function to each of the key-value
 % entries contained in this hashtable.
 %
 % Allows to apply "in-place" an operation on all entries without having to
@@ -381,7 +379,7 @@ map_on_entries( Fun, _LazyHashtable={ Hashtable, OpCount }  ) ->
 
 
 
-% Applies (maps) the specified anonymous function to each of the values
+% @doc Applies (maps) the specified anonymous function to each of the values
 % contained in this hashtable.
 %
 % Allows to apply "in-place" an operation on all values without having to
@@ -401,7 +399,7 @@ map_on_values( Fun, _LazyHashtable={ Hashtable, OpCount } ) ->
 
 
 
-% Folds specified anonymous function on all entries of the specified lazy
+% @doc Folds specified anonymous function on all entries of the specified lazy
 % hashtable.
 %
 % The order of transformation for entries is not specified.
@@ -415,8 +413,8 @@ fold_on_entries( Fun, InitialAcc, _LazyHashtable={ Hashtable, _OpCount } ) ->
 
 
 
-% Adds specified value to the value, supposed to be numerical, associated to
-% specified key.
+% @doc Adds specified value to the value, supposed to be numerical, associated
+% to specified key.
 %
 % An exception is thrown if the key does not exist, a bad arithm is triggered if
 % no addition can be performed on the associated value.
@@ -438,8 +436,8 @@ add_to_entry( Key, Value, LazyHashtable ) ->
 
 
 
-% Subtracts specified value to the value, supposed to be numerical, associated
-% to specified key.
+% @doc Subtracts specified value to the value, supposed to be numerical,
+% associated to specified key.
 %
 % An exception is thrown if the key does not exist, a bad arithm is triggered if
 % no subtraction can be performed on the associated value.
@@ -462,7 +460,7 @@ subtract_from_entry( Key, Value, LazyHashtable ) ->
 
 
 
-% Toggles the boolean value associated with specified key: if true will be
+% @doc Toggles the boolean value associated with specified key: if true will be
 % false, if false will be true.
 %
 % An exception is thrown if the key does not exist or if its associated value is
@@ -475,8 +473,8 @@ toggle_entry( Key, _LazyHashtable={ Hashtable, OpCount } ) ->
 
 
 
-% Returns a new lazy hashtable, which started from LazyHashtableBase and was
-% enriched with the LazyHashtableAdd entries whose keys where not already in
+% @doc Returns a new lazy hashtable, which started from LazyHashtableBase and
+% was enriched with the LazyHashtableAdd entries whose keys where not already in
 % LazyHashtableBase (if a key is in both tables, the one from LazyHashtableBase
 % will be kept).
 %
@@ -499,7 +497,7 @@ merge( _LazyHashtableBase={ HashtableBase, BaseOptCount },
 
 
 
-% Optimises this hashtable.
+% @doc Optimises this hashtable.
 %
 % A no-operation for lazy hashtables.
 %
@@ -509,10 +507,10 @@ optimise( Hashtable ) ->
 
 
 
-% Checks whether an optimisation of the internal hashtable is deemed potentially
-% useful, i.e. if the operation count is past a threshold.
+% @doc Checks whether an optimisation of the internal hashtable is deemed
+% potentially useful, ie if the operation count is past a threshold.
 %
-% Returns { H, NewOpCount } (i.e. a lazy table) where H is either an optimised
+% Returns {H, NewOpCount} (ie a lazy table) where H is either an optimised
 % hashtable or the specified one, and NewOpCount is either zero or the specified
 % CurrentOpCount, depending on whether an optimisation was triggered or not.
 %
@@ -554,8 +552,8 @@ optimise_table_if_necessary( LazyTable={ Hashtable, CurrentOpCount } ) ->
 
 
 
-% Appends specified element to the value, supposed to be a list, associated to
-% specified key.
+% @doc Appends specified element to the value, supposed to be a list, associated
+% to specified key.
 %
 % An exception is thrown if the key does not exist.
 %
@@ -577,8 +575,8 @@ append_to_entry( Key, Element, LazyHashtable ) ->
 
 
 
-% Deletes the first match of the specified element in the value associated to
-% specified key, this value being assumed to be a list.
+% @doc Deletes the first match of the specified element in the value associated
+% to specified key, this value being assumed to be a list.
 %
 % An exception is thrown if the key does not exist.
 %
@@ -601,8 +599,9 @@ delete_from_entry( Key, Element, LazyHashtable ) ->
 
 
 
-% Pops the head of the value (supposed to be a list) associated to specified
-% key, and returns a pair made of the popped head and the new hashtable.
+% @doc Pops the head of the value (supposed to be a list) associated to
+% specified key, and returns a pair made of the popped head and the new
+% hashtable.
 %
 -spec pop_from_entry( key(), lazy_hashtable() ) -> { term(), lazy_hashtable() }.
 pop_from_entry( Key, LazyHashtable ) ->
@@ -621,7 +620,7 @@ pop_from_entry( Key, LazyHashtable ) ->
 
 
 
-% Returns a flat list whose elements are all the key/value pairs of the
+% @doc Returns a flat list whose elements are all the key/value pairs of the
 % hashtable, in no particular order.
 %
 % Ex: [{K1,V1}, {K2,V2}, ...].
@@ -632,21 +631,21 @@ enumerate( _LazyHashtable={ Hashtable, _OpCount } ) ->
 
 
 
-% Returns a list of key/value pairs corresponding to the list of specified keys,
-% or throws a badmatch is at least one key is not found.
+% @doc Returns a list of key/value pairs corresponding to the list of specified
+% keys, or throws a badmatch is at least one key is not found.
 %
 -spec select_entries( [ key() ], lazy_hashtable() ) -> entries().
 select_entries( Keys, _LazyHashtable={ Hashtable, _OpCount } ) ->
 	hashtable:select_entries( Keys, Hashtable ).
 
 
-% Returns a list containing all the keys of this hashtable.
+% @doc Returns a list containing all the keys of this hashtable.
 -spec keys( lazy_hashtable() ) -> [ key() ].
 keys( _LazyHashtable={ Hashtable, _OpCount } ) ->
 	hashtable:keys( Hashtable ).
 
 
-% Returns a list containing all the values of this hashtable.
+% @doc Returns a list containing all the values of this hashtable.
 %
 % Ex: useful if the key was used as an index to generate this table first.
 %
@@ -656,8 +655,8 @@ values( _LazyHashtable={ Hashtable, _OpCount }  ) ->
 
 
 
-% Returns whether the specified hashtable is empty (not storing any key/value
-% pair).
+% @doc Returns whether the specified hashtable is empty (not storing any
+% key/value pair).
 %
 -spec is_empty( lazy_hashtable() ) -> boolean().
 is_empty( _LazyHashtable={ Hashtable, _OpCount } ) ->
@@ -665,23 +664,23 @@ is_empty( _LazyHashtable={ Hashtable, _OpCount } ) ->
 
 
 
-% Returns the size (number of entries, i.e. of key/value pairs) of the specified
-% table.
+% @doc Returns the size (number of entries, ie of key/value pairs) of the
+% specified table.
 %
--spec size( lazy_hashtable() ) -> hashtable:entry_count().
+-spec size( lazy_hashtable() ) -> entry_count().
 size( _LazyTable={ Hashtable, _CurrentOpCount } ) ->
 	hashtable:size( Hashtable ).
 
 
 
-% Returns a textual description of the specified hashtable.
+% @doc Returns a textual description of the specified table.
 -spec to_string( lazy_hashtable() ) -> ustring().
 to_string( _LazyHashtable={ Hashtable, _OpCount } ) ->
 	hashtable:to_string( Hashtable ).
 
 
 
-% Returns a textual description of the specified table.
+% @doc Returns a textual description of the specified table.
 %
 % Either a bullet is specified, or the returned string is ellipsed if needed (if
 % using 'user_friendly'), or quite raw and non-ellipsed (if using 'full'), or
@@ -693,7 +692,7 @@ to_string( _LazyHashtable={ Hashtable, _OpCount }, DescriptionType ) ->
 
 
 
-% Displays the specified hashtable on the standard output.
+% @doc Displays the specified hashtable on the standard output.
 -spec display( lazy_hashtable() ) -> void().
 display( _LazyHashtable={ Hashtable, OpCount } ) ->
 	hashtable:display( Hashtable ),
@@ -701,8 +700,8 @@ display( _LazyHashtable={ Hashtable, OpCount } ) ->
 
 
 
-% Displays the specified hashtable on the standard output, with the specified
-% title on top.
+% @doc Displays the specified hashtable on the standard output, with the
+% specified title on top.
 %
 -spec display( ustring(), lazy_hashtable() ) -> void().
 display( Title, _LazyHashtable={ Hashtable, OpCount } ) ->

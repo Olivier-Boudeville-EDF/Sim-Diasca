@@ -8,7 +8,7 @@ MODULES_DIRS = internal-version public-version
 
 # Default do-nothing target:
 all:
-	@echo "  Run 'make full-doc' in the relevant internal/public subdirectory to generate the installation guide."
+	@echo "  Run 'make full-doc' in the relevant internal/public subdirectory to generate the relevant version of the installation guide."
 
 
 doc:
@@ -26,3 +26,7 @@ clean-outputs:
 
 
 real-clean:
+
+
+# For Myriad's GNUmakerules-docutils.inc ultimately:
+include $(SIM_DIASCA_TOP)/GNUmakesettings.inc

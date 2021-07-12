@@ -1,10 +1,14 @@
-
 .. _Top:
 
 
-.. title:: Welcome to the Ceylan-WOOPER 2.0 documentation
+.. title:: Welcome to the Ceylan-WOOPER documentation
 
 .. comment stylesheet specified through GNUmakefile
+
+
+===================================================
+*Wrapper for Object-Oriented Programming in Erlang*
+===================================================
 
 
 .. role:: raw-html(raw)
@@ -16,28 +20,24 @@
 
 :raw-html:`<a name="wooper_top"></a>`
 
-:raw-html:`<div class="banner"><p><em>WOOPER 2.0 documentation</em> <a href="http://wooper.esperide.org">browse latest</a> <a href="https://olivier-boudeville.github.io/Ceylan-WOOPER/index.html">browse mirror</a> <a href="Ceylan-WOOPER-Layer-technical-manual-english.pdf">get PDF</a> <a href="#wooper_top">go to top</a> <a href="#wooper_bottom">go to bottom</a> <a href="https://github.com/Olivier-Boudeville/Ceylan-WOOPER">go to project</a> <a href="mailto:about(dash)wooper(at)esperide(dot)com?subject=[Ceylan-WOOPER%202.0]%20Remark">email us</a></p></div>`
+:raw-html:`<div class="banner"><p><em>WOOPER documentation</em> <a href="http://wooper.esperide.org">browse latest</a> <a href="https://olivier-boudeville.github.io/Ceylan-WOOPER/index.html">browse mirror</a> <a href="Ceylan-WOOPER-Layer-technical-manual-english.pdf">get PDF</a> <a href="#wooper_top">go to top</a> <a href="#wooper_toc">go to toc</a> <a href="#wooper_bottom">go to bottom</a> <a href="api-doc/index.html">browse API</a> <a href="https://github.com/Olivier-Boudeville/Ceylan-WOOPER">go to project</a> <a href="mailto:about(dash)wooper(at)esperide(dot)com?subject=[Ceylan-WOOPER]%20Remark">email us</a></p></div>`
 
 
 
-:raw-html:`<center><img src="wooper-title.png" width="35%"></img></center>`
+:raw-html:`<center><img src="wooper-title.png" id="responsive-image-small"></img>`
 :raw-latex:`\centering \includegraphics[scale=0.28]{wooper-title.png}`
 
 .. comment Note: this is the latest, current version of the WOOPER 2.x documentation, directly obtained from the one of WOOPER 1.x.
 
 
 
----------------------------------------------------
-*Wrapper for Object-Oriented Programming in Erlang*
----------------------------------------------------
-
-
-:Organisation: Copyright (C) 2008-2021 Olivier Boudeville
+:Organisation: Copyright (C) 2008-GENERATION_YEAR_TAG Olivier Boudeville
 :Contact: about (dash) wooper (at) esperide (dot) com
 :Creation date: Sunday, August 17, 2008
-:Lastly updated: Friday, March 12, 2021
-:Version: 2.0.10
-:Dedication: Users and maintainers of the ``WOOPER`` layer, version 2.0.
+:Lastly updated: GENERATION_DATE_TAG
+:Version: PROJECT_VERSION_TAG
+:Status: Stable
+:Dedication: Users and maintainers of the ``WOOPER`` layer.
 :Abstract:
 
 	The role of the ``WOOPER`` layer is to provide free software object-oriented facilities to the Erlang language.
@@ -46,12 +46,14 @@
 .. meta::
    :keywords: WOOPER, OOP, inheritance, object-oriented, Erlang
 
+:raw-html:`</center>`
+
 
 The latest version of this documentation is to be found at the `official WOOPER website <http://wooper.esperide.org>`_ (``http://wooper.esperide.org``).
 
 :raw-html:`This WOOPER documentation is also available in the PDF format (see <a href="Ceylan-WOOPER-Layer-technical-manual-english.pdf">Ceylan-WOOPER-Layer-technical-manual-english.pdf</a>), and mirrored <a href="http://olivier-boudeville.github.io/Ceylan-WOOPER/">here</a>.`
 
-:raw-latex:`The documentation is also mirrored \href{https://olivier-boudeville.github.io/Ceylan-WOOPER/}{here}.`
+:raw-latex:`This documentation is also mirrored \href{https://olivier-boudeville.github.io/Ceylan-WOOPER/}{here}.`
 
 
 
@@ -59,11 +61,12 @@ The latest version of this documentation is to be found at the `official WOOPER 
 :raw-latex:`\pagebreak`
 
 
+:raw-html:`<a name="wooper_toc"></a>`
 
 .. _`table of contents`:
 
 
-.. contents:: Table of Contents
+.. contents:: **Table of Contents**
   :depth: 3
 
 
@@ -77,13 +80,15 @@ Overview
 
 WOOPER, which stands for *Wrapper for Object-Oriented Programming in Erlang*, is a `free software`_ lightweight layer on top of the `Erlang <http://erlang.org>`__ language that provides constructs dedicated to `Object-Oriented Programming <http://en.wikipedia.org/wiki/Object-oriented_programming>`_ (OOP).
 
-This documentation applies to the WOOPER 2.0 version.
+.. This documentation applies to the WOOPER 2.0 version.
 
 WOOPER is a rather autonomous part of the `Ceylan <https://github.com/Olivier-Boudeville/Ceylan>`_ project (yet it uses `Myriad <https://github.com/Olivier-Boudeville/Ceylan-Myriad>`_ and is used by `Traces <https://github.com/Olivier-Boudeville/Ceylan-Traces>`_).
 
 The project repository is located `here <https://github.com/Olivier-Boudeville/Ceylan-WOOPER>`_.
 
 At least a basic knowledge of Erlang is expected in order to use WOOPER.
+
+Seasoned WOOPER users may directly bookmark this always useful `cheat sheet`_.
 
 
 
@@ -610,9 +615,9 @@ For an instance to be able to send an answer to a request triggered by a caller,
 
 Therefore requests have to specify, as the third element of the call tuple, an additional information: the PID to which the answer should be sent, which is almost always the caller (hence the ``self()`` in the actual calls).
 
-So these three potential information (request name, parameters, reference of the sender - i.e. an atom, usually a list, and a PID) are gathered in a triplet (a 3-tuple) sent as a message: ``{request_name,[Arg1,Arg2,..],self()}``.
+So these three potential information (request name, parameters, reference of the sender - i.e. an atom, usually a list, and a PID) are gathered in a triplet (a 3-tuple) sent as a message: ``{request_name, [Arg1,Arg2,..], self()}``.
 
-If only one parameter is to be sent, and if that parameter is not a list, then this can become ``{request_name,Arg,self()}``.
+If only one parameter is to be sent, and if that parameter is not a list, then this can become ``{request_name, Arg, self()}``.
 
 For example:
 
@@ -625,7 +630,7 @@ or:
 
 .. code:: erlang
 
- Douglas ! {askQuestionWithHint,[{meaning_of,"Life"},{maybe,42}],self()}.
+ Douglas ! {askQuestionWithHint, [{meaning_of,"Life"},{maybe,42}], self()}.
 
 or:
 
@@ -878,11 +883,11 @@ Finally, a recommended good practice is to add a type specification (see `Dialyz
 
 
 For Requests
-____________
+............
 
 
 Requests in general
-...................
+___________________
 
 
 Requests will use ``wooper:return_state_result(NewState,Result)`` to terminate their clauses: the new state will be kept by the instance, whereas the result will be sent to the caller. Hence ``wooper:return_state_result/2`` means that the method returns a state **and** a result.
@@ -921,7 +926,7 @@ Then we may call it, in the case of a cat having 2 male kitten and 3 female ones
 
 
 Const Requests
-..............
+______________
 
 Some clauses of a request may return an unchanged state. It is then a ``const`` clause, and rather than using the  ``wooper:return_state_result/2`` request terminator, it shall use the ``wooper:const_return_result/1`` one.
 
@@ -947,7 +952,7 @@ Note that ``State`` can be used as always, and that even there it is not reporte
 
 
 Sender PID
-..........
+__________
 
 Requests can access to one more information than oneways: the PID of the caller that sent the request. As WOOPER takes care automatically of sending back the result to the caller, having the request know explicitly the caller is usually not useful, thus the caller PID does not appear explicitly in request signatures, among the actual parameters.
 
@@ -985,7 +990,7 @@ Note that:
 
 
 Request Type Specifications
-...........................
+___________________________
 
 Using them is not mandatory, yet is very much recommended, and WOOPER provides suitable constructs for that.
 
@@ -1017,14 +1022,14 @@ Of course, should type specifications be used, they must be correct; WOOPER will
 
 
 For Oneways
-___________
+...........
 
 
 After relevant adaptations, most of the conventions for requests apply to oneways.
 
 
 Oneways in general
-..................
+__________________
 
 Oneways will use ``wooper:return_state(NewState)`` to terminate their clauses: the new state will be kept by the instance, and no result will be returned to the caller (which is not even known - hence no ``?getSender`` macro applies to oneways either).
 
@@ -1046,7 +1051,7 @@ This oneway can be called that way:
 
 
 Const Oneways
-.............
+_____________
 
 Even if it is less frequent than for requests, oneways may also be ``const``, i.e. may leave the state unchanged, and consequently are only called for side-effects; for example, rather than specifying:
 
@@ -1069,7 +1074,7 @@ A oneway whose clauses are all ``const`` is itself a const oneway.
 
 
 Oneway Type Specifications
-..........................
+__________________________
 
 The type specification of a oneway should rely, for its return type, either on ``oneway_return()`` or on ``const_oneway_return()``, depending on its constness (no result to account for in either case).
 
@@ -1089,7 +1094,7 @@ Making the previous examples more complete:
 
 
 Usefulness Of the Method Terminators
-____________________________________
+....................................
 
 
 The actual definition of the method terminators (ex: ``wooper:return_state_result/2``, ``wooper:return_state/1``) is actually quite straightforward.
@@ -1382,7 +1387,7 @@ The current state of an instance can be thought as a list of ``{attribute_name,a
 
 .. code:: erlang
 
- [ {color,black}, {fur_color,sand}, {age,13}, {name,"Tortilla"} ].
+ [{color,black}, {fur_color,sand}, {age,13}, {name,"Tortilla"}].
 
 
 
@@ -1433,10 +1438,10 @@ where:
 
 .. _`attribute declaration`:
 
- - ``Name`` is the name of that attribute, as an atom (ex: ``fur_color``)
- - ``Type`` corresponds to the `type specification <http://erlang.org/doc/reference_manual/typespec.html>`_ of that attribute (ex: ``[atom()]``, ``foo:color_index()``); note that the Erlang parser will not support the ``|`` (i.e. union) operator, like in ``'foo'|integer()``; we recommend to use the ``union`` variadic pseudo-function instead (with any arity greater or equal to 2), like in: ``union('foo',integer())``
- - ``QualifierInfo`` is detailed just below
- - ``Description`` is a plain string describing the purpose of this attribute; this is a comment aimed only at humans, which preferably does not start with a capital letter and does not end with a dot (ex: ``"describes the color of the fur of this animal (not including whiskers)"`` or a shorter, maybe better, ``"color of the fur of this animal (not including whiskers)"``)
+- ``Name`` is the name of that attribute, as an atom (ex: ``fur_color``)
+- ``Type`` corresponds to the `type specification <http://erlang.org/doc/reference_manual/typespec.html>`_ of that attribute (ex: ``[atom()]``, ``foo:color_index()``); note that the Erlang parser will not support the ``|`` (i.e. union) operator, like in ``'foo'|integer()``; we recommend to use the ``union`` variadic pseudo-function instead (with any arity greater or equal to 2), like in: ``union('foo',integer())``
+- ``QualifierInfo`` is detailed just below
+- ``Description`` is a plain string describing the purpose of this attribute; this is a comment aimed only at humans, which preferably does not start with a capital letter and does not end with a dot (ex: ``"describes the color of the fur of this animal (not including whiskers)"`` or a shorter, maybe better, ``"color of the fur of this animal (not including whiskers)"``)
 
 
 .. comment We would have preferred that, instead of ``'integer()'``, one could have specified directly ``integer()``, yet this does not seem possible with parse-transforms, as in the latter case it would trigger a parse error earlier in the transformation process.
@@ -2596,7 +2601,6 @@ Writing a method relying on such an helper function could be:
 .. code:: erlang
 
    doSomething(State,A) ->
-
 	   case foobar(A,State) of
 
 		  {value,Result} ->
@@ -2773,6 +2777,17 @@ Rather than declaring the corresponding behaviour and its implemented API direct
 
 
 
+WOOPER API
+----------
+
+One can browse the `WOOPER API documentation <api-doc/index.html>`_.
+
+The next level of information is simply to read the corresponding `source files <https://github.com/Olivier-Boudeville/Ceylan-WOOPER>`_, which are intensely commented and generally straightforward.
+
+
+.. _`cheat sheet`:
+
+
 Class Developer Cheat Sheet
 ---------------------------
 
@@ -2866,7 +2881,7 @@ WOOPER Example
 We defined a small set of classes in order to serve as an example and demonstrate multiple inheritance:
 
 
-:raw-html:`<center><img src="wooper-example.png" width="70%" alt="WOOPER Example"></img></center>`
+:raw-html:`<center><img src="wooper-example.png" id="responsive-image-large" alt="WOOPER Example"></img></center>`
 :raw-latex:`\includegraphics[scale=0.34]{wooper-example.png}`
 
 
@@ -3588,7 +3603,6 @@ Issues & Planned Enhancements
 
 .. For all versions of WOOPER:
 
-- test the impact of using HiPE by default / wait for the upcoming JIT compilation
 - integrate automatic persistent storage of instance states, for example in Mnesia databases
 - integrate specific constructs for code reflection
 - check that a class specified in ``execute*As`` is indeed a (direct or not) mother class of this one, at least in debug mode
@@ -3707,7 +3721,7 @@ Ending Word
 
 Have fun with Ceylan-WOOPER!
 
-:raw-html:`<center><img src="wooper-title.png" width="25%"></img></center>`
+:raw-html:`<center><img src="wooper-title.png" id="responsive-image-small"></img></center>`
 :raw-latex:`\begin{figure}[h] \centering \includegraphics[scale=0.15]{wooper-title.png} \end{figure}`
 
 :raw-html:`<a name="wooper_bottom"></a>`

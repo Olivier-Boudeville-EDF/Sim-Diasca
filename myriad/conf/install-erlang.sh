@@ -18,6 +18,7 @@ LANG=C; export LANG
 # Now we keep the MD5 sums of the sources of former Erlang/OTP versions, in
 # order to be able to switch back and forth more easily:
 
+erlang_md5_for_24_0="7227024b8619e4d97a7af4f4cf98d4db"
 erlang_md5_for_23_3="d6660705f01afbe3466c0a5de21ab361"
 erlang_md5_for_23_2="e315f59eb9e420a0e469c09649f4303f"
 erlang_md5_for_23_1="3dba61234519884664e032616a61353d"
@@ -33,51 +34,80 @@ erlang_md5_for_20_1="4c9eb112cd0e56f17c474218825060ee"
 
 
 # Current stable (an update of the next two lines is needed):
-erlang_version="23.3"
-erlang_md5="${erlang_md5_for_23_3}"
+erlang_version="24.0"
+erlang_md5="${erlang_md5_for_24_0}"
 
 
 # Candidate version (ex: either cutting-edge or, most probably, the previous
 # version that we deem stable enough, should the current introduce regressions):
 #
-erlang_version_candidate="23.2"
-erlang_md5_candidate="${erlang_md5_for_23_2}"
+erlang_version_candidate="23.3"
+erlang_md5_candidate="${erlang_md5_for_23_3}"
+
+base_install_dir="${HOME}/Software/Erlang"
 
 
 plt_file="Erlang-${erlang_version}.plt"
 plt_link="Erlang.plt"
 
 
-mv=/bin/mv
-tar=/bin/tar
-rm=/bin/rm
-ln=/bin/ln
-mkdir=/bin/mkdir
+mv="/bin/mv"
+tar="/bin/tar"
+rm="/bin/rm"
+ln="/bin/ln"
+mkdir="/bin/mkdir"
 
 
-usage="Usage: $(basename $0) [-h|--help] [-d|--doc-install] [-g|--generate-plt] [-n|--no-download] [-np|--no-patch] [-p|--previous] [<base install directory>]: downloads, patches, builds and installs a fresh ${erlang_version} Erlang version in specified base directory (if any), or in default directory, and in this case adds a symbolic link pointing to it from its parent directory so that Erlang-current-install always points to the latest installed version.
+help_opt_short="-h"
+help_opt_long="--help"
+
+version_opt_short="-v"
+version_opt_long="--version"
+
+doc_opt_short="-d"
+doc_opt_long="--doc-install"
+
+plt_opt_short="-g"
+plt_opt_long="--generate-plt"
+
+download_opt_short="-n"
+download_opt_long="--no-download"
+
+patch_opt_short="-np"
+patch_opt_long="--no-patch"
+
+previous_opt_short="-p"
+previous_opt_long="--previous"
+
+# Currently removed:
+#   [${patch_opt_short}|${patch_opt_long}]
+#   downloads, patches, builds and installs
+#
+#   ${patch_opt_short} or ${patch_opt_long}: disable the automatic patching we
+#   make use of
+
+usage="Usage: $(basename $0) [${help_opt_short}|${help_opt_long}] [${version_opt_short}|${version_opt_long}] [${doc_opt_short}|${doc_opt_long}] [${plt_opt_short}|${plt_opt_long}] [${download_opt_short}|${download_opt_long}] [${previous_opt_short}|${previous_opt_long}] [<base install directory>]: downloads, builds and installs a fresh ${erlang_version} Erlang version in the specified base install directory (if defined), or in default directory, and in this case adds a symbolic link pointing to it from its parent directory so that an 'Erlang-current-install' symbolic link always points to the latest installed version.
 
 Note that, if relevant archives are found in the current directory, they will be used, even if the user did not specify a 'no download' option.
 
 If no base install directory is specified, then:
  - if this script is run as root thanks to a sudo (i.e. 'sudo $(basename $0)...'), Erlang will be built by the (supposedly non-privileged) original sudoer in the current directory, before being installed as root in /usr/local/ (i.e. system-wide); no Erlang-current-install symbolic link applies then
- - otherwise it will be installed in ~/Software/Erlang/Erlang-${erlang_version}/.
+ - otherwise it will be installed in ${base_install_dir}/Erlang-${erlang_version}/.
 
 Otherwise, i.e. if a base install directory MY_DIR is specified, then Erlang will be installed into MY_DIR/Erlang/Erlang-${erlang_version}/.
 
 Options:
-	-d or --doc-install: download and install the corresponding documentation as well
-	-g or --generate-plt: generate the PLT file ($plt_file) for Dialyzer corresponding to this Erlang/OTP install
-	-n or --no-download: do not attempt to download anything, expect that needed files are already available (useful if not having a direct access to the Internet)
-	-np or --no-patch: disable the automatic patching we make use of
-	-p or --previous: use, instead of the current Erlang version registered for installation (i.e. ${erlang_version}), the previous one (ex: latest supported release candidate version otherwise the lastly supported stable version), namely, currently, ${erlang_version_candidate}
-
+	${doc_opt_short} or ${doc_opt_long}: download and install the corresponding documentation as well
+	${version_opt_short} or ${version_opt_long}: just returns the current version of Erlang that would be installed
+	${plt_opt_short} or ${plt_opt_long}: generate the PLT file (${plt_file}) for Dialyzer corresponding to this Erlang/OTP install
+	${download_opt_short} or ${download_opt_long}: do not attempt to download anything; expect that needed files are already available (useful if not having a direct access to the Internet)
+	${previous_opt_short} or ${previous_opt_long}: use, instead of the current Erlang version registered for installation (i.e. ${erlang_version}), the previous one (ex: latest supported release candidate version otherwise the lastly supported stable version), namely, currently, ${erlang_version_candidate}
 
 Example:
-  install-erlang.sh --doc-install --no-download --generate-plt
-	will install latest available version of Erlang, with its documentation, in the ~/Software/Erlang directory, without downloading anything,
+  install-erlang.sh ${doc_opt_long} ${download_opt_long} ${plt_opt_long}
+	will install the latest available version of Erlang, with its documentation, in the ${base_install_dir}/Erlang directory, without downloading anything,
 	  - or -
-  install-erlang.sh --doc-install ~/my-directory
+  install-erlang.sh ${doc_opt_long} ~/my-directory
 	will install current official stable version of Erlang (${erlang_version}), with its documentation, in the ~/my-directory/Erlang/Erlang-${erlang_version} base directory, by downloading Erlang archives from the Internet
 	  - or -
   sudo install-erlang.sh
@@ -102,7 +132,7 @@ For Debian-based distributions, you should preferably run beforehand, as root: '
 #
 # Another related problem is that libtinfo.so might not be found. A solution is
 # to create a symlink to libncurses, which include it:
-# cd /usr/lib ; ln -s libncurses.so.5 -T libtinfo.so.5
+# cd /usr/lib; ln -s libncurses.so.5 -T libtinfo.so.5
 #
 # For Arch display-less servers:
 # pacman -S gcc make openssl
@@ -166,15 +196,22 @@ while [ $token_eaten -eq 0 ]; do
 	token_eaten=1
 
 
-	if [ "$1" = "-h" -o "$1" = "--help" ]; then
+	if [ "$1" = "${help_opt_short}" -o "$1" = "${help_opt_long}" ]; then
 
 		echo "${usage}"
 		exit
 
 	fi
 
+	if [ "$1" = "${version_opt_short}" -o "$1" = "${version_opt_long}" ]; then
 
-	if [ "$1" = "-p" -o "$1" = "--previous" ]; then
+		echo "${erlang_version}"
+		exit
+
+	fi
+
+
+	if [ "$1" = "${previous_opt_short}" -o "$1" = "${previous_opt_long}" ]; then
 
 		erlang_version="${erlang_version_candidate}"
 		erlang_md5="${erlang_md5_candidate}"
@@ -187,7 +224,7 @@ while [ $token_eaten -eq 0 ]; do
 	fi
 
 
-	if [ "$1" = "-d" -o "$1" = "--doc-install" ]; then
+	if [ "$1" = "${doc_opt_short}" -o "$1" = "${doc_opt_long}" ]; then
 
 		echo "Will manage the corresponding documentation."
 		do_manage_doc=0
@@ -196,16 +233,16 @@ while [ $token_eaten -eq 0 ]; do
 	fi
 
 
-	if [ "$1" = "-g" -o "$1" = "--generate-plt" ]; then
+	if [ "$1" = "${plt_opt_short}" -o "$1" = "${plt_opt_long}" ]; then
 
-		echo "Will generate the PLT file $plt_file for Dialyzer."
+		echo "Will generate the PLT file ${plt_file} for Dialyzer."
 		do_generate_plt=0
 		token_eaten=0
 
 	fi
 
 
-	if [ "$1" = "-n" -o "$1" = "--no-download" ]; then
+	if [ "$1" = "${download_opt_short}" -o "$1" = "${download_opt_long}" ]; then
 
 		echo "No file will be downloaded."
 		do_download=1
@@ -214,7 +251,7 @@ while [ $token_eaten -eq 0 ]; do
 	fi
 
 
-	if [ "$1" = "-np" -o "$1" = "--no-patch" ]; then
+	if [ "$1" = "${patch_opt_short}" -o "$1" = "${patch_opt_long}" ]; then
 
 		echo "No patch will be applied to the Erlang sources."
 		do_patch=1
@@ -271,7 +308,7 @@ if [ -z "${read_parameter}" ]; then
 
    else
 
-	   prefix="$HOME/Software/Erlang/Erlang-${erlang_version}"
+	   prefix="${base_install_dir}/Erlang-${erlang_version}"
 	   echo "Not run as root, thus using default installation directory '${prefix}' (and user '${build_user}')."
 
 	   # In this case the Erlang build tree will *not* be removed (as it is more
@@ -284,7 +321,12 @@ if [ -z "${read_parameter}" ]; then
 else
 
 	prefix="${read_parameter}/Erlang/Erlang-${erlang_version}"
-	echo "Using '${prefix}' as installation directory."
+
+	if [ -d "${prefix}" ]; then
+		echo "Using (pre-existing) '${prefix}' as installation directory."
+	else
+		echo "Using (non-existing yet) '${prefix}' as installation directory."
+	fi
 
 fi
 
@@ -312,7 +354,7 @@ erlang_doc_archive="${erlang_doc_prefix}.tar.gz"
 if [ ! -e "/usr/include/ncurses.h" ]; then
 
 	echo "  Error, the libncurses headers cannot be found, whereas they are needed for the build.
-Use for instance 'apt-get install libncurses5-dev' (other packages should preferably be also installed beforehand, refer to the help message displayed thanks to the -h option)." 1>&2
+Use for instance 'apt-get install libncurses5-dev' (other packages should preferably be also installed beforehand, refer to the help message displayed thanks to the ${help_opt_short} option)." 1>&2
 
 	exit 5
 
@@ -351,7 +393,7 @@ if [ $do_patch -eq 0 ]; then
 
 	if [ ! -x "${patch_tool}" ]; then
 
-		echo "  Error, the patching of the Erlang sources was requested, but the 'patch' utility cannot be found on this system. Either install it (ex: 'apt-get install patch') or use the --no-patch option." 1>&2
+		echo "  Error, the patching of the Erlang sources was requested, but the 'patch' utility cannot be found on this system. Either install it (ex: 'apt-get install patch') or use the ${patch_opt_long} option." 1>&2
 
 		exit 6
 
@@ -467,7 +509,7 @@ else
 	if [ "${computed_md5}" = "${erlang_md5}" ]; then
 		echo "MD5 sum for Erlang source archive matches."
 	else
-		echo "Error, MD5 sums not matching for Erlang source archive: expected '${erlang_md5}', computed '${computed_md5}'." 1>&2
+		echo "Error, MD5 sums not matching for Erlang source archive '${erlang_src_archive}': expected '${erlang_md5}', computed '${computed_md5}'." 1>&2
 		exit 25
 	fi
 
@@ -671,7 +713,7 @@ if [ -n ${prefix} ]; then
 	# Then go again in the install (not source) tree to create the base link:
 	cd ${prefix}/..
 
-	# Ex: we are in $HOME/Software/Erlang now.
+	# Ex: we are in ${base_install_dir} now.
 
 	# Sets as current:
 	if [ -e "Erlang-current-install" ]; then

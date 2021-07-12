@@ -27,27 +27,28 @@
 
 
 
-% Module in charge of handling expressions defined with an AST.
+% @doc Module in charge of handling <b>expressions defined with an AST</b>.
 %
-% See http://erlang.org/doc/apps/erts/absform.html for more information.
+% See [http://erlang.org/doc/apps/erts/absform.html] for more information.
 %
 -module(ast_expression).
 
 
-% The description of an expression in an AST, with line information.
+-type ast_expression() :: ast_base:ast_element().
+% The description of an expression in an AST, with in-file location information.
 %
-% Ex: '{integer,97,2}' or '{match,117, {var,117,'A'}, {atom,117,foobar}}', etc.
+% Ex: '{integer, {97,1}, 2}' or '{match, 117, {var,117,'A'}, {atom, 117,
+% foobar}}', etc.
 %
-% Note: an expression is different from a pattern: even if they share at least
-% some types of forms, they are to be interpreted differently (ex: their
+% Note that an expression is different from a pattern: even if they share at
+% least some types of forms, they are to be interpreted differently (ex: their
 % sub-elements are of the same kind as they are, and at least some rules
 % differ).
-%
--type ast_expression() :: ast_base:ast_element().
 
 
-% An expression that can be evaluated to an integer:
 -type ast_integer_expression() :: ast_expression().
+% An expression that can be evaluated to an integer.
+
 
 -type ast_field_init() :: ast_record:ast_untyped_record_field_definition().
 
@@ -86,10 +87,12 @@
 
 % Shorthands:
 
--type line() :: ast_base:line().
+-type file_loc() :: ast_base:file_loc().
 
 -type ast_case_clause() :: ast_clause:ast_case_clause().
 -type ast_if_clause() :: ast_clause:ast_if_clause().
+
+-type ast_pattern() :: ast_pattern:ast_pattern().
 
 -type ast_body() :: ast_clause:ast_body().
 
@@ -98,27 +101,22 @@
 -type form() :: ast_base:form().
 
 
-% List-comprehension generator.
 -type lc_generator_qualifier() ::
-		{ 'generate', line(), ast_pattern:ast_pattern(), ast_expression() }.
+		{ 'generate', file_loc(), ast_pattern(), ast_expression() }.
+% List-comprehension generator.
 
 
-% Bitstring generator.
 -type bitstring_generator_qualifier() ::
-		{ 'b_generate', line(), ast_pattern:ast_pattern(), ast_expression() }.
+		{ 'b_generate', file_loc(), ast_pattern(), ast_expression() }.
+% Bitstring generator.
 
 
-
+-type ast_qualifier() :: ast_expression() | lc_generator_qualifier()
+							| bitstring_generator_qualifier().
 % A qualifier is one of the following: an expression-based filter, a
 % list-comprehension generator or a bitstring generator.
-%
--type ast_qualifier() :: ast_expression() | lc_generator_qualifier()
-						 | bitstring_generator_qualifier().
 
 
-
-
-% Allows to designate any kind of AST expression.
 -type expression_kind() :: 'call' | 'if' | 'case' | 'match' | 'bin'
 		| 'unary_op' | 'binary_op' | 'simple_receive' | 'receive_with_after'
 		| 'try' | 'remote' | 'catch' | 'cons' | 'lc' | 'bc' | 'tuple'
@@ -127,26 +125,19 @@
 		| 'record_field_other' | 'record_update' | 'block' | 'fun_definition'
 		| 'fun_local' | 'fun_mfa_old' | 'fun_mfa' | 'var' | 'nil' | 'named_fun'
 		| 'atomic_literal'.
+% Allows to designate any kind of AST expression.
 
 
-% Expression designating a reference to a function (local or remote):
 -type function_ref_expression() :: ast_expression().
+% Expression designating a reference to a function (local or remote).
 
 
-% List of expressions corresponding to function parameters:
 -type params_expression() :: [ ast_expression() ].
+% List of expressions corresponding to function parameters.
 
 
 -export_type([ expression_kind/0, function_ref_expression/0,
 			   params_expression/0 ]).
-
-
-% Transforms specified expression into a list of expressions.
-%
-% See section "7.4 Expressions" in http://erlang.org/doc/apps/erts/absform.html.
-%
--spec transform_expression( ast_expression(), ast_transforms() ) ->
-									{ [ ast_expression() ], ast_transforms() }.
 
 
 
@@ -190,20 +181,28 @@
 -endif. % log_traversal
 
 
+% @doc Transforms specified expression into a list of expressions.
+%
+% See section "7.4 Expressions" in
+% [http://erlang.org/doc/apps/erts/absform.html].
+%
+-spec transform_expression( ast_expression(), ast_transforms() ) ->
+									{ [ ast_expression() ], ast_transforms() }.
+
 
 % Function call found:
 %
 % Once it is transformed, expected to fall within:
 %
-% "If E is a function call E_0(E_1, ..., E_k), then Rep(E) =
-% {call,LINE,Rep(E_0),[Rep(E_1), ..., Rep(E_k)]}."
+% "If E is a function call E_0(E_1, ..., E_k), then Rep(E) = {call, FILE_LOC,
+% Rep(E_0), [Rep(E_1), ..., Rep(E_k)]}."
 %
 % or
 %
-% "If E is a function call E_m:E_0(E_1, ..., E_k), then Rep(E) =
-% {call,LINE,{remote,LINE,Rep(E_m),Rep(E_0)},[Rep(E_1), ..., Rep(E_k)]}.
+% "If E is a function call E_m:E_0(E_1, ..., E_k), then Rep(E) = {call,
+% FILE_LOC, {remote, FILE_LOC, Rep(E_m), Rep(E_0)}, [Rep(E_1), ..., Rep(E_k)]}.
 %
-transform_expression( ?e={ 'call', Line, FunctionRef, Params },
+transform_expression( ?e={ 'call', FileLoc, FunctionRef, Params },
 					  Transforms ) ?rec_guard ->
 
 	?log_enter( "Transforming call expression ~p...", [ E ] ),
@@ -212,22 +211,22 @@ transform_expression( ?e={ 'call', Line, FunctionRef, Params },
 	Res = case Transforms#ast_transforms.transform_table of
 
 		undefined ->
-			transform_call( Line, FunctionRef, Params, Transforms );
+			transform_call( FileLoc, FunctionRef, Params, Transforms );
 
 		TransformTable ->
 			case ?table:lookup_entry( 'call', TransformTable ) of
 
 				key_not_found ->
-					transform_call( Line, FunctionRef, Params, Transforms );
+					transform_call( FileLoc, FunctionRef, Params, Transforms );
 
 				{ value, CallTransformFun } ->
-					% Returns directly { NewExprs, NewTransforms }:
+					% Returns directly {NewExprs, NewTransforms}:
 					%
 					% (note that this transform function is responsible for
 					% recursing in the parameters if needed - which is probably
 					% the case)
 					%
-					CallTransformFun( Line, FunctionRef, Params,
+					CallTransformFun( FileLoc, FunctionRef, Params,
 									  Transforms )
 
 			end
@@ -243,9 +242,9 @@ transform_expression( ?e={ 'call', Line, FunctionRef, Params },
 % If expression found:
 %
 % "If E is an if expression if Ic_1 ; ... ; Ic_k end, where each Ic_i is an if
-% clause, then Rep(E) = {'if',LINE,[Rep(Ic_1), ..., Rep(Ic_k)]}."
+% clause, then Rep(E) = {'if', FILE_LOC, [Rep(Ic_1), ..., Rep(Ic_k)]}."
 %
-transform_expression( ?e={ 'if', Line, Clauses }, Transforms ) ?rec_guard ->
+transform_expression( ?e={ 'if', FileLoc, Clauses }, Transforms ) ?rec_guard ->
 
 	?log_enter( "Transforming if expression ~p...", [ E ] ),
 
@@ -253,22 +252,22 @@ transform_expression( ?e={ 'if', Line, Clauses }, Transforms ) ?rec_guard ->
 	Res = case Transforms#ast_transforms.transform_table of
 
 		undefined ->
-			transform_if( Line, Clauses, Transforms );
+			transform_if( FileLoc, Clauses, Transforms );
 
 		TransformTable ->
 			case ?table:lookup_entry( 'if', TransformTable ) of
 
 				key_not_found ->
-					transform_if( Line, Clauses, Transforms );
+					transform_if( FileLoc, Clauses, Transforms );
 
 				{ value, IfTransformFun } ->
-					% Returns directly { NewExprs, NewTransforms }:
+					% Returns directly {NewExprs, NewTransforms}:
 					%
 					% (note that this transform function is responsible for
 					% recursing in the parameters if needed - which is probably
 					% the case)
 					%
-					IfTransformFun( Line, Clauses, Transforms )
+					IfTransformFun( FileLoc, Clauses, Transforms )
 
 			end
 
@@ -286,9 +285,9 @@ transform_expression( ?e={ 'if', Line, Clauses }, Transforms ) ?rec_guard ->
 %
 % "If E is a case expression case E_0 of Cc_1 ; ... ; Cc_k end, where E_0 is an
 % expression and each Cc_i is a case clause, then Rep(E) =
-% {'case',LINE,Rep(E_0),[Rep(Cc_1), ..., Rep(Cc_k)]}."
+% {'case', FILE_LOC, Rep(E_0), [Rep(Cc_1), ..., Rep(Cc_k)]}."
 %
-transform_expression( ?e={ 'case', Line, TestExpression, CaseClauses },
+transform_expression( ?e={ 'case', FileLoc, TestExpression, CaseClauses },
 					  Transforms ) ?rec_guard ->
 
 	?log_enter( "Transforming case expression ~p...", [ E ] ),
@@ -297,23 +296,23 @@ transform_expression( ?e={ 'case', Line, TestExpression, CaseClauses },
 	Res = case Transforms#ast_transforms.transform_table of
 
 		undefined ->
-			transform_case( Line, TestExpression, CaseClauses, Transforms );
+			transform_case( FileLoc, TestExpression, CaseClauses, Transforms );
 
 		TransformTable ->
 			case ?table:lookup_entry( 'case', TransformTable ) of
 
 				key_not_found ->
-					transform_case( Line, TestExpression, CaseClauses,
+					transform_case( FileLoc, TestExpression, CaseClauses,
 									Transforms );
 
 				{ value, CaseTransformFun } ->
-					% Returns directly { NewExprs, NewTransforms }:
+					% Returns directly {NewExprs, NewTransforms}:
 					%
 					% (note that this transform function is responsible for
 					% recursing in the parameters if needed - which is probably
 					% the case)
 					%
-					CaseTransformFun( Line, TestExpression, CaseClauses,
+					CaseTransformFun( FileLoc, TestExpression, CaseClauses,
 									  Transforms )
 
 			end
@@ -330,9 +329,9 @@ transform_expression( ?e={ 'case', Line, TestExpression, CaseClauses },
 % Match expression found:
 %
 % "If E is a match operator expression P = E_0, where P is a pattern, then
-% Rep(E) = {match,LINE,Rep(P),Rep(E_0)}."
+% Rep(E) = {match, FILE_LOC, Rep(P), Rep(E_0)}."
 %
-transform_expression( ?e={ 'match', Line, MatchPattern, MatchExpression },
+transform_expression( ?e={ 'match', FileLoc, MatchPattern, MatchExpression },
 					  Transforms ) ?rec_guard ->
 
 	?log_enter( "Transforming match expression ~p...", [ E ] ),
@@ -341,23 +340,24 @@ transform_expression( ?e={ 'match', Line, MatchPattern, MatchExpression },
 	Res = case Transforms#ast_transforms.transform_table of
 
 		undefined ->
-			transform_match( Line, MatchPattern, MatchExpression, Transforms );
+			transform_match( FileLoc, MatchPattern, MatchExpression,
+							 Transforms );
 
 		TransformTable ->
 			case ?table:lookup_entry( 'match', TransformTable ) of
 
 				key_not_found ->
-					transform_match( Line, MatchPattern, MatchExpression,
+					transform_match( FileLoc, MatchPattern, MatchExpression,
 									 Transforms );
 
 				{ value, MatchTransformFun } ->
-					% Returns directly { NewExprs, NewTransforms }:
+					% Returns directly {NewExprs, NewTransforms}:
 					%
 					% (note that this transform function is responsible for
 					% recursing in the parameters if needed - which is probably
 					% the case)
 					%
-					MatchTransformFun( Line, MatchPattern, MatchExpression,
+					MatchTransformFun( FileLoc, MatchPattern, MatchExpression,
 									   Transforms )
 
 			end
@@ -375,22 +375,24 @@ transform_expression( ?e={ 'match', Line, MatchPattern, MatchExpression },
 %
 % "If E is a bitstring constructor <<E_1:Size_1/TSL_1, ..., E_k:Size_k/TSL_k>>,
 % where each Size_i is an expression and each TSL_i is a type specificer list,
-% then Rep(E) = {bin,LINE,[{bin_element,LINE,Rep(E_1),Rep(Size_1),Rep(TSL_1)},
-% ..., {bin_element,LINE,Rep(E_k),Rep(Size_k),Rep(TSL_k)}]}. For Rep(TSL), see
-% below. An omitted Size_i is represented by default. An omitted TSL_i is
-% represented by default."
+% then Rep(E) = {bin, FILE_LOC, [{bin_element, FILE_LOC, Rep(E_1), Rep(Size_1),
+% Rep(TSL_1)}, ..., {bin_element, FILE_LOC, Rep(E_k), Rep(Size_k),
+% Rep(TSL_k)}]}.
 %
-transform_expression( ?e={ 'bin', Line, BinElemPatterns },
+% For Rep(TSL), see below. An omitted Size_i is represented by default. An
+% omitted TSL_i is represented by default."
+%
+transform_expression( ?e={ 'bin', FileLoc, BinElemPatterns },
 					  Transforms ) ?rec_guard ->
 
 	?log_enter( "Transforming bin expression ~p...", [ E ] ),
 
 	% TO-DO: add a 'bin' transform trigger.
 
-	{ NewBinElemPattern, NewTransforms } = ast_bitstring:transform_bin_elements(
-											 BinElemPatterns, Transforms ),
+	{ NewBinElemPattern, NewTransforms } =
+		ast_bitstring:transform_bin_elements( BinElemPatterns, Transforms ),
 
-	NewExpr = { 'bin', Line, NewBinElemPattern },
+	NewExpr = { 'bin', FileLoc, NewBinElemPattern },
 
 	Res = { [ NewExpr ], NewTransforms },
 
@@ -403,9 +405,9 @@ transform_expression( ?e={ 'bin', Line, BinElemPatterns },
 % Unary operation expression found:
 %
 % "If E is an operator expression Op E_0, where Op is a unary operator, then
-% Rep(E) = {op,LINE,Op,Rep(E_0)}."
+% Rep(E) = {op, FILE_LOC, Op, Rep(E_0)}."
 %
-transform_expression( ?e={ 'op', Line, Operator, Operand },
+transform_expression( ?e={ 'op', FileLoc, Operator, Operand },
 					  Transforms ) ?rec_guard ->
 
 	?log_enter( "Transforming unary operation expression ~p...", [ E ] ),
@@ -415,7 +417,7 @@ transform_expression( ?e={ 'op', Line, Operator, Operand },
 	{ [ NewOperand ], NewTransforms } =
 		transform_expression( Operand, Transforms ),
 
-	NewExpr = { 'op', Line, Operator, NewOperand },
+	NewExpr = { 'op', FileLoc, Operator, NewOperand },
 
 	Res = { [ NewExpr ], NewTransforms },
 
@@ -428,9 +430,10 @@ transform_expression( ?e={ 'op', Line, Operator, Operand },
 % Binary operation expression found:
 %
 % "If E is an operator expression E_1 Op E_2, where Op is a binary operator
-% other than match operator =, then Rep(E) = {op,LINE,Op,Rep(E_1),Rep(E_2)}."
+% other than match operator =, then Rep(E) = {op, FILE_LOC, Op, Rep(E_1),
+% Rep(E_2)}."
 %
-transform_expression( ?e={ 'op', Line, Operator, LeftOperand, RightOperand },
+transform_expression( ?e={ 'op', FileLoc, Operator, LeftOperand, RightOperand },
 					  Transforms ) ?rec_guard ->
 
 	?log_enter( "Transforming binary operation expression ~p...", [ E ] ),
@@ -443,7 +446,7 @@ transform_expression( ?e={ 'op', Line, Operator, LeftOperand, RightOperand },
 	{ [ NewRightOperand ], RightTransforms } =
 		transform_expression( RightOperand, LeftTransforms ),
 
-	NewExpr = { 'op', Line, Operator, NewLeftOperand, NewRightOperand },
+	NewExpr = { 'op', FileLoc, Operator, NewLeftOperand, NewRightOperand },
 
 	Res = { [ NewExpr ], RightTransforms },
 
@@ -457,10 +460,10 @@ transform_expression( ?e={ 'op', Line, Operator, LeftOperand, RightOperand },
 % Receive "simple" (with no 'after' clause) expression found:
 %
 % "If E is a receive expression receive Cc_1 ; ... ; Cc_k end, where each Cc_i
-% is a case clause, then Rep(E) = {'receive',LINE,[Rep(Cc_1), ...,
-% Rep(Cc_k)]}.."
+% is a case clause, then Rep(E) = {'receive', FILE_LOC, [Rep(Cc_1), ...,
+% Rep(Cc_k)]}."
 %
-transform_expression( ?e={ 'receive', Line, ReceiveClauses },
+transform_expression( ?e={ 'receive', FileLoc, ReceiveClauses },
 					  Transforms ) ?rec_guard ->
 
 	?log_enter( "Transforming simple receive expression ~p...", [ E ] ),
@@ -469,23 +472,23 @@ transform_expression( ?e={ 'receive', Line, ReceiveClauses },
 	Res = case Transforms#ast_transforms.transform_table of
 
 		undefined ->
-			transform_simple_receive( Line, ReceiveClauses, Transforms );
+			transform_simple_receive( FileLoc, ReceiveClauses, Transforms );
 
 		TransformTable ->
 			case ?table:lookup_entry( 'simple_receive', TransformTable ) of
 
 				key_not_found ->
-					transform_simple_receive( Line, ReceiveClauses,
+					transform_simple_receive( FileLoc, ReceiveClauses,
 											  Transforms );
 
 				{ value, ReceiveTransformFun } ->
-					% Returns directly { NewExprs, NewTransforms }:
+					% Returns directly {NewExprs, NewTransforms}:
 					%
 					% (note that this transform function is responsible for
 					% recursing in the parameters if needed - which is probably
 					% the case)
 					%
-					ReceiveTransformFun( Line, ReceiveClauses, Transforms )
+					ReceiveTransformFun( FileLoc, ReceiveClauses, Transforms )
 
 			end
 
@@ -501,9 +504,10 @@ transform_expression( ?e={ 'receive', Line, ReceiveClauses },
 %
 % "If E is a receive expression receive Cc_1 ; ... ; Cc_k after E_0 -> B_t end,
 % where each Cc_i is a case clause, E_0 is an expression, and B_t is a body,
-% then Rep(E) = {'receive',LINE,[Rep(Cc_1), ..., Rep(Cc_k)],Rep(E_0),Rep(B_t)}.
+% then Rep(E) = { 'receive', FILE_LOC, [Rep(Cc_1), ..., Rep(Cc_k)], Rep(E_0),
+% Rep(B_t)}.
 %
-transform_expression( ?e={ 'receive', Line, ReceiveClauses, AfterTest,
+transform_expression( ?e={ 'receive', FileLoc, ReceiveClauses, AfterTest,
 						   AfterExpressions }, Transforms ) ?rec_guard ->
 
 	?log_enter( "Transforming receive expression with after ~p...", [ E ] ),
@@ -512,24 +516,24 @@ transform_expression( ?e={ 'receive', Line, ReceiveClauses, AfterTest,
 	Res = case Transforms#ast_transforms.transform_table of
 
 		undefined ->
-			transform_receive_with_after( Line, ReceiveClauses, AfterTest,
+			transform_receive_with_after( FileLoc, ReceiveClauses, AfterTest,
 										  AfterExpressions, Transforms );
 
 		TransformTable ->
 			case ?table:lookup_entry( 'receive_with_after', TransformTable ) of
 
 				key_not_found ->
-					transform_receive_with_after( Line, ReceiveClauses,
-							   AfterTest, AfterExpressions, Transforms );
+					transform_receive_with_after( FileLoc, ReceiveClauses,
+								AfterTest, AfterExpressions, Transforms );
 
 				{ value, ReceiveTransformFun } ->
-					% Returns directly { NewExprs, NewTransforms }:
+					% Returns directly {NewExprs, NewTransforms}:
 					%
 					% (note that this transform function is responsible for
 					% recursing in the parameters if needed - which is probably
 					% the case)
 					%
-					ReceiveTransformFun( Line, ReceiveClauses, AfterTest,
+					ReceiveTransformFun( FileLoc, ReceiveClauses, AfterTest,
 										 AfterExpressions, Transforms )
 
 			end
@@ -546,31 +550,31 @@ transform_expression( ?e={ 'receive', Line, ReceiveClauses, AfterTest,
 % Try expression found (6 different forms managed in this single clause):
 %
 % - "If E is a try expression try B catch Tc_1 ; ... ; Tc_k end, where B is a
-% body and each Tc_i is a catch clause, then Rep(E) =
-% {'try',LINE,Rep(B),[],[Rep(Tc_1), ..., Rep(Tc_k)],[]}."
+% body and each Tc_i is a catch clause, then Rep(E) = {'try', FILE_LOC, Rep(B),
+% [], [Rep(Tc_1), ..., Rep(Tc_k)], []}."
 %
 % - "If E is a try expression try B of Cc_1 ; ... ; Cc_k catch Tc_1 ; ... ; Tc_n
 % end, where B is a body, each Cc_i is a case clause, and each Tc_j is a catch
-% clause, then Rep(E) = {'try',LINE,Rep(B),[Rep(Cc_1), ...,
-% Rep(Cc_k)],[Rep(Tc_1), ..., Rep(Tc_n)],[]}."
+% clause, then Rep(E) = {'try', FILE_LOC, Rep(B), [Rep(Cc_1), ..., Rep(Cc_k)],
+% [Rep(Tc_1), ..., Rep(Tc_n)], []}."
 %
 % - "If E is a try expression try B after A end, where B and A are bodies, then
-% Rep(E) = {'try',LINE,Rep(B),[],[],Rep(A)}."
+% Rep(E) = {'try', FILE_LOC, Rep(B), [], [], Rep(A)}."
 %
 % - "If E is a try expression try B of Cc_1 ; ... ; Cc_k after A end, where B
-% and A are a bodies, and each Cc_i is a case clause, then Rep(E) =
-% {'try',LINE,Rep(B),[Rep(Cc_1), ..., Rep(Cc_k)],[],Rep(A)}."
+% and A are a bodies, and each Cc_i is a case clause, then Rep(E) = {'try',
+% FILE_LOC, Rep(B), [Rep(Cc_1), ..., Rep(Cc_k)], [], Rep(A)}."
 %
 % - "If E is a try expression try B catch Tc_1 ; ... ; Tc_k after A end, where B
-% and A are bodies, and each Tc_i is a catch clause, then Rep(E) =
-% {'try',LINE,Rep(B),[],[Rep(Tc_1), ..., Rep(Tc_k)],Rep(A)}."
+% and A are bodies, and each Tc_i is a catch clause, then Rep(E) = {'try',
+% FILE_LOC, Rep(B), [], [Rep(Tc_1), ..., Rep(Tc_k)], Rep(A)}."
 %
 % - "If E is a try expression try B of Cc_1 ; ... ; Cc_k catch Tc_1 ; ... ; Tc_n
 % after A end, where B and A are a bodies, each Cc_i is a case clause, and each
-% Tc_j is a catch clause, then Rep(E) = {'try',LINE,Rep(B),[Rep(Cc_1), ...,
-% Rep(Cc_k)],[Rep(Tc_1), ..., Rep(Tc_n)],Rep(A)}."
+% Tc_j is a catch clause, then Rep(E) = {'try', FILE_LOC, Rep(B), [Rep(Cc_1),
+% ..., Rep(Cc_k)], [Rep(Tc_1), ..., Rep(Tc_n)], Rep(A)}."
 %
-transform_expression( ?e={ 'try', Line, TryBody, TryClauses, CatchClauses,
+transform_expression( ?e={ 'try', FileLoc, TryBody, TryClauses, CatchClauses,
 						   AfterBody }, Transforms ) ?rec_guard ->
 
 	?log_enter( "Transforming try expression ~p...", [ E ] ),
@@ -579,24 +583,24 @@ transform_expression( ?e={ 'try', Line, TryBody, TryClauses, CatchClauses,
 	Res = case Transforms#ast_transforms.transform_table of
 
 		undefined ->
-			transform_try( Line, TryBody, TryClauses, CatchClauses, AfterBody,
-						   Transforms );
+			transform_try( FileLoc, TryBody, TryClauses, CatchClauses,
+						   AfterBody, Transforms );
 
 		TransformTable ->
 			case ?table:lookup_entry( 'try', TransformTable ) of
 
 				key_not_found ->
-					transform_try( Line, TryBody, TryClauses, CatchClauses,
+					transform_try( FileLoc, TryBody, TryClauses, CatchClauses,
 								   AfterBody, Transforms );
 
 				{ value, TryTransformFun } ->
-					% Returns directly { NewExprs, NewTransforms }:
+					% Returns directly {NewExprs, NewTransforms}:
 					%
 					% (note that this transform function is responsible for
 					% recursing in the parameters if needed - which is probably
 					% the case)
 					%
-					TryTransformFun( Line, TryBody, TryClauses, CatchClauses,
+					TryTransformFun( FileLoc, TryBody, TryClauses, CatchClauses,
 									 AfterBody, Transforms )
 
 			end
@@ -611,12 +615,12 @@ transform_expression( ?e={ 'try', Line, TryBody, TryClauses, CatchClauses,
 % Useful indeed, typically should a define be replaced by
 % module_name:function_name (see the myriad_spawn define for an example)
 %
-transform_expression( ?e={ 'remote', Line, ModuleExpr, FunctionExpr },
+transform_expression( ?e={ 'remote', FileLoc, ModuleExpr, FunctionExpr },
 					  Transforms ) ?rec_guard ->
 
 	%ast_utils:display_debug( "Remote transform expression, with module "
-	%						 "expression '~p' and function one '~p'.",
-	%						 [ ModuleExpr, FunctionExpr ] ),
+	%   "expression '~p' and function one '~p'.",
+	%   [ ModuleExpr, FunctionExpr ] ),
 
 	% TO-DO: add a 'remote' transform trigger.
 
@@ -628,7 +632,7 @@ transform_expression( ?e={ 'remote', Line, ModuleExpr, FunctionExpr },
 	{ [ NewFunctionExpr ], FunTransforms } =
 		transform_expression( FunctionExpr, ModTransforms ),
 
-	NewExpr = { 'remote', Line, NewModuleExpr, NewFunctionExpr },
+	NewExpr = { 'remote', FileLoc, NewModuleExpr, NewFunctionExpr },
 
 	Res = { [ NewExpr ], FunTransforms },
 
@@ -639,9 +643,10 @@ transform_expression( ?e={ 'remote', Line, ModuleExpr, FunctionExpr },
 
 % Catch expression found:
 %
-% "If E is a catch expression catch E_0, then Rep(E) = {'catch',LINE,Rep(E_0)}."
+% "If E is a catch expression catch E_0, then Rep(E) = {'catch', FILE_LOC,
+% Rep(E_0)}."
 %
-transform_expression( ?e={ 'catch', Line, Expression },
+transform_expression( ?e={ 'catch', FileLoc, Expression },
 					  Transforms ) ?rec_guard ->
 
 	?log_enter( "Transforming catch expression ~p...", [ E ] ),
@@ -650,22 +655,22 @@ transform_expression( ?e={ 'catch', Line, Expression },
 	Res = case Transforms#ast_transforms.transform_table of
 
 		undefined ->
-			transform_catch( Line, Expression, Transforms );
+			transform_catch( FileLoc, Expression, Transforms );
 
 		TransformTable ->
 			case ?table:lookup_entry( 'catch', TransformTable ) of
 
 				key_not_found ->
-					transform_catch( Line, Expression, Transforms );
+					transform_catch( FileLoc, Expression, Transforms );
 
 				{ value, CatchTransformFun } ->
-					% Returns directly { NewExprs, NewTransforms }:
+					% Returns directly {NewExprs, NewTransforms}:
 					%
 					% (note that this transform function is responsible for
 					% recursing in the parameters if needed - which is probably
 					% the case)
 					%
-					CatchTransformFun( Line, Expression, Transforms )
+					CatchTransformFun( FileLoc, Expression, Transforms )
 
 			end
 
@@ -678,13 +683,13 @@ transform_expression( ?e={ 'catch', Line, Expression },
 
 % Cons expression found:
 %
-% "If E is a cons skeleton [E_h | E_t], then Rep(E) =
-% {cons,LINE,Rep(E_h),Rep(E_t)}."
+% "If E is a cons skeleton [E_h | E_t], then Rep(E) = {cons, FILE_LOC, Rep(E_h),
+% Rep(E_t)}."
 %
 % Head and Tail members are expressions (not just patterns), as a member can
 % for example be : {call,56, {remote, ...
 %
-transform_expression( ?e={ 'cons', Line, HeadExpression, TailExpression },
+transform_expression( ?e={ 'cons', FileLoc, HeadExpression, TailExpression },
 					  Transforms ) ?rec_guard ->
 
 	?log_enter( "Transforming cons expression ~p...", [ E ] ),
@@ -698,7 +703,7 @@ transform_expression( ?e={ 'cons', Line, HeadExpression, TailExpression },
 	{ [ NewTailExpression ], TailTransforms } =
 		transform_expression( TailExpression, HeadTranforms ),
 
-	NewExpr = { 'cons', Line, NewHeadExpression, NewTailExpression },
+	NewExpr = { 'cons', FileLoc, NewHeadExpression, NewTailExpression },
 
 	Res = { [ NewExpr ], TailTransforms },
 
@@ -710,10 +715,10 @@ transform_expression( ?e={ 'cons', Line, HeadExpression, TailExpression },
 % List comprehension found:
 %
 % "If E is a list comprehension [E_0 || Q_1, ..., Q_k], where each Q_i is a
-% qualifier, then Rep(E) = {lc,LINE,Rep(E_0),[Rep(Q_1), ..., Rep(Q_k)]}. For
-% Rep(Q), see below.."
+% qualifier, then Rep(E) = {lc, FILE_LOC, Rep(E_0), [Rep(Q_1), ...,
+% Rep(Q_k)]}. For Rep(Q), see below."
 %
-transform_expression( ?e={ 'lc', Line, Expression, Qualifiers },
+transform_expression( ?e={ 'lc', FileLoc, Expression, Qualifiers },
 					  Transforms ) ?rec_guard ->
 
 	?log_enter( "Transforming list comprehension ~p...", [ E ] ),
@@ -726,7 +731,7 @@ transform_expression( ?e={ 'lc', Line, Expression, Qualifiers },
 	{ NewQualifiers, QualTransforms } =
 		transform_qualifiers( Qualifiers, ExprTransforms ),
 
-	NewExpr = { 'lc', Line, NewExpression, NewQualifiers },
+	NewExpr = { 'lc', FileLoc, NewExpression, NewQualifiers },
 
 	Res = { [ NewExpr ], QualTransforms },
 
@@ -738,9 +743,10 @@ transform_expression( ?e={ 'lc', Line, Expression, Qualifiers },
 % Bitstring comprehension found:
 %
 % "If E is a bitstring comprehension <<E_0 || Q_1, ..., Q_k>>, where each Q_i is
-% a qualifier, then Rep(E) = {bc,LINE,Rep(E_0),[Rep(Q_1), ..., Rep(Q_k)]}."
+% a qualifier, then Rep(E) = {bc, FILE_LOC, Rep(E_0), [Rep(Q_1), ...,
+% Rep(Q_k)]}."
 %
-transform_expression( ?e={ 'bc', Line, Expression, Qualifiers },
+transform_expression( ?e={ 'bc', FileLoc, Expression, Qualifiers },
 					  Transforms ) ?rec_guard ->
 
 	?log_enter( "Transforming bitstring comprehension ~p...", [ E ] ),
@@ -753,7 +759,7 @@ transform_expression( ?e={ 'bc', Line, Expression, Qualifiers },
 	{ NewQualifiers, QualTransforms } =
 		transform_qualifiers( Qualifiers, ExprTransforms ),
 
-	NewExpr = { 'bc', Line, NewExpression, NewQualifiers },
+	NewExpr = { 'bc', FileLoc, NewExpression, NewQualifiers },
 
 	Res = { [ NewExpr ], QualTransforms },
 
@@ -764,10 +770,10 @@ transform_expression( ?e={ 'bc', Line, Expression, Qualifiers },
 
 % Tuple skeleton found:
 %
-% "If E is a tuple skeleton {E_1, ..., E_k}, then Rep(E) =
-% {tuple,LINE,[Rep(E_1), ..., Rep(E_k)]}."
+% "If E is a tuple skeleton {E_1, ..., E_k}, then Rep(E) = {tuple, FILE_LOC,
+% [Rep(E_1), ..., Rep(E_k)]}."
 %
-transform_expression( ?e={ 'tuple', Line, Expressions },
+transform_expression( ?e={ 'tuple', FileLoc, Expressions },
 					  Transforms ) ?rec_guard ->
 
 	?log_enter( "Transforming tuple skeleton ~p...", [ E ] ),
@@ -777,7 +783,7 @@ transform_expression( ?e={ 'tuple', Line, Expressions },
 	{ NewExpressions, NewTransforms } =
 		transform_expressions( Expressions, Transforms ),
 
-	NewExpr = { 'tuple', Line, NewExpressions },
+	NewExpr = { 'tuple', FileLoc, NewExpressions },
 
 	Res = { [ NewExpr ], NewTransforms },
 
@@ -790,10 +796,10 @@ transform_expression( ?e={ 'tuple', Line, Expressions },
 % Map creation found:
 %
 % "If E is a map creation #{A_1, ..., A_k}, where each A_i is an association
-% E_i_1 => E_i_2 or E_i_1 := E_i_2, then Rep(E) = {map,LINE,[Rep(A_1), ...,
-% Rep(A_k)]}."
+% E_i_1 => E_i_2 or E_i_1 := E_i_2, then Rep(E) = {map, FILE_LOC, [Rep(A_1),
+% ..., Rep(A_k)]}."
 %
-transform_expression( ?e={ 'map', Line, Expressions },
+transform_expression( ?e={ 'map', FileLoc, Expressions },
 					  Transforms ) ?rec_guard ->
 
 	?log_enter( "Transforming map creation ~p...", [ E ] ),
@@ -803,7 +809,7 @@ transform_expression( ?e={ 'map', Line, Expressions },
 	{ NewExpressions, NewTransforms } =
 		transform_expressions( Expressions, Transforms ),
 
-	NewExpr = { 'map', Line, NewExpressions },
+	NewExpr = { 'map', FileLoc, NewExpressions },
 
 	Res = { [ NewExpr ], NewTransforms },
 
@@ -815,10 +821,10 @@ transform_expression( ?e={ 'map', Line, Expressions },
 % Map update found:
 %
 % "If E is a map update E_0#{A_1, ..., A_k}, where each A_i is an association
-% E_i_1 => E_i_2 or E_i_1 := E_i_2, then Rep(E) = {map,LINE,Rep(E_0),[Rep(A_1),
-% ..., Rep(A_k)]}."
+% E_i_1 => E_i_2 or E_i_1 := E_i_2, then Rep(E) = {map, FILE_LOC, Rep(E_0),
+% [Rep(A_1), ..., Rep(A_k)]}."
 %
-transform_expression( ?e={ 'map', Line, MapRefExpression, AssocExpressions },
+transform_expression( ?e={ 'map', FileLoc, MapRefExpression, AssocExpressions },
 					  Transforms ) ?rec_guard ->
 
 	?log_enter( "Transforming map update ~p...", [ E ] ),
@@ -829,7 +835,7 @@ transform_expression( ?e={ 'map', Line, MapRefExpression, AssocExpressions },
 		transform_expressions( [ MapRefExpression | AssocExpressions ],
 							   Transforms ),
 
-	NewExpr = { 'map', Line, NewMapRefExpression, NewAssocExpressions },
+	NewExpr = { 'map', FileLoc, NewMapRefExpression, NewAssocExpressions },
 
 	Res = { [ NewExpr ], NewTransforms },
 
@@ -840,10 +846,10 @@ transform_expression( ?e={ 'map', Line, MapRefExpression, AssocExpressions },
 
 % Map field association found:
 %
-% "If A is an association K => V, then Rep(A) =
-% {map_field_assoc,LINE,Rep(K),Rep(V)}."
+% "If A is an association K => V, then Rep(A) = {map_field_assoc, FILE_LOC,
+% Rep(K), Rep(V)}."
 %
-transform_expression( ?e={ 'map_field_assoc', Line, KeyExpression,
+transform_expression( ?e={ 'map_field_assoc', FileLoc, KeyExpression,
 						   ValueExpression }, Transforms ) ?rec_guard ->
 
 	?log_enter( "Transforming map association ~p...", [ E ] ),
@@ -856,7 +862,8 @@ transform_expression( ?e={ 'map_field_assoc', Line, KeyExpression,
 	{ [ NewValueExpression ], ValueTransforms } =
 		transform_expression( ValueExpression, KeyTransforms ),
 
-	NewExpr = { 'map_field_assoc', Line, NewKeyExpression, NewValueExpression },
+	NewExpr = { 'map_field_assoc', FileLoc, NewKeyExpression,
+				NewValueExpression },
 
 	Res = { [ NewExpr ], ValueTransforms },
 
@@ -867,11 +874,11 @@ transform_expression( ?e={ 'map_field_assoc', Line, KeyExpression,
 
 % Map exact field association found:
 %
-% "If A is an association K := V, then Rep(A) =
-% {map_field_exact,LINE,Rep(K),Rep(V)}."
+% "If A is an association K := V, then Rep(A) = {map_field_exact, FILE_LOC,
+% Rep(K), Rep(V)}."
 %
-transform_expression( ?e={ 'map_field_exact', Line, KeyExpression,
-						  ValueExpression }, Transforms ) ?rec_guard ->
+transform_expression( ?e={ 'map_field_exact', FileLoc, KeyExpression,
+						   ValueExpression }, Transforms ) ?rec_guard ->
 
 	?log_enter( "Transforming map exact association ~p...", [ E ] ),
 
@@ -883,7 +890,8 @@ transform_expression( ?e={ 'map_field_exact', Line, KeyExpression,
 	{ [ NewValueExpression ], ValueTransforms } =
 		transform_expression( ValueExpression, KeyTransforms ),
 
-	NewExpr = { 'map_field_exact', Line, NewKeyExpression, NewValueExpression },
+	NewExpr = { 'map_field_exact', FileLoc, NewKeyExpression,
+				NewValueExpression },
 
 	Res = { [ NewExpr ], ValueTransforms },
 
@@ -900,11 +908,11 @@ transform_expression( ?e={ 'map_field_exact', Line, KeyExpression,
 % Record creation expression found:
 %
 % "If E is a record creation #Name{Field_1=E_1, ..., Field_k=E_k}, where each
-% Field_i is an atom or _, then Rep(E) =
-% {record,LINE,Name,[{record_field,LINE,Rep(Field_1),Rep(E_1)}, ...,
-% {record_field,LINE,Rep(Field_k),Rep(E_k)}]}."
+% Field_i is an atom or _, then Rep(E) = {record, FILE_LOC, Name,
+% [{record_field, FILE_LOC, Rep(Field_1), Rep(E_1)}, ..., {record_field,
+% FILE_LOC, Rep(Field_k), Rep(E_k)}]}."
 %
-transform_expression( ?e={ 'record', Line, RecordName, FieldInits },
+transform_expression( ?e={ 'record', FileLoc, RecordName, FieldInits },
 					  Transforms ) ?rec_guard ->
 
 	?log_enter( "Transforming record creation expression ~p...", [ E ] ),
@@ -914,7 +922,7 @@ transform_expression( ?e={ 'record', Line, RecordName, FieldInits },
 	{ NewFieldInits, NewTransforms } =
 		transform_record_field_inits( FieldInits, Transforms ),
 
-	NewExpr = { 'record', Line, RecordName, NewFieldInits },
+	NewExpr = { 'record', FileLoc, RecordName, NewFieldInits },
 
 	Res = { [ NewExpr ], NewTransforms },
 
@@ -927,9 +935,9 @@ transform_expression( ?e={ 'record', Line, RecordName, FieldInits },
 % Record index expression found:
 %
 % "If E is a record field index #Name.Field, where Field is an atom, then Rep(E)
-% = {record_index,LINE,Name,Rep(Field)}."
+% = {record_index, FILE_LOC, Name, Rep(Field)}."
 %
-transform_expression( ?e={ 'record_index', Line, RecordName, FieldName },
+transform_expression( ?e={ 'record_index', FileLoc, RecordName, FieldName },
 					  Transforms ) ?rec_guard ->
 
 	?log_enter( "Transforming record index expression ~p...", [ E ] ),
@@ -939,7 +947,7 @@ transform_expression( ?e={ 'record_index', Line, RecordName, FieldName },
 	{ [ NewFieldName ], NewTransforms } =
 		transform_expression( FieldName, Transforms ),
 
-	NewExpr = { 'record_index', Line, RecordName, NewFieldName },
+	NewExpr = { 'record_index', FileLoc, RecordName, NewFieldName },
 
 	Res = { [ NewExpr ], NewTransforms },
 
@@ -951,9 +959,9 @@ transform_expression( ?e={ 'record_index', Line, RecordName, FieldName },
 % Record field access found:
 %
 % "If E is a record field access E_0#Name.Field, where Field is an atom, then
-% Rep(E) = {record_field,LINE,Rep(E_0),Name,Rep(Field)}."
+% Rep(E) = {record_field, FILE_LOC, Rep(E_0), Name, Rep(Field)}."
 %
-transform_expression( ?e={ 'record_field', Line, RecordRef, RecordName,
+transform_expression( ?e={ 'record_field', FileLoc, RecordRef, RecordName,
 						   FieldName }, Transforms ) ?rec_guard ->
 
 	?log_enter( "Transforming record field access expression ~p...", [ E ] ),
@@ -966,7 +974,8 @@ transform_expression( ?e={ 'record_field', Line, RecordRef, RecordName,
 	{ [ NewFieldName ], NameTransforms } =
 		transform_expression( FieldName, RefTransforms ),
 
-	NewExpr = { 'record_field', Line, NewRecordRef, RecordName, NewFieldName },
+	NewExpr = { 'record_field', FileLoc, NewRecordRef, RecordName,
+				NewFieldName },
 
 	Res = { [ NewExpr ], NameTransforms },
 
@@ -980,7 +989,7 @@ transform_expression( ?e={ 'record_field', Line, RecordRef, RecordName,
 %
 % (not found apparently in http://erlang.org/doc/apps/erts/absform.html)
 %
-transform_expression( ?e={ 'record_field', Line, RecordRef, Field },
+transform_expression( ?e={ 'record_field', FileLoc, RecordRef, Field },
 					  Transforms ) ?rec_guard ->
 
 	% Expected never to be displayed:
@@ -997,7 +1006,7 @@ transform_expression( ?e={ 'record_field', Line, RecordRef, Field },
 	{ [ NewField ], FieldTransforms } =
 		transform_expression( Field, RefTransforms ),
 
-	NewExpr = { 'record_field', Line, NewRecordRef, NewField },
+	NewExpr = { 'record_field', FileLoc, NewRecordRef, NewField },
 
 	Res = { [ NewExpr ], FieldTransforms },
 
@@ -1009,11 +1018,11 @@ transform_expression( ?e={ 'record_field', Line, RecordRef, Field },
 % Record update found:
 %
 % "If E is a record update E_0#Name{Field_1=E_1, ..., Field_k=E_k}, where each
-% Field_i is an atom, then Rep(E) =
-% {record,LINE,Rep(E_0),Name,[{record_field,LINE,Rep(Field_1),Rep(E_1)}, ...,
-% {record_field,LINE,Rep(Field_k),Rep(E_k)}]}."
+% Field_i is an atom, then Rep(E) = {record, FILE_LOC, Rep(E_0), Name,
+% [{record_field, FILE_LOC, Rep(Field_1), Rep(E_1)}, ...,
+% {record_field, FILE_LOC, Rep(Field_k), Rep(E_k)}]}."
 %
-transform_expression( ?e={ 'record', Line, RecordRef, RecordName,
+transform_expression( ?e={ 'record', FileLoc, RecordRef, RecordName,
 						   FieldUpdates }, Transforms ) ?rec_guard ->
 
 	?log_enter( "Transforming record update expression ~p...", [ E ] ),
@@ -1026,7 +1035,7 @@ transform_expression( ?e={ 'record', Line, RecordRef, RecordName,
 	{ NewFieldUpdates, UpTransforms } =
 		transform_record_field_updates( FieldUpdates, RefTransforms ),
 
-	NewExpr = { 'record', Line, NewRecordRef, RecordName, NewFieldUpdates },
+	NewExpr = { 'record', FileLoc, NewRecordRef, RecordName, NewFieldUpdates },
 
 	Res = { [ NewExpr ], UpTransforms },
 
@@ -1039,9 +1048,9 @@ transform_expression( ?e={ 'record', Line, RecordRef, RecordName,
 % Block expression found:
 %
 % "If E is a block expression begin B end, where B is a body, then Rep(E) =
-% {block,LINE,Rep(B)}."
+% {block, FILE_LOC, Rep(B)}."
 %
-transform_expression( ?e={ 'block', Line, Expressions },
+transform_expression( ?e={ 'block', FileLoc, Expressions },
 					  Transforms ) ?rec_guard ->
 
 	?log_enter( "Transforming block expression ~p...", [ E ] ),
@@ -1052,7 +1061,7 @@ transform_expression( ?e={ 'block', Line, Expressions },
 	{ NewExpressions, NewTransforms } =
 		transform_expressions( Expressions, Transforms ),
 
-	NewExpr = { 'block', Line, NewExpressions },
+	NewExpr = { 'block', FileLoc, NewExpressions },
 
 	Res = { [ NewExpr ], NewTransforms },
 
@@ -1062,15 +1071,14 @@ transform_expression( ?e={ 'block', Line, Expressions },
 
 
 
-
 % Fun expression found:
 
 
 % "If E is a fun expression fun Fc_1 ; ... ; Fc_k end, where each Fc_i is a
-% function clause, then Rep(E) = {'fun',LINE,{clauses,[Rep(Fc_1), ...,
+% function clause, then Rep(E) = {'fun', FILE_LOC, {clauses, [Rep(Fc_1), ...,
 % Rep(Fc_k)]}}."
 %
-transform_expression( ?e={ 'fun', Line, { 'clauses', FunctionClauses } },
+transform_expression( ?e={ 'fun', FileLoc, { 'clauses', FunctionClauses } },
 					  Transforms ) ?rec_guard ->
 
 	?log_enter( "Transforming clause-based fun expression ~p...", [ E ] ),
@@ -1080,7 +1088,7 @@ transform_expression( ?e={ 'fun', Line, { 'clauses', FunctionClauses } },
 	{ NewFunctionClauses, NewTransforms } =
 		ast_clause:transform_function_clauses( FunctionClauses, Transforms ),
 
-	NewExpr = { 'fun', Line, { 'clauses', NewFunctionClauses } },
+	NewExpr = { 'fun', FileLoc, { 'clauses', NewFunctionClauses } },
 
 	Res = { [ NewExpr ], NewTransforms },
 
@@ -1090,10 +1098,10 @@ transform_expression( ?e={ 'fun', Line, { 'clauses', FunctionClauses } },
 	Res;
 
 
-% "If E is a fun expression fun Name/Arity, then Rep(E) =
-% {'fun',LINE,{function,Name,Arity}}."
+% "If E is a fun expression fun Name/Arity, then Rep(E) = {'fun', FILE_LOC,
+% {function, Name, Arity}}."
 %
-transform_expression( E={ 'fun', _Line, { 'function', _Name, _Arity } },
+transform_expression( E={ 'fun', _FileLoc, { 'function', _Name, _Arity } },
 					  Transforms ) ?rec_guard ->
 
 	?log_enter( "Transforming local fun expression ~p...", [ E ] ),
@@ -1107,7 +1115,7 @@ transform_expression( E={ 'fun', _Line, { 'function', _Name, _Arity } },
 	% Apparently no possible transformation, already fully resolved:
 	% (see expr/1 in erl_id_trans)
 	%
-	%NewExpr = { 'fun', Line, { function, NewName, NewArity } },
+	%NewExpr = { 'fun', FileLoc, { function, NewName, NewArity } },
 	NewExpr = E,
 
 	Res = { [ NewExpr ], Transforms },
@@ -1118,15 +1126,15 @@ transform_expression( E={ 'fun', _Line, { 'function', _Name, _Arity } },
 
 
 % Managing specifically the fact that, before Erlang/OTP R15, Rep(E) =
-% {'fun',LINE,{function,Module,Name,Arity}}.
+% {'fun', FILE_LOC, {function, Module, Name, Arity}}.
 %
-transform_expression( E={ 'fun', _Line,
+transform_expression( E={ 'fun', _FileLoc,
 						  _F={ 'function', Module, Name, Arity } },
 					  Transforms ) when is_atom( Module )
 	  andalso is_atom( Name ) andalso is_integer( Arity ) ?andalso_rec_guard ->
 
-	ast_utils:display_warning( "Pre-R15 fun expression '~p' detected, "
-							   "this warning should be silenced.", [ E ] ),
+	%ast_utils:display_warning( "Pre-R15 fun expression '~p' detected, "
+	%							"this warning should be silenced.", [ E ] ),
 
 	?log_enter( "Transforming pre-R15 fun expression ~p...", [ E ] ),
 
@@ -1139,13 +1147,13 @@ transform_expression( E={ 'fun', _Line,
 	Res;
 
 
-% "If E is a fun expression fun Module:Name/Arity, then Rep(E) =
-% {'fun',LINE,{function,Rep(Module),Rep(Name),Rep(Arity)}}."
+% "If E is a fun expression fun Module:Name/Arity, then Rep(E) = {'fun',
+% FILE_LOC, {function, Rep(Module), Rep(Name), Rep(Arity)}}."
 %
 % Since R15, fun M:F/A can be obtained through variables.
 %
-transform_expression( ?e={ 'fun', Line, _F={ 'function', ModuleName,
-											FunctionName, FunctionArity } },
+transform_expression( ?e={ 'fun', FileLoc,
+				_F={ 'function', ModuleName, FunctionName, FunctionArity } },
 					  Transforms ) ?rec_guard ->
 
 	?log_enter( "Transforming remote fun expression ~p...", [ E ] ),
@@ -1161,7 +1169,7 @@ transform_expression( ?e={ 'fun', Line, _F={ 'function', ModuleName,
 	{ [ NewFunctionArity ], ArityTransforms } =
 		transform_expression( FunctionArity, NameTransforms ),
 
-	NewExpr = { 'fun', Line,
+	NewExpr = { 'fun', FileLoc,
 			{ 'function', NewModuleName, NewFunctionName, NewFunctionArity } },
 
 	Res = { [ NewExpr ], ArityTransforms },
@@ -1171,10 +1179,10 @@ transform_expression( ?e={ 'fun', Line, _F={ 'function', ModuleName,
 	Res;
 
 
-% "If E is a variable V, then Rep(E) = {var,LINE,A}, where A is an atom with a
-% printname consisting of the same characters as V."
+% "If E is a variable V, then Rep(E) = {var, FILE_LOC, A}, where A is an atom
+% with a printname consisting of the same characters as V."
 %
-transform_expression( E={ 'var', _Line, _VarAtomName },
+transform_expression( E={ 'var', _FileLoc, _VarAtomName },
 					  Transforms ) ?rec_guard ->
 
 	?log_enter( "Transforming var expression with clauses ~p...", [ E ] ),
@@ -1184,7 +1192,7 @@ transform_expression( E={ 'var', _Line, _VarAtomName },
 	% Currently names not transformed:
 	%NewVarAtomName = VarAtomName,
 
-	%NewExpr = { 'var', Line, NewVarAtomName },
+	%NewExpr = { 'var', FileLoc, NewVarAtomName },
 	NewExpr = E,
 
 	Res= { [ NewExpr ], Transforms },
@@ -1195,9 +1203,8 @@ transform_expression( E={ 'var', _Line, _VarAtomName },
 	Res;
 
 
-% "If E is nil, [], then Rep(E) = {nil,LINE}."
-%
-transform_expression( E={ 'nil', _Line }, Transforms ) ?rec_guard ->
+% "If E is nil, [], then Rep(E) = {nil, FILE_LOC}."
+transform_expression( E={ 'nil', _FileLoc }, Transforms ) ?rec_guard ->
 
 	?log_enter( "Transforming nil expression with clauses ~p...", [ E ] ),
 
@@ -1217,9 +1224,9 @@ transform_expression( E={ 'nil', _Line }, Transforms ) ?rec_guard ->
 
 % "If E is a fun expression fun Name Fc_1 ; ... ; Name Fc_k end, where Name is a
 % variable and each Fc_i is a function clause, then Rep(E) =
-% {named_fun,LINE,Name,[Rep(Fc_1), ..., Rep(Fc_k)]}."
+% {named_fun, FILE_LOC, Name, [Rep(Fc_1), ..., Rep(Fc_k)]}."
 %
-transform_expression( ?e={ 'named_fun', Line, Name, FunctionClauses },
+transform_expression( ?e={ 'named_fun', FileLoc, Name, FunctionClauses },
 					  Transforms ) ?rec_guard ->
 
 	?log_enter( "Transforming named fun expression ~p...", [ E ] ),
@@ -1229,7 +1236,7 @@ transform_expression( ?e={ 'named_fun', Line, Name, FunctionClauses },
 	{ NewFunctionClauses, NewTransforms } =
 		ast_clause:transform_function_clauses( FunctionClauses, Transforms ),
 
-	NewExpr = { 'named_fun', Line, Name, NewFunctionClauses },
+	NewExpr = { 'named_fun', FileLoc, Name, NewFunctionClauses },
 
 	Res = { [ NewExpr ], NewTransforms },
 
@@ -1242,7 +1249,7 @@ transform_expression( ?e={ 'named_fun', Line, Name, FunctionClauses },
 %
 % Wish type_utils:get_immediate_types/0 could be used in a guard.
 %
-transform_expression( E={ AtomicLiteralType, _Line, _Value },
+transform_expression( E={ AtomicLiteralType, _FileLoc, _Value },
 					  Transforms ) when ( AtomicLiteralType =:= 'atom' orelse
 		AtomicLiteralType =:= 'char' orelse AtomicLiteralType =:= 'float' orelse
 		AtomicLiteralType =:= 'integer' orelse AtomicLiteralType =:= 'string' )
@@ -1278,18 +1285,19 @@ transform_expression( Expression, Transforms ) ->
 
 
 % Section centralising the transformations that are specific to a kind of
-% expressions.
+% expression.
 
 
 
-% Transforms an expression corresponding to a function call into another one
-% (exactly).
+% @doc Transforms an expression corresponding to a function call into another
+% one (exactly).
 %
 % (default traversal implementation)
 %
--spec transform_call( line(), function_ref_expression(), params_expression(),
-			ast_transforms() ) -> { [ ast_expression() ], ast_transforms() }.
-transform_call( Line, FunctionRef, Params, Transforms ) ?rec_guard ->
+-spec transform_call( file_loc(), function_ref_expression(),
+					  params_expression(), ast_transforms() ) ->
+							{ [ ast_expression() ], ast_transforms() }.
+transform_call( FileLoc, FunctionRef, Params, Transforms ) ?rec_guard ->
 
 	?log_enter( "Transforming 'call', to function reference ~p",
 				[ FunctionRef ] ),
@@ -1307,38 +1315,40 @@ transform_call( Line, FunctionRef, Params, Transforms ) ?rec_guard ->
 	NewArity = length( NewParams ),
 
 	{ [ FinalFunctionRef ], FinalTransforms } = transform_call_expression(
-						 TransformedFunctionRef, NewArity, ParamsTransforms ),
+						TransformedFunctionRef, NewArity, ParamsTransforms ),
 
-	NewExpr = { 'call', Line, FinalFunctionRef, NewParams },
+	NewExpr = { 'call', FileLoc, FinalFunctionRef, NewParams },
 
 	{ [ NewExpr ], FinalTransforms }.
 
 
 
-% Transforms an expression corresponding to an 'if' into another one (exactly).
+% @doc Transforms an expression corresponding to an 'if' into another one
+% (exactly).
 %
 % (default traversal implementation)
 %
--spec transform_if( line(), [ ast_if_clause() ], ast_transforms() ) ->
+-spec transform_if( file_loc(), [ ast_if_clause() ], ast_transforms() ) ->
 							{ [ ast_expression() ], ast_transforms() }.
-transform_if( Line, Clauses, Transforms ) ?rec_guard ->
+transform_if( FileLoc, Clauses, Transforms ) ?rec_guard ->
 
 	{ NewClauses, NewTransforms } =
 		ast_clause:transform_if_clauses( Clauses, Transforms ),
 
-	NewExpr = { 'if', Line, NewClauses },
+	NewExpr = { 'if', FileLoc, NewClauses },
 
 	{ [ NewExpr ], NewTransforms }.
 
 
 
-% Transforms an expression corresponding to a 'case' into another one (exactly).
+% @doc Transforms an expression corresponding to a 'case' into another one
+% (exactly).
 %
 % (default traversal implementation)
 %
--spec transform_case( line(), ast_expression(), [ ast_case_clause() ],
+-spec transform_case( file_loc(), ast_expression(), [ ast_case_clause() ],
 			ast_transforms() ) -> { [ ast_expression() ], ast_transforms() }.
-transform_case( Line, TestExpression, CaseClauses, Transforms ) ?rec_guard ->
+transform_case( FileLoc, TestExpression, CaseClauses, Transforms ) ?rec_guard ->
 
 	{ [ NewTestExpression ], TestTransforms } =
 		transform_expression( TestExpression, Transforms ),
@@ -1346,68 +1356,68 @@ transform_case( Line, TestExpression, CaseClauses, Transforms ) ?rec_guard ->
 	{ NewCaseClauses, CaseTransforms } =
 		ast_clause:transform_case_clauses( CaseClauses, TestTransforms ),
 
-	NewExpr = { 'case', Line, NewTestExpression, NewCaseClauses },
+	NewExpr = { 'case', FileLoc, NewTestExpression, NewCaseClauses },
 
 	{ [ NewExpr ], CaseTransforms }.
 
 
 
 
-% Transforms an expression corresponding to a 'match' into another one
+% @doc Transforms an expression corresponding to a 'match' into another one
 % (exactly).
 %
 % (default traversal implementation)
 %
--spec transform_match( line(), ast_pattern:ast_pattern(), ast_expression(),
+-spec transform_match( file_loc(), ast_pattern(), ast_expression(),
 			ast_transforms() ) -> { [ ast_expression() ], ast_transforms() }.
-transform_match( Line, MatchPattern, MatchExpression, Transforms ) ?rec_guard ->
+transform_match( FileLoc, MatchPattern, MatchExpression,
+				 Transforms ) ?rec_guard ->
 
 	{ NewMatchPattern, PatternTransforms } =
 		ast_pattern:transform_pattern( MatchPattern, Transforms ),
 
-	%?log_enter( "Transforming match expression: ~p",
-	%						 [ MatchExpression ] ),
+	%?log_enter( "Transforming match expression: ~p", [ MatchExpression ] ),
 
 	{ [ NewMatchExpression ], ExprTransforms } =
 		transform_expression( MatchExpression, PatternTransforms ),
 
 	%ast_utils:display_debug( "New match expression:~p",
-	%						 [ NewMatchExpression ] ),
+	%						  [ NewMatchExpression ] ),
 
-	NewExpr = { 'match', Line, NewMatchPattern, NewMatchExpression },
+	NewExpr = { 'match', FileLoc, NewMatchPattern, NewMatchExpression },
 
 	{ [ NewExpr ], ExprTransforms }.
 
 
 
-% Transforms an expression corresponding to a simple 'receive' into another one
-% (exactly).
+% @doc Transforms an expression corresponding to a simple 'receive' into another
+% one (exactly).
 %
 % (default traversal implementation)
 %
--spec transform_simple_receive( line(), [ ast_case_clause() ],
+-spec transform_simple_receive( file_loc(), [ ast_case_clause() ],
 			ast_transforms() ) -> { [ ast_expression() ], ast_transforms() }.
-transform_simple_receive( Line, ReceiveClauses, Transforms ) ?rec_guard ->
+transform_simple_receive( FileLoc, ReceiveClauses, Transforms ) ?rec_guard ->
 
 	% 'case' clauses relevant here:
 	{ NewReceiveClauses, NewTransforms } =
 		ast_clause:transform_case_clauses( ReceiveClauses, Transforms ),
 
-	NewExpr = { 'receive', Line, NewReceiveClauses },
+	NewExpr = { 'receive', FileLoc, NewReceiveClauses },
 
 	{ [ NewExpr ], NewTransforms }.
 
 
 
-% Transforms an expression corresponding to a simple 'receive' into another one
-% (exactly).
+% @doc Transforms an expression corresponding to a simple 'receive' into another
+% one (exactly).
 %
 % (default traversal implementation)
 %
--spec transform_receive_with_after( line(), [ ast_case_clause() ],
+-spec transform_receive_with_after( file_loc(), [ ast_case_clause() ],
 		ast_expression(), ast_body(), ast_transforms() ) ->
 								{ [ ast_expression() ], ast_transforms() }.
-transform_receive_with_after( Line, ReceiveClauses, AfterTest,
+transform_receive_with_after( FileLoc, ReceiveClauses, AfterTest,
 							  AfterBody, Transforms ) ?rec_guard ->
 
 	% 'case' clauses relevant here:
@@ -1420,26 +1430,27 @@ transform_receive_with_after( Line, ReceiveClauses, AfterTest,
 	% Not exactly, as this is a body:
 	%
 	%{ NewAfterExpressions, AfterTransforms } =
-	%	transform_expressions( AfterExpressions, AfterTestTransforms ),
+	%    transform_expressions( AfterExpressions, AfterTestTransforms ),
 	%
 	{ NewAfterBody, AfterTransforms } =
 		ast_clause:transform_body( AfterBody, AfterTestTransforms ),
 
-	NewExpr = { 'receive', Line, NewReceiveClauses, NewAfterTest,
+	NewExpr = { 'receive', FileLoc, NewReceiveClauses, NewAfterTest,
 				 NewAfterBody },
 
 	{ [ NewExpr ], AfterTransforms }.
 
 
 
-% Transforms an expression corresponding to a 'try' into another one (exactly).
+% @doc Transforms an expression corresponding to a 'try' into another one
+% (exactly).
 %
 % (default traversal implementation)
 %
--spec transform_try( line(), ast_body(), [ ast_case_clause() ],
+-spec transform_try( file_loc(), ast_body(), [ ast_case_clause() ],
 					 [ ast_case_clause() ], ast_body(), ast_transforms() ) ->
 							{ [ ast_expression() ], ast_transforms() }.
-transform_try( Line, TryBody, TryClauses, CatchClauses, AfterBody,
+transform_try( FileLoc, TryBody, TryClauses, CatchClauses, AfterBody,
 			   Transforms ) ?rec_guard ->
 
 	{ NewTryBody, TryBodyTranforms } =
@@ -1454,34 +1465,36 @@ transform_try( Line, TryBody, TryClauses, CatchClauses, AfterBody,
 	{ NewAfterBody, AfterTransforms } =
 		ast_clause:transform_body( AfterBody, CatchTransforms ),
 
-	NewExpr = { 'try', Line, NewTryBody, NewTryClauses, NewCatchClauses,
+	NewExpr = { 'try', FileLoc, NewTryBody, NewTryClauses, NewCatchClauses,
 				NewAfterBody },
 
 	{ [ NewExpr ], AfterTransforms }.
 
 
 
-% Transforms an expression corresponding to a 'catch' into another one
+% @doc Transforms an expression corresponding to a 'catch' into another one
 % (exactly).
 %
 % (default traversal implementation)
 %
--spec transform_catch( line(), ast_expression(), ast_transforms() ) ->
+-spec transform_catch( file_loc(), ast_expression(), ast_transforms() ) ->
 							{ [ ast_expression() ], ast_transforms() }.
-transform_catch( Line, Expression, Transforms ) ?rec_guard ->
+transform_catch( FileLoc, Expression, Transforms ) ?rec_guard ->
 
 	{ [ NewExpression ], NewTransforms } =
 		transform_expression( Expression, Transforms ),
 
-	NewExpr = { 'catch', Line, NewExpression },
+	NewExpr = { 'catch', FileLoc, NewExpression },
 
 	{ [ NewExpr ], NewTransforms }.
 
 
 
 
-
-% For convenience:
+% @doc Transforms specified list of expressions.
+%
+% Defined for convenience.
+%
 -spec transform_expressions( [ ast_expression() ], ast_transforms() ) ->
 									{ [ ast_expression() ], ast_transforms() }.
 transform_expressions( Expressions, Transforms ) ?rec_guard ->
@@ -1490,7 +1503,7 @@ transform_expressions( Expressions, Transforms ) ?rec_guard ->
 	% lists:mapfoldl/3 should be replaced by ad-hoc code, to ease debugging)
 	%
 	{ ExprLists, NewTransforms } = lists:mapfoldl(
-		 fun transform_expression/2, _Acc0=Transforms, _List=Expressions ),
+			fun transform_expression/2, _Acc0=Transforms, _List=Expressions ),
 
 	% We do not want expressions to remain nested over two levels:
 	OneLevelExprList = merge_expression_lists( ExprLists ),
@@ -1499,7 +1512,7 @@ transform_expressions( Expressions, Transforms ) ?rec_guard ->
 
 
 
-% Removes a single depth of nesting (not an arbitrary flattening) regarding
+% @doc Removes a single depth of nesting (not an arbitrary flattening) regarding
 % expressions.
 %
 % (helper)
@@ -1529,7 +1542,7 @@ merge_expression_lists( [ Unexpected | _T ], _Acc ) ->
 
 
 
-% Transforms specified qualifiers.
+% @doc Transforms specified qualifiers.
 %
 % Allows filters to be both guard tests and general expressions.
 %
@@ -1543,14 +1556,14 @@ transform_qualifiers( Qualifiers, Transforms ) ?rec_guard ->
 
 
 
-% Transforms specificied qualifier.
+% @doc Transforms specified qualifier.
 -spec transform_qualifier( ast_qualifier(), ast_transforms() ) ->
 									{ ast_qualifier(), ast_transforms() }.
 
 % "If Q is a (lc) generator P <- E, where P is a pattern and E is an expression,
-% then Rep(Q) = {generate,LINE,Rep(P),Rep(E)}."
+% then Rep(Q) = {generate, FILE_LOC, Rep(P), Rep(E)}."
 %
-transform_qualifier( _Qualifier={ 'generate', Line, Pattern, Expression },
+transform_qualifier( _Qualifier={ 'generate', FileLoc, Pattern, Expression },
 					 Transforms ) ?rec_guard ->
 
 	{ NewPattern, PatTransforms } =
@@ -1559,15 +1572,15 @@ transform_qualifier( _Qualifier={ 'generate', Line, Pattern, Expression },
 	{ [ NewExpression ], ExpTransforms } =
 		transform_expression( Expression, PatTransforms ),
 
-	NewExpr = { 'generate', Line, NewPattern, NewExpression },
+	NewExpr = { 'generate', FileLoc, NewPattern, NewExpression },
 
 	{ NewExpr, ExpTransforms };
 
 
 % "If Q is a bitstring generator P <= E, where P is a pattern and E is an
-% expression, then Rep(Q) = {b_generate,LINE,Rep(P),Rep(E)}."
+% expression, then Rep(Q) = {b_generate, FILE_LOC, Rep(P), Rep(E)}."
 %
-transform_qualifier( _Qualifier={ 'b_generate', Line, Pattern, Expression },
+transform_qualifier( _Qualifier={ 'b_generate', FileLoc, Pattern, Expression },
 					 Transforms ) ?rec_guard ->
 
 	{ NewPattern, PatTransforms } =
@@ -1576,10 +1589,9 @@ transform_qualifier( _Qualifier={ 'b_generate', Line, Pattern, Expression },
 	{ [ NewExpression ], ExpTransforms } =
 		transform_expression( Expression, PatTransforms ),
 
-	NewExpr = { 'b_generate', Line, NewPattern, NewExpression },
+	NewExpr = { 'b_generate', FileLoc, NewPattern, NewExpression },
 
 	{ NewExpr, ExpTransforms };
-
 
 
 % "If Q is a filter E, where E is an expression, then Rep(Q) = Rep(E)."
@@ -1602,32 +1614,32 @@ transform_qualifier( _Qualifier=Expression, Transforms ) ?rec_guard ->
 transform_record_field_inits( RecordFieldInits, Transforms ) ?rec_guard ->
 
 	%ast_utils:display_trace( "Transforming record field init ~p.",
-	%				   [ RecordFieldInits ] ),
+	%						  [ RecordFieldInits ] ),
 
 	% An expression is transformed into a *list* of expressions:
 	{ ExprLists, NewTransforms } = lists:mapfoldl(
 		fun transform_record_field_init/2, _Acc0=Transforms,
-									 _List=RecordFieldInits ),
+									_List=RecordFieldInits ),
 
 	% We do not want expressions to remain nested over two levels:
 	OneLevelExprList = merge_expression_lists( ExprLists ),
 
 	%ast_utils:display_trace( "record field inits ~n~p transformed as:~n~p",
-	%						 [ RecordFieldInits, OneLevelExprList ] ),
+	%						  [ RecordFieldInits, OneLevelExprList ] ),
 
 	{ OneLevelExprList, NewTransforms }.
 
 
 
 % Includes the case where FieldName is '_':
-transform_record_field_init( { 'record_field', LineField,
-		   FieldNameASTAtom={ atom, _LineAtom, _FieldName }, FieldValue },
+transform_record_field_init( { 'record_field', FileLocField,
+		FieldNameASTAtom={ atom, _FileLocAtom, _FieldName }, FieldValue },
 							 Transforms ) ?rec_guard ->
 
 	{ [ NewFieldValue ], NewTransforms } =
 		transform_expression( FieldValue, Transforms ),
 
-	NewExpr = { 'record_field', LineField, FieldNameASTAtom, NewFieldValue },
+	NewExpr = { 'record_field', FileLocField, FieldNameASTAtom, NewFieldValue },
 
 	{ [ NewExpr ], NewTransforms }.
 
@@ -1654,14 +1666,14 @@ transform_record_field_updates( RecordFieldUpdates, Transforms ) ?rec_guard ->
 	%Res.
 
 
-transform_record_field_update( { 'record_field', LineField,
-		   FieldNameASTAtom={ atom, _LineAtom, _FieldName }, FieldValue },
+transform_record_field_update( { 'record_field', FileLocField,
+		FieldNameASTAtom={ atom, _FileLocAtom, _FieldName }, FieldValue },
 							   Transforms ) ?rec_guard ->
 
 	{ [ NewFieldValue ], NewTransforms } =
 		transform_expression( FieldValue, Transforms ),
 
-	NewExpr = { record_field, LineField, FieldNameASTAtom, NewFieldValue },
+	NewExpr = { record_field, FileLocField, FieldNameASTAtom, NewFieldValue },
 
 	% Single expression here by design:
 	{ NewExpr, NewTransforms }.
@@ -1670,10 +1682,10 @@ transform_record_field_update( { 'record_field', LineField,
 
 
 
-% Remote call expression found:
+% @doc Remote call expression found.
 %
-% "If E is a function call E_m:E_0(E_1, ..., E_k), then Rep(E) =
-% {call,LINE,{remote,LINE,Rep(E_m),Rep(E_0)},[Rep(E_1), ..., Rep(E_k)]}.
+% "If E is a function call E_m:E_0(E_1, ..., E_k), then Rep(E) = {call,
+% FILE_LOC, {remote, FILE_LOC, Rep(E_m), Rep(E_0)}, [Rep(E_1), ..., Rep(E_k)]}.
 %
 % Remote call expression found, with an immediate name for both the module and
 % the function:
@@ -1681,10 +1693,10 @@ transform_record_field_update( { 'record_field', LineField,
 % (parameters already transformed)
 %
 -spec transform_call_expression( form(), arity(), ast_transforms() ) ->
-									   { form(), ast_transforms() }.
-transform_call_expression( OriginalExpr={ 'remote', LineRemote,
-										  _M={ atom, LineMod, ModuleName },
-										  _F={ atom, LineFun, FunctionName } },
+										{ form(), ast_transforms() }.
+transform_call_expression( OriginalExpr={ 'remote', FileLocRemote,
+									_M={ atom, FileLocMod, ModuleName },
+									_F={ atom, FileLocFun, FunctionName } },
 						   Arity, Transforms ) ?rec_guard ->
 
 	?log_enter( "Transforming remote call expression to ~ts:~ts/~B...",
@@ -1698,7 +1710,7 @@ transform_call_expression( OriginalExpr={ 'remote', LineRemote,
 		RemoteReplaceTable ->
 
 			case ?table:lookup_entry( { ModuleName, FunctionName, Arity },
-									 RemoteReplaceTable ) of
+									  RemoteReplaceTable ) of
 
 				{ value, E={ _NewModuleName, _NewFunctionName } } ->
 					E;
@@ -1708,9 +1720,11 @@ transform_call_expression( OriginalExpr={ 'remote', LineRemote,
 
 				key_not_found ->
 
+					AnyArity = '_',
+
 					% Maybe a wildcard arity was defined then?
 					case ?table:lookup_entry(
-							{ ModuleName, FunctionName, _AnyArity='_' },
+							{ ModuleName, FunctionName, AnyArity },
 							RemoteReplaceTable ) of
 
 						{ value, E={ _NewModuleName, _NewFunctionName } } ->
@@ -1733,8 +1747,8 @@ transform_call_expression( OriginalExpr={ 'remote', LineRemote,
 							% set, actual arity is not deemed relevant)
 
 							case ?table:lookup_entry( { ModuleName,
-									   _AnyFunctionName='_', _AnyArity='_' },
-													 RemoteReplaceTable ) of
+									   _AnyFunctionName='_', AnyArity },
+													  RemoteReplaceTable ) of
 
 								{ value,
 								  { NewModuleName, _NewFunctionName='_' } } ->
@@ -1774,9 +1788,9 @@ transform_call_expression( OriginalExpr={ 'remote', LineRemote,
 			OriginalExpr;
 
 		{ SetModuleName, SetFunctionName } ->
-			TransfExpr = { 'remote', LineRemote,
-						   { atom, LineMod, SetModuleName },
-						   { atom, LineFun, SetFunctionName } },
+			TransfExpr = { 'remote', FileLocRemote,
+							{ atom, FileLocMod, SetModuleName },
+							{ atom, FileLocFun, SetFunctionName } },
 			?log_exit( "... returning remote call expression "
 					   "(case R2) ~p", [ TransfExpr ] ),
 			TransfExpr
@@ -1786,14 +1800,13 @@ transform_call_expression( OriginalExpr={ 'remote', LineRemote,
 	{ [ NewExpr ], Transforms };
 
 
-
 % Here, at least one name (module and/or function) is not immediate in that
 % remote call expression:
 %
 % (note: we do not manage yet the case where for example the function name
 % results from an expression yet a wildcard has been defined for it)
 %
-transform_call_expression( ?e={ 'remote', LineRemote, ModuleExpr,
+transform_call_expression( ?e={ 'remote', FileLocRemote, ModuleExpr,
 								FunctionExpr },
 						   _Arity, Transforms ) ?rec_guard ->
 
@@ -1806,7 +1819,7 @@ transform_call_expression( ?e={ 'remote', LineRemote, ModuleExpr,
 	{ [ NewFunctionExpr ], FunTransforms } =
 		transform_expression( FunctionExpr, ModTransforms ),
 
-	NewExpr = { 'remote', LineRemote, NewModuleExpr, NewFunctionExpr },
+	NewExpr = { 'remote', FileLocRemote, NewModuleExpr, NewFunctionExpr },
 
 	Res = { [ NewExpr ], FunTransforms },
 
@@ -1818,10 +1831,10 @@ transform_call_expression( ?e={ 'remote', LineRemote, ModuleExpr,
 
 % Local call expression found:
 %
-% "If E is a function call E_0(E_1, ..., E_k), then Rep(E) =
-% {call,LINE,Rep(E_0),[Rep(E_1), ..., Rep(E_k)]}."
+% "If E is a function call E_0(E_1, ..., E_k), then Rep(E) = {call, FILE_LOC,
+% Rep(E_0), [Rep(E_1), ..., Rep(E_k)]}."
 %
-transform_call_expression( CallExpr={ 'atom', LineFun, FunName }, Arity,
+transform_call_expression( CallExpr={ 'atom', FileLocFun, FunName }, Arity,
 						   Transforms ) ?rec_guard ->
 
 	?log_enter( "Transforming local call expression ~p...", [ CallExpr ] ),
@@ -1845,7 +1858,7 @@ transform_call_expression( CallExpr={ 'atom', LineFun, FunName }, Arity,
 
 					% Maybe a wildcard arity was defined then?
 					case ?table:lookup_entry( { FunName, _AnyArity='_' },
-											 LocalReplaceTable ) of
+											  LocalReplaceTable ) of
 
 						{ value, E={ _NewModuleName, _NewFunName } } ->
 							E;
@@ -1878,7 +1891,7 @@ transform_call_expression( CallExpr={ 'atom', LineFun, FunName }, Arity,
 			Expr;
 
 		{ SetModuleName, SetFunctionName } ->
-			Expr = { 'remote', LineFun, SetModuleName, SetFunctionName },
+			Expr = { 'remote', FileLocFun, SetModuleName, SetFunctionName },
 			?log_exit( "... returning remote call expression ~p", [ Expr ] ),
 			Expr
 

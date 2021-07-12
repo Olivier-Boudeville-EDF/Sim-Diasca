@@ -26,8 +26,8 @@
 % Creation date: July 1, 2007.
 
 
-% This module gathers all the code that allows to lighten the trace macros for
-% applications.
+% @doc This module gathers all the code that allows to <b>lighten the trace
+% macros for (Myriad) applications</b>.
 %
 -module(traces_for_apps).
 
@@ -62,6 +62,8 @@
 
 
 
+% @doc Starts the specified application.
+%
 % To be called notably from the counterpart macro.
 %
 % The trace supervisor can be requested to be initialized now or not at all, or
@@ -82,6 +84,9 @@ app_start( ModuleName, InitTraceSupervisor ) ->
 
 
 
+% @doc Starts specified (Myriad - not specifically related to OTP) application,
+% deciding whether EXIT messages shall be trapped.
+%
 % The trace supervisor can be requested to be initialized now or not at all, or
 % later (typically only once the desired filename for the traces file will be
 % known for good, i.e. at its first renaming).
@@ -169,7 +174,11 @@ app_start( ModuleName, InitTraceSupervisor, DisableExitTrapping ) ->
 
 
 
+% @doc Stops the specified (Myriad - not specifically related to OTP)
+% application, waiting for the trace supervisor if requested.
+%
 % To be called from the counterpart macro.
+%
 -spec app_stop( module_name(), aggregator_pid(), boolean() ) -> no_return().
 app_stop( ModuleName, TraceAggregatorPid, WaitForTraceSupervisor ) ->
 
@@ -195,7 +204,12 @@ app_stop( ModuleName, TraceAggregatorPid, WaitForTraceSupervisor ) ->
 
 
 
+% @doc Stops specified (Myriad - not specifically related to OTP) application
+% immediately, not waiting for any trace supervisor, stopping the trace
+% aggregator, and finishing on the shell.
+%
 % To be called from the counterpart macro.
+%
 -spec app_immediate_stop( module_name(), aggregator_pid() ) -> no_return().
 app_immediate_stop( ModuleName, TraceAggregatorPid ) ->
 
@@ -210,6 +224,9 @@ app_immediate_stop( ModuleName, TraceAggregatorPid ) ->
 
 
 
+% @doc Stops specified (Myriad - not specifically related to OTP) application,
+% stopping the trace aggregator and finishing on the shell.
+%
 % To be called from the counterpart macro, directly or not.
 -spec app_stop_on_shell( module_name(), aggregator_pid() ) -> no_return().
 app_stop_on_shell( ModuleName, TraceAggregatorPid ) ->

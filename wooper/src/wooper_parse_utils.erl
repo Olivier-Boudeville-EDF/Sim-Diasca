@@ -23,11 +23,11 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
-% Creation date: Wednesday, December 24, 2014
+% Creation date: Wednesday, December 24, 2014.
 
 
-% Centralizes, on behalf of the WOOPER parse transform, some utilities to
-% transform ASTs.
+% @doc Centralizes, on behalf of the WOOPER parse transform, <b>some utilities
+% to transform ASTs</b>.
 %
 -module(wooper_parse_utils).
 
@@ -39,7 +39,7 @@
 
 
 
-% Returns a form element corresponding to wooper:state().
+% @doc Returns a form element corresponding to the wooper:state() type.
 %
 % (shorthand)
 %
@@ -50,7 +50,7 @@ get_state_type() ->
 
 
 
-% Returns a form element corresponding to the State variable.
+% @doc Returns a form element corresponding to the State variable.
 %
 % (shorthand)
 %

@@ -26,7 +26,7 @@
 % Creation date: Saturday, July 20, 2019.
 
 
-% Module implementing the root supervisor of Traces.
+% @doc Module implementing the <b>root OTP supervisor</b> of Traces.
 %
 % In practice, it will supervise a single process, the one of the (singleton)
 % trace aggregator, through a dedicated supervision bridge, defined in the
@@ -56,7 +56,7 @@
 -define( root_supervisor_name, ?MODULE ).
 
 
-% Starts and links the Traces root supervisor, creating in turn a proper
+% @doc Starts and links the Traces root supervisor, creating in turn a proper
 % supervision bridge.
 %
 % Note: typically called by traces_app:start/2, hence generally triggered by the
@@ -74,8 +74,8 @@ start_link( TraceSupervisorWanted ) ->
 
 
 
-% Callback to initialise the Traces supervisor bridge (supervised by this root
-% supervisor), typically in answer to start_link/1 above being executed.
+% @doc Callback to initialise the Traces supervisor bridge (supervised by this
+% root supervisor), typically in answer to start_link/1 above being executed.
 %
 -spec init( boolean() ) -> { 'ok',
 	   { supervisor:sup_flags(), [ supervisor:child_spec() ] } } | 'ignore'.

@@ -102,16 +102,22 @@ ifndef PROJECT_NAME
 endif
 
 
+# PROJECT_SHORT_NAME should be defined on a per-project basis.
+ifndef PROJECT_SHORT_NAME
+ PROJECT_SHORT_NAME := traces
+endif
+
+
 # PROJECT_NAME_FOR_REBAR should be defined on a per-project basis.
 ifndef PROJECT_NAME_FOR_REBAR
-	PROJECT_NAME_FOR_REBAR := traces
+	PROJECT_NAME_FOR_REBAR := $(PROJECT_SHORT_NAME)
 endif
 
 
 # The uniquely-defined version of this layer, for all uses (including rebar and
 # hex):
 #
-TRACES_VERSION := 1.0.5
+TRACES_VERSION := 1.0.6
 
 
 # PROJECT_VERSION should be defined on a per-project basis.
@@ -151,18 +157,7 @@ TRACES_RELEASE_ARCHIVE_XZ  := $(TRACES_RELEASE_BASE).tar.xz
 TRACES_SRC := $(TRACES_TOP)/src
 
 # BEAM path section.
-TRACES_BEAM := $(TRACES_TOP)/src
-
-
-# In an OTP/rebar3-style application layout, at compilation time, libraries
-# making use of WOOPER will expect its includes to be located in:
-#
-# (Myriad already taken care of, at the WOOPER level)
-#
-WOOPER_OTP_INC := -I$(TRACES_TOP)/../wooper/include/
-
-
-INC += $(WOOPER_OTP_INC)
+TRACES_BEAM_DIR := $(TRACES_TOP)/src
 
 
 # Defined so that full traces are kept in messages (as the user of Traces can
@@ -175,7 +170,7 @@ WOOPER_UNELLIPSED_TRACES_OPT= -Dwooper_unellipsed_traces
 
 
 # See Myriad counterpart variable (MYRIAD_BEAM_DIRS) for explanations:
-TRACES_BEAM_DIRS := $(TRACES_BEAM)
+TRACES_BEAM_DIRS := $(TRACES_BEAM_DIR) $(TRACES_TOP)/..
 
 
 # We rely on Myriad and WOOPER as well:
@@ -227,6 +222,10 @@ endif
 
 ifndef BOOTSTRAP_MODULES
 	BOOTSTRAP_MODULES = $(empty)
+endif
+
+ifndef EDOC_OPTS
+	EDOC_OPTS = '[{dir,"$(API_DOC_ROOT)"}, {def,{vsn,"$(PROJECT_VERSION)"}}, {preprocess,true}, {includes,["$(LAYER_TOP)/include", "$(MYRIAD_TOP)/.."]}, {overview, "$(LAYER_TOP)/overview.edoc"}]'
 endif
 
 
@@ -302,7 +301,7 @@ else
 		ifneq ($(wildcard $(TRACES_TOP)/_build/default/lib/wooper/.),)
 			WOOPER_TOP = $(TRACES_TOP)/_build/default/lib/wooper
 		else
-			FORCE_EVAL := $(error Unable to find the build root of Ceylan-WOOPER from $(realpath .).)
+			FORCE_EVAL := $(error Unable to find the build root of Ceylan-WOOPER from '$(realpath .)'.)
 		endif
 	endif
 endif

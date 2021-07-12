@@ -27,8 +27,8 @@
 
 
 
-% Gathers all elements relative to the MyriadGUI events, including the event
-% loop.
+% @doc Gathers all elements relative to the <b>MyriadGUI</b> events, including
+% the event loop.
 %
 -module(gui_event).
 
@@ -84,25 +84,23 @@
 
 
 
+-type event_message() :: { event_type(), [ any() ] }.
 % An event message is a pair whose first element is the event type, as an atom
 % (ex: 'onWindowClosed'), and whose second element is a list, whose first
 % element is the GUI object that generated that event (the closed window, here),
 % and whose last element is the event context (intermediary elements carrying
 % event-specific information):
 %
-% { event_type(), [ gui_object(), ..., event_context() ] }
+% {event_type(), [ gui_object(), ..., event_context() ]}
 %
-% Ex: { onWindowClosed, [ Window, CloseContext ] }.
+% Ex: {onWindowClosed, [Window, CloseContext]}.
 %
 % Note: these messages respect the WOOPER conventions, and this is done on
 % purpose, to facilitate any integration with upper layers.
-%
--type event_message() :: { event_type(), [ any() ] }.
 
 
-
-% A count of instances of a given object type:
 -type instance_count() :: basic_utils:count().
+% A count of instances of a given object type.
 
 
 % Event management.
@@ -118,49 +116,42 @@
 -type wx_event_handler() :: wxEvtHandler:wxEvtHandler().
 
 
-% Only one currently:
 -type myriad_event_handler() :: gui_canvas:canvas().
+% Only one currently.
 
 
-
-% Using the wx-event type, leaked by wx.hrl:
-%
-% (enrich this union whenever needed)
-%
--type wx_event_type() :: wx_close_event_type(). % | ...
+% | ...
+-type wx_event_type() :: wx_close_event_type().
+% Using the wx-event type, leaked by wx.hrl (enrich this union whenever needed).
 
 
-% Associated to wxCloseEvent:
 -type wx_close_event_type() :: 'close_window'
 							 | 'end_session'
 							 | 'query_end_session'.
+% Associated to wxCloseEvent.
 
 
-% Our own event types, independent from any backend:
 -type event_type() :: 'onWindowClosed'.
+% Our own event types, independent from any backend.
 
 
-% The PID of a user calling process:
 -type user_pid() :: pid().
+% The PID of a user calling process.
 
 
-% The PID of an event subscriber:
 -type event_subscriber_pid() :: pid().
+% The PID of an event subscriber.
 
 
-% So that user process(es) can subscribe to GUI events:
--type event_subscription() ::
-		{ list_utils:maybe_list( event_type() ),
-		  list_utils:maybe_list( gui_object() ),
-		  list_utils:maybe_list( event_subscriber_pid() ) }.
+-type event_subscription() :: { maybe_list( event_type() ),
+		maybe_list( gui_object() ), maybe_list( event_subscriber_pid() ) }.
+% So that user process(es) can subscribe to GUI events.
 
 
 
+-type event_subscription_spec() :: maybe_list( event_subscription() ).
 % Specifies, for an event subscriber (by default: the calling process), any
 % combination of type of events and GUI objects that shall be listened to.
-%
--type event_subscription_spec() ::
-		list_utils:maybe_list( event_subscription() ).
 
 
 -export_type([ event_message/0, event_source/0,
@@ -172,12 +163,12 @@
 
 
 
+-type event_table() :: table:table( gui_object(), event_dispatch_table() ).
 % An indirection table dispatching events according to subscription
 % specifications.
 %
 % For an incoming event, we see this type (virtually, logically) as:
-% table( { gui_object(), event_type() },
-%            set_utils:set( event_subscriber_pid() ) ):
+% table({gui_object(), event_type()}, set_utils:set( event_subscriber_pid())):
 %
 % - the first key is the GUI object (e.g. widget) from which the event emanates
 % (ex: a frame)
@@ -191,32 +182,38 @@
 % Note: two nested tables (one table(), one list_table()) are used also in
 % order to ensure that there is up to one entry per GUI object and per event
 % type stored.
-%
--type event_table() :: table:table( gui_object(), event_dispatch_table() ).
 
 
-% Tells, for a given event type (e.g. in the context of a specific GUI object),
-% to which event subscribers the corresponding GUI messages shall be sent.
-%
 -type event_dispatch_table() :: list_table:table( event_type(),
 												  [ event_subscriber_pid() ] ).
+% Tells, for a given event type (e.g. in the context of a specific GUI object),
+% to which event subscribers the corresponding GUI messages shall be sent.
 
 
-% To replace source events objects (ex: a panel) by others (ex: its associated
-% canvas, if any):
-%
 -type reassign_table() :: table:table( gui_object(), gui_object() ).
+% To replace source events objects (ex: a panel) by others (ex: its associated
+% canvas, if any).
 
 
+-type myriad_type_table() :: table:table( gui:myriad_object_type(),
+										  instance_referential() ).
 % To store the MyriadGUI instances (sorted by types) and manage them like wx
 % native objects.
 %
 % Keys are like 'canvas'.
-%
--type myriad_type_table() :: table:table( gui:myriad_object_type(),
-										  instance_referential() ).
 
 
+
+-record( instance_referential, {
+
+		% Total count of the instances already created for that type:
+		instance_count :: instance_count(),
+
+		instance_table :: table:table( gui:myriad_instance_pid(),
+									   gui:myriad_object_state() ) }).
+
+
+-type instance_referential() :: #instance_referential{}.
 % To store, for a given MyriadGUI type (ex: 'canvas'), all information about all
 % instances.
 %
@@ -227,16 +224,6 @@
 %
 % Note: the total count is not the same as the size of the table, as instances
 % may be deleted.
-%
--record( instance_referential, {
-
-		% Total count of the instances already created for that type:
-		instance_count :: instance_count(),
-
-		instance_table :: table:table( gui:myriad_instance_pid(),
-									   gui:myriad_object_state() ) }).
-
--type instance_referential() :: #instance_referential{}.
 
 
 
@@ -273,14 +260,14 @@
 
 
 		   % List of the MyriadGUI objects that shall be adjusted after a show:
-		   %
 		   objects_to_adjust=[] :: [ myriad_object_ref() ] }).
 
 
 -type loop_state() :: #loop_state{}.
 
 
-
+-type wx_event() :: { 'wx', wx_id(), wx:wx_object(), gui:user_data(),
+					  wx_event_info() }.
 % A #wx event record comprises:
 %
 % - (the 'wx' record tag, if the record instance is seen as a tuple)
@@ -298,11 +285,10 @@
 % - event :: wx_event_info() is the description of the event itself
 %
 % As always, same as: -record( wx,...
-%
--type wx_event() :: { 'wx', wx_id(), wx:wx_object(), gui:user_data(),
-					  wx_event_info() }.
 
 
+
+-type wx_event_info() :: tuple().
 % A wx-defined record describing an actual event.
 %
 % WxFoobar record whose first field is 'type', and which may have other
@@ -310,9 +296,6 @@
 %
 % Examples of descriptions, as tuples: {wxClose,close_window}, or
 % {wxCommand,command_button_clicked,CmdString,CmdInt,...}
-%
--type wx_event_info() :: tuple().
-
 
 -export_type([ wx_event/0, wx_event_info/0 ]).
 
@@ -327,6 +310,7 @@
 
 -type wx_object() :: wx:wx_object().
 
+-type maybe_list(T) :: list_utils:maybe_list(T).
 
 
 
@@ -347,7 +331,7 @@
 
 
 
-% Starts the internal, main event loop of MyriadGUI.
+% @doc Starts the internal, main event loop of MyriadGUI.
 %
 % The backend events received will result in callbacks to be triggered on their
 % respective subscribers.
@@ -377,7 +361,7 @@ start_main_event_loop( WxServer, WxEnv ) ->
 
 
 
-% Receives and process all messages (actual main event loop), coming:
+% @doc Receives and process all messages (actual main event loop), coming:
 %
 % - either from controlling processes (typically from application processes
 % subscribing to some events)
@@ -417,15 +401,17 @@ process_event_messages( LoopState ) ->
 % Event types roughly sorted in clauses by decreasing frequency of appearance:
 %
 % (defined in lib/wx/include/wx.hrl)
+
+
+
+% @doc Processes specified GUI event.
 %
-
-
 % A wx event has been received here:
 %
-% Structure: { wx, EventSourceId, Obj, UserData, EventInfo }, with EventInfo:
-% { WxEventName, EventType, ...}
+% Structure: {wx, EventSourceId, Obj, UserData, EventInfo }, with EventInfo:
+% {WxEventName, EventType, ...}
 %
-% Ex: { wx, -2006, {wx_ref,35,wxFrame,[]}, [], {wxClose,close_window} }.
+% Ex: {wx, -2006, {wx_ref,35,wxFrame,[]}, [], {wxClose,close_window}}.
 %
 process_event_message( WxEvent=#wx{ id=EventSourceId, obj=GUIObject,
 									userData=UserData, event=WxEventInfo },
@@ -685,8 +671,8 @@ process_event_message( UnmatchedEvent, LoopState ) ->
 
 
 
-% Drops all intermediate repaint events, and processes the last one, and the
-% next non-repaint event.
+% @doc Drops all intermediate repaint events, and processes the last one, and
+% the next non-repaint event.
 %
 -spec process_only_latest_repaint_event( wx_event(), wx_object(),
 										 loop_state() ) -> loop_state().
@@ -694,7 +680,6 @@ process_only_latest_repaint_event( CurrentWxRepaintEvent, SourceObject,
 								   LoopState ) ->
 
 	receive
-
 
 		% Ignores all repaints applying to specified object of a series, except
 		% the last:
@@ -741,7 +726,7 @@ process_only_latest_repaint_event( CurrentWxRepaintEvent, SourceObject,
 
 
 
-% Processes specified wx event message.
+% @doc Processes specified wx event message.
 -spec process_wx_event( wx_id(), wx_object(), gui:user_data(),
 					wx_event_info(), wx_event(), loop_state() ) -> loop_state().
 process_wx_event( EventSourceId, GUIObject, UserData, WxEventInfo, WxEvent,
@@ -812,7 +797,7 @@ process_wx_event( EventSourceId, GUIObject, UserData, WxEventInfo, WxEvent,
 
 
 
-% Returns the subscribers (if any) to the specified GUI object, for the
+% @doc Returns the subscribers (if any) to the specified GUI object, for the
 % specified event type.
 %
 -spec get_subscribers_for( gui_object(), event_type(), event_table() ) ->
@@ -840,7 +825,7 @@ get_subscribers_for( GUIObject, EventType, EventTable ) ->
 
 
 
-% Creates specified MyriadGUI object.
+% @doc Creates specified MyriadGUI object.
 -spec process_myriad_creation( gui:myriad_object_type(),
 	gui:construction_parameters(), user_pid(), loop_state() ) -> loop_state().
 process_myriad_creation( ObjectType, ConstructionParams, CallerPid,
@@ -892,11 +877,11 @@ process_myriad_creation( ObjectType, ConstructionParams, CallerPid,
 
 
 
-% Registers the creation of a MyriadGUI instance of specified type and initial
-% state, in specified instance table.
+% @doc Registers the creation of a MyriadGUI instance of specified type and
+% initial state, in specified instance table.
 %
 -spec register_instance( gui:myriad_object_type(), gui:myriad_object_state(),
-		 myriad_type_table() ) -> { myriad_object_ref(), myriad_type_table() }.
+		myriad_type_table() ) -> { myriad_object_ref(), myriad_type_table() }.
 register_instance( ObjectType, ObjectInitialState, TypeTable ) ->
 
 	trace_utils:info_fmt( "Registering a MyriadGUI instance of type '~ts', "
@@ -950,7 +935,7 @@ register_instance( ObjectType, ObjectInitialState, TypeTable ) ->
 
 
 
-% Sends the specified MyriadGUI event to the relevant subscribers.
+% @doc Sends the specified MyriadGUI event to the relevant subscribers.
 %
 % (helper)
 %
@@ -993,7 +978,8 @@ send_event( Subscribers, EventType, Id, GUIObject, UserData, Event ) ->
 
 
 
-% Enriches the specified event table with specified subscription information.
+% @doc Enriches the specified event table with specified subscription
+% information.
 %
 % (helper)
 %
@@ -1079,8 +1065,8 @@ register_event_types_for( GUIObject, EventTypes, Subscribers,
 
 
 
-% Records the specified subscribers for each of the specified event types for
-% the specified GUI object.
+% @doc Records the specified subscribers for each of the specified event types
+% for the specified GUI object.
 %
 % (helper)
 %
@@ -1104,8 +1090,8 @@ record_subscriptions( GUIObject, EventTypes, Subscribers, EventTable ) ->
 
 
 
-% Returns an event dispatch table recording specified event type / subscriber
-% associations.
+% @doc Returns an event dispatch table recording specified event type /
+% subscriber associations.
 %
 -spec update_event_table( [ event_type() ], [ event_subscriber_pid() ],
 						  event_dispatch_table() ) -> event_dispatch_table().
@@ -1133,7 +1119,7 @@ update_event_table( _EventTypes=[ EventType | T ], Subscribers,
 
 
 
-% Adjusts the specified MyriadGUI instances.
+% @doc Adjusts the specified MyriadGUI instances.
 -spec adjust_objects( [ myriad_object_ref() ], event_table(),
 					  myriad_type_table() ) -> myriad_type_table().
 adjust_objects( _ObjectsToAdjust=[], _EventTable, TypeTable ) ->
@@ -1172,7 +1158,7 @@ adjust_objects( _ObjectsToAdjust=[ CanvasRef=#myriad_object_ref{
 
 
 
-% Returns the internal state of the specified canvas instance.
+% @doc Returns the internal state of the specified canvas instance.
 -spec get_canvas_instance_state( gui:myriad_instance_pid(),
 						myriad_type_table() ) -> gui:myriad_object_state().
 get_canvas_instance_state( CanvasId, TypeTable ) ->
@@ -1180,7 +1166,7 @@ get_canvas_instance_state( CanvasId, TypeTable ) ->
 
 
 
-% Returns the internal state of the specified MyriadGUI instance.
+% @doc Returns the internal state of the specified MyriadGUI instance.
 -spec get_instance_state( myriad_object_ref(), myriad_type_table() ) ->
 								gui:myriad_object_state().
 get_instance_state( { myriad_object_ref, MyriadObjectType, InstanceId },
@@ -1189,7 +1175,7 @@ get_instance_state( { myriad_object_ref, MyriadObjectType, InstanceId },
 
 
 
-% Returns the internal state of the specified MyriadGUI instance.
+% @doc Returns the internal state of the specified MyriadGUI instance.
 -spec get_instance_state( myriad_object_ref(), myriad_type_table(),
 						  myriad_type_table() ) -> gui:myriad_object_state().
 get_instance_state( MyriadObjectType, InstanceId, TypeTable ) ->
@@ -1223,7 +1209,7 @@ get_instance_state( MyriadObjectType, InstanceId, TypeTable ) ->
 
 
 
-% Sets the internal state of the specified canvas instance.
+% @doc Sets the internal state of the specified canvas instance.
 -spec set_canvas_instance_state( gui:myriad_instance_pid(),
 	gui:myriad_object_state(), myriad_type_table() ) -> myriad_type_table().
 set_canvas_instance_state( CanvasId, CanvasState, TypeTable ) ->
@@ -1232,7 +1218,7 @@ set_canvas_instance_state( CanvasId, CanvasState, TypeTable ) ->
 
 
 
-% Returns the internal state of the specified MyriadGUI instance.
+% @doc Returns the internal state of the specified MyriadGUI instance.
 -spec set_instance_state( myriad_object_ref(), gui:myriad_object_state(),
 						  myriad_type_table() ) -> myriad_type_table().
 set_instance_state( { myriad_object_ref, MyriadObjectType, InstanceId },
@@ -1242,7 +1228,7 @@ set_instance_state( { myriad_object_ref, MyriadObjectType, InstanceId },
 
 
 
-% Returns the internal state of the specified, already-existing MyriadGUI
+% @doc Returns the internal state of the specified, already-existing MyriadGUI
 % instance.
 %
 -spec set_instance_state( gui:myriad_object_type(), gui:myriad_instance_pid(),
@@ -1278,9 +1264,9 @@ set_instance_state( MyriadObjectType, InstanceId, InstanceState, TypeTable ) ->
 
 
 
-% Propagates the event designated by the specified context upward in the widget
-% hierarchy (instead of the default, which is considering that it has been
-% processed once for all, and thus shall not be propagated further).
+% @doc Propagates the event designated by the specified context upward in the
+% widget hierarchy (instead of the default, which is considering that it has
+% been processed once for all, and thus shall not be propagated further).
 %
 % Events are handled in order, from bottom to top in the widgets hierarchy, by
 % the last subscribed handler first. Most of the events have default event
@@ -1317,8 +1303,7 @@ propagate_event( #gui_event_context{ backend_event=WxEvent } ) ->
 % Stringification subsection.
 
 
-
-% Returns a textual representation of specified event table.
+% @doc Returns a textual representation of specified event table.
 -spec event_table_to_string( event_table() ) -> ustring().
 event_table_to_string( EventTable ) ->
 
@@ -1340,7 +1325,8 @@ event_table_to_string( EventTable ) ->
 	end.
 
 
-% (helper)
+
+% @doc Returns a textual representation of specified dispatch table.
 -spec dispatch_table_to_string( gui_object(), event_dispatch_table() ) ->
 										ustring().
 dispatch_table_to_string( GUIObject, DispatchTable ) ->
@@ -1359,7 +1345,7 @@ dispatch_table_to_string( GUIObject, DispatchTable ) ->
 
 
 
-% Returns a textual representation of the specified reassign table.
+% @doc Returns a textual representation of the specified reassign table.
 -spec reassign_table_to_string( reassign_table() ) -> ustring().
 reassign_table_to_string( ReassignTable ) ->
 
@@ -1380,7 +1366,7 @@ reassign_table_to_string( ReassignTable ) ->
 
 
 
-% Returns a textual representation of the specified type table.
+% @doc Returns a textual representation of the specified type table.
 -spec type_table_to_string( myriad_type_table() ) -> ustring().
 type_table_to_string( Table ) ->
 
@@ -1401,7 +1387,7 @@ type_table_to_string( Table ) ->
 
 
 
-% Returns a textual representation of the specified type table.
+% @doc Returns a textual representation of the specified type table.
 -spec instance_referential_to_string( instance_referential() ) -> ustring().
 instance_referential_to_string( #instance_referential{ instance_count=Count,
 										instance_table=InstanceTable } ) ->
@@ -1415,8 +1401,8 @@ instance_referential_to_string( #instance_referential{ instance_count=Count,
 		Pairs ->
 			Count = length( Pairs),
 			Strings = [ text_utils:format(
-						  "ID #~B for instance whose state is: ~w",
-						  [ Id, State ] ) || { Id, State } <- Pairs ],
+							"ID #~B for instance whose state is: ~w",
+							[ Id, State ] ) || { Id, State } <- Pairs ],
 			text_utils:strings_to_string( Strings, _IndentLevel=1 )
 
 	end.

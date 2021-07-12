@@ -26,7 +26,10 @@
 
 
 
-% Tool to manage rendering assets.
+% @doc The very beginning of a tool to manage <b>assets</b>, especially for
+% rendering.
+%
+% @hidden Far from being ready.
 %
 -module(asset_tool_app).
 
@@ -36,14 +39,12 @@
 
 
 
-
 % To remove:
 -export([ gui_main_loop/1, get_canvas_width/0, get_canvas_height/0,
 		  render_main_view/1 ]).
 
 
 % State of the program, passed between event handlers.
-%
 -record( app_state, {
 
 		  main_frame = undefined :: gui:frame(),
@@ -55,36 +56,42 @@
 
 }).
 
+
 -type app_state() :: #app_state{}.
+% The application state.
+
 
 % FIXME:
 -export_type([ app_state/0 ]).
 -export([ load_image/1 ]).
 
 
+% @doc Returns the width of the main window.
 -spec get_main_window_width() -> linear:coordinate().
 get_main_window_width() ->
 	800.
 
 
+% @doc Returns the height of the main window.
 -spec get_main_window_height() -> linear:coordinate().
 get_main_window_height() ->
 	600.
 
 
-
+% @doc Returns the width of the displayed canvas.
 -spec get_canvas_width() -> linear:coordinate().
 get_canvas_width() ->
 	640.
 
 
+% @doc Returns the height of the displayed canvas.
 -spec get_canvas_height() -> linear:coordinate().
 get_canvas_height() ->
 	480.
 
 
 
-
+% (helper)
 -spec init_app_gui() -> no_return().
 init_app_gui() ->
 
@@ -147,7 +154,7 @@ init_app_gui() ->
 
 	ButtonOpt = [ { flag, [ expand_fully ] } ],
 
-	gui:add_to_sizer( ControlBoxSizer, [ LoadImageButton, QuitButton ], 
+	gui:add_to_sizer( ControlBoxSizer, [ LoadImageButton, QuitButton ],
 					  ButtonOpt ),
 
 
@@ -190,6 +197,7 @@ app_main_loop( _, _ ) ->
 	fixme.
 
 
+% @doc Renders the main view of the tool.
 -spec render_main_view( gui_canvas:canvas() ) -> void().
 render_main_view( Canvas ) ->
 
@@ -202,7 +210,10 @@ render_main_view( Canvas ) ->
 	gui_canvas:blit( Canvas ).
 
 
-
+% (helper)
+%
+% @private
+%
 gui_main_loop( _GUIState=#app_state{ main_frame=_MainFrame,
 									 load_image_button=_LoadImageButton,
 									 quit_button=_QuitButton,
@@ -273,8 +284,8 @@ gui_main_loop( _GUIState=#app_state{ main_frame=_MainFrame,
 
 
 
-% Loads image in specified canvas, and returns a list of information texts about
-% it.
+% @doc Loads image in specified canvas, and returns a list of information texts
+% about it.
 %
 load_image( Canvas ) ->
 	gui_canvas:load_image( Canvas, { 40, 20 }, "../../doc/example.bmp" ),
@@ -282,8 +293,7 @@ load_image( Canvas ) ->
 
 
 
-% Updates information sizer with specified texts.
-%
+% @doc Updates information sizer with specified texts.
 update_information_sizer( InfoSizer, Panel, Texts ) ->
 
 	%gui:clear_sizer( InfoSizer ),
@@ -294,8 +304,7 @@ update_information_sizer( InfoSizer, Panel, Texts ) ->
 						TextOpts ) || T <- Texts ].
 
 
-% Executes that application.
-%
+% @doc Executes that application.
 -spec exec() -> no_return().
 exec() ->
 

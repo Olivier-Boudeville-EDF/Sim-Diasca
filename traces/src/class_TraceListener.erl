@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2021 Olivier Boudeville
+% Copyright (C) 2007-2021 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -24,6 +24,10 @@
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: July 1, 2007.
+
+
+% @doc The <b>trace listener class</b> is similar to a remote trace
+% supervisor, able to synchronise at will to a trace aggregator.
 %
 -module(class_TraceListener).
 
@@ -115,7 +119,8 @@
 
 
 
-% Constructs a new trace listener.
+% @doc Constructs a new trace listener, synchronised to specified trace
+% aggregator.
 %
 % TraceAggregatorPid is the PID of the trace aggregator to which this listener
 % will be synchronized.
@@ -178,8 +183,9 @@ construct( State, TraceAggregatorPid, CloseListenerPid ) ->
 
 
 
-% Constructs a new trace listener, whose listening sockets will have to be
-% elected within the specified range of TCP ports.
+% @doc Constructs a new trace listener, whose listening sockets will have to be
+% elected within the specified range of TCP ports, synchronised to specified
+% trace aggregator.
 %
 % TraceAggregatorPid is the PID of the trace aggregator to which this listener
 % will be synchronized.
@@ -248,7 +254,7 @@ manage_send_traces( CompressedFilename, State ) ->
 
 
 
-% Overridden destructor.
+% @doc Overridden destructor.
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -287,7 +293,7 @@ destruct( State ) ->
 
 
 
-% Triggers an asynchronous supervision (trace monitoring).
+% @doc Triggers an asynchronous supervision (trace monitoring).
 %
 % Will return immediately.
 %
@@ -345,7 +351,7 @@ monitor( State ) ->
 
 
 
-% Registers a new pre-formatted trace in trace file.
+% @doc Registers a new pre-formatted trace in the (local) trace file.
 %
 % To be called by the trace aggregator.
 %
@@ -372,8 +378,8 @@ addTrace( State, NewTrace ) ->
 
 
 
-% Callback triggered when the waiter process detected that the supervision tool
-% has been closed.
+% @doc Callback triggered when the waiter process detected that the supervision
+% tool has been closed.
 %
 -spec onMonitoringOver( wooper:state(), pid() ) -> const_oneway_return().
 onMonitoringOver( State, WaiterPid ) ->
@@ -390,7 +396,7 @@ onMonitoringOver( State, WaiterPid ) ->
 % Static section:
 
 
-% Creates the trace listener that will synchronize itself to the specified
+% @doc Creates a trace listener that will synchronize itself to the specified
 % aggregator.
 %
 -spec create( aggregator_pid() ) -> static_return( listener_pid() ).

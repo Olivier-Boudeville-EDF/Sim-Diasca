@@ -19,6 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Abstract <b>base class common to all Sim-Diasca instances</b>.
 -module(class_EngineBaseObject).
 
 
@@ -43,8 +44,8 @@
 -define( trace_emitter_categorization, "Core" ).
 
 
-% The PID of an engine base object:
 -type object_pid() :: class_TraceEmitter:emitter_pid().
+% The PID of an engine base object.
 
 -export_type([ object_pid/0 ]).
 
@@ -61,9 +62,15 @@
 -include_lib("traces/include/class_TraceEmitter.hrl").
 
 
-% Constructs a new, named Sim-Diasca base object.
+% Shorthands:
+
+-type ustring() :: text_utils:ustring().
+
+
+
+% @doc Constructs a new, named Sim-Diasca base object.
 -spec construct( wooper:state(), class_TraceEmitter:emitter_init() ) ->
-					   wooper:state().
+						wooper:state().
 construct( State, InstanceName ) ->
 	% Only direct mother class; updated state returned directly:
 	class_TraceEmitter:construct( State, ?trace_categorize(InstanceName) ).
@@ -73,11 +80,12 @@ construct( State, InstanceName ) ->
 % Static section.
 
 
-% Returns, should this base object have been deployed (i.e. should it run on a
-% computing node), the (object-local) root directory of the deployment tree.
+% @doc Returns, should this base object have been deployed (that is should it
+% run on a computing node), the (object-local) root directory of the deployment
+% tree.
 %
 -spec get_deployment_root_directory() ->
-				   static_return( file_utils:directory_name() ).
+					static_return( file_utils:directory_name() ).
 get_deployment_root_directory() ->
 
 	% Returns typically /tmp/sim-diasca-$CASE-$USER-$TIME/deployed-elements",
@@ -87,18 +95,18 @@ get_deployment_root_directory() ->
 
 
 
-% Returns the names of all the base state attributes (be they defined by this
-% class or inherited).
+% @doc Returns the names of all the base state attributes (be they defined by
+% this class or inherited).
 %
 -spec get_all_base_attribute_names() ->
-							 static_return( [ wooper:attribute_name() ] ).
+								static_return( [ wooper:attribute_name() ] ).
 get_all_base_attribute_names() ->
 
 	AttrNames =
 		wooper_introspection:get_class_specific_attribute_names( ?MODULE )
 		++ list_utils:flatten_once(
 			 [ wooper_introspection:get_class_specific_attribute_names( C )
-			   || C <- ?superclasses ] ),
+					|| C <- ?superclasses ] ),
 
 	wooper:return_static( AttrNames ).
 
@@ -107,15 +115,15 @@ get_all_base_attribute_names() ->
 % Helper section.
 
 
-% Initializes some context-specific information.
+% @doc Initializes some context-specific information.
 -spec init( wooper:state() ) -> wooper:state().
 init( State ) ->
 	class_TraceEmitter:init( State ).
 
 
 
-% Returns a textual description of this instance.
--spec to_string( wooper:state() ) -> string().
+% @doc Returns a textual description of this instance.
+-spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
-	text_utils:format( "Sim-Diasca base object named '~s'",
+	text_utils:format( "Sim-Diasca base object named '~ts'",
 					   [ ?getAttr(name) ] ).

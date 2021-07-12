@@ -27,21 +27,20 @@
 
 
 
-% Basic numerical solver based on the classic Runge–Kutta fourth-order method,
-% operating on three dimensions.
+% @doc Basic <b>numerical solver based on the classic Runge–Kutta fourth-order
+% method</b>, operating on three dimensions.
 %
-% See: http://en.wikipedia.org/wiki/List_of_Runge–Kutta_methods
+% See [http://en.wikipedia.org/wiki/List_of_Runge–Kutta_methods].
 %
-% We want to evaluate a given function f, whose spec could be:
-%     f( time(), vector() ) -> vector()
+% We want to evaluate a given function f, whose spec could be: `f( time(),
+%     vector() ) -> vector()' that would comply to the following equation:
+%     `dy/dt = f(t,y)'.
 %
-% complying to equation dy/dt = f( t, y ).
-%
-% For that we compute yn+1 = yn + h.sum(bi.ki) with ki = f( ti, yi ), with ti
-% and yi depending on the order, and h being the chosen timestep. ki and bi are
+% For that we compute `yn+1 = yn + h.sum(bi.ki)' with `ki=f(ti,yi)', with ti and
+% yi depending on the order, and h being the chosen timestep. ki and bi are
 % determined by the corresponding Butcher tableau.
 %
-% The implementation of f corresponds here to the anonymous function F.
+% The implementation of `f' corresponds here to the anonymous function `F'.
 %
 -module(rk4_solver).
 
@@ -50,22 +49,19 @@
 -export([ compute_next_estimate/4 ]).
 
 
-% Simulation time:
-%
 -type time() :: float().
+% Simulation time.
 
 
+-type vector() :: linear_3D:vector().
 % Definition depends on the function of interest, more precisely on the
-% dimension of the space the function to evaluate is an endomorphism of:
+% dimension of the space the function to evaluate is an endomorphism of.
 %
 % (vectors and points are not distinguished here)
-%
--type vector() :: linear_3D:vector().
 
 
-% The function f in the equation that we want to solve numerically:
-%
 -type f() :: fun( ( time(), vector() ) -> vector() ).
+% The function f in the equation that we want to solve numerically.
 
 
 -export_type([ time/0, vector/0, f/0 ]).
@@ -78,8 +74,8 @@
 
 
 
-% Computes the next point (yn+1), based on the current one (yn), the function
-% (F) and the timestep (h).
+% @doc Computes the next point (yn+1), based on the current one (yn), the
+% function (F) and the timestep (h).
 %
 -spec compute_next_estimate( f(), vector(), time(), time() ) -> vector().
 compute_next_estimate( F, Point, Time, Step ) ->

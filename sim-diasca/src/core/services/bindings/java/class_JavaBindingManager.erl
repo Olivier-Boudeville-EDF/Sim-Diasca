@@ -19,17 +19,20 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Class defining the overall, unique <b>manager of all Java Virtual
+% Machines</b> spawned by the engine.
+%
 -module(class_JavaBindingManager).
 
 
 -define( class_description,
 		 "Class defining the overall, unique manager of all Java Virtual "
 		 "Machines spawned by the engine, each of them being driven by its "
-		 "node-local JavaBindingAgent."
+		 "node-local JavaBindingAgent. "
 		 "As all language binding managers, it is expected to run on the "
 		 "user node, while each of its agents (instances of "
 		 "class_JavaBindingAgent) is to run on the computing node that it "
-		 "drives."
+		 "drives. "
 		 "More precisely each computing node is to host its own Jinterface "
 		 "OtpNode, itself hosting OtpMailboxes (one controller, and a number "
 		 "of worker ones), each of them being roughly equivalent to an "
@@ -124,7 +127,9 @@
 
 
 
-% Constructs a new manager of Java resources (resource manager), from:
+% @doc Constructs a new manager of Java resources (resource manager).
+%
+% Parameters:
 %
 % - ComputingNodes, a list of the computing nodes on each of which a JVM is to
 % be created
@@ -140,15 +145,15 @@
 % - DeploymentManagerPid, the PID of the deployment manager
 %
 -spec construct( wooper:state(), [ atom_node_name() ], directory_path(),
-		maybe( tcp_port() ), code_path(),
-		class_DeploymentManager:manager_pid() ) -> wooper:state().
+				 maybe( tcp_port() ), code_path(),
+				 class_DeploymentManager:manager_pid() ) -> wooper:state().
 construct( State, ComputingNodes, EngineRootDir, EpmdPort, ClassPath,
 		   DeploymentManagerPid ) ->
 
 	% First the direct mother class:
 	LangState = class_LanguageBindingManager:construct( State,
-		   ?trace_categorize("JavaBindingManager"), EngineRootDir, EpmdPort,
-		   ClassPath, DeploymentManagerPid ),
+			?trace_categorize("JavaBindingManager"), EngineRootDir, EpmdPort,
+			ClassPath, DeploymentManagerPid ),
 
 	% Any language-specific binding manager might be registered that way:
 	% (enforces uniqueness, and provides global access)
@@ -167,7 +172,7 @@ construct( State, ComputingNodes, EngineRootDir, EpmdPort, ClassPath,
 
 
 
-% Overridden destructor.
+% @doc Overridden destructor.
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -188,8 +193,8 @@ destruct( State ) ->
 % Methods section.
 
 
-% Notifies this manager of the PID of the controller mailbox for the specified
-% computing node.
+% @doc Notifies this manager of the PID of the controller mailbox for the
+% specified computing node.
 %
 -spec notifyNodeMailboxes( wooper:state(), controller_mbox_pid(),
 			[ worker_mbox_pid() ], agent_pid() ) -> oneway_return().
@@ -225,8 +230,8 @@ notifyNodeMailboxes( State, ControllerMailboxPid, WorkerMailboxPids,
 
 
 
-% Returns the PID of the controller mailbox running on the Java Virtual Machine
-% associated to the specified sender of this request.
+% @doc Returns the PID of the controller mailbox running on the Java Virtual
+% Machine associated to the specified sender of this request.
 %
 % In practice this controller mailbox is the one existing in the Java VM running
 % on the same node as the request sender (not specifying any particular thread
@@ -252,7 +257,7 @@ getAssociatedControllerMailbox( State ) ->
 
 
 
-% Returns the PID corresponding to the mailbox of a worker (anyone of them)
+% @doc Returns the PID corresponding to the mailbox of a worker (anyone of them)
 % running on the (local) JVM, based on the specified Java binding manager.
 %
 % In practice this worker mailbox is one existing in the Java VM running on the
@@ -288,8 +293,8 @@ getAnyAssociatedWorkerMailbox( State ) ->
 % Static section.
 
 
-% Returns the atom corresponding to the name the Java binding manager should be
-% registered as.
+% @doc Returns the atom corresponding to the name the Java binding manager
+% should be registered as.
 %
 % Note: executed on the caller node.
 %
@@ -301,7 +306,7 @@ get_registration_name() ->
 
 
 
-% Returns the PID of the (unique) Java binding manager.
+% @doc Returns the PID of the (unique) Java binding manager.
 %
 % To be used by clients of the Java binding manager.
 %
@@ -320,8 +325,8 @@ get_registered_manager() ->
 
 
 
-% Returns the PID corresponding to the controller mailbox of the (local) JVM,
-% based on the specified Java binding manager.
+% @doc Returns the PID corresponding to the controller mailbox of the (local)
+% JVM, based on the specified Java binding manager.
 %
 % To be used by clients of this Java binding manager.
 %
@@ -340,7 +345,7 @@ get_controller_mbox( JavaBindingManagerPid ) ->
 
 
 
-% Returns the PID corresponding to the mailbox of a worker (anyone of them)
+% @doc Returns the PID corresponding to the mailbox of a worker (anyone of them)
 % running on the (local) JVM, based on the specified Java binding manager.
 %
 % To be used by clients of this Java binding manager.
@@ -364,8 +369,8 @@ get_any_worker_mailbox( JavaBindingManagerPid ) ->
 % Helpers section.
 
 
-% Initialises the per-computing node Java runtime containers, i.e. JVMs,
-% a.k.a. OtpNodes.
+% @doc Initialises the per-computing node Java runtime containers, that is JVMs
+% (also known as OtpNodes).
 %
 -spec initialise_java_nodes( [ atom_node_name() ], tcp_port(), code_path(),
 							 wooper:state() ) -> wooper:state().
@@ -404,7 +409,7 @@ initialise_java_nodes( ComputingNodes, EpmdPort, ClassPath, State ) ->
 
 	NodePidPairs = [ { Node,
 					   class_JavaBindingAgent:remote_synchronous_timed_new_link(
-						   Node, EpmdPort, ClassPath, self() ) }
+							Node, EpmdPort, ClassPath, self() ) }
 					 || Node <- ComputingNodes ],
 
 	% Storing, for each computing node, the PID of its Java binding agent,
@@ -427,7 +432,7 @@ initialise_java_nodes( ComputingNodes, EpmdPort, ClassPath, State ) ->
 
 
 
-% Returns a textual description of this manager.
+% @doc Returns a textual description of this manager.
 -spec to_string( wooper:state() ) -> string().
 to_string( State ) ->
 

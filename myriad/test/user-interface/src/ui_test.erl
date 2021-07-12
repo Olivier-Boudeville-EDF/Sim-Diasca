@@ -80,7 +80,7 @@ test_user_entry() ->
 			test_user_entry();
 
 		V when V >= Lower andalso V =< Upper ->
-			ui:display( "Congratulation, you entered a correct value: ~B",
+			ui:display( "Congratulations, you entered a correct value: ~B",
 						[ V ] );
 
 		V ->
@@ -115,7 +115,7 @@ run() ->
 
 		true ->
 			test_facilities:display(
-			  "(not running the ui test, being in batch mode)" );
+				"(not running the ui test, being in batch mode)" );
 
 		false ->
 			run_test_ui()

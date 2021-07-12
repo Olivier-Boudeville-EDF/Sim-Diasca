@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2021 Olivier Boudeville
+% Copyright (C) 2007-2021 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -26,8 +26,8 @@
 % Creation date: July 1, 2007.
 
 
-% This module gathers all code, common to tests and applications, that allows to
-% lighten the trace macros or to share defines and types.
+% @doc Module gathering all code, common to tests and applications, that allows
+% to <b>lighten the trace macros or to share defines and types</b>.
 %
 -module(traces).
 
@@ -49,26 +49,26 @@
 
 -type location() :: text_utils:ustring().
 
-
-% A message may or may not (which is the default) by categorized:
 -type message_categorization() :: text_utils:ustring() | 'uncategorized'.
+% A message may or may not (which is the default) by categorized.
 
 
-% Numerical:
 -type priority() :: trace_utils:trace_priority().
+% Numerical version.
+
+-type trace_severity() :: trace_utils:trace_severity().
+% Textual version: 'emergency', 'alert', and all.
 
 -type message() :: text_utils:ustring().
 
-% 'emergency', 'alert', and all:
--type trace_severity() :: trace_utils:trace_severity().
 
-
-
-% Text traces are either in pure, raw text, or in PDF:
 -type trace_text_type() :: 'text_only' | 'pdf'.
+% Text traces are either in pure, raw text, or in PDF.
 
 
 
+-type trace_supervision_type() :: 'advanced_traces'
+								| { 'text_traces', trace_text_type() }.
 % A trace type must be selected so that, when the traces are aggregated, the
 % corresponding output is compliant with the tools to be used for supervision.
 %
@@ -80,9 +80,6 @@
 % LogMX tool (relying then on our parser); see http://logmx.com/
 %
 % - or {'text_traces', trace_text_type()}
-%
--type trace_supervision_type() :: 'advanced_traces'
-								| { 'text_traces', trace_text_type() }.
 
 
 -export_type([ emitter_name/0, emitter_categorization/0, emitter_info/0,
@@ -115,7 +112,7 @@
 
 
 
-% Returns the name of the file in which traces will be written:
+% @doc Returns the name of the file in which traces will be written.
 -spec get_trace_filename( basic_utils:module_name() ) ->
 								file_utils:file_name().
 get_trace_filename( ModuleName ) ->
@@ -123,10 +120,8 @@ get_trace_filename( ModuleName ) ->
 
 
 
-
-
-% Receives an applicative, non-trace message, to protect user messages from the
-% trace ones.
+% @doc Receives an applicative, non-trace message, to shelter user messages from
+% the trace ones.
 %
 -spec receive_applicative_message() -> any().
 receive_applicative_message() ->
@@ -140,8 +135,8 @@ receive_applicative_message() ->
 
 
 
-% Receives specified applicative, non-trace message, to protect user messages
-% from the trace ones.
+% @doc Receives specified applicative, non-trace message, to shelter user
+% messages from the trace ones.
 %
 % Used for synchronization purpose.
 %
@@ -160,7 +155,7 @@ receive_applicative_message( Message ) ->
 
 
 
-% Displays and flushes all remaining WOOPER results.
+% @doc Displays and flushes all remaining WOOPER results.
 %
 % Defined here, since uses a trace.
 %
@@ -185,8 +180,8 @@ check_pending_wooper_results() ->
 
 
 
-% Declares automatically the relevant BEAM directories in the code path, so that
-% Ceylan-Traces can be fully usable from then on.
+% @doc Declares automatically the relevant BEAM directories in the code path, so
+% that Ceylan-Traces can be fully usable from then on.
 %
 % Note:
 %
@@ -210,8 +205,12 @@ declare_beam_dirs_for_traces() ->
 
 
 
-% Manages the supervision of traces, typically in an OTP context, where:
+% @doc Manages the supervision of traces, typically in an OTP context.
+%
+% In this context:
+%
 % - the trace aggregator is expected to be already running
+%
 % - by default no specific trace file can be defined by the user, as
 % applications are just started or not
 %
@@ -259,9 +258,9 @@ manage_supervision() ->
 % Refer to https://erlang.org/doc/man/logger.html.
 
 
-% Replaces the current (probably default) logger handler with this Traces one
-% (registered as 'default'), based on the (supposedly already-existing) trace
-% aggregator.
+% @doc Replaces the current (probably default) logger handler with this Traces
+% one (registered as 'default'), based on the (supposedly already-existing)
+% trace aggregator.
 %
 -spec set_handler() -> void().
 set_handler() ->
@@ -293,14 +292,14 @@ set_handler() ->
 
 
 
-% Replaces the current (probably default) logger handler with this Traces one
-% (registered as 'default'), based on the specified trace aggregator.
+% @doc Replaces the current (probably default) logger handler with this Traces
+% one (registered as 'default'), based on the specified trace aggregator.
 %
 -spec set_handler( aggregator_pid() ) -> void().
 set_handler( AggregatorPid ) ->
 
 	%trace_utils:debug_fmt( "Setting default handler for logger to "
-	%	"aggregator ~w, on node: ~ts.", [ AggregatorPid, node() ] ),
+	%   "aggregator ~w, on node: ~ts.", [ AggregatorPid, node() ] ),
 
 	TargetHandler = default,
 
@@ -329,8 +328,8 @@ set_handler( AggregatorPid ) ->
 
 
 
-% Registers this Traces logger handler as an additional one (not replacing the
-% default one), based on the (supposedly already-existing) trace aggregator.
+% @doc Registers this Traces logger handler as an additional one (not replacing
+% the default one), based on the (supposedly already-existing) trace aggregator.
 %
 -spec add_handler() -> void().
 add_handler() ->
@@ -348,8 +347,8 @@ add_handler() ->
 
 
 
-% Registers this Traces logger handler as an additional one (not replacing the
-% default one), based on the specified trace aggregator.
+% @doc Registers this Traces logger handler as an additional one (not replacing
+% the default one), based on the specified trace aggregator.
 %
 -spec add_handler( aggregator_pid() ) -> void().
 add_handler( AggregatorPid ) ->
@@ -367,8 +366,8 @@ add_handler( AggregatorPid ) ->
 
 
 
-% Returns the (initial) configuration of the Traces logger handler, branching to
-% the (supposedly already-existing) trace aggregator.
+% @doc Returns the (initial) configuration of the Traces logger handler,
+% branching to the (supposedly already-existing) trace aggregator.
 %
 -spec get_handler_config() -> logger:handler_config().
 get_handler_config() ->
@@ -388,8 +387,8 @@ get_handler_config() ->
 
 
 
-% Returns the (initial) configuration of the Traces logger handler, branching to
-% the specified trace aggregator.
+% @doc Returns the (initial) configuration of the Traces logger handler,
+% branching to the specified trace aggregator.
 %
 -spec get_handler_config( aggregator_pid() ) -> logger:handler_config().
 get_handler_config( AggregatorPid ) ->
@@ -408,7 +407,7 @@ get_handler_config( AggregatorPid ) ->
 
 
 
-% Unsets the Traces logger handler, returns to the base trace_utils one.
+% @doc Unsets the Traces logger handler, returns to the base trace_utils one.
 -spec reset_handler() -> void().
 reset_handler() ->
 
@@ -418,9 +417,10 @@ reset_handler() ->
 	trace_utils:set_handler().
 
 
-% Mandatory callback for log handlers.
+
+% @doc Mandatory callback for log handlers.
 %
-% See https://erlang.org/doc/man/logger.html#HModule:log-2
+% See [https://erlang.org/doc/man/logger.html#HModule:log-2].
 %
 -spec log( logger:log_event(), logger:handler_config() ) -> void().
 log( _LogEvent=#{ level := Level,
@@ -484,7 +484,7 @@ log( _LogEvent=#{ level := Level,
 
 		{ wooper_result, trace_aggregator_synchronised } ->
 			%trace_utils:debug_fmt( "Synchronised from logger for "
-			%	"message '~p'.", [ TraceMsg ] ),
+			%   "message '~p'.", [ TraceMsg ] ),
 			ok
 
 	end;

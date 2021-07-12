@@ -27,8 +27,8 @@
 
 
 
-% Gathering of various facilities regarding the management of binary, bit-level
-% operations, like cyclic redundancy check (CRC) calculations.
+% @doc Gathering of various facilities regarding the management of <b>binary,
+% bit-level operations</b>, like cyclic redundancy check (CRC) calculations.
 %
 % See bin_utils_test.erl for the corresponding test.
 %
@@ -48,7 +48,7 @@
 % - http://learnyousomeerlang.com/starting-out-for-real#bit-syntax
 
 
-% Returns the table used to compute CRC8.
+% @doc Returns the table used to compute CRC8.
 -spec get_crc8_table() -> tuple().
 get_crc8_table() ->
 
@@ -97,7 +97,7 @@ get_crc8_table() ->
 
 
 
-% Returns the CRC8 checksum corresponding to specified binary.
+% @doc Returns the CRC8 checksum corresponding to specified binary.
 -spec compute_crc8_checksum( binary() ) -> crc8_checksum().
 compute_crc8_checksum( Binary ) ->
 
@@ -123,7 +123,7 @@ compute_crc8_checksum( _BinList=[ Byte | T ], CRCTable, CurrentCRC ) ->
 	NewCRC = element( Index + 1, CRCTable ),
 
 	%trace_utils:debug_fmt( "With current CRC of ~p, read byte ~p: "
-	%	"new index is ~p, new CRC is ~p.",
-	%	[ CurrentCRC, Byte, Index, NewCRC ] ),
+	%   "new index is ~p, new CRC is ~p.",
+	%   [ CurrentCRC, Byte, Index, NewCRC ] ),
 
 	compute_crc8_checksum( T, CRCTable, NewCRC ).

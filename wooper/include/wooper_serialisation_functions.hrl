@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2021 Olivier Boudeville
+% Copyright (C) 2007-2021 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -37,8 +37,8 @@
 
 
 
-% Serialises the specified instance (i.e. the state thereof), using specified
-% entry transformer and user data.
+% @doc Serialises the specified instance (that is the state thereof), using
+% specified entry transformer and user data.
 %
 % Returns a binary corresponding to a {InnerPair, UpdatedUserData} pair made of:
 %
@@ -120,7 +120,6 @@ serialise( State, _EntryTransformer=undefined, UserData ) ->
 	wooper:const_return_result( Res );
 
 
-
 serialise( State, EntryTransformer, UserData ) ->
 
 	% Here an entry transformer is to be used, for a smarter serialisation (ex:
@@ -200,7 +199,7 @@ serialise( State, EntryTransformer, UserData ) ->
 % Default do-nothing hooks:
 
 
-% Triggered just before serialisation.
+% @doc Hook triggered just before serialisation.
 %
 % We are here to return a state directly suitable for serialisation, for example
 % with no transient technical identifiers (like PID, open files, etc.) - unless
@@ -212,7 +211,7 @@ pre_serialise_hook( State ) ->
 
 
 
-% Triggered just after serialisation, based on the selected entries.
+% @doc Hook triggered just after serialisation, based on the selected entries.
 %
 % The value returned by this hook will be converted "as is" into a binary, that
 % will be written.
@@ -227,7 +226,7 @@ post_serialise_hook( Classname, Entries, _State ) ->
 
 
 
-% Triggered just before deserialisation.
+% @doc Hook triggered just before deserialisation.
 %
 % Default version corresponding to post_serialise_hook/3.
 %
@@ -238,7 +237,7 @@ pre_deserialise_hook( _SerialisationTerm={ _Classname, Entries }, _UserData ) ->
 
 
 
-% Triggered just after deserialisation.
+% @doc Hook triggered just after deserialisation.
 -spec post_deserialise_hook( wooper:state() ) -> wooper:state().
 post_deserialise_hook( State ) ->
 	State.

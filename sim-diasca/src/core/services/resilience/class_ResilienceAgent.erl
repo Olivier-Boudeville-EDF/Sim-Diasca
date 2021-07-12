@@ -801,11 +801,14 @@ read_probe( File, _AgentPid, _LocalInstanceTracker ) ->
 	% The data format is fully specified in the 'Probe serialisation' section of
 	% class_Probe.erl.
 
-	{ ok, << ContentSize:32 >> } = file_utils:read( File, _SizeSize=4 ),
+	% A size is stored as this number of bytes:
+	SizeOfSize = 4,
+
+	{ ok, << ContentSize:32 >> } = file_utils:read( File, SizeOfSize ),
 
 	{ ok, BinStateContent } = file_utils:read( File, ContentSize ),
 
-	{ ok, << CommandSize:32 >> } = file_utils:read( File, _SizeSize=4 ),
+	{ ok, << CommandSize:32 >> } = file_utils:read( File, SizeOfSize ),
 
 	BinCommand = case CommandSize of
 
@@ -818,7 +821,7 @@ read_probe( File, _AgentPid, _LocalInstanceTracker ) ->
 
 	end,
 
-	{ ok, << DataSize:32 >> } = file_utils:read( File, _SizeSize=4 ),
+	{ ok, << DataSize:32 >> } = file_utils:read( File, SizeOfSize ),
 
 	BinData = case DataSize of
 

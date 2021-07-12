@@ -279,7 +279,7 @@ A set of third-party tools is also used.
 
 The resulting architecture can be represented that way:
 
-:raw-html:`<img src=technical-architecture-english.png></img>`
+:raw-html:`<center><img src="technical-architecture-english.png"></img></center>`
 :raw-latex:`\includegraphics[scale=0.5]{technical-architecture-english.png}`
 
 
@@ -1000,7 +1000,7 @@ If no specific mechanism was used to ensure simulation correctness in a parallel
 
 Then consequences could happen *before* their causes:
 
-:raw-html:`<img src=causality-issues-english.png></img>`
+:raw-html:`<center><img src="causality-issues-english.png"></img></center>`
 :raw-latex:`\includegraphics[scale=0.75]{causality-issues-english.png}`
 
 
@@ -1016,7 +1016,7 @@ If no specific mechanism was used to ensure **reproducibility** in a parallel or
 
 Then by default running twice the same simulation would generally produce different results, as concurrent events, unlike causality-related events, can happen in any order:
 
-:raw-html:`<img src=reproducibility-issues-english.png></img>`
+:raw-html:`<center><img src="reproducibility-issues-english.png"></img></center>`
 :raw-latex:`\includegraphics[scale=0.75]{reproducibility-issues-english.png}`
 
 Analysis and comparison of results would not be reliable nor practical.
@@ -1088,7 +1088,7 @@ ________________
 
 As shown in the diagram:
 
-:raw-html:`<img src=tick-timescale-english.png></img>`
+:raw-html:`<center><img src="tick-timescale-english.png"></img></center>`
 :raw-latex:`\includegraphics[scale=0.8]{tick-timescale-english.png}`
 
  - an *actor message* M is an asynchronous message sent from an actor A to an actor B at a tick T, which must acknowledge it at once (but this message is only *stored* by B, which does not process it during T)
@@ -1278,13 +1278,13 @@ A rather advanced **distributed trace system** is also available.
 
 
 
-.. comment: :raw-html:`<img src=PLCCommunicationModel-tick-0.png></img>`
+.. comment: :raw-html:`<center><img src="PLCCommunicationModel-tick-0.png"></img></center>`
 .. comment: :raw-latex:`\includegraphics[scale=0.4]{PLCCommunicationModel-tick-0.png}`
 
 :raw-latex:`\pagebreak`
 
 
-.. comment: :raw-html:`<img src=deterministic-test-instances.png></img>`
+.. comment: :raw-html:`<center><img src="deterministic-test-instances.png"></img></center>`
 .. comment: :raw-latex:`\includegraphics[scale=0.75]{deterministic-test-instances.png}`
 
 :raw-latex:`\pagebreak`
@@ -1410,12 +1410,12 @@ Advanced Case
 This describes more specifically how Sim-Diasca is to be used in a distributed context.
 
 
-:raw-html:`<img src=SimDiasca-physical-dispatching-english.png></img>`
+:raw-html:`<center><img src="SimDiasca-physical-dispatching-english.png"></img></center>`
 :raw-latex:`\includegraphics[scale=0.27]{SimDiasca-physical-dispatching-english.png}`
 
 .. comment:
 
- :raw-html:`<img src=SimDiasca-placement-scheduling-sequence.png></img>`
+ :raw-html:`<center><img src="SimDiasca-placement-scheduling-sequence.png"></img></center>`
  :raw-latex:`\includegraphics[scale=0.25]{SimDiasca-placement-scheduling-sequence.png}`
 
 
@@ -1454,7 +1454,7 @@ See the ``Sim-Diasca Modelling Guide``, section 10 of the ``SimDiasca-technical-
 Open discussion about how these guidelines could be applied to the specific context of use of Sim-Diasca, for the simulation target.
 
 
-.. comment :raw-html:`<img src=modelling-approach-english.png></img>`
+.. comment :raw-html:`<center><img src="modelling-approach-english.png"></img></center>`
 .. comment :raw-latex:`\includegraphics[scale=0.75]{modelling-approach-english.png}`
 
 

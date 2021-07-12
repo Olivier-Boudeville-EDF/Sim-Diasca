@@ -26,7 +26,7 @@
 % Creation date: Thursday, July 11, 2019.
 
 
-% Module implementing the WOOPER (active) application behaviour.
+% @doc Module implementing the <b>WOOPER (active) OTP application</b> behaviour.
 %
 % Note that, thanks to the automatic creation of the class manager, WOOPER will
 % still work flawlessly even if not specifically started (typically out of any
@@ -37,7 +37,7 @@
 
 % Implementing the (active, OTP) application behaviour:
 %
-% (see https://erlang.org/doc/design_principles/applications.html)
+% See [https://erlang.org/doc/design_principles/applications.html].
 %
 -behaviour(application).
 
@@ -47,7 +47,7 @@
 
 
 
-% Starts the WOOPER services.
+% @doc Starts the WOOPER services.
 %
 % Note: RestartType and StartArgs at least currently ignored.
 %
@@ -75,7 +75,7 @@ start( RestartType, StartArgs ) ->
 
 
 
-% Stops the WOOPER services.
+% @doc Stops the WOOPER services.
 -spec stop( State :: term() ) -> void().
 stop( State ) ->
 

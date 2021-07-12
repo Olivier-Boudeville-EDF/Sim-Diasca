@@ -26,11 +26,13 @@
 % Creation date: Saturday, July 12, 2008.
 
 
-% Gathering of various convenient facilities regarding executing of third-party
-% tools.
+% @doc Gathering of various convenient facilities regarding the <b>execution of
+% third-party programs</b>.
 %
 % See executable_utils_test.erl for the corresponding test, and shell_utils.erl
 % for the management of the shells and command lines.
+%
+% See system_utils.erl for the actual execution of programs.
 %
 -module(executable_utils).
 
@@ -106,19 +108,20 @@
 		 get_default_jinterface_path/0 ]).
 
 
-% A name, not a path:
 -type executable_name() :: ustring().
+% A name, not a path.
 
-% MD5 sum, a 128-bit hash value:
+
 -type md5_sum() :: non_neg_integer().
+% MD5 sum, a 128-bit hash value.
 
 
-% SHA1 sum, a 160-bit hash value:
 -type sha1_sum() :: non_neg_integer().
+% SHA1 sum, a 160-bit hash value.
 
 
-% SHA sum, a hash value of unspecified size:
 -type sha_sum() :: non_neg_integer().
+% SHA sum, a hash value of unspecified size.
 
 
 -export_type([ executable_name/0, md5_sum/0, sha1_sum/0, sha_sum/0 ]).
@@ -147,8 +150,8 @@
 
 
 
-% Looks-up specified executable program, whose name is specified as a string
-% (ex: "gcc") in the current user PATH.
+% @doc Looks-up specified executable program, whose name is specified as a
+% string (ex: "gcc") in the current user PATH.
 %
 % Returns an absolute filename of the executable program (ex: "/usr/bin/gcc"),
 % or the 'false' atom if it was not found.
@@ -160,9 +163,9 @@ lookup_executable( ExecutableName ) ->
 
 
 
-% Looks-up specified executable program, whose name is specified as a string
-% (ex: "gcc") in the current user PATH, augmented of the specified list of
-% directories (whose existence is not checked), placed at first position.
+% @doc Looks-up specified executable program, whose name is specified as a
+% string (ex: "gcc") in the current user PATH, augmented of the specified list
+% of directories (whose existence is not checked), placed at first position.
 %
 % Returns an absolute filename of the executable program (ex: "/usr/bin/gcc"),
 % or the 'false' atom if it was not found.
@@ -191,8 +194,8 @@ lookup_executable( ExecutableName, ExtraDirs ) ->
 
 
 
-% Finds specified executable program, whose name is specified as a string (ex:
-% "gcc") in the current user PATH.
+% @doc Finds specified executable program, whose name is specified as a string
+% (ex: "gcc") in the current user PATH.
 %
 % Returns an absolute filename of the executable program (ex: "/usr/bin/gcc") or
 % throws an exception {executable_not_found,ExecutableName} if it was not found.
@@ -216,8 +219,8 @@ find_executable( ExecutableName ) ->
 % Section for most usual commands.
 
 
-% Returns whether a PNG file can be generated from a graph file: either confirms
-% it, or returns an hint why not.
+% @doc Returns whether a PNG file can be generated from a graph file: either
+% confirms it, or returns an hint why not.
 %
 -spec can_generate_png_from_graph() -> 'true' | ustring().
 can_generate_png_from_graph() ->
@@ -227,7 +230,7 @@ can_generate_png_from_graph() ->
 	case lookup_executable( Tool ) of
 
 		false ->
-			text_utils:format( "no '~s' tool found (to be installed on many "
+			text_utils:format( "no '~ts' tool found (to be installed on many "
 				"distributions with the 'graphviz' package)", [ Tool ] );
 
 		_Path ->
@@ -236,7 +239,8 @@ can_generate_png_from_graph() ->
 	end.
 
 
-
+% @doc Generates a PNG file from specified graph file.
+%
 % By default does not crash if dot outputs some warnings but does not yield an
 % error exit status.
 %
@@ -248,8 +252,10 @@ generate_png_from_graph_file( PNGFilename, GraphFilename ) ->
 
 
 
-% Generates a PNG image file from specified graph file, that must respect the
-% dot (graphviz) syntax:
+% @doc Generates a PNG image file from specified graph file, that must respect
+% the dot (graphviz) syntax.
+%
+% Arguments are:
 %
 %  - PNGFilePath the filename of the PNG to generate
 %
@@ -284,8 +290,8 @@ generate_png_from_graph_file( PNGFilePath, GraphFilePath,
 
 
 
-% Displays (without blocking) to the user the specified PNG, using an external
-% viewer.
+% @doc Displays (without blocking) to the user the specified PNG, using an
+% external viewer.
 %
 % Returns the text output by the tool (if any).
 %
@@ -299,7 +305,7 @@ display_png_file( PNGFilename ) ->
 
 
 
-% Allows to browse (without blocking) the images available in specified
+% @doc Allows to browse (without blocking) the images available in specified
 % directory (specified as a plain string)
 %
 % Returns the text output by the tool (if any).
@@ -313,8 +319,8 @@ browse_images_in( DirectoryName ) ->
 
 
 
-% Displays (without blocking) to the user the specified PNG, using an external
-% viewer.
+% @doc Displays (without blocking) to the user the specified PNG, using an
+% external viewer.
 %
 % Returns the text output by the tool (if any).
 %
@@ -327,7 +333,7 @@ display_pdf_file( PDFFilename ) ->
 
 
 
-% Displays, with blocking, a text file.
+% @doc Displays, with blocking, a text file.
 %
 % Returns the text output by the tool (if any).
 %
@@ -349,7 +355,7 @@ display_text_file( TextFilename ) ->
 
 
 
-% Displays, with blocking, a wide text file.
+% @doc Displays, with blocking, a wide text file.
 %
 % Returns the text output by the tool (if any).
 %
@@ -373,8 +379,8 @@ display_wide_text_file( TextFilename, CharacterWidth ) ->
 
 
 
-% Returns a string to be inserted into a command-line call to ssh/scp so that it
-% can run as much as possible non-interactively.
+% @doc Returns a string to be inserted into a command-line call to ssh/scp so
+% that it can run as much as possible non-interactively.
 %
 % Tries notably to avoid following message: "The authenticity of host 'Server
 % (XXXXX)' can't be established.  RSA key fingerprint is YYYYY. Are you sure you
@@ -392,8 +398,8 @@ get_ssh_mute_option() ->
 
 
 
-% Returns the MD5 sum computed from the content of the specified file, as an
-% unsigned integer, actually of 128 bits (ex:
+% @doc Returns the MD5 sum computed from the content of the specified file, as
+% an unsigned integer, actually of 128 bits (ex:
 % 96950473382892364268626543336313804804, corresponding to hexadecimal string
 % "48effb631c66e93c7054c10f798f5804").
 %
@@ -429,8 +435,8 @@ compute_md5_sum( Filename ) ->
 
 
 
-% Returns the SHA1 sum computed from the content of the specified file, as an
-% unsigned integer, actually of 160 bits (ex:
+% @doc Returns the SHA1 sum computed from the content of the specified file, as
+% an unsigned integer, actually of 160 bits (ex:
 % 189271338729529876450691804503218393830331783574, corresponding to hexadecimal
 % string "212738699f721d8d8c3e58dac2b113bb8d0c1996").
 %
@@ -443,9 +449,9 @@ compute_sha1_sum( Filename ) ->
 
 
 
-% Returns the SHA sum computed from the content of the specified file, as an
-% unsigned integer, whose size depends on the specified algorithm: 1, 224, 256,
-% 384, 512, 512224, 512256 (see 'man shasum' for more details).
+% @doc Returns the SHA sum computed from the content of the specified file, as
+% an unsigned integer, whose size depends on the specified algorithm: 1, 224,
+% 256, 384, 512, 512224, 512256 (see 'man shasum' for more details).
 %
 -spec compute_sha_sum( any_file_path(), basic_utils:count() ) -> sha_sum().
 compute_sha_sum( Filename, SizeOfSHAAlgorithm )
@@ -543,7 +549,7 @@ compute_sha_sum( Filename, SizeOfSHAAlgorithm )
 
 
 
-% Returns the name of the default image viewer tool.
+% @doc Returns the name of the default image viewer tool.
 %
 % Could be also: xv, firefox, etc.
 %
@@ -553,14 +559,14 @@ get_default_image_viewer_name() ->
 	"eog".
 
 
-% Returns an absolute path to the default image viewer tool.
+% @doc Returns an absolute path to the default image viewer tool.
 -spec get_default_image_viewer_path() -> executable_path().
 get_default_image_viewer_path() ->
 	find_executable( get_default_image_viewer_name() ).
 
 
 
-% Returns the name of the default image browser tool.
+% @doc Returns the name of the default image browser tool.
 %
 % Used to be: gqview (renamed since then).
 %
@@ -570,7 +576,7 @@ get_default_image_browser_name() ->
 	"geeqie".
 
 
-% Returns an absolute path to the default image browser tool.
+% @doc Returns an absolute path to the default image browser tool.
 -spec get_default_image_browser_path() -> executable_path().
 get_default_image_browser_path() ->
 	case get_default_image_browser_name() of
@@ -585,55 +591,59 @@ get_default_image_browser_path() ->
 	end.
 
 
-% Returns the name of the default web browser.
+% @doc Returns the name of the default web browser.
 -spec get_default_web_browser_name() -> executable_name().
 get_default_web_browser_name() ->
 	"firefox".
 
 
-% Returns an absolute path to the default web browser tool.
+% @doc Returns an absolute path to the default web browser tool.
 -spec get_default_web_browser_path() -> executable_path().
 get_default_web_browser_path() ->
 	find_executable( get_default_web_browser_name() ).
 
 
 
-% Returns the name of the default PDF viewer tool.
+% @doc Returns the name of the default PDF viewer tool.
+%
 % Could be also: xpdf, acroread, etc.
+%
 -spec get_default_pdf_viewer_name() -> executable_name().
 get_default_pdf_viewer_name() ->
 	"evince".
 
 
-% Returns an absolute path to the default PDF viewer tool.
+% @doc Returns an absolute path to the default PDF viewer tool.
 -spec get_default_pdf_viewer_path() -> executable_path().
 get_default_pdf_viewer_path() ->
 	find_executable( get_default_pdf_viewer_name() ).
 
 
 
-% Returns the name of the default text viewer tool.
+% @doc Returns the name of the default text viewer tool.
+%
 % Could be also: nedit, emacs, etc.
+%
 -spec get_default_text_viewer_name() -> executable_name().
 get_default_text_viewer_name() ->
 	"gedit".
 
 
-% Returns an absolute path to the default text viewer tool.
+% @doc Returns an absolute path to the default text viewer tool.
 -spec get_default_text_viewer_path() -> executable_path().
 get_default_text_viewer_path() ->
 	find_executable( get_default_text_viewer_name() ).
 
 
 
-% Returns the name of the default viewer tool for wider texts.
+% @doc Returns the name of the default viewer tool for wider texts.
 -spec get_default_wide_text_viewer_name( width() ) -> executable_name().
 get_default_wide_text_viewer_name( _CharacterWidth ) ->
 	% Could be: "nedit":
 	"gedit".
 
 
-% Returns an absolute path to the default viewer tool for wider texts.
+% @doc Returns an absolute path to the default viewer tool for wider texts.
 -spec get_default_wide_text_viewer_path( width() ) -> executable_path().
 get_default_wide_text_viewer_path( CharacterWidth ) ->
 	% Could be: io_lib:format( "nedit -column ~B", [ CharacterWidth ] )
@@ -641,7 +651,7 @@ get_default_wide_text_viewer_path( CharacterWidth ) ->
 
 
 
-% Returns the name of the default trace viewer tool.
+% @doc Returns the name of the default trace viewer tool.
 %
 % Could be also: nedit, gedit, etc.
 %
@@ -661,7 +671,7 @@ get_default_trace_viewer_name() ->
 
 
 
-% Returns an absolute path to the default trace viewer tool.
+% @doc Returns an absolute path to the default trace viewer tool.
 %
 % Could be also: nedit, gedit, etc.
 %
@@ -672,7 +682,7 @@ get_default_trace_viewer_path() ->
 
 
 
-% Returns an absolute path to the root directory of the current Erlang
+% @doc Returns an absolute path to the root directory of the current Erlang
 % installation.
 %
 % Ex: if 'erl' is to be found in
@@ -687,13 +697,13 @@ get_default_erlang_root() ->
 
 
 
-% Returns the name of the default Erlang interpreter.
+% @doc Returns the name of the default Erlang interpreter.
 -spec get_default_erlang_interpreter_name() -> executable_name().
 get_default_erlang_interpreter_name() ->
 	"erl".
 
 
-% Returns an absolute path to the default Erlang interpreter.
+% @doc Returns an absolute path to the default Erlang interpreter.
 -spec get_default_erlang_interpreter_path() -> executable_path().
 get_default_erlang_interpreter_path() ->
 	% Note: expected to be on the PATH:
@@ -701,13 +711,13 @@ get_default_erlang_interpreter_path() ->
 
 
 
-% Returns the name of the default SSH client.
+% @doc Returns the name of the default SSH client.
 -spec get_default_ssh_client_name() -> executable_name().
 get_default_ssh_client_name() ->
 	"ssh".
 
 
-% Returns an absolute path to the default SSH client.
+% @doc Returns an absolute path to the default SSH client.
 -spec get_default_ssh_client_path() -> executable_path().
 get_default_ssh_client_path() ->
 	% Note: expected to be on the PATH:
@@ -715,13 +725,13 @@ get_default_ssh_client_path() ->
 
 
 
-% Returns the name default SSH-based scp executable.
+% @doc Returns the name default SSH-based scp executable.
 -spec get_default_scp_executable_name() -> executable_name().
 get_default_scp_executable_name() ->
 	"scp".
 
 
-% Returns an absolute path to the default SSH-based scp executable.
+% @doc Returns an absolute path to the default SSH-based scp executable.
 -spec get_default_scp_executable_path() -> executable_path().
 get_default_scp_executable_path() ->
 	% Note: expected to be on the PATH:
@@ -729,13 +739,13 @@ get_default_scp_executable_path() ->
 
 
 
-% Returns the name default openssl-based executable.
+% @doc Returns the name default openssl-based executable.
 -spec get_default_openssl_executable_name() -> executable_name().
 get_default_openssl_executable_name() ->
 	"openssl".
 
 
-% Returns an absolute path to the default openssl-based executable.
+% @doc Returns an absolute path to the default openssl-based executable.
 -spec get_default_openssl_executable_path() -> executable_path().
 get_default_openssl_executable_path() ->
 	% Note: expected to be on the PATH:
@@ -743,7 +753,7 @@ get_default_openssl_executable_path() ->
 
 
 
-% Returns an absolute path to a gnuplot executable.
+% @doc Returns an absolute path to a gnuplot executable.
 -spec get_gnuplot_path() -> executable_path().
 get_gnuplot_path() ->
 	% Note: expected to be on the PATH:
@@ -751,7 +761,7 @@ get_gnuplot_path() ->
 
 
 
-% Returns, as a tuple (ex: {4,2} for the 4.2 version), the gnuplot version
+% @doc Returns, as a tuple (ex: {4,2} for the 4.2 version), the gnuplot version
 % actually available on the computer.
 %
 -spec get_current_gnuplot_version() -> basic_utils:two_digit_version().
@@ -784,63 +794,63 @@ get_current_gnuplot_version() ->
 
 
 
-% Returns the default tool to use to compress in the ZIP format.
+% @doc Returns the default tool to use to compress in the ZIP format.
 -spec get_default_zip_compress_tool() -> executable_path().
 get_default_zip_compress_tool() ->
 	find_executable( "zip" ).
 
 
-% Returns the default tool to use to decompress in the ZIP format.
+% @doc Returns the default tool to use to decompress in the ZIP format.
 -spec get_default_zip_decompress_tool() -> executable_path().
 get_default_zip_decompress_tool() ->
 	find_executable( "unzip" ).
 
 
-% Returns the default tool to use to decompress in the BZIP2 format.
+% @doc Returns the default tool to use to decompress in the BZIP2 format.
 -spec get_default_bzip2_compress_tool() -> executable_path().
 get_default_bzip2_compress_tool() ->
 	find_executable( "bzip2" ).
 
 
-% Returns the default tool to use to decompress in the BZIP2 format.
+% @doc Returns the default tool to use to decompress in the BZIP2 format.
 -spec get_default_bzip2_decompress_tool() -> executable_path().
 get_default_bzip2_decompress_tool() ->
 	find_executable( "bunzip2" ).
 
 
-% Returns the default tool to use to compress in the XZ format.
+% @doc Returns the default tool to use to compress in the XZ format.
 -spec get_default_xz_compress_tool() -> executable_path().
 get_default_xz_compress_tool() ->
 	find_executable( "xz" ).
 
 
-% Returns the default tool to use to decompress in the XZ format.
+% @doc Returns the default tool to use to decompress in the XZ format.
 -spec get_default_xz_decompress_tool() -> executable_path().
 get_default_xz_decompress_tool() ->
 	find_executable( "unxz" ).
 
 
-% Returns the default tool to compute MD5 sums.
+% @doc Returns the default tool to compute MD5 sums.
 -spec get_default_md5_tool() -> executable_path().
 get_default_md5_tool() ->
 	find_executable( "md5sum" ).
 
 
-% Returns the default tool to compute SHA sums.
+% @doc Returns the default tool to compute SHA sums.
 -spec get_default_sha_tool() -> executable_path().
 get_default_sha_tool() ->
 	find_executable( "shasum" ).
 
 
 
-% Returns the default tool to execute Java programs.
+% @doc Returns the default tool to execute Java programs.
 -spec get_default_java_runtime() -> executable_path().
 get_default_java_runtime() ->
 	find_executable( "java" ).
 
 
-% Returns the default path to the .jar file implementing JInterface,
-% i.e. 'OtpErlang.jar'.
+% @doc Returns the default path to the .jar file implementing JInterface,
+% namely 'OtpErlang.jar'.
 %
 % Indeed, to make use of JInterface, OtpErlang.jar must be found by the
 % counterpart Java program.
@@ -889,7 +899,7 @@ get_default_jinterface_path() ->
 % Miscellaneous section:
 
 
-% Tells whether the program is run in batch mode.
+% @doc Tells whether the program is run in batch mode.
 %
 % By default, a program is not in batch mode (hence is in interactive mode,
 % meaning it might trigger graphical displays).
@@ -956,9 +966,10 @@ is_batch() ->
 
 
 
-
 % Helper functions.
 
+
+% @doc Executes the dot tool.
 -spec execute_dot( file_name(), file_name() ) -> command_output().
 execute_dot( PNGFilename, GraphFilename ) ->
 

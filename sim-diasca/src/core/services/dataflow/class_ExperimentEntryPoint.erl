@@ -19,6 +19,9 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Class implementing the <b>entry point of an experiment</b>, in charge of
+% feeding and triggering an associated dataflow.
+%
 -module(class_ExperimentEntryPoint).
 
 
@@ -49,6 +52,7 @@
 % Experiments' sections of the Dataflow HOWTO in order to understand why this
 % actor is purely passive and (only) triggered by its ExperimentExitPoint
 % counterpart actor.
+
 
 
 % The attributes that are specific to the experiment entry point are:
@@ -85,7 +89,9 @@
 
 
 
-% Constructs the experiment entry point, from:
+% @doc Constructs the experiment entry point.
+%
+% Construction parameters are:
 %
 % - ActorSettings describes the actor abstract identifier (AAI) and seed of this
 % actor, as assigned by the load balancer
@@ -130,7 +136,7 @@ construct( State, ActorSettings, Dataflows, ExperimentManagerPid,
 
 
 
-% Callback executed on the first diasca of existence of this entry point.
+% @doc Callback executed on the first diasca of existence of this entry point.
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
 							const_actor_oneway_return().
 onFirstDiasca( State, _CallerPid ) ->
@@ -141,7 +147,7 @@ onFirstDiasca( State, _CallerPid ) ->
 
 
 
-% Starts the evaluation of the experiment for the current tick.
+% @doc Starts the evaluation of the experiment for the current tick.
 %
 % Typically called by the experiment exit point.
 %
@@ -176,7 +182,7 @@ startExperimentTick( State, _SendingActorPid ) ->
 % Helper functions.
 
 
-% Returns a textual description of this entry point.
+% @doc Returns a textual description of this entry point.
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 

@@ -11,7 +11,7 @@ At all levels of the technical architecture, we tried to enforce a few conventio
 Some of them are necessary, others are mere good practices, a few are arbitrary (notably in terms of style), but we believe that, for the sake of clarity and homogeneity, all of them should be respected in the code of the Sim-Diasca stack, and preferably also in code using it (typically models, tools, etc.).
 
 
-:raw-html:`<img src="xkcd-code_quality.png"></img>`
+:raw-html:`<center><img src="xkcd-code_quality.png"></img></center>`
 :raw-latex:`\includegraphics[scale=0.5]{xkcd-code_quality.png}`
 
 (see the credits_ section about the comic strips)
@@ -20,7 +20,7 @@ Some of them are necessary, others are mere good practices, a few are arbitrary 
 We believe also that these conventions have been fairly well enforced in our own Sim-Diasca code base (which thus might be used as an example thereof). Please tell us if you do not think so, or if you identified interesting other conventions that could be listed here and applied.
 
 
-:raw-html:`<img src="xkcd-donald_knuth.png"></img>`
+:raw-html:`<center><img src="xkcd-donald_knuth.png"></img></center>`
 :raw-latex:`\includegraphics[scale=4]{xkcd-donald_knuth.png}`
 
 
@@ -31,46 +31,19 @@ We believe also that these conventions have been fairly well enforced in our own
 Text Conventions
 ================
 
-Any text editor can be used, provided that it saves source files with the UNIX, not DOS, conventions (i.e. lines terminating by the LF character, not by the CRLF characters).
+We now recommend to directly stick to the `Myriad ones <http://myriad.esperide.org/#myriad-main-conventions>`_ `[mirror] <https://olivier-boudeville.github.io/Ceylan-Myriad/#myriad-main-conventions>`_.
 
-The use of syntax highlighting is encouraged.
-
-Recommended text editors are:
-
-- emacs / xemacs
-- nedit
-- ErlIDE (based on Eclipse)
-- gedit
-
-
-:raw-html:`<img src="xkcd-real_programmers.png"></img>`
+:raw-html:`<center><img src="xkcd-real_programmers.png"></img></center>`
 :raw-latex:`\includegraphics[scale=0.45]{xkcd-real_programmers.png}`
 
-Source files should be formatted for a 80-character width: no character should be present after the 79th column of a line.
 
-Tabulations should be preferred to series of spaces, and the text should be formatted according to 4-character tabulations.
-
-All redundant whitespaces should be removed, preferably automatically (see the Emacs ``whitespace-cleanup`` command). This is why, on Emacs, with our settings, pressing the F8 key removes for example the yellow areas in the current buffer by replacing any series of four spaces by a corresponding tabulation.
-
-For that, with emacs, in addition to our ``init.el``, we rely on ``acme-search.el``, ``flyspell-guess.el`` and ``whitespace.el`` (all in the ``~/.emacs.d`` directory - check that no other initialisation file collide, like a stray ``~/.emacs`` file), and it leads to a display like:
-
-:raw-html:`<img src="emacs-and-code.png"></img>`
+:raw-html:`<center><img src="emacs-and-code.png"></img></center>`
 :raw-latex:`\includegraphics[scale=0.55]{emacs-and-code.png}`
 
+Just ensure you typed everything properly:
 
-
-Only ASCII code should be used (ex: no accentuated characters).
-
-All elements of documentation should be written in English, possibly translated to other languages.
-
-Spell-checking is recommended; ensure you typed everything properly:
-
-:raw-html:`<img src="xkcd-the_important_field.png"></img>`
+:raw-html:`<center><img src="xkcd-the_important_field.png"></img></center>`
 :raw-latex:`\includegraphics[scale=0.6]{xkcd-the_important_field.png}`
-
-
-As not all typos may be detected at compilation-time (ex: wrong spelling for a module), we recommend the use of additional static checkers, as discussed `here <https://myriad.esperide.org/#type-checking-myriad>`_.
-
 
 
 
@@ -124,7 +97,7 @@ For example, a telecom-centric simulation could define building blocks like serv
 Erlang Conventions
 ==================
 
-:raw-html:`<img src="xkcd-parenthesis.png"></img>`
+:raw-html:`<center><img src="xkcd-parenthesis.png"></img></center>`
 :raw-latex:`\includegraphics[scale=0.7]{xkcd-parenthesis.png}`
 
 
@@ -156,7 +129,7 @@ The most obvious conventions are:
 
 - the official *Programming Rules and Conventions* should be enforced, as defined `here <http://www.erlang.se/doc/programming_rules.shtml>`_
 
-:raw-html:`<img src="xkcd-functional.png"></img>`
+:raw-html:`<center><img src="xkcd-functional.png"></img></center>`
 :raw-latex:`\includegraphics[scale=0.7]{xkcd-functional.png}`
 
 - the function definitions shall follow **the same order** as the one of their exports
@@ -179,12 +152,12 @@ The most obvious conventions are:
 
 - regarding **text**:
 
- - if a text is to be rather static (constant) and/or if it is to be exchanged between processes, then it should be a ``binary``, and its type shall be declared as ``text_utils:bin_string()``
- - other, a plain string (``string()``) shall be used
+  - if a text is to be rather static (constant) and/or if it is to be exchanged between processes, then it should be a ``binary``, and its type shall be declared as ``text_utils:bin_string()``
+  - other, a plain string (``string()``) shall be used
 
 - when defining a non-trivial datastructure, a **record** shall be used (rather than, say, a mere ad-hoc tuple), a corresponding **type** should be then defined (ex: a ``foobar`` record leading to a ``foobar()`` type), and a **function to describe it** as text shall be provided (ex: ``-spec foobar_to_string(foobar()) -> string()``)
 
- - **mute variables** should be used as well to document actual parameters; for example ``f(3,7,10)`` could preferably be written as a clearer ``f(_Min=3,_Max=7,_Deviation=10)``
+  - **mute variables** should be used as well to document actual parameters; for example ``f(3,7,10)`` could preferably be written as a clearer ``f(_Min=3,_Max=7,_Deviation=10)``
 
 
 .. Note:: Mute variables are however actually bound, thus if for example there is in the same scope ``_Min=3`` and later ``_Min=4``, then a badmatch will be triggered at runtime; therefore names of mute variables should be generally kept unique in a given scope.
@@ -196,9 +169,9 @@ For example, as of May 2017, we have for the Sim-Diasca stack (i.e. from ``myria
 
 - 326 source files (``*.erl``), 86 header files (``*.hrl``)
 - a grand total of 178980 lines:
- - 57814 of which (32.3%) are blank lines
- - 56548 of which (31.5%) are comments
- - 64618 of which (36.1%) are code
+  - 57814 of which (32.3%) are blank lines
+  - 56548 of which (31.5%) are comments
+  - 64618 of which (36.1%) are code
 
 These information can be obtained by running ``make stats`` from the root of a Sim-Diasca install.
 
@@ -210,19 +183,19 @@ Other recommended good practices are:
 - write **type specifications** and run regularly **Dialyzer**
 
 
-:raw-html:`<img src="xkcd-good_code.png"></img>`
+:raw-html:`<center><img src="xkcd-good_code.png"></img></center>`
 :raw-latex:`\includegraphics[scale=0.5]{xkcd-good_code.png}`
 
 
 Another piece of advice we maybe should apply more frequently:
 
-:raw-html:`<img src="xkcd-optimization.png"></img>`
+:raw-html:`<center><img src="xkcd-optimization.png"></img></center>`
 :raw-latex:`\includegraphics[scale=0.5]{xkcd-optimization.png}`
 
 
  Of course we cannot stress enough that securing a sufficient code quality is essential for the other developers to come, and also often even for one's future self; for that reason we recommend pair-programming, or at least the aforementioned review before new sources are incorporated in the code base:
 
-:raw-html:`<img src="xkcd-code_quality_3.png"></img>`
+:raw-html:`<center><img src="xkcd-code_quality_3.png"></img></center>`
 :raw-latex:`\includegraphics[scale=0.5]{xkcd-code_quality_3.png}`
 
 
@@ -308,7 +281,7 @@ Once building the simulator, one can configure:
 - if enabled, what kind of trace output will be generated, among LogMX-compliant (a third-party log supervisor integrating a trace parser of our own), PDF output, or raw text output; this is to be set in ``traces.hrl`` (default is: LogMX-compliant)
 
 
- At execution time, the command-line option ``--batch`` can be specified, which causes all interactive elements to be disabled, including any trace supervisor (like the LogMX browser). It can be specified that way::
+At execution time, the command-line option ``--batch`` can be specified, which causes all interactive elements to be disabled, including any trace supervisor (like the LogMX browser). It can be specified that way::
 
    $ make my_case_run CMD_LINE_OPT="--batch"
 

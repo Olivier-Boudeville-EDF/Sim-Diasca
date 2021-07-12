@@ -2,13 +2,15 @@
 
 .. _`main conventions`:
 
-
+---------------------------
 ``Myriad`` Main Conventions
-===========================
+---------------------------
+
+We list here the conventions of all sorts that the Myriad code (base or contributed one) - and also code in the software stack based on it - shall obey.
 
 
 Text Conventions
-----------------
+================
 
 The purpose here is to ensure a sufficient **code homogeneity**; for example in all source files are in such a "canonical form", analysing their differences (``diff``) is made simpler.
 
@@ -18,10 +20,20 @@ The use of syntax highlighting is encouraged.
 
 Recommended text editors are:
 
-- emacs / xemacs
-- ErlIDE (based on Eclipse)
-- gedit
-- nedit
+- `Emacs <https://www.gnu.org/software/emacs/>`_ (see our `init.el <https://github.com/Olivier-Boudeville/Ceylan-Myriad/tree/master/conf/init.el>`_)
+- `Visual Studio Code <https://en.wikipedia.org/wiki/Visual_Studio_Code>`_ (a.k.a. Vscode)
+- `ErlIDE <https://erlide.org/>`_ (based on Eclipse)
+- Vim, IntelliJ, Gedit, Nedit, etc.
+
+
+The main editors integrate the *Language Server Protocol* (also known as LSP), so `Erlang LS <https://erlang-ls.github.io/>`_ can be used with them (`Flycheck <https://www.flycheck.org>`_ can be another option). For that we recommend the use of our `erlang_ls.config <https://github.com/Olivier-Boudeville/Ceylan-Myriad/tree/master/erlang_ls.config>`_ file.
+
+.. comment For that we recommend the use of our `erlang_ls.config <https://github.com/Olivier-Boudeville/Ceylan-Myriad/tree/master/conf/erlang_ls.config>`_ file; for example::
+
+.. $ mkdir -p ~/.config/erlang_ls && cd ~/.config/erlang_ls/
+.. $ ln -sf ${CEYLAN_MYRIAD}/conf/erlang_ls.config
+
+
 
 Source files should be formatted for a 80-character width: no character should be present after the 79th column of a line.
 
@@ -31,14 +43,14 @@ Tabulations should be preferred to series of spaces, and the text should be form
 
 All redundant whitespaces should be removed, preferably automatically (see the Emacs ``whitespace-cleanup`` command). This is why, with the `emacs settings`_ that we recommend, pressing the F8 key removes for example the yellow areas in the current buffer by replacing any series of four spaces by a corresponding tabulation.
 
-We would prefer that contributed files (especially source ones) are "whitespace-clean" before being committed. As mentioned, such a transformation can be done directly from Emacs. If using another editor, please ensure that the `fix-whitespaces.sh <https://github.com/Olivier-Boudeville/Ceylan-Hull/blob/master/fix-whitespaces.sh>`_ script has been run on the target sources (possibly automatically thanks to a VCS hook) *before* committing them.
+We would prefer that all files (especially source ones; including the contributed ones) are "whitespace-clean" before being committed. As mentioned, such a transformation can be done directly from Emacs. If using another editor, please ensure that the `fix-whitespaces.sh <https://github.com/Olivier-Boudeville/Ceylan-Hull/blob/master/fix-whitespaces.sh>`_ script has been run on the target sources (possibly automatically thanks to a VCS hook) *before* committing them; the `fix-whitespaces-in-tree.sh <https://github.com/Olivier-Boudeville/Ceylan-Hull/blob/master/fix-whitespaces-in-tree.sh>`_ script may be also used, in order to perform a bulk transformation.
 
 All elements of documentation should be written in English, possibly translated to other languages. Spell-checking is recommended.
 
 
 
 Coding Practices
-----------------
+================
 
 In terms of coding style, we would like that the sources remain as uniform as possible, regarding naming, spacing, code/comments/blank line ratios.
 
@@ -56,12 +68,73 @@ For example::
 	- 33214 of which (37.2%) are code
 
 
+
+The most obvious conventions are:
+
+- the **settings of the build chain** should be used (ex: with regard to compiler flags) and adapted/completed if needed; the (possibly-specialised) ``GNUmakesettings.inc``,  ``GNUmakerules.inc`` and ``GNUmakevars.inc`` files should be relied upon
+
+- **no warning should be tolerated**; anyway our build chain treats warnings as (blocking) errors
+
+- **test cases** should be developed alongside most if not all modules; ex: if developing ``src/class_X.erl``, then probably the ``test/class_X_test.erl`` testing code should be developed, after or, even preferably, before the implementation of the tested code; test success should be evaluated automatically, by the code (ex: thanks to pattern matching), not by the person running the test (ex: who would have to compare visually the actual results with the expected ones); in some cases, only **integrated tests** can be devised in practice; tests should be gathered in **test suites**, that should be runnable automatically (``make test``, recursively through child directories) and fail loudly (and in a blocking manner) at the first error met
+
+- **multiple levels of quality documentation** should be made available to the code user, and probably be written in parallel to the code; there are at least three documentation levels:
+
+  - lower-level documentation: code should always be **densely commented**, with documentation headers added to all functions, inlined comments (not paraphrasing the code) and self-describing symbols: function names, variable names (ex: ``RegisteredState = ...`` to be preferred to ``NewState = ...``), etc.; more generally all names shall be long enough to be descriptive (clarity preferred over compactness); type specifications also pertain to this low-level documentation effort
+
+  - higher-level **design and/or implementation notes**: they should be available as a set of paragraphs in each source file, before the function definitions, to describe the context and constraints, and help understanding how the features are implemented, and why
+
+  - high-level **developer and user documentation** should be made available, targeting at least HTML and PDF outputs, possibly offering a wiki access as well
+
+- more generally, **comments** should be clear and precise, numerous, rich and complete (overall, in terms of line counts, we target roughly 1/3 of code, 1/3 of blank lines and 1/3 of comments); all comments shall be written in UK English, start with a single ``%`` and be properly word-wrapped (use ``meta-q`` with our Emacs settings to take care of that automatically)
+
+- **indentation** should respect, as already explained, the 80-character width and 4-space tabulation; however the default built-in Erlang indentation mode of ``emacs`` can hardly be used for that, as it leads to huge width offsets (we may in the future provide a variation of the ``elisp`` code for the emacs indentation rules)
+
+- **spacing homogeneity** across source files should be enforced; for example three blank lines should exist between two function definitions, one between the clauses of any given function (possibly two in case of longer clauses); for the sake of "visual parsing", arguments should be separated by spaces (ex: ``f( X ) -> ...``, not ``f(X) -> ...``), especially if they are a bit complex (``f( A={U,V}, B, _C ) -> ...``, not ``f(A={U,V},B,_C) -> ...`` or the usual ``f(A={U,V}, B, _C) -> ...``)
+
+- for **type-related conventions**, at least all exported functions shall have a ``-spec`` declaration; if an actual type is referenced more than once (notably in a given module), a specific user-defined type shall be defined; types shall be defined in "semantic" terms rather than on technical ones (ex: ``-type temperature() :: ...`` than ``float()``; developers may refer to, or enrich, ``myriad/src/utils/unit_utils.erl`` for that)
+
+- the **latest stable version of Erlang** should be used, preferably built thanks to our ``myriad/conf/install-erlang.sh`` script
+
+- the official *Programming Rules and Conventions* should be enforced, as defined `here <http://www.erlang.se/doc/programming_rules.shtml>`_
+
+- the function definitions shall follow **the same order** as the one of their exports
+
+- helper functions **shall preferably be identified as such**, with an ``(helper)`` comment
+
+- if an helper function is specific to an exported function, it shall be defined just after this function; otherwise it should be defined in the **helper section**, placed just after the definition of the exported functions
+
+- defining distinct (non-overlapping), explicit (with a clear-enough name), numerous (statically-defined) **atoms** is cheap; each atom found in the sources is generally to be involved in at least one type definition
+
+- the use of ``case ... of ... end`` should be preferred to the use of ``if`` (never used in our code base)
+
+- we also prefer that the various patterns of a case are indented with exactly one tabulation, and that the closing ``end`` lies as much as possible on the left (ex: if having specified ``MyVar = case ... end``, then ``end`` should begin at the same column as ``MyVar``); the same applies to ``try ... catch ... end`` clauses
+
+- when a term is ignored, instead of using simply ``_``, one should define a **named mute variable** in order to provide more information about this term (ex: ``_TimeManagerPid``); one should then to accidental matching of such names (now a warning is emitted)
+
+- some conventional variable names are, and may be, extensively used: ``Res`` for result, ``H`` and ``T`` for respectively the head and tail of a list on which we recursively iterate
+
+- when needing an **associative table**, use the ``table`` pseudo-module; a key/value pair shall be designated as a table *entry* (ex: variable named as ``RoadEntry``)
+
+- regarding the in-code management of **text**:
+
+  - if a text is to be rather static (constant) and/or if it is to be exchanged between processes, then it should be a UTF8 ``binary``, and its type shall be declared as ``text_utils:bin_string()``
+  - other, a plain string (``text_utils:ustring()``) shall be used
+
+- when defining a non-trivial datastructure, a **record** shall be used (rather than, say, a mere ad-hoc tuple or a map of undocumented structure...), a corresponding **type** should be then defined (ex: a ``foobar`` record leading to a ``foobar()`` type), and a **function to describe it** as text shall be provided (ex: ``-spec foobar_to_string(foobar()) -> text_utils:string()``)
+
+  - **mute variables** should be used as well to document actual parameters; for example ``f(3,7,10)`` could preferably be written as a clearer ``f(_Min=3,_Max=7,_Deviation=10)``
+
+
+.. Note:: Mute variables are however actually bound, thus if for example there is in the same scope ``_Min=3`` and later ``_Min=4``, then a badmatch will be triggered at runtime; therefore names of mute variables should be generally kept unique in a given scope.
+
+ - type shorthands may be defined; for example, if using repeatedly within a module ``text_utils:ustring()``, a local, non-exported type shorthand (``-type ustring() :: text_utils:ustring()``) may be defined so that all other uses of this type become simply ``ustring()``
+
 As not all typos may be detected at compilation-time (ex: wrong spelling for a module), we recommend, for source code, the use of additional static checkers, as discussed in the `type-checking`_ section.
 
 
 
 Execution Targets
------------------
+=================
 
 Two execution target modes have been defined:
 
@@ -80,8 +153,29 @@ This function shall be compiled once per layer to be accurate, in one of its mod
 
 
 
+Geometric Conventions
+=====================
+
+:raw-html:`<center><img src="myriad-space-time-referential.png" id="responsive-image-tiny"></img></center>`
+:raw-latex:`\begin{figure}[h] \centering \includegraphics[scale=1]{myriad-space-time-referential.png} \end{figure}`
+
+For **space** coordinates, three axes are defined for a global referential:
+
+- abscissa: X axis (in red, ``#FF0000``)
+- ordinate: Y axis (in green, ``#008000``)
+- depth: Z axis (in blue, ``#0000FF``)
+
+For each of them, generally ``1.0`` corresponds to 1 meter, otherwise to 1 `light-second <https://en.wikipedia.org/wiki/Light-second>`_ (i.e. roughly 300 000 km [#]_).
+
+.. [#] Then for more human-sized distances, a scale of one light-nanosecond (10^-9 second) might be more convenient, as it corresponds almost to 30 cm.
+
+For **time** coordinate, a single axis is defined for a global referential: the T axis (in yellow, ``#F6DE2D``), for which ``1.0`` corresponds to 1 second.
+
+
+
+
 Other Conventions
------------------
+=================
 
 - for clarity, we tend to use longer variable names, in CamelCase
 - we tend to use mute variables to clarify meanings and intents, as in ``_Acc=[]`` (beware, despite being muted, any variable in scope that bears the same name will be matched), ``Acc`` designating accumulators

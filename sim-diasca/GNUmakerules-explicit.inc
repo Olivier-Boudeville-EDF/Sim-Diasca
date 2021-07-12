@@ -11,7 +11,8 @@
 
 
 .PHONY-local: default-sim-diasca-rule make-config-links                \
-			  make-config-links-recurse clean clean-probe clean-test   \
+			  make-config-links-recurse create-doc-links               \
+			  clean clean-probe clean-test                             \
 			  clean-test-logs clean-test-images clean-source-archives  \
 			  clean-results clean-outputs
 
@@ -39,6 +40,16 @@ make-config-links-recurse:
 	@for m in $(MODULES_DIRS) ; do \
 	( cd $$m && $(MAKE) -s make-config-links make-config-links-recurse ) ; \
 	done
+
+
+
+# Creates, once for all (before adding them in VCS) the main, general
+# documentation-related symbolic links, used by most SimDiasca-related documents
+# (especially the ones generated thanks to a local-html target):
+#
+create-doc-links:
+	@echo "  Creating doc-related symlinks"
+	@base_dir="$(SIM_DIASCA_TOP)/doc/common-elements"; for f in css/pygments-default.css css/sim-diasca.css edf-related/sim-diasca.png edf-related/logo-EDF-english.png edf-related/sim-diasca-icon.png licence/lgpl-v3-logo-bordered.png; do ln -sf $${base_dir}/$$f ; done
 
 
 

@@ -1473,11 +1473,13 @@ update_node_table( SurvivingNodes, PreviousNodeTable, KMap ) ->
 
 	lists:foldl( fun( Node, AccTable ) ->
 
+		Key = Node,
+
 		% Retrieving first the PID of the corresponding agent:
-		AgentPid = table:get_value( _K=Node, PreviousNodeTable ),
+		AgentPid = table:get_value( Key, PreviousNodeTable ),
 
 		% Fetching the new k-record for this node:
-		NodeKRecord = table:get_value( _K=Node, KMap ),
+		NodeKRecord = table:get_value( Key, KMap ),
 
 		Securing = NodeKRecord#k_record.securing,
 		SecuredBy = NodeKRecord#k_record.secured_by,
@@ -1486,7 +1488,7 @@ update_node_table( SurvivingNodes, PreviousNodeTable, KMap ) ->
 		AgentPid ! { updateResilienceMapping, [ Securing, SecuredBy ] },
 
 		% By design failed nodes are not referenced anymore:
-		table:add_entry( _Key=Node, _Value=AgentPid, AccTable )
+		table:add_entry( Key, _Value=AgentPid, AccTable )
 
 				 end,
 				 _Acc0=table:new(),

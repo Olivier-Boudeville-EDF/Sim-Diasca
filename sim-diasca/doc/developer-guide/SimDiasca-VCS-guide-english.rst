@@ -56,15 +56,15 @@ Creating a Branch
 .................
 
 
- #. select the origin of that branch, i.e. the place from which the initial content of the branch should be copied (ex: ``trunk``, or another branch)
+#. select the origin of that branch, i.e. the place from which the initial content of the branch should be copied (ex: ``trunk``, or another branch)
 
- #. check to the origin is up-to-date (``svn status`` / ``svn ci``)
+#. check to the origin is up-to-date (``svn status`` / ``svn ci``)
 
- #. find a proper name for that branch (ex: based on a feature rather than on a developer name)
+#. find a proper name for that branch (ex: based on a feature rather than on a developer name)
 
- #. create the branch: ``svn copy svn+ssh://<user>@<server>/<path>/<location> svn+ssh://<user>@<server>/<path>/branches/<branch name> -m "<comment>"``
+#. create the branch: ``svn copy svn+ssh://<user>@<server>/<path>/<location> svn+ssh://<user>@<server>/<path>/branches/<branch name> -m "<comment>"``
 
- #. document it
+#. document it
 
 
 .. Note:: Naming a branch according to a developer is generally a mistake, as the branch will be unusable once having been merged back to the trunk, whereas the developer could be still usable.
@@ -93,11 +93,11 @@ If wanting then to restore the previous state of the working copy, a recursive r
 
 Although all branches are managed identically by SVN, the following usual conventions are to be respected:
 
- - all vendor branches should be created in the top-level ``vendor`` directory (ex: ``vendor/myriad/0.1``)
+- all vendor branches should be created in the top-level ``vendor`` directory (ex: ``vendor/myriad/0.1``)
 
- - all other branches should be created in the top-level ``branches`` directory (ex: ``branches/sim-diasca-2.0``)
+- all other branches should be created in the top-level ``branches`` directory (ex: ``branches/sim-diasca-2.0``)
 
- - names (all lowercases, words separated by a dash) should describe clearly the changes to be operated on that branch
+- names (all lowercases, words separated by a dash) should describe clearly the changes to be operated on that branch
 
 
 Similarly, all tags should be created in the top-level ``tags`` directory (ex: ``tags/sim-diasca-release-2.0.6``).
@@ -108,9 +108,9 @@ ____________
 
 Three parameters are generally involved:
 
- #. the server location of the origin branch (A)
- #. the server location of the destination branch (B)
- #. the local working copy on which differences will be applied
+#. the server location of the origin branch (A)
+#. the server location of the destination branch (B)
+#. the local working copy on which differences will be applied
 
 The goal is to update B from A.
 

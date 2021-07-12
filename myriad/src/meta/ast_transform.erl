@@ -27,12 +27,12 @@
 
 
 
-% Module in charge of transforming AST elements, typically by operating on a
-% module_info record obtained after the transforming of an AST.
+% @doc Module in charge of <b>transforming AST elements</b>, typically by
+% operating on a `module_info' record obtained after the transforming of an AST.
 %
 % Note that the transform relies on a rather complex and complete traversal of
 % the abstract syntax of the AST, inspired from the spec (in
-% http://erlang.org/doc/apps/erts/absform.html) and also checked against the
+% [http://erlang.org/doc/apps/erts/absform.html]) and also checked against the
 % Erlang 'id' parse transformation (see lib/stdlib/examples/erl_id_trans.erl).
 %
 -module(ast_transform).
@@ -54,9 +54,8 @@
 
 % Facilities to express transformations.
 
-
-% All information regarding AST replacements:
 -type ast_transforms() :: #ast_transforms{}.
+% All information regarding AST replacements.
 
 
 % Not expected to be legit symbols:
@@ -76,51 +75,52 @@
 -type type_arity_match() :: type_arity() | ?any_type_arity.
 
 
+-type type_replacement() :: { module_name(), type_name() } | module_name().
 % The same arity is kept, and just specifying the module name means that the
 % type name is not to change.
 %
 % Note that this implies that a (local or remote) type can only be replaced by a
 % remote type (a priori not a problematic limitation).
-%
--type type_replacement() :: { module_name(), type_name() } | module_name().
+
 
 
 % Local subsection:
 
 -type local_type_id_match() :: { type_name_match(), type_arity_match() }.
 
-% Either we directly set the target module and type names (using same arity), or
-% we apply an anonymous function to determine the corresponding information,
-% based on context:
+
 -type local_type_replacement() :: type_replacement()
 			| fun( ( type_name(), type_arity(), transformation_state() ) ->
-						 { type_replacement(), transformation_state() } ).
+						{ type_replacement(), transformation_state() } ).
+% Either we directly set the target module and type names (using same arity), or
+% we apply an anonymous function to determine the corresponding information,
+% based on context.
 
 
-% Table defining replacements of local types:
 -type local_type_transform_table() ::
 		?table:?table( local_type_id_match(), local_type_replacement() ).
+% Table defining replacements of local types.
 
 
 % Remote subsection:
 
--type remote_type_id_match() :: { module_name_match(), type_name_match(),
-								  type_arity_match() }.
+-type remote_type_id_match() ::
+		{ module_name_match(), type_name_match(), type_arity_match() }.
 
 
+
+-type remote_type_replacement() :: type_replacement()
+			| fun( ( module_name(), type_name(), type_arity(),
+					 transformation_state() ) ->
+						{ type_replacement(), transformation_state() } ).
 % Either we directly set the target module and type names (using same arity), or
 % we apply an anonymous function to determine the corresponding information,
-% based on context:
--type remote_type_replacement() :: type_replacement()
-			 | fun( ( module_name(), type_name(), type_arity(),
-					  transformation_state() ) ->
-						  { type_replacement(), transformation_state() } ).
+% based on context.
 
 
-% Table defining replacements of remote types:
 -type remote_type_transform_table() ::
 		?table:?table( remote_type_id_match(), remote_type_replacement() ).
-
+% Table defining replacements of remote types.
 
 
 
@@ -134,31 +134,31 @@
 -type function_arity_match() :: arity()         | ?any_function_arity.
 
 
+
+-type call_replacement() :: { module_name(), function_name() } | module_name().
 % The same arity is kept, and just specifying the module name means that the
 % function name of the call is not to change.
 %
 % Note that this implies that a (local or remote) call can only be replaced by a
 % remote call (a priori not a problematic limitation).
-%
--type call_replacement() :: { module_name(), function_name() } | module_name().
 
 
 % Local subsection:
 
 -type local_call_match() :: { function_name_match(), function_arity_match() }.
 
-% Either we directly set the target module and function names (using same
-% arity), or we apply an anonymous function to determine the corresponding
-% information, based on context:
-%
+
 -type local_call_replacement() :: call_replacement()
 			 | fun( ( function_name(), arity(), transformation_state() ) ->
-						  { call_replacement(), transformation_state() } ) .
+							{ call_replacement(), transformation_state() } ) .
+% Either we directly set the target module and function names (using same
+% arity), or we apply an anonymous function to determine the corresponding
+% information, based on context.
 
 
-% Table defining replacements of local calls:
 -type local_call_transform_table() ::
 		?table:?table( local_call_match(), local_call_replacement() ).
+% Table defining replacements of local calls.
 
 
 % Remote subsection:
@@ -166,90 +166,82 @@
 -type remote_call_match() :: { module_name_match(), function_name_match(),
 							   function_arity_match() }.
 
-% Either we directly set the target module and function names (using same
-% arity), or we apply an anonymous function to determine the corresponding
-% information, based on context:
-%
 -type remote_call_replacement() :: call_replacement()
 			 | fun( ( module_name(), function_name(), arity(),
 					  transformation_state() ) ->
-						  { call_replacement(), transformation_state() } ).
+							{ call_replacement(), transformation_state() } ).
+% Either we directly set the target module and function names (using same
+% arity), or we apply an anonymous function to determine the corresponding
+% information, based on context.
 
 
-% Table defining replacements of remote calls:
 -type remote_call_transform_table() ::
 		?table:?table( remote_call_match(), remote_call_replacement() ).
+% Table defining replacements of remote calls.
 
 
 
 %% AST subtree replacement section.
 
 
+-type transform_trigger() :: ast_expression:expression_kind()
+						   | 'clause' | 'body'.
 % Lists the contexts that may trigger a transformation function:
 %
 % Note that not all triggers are supported, but that adding any lacking one is
 % not especially difficult.
-%
--type transform_trigger() :: ast_expression:expression_kind()
-							 | 'clause'
-							 | 'body'.
 
 
-% User-supplied function to define how AST clauses shall be transformed:
 -type clause_transform_function() ::
 		fun( ( ast_clause(), ast_transforms() ) ->
-				   { ast_clause(), ast_transforms() } ).
+					{ ast_clause(), ast_transforms() } ).
+% User-supplied function to define how AST clauses shall be transformed.
 
 
-% User-supplied function to define how AST bodies shall be transformed:
 -type body_transform_function() :: fun( ( ast_body(), ast_transforms() ) ->
 											{ ast_body(), ast_transforms() } ).
+% User-supplied function to define how AST bodies shall be transformed.
 
 
 
-
-
-% User-supplied function to define how expressions shall be replaced:
-%
-% (currently describing only call replacements)
-%
 -type expression_replacement_function() :: fun(
   ( line(), ast_expression:function_ref_expression(),
 	ast_expression:params_expression(), ast_transforms() ) ->
 					{ [ ast_expression() ], ast_transforms() } ).
+% User-supplied function to define how expressions shall be replaced.
+%
+% (currently describing only call replacements)
 
 
-% All the kinds of functions able to transform at least a part of an AST:
+
 -type ast_transform_function() :: clause_transform_function()
 								| body_transform_function()
 								| expression_replacement_function().
+% All the kinds of functions able to transform at least a part of an AST.
 
 
-% Table defining replacements of parts of an input AST:
+
+-type ast_transform_table() ::
+		?table:?table( transform_trigger(), ast_transform_function() ).
+% Table defining replacements of parts of an input AST.
 %
 % Note: a full ast_transforms record (not a mere transformation state) is used
 % as input (and output) of these transformation functions so that they can
 % trigger in turn recursive transformation calls (ex: to
 % ast_expression:transform_expressions/2) by themselves.
-%
--type ast_transform_table() ::
-		?table:?table( transform_trigger(), ast_transform_function() ).
 
 
-
+-type transformation_state() :: any().
 % Any state that is to be preserved in the course of a transformation (so that
 % it may have a memory) and that may be ultimately read (i.e. to be used for its
 % inner mode of operation and possibly for the caller's sake as well).
-%
--type transformation_state() :: any().
 
 
+-type transform_formatter() :: fun( ( format_string(), format_values() ) ->
+											ustring() ).
 % Designates a function able to properly format typically the output of
 % expression transformation (ex: when exiting an
 % ast_expression:transform_expression/2 clause).
-%
--type transform_formatter() :: fun( ( format_string(), format_values() ) ->
-										  ustring() ).
 
 
 
@@ -296,29 +288,26 @@
 
 
 
+-type term_transformer() :: fun( ( term(), user_data() ) ->
+										{ term(), user_data() } ).
 % Type of functions to transform terms during a recursive traversal (see
 % transform_term/4).
 %
 % Note: apparently we cannot use the 'when' notation here (InputTerm ... when
 % InputTerm :: term()).
-%
--type term_transformer() :: fun( ( term(), user_data() ) ->
-										{ term(), user_data() } ).
 
 
-% Designates the transformation functions that are used to transform differently
-% a kind of form (ex: the one of a bistring, a record, etc.) depending on the
-% context (ex: in a guard, in an expression, etc.).
-%
 -type transform_fun() :: transform_fun( ast_base:ast_element() ).
-
-
 % Designates the transformation functions that are used to transform differently
 % a kind of form (ex: the one of a bistring, a record, etc.) depending on the
 % context (ex: in a guard, in an expression, etc.).
-%
+
+
 -type transform_fun( TargetType ) :: fun( ( TargetType, ast_transforms() ) ->
 											{ TargetType, ast_transforms() } ).
+% Designates the transformation functions that are used to transform differently
+% a kind of form (ex: the one of a bistring, a record, etc.) depending on the
+% context (ex: in a guard, in an expression, etc.).
 
 
 -export_type([ term_transformer/0, transform_fun/0, transform_fun/1 ]).
@@ -353,7 +342,7 @@
 %% Type replacement section.
 
 
-% Returns a table describing local type replacements.
+% @doc Returns a table describing local type replacements.
 %
 % Ex: [ { { void, 0 }, basic_utils },
 %       { { my_maybe, 1 }, { basic_utils, maybe } },
@@ -420,7 +409,7 @@ get_local_type_repl_helper(_Replacements=[
 
 
 
-% Returns a table describing remote type replacements.
+% @doc Returns a table describing remote type replacements.
 %
 % Ex: [ { { a_module, void, 0 }, basic_utils },
 %       { { a_module, my_maybe, 1 }, { basic_utils, maybe } },
@@ -489,12 +478,10 @@ get_remote_type_repl_helper( _Replacements=[
 
 
 
-
-
 %% Call replacement section.
 
 
-% Returns a table describing local call replacements.
+% @doc Returns a table describing local call replacements.
 %
 % Ex: [ { { halt, 0 }, basic_utils },
 %       { { setAttributes, 1 }, { some_utils, set_attr } },
@@ -530,7 +517,7 @@ get_local_call_transform_table( Replacements ) ->
 get_local_call_repl_helper( _Replacements=[], Table ) ->
 	Table;
 
-% Replacement can be either { TargetModule, TargetFunctionName } or
+% Replacement can be either {TargetModule, TargetFunctionName} or
 % TargetModule:
 %
 get_local_call_repl_helper( _Replacements=[
@@ -563,7 +550,7 @@ get_local_call_repl_helper(_Replacements=[
 
 
 
-% Returns a table describing remote call replacements.
+% @doc Returns a table describing remote call replacements.
 %
 % Ex: [ { { a_module, void, 0 }, basic_utils },
 %       { { a_module, my_maybe, 1 }, { basic_utils, maybe } },
@@ -638,17 +625,17 @@ get_remote_call_repl_helper( _Replacements=[
 % transform.
 
 
-% Transforms "blindly" (i.e. with no a-priori knowledge about its structure) the
-% specified arbitrary term (possibly with nested subterms, as the function
-% recurses in lists and tuples), calling specified transformer function on each
-% instance of the specified type, in order to replace that instance by the
-% result of that function.
+% @doc Transforms "blindly" (that is with no a-priori knowledge about its
+% structure) the specified arbitrary term (possibly with nested subterms, as the
+% function recurses in lists and tuples), calling specified transformer function
+% on each instance of the specified type, in order to replace that instance by
+% the result of that function.
 %
 % Returns an updated term, with these replacements made.
 %
-% Ex: the input term could be T={ a, [ "foo", {c, [2.0, 45]} ] } and the
-% function might replace, for example, floats by <<bar>>; then T'={ a, [ "foo",
-% { c, [<<bar>>, 45] } ] } would be returned.
+% Ex: the input term could be `T={a, ["foo", {c, [2.0, 45]}]}' and the function
+% might replace, for example, floats by `<<bar>>'; then `{a, ["foo", {c,
+% [<<bar>>, 45]}]}' would be returned.
 %
 % Note: the transformed terms are themselves recursively transformed, to ensure
 % nesting is managed. Of course this implies that the term transform should not
@@ -663,13 +650,13 @@ get_remote_call_repl_helper( _Replacements=[
 				term_transformer(), user_data() ) -> { term(), user_data() }.
 
 % Here the term is a list and this is the type we want to intercept:
-transform_term( TargetTerm, _TypeDescription=list, TermTransformer, UserData )
+transform_term( TargetTerm, TypeDescription=list, TermTransformer, UserData )
   when is_list( TargetTerm ) ->
 
 	{ TransformedTerm, NewUserData } = TermTransformer( TargetTerm, UserData ),
 
-	transform_transformed_term( TransformedTerm, _TypeDescription=list,
-							TermTransformer, NewUserData );
+	transform_transformed_term( TransformedTerm, TypeDescription,
+								TermTransformer, NewUserData );
 
 
 % Here the term is a list and we are not interested in them:
@@ -687,7 +674,7 @@ transform_term( TargetTerm, TypeDescription, TermTransformer, UserData )
 	{ TransformedTerm, NewUserData } = TermTransformer( TargetTerm, UserData ),
 
 	transform_transformed_term( TransformedTerm, TypeDescription,
-						   TermTransformer, NewUserData );
+								TermTransformer, NewUserData );
 
 
 % Here the term is a tuple (or a record...), and we are not interested in them:
@@ -714,11 +701,11 @@ transform_term( TargetTerm, TypeDescription, TermTransformer, UserData ) ->
 
 
 
-% Helper to traverse a list.
+% @doc Transforms the elements of a list (helper).
 transform_list( TargetList, TypeDescription, TermTransformer, UserData ) ->
 
 	{ NewList, NewUserData } = lists:foldl(
-								 fun( Elem, { AccList, AccData } ) ->
+									fun( Elem, { AccList, AccData } ) ->
 
 			{ TransformedElem, UpdatedData } = transform_term( Elem,
 							TypeDescription, TermTransformer, AccData ),
@@ -736,7 +723,7 @@ transform_list( TargetList, TypeDescription, TermTransformer, UserData ) ->
 
 
 
-% Helper to traverse a tuple.
+% @doc Transforms the elements of a tuple (helper).
 transform_tuple( TargetTuple, TypeDescription, TermTransformer, UserData ) ->
 
 	% We do exactly as with lists:
@@ -749,6 +736,8 @@ transform_tuple( TargetTuple, TypeDescription, TermTransformer, UserData ) ->
 
 
 
+% @doc Transforms any term by traversing it (helper).
+%
 % Helper to traverse a transformed term (ex: if looking for a {user_id, String}
 % pair, we must recurse in nested tuples like: {3, {user_id, "Hello"}, 1}.
 %
@@ -773,7 +762,7 @@ transform_transformed_term( TargetTerm, TypeDescription, TermTransformer,
 
 
 
-% Returns a textual description of specified AST transforms.
+% @doc Returns a textual description of specified AST transforms.
 -spec ast_transforms_to_string( ast_transforms() ) -> ustring().
 ast_transforms_to_string( #ast_transforms{
 							 local_types=MaybeLocalTypeTable,
@@ -794,7 +783,7 @@ ast_transforms_to_string( #ast_transforms{
 
 		_ ->
 			text_utils:format( "local types transformed based on ~ts",
-				   [ ?table:to_string( MaybeLocalTypeTable, Bullet ) ] )
+					[ ?table:to_string( MaybeLocalTypeTable, Bullet ) ] )
 
 	end,
 
@@ -816,7 +805,7 @@ ast_transforms_to_string( #ast_transforms{
 
 		_ ->
 			text_utils:format( "local calls transformed based on ~ts",
-				   [ ?table:to_string( MaybeLocalCallTable, Bullet ) ] )
+					[ ?table:to_string( MaybeLocalCallTable, Bullet ) ] )
 
 	end,
 
@@ -827,7 +816,7 @@ ast_transforms_to_string( #ast_transforms{
 
 		_ ->
 			text_utils:format( "remote calls transformed based on ~ts",
-				   [ ?table:to_string( MaybeRemoteCallTable, Bullet ) ] )
+					[ ?table:to_string( MaybeRemoteCallTable, Bullet ) ] )
 
 	end,
 
@@ -859,12 +848,10 @@ ast_transforms_to_string( #ast_transforms{
 			"no AST transformation defined";
 
 		TransfoTable ->
-			text_utils:format( "AST transformations defined, "
-							   "for following ~B triggers: ~w; "
-							   "transformation state is:~n  ~p",
-							   [ ?table:size( TransfoTable ),
-								 ?table:keys( TransfoTable ),
-								 TransfoState ] )
+			text_utils:format( "AST transformations defined, for following "
+				"~B triggers: ~w; transformation state is:~n  ~p",
+				[ ?table:size( TransfoTable ), ?table:keys( TransfoTable ),
+				  TransfoState ] )
 
 	end,
 
@@ -876,7 +863,7 @@ ast_transforms_to_string( #ast_transforms{
 
 
 
-% The default transform_formatter() to be used:
+% @doc The default transform_formatter() to be used.
 -spec default_formatter( format_string(), format_values() ) -> ustring().
 default_formatter( _FormatString, _FormatValue ) ->
 	%text_utils:format( "[Myriad-Transforms] " ++ FormatString, FormatValue ).

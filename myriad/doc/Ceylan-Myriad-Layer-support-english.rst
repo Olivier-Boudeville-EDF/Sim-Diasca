@@ -2,8 +2,9 @@
 
 .. _support:
 
+----------------------
 Support for ``Myriad``
-======================
+----------------------
 
 So you respected the prerequisites_ and build_ sections, and something went wrong? Generally we made sure that any detected error is blocking and loudly reported, with as much context as possible.
 

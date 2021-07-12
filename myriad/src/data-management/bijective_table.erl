@@ -27,10 +27,12 @@
 
 
 
-% Datastructure allowing to perform a bidirectional conversion between two sets.
+% @doc Datastructure allowing to perform <b>bidirectional conversions between
+% two sets</b>.
 %
-% One can see as [ {first_type(), second_type()} ] associative table allowing
-% to transform an element of a type into an element of the second one.
+% One can see it as a `[{first_type(), second_type()}]' associative table
+% allowing to transform any element of a set into a corresponding element of the
+% other one.
 %
 -module(bijective_table).
 
@@ -41,8 +43,8 @@
 -opaque bijective_table() :: bijective_table( any(), any() ).
 
 
-% Internally, two tables used, one for each direction of conversion:
 -opaque bijective_table( F, S ) :: { table:table( F, S ), table:table( S, F ) }.
+% Internally, two tables used, one for each direction of conversion.
 
 
 -type first_type() :: any().
@@ -58,8 +60,8 @@
 
 
 
-% Returns a new bijective table allowing a two-way conversion between specified
-% (initial) entries.
+% @doc Returns a new bijective table allowing a two-way conversion between
+% specified (initial) entries.
 %
 -spec new( entries() ) -> bijective_table().
 new( InitialEntries ) -> % list type tested by table:new/1:
@@ -87,7 +89,7 @@ new( InitialEntries ) -> % list type tested by table:new/1:
 
 
 
-% Returns the element of the first type that corresponds to the specified
+% @doc Returns the element of the first type that corresponds to the specified
 % element of the second type.
 %
 -spec get_first_for( second_type(), bijective_table() ) -> first_type().
@@ -97,7 +99,7 @@ get_first_for( Second,
 
 
 
-% Returns the element of the second type that corresponds to the specified
+% @doc Returns the element of the second type that corresponds to the specified
 % element of the first type.
 %
 -spec get_second_for( first_type(), bijective_table() ) -> second_type().
@@ -107,7 +109,7 @@ get_second_for( First,
 
 
 
-% Returns a textual description of the specified bijective table.
+% @doc Returns a textual description of the specified bijective table.
 -spec to_string( bijective_table() ) -> text_utils:ustring().
 to_string( _BijTable={ FirstToSecondTable, _SecondToFirstTable } ) ->
 

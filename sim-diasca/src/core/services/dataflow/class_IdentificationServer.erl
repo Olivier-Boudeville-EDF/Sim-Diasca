@@ -19,6 +19,9 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Class in charge of maintaining a <b>two-way relationship between an
+% identifier external to a dataflow and an internal one</b>.
+%
 -module(class_IdentificationServer).
 
 
@@ -50,12 +53,12 @@
 
 % The identifier bijection is maintained thanks to two synchronised tables:
 
-% Inner table to convert external identifiers into (internal) block PIDs:
 -type inbound_table() :: table( external_id(), block_pid() ).
+% Inner table to convert external identifiers into (internal) block PIDs.
 
 
-% Inner table to convert (internal) block PIDs into external identifiers:
 -type outbound_table() :: table( block_pid(), external_id() ).
+% Inner table to convert (internal) block PIDs into external identifiers.
 
 
 
@@ -112,7 +115,7 @@
 
 
 
-% Constructs a new identification server.
+% @doc Constructs a new identification server.
 -spec construct( wooper:state() ) -> wooper:state().
 construct( State ) ->
 
@@ -133,6 +136,7 @@ construct( State ) ->
 
 
 
+% @doc Overridden destructor.
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -152,7 +156,7 @@ destruct( State ) ->
 
 
 
-% Declares the specified identifier association.
+% @doc Declares the specified identifier association.
 %
 % Multiple declarations for the same identifier pair are allowed, provided that
 % they match.
@@ -167,7 +171,7 @@ declareIdentifierAssociation( State, BlockPid, ExternalId ) ->
 	OutboundTable = ?getAttr(outbound_table),
 
 	{ NewInboundTable, NewOutboundTable } = declare_association( BlockPid,
-							 ExternalId, InboundTable, OutboundTable, State ),
+							ExternalId, InboundTable, OutboundTable, State ),
 
 	NewState = setAttributes( State, [ { inbound_table, NewInboundTable },
 									   { outbound_table, NewOutboundTable } ] ),
@@ -176,12 +180,12 @@ declareIdentifierAssociation( State, BlockPid, ExternalId ) ->
 
 
 
-% Declares specified association.
+% @doc Declares specified association.
 %
 % State is const, only used for traces.
 %
 -spec declare_association( block_pid(), external_id(), inbound_table(),
-  outbound_table(), wooper:state() ) -> { inbound_table(), outbound_table() }.
+	outbound_table(), wooper:state() ) -> { inbound_table(), outbound_table() }.
 declare_association( BlockPid, ExternalId, InboundTable, OutboundTable,
 					 State ) ->
 
@@ -218,7 +222,7 @@ declare_association( BlockPid, ExternalId, InboundTable, OutboundTable,
 
 
 
-% Declares the specified identifier associations.
+% @doc Declares the specified identifier associations.
 %
 % Multiple declarations for the same identifier pair are allowed, provided that
 % they match.
@@ -227,14 +231,14 @@ declare_association( BlockPid, ExternalId, InboundTable, OutboundTable,
 %
 -spec declareIdentifierAssociations( wooper:state(),
 							[ { block_pid(), external_id() } ]  ) ->
-				 request_return( 'identifier_associations_declared' ).
+				request_return( 'identifier_associations_declared' ).
 declareIdentifierAssociations( State, IdPairs ) ->
 
 	InboundTable = ?getAttr(inbound_table),
 	OutboundTable = ?getAttr(outbound_table),
 
 	{ NewInboundTable, NewOutboundTable } = declare_associations( IdPairs,
-								   InboundTable, OutboundTable, State ),
+									InboundTable, OutboundTable, State ),
 
 	NewState = setAttributes( State, [ { inbound_table, NewInboundTable },
 									   { outbound_table, NewOutboundTable } ] ),
@@ -243,7 +247,7 @@ declareIdentifierAssociations( State, IdPairs ) ->
 
 
 
-% Declares specified identifier associations.
+% @doc Declares specified identifier associations.
 %
 % State is const, only used for traces.
 %
@@ -263,7 +267,7 @@ declare_associations( _IdPairs=[ { BlockPid, ExternalId } | T ], InboundTable,
 
 
 
-% Removes the known identifier association for specified block PID.
+% @doc Removes the known identifier association for specified block PID.
 %
 % Throws if the specified block PID is not known.
 %
@@ -281,8 +285,8 @@ removeIdentifierAssociation( State, BlockPid ) ->
 		{ value, ExtId } ->
 
 			%?debug_fmt( "The association between the block PID ~w and the "
-			%			"external identifier '~p' has been removed.",
-			%			[ BlockPid, ExtId ] ),
+			%    "external identifier '~p' has been removed.",
+			%    [ BlockPid, ExtId ] ),
 
 			NewOutboundTable = table:remove_entry( BlockPid, OutboundTable ),
 
@@ -303,7 +307,7 @@ removeIdentifierAssociation( State, BlockPid ) ->
 
 
 
-% Returns the external identifier corresponding to the specified block PID.
+% @doc Returns the external identifier corresponding to the specified block PID.
 %
 % Throws if the specified block PID is not known.
 %
@@ -323,8 +327,7 @@ getExternalIdentifier( State, BlockPid ) ->
 
 
 
-% Returns the external identifier corresponding to the specified block
-% PID.
+% @doc Returns the external identifier corresponding to the specified block PID.
 %
 % Returns 'undefined' if the specified block PID is not known.
 %
@@ -344,7 +347,8 @@ getAnyExternalIdentifier( State, BlockPid ) ->
 
 
 
-% Returns the external identifiers corresponding to the specified block PIDs.
+% @doc Returns the external identifiers corresponding to the specified block
+% PIDs.
 %
 % The returned list is in the same order as the input one, i.e. the external
 % identifier of a block PID is at the same rank as it was in the list of block
@@ -386,7 +390,8 @@ get_external_ids( _BlockPids=[ BlockPid | T ], OutboundTable, State, Acc ) ->
 
 
 
-% Returns the external identifiers corresponding to the specified block PIDs.
+% @doc Returns the external identifiers corresponding to the specified block
+% PIDs.
 %
 % The returned list is in the same order as the input one, i.e. the external
 % identifier of a block PID is at the same rank as it was in the list of block
@@ -430,7 +435,7 @@ get_any_external_ids( _BlockPids=[ BlockPid | T ], OutboundTable, State,
 
 
 
-% Returns the block PID corresponding to the specified external identifier.
+% @doc Returns the block PID corresponding to the specified external identifier.
 %
 % Throws an exception if the specified external identifier is not known.
 %
@@ -448,13 +453,13 @@ getBlockPID( State, ExternalIdentifier ) ->
 		key_not_found ->
 			% So that WOOPER does not think it is a non-request return:
 			wooper:throwing(
-			  throw_on_external_id_not_found( ExternalIdentifier, State ) )
+				throw_on_external_id_not_found( ExternalIdentifier, State ) )
 
 	end.
 
 
 
-% Returns the block PID corresponding to the specified external identifier.
+% @doc Returns the block PID corresponding to the specified external identifier.
 %
 % Returns 'undefined' if the specified external identifier is not known.
 %
@@ -476,7 +481,8 @@ getAnyBlockPID( State, ExternalIdentifier ) ->
 
 
 
-% Returns the block PIDs corresponding to the specified external identifiers.
+% @doc Returns the block PIDs corresponding to the specified external
+% identifiers.
 %
 % The returned list is in the same order as the input one, i.e. the block PID of
 % an external identifier is at the same rank as it was in the list of external
@@ -494,7 +500,6 @@ getBlockPIDs( State, ExternalIdentifiers ) ->
 								_Acc=[] ),
 
 	wooper:const_return_result( BlockPids ).
-
 
 
 % (helper)
@@ -519,7 +524,8 @@ get_block_pids( _ExtIDs=[ ExtID | T ], InboundTable, State, Acc ) ->
 
 
 
-% Returns the block PIDs corresponding to the specified external identifiers.
+% @doc Returns the block PIDs corresponding to the specified external
+% identifiers.
 %
 % The returned list is in the same order as the input one, i.e. the block PID of
 % an external identifier is at the same rank as it was in the list of external
@@ -563,7 +569,7 @@ get_any_block_pids( _ExtIDs=[ ExtID | T ], InboundTable, State, Acc ) ->
 
 
 
-% Returns the current status of this identification server.
+% @doc Returns the current status of this identification server.
 -spec getStatus( wooper:state() ) -> const_request_return( bin_string() ).
 getStatus( State ) ->
 
@@ -576,13 +582,13 @@ getStatus( State ) ->
 % Static section.
 
 
-% Launches the identification server, with default settings.
+% @doc Launches the identification server, with default settings.
 -spec start() -> static_return( identification_server_pid() ).
 start() ->
 	wooper:return_static( new_link() ).
 
 
-% Stops the identification server.
+% @doc Stops the identification server.
 -spec stop() -> static_void_return().
 stop() ->
 	IdentificationServerPid = get_server(),
@@ -590,21 +596,21 @@ stop() ->
 	wooper:return_static_void().
 
 
-% Stops the specified identification server.
+% @doc Stops the specified identification server.
 -spec stop( identification_server_pid() ) -> static_void_return().
 stop( IdentificationServerPid ) ->
 	IdentificationServerPid ! delete,
 	wooper:return_static_void().
 
 
-% Returns the PID of the identification server.
+% @doc Returns the PID of the identification server.
 -spec get_server() -> static_return( identification_server_pid() ).
 get_server() ->
 	Pid = naming_utils:get_registered_pid_for( ?id_server_name, global ),
 	wooper:return_static( Pid ).
 
 
-% Returns the PID of the identification server, if any.
+% @doc Returns the PID of the identification server, if any.
 -spec get_any_server() -> static_return( maybe( identification_server_pid() ) ).
 get_any_server() ->
 
@@ -620,8 +626,8 @@ get_any_server() ->
 
 
 
-% Creates an external identifier in the form of a binary string, from specified
-% block PID.
+% @doc Creates an external identifier in the form of a binary string, from
+% specified block PID.
 %
 % Returns for example <<"sim-diasca-0.57.0">>.
 %
@@ -639,7 +645,7 @@ forge_external_identifier( Pid ) when is_pid( Pid ) ->
 % Helper section:
 
 
-% Throws an exception because specified external identifier could not be
+% @doc Throws an exception because specified external identifier could not be
 % resolved.
 %
 -spec throw_on_external_id_not_found( external_id(), wooper:state() ) ->
@@ -648,7 +654,7 @@ throw_on_external_id_not_found( ExternalIdentifier, State ) ->
 
 	% Should they be not textual already:
 	ExtIdStrings = [ text_utils:format( "~p", [ K ] )
-					 || K <- table:keys( ?getAttr(inbound_table) ) ],
+						|| K <- table:keys( ?getAttr(inbound_table) ) ],
 
 	?error_fmt( "External identifier '~p' not found among the ~B known "
 		"ones: ~ts", [ ExternalIdentifier, length( ExtIdStrings ),
@@ -658,7 +664,7 @@ throw_on_external_id_not_found( ExternalIdentifier, State ) ->
 
 
 
-% Returns a textual description of the state of this identification server.
+% @doc Returns a textual description of the state of this identification server.
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
@@ -674,7 +680,7 @@ to_string( State ) ->
 
 
 
-% Returns a textual description of the specified inbound table.
+% @doc Returns a textual description of the specified inbound table.
 -spec inbound_to_string( text_utils:indentation_level(), inbound_table() ) ->
 								ustring().
 inbound_to_string( IndentationLevel, InboundTable ) ->
@@ -703,9 +709,9 @@ inbound_to_string( IndentationLevel, InboundTable ) ->
 
 
 
-% Returns a textual description of the specified outbound table.
+% @doc Returns a textual description of the specified outbound table.
 -spec outbound_to_string( text_utils:indentation_level(), outbound_table() ) ->
-								string().
+								ustring().
 outbound_to_string( IndentationLevel, OutboundTable ) ->
 
 	OutEntries = table:enumerate( OutboundTable ),
@@ -718,8 +724,8 @@ outbound_to_string( IndentationLevel, OutboundTable ) ->
 		_ ->
 
 			OutStrings = [ text_utils:format(
-				 "block PID ~w translated to external identifier '~ts'",
-				 [ Pid, Ext ] ) || { Pid, Ext } <- OutEntries ],
+				"block PID ~w translated to external identifier '~ts'",
+				[ Pid, Ext ] ) || { Pid, Ext } <- OutEntries ],
 
 			ListString = text_utils:strings_to_sorted_string( OutStrings,
 													   IndentationLevel ),

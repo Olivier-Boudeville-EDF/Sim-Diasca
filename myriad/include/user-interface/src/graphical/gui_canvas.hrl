@@ -55,9 +55,9 @@
 
 }).
 
-% The actual canvas type we are to use:
+
 -type canvas_state() :: #canvas_state{}.
+% The actual canvas type we are to use.
 
-
-% An OpenGL-based canvas:
 -type gl_canvas():: wxGLCanvas:wxGLCanvas().
+% An OpenGL-based canvas.

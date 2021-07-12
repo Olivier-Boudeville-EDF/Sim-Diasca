@@ -1329,7 +1329,9 @@ resolve_locally( Pid, State ) ->
 	%
 	ActorTable = ?getAttr(actor_table),
 
-	case table:lookup_entry( _Key=Pid, ActorTable ) of
+	Key = Pid,
+
+	case table:lookup_entry( Key, ActorTable ) of
 
 		{ value, ActorInfo } ->
 			ActorInfo#actor_info.aai;
@@ -1339,7 +1341,7 @@ resolve_locally( Pid, State ) ->
 			% Then maybe then this local PID corresponds to a simulation agent?
 			AgentTable = ?getAttr(agent_table),
 
-			case table:lookup_entry( _Key=Pid, AgentTable ) of
+			case table:lookup_entry( Key, AgentTable ) of
 
 				{ value, AgentRef } ->
 					AgentRef;
@@ -1349,7 +1351,7 @@ resolve_locally( Pid, State ) ->
 					% Last chance: might then be result producer?
 					ProducerTable = ?getAttr(producer_table),
 
-					case table:lookup_entry( _Key=Pid, ProducerTable ) of
+					case table:lookup_entry( Key, ProducerTable ) of
 
 						{ value, ProducerRef } ->
 							ProducerRef;

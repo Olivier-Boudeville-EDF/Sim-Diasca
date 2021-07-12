@@ -20,6 +20,7 @@
 %          Samuel Thiriot      (samuel.thiriot@edf.fr)
 
 
+% Class offering services in terms of <b>random number generation</b>.
 -module(class_RandomManager).
 
 
@@ -33,7 +34,8 @@
 		 "Inspired from http://www.trapexit.org/Random_Numbers_Biased. "
 		 "Note: it is possible to request only a seed from a RandomManager, "
 		 "and to generate afterwards one's own random series. That is what the "
-		 "class_Actor instances do, indirectly." ).
+		 "class_Actor instances do, indirectly. "
+		 "See also: the random_utils module." ).
 
 
 
@@ -54,11 +56,11 @@
 -type uniform_law() :: { 'uniform', pos_integer() }.
 
 
+-type exponential_law() :: { 'exponential', number() }.
 % Parameter is Lambda:
 %
 % (refer to https://en.wikipedia.org/wiki/Exponential_distribution)
-%
--type exponential_law() :: { 'exponential', number() }.
+
 
 -type positive_integer_exponential_law() ::
 						{ 'positive_integer_exponential', number() }.
@@ -68,9 +70,11 @@
 
 -type standard_deviation() :: math_utils:standard_deviation().
 
-% The parameters of a gaussian/normal law are respectively Mu and Sigma:
+
 -type gaussian_law() ::
 		{ 'gaussian', Mu :: mean(), Sigma :: standard_deviation() }.
+% The parameters of a gaussian/normal law are respectively Mu and Sigma, the
+% mean and the standard deviation.
 
 
 -type positive_integer_gaussian_law() ::
@@ -177,7 +181,10 @@
 -type count() :: basic_utils:count().
 
 
-% Constructs a new random manager, from:
+
+% @doc Constructs a new random manager.
+%
+% Construction parameters:
 %
 % - SeedInformations allows to choose the random seed to be used, it can be:
 %
@@ -244,7 +251,7 @@ construct( State, SeedInformations, IsPrivate ) ->
 
 
 
-% Overridden destructor.
+% @doc Overridden destructor.
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -292,11 +299,11 @@ destruct( State ) ->
 
 
 
-
 % Uniform section.
 
 
-% Returns a boolean random value generated from an uniform distribution.
+% @doc Returns a boolean random value generated from an uniform distribution.
+%
 % Therefore true and false are equally likely to be returned.
 %
 -spec get_boolean() -> static_return( boolean() ).
@@ -305,7 +312,7 @@ get_boolean() ->
 
 
 
-% Returns a randomly-selected element of specified list.
+% @doc Returns a randomly-selected element of specified list.
 -spec one_of( [ any() ] ) -> static_return( any() ).
 one_of( ListOfThings ) ->
 
@@ -315,8 +322,8 @@ one_of( ListOfThings ) ->
 
 
 
-% Returns an integer random value generated from an uniform distribution, in
-% specified range.
+% @doc Returns an integer random value generated from an uniform distribution,
+% in specified range.
 %
 % Given two integers Nmin and Nmax, returns a random integer uniformly
 % distributed between these two bounds (both included), updating the random
@@ -334,7 +341,7 @@ getUniformValue( State, Nmin, Nmax ) ->
 
 
 
-% Returns an integer random value generated from an uniform distribution.
+% @doc Returns an integer random value generated from an uniform distribution.
 %
 % Given an integer N >= 1, returns a random integer uniformly distributed
 % between 1 and N (both included), updating the random state in the process
@@ -352,7 +359,7 @@ getUniformValue( State, N ) ->
 
 
 
-% Returns an integer random value generated from an uniform distribution.
+% @doc Returns an integer random value generated from an uniform distribution.
 %
 % Given an integer N >= 1, returns a random integer uniformly distributed
 % between 1 and N (both included), updating the random state in the process
@@ -364,8 +371,8 @@ get_uniform_value( N ) ->
 
 
 
-% Returns an integer random value generated from an uniform distribution, in
-% specified range.
+% @doc Returns an integer random value generated from an uniform distribution,
+% in specified range.
 %
 % Given two integers Nmin and Nmax, returns a random integer uniformly
 % distributed between these two bounds (both included), updating the random
@@ -377,7 +384,7 @@ get_uniform_value( Nmin, Nmax ) ->
 
 
 
-% Returns a list of Count integer uniform values in [ 1, N ] (both included).
+% @doc Returns a list of Count integer uniform values in [1, N] (both included).
 %
 % Given an integer N >= 1, returns random integers uniformly distributed between
 % 1 and N, updating the random state in the process dictionary.
@@ -389,18 +396,18 @@ get_uniform_values( N, Count ) ->
 
 
 
-% Returns a list of Count integer uniform values in [Nmin,Nmax] (both included),
-% updating the random state in the process dictionary.
+% @doc Returns a list of Count integer uniform values in [Nmin,Nmax] (both
+% included), updating the random state in the process dictionary.
 %
 -spec get_uniform_values( integer(), integer(), count() ) ->
-							static_return( [ integer() ] ).
+								static_return( [ integer() ] ).
 get_uniform_values( Nmin, Nmax, Count ) ->
 	wooper:return_static( random_utils:get_random_values( Nmin, Nmax, Count ) ).
 
 
 
-% Returns a floating-point random value in [0.0;N[ generated from an uniform
-% distribution.
+% @doc Returns a floating-point random value in [0.0;N[ generated from an
+% uniform distribution.
 %
 % Given a number (integer or float) N (positive or not), returns a random
 % floating-point value uniformly distributed between 0.0 (included) and N
@@ -413,7 +420,7 @@ get_uniform_floating_point_value( N ) ->
 
 
 
-% Returns a floating-point random value in [Nmin, Nmax[ generated from an
+% @doc Returns a floating-point random value in [Nmin, Nmax[ generated from an
 % uniform distribution.
 %
 % Given two numbers (integer or float) Nmin and Nmax (each being positive or
@@ -422,10 +429,11 @@ get_uniform_floating_point_value( N ) ->
 % dictionary.
 %
 -spec get_uniform_floating_point_value( number(), number() ) ->
-											  static_return( float() ).
+												static_return( float() ).
 get_uniform_floating_point_value( Nmin, Nmax ) ->
 	V = random_utils:get_uniform_floating_point_value( Nmin, Nmax ),
 	wooper:return_static( V ).
+
 
 
 
@@ -436,9 +444,8 @@ get_uniform_floating_point_value( Nmin, Nmax ) ->
 
 
 
-
-% Returns an exponential floating-point random value with Lambda being the rate
-% parameter.
+% @doc Returns an exponential floating-point random value with Lambda being the
+% rate parameter.
 %
 % The probability density function is p(x) = Lambda.exp(-Lambda.x), whose
 % integral is 1.
@@ -461,8 +468,8 @@ getExponentialValue( State, Lambda ) ->
 
 
 
-% Returns an exponential floating-point random value with Lambda being the rate
-% parameter.
+% @doc Returns an exponential floating-point random value with Lambda being the
+% rate parameter.
 %
 % The probability density function is p(x) = Lambda.exp(-Lambda.x), whose
 % integral is 1.
@@ -476,6 +483,8 @@ getExponentialValue( State, Lambda ) ->
 -spec get_exponential_value( number() ) -> static_return( float() ).
 get_exponential_value( Lambda ) ->
 
+	%trace_utils:debug_fmt( "Lambda=~p", [ Lambda ] ),
+
 	% Note: with Erlang, math:log(x) is ln(x):
 	V = - math:log( random_utils:get_random_value() ) / Lambda,
 
@@ -484,8 +493,8 @@ get_exponential_value( Lambda ) ->
 
 
 
-% Returns an exponential (positive) integer random value with Lambda being the
-% rate parameter.
+% @doc Returns an exponential (positive) integer random value with Lambda being
+% the rate parameter.
 %
 % The probability density function is p(x) = Lambda.exp(-Lambda.x), whose
 % integral is 1.
@@ -503,15 +512,15 @@ getPositiveIntegerExponentialValue( State, Lambda ) ->
 	Value = round( get_exponential_value( Lambda ) ),
 
 	%?debug_fmt( "Returning positive integer exponential value ~w.",
-	%			[ Value ] ),
+	%			 [ Value ] ),
 
 	wooper:const_return_result(
 		{ positive_integer_exponential_value, Value } ).
 
 
 
-% Returns an exponential (positive) integer random value with Lambda being the
-% rate parameter.
+% @doc Returns an exponential (positive) integer random value with Lambda being
+% the rate parameter.
 %
 % The probability density function is p(x) = Lambda.exp(-Lambda.x), whose
 % integral is 1.
@@ -529,8 +538,8 @@ get_positive_integer_exponential_value( Lambda ) ->
 
 
 
-% Returns a list of Count exponential values according to the specified Lambda
-% setting.
+% @doc Returns a list of Count exponential values according to the specified
+% Lambda setting.
 %
 % Lambda is the rate parameter: the probability density function is
 % p(x) = Lambda.exp(-Lambda.x), whose integral is 1.
@@ -549,8 +558,8 @@ get_exponential_values( Lambda, Count ) ->
 
 
 
-% Returns a list of Count (positive) integer exponential values according to the
-% specified Lambda setting.
+% @doc Returns a list of Count (positive) integer exponential values according
+% to the specified Lambda setting.
 %
 % Lambda is the rate parameter: the probability density function is
 % p(x) = Lambda.exp(-Lambda.x), whose integral is 1.
@@ -585,8 +594,8 @@ get_positive_integer_exponential_values( Lambda, Count ) ->
 
 
 
-% Returns a random value generated from the normal (Gaussian) distribution with
-% specified settings.
+% @doc Returns a random value generated from the normal (Gaussian) distribution
+% with specified settings.
 %
 % Given a mean Mu and a standard deviation Sigma, returns a random
 % floating-point value drawn according to the corresponding Gaussian law,
@@ -604,8 +613,8 @@ getGaussianValue( State, Mu, Sigma ) ->
 
 
 
-% Returns a random value generated from the normal (Gaussian) distribution with
-% specified settings.
+% @doc Returns a random value generated from the normal (Gaussian) distribution
+% with specified settings.
 %
 % Given a mean Mu and a standard deviation Sigma, returns a random
 % floating-point value drawn according to the corresponding Gaussian law,
@@ -618,9 +627,8 @@ get_gaussian_value( Mu, Sigma ) ->
 
 
 
-
-% Returns a positive integer random value generated from the normal (Gaussian)
-% distribution with specified settings.
+% @doc Returns a positive integer random value generated from the normal
+% (Gaussian) distribution with specified settings.
 %
 % Given a mean Mu and a standard deviation Sigma, returns random integers drawn
 % according the corresponding Gaussian law, updating the state in the process
@@ -642,8 +650,8 @@ getPositiveIntegerGaussianValue( State, Mu, Sigma ) ->
 
 
 
-% Returns a positive integer random value generated from the normal (Gaussian)
-% distribution with specified settings.
+% @doc Returns a positive integer random value generated from the normal
+% (Gaussian) distribution with specified settings.
 %
 % Given a mean Mu and a standard deviation Sigma, returns random integers drawn
 % according the corresponding Gaussian law, updating the state in the process
@@ -660,7 +668,7 @@ get_positive_integer_gaussian_value( Mu, Sigma ) ->
 
 
 
-% Returns a list of Count Gaussian values.
+% @doc Returns a list of Count Gaussian values.
 %
 % Given a mean Mu and a standard deviation Sigma, returns random floating-point
 % values drawn according the corresponding Gaussian law, updating the state in
@@ -674,7 +682,7 @@ get_gaussian_values( Mu, Sigma, Count ) ->
 
 
 
-% Returns a list of Count positive integer Gaussian values.
+% @doc Returns a list of Count positive integer Gaussian values.
 %
 % Given a mean Mu and a standard deviation Sigma, returns random integers drawn
 % according the corresponding Gaussian law, updating the state in the process
@@ -688,14 +696,14 @@ get_positive_integer_gaussian_values( Mu, Sigma, Count ) ->
 
 
 
-% Returns a new seed triplet.
+% @doc Returns a new seed triplet.
 -spec get_new_seed() -> static_return( random_utils:seed() ).
 get_new_seed() ->
 	wooper:return_static( random_utils:get_random_seed() ).
 
 
 
-% Creates the random manager asynchronously, with default settings (mean of
+% @doc Creates the random manager asynchronously, with default settings (mean of
 % zero, sigma of 1).
 %
 -spec create() -> static_return( manager_pid() ).
@@ -708,7 +716,7 @@ create() ->
 
 
 
-% Returns the PID of the current random manager if it exists, otherwise
+% @doc Returns the PID of the current random manager if it exists, otherwise
 % random_manager_not_found.
 %
 % Waits a bit before giving up: useful when client and manager processes may be
@@ -719,13 +727,13 @@ getManager() ->
 
 	% Waits gracefully for the random manager to exist:
 	ManagerPid = naming_utils:wait_for_global_registration_of(
-				   ?random_manager_name ),
+					?random_manager_name ),
 
 	wooper:return_static( ManagerPid ).
 
 
 
-% Deletes (asynchronously) any global random manager.
+% @doc Deletes (asynchronously) any global random manager.
 -spec remove() -> static_return( 'ok' | 'random_manager_not_found' ).
 remove() ->
 
@@ -743,19 +751,20 @@ remove() ->
 
 
 
+
 % Section for helper functions (not methods).
 
 
 % generate_*_list could use higher-order functions.
 
 
-
-% Generates a list of Count exponential random values.
+% @doc Generates a list of Count exponential random values.
 -spec generate_exponential_list( number(), count() ) -> [ float() ].
 generate_exponential_list( Lambda, Count ) ->
 	generate_exponential_list( Lambda, Count, [] ).
 
 
+% (helper)
 generate_exponential_list( _Lambda, _Count=0, Acc ) ->
 	Acc;
 
@@ -765,13 +774,14 @@ generate_exponential_list( Lambda, Count, Acc ) ->
 
 
 
-% Generates a list of Count positive integer exponential random values.
+% @doc Generates a list of Count positive integer exponential random values.
 -spec generate_positive_integer_exponential_list( number(),
-						   count() ) -> [ pos_integer() ].
+							count() ) -> [ pos_integer() ].
 generate_positive_integer_exponential_list( Lambda, Count ) ->
 	generate_positive_integer_exponential_list( Lambda, Count, [] ).
 
 
+% (helper)
 generate_positive_integer_exponential_list( _Lambda, _Count=0, Acc ) ->
 	Acc;
 
@@ -781,13 +791,13 @@ generate_positive_integer_exponential_list( Lambda, Count, Acc ) ->
 
 
 
-% Generates a list of Count Gaussian random values.
--spec generate_gaussian_list( number(), number(), count() ) ->
-									[ float() ].
+% @doc Generates a list of Count Gaussian random values.
+-spec generate_gaussian_list( number(), number(), count() ) -> [ float() ].
 generate_gaussian_list( Mu, Sigma, Count ) ->
 	generate_gaussian_list( Mu, Sigma, Count, [] ).
 
 
+% (helper)
 generate_gaussian_list( _Mu, _Sigma, _Count=0, Acc ) ->
 	Acc;
 
@@ -797,13 +807,14 @@ generate_gaussian_list( Mu, Sigma, Count, Acc ) ->
 
 
 
-% Generates a list of Count positive integer Gaussian random values.
+% @doc Generates a list of Count positive integer Gaussian random values.
 -spec generate_positive_integer_gaussian_list( number(), number(), count() ) ->
-													 [ pos_integer() ].
+														[ pos_integer() ].
 generate_positive_integer_gaussian_list( Mu, Sigma, Count ) ->
 	generate_positive_integer_gaussian_list( Mu, Sigma, Count, [] ).
 
 
+% (helper)
 generate_positive_integer_gaussian_list( _Mu, _Sigma, _Count=0, Acc ) ->
 	Acc;
 
@@ -813,7 +824,7 @@ generate_positive_integer_gaussian_list( Mu, Sigma, Count, Acc ) ->
 
 
 
-% Generates a new normal value and updates the state.
+% @doc Generates a new normal value and updates the state.
 %
 % Mu is the mean, Sigma is the standard deviation (variance being its square).
 %
@@ -859,7 +870,7 @@ sigma_loop( Mu, Sigma ) ->
 			% transforming any 0.0 in a 1.0):
 			%
 			%trace_utils:debug_fmt( "Mu = ~p, Sigma = ~p, S = ~p.",
-			%					   [ Mu, Sigma, S ] ),
+			%						[ Mu, Sigma, S ] ),
 
 			% math:log/1 is the Natural Log (base e log):
 			Scale = math:sqrt( ( -2.0 * math:log( S ) ) / S ),
@@ -871,7 +882,7 @@ sigma_loop( Mu, Sigma ) ->
 
 
 
-% Generates a new integer non-negative normal value and updates the state.
+% @doc Generates a new integer non-negative normal value and updates the state.
 %
 % Returns the computed value.
 %

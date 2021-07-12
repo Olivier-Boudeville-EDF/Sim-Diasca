@@ -27,7 +27,7 @@
 
 
 
-% Process dictionary-related support.
+% @doc Support for the <b>process dictionary</b>.
 %
 % While using the process dictionary is usually regarded with contempt for good
 % reasons (impure, prone to unwanted side-effects, etc.), there are a few
@@ -48,8 +48,8 @@
 -module(process_dictionary).
 
 
-% Actually any term:
 -type key() :: hashtable:key().
+% Actually any term.
 
 -type value() :: hashtable:value().
 
@@ -60,8 +60,8 @@
 -type entry_count() :: basic_utils:count().
 
 
-% Explicit form thereof, as a term:
 -type process_dictionary() :: list_table:list_table().
+% Explicit form thereof, as a term.
 
 
 -export_type([ key/0, value/0, entry/0, entries/0, entry_count/0,
@@ -75,8 +75,8 @@
 		  blank/0, to_string/0 ]).
 
 
-% Puts specified entry in the process dictionary; returns any value that was
-% previously associated to that key.
+% @doc Puts specified entry in the process dictionary; returns any value that
+% was previously associated to that key.
 %
 -spec put( key(), value() ) -> maybe( value() ).
 put( Key, Value ) ->
@@ -84,8 +84,8 @@ put( Key, Value ) ->
 
 
 
-% Puts specified entry in the process dictionary; raises an exception if ever
-% the specified key was already registered in the process dictionary.
+% @doc Puts specified entry in the process dictionary; raises an exception if
+% ever the specified key was already registered in the process dictionary.
 %
 -spec put_as_new( key(), value() ) -> void().
 put_as_new( Key, Value ) ->
@@ -102,7 +102,7 @@ put_as_new( Key, Value ) ->
 
 
 
-% Returns the value (if any) associated to the specified key in the process
+% @doc Returns the value (if any) associated to the specified key in the process
 % dictionary, otherwise the 'undefined' atom.
 %
 -spec get( key() ) -> maybe( value() ).
@@ -112,7 +112,7 @@ get( Key ) ->
 
 
 
-% Returns the value expected to be associated to the specified key in the
+% @doc Returns the value expected to be associated to the specified key in the
 % process dictionary, otherwise throws an exception.
 %
 -spec get_existing( key() ) -> value().
@@ -130,9 +130,8 @@ get_existing( Key ) ->
 
 
 
-
-% Removes any entry in the process dictionary corresponding to specified key,
-% returning any value that was associated to it.
+% @doc Removes any entry in the process dictionary corresponding to specified
+% key, returning any value that was associated to it.
 %
 -spec remove( key() ) -> maybe( value() ).
 remove( Key ) ->
@@ -140,7 +139,7 @@ remove( Key ) ->
 
 
 
-% Removes the entry in the process dictionary expected to correspond to the
+% @doc Removes the entry in the process dictionary expected to correspond to the
 % specified key and returns, otherwise throws an exception, should no value be
 % associated to specified key.
 %
@@ -159,21 +158,21 @@ remove_existing( Key ) ->
 
 
 
-% Returns the full process dictionary, as a list of {Key,Value} pairs.
+% @doc Returns the full process dictionary, as a list of {Key,Value} pairs.
 -spec get_dictionary() -> process_dictionary().
 get_dictionary() ->
 	erlang:get().
 
 
 
-% Returns a list of all keys present in the process dictionary.
+% @doc Returns a list of all keys present in the process dictionary.
 -spec get_keys() -> [ key() ].
 get_keys() ->
 	erlang:get_keys().
 
 
 
-% Returns a list of keys that are associated to the specified value in the
+% @doc Returns a list of keys that are associated to the specified value in the
 % process dictionary.
 %
 -spec get_keys_for( value() ) -> [ key() ].
@@ -182,7 +181,7 @@ get_keys_for( Value ) ->
 
 
 
-% Blanks the process dictionary (erases all entries), and returns its past
+% @doc Blanks the process dictionary (erases all entries), and returns its past
 % content (as a term).
 %
 -spec blank() -> process_dictionary().
@@ -191,7 +190,9 @@ blank() ->
 
 
 
-% Returns a textual description of the current state of the process dictionary.
+% @doc Returns a textual description of the current state of the process
+% dictionary.
+%
 -spec to_string() -> text_utils:ustring().
 to_string() ->
 

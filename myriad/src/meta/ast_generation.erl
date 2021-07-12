@@ -27,7 +27,9 @@
 
 
 
-% Module in charge of generating parts of an AST (ex: elements of forms).
+% @doc Module in charge of <b>generating parts of an AST</b> (ex: elements of
+% forms).
+%
 -module(ast_generation).
 
 
@@ -43,74 +45,79 @@
 -type form_element() :: ast_base:form_element().
 
 
+% For the default_generation_location define:
+-include("ast_utils.hrl").
 
-% Transforms specified list (whose elements are typically themselves form
+
+
+% @doc Transforms specified list (whose elements are typically themselves form
 % elements already) into the AST version of a list.
 %
-% Ex: list_to_form( [{atom,Line,a}, {atom,Line,b}]) =
-% {cons,Line,{atom,Line,a}, {cons,Line,{atom,Line,b}, {nil,Line} }}.
+% Ex: list_to_form( [{atom,FileLoc,a}, {atom,FileLoc,b}]) = {cons, FileLoc,
+% {atom,FileLoc,a}, {cons, FileLoc, {atom,FileLoc,b}, {nil,FileLoc}}}.
 %
 % See form_to_list/1 for the reciprocal function.
 %
 -spec list_to_form( list() ) -> form_element().
 list_to_form( _List=[] ) ->
-	{ nil, _Line=0 };
+	{ nil, ?default_generation_location };
 
 list_to_form( _List=[ E | T ] ) ->
-	Line = 0,
-	{ cons, Line, E, list_to_form( T ) }.
+	{ cons, ?default_generation_location, E, list_to_form( T ) }.
 
 
 
-% Transforms specified AST list into the corresponding plain list.
+% @doc Transforms specified AST list into the corresponding plain list.
 %
-% Ex: form_to_list( {cons,Line,{atom,Line,a}, {cons,Line,{atom,Line,b},
-% {nil,Line} } }) = [{atom,Line,a}, {atom,Line,b}].
+% Ex: form_to_list( {cons, FileLoc, {atom,FileLoc,a}, {cons, FileLoc,
+% {atom,FileLoc,b}, {nil,FileLoc} }}) = [{atom,FileLoc,a}, {atom,FileLoc,b}].
 %
 % See list_to_form/1 for the reciprocal function.
 %
 -spec form_to_list( form_element() ) -> list().
-form_to_list( { nil, _Line } ) ->
+form_to_list( { nil, _FileLoc } ) ->
 	[];
 
-form_to_list( { cons, _Line, E, NestedForm } ) ->
+form_to_list( { cons, _FileLoc, E, NestedForm } ) ->
 	[ E | form_to_list( NestedForm ) ].
 
 
 
-% Returns the form element corresponding to the specified list of atoms.
+% @doc Returns the form element corresponding to the specified list of atoms.
 %
-% Ex: {cons,Line,{atom,Line,a}, {cons,Line,{atom,Line,b}, {nil,Line} }} =
-%         atoms_to_form(['a', 'b']).
+% Ex: {cons, FileLoc, {atom,FileLoc,a}, {cons, FileLoc, {atom,FileLoc,b}, {nil,
+% FileLoc} }} = atoms_to_form(['a', 'b']).
 %
 -spec atoms_to_form( [ atom() ] ) -> form_element().
 atoms_to_form( _AtomList=[] ) ->
-	{ nil, _Line=0 };
+	{ nil, ?default_generation_location };
 
 atoms_to_form( _AtomList=[ Atom | H ] ) ->
-	Line = 0,
-	{ cons, Line, { atom, Line, Atom }, atoms_to_form( H ) }.
+	FileLoc = ?default_generation_location,
+	{ cons, FileLoc, { atom, FileLoc, Atom }, atoms_to_form( H ) }.
 
 
 
-% Returns the list of atoms corresponding to the specified form element.
+% @doc Returns the list of atoms corresponding to the specified form element.
 %
-% Ex: ['a', 'b'] = atoms_to_form( {cons,Line,{atom,Line,a},
-% {cons,Line,{atom,Line,b}, {nil,Line} } }).
+% Ex: ['a', 'b'] = atoms_to_form( {cons, FileLoc, {atom,FileLoc,a}, {cons,
+% FileLoc, {atom,FileLoc,b}, {nil,FileLoc}}}).
 %
 -spec form_to_atoms( form_element() ) -> [ atom() ].
-form_to_atoms( { nil, _Line } ) ->
+form_to_atoms( { nil, _FileLoc } ) ->
 	[];
 
-form_to_atoms( { cons, _Line, {atom,_,Atom}, NestedForm } ) ->
+form_to_atoms( { cons, _FileLoc, {atom,_,Atom}, NestedForm } ) ->
 	[ Atom | form_to_atoms( NestedForm ) ].
 
 
 
-% Returns the form element corresponding a list of variables.
+% @doc Returns the form element corresponding to the list of variables
+% corresponding to the specified number of such variables.
 %
-% Ex: {cons, Line, {var,Line,'A'}, { cons,Line,{var,Line,'B'}, {nil,Line}}} =
-%         enumerated_variables_to_form(2).
+% Ex: {cons, FileLoc, {var,FileLoc,'Myriad_Param_1'}, { cons, FileLoc,
+% {var,FileLoc,'Myriad_Param_2'}, {nil,FileLoc}}} =
+% enumerated_variables_to_form( 2 ).
 %
 % See also: get_header_params/1.
 %
@@ -120,15 +127,16 @@ enumerated_variables_to_form( Count ) ->
 
 
 enumerated_variables_to_form( _Count=0, _Index ) ->
-	{ nil, _Line=0 };
+	{ nil, ?default_generation_location };
 
 enumerated_variables_to_form( Count, Index ) ->
-	Line = 0,
-	{ cons, Line, { var, Line, get_iterated_param_name( Index ) },
+	FileLoc = ?default_generation_location,
+	{ cons, FileLoc, { var, FileLoc, get_iterated_param_name( Index ) },
 	  enumerated_variables_to_form( Count-1, Index+1 ) }.
 
 
-% Returns, in AST form, a reference to an iterated variable.
+
+% @doc Returns, in AST form, a reference to an iterated variable.
 %
 % Ex: 'Myriad_Param_4' = get_iterated_param_name( 4 ).
 %
@@ -140,13 +148,14 @@ get_iterated_param_name( Count ) ->
 
 
 
-% Returns, as form elements, conventional call parameter names, as form
+% @doc Returns, as form elements, conventional call parameter names, as form
 % elements, corresponding to a function of specified arity.
 %
 % This is typically useful when generating a function form, to define its
 % header, like in 'f(A,B)->...'.
 %
-% Ex: [{var,Line,'A'}, {var,Line,'B'}] = get_header_params(2).
+% Ex: [{var,FileLoc,'Myriad_Param_1'}, {var,FileLoc,'Myriad_Param_2'}] =
+% get_header_params( 2 ).
 %
 % See also: enumerated_variables_to_form/1.
 %
@@ -159,5 +168,8 @@ get_header_params( _Arity=0, Acc ) ->
 	Acc;
 
 get_header_params( Arity, Acc ) ->
-	NewAcc = [ { var, _Line=0, get_iterated_param_name( Arity ) } | Acc ],
+
+	NewAcc = [ { var, ?default_generation_location,
+				 get_iterated_param_name( Arity ) } | Acc ],
+
 	get_header_params( Arity-1, NewAcc ).

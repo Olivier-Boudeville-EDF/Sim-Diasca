@@ -31,66 +31,71 @@
 
 -type time_manager_pid() :: class_TimeManager:time_manager_pid().
 
-% PID of the deployment manager:
 -type deployment_manager_pid() :: agent_pid().
+% PID of the deployment manager.
 
-% PID of a computing host manager:
 -type computing_host_manager_pid() :: agent_pid().
+% PID of a computing host manager.
 
-% PID of the load balancer:
+
 -type load_balancer_pid() :: agent_pid().
+% PID of the load balancer.
 
 
-% PID of a data exchanger:
 -type data_exchanger_pid() :: class_DataExchanger:data_exchanger_pid().
+% PID of a data exchanger.
 
 
-% PID of the result manager:
 -type result_manager_pid() :: agent_pid().
+% PID of the result manager.
 
-% PID of a result producer:
+
 -type result_producer_pid() :: agent_pid().
+% PID of a result producer.
 
 
-% Reference of a probe:
 -type probe_ref() :: class_Probe:probe_ref().
+% Reference of a probe.
 
-% PID of a probe:
+
 -type probe_pid() :: class_Probe:probe_pid().
+% PID of a probe.
 
 
-% PID of the datalogger:
 -type datalogger_pid() :: class_DataLogger:datalogger_pid().
+% PID of the datalogger.
 
 
-% PID of the web manager:
 -type web_manager_pid() :: agent_pid().
+% PID of the web manager.
 
 
-% PID of the plugin manager:
 -type plugin_manager_pid() :: agent_pid().
+% PID of the web manager.
 
 
-% PID of the performance tracker:
 -type performance_tracker_pid() :: agent_pid().
+% PID of the performance tracker.
 
-% PID of an instance tracker:
+
 -type instance_tracker_pid() :: agent_pid().
+% PID of an instance tracker.
 
 
-% PID of the resilience manager:
 -type resilience_manager_pid() :: class_ResultManager:manager_pid().
+% PID of the resilience manager.
 
-% PID of a resilience agent:
+
 -type resilience_agent_pid() :: class_ResilienceAgent:agent_pid().
+% PID of a resilience agent.
 
 
-% PID of a (mostly deprecated) random manager:
 -type random_manager_pid() :: agent_pid().
+% PID of a (mostly deprecated) random manager.
 
 
-% PID of a trace aggregator:
 -type trace_aggregator_pid() :: agent_pid().
+% PID of a trace aggregator.
 
 
 % Command-line argument options (as "flags", not associated "values"):

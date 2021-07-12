@@ -32,6 +32,7 @@
 %
 -define( infinity, 3.402823e+38 ).
 
+
 % To properly format (as text), typically coordinates:
 -define( printout_width, "14" ).
 -define( printout_precision, "10" ).

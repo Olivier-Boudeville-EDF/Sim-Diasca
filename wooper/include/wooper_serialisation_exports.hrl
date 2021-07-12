@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2021 Olivier Boudeville
+% Copyright (C) 2007-2021 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -56,6 +56,4 @@
 		 %serialise/3,
 
 		 pre_serialise_hook/1, post_serialise_hook/3,
-		 pre_deserialise_hook/2, post_deserialise_hook/1
-
-		 ]).
+		 pre_deserialise_hook/2, post_deserialise_hook/1 ]).

@@ -22,33 +22,32 @@
 % A few type shorthands:
 
 
-% Type of a language:
 -type language() :: language_utils:language().
+% Type of a language.
 
 
-% PID of a runtime manager:
 -type binding_manager_pid() :: class_LanguageBindingManager:manager_pid().
+% PID of a runtime manager.
 
 
-% PID of the Python runtime manager:
 -type python_binding_manager_pid() :: class_PythonBindingManager:manager_pid().
+% PID of the Python runtime manager.
 
 
-% PID of the Java runtime manager:
 -type java_binding_manager_pid() :: class_JavaBindingManager:manager_pid().
+% PID of the Java runtime manager.
 
 
 
 % Record gathering all the binding managers of the various languages involved.
-%
 -record( binding_managers, {
 
-		   % For Python:
 		   python_binding_manager = none ::
 			 'none' | python_binding_manager_pid(),
+		   % For Python.
 
-		   % For Java:
 		   java_binding_manager = none :: 'none' | java_binding_manager_pid()
+		   % For Java.
 
 } ).
 

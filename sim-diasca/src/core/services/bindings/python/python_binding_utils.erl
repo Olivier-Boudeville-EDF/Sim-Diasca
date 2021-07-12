@@ -21,8 +21,8 @@
 
 
 
-% Module storing all the helper functions dedicated to the support of the Python
-% binding API (relying on Erlport).
+% @doc Module storing all the helper functions dedicated to the support of the
+% <b>Python binding API</b> (relying on Erlport).
 %
 -module(python_binding_utils).
 
@@ -64,8 +64,8 @@
 
 
 
-% Executes a request in a Python interpreter, by sending a message decomposed as
-% a title and a body.
+% @doc Executes specified request specified a Python interpreter, by sending a
+% message decomposed as a title and a body.
 %
 % Note: trace messages received while this request is processed are managed as
 % well.
@@ -79,8 +79,7 @@ execute_request( InterpreterPid, MessageTitle, MessageBody,
 
 
 
-% Executes the same kind of request as the method above, but in any (local)
-% available Python interpreter.
+% @doc Executes specified request in any (local) available Python interpreter.
 %
 % Hence this function is only relevant for requests that do not rely on the
 % state of a particular interpreter (ex: static methods only).
@@ -102,9 +101,9 @@ execute_request_locally( MessageTitle, MessageBody, TraceInfoOrState ) ->
 
 
 
-% Recursive listener transmitting trace messages sent from Python, to be used
-% while performing a request to a Python interpreter in order to wait for its
-% corresponding answer.
+% @doc Recursive listener transmitting trace messages sent from Python, to be
+% used while performing a request to a Python interpreter in order to wait for
+% its corresponding answer.
 %
 % Stops as soon as the request is successfully completed, or an error message is
 % received, or an exception has been raised in the interpreter.
@@ -115,7 +114,6 @@ handle_request_results( InterpreterPid, MessageTitle,
 		TraceEmitterInfo={ TraceEmitterName, TraceEmitterCategorization } ) ->
 
 	case python_utils:wait_for_request_result( InterpreterPid, MessageTitle ) of
-
 
 		{ request_completed, ReceivedData } ->
 			ReceivedData;

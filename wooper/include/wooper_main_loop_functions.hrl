@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2021 Olivier Boudeville
+% Copyright (C) 2007-2021 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -38,7 +38,7 @@
 
 
 
-% No closure nor export needed for wooper_main_loop, as the various spawns are
+% No closure nor export needed for wooper_main_loop/1, as the various spawns are
 % done based on the wooper_construct_and_run* functions, which are not exported,
 % and are executed thanks to a closure.
 %
@@ -49,7 +49,7 @@
 
 
 
-% Waits for the incoming method calls, and serves them.
+% @doc Waits for the incoming method calls, and serves them.
 -spec wooper_main_loop( wooper:state() ) -> 'deleted'. % no_return().
 wooper_main_loop( State ) ->
 

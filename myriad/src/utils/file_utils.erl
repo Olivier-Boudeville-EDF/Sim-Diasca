@@ -26,7 +26,8 @@
 % Creation date: Saturday, July 12, 2008.
 
 
-% Gathering of various convenient facilities regarding files.
+% @doc Gathering of various facilities regarding <b>files and other filesystem
+% elements</b>.
 %
 % See file_utils_test.erl for the corresponding test.
 %
@@ -90,6 +91,8 @@
 		  remove_file/1, remove_file_if_existing/1,
 		  remove_files/1, remove_files_if_existing/1,
 
+		  remove_symlink/1,
+
 		  remove_empty_directory/1, remove_empty_path/1, remove_empty_tree/1,
 		  remove_directory/1,
 
@@ -109,7 +112,7 @@
 		  is_absolute_path/1,
 		  ensure_path_is_absolute/1, ensure_path_is_absolute/2,
 		  normalise_path/1, make_relative/1, make_relative/2,
-		  get_longest_common_path/1,
+		  get_longest_common_path/1, get_shortest_unique_ending_paths/2,
 
 		  is_leaf_among/2,
 
@@ -152,59 +155,65 @@
 
 % Type declarations:
 
+
+-type path() :: ustring().
 % A path may designate either a file or a directory (in both case with leading,
 % root directories possibly specified).
-%
--type path() :: ustring().
+
+
 -type bin_path() :: binary().
 
-% We do not believe that atoms shall be legit paths:
+
 -type any_path() :: path() | bin_path().
+% We do not believe that atoms shall be legit paths.
 
 
-% Designates a filename, generally without a path (ex: "foobar.txt"):
 -type file_name() :: path().
+% Designates a filename, generally without a path (ex: "foobar.txt").
 
-% Just a convenience alias:
+
 -type filename() :: file_name().
+% Just a convenience alias.
 
 
+-type file_path() :: path().
 % Designates a path to a file (including its filename); ex:
 % "../my_dir/other/foobar.txt".
-%
--type file_path() :: path().
 
 
 -type bin_file_name() :: binary().
 -type bin_file_path() :: binary().
 
 
-% Could also be the more general file:name_all():
 -type any_file_name() :: file_name() | bin_file_name().
+% Could also be the more general file:name_all().
+
 
 -type any_file_path() :: file_path() | bin_file_path().
 
 
-% The name of a (symbolic) link:
 -type link_name() :: ustring().
+% The name of a (symbolic) link.
 
 
-% Designates an executable, generally without a path (ex: "foobar"):
 -type executable_name() :: file_name().
+% Designates an executable, generally without a path (ex: "foobar").
 
 
-% Designates a path to an executable; ex: "../my_dir/other/run.exe").
 -type executable_path() :: file_path().
+% Designates a path to an executable; ex: "../my_dir/other/run.exe").
 
-% Designates a path to an executable, as a binary.
+
 -type bin_executable_path() :: bin_file_path().
+% Designates a path to an executable, as a binary.
 
 
-% Designates a path to an (executable) script; ex: "../my_dir/other/run.sh").
 -type script_path() :: file_path().
+% Designates a path to an (executable) script; ex: "../my_dir/other/run.sh").
 
-% Designates a path to an (executable) script, as a binary.
+
 -type bin_script_path() :: bin_file_path().
+% Designates a path to an (executable) script, as a binary.
 
 
 -type directory_name() :: path().
@@ -218,106 +227,109 @@
 
 -type any_directory_path() :: directory_path() | bin_directory_path().
 
-% Sometimes useful:
 -type abs_directory_path() :: directory_path().
+% Sometimes useful.
 
 
-% An extension in a filename (ex: "baz", in "foobar.baz.json"):
 -type extension() :: ustring().
+% An extension in a filename (ex: "baz", in "foobar.baz.json").
 
-% The suffix (final part) in a path element:
+
 -type any_suffix() :: any_string().
+% The suffix (final part) in a path element.
 
-% A part of a path (ex: "local" in "/usr/local/share"):
+
 -type path_element() :: ustring().
+% A part of a path (ex: "local" in "/usr/local/share").
 
 
-% A part of a path (ex: <<"local">> in "/usr/local/share"):
 -type bin_path_element() :: text_utils:bin_string().
+% A part of a path (ex: `<<"local">>' in "/usr/local/share").
 
 
-% Any type of a part of a path (ex: <<"local">> in "/usr/local/share"):
 -type any_path_element() :: path_element() | bin_path_element().
+% Any type of a part of a path (ex: `<<"local">>' in "/usr/local/share").
 
 
+-type leaf_name() :: path_element().
 % A leaf name, i.e. the final element of a path (possibly a file or directory).
 %
 % Ex: in 'aaa/bbb/ccc', 'aaa' is the root, and 'ccc' is the leaf.
-%
--type leaf_name() :: path_element().
 
 
-
-% All known types of file entries:
 -type entry_type() :: 'device' | 'directory' | 'other' | 'regular' | 'symlink'.
+% All known types of file entries.
 
 
-% Tells whether parent directories shall be created:
 -type parent_creation() :: 'create_no_parent' | 'create_parents'.
+% Tells whether parent directories shall be created.
 
 
+%-type file_open_mode() :: file:mode() | 'ram'.
+-type file_open_mode() :: tuple() | atom() | 'ram'.
 % Relevant flags when opening a file (ex: read, write, append, exclusive, raw,
 % etc.).
 %
-% See http://erlang.org/doc/man/file.html#open-2 for their detailed description.
+% See [http://erlang.org/doc/man/file.html#open-2] for their detailed
+% description.
 %
 % (file:mode() not exported currently unfortunately, see
 % lib/kernel/src/file.erl)
-%
-%-type file_open_mode() :: file:mode() | 'ram'.
--type file_open_mode() :: tuple() | atom() | 'ram'.
 
 
-% The supported compression formats:
 -type compression_format() :: 'zip' | 'bzip2' | 'xz'.
+% The supported compression formats.
 
 
+-type file() :: file:io_device().
 % Corresponds to the handle to an open file (typically a file descriptor
 % counterpart), but also, possibly, 'standard_io' (for standard output,
 % descriptor 1), 'standard_error' (for standard error, descriptor 2), a
-% registered name (as an atom), or any PID handling the I/O protocols:
-%
--type file() :: file:io_device().
+% registered name (as an atom), or any PID handling the I/O protocols.
+
 
 -type file_info() :: #file_info{}.
 
 
-
-% The various permissions that can be combined for file-like elements:
 -type permission() :: 'owner_read'  | 'owner_write' | 'owner_execute'
 					| 'group_read'  | 'group_write' | 'group_execute'
 					| 'other_read'  | 'other_write' | 'other_execute'
 					| 'set_user_id' | 'set_group_id'.
+% The various permissions that can be combined for file-like elements.
 
 
-% The binary mask corresponding to a filesystem permission:
 -type permission_mask() :: non_neg_integer().
+% The binary mask corresponding to a filesystem permission.
 
-
-% Action to be trigger whenever a file element has not a proper Unicode
-% filename:
-%
-% (refer to
-%https://erlang.org/doc/apps/stdlib/unicode_usage.html#notes-about-raw-filenames
-% for further information)
-%
--type improper_encoding_action() ::
-
-		'throw'    % Throw an exception as soon as a raw filename is found
-
-	  | 'warn'     % Emit a warning trace if a raw filename is found, and do
-				   % not consider the corresponding file element
-
-	  | 'ignore'   % Ignore as a whole such a file element (do not even emit
-				   % a trace)
-
-	  | 'include'. % Return such raw filenames (thus as binaries) among the
-				   % other ones (which are plain strings)
 
 % We previously considered also (was not satisfactory, as introducing a
 % different return type):
-%	  | 'list'.    % List separately (as a returned pair) the raw filenames
+%    | 'list'.    % List separately (as a returned pair) the raw filenames
 %                  % (regardless of their actual filesystem-level type)
+-type improper_encoding_action() ::
+
+		% Throw an exception as soon as a raw filename is found:
+		'throw'
+
+		% Emit a warning trace if a raw filename is found, and do not consider
+		% the corresponding file element:
+		%
+		| 'warn'
+
+		% Ignore as a whole such a file element (do not even emit a trace):
+		| 'ignore'
+
+		% Return such raw filenames (thus as binaries) among the other ones
+		% (which are plain strings):
+		%
+		| 'include'.
+% Action to be trigger whenever a file element has not a proper Unicode
+% filename.
+%
+% (refer to
+%[https://erlang.org/doc/apps/stdlib/unicode_usage.html#notes-about-raw-filenames]
+% for further information)
+%
 
 
 -export_type([ path/0, bin_path/0, any_path/0,
@@ -391,7 +403,7 @@
 %					  [ lists:keyfind(encoding, 1, io:getopts()) ] ),
 %
 % See also:
-% https://erlang.org/doc/apps/stdlib/unicode_usage.html#unicode-data-in-files
+% [https://erlang.org/doc/apps/stdlib/unicode_usage.html#unicode-data-in-files]
 % Summary: use the 'file' module only for files opened for bytewise access
 % ({encoding,latin1}) - otherwise use the 'io' module.
 
@@ -400,6 +412,46 @@
 % yet apparently with nothing simpler than:
 
 % awk -v val=USER_ID -F ":" '$3==val{print $1}' /etc/passwd
+
+
+% Regarding tree traversals:
+%
+% In the course of a traversal, we chose not to follow the symbolic links that
+% point to a directory, in order to avoid having a traversal escape a given tree
+% and/or enter cycles and/or having symlinks pointing to symlinks etc.
+%
+% To nevertheless introduce such a feature, helpers such as find_files_from/5
+% may recurse in a Directories list augmented with the symlinks that point to
+% directories:
+%
+%	% Some symlinks may point to directories:
+%	AllDirectories = lists:foldl(
+%		fun( SymLnk, Acc ) ->
+%			case file:read_link_all( SymLnk ) of
+%
+%				{ ok, SymTarget } ->
+%					% TO-DO: might be in turn a symlink, which shall be
+%                   % fully resolved first.
+%                   %
+%					case is_existing_directory( SymTarget ) of
+%
+%						true ->
+%							[ SymTarget | Acc ];
+%
+%						false ->
+%							Acc
+%
+%					end;
+%
+%				{ error, _ } ->
+%					Acc
+%
+%			end
+%
+%		end,
+%		_Acc=Directories,
+%		_List=Symlinks ),
+
 
 
 
@@ -438,7 +490,7 @@
 
 
 
-% Joins the specified list of path elements.
+% @doc Joins the specified list of path elements.
 %
 % This function has been added back to this module; filename:join( Components )
 % could be used instead (at least to some extent), however filename:join( [ "",
@@ -465,7 +517,8 @@ join( NonList ) ->
 
 
 
-% Joins the two specified path elements, returns a corresponding plain string.
+% @doc Joins the two specified path elements, returns a corresponding plain
+% string.
 %
 % This function has been added back to this module; filename:join(Name1, Name2)
 % could be used instead (at least to some extent); however filename:join("",
@@ -532,7 +585,7 @@ join( FirstPath, SecondPath ) ->
 
 
 
-% Joins the specified list of path elements, returns a corresponding binary
+% @doc Joins the specified list of path elements, returns a corresponding binary
 % string.
 %
 % See join/1 for API details.
@@ -551,7 +604,8 @@ bin_join( NonList ) ->
 
 
 
-% Joins the two specified path elements, returns a corresponding binary string.
+% @doc Joins the two specified path elements, returns a corresponding binary
+% string.
 %
 % Never attempts a binary-to-string conversion.
 %
@@ -581,7 +635,7 @@ bin_join( FirstPath, SecondPath ) ->
 
 
 
-% Joins the specified list of path elements; returns a corresponding binary
+% @doc Joins the specified list of path elements; returns a corresponding binary
 % string if at least one element is a binary string itself, otherwise returns a
 % plain string.
 %
@@ -603,9 +657,9 @@ any_join( NonList ) ->
 
 
 
-% Joins the two specified path elements; returns a corresponding binary string
-% if at least one element is a binary string itself, otherwise returns a plain
-% string.
+% @doc Joins the two specified path elements; returns a corresponding binary
+% string if at least one element is a binary string itself, otherwise returns a
+% plain string.
 %
 % Never attempts a binary-to-string conversion; introduced to promote to binary
 % string only when necessary.
@@ -629,7 +683,7 @@ any_join( FirstPath, SecondPath )  ->
 % Duplicated verbatim from list_utils, so that file_utils can remain a mostly
 % autonomous, pioneer module.
 %
-% Returns the last element of the specified list.
+% @doc Returns the last element of the specified list.
 %
 % Note: not computationnally efficient, usually having to retrieve the last
 % element suggests a bad code design.
@@ -645,8 +699,8 @@ get_last_element( _List=[ _H | T ] ) ->
 
 
 
-% Returns the complete leading, "directory" part of specified path,
-% i.e. the one with all its element but the last one.
+% @doc Returns the complete leading, "directory" part of specified path,
+% that is the one with all its element but the last one.
 %
 % Ex: "/aaa/bbb/ccc" =
 %          file_utils:get_base_path("/aaa/bbb/ccc/foobar.txt").
@@ -663,11 +717,11 @@ get_base_path( AnyPath ) ->
 
 
 
-% Returns the final, "file" part of specified path, i.e. its last element, as a
-% one-element path, corresponding either to a file or a directory.
+% @doc Returns the final, "file" part of specified path, that is its last
+% element, as a one-element path, corresponding either to a file or a directory.
 %
-% Ex: <<"foobar.txt">> =
-%          file_utils:get_last_path_element(<<"/aaa/bbb/ccc/foobar.txt">>).
+% Ex: `<<"foobar.txt">> =
+%          file_utils:get_last_path_element(<<"/aaa/bbb/ccc/foobar.txt">>).'
 %
 % Note that the return type is the same of the input path, i.e. plain string or
 % binary string.
@@ -682,7 +736,8 @@ get_last_path_element( AnyPath ) ->
 
 
 
-% Converts specified name to an acceptable filename, filesystem-wise.
+% @doc Converts specified name to an acceptable filename, filesystem-wise.
+%
 % Returns the same string type as the parameter.
 %
 -spec convert_to_filename( any_string() ) -> any_file_name().
@@ -704,39 +759,46 @@ convert_to_filename( Name ) ->
 
 
 
-% Escapes specified path so that it can safely be included as string content.
+% @doc Escapes specified path so that it can safely be included as a seralised
+% (string) content.
 %
 % Returns the same type of string as the specified one.
 %
 -spec escape_path( any_path() ) -> any_string().
 escape_path( Path ) when is_list( Path ) ->
 	% To properly flatten:
-	text_utils:to_unicode_list(
-	  string:replace( Path, _SearchPattern="\"", _Replacement="\\\"",
-					  _Direction=all), _CanFail=true );
+	text_utils:to_unicode_list( escape_path_helper( Path ), _CanFail=true );
 
 escape_path( BinPath ) ->
+	% Not wanting for example [<<XX>>, 92, 34, <<YY>>]:
+	text_utils:to_unicode_binary( escape_path_helper( BinPath ),
+								  _CanFail=true ).
+
+
+-spec escape_path_helper( any_path() ) -> any_path().
+escape_path_helper( Path ) ->
 
 	Direction = all,
 
-	DoubleQuoteEscapedBin =
-		string:replace( BinPath, _DQSearchPattern="\.", _DQReplacement="\\.",
-						Direction ),
+	% Order of replacements matters.
 
-	AntiSlashesEscapedBin =
-		string:replace( DoubleQuoteEscapedBin, _ASSearchPattern="\"",
-						_ASReplacement="\\\"", Direction ),
+	% Escaping first antislashes, as some filenames *might* include some of
+	% them; so:    \ -> \\
+	%
+	AntislashEscapes = string:replace( Path, _ASSearchPattern="\\",
+									   _ASReplacement="\\\\", Direction ),
 
-	% Not wanting for example [<<XX>>, 92, 34, <<YY>>]:
-	text_utils:to_unicode_binary( AntiSlashesEscapedBin, _CanFail=true ).
+	% Then do the same for double quotes; so:    " -> \"
+	string:replace( AntislashEscapes, _DQSearchPattern="\"",
+					_DQReplacement="\\\"", Direction ).
 
 
 
-% Returns the (ordered) extension(s) of the specified filename.
+% @doc Returns the (ordered) extension(s) of the specified file path.
 %
-% Ex: ["baz", "json"] = get_extensions("foobar.baz.json")
+% Ex: ["baz", "json"] = get_extensions("/home/joe/foobar.baz.json")
 %
--spec get_extensions( file_name() ) -> [ extension() ] | 'no_extension'.
+-spec get_extensions( file_path() ) -> [ extension() ] | 'no_extension'.
 get_extensions( Filename ) ->
 
 	case text_utils:split( Filename, _Delimiters=[ $. ] ) of
@@ -757,11 +819,11 @@ get_extensions( Filename ) ->
 
 
 
-% Returns the (last) extension of the specified filename.
+% @doc Returns the (last) extension of the specified file path.
 %
-% Ex: "json" = get_extension( "foobar.baz.json" )
+% Ex: "json" = get_extension( "/home/joe/foobar.baz.json" )
 %
--spec get_extension( file_name() ) -> extension() | 'no_extension'.
+-spec get_extension( file_path() ) -> extension() | 'no_extension'.
 get_extension( Filename ) ->
 
 	case get_extensions( Filename ) of
@@ -776,7 +838,7 @@ get_extension( Filename ) ->
 
 
 
-% Removes the (last) extension of the specified filename.
+% @doc Removes the (last) extension of the specified file path.
 %
 % Ex: "/home/jack/rosie.tmp" = remove_extension( "/home/jack/rosie.tmp.ttf" )
 %
@@ -800,7 +862,7 @@ remove_extension( FilePath ) ->
 
 
 
-% Returns a new filename whose extension has been updated.
+% @doc Returns a new file path whose extension has been updated.
 %
 % Ex: replace_extension("/home/jack/rosie.ttf", ".ttf", ".wav") should return
 % "/home/jack/rosie.wav".
@@ -820,11 +882,13 @@ replace_extension( FilePath, SourceExtension, TargetExtension ) ->
 
 
 
-% Tells whether specified file entry exists, regardless of its type.
+% @doc Tells whether specified file entry exists, regardless of its type.
 -spec exists( any_path() ) -> boolean().
 exists( EntryName ) ->
 
-	case file:read_file_info( EntryName ) of
+	% Dead symbolic links are deemed existing:
+	case file:read_link_info( EntryName ) of
+	%case file:read_file_info( EntryName ) of
 
 		{ ok, _FileInfo } ->
 			true;
@@ -836,9 +900,9 @@ exists( EntryName ) ->
 
 
 
-% Returns the type of the specified file entry.
+% @doc Returns the type of the specified file entry.
 -spec get_type_of( any_path() ) -> entry_type().
-get_type_of( EntryName ) ->
+get_type_of( Path ) ->
 
 	% We used to rely on file:read_file_info/1, but an existing symlink pointing
 	% to a non-existing entry was triggering the enoent error, while we just
@@ -847,63 +911,68 @@ get_type_of( EntryName ) ->
 	% Some tools (e.g. emacs) used thus to get in the way, as apparently they
 	% create dead symlinks on purpose, to store information.
 
-	case file:read_link_info( EntryName ) of
+	case file:read_link_info( Path ) of
 
 		{ ok, #file_info{ type=FileType } } ->
 			FileType;
 
 		{ error, eloop } ->
 			% Probably a recursive symlink:
-			throw( { too_many_symlink_levels, EntryName } );
+			throw( { too_many_symlink_levels, Path } );
 
 		{ error, enoent } ->
-			throw( { non_existing_entry, EntryName } )
+			throw( { non_existing_entry, Path } )
 
 	end.
 
 
 
-% Returns the user identifier (uid) of the owner of the specified file entry.
+% @doc Returns the user identifier (uid) of the owner of the specified file
+% entry.
+%
 -spec get_owner_of( any_path() ) -> system_utils:user_id().
-get_owner_of( EntryName ) ->
+get_owner_of( Path  ) ->
 
-	case file:read_file_info( EntryName ) of
+	case file:read_file_info( Path ) of
 
 		{ ok, #file_info{ uid=UID } } ->
 			UID;
 
 		{ error, Reason } ->
-			throw( { file_info_failure, Reason, EntryName } )
+			throw( { owner_inquiry_failed, Reason, Path } )
 
 	end.
 
 
 
-% Returns the group identifier (gid) of the group of the specified file entry.
+% @doc Returns the group identifier (gid) of the group of the specified file
+% entry.
+%
 -spec get_group_of( any_path() ) -> system_utils:group_id().
-get_group_of( EntryName ) ->
+get_group_of( Path ) ->
 
-	case file:read_file_info( EntryName ) of
+	case file:read_file_info( Path ) of
 
 		{ ok, #file_info{ gid=GID } } ->
 			GID;
 
 		{ error, Reason } ->
-			throw( { file_info_failure, Reason, EntryName } )
+			throw( { group_inquiry_failed, Reason, Path } )
 
 	end.
 
 
 
-% Returns whether the specified entry, supposedly existing, is a regular file.
+% @doc Returns whether the specified entry, supposedly existing, is a regular
+% file.
 %
 % If the specified entry happens not to exist, a {non_existing_entry, EntryName}
 % exception will be thrown.
 %
 -spec is_file( any_path() ) -> boolean().
-is_file( EntryName ) ->
+is_file( Path ) ->
 
-	case get_type_of( EntryName ) of
+	case get_type_of( Path ) of
 
 		regular ->
 			true ;
@@ -915,14 +984,14 @@ is_file( EntryName ) ->
 
 
 
-% Returns whether the specified entry exists and is a regular file.
+% @doc Returns whether the specified entry exists and is a regular file.
 %
 % Returns true or false, and cannot trigger an exception.
 %
 -spec is_existing_file( any_path() ) -> boolean().
-is_existing_file( EntryName ) ->
+is_existing_file( Path ) ->
 
-	case exists( EntryName ) andalso get_type_of( EntryName ) of
+	case exists( Path ) andalso get_type_of( Path ) of
 
 		regular ->
 			true ;
@@ -934,14 +1003,14 @@ is_existing_file( EntryName ) ->
 
 
 
-% Returns whether the specified entry exists and is a symbolic file.
+% @doc Returns whether the specified entry exists and is a symbolic file.
 %
 % Returns true or false, and cannot trigger an exception.
 %
 -spec is_existing_link( any_path() ) -> boolean().
-is_existing_link( EntryName ) ->
+is_existing_link( Path ) ->
 
-	case exists( EntryName ) andalso get_type_of( EntryName ) of
+	case exists( Path ) andalso get_type_of( Path ) of
 
 		symlink ->
 			true ;
@@ -953,15 +1022,15 @@ is_existing_link( EntryName ) ->
 
 
 
-% Returns whether the specified entry exists and is either a regular file or a
-% symbolic link.
+% @doc Returns whether the specified entry exists and is either a regular file
+% or a symbolic link.
 %
 % Returns true or false, and cannot trigger an exception.
 %
 -spec is_existing_file_or_link( any_path() ) -> boolean().
-is_existing_file_or_link( EntryName ) ->
+is_existing_file_or_link( Path ) ->
 
-	case exists( EntryName ) andalso get_type_of( EntryName ) of
+	case exists( Path ) andalso get_type_of( Path ) of
 
 		regular ->
 			true ;
@@ -976,18 +1045,18 @@ is_existing_file_or_link( EntryName ) ->
 
 
 
-% Returns whether the specified entry exists and is readable for its current
-% owner (can be either a regular file or a symbolic link) - not telling anything
-% about whether the current user can read it.
+% @doc Returns whether the specified entry exists and is readable for its
+% current owner (can be either a regular file or a symbolic link) - not telling
+% anything about whether the current user can read it.
 %
 % Returns true or false, and cannot trigger an exception.
 %
 % See also: is_user_readable/1.
 %
 -spec is_owner_readable( any_path() ) -> boolean().
-is_owner_readable( EntryPath ) ->
+is_owner_readable( Path ) ->
 
-	case file:read_file_info( EntryPath ) of
+	case file:read_file_info( Path ) of
 
 		{ ok, FileInfo } ->
 
@@ -1023,18 +1092,18 @@ is_owner_readable( EntryPath ) ->
 
 
 
-% Returns whether the specified entry exists and is writable for its current
-% owner (can be either a regular file or a symbolic link) - not telling anything
-% about whether the current user can write it.
+% @doc Returns whether the specified entry exists and is writable for its
+% current owner (can be either a regular file or a symbolic link) - not telling
+% anything about whether the current user can write it.
 %
 % Returns true or false, and cannot trigger an exception.
 %
 % See also: is_user_writable/1.
 %
 -spec is_owner_writable( any_path() ) -> boolean().
-is_owner_writable( EntryPath ) ->
+is_owner_writable( Path ) ->
 
-	case file:read_file_info( EntryPath ) of
+	case file:read_file_info( Path ) of
 
 		{ ok, FileInfo } ->
 
@@ -1070,18 +1139,18 @@ is_owner_writable( EntryPath ) ->
 
 
 
-% Returns whether the specified entry exists and is executable for its current
-% owner (can be either a regular file or a symbolic link) - not telling anything
-% about whether the current user can execute it.
+% @doc Returns whether the specified entry exists and is executable for its
+% current owner (can be either a regular file or a symbolic link) - not telling
+% anything about whether the current user can execute it.
 %
 % Returns true or false, and cannot trigger an exception.
 %
 % See also: is_owner_writable/1.
 %
 -spec is_owner_executable( any_path() ) -> boolean().
-is_owner_executable( EntryPath ) ->
+is_owner_executable( Path ) ->
 
-	case file:read_file_info( EntryPath ) of
+	case file:read_file_info( Path ) of
 
 		{ ok, FileInfo } ->
 
@@ -1117,19 +1186,19 @@ is_owner_executable( EntryPath ) ->
 
 
 
-% Returns whether the specified entry exists and is readable for the current
-% user (can be either a regular file or a symbolic link).
+% @doc Returns whether the specified entry exists and is readable for the
+% current user (can be either a regular file or a symbolic link).
 %
 % Returns true or false, and cannot trigger an exception.
 %
 -spec is_user_readable( any_path() ) -> boolean().
-is_user_readable( EntryPath ) ->
+is_user_readable( Path ) ->
 
 	% Rather than using file:read_file_info/1 and having to try to fetch and
 	% filter user/group information, it is easier, maybe more efficient and
 	% reliable to try to open it for reading:
 
-	case file:open( _File=EntryPath, _Mode=[ read ] ) of
+	case file:open( _File=Path, _Mode=[ read ] ) of
 
 		{ ok, File } ->
 			file:close( File ),
@@ -1142,19 +1211,19 @@ is_user_readable( EntryPath ) ->
 
 
 
-% Returns whether the specified entry exists and is writable for the current
-% user (can be either a regular file or a symbolic link).
+% @doc Returns whether the specified entry exists and is writable for the
+% current user (can be either a regular file or a symbolic link).
 %
 % Returns true or false, and cannot trigger an exception.
 %
 -spec is_user_writable( any_path() ) -> boolean().
-is_user_writable( EntryPath ) ->
+is_user_writable( Path ) ->
 
 	% Rather than using file:read_file_info/1 and having to try to fetch and
 	% filter user/group information, it is easier, maybe more efficient and
 	% reliable to try to open it for writing:
 
-	case file:open( _File=EntryPath, _Mode=[ write ] ) of
+	case file:open( _File=Path, _Mode=[ write ] ) of
 
 		{ ok, File } ->
 			file:close( File ),
@@ -1167,28 +1236,29 @@ is_user_writable( EntryPath ) ->
 
 
 
-% Returns whether the specified entry exists and is executable for the current
-% user (can be either a regular file or a symbolic link).
+% @doc Returns whether the specified entry exists and is executable for the
+% current user (can be either a regular file or a symbolic link).
 %
 % Returns true or false, and cannot trigger an exception.
 %
 % See also: is_owner_executable/1.
 %
 -spec is_user_executable( any_path() ) -> boolean().
-is_user_executable( EntryPath ) ->
+is_user_executable( Path ) ->
 	% WARNING: not properly implemented yet.
-	is_owner_executable( EntryPath ).
+	is_owner_executable( Path ).
 
 
-% Returns whether the specified entry, supposedly existing, is a directory.
+
+% @doc Returns whether the specified entry, supposedly existing, is a directory.
 %
-% If the specified entry happens not to exist, a {non_existing_entry, EntryName}
+% If the specified entry happens not to exist, a {non_existing_entry, Path}
 % exception will be thrown.
 %
 -spec is_directory( any_path() ) -> boolean().
-is_directory( EntryName ) ->
+is_directory( Path ) ->
 
-	case get_type_of( EntryName ) of
+	case get_type_of( Path ) of
 
 		directory ->
 			true ;
@@ -1200,14 +1270,14 @@ is_directory( EntryName ) ->
 
 
 
-% Returns whether the specified entry exists and is a directory.
+% @doc Returns whether the specified entry exists and is a directory.
 %
 % Returns true or false, and cannot trigger an exception.
 %
 -spec is_existing_directory( any_path() ) -> boolean().
-is_existing_directory( EntryName ) ->
+is_existing_directory( Path ) ->
 
-	case exists( EntryName ) andalso get_type_of( EntryName ) of
+	case exists( Path ) andalso get_type_of( Path ) of
 
 		directory ->
 			true ;
@@ -1219,15 +1289,15 @@ is_existing_directory( EntryName ) ->
 
 
 
-% Returns whether the specified entry exists and is a directory or a symbolic
-% link.
+% @doc Returns whether the specified entry exists and is a directory or a
+% symbolic link.
 %
 % Returns true or false, and cannot trigger an exception.
 %
 -spec is_existing_directory_or_link( any_path() ) -> boolean().
-is_existing_directory_or_link( EntryName ) ->
+is_existing_directory_or_link( Path ) ->
 
-	case exists( EntryName ) andalso get_type_of( EntryName ) of
+	case exists( Path ) andalso get_type_of( Path ) of
 
 		directory ->
 			true ;
@@ -1242,7 +1312,7 @@ is_existing_directory_or_link( EntryName ) ->
 
 
 
-% Returns a tuple containing five lists corresponding to the per-type
+% @doc Returns a tuple containing five lists corresponding to the per-type
 % dispatching of all filesystem elements local to specified directory (hence not
 % recursively traversed), namely: {RegularFiles, Symlinks, Directories,
 % OtherFiles, Devices}.
@@ -1264,7 +1334,7 @@ list_dir_elements( DirName ) ->
 
 
 
-% Returns a tuple containing five lists corresponding to the per-type
+% @doc Returns a tuple containing five lists corresponding to the per-type
 % dispatching of all filesystem elements local to specified directory (hence not
 % recursively traversed), namely: {RegularFiles, Symlinks, Directories,
 % OtherFiles, Devices}.
@@ -1323,47 +1393,47 @@ list_dir_elements( DirName, ImproperEncodingAction ) ->
 
 
 
-% Returns the size, in bytes, of the specified file entry.
--spec get_size( any_file_name() ) -> system_utils:byte_size().
-get_size( Filename ) ->
+% @doc Returns the size, in bytes, of the specified file.
+-spec get_size( any_file_path() ) -> system_utils:byte_size().
+get_size( FilePath ) ->
 
-	case file:read_file_info( Filename ) of
+	case file:read_file_info( FilePath ) of
 
 		{ ok, #file_info{ size=Size } } ->
 			Size;
 
 		{ error, Reason } ->
-			throw( { file_info_failure, Reason, Filename } )
+			throw( { size_inquiry_failed, Reason, FilePath } )
 
 	end.
 
 
 
-% Returns the last time at which the content of specified file entry was
+% @doc Returns the last time at which the content of specified file entry was
 % modified (not counting attribute or permission changes), according to the
 % filesystem.
 %
-% Said time will be expressed as an integer number of seconds since (or before)
-% Unix time epoch, which is 1970-01-01 00:00 UTC.
+% Said timestamp will be expressed as an integer number of seconds since (or
+% before) Unix time epoch, which is 1970-01-01 00:00 UTC.
 %
 -spec get_last_modification_time( any_path() ) -> time_utils:posix_seconds().
-get_last_modification_time( Filename ) ->
+get_last_modification_time( Path ) ->
 
-	case file:read_file_info( Filename, [ { time, posix } ] ) of
+	case file:read_file_info( Path, [ { time, posix } ] ) of
 
 		{ ok, #file_info{ mtime=Seconds } } ->
 			Seconds;
 
 		{ error, Reason } ->
-			throw( { file_info_failure, Reason, Filename } )
+			throw( { file_info_failure, Reason, Path } )
 
 	end.
 
 
 
-% Updates the modification time (the last time at which its content was reported
-% as modified according to the filesystem) of the specified file entry, which
-% must already exist.
+% @doc Updates the modification time (the last time at which its content was
+% reported as modified according to the filesystem) of the specified file entry,
+% which must already exist.
 %
 % Note: leaves last access time unchanged, updates both modification and change
 % times.
@@ -1371,33 +1441,34 @@ get_last_modification_time( Filename ) ->
 % See also: create_empty_file/1
 %
 -spec touch( any_path() ) -> void().
-touch( FileEntry ) ->
+touch( Path ) ->
 
-	case exists( FileEntry ) of
+	case exists( Path ) of
 
 		true ->
 			% -c: do not create any file
 			% -m: change only the modification time
 			%
 			case system_utils:run_executable( _ExecPath="/bin/touch",
-					_Args=[ "-c", "-m", FileEntry ] ) of
+					_Args=[ "-c", "-m", Path ] ) of
 
 				{ 0, _Output } ->
 					ok;
 
 				{ ErrorCode, Output } ->
-					throw( { touch_failed, Output, ErrorCode, FileEntry } )
+					throw( { touch_failed, Output, ErrorCode, Path } )
 
 			end;
 
 		false ->
-			throw( { non_existing_file_element_to_touch, FileEntry } )
+			throw( { non_existing_file_element_to_touch, Path } )
 
 	end.
 
 
 
-% Creates an empty file bearing the specified filename (other use of touch).
+% @doc Creates an empty file bearing the specified filename (other use of
+% touch).
 %
 % Potentially useful as a last-resort debugging tool (when no console output or
 % applicative trace can be relied upon, we can at least leave side-effects on
@@ -1423,7 +1494,7 @@ create_empty_file( FilePath ) ->
 
 
 
-% Returns the current directory, as a plain string.
+% @doc Returns the current directory, as a plain string.
 %
 % Throws an exception on failure.
 %
@@ -1442,7 +1513,7 @@ get_current_directory() ->
 
 
 
-% Returns the current directory, as a binary string.
+% @doc Returns the current directory, as a binary string.
 %
 % Throws an exception on failure.
 %
@@ -1452,29 +1523,29 @@ get_bin_current_directory() ->
 
 
 
-% Sets the specified directory as current directory.
+% @doc Sets the specified directory as current directory.
 %
 % Throws an exception on failure.
 %
--spec set_current_directory( directory_name() ) -> void().
-set_current_directory( DirName ) ->
+-spec set_current_directory( directory_path() ) -> void().
+set_current_directory( DirPath ) ->
 
 	 % For more detail of { 'error', atom() }, refer to type specifications of
 	 % erlang files: file.erl and file.hrl.
 
-	case file:set_cwd( DirName ) of
+	case file:set_cwd( DirPath ) of
 
 		ok ->
 			ok;
 
 		{ error, Error } ->
-			throw( { set_current_directory_failed, DirName, Error } )
+			throw( { set_current_directory_failed, DirPath, Error } )
 
 	end.
 
 
 
-% Returns the first (if any) existing directory found in specified list, or
+% @doc Returns the first (if any) existing directory found in specified list, or
 % throws an exception if none is found.
 %
 % Typically useful when having multiple possible paths depending on settings,
@@ -1490,7 +1561,6 @@ get_first_existing_directory_in( DirPaths ) ->
 get_first_existing_dir( _DirPaths=[], Acc ) ->
 	throw( { no_existing_directory_found_in, lists:reverse( Acc ),
 			 get_current_directory() } );
-
 
 get_first_existing_dir( _DirPaths=[ Dir | T ], Acc ) ->
 
@@ -1519,7 +1589,7 @@ classify_dir_elements( _DirName, _Elements=[], Devices, Directories, Files,
 
 classify_dir_elements( DirName, _Elements=[ Str | T ], Devices, Directories,
 					   Files, Symlinks, OtherFiles, ImproperEncodingAction )
-						   when is_list( Str ) ->
+							when is_list( Str ) ->
 
 	case get_type_of( filename:join( DirName, Str ) ) of
 
@@ -1556,7 +1626,7 @@ classify_dir_elements( DirName, _Elements=[ Bin | T ], Devices, Directories,
 		Files, Symlinks, OtherFiles, ImproperEncodingAction=warn ) ->
 
 	trace_bridge:warning_fmt( "Ignoring improperly-encoded "
-		"file element found in directory '~s': '~s'.", [ DirName, Bin ] ),
+		"file element found in directory '~ts': '~ts'.", [ DirName, Bin ] ),
 
 	% Then ignore:
 	classify_dir_elements( DirName, T, Devices, Directories, Files, Symlinks,
@@ -1605,8 +1675,8 @@ classify_dir_elements( DirName, _Elements=[ Bin | T ], Devices, Directories,
 % ".PNG" are treated the same.
 
 
-% Returns a list containing all elements of the Filenames list whose extension
-% is the specified one (ex: ".dat").
+% @doc Returns a list containing all elements of the Filenames list whose
+% extension is the specified one (ex: ".dat").
 %
 -spec filter_by_extension( [ file_path() ], extension() ) -> [ file_path() ].
 filter_by_extension( Filenames, Extension ) ->
@@ -1630,7 +1700,7 @@ filter_by_extension( _Filenames=[ H | T ], Extension, Acc ) ->
 
 
 
-% Returns a list containing all elements of Filenames list whose extension
+% @doc Returns a list containing all elements of Filenames list whose extension
 % corresponds to one of the specified extensions (ex: [".dat", ".png"]).
 %
 -spec filter_by_extensions( [ file_path() ], [ extension() ] ) ->
@@ -1656,8 +1726,8 @@ filter_by_extensions( _Filenames=[ F | T ], Extensions, Acc ) ->
 
 
 
-% Returns a list containing all paths in the specified list (in an unspecified
-% order) that match any of the specified suffixes.
+% @doc Returns a list containing all paths in the specified list (in an
+% unspecified order) that match any of the specified suffixes.
 %
 -spec filter_by_included_suffixes( [ any_path() ], [ any_suffix() ] ) ->
 											[ any_path() ].
@@ -1690,9 +1760,8 @@ filter_by_included_suffixes( _Paths=[ P | T ], IncludedSuffixes, Acc ) ->
 
 
 
-
-% Returns a list containing all paths in the specified list (in an unspecified
-% order) that do not match any of the specified suffixes.
+% @doc Returns a list containing all paths in the specified list (in an
+% unspecified order) that do not match any of the specified suffixes.
 %
 -spec filter_by_excluded_suffixes( [ any_path() ], [ any_suffix() ] ) ->
 											[ any_path() ].
@@ -1723,7 +1792,8 @@ filter_by_excluded_suffixes( _Paths=[ P | T ], ExcludedSuffixes, Acc ) ->
 
 
 
-
+% @doc Tells whether specified path matches one of the specified suffixes.
+%
 % (exported helper)
 -spec has_matching_suffix( any_path(), [ any_suffix() ] ) -> boolean().
 has_matching_suffix( _Path, _Suffixes=[] ) ->
@@ -1796,15 +1866,18 @@ has_matching_suffix( Path, [ Suffix | T ] ) ->
 
 % Section dedicated to the look-up of files, with various variations (with or
 % without extensions, with or without excluded directories, etc.)
-
+%
+% During a tree traversal, no symbolic link is ever followed. See the 'Regarding
+% tree traversals' section at the top of this file.
+%
 % Excluded directories are all promoted to binary strings at first, so that no
-% upcoming lists:member( D, ExcludedDirs ) can fail if ever D happens to be a
+% upcoming lists:member(D, ExcludedDirs) can fail if ever D happens to be a
 % binary (because of a 'raw directory').
 
 
 
-% Returns a list of all files (regular ones and symlinks) found from the root,
-% in the whole subtree (i.e. recursively).
+% @doc Returns a list of all files (regular ones and symlinks) found from the
+% root, in the whole subtree (that is recursively).
 %
 % All extensions and suffixes accepted, no excluded directories. Elements whose
 % name is improperly encoded are notified thanks to a warning trace, and then
@@ -1822,8 +1895,8 @@ find_files_from( RootDir ) ->
 
 
 
-% Returns a list of all regular files (hence not including symlinks) found from
-% the root, in the whole subtree (i.e. recursively).
+% @doc Returns a list of all regular files (hence not including symlinks) found
+% from the root, in the whole subtree (that is recursively).
 %
 % All extensions and suffixes accepted, no excluded directories. Elements whose
 % name is improperly encoded are notified thanks to a warning trace, and then
@@ -1838,8 +1911,8 @@ find_regular_files_from( RootDir ) ->
 
 
 
-% Returns a list of all files (regular ones and, if requested, symlinks) found
-% from the root, in the whole subtree (i.e. recursively).
+% @doc Returns a list of all files (regular ones and, if requested, symlinks)
+% found from the root, in the whole subtree (that is recursively).
 %
 % All extensions and suffixes accepted, no excluded directories. Elements whose
 % name is improperly encoded are notified thanks to a warning trace, and then
@@ -1854,8 +1927,8 @@ find_files_from( RootDir, IncludeSymlinks ) ->
 
 
 
-% Returns a list of all files (regular ones and, if requested, symlinks) found
-% from the root, in the whole subtree (i.e. recursively).
+% @doc Returns a list of all files (regular ones and, if requested, symlinks)
+% found from the root, in the whole subtree (that is recursively).
 %
 % All extensions and suffixes accepted, no excluded directories. Elements whose
 % name is improperly encoded are managed according to the IfImproperEncoding
@@ -1897,9 +1970,9 @@ find_files_from( RootDir, CurrentRelativeDir, IncludeSymlinks,
 
 	end,
 
-	Acc ++ list_files_in_subdirs( Directories, RootDir, CurrentRelativeDir,
-							IncludeSymlinks, IfImproperEncoding, _NextAcc=[] )
-		++ prefix_files_with( CurrentRelativeDir, Files ).
+	Acc ++ list_files_in_subdirs( Directories, RootDir,
+			CurrentRelativeDir, IncludeSymlinks, IfImproperEncoding,
+			_NextAcc=[] ) ++ prefix_files_with( CurrentRelativeDir, Files ).
 
 
 
@@ -1922,8 +1995,8 @@ list_files_in_subdirs( _Dirs=[ D | T ], RootDir, CurrentRelativeDir,
 
 
 
-% Returns a list of all symlinks found from the root, in the whole subtree
-% (i.e. recursively).
+% @doc Returns a list of all symlinks found from the root, in the whole subtree
+% (that is recursively).
 %
 % All extensions and suffixes accepted, no excluded directories. Elements whose
 % name is improperly encoded are notified thanks to a warning trace, and then
@@ -1938,8 +2011,8 @@ find_links_from( RootDir ) ->
 
 
 
-% Returns a list of all symlinks found from the root, in the whole subtree
-% (i.e. recursively).
+% @doc Returns a list of all symlinks found from the root, in the whole subtree
+% (that is recursively).
 %
 % All extensions and suffixes accepted, no excluded directories. Elements whose
 % name is improperly encoded are managed according to the IfImproperEncoding
@@ -1992,8 +2065,8 @@ list_links_in_subdirs( _Dirs=[ D | T ], RootDir, CurrentRelativeDir,
 
 
 
-% Returns a list of all files (regular ones and symlinks) found from the root
-% with specified extension, in the whole subtree (i.e. recursively).
+% @doc Returns a list of all files (regular ones and symlinks) found from the
+% root with specified extension, in the whole subtree (that is recursively).
 %
 % All suffixes accepted, no excluded directories. Elements whose name is
 % improperly encoded are notified thanks to a warning trace, and then are
@@ -2009,8 +2082,8 @@ find_files_with_extension_from( RootDir, Extension ) ->
 									_IfImproperEncoding=warn ).
 
 
-% Returns a list of all files (regular ones and symlinks) found from the root
-% with specified extension, in the whole subtree (i.e. recursively).
+% @doc Returns a list of all files (regular ones and symlinks) found from the
+% root with specified extension, in the whole subtree (that is recursively).
 %
 % All suffixes accepted, no excluded directories. Elements whose name is
 % improperly encoded are managed according to the IfImproperEncoding parameter;
@@ -2028,9 +2101,9 @@ find_files_with_extension_from( RootDir, Extension, IfImproperEncoding ) ->
 
 
 
-% Returns a list of all files (regular ones and, if requested, symlinks) found
-% from the root with specified extension, in the whole subtree
-% (i.e. recursively).
+% @doc Returns a list of all files (regular ones and, if requested, symlinks)
+% found from the root with specified extension, in the whole subtree (that is
+% recursively).
 %
 % All suffixes accepted, no excluded directories. Elements whose name is
 % improperly encoded are managed according to the IfImproperEncoding parameter;
@@ -2095,8 +2168,9 @@ list_files_in_subdirs_with_extension( _Dirs=[ H | T ], Extension, RootDir,
 
 
 
-% Returns a list of all files (regular ones and symlinks) found from the root,
-% in the whole subtree (i.e. recursively), with specified directories excluded.
+% @doc Returns a list of all files (regular ones and symlinks) found from the
+% root, in the whole subtree (that is recursively), with specified directories
+% excluded.
 %
 % Note that an excluded directory can be specified as a full (relative) path
 % (ex: "foo/bar/not-wanted"), or just as a final directory name (ex:
@@ -2122,9 +2196,9 @@ find_files_with_excluded_dirs( RootDir, ExcludedDirs ) ->
 
 
 
-% Returns a list of all files (regular ones and, if requested, symlinks) found
-% from the root, in the whole subtree (i.e. recursively), with specified
-% directories excluded.
+% @doc Returns a list of all files (regular ones and, if requested, symlinks)
+% found from the root, in the whole subtree (that is recursively), with
+% specified directories excluded.
 %
 % Note that an excluded directory can be specified as a full (relative) path
 % (ex: "foo/bar/not-wanted"), or just as a final directory name (ex:
@@ -2149,9 +2223,9 @@ find_files_with_excluded_dirs( RootDir, ExcludedDirs, IncludeSymlinks ) ->
 								   _IfImproperEncoding=warn ).
 
 
-% Returns a list of all files (regular ones and, if requested, symlinks) found
-% from the root, in the whole subtree (i.e. recursively), with specified
-% directories excluded.
+% @doc Returns a list of all files (regular ones and, if requested, symlinks)
+% found from the root, in the whole subtree (that is recursively), with
+% specified directories excluded.
 %
 % Note that an excluded directory can be specified as a full (relative) path
 % (ex: "foo/bar/not-wanted"), or just as a final directory name (ex:
@@ -2240,11 +2314,9 @@ list_files_in_subdirs_excluded_dirs( _Dirs=[ D | T ], RootDir,
 
 
 
-
-
-% Returns a list of all files (regular ones and symlinks) found from the root
-% which do not match any of the specified suffixes, in the whole subtree
-% (i.e. recursively).
+% @doc Returns a list of all files (regular ones and symlinks) found from the
+% root which do not match any of the specified suffixes, in the whole subtree
+% (that is recursively).
 %
 % No excluded directories. Elements whose name is improperly encoded are
 % notified thanks to a warning trace, and then are ignored.
@@ -2259,9 +2331,9 @@ find_files_with_excluded_suffixes( RootDir, ExcludedSuffixes ) ->
 									   _IfImproperEncoding=warn ).
 
 
-% Returns a list of all files (regular ones and symlinks) found from the root
-% which do not match any of the specified suffixes, in the whole subtree
-% (i.e. recursively).
+% @doc Returns a list of all files (regular ones and symlinks) found from the
+% root which do not match any of the specified suffixes, in the whole subtree
+% (that is recursively).
 %
 % No excluded directories. Elements whose name is
 % improperly encoded are managed according to the IfImproperEncoding parameter;
@@ -2280,9 +2352,9 @@ find_files_with_excluded_suffixes( RootDir, ExcludedSuffixes,
 
 
 
-% Returns a list of all files (regular ones and, if requested, symlinks) found
-% from the root which do not match any of the specified suffixes, in the whole
-% subtree (i.e. recursively).
+% @doc Returns a list of all files (regular ones and, if requested, symlinks)
+% found from the root which do not match any of the specified suffixes, in the
+% whole subtree (that is recursively).
 %
 % No excluded directories. Elements whose name is
 % improperly encoded are managed according to the IfImproperEncoding parameter;
@@ -2355,9 +2427,9 @@ list_files_in_subdirs_with_excluded_suffixes( _Dirs=[ D | T ], ExcludedSuffixes,
 
 
 
-% Returns a list of all files (regular ones and symlinks) found from the root,
-% in the whole subtree (i.e. recursively), with specified directories and
-% suffixes excluded.
+% @doc Returns a list of all files (regular ones and symlinks) found from the
+% root, in the whole subtree (that is recursively), with specified directories
+% and suffixes excluded.
 %
 % Note that an excluded directory can be specified as a full (relative) path
 % (ex: "foo/bar/not-wanted"), or just as a final directory name (ex:
@@ -2384,9 +2456,9 @@ find_files_with_excluded_dirs_and_suffixes( RootDir, ExcludedDirs,
 
 
 
-% Returns a list of all files (regular ones and, if requested, symlinks) found
-% from the root, in the whole subtree (i.e. recursively), with specified
-% directories and suffixes excluded.
+% @doc Returns a list of all files (regular ones and, if requested, symlinks)
+% found from the root, in the whole subtree (that is recursively), with
+% specified directories and suffixes excluded.
 %
 % Note that an excluded directory can be specified as a full (relative) path
 % (ex: "foo/bar/not-wanted"), or just as a final directory name (ex:
@@ -2412,9 +2484,9 @@ find_files_with_excluded_dirs_and_suffixes( RootDir, ExcludedDirs,
 		ExcludedSuffixes, IncludeSymlinks, _IfImproperEncoding=warn ).
 
 
-% Returns a list of all files (regular ones and, if requested, symlinks) found
-% from the root, in the whole subtree (i.e. recursively), with specified
-% directories and suffixes excluded.
+% @doc Returns a list of all files (regular ones and, if requested, symlinks)
+% found from the root, in the whole subtree (that is recursively), with
+% specified directories and suffixes excluded.
 %
 % Note that an excluded directory can be specified as a full (relative) path
 % (ex: "foo/bar/not-wanted"), or just as a final directory name (ex:
@@ -2494,7 +2566,6 @@ find_files_with_excluded_dirs_and_suffixes( RootDir, CurrentRelativeDir,
 
 
 
-
 % Specific helper for find_files_with_excluded_dirs_and_suffixes/7 above:
 list_files_in_subdirs_excluded_dirs_and_suffixes( _Dirs=[], _RootDir,
 		_CurrentRelativeDir, _ExcludedDirs, _ExcludedSuffixes,
@@ -2535,8 +2606,8 @@ prefix_files_with( RootDir, [ BinStr | T ], Acc ) when is_binary( BinStr ) ->
 
 
 
-% Returns a list of all directories found from the root, in the whole subtree
-% (i.e. recursively).
+% @doc Returns a list of all directories found from the root, in the whole
+% subtree (that is recursively).
 %
 % All returned pathnames are relative to this root.
 % Ex: ["./my-dir", "./tmp/other-dir"].
@@ -2574,7 +2645,7 @@ list_directories_in_subdirs( _Dirs=[ H | T ], RootDir, CurrentRelativeDir,
 
 
 
-% Creates specified directory ("mkdir"), without creating any intermediate
+% @doc Creates specified directory ("mkdir"), without creating any intermediate
 % (parent) directory that would not exist.
 %
 % Throws an exception if the operation failed.
@@ -2585,7 +2656,7 @@ create_directory( DirName ) ->
 
 
 
-% Creates the specified directory.
+% @doc Creates the specified directory.
 %
 % If 'create_no_parent' is specified, no intermediate (parent) directory will be
 % created.
@@ -2635,7 +2706,7 @@ create_dir_elem( _Elems=[ H | T ], Prefix ) ->
 
 
 
-% Creates specified directory (but not any parent thereof), if not already
+% @doc Creates specified directory (but not any parent thereof), if not already
 % existing.
 %
 % Throws an exception if the operation fails.
@@ -2645,8 +2716,8 @@ create_directory_if_not_existing( DirName ) ->
 	create_directory_if_not_existing( DirName, create_no_parent ).
 
 
-% Creates specified directory (and, if specified, any needed parent as well), if
-% not already existing.
+% @doc Creates specified directory (and, if specified, any needed parent as
+% well), if not already existing.
 %
 % Throws an exception if the operation fails.
 %
@@ -2666,8 +2737,8 @@ create_directory_if_not_existing( DirName, ParentCreation ) ->
 
 
 
-% Creates a non-previously existing temporary directory, and returns its full
-% path.
+% @doc Creates a non-previously existing temporary directory, and returns its
+% full path.
 %
 % See also: system_utils:get_default_temporary_directory/0
 %
@@ -2691,71 +2762,112 @@ create_temporary_directory() ->
 
 
 
-% Removes (deletes) specified file, specified as any kind of string.
+% @doc Removes (deletes) specified file, specified as any kind of string.
 %
 % Throws an exception if any problem occurs.
 %
 -spec remove_file( any_file_path() ) -> void().
-remove_file( Filename ) ->
+remove_file( FilePath ) ->
 
-	%trace_utils:warning_fmt( "Removing file '~ts'.", [ Filename ] ),
+	%trace_utils:warning_fmt( "Removing file '~ts'.", [ FilePath ] ),
 
-	case file:delete( Filename ) of
-	%case ok of
+	case file:delete( FilePath ) of
+	% To disable side-effect: case ok of
 
 		ok ->
 			ok;
 
 		Error ->
-			throw( { remove_file_failed, Filename, Error } )
+			throw( { remove_file_failed, FilePath, Error } )
 
 	end.
 
 
 
-% Removes (deletes) specified files, specified as a list of any kind of strings.
+% @doc Removes (deletes) specified files, specified as a list of any kind of
+% strings.
+%
 -spec remove_files( [ any_file_path() ] ) -> void().
-remove_files( FilenameList ) ->
+remove_files( FilePaths ) ->
 
 	%trace_utils:warning_fmt( "Removing following files: ~ts",
-	%						 [ text_utils:strings_to_string( FilenameList ) ] ),
+	%						 [ text_utils:strings_to_string( FilePaths ) ] ),
 
-	[ remove_file( Filename ) || Filename <- FilenameList ].
+	[ remove_file( FP ) || FP <- FilePaths ].
 
 
 
-% Removes specified file, specified as any kind of string, iff it is already
-% existing, otherwise does nothing.
+% @doc Removes specified file, specified as any kind of string, iff it is
+% already existing, otherwise does nothing.
 %
 -spec remove_file_if_existing( any_file_path() ) -> void().
-remove_file_if_existing( Filename ) ->
+remove_file_if_existing( FilePath ) ->
 
-	case is_existing_file( Filename ) of
+	case is_existing_file( FilePath ) of
 
 		true ->
 			%trace_bridge:debug_fmt( "Removing existing file '~ts'.",
-			%						[ Filename ] ),
-			remove_file( Filename );
+			%						[ FilePath ] ),
+			remove_file( FilePath );
 
 		false ->
 			%trace_bridge:debug_fmt( "No existing file '~ts' to remove.",
-			%						[ Filename ] ),
+			%						[ FilePath ] ),
 			ok
 
 	end.
 
 
 
-% Removes each specified file, in specified list of any kind of strings, iff it
-% is already existing.
+% @doc Removes each specified file, in specified list of any kind of strings,
+% iff it is already existing.
 %
 -spec remove_files_if_existing( [ any_file_path() ] ) -> void().
-remove_files_if_existing( FilenameList ) ->
-	[ remove_file_if_existing( Filename ) || Filename <- FilenameList ].
+remove_files_if_existing( FilePaths ) ->
+	[ remove_file_if_existing( FP ) || FP <- FilePaths ].
 
 
 
-% Removes specified directory, which must be empty (so: behaves mostly like
+% @doc Removes (deletes) specified symbolic link, specified as any kind
+% of string.
+%
+% Checks that the specified path designates indeed a symbolic link (dead or
+% not).
+%
+% Throws an exception if any problem occurs.
+%
+-spec remove_symlink( any_file_path() ) -> void().
+remove_symlink( SymlinkPath ) ->
+
+	%trace_utils:warning_fmt( "Removing symlink '~ts'.", [ SymlinkPath ] ),
+
+	case file:read_link_info( SymlinkPath ) of
+
+		{ ok, #file_info{ type=symlink } } ->
+			ok;
+
+		{ error, eloop } ->
+			% Probably a recursive symlink:
+			throw( { too_many_symlink_levels, SymlinkPath } );
+
+		{ error, enoent } ->
+			throw( { non_existing_entry, SymlinkPath } )
+
+	end,
+
+	case file:delete( SymlinkPath ) of
+
+		ok ->
+			ok;
+
+		Error ->
+			throw( { remove_symlink_failed, SymlinkPath, Error } )
+
+	end.
+
+
+
+% @doc Removes specified directory, which must be empty (so: behaves mostly like
 % the 'rmdir' shell command).
 %
 -spec remove_empty_directory( any_directory_path() ) -> void().
@@ -2770,6 +2882,8 @@ remove_empty_directory( DirectoryPath ) ->
 			ok;
 
 		{ error, Reason } ->
+			trace_utils:error_fmt( "Removal of directory '~ts' failed: ~p.",
+								   [ DirectoryPath, Reason ] ),
 			% Probably not so empty:
 			throw( { remove_empty_directory_failed, Reason, DirectoryPath } )
 
@@ -2777,11 +2891,11 @@ remove_empty_directory( DirectoryPath ) ->
 
 
 
-% Removes all (supposedly) empty directories pertaining to the specified local,
-% relative directory path, i.e. this path (ex: a/b/c) and all its ancestors
-% (hence a/b and a are - if empty - removed as well, and none of their possible
-% siblings of course); so behaves mostly like the 'rmdir --parents' shell
-% command.
+% @doc Removes all (supposedly) empty directories pertaining to the specified
+% local, relative directory path, that is this path (ex: a/b/c) and all its
+% ancestors (hence a/b and a are - if empty - removed as well, and none of their
+% possible siblings of course); so behaves mostly like the 'rmdir --parents'
+% shell command.
 %
 % Note: does not remove an (empty) tree, just a given directory and its local
 % ancestors.
@@ -2805,9 +2919,9 @@ remove_empty_path_helper( DirectoryPath ) ->
 
 
 
-% Removes all (supposedly) empty directories found from specified directory,
-% expected to be the root of a tree that contains only (possibly nested)
-% directories (and no other kind of filesystem entry).
+% @doc Removes all (supposedly) empty directories found from specified
+% directory, expected to be the root of a tree that contains only (possibly
+% nested) directories (and no other kind of filesystem entry).
 %
 -spec remove_empty_tree( any_directory_path() ) -> void().
 remove_empty_tree( DirectoryPath ) ->
@@ -2827,7 +2941,7 @@ remove_empty_tree( DirectoryPath ) ->
 	end,
 
 	{ RegularFiles, Symlinks, Directories, OtherFiles, Devices } =
-		list_dir_elements( DirectoryPath ),
+		list_dir_elements( DirectoryPath, _ImproperEncodingAction=include ),
 
 	case RegularFiles of
 
@@ -2835,7 +2949,7 @@ remove_empty_tree( DirectoryPath ) ->
 			ok;
 
 		_ ->
-			throw( { regular_files_found, RegularFiles } )
+			throw( { regular_files_found, RegularFiles, DirectoryPath } )
 
 	end,
 
@@ -2845,7 +2959,7 @@ remove_empty_tree( DirectoryPath ) ->
 			ok;
 
 		_ ->
-			throw( { symbolic_links_found, Symlinks } )
+			throw( { symbolic_links_found, Symlinks, DirectoryPath } )
 
 	end,
 
@@ -2855,7 +2969,7 @@ remove_empty_tree( DirectoryPath ) ->
 			ok;
 
 		_ ->
-			throw( { other_files_found, OtherFiles } )
+			throw( { other_files_found, OtherFiles, DirectoryPath } )
 
 	end,
 
@@ -2865,19 +2979,20 @@ remove_empty_tree( DirectoryPath ) ->
 			ok;
 
 		_ ->
-			throw( { devices_found, Devices } )
+			throw( { devices_found, Devices, DirectoryPath } )
 
 	end,
 
-	[ remove_empty_tree( join( DirectoryPath, D ) ) || D <- Directories ],
+	[ remove_empty_tree( any_join( DirectoryPath, D ) ) || D <- Directories ],
 
 	% Now an empty directory, so:
 	remove_directory( DirectoryPath ).
 
 
 
-% Removes specified (possibly non-empty) directory as a whole, recursively (so:
-% behaves mostly like the 'rm -rf ' shell command; of course to use with care).
+% @doc Removes specified (possibly non-empty) directory as a whole, recursively
+% (so: behaves mostly like the 'rm -rf ' shell command; of course to use with
+% care).
 %
 % Note that if any unusual file entry is found in the tree (ex: device or file
 % that is neither regular nor a symbolic link), the operation will stop on error
@@ -2894,7 +3009,7 @@ remove_directory( DirectoryName ) ->
 
 	% All local elements:
 	{ RegularFiles, Symlinks, Directories, OtherFiles, Devices } =
-		list_dir_elements( DirectoryName ),
+		list_dir_elements( DirectoryName, _ImproperEncodingAction=include ),
 
 	case Devices of
 
@@ -2924,11 +3039,11 @@ remove_directory( DirectoryName ) ->
 	end,
 
 	% Depth-first of course:
-	[ remove_directory( join( DirectoryName, SubDir ) )
+	[ remove_directory( any_join( DirectoryName, SubDir ) )
 	  || SubDir <- Directories ],
 
 	% Then removing all local regular files and symlinks:
-	[ remove_file( join( DirectoryName, F ) )
+	[ remove_file( any_join( DirectoryName, F ) )
 	  || F <- Symlinks ++ RegularFiles ],
 
 	% Finally removing this (now empty) directory as well:
@@ -2936,48 +3051,94 @@ remove_directory( DirectoryName ) ->
 
 
 
-% Copies a specified file to a given destination filename (not a directory name,
-% see copy_file_in/2 for that), overwriting any previous file.
+% @doc Copies a specified file to a given destination filename (not a directory
+% name, see copy_file_in/2 for that), overwriting any previous file.
 %
 % Note: content is copied and permissions are preserved (ex: the copy of an
-% executable file will be itself executable, other permissions as well, unlike
-% /bin/cp which relies on umask).
+% executable file will be itself executable, and other permissions as well,
+% unlike /bin/cp that relies on umask).
 %
--spec copy_file( file_name(), file_name() ) -> void().
-copy_file( SourceFilename, DestinationFilename ) ->
+-spec copy_file( any_file_path(), any_file_path() ) -> void().
+copy_file( SourceFilePath, DestinationFilePath ) ->
 
-	case try_copy_file( SourceFilename, DestinationFilename ) of
+	case try_copy_file( SourceFilePath, DestinationFilePath ) of
 
 		ok ->
 			ok;
 
 		{ error, Reason } ->
-			throw( { copy_file_failed, SourceFilename, Reason } )
+			throw( { copy_file_failed, SourceFilePath, DestinationFilePath,
+					 Reason } )
 
 	end.
 
 
 
-% Copies a specified file to a given destination filename (not a directory name,
-% see copy_file_in/2 for that), overwriting any previous file.
+% @doc Copies a specified file to a given destination filename (not a directory
+% name, see copy_file_in/2 for that), overwriting any previous file.
+%
+% Symlinks are copied as symlinks (whereas file:copy/2 would copy their target
+% as new files).
 %
 % Note: content is copied and permissions are preserved (ex: the copy of an
-% executable file will be itself executable, other permissions as well, unlike
-% /bin/cp that relies on umask).
+% executable file will be itself executable, and other permissions as well,
+% unlike /bin/cp that relies on umask).
 %
--spec try_copy_file( file_name(), file_name() ) -> basic_utils:base_status().
-try_copy_file( SourceFilename, DestinationFilename ) ->
+-spec try_copy_file( any_file_path(), any_file_path() ) ->
+							basic_utils:base_status().
+try_copy_file( SourceFilePath, DestinationFilePath ) ->
 
 	% First, checks the source file exists and retrieves its meta-information:
-	case file:read_file_info( SourceFilename ) of
+	%
+	% (note: not using file:read_file_info/1, as we prefer referring to symlinks
+	% themselves rather than to the element they point to; otherwise a broken
+	% link would trigger 'enoent')
+	%
+	case file:read_link_info( SourceFilePath ) of
 
-		{ ok, #file_info{ mode=Mode } } ->
+		% Here we want to create in turn a symlink (broken or not, pointing
+		% through the exact same path definition, absolute or relative):
+		%
+		{ ok, #file_info{ type=symlink } } ->
+			case file:read_link_all( SourceFilePath ) of
 
-			case file:copy( SourceFilename, DestinationFilename ) of
+				% Possibly a raw file element:
+				{ ok, LinkTargetPath } ->
+					case file:make_symlink( LinkTargetPath,
+											DestinationFilePath ) of
+
+						ok ->
+							ok;
+
+						{ error, Reason } ->
+							trace_utils:error_fmt( "Cannot create symlink "
+								"'~ts' pointing to '~ts': ~p.",
+								[ DestinationFilePath, LinkTargetPath ] ),
+							throw( { symlink_creation_failed, Reason,
+									 DestinationFilePath, LinkTargetPath } )
+
+					end;
+
+				{ error, Reason } ->
+					trace_utils:error_fmt( "Cannot determine the target of "
+						"symbolic link '~ts': ~p.",
+						[ SourceFilePath, Reason ] ),
+					throw( { symlink_resolution_failed, Reason,
+							 SourceFilePath } )
+
+			end;
+
+		{ ok, #file_info{ type=regular, mode=Mode } } ->
+
+			% Yet file:copy/2 will fail (with 'enoent') if SourceFilePath is a
+			% broken symlink, as it copies the target of the link, not the link
+			% itself.
+			%
+			case file:copy( SourceFilePath, DestinationFilePath ) of
 
 				{ ok, _ByteCount } ->
 					% Now sets the permissions of the copy:
-					case file:change_mode( DestinationFilename, Mode ) of
+					case file:change_mode( DestinationFilePath, Mode ) of
 
 						ok ->
 							ok;
@@ -2999,39 +3160,40 @@ try_copy_file( SourceFilename, DestinationFilename ) ->
 
 
 
-% Copies a specified file in a given destination directory, overwriting any
+% @doc Copies a specified file in a given destination directory, overwriting any
 % previous file, and returning the full path of the copied file.
 %
 % Note: content is copied and permissions are preserved (ex: the copy of an
-% executable file will be itself executable, other permissions as well, unlike
-% /bin/cp which relies on umask).
+% executable file will be itself executable, likz for the other permissions -
+% and unlike /bin/cp, which relies on umask).
 %
--spec copy_file_in( file_name(), directory_name() ) -> file_name().
-copy_file_in( SourceFilename, DestinationDirectory ) ->
+-spec copy_file_in( any_file_path(), any_directory_name() ) -> any_file_path().
+copy_file_in( SourcePath, DestinationDirectory ) ->
 
-	Filename = filename:basename( SourceFilename ),
+	Filename = filename:basename( SourcePath ),
 
-	TargetPath = join( DestinationDirectory, Filename ),
+	TargetPath = any_join( DestinationDirectory, Filename ),
 
-	copy_file( SourceFilename, TargetPath ),
+	copy_file( SourcePath, TargetPath ),
 
 	TargetPath.
 
 
 
-% Copies a specified file to a given destination iff this source file is already
-% existing.
+% @doc Copies a specified file to a given destination iff this source file is
+% already existing.
 %
 % Note: content is copied and permissions are preserved (ex: the copy of an
-% executable file will be itself executable).
+% executable file will be itself executable, likz for the other permissions -
+% and unlike /bin/cp, which relies on umask).
 %
--spec copy_file_if_existing( file_name(), file_name() ) -> void().
-copy_file_if_existing( SourceFilename, DestinationFilename ) ->
+-spec copy_file_if_existing( any_file_path(), any_file_path() ) -> void().
+copy_file_if_existing( SourceFilePath, DestinationFilePath ) ->
 
-	case is_existing_file( SourceFilename ) of
+	case is_existing_file( SourceFilePath ) of
 
 		true ->
-			copy_file( SourceFilename, DestinationFilename );
+			copy_file( SourceFilePath, DestinationFilePath );
 
 		false ->
 			ok
@@ -3040,11 +3202,11 @@ copy_file_if_existing( SourceFilename, DestinationFilename ) ->
 
 
 
-% Copies specified source tree in specified target directory.
--spec copy_tree( directory_path(), directory_path() ) -> void().
+% @doc Copies specified source tree in specified target directory.
+-spec copy_tree( any_directory_path(), any_directory_path() ) -> void().
 copy_tree( SourceTreePath, TargetDirectory ) ->
 
-	case file_utils:is_existing_directory_or_link( SourceTreePath ) of
+	case is_existing_directory_or_link( SourceTreePath ) of
 
 		true ->
 			ok;
@@ -3054,7 +3216,7 @@ copy_tree( SourceTreePath, TargetDirectory ) ->
 
 	end,
 
-	case file_utils:is_existing_directory_or_link( TargetDirectory ) of
+	case is_existing_directory_or_link( TargetDirectory ) of
 
 		true ->
 			ok;
@@ -3079,53 +3241,59 @@ copy_tree( SourceTreePath, TargetDirectory ) ->
 	end.
 
 
-% Renames specified file.
+
+% @doc Renames specified file.
 %
 % Returns, for convenience, the new name.
 %
--spec rename( file_name(), file_name() ) -> file_name().
-rename( SourceFilename, DestinationFilename ) ->
-	move_file( SourceFilename, DestinationFilename ).
+-spec rename( any_file_path(), any_file_path() ) -> any_file_path().
+rename( SourceFilePath, DestinationFilePath ) ->
+	move_file( SourceFilePath, DestinationFilePath ).
 
 
 
-% Moves specified file so that it is now designated by specified filename.
+% @doc Moves specified file or symbolic link so that it is now designated by
+% specified path.
 %
-% Returns, for convenience, the new name.
+% Note:
+%  - no check that source is a file or symlink (ex: not a directory) is done
+%  - destination is a file path, not a directory path
 %
--spec move_file( file_name(), file_name() ) -> file_name().
-move_file( SourceFilename, DestinationFilename ) ->
+% Returns, for convenience, the new path.
+%
+-spec move_file( any_file_path(), any_file_path() ) -> any_file_path().
+move_file( SourceFilePath, DestinationFilePath ) ->
 
 	%trace_utils:warning_fmt( "## Moving file '~ts' to '~ts'.",
-	%						  [ SourceFilename, DestinationFilename ] ),
+	%						  [ SourceFilePath, DestinationFilePath ] ),
 
-	%copy_file( SourceFilename, DestinationFilename ),
-	%remove_file( SourceFilename ).
+	%copy_file( SourceFilePath, DestinationFilePath ),
+	%remove_file( SourceFilePath ).
 
 	% Simpler, better, yet does not works across filesystems:
-	case file:rename( SourceFilename, DestinationFilename ) of
+	case file:rename( SourceFilePath, DestinationFilePath ) of
 
 		ok ->
-			DestinationFilename;
+			DestinationFilePath;
 
 		{ error, exdev } ->
 			%trace_utils:info_fmt( "Moving across filesystems '~ts' to '~ts'.",
-			%					   [ SourceFilename, DestinationFilename ] ),
-			copy_file( SourceFilename, DestinationFilename ),
-			remove_file( SourceFilename );
+			%					   [ SourceFilePath, DestinationFilePath ] ),
+			copy_file( SourceFilePath, DestinationFilePath ),
+			remove_file( SourceFilePath );
 
 		Error ->
-			throw( { move_file_failed, Error, SourceFilename,
-					 DestinationFilename } )
+			throw( { move_file_failed, Error, SourceFilePath,
+					 DestinationFilePath } )
 
 	end.
 
 
 
-% Creates a symbolic link pointing to specified target path, bearing specified
-% (link) name.
+% @doc Creates a symbolic link pointing to specified target path, bearing
+% specified (link) name.
 %
--spec create_link( path(), link_name() ) -> void().
+-spec create_link( any_path(), link_name() ) -> void().
 create_link( TargetPath, LinkName ) ->
 
 	%trace_utils:debug_fmt( "Creating a link '~ts' to '~ts', while in '~ts'.",
@@ -3144,13 +3312,13 @@ create_link( TargetPath, LinkName ) ->
 
 
 
-% Returns a path deriving from specified one so that it is unique, i.e. that it
-% does not clash with any pre-existing entry.
+% @doc Returns a path deriving from specified one so that it is unique, meaning
+% that it does not clash with any pre-existing entry.
 %
 % Note: of course multiple, parallel calls to this function with the same base
 % path will result in potential race conditions and risks of collisions.
 %
--spec get_non_clashing_entry_name_from( path() ) -> path().
+-spec get_non_clashing_entry_name_from( any_path() ) -> any_path().
 get_non_clashing_entry_name_from( Path ) ->
 
 	% Ex:
@@ -3198,8 +3366,8 @@ get_non_clashing_entry_name_from( Path ) ->
 
 
 
-% Appends, at the end of the first specified file, the content of the second
-% specified one: concatenates the second with the first one.
+% @doc Appends, at the end of the first specified file, the content of the
+% second specified one: concatenates the second with the first one.
 %
 -spec append_file( file_name(), file_name() ) -> void().
 append_file( TargetFilename, ToAppendFilename ) ->
@@ -3225,7 +3393,7 @@ append_file( TargetFilename, ToAppendFilename ) ->
 
 
 
-% Lists all known permission types, as {Perm,Mask} pairs.
+% @doc Lists all known permission types, as {Perm,Mask} pairs.
 -spec list_permission_pairs() -> [ { permission(), permission_mask() } ].
 list_permission_pairs() ->
 	[ { owner_read,    8#00400 },
@@ -3245,7 +3413,7 @@ list_permission_pairs() ->
 
 
 
-% Encodes the specified symbolic permission(s) into its/their low-level
+% @doc Encodes the specified symbolic permission(s) into its/their low-level
 % counterpart mask(s).
 %
 -spec to_permission_mask( permission() | [ permission() ] ) ->
@@ -3276,7 +3444,7 @@ to_permission_mask( PermAtom, PermPairs ) ->
 
 
 
-% Decodes the specified permission mask into a list of the corresponding
+% @doc Decodes the specified permission mask into a list of the corresponding
 % permissions.
 %
 -spec from_permission_mask( permission_mask() ) -> [ permission() ].
@@ -3309,7 +3477,7 @@ from_permission_mask( _PermPairs=[ { Perm, PermMask } | T ], Mask, AccPerms ) ->
 
 
 
-% Returns the (UNIX) permissions associated to specified filesystem entry.
+% @doc Returns the (UNIX) permissions associated to specified filesystem entry.
 -spec get_permissions_of( any_path() ) -> [ permission() ].
 get_permissions_of( EntryPath ) ->
 
@@ -3325,7 +3493,7 @@ get_permissions_of( EntryPath ) ->
 
 
 
-% Changes the permissions ("chmod") of specified filesystem element.
+% @doc Changes the permissions ("chmod") of specified filesystem element.
 %
 % Note: erases any prior permissions, i.e. if specifying [other_read] then a
 % corresponding file will end up with (exactly) a -------r-- permission.
@@ -3351,7 +3519,7 @@ change_permissions( Path, NewPermissions ) ->
 
 
 
-% Tells whether the specified path is an absolute one.
+% @doc Tells whether the specified path is an absolute one.
 %
 % A path is deemed absolute iff it starts with "/".
 %
@@ -3381,7 +3549,7 @@ is_absolute_path( AnyPath ) ->
 
 
 
-% Returns an absolute, normalised path corresponding to specified path.
+% @doc Returns an absolute, normalised path corresponding to specified path.
 %
 % Returns a string of the same type as the specified one.
 %
@@ -3410,9 +3578,9 @@ ensure_path_is_absolute( Path ) ->
 
 
 
-% Returns an absolute, normalised path corresponding to the specified target
-% path, using base path as root directory (this must be an absolute path) if the
-% target path is not absolute.
+% @doc Returns an absolute, normalised path corresponding to the specified
+% target path, using base path as root directory (this must be an absolute path)
+% if the target path is not absolute.
 %
 % Returns a plain string iff both specified ones are plain, otherwise returns a
 % binary.
@@ -3458,8 +3626,8 @@ ensure_path_is_absolute( TargetPath, BasePath ) ->
 
 
 
-% Normalises specified path (canonicalises it), by translating it so that no
-% intermediate, superfluous '.' or '..' is present afterwards.
+% @doc Normalises specified path (canonicalises it), by translating it so that
+% no intermediate, superfluous '.' or '..' is present afterwards.
 %
 % For example, "/home/garfield/../lisa/./src/.././tube" shall be normalised in
 % "/home/lisa/tube".
@@ -3571,7 +3739,7 @@ filter_elems_bin( _ElemList=[ E | T ], Acc ) ->
 
 
 
-% Returns a version of the specified path that is relative to the current
+% @doc Returns a version of the specified path that is relative to the current
 % directory; returns the same type (plain or binary string) as the one of the
 % specified path.
 %
@@ -3581,7 +3749,7 @@ make_relative( Path ) ->
 
 
 
-% Returns a version of the first specified path that is relative to the
+% @doc Returns a version of the first specified path that is relative to the
 % specified second reference directory; returns the same type (plain or binary
 % string) as the one of the first specified path.
 %
@@ -3667,9 +3835,9 @@ make_relative_binary( PathElems, RefPathElems ) ->
 
 
 
-% Returns a pair made of the longest path common to all specified directory
-% paths, and the corresponding suffixes, i.e. an (unordered) list of the input
-% paths (as binaries) once the common prefix elements have been removed.
+% @doc Returns a pair made of the longest path common to all specified directory
+% paths, and the corresponding suffixes, that is an (unordered) list of the
+% input paths (as binaries) once the common prefix elements have been removed.
 %
 % Note: operates per-directory (as a whole), not per-character.
 %
@@ -3786,8 +3954,53 @@ try_behead_with( _Elem, _Others, _Acc ) ->
 
 
 
+% @doc Returns a pair made of the shortest ending paths that allows to
+% discriminate between the specified paths (expected to be of the same string
+% type).
+%
+% Ex: get_shortest_unique_ending_paths( "/aa/bb/foo/bar/hello.txt",
+%                                       "/tmp/buzz/frob/aa/foo/bar/hello.txt")
+%      returns: {"bb/foo/bar/hello.txt", "aa/foo/bar/hello.txt"}
+%
+-spec get_shortest_unique_ending_paths( any_path(), any_path() ) ->
+												{ any_path(), any_path() }.
+get_shortest_unique_ending_paths( Path, Path ) ->
+	throw( { same_path, Path } );
 
-% Tells whether specified basename (ex: a pathless filename) is among the
+get_shortest_unique_ending_paths( FirstPath, SecondPath ) ->
+
+	FirstElems = lists:reverse( filename:split( FirstPath ) ),
+	SecondElems = lists:reverse( filename:split( SecondPath ) ),
+
+	get_shorted_ending_helper( FirstElems, SecondElems, _Acc=[] ).
+
+
+% Can newer happen by design (checked first to be different):
+%get_shorted_ending_helper( _FirstElems=[], _SecondElems=[], Acc ) ->
+get_shorted_ending_helper( _FirstElems=[], _SecondElems=[ S | _T ],
+								Acc ) ->
+	RevPath = join( Acc ),
+	{ RevPath, join( S, RevPath ) };
+
+get_shorted_ending_helper( _FirstElems=[ S | _T ], _SecondElems=[], Acc ) ->
+	RevPath = join( Acc ),
+	{ join( S, RevPath ), RevPath };
+
+% Same element:
+get_shorted_ending_helper( _FirstElems=[ H | TF ], _SecondElems=[ H | TS ],
+						   Acc ) ->
+	get_shorted_ending_helper( TF, TS, [ H | Acc ] );
+
+% Different:
+get_shorted_ending_helper( _FirstElems=[ HF | _TF ], _SecondElems=[ HS | _TS ],
+						   Acc ) ->
+	RevPath = join( Acc ),
+	{ join( HF, RevPath ),  join( HS, RevPath ) }.
+
+
+
+
+% @doc Tells whether specified basename (ex: a pathless filename) is among the
 % specified list of full paths; returns either false or the first full path
 % found corresponding to that leaf element.
 %
@@ -3813,13 +4026,14 @@ is_leaf_among( LeafName, _PathList=[ Path | T ] ) ->
 
 
 
-% Updates specified file with specified keywords, i.e. copies the original file
-% into a target, updated one (supposedly non-already existing), in which all the
-% specified keywords (the keys of the translation table) have been replaced with
-% their associated value (i.e. the value in table corresponding to that key).
+% @doc Updates specified file with specified keywords, that is copies the
+% original file into a target, updated one (supposedly non-already existing), in
+% which all the specified keywords (the keys of the translation table) have been
+% replaced with their associated value (i.e. the value in table corresponding to
+% that key).
 %
 % Ex: file_utils:update_with_keywords( "original.txt", "updated.txt", table:new(
-%  [ {"hello", "goodbye"}, {"Blue", "Red"} ] ).
+%  [{"hello", "goodbye"}, {"Blue", "Red"}]).
 %
 % Note that the resulting file will be written with no additional encoding.
 %
@@ -3831,14 +4045,14 @@ update_with_keywords( OriginalFilePath, TargetFilePath, TranslationTable ) ->
 
 
 
-% Updates specified file with specified keywords, i.e. copies the original file
-% into a target, updated one (supposedly non-already existing; and with the
-% specified encoding), in which all the specified keywords (the keys of the
-% translation table) have been replaced with their associated value (i.e. the
-% value in table corresponding to that key).
+% @doc Updates specified file with specified keywords, that is copies the
+% original file into a target, updated one (supposedly non-already existing; and
+% with the specified encoding), in which all the specified keywords (the keys of
+% the translation table) have been replaced with their associated value
+% (i.e. the value in table corresponding to that key).
 %
 % Ex: file_utils:update_with_keywords( "original.txt", "updated.txt", table:new(
-%  [ { "hello", "goodbye" }, { "Blue", "Red" } ] ).
+%  [{"hello", "goodbye" }, {"Blue", "Red"}]).
 %
 -spec update_with_keywords( any_file_path(), any_file_path(),
 		text_utils:translation_table(), system_utils:encoding_options() ) ->
@@ -3869,7 +4083,7 @@ update_with_keywords( OriginalFilePath, TargetFilePath, TranslationTable,
 
 
 
-% Converts specified path (full filename, like '/home/jack/test.txt' or
+% @doc Converts specified path (full filename, like '/home/jack/test.txt' or
 % './media/test.txt') into a variable name licit in most programming languages
 % (ex: C/C++).
 %
@@ -3885,7 +4099,11 @@ path_to_variable_name( Filename ) ->
 	path_to_variable_name( Filename, "File_" ).
 
 
-% (helper)
+% @doc Converts specified path (full filename, like '/home/jack/test.txt' or
+% './media/test.txt') into a variable name licit in most programming languages
+% (ex: C/C++), based on specified prefix.
+%
+%
 % Removes any leading './'.
 -spec path_to_variable_name( path(), ustring() ) -> ustring().
 path_to_variable_name( [ $.,$/ | T ], Prefix ) ->
@@ -3910,8 +4128,8 @@ convert( Filename, Prefix ) ->
 
 
 
-% Removes all upper levels of a path (absolute or not), as well as the extension
-% of the resulting file name.
+% @doc Removes all upper levels of a path (absolute or not), as well as the
+% extension of the resulting file name.
 %
 % Ex: "foobar" =
 %           file_utils:remove_upper_levels_and_extension( "aa/bb/foobar.txt" ).
@@ -3934,8 +4152,7 @@ remove_upper_levels_and_extension( FilePath ) ->
 
 
 
-
-% Returns a list of the known file extensions that refer to image files.
+% @doc Returns a list of the known file extensions that refer to image files.
 -spec get_image_extensions() -> [ extension() ].
 get_image_extensions() ->
 	% TIFF, TGA and al deemed deprecated:
@@ -3946,14 +4163,14 @@ get_image_extensions() ->
 -define(ResourceDir,"resources").
 
 
-% Returns the image path corresponding to the specified file.
+% @doc Returns the image path corresponding to the specified file.
 -spec get_image_file_png( file_name() ) -> path().
 get_image_file_png( Image ) ->
   filename:join( [ ?ResourceDir, "images", Image ++ ".png"] ).
 
 
 
-% Returns the image path corresponding to the specified file.
+% @doc Returns the image path corresponding to the specified file.
 -spec get_image_file_gif( file_name() ) -> path().
 get_image_file_gif( Image ) ->
   filename:join( [ ?ResourceDir, "images", Image ++ ".gif"] ).
@@ -3964,8 +4181,8 @@ get_image_file_gif( Image ) ->
 % I/O section.
 
 
-% Returns the default recommended encoding, for example when needing to open a
-% file for writing.
+% @doc Returns the default recommended encoding, for example when needing to
+% open a file for writing.
 %
 % See the notes above in the 'Regarding encodings and Unicode' section, notably
 % about the consequences of specifying an encoding at file opening (generally
@@ -3976,7 +4193,7 @@ get_default_encoding() ->
 	system_utils:get_default_encoding().
 
 
-% Returns the default recommended option encoding option, for example when
+% @doc Returns the default recommended option encoding option, for example when
 % needing to open a file for writing - should such an option be used.
 %
 % See the notes above in the 'Regarding encodings and Unicode' section, notably
@@ -3990,10 +4207,10 @@ get_default_encoding_option() ->
 
 
 
-% Opens the file corresponding to the specified filename, with specified list of
-% options (as listed for file:open/2 in
-% http://erlang.org/doc/man/file.html#open-2, i.e. read, write, append,
-% exclusive, raw, etc.).
+% @doc Opens the file corresponding to the specified filename, with specified
+% list of options (as listed for file:open/2 in
+% [http://erlang.org/doc/man/file.html#open-2], that is read, write, append,
+% exclusive, raw, etc).
 %
 % See read_terms/1 if planning to read that content as terms later, notably with
 % regard to encoding.
@@ -4031,9 +4248,9 @@ open( Filename, Options ) ->
 
 
 
-% Opens the file corresponding to specified filename (first parameter) with
+% @doc Opens the file corresponding to specified filename (first parameter) with
 % specified list of options (second parameter; refer to file:open/2 for detailed
-% documentation, see http://erlang.org/doc/man/file.html#open-2).
+% documentation, see [http://erlang.org/doc/man/file.html#open-2]).
 %
 % Third parameter is the "attempt mode", either 'try_once', 'try_endlessly' or
 % 'try_endlessly_safer', depending respectively on whether we want to try to
@@ -4136,7 +4353,7 @@ open( Filename, Options, _AttemptMode=try_endlessly ) ->
 open( Filename, Options, _AttemptMode=try_once ) ->
 
 	%trace_utils:debug_fmt( "Opening '~ts' once, with the ~w options, "
-	%	"from '~ts'.", [ Filename, Options, get_current_directory() ] ),
+	%   "from '~ts'.", [ Filename, Options, get_current_directory() ] ),
 
 	case file:open( Filename, Options ) of
 
@@ -4200,7 +4417,7 @@ get_access_denied_info( Filename ) ->
 
 
 
-% Closes specified file reference.
+% @doc Closes specified file reference.
 %
 % Throws an exception on failure.
 %
@@ -4210,7 +4427,7 @@ close( File ) ->
 
 
 
-% Closes specified file reference.
+% @doc Closes specified file reference.
 %
 % Throws an exception on failure or not, depending on specified failure mode.
 %
@@ -4232,7 +4449,7 @@ close( File, _FailureMode=overcome_failure ) ->
 
 
 
-% Reads specified number of bytes/characters from the specified file.
+% @doc Reads specified number of bytes/characters from the specified file.
 %
 % Returns either { ok, Data } if at least some data could be read, or eof if at
 % least one element was to read and end of file was reached before anything at
@@ -4259,7 +4476,7 @@ read( File, Count ) ->
 
 
 
-% Writes specified byte-oriented content in the specified file.
+% @doc Writes specified byte-oriented content in the specified file.
 %
 % Operates on files opened in raw mode (only way to do so), or not (works for
 % normal mode as well).
@@ -4288,7 +4505,7 @@ write( File, Content ) ->
 
 
 
-% Writes specified Unicode string in the specified file.
+% @doc Writes specified Unicode string in the specified file.
 %
 % Operates on files opened in raw mode (only way to do so), or not (works for
 % normal mode as well).
@@ -4322,7 +4539,7 @@ write_ustring( File, Str ) ->
 
 
 
-% Writes specified formatted content in the specified file.
+% @doc Writes specified formatted content in the specified file.
 %
 % Throws an exception on failure.
 %
@@ -4333,9 +4550,9 @@ write_ustring( File, FormatString, Values ) ->
 
 
 
-% Reads the content of the specified file, based on its filename specified as
-% any kind of string (plain, binary, atom, etc.), and returns the corresponding
-% binary, or throws an exception on failure.
+% @doc Reads the content of the specified file, based on its filename specified
+% as any kind of string (plain, binary, atom, etc), and returns the
+% corresponding binary, or throws an exception on failure.
 %
 % See also: read_terms/1 to read directly Erlang terms.
 %
@@ -4360,8 +4577,8 @@ read_whole( Filename ) ->
 
 
 
-% Writes the specified content in specified file, whose filename is specified as
-% any kind of string, using the default encoding.
+% @doc Writes the specified content in specified file, whose filename is
+% specified as any kind of string, using the default encoding.
 %
 % Throws an exception on failure.
 %
@@ -4378,8 +4595,8 @@ write_whole( Filename, Content ) ->
 
 
 
-% Writes the specified content in specified file, whose filename is specified as
-% any kind of string, using the specified encoding for writing.
+% @doc Writes the specified content in specified file, whose filename is
+% specified as any kind of string, using the specified encoding for writing.
 %
 % Note that no transparent encoding is expected to be specified through modes,
 % as this function performs (through text_utils:string_to_binary/1) such
@@ -4429,7 +4646,7 @@ write_whole( Filename, BinaryContent, Modes ) ->
 
 
 
-% Reads specified file, tries to parse a list of terms from it (as
+% @doc Reads specified file, tries to parse a list of terms from it (as
 % file:consult/1 does), and returns it.
 %
 % If expecting to read UTF-8 content from a file, it should:
@@ -4468,7 +4685,8 @@ read_terms( Filename ) ->
 
 
 
-% Writes specified terms into specified file, with no specific header or footer.
+% @doc Writes specified terms into specified file, with no specific header or
+% footer.
 %
 % Heavily inspired from Joe Armstrong's lib_misc:unconsult/2.
 %
@@ -4478,7 +4696,8 @@ write_terms( Terms, Filename ) ->
 
 
 
-% Writes specified terms into specified file, with specified header and footer.
+% @doc Writes specified terms into specified file, with specified header and
+% footer.
 %
 % Heavily inspired from Joe Armstrong's lib_misc:unconsult/2.
 %
@@ -4514,7 +4733,7 @@ write_terms( Terms, Header, Footer, Filename ) ->
 
 
 
-% Writes directly specified terms into specified already opened file.
+% @doc Writes directly specified terms into specified already opened file.
 %
 % Heavily inspired from Joe Armstrong's lib_misc:unconsult/2.
 %
@@ -4527,7 +4746,7 @@ write_direct_terms( File, Terms ) ->
 % Compression-related operations.
 
 
-% Returns the file extension corresponding to filenames compressed with
+% @doc Returns the file extension corresponding to filenames compressed with
 % specified format.
 %
 -spec get_extension_for( compression_format() ) -> extension().
@@ -4542,8 +4761,8 @@ get_extension_for( _CompressionFormat=xz ) ->
 
 
 
-% Compresses specified file: creates a new, compressed version thereof (using
-% the most efficient, compacity-wise, compression tool available), whose
+% @doc Compresses specified file: creates a new, compressed version thereof
+% (using the most efficient, compacity-wise, compression tool available), whose
 % filename, established based on usual conventions, is returned. If a file with
 % that name already exists, it will be overwritten.
 %
@@ -4562,9 +4781,9 @@ compress( Filename ) ->
 
 
 
-% Compresses specified file: creates a new, compressed version thereof, whose
-% filename, established based on usual conventions, is returned. If a file with
-% that name already exists, it will be overwritten.
+% @doc Compresses specified file: creates a new, compressed version thereof,
+% whose filename, established based on usual conventions, is returned. If a file
+% with that name already exists, it will be overwritten.
 %
 % For example, compress( "hello.png", zip ) will generate a "hello.png.zip"
 % file.
@@ -4647,7 +4866,7 @@ compress( _Filename, CompressionFormat ) ->
 
 
 
-% Decompresses specified compressed file, expected to bear the extension
+% @doc Decompresses specified compressed file, expected to bear the extension
 % corresponding to the implicit, most compact format: recreates the original,
 % decompressed version thereof, whose filename, established based on usual
 % conventions, is returned: the name of the input file without its extension.
@@ -4672,7 +4891,7 @@ decompress( Filename ) ->
 
 
 
-% Decompresses specified compressed file, expected to bear the extension
+% @doc Decompresses specified compressed file, expected to bear the extension
 % corresponding to the specified format: recreates the original, decompressed
 % version thereof, whose filename, established based on usual conventions, is
 % returned: the name of the input file without its extension.
@@ -4781,8 +5000,8 @@ decompress( _Filename, CompressionFormat ) ->
 
 
 
-% Reads in memory the file specified from its filename, zips the corresponding
-% term, and returns it, as a compressed binary.
+% @doc Reads in memory the file specified from its filename, zips the
+% corresponding term, and returns it, as a compressed binary.
 %
 % Note: useful for network transfers of small files.
 %
@@ -4803,8 +5022,8 @@ file_to_zipped_term( Filename ) ->
 
 
 
-% Reads specified binary, extracts the zipped file in it and writes it on disk,
-% in current directory.
+% @doc Reads specified binary, extracts the zipped file in it and writes it on
+% disk, in current directory.
 %
 % Returns the filename of the unzipped file.
 %
@@ -4816,8 +5035,8 @@ zipped_term_to_unzipped_file( ZippedTerm ) ->
 
 
 
-% Reads specified binary, extracts the zipped file in it and writes it on disk,
-% in current directory, under specified filename instead of under filename
+% @doc Reads specified binary, extracts the zipped file in it and writes it on
+% disk, in current directory, under specified filename instead of under filename
 % stored in the zip archive.
 %
 % Any pre-existing file will be overwritten.
@@ -4837,8 +5056,8 @@ zipped_term_to_unzipped_file( ZippedTerm, TargetFilename ) ->
 
 
 
-% Reads in memory the files specified from their filenames (as plain strings),
-% zips the corresponding term, and returns it.
+% @doc Reads in memory the files specified from their filenames (as plain
+% strings), zips the corresponding term, and returns it.
 %
 % Note: useful for network transfers of small files.
 %
@@ -4858,9 +5077,9 @@ files_to_zipped_term( FilenameList ) ->
 
 
 
-% Reads in memory the files specified from their filenames (as plain strings),
-% assuming their path is relative to the specified base directory, zips the
-% corresponding term, and returns it.
+% @doc Reads in memory the files specified from their filenames (as plain
+% strings), assuming their path is relative to the specified base directory,
+% zips the corresponding term, and returns it.
 %
 % Note: useful for network transfers of small files.
 %
@@ -4909,8 +5128,8 @@ files_to_zipped_term( FilenameList, BaseDirectory ) ->
 
 
 
-% Reads specified binary, extracts the zipped files stored in it and writes them
-% on disk, in current directory.
+% @doc Reads specified binary, extracts the zipped files stored in it and writes
+% them on disk, in current directory.
 %
 % Returns the list of filenames corresponding to the unzipped files.
 %
@@ -4922,8 +5141,8 @@ zipped_term_to_unzipped_files( ZippedTerm ) ->
 
 
 
-% Reads specified binary, extracts the zipped files in it and writes them on
-% disk, in specified directory.
+% @doc Reads specified binary, extracts the zipped files in it and writes them
+% on disk, in specified directory.
 %
 % Returns the list of filenames corresponding to the unzipped files.
 %

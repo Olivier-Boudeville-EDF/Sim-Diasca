@@ -20,6 +20,7 @@
 % Creation date: Friday, June 7, 2019.
 
 
+% @doc Overall (singleton) manager of web-based interactions.
 -module(class_WebManager).
 
 
@@ -39,8 +40,8 @@
 -type probe_info() :: class_ResultManager:probe_info().
 
 
-% Table storing the known (web) probes:
 -type probe_table() :: table( probe_pid(), probe_info() ).
+% Table storing the known (web) probes.
 
 
 -export_type([ manager_pid/0, probe_table/0 ]).
@@ -151,6 +152,7 @@
 -type tcp_port() :: net_utils:tcp_port().
 
 
+
 % Implementation notes:
 %
 % Some probes are web-based; most of them will rely, among other elements, on
@@ -185,7 +187,7 @@
 
 
 
-% Creates the web manager.
+% @doc Creates the web manager.
 %
 % Construction parameters are:
 %
@@ -213,7 +215,7 @@ construct( State, SII, EngineRootDir, InteractivityMode, ServerContentRoot,
 
 
 
-% Creates the web manager.
+% @doc Creates the web manager.
 %
 % Construction parameters are:
 %
@@ -279,19 +281,19 @@ construct( State, SII, EngineRootDir, InteractivityMode, ServerContentRoot,
 	% No more webserver needed:
 
 	%_CfgFilename = generate_webserver_configuration_file( SII,
-	%	  NewServerInstallRoot, NewServerContentRoot, TCPPort, CreatedState ),
+	%    NewServerInstallRoot, NewServerContentRoot, TCPPort, CreatedState ),
 
 	%start_webserver( NewServerInstallRoot, NewServerContentRoot,
 	%				 CfgFilename, CreatedState ),
 
-	?send_debug_fmt( CreatedState, "Created ~s",
+	?send_debug_fmt( CreatedState, "Created ~ts",
 					 [ to_string( CreatedState ) ] ),
 
 	CreatedState.
 
 
 
-% Overridden destructor.
+% @doc Overridden destructor.
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -311,13 +313,13 @@ destruct( State ) ->
 
 
 
-% Declares a new web probe.
+% @doc Declares a new web probe.
 -spec declareWebProbe( wooper:state(), bin_probe_name(), wooper:classname(),
 					   maybe( bin_directory_path() ) ) ->
 										request_return( 'web_probe_declared' ).
 declareWebProbe( State, BinProbeName, WebProbeClassname, MaybeBinProbeDir ) ->
 
-	?debug_fmt( "Declaring web probe '~s' of class '~s'.",
+	?debug_fmt( "Declaring web probe '~ts' of class '~ts'.",
 				[ BinProbeName, WebProbeClassname ] ),
 
 	ProbeTable = ?getAttr(probe_table),
@@ -378,8 +380,8 @@ declareWebProbe( State, BinProbeName, WebProbeClassname, MaybeBinProbeDir ) ->
 
 
 
-% Callback triggered by the result manager, as the web manager is a listener
-% thereof.
+% @doc Callback triggered by the result manager, as the web manager is a
+% listener thereof.
 %
 -spec results_collected( wooper:state(), bin_directory_path() ) ->
 								oneway_return().
@@ -391,7 +393,7 @@ results_collected( State, ResultBaseDirName ) ->
 	%
 	?getAttr(result_manager_pid) ! { getBaseProbeInfos, [], self() },
 
-	?debug_fmt( "Notified that results were collected, in '~s'.",
+	?debug_fmt( "Notified that results were collected, in '~ts'.",
 				[ ResultBaseDirName ] ),
 
 	BrowserPath = executable_utils:get_default_web_browser_path(),
@@ -415,11 +417,11 @@ results_collected( State, ResultBaseDirName ) ->
 			ok;
 
 		interactive ->
-			Command = text_utils:format( "~s file://~s",
+			Command = text_utils:format( "~ts file://~ts",
 										 [ BrowserPath, LandingFilePath ] ),
 
 			?debug_fmt( "In interactive mode, thus launching a browser pointing"
-						" to the landing page: '~s'.", [ Command ] ),
+						" to the landing page: '~ts'.", [ Command ] ),
 
 			system_utils:run_background_command( Command )
 
@@ -429,10 +431,11 @@ results_collected( State, ResultBaseDirName ) ->
 
 
 
+
 % Static methods.
 
 
-% Initializes synchronously (typically from the simulation case) the web
+% @doc Initializes synchronously (typically from the simulation case) the web
 % management service, using the specified SII and directories, respectively as
 % the root directory of the engine, as webserver content root and as webserver
 % installation root, and the specified TCP port.
@@ -449,7 +452,7 @@ create_manager( SII, EngineRootDir, InteractivityMode, WebserverContentRoot,
 
 
 
-% Returns the atom corresponding to the name the  web manager should be
+% @doc Returns the atom corresponding to the name the web manager should be
 % registered as.
 %
 -spec get_registration_name() -> static_return( net_utils:atom_node_name() ).
@@ -458,7 +461,9 @@ get_registration_name() ->
 
 
 
-% Returns the web content root corresponding to specified base result directory.
+% @doc Returns the web content root corresponding to specified base result
+% directory.
+%
 -spec get_web_content_root( directory_path() ) ->
 									static_return( directory_path() ).
 get_web_content_root( ResultDir ) ->
@@ -472,8 +477,8 @@ get_web_content_root( ResultDir ) ->
 % Helper functions.
 
 
-% Checks the settings assigned to this manager (and performs some side effects
-% like the creation of directories).
+% @doc Checks the settings assigned to this manager (and performs some side
+% effects like the creation of directories).
 %
 -spec check_settings( directory_path(), maybe( directory_path() ),
 					  maybe( tcp_port() ), wooper:state() ) ->
@@ -507,25 +512,25 @@ check_settings( ServerContentRoot, _MaybeServerInstallRoot, MaybeTCPPort,
 	%	undefined ->
 	%		InstDir = get_default_webserver_installation_root(),
 	%		?notice_fmt( "No user-defined webserver root directory specified, "
-	%				   "using the default one, '~s'.", [ InstDir ] ),
+	%					 "using the default one, '~ts'.", [ InstDir ] ),
 	%		InstDir;
 	%
 	%	InstRoot ->
 	%		?notice_fmt( "User-specified webserver root specified, "
-	%				   "using the default one, '~s'.", [ InstRoot ] ),
+	%					 "using the default one, '~ts'.", [ InstRoot ] ),
 	%		file_utils:ensure_path_is_absolute( InstRoot )
 	%
 	%end,
 
 	%CheckedServerInstallRoot = case file_utils:is_existing_directory_or_link(
-	%							  ServerInstallRoot ) of
+	%								ServerInstallRoot ) of
 	%
 	%	true ->
 	%		text_utils:string_to_binary( ServerInstallRoot );
 	%
 	%	false ->
 	%		?error_fmt( "The specified root directory of the webserver "
-	%				"install, '~s', does not exist.", [ ServerInstallRoot ] ),
+	%				"install, '~ts', does not exist.", [ ServerInstallRoot ] ),
 	%		throw( { non_existing_webserver_install_root, ServerInstallRoot } )
 	%
 	%end,
@@ -539,7 +544,7 @@ check_settings( ServerContentRoot, _MaybeServerInstallRoot, MaybeTCPPort,
 
 		true ->
 			?error_fmt( "The root directory of the webserver content, "
-				"'~s', already exists (transformed from ~s).",
+				"'~ts', already exists (transformed from ~ts).",
 				[ CanonServerContentRoot, ServerContentRoot ] ),
 
 			throw( { already_existing_webserver_content_root,
@@ -556,7 +561,7 @@ check_settings( ServerContentRoot, _MaybeServerInstallRoot, MaybeTCPPort,
 
 
 
-% Checks that no pending local (web)server is lingering at the TCP port we
+% @doc Checks that no pending local (web)server is lingering at the TCP port we
 % target, to ensure that a next launch is possible.
 %
 -spec check_no_pending_webserver( tcp_port(), wooper:state() ) -> void().
@@ -577,7 +582,7 @@ check_no_pending_webserver( TCPPort, State ) ->
 
 
 
-% Returns the default root directory of the webserver installation.
+% @doc Returns the default root directory of the webserver installation.
 -spec get_default_webserver_installation_root() -> directory_path().
 get_default_webserver_installation_root() ->
 
@@ -587,14 +592,18 @@ get_default_webserver_installation_root() ->
 
 
 
-% Generates a new, suitable Node.js configuration file.
+% @doc Generates a new, suitable Node.js configuration file.
+%
+% As mentioned, depending on the probes, running such a node may or may not be
+% necessary.
+%
 -spec generate_webserver_configuration_file( sim_diasca:sii(),
 		bin_directory_path(), bin_directory_path(),
 		tcp_port(), wooper:state() ) -> bin_file_path().
 generate_webserver_configuration_file( SII, BinServerInstallRoot,
 									   BinServerContentRoot, TCPPort, State ) ->
 
-	TargetFilename = text_utils:format( "sim-diasca-~s-server.js", [ SII ] ),
+	TargetFilename = text_utils:format( "sim-diasca-~ts-server.js", [ SII ] ),
 
 	TargetFilePath = file_utils:join( BinServerInstallRoot, TargetFilename ),
 
@@ -603,12 +612,12 @@ generate_webserver_configuration_file( SII, BinServerInstallRoot,
 
 		true ->
 
-			BackupName = text_utils:format( "~s-~s", [ TargetFilePath,
+			BackupName = text_utils:format( "~ts-~ts", [ TargetFilePath,
 							 time_utils:get_textual_timestamp_for_path() ] ),
 
 			?warning_fmt( "A Node.js configuration file has been found already "
-				"existing, '~s'; moving it out of the way by "
-				"renaming it to '~s'.", [ TargetFilePath, BackupName ] ),
+				"existing, '~ts'; moving it out of the way by "
+				"renaming it to '~ts'.", [ TargetFilePath, BackupName ] ),
 
 			file_utils:rename( TargetFilePath, BackupName );
 
@@ -621,17 +630,17 @@ generate_webserver_configuration_file( SII, BinServerInstallRoot,
 	NewCfgFile = file_utils:open( TargetFilePath, [ write, raw ] ),
 
 	file_utils:write_ustring( NewCfgFile,
-		"// Generated by Sim-Diasca on ~s.~n"
+		"// Generated by Sim-Diasca on ~ts.~n"
 		"const express = require('express');~n"
 		"const app = new express();~n"
-		"app.use(express.static('~s'));~n"
+		"app.use(express.static('~ts'));~n"
 		"app.listen(~B);~n"
 		"// End of generated file.~n",
 		[ time_utils:get_textual_timestamp(), BinServerContentRoot, TCPPort ] ),
 
 	file_utils:close( NewCfgFile ),
 
-	?notice_fmt( "New configuration file '~s' written.", [ TargetFilePath ] ),
+	?notice_fmt( "New configuration file '~ts' written.", [ TargetFilePath ] ),
 
 	TargetFilePath.
 
@@ -639,8 +648,8 @@ generate_webserver_configuration_file( SII, BinServerInstallRoot,
 
 
 
-% Generates a landing page (index.html) at the root of the specified web content
-% directory, and returns its path.
+% @doc Generates a landing page (index.html) at the root of the specified web
+% content directory, and returns its path.
 %
 % Any pre-existing version of that page will be removed first.
 %
@@ -649,8 +658,8 @@ generate_webserver_configuration_file( SII, BinServerInstallRoot,
 generate_landing_page( BasicProbeInfos, WebProbeInfos, Metadata, State ) ->
 
 	?debug_fmt( "Generating landing page for:~n  - basic probes: ~p~n"
-				"  - web probes: ~p~n(metadata: ~p)",
-				[ BasicProbeInfos, WebProbeInfos, Metadata ] ),
+		"  - web probes: ~p~n(metadata: ~p)",
+		[ BasicProbeInfos, WebProbeInfos, Metadata ] ),
 
 	BinServerContentRoot = ?getAttr(webserver_content_root),
 
@@ -662,7 +671,7 @@ generate_landing_page( BasicProbeInfos, WebProbeInfos, Metadata, State ) ->
 	file_utils:copy_file_in( CssFilename, BinServerContentRoot ),
 
 	LogoFilename = file_utils:join(
-					 [ CommonDir, "edf-related", ?logo_filename ] ),
+						[ CommonDir, "edf-related", ?logo_filename ] ),
 
 	file_utils:copy_file_in( LogoFilename, BinServerContentRoot ),
 
@@ -673,7 +682,7 @@ generate_landing_page( BasicProbeInfos, WebProbeInfos, Metadata, State ) ->
 
 		true ->
 			% Quite surprising:
-			?warning_fmt( "Removing a former version of '~s'.",
+			?warning_fmt( "Removing a former version of '~ts'.",
 						  [ LandingFilename ] ),
 			file_utils:remove_file( LandingFilename );
 
@@ -682,7 +691,7 @@ generate_landing_page( BasicProbeInfos, WebProbeInfos, Metadata, State ) ->
 
 	end,
 
-	?debug_fmt( "Generating following landing page: '~s'.",
+	?debug_fmt( "Generating following landing page: '~ts'.",
 				[ LandingFilename ] ),
 
 	% Do not *ever* add 'raw' here, otherwise encoding might be screwed up:
@@ -743,8 +752,8 @@ generate_landing_page( BasicProbeInfos, WebProbeInfos, Metadata, State ) ->
 
 
 
-% Manages the termination of every registered, initialized support class, by
-% calling any appropriate class-level callbacks.
+% @doc Manages the termination of every registered, initialised support class,
+% by calling any appropriate class-level callbacks.
 %
 -spec manage_support_termination( wooper:state() ) -> wooper:state().
 manage_support_termination( State ) ->
@@ -762,8 +771,8 @@ manage_support_termination( State ) ->
 
 		  true ->
 			  true = Mod:Fun( ?getAttr(engine_root_dir),
-					   ?getAttr(webserver_install_root),
-					   ?getAttr(webserver_content_root) );
+						?getAttr(webserver_install_root),
+						?getAttr(webserver_content_root) );
 
 		  false ->
 			  ok
@@ -771,7 +780,7 @@ manage_support_termination( State ) ->
 	  end || Classname <- SupportClassnamesToTerminate ],
 
 	NewSupportTable = table:add_entries( [ { Classname, _IsInit=false }
-		  || Classname <- SupportClassnamesToTerminate ], SupportTable ),
+			|| Classname <- SupportClassnamesToTerminate ], SupportTable ),
 
 	setAttribute( State, support_table, NewSupportTable ).
 
@@ -784,12 +793,12 @@ write_header( SII, Metadata, File ) ->
 
 	SimString = list_table:get_value( simulation_name, Metadata ),
 
-	RunString = text_utils:format( "run ID: ~s", [ SII ] ),
+	RunString = text_utils:format( "run ID: ~ts", [ SII ] ),
 
-	TimeString = text_utils:format( "collection timestamp: ~s",
+	TimeString = text_utils:format( "collection timestamp: ~ts",
 									[ time_utils:get_textual_timestamp() ] ),
 
-	HostString = text_utils:format( "user host: ~s",
+	HostString = text_utils:format( "user host: ~ts",
 									[ net_utils:localhost() ] ),
 
 	TickString = list_table:get_value( tick_duration, Metadata ),
@@ -802,7 +811,7 @@ write_header( SII, Metadata, File ) ->
 	  "<!DOCTYPE html>~n"
 	  "<html>~n"
 	  "  <head>~n"
-	  "    <title>Simulation Results for run ~s</title>~n"
+	  "    <title>Simulation Results for run ~ts</title>~n"
 	  "    <meta charset=\"UTF-8\">~n"
 	  "    <meta name=\"description\" content=\"Sim-Diasca Web Results\">~n"
 	  "    <meta name=\"keywords\" content=\"HTML,CSS,XML,JavaScript\">~n"
@@ -814,7 +823,7 @@ write_header( SII, Metadata, File ) ->
 	  "  <body>~n"
 	  "    <h1>Welcome to the Sim-Diasca web results browser "
 	  "for simulation run ~s</h1>~n"
-	  "<blockquote><p><b>Simulation information</b>:~n~s</p></blockquote>~n",
+	  "<blockquote><p><b>Simulation information</b>:~n~ts</p></blockquote>~n",
 	  [ SII, SII, MetadataString ] ).
 
 
@@ -828,7 +837,7 @@ write_toc( _BasicProbeNames, _WebProbeNames, _File ) ->
 % Single probe here:
 write_web_probes( [ WebProbeInfo ], BinServerContentRoot, File ) ->
 	file_utils:write_ustring( File, "<a name=\"web_probes\"></a>~n"
-		"<p>A single web probe enabled: ~s</p>~n",
+		"<p>A single web probe enabled: ~ts</p>~n",
 		[ get_probe_link( WebProbeInfo, BinServerContentRoot ) ] );
 
 write_web_probes( WebProbeInfos, BinServerContentRoot, File ) ->
@@ -837,18 +846,20 @@ write_web_probes( WebProbeInfos, BinServerContentRoot, File ) ->
 				   || I <- WebProbeInfos ],
 
 	file_utils:write_ustring( File, "<a name=\"web_probes\"></a>~n"
-		"<p>~B web probes enabled:~n~s</p>~n",
+		"<p>~B web probes enabled:~n~ts</p>~n",
 		[ length( WebProbeInfos ),
 		  web_utils:get_unordered_list( ProbeLinks ) ] ).
 
 
+
+% @doc Returns an HTML link (if possible) for specified probe.
 
 % Must be a tracked (non-facility) *web* probe, whose result location is a
 % priori known:
 %
 get_probe_link( { BinProbeName, _MaybeBinProbeDir=undefined },
 				_BinServerContentRoot ) ->
-	text_utils:format( "<a href=\"~s\">~s</a>", [
+	text_utils:format( "<a href=\"~s\">~ts</a>", [
 		file_utils:join( [ "..", "simulation-results",
 					class_WebProbe:get_filename_for( BinProbeName ) ] ),
 		BinProbeName ] );
@@ -862,7 +873,7 @@ get_probe_link( { BinProbeName, BinProbeDir }, BinServerContentRoot ) ->
 		text_utils:binary_to_string( BinServerContentRoot ) ),
 
 	% We do our best to rely on relative links:
-	text_utils:format( "<a href=\"~s\">~s</a>", [
+	text_utils:format( "<a href=\"~ts\">~s</a>", [
 		file_utils:join( RelativeDir,
 						 class_WebProbe:get_filename_for( BinProbeName ) ),
 		BinProbeName ] ).
@@ -876,7 +887,7 @@ write_basic_probes( _BasicProbeInfos=[ { ProbeName, _BinDirPath } ],
 	ProbeLink = get_html_link_for( ProbeName, BinServerContentRoot ),
 
 	file_utils:write_ustring( File, "<a name=\"basic_probes\"></a>~n<p>"
-		"A single basic probe enabled: ~s</p>~n", [ ProbeLink ] );
+		"A single basic probe enabled: ~ts</p>~n", [ ProbeLink ] );
 
 
 % At least two of them:
@@ -886,13 +897,13 @@ write_basic_probes( BasicProbeInfos, BinServerContentRoot, File ) ->
 				   || { PName, _BinDirPath } <- BasicProbeInfos ],
 
 	file_utils:write_ustring( File,
-	  "<a name=\"basic_probes\"></a>~n<p>~B basic probes enabled: ~s</p>~n",
+	  "<a name=\"basic_probes\"></a>~n<p>~B basic probes enabled: ~ts</p>~n",
 	  [ length( BasicProbeInfos ),
 		web_utils:get_unordered_list( ProbeLinks ) ] ).
 
 
 
-% Returns an HTML link (if possible) for specified basic probe.
+% @doc Returns an HTML link (if possible) for specified basic probe.
 -spec get_html_link_for( bin_probe_name(), bin_directory_path() ) -> ustring().
 get_html_link_for( BinProbeName, BinServerContentRoot ) ->
 
@@ -901,7 +912,7 @@ get_html_link_for( BinProbeName, BinServerContentRoot ) ->
 							text_utils:binary_to_string( BinProbeName ) ) ] ),
 
 	%trace_utils:debug_fmt( "Searching for '~s' from '~s'.",
-	%	[ ProbeContentFilePath, file_utils:get_current_directory() ] ),
+	%   [ ProbeContentFilePath, file_utils:get_current_directory() ] ),
 
 	% Should a basic probe not receive any sample, no rendering thereof will be
 	% produced; so we do not want to generate an URL that is actually a dead
@@ -910,11 +921,11 @@ get_html_link_for( BinProbeName, BinServerContentRoot ) ->
 	case file_utils:is_existing_file( ProbeContentFilePath ) of
 
 		true ->
-			text_utils:format( "<a href=\"~s\">~s</a>",
+			text_utils:format( "<a href=\"~ts\">~ts</a>",
 							   [ ProbeContentFilePath, BinProbeName ] );
 
 		false ->
-			text_utils:format( "(no available report for: <em>~s</em>)",
+			text_utils:format( "(no available report for: <em>~ts</em>)",
 							   [ BinProbeName ] )
 
 	end.
@@ -939,8 +950,8 @@ write_footer( File ) ->
 
 
 
-% Starts the corresponding webserver, with specified configuration file, with
-% the current user.
+% @doc Starts the corresponding webserver, with specified configuration file,
+% with the current user.
 %
 -spec start_webserver( directory_path(), directory_path(), file_path(),
 					   wooper:state() ) -> void().
@@ -953,7 +964,7 @@ start_webserver( ServerInstallRoot, _ServerContentRoot, ConfigFilename,
 	NodePath = case executable_utils:lookup_executable( WebExec ) of
 
 		false ->
-			?error_fmt( "No executable '~s' found (is Node.js installed?).",
+			?error_fmt( "No executable '~ts' found (is Node.js installed?).",
 						[ WebExec ] ),
 			throw( { webserver_executable_not_found, WebExec } );
 
@@ -993,7 +1004,7 @@ start_webserver( ServerInstallRoot, _ServerContentRoot, ConfigFilename,
 
 
 
-% Returns a textual representation of this instance.
+% @doc Returns a textual representation of this instance.
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
@@ -1004,11 +1015,11 @@ to_string( State ) ->
 
 		[ { SupportClassname, IsInit } ] ->
 			text_utils:format(
-			  "having initialized (to ~w) a single support class: ~s",
+			  "having initialized (to ~w) a single support class: ~ts",
 			  [ IsInit, SupportClassname ] );
 
 		SupportClasses ->
-			text_utils:format( "having initialized ~B support classes: ~s",
+			text_utils:format( "having initialized ~B support classes: ~ts",
 			  [ length( SupportClasses ), table:to_string( SupportClasses ) ] )
 
 	end,
@@ -1019,14 +1030,14 @@ to_string( State ) ->
 			"no web probe";
 
 		ProbeInfos ->
-			text_utils:format( "~B web probe(s): ~s", [ length( ProbeInfos ),
+			text_utils:format( "~B web probe(s): ~ts", [ length( ProbeInfos ),
 				text_utils:strings_to_string(
 						[ Name || { Name, _Dir } <- ProbeInfos ] ) ] )
 
 	end,
 
-	text_utils:format( "web manager, whose content root is '~s' "
-		"(webserver installation root is '~s', TCP port is ~B), "
-		"~s, referencing ~s",
+	text_utils:format( "web manager, whose content root is '~ts' "
+		"(webserver installation root is '~ts', TCP port is ~B), "
+		"~ts, referencing ~ts",
 		[ ?getAttr(webserver_content_root), ?getAttr(webserver_install_root),
 		  ?getAttr(tcp_port), SupportString, ProbeString ] ).

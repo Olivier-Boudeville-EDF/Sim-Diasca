@@ -26,8 +26,8 @@
 % Creation date: July 1, 2007.
 
 
-% This module gathers all the code that allows to lighten the trace macros for
-% tests.
+% @doc This module gathers all the code that allows to <b>lighten the trace
+% macros for (Myriad) applications</b>.
 %
 -module(traces_for_tests).
 
@@ -62,6 +62,8 @@
 
 
 
+% @doc Starts the specified test.
+%
 % To be called from the counterpart macro.
 %
 % The trace supervisor can be requested to be initialized now or not at all, or
@@ -93,7 +95,7 @@ test_start( ModuleName, InitTraceSupervisor ) ->
 	TestIsBatch = executable_utils:is_batch(),
 
 	%trace_utils:debug_fmt( "At test_start/2: TestIsBatch=~ts, "
-	%	"InitTraceSupervisor=~ts.", [ TestIsBatch, InitTraceSupervisor ] ),
+	%   "InitTraceSupervisor=~ts.", [ TestIsBatch, InitTraceSupervisor ] ),
 
 	TraceFilename = traces:get_trace_filename( ModuleName ),
 
@@ -141,6 +143,8 @@ test_start( ModuleName, InitTraceSupervisor ) ->
 
 
 
+% @doc Stops the specified test, waiting for the trace supervisor if requested.
+%
 % To be called from the counterpart macro.
 -spec test_stop( module_name(), aggregator_pid(), boolean() ) -> no_return().
 test_stop( ModuleName, TraceAggregatorPid, WaitForTraceSupervisor ) ->
@@ -167,7 +171,11 @@ test_stop( ModuleName, TraceAggregatorPid, WaitForTraceSupervisor ) ->
 
 
 
+% @doc Stops specified test immediately, not waiting for any trace supervisor,
+% stopping the trace aggregator, and finishing on the shell.
+%
 % To be called from the counterpart macro.
+%
 -spec test_immediate_stop( module_name(), aggregator_pid() ) -> no_return().
 test_immediate_stop( ModuleName, TraceAggregatorPid ) ->
 
@@ -181,6 +189,9 @@ test_immediate_stop( ModuleName, TraceAggregatorPid ) ->
 
 
 
+% @doc Stops specified test, stopping the trace aggregator and finishing on the
+% shell.
+%
 % To be called from the counterpart macro, directly or not.
 -spec test_stop_on_shell( module_name(), aggregator_pid() ) -> no_return().
 test_stop_on_shell( ModuleName, TraceAggregatorPid ) ->

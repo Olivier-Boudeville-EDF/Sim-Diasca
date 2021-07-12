@@ -25,7 +25,7 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 
 
-% Module containing some introspection-related facilities.
+% Module containing some <b>introspection-related</b> facilities.
 -module(wooper_introspection).
 
 
@@ -35,8 +35,8 @@
 -include("wooper_info.hrl").
 
 
-% Returns the list of the names of the class-specific attributes of specified
-% class, in their declaration order.
+% @doc Returns the list of the names of the class-specific attributes of
+% specified class, in their declaration order.
 %
 -spec get_class_specific_attribute_names( wooper:classname() ) ->
 												[ wooper:attribute_name() ].

@@ -53,8 +53,7 @@ construct( State ) ->
 
 
 
-% Request test.
-%
+% @doc The request defined to trigger a test.
 -spec test( wooper:state() ) -> request_return( 'test_ok' ).
 test( State ) ->
 

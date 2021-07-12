@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2021 Olivier Boudeville
+% Copyright (C) 2007-2021 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -139,9 +139,9 @@
 
 
 
-% Helper function to write receive clauses in tests which cannot interfere with
-% trace supervision, as a test may also receive trace control message the test
-% code should remain unware of.
+% @doc Helper function to add receive clauses (for undiscriminated messages) in
+% tests so that they cannot interfere with trace supervision, as a test may also
+% receive trace control message that the test code should remain unware of.
 %
 % Returns the received value.
 %
@@ -164,8 +164,9 @@ test_receive() ->
 
 
 
-% Helper function to write receive clauses for specific messages in tests while
-% not interfering with trace supervision.
+% @doc Helper function to add receive clauses (of specific messages) in tests so
+% that they cannot interfere with trace supervision, as a test may also receive
+% trace control message that the test code should remain unware of.
 %
 -spec test_receive( any() ) -> void().
 test_receive( Message ) ->
@@ -181,7 +182,7 @@ test_receive( Message ) ->
 
 
 
-% Handles a test failure, using specified string as advertised reason.
+% @doc Handles a test failure, using specified string as advertised reason.
 -spec test_failed( text_utils:ustring() ) -> no_return().
 test_failed( Reason ) ->
 
@@ -202,9 +203,9 @@ test_failed( Reason ) ->
 
 
 
-% Handles a test failure, using specified first string as an advertised reason
-% with format characters (ex: '~w') and specified list as actual values to be
-% formatted.
+% @doc Handles a test failure, using specified first string as an advertised
+% reason with format characters (ex: '~w') and specified list as actual values
+% to be formatted.
 %
 -spec test_failed( text_utils:format_string(), text_utils:format_values() ) ->
 						no_return().

@@ -25,23 +25,28 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 
 
+
 % Describes a polygon, convex or not, simple or not.
-%
 -record( polygon, {
 
-		   % List of points:
-		   vertices = [] :: [ linear_2D:point() ],
 
-		   % Rendering information, if any, as an option list.
-		   %
-		   % Supported options:
-		   %   - edge_color :: gui_color:color_by_decimal()
-		   %   - fill_color :: gui_color:color_by_decimal()
-		   %
-		   rendering = [] :: option_list:option_list(),
+		% List of points:
+		vertices = [] :: [ linear_2D:point() ],
 
-		   % Bounding-box information:
-		   % (can be for example a circle or a right_cuboid)
-		   bounding_box = undefined :: maybe( bounding_box:bounding_box() )
+
+		% Rendering information, if any, as an option list.
+		%
+		% Supported options:
+		%   - edge_color :: gui_color:color_by_decimal()
+		%   - fill_color :: gui_color:color_by_decimal()
+		%
+		rendering = [] :: option_list:option_list(),
+
+
+		% Bounding-box information:
+		% (can be for example a circle or a right_cuboid)
+		%
+		bounding_box = undefined :: maybe( bounding_box:bounding_box() )
+
 
 }).

@@ -26,10 +26,10 @@
 % Creation date: Monday, February 15, 2010.
 
 
-% Gathering of various four dimensional linear facilities, mostly dealing with
-% homogeneous matrices for 3D.
+% @doc Gathering of various <b>four dimensional linear</b> facilities, mostly
+% dealing with homogeneous matrices for 3D.
 %
-% See linear_4D_test.erl for the corresponding test.
+% See `linear_4D_test.erl' for the corresponding test.
 %
 -module(linear_4D).
 
@@ -47,22 +47,20 @@
 
 
 % Shorthands:
-
 -type coordinate() :: linear:coordinate().
 -type factor() :: linear:factor().
 
 
+-type vector() :: { X :: coordinate(), Y :: coordinate(),
+					Z :: coordinate(), W :: coordinate() }.
 % A 4D vector, with floating-point coordinates.
 %
 % They are typically referenced as [X, Y, Z, W].
-%
--type vector() :: { coordinate(), coordinate(), coordinate(), coordinate() }.
 
 
 % Alias for 4x4 canonical matrices:
 -type mat4() :: #mat4{}.
 -type canonical_matrix() :: mat4().
-
 
 
 % Aliases for 4x4 compact matrices:
@@ -101,21 +99,22 @@
 % Implementation of vector-related operations.
 
 
-% Returns the null (4D) vector.
+% @doc Returns the null (4D) vector.
 -spec null_vector() -> vector().
 null_vector() ->
-	{ 0.0, 0.0, 0.0, 0.0 }.
+	%{ 0.0, 0.0, 0.0, 0.0 }.
+	{ 0, 0, 0, 0 }.
 
 
 
-% Adds the two specified (4D) vectors.
+% @doc Adds the two specified (4D) vectors.
 -spec add( vector(), vector() ) -> vector().
 add( _Va={Xa,Ya,Za,Wa}, _Vb={Xb,Yb,Zb,Wb} ) ->
 	{ Xa+Xb, Ya+Yb, Za+Zb, Wa+Wb }.
 
 
 
-% Adds the specified (non-empty) list of (4D) vectors.
+% @doc Adds the specified (non-empty) list of (4D) vectors.
 -spec add( [ vector() ] ) -> vector().
 add( _Vectors=[ V | T ] ) ->
 	add_vec_list( T, _Acc=V );
@@ -137,7 +136,7 @@ add_vec_list( _Vec=[ V | T ], AccV ) ->
 % Implementation of matrix-related operations.
 
 
-% Returns the null (4x4) matrix.
+% @doc Returns the null (4x4) matrix.
 -spec null_matrix() -> canonical_matrix().
 null_matrix() ->
 	#mat4{ m11=0.0, m12=0.0, m13=0.0, m14=0.0,
@@ -147,14 +146,14 @@ null_matrix() ->
 
 
 
-% Returns the identity (4x4) matrix.
+% @doc Returns the identity (4x4) matrix.
 -spec identity() -> matrix().
 identity() ->
 	identity_4.
 
 
 
-% Scales specified (4D) vector or matrix of specified factor.
+% @doc Scales specified (4D) vector or matrix of specified factor.
 -spec scale( vector(), factor() ) -> vector();
 		   ( matrix(), factor() ) -> matrix().
 scale( _V={X,Y,Z,W}, Factor ) ->
@@ -182,14 +181,19 @@ scale( identity_4, Factor ) ->
 
 
 
-% Returns the (4x4) matrix whose columns correspond to the specified 4 vectors:
+% @doc Returns the (4x4) matrix whose columns correspond to the specified 4
+% vectors.
+%
+% Returns thus:
+%  ```
 %  [ Va Vb Vc Vd ]
 %  [ |  |  |  |  ]
 %  [ |  |  |  |  ]
 %  [ |  |  |  |  ]
+%  '''
 %
--spec from_columns( vector(), vector(), vector(), vector() ) -> 
-						    canonical_matrix().
+-spec from_columns( vector(), vector(), vector(), vector() ) ->
+							canonical_matrix().
 from_columns( _Va={Xa,Ya,Za,Wa}, _Vb={Xb,Yb,Zb,Wb},
 			  _Vc={Xc,Yc,Zc,Wc}, _Vd={Xd,Yd,Zd,Wd} ) ->
 	#mat4{ m11=Xa, m12=Xb, m13=Xc, m14=Xd,
@@ -199,11 +203,16 @@ from_columns( _Va={Xa,Ya,Za,Wa}, _Vb={Xb,Yb,Zb,Wb},
 
 
 
-% Returns the (4x4) matrix whose columns correspond to the specified 4 vectors:
+% @doc Returns the (4x4) matrix whose columns correspond to the specified 4
+% vectors.
+%
+% Returns thus:
+%  ```
 % [ Va - - - ]
 % [ Vb - - - ]
 % [ Vc - - - ]
 % [ Vd - - - ]
+%  '''
 %
 -spec from_rows( vector(), vector(), vector(), vector() ) -> canonical_matrix().
 from_rows( _Va={Xa,Ya,Za,Wa}, _Vb={Xb,Yb,Zb,Wb},
@@ -215,8 +224,8 @@ from_rows( _Va={Xa,Ya,Za,Wa}, _Vb={Xb,Yb,Zb,Wb},
 
 
 
-% Returns the (4x4, canonical) matrix whose (16) coordinates are the specified
-% ones, specified rows after rows.
+% @doc Returns the (4x4, canonical) matrix whose (16) coordinates are the
+% specified ones, specified rows after rows.
 %
 -spec from_coordinates( coordinate(), coordinate(), coordinate(), coordinate(),
 						coordinate(), coordinate(), coordinate(), coordinate(),
@@ -232,8 +241,8 @@ from_coordinates( A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14,
 
 
 
-% Returns the (4x4, compact) matrix whose (12) coordinates are the specified
-% ones, specified rows after rows.
+% @doc Returns the (4x4, compact) matrix whose (12) coordinates are the
+% specified ones, specified rows after rows.
 %
 -spec from_coordinates( coordinate(), coordinate(), coordinate(), coordinate(),
 						coordinate(), coordinate(), coordinate(), coordinate(),
@@ -246,7 +255,7 @@ from_coordinates( A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12 ) ->
 
 
 
-% Returns the (4x4) compact matrix obtained from specified 3x3 matrix and
+% @doc Returns the (4x4) compact matrix obtained from specified 3x3 matrix and
 % vector.
 %
 -spec from_3D( linear_3D:matrix(), linear_3D:vector() ) -> compact_matrix().
@@ -259,7 +268,7 @@ from_3D( #mat3{ m11=M11, m12=M12, m13=M13,
 			   m31=M31, m32=M32, m33=M33, tz=Z }.
 
 
-% Returns the canonical form of specified (4x4) matrix.
+% @doc Returns the canonical form of specified (4x4) matrix.
 -spec to_canonical( matrix() ) -> canonical_matrix().
 to_canonical( #cpt_mat4{ m11=M11, m12=M12, m13=M13, tx=Tx,
 						 m21=M21, m22=M22, m23=M23, ty=Ty,
@@ -281,7 +290,7 @@ to_canonical( M ) when is_record( M, mat4 ) ->
 
 
 
-% Returns the compact form of specified (4x4) matrix.
+% @doc Returns the compact form of specified (4x4) matrix.
 %
 % Throws an exception if the specified matrix cannot be expressed as a compact
 % one.
@@ -320,7 +329,7 @@ to_compact( M ) when is_record( M, cpt_mat4 ) ->
 
 
 
-% Multiplies the first matrix by the second one: returns Mc = Ma.Mb.
+% @doc Multiplies the first matrix by the second one: returns Mc = Ma.Mb.
 -spec mult( matrix(), matrix() ) -> matrix().
 mult( identity_4, M ) ->
 	M;
@@ -459,7 +468,7 @@ mult( _Ma=#cpt_mat4{ m11=A11, m12=A12, m13=A13, tx=Ax,
 
 
 
-% Tells whether the two specified (4x4) matrices are equal.
+% @doc Tells whether the two specified (4x4) matrices are equal.
 -spec are_equal( matrix(), matrix() ) -> boolean().
 are_equal( _Ma=identity_4, _Mb=identity_4 ) ->
 	true;
@@ -522,7 +531,7 @@ are_equal( _Ma=identity_4, Mb ) ->
 
 
 
-% Returns a textual representation of specified (4x4) vector or matrix.
+% @doc Returns a textual representation of specified (4x4) vector or matrix.
 -spec to_string( vector() | matrix() ) -> text_utils:ustring().
 to_string( _Vector={X,Y,Z,W} ) ->
 	text_utils:format( "[ ~ts, ~ts, ~ts, ~ts ]",

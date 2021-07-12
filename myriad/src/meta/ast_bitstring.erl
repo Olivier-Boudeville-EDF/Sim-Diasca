@@ -27,22 +27,20 @@
 
 
 
-% Module in charge of handling bitstrings defined or used within an AST.
+% @doc Module in charge of handling <b>bitstrings defined or used within an
+% AST</b>.
 %
-% See http://erlang.org/doc/apps/erts/absform.html for more information.
+% See [http://erlang.org/doc/apps/erts/absform.html] for more information.
 %
 -module(ast_bitstring).
 
 
-
-% Element size in a bitstring.
-%
-% Actual size maybe be omitted:
-%
 -type maybe_size() :: 'default' | ast_expression:ast_integer_expression().
+% Element size in a bitstring. Actual size maybe be omitted.
 
 
-
+-type type_specifier() ::
+		type_utils:type_name() | { type_utils:type_name(), integer() }.
 % Bitstring Element Type Specifier.
 %
 % If TS is a type specifier A, where A is an atom, then Rep(TS) = A.
@@ -50,48 +48,40 @@
 % If TS is a type specifier A:Value, where A is an atom and Value is an integer,
 % then Rep(TS) = {A,Value}.
 %
-% Actual type maybe be omitted:
-%
--type type_specifier() ::
-		type_utils:type_name() | { type_utils:type_name(), integer() }.
+% Actual type maybe be omitted.
 
 
 
-% Type Specifier List (TSL).
-
-% "A type specifier list TSL for a bitstring element is a sequence of type
-% specifiers TS_1 - ... - TS_k, and Rep(TSL) = [Rep(TS_1), ..., Rep(TS_k)].
-%
 -type type_specifier_list() :: [ type_specifier() ].
-
-
-% Alias:
+% Type Specifier List (TSL).
 %
+% "A type specifier list TSL for a bitstring element is a sequence of type
+% specifiers TS_1 - ... - TS_k, and Rep(TSL) = [Rep(TS_1), ..., Rep(TS_k)]."
+
+
+
 -type tsl() :: type_specifier_list().
+% Alias.
 
 
-% An actual TSL may be omitted in some cases:
 -type maybe_type_specifier_list() :: tsl() | 'default'.
+% An actual TSL may be omitted in some cases.
 
 
+-type constructor( ContentType ) ::
+		{ 'bin', file_loc(), [ bin_element( ContentType ) ] }.
 % General form of a bitstring constructor, as a polymorphic type so that it can
-% be specialized for dedicated contexts (ex: in guards, expressions, etc.):
-%
--type constructor( ContentType ) :: { 'bin', line(),
-									  [ bin_element( ContentType ) ] }.
+% be specialized for dedicated contexts (ex: in guards, expressions, etc).
 
 
 
-
-% A binary element within a bitstring constructor:
-%
 -type bin_element() :: bin_element( ast_base:ast_element() ).
+% A binary element within a bitstring constructor.
 
 
-% A binary element within a bitstring constructor, with a specific content type:
-%
--type bin_element( ContentType ) :: { 'bin_element', ast_base:line(),
-					 ContentType, maybe_size(), maybe_type_specifier_list() }.
+-type bin_element( ContentType ) :: { 'bin_element', ast_base:file_loc(),
+					ContentType, maybe_size(), maybe_type_specifier_list() }.
+% A binary element within a bitstring constructor, with a specific content type.
 
 
 -type element_transform_fun() :: ast_transform:transform_fun( bin_element() ).
@@ -109,8 +99,7 @@
 
 
 % Shorthands:
-
--type line() :: ast_base:line().
+-type file_loc() :: ast_base:file_loc().
 -type ast_transforms() :: ast_transform:ast_transforms().
 
 
@@ -122,7 +111,7 @@
 
 
 
-% Transforms specified list of binary elements involved in a bitstring
+% @doc Transforms specified list of binary elements involved in a bitstring
 % expression.
 %
 % Note: finally common to patterns, expressions and guard expressions.
@@ -135,23 +124,23 @@ transform_bin_elements( BinElements, Transforms ) ?rec_guard ->
 	% expression can be found here.
 	%
 	%transform_bin_elements( BinElements, Transforms,
-	%				   fun ast_expression:transform_expression/2 ) .
+	%					fun ast_expression:transform_expression/2 ) .
 
 	lists:mapfoldl( fun transform_bin_element/2, _Acc0=Transforms,
 					_List=BinElements ).
 
 
 
-% Transforms specified binary element involved in a bitstring expression.
+% @doc Transforms specified binary element involved in a bitstring expression.
 %
 % Note: finally common to patterns, expressions and guard expressions.
 %
 % (corresponds to pattern_grp/1 in erl_id_trans)
 %
 -spec transform_bin_element( bin_element(), ast_transforms() ) ->
-								   { bin_element(), ast_transforms() }.
+									{ bin_element(), ast_transforms() }.
 transform_bin_element(
-  _BinElem={ 'bin_element', Line, Element, Size, TypeSpecifierList },
+  _BinElem={ 'bin_element', FileLoc, Element, Size, TypeSpecifierList },
   Transforms ) ?rec_guard ->
 
 	{ [ NewElement ], ElemTransforms } =
@@ -164,7 +153,7 @@ transform_bin_element(
 
 		_ ->
 			{ [ NewSizeElem ], NewSizeTransforms } =
-					   ast_expression:transform_expression( Size, ElemTransforms ),
+					ast_expression:transform_expression( Size, ElemTransforms ),
 			{ NewSizeElem, NewSizeTransforms }
 
 	end,
@@ -182,7 +171,7 @@ transform_bin_element(
 	end,
 
 	NewExpr =
-		{ 'bin_element', Line, NewElement, NewSize,	NewTypeSpecifierList },
+		{ 'bin_element', FileLoc, NewElement, NewSize, NewTypeSpecifierList },
 
 	{ NewExpr, TypeTransforms };
 
@@ -193,13 +182,13 @@ transform_bin_element( Unexpected, Transforms )
 
 
 
-% Transforms specified list of binary elements involved in a bitstring
+% @doc Transforms specified list of binary elements involved in a bitstring
 % expression, applying to each element the specified function to perform the
 % relevant transformations (that depends on the context; ex: if being in a
-% guard, in an expression, etc.).
+% guard, in an expression, etc).
 %
 -spec transform_bin_elements( [ bin_element() ], ast_transforms(),
-		  element_transform_fun() ) -> { [ bin_element() ], ast_transforms() }.
+		element_transform_fun() ) -> { [ bin_element() ], ast_transforms() }.
 
 transform_bin_elements( BinElements, Transforms, TransformFun ) ?rec_guard ->
 
@@ -213,7 +202,7 @@ transform_bin_elements( BinElements, Transforms, TransformFun ) ?rec_guard ->
 
 
 
-% Transforms specified binary element involved in a bitstring expression.
+% @doc Transforms specified binary element involved in a bitstring expression.
 %
 % Note: context-insensitive function, considering that any kind of expression
 % can be found here (ex: a guard test).
@@ -221,7 +210,7 @@ transform_bin_elements( BinElements, Transforms, TransformFun ) ?rec_guard ->
 -spec transform_bin_element( bin_element(), ast_transforms(),
 			element_transform_fun() ) -> { bin_element(), ast_transforms() }.
 transform_bin_element(
-  _BinElem={ 'bin_element', Line, Element, Size, TypeSpecifierList },
+  _BinElem={ 'bin_element', FileLoc, Element, Size, TypeSpecifierList },
   Transforms, TransformFun ) ?rec_guard ->
 
 	{ NewElement, ElemTransforms } = TransformFun( Element, Transforms ),
@@ -248,7 +237,7 @@ transform_bin_element(
 
 	end,
 
-	NewExpr = { 'bin_element', Line, NewElement, NewSize,
+	NewExpr = { 'bin_element', FileLoc, NewElement, NewSize,
 				NewTypeSpecifierList },
 
 	{ NewExpr, TypeTransforms };
@@ -262,8 +251,8 @@ transform_bin_element( Unexpected, Transforms, _TransformFun )
 
 
 
-% "A type specifier list TSL for a bitstring element is a sequence of type
-% specifiers TS_1 - ... - TS_k, and Rep(TSL) = [Rep(TS_1), ..., Rep(TS_k)].
+% @doc "A type specifier list TSL for a bitstring element is a sequence of type
+% specifiers TS_1 - ... - TS_k, and Rep(TSL) = [Rep(TS_1), ..., Rep(TS_k)]".
 %
 % If TS is a type specifier A, where A is an atom, then Rep(TS) = A.
 %
@@ -282,4 +271,4 @@ transform_type_specifier( TypeSpecifier={ A, Value }, Transforms )
 
 transform_type_specifier( Unexpected, _Transforms ) ->
 	ast_utils:raise_error(
-	  [ unexpected_bitstring_type_specifier, Unexpected ] ).
+		[ unexpected_bitstring_type_specifier, Unexpected ] ).

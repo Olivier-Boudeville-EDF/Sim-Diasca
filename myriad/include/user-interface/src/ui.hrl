@@ -25,8 +25,9 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 
 
-% Options to initialise a user interface:
 -type ui_options() :: [ any() ].
+% Options to initialise a user interface.
+
 
 -export_type([ ui_options/0 ]).
 
@@ -43,14 +44,15 @@
 -type binary_choice() :: 'yes' | 'no'.
 
 
-% For traces:
 -type message() :: text().
+% For traces.
 
 
-% The text of a choice:
 -type choice_text() :: text().
+% The text of a choice.
 
 
+-type choice_designator() :: term() | 'ui_cancel'.
 % Designator of a choice (ex: regardless of the choice labels, locales, etc.):
 %
 % (usually an atom, but possibly an integer or anything else)
@@ -59,12 +61,10 @@
 % among the user ones) that is the 'ui_cancel' atom, which is returned by a
 % backend whenever the user chose to cancel the operation rather than selecting
 % one of the available options.
-%
--type choice_designator() :: term() | 'ui_cancel'.
 
 
-% The index of a choice (starting at 1):
 -type choice_index() :: basic_utils:count().
+% The index of a choice (starting at 1).
 
 
 -type choice_element() :: { choice_designator(), choice_text() }.
@@ -86,29 +86,28 @@
 % behaviour will be retained).
 
 
-% The known per-setting keys:
 -type ui_setting_key() :: 'backtitle' | 'title'.
+% The known per-setting keys.
 
 
-% The setting-specific values:
 -type ui_setting_value() :: term().
+% The setting-specific values.
 
 
-% For setting-specific entries:
 -type ui_setting_entry() :: { ui_setting_key(), ui_setting_value() }.
+% For setting-specific entries.
 
 
-
-% Parameter keys that are common to all dialogs:
 -type common_entry() :: backtitle_entry() | title_entry().
+% Parameter keys that are common to all dialogs.
 
 
-% For back-titles:
 -type backtitle_entry() :: { 'backtitle', title() }.
+% For back-titles.
 
 
-% For (front) titles:
 -type title_entry() :: { 'title', title() }.
+% For (front) titles.
 
 
 
@@ -116,15 +115,16 @@
 -define( ui_table, list_table ).
 
 
-% A table storing UI settings (either top-level or backend-specific):
-%
 -type setting_table() :: ?ui_table:?ui_table( ui_setting_key(),
 											  ui_setting_value() ).
+% A table storing UI settings (either top-level or backend-specific).
+
 
 
 -export_type([ ui_setting_key/0, ui_setting_value/0, ui_setting_entry/0,
 			   common_entry/0, backtitle_entry/0, title_entry/0,
 			   setting_table/0 ]).
+
 
 
 % The key used by UI modules to store their name in the process dictionary:

@@ -1,11 +1,14 @@
 % Copyright (C) 2018-2021 Olivier Boudeville
 %
-% Transferred from generate-password.escript to benefit from a more
-% user-friendly debugging.
-%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 %
 % Released as LGPL software.
+%
+
+% @doc Actual module in charge of the Myriad <b>password generation</b>.
+%
+% Transferred from `generate-password.escript' in order to benefit from a more
+% user-friendly debugging.
 %
 -module(password_generation).
 
@@ -23,11 +26,13 @@
 -export([ generate_password/2 ]).
 
 
-% Typically for testing:
+
+% @doc Typically for testing.
 -spec run() -> void().
 run() ->
 	ArgTable = shell_utils:get_argument_table(),
 	main( ArgTable ).
+
 
 
 % Defaults:
@@ -38,6 +43,7 @@ run() ->
 -define( default_alphabet, "extended" ).
 
 
+% @doc Returns the usage information of the corresponding application.
 -spec get_usage() -> void().
 get_usage() ->
 	text_utils:format( "Usage: ~ts "
@@ -61,8 +67,8 @@ get_usage() ->
 
 
 
-% Sole entry point for this generation service, either triggered by run/0 or by
-% the associated escript.
+% @doc Sole entry point for this generation service, either triggered by `run/0'
+% or by the associated escript.
 %
 -spec main( shell_utils:argument_table() ) -> void().
 main( ArgTable ) ->
@@ -181,8 +187,7 @@ main( ArgTable ) ->
 	Alphabet = get_alphabet( AlphabetSpec ),
 
 	%trace_utils:debug_fmt( "Input alphabet corresponding to spec ~p: "
-	%					   "'~w' (i.e. '~ts').",
-	%					   [ AlphabetSpec, Alphabet, Alphabet ] ),
+	%	"'~w' (i.e. '~ts').", [ AlphabetSpec, Alphabet, Alphabet ] ),
 
 	Password = generate_password( Alphabet, Length ),
 
@@ -193,15 +198,15 @@ main( ArgTable ) ->
 
 
 
-% Displays the usage of this service, and stops (with no error).
+% @doc Displays the usage of this service, and stops (with no error).
 display_usage() ->
 	io:format( get_usage(), [] ),
 	basic_utils:stop( _ErrorCode=0 ).
 
 
 
-% Returns the corresponding alphabet, based on its spec, expressed as an atom
-% (ex: 'numeric' for all numeric literals) or as a list thereof.
+% @doc Returns the corresponding alphabet, based on its spec, expressed as an
+% atom (ex: 'numeric' for all numeric literals) or as a list thereof.
 %
 get_alphabet( AlphabetSpecs ) when is_list( AlphabetSpecs ) ->
 	list_utils:flatten_once( [ get_alphabet( A ) || A <- AlphabetSpecs ] );
@@ -233,7 +238,7 @@ get_alphabet( _AlphabetSpec=extra_punctuation ) ->
 
 
 
-% Generates a password of specified exact length, from specified alphabet.
+% @doc Generates a password of specified exact length, from specified alphabet.
 -spec generate_password( alphabet(), basic_utils:count() ) -> password().
 generate_password( Alphabet, CharCount ) ->
 
@@ -254,8 +259,10 @@ generate_helper( _CharCount=0, _Alphabet, _AlphaSize, Acc ) ->
 	Acc;
 
 generate_helper( CharCount, Alphabet, AlphaSize, Acc ) ->
+
 	NewCharIndex = random_utils:get_random_value( AlphaSize ),
 	NewChar = list_utils:get_element_at( Alphabet, NewCharIndex ),
+
 	%trace_utils:debug_fmt( "Drawn '~B' (~ts), at index #~B",
 	%					   [ NewChar, [ NewChar ], NewCharIndex ] ),
 

@@ -26,9 +26,9 @@
 % Creation date: Monday, February 15, 2010.
 
 
-% Gathering of various three dimensional linear facilities.
+% @doc Gathering of various <b>three dimensional linear</b> facilities.
 %
-% See linear_3D_test.erl for the corresponding test.
+% See `linear_3D_test.erl' for the corresponding test.
 %
 -module(linear_3D).
 
@@ -79,50 +79,48 @@
 % Section about points and vectors.
 
 
+-type point() :: { X :: coordinate(), Y :: coordinate(), Z :: coordinate() }.
 % A 3D vector, with floating-point coordinates.
 %
-% They are typically referenced as [ X, Y, Z ].
-%
--type point() :: { coordinate(), coordinate(), coordinate() }.
+% They are typically referenced as [X, Y, Z].
 
 
-% A 3D point, with integer coordinates.
-%
 -type integer_point() ::
-		{ integer_coordinate(), integer_coordinate(), integer_coordinate() }.
+		{ X :: integer_coordinate(), Y :: integer_coordinate(),
+		  Z :: integer_coordinate() }.
+% A 3D point, with integer coordinates.
+
 
 
 % Vectors could/should be aliased to points.
 
+-type vector() :: { V1 :: coordinate(), V2 :: coordinate(),
+					V3 :: coordinate() }.
+% A 3D vector, with floating-point coordinates.
 
-% A 3D vector, with floating-point coordinates:
--type vector() :: { coordinate(), coordinate(), coordinate() }.
 
-
-% A 3D unit vector, i.e. a vector of magnitude 1.0.
-%
-% For documentation purpose.
-%
 -type unit_vector() :: vector().
+% A 3D unit vector, ie a vector of magnitude 1.0.
+%
+% Defined for documentation purpose.
 
 
 % A 3D vector normal to a plane.
 %
-% For documentation purpose.
-%
+% Defined for documentation purpose.
 -type normal() :: vector().
 
 
+-type unit_normal() :: unit_vector().
 % A 3D unit vector normal to a plane.
 %
-% For documentation purpose.
-%
--type unit_normal() :: unit_vector().
+% Defined for documentation purpose.
 
 
-% 3D vector, with integer coordinates:
 -type integer_vector() ::
-		{ integer_coordinate(),	integer_coordinate(), integer_coordinate() }.
+		{ V1 :: integer_coordinate(), V2 :: integer_coordinate(),
+		  V3 :: integer_coordinate() }.
+% A 3D vector, with integer coordinates.
 
 
 -export_type([ point/0, integer_point/0,
@@ -134,12 +132,12 @@
 % Section about lines and planes.
 
 
+-type line() :: { A :: factor(), B :: factor(), C :: factor(), D :: factor() }.
 % A 3D line, whose equation A.x+B.y+C.z+D=0, can be defined from these four
 % factors {A,B,C,D}.
-%
--type line() :: { factor(), factor(), factor(), factor() }.
 
 
+-type plane() :: { normal(), factor() }.
 % A plane, whose general equation is: A.x + B.y + C.z + D = 0, where:
 %
 % - P=(x,y,z) is a point belonging to this plane
@@ -150,18 +148,15 @@
 %
 % - D= -A.x0 - B.y0 - C.z0
 %
-% See http://mathworld.wolfram.com/Plane.html
+% See [http://mathworld.wolfram.com/Plane.html].
 %
-% So a plane may be described as (N,D):
-%
--type plane() :: { normal(), factor() }.
+% So a plane may be described as (N,D).
 
 
+-type hessian_plane() :: { unit_normal(), factor() }.
 % A plane in Hessian normal form.
 %
-% See http://mathworld.wolfram.com/HessianNormalForm.html
-%
--type hessian_plane() :: { unit_normal(), factor() }.
+% See [http://mathworld.wolfram.com/HessianNormalForm.html].
 
 
 -export_type([ line/0, plane/0, hessian_plane/0 ]).
@@ -191,8 +186,8 @@
 % Section about shapes.
 
 
-% Various types of known 3D shapes (basic geometries):
 -type shape() :: 'sphere' | 'right_cuboid'.
+% Various types of known 3D shapes (basic geometries).
 
 
 -export_type([ shape/0 ]).
@@ -206,14 +201,14 @@
 % Point section.
 
 
-% Returns the origin of this referential.
+% @doc Returns the origin of this referential.
 -spec get_origin() -> point().
 get_origin() ->
 	{ 0, 0, 0 }.
 
 
 
-% Returns whether the two specified points are close, i.e. if they could be
+% @doc Returns whether the two specified points are close, ie if they could be
 % considered as representing the same point (equality operator on points).
 %
 -spec are_close( point(), point() ) -> boolean().
@@ -223,8 +218,8 @@ are_close( _P1={X1,Y1,Z1}, _P2={X2,Y2,Z2} ) ->
 
 
 
-% Tells whether point P is within a distance D from point C, using some margin
-% to overcome numerical errors.
+% @doc Tells whether point P is within a distance D from point C, using some
+% margin to overcome numerical errors.
 %
 -spec is_within( point(), point(), distance() ) -> boolean().
 is_within( P, C, D ) ->
@@ -233,14 +228,14 @@ is_within( P, C, D ) ->
 
 
 
-% Tells whether point P is within a square distance SquareD from point C.
+% @doc Tells whether point P is within a square distance SquareD from point C.
 -spec is_within_square( point(), point(), square_distance() ) -> boolean().
 is_within_square( P, C, SquareD ) ->
 	square_distance( P, C ) < SquareD.
 
 
 
-% Returns the square of the distance between the two specified points.
+% @doc Returns the square of the distance between the two specified points.
 %
 % For comparison purposes, computing the square root is useless.
 %
@@ -257,7 +252,7 @@ square_distance( {X1,Y1,Z1}, {X2,Y2,Z2} ) ->
 
 
 
-% Returns the distance between the two specified points.
+% @doc Returns the distance between the two specified points.
 %
 % Note: just for comparison purposes, computing the square root is useless.
 %
@@ -269,8 +264,8 @@ distance( P1, P2 ) ->
 
 
 
-% Returns the cross-product of the two specified vectors, i.e. the results of a
-% regular 3D cross product of the input vectors.
+% @doc Returns the cross-product of the two specified vectors, ie the results of
+% a regular 3D cross product of the input vectors.
 %
 -spec cross_product( vector(), vector() ) -> vector().
 cross_product( {X1,Y1,Z1}, {X2,Y2,Z2} ) ->
@@ -278,8 +273,7 @@ cross_product( {X1,Y1,Z1}, {X2,Y2,Z2} ) ->
 
 
 
-
-% Returns a point (or vector) whose coordinates have been rounded to the
+% @doc Returns a point (or vector) whose coordinates have been rounded to the
 % respective nearest integers.
 %
 -spec roundify( point() ) -> integer_point().
@@ -288,14 +282,14 @@ roundify( {X,Y,Z} ) ->
 
 
 
-% Returns a vertex corresponding the middle of the two specified vertices.
+% @doc Returns a vertex corresponding the middle of the two specified vertices.
 -spec get_center( point(), point() ) -> point().
 get_center( {X1,Y1,Z1}, {X2,Y2,Z2} ) ->
 	{ (X1+X2)/2, (Y1+Y2)/2, (Z1+Z2)/2 }.
 
 
 
-% Returns a vertex corresponding the middle of the two specified vertices,
+% @doc Returns a vertex corresponding the middle of the two specified vertices,
 % returned with integer coordinates.
 %
 -spec get_integer_center( point(), point() ) -> integer_point().
@@ -304,7 +298,7 @@ get_integer_center( P1, P2 ) ->
 
 
 
-% Returns a point corresponding to the specified point P translated by the
+% @doc Returns a point corresponding to the specified point P translated by the
 % specified vector V.
 %
 -spec translate( point(), vector() ) -> point().
@@ -320,34 +314,34 @@ translate( _P={X,Y,Z}, _V={Vx,Vy,Vz} ) ->
 % Vector section.
 
 
-% Returns a vector V made from the specified two points: V=P2-P1.
+% @doc Returns a vector V made from the specified two points: V=P2-P1.
 -spec vectorize( point(), point() ) -> vector().
 vectorize( _P1={X1,Y1,Z1}, _P2={X2,Y2,Z2} ) ->
 	{ X2-X1, Y2-Y1, Z2-Z1 }.
 
 
 
-% Returns the square of the magnitude of the specified vector.
+% @doc Returns the square of the magnitude of the specified vector.
 -spec square_magnitude( vector() ) -> square_distance().
 square_magnitude( _V={X,Y,Z} ) ->
 	X*X + Y*Y + Z*Z.
 
 
-% Returns the magnitude of the specified vector.
+% @doc Returns the magnitude of the specified vector.
 -spec magnitude( vector() ) -> distance().
 magnitude( V ) ->
 	math:sqrt( square_magnitude( V ) ).
 
 
-% Scales specified vector of specified factor.
-%
+% @doc Scales specified vector of specified factor.
 -spec scale( vector(), factor() ) -> vector().
 scale( _V={X,Y,Z}, Factor ) ->
 	{ Factor*X, Factor*Y, Factor*Z }.
 
 
-
-% Returns the specified vector with an unit length (whose magnitude is thus 1).
+% @doc Returns the specified vector with an unit length (whose magnitude is thus
+% 1).
+%
 -spec make_unit( vector() ) -> vector().
 make_unit( V ) ->
 	case magnitude( V ) of
@@ -362,21 +356,21 @@ make_unit( V ) ->
 
 
 
-% Returns the dot product of the two specified vectors: D = V1.V2.
+% @doc Returns the dot product of the two specified vectors: D = V1.V2.
 -spec dot_product( vector(), vector() ) -> float().
 dot_product( _V1={X1,Y1,Z1}, _V2={X2,Y2,Z2} ) ->
 	X1*X2 + Y1*Y2 + Z1*Z2.
 
 
 
-% Returns the sum of the two specified vectors: C = A + B.
+% @doc Returns the sum of the two specified vectors: C = A + B.
 -spec add( vector(), vector() ) -> vector().
 add( { X1, Y1, Z1 }, { X2, Y2, Z2 } ) ->
 	{ X1 + X2, Y1 + Y2, Z1 + Z2 }.
 
 
 
-% Returns the sum of all vectors in the specified list.
+% @doc Returns the sum of all vectors in the specified list.
 -spec add( [ vector() ] ) -> vector().
 add( Vectors ) ->
 
@@ -389,11 +383,10 @@ add( Vectors ) ->
 
 
 
-
 % Textual conversion section.
 
 
-% Returns a stringified representation of specified point or vector.
+% @doc Returns a stringified representation of specified point or vector.
 -spec to_string( point() | vector() ) -> ustring().
 to_string( { X, Y, Z } ) ->
 	io_lib:format( "{ ~w, ~w, ~w }", [ X, Y, Z ] ).

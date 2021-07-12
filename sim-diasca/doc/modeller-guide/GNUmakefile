@@ -15,6 +15,7 @@ all:
 
 full-doc: full-doc-local
 
+pdf: full-pdf
 
 # We need to rely on images generated in other layers (ex: mock-simulators):
 #

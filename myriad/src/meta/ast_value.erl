@@ -27,11 +27,11 @@
 
 
 
-% Module in charge of handling values defined within an AST, including atomic
-% literals.
+% @doc Module in charge of handling <b>values defined within an AST</b>,
+% including atomic literals.
 %
 % Refer to the "7.2 Atomic Literals" section of
-% http://erlang.org/doc/apps/erts/absform.html for more information.
+% [http://erlang.org/doc/apps/erts/absform.html for more information].
 %
 -module(ast_value).
 
@@ -39,31 +39,29 @@
 
 % "There are five kinds of atomic literals, which are represented in the same
 % way in patterns, expressions, and guards:
-%    If L is an atom literal, then Rep(L) = {atom,LINE,L}.
-%    If L is a character literal, then Rep(L) = {char,LINE,L}.
-%    If L is a float literal, then Rep(L) = {float,LINE,L}.
-%    If L is an integer literal, then Rep(L) = {integer,LINE,L}.
+%    If L is an atom literal, then Rep(L) = {atom, FILE_LOC, L}.
+%    If L is a character literal, then Rep(L) = {char, FILE_LOC, L}.
+%    If L is a float literal, then Rep(L) = {float, FILE_LOC, L}.
+%    If L is an integer literal, then Rep(L) = {integer, FILE_LOC, L}.
 %    If L is a string literal consisting of the characters C_1, ..., C_k, then
-%    Rep(L) = {string,LINE,[C_1, ..., C_k]}.
+%    Rep(L) = {string, FILE_LOC, [C_1, ..., C_k]}.
 %
 % Notice that negative integer and float literals do not occur as such; they are
 % parsed as an application of the unary negation operator."
 
 
-
-% The description of an immediate value (atomic literal) in an AST, with line
-% information.
+-type ast_atomic_literal() :: { 'atom',    file_loc(), atom() }
+							| { 'char',    file_loc(), char() }
+							| { 'float',   file_loc(), float() }
+							| { 'integer', file_loc(), integer() }
+							| { 'string',  file_loc(), ustring() }.
+% The description of an immediate value (atomic literal) in an AST, with in-file
+% location information (line/column).
 %
-% Ex: nil, in {nil,33} for [] at line #33.
-%
--type ast_atomic_literal() :: { 'atom',    line(), atom() }
-							| { 'char',    line(), char() }
-							| { 'float',   line(), float() }
-							| { 'integer', line(), integer() }
-							| { 'string',  line(), text_utils:ustring() }.
+% Ex: nil, in {nil,{33,2}} for [] at column 2 of line #33.
 
 
--type ast_compound_literal() :: { 'nil', line() }.
+-type ast_compound_literal() :: { 'nil', file_loc() }.
 
 -type ast_immediate_value() :: ast_atomic_literal() | ast_compound_literal().
 
@@ -93,40 +91,43 @@
 
 % Shorthands:
 
+-type ustring() :: text_utils:ustring().
+
 -type ast_element() :: ast_base:ast_element().
--type line() :: ast_base:line().
+-type file_loc() :: ast_base:file_loc().
 -type ast_transforms() :: ast_transform:ast_transforms().
 
 
 % For the ast_transforms record:
 -include("ast_transform.hrl").
 
-% For rec_guard-related defines:
+% For rec_guard-related and default_generation_location defines:
 -include("ast_utils.hrl").
 
 
 % Section for value transformation.
 
 
-% Transforms specified literal value, operating relevant AST transformations
-% onto it.
+% @doc Transforms specified literal value, operating relevant AST
+% transformations onto it.
 %
 -spec transform_value( ast_atomic_literal(), ast_transforms() ) ->
-							 { ast_atomic_literal(), ast_transforms() }.
-transform_value( Literal={ atom, _Line, _Atom }, Transforms ) ?rec_guard ->
+								{ ast_atomic_literal(), ast_transforms() }.
+transform_value( Literal={ atom, _FileLoc, _Atom }, Transforms ) ?rec_guard ->
 	{ Literal, Transforms };
 
-transform_value( Literal={ char, _Line, _Char }, Transforms ) ?rec_guard ->
+transform_value( Literal={ char, _FileLoc, _Char }, Transforms ) ?rec_guard ->
 	{ Literal, Transforms };
 
-transform_value( Literal={ float, _Line, _Float }, Transforms ) ?rec_guard ->
+transform_value( Literal={ float, _FileLoc, _Float }, Transforms ) ?rec_guard ->
 	{ Literal, Transforms };
 
-transform_value( Literal={ integer, _Line, _Integer },
+transform_value( Literal={ integer, _FileLoc, _Integer },
 				 Transforms ) ?rec_guard ->
 	{ Literal, Transforms };
 
-transform_value( Literal={ string, _Line, _String }, Transforms ) ?rec_guard ->
+transform_value( Literal={ string, _FileLoc, _String },
+				 Transforms ) ?rec_guard ->
 	{ Literal, Transforms };
 
 transform_value( UnexpectedLiteral, Transforms )
@@ -135,16 +136,16 @@ transform_value( UnexpectedLiteral, Transforms )
 
 
 
-% Returns the actual (immediate) value corresponding to the specified form
+% @doc Returns the actual (immediate) value corresponding to the specified form
 % (regardless of its actual type).
 %
-get_immediate_value( { atom, _Line, Atom } ) ->
+get_immediate_value( { atom, _FileLoc, Atom } ) ->
 	Atom;
 
-get_immediate_value( { integer, _Line, Integer } ) ->
+get_immediate_value( { integer, _FileLoc, Integer } ) ->
 	Integer;
 
-get_immediate_value( { float, _Line, Float } ) ->
+get_immediate_value( { float, _FileLoc, Float } ) ->
 	Float;
 
 get_immediate_value( Other ) ->
@@ -155,42 +156,42 @@ get_immediate_value( Other ) ->
 % Section for immediate value forging.
 
 
-% Returns an AST-compliant value designating specified boolean, defined at line
-% #0 of the current source file.
+% @doc Returns an AST-compliant value designating specified boolean, defined at
+% column 0 of line #0 of the current source file.
 %
-% Ex: forge_boolean_value(true) returns: {boolean,0,true}.
+% Ex: forge_boolean_value(true) returns: {boolean,{0,1},true}.
 %
 -spec forge_boolean_value( boolean() ) -> ast_element().
 forge_boolean_value( BooleanValue ) ->
-	forge_boolean_value( BooleanValue, _Line=0 ).
+	forge_boolean_value( BooleanValue, ?default_generation_location ).
 
 
-% Returns an AST-compliant value designating specified boolean, defined at
-% specified line of the current source file.
+% @doc Returns an AST-compliant value designating specified boolean, defined at
+% specified location of the current source file.
 %
-% Ex: forge_boolean_value(false, 43) returns: {boolean,43,false}.
+% Ex: forge_boolean_value(false, {43,1}) returns: {boolean, {43,1}, false}.
 %
--spec forge_boolean_value( boolean(), line() ) -> ast_element().
-forge_boolean_value( BooleanValue, Line ) ->
-	{ boolean, Line, BooleanValue }.
+-spec forge_boolean_value( boolean(), file_loc() ) -> ast_element().
+forge_boolean_value( BooleanValue, FileLoc ) ->
+	{ boolean, FileLoc, BooleanValue }.
 
 
 
-% Returns an AST-compliant value designating specified atom, defined at line #0
-% of the current source file.
+% @doc Returns an AST-compliant value designating specified atom, defined at
+% column 0 of line #0 of the current source file.
 %
-% Ex: forge_atom_value(basic_utils) returns: {atom,0,basic_utils}.
+% Ex: forge_atom_value(basic_utils) returns: {atom,{0,1},basic_utils}.
 %
 -spec forge_atom_value( atom() ) -> ast_element().
 forge_atom_value( AtomValue ) ->
-	forge_atom_value( AtomValue, _Line=0 ).
+	forge_atom_value( AtomValue, ?default_generation_location ).
 
 
-% Returns an AST-compliant value designating specified atom, defined at
-% specified line of the current source file.
+% @doc Returns an AST-compliant value designating specified atom, defined at
+% specified location of the current source file.
 %
-% Ex: forge_atom_value( basic_utils, 43 ) returns: {atom,43,basic_utils}.
+% Ex: forge_atom_value(basic_utils, {4,1}) returns: {atom,{4,1},basic_utils}.
 %
--spec forge_atom_value( atom(), line() ) -> ast_element().
-forge_atom_value( AtomValue, Line ) ->
-	{ atom, Line, AtomValue }.
+-spec forge_atom_value( atom(), file_loc() ) -> ast_element().
+forge_atom_value( AtomValue, FileLoc ) ->
+	{ atom, FileLoc, AtomValue }.

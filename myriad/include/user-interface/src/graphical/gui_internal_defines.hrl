@@ -49,7 +49,7 @@
 % A reference onto a GUI object, for the widgets that MyriadGUI added to the
 % backend at hand.
 %
-% Results in terms such as: { myriad_object_ref, canvas, CanvasPid }.
+% Results in terms such as: {myriad_object_ref, canvas, CanvasPid}.
 %
 -record( myriad_object_ref, {
 

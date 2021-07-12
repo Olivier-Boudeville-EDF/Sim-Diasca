@@ -25,7 +25,7 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 
 
-% Module to create WOOPER instance proxies.
+% @doc Module to create <b>WOOPER instance proxies</b>.
 -module(wooper_instance_proxy).
 
 
@@ -51,6 +51,9 @@
 -include_lib("myriad/include/spawn_utils.hrl").
 
 
+% @doc Starts a proxy for the specified WOOPER instance, designated by specified
+% PID.
+%
 -spec start( instance_pid() ) -> instance_pid().
 start( TargetInstancePid ) ->
 
@@ -63,6 +66,9 @@ start( TargetInstancePid ) ->
 
 
 
+% @doc Starts and links a proxy for the specified WOOPER instance, designated by
+% specified PID.
+%
 -spec start_link( pid() ) -> pid().
 start_link( TargetInstancePid ) ->
 
@@ -75,8 +81,7 @@ start_link( TargetInstancePid ) ->
 
 
 
-
-% Starts a proxy for specified WOOPER instance, designated by specified PID.
+% @doc Main loop of the proxy.
 proxy_main_loop( TargetInstancePid ) ->
 
 	trace_utils:debug_fmt(
@@ -97,8 +102,9 @@ proxy_main_loop( TargetInstancePid ) ->
 
 				R ->
 
-					trace_utils:debug_fmt( "Proxy ~w returning ~p to caller ~w.",
-										   [ self(), R, SenderPid ] ),
+					trace_utils:debug_fmt(
+					  "Proxy ~w returning ~p to caller ~w.",
+					  [ self(), R, SenderPid ] ),
 
 					SenderPid ! R
 

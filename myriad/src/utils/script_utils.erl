@@ -27,8 +27,8 @@
 
 
 
-% Gathering helper functions for the development and use of all kinds of scripts
-% (Erlang escripts and shell scripts alike).
+% @doc Gathering helper functions for the <b>development and use of all kinds of
+% scripts</b> (Erlang escripts and shell scripts alike).
 %
 % Intended use for escripts: add, in the script directory, a symbolic link to
 % this module so that the script can readily call it and thus bootstrap the use
@@ -54,8 +54,8 @@
 
 
 
-% Tells whether the currently running Erlang code is executed as an escript or
-% as a regular Erlang program.
+% @doc Tells whether the currently running Erlang code is executed as an escript
+% or as a regular Erlang program.
 %
 -spec is_running_as_escript() -> boolean().
 is_running_as_escript() ->
@@ -94,7 +94,7 @@ is_running_as_escript() ->
 % them).
 
 
-% Updates the VM code path so that all modules of the 'Myriad' layer can be
+% @doc Updates the VM code path so that all modules of the 'Myriad' layer can be
 % readily used from an escript.
 %
 % Note: this function and its helpers might be copied verbatim to the target
@@ -117,7 +117,7 @@ update_code_path_for_myriad() ->
 						  "user-interface/src/graphical", "utils" ],
 
 	MyriadBeamDirs = [ filename:join( MyriadSrcDir, D )
-						   || D <- MyriadBeamSubDirs ],
+							|| D <- MyriadBeamSubDirs ],
 
 	%trace_utils:debug_fmt( "'Myriad' beam dirs: ~p.", [ MyriadBeamDirs ] ),
 
@@ -125,8 +125,8 @@ update_code_path_for_myriad() ->
 
 
 
-% Returns the base directory of that script, i.e. where it is stored (regardless
-% of the possibly relative path whence it was launched).
+% @doc Returns the base directory of that script, that is where it is stored
+% (regardless of the possibly relative path whence it was launched).
 %
 % Note: useful to locate resources (ex: other modules) defined in link to that
 % script and needed by it.
@@ -223,7 +223,7 @@ get_myriad_path_from( [ Path | T ], BaseDirName ) ->
 
 
 
-% Returns the root directory of the Myriad layer.
+% @doc Returns the root directory of the Myriad layer.
 %
 % (note that a double path conversion between root and script directories can
 % hardly be avoided)
@@ -237,12 +237,15 @@ get_myriad_base_directory() ->
 	filename:join( [ get_script_base_directory(), "..", ".." ] ).
 
 
-% Returns the specified command-line arguments (simply transmitted as a list of
-% the corresponding strings, typically as directly obtained through the main/1
-% function of an escript) once transformed into our "canonical", more convenient
-% form, which is the same as the one used by
-% shell_utils:get_argument_table/0 and is itself similar to the one used by
-% Erlang for its user/system flags (i.e. for all its non-plain options).
+% @doc Returns a table allowing to manage the specified command-line arguments
+% more easily.
+%
+% These arguments are simply to be transmitted as a list of the corresponding
+% strings, typically as directly obtained through the main/1 function of an
+% escript) once transformed into our "canonical", more convenient form, which is
+% the same as the one used by shell_utils:get_argument_table/0 and is itself
+% similar to the one used by Erlang for its user/system flags (i.e. for all its
+% non-plain options).
 %
 % In this form, which by default is not available for escripts, options start
 % with a dash, may have any number of arguments, and may be specified more than
