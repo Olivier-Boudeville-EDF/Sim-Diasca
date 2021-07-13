@@ -36,7 +36,7 @@ jobs:
         #apt-get update
         echo "## Updating packages"
         apt-get update
-        apt-get install --assume-yes tree gnuplot-nox
+        apt-get install --assume-yes tree graphviz gnuplot-nox uuid-runtime unzip
         rebar3 compile
         echo " - building from: $(pwd)"
         echo " - content of parent directory: $(ls .. 2>/dev/null | tr '\n' ' ')"
@@ -46,7 +46,7 @@ jobs:
     - name: Run tests
       run: |
         echo "Building and testing all first in the 'development' execution target:"
-        make test NODE_NAMING="--sn"
+        make test NODE_NAMING="--nn"
         echo
         echo "Then building and testing all in the 'production' execution target:"
-        make test-production NODE_NAMING="--sn"
+        make test-production NODE_NAMING="--nn"
