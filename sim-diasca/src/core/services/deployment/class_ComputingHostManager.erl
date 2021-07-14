@@ -19,6 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Class in charge of <b>managing a computing host</b>, from the user node.
 -module(class_ComputingHostManager).
 
 
@@ -49,16 +50,16 @@
 		{ user_name, basic_utils:user_name(), "the name of the "
 		  "(operating-system) user with which we should connect to that host" },
 
-		{ node_name, string_node_name(),
-		  "the managed, short node name (ex: 'my_node'), i.e. it is not "
-		  "fully-qualified" },
+		{ hostless_node_name, string_node_name(),
+		  "the name of the managed node (ex: 'my_node'), with no host suffix" },
 
-		{ full_node_name, atom_node_name(),
-		  "the fully-qualified node name (ex: 'my_node@foo.org') to be used "
-		  "by other nodes in order to target the corresponding node" },
+		{ complete_node_name, atom_node_name(),
+		  "the complete name (ex: 'my_node@foo.org') of the manage node; "
+		  "to be used by other nodes in order to target it" },
 
 		{ node_naming_mode, net_utils:node_naming_mode(), "the node naming "
-		  "mode in use (i.e. short or long names)" },
+		  "mode in use (i.e. short or long names) on the local host, to be "
+		  "used also on the computing hosts" },
 
 		{ node_cleanup, union( 'false', file_utils:bin_script_path() ),
 		  "tells whether an initial clean-up of any previously existing node "
@@ -92,7 +93,7 @@
 
 		{ deployment_agent_monitor_ref, maybe( reference() ),
 		  "the monitoring reference (if any) towards the associated deployment "
-		   "agent" },
+		  "agent" },
 
 		{ deployed_node, maybe( atom_node_name() ),
 		  "the name of the deployed node, as an atom" },
@@ -117,7 +118,6 @@
 
 
 
-% The various reasons why a VM launch may fail:
 -type host_failure_reason() :: 'host_not_available'
 							 | 'deployment_time_out'
 							 | 'vm_detection_abnormal'
@@ -130,9 +130,12 @@
 							 | 'one_remote_vm_detected'
 							 | 'multiple_remote_vms_detected'
 							 | 'vm_remote_detection_failed'.
+% The various reasons why a VM launch may fail.
 
 
 -type host_manager_pid() :: sim_diasca:agent_pid().
+% PID of a computing host manager.
+
 
 -export_type([ host_failure_reason/0, host_manager_pid/0 ]).
 
@@ -219,15 +222,16 @@
 
 
 
-% Constructs a new manager for a given computing host, from following
-% parameters:
+% @doc Constructs a new manager for a given computing host.
+%
+% Construction parameters:
 %
 % - HostnameOptions={Hostname, Username}, Hostname being either the name (as a
 % plain string) of the remote computing host to manage, or the 'localhost' atom,
 % Username being the name of the user to rely on for that host
 %
 % - NodeOptions={NodeBaseName, NodeNamingNode, NodeCleanupWanted, NodeCookie,
-% NodeSchedulerCount}, a tuple made of:
+% NodeSchedulerCount}, a 5-tuple made of:
 %
 %  - NodeName, the base node name (a plain string, ex: "my_node"), without any
 %   host name
@@ -262,7 +266,7 @@
 %   fail
 %
 % - DeployOptions is a {DeploymentManagerPid, DeployTimeOut,
-% InterNodeTickTimeOut, AdditionalBEAMDirs} tuple, where:
+%   InterNodeTickTimeOut, AdditionalBEAMDirs} tuple, where:
 %
 %   - DeploymentManagerPid: the PID of the deployment manager, which created
 %   this manager, in order to be able to interact with it later
@@ -304,8 +308,8 @@ construct( State,
 		   _NetworkOptions={ EpmdPort, TCPPortRestriction, PingAllowed },
 
 		   _DeployOptions={ DeploymentManagerPid, DeployTimeOut,
-							InterNodeTickTimeOut, BinDeployBaseDir,
-							AdditionalBEAMBinDirs, SII } ) ->
+			   InterNodeTickTimeOut, BinDeployBaseDir,
+			   AdditionalBEAMBinDirs, SII } ) ->
 
 	{ MessageHostname, ActualHostname } = case Hostname of
 
@@ -315,12 +319,11 @@ construct( State,
 			% unresolvable values (see Sim-Diasca issues #3 and #4 for more
 			% information).
 			%
-			% So:
-			%LocalHostname = net_utils:localhost(),
+			% So instead of:
+			% LocalHostname = net_utils:localhost(),
 			% We reuse the actual host of this local node:
 			%
-			[ _ThisNodeName, LocalHostname ] = text_utils:split(
-				text_utils:atom_to_string( node() ), [ $@ ] ),
+			LocalHostname = net_utils:localhost_for_node_name(),
 
 			{ "the user host", LocalHostname };
 
@@ -330,8 +333,8 @@ construct( State,
 	end,
 
 	%trace_utils:debug_fmt( "Hostname as specified by the deployment manager: "
-	%					   "'~s', resulting in an actual hostname of '~s'.",
-	%					   [ Hostname, ActualHostname ] ),
+	%    "'~ts', resulting in an actual hostname of '~ts'.",
+	%    [ Hostname, ActualHostname ] ),
 
 	% First the direct mother classes:
 	%
@@ -349,40 +352,43 @@ construct( State,
 	% As it may explain many connection issues (we waited to be able to send
 	% traces):
 	%
-	case Hostname of
+	% (disabled, as above ActualHostname has been set to be correct by design)
+	%case Hostname of
 
-		localhost ->
+	%	localhost ->
 
-			case net_utils:localhost() of
+	%		case net_utils:localhost() of
 
-				ActualHostname ->
-					ok;
+	%			% Matching:
+	%			ActualHostname ->
+	%				ok;
 
-				OtherHostname ->
-					?send_warning_fmt( TraceState,
-						"Apparently the local hostname can resolve in different"
-						" versions: '~s' as determined internally, and '~s' as "
-						"deduced from the node name. Such inconsistencies may "
-						"prevent the node interconnection.",
-						[ OtherHostname, ActualHostname ] )
+	%			OtherHostname ->
+	%				?send_warning_fmt( TraceState,
+	%					"Apparently the local hostname can resolve in different"
+	%					" versions: '~ts' as determined internally "
+	%					"(by net_utils:localhost/0), and '~ts' as deduced "
+	%					"directly from the node name. Such inconsistencies are "
+	%					"likely to prevent the upcoming node interconnection.",
+	%					[ OtherHostname, ActualHostname ] )
 
-			end;
+	%		end;
 
-		_ ->
-			ok
+	%	_ ->
+	%		ok
 
-	end,
+	%end,
 
-	FullyQualifiedNodeName = net_utils:get_fully_qualified_node_name( NodeName,
+	CompleteNodeName = net_utils:get_complete_node_name( NodeName,
 									ActualHostname, NodeNamingNode ),
 
 	% EPMD possibly undefined:
 	?send_debug_fmt( TraceState, "Creating a computing host manager for "
-		"host '~s' (user: '~s', ~s node: '~s', cookie: '~s', EPMD port: ~w, "
-		"TCP port restriction: ~w, SII: ~s), "
-		"resulting in following full node name: '~s'.",
+		"host '~ts' (user: '~ts', ~ts node: '~ts', cookie: '~ts', "
+		"EPMD port: ~w, TCP port restriction: ~w, SII: ~ts), "
+		"resulting in following full node name: '~ts'.",
 		[ Hostname, Username, NodeNamingNode, NodeName, NodeCookie, EpmdPort,
-		  TCPPortRestriction, SII, FullyQualifiedNodeName ] ),
+		  TCPPortRestriction, SII, CompleteNodeName ] ),
 
 	StartingState = setAttributes( TraceState, [
 
@@ -395,14 +401,14 @@ construct( State,
 		{ user_name, Username },
 
 		% Node name (a plain string); this is just the node name, ex: "my_node",
-		% i.e. it is not fully-qualified.
+		% i.e. it has no host part:
 		%
-		{ node_name, NodeName },
+		{ hostless_node_name, NodeName },
 
-		% Fully-qualified node name (stored as an atom), ex: 'my_node@foo.org',
-		% to be used by other nodes, to target the corresponding node.
+		% Complete node name (stored as an atom), ex: 'my_node@foo.org', to be
+		% used by other nodes, to target the corresponding node.
 		%
-		{ full_node_name, FullyQualifiedNodeName },
+		{ complete_node_name, CompleteNodeName },
 
 		% Node naming mode (i.e. short or long names):
 		{ node_naming_mode, NodeNamingNode },
@@ -425,7 +431,7 @@ construct( State,
 		{ epmd_port, EpmdPort },
 
 		% The TCP port restriction, either the 'no_restriction' atom or a pair
-		% of integers { MinTCPPort, MaxTCPPort }
+		% of integers {MinTCPPort, MaxTCPPort}:
 		%
 		{ tcp_port_range, TCPPortRestriction },
 
@@ -466,8 +472,8 @@ construct( State,
 
 
 	?send_info_fmt( StartingState,
-		"Created a new manager for computing host '~s', "
-		"with node name '~s'.", [ Hostname, NodeName ] ),
+		"Created a new manager for computing host '~ts', "
+		"with node name '~ts'.", [ Hostname, NodeName ] ),
 
 	% Direct asynchronous auto-activation after this constructor:
 	self() ! setUpHost,
@@ -477,7 +483,7 @@ construct( State,
 
 
 
-% Overridden destructor.
+% @doc Overridden destructor.
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -519,7 +525,7 @@ destruct( State ) ->
 	% Previous solution to halt corresponding node, used to trigger
 	% 'noconnection' errors:
 
-	%TargetNode = ?getAttr(full_node_name),
+	%TargetNode = ?getAttr(complete_node_name),
 
 	%try
 
@@ -529,7 +535,7 @@ destruct( State ) ->
 
 	%	E ->
 	%		trace_utils:debug_fmt( "Exception caught when shutting down node "
-	%                              "'~s': ~p.", [ TargetNode, E ] )
+	%                              "'~ts': ~p.", [ TargetNode, E ] )
 
 	%end,
 
@@ -546,7 +552,8 @@ destruct( State ) ->
 
 
 
-% Performs an initial set-up of the managed host, to prepare for deployment.
+% @doc Performs an initial set-up of the managed host, to prepare for
+% deployment.
 %
 % (oneway, as it is a long-running task)
 %
@@ -565,7 +572,7 @@ setUpHost( State ) ->
 
 				TimeOutString ->
 					?debug_fmt( "No connection set-up attempted, "
-						"as already too late (~s).", [ TimeOutString ] ),
+						"as already too late (~ts).", [ TimeOutString ] ),
 					State
 
 			end;
@@ -579,8 +586,8 @@ setUpHost( State ) ->
 
 
 
-% Requests the simulation package to be sent to the caller, expected to be the
-% deployment agent.
+% @doc Requests the simulation package to be sent to the caller, expected to be
+% the corresponding, remote deployment agent.
 %
 % DeployedNode is the node on which the calling agent runs, specified as an
 % atom.
@@ -636,7 +643,7 @@ requestPackage( State, DeployedNode ) ->
 			?getAttr(deployment_manager_pid) ! { getPackage, [], self() },
 
 			?info( "Waiting for the package to be sent locally by "
-					"the deployment manager." ),
+				   "the deployment manager." ),
 
 			% Luckily sent big binaries are not copied when in the same node:
 			{ PackageFilename, PackageFilenameBin } = receive
@@ -649,7 +656,7 @@ requestPackage( State, DeployedNode ) ->
 			% We must tell the agent that it is not already too late:
 			AgentPid ! { wooper_result, send_starting },
 
-			?info_fmt( "Sending the package '~s' through sendfile.",
+			?info_fmt( "Sending the package '~ts' through sendfile.",
 					   [ PackageFilename ] ),
 
 			% Now we send the package through sendfile (rather than using a too
@@ -671,7 +678,7 @@ requestPackage( State, DeployedNode ) ->
 		TimeOutString ->
 
 			?info_fmt( "(already too late even to request "
-					   "the deployment package: ~s)", [ TimeOutString ] ),
+					   "the deployment package: ~ts)", [ TimeOutString ] ),
 
 			wooper:const_return_result( deploy_time_out )
 
@@ -679,7 +686,7 @@ requestPackage( State, DeployedNode ) ->
 
 
 
-% Notifies this manager that the deployment agent finished its deployment.
+% @doc Notifies this manager that the deployment agent finished its deployment.
 -spec onDeploymentReady( wooper:state(), system_utils:host_static_info() ) ->
 							const_oneway_return().
 onDeploymentReady( State, HostInfo ) ->
@@ -693,7 +700,7 @@ onDeploymentReady( State, HostInfo ) ->
 
 		TimeOutString ->
 			?info_fmt( "(already too late even to report that the "
-					   "deployment succeeded: ~s)", [ TimeOutString ] ),
+					   "deployment succeeded: ~ts)", [ TimeOutString ] ),
 			ok
 
 	end,
@@ -702,8 +709,8 @@ onDeploymentReady( State, HostInfo ) ->
 
 
 
-% Starts a database agent, on the corresponding computing host, generally on
-% behalf of the deployment manager.
+% @doc Starts a database agent, on the corresponding computing host, generally
+% on behalf of the deployment manager.
 %
 -spec startDatabase( wooper:state(), pid() ) -> const_oneway_return().
 startDatabase( State, CallerPid ) ->
@@ -723,7 +730,7 @@ startDatabase( State, CallerPid ) ->
 
 
 
-% Stops a database agent, on the corresponding computing host, generally on
+% @doc Stops a database agent, on the corresponding computing host, generally on
 % behalf of the deployment manager.
 %
 -spec stopDatabase( wooper:state(), pid() ) -> const_oneway_return().
@@ -749,8 +756,9 @@ stopDatabase( State, CallerPid ) ->
 
 
 
-% Terminates the computing node managed, typically on error-related teardowns in
-% order to avoid that the corresponding UNIX processes remain as zombis.
+% @doc Terminates the computing node managed, typically on error-related
+% teardowns in order to avoid that the corresponding UNIX processes remain as
+% zombis.
 %
 -spec terminateComputingNode( wooper:state() ) -> const_oneway_return().
 terminateComputingNode( State ) ->
@@ -766,10 +774,11 @@ terminateComputingNode( State ) ->
 
 
 
+
 % Section for static methods.
 
 
-% Returns an upper bound to the duration, in milliseconds, of a host-level
+% @doc Returns an upper bound to the duration, in milliseconds, of a host-level
 % deployment.
 %
 -spec get_host_deployment_duration_upper_bound() ->
@@ -790,11 +799,11 @@ get_host_deployment_duration_upper_bound() ->
 
 
 
-% Returns the estimated maximum duration, in milliseconds, of all operations
-% beyond node setup, for a host deployment.
+% @doc Returns the estimated maximum duration, in milliseconds, of all
+% operations beyond node setup, for a host deployment.
 %
 -spec get_other_operations_duration() ->
-							 static_return( milliseconds() ).
+								static_return( milliseconds() ).
 get_other_operations_duration() ->
 	wooper:return_static( 1000 ).
 
@@ -804,7 +813,7 @@ get_other_operations_duration() ->
 % Section for helper functions.
 
 
-% Tells whether, at this point in time, this manager is already too late to
+% @doc Tells whether, at this point in time, this manager is already too late to
 % respect its deployment time-out. If yes, the deployment manager already
 % ignored it and possibly went through next steps, and is not listening anymore.
 %
@@ -822,8 +831,8 @@ is_already_too_late( State ) ->
 	case 1000 * time_utils:get_duration( ?getAttr(start_time), Now ) of
 
 		D when D > TimeOut ->
-			io_lib:format( "already waited for ~s, "
-				"longer than time-out of ~s", [
+			text_utils:format( "already waited for ~ts, "
+				"longer than time-out of ~ts", [
 				time_utils:duration_to_string( D ),
 				time_utils:duration_to_string( TimeOut ) ] );
 
@@ -834,24 +843,23 @@ is_already_too_late( State ) ->
 
 
 
-
-% Connects to specified host, performs any required clean-up, and launch a
-% corresponding node.
+% @doc Connects to the specified host, performs any required clean-up, and
+% launches a corresponding node.
 %
 % (helper function)
 %
 -spec connect_to_host( string_host_name(), wooper:state() ) -> wooper:state().
 connect_to_host( Hostname, State ) ->
 
-	FullyQualifiedNodeName = ?getAttr(full_node_name),
+	CompleteNodeName = ?getAttr(complete_node_name),
 
-	?debug_fmt( "Starting the creation of node '~s' on host '~s'.",
-				[ FullyQualifiedNodeName, Hostname ] ),
+	?debug_fmt( "Starting the creation of node '~ts' on host '~ts'.",
+				[ CompleteNodeName, Hostname ] ),
 
 	case manage_node_cleanup( State ) of
 
 		false ->
-			?warning_fmt( "Deployment for host '~s' already too long after "
+			?warning_fmt( "Deployment for host '~ts' already too long after "
 				"clean-up, thus this host has already been "
 				"considered as unavailable.", [  Hostname ] ),
 			State;
@@ -864,7 +872,7 @@ connect_to_host( Hostname, State ) ->
 
 				success ->
 
-					?info_fmt( "Deployment succeeded for host '~s', notifying "
+					?info_fmt( "Deployment succeeded for host '~ts', notifying "
 							   "the deployment manager.", [ Hostname ] ),
 
 					% Another thing that can be done in parallel; returns an
@@ -878,11 +886,11 @@ connect_to_host( Hostname, State ) ->
 
 						TimeOutString ->
 
-							?warning_fmt( "Deployment succeeded for host '~s', "
-								"however it took too long compared to the "
-								"deployment time-out (~s), and thus this host "
+							?warning_fmt( "Deployment succeeded for host '~ts',"
+								" however it took too long compared to the "
+								"deployment time-out (~ts), and thus this host "
 								"has already been considered as unavailable.",
-								[  Hostname, TimeOutString ] ),
+								[ Hostname, TimeOutString ] ),
 
 							State
 
@@ -899,8 +907,8 @@ connect_to_host( Hostname, State ) ->
 
 
 
-% Declares to the deployment manager that on this host the set-up failed, then
-% triggers the deletion of this manager.
+% @doc Declares to the deployment manager that on this host the set-up failed,
+% then triggers the deletion of this manager.
 %
 % Returns an updated state.
 %
@@ -915,8 +923,8 @@ declare_deployment_failure( Reason, State ) ->
 
 		false ->
 
-			?warning_fmt( "Deployment failed for host '~s' with user '~s' "
-				"(reason: ~s) and anyway it had already taken too long "
+			?warning_fmt( "Deployment failed for host '~ts' with user '~ts' "
+				"(reason: ~ts) and anyway it had already taken too long "
 				"compared to the deployment time-out; notifying the deployment "
 				"manager and terminating.",
 				[ ManagedHostname, LocalUsername, ReasonString ] ),
@@ -927,8 +935,8 @@ declare_deployment_failure( Reason, State ) ->
 
 		TimeOutString ->
 
-			?warning_fmt( "Deployment failed for host '~s' with user '~s' "
-				"(reason: ~s; ~s), notifying the deployment manager and "
+			?warning_fmt( "Deployment failed for host '~ts' with user '~ts' "
+				"(reason: ~ts; ~ts), notifying the deployment manager and "
 				"terminating.", [ ManagedHostname, LocalUsername, ReasonString,
 								  TimeOutString ] ),
 			ok
@@ -941,8 +949,8 @@ declare_deployment_failure( Reason, State ) ->
 
 
 
-% Checks that the specified host is available and that no previous node is on
-% the way.
+% @doc Checks that the specified host is available and that no previous node is
+% in the way.
 %
 % Returns whether the specified host is valid.
 %
@@ -953,8 +961,8 @@ check_availability( Hostname, State ) ->
 	case check_host_availability( Hostname, State ) of
 
 		true ->
-			ensure_no_lingering_node( ?getAttr(full_node_name),
-									  ?getAttr(node_name), Hostname, State ),
+			ensure_no_lingering_node( ?getAttr(complete_node_name),
+				?getAttr(hostless_node_name), Hostname, State ),
 
 			true;
 
@@ -965,7 +973,8 @@ check_availability( Hostname, State ) ->
 
 
 
-% Returns whether specified host seems to be reachable from the network.
+% @doc Returns whether the specified host seems to be reachable from the
+% network.
 %
 % Checks with a ping that the specified host is available.
 %
@@ -979,21 +988,22 @@ check_host_availability( Hostname, State ) ->
 	case ?getAttr(ping_allowed) of
 
 		true ->
-			?debug_fmt( "Will ping now host '~s'. Depending on the DNS "
+			?debug_fmt( "Will ping now host '~ts'. Depending on the DNS "
 				"settings, if the host is not available, the operation "
 				"may last for some time.", [ Hostname ] ),
 
 			% Note: pinging a non-existing host may block this process for a few
 			% seconds.
+			%
 			case net_utils:ping( Hostname ) of
 
 				true ->
-					?debug_fmt( "Host '~s' is available (ping success).",
+					?debug_fmt( "Host '~ts' is available (ping success).",
 								[ Hostname ] ),
 					true;
 
 				false ->
-					?warning_fmt( "Host '~s' not available, no node checked "
+					?warning_fmt( "Host '~ts' not available, no node checked "
 								  "nor launched.", [ Hostname ] ),
 					false
 
@@ -1001,14 +1011,15 @@ check_host_availability( Hostname, State ) ->
 
 		false ->
 			?debug_fmt( "The use of ping is disallowed, so supposing that "
-						"host '~s' is available.", [ Hostname ] ),
+						"host '~ts' is available.", [ Hostname ] ),
 			true
 
 	end.
 
 
 
-% Ensures that no lingering node with specified name exists on the target host.
+% @doc Ensures that no lingering node with specified name exists on the target
+% host.
 %
 % The usefulness of this function is quite hypothetical now, as cookies should
 % not match on purpose (new UUID already used here), and anyway a node cleaner
@@ -1016,7 +1027,7 @@ check_host_availability( Hostname, State ) ->
 %
 % (helper function)
 %
-ensure_no_lingering_node( FullyQualifiedNodeName, NodeName, Hostname, State ) ->
+ensure_no_lingering_node( CompleteNodeName, NodeName, Hostname, State ) ->
 
 	% 'Immediate', as it is not being launched here:
 	%
@@ -1025,21 +1036,21 @@ ensure_no_lingering_node( FullyQualifiedNodeName, NodeName, Hostname, State ) ->
 	% the most common case, so this checking alone might be responsible for a
 	% time-out failure)
 	%
-	case net_utils:check_node_availability( FullyQualifiedNodeName,
+	case net_utils:check_node_availability( CompleteNodeName,
 											immediate ) of
 
 		{ true, _Duration } ->
-			?warning_fmt( "Node ~s on host ~s was already available, stopping"
+			?warning_fmt( "Node ~ts on host ~ts was already available, stopping"
 				" (and, later relaunching) it to ensure it runs the "
 				"correct code version.", [ NodeName, Hostname ] ),
 
 			% Preferred to unloading-purging/reloading our modules:
 			% (this is a blocking operation)
 			%
-			net_utils:shutdown_node( FullyQualifiedNodeName );
+			net_utils:shutdown_node( CompleteNodeName );
 
 		{ false, _Duration } ->
-			?debug_fmt( "Node ~s on host ~s is not available, it will be "
+			?debug_fmt( "Node ~ts on host ~ts is not available, it will be "
 						"launched from scratch.", [ NodeName, Hostname ] )
 
 	end.
@@ -1047,7 +1058,7 @@ ensure_no_lingering_node( FullyQualifiedNodeName, NodeName, Hostname, State ) ->
 
 
 
-% Performs a node-cleanup, if requested to do so.
+% @doc Performs a node-cleanup, if requested to do so.
 %
 % As we use at each simulation run, on purpose, unique (generated) cookies to
 % avoid any possibility of connecting by mistake to previously running instances
@@ -1092,11 +1103,11 @@ manage_node_cleanup( State ) ->
 
 			end,
 
-			?debug_fmt( "Cleaning up was requested, with clean-up script '~s', "
-				"resulting in full command '~s'.~n",
+			?debug_fmt( "Cleaning up was requested, with clean-up script "
+				"'~ts', resulting in full command '~ts'.~n",
 				[ ScriptFullPath, CleanCommand ] ),
 
-			%trace_utils:debug_fmt( "Clean-up command:~n~s",
+			%trace_utils:debug_fmt( "Clean-up command:~n~ts",
 			%						[ CleanCommand ] ),
 
 			% We noticed that the full-blown SSH command was actually *not*
@@ -1112,23 +1123,24 @@ manage_node_cleanup( State ) ->
 
 						% Our script is designed to output messages, and the
 						% sole guide is to rely on its return code:
+						%
 						{ _ReturnCode=0, CmdOutput } ->
 							?notice_fmt( "Local clean-up command succeeded and "
-								"resulted in following output: '~s'.",
+								"resulted in following output: '~ts'.",
 								[ CmdOutput ] );
 
 						{ ReturnCode, CmdOutput } ->
 							?error_fmt( "Local clean-up command failed (error "
-							  "code: ~B) and returned following output: '~s'.",
-							  [ ReturnCode, CmdOutput ] )
+								"code: ~B) and returned following output: "
+								"'~ts'.", [ ReturnCode, CmdOutput ] )
 
 					end;
 
 				_Hostname ->
-					CmdOutput = system_utils:evaluate_shell_expression(
-								  CleanCommand ),
+					CmdOutput =
+						system_utils:evaluate_shell_expression( CleanCommand ),
 					?notice_fmt( "Remote clean-up command resulted in "
-								 "following output: '~s'.", [ CmdOutput ] )
+								 "following output: '~ts'.", [ CmdOutput ] )
 
 			end,
 
@@ -1147,19 +1159,20 @@ manage_node_cleanup( State ) ->
 
 
 
-% Clean-up the local computing node.
+% @doc Cleans up the local computing node.
 %
 % We try to avoid a SSH connection from this node to itself, as it may not be
 % already in its own known hosts.
 %
 get_clean_up_command_for_localhost( ScriptFullPath, State ) ->
-	ScriptFullPath ++ " " ++ ?getAttr(node_name).
+	ScriptFullPath ++ " " ++ ?getAttr(hostless_node_name).
 
 
 
-% Clean-up specified remote computing node.
+% @doc Cleans up the specified remote computing node.
 %
 % First, copies the script, then executes it there, then removes it.
+%
 get_clean_up_command_for_host( Hostname, ScriptFullPath, State ) ->
 
 	% We suppose here we do not have anything to do, firewall-wise:
@@ -1177,12 +1190,12 @@ get_clean_up_command_for_host( Hostname, ScriptFullPath, State ) ->
 	% not depending on the underlying path structure, so that it is preserved:
 
 	%UserHomeDirectory = system_utils:get_user_home_directory(),
-	%UserHomeDirectory = io_lib:format( "/home/~s", [Username] ),
+	%UserHomeDirectory = io_lib:format( "/home/~ts", [Username] ),
 	UserHomeDirectory = re:replace(
-						  _Subject=system_utils:get_user_home_directory(),
-						  _RegExp=system_utils:get_user_name(),
-						  _Replacement=Username,
-						  _Opts=[ { return, list } ] ),
+							_Subject=system_utils:get_user_home_directory(),
+							_RegExp=system_utils:get_user_name(),
+							_Replacement=Username,
+							_Opts=[ { return, list } ] ),
 
 	% Previously we attempted to use a one-liner with SSH but could not succeed,
 	% so we had to write a specific script.
@@ -1191,10 +1204,10 @@ get_clean_up_command_for_host( Hostname, ScriptFullPath, State ) ->
 	% connected:
 	%
 	%"\"for p in $(/bin/ps -o pid,cmd -u $USER|"
-	%	"grep beam|grep -v grep|grep -v " ++ StringCookie
-	%	++ "| grep " ++ NodeName
-	%	++ " | cut -f 1 -d ' ') ; do kill $p ; done ; "
-	%	++ BasicCommand ++ "\"";
+	%   "grep beam|grep -v grep|grep -v " ++ StringCookie
+	%   ++ "| grep " ++ NodeName
+	%   ++ " | cut -f 1 -d ' ') ; do kill $p ; done ; "
+	%   ++ BasicCommand ++ "\"";
 
 	% Hidden yet being still clearly related to Sim-Diasca:
 	RemoteCleanScriptName = ".sim-diasca-node-cleaner.sh",
@@ -1204,8 +1217,9 @@ get_clean_up_command_for_host( Hostname, ScriptFullPath, State ) ->
 
 	% Like 'scp xx.sh joe@foo.org:/home/joe/yy.sh &&
 	% ssh joe@foo.org "/home/joe/yy.sh NODE ; /bin/rm -f /home/joe/yy.sh"':
-	RemoteCommand = "\"" ++ TargetScriptName ++ " " ++ ?getAttr(node_name)
-		++ " ; /bin/rm -f " ++ TargetScriptName ++ "\"",
+	RemoteCommand = "\"" ++ TargetScriptName ++ " "
+		++ ?getAttr(hostless_node_name) ++ " ; /bin/rm -f "
+		++ TargetScriptName ++ "\"",
 
 	text_utils:join( _Separator=" ", [
 		executable_utils:get_default_scp_executable_path(),
@@ -1227,8 +1241,9 @@ get_clean_up_command_for_host( Hostname, ScriptFullPath, State ) ->
 
 
 
-% Launches on the specfied host (remote or not, i.e. local) an appropriately
-% configured Erlang node, on which first the deployment agent will be run.
+% @doc Launches on the specified host (remote or not, i.e. local) an
+% appropriately-configured Erlang node, on which first the deployment agent will
+% be run.
 %
 % Returns either 'success' or { failure, Reason }.
 %
@@ -1236,7 +1251,7 @@ get_clean_up_command_for_host( Hostname, ScriptFullPath, State ) ->
 								'success' | { 'failure', ustring() }.
 launch_erlang_node( State ) ->
 
-	NodeName = ?getAttr(node_name),
+	NodeName = ?getAttr(hostless_node_name),
 
 	% To test how deployment failures are managed:
 	%NodeName = list_to_atom( "non_matching_node_name_for_test" ),
@@ -1256,16 +1271,15 @@ launch_erlang_node( State ) ->
 	{ Command, Env, IsBackground } =
 		get_erlang_launch_command( NodeName, UserName, Hostname, State ),
 
-	?info_fmt( "Trying to launch computing node ~s on host ~s with user ~s "
-		"(in the background: ~s) based on following "
-		"command: '~s' and following environment: ~s",
+	?info_fmt( "Trying to launch computing node ~ts on host ~ts with user ~ts "
+		"(in the background: ~ts) based on following command: '~ts' "
+		"and following environment: ~ts",
 		[ NodeName, Hostname, UserName, IsBackground, Command,
 		  system_utils:environment_to_string( Env ) ] ),
 
-	%trace_utils:debug_fmt( "### Launching: '~s', in the background: ~s, "
-	%                       "env: ~s.",
-	%						Command, IsBackground,
-	%						system_utils:environment_to_string( Env ) ] ),
+	%trace_utils:debug_fmt( "### Launching: '~ts', in the background: ~ts, "
+	%   "env: ~ts.", [ Command, IsBackground,
+	%				   system_utils:environment_to_string( Env ) ] ),
 
 	% We will try to ensure that host managers will not answer after the
 	% deployment manager times-out:
@@ -1286,16 +1300,17 @@ launch_erlang_node( State ) ->
 	{ ActualTimeOut, InfoString } = case IsBackground of
 
 		true ->
+
 			%trace_utils:debug_fmt( "Launching node in background with "
-			%  "command = ~p and env = ~p.", [ Command, Env ] ),
+			%   "command = ~p and env = ~p.", [ Command, Env ] ),
+
 			% No return code or output available here:
 			system_utils:run_background_command( Command, Env ),
 			{ SuccessTimeout, "launched in the background" };
 
 		false ->
 			%trace_utils:debug_fmt( "Launching node NOT in background with "
-			%						"command = ~p and env = ~p.",
-			%						[ Command, Env ] ),
+			%   "command = ~p and env = ~p.", [ Command, Env ] ),
 
 			% Direct launch (to go in the background by itself
 			% afterwards, hence with no relevant output or exit status):
@@ -1317,16 +1332,15 @@ launch_erlang_node( State ) ->
 
 					ErrorCauseString = case ExecOutcome of
 
-							 { C, _Output=[] } ->
-								 text_utils:format( "error code ~B", [ C ] );
+						{ C, _Output=[] } ->
+							text_utils:format( "error code ~B", [ C ] );
 
-							 { _C=0, Output } ->
-								 text_utils:format( "output '~s'", [ Output ] );
+						{ _C=0, Output } ->
+							text_utils:format( "output '~ts'", [ Output ] );
 
-							 { C, Output } ->
-								 text_utils:format(
-								   "error code ~B and output '~s'",
-								   [ C, Output ] )
+						{ C, Output } ->
+							text_utils:format( "error code ~B and output '~ts'",
+											   [ C, Output ] )
 
 					end,
 
@@ -1352,7 +1366,7 @@ launch_erlang_node( State ) ->
 
 	%trace_utils:debug_fmt( "ActualTimeOut = ~B ms.", [ ActualTimeOut ] ),
 
-	FullyQualifiedNodeName = ?getAttr(full_node_name),
+	CompleteNodeName = ?getAttr(complete_node_name),
 
 	% We will try to ensure that host managers will not answer after the
 	% deployment manager times-out:
@@ -1362,17 +1376,19 @@ launch_erlang_node( State ) ->
 
 	% Node availability will be determined based on Erlang-level ping:
 	%
-	%trace_utils:debug_fmt( "Ping of '~s' with time-out ~p.",
-	%					   [ FullyQualifiedNodeName, ActualTimeOut ] ),
+	%trace_utils:debug_fmt( "Ping of '~ts' with time-out ~p.",
+	%						[ CompleteNodeName, ActualTimeOut ] ),
 
-	case net_utils:check_node_availability( FullyQualifiedNodeName,
+	case net_utils:check_node_availability( CompleteNodeName,
 											ActualTimeOut ) of
 
 		{ true, Duration } ->
-			%trace_utils:debug_fmt( "Ping success for '~s'.",
-			%                      [ FullyQualifiedNodeName ] ),
-			?info_fmt( "Node ~s on host ~s (~s) successfully launched and "
-				"checked (which took ~B ms on a time-out of ~B ms, i.e. ~s).",
+
+			%trace_utils:debug_fmt( "Ping success for '~ts'.",
+			%                       [ CompleteNodeName ] ),
+
+			?info_fmt( "Node ~ts on host ~ts (~ts) successfully launched and "
+				"checked (which took ~B ms on a time-out of ~B ms, i.e. ~ts).",
 				[ NodeName, Hostname, InfoString, Duration, ActualTimeOut,
 				  time_utils:duration_to_string( ActualTimeOut ) ] ),
 			success;
@@ -1380,17 +1396,17 @@ launch_erlang_node( State ) ->
 
 		{ false, Duration } ->
 
-			%trace_utils:debug_fmt( "Ping failure for '~s'.",
-			%					   [ FullyQualifiedNodeName ] ),
+			%trace_utils:debug_fmt( "Ping failure for '~ts'.",
+			%						[ CompleteNodeName ] ),
 
-			?error_fmt( "Node '~s' on host '~s' apparently failed to launch "
-				"properly (reported as ~s) and is not responding "
-				"after a measured duration of ~s "
+			?error_fmt( "Node '~ts' on host '~ts' apparently failed to launch "
+				"properly (reported as ~ts) and is not responding "
+				"after a measured duration of ~ts "
 				"(time-out was set to ~B milliseconds). "
 				"Are you using indeed a proper SSH password-less "
 				"account for that host, and is Erlang available on it? "
 				"One may try executing: 'ssh USER@HOST erl' to check, "
-				"i.e. typically 'ssh ~s@~s erl'; an Erlang prompt shall"
+				"i.e. typically 'ssh ~ts@~ts erl'; an Erlang prompt shall"
 				" then be displayed (use CTR-C twice to exit it)." ,
 				[ NodeName, Hostname, InfoString,
 				  time_utils:duration_to_string( Duration ), ActualTimeOut,
@@ -1405,14 +1421,14 @@ launch_erlang_node( State ) ->
 
 
 
-% Helper, to try to diagnose why no answer (Erlang-level ping) from a launched
-% VM was obtained, based on the look-up of relevant UNIX processes.
+% @doc Helper, to try to diagnose why no answer (Erlang-level ping) from a
+% launched VM was obtained, based on the look-up of relevant UNIX processes.
 %
 % Sends a trace message and returns a reason atom.
 %
 -spec interpret_launch_failure( time_out(), milliseconds(), string_node_name(),
-		user_name(), string_host_name(),
-		system_utils:command(), wooper:state() ) -> atom().
+		user_name(), string_host_name(), system_utils:command(),
+		wooper:state() ) -> atom().
 interpret_launch_failure( ActualTimeOut, Duration, NodeName, UserName,
 						  Hostname, Command, State ) ->
 
@@ -1441,7 +1457,7 @@ interpret_launch_failure( ActualTimeOut, Duration, NodeName, UserName,
 					?error_fmt( "Local computing node not responding to Erlang "
 						"ping after ~B milliseconds (time-out duration: ~B), "
 						"not able either to detect any VM process. "
-						"Launch command was: '~s'.",
+						"Launch command was: '~ts'.",
 						[ Duration, ActualTimeOut, Command ] ),
 					vm_detection_abnormal;
 
@@ -1450,7 +1466,7 @@ interpret_launch_failure( ActualTimeOut, Duration, NodeName, UserName,
 					?error_fmt( "Local computing node not responding to Erlang "
 						"ping after ~B milliseconds (time-out duration: ~B), "
 						"detecting zero VM process (whereas at least one "
-						"should have been found). Launch command was: '~s'.",
+						"should have been found). Launch command was: '~ts'.",
 						[ Duration, ActualTimeOut, Command ] ),
 					vm_detection_none;
 
@@ -1460,7 +1476,7 @@ interpret_launch_failure( ActualTimeOut, Duration, NodeName, UserName,
 					?error_fmt( "Local computing node not responding to Erlang "
 						"ping after ~B milliseconds (time-out duration: ~B) "
 						"nor found as a live process, its VM must not have "
-						"been launched properly. Launch command was: '~s'.",
+						"been launched properly. Launch command was: '~ts'.",
 						[ Duration, ActualTimeOut, Command ] ),
 					launched_vm_not_found;
 
@@ -1468,16 +1484,16 @@ interpret_launch_failure( ActualTimeOut, Duration, NodeName, UserName,
 				{ _ReturnCode=0, _CmdOutput=AtLeastTwo } ->
 					?error_fmt( "Local computing node not responding to Erlang "
 						"ping after ~B milliseconds (time-out duration: ~B) "
-						"whereas multiple VMs (~s) are found running. "
-						"Launch command was: '~s'.",
+						"whereas multiple VMs (~ts) are found running. "
+						"Launch command was: '~ts'.",
 						[ Duration, ActualTimeOut, AtLeastTwo, Command ] ),
 					multiple_vms_detected;
 
 				% Unexpected error:
 				{ ReturnCode, CmdOutput } ->
-					?error_fmt( "Error (code: ~B, message: '~s') when "
+					?error_fmt( "Error (code: ~B, message: '~ts') when "
 						"looking-up local computing nodes (VMs). "
-						"Launch command was: '~s'.",
+						"Launch command was: '~ts'.",
 						[ ReturnCode, CmdOutput, Command ] ),
 					vm_detection_failed
 
@@ -1497,59 +1513,60 @@ interpret_launch_failure( ActualTimeOut, Duration, NodeName, UserName,
 
 				{ _ReturnCode=0, _CmdOutput="" } ->
 					?error_fmt(
-					   "Node ~s on host ~s apparently successfully "
-					   "launched, but not responding (to Erlang ping) "
-					   "after ~B milliseconds (time-out duration: ~B), "
-					   "and the counting of VM processes on that host failed "
-					   "(no count could be obtained). "
-					   "The VM may have crashed soon or may have not properly "
-					   "been launched; launch command was: '~s'.",
-					   [ NodeName, Hostname, Duration, ActualTimeOut,
-						 Command ] ),
+						"Node ~ts on host ~ts apparently successfully "
+						"launched, but not responding (to Erlang ping) "
+						"after ~B milliseconds (time-out duration: ~B), "
+						"and the counting of VM processes on that host failed "
+						"(no count could be obtained). "
+						"The VM may have crashed soon or may have not properly "
+						"been launched; launch command was: '~ts'.",
+						[ NodeName, Hostname, Duration, ActualTimeOut,
+						  Command ] ),
 					vm_remote_detection_abnormal;
 
 				{ _ReturnCode=0, _CmdOutput="0" } ->
 					?error_fmt(
-					   "Node ~s on host ~s apparently successfully "
-					   "launched, but not responding (to Erlang ping) "
-					   "after ~B milliseconds (time-out duration: ~B), "
-					   "and the counting of VM processes on that host reported "
-					   "that none is running. "
-					   "The VM may have crashed soon or may have not properly "
-					   "been launched; launch command was: '~s'.",
-					   [ NodeName, Hostname, Duration, ActualTimeOut,
-						 Command ] ),
+						"Node ~ts on host ~ts apparently successfully "
+						"launched, but not responding (to Erlang ping) "
+						"after ~B milliseconds (time-out duration: ~B), "
+						"and the counting of VM processes on that host "
+						"reported that none is running. "
+						"The VM may have crashed soon or may have not properly "
+						"been launched; launch command was: '~ts'.",
+						[ NodeName, Hostname, Duration, ActualTimeOut,
+						  Command ] ),
 					remote_launched_vm_not_found;
 
 
 				{ _ReturnCode=0, _CmdOutput="1" } ->
 					?error_fmt(
-					   "Node ~s on host ~s apparently successfully "
-					   "launched, but not responding (to Erlang ping) "
-					   "after ~B milliseconds (time-out duration: ~B), "
-					   "whereas exactly one VM process was found on "
-					   "that host; launch command was: '~s'.",
-					   [ NodeName, Hostname, Duration, ActualTimeOut,
-						 Command ] ),
+						"Node ~ts on host ~ts apparently successfully "
+						"launched, but not responding (to Erlang ping) "
+						"after ~B milliseconds (time-out duration: ~B), "
+						"whereas exactly one VM process was found on "
+						"that host; launch command was: '~ts'.",
+						[ NodeName, Hostname, Duration, ActualTimeOut,
+						  Command ] ),
 					one_remote_vm_detected;
 
 				{ _ReturnCode=0, _CmdOutput=AtLeastTwo } ->
 					?error_fmt(
-					   "Node ~s on host ~s apparently successfully "
-					   "launched, but not responding (to Erlang ping) "
-					   "after ~B milliseconds (time-out duration: ~B). "
-					   "Apparently multiple VMs (~s) were found there; "
-					   "launch command was: '~s'.",
-					   [ NodeName, Hostname, Duration, ActualTimeOut,
-						 AtLeastTwo, Command ] ),
+						"Node ~ts on host ~ts apparently successfully "
+						"launched, but not responding (to Erlang ping) "
+						"after ~B milliseconds (time-out duration: ~B). "
+						"Apparently multiple VMs (~ts) were found there; "
+						"launch command was: '~ts'.",
+						[ NodeName, Hostname, Duration, ActualTimeOut,
+						  AtLeastTwo, Command ] ),
 					multiple_remote_vms_detected;
 
 				{ ReturnCode, CmdOutput } ->
 					?error_fmt(
-					   "Not able to establish whether node ~s on host ~s "
-					   "has been successfully launched (code: ~B, message:'~s')"
-					   "Launch command was: '~s'.",
-					   [ NodeName, Hostname, ReturnCode, CmdOutput, Command ] ),
+						"Not able to establish whether node ~ts on host ~ts "
+						"has been successfully launched (code: ~B, "
+						"message:'~ts'). Launch command was: '~ts'.",
+						[ NodeName, Hostname, ReturnCode, CmdOutput,
+						  Command ] ),
 					vm_remote_detection_failed
 
 			end
@@ -1558,8 +1575,8 @@ interpret_launch_failure( ActualTimeOut, Duration, NodeName, UserName,
 
 
 
-% Called whenever an 'EXIT' message is received, typically from the associated
-% deployment agent.
+% @doc Called whenever an 'EXIT' message is received, typically from the
+% associated deployment agent.
 %
 -spec onWOOPERExitReceived( wooper:state(), pid(), exit_reason() ) ->
 								const_oneway_return().
@@ -1569,8 +1586,8 @@ onWOOPERExitReceived( State, _Pid, _ExitReason=normal ) ->
 
 onWOOPERExitReceived( State, Pid, ExitReason ) ->
 
-	?emergency_fmt( "EXIT message received for ~w, whose exit reason was: ~p, "
-					"terminating now.", [ Pid, ExitReason ] ),
+	?emergency_fmt( "EXIT message received for ~w, whose exit reason was:"
+		"~n  ~p, terminating now.", [ Pid, ExitReason ] ),
 
 	% Shall be avoided, as would attempt to interact with the now defunct
 	% deployment agent:
@@ -1583,8 +1600,8 @@ onWOOPERExitReceived( State, Pid, ExitReason ) ->
 
 
 
-% Called whenever a 'DOWN' message is received, typically from the associated
-% deployment agent.
+% @doc Called whenever a 'DOWN' message is received, typically from the
+% associated deployment agent.
 %
 -spec onWOOPERDownNotified( wooper:state(), monitor_utils:monitor_reference(),
 	monitor_utils:monitored_element_type(), monitor_utils:monitored_element(),
@@ -1598,7 +1615,7 @@ onWOOPERDownNotified( State, MonitorReference, MonitoredType, MonitoredElement,
 	?notice_fmt( "DOWN message received (reference: ~p) for monitored element "
 		"'~p' (of type ~p), whose exit reason was: ~p, "
 		"terminating now.", [ MonitorReference, MonitoredElement,
-									 MonitoredType, ExitReason ] ),
+							  MonitoredType, ExitReason ] ),
 
 	% Shall be avoided, as would attempt to interact with the now defunct
 	% deployment agent:
@@ -1611,10 +1628,9 @@ onWOOPERDownNotified( State, MonitorReference, MonitoredType, MonitoredElement,
 
 
 
-
-% Returns a command suitable to the launching of the corresponding Erlang node,
-% with a relevant environment and telling whether this shall be a background
-% launch.
+% @doc Returns a command suitable for the launching of the corresponding Erlang
+% node, with a relevant environment, and telling whether this shall be a
+% background launch.
 %
 % (helper)
 %
@@ -1650,11 +1666,10 @@ get_erlang_launch_command( NodeName, Username, Hostname, State ) ->
 	% makes the scalability curves considerably smoother.
 
 	AdditionalOptions = text_utils:format(
-		" -noshell -smp auto +sbt tnnps ~s +K true +A ~B +P ~B ",
+		" -noshell -smp auto +sbt tnnps ~ts +K true +A ~B +P ~B ",
 		[ SeqOption, AsynchThreadsCount, MaxProcesses ] ),
 
 	EpmdPort = ?getAttr(epmd_port),
-
 
 	% At least on some hosts, the domain name as resolved by Erlang is not the
 	% one included in the FQDN; for example:
@@ -1666,24 +1681,30 @@ get_erlang_launch_command( NodeName, Username, Hostname, State ) ->
 	%
 	% (culprit: /etc/resolv.conf having still a 'domain localdomain', whereas
 	% /etc/hosts has something like:
+	% """
 	% 127.0.1.1  hurricane.foo.org hurricane
-	% (/etc/resolv.conf shall be fixed, but we have to overcome it anyway...)
+	% """
+	% so /etc/resolv.conf shall be fixed; yet we have to overcome it here
+	% anyway...)
 	%
-	% So, instead of specifying 'my_user_node_name' (at, implicitly, the local
-	% host), we have to specify 'my_user_node_name@ hurricane.foo.org':
+	% Therefore, instead of specifying 'my_user_node_name' (at, implicitly, the
+	% local host), we have to specify by ourselves
+	% 'my_user_node_name@hurricane.foo.org':
 
-	% Not wanting the 'localhost' atom:
+	% Not wanting the 'localhost' atom (node() could have been used directly
+	% then, but we prefer more control/homogeneity):
+	%
 	ActualHostname = case Hostname of
 
 		localhost ->
-			net_utils:localhost();
+			net_utils:localhost_for_node_name();
 
 		_ ->
 			Hostname
 
 	end,
 
-	FullNodeName = text_utils:format( "~s@~s", [ NodeName, ActualHostname ] ),
+	FullNodeName = text_utils:format( "~ts@~ts", [ NodeName, ActualHostname ] ),
 
 	% The next command propagates the cookie of the user node to this newly
 	% launched computing node (using -setcookie); however there seems to be a
@@ -1696,7 +1717,7 @@ get_erlang_launch_command( NodeName, Username, Hostname, State ) ->
 		FullNodeName, ?getAttr(node_naming_mode), EpmdPort,
 		?getAttr(tcp_port_range), AdditionalOptions ),
 
-	%trace_utils:debug_fmt( "Basic command = '~s'.", [ BasicCommand ] ),
+	%trace_utils:debug_fmt( "Basic command = '~ts'.", [ BasicCommand ] ),
 
 	case ?getAttr(managed_host) of
 
@@ -1720,11 +1741,11 @@ get_erlang_launch_command( NodeName, Username, Hostname, State ) ->
 
 			EpmdPrefix = case EpmdPort of
 
-			   undefined ->
-					  "";
+				undefined ->
+					"";
 
-			   Port when is_integer( Port ) ->
-				  text_utils:format( "export ERL_EPMD_PORT=~B && ", [ Port ] )
+				Port when is_integer( Port ) ->
+					text_utils:format( "export ERL_EPMD_PORT=~B && ", [ Port ] )
 
 			end,
 
@@ -1746,17 +1767,17 @@ get_erlang_launch_command( NodeName, Username, Hostname, State ) ->
 
 
 
-% Sends pioneer modules (e.g. the deployment agent with its prerequisites), that
-% will then organise the deployment, based on the simulation archive that is
-% expected to be received from the deployment manager afterwards (see the
-% deploy/5 function).
+% @doc Sends the pioneer modules (e.g. the deployment agent with its
+% prerequisites), that will then organise the deployment, based on the
+% simulation archive that is expected to be received from the deployment manager
+% afterwards (see the deploy/5 function).
 %
 % Returns an udpated state.
 %
 -spec send_deployment_agent( wooper:state() ) -> wooper:state().
 send_deployment_agent( State ) ->
 
-	TargetNode = ?getAttr(full_node_name),
+	TargetNode = ?getAttr(complete_node_name),
 
 	% This system_info call may not work on ancient Erlang versions, see
 	% system_utils:get_interpreter_version/0:
@@ -1768,9 +1789,8 @@ send_deployment_agent( State ) ->
 	% for that, and that's it!)
 
 	{ IsVersionObtained, VersionInfo } = case rpc:call( TargetNode,
-								_FirstModule=erlang,
-								_FirstFunction=system_info,
-								_FirstArgs=[ otp_release ] ) of
+			_FirstModule=erlang, _FirstFunction=system_info,
+			_FirstArgs=[ otp_release ] ) of
 
 		{ badrpc, FirstReason } ->
 
@@ -1796,13 +1816,13 @@ send_deployment_agent( State ) ->
 
 		true ->
 			?info_fmt( "Sending Sim-Diasca deployment agent and "
-				"its prerequisites to node ~s, which runs the "
-				"following Erlang version: '~s'.",
+				"its prerequisites to node ~ts, which runs the "
+				"following Erlang version: '~ts'.",
 				[ TargetNode, VersionInfo ] );
 
 		false ->
 			?error_fmt( "Sending Sim-Diasca deployment agent and its "
-				"prerequisites to node ~s, whereas ~s.",
+				"prerequisites to node ~ts, whereas ~ts.",
 				[ TargetNode, VersionInfo ] )
 
 	end,
@@ -1855,7 +1875,7 @@ send_deployment_agent( State ) ->
 				case IsVersionObtained of
 
 				true ->
-					{ text_utils:format( "version ~s", [ VersionInfo ] ),
+					{ text_utils:format( "version ~ts", [ VersionInfo ] ),
 					  VersionInfo };
 
 				false ->
@@ -1867,8 +1887,8 @@ send_deployment_agent( State ) ->
 			Message = text_utils:format(
 				"Deployment failed, possibly due to a version mistmatch "
 				"between the Erlang environments in the user node "
-				"(~s, which relies on ~s) and the node ~s "
-				"(which relies on ~s).",
+				"(~ts, which relies on ~ts) and the node ~ts "
+				"(which relies on ~ts).",
 				[ net_utils:localhost(), LocalVersion, TargetNode,
 				  RemoteVersionString ] ),
 
@@ -1885,8 +1905,8 @@ send_deployment_agent( State ) ->
 
 			StackString = code_utils:interpret_stacktrace( StackTrace ),
 
-			?alert_fmt( "Error (~p) while deploying ~p on '~s': ~p.~n"
-				"Stack trace is:~n~s",
+			?alert_fmt( "Error (~p) while deploying ~p on '~ts': ~p.~n"
+				"Stack trace is:~n~ts",
 				[ Type, ModulesToDeploy, TargetNode, Exception, StackString ] ),
 
 			throw( { module_deployment_failed, Type, Exception,
@@ -1921,9 +1941,9 @@ send_deployment_agent( State ) ->
 -ifdef(exec_target_is_production).
 
 
-% Returns the duration, in milliseconds, that shall be waited until deciding a
-% non-responding launched node is unavailable, depending on the value returned
-% by its launch command.
+% @doc Returns the duration, in milliseconds, that shall be waited until
+% deciding a non-responding launched node is unavailable, depending on the value
+% returned by its launch command.
 
 
 % In production mode, we want to overcome situations where a few nodes might be

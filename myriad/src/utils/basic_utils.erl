@@ -175,7 +175,7 @@
 % An error with its diagnosis.
 
 
--type error_term() :: { 'error', error_reason() } | term().
+-type error_term() :: { 'error', error_reason() } | error_reason().
 % A (possibly tagged) error term. Ex: 'badarg'.
 
 

@@ -801,25 +801,6 @@ ERLANG_INTERPRETER := $$(PATH=$(ERLANG_USUAL_ROOT)/bin:$$PATH which erl 2>/dev/n
 #ERLANG_INTERPRETER_OPT_DEBUG = -init_debug -smp
 
 
-# Force your FQDN, if ever relevant in your setting:
-# FQDN := a_host_name.a_domain_name
-
-ifdef FQDN
-
-	FQDN_OPT = "--fqdn $(FQDN)"
-
-else
-
-	#FQDN := $$(host $(hostname) | awk '{ print $$1 }' | head -n 1)
-	FQDN := $$(hostname -f)
-
-  # Not useful in this case:
-  #FQDN_OPT = "--fqdn $(FQDN)"
-
-endif
-
-
-
 ifndef VM_NAME
 	VM_NAME := ceylan_myriad_debug
 endif
@@ -841,8 +822,15 @@ COOKIE_OPT = -c $(COOKIE)
 # One may switch to short names if network configuration does not allow for long
 # ones:
 #
-#DISTRIBUTED_NODE_OPT := -sname $(VM_NAME) -setcookie $(COOKIE)
-DISTRIBUTED_NODE_OPT := -name $(VM_NAME)@$(FQDN) -setcookie $(COOKIE)
+ifeq (NODE_NAMING,"--ln")
+
+	DISTRIBUTED_NODE_OPT := -name $(VM_NAME)@$(HOSTNAME) -setcookie $(COOKIE)
+
+else ifeq (NODE_NAMING,"--sn")
+
+	DISTRIBUTED_NODE_OPT := -sname $(VM_NAME) -setcookie $(COOKIE)
+
+endif
 
 
 STARTUP_FUNCTION := run
@@ -1251,7 +1239,7 @@ endif
 # now that user-defined code paths are absolute, thus significantly longer
 #
 # OVERRIDDEN_OPT left for the user.
-ERL_PARAMETERIZED_LAUNCHER = $(ERL_LAUNCHER) $(FQDN_OPT) $(FIREWALL_OPT)  \
+ERL_PARAMETERIZED_LAUNCHER = $(ERL_LAUNCHER) $(HOSTNAME_OPT) $(FIREWALL_OPT)  \
 							 $(MAX_PROCESS_OPT) $(ASYNC_THREAD_OPT)       \
 							 $(BEAM_PATH_OPT) $(SCALE_OPT) $(COOKIE_OPT)  \
 							 $(LOG_DIR_OPT) $(ENCODING_OPT) $(OVERRIDDEN_OPT)
@@ -1278,6 +1266,38 @@ ifndef NODE_NAMING
 	NODE_NAMING = "--ln"
 	#NODE_NAMING = "--sn"
 	#NODE_NAMING = "--nn"
+
+endif
+
+
+# Force your local hostname, if ever relevant in your setting, and depending on
+# NODE_NAMING:
+#
+# HOSTNAME := a_host_name.a_domain_name
+# HOSTNAME := a_host_name
+#
+# (note that HOSTNAME might be defined in your shell)
+
+ifdef HOSTNAME
+
+	HOSTNAME_OPT = "--hostname $(HOSTNAME)"
+
+else
+
+	#HOSTNAME := $$(host $(hostname) | awk '{ print $$1 }' | head -n 1)
+
+	ifeq (NODE_NAMING,"--ln")
+
+		HOSTNAME := $$(hostname -f)
+
+	else ifeq (NODE_NAMING,"--sn")
+
+		HOSTNAME := $$(hostname -s)
+
+	endif
+
+	# Not useful in this case:
+	#HOSTNAME_OPT = "--hostname $(HOSTNAME)"
 
 endif
 

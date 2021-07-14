@@ -52,17 +52,17 @@ asynch_thread_count=128
 
 
 usage="
-Usage: $(basename $0) [-v] [-c a_cookie] [--sn a_short_node_name | --ln a_long_node_name | --nn an_ignored_node_name ] [--tcp-range min_port max_port] [--epmd-port new_port] [--fqdn a_fqdn] [--max-process-count max_count] [--busy-limit kb_size] [--async-thread-count thread_count] [--background] [--non-interactive] [--eval an_expression] [--no-auto-start] [-h|--help] [--beam-dir a_path] [--beam-paths path_1 path_2] [-start-verbatim-options [...]]: launches the Erlang interpreter with specified settings.
+Usage: $(basename $0) [-v] [-c a_cookie] [--sn a_short_node_name | --ln a_long_node_name | --nn an_ignored_node_name ] [--hostname a_hostname] [--tcp-range min_port max_port] [--epmd-port new_port] [--max-process-count max_count] [--busy-limit kb_size] [--async-thread-count thread_count] [--background] [--non-interactive] [--eval an_expression] [--no-auto-start] [-h|--help] [--beam-dir a_path] [--beam-paths path_1 path_2] [-start-verbatim-options [...]]: launches the Erlang interpreter with specified settings.
 
 Detailed options:
 	-v: be verbose
 	-c a_cookie: specify a cookie, otherwise no cookie will be specifically set
 	--sn a_short_node_name: distributed node using specified short name (ex: 'my_short_name')
 	--ln a_long_node_name: distributed node using specified long name (ex: 'my_long_name')
-	--nn an_ignored_node_name: non-distributed node, specified name ignored (useful to just switch the naming options)
+	--nn an_ignored_node_name: non-distributed node; the specified name is ignored (useful to just switch the node naming options at runtime)
+	--hostname a_hostname: specify the hostname to be used (typically a FQDN for long node names, and a short hostname for short node names)
 	--tcp-range min_port max_port: specify a TCP port range for inter-node communication (useful for firewalling issues)
 	--epmd-port new_port: specify a specific EPMD port (default: 4369); only relevant if the VM is to be distributed (using short or long names), initially or at runtime
-	--fqdn a_fqdn: specify the FQDN to be used
 	--max-process-count max_count: specify the maximum number of processes per VM (default: ${max_process_count})
 	--busy-limit size: specify the distribution buffer busy limit, in kB (default: 1024)
 	--async-thread-count thread_count: specify the number of asynchronous threads for driver calls (default: ${asynch_thread_count})
@@ -245,13 +245,13 @@ while [ $# -gt 0 ] && [ $do_stop -eq 1 ]; do
 
 	fi
 
-	if [ "$1" = "--fqdn" ]; then
+	if [ "$1" = "--hostname" ]; then
 		shift
 		if [ -z "$1" ]; then
-			echo "  Error, no FQDN specified after --fqdn." 1>&2
+			echo "  Error, no hostname specified after --hostname." 1>&2
 			exit 12
 		fi
-		fqdn="$1"
+		hostname="$1"
 		token_eaten=0
 	fi
 
@@ -593,17 +593,15 @@ command="${command} ${cookie_opt} ${tcp_port_opt}"
 
 
 
+# Now the hostname is set just after, depending on node naming.
+
+#hostname=$(hostname -f)
+#hostname=$(hostname -s)
+
 # nslookup could be used as well:
 # (some laptops timeout when using the 'host' command)
-#
-if [ -z "${fqdn}" ]; then
+#hostname=$(host $(hostname) | awk '{ print $1 }' | head -n 1)
 
-	# Not used anymore:
-	#fqdn=$(host $(hostname) | awk '{ print $1 }' | head -n 1)
-	fqdn=$(hostname -f)
-	#echo "Guessed FQDN is ${fqdn}"
-
-fi
 
 
 # By default, unless short or long naming required:
@@ -619,6 +617,13 @@ if [ -n "${short_name}" ]; then
 		command="${command} -sname ${short_name}"
 
 		actual_name="${short_name}"
+
+		if [ -z "${hostname}" ]; then
+
+			hostname="$(hostname -s)"
+			#echo "Guessed (short) hostname is '${hostname}'."
+
+		fi
 
 		is_distributed=0
 
@@ -672,12 +677,20 @@ else
 
 		actual_name="${long_name}"
 
+		if [ -z "${hostname}" ]; then
+
+			hostname="$(hostname -f)"
+			#echo "Guessed (FQDN) hostname is '${hostname}'."
+
+		fi
+
 		# Commented-out, as otherwise we will indeed avoid the "Can't set long
-		# node name! Please check your configuration" blocking error, but
-		# afterwards Indeed one should let the VM adds by itself the proper
-		# hostname:
+		# node name! Please check your configuration" blocking error, yet
+		# afterwards.
 		#
-		#long_name="${long_name}@${fqdn}"
+		# Indeed one should let the VM add by itself the proper hostname:
+		#
+		#long_name="${long_name}@${hostname}"
 
 		command="${command} -name ${long_name}"
 
@@ -688,12 +701,12 @@ else
 	# Useless (would be a duplicate)
 	#if [ $be_verbose -eq 0 ]; then
 	#
-	#	echo "Launching: ${command}"
+	#   echo "Launching: ${command}"
 	#
 	#else
 
 		# No-op:
-	#	:
+		#:
 
 		#echo "Launching the Erlang VM with long name ${long_name}"
 
@@ -880,7 +893,7 @@ if [ $use_run_erl -eq 0 ] && [ $autostart -eq 0 ]; then
 			# command-line truncated; or the node may not be a distributed one),
 			# hence this has been disabled:
 			#
-			#ps -edf | grep beam | grep "$actual_name" | grep -v grep >&2
+			#ps -edf | grep beam | grep "${actual_name}" | grep -v grep >&2
 
 			exit 25
 

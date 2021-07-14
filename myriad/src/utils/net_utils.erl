@@ -37,7 +37,8 @@
 
 
 % Host-related functions:
--export([ ping/1, localhost/0, bin_localhost/0, localhost/1, bin_localhost/1,
+-export([ ping/1, localhost/0, bin_localhost/0, localhost_for_node_name/0,
+		  localhost/1, bin_localhost/1,
 		  split_fqdn/1, get_hostname/1,
 		  get_local_ip_addresses/0, get_local_ip_address/0,
 		  get_reverse_lookup_info/0, reverse_lookup/1, reverse_lookup/2 ]).
@@ -49,8 +50,10 @@
 		  get_all_connected_nodes/0,
 		  check_node_availability/1, check_node_availability/2,
 		  get_node_naming_mode/0, get_naming_compliant_hostname/2,
-		  generate_valid_node_name_from/1, get_fully_qualified_node_name/3,
-		  launch_epmd/0, launch_epmd/1, enable_distribution/2,
+		  generate_valid_node_name_from/1, get_complete_node_name/3,
+		  get_hostname_from_node_name/1,
+		  launch_epmd/0, launch_epmd/1,
+		  enable_distribution_mode/2, enable_preferred_distribution_mode/2,
 		  get_cookie/0, set_cookie/1, set_cookie/2,
 		  shutdown_node/0, shutdown_node/1 ]).
 
@@ -149,6 +152,7 @@
 -type check_node_timing() :: check_duration() | 'immediate' | 'with_waiting'.
 
 -type node_naming_mode() :: 'long_name' | 'short_name'.
+% How Erlang nodes are to be named to locate each other.
 
 -type cookie() :: atom().
 
@@ -168,7 +172,7 @@
 -type lookup_info() :: { lookup_tool(), file_utils:executable_path() }.
 
 -type lookup_outcome() :: string_host_name()
-						 | 'unknown_dns' | 'no_dns_lookup_executable_found'.
+							| 'unknown_dns' | 'no_dns_lookup_executable_found'.
 
 
 -export_type([ ip_v4_address/0, ip_v6_address/0, ip_address/0,
@@ -337,6 +341,29 @@ localhost_last_resort() ->
 -spec bin_localhost( 'fqdn' | 'short' ) -> bin_host_name().
 bin_localhost( Type ) ->
 	text_utils:string_to_binary( localhost( Type ) ).
+
+
+
+% @doc Returns a hostname of the local host that is suitable to be included in a
+% node name (in compliance with the current short/long name setting), assuming
+% the current node is a distributed one.
+%
+% We have had our deal of problems regarding systems whose local hostnames
+% resolved in varied, sometimes variable, potentially unresolvable values.
+%
+-spec localhost_for_node_name() -> string_host_name().
+localhost_for_node_name() ->
+	case node() of
+
+		nonode@nohost ->
+			throw( node_not_alive );
+
+		AtomNode ->
+			[ _ThisNodeName, LocalHostname ] = text_utils:split(
+				text_utils:atom_to_string( AtomNode ), [ $@ ] ),
+			LocalHostname
+
+	end.
 
 
 
@@ -666,6 +693,7 @@ localnode() ->
 	end.
 
 
+
 % @doc Returns the name of the local node, as a binary string.
 %
 % It is either a specific node name, or `<<"local_node">>'.
@@ -685,7 +713,7 @@ localnode_as_binary() ->
 % Restarts the distribution node with long names - however it is generally *not*
 % expected to succeed. Anyway an often better solution is not running a
 % networked (distributed) node at the first place (see NODE_NAMING="--nn") and
-% (iff needed) to execute enable_distribution/2 afterwards.
+% (iff needed) to execute enable_distribution_mode/2 afterwards.
 %
 -spec set_unique_node_name() -> void().
 set_unique_node_name() ->
@@ -757,6 +785,8 @@ check_node_availability( NodeName ) when is_atom( NodeName ) ->
 % Defining initial and upper bound to waiting durations for node look-up:
 -define( check_node_first_waiting_step, 20 ).
 -define( check_node_max_waiting_step, 2000 ).
+
+-define( distribution_setting_attempt_count, 5 ).
 
 
 
@@ -890,21 +920,41 @@ check_node_availability( _NodeName, _CurrentDurationStep, ElapsedDuration,
 
 
 
-% @doc Returns the naming mode of this node, either 'short_name' or 'long_name'.
--spec get_node_naming_mode() -> node_naming_mode().
+% @doc Returns the naming mode of this node, either 'short_name' or 'long_name',
+% provided that the current node is a distributed one.
+%
+-spec get_node_naming_mode() -> maybe( node_naming_mode() ).
 get_node_naming_mode() ->
 
-	% We determine the mode based on the returned node name:
+	% We determine the mode based on the returned local node name:
 	% (ex: 'foo@bar' vs 'foo@bar.baz.org')
 	%
-	[ _Node, Host ] = string:tokens( atom_to_list( node() ), "@" ),
-	case length( string:tokens( Host, "." ) ) of
+	case node() of
 
-		1 ->
-			short_name;
+		nonode@nohost ->
+			undefined;
 
-		TwoOrMore when TwoOrMore > 1 ->
-			long_name
+		FullNodeName ->
+
+			[ _Node, Host ] =
+				string:tokens( atom_to_list( FullNodeName ),
+							   _NodeSeps=[ $@ ] ),
+
+			%trace_utils:debug_fmt( "Host for naming node: '~ts'.", [ Host ] ),
+
+			case string:tokens( Host, _HostSeps=[ $. ] ) of
+
+				% Not expected to happen:
+				[] ->
+					throw( { invalid_node_name, FullNodeName } );
+
+				[ _SingleHostElem ] ->
+					short_name;
+
+				_HostElems ->
+					long_name
+
+			end
 
 	end.
 
@@ -949,22 +999,40 @@ generate_valid_node_name_from( Name ) when is_list( Name ) ->
 
 
 
-% @doc Returns the full name of a node (as a string), which has to be used to
-% target it from another node, with respect to the specified node naming
-% conventions.
+% @doc Returns the complete name of the specified node (as a string), which has
+% to be used to target it from another node, with respect to the specified node
+% naming conventions.
 %
 % Ex: for a node name "foo", a hostname "bar.org", with short names, we may
 % specify "foo@bar" to target the corresponding node with these conventions (not
 % a mere "foo", neither "foo@bar.org").
 %
--spec get_fully_qualified_node_name( string_node_name(),
-		string_host_name(), node_naming_mode() ) -> atom_node_name().
-get_fully_qualified_node_name( NodeName, Hostname, NodeNamingMode ) ->
+-spec get_complete_node_name( string_node_name(), string_host_name(),
+							  node_naming_mode() ) -> atom_node_name().
+get_complete_node_name( NodeName, Hostname, NodeNamingMode ) ->
 
 	StringNodeName = NodeName ++ "@"
 		++ get_naming_compliant_hostname( Hostname, NodeNamingMode ),
 
+	%trace_utils:debug_fmt( "For node '~ts' on host '~ts', in ~ts mode, "
+	%   "returning node name '~ts'.",
+	%   [ NodeName, Hostname, NodeNamingMode, StringNodeName ] ),
+
 	text_utils:string_to_atom( StringNodeName ).
+
+
+
+% @doc Returns the hostname (as a plain string) that corresponds to the
+% specified node name (as an atom).
+%
+-spec get_hostname_from_node_name( atom_node_name() ) -> string_host_name().
+get_hostname_from_node_name( NodeName ) ->
+
+	% Ex: returns "Data_Exchange_test-john@foobar":
+	StringNodeName = text_utils:atom_to_string( NodeName ),
+
+	% Returns "foobar":
+	string:sub_word( StringNodeName, _WordIndex=2, _SplittingChar=$@ ).
 
 
 
@@ -1034,31 +1102,123 @@ launch_epmd( Port ) when is_integer( Port ) ->
 %
 % So a (tiny) second-chance mechanism has been introduced.
 %
--spec enable_distribution( node_name(), node_naming_mode() ) -> void().
-enable_distribution( NodeName, NamingMode ) when is_list( NodeName ) ->
-	AtomNodeName = text_utils:string_to_atom( lists:flatten( NodeName ) ),
-	enable_distribution( AtomNodeName, NamingMode );
+-spec enable_distribution_mode( node_name(), node_naming_mode() ) -> void().
+enable_distribution_mode( NodeName, NamingMode ) ->
+	case enable_preferred_distribution_mode( NodeName, [ NamingMode ] ) of
 
-enable_distribution( NodeName, NamingMode=long_name )
-  when is_atom( NodeName ) ->
-	enable_distribution_helper( NodeName, longnames, NamingMode,
-								_RemainingAttempts=5 );
+		{ ok, _NamingMode } ->
+			ok;
 
-enable_distribution( NodeName, NamingMode=short_name )
-  when is_atom( NodeName ) ->
-	enable_distribution_helper( NodeName, shortnames, NamingMode,
-								_RemainingAttempts=5 ).
+		{ error, ErrorReason } ->
+			trace_utils:error_fmt( "Failed to enable distribution mode ~ts of "
+				"node '~ts': ~p.", [ NamingMode, NodeName, ErrorReason ] ),
+			throw( { distribution_enabling_failed, NodeName, NamingMode,
+					 ErrorReason } )
+
+	end.
 
 
-% NamingMode kept for error message.
+
+% @doc Returns the distribution naming mode that could be enabled (if any) on
+% the current node, based on the modes that were specified in decreasing order
+% of interest, or returns an error.
 %
+% The current node is supposedly not already distributed (otherwise the
+% operation will fail).
+%
+% See enable_distribution_mode/2 for more information.
+%
+-spec enable_preferred_distribution_mode( node_name(),
+				[ node_naming_mode() ] ) -> fallible( node_naming_mode() ).
+enable_preferred_distribution_mode( _NodeName, _NamingModes=[] ) ->
+	{ error, no_node_naming_mode_specified };
+
+enable_preferred_distribution_mode( NodeName, NamingModes )
+					when is_list( NodeName ) ->
+	AtomNodeName = text_utils:string_to_atom( lists:flatten( NodeName ) ),
+	enable_preferred_distribution_mode( AtomNodeName, NamingModes );
+
+enable_preferred_distribution_mode( AtomNodeName, NamingModes )
+		when is_atom( AtomNodeName ) andalso is_list( NamingModes ) ->
+	enable_preferred_distribution_mode( AtomNodeName, NamingModes,
+		_LastError=no_suitable_node_naming_mode );
+
+enable_preferred_distribution_mode( AtomNodeName, NamingModes )
+		when is_atom( AtomNodeName ) ->
+	throw( { invalid_preferred_node_naming_modes, NamingModes } );
+
+enable_preferred_distribution_mode( NodeName, _NamingModes ) ->
+	throw( { invalid_node_naming_mode, NodeName } ).
+
+
+
+% We ensure we have an actual error to report.
 % (helper)
 %
-enable_distribution_helper( NodeName, NameType, NamingMode,
-							RemainingAttempts ) ->
+enable_preferred_distribution_mode( NodeName, _NamingModes=[], LastError ) ->
+	trace_utils:error_fmt( "No node naming left to enable the distribution "
+		"of node '~ts' (last error: ~p).", [ NodeName, LastError ] ),
+	{ error, LastError };
 
-	%trace_utils:debug_fmt( "Starting distribution for node name ~ts, as '~w'.",
-	%						[ NodeName, NameType ] ),
+
+% Clause almost duplicated, yet allows to convert modes:
+enable_preferred_distribution_mode( NodeName,
+						_NamingModes=[ long_name | T ], _LastError ) ->
+	case try_start_distribution( NodeName, long_name, _NameType=longnames ) of
+
+		ok ->
+			{ ok, long_name };
+
+		{ error, Reason } ->
+			trace_utils:warning_fmt( "Could not enable a long name "
+				"distribution for node '~ts'; reason:~n  ~p)~nSwitching to any "
+				"next preferred mode.", [ NodeName, Reason ] ),
+			enable_preferred_distribution_mode( NodeName, T, Reason )
+
+	end;
+
+
+enable_preferred_distribution_mode( NodeName,
+						_NamingModes=[ short_name | T ], _LastError ) ->
+	case try_start_distribution( NodeName, short_name, _NameType=shortnames ) of
+
+		ok ->
+			{ ok, short_name };
+
+		{ error, Reason } ->
+			trace_utils:warning_fmt( "Could not enable a short name "
+				"distribution for node '~ts'; reason:~n  ~p)~nSwitching to any "
+				"next preferred mode.", [ NodeName, Reason ] ),
+			enable_preferred_distribution_mode( NodeName, T, Reason )
+
+	end;
+
+
+enable_preferred_distribution_mode( NodeName,
+					_NamingModes=[ InvalidMode | _T ], _LastError ) ->
+
+	trace_utils:error_fmt( "Invalid node naming mode '~ts' specified for "
+						   "node '~ts'.", [ InvalidMode, NodeName ] ),
+
+	throw( { invalid_node_naming_mode, InvalidMode, NodeName } ).
+
+
+
+% (helper)
+try_start_distribution( NodeName, NamingMode, NameType ) ->
+	try_start_distribution( NodeName, NamingMode, NameType,
+							?distribution_setting_attempt_count ).
+
+
+% (sub-helper)
+%try_start_distribution( _NodeName, _NamingMode, _NameType,
+%						_RemainingAttempts=0 ) ->
+%	{ error, all_attempts_failed };
+
+try_start_distribution( NodeName, NamingMode, NameType, RemainingAttempts ) ->
+
+	%trace_utils:debug_fmt( "Starting distribution for node name '~ts', "
+	%    "as '~w'.", [ NodeName, NameType ] ),
 
 	case net_kernel:start( [ NodeName, NameType ] ) of
 
@@ -1080,25 +1240,26 @@ enable_distribution_helper( NodeName, NameType, NamingMode,
 
 					end,
 
-					throw( { distribution_enabling_failed, NodeName, NamingMode,
-							 ExtraReason } );
+					{ error, { distribution_enabling_failed, NodeName,
+							   NamingMode, ExtraReason } };
 
 				N ->
-					trace_utils:warning_fmt(
-					  "(attempt of enabling ~p distribution "
-					  "for node '~ts' failed, retrying...)",
-					  [ NamingMode, NodeName ] ),
+					trace_utils:warning_fmt( "(attempt of enabling ~p "
+						"distribution for node '~ts' failed, retrying...)",
+						[ NamingMode, NodeName ] ),
 					timer:sleep( 300 ),
-					enable_distribution_helper( NodeName, NameType, NamingMode,
-												N - 1 )
+					try_start_distribution( NodeName, NamingMode, NameType,
+											N-1 )
 
 			end;
 
-		%{ ok, _NetKernelPid } ->
-		R ->
-			R
+		{ ok, _NetKernelPid } ->
+			ok
 
 	end.
+
+
+
 
 
 
@@ -1360,7 +1521,7 @@ get_tcp_port_range_option( { MinTCPPort, MaxTCPPort } )
 % settings.
 %
 -spec get_basic_node_launching_command( string_node_name(), node_naming_mode(),
-	   maybe( tcp_port() ), 'no_restriction' | tcp_port_range(), ustring() ) ->
+		maybe( tcp_port() ), 'no_restriction' | tcp_port_range(), ustring() ) ->
 					{ command(), environment() }.
 get_basic_node_launching_command( NodeName, NodeNamingMode, EpmdSettings,
 								  TCPSettings, AdditionalOptions ) ->

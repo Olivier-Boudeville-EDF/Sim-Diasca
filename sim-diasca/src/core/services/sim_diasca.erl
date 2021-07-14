@@ -19,10 +19,10 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 
 
-% This is the root Sim-Diasca module, to be called from most simulation cases,
-% hiding the details of the simulation services being used underneath, and
-% offering opportunities for single-place updates with no impact on existing
-% cases.
+% @doc This is the <b>root Sim-Diasca module</b>, to be called from most
+% simulation cases, hiding the details of the simulation services being used
+% underneath, and offering opportunities for single-place updates with no impact
+% on existing cases.
 %
 -module(sim_diasca).
 
@@ -33,19 +33,19 @@
 		  start_for_test/0 ]).
 
 
-% Simulation UUID (ex: for node cookies):
 -type simulation_uuid() :: id_utils:uuid().
+% Simulation UUID (ex: for node cookies).
 
 
-% Simulation Instance Identifier (possibly user-defined):
 -type sii() :: ustring().
+% Simulation Instance Identifier (possibly user-defined).
 
 
 -type simulation_identifiers() :: { simulation_uuid(), sii() }.
 
 
-% PID of an agent of the engine (an engine base object):
 -type agent_pid() :: pid().
+% PID of an agent of the engine (an engine base object).
 
 
 -export_type([ simulation_uuid/0, sii/0, simulation_identifiers/0,
@@ -77,13 +77,14 @@
 -define( registration_scope, global_only ).
 
 
-% Shorthand:
+% Shorthands:
+
 -type ustring() :: text_utils:ustring().
 
 
 
-% Initialises the engine according to specified settings, using default
-% deployment and load-balancing settings.
+% @doc Initialises the engine according to the specified simulation settings,
+% using default deployment and load-balancing settings.
 %
 % Returns the PID of the deployment manager.
 %
@@ -93,7 +94,7 @@ init( SimulationSettings ) ->
 
 
 
-% Initialises the engine according to specified settings, using default
+% @doc Initialises the engine according to the specified settings, using default
 % load-balancing settings.
 %
 % Returns the PID of the deployment manager.
@@ -105,7 +106,7 @@ init( SimulationSettings, DeploymentSettings ) ->
 
 
 
-% Initialises the engine according to specified settings.
+% @doc Initialises the engine according to specified settings.
 %
 % Returns the PID of the deployment manager.
 %
@@ -146,11 +147,10 @@ init( SimulationSettings, DeploymentSettings, LoadBalancingSettings )
 	% 'my_foobar_case-by-boudevil-94.traces'):
 	%
 	NewTraceFilename = file_utils:convert_to_filename( SimulationName ++ "-by-"
-								++ system_utils:get_user_name() ++ "-" ++ SII
-								++ ?TraceExtension ),
+		++ system_utils:get_user_name() ++ "-" ++ SII ++ ?TraceExtension ),
 
-	TraceAggregatorPid = naming_utils:get_registered_pid_for(
-							?trace_aggregator_name, global ),
+	TraceAggregatorPid =
+		naming_utils:get_registered_pid_for( ?trace_aggregator_name, global ),
 
 	% We have to rename the trace file (ex: to include the SII):
 	TraceAggregatorPid ! { renameTraceFile, [ NewTraceFilename ] },
@@ -191,7 +191,7 @@ init( SimulationSettings, DeploymentSettings, LoadBalancingSettings )
 	% its firewall_restrictions field) must match.
 	%
 	case class_DeploymentManager:interpret_firewall_options(
-		   DeploymentSettings ) of
+			DeploymentSettings ) of
 
 		{ _EPMDPort=undefined, _TcpRangeOption } ->
 			% We use here the default Sim-Diasca EPMD port:
@@ -199,7 +199,7 @@ init( SimulationSettings, DeploymentSettings, LoadBalancingSettings )
 
 		{ EPMDPort, _TcpRangeOption } ->
 			system_utils:set_environment_variable( "ERL_EPMD_PORT",
-									text_utils:format( "~B", [ EPMDPort ] ) ),
+				text_utils:integer_to_string( EPMDPort ) ),
 			net_utils:launch_epmd( EPMDPort )
 
 	end,
@@ -210,8 +210,29 @@ init( SimulationSettings, DeploymentSettings, LoadBalancingSettings )
 	% We rename this user node accordingly:
 	UserNodeName = NodePrefix ++ "-user-node",
 
-	%net_utils:enable_distribution( UserNodeName, long_name ),
-	net_utils:enable_distribution( UserNodeName, short_name ),
+	PreferredNodeNamingModes =
+		DeploymentSettings#deployment_settings.preferred_node_naming_modes,
+
+	% The deployment manager will figure it out from the enabled node name:
+	case net_utils:enable_preferred_distribution_mode(
+						UserNodeName, PreferredNodeNamingModes ) of
+
+		{ ok, _NMode } ->
+			%trace_utils:debug_fmt(
+			%   "Selected node naming node for distribution: ~ts "
+			%   "(node is '~ts').", [ NMode, node() ] );
+			ok;
+
+		{ error, Reason } ->
+			trace_utils:error_fmt( "Unable to enable the distribution of the "
+				"user node (~ts); reason:~n  ~p~n"
+				"(the order of preference in terms of node naming modes "
+				"was: ~p).",
+				[ UserNodeName, Reason, PreferredNodeNamingModes ] ),
+			throw( { distribution_enabling_failed, UserNodeName, Reason,
+					 PreferredNodeNamingModes } )
+
+	end,
 
 	% Simulations will never step over others (previous ones):
 	Cookie = text_utils:string_to_atom( SimUUID ),
@@ -250,8 +271,8 @@ init( SimulationSettings, DeploymentSettings, LoadBalancingSettings )
 	% to detect crashes nevertheless)
 	%
 	class_DeploymentManager:synchronous_new_link( SimulationSettings,
-			DeploymentSettings, LoadBalancingSettings, SimIdentifiers,
-			deploy_from_scratch );
+		DeploymentSettings, LoadBalancingSettings, SimIdentifiers,
+		deploy_from_scratch );
 
 
 % One set of settings is invalid:
@@ -276,10 +297,11 @@ init( SimulationSettings, DeploymentSettings, LoadBalancingSettings ) ->
 			 LoadBalancingSettings } ).
 
 
-% Notifies the user about the currently-enforced condition settings, in order to
-% be able to be able to remain aware of what is currently compiled (note that
-% this applies only to the current module, yet compilation options are expected
-% to be uniform across modules).
+
+% @doc Notifies the user about the currently-enforced condition settings, in
+% order to be able to be able to remain aware of what is currently compiled
+% (note that this applies only to the current module, yet compilation options
+% are expected to be uniform across modules).
 %
 -spec notify_conditional_settings() -> void().
 notify_conditional_settings() ->
@@ -342,8 +364,8 @@ notify_conditional_settings() ->
 
 
 
-% Tells whether the engine is running (i.e. has been initialised and not been
-% stopped yet).
+% @doc Tells whether the engine is running (i.e. has been initialised and not
+% been stopped yet).
 %
 -spec is_running() -> boolean().
 is_running() ->
@@ -362,7 +384,7 @@ is_running() ->
 
 
 
-% Creates (synchronously) the initial instances, from specified file.
+% @doc Creates (synchronously) the initial instances, from specified file.
 -spec create_initial_instances( file_utils:file_path() ) -> void().
 create_initial_instances( _FilePath ) ->
 
@@ -373,7 +395,7 @@ create_initial_instances( _FilePath ) ->
 
 
 
-% Notifies the user of an engine-level hint.
+% @doc Notifies the user of an engine-level hint.
 %
 % This is typically used to suggest that some kind of model-level defect is the
 % culprit for a detected error.
@@ -384,10 +406,11 @@ notify_hint( Message ) ->
 
 
 
-% Runs the actual simulation, until reaching the stop tick or any prior
+% @doc Runs the actual simulation, until reaching the stop tick or any prior
 % termination criterion.
 %
--spec run_simulation( class_TimeManager:tick(), pid() ) -> void().
+-spec run_simulation( class_TimeManager:tick(), deployment_manager_pid() ) ->
+							void().
 run_simulation( StopTick, DeploymentManagerPid ) ->
 
 	% As some processes (ex: the time manager) have the PID of this simulation
@@ -418,11 +441,11 @@ run_simulation( StopTick, DeploymentManagerPid ) ->
 
 
 
-% Runs the actual simulation, until reaching the stop tick, and allows the user
-% to browse the corresponding results, if it succeeded.
+% @doc Runs the actual simulation, until reaching the stop tick, and allows the
+% user to browse the corresponding results, if it succeeded.
 %
--spec run_simulation_and_browse_results( class_TimeManager:tick(), pid() ) ->
-												void().
+-spec run_simulation_and_browse_results( class_TimeManager:tick(),
+										 deployment_manager_pid() ) -> void().
 run_simulation_and_browse_results( StopTick, DeploymentManagerPid ) ->
 
 	run_simulation( StopTick, DeploymentManagerPid ),
@@ -433,7 +456,7 @@ run_simulation_and_browse_results( StopTick, DeploymentManagerPid ) ->
 
 
 
-% Shutdowns the engine.
+% @doc Shutdowns the engine.
 -spec shutdown() -> void().
 shutdown() ->
 
@@ -455,7 +478,7 @@ shutdown() ->
 
 
 
-% Allows to support both OTP conventions and ad hoc, automatic ones.
+% @doc Allows to support both OTP conventions and ad hoc, automatic ones.
 -spec start_for_test() -> void().
 start_for_test() ->
 	trace_utils:info( "Starting Sim-Diasca test environment." ),
@@ -463,7 +486,7 @@ start_for_test() ->
 
 
 
-% Lists any EXIT messages that would linger in mailbox.
+% @doc Lists any EXIT messages that would linger in mailbox.
 -spec check_exit_messages() -> void().
 check_exit_messages() ->
 
@@ -487,9 +510,8 @@ check_exit_messages() ->
 
 
 
-
-% Returns the simulation identifiers: determines both the simulation UUID and
-% the SII (potentially derived from it, if not specified by the user).
+% @doc Returns the simulation identifiers: determines both the simulation UUID
+% and the SII (potentially derived from it, if not specified by the user).
 %
 -spec get_simulation_identifiers() -> simulation_identifiers().
 get_simulation_identifiers() ->
@@ -504,7 +526,7 @@ get_simulation_identifiers() ->
 	MessageCategorization = uncategorized,
 
 	SII = case shell_utils:get_command_arguments_for_option(
-				 '-simulation-instance-id' ) of
+					'-simulation-instance-id' ) of
 
 		undefined ->
 			% No SII defined by the user, hence deducing it from UUID.
@@ -544,16 +566,16 @@ get_simulation_identifiers() ->
 
 
 
-% Returns the (string) simulation name obtained from the specified simulation
-% settings.
+% @doc Returns the (string) simulation name obtained from the specified
+% simulation settings.
 %
 -spec get_simulation_name( simulation_settings() ) -> ustring().
 get_simulation_name( #simulation_settings{ simulation_name=AtomName } )
-  when is_atom( AtomName ) ->
+			when is_atom( AtomName ) ->
 	text_utils:atom_to_string( AtomName );
 
 get_simulation_name( #simulation_settings{ simulation_name=StringName } )
-  when is_list( StringName ) ->
+			when is_list( StringName ) ->
 	StringName;
 
 get_simulation_name( #simulation_settings{ simulation_name=UnexpectedName } ) ->

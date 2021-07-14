@@ -1111,7 +1111,7 @@ info-source-layout:
 
 
 info: info-files
-	@echo "FQDN                   = $(FQDN)"
+	@echo "HOSTNAME               = $(HOSTNAME)"
 	@echo "BEAM_DIRS              = $(BEAM_DIRS)"
 	@echo "BEAM_PATH_OPT          = $(BEAM_PATH_OPT)"
 	@echo "ARCHIVE_FILE           = $(ARCHIVE_FILE)"
@@ -1132,7 +1132,7 @@ info-files:
 
 
 info-meta:
-	@echo "META_SRC_FILES = $(META_SRC_FILES)"
+	@echo "META_SRC_FILES  = $(META_SRC_FILES)"
 	@echo "META_BEAM_FILES = $(META_BEAM_FILES)"
 
 

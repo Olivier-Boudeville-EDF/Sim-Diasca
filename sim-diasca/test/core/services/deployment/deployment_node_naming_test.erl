@@ -19,9 +19,10 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-
-% Overall unit test of the Sim-Diasca management of firewall restrictions.
--module(deployment_firewall_restriction_test).
+% @doc Overall unit test of the Sim-Diasca management of the various <b>node
+% naming modes</b>.
+%
+-module(deployment_node_naming_test).
 
 
 % For facilities common to all cases:
@@ -29,7 +30,7 @@
 
 
 
-% Runs a distributed simulation (of course if relevant computing hosts are
+% @doc Runs a distributed simulation (of course if relevant computing hosts are
 % specified).
 %
 -spec run() -> no_return().
@@ -39,49 +40,52 @@ run() ->
 
 	% Default simulation settings (50Hz, batch reproducible) are used, except
 	% for the name:
+	%
 	SimulationSettings = #simulation_settings{
-
-		simulation_name="Test of the management of firewall restrictions" },
+		simulation_name="Test of the management of node naming modes" },
 
 
 	% Default deployment settings (unavailable nodes allowed, on-the-fly
 	% generation of the deployment package requested), but computing
 	% hosts are specified (to be updated depending on your environment):
 	% (note that localhost is implied)
-	% Here we request the deployment package to be created:
+
+	% Differs from the defaults hence interesting to test:
+	PreferredNodeNamingModes = [ short_name, long_name ],
+
+	% Other values that can be tested:
+	%PreferredNodeNamingModes = [ long_name, short_name ],
+	%PreferredNodeNamingModes = [ short_name ],
+	%PreferredNodeNamingModes = [ long_name ],
+	%PreferredNodeNamingModes = [ bogus_value ],
+	%PreferredNodeNamingModes = [],
+
 	DeploymentSettings = #deployment_settings{
 
 		computing_hosts =
 			{ use_host_file_otherwise_local, "sim-diasca-host-candidates.txt" },
 
-		perform_initial_node_cleanup=true,
-
-		firewall_restrictions = [
-
-						% Uncomment next line and modify accordingly EPMD_PORT
-						% in myriad/GNUmakevars.inc to test the change in EPMD
-						% port:
-						%{ epmd_port, 4000 },
-
-						{ tcp_restricted_range,
-						   { _MinPort=30000, _MaxPort=35000 } } ] },
+		% Reversed conventions compared to defaults:
+		preferred_node_naming_modes = PreferredNodeNamingModes },
 
 	?test_warning( "By default this test will not use an alternate EPMD port, "
-				   "as the overall engine settings have to be changed "
-				   "accordingly for this test to succeed." ),
+		"as the overall engine settings have to be changed "
+		"accordingly for this test to succeed." ),
 
 	% Default load balancing settings (round-robin placement heuristic):
 	LoadBalancingSettings = #load_balancing_settings{},
 
 
 	?test_notice_fmt( "This test will deploy a distributed simulation"
-		" based on computing hosts specified as ~p.",
-		[ DeploymentSettings#deployment_settings.computing_hosts ] ),
+		" based on computing hosts specified as ~p, with following node "
+		"naming conventions: ~p.",
+		[ DeploymentSettings#deployment_settings.computing_hosts,
+		  PreferredNodeNamingModes ] ),
 
 
 	% Directly created on the user node:
 	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-								  DeploymentSettings, LoadBalancingSettings ),
+								DeploymentSettings, LoadBalancingSettings ),
 
 
 	?test_info( "Here we do not create any actor, "
