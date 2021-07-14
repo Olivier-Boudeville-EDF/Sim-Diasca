@@ -210,8 +210,8 @@ init( SimulationSettings, DeploymentSettings, LoadBalancingSettings )
 	% We rename this user node accordingly:
 	UserNodeName = NodePrefix ++ "-user-node",
 
-	%net_utils:enable_distribution( UserNodeName, long_name ),
-	net_utils:enable_distribution( UserNodeName, short_name ),
+	net_utils:enable_distribution( UserNodeName, long_name ),
+	%net_utils:enable_distribution( UserNodeName, short_name ),
 
 	% Simulations will never step over others (previous ones):
 	Cookie = text_utils:string_to_atom( SimUUID ),

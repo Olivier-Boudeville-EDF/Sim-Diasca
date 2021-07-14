@@ -45,8 +45,11 @@ jobs:
         make info-context
     - name: Run tests
       run: |
+        # No NODE_NAMING specification in the case of Sim-Diasca, which
+        # activates distribution by itself in order to secure the uniqueness
+        # of its node names:
         echo "Building and testing all first in the 'development' execution target:"
-        make test NODE_NAMING="--sn"
+        make test
         echo
         echo "Then building and testing all in the 'production' execution target:"
-        make test-production NODE_NAMING="--sn"
+        make test-production
