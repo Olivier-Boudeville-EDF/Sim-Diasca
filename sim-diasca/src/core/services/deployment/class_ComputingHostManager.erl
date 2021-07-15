@@ -249,7 +249,8 @@
 %   - NodeSchedulerCount :: maybe( count() ) the number of
 %   schedulers to create on the associated node
 %
-% - NetworkOptions={EpmdPort, TCPPortRestriction}, a pair made of:
+% - NetworkOptions={EpmdPort, SSHPort, TCPPortRestriction, PingAllowed},
+% quadruplet made of:
 %
 %   - EpmdPort is the EPMD port specification, with can be either the
 %   'undefined' atom or the port number; note that if a non-default EPMD port is
@@ -258,12 +259,19 @@
 %   make option in myriad/GNUmakevars.inc), otherwise available nodes will not
 %   be found
 %
+%   - SSHPort is the TCP port at which a SSH server is expected to run on each
+%   computing host involved, allowing for a passwordless authentication from the
+%   user host for the automatic deployment to take place
+%
 %   - TCPPortRestriction is the TCP port restriction, with can be either the
 %   'no_restriction' atom or a pair of integers {MinTCPPort,MaxTCPPort}; note
 %   that if using a specific TCP/IP port range for a new node, the current node
 %   may have to respect this constraint as well (see the FIREWALL_OPT make
 %   option in myriad/GNUmakevars.inc), otherwise inter-node communication could
 %   fail
+%
+%    - PingAllowed tells whether ping (ICMP) messages may be used to test
+%    (computing) host availability
 %
 % - DeployOptions is a {DeploymentManagerPid, DeployTimeOut,
 %   InterNodeTickTimeOut, AdditionalBEAMDirs} tuple, where:
@@ -305,7 +313,8 @@ construct( State,
 		   _NodeOptions={ NodeName, NodeNamingNode, NodeCleanupWanted,
 						  NodeCookie, NodeSchedulerCount },
 
-		   _NetworkOptions={ EpmdPort, TCPPortRestriction, PingAllowed },
+		   _NetworkOptions={ EpmdPort, SSHPort, TCPPortRestriction,
+							 PingAllowed },
 
 		   _DeployOptions={ DeploymentManagerPid, DeployTimeOut,
 			   InterNodeTickTimeOut, BinDeployBaseDir,
@@ -385,7 +394,7 @@ construct( State,
 	% EPMD possibly undefined:
 	?send_debug_fmt( TraceState, "Creating a computing host manager for "
 		"host '~ts' (user: '~ts', ~ts node: '~ts', cookie: '~ts', "
-		"EPMD port: ~w, TCP port restriction: ~w, SII: ~ts), "
+		"EPMD port: ~w, SSH port: ~B, TCP port restriction: ~w, SII: ~ts), "
 		"resulting in following full node name: '~ts'.",
 		[ Hostname, Username, NodeNamingNode, NodeName, NodeCookie, EpmdPort,
 		  TCPPortRestriction, SII, CompleteNodeName ] ),
@@ -430,6 +439,12 @@ construct( State,
 		%
 		{ epmd_port, EpmdPort },
 
+		% The TCP port at which a SSH server is expected to run on each
+		% computing host involved, allowing for a passwordless authentication
+		% from the user host for the automatic deployment to take place:
+		%
+		{ ssh_port, SSHPort },
+
 		% The TCP port restriction, either the 'no_restriction' atom or a pair
 		% of integers {MinTCPPort, MaxTCPPort}:
 		%
@@ -437,7 +452,7 @@ construct( State,
 
 		{ simulation_instance_id, SII },
 
-		% Tells whether ping (ICMP) messages may be used to test host
+		% Tells whether ping (ICMP) messages may be used to test computing host
 		% availability:
 		%
 		{ ping_allowed, PingAllowed },
@@ -1176,7 +1191,12 @@ get_clean_up_command_for_localhost( ScriptFullPath, State ) ->
 get_clean_up_command_for_host( Hostname, ScriptFullPath, State ) ->
 
 	% We suppose here we do not have anything to do, firewall-wise:
-	SSHOption = executable_utils:get_ssh_mute_option(),
+	SSHMuteOption = executable_utils:get_ssh_mute_option(),
+
+	SSHPort = ?getAttr(ssh_port),
+
+	SCPPortOption = text_utils:format( "-P ~B", [ SSHPort ] ),
+	SSHPortOption = text_utils:format( "-p ~B", [ SSHPort ] ),
 
 	% Note that this is the user name on the user node, not necessarily the user
 	% name on the current host of interest, however this is not a problem as
@@ -1192,10 +1212,9 @@ get_clean_up_command_for_host( Hostname, ScriptFullPath, State ) ->
 	%UserHomeDirectory = system_utils:get_user_home_directory(),
 	%UserHomeDirectory = io_lib:format( "/home/~ts", [Username] ),
 	UserHomeDirectory = re:replace(
-							_Subject=system_utils:get_user_home_directory(),
-							_RegExp=system_utils:get_user_name(),
-							_Replacement=Username,
-							_Opts=[ { return, list } ] ),
+		_Subject=system_utils:get_user_home_directory(),
+		_RegExp=system_utils:get_user_name(),
+		_Replacement=Username, _Opts=[ { return, list } ] ),
 
 	% Previously we attempted to use a one-liner with SSH but could not succeed,
 	% so we had to write a specific script.
@@ -1215,20 +1234,21 @@ get_clean_up_command_for_host( Hostname, ScriptFullPath, State ) ->
 	TargetScriptName =
 		filename:join( UserHomeDirectory, RemoteCleanScriptName ),
 
-	% Like 'scp xx.sh joe@foo.org:/home/joe/yy.sh &&
-	% ssh joe@foo.org "/home/joe/yy.sh NODE ; /bin/rm -f /home/joe/yy.sh"':
+	% Like 'scp -P 22 xx.sh joe@foo.org:/home/joe/yy.sh && ssh -p 22 joe@foo.org
+	% "/home/joe/yy.sh NODE'
+	%
 	RemoteCommand = "\"" ++ TargetScriptName ++ " "
 		++ ?getAttr(hostless_node_name) ++ " ; /bin/rm -f "
 		++ TargetScriptName ++ "\"",
 
 	text_utils:join( _Separator=" ", [
 		executable_utils:get_default_scp_executable_path(),
-		SSHOption,
+		SSHMuteOption, SCPPortOption,
 		ScriptFullPath,
 		Username ++ "@" ++ Hostname ++ ":" ++ TargetScriptName,
 		"&&",
 		executable_utils:get_default_ssh_client_path(),
-		SSHOption,
+		SSHMuteOption, SSHPortOption,
 		Username ++ "@" ++ Hostname,
 		RemoteCommand ] ).
 

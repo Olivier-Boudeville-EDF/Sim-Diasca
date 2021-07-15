@@ -86,6 +86,10 @@
 	{ epmd_port, maybe( tcp_port() ), "stores any non-default TCP "
 	  "port to be used for the EPMD daemon" },
 
+	{ ssh_port, tcp_port(), "the TCP port at which a SSH server is supposed "
+	  "to run on each of the possible computing hosts, to allow for the "
+	  "automatic deployment" },
+
 	{ tcp_port_range, tcp_port_restriction(),
 	  "records any restriction to apply regarding the range of used TCP "
 	  "ports" },
@@ -437,6 +441,8 @@ construct( State,
 	{ EpmdPortOption, TcpRangeOption } =
 		interpret_firewall_options( DeploymentSettings ),
 
+	SSHPort = interpret_ssh_option( DeploymentSettings ),
+
 	PingAllowed = interpret_ping_option( DeploymentSettings ),
 
 	TmpDir = determine_temporary_directory( DeploymentSettings ),
@@ -465,7 +471,7 @@ construct( State,
 
 		NNMode ->
 			%trace_utils:debug_fmt( "Detected naming node ~ts from node '~ts'.",
-			%					   [ NNMode, LocalNode ] ),
+			%                       [ NNMode, LocalNode ] ),
 			NNMode
 
 	end,
@@ -503,6 +509,7 @@ construct( State,
 		{ database_running, false },
 		{ plugin_manager_pid, PluginManagerPid },
 		{ epmd_port, EpmdPortOption },
+		{ ssh_port, SSHPort },
 		{ tcp_port_range, TcpRangeOption },
 		{ ping_allowed, PingAllowed },
 		{ deploy_time_out, DeployTimeOut },
@@ -1332,7 +1339,7 @@ wait_setup_outcome( Waited, Available, Failed, CollectTimeOut,
 			InitialComputingHostInfo = get_host_info( HostManagerPid, State ),
 
 			NewComputingHostInfo = InitialComputingHostInfo#computing_host_info{
-									   host_infos=HostInfos },
+										host_infos=HostInfos },
 
 			?info_fmt( "Received notification of set-up success from "
 				"manager ~w: deployment on host '~ts' starts now, "
@@ -3283,8 +3290,8 @@ set_up_computing_nodes( BaseNodeName, HostUserList, InterNodeSeconds,
 				 ?getAttr(node_cleanup), erlang:get_cookie(),
 				 ?getAttr(compute_scheduler_count) },
 
-	NetworkOpts = { ?getAttr(epmd_port), ?getAttr(tcp_port_range),
-					?getAttr(ping_allowed) },
+	NetworkOpts = { ?getAttr(epmd_port), ?getAttr(ssh_port),
+					?getAttr(tcp_port_range), ?getAttr(ping_allowed) },
 
 	DeployBaseDir =
 		text_utils:string_to_binary( ?getAttr(deployment_base_dir) ),
@@ -4639,7 +4646,21 @@ interpret_firewall_options( _Opts=[ Other | _T ], _Acc ) ->
 
 
 
-% @doc Interpret the 'ping_available' field of the deployment settings.
+% @doc Interprets the 'ssh_port' field of the deployment settings: determines
+% the TCP port where a SSH server is expected to run on each of the computing
+% hosts expected to take part to a (distributed) simulation.
+%
+-spec interpret_ssh_option( deployment_settings() ) -> tcp_port().
+interpret_ssh_option( #deployment_settings{ ssh_port=SSHPort } )
+  when is_integer( SSHPort ) ->
+	SSHPort;
+
+interpret_ssh_option( #deployment_settings{ ssh_port=InvalidSSHPort } ) ->
+	throw( { invalid_ssh_port, InvalidSSHPort } ).
+
+
+
+% @doc Interprets the 'ping_available' field of the deployment settings.
 -spec interpret_ping_option( deployment_settings() ) -> boolean().
 interpret_ping_option( #deployment_settings{ ping_available=true } ) ->
 	true;
@@ -4920,7 +4941,7 @@ build_simulation_package( State ) ->
 		++ AdditionalElemList ++ ConfigurationFiles, % ++ InitialisationFiles,
 
 	CanonizedAdditions = [ standardise_deploy_element( Addition )
-							   || Addition <- ActualAdditions ],
+								|| Addition <- ActualAdditions ],
 
 	%trace_utils:debug_fmt( "CanonizedAdditions: ~p.", [ CanonizedAdditions ] ),
 
@@ -4939,8 +4960,9 @@ build_simulation_package( State ) ->
 
 	RuleString = text_utils:format( "Following ~B deployment selection rules "
 		"have been applied: ~ts", [ length( CanonizedAdditions ),
-		  text_utils:strings_to_string( [ text_utils:format( "rule ~p", [ R ] )
-				|| R <- CanonizedAdditions ] ) ] ),
+			text_utils:strings_to_string(
+				[ text_utils:format( "rule ~p", [ R ] )
+					|| R <- CanonizedAdditions ] ) ] ),
 
 	FileString = text_utils:format( "Following ~B files have been selected "
 		"(ordered alphabetically): ~ts", [ length( SortedSelected ),

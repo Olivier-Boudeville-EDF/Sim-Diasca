@@ -409,6 +409,19 @@
 	perform_initial_node_cleanup = false :: boolean(),
 
 
+	% The TCP port where a SSH server is expected to run on each of the
+	% computing hosts expected to take part to a (distributed) simulation.
+	%
+	% Note that a passwordless authentication shall be functional, from the user
+	% on its host to the specified computing ones.
+	%
+	% The engine will indeed send all necessary elements on the fly so that all
+	% hosts besides the user one can be used by the simulation, even if they
+	% have no specific prerequisite (except Erlang of course).
+	%
+	ssh_port = 22 :: net_utils:tcp_port(),
+
+
 	% Tells whether there are firewall restrictions to be taken into account
 	% between computing nodes:
 	%
@@ -433,7 +446,7 @@
 	% have their firewall configured so that the TCP ports between 20000 and
 	% 26000 (bounds included) are not filtered. Then one could specify:
 	%  firewall_restrictions = [ {epmd_port, 20000},
-	%							 {tcp_restricted_range, { 20001,26000}].
+	%                            {tcp_restricted_range, { 20001,26000}].
 	%
 	% Note that the settings here will affect only the computing nodes (i.e. the
 	% ones that will be subsequently launched by the initial user node), not the
