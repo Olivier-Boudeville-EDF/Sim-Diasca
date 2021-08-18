@@ -27,8 +27,8 @@
 
 
 % @doc Module implementing the <b>OTP supervisor bridge of Traces</b>, so that
-% the (singleton) trace aggregator is attached to the Traces supervision tree,
-% through the Traces root supervisor, defined in the traces_sup module.
+% the (singleton) trace aggregator is attached to the Traces OTP supervision
+% tree, through the Traces root supervisor, defined in the traces_sup module.
 %
 -module(traces_bridge_sup).
 
@@ -48,21 +48,22 @@
 % We suppose that such a supervisor bridge cannot be used directly as a root
 % supervisor.
 %
-% See also within the Erlang codebase itself, as an example, the user_sup
-% supervisor bridge, created by kernel:init/1.
+% See also:
+% - https://wooper.esperide.org/#otp-guidelines for further information
+% - within the Erlang codebase itself, as an example, the user_sup
+% supervisor bridge, created by kernel:init/1
 %
 -behaviour(supervisor_bridge).
 
-
-% User API:
+% User API of the bridge:
 -export([ start_link/1 ]).
 
 
 % Callbacks of the supervisor_bridge behaviour:
 -export([ init/1, terminate/2 ]).
 
-
 -define( bridge_name, ?MODULE ).
+
 
 
 % For otp_application_module_name:
@@ -84,7 +85,7 @@ start_link( TraceSupervisorWanted ) ->
 						   [ self() ] ),
 
 	supervisor_bridge:start_link( { local, ?bridge_name },
-			_Module=?MODULE, _Args=TraceSupervisorWanted ).
+		_Module=?MODULE, _InitArgs=TraceSupervisorWanted ).
 
 
 
@@ -92,8 +93,8 @@ start_link( TraceSupervisorWanted ) ->
 % start_link/1 above being executed.
 %
 -spec init( boolean() ) -> { 'ok', pid(), State :: term() }
-						 | 'ignore' | { 'error', Error :: term() }.
-init( TraceSupervisorWanted ) ->
+							| 'ignore' | { 'error', Error :: term() }.
+init( _Args=TraceSupervisorWanted ) ->
 
 	trace_utils:info_fmt( "Initializing the Traces supervisor bridge ~w "
 		"(trace supervisor wanted: ~ts).", [ self(), TraceSupervisorWanted ] ),
@@ -136,13 +137,13 @@ init( TraceSupervisorWanted ) ->
 	trace_utils:debug_fmt( "Traces supervisor bridge initialised, "
 		"with trace aggregator ~w.", [ TraceAggregatorPid ] ),
 
-	{ ok, TraceAggregatorPid, _State=TraceAggregatorPid }.
+	{ ok, TraceAggregatorPid, _InitialBridgeState=TraceAggregatorPid }.
 
 
 
 % @doc Callback to terminate this supervisor bridge.
 -spec terminate( Reason :: 'shutdown' | term(), State :: term() ) -> void().
-terminate( Reason, _State=TraceAggregatorPid )
+terminate( Reason, _BridgeState=TraceAggregatorPid )
   when is_pid( TraceAggregatorPid ) ->
 
 	trace_utils:info_fmt( "Terminating the Traces supervisor bridge "

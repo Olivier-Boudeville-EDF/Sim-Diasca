@@ -239,14 +239,14 @@ manage_send_traces( CompressedFilename, State ) ->
 	file_utils:remove_file( CompressedFilename ),
 
 	%trace_utils:info_fmt( "~ts Received from aggregator a trace "
-	%					   "synchronization for file '~ts', reused for "
-	%					   "later traces.", [ ?LogPrefix, TraceFilename ] ),
+	%                      "synchronization for file '~ts', reused for "
+	%                      "later traces.", [ ?LogPrefix, TraceFilename ] ),
 
 	% Will write in it newly received traces (sent through messages); now
 	% preferring the (more efficient) raw mode:
 	%
 	File = file_utils:open( TraceFilename,
-				[ append, raw, { delayed_write, _Size=1024, _Delay=200 } ] ),
+			[ append | class_TraceAggregator:get_trace_file_base_options() ] ),
 
 	setAttributes( State, [ { trace_filename, TraceFilename },
 							{ trace_file, File } ] ).
@@ -363,16 +363,19 @@ addTrace( State, NewTrace ) ->
 
 	% We used to rely on:
 
-	%io:format( ?getAttr(trace_file), "~ts", [
-	%					text_utils:binary_to_string( NewTrace ) ] ),
+	%io:format( ?getAttr(trace_file), "~ts",
+	%    [ text_utils:binary_to_string( NewTrace ) ] ),
 
 	% yet now the internal trace file is opened in raw mode (so there is no
 	% intermediate process handling the I/O protocol), so:
 
-	Content = text_utils:format( "~ts",
-				[ text_utils:binary_to_string( NewTrace ) ] ),
+	% Not the following, which would break the encoding of Unicode messages:
+	%Content = text_utils:format( "~ts",
+	%               [ text_utils:binary_to_string( NewTrace ) ] ),
+	% file_utils:write( ?getAttr(trace_file), Content ),
 
-	file:write( ?getAttr(trace_file), Content ),
+	% A correct form is instead:
+	file_utils:write_ustring( ?getAttr(trace_file), NewTrace ),
 
 	wooper:const_return().
 

@@ -788,7 +788,7 @@ renameTraceFile( State, NewTraceFilename ) ->
 
 		IS when is_boolean( IS ) ->
 			%trace_utils:debug_fmt( "Not initializing trace supervision (~ts).",
-			%					   [ IS ] ),
+			%                       [ IS ] ),
 			RenState
 
 	end,
@@ -1271,6 +1271,35 @@ remove() ->
 
 	end.
 
+
+
+% @doc Returns the base option for trace writing.
+%
+% (static method, for sharing with for example the trace listener class)
+%
+-spec get_trace_file_base_options() ->
+							static_return( [ file_utils:file_open_mode() ] ).
+get_trace_file_base_options() ->
+
+	% Writes to file, as soon as 32KB or 0.5s is reached, with Unicode support
+	% (apparently not specifically needed, however):
+	%
+	% Note: we thought that the 'raw' option shall not be added here, otherwise,
+	% at least in some cases, strings such as "àéèïîôùû." would not be written
+	% correctly, in the sense that the overall encoding of the file will not be
+	% UTF-8 as expected, but ISO-8859... However we have not be able to
+	% reproduce the problem recently anymore, so 'raw' seems perfectly fine (at
+	% least now).
+	%
+	% No file_utils:get_default_encoding_option/0 here, otherwise a
+	% double-Unicode encoding will take place:
+	%
+	wooper:return_static(
+		[ raw, { delayed_write, _Size=32*1024, _Delay=500 } ] ).
+
+
+
+% Other functions.
 
 
 % @doc Code run by the process that monitors the aggregator, overloading-wise.
@@ -1809,6 +1838,9 @@ format_full_lines( _Rows=[ { [ Line | OtherLines ], Width } | ColumnPairs ],
 % (helper)
 %
 open_trace_file( TraceFilename ) ->
+
+	%trace_utils:debug_fmt( "Creating trace file '~ts'.", [ TraceFilename ] ),
+
 	% 'exclusive' not needed:
 	file_utils:open( TraceFilename,
 					 [ write | get_trace_file_base_options() ] ).
@@ -1820,30 +1852,12 @@ open_trace_file( TraceFilename ) ->
 % (helper)
 %
 reopen_trace_file( TraceFilename ) ->
+
+	%trace_utils:debug_fmt( "Reopening trace file '~ts'.", [ TraceFilename ] ),
+
 	% 'exclusive' not wanted:
 	file_utils:open( TraceFilename,
 					 [ append | get_trace_file_base_options() ] ).
-
-
-
-% @doc Returns the base option for trace writing.
-%
-% (helper)
-%
-get_trace_file_base_options() ->
-
-	% Writes to file, as soon as 32KB or 0.5s is reached, with Unicode support
-	% (apparently not specifically needed, however):
-	%
-	% Note: do *not* add 'raw' here, otherwise, at least in some cases, strings
-	% such as "àéèïîôùû." will not be written correctly, in the sense that the
-	% overall encoding of the file will not be UTF-8 as expected, but
-	% ISO-8859...
-	%
-	% No file_utils:get_default_encoding_option/0 here, otherwise a
-	% double-Unicode encoding will take place:
-	%
-	[ raw, { delayed_write, _Size=32*1024, _Delay=500 } ].
 
 
 

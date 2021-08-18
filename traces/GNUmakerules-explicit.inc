@@ -9,6 +9,7 @@
 
 .PHONY: default-traces-rule create-traces-checkout                   \
 		rebar3-local-update rebar3-local-update-for-traces           \
+		list-trace-files-in-tree remove-trace-files-in-tree          \
 		clean clean-traces
 
 
@@ -66,6 +67,16 @@ rebar3-local-sibling-update-for-traces:
 	@mkdir -p $(WOOPER_LOCAL_EBIN)
 	@/bin/cp -f $(WOOPER_SIBLING_BUILD)/_build/default/lib/wooper/ebin/* $(WOOPER_LOCAL_EBIN)
 
+
+# The -L option allows 'find' to recurse through symlinked directories as well:
+
+list-trace-files-in-tree:
+	@echo "  Listing all *.traces files from $$(pwd), most recent ones first..."
+	@find -L . -type f -a -name '*.traces' -printf "%TY-%Tm-%Td %TT %p\n" | sort -nr
+
+remove-trace-files-in-tree:
+	@echo "  Removing all *.traces files from $$(pwd)..."
+	@find -L . -name '*.traces' -exec /bin/rm -f '{}' ';' 2>/dev/null
 
 
 # Not wanting to define a default rule:
