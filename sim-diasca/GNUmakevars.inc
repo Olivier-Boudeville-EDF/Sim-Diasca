@@ -431,7 +431,7 @@ endif
 # interpreter is run.
 #
 EXEC_EXTERNAL_OPTIONS := --sim-diasca-root $(SIM_DIASCA_TOP) \
-			 --sim-diasca-version $(SIM_DIASCA_VERSION) $(EXEC_EXTERNAL_OPTIONS)
+			--sim-diasca-version $(SIM_DIASCA_VERSION) $(EXEC_EXTERNAL_OPTIONS)
 
 
 # The script to convert spreadsheets into DUMF files:
@@ -542,6 +542,30 @@ SD_DATAFLOW_HOWTO_BASE := $(SD_PREFIX)-$(SD_DATAFLOW_HOWTO_NAME)-$(SD_LANG)
 SD_DATAFLOW_HOWTO_SRC := $(SD_DATAFLOW_HOWTO_BASE).rst
 SD_DATAFLOW_HOWTO_HTML := $(SD_DATAFLOW_HOWTO_BASE).html
 SD_DATAFLOW_HOWTO_PDF := $(SD_DATAFLOW_HOWTO_BASE).pdf
+
+SD_DOC_ROOT := $(SIM_DIASCA_TOP)/doc
+
+SD_DOC_COMMON_ELEMS := $(SD_DOC_ROOT)/common-elements
+
+
+# To share doc elements between the public/internal of the installation guide
+# versions while not introducing full-* targets:
+#
+SD_INST_COMMON_DOC_ELEMS = \
+	../SimDiasca-installation-guide-base-english.rst            \
+	../SimDiasca-installation-guide-header-english.rst          \
+	$(SD_DOC_COMMON_ELEMS)/css/pygments-default.css             \
+	$(SD_DOC_COMMON_ELEMS)/css/sim-diasca.css                   \
+	$(SD_DOC_COMMON_ELEMS)/edf-related/sim-diasca-icon.png      \
+	$(SD_DOC_COMMON_ELEMS)/edf-related/sim-diasca.png           \
+	$(SD_DOC_COMMON_ELEMS)/edf-related/logo-EDF-english.png     \
+	$(SD_DOC_COMMON_ELEMS)/licence/lgpl-v3-logo-bordered.png    \
+	$(SD_DOC_COMMON_ELEMS)/xkcd/xkcd-cautionary.png             \
+	$(SD_DOC_COMMON_ELEMS)/xkcd/xkcd-sandwich.png               \
+	$(SD_DOC_COMMON_ELEMS)/xkcd/xkcd-tar.png                    \
+	$(SD_DOC_COMMON_ELEMS)/xkcd/xkcd-compiling.png              \
+	$(TRACES_TOP)/doc/logmx-interface.png
+
 
 
 # As we prefer having a Sim-Diasca specific message, denoting the use of its

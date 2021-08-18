@@ -33,4 +33,4 @@ Writing such toy models is surely the shortest path to the understanding of Sim-
 :raw-latex:`\includegraphics[scale=0.6]{xkcd-not_enough_work.png}`
 
 
-We hope that you will enjoy using Sim-Diasca. As always, any (constructive!) feedback is welcome (use `this email address <mailto:olivier.boudeville@edf.fr>`_ for that). Thanks!
+We hope that you will enjoy using Sim-Diasca. As always, any (constructive!) feedback is welcome (use the email address at top of this document for that). Thanks!

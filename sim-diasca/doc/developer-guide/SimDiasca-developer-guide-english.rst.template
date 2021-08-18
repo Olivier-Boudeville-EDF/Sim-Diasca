@@ -76,11 +76,13 @@ Sim-Diasca Developer Guide
 .. include:: SimDiasca-technical-gotchas.rst
 
 
-:raw-latex:`\pagebreak`
+.. comment To be adapted to GIT:
 
-.. include:: SimDiasca-VCS-conventions-english.rst
+.. comment :raw-latex:`\pagebreak`
 
-.. include:: SimDiasca-VCS-guide-english.rst
+.. comment .. include:: SimDiasca-VCS-conventions-english.rst
+
+.. comment .. include:: SimDiasca-VCS-guide-english.rst
 
 
 

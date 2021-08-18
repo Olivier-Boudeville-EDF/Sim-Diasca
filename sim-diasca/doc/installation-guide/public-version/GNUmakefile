@@ -1,7 +1,8 @@
 SIM_DIASCA_TOP = ../../..
 
 
-.PHONY: doc html pdf secure-header-rst info-doc info-local-doc
+.PHONY: doc html pdf secure-doc-elements clean-doc-elements \
+		info-doc info-local-doc
 
 
 OVERALL_DOCUMENT_SOURCE = $(SD_INST_PUBLIC_GUIDE_SRC)
@@ -9,18 +10,31 @@ OVERALL_DOCUMENT_SOURCE = $(SD_INST_PUBLIC_GUIDE_SRC)
 
 # Default do-nothing target:
 doc:
-	@echo "  Run 'make full-doc' to generate the public installation "\
+	@echo "  Run 'make full-doc' to generate the public installation " \
 	"guide ($(SD_INST_PUBLIC_GUIDE_BASE)) documents."
 
 
-html: secure-header-rst full-html
+# We used to rely on full-* targets instead of local-* ones, yet selecting
+# recursively all RST files led to overwrite randomly identically-named files
+# found in public and internal directories.
+#
+# So it is better to use local-* targets and to manage, on an ad hoc basis
+# through symlinks), the few RST files needed:
+#
+html: secure-doc-elements local-html
 
-pdf: secure-header-rst full-pdf
+pdf: secure-doc-elements local-pdf
 
 
-secure-header-rst:
-	@echo "  Securing common RST header"
-	@cd .. && $(MAKE) -s SimDiasca-installation-guide-header-english.rst
+secure-doc-elements:
+	@echo "  Securing common RST header and creating symlinks"
+	@cd .. && $(MAKE) -s secure-doc-elements
+	@for f in $(SD_INST_COMMON_DOC_ELEMS); do ln -sf $$f; done
+
+
+clean-doc-elements:
+	@echo "  Cleaning doc elements: removing symlinks"
+	@for f in $(SD_INST_COMMON_DOC_ELEMS); do /bin/rm -f $$(basename $$f); done
 
 
 # Root specified as we want to catch all relevant doc elements:

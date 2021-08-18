@@ -1,7 +1,7 @@
 
 The operating system is supposed here to be GNU/Linux [#]_ (32 or, most probably, 64 bits):
 
-:raw-html:`<center><img src="xkcd-cautionary.png"></img></center>`
+:raw-html:`<center><img src="xkcd-cautionary.png" id="responsive-image-medium"></img></center>`
 :raw-latex:`\includegraphics[scale=0.6]{xkcd-cautionary.png}`
 
 (see the credits_ section about the comic strips)
@@ -11,7 +11,7 @@ The operating system is supposed here to be GNU/Linux [#]_ (32 or, most probably
 
 Root access is not necessary, but recommended so that any lacking prerequisite can be installed directly and with little effort:
 
-:raw-html:`<center><img src="xkcd-sandwich.png"></img></center>`
+:raw-html:`<center><img src="xkcd-sandwich.png" id="responsive-image-small"></img></center>`
 :raw-latex:`\includegraphics[scale=0.6]{xkcd-sandwich.png}`
 
 
@@ -293,7 +293,7 @@ Finally, users of Debian-based distributions (Jeesie, Wheezy) could just start w
 
 .. code:: bash
 
- $ sudo apt-get install bzip2 coreutils build-essential g++     \
+ $ sudo apt-get install bzip2 coreutils build-essential g++       \
    libncurses5-dev openssl libssl-dev libwxgtk3.0-dev             \
    libgl1-mesa-dev libglu1-mesa-dev libpng3                       \
    python-docutils eog evince gcc gnuplot  gnuplot-x11            \
@@ -322,7 +322,7 @@ You should have been given a Sim-Diasca archive, probably corresponding to a sta
 
 In a directory on which you have read/write access and enough space left, extract that Sim-Diasca archive, using a proper ``tar`` incantation:
 
-:raw-html:`<center><img src="xkcd-tar.png"></img></center>`
+:raw-html:`<center><img src="xkcd-tar.png" id="responsive-image-intermediate"></img></center>`
 :raw-latex:`\includegraphics[scale=0.5]{xkcd-tar.png}`
 
 
@@ -368,7 +368,7 @@ Although older versions of Erlang were supported (initially starting from ``R12B
 
   So, to obtain a proper Erlang installation, users of Debian-based distributions may run the following command (in one line)::
 
-   > sudo apt-get install g++ make libncurses5-dev openssl \
+   $ sudo apt-get install g++ make libncurses5-dev openssl \
 	 libssl-dev libwxgtk3.0-dev libgl1-mesa-dev            \
 	 libglu1-mesa-dev libpng3
 
@@ -574,7 +574,7 @@ Sim-Diasca provides, in the ``traces/conf/logmx`` directory, the following confi
 They should be copied in the LogMX ``config`` directory. These files should overwrite the default LogMX ones. For example::
 
   $ for f in logmx.properties managers.properties parsers.properties; do \
-  /bin/cp traces/conf/logmx/$f ~/Software/LogMX/LogMX_vx.y.z/config ; \
+  /bin/cp traces/conf/logmx/$f ~/Software/LogMX/LogMX_vx.y.z/config ;    \
   done
 
 
@@ -653,7 +653,7 @@ To do so, just test, from the root of the sources, whether LogMX and the Sim-Dia
 
 You can skip next section if you see something like:
 
-:raw-html:`<center><img src="logmx-interface.png"></img></center>`
+:raw-html:`<center><img src="logmx-interface.png" id="responsive-image-full"></img></center>`
 :raw-latex:`\includegraphics[scale=0.5]{logmx-interface.png}`
 
 Otherwise, an error like ``Error while instantiating parser`` must have been reported: your Java environment is most probably not appropriate (too old?), and, **if** you are not able to upgrade the Java interpreter that you are using, then unfortunately the parser will have to be rebuilt with all the Java bells and whistles, as explained in the next section (usually this issue does not occur, and one can thus jump directly to the `Checking Which Tools Sim-Diasca Will Use`_ section).
@@ -837,7 +837,7 @@ Building Sim-Diasca
 
 The good news is that Sim-Diasca is written in Erlang, thus it requires to be compiled:
 
-:raw-html:`<center><img src="xkcd-compiling.png"></img></center>`
+:raw-html:`<center><img src="xkcd-compiling.png" id="responsive-image-small"></img></center>`
 :raw-latex:`\includegraphics[scale=0.6]{xkcd-compiling.png}`
 
 
@@ -1233,7 +1233,7 @@ We hope that the installation went smooth!
 Now is maybe a good time to run some examples found in the ``mock-simulators`` tree (located at the root of the Sim-Diasca clone) - typically a ``soda-test``?
 
 
-:raw-html:`<center><img src="sim-diasca.png" width="25%"></img></center>`
+:raw-html:`<center><img src="sim-diasca.png" id="responsive-image-small"></img></center>`
 :raw-latex:`\begin{figure}[h] \centering \includegraphics[scale=0.15]{sim-diasca.png} \end{figure}`
 
 :raw-html:`<a name="sim_diasca_bottom"></a>`

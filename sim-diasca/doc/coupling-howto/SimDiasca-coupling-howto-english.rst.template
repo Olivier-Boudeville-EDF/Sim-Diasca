@@ -45,14 +45,14 @@ Sim-Diasca Coupling HOWTO
 
 :Abstract:
 
-	This document describes how the coupling of models and simulations can be done with Sim-Diasca.
+	This document describes how the *coupling* of models and simulations can be done with Sim-Diasca.
 
-	Four coupling schemes are more specifically discussed, based on:
+	Four coupling schemes are more specifically discussed, following:
 
 	- a black box model
 	- a model-driven adapter
 	- an adapter-driven model
-	- a native model
+	- the native model (the reference, usual way models are integrated)
 
 	These coupling schemes account for the most common options that range from co-simulation to pure simulation.
 
@@ -99,6 +99,12 @@ However in some cases the last two steps cannot be performed in that order, nota
 
 In this case we have to deal with pre-existing models, and the challenge switches from their writing to their coupling, so that, **even if these models are already written, they can be nevertheless integrated - at least to some extent - in the new simulation of interest**.
 
+Said otherwise, the models involved in the vast majority of Sim-Diasca simulations shall be purposedly Erlang-based and shall derive, directly or not, from the ``class_Actor`` mother classes provided by the engine.
+
+We suppose, in the context of this document, that this most direct "native" approach cannot be taken, inducing the need to perform some kind of coupling instead.
+
+.. comment	Coupling departs completely from the most common, general way Sim-Diasca is intended to be used, in the sense that, in the very specific use case discussed in this document, the simulation is to include at least some third-party models - as opposed to models that would have been implemented from the ground based on the Sim-Diasca framework.
+
 
 
 Coupling Among the Sim-Diasca Example Cases
@@ -111,14 +117,14 @@ This typically corresponds to the `City-Example` simulation case [#]_, which foc
 .. [#] This case is distributed with the free software version of Sim-Diasca, and can be found in the ``mock-simulators/city-example`` directory.
 
 
-Another example case, the `Sustainable-Cities` [#]_ one, is also a fairly classical simulation, yet focuses on its boundaries (i.e. its input and output) in the context of the integration to a third-party platform; no coupling is involved here either.
+Another example case, the `Sustainable-Cities` [#]_ one, is also a fairly classical simulation, yet focuses on its boundaries (i.e. its input and output) in the context of the integration to a third-party platform; yet no actual coupling is involved here either.
 
 .. [#] This case does not belong to the free software version of Sim-Diasca; it is located in the ``sustainable-cities/sustainable-cities-case`` directory.
 
 
 A third simulation case, nicknamed `MUG` [#]_, focuses on the subject of interest here, i.e. the **coupling of a set of models that were not all written for Sim-Diasca** (they were written independently, and their coupling is thus an afterthought).
 
-.. [#] This case does not belong to the free software version of Sim-Diasca; it is located in the ``sustainable-cities/mug-case`` directory.
+.. [#] This case does not belong to the free software version of Sim-Diasca (it is located in the ``sustainable-cities/mug-case`` directory of the internal version).
 
 
 As a result these models were not specifically in line with the engine's expectations at various levels; from the most problematic to the least:

@@ -15,6 +15,12 @@ doc:
 	@for m in $(MODULES_DIRS); do (cd $$m && $(MAKE) -s doc); done
 
 
+# To be shared between public/internal.
+#
+# Header must be (re)-generated:
+secure-doc-elements: SimDiasca-installation-guide-header-english.rst
+
+
 test:
 
 
