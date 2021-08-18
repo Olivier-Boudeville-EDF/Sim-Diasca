@@ -8,7 +8,7 @@
 	clean-prerequisites clean-generated-files                           \
 	clean-all-results real-clean real-clean-local                       \
 	install to-archive to-archive-full vcs-archive archive              \
-	update-third-party-mirror release stats                             \
+	update-third-party-mirror release stats stats-full                  \
 	info-context info-versions                                          \
 	info info-files info-local-files info-paths info-build              \
 	info-archive info-version info-release
@@ -180,9 +180,9 @@ $(VERSION_FILE):
 
 prerequisites:
 	@echo "   Making prerequisites: $(PREREQUISITES_DESCRIPTION)"
-	@for m in $(PREREQUISITES_DIRS); do if ! ( if [ -d $$m ]; then cd $$m && \
+	@for m in $(PREREQUISITES_DIRS); do if ! (if [ -d $$m ]; then cd $$m &&  \
 	$(MAKE) -s all && cd ..;                                                 \
-	else echo "     (non-existing directory $$m skipped)"; fi ); then       \
+	else echo "     (non-existing directory $$m skipped)"; fi); then         \
 	exit 1; fi; done
 
 
@@ -192,13 +192,13 @@ rebuild: clean all generate-list-of-all-types
 generate-all-plt: all
 	@echo "   Generating now PLTs for the full Sim-Diasca based stack:"
 	@for m in $(PLT_TARGETS); do \
-	( cd $$m; $(MAKE) -s generate-local-plt ); done
+	(cd $$m && $(MAKE) -s generate-local-plt); done
 
 
 generate-list-of-all-types:
 	@echo "   Listing now all types defined in the full Sim-Diasca based stack:"
 	@for m in $(PLT_TARGETS); do \
-	( cd $$m; $(MAKE) -s generate-list-of-local-types ); done
+	(cd $$m && $(MAKE) -s generate-list-of-local-types); done
 
 
 # Creates all relevant links in the source tree to the central, single, host
@@ -208,7 +208,7 @@ link-host-candidates:
 	@echo "   Creating symbolic links to $(SIM_DIASCA_HOST_FILE) \
 	in the full source tree"
 	@for f in $(SIM_DIASCA_TOP) $(MOCK_SIMULATORS_TOP); do \
-	( cd $$f && $(MAKE) -s make-config-links-recurse ); done
+	(cd $$f && $(MAKE) -s make-config-links-recurse); done
 
 
 
@@ -486,7 +486,16 @@ update-third-party-mirror:
 
 
 stats:
+	@echo "Statistics of the Sim-Diasca core itself only:"
 	@$(MAKE_CODE_STATS) $(SIM_DIASCA_TOP)
+
+
+stats-full: stats
+	@echo "Statistics of the Sim-Diasca lower-layers:"
+	@$(MAKE_CODE_STATS) $(TRACES_TOP)
+	@$(MAKE_CODE_STATS) $(WOOPER_TOP)
+	@$(MAKE_CODE_STATS) $(MYRIAD_TOP)
+
 
 
 # Typically useful to know the software context for continuous integration:
