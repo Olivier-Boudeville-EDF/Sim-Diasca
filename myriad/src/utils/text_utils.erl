@@ -60,8 +60,9 @@
 
 		  record_to_string/1,
 
-		  strings_to_string/1, strings_to_sorted_string/1,
-		  strings_to_string/2, strings_to_sorted_string/2,
+		  strings_to_string/1, strings_to_string/2,
+		  strings_to_spaced_string/1, strings_to_spaced_string/2,
+		  strings_to_sorted_string/1, strings_to_sorted_string/2,
 		  strings_to_enumerated_string/1, strings_to_enumerated_string/2,
 		  strings_to_listed_string/1, strings_to_listed_string/2,
 
@@ -658,10 +659,10 @@ get_bullet_for_level( 0 ) ->
 	" + ";
 
 get_bullet_for_level( 1 ) ->
-	"   - ";
+	"    - ";
 
 get_bullet_for_level( 2 ) ->
-	"     * ";
+	"       * ";
 
 get_bullet_for_level( N ) when is_integer( N ) andalso N > 0 ->
 	Base = get_bullet_for_level( N rem 3 ),
@@ -674,7 +675,7 @@ get_bullet_for_level( N ) when is_integer( N ) andalso N > 0 ->
 %
 -spec get_indentation_offset_for_level( indentation_level() ) ->  ustring().
 get_indentation_offset_for_level( N ) ->
-	string:copies( _BaseString=" ", _Count=N+1 ).
+	string:copies( _BaseString="   ", _Count=N+1 ).
 
 
 
@@ -730,19 +731,20 @@ strings_to_enumerated_string( Strings, IndentationLevel ) ->
 	Prefix = get_indentation_offset_for_level( IndentationLevel ),
 
 	{ _FinalCount, ReversedStrings } = lists:foldl(
-				fun( String, _Acc={ Count, Strs } ) ->
+		fun( String, _Acc={ Count, Strs } ) ->
 
-					NewStrs = [ format( "~ts~B. ~ts~n",
-										[ Prefix, Count, String ] ) | Strs ],
-					{ Count+1, NewStrs }
+			NewStrs =
+				[ format( "~n~ts~B. ~ts", [ Prefix, Count, String ] ) | Strs ],
 
-				end,
-				_Acc0={ 1, "" },
-				_List=Strings ),
+			{ Count+1, NewStrs }
+
+		end,
+		_Acc0={ 1, "" },
+		_List=Strings ),
 
 	OrderedStrings = lists:reverse( ReversedStrings ),
 
-	format( "~n~ts", [ lists:flatten( OrderedStrings ) ] ).
+	format( "~ts", [ lists:flatten( OrderedStrings ) ] ).
 
 
 
@@ -820,6 +822,10 @@ strings_to_string( Strings, IndentationLevel )
 
 strings_to_string( Strings, Bullet )
 			when is_list( Strings ) andalso is_list( Bullet ) ->
+
+	%trace_utils:debug_fmt( "strings_to_string/2 for '~p' : bullet is '~ts'.",
+	%						[ Strings, Bullet ] ),
+
 	% Leading '~n' had been removed for some unknown reason:
 
 	% Trailing '~n' was removed (as was inducing a too large final blank space),
@@ -841,6 +847,94 @@ strings_to_string( Strings, Bullet ) when is_list( Bullet ) ->
 strings_to_string( _Strings, IncorrectBullet ) ->
 	throw( { bullet_not_a_string, IncorrectBullet } ).
 
+
+
+% @doc Returns a plain string that pretty-prints specified list of strings
+% (actually the list may contain also binary strings), with default bullets and
+% a blank line before each top-level entry in order to better space them, for an
+% increased readability.
+%
+-spec strings_to_spaced_string( [ any_string() ] ) -> ustring().
+strings_to_spaced_string( _Strings=[] ) ->
+	"(empty list)";
+
+strings_to_spaced_string( Strings=[ SingleString ] )
+  when is_list( SingleString ) orelse is_binary( SingleString ) ->
+
+	% Not retained, as the single string may itself correspond to a full, nested
+	% list and no dangling final quote is desirable:
+	%io_lib:format( " '~ts'", Strings );
+
+	% No leading space, the caller is expected to have it specified by himself,
+	% like in: "foo: ~ts", not as "foo:~ts":
+
+	% To force a plain string:
+	%io_lib:format( " ~ts", Strings );
+	io_lib:format( "~ts", Strings );
+
+strings_to_spaced_string( Strings ) when is_list( Strings ) ->
+
+	%trace_utils:debug_fmt( "Stringifying ~p.", [ Strings ] ),
+
+	SpacedBullet = [ $\n | get_default_bullet() ],
+
+	io_lib:format( "~n~ts~n",
+		[ strings_to_string_helper( Strings, _Acc=[], SpacedBullet ) ] );
+
+strings_to_spaced_string( ErrorTerm ) ->
+	report_not_a_list( ErrorTerm ).
+
+
+% @doc Returns a string that pretty-prints specified list of strings (actually,
+% any element that can be processed with ~ts will do; ex: atoms), with
+% user-specified bullets or indentation level, and a blank line before each
+% top-level entry in order to better space them, for an increased readability.
+%
+% This can be a solution to nest bullet lists, by specifying a bullet with an
+% offset, such as " * ".
+%
+-spec strings_to_spaced_string( [ ustring() ],
+								indentation_level_or_bullet() ) -> ustring().
+strings_to_spaced_string( _Strings=[], _IndentationOrBullet ) ->
+	"(empty list)";
+
+strings_to_spaced_string( _Strings=[ SingleString ], _IndentationOrBullet )
+									when is_list( SingleString ) ->
+	% For a single string, no need for leading and trailing newlines, but it
+	% used to be separated (with single quotes) from the surrounding text
+	% (not done anymore, as this single element may be itself a bullet list)
+	%
+	SingleString;
+
+strings_to_spaced_string( Strings, IndentationLevel )
+									when is_integer( IndentationLevel ) ->
+	Bullet = get_bullet_for_level( IndentationLevel ),
+	strings_to_spaced_string( Strings, Bullet );
+
+strings_to_spaced_string( Strings, Bullet )
+			when is_list( Strings ) andalso is_list( Bullet ) ->
+
+	%trace_utils:debug_fmt( "strings_to_spaced_string/2 for '~p' : "
+	%    "bullet is '~ts'.", [ Strings, Bullet ] ),
+
+	Pattern = "~n~ts",
+
+	SpacedBullet = [ $\n | Bullet ],
+
+	io_lib:format( Pattern,
+		[ strings_to_string_helper( Strings, _Acc=[], SpacedBullet ) ] );
+
+strings_to_spaced_string( Strings, Bullet ) when is_list( Bullet ) ->
+	report_not_a_list( Strings );
+
+strings_to_spaced_string( _Strings, IncorrectBullet ) ->
+	throw( { bullet_not_a_string, IncorrectBullet } ).
+
+
+% any element that can be processed with ~ts will do; ex: atoms) once reordered,
+% with user-specified indentation level or bullet, and a blank line before each
+% top-level entry in order to better space them, for an increased readability.
+%
 
 
 % @doc Returns a string that pretty-prints specified list of strings (actually,

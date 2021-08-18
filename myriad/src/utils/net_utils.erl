@@ -49,11 +49,14 @@
 		  set_unique_node_name/0,
 		  get_all_connected_nodes/0,
 		  check_node_availability/1, check_node_availability/2,
-		  get_node_naming_mode/0, get_naming_compliant_hostname/2,
-		  generate_valid_node_name_from/1, get_complete_node_name/3,
+		  get_node_naming_mode/0,
+		  get_naming_compliant_hostname/1, get_naming_compliant_hostname/2,
+		  generate_valid_node_name_from/1,
+		  get_complete_node_name/1, get_complete_node_name/3,
 		  get_hostname_from_node_name/1,
 		  launch_epmd/0, launch_epmd/1,
 		  enable_distribution_mode/2, enable_preferred_distribution_mode/2,
+		  secure_distribution/1,
 		  get_cookie/0, set_cookie/1, set_cookie/2,
 		  shutdown_node/0, shutdown_node/1 ]).
 
@@ -151,8 +154,15 @@
 -type check_duration() :: non_neg_integer().
 -type check_node_timing() :: check_duration() | 'immediate' | 'with_waiting'.
 
+
 -type node_naming_mode() :: 'long_name' | 'short_name'.
-% How Erlang nodes are to be named to locate each other.
+% How Erlang nodes are to be named to locate each other, according to our
+% conventions.
+
+
+-type erlang_naming_type() :: 'shortnames' | 'longnames'.
+% No standard definition of NameType found in net_kernel or elsewhere.
+
 
 -type cookie() :: atom().
 
@@ -171,8 +181,8 @@
 
 -type lookup_info() :: { lookup_tool(), file_utils:executable_path() }.
 
--type lookup_outcome() :: string_host_name()
-							| 'unknown_dns' | 'no_dns_lookup_executable_found'.
+-type lookup_outcome() ::
+		string_host_name() | 'unknown_dns' | 'no_dns_lookup_executable_found'.
 
 
 -export_type([ ip_v4_address/0, ip_v6_address/0, ip_address/0,
@@ -183,7 +193,7 @@
 			   atom_fqdn/0, string_fqdn/0, bin_fqdn/0, fqdn/0,
 			   domain_name/0, bin_domain_name/0, subdomain/0, bin_subdomain/0,
 			   check_duration/0, check_node_timing/0,
-			   node_naming_mode/0, cookie/0,
+			   node_naming_mode/0, erlang_naming_type/0, cookie/0,
 			   net_port/0, tcp_port/0, udp_port/0,
 			   tcp_port_range/0, udp_port_range/0,
 			   tcp_port_restriction/0,
@@ -960,19 +970,31 @@ get_node_naming_mode() ->
 
 
 
-% @doc Returns a transformed version (as a string) of the specified hostname
-% (itself specified as a string) so that it is compliant with the specified node
-% naming convention.
+% @doc Returns a transformed version (as a string) of the local hostname, so
+% that it is compliant with the specified node naming convention.
+%
+% For example, if the short_name convention is specified, then a "bar.baz.org"
+% local hostname will result into "bar".
+%
+-spec get_naming_compliant_hostname( node_naming_mode() ) -> string_host_name().
+get_naming_compliant_hostname( NamingMode ) ->
+	get_naming_compliant_hostname( _Hostname=localhost( fqdn ), NamingMode ).
+
+
+
+% @doc Returns a transformed version (as a string) of the specified FQDN
+% hostname (itself specified as a string) so that it is compliant with the
+% specified node naming convention.
 %
 % For example, if the short_name convention is specified, then a "bar.baz.org"
 % hostname will result into "bar".
 %
 -spec get_naming_compliant_hostname( string_host_name(),
 									 node_naming_mode() ) -> string_host_name().
-get_naming_compliant_hostname( Hostname, short_name ) ->
+get_naming_compliant_hostname( Hostname, _NamingMode=short_name ) ->
 	hd( string:tokens( Hostname, "." ) );
 
-get_naming_compliant_hostname( Hostname, long_name ) ->
+get_naming_compliant_hostname( Hostname, _NamingMode=long_name ) ->
 	Hostname.
 
 
@@ -996,6 +1018,22 @@ generate_valid_node_name_from( Name ) when is_list( Name ) ->
 				"( |<|>|,|\\(|\\)|'|\"|/|\\\\|\&|~|"
 				"#|@|{|}|\\[|\\]|\\||\\$|\\*|\\?|!|\\+|;|\\.|:)+", "_",
 				[ global, { return, list } ] ).
+
+
+
+% @doc Returns the complete name of the specified node (as a string), which has
+% to be used to target it from another node, with respect to the local hostname
+% and node naming conventions.
+%
+% Ex: for a node name "foo", the local hostname may be determined as "bar.org",
+% and with short names, we may specify "foo@bar" to target the corresponding
+% node with these conventions (neither with a mere "foo" nor with
+% "foo@bar.org").
+%
+-spec get_complete_node_name( string_node_name() ) -> atom_node_name().
+get_complete_node_name( NodeName ) ->
+	get_complete_node_name( NodeName, _Hostname=localhost( fqdn ),
+							get_node_naming_mode() ).
 
 
 
@@ -1120,7 +1158,7 @@ enable_distribution_mode( NodeName, NamingMode ) ->
 
 
 % @doc Returns the distribution naming mode that could be enabled (if any) on
-% the current node, based on the modes that were specified in decreasing order
+% the current node, based on the mode(s) that were specified in decreasing order
 % of interest, or returns an error.
 %
 % The current node is supposedly not already distributed (otherwise the
@@ -1138,42 +1176,55 @@ enable_preferred_distribution_mode( NodeName, NamingModes )
 	AtomNodeName = text_utils:string_to_atom( lists:flatten( NodeName ) ),
 	enable_preferred_distribution_mode( AtomNodeName, NamingModes );
 
+enable_preferred_distribution_mode( BinNodeName, NamingModes )
+					when is_binary( BinNodeName ) ->
+	AtomNodeName = text_utils:binary_to_atom( BinNodeName ),
+	enable_preferred_distribution_mode( AtomNodeName, NamingModes );
+
 enable_preferred_distribution_mode( AtomNodeName, NamingModes )
 		when is_atom( AtomNodeName ) andalso is_list( NamingModes ) ->
 	enable_preferred_distribution_mode( AtomNodeName, NamingModes,
 		_LastError=no_suitable_node_naming_mode );
 
+% NamingModes not a list:
 enable_preferred_distribution_mode( AtomNodeName, NamingModes )
 		when is_atom( AtomNodeName ) ->
 	throw( { invalid_preferred_node_naming_modes, NamingModes } );
 
+% NodeName not legit:
 enable_preferred_distribution_mode( NodeName, _NamingModes ) ->
 	throw( { invalid_node_naming_mode, NodeName } ).
 
 
 
-% We ensure we have an actual error to report.
+% We ensure we have an actual error to report in all cases.
+%
 % (helper)
 %
 enable_preferred_distribution_mode( NodeName, _NamingModes=[], LastError ) ->
+
 	trace_utils:error_fmt( "No node naming left to enable the distribution "
-		"of node '~ts' (last error: ~p).", [ NodeName, LastError ] ),
+		"of node '~ts'; last reported error was:~n  ~p).",
+		[ NodeName, LastError ] ),
+
 	{ error, LastError };
 
 
-% Clause almost duplicated, yet allows to convert modes:
+% Clause almost duplicated with next one, yet allows to convert modes:
 enable_preferred_distribution_mode( NodeName,
 						_NamingModes=[ long_name | T ], _LastError ) ->
+
 	case try_start_distribution( NodeName, long_name, _NameType=longnames ) of
 
-		ok ->
-			{ ok, long_name };
-
-		{ error, Reason } ->
+		{ error, ErrorReason } ->
 			trace_utils:warning_fmt( "Could not enable a long name "
-				"distribution for node '~ts'; reason:~n  ~p)~nSwitching to any "
-				"next preferred mode.", [ NodeName, Reason ] ),
-			enable_preferred_distribution_mode( NodeName, T, Reason )
+				"distribution for node '~ts'; reason:~n  ~p~nSwitching to any "
+				"next preferred mode.", [ NodeName, ErrorReason ] ),
+			enable_preferred_distribution_mode( NodeName, T, ErrorReason );
+
+		% R={ ok, long_name };
+		R ->
+			R
 
 	end;
 
@@ -1182,14 +1233,15 @@ enable_preferred_distribution_mode( NodeName,
 						_NamingModes=[ short_name | T ], _LastError ) ->
 	case try_start_distribution( NodeName, short_name, _NameType=shortnames ) of
 
-		ok ->
-			{ ok, short_name };
-
-		{ error, Reason } ->
+		{ error, ErrorReason } ->
 			trace_utils:warning_fmt( "Could not enable a short name "
-				"distribution for node '~ts'; reason:~n  ~p)~nSwitching to any "
-				"next preferred mode.", [ NodeName, Reason ] ),
-			enable_preferred_distribution_mode( NodeName, T, Reason )
+				"distribution for node '~ts'; reason:~n  ~p~nSwitching to any "
+				"next preferred mode.", [ NodeName, ErrorReason ] ),
+			enable_preferred_distribution_mode( NodeName, T, ErrorReason );
+
+		% R={ ok, short_name };
+		R={ ok, _NamingMode } ->
+			R
 
 	end;
 
@@ -1204,25 +1256,32 @@ enable_preferred_distribution_mode( NodeName,
 
 
 
-% (helper)
+% (actual helper, defined to be able to fail while not throwing)
+-spec try_start_distribution( atom_node_name(), node_naming_mode(),
+				erlang_naming_type() ) -> fallible( node_naming_mode() ).
 try_start_distribution( NodeName, NamingMode, NameType ) ->
 	try_start_distribution( NodeName, NamingMode, NameType,
 							?distribution_setting_attempt_count ).
 
 
+
 % (sub-helper)
 %try_start_distribution( _NodeName, _NamingMode, _NameType,
-%						_RemainingAttempts=0 ) ->
-%	{ error, all_attempts_failed };
+%                        _RemainingAttempts=0 ) ->
+%   { error, all_attempts_failed };
 
 try_start_distribution( NodeName, NamingMode, NameType, RemainingAttempts ) ->
 
 	%trace_utils:debug_fmt( "Starting distribution for node name '~ts', "
-	%    "as '~w'.", [ NodeName, NameType ] ),
+	%	"as '~ts', i.e. '~ts' (while current is '~ts'); still ~B attempts.",
+	%	[ NodeName, NamingMode, NameType, node(), RemainingAttempts ] ),
 
 	case net_kernel:start( [ NodeName, NameType ] ) of
 
 		{ error, Reason } ->
+
+			%trace_utils:warning_fmt( "Cannot start node '~ts' as ~ts:"
+			%	"~n  ~p.", [ NodeName, NameType, Reason ] ),
 
 			case RemainingAttempts of
 
@@ -1244,22 +1303,61 @@ try_start_distribution( NodeName, NamingMode, NameType, RemainingAttempts ) ->
 							   NamingMode, ExtraReason } };
 
 				N ->
-					trace_utils:warning_fmt( "(attempt of enabling ~p "
-						"distribution for node '~ts' failed, retrying...)",
-						[ NamingMode, NodeName ] ),
+
+					NextRetryCount = N-1,
+
+					%trace_utils:warning_fmt( "(attempt of enabling ~p "
+					%   "distribution for node '~ts' failed, retrying "
+					%   "(still ~B retries)...)",
+					%   [ NamingMode, NodeName, NextRetryCount ] ),
+
 					timer:sleep( 300 ),
+
 					try_start_distribution( NodeName, NamingMode, NameType,
-											N-1 )
+											NextRetryCount )
 
 			end;
 
 		{ ok, _NetKernelPid } ->
-			ok
+			%trace_utils:debug_fmt( "Node '~ts' started as ~ts.",
+			%					   [ NodeName, NameType ] ),
+			{ ok, NamingMode }
 
 	end.
 
 
 
+% @doc Tries to enable the distribution on the current node, trying first to use
+% long names, otherwise short names, doing its best to avoid that the operation
+% fails; in case of success returns the enabled naming mode, otherwise throws an
+% exception.
+%
+% Especially useful in context of continuous integration and/or from within a
+% container facility such as Docker or Singularity, where enabling the
+% distribution of nodes may fail for varied reasons.
+%
+% See enable_distribution_mode/2 for more details.
+%
+-spec secure_distribution( node_name() ) -> node_naming_mode().
+secure_distribution( UserNodeName ) ->
+
+	% Our preferred order (the most tricky one):
+	OrderedNamingModes = [ long_name, short_name ],
+
+	% Just if wanting to test that way:
+	%OrderedNamingModes = [ short_name, long_name ],
+
+	case enable_preferred_distribution_mode( UserNodeName,
+											 OrderedNamingModes ) of
+
+		{ ok, NamingMode } ->
+			NamingMode;
+
+		{ error, ErrorReason } ->
+			throw( { cannot_secure_distribution, UserNodeName,
+					 ErrorReason } )
+
+end.
 
 
 
@@ -1520,9 +1618,25 @@ get_tcp_port_range_option( { MinTCPPort, MaxTCPPort } )
 % environment in order to launch an Erlang node (interpreter) with the specified
 % settings.
 %
--spec get_basic_node_launching_command( string_node_name(), node_naming_mode(),
+-spec get_basic_node_launching_command( node_name(), node_naming_mode(),
 		maybe( tcp_port() ), 'no_restriction' | tcp_port_range(), ustring() ) ->
 					{ command(), environment() }.
+get_basic_node_launching_command( NodeName, NodeNamingMode, EpmdSettings,
+		TCPSettings, AdditionalOptions ) when is_atom( NodeName ) ->
+
+	NodeNameStr = text_utils:atom_to_string( NodeName ),
+
+	get_basic_node_launching_command( NodeNameStr, NodeNamingMode, EpmdSettings,
+									  TCPSettings, AdditionalOptions );
+
+get_basic_node_launching_command( NodeName, NodeNamingMode, EpmdSettings,
+		TCPSettings, AdditionalOptions ) when is_binary( NodeName ) ->
+
+	NodeNameStr = text_utils:binary_to_string( NodeName ),
+
+	get_basic_node_launching_command( NodeNameStr, NodeNamingMode, EpmdSettings,
+									  TCPSettings, AdditionalOptions );
+
 get_basic_node_launching_command( NodeName, NodeNamingMode, EpmdSettings,
 								  TCPSettings, AdditionalOptions ) ->
 

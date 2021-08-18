@@ -34,10 +34,9 @@ For that, following changes are operated:
   - ``maybe(T)`` becomes the type union ``'undefined'|T``
   - ``fallible(T)`` becomes ultimately the type union ``{'ok',T}|{'error',term()}``, while ``fallible(Tok, Terror)`` becomes ``{'ok',Tok}|{'error',Terror}``
 
-- both in type specifications and actual code, ``table/2``, the Myriad-specific associative table pseudo-type, is translated into an actual `table type`_:
+- both in type specifications and actual code, ``table/2``, the Myriad-specific associative table pseudo-type, is translated into an actual `table type`_
 
-  - by default, ``map_hashtable`` (the generally most efficient one)
-  - unless it is overridden on a per-module basis with the ``table_type`` define, like in: ``-table_type(list_table).``
+- the ``const_table`` module allows to generate sharable, read-only associative tables probably in the most efficient way in Erlang (refer to the `const table`_ section for further information)
 
 - the ``cond_utils`` services drive conditional code injection: based on the build-time tokens defined, their values can be used to perform compilation-time operations such as **if** (see in this module ``if_debug/1``, ``if_defined/{2,3}``, ``if_set_to/{3,4}``), **switch** (see ``switch_set_to/{2,3}``, possibly with a default clause) or **assert** (``assert/{1,2,3}``); if useful, it should be fairly easy (infrastructure mostly ready) to transform the (currently constant) user-defined build tokens into mutable variables and to add for example compile-time assignments (``cond_utils:create_token(TOKEN, MAYBE_INITIAL_VALUE)``, ``cond_utils:set_token_value(TOKEN, VALUE)`` and ``cond_utils:remove_token(TOKEN, MAYBE_INITIAL_VALUE)``) of these variables and loops (**for**, **while**, etc.) if not going for a Turing-complete language, if ever that made sense for some uses; see the `Support for Code Injection`_ for additional usage details regarding the supported primitives
 

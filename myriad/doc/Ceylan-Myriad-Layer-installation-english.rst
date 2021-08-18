@@ -14,11 +14,15 @@ The **operating system** is supposed to be any not-so-old ``GNU/Linux`` distribu
 
 People reported uses of Myriad on ``macOS``, yet no extensive testing has been done there.
 
-Whereas Erlang supports ``Windows`` and we tried to be as cross-platform as possible, even with tools like ``MSYS2`` / ``MinGW-w64`` we suppose quite a lot of special cases would have to be addressed (patches welcome, though!).
+Whereas Erlang supports ``Windows`` and we tried to be as cross-platform as possible, even with tools like ``MSYS2`` / ``MinGW-w64`` we suppose that quite a lot of special cases would have to be addressed (patches welcome, though!).
 
 .. [#] For what it is worth, we prefer `Arch Linux <https://www.archlinux.org/>`_, but this does not really matter here.
 
-.. _getting-erlang:
+.. _`getting-erlang`:
+
+.. _`getting erlang`:
+
+
 
 The main tool prerequisite is of course having the `Erlang <http://erlang.org>`_ environment available, in its ``24.0`` version [#]_ or more recent.
 
@@ -198,7 +202,8 @@ Now we believe that all pending issues have been solved (rebar3 is a neat tool),
 
 .. Since then the rebar3 support remains as it is (a priori at least mostly functional); maybe in the future we will reintroduce it as a native, possibly main, build option - but not today.
 
-One might refer to our `install-rebar3.sh <https://github.com/Olivier-Boudeville/Ceylan-Hull/blob/master/install-rebar3.sh>`_ script for the installation of rebar3.
+
+.. One might refer to our `install-rebar3.sh <https://github.com/Olivier-Boudeville/Ceylan-Hull/blob/master/install-rebar3.sh>`_ script for the installation of rebar3.
 
 
 ..

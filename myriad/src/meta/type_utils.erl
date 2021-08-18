@@ -493,9 +493,16 @@
 
 % Checking:
 -export([ check_atom/1, check_boolean/1, check_pid/1,
-		  check_integer/1, check_float/1,
+
+		  check_integer/1, check_maybe_integer/1,
+		  check_integers/1, check_maybe_integers/1,
+
+		  check_float/1, check_maybe_float/1,
+		  check_floats/1, check_maybe_floats/1,
+
 		  check_list/1,
-		  check_binary/1, check_binaries/1, check_tuple/1 ]).
+		  check_binary/1, check_binaries/1,
+		  check_tuple/1 ]).
 
 
 % Specials for datatypes:
@@ -512,6 +519,10 @@
 -type level() :: basic_utils:level().
 
 -type ustring() :: text_utils:ustring().
+
+
+% (cannot use our extended types here)
+-type maybe( T ) :: T | 'undefined'.
 
 
 
@@ -1199,6 +1210,7 @@ check_pid( Other ) ->
 	throw( { not_pid, Other } ).
 
 
+
 % @doc Checks that the specified term is an integer indeed, and returns it.
 -spec check_integer( term() ) -> integer().
 check_integer( Int ) when is_integer( Int ) ->
@@ -1209,6 +1221,37 @@ check_integer( Other ) ->
 
 
 
+% @doc Checks that the specified term is a maybe-integer indeed, and returns it.
+-spec check_maybe_integer( term() ) -> maybe( integer() ).
+check_maybe_integer( undefined ) ->
+	undefined;
+
+check_maybe_integer( Int ) when is_integer( Int ) ->
+	Int;
+
+check_maybe_integer( Other ) ->
+	throw( { not_maybe_integer, Other } ).
+
+
+
+% @doc Checks that the specified term is a list of integers indeed, and returns
+% it.
+%
+-spec check_integers( term() ) -> [ integer() ].
+check_integers( Integers ) ->
+	[ check_integer( I ) || I <- Integers ].
+
+
+
+% @doc Checks that the specified term is a list of maybe-integers indeed, and
+% returns it.
+%
+-spec check_maybe_integers( term() ) -> [ maybe( integer() ) ].
+check_maybe_integers( MaybeIntegers ) ->
+	[ check_maybe_integer( MI ) || MI <- MaybeIntegers ].
+
+
+
 % @doc Checks that the specified term is a float indeed, and returns it.
 -spec check_float( term() ) -> float().
 check_float( Float ) when is_float( Float ) ->
@@ -1216,6 +1259,37 @@ check_float( Float ) when is_float( Float ) ->
 
 check_float( Other ) ->
 	throw( { not_float, Other } ).
+
+
+
+% @doc Checks that the specified term is a maybe-float indeed, and returns it.
+-spec check_maybe_float( term() ) -> maybe( float() ).
+check_maybe_float( undefined ) ->
+	undefined;
+
+check_maybe_float( F ) when is_float( F ) ->
+	F;
+
+check_maybe_float( Other ) ->
+	throw( { not_maybe_float, Other } ).
+
+
+
+% @doc Checks that the specified term is a list of floats indeed, and returns
+% it.
+%
+-spec check_floats( term() ) -> [ float() ].
+check_floats( Floats ) ->
+	[ check_float( F ) || F <- Floats ].
+
+
+
+% @doc Checks that the specified term is a list of maybe-floats indeed, and
+% returns it.
+%
+-spec check_maybe_floats( term() ) -> [ maybe( float() ) ].
+check_maybe_floats( MaybeFloats ) ->
+	[ check_maybe_float( MF ) || MF <- MaybeFloats ].
 
 
 

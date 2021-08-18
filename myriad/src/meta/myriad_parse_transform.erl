@@ -133,7 +133,7 @@
 
 % The default actual implementation to which 'table' will be wired:
 %
-% (a map is versatile, quite efficient, etc. - hence a good defaults):
+% (a map is versatile, quite efficient, etc. - hence a good default):
 %
 -define( default_table_type, map_hashtable ).
 
@@ -226,7 +226,7 @@ apply_myriad_transform( InputAST, Options ) ->
 	% This allows to compare input and output ASTs more easily:
 	% (most useful input option)
 	%ast_utils:write_ast_to_file( lists:sort( InputAST ),
-	%							 "Myriad-input-AST-sorted.txt" ),
+	%                             "Myriad-input-AST-sorted.txt" ),
 
 	%ast_utils:display_debug( "Code path: ~p", [ code:get_path() ] ),
 
@@ -235,10 +235,10 @@ apply_myriad_transform( InputAST, Options ) ->
 	WithOptsModuleInfo = ast_info:interpret_options( Options, BaseModuleInfo ),
 
 	%ast_info:write_module_info_to_file( WithOptsModuleInfo,
-	%									  "Input-module_info.txt" ),
+	%                                    "Input-module_info.txt" ),
 
 	%ast_utils:display_debug( "Input module info: ~ts~n~n",
-	%		   [ ast_info:module_info_to_string( WithOptsModuleInfo ) ] ),
+	%      [ ast_info:module_info_to_string( WithOptsModuleInfo ) ] ),
 
 	% Currently the resulting transforms are not kept:
 	{ TransformedModuleInfo, _ModuleTransforms } =
@@ -246,7 +246,7 @@ apply_myriad_transform( InputAST, Options ) ->
 
 
 	%ast_info:write_module_info_to_file( TransformedModuleInfo,
-	%									"Output-module_info.txt" ),
+	%                                    "Output-module_info.txt" ),
 
 	%ast_utils:display_debug( "~n## OUTPUT #################################" ),
 	%ast_utils:display_debug( "Output module info: ~ts",
@@ -260,13 +260,13 @@ apply_myriad_transform( InputAST, Options ) ->
 	%ast_utils:display_debug( "~n~nMyriad output AST:~n~p~n", [ OutputAST ] ),
 
 	%OutputASTFilename = io_lib:format(
-	%			"Myriad-output-AST-for-module-~ts.txt",
-	%			[ element( 1, TransformedModuleInfo#module_info.module ) ] ),
+	%    "Myriad-output-AST-for-module-~ts.txt",
+	%    [ element( 1, TransformedModuleInfo#module_info.module ) ] ),
 
 	%ast_utils:write_ast_to_file( OutputAST, OutputASTFilename ),
 
 	%ast_utils:write_ast_to_file( lists:sort( OutputAST ),
-	%							 "Myriad-output-AST-sorted.txt" ),
+	%                             "Myriad-output-AST-sorted.txt" ),
 
 	{ OutputAST, TransformedModuleInfo }.
 
@@ -285,7 +285,7 @@ transform_module_info( ModuleInfo ) when is_record( ModuleInfo, module_info ) ->
 	% Then apply them:
 
 	%ast_utils:display_debug( "~nApplying following ~ts",
-	%		   [ ast_transform:ast_transforms_to_string( Transforms ) ] ),
+	%      [ ast_transform:ast_transforms_to_string( Transforms ) ] ),
 
 	% Returns updated transforms and module information:
 	meta_utils:apply_ast_transforms( ModuleInfo, Transforms ).
@@ -367,7 +367,7 @@ get_myriad_ast_transforms_for(
 
 	% Uncomment to see all known tokens:
 	%ast_utils:display_debug( "Token table:~n~ts",
-	%						 [ ?table:to_string( TokenTable ) ] ),
+	%                         [ ?table:to_string( TokenTable ) ] ),
 
 	TargetModuleName = case ModuleEntry of
 
@@ -411,7 +411,7 @@ get_actual_table_type( ParseAttributeTable ) ->
 		key_not_found ->
 			TableType = ?default_table_type,
 			%?display_trace( "Using default table ~p.~n",
-			%				   [ TableType ] ),
+			%                [ TableType ] ),
 			TableType
 
 	end,
@@ -545,7 +545,7 @@ get_ast_global_transforms( DesiredTableType ) ->
 		%
 		( _FileLocCall,
 		  _FunctionRef={ remote, _, {atom,_,cond_utils},
-						 {atom,FileLocFun,if_debug} },
+						   {atom,FileLocFun,if_debug} },
 		  _Params=[ ExprForm ],
 		  Transforms=#ast_transforms{ transformation_state=TokenTable } ) ->
 

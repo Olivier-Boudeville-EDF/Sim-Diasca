@@ -6,6 +6,11 @@
 ;; emacs -q -l ~/Software/erlang_ls/misc/dotemacs XXX.erl
 
 
+;; Note: on a new install, or to update an older one, uncomment once
+;; (temporarily) the 'package-refresh-contents)' line below.
+
+
+
 ;; Temporarily added, to silence 'Package cl is deprecated':
 (setq byte-compile-warnings '(cl-functions))
 
@@ -75,6 +80,8 @@
 ;; Now disabled, to avoid spurious errors, like load-path not being then found,
 ;; or complaints about free variables:
 ;;(byte-recompile-directory "~/.emacs.d" 0)
+
+(package-require 'flycheck)
 
 (add-hook 'after-init-hook #'global-flycheck-mode)
 
@@ -179,7 +186,10 @@
 
 ;; List of a major modes on which to disable line numbers:
 (defcustom display-line-numbers-exempt-modes
-  '(vterm-mode eshell-mode shell-mode term-mode ansi-term-mode rst-mode)
+  ;; Finally not including 'rst-mode' here, as useful for the debugging of
+  ;; document generation:
+  ;;
+  '(vterm-mode eshell-mode shell-mode term-mode ansi-term-mode)
   "Major modes :."
   :group 'display-line-numbers
   :type 'list
@@ -220,12 +230,12 @@ Exempt major modes are defined in `display-line-numbers-exempt-modes'."
 (add-hook 'erlang-mode-hook #'lsp)
 
 ;; Require and enable the Yasnippet templating system:
-(package-require 'yasnippet)
-(yas-global-mode t)
+;;(package-require 'yasnippet)
+;;(yas-global-mode t)
 
 ;; Enable logging for lsp-mode:
 ;;(setq lsp-log-io t)
-(setq lsp-log-io nil)
+;;(setq lsp-log-io nil)
 
 ;; To select options, see:
 ;; https://emacs-lsp.github.io/lsp-mode/tutorials/how-to-turn-off/
@@ -233,63 +243,63 @@ Exempt major modes are defined in `display-line-numbers-exempt-modes'."
 ;; Enable and configure the LSP UI Package:
 ;; See https://github.com/emacs-lsp/lsp-ui
 ;;(package-require 'lsp-ui)
-(use-package lsp-ui)
+;;(use-package lsp-ui)
 
 ;; Regarding sideline:
-(setq lsp-ui-sideline-show-diagnostics t)
-(setq lsp-ui-sideline-show-hover t)
+;;(setq lsp-ui-sideline-show-diagnostics t)
+;;(setq lsp-ui-sideline-show-hover t)
 
 ;;(setq lsp-ui-sideline-show-code-actions t)
-(setq lsp-ui-sideline-show-code-actions nil)
+;;(setq lsp-ui-sideline-show-code-actions nil)
 
 ;;(setq lsp-ui-sideline-update-mode 'line)
 ;;(setq lsp-ui-sideline-delay ...
 
-(setq lsp-ui-sideline-enable t)
+;;(setq lsp-ui-sideline-enable t)
 
 
 ;; Regarding peek:
-(setq lsp-ui-peek-enable t)
-(setq lsp-ui-peek-show-directory t)
+;;(setq lsp-ui-peek-enable t)
+;;(setq lsp-ui-peek-show-directory t)
 
 
 ;; Regarding lsp-ui-doc:
-(setq lsp-ui-doc-enable t)
-(setq lsp-ui-doc-position 'bottom)
+;;(setq lsp-ui-doc-enable t)
+;;(setq lsp-ui-doc-position 'bottom)
 ;;(setq lsp-ui-doc-delay Number of seconds before showing the doc...
-(setq lsp-ui-doc-show-with-cursor t)
-(setq lsp-ui-doc-show-with-mouse t)
+;;(setq lsp-ui-doc-show-with-cursor t)
+;;(setq lsp-ui-doc-show-with-mouse t)
 
 
 ;; Enable LSP Origami Mode (for folding ranges):
-(package-require 'lsp-origami)
-(add-hook 'origami-mode-hook #'lsp-origami-mode)
-(add-hook 'erlang-mode-hook #'origami-mode)
+;;(package-require 'lsp-origami)
+;;(add-hook 'origami-mode-hook #'lsp-origami-mode)
+;;(add-hook 'erlang-mode-hook #'origami-mode)
 
 ;; Provide commands for type completion, to list workspace symbols:
 ;; - helm-lsp-workspace-symbol
 ;; - helm-lsp-global-workspace-symbol
-(package-install 'helm-lsp)
+;;(package-install 'helm-lsp)
 
-(add-hook 'after-init-hook 'global-company-mode)
+;;(add-hook 'after-init-hook 'global-company-mode)
 
-(setq company-minimum-prefix-length 1
-	  company-idle-delay 0.0) ;; default is 0.2
+;;(setq company-minimum-prefix-length 1
+;;	  company-idle-delay 0.0) ;; default is 0.2
 
 ;; Which-key integration:
 (package-require 'which-key)
 (add-hook 'erlang-mode-hook 'which-key-mode)
-(with-eval-after-load 'lsp-mode
-  (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration))
+;;(with-eval-after-load 'lsp-mode
+;; (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration))
 
 ;; Always show diagnostics at the bottom, using 1/3 of the available space:
-(add-to-list 'display-buffer-alist
-			 `(,(rx bos "*LSP errors*" eos)
-			  (display-buffer-reuse-window
-			   display-buffer-in-side-window)
-			  (side            . bottom)
-			  (reusable-frames . visible)
-			  (window-height   . 0.33)))
+;;(add-to-list 'display-buffer-alist
+;;			 `(,(rx bos "*LSP errors*" eos)
+;;			  (display-buffer-reuse-window
+;;			   display-buffer-in-side-window)
+;;			  (side            . bottom)
+;;			  (reusable-frames . visible)
+;;			  (window-height   . 0.33)))
 
 
 
@@ -926,8 +936,8 @@ Exempt major modes are defined in `display-line-numbers-exempt-modes'."
  ;; If there is more than one, they won't work right.
  '(blink-cursor-mode nil)
  '(column-number-mode t)
- '(package-selected-packages
-   '(yasnippet which-key use-package lsp-ui lsp-origami helm-lsp flycheck erlang))
+ ;;'(package-selected-packages '(flycheck yasnippet which-key lsp-origami helm-lsp erlang))
+ '(package-selected-packages '(flycheck which-key erlang))
  '(show-paren-mode t)
  '(tool-bar-mode nil))
 

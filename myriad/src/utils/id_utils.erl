@@ -63,9 +63,11 @@
 % No legit sortable identifier can be higher than that one (in Erlang term
 % order, lists are dominated (only) by bitstrings):
 %
--define( upper_bound_id, <<"Max">> ).
+-define( upper_bound_id, <<"Myriad_max_sortable_id">> ).
 
 
+% Would have been precisely, if allowed:
+% -type sortable_id() :: [ integer() ] | ?upper_bound_id.
 -type sortable_id() :: [ integer() ] | text_utils:bin_string().
 % Corresponds to smart (sortable, insertion-friendly) identifiers, typically
 % represented (externally) as {1}, {2}, {2,1}, {4}, etc.
@@ -92,8 +94,12 @@
 % Example: `lists:sort([[7,3], [7,2,1], [7,2,2], [7,2]]) =
 %   [[7,2], [7,2,1], [7,2,2], [7,3]]'.
 %
-% The maximum lower bound is conventionally chosen to be [0] - which is not a
-% valid sortable identifier (as it terminates with zero).
+% The maximum lower bound is conventionally chosen to be ?lower_bound_id,
+% i.e. [0] - which is not a valid sortable identifier (as it terminates with
+% zero).
+%
+% The minimum upper bound is conventionally chosen to be ?upper_bound_id, i.e. a
+% binary string.
 %
 % Designed to be efficiently compared/ordered, at the cost of more expensive
 % insertions.

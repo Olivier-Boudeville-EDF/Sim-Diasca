@@ -47,7 +47,7 @@ The dependencies discussed here have to be found only when *executing* one's app
 Build-time Third-Party Dependencies
 -----------------------------------
 
-Myriad does not have such dependencies, but layers above in the software stack (like ``Foo``) may.
+Myriad does not have such dependencies, but layers above in the software stack (like a layer that would be named ``Foo``) may.
 
 To have such dependencies (ex: let's suppose that the ``jsx`` JSON parser defined header files that one wants to include) *installed* as well when building one's project (ex: ``Foo``), one may rely on rebar, and list them in the project's ``foo/conf/rebar.config.template`` file (ex: ``{deps, [bar, jsx]}.``) from which the actual ``rebar.config`` is to be generated (use the ``make set-rebar-conf`` target for that).
 
@@ -68,6 +68,24 @@ Myriad as such has no mandatory dependency (except Erlang itself of course), but
 - a first-level support of the `HDF5 <https://www.hdfgroup.org/HDF5/>`_ file format (see our `hdf5_support <https://github.com/Olivier-Boudeville/Ceylan-Myriad/blob/master/src/data-management/hdf5_support.erl>`_ module), based on - and thus requiring - the `enhanced fork <https://github.com/Olivier-Boudeville-EDF/erlhdf5>`_ that we made of `erlhdf5 <https://github.com/RomanShestakov/erlhdf5>`_
 - `Python <https://en.wikipedia.org/wiki/Python_(programming_language)>`_ (see our `python_utils <https://github.com/Olivier-Boudeville/Ceylan-Myriad/blob/master/src/utils/python_utils.erl>`_ module), thanks to `erlport <https://github.com/hdima/erlport>`_
 - `SQLite <https://en.wikipedia.org/wiki/SQLite>`_ (see our `sql_support <https://github.com/Olivier-Boudeville/Ceylan-Myriad/blob/master/src/data-management/sql_support.erl>`_ module), thanks to the SQLite 3 Erlang binding that we retained, `erlang-sqlite3 <https://github.com/alexeyr/erlang-sqlite3.git>`_
+
+
+.. _`jsx install`:
+
+As an example, let's suppose that we need a JSON support and that we want to rely on the ``jsx`` parser (our default choice) for that.
+
+If applying our conventions, supposing that Erlang and Rebar3 are already installed (otherwise refer to the `getting Erlang`_ and `getting Rebar3`_ sections), ``jsx`` may be installed with:
+
+.. code:: bash
+
+ $ mkdir -p ~/Software/jsx
+ $ cd ~/Software/jsx
+ $ git clone https://github.com/talentdeficit/jsx.git
+ $ ln -s jsx jsx-current-install
+ $ cd jsx/
+ $ rebar3 compile && rebar3 eunit
+
+.. $ ln -s _build/default/lib/jsx/ebin
 
 
 

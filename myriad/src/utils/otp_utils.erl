@@ -1120,18 +1120,20 @@ get_supervisor_settings( RestartStrategy, _ExecutionTarget=development ) ->
 	% hide crashes, and when an error occurs we want to see it logged once, not
 	% as a longer series of that same error:
 	%
-	#{ strategy  => RestartStrategy,
-	   intensity => _MaxRestarts=0,
-	   period    => _WithinSeconds=3600 };
+	#{ strategy      => RestartStrategy,
+	   intensity     => _MaxRestarts=0,
+	   period        => _WithinSeconds=3600,
+	   auto_shutdown => never };
 
 get_supervisor_settings( RestartStrategy, _ExecutionTarget=production ) ->
 
 	% In production mode, we apply here basic defaults (actually the same as
 	% used by the 'kernel' standard module in safe mode):
 	%
-	#{ strategy  => RestartStrategy,
-	   intensity => _MaxRestarts=4,
-	   period    => _WithinSeconds=3600 }.
+	#{ strategy      => RestartStrategy,
+	   intensity     => _MaxRestarts=4,
+	   period        => _WithinSeconds=3600,
+	   auto_shutdown => never }.
 
 
 

@@ -60,7 +60,8 @@
 
 
 % Date support:
--export([ compare_dates/2, check_date_order/2, get_date_difference/2 ]).
+-export([ is_canonical_date/1, check_canonical_date/1, compare_dates/2,
+		  check_date_order/2, get_date_difference/2 ]).
 
 
 -type day_index() :: 1..7.
@@ -77,7 +78,7 @@
 
 
 -type date() :: { year(), canonical_month(), canonical_day() }.
-% Calendar date; used instrad of less precise calendar:date().
+% Calendar date; used instead of the less precise calendar:date/0 type.
 
 
 -type date_in_year() :: { canonical_month(), canonical_day() }.
@@ -496,17 +497,31 @@ week_day_to_string( DayIndex ) ->
 % Date section.
 
 
+% @doc Tells whether the specified term is a canonical date.
+-spec is_canonical_date( term() ) -> boolean().
+is_canonical_date( _Date={ Year, Month, Day } ) when
+		is_integer( Year ) andalso is_integer( Month ) andalso
+		is_integer( Day ) andalso Month >= 1 andalso Month =< 12
+		andalso Day >= 1 andalso Day =< 31 ->
+	true;
+
+is_canonical_date( _Other ) ->
+	false.
+
+
+
 % @doc Checks that specified date is a canonical one.
--spec check_date_canonical( date() ) -> void().
-check_date_canonical( _Date={ Year, Month, Day } ) when
-	  is_integer( Year ) andalso is_integer( Month ) andalso
-	  is_integer( Day ) andalso Month >= 1 andalso Month =< 12
-	  andalso Day >= 1 andalso Day =< 31 ->
-	ok;
+-spec check_canonical_date( date() ) -> void().
+check_canonical_date( Date ) ->
+	case is_canonical_date( Date) of
 
-check_date_canonical( Date ) ->
-	throw( { non_canonical_date, Date } ).
+		true ->
+			ok;
 
+		false ->
+			throw( { non_canonical_date, Date } )
+
+	end.
 
 
 
@@ -519,8 +534,8 @@ check_date_canonical( Date ) ->
 -spec compare_dates( date(), date() ) -> basic_utils:comparison_result().
 compare_dates( FirstDate, SecondDate ) ->
 
-	check_date_canonical( FirstDate ),
-	check_date_canonical( SecondDate ),
+	check_canonical_date( FirstDate ),
+	check_canonical_date( SecondDate ),
 
 	compare_helper( FirstDate, SecondDate ).
 
@@ -867,14 +882,14 @@ is_timestamp( _Other ) ->
 
 
 
-% @doc Checks that specified term is a timestamp indeed.
--spec check_timestamp( timestamp() ) -> void().
+% @doc Checks that specified term is a timestamp indeed, and returns it.
+-spec check_timestamp( timestamp() ) -> timestamp().
 check_timestamp( Term ) ->
 
 	case is_timestamp( Term ) of
 
 		true ->
-			ok;
+			Term;
 
 		false ->
 			throw( { not_a_timestamp, Term } )
@@ -884,16 +899,16 @@ check_timestamp( Term ) ->
 
 
 % @doc Checks that specified term is a maybe-timestamp indeed.
--spec check_maybe_timestamp( maybe( timestamp() ) ) -> void().
-check_maybe_timestamp( _Term=undefined ) ->
-	ok;
+-spec check_maybe_timestamp( maybe( timestamp() ) ) -> maybe( timestamp() ).
+check_maybe_timestamp( Term=undefined ) ->
+	Term;
 
 check_maybe_timestamp( Term ) ->
 
 	case is_timestamp( Term ) of
 
 		true ->
-			ok;
+			Term;
 
 		false ->
 			throw( { not_a_maybe_timestamp, Term } )
@@ -1298,15 +1313,16 @@ get_duration_since( StartTimestamp ) ->
 
 
 
-% @doc Returns an (english) textual description of the duration between the two
-% specified timestamps.
+% @doc Returns an (english), smart textual description of the duration between
+% the two specified timestamps, using the first one as starting time and the
+% second one as stopping time.
 %
 -spec get_textual_duration( timestamp(), timestamp() ) -> ustring().
 get_textual_duration( FirstTimestamp, SecondTimestamp ) ->
 
 	% As duration_to_string/1 is smarter:
-	% { Days, { Hour, Minute, Second } } = calendar:seconds_to_daystime(
-	%   get_duration( FirstTimestamp, SecondTimestamp ) ),
+	% {Days, {Hour, Minute, Second}} = calendar:seconds_to_daystime(
+	%   get_duration(FirstTimestamp, SecondTimestamp)),
 
 	%lists:flatten( io_lib:format( "~B day(s), ~B hour(s), ~B minute(s) "
 	%  "and ~B second(s)", [ Days, Hour, Minute, Second ] ) ).
@@ -1319,7 +1335,8 @@ get_textual_duration( FirstTimestamp, SecondTimestamp ) ->
 
 
 % @doc Returns a textual description, in French, of the duration between the two
-% specified timestamps.
+% specified timestamps, using the first one as starting time and the
+% second one as stopping time.
 %
 -spec get_french_textual_duration( timestamp(), timestamp() ) -> ustring().
 get_french_textual_duration( FirstTimestamp, SecondTimestamp ) ->

@@ -302,8 +302,9 @@
 
 -type rpm() :: float().
 % Revolutions per minute (also known as RPM, rev/min, r/min, or with the
-% notation min−1) is the number of turns in one minute; a unit of rotational
+% notation min^-1) is a number of turns made per minute; a unit of rotational
 % speed or the frequency of rotation around a fixed axis.
+
 
 -type misc_units() :: rpm().
 
@@ -618,7 +619,8 @@
 
 % Stringification section.
 
--export([ temperature_to_string/1, maybe_temperature_to_string/1 ]).
+-export([ temperature_to_string/1, maybe_temperature_to_string/1,
+		  rpm_to_string/1, maybe_rpm_to_string/1 ]).
 
 
 
@@ -676,19 +678,43 @@ human_time_to_milliseconds( Day, Hour, Minute, Second, Millisecond ) ->
 % Stringification section.
 
 
-% Returns a textual description of the specified temperature.
+% @doc Returns a textual, possibly rounded, description of the specified
+% temperature.
+%
 -spec temperature_to_string( celsius() ) -> ustring().
 temperature_to_string( Temp ) ->
 	text_utils:float_to_string( Temp, [ { decimals, 1 }, compact ] ) ++ " °C".
 
 
-% Returns a textual description of the specified temperature (if any).
+% @doc Returns a textual, possibly rounded, description of the specified
+% temperature (if any).
+%
 -spec maybe_temperature_to_string( maybe( celsius() ) ) -> ustring().
 maybe_temperature_to_string( _Temp=undefined ) ->
 	"undefined";
 
 maybe_temperature_to_string( Temp ) ->
 	temperature_to_string( Temp ).
+
+
+
+% @doc Returns a textual, possibly rounded, description of the specified
+% rotation speed.
+%
+-spec rpm_to_string( rpm() ) -> ustring().
+rpm_to_string( Rpm ) ->
+	text_utils:float_to_string( Rpm, [ { decimals, 0 }, compact ] ) ++ " rpm".
+
+
+% @doc Returns a textual, possibly rounded, description of the specified
+% rotation speed (if any).
+%
+-spec maybe_rpm_to_string( rpm() ) -> ustring().
+maybe_rpm_to_string( _Rpm=undefined ) ->
+	"undefined";
+
+maybe_rpm_to_string( Rpm ) ->
+	rpm_to_string( Rpm ).
 
 
 

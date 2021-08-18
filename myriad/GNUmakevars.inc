@@ -125,12 +125,15 @@ endif
 #	 handled
 #  - web_exchanges: http/https exchanges
 #  - strings: notably for mismatches between plain and binary ones
+#  - registration: regarding naming registering
 #
 # Defining debug flags (at least the most verbose are by default commented-out):
 ifeq ($(ENABLE_DEBUG),true)
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_code_path
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_otp_integration
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_web_exchanges
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_strings
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_registration
 endif
 
 # Defining check flags:
@@ -443,7 +446,8 @@ ifeq ($(USE_JSON),true)
 		# The JSX JSON parser is available at
 		# https://github.com/talentdeficit/jsx.
 
-		# Install obtained thanks to:
+		# Install obtained thanks to (see also
+		# https://myriad.esperide.org/#file-formats)
 		#
 		# $ mkdir -p ~/Software/jsx
 		# $ cd ~/Software/jsx
@@ -824,7 +828,7 @@ COOKIE_OPT = -c $(COOKIE)
 #
 ifeq (NODE_NAMING,"--ln")
 
-	DISTRIBUTED_NODE_OPT := -name $(VM_NAME)@$(HOSTNAME) -setcookie $(COOKIE)
+	DISTRIBUTED_NODE_OPT := -name $(VM_NAME)@$(HOSTNAME_FOR_NODE) -setcookie $(COOKIE)
 
 else ifeq (NODE_NAMING,"--sn")
 
@@ -1252,6 +1256,9 @@ ERL_PARAMETERIZED_LAUNCHER = $(ERL_LAUNCHER) $(HOSTNAME_OPT) $(FIREWALL_OPT)  \
 # taken by Erlang from /etc/resolv.conf), so we went back to the (supposedly
 # more precise) long names.
 #
+# Yet some environments, such as in continuous integration and/or in containers,
+# do not support long names, so finally relying on short ones is more pragmatic.
+#
 # Then we realized that some use cases required the node name to be changed at
 # runtime, implying the node should not be defined initially as a distributed
 # one (hence the --nn option).
@@ -1263,8 +1270,11 @@ ERL_PARAMETERIZED_LAUNCHER = $(ERL_LAUNCHER) $(HOSTNAME_OPT) $(FIREWALL_OPT)  \
 #
 ifndef NODE_NAMING
 
-	NODE_NAMING = "--ln"
-	#NODE_NAMING = "--sn"
+	#NODE_NAMING = "--ln"
+
+	# Best default currently:
+	NODE_NAMING = "--sn"
+
 	#NODE_NAMING = "--nn"
 
 endif
@@ -1273,31 +1283,29 @@ endif
 # Force your local hostname, if ever relevant in your setting, and depending on
 # NODE_NAMING:
 #
-# HOSTNAME := a_host_name.a_domain_name
-# HOSTNAME := a_host_name
+# HOSTNAME_FOR_NODE := a_host_name.a_domain_name
+# HOSTNAME_FOR_NODE := a_host_name
 #
-# (note that HOSTNAME might be defined in your shell)
+ifdef HOSTNAME_FOR_NODE
 
-ifdef HOSTNAME
-
-	HOSTNAME_OPT = "--hostname $(HOSTNAME)"
+	HOSTNAME_OPT = --hostname $(HOSTNAME_FOR_NODE)
 
 else
 
-	#HOSTNAME := $$(host $(hostname) | awk '{ print $$1 }' | head -n 1)
+	#HOSTNAME_FOR_NODE := $$(host $(hostname) | awk '{ print $$1 }' | head -n 1)
 
 	ifeq (NODE_NAMING,"--ln")
 
-		HOSTNAME := $$(hostname -f)
+		HOSTNAME_FOR_NODE := $$(hostname -f)
 
 	else ifeq (NODE_NAMING,"--sn")
 
-		HOSTNAME := $$(hostname -s)
+		HOSTNAME_FOR_NODE := $$(hostname -s)
 
 	endif
 
 	# Not useful in this case:
-	#HOSTNAME_OPT = "--hostname $(HOSTNAME)"
+	#HOSTNAME_OPT = "--hostname $(HOSTNAME_FOR_NODE)"
 
 endif
 

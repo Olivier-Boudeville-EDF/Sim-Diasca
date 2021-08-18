@@ -253,7 +253,7 @@ unregister( Name, local_only ) ->
 
 		ExceptionType:Exception ->
 			throw( { local_unregistration_failed, Name,
-					 { ExceptionType, Exception } } )
+						{ ExceptionType, Exception } } )
 
 	end;
 
@@ -267,7 +267,7 @@ unregister( Name, global_only ) ->
 
 		ExceptionType:Exception ->
 			throw( { global_unregistration_failed, Name,
-					 { ExceptionType, Exception } } )
+						{ ExceptionType, Exception } } )
 
 	end;
 
@@ -420,6 +420,12 @@ is_registered( Name, _LookUpScope=global ) ->
 	case global:whereis_name( Name ) of
 
 		undefined ->
+
+			cond_utils:if_defined( myriad_debug_registration,
+				trace_utils:debug_fmt( "The name '~ts' is not globally "
+					"registered; the ones that are are:~n  ~p",
+					[ Name, get_registered_names( global ) ] ) ),
+
 			not_registered ;
 
 		Pid ->
@@ -433,6 +439,12 @@ is_registered( Name, _LookUpScope=local ) ->
 	case erlang:whereis( Name ) of
 
 		undefined ->
+
+			cond_utils:if_defined( myriad_debug_registration,
+				trace_utils:debug_fmt( "The name '~ts' is not locally "
+					"registered; the ones that are are:~n  ~p",
+					[ Name, get_registered_names( local ) ] ) ),
+
 			not_registered;
 
 		Pid ->
@@ -450,10 +462,15 @@ is_registered( Name, _LookUpScope=local_and_global ) ->
 	case is_registered( Name, local ) of
 
 		not_registered ->
+
+			cond_utils:if_defined( myriad_debug_registration,
+				trace_utils:debug_fmt( "First, the name '~ts' is not locally "
+				   "registered; the ones that are are:~n  ~p",
+				   [ Name, get_registered_names( local ) ] ) ),
+
 			not_registered;
 
 		Pid ->
-
 			case is_registered( Name, global ) of
 
 				% Already bound!
@@ -461,6 +478,12 @@ is_registered( Name, _LookUpScope=local_and_global ) ->
 					Pid;
 
 				not_registered ->
+
+					cond_utils:if_defined( myriad_debug_registration,
+						trace_utils:debug_fmt( "Second, the name '~ts' is not "
+							"globally registered; the ones that are are:~n  ~p",
+							[ Name, get_registered_names( global ) ] ) ),
+
 					not_registered
 
 			end
@@ -514,12 +537,18 @@ wait_for_registration_of( Name, _LookUpScope=local_and_global ) ->
 
 wait_for_registration_of( Name, _LookUpScope=local_otherwise_global ) ->
 	try
+
 		wait_for_local_registration_of( Name )
+
 	catch _ ->
+
+		cond_utils:if_defined( myriad_debug_registration,
 			trace_utils:debug_fmt( "Time-out when waiting for a local "
 				"registration of '~ts', switching to a global look-up.",
-				[ Name ] ),
-			wait_for_global_registration_of( Name )
+				[ Name ] ) ),
+
+		wait_for_global_registration_of( Name )
+
 	end;
 
 wait_for_registration_of( Name, _LookUpScope=none ) ->

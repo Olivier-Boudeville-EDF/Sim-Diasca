@@ -508,7 +508,7 @@ remove-rebar-conf:
 # Apparently no way of telling rebar to exclude some source files, so:
 rebar3-hide-unsupported-sources:
 	@echo "  Hiding unsupported sources"
-	@for f in $(UNSUPPORTED_SOURCES); do /bin/mv -f $$f $$f-hidden; done 2>/dev/null || true
+	@for f in $(UNSUPPORTED_SOURCES); do /bin/mv -f $$f $$f-hiddenFOO; done 2>/dev/null || true
 
 
 rebar3-restore-unsupported-sources:
@@ -1111,7 +1111,7 @@ info-source-layout:
 
 
 info: info-files
-	@echo "HOSTNAME               = $(HOSTNAME)"
+	@echo "HOSTNAME_FOR_NODE      = $(HOSTNAME_FOR_NODE)"
 	@echo "BEAM_DIRS              = $(BEAM_DIRS)"
 	@echo "BEAM_PATH_OPT          = $(BEAM_PATH_OPT)"
 	@echo "ARCHIVE_FILE           = $(ARCHIVE_FILE)"

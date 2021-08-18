@@ -91,6 +91,7 @@
 
 		 get_gnuplot_path/0,
 		 get_current_gnuplot_version/0,
+		 get_current_gnuplot_version/1,
 
 		 get_default_zip_compress_tool/0,
 		 get_default_zip_decompress_tool/0,
@@ -762,10 +763,21 @@ get_gnuplot_path() ->
 
 
 % @doc Returns, as a tuple (ex: {4,2} for the 4.2 version), the gnuplot version
-% actually available on the computer.
+% actually available by default (in the PATH) on this computer.
 %
 -spec get_current_gnuplot_version() -> basic_utils:two_digit_version().
 get_current_gnuplot_version() ->
+	GnuplotPath = get_gnuplot_path(),
+	get_current_gnuplot_version( GnuplotPath ).
+
+
+
+% @doc Returns, as a tuple (ex: {4,2} for the 4.2 version), the gnuplot version
+% actually available on this computer.
+%
+-spec get_current_gnuplot_version( executable_path() ) ->
+			basic_utils:two_digit_version().
+get_current_gnuplot_version( GnuplotPath ) ->
 
 	% gnuplot -V returns information like "gnuplot 4.4 patchlevel 0"; rather
 	% that evaluation a shell expression like:
@@ -775,20 +787,19 @@ get_current_gnuplot_version() ->
 	% we prefer executing directly gnuplot, have then the exit status, and parse
 	% the result in Erlang:
 	%
-	Cmd = get_gnuplot_path() ++ " -V",
+	Cmd = GnuplotPath ++ " -V",
 
 	% The returned value of following command is like "4.2":
-	%
 	case system_utils:run_command( Cmd ) of
 
-			{ _ExitCode=0, Output } ->
-				GnuplotVersionInString = lists:nth( _IndexVersion=2,
-								text_utils:split_per_element( Output, " " ) ),
-				basic_utils:parse_version( GnuplotVersionInString );
+		{ _ExitCode=0, Output } ->
+			GnuplotVersionInString = lists:nth( _IndexVersion=2,
+				text_utils:split_per_element( Output, " " ) ),
+			basic_utils:parse_version( GnuplotVersionInString );
 
-			{ ExitCode, ErrorOutput } ->
-				throw( { gnuplot_version_detection_failed, ExitCode,
-						 ErrorOutput } )
+		{ ExitCode, ErrorOutput } ->
+			throw( { gnuplot_version_detection_failed, ExitCode,
+					 ErrorOutput } )
 
 	end.
 

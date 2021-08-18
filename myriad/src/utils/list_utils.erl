@@ -48,7 +48,8 @@
 
 % Checks regarding lists:
 -export([ ensure_list/1, ensure_atoms/1, ensure_tuples/1, ensure_pids/1,
-		  are_integers/1, check_integers/1, are_pids/1 ]).
+		  are_integers/1, check_integers/1, are_pids/1,
+		  check_strictly_ascending/1 ]).
 
 
 % Basic list operations:
@@ -203,11 +204,11 @@ ensure_pids( Other ) ->
 %
 % Not tail recursive version:
 %
-%% get_element_at( List, 1 ) ->
-%%	hd(List);
+% get_element_at( List, 1 ) ->
+%   hd(List);
 %
-%% get_element_at( [ _H | T ], Index ) ->
-%%	get_element_at( T, Index-1 ).
+% get_element_at( [ _H | T ], Index ) ->
+%   get_element_at( T, Index-1 ).
 %
 -spec get_element_at( list(), positive_index() ) -> element().
 get_element_at( List, Index ) ->
@@ -225,7 +226,7 @@ get_element_at( List, Index ) ->
 insert_element_at( Element, List, Index ) ->
 
 	%io:format( " - inserting element ~p at #~B in ~w~n",
-	%		   [ Element, Index, List ] ),
+	%           [ Element, Index, List ] ),
 
 	insert_element_at( Element, List, Index, _Acc=[] ).
 
@@ -327,14 +328,14 @@ remove_element_at( [ H | RemainingList ], Index, Result ) ->
 remove_last_element( List ) ->
 	lists:droplast( List ).
 
-%	remove_last_element( List, _Acc=[] ).
+% remove_last_element( List, _Acc=[] ).
 
 
 %remove_last_element( _List=[ _Last ], Acc ) ->
-%	lists:reverse( Acc );
+%   lists:reverse( Acc );
 
 %remove_last_element( _List=[ H | T ], Acc ) ->
-%	remove_last_element( T, [ H | Acc ] ).
+%   remove_last_element( T, [ H | Acc ] ).
 
 
 
@@ -811,6 +812,9 @@ are_integers( _ ) ->
 
 
 % @doc Checks that specified argument is a list of integers.
+%
+% See also type_utils:check_integers/1.
+%
 -spec check_integers( term() ) -> void().
 check_integers( Any ) ->
 	true = are_integers( Any ).
@@ -825,6 +829,33 @@ are_pids( [ H | T ] ) when is_pid( H ) ->
 	are_pids( T );
 
 are_pids( _ ) ->
+	false.
+
+
+
+% @doc Checks that the terms in the specified list are in strict (no duplicates)
+% ascending (Erlang) term order.
+%
+% In many cases, the actual type of these elements shall be checked beforehand
+% (ex: see type_utils:check_{integers,floats}/1) to ensure that comparisons make
+% sense (ex: float versus atom).
+%
+-spec check_strictly_ascending( list() ) -> boolean().
+check_strictly_ascending( _List=[] ) ->
+	true;
+
+check_strictly_ascending( _List=[ H | T ] ) ->
+	check_strictly_ascending( T, _LastSeen=H ).
+
+
+% (helper)
+check_strictly_ascending( _List=[], _LastSeen ) ->
+	true;
+
+check_strictly_ascending( _List=[ H | T ], LastSeen ) when H > LastSeen ->
+	check_strictly_ascending( T, H );
+
+check_strictly_ascending( _List, _LastSeen ) ->
 	false.
 
 
@@ -1158,7 +1189,10 @@ extract_elements_from( RemainingElems, _Count=0, AccExtract ) ->
 	{ AccExtract, RemainingElems };
 
 extract_elements_from( RemainingElems, Count, AccExtract ) ->
+
 	DrawnElem = draw_element( RemainingElems ),
+
 	ShrunkRemainingElems = lists:delete( DrawnElem, RemainingElems ),
+
 	extract_elements_from( ShrunkRemainingElems, Count-1,
 						   [ DrawnElem | AccExtract ] ).

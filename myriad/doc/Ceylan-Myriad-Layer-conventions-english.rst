@@ -26,13 +26,7 @@ Recommended text editors are:
 - Vim, IntelliJ, Gedit, Nedit, etc.
 
 
-The main editors integrate the *Language Server Protocol* (also known as LSP), so `Erlang LS <https://erlang-ls.github.io/>`_ can be used with them (`Flycheck <https://www.flycheck.org>`_ can be another option). For that we recommend the use of our `erlang_ls.config <https://github.com/Olivier-Boudeville/Ceylan-Myriad/tree/master/erlang_ls.config>`_ file.
-
-.. comment For that we recommend the use of our `erlang_ls.config <https://github.com/Olivier-Boudeville/Ceylan-Myriad/tree/master/conf/erlang_ls.config>`_ file; for example::
-
-.. $ mkdir -p ~/.config/erlang_ls && cd ~/.config/erlang_ls/
-.. $ ln -sf ${CEYLAN_MYRIAD}/conf/erlang_ls.config
-
+The main editors integrate the *Language Server Protocol* (also known as LSP), refer to the LSP_ section for more details (`Flycheck <https://www.flycheck.org>`_ can be another option).
 
 
 Source files should be formatted for a 80-character width: no character should be present after the 79th column of a line.
@@ -172,6 +166,40 @@ For each of them, generally ``1.0`` corresponds to 1 meter, otherwise to 1 `ligh
 For **time** coordinate, a single axis is defined for a global referential: the T axis (in yellow, ``#F6DE2D``), for which ``1.0`` corresponds to 1 second.
 
 
+Tooling Conventions
+===================
+
+
+.. _LSP:
+
+Erlang LS
+---------
+
+The `Language Server Protocol <https://en.wikipedia.org/wiki/Language_Server_Protocol>`_ (also known as LSP) may be used by one's editor of choice in order to provide various services facilitating the developments in various languages, including Erlang.
+
+For that `Erlang LS <https://erlang-ls.github.io/>`_ should be used. We then recommend to rely on our `erlang_ls.config <https://github.com/Olivier-Boudeville/Ceylan-Myriad/tree/master/erlang_ls.config>`_ configuration file, which may be installed that way:
+
+.. code:: bash
+
+ $ mkdir -p ~/.config/erlang_ls && cd ~/.config/erlang_ls/
+ $ ln -sf ${CEYLAN_MYRIAD}/conf/erlang_ls.config
+
+As for the installation of `Erlang LS <https://erlang-ls.github.io/>`_ itself, we rely on:
+
+.. code:: bash
+
+ $ mkdir -p ~/Software && cd ~/Software
+ $ git clone https://github.com/erlang-ls/erlang_ls
+ $ cd erlang_ls/
+ $ make
+ $ mkdir bin && cd bin
+ $ ln -s ../_build/default/bin/erlang_ls
+
+Then one would just have to ensure that ``~/Software/erlang_ls/bin`` is indeed in one's PATH.
+
+Note that not all bells and whistles of LSP may be retained, knowing that at least some of them are confused by various elements, especially when applied to code that is parse-transformed.
+
+The Emacs configuration that we use (see the corresponding `init.el <https://github.com/Olivier-Boudeville/Ceylan-Myriad/blob/master/conf/init.el>`_) attempts to find some sweet spot in this matter.
 
 
 Other Conventions

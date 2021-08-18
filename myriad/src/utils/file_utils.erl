@@ -37,8 +37,13 @@
 % Related standard modules: file, filename.
 
 
-% Note: using the file module has been known to cause synchronization overheads,
-% often prim_file is used instead.
+% Implementation notes:
+
+% Using the file module has been known to cause synchronization overheads, often
+% prim_file is used instead.
+
+% For file formats, notably the ETF one, refer to:
+% https://myriad.esperide.org/#file-formats
 
 
 % Filename-related operations.
@@ -131,7 +136,10 @@
 		  open/2, open/3, close/1, close/2,
 		  read/2, write/2, write_ustring/2, write_ustring/3,
 		  read_whole/1, write_whole/2, write_whole/3,
-		  read_terms/1, write_terms/2, write_terms/4, write_direct_terms/2 ]).
+		  read_etf_file/1, read_terms/1,
+		  write_etf_file/2, write_etf_file/4,
+		  write_terms/2, write_terms/4,
+		  write_direct_terms/2 ]).
 
 
 % Compression-related operations.
@@ -4646,16 +4654,43 @@ write_whole( Filename, BinaryContent, Modes ) ->
 
 
 
-% @doc Reads specified file, tries to parse a list of terms from it (as
-% file:consult/1 does), and returns it.
+% @doc Reads specified file supposedly in ETF format (Erlang Term Format): tries
+% to parse a list of terms (one per line, terminating with a dot) from it
+% (as file:consult/1 does), and returns it. Lines starting with '%' are ignored
+% (just considered as comments).
 %
 % If expecting to read UTF-8 content from a file, it should:
 %
 %  - have been then opened for writing typically while including the {encoding,
 %  utf8} option, or have been written with content already properly encoded
-%  (maybe more reliable that way)
+%  (it may be more reliable that way)
 %
 %  - start with a '%% -*- coding: utf-8 -*-' header
+%
+% See http://myriad.esperide.org/#etf for more details.
+%
+% Throws an exception on error.
+%
+-spec read_etf_file( file_path() ) -> [ term() ].
+read_etf_file( Filename ) ->
+	read_terms( Filename ).
+
+
+
+% @doc Reads specified file supposedly in ETF format (Erlang Term Format): tries
+% to parse a list of terms (one per line, terminating with a dot) from it
+% (as file:consult/1 does), and returns it. Lines starting with '%' are ignored
+% (just considered as comments).
+%
+% If expecting to read UTF-8 content from a file, it should:
+%
+%  - have been then opened for writing typically while including the {encoding,
+%  utf8} option, or have been written with content already properly encoded
+%  (it may be more reliable that way)
+%
+%  - start with a '%% -*- coding: utf-8 -*-' header
+%
+% See http://myriad.esperide.org/#etf for more details.
 %
 % Throws an exception on error.
 %
@@ -4685,8 +4720,23 @@ read_terms( Filename ) ->
 
 
 
-% @doc Writes specified terms into specified file, with no specific header or
-% footer.
+% @doc Writes specified terms into specified file, in the ETF format, with no
+% specific header or footer.
+%
+% See http://myriad.esperide.org/#etf for more details.
+%
+% Heavily inspired from Joe Armstrong's lib_misc:unconsult/2.
+%
+-spec write_etf_file( [ term() ], file_path() ) -> void().
+write_etf_file( Terms, Filename ) ->
+	write_terms( Terms, Filename ).
+
+
+
+% @doc Writes specified terms into specified file, in the ETF format, with no
+% specific header or footer.
+%
+% See http://myriad.esperide.org/#etf for more details.
 %
 % Heavily inspired from Joe Armstrong's lib_misc:unconsult/2.
 %
@@ -4696,8 +4746,22 @@ write_terms( Terms, Filename ) ->
 
 
 
-% @doc Writes specified terms into specified file, with specified header and
-% footer.
+% @doc Writes specified terms into specified file, in the ETF format, with
+% specified header and footer.
+%
+% See http://myriad.esperide.org/#etf for more details.
+%
+% Heavily inspired from Joe Armstrong's lib_misc:unconsult/2.
+%
+-spec write_etf_file( [ term() ], maybe( ustring() ), maybe( ustring() ),
+					  file_path() ) -> void().
+write_etf_file( Terms, Header, Footer, Filename ) ->
+	write_terms( Terms, Header, Footer, Filename ).
+
+
+
+% @doc Writes specified terms into specified file, in the ETF format, with
+% specified header and footer.
 %
 % Heavily inspired from Joe Armstrong's lib_misc:unconsult/2.
 %
@@ -4733,7 +4797,10 @@ write_terms( Terms, Header, Footer, Filename ) ->
 
 
 
-% @doc Writes directly specified terms into specified already opened file.
+% @doc Writes directly specified terms into specified already opened file, in
+% the ETF format.
+%
+% See http://myriad.esperide.org/#etf for more details.
 %
 % Heavily inspired from Joe Armstrong's lib_misc:unconsult/2.
 %
