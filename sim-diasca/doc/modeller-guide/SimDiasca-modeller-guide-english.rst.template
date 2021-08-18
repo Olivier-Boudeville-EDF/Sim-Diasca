@@ -3,18 +3,6 @@ Sim-Diasca Modeller Guide
 =========================
 
 
-
-+------------------------------------------+--------------------------------------+
-| .. image:: sim-diasca.png                                                       |
-|   :scale: 40                                                                    |
-|   :align: center                                                                |
-+==========================================+======================================+
-| .. image:: logo-EDF-english.png          | .. image:: lgpl-v3-logo-bordered.png |
-|   :scale: 50                             |   :align: right                      |
-|   :align: left                           |                                      |
-+------------------------------------------+--------------------------------------+
-
-
 .. role:: raw-html(raw)
    :format: html
 
@@ -22,13 +10,31 @@ Sim-Diasca Modeller Guide
    :format: latex
 
 
-:Organisation: Copyright (C) 2015-2017 EDF R&D
+:raw-html:`<a name="sim_diasca_top"></a>`
+
+
+.. Unable to have proper table formatting without specialising:
+
+
+.. Scale does not seem taken into account:
+:raw-html:`<center><table><tr colspan="2"><center><img src="sim-diasca.png" style="width:500px"></center></tr><tr><td><center><img src="logo-EDF-english.png" style="width:150px"></center></td><td><center><img src="lgpl-v3-logo-bordered.png" style="width:140px"></center></td></tr></table>`
+
+:raw-latex:`\begin{center} \begin{tabular}{c c c} \multicolumn{2}{c}{\includegraphics[scale=0.3]{sim-diasca.png}} \\  \includegraphics[scale=0.4]{logo-EDF-english.png} & \includegraphics[scale=0.8]{lgpl-v3-logo-bordered.png} \\ \end{tabular} \end{center}`
+
+
+
+:raw-html:`<div class="banner"><p><em>Sim-Diasca Modeller Guide</em> <a href="https://olivier-boudeville-edf.github.io/Sim-Diasca/">browse latest</a> <a href="SimDiasca-modeller-guide-english.pdf">get PDF</a> <a href="#sim_diasca_top">go to top</a> <a href="#sim_diasca_toc">go to toc</a> <a href="#sim_diasca_bottom">go to bottom</a> <a href="https://github.com/Olivier-Boudeville-EDF/Sim-Diasca">go to project</a> <a href="mailto:olivier(dot)boudeville(at)edf(dot)fr?subject=[Sim-Diasca]%20Remark%20about%20the%20modeller%20guide">email us</a></p></div>`
+
+
+
+:Organisation: Copyright (C) 2015-GENERATION_YEAR_TAG EDF R&D
+:Contact: olivier (dot) boudeville (at) edf (dot) fr
 :Author: Olivier Boudeville
-:Lastly Updated on: Tuesday, January 3, 2017
 :Creation Date: March 2015
-:Contact: olivier.boudeville@edf.fr
-:Status: Work in progress
-:Version: 0.1.3
+:Lastly updated: GENERATION_DATE_TAG
+:Version: PROJECT_VERSION_TAG
+:Status: Stable
+:Website: `http://sim-diasca.com <http://sim-diasca.com>`_
 :Dedication:
 
 	For people wanting to implement a simulation with the `Sim-Diasca` engine.
@@ -38,6 +44,8 @@ Sim-Diasca Modeller Guide
 
   The modelling and the implementation are described on a step-by-step basis, allowing to introduce incidentally the basic features offered by the engine.
 
+:raw-html:`</center>`
+
 
 .. meta::
    :keywords: Sim-Diasca, massive, simulation, multi-agent, modelling
@@ -46,8 +54,10 @@ Sim-Diasca Modeller Guide
 
 :raw-latex:`\pagebreak`
 
-.. contents:: Table of Contents
-	:depth: 2
+:raw-html:`<a name="sim_diasca_toc"></a>`
+
+.. contents:: **Table of Contents**
+	:depth: 3
 
 .. section-numbering::
 
@@ -106,8 +116,8 @@ So, what does creating a simulation always entail?
 
 - defining the "abstractions" of interest in this context, i.e.:
 
- - the **models** involved, which collectively provide a simplified representation of the target system that is to be simulated
- - the **scenarios** (if any) to account for the context of the target system
+  - the **models** involved, which collectively provide a simplified representation of the target system that is to be simulated
+  - the **scenarios** (if any) to account for the context of the target system
 
 - defining the **results** expected from the simulation, i.e. what are the metrics that shall be collected thanks to probes, and how they should be produced
 
@@ -545,7 +555,7 @@ For this test case, we want following basic initial setting to be simulated:
 
 This corresponds to the following setting:
 
-:raw-html:`<center><img src="deterministic-test-instances.png"></img></center>`
+:raw-html:`<center><img src="deterministic-test-instances.png" id="responsive-image-tiny"></img></center>`
 :raw-latex:`\includegraphics[scale=0.4]{deterministic-test-instances.png}`
 
 
@@ -560,9 +570,9 @@ We must just know that:
 - initial instances must be created by using the ``class_Actor:create_initial_actor/2`` static method, whose first parameter is the name of the class of the instance to create (ex: ``class_Incinerator``), and whose second one is the (ordered) list of the construction parameters for that upcoming instance
 - in Erlang:
 
- - comments start with the ``%`` character
- - as mentioned, a variable name starts with a capital letter (ex: ``MyVariable``) but prefixing it by an underscore (ex: ``_MyVariable``) makes it a mute variable, i.e. a variable that will be ignored by the compiler - so specifying it just serves documentation purposes
- - a list is denoted by brackets, and may not be homogeneous (ex: ``MyList=["hello",42]``)
+  - comments start with the ``%`` character
+  - as mentioned, a variable name starts with a capital letter (ex: ``MyVariable``) but prefixing it by an underscore (ex: ``_MyVariable``) makes it a mute variable, i.e. a variable that will be ignored by the compiler - so specifying it just serves documentation purposes
+  - a list is denoted by brackets, and may not be homogeneous (ex: ``MyList=["hello",42]``)
 
 
 These programmatic creations translate as:
@@ -963,14 +973,14 @@ One of the many ways to formalize a bit a high-level description of the behaviou
 
 The following graphical conventions are used here:
 
-:raw-html:`<center><img src="FSM-legend.png"></img></center>`
+:raw-html:`<center><img src="FSM-legend.png" id="responsive-image-intermediate"></img></center>`
 :raw-latex:`\includegraphics[scale=0.5]{FSM-legend.png}`
 
 Not specifying an event condition on a state transition means here that the state change is time-based, i.e. it will occur automatically once a specific duration (in simulation time) will be elapsed.
 
 The two models are interacting, thus the two FSM swill interact as well, based on message exchanges:
 
-:raw-html:`<center><img src="soda-ordering-interacting-FSM.png"></img></center>`
+:raw-html:`<center><img src="soda-ordering-interacting-FSM.png" id="responsive-image-medium"></img></center>`
 :raw-latex:`\includegraphics[scale=0.4]{soda-ordering-interacting-FSM.png}`
 
 
@@ -1025,8 +1035,9 @@ Once having updated the state of its instance, this ``orderSoda/3`` actor oneway
 
 - the transaction succeeded, the customer lost a bit of money (the cost of a can) yet gained a can - thus sooner being less thirsty
 - the transaction failed and the customer remains as thristy as he was:
- - either because there was no can left in the machine
- - or because the customer did not insert enough money
+
+  - either because there was no can left in the machine
+  - or because the customer did not insert enough money
 
 
 How can the vending machine notify the customer of these outcomes? Simply by sending him back an actor message (among, respectively, ``getCan/2``, ``onNoCanAvailable/2``, or ``onNotEnoughMoney/2``), using the PID listed as last parameter of the incoming actor oneway for that.
@@ -1146,7 +1157,7 @@ The previous section showed how such timings should be expressed and used.
 .. Note::
   As a rule of thumb: in a model, one should avoid expressing durations directly in terms of ticks; models shall be defined irrespective of any simulation frequency, as they may be involved in various simulations with various temporalities (as dictated by simulation cases).
 
-  Use thus higher-level durations (ex: expressed in seconds, or hours, etc.) and convert them in ticks only at runtime (possibly from constructors). All kinds of timings (for scheduling and interactions alike) can then be devised.
+  One should thus use higher-level durations (ex: expressed in seconds, or hours, etc.) and convert them in ticks only at runtime (possibly from constructors). All kinds of timings (for scheduling and interactions alike) can then be devised, knowing that, internally to models, ticks (as tick offsets) are the time units of choice for all processings.
 
 
 
@@ -1159,15 +1170,13 @@ State
 
 
 
+.. -------------------
+   Defining Input Data
+   -------------------
 
-
--------------------
-Defining Input Data
--------------------
-
---------------------
-Defining Output Data
---------------------
+   --------------------
+   Defining Output Data
+   --------------------
 
 
 ----------------------------------
@@ -1257,3 +1266,5 @@ More advanced users are advised to have a look also to the *City-Example* case, 
 We hope that writing simulations will be easier thanks to the examples provided with the Sim-Diasca code base and thanks to this guide oriented towards modellers.
 
 As always, any (constructive!) feedback is welcome (use `this email address <mailto:olivier.boudeville@edf.fr>`_ for that). Should some point remain unclear, please feel free to contact us, as we try to provide support on a best-effort basis.
+
+:raw-html:`<a name="sim_diasca_bottom"></a>`
