@@ -9,7 +9,7 @@ General View
 
 
 
-:raw-html:`<center><img src="technical-architecture-english.png"></img></center>`
+:raw-html:`<center><img src="technical-architecture-english.png" id="responsive-image-medium"></img></center>`
 :raw-latex:`\includegraphics[scale=0.4]{technical-architecture-english.png}`
 
 
@@ -47,8 +47,8 @@ Basically, `Erlang <http://www.erlang.org>`_ provides a full environment particu
 
 At this lower level of the architecture, we are dealing with *Erlang processes*, which are lightweight objects:
 
- - having each their own execution thread (their mode of operation is inherently concurrent)
- - communicating between them only thanks to messages (pure asynchronous message passing, no memory is shared)
+- having each their own execution thread (their mode of operation is inherently concurrent)
+- communicating between them only thanks to messages (pure asynchronous message passing, no memory is shared)
 
 Erlang processes are not mapped to any scheduling object provided by the operating system or by the general execution environment. Thus Erlang processes are not system processes nor threads.
 
@@ -58,7 +58,7 @@ The Erlang virtual machine schedules itself all the Erlang processes it is hosti
 
 Erlang processes execute *functions* that are gathered in *modules*. Being Erlang code, they are implemented in a declarative, functional way, with single-assignment, absence of side-effects, pattern-matching and recursive behaviour:
 
-:raw-html:`<center><img src="xkcd-dependencies.png"></img></center>`
+:raw-html:`<center><img src="xkcd-dependencies.png" id="responsive-image-medium"></img></center>`
 :raw-latex:`\includegraphics[scale=0.6]{xkcd-dependencies.png}`
 
 
@@ -110,10 +110,10 @@ Actors making use of random variables have also to interact correctly with the  
 
 Finally, thanks to these inheritances, the development of models will mostly consist on specifying the business-specific state changes and message exchanges supported by each type of simulated element. Most technical issues are hidden to the model developer, who will only have to define:
 
- - how an actor will be initialised (i.e. the constructor of its class)
- - how an actor will be deleted (i.e. the destructor of its class)
- - how an actor will behave spontaneously at each tick (i.e. its ``act`` method)
- - any other behaviours that could be triggered by notifications received from other actors (i.e. the methods other simulation actors might call, thanks to actor messages)
+- how an actor will be initialised (i.e. the constructor of its class)
+- how an actor will be deleted (i.e. the destructor of its class)
+- how an actor will behave spontaneously at each tick (i.e. its ``act`` method)
+- any other behaviours that could be triggered by notifications received from other actors (i.e. the methods other simulation actors might call, thanks to actor messages)
 
 These are totally model-specific, no simulation mechanism can provide them, only the model developer can know which code is relevant here.
 

@@ -14,7 +14,7 @@ The overall goal is to obtain, from known facts and thanks the simulations, new 
 
 Indeed, in the same way as one may rely on a (hopefully validated_) oracle or a gyroscope, the outcome of a simulation cannot be really precisely foreseen (otherwise it would be plain useless):
 
-:raw-html:`<center><img src="xkcd-gyroscopes.png"></img></center>`
+:raw-html:`<center><img src="xkcd-gyroscopes.png" id="responsive-image-intermediate"></img></center>`
 :raw-latex:`\includegraphics[scale=0.45]{xkcd-gyroscopes.png}`
 
 
@@ -47,22 +47,22 @@ Results of interest are automatically transferred there (otherwise one would hav
 
 Results are handled by:
 
- - the overall *Result Manager* (a ``class_ResultManager`` singleton, automatically created at deployment time on the user node), which keeps track of results and drive them
+- the overall *Result Manager* (a ``class_ResultManager`` singleton, automatically created at deployment time on the user node), which keeps track of results and drive them
 
- - *Result producers* (all ``class_ResultProducer`` instances, like probes, either basic or datalogger-based), which provide support to declare, aggregate and send their results
+- *Result producers* (all ``class_ResultProducer`` instances, like probes, either basic or datalogger-based), which provide support to declare, aggregate and send their results
 
 
 Following mode of operation allows to handle results:
 
- #. the simulation user specifies initially, in the simulation case, what are the results he is interested in, thanks to a *Result Specification* (detailed below)
+#. the simulation user specifies initially, in the simulation case, what are the results he is interested in, thanks to a *Result Specification* (detailed below)
 
- #. the result manager checks this specification, and precomputes what will be needed to discriminate between wanted and unwanted simulation results
+#. the result manager checks this specification, and precomputes what will be needed to discriminate between wanted and unwanted simulation results
 
- #. when the creation of result producers (typically probes instantiated from models or scenarios) is considered (either initially or at simulation-time), it is declared automatically to the result manager, which is then able to tell whether a given result producer is wanted or not (then only the necessary producers will be created and fed); this allows a given model to support any number of probes, and to enable only the relevant ones on a per-simulation case basis
+#. when the creation of result producers (typically probes instantiated from models or scenarios) is considered (either initially or at simulation-time), it is declared automatically to the result manager, which is then able to tell whether a given result producer is wanted or not (then only the necessary producers will be created and fed); this allows a given model to support any number of probes, and to enable only the relevant ones on a per-simulation case basis
 
- #. in the course of the simulation, result producers gather sample data, performing immediate or deferred writes (their volume usually exceeds the capacities of the overall distributed RAM), potentially terminating at any time and then performing operations on these data (ex: generating plots from them)
+#. in the course of the simulation, result producers gather sample data, performing immediate or deferred writes (their volume usually exceeds the capacities of the overall distributed RAM), potentially terminating at any time and then performing operations on these data (ex: generating plots from them)
 
- #. when (if) the simulation ends successfully, the result manager automatically requests the relevant results from all relevant producers, and copy them in the result directory (more precisely, it generates them only if appropriate, like in the case of plots, and send them in a compressed from over the network, to the user node)
+#. when (if) the simulation ends successfully, the result manager automatically requests the relevant results from all relevant producers, and copy them in the result directory (more precisely, it generates them only if appropriate, like in the case of plots, and send them in a compressed from over the network, to the user node)
 
 
 
@@ -84,7 +84,7 @@ Patterns are to be expressed according to the *Perl Compatible Regular Expressio
 
 For more information on the pattern format, see following `cheat sheet <http://www.bitcetera.com/page_attachments/0000/0030/regex_in_a_nutshell.pdf>`_ and the `re module <http://erlang.org/doc/man/re.html>`_.
 
-:raw-html:`<center><img src="xkcd-perl_problems.png"></img></center>`
+:raw-html:`<center><img src="xkcd-perl_problems.png" id="responsive-image-medium"></img></center>`
 :raw-latex:`\includegraphics[scale=0.6]{xkcd-perl_problems.png}`
 
 
@@ -146,7 +146,7 @@ Identifying Reasons For Observed Phenomena
 
 Finding actual causes is seldom straightforward:
 
-:raw-html:`<center><img src="xkcd-correlation.png"></img></center>`
+:raw-html:`<center><img src="xkcd-correlation.png" id="responsive-image-medium"></img></center>`
 :raw-latex:`\includegraphics[scale=0.8]{xkcd-correlation.png}`
 
 
@@ -156,7 +156,7 @@ Having Reasonable Expectations
 
 A simulation is not the silver bullet that will ask the right questions on the user's behalf and answer them with infinite accuracy:
 
-:raw-html:`<center><img src="xkcd-science_montage.png"></img></center>`
+:raw-html:`<center><img src="xkcd-science_montage.png" id="responsive-image-medium"></img></center>`
 :raw-latex:`\includegraphics[scale=0.6]{xkcd-science_montage.png}`
 
 Simulation being a rather expensive and time-consuming mode of evaluation, it should be used on carefully selected cases that cannot be solved satisfactorily thanks to other methods, like comparison with actual systems, expert assessments, coarse spreadsheet-based studies, etc.
@@ -174,13 +174,13 @@ This is why the scalability of a simulation engine is a key property: whenever s
 
 Indeed extrapolating becomes too often a wild guess:
 
-:raw-html:`<center><img src="xkcd-extrapolating.png"></img></center>`
+:raw-html:`<center><img src="xkcd-extrapolating.png" id="responsive-image-reduced"></img></center>`
 :raw-latex:`\includegraphics[scale=0.7]{xkcd-extrapolating.png}`
 
 
 In most cases, approaches based on extrapolations are hardly sustainable:
 
-:raw-html:`<center><img src="xkcd-sustainable.png"></img></center>`
+:raw-html:`<center><img src="xkcd-sustainable.png" id="responsive-image-intermediate"></img></center>`
 :raw-latex:`\includegraphics[scale=0.45]{xkcd-sustainable.png}`
 
 
@@ -190,13 +190,13 @@ Sharing the Findings With the Intended Audience
 
 The lessons learned thanks to the simulation must be synthesised appropriately, with proper wording for the targeted public, so that the conclusions are sufficiently emphasized to be well-understood:
 
-:raw-html:`<center><img src="xkcd-simple.png"></img></center>`
+:raw-html:`<center><img src="xkcd-simple.png" id="responsive-image-small"></img></center>`
 :raw-latex:`\includegraphics[scale=0.7]{xkcd-simple.png}`
 
 
 Concerns must be correctly shared among the people involved, with appropriate common metrics and goals:
 
-:raw-html:`<center><img src="xkcd-car_problems.png"></img></center>`
+:raw-html:`<center><img src="xkcd-car_problems.png" id="responsive-image-large"></img></center>`
 :raw-latex:`\includegraphics[scale=0.55]{xkcd-car_problems.png}`
 
 
@@ -206,5 +206,5 @@ Making Good Use of the New Knowledge
 
 It is certainly out of the scope of this document, but simulations may generate new knowledge, which must be carefully leveraged, lest it worsens the situation:
 
-:raw-html:`<center><img src="xkcd-conditional_risk.png"></img></center>`
+:raw-html:`<center><img src="xkcd-conditional_risk.png" id="responsive-image-intermediate"></img></center>`
 :raw-latex:`\includegraphics[scale=0.8]{xkcd-conditional_risk.png}`

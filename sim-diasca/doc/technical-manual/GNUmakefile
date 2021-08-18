@@ -3,13 +3,15 @@ SIM_DIASCA_TOP = ../..
 
 .PHONY: doc html pdf info-doc info-local-doc
 
+
+
 OVERALL_DOCUMENT_SOURCE = $(SD_TECH_MANUAL_SRC)
 
 
 # Default do-nothing target:
 doc:
 	@echo "  Run 'make full-doc' to generate the technical "\
-	"manual ($(SD_TECH_MANUAL_NAME))."
+	"manual ($(SD_TECH_MANUAL_SRC)) documents."
 
 
 html: full-html

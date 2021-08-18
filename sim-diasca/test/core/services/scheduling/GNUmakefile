@@ -14,6 +14,8 @@ all:
 # saving a simulation archive should be run before the one loading it)
 #
 ORDERED_TESTS = \
+	deployment_saving_package_test.erl                            \
+	deployment_reloading_saved_package_test.erl                   \
 	scheduling_initial_placement_hint_test.erl                    \
 	setting_initial_and_final_date_test.erl                       \
 	scheduling_one_initial_non_terminating_actor_test.erl         \
@@ -28,6 +30,10 @@ ORDERED_TESTS = \
 	scheduling_multiple_coupled_periodic_actors_test.erl          \
 	scheduling_multiple_coupled_erratic_actors_longer_test.erl    \
 	scheduling_scalability_test.erl
+
+
+# The package file must be available if testing its (re)loading:
+deployment_reloading_saved_package_run: deployment_saving_package_run
 
 
 # Note: as the 'test' target cannot be overridden, if the run-tests target is
@@ -45,29 +51,30 @@ notify-error:
 
 
 
+
 run-tests:
 	@echo "  Running all tests now in batch mode:"
 	@for t in $(ORDERED_TESTS); do \
-	target=$(echo $$t|sed 's|\_test.erl$$|_run|1'); \
-	echo " ---- Running $$target ----"; \
-	if ! $(MAKE) $$target CMD_LINE_OPT="--batch"; then \
-	echo "######## Test $$target failed! ########" 1>&2; exit 120; \
-	else sleep 1; echo; fi; done
+	target=`echo $$t|sed 's|\_test.erl$$|_run|1'` ; \
+	echo " ---- Running $$target ----" ; \
+	if ! $(MAKE) $$target CMD_LINE_OPT="--batch" ; then \
+	echo "######## Test $$target failed! ########" 1>&2 ; exit 120 ; \
+	else sleep 1 ; echo ; fi ; done
 	-@/bin/rm -f DeploymentSavingTest.sdar
 
 
 run-test-forever:
-	@while true; do if ! $(MAKE) \
+	@while [ 1 ] ; do if ! $(MAKE) \
 	scheduling_multiple_coupled_erratic_actors_run CMD_LINE_OPT="--batch"; \
-	then echo "######## Test failed ########" 1>&2; exit 120; else \
-	sleep 1; echo; fi; done
+	then echo "######## Test failed ########" 1>&2 ; exit 120 ; else \
+	sleep 1 ; echo ; fi ; done
 
 
 run-tests-forever:
 	@echo "  Running all tests now in batch mode, \
 	forever (unless an error occurs):"
-	@while true; do if ! $(MAKE) run-tests; then \
-	echo "Stopped due to failed test." 1>&2; exit 115; fi; done
+	@while [ 1 ] ; do if ! $(MAKE) run-tests ; then \
+	echo "Stopped due to failed test." 1>&2 ; exit 115 ; fi ; done
 
 
 clean: clean-local

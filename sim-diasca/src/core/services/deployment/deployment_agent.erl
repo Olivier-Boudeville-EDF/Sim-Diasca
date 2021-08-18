@@ -20,9 +20,9 @@
 
 
 
-% @doc Agent to be sent, thanks to deployment workers, on all computing nodes,
-% so that it can <b>deploy automatically all elements needed there</b> in order
-% to run a simulation.
+% Agent to be sent, thanks to deployment workers, on all computing nodes, so
+% that it can deploy automatically everything that is needed there in order to
+% run a simulation.
 %
 % Not using WOOPER here, in order to avoid needing extra dependencies and
 % environment during this bootstrap phase.
@@ -89,7 +89,7 @@
 % filesystem where deployment agents would overwrite their respective log files)
 %
 -define( deploy_log_file_fmt,
-		 "/tmp/sim-diasca-deployment-debug-for-sii-~ts.txt" ).
+		 "/tmp/sim-diasca-deployment-debug-for-sii-~s.txt" ).
 
 
 % Silencing:
@@ -110,7 +110,7 @@
 
 
 
-% @doc Performs the actual deployment; triggered by a rpc:cast/4 called by the
+% Performs the actual deployment; triggered by a rpc:cast/4 called by the
 % associated computing host manager.
 %
 % io:format print-outs will end up in the user console.
@@ -167,7 +167,7 @@ deploy( ComputerHostManagerPid, GroupLeaderPid, InterNodeTickTimeOut,
 
 
 	send_trace_fmt( TraceAggregatorPid, "Deployment agent running on node ~p, "
-		"with version ~ts of the virtual machine, requesting the "
+		"with version ~s of the virtual machine, requesting the "
 		"simulation package from ~w. Current scheduler count: ~B.",
 		[ node(), system_utils:get_interpreter_version(),
 		  ComputerHostManagerPid, erlang:system_info( schedulers ) ], info ),
@@ -183,7 +183,7 @@ deploy( ComputerHostManagerPid, GroupLeaderPid, InterNodeTickTimeOut,
 
 		{ wooper_result, deploy_time_out } ->
 			Message = "overall deployment time-out reached",
-			log_on_file( SII, "Error: ~ts.", [ Message ] ),
+			log_on_file( SII, "Error: ~s.", [ Message ] ),
 			terminate( error, Message, TraceAggregatorPid, SII );
 
 
@@ -228,7 +228,7 @@ deploy( ComputerHostManagerPid, GroupLeaderPid, InterNodeTickTimeOut,
 
 		% Ignored in the mailbox, managed later:
 		%{ nodeup, NodeUp } ->
-		%	io:format( "(received a notification about node '~ts' "
+		%	io:format( "(received a notification about node '~s' "
 		%			   "becoming up)~n", [ NodeUp ] ),...
 
 
@@ -239,7 +239,7 @@ deploy( ComputerHostManagerPid, GroupLeaderPid, InterNodeTickTimeOut,
 			Reason = io_lib:format( "EXIT signal received from ~w "
 				"with reason '~p', terminating", [ SourcePid, ExitReason ] ),
 
-			log_on_file( SII, "Error: ~ts.", [ Reason ] ),
+			log_on_file( SII, "Error: ~s.", [ Reason ] ),
 
 			terminate( error, Reason, TraceAggregatorPid, SII );
 
@@ -248,7 +248,7 @@ deploy( ComputerHostManagerPid, GroupLeaderPid, InterNodeTickTimeOut,
 			Message = "termination request received while waiting "
 				"for deployment start",
 
-			log_on_file( SII, "Info: ~ts.", [ Message ] ),
+			log_on_file( SII, "Info: ~s.", [ Message ] ),
 
 			terminate( error, Message, TraceAggregatorPid, SII )
 
@@ -259,7 +259,7 @@ deploy( ComputerHostManagerPid, GroupLeaderPid, InterNodeTickTimeOut,
 				"from the user node regarding the package request",
 				[ ?connection_time_out ]  ),
 
-			log_on_file( SII, "Error: ~ts.", [ Message ] ),
+			log_on_file( SII, "Error: ~s.", [ Message ] ),
 
 			terminate( error, Message, TraceAggregatorPid, SII )
 
@@ -267,7 +267,7 @@ deploy( ComputerHostManagerPid, GroupLeaderPid, InterNodeTickTimeOut,
 
 
 
-% @doc Prepares to receive the deployment package.
+% Prepares to receive the deployment package.
 -spec prepare_package( bin_string(), pid() ) ->
 							{ directory_name(), directory_name() }.
 prepare_package( BinDeployBaseDir, TraceAggregatorPid ) ->
@@ -279,7 +279,7 @@ prepare_package( BinDeployBaseDir, TraceAggregatorPid ) ->
 		true ->
 
 			send_trace_fmt( TraceAggregatorPid,
-				"Deployment directory '~ts' already existing "
+				"Deployment directory '~s' already existing "
 				"as a filesystem element, removing it fully first.",
 				[ DeployBaseDir ], info ),
 
@@ -293,14 +293,14 @@ prepare_package( BinDeployBaseDir, TraceAggregatorPid ) ->
 
 				{ _ErrorCode=0, CmdOutput } ->
 					send_trace_fmt( TraceAggregatorPid,
-						"Removal of deployment directory '~ts' succeeded, yet "
-						"output following message: '~ts'.",
+						"Removal of deployment directory '~s' succeeded, yet "
+						"output following message: '~s'.",
 						[ DeployBaseDir, CmdOutput ], warning );
 
 				{ ErrorCode, CmdOutput } ->
 					send_trace_fmt( TraceAggregatorPid, "Error, removal of "
-						"deployment directory '~ts' failed (error code: ~B, "
-						"output: '~ts').",
+						"deployment directory '~s' failed (error code: ~B, "
+						"output: '~s').",
 						[ DeployBaseDir, ErrorCode, CmdOutput ], error )
 
 			end;
@@ -308,7 +308,7 @@ prepare_package( BinDeployBaseDir, TraceAggregatorPid ) ->
 
 		false ->
 			send_trace_fmt( TraceAggregatorPid,
-				"Deployment directory '~ts' not already existing, creating it.",
+				"Deployment directory '~s' not already existing, creating it.",
 				[ DeployBaseDir ], debug )
 
 	end,
@@ -323,7 +323,7 @@ prepare_package( BinDeployBaseDir, TraceAggregatorPid ) ->
 
 
 
-% @doc Manages the received deployment package.
+% Manages the received deployment package.
 -spec manage_package( binary(), directory_name(), directory_name(), pid() ) ->
 							void().
 manage_package( PackageBin, DeployBaseDir, DeployBeamDir,
@@ -331,13 +331,13 @@ manage_package( PackageBin, DeployBaseDir, DeployBeamDir,
 
 	send_trace_fmt( TraceAggregatorPid,
 		"Received simulation package, whose size is ~B bytes, "
-		"will extract it in deployment directory '~ts'.~n",
+		"will extract it in deployment directory '~s'.~n",
 		[ size( PackageBin ), DeployBeamDir ], debug ),
 
 	FileNames = file_utils:zipped_term_to_unzipped_files( PackageBin ),
 
 	send_trace_fmt( TraceAggregatorPid,
-		"Following ~B files were extracted in '~ts':~n~p.~n",
+		"Following ~B files were extracted in '~s':~n~p.~n",
 		[ length( FileNames ), DeployBeamDir, lists:sort( FileNames ) ],
 		debug ),
 
@@ -383,11 +383,11 @@ manage_package( PackageBin, DeployBaseDir, DeployBeamDir,
 
 
 
-% @doc Final loop of this deploy agent.
+% Final loop of this deploy agent.
 final_main_loop( TraceAggregatorPid, ComputerHostManagerPid, BinDeployBaseDir,
 				 SII ) ->
 
-	% To test the proper simulation teardown, should this agent fail:
+	% To test the proper simulation teardown should this agent fail:
 	%erlang:halt( abort ),
 
 	receive
@@ -398,7 +398,7 @@ final_main_loop( TraceAggregatorPid, ComputerHostManagerPid, BinDeployBaseDir,
 		{ wooper_result, DeployFilenameBin }
 		  when is_binary( DeployFilenameBin ) ->
 
-			log_on_file( SII, "(package archive was '~ts')",
+			log_on_file( SII, "(package archive was '~s')",
 						 [ DeployFilenameBin ] ),
 
 			final_main_loop( TraceAggregatorPid, ComputerHostManagerPid,
@@ -410,23 +410,23 @@ final_main_loop( TraceAggregatorPid, ComputerHostManagerPid, BinDeployBaseDir,
 			% application:set_env( mnesia, dir, ... ) taken into account here).
 
 			send_trace_fmt( TraceAggregatorPid,
-							"Deployment agent starting database on node ~ts.",
+							"Deployment agent starting database on node ~s.",
 							[ node() ], info ),
 
-			%io:format( "Deployment agent starting database on node ~ts.~n",
-			%           [ node() ] ),
+			%io:format( "Deployment agent starting database on node ~s.~n",
+			%		  [ node() ] ),
 
 			% No prior loading accepted:
 
-			%case application:load(mnesia) of
+			%%case application:load(mnesia) of
 
-			%    ok ->
-			%        ok;
+			%%	ok ->
+			%%		ok;
 
-			%		LoadError ->
-			%			throw( { mnesia_load_failed, node(), LoadError } )
+			%%	LoadError ->
+			%%		throw( { mnesia_load_failed, node(), LoadError } )
 
-			%end,
+			%%end,
 
 			case application:start( mnesia ) of
 
@@ -438,7 +438,7 @@ final_main_loop( TraceAggregatorPid, ComputerHostManagerPid, BinDeployBaseDir,
 
 			end,
 
-			%io:format( "Database started on node ~ts.~n", [ node() ] ),
+			%io:format( "Database started on node ~s.~n", [ node() ] ),
 
 			CallerPid ! onDatabaseStarted,
 
@@ -469,7 +469,7 @@ final_main_loop( TraceAggregatorPid, ComputerHostManagerPid, BinDeployBaseDir,
 			Message = io_lib:format( "A new node connected (to ~p): ~p.",
 									 [ node(), NewNode ] ),
 
-			%io:format( "Warning: ~ts~n", [ Message ] ),
+			%io:format( "Warning: ~s~n", [ Message ] ),
 			log_on_file( SII, Message ),
 
 			send_trace( TraceAggregatorPid, Message, info ),
@@ -492,9 +492,10 @@ final_main_loop( TraceAggregatorPid, ComputerHostManagerPid, BinDeployBaseDir,
 
 
 		{ 'EXIT', SourcePid, ExitReason } ->
-
 			Reason = io_lib:format( "EXIT signal received from ~w "
-				"with reason '~p', terminating", [ SourcePid, ExitReason ] ),
+									"with reason '~p', terminating",
+									[ SourcePid, ExitReason ] ),
+
 
 			log_on_file( SII, Reason ),
 
@@ -504,7 +505,7 @@ final_main_loop( TraceAggregatorPid, ComputerHostManagerPid, BinDeployBaseDir,
 		terminate ->
 
 			Message = io_lib:format( "Requested to terminate, removing "
-				"deployment directory '~ts' and terminating now.",
+				"deployment directory '~s' and terminating now.",
 				[ BinDeployBaseDir ] ),
 
 			log_on_file( SII, Message ),
@@ -531,7 +532,7 @@ final_main_loop( TraceAggregatorPid, ComputerHostManagerPid, BinDeployBaseDir,
 						{ ReturnCode, CmdOutput } ->
 							send_trace_fmt( TraceAggregatorPid,
 								"Problem while removing deployment directory "
-								"'~ts' (error code: ~B, message '~ts').",
+								"'~s' (error code: ~B, message '~s').",
 								[ BinDeployBaseDir, ReturnCode, CmdOutput ],
 								error )
 
@@ -539,7 +540,7 @@ final_main_loop( TraceAggregatorPid, ComputerHostManagerPid, BinDeployBaseDir,
 
 				false ->
 					send_trace_fmt( TraceAggregatorPid,
-						"Not removing the deployment directory '~ts'.",
+						"Not removing the deployment directory '~s'.",
 						[ DeployDirString ], warning )
 
 			end,
@@ -550,8 +551,8 @@ final_main_loop( TraceAggregatorPid, ComputerHostManagerPid, BinDeployBaseDir,
 		Unexpected ->
 
 			log_on_file( SII,
-				"Received unexpected, hence ignored, message:~n~p",
-				[ Unexpected ] ),
+						 "Received unexpected, hence ignored, message:~n~p",
+						 [ Unexpected ] ),
 
 			final_main_loop( TraceAggregatorPid, ComputerHostManagerPid,
 							 BinDeployBaseDir, SII )
@@ -566,8 +567,8 @@ final_main_loop( TraceAggregatorPid, ComputerHostManagerPid, BinDeployBaseDir,
 
 
 
-% @doc Called whenever a node (possibly the user node, the only other node
-% directly known) is detected as down.
+% Called whenever a node (most probably the user node, the only other node
+% known) is detected as down.
 %
 % (helper)
 %
@@ -589,8 +590,8 @@ on_node_down( NodeDown ) ->
 
 
 
-% @doc Reports the specified termination reason on the console and as a trace,
-% and terminate.
+% Reports the specified termination reason on the console and as a trace, and
+% terminate.
 %
 -spec terminate( atom(), ustring(), trace_aggregator_pid(), sii() ) ->
 						no_return().
@@ -604,7 +605,7 @@ terminate( _TraceLevel, Reason, _TraceAggregatorPid, SII ) ->
 	% it seems to work.
 
 	Message = io_lib:format( "Deployment agent ~w halting now the computing "
-		"node '~ts'; reason: ~ts.", [ self(), node(), Reason ] ),
+		"node '~s'; reason: ~s.", [ self(), node(), Reason ] ),
 
 	log_on_file( SII, Message ),
 
@@ -616,7 +617,6 @@ terminate( _TraceLevel, Reason, _TraceAggregatorPid, SII ) ->
 
 
 
-% @doc Terminates this agent and its computing node.
 -spec terminate( sii() ) -> no_return().
 terminate( SII ) ->
 
@@ -626,7 +626,7 @@ terminate( SII ) ->
 	log_on_file( SII, "Deployment agent terminating immediately." ),
 
 	%io:format( "~n(deployment agent ~p terminating immediately)~n",
-	%           [ self() ] ),
+	%		   [ self() ] ),
 	%timer:sleep( 1000 ),
 
 	% Remote shutdown directly done by computing host manager:
@@ -650,7 +650,7 @@ log_on_file( SII, String ) ->
 	TimestampString = io_lib:format( "~B/~B/~B at ~B:~B:~B",
 					tuple_to_list( date() ) ++ tuple_to_list( time() ) ),
 
-	Message = io_lib:format( "~n[~ts] ~ts", [ TimestampString, String ] ),
+	Message = io_lib:format( "~n[~s] ~s", [ TimestampString, String ] ),
 
 	LogFilename = io_lib:format( ?deploy_log_file_fmt, [ SII ] ),
 
@@ -668,7 +668,6 @@ log_on_file( _SII, _String ) ->
 
 
 -endif.
-
 
 
 % Section to help sending traces from the deployment agent, which is not a trace
@@ -747,7 +746,7 @@ send_trace_helper( TraceAggregatorPid, Message, TraceSeverity ) ->
 	case lists:member( TraceSeverity, ErrorLikeSeverities ) of
 
 		true ->
-			io:format( "[deployment ~ts] ~ts~n", [ TraceSeverity, Message ] );
+			io:format( "[deployment ~s] ~s~n", [ TraceSeverity, Message ] );
 
 		false ->
 			ok
@@ -756,7 +755,6 @@ send_trace_helper( TraceAggregatorPid, Message, TraceSeverity ) ->
 
 	% We keep only the hostname, not the FQDN, otherwise the (last) dot in the
 	% name would be interpreted as subcategory in the traces:
-	%
 	TraceAggregatorPid ! { send,
 		[ self(), "Deployment agent on "
 			++ hd( string:tokens( net_adm:localhost(), "." ) ),
@@ -765,7 +763,7 @@ send_trace_helper( TraceAggregatorPid, Message, TraceSeverity ) ->
 		  Message ] }.
 
 
-% Corresponds to time_utils:get_textual_timestamp/0:
+% Corresponds to time_utims:get_textual_timestamp/0:
 %
 % Returns the current time and date as a string, with correct format.
 %
@@ -782,17 +780,15 @@ current_time_to_string() ->
 % Duplication section: the deployment_agent is the only one that is to be run
 % standalone (pioneer module with almost no allowed prerequisite).
 
-
 % Duplicated verbatim from class_TraceEmitter.erl:
 
-
-% @doc Returns the (numerical) priority associated to specified trace severity
+% Returns the (numerical) priority associated to specified trace severity
 % (i.e. emergency, alert, etc.).
 %
 % See also: its reciprocal get_severity_for/1.
 %
 -spec get_priority_for( trace_utils:trace_severity() ) ->
-								trace_utils:trace_priority().
+							  trace_utils:trace_priority().
 % From most common to least:
 get_priority_for( debug ) ->
 	7;
@@ -824,23 +820,21 @@ get_priority_for( Other ) ->
 % 'void' not expected here.
 
 
-
 % Duplicated almost verbatim (cf. module) from traces.erl:
 
-
-% @doc Replaces the current (probably default) logger handler with this Traces
-% one (registered as 'default'), based on the specified trace aggregator.
+% Replaces the current (probably default) logger handler with this Traces one
+% (registered as 'default'), based on the specified trace aggregator.
 %
 -spec set_handler( aggregator_pid() ) -> void().
 set_handler( AggregatorPid ) ->
 
 	% Note: if set before actual deployment, trace_utils and all not ready yet:
 	%trace_utils:debug_fmt( "Setting from deployment manager the default "
-	%    "handler for logger to aggregator ~w, on node: ~ts.",
-	%    [ AggregatorPid, node() ] ),
+	%	"handler for logger to aggregator ~w, on node: ~s.",
+	%	[ AggregatorPid, node() ] ),
 
 	%trace_utils:debug_fmt( "Previous handler: ~p",
-	%                       [ logger:get_handler_config( default ) ] ),
+	%					   [ logger:get_handler_config( default ) ] ),
 
 	TargetHandler = default,
 
@@ -869,8 +863,8 @@ set_handler( AggregatorPid ) ->
 
 
 
-% @doc Returns the (initial) configuration of the Traces logger handler,
-% branching to the specified trace aggregator.
+% Returns the (initial) configuration of the Traces logger handler, branching to
+% the specified trace aggregator.
 %
 -spec get_handler_config( aggregator_pid() ) -> logger:handler_config().
 get_handler_config( AggregatorPid ) ->
@@ -892,7 +886,7 @@ get_handler_config( AggregatorPid ) ->
 % Duplicated verbatim from naming_utils:
 
 
-% @doc Waits (up to 10 seconds) until specified name is globally registered.
+% Waits (up to 10 seconds) until specified name is globally registered.
 %
 % Returns the resolved PID, or throws {global_registration_waiting_timeout,
 % Name}.

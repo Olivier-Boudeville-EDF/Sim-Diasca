@@ -4396,7 +4396,7 @@ create_initial_actors( ActorConstructionList, LoadBalancerPid )
 
 	cond_utils:if_defined( simdiasca_debug_initial_creations, [
 
-	   ActorLines = [ text_utils:format( "~p", [ CP ] )
+		ActorLines = [ text_utils:format( "~p", [ CP ] )
 						|| CP <- ActorConstructionList ],
 
 		trace_utils:debug_fmt( "~w requesting the creation of ~B initial "

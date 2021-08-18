@@ -67,32 +67,33 @@
 
 
 -type troubleshooting_mode() :: 'enabled' | 'disabled'.
+% Tells whether (often costly) troubleshooting measures are activated.
 
 
-
-% Allows to describe the evaluation mode of the simulation:
-%
 -type evaluation_mode() :: 'fastest' | 'reproducible' | 'ergodic'.
+% Allows to describe the evaluation mode of the simulation.
 
 
 -type evaluation_requested_properties() :: evaluation_mode()
 		| { 'reproducible', random_utils:seed() }.
+% Allows to describe actual key properties expected from the simulation.
 
 
 
 % Allows to store most general simulation settings.
-%
 -record( simulation_settings, {
 
 
-	% The name of that simulation, as a string.
+	% The name of that simulation, as a plain string (otherwise as a module
+	% name).
 	%
 	% Ex: simulation_name="My Simulation"
 	%
 	% (if left undefined, will automatically adopt the module name of the case
 	% being run)
 	%
-	simulation_name = ?MODULE :: string() | basic_utils:module_name(),
+	simulation_name = ?MODULE ::
+		text_utils:ustring() | basic_utils:module_name(),
 
 
 	% The duration (in floating-point virtual seconds) of a fundamental tick in
@@ -102,7 +103,7 @@
 	% number of uses.
 	%
 	tick_duration = ?default_tick_duration
-							   :: class_TimeManager:virtual_seconds(),
+								:: class_TimeManager:virtual_seconds(),
 
 
 	% Whether the simulation should run in interactive or batch mode:
@@ -116,7 +117,7 @@
 	% outputs (if --batch is used) or interactively.
 	%
 	simulation_interactivity_mode = batch ::
-	  class_TimeManager:simulation_interactivity_mode(),
+		class_TimeManager:simulation_interactivity_mode(),
 
 
 	% Whether targeting reproducibility (with or without a seed) or ergodicity:
@@ -152,7 +153,7 @@
 	%
 	% - or, in the general case, a list of options, among:
 	%
-	%  - { targeted_patterns, TargetPatterns } where TargetPatterns is a list of
+	%  - {targeted_patterns, TargetPatterns} where TargetPatterns is a list of
 	%  elements, each being:
 	%
 	%	 - either a standalone regular expression pattern, expressed as a plain
@@ -165,7 +166,7 @@
 	%	 depending on what is requested by the user) or a list of such
 	%	 corresponding producer options
 	%
-	%  - { blacklisted_patterns, BlacklistPatterns } where BlacklistPatterns is
+	%  - {blacklisted_patterns, BlacklistPatterns} where BlacklistPatterns is
 	%  a list of regular expression patterns, expressed as plain strings,
 	%  allowing to remove elements among the ones that the previous targeted
 	%  patterns selected
@@ -187,10 +188,10 @@
 	%
 	%   { blacklisted_patterns, [ "*-emitter-(first|second)-*" ] } ]
 	%
-	% Note that if strings are not separated by commas (ex: [ "aaa" "bbb" ],
-	% instead of [ "aaa", "bbb" ]), then they will be concatenated by the
+	% Note that if strings are not separated by commas (ex: ["aaa" "bbb"],
+	% instead of ["aaa", "bbb"]), then they will be concatenated by the
 	% preprocessor and be equivalent to "aaabbb" (which, in the general case,
-	% leads to different selections than [ "aaa", "bbb" ]).
+	% leads to different selections than ["aaa", "bbb"]).
 	%
 	% Note also that the patterns are checked against the name of the output
 	% (ex: "my interesting probe"), not against its translation to be a proper
@@ -214,14 +215,11 @@
 	% instances will be kept, so that information about a faulty instance can be
 	% retrieved despite its lack of cooperation.
 	%
-	troubleshooting_mode = enabled :: troubleshooting_mode()
+	troubleshooting_mode = enabled :: troubleshooting_mode() }).
 
 
-}).
-
-
-% For convenience:
 -type simulation_settings() :: #simulation_settings{}.
+% Allows to store most general simulation settings.
 
 
 % It may be more efficient to handle larger numbers of actors per chunk.

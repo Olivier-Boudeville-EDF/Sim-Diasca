@@ -144,9 +144,7 @@ endif
 
 # Starting from this layer, nodes are not started as distributed ones, as, for
 # the purpose of run uniqueness (see SII), Sim-Diasca has to change the name of
-# the user node at runtime - hence this non-distributed flag (that is forced
-# now, unless set through the command-line, which would probably not be a good
-# idea):
+# the user node at runtime - hence this non-distributed flag (that is forced now):
 #
 NODE_NAMING := "--nn"
 

@@ -13,6 +13,9 @@ Technical Manual of the **Sim-Diasca** Simulation Engine
    :format: latex
 
 
+:raw-html:`<a name="sim_diasca_top"></a>`
+
+
 .. Unable to have proper table formatting without specialising:
 
 
@@ -23,19 +26,17 @@ Technical Manual of the **Sim-Diasca** Simulation Engine
 :raw-latex:`\begin{center} \begin{tabular}{c c c} \multicolumn{2}{c}{\includegraphics[scale=0.3]{sim-diasca.png}} \\  \includegraphics[scale=0.4]{logo-EDF-english.png} & \includegraphics[scale=0.8]{lgpl-v3-logo-bordered.png} \\ \end{tabular} \end{center}`
 
 
-:raw-html:`<a name="sim_diasca_top"></a>`
-
-:raw-html:`<div class="banner"><p><em>Sim-Diasca Technical Manual</em> <a href="https://olivier-boudeville-edf.github.io/Sim-Diasca/">browse latest</a> <a href="Ceylan-Myriad-Layer-technical-manual-english.pdf">get PDF</a> <a href="#myriad_top">go to top</a> <a href="#myriad_toc">go to toc</a> <a href="#myriad_bottom">go to bottom</a> <a href="api-doc/index.html">browse API</a> <a href="https://github.com/Olivier-Boudeville/Ceylan-Myriad">go to project</a> <a href="mailto:about(dash)myriad(at)esperide(dot)com?subject=[Ceylan-Myriad]%20Remark">email us</a></p></div>`
+:raw-html:`<div class="banner"><p><em>Sim-Diasca Technical Manual</em> <a href="https://olivier-boudeville-edf.github.io/Sim-Diasca/">browse latest</a> <a href="SimDiasca-technical-manual-english.pdf">get PDF</a> <a href="#sim_diasca_top">go to top</a> <a href="#sim_diasca_toc">go to toc</a> <a href="#sim_diasca_bottom">go to bottom</a> <a href="api-doc/index.html">browse API</a> <a href="https://github.com/Olivier-Boudeville-EDF/Sim-Diasca/">go to project</a> <a href="mailto:olivier(dot)boudeville(at)edf(dot)fr?subject=[Sim-Diasca]%20Remark">email us</a></p></div>`
 
 
 
-:Organisation: Copyright (C) 2008-2021 EDF R&D
+:Organisation: Copyright (C) 2008-GENERATION_YEAR_TAG EDF R&D
 :Author: Olivier Boudeville
 :Contact: olivier (dot) boudeville (at) edf (dot) fr
 :Creation date: Monday, February 8, 2010
-:Lastly updated: GENERATION_DATE
-:Version: PROJECT_VERSION
-:Status: Work in progress
+:Lastly updated: GENERATION_DATE_TAG
+:Version: PROJECT_VERSION_TAG
+:Status: Stable
 :Website: `http://sim-diasca.com <http://sim-diasca.com>`_
 :Dedication:
 
@@ -55,6 +56,8 @@ Technical Manual of the **Sim-Diasca** Simulation Engine
 
 
 :raw-latex:`\pagebreak`
+
+:raw-html:`<a name="sim_diasca_toc"></a>`
 
 .. contents:: **Table of Contents**
 	:depth: 2
@@ -154,7 +157,7 @@ For the more in-depth reference installation instructions, refer to the ``Sim-Di
 How to Read This Manual
 -----------------------
 
-:raw-html:`<center><center><img src=xkcd-manuals.png></img></center>`
+:raw-html:`<center><center><img src="xkcd-manuals.png" id="responsive-image-medium"></img></center>`
 :raw-latex:`\includegraphics[scale=0.75]{xkcd-manuals.png}`
 
 
@@ -233,4 +236,6 @@ Please refer directly to the ``SimDiasca-changes-english.rst`` file instead.
 
 .. include:: SimDiasca-footer-english.rst
 
-:raw-latex:`\pagebreak`
+:raw-html:`<a name="sim_diasca_bottom"></a>`
+
+.. comment :raw-latex:`\pagebreak`

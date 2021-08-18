@@ -20,7 +20,7 @@
 % Creation date: Friday, June 7, 2019.
 
 
-% @doc Overall (singleton) manager of web-based interactions.
+% @doc Overall (singleton) manager of <b>web-based interactions</b>.
 -module(class_WebManager).
 
 
@@ -73,6 +73,7 @@
 
 
 
+%-type support_table() :: table( wooper:classname(), boolean() ).
 % Table allowing to associate class-level information about support facilities.
 %
 % For example, a given type (i.e. class) of web probe might need one-time
@@ -84,8 +85,7 @@
 %
 % So the boolean associated to the classname tells whether the corresponding
 % support has already been initialized (or terminated since then).
-%
-%-type support_table() :: table( wooper:classname(), boolean() ).
+
 
 
 % Shorthands:
@@ -315,8 +315,7 @@ destruct( State ) ->
 
 % @doc Declares a new web probe.
 -spec declareWebProbe( wooper:state(), bin_probe_name(), wooper:classname(),
-					   maybe( bin_directory_path() ) ) ->
-										request_return( 'web_probe_declared' ).
+	maybe( bin_directory_path() ) ) -> request_return( 'web_probe_declared' ).
 declareWebProbe( State, BinProbeName, WebProbeClassname, MaybeBinProbeDir ) ->
 
 	?debug_fmt( "Declaring web probe '~ts' of class '~ts'.",
@@ -396,8 +395,6 @@ results_collected( State, ResultBaseDirName ) ->
 	?debug_fmt( "Notified that results were collected, in '~ts'.",
 				[ ResultBaseDirName ] ),
 
-	BrowserPath = executable_utils:get_default_web_browser_path(),
-
 	WebProbePairs = table:values( ?getAttr(probe_table) ),
 
 	% Answer from the getBaseProbeInfos/1 request:
@@ -417,6 +414,9 @@ results_collected( State, ResultBaseDirName ) ->
 			ok;
 
 		interactive ->
+
+			BrowserPath = executable_utils:get_default_web_browser_path(),
+
 			Command = text_utils:format( "~ts file://~ts",
 										 [ BrowserPath, LandingFilePath ] ),
 
@@ -646,8 +646,6 @@ generate_webserver_configuration_file( SII, BinServerInstallRoot,
 
 
 
-
-
 % @doc Generates a landing page (index.html) at the root of the specified web
 % content directory, and returns its path.
 %
@@ -670,8 +668,8 @@ generate_landing_page( BasicProbeInfos, WebProbeInfos, Metadata, State ) ->
 
 	file_utils:copy_file_in( CssFilename, BinServerContentRoot ),
 
-	LogoFilename = file_utils:join(
-						[ CommonDir, "edf-related", ?logo_filename ] ),
+	LogoFilename =
+		file_utils:join( [ CommonDir, "edf-related", ?logo_filename ] ),
 
 	file_utils:copy_file_in( LogoFilename, BinServerContentRoot ),
 
@@ -786,7 +784,7 @@ manage_support_termination( State ) ->
 
 
 
-% Writes the header of the landing page.
+% @doc Writes the header of the landing page.
 -spec write_header( sim_diasca:sii(), class_ResultManager:meta_data(),
 					file_utils:file() ) -> void().
 write_header( SII, Metadata, File ) ->
@@ -822,13 +820,13 @@ write_header( SII, Metadata, File ) ->
 	  "  </head>~n"
 	  "  <body>~n"
 	  "    <h1>Welcome to the Sim-Diasca web results browser "
-	  "for simulation run ~s</h1>~n"
+	  "for simulation run ~ts</h1>~n"
 	  "<blockquote><p><b>Simulation information</b>:~n~ts</p></blockquote>~n",
 	  [ SII, SII, MetadataString ] ).
 
 
 
-% Writes a suitable mini-table of contents.
+% @doc Writes a suitable mini-table of contents.
 write_toc( _BasicProbeNames, _WebProbeNames, _File ) ->
 	ok.
 
@@ -859,7 +857,7 @@ write_web_probes( WebProbeInfos, BinServerContentRoot, File ) ->
 %
 get_probe_link( { BinProbeName, _MaybeBinProbeDir=undefined },
 				_BinServerContentRoot ) ->
-	text_utils:format( "<a href=\"~s\">~ts</a>", [
+	text_utils:format( "<a href=\"~ts\">~ts</a>", [
 		file_utils:join( [ "..", "simulation-results",
 					class_WebProbe:get_filename_for( BinProbeName ) ] ),
 		BinProbeName ] );
@@ -873,7 +871,7 @@ get_probe_link( { BinProbeName, BinProbeDir }, BinServerContentRoot ) ->
 		text_utils:binary_to_string( BinServerContentRoot ) ),
 
 	% We do our best to rely on relative links:
-	text_utils:format( "<a href=\"~ts\">~s</a>", [
+	text_utils:format( "<a href=\"~ts\">~ts</a>", [
 		file_utils:join( RelativeDir,
 						 class_WebProbe:get_filename_for( BinProbeName ) ),
 		BinProbeName ] ).
@@ -911,7 +909,7 @@ get_html_link_for( BinProbeName, BinServerContentRoot ) ->
 		"simulation-results", class_Probe:get_report_filename(
 							text_utils:binary_to_string( BinProbeName ) ) ] ),
 
-	%trace_utils:debug_fmt( "Searching for '~s' from '~s'.",
+	%trace_utils:debug_fmt( "Searching for '~ts' from '~ts'.",
 	%   [ ProbeContentFilePath, file_utils:get_current_directory() ] ),
 
 	% Should a basic probe not receive any sample, no rendering thereof will be
@@ -932,7 +930,7 @@ get_html_link_for( BinProbeName, BinServerContentRoot ) ->
 
 
 
-% Writes down the fact that there is no probe available.
+% @doc Writes down the fact that there is no probe available.
 write_no_probe( File ) ->
 	file_utils:write_ustring( File,
 	  "<p>No tracked probe available (see the <code>result_specification</code>"
@@ -940,13 +938,13 @@ write_no_probe( File ) ->
 	  "potential, either basic or web, probe).</p>~n", [] ).
 
 
+% @doc Writes the footer of the web page.
 write_footer( File ) ->
 	file_utils:write_ustring( File,
 	  "     <hr>~n"
 	  "     <p><center><img src=\""?logo_filename"\" width=15%></center></p>~n"
 	  "  </body>~n"
 	  "</html>~n", [] ).
-
 
 
 
@@ -991,7 +989,7 @@ start_webserver( ServerInstallRoot, _ServerContentRoot, ConfigFilename,
 	%							   "sim-diasca-web-launch.log" ),
 
 	%Command = text_utils:join( _Sep=" ", [ NodePath, ConfigFilename,
-	%				text_utils:format( " 1> ~s 2>&1", [ LogFilename ] ) ),
+	%				text_utils:format( " 1> ~ts 2>&1", [ LogFilename ] ) ),
 
 	% TO-DO: perform a direct HTTP test prior to a new launch.
 
@@ -1015,12 +1013,13 @@ to_string( State ) ->
 
 		[ { SupportClassname, IsInit } ] ->
 			text_utils:format(
-			  "having initialized (to ~w) a single support class: ~ts",
-			  [ IsInit, SupportClassname ] );
+				"having initialized (to ~w) a single support class: ~ts",
+				[ IsInit, SupportClassname ] );
 
 		SupportClasses ->
 			text_utils:format( "having initialized ~B support classes: ~ts",
-			  [ length( SupportClasses ), table:to_string( SupportClasses ) ] )
+				[ length( SupportClasses ),
+				  table:to_string( SupportClasses ) ] )
 
 	end,
 
@@ -1032,7 +1031,7 @@ to_string( State ) ->
 		ProbeInfos ->
 			text_utils:format( "~B web probe(s): ~ts", [ length( ProbeInfos ),
 				text_utils:strings_to_string(
-						[ Name || { Name, _Dir } <- ProbeInfos ] ) ] )
+					[ Name || { Name, _Dir } <- ProbeInfos ] ) ] )
 
 	end,
 

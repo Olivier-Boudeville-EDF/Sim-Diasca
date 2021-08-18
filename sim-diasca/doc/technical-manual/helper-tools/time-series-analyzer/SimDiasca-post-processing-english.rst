@@ -13,28 +13,28 @@ Such files can be inputs to the Sim-Diasca analyzer tool for time series, which 
 
 For a time-series file, identified processings of interest are:
 
- - select a subset of curves in a time-series file
+- select a subset of curves in a time-series file
 
- - remove empty ones and/or constant ones
+- remove empty ones and/or constant ones
 
- - generate a basic ``gnuplot`` command file corresponding to a ``.dat`` file
+- generate a basic ``gnuplot`` command file corresponding to a ``.dat`` file
 
 For a curve,  identified processings of interest are:
 
- - find the extrema (minimum and maximum values), and when they occur (list of matching ticks)
+- find the extrema (minimum and maximum values), and when they occur (list of matching ticks)
 
- - compute the average value of the curve (which is not necessarily the average of the values, due to potentially non-consecutive ticks)
+- compute the average value of the curve (which is not necessarily the average of the values, due to potentially non-consecutive ticks)
 
- - apply a convolution filter on the curve samples
+- apply a convolution filter on the curve samples
 
- - compute the curve for the moving average (a specific case of convolution), which is a way of obtaining a smoother curve, making its interpretation easier by highlighting trends
+- compute the curve for the moving average (a specific case of convolution), which is a way of obtaining a smoother curve, making its interpretation easier by highlighting trends
 
- - perform a linear interpolation between samples
+- perform a linear interpolation between samples
 
- - perform decimation, to reduce the number of samples
+- perform decimation, to reduce the number of samples
 
- - change scale (ex: switch to logarithmic, reshape to fit into a ``0..1`` interval, etc.)
+- change scale (ex: switch to logarithmic, reshape to fit into a ``0..1`` interval, etc.)
 
 
-:raw-html:`<center><img src="xkcd-log_scale.png"></img></center>`
+:raw-html:`<center><img src="xkcd-log_scale.png" id="responsive-image-medium"></img></center>`
 :raw-latex:`\includegraphics[scale=0.6]{xkcd-log_scale.png}`

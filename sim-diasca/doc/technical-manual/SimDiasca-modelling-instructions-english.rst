@@ -38,9 +38,9 @@ An attribute has a name and a value, which can be of any data type, usually made
 
 For an actor, acting corresponds mostly to:
 
- - changing its private state (ex: changing the value of an attribute)
- - sending messages to other actors (ex: to notify them that some event occurred)
- - possibly, triggering side-effects (ex: sending a message to the distributed trace system)
+- changing its private state (ex: changing the value of an attribute)
+- sending messages to other actors (ex: to notify them that some event occurred)
+- possibly, triggering side-effects (ex: sending a message to the distributed trace system)
 
 
 .. Note:: Please refer to the Sim-Diasca Developer Guide for more implementation-level information about actors.
@@ -59,7 +59,7 @@ Expressivity
 ............
 
 
-:raw-html:`<center><img src="xkcd-candy_button_paper.png"></img></center>`
+:raw-html:`<center><img src="xkcd-candy_button_paper.png" id="responsive-image-intermediate"></img></center>`
 :raw-latex:`\includegraphics[scale=0.5]{xkcd-candy_button_paper.png}`
 
 
@@ -102,20 +102,20 @@ Modelling allows to bridge the gap between our knowledge of the system and its i
 
 One can certainly use flowcharts:
 
-:raw-html:`<center><img src="xkcd-flow_charts.png"></img></center>`
+:raw-html:`<center><img src="xkcd-flow_charts.png" id="responsive-image-intermediate"></img></center>`
 :raw-latex:`\includegraphics[scale=0.5]{xkcd-flow_charts.png}`
 
 But one may preferably rely on a few UML diagrams, including:
 
- - use case diagram
- - activity diagram
- - class diagram
- - sequence diagram
+- use case diagram
+- activity diagram
+- class diagram
+- sequence diagram
 
 Other interesting diagrams might be:
 
- - communication diagram
- - state machine diagram
+- communication diagram
+- state machine diagram
 
 This is one of the most delicate steps, as often the domain experts are not able to write by their own their corresponding models: they generally make use of domain-specific languages, which are tailored for their needs but quite often are, simulation-wise, not standard.
 
@@ -123,7 +123,7 @@ So a translation step to the simulation language must generally take place, and 
 
 The best practice we recommend is to adopt a unified language to specify all models first, and to practise pair-work (one domain expert sitting on the side of a computer scientist/model developer) to ensure that the translation is correct. Indeed, mistakes can easily be made:
 
-:raw-html:`<center><img src="xkcd-circumference_formula.png"></img></center>`
+:raw-html:`<center><img src="xkcd-circumference_formula.png" id="responsive-image-small"></img></center>`
 :raw-latex:`\includegraphics[scale=0.7]{xkcd-circumference_formula.png}`
 
 
@@ -159,10 +159,10 @@ Actor Creation
 
 An actor must be either created:
 
- - by the simulation scenario, before the simulation is started
- - by another (already synchronised) actor
+- by the simulation scenario, before the simulation is started
+- by another (already synchronised) actor
 
-In the latter case, if actor A requires the creation of an actor B during tick ``T`` diasca ``D`` (hence at ``{T,D}``), then B will be actually created at tick ``{T,D+1}``. On the next diasca (``{T,D+2}``) B will be scheduled for the first time (thanks to a call to its ``onFirstDiasca/2`` actor oneway), while A will be notified of this creation (and of the PID of B). 
+In the latter case, if actor A requires the creation of an actor B during tick ``T`` diasca ``D`` (hence at ``{T,D}``), then B will be actually created at tick ``{T,D+1}``. On the next diasca (``{T,D+2}``) B will be scheduled for the first time (thanks to a call to its ``onFirstDiasca/2`` actor oneway), while A will be notified of this creation (and of the PID of B).
 
 Usually some specific actors, not directly corresponding to an element of the target system, are defined to create other actors.
 
@@ -173,23 +173,23 @@ The simulation scenario itself can be modelled as one of these creating actors.
 
 The actual creation of an actor in the course of the simulation is made of a few steps:
 
- - at ``{T,D}`` the creating actor issues a creation request [#]_ to the load balancer
+- at ``{T,D}`` the creating actor issues a creation request [#]_ to the load balancer
 
- - at ``{T,D+1}``:
+- at ``{T,D+1}``:
 
-   - the load balancer processes that request, and creates synchronously the corresponding instance on the computing node it deems the most appropriate
+  - the load balancer processes that request, and creates synchronously the corresponding instance on the computing node it deems the most appropriate
 
-   - during its construction the instance retrieves the overall scheduling settings from the time management agent it is in contact with, and as a consequence notifies it of how it intends to be scheduled; as the created actor is not synchronised yet to the simulation, its initial construction stage has to respect some restrictions; notably the actor is not able yet to interact with other actors or to consume stochastic variables yet
+  - during its construction the instance retrieves the overall scheduling settings from the time management agent it is in contact with, and as a consequence notifies it of how it intends to be scheduled; as the created actor is not synchronised yet to the simulation, its initial construction stage has to respect some restrictions; notably the actor is not able yet to interact with other actors or to consume stochastic variables yet
 
-   - the load balancer sends back to the creating actor an actor message carrying the PID of the created instance, whose basic construction is finished (its constructor ended), but which is not ready to enter the simulation yet
+  - the load balancer sends back to the creating actor an actor message carrying the PID of the created instance, whose basic construction is finished (its constructor ended), but which is not ready to enter the simulation yet
 
- - at ``{T,D+2}``:
+- at ``{T,D+2}``:
 
-   - the creating actor processes the notification of the created instance, which includes its PID
+  - the creating actor processes the notification of the created instance, which includes its PID
 
-   - the created actor is notified that the simulation has started for it (it is necessary as it could have been created before the simulation was started) and is scheduled for the first time; it is up to its model to determine whether this actor is ready to develop its behaviour immediately, as it may not have achieved its full initialisation yet (ex: it may be waiting for other actors to be themselves ready, and/or it might need to set some stochastic values to complete its initialisation, etc.)
+  - the created actor is notified that the simulation has started for it (it is necessary as it could have been created before the simulation was started) and is scheduled for the first time; it is up to its model to determine whether this actor is ready to develop its behaviour immediately, as it may not have achieved its full initialisation yet (ex: it may be waiting for other actors to be themselves ready, and/or it might need to set some stochastic values to complete its initialisation, etc.)
 
-   - as soon as the created actor deems it is itself ready (maybe from its first scheduled tick, maybe on later ticks), automatically any related actions will be triggered, and any actors waiting for that actor will be notified that it is ready now; then on the next tick the actor will be free to develop its normal behaviour; by default during its first scheduled tick an actor will not wait for any other actor, and therefore will call directly its (possibly overridden) ``onReady`` method; it will then be ready to develop its actual behaviour only on next tick (``N+3``)
+  - as soon as the created actor deems it is itself ready (maybe from its first scheduled tick, maybe on later ticks), automatically any related actions will be triggered, and any actors waiting for that actor will be notified that it is ready now; then on the next tick the actor will be free to develop its normal behaviour; by default during its first scheduled tick an actor will not wait for any other actor, and therefore will call directly its (possibly overridden) ``onReady`` method; it will then be ready to develop its actual behaviour only on next tick (``N+3``)
 
 
 .. [#] To preserve the simulation properties, the load balancer is itself a simulation actor and therefore the creation request is an actor message.
@@ -270,11 +270,11 @@ Therefore, to ease the implementation of models and to preserve performances, th
 
 Scheduling-wise, the three most common types of actors are:
 
-  - *periodical actors*: an actor requesting a scheduling period of N would be triggered by the time manager one time step every N elapsed; therefore an actor could run, in virtual time, at a frequency of 10 Hz even if the fundamental frequency of the simulation was set for example to 50Hz
+- *periodical actors*: an actor requesting a scheduling period of N would be triggered by the time manager one time step every N elapsed; therefore an actor could run, in virtual time, at a frequency of 10 Hz even if the fundamental frequency of the simulation was set for example to 50Hz
 
-  - *step-by-step actors*: when such actors finish a time step, they may specify the next tick at which they should be triggered again (*look-ahead*), unless they receive an actor message in-between, in which case they may withdraw their already planned activation and set a new one, earlier or later
+- *step-by-step actors*: when such actors finish a time step, they may specify the next tick at which they should be triggered again (*look-ahead*), unless they receive an actor message in-between, in which case they may withdraw their already planned activation and set a new one, earlier or later
 
-  - *purely passive actors*: these actors have no spontaneous behaviour, they are triggered only when they receive a message from another actor during the previous tick
+- *purely passive actors*: these actors have no spontaneous behaviour, they are triggered only when they receive a message from another actor during the previous tick
 
 
 These scheduling policies - and many others - can be implemented with Sim-Diasca thanks to the definition of future actions: each actor, during its triggered and spontaneous behaviours, is able to specify, if needed, a future tick at which it should be scheduled for a spontaneous behaviour.
@@ -315,12 +315,13 @@ Should all concepts to be ultimately simulated be represented by models of their
 
 If a concept:
 
- - is used in multiple different contexts
- - and/or is used by multiple actors
- - and/or has a complex state and/or behaviour
- - and/or is not tightly coupled to any model
+- is used in multiple different contexts
+- and/or is used by multiple actors
+- and/or has a complex state and/or behaviour
+- and/or is not tightly coupled to any model
 
 then most probably this concept should be mapped to a specific model, i.e. a dedicated class inheriting from ``class_Actor``.
+
 
 
 Model Temporality And Reactivity
@@ -342,6 +343,7 @@ State And Behaviour Of The Model
 These are very model-specific, but general rules still apply.
 
 Processing an actor message and acting spontaneously both boil down to writing an appropriate method, which may send actor messages and/or return any updated state and/or trigger the removal of that actor.
+
 
 
 Triggered Behaviour: Receiving of an Actor Message

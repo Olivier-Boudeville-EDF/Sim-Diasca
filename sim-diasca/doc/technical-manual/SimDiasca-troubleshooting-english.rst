@@ -8,7 +8,7 @@ Sim-Diasca Troubleshooting
 First Of All: Did You Read The Manuals?
 =======================================
 
-:raw-html:`<center><img src="xkcd-rtfm.png"></img></center>`
+:raw-html:`<center><img src="xkcd-rtfm.png" id="responsive-image-reduced"></img></center>`
 :raw-latex:`\includegraphics[scale=0.5]{xkcd-rtfm.png}`
 
 Besides this document, a Sim-Diasca user should definitively read the *Sim-Diasca Developer Guide*, which is freely available as well. We are not providing ``man`` pages yet.
@@ -30,7 +30,7 @@ Each actor having its own sequential stream of instructions, sharing no data, re
 
 So, unlike other approaches like this one:
 
-:raw-html:`<center><img src="xkcd-compiler_complaint.png"></img></center>`
+:raw-html:`<center><img src="xkcd-compiler_complaint.png" id="responsive-image-large"></img></center>`
 :raw-latex:`\includegraphics[scale=0.5]{xkcd-compiler_complaint.png}`
 
 
@@ -49,31 +49,33 @@ The most common errors encountered that are not self-explanatory (please have a 
 They are roughly sorted by chronological order of potential appearance.
 
 
-:raw-html:`<center><img src="xkcd-computer_problems.png"></img></center>`
+:raw-html:`<center><img src="xkcd-computer_problems.png" id="responsive-image-medium"></img></center>`
 :raw-latex:`\includegraphics[scale=0.6]{xkcd-computer_problems.png}`
 
 
 
 **Issue #1**: ``undefined parse transform 'myriad_parse_transform'``
+--------------------------------------------------------------------
 
-	When a build recipe fails that way, this usually means that one attempted to compile elements of a layer depending on the ``Myriad`` layer whereas this latter layer is itself not already compiled. One should preferably run ``make`` from the root, to ensure that the full code-base is rebuilt (layers will then be compiled in a relevant order).
+When a build recipe fails that way, this usually means that one attempted to compile elements of a layer depending on the ``Myriad`` layer whereas this latter layer is itself not already compiled. One should preferably run ``make`` from the root, to ensure that the full code-base is rebuilt (layers will then be compiled in a relevant order).
 
-	Why is it so? Because a parse-transform (Erlang code modifying how Erlang code is compiled) defined in the ``Myriad`` layer is necessary to compile most of the BEAM files of all layers, hence it must be available prior to any of these builds.
+Why is it so? Because a parse-transform (Erlang code modifying how Erlang code is compiled) defined in the ``Myriad`` layer is necessary to compile most of the BEAM files of all layers, hence it must be available prior to any of these builds.
 
 
 
 **Issue #2**: ``Protocol: register error``
+------------------------------------------
 
-	If running a simulation and being notified of a strange error like::
+If running a simulation and being notified of a strange error like::
 
-		{error_logger,{{2008,11,25},{15,25,6}}, "Protocol: ~p: register
-		error: ~p~n", ["inet_tcp",{{badmatch,{error,duplicate_name}},
-		[{inet_tcp_dist,listen,1},{net_kernel,start_protos,4},
-		{net_kernel,start_protos,3},{net_kernel,init_node,2},
-		{net_kernel,init,1},{gen_server,init_it,6}, {proc_lib,init_p,5}]}]}
-		[..]
+ {error_logger,{{2008,11,25},{15,25,6}}, "Protocol: ~p: register
+ error: ~p~n", ["inet_tcp",{{badmatch,{error,duplicate_name}},
+ [{inet_tcp_dist,listen,1},{net_kernel,start_protos,4},
+ {net_kernel,start_protos,3},{net_kernel,init_node,2},
+ {net_kernel,init,1},{gen_server,init_it,6}, {proc_lib,init_p,5}]}]}
+ [...]
 
-	then it is the symptom that a similarly-named Erlang virtual machine is already running on the same host. Either it is an idle forgotten simulation still opened on another terminal [#]_ (in that case shutting down the corresponding virtual machine will correct the situation), or the user really wants to have two instances of the same simulation run simultaneously. In that case, the two virtual machines should be named differently, knowing that, with the default Sim-Diasca Make rules, the launched virtual machines are named according to the case that is run. For example, to run the simulation case defined in ``simulationAndScenario_test.erl`` from the host ``myhost.foobar.org``, one may just issue ``make simulationAndScenario_run``. The corresponding Erlang virtual machine will be then named ``simulationAndScenario_run@myhost.foobar.org``.
+then it is the symptom that a similarly-named Erlang virtual machine is already running on the same host. Either it is an idle forgotten simulation still opened on another terminal [#]_ (in that case shutting down the corresponding virtual machine will correct the situation), or the user really wants to have two instances of the same simulation run simultaneously. In that case, the two virtual machines should be named differently, knowing that, with the default Sim-Diasca Make rules, the launched virtual machines are named according to the case that is run. For example, to run the simulation case defined in ``simulationAndScenario_test.erl`` from the host ``myhost.foobar.org``, one may just issue ``make simulationAndScenario_run``. The corresponding Erlang virtual machine will be then named ``simulationAndScenario_run@myhost.foobar.org``.
 
 .. [#] This can happen if for example you issued ``CTRL-Z`` then put that task in the background (``bg``) and forgot that it was still running.
 
@@ -82,58 +84,62 @@ They are roughly sorted by chronological order of potential appearance.
 
 
 **Issue #3**: ``Can't set long node name! Please check your configuration``
+---------------------------------------------------------------------------
 
-	Such a problem may be reproduced simply by running on a given host::
+Such a problem may be reproduced simply by running on a given host::
 
-	  $ erl -name my_test
+ $ erl -name my_test
 
-	Instead of running the expected VM, like in::
+Instead of running the expected VM, like in::
 
-	  Erlang/OTP 21 [erts-10.3] [source] [64-bit] [...]
+ Erlang/OTP 21 [erts-10.3] [source] [64-bit] [...]
 
-	  Eshell V10.3  (abort with ^G)
-	  (my_test@hurricane.foobar.org)1>
+ Eshell V10.3  (abort with ^G)
+ (my_test@hurricane.foobar.org)1>
 
-	the VM launcher may report that no long node naming can be used.
+the VM launcher may report that no long node naming can be used.
 
-	This may happen whenever the network configuration of the local host is not consistent, at least from the point of view of the Erlang virtual machine. More specifically, it can happen if in the ``/etc/hosts`` file the first name to appear for the local host is not the expected proper FQDN (*Fully-Qualified Domain Name*) and/or when the domain is not correctly specified.
+This may happen whenever the network configuration of the local host is not consistent, at least from the point of view of the Erlang virtual machine. More specifically, it can happen if in the ``/etc/hosts`` file the first name to appear for the local host is not the expected proper FQDN (*Fully-Qualified Domain Name*) and/or when the domain is not correctly specified.
 
-	For example, supposing that in ``/etc/resolv.conf`` a domain is specified as ``domain localdomain`` and that the local hostname is ``foo``, then a line in ``/etc/hosts`` like::
+For example, supposing that in ``/etc/resolv.conf`` a domain is specified as ``domain localdomain`` and that the local hostname is ``foo``, then a line in ``/etc/hosts`` like::
 
-	  127.0.0.1 localhost.localdomain localhost foo.bar.org foo
-
-	should be corrected into::
-
-	  127.0.0.1 foo.bar.org foo localhost.localdomain localhost
-
-	Typically, one of the simplest ``/etc/hosts`` could be in this context::
-
-	  127.0.0.1 localhost.localdomain localhost
-	  ::1       localhost
-	  127.0.1.1 foo.localdomain foo
+ 127.0.0.1 localhost.localdomain localhost foo.bar.org foo
 
 
-	Ping your local host, use ``hostname``, ``hostname -f`` and/or ``hostnamectl`` to check that the name resolution is correctly set. See also the related note about ``Domain configuration`` in the ``Sim-Diasca Installation Guide``.
+should be corrected into::
 
-	If you have for example a laptop making use of DHCP servers that assign over time different host/domain names and you find it impractical, you may reintroduce a stable naming (to be used at least by Sim-Diasca) by adding at the end of your ``/etc/hosts`` a line like::
+ 127.0.0.1 foo.bar.org foo localhost.localdomain localhost
 
-	 127.0.2.1 a_host_name.a_domain_name a_host_name
+Typically, one of the simplest ``/etc/hosts`` could be in this context::
 
-  (where ``a_host_name`` and ``a_domain_name`` can be any network names of your choice)
+ 127.0.0.1 localhost.localdomain localhost
+ ::1       localhost
+ 127.0.1.1 foo.localdomain foo
 
-	Then, in ``myriad/GNUmakevars.inc``, the FQDN information shall be set statically, accordingly by editing the corresponding section with::
 
-	 FQDN := a_host_name.a_domain_name
+Ping your local host, use ``hostname``, ``hostname -f`` and/or ``hostnamectl`` to check that the name resolution is correctly set. See also the related note about ``Domain configuration`` in the ``Sim-Diasca Installation Guide``.
+
+If you have for example a laptop making use of DHCP servers that assign over time different host/domain names and you find it impractical, you may reintroduce a stable naming (to be used at least by Sim-Diasca) by adding at the end of your ``/etc/hosts`` a line like::
+
+ 127.0.2.1 a_host_name.a_domain_name a_host_name
+
+(where ``a_host_name`` and ``a_domain_name`` can be any network names of your choice)
+
+Then, in ``myriad/GNUmakevars.inc``, the FQDN information shall be set statically, accordingly by editing the corresponding section with::
+
+ FQDN := a_host_name.a_domain_name
+
 
 (before ``ifdef FQDN [...]``)
 
 
 
 **Issue #4**: The Deployment of a Sim-Diasca Module apparently failed
+---------------------------------------------------------------------
 
 The corresponding symptom is an exception being thrown during deployment and including::
 
-  {module_deployment_failed,SOME_MODULE,...
+ {module_deployment_failed,SOME_MODULE,...
 
 
 This may happen when running distributed simulations whereas hostname resolution is somehow failing.
@@ -143,118 +149,129 @@ For example, we encountered sometimes faulty network configurations (ex: w.r.t. 
 In other cases, a computing host was designated (either in a host file or directly in the simulation case) not, as expected, by its name (preferably FQDN) but, incorrectly, by its IP address (which is disallowed, see the ``computing_hosts`` field of the ``deployment_settings`` record).
 
 
+
 **Issue #5**: Execution seems to be blocked right after having been triggered.
+------------------------------------------------------------------------------
 
-	This may happen (albeit now on very rare cases; or, possibly, never anymore) if using a virtualized environment (ex: VMWare or VirtualBox). Indeed there used to be, with some unspecified configurations, a general problem related to timers and message receiving, and apparently Sim-Diasca was not the culprit here (as unrelated applications were affected similarly). Erlang was maybe not guilty either, as possibly related issues were reported on the VMWare side.
+This may happen (albeit now on very rare cases; or, possibly, never anymore) if using a virtualized environment (ex: VMWare or VirtualBox). Indeed there used to be, with some unspecified configurations, a general problem related to timers and message receiving, and apparently Sim-Diasca was not the culprit here (as unrelated applications were affected similarly). Erlang was maybe not guilty either, as possibly related issues were reported on the VMWare side.
 
-	Anyway, because of these problems and of the incurred performance penalty, *the use of virtualized environments should be avoided* here; at least one should develop and test one's simulation on a real hardware before considering running it in a virtualized form.
+Anyway, because of these problems and of the incurred performance penalty, *the use of virtualized environments should be avoided* here; at least one should develop and test one's simulation on a real hardware before considering running it in a virtualized form.
 
-	Another cause of a launched computing node not being found and resulting in a time-out might be an inconsistent name resolution (see issue #3).
+Another cause of a launched computing node not being found and resulting in a time-out might be an inconsistent name resolution (see issue #3).
 
-	For example, beware of specifying in ``/etc/resolv.conf`` a wrong domain in the ``domain`` entry (ex: ``bar.org`` instead of ``foo.org``) . Otherwise your user node may try to reach ``A_COMPUTING_NODE_NAME@HOST.foo.org`` whereas this one will believe its own name actually is ``A_COMPUTING_NODE_NAME@HOST.bar.org`` and thus will not respond - leading to Sim-Diasca freezing at start-up before automatically timing-out. If in doubt and having the relevant permissions, one may comment-out the ``domain`` information, at least for a first troubleshooting.
+For example, beware of specifying in ``/etc/resolv.conf`` a wrong domain in the ``domain`` entry (ex: ``bar.org`` instead of ``foo.org``) . Otherwise your user node may try to reach ``A_COMPUTING_NODE_NAME@HOST.foo.org`` whereas this one will believe its own name actually is ``A_COMPUTING_NODE_NAME@HOST.bar.org`` and thus will not respond - leading to Sim-Diasca freezing at start-up before automatically timing-out. If in doubt and having the relevant permissions, one may comment-out the ``domain`` information, at least for a first troubleshooting.
 
 
 
 **Issue #6**: At least one computing node times-out because it did not receive on time (from the user node) the deployment archive.
+-----------------------------------------------------------------------------------------------------------------------------------
 
-	The default deployment time-out is supposedly sufficient for most configuration settings.
+The default deployment time-out is supposedly sufficient for most configuration settings.
 
-	If for example relying on very slow hard-disks and/or having defined extra simulation data to deploy whose size exceeds a few dozens megabytes, then maybe indeed you may need to increase your deployment time-out, at least for this simulation case.
+If for example relying on very slow hard-disks and/or having defined extra simulation data to deploy whose size exceeds a few dozens megabytes, then maybe indeed you may need to increase your deployment time-out, at least for this simulation case.
 
-	For that, see the ``maximum_allowed_deployment_duration`` field of the ``deployment_settings`` record (defined in ``class_DeploymentManager.hrl``, in the ``sim-diasca/src/core/src/deployment`` directory).
+For that, see the ``maximum_allowed_deployment_duration`` field of the ``deployment_settings`` record (defined in ``class_DeploymentManager.hrl``, in the ``sim-diasca/src/core/src/deployment`` directory).
 
-	Such larger simulation archives may also result from user-level errors. A typical mistake was to run the Erlang installation script ``install-erlang.sh`` directly from its location (in ``myriad/conf``): then the full build tree of Erlang/OTP could still reside in this latter directory. In this case, the deployment manager, when scanning the ``Myriad`` package, would also detect the BEAM files of Erlang/OTP and include them in the simulation archive. Note that a specific checking has been since then introduced so that the specific case of a local build of the Erlang/OTP runtime should be correctly detected, but this issue may arise for other codebases as well.
+Such larger simulation archives may also result from user-level errors. A typical mistake was to run the Erlang installation script ``install-erlang.sh`` directly from its location (in ``myriad/conf``): then the full build tree of Erlang/OTP could still reside in this latter directory. In this case, the deployment manager, when scanning the ``Myriad`` package, would also detect the BEAM files of Erlang/OTP and include them in the simulation archive. Note that a specific checking has been since then introduced so that the specific case of a local build of the Erlang/OTP runtime should be correctly detected, but this issue may arise for other codebases as well.
 
-	Of course including such duplicated BEAMs (as they shall be already available on the computing hosts) is not desirable at all, and results in larger simulation packages bound to trigger a deployment time-out.
+Of course including such duplicated BEAMs (as they shall be already available on the computing hosts) is not desirable at all, and results in larger simulation packages bound to trigger a deployment time-out.
 
-	So: just remove then, from the overall Sim-Diasca codebase, all build trees that do not belong there!
+So: just remove then, from the overall Sim-Diasca codebase, all build trees that do not belong there!
 
 
 
 **Issue #7**: At start-up, the rebuild of the simulator codebase fails, although the code is correct.
+-----------------------------------------------------------------------------------------------------
 
-	This may happen if at least one source file (ex: ``myFile.erl``) is being edited without having been saved yet: some editors then create a temporary file like ``~myFile.erl`` or ``.#myFile.erl`` in the same directory. The make system will try to rebuild that file, but the compilation will fail necessarily, as this filename will not match the module name. A proper error message should have been sent in the simulation traces.
+This may happen if at least one source file (ex: ``myFile.erl``) is being edited without having been saved yet: some editors then create a temporary file like ``~myFile.erl`` or ``.#myFile.erl`` in the same directory. The make system will try to rebuild that file, but the compilation will fail necessarily, as this filename will not match the module name. A proper error message should have been sent in the simulation traces.
 
 
 
 **Issue #8**: A ``noconnection`` error is triggered in the course of the execution.
+-----------------------------------------------------------------------------------
 
-	This usually means that at least one of the involved computing nodes unexpectedly crashed. The most likely reason is that its host was exceedingly loaded. This happens typically in the course of the creation of the initial actors: a too large simulation may then result on the exhaustion of the RAM (and, possibly, swap) of at least one computing host, crashing the whole simulation.
+This usually means that at least one of the involved computing nodes unexpectedly crashed. The most likely reason is that its host was exceedingly loaded. This happens typically in the course of the creation of the initial actors: a too large simulation may then result on the exhaustion of the RAM (and, possibly, swap) of at least one computing host, crashing the whole simulation.
 
-	Solution: opt for a less demanding simulation and/or use more hosts, ensuring they have roughly the same level of free resources (knowing that the load balancer tends to even the resource demands across the available hosts).
+Solution: opt for a less demanding simulation and/or use more hosts, ensuring they have roughly the same level of free resources (knowing that the load balancer tends to even the resource demands across the available hosts).
 
 
 
 **Issue #9**: Apparently my newer code does not seem to be taken into account!
+------------------------------------------------------------------------------
 
-   More precisely, some changes to the source code have been made, yet the newer executions seem to correspond to the code that existed before the change rather than to the updated one. Or, more generally, the executed code does not seem to correspond to the specified one.
+More precisely, some changes to the source code have been made, yet the newer executions seem to correspond to the code that existed before the change rather than to the updated one. Or, more generally, the executed code does not seem to correspond to the specified one.
 
-   This could happen when multiple BEAM versions of the same module can be found from the deployment root. For example, from some subdirectory in the sources, one may have issued ``cp -r foo_directory foo_directory-hidden``, to save temporarily its content while experimenting in-place in ``foo_directory``.
+This could happen when multiple BEAM versions of the same module can be found from the deployment root. For example, from some subdirectory in the sources, one may have issued ``cp -r foo_directory foo_directory-hidden``, to save temporarily its content while experimenting in-place in ``foo_directory``.
 
-   The problem is that the deployment manager will scan for all BEAMs from the deployment root, and include them in the deployment archive. As a result, on each computing node, any BEAM found in ``foo_directory-hidden`` will be deployed as well and, depending on the code path, ``foo_directory-hidden/a_module.beam`` may be found before ``foo_directory/a_module.beam`` (unfortunately this tends to be often the case). As a consequence, the previous version of the code (the hidden one) would be wrongly executed.
+The problem is that the deployment manager will scan for all BEAMs from the deployment root, and include them in the deployment archive. As a result, on each computing node, any BEAM found in ``foo_directory-hidden`` will be deployed as well and, depending on the code path, ``foo_directory-hidden/a_module.beam`` may be found before ``foo_directory/a_module.beam`` (unfortunately this tends to be often the case). As a consequence, the previous version of the code (the hidden one) would be wrongly executed.
 
-   The solution is to avoid to perform back-ups directly in the source tree (ex: use ``git stash``) or, at the very least, to copy them once all BEAMs have been removed, to avoid that they silently collide.
+The solution is to avoid to perform back-ups directly in the source tree (ex: use ``git stash``) or, at the very least, to copy them once all BEAMs have been removed, to avoid that they silently collide.
 
-   Another possible cause of not seeing a change when running Sim-Diasca (at least, not the first time it is then run) is to modify a source file without recompiling it afterwards: Sim-Diasca, during its deployment, will then recompile the whole (thus updating any BEAM file that requires it), yet the previous version of the BEAM may have already been loaded by the user node (and possibly sent over the network to other nodes). These changes would be visible only from the second run, not the first one. To avoid that, one should recompile a module when having modified it - anyway after a change we have to check that the module still compiles, isn't it?
+Another possible cause of not seeing a change when running Sim-Diasca (at least, not the first time it is then run) is to modify a source file without recompiling it afterwards: Sim-Diasca, during its deployment, will then recompile the whole (thus updating any BEAM file that requires it), yet the previous version of the BEAM may have already been loaded by the user node (and possibly sent over the network to other nodes). These changes would be visible only from the second run, not the first one. To avoid that, one should recompile a module when having modified it - anyway after a change we have to check that the module still compiles, isn't it?
 
 
 
 **Issue #10**: My simulation seems to be finished, however it does not return to the shell, and it is still eating a lot of resources for quite long. What's happening?
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-	It may happen whenever a simulation is executed for a long time and/or with numerous actors, whereas the intensity of trace sendings has not been lowered: although all trace modes write down a trace directly as soon as possible once received, and none, except the PDF mode, incurs long processings at shutdown, nevertheless all trace modes can significantly delay this shutdown phase.
+It may happen whenever a simulation is executed for a long time and/or with numerous actors, whereas the intensity of trace sendings has not been lowered: although all trace modes write down a trace directly as soon as possible once received, and none, except the PDF mode, incurs long processings at shutdown, nevertheless all trace modes can significantly delay this shutdown phase.
 
-	The reason is that the trace aggregation process (see ``class_TraceAggregator``) could not cope with the speed at which traces are sent by the various emitters, including actors. Thus traces accumulate in the aggregator mailbox, and time is needed for them to be formatted and flushed on disk. Sending too many traces regarding the aggregator speed should be avoided, as accumulating messages in the mailbox may result in a huge RAM consumption, delayed shutdown, and risk that a simulation crash happens whereas the corresponding traces are not written yet.
+The reason is that the trace aggregation process (see ``class_TraceAggregator``) could not cope with the speed at which traces are sent by the various emitters, including actors. Thus traces accumulate in the aggregator mailbox, and time is needed for them to be formatted and flushed on disk. Sending too many traces regarding the aggregator speed should be avoided, as accumulating messages in the mailbox may result in a huge RAM consumption, delayed shutdown, and risk that a simulation crash happens whereas the corresponding traces are not written yet.
 
 
 
 **Issue #11**: At runtime, an exception like ``{unexpected_ack_from,APid,PidList,ATick,ActorPid}`` is thrown.
+-------------------------------------------------------------------------------------------------------------
 
-   Although it looks as if the engine was faulty, the cause must lie in the code of the class corresponding to the instance ``ActorPid`` refers to: most probably that an updated state was not taken into account into one of its methods, from where an actor message was sent (directly or not, like in the case of the creation of another actor) to the process corresponding to ``APid``.
+  Although it looks as if the engine was faulty, the cause must lie in the code of the class corresponding to the instance ``ActorPid`` refers to: most probably that an updated state was not taken into account into one of its methods, from where an actor message was sent (directly or not, like in the case of the creation of another actor) to the process corresponding to ``APid``.
 
-   Indeed an actor message must have been sent, returning an updated state tracking that sending, whereas a previous state, unaware of that sending, was instead returned to WOOPER by that method. Thus when that actor received the acknowledgement corresponding to the actor message it sent, it does not correspond to any recorded sending, leading to the ``unexpected_ack_from`` exception to be triggered.
+Indeed an actor message must have been sent, returning an updated state tracking that sending, whereas a previous state, unaware of that sending, was instead returned to WOOPER by that method. Thus when that actor received the acknowledgement corresponding to the actor message it sent, it does not correspond to any recorded sending, leading to the ``unexpected_ack_from`` exception to be triggered.
 
 
 
 **Issue #12**: Simulation runs, but is slow.
+--------------------------------------------
 
-   This is a difficult issue to tackle generically. Some slowness are more acceptable than others:
+This is a difficult issue to tackle generically. Some slowness are more acceptable than others:
 
-   :raw-html:`<center><img src="xkcd-long_light.png"></img></center>`
-   :raw-latex:`\includegraphics[scale=6.0]{xkcd-long_light.png}`
+:raw-html:`<center><img src="xkcd-long_light.png" id="responsive-image-medium"></img></center>`
+:raw-latex:`\includegraphics[scale=6.0]{xkcd-long_light.png}`
 
-   Most efficient solutions to increase speed are:
+Most efficient solutions to increase speed are:
 
-   - increase your computing resources (more nodes, more powerful, better network, etc.); check that you are never hitting the swap and, more generally, try to ensure that computing nodes stay well below a high load (performances in that case degrade swiftly)
-   - make (a better) use of advanced scheduling (models seldom require all the same evaluation frequency)
-   - selectively tune your models (ex: use ``etop`` and the traces to spot the most-demanding ones)
-   - switch to more "exotic" solutions, like native compilation or the use of `NIFs <http://erlang.org/doc/tutorial/nif.html>`_ (i.e. *Native Implemented Functions*)
-   - ultimately, if at all possible, reduce your problem size
-   - improve your algorithms (ex: choose better data-structures):
-   :raw-html:`<center><img src="xkcd-algorithms"></img></center>`
-   :raw-latex:`\includegraphics[scale=0.5]{xkcd-algorithms.png}`
+- increase your computing resources (more nodes, more powerful, better network, etc.); check that you are never hitting the swap and, more generally, try to ensure that computing nodes stay well below a high load (performances in that case degrade swiftly)
+- make (a better) use of advanced scheduling (models seldom require all the same evaluation frequency)
+- selectively tune your models (ex: use ``etop`` and the traces to spot the most-demanding ones)
+- switch to more "exotic" solutions, like native compilation or the use of `NIFs <http://erlang.org/doc/tutorial/nif.html>`_ (i.e. *Native Implemented Functions*)
+- ultimately, if at all possible, reduce your problem size
+- improve your algorithms (ex: choose better data-structures):
+
+:raw-html:`<center><img src="xkcd-algorithms.png" id="responsive-image-medium"></img></center>`
+:raw-latex:`\includegraphics[scale=0.5]{xkcd-algorithms.png}`
 
 
 
 **Issue #13**: Simulation seems to freeze, or to be surprisingly slow, or more generally does not behave as expected, and I do not want to stick ``io:format`` calls everywhere to understand what is happening.
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-	If not using the simulation traces either to figure out what is happening, then a good approach could be to connect to the busiest computing nodes (use simply ``top`` on each host) to determine what they are doing; to do so, track in the console the line which reminds the user of the names of the computing nodes and of the simulation cookie, like in::
+If not using the simulation traces either to figure out what is happening, then a good approach could be to connect to the busiest computing nodes (use simply ``top`` on each host) to determine what they are doing; to do so, track in the console the line which reminds the user of the names of the computing nodes and of the simulation cookie, like in::
 
-	  To connect to computing nodes [
-	   'Scheduling_scalability_test-boudevil@server1',
-	   'Scheduling_scalability_test-boudevil@server2',
-	   'Scheduling_scalability_test-boudevil@server3'], use cookie
-	   '1f793a6ba507-d389-2e11-5bd1-2f759320'.
+ To connect to computing nodes [
+  'Scheduling_scalability_test-boudevil@server1',
+  'Scheduling_scalability_test-boudevil@server2',
+  'Scheduling_scalability_test-boudevil@server3'], use cookie
+  '1f793a6ba507-d389-2e11-5bd1-2f759320'.
 
-	Then run a new node, connect to the computing node and run ``etop`` to inspect it, like in (maybe exporting ``DISPLAY`` and/or increasing the net tick time can help)::
+Then run a new node, connect to the computing node and run ``etop`` to inspect it, like in (maybe exporting ``DISPLAY`` and/or increasing the net tick time can help)::
 
-	  erl -epmd_port 4506 -setcookie '1f793a6ba507-d389-2e11-5bd1-2f759320' -sname inspector
-	  (inspector@tesla)1> net_adm:ping(
-		'Scheduling_scalability_test-boudevil@server2').
-	  pong
+ erl -epmd_port 4506 -setcookie '1f793a6ba507-d389-2e11-5bd1-2f759320' -sname inspector
+ (inspector@tesla)1> net_adm:ping(
+ 'Scheduling_scalability_test-boudevil@server2').
+  pong
 
-	Then hit CTRL-G and enter::
+Then hit CTRL-G and enter::
 
-	  --> r 'Scheduling_scalability_test-boudevil@server2'
+  --> r 'Scheduling_scalability_test-boudevil@server2'
 	  --> j
 		1  {shell,start,[init]}
 		2* {'Scheduling_scalability_test-boudevil@server2',shell,start,[]}
@@ -265,31 +282,39 @@ In other cases, a computing host was designated (either in a host file or direct
 
 	Then you are able to see something like:
 
-:raw-html:`<center><img src="etop.png"></img></center>`
+:raw-html:`<center><img src="etop.png" id="responsive-image-large"></img></center>`
 :raw-latex:`\includegraphics[scale=0.5]{etop.png}`
 
-	You can also run ``observer`` instead::
+You can also run ``observer`` instead::
 
-	 (Scheduling_scalability_test-boudevil@server2)1> observer:start().
+  (Scheduling_scalability_test-boudevil@server2)1> observer:start().
 
-	And then we have:
+And then we have:
 
-:raw-html:`<center><img src="observer.png"></img></center>`
+:raw-html:`<center><img src="observer.png" id="responsive-image-intermediate"></img></center>`
 :raw-latex:`\includegraphics[scale=0.5]{observer.png}`
 
 
+ "FIXME - STOPPED HERE!
+
 
 **Issue #14**: Simulation runs, but result generation fails.
+------------------------------------------------------------
 
-	If the error message mentions ``unknown or ambiguous terminal type``, this means that ``gnuplot`` (used by probes to generate graphical outputs) is (surprisingly enough) *not* able to generate PNG files. Either rebuild it accordingly, or select a gnuplot package in your distribution whose PNG support has been enabled beforehand.
+If the error message mentions ``unknown or ambiguous terminal type``, this means that ``gnuplot`` (used by probes to generate graphical outputs) is (surprisingly enough) *not* able to generate PNG files. Either rebuild it accordingly, or select a gnuplot package in your distribution whose PNG support has been enabled beforehand.
 
 
 
-**Issue #15** [unlikely to happen anymore: cleaner script used by default now]: At start-up, no available computing node is found, each candidate node being apparently successfully launched, but not responding.
+**Issue #15**: At start-up, no available computing node is found, each candidate node being apparently successfully launched, but not responding.
+-------------------------------------------------------------------------------------------------------------------------------------------------
 
-	This may happen if a previous simulation crashed and thus could not reach its clean-up phase: then pending Erlang nodes, spawned by the previous run, may linger for up to 10 minutes before their automatic shutdown, should the node cleaner script have been unable to remove them, for any reason (which must be *very* uncommon).
 
-	Indeed their node name will be correct, so no attempt to launch them will be made, but the automatic authentication system of the engine, based on security cookies generated from a unique UUID, will prevent the connection to these preexisting nodes. They will thus be deemed unavailable and the simulation will stop, short of being able to rely on any computing node. The solution is then either to remove these pending nodes manually (one effective yet rough means of doing so being ``killall -9 ssh beam beam.smp``, to be run on all computing nodes) or to set the ``perform_initial_node_cleanup`` field in the ``deployment_settings`` record to true (see ``class_DeploymentManager.hrl``) and recompile, in which case any lingering node would be removed when colliding with a newer run; as this latter setting is now the default, this issue should not happen frequently anymore, or at all.
+.. Note:: Unlikely to happen anymore (a cleaner script is used by default now).
+
+
+This may happen if a previous simulation crashed and thus could not reach its clean-up phase: then pending Erlang nodes, spawned by the previous run, may linger for up to 10 minutes before their automatic shutdown, should the node cleaner script have been unable to remove them, for any reason (which must be *very* uncommon).
+
+Indeed their node name will be correct, so no attempt to launch them will be made, but the automatic authentication system of the engine, based on security cookies generated from a unique UUID, will prevent the connection to these preexisting nodes. They will thus be deemed unavailable and the simulation will stop, short of being able to rely on any computing node. The solution is then either to remove these pending nodes manually (one effective yet rough means of doing so being ``killall -9 ssh beam beam.smp``, to be run on all computing nodes) or to set the ``perform_initial_node_cleanup`` field in the ``deployment_settings`` record to true (see ``class_DeploymentManager.hrl``) and recompile, in which case any lingering node would be removed when colliding with a newer run; as this latter setting is now the default, this issue should not happen frequently anymore, or at all.
 
 
 
@@ -370,7 +395,7 @@ So chances are that this corresponds to a user implementation error.
 Common Misconceptions
 =====================
 
-:raw-html:`<center><img src="xkcd-misconceptions.png"></img></center>`
+:raw-html:`<center><img src="xkcd-misconceptions.png" id="responsive-image-medium"></img></center>`
 :raw-latex:`\includegraphics[scale=0.6]{xkcd-misconceptions.png}`
 
 

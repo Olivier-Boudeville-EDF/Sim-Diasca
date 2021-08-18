@@ -33,9 +33,9 @@ A Tunable Resilience Service
 
 Now, at start-up, the user of a simulation is able to specify, among the simulation settings (see, in ``class_DeploymentManager.hrl``, the ``crash_resilience`` field of the ``deployment_settings`` record),  what is the required level of resilience of the simulation with regard to the loss of computing hosts in its course:
 
- - either ``none`` is required (the default mode), in which case the simulation will crash as soon as a computing host is deemed lost (while, on the other hand, no resilience-induced overhead will exist in this case)
+- either ``none`` is required (the default mode), in which case the simulation will crash as soon as a computing host is deemed lost (while, on the other hand, no resilience-induced overhead will exist in this case)
 
- - or a positive integer **k** is specified, which designates the maximum number of simultaneous losses of computing hosts that the simulation will be able to overcome (a safety net which, of course, will imply some corresponding overhead - it is actually quite reasonable)
+- or a positive integer **k** is specified, which designates the maximum number of simultaneous losses of computing hosts that the simulation will be able to overcome (a safety net which, of course, will imply some corresponding overhead - it is actually quite reasonable)
 
 For example, if ``k=3``, then as long as up to 3 computing hosts fail at the same time during a simulation, it will be nevertheless able to resist and continue after a short (bounded) automatic rollback in simulation-time.
 
@@ -108,13 +108,13 @@ For example, if ``N=6``, hosts may be ``[a,b,c,d,e,f]``, and the k-map could the
 
 This example corresponds to, graphically (see ``class_Resilience_test.erl``):
 
-:raw-html:`<center><img src="Resilience_5-map_for_6_nodes.png"></img></center>`
+:raw-html:`<center><img src="Resilience_5-map_for_6_nodes.png" id="responsive-image-intermediate"></img></center>`
 :raw-latex:`\includegraphics[scale=0.5]{Resilience_5-map_for_6_nodes.png}`
 
 
 Of course this resilience feature is typically to be used with a far larger number of nodes; even with a slight increase, like in:
 
-:raw-html:`<center><img src="Resilience_10-map_for_20_nodes.png"></img></center>`
+:raw-html:`<center><img src="Resilience_10-map_for_20_nodes.png" id="responsive-image-large"></img></center>`
 :raw-latex:`\includegraphics[scale=0.3]{Resilience_10-map_for_20_nodes.png}`
 
 we see that any central point in the process would become very quickly a massive bottleneck.
@@ -147,17 +147,17 @@ Either such a PID belongs to a lower layer (``Myriad``, ``WOOPER`` or ``Traces``
 
 As PIDs are technical, contextual, non-reproducible identifiers (somewhat akin to pointers), they must be translated into a more abstract form prior to serialisation, to allow for a later proper deserialisation; otherwise these "pointers" would not mean anything for the deserialising mechanism:
 
-:raw-html:`<center><img src="xkcd-pointers.png"></img></center>`
+:raw-html:`<center><img src="xkcd-pointers.png" id="responsive-image-small"></img></center>`
 :raw-latex:`\includegraphics[scale=0.5]{xkcd-pointers.png}`
 
 
- - Lower layers are special-cased (we have mostly to deal with the WOOPER class manager and the trace aggregator)
+- Lower layers are special-cased (we have mostly to deal with the WOOPER class manager and the trace aggregator)
 
- - Simulation agents are identified by ``agent_ref`` (specifying the service they implement and the node on which they used to operate)
+- Simulation agents are identified by ``agent_ref`` (specifying the service they implement and the node on which they used to operate)
 
- - Model instances are identified by their ``AAI`` (*Abstract Actor Identifier*), a context-free actor identifier we already need to rely upon for reproducibility purposes, at the level of the message-reordering system
+- Model instances are identified by their ``AAI`` (*Abstract Actor Identifier*), a context-free actor identifier we already need to rely upon for reproducibility purposes, at the level of the message-reordering system
 
- - Probes are identified based on their producer name (as a binary string); the data-logger service is currently not managed by the resilience mechanisms
+- Probes are identified based on their producer name (as a binary string); the data-logger service is currently not managed by the resilience mechanisms
 
 In the case of the probes, beyond their internal states, the engine has to take care also of the data and command files they may have already written on disk.
 
@@ -168,22 +168,22 @@ For that we defined a simple file format, based on a header (specifying the vers
 
 Multiple steps of this procedure are instrumented thanks to WOOPER; notably:
 
- - once, with the help of the time manager, the resilience manager determined that a serialisation shall occur, it requests all its distributed resilience agents to take care of the node they are running on
+- once, with the help of the time manager, the resilience manager determined that a serialisation shall occur, it requests all its distributed resilience agents to take care of the node they are running on
 
- - to do so, each of them retrieves references (PID) of all local actors (from the corresponding local time manager), local simulation agents and local probes; then each of these instances is requested to serialise itself
+- to do so, each of them retrieves references (PID) of all local actors (from the corresponding local time manager), local simulation agents and local probes; then each of these instances is requested to serialise itself
 
- - such a serialisation involves transforming its current state, notably replacing PID (that are transient) by higher-level, reproducible identifiers (the conversion being performed by a distributed instance tracking service); for that, the underlying data-structure of each attribute value (ex: nested records in lists of tuples containing in some positions PID) is discovered at runtime, and recursively traversed and translated with much help from nested higher-order functions and closures; it results finally into a compact, binary representation of the state of each instance
+- such a serialisation involves transforming its current state, notably replacing PID (that are transient) by higher-level, reproducible identifiers (the conversion being performed by a distributed instance tracking service); for that, the underlying data-structure of each attribute value (ex: nested records in lists of tuples containing in some positions PID) is discovered at runtime, and recursively traversed and translated with much help from nested higher-order functions and closures; it results finally into a compact, binary representation of the state of each instance
 
- - on each node (thus, in a distributed way), these serialisations are driven by worker processes (i.e. in parallel, to take also advantage of all local cores), and the resulting serialised content is sent to a local writer process (in charge of writing the serialisation file), tailored not to be a bottleneck; reciprocally, the deserialisation is based on as many parallel processes (for reading, recreating and relinking instances) as there are serialisation files to read locally
+- on each node (thus, in a distributed way), these serialisations are driven by worker processes (i.e. in parallel, to take also advantage of all local cores), and the resulting serialised content is sent to a local writer process (in charge of writing the serialisation file), tailored not to be a bottleneck; reciprocally, the deserialisation is based on as many parallel processes (for reading, recreating and relinking instances) as there are serialisation files to read locally
 
 
 A few additional technical concerns had to be dealt with this resilience feature, like:
 
- - The proper starting of Erlang VMs, so that the crash of a subset of them could be first detected, then overcome (initial versions crashed in turn; using now ``run_erl``/``to_erl``)
+- The proper starting of Erlang VMs, so that the crash of a subset of them could be first detected, then overcome (initial versions crashed in turn; using now ``run_erl``/``to_erl``)
 
- - The redeployment of the engine services onto the surviving hosts; for example, the loss of nodes used to result in reducing accordingly the number of time managers, and thus merging their serialised state; however this mode of operation has not been kept, as the random state of these managers cannot be merged satisfactorily (to preserve reproducibility, models but also time managers need to rely on the same separate, independent random series as initially, notwithstanding the simulation rollbacks)
+- The redeployment of the engine services onto the surviving hosts; for example, the loss of nodes used to result in reducing accordingly the number of time managers, and thus merging their serialised state; however this mode of operation has not been kept, as the random state of these managers cannot be merged satisfactorily (to preserve reproducibility, models but also time managers need to rely on the same separate, independent random series as initially, notwithstanding the simulation rollbacks)
 
- - Special cases must be accounted for, as crashes may happen while performing a serialisation snapshot or while being already in the course of recovering from previous crashes
+- Special cases must be accounted for, as crashes may happen while performing a serialisation snapshot or while being already in the course of recovering from previous crashes
 
 
 Currently, when recovering from a crash, by design there is at least one extra set of agent states to consider (corresponding to at least one crashed node). Either these information are merged in the state of agents running on surviving nodes, or more than one agent of a given kind is created on the same computing node.
@@ -217,10 +217,10 @@ The initial testing was done by specifying more than one computing host, and emu
 
 For a better checking of this feature, we then relied on a set of 10 virtual machines (``HOSTS="host_1 host_2..."``) on which we simply:
 
- - updated the distribution with the right prerequisites: ``apt-get update && apt-get install g++ make libncurses5-dev openssl libssl-dev libwxgtk2.8-dev libgl1-mesa-dev libglu1-mesa-dev libpng3 gnuplot``
- - created a non-privileged user: ``adduser diasca-tester``
- - built Erlang on his account: ``su diasca-tester`` ; ``cd /home/diasca-tester && ./install-erlang.sh -n``
- - recorded a public key on each of these 10 computing hosts::
+- updated the distribution with the right prerequisites: ``apt-get update && apt-get install g++ make libncurses5-dev openssl libssl-dev libwxgtk2.8-dev libgl1-mesa-dev libglu1-mesa-dev libpng3 gnuplot``
+- created a non-privileged user: ``adduser diasca-tester``
+- built Erlang on his account: ``su diasca-tester`` ; ``cd /home/diasca-tester && ./install-erlang.sh -n``
+- recorded a public key on each of these 10 computing hosts::
 
 	$ for m in $HOSTS ; do ssh diasca-tester@$m \
 	'mkdir /home/diasca-tester/.ssh &&          \
@@ -229,7 +229,7 @@ For a better checking of this feature, we then relied on a set of 10 virtual mac
 	diasca-tester@$m:/home/diasca-tester/.ssh/authorized_keys; \
 	done
 
- - ensured the right version of the Erlang VM is used::
+- ensured the right version of the Erlang VM is used::
 
 	$ for m in $HOSTS ; do ssh diasca-tester@$m  \
 	"echo 'export PATH=~/Software/Erlang/Erlang-current-install/bin:\$PATH' \
@@ -260,10 +260,10 @@ Future Improvements
 
 Many enhancements could be devised, including:
 
- - Merging all agents in each node, except the time managers, so that reproducibility (i.e. distinct random series) can be preserved
- - Increasing the compactness of serialisation archives (alleviating in turn the network transfers)
- - Tuning the resilience mechanisms thanks to larger-scale snapshots, to identify the remaining bottlenecks (profiling the whole serialisation process, meant to happen a lot more frequently to its counterpart deserialisation one)
- - Allowing for a “cold start”, i.e. restarting from only serialisation files (while Sim-Diasca is not running), even though collecting them post-mortem on various computing hosts is not nearly as convenient as having the engine perform directly an automatic, live rollback which might even remain unnoticed from the user
- - Applying a second pass of load-balancing, onto the serialised actors (this would probably require implementing actor migration), if the post-rollback computing and network load was found too uneven in some cases
+- Merging all agents in each node, except the time managers, so that reproducibility (i.e. distinct random series) can be preserved
+- Increasing the compactness of serialisation archives (alleviating in turn the network transfers)
+- Tuning the resilience mechanisms thanks to larger-scale snapshots, to identify the remaining bottlenecks (profiling the whole serialisation process, meant to happen a lot more frequently to its counterpart deserialisation one)
+- Allowing for a “cold start”, i.e. restarting from only serialisation files (while Sim-Diasca is not running), even though collecting them post-mortem on various computing hosts is not nearly as convenient as having the engine perform directly an automatic, live rollback which might even remain unnoticed from the user
+- Applying a second pass of load-balancing, onto the serialised actors (this would probably require implementing actor migration), if the post-rollback computing and network load was found too uneven in some cases
 
 Anyway, to the best of our knowledge, at least for civil applications, there are very few other discrete time massively parallel and distributed simulation engines, and we do not know any that implements resilience features akin to the one documented here, so we already benefit from a pretty hefty solution.

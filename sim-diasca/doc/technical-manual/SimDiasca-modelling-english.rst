@@ -6,7 +6,7 @@ Modelling Approach
 ------------------
 
 
-:raw-html:`<center><img src="xkcd-physicists.png"></img></center>`
+:raw-html:`<center><img src="xkcd-physicists.png" id="responsive-image-small"></img></center>`
 :raw-latex:`\includegraphics[scale=0.65]{xkcd-physicists.png}`
 
 
@@ -39,7 +39,7 @@ Moreover, the same element of the target system might be modeled differently dep
 
 Therefore each element of the system can be represented by a set of models, of various nature and level of detail, results of the work of experts on various subjects, according to the following theoretical diagram:
 
-:raw-html:`<center><img src="modelling-approach-english.png"></img></center>`
+:raw-html:`<center><img src="modelling-approach-english.png" id="responsive-image-large"></img></center>`
 :raw-latex:`\includegraphics[scale=0.6]{modelling-approach-english.png}`
 
 Different fields of expertise (notably functional and technical experts) have to define the simulation goals, metrics, and to work collaboratively on a set of common models, which form the modelling framework.
@@ -56,9 +56,9 @@ Uncoupling as much as possible models from implementations allows to reduce the 
 
 In the case of the AMM project, two completely different simulation environments were developed, based on a common view of the system:
 
- - **AMM-Jade**, making use of the `Jade <http://jade.tilab.com/>`_ multi-agent system, for fast prototyping purposes
+- **AMM-Jade**, making use of the `Jade <http://jade.tilab.com/>`_ multi-agent system, for fast prototyping purposes
 
- - **Sim-Diasca**, discussed here, making use of `Erlang <http://www.erlang.org/>`_ and of various custom-made layers, for finer modelling and HPC simulation purposes
+- **Sim-Diasca**, discussed here, making use of `Erlang <http://www.erlang.org/>`_ and of various custom-made layers, for finer modelling and HPC simulation purposes
 
 
 These two threads of activity did not share any code but had a common approach to modelling.

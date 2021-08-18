@@ -29,17 +29,20 @@
 
 % Section of shorthands for next record specifications.
 
+
+% A list of hostnames, possibly with their associated user name:
 -type host_list() :: net_utils:atom_host_name() |
-			[ { net_utils:atom_host_name(), basic_utils:atom_user_name() } ].
-% A list of hostnames, possibly with their associated user name.
+		  [ { net_utils:atom_host_name(), basic_utils:atom_user_name() } ].
+
 
 -type element_path() :: file_utils:path().
 
 
--type element_type() :: 'data' | 'code'.
 % Designates the type of elements to deploy, either data used by models, or code
 % (native, or used through bindings - hence typically Erlang, or Python, Java,
-% etc.).
+% etc.)
+%
+-type element_type() :: 'data' | 'code'.
 
 
 -type element_option() :: { 'exclude_directories', [ file_utils:path() ] }
@@ -52,36 +55,30 @@
 -type element_spec() :: { element_path(), element_type(), [ element_option() ] }
 					  | { element_path(), element_type(), element_option() }
 					  | { element_path(), element_type() }.
-% An element in the filesystem that shall be deployed.
 
 
+% Specifies elements in the filesystem that shall be deployed:
 -type elements_to_deploy() :: [ element_spec() ].
-% Specifies elements in the filesystem that shall be deployed.
 
 
--type firewall_options() ::
-		{ 'tcp_restricted_range', net_utils:tcp_port_range() }
-	  | { 'epmd_port', net_utils:tcp_port() }.
-% The firewall-related network options to account for.
+% The firewall-related network options to account for:
+-type firewall_options() :: { 'tcp_restricted_range',
+							  net_utils:tcp_port_range() }
+						  | { 'epmd_port', net_utils:tcp_port() }.
 
 
+% The information regarding the configuration of a language binding:
 -type language_binding_information() :: language_utils:language()
-					| { language_utils:language(), code_utils:code_path() }.
-% The information regarding the configuration of a language binding.
+				   | { language_utils:language(), code_utils:code_path() }.
 
 
+% A list of the classnames of web probes:
 -type web_probe_classnames() :: [ wooper:classname() ].
-% A list of the classnames of web probes.
 
 
+% Describes how the simulator deployment should be performed.
 -record( deployment_settings, {
 
-	% Lists, by decreasing order of preference, the modes that shall be tried in
-	% terms of node naming, so that the user node can become distributed and
-	% communicate afterwards with the computing nodes that it spawned:
-	%
-	preferred_node_naming_modes = [ long_name, short_name ]
-			:: [ net_utils:node_naming_mode() ],
 
 	% This field describes the eligible computing hosts that may take part to
 	% the simulation. This field is either:
@@ -99,7 +96,7 @@
 	% (may not be specified since, as already mentioned, this is true by
 	% default) or 'exclude_localhost', if we do no want the user computer
 	% from which the simulation is launched to take part to the computings
-	% (ex: {[computer_a.foo.org], exclude_localhost})
+	% (ex: { [ computer_a.foo.org ], exclude_localhost })
 	%
 	% - or localhost_only, implying that the execution is not wanted to be
 	% distributed, just being wanted to run on the local host (with the current
@@ -132,16 +129,16 @@
 	% specified (the tuple is just a pair), the local host will be included.
 	%
 	% So examples for this field could be:
-	% - [computer_a, computer_b] (which implies include_localhost)
-	% - [computer_a, {computer_b,joe}] (which implies include_localhost)
-	% - {[computer_a, computer_b], include_localhost}
-	% - {[computer_a, computer_b], exclude_localhost}
+	% - [ computer_a, computer_b ] (which implies include_localhost)
+	% - [ computer_a, {computer_b,joe} ] (which implies include_localhost)
+	% - { [ computer_a, computer_b ], include_localhost }
+	% - { [ computer_a, computer_b ], exclude_localhost }
 	% - localhost_only
-	% - {use_host_file,"my_hosts.txt"} (which implies include_localhost)
-	% - {use_host_file,"my_hosts.txt", include_localhost}
-	% - {use_host_file,"my_hosts.txt", exclude_localhost}
-	% - {use_host_file_otherwise_local, "sim-diasca-host-candidates.txt"}
-	% - {use_host_file_otherwise_local, "sim-diasca-host-candidates.txt"}
+	% - { use_host_file,"my_hosts.txt" } (which implies include_localhost)
+	% - { use_host_file,"my_hosts.txt", include_localhost }
+	% - { use_host_file,"my_hosts.txt", exclude_localhost }
+	% - { use_host_file_otherwise_local, "sim-diasca-host-candidates.txt" }
+	% - { use_host_file_otherwise_local, "sim-diasca-host-candidates.txt" }
 	%
 	% Of course if the local host is implied, it will be associated with the
 	% current username.
@@ -158,9 +155,9 @@
 		| { host_list(), 'include_localhost' | 'exclude_localhost' }
 		| 'localhost_only'
 		| { 'use_host_file' | 'use_host_file_otherwise_local',
-			file_utils:file_name() }
+		   file_utils:file_name() }
 		| { 'use_host_file', file_utils:file_name(),
-			'include_localhost' | 'exclude_localhost' },
+		   'include_localhost' | 'exclude_localhost' },
 
 
 	% This field tells whether an unavailable node can be tolerated (used both
@@ -172,7 +169,7 @@
 	% Otherwise leave it to 'allow_unavailable_nodes'.
 	%
 	node_availability_tolerance = allow_unavailable_nodes ::
-						'allow_unavailable_nodes' | 'fail_on_unavailable_node',
+					   'allow_unavailable_nodes' | 'fail_on_unavailable_node',
 
 
 	% Tells whether ping (ICMP) messages can be used in order to determine
@@ -202,7 +199,7 @@
 	% default settings for the selected execution target.
 	%
 	maximum_allowed_deployment_duration = undefined ::
-			maybe( unit_utils:seconds() ),
+	  maybe( unit_utils:seconds() ),
 
 
 	% This field tells how the deployment package should be managed.
@@ -296,7 +293,7 @@
 	%     - {exclude_directories, PathList} where PathList is a list of
 	%     directories relative to ElementPath (supposed to be itself a
 	%     directory): these directories will not be searched for content; for
-	%     example: {exclude_directories, ["ebin/v1", "test", "doc"]}
+	%     example: {exclude_directories, [ "ebin/v1", "test", "doc" ]}
 	%
 	%     - {exclude_suffixes, ExcludeSuffixList} where ExcludeSuffixList is a
 	%     list of suffixes that will be blacklisted (filenames ending with them
@@ -409,19 +406,6 @@
 	perform_initial_node_cleanup = false :: boolean(),
 
 
-	% The TCP port where a SSH server is expected to run on each of the
-	% computing hosts expected to take part to a (distributed) simulation.
-	%
-	% Note that a passwordless authentication shall be functional, from the user
-	% on its host to the specified computing ones.
-	%
-	% The engine will indeed send all necessary elements on the fly so that all
-	% hosts besides the user one can be used by the simulation, even if they
-	% have no specific prerequisite (except Erlang of course).
-	%
-	ssh_port = 22 :: net_utils:tcp_port(),
-
-
 	% Tells whether there are firewall restrictions to be taken into account
 	% between computing nodes:
 	%
@@ -446,7 +430,7 @@
 	% have their firewall configured so that the TCP ports between 20000 and
 	% 26000 (bounds included) are not filtered. Then one could specify:
 	%  firewall_restrictions = [ {epmd_port, 20000},
-	%                            {tcp_restricted_range, { 20001,26000}].
+	%							 {tcp_restricted_range, { 20001,26000}].
 	%
 	% Note that the settings here will affect only the computing nodes (i.e. the
 	% ones that will be subsequently launched by the initial user node), not the
@@ -466,7 +450,7 @@
 							  % (default Erlang EPMD port is 4369)
 							  { epmd_port, 4506 },
 							  { tcp_restricted_range, { 50000, 55000 } } ]
-									:: 'none' | [ firewall_options() ],
+								 :: 'none' | [ firewall_options() ],
 
 
 	% Tells which directory shall be used, on each computing node, to store
@@ -508,7 +492,7 @@
 	% configuration file may be named "foobar.baz.json").
 	%
 	enable_data_exchanger = true :: boolean()
-								| { 'true', [ file_utils:file_name() ] },
+							   | { 'true', [ file_utils:file_name() ] },
 
 
 	% Tells whether the performance tracker should be enabled:
@@ -557,10 +541,10 @@
 	% possibly a symlink pointing to a specific local install
 	%
 	enable_webmanager = false :: boolean()
-			| { 'true', web_probe_classnames() }
-			| { 'true', web_probe_classnames(), net_utils:tcp_port() }
-			| { 'true', web_probe_classnames(), net_utils:tcp_port(),
-				file_utils:directory_path() },
+			   | { 'true', web_probe_classnames() }
+			   | { 'true', web_probe_classnames(), net_utils:tcp_port() }
+			   | { 'true', web_probe_classnames(), net_utils:tcp_port(),
+				   file_utils:directory_path() },
 
 
 	% Tells what is the required resilience of the simulation with regard to the
@@ -625,37 +609,42 @@
 	% By default, 2 hours will elapse between the end of a serialisation and the
 	% beginning of the next one.
 	%
-	serialisation_period = 2 * 60 * 60 :: unit_utils:seconds() } ).
+	serialisation_period = 2 * 60 * 60 :: unit_utils:seconds()
+
+} ).
 
 
+% For convenience:
 -type deployment_settings() :: #deployment_settings{}.
-% Describes how the simulator deployment should be performed.
 
 
 
+
+% Records the known information of a computing host.
 -record( computing_host_info, {
 
-	% The PID of the host manager in charge of the corresponding computing host:
-	host_manager_pid :: class_ComputingHostManager:host_manager_pid(),
+		   % The PID of the host manager in charge of the corresponding
+		   % computing host:
+		   %
+		   host_manager_pid :: pid(),
 
-	% The name of the corresponding computing host, as a binary (could be
-	% net_utils:atom_host_name()):
-	%
-	host_name :: text_utils:bin_string(),
+		   % The name of the corresponding computing host, as a binary (could
+		   % be net_utils:atom_host_name()):
+		   %
+		   host_name :: text_utils:bin_string(),
 
-	% The name of the user to be retained for that host, as a binary (could be
-	% basic_utils:user_name()):
-	%
-	user_name :: text_utils:bin_string(),
+		   % The name of the user to be retained for that host, as a binary
+		   % (could be basic_utils:user_name()):
+		   %
+		   user_name :: text_utils:bin_string(),
 
-	% The name of the corresponding (fully qualified) node created for this host
-	% (as an atom):
-	%
-	node_name :: net_utils:atom_node_name(),
+		   % The name of the corresponding (fully qualified) node created for
+		   % this host (as an atom):
+		   %
+		   node_name :: net_utils:atom_node_name(),
 
-	% The static information about an host:
-	host_infos :: system_utils:host_static_info() } ).
+		   % The static information about an host:
+		   host_infos :: system_utils:host_static_info() } ).
 
 
 -type computing_host_info() :: #computing_host_info{}.
-% Records the known information of a computing host.

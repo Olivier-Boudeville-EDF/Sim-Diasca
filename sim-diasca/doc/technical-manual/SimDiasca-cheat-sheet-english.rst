@@ -187,19 +187,21 @@ For that, the PID of the deployment manager shall be obtained first, thanks a ca
 
 Then the PID of the root time manager can be requested from it::
 
- DeploymentManagerPid ! { getRootTimeManager, [], self() },
+ DeploymentManagerPid ! {getRootTimeManager, [], self()},
  RootTimeManagerPid = test_receive()
 
 
 The actual start can be then triggered thanks to::
 
- RootTimeManagerPid ! { start, [ self() ] }
+ RootTimeManagerPid ! {start, [self()]}
+
 
 
 This will evaluate the simulation from its first timestamp, ``{0,0}``:
- - the ``simulationStarted/3`` request of all time managers will be triggered by the root one, resulting in the request being triggered (by transparent chunks) in turn to all initial actors so that they can be synchronised (i.e. so that they are notified of various information, mostly time-related); at this point they are still passive, have no agenda declared and are not fully initialized (their own initialization logic is to be triggered only when entering for good the simulation, at their fist diasca)
- - then the root time manager auto-triggers its ``beginTimeManagerTick/2`` oneway
- - then ``{0,0}`` is scheduled, and the load balancer (created, like the time managers, by the deployment manager) is triggered (by design no other actor can possibly in that case), for its first and only spontaneous scheduling, during which it will trigger in turn, over the first diascas (to avoid a potentially too large initial spike), the ``onFirstDiasca/2`` actor oneway of all initial actors (that it had spawned)
+
+- the ``simulationStarted/3`` request of all time managers will be triggered by the root one, resulting in the request being triggered (by transparent chunks) in turn to all initial actors so that they can be synchronised (i.e. so that they are notified of various information, mostly time-related); at this point they are still passive, have no agenda declared and are not fully initialized (their own initialization logic is to be triggered only when entering for good the simulation, at their fist diasca)
+- then the root time manager auto-triggers its ``beginTimeManagerTick/2`` oneway
+- then ``{0,0}`` is scheduled, and the load balancer (created, like the time managers, by the deployment manager) is triggered (by design no other actor can possibly in that case), for its first and only spontaneous scheduling, during which it will trigger in turn, over the first diascas (to avoid a potentially too large initial spike), the ``onFirstDiasca/2`` actor oneway of all initial actors (that it had spawned)
 
 As actors can schedule themselves only once fully ready (thus from their ``onFirstDiasca/2`` actor oneway onward), by design the load balancer is the sole actor to be scheduled at ``{0,0}`` (thus spontaneously), leading all other actors to be triggered for their first diasca only at ``{0,1}``, and possible next diascas, should initial actors be numerous.
 

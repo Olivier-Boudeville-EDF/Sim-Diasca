@@ -42,6 +42,7 @@
 
 
 -type simulation_identifiers() :: { simulation_uuid(), sii() }.
+% All the identifiers of a given simulation instance.
 
 
 -type agent_pid() :: pid().
@@ -77,14 +78,13 @@
 -define( registration_scope, global_only ).
 
 
-% Shorthands:
-
+% Shorthand:
 -type ustring() :: text_utils:ustring().
 
 
 
-% @doc Initialises the engine according to the specified simulation settings,
-% using default deployment and load-balancing settings.
+% @doc Initialises the engine according to the specified settings, using default
+% deployment and load-balancing settings.
 %
 % Returns the PID of the deployment manager.
 %
@@ -94,7 +94,7 @@ init( SimulationSettings ) ->
 
 
 
-% @doc Initialises the engine according to the specified settings, using default
+% @doc Initialises the engine according to specified settings, using default
 % load-balancing settings.
 %
 % Returns the PID of the deployment manager.
@@ -134,7 +134,7 @@ init( SimulationSettings, DeploymentSettings, LoadBalancingSettings )
 	% (deriving from the simulation case, and including the SII) - yet this can
 	% only be done by starting from a non-distributed node (done by the
 	% Sim-Diasca make rules, relying on the --nn option):
-
+	%
 	SimulationName = get_simulation_name( SimulationSettings ),
 
 	% We wanted the trace system to be autonomous (ex: so that it can be used
@@ -149,8 +149,8 @@ init( SimulationSettings, DeploymentSettings, LoadBalancingSettings )
 	NewTraceFilename = file_utils:convert_to_filename( SimulationName ++ "-by-"
 		++ system_utils:get_user_name() ++ "-" ++ SII ++ ?TraceExtension ),
 
-	TraceAggregatorPid =
-		naming_utils:get_registered_pid_for( ?trace_aggregator_name, global ),
+	TraceAggregatorPid = naming_utils:get_registered_pid_for(
+							?trace_aggregator_name, global ),
 
 	% We have to rename the trace file (ex: to include the SII):
 	TraceAggregatorPid ! { renameTraceFile, [ NewTraceFilename ] },
@@ -199,7 +199,7 @@ init( SimulationSettings, DeploymentSettings, LoadBalancingSettings )
 
 		{ EPMDPort, _TcpRangeOption } ->
 			system_utils:set_environment_variable( "ERL_EPMD_PORT",
-				text_utils:integer_to_string( EPMDPort ) ),
+							text_utils:integer_to_string( EPMDPort ) ),
 			net_utils:launch_epmd( EPMDPort )
 
 	end,
@@ -210,29 +210,10 @@ init( SimulationSettings, DeploymentSettings, LoadBalancingSettings )
 	% We rename this user node accordingly:
 	UserNodeName = NodePrefix ++ "-user-node",
 
-	PreferredNodeNamingModes =
-		DeploymentSettings#deployment_settings.preferred_node_naming_modes,
-
-	% The deployment manager will figure it out from the enabled node name:
-	case net_utils:enable_preferred_distribution_mode(
-						UserNodeName, PreferredNodeNamingModes ) of
-
-		{ ok, _NMode } ->
-			%trace_utils:debug_fmt(
-			%   "Selected node naming node for distribution: ~ts "
-			%   "(node is '~ts').", [ NMode, node() ] );
-			ok;
-
-		{ error, Reason } ->
-			trace_utils:error_fmt( "Unable to enable the distribution of the "
-				"user node (~ts); reason:~n  ~p~n"
-				"(the order of preference in terms of node naming modes "
-				"was: ~p).",
-				[ UserNodeName, Reason, PreferredNodeNamingModes ] ),
-			throw( { distribution_enabling_failed, UserNodeName, Reason,
-					 PreferredNodeNamingModes } )
-
-	end,
+	% Securing this might be difficult in a continuous integration context
+	% and/or from within a container facility such as Docker or Singularity:
+	%
+	net_utils:secure_distribution( UserNodeName ),
 
 	% Simulations will never step over others (previous ones):
 	Cookie = text_utils:string_to_atom( SimUUID ),
@@ -364,8 +345,8 @@ notify_conditional_settings() ->
 
 
 
-% @doc Tells whether the engine is running (i.e. has been initialised and not
-% been stopped yet).
+% @doc Tells whether the engine is running (meaning that it has been initialised
+% and not been stopped yet).
 %
 -spec is_running() -> boolean().
 is_running() ->
@@ -409,8 +390,7 @@ notify_hint( Message ) ->
 % @doc Runs the actual simulation, until reaching the stop tick or any prior
 % termination criterion.
 %
--spec run_simulation( class_TimeManager:tick(), deployment_manager_pid() ) ->
-							void().
+-spec run_simulation( class_TimeManager:tick(), pid() ) -> void().
 run_simulation( StopTick, DeploymentManagerPid ) ->
 
 	% As some processes (ex: the time manager) have the PID of this simulation
@@ -571,11 +551,11 @@ get_simulation_identifiers() ->
 %
 -spec get_simulation_name( simulation_settings() ) -> ustring().
 get_simulation_name( #simulation_settings{ simulation_name=AtomName } )
-			when is_atom( AtomName ) ->
+  when is_atom( AtomName ) ->
 	text_utils:atom_to_string( AtomName );
 
 get_simulation_name( #simulation_settings{ simulation_name=StringName } )
-			when is_list( StringName ) ->
+  when is_list( StringName ) ->
 	StringName;
 
 get_simulation_name( #simulation_settings{ simulation_name=UnexpectedName } ) ->

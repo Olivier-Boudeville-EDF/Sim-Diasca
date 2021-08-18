@@ -13,29 +13,29 @@ Requirements & Functional Coverage
 
 The current version provides the following features:
 
- - trace the following memory consumptions on the user node and on computing nodes along with the simulation duration or with the wall-clock time:
+- trace the following memory consumptions on the user node and on computing nodes along with the simulation duration or with the wall-clock time:
 
-   - the available memory (which is: free memory + buffers + cache)
+  - the available memory (which is: free memory + buffers + cache)
 
-   - the memory used by the other applications (i.e. all non-Erlang applications)
+  - the memory used by the other applications (i.e. all non-Erlang applications)
 
-   - the memory allocated to the Erlang emulator (i.e. the memory currently used by the simulator), plus any other Erlang program being executed at the same time
+  - the memory allocated to the Erlang emulator (i.e. the memory currently used by the simulator), plus any other Erlang program being executed at the same time
 
-   - the used swap
+  - the used swap
 
- - trace the overall number of Erlang processes (on a per-node basis) during the simulation in real (wall-clock) time and/or in simulation time (tick)
+- trace the overall number of Erlang processes (on a per-node basis) during the simulation in real (wall-clock) time and/or in simulation time (tick)
 
 
 In the future, it will allow to trace also:
 
- - overall number of instances of a given class; for example: how many classical or virtual probes, or ``class_Foobar`` instances on each node
+- overall number of instances of a given class; for example: how many classical or virtual probes, or ``class_Foobar`` instances on each node
 
- - the wall-clock duration of each simulation tick, on each node
+- the wall-clock duration of each simulation tick, on each node
 
 The output of the performance tracker is:
 
- - time series (``.dat`` files)
- - and/or the corresponding graphs (``.png``)
+- time series (``.dat`` files)
+- and/or the corresponding graphs (``.png``)
 
 Its reports are available post-mortem (not live), among the simulation results.
 
@@ -53,9 +53,9 @@ The performance tracker is implemented as an optional service, disabled by defau
 
 It defines following classical probes:
 
- - a global probe is created in order to track the overall number of Erlang processes on each node: it includes as many curves as there are nodes (user node and computing nodes); each curve is named according to its corresponding node
+- a global probe is created in order to track the overall number of Erlang processes on each node: it includes as many curves as there are nodes (user node and computing nodes); each curve is named according to its corresponding node
 
- - a probe per node is also created in order to track the resource consumptions on each node
+- a probe per node is also created in order to track the resource consumptions on each node
 
 
 
@@ -83,85 +83,91 @@ To do so, the PID of the tracker must be obtained, thanks to the following stati
 Performance Tracker Report Example
 ----------------------------------
 
- - Example 1: a simulation is lanced on one node:
 
- These reports are generated based on the results of the performance tracker test (``class_Performance_Tracker_test.erl``) with following test configuration:
+Example 1: a single-host simulation
+...................................
 
-   - only one initial test actor (``class_PerformanceTracker_TestActor``)
+These reports are generated based on the results of the performance tracker test (``class_Performance_Tracker_test.erl``) with following test configuration:
 
-   - each test actor creates a new test actor every 4 simulation tick
+- only one initial test actor (``class_PerformanceTracker_TestActor``)
 
-   - the total simulation duration is 36 simulation ticks
+- each test actor creates a new test actor every 4 simulation tick
 
-   - the simulation runs on only one machine, that means: the user node and the computing node are on the same machine
+- the total simulation duration is 36 simulation ticks
+
+- the simulation runs on only one machine, that means: the user node and the computing node are on the same machine
 
 :raw-latex:`\pagebreak`
 
 One can have a global view of the simulation, first in *wall-clock* time:
 
-:raw-html:`<center><img src="example1_process_tracker_in_wall_clock_time.png"></img></center>`
+:raw-html:`<center><img src="example1_process_tracker_in_wall_clock_time.png" id="responsive-image-full"></img></center>`
 :raw-latex:`\includegraphics[scale=0.2]{example1_process_tracker_in_wall_clock_time.png}`
 
 
 The same global view can also be shown in *simulation* time:
 
-:raw-html:`<center><img src="example1_process_tracker_on_simulation_time.png"></img></center>`
+:raw-html:`<center><img src="example1_process_tracker_on_simulation_time.png" id="responsive-image-full"></img></center>`
 :raw-latex:`\includegraphics[scale=0.2]{example1_process_tracker_on_simulation_time.png}`
 
 
 
 More detailed information can be collected, on a per node basis. Here first is the report specific to the *user* node, in wall-clock time, then the same report for a *computing* node:
 
-:raw-html:`<center><img src="example1_memory_tracker_on_user_node.png"></img></center>`
+:raw-html:`<center><img src="example1_memory_tracker_on_user_node.png" id="responsive-image-full"></img></center>`
 :raw-latex:`\includegraphics[scale=0.2]{example1_memory_tracker_on_user_node.png}`
 
 
-:raw-html:`<center><img src="example1_memory_tracker_on_computing_node.png"></img></center>`
+:raw-html:`<center><img src="example1_memory_tracker_on_computing_node.png" id="responsive-image-full"></img></center>`
 :raw-latex:`\includegraphics[scale=0.2]{example1_memory_tracker_on_computing_node.png}`
 
 
- - Example 2: a simulation runs on 4 nodes:
 
- These reports are generated based on the results of the performance tracker test (``class_Performance_Tracker_test.erl``) with following test configuration:
 
- - only one initial test actor (``class_PerformanceTracker_TestActor``)
+Example 2: a simulation distributed over 4 nodes
+................................................
 
- - each test actor creates a new test actor every 4 simulation tick
 
- - the total simulation duration is 36 simulation ticks
+These reports are generated based on the results of the performance tracker test (``class_Performance_Tracker_test.erl``) with following test configuration:
 
- - the simulation runs on 4 machines, that means:  the user node and one computing node are on one machine, the three other computing nodes are on three different machines
+- only one initial test actor (``class_PerformanceTracker_TestActor``)
+
+- each test actor creates a new test actor every 4 simulation tick
+
+- the total simulation duration is 36 simulation ticks
+
+- the simulation runs on 4 machines, that means:  the user node and one computing node are on one machine, the three other computing nodes are on three different machines
 
 :raw-latex:`\pagebreak`
 
 One can have a global view of the simulation, first in *wall-clock* time:
 
-:raw-html:`<center><img src="example_process_tracker_in_wall_clock_time.png"></img></center>`
+:raw-html:`<center><img src="example_process_tracker_in_wall_clock_time.png" id="responsive-image-full"></img></center>`
 :raw-latex:`\includegraphics[scale=0.2]{example_process_tracker_in_wall_clock_time.png}`
 
 
 The same global view can also be shown in *simulation* time:
 
-:raw-html:`<center><img src="example_process_tracker_on_simulation_time.png"></img></center>`
+:raw-html:`<center><img src="example_process_tracker_on_simulation_time.png" id="responsive-image-full"></img></center>`
 :raw-latex:`\includegraphics[scale=0.2]{example_process_tracker_on_simulation_time.png}`
 
 
 More detailed memory consumption information can be collected. Here first is the report specific to the *user* node, in wall-clock time, then the same report for  *computing* nodes:
 
-:raw-html:`<center><img src="example_memory_tracker_on_user_node.png"></img></center>`
+:raw-html:`<center><img src="example_memory_tracker_on_user_node.png" id="responsive-image-full"></img></center>`
 :raw-latex:`\includegraphics[scale=0.2]{example_memory_tracker_on_user_node.png}`
 
 
-:raw-html:`<center><img src="example_memory_tracker_on_computing_node_1.png"></img></center>`
+:raw-html:`<center><img src="example_memory_tracker_on_computing_node_1.png" id="responsive-image-full"></img></center>`
 :raw-latex:`\includegraphics[scale=0.2]{example_memory_tracker_on_computing_node_1.png}`
 
 
 .. comment Not useful enough:
- :raw-html:`<center><img src="example_memory_tracker_on_computing_node_2.png"></img></center>`
+ :raw-html:`<center><img src="example_memory_tracker_on_computing_node_2.png" id="responsive-image-full"></img></center>`
  :raw-latex:`\includegraphics[scale=0.2]{example_memory_tracker_on_computing_node_2.png}`
 
- :raw-html:`<center><img src="example_memory_tracker_on_computing_node_3.png"></img></center>`
+ :raw-html:`<center><img src="example_memory_tracker_on_computing_node_3.png" id="responsive-image-full"></img></center>`
  :raw-latex:`\includegraphics[scale=0.2]{example_memory_tracker_on_computing_node_3.png}`
 
- :raw-html:`<center><img src="example_memory_tracker_on_computing_node_4.png"></img></center>`
+ :raw-html:`<center><img src="example_memory_tracker_on_computing_node_4.png" id="responsive-image-full"></img></center>`
  :raw-latex:`\includegraphics[scale=0.2]{example_memory_tracker_on_computing_node_4.png}`

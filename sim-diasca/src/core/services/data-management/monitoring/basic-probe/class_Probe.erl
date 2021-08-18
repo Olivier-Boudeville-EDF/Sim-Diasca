@@ -37,11 +37,28 @@
 %
 % Needs:
 %
-% - gnuplot version 4.2 or higher; see comments in get_probe_settings/4
-% (key_options) to support older gnuplot versions
+% - gnuplot version 5.0 or higher is preferred (and 4.2 or above is required);
+% see comments in get_probe_settings/4 (key_options) to support older gnuplot
+% versions
 %
 % - an image viewer, eog (eye of gnome); see the executable_utils module for
 % viewers
+
+
+% Regarding gnuplot:
+
+% As a given probe cannot predict whether ultimately it will be requested or not
+% to generate a rendering (cf. its sendResults/2 request and the 'data_only'
+% producer option), ideally the availability and version of gnuplot would not
+% checked at probe creation, but only when (and if) an actual rendering must be
+% done (see generate_report/2).
+%
+% If doing would reduce the risk of exhausting the host-local limit in the
+% number of file descriptors opened simultaneously, issues may be detected at
+% simulation end rather than start (not desirable), and probe settings could not
+% be applied at construction-time, whereas methods to update them afterwards are
+% useful. So we stick to a gnuplot host-local check at each probe creation -
+% even if no rendering may finally happen.
 
 
 
@@ -103,6 +120,9 @@
 -type curve_count() :: count().
 
 
+-type gnuplot_version() :: basic_utils:two_digit_version().
+
+
 % Shorthands:
 
 -type count() :: basic_utils:count().
@@ -116,6 +136,7 @@
 -type file_name() :: file_utils:file_name().
 -type directory_path() :: file_utils:directory_path().
 -type any_directory_path() :: file_utils:any_directory_path().
+-type executable_path() :: file_utils:executable_path().
 -type file() :: file_utils:file().
 
 
@@ -234,8 +255,11 @@
   { row_format_string, maybe( ustring() ),
 	"a precomputed format string (if any) used to write new samples" },
 
-  { gnuplot_version, basic_utils:two_digit_version(), "version of gnuplot "
-	"that will be used on this computer during this simulation" },
+  { gnuplot_version, maybe( gnuplot_version() ), "version of gnuplot "
+	"(if any) that will be used on this computer during this simulation" },
+
+  { gnuplot_path, maybe( file_utils:executable_path() ),
+	"the path to the gnuplot executable (if any)" },
 
   { meta_data, class_ResultManager:meta_data(), "corresponds to the meta-data "
 	"to be added in probe-generated data files" } ] ).
@@ -484,22 +508,9 @@
 %
 % Construction parameters:
 %
-% - NameOptions is either:
-%
-%  - Name :: ustring(); i.e. directly the name of this probe (specified as a
-%  plain string), which will be used for the generated data and command files
-%
-%  - or {Name :: ustring(), ProbeOptions} where ProbeOptions is a list of
-%  pairs, in:
-%
-%   - {create_command_file_initially, boolean()}: if true, the gnuplot command
-%   file will be written at probe start-up, thus preventing the taking into
-%   account of any subsequent change in the rendering parameter (default: false)
-%
-%   - {deferred_data_writes, boolean()}: if true, received sample data will
-%   stored in memory instead of being directly written to disk (default: false,
-%   as the memory footprint might become significant) where Bool is true or
-%   false
+% - NameOptions is either NameInit or {NameInit, ProbeOptions}, where NameInit
+% :: probe_name_init() and ProbeOptions :: probe_options(), i.e. is a
+% probe_options record
 %
 % - CurveNames :: [ ustring() ] is an (ordered) list containing the names (as
 % plain strings) of each curve to be drawn (hence the probe will expect
@@ -542,22 +553,9 @@ construct( State, NameTerm, CurveNames, Zones, Title,
 % @doc Constructs a new (basic) probe, from following parameters: NameOptions,
 % CurveNames, Title, Zones, MaybeXLabel, YLabel, ExtraSettingsTable, where:
 %
-% - NameOptions is either:
-%
-%  - Name :: ustring(); i.e. directly the name of this probe (specified as a
-%  plain string), which will be used for the generated data and command files
-%
-%  - or {Name :: ustring(), ProbeOptions} where ProbeOptions is a list of
-%  pairs, in:
-%
-%   - {create_command_file_initially, boolean()}: if true, the gnuplot command
-%   file will be written at probe start-up, thus preventing the taking into
-%   account of any subsequent change in the rendering parameter (default: false)
-%
-%   - {deferred_data_writes, boolean()}: if true, received sample data will
-%   stored in memory instead of being directly written to disk (default: false,
-%   as the memory footprint might become significant) where Bool is true or
-%   false
+% - NameOptions is either NameInit or {NameInit, ProbeOptions}, where NameInit
+% :: probe_name_init() and ProbeOptions :: probe_options(), i.e. is a
+% probe_options record
 %
 % - CurveNames :: [ ustring() ] is an (ordered) list containing the names (as
 % plain strings) of each curve to be drawn (hence the probe will expect
@@ -619,15 +617,17 @@ construct( State, { NameInit, ProbeOptions }, CurveNames, Zones, Title,
 
 	%trace_utils:debug_fmt( "Initial curve entries: ~p.", [ CurveEntries ] ),
 
-	% Results in [ zone_definition() ]:
+	% Results in [zone_definition()]:
 	ZoneEntries = transform_declared_zones( Zones, CurveEntries ),
 
 	%trace_utils:debug_fmt( "Initial zone entries: ~p.", [ ZoneEntries ] ),
 
-	GnuplotVersion = executable_utils:get_current_gnuplot_version(),
+	{ CreateCommandFileInitially, DeferredDataWrites, IsTrackedProducer,
+	  ProbeDir, MaybeBinProbeDir, MaybeGnuplotPath, MaybeGnuplotVersion} =
+		interpret_options( ProbeOptions ),
 
 	ProbeBaseSettings =
-		get_probe_settings( Title, MaybeXLabel, YLabel, GnuplotVersion ),
+		get_probe_settings( Title, MaybeXLabel, YLabel, MaybeGnuplotVersion ),
 
 	{ ProbeSettings, ExtraCurveSettings } = apply_extra_settings(
 		MaybeExtraSettingsTable, ProbeBaseSettings, ProducerState ),
@@ -635,8 +635,6 @@ construct( State, { NameInit, ProbeOptions }, CurveNames, Zones, Title,
 	UpdatedCurveEntries =
 		update_curve_entries( CurveEntries, ExtraCurveSettings ),
 
-	{ CreateCommandFileInitially, DeferredDataWrites, IsTrackedProducer,
-	  ProbeDir, MaybeBinProbeDir } = interpret_options( ProbeOptions ),
 
 	% For an increased interleaving:
 	getAttribute( ProducerState, result_manager_pid ) ! { declareProbe,
@@ -664,7 +662,10 @@ construct( State, { NameInit, ProbeOptions }, CurveNames, Zones, Title,
 		{ data_filename, text_utils:string_to_binary( DataFilename ) },
 		{ data_file, undefined },
 		{ row_format_string, forge_format_string_for( CurveCount ) },
-		{ gnuplot_version, GnuplotVersion },
+
+		{ gnuplot_version, MaybeGnuplotVersion },
+		{ gnuplot_path, MaybeGnuplotPath },
+
 		{ meta_data, MetaData } ] ),
 
 	CommandState = case CreateCommandFileInitially of
@@ -725,11 +726,11 @@ construct( State, { NameInit, ProbeOptions }, CurveNames, Zones, Title,
 	wait_result_declaration_outcome( ProbeName, DeferredState );
 
 
-construct( State, Name, CurveNames, Zones, Title, MaybeXLabel, YLabel, MetaData,
-		   MaybeExtraSettingsTable, MaybeTickDuration ) ->
+construct( State, NameInit, CurveNames, Zones, Title, MaybeXLabel, YLabel,
+		   MetaData, MaybeExtraSettingsTable, MaybeTickDuration ) ->
 	% Will be using default settings here:
-	construct( State, { Name, _DefaultOptions=#probe_options{} }, CurveNames,
-			   Zones, Title, MaybeXLabel, YLabel, MetaData,
+	construct( State, { NameInit, _DefaultProbeOptions=#probe_options{} },
+			   CurveNames, Zones, Title, MaybeXLabel, YLabel, MetaData,
 			   MaybeExtraSettingsTable, MaybeTickDuration ).
 
 
@@ -1626,7 +1627,9 @@ setDirectory( State, NewProbeDirectory ) ->
 					request_return( class_ResultProducer:producer_result() ).
 sendResults( State, [ data_only ] ) ->
 
-	% Here we will send an archive term containing the data and command files:
+	% Here we will send an archive term containing the data and command files
+	% (might still be useful to the user afterwards):
+	%
 	CommandState = ensure_command_file_available( State ),
 	ensure_data_file_available( CommandState ),
 
@@ -1656,7 +1659,7 @@ sendResults( State, [ data_only ] ) ->
 	FileList = [ PathLessDataFilename, CommandFilename ],
 
 	?info_fmt( "Creating binary data-only archive term for ~p.",
-				[ FileList ] ),
+			   [ FileList ] ),
 
 	BinArchive = file_utils:files_to_zipped_term( FileList ),
 
@@ -1788,7 +1791,7 @@ sendResults( State, [ data_and_rendering ] ) ->
 	ProbeDir = ?getAttr(probe_dir),
 
 	?info_fmt( "Creating binary plot-and-data archive term for ~p, from '~ts'.",
-				[ FileList, ProbeDir ] ),
+			   [ FileList, ProbeDir ] ),
 
 	BinArchive = file_utils:files_to_zipped_term( FileList, ProbeDir ),
 
@@ -2532,14 +2535,14 @@ wait_result_declaration_outcome( ProbeName, State ) ->
 
 
 
-% @doc Returns a probe_settings record with specified informations (expressed as
+% @doc Returns a probe_settings record with specified information (expressed as
 % plain strings) and default values for the other fields.
 %
 -spec get_probe_settings( title(), label(), label(),
-						  basic_utils:two_digit_version() ) -> probe_settings().
-get_probe_settings( Title, MaybeXLabel, YLabel, GnuplotVersion ) ->
+		maybe( gnuplot_version() ) ) -> probe_settings().
+get_probe_settings( Title, MaybeXLabel, YLabel, MaybeGnuplotVersion ) ->
 
-	{ Xtick, KeyOption } = get_basic_options( GnuplotVersion ),
+	{ Xtick, KeyOption } = get_basic_options( MaybeGnuplotVersion ),
 
 	ActualXLabel = case MaybeXLabel of
 
@@ -2555,35 +2558,43 @@ get_probe_settings( Title, MaybeXLabel, YLabel, GnuplotVersion ) ->
 	   title=text_utils:string_to_binary( Title ),
 	   x_tick=Xtick,
 	   key_options=KeyOption,
-	   %image_format=text_utils:string_to_binary( "svg" );
-	   y_tick=text_utils:string_to_binary( "auto" ),
+	   %image_format = <<"svg">>,
+	   y_tick= <<"auto">>,
 	   x_label=text_utils:string_to_binary( ActualXLabel ),
 	   y_label=text_utils:string_to_binary( YLabel ),
 	   x_range=undefined,
 	   y_range=undefined,
-	   plot_style=text_utils:string_to_binary( "linespoints" ),
-	   fill_style=text_utils:string_to_binary( "empty" ) }.
+	   plot_style = <<"linespoints">>,
+	   fill_style = <<"empty">> }.
 
 
 
-% @doc Returns some basic options, depending on the current gnuplot version.
+% @doc Returns some basic rendering options, depending on the current gnuplot
+% version.
 %
 % (helper, for code sharing)
 %
--spec get_basic_options( basic_utils:two_digit_version() ) ->
-								{ binary(), binary() }.
+-spec get_basic_options( maybe( gnuplot_version() ) ) ->
+			{ bin_string(), bin_string() }.
+get_basic_options( _MaybeGnuplotVersion=undefined ) ->
+
+	% For an increased safety:
+	%trace_utils:warning( "Determining gnuplot options whereas its version "
+	%					 "is not known." ),
+
+	get_basic_options_for_older_gnuplot();
+
+
 get_basic_options( GnuplotVersion ) ->
 
-	% If using a very old version of gnuplot (ex: < 4.2), these key options
-	% use default values:
+	% If using a very old version of gnuplot (ex: prior to 4.2), these key
+	% options use default values:
 
 	case basic_utils:compare_versions( GnuplotVersion,
 									   get_gnuplot_reference_version() ) of
 
 		second_bigger ->
-			% Here we only have access to an older gnuplot:
-			{ _Xtick2 = text_utils:string_to_binary( "auto" ),
-			  _KeyOption2 = text_utils:string_to_binary( "" ) };
+			get_basic_options_for_older_gnuplot();
 
 		_ ->
 			% Here we have a recent enough gnuplot:
@@ -2591,26 +2602,31 @@ get_basic_options( GnuplotVersion ) ->
 
 			 % By default we prefer not having rotated ticks:
 
-			 %_Xtick1=text_utils:string_to_binary( "rotate by - 45 auto" ),
+			 %_Xtick = <<"rotate by - 45 auto">>,
 			 %
-			 % 'out' has been added to avoid that tick marks get hidden by any
-			 % filled area in the plot (ex: boxes).
-			 %
-			 % We used to specify also 'out', yet stopped as it was wreaking
-			 % havoc the layout and/or cropping done by gnuplot (leading to
+			 % 'out' had been added to avoid that tick marks get hidden by any
+			 % filled area in the plot (ex: boxes), yet it was wreaking havoc on
+			 % the layout and/or cropping done by gnuplot (leading to
 			 % overlapping legend and truncated timestamps).
 			 %
-			 _Xtick1 = text_utils:string_to_binary(
-						%"axis out mirror font \"sans,8\" auto" ),
-						 "out mirror font \"sans,8\" auto" ),
+			 %_Xtick = <<"axis out mirror font \"sans,8\" auto">>,
+			 _Xtick= <<"out mirror font \"sans,8\" auto">>,
 
 			 % Extra size for box, otherwise may collide with inner text:
-			 _KeyOption1 = text_utils:string_to_binary(
-				"bmargin center horizontal width 0.5 height 0.5" ) }
+			 _KeyOption=
+				<<"bmargin center horizontal width 0.5 height 0.5">> }
 
-			%image_format = text_utils:string_to_binary( "svg" );
+			%image_format = <<"svg">>;
 
 	end.
+
+
+
+% (helper)
+get_basic_options_for_older_gnuplot() ->
+	% As here we only have access to an older gnuplot:
+	{ _Xtick= <<"auto">>, _KeyOption= <<"">> }.
+
 
 
 
@@ -2658,12 +2674,14 @@ add_probe_index_back( [ Name | T ], CurveEntries, Acc ) ->
 
 % @doc Interprets the creation-time probe options:
 -spec interpret_options( probe_options() ) ->
-			{ boolean(), boolean(), boolean(), maybe( directory_path() ) }.
+			{ boolean(), boolean(), boolean(), maybe( directory_path() ),
+			  maybe( executable_path() ), maybe( probe_options() ) }.
 interpret_options( _ProbeOptions=#probe_options{
 			create_command_file_initially=CreateCommandFileInitially,
 			deferred_data_writes=DeferredDataWrites,
 			register_as_tracked_producer=IsTrackedProducer,
-			probe_directory=ProbeDirectory } ) ->
+			probe_directory=ProbeDirectory,
+			rendering_enabled=RenderingEnabled } ) ->
 
 	check_is_boolean( CreateCommandFileInitially,
 					  create_command_file_initially ),
@@ -2687,8 +2705,24 @@ interpret_options( _ProbeOptions=#probe_options{
 
 	end,
 
+	{ MaybeGnuplotPath, MaybeGnuplotVersion } = case RenderingEnabled of
+
+		true ->
+			GnuplotPath = executable_utils:get_gnuplot_path(),
+
+			GnuplotVersion =
+				executable_utils:get_current_gnuplot_version( GnuplotPath ),
+
+			{ GnuplotPath, GnuplotVersion };
+
+		false ->
+			{ undefined, undefined }
+
+	end,
+
+
 	{ CreateCommandFileInitially, DeferredDataWrites, IsTrackedProducer,
-	  ProbeDir, MaybeBinProbeDir }.
+	  ProbeDir, MaybeBinProbeDir, MaybeGnuplotPath, MaybeGnuplotVersion }.
 
 
 
@@ -3799,7 +3833,7 @@ get_formatted_orientation( Angle ) when is_number( Angle ) ->
 
 
 
-% @doc Actual (synchronous) generation of the report.
+% @doc Actual (synchronous) generation of the probe report.
 %
 % Returns an updated state.
 %
@@ -3821,7 +3855,19 @@ generate_report( Name, State ) ->
 
 	end,
 
-	SetState = setAttribute( State, result_produced, true ),
+	% Searched up to once then:
+	GnuplotPath = case ?getAttr(gnuplot_path) of
+
+		undefined ->
+			executable_utils:get_gnuplot_path();
+
+		GpPath ->
+			GpPath
+
+	end,
+
+	SetState = setAttributes( State, [ { result_produced, true },
+									   { gnuplot_path, GnuplotPath } ] ),
 
 	TargetFilename = get_report_filename( Name ),
 
@@ -3857,13 +3903,15 @@ generate_report( Name, State ) ->
 	%trace_utils:debug_fmt( "Generating plot based on ~ts.",
 	%                       [ GeneratingFile ] ),
 
+
+
 	% We must change the current directory (in the command, as we do not want to
 	% interfere at the level of the whole VM) otherwise the PNG will be created
 	% in the directory of the simulation case; specifying in the command file an
 	% absolute path for the PNG is not an option either, as we are to move the
 	% files to the result directory afterwards.
 	%
-	Command = executable_utils:get_gnuplot_path() ++ " '" ++ CommandFilename
+	Command = GnuplotPath ++ " '" ++ CommandFilename
 		++ "'",
 
 	OutputMessage = case system_utils:run_command( Command,
@@ -3976,7 +4024,7 @@ ensure_data_file_available( State ) ->
 
 % @doc Returns the Gnuplot reference version for us.
 -spec get_gnuplot_reference_version() ->
-					static_return( basic_utils:two_digit_version() ).
+					static_return( gnuplot_version() ).
 get_gnuplot_reference_version() ->
 	wooper:return_static( ?gnuplot_reference_version ).
 

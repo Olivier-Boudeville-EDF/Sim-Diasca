@@ -187,33 +187,40 @@
 -record( probe_options, {
 
 
-		   % If true, the gnuplot command file will be written at probe
-		   % start-up, thus preventing the taking into account of any subsequent
-		   % change in the rendering parameters, but remaining available even if
-		   % the simulation was to be interrupted.
-		   %
-		   create_command_file_initially = false :: boolean(),
+		% If true, the gnuplot command file will be written at probe start-up,
+		% thus preventing the taking into account of any subsequent change in
+		% the rendering parameters, but remaining available even if the
+		% simulation was to be interrupted.
+		%
+		create_command_file_initially = false :: boolean(),
 
 
-		   % If true, received sample data will be stored in memory instead of
-		   % being directly written to disk (default: false, as the memory
-		   % footprint might become then very significant).
-		   %
-		   deferred_data_writes = false :: boolean(),
+		% If true, received sample data will be stored in memory instead of
+		% being directly written to disk (default: false, as the memory
+		% footprint might become then very significant).
+		%
+		deferred_data_writes = false :: boolean(),
 
 
-		   % If true, this probe will register itself to the result manager, and
-		   % be driven by it.
-		   %
-		   register_as_tracked_producer = true :: boolean(),
+		% If true, this probe will register itself to the result manager, and be
+		% driven by it.
+		%
+		register_as_tracked_producer = true :: boolean(),
 
 
-		   % Specifies the directory in which the files related to this probe
-		   % (ex: *.p, *.data, *.png) should be written.
-		   %
-		   probe_directory = undefined :: maybe( file_utils:directory_name() )
+		% Specifies the directory in which the files related to this probe
+		% (ex: *.p, *.data, *.png) should be written.
+		%
+		probe_directory = undefined :: maybe( file_utils:directory_name() ),
 
-}).
+
+		% Allows to disable from the very start, at construction-time, the
+		% support for probe rendering, typically to bypass the lookup and
+		% version check of gnuplot (which may exhaust the number of opened file
+		% descriptors, should many probes be created)
+		%
+		rendering_enabled = true :: boolean() }).
+
 
 -type probe_options() :: #probe_options{}.
 % Describes management (not rendering) options that apply to (basic) probes.

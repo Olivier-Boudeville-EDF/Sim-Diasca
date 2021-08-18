@@ -13,9 +13,9 @@ A simulation is defined primarily by its simulation case, which shall specify th
 
 These inputs are mostly:
 
- - the **technical settings**, like the various simulation, deployment and load balancing settings (see the corresponding records to properly specify these inputs)
+- the **technical settings**, like the various simulation, deployment and load balancing settings (see the corresponding records to properly specify these inputs)
 
- - the **initial state** of the simulation, i.e. what are the initial actors and scenarios, and in which state they shall be when the simulation begins
+- the **initial state** of the simulation, i.e. what are the initial actors and scenarios, and in which state they shall be when the simulation begins
 
 
 
@@ -24,8 +24,8 @@ Requirements
 
 The initial state of the simulation is by far the most challenging input to manage. In simple cases, it can be seen as a series of (synchronous) creations of initial instances (actors or scenarios, no difference from the engine's point of view), which can be done:
 
- - either *programmatically* - directly from the simulation case or from a scenario (in both cases typically thanks to a series of ``class_Actor:create_initial_actor/{2,3}`` calls, with the relevant parameters in terms of model construction)
- - or based on *initialisation data*, read from any kind of information stream (typically user-specified initialisation files)
+- either *programmatically* - directly from the simulation case or from a scenario (in both cases typically thanks to a series of ``class_Actor:create_initial_actor/{2,3}`` calls, with the relevant parameters in terms of model construction)
+- or based on *initialisation data*, read from any kind of information stream (typically user-specified initialisation files)
 
 
 Initialisation may not be straightforward, notably because actors may have to know others, forming a directed graph that may comprise cycles.
@@ -40,12 +40,12 @@ For example some projects will rely on numerical instance identifiers (ex: ``127
 
 Qualities of an input management system include:
 
- - allowing most kinds of user-specific instance identifiers
- - managing its own, private identifiers transparently for the user
- - being able to sort out all cyclic dependencies
- - not preventing at least some sort of efficient distributed mode of operation afterwards, notably with regard to smart placement and load-balancing
- - relying on an expressive, yet compact and human-readable, form to specify the initial instances
- - managing this initialisation data as much as possible in parallel
+- allowing most kinds of user-specific instance identifiers
+- managing its own, private identifiers transparently for the user
+- being able to sort out all cyclic dependencies
+- not preventing at least some sort of efficient distributed mode of operation afterwards, notably with regard to smart placement and load-balancing
+- relying on an expressive, yet compact and human-readable, form to specify the initial instances
+- managing this initialisation data as much as possible in parallel
 
 
 
@@ -77,10 +77,10 @@ If wanting to create two instances that have to know each other, one may use, po
 
 A few remarks here:
 
- - ``A`` and ``B`` are PIDs
- - this mutual recognition requires a specific method to be added in both classes (namely ``declare{Foo,Bar}/2``)
- - one can guess that the ``declare{Foo,Bar}/2`` methods exposed here are requests (even if no particular result had to be returned), for synchronicity reasons (otherwise there could be a race condition between these messages and the ones related to the start of the simulation); this is why we have to receive the ``*_declared`` messages from the simulation case
- - we can see that here A will be created using default placement policy, when B will be created by the load balancer according to the specified hint: when created programmatically, all instances specifying the same placement hint will be created on the same computing node (as chosen by the load balancer)
+- ``A`` and ``B`` are PIDs
+- this mutual recognition requires a specific method to be added in both classes (namely ``declare{Foo,Bar}/2``)
+- one can guess that the ``declare{Foo,Bar}/2`` methods exposed here are requests (even if no particular result had to be returned), for synchronicity reasons (otherwise there could be a race condition between these messages and the ones related to the start of the simulation); this is why we have to receive the ``*_declared`` messages from the simulation case
+- we can see that here A will be created using default placement policy, when B will be created by the load balancer according to the specified hint: when created programmatically, all instances specifying the same placement hint will be created on the same computing node (as chosen by the load balancer)
 
 
 
@@ -107,9 +107,9 @@ In both cases we expect a list of filenames to be specified, each being a path (
 
 Each of them should be a text file (whose name is arbitrary, but we recommend using the ``.init`` file extension; for example: ``my-case-instances.init``), containing a series of lines, either:
 
- - blank
- - or containing a comment
- - or containing a creation specification, ending with a dot
+- blank
+- or containing a comment
+- or containing a creation specification, ending with a dot
 
 Any line may have any number of leading and/or trailing whitespaces.
 
@@ -126,8 +126,8 @@ Regarding Actor Identifiers
 
 To better integrate into most architectures, Sim-Diasca manages two kinds of identifiers for actor instances created from data:
 
- - **external** ones, i.e. the arbitrary identifiers that are provided by the user, which are often simulation-specific
- - **internal** ones, i.e. identifiers that are managed internally by the engine, and which are mostly transparent for the user
+- **external** ones, i.e. the arbitrary identifiers that are provided by the user, which are often simulation-specific
+- **internal** ones, i.e. identifiers that are managed internally by the engine, and which are mostly transparent for the user
 
 
 External identifiers can be arbitrary strings, which are processed as are (no attempt of checking, parsing or enforcing any convention on their content is made there) [#]_.
@@ -279,8 +279,8 @@ In the meantime the read initialisation terms are transformed, replacing each ``
 
 Each user identifier must be defined exactly once; any user identifier:
 
- - referenced to, but never defined, results in an error
- - defined more than once results in an error
+- referenced to, but never defined, results in an error
+- defined more than once results in an error
 
 A user identifier that is defined but never referenced is not considered as an error.
 

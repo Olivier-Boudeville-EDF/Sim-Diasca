@@ -44,5 +44,5 @@ An instance can indeed call the actor oneway defined, here in ``class_TwoDimensi
 
 This center of perception must be by convention the current location of the perceiving instance, as:
 
- - a given instance should only perceive its own neighborhood
- - the environment will take advantage of this call to update its knowledge of the location of the perceiver
+- a given instance should only perceive its own neighborhood
+- the environment will take advantage of this call to update its knowledge of the location of the perceiver

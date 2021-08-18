@@ -19,6 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Base class for all <b>result producers</b>.
 -module(class_ResultProducer).
 
 
@@ -57,43 +58,44 @@
 
 % Type section.
 
--type producer_name() :: string().
--type bin_producer_name() :: text_utils:ustring().
+-type producer_name() :: ustring().
+-type bin_producer_name() :: ustring().
 
 -type producer_pid() :: sim_diasca:agent_pid().
 
-% Describes the types of output expected from a producer:
+
 -type producer_option() :: 'data_only'
 						 | 'rendering_only'
 						 | 'data_and_rendering'.
+% Describes the types of output expected from a result producer.
+
 
 -type producer_options() :: producer_option() | [ producer_option() ].
 
 
-
-% Describes the precise nature of a result producer:
 -type producer_nature() ::
 		maybe( 'basic_probe' | 'virtual_probe' | 'web_probe' ).
+% Describes the precise nature of a result producer.
 
 
-% Possible terms returned by a producer after results have been sent to it.
-%
-% It is:
-%
-% - {self(), archive, BinArchive} where BinArchive is a binary corresponding to
-% a ZIP archive of a set of files (ex: data and command file)
-%
-% - or {self(), raw, {BinFilename, BinContent}} where BinFilename is the
-% filename (as a binary) of the transferred file, and BinContent is a binary of
-% its content (ex: a PNG file, which should better not be transferred as an
-% one-file archive)
-%
-% - or {self(), no_result} should no result be to return
-%
+
 -type producer_result() ::
 		{ producer_pid(), 'archive', binary() }
 	  | { producer_pid(), 'raw', { file_utils:bin_file_name(), binary() } }
 	  | { producer_pid(), 'no_result' }.
+% Possible terms returned by a producer in terms of results.
+%
+% It is:
+%
+% - {self(), archive, BinArchive} where BinArchive is a binary corresponding to
+% a ZIP archive of a set of files (ex: data and command files)
+%
+% - or {self(), raw, {BinFilename, BinContent}} where BinFilename is the
+% filename (as a binary) of the transferred file, and BinContent is a binary of
+% its content (ex: a PNG file - which should better not be transferred as an
+% one-file archive)
+%
+% - or {self(), no_result} should no result be to return
 
 
 -export_type([ producer_name/0, bin_producer_name/0, producer_pid/0,
@@ -117,12 +119,14 @@
 -include("class_ResultManager.hrl").
 
 
-% Shorthand:
+% Shorthands:
+-type ustring() :: text_utils:ustring().
+
 %-type result_manager_pid() :: class_ResultManager:manager_pid().
 
 
 
-% Constructs a new result producer.
+% @doc Constructs a new result producer.
 %
 % ProducerName is the name of this producer, specified as a plain string.
 %
@@ -156,9 +160,18 @@ construct( State, ProducerName ) ->
 	erlang:link( ResultManagerPid ),
 
 	%?send_debug_fmt( TraceState, "Creating result producer '~ts'.",
-	%				[ ProducerName ] ),
+	%                 [ ProducerName ] ),
 
-	% Deferred reception for registerResultProducer:
+	ConstructState = setAttributes( TraceState, [
+		{ result_manager_pid, ResultManagerPid },
+
+		% By default:
+		{ enabled_producer, true },
+
+		{ result_produced, false },
+		{ result_collected, false } ] ),
+
+	% Deferred reception for registerResultProducer/3:
 	receive
 
 		{ wooper_result, result_producer_registered } ->
@@ -166,19 +179,11 @@ construct( State, ProducerName ) ->
 
 	end,
 
-	setAttributes( TraceState, [
-		{ result_manager_pid, ResultManagerPid },
-
-		% By default:
-		{ enabled_producer, true },
-
-		{ result_produced, false },
-		{ result_collected, false } ] ).
+	ConstructState.
 
 
 
-
-% Overridden destructor.
+% @doc Overridden destructor.
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -219,22 +224,22 @@ destruct( State ) ->
 % Methods section.
 
 
-% Sets the enable status for this producer.
+% @doc Sets the enable status for this producer.
 -spec setEnableStatus( wooper:state(), boolean() ) -> oneway_return().
 setEnableStatus( State, NewStatus ) ->
 	wooper:return_state(
-				 setAttribute( State, enabled_producer, NewStatus ) ).
+				setAttribute( State, enabled_producer, NewStatus ) ).
 
 
 
-% Returns true iff the outputs of that producer are enabled.
+% @doc Returns whether the outputs of that producer are enabled.
 -spec getEnableStatus( wooper:state() ) -> const_request_return( boolean() ).
 getEnableStatus( State ) ->
 	wooper:const_return_result( ?getAttr(enabled_producer) ).
 
 
 
-% Sends the specified results to the caller (generally the result manager).
+% @doc Sends the specified results to the caller (generally the result manager).
 %
 % Note: must be overridden by the actual result producer.
 %
@@ -262,8 +267,8 @@ sendResults( _State, _Options ) ->
 
 
 
-% Forces the status of this producer regarding its results being produced or
-% not.
+% @doc Forces the status of this producer, regarding its results being produced
+% or not.
 %
 -spec setResultProducedStatus( wooper:state(), boolean() ) ->
 									oneway_return().
@@ -272,21 +277,23 @@ setResultProducedStatus( State, AreProduced ) ->
 
 
 
-% Forces the status of this producer regarding its results being collected or
-% not.
+% @doc Forces the status of this producer regarding its results being collected
+% or not.
 %
 -spec setResultCollectedStatus( wooper:state(), boolean() ) ->
 									oneway_return().
 setResultCollectedStatus( State, AreCollected ) ->
 	wooper:return_state(
-	  setAttribute( State, result_collected, AreCollected ) ).
+		setAttribute( State, result_collected, AreCollected ) ).
 
 
 
 % Static section.
 
 
-% Returns a list of all possible generation-time options for result producers.
+% @doc Returns a list of all possible generation-time options for result
+% producers.
+%
 -spec get_producer_options() -> static_return( [ producer_option() ] ).
 get_producer_options() ->
 	wooper:return_static( [ data_only, rendering_only, data_and_rendering ] ).

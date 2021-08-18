@@ -19,9 +19,9 @@ Principles
 
 Traces (a.k.a. simulation logs) are a way of recording for later use any event of interest, of any sort (technical or domain-specific), happening during a simulation. Traces allow to monitor selectively an execution, without recording each and every event that occurred.
 
-Traces are not simulation results per se, their purpose is to make the technical troubleshooting easier, notably to help developing and debugging models.
+Traces are not simulation results per se, their purpose is to make the technical troubleshooting easier, notably in order to help developing and debugging models.
 
-Trace facilities are gathered in a separate layer, the ``Traces`` one (in the ``traces`` directory), which is used notably by Sim-Diasca. The ``Traces`` service depends only on ``WOOPER`` and on ``Myriad``.
+Trace facilities are gathered in a separate layer, the ``Traces`` one (in the ``traces`` directory), which is used, among others, by Sim-Diasca. The ``Traces`` service depends only on ``WOOPER`` and on ``Myriad``. Refer to the `Ceylan-Traces <https://olivier-boudeville.github.io/Ceylan-Traces/>`_ official website for most information.
 
 Please refer to the *Sim-Diasca Developer Guide* for information about the actual (practical) use of traces.
 
@@ -29,8 +29,7 @@ Defining a trace format allows to uncouple the execution of a simulation from th
 
 If moreover the format is designed to be "universal" (in the context of discrete-time simulations), in order to be independent from a particular domain and from any trace generator or supervisor, then the post-processing toolchain of traces might be shared between several simulators.
 
-
-See also: the documentation of the ``Traces`` layer, in ``Ceylan-Traces-Layer-technical-manual-english.pdf``.
+.. See also: the documentation of the ``Traces`` layer, in ``Ceylan-Traces-Layer-technical-manual-english.pdf``.
 
 
 
@@ -72,18 +71,21 @@ Finally, one should know that, if going for higher simulation scales, traces sha
 Trace Channels
 --------------
 
-There are six built-in trace channels, of increasing importance:
+There are eight built-in trace channels, of increasing severity:
 
 - ``debug``
-- ``trace``
 - ``info``
+- ``notice``
 - ``warning``
 - ``error``
-- ``fatal``
+- ``critical``
+- ``alert``
+- ``emergency``
+
 
 Depending on the nature of its message, a trace emitter can select in which channel its current trace should be output.
 
-The three most critical trace channels (``warning``, ``error`` and ``fatal``) will always echo their messages on the console as well (to ensure none can remain unnoticed), and will not be disabled even if the trace system is deactivated (i.e. regardless of the ``ENABLE_TRACES`` settings).
+The five most critical - yet least used - trace channels (``warning``, ``error``, ``critical``, ``alert`` and ``emergency``) will always echo their messages on the console as well (to ensure none can remain unnoticed), and will not be disabled even if the trace system is deactivated (i.e. regardless of the ``ENABLE_TRACES`` settings).
 
 
 Depending on the needs of the simulation user, various types of trace outputs can be selected:
@@ -111,7 +113,7 @@ Traces For LogMX
 
 The resulting interface when browsing the traces (written in a ``*.traces`` file) with default aggregator output corresponds to:
 
-:raw-html:`<center><img src="logmx-interface.png"></img></center>`
+:raw-html:`<center><img src="logmx-interface.png" id="responsive-image-large"></img></center>`
 :raw-latex:`\includegraphics[scale=0.5]{logmx-interface.png}`
 
 
@@ -119,16 +121,16 @@ Using the LogMX trace supervisor is surely the most useful way of monitoring the
 
 `LogMX <http://www.logmx.com/>`_ offers rich features that allow to:
 
- - browse conveniently even large sets of traces
- - select the minimum level of detail for the traces to be displayed
- - search traces for specific patterns, or by emitter, date, location, etc.
+- browse conveniently even large sets of traces
+- select the minimum level of detail for the traces to be displayed
+- search traces for specific patterns, or by emitter, date, location, etc.
 
 
 The only drawbacks of this trace mode are that:
 
- - it requires a specific (commercial) tool (LogMX), properly obtained, installed and configured with the Sim-Diasca parser
+- it requires a specific (commercial) tool (LogMX), properly obtained, installed and configured with the Sim-Diasca parser
 
- - the results cannot be directly integrated into a report
+- the results cannot be directly integrated into a report
 
 
 LogMX-based traces are the default output type. Should the trace output type have been changed, it can be restored by setting ``TraceType`` to ``log_mx_traces``, in ``traces/src/traces.hrl``.
@@ -192,14 +194,14 @@ Then recompiling this module should be enough.
 Probes
 ======
 
-They can collect all kinds of numerical data produced during simulation, and generate a graphical view of them.
+The Sim-Diasca **probes** can collect all kinds of numerical data produced during simulation, and generate a graphical view of them.
 
 Probes are *result producers*, and as such are dealt with by the *result manager*.
 
-There are two main kinds of probes:
+There are two main kinds of built-in probes:
 
- - *basic probes*, the most resource-efficient, scalable ones
- - *virtual probes*, based on the data-logger, the most flexible and powerful ones
+- *basic probes*, the most resource-efficient, scalable ones
+- *virtual probes*, based on the data-logger, the most flexible and powerful ones
 
 
 They are based on similar interfaces and share most features, including the management of their rendering.
@@ -207,9 +209,14 @@ They are based on similar interfaces and share most features, including the mana
 
 Among the common features:
 
- - a probe will be created if and only if it is to produce a result of interest for the simulation, i.e. iff it matches the result specification chosen by the user (in the simulation settings); otherwise this probe will be not created at all, sparing 100% of the resources it would require
+- a probe will be created if and only if it is to produce a result of interest for the simulation, i.e. iff it matches the result specification chosen by the user (in the simulation settings); otherwise this probe will be not created at all, sparing 100% of the resources it would require
 
- - their data files for time series all start with an header which lists meta-data like generation date and time, probe name, title, and the description of the curves involved
+- their data files for time series all start with an header that lists meta-data like generation date and time, probe name, title, and the description of the curves involved
+
+
+As subclassing the basic probe or devising new ones (ex: web-based ones) is relatively straightforward, projects may start with built-in probes and define in their course specialised ones.
+
+Another popular option is to switch to dedicated plotting/rendering libraries when post-processing the data resulting from the simulation. Then, in the simulation case of interest, the ``data_only`` producer option might be specified in the patterns listed in the ``result_specification`` field of the ``simulation_settings`` record , in which case only the corresponding data files (``*.dat`` files) will be produced (no ``*.png`` plot files).
 
 
 
@@ -218,15 +225,15 @@ Generic Probe
 
 A generic probe can be dynamically configured to gather any number of time series, and represent them with as many curves whose abscissa axis corresponds to the simulation time, like in:
 
-:raw-html:`<center><img src="xkcd-stove_ownership.png"></img></center>`
+:raw-html:`<center><img src="xkcd-stove_ownership.png" id="responsive-image-reduced"></img></center>`
 :raw-latex:`\includegraphics[scale=0.7]{xkcd-stove_ownership.png}`
 
 
-Samples *must* be sent to the probe in chronological order (indeed, depending on their settings, they may write directly their data to disk).
+Samples may or may not be sent to their probe in chronological order (indeed, depending on their settings, probes may write directly their data to disk, yet timestamping them allows their renderer to reorder them if needed).
 
 An example of the output rendering is:
 
-:raw-html:`<center><img src="Generic_probe_example.png"></img></center>`
+:raw-html:`<center><img src="Generic_probe_example.png" id="responsive-image-intermediate"></img></center>`
 :raw-latex:`\includegraphics[scale=0.6]{Generic_probe_example.png}`
 
 The generic probe is defined in ``class_Probe.erl``, and tested in ``probe_rendering_test.erl`` (unit rendering test) and ``class_Probe_test.erl`` (integration test).
@@ -234,26 +241,26 @@ The generic probe is defined in ``class_Probe.erl``, and tested in ``probe_rende
 
 By default:
 
- - a probe will create a command file only when requested to generate a report (i.e. not when itself being created, in order to be able to take into account any later change in the curve declarations and rendering options before rendering is requested)
+- a probe will create a command file only when requested to generate a report (i.e. not when itself being created, in order to be able to take into account any later change in the curve declarations and rendering options before rendering is requested)
 
- - the sample data it will receive will be written to disk on-the-fly (i.e. will *not* be cached in memory, to minimize the memory footprint of the probe)
+- the sample data that it will receive will be written to disk on-the-fly (i.e. it will *not* be cached in memory, in order to minimise the memory footprint of the probes)
 
 
 Both behaviours can be changed, thanks to construction-time options (see, respectively, the ``create_command_file_initially`` and ``deferred_data_writes`` options).
 
 As shown in the probe test, new curves can be dynamically declared, so that samples of increasing sizes can be sent over time (in the example, the fourth curve, the purple one, is dynamically added). The corresponding curves will be appropriately rendered the next time a report generation is requested. Existing curves can be renamed as well on-the-fly.
 
-Full time-steps can be skipped, i.e. a new sample might be associated to a tick more than one tick after the previous one, and curve rendering will respect that time lapse (in the example, no sample at all was sent for ticks #8 and #9).
+Full time-steps can be skipped, i.e. a new sample might be associated to a tick more than one tick after the previous one, and curve rendering will respect that time lapse (in the example, no sample at all was sent for ticks #4 and #9).
 
 Partial samples can be sent as well, when no data is available for a given curve at a given tick (in the example, the second curve, the green one, had no relevant data for tick #3).
 
 
-Finally, probes used to support the generation of histograms like this one:
+Finally, probes can also support the generation of histograms like this one:
 
-:raw-html:`<center><img src="xkcd-11th_grade.png"></img></center>`
+:raw-html:`<center><img src="xkcd-11th_grade.png" id="responsive-image-reduced"></img></center>`
 :raw-latex:`\includegraphics[scale=0.6]{xkcd-11th_grade.png}`
 
-However this feature is currently deprecated, as synthetic indicators should preferably be generated in a later separated post-processing stage.
+.. However this feature is currently deprecated, as synthetic indicators should preferably be generated in a later separated post-processing stage.
 
 
 
@@ -269,7 +276,7 @@ Reliability Probes
 
 Once associated with an equipment, a reliability probe, still based on a time series, records at each simulation tick the status of this equipment (functional or in failure), and can generate the chronology of status changes as shown here:
 
-:raw-html:`<center><img src="Reliability_probe_example.png"></img></center>`
+:raw-html:`<center><img src="Reliability_probe_example.png" id="responsive-image-medium"></img></center>`
 :raw-latex:`\includegraphics[scale=0.5]{Reliability_probe_example.png}`
 
 The reliability probe is defined in ``class_ReliabilityProbe.hrl``, and tested in ``class_ReliabilityProbe.erl``.
@@ -284,15 +291,30 @@ Here are some general troubleshooting hints about probes, when they seem to fail
 
 First, no error nor warning should be output in the terminal or in the simulation traces; otherwise the user code must be fixed accordingly. It can happen for example when no data at all was sent to a probe, whereas it was requested to generate a report.
 
-For each probe which was created, fed with data *and* requested to output, a report (a graphical view of its data) should be made available to the user.
+For each probe that was created, fed with data *and* requested to be output, a report (a graphical view of its data) should be made available to the user.
 
-By default, a basic probe will perform immediate (non-deferred) writes: otherwise it would have to keep its sample in-memory, potentially exhausting the RAM if the simulation is long enough.
+By default, a basic probe will perform immediate (non-deferred) writes: otherwise it would have to keep its sample in-memory, potentially exhausting the RAM if the simulation was long enough.
 
-As a consequence in this case one open file descriptor is used per probe. This limits by default the maximum number of simultaneously existing basic probes per computing node to roughly one thousand.
+As a consequence, by default, each probe uses one opened file descriptor. This limits by default the maximum number of simultaneously existing basic probes per computing node to roughly one thousand on most systems; having too many of such probes created results in the ``emfile`` error being reported - possibly as soon as probe creation, when each of them is to check that its prerequisites are met (typically regarding the gnuplot version available locally).
 
-This limit can be overcome, for example ``ulimit -n 20000``) will raise the maximum number of open file descriptors from the usual default ``1024`` to ``20000``.
+As this limit is just a `shell setting <https://linuxcommand.org/lc3_man_pages/ulimith.html>`_, this can be overcome; for example ``ulimit -n 20000`` will raise the maximum number of open file descriptors from the usual default ``1024`` to ``20000``, which is likely to be sufficient for most simulations.
 
-This is not done automatically by Sim-Diasca as on most systems this requires root privileges.
+This is nevertheless a transient setting that will be reset at each new shell. This limit is not raised automatically by Sim-Diasca at start-up, as on most systems this would require root privileges - at least, in terms of file descriptor count, above some threshold. For example ``ulimit -n 2000`` may be accepted, whereas ``ulimit -n 20000`` may not, returning then::
+
+ ulimit: open files: cannot modify limit: Operation not permitted
+
+
+A more permanent solution (requiring root privileges) is to use ``nofile`` entries in ``/etc/security/limits.conf``. For example one may add following entries to the end of this file (or edit them if already existing)::
+
+  root soft  nofile 20000
+  root hard  nofile 40000
+
+
+As larger numbers of probes are unlikely to generate diagrams that will be actually viewed, just generating and storing the corresponding data samples (no image being then produced) might suffice, in which case the result specifications (as declared in the simulation case) may opt for the ``data_only`` producer option (rather than ``rendering_only`` or ``data_and_rendering``; refer to ``class_ResultProducer:producer_option/0``).
+
+
+An even safer option (scalability-wise) is, if relevant, to also tell directly to the probes themselves that no rendering is to be prepared (see the ``rendering_enabled`` field of the ``probe_options`` record for that).
+
 
 
 
@@ -305,8 +327,8 @@ If, when the generation takes place, a warning about ``bmargin`` is issued, then
 
 In this case you can either:
 
- - update your ``gnuplot`` version
- - in ``sim-diasca/src/core/src/probe/class_Probe.erl``, disable all key options: set the ``key_options`` attribute to an empty string
+- update your ``gnuplot`` version
+- in ``sim-diasca/src/core/src/probe/class_Probe.erl``, disable all key options: set the ``key_options`` attribute to an empty string
 
 
 More generally, if a problems occurs, you should check first that the probe report (ex: ``Test_probe.png``) was indeed generated.
@@ -360,15 +382,15 @@ The data-logger is defined in the ``sim-diasca/src/core/src/data-management/data
 
 When running for example the data-logger test (``datalogging_test.erl``, thanks to ``make datalogging_run``), one can see:
 
-:raw-html:`<center><img src="datalogger-example.png"></img></center>`
+:raw-html:`<center><img src="datalogger-example.png" id="responsive-image-large"></img></center>`
 :raw-latex:`\includegraphics[scale=0.5]{datalogger-example.png}`
 
 In the stacking of windows, from the upper one to the lower one we can see:
 
- - a rendering of a virtual probe
- - the list of all known virtual probes
- - the database table corresponding a virtual probe
- - a bit of the console tracking
+- a rendering of a virtual probe
+- the list of all known virtual probes
+- the database table corresponding a virtual probe
+- a bit of the console tracking
 
 
 
@@ -482,11 +504,11 @@ More precisely, the data-exchanger fulfills two technical purposes:
 
 Each data that is shared according to following conventions:
 
- - data is defined as key/value pairs, respectively an atom and any Erlang term
+- data is defined as key/value pairs, respectively an atom and any Erlang term
 
- - data can be *static*, i.e. be defined initially and thus be permanently available (ex: through the built-in support for reading from configuration files) and/or be introduced in the course of the simulation, i.e. be *dynamic*
+- data can be *static*, i.e. be defined initially and thus be permanently available (ex: through the built-in support for reading from configuration files) and/or be introduced in the course of the simulation, i.e. be *dynamic*
 
- - can be modified over time once defined (non-const, to be defined with the ``mutable`` qualifier) or not (immutable, to be defined with the ``const`` qualifier)
+- can be modified over time once defined (non-const, to be defined with the ``mutable`` qualifier) or not (immutable, to be defined with the ``const`` qualifier)
 
 Note that static/dynamic and mutable/const are orthogonal properties, all combinations of which making sense.
 
@@ -505,7 +527,7 @@ Sharing Constant Data
 One of the notable use cases of the data exchange service is the sharing of simulation-specific configuration settings: then all actors can have access to the same static (``const``) data sets, which will be available from the start, before the simulation is started, even before the first initial actor is created. It is then functionally equivalent to having each actor read these information from a common configuration file, except that the reading is done once for all actors on each node, instead of once per actor, avoiding the massive reading and parsing, etc. that would be incurred otherwise.
 
 
-:raw-html:`<center><img src="xkcd-x11.png"></img></center>`
+:raw-html:`<center><img src="xkcd-x11.png" id="responsive-image-small"></img></center>`
 :raw-latex:`\includegraphics[scale=0.8]{xkcd-x11.png}`
 
 
@@ -555,15 +577,15 @@ Note also that setting a data involves either defining a new key or modifying a 
 
 More precisely, data **modification**, during the simulation, is to be done from actors, and is either:
 
- - defining new data, with ``class_Actor:define_data/{2,3,4}``
- - or modifying pre-existing data, with ``class_Actor:modify_data/{2,3,4}``
+- defining new data, with ``class_Actor:define_data/{2,3,4}``
+- or modifying pre-existing data, with ``class_Actor:modify_data/{2,3,4}``
 
 
 The point is that, once the simulation is started:
 
- - a modification done at tick T will be visible (thanks to read operations) only at the next scheduled tick (ex: T+1)
+- a modification done at tick T will be visible (thanks to read operations) only at the next scheduled tick (ex: T+1)
 
- - a given data (i.e. a value associated to a key), provided it was declared as ``mutable``, can be modified during the simulation up to once per tick, otherwise the data exchanger will detect the mismatch (commit inconsistency, up to one writer per key and per tick) and crash on purpose the simulation with a relevant exception
+- a given data (i.e. a value associated to a key), provided it was declared as ``mutable``, can be modified during the simulation up to once per tick, otherwise the data exchanger will detect the mismatch (commit inconsistency, up to one writer per key and per tick) and crash on purpose the simulation with a relevant exception
 
 
 So if the data exchanger holds at tick T a ``{my_data,AnyTerm}`` mutable entry, and if during this tick an actor commits a ``{my_data,AnotherTerm}`` entry, then during T all read requests of ``my_data`` will return ``AnyTerm``, and during T+1 they will all return ``AnotherTerm``. If more than one actor attempts to commit at T a change to ``my_data``, then the simulation will fail. Even if they try to commit the exactly the same value.
@@ -583,9 +605,9 @@ When a data is to be read, only its key is to be specified.
 
 When a data entry (key and at least value) is specified either for definition or for modification, if no qualifier is specified, then the default one (``const``) will be implied. This means that requesting a modification with a data entry ``{my_data,AnyTerm``}`` implies notably that:
 
- - ``my_data`` has already been defined
- - its previous qualifier was ``mutable`` (thus was explicitly set as such), otherwise the modification would be bound to fail
- - its new qualifier will be ``const`` (none was specified in the modification request), thus no further modification will be done on that data
+- ``my_data`` has already been defined
+- its previous qualifier was ``mutable`` (thus was explicitly set as such), otherwise the modification would be bound to fail
+- its new qualifier will be ``const`` (none was specified in the modification request), thus no further modification will be done on that data
 
 These data operations can be made either from the simulation case (thus, before the simulation is started) and/or from actors (before or during the simulation).
 
