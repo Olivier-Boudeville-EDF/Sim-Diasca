@@ -96,10 +96,19 @@ run() ->
 
 	test_facilities:display( "Naming mode for this node: ~w.", [ NamingMode ] ),
 
-	test_facilities:display( "Naming-compliant hostname for '~ts' is '~ts'.",
-		[ Localhost,
-		  net_utils:get_naming_compliant_hostname( Localhost, NamingMode ) ] ),
+	% As may be forcibly disabled, for example for continuous integration:
+	case NamingMode of
 
+		undefined ->
+			ok;
+
+		_ ->
+			test_facilities:display( "Naming-compliant hostname for '~ts' "
+				"is '~ts'.", [ Localhost,
+					net_utils:get_naming_compliant_hostname( Localhost,
+															 NamingMode ) ] )
+
+	end,
 
 	TestName = "I have \"<spaces>\" / \ & ~ # @ { } [ ] | $ * ? ! + , . ; :"
 		"(and also 'I have quotes')",
