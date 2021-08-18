@@ -45,13 +45,8 @@ jobs:
         make info-context
     - name: Run tests
       run: |
-        # Node distribution disabled by default (thanks to the NODE_NAMING
-        # variable) as Github nodes do not allow long_names (our default through
-        # the Ceylan software stack); Sim-Diasca activates distribution by
-        # itself anyway, in order to secure the uniqueness of its node names.
-        #
         echo "Building and testing all first in the 'development' execution target:"
-        make test NODE_NAMING="--nn"
+        make test NODE_NAMING="--sn"
         echo
         echo "Then building and testing all in the 'production' execution target:"
-        make test-production NODE_NAMING="--nn"
+        make test-production NODE_NAMING="--sn"
