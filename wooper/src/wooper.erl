@@ -1909,7 +1909,7 @@ trigger_error( ExceptionClass, ExceptionTerm, Classname, ConstructionParameters,
 	log_error( "WOOPER error for PID ~w, "
 		"constructor (~ts:construct/~B) failed (exception class: ~p):~n~n"
 		" - with error term:~n  ~p~n~n"
-		" - stack trace was (latest calls first):~n~ts~n"
+		" - stack trace was (latest calls first): ~ts~n"
 		" - for construction parameters:~n  ~p~n",
 		[ self(), Classname, Arity, ExceptionClass, ExceptionTerm,
 		  code_utils:interpret_stacktrace( Stacktrace, ExceptionTerm ),
@@ -2349,7 +2349,7 @@ on_failed_request( RequestName, ArgumentList, CallerPid, ExceptionClass,
 
 	log_error( "request ~ts~ts/~B failed (exception class: ~ts):~n~n"
 		" - with error term:~n  ~p~n~n"
-		" - stack trace was (latest calls first):~n~ts~n"
+		" - stack trace was (latest calls first): ~ts~n"
 		" - caller being process ~w~n~n"
 		" - for request parameters:~n  ~p~n",
 		[ ModulePrefix, RequestName, Arity, ExceptionClass, ExceptionTerm,
@@ -2421,7 +2421,7 @@ on_failed_oneway( OnewayName, ArgumentList, ExceptionClass, ExceptionTerm,
 	% PID managed by log_error:
 	log_error( "oneway ~ts~ts/~B failed (exception class: ~ts):~n~n"
 		" - with error term:~n  ~p~n~n"
-		" - stack trace was (latest calls first):~n~ts~n"
+		" - stack trace was (latest calls first): ~ts~n"
 		" - for oneway parameters:~n  ~p~n",
 		[ ModulePrefix, OnewayName, Arity, ExceptionClass, ExceptionTerm,
 		  code_utils:interpret_stacktrace( Stacktrace, ExceptionTerm ),

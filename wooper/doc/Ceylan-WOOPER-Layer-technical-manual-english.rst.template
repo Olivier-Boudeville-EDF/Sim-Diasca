@@ -2769,18 +2769,83 @@ For examples of re-use of WOOPER by upper layers, one may refer to `Ceylan-Trace
 OTP Guidelines
 ..............
 
-For server-like activities, it may be useful to have an instance of a WOOPER class (ex: ``class_Foobar``) behave like an OTP worker in a supervision tree.
+For server-like activities, it may be useful to have instances of WOOPER classes (ex: ``class_Foobar``) behave like OTP workers in supervision trees.
+
+Exactly like by default any Erlang process is not able to readily take part to an OTP supervision tree [#]_, a WOOPER instance must specifically support such an integration.
+
+.. [#] For that such process has to comply with a relevant applicative protocol in order to properly interact with its supervisor, either directly by itself or through its implementation of an OTP behaviour like `gen_server <https://erlang.org/doc/man/gen_server.html>`_.
 
 A `supervisor bridge <https://erlang.org/doc/man/supervisor_bridge.html>`_ (i.e. a process in charge of integrating properly such a non-OTP process into an OTP supervision tree) is the tool of choice here.
 
-Rather than declaring the corresponding behaviour and its implemented API directly in the target class (ex: in ``class_Foobar``), we recommend for clarity and separation of concerns to introduce a specific module for that, like done with `traces_bridge_sup <https://github.com/Olivier-Boudeville/Ceylan-Traces/blob/master/src/traces_bridge_sup.erl>`_ for `class_TraceAggregator.erl <https://github.com/Olivier-Boudeville/Ceylan-Traces/blob/master/src/class_TraceAggregator.erl>`_ or `us_common_config_bridge_sup <https://github.com/Olivier-Boudeville/us-common/blob/master/src/us_common_config_bridge_sup.erl>`_ for `class_USConfigServer.erl <https://github.com/Olivier-Boudeville/us-common/blob/master/src/class_USConfigServer.erl>`_.
+Rather than declaring the corresponding behaviour and its implemented API directly in the target class (ex: in ``class_Foobar``), we recommend for *clarity* (as, even if the bridge was declared in the same module, it would be still an intermediate, autonomous process sitting between the OTP supervisor and the WOOPER instance of interest) and for *separation of concerns* (leaving an OTP integration as an optional feature) to introduce a specific module for that, like done with `traces_bridge_sup <https://github.com/Olivier-Boudeville/Ceylan-Traces/blob/master/src/traces_bridge_sup.erl>`_ for `class_TraceAggregator.erl <https://github.com/Olivier-Boudeville/Ceylan-Traces/blob/master/src/class_TraceAggregator.erl>`_ or `us_common_config_bridge_sup <https://github.com/Olivier-Boudeville/us-common/blob/master/src/us_common_config_bridge_sup.erl>`_ for `class_USConfigServer.erl <https://github.com/Olivier-Boudeville/us-common/blob/master/src/class_USConfigServer.erl>`_.
+
+However, when the purpose of a given class is solely to integrate within an OTP application through a supervision tree, one may of course have the bridge directly defined in the WOOPER class the interfacing of which it is enabling; see `class_USSensorManager.erl <https://github.com/Olivier-Boudeville/us-main/blob/master/src/class_USSensorManager.erl>`_ for an example thereof.
+
+In all cases, following the aforementioned `us_common_config_bridge_sup <https://github.com/Olivier-Boudeville/us-common/blob/master/src/us_common_config_bridge_sup.erl>`_ simple example, the additions mostly boil down to, in a relevant module as discussed above:
+
+- declaring the corresponding OTP behaviour, the exported functions that this implies, and any relevant define, like in::
+
+.. code:: erlang
+
+ -behaviour(supervisor_bridge).
+
+ % User API of the bridge (can be arbitrarily chosen, including of course the arity):
+ -export([start_link/2]).
+
+ % Callbacks of the supervisor_bridge behaviour:
+ -export([init/1, terminate/2]).
+
+ -define(bridge_name, ?MODULE).
+
+
+- implementing how the bridge shall be spawned by the user, like in::
+
+.. code:: erlang
+
+  start_link(X,Y) ->
+	Z=f(X),
+	% Supposing here that a local registration of the bridge is wanted:
+	supervisor_bridge:start_link({local, ?bridge_name},
+		_Module=?MODULE, _InitArgs=[Y,hello,Z]).
+
+
+- implementing what the bridge shall do in terms of initialisation once spawned (notably regarding the WOOPER instance that it interfaces), like in::
+
+.. code:: erlang
+
+  -spec init( list() ) -> { 'ok', pid(), BridgeState :: term()}
+		| 'ignore' | {'error', Error :: term()}.
+  init(_Args=[_A, Atom, B]) ->
+	% No synchronous creation supposed useful here:
+	MyFoobarInstancePid = class_Foobar:new_link(Atom,B),
+
+	InitialBridgeState = {MyFoobarInstancePid, Atom},
+
+	{ok, MyFoobarInstancePid, InitialBridgeState}.
+
+
+- do the same regarding termination, like in::
+
+.. code:: erlang
+
+  terminate(Reason, _BridgeState={FoobarPid, _Atom}) ->
+	% No synchronicity especially needed:
+	FoobarPid ! delete.
+
+
+Of course:
+
+- any user API and bridge state can be elected, but the `supervisor_bridge behaviour <https://erlang.org/doc/man/supervisor_bridge.html#Module:init-1>`_ requires ``init/1`` and ``terminate/2`` to be defined with these arities and to return the terms documented
+- the various functions introduced here could be defined as static methods instead, but maybe such exported plain functions will be clearer for developers with an OTP background
+- spawned processes must be linked, so that crashes do not remain unnoticed
+- we recommend to add type specs and relevant traces in actual code
 
 
 
 WOOPER API
 ----------
 
-One can browse the `WOOPER API documentation <api-doc/index.html>`_.
+One can browse the `WOOPER API documentation <api-doc/index.html>`_. WOOPER being, in some way, a dialect deriving from Erlang (hence closer to a language of its own than to a pure library), such an API documentation is most probably less useful than counterpart ones made for libraries like `Myriad <https://myriad.esperide.org/api-doc/index.html>`_.
 
 The next level of information is simply to read the corresponding `source files <https://github.com/Olivier-Boudeville/Ceylan-WOOPER>`_, which are intensely commented and generally straightforward.
 

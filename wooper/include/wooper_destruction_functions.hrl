@@ -185,7 +185,7 @@ trigger_destruct_error( Reason, ErrorTerm, StackTrace, State ) ->
 	wooper:log_error( "~nWOOPER error for PID ~w, "
 		"destructor (~ts:destruct/1) failed (cause: ~p):~n~n"
 		" - with error term:~n  ~p~n~n"
-		" - stack trace was (latest calls first):~n~ts~n"
+		" - stack trace was (latest calls first): ~ts~n"
 		" - instance state was: ~ts~n~n",
 		[ self(), ActualClassname, Reason, ErrorTerm,
 		  code_utils:interpret_stacktrace( StackTrace ),
