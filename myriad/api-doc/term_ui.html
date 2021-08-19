@@ -1,0 +1,775 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module term_ui</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module term_ui</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>This is the second most basic, terminal-based <b>textual interface</b>, 
+with colors, dialog boxes, etc., relying on the 'dialog' or 'whiptail' tools.
+
+
+<h2><a name="description">Description</a></h2><p>This is the second most basic, terminal-based <b>textual interface</b>, 
+with colors, dialog boxes, etc., relying on the 'dialog' or 'whiptail' tools.</p>
+
+ <p>See:</p>
+
+ <p>- term_ui_test.erl for the corresponding test</p>
+
+ <p>- text_ui.erl for a more basic text interface</p>
+
+ <p>- gui.erl for a graphical counterpart</p>
+
+ See also: trace_utils.erl for another kind of output and test-dialog.sh for an
+ autonomous, standalone test.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-backtitle_entry">backtitle_entry()</a></h3>
+<p><tt>backtitle_entry() = {backtitle, <a href="#type-title">title()</a>}</tt></p>
+
+
+<h3 class="typedecl"><a name="type-binary_choice">binary_choice()</a></h3>
+<p><tt>binary_choice() = yes | no</tt></p>
+
+
+<h3 class="typedecl"><a name="type-choice_designator">choice_designator()</a></h3>
+<p><tt>choice_designator() = term() | ui_cancel</tt></p>
+
+
+<h3 class="typedecl"><a name="type-choice_element">choice_element()</a></h3>
+<p><tt>choice_element() = {<a href="#type-choice_designator">choice_designator()</a>, <a href="#type-choice_text">choice_text()</a>}</tt></p>
+
+
+<h3 class="typedecl"><a name="type-choice_index">choice_index()</a></h3>
+<p><tt>choice_index() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-choice_text">choice_text()</a></h3>
+<p><tt>choice_text() = <a href="#type-text">text()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-common_entry">common_entry()</a></h3>
+<p><tt>common_entry() = <a href="#type-backtitle_entry">backtitle_entry()</a> | <a href="#type-title_entry">title_entry()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-dialog_locale">dialog_locale()</a></h3>
+<p><tt>dialog_locale() = default | none | <a href="#type-ustring">ustring()</a></tt></p>
+<p><p> The locale to be used by dialogs:</p>
+
+ <p>- default: the current user one</p>
+
+ <p>- none: no locale (defaulting to "C")</p>
+
+ - a user-specified one</p>
+
+<h3 class="typedecl"><a name="type-dialog_tool">dialog_tool()</a></h3>
+<p><tt>dialog_tool() = dialog | whiptail</tt></p>
+
+
+<h3 class="typedecl"><a name="type-file_path">file_path()</a></h3>
+<p><tt>file_path() = <a href="file_utils.html#type-file_path">file_utils:file_path()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-format_string">format_string()</a></h3>
+<p><tt>format_string() = <a href="text_utils.html#type-format_string">text_utils:format_string()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-label">label()</a></h3>
+<p><tt>label() = <a href="#type-text">text()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-message">message()</a></h3>
+<p><tt>message() = <a href="#type-text">text()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-prompt">prompt()</a></h3>
+<p><tt>prompt() = <a href="#type-text">text()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-setting_table">setting_table()</a></h3>
+<p><tt>setting_table() = <a href="list_table.html#type-list_table">list_table:list_table</a>(<a href="#type-ui_setting_key">ui_setting_key()</a>, <a href="#type-ui_setting_value">ui_setting_value()</a>)</tt></p>
+
+
+<h3 class="typedecl"><a name="type-text">text()</a></h3>
+<p><tt>text() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-title">title()</a></h3>
+<p><tt>title() = <a href="#type-text">text()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-title_entry">title_entry()</a></h3>
+<p><tt>title_entry() = {title, <a href="#type-title">title()</a>}</tt></p>
+
+
+<h3 class="typedecl"><a name="type-ui_options">ui_options()</a></h3>
+<p><tt>ui_options() = [any()]</tt></p>
+
+
+<h3 class="typedecl"><a name="type-ui_setting_entry">ui_setting_entry()</a></h3>
+<p><tt>ui_setting_entry() = {<a href="#type-ui_setting_key">ui_setting_key()</a>, <a href="#type-ui_setting_value">ui_setting_value()</a>}</tt></p>
+
+
+<h3 class="typedecl"><a name="type-ui_setting_key">ui_setting_key()</a></h3>
+<p><tt>ui_setting_key() = backtitle | title</tt></p>
+
+
+<h3 class="typedecl"><a name="type-ui_setting_value">ui_setting_value()</a></h3>
+<p><tt>ui_setting_value() = term()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-ui_state">ui_state()</a></h3>
+<p><tt>ui_state() = #term_ui_state{dialog_tool = <a href="#type-dialog_tool">dialog_tool()</a>, dialog_tool_path = <a href="#type-file_path">file_path()</a>, locale = <a href="#type-dialog_locale">dialog_locale()</a>, log_console = boolean(), log_file = <a href="#type-maybe">maybe</a>(<a href="file_utils.html#type-file">file_utils:file()</a>), settings = <a href="#type-setting_table">setting_table()</a>}</tt></p>
+
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add_separation-0">add_separation/0</a></td><td>Adds a default separation between previous and next content.</td></tr>
+<tr><td valign="top"><a href="#ask_yes_no-2">ask_yes_no/2</a></td><td>Displays specified prompt, let the user choose between two options, "yes"
+ and "no" (with specified default option), and returns that choice.</td></tr>
+<tr><td valign="top"><a href="#ask_yes_no-3">ask_yes_no/3</a></td><td>Displays specified prompt, let the user choose between two options, "yes"
+ and "no" (with specified default option), and returns that choice.</td></tr>
+<tr><td valign="top"><a href="#choose_designated_item-1">choose_designated_item/1</a></td><td>Selects, using a default prompt, an item among the specified ones 
+(comprising, for each, a user-specified, internal, designator and a text), and 
+returns its designator.</td></tr>
+<tr><td valign="top"><a href="#choose_designated_item-2">choose_designated_item/2</a></td><td>Selects, using specified prompt, an item among the specified ones 
+(comprising, for each, a user-specified, internal, designator and a text), and 
+returns its designator.</td></tr>
+<tr><td valign="top"><a href="#choose_designated_item-3">choose_designated_item/3</a></td><td>Selects, based on an explicit state, using the specified prompt, an item 
+among the specified ones (comprising, for each, a user-specified, internal, 
+designator and a text), and returns its designator.</td></tr>
+<tr><td valign="top"><a href="#choose_designated_item_with_default-2">choose_designated_item_with_default/2</a></td><td>Selects, based on an implicit state, using a default prompt, an item 
+among the specified ones (comprising, for each, a user-specified, internal, 
+designator and a text), with a default choix designator being specified, and 
+returns its designator.</td></tr>
+<tr><td valign="top"><a href="#choose_designated_item_with_default-3">choose_designated_item_with_default/3</a></td><td>Selects, based on an implicit state, using the specified prompt, an item 
+among the specified ones (comprising, for each, a user-specified, internal, 
+designator and a text), with a default choix designator being specified, and 
+returns its designator.</td></tr>
+<tr><td valign="top"><a href="#choose_designated_item_with_default-4">choose_designated_item_with_default/4</a></td><td>Selects, based on an explicit state, using the specified prompt, an item 
+among the specified ones (comprising, for each, a user-specified, internal, 
+designator and a text), with a default choice designator being specified, and 
+returns its designator.</td></tr>
+<tr><td valign="top"><a href="#choose_numbered_item-1">choose_numbered_item/1</a></td><td>Selects, based on an implicit state, using a default prompt, an item 
+among the specified ones (specified as direct text, with no specific 
+designator provided), and returns its index.</td></tr>
+<tr><td valign="top"><a href="#choose_numbered_item-2">choose_numbered_item/2</a></td><td>Selects, based on an explicit state, using a default prompt, an item 
+among the specified ones (specified as direct text, with no specific 
+designator provided), and returns its index.</td></tr>
+<tr><td valign="top"><a href="#choose_numbered_item-3">choose_numbered_item/3</a></td><td>Selects, based on an explicit state, using the specified prompt, an item 
+among the specified ones (specified as direct text, with no specific 
+designator provided), and returns its index.</td></tr>
+<tr><td valign="top"><a href="#choose_numbered_item_with_default-2">choose_numbered_item_with_default/2</a></td><td>Selects, based on an implicit state, using a default prompt, an item 
+among the specified ones, with a default item being specified, and returns its 
+index.</td></tr>
+<tr><td valign="top"><a href="#choose_numbered_item_with_default-3">choose_numbered_item_with_default/3</a></td><td>Selects, based on an explicit state, using a default prompt, an item 
+among the specified ones (specified as direct text, with no specific 
+designator provided) and returns its index.</td></tr>
+<tr><td valign="top"><a href="#choose_numbered_item_with_default-4">choose_numbered_item_with_default/4</a></td><td>Selects, based on an explicit state, using the specified prompt and 
+default item, an item among the specified ones (specified as direct text, with 
+no specific designator provided), and returns its index.</td></tr>
+<tr><td valign="top"><a href="#clear-0">clear/0</a></td><td>Clears the interface.</td></tr>
+<tr><td valign="top"><a href="#clear-1">clear/1</a></td><td>Clears the interface.</td></tr>
+<tr><td valign="top"><a href="#display-1">display/1</a></td><td>Displays specified text, as a normal modal message.</td></tr>
+<tr><td valign="top"><a href="#display-2">display/2</a></td><td>Displays specified formatted text, as a normal modal message.</td></tr>
+<tr><td valign="top"><a href="#display_error-1">display_error/1</a></td><td>Displays specified text, as an error message.</td></tr>
+<tr><td valign="top"><a href="#display_error-2">display_error/2</a></td><td>Displays specified formatted text, as an error message.</td></tr>
+<tr><td valign="top"><a href="#display_error_numbered_list-2">display_error_numbered_list/2</a></td><td>Displays in-order the items of specified list, as an error message.</td></tr>
+<tr><td valign="top"><a href="#display_instant-1">display_instant/1</a></td><td>Displays specified text, as a normal non-modal message.</td></tr>
+<tr><td valign="top"><a href="#display_instant-2">display_instant/2</a></td><td>Displays specified formatted text, as a normal non-modal message.</td></tr>
+<tr><td valign="top"><a href="#display_numbered_list-2">display_numbered_list/2</a></td><td>Displays in-order the items of specified list, as a normal modal message.</td></tr>
+<tr><td valign="top"><a href="#display_warning-1">display_warning/1</a></td><td>Displays specified text, as a warning message.</td></tr>
+<tr><td valign="top"><a href="#display_warning-2">display_warning/2</a></td><td>Displays specified formatted text, as a warning message.</td></tr>
+<tr><td valign="top"><a href="#get_setting-1">get_setting/1</a></td><td>Returns the value (if any) associated, in the (implicit) UI state, to the
+ specified setting.</td></tr>
+<tr><td valign="top"><a href="#get_text-1">get_text/1</a></td><td>Returns the user-entered text, based on an implicit state.</td></tr>
+<tr><td valign="top"><a href="#get_text-2">get_text/2</a></td><td>Returns the user-entered text, based on an explicit state, or throws 
+operation_cancelled if the user preferred the cancel button.</td></tr>
+<tr><td valign="top"><a href="#get_text_as_integer-1">get_text_as_integer/1</a></td><td>Returns the user-entered text, once translated to an integer, based on an 
+implicit state.</td></tr>
+<tr><td valign="top"><a href="#get_text_as_integer-2">get_text_as_integer/2</a></td><td>Returns the user-entered text, once translated to an integer, based on an 
+explicit state.</td></tr>
+<tr><td valign="top"><a href="#get_text_as_maybe_integer-1">get_text_as_maybe_integer/1</a></td><td>Returns the user-entered text (if any) after specified prompt, once 
+translated to (possibly) an integer, based on an implicit state.</td></tr>
+<tr><td valign="top"><a href="#get_text_as_maybe_integer-2">get_text_as_maybe_integer/2</a></td><td>Returns the user-entered text (if any) after specified prompt, once 
+translated to (possibly) an integer, based on an explicit state.</td></tr>
+<tr><td valign="top"><a href="#is_available-0">is_available/0</a></td><td>Tells whether this user-interface backend is available.</td></tr>
+<tr><td valign="top"><a href="#read_text_as_integer-1">read_text_as_integer/1</a></td><td>Returns the user-entered text, once translated to an integer, based on an 
+implicit state, prompting the user until a valid input is obtained.</td></tr>
+<tr><td valign="top"><a href="#read_text_as_integer-2">read_text_as_integer/2</a></td><td>Returns the user-entered text, once translated to an integer, based on an 
+explicit state, prompting the user until a valid input is obtained.</td></tr>
+<tr><td valign="top"><a href="#read_text_as_maybe_integer-1">read_text_as_maybe_integer/1</a></td><td>Returns the user-entered text after specified prompt, once translated to 
+an integer, prompting the user until a valid input is obtained: either a 
+string that resolves to an integer (then returned), or an empty string (then 
+returning 'undefined'), based on an implicit state.</td></tr>
+<tr><td valign="top"><a href="#read_text_as_maybe_integer-2">read_text_as_maybe_integer/2</a></td><td>Returns the user-entered text after specified prompt, once translated to 
+an integer, prompting the user until a valid input is obtained: either a 
+string that resolves to an integer (then returned), or an empty string (then 
+returning 'undefined'), based on an explicit state.</td></tr>
+<tr><td valign="top"><a href="#set-1">set/1</a></td><td>Sets specified UI settings.</td></tr>
+<tr><td valign="top"><a href="#set-2">set/2</a></td><td>Sets specified UI setting.</td></tr>
+<tr><td valign="top"><a href="#set_setting-2">set_setting/2</a></td><td>Sets the specified setting to specified value, in the (implicit) UI
+ state.</td></tr>
+<tr><td valign="top"><a href="#set_setting-3">set_setting/3</a></td><td>Sets the specified setting to specified value, in the specified UI state.</td></tr>
+<tr><td valign="top"><a href="#set_settings-1">set_settings/1</a></td><td>Sets the specified settings to specified values, in the (implicit) UI
+ state.</td></tr>
+<tr><td valign="top"><a href="#set_settings-2">set_settings/2</a></td><td>Sets the specified settings to specified values, in the specified UI
+ state.</td></tr>
+<tr><td valign="top"><a href="#start-0">start/0</a></td><td>Starts the UI with default settings.</td></tr>
+<tr><td valign="top"><a href="#start-1">start/1</a></td><td>Starts the UI with specified settings.</td></tr>
+<tr><td valign="top"><a href="#stop-0">stop/0</a></td><td>Stops the UI.</td></tr>
+<tr><td valign="top"><a href="#stop-1">stop/1</a></td><td>Stops the UI.</td></tr>
+<tr><td valign="top"><a href="#to_string-0">to_string/0</a></td><td>Returns a textual description of the (implicit) UI state.</td></tr>
+<tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td>Returns a textual description of the specified UI state.</td></tr>
+<tr><td valign="top"><a href="#trace-1">trace/1</a></td><td>Traces specified message, by displaying it, and possibly logging it,
+ based on an implicit state.</td></tr>
+<tr><td valign="top"><a href="#trace-2">trace/2</a></td><td>Traces specified message, by displaying it, and possibly logging it.</td></tr>
+<tr><td valign="top"><a href="#unset-1">unset/1</a></td><td>Unsets specified UI setting.</td></tr>
+<tr><td valign="top"><a href="#unset_setting-1">unset_setting/1</a></td><td>Unsets specified setting, in the (implicit) UI state.</td></tr>
+<tr><td valign="top"><a href="#unset_setting-2">unset_setting/2</a></td><td>Unsets specified setting, in the specified UI state.</td></tr>
+<tr><td valign="top"><a href="#unset_settings-1">unset_settings/1</a></td><td>Unsets specified settings, in the (implicit) UI state.</td></tr>
+<tr><td valign="top"><a href="#unset_settings-2">unset_settings/2</a></td><td>Unsets specified settings, in the specified UI state.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="add_separation-0">add_separation/0</a></h3>
+<div class="spec">
+<p><tt>add_separation() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Adds a default separation between previous and next content.</p>
+
+ Note: meaningless for this backend.
+</p>
+
+<h3 class="function"><a name="ask_yes_no-2">ask_yes_no/2</a></h3>
+<div class="spec">
+<p><tt>ask_yes_no(Prompt::<a href="#type-prompt">prompt()</a>, BinaryDefault::<a href="#type-binary_choice">binary_choice()</a>) -&gt; <a href="#type-binary_choice">binary_choice()</a></tt><br></p>
+<p> </p>
+</div><p>Displays specified prompt, let the user choose between two options, "yes"
+ and "no" (with specified default option), and returns that choice.
+</p>
+
+<h3 class="function"><a name="ask_yes_no-3">ask_yes_no/3</a></h3>
+<div class="spec">
+<p><tt>ask_yes_no(Prompt::<a href="#type-prompt">prompt()</a>, BinaryDefault::<a href="#type-binary_choice">binary_choice()</a>, Term_ui_state::<a href="#type-ui_state">ui_state()</a>) -&gt; <a href="#type-binary_choice">binary_choice()</a></tt><br></p>
+<p> </p>
+</div><p>Displays specified prompt, let the user choose between two options, "yes"
+ and "no" (with specified default option), and returns that choice.
+</p>
+
+<h3 class="function"><a name="choose_designated_item-1">choose_designated_item/1</a></h3>
+<div class="spec">
+<p><tt>choose_designated_item(Choices::[<a href="#type-choice_element">choice_element()</a>]) -&gt; <a href="#type-choice_designator">choice_designator()</a></tt><br></p>
+<p> </p>
+</div><p><p>Selects, using a default prompt, an item among the specified ones 
+(comprising, for each, a user-specified, internal, designator and a text), and 
+returns its designator.</p>
+
+ <p>Note that the 'ui_cancel' designator atom can also be returned, should the 
+user prefer to cancel that operation.</p>
+
+ (const)
+</p>
+
+<h3 class="function"><a name="choose_designated_item-2">choose_designated_item/2</a></h3>
+<div class="spec">
+<p><tt>choose_designated_item(Prompt::<a href="#type-prompt">prompt()</a>, Choices::[<a href="#type-choice_element">choice_element()</a>]) -&gt; <a href="#type-choice_designator">choice_designator()</a></tt><br></p>
+<p> </p>
+</div><p><p>Selects, using specified prompt, an item among the specified ones 
+(comprising, for each, a user-specified, internal, designator and a text), and 
+returns its designator.</p>
+
+ <p>Note that the 'ui_cancel' designator atom can also be returned, should the 
+user prefer to cancel that operation.</p>
+
+ (const)
+</p>
+
+<h3 class="function"><a name="choose_designated_item-3">choose_designated_item/3</a></h3>
+<div class="spec">
+<p><tt>choose_designated_item(Prompt::<a href="#type-prompt">prompt()</a>, Choices::[<a href="#type-choice_element">choice_element()</a>], Term_ui_state::<a href="#type-ui_state">ui_state()</a>) -&gt; <a href="#type-choice_designator">choice_designator()</a></tt><br></p>
+<p> </p>
+</div><p><p>Selects, based on an explicit state, using the specified prompt, an item 
+among the specified ones (comprising, for each, a user-specified, internal, 
+designator and a text), and returns its designator.</p>
+
+ <p>Note that the 'ui_cancel' designator atom can also be returned, should the 
+user prefer to cancel that operation.</p>
+
+ (const)
+</p>
+
+<h3 class="function"><a name="choose_designated_item_with_default-2">choose_designated_item_with_default/2</a></h3>
+<div class="spec">
+<p><tt>choose_designated_item_with_default(Choices::[<a href="#type-choice_element">choice_element()</a>], DefaultChoiceDesignator::<a href="#type-choice_designator">choice_designator()</a>) -&gt; <a href="#type-choice_designator">choice_designator()</a></tt><br></p>
+<p> </p>
+</div><p><p>Selects, based on an implicit state, using a default prompt, an item 
+among the specified ones (comprising, for each, a user-specified, internal, 
+designator and a text), with a default choix designator being specified, and 
+returns its designator.</p>
+
+ <p>Note that the 'ui_cancel' designator atom can also be returned, should the 
+user prefer to cancel that operation.</p>
+
+ (const)
+</p>
+
+<h3 class="function"><a name="choose_designated_item_with_default-3">choose_designated_item_with_default/3</a></h3>
+<div class="spec">
+<p><tt>choose_designated_item_with_default(Prompt::<a href="#type-prompt">prompt()</a>, Choices::[<a href="#type-choice_element">choice_element()</a>], DefaultChoiceDesignator::<a href="#type-choice_designator">choice_designator()</a>) -&gt; <a href="#type-choice_designator">choice_designator()</a></tt><br></p>
+<p> </p>
+</div><p><p>Selects, based on an implicit state, using the specified prompt, an item 
+among the specified ones (comprising, for each, a user-specified, internal, 
+designator and a text), with a default choix designator being specified, and 
+returns its designator.</p>
+
+ <p>Note that:</p>
+
+ <p>- this dialog is potentially a bit misleading as, if hitting the Enter key, 
+the selected item will be the starred one, not necessarily the currently 
+selected one... (yet a menu does not support the definition of a default 
+choice)</p>
+
+ <p>- the 'ui_cancel' designator atom can also be returned, should the 
+user prefer to cancel that operation</p>
+
+ (const)
+</p>
+
+<h3 class="function"><a name="choose_designated_item_with_default-4">choose_designated_item_with_default/4</a></h3>
+<div class="spec">
+<p><tt>choose_designated_item_with_default(Prompt::<a href="#type-prompt">prompt()</a>, Choices::[<a href="#type-choice_element">choice_element()</a>], DefaultChoiceDesignator::<a href="#type-choice_designator">choice_designator()</a>, Term_ui_state::<a href="#type-ui_state">ui_state()</a>) -&gt; <a href="#type-choice_designator">choice_designator()</a></tt><br></p>
+<p> </p>
+</div><p><p>Selects, based on an explicit state, using the specified prompt, an item 
+among the specified ones (comprising, for each, a user-specified, internal, 
+designator and a text), with a default choice designator being specified, and 
+returns its designator.</p>
+
+ <p>Note that:</p>
+
+ <p>- this dialog is potentially a bit misleading as, if hitting the Enter key, 
+the selected item will be the starred one, not necessarily the currently 
+selected one... (yet a menu does not support the definition of a default 
+choice)</p>
+
+ <p>- the 'ui_cancel' designator atom can also be returned, should the 
+user prefer to cancel that operation</p>
+
+ (const)
+</p>
+
+<h3 class="function"><a name="choose_numbered_item-1">choose_numbered_item/1</a></h3>
+<div class="spec">
+<p><tt>choose_numbered_item(Choices::[<a href="#type-choice_text">choice_text()</a>]) -&gt; <a href="#type-choice_index">choice_index()</a></tt><br></p>
+<p> </p>
+</div><p><p>Selects, based on an implicit state, using a default prompt, an item 
+among the specified ones (specified as direct text, with no specific 
+designator provided), and returns its index.</p>
+
+ Note that index zero can also be returned, corresponding to the 'ui_cancel'
+ atom, should the user prefer to cancel that operation.
+</p>
+
+<h3 class="function"><a name="choose_numbered_item-2">choose_numbered_item/2</a></h3>
+<div class="spec">
+<p><tt>choose_numbered_item(Choices::[<a href="#type-choice_text">choice_text()</a>], UIState::<a href="#type-ui_state">ui_state()</a>) -&gt; <a href="#type-choice_index">choice_index()</a></tt><br></p><p><tt>choose_numbered_item(Choices::<a href="#type-prompt">prompt()</a>, UIState::[<a href="#type-choice_element">choice_element()</a>]) -&gt; <a href="#type-choice_index">choice_index()</a></tt><br></p>
+<p> </p>
+<p> </p>
+</div><p><p>Selects, based on an explicit state, using a default prompt, an item 
+among the specified ones (specified as direct text, with no specific 
+designator provided), and returns its index.</p>
+
+ <p>Selects, based on an implicit state, using the specified prompt, an item among 
+the specified ones, and returns its index.</p>
+
+ Note that index zero can also be returned, corresponding to the 'ui_cancel'
+ atom, should the user prefer to cancel that operation.
+</p>
+
+<h3 class="function"><a name="choose_numbered_item-3">choose_numbered_item/3</a></h3>
+<div class="spec">
+<p><tt>choose_numbered_item(Prompt::<a href="#type-prompt">prompt()</a>, Choices::[<a href="#type-choice_text">choice_text()</a>], UIState::<a href="#type-ui_state">ui_state()</a>) -&gt; <a href="#type-choice_index">choice_index()</a></tt><br></p>
+<p> </p>
+</div><p><p>Selects, based on an explicit state, using the specified prompt, an item 
+among the specified ones (specified as direct text, with no specific 
+designator provided), and returns its index.</p>
+
+ Note that index zero can also be returned, corresponding to the 'ui_cancel'
+ atom, should the user prefer to cancel that operation.
+</p>
+
+<h3 class="function"><a name="choose_numbered_item_with_default-2">choose_numbered_item_with_default/2</a></h3>
+<div class="spec">
+<p><tt>choose_numbered_item_with_default(Choices::[<a href="#type-choice_text">choice_text()</a>], DefaultChoiceText::<a href="#type-choice_index">choice_index()</a>) -&gt; <a href="#type-choice_index">choice_index()</a></tt><br></p>
+<p> </p>
+</div><p><p>Selects, based on an implicit state, using a default prompt, an item 
+among the specified ones, with a default item being specified, and returns its 
+index.</p>
+
+ Note that index zero can also be returned, corresponding to the 'ui_cancel'
+ atom, should the user prefer to cancel that operation.
+</p>
+
+<h3 class="function"><a name="choose_numbered_item_with_default-3">choose_numbered_item_with_default/3</a></h3>
+<div class="spec">
+<p><tt>choose_numbered_item_with_default(Choices::[<a href="#type-choice_text">choice_text()</a>], DefaultChoiceText::<a href="#type-choice_index">choice_index()</a>, UIState::<a href="#type-ui_state">ui_state()</a>) -&gt; <a href="#type-choice_index">choice_index()</a></tt><br></p><p><tt>choose_numbered_item_with_default(Choices::<a href="#type-prompt">prompt()</a>, DefaultChoiceText::[<a href="#type-choice_text">choice_text()</a>], UIState::<a href="#type-choice_index">choice_index()</a>) -&gt; <a href="#type-choice_index">choice_index()</a></tt><br></p>
+<p> </p>
+<p> </p>
+</div><p><p>Selects, based on an explicit state, using a default prompt, an item 
+among the specified ones (specified as direct text, with no specific 
+designator provided) and returns its index.</p>
+
+ <p>Selects, based on an implicit state, using the specified prompt and default 
+item, an item among the specified ones, and returns its index.</p>
+
+ Note that index zero can also be returned, corresponding to the 'ui_cancel'
+ atom, should the user prefer to cancel that operation.
+</p>
+
+<h3 class="function"><a name="choose_numbered_item_with_default-4">choose_numbered_item_with_default/4</a></h3>
+<div class="spec">
+<p><tt>choose_numbered_item_with_default(Prompt::<a href="#type-prompt">prompt()</a>, Choices::[<a href="#type-choice_text">choice_text()</a>], DefaultChoiceText::<a href="#type-choice_text">choice_text()</a>, UIState::<a href="#type-ui_state">ui_state()</a>) -&gt; <a href="#type-choice_index">choice_index()</a></tt><br></p>
+<p> </p>
+</div><p><p>Selects, based on an explicit state, using the specified prompt and 
+default item, an item among the specified ones (specified as direct text, with 
+no specific designator provided), and returns its index.</p>
+
+ Note that index zero can also be returned, corresponding to the 'ui_cancel'
+ atom, should the user prefer to cancel that operation.
+</p>
+
+<h3 class="function"><a name="clear-0">clear/0</a></h3>
+<div class="spec">
+<p><tt>clear() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Clears the interface.</p>
+
+<h3 class="function"><a name="clear-1">clear/1</a></h3>
+<div class="spec">
+<p><tt>clear(Term_ui_state::<a href="#type-ui_state">ui_state()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Clears the interface.</p>
+
+<h3 class="function"><a name="display-1">display/1</a></h3>
+<div class="spec">
+<p><tt>display(Text::<a href="#type-text">text()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Displays specified text, as a normal modal message.</p>
+
+<h3 class="function"><a name="display-2">display/2</a></h3>
+<div class="spec">
+<p><tt>display(FormatString::<a href="#type-format_string">format_string()</a>, Values::[term()]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Displays specified formatted text, as a normal modal message.</p>
+
+<h3 class="function"><a name="display_error-1">display_error/1</a></h3>
+<div class="spec">
+<p><tt>display_error(Text::<a href="#type-text">text()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Displays specified text, as an error message.</p>
+
+<h3 class="function"><a name="display_error-2">display_error/2</a></h3>
+<div class="spec">
+<p><tt>display_error(FormatString::<a href="#type-format_string">format_string()</a>, Values::[term()]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Displays specified formatted text, as an error message.</p>
+
+<h3 class="function"><a name="display_error_numbered_list-2">display_error_numbered_list/2</a></h3>
+<div class="spec">
+<p><tt>display_error_numbered_list(Label::<a href="#type-label">label()</a>, Lines::[<a href="#type-text">text()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Displays in-order the items of specified list, as an error message.</p>
+
+<h3 class="function"><a name="display_instant-1">display_instant/1</a></h3>
+<div class="spec">
+<p><tt>display_instant(Text::<a href="#type-text">text()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Displays specified text, as a normal non-modal message.</p>
+
+<h3 class="function"><a name="display_instant-2">display_instant/2</a></h3>
+<div class="spec">
+<p><tt>display_instant(FormatString::<a href="#type-format_string">format_string()</a>, Values::[term()]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Displays specified formatted text, as a normal non-modal message.</p>
+
+<h3 class="function"><a name="display_numbered_list-2">display_numbered_list/2</a></h3>
+<div class="spec">
+<p><tt>display_numbered_list(Label::<a href="#type-label">label()</a>, Lines::[<a href="#type-text">text()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Displays in-order the items of specified list, as a normal modal message.</p>
+
+<h3 class="function"><a name="display_warning-1">display_warning/1</a></h3>
+<div class="spec">
+<p><tt>display_warning(Text::<a href="#type-text">text()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Displays specified text, as a warning message.</p>
+
+<h3 class="function"><a name="display_warning-2">display_warning/2</a></h3>
+<div class="spec">
+<p><tt>display_warning(FormatString::<a href="#type-format_string">format_string()</a>, Values::[term()]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Displays specified formatted text, as a warning message.</p>
+
+<h3 class="function"><a name="get_setting-1">get_setting/1</a></h3>
+<div class="spec">
+<p><tt>get_setting(SettingKey::<a href="#type-ui_setting_key">ui_setting_key()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-ui_setting_value">ui_setting_value()</a>)</tt><br></p>
+<p> </p>
+</div><p>Returns the value (if any) associated, in the (implicit) UI state, to the
+ specified setting.
+</p>
+
+<h3 class="function"><a name="get_text-1">get_text/1</a></h3>
+<div class="spec">
+<p><tt>get_text(Prompt::<a href="#type-prompt">prompt()</a>) -&gt; <a href="#type-text">text()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the user-entered text, based on an implicit state.</p>
+
+ (const)
+</p>
+
+<h3 class="function"><a name="get_text-2">get_text/2</a></h3>
+<div class="spec">
+<p><tt>get_text(Prompt::<a href="#type-prompt">prompt()</a>, Term_ui_state::<a href="#type-ui_state">ui_state()</a>) -&gt; <a href="#type-text">text()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the user-entered text, based on an explicit state, or throws 
+operation_cancelled if the user preferred the cancel button.</p>
+
+ (const)
+</p>
+
+<h3 class="function"><a name="get_text_as_integer-1">get_text_as_integer/1</a></h3>
+<div class="spec">
+<p><tt>get_text_as_integer(Prompt::<a href="#type-prompt">prompt()</a>) -&gt; <a href="#type-text">text()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the user-entered text, once translated to an integer, based on an 
+implicit state.</p>
+
+ (const)
+</p>
+
+<h3 class="function"><a name="get_text_as_integer-2">get_text_as_integer/2</a></h3>
+<div class="spec">
+<p><tt>get_text_as_integer(Prompt::<a href="#type-prompt">prompt()</a>, UIState::<a href="#type-ui_state">ui_state()</a>) -&gt; <a href="#type-text">text()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the user-entered text, once translated to an integer, based on an 
+explicit state.</p>
+
+ (const)
+</p>
+
+<h3 class="function"><a name="get_text_as_maybe_integer-1">get_text_as_maybe_integer/1</a></h3>
+<div class="spec">
+<p><tt>get_text_as_maybe_integer(Prompt::<a href="#type-prompt">prompt()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-text">text()</a>)</tt><br></p>
+<p> </p>
+</div><p><p>Returns the user-entered text (if any) after specified prompt, once 
+translated to (possibly) an integer, based on an implicit state.</p>
+
+ (const)
+</p>
+
+<h3 class="function"><a name="get_text_as_maybe_integer-2">get_text_as_maybe_integer/2</a></h3>
+<div class="spec">
+<p><tt>get_text_as_maybe_integer(Prompt::<a href="#type-prompt">prompt()</a>, UIState::<a href="#type-ui_state">ui_state()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-text">text()</a>)</tt><br></p>
+<p> </p>
+</div><p><p>Returns the user-entered text (if any) after specified prompt, once 
+translated to (possibly) an integer, based on an explicit state.</p>
+
+ (const)
+</p>
+
+<h3 class="function"><a name="is_available-0">is_available/0</a></h3>
+<div class="spec">
+<p><tt>is_available() -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Tells whether this user-interface backend is available.</p>
+
+<h3 class="function"><a name="read_text_as_integer-1">read_text_as_integer/1</a></h3>
+<div class="spec">
+<p><tt>read_text_as_integer(Prompt::<a href="#type-prompt">prompt()</a>) -&gt; <a href="#type-text">text()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the user-entered text, once translated to an integer, based on an 
+implicit state, prompting the user until a valid input is obtained.</p>
+
+ (const)
+</p>
+
+<h3 class="function"><a name="read_text_as_integer-2">read_text_as_integer/2</a></h3>
+<div class="spec">
+<p><tt>read_text_as_integer(Prompt::<a href="#type-prompt">prompt()</a>, UIState::<a href="#type-ui_state">ui_state()</a>) -&gt; <a href="#type-text">text()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the user-entered text, once translated to an integer, based on an 
+explicit state, prompting the user until a valid input is obtained.</p>
+
+ (const)
+</p>
+
+<h3 class="function"><a name="read_text_as_maybe_integer-1">read_text_as_maybe_integer/1</a></h3>
+<div class="spec">
+<p><tt>read_text_as_maybe_integer(Prompt::<a href="#type-prompt">prompt()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-text">text()</a>)</tt><br></p>
+<p> </p>
+</div><p><p>Returns the user-entered text after specified prompt, once translated to 
+an integer, prompting the user until a valid input is obtained: either a 
+string that resolves to an integer (then returned), or an empty string (then 
+returning 'undefined'), based on an implicit state.</p>
+
+ (const)
+</p>
+
+<h3 class="function"><a name="read_text_as_maybe_integer-2">read_text_as_maybe_integer/2</a></h3>
+<div class="spec">
+<p><tt>read_text_as_maybe_integer(Prompt::<a href="#type-prompt">prompt()</a>, UIState::<a href="#type-ui_state">ui_state()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-text">text()</a>)</tt><br></p>
+<p> </p>
+</div><p><p>Returns the user-entered text after specified prompt, once translated to 
+an integer, prompting the user until a valid input is obtained: either a 
+string that resolves to an integer (then returned), or an empty string (then 
+returning 'undefined'), based on an explicit state.</p>
+
+ (const)
+</p>
+
+<h3 class="function"><a name="set-1">set/1</a></h3>
+<div class="spec">
+<p><tt>set(SettingEntries::[<a href="#type-ui_setting_entry">ui_setting_entry()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Sets specified UI settings.</p>
+
+<h3 class="function"><a name="set-2">set/2</a></h3>
+<div class="spec">
+<p><tt>set(SettingKey::<a href="#type-ui_setting_key">ui_setting_key()</a>, SettingValue::<a href="#type-ui_setting_value">ui_setting_value()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Sets specified UI setting.</p>
+
+<h3 class="function"><a name="set_setting-2">set_setting/2</a></h3>
+<div class="spec">
+<p><tt>set_setting(SettingKey::<a href="#type-ui_setting_key">ui_setting_key()</a>, SettingValue::<a href="#type-ui_setting_value">ui_setting_value()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Sets the specified setting to specified value, in the (implicit) UI
+ state.
+</p>
+
+<h3 class="function"><a name="set_setting-3">set_setting/3</a></h3>
+<div class="spec">
+<p><tt>set_setting(SettingKey::<a href="#type-ui_setting_key">ui_setting_key()</a>, SettingValue::<a href="#type-ui_setting_value">ui_setting_value()</a>, UIState::<a href="#type-ui_state">ui_state()</a>) -&gt; <a href="#type-ui_state">ui_state()</a></tt><br></p>
+<p> </p>
+</div><p>Sets the specified setting to specified value, in the specified UI state.</p>
+
+<h3 class="function"><a name="set_settings-1">set_settings/1</a></h3>
+<div class="spec">
+<p><tt>set_settings(SettingEntries::[<a href="#type-ui_setting_entry">ui_setting_entry()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Sets the specified settings to specified values, in the (implicit) UI
+ state.
+</p>
+
+<h3 class="function"><a name="set_settings-2">set_settings/2</a></h3>
+<div class="spec">
+<p><tt>set_settings(SettingEntries::[<a href="#type-ui_setting_entry">ui_setting_entry()</a>], UIState::<a href="#type-ui_state">ui_state()</a>) -&gt; <a href="#type-ui_state">ui_state()</a></tt><br></p>
+<p> </p>
+</div><p>Sets the specified settings to specified values, in the specified UI
+ state.
+</p>
+
+<h3 class="function"><a name="start-0">start/0</a></h3>
+<div class="spec">
+<p><tt>start() -&gt; <a href="#type-ui_state">ui_state()</a></tt><br></p>
+<p> </p>
+</div><p><p>Starts the UI with default settings.</p>
+
+ Stores the corresponding state in the process dictionary, yet returns as well
+ that state, for any explicit later operation.
+</p>
+
+<h3 class="function"><a name="start-1">start/1</a></h3>
+<div class="spec">
+<p><tt>start(Options::<a href="#type-ui_options">ui_options()</a>) -&gt; <a href="#type-ui_state">ui_state()</a></tt><br></p>
+<p> </p>
+</div><p><p>Starts the UI with specified settings.</p>
+
+ Stores the corresponding state in the process dictionary, yet returns as well
+ that state, for any explicit later operation.
+</p>
+
+<h3 class="function"><a name="stop-0">stop/0</a></h3>
+<div class="spec">
+<p><tt>stop() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Stops the UI.</p>
+
+<h3 class="function"><a name="stop-1">stop/1</a></h3>
+<div class="spec">
+<p><tt>stop(UIState::<a href="#type-ui_state">ui_state()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Stops the UI.</p>
+
+<h3 class="function"><a name="to_string-0">to_string/0</a></h3>
+<div class="spec">
+<p><tt>to_string() -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of the (implicit) UI state.</p>
+
+<h3 class="function"><a name="to_string-1">to_string/1</a></h3>
+<div class="spec">
+<p><tt>to_string(Term_ui_state::<a href="#type-ui_state">ui_state()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of the specified UI state.</p>
+
+<h3 class="function"><a name="trace-1">trace/1</a></h3>
+<div class="spec">
+<p><tt>trace(Message::<a href="#type-message">message()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Traces specified message, by displaying it, and possibly logging it,
+ based on an implicit state.
+</p>
+
+<h3 class="function"><a name="trace-2">trace/2</a></h3>
+<div class="spec">
+<p><tt>trace(Message::<a href="#type-message">message()</a>, UIState::<a href="#type-ui_state">ui_state()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p><p><tt>trace(Message::<a href="#type-format_string">format_string()</a>, UIState::[term()]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+<p> </p>
+</div><p>Traces specified message, by displaying it, and possibly logging it.</p>
+
+<h3 class="function"><a name="unset-1">unset/1</a></h3>
+<div class="spec">
+<p><tt>unset(SettingKeys::[<a href="#type-ui_setting_key">ui_setting_key()</a>] | <a href="#type-ui_setting_key">ui_setting_key()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Unsets specified UI setting.</p>
+
+<h3 class="function"><a name="unset_setting-1">unset_setting/1</a></h3>
+<div class="spec">
+<p><tt>unset_setting(SettingKey::<a href="#type-ui_setting_key">ui_setting_key()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Unsets specified setting, in the (implicit) UI state.</p>
+
+<h3 class="function"><a name="unset_setting-2">unset_setting/2</a></h3>
+<div class="spec">
+<p><tt>unset_setting(SettingKey::<a href="#type-ui_setting_key">ui_setting_key()</a>, UIState::<a href="#type-ui_state">ui_state()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Unsets specified setting, in the specified UI state.</p>
+
+<h3 class="function"><a name="unset_settings-1">unset_settings/1</a></h3>
+<div class="spec">
+<p><tt>unset_settings(SettingKeys::[<a href="#type-ui_setting_key">ui_setting_key()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Unsets specified settings, in the (implicit) UI state.</p>
+
+<h3 class="function"><a name="unset_settings-2">unset_settings/2</a></h3>
+<div class="spec">
+<p><tt>unset_settings(SettingKeys::[<a href="#type-ui_setting_key">ui_setting_key()</a>], UIState::<a href="#type-ui_state">ui_state()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Unsets specified settings, in the specified UI state.</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

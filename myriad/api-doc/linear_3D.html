@@ -1,0 +1,311 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module linear_3D</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module linear_3D</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various <b>three dimensional linear</b> facilities.
+
+
+<h2><a name="description">Description</a></h2><p>Gathering of various <b>three dimensional linear</b> facilities.</p>
+
+ See <code>linear_3D_test.erl</code> for the corresponding test.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-canonical_matrix">canonical_matrix()</a></h3>
+<p><tt>canonical_matrix() = <a href="#type-mat3">mat3()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-compact_matrix">compact_matrix()</a></h3>
+<p><tt>compact_matrix() = <a href="#type-cpt_mat3">cpt_mat3()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-coordinate">coordinate()</a></h3>
+<p><tt>coordinate() = <a href="linear.html#type-coordinate">linear:coordinate()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-cpt_mat3">cpt_mat3()</a></h3>
+<p><tt>cpt_mat3() = #cpt_mat3{m11 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m12 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, tx = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m21 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m22 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, ty = <a href="linear.html#type-coordinate">linear:coordinate()</a>}</tt></p>
+
+
+<h3 class="typedecl"><a name="type-distance">distance()</a></h3>
+<p><tt>distance() = <a href="linear.html#type-distance">linear:distance()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-factor">factor()</a></h3>
+<p><tt>factor() = <a href="linear.html#type-factor">linear:factor()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-hessian_plane">hessian_plane()</a></h3>
+<p><tt>hessian_plane() = {<a href="#type-unit_normal">unit_normal()</a>, <a href="#type-factor">factor()</a>}</tt></p>
+<p><p> A plane in Hessian normal form.</p>
+
+ See <a href="http://mathworld.wolfram.com/HessianNormalForm.html" target="_top"><tt>http://mathworld.wolfram.com/HessianNormalForm.html</tt></a>.</p>
+
+<h3 class="typedecl"><a name="type-integer_coordinate">integer_coordinate()</a></h3>
+<p><tt>integer_coordinate() = <a href="linear.html#type-integer_coordinate">linear:integer_coordinate()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-integer_point">integer_point()</a></h3>
+<p><tt>integer_point() = {X::<a href="#type-integer_coordinate">integer_coordinate()</a>, Y::<a href="#type-integer_coordinate">integer_coordinate()</a>, Z::<a href="#type-integer_coordinate">integer_coordinate()</a>}</tt></p>
+<p> A 3D point, with integer coordinates.</p>
+
+<h3 class="typedecl"><a name="type-integer_vector">integer_vector()</a></h3>
+<p><tt>integer_vector() = {V1::<a href="#type-integer_coordinate">integer_coordinate()</a>, V2::<a href="#type-integer_coordinate">integer_coordinate()</a>, V3::<a href="#type-integer_coordinate">integer_coordinate()</a>}</tt></p>
+<p> A 3D vector, with integer coordinates.</p>
+
+<h3 class="typedecl"><a name="type-line">line()</a></h3>
+<p><tt>line() = {A::<a href="#type-factor">factor()</a>, B::<a href="#type-factor">factor()</a>, C::<a href="#type-factor">factor()</a>, D::<a href="#type-factor">factor()</a>}</tt></p>
+<p> A 3D line, whose equation A.x+B.y+C.z+D=0, can be defined from these four
+ factors {A,B,C,D}.</p>
+
+<h3 class="typedecl"><a name="type-mat3">mat3()</a></h3>
+<p><tt>mat3() = #mat3{m11 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m12 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m13 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m21 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m22 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m23 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m31 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m32 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m33 = <a href="linear.html#type-coordinate">linear:coordinate()</a>}</tt></p>
+
+
+<h3 class="typedecl"><a name="type-matrix">matrix()</a></h3>
+<p><tt>matrix() = identity_3 | <a href="#type-canonical_matrix">canonical_matrix()</a> | <a href="#type-compact_matrix">compact_matrix()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-normal">normal()</a></h3>
+<p><tt>normal() = <a href="#type-vector">vector()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-plane">plane()</a></h3>
+<p><tt>plane() = {<a href="#type-normal">normal()</a>, <a href="#type-factor">factor()</a>}</tt></p>
+<p><p> A plane, whose general equation is: A.x + B.y + C.z + D = 0, where:</p>
+
+ <p>- P=(x,y,z) is a point belonging to this plane</p>
+
+ <p>- N=(A,B,C) is a (non-necessarily unit) normal vector to this plane</p>
+
+ <p>- P0=(x0,y0,z0) is a point of that plane</p>
+
+ <p>- D= -A.x0 - B.y0 - C.z0</p>
+
+ <p>See <a href="http://mathworld.wolfram.com/Plane.html" target="_top"><tt>http://mathworld.wolfram.com/Plane.html</tt></a>.</p>
+
+ So a plane may be described as (N,D).</p>
+
+<h3 class="typedecl"><a name="type-point">point()</a></h3>
+<p><tt>point() = {X::<a href="#type-coordinate">coordinate()</a>, Y::<a href="#type-coordinate">coordinate()</a>, Z::<a href="#type-coordinate">coordinate()</a>}</tt></p>
+<p><p> A 3D vector, with floating-point coordinates.</p>
+
+ They are typically referenced as [X, Y, Z].</p>
+
+<h3 class="typedecl"><a name="type-shape">shape()</a></h3>
+<p><tt>shape() = sphere | right_cuboid</tt></p>
+<p> Various types of known 3D shapes (basic geometries).</p>
+
+<h3 class="typedecl"><a name="type-square_distance">square_distance()</a></h3>
+<p><tt>square_distance() = <a href="linear.html#type-square_distance">linear:square_distance()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-unit_normal">unit_normal()</a></h3>
+<p><tt>unit_normal() = <a href="#type-unit_vector">unit_vector()</a></tt></p>
+<p><p> A 3D unit vector normal to a plane.</p>
+
+ Defined for documentation purpose.</p>
+
+<h3 class="typedecl"><a name="type-unit_vector">unit_vector()</a></h3>
+<p><tt>unit_vector() = <a href="#type-vector">vector()</a></tt></p>
+<p><p> A 3D unit vector, ie a vector of magnitude 1.0.</p>
+
+ Defined for documentation purpose.</p>
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-vector">vector()</a></h3>
+<p><tt>vector() = {V1::<a href="#type-coordinate">coordinate()</a>, V2::<a href="#type-coordinate">coordinate()</a>, V3::<a href="#type-coordinate">coordinate()</a>}</tt></p>
+<p> A 3D vector, with floating-point coordinates.</p>
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add-1">add/1</a></td><td>Returns the sum of all vectors in the specified list.</td></tr>
+<tr><td valign="top"><a href="#add-2">add/2</a></td><td>Returns the sum of the two specified vectors: C = A + B.</td></tr>
+<tr><td valign="top"><a href="#are_close-2">are_close/2</a></td><td>Returns whether the two specified points are close, ie if they could be
+ considered as representing the same point (equality operator on points).</td></tr>
+<tr><td valign="top"><a href="#cross_product-2">cross_product/2</a></td><td>Returns the cross-product of the two specified vectors, ie the results of
+ a regular 3D cross product of the input vectors.</td></tr>
+<tr><td valign="top"><a href="#distance-2">distance/2</a></td><td>Returns the distance between the two specified points.</td></tr>
+<tr><td valign="top"><a href="#dot_product-2">dot_product/2</a></td><td>Returns the dot product of the two specified vectors: D = V1.V2.</td></tr>
+<tr><td valign="top"><a href="#get_center-2">get_center/2</a></td><td>Returns a vertex corresponding the middle of the two specified vertices.</td></tr>
+<tr><td valign="top"><a href="#get_integer_center-2">get_integer_center/2</a></td><td>Returns a vertex corresponding the middle of the two specified vertices,
+ returned with integer coordinates.</td></tr>
+<tr><td valign="top"><a href="#get_origin-0">get_origin/0</a></td><td>Returns the origin of this referential.</td></tr>
+<tr><td valign="top"><a href="#is_within-3">is_within/3</a></td><td>Tells whether point P is within a distance D from point C, using some
+ margin to overcome numerical errors.</td></tr>
+<tr><td valign="top"><a href="#is_within_square-3">is_within_square/3</a></td><td>Tells whether point P is within a square distance SquareD from point C.</td></tr>
+<tr><td valign="top"><a href="#magnitude-1">magnitude/1</a></td><td>Returns the magnitude of the specified vector.</td></tr>
+<tr><td valign="top"><a href="#make_unit-1">make_unit/1</a></td><td>Returns the specified vector with an unit length (whose magnitude is thus
+ 1).</td></tr>
+<tr><td valign="top"><a href="#roundify-1">roundify/1</a></td><td>Returns a point (or vector) whose coordinates have been rounded to the
+ respective nearest integers.</td></tr>
+<tr><td valign="top"><a href="#scale-2">scale/2</a></td><td>Scales specified vector of specified factor.</td></tr>
+<tr><td valign="top"><a href="#square_distance-2">square_distance/2</a></td><td>Returns the square of the distance between the two specified points.</td></tr>
+<tr><td valign="top"><a href="#square_magnitude-1">square_magnitude/1</a></td><td>Returns the square of the magnitude of the specified vector.</td></tr>
+<tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td>Returns a stringified representation of specified point or vector.</td></tr>
+<tr><td valign="top"><a href="#translate-2">translate/2</a></td><td>Returns a point corresponding to the specified point P translated by the
+ specified vector V.</td></tr>
+<tr><td valign="top"><a href="#vectorize-2">vectorize/2</a></td><td>Returns a vector V made from the specified two points: V=P2-P1.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="add-1">add/1</a></h3>
+<div class="spec">
+<p><tt>add(Vectors::[<a href="#type-vector">vector()</a>]) -&gt; <a href="#type-vector">vector()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the sum of all vectors in the specified list.</p>
+
+<h3 class="function"><a name="add-2">add/2</a></h3>
+<div class="spec">
+<p><tt>add(X1::<a href="#type-vector">vector()</a>, X2::<a href="#type-vector">vector()</a>) -&gt; <a href="#type-vector">vector()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the sum of the two specified vectors: C = A + B.</p>
+
+<h3 class="function"><a name="are_close-2">are_close/2</a></h3>
+<div class="spec">
+<p><tt>are_close(P1::<a href="#type-point">point()</a>, P2::<a href="#type-point">point()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Returns whether the two specified points are close, ie if they could be
+ considered as representing the same point (equality operator on points).
+</p>
+
+<h3 class="function"><a name="cross_product-2">cross_product/2</a></h3>
+<div class="spec">
+<p><tt>cross_product(X1::<a href="#type-vector">vector()</a>, X2::<a href="#type-vector">vector()</a>) -&gt; <a href="#type-vector">vector()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the cross-product of the two specified vectors, ie the results of
+ a regular 3D cross product of the input vectors.
+</p>
+
+<h3 class="function"><a name="distance-2">distance/2</a></h3>
+<div class="spec">
+<p><tt>distance(P1::<a href="#type-point">point()</a>, P2::<a href="#type-point">point()</a>) -&gt; <a href="#type-distance">distance()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the distance between the two specified points.</p>
+
+ <p>Note: just for comparison purposes, computing the square root is useless.</p>
+
+ Could rely on vectorize and magnitude as well.
+</p>
+
+<h3 class="function"><a name="dot_product-2">dot_product/2</a></h3>
+<div class="spec">
+<p><tt>dot_product(V1::<a href="#type-vector">vector()</a>, V2::<a href="#type-vector">vector()</a>) -&gt; float()</tt><br></p>
+<p> </p>
+</div><p>Returns the dot product of the two specified vectors: D = V1.V2.</p>
+
+<h3 class="function"><a name="get_center-2">get_center/2</a></h3>
+<div class="spec">
+<p><tt>get_center(X1::<a href="#type-point">point()</a>, X2::<a href="#type-point">point()</a>) -&gt; <a href="#type-point">point()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a vertex corresponding the middle of the two specified vertices.</p>
+
+<h3 class="function"><a name="get_integer_center-2">get_integer_center/2</a></h3>
+<div class="spec">
+<p><tt>get_integer_center(P1::<a href="#type-point">point()</a>, P2::<a href="#type-point">point()</a>) -&gt; <a href="#type-integer_point">integer_point()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a vertex corresponding the middle of the two specified vertices,
+ returned with integer coordinates.
+</p>
+
+<h3 class="function"><a name="get_origin-0">get_origin/0</a></h3>
+<div class="spec">
+<p><tt>get_origin() -&gt; <a href="#type-point">point()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the origin of this referential.</p>
+
+<h3 class="function"><a name="is_within-3">is_within/3</a></h3>
+<div class="spec">
+<p><tt>is_within(P::<a href="#type-point">point()</a>, C::<a href="#type-point">point()</a>, D::<a href="#type-distance">distance()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Tells whether point P is within a distance D from point C, using some
+ margin to overcome numerical errors.
+</p>
+
+<h3 class="function"><a name="is_within_square-3">is_within_square/3</a></h3>
+<div class="spec">
+<p><tt>is_within_square(P::<a href="#type-point">point()</a>, C::<a href="#type-point">point()</a>, SquareD::<a href="#type-square_distance">square_distance()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Tells whether point P is within a square distance SquareD from point C.</p>
+
+<h3 class="function"><a name="magnitude-1">magnitude/1</a></h3>
+<div class="spec">
+<p><tt>magnitude(V::<a href="#type-vector">vector()</a>) -&gt; <a href="#type-distance">distance()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the magnitude of the specified vector.</p>
+
+<h3 class="function"><a name="make_unit-1">make_unit/1</a></h3>
+<div class="spec">
+<p><tt>make_unit(V::<a href="#type-vector">vector()</a>) -&gt; <a href="#type-vector">vector()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the specified vector with an unit length (whose magnitude is thus
+ 1).
+</p>
+
+<h3 class="function"><a name="roundify-1">roundify/1</a></h3>
+<div class="spec">
+<p><tt>roundify(X1::<a href="#type-point">point()</a>) -&gt; <a href="#type-integer_point">integer_point()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a point (or vector) whose coordinates have been rounded to the
+ respective nearest integers.
+</p>
+
+<h3 class="function"><a name="scale-2">scale/2</a></h3>
+<div class="spec">
+<p><tt>scale(V::<a href="#type-vector">vector()</a>, Factor::<a href="#type-factor">factor()</a>) -&gt; <a href="#type-vector">vector()</a></tt><br></p>
+<p> </p>
+</div><p>Scales specified vector of specified factor.</p>
+
+<h3 class="function"><a name="square_distance-2">square_distance/2</a></h3>
+<div class="spec">
+<p><tt>square_distance(X1::<a href="#type-point">point()</a>, X2::<a href="#type-point">point()</a>) -&gt; <a href="#type-square_distance">square_distance()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the square of the distance between the two specified points.</p>
+
+ <p>For comparison purposes, computing the square root is useless.</p>
+
+ Could rely on vectorize and square_magnitude as well.
+</p>
+
+<h3 class="function"><a name="square_magnitude-1">square_magnitude/1</a></h3>
+<div class="spec">
+<p><tt>square_magnitude(V::<a href="#type-vector">vector()</a>) -&gt; <a href="#type-square_distance">square_distance()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the square of the magnitude of the specified vector.</p>
+
+<h3 class="function"><a name="to_string-1">to_string/1</a></h3>
+<div class="spec">
+<p><tt>to_string(X1::<a href="#type-point">point()</a> | <a href="#type-vector">vector()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a stringified representation of specified point or vector.</p>
+
+<h3 class="function"><a name="translate-2">translate/2</a></h3>
+<div class="spec">
+<p><tt>translate(P::<a href="#type-point">point()</a>, V::<a href="#type-vector">vector()</a>) -&gt; <a href="#type-point">point()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a point corresponding to the specified point P translated by the
+ specified vector V.
+</p>
+
+<h3 class="function"><a name="vectorize-2">vectorize/2</a></h3>
+<div class="spec">
+<p><tt>vectorize(P1::<a href="#type-point">point()</a>, P2::<a href="#type-point">point()</a>) -&gt; <a href="#type-vector">vector()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a vector V made from the specified two points: V=P2-P1.</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

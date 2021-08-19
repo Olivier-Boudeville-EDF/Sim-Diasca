@@ -1,0 +1,683 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module unit_utils</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module unit_utils</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of <b>unit management</b> facilities, to denote quantities 
+first in a simple, ad hoc, limited form, then on a more formal, heavyweight 
+one.
+
+
+<h2><a name="description">Description</a></h2><p>Gathering of <b>unit management</b> facilities, to denote quantities 
+first in a simple, ad hoc, limited form, then on a more formal, heavyweight 
+one.</p>
+
+ <p>All kinds of units are listed here, alongside the reference ones (ex: the 
+meter is the unit of length in the International System of Units).</p>
+
+ <p>One objective is to be able to specify, instead of mere values (ex: "1.14"), 
+values with units (ex: "1.14 km/h"), and possibly to convert them into a 
+canonical form transparently, for automated checking and exact conversion.</p>
+
+ <p>See unit_utils_test.erl for the corresponding test.</p>
+
+ Read the 'Management of Units' section of the technical manual of the Myriad
+ Layer for more information.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-absolute_month">absolute_month()</a></h3>
+<p><tt>absolute_month() = {<a href="#type-year">year()</a>, <a href="#type-canonical_month">canonical_month()</a>}</tt></p>
+<p> Absolute months.</p>
+
+<h3 class="typedecl"><a name="type-angle_reference_unit">angle_reference_unit()</a></h3>
+<p><tt>angle_reference_unit() = radians</tt></p>
+
+
+<h3 class="typedecl"><a name="type-angle_units">angle_units()</a></h3>
+<p><tt>angle_units() = <a href="#type-angle_reference_unit">angle_reference_unit()</a> | degrees | int_degrees</tt></p>
+
+
+<h3 class="typedecl"><a name="type-any_second">any_second()</a></h3>
+<p><tt>any_second() = <a href="#type-second">second()</a> | <a href="#type-float_second">float_second()</a></tt></p>
+<p> Any type of second (integer or float).</p>
+
+<h3 class="typedecl"><a name="type-any_seconds">any_seconds()</a></h3>
+<p><tt>any_seconds() = <a href="#type-seconds">seconds()</a> | <a href="#type-float_seconds">float_seconds()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-base_unit_symbol">base_unit_symbol()</a></h3>
+<p><tt>base_unit_symbol() = m | g | s | 'A' | 'K' | mol | cd</tt></p>
+<p><p> The seven SI base units are:</p>
+
+ <p>- meter, for length [m]</p>
+
+ <p>- kilogram, for mass [kg]; we use gram ([g]) instead, as no prefix is wanted 
+here</p>
+
+ <p>- second, for time [s]</p>
+
+ <p>- ampere, for electric current [A]</p>
+
+ <p>- kelvin, for thermodynamic temperature [K]</p>
+
+ <p>- mole, for the amount of substance [mol]</p>
+
+ - candela, for luminous intensity [cd]</p>
+
+<h3 class="typedecl"><a name="type-canonical_day">canonical_day()</a></h3>
+<p><tt>canonical_day() = 1..31</tt></p>
+<p> Day in the month.</p>
+
+<h3 class="typedecl"><a name="type-canonical_hour">canonical_hour()</a></h3>
+<p><tt>canonical_hour() = 0..23</tt></p>
+<p> Hour in the day.</p>
+
+<h3 class="typedecl"><a name="type-canonical_microsecond">canonical_microsecond()</a></h3>
+<p><tt>canonical_microsecond() = 0..999999</tt></p>
+<p> Microsecond in the second.</p>
+
+<h3 class="typedecl"><a name="type-canonical_millisecond">canonical_millisecond()</a></h3>
+<p><tt>canonical_millisecond() = 0..999</tt></p>
+<p> Millisecond in the second.</p>
+
+<h3 class="typedecl"><a name="type-canonical_minute">canonical_minute()</a></h3>
+<p><tt>canonical_minute() = 0..59</tt></p>
+<p> Minute in the hour.</p>
+
+<h3 class="typedecl"><a name="type-canonical_month">canonical_month()</a></h3>
+<p><tt>canonical_month() = 1..12</tt></p>
+<p> Month in the year; could be calendar:month().</p>
+
+<h3 class="typedecl"><a name="type-canonical_second">canonical_second()</a></h3>
+<p><tt>canonical_second() = 0..59</tt></p>
+<p> Second in the minute.</p>
+
+<h3 class="typedecl"><a name="type-canonical_unit">canonical_unit()</a></h3>
+<p><tt>canonical_unit() = #canonical_unit{meter = <a href="#type-exponent">exponent()</a>, gram = <a href="#type-exponent">exponent()</a>, second = <a href="#type-exponent">exponent()</a>, ampere = <a href="#type-exponent">exponent()</a>, kelvin = <a href="#type-exponent">exponent()</a>, mole = <a href="#type-exponent">exponent()</a>, candela = <a href="#type-exponent">exponent()</a>, other_units = [{<a href="#type-non_standard_unit_symbol">non_standard_unit_symbol()</a>, <a href="#type-exponent">exponent()</a>}], order = <a href="#type-magnitude_order">magnitude_order()</a>, factor = <a href="#type-multiplying_factor">multiplying_factor()</a>}</tt></p>
+<p> Actual internal, canonical form for any unit (relying on the 7 SI base units,
+ an order of magnitude and a multiplying factor).</p>
+
+<h3 class="typedecl"><a name="type-celsius">celsius()</a></h3>
+<p><tt>celsius() = float()</tt></p>
+<p> In degree Celsius (°C).</p>
+
+<h3 class="typedecl"><a name="type-cubic_meters">cubic_meters()</a></h3>
+<p><tt>cubic_meters() = float()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-day">day()</a></h3>
+<p><tt>day() = integer()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-days">days()</a></h3>
+<p><tt>days() = integer()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-degrees">degrees()</a></h3>
+<p><tt>degrees() = float()</tt></p>
+<p><p> Angle in degrees.</p>
+
+ Preferably to be kept in [0.0,360.0[.</p>
+
+<h3 class="typedecl"><a name="type-derived_unit_symbol">derived_unit_symbol()</a></h3>
+<p><tt>derived_unit_symbol() = 'Hz' | rad | sr | 'N' | 'Pa' | 'J' | 'W' | 'C' | 'V' | 'F' | 'Ohm' | 'S' | 'T' | 'H' | '°C' | lm | lx | 'Bq' | 'Gy' | 'Sv' | kat</tt></p>
+<p><p> The derived base units currently supported:</p>
+
+ <p>- hertz, for frequency [Hz]</p>
+
+ <p>- radian, for angle [rad]</p>
+
+ <p>- steradian, for solid angle [sr]</p>
+
+ <p>- newton, for force, weight [N]</p>
+
+ <p>- pascal, forpressure, stress [Pa]</p>
+
+ <p>- joule, for energy, work, heat [J]</p>
+
+ <p>- watt, for power, radiant flux [W]</p>
+
+ <p>- coulomb, for electric charge or quantity of electricity [C]</p>
+
+ <p>- volt, for voltage, electrical potential difference, electromotive force [V]</p>
+
+ <p>- farad, for electrical capacitance [F]</p>
+
+ <p>- ohm, for electrical resistance, impedance, reactance [ohm]</p>
+
+ <p>- siemens, for electrical conductance [S]</p>
+
+ <p>- tesla, for magnetic field strength, magnetic flux density [T]</p>
+
+ <p>- henry, for inductance [H]</p>
+
+ <p>- degree Celsius, for temperature relative to 273.15 K [°C]</p>
+
+ <p>- lumen, for luminous flux [lm]</p>
+
+ <p>- lux, for illuminance [lx]</p>
+
+ <p>- becquerel, for radioactive decays per unit time [Bq]</p>
+
+ <p>- gray, for absorbed dose of ionizing radiation [Gy]</p>
+
+ <p>- sievert, for equivalent dose of ionizing radiation [Sv]</p>
+
+ - katal, for catalytic activity [kat]</p>
+
+<h3 class="typedecl"><a name="type-energy_reference_unit">energy_reference_unit()</a></h3>
+<p><tt>energy_reference_unit() = joules</tt></p>
+
+
+<h3 class="typedecl"><a name="type-energy_units">energy_units()</a></h3>
+<p><tt>energy_units() = <a href="#type-energy_reference_unit">energy_reference_unit()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-exponent">exponent()</a></h3>
+<p><tt>exponent() = integer()</tt></p>
+<p> Exponentiation of a unit (ex: 2 for square meters, m^2).</p>
+
+<h3 class="typedecl"><a name="type-float_second">float_second()</a></h3>
+<p><tt>float_second() = float()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-float_seconds">float_seconds()</a></h3>
+<p><tt>float_seconds() = float()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-grams">grams()</a></h3>
+<p><tt>grams() = float()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-hertz">hertz()</a></h3>
+<p><tt>hertz() = float()</tt></p>
+<p> Frequency.</p>
+
+<h3 class="typedecl"><a name="type-hour">hour()</a></h3>
+<p><tt>hour() = integer()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-hours">hours()</a></h3>
+<p><tt>hours() = integer()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-int_degrees">int_degrees()</a></h3>
+<p><tt>int_degrees() = integer()</tt></p>
+<p><p> Angle in degrees.</p>
+
+ Strictly expected to be in [0,360[.</p>
+
+<h3 class="typedecl"><a name="type-int_millimeters">int_millimeters()</a></h3>
+<p><tt>int_millimeters() = integer()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-joules">joules()</a></h3>
+<p><tt>joules() = float()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-kilograms">kilograms()</a></h3>
+<p><tt>kilograms() = float()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-kilometers">kilometers()</a></h3>
+<p><tt>kilometers() = float()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-km_per_hour">km_per_hour()</a></h3>
+<p><tt>km_per_hour() = float()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-length_reference_unit">length_reference_unit()</a></h3>
+<p><tt>length_reference_unit() = meters</tt></p>
+
+
+<h3 class="typedecl"><a name="type-length_units">length_units()</a></h3>
+<p><tt>length_units() = <a href="#type-length_reference_unit">length_reference_unit()</a> | millimeters | int_millimeters</tt></p>
+
+
+<h3 class="typedecl"><a name="type-litre">litre()</a></h3>
+<p><tt>litre() = float()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-magnitude_order">magnitude_order()</a></h3>
+<p><tt>magnitude_order() = integer()</tt></p>
+<p> Order of magnitude (exponent of 10).</p>
+
+<h3 class="typedecl"><a name="type-mass_reference_unit">mass_reference_unit()</a></h3>
+<p><tt>mass_reference_unit() = kilograms</tt></p>
+
+
+<h3 class="typedecl"><a name="type-mass_units">mass_units()</a></h3>
+<p><tt>mass_units() = <a href="#type-mass_reference_unit">mass_reference_unit()</a> | tons | grams</tt></p>
+
+
+<h3 class="typedecl"><a name="type-megasecond">megasecond()</a></h3>
+<p><tt>megasecond() = integer()</tt></p>
+<p> 10^6 seconds.</p>
+
+<h3 class="typedecl"><a name="type-megaseconds">megaseconds()</a></h3>
+<p><tt>megaseconds() = integer()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-meters">meters()</a></h3>
+<p><tt>meters() = float()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-meters_per_second">meters_per_second()</a></h3>
+<p><tt>meters_per_second() = float()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-meters_per_tick">meters_per_tick()</a></h3>
+<p><tt>meters_per_tick() = float()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-metric_prefix">metric_prefix()</a></h3>
+<p><tt>metric_prefix() = yotta | zetta | exa | peta | tera | giga | mega | kilo | hecto | deca | deci | centi | milli | micro | nano | pico | femto | atto | zepto | yocto</tt></p>
+
+
+<h3 class="typedecl"><a name="type-microsecond">microsecond()</a></h3>
+<p><tt>microsecond() = integer()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-microseconds">microseconds()</a></h3>
+<p><tt>microseconds() = integer()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-millimeters">millimeters()</a></h3>
+<p><tt>millimeters() = float()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-millisecond">millisecond()</a></h3>
+<p><tt>millisecond() = integer()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-milliseconds">milliseconds()</a></h3>
+<p><tt>milliseconds() = integer()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-minute">minute()</a></h3>
+<p><tt>minute() = integer()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-minutes">minutes()</a></h3>
+<p><tt>minutes() = integer()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-misc_units">misc_units()</a></h3>
+<p><tt>misc_units() = <a href="#type-rpm">rpm()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-month">month()</a></h3>
+<p><tt>month() = integer()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-months">months()</a></h3>
+<p><tt>months() = integer()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-mttf">mttf()</a></h3>
+<p><tt>mttf() = <a href="time_utils.html#type-dhms_duration">time_utils:dhms_duration()</a></tt></p>
+<p> Mean Time To Failure.</p>
+
+<h3 class="typedecl"><a name="type-multiplying_factor">multiplying_factor()</a></h3>
+<p><tt>multiplying_factor() = float()</tt></p>
+<p> Multiplying factor.</p>
+
+<h3 class="typedecl"><a name="type-non_standard_unit_symbol">non_standard_unit_symbol()</a></h3>
+<p><tt>non_standard_unit_symbol() = atom()</tt></p>
+<p> For non-SI units that cannot be anticipated (ex: teqCO2, singaporean dollar of
+ 2012, number of people, etc.).</p>
+
+<h3 class="typedecl"><a name="type-numerical_value">numerical_value()</a></h3>
+<p><tt>numerical_value() = float()</tt></p>
+<p> The actual value whose unit may be associated to.</p>
+
+<h3 class="typedecl"><a name="type-prefix_symbol">prefix_symbol()</a></h3>
+<p><tt>prefix_symbol() = <a href="#type-ustring">ustring()</a></tt></p>
+<p> Symbol of metric prefix (ex: "da" for 'deca').</p>
+
+<h3 class="typedecl"><a name="type-radians">radians()</a></h3>
+<p><tt>radians() = float()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-rpm">rpm()</a></h3>
+<p><tt>rpm() = float()</tt></p>
+<p> Revolutions per minute (also known as RPM, rev/min, r/min, or with the
+ notation min^-1) is a number of turns made per minute; a unit of rotational
+ speed or the frequency of rotation around a fixed axis.</p>
+
+<h3 class="typedecl"><a name="type-second">second()</a></h3>
+<p><tt>second() = integer()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-seconds">seconds()</a></h3>
+<p><tt>seconds() = integer()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-special_unit_symbol">special_unit_symbol()</a></h3>
+<p><tt>special_unit_symbol() = dimensionless | '$' | euros | unspecified_unit</tt></p>
+<p><p> The special units, designating:</p>
+
+ <p>- dimension-less quantities (ex: a count), [dimensionless] (most probably 
+clearer than m/m)</p>
+
+ <p>- currencies, either [$] (US Dollar) or [euros] (Euro)</p>
+
+ - values whose unit has not been specified [unspecified_unit]</p>
+
+<h3 class="typedecl"><a name="type-square_meters">square_meters()</a></h3>
+<p><tt>square_meters() = float()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-square_seconds">square_seconds()</a></h3>
+<p><tt>square_seconds() = float()</tt></p>
+<p> Square seconds (s^2).</p>
+
+<h3 class="typedecl"><a name="type-surface_reference_unit">surface_reference_unit()</a></h3>
+<p><tt>surface_reference_unit() = <a href="#type-square_meters">square_meters()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-surface_units">surface_units()</a></h3>
+<p><tt>surface_units() = <a href="#type-square_meters">square_meters()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-time_reference_unit">time_reference_unit()</a></h3>
+<p><tt>time_reference_unit() = seconds</tt></p>
+
+
+<h3 class="typedecl"><a name="type-time_units">time_units()</a></h3>
+<p><tt>time_units() = <a href="#type-time_reference_unit">time_reference_unit()</a> | years | days | hours | minutes | milliseconds | microseconds</tt></p>
+<p> Months and weeks not specifically useful here.</p>
+
+<h3 class="typedecl"><a name="type-tons">tons()</a></h3>
+<p><tt>tons() = float()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-unit_bin_string">unit_bin_string()</a></h3>
+<p><tt>unit_bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></tt></p>
+<p> Binary counterpart of a unit string.</p>
+
+<h3 class="typedecl"><a name="type-unit_string">unit_string()</a></h3>
+<p><tt>unit_string() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><p> String containing a unit, in standard form (ex: "km/h", "mW.m^-3").</p>
+
+ Read the 'Management of Units' section of the technical manual of the Myriad
+ Layer for more information.</p>
+
+<h3 class="typedecl"><a name="type-unit_symbol">unit_symbol()</a></h3>
+<p><tt>unit_symbol() = <a href="#type-base_unit_symbol">base_unit_symbol()</a> | <a href="#type-derived_unit_symbol">derived_unit_symbol()</a> | <a href="#type-widely_used_unit_symbol">widely_used_unit_symbol()</a> | <a href="#type-special_unit_symbol">special_unit_symbol()</a> | <a href="#type-non_standard_unit_symbol">non_standard_unit_symbol()</a></tt></p>
+<p> All unit symbols (actually not used as such).</p>
+
+<h3 class="typedecl"><a name="type-units">units()</a></h3>
+<p><tt>units() = <a href="#type-time_units">time_units()</a> | <a href="#type-length_units">length_units()</a> | <a href="#type-volume_units">volume_units()</a> | <a href="#type-mass_units">mass_units()</a> | <a href="#type-energy_units">energy_units()</a> | <a href="#type-angle_units">angle_units()</a> | <a href="#type-misc_units">misc_units()</a></tt></p>
+<p> All kinds of units.</p>
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-volume_reference_unit">volume_reference_unit()</a></h3>
+<p><tt>volume_reference_unit() = <a href="#type-cubic_meters">cubic_meters()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-volume_units">volume_units()</a></h3>
+<p><tt>volume_units() = <a href="#type-volume_reference_unit">volume_reference_unit()</a> | litre</tt></p>
+
+
+<h3 class="typedecl"><a name="type-week">week()</a></h3>
+<p><tt>week() = integer()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-weeks">weeks()</a></h3>
+<p><tt>weeks() = integer()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-widely_used_unit_symbol">widely_used_unit_symbol()</a></h3>
+<p><tt>widely_used_unit_symbol() = min | h | 'L' | t | eV</tt></p>
+<p><p> The units widely used in conjunction with SI units:</p>
+
+ <p>- minute, for 60-second durations [min]</p>
+
+ <p>- hour, for 60-minute durations [h]</p>
+
+ <p>- litre, for 10^-3 m^3 volumes [L]</p>
+
+ <p>- tonne, for 1,000 kilogram masses [t]</p>
+
+ - electronvolt, for 1.602176565(35).10-19 joule energies  [eV]</p>
+
+<h3 class="typedecl"><a name="type-year">year()</a></h3>
+<p><tt>year() = integer()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-years">years()</a></h3>
+<p><tt>years() = integer()</tt></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#are_units_identical-2">are_units_identical/2</a></td><td>Tells whether the two specified units are strictly the same.</td></tr>
+<tr><td valign="top"><a href="#get_factor-1">get_factor/1</a></td><td>Returns the multiplying factor of the specified unit.</td></tr>
+<tr><td valign="top"><a href="#get_order-1">get_order/1</a></td><td>Returns the magnitude order of the specified unit.</td></tr>
+<tr><td valign="top"><a href="#get_order_for_prefix-1">get_order_for_prefix/1</a></td><td>Returns the magnitude order corresponding to the specified symbol 
+(string) of metric prefix.</td></tr>
+<tr><td valign="top"><a href="#get_prefix_for_order-1">get_prefix_for_order/1</a></td><td>Returns the metric prefix (if any) corresponding to the specified 
+magnitude order.</td></tr>
+<tr><td valign="top"><a href="#get_prefix_information-0">get_prefix_information/0</a></td><td>Returns a list of all metric prefixes, together with their symbol and 
+order of magnitude.</td></tr>
+<tr><td valign="top"><a href="#human_time_to_milliseconds-5">human_time_to_milliseconds/5</a></td><td>Converts specified duration, expressed in a user-friendly time (for 
+humans, typically obtained from time_utils:duration_to_string/1) into an 
+integer number of milliseconds.</td></tr>
+<tr><td valign="top"><a href="#is_canonical_unit-1">is_canonical_unit/1</a></td><td>Tells whether specified term is an actual, canonical unit.</td></tr>
+<tr><td valign="top"><a href="#km_per_hour_to_meters_per_second-1">km_per_hour_to_meters_per_second/1</a></td><td>Converts km/h to m/s.</td></tr>
+<tr><td valign="top"><a href="#maybe_rpm_to_string-1">maybe_rpm_to_string/1</a></td><td>Returns a textual, possibly rounded, description of the specified
+ rotation speed (if any).</td></tr>
+<tr><td valign="top"><a href="#maybe_temperature_to_string-1">maybe_temperature_to_string/1</a></td><td>Returns a textual, possibly rounded, description of the specified
+ temperature (if any).</td></tr>
+<tr><td valign="top"><a href="#meters_per_second_to_km_per_hour-1">meters_per_second_to_km_per_hour/1</a></td><td>Converts m/s to km/h.</td></tr>
+<tr><td valign="top"><a href="#parse_unit-1">parse_unit/1</a></td><td>Parses specified string, expected to contain a unit (ex: "kW.m/h^2"), and
+ returns a canonical unit.</td></tr>
+<tr><td valign="top"><a href="#parse_value_with_unit-1">parse_value_with_unit/1</a></td><td>Parses specified string (expected to be a unit_string()) containing a 
+value and its unit (ex: "-8.15 kW.m/h^2"), and returns them in a 
+program-tractable form, that is a pair made of the value (as a float) and the 
+corresponding unit, in canonical form.</td></tr>
+<tr><td valign="top"><a href="#pure_unit_to_string-1">pure_unit_to_string/1</a></td><td>Returns a textual representation of the raw unit only (factor and order 
+ignored) for the specified canonical unit.</td></tr>
+<tr><td valign="top"><a href="#rpm_to_string-1">rpm_to_string/1</a></td><td>Returns a textual, possibly rounded, description of the specified
+ rotation speed.</td></tr>
+<tr><td valign="top"><a href="#temperature_to_string-1">temperature_to_string/1</a></td><td>Returns a textual, possibly rounded, description of the specified
+ temperature.</td></tr>
+<tr><td valign="top"><a href="#unit_to_string-1">unit_to_string/1</a></td><td>Returns a textual representation of the specified canonical unit.</td></tr>
+<tr><td valign="top"><a href="#value_with_unit_to_string-2">value_with_unit_to_string/2</a></td><td>Returns a textual description of specified unit with a value.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="are_units_identical-2">are_units_identical/2</a></h3>
+<div class="spec">
+<p><tt>are_units_identical(Unit::<a href="#type-canonical_unit">canonical_unit()</a>, SecondUnit::<a href="#type-canonical_unit">canonical_unit()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Tells whether the two specified units are strictly the same.</p>
+
+<h3 class="function"><a name="get_factor-1">get_factor/1</a></h3>
+<div class="spec">
+<p><tt>get_factor(Unit::<a href="#type-canonical_unit">canonical_unit()</a>) -&gt; <a href="#type-multiplying_factor">multiplying_factor()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the multiplying factor of the specified unit.</p>
+
+<h3 class="function"><a name="get_order-1">get_order/1</a></h3>
+<div class="spec">
+<p><tt>get_order(Unit::<a href="#type-canonical_unit">canonical_unit()</a>) -&gt; <a href="#type-magnitude_order">magnitude_order()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the magnitude order of the specified unit.</p>
+
+<h3 class="function"><a name="get_order_for_prefix-1">get_order_for_prefix/1</a></h3>
+<div class="spec">
+<p><tt>get_order_for_prefix(PrefixSymbol::<a href="#type-prefix_symbol">prefix_symbol()</a>) -&gt; <a href="#type-magnitude_order">magnitude_order()</a> | unknown_prefix</tt><br></p>
+<p> </p>
+</div><p><p>Returns the magnitude order corresponding to the specified symbol 
+(string) of metric prefix.</p>
+
+ Note: could be predetermined at build time.
+</p>
+
+<h3 class="function"><a name="get_prefix_for_order-1">get_prefix_for_order/1</a></h3>
+<div class="spec">
+<p><tt>get_prefix_for_order(Order::<a href="#type-magnitude_order">magnitude_order()</a>) -&gt; <a href="#type-metric_prefix">metric_prefix()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the metric prefix (if any) corresponding to the specified 
+magnitude order.</p>
+
+ Note: could be predetermined at build time.
+</p>
+
+<h3 class="function"><a name="get_prefix_information-0">get_prefix_information/0</a></h3>
+<div class="spec">
+<p><tt>get_prefix_information() -&gt; [{<a href="#type-metric_prefix">metric_prefix()</a>, <a href="#type-prefix_symbol">prefix_symbol()</a>, <a href="#type-magnitude_order">magnitude_order()</a>}]</tt><br></p>
+<p> </p>
+</div><p><p>Returns a list of all metric prefixes, together with their symbol and 
+order of magnitude.</p>
+
+ <p>For example: {'kilo', "k", 3} means that there are 10^3 grams in a kilogram, 
+and that this prefix is represented as "k".</p>
+
+ We can see that a symbol may span over multiple characters (ex : "da") and
+ even use non-ASCII characters (ex: "µ").
+</p>
+
+<h3 class="function"><a name="human_time_to_milliseconds-5">human_time_to_milliseconds/5</a></h3>
+<div class="spec">
+<p><tt>human_time_to_milliseconds(Day::<a href="#type-days">days()</a>, Hour::<a href="#type-hours">hours()</a>, Minute::<a href="#type-minutes">minutes()</a>, Second::<a href="#type-seconds">seconds()</a>, Millisecond::<a href="#type-milliseconds">milliseconds()</a>) -&gt; <a href="#type-milliseconds">milliseconds()</a></tt><br></p>
+<p> </p>
+</div><p><p>Converts specified duration, expressed in a user-friendly time (for 
+humans, typically obtained from time_utils:duration_to_string/1) into an 
+integer number of milliseconds.</p>
+
+ Ex: "1 day, 12 hours, 31 minutes, 9 seconds and 235 milliseconds" translates
+ to {1, 12, 31, 9, 235} which, applied to this function, returns milliseconds.
+</p>
+
+<h3 class="function"><a name="is_canonical_unit-1">is_canonical_unit/1</a></h3>
+<div class="spec">
+<p><tt>is_canonical_unit(Term::<a href="#type-canonical_unit">canonical_unit()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Tells whether specified term is an actual, canonical unit.</p>
+
+<h3 class="function"><a name="km_per_hour_to_meters_per_second-1">km_per_hour_to_meters_per_second/1</a></h3>
+<div class="spec">
+<p><tt>km_per_hour_to_meters_per_second(K::<a href="#type-km_per_hour">km_per_hour()</a>) -&gt; <a href="#type-meters_per_second">meters_per_second()</a></tt><br></p>
+<p> </p>
+</div><p>Converts km/h to m/s.</p>
+
+<h3 class="function"><a name="maybe_rpm_to_string-1">maybe_rpm_to_string/1</a></h3>
+<div class="spec">
+<p><tt>maybe_rpm_to_string(Rpm::<a href="#type-rpm">rpm()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual, possibly rounded, description of the specified
+ rotation speed (if any).
+</p>
+
+<h3 class="function"><a name="maybe_temperature_to_string-1">maybe_temperature_to_string/1</a></h3>
+<div class="spec">
+<p><tt>maybe_temperature_to_string(Temp::<a href="#type-maybe">maybe</a>(<a href="#type-celsius">celsius()</a>)) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual, possibly rounded, description of the specified
+ temperature (if any).
+</p>
+
+<h3 class="function"><a name="meters_per_second_to_km_per_hour-1">meters_per_second_to_km_per_hour/1</a></h3>
+<div class="spec">
+<p><tt>meters_per_second_to_km_per_hour(M::<a href="#type-meters_per_second">meters_per_second()</a>) -&gt; <a href="#type-km_per_hour">km_per_hour()</a></tt><br></p>
+<p> </p>
+</div><p>Converts m/s to km/h.</p>
+
+<h3 class="function"><a name="parse_unit-1">parse_unit/1</a></h3>
+<div class="spec">
+<p><tt>parse_unit(UnitString::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-canonical_unit">canonical_unit()</a></tt><br></p>
+<p> </p>
+</div><p>Parses specified string, expected to contain a unit (ex: "kW.m/h^2"), and
+ returns a canonical unit.
+</p>
+
+<h3 class="function"><a name="parse_value_with_unit-1">parse_value_with_unit/1</a></h3>
+<div class="spec">
+<p><tt>parse_value_with_unit(InputString::<a href="#type-ustring">ustring()</a>) -&gt; {<a href="#type-numerical_value">numerical_value()</a>, <a href="#type-canonical_unit">canonical_unit()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Parses specified string (expected to be a unit_string()) containing a 
+value and its unit (ex: "-8.15 kW.m/h^2"), and returns them in a 
+program-tractable form, that is a pair made of the value (as a float) and the 
+corresponding unit, in canonical form.</p>
+
+ <p>The input format is the following (in order):</p>
+
+ <p>- any leading or trimming whitespace are ignored</p>
+
+ <p>- a number, either as an integer (ex: "17") or as a floating point value (ex: 
+"17.0" or "2.2017764e+0"), possibly negative (hence starting with an optional 
+minus, ex: "-8.15")</p>
+
+ <p>- at least one whitespace</p>
+
+ <p>- a unit (ex: "kW.m/h^2")</p>
+
+ <p>Knowing that: 
+- a built-in unit is a base, derived, widely used, or special unit (ex: 'W') 
+- a prefixed unit is a built-in unit with a prefix (ex: 'kW') 
+- a unit component is a prefixed unit with an exponent (ex: 'km^-2') 
+- a unit operator is either '.' (dot, for multiply) or '/' (slash, for divide)</p>
+
+ The general format of a unit is then: a series of unit components with one
+ unit operator intercalated between two successive components (no whitespace
+ allowed).
+</p>
+
+<h3 class="function"><a name="pure_unit_to_string-1">pure_unit_to_string/1</a></h3>
+<div class="spec">
+<p><tt>pure_unit_to_string(Unit::<a href="#type-canonical_unit">canonical_unit()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns a textual representation of the raw unit only (factor and order 
+ignored) for the specified canonical unit.</p>
+
+ Note: unit_to_string/1 shall be the relevant function for most uses.
+</p>
+
+<h3 class="function"><a name="rpm_to_string-1">rpm_to_string/1</a></h3>
+<div class="spec">
+<p><tt>rpm_to_string(Rpm::<a href="#type-rpm">rpm()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual, possibly rounded, description of the specified
+ rotation speed.
+</p>
+
+<h3 class="function"><a name="temperature_to_string-1">temperature_to_string/1</a></h3>
+<div class="spec">
+<p><tt>temperature_to_string(Temp::<a href="#type-celsius">celsius()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual, possibly rounded, description of the specified
+ temperature.
+</p>
+
+<h3 class="function"><a name="unit_to_string-1">unit_to_string/1</a></h3>
+<div class="spec">
+<p><tt>unit_to_string(Unit::<a href="#type-canonical_unit">canonical_unit()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual representation of the specified canonical unit.</p>
+
+<h3 class="function"><a name="value_with_unit_to_string-2">value_with_unit_to_string/2</a></h3>
+<div class="spec">
+<p><tt>value_with_unit_to_string(Value::<a href="#type-numerical_value">numerical_value()</a>, Unit::<a href="#type-canonical_unit">canonical_unit()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of specified unit with a value.</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

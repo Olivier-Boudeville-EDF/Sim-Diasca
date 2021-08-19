@@ -1,0 +1,5 @@
+%% encoding: UTF-8
+{application,'Ceylan-Traces'}.
+{modules,[class_TraceAggregator,class_TraceEmitter,class_TraceListener,
+          class_TraceSupervisor,traces,traces_app,traces_bridge_sup,
+          traces_for_apps,traces_for_tests,traces_sup,traces_utils]}.

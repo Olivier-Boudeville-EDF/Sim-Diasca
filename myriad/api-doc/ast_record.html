@@ -1,0 +1,163 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module ast_record</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module ast_record</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Module in charge of handling <b>records defined or used within an
+ AST</b>.
+
+
+<h2><a name="description">Description</a></h2><p>Module in charge of handling <b>records defined or used within an
+ AST</b>.</p>
+
+ See <a href="http://erlang.org/doc/apps/erts/absform.html" target="_top"><tt>http://erlang.org/doc/apps/erts/absform.html</tt></a> for more information.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-ast_field_id">ast_field_id()</a></h3>
+<p><tt>ast_field_id() = <a href="ast_base.html#type-ast_atom">ast_base:ast_atom()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-ast_pattern_field">ast_pattern_field()</a></h3>
+<p><tt>ast_pattern_field() = {record_field, <a href="#type-file_loc">file_loc()</a>, <a href="#type-ast_field_id">ast_field_id()</a> | {var, <a href="#type-file_loc">file_loc()</a>, '_'}, <a href="ast_pattern.html#type-ast_pattern">ast_pattern:ast_pattern()</a>}</tt></p>
+<p> Typically used in ast_pattern.</p>
+
+<h3 class="typedecl"><a name="type-ast_record_field_definition">ast_record_field_definition()</a></h3>
+<p><tt>ast_record_field_definition(ValueType) = <a href="#type-ast_untyped_record_field_definition">ast_untyped_record_field_definition</a>(ValueType) | <a href="#type-ast_typed_record_field_definition">ast_typed_record_field_definition</a>(ValueType)</tt></p>
+
+
+<h3 class="typedecl"><a name="type-ast_record_field_definition">ast_record_field_definition()</a></h3>
+<p><tt>ast_record_field_definition() = <a href="#type-ast_record_field_definition">ast_record_field_definition</a>(<a href="ast_base.html#type-ast_element">ast_base:ast_element()</a>)</tt></p>
+<p> AST definition for a field of a record, when creating it.</p>
+
+<h3 class="typedecl"><a name="type-ast_transforms">ast_transforms()</a></h3>
+<p><tt>ast_transforms() = <a href="ast_transform.html#type-ast_transforms">ast_transform:ast_transforms()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-ast_type">ast_type()</a></h3>
+<p><tt>ast_type() = <a href="ast_type.html#type-ast_type">ast_type:ast_type()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-ast_typed_record_field_definition">ast_typed_record_field_definition()</a></h3>
+<p><tt>ast_typed_record_field_definition(ValueType) = {typed_record_field, <a href="#type-file_loc">file_loc()</a>, <a href="#type-ast_untyped_record_field_definition">ast_untyped_record_field_definition</a>(ValueType), <a href="#type-ast_type">ast_type()</a>}</tt></p>
+
+
+<h3 class="typedecl"><a name="type-ast_untyped_record_field_definition">ast_untyped_record_field_definition()</a></h3>
+<p><tt>ast_untyped_record_field_definition() = <a href="#type-ast_untyped_record_field_definition">ast_untyped_record_field_definition</a>(term())</tt></p>
+
+
+<h3 class="typedecl"><a name="type-ast_untyped_record_field_definition">ast_untyped_record_field_definition()</a></h3>
+<p><tt>ast_untyped_record_field_definition(ValueType) = {record_field, <a href="#type-file_loc">file_loc()</a>, <a href="#type-ast_field_id">ast_field_id()</a>, ValueType}</tt></p>
+<p><p> AST definition for a field of a record, when creating it.</p>
+
+ Precisely: {record_field, FILE_LOC, Rep(Field_1), Rep(ValueType)}
+</p>
+
+<h3 class="typedecl"><a name="type-field_definition">field_definition()</a></h3>
+<p><tt>field_definition() = {<a href="#type-maybe_ast_type">maybe_ast_type()</a>, <a href="#type-maybe_ast_immediate_value">maybe_ast_immediate_value()</a>, <a href="#type-file_loc">file_loc()</a>, <a href="#type-file_loc">file_loc()</a>}</tt></p>
+<p> Defines the field of a type of record (type and default value, if specified;
+ lines are also stored so that the full, actual form can be recreated - far
+ clearer to interpret afterwards).</p>
+
+<h3 class="typedecl"><a name="type-field_id">field_id()</a></h3>
+<p><tt>field_id() = <a href="#type-field_name">field_name()</a> | '_'</tt></p>
+<p> Field identifier, possibly '_'.</p>
+
+<h3 class="typedecl"><a name="type-field_name">field_name()</a></h3>
+<p><tt>field_name() = <a href="basic_utils.html#type-field_name">basic_utils:field_name()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-field_pair">field_pair()</a></h3>
+<p><tt>field_pair() = {<a href="#type-field_name">field_name()</a>, <a href="#type-field_definition">field_definition()</a>}</tt></p>
+
+
+<h3 class="typedecl"><a name="type-file_loc">file_loc()</a></h3>
+<p><tt>file_loc() = <a href="ast_base.html#type-file_loc">ast_base:file_loc()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-located_form">located_form()</a></h3>
+<p><tt>located_form() = <a href="ast_info.html#type-located_form">ast_info:located_form()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-maybe_ast_immediate_value">maybe_ast_immediate_value()</a></h3>
+<p><tt>maybe_ast_immediate_value() = <a href="ast_value.html#type-maybe_ast_immediate_value">ast_value:maybe_ast_immediate_value()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-maybe_ast_type">maybe_ast_type()</a></h3>
+<p><tt>maybe_ast_type() = <a href="ast_type.html#type-maybe_ast_type">ast_type:maybe_ast_type()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-record_definition">record_definition()</a></h3>
+<p><tt>record_definition() = <a href="ast_info.html#type-record_definition">ast_info:record_definition()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-record_name">record_name()</a></h3>
+<p><tt>record_name() = <a href="basic_utils.html#type-record_name">basic_utils:record_name()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-record_pair">record_pair()</a></h3>
+<p><tt>record_pair() = {<a href="#type-record_name">record_name()</a>, <a href="#type-record_definition">record_definition()</a>}</tt></p>
+
+
+<h3 class="typedecl"><a name="type-record_table">record_table()</a></h3>
+<p><tt>record_table() = <a href="ast_info.html#type-record_table">ast_info:record_table()</a></tt></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#get_located_forms_for-1">get_located_forms_for/1</a></td><td>Returns located forms corresponding to specified record table.</td></tr>
+<tr><td valign="top"><a href="#transform_record_definitions-2">transform_record_definitions/2</a></td><td>Transforms the specified record definitions (ex: coming for the 'records'
+ field of a module_info record), according to specified transforms.</td></tr>
+<tr><td valign="top"><a href="#transform_record_field_definition-2">transform_record_field_definition/2</a></td><td>Transforms specified record field definition.</td></tr>
+<tr><td valign="top"><a href="#transform_record_field_definitions-2">transform_record_field_definitions/2</a></td><td>Transforms specified record fields, at creation, applying to each record 
+field the specified function to perform the relevant transformations (that 
+depends on the context; ex: if being in a guard, in an expression).</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="get_located_forms_for-1">get_located_forms_for/1</a></h3>
+<div class="spec">
+<p><tt>get_located_forms_for(RecordTable::<a href="#type-record_table">record_table()</a>) -&gt; [<a href="#type-located_form">located_form()</a>]</tt><br></p>
+<p> </p>
+</div><p>Returns located forms corresponding to specified record table.</p>
+
+<h3 class="function"><a name="transform_record_definitions-2">transform_record_definitions/2</a></h3>
+<div class="spec">
+<p><tt>transform_record_definitions(RecordTable::<a href="ast_info.html#type-record_table">ast_info:record_table()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="ast_info.html#type-record_table">ast_info:record_table()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
+<p> </p>
+</div><p>Transforms the specified record definitions (ex: coming for the 'records'
+ field of a module_info record), according to specified transforms.
+</p>
+
+<h3 class="function"><a name="transform_record_field_definition-2">transform_record_field_definition/2</a></h3>
+<div class="spec">
+<p><tt>transform_record_field_definition(RF::<a href="#type-ast_record_field_definition">ast_record_field_definition()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="#type-ast_record_field_definition">ast_record_field_definition()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Transforms specified record field definition.</p>
+
+ Ex: {record_field, FILE_LOC, Rep(Field_k), Rep(Gt_k)}.
+</p>
+
+<h3 class="function"><a name="transform_record_field_definitions-2">transform_record_field_definitions/2</a></h3>
+<div class="spec">
+<p><tt>transform_record_field_definitions(RecordFields::[<a href="#type-ast_record_field_definition">ast_record_field_definition()</a>], Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; [<a href="#type-ast_record_field_definition">ast_record_field_definition()</a>]</tt><br></p>
+<p> </p>
+</div><p><p>Transforms specified record fields, at creation, applying to each record 
+field the specified function to perform the relevant transformations (that 
+depends on the context; ex: if being in a guard, in an expression).</p>
+
+ (counterpart of record_inits/1 in erl_id_trans)
+</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

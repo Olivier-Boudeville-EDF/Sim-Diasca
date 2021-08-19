@@ -1,0 +1,822 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module map_hashtable</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module map_hashtable</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Implementation of an <b>associative table based on the <code>map</code>
+ module</b>.
+
+
+<h2><a name="description">Description</a></h2><p>Implementation of an <b>associative table based on the <code>map</code>
+ module</b>.</p>
+
+ <p>Supposedly the most efficient native available implementation of an 
+associative table.</p>
+
+ <p>See <code>map_table_test.erl</code> for the corresponding test.
+ See <code>hashtable.erl</code> for the parent, base implementation.</p>
+
+
+ <p>We provide different multiple types of hashtables, including:</p>
+
+ <p>- 'hashtable', the most basic, safest, reference implementation - and quite 
+efficient as well</p>
+
+ <p>- 'tracked_hashtable', an attempt of optimisation of it (not necessarily the 
+best)</p>
+
+ <p>- 'lazy_hashtable', deciding to optimise in a less costly way than 
+'tracked_hashtable'</p>
+
+ <p>- 'map_hashtable' (this module), which is the newest, probably most efficient 
+in most cases implementation (speed/size compromise)</p>
+
+ <p>- 'list_table', a list-based implementation, efficient for smaller tables (and 
+only them)</p>
+
+ All these types of tables are to provide the same API (signatures and
+ contracts), yet one should note that this module is the one that tends to
+ supersede all others, and that over time features have been added that may not
+ have been back-ported to the other table types.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-accumulator">accumulator()</a></h3>
+<p><tt>accumulator() = <a href="basic_utils.html#type-accumulator">basic_utils:accumulator()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-entries">entries()</a></h3>
+<p><tt>entries() = <a href="hashtable.html#type-entries">hashtable:entries()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-entry">entry()</a></h3>
+<p><tt>entry() = <a href="hashtable.html#type-entry">hashtable:entry()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-entry_count">entry_count()</a></h3>
+<p><tt>entry_count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-key">key()</a></h3>
+<p><tt>key() = <a href="hashtable.html#type-key">hashtable:key()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-map_hashtable">map_hashtable()</a></h3>
+<p><b>abstract datatype</b>: <tt>map_hashtable(_K, _V)</tt></p>
+
+
+<h3 class="typedecl"><a name="type-map_hashtable">map_hashtable()</a></h3>
+<p><b>abstract datatype</b>: <tt>map_hashtable()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-value">value()</a></h3>
+<p><tt>value() = <a href="hashtable.html#type-value">hashtable:value()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-void">void()</a></h3>
+<p><tt>void() = <a href="basic_utils.html#type-void">basic_utils:void()</a></tt></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add_entries-2">add_entries/2</a></td><td>Adds specified list of key/value pairs into the specified map table.</td></tr>
+<tr><td valign="top"><a href="#add_entry-3">add_entry/3</a></td><td>Adds specified key/value pair into the specified map hashtable.</td></tr>
+<tr><td valign="top"><a href="#add_new_entries-2">add_new_entries/2</a></td><td>Adds specified list of key/value pairs into the specified map table,
+ expecting that none of these keys is already defined in this table (otherwise
+ an exception is thrown).</td></tr>
+<tr><td valign="top"><a href="#add_new_entry-3">add_new_entry/3</a></td><td>Adds specified key/value pair into the specified map hashtable, expecting
+ this key not to be already defined in this table.</td></tr>
+<tr><td valign="top"><a href="#add_to_entry-3">add_to_entry/3</a></td><td>Adds specified value to the value, supposed to be numerical, associated 
+to specified key.</td></tr>
+<tr><td valign="top"><a href="#append_list_to_entry-3">append_list_to_entry/3</a></td><td>Appends specified elements to the value, supposed to be a list, 
+associated to specified key.</td></tr>
+<tr><td valign="top"><a href="#append_list_to_existing_entry-3">append_list_to_existing_entry/3</a></td><td>Appends specified elements to the value, supposed to be a list, 
+associated to specified key.</td></tr>
+<tr><td valign="top"><a href="#append_to_entry-3">append_to_entry/3</a></td><td>Appends specified element to the value, supposed to be a list, associated 
+to specified key.</td></tr>
+<tr><td valign="top"><a href="#append_to_existing_entry-3">append_to_existing_entry/3</a></td><td>Appends specified element to the value, supposed to be a list, associated 
+to specified key, which must already exist in that table.</td></tr>
+<tr><td valign="top"><a href="#concat_list_to_entries-2">concat_list_to_entries/2</a></td><td>Concatenes (on the left) specified lists to the values, supposed to be 
+lists as well, associated to specified keys, the input being thus a list of 
+key/list-value pairs.</td></tr>
+<tr><td valign="top"><a href="#concat_to_entry-3">concat_to_entry/3</a></td><td>Concatenes (on the left) specified list to the value, supposed to be a 
+list as well, associated to specified key.</td></tr>
+<tr><td valign="top"><a href="#delete_existing_from_entry-3">delete_existing_from_entry/3</a></td><td>Deletes the first match of the specified element in the value associated 
+to specified key, this value being assumed to be a list.</td></tr>
+<tr><td valign="top"><a href="#delete_from_entry-3">delete_from_entry/3</a></td><td>Deletes the first match of the specified element in the value associated 
+to specified key, this value being assumed to be a list.</td></tr>
+<tr><td valign="top"><a href="#display-1">display/1</a></td><td>Displays the specified map hashtable on the standard output.</td></tr>
+<tr><td valign="top"><a href="#display-2">display/2</a></td><td>Displays the specified map hashtable on the standard output, with the
+ specified title on top.</td></tr>
+<tr><td valign="top"><a href="#enumerate-1">enumerate/1</a></td><td>Returns a flat list whose elements are all the key/value pairs of the 
+hashtable, in no particular order.</td></tr>
+<tr><td valign="top"><a href="#extract_entries-2">extract_entries/2</a></td><td>Extracts specified entries from specified hashtable, ie returns their 
+associated values (in-order) and removes these entries from the returned 
+table.</td></tr>
+<tr><td valign="top"><a href="#extract_entry-2">extract_entry/2</a></td><td>Extracts specified entry from specified hashtable, ie returns its 
+associated value and removes that entry from the returned table.</td></tr>
+<tr><td valign="top"><a href="#extract_entry_if_existing-2">extract_entry_if_existing/2</a></td><td>Extracts specified entry (if any) from specified table, ie returns its 
+associated value and removes that entry from the returned table.</td></tr>
+<tr><td valign="top"><a href="#extract_entry_with_defaults-3">extract_entry_with_defaults/3</a></td><td>Extracts specified entry from specified table, ie returns the 
+associated value and removes that entry from the table.</td></tr>
+<tr><td valign="top"><a href="#fold-3">fold/3</a></td><td>Folds specified anonymous function on all key/value pairs of the 
+specified map hashtable, based on specified initial accumulator.</td></tr>
+<tr><td valign="top"><a href="#fold_on_entries-3">fold_on_entries/3</a></td><td>Folds specified anonymous function on all entries of the specified map 
+hashtable.</td></tr>
+<tr><td valign="top"><a href="#get_all_values-2">get_all_values/2</a></td><td>Returns the (ordered) list of values that correspond to the specified 
+(ordered) list of keys of this table, ensuring that all entries in the 
+specified table have been read, otherwise throwing an exception.</td></tr>
+<tr><td valign="top"><a href="#get_value-2">get_value/2</a></td><td>Retrieves the value corresponding to the specified (existing) key, and 
+returns it directly.</td></tr>
+<tr><td valign="top"><a href="#get_value_with_defaults-3">get_value_with_defaults/3</a></td><td>Looks for specified entry in specified table and, if found, returns the
+ associated value; otherwise returns the specified default value.</td></tr>
+<tr><td valign="top"><a href="#get_values-2">get_values/2</a></td><td>Returns the (ordered) list of values that correspond to the specified 
+(ordered) list of keys of this table.</td></tr>
+<tr><td valign="top"><a href="#has_entry-2">has_entry/2</a></td><td>Tells whether the specified key exists in the table: returns true or
+ false.</td></tr>
+<tr><td valign="top"><a href="#is_empty-1">is_empty/1</a></td><td>Returns whether the specified hashtable is empty (not storing any
+ key/value pair).</td></tr>
+<tr><td valign="top"><a href="#keys-1">keys/1</a></td><td>Returns a list containing all the keys of this hashtable.</td></tr>
+<tr><td valign="top"><a href="#lookup_entry-2">lookup_entry/2</a></td><td>Looks-up specified entry (designated by its key) in specified map table.</td></tr>
+<tr><td valign="top"><a href="#map-2">map/2</a></td><td>Applies (maps) the specified anonymous function to each of the values 
+contained in this hashtable: to each key will be associated the value returned 
+by this function when applied to that key and its current value, as two 
+arguments.</td></tr>
+<tr><td valign="top"><a href="#map_on_entries-2">map_on_entries/2</a></td><td>Applies (maps) the specified anonymous function to each of the key-value 
+entries contained in this hashtable.</td></tr>
+<tr><td valign="top"><a href="#map_on_values-2">map_on_values/2</a></td><td>Applies (maps) the specified anonymous function to each of the values 
+contained in this hashtable.</td></tr>
+<tr><td valign="top"><a href="#merge-2">merge/2</a></td><td>Returns a new map hashtable, which started from MapHashtableRef and was 
+enriched with the entries from MapHashtableOnlyForAdditions whose keys were 
+*not* already in MapHashtableRef (if a key is in both tables, the one from 
+MapHashtableRef is the one kept).</td></tr>
+<tr><td valign="top"><a href="#merge_unique-1">merge_unique/1</a></td><td>Merges the all specified tables into one, expecting that their keys are 
+unique (ie that they do not intersect), otherwise throws an exception.</td></tr>
+<tr><td valign="top"><a href="#merge_unique-2">merge_unique/2</a></td><td>Merges the two specified tables into one, expecting that their keys are 
+unique (ie that they do not intersect), otherwise throws an exception.</td></tr>
+<tr><td valign="top"><a href="#new-0">new/0</a></td><td>Returns an empty, map-based hashtable.</td></tr>
+<tr><td valign="top"><a href="#new-1">new/1</a></td><td>Creates a table, either from specified initial entries or (solely for API 
+interoperability) from specified target number of entries.</td></tr>
+<tr><td valign="top"><a href="#new_from_unique_entries-1">new_from_unique_entries/1</a></td><td>Creates a new table from specified list of key/values pairs, expecting no 
+duplicate in the keys, otherwise throwing an exception.</td></tr>
+<tr><td valign="top"><a href="#optimise-1">optimise/1</a></td><td>Optimises this hashtable.</td></tr>
+<tr><td valign="top"><a href="#pop_from_entry-2">pop_from_entry/2</a></td><td>Pops the head of the value (supposed to be a list) associated to
+ specified key, and returns a pair made of the popped head and the new
+ hashtable.</td></tr>
+<tr><td valign="top"><a href="#remove_entries-2">remove_entries/2</a></td><td>Removes specified key/value pairs, as designated by the keys, from the 
+specified table.</td></tr>
+<tr><td valign="top"><a href="#remove_entry-2">remove_entry/2</a></td><td>Removes specified key/value pair, as designated by the key, from the 
+specified table.</td></tr>
+<tr><td valign="top"><a href="#remove_existing_entries-2">remove_existing_entries/2</a></td><td>Removes specified key/value pairs, as designated by the keys, from the 
+specified table.</td></tr>
+<tr><td valign="top"><a href="#remove_existing_entry-2">remove_existing_entry/2</a></td><td>Removes specified key/value pair, as designated by the key, from the 
+specified table.</td></tr>
+<tr><td valign="top"><a href="#select_entries-2">select_entries/2</a></td><td>Returns a list of key/value pairs corresponding to the list of specified
+ keys, or throws a badmatch is at least one key is not found.</td></tr>
+<tr><td valign="top"><a href="#size-1">size/1</a></td><td>Returns the size (number of entries, ie of key/value pairs) of the
+ specified table.</td></tr>
+<tr><td valign="top"><a href="#subtract_from_entry-3">subtract_from_entry/3</a></td><td>Subtracts specified value to the value, supposed to be numerical, 
+associated to specified key.</td></tr>
+<tr><td valign="top"><a href="#swap_value-3">swap_value/3</a></td><td>Swaps in specified table the current value associated to the specified 
+key with the specified new value.</td></tr>
+<tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td>Returns a textual description of the specified map hashtable.</td></tr>
+<tr><td valign="top"><a href="#to_string-2">to_string/2</a></td><td>Returns a textual description of the specified hashtable.</td></tr>
+<tr><td valign="top"><a href="#toggle_entry-2">toggle_entry/2</a></td><td>Toggles the boolean value associated with specified key: if true will be 
+false, if false will be true.</td></tr>
+<tr><td valign="top"><a href="#update_entries-2">update_entries/2</a></td><td>Updates specified list of keys with specified values in specified map 
+hashtable.</td></tr>
+<tr><td valign="top"><a href="#update_entry-3">update_entry/3</a></td><td>Updates the specified key with the specified value in the specified map 
+hashtable.</td></tr>
+<tr><td valign="top"><a href="#values-1">values/1</a></td><td>Returns a list (in no particular order) containing all the values of this 
+hashtable.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="add_entries-2">add_entries/2</a></h3>
+<div class="spec">
+<p><tt>add_entries(EntryList::<a href="#type-entries">entries()</a>, MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable">map_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p><p>Adds specified list of key/value pairs into the specified map table.</p>
+
+ If there is already a pair with this key, then its previous value will be
+ replaced by the specified one (hence does not check whether or not keys
+ already exist in this table).
+</p>
+
+<h3 class="function"><a name="add_entry-3">add_entry/3</a></h3>
+<div class="spec">
+<p><tt>add_entry(Key::<a href="#type-key">key()</a>, Value::<a href="#type-value">value()</a>, MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable">map_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p><p>Adds specified key/value pair into the specified map hashtable.</p>
+
+ If there is already a pair with this key, then its previous value will be
+ replaced by the specified one (hence does not check whether or not the key
+ already exist in this table).
+</p>
+
+<h3 class="function"><a name="add_new_entries-2">add_new_entries/2</a></h3>
+<div class="spec">
+<p><tt>add_new_entries(EntryList::<a href="#type-entries">entries()</a>, MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable">map_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p>Adds specified list of key/value pairs into the specified map table,
+ expecting that none of these keys is already defined in this table (otherwise
+ an exception is thrown).
+</p>
+
+<h3 class="function"><a name="add_new_entry-3">add_new_entry/3</a></h3>
+<div class="spec">
+<p><tt>add_new_entry(Key::<a href="#type-key">key()</a>, Value::<a href="#type-value">value()</a>, MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable">map_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p>Adds specified key/value pair into the specified map hashtable, expecting
+ this key not to be already defined in this table.
+</p>
+
+<h3 class="function"><a name="add_to_entry-3">add_to_entry/3</a></h3>
+<div class="spec">
+<p><tt>add_to_entry(Key::<a href="#type-key">key()</a>, Value::number(), MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable">map_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p><p>Adds specified value to the value, supposed to be numerical, associated 
+to specified key.</p>
+
+ An exception is thrown if the key does not exist, a bad arithm is triggered if
+ no addition can be performed on the associated value.
+</p>
+
+<h3 class="function"><a name="append_list_to_entry-3">append_list_to_entry/3</a></h3>
+<div class="spec">
+<p><tt>append_list_to_entry(Key::<a href="#type-key">key()</a>, Elements::[term()], MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable">map_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p><p>Appends specified elements to the value, supposed to be a list, 
+associated to specified key.</p>
+
+ If that key does not already exist, it will be created and associated to a
+ list containing only the specified elements.
+</p>
+
+<h3 class="function"><a name="append_list_to_existing_entry-3">append_list_to_existing_entry/3</a></h3>
+<div class="spec">
+<p><tt>append_list_to_existing_entry(Key::<a href="#type-key">key()</a>, Elements::[term()], Hashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable">map_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p><p>Appends specified elements to the value, supposed to be a list, 
+associated to specified key.</p>
+
+ An exception is thrown if the key does not exist.
+</p>
+
+<h3 class="function"><a name="append_to_entry-3">append_to_entry/3</a></h3>
+<div class="spec">
+<p><tt>append_to_entry(Key::<a href="#type-key">key()</a>, Element::term(), MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable">map_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p><p>Appends specified element to the value, supposed to be a list, associated 
+to specified key.</p>
+
+ If that key does not already exist, it will be created and associated to a
+ list containing only the specified element.
+</p>
+
+<h3 class="function"><a name="append_to_existing_entry-3">append_to_existing_entry/3</a></h3>
+<div class="spec">
+<p><tt>append_to_existing_entry(Key::<a href="#type-key">key()</a>, Element::term(), MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable">map_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p><p>Appends specified element to the value, supposed to be a list, associated 
+to specified key, which must already exist in that table.</p>
+
+ <p>An exception is thrown if the key does not exist.</p>
+
+ Note: no check is performed to ensure the value is a list indeed, and the
+ '[|]' operation will not complain if not.
+</p>
+
+<h3 class="function"><a name="concat_list_to_entries-2">concat_list_to_entries/2</a></h3>
+<div class="spec">
+<p><tt>concat_list_to_entries(KeyListValuePairs::<a href="list_table.html#type-list_table">list_table:list_table()</a>, MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable">map_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p><p>Concatenes (on the left) specified lists to the values, supposed to be 
+lists as well, associated to specified keys, the input being thus a list of 
+key/list-value pairs.</p>
+
+ <p>If a key does not already exist, it will be created and associated to the 
+specified list (as if beforehand the key was associated to an empty list)</p>
+
+ Ex: concat_list_to_entries( [{hello, [1, 2]}, {world, [4]}],
+                             MyTable ).
+</p>
+
+<h3 class="function"><a name="concat_to_entry-3">concat_to_entry/3</a></h3>
+<div class="spec">
+<p><tt>concat_to_entry(Key::<a href="#type-key">key()</a>, ListToConcat::list(), MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable">map_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p><p>Concatenes (on the left) specified list to the value, supposed to be a 
+list as well, associated to specified key.</p>
+
+ If that key does not already exist, it will be created and associated to the
+ specified list (as if beforehand the key was associated to an empty list)
+</p>
+
+<h3 class="function"><a name="delete_existing_from_entry-3">delete_existing_from_entry/3</a></h3>
+<div class="spec">
+<p><tt>delete_existing_from_entry(Key::<a href="#type-key">key()</a>, Element::term(), MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable">map_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p><p>Deletes the first match of the specified element in the value associated 
+to specified key, this value being assumed to be a list.</p>
+
+ An exception is thrown if the key does not exist, or if the element is not in
+ the targeted list.
+</p>
+
+<h3 class="function"><a name="delete_from_entry-3">delete_from_entry/3</a></h3>
+<div class="spec">
+<p><tt>delete_from_entry(Key::<a href="#type-key">key()</a>, Element::term(), MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable">map_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p><p>Deletes the first match of the specified element in the value associated 
+to specified key, this value being assumed to be a list.</p>
+
+ <p>An exception is thrown if the key does not exist.</p>
+
+ If the element is not in the specified list, the list will not be modified.
+</p>
+
+<h3 class="function"><a name="display-1">display/1</a></h3>
+<div class="spec">
+<p><tt>display(MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Displays the specified map hashtable on the standard output.</p>
+
+<h3 class="function"><a name="display-2">display/2</a></h3>
+<div class="spec">
+<p><tt>display(Title::<a href="#type-ustring">ustring()</a>, MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Displays the specified map hashtable on the standard output, with the
+ specified title on top.
+</p>
+
+<h3 class="function"><a name="enumerate-1">enumerate/1</a></h3>
+<div class="spec">
+<p><tt>enumerate(MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; <a href="#type-entries">entries()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns a flat list whose elements are all the key/value pairs of the 
+hashtable, in no particular order.</p>
+
+ Ex: [{K1,V1}, {K2,V2}, ...].
+</p>
+
+<h3 class="function"><a name="extract_entries-2">extract_entries/2</a></h3>
+<div class="spec">
+<p><tt>extract_entries(Keys::[<a href="#type-key">key()</a>], MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; {[<a href="#type-value">value()</a>], <a href="#type-map_hashtable">map_hashtable()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Extracts specified entries from specified hashtable, ie returns their 
+associated values (in-order) and removes these entries from the returned 
+table.</p>
+
+ <p>Each key/value pair is expected to exist already, otherwise an exception is 
+raised (typically {badkey, KeyNotFound}).</p>
+
+ Ex: {[RedValue, GreenValue, BlueValue], ExtractedTable} =
+         table:extract_entries([red, green, blue], MyTable)
+</p>
+
+<h3 class="function"><a name="extract_entry-2">extract_entry/2</a></h3>
+<div class="spec">
+<p><tt>extract_entry(Key::<a href="#type-key">key()</a>, MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; {<a href="#type-value">value()</a>, <a href="#type-map_hashtable">map_hashtable()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Extracts specified entry from specified hashtable, ie returns its 
+associated value and removes that entry from the returned table.</p>
+
+ The key/value pair is expected to exist already, otherwise an exception is
+ raised (typically {badkey, KeyNotFound}).
+</p>
+
+<h3 class="function"><a name="extract_entry_if_existing-2">extract_entry_if_existing/2</a></h3>
+<div class="spec">
+<p><tt>extract_entry_if_existing(Key::<a href="#type-key">key()</a>, MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; false | {<a href="#type-value">value()</a>, <a href="#type-map_hashtable">map_hashtable()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Extracts specified entry (if any) from specified table, ie returns its 
+associated value and removes that entry from the returned table.</p>
+
+ <p>Otherwise, ie if that entry does not exist, returns false.</p>
+
+ Typically useful to iterate over options stored as a table and extracting them
+ in turn, then to check that the resulting final table is empty as expected.
+</p>
+
+<h3 class="function"><a name="extract_entry_with_defaults-3">extract_entry_with_defaults/3</a></h3>
+<div class="spec">
+<p><tt>extract_entry_with_defaults(Key::<a href="#type-key">key()</a>, DefaultValue::<a href="#type-value">value()</a>, Table::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; {<a href="#type-value">value()</a>, <a href="#type-map_hashtable">map_hashtable()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Extracts specified entry from specified table, ie returns the 
+associated value and removes that entry from the table.</p>
+
+ If no such key is available, returns the specified default value and the
+ original table.
+</p>
+
+<h3 class="function"><a name="fold-3">fold/3</a></h3>
+<div class="spec">
+<p><tt>fold(Fun::fun((<a href="#type-key">key()</a>, <a href="#type-value">value()</a>, <a href="#type-accumulator">accumulator()</a>) -&gt; <a href="#type-accumulator">accumulator()</a>), InitialAcc::<a href="#type-accumulator">accumulator()</a>, Table::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; <a href="#type-accumulator">accumulator()</a></tt><br></p>
+<p> </p>
+</div><p><p>Folds specified anonymous function on all key/value pairs of the 
+specified map hashtable, based on specified initial accumulator.</p>
+
+ <p>The order of transformation for entries is not specified.</p>
+
+ Returns the final accumulator.
+</p>
+
+<h3 class="function"><a name="fold_on_entries-3">fold_on_entries/3</a></h3>
+<div class="spec">
+<p><tt>fold_on_entries(Fun::fun((<a href="#type-entry">entry()</a>, <a href="#type-accumulator">accumulator()</a>) -&gt; <a href="#type-accumulator">accumulator()</a>), InitialAcc::<a href="#type-accumulator">accumulator()</a>, MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; <a href="#type-accumulator">accumulator()</a></tt><br></p>
+<p> </p>
+</div><p><p>Folds specified anonymous function on all entries of the specified map 
+hashtable.</p>
+
+ <p>The order of transformation for entries is not specified.</p>
+
+ <p>Returns the final accumulator.</p>
+
+ fold/3 may be preferred (being more efficient) to this version.
+</p>
+
+<h3 class="function"><a name="get_all_values-2">get_all_values/2</a></h3>
+<div class="spec">
+<p><tt>get_all_values(Keys::[<a href="#type-key">key()</a>], Hashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; [<a href="#type-value">value()</a>]</tt><br></p>
+<p> </p>
+</div><p><p>Returns the (ordered) list of values that correspond to the specified 
+(ordered) list of keys of this table, ensuring that all entries in the 
+specified table have been read, otherwise throwing an exception.</p>
+
+ <p>The key/value pairs are expected to exist already, otherwise an exception is 
+raised.</p>
+
+ Ex: [Color=red, Age=23, Mass=51] = map_hashtable:get_all_values([color,
+   age, mass], [{color, red}, {mass, 51}, {age, 23}])
+</p>
+
+<h3 class="function"><a name="get_value-2">get_value/2</a></h3>
+<div class="spec">
+<p><tt>get_value(Key::<a href="#type-key">key()</a>, MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; <a href="#type-value">value()</a></tt><br></p>
+<p> </p>
+</div><p><p>Retrieves the value corresponding to the specified (existing) key, and 
+returns it directly.</p>
+
+ The key/value pair is expected to exist already in the table, otherwise an
+ exception ({bad_key, Key}) is raised.
+</p>
+
+<h3 class="function"><a name="get_value_with_defaults-3">get_value_with_defaults/3</a></h3>
+<div class="spec">
+<p><tt>get_value_with_defaults(Key::<a href="#type-key">key()</a>, DefaultValue::<a href="#type-value">value()</a>, MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; <a href="#type-value">value()</a></tt><br></p>
+<p> </p>
+</div><p>Looks for specified entry in specified table and, if found, returns the
+ associated value; otherwise returns the specified default value.
+</p>
+
+<h3 class="function"><a name="get_values-2">get_values/2</a></h3>
+<div class="spec">
+<p><tt>get_values(Keys::[<a href="#type-key">key()</a>], Hashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; [<a href="#type-value">value()</a>]</tt><br></p>
+<p> </p>
+</div><p><p>Returns the (ordered) list of values that correspond to the specified 
+(ordered) list of keys of this table.</p>
+
+ <p>The key/value pairs are expected to exist already in the table, otherwise an 
+exception is raised.</p>
+
+ Ex: [Color, Age, Mass] = map_hashtable:get_values( [color, age, mass],
+                                                    MyMapTable ] )
+</p>
+
+<h3 class="function"><a name="has_entry-2">has_entry/2</a></h3>
+<div class="spec">
+<p><tt>has_entry(Key::<a href="#type-key">key()</a>, MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Tells whether the specified key exists in the table: returns true or
+ false.
+</p>
+
+<h3 class="function"><a name="is_empty-1">is_empty/1</a></h3>
+<div class="spec">
+<p><tt>is_empty(MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Returns whether the specified hashtable is empty (not storing any
+ key/value pair).
+</p>
+
+<h3 class="function"><a name="keys-1">keys/1</a></h3>
+<div class="spec">
+<p><tt>keys(MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; [<a href="#type-key">key()</a>]</tt><br></p>
+<p> </p>
+</div><p>Returns a list containing all the keys of this hashtable.</p>
+
+<h3 class="function"><a name="lookup_entry-2">lookup_entry/2</a></h3>
+<div class="spec">
+<p><tt>lookup_entry(Key::<a href="#type-key">key()</a>, MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; key_not_found | {value, <a href="#type-value">value()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Looks-up specified entry (designated by its key) in specified map table.</p>
+
+ Returns either 'key_not_found' if no such key is registered in the table, or
+ {value, Value}, with Value being the value associated to the specified key.
+</p>
+
+<h3 class="function"><a name="map-2">map/2</a></h3>
+<div class="spec">
+<p><tt>map(Fun::fun((<a href="#type-key">key()</a>, <a href="#type-value">value()</a>) -&gt; <a href="#type-value">value()</a>), MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable">map_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p><p>Applies (maps) the specified anonymous function to each of the values 
+contained in this hashtable: to each key will be associated the value returned 
+by this function when applied to that key and its current value, as two 
+arguments.</p>
+
+ <p>Allows to apply "in-place" an operation on all values without having to 
+enumerate the content of the hashtable and iterate on it (hence without having 
+to duplicate the whole content in memory).</p>
+
+ See also: map_on_values/2.
+</p>
+
+<h3 class="function"><a name="map_on_entries-2">map_on_entries/2</a></h3>
+<div class="spec">
+<p><tt>map_on_entries(Fun::fun((<a href="#type-entry">entry()</a>) -&gt; <a href="#type-entry">entry()</a>), MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable">map_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p><p>Applies (maps) the specified anonymous function to each of the key-value 
+entries contained in this hashtable.</p>
+
+ <p>Allows to apply "in-place" an operation on all entries without having to 
+enumerate the content of the hashtable and iterate on it (hence without having 
+to duplicate the whole content in memory).</p>
+
+ Note: same as map/2 above, except that the lambda takes one argument (the
+ entry, as a pair) instead of two (the key and then the value), and returns an
+ entry, not a mere value to associate the same key (and thus may change the
+ structure, number of entries because of collisions, etc. of the table).
+</p>
+
+<h3 class="function"><a name="map_on_values-2">map_on_values/2</a></h3>
+<div class="spec">
+<p><tt>map_on_values(Fun::fun((<a href="#type-value">value()</a>) -&gt; <a href="#type-value">value()</a>), MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable">map_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p><p>Applies (maps) the specified anonymous function to each of the values 
+contained in this hashtable.</p>
+
+ <p>Allows to apply "in-place" an operation on all values without having to 
+enumerate the content of the hashtable, to iterate on it (hence without having 
+to duplicate the whole content in memory), and to recreate the table.</p>
+
+ <p>Note: the keys are left as are, hence the structure of the hashtable does not 
+change.</p>
+
+ Note: same as map/2 above, except that the lambda does not know about the
+ keys.
+</p>
+
+<h3 class="function"><a name="merge-2">merge/2</a></h3>
+<div class="spec">
+<p><tt>merge(MapHashtableRef::<a href="#type-map_hashtable">map_hashtable()</a>, MapHashtableOnlyForAdditions::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable">map_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns a new map hashtable, which started from MapHashtableRef and was 
+enriched with the entries from MapHashtableOnlyForAdditions whose keys were 
+*not* already in MapHashtableRef (if a key is in both tables, the one from 
+MapHashtableRef is the one kept).</p>
+
+ <p>Said differently: if a key exists in both tables, the value in 
+MapHashtableOnlyForAdditions will be dropped (will *not* supersede the value 
+in MapHashtableRef, which is the "prioritary" one).</p>
+
+ Note: not the standard merge that one would expect, should values be lists.
+</p>
+
+<h3 class="function"><a name="merge_unique-1">merge_unique/1</a></h3>
+<div class="spec">
+<p><tt>merge_unique(Tables::[<a href="#type-map_hashtable">map_hashtable()</a>]) -&gt; <a href="#type-map_hashtable">map_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p><p>Merges the all specified tables into one, expecting that their keys are 
+unique (ie that they do not intersect), otherwise throws an exception.</p>
+
+ Note: for an improved efficiency, ideally the tables shall be listed from the
+ smaller to the bigger.
+</p>
+
+<h3 class="function"><a name="merge_unique-2">merge_unique/2</a></h3>
+<div class="spec">
+<p><tt>merge_unique(FirstHashtable::<a href="#type-map_hashtable">map_hashtable()</a>, SecondHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable">map_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p><p>Merges the two specified tables into one, expecting that their keys are 
+unique (ie that they do not intersect), otherwise throws an exception.</p>
+
+ Note: for an improved efficiency, ideally the smaller table shall be the first
+ one.
+</p>
+
+<h3 class="function"><a name="new-0">new/0</a></h3>
+<div class="spec">
+<p><tt>new() -&gt; <a href="#type-map_hashtable">map_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p>Returns an empty, map-based hashtable.</p>
+
+<h3 class="function"><a name="new-1">new/1</a></h3>
+<div class="spec">
+<p><tt>new(ExpectedNumberOfEntries::<a href="#type-entries">entries()</a> | <a href="#type-entry_count">entry_count()</a>) -&gt; <a href="#type-map_hashtable">map_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p><p>Creates a table, either from specified initial entries or (solely for API 
+interoperability) from specified target number of entries.</p>
+
+ <p>As map tables manage by themselves their size, no need to specify any target 
+size. This clause is only defined so that we can transparently switch APIs 
+with the other table modules.</p>
+
+ <p>If the same key appears more than once, the latter (right-most) value is used 
+and the previous values are ignored.</p>
+
+ Throws bad argument (bad_arg) if a non-pair term is found in this list.</p>
+
+<h3 class="function"><a name="new_from_unique_entries-1">new_from_unique_entries/1</a></h3>
+<div class="spec">
+<p><tt>new_from_unique_entries(InitialEntries) -&gt; any()</tt></p>
+<p> </p>
+</div><p><p>Creates a new table from specified list of key/values pairs, expecting no 
+duplicate in the keys, otherwise throwing an exception.</p>
+
+ Allows to safely load entries in a table without risking a silent overwrite of
+ any entry.
+</p>
+
+<h3 class="function"><a name="optimise-1">optimise/1</a></h3>
+<div class="spec">
+<p><tt>optimise(Hashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable">map_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p><p>Optimises this hashtable.</p>
+
+ A no-operation for map hashtables.
+</p>
+
+<h3 class="function"><a name="pop_from_entry-2">pop_from_entry/2</a></h3>
+<div class="spec">
+<p><tt>pop_from_entry(Key::<a href="#type-key">key()</a>, MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; {term(), <a href="#type-map_hashtable">map_hashtable()</a>}</tt><br></p>
+<p> </p>
+</div><p>Pops the head of the value (supposed to be a list) associated to
+ specified key, and returns a pair made of the popped head and the new
+ hashtable.
+</p>
+
+<h3 class="function"><a name="remove_entries-2">remove_entries/2</a></h3>
+<div class="spec">
+<p><tt>remove_entries(Keys::[<a href="#type-key">key()</a>], MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable">map_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p><p>Removes specified key/value pairs, as designated by the keys, from the 
+specified table.</p>
+
+ <p>Specifying a non-existing key is accepted.</p>
+
+ Returns an updated table.
+</p>
+
+<h3 class="function"><a name="remove_entry-2">remove_entry/2</a></h3>
+<div class="spec">
+<p><tt>remove_entry(Key::<a href="#type-key">key()</a>, MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable">map_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p><p>Removes specified key/value pair, as designated by the key, from the 
+specified table.</p>
+
+ <p>Does nothing if the key is not found.</p>
+
+ Returns an updated table.
+</p>
+
+<h3 class="function"><a name="remove_existing_entries-2">remove_existing_entries/2</a></h3>
+<div class="spec">
+<p><tt>remove_existing_entries(Keys::[<a href="#type-key">key()</a>], MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable">map_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p><p>Removes specified key/value pairs, as designated by the keys, from the 
+specified table.</p>
+
+ <p>Throws an exception if a key is not found.</p>
+
+ Returns an updated table.
+</p>
+
+<h3 class="function"><a name="remove_existing_entry-2">remove_existing_entry/2</a></h3>
+<div class="spec">
+<p><tt>remove_existing_entry(Key::<a href="#type-key">key()</a>, MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable">map_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p><p>Removes specified key/value pair, as designated by the key, from the 
+specified table.</p>
+
+ <p>Throws an exception if the key is not found.</p>
+
+ Returns an updated table.
+</p>
+
+<h3 class="function"><a name="select_entries-2">select_entries/2</a></h3>
+<div class="spec">
+<p><tt>select_entries(Keys::[<a href="#type-key">key()</a>], MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; <a href="#type-entries">entries()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a list of key/value pairs corresponding to the list of specified
+ keys, or throws a badmatch is at least one key is not found.
+</p>
+
+<h3 class="function"><a name="size-1">size/1</a></h3>
+<div class="spec">
+<p><tt>size(MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; <a href="#type-entry_count">entry_count()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the size (number of entries, ie of key/value pairs) of the
+ specified table.
+</p>
+
+<h3 class="function"><a name="subtract_from_entry-3">subtract_from_entry/3</a></h3>
+<div class="spec">
+<p><tt>subtract_from_entry(Key::<a href="#type-key">key()</a>, Value::number(), MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable">map_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p><p>Subtracts specified value to the value, supposed to be numerical, 
+associated to specified key.</p>
+
+ An exception is thrown if the key does not exist, a bad arithm is triggered if
+ no subtraction can be performed on the associated value.
+</p>
+
+<h3 class="function"><a name="swap_value-3">swap_value/3</a></h3>
+<div class="spec">
+<p><tt>swap_value(Key::<a href="#type-key">key()</a>, NewValue::<a href="#type-value">value()</a>, MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; {<a href="#type-value">value()</a>, <a href="#type-map_hashtable">map_hashtable()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Swaps in specified table the current value associated to the specified 
+key with the specified new value.</p>
+
+ <p>Returns the value previously associated to that key and an updated table.</p>
+
+ The entry designated by the specified key is expected to exist already,
+ otherwise a {bad_key,Key} exception is triggered.
+</p>
+
+<h3 class="function"><a name="to_string-1">to_string/1</a></h3>
+<div class="spec">
+<p><tt>to_string(MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of the specified map hashtable.</p>
+
+<h3 class="function"><a name="to_string-2">to_string/2</a></h3>
+<div class="spec">
+<p><tt>to_string(MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>, DescriptionType::<a href="hashtable.html#type-description_type">hashtable:description_type()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns a textual description of the specified hashtable.</p>
+
+ Either a bullet is specified, or the returned string is ellipsed if needed (if
+ using 'user_friendly'), or quite raw and non-ellipsed (if using 'full'), or
+ even completly raw ('internal').
+</p>
+
+<h3 class="function"><a name="toggle_entry-2">toggle_entry/2</a></h3>
+<div class="spec">
+<p><tt>toggle_entry(Key::<a href="#type-key">key()</a>, MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable">map_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p><p>Toggles the boolean value associated with specified key: if true will be 
+false, if false will be true.</p>
+
+ An exception is thrown if the key does not exist or if its associated value is
+ not a boolean.
+</p>
+
+<h3 class="function"><a name="update_entries-2">update_entries/2</a></h3>
+<div class="spec">
+<p><tt>update_entries(EntryList::<a href="#type-entries">entries()</a>, MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable">map_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p><p>Updates specified list of keys with specified values in specified map 
+hashtable.</p>
+
+ For each of the listed keys, a corresponding pair is expected to already exist
+ in this table.
+</p>
+
+<h3 class="function"><a name="update_entry-3">update_entry/3</a></h3>
+<div class="spec">
+<p><tt>update_entry(Key::<a href="#type-key">key()</a>, Value::<a href="#type-value">value()</a>, MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable">map_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p><p>Updates the specified key with the specified value in the specified map 
+hashtable.</p>
+
+ A pair with this key is expected to already exist in this table.
+</p>
+
+<h3 class="function"><a name="values-1">values/1</a></h3>
+<div class="spec">
+<p><tt>values(MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; [<a href="#type-value">value()</a>]</tt><br></p>
+<p> </p>
+</div><p><p>Returns a list (in no particular order) containing all the values of this 
+hashtable.</p>
+
+ Ex: useful if the key was used as an index to generate this table first (no
+ information loss).
+</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

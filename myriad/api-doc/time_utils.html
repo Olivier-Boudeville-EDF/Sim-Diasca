@@ -1,0 +1,968 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module time_utils</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module time_utils</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of <b>time management</b> facilities.
+
+
+<h2><a name="description">Description</a></h2><p>Gathering of <b>time management</b> facilities.</p>
+
+ See time_utils_test.erl for the corresponding test.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-absolute_month">absolute_month()</a></h3>
+<p><tt>absolute_month() = <a href="unit_utils.html#type-absolute_month">unit_utils:absolute_month()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-canonical_day">canonical_day()</a></h3>
+<p><tt>canonical_day() = <a href="unit_utils.html#type-canonical_day">unit_utils:canonical_day()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-canonical_hour">canonical_hour()</a></h3>
+<p><tt>canonical_hour() = <a href="unit_utils.html#type-canonical_hour">unit_utils:canonical_hour()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-canonical_minute">canonical_minute()</a></h3>
+<p><tt>canonical_minute() = <a href="unit_utils.html#type-canonical_minute">unit_utils:canonical_minute()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-canonical_month">canonical_month()</a></h3>
+<p><tt>canonical_month() = <a href="unit_utils.html#type-canonical_month">unit_utils:canonical_month()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-canonical_second">canonical_second()</a></h3>
+<p><tt>canonical_second() = <a href="unit_utils.html#type-canonical_second">unit_utils:canonical_second()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-country">country()</a></h3>
+<p><tt>country() = <a href="locale_utils.html#type-country">locale_utils:country()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-date">date()</a></h3>
+<p><tt>date() = {<a href="#type-year">year()</a>, <a href="#type-canonical_month">canonical_month()</a>, <a href="#type-canonical_day">canonical_day()</a>}</tt></p>
+<p> Calendar date; used instead of the less precise calendar:date/0 type.</p>
+
+<h3 class="typedecl"><a name="type-date_in_year">date_in_year()</a></h3>
+<p><tt>date_in_year() = {<a href="#type-canonical_month">canonical_month()</a>, <a href="#type-canonical_day">canonical_day()</a>}</tt></p>
+<p> Calendar date within a year.</p>
+
+<h3 class="typedecl"><a name="type-day_index">day_index()</a></h3>
+<p><tt>day_index() = 1..7</tt></p>
+<p><p> As calendar:daynum/0 is not exported.</p>
+
+ <p>Monday is 1, Tuesday is 2, etc.</p>
+
+ Such numerical values are useful to operate based on ranges.</p>
+
+<h3 class="typedecl"><a name="type-days">days()</a></h3>
+<p><tt>days() = <a href="unit_utils.html#type-days">unit_utils:days()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-dhms_duration">dhms_duration()</a></h3>
+<p><tt>dhms_duration() = {<a href="#type-days">days()</a>, <a href="#type-hours">hours()</a>, <a href="#type-minutes">minutes()</a>, <a href="#type-seconds">seconds()</a>}</tt></p>
+<p> Day/Hour/Minute/Second duration, for example used with MTTF (not necessarily
+ in a canonical form, for example more than 24 hours or 60 minutes can be
+ specified).</p>
+
+<h3 class="typedecl"><a name="type-float_seconds">float_seconds()</a></h3>
+<p><tt>float_seconds() = <a href="unit_utils.html#type-float_seconds">unit_utils:float_seconds()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-hours">hours()</a></h3>
+<p><tt>hours() = <a href="unit_utils.html#type-hours">unit_utils:hours()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-megaseconds">megaseconds()</a></h3>
+<p><tt>megaseconds() = <a href="unit_utils.html#type-megaseconds">unit_utils:megaseconds()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-microseconds">microseconds()</a></h3>
+<p><tt>microseconds() = <a href="unit_utils.html#type-microseconds">unit_utils:microseconds()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-milliseconds">milliseconds()</a></h3>
+<p><tt>milliseconds() = <a href="unit_utils.html#type-milliseconds">unit_utils:milliseconds()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-minutes">minutes()</a></h3>
+<p><tt>minutes() = <a href="unit_utils.html#type-minutes">unit_utils:minutes()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-month">month()</a></h3>
+<p><tt>month() = <a href="unit_utils.html#type-month">unit_utils:month()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-months">months()</a></h3>
+<p><tt>months() = <a href="unit_utils.html#type-months">unit_utils:months()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-ms_duration">ms_duration()</a></h3>
+<p><tt>ms_duration() = <a href="unit_utils.html#type-milliseconds">unit_utils:milliseconds()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-ms_monotonic">ms_monotonic()</a></h3>
+<p><tt>ms_monotonic() = <a href="unit_utils.html#type-milliseconds">unit_utils:milliseconds()</a></tt></p>
+<p> The internal, duration-friendly monotonic time.</p>
+
+<h3 class="typedecl"><a name="type-ms_since_epoch">ms_since_epoch()</a></h3>
+<p><tt>ms_since_epoch() = <a href="unit_utils.html#type-milliseconds">unit_utils:milliseconds()</a></tt></p>
+<p> POSIX conventions.</p>
+
+<h3 class="typedecl"><a name="type-ms_since_year_0">ms_since_year_0()</a></h3>
+<p><tt>ms_since_year_0() = <a href="unit_utils.html#type-milliseconds">unit_utils:milliseconds()</a></tt></p>
+<p> Also known as Gregorian milliseconds.</p>
+
+<h3 class="typedecl"><a name="type-posix_seconds">posix_seconds()</a></h3>
+<p><tt>posix_seconds() = integer()</tt></p>
+<p> Designates an integer number of seconds since or before Unix time epoch, which
+ is 1970-01-01 00:00 UTC.</p>
+
+<h3 class="typedecl"><a name="type-precise_timestamp">precise_timestamp()</a></h3>
+<p><tt>precise_timestamp() = {<a href="#type-megaseconds">megaseconds()</a>, <a href="#type-seconds">seconds()</a>, <a href="#type-microseconds">microseconds()</a>}</tt></p>
+
+
+<h3 class="typedecl"><a name="type-seconds">seconds()</a></h3>
+<p><tt>seconds() = <a href="unit_utils.html#type-seconds">unit_utils:seconds()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-time">time()</a></h3>
+<p><tt>time() = {<a href="#type-canonical_hour">canonical_hour()</a>, <a href="#type-canonical_minute">canonical_minute()</a>, <a href="#type-canonical_second">canonical_second()</a>}</tt></p>
+<p> Time in the day; used to be {hour(), minute(), second()} or calendar:time().</p>
+
+<h3 class="typedecl"><a name="type-time_out">time_out()</a></h3>
+<p><tt>time_out() = infinity | <a href="#type-milliseconds">milliseconds()</a></tt></p>
+<p> Cannot find the definition of the built-in timeout() type.</p>
+
+<h3 class="typedecl"><a name="type-timestamp">timestamp()</a></h3>
+<p><tt>timestamp() = {<a href="#type-date">date()</a>, <a href="#type-time">time()</a>}</tt></p>
+<p> Used to be calendar:datetime(), now uses our types.</p>
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-week_day">week_day()</a></h3>
+<p><tt>week_day() = monday | tuesday | wednesday | thursday | friday | saturday | sunday</tt></p>
+<p> User-friendly atom-based version of day_index/0.</p>
+
+<h3 class="typedecl"><a name="type-weeks">weeks()</a></h3>
+<p><tt>weeks() = <a href="unit_utils.html#type-weeks">unit_utils:weeks()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-year">year()</a></h3>
+<p><tt>year() = <a href="unit_utils.html#type-year">unit_utils:year()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-years">years()</a></h3>
+<p><tt>years() = <a href="unit_utils.html#type-years">unit_utils:years()</a></tt></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#canonicalise_month-1">canonicalise_month/1</a></td><td>Canonicalises specified month.</td></tr>
+<tr><td valign="top"><a href="#check_canonical_date-1">check_canonical_date/1</a></td><td>Checks that specified date is a canonical one.</td></tr>
+<tr><td valign="top"><a href="#check_date_order-2">check_date_order/2</a></td><td>Ensures that the starting canonical date is strictly before the stopping 
+one.</td></tr>
+<tr><td valign="top"><a href="#check_maybe_timestamp-1">check_maybe_timestamp/1</a></td><td>Checks that specified term is a maybe-timestamp indeed.</td></tr>
+<tr><td valign="top"><a href="#check_month_canonical-1">check_month_canonical/1</a></td><td>Checks that specified month is a canonical one.</td></tr>
+<tr><td valign="top"><a href="#check_month_order-2">check_month_order/2</a></td><td>Ensures that the starting canonical month is strictly before the stopping
+ one.</td></tr>
+<tr><td valign="top"><a href="#check_timestamp-1">check_timestamp/1</a></td><td>Checks that specified term is a timestamp indeed, and returns it.</td></tr>
+<tr><td valign="top"><a href="#compare_dates-2">compare_dates/2</a></td><td>Compares the specified two dates: tells whether the first date is 
+strictly before, after or the same as the second one.</td></tr>
+<tr><td valign="top"><a href="#date_to_weekday-1">date_to_weekday/1</a></td><td>Returns the week day (ex: 'Tuesday') corresponding to specified date.</td></tr>
+<tr><td valign="top"><a href="#days_to_seconds-1">days_to_seconds/1</a></td><td>Converts a duration in days into a duration in seconds.</td></tr>
+<tr><td valign="top"><a href="#dhms_to_seconds-1">dhms_to_seconds/1</a></td><td>Converts a DHMS duration (in Days/Hours/Minutes/Seconds) into a duration
+ in seconds.</td></tr>
+<tr><td valign="top"><a href="#dhms_to_string-1">dhms_to_string/1</a></td><td>Returns a textual description of the specified DHMS-based duration.</td></tr>
+<tr><td valign="top"><a href="#duration_to_french_string-1">duration_to_french_string/1</a></td><td>Returns an approximate textual, French description of the specified 
+duration, expected to be expressed as a number of milliseconds (integer; 
+otherwise, if being floating-point, it will be rounded), or as the 'infinity' 
+atom.</td></tr>
+<tr><td valign="top"><a href="#duration_to_string-1">duration_to_string/1</a></td><td>Returns an approximate textual (English) description of the specified 
+duration, expected to be expressed as a signed number of milliseconds 
+(integer; otherwise, if being floating-point, it will be rounded), or as the 
+'infinity' atom.</td></tr>
+<tr><td valign="top"><a href="#duration_to_string-2">duration_to_string/2</a></td><td>Returns an approximate textual description, in the specified language, of 
+the specified duration, expected to be expressed as a number of milliseconds 
+(integer; otherwise, if being floating-point, it will be rounded), or as the 
+'infinity' atom.</td></tr>
+<tr><td valign="top"><a href="#find_common_bank_holidays-3">find_common_bank_holidays/3</a></td><td>Returns the days-of-the-year that are common to the whole year range
+ (start year included, stop one excluded).</td></tr>
+<tr><td valign="top"><a href="#from_posix_timestamp-1">from_posix_timestamp/1</a></td><td>Converts specified POSIX timestamp (typically the one obtained through
+ file-level operations such as file_utils:get_last_modification_time/1) into a
+ standard timestamp.</td></tr>
+<tr><td valign="top"><a href="#get_bank_holidays_for-2">get_bank_holidays_for/2</a></td><td>Returns a (non chronologically-ordered) list of the dates of the bank 
+holidays, for specified year and country.</td></tr>
+<tr><td valign="top"><a href="#get_date_after-2">get_date_after/2</a></td><td>Returns the date corresponding to the specified one augmented of the
+ specified number of days (possibly a negative number).</td></tr>
+<tr><td valign="top"><a href="#get_date_difference-2">get_date_difference/2</a></td><td>Returns the signed duration, in days, between the two specified dates.</td></tr>
+<tr><td valign="top"><a href="#get_duration-1">get_duration/1</a></td><td>Returns the (signed) duration in seconds corresponding to the specified
+ time.</td></tr>
+<tr><td valign="top"><a href="#get_duration-2">get_duration/2</a></td><td>Returns the (signed) duration in seconds between the two specified
+ timestamps, using the first one as starting time and the second one as
+ stopping time.</td></tr>
+<tr><td valign="top"><a href="#get_duration_since-1">get_duration_since/1</a></td><td>Returns the (signed) duration in seconds between the specified start
+ timestamp and the current time.</td></tr>
+<tr><td valign="top"><a href="#get_epoch_milliseconds_since_year_0-0">get_epoch_milliseconds_since_year_0/0</a></td><td>Returns the number of milliseconds of the Epoch since year 0.</td></tr>
+<tr><td valign="top"><a href="#get_epoch_timestamp-0">get_epoch_timestamp/0</a></td><td>Returns the timestamp of the (UNIX) Epoch, defined to be 00:00:00 UTC,
+ 1970-01-01.</td></tr>
+<tr><td valign="top"><a href="#get_french_textual_duration-2">get_french_textual_duration/2</a></td><td>Returns a textual description, in French, of the duration between the two
+ specified timestamps, using the first one as starting time and the
+ second one as stopping time.</td></tr>
+<tr><td valign="top"><a href="#get_french_textual_timestamp-1">get_french_textual_timestamp/1</a></td><td>Returns a string corresponding to the specified timestamp expressed in
+ French, like: "le 1/9/2009, à 11h46m53".</td></tr>
+<tr><td valign="top"><a href="#get_intertime_duration-2">get_intertime_duration/2</a></td><td>Returns the signed duration, in integer seconds, between the two 
+specified times.</td></tr>
+<tr><td valign="top"><a href="#get_monotonic_time-0">get_monotonic_time/0</a></td><td>Returns the current time, expressed in (absolute) internal time 
+(logically equivalent to a millisecond-based timestamp).</td></tr>
+<tr><td valign="top"><a href="#get_precise_duration-2">get_precise_duration/2</a></td><td>Returns the (signed) duration in milliseconds between the two specified
+ precise timestamps (as obtained thanks to get_precise_duration/0), using the
+ first one as starting time and the second one as stopping time.</td></tr>
+<tr><td valign="top"><a href="#get_precise_duration_since-1">get_precise_duration_since/1</a></td><td>Returns the (signed) duration in milliseconds between the specified
+ precise timestamp (as obtained thanks to get_precise_duration/0) and the
+ current time.</td></tr>
+<tr><td valign="top"><a href="#get_precise_timestamp-0">get_precise_timestamp/0</a></td><td>Returns a timestamp that is as precise as possible, that is {MegaSecs, 
+Secs, MicroSecs}.</td></tr>
+<tr><td valign="top"><a href="#get_system_time-0">get_system_time/0</a></td><td>Returns the (VM) system time (that is monotonic + time offset), in
+ milliseconds since the Epoch.</td></tr>
+<tr><td valign="top"><a href="#get_textual_date-1">get_textual_date/1</a></td><td>Returns a string corresponding to the specified date, like: "30/11/2009".</td></tr>
+<tr><td valign="top"><a href="#get_textual_duration-2">get_textual_duration/2</a></td><td>Returns an (english), smart textual description of the duration between
+ the two specified timestamps, using the first one as starting time and the
+ second one as stopping time.</td></tr>
+<tr><td valign="top"><a href="#get_textual_timestamp-0">get_textual_timestamp/0</a></td><td>Returns a string corresponding to the current timestamp, like: 
+"2009/9/1 11:46:53".</td></tr>
+<tr><td valign="top"><a href="#get_textual_timestamp-1">get_textual_timestamp/1</a></td><td>Returns a (clear, non-ambiguous) string corresponding to the specified
+ timestamp, like: "2009/9/1 11:46:53".</td></tr>
+<tr><td valign="top"><a href="#get_textual_timestamp_for_path-0">get_textual_timestamp_for_path/0</a></td><td>Returns a string corresponding to the current timestamp and able to be a
+ part of a path, like: "2010-11-18-at-13h-30m-35s".</td></tr>
+<tr><td valign="top"><a href="#get_textual_timestamp_for_path-1">get_textual_timestamp_for_path/1</a></td><td>Returns a string corresponding to the specified timestamp and able to be
+ a part of a path, like: "2010-11-18-at-13h-30m-35s".</td></tr>
+<tr><td valign="top"><a href="#get_textual_timestamp_with_dashes-1">get_textual_timestamp_with_dashes/1</a></td><td>Returns a string corresponding to the specified timestamp, with "dash"
+ conventions (ex: used by jsgantt), like: "2017-05-20 12:00:17".</td></tr>
+<tr><td valign="top"><a href="#get_time2_textual_timestamp-0">get_time2_textual_timestamp/0</a></td><td>Returns a string corresponding to the current timestamp expressed as the 
+"%time2" Date and time format, that is "yyyy-mm-dd hh-mm-ss"; for example: 
+"2020-01-01 00-01-22".</td></tr>
+<tr><td valign="top"><a href="#get_time2_textual_timestamp-1">get_time2_textual_timestamp/1</a></td><td>Returns a string corresponding to the specified timestamp expressed as 
+the "%time2" Date and time format, that is "yyyy-mm-dd hh-mm-ss"; for example: 
+"2020-01-01 00-01-22".</td></tr>
+<tr><td valign="top"><a href="#get_timestamp-0">get_timestamp/0</a></td><td>Returns a timestamp tuple describing now, that is the current time, the 
+time zone and Daylight Saving Time correction depending on the underlying OS.</td></tr>
+<tr><td valign="top"><a href="#get_user_friendly_textual_timestamp-1">get_user_friendly_textual_timestamp/1</a></td><td>Returns a string corresponding to the specified timestamp in a
+ user-friendly manner, like: "Wednesday, January 6, 2021 at 11:46:53".</td></tr>
+<tr><td valign="top"><a href="#get_week_day-1">get_week_day/1</a></td><td>Returns the symbol (atom) corresponding to specified week day index.</td></tr>
+<tr><td valign="top"><a href="#gregorian_ms_to_timestamp-1">gregorian_ms_to_timestamp/1</a></td><td>Converts (with a bit of approximation) the specified number of Gregorian
+ milliseconds into a proper, user-level (local, system) timestamp.</td></tr>
+<tr><td valign="top"><a href="#hours_to_seconds-1">hours_to_seconds/1</a></td><td>Converts a duration in hours into a duration in seconds.</td></tr>
+<tr><td valign="top"><a href="#is_bank_holiday-2">is_bank_holiday/2</a></td><td>Tells whether, for specified country, the specified date is a bank
+ holiday.</td></tr>
+<tr><td valign="top"><a href="#is_canonical_date-1">is_canonical_date/1</a></td><td>Tells whether the specified term is a canonical date.</td></tr>
+<tr><td valign="top"><a href="#is_dhms_duration-1">is_dhms_duration/1</a></td><td>Tells whether specified term is a DHMS duration.</td></tr>
+<tr><td valign="top"><a href="#is_timestamp-1">is_timestamp/1</a></td><td>Returns whether specified term is a legit timestamp.</td></tr>
+<tr><td valign="top"><a href="#local_to_universal_time-1">local_to_universal_time/1</a></td><td>Converts specified timestamp expressed in local time (thus with time zone 
+and Daylight Saving Time) into a timestamp expressed in universal time (UTC).</td></tr>
+<tr><td valign="top"><a href="#month_to_string-1">month_to_string/1</a></td><td>Converts a month (an integer in [1,12] or a 12-multiple thereof, like 23)
+ into its common name.</td></tr>
+<tr><td valign="top"><a href="#months_to_seconds-1">months_to_seconds/1</a></td><td>Converts a duration in months into a duration in seconds, supposing the
+ duration of a month is 1/12 of the one of an average year.</td></tr>
+<tr><td valign="top"><a href="#next_month-1">next_month/1</a></td><td>Returns the same timestamp as specified, except exactly one month later 
+(hence not translated of a fixed duration).</td></tr>
+<tr><td valign="top"><a href="#offset_timestamp-2">offset_timestamp/2</a></td><td>Offsets specified timestamp of specified (signed) duration: returns a
+ timestamp translated accordingly.</td></tr>
+<tr><td valign="top"><a href="#seconds_to_dhms-1">seconds_to_dhms/1</a></td><td>Converts a duration in seconds into a DHMS duration (in
+ Days/Hours/Minutes/Seconds).</td></tr>
+<tr><td valign="top"><a href="#short_string_to_timestamp-1">short_string_to_timestamp/1</a></td><td>Parses back a timestamp in the form of "14/4/11 18:48" ("11" for 2011,
+ and with no seconds specified) into a timestamp(), that is
+ {_Date={Year,Month,Day}, _Time={Hour,Minute,Second}}.</td></tr>
+<tr><td valign="top"><a href="#string_to_dhms-1">string_to_dhms/1</a></td><td>Converts specified string (ex: "113j0h10m3s" for a French version,
+ "1d12h0m0s" for an English one) to a DHMS duration.</td></tr>
+<tr><td valign="top"><a href="#string_to_timestamp-1">string_to_timestamp/1</a></td><td>Parses back a timestamp in the form of "14/4/2011 18:48:51" into a
+ timestamp(), that is {_Date={Year,Month,Day}, _Time={Hour,Minute,Second}}.</td></tr>
+<tr><td valign="top"><a href="#time_of_day_to_string-1">time_of_day_to_string/1</a></td><td>Returns a textual description of the specified time of day.</td></tr>
+<tr><td valign="top"><a href="#time_out_to_string-1">time_out_to_string/1</a></td><td>Returns an approximate textual (English) description of the specified 
+time-out, expected to be expressed as a signed number of milliseconds 
+(integer; otherwise, if being floating-point, it will be rounded), or as the 
+'infinity' atom.</td></tr>
+<tr><td valign="top"><a href="#time_out_to_string-2">time_out_to_string/2</a></td><td>Returns an approximate textual description of the specified time-out, in 
+the specified language, expected to be expressed as a number of milliseconds 
+(integer; otherwise, if being floating-point, it will be rounded), or as the 
+'infinity' atom.</td></tr>
+<tr><td valign="top"><a href="#time_to_seconds-1">time_to_seconds/1</a></td><td>Converts a HMS duration (in Hours/Minutes/Seconds) into a duration in
+ seconds.</td></tr>
+<tr><td valign="top"><a href="#timestamp_to_seconds-0">timestamp_to_seconds/0</a></td><td>Returns the number of seconds elapsed since year 0 and now.</td></tr>
+<tr><td valign="top"><a href="#timestamp_to_seconds-1">timestamp_to_seconds/1</a></td><td>Returns the number of seconds elapsed since year 0 and specified 
+timestamp.</td></tr>
+<tr><td valign="top"><a href="#timestamp_to_string-1">timestamp_to_string/1</a></td><td>Alias of get_textual_timestamp/1; defined for clarity.</td></tr>
+<tr><td valign="top"><a href="#timestamp_to_weekday-1">timestamp_to_weekday/1</a></td><td>Returns the week day (ex: 'Tuesday') corresponding to specified
+ timestamp.</td></tr>
+<tr><td valign="top"><a href="#universal_to_local_time-1">universal_to_local_time/1</a></td><td>Converts specified timestamp expressed in universal time (UTC) into a
+ timestamp expressedin local time (thus with time zone and Daylight Saving
+ Time).</td></tr>
+<tr><td valign="top"><a href="#week_day_to_string-1">week_day_to_string/1</a></td><td>Returns the common name of a week day (ex: "Tuesday") based on the
+ specified date or on the specified index in the week.</td></tr>
+<tr><td valign="top"><a href="#weeks_to_seconds-1">weeks_to_seconds/1</a></td><td>Converts a duration in weeks into a duration in seconds.</td></tr>
+<tr><td valign="top"><a href="#years_to_seconds-1">years_to_seconds/1</a></td><td>Converts a duration in years into a duration in seconds, supposing a year
+ has 365 days and 6 hours (that is a quarter of one day, to account for leap
+ years).</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="canonicalise_month-1">canonicalise_month/1</a></h3>
+<div class="spec">
+<p><tt>canonicalise_month(M::<a href="#type-month">month()</a>) -&gt; <a href="#type-canonical_month">canonical_month()</a></tt><br></p>
+<p> </p>
+</div><p>Canonicalises specified month.</p>
+
+<h3 class="function"><a name="check_canonical_date-1">check_canonical_date/1</a></h3>
+<div class="spec">
+<p><tt>check_canonical_date(Date::<a href="#type-date">date()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that specified date is a canonical one.</p>
+
+<h3 class="function"><a name="check_date_order-2">check_date_order/2</a></h3>
+<div class="spec">
+<p><tt>check_date_order(StartDate::<a href="#type-date">date()</a>, StopDate::<a href="#type-date">date()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Ensures that the starting canonical date is strictly before the stopping 
+one.</p>
+
+ Note: both dates are expected to be in canonical form (ex: not more than 12
+ months or 31 days in the specified date).
+</p>
+
+<h3 class="function"><a name="check_maybe_timestamp-1">check_maybe_timestamp/1</a></h3>
+<div class="spec">
+<p><tt>check_maybe_timestamp(Term::<a href="#type-maybe">maybe</a>(<a href="#type-timestamp">timestamp()</a>)) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-timestamp">timestamp()</a>)</tt><br></p>
+<p> </p>
+</div><p>Checks that specified term is a maybe-timestamp indeed.</p>
+
+<h3 class="function"><a name="check_month_canonical-1">check_month_canonical/1</a></h3>
+<div class="spec">
+<p><tt>check_month_canonical(Month::<a href="#type-month">month()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that specified month is a canonical one.</p>
+
+<h3 class="function"><a name="check_month_order-2">check_month_order/2</a></h3>
+<div class="spec">
+<p><tt>check_month_order(Start::<a href="#type-absolute_month">absolute_month()</a>, Stop::<a href="#type-absolute_month">absolute_month()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Ensures that the starting canonical month is strictly before the stopping
+ one.
+</p>
+
+<h3 class="function"><a name="check_timestamp-1">check_timestamp/1</a></h3>
+<div class="spec">
+<p><tt>check_timestamp(Term::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-timestamp">timestamp()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that specified term is a timestamp indeed, and returns it.</p>
+
+<h3 class="function"><a name="compare_dates-2">compare_dates/2</a></h3>
+<div class="spec">
+<p><tt>compare_dates(FirstDate::<a href="#type-date">date()</a>, SecondDate::<a href="#type-date">date()</a>) -&gt; <a href="basic_utils.html#type-comparison_result">basic_utils:comparison_result()</a></tt><br></p>
+<p> </p>
+</div><p><p>Compares the specified two dates: tells whether the first date is 
+strictly before, after or the same as the second one.</p>
+
+ Note: both dates are expected to be in canonical form (ex: not more 12 months
+ or 31 days in the specified date).
+</p>
+
+<h3 class="function"><a name="date_to_weekday-1">date_to_weekday/1</a></h3>
+<div class="spec">
+<p><tt>date_to_weekday(Date::<a href="#type-date">date()</a>) -&gt; <a href="#type-week_day">week_day()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the week day (ex: 'Tuesday') corresponding to specified date.</p>
+
+<h3 class="function"><a name="days_to_seconds-1">days_to_seconds/1</a></h3>
+<div class="spec">
+<p><tt>days_to_seconds(DayDuration::<a href="#type-days">days()</a>) -&gt; <a href="#type-seconds">seconds()</a></tt><br></p>
+<p> </p>
+</div><p>Converts a duration in days into a duration in seconds.</p>
+
+<h3 class="function"><a name="dhms_to_seconds-1">dhms_to_seconds/1</a></h3>
+<div class="spec">
+<p><tt>dhms_to_seconds(X1::<a href="#type-dhms_duration">dhms_duration()</a>) -&gt; <a href="#type-seconds">seconds()</a></tt><br></p>
+<p> </p>
+</div><p>Converts a DHMS duration (in Days/Hours/Minutes/Seconds) into a duration
+ in seconds.
+</p>
+
+<h3 class="function"><a name="dhms_to_string-1">dhms_to_string/1</a></h3>
+<div class="spec">
+<p><tt>dhms_to_string(DHMS::<a href="#type-dhms_duration">dhms_duration()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of the specified DHMS-based duration.</p>
+
+<h3 class="function"><a name="duration_to_french_string-1">duration_to_french_string/1</a></h3>
+<div class="spec">
+<p><tt>duration_to_french_string(Milliseconds::<a href="#type-milliseconds">milliseconds()</a> | float() | infinity) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns an approximate textual, French description of the specified 
+duration, expected to be expressed as a number of milliseconds (integer; 
+otherwise, if being floating-point, it will be rounded), or as the 'infinity' 
+atom.</p>
+
+ <p>Ex: for a duration of 150 012 ms, returns: 
+"2 minutes, 30 secondes et 12 millisecondes".</p>
+
+ See also: basic_utils:get_textual_duration/2.
+</p>
+
+<h3 class="function"><a name="duration_to_string-1">duration_to_string/1</a></h3>
+<div class="spec">
+<p><tt>duration_to_string(Milliseconds::<a href="#type-milliseconds">milliseconds()</a> | float() | infinity) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns an approximate textual (English) description of the specified 
+duration, expected to be expressed as a signed number of milliseconds 
+(integer; otherwise, if being floating-point, it will be rounded), or as the 
+'infinity' atom.</p>
+
+ <p>Ex: for a duration of 150 012 ms, returns: 
+"2 minutes, 30 seconds and 12 milliseconds".</p>
+
+ See also: basic_utils:get_textual_duration/2.
+</p>
+
+<h3 class="function"><a name="duration_to_string-2">duration_to_string/2</a></h3>
+<div class="spec">
+<p><tt>duration_to_string(Duration::<a href="#type-milliseconds">milliseconds()</a> | float() | infinity, Lang::<a href="language_utils.html#type-human_language">language_utils:human_language()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns an approximate textual description, in the specified language, of 
+the specified duration, expected to be expressed as a number of milliseconds 
+(integer; otherwise, if being floating-point, it will be rounded), or as the 
+'infinity' atom.</p>
+
+ <p>Ex: for a duration of 150 012 ms, returns for English: 
+"2 minutes, 30 seconds and 12 milliseconds".</p>
+
+ <p>Can be fed directly with a time_out() value.</p>
+
+ See also: basic_utils:get_textual_duration/2.
+</p>
+
+<h3 class="function"><a name="find_common_bank_holidays-3">find_common_bank_holidays/3</a></h3>
+<div class="spec">
+<p><tt>find_common_bank_holidays(StartYear::<a href="#type-year">year()</a>, StopYear::<a href="#type-year">year()</a>, Country::<a href="#type-country">country()</a>) -&gt; [<a href="#type-date_in_year">date_in_year()</a>]</tt><br></p>
+<p> </p>
+</div><p>Returns the days-of-the-year that are common to the whole year range
+ (start year included, stop one excluded).
+</p>
+
+<h3 class="function"><a name="from_posix_timestamp-1">from_posix_timestamp/1</a></h3>
+<div class="spec">
+<p><tt>from_posix_timestamp(PosixTimestamp::<a href="#type-posix_seconds">posix_seconds()</a>) -&gt; <a href="#type-timestamp">timestamp()</a></tt><br></p>
+<p> </p>
+</div><p>Converts specified POSIX timestamp (typically the one obtained through
+ file-level operations such as file_utils:get_last_modification_time/1) into a
+ standard timestamp.
+</p>
+
+<h3 class="function"><a name="get_bank_holidays_for-2">get_bank_holidays_for/2</a></h3>
+<div class="spec">
+<p><tt>get_bank_holidays_for(Year::<a href="#type-year">year()</a>, Country::<a href="#type-country">country()</a>) -&gt; [<a href="#type-date_in_year">date_in_year()</a>]</tt><br></p>
+<p> </p>
+</div><p><p>Returns a (non chronologically-ordered) list of the dates of the bank 
+holidays, for specified year and country.</p>
+
+ Sources for France: https://kalendrier.ouest-france.fr/jours-feries/2020.html
+ ("fixed" days have then been factored).
+</p>
+
+<h3 class="function"><a name="get_date_after-2">get_date_after/2</a></h3>
+<div class="spec">
+<p><tt>get_date_after(BaseDate::<a href="#type-date">date()</a>, Days::<a href="#type-days">days()</a>) -&gt; <a href="#type-date">date()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the date corresponding to the specified one augmented of the
+ specified number of days (possibly a negative number).
+</p>
+
+<h3 class="function"><a name="get_date_difference-2">get_date_difference/2</a></h3>
+<div class="spec">
+<p><tt>get_date_difference(FirstDate::<a href="#type-date">date()</a>, SecondDate::<a href="#type-date">date()</a>) -&gt; <a href="#type-days">days()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the signed duration, in days, between the two specified dates.</p>
+
+<h3 class="function"><a name="get_duration-1">get_duration/1</a></h3>
+<div class="spec">
+<p><tt>get_duration(X1::<a href="#type-time">time()</a>) -&gt; <a href="#type-seconds">seconds()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the (signed) duration in seconds corresponding to the specified
+ time.
+</p>
+
+<h3 class="function"><a name="get_duration-2">get_duration/2</a></h3>
+<div class="spec">
+<p><tt>get_duration(FirstTimestamp::<a href="#type-timestamp">timestamp()</a>, SecondTimestamp::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-seconds">seconds()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the (signed) duration in seconds between the two specified
+ timestamps, using the first one as starting time and the second one as
+ stopping time.
+</p>
+
+<h3 class="function"><a name="get_duration_since-1">get_duration_since/1</a></h3>
+<div class="spec">
+<p><tt>get_duration_since(StartTimestamp::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-seconds">seconds()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the (signed) duration in seconds between the specified start
+ timestamp and the current time.
+</p>
+
+<h3 class="function"><a name="get_epoch_milliseconds_since_year_0-0">get_epoch_milliseconds_since_year_0/0</a></h3>
+<div class="spec">
+<p><tt>get_epoch_milliseconds_since_year_0() -&gt; any()</tt></p>
+<p> </p>
+</div><p>Returns the number of milliseconds of the Epoch since year 0.</p>
+
+<h3 class="function"><a name="get_epoch_timestamp-0">get_epoch_timestamp/0</a></h3>
+<div class="spec">
+<p><tt>get_epoch_timestamp() -&gt; <a href="#type-timestamp">timestamp()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the timestamp of the (UNIX) Epoch, defined to be 00:00:00 UTC,
+ 1970-01-01.
+</p>
+
+<h3 class="function"><a name="get_french_textual_duration-2">get_french_textual_duration/2</a></h3>
+<div class="spec">
+<p><tt>get_french_textual_duration(FirstTimestamp::<a href="#type-timestamp">timestamp()</a>, SecondTimestamp::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description, in French, of the duration between the two
+ specified timestamps, using the first one as starting time and the
+ second one as stopping time.
+</p>
+
+<h3 class="function"><a name="get_french_textual_timestamp-1">get_french_textual_timestamp/1</a></h3>
+<div class="spec">
+<p><tt>get_french_textual_timestamp(X1::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a string corresponding to the specified timestamp expressed in
+ French, like: "le 1/9/2009, à 11h46m53".
+</p>
+
+<h3 class="function"><a name="get_intertime_duration-2">get_intertime_duration/2</a></h3>
+<div class="spec">
+<p><tt>get_intertime_duration(X1::<a href="#type-time">time()</a>, X2::<a href="#type-time">time()</a>) -&gt; <a href="#type-seconds">seconds()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the signed duration, in integer seconds, between the two 
+specified times.</p>
+
+ A positive duration will be returned iff the first specified time is before
+ the second one.
+</p>
+
+<h3 class="function"><a name="get_monotonic_time-0">get_monotonic_time/0</a></h3>
+<div class="spec">
+<p><tt>get_monotonic_time() -&gt; <a href="#type-ms_monotonic">ms_monotonic()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the current time, expressed in (absolute) internal time 
+(logically equivalent to a millisecond-based timestamp).</p>
+
+ <p>This is a "cheap" yet monotonic (never going backward) time, thus used 
+internally, mostly useful to determine durations.</p>
+
+ Note: due to the VM time offset, this is probably a (large) negative number
+ (of milliseconds), and this is not a problem.
+</p>
+
+<h3 class="function"><a name="get_precise_duration-2">get_precise_duration/2</a></h3>
+<div class="spec">
+<p><tt>get_precise_duration(FirstTimestamp::<a href="#type-precise_timestamp">precise_timestamp()</a>, SecondTimestamp::<a href="#type-precise_timestamp">precise_timestamp()</a>) -&gt; <a href="#type-milliseconds">milliseconds()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the (signed) duration in milliseconds between the two specified
+ precise timestamps (as obtained thanks to get_precise_duration/0), using the
+ first one as starting time and the second one as stopping time.
+</p>
+
+<h3 class="function"><a name="get_precise_duration_since-1">get_precise_duration_since/1</a></h3>
+<div class="spec">
+<p><tt>get_precise_duration_since(StartTimestamp::<a href="#type-precise_timestamp">precise_timestamp()</a>) -&gt; <a href="#type-milliseconds">milliseconds()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the (signed) duration in milliseconds between the specified
+ precise timestamp (as obtained thanks to get_precise_duration/0) and the
+ current time.
+</p>
+
+<h3 class="function"><a name="get_precise_timestamp-0">get_precise_timestamp/0</a></h3>
+<div class="spec">
+<p><tt>get_precise_timestamp() -&gt; <a href="#type-precise_timestamp">precise_timestamp()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns a timestamp that is as precise as possible, that is {MegaSecs, 
+Secs, MicroSecs}.</p>
+
+ <p>Where:</p>
+
+ <p>- MegaSecs is an integer number of millions of seconds</p>
+
+ <p>- Secs is an integer number of seconds that is less than one million</p>
+
+ - MicroSecs is an integer number of microseconds
+</p>
+
+<h3 class="function"><a name="get_system_time-0">get_system_time/0</a></h3>
+<div class="spec">
+<p><tt>get_system_time() -&gt; <a href="#type-ms_since_epoch">ms_since_epoch()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the (VM) system time (that is monotonic + time offset), in
+ milliseconds since the Epoch.
+</p>
+
+<h3 class="function"><a name="get_textual_date-1">get_textual_date/1</a></h3>
+<div class="spec">
+<p><tt>get_textual_date(X1::<a href="#type-date">date()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a string corresponding to the specified date, like: "30/11/2009".</p>
+
+<h3 class="function"><a name="get_textual_duration-2">get_textual_duration/2</a></h3>
+<div class="spec">
+<p><tt>get_textual_duration(FirstTimestamp::<a href="#type-timestamp">timestamp()</a>, SecondTimestamp::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns an (english), smart textual description of the duration between
+ the two specified timestamps, using the first one as starting time and the
+ second one as stopping time.
+</p>
+
+<h3 class="function"><a name="get_textual_timestamp-0">get_textual_timestamp/0</a></h3>
+<div class="spec">
+<p><tt>get_textual_timestamp() -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns a string corresponding to the current timestamp, like: 
+"2009/9/1 11:46:53".</p>
+
+ Note that the display order here is YY-MM-DD (same as when specifying the
+ timestamp), as opposed to DD-MM-YY, which is maybe more usual.
+</p>
+
+<h3 class="function"><a name="get_textual_timestamp-1">get_textual_timestamp/1</a></h3>
+<div class="spec">
+<p><tt>get_textual_timestamp(X1::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a (clear, non-ambiguous) string corresponding to the specified
+ timestamp, like: "2009/9/1 11:46:53".
+</p>
+
+<h3 class="function"><a name="get_textual_timestamp_for_path-0">get_textual_timestamp_for_path/0</a></h3>
+<div class="spec">
+<p><tt>get_textual_timestamp_for_path() -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a string corresponding to the current timestamp and able to be a
+ part of a path, like: "2010-11-18-at-13h-30m-35s".
+</p>
+
+<h3 class="function"><a name="get_textual_timestamp_for_path-1">get_textual_timestamp_for_path/1</a></h3>
+<div class="spec">
+<p><tt>get_textual_timestamp_for_path(X1::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a string corresponding to the specified timestamp and able to be
+ a part of a path, like: "2010-11-18-at-13h-30m-35s".
+</p>
+
+<h3 class="function"><a name="get_textual_timestamp_with_dashes-1">get_textual_timestamp_with_dashes/1</a></h3>
+<div class="spec">
+<p><tt>get_textual_timestamp_with_dashes(X1::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a string corresponding to the specified timestamp, with "dash"
+ conventions (ex: used by jsgantt), like: "2017-05-20 12:00:17".
+</p>
+
+<h3 class="function"><a name="get_time2_textual_timestamp-0">get_time2_textual_timestamp/0</a></h3>
+<div class="spec">
+<p><tt>get_time2_textual_timestamp() -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns a string corresponding to the current timestamp expressed as the 
+"%time2" Date and time format, that is "yyyy-mm-dd hh-mm-ss"; for example: 
+"2020-01-01 00-01-22".</p>
+
+ Used by various web-related tools (see
+ https://awstats.sourceforge.io/docs/awstats_config.html#LogFormat and
+ https://awstats.sourceforge.io/docs/awstats_faq.html#PERSONALIZEDLOG).
+</p>
+
+<h3 class="function"><a name="get_time2_textual_timestamp-1">get_time2_textual_timestamp/1</a></h3>
+<div class="spec">
+<p><tt>get_time2_textual_timestamp(X1::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns a string corresponding to the specified timestamp expressed as 
+the "%time2" Date and time format, that is "yyyy-mm-dd hh-mm-ss"; for example: 
+"2020-01-01 00-01-22".</p>
+
+ Used by various web-related tools (see
+ https://awstats.sourceforge.io/docs/awstats_config.html#LogFormat and
+ https://awstats.sourceforge.io/docs/awstats_faq.html#PERSONALIZEDLOG).
+</p>
+
+<h3 class="function"><a name="get_timestamp-0">get_timestamp/0</a></h3>
+<div class="spec">
+<p><tt>get_timestamp() -&gt; <a href="#type-timestamp">timestamp()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns a timestamp tuple describing now, that is the current time, the 
+time zone and Daylight Saving Time correction depending on the underlying OS.</p>
+
+ Ex: {{Year, Month, Day}, {Hour, Minute, Second}} = get_timestamp()
+ may return {{2007,9,6}, {15,9,14}}.
+</p>
+
+<h3 class="function"><a name="get_user_friendly_textual_timestamp-1">get_user_friendly_textual_timestamp/1</a></h3>
+<div class="spec">
+<p><tt>get_user_friendly_textual_timestamp(X1) -&gt; any()</tt></p>
+<p> </p>
+</div><p>Returns a string corresponding to the specified timestamp in a
+ user-friendly manner, like: "Wednesday, January 6, 2021 at 11:46:53".
+</p>
+
+<h3 class="function"><a name="get_week_day-1">get_week_day/1</a></h3>
+<div class="spec">
+<p><tt>get_week_day(DayIndex::<a href="#type-day_index">day_index()</a>) -&gt; <a href="#type-week_day">week_day()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the symbol (atom) corresponding to specified week day index.</p>
+
+<h3 class="function"><a name="gregorian_ms_to_timestamp-1">gregorian_ms_to_timestamp/1</a></h3>
+<div class="spec">
+<p><tt>gregorian_ms_to_timestamp(GregorianMs::<a href="#type-ms_since_year_0">ms_since_year_0()</a>) -&gt; <a href="#type-timestamp">timestamp()</a></tt><br></p>
+<p> </p>
+</div><p>Converts (with a bit of approximation) the specified number of Gregorian
+ milliseconds into a proper, user-level (local, system) timestamp.
+</p>
+
+<h3 class="function"><a name="hours_to_seconds-1">hours_to_seconds/1</a></h3>
+<div class="spec">
+<p><tt>hours_to_seconds(HourDuration::<a href="unit_utils.html#type-hours">unit_utils:hours()</a>) -&gt; <a href="#type-seconds">seconds()</a></tt><br></p>
+<p> </p>
+</div><p>Converts a duration in hours into a duration in seconds.</p>
+
+<h3 class="function"><a name="is_bank_holiday-2">is_bank_holiday/2</a></h3>
+<div class="spec">
+<p><tt>is_bank_holiday(Date::<a href="#type-date">date()</a>, Country::<a href="#type-country">country()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Tells whether, for specified country, the specified date is a bank
+ holiday.
+</p>
+
+<h3 class="function"><a name="is_canonical_date-1">is_canonical_date/1</a></h3>
+<div class="spec">
+<p><tt>is_canonical_date(Date::term()) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Tells whether the specified term is a canonical date.</p>
+
+<h3 class="function"><a name="is_dhms_duration-1">is_dhms_duration/1</a></h3>
+<div class="spec">
+<p><tt>is_dhms_duration(Other::term()) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p><p>Tells whether specified term is a DHMS duration.</p>
+
+ Note: does not check whether its components are in canonical form (ex: Hours
+ in [0,23]).
+</p>
+
+<h3 class="function"><a name="is_timestamp-1">is_timestamp/1</a></h3>
+<div class="spec">
+<p><tt>is_timestamp(Other::term()) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p><p>Returns whether specified term is a legit timestamp.</p>
+
+ Useful to vet user-specified timestamps.
+</p>
+
+<h3 class="function"><a name="local_to_universal_time-1">local_to_universal_time/1</a></h3>
+<div class="spec">
+<p><tt>local_to_universal_time(LocalTimestamp::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-timestamp">timestamp()</a></tt><br></p>
+<p> </p>
+</div><p><p>Converts specified timestamp expressed in local time (thus with time zone 
+and Daylight Saving Time) into a timestamp expressed in universal time (UTC).</p>
+
+ Note: designed to never fail, and performs a conversion as reasonably as
+ possible (ex: due to DST, some timestamp in local time shall not exist, like
+ when leaping forward of, say, an hour at spring; on the other way round, at
+ fall, a given local timestamp may exist twice: before and after, when going
+ back of, say, one hour).
+</p>
+
+<h3 class="function"><a name="month_to_string-1">month_to_string/1</a></h3>
+<div class="spec">
+<p><tt>month_to_string(MonthIndex::<a href="#type-month">month()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Converts a month (an integer in [1,12] or a 12-multiple thereof, like 23)
+ into its common name.
+</p>
+
+<h3 class="function"><a name="months_to_seconds-1">months_to_seconds/1</a></h3>
+<div class="spec">
+<p><tt>months_to_seconds(MonthDuration::<a href="#type-months">months()</a>) -&gt; <a href="#type-float_seconds">float_seconds()</a></tt><br></p>
+<p> </p>
+</div><p>Converts a duration in months into a duration in seconds, supposing the
+ duration of a month is 1/12 of the one of an average year.
+</p>
+
+<h3 class="function"><a name="next_month-1">next_month/1</a></h3>
+<div class="spec">
+<p><tt>next_month(Timestamp::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-timestamp">timestamp()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the same timestamp as specified, except exactly one month later 
+(hence not translated of a fixed duration).</p>
+
+ Note that this may still lead to invalid date, if the specified month has more
+ days than the next (ex: January, 31 becoming then a nonsensical February, 31).
+</p>
+
+<h3 class="function"><a name="offset_timestamp-2">offset_timestamp/2</a></h3>
+<div class="spec">
+<p><tt>offset_timestamp(Timestamp::<a href="#type-timestamp">timestamp()</a>, DHMS::<a href="#type-dhms_duration">dhms_duration()</a> | <a href="#type-seconds">seconds()</a>) -&gt; <a href="#type-timestamp">timestamp()</a></tt><br></p>
+<p> </p>
+</div><p>Offsets specified timestamp of specified (signed) duration: returns a
+ timestamp translated accordingly.
+</p>
+
+<h3 class="function"><a name="seconds_to_dhms-1">seconds_to_dhms/1</a></h3>
+<div class="spec">
+<p><tt>seconds_to_dhms(FullSeconds) -&gt; any()</tt></p>
+<p> </p>
+</div><p>Converts a duration in seconds into a DHMS duration (in
+ Days/Hours/Minutes/Seconds).
+</p>
+
+<h3 class="function"><a name="short_string_to_timestamp-1">short_string_to_timestamp/1</a></h3>
+<div class="spec">
+<p><tt>short_string_to_timestamp(TimestampString::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-timestamp">timestamp()</a></tt><br></p>
+<p> </p>
+</div><p>Parses back a timestamp in the form of "14/4/11 18:48" ("11" for 2011,
+ and with no seconds specified) into a timestamp(), that is
+ {_Date={Year,Month,Day}, _Time={Hour,Minute,Second}}.
+</p>
+
+<h3 class="function"><a name="string_to_dhms-1">string_to_dhms/1</a></h3>
+<div class="spec">
+<p><tt>string_to_dhms(DurationString::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-dhms_duration">dhms_duration()</a></tt><br></p>
+<p> </p>
+</div><p>Converts specified string (ex: "113j0h10m3s" for a French version,
+ "1d12h0m0s" for an English one) to a DHMS duration.
+</p>
+
+<h3 class="function"><a name="string_to_timestamp-1">string_to_timestamp/1</a></h3>
+<div class="spec">
+<p><tt>string_to_timestamp(TimestampString::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-timestamp">timestamp()</a></tt><br></p>
+<p> </p>
+</div><p>Parses back a timestamp in the form of "14/4/2011 18:48:51" into a
+ timestamp(), that is {_Date={Year,Month,Day}, _Time={Hour,Minute,Second}}.
+</p>
+
+<h3 class="function"><a name="time_of_day_to_string-1">time_of_day_to_string/1</a></h3>
+<div class="spec">
+<p><tt>time_of_day_to_string(Time::<a href="#type-time">time()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of the specified time of day.</p>
+
+<h3 class="function"><a name="time_out_to_string-1">time_out_to_string/1</a></h3>
+<div class="spec">
+<p><tt>time_out_to_string(Timeout::<a href="#type-time_out">time_out()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns an approximate textual (English) description of the specified 
+time-out, expected to be expressed as a signed number of milliseconds 
+(integer; otherwise, if being floating-point, it will be rounded), or as the 
+'infinity' atom.</p>
+
+ <p>Ex: for a time-out of 150 012 ms, returns: 
+"time-out of 2 minutes, 30 seconds and 12 milliseconds".</p>
+
+ See also: basic_utils:get_textual_duration/2.
+</p>
+
+<h3 class="function"><a name="time_out_to_string-2">time_out_to_string/2</a></h3>
+<div class="spec">
+<p><tt>time_out_to_string(Duration::<a href="#type-time_out">time_out()</a>, Lang::<a href="language_utils.html#type-human_language">language_utils:human_language()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns an approximate textual description of the specified time-out, in 
+the specified language, expected to be expressed as a number of milliseconds 
+(integer; otherwise, if being floating-point, it will be rounded), or as the 
+'infinity' atom.</p>
+
+ Ex: for a time-out of 150 012 ms, returns for English:
+ "time-out of 2 minutes, 30 seconds and 12 milliseconds".
+</p>
+
+<h3 class="function"><a name="time_to_seconds-1">time_to_seconds/1</a></h3>
+<div class="spec">
+<p><tt>time_to_seconds(X1::<a href="#type-time">time()</a>) -&gt; <a href="#type-seconds">seconds()</a></tt><br></p>
+<p> </p>
+</div><p>Converts a HMS duration (in Hours/Minutes/Seconds) into a duration in
+ seconds.
+</p>
+
+<h3 class="function"><a name="timestamp_to_seconds-0">timestamp_to_seconds/0</a></h3>
+<div class="spec">
+<p><tt>timestamp_to_seconds() -&gt; <a href="#type-seconds">seconds()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the number of seconds elapsed since year 0 and now.</p>
+
+ Useful for example to define an absolute reference in seconds and then only
+ compare offsets to it.
+</p>
+
+<h3 class="function"><a name="timestamp_to_seconds-1">timestamp_to_seconds/1</a></h3>
+<div class="spec">
+<p><tt>timestamp_to_seconds(Timestamp::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-seconds">seconds()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the number of seconds elapsed since year 0 and specified 
+timestamp.</p>
+
+ Useful for example to define an absolute reference in seconds and then only
+ compare offsets to it.
+</p>
+
+<h3 class="function"><a name="timestamp_to_string-1">timestamp_to_string/1</a></h3>
+<div class="spec">
+<p><tt>timestamp_to_string(Timestamp::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Alias of get_textual_timestamp/1; defined for clarity.</p>
+
+<h3 class="function"><a name="timestamp_to_weekday-1">timestamp_to_weekday/1</a></h3>
+<div class="spec">
+<p><tt>timestamp_to_weekday(Timestamp::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-week_day">week_day()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the week day (ex: 'Tuesday') corresponding to specified
+ timestamp.
+</p>
+
+<h3 class="function"><a name="universal_to_local_time-1">universal_to_local_time/1</a></h3>
+<div class="spec">
+<p><tt>universal_to_local_time(UTCTimestamp::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-timestamp">timestamp()</a></tt><br></p>
+<p> </p>
+</div><p>Converts specified timestamp expressed in universal time (UTC) into a
+ timestamp expressedin local time (thus with time zone and Daylight Saving
+ Time).
+</p>
+
+<h3 class="function"><a name="week_day_to_string-1">week_day_to_string/1</a></h3>
+<div class="spec">
+<p><tt>week_day_to_string(Date::<a href="#type-date">date()</a> | <a href="#type-day_index">day_index()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the common name of a week day (ex: "Tuesday") based on the
+ specified date or on the specified index in the week.
+</p>
+
+<h3 class="function"><a name="weeks_to_seconds-1">weeks_to_seconds/1</a></h3>
+<div class="spec">
+<p><tt>weeks_to_seconds(WeekDuration::<a href="#type-weeks">weeks()</a>) -&gt; <a href="#type-seconds">seconds()</a></tt><br></p>
+<p> </p>
+</div><p>Converts a duration in weeks into a duration in seconds.</p>
+
+<h3 class="function"><a name="years_to_seconds-1">years_to_seconds/1</a></h3>
+<div class="spec">
+<p><tt>years_to_seconds(YearDuration::<a href="#type-years">years()</a>) -&gt; <a href="#type-float_seconds">float_seconds()</a></tt><br></p>
+<p> </p>
+</div><p>Converts a duration in years into a duration in seconds, supposing a year
+ has 365 days and 6 hours (that is a quarter of one day, to account for leap
+ years).
+</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

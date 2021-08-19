@@ -1,0 +1,303 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module trace_bridge</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module trace_bridge</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>The trace bridge allows a software to depend only on the Ceylan-Myriad
+ layer, yet to be able (optionally) to be using another piece of software
+ (possibly the Ceylan-Traces layer, refer to <a href="http://traces.esperide.org/" target="_top"><tt>http://traces.esperide.org/</tt></a>) at
+ runtime for <b>its logging</b>, so that in all cases exactly one (and the most 
+appropriate) logging system is used, even when lower-level libraries are 
+involved, and with no change of source code to be operated on that software.
+
+
+<h2><a name="description">Description</a></h2><p>The trace bridge allows a software to depend only on the Ceylan-Myriad
+ layer, yet to be able (optionally) to be using another piece of software
+ (possibly the Ceylan-Traces layer, refer to <a href="http://traces.esperide.org/" target="_top"><tt>http://traces.esperide.org/</tt></a>) at
+ runtime for <b>its logging</b>, so that in all cases exactly one (and the most 
+appropriate) logging system is used, even when lower-level libraries are 
+involved, and with no change of source code to be operated on that software.</p>
+
+ <p>It is useful to provide native, integrated, higher-level logging to basic
+ libraries (ex: LEEC, see <a href="https://github.com/Olivier-Boudeville/Ceylan-LEEC" target="_top"><tt>https://github.com/Olivier-Boudeville/Ceylan-LEEC</tt></a>), 
+should their user require it - while being able to remain lean and mean if 
+wanted (e.g while keeping the dependency to Ceylan-Traces optional).</p>
+
+ <p>Switching to a more advanced trace system (typically Ceylan-Traces) is just a 
+matter of having the process of interest call the register/3 function below.</p>
+
+ <p>For usage examples, refer to:</p>
+
+  <p>- Ceylan-Myriad: trace_bridge_test.erl (directly tracing through basic  
+trace_utils)</p>
+
+  - Ceylan-Traces: trace_bridging_test.erl (using then our advanced trace
+  system)
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-any_string">any_string()</a></h3>
+<p><tt>any_string() = <a href="text_utils.html#type-any_string">text_utils:any_string()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-bridge_info">bridge_info()</a></h3>
+<p><b>abstract datatype</b>: <tt>bridge_info()</tt></p>
+<p> The bridging information stored in the target process dictionary.</p>
+
+<h3 class="typedecl"><a name="type-bridge_pid">bridge_pid()</a></h3>
+<p><tt>bridge_pid() = pid()</tt></p>
+<p> Possibly a class_TraceAggregator:aggregator_pid().</p>
+
+<h3 class="typedecl"><a name="type-bridge_spec">bridge_spec()</a></h3>
+<p><b>abstract datatype</b>: <tt>bridge_spec()</tt></p>
+<p> Typically the information transmitted by a trace emitter when creating a
+ lower-level process that may or may not use fancy tracing.</p>
+
+<h3 class="typedecl"><a name="type-format_string">format_string()</a></h3>
+<p><tt>format_string() = <a href="text_utils.html#type-format_string">text_utils:format_string()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-format_values">format_values()</a></h3>
+<p><tt>format_values() = <a href="text_utils.html#type-format_values">text_utils:format_values()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-trace_message">trace_message()</a></h3>
+<p><tt>trace_message() = <a href="#type-ustring">ustring()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-trace_timestamp">trace_timestamp()</a></h3>
+<p><tt>trace_timestamp() = <a href="trace_utils.html#type-trace_timestamp">trace_utils:trace_timestamp()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#alert-1">alert/1</a></td><td>Outputs specified critical message.</td></tr>
+<tr><td valign="top"><a href="#alert_fmt-2">alert_fmt/2</a></td><td>Outputs specified alert message to format.</td></tr>
+<tr><td valign="top"><a href="#critical-1">critical/1</a></td><td>Outputs specified critical message.</td></tr>
+<tr><td valign="top"><a href="#critical_fmt-2">critical_fmt/2</a></td><td>Outputs specified critical message to format.</td></tr>
+<tr><td valign="top"><a href="#debug-1">debug/1</a></td><td>Outputs specified debug message.</td></tr>
+<tr><td valign="top"><a href="#debug_fmt-2">debug_fmt/2</a></td><td>Outputs specified debug message to format.</td></tr>
+<tr><td valign="top"><a href="#emergency-1">emergency/1</a></td><td>Outputs specified emergency message.</td></tr>
+<tr><td valign="top"><a href="#emergency_fmt-2">emergency_fmt/2</a></td><td>Outputs specified emergency message to format.</td></tr>
+<tr><td valign="top"><a href="#error-1">error/1</a></td><td>Outputs specified error message.</td></tr>
+<tr><td valign="top"><a href="#error_fmt-2">error_fmt/2</a></td><td>Outputs specified error message to format.</td></tr>
+<tr><td valign="top"><a href="#get_bridge_info-0">get_bridge_info/0</a></td><td>Returns the bridge information of the current process.</td></tr>
+<tr><td valign="top"><a href="#get_bridge_spec-3">get_bridge_spec/3</a></td><td>Returns the information to pass to a process so that it can register to
+ the corresponding trace bridge and use it automatically from then.</td></tr>
+<tr><td valign="top"><a href="#info-1">info/1</a></td><td>Outputs specified info message.</td></tr>
+<tr><td valign="top"><a href="#info_fmt-2">info_fmt/2</a></td><td>Outputs specified info message to format.</td></tr>
+<tr><td valign="top"><a href="#notice-1">notice/1</a></td><td>Outputs specified notice message.</td></tr>
+<tr><td valign="top"><a href="#notice_fmt-2">notice_fmt/2</a></td><td>Outputs specified notice message to format.</td></tr>
+<tr><td valign="top"><a href="#register-1">register/1</a></td><td>Registers the current process to the specified trace bridge (if any).</td></tr>
+<tr><td valign="top"><a href="#register_if_not_already-1">register_if_not_already/1</a></td><td>Registers the current process to the specified trace bridge (if any), and 
+provided that no bridge was already registered (otherwise maintains the 
+previous bridge and ignores silently that extraneous call).</td></tr>
+<tr><td valign="top"><a href="#set_application_timestamp-1">set_application_timestamp/1</a></td><td>Sets the current application timestamp.</td></tr>
+<tr><td valign="top"><a href="#set_bridge_info-1">set_bridge_info/1</a></td><td>Sets the specified bridge information for the current process.</td></tr>
+<tr><td valign="top"><a href="#unregister-0">unregister/0</a></td><td>Unregisters the current process, which acted as a trace bridge; never
+ fails.</td></tr>
+<tr><td valign="top"><a href="#void-1">void/1</a></td><td>"Outputs" specified void message.</td></tr>
+<tr><td valign="top"><a href="#void_fmt-2">void_fmt/2</a></td><td>"Outputs" specified void message to format.</td></tr>
+<tr><td valign="top"><a href="#warning-1">warning/1</a></td><td>Outputs specified warning message.</td></tr>
+<tr><td valign="top"><a href="#warning_fmt-2">warning_fmt/2</a></td><td>Outputs specified warning message to format.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="alert-1">alert/1</a></h3>
+<div class="spec">
+<p><tt>alert(Message::<a href="#type-trace_message">trace_message()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified critical message.</p>
+
+<h3 class="function"><a name="alert_fmt-2">alert_fmt/2</a></h3>
+<div class="spec">
+<p><tt>alert_fmt(MessageFormat::<a href="#type-format_string">format_string()</a>, MessageValues::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified alert message to format.</p>
+
+<h3 class="function"><a name="critical-1">critical/1</a></h3>
+<div class="spec">
+<p><tt>critical(Message::<a href="#type-trace_message">trace_message()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified critical message.</p>
+
+<h3 class="function"><a name="critical_fmt-2">critical_fmt/2</a></h3>
+<div class="spec">
+<p><tt>critical_fmt(MessageFormat::<a href="#type-format_string">format_string()</a>, MessageValues::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified critical message to format.</p>
+
+<h3 class="function"><a name="debug-1">debug/1</a></h3>
+<div class="spec">
+<p><tt>debug(Message::<a href="#type-trace_message">trace_message()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified debug message.</p>
+
+<h3 class="function"><a name="debug_fmt-2">debug_fmt/2</a></h3>
+<div class="spec">
+<p><tt>debug_fmt(MessageFormat::<a href="#type-format_string">format_string()</a>, MessageValues::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified debug message to format.</p>
+
+<h3 class="function"><a name="emergency-1">emergency/1</a></h3>
+<div class="spec">
+<p><tt>emergency(Message::<a href="#type-trace_message">trace_message()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified emergency message.</p>
+
+<h3 class="function"><a name="emergency_fmt-2">emergency_fmt/2</a></h3>
+<div class="spec">
+<p><tt>emergency_fmt(MessageFormat::<a href="#type-format_string">format_string()</a>, MessageValues::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified emergency message to format.</p>
+
+<h3 class="function"><a name="error-1">error/1</a></h3>
+<div class="spec">
+<p><tt>error(Message::<a href="#type-trace_message">trace_message()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified error message.</p>
+
+<h3 class="function"><a name="error_fmt-2">error_fmt/2</a></h3>
+<div class="spec">
+<p><tt>error_fmt(MessageFormat::<a href="#type-format_string">format_string()</a>, MessageValues::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified error message to format.</p>
+
+<h3 class="function"><a name="get_bridge_info-0">get_bridge_info/0</a></h3>
+<div class="spec">
+<p><tt>get_bridge_info() -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-bridge_info">bridge_info()</a>)</tt><br></p>
+<p> </p>
+</div><p><p>Returns the bridge information of the current process.</p>
+
+ May be useful for example if spawning processes and wanting that they use the
+ same bridge.
+</p>
+
+<h3 class="function"><a name="get_bridge_spec-3">get_bridge_spec/3</a></h3>
+<div class="spec">
+<p><tt>get_bridge_spec(TraceEmitterName::<a href="#type-any_string">any_string()</a>, TraceCategory::<a href="#type-any_string">any_string()</a>, BridgePid::<a href="#type-bridge_pid">bridge_pid()</a>) -&gt; <a href="#type-bridge_spec">bridge_spec()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the information to pass to a process so that it can register to
+ the corresponding trace bridge and use it automatically from then.
+</p>
+
+<h3 class="function"><a name="info-1">info/1</a></h3>
+<div class="spec">
+<p><tt>info(Message::<a href="#type-trace_message">trace_message()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified info message.</p>
+
+<h3 class="function"><a name="info_fmt-2">info_fmt/2</a></h3>
+<div class="spec">
+<p><tt>info_fmt(MessageFormat::<a href="#type-format_string">format_string()</a>, MessageValues::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified info message to format.</p>
+
+<h3 class="function"><a name="notice-1">notice/1</a></h3>
+<div class="spec">
+<p><tt>notice(Message::<a href="#type-trace_message">trace_message()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified notice message.</p>
+
+<h3 class="function"><a name="notice_fmt-2">notice_fmt/2</a></h3>
+<div class="spec">
+<p><tt>notice_fmt(MessageFormat::<a href="#type-format_string">format_string()</a>, MessageValues::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified notice message to format.</p>
+
+<h3 class="function"><a name="register-1">register/1</a></h3>
+<div class="spec">
+<p><tt>register(MaybeBridgeSpec::<a href="#type-maybe">maybe</a>(<a href="#type-bridge_spec">bridge_spec()</a>)) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Registers the current process to the specified trace bridge (if any).</p>
+
+ <p>To be called by the process wanting to use such a trace bridge.</p>
+
+ <p>Throws an exception of a bridge is already set.</p>
+
+ See also: register_if_not_already/1.
+</p>
+
+<h3 class="function"><a name="register_if_not_already-1">register_if_not_already/1</a></h3>
+<div class="spec">
+<p><tt>register_if_not_already(MaybeBridgeSpec::<a href="#type-maybe">maybe</a>(<a href="#type-bridge_spec">bridge_spec()</a>)) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Registers the current process to the specified trace bridge (if any), and 
+provided that no bridge was already registered (otherwise maintains the 
+previous bridge and ignores silently that extraneous call).</p>
+
+ <p>To be called by the process wanting to use such a trace bridge.</p>
+
+ Useful to have a bridge yet accept that the caller may have already set its
+ bridge.
+</p>
+
+<h3 class="function"><a name="set_application_timestamp-1">set_application_timestamp/1</a></h3>
+<div class="spec">
+<p><tt>set_application_timestamp(NewAppTimestamp::<a href="#type-trace_timestamp">trace_timestamp()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Sets the current application timestamp.</p>
+
+ Note: if no trace bridge is registered, does nothing.
+</p>
+
+<h3 class="function"><a name="set_bridge_info-1">set_bridge_info/1</a></h3>
+<div class="spec">
+<p><tt>set_bridge_info(MaybeBridgeInfo::<a href="#type-maybe">maybe</a>(<a href="#type-bridge_info">bridge_info()</a>)) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Sets the specified bridge information for the current process.</p>
+
+ <p>May be useful for example for a spawned process to adopt the same bridge as 
+the one of its caller (obtained thanks to get_bridge_info/0).</p>
+
+ Any local pre-existing bridge information will be overwritten.
+</p>
+
+<h3 class="function"><a name="unregister-0">unregister/0</a></h3>
+<div class="spec">
+<p><tt>unregister() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Unregisters the current process, which acted as a trace bridge; never
+ fails.
+</p>
+
+<h3 class="function"><a name="void-1">void/1</a></h3>
+<div class="spec">
+<p><tt>void(Message::<a href="#type-trace_message">trace_message()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>"Outputs" specified void message.</p>
+
+<h3 class="function"><a name="void_fmt-2">void_fmt/2</a></h3>
+<div class="spec">
+<p><tt>void_fmt(MessageFormat::<a href="#type-format_string">format_string()</a>, MessageValues::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>"Outputs" specified void message to format.</p>
+
+<h3 class="function"><a name="warning-1">warning/1</a></h3>
+<div class="spec">
+<p><tt>warning(Message::<a href="#type-trace_message">trace_message()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified warning message.</p>
+
+<h3 class="function"><a name="warning_fmt-2">warning_fmt/2</a></h3>
+<div class="spec">
+<p><tt>warning_fmt(MessageFormat::<a href="#type-format_string">format_string()</a>, MessageValues::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified warning message to format.</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

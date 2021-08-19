@@ -1,0 +1,717 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module list_utils</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module list_utils</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various facilities about <b>lists</b>.
+
+
+<h2><a name="description">Description</a></h2><p>Gathering of various facilities about <b>lists</b>.</p>
+
+ <p>See list_utils_test.erl for the corresponding test.</p>
+
+ See also: set_utils.erl and list_table.erl.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-count">count()</a></h3>
+<p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-element">element()</a></h3>
+<p><tt>element() = term()</tt></p>
+<p> An element of a list.</p>
+
+<h3 class="typedecl"><a name="type-maybe_list">maybe_list()</a></h3>
+<p><tt>maybe_list(T) = [T] | T</tt></p>
+<p><p> Either a list of terms, or a term by itself.</p>
+
+ Note: different from maybe(list()).</p>
+
+<h3 class="typedecl"><a name="type-positive_index">positive_index()</a></h3>
+<p><tt>positive_index() = <a href="basic_utils.html#type-positive_index">basic_utils:positive_index()</a></tt></p>
+<p> These indexes start at 1.</p>
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#append_at_end-2">append_at_end/2</a></td><td>Appends specified element at the end of specified list, without changing 
+the order of the list.</td></tr>
+<tr><td valign="top"><a href="#are_integers-1">are_integers/1</a></td><td>Returns whether the specified list contains only integers.</td></tr>
+<tr><td valign="top"><a href="#are_pids-1">are_pids/1</a></td><td>Returns whether the specified list contains only PIDs.</td></tr>
+<tr><td valign="top"><a href="#cartesian_product-1">cartesian_product/1</a></td><td>Returns the cartesian product of the specified lists (collected in a 
+top-level list).</td></tr>
+<tr><td valign="top"><a href="#check_integers-1">check_integers/1</a></td><td>Checks that specified argument is a list of integers.</td></tr>
+<tr><td valign="top"><a href="#check_strictly_ascending-1">check_strictly_ascending/1</a></td><td>Checks that the terms in the specified list are in strict (no duplicates) 
+ascending (Erlang) term order.</td></tr>
+<tr><td valign="top"><a href="#count_occurrences-1">count_occurrences/1</a></td><td>Counts the number of occurences of all elements in the specified list:
+ returns an (unordered) list of {Term,Count} pairs, where each term is
+ associated to the total number of its occurrences (1 or above) in the
+ specified list.</td></tr>
+<tr><td valign="top"><a href="#delete_all_in-2">delete_all_in/2</a></td><td>Returns a copy of the specified list where all elements matching Elem are 
+deleted, whether or not there is any.</td></tr>
+<tr><td valign="top"><a href="#delete_existing-2">delete_existing/2</a></td><td>Returns a copy of the specified list where the first element matching
+ Elem is deleted, ensuring at least one of these elements exists (as opposed to
+ lists:delete/2).</td></tr>
+<tr><td valign="top"><a href="#delete_if_existing-2">delete_if_existing/2</a></td><td>Deletes the first matching of specified element from specified list, 
+returning whether an element has been removed: either the 'not_found' atom (in 
+which case the list remained the same) or the corresponding new list (same 
+order and content, except first occurrence removed).</td></tr>
+<tr><td valign="top"><a href="#determine_tuple_info-1">determine_tuple_info/1</a></td><td>Determines tuple-related information about specified datastructure:
+ returns {TupleCount, TupleSize}, supposing the list is made of tuples of
+ uniform sizes.</td></tr>
+<tr><td valign="top"><a href="#difference-2">difference/2</a></td><td>Returns the difference between the first specified list and the second,
+ that is the elements of the first list that are not in the second one.</td></tr>
+<tr><td valign="top"><a href="#differences-2">differences/2</a></td><td>Returns the differences between the first specified list and the second,
+ as a pair, whose first element corresponds to the elements of the first list
+ that are not in the second one, and whose second element corresponds to the
+ elements of the second list that are not in the first one.</td></tr>
+<tr><td valign="top"><a href="#draw_element-1">draw_element/1</a></td><td>Draws one element at random of the specified list, knowing that they all
+ have the same probability of being drawn (uniform probability).</td></tr>
+<tr><td valign="top"><a href="#draw_element-2">draw_element/2</a></td><td>Draws one element at random of the specified list, whose length must be
+ the specified one (allows to precompute it once for multiple drawings),
+ knowing all elements have the same probability of being drawn (uniform
+ probability).</td></tr>
+<tr><td valign="top"><a href="#draw_element_weighted-1">draw_element_weighted/1</a></td><td>Draws one element at random of the specified list, which is a list of 
+{Element, Probability} pairs: returns the drawn element, knowing that it will 
+be chosen according to the probability associated to each element.</td></tr>
+<tr><td valign="top"><a href="#draw_elements_from-2">draw_elements_from/2</a></td><td>Draws the specified number of elements at random of the specified list, 
+knowing that they all have the same probability of being drawn initially, but 
+when an element is drawn, it is removed from the candidate list so that the 
+next drawing operates on the resulting shortened list, so that any element is 
+drawn up to once.</td></tr>
+<tr><td valign="top"><a href="#ensure_atoms-1">ensure_atoms/1</a></td><td>Ensures that the specified argument is a list of atoms: encloses any atom
+ in a list of its own if not already a list, or check that this list is only
+ populated of atoms.</td></tr>
+<tr><td valign="top"><a href="#ensure_is_once_in-2">ensure_is_once_in/2</a></td><td>Ensures that specified element is included once in specified unordered 
+list (supposed to contain it already up to once).</td></tr>
+<tr><td valign="top"><a href="#ensure_list-1">ensure_list/1</a></td><td>Ensures that the specified argument is a list: encloses it in a list of 
+its own if not already a list.</td></tr>
+<tr><td valign="top"><a href="#ensure_pids-1">ensure_pids/1</a></td><td>Ensures that the specified argument is a list of PIDs: encloses any PID
+ in a list of its own if not already a list, or check that this list is only
+ populated of PIDs.</td></tr>
+<tr><td valign="top"><a href="#ensure_tuples-1">ensure_tuples/1</a></td><td>Ensures that the specified argument is a list of tuples: encloses any
+ tuple in a list of its own if not already a list, or check that this list is
+ only populated of tuples.</td></tr>
+<tr><td valign="top"><a href="#extract_element_at-2">extract_element_at/2</a></td><td>Extracts element from the specified list, at the specified index.</td></tr>
+<tr><td valign="top"><a href="#extract_elements_from-2">extract_elements_from/2</a></td><td>Extracts the specified number of elements at random from the specified 
+list, knowing that they all have the same probability of being extracted 
+initially, but when an element is extracted, it is removed from the candidate 
+list so that the next extracting operates on the resulting shortened list 
+(that is a subset with no duplicates is returned).</td></tr>
+<tr><td valign="top"><a href="#extract_last_element-1">extract_last_element/1</a></td><td>Extracts the last element of the specified (non-empty) list, returning a 
+pair made of that element and of the remainder of the list (in its original 
+order).</td></tr>
+<tr><td valign="top"><a href="#filter_out_undefined-1">filter_out_undefined/1</a></td><td>Removes (filters out) all elements equal to 'undefined'; preserves order.</td></tr>
+<tr><td valign="top"><a href="#flatten_once-1">flatten_once/1</a></td><td>Flattens specified list of lists only once (that is on a single level), 
+as opposed to indefinitively (as done recursively by lists:flatten/1); 
+provides more control than a recursive counterpart.</td></tr>
+<tr><td valign="top"><a href="#flatten_tuples-1">flatten_tuples/1</a></td><td>Flattens a list of tuples into a simple list of their elements, without 
+tuples and in the same order.</td></tr>
+<tr><td valign="top"><a href="#get_duplicates-1">get_duplicates/1</a></td><td>Returns the duplicates in the specified list: returns an (unordered) list 
+of {DuplicatedTerm,DuplicationCount} pairs, where each duplicated term (that 
+is a term present more than once) is specified, alongside the total number of 
+occurrences of that term in the specified list.</td></tr>
+<tr><td valign="top"><a href="#get_element_at-2">get_element_at/2</a></td><td>Returns the element in the list at the specified index, in
+ <code>[1..length(List)]</code>.</td></tr>
+<tr><td valign="top"><a href="#get_index_of-2">get_index_of/2</a></td><td>Returns the index, in <code>[1..length(List)]</code>, of the (first occurrence of 
+the) specified element in the specified list.</td></tr>
+<tr><td valign="top"><a href="#get_last_element-1">get_last_element/1</a></td><td>Returns the last element of the specified list.</td></tr>
+<tr><td valign="top"><a href="#get_maybe_index_of-2">get_maybe_index_of/2</a></td><td>Returns the index, in <code>[1..length(List)]</code>, of the (first occurrence of 
+the) specified element in the specified list, or 'undefined' if the element is 
+not found.</td></tr>
+<tr><td valign="top"><a href="#has_duplicates-1">has_duplicates/1</a></td><td>Tells whether there are in the specified list elements that are present
+ more than once.</td></tr>
+<tr><td valign="top"><a href="#insert_element_at-3">insert_element_at/3</a></td><td>Inserts specified element at specified position in specified list.</td></tr>
+<tr><td valign="top"><a href="#intersection-2">intersection/2</a></td><td>Returns the intersection of the two specified lists, that is the list of 
+all elements that are in both lists.</td></tr>
+<tr><td valign="top"><a href="#random_permute-1">random_permute/1</a></td><td>Returns a random uniform permutation of the specified list.</td></tr>
+<tr><td valign="top"><a href="#random_permute_reciprocal-1">random_permute_reciprocal/1</a></td><td>Returns a reciprocal random uniform permutation of the specified list, 
+compared to random_permute/1.</td></tr>
+<tr><td valign="top"><a href="#reconstruct_tuples-2">reconstruct_tuples/2</a></td><td>Reconstructs a list of tuples of specified size from the specified flat 
+list.</td></tr>
+<tr><td valign="top"><a href="#remove_element_at-2">remove_element_at/2</a></td><td>Returns a list corresponding to the specified one with the element at 
+specified index removed.</td></tr>
+<tr><td valign="top"><a href="#remove_first_elements-2">remove_first_elements/2</a></td><td>Removes the specified number first elements.</td></tr>
+<tr><td valign="top"><a href="#remove_last_element-1">remove_last_element/1</a></td><td>Removes the last element of the specified list.</td></tr>
+<tr><td valign="top"><a href="#split_at-2">split_at/2</a></td><td>Splits the specified (plain) list in two parts (two plain lists, that are 
+returned): the first contains the first elements, up to MaxLen included (in 
+reverse order), and the second the others (if any).</td></tr>
+<tr><td valign="top"><a href="#subtract_all_duplicates-2">subtract_all_duplicates/2</a></td><td>Returns a list equal to L1 except that all elements found in L2 have been 
+removed, even if in L1 they were duplicated.</td></tr>
+<tr><td valign="top"><a href="#union-2">union/2</a></td><td>Returns the union of the two specified lists, that is the list of all
+ elements that are in either list.</td></tr>
+<tr><td valign="top"><a href="#uniquify-1">uniquify/1</a></td><td>Returns a list whose elements are the ones of the specified list, except 
+that they are unique (all their duplicates have been removed).</td></tr>
+<tr><td valign="top"><a href="#uniquify_ordered-1">uniquify_ordered/1</a></td><td>Returns a list whose elements are the ones of the specified list, except 
+that they are unique (all their duplicates have been removed), while the order 
+in the kept elements is preserved.</td></tr>
+<tr><td valign="top"><a href="#unordered_compare-2">unordered_compare/2</a></td><td>Compares the two specified lists with no regard to the order of their
+ elements: returns true iff they have the exact same elements (differentiating
+ between 1 and 1.0 for example), possibly in a different order.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="append_at_end-2">append_at_end/2</a></h3>
+<div class="spec">
+<p><tt>append_at_end(Elem::<a href="#type-element">element()</a>, L::list()) -&gt; nonempty_list()</tt><br></p>
+<p> </p>
+</div><p><p>Appends specified element at the end of specified list, without changing 
+the order of the list.</p>
+
+ <p>Ex: append_at_end(d, [a,b,c]) returns [a,b,c,d].</p>
+
+ Note: usually adding elements at the end of a list should be avoided, as it is
+ costlier than adding them at head.
+</p>
+
+<h3 class="function"><a name="are_integers-1">are_integers/1</a></h3>
+<div class="spec">
+<p><tt>are_integers(T::term()) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Returns whether the specified list contains only integers.</p>
+
+<h3 class="function"><a name="are_pids-1">are_pids/1</a></h3>
+<div class="spec">
+<p><tt>are_pids(T::term()) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Returns whether the specified list contains only PIDs.</p>
+
+<h3 class="function"><a name="cartesian_product-1">cartesian_product/1</a></h3>
+<div class="spec">
+<p><tt>cartesian_product(OtherLists::[[T]]) -&gt; [[T]]</tt><br></p>
+<p> </p>
+</div><p><p>Returns the cartesian product of the specified lists (collected in a 
+top-level list).</p>
+
+ Ex: cartesian_product([[a,b,c], [d,e], [f]]) =
+     [[a,d,f], [a,e,f], [b,d,f], [b,e,f], [c,d,f], [c,e,f]]
+</p>
+
+<h3 class="function"><a name="check_integers-1">check_integers/1</a></h3>
+<div class="spec">
+<p><tt>check_integers(Any::term()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Checks that specified argument is a list of integers.</p>
+
+ See also type_utils:check_integers/1.
+</p>
+
+<h3 class="function"><a name="check_strictly_ascending-1">check_strictly_ascending/1</a></h3>
+<div class="spec">
+<p><tt>check_strictly_ascending(List::list()) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p><p>Checks that the terms in the specified list are in strict (no duplicates) 
+ascending (Erlang) term order.</p>
+
+ In many cases, the actual type of these elements shall be checked beforehand
+ (ex: see type_utils:check_{integers,floats}/1) to ensure that comparisons make
+ sense (ex: float versus atom).
+</p>
+
+<h3 class="function"><a name="count_occurrences-1">count_occurrences/1</a></h3>
+<div class="spec">
+<p><tt>count_occurrences(List::list()) -&gt; [{<a href="#type-element">element()</a>, <a href="#type-count">count()</a>}]</tt><br></p>
+<p> </p>
+</div><p>Counts the number of occurences of all elements in the specified list:
+ returns an (unordered) list of {Term,Count} pairs, where each term is
+ associated to the total number of its occurrences (1 or above) in the
+ specified list.
+</p>
+
+<h3 class="function"><a name="delete_all_in-2">delete_all_in/2</a></h3>
+<div class="spec">
+<p><tt>delete_all_in(Elem::<a href="#type-element">element()</a>, List::list()) -&gt; list()</tt><br></p>
+<p> </p>
+</div><p><p>Returns a copy of the specified list where all elements matching Elem are 
+deleted, whether or not there is any.</p>
+
+ The element order of the specified list is preserved.
+</p>
+
+<h3 class="function"><a name="delete_existing-2">delete_existing/2</a></h3>
+<div class="spec">
+<p><tt>delete_existing(Elem::<a href="#type-element">element()</a>, List::list()) -&gt; list()</tt><br></p>
+<p> </p>
+</div><p>Returns a copy of the specified list where the first element matching
+ Elem is deleted, ensuring at least one of these elements exists (as opposed to
+ lists:delete/2). The order of the specified list is preserved.
+</p>
+
+<h3 class="function"><a name="delete_if_existing-2">delete_if_existing/2</a></h3>
+<div class="spec">
+<p><tt>delete_if_existing(Elem::<a href="#type-element">element()</a>, List::list()) -&gt; not_found | list()</tt><br></p>
+<p> </p>
+</div><p><p>Deletes the first matching of specified element from specified list, 
+returning whether an element has been removed: either the 'not_found' atom (in 
+which case the list remained the same) or the corresponding new list (same 
+order and content, except first occurrence removed).</p>
+
+ Note: allows to perform only one traversal of the list (compared for example
+ to a lists:member/2 then a lists:delete/2).
+</p>
+
+<h3 class="function"><a name="determine_tuple_info-1">determine_tuple_info/1</a></h3>
+<div class="spec">
+<p><tt>determine_tuple_info(TupleList::[tuple()]) -&gt; {<a href="#type-count">count()</a>, <a href="#type-count">count()</a>}</tt><br></p>
+<p> </p>
+</div><p>Determines tuple-related information about specified datastructure:
+ returns {TupleCount, TupleSize}, supposing the list is made of tuples of
+ uniform sizes.
+</p>
+
+<h3 class="function"><a name="difference-2">difference/2</a></h3>
+<div class="spec">
+<p><tt>difference(L1::list(), L2::list()) -&gt; list()</tt><br></p>
+<p> </p>
+</div><p>Returns the difference between the first specified list and the second,
+ that is the elements of the first list that are not in the second one.
+</p>
+
+<h3 class="function"><a name="differences-2">differences/2</a></h3>
+<div class="spec">
+<p><tt>differences(L1::list(), L2::list()) -&gt; {list(), list()}</tt><br></p>
+<p> </p>
+</div><p>Returns the differences between the first specified list and the second,
+ as a pair, whose first element corresponds to the elements of the first list
+ that are not in the second one, and whose second element corresponds to the
+ elements of the second list that are not in the first one.
+</p>
+
+<h3 class="function"><a name="draw_element-1">draw_element/1</a></h3>
+<div class="spec">
+<p><tt>draw_element(ElementList::list()) -&gt; <a href="#type-element">element()</a></tt><br></p>
+<p> </p>
+</div><p>Draws one element at random of the specified list, knowing that they all
+ have the same probability of being drawn (uniform probability).
+</p>
+
+<h3 class="function"><a name="draw_element-2">draw_element/2</a></h3>
+<div class="spec">
+<p><tt>draw_element(ElementList::list(), Length::<a href="#type-count">count()</a>) -&gt; <a href="#type-element">element()</a></tt><br></p>
+<p> </p>
+</div><p>Draws one element at random of the specified list, whose length must be
+ the specified one (allows to precompute it once for multiple drawings),
+ knowing all elements have the same probability of being drawn (uniform
+ probability).
+</p>
+
+<h3 class="function"><a name="draw_element_weighted-1">draw_element_weighted/1</a></h3>
+<div class="spec">
+<p><tt>draw_element_weighted(ElementList::[{<a href="#type-element">element()</a>, number()}]) -&gt; <a href="#type-element">element()</a></tt><br></p>
+<p> </p>
+</div><p><p>Draws one element at random of the specified list, which is a list of 
+{Element, Probability} pairs: returns the drawn element, knowing that it will 
+be chosen according to the probability associated to each element.</p>
+
+ <p>Probabilities are managed as positive (possibly null) numbers (integer or 
+floating-point values) defined relatively to each other (they do not have to 
+sum up to 1.0).</p>
+
+ <p>Ex: ElementList = [{first,1}, {second,2}, {third,1}] is excepted to return on 
+average 'second' twice as frequently as 'first' or 'third'.</p>
+
+ Using [{first,1}, {second,0}, {third,1}] instead would mean that 'second'
+ would never be drawn.
+</p>
+
+<h3 class="function"><a name="draw_elements_from-2">draw_elements_from/2</a></h3>
+<div class="spec">
+<p><tt>draw_elements_from(ElementList::list(), Count::<a href="#type-count">count()</a>) -&gt; list()</tt><br></p>
+<p> </p>
+</div><p><p>Draws the specified number of elements at random of the specified list, 
+knowing that they all have the same probability of being drawn initially, but 
+when an element is drawn, it is removed from the candidate list so that the 
+next drawing operates on the resulting shortened list, so that any element is 
+drawn up to once.</p>
+
+ Note that the specified list must contain at least the specified count of
+ elements.
+</p>
+
+<h3 class="function"><a name="ensure_atoms-1">ensure_atoms/1</a></h3>
+<div class="spec">
+<p><tt>ensure_atoms(Atom) -&gt; any()</tt></p>
+<p> </p>
+</div><p>Ensures that the specified argument is a list of atoms: encloses any atom
+ in a list of its own if not already a list, or check that this list is only
+ populated of atoms.
+</p>
+
+<h3 class="function"><a name="ensure_is_once_in-2">ensure_is_once_in/2</a></h3>
+<div class="spec">
+<p><tt>ensure_is_once_in(Elem::term(), List::list()) -&gt; list()</tt><br></p>
+<p> </p>
+</div><p><p>Ensures that specified element is included once in specified unordered 
+list (supposed to contain it already up to once).</p>
+
+ Note: refer to set_utils for a more proper implementation of set.
+</p>
+
+<h3 class="function"><a name="ensure_list-1">ensure_list/1</a></h3>
+<div class="spec">
+<p><tt>ensure_list(List::<a href="#type-maybe_list">maybe_list</a>(T)) -&gt; [T]</tt><br></p>
+<p> </p>
+</div><p><p>Ensures that the specified argument is a list: encloses it in a list of 
+its own if not already a list.</p>
+
+ Note: not to be applied on strings for example.
+</p>
+
+<h3 class="function"><a name="ensure_pids-1">ensure_pids/1</a></h3>
+<div class="spec">
+<p><tt>ensure_pids(Pid) -&gt; any()</tt></p>
+<p> </p>
+</div><p>Ensures that the specified argument is a list of PIDs: encloses any PID
+ in a list of its own if not already a list, or check that this list is only
+ populated of PIDs.
+</p>
+
+<h3 class="function"><a name="ensure_tuples-1">ensure_tuples/1</a></h3>
+<div class="spec">
+<p><tt>ensure_tuples(Tuple) -&gt; any()</tt></p>
+<p> </p>
+</div><p>Ensures that the specified argument is a list of tuples: encloses any
+ tuple in a list of its own if not already a list, or check that this list is
+ only populated of tuples.
+</p>
+
+<h3 class="function"><a name="extract_element_at-2">extract_element_at/2</a></h3>
+<div class="spec">
+<p><tt>extract_element_at(List::list(), Index::<a href="#type-positive_index">positive_index()</a>) -&gt; {<a href="#type-element">element()</a>, list()}</tt><br></p>
+<p> </p>
+</div><p><p>Extracts element from the specified list, at the specified index.</p>
+
+ <p>Returns that element and the resulting, shrunk list.</p>
+
+ Ex: {b, [a, c]} = extract_element_at([ a, b, c], 2).
+</p>
+
+<h3 class="function"><a name="extract_elements_from-2">extract_elements_from/2</a></h3>
+<div class="spec">
+<p><tt>extract_elements_from(ElementList::list(), Count::<a href="#type-count">count()</a>) -&gt; {ExtractedElems::list(), RemainingElems::list()}</tt><br></p>
+<p> </p>
+</div><p><p>Extracts the specified number of elements at random from the specified 
+list, knowing that they all have the same probability of being extracted 
+initially, but when an element is extracted, it is removed from the candidate 
+list so that the next extracting operates on the resulting shortened list 
+(that is a subset with no duplicates is returned).</p>
+
+ <p>Returns the list of extracted elements, and the list of the remaining 
+elements.</p>
+
+ Note that the specified list must contain at least the specified count of
+ elements.
+</p>
+
+<h3 class="function"><a name="extract_last_element-1">extract_last_element/1</a></h3>
+<div class="spec">
+<p><tt>extract_last_element(List::list()) -&gt; {<a href="#type-element">element()</a>, list()}</tt><br></p>
+<p> </p>
+</div><p><p>Extracts the last element of the specified (non-empty) list, returning a 
+pair made of that element and of the remainder of the list (in its original 
+order).</p>
+
+ Note: not computationnally efficient, usually having to retrieve the last
+ element suggests a bad code design.
+</p>
+
+<h3 class="function"><a name="filter_out_undefined-1">filter_out_undefined/1</a></h3>
+<div class="spec">
+<p><tt>filter_out_undefined(L::list()) -&gt; list()</tt><br></p>
+<p> </p>
+</div><p>Removes (filters out) all elements equal to 'undefined'; preserves order.</p>
+
+<h3 class="function"><a name="flatten_once-1">flatten_once/1</a></h3>
+<div class="spec">
+<p><tt>flatten_once(List::[list()]) -&gt; list()</tt><br></p>
+<p> </p>
+</div><p><p>Flattens specified list of lists only once (that is on a single level), 
+as opposed to indefinitively (as done recursively by lists:flatten/1); 
+provides more control than a recursive counterpart.</p>
+
+ <p>Element order is preserved.</p>
+
+ Ex: if L=[ [1], [2,[3,4]] ], lists:flatten(L) yields [1,2,3,4] whereas
+ list_utils:flatten_once(L) should yield [1,2,[3,4]].
+</p>
+
+<h3 class="function"><a name="flatten_tuples-1">flatten_tuples/1</a></h3>
+<div class="spec">
+<p><tt>flatten_tuples(List::[tuple()]) -&gt; list()</tt><br></p>
+<p> </p>
+</div><p><p>Flattens a list of tuples into a simple list of their elements, without 
+tuples and in the same order.</p>
+
+ Ex: flatten_tuples([{1, 2, 3}, {4, 5, 6}]) = [1, 2, 3, 4, 5, 6])
+</p>
+
+<h3 class="function"><a name="get_duplicates-1">get_duplicates/1</a></h3>
+<div class="spec">
+<p><tt>get_duplicates(List::list()) -&gt; [{<a href="#type-element">element()</a>, <a href="#type-count">count()</a>}]</tt><br></p>
+<p> </p>
+</div><p><p>Returns the duplicates in the specified list: returns an (unordered) list 
+of {DuplicatedTerm,DuplicationCount} pairs, where each duplicated term (that 
+is a term present more than once) is specified, alongside the total number of 
+occurrences of that term in the specified list.</p>
+
+ <p>Note: as a consequence, a term that is not in the specified list, or that is 
+present there only once, will not be referenced in the returned list; use 
+count_occurrences/1 if wanting to include the terms that are listed only once 
+each.</p>
+
+ Ex: list_utils:get_duplicates([a,a,b,b,b,c,d,d]) = [{b,3},{d,2},{a,2}]
+</p>
+
+<h3 class="function"><a name="get_element_at-2">get_element_at/2</a></h3>
+<div class="spec">
+<p><tt>get_element_at(List::list(), Index::<a href="#type-positive_index">positive_index()</a>) -&gt; <a href="#type-element">element()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the element in the list at the specified index, in
+ <code>[1..length(List)]</code>.</p>
+
+ <p>If the index is out of bounds, a function_clause is raised.</p>
+
+ <p>Note: usually these kinds of functions should not be used, recursive 
+algorithms are a lot more effective, when applicable.</p>
+
+ <p>Not tail recursive version:</p>
+
+ <p>get_element_at( List, 1 ) -&gt;   
+hd(List);</p>
+
+ get_element_at( [ _H | T ], Index ) -&gt;
+   get_element_at( T, Index-1 ).
+</p>
+
+<h3 class="function"><a name="get_index_of-2">get_index_of/2</a></h3>
+<div class="spec">
+<p><tt>get_index_of(Element::<a href="#type-element">element()</a>, List::list()) -&gt; <a href="#type-count">count()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the index, in <code>[1..length(List)]</code>, of the (first occurrence of 
+the) specified element in the specified list.</p>
+
+ <p>Throws an exception if the element is not found.</p>
+
+ Ex: 3 = get_index_of( bar, [ foo, ugh, bar, baz ] )
+</p>
+
+<h3 class="function"><a name="get_last_element-1">get_last_element/1</a></h3>
+<div class="spec">
+<p><tt>get_last_element(List::list()) -&gt; <a href="#type-element">element()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the last element of the specified list.</p>
+
+ <p>Note: not computationnally efficient, usually having to retrieve the last 
+element suggests a bad code design.</p>
+
+ Crashes (with 'no function clause') if the input list is empty.
+</p>
+
+<h3 class="function"><a name="get_maybe_index_of-2">get_maybe_index_of/2</a></h3>
+<div class="spec">
+<p><tt>get_maybe_index_of(Element::<a href="#type-element">element()</a>, List::list()) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-count">count()</a>)</tt><br></p>
+<p> </p>
+</div><p><p>Returns the index, in <code>[1..length(List)]</code>, of the (first occurrence of 
+the) specified element in the specified list, or 'undefined' if the element is 
+not found.</p>
+
+ Ex:
+   3 = get_maybe_index_of(bar, [foo, ugh, bar, baz])
+   undefined = get_maybe_index_of(xxx, [foo, ugh, bar, baz])
+</p>
+
+<h3 class="function"><a name="has_duplicates-1">has_duplicates/1</a></h3>
+<div class="spec">
+<p><tt>has_duplicates(List) -&gt; any()</tt></p>
+<p> </p>
+</div><p>Tells whether there are in the specified list elements that are present
+ more than once.
+</p>
+
+<h3 class="function"><a name="insert_element_at-3">insert_element_at/3</a></h3>
+<div class="spec">
+<p><tt>insert_element_at(Element::<a href="#type-element">element()</a>, List::list(), Index::<a href="#type-positive_index">positive_index()</a>) -&gt; list()</tt><br></p>
+<p> </p>
+</div><p><p>Inserts specified element at specified position in specified list.</p>
+
+ For example, insert_element_at(foo, [a,b,c,d], 3) will return
+ [a, b, foo, c, d].
+</p>
+
+<h3 class="function"><a name="intersection-2">intersection/2</a></h3>
+<div class="spec">
+<p><tt>intersection(L1::list(), L2::list()) -&gt; list()</tt><br></p>
+<p> </p>
+</div><p><p>Returns the intersection of the two specified lists, that is the list of 
+all elements that are in both lists.</p>
+
+ See also: subtract_all_duplicates/2.
+</p>
+
+<h3 class="function"><a name="random_permute-1">random_permute/1</a></h3>
+<div class="spec">
+<p><tt>random_permute(List::list()) -&gt; list()</tt><br></p>
+<p> </p>
+</div><p><p>Returns a random uniform permutation of the specified list.</p>
+
+ <p>Inspired from http://paste.lisp.org/display/74804.</p>
+
+ <p>All these algorithms would need random access to a list, which is not readily 
+possible here, hence must be emulated.</p>
+
+ See also the 'Speedy unsort:shuffle/1,2' thread in the erlang-questions
+ mailing list for counterparts.
+</p>
+
+<h3 class="function"><a name="random_permute_reciprocal-1">random_permute_reciprocal/1</a></h3>
+<div class="spec">
+<p><tt>random_permute_reciprocal(List::list()) -&gt; list()</tt><br></p>
+<p> </p>
+</div><p><p>Returns a reciprocal random uniform permutation of the specified list, 
+compared to random_permute/1.</p>
+
+ Consists on the reciprocal operation, so that, if starting from a random state
+ S (see set_random_state/1) and if L2 = random_permute( L1 ), then, if starting
+ again from S, L1 = random_permute_reciprocal( L2 ).
+</p>
+
+<h3 class="function"><a name="reconstruct_tuples-2">reconstruct_tuples/2</a></h3>
+<div class="spec">
+<p><tt>reconstruct_tuples(List::list(), TupleSize::<a href="#type-count">count()</a>) -&gt; [tuple()]</tt><br></p>
+<p> </p>
+</div><p><p>Reconstructs a list of tuples of specified size from the specified flat 
+list.</p>
+
+ Ex: reconstruct_tuples([ 1, 2, 3, 4, 5, 6 ], 3) = [{1, 2, 3}, {4, 5, 6}]
+</p>
+
+<h3 class="function"><a name="remove_element_at-2">remove_element_at/2</a></h3>
+<div class="spec">
+<p><tt>remove_element_at(List::list(), Index::<a href="#type-positive_index">positive_index()</a>) -&gt; list()</tt><br></p>
+<p> </p>
+</div><p><p>Returns a list corresponding to the specified one with the element at 
+specified index removed.</p>
+
+ <p>If the index is out of bounds, a function_clause like 
+'[{list_utils, remove_element_at, ...}]' is triggered.</p>
+
+ <p>Note: usually these kinds of functions should not be used, recursive 
+algorithms are a lot more effective, when applicable.</p>
+
+ <p>Curiously lists:nth exists, but no function to remove an element specified by 
+its index seems to be available in the lists module.</p>
+
+ <p>Not tail recursive version:
+remove_element_at( [ _H | T ], _LastIndex=1 ) -&gt;   
+T;</p>
+
+<p>remove_element_at( [ H | T ], _Index=N ) -&gt;   
+[ H | remove_element_at( T, _NextIndex=N-1 ) ].</p>
+
+ Tail recursive version.
+</p>
+
+<h3 class="function"><a name="remove_first_elements-2">remove_first_elements/2</a></h3>
+<div class="spec">
+<p><tt>remove_first_elements(List::list(), Count::<a href="#type-count">count()</a>) -&gt; list()</tt><br></p>
+<p> </p>
+</div><p><p>Removes the specified number first elements.</p>
+
+ Ex: [c, d, e] = list_utils:remove_first_elements([a, b, c, d, e], 2).
+</p>
+
+<h3 class="function"><a name="remove_last_element-1">remove_last_element/1</a></h3>
+<div class="spec">
+<p><tt>remove_last_element(List::list()) -&gt; list()</tt><br></p>
+<p> </p>
+</div><p><p>Removes the last element of the specified list.</p>
+
+ <p>Crashes (with 'no function clause') if the input list is empty.</p>
+
+ Note: not computationnally efficient, usually removing the last element
+ suggests a bad code design.
+</p>
+
+<h3 class="function"><a name="split_at-2">split_at/2</a></h3>
+<div class="spec">
+<p><tt>split_at(MaxLen::<a href="#type-count">count()</a>, List::list()) -&gt; {list(), list()}</tt><br></p>
+<p> </p>
+</div><p><p>Splits the specified (plain) list in two parts (two plain lists, that are 
+returned): the first contains the first elements, up to MaxLen included (in 
+reverse order), and the second the others (if any).</p>
+
+ Ex: split_at(3, [a, b, c, d, e]) = {[c, b, a], [d, e]}
+</p>
+
+<h3 class="function"><a name="subtract_all_duplicates-2">subtract_all_duplicates/2</a></h3>
+<div class="spec">
+<p><tt>subtract_all_duplicates(L1::list(), L2::list()) -&gt; list()</tt><br></p>
+<p> </p>
+</div><p><p>Returns a list equal to L1 except that all elements found in L2 have been 
+removed, even if in L1 they were duplicated.</p>
+
+ <p>Note: like lists:subtract/2, except that *all* occurences from L2 in L1 (not 
+only the first one) are removed. See also: the '--' operator.</p>
+
+ <p>Example: [1,4] = list_utils:subtract_all_duplicates( [1,2,3,4,2], [2,3] )</p>
+
+ Taken from
+ http://www.trapexit.org/Finding_Elements_in_One_Array_but_Not_Another
+</p>
+
+<h3 class="function"><a name="union-2">union/2</a></h3>
+<div class="spec">
+<p><tt>union(L1::list(), L2::list()) -&gt; list()</tt><br></p>
+<p> </p>
+</div><p>Returns the union of the two specified lists, that is the list of all
+ elements that are in either list.
+</p>
+
+<h3 class="function"><a name="uniquify-1">uniquify/1</a></h3>
+<div class="spec">
+<p><tt>uniquify(List::list()) -&gt; list()</tt><br></p>
+<p> </p>
+</div><p><p>Returns a list whose elements are the ones of the specified list, except 
+that they are unique (all their duplicates have been removed).</p>
+
+ <p>No specific order is respected in the returned list.</p>
+
+ Ex: if L = [1,2,3,2,2,4,5,5,4,6,6,5], then uniquify(L) is:
+ [3,6,2,5,1,4].
+</p>
+
+<h3 class="function"><a name="uniquify_ordered-1">uniquify_ordered/1</a></h3>
+<div class="spec">
+<p><tt>uniquify_ordered(List::list()) -&gt; list()</tt><br></p>
+<p> </p>
+</div><p><p>Returns a list whose elements are the ones of the specified list, except 
+that they are unique (all their duplicates have been removed), while the order 
+in the kept elements is preserved.</p>
+
+ <p>Expected to be a bit slower than uniquify/1.</p>
+
+ Ex: if L = [1,3,2,3,2,2,4,5,5,4,6,6,5], then uniquify_ordered(L) is:
+ [1,3,2,4,5,6].
+</p>
+
+<h3 class="function"><a name="unordered_compare-2">unordered_compare/2</a></h3>
+<div class="spec">
+<p><tt>unordered_compare(L1::list(), L2::list()) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Compares the two specified lists with no regard to the order of their
+ elements: returns true iff they have the exact same elements (differentiating
+ between 1 and 1.0 for example), possibly in a different order.
+</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

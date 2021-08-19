@@ -1,0 +1,274 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module rest_utils</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module rest_utils</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of management facilities for <b>REST architectures</b>
+ (<em>Representational State Transfer</em>).
+
+
+<h2><a name="description">Description</a></h2><p>Gathering of management facilities for <b>REST architectures</b>
+ (<em>Representational State Transfer</em>).</p>
+
+ <p>See rest_utils_test.erl for the corresponding test.</p>
+
+ See also: web_utils.erl.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-body">body()</a></h3>
+<p><tt>body() = binary() | <a href="#type-ustring">ustring()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-content_type">content_type()</a></h3>
+<p><tt>content_type() = <a href="#type-ustring">ustring()</a></tt></p>
+<p> Content type (ex: "text/html;charset=utf-8", "application/json").</p>
+
+<h3 class="typedecl"><a name="type-context">context()</a></h3>
+<p><tt>context() = {<a href="web_utils.html#type-url_info">web_utils:url_info()</a>, <a href="#type-headers">headers()</a>}</tt></p>
+<p> Context of a REST exchange.</p>
+
+<h3 class="typedecl"><a name="type-field">field()</a></h3>
+<p><tt>field() = <a href="#type-ustring">ustring()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-header">header()</a></h3>
+<p><tt>header() = {<a href="#type-field">field()</a>, <a href="#type-value">value()</a>}</tt></p>
+
+
+<h3 class="typedecl"><a name="type-headers">headers()</a></h3>
+<p><tt>headers() = [<a href="#type-header">header()</a>]</tt></p>
+
+
+<h3 class="typedecl"><a name="type-http_option">http_option()</a></h3>
+<p><tt>http_option() = {atom(), term()}</tt></p>
+
+
+<h3 class="typedecl"><a name="type-http_options">http_options()</a></h3>
+<p><tt>http_options() = [<a href="#type-http_option">http_option()</a>]</tt></p>
+
+
+<h3 class="typedecl"><a name="type-method">method()</a></h3>
+<p><tt>method() = get | head | post | options | connect | trace | put | patch | delete</tt></p>
+<p> HTTP/1.1 method.</p>
+
+<h3 class="typedecl"><a name="type-option">option()</a></h3>
+<p><tt>option() = {atom(), term()}</tt></p>
+
+
+<h3 class="typedecl"><a name="type-options">options()</a></h3>
+<p><tt>options() = [<a href="#type-option">option()</a>]</tt></p>
+
+
+<h3 class="typedecl"><a name="type-request">request()</a></h3>
+<p><tt>request() = {<a href="web_utils.html#type-url">web_utils:url()</a>, <a href="#type-headers">headers()</a>, <a href="#type-content_type">content_type()</a>, <a href="#type-body">body()</a>} | {<a href="web_utils.html#type-url">web_utils:url()</a>, <a href="#type-headers">headers()</a>}</tt></p>
+<p> Type of a request for httpc:request, see
+ <a href="http://erlang.org/doc/man/httpc.html" target="_top"><tt>http://erlang.org/doc/man/httpc.html</tt></a>.</p>
+
+<h3 class="typedecl"><a name="type-result">result()</a></h3>
+<p><tt>result() = {<a href="#type-status_line">status_line()</a>, <a href="#type-headers">headers()</a>, <a href="#type-body">body()</a>} | {<a href="#type-status_code">status_code()</a>, <a href="#type-body">body()</a>} | reference()</tt></p>
+<p> Type of a result from httpc:request, see
+ <a href="http://erlang.org/doc/man/httpc.html" target="_top"><tt>http://erlang.org/doc/man/httpc.html</tt></a>.</p>
+
+<h3 class="typedecl"><a name="type-retries_count">retries_count()</a></h3>
+<p><tt>retries_count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-ssl_opt">ssl_opt()</a></h3>
+<p><tt>ssl_opt() = <a href="web_utils.html#type-ssl_opt">web_utils:ssl_opt()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-status_code">status_code()</a></h3>
+<p><tt>status_code() = pos_integer()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-status_line">status_line()</a></h3>
+<p><tt>status_line() = {<a href="#type-ustring">ustring()</a>, <a href="#type-status_code">status_code()</a>, <a href="#type-ustring">ustring()</a>}</tt></p>
+
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-value">value()</a></h3>
+<p><tt>value() = <a href="#type-ustring">ustring()</a></tt></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#http_delete-1">http_delete/1</a></td><td>Sends a HTTP PUT request.</td></tr>
+<tr><td valign="top"><a href="#http_delete-2">http_delete/2</a></td><td>Sends a HTTP PUT request, with the specified number of retries.</td></tr>
+<tr><td valign="top"><a href="#http_delete-4">http_delete/4</a></td><td>Sends a HTTP PUT request, with the specified number of retries and (HTTP
+ or not) options.</td></tr>
+<tr><td valign="top"><a href="#http_get-1">http_get/1</a></td><td>Sends a HTTP GET request.</td></tr>
+<tr><td valign="top"><a href="#http_get-2">http_get/2</a></td><td>Sends a HTTP GET request, with the specified number of retries.</td></tr>
+<tr><td valign="top"><a href="#http_get-4">http_get/4</a></td><td>Sends a HTTP GET request, with the specified number of retries and (HTTP
+ or not) options.</td></tr>
+<tr><td valign="top"><a href="#http_post-1">http_post/1</a></td><td>Sends a HTTP POST request.</td></tr>
+<tr><td valign="top"><a href="#http_post-2">http_post/2</a></td><td>Sends a HTTP POST request, with the specified number of retries.</td></tr>
+<tr><td valign="top"><a href="#http_post-4">http_post/4</a></td><td>Sends a HTTP POST request, with the specified number of retries and (HTTP
+ or not) options.</td></tr>
+<tr><td valign="top"><a href="#http_put-1">http_put/1</a></td><td>Sends a HTTP PUT request.</td></tr>
+<tr><td valign="top"><a href="#http_put-2">http_put/2</a></td><td>Sends a HTTP PUT request, with the specified number of retries.</td></tr>
+<tr><td valign="top"><a href="#http_put-4">http_put/4</a></td><td>Sends a HTTP PUT request, with the specified number of retries and (HTTP
+ or not) options.</td></tr>
+<tr><td valign="top"><a href="#http_request-1">http_request/1</a></td><td>Sends a HTTP GET requests, as an alternate solution as suggested by the
+ standard 'httpc' module of Erlang.</td></tr>
+<tr><td valign="top"><a href="#http_request-2">http_request/2</a></td><td>Sends a generic HTTP request, as an alternate solution as suggested by 
+the standard 'httpc' module of Erlang.</td></tr>
+<tr><td valign="top"><a href="#http_request-3">http_request/3</a></td><td>Sends a generic HTTP request, with the specified number of retries.</td></tr>
+<tr><td valign="top"><a href="#http_request-5">http_request/5</a></td><td>Sends a generic HTTP request, with the specified number of retries and 
+(HTTP or not) options.</td></tr>
+<tr><td valign="top"><a href="#start-0">start/0</a></td><td>Starts the REST service, with default settings.</td></tr>
+<tr><td valign="top"><a href="#start-1">start/1</a></td><td>Starts the REST service, with specified option.</td></tr>
+<tr><td valign="top"><a href="#stop-0">stop/0</a></td><td>Stops the REST service.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="http_delete-1">http_delete/1</a></h3>
+<div class="spec">
+<p><tt>http_delete(Request::<a href="#type-request">request()</a>) -&gt; {<a href="#type-status_code">status_code()</a>, term()}</tt><br></p>
+<p> </p>
+</div><p>Sends a HTTP PUT request.</p>
+
+<h3 class="function"><a name="http_delete-2">http_delete/2</a></h3>
+<div class="spec">
+<p><tt>http_delete(Request::<a href="#type-request">request()</a>, Retries::<a href="#type-retries_count">retries_count()</a>) -&gt; {<a href="#type-status_code">status_code()</a>, term()}</tt><br></p>
+<p> </p>
+</div><p>Sends a HTTP PUT request, with the specified number of retries.</p>
+
+<h3 class="function"><a name="http_delete-4">http_delete/4</a></h3>
+<div class="spec">
+<p><tt>http_delete(Request::<a href="#type-request">request()</a>, HTTPOptions::<a href="#type-http_options">http_options()</a>, Options::<a href="#type-options">options()</a>, Retries::<a href="#type-retries_count">retries_count()</a>) -&gt; term()</tt><br></p>
+<p> </p>
+</div><p>Sends a HTTP PUT request, with the specified number of retries and (HTTP
+ or not) options.
+</p>
+
+<h3 class="function"><a name="http_get-1">http_get/1</a></h3>
+<div class="spec">
+<p><tt>http_get(Request::<a href="#type-request">request()</a>) -&gt; {<a href="#type-status_code">status_code()</a>, term()}</tt><br></p>
+<p> </p>
+</div><p>Sends a HTTP GET request.</p>
+
+<h3 class="function"><a name="http_get-2">http_get/2</a></h3>
+<div class="spec">
+<p><tt>http_get(Request::<a href="#type-request">request()</a>, Retries::<a href="#type-retries_count">retries_count()</a>) -&gt; {<a href="#type-status_code">status_code()</a>, term()}</tt><br></p>
+<p> </p>
+</div><p>Sends a HTTP GET request, with the specified number of retries.</p>
+
+<h3 class="function"><a name="http_get-4">http_get/4</a></h3>
+<div class="spec">
+<p><tt>http_get(Request::<a href="#type-request">request()</a>, HTTPOptions::<a href="#type-http_options">http_options()</a>, Options::<a href="#type-options">options()</a>, Retries::<a href="#type-retries_count">retries_count()</a>) -&gt; term()</tt><br></p>
+<p> </p>
+</div><p>Sends a HTTP GET request, with the specified number of retries and (HTTP
+ or not) options.
+</p>
+
+<h3 class="function"><a name="http_post-1">http_post/1</a></h3>
+<div class="spec">
+<p><tt>http_post(Request::<a href="#type-request">request()</a>) -&gt; {<a href="#type-status_code">status_code()</a>, term()}</tt><br></p>
+<p> </p>
+</div><p>Sends a HTTP POST request.</p>
+
+<h3 class="function"><a name="http_post-2">http_post/2</a></h3>
+<div class="spec">
+<p><tt>http_post(Request::<a href="#type-request">request()</a>, Retries::<a href="#type-retries_count">retries_count()</a>) -&gt; {<a href="#type-status_code">status_code()</a>, term()}</tt><br></p>
+<p> </p>
+</div><p>Sends a HTTP POST request, with the specified number of retries.</p>
+
+<h3 class="function"><a name="http_post-4">http_post/4</a></h3>
+<div class="spec">
+<p><tt>http_post(Request::<a href="#type-request">request()</a>, HTTPOptions::<a href="#type-http_options">http_options()</a>, Options::<a href="#type-options">options()</a>, Retries::<a href="#type-retries_count">retries_count()</a>) -&gt; term()</tt><br></p>
+<p> </p>
+</div><p>Sends a HTTP POST request, with the specified number of retries and (HTTP
+ or not) options.
+</p>
+
+<h3 class="function"><a name="http_put-1">http_put/1</a></h3>
+<div class="spec">
+<p><tt>http_put(Request::<a href="#type-request">request()</a>) -&gt; {<a href="#type-status_code">status_code()</a>, term()}</tt><br></p>
+<p> </p>
+</div><p>Sends a HTTP PUT request.</p>
+
+<h3 class="function"><a name="http_put-2">http_put/2</a></h3>
+<div class="spec">
+<p><tt>http_put(Request::<a href="#type-request">request()</a>, Retries::<a href="#type-retries_count">retries_count()</a>) -&gt; {<a href="#type-status_code">status_code()</a>, term()}</tt><br></p>
+<p> </p>
+</div><p>Sends a HTTP PUT request, with the specified number of retries.</p>
+
+<h3 class="function"><a name="http_put-4">http_put/4</a></h3>
+<div class="spec">
+<p><tt>http_put(Request::<a href="#type-request">request()</a>, HTTPOptions::<a href="#type-http_options">http_options()</a>, Options::<a href="#type-options">options()</a>, Retries::<a href="#type-retries_count">retries_count()</a>) -&gt; term()</tt><br></p>
+<p> </p>
+</div><p>Sends a HTTP PUT request, with the specified number of retries and (HTTP
+ or not) options.
+</p>
+
+<h3 class="function"><a name="http_request-1">http_request/1</a></h3>
+<div class="spec">
+<p><tt>http_request(URL::<a href="web_utils.html#type-url">web_utils:url()</a>) -&gt; {<a href="#type-status_code">status_code()</a>, term()}</tt><br></p>
+<p> </p>
+</div><p>Sends a HTTP GET requests, as an alternate solution as suggested by the
+ standard 'httpc' module of Erlang.
+</p>
+
+<h3 class="function"><a name="http_request-2">http_request/2</a></h3>
+<div class="spec">
+<p><tt>http_request(Method::<a href="#type-method">method()</a>, Request::<a href="#type-request">request()</a>) -&gt; {<a href="#type-status_code">status_code()</a>, term()}</tt><br></p>
+<p> </p>
+</div><p><p>Sends a generic HTTP request, as an alternate solution as suggested by 
+the standard 'httpc' module of Erlang.</p>
+
+ (Basically just a call to httpc:request/4 surrounded by checking steps)
+</p>
+
+<h3 class="function"><a name="http_request-3">http_request/3</a></h3>
+<div class="spec">
+<p><tt>http_request(Method::<a href="#type-method">method()</a>, Request::<a href="#type-request">request()</a>, Retries::<a href="#type-retries_count">retries_count()</a>) -&gt; {<a href="#type-status_code">status_code()</a>, term()}</tt><br></p>
+<p> </p>
+</div><p><p>Sends a generic HTTP request, with the specified number of retries.</p>
+
+ (Basically just a call to httpc:request/4 surrounded by checking steps)
+</p>
+
+<h3 class="function"><a name="http_request-5">http_request/5</a></h3>
+<div class="spec">
+<p><tt>http_request(Method::<a href="#type-method">method()</a>, Request::<a href="#type-request">request()</a>, HTTPOptions::<a href="#type-http_options">http_options()</a>, Options::<a href="#type-options">options()</a>, Retries::<a href="#type-retries_count">retries_count()</a>) -&gt; term()</tt><br></p>
+<p> </p>
+</div><p><p>Sends a generic HTTP request, with the specified number of retries and 
+(HTTP or not) options.</p>
+
+ (Basically just a call to httpc:request/4 surrounded by checking steps)
+</p>
+
+<h3 class="function"><a name="start-0">start/0</a></h3>
+<div class="spec">
+<p><tt>start() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Starts the REST service, with default settings.</p>
+
+<h3 class="function"><a name="start-1">start/1</a></h3>
+<div class="spec">
+<p><tt>start(Option::<a href="#type-ssl_opt">ssl_opt()</a>) -&gt; <a href="json_utils.html#type-parser_state">json_utils:parser_state()</a></tt><br></p>
+<p> </p>
+</div><p>Starts the REST service, with specified option.</p>
+
+<h3 class="function"><a name="stop-0">stop/0</a></h3>
+<div class="spec">
+<p><tt>stop() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Stops the REST service.</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

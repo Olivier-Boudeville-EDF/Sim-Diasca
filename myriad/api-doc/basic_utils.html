@@ -1,0 +1,1037 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module basic_utils</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module basic_utils</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various <b>convenient facilities of all sorts</b>.
+
+
+<h2><a name="description">Description</a></h2><p>Gathering of various <b>convenient facilities of all sorts</b>.</p>
+
+ See basic_utils_test.erl for the corresponding test.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-accumulator">accumulator()</a></h3>
+<p><tt>accumulator() = any()</tt></p>
+<p><p> Designates an accumulator (of any type), to document typically fold-like 
+operations.</p>
+
+ (useful for documentation purposes)</p>
+
+<h3 class="typedecl"><a name="type-any_version">any_version()</a></h3>
+<p><tt>any_version() = <a href="#type-version">version()</a> | <a href="#type-two_digit_version">two_digit_version()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-argument">argument()</a></h3>
+<p><tt>argument() = any()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-arguments">arguments()</a></h3>
+<p><tt>arguments() = [<a href="#type-argument">argument()</a>]</tt></p>
+
+
+<h3 class="typedecl"><a name="type-atom_key">atom_key()</a></h3>
+<p><tt>atom_key() = atom()</tt></p>
+<p> For tables.</p>
+
+<h3 class="typedecl"><a name="type-atom_node_name">atom_node_name()</a></h3>
+<p><tt>atom_node_name() = <a href="net_utils.html#type-atom_node_name">net_utils:atom_node_name()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-atom_user_name">atom_user_name()</a></h3>
+<p><tt>atom_user_name() = atom()</tt></p>
+<p> To store (UNIX-like) user names.</p>
+
+<h3 class="typedecl"><a name="type-base_status">base_status()</a></h3>
+<p><tt>base_status() = ok | <a href="#type-error_term">error_term()</a></tt></p>
+<p> Tells whether an operation succeeded; if not, an error reason is specified (as
+ a term).</p>
+
+<h3 class="typedecl"><a name="type-bit_mask">bit_mask()</a></h3>
+<p><tt>bit_mask() = integer()</tt></p>
+<p> Describes a mask of bits.</p>
+
+<h3 class="typedecl"><a name="type-command_spec">command_spec()</a></h3>
+<p><tt>command_spec() = {<a href="#type-module_name">module_name()</a>, <a href="#type-function_name">function_name()</a>, <a href="#type-arguments">arguments()</a>}</tt></p>
+<p> A command (module-function-arguments).</p>
+
+<h3 class="typedecl"><a name="type-comparison_result">comparison_result()</a></h3>
+<p><tt>comparison_result() = lower | equal | higher</tt></p>
+<p> Possible outcome of a partial-order comparison of two elements.</p>
+
+<h3 class="typedecl"><a name="type-count">count()</a></h3>
+<p><tt>count() = non_neg_integer()</tt></p>
+<p> Allows to count elements (positive integer, possibly zero).</p>
+
+<h3 class="typedecl"><a name="type-diagnosed_error_reason">diagnosed_error_reason()</a></h3>
+<p><tt>diagnosed_error_reason(T) = {<a href="#type-error_tuploid">error_tuploid</a>(T), <a href="#type-error_message">error_message()</a>}</tt></p>
+<p> An error with its diagnosis.</p>
+
+<h3 class="typedecl"><a name="type-diagnosed_error_reason">diagnosed_error_reason()</a></h3>
+<p><tt>diagnosed_error_reason() = {<a href="#type-error_tuploid">error_tuploid()</a>, <a href="#type-error_message">error_message()</a>}</tt></p>
+<p> An error with its diagnosis.</p>
+
+<h3 class="typedecl"><a name="type-diagnosed_error_term">diagnosed_error_term()</a></h3>
+<p><tt>diagnosed_error_term(T) = {error, <a href="#type-diagnosed_error_reason">diagnosed_error_reason</a>(T)}</tt></p>
+<p> A (tagged) error term with a diagnosis.</p>
+
+<h3 class="typedecl"><a name="type-diagnosed_error_term">diagnosed_error_term()</a></h3>
+<p><tt>diagnosed_error_term() = {error, <a href="#type-diagnosed_error_reason">diagnosed_error_reason()</a>}</tt></p>
+<p> A (tagged) error term with a diagnosis.</p>
+
+<h3 class="typedecl"><a name="type-diagnosed_fallible">diagnosed_fallible()</a></h3>
+<p><tt>diagnosed_fallible(TSuccess, TFailure) = <a href="#type-fallible">fallible</a>(TSuccess, <a href="#type-diagnosed_error_term">diagnosed_error_term</a>(TFailure))</tt></p>
+<p> Thus either {ok,T} or {error,{ErrorTuploid,ErrorMsg}}.</p>
+
+<h3 class="typedecl"><a name="type-diagnosed_fallible">diagnosed_fallible()</a></h3>
+<p><tt>diagnosed_fallible(T) = <a href="#type-fallible">fallible</a>(T, <a href="#type-diagnosed_error_term">diagnosed_error_term()</a>)</tt></p>
+<p> Thus either {ok,T} or {error,{ErrorTuploid,ErrorMsg}}.</p>
+
+<h3 class="typedecl"><a name="type-error_message">error_message()</a></h3>
+<p><tt>error_message() = <a href="#type-ustring">ustring()</a></tt></p>
+<p> A textual description associated to an error (typically for richer traces).</p>
+
+<h3 class="typedecl"><a name="type-error_reason">error_reason()</a></h3>
+<p><tt>error_reason() = <a href="#type-reason">reason()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-error_term">error_term()</a></h3>
+<p><tt>error_term() = {error, <a href="#type-error_reason">error_reason()</a>} | <a href="#type-error_reason">error_reason()</a></tt></p>
+<p> A (possibly tagged) error term. Ex: 'badarg'.</p>
+
+<h3 class="typedecl"><a name="type-error_tuploid">error_tuploid()</a></h3>
+<p><tt>error_tuploid(T) = <a href="type_utils.html#type-tuploid">type_utils:tuploid</a>(T)</tt></p>
+<p> To specify at least some information about the error type.</p>
+
+<h3 class="typedecl"><a name="type-error_tuploid">error_tuploid()</a></h3>
+<p><tt>error_tuploid() = <a href="#type-error_tuploid">error_tuploid</a>(<a href="#type-error_reason">error_reason()</a>)</tt></p>
+<p><p> An error pseudo-tuple, i.e. an error tuple (ex: {invalid_name,1.0}) or a 
+single error term (instead of a tuple with a single element), preferably an 
+atom (like 'invalid_password').</p>
+
+ See also: throw_diagnosed/{1,2}.</p>
+
+<h3 class="typedecl"><a name="type-error_type">error_type()</a></h3>
+<p><tt>error_type() = atom()</tt></p>
+<p> Designates an error type (a specific, simple error reason), when we know it is
+ an atom (often the first element of an error tuple), like 'invalid_name'.</p>
+
+<h3 class="typedecl"><a name="type-exception_class">exception_class()</a></h3>
+<p><tt>exception_class() = throw | exit | error</tt></p>
+<p> The exception classes that can be raised.</p>
+
+<h3 class="typedecl"><a name="type-exception_term">exception_term()</a></h3>
+<p><tt>exception_term() = term()</tt></p>
+<p> Exception term corresponding to a corresponding bound pattern, as in:
+    catch ExceptionClass:ExceptionPattern:StackTrace -&gt;</p>
+
+<h3 class="typedecl"><a name="type-execution_context">execution_context()</a></h3>
+<p><tt>execution_context() = development | production</tt></p>
+<p> Runtime-time execution context (not to be mixed up with execution_target/0,
+ although gathering the same values - but conveying a different meaning).</p>
+
+<h3 class="typedecl"><a name="type-execution_target">execution_target()</a></h3>
+<p><tt>execution_target() = development | production</tt></p>
+<p> Compile-time execution target (not to be mixed up with execution_context/0).</p>
+
+<h3 class="typedecl"><a name="type-exit_reason">exit_reason()</a></h3>
+<p><tt>exit_reason() = <a href="#type-reason">reason()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-external_data">external_data()</a></h3>
+<p><tt>external_data() = term()</tt></p>
+<p><p> To denote that a piece of data comes from the program boundaries (interfaces 
+with the outside word, possibly in link with the user) and thus may or may not 
+be of the expected type (as long as it has not been checked).</p>
+
+ (opaque, unspecified type - yet not declared as 'opaque' to avoid a
+ compilation warning telling it is "underspecified and therefore meaningless").</p>
+
+<h3 class="typedecl"><a name="type-fallible">fallible()</a></h3>
+<p><tt>fallible(TSuccess, TFailure) = {ok, TSuccess} | {error, TFailure}</tt></p>
+<p> Return type for operations that may fail (with a sufficient likelihood that no
+ exception is to be raised then, thus the choice is left to the caller), when
+ wanting to specify the error type as well.</p>
+
+<h3 class="typedecl"><a name="type-fallible">fallible()</a></h3>
+<p><tt>fallible(T) = {ok, T} | <a href="#type-error_term">error_term()</a></tt></p>
+<p> Return type for operations that may fail (with a sufficient likelihood that no
+ exception is to be raised then, thus the choice is left to the caller).</p>
+
+<h3 class="typedecl"><a name="type-field_name">field_name()</a></h3>
+<p><tt>field_name() = atom()</tt></p>
+<p> The name of a field of a record.</p>
+
+<h3 class="typedecl"><a name="type-fixme">fixme()</a></h3>
+<p><tt>fixme() = any()</tt></p>
+<p> Useful as a temporary type placeholder, during development (easy to grep and
+ eliminate afterwards).</p>
+
+<h3 class="typedecl"><a name="type-format_string">format_string()</a></h3>
+<p><tt>format_string() = <a href="text_utils.html#type-format_string">text_utils:format_string()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-format_values">format_values()</a></h3>
+<p><tt>format_values() = <a href="text_utils.html#type-format_values">text_utils:format_values()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-function_name">function_name()</a></h3>
+<p><tt>function_name() = atom()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-layer_name">layer_name()</a></h3>
+<p><tt>layer_name() = <a href="#type-ustring">ustring()</a></tt></p>
+<p> The name of a layer (ex: "Myriad").</p>
+
+<h3 class="typedecl"><a name="type-level">level()</a></h3>
+<p><tt>level() = non_neg_integer()</tt></p>
+<p> Allows to count levels (ex: indentation ones, nesting ones).</p>
+
+<h3 class="typedecl"><a name="type-maybe">maybe()</a></h3>
+<p><tt>maybe(T) = T | undefined</tt></p>
+<p> Quite often, variables (ex: record fields) are set to 'undefined'
+ (i.e. "Nothing") before being set later.</p>
+
+<h3 class="typedecl"><a name="type-message">message()</a></h3>
+<p><tt>message() = any()</tt></p>
+<p> Describes an (Erlang, inter-process) messsage.</p>
+
+<h3 class="typedecl"><a name="type-milliseconds">milliseconds()</a></h3>
+<p><tt>milliseconds() = <a href="unit_utils.html#type-milliseconds">unit_utils:milliseconds()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-module_name">module_name()</a></h3>
+<p><tt>module_name() = atom()</tt></p>
+<p> To distinguish with the built-in type, which can be a parameterised module.</p>
+
+<h3 class="typedecl"><a name="type-non_null_count">non_null_count()</a></h3>
+<p><tt>non_null_count() = pos_integer()</tt></p>
+<p> Allows to count elements (strictly positive integer).</p>
+
+<h3 class="typedecl"><a name="type-pid_or_port">pid_or_port()</a></h3>
+<p><tt>pid_or_port() = pid() | port()</tt></p>
+<p> Describes a PID or a port.</p>
+
+<h3 class="typedecl"><a name="type-positive_index">positive_index()</a></h3>
+<p><tt>positive_index() = pos_integer()</tt></p>
+<p> For all non-null index (i.e. the ones that start at 1).</p>
+
+<h3 class="typedecl"><a name="type-process_info_result_item">process_info_result_item()</a></h3>
+<p><tt>process_info_result_item() = <a href="http://www.erlang.org/edoc/doc/erts/doc/erlang.html#type-process_info_result_item">erlang:process_info_result_item()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-reason">reason()</a></h3>
+<p><tt>reason() = any()</tt></p>
+<p><p> Term designating a reason (which may be any term).</p>
+
+ Note: useful to have self-describing types.</p>
+
+<h3 class="typedecl"><a name="type-record_name">record_name()</a></h3>
+<p><tt>record_name() = atom()</tt></p>
+<p> The name of a record.</p>
+
+<h3 class="typedecl"><a name="type-set">set()</a></h3>
+<p><tt>set(T) = <a href="set_utils.html#type-set">set_utils:set</a>(T)</tt></p>
+
+
+<h3 class="typedecl"><a name="type-status_code">status_code()</a></h3>
+<p><tt>status_code() = 0..255</tt></p>
+<p> The status code returned by a shell command.</p>
+
+<h3 class="typedecl"><a name="type-time_out">time_out()</a></h3>
+<p><tt>time_out() = <a href="time_utils.html#type-time_out">time_utils:time_out()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-two_digit_version">two_digit_version()</a></h3>
+<p><tt>two_digit_version() = {<a href="#type-version_number">version_number()</a>, <a href="#type-version_number">version_number()</a>}</tt></p>
+
+
+<h3 class="typedecl"><a name="type-unchecked_data">unchecked_data()</a></h3>
+<p><tt>unchecked_data() = term()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-user_data">user_data()</a></h3>
+<p><tt>user_data() = <a href="#type-external_data">external_data()</a></tt></p>
+<p> Designates user-specified data (users shall not be trusted either).</p>
+
+<h3 class="typedecl"><a name="type-user_name">user_name()</a></h3>
+<p><tt>user_name() = nonempty_string()</tt></p>
+<p> To store (UNIX-like) user names.</p>
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-version">version()</a></h3>
+<p><tt>version() = {<a href="#type-version_number">version_number()</a>, <a href="#type-version_number">version_number()</a>, <a href="#type-version_number">version_number()</a>}</tt></p>
+<p> By default we consider that a version is a triplet of integer numbers.</p>
+
+<h3 class="typedecl"><a name="type-version_number">version_number()</a></h3>
+<p><tt>version_number() = non_neg_integer()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-void">void()</a></h3>
+<p><tt>void() = any() | void</tt></p>
+<p><p> To tell that a returned value is not of interest to the caller: 
+(could have been: "-type void() :: 'VoiD' or 'myriad_void'" for example)</p>
+
+ <p>Nevertheless, should, for any reason, a value of the void/0 type have to be 
+specified, the 'void' atom shall be preferred, knowing that any value can be 
+returned and complies with this type.</p>
+
+ <p>Opaque types currently not always well managed by the Erlang standard 
+toolchain:</p>
+
+-opaque void() :: any() | 'void'.</p>
+
+<h3 class="typedecl"><a name="type-wildcardable">wildcardable()</a></h3>
+<p><tt>wildcardable(T) = T | any</tt></p>
+<p> To account for wildcard entries.</p>
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#check_all_defined-1">check_all_defined/1</a></td><td>Checks that all elements of the specified list are "defined" (not
+ 'undefined'); returns that list.</td></tr>
+<tr><td valign="top"><a href="#check_all_undefined-1">check_all_undefined/1</a></td><td>Checks that all elements of the specified list are equal to 'undefined';
+ returns that list.</td></tr>
+<tr><td valign="top"><a href="#check_defined-1">check_defined/1</a></td><td>Checks that specified term is "defined" (not 'undefined'); returns that
+ term.</td></tr>
+<tr><td valign="top"><a href="#check_no_pending_message-0">check_no_pending_message/0</a></td><td>Ensures that no message is pending in the mailbox of this process.</td></tr>
+<tr><td valign="top"><a href="#check_not_undefined-1">check_not_undefined/1</a></td><td>Checks that specified term is not 'undefined'; returns that term.</td></tr>
+<tr><td valign="top"><a href="#check_undefined-1">check_undefined/1</a></td><td>Checks that specified term is 'undefined'.</td></tr>
+<tr><td valign="top"><a href="#check_version-1">check_version/1</a></td><td>Checks that specified term is a triplet-based version.</td></tr>
+<tr><td valign="top"><a href="#checkpoint-1">checkpoint/1</a></td><td>Displays a numbered checkpoint.</td></tr>
+<tr><td valign="top"><a href="#compare_versions-2">compare_versions/2</a></td><td>Compares the two pairs or triplets, which describe two version numbers 
+(ex: {0,1,0} or {4,2}) and returns either first_bigger, second_bigger, or 
+equal.</td></tr>
+<tr><td valign="top"><a href="#crash-0">crash/0</a></td><td>Crashes the current process immediately.</td></tr>
+<tr><td valign="top"><a href="#create_uniform_tuple-2">create_uniform_tuple/2</a></td><td>Creates a tuple of specified size, all elements having the same,
+ specified, value.</td></tr>
+<tr><td valign="top"><a href="#debug-1">debug/1</a></td><td>Displays, for debugging purposes, specified string, ensuring as much as
+ possible this message is output synchronously, so that it can be output on the
+ console even if the virtual machine is to crash just after.</td></tr>
+<tr><td valign="top"><a href="#debug-2">debug/2</a></td><td>Displays, for debugging purposes, specified format string filled
+ according to specified values, ensuring as much as possible this message is
+ output synchronously, so that it can be output on the console even if the
+ virtual machine is to crash just after.</td></tr>
+<tr><td valign="top"><a href="#describe_term-1">describe_term/1</a></td><td>Describes specified term in a controlled manner.</td></tr>
+<tr><td valign="top"><a href="#display-1">display/1</a></td><td>Displays specified string on the standard output of the console, ensuring
+ as much as possible this message is output synchronously, so that it can be
+ output on the console even if the virtual machine is to crash just after.</td></tr>
+<tr><td valign="top"><a href="#display-2">display/2</a></td><td>Displays specified format string filled according to specified values on
+ the standard output of the console, ensuring as much as possible this message
+ is output synchronously, so that it can be output on the console even if the
+ virtual machine is to crash just after.</td></tr>
+<tr><td valign="top"><a href="#display_error-1">display_error/1</a></td><td>Displays specified string on the standard error output of the console,
+ ensuring as much as possible this message is output synchronously, so that it
+ can be output on the console even if the virtual machine is to crash just
+ after.</td></tr>
+<tr><td valign="top"><a href="#display_error-2">display_error/2</a></td><td>Displays specified format string filled according to specified values on
+ the standard error output of the console, ensuring as much as possible this
+ message is output synchronously, so that it can be output on the console even
+ if the virtual machine is to crash just after.</td></tr>
+<tr><td valign="top"><a href="#display_process_info-1">display_process_info/1</a></td><td>Displays information about the process(es) identified by specified
+ PID(s).</td></tr>
+<tr><td valign="top"><a href="#display_timed-2">display_timed/2</a></td><td>Displays specified string on the standard output of the console, ensuring
+ as much as possible this message is output synchronously, so that it can be
+ output on the console even if the virtual machine is to crash just after.</td></tr>
+<tr><td valign="top"><a href="#display_timed-3">display_timed/3</a></td><td>Displays specified format string filled according to specified values on
+ the standard output of the console, ensuring as much as possible this message
+ is output synchronously, so that it can be output on the console even if the
+ virtual machine is to crash just after.</td></tr>
+<tr><td valign="top"><a href="#enter_infinite_loop-0">enter_infinite_loop/0</a></td><td>Makes the current process enter in an infinite, mostly idle loop.</td></tr>
+<tr><td valign="top"><a href="#flush_pending_messages-0">flush_pending_messages/0</a></td><td>Flushes all the messages still in the mailbox of this process.</td></tr>
+<tr><td valign="top"><a href="#flush_pending_messages-1">flush_pending_messages/1</a></td><td>Flushes all the messages still in the mailbox of this process that
+ (exactly) match the specified one.</td></tr>
+<tr><td valign="top"><a href="#freeze-0">freeze/0</a></td><td>Freezes the current process immediately.</td></tr>
+<tr><td valign="top"><a href="#get_execution_target-0">get_execution_target/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_process_info-1">get_process_info/1</a></td><td>Returns all general information regarding specified process (which is
+ local or not), provided it is still alive (otherwise returns undefined).</td></tr>
+<tr><td valign="top"><a href="#get_process_info-2">get_process_info/2</a></td><td>Returns the specified information regarding specified process (which is
+ local or not), provided it is still alive (otherwise returns undefined).</td></tr>
+<tr><td valign="top"><a href="#get_process_size-1">get_process_size/1</a></td><td>Returns the total size in (RAM) memory used by specified (local, alive) 
+process, in bytes: this includes call stack, heap, and internal structures.</td></tr>
+<tr><td valign="top"><a href="#get_process_specific_value-0">get_process_specific_value/0</a></td><td>Returns a value (a strictly positive integer) expected to be as much as 
+possible specific to the current process.</td></tr>
+<tr><td valign="top"><a href="#get_process_specific_value-1">get_process_specific_value/1</a></td><td>Returns a value (a strictly positive integer) expected to be as much as 
+possible specific to the specified PID.</td></tr>
+<tr><td valign="top"><a href="#get_process_specific_value-2">get_process_specific_value/2</a></td><td>Returns a process-specific value in [Min,Max[.</td></tr>
+<tr><td valign="top"><a href="#identity-1">identity/1</a></td><td>Identity function: returns its argument as it is.</td></tr>
+<tr><td valign="top"><a href="#ignore_unused-1">ignore_unused/1</a></td><td>Ignores specified argument.</td></tr>
+<tr><td valign="top"><a href="#is_alive-1">is_alive/1</a></td><td>Tells whether the specified process, designated by its PID, by a textual
+ representation of it (like <code>&lt;9092.61.0&gt;</code>) or by a registered name (local 
+otherwise global) like 'foobar_service' is still existing at the moment of 
+this call.</td></tr>
+<tr><td valign="top"><a href="#is_alive-2">is_alive/2</a></td><td>Tells whether the specified process (designated by its PID) supposed to 
+run on specified node (specified as an atom) was still existing at the moment 
+of this call.</td></tr>
+<tr><td valign="top"><a href="#is_alive-3">is_alive/3</a></td><td>Tells whether the specified process (designated by its PID) supposed to 
+run on specified node (specified as an atom) was still existing at the moment 
+of this call.</td></tr>
+<tr><td valign="top"><a href="#is_debug_mode_enabled-0">is_debug_mode_enabled/0</a></td><td>Returns whether the (Myriad-enforced) debug mode is activated for the
+ compilation of this module.</td></tr>
+<tr><td valign="top"><a href="#notify_pending_messages-0">notify_pending_messages/0</a></td><td>Reads all pending messages in the mailbox of this process and notifies 
+about them on the console.</td></tr>
+<tr><td valign="top"><a href="#notify_user-1">notify_user/1</a></td><td>Notifies the user of the specified message, with log output and synthetic
+ voice.</td></tr>
+<tr><td valign="top"><a href="#notify_user-2">notify_user/2</a></td><td>Notifies the user of the specified message, with log output and synthetic 
+voice.</td></tr>
+<tr><td valign="top"><a href="#parse_version-1">parse_version/1</a></td><td>Parses specified textual version.</td></tr>
+<tr><td valign="top"><a href="#send_to_pid_set-2">send_to_pid_set/2</a></td><td>Sends the specified message to all elements (supposed to be PID) of the 
+specified set, and returns the number of sent messages.</td></tr>
+<tr><td valign="top"><a href="#size-1">size/1</a></td><td>Returns the number of bytes used by specified term.</td></tr>
+<tr><td valign="top"><a href="#speak-1">speak/1</a></td><td>Speaks the specified message, using espeak.</td></tr>
+<tr><td valign="top"><a href="#stop-0">stop/0</a></td><td>Stops smoothly the underlying VM, with a normal, success status code (0).</td></tr>
+<tr><td valign="top"><a href="#stop-1">stop/1</a></td><td>Stops smoothly, synchronously the underlying VM, with specified error 
+code.</td></tr>
+<tr><td valign="top"><a href="#stop_on_failure-0">stop_on_failure/0</a></td><td>Stops smoothly the underlying VM, with a default error status code (1).</td></tr>
+<tr><td valign="top"><a href="#stop_on_failure-1">stop_on_failure/1</a></td><td>Stops smoothly the underlying VM, with a default error status code (1).</td></tr>
+<tr><td valign="top"><a href="#stop_on_success-0">stop_on_success/0</a></td><td>Stops smoothly, synchronously the underlying VM, with a normal, success
+ status code (0).</td></tr>
+<tr><td valign="top"><a href="#throw_diagnosed-1">throw_diagnosed/1</a></td><td>Triggers specified diagnosed error: reports first its embedded diagnosis, 
+then throws this error as an exception.</td></tr>
+<tr><td valign="top"><a href="#throw_diagnosed-2">throw_diagnosed/2</a></td><td>Triggers specified diagnosed error, augmented by specified term: reports 
+first its embedded diagnosis, then throws this error, as an augmented tuploid, 
+as an exception.</td></tr>
+<tr><td valign="top"><a href="#trigger_oom-0">trigger_oom/0</a></td><td>Triggers a OOM crash, that is a "Out of Memory" error.</td></tr>
+<tr><td valign="top"><a href="#wait_for-2">wait_for/2</a></td><td>Waits (indefinitively) for the specified count of the specified message
+ to be received.</td></tr>
+<tr><td valign="top"><a href="#wait_for-4">wait_for/4</a></td><td>Waits (indefinitively) for the specified count of the specified message 
+to be received, displaying repeatedly on the console a notification should the 
+duration between two receivings exceed the specified time-out.</td></tr>
+<tr><td valign="top"><a href="#wait_for_acks-4">wait_for_acks/4</a></td><td>Waits until receiving from all expected senders the specified 
+acknowledgement message, expected to be in the form of {AckReceiveAtom, 
+WaitedSenderPid}.</td></tr>
+<tr><td valign="top"><a href="#wait_for_acks-5">wait_for_acks/5</a></td><td>Waits until receiving from all expected senders the specified 
+acknowledgement message, expected to be in the form of {AckReceiveAtom, 
+WaitedSenderPid}, ensuring a check is performed at least at specified period.</td></tr>
+<tr><td valign="top"><a href="#wait_for_many_acks-4">wait_for_many_acks/4</a></td><td>Waits until receiving from all expected (numerous) senders the specified 
+acknowledgement message.</td></tr>
+<tr><td valign="top"><a href="#wait_for_many_acks-5">wait_for_many_acks/5</a></td><td>Waits until receiving from all expected (numerous) senders the specified 
+acknowledgement message.</td></tr>
+<tr><td valign="top"><a href="#wait_for_summable_acks-5">wait_for_summable_acks/5</a></td><td>Waits until receiving from all expected senders the specified 
+acknowledgement message, expected to be in the form of: {AckReceiveAtom, 
+ToAdd, WaitedSenderPid}.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="check_all_defined-1">check_all_defined/1</a></h3>
+<div class="spec">
+<p><tt>check_all_defined(List::[term()]) -&gt; [term()]</tt><br></p>
+<p> </p>
+</div><p>Checks that all elements of the specified list are "defined" (not
+ 'undefined'); returns that list.
+</p>
+
+<h3 class="function"><a name="check_all_undefined-1">check_all_undefined/1</a></h3>
+<div class="spec">
+<p><tt>check_all_undefined(List::term()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that all elements of the specified list are equal to 'undefined';
+ returns that list.
+</p>
+
+<h3 class="function"><a name="check_defined-1">check_defined/1</a></h3>
+<div class="spec">
+<p><tt>check_defined(Term::term()) -&gt; term()</tt><br></p>
+<p> </p>
+</div><p>Checks that specified term is "defined" (not 'undefined'); returns that
+ term.
+</p>
+
+<h3 class="function"><a name="check_no_pending_message-0">check_no_pending_message/0</a></h3>
+<div class="spec">
+<p><tt>check_no_pending_message() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Ensures that no message is pending in the mailbox of this process</p>
+
+ <p>Does not block.</p>
+
+ Useful for tests.
+</p>
+
+<h3 class="function"><a name="check_not_undefined-1">check_not_undefined/1</a></h3>
+<div class="spec">
+<p><tt>check_not_undefined(Term::term()) -&gt; term()</tt><br></p>
+<p> </p>
+</div><p>Checks that specified term is not 'undefined'; returns that term.</p>
+
+<h3 class="function"><a name="check_undefined-1">check_undefined/1</a></h3>
+<div class="spec">
+<p><tt>check_undefined(Term::term()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that specified term is 'undefined'.</p>
+
+<h3 class="function"><a name="check_version-1">check_version/1</a></h3>
+<div class="spec">
+<p><tt>check_version(T::term()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that specified term is a triplet-based version.</p>
+
+<h3 class="function"><a name="checkpoint-1">checkpoint/1</a></h3>
+<div class="spec">
+<p><tt>checkpoint(Number::integer()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Displays a numbered checkpoint.</p>
+
+ Useful for debugging purposes.
+</p>
+
+<h3 class="function"><a name="compare_versions-2">compare_versions/2</a></h3>
+<div class="spec">
+<p><tt>compare_versions(X1::<a href="#type-any_version">any_version()</a>, X2::<a href="#type-any_version">any_version()</a>) -&gt; equal | first_bigger | second_bigger</tt><br></p>
+<p> </p>
+</div><p><p>Compares the two pairs or triplets, which describe two version numbers 
+(ex: {0,1,0} or {4,2}) and returns either first_bigger, second_bigger, or 
+equal.</p>
+
+ <p>The two compared versions must have the same number of digits.</p>
+
+ Note: the default term order is already what we needed.
+</p>
+
+<h3 class="function"><a name="crash-0">crash/0</a></h3>
+<div class="spec">
+<p><tt>crash() -&gt; any()</tt><br></p>
+<p> </p>
+</div><p><p>Crashes the current process immediately.</p>
+
+ Useful for testing reliability, for example.
+</p>
+
+<h3 class="function"><a name="create_uniform_tuple-2">create_uniform_tuple/2</a></h3>
+<div class="spec">
+<p><tt>create_uniform_tuple(Size::<a href="#type-count">count()</a>, Value::any()) -&gt; tuple()</tt><br></p>
+<p> </p>
+</div><p>Creates a tuple of specified size, all elements having the same,
+ specified, value.
+</p>
+
+<h3 class="function"><a name="debug-1">debug/1</a></h3>
+<div class="spec">
+<p><tt>debug(Message::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Displays, for debugging purposes, specified string, ensuring as much as
+ possible this message is output synchronously, so that it can be output on the
+ console even if the virtual machine is to crash just after.
+</p>
+
+<h3 class="function"><a name="debug-2">debug/2</a></h3>
+<div class="spec">
+<p><tt>debug(Format::<a href="#type-format_string">format_string()</a>, Values::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Displays, for debugging purposes, specified format string filled
+ according to specified values, ensuring as much as possible this message is
+ output synchronously, so that it can be output on the console even if the
+ virtual machine is to crash just after.
+</p>
+
+<h3 class="function"><a name="describe_term-1">describe_term/1</a></h3>
+<div class="spec">
+<p><tt>describe_term(T::term()) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Describes specified term in a controlled manner.</p>
+
+<h3 class="function"><a name="display-1">display/1</a></h3>
+<div class="spec">
+<p><tt>display(Message::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Displays specified string on the standard output of the console, ensuring
+ as much as possible this message is output synchronously, so that it can be
+ output on the console even if the virtual machine is to crash just after.
+</p>
+
+<h3 class="function"><a name="display-2">display/2</a></h3>
+<div class="spec">
+<p><tt>display(Format::<a href="#type-format_string">format_string()</a>, Values::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Displays specified format string filled according to specified values on
+ the standard output of the console, ensuring as much as possible this message
+ is output synchronously, so that it can be output on the console even if the
+ virtual machine is to crash just after.
+</p>
+
+<h3 class="function"><a name="display_error-1">display_error/1</a></h3>
+<div class="spec">
+<p><tt>display_error(Message::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Displays specified string on the standard error output of the console,
+ ensuring as much as possible this message is output synchronously, so that it
+ can be output on the console even if the virtual machine is to crash just
+ after.
+</p>
+
+<h3 class="function"><a name="display_error-2">display_error/2</a></h3>
+<div class="spec">
+<p><tt>display_error(Format::<a href="#type-format_string">format_string()</a>, Values::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Displays specified format string filled according to specified values on
+ the standard error output of the console, ensuring as much as possible this
+ message is output synchronously, so that it can be output on the console even
+ if the virtual machine is to crash just after.
+</p>
+
+<h3 class="function"><a name="display_process_info-1">display_process_info/1</a></h3>
+<div class="spec">
+<p><tt>display_process_info(PidList::pid() | [pid()]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Displays information about the process(es) identified by specified
+ PID(s).
+</p>
+
+<h3 class="function"><a name="display_timed-2">display_timed/2</a></h3>
+<div class="spec">
+<p><tt>display_timed(Message::<a href="#type-ustring">ustring()</a>, TimeOut::<a href="#type-time_out">time_out()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Displays specified string on the standard output of the console, ensuring
+ as much as possible this message is output synchronously, so that it can be
+ output on the console even if the virtual machine is to crash just after.
+</p>
+
+<h3 class="function"><a name="display_timed-3">display_timed/3</a></h3>
+<div class="spec">
+<p><tt>display_timed(Format::<a href="#type-format_string">format_string()</a>, Values::<a href="#type-format_values">format_values()</a>, TimeOut::<a href="#type-time_out">time_out()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Displays specified format string filled according to specified values on
+ the standard output of the console, ensuring as much as possible this message
+ is output synchronously, so that it can be output on the console even if the
+ virtual machine is to crash just after.
+</p>
+
+<h3 class="function"><a name="enter_infinite_loop-0">enter_infinite_loop/0</a></h3>
+<div class="spec">
+<p><tt>enter_infinite_loop() -&gt; any()</tt></p>
+<p> </p>
+</div><p><p>Makes the current process enter in an infinite, mostly idle loop.</p>
+
+ <p>Useful for testing reliability, for example.</p>
+
+ See also: freeze/0.
+</p>
+
+<h3 class="function"><a name="flush_pending_messages-0">flush_pending_messages/0</a></h3>
+<div class="spec">
+<p><tt>flush_pending_messages() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Flushes all the messages still in the mailbox of this process.</p>
+
+<h3 class="function"><a name="flush_pending_messages-1">flush_pending_messages/1</a></h3>
+<div class="spec">
+<p><tt>flush_pending_messages(Message::any()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Flushes all the messages still in the mailbox of this process that
+ (exactly) match the specified one.
+</p>
+
+<h3 class="function"><a name="freeze-0">freeze/0</a></h3>
+<div class="spec">
+<p><tt>freeze() -&gt; no_return()</tt><br></p>
+<p> </p>
+</div><p><p>Freezes the current process immediately.</p>
+
+ <p>Useful to block the process while for example an ongoing termination 
+occurs.</p>
+
+ See also: enter_infinite_loop/0.
+</p>
+
+<h3 class="function"><a name="get_execution_target-0">get_execution_target/0</a></h3>
+<div class="spec">
+<p><tt>get_execution_target() -&gt; development</tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_process_info-1">get_process_info/1</a></h3>
+<div class="spec">
+<p><tt>get_process_info(Pid::pid()) -&gt; <a href="#type-maybe">maybe</a>([<a href="#type-process_info_result_item">process_info_result_item()</a>])</tt><br></p>
+<p> </p>
+</div><p>Returns all general information regarding specified process (which is
+ local or not), provided it is still alive (otherwise returns undefined).
+</p>
+
+<h3 class="function"><a name="get_process_info-2">get_process_info/2</a></h3>
+<div class="spec">
+<p><tt>get_process_info(Pid::pid(), ItemTerm::<a href="#type-process_info_result_item">process_info_result_item()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-process_info_result_item">process_info_result_item()</a>)</tt><br></p><p><tt>get_process_info(Pid::pid(), ItemTerm::[<a href="#type-process_info_result_item">process_info_result_item()</a>]) -&gt; <a href="#type-maybe">maybe</a>([<a href="#type-process_info_result_item">process_info_result_item()</a>])</tt><br></p>
+<p> </p>
+<p> </p>
+</div><p>Returns the specified information regarding specified process (which is
+ local or not), provided it is still alive (otherwise returns undefined).
+</p>
+
+<h3 class="function"><a name="get_process_size-1">get_process_size/1</a></h3>
+<div class="spec">
+<p><tt>get_process_size(Pid::pid()) -&gt; <a href="system_utils.html#type-byte_size">system_utils:byte_size()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the total size in (RAM) memory used by specified (local, alive) 
+process, in bytes: this includes call stack, heap, and internal structures.</p>
+
+ See https://erlang.org/doc/man/erlang.html#process_info-1 for more
+ information.
+</p>
+
+<h3 class="function"><a name="get_process_specific_value-0">get_process_specific_value/0</a></h3>
+<div class="spec">
+<p><tt>get_process_specific_value() -&gt; pos_integer()</tt><br></p>
+<p> </p>
+</div><p><p>Returns a value (a strictly positive integer) expected to be as much as 
+possible specific to the current process.</p>
+
+ <p>Mostly based on its PID.</p>
+
+ <p>Useful for example when a large number of similar processes try to access to 
+the same resource (ex: a set of file descriptors) at the same time: they can 
+rely on some random waiting based on that process-specific value in order to 
+smooth the accesses over time.</p>
+
+ We could imagine taking into account as well the current time, the process
+ reductions, etc. or generating a reference.
+</p>
+
+<h3 class="function"><a name="get_process_specific_value-1">get_process_specific_value/1</a></h3>
+<div class="spec">
+<p><tt>get_process_specific_value(Pid::pid()) -&gt; pos_integer()</tt><br></p>
+<p> </p>
+</div><p><p>Returns a value (a strictly positive integer) expected to be as much as 
+possible specific to the specified PID.</p>
+
+ <p>Useful for example when a large number of similar processes try to access to 
+the same resource (ex: a set of file descriptors) at the same time: they can 
+rely on some random waiting based on that process-specific value in order to 
+smooth the accesses over time.</p>
+
+ We could imagine taking into account as well the current time, the process
+ reductions, etc. or generating a reference.
+</p>
+
+<h3 class="function"><a name="get_process_specific_value-2">get_process_specific_value/2</a></h3>
+<div class="spec">
+<p><tt>get_process_specific_value(Min::integer(), Max::integer()) -&gt; integer()</tt><br></p>
+<p> </p>
+</div><p>Returns a process-specific value in [Min,Max[.</p>
+
+<h3 class="function"><a name="identity-1">identity/1</a></h3>
+<div class="spec">
+<p><tt>identity(Term::term()) -&gt; term()</tt><br></p>
+<p> </p>
+</div><p><p>Identity function: returns its argument as it is.</p>
+
+ Useful to avoid having the compiler being too smart by notifying annoying,
+ spurious messages (ex: no clause will ever match) in some tests.
+</p>
+
+<h3 class="function"><a name="ignore_unused-1">ignore_unused/1</a></h3>
+<div class="spec">
+<p><tt>ignore_unused(Term::any()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Ignores specified argument.</p>
+
+ <p>Useful to define, for debugging purposes, terms that will be (temporarily) 
+unused without blocking the compilation.</p>
+
+ Ex: basic_utils:ignore_unused(A) or basic_utils:ignore_unused([A, B, C]).
+</p>
+
+<h3 class="function"><a name="is_alive-1">is_alive/1</a></h3>
+<div class="spec">
+<p><tt>is_alive(TargetPid::pid() | <a href="#type-ustring">ustring()</a> | <a href="naming_utils.html#type-registration_name">naming_utils:registration_name()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p><p>Tells whether the specified process, designated by its PID, by a textual
+ representation of it (like <code>&lt;9092.61.0&gt;</code>) or by a registered name (local 
+otherwise global) like 'foobar_service' is still existing at the moment of 
+this call.</p>
+
+ <p>Note:</p>
+
+ <p>- the process may run on the local node or not</p>
+
+ - generally not to be used, when relying on a good design
+</p>
+
+<h3 class="function"><a name="is_alive-2">is_alive/2</a></h3>
+<div class="spec">
+<p><tt>is_alive(TargetPid::pid(), Node::<a href="#type-atom_node_name">atom_node_name()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p><p>Tells whether the specified process (designated by its PID) supposed to 
+run on specified node (specified as an atom) was still existing at the moment 
+of this call.</p>
+
+ Note: generally not to be used when relying on a good design; and is_alive/1
+ should be preferred.
+</p>
+
+<h3 class="function"><a name="is_alive-3">is_alive/3</a></h3>
+<div class="spec">
+<p><tt>is_alive(TargetPid::pid(), Node::<a href="#type-atom_node_name">atom_node_name()</a>, Verbose::boolean()) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p><p>Tells whether the specified process (designated by its PID) supposed to 
+run on specified node (specified as an atom) was still existing at the moment 
+of this call.</p>
+
+ <p>May emit trace warnings if told to be verbose.</p>
+
+ Note: generally not to be used when relying on a good design; and is_alive/1
+ should be preferred.
+</p>
+
+<h3 class="function"><a name="is_debug_mode_enabled-0">is_debug_mode_enabled/0</a></h3>
+<div class="spec">
+<p><tt>is_debug_mode_enabled() -&gt; false</tt><br></p>
+<p> </p>
+</div><p>Returns whether the (Myriad-enforced) debug mode is activated for the
+ compilation of this module.</p>
+
+<h3 class="function"><a name="notify_pending_messages-0">notify_pending_messages/0</a></h3>
+<div class="spec">
+<p><tt>notify_pending_messages() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Reads all pending messages in the mailbox of this process and notifies 
+about them on the console.</p>
+
+ <p>Does not block.</p>
+
+ Useful for tests.
+</p>
+
+<h3 class="function"><a name="notify_user-1">notify_user/1</a></h3>
+<div class="spec">
+<p><tt>notify_user(Message::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Notifies the user of the specified message, with log output and synthetic
+ voice.
+</p>
+
+<h3 class="function"><a name="notify_user-2">notify_user/2</a></h3>
+<div class="spec">
+<p><tt>notify_user(Message::<a href="#type-format_string">format_string()</a>, FormatList::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Notifies the user of the specified message, with log output and synthetic 
+voice.</p>
+
+ Example: 'basic_utils:notify_user("Hello ~w", [ Name ]).'
+</p>
+
+<h3 class="function"><a name="parse_version-1">parse_version/1</a></h3>
+<div class="spec">
+<p><tt>parse_version(VersionString::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-any_version">any_version()</a></tt><br></p>
+<p> </p>
+</div><p><p>Parses specified textual version.</p>
+
+ Ex: "4.2.1" should become {4,2,1}, and "2.3" should become {2,3}.
+</p>
+
+<h3 class="function"><a name="send_to_pid_set-2">send_to_pid_set/2</a></h3>
+<div class="spec">
+<p><tt>send_to_pid_set(Message::term(), PidSet::<a href="#type-set">set</a>(pid())) -&gt; <a href="#type-count">count()</a></tt><br></p>
+<p> </p>
+</div><p><p>Sends the specified message to all elements (supposed to be PID) of the 
+specified set, and returns the number of sent messages.</p>
+
+ (helper)
+</p>
+
+<h3 class="function"><a name="size-1">size/1</a></h3>
+<div class="spec">
+<p><tt>size(Term::term()) -&gt; <a href="system_utils.html#type-byte_size">system_utils:byte_size()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the number of bytes used by specified term.</p>
+
+<h3 class="function"><a name="speak-1">speak/1</a></h3>
+<div class="spec">
+<p><tt>speak(Message::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Speaks the specified message, using espeak.</p>
+
+<h3 class="function"><a name="stop-0">stop/0</a></h3>
+<div class="spec">
+<p><tt>stop() -&gt; no_return()</tt><br></p>
+<p> </p>
+</div><p><p>Stops smoothly the underlying VM, with a normal, success status code (0).</p>
+
+ Also also to potentially override Erlang standard teardown procedure.
+</p>
+
+<h3 class="function"><a name="stop-1">stop/1</a></h3>
+<div class="spec">
+<p><tt>stop(StatusCode::<a href="#type-status_code">status_code()</a>) -&gt; no_return()</tt><br></p>
+<p> </p>
+</div><p><p>Stops smoothly, synchronously the underlying VM, with specified error 
+code.</p>
+
+ Also allows to potentially override Erlang standard teardown procedure.
+</p>
+
+<h3 class="function"><a name="stop_on_failure-0">stop_on_failure/0</a></h3>
+<div class="spec">
+<p><tt>stop_on_failure() -&gt; no_return()</tt><br></p>
+<p> </p>
+</div><p>Stops smoothly the underlying VM, with a default error status code (1).</p>
+
+<h3 class="function"><a name="stop_on_failure-1">stop_on_failure/1</a></h3>
+<div class="spec">
+<p><tt>stop_on_failure(StatusCode::<a href="#type-status_code">status_code()</a>) -&gt; no_return()</tt><br></p>
+<p> </p>
+</div><p>Stops smoothly the underlying VM, with a default error status code (1).</p>
+
+<h3 class="function"><a name="stop_on_success-0">stop_on_success/0</a></h3>
+<div class="spec">
+<p><tt>stop_on_success() -&gt; no_return()</tt><br></p>
+<p> </p>
+</div><p>Stops smoothly, synchronously the underlying VM, with a normal, success
+ status code (0).
+</p>
+
+<h3 class="function"><a name="throw_diagnosed-1">throw_diagnosed/1</a></h3>
+<div class="spec">
+<p><tt>throw_diagnosed(DiagnosedReason::<a href="#type-diagnosed_error_reason">diagnosed_error_reason()</a>) -&gt; no_return()</tt><br></p>
+<p> </p>
+</div><p><p>Triggers specified diagnosed error: reports first its embedded diagnosis, 
+then throws this error as an exception.</p>
+
+ <p>Typical use:</p>
+
+ <p>case Expr of</p>
+
+  <p>{ ok, X } -&gt;    
+[...];</p>
+
+  <p>{ ok, Y } -&gt;    
+[...];</p>
+
+  <p>{ error, DiagnosedReason } -&gt;     
+basic_utils:throw_diagnosed( DiagnosedReason )</p>
+
+ end
+</p>
+
+<h3 class="function"><a name="throw_diagnosed-2">throw_diagnosed/2</a></h3>
+<div class="spec">
+<p><tt>throw_diagnosed(DiagnosedReason::<a href="#type-diagnosed_error_reason">diagnosed_error_reason()</a>, ExtraErrorTerm::term()) -&gt; no_return()</tt><br></p>
+<p> </p>
+</div><p><p>Triggers specified diagnosed error, augmented by specified term: reports 
+first its embedded diagnosis, then throws this error, as an augmented tuploid, 
+as an exception.</p>
+
+ <p>Typical use:</p>
+
+ <p>case Expr of</p>
+
+  <p>{ ok, X } -&gt;    
+[...];</p>
+
+  <p>{ ok, Y } -&gt;    
+[...];</p>
+
+  <p>{ error, DiagnosedReason } -&gt;     
+basic_utils:throw_diagnosed( DiagnosedReason, Z )</p>
+
+ end
+</p>
+
+<h3 class="function"><a name="trigger_oom-0">trigger_oom/0</a></h3>
+<div class="spec">
+<p><tt>trigger_oom() -&gt; any()</tt></p>
+<p> </p>
+</div><p><p>Triggers a OOM crash, that is a "Out of Memory" error.</p>
+
+ Useful for testing reliability, for example.
+</p>
+
+<h3 class="function"><a name="wait_for-2">wait_for/2</a></h3>
+<div class="spec">
+<p><tt>wait_for(Message::term(), Count::<a href="#type-count">count()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Waits (indefinitively) for the specified count of the specified message
+ to be received.
+</p>
+
+<h3 class="function"><a name="wait_for-4">wait_for/4</a></h3>
+<div class="spec">
+<p><tt>wait_for(Message::term(), Count::<a href="#type-count">count()</a>, TimeOutDuration::<a href="#type-milliseconds">milliseconds()</a>, TimeOutFormatString::<a href="#type-format_string">format_string()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Waits (indefinitively) for the specified count of the specified message 
+to be received, displaying repeatedly on the console a notification should the 
+duration between two receivings exceed the specified time-out.</p>
+
+ Typical usage: basic_utils:wait_for( {foobar_result, done}, _Count=5,
+ _Duration=2000, "Still waiting for ~B task(s) to complete").
+</p>
+
+<h3 class="function"><a name="wait_for_acks-4">wait_for_acks/4</a></h3>
+<div class="spec">
+<p><tt>wait_for_acks(WaitedSenders::[pid()], MaxDurationInSeconds::<a href="#type-time_out">time_out()</a>, AckReceiveAtom::atom(), ThrowAtom::atom()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Waits until receiving from all expected senders the specified 
+acknowledgement message, expected to be in the form of {AckReceiveAtom, 
+WaitedSenderPid}.</p>
+
+ <p>Throws a {ThrowAtom, StillWaitedSenders} exception on time-out (if any, as the 
+time-out can be disabled if set to 'infinity').</p>
+
+ See wait_for_many_acks/{4,5} if having a large number of senders that are
+ waited for.
+</p>
+
+<h3 class="function"><a name="wait_for_acks-5">wait_for_acks/5</a></h3>
+<div class="spec">
+<p><tt>wait_for_acks(WaitedSenders::[pid()], MaxDurationInSeconds::<a href="#type-time_out">time_out()</a>, Period::<a href="#type-milliseconds">milliseconds()</a>, AckReceiveAtom::atom(), ThrowAtom::atom()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Waits until receiving from all expected senders the specified 
+acknowledgement message, expected to be in the form of {AckReceiveAtom, 
+WaitedSenderPid}, ensuring a check is performed at least at specified period.</p>
+
+ <p>Throws a {ThrowAtom, StillWaitedSenders} exception on time-out.</p>
+
+ See wait_for_many_acks/{4,5} if having a large number of senders waited for.
+</p>
+
+<h3 class="function"><a name="wait_for_many_acks-4">wait_for_many_acks/4</a></h3>
+<div class="spec">
+<p><tt>wait_for_many_acks(WaitedSenders::<a href="#type-set">set</a>(pid()), MaxDurationInSeconds::<a href="#type-milliseconds">milliseconds()</a>, AckReceiveAtom::atom(), ThrowAtom::atom()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Waits until receiving from all expected (numerous) senders the specified 
+acknowledgement message.</p>
+
+ <p>Throws specified exception on time-out.</p>
+
+ Note: each sender shall be unique (as they will be gathered in a set, that
+ does not keep duplicates)
+</p>
+
+<h3 class="function"><a name="wait_for_many_acks-5">wait_for_many_acks/5</a></h3>
+<div class="spec">
+<p><tt>wait_for_many_acks(WaitedSenders::<a href="#type-set">set</a>(pid()), MaxDurationInSeconds::<a href="#type-milliseconds">milliseconds()</a>, Period::<a href="#type-milliseconds">milliseconds()</a>, AckReceiveAtom::atom(), ThrowAtom::atom()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Waits until receiving from all expected (numerous) senders the specified 
+acknowledgement message.</p>
+
+ Throws specified exception on time-out, checking at the specified period.
+</p>
+
+<h3 class="function"><a name="wait_for_summable_acks-5">wait_for_summable_acks/5</a></h3>
+<div class="spec">
+<p><tt>wait_for_summable_acks(WaitedSenders::[pid()], InitialValue::number(), MaxDurationInSeconds::<a href="#type-time_out">time_out()</a>, AckReceiveAtom::atom(), ThrowAtom::atom()) -&gt; number()</tt><br></p>
+<p> </p>
+</div><p><p>Waits until receiving from all expected senders the specified 
+acknowledgement message, expected to be in the form of: {AckReceiveAtom, 
+ToAdd, WaitedSenderPid}.</p>
+
+ <p>Returns the sum of the specified initial value with all the ToAdd received 
+values.</p>
+
+ Throws a {ThrowAtom, StillWaitedSenders} exception on time-out (if any, as the
+ time-out can be disabled if set to 'infinity').
+</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

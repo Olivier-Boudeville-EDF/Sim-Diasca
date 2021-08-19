@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module traces_for_tests</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module traces_for_tests</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>This module gathers all the code that allows to <b>lighten the trace
+ macros for (Myriad) applications</b>.
+
+
+<h2><a name="description">Description</a></h2>This module gathers all the code that allows to <b>lighten the trace
+ macros for (Myriad) applications</b>.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-aggregator_pid">aggregator_pid()</a></h3>
+<p><tt>aggregator_pid() = <a href="class_TraceAggregator.html#type-aggregator_pid">class_TraceAggregator:aggregator_pid()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-module_name">module_name()</a></h3>
+<p><tt>module_name() = <a href="basic_utils.html#type-module_name">basic_utils:module_name()</a></tt></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#test_immediate_stop-2">test_immediate_stop/2</a></td><td>Stops specified test immediately, not waiting for any trace supervisor, 
+stopping the trace aggregator, and finishing on the shell.</td></tr>
+<tr><td valign="top"><a href="#test_start-2">test_start/2</a></td><td>Starts the specified test.</td></tr>
+<tr><td valign="top"><a href="#test_stop-3">test_stop/3</a></td><td>Stops the specified test, waiting for the trace supervisor if requested.</td></tr>
+<tr><td valign="top"><a href="#test_stop_on_shell-2">test_stop_on_shell/2</a></td><td>Stops specified test, stopping the trace aggregator and finishing on the 
+shell.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="test_immediate_stop-2">test_immediate_stop/2</a></h3>
+<div class="spec">
+<p><tt>test_immediate_stop(ModuleName::<a href="#type-module_name">module_name()</a>, TraceAggregatorPid::<a href="#type-aggregator_pid">aggregator_pid()</a>) -&gt; no_return()</tt><br></p>
+<p> </p>
+</div><p><p>Stops specified test immediately, not waiting for any trace supervisor, 
+stopping the trace aggregator, and finishing on the shell.</p>
+
+ To be called from the counterpart macro.
+</p>
+
+<h3 class="function"><a name="test_start-2">test_start/2</a></h3>
+<div class="spec">
+<p><tt>test_start(ModuleName::<a href="#type-module_name">module_name()</a>, InitTraceSupervisor::<a href="class_TraceAggregator.html#type-initialize_supervision">class_TraceAggregator:initialize_supervision()</a>) -&gt; <a href="#type-aggregator_pid">aggregator_pid()</a></tt><br></p>
+<p> </p>
+</div><p><p>Starts the specified test.</p>
+
+ <p>To be called from the counterpart macro.</p>
+
+ <p>The trace supervisor can be requested to be initialized now or not at all, or 
+later (typically only once the desired filename for the traces file will be 
+known for good, i.e. at its first renaming).</p>
+
+ Here we disable explicitly the trapping of EXIT signals, as a function run
+ through "erl -eval" (like our apps) or through "erl -run" will be executed in
+ a process that will silently trap EXIT signals, which would mean that the
+ crash of any process created from the app, even thanks to spawn_link, would
+ most probably remain unnoticed (just leading to an EXIT message happily
+ sitting in the mailbox of the app process).
+</p>
+
+<h3 class="function"><a name="test_stop-3">test_stop/3</a></h3>
+<div class="spec">
+<p><tt>test_stop(ModuleName::<a href="#type-module_name">module_name()</a>, TraceAggregatorPid::<a href="#type-aggregator_pid">aggregator_pid()</a>, WaitForTraceSupervisor::boolean()) -&gt; no_return()</tt><br></p>
+<p> </p>
+</div><p><p>Stops the specified test, waiting for the trace supervisor if requested.</p>
+
+ To be called from the counterpart macro.</p>
+
+<h3 class="function"><a name="test_stop_on_shell-2">test_stop_on_shell/2</a></h3>
+<div class="spec">
+<p><tt>test_stop_on_shell(ModuleName::<a href="#type-module_name">module_name()</a>, TraceAggregatorPid::<a href="#type-aggregator_pid">aggregator_pid()</a>) -&gt; no_return()</tt><br></p>
+<p> </p>
+</div><p><p>Stops specified test, stopping the trace aggregator and finishing on the 
+shell.</p>
+
+ To be called from the counterpart macro, directly or not.</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

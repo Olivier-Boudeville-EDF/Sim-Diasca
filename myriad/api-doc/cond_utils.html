@@ -1,0 +1,255 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module cond_utils</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module cond_utils</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Management of <b>conditional compilation</b> - like generalised,
+ limitation-less macros.
+
+
+<h2><a name="description">Description</a></h2>Management of <b>conditional compilation</b> - like generalised,
+ limitation-less macros.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-expression">expression()</a></h3>
+<p><tt>expression() = any()</tt></p>
+<p> An expression that is conditionally enabled.</p>
+
+<h3 class="typedecl"><a name="type-expressions">expressions()</a></h3>
+<p><tt>expressions() = <a href="#type-expression">expression()</a> | [<a href="#type-expression">expression()</a>]</tt></p>
+<p> The conditional code injected is either a single expression or a list thereof.</p>
+
+<h3 class="typedecl"><a name="type-token">token()</a></h3>
+<p><tt>token() = atom()</tt></p>
+<p><p> A token (defined through the command-line), whose definition enables the 
+conditional execution of associated code.</p>
+
+ Ex: a 'debug_gui' token would enable, if defined, associated code, like in:
+ cond_utils:if_defined(debug_gui, [f(), A=B, g(C)]).</p>
+
+<h3 class="typedecl"><a name="type-token_expr_table">token_expr_table()</a></h3>
+<p><tt>token_expr_table() = [{<a href="#type-token">token()</a>, <a href="#type-expressions">expressions()</a>}]</tt></p>
+<p> A table used to associate expression(s) to token values.</p>
+
+<h3 class="typedecl"><a name="type-token_table">token_table()</a></h3>
+<p><tt>token_table() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(<a href="#type-token">token()</a>, <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>(term()))</tt></p>
+<p> Table to establish easily whether a token has been defined and, if yes, a
+ value (if any; otherwise it is set to 'undefined') that has been associated to
+ it.</p>
+
+<h3 class="typedecl"><a name="type-value">value()</a></h3>
+<p><tt>value() = term()</tt></p>
+<p> An (immediate) value associated to a token can actually of various types
+ (ex: atom, integer; as a form of course), as translated by the compiler.</p>
+
+<h3 class="typedecl"><a name="type-void">void()</a></h3>
+<p><tt>void() = <a href="basic_utils.html#type-void">basic_utils:void()</a></tt></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#assert-1">assert/1</a></td><td>If in debug mode, asserts that the specified expression is true, 
+ie evaluates it at runtime and matches it with the atom 'true'.</td></tr>
+<tr><td valign="top"><a href="#assert-2">assert/2</a></td><td>If the specified token has been defined through the command-line, asserts 
+that the specified expression is true, ie evaluates it at runtime and 
+matches it with the atom 'true'.</td></tr>
+<tr><td valign="top"><a href="#assert-3">assert/3</a></td><td>If the specified token has been defined through the command-line and set 
+to the specified value, asserts that the specified expression is true, ie 
+evaluates it at runtime and matches it with the atom 'true'.</td></tr>
+<tr><td valign="top"><a href="#get_token_table_from-1">get_token_table_from/1</a></td><td>Returns the tokens declared among the compile options.</td></tr>
+<tr><td valign="top"><a href="#if_debug-1">if_debug/1</a></td><td>Conditional execution of specified expression or list thereof.</td></tr>
+<tr><td valign="top"><a href="#if_defined-2">if_defined/2</a></td><td>Conditional execution, enabled iff the specified token has been 
+specified.</td></tr>
+<tr><td valign="top"><a href="#if_defined-3">if_defined/3</a></td><td>Conditional execution of one of the two specified expressions or lists 
+thereof, depending on whether the specified token has been defined through the 
+command-line.</td></tr>
+<tr><td valign="top"><a href="#if_set_to-3">if_set_to/3</a></td><td>Conditional execution of the specified expression or list thereof, 
+depending on whether the specified token has been defined through the 
+command-line *and* has been set to the specified (immediate) value.</td></tr>
+<tr><td valign="top"><a href="#if_set_to-4">if_set_to/4</a></td><td>Conditional execution of one of the two specified expressions or lists 
+thereof, depending on whether the specified token has been defined through the 
+command-line *and* has been set to the specified (immediate) value.</td></tr>
+<tr><td valign="top"><a href="#switch_set_to-2">switch_set_to/2</a></td><td>Conditional execution of one of the specified expressions or lists 
+thereof listed in the token-expression table, depending on whether the 
+specified token has been defined through the command-line *and* has been set 
+to one of the specified (immediate) values.</td></tr>
+<tr><td valign="top"><a href="#switch_set_to-3">switch_set_to/3</a></td><td>Conditional execution of one of the specified expressions or lists 
+thereof listed in the token-expression table, depending on whether the 
+specified token has been defined through the command-line *and* has been set 
+to one of the specified (immediate) values.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="assert-1">assert/1</a></h3>
+<div class="spec">
+<p><tt>assert(Expression::<a href="#type-expression">expression()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>If in debug mode, asserts that the specified expression is true, 
+ie evaluates it at runtime and matches it with the atom 'true'.</p>
+
+ In debug mode (i.e when the 'myriad_debug_mode' token has been defined), and
+ only in that mode, the check will be done (at runtime), and possibly will fail
+ by throwing a { assertion_failed, Other } exception, where Other is the actual
+ (non-true) value breaking that assertion (of course the usual stacktrace with
+ line numbers will be available).
+</p>
+
+<h3 class="function"><a name="assert-2">assert/2</a></h3>
+<div class="spec">
+<p><tt>assert(Token::<a href="#type-token">token()</a>, Expression::<a href="#type-expression">expression()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>If the specified token has been defined through the command-line, asserts 
+that the specified expression is true, ie evaluates it at runtime and 
+matches it with the atom 'true'.</p>
+
+ See assert/1 for use and caveats.
+</p>
+
+<h3 class="function"><a name="assert-3">assert/3</a></h3>
+<div class="spec">
+<p><tt>assert(Token::<a href="#type-token">token()</a>, Value::<a href="#type-value">value()</a>, Expression::<a href="#type-expression">expression()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>If the specified token has been defined through the command-line and set 
+to the specified value, asserts that the specified expression is true, ie 
+evaluates it at runtime and matches it with the atom 'true'.</p>
+
+ See assert/1 for use and caveats.
+</p>
+
+<h3 class="function"><a name="get_token_table_from-1">get_token_table_from/1</a></h3>
+<div class="spec">
+<p><tt>get_token_table_from(OptionTable::<a href="ast_info.html#type-compile_option_table">ast_info:compile_option_table()</a>) -&gt; <a href="#type-token_table">token_table()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the tokens declared among the compile options.</p>
+
+<h3 class="function"><a name="if_debug-1">if_debug/1</a></h3>
+<div class="spec">
+<p><tt>if_debug(ExpressionsIfDebug::<a href="#type-expressions">expressions()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Conditional execution of specified expression or list thereof.</p>
+
+ Enabled iff the debug mode has been set (ie iff the 'myriad_debug_mode'
+ token has been defined through the command-line).
+</p>
+
+<h3 class="function"><a name="if_defined-2">if_defined/2</a></h3>
+<div class="spec">
+<p><tt>if_defined(Token::<a href="#type-token">token()</a>, ExpressionsIfDefined::<a href="#type-expressions">expressions()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Conditional execution, enabled iff the specified token has been 
+specified.</p>
+
+ <p>It is enabled iff its token has been defined through the command-line, in 
+which case the specified expression(s) are injected (otherwise they are simply 
+dismissed as a whole).</p>
+
+ <p>Note: the first parameter, Token, must be an immediate value, an atom (not 
+even a variable whose value happens to be an atom).</p>
+
+ <p>So 'cond_utils:if_defined( hello, [...] )' will be accepted, while even 
+'A=hello, cond_utils:if_defined( A, [...] )' will be rejected.</p>
+
+ <p>As for the second parameter, it shall be *directly* either a single expression 
+or a list thereof; for example 'cond_utils:if_defined( myriad_debug_mode, 
+_Exprs=[...])' would be rejected.</p>
+
+ <p>Finally, should the relevant token not be defined, the corresponding 
+expressions are dismissed as a whole, which may lead variables only mentioned 
+in said expressions to be reported as unused.</p>
+
+ For example: 'A=1, cond_utils:if_defined(non_defined_token, [ A=1,...])' will
+ report that variable 'A' is unused.
+</p>
+
+<h3 class="function"><a name="if_defined-3">if_defined/3</a></h3>
+<div class="spec">
+<p><tt>if_defined(Token::<a href="#type-token">token()</a>, ExpressionsIfDefined::<a href="#type-expressions">expressions()</a>, ExpressionsIfNotDefined::<a href="#type-expressions">expressions()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Conditional execution of one of the two specified expressions or lists 
+thereof, depending on whether the specified token has been defined through the 
+command-line.</p>
+
+ <p>If the token has been defined, the first list of expressions is injected, 
+otherwise the second is.</p>
+
+ See if_defined/2 for use and caveats.
+</p>
+
+<h3 class="function"><a name="if_set_to-3">if_set_to/3</a></h3>
+<div class="spec">
+<p><tt>if_set_to(Token::<a href="#type-token">token()</a>, Value::<a href="#type-value">value()</a>, ExpressionsIfSetTo::<a href="#type-expressions">expressions()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Conditional execution of the specified expression or list thereof, 
+depending on whether the specified token has been defined through the 
+command-line *and* has been set to the specified (immediate) value.</p>
+
+ <p>The specified list of expressions is injected iff the token has been defined 
+and set to the specified value.</p>
+
+ See if_defined/2 for use and caveats.
+</p>
+
+<h3 class="function"><a name="if_set_to-4">if_set_to/4</a></h3>
+<div class="spec">
+<p><tt>if_set_to(Token::<a href="#type-token">token()</a>, Value::<a href="#type-value">value()</a>, ExpressionsIfMatching::<a href="#type-expressions">expressions()</a>, ExpressionsOtherwise::<a href="#type-expressions">expressions()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Conditional execution of one of the two specified expressions or lists 
+thereof, depending on whether the specified token has been defined through the 
+command-line *and* has been set to the specified (immediate) value.</p>
+
+ <p>If the token has been defined and set to the specified value, the first list 
+of expressions is injected, otherwise (different value or not defined) the 
+second is.</p>
+
+ See if_defined/2 for use and caveats.
+</p>
+
+<h3 class="function"><a name="switch_set_to-2">switch_set_to/2</a></h3>
+<div class="spec">
+<p><tt>switch_set_to(Token::<a href="#type-token">token()</a>, TokenExprTable::<a href="#type-token_expr_table">token_expr_table()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Conditional execution of one of the specified expressions or lists 
+thereof listed in the token-expression table, depending on whether the 
+specified token has been defined through the command-line *and* has been set 
+to one of the specified (immediate) values.</p>
+
+ <p>If the token has been defined and set to one the values specified in the 
+table, the expression(s) associated to this value are injected.</p>
+
+ <p>Otherwise (token not set, or set to a value not listed), a compilation-time 
+error is raised.</p>
+
+ See if_defined/2 for use and caveats.
+</p>
+
+<h3 class="function"><a name="switch_set_to-3">switch_set_to/3</a></h3>
+<div class="spec">
+<p><tt>switch_set_to(Token::<a href="#type-token">token()</a>, TokenExprTable::<a href="#type-token_expr_table">token_expr_table()</a>, DefaultTokenValue::<a href="#type-value">value()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Conditional execution of one of the specified expressions or lists 
+thereof listed in the token-expression table, depending on whether the 
+specified token has been defined through the command-line *and* has been set 
+to one of the specified (immediate) values.</p>
+
+ <p>If the token has been defined and set to one the values specified in the 
+table, the expression(s) associated to this value are injected.</p>
+
+ <p>Otherwise (token not set, or set to a value not listed), the specified default 
+token value (expected to be referenced in the table) applies.</p>
+
+ See if_defined/2 for use and caveats.
+</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

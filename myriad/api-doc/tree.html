@@ -1,0 +1,159 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module tree</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module tree</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of facilities to manage <b>trees</b> that may be unbalanced.
+
+
+<h2><a name="description">Description</a></h2>Gathering of facilities to manage <b>trees</b> that may be unbalanced.
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-accumulator">accumulator()</a></h3>
+<p><tt>accumulator() = <a href="basic_utils.html#type-accumulator">basic_utils:accumulator()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-content_fold_fun">content_fold_fun()</a></h3>
+<p><tt>content_fold_fun() = fun((<a href="#type-node_content">node_content()</a>, <a href="basic_utils.html#type-accumulator">basic_utils:accumulator()</a>) -&gt; <a href="basic_utils.html#type-accumulator">basic_utils:accumulator()</a>)</tt></p>
+<p> Describes a function that can be folded onto the content of trees.</p>
+
+<h3 class="typedecl"><a name="type-height">height()</a></h3>
+<p><tt>height() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+<p> Height of a tree.</p>
+
+<h3 class="typedecl"><a name="type-node_content">node_content()</a></h3>
+<p><tt>node_content() = <a href="#type-maybe">maybe</a>(any())</tt></p>
+<p> The content of a node of a tree ('undefined' means empty content).</p>
+
+<h3 class="typedecl"><a name="type-tree">tree()</a></h3>
+<p><b>abstract datatype</b>: <tt>tree(T)</tt></p>
+<p> A typed tree is polymorphic according to its node content?</p>
+
+<h3 class="typedecl"><a name="type-tree">tree()</a></h3>
+<p><b>abstract datatype</b>: <tt>tree()</tt></p>
+<p> Any tree is made of the content of its root and of any number of (ordered)
+ subtrees (children trees).</p>
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#append_child-2">append_child/2</a></td><td>Appends the specified child tree as first child of the specified tree.</td></tr>
+<tr><td valign="top"><a href="#append_children-2">append_children/2</a></td><td>Appends the specified child trees as first children of the specified
+ tree.</td></tr>
+<tr><td valign="top"><a href="#fold_breadth_first-3">fold_breadth_first/3</a></td><td>Folds specified function breadth-first onto the content of all nodes of 
+specified tree, and returns the corresponding result.</td></tr>
+<tr><td valign="top"><a href="#fold_depth_first-3">fold_depth_first/3</a></td><td>Folds specified function depth-first onto the content of all nodes of 
+specified tree, and returns the corresponding result.</td></tr>
+<tr><td valign="top"><a href="#height-1">height/1</a></td><td>Returns the height (maximum depth) of specified tree, ie the number of
+ edges on the longest downward path between the root and a leaf.</td></tr>
+<tr><td valign="top"><a href="#map-2">map/2</a></td><td>Maps specified function to the content of all nodes of specified tree.</td></tr>
+<tr><td valign="top"><a href="#new-0">new/0</a></td><td>Creates a new, single-node, empty, tree.</td></tr>
+<tr><td valign="top"><a href="#new-1">new/1</a></td><td>Creates a new tree with a single node containing specified content.</td></tr>
+<tr><td valign="top"><a href="#new-2">new/2</a></td><td>Creates a new tree with specified content and child trees.</td></tr>
+<tr><td valign="top"><a href="#set_content-2">set_content/2</a></td><td>Sets the content of specified node.</td></tr>
+<tr><td valign="top"><a href="#size-1">size/1</a></td><td>Returns the total number of nodes that specified tree contains.</td></tr>
+<tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td>Returns a textual description of specified tree.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="append_child-2">append_child/2</a></h3>
+<div class="spec">
+<p><tt>append_child(NewChildTree::<a href="#type-tree">tree()</a>, TargetTree::<a href="#type-tree">tree()</a>) -&gt; <a href="#type-tree">tree()</a></tt><br></p>
+<p> </p>
+</div><p>Appends the specified child tree as first child of the specified tree.</p>
+
+<h3 class="function"><a name="append_children-2">append_children/2</a></h3>
+<div class="spec">
+<p><tt>append_children(NewChildTrees::[<a href="#type-tree">tree()</a>], TargetTree::<a href="#type-tree">tree()</a>) -&gt; <a href="#type-tree">tree()</a></tt><br></p>
+<p> </p>
+</div><p>Appends the specified child trees as first children of the specified
+ tree.
+</p>
+
+<h3 class="function"><a name="fold_breadth_first-3">fold_breadth_first/3</a></h3>
+<div class="spec">
+<p><tt>fold_breadth_first(ContentFun::<a href="#type-content_fold_fun">content_fold_fun()</a>, InitialAcc::<a href="#type-accumulator">accumulator()</a>, Tree::<a href="#type-tree">tree()</a>) -&gt; <a href="#type-accumulator">accumulator()</a></tt><br></p>
+<p> </p>
+</div><p><p>Folds specified function breadth-first onto the content of all nodes of 
+specified tree, and returns the corresponding result.</p>
+
+ At a given height, siblings will be traversed from most recent to oldest
+ attached.
+</p>
+
+<h3 class="function"><a name="fold_depth_first-3">fold_depth_first/3</a></h3>
+<div class="spec">
+<p><tt>fold_depth_first(ContentFun::<a href="#type-content_fold_fun">content_fold_fun()</a>, InitialAcc::<a href="#type-accumulator">accumulator()</a>, Tree::<a href="#type-tree">tree()</a>) -&gt; <a href="#type-accumulator">accumulator()</a></tt><br></p>
+<p> </p>
+</div><p><p>Folds specified function depth-first onto the content of all nodes of 
+specified tree, and returns the corresponding result.</p>
+
+ In case of unbalanced trees, there is no guarantee that the deepest element is
+ examined first, as the first branch examined may not be the deepest.
+</p>
+
+<h3 class="function"><a name="height-1">height/1</a></h3>
+<div class="spec">
+<p><tt>height(Tree::<a href="#type-tree">tree()</a>) -&gt; <a href="#type-height">height()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the height (maximum depth) of specified tree, ie the number of
+ edges on the longest downward path between the root and a leaf.
+</p>
+
+<h3 class="function"><a name="map-2">map/2</a></h3>
+<div class="spec">
+<p><tt>map(Fun::fun((<a href="#type-node_content">node_content()</a>) -&gt; <a href="#type-node_content">node_content()</a>), Tree::<a href="#type-tree">tree()</a>) -&gt; <a href="#type-tree">tree()</a></tt><br></p>
+<p> </p>
+</div><p><p>Maps specified function to the content of all nodes of specified tree.</p>
+
+ Performs breadth-first mapping.
+</p>
+
+<h3 class="function"><a name="new-0">new/0</a></h3>
+<div class="spec">
+<p><tt>new() -&gt; <a href="#type-tree">tree()</a></tt><br></p>
+<p> </p>
+</div><p>Creates a new, single-node, empty, tree.</p>
+
+<h3 class="function"><a name="new-1">new/1</a></h3>
+<div class="spec">
+<p><tt>new(NodeContent::<a href="#type-node_content">node_content()</a>) -&gt; <a href="#type-tree">tree()</a></tt><br></p>
+<p> </p>
+</div><p>Creates a new tree with a single node containing specified content.</p>
+
+<h3 class="function"><a name="new-2">new/2</a></h3>
+<div class="spec">
+<p><tt>new(NodeContent::<a href="#type-node_content">node_content()</a>, Subtrees::[<a href="#type-tree">tree()</a>]) -&gt; <a href="#type-tree">tree()</a></tt><br></p>
+<p> </p>
+</div><p>Creates a new tree with specified content and child trees.</p>
+
+<h3 class="function"><a name="set_content-2">set_content/2</a></h3>
+<div class="spec">
+<p><tt>set_content(Content::<a href="#type-node_content">node_content()</a>, Tree::<a href="#type-tree">tree()</a>) -&gt; <a href="#type-tree">tree()</a></tt><br></p>
+<p> </p>
+</div><p>Sets the content of specified node.</p>
+
+<h3 class="function"><a name="size-1">size/1</a></h3>
+<div class="spec">
+<p><tt>size(Tree::<a href="#type-tree">tree()</a>) -&gt; <a href="basic_utils.html#type-count">basic_utils:count()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the total number of nodes that specified tree contains.
+</p>
+
+<h3 class="function"><a name="to_string-1">to_string/1</a></h3>
+<div class="spec">
+<p><tt>to_string(Tree::<a href="#type-tree">tree()</a>) -&gt; <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of specified tree.</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

@@ -1,0 +1,462 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module wooper_method_management</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module wooper_method_management</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Centralises, on behalf of the WOOPER parse transform, the support for
+ <b>method management</b>.
+
+
+<h2><a name="description">Description</a></h2>Centralises, on behalf of the WOOPER parse transform, the support for
+ <b>method management</b>.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-ast_body">ast_body()</a></h3>
+<p><tt>ast_body() = <a href="ast_clause.html#type-ast_body">ast_clause:ast_body()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-ast_case_clause">ast_case_clause()</a></h3>
+<p><tt>ast_case_clause() = <a href="ast_clause.html#type-ast_case_clause">ast_clause:ast_case_clause()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-ast_clause">ast_clause()</a></h3>
+<p><tt>ast_clause() = <a href="ast_clause.html#type-ast_clause">ast_clause:ast_clause()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-ast_expression">ast_expression()</a></h3>
+<p><tt>ast_expression() = <a href="ast_expression.html#type-ast_expression">ast_expression:ast_expression()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-ast_if_clause">ast_if_clause()</a></h3>
+<p><tt>ast_if_clause() = <a href="ast_clause.html#type-ast_if_clause">ast_clause:ast_if_clause()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-ast_transform_table">ast_transform_table()</a></h3>
+<p><tt>ast_transform_table() = <a href="ast_transform.html#type-ast_transform_table">ast_transform:ast_transform_table()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-ast_transforms">ast_transforms()</a></h3>
+<p><tt>ast_transforms() = <a href="ast_transform.html#type-ast_transforms">ast_transform:ast_transforms()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-classname">classname()</a></h3>
+<p><tt>classname() = <a href="wooper.html#type-classname">wooper:classname()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-clause_def">clause_def()</a></h3>
+<p><tt>clause_def() = <a href="meta_utils.html#type-clause_def">meta_utils:clause_def()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-compose_pair">compose_pair()</a></h3>
+<p><tt>compose_pair() = <a href="wooper_parse_transform.html#type-compose_pair">wooper_parse_transform:compose_pair()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-file_loc">file_loc()</a></h3>
+<p><tt>file_loc() = <a href="ast_base.html#type-file_loc">ast_base:file_loc()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-function_id">function_id()</a></h3>
+<p><tt>function_id() = <a href="meta_utils.html#type-function_id">meta_utils:function_id()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-function_info">function_info()</a></h3>
+<p><tt>function_info() = <a href="ast_info.html#type-function_info">ast_info:function_info()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-function_nature">function_nature()</a></h3>
+<p><tt>function_nature() = constructor | destructor | request | oneway | static | function | throw</tt></p>
+<p><p> The (WOOPER-level) nature of a given Erlang function.</p>
+
+ ('throw' designates a function whose all clauses throw an exception, and as
+ such may be temporarily not identified in terms of nature)</p>
+
+<h3 class="typedecl"><a name="type-function_table">function_table()</a></h3>
+<p><tt>function_table() = <a href="ast_info.html#type-function_table">ast_info:function_table()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-location">location()</a></h3>
+<p><tt>location() = <a href="ast_base.html#type-form_location">ast_base:form_location()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-marker_table">marker_table()</a></h3>
+<p><tt>marker_table() = <a href="ast_info.html#type-section_marker_table">ast_info:section_marker_table()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-method_qualifiers">method_qualifiers()</a></h3>
+<p><tt>method_qualifiers() = <a href="wooper.html#type-method_qualifiers">wooper:method_qualifiers()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-oneway_info">oneway_info()</a></h3>
+<p><tt>oneway_info() = <a href="wooper_info.html#type-oneway_info">wooper_info:oneway_info()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-oneway_table">oneway_table()</a></h3>
+<p><tt>oneway_table() = <a href="wooper_info.html#type-oneway_table">wooper_info:oneway_table()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-request_info">request_info()</a></h3>
+<p><tt>request_info() = <a href="wooper_info.html#type-request_info">wooper_info:request_info()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-request_table">request_table()</a></h3>
+<p><tt>request_table() = <a href="wooper_info.html#type-request_table">wooper_info:request_table()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-static_info">static_info()</a></h3>
+<p><tt>static_info() = <a href="wooper_info.html#type-static_info">wooper_info:static_info()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-static_table">static_table()</a></h3>
+<p><tt>static_table() = <a href="wooper_info.html#type-static_table">wooper_info:static_table()</a></tt></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#body_transformer-2">body_transformer/2</a></td><td>The standard body transformer, expected never to be called due to the
+ WOOPER-driven traversal of branching constructs.</td></tr>
+<tr><td valign="top"><a href="#call_transformer-4">call_transformer/4</a></td><td>Drives the AST transformation of a call: in charge of detecting the 
+method terminators and qualifiers, in a WOOPER context.</td></tr>
+<tr><td valign="top"><a href="#case_transformer-4">case_transformer/4</a></td><td>Drives the AST transformation of a 'case' construct.</td></tr>
+<tr><td valign="top"><a href="#catch_transformer-3">catch_transformer/3</a></td><td>Drives the AST transformation of a 'catch' construct.</td></tr>
+<tr><td valign="top"><a href="#check_clause_spec-5">check_clause_spec/5</a></td><td>Checks the specified method clause spec.</td></tr>
+<tr><td valign="top"><a href="#check_state_argument-3">check_state_argument/3</a></td><td>Checks that, in the specified clauses of specified function 
+(corresponding to a request or a oneway), the first parameter is 'State' 
+indeed.</td></tr>
+<tr><td valign="top"><a href="#clause_transformer-2">clause_transformer/2</a></td><td>Drives the AST transformation of a clause.</td></tr>
+<tr><td valign="top"><a href="#ensure_all_exported_in-2">ensure_all_exported_in/2</a></td><td>Ensures that all functions in specified function table are exported,
+ auto-exporting them if necessary.</td></tr>
+<tr><td valign="top"><a href="#ensure_exported-2">ensure_exported/2</a></td><td>Ensures that the specified information is exported, auto-exporting it if 
+necessary.</td></tr>
+<tr><td valign="top"><a href="#ensure_exported_at-2">ensure_exported_at/2</a></td><td>Ensures that the specified method is indeed to export, and does it.</td></tr>
+<tr><td valign="top"><a href="#format_log-2">format_log/2</a></td><td>Formats specified log, to help debugging.</td></tr>
+<tr><td valign="top"><a href="#function_nature_to_string-1">function_nature_to_string/1</a></td><td>Returns a textual description of the specified function nature.</td></tr>
+<tr><td valign="top"><a href="#function_to_oneway_info-2">function_to_oneway_info/2</a></td><td>Converts specified (Myriad-level) function information into a
+ (WOOPER-level) oneway information.</td></tr>
+<tr><td valign="top"><a href="#function_to_request_info-2">function_to_request_info/2</a></td><td>Converts specified (Myriad-level) function information into a
+ (WOOPER-level) request information.</td></tr>
+<tr><td valign="top"><a href="#function_to_static_info-2">function_to_static_info/2</a></td><td>Converts specified (Myriad-level) function information into a
+ (WOOPER-level) static information.</td></tr>
+<tr><td valign="top"><a href="#get_blank_transformation_state-0">get_blank_transformation_state/0</a></td><td>Returns a blank transformation state, based on the WOOPER exports.</td></tr>
+<tr><td valign="top"><a href="#get_blank_transformation_state-1">get_blank_transformation_state/1</a></td><td>Returns a suitable, blank transformation state, from specified export 
+set.</td></tr>
+<tr><td valign="top"><a href="#get_info_from_clause_spec-3">get_info_from_clause_spec/3</a></td><td>Returns a {FunctionNature, Qualifiers} pair deduced from specified clause
+ spec.</td></tr>
+<tr><td valign="top"><a href="#get_wooper_transform_table-0">get_wooper_transform_table/0</a></td><td>Returns the WOOPER-specific transform table.</td></tr>
+<tr><td valign="top"><a href="#if_transformer-3">if_transformer/3</a></td><td>Drives the AST transformation of a 'if' construct.</td></tr>
+<tr><td valign="top"><a href="#manage_methods-1">manage_methods/1</a></td><td>Extracts the methods found in the specified function table, transforms 
+them, and interprets that information to update the specified class 
+information.</td></tr>
+<tr><td valign="top"><a href="#methods_to_functions-5">methods_to_functions/5</a></td><td>Transforms the methods in the specified tables into functions, and adds
+ them in specified function table.</td></tr>
+<tr><td valign="top"><a href="#oneway_to_function_info-2">oneway_to_function_info/2</a></td><td>Converts specified (WOOPER-level) oneway information into a
+ (Myriad-level) function information.</td></tr>
+<tr><td valign="top"><a href="#raise_no_implementation_error-6">raise_no_implementation_error/6</a></td><td>Tries to locate among specified function entries and tables any 
+implementation of the specified function with any (different) arity, and 
+raises an appropriate exception.</td></tr>
+<tr><td valign="top"><a href="#receive_with_after_transformer-5">receive_with_after_transformer/5</a></td><td>Drives the AST transformation of a 'receive_with_after' construct.</td></tr>
+<tr><td valign="top"><a href="#request_to_function_info-2">request_to_function_info/2</a></td><td>Converts specified (WOOPER-level) request information into a
+ (Myriad-level) function information.</td></tr>
+<tr><td valign="top"><a href="#simple_receive_transformer-3">simple_receive_transformer/3</a></td><td>Drives the AST transformation of a 'simple_receive' construct.</td></tr>
+<tr><td valign="top"><a href="#static_to_function_info-2">static_to_function_info/2</a></td><td>Converts specified (WOOPER-level) static information into a
+ (Myriad-level) function information.</td></tr>
+<tr><td valign="top"><a href="#take_spec_into_account-6">take_spec_into_account/6</a></td><td>Checks that the method spec (if any) corresponds indeed to the right 
+nature of function, that is relies on the right method terminators with the 
+right qualifiers, and returns a corresponding pair.</td></tr>
+<tr><td valign="top"><a href="#try_transformer-6">try_transformer/6</a></td><td>Drives the AST transformation of a 'try' construct.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="body_transformer-2">body_transformer/2</a></h3>
+<div class="spec">
+<p><tt>body_transformer(Body::<a href="#type-ast_body">ast_body()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="#type-ast_body">ast_body()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
+<p> </p>
+</div><p>The standard body transformer, expected never to be called due to the
+ WOOPER-driven traversal of branching constructs.
+</p>
+
+<h3 class="function"><a name="call_transformer-4">call_transformer/4</a></h3>
+<div class="spec">
+<p><tt>call_transformer(FileLocCall::<a href="#type-file_loc">file_loc()</a>, FunctionRef::<a href="ast_expression.html#type-function_ref_expression">ast_expression:function_ref_expression()</a>, Params::<a href="ast_expression.html#type-params_expression">ast_expression:params_expression()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {[<a href="ast_expression.html#type-ast_expression">ast_expression:ast_expression()</a>], <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Drives the AST transformation of a call: in charge of detecting the 
+method terminators and qualifiers, in a WOOPER context.</p>
+
+ <p>Only the top-level call is of interest here (no need to recurse to hunt for 
+method terminators).</p>
+
+ (anonymous mute variables correspond to line numbers)
+</p>
+
+<h3 class="function"><a name="case_transformer-4">case_transformer/4</a></h3>
+<div class="spec">
+<p><tt>case_transformer(FileLoc::<a href="#type-file_loc">file_loc()</a>, TestExpression::<a href="#type-ast_expression">ast_expression()</a>, CaseClauses::[<a href="#type-ast_case_clause">ast_case_clause()</a>], Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {[<a href="#type-ast_expression">ast_expression()</a>], <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Drives the AST transformation of a 'case' construct.</p>
+
+ (see ast_expression:transform_case/4)
+</p>
+
+<h3 class="function"><a name="catch_transformer-3">catch_transformer/3</a></h3>
+<div class="spec">
+<p><tt>catch_transformer(FileLoc::<a href="#type-file_loc">file_loc()</a>, Expression::<a href="#type-ast_expression">ast_expression()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {[<a href="#type-ast_expression">ast_expression()</a>], <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Drives the AST transformation of a 'catch' construct.</p>
+
+ Not: for catch as an expression, not as a component of try.
+</p>
+
+<h3 class="function"><a name="check_clause_spec-5">check_clause_spec/5</a></h3>
+<div class="spec">
+<p><tt>check_clause_spec(UnexpectedTypeForm, FunNature, Qualifiers, FunId, Classname) -&gt; any()</tt></p>
+<p> </p>
+</div><p><p>Checks the specified method clause spec.</p>
+
+ (helper)</p>
+
+<h3 class="function"><a name="check_state_argument-3">check_state_argument/3</a></h3>
+<div class="spec">
+<p><tt>check_state_argument(Clauses::[<a href="#type-clause_def">clause_def()</a>], FunId::<a href="#type-function_id">function_id()</a>, Classname::<a href="#type-classname">classname()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Checks that, in the specified clauses of specified function 
+(corresponding to a request or a oneway), the first parameter is 'State' 
+indeed.</p>
+
+ Note: enforces a very welcome convention, but also complies with the
+ expression that the support for example of const_return_result/1 introduces
+ (ex: {var, FileLocCall, 'State'} added in the AST, hence the enforced variable
+ name).
+</p>
+
+<h3 class="function"><a name="clause_transformer-2">clause_transformer/2</a></h3>
+<div class="spec">
+<p><tt>clause_transformer(Clause::<a href="#type-ast_clause">ast_clause()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="#type-ast_clause">ast_clause()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Drives the AST transformation of a clause.</p>
+
+ <p>For any clause, we are to transform here, for WOOPER, only the last expression 
+(not the preceding ones) of the body (hence not touching parameters or 
+guards).</p>
+
+ The goal is to feed the call-transformer only with relevant expressions.
+</p>
+
+<h3 class="function"><a name="ensure_all_exported_in-2">ensure_all_exported_in/2</a></h3>
+<div class="spec">
+<p><tt>ensure_all_exported_in(FunctionTable::<a href="#type-function_table">function_table()</a>, ExportLoc::<a href="#type-location">location()</a>) -&gt; <a href="#type-function_table">function_table()</a></tt><br></p>
+<p> </p>
+</div><p>Ensures that all functions in specified function table are exported,
+ auto-exporting them if necessary.
+</p>
+
+<h3 class="function"><a name="ensure_exported-2">ensure_exported/2</a></h3>
+<div class="spec">
+<p><tt>ensure_exported(FunInfo::<a href="#type-function_info">function_info()</a>, MarkerTable::<a href="#type-marker_table">marker_table()</a>) -&gt; <a href="#type-function_info">function_info()</a></tt><br></p>
+<p> </p>
+</div><p><p>Ensures that the specified information is exported, auto-exporting it if 
+necessary.</p>
+
+ See also: ast_info:ensure_function_exported/4.
+</p>
+
+<h3 class="function"><a name="ensure_exported_at-2">ensure_exported_at/2</a></h3>
+<div class="spec">
+<p><tt>ensure_exported_at(FunInfo, ExportLoc) -&gt; any()</tt></p>
+<p> </p>
+</div><p>Ensures that the specified method is indeed to export, and does it.</p>
+
+<h3 class="function"><a name="format_log-2">format_log/2</a></h3>
+<div class="spec">
+<p><tt>format_log(FormatString, Other) -&gt; any()</tt></p>
+<p> </p>
+</div><p>Formats specified log, to help debugging.</p>
+
+<h3 class="function"><a name="function_nature_to_string-1">function_nature_to_string/1</a></h3>
+<div class="spec">
+<p><tt>function_nature_to_string(Other::<a href="#type-maybe">maybe</a>(<a href="#type-function_nature">function_nature()</a>)) -&gt; <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of the specified function nature.</p>
+
+<h3 class="function"><a name="function_to_oneway_info-2">function_to_oneway_info/2</a></h3>
+<div class="spec">
+<p><tt>function_to_oneway_info(Function_info::<a href="#type-function_info">function_info()</a>, Qualifiers::<a href="#type-method_qualifiers">method_qualifiers()</a>) -&gt; <a href="#type-oneway_info">oneway_info()</a></tt><br></p>
+<p> </p>
+</div><p>Converts specified (Myriad-level) function information into a
+ (WOOPER-level) oneway information.
+</p>
+
+<h3 class="function"><a name="function_to_request_info-2">function_to_request_info/2</a></h3>
+<div class="spec">
+<p><tt>function_to_request_info(Function_info::<a href="#type-function_info">function_info()</a>, Qualifiers::<a href="#type-method_qualifiers">method_qualifiers()</a>) -&gt; <a href="#type-request_info">request_info()</a></tt><br></p>
+<p> </p>
+</div><p>Converts specified (Myriad-level) function information into a
+ (WOOPER-level) request information.
+</p>
+
+<h3 class="function"><a name="function_to_static_info-2">function_to_static_info/2</a></h3>
+<div class="spec">
+<p><tt>function_to_static_info(Function_info::<a href="#type-function_info">function_info()</a>, Qualifiers::<a href="#type-method_qualifiers">method_qualifiers()</a>) -&gt; <a href="#type-static_info">static_info()</a></tt><br></p>
+<p> </p>
+</div><p>Converts specified (Myriad-level) function information into a
+ (WOOPER-level) static information.
+</p>
+
+<h3 class="function"><a name="get_blank_transformation_state-0">get_blank_transformation_state/0</a></h3>
+<div class="spec">
+<p><tt>get_blank_transformation_state() -&gt; any()</tt></p>
+<p> </p>
+</div><p><p>Returns a blank transformation state, based on the WOOPER exports.</p>
+
+ Defined to be safely reused from various locations.
+</p>
+
+<h3 class="function"><a name="get_blank_transformation_state-1">get_blank_transformation_state/1</a></h3>
+<div class="spec">
+<p><tt>get_blank_transformation_state(ExportSet) -&gt; any()</tt></p>
+<p> </p>
+</div><p><p>Returns a suitable, blank transformation state, from specified export 
+set.</p>
+
+ Defined to be safely reused from various locations.
+</p>
+
+<h3 class="function"><a name="get_info_from_clause_spec-3">get_info_from_clause_spec/3</a></h3>
+<div class="spec">
+<p><tt>get_info_from_clause_spec(ClauseSpec, FunId, Classname) -&gt; any()</tt></p>
+<p> </p>
+</div><p>Returns a {FunctionNature, Qualifiers} pair deduced from specified clause
+ spec.
+</p>
+
+<h3 class="function"><a name="get_wooper_transform_table-0">get_wooper_transform_table/0</a></h3>
+<div class="spec">
+<p><tt>get_wooper_transform_table() -&gt; <a href="#type-ast_transform_table">ast_transform_table()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the WOOPER-specific transform table.</p>
+
+<h3 class="function"><a name="if_transformer-3">if_transformer/3</a></h3>
+<div class="spec">
+<p><tt>if_transformer(FileLoc::<a href="#type-file_loc">file_loc()</a>, IfClauses::[<a href="#type-ast_if_clause">ast_if_clause()</a>], Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {[<a href="#type-ast_expression">ast_expression()</a>], <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Drives the AST transformation of a 'if' construct.</p>
+
+ (see ast_expression:transform_if/3)
+</p>
+
+<h3 class="function"><a name="manage_methods-1">manage_methods/1</a></h3>
+<div class="spec">
+<p><tt>manage_methods(X1::<a href="#type-compose_pair">compose_pair()</a>) -&gt; <a href="#type-compose_pair">compose_pair()</a></tt><br></p>
+<p> </p>
+</div><p><p>Extracts the methods found in the specified function table, transforms 
+them, and interprets that information to update the specified class 
+information.</p>
+
+ Returns an updated pair thereof.
+</p>
+
+<h3 class="function"><a name="methods_to_functions-5">methods_to_functions/5</a></h3>
+<div class="spec">
+<p><tt>methods_to_functions(RequestTable::<a href="#type-request_table">request_table()</a>, OnewayTable::<a href="#type-oneway_table">oneway_table()</a>, StaticTable::<a href="#type-static_table">static_table()</a>, InitFunctionTable::<a href="#type-function_table">function_table()</a>, MarkerTable::<a href="#type-marker_table">marker_table()</a>) -&gt; <a href="#type-function_table">function_table()</a></tt><br></p>
+<p> </p>
+</div><p>Transforms the methods in the specified tables into functions, and adds
+ them in specified function table.
+</p>
+
+<h3 class="function"><a name="oneway_to_function_info-2">oneway_to_function_info/2</a></h3>
+<div class="spec">
+<p><tt>oneway_to_function_info(Oneway_info::<a href="#type-oneway_info">oneway_info()</a>, Location::<a href="#type-location">location()</a>) -&gt; <a href="#type-function_info">function_info()</a></tt><br></p>
+<p> </p>
+</div><p>Converts specified (WOOPER-level) oneway information into a
+ (Myriad-level) function information.
+</p>
+
+<h3 class="function"><a name="raise_no_implementation_error-6">raise_no_implementation_error/6</a></h3>
+<div class="spec">
+<p><tt>raise_no_implementation_error(Classname, FName, FArity, MaybeFileLoc, FunctionEntries, Tables) -&gt; any()</tt></p>
+<p> </p>
+</div><p><p>Tries to locate among specified function entries and tables any 
+implementation of the specified function with any (different) arity, and 
+raises an appropriate exception.</p>
+
+ (helper, defined for reuse by upper layers)
+</p>
+
+<h3 class="function"><a name="receive_with_after_transformer-5">receive_with_after_transformer/5</a></h3>
+<div class="spec">
+<p><tt>receive_with_after_transformer(FileLoc::<a href="#type-file_loc">file_loc()</a>, ReceiveClauses::[<a href="#type-ast_case_clause">ast_case_clause()</a>], AfterTest::<a href="#type-ast_expression">ast_expression()</a>, AfterBody::<a href="#type-ast_body">ast_body()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {[<a href="#type-ast_expression">ast_expression()</a>], <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Drives the AST transformation of a 'receive_with_after' construct.</p>
+
+ (see ast_expression:transform_receive_with_after/5)
+</p>
+
+<h3 class="function"><a name="request_to_function_info-2">request_to_function_info/2</a></h3>
+<div class="spec">
+<p><tt>request_to_function_info(Request_info::<a href="#type-request_info">request_info()</a>, Location::<a href="#type-location">location()</a>) -&gt; <a href="#type-function_info">function_info()</a></tt><br></p>
+<p> </p>
+</div><p>Converts specified (WOOPER-level) request information into a
+ (Myriad-level) function information.
+</p>
+
+<h3 class="function"><a name="simple_receive_transformer-3">simple_receive_transformer/3</a></h3>
+<div class="spec">
+<p><tt>simple_receive_transformer(FileLoc::<a href="#type-file_loc">file_loc()</a>, ReceiveClauses::[<a href="#type-ast_case_clause">ast_case_clause()</a>], Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {[<a href="#type-ast_expression">ast_expression()</a>], <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Drives the AST transformation of a 'simple_receive' construct.</p>
+
+ (see ast_expression:transform_simple_receive/3)
+</p>
+
+<h3 class="function"><a name="static_to_function_info-2">static_to_function_info/2</a></h3>
+<div class="spec">
+<p><tt>static_to_function_info(Static_info::<a href="#type-static_info">static_info()</a>, Location::<a href="#type-location">location()</a>) -&gt; <a href="#type-function_info">function_info()</a></tt><br></p>
+<p> </p>
+</div><p>Converts specified (WOOPER-level) static information into a
+ (Myriad-level) function information.
+</p>
+
+<h3 class="function"><a name="take_spec_into_account-6">take_spec_into_account/6</a></h3>
+<div class="spec">
+<p><tt>take_spec_into_account(LocSpec::<a href="#type-maybe">maybe</a>(<a href="ast_info.html#type-located_form">ast_info:located_form()</a>), FunId::<a href="#type-function_id">function_id()</a>, FunNature::<a href="#type-function_nature">function_nature()</a>, Qualifiers::<a href="#type-method_qualifiers">method_qualifiers()</a>, Classname::<a href="#type-classname">classname()</a>, FunInfo::<a href="#type-function_info">function_info()</a>) -&gt; {<a href="#type-function_nature">function_nature()</a>, <a href="#type-method_qualifiers">method_qualifiers()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Checks that the method spec (if any) corresponds indeed to the right 
+nature of function, that is relies on the right method terminators with the 
+right qualifiers, and returns a corresponding pair.</p>
+
+ (helper)
+</p>
+
+<h3 class="function"><a name="try_transformer-6">try_transformer/6</a></h3>
+<div class="spec">
+<p><tt>try_transformer(FileLoc::<a href="#type-file_loc">file_loc()</a>, TryBody::<a href="#type-ast_body">ast_body()</a>, TryClauses::[<a href="#type-ast_case_clause">ast_case_clause()</a>], CatchClauses::[<a href="#type-ast_case_clause">ast_case_clause()</a>], AfterBody::<a href="#type-ast_body">ast_body()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {[<a href="#type-ast_expression">ast_expression()</a>], <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Drives the AST transformation of a 'try' construct.</p>
+
+ <p>Actually it is rather tricky, as a try, in terms of return value, can have 3 
+different forms (cf. http://erlang.org/doc/reference_manual/expressions.html):</p>
+
+ <p>(1) try EXPR catch (CATCH_PATTERN_1 -&gt; BODY_1), (CATCH_PATTERN_2 -&gt; BODY_2)</p>
+
+ <p>(2) try EXPR of (PATTERN_1 -&gt; BODY_1), (PATTERN_2 -&gt; BODY_2) catch 
+(CATCH_PATTERN_A -&gt; BODY_A), (CATCH_PATTERN_B -&gt; BODY_B),...</p>
+
+ <p>(3) like (2), with an additional AFTER_BODY, whose value is lost</p>
+
+ <p>So, here, for (1) EXPR is a possible return value, whereas not for (2) and 
+(3), and we have to discriminate among these cases.</p>
+
+ (see also ast_expression:transform_try/6)
+</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

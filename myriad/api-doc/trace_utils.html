@@ -1,0 +1,485 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module trace_utils</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module trace_utils</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various very <b>low-level trace-related facilities</b> on 
+the console.
+
+
+<h2><a name="description">Description</a></h2><p>Gathering of various very <b>low-level trace-related facilities</b> on 
+the console. These are (runtime) logs; they are not related to the Erlang 
+tracing subsystem.</p>
+
+ <p>The API functions provided by the current module are mostly useful so that 
+their call can be replaced by calls to the far more advanced facilities of the 
+'Ceylan-Traces' layer with no change in their parameters.</p>
+
+ <p>For example, 'trace_utils:debug_fmt("I am the ~B.", [1])' may be replaced by 
+'?debug_fmt("I am the ~B.", [1])' to switch, in a trace emitter instance, from 
+basic traces output on the console to traces sent through the Traces 
+subsystem.</p>
+
+ <p>As a result, for a trace severity S in [debug, info, notice, warning, error, 
+critical, alert, emergency, void], 'trace_utils:S' may be replaced as a whole 
+by '?S' to promote a very debug-oriented trace into a potentially more durable 
+one.</p>
+
+ <p>Note that a given trace emission can be fully disabled (with no remaining 
+resource consumption at all) thanks to the cond_utils:if_defined* primitives.</p>
+
+ <p>This module is also a logger one, see
+ <a href="https://erlang.org/doc/apps/kernel/logger_chapter.html" target="_top"><tt>https://erlang.org/doc/apps/kernel/logger_chapter.html</tt></a>.</p>
+
+ See trace_utils_test.erl for testing.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-trace_format">trace_format()</a></h3>
+<p><tt>trace_format() = <a href="text_utils.html#type-format_string">text_utils:format_string()</a></tt></p>
+<p> A format with quantifiers (such as ~p).</p>
+
+<h3 class="typedecl"><a name="type-trace_message">trace_message()</a></h3>
+<p><tt>trace_message() = <a href="#type-ustring">ustring()</a></tt></p>
+<p> An actual trace message.</p>
+
+<h3 class="typedecl"><a name="type-trace_message_categorization">trace_message_categorization()</a></h3>
+<p><tt>trace_message_categorization() = <a href="#type-ustring">ustring()</a></tt></p>
+<p> Categorization of a trace message.</p>
+
+<h3 class="typedecl"><a name="type-trace_priority">trace_priority()</a></h3>
+<p><tt>trace_priority() = 0..7</tt></p>
+<p> Not including the 'void' severity here.</p>
+
+<h3 class="typedecl"><a name="type-trace_severity">trace_severity()</a></h3>
+<p><tt>trace_severity() = debug | info | notice | warning | error | critical | alert | emergency | void</tt></p>
+
+
+<h3 class="typedecl"><a name="type-trace_timestamp">trace_timestamp()</a></h3>
+<p><tt>trace_timestamp() = any()</tt></p>
+<p> An applicative timestamp for a trace; it can be anything (ex: integer() |
+ 'none'), no constraint applies on purpose, so that any kind of
+ application-specific timestamps can be elected.</p>
+
+<h3 class="typedecl"><a name="type-trace_values">trace_values()</a></h3>
+<p><tt>trace_values() = <a href="text_utils.html#type-format_values">text_utils:format_values()</a></tt></p>
+<p> Values corresponding to format quantifiers.</p>
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add_handler-0">add_handler/0</a></td><td>Registers this Myriad logger handler as an additional one (not replacing
+ the default one).</td></tr>
+<tr><td valign="top"><a href="#alert-1">alert/1</a></td><td>Outputs specified alert message.</td></tr>
+<tr><td valign="top"><a href="#alert_categorized-2">alert_categorized/2</a></td><td>Outputs specified alert message, with specified message categorization.</td></tr>
+<tr><td valign="top"><a href="#alert_categorized_timed-3">alert_categorized_timed/3</a></td><td>Outputs specified alert message, with specified message categorization
+ and time information.</td></tr>
+<tr><td valign="top"><a href="#alert_fmt-2">alert_fmt/2</a></td><td>Outputs specified formatted alert message.</td></tr>
+<tr><td valign="top"><a href="#critical-1">critical/1</a></td><td>Outputs specified critical message.</td></tr>
+<tr><td valign="top"><a href="#critical_categorized-2">critical_categorized/2</a></td><td>Outputs specified critical message, with specified message
+ categorization.</td></tr>
+<tr><td valign="top"><a href="#critical_categorized_timed-3">critical_categorized_timed/3</a></td><td>Outputs specified critical message, with specified message categorization
+ and time information.</td></tr>
+<tr><td valign="top"><a href="#critical_fmt-2">critical_fmt/2</a></td><td>Outputs specified formatted critical message.</td></tr>
+<tr><td valign="top"><a href="#debug-1">debug/1</a></td><td>Outputs specified debug message.</td></tr>
+<tr><td valign="top"><a href="#debug_categorized-2">debug_categorized/2</a></td><td>Outputs specified debug message, with specified message categorization.</td></tr>
+<tr><td valign="top"><a href="#debug_categorized_timed-3">debug_categorized_timed/3</a></td><td>Outputs specified debug message, with specified message categorization
+ and time information.</td></tr>
+<tr><td valign="top"><a href="#debug_fmt-2">debug_fmt/2</a></td><td>Outputs specified formatted debug message.</td></tr>
+<tr><td valign="top"><a href="#echo-2">echo/2</a></td><td>Echoes specified trace in specified trace channel.</td></tr>
+<tr><td valign="top"><a href="#echo-3">echo/3</a></td><td>Echoes specified trace in the specified trace severity channel, for 
+specified message categorization.</td></tr>
+<tr><td valign="top"><a href="#echo-4">echo/4</a></td><td>Echoes specified trace in specified trace channel, for specified message 
+categorization and timestamp.</td></tr>
+<tr><td valign="top"><a href="#emergency-1">emergency/1</a></td><td>Outputs specified emergency message.</td></tr>
+<tr><td valign="top"><a href="#emergency_categorized-2">emergency_categorized/2</a></td><td>Outputs specified emergency message, with specified message
+ categorization.</td></tr>
+<tr><td valign="top"><a href="#emergency_categorized_timed-3">emergency_categorized_timed/3</a></td><td>Outputs specified emergency message, with specified message
+ categorization and time information.</td></tr>
+<tr><td valign="top"><a href="#emergency_fmt-2">emergency_fmt/2</a></td><td>Outputs specified formatted emergency message.</td></tr>
+<tr><td valign="top"><a href="#error-1">error/1</a></td><td>Outputs specified error message.</td></tr>
+<tr><td valign="top"><a href="#error_categorized-2">error_categorized/2</a></td><td>Outputs specified error message, with specified message categorization.</td></tr>
+<tr><td valign="top"><a href="#error_categorized_timed-3">error_categorized_timed/3</a></td><td>Outputs specified error message, with specified message categorization
+ and time information.</td></tr>
+<tr><td valign="top"><a href="#error_fmt-2">error_fmt/2</a></td><td>Outputs specified formatted error message.</td></tr>
+<tr><td valign="top"><a href="#get_priority_for-1">get_priority_for/1</a></td><td>Returns the (numerical) priority associated to specified trace severity 
+(that is emergency, alert, etc.).</td></tr>
+<tr><td valign="top"><a href="#get_severity_for-1">get_severity_for/1</a></td><td>Returns the trace severity (that is emergency, error, etc.) associated to 
+specified (numerical) severity (which corresponds also to a log level, in 
+terms of the newer standard logger).</td></tr>
+<tr><td valign="top"><a href="#info-1">info/1</a></td><td>Outputs specified info message.</td></tr>
+<tr><td valign="top"><a href="#info_categorized-2">info_categorized/2</a></td><td>Outputs specified info message, with specified message categorization.</td></tr>
+<tr><td valign="top"><a href="#info_categorized_timed-3">info_categorized_timed/3</a></td><td>Outputs specified info message, with specified message categorization and
+ time information.</td></tr>
+<tr><td valign="top"><a href="#info_fmt-2">info_fmt/2</a></td><td>Outputs specified formatted info message.</td></tr>
+<tr><td valign="top"><a href="#is_error_like-1">is_error_like/1</a></td><td>Tells whether specified severity belongs to the error-like ones
+ (typically the ones that must never be missed).</td></tr>
+<tr><td valign="top"><a href="#log-2">log/2</a></td><td>Mandatory callback for log handlers.</td></tr>
+<tr><td valign="top"><a href="#notice-1">notice/1</a></td><td>Outputs specified notice message.</td></tr>
+<tr><td valign="top"><a href="#notice_categorized-2">notice_categorized/2</a></td><td>Outputs specified notice message, with specified message categorization.</td></tr>
+<tr><td valign="top"><a href="#notice_categorized_timed-3">notice_categorized_timed/3</a></td><td>Outputs specified notice message, with specified message categorization
+ and time information.</td></tr>
+<tr><td valign="top"><a href="#notice_fmt-2">notice_fmt/2</a></td><td>Outputs specified formatted notice message.</td></tr>
+<tr><td valign="top"><a href="#set_handler-0">set_handler/0</a></td><td>Replaces the current (probably default) logger handler with this Myriad
+ one (registered as 'default').</td></tr>
+<tr><td valign="top"><a href="#void-1">void/1</a></td><td>"Outputs" specified void message.</td></tr>
+<tr><td valign="top"><a href="#void_categorized-2">void_categorized/2</a></td><td>"Outputs" specified void message, with specified message categorization.</td></tr>
+<tr><td valign="top"><a href="#void_categorized_timed-3">void_categorized_timed/3</a></td><td>"Outputs" specified void message, with specified message categorization
+ and time information.</td></tr>
+<tr><td valign="top"><a href="#void_fmt-2">void_fmt/2</a></td><td>"Outputs" specified formatted void message.</td></tr>
+<tr><td valign="top"><a href="#warning-1">warning/1</a></td><td>Outputs specified warning message.</td></tr>
+<tr><td valign="top"><a href="#warning_categorized-2">warning_categorized/2</a></td><td>Outputs specified warning message, with specified message categorization.</td></tr>
+<tr><td valign="top"><a href="#warning_categorized_timed-3">warning_categorized_timed/3</a></td><td>Outputs specified warning message, with specified message categorization
+ and time information.</td></tr>
+<tr><td valign="top"><a href="#warning_fmt-2">warning_fmt/2</a></td><td>Outputs specified formatted warning message.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="add_handler-0">add_handler/0</a></h3>
+<div class="spec">
+<p><tt>add_handler() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Registers this Myriad logger handler as an additional one (not replacing
+ the default one).
+</p>
+
+<h3 class="function"><a name="alert-1">alert/1</a></h3>
+<div class="spec">
+<p><tt>alert(Message::<a href="#type-trace_message">trace_message()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified alert message.</p>
+
+<h3 class="function"><a name="alert_categorized-2">alert_categorized/2</a></h3>
+<div class="spec">
+<p><tt>alert_categorized(Message::<a href="#type-trace_message">trace_message()</a>, MessageCategorization::<a href="#type-trace_message_categorization">trace_message_categorization()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified alert message, with specified message categorization.</p>
+
+<h3 class="function"><a name="alert_categorized_timed-3">alert_categorized_timed/3</a></h3>
+<div class="spec">
+<p><tt>alert_categorized_timed(Message::<a href="#type-trace_message">trace_message()</a>, MessageCategorization::<a href="#type-trace_message_categorization">trace_message_categorization()</a>, Timestamp::<a href="#type-trace_timestamp">trace_timestamp()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified alert message, with specified message categorization
+ and time information.
+</p>
+
+<h3 class="function"><a name="alert_fmt-2">alert_fmt/2</a></h3>
+<div class="spec">
+<p><tt>alert_fmt(Format::<a href="#type-trace_format">trace_format()</a>, Values::<a href="#type-trace_values">trace_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified formatted alert message.</p>
+
+<h3 class="function"><a name="critical-1">critical/1</a></h3>
+<div class="spec">
+<p><tt>critical(Message::<a href="#type-trace_message">trace_message()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified critical message.</p>
+
+<h3 class="function"><a name="critical_categorized-2">critical_categorized/2</a></h3>
+<div class="spec">
+<p><tt>critical_categorized(Message::<a href="#type-trace_message">trace_message()</a>, MessageCategorization::<a href="#type-trace_message_categorization">trace_message_categorization()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified critical message, with specified message
+ categorization.
+</p>
+
+<h3 class="function"><a name="critical_categorized_timed-3">critical_categorized_timed/3</a></h3>
+<div class="spec">
+<p><tt>critical_categorized_timed(Message::<a href="#type-trace_message">trace_message()</a>, MessageCategorization::<a href="#type-trace_message_categorization">trace_message_categorization()</a>, Timestamp::<a href="#type-trace_timestamp">trace_timestamp()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified critical message, with specified message categorization
+ and time information.
+</p>
+
+<h3 class="function"><a name="critical_fmt-2">critical_fmt/2</a></h3>
+<div class="spec">
+<p><tt>critical_fmt(Format::<a href="#type-trace_format">trace_format()</a>, Values::<a href="#type-trace_values">trace_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified formatted critical message.</p>
+
+<h3 class="function"><a name="debug-1">debug/1</a></h3>
+<div class="spec">
+<p><tt>debug(Message::<a href="#type-trace_message">trace_message()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified debug message.</p>
+
+<h3 class="function"><a name="debug_categorized-2">debug_categorized/2</a></h3>
+<div class="spec">
+<p><tt>debug_categorized(Message::<a href="#type-trace_message">trace_message()</a>, MessageCategorization::<a href="#type-trace_message_categorization">trace_message_categorization()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified debug message, with specified message categorization.</p>
+
+<h3 class="function"><a name="debug_categorized_timed-3">debug_categorized_timed/3</a></h3>
+<div class="spec">
+<p><tt>debug_categorized_timed(Message::<a href="#type-trace_message">trace_message()</a>, MessageCategorization::<a href="#type-trace_message_categorization">trace_message_categorization()</a>, Timestamp::<a href="#type-trace_timestamp">trace_timestamp()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified debug message, with specified message categorization
+ and time information.
+</p>
+
+<h3 class="function"><a name="debug_fmt-2">debug_fmt/2</a></h3>
+<div class="spec">
+<p><tt>debug_fmt(Format::<a href="#type-trace_format">trace_format()</a>, Values::<a href="#type-trace_values">trace_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified formatted debug message.</p>
+
+<h3 class="function"><a name="echo-2">echo/2</a></h3>
+<div class="spec">
+<p><tt>echo(TraceMessage::<a href="#type-trace_message">trace_message()</a>, TraceSeverity::<a href="#type-trace_severity">trace_severity()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Echoes specified trace in specified trace channel.</p>
+
+ Defined notably to perform integrated operations (a trace being sent through
+ both a basic system and a more advanced one), in order that the trace macros
+ of upper layers (ex: send_alert_fmt/3, in the Traces layer) do not need to
+ bind variables in their body (which may trigger bad matches as soon as more
+ than once trace is sent in the same scope).
+</p>
+
+<h3 class="function"><a name="echo-3">echo/3</a></h3>
+<div class="spec">
+<p><tt>echo(TraceMessage::<a href="#type-trace_message">trace_message()</a>, TraceSeverity::<a href="#type-trace_severity">trace_severity()</a>, MessageCategorization::<a href="#type-trace_message_categorization">trace_message_categorization()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Echoes specified trace in the specified trace severity channel, for 
+specified message categorization.</p>
+
+ Defined notably to perform integrated operations (a trace being sent through
+ both a basic system and a more advanced one), in order that the trace macros
+ of upper layers (ex: send_alert_fmt/3, in the Traces layer) do not need to
+ bind variables in their body (which may trigger bad matches as soon as more
+ than once trace is sent in the same scope).
+</p>
+
+<h3 class="function"><a name="echo-4">echo/4</a></h3>
+<div class="spec">
+<p><tt>echo(TraceMessage::<a href="#type-trace_message">trace_message()</a>, TraceSeverity::<a href="#type-trace_severity">trace_severity()</a>, MessageCategorization::<a href="#type-trace_message_categorization">trace_message_categorization()</a>, Timestamp::<a href="#type-trace_timestamp">trace_timestamp()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Echoes specified trace in specified trace channel, for specified message 
+categorization and timestamp.</p>
+
+ Defined notably to perform integrated operations (a trace being sent through
+ both a basic system and a more advanced one), in order that the trace macros
+ of upper layers (ex: send_alert_fmt/3, in the Traces layer) do not need to
+ bind variables in their body (which may trigger bad matches as soon as more
+ than once trace is sent in the same scope).
+</p>
+
+<h3 class="function"><a name="emergency-1">emergency/1</a></h3>
+<div class="spec">
+<p><tt>emergency(Message::<a href="#type-trace_message">trace_message()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified emergency message.</p>
+
+<h3 class="function"><a name="emergency_categorized-2">emergency_categorized/2</a></h3>
+<div class="spec">
+<p><tt>emergency_categorized(Message::<a href="#type-trace_message">trace_message()</a>, MessageCategorization::<a href="#type-trace_message_categorization">trace_message_categorization()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified emergency message, with specified message
+ categorization.
+</p>
+
+<h3 class="function"><a name="emergency_categorized_timed-3">emergency_categorized_timed/3</a></h3>
+<div class="spec">
+<p><tt>emergency_categorized_timed(Message::<a href="#type-trace_message">trace_message()</a>, MessageCategorization::<a href="#type-trace_message_categorization">trace_message_categorization()</a>, Timestamp::<a href="#type-trace_timestamp">trace_timestamp()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified emergency message, with specified message
+ categorization and time information.
+</p>
+
+<h3 class="function"><a name="emergency_fmt-2">emergency_fmt/2</a></h3>
+<div class="spec">
+<p><tt>emergency_fmt(Format::<a href="#type-trace_format">trace_format()</a>, Values::<a href="#type-trace_values">trace_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified formatted emergency message.</p>
+
+<h3 class="function"><a name="error-1">error/1</a></h3>
+<div class="spec">
+<p><tt>error(Message::<a href="#type-trace_message">trace_message()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified error message.</p>
+
+<h3 class="function"><a name="error_categorized-2">error_categorized/2</a></h3>
+<div class="spec">
+<p><tt>error_categorized(Message::<a href="#type-trace_message">trace_message()</a>, MessageCategorization::<a href="#type-trace_message_categorization">trace_message_categorization()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified error message, with specified message categorization.</p>
+
+<h3 class="function"><a name="error_categorized_timed-3">error_categorized_timed/3</a></h3>
+<div class="spec">
+<p><tt>error_categorized_timed(Message::<a href="#type-trace_message">trace_message()</a>, MessageCategorization::<a href="#type-trace_message_categorization">trace_message_categorization()</a>, Timestamp::<a href="#type-trace_timestamp">trace_timestamp()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified error message, with specified message categorization
+ and time information.
+</p>
+
+<h3 class="function"><a name="error_fmt-2">error_fmt/2</a></h3>
+<div class="spec">
+<p><tt>error_fmt(Format::<a href="#type-trace_format">trace_format()</a>, Values::<a href="#type-trace_values">trace_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified formatted error message.</p>
+
+<h3 class="function"><a name="get_priority_for-1">get_priority_for/1</a></h3>
+<div class="spec">
+<p><tt>get_priority_for(Other::<a href="#type-trace_severity">trace_severity()</a>) -&gt; <a href="#type-trace_priority">trace_priority()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the (numerical) priority associated to specified trace severity 
+(that is emergency, alert, etc.).</p>
+
+ See also: its reciprocal get_severity_for/1.
+</p>
+
+<h3 class="function"><a name="get_severity_for-1">get_severity_for/1</a></h3>
+<div class="spec">
+<p><tt>get_severity_for(Other::<a href="#type-trace_priority">trace_priority()</a>) -&gt; <a href="#type-trace_severity">trace_severity()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the trace severity (that is emergency, error, etc.) associated to 
+specified (numerical) severity (which corresponds also to a log level, in 
+terms of the newer standard logger).</p>
+
+ See also: its reciprocal get_priority_for/1.
+</p>
+
+<h3 class="function"><a name="info-1">info/1</a></h3>
+<div class="spec">
+<p><tt>info(Message::<a href="#type-trace_message">trace_message()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified info message.</p>
+
+<h3 class="function"><a name="info_categorized-2">info_categorized/2</a></h3>
+<div class="spec">
+<p><tt>info_categorized(Message::<a href="#type-trace_message">trace_message()</a>, MessageCategorization::<a href="#type-trace_message_categorization">trace_message_categorization()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified info message, with specified message categorization.</p>
+
+<h3 class="function"><a name="info_categorized_timed-3">info_categorized_timed/3</a></h3>
+<div class="spec">
+<p><tt>info_categorized_timed(Message::<a href="#type-trace_message">trace_message()</a>, MessageCategorization::<a href="#type-trace_message_categorization">trace_message_categorization()</a>, Timestamp::<a href="#type-trace_timestamp">trace_timestamp()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified info message, with specified message categorization and
+ time information.
+</p>
+
+<h3 class="function"><a name="info_fmt-2">info_fmt/2</a></h3>
+<div class="spec">
+<p><tt>info_fmt(Format::<a href="#type-trace_format">trace_format()</a>, Values::<a href="#type-trace_values">trace_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified formatted info message.</p>
+
+<h3 class="function"><a name="is_error_like-1">is_error_like/1</a></h3>
+<div class="spec">
+<p><tt>is_error_like(Severity::<a href="#type-trace_severity">trace_severity()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Tells whether specified severity belongs to the error-like ones
+ (typically the ones that must never be missed).
+</p>
+
+<h3 class="function"><a name="log-2">log/2</a></h3>
+<div class="spec">
+<p><tt>log(LogEvent::<a href="http://www.erlang.org/edoc/doc/kernel/doc/logger.html#type-log_event">logger:log_event()</a>, Config::<a href="http://www.erlang.org/edoc/doc/kernel/doc/logger.html#type-handler_config">logger:handler_config()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Mandatory callback for log handlers.</p>
+
+ See <a href="https://erlang.org/doc/man/logger.html#HModule:log-2" target="_top"><tt>https://erlang.org/doc/man/logger.html#HModule:log-2</tt></a>.
+</p>
+
+<h3 class="function"><a name="notice-1">notice/1</a></h3>
+<div class="spec">
+<p><tt>notice(Message::<a href="#type-trace_message">trace_message()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified notice message.</p>
+
+<h3 class="function"><a name="notice_categorized-2">notice_categorized/2</a></h3>
+<div class="spec">
+<p><tt>notice_categorized(Message::<a href="#type-trace_message">trace_message()</a>, MessageCategorization::<a href="#type-trace_message_categorization">trace_message_categorization()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified notice message, with specified message categorization.</p>
+
+<h3 class="function"><a name="notice_categorized_timed-3">notice_categorized_timed/3</a></h3>
+<div class="spec">
+<p><tt>notice_categorized_timed(Message::<a href="#type-trace_message">trace_message()</a>, MessageCategorization::<a href="#type-trace_message_categorization">trace_message_categorization()</a>, Timestamp::<a href="#type-trace_timestamp">trace_timestamp()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified notice message, with specified message categorization
+ and time information.
+</p>
+
+<h3 class="function"><a name="notice_fmt-2">notice_fmt/2</a></h3>
+<div class="spec">
+<p><tt>notice_fmt(Format::<a href="#type-trace_format">trace_format()</a>, Values::<a href="#type-trace_values">trace_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified formatted notice message.</p>
+
+<h3 class="function"><a name="set_handler-0">set_handler/0</a></h3>
+<div class="spec">
+<p><tt>set_handler() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Replaces the current (probably default) logger handler with this Myriad
+ one (registered as 'default').
+</p>
+
+<h3 class="function"><a name="void-1">void/1</a></h3>
+<div class="spec">
+<p><tt>void(Message::<a href="#type-trace_message">trace_message()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>"Outputs" specified void message.</p>
+
+<h3 class="function"><a name="void_categorized-2">void_categorized/2</a></h3>
+<div class="spec">
+<p><tt>void_categorized(Message::<a href="#type-trace_message">trace_message()</a>, MessageCategorization::<a href="#type-trace_message_categorization">trace_message_categorization()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>"Outputs" specified void message, with specified message categorization.</p>
+
+<h3 class="function"><a name="void_categorized_timed-3">void_categorized_timed/3</a></h3>
+<div class="spec">
+<p><tt>void_categorized_timed(Message::<a href="#type-trace_message">trace_message()</a>, MessageCategorization::<a href="#type-trace_message_categorization">trace_message_categorization()</a>, Timestamp::<a href="#type-trace_timestamp">trace_timestamp()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>"Outputs" specified void message, with specified message categorization
+ and time information.
+</p>
+
+<h3 class="function"><a name="void_fmt-2">void_fmt/2</a></h3>
+<div class="spec">
+<p><tt>void_fmt(Format::<a href="#type-trace_format">trace_format()</a>, Values::<a href="#type-trace_values">trace_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>"Outputs" specified formatted void message.</p>
+
+<h3 class="function"><a name="warning-1">warning/1</a></h3>
+<div class="spec">
+<p><tt>warning(Message::<a href="#type-trace_message">trace_message()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified warning message.</p>
+
+<h3 class="function"><a name="warning_categorized-2">warning_categorized/2</a></h3>
+<div class="spec">
+<p><tt>warning_categorized(Message::<a href="#type-trace_message">trace_message()</a>, MessageCategorization::<a href="#type-trace_message_categorization">trace_message_categorization()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified warning message, with specified message categorization.</p>
+
+<h3 class="function"><a name="warning_categorized_timed-3">warning_categorized_timed/3</a></h3>
+<div class="spec">
+<p><tt>warning_categorized_timed(Message::<a href="#type-trace_message">trace_message()</a>, MessageCategorization::<a href="#type-trace_message_categorization">trace_message_categorization()</a>, Timestamp::<a href="#type-trace_timestamp">trace_timestamp()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified warning message, with specified message categorization
+ and time information.
+</p>
+
+<h3 class="function"><a name="warning_fmt-2">warning_fmt/2</a></h3>
+<div class="spec">
+<p><tt>warning_fmt(Format::<a href="#type-trace_format">trace_format()</a>, Values::<a href="#type-trace_values">trace_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Outputs specified formatted warning message.</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

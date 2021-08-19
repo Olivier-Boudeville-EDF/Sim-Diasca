@@ -1,0 +1,280 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module naming_utils</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module naming_utils</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various facilities about <b>naming services</b> (local and 
+global).
+
+
+<h2><a name="description">Description</a></h2><p>Gathering of various facilities about <b>naming services</b> (local and 
+global).</p>
+
+ See naming_utils_test.erl for the corresponding test.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-atom_node_name">atom_node_name()</a></h3>
+<p><tt>atom_node_name() = <a href="net_utils.html#type-atom_node_name">net_utils:atom_node_name()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-look_up_scope">look_up_scope()</a></h3>
+<p><tt>look_up_scope() = global | local | local_and_global | local_otherwise_global</tt></p>
+<p> Not to be mixed up with a registration scope.</p>
+
+<h3 class="typedecl"><a name="type-registration_name">registration_name()</a></h3>
+<p><tt>registration_name() = atom()</tt></p>
+<p> Necessarily an atom.</p>
+
+<h3 class="typedecl"><a name="type-registration_scope">registration_scope()</a></h3>
+<p><tt>registration_scope() = global_only | local_only | local_and_global | none</tt></p>
+<p> Not to be mixed up with a look-up scope.</p>
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#display_registered-0">display_registered/0</a></td><td>Displays registered processes.</td></tr>
+<tr><td valign="top"><a href="#get_locally_registered_pid_for-2">get_locally_registered_pid_for/2</a></td><td>Returns the PID of the process corresponding to the specified local name 
+on specified node: that process is expected to be locally registered on that 
+specified node.</td></tr>
+<tr><td valign="top"><a href="#get_registered_names-1">get_registered_names/1</a></td><td>Returns a list of the names of the registered processes, for specified
+ look-up scope.</td></tr>
+<tr><td valign="top"><a href="#get_registered_pid_for-1">get_registered_pid_for/1</a></td><td>Returns the PID that should be already registered, as specified name.</td></tr>
+<tr><td valign="top"><a href="#get_registered_pid_for-2">get_registered_pid_for/2</a></td><td>Returns the PID that should be already registered, as specified name, at 
+specified scope.</td></tr>
+<tr><td valign="top"><a href="#is_registered-1">is_registered/1</a></td><td>Tells whether specified name is registered in the specified local/global 
+context: if no, returns the 'not_registered' atom, otherwise returns the 
+corresponding PID.</td></tr>
+<tr><td valign="top"><a href="#is_registered-2">is_registered/2</a></td><td>Tells whether specified name is registered in the specified scope: if no, 
+returns the 'not_registered' atom, otherwise returns the corresponding PID.</td></tr>
+<tr><td valign="top"><a href="#register_as-2">register_as/2</a></td><td>Registers the current process under specified name and scope.</td></tr>
+<tr><td valign="top"><a href="#register_as-3">register_as/3</a></td><td>Registers the specified process under specified name and scope.</td></tr>
+<tr><td valign="top"><a href="#register_or_return_registered-2">register_or_return_registered/2</a></td><td>Registers specified PID under specified name (which must be an atom) and 
+scope (only local_only and global_only registration scopes permitted), and 
+returns 'registered', or returns the PID of any process already registered.</td></tr>
+<tr><td valign="top"><a href="#registration_to_look_up_scope-1">registration_to_look_up_scope/1</a></td><td>Converts a registration scope into a look-up one.</td></tr>
+<tr><td valign="top"><a href="#unregister-2">unregister/2</a></td><td>Unregisters specified name from specified registry.</td></tr>
+<tr><td valign="top"><a href="#wait_for_global_registration_of-1">wait_for_global_registration_of/1</a></td><td>Waits (up to 10 seconds) until specified name is globally registered.</td></tr>
+<tr><td valign="top"><a href="#wait_for_global_registration_of-2">wait_for_global_registration_of/2</a></td><td>Waits (up to to the specified number of seconds) until specified name is 
+globally registered.</td></tr>
+<tr><td valign="top"><a href="#wait_for_local_registration_of-1">wait_for_local_registration_of/1</a></td><td>Waits (up to 5 seconds) until specified name is locally registered.</td></tr>
+<tr><td valign="top"><a href="#wait_for_local_registration_of-2">wait_for_local_registration_of/2</a></td><td>Waits (up to the specified number of seconds) until specified name is 
+locally registered.</td></tr>
+<tr><td valign="top"><a href="#wait_for_registration_of-2">wait_for_registration_of/2</a></td><td>Waits (up to a few seconds) until specified name is registered, within 
+specified scope.</td></tr>
+<tr><td valign="top"><a href="#wait_for_remote_local_registrations_of-2">wait_for_remote_local_registrations_of/2</a></td><td>Waits for specified name RegisteredName (an atom) to be locally 
+registered on all specified nodes before returning.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="display_registered-0">display_registered/0</a></h3>
+<div class="spec">
+<p><tt>display_registered() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Displays registered processes.</p>
+
+<h3 class="function"><a name="get_locally_registered_pid_for-2">get_locally_registered_pid_for/2</a></h3>
+<div class="spec">
+<p><tt>get_locally_registered_pid_for(Name::<a href="#type-registration_name">registration_name()</a>, TargetNode::<a href="#type-atom_node_name">atom_node_name()</a>) -&gt; pid()</tt><br></p>
+<p> </p>
+</div><p><p>Returns the PID of the process corresponding to the specified local name 
+on specified node: that process is expected to be locally registered on that 
+specified node.</p>
+
+ Throws an exception on failure.
+</p>
+
+<h3 class="function"><a name="get_registered_names-1">get_registered_names/1</a></h3>
+<div class="spec">
+<p><tt>get_registered_names(LookUpScope::<a href="#type-look_up_scope">look_up_scope()</a>) -&gt; [<a href="#type-registration_name">registration_name()</a>]</tt><br></p>
+<p> </p>
+</div><p>Returns a list of the names of the registered processes, for specified
+ look-up scope.
+</p>
+
+<h3 class="function"><a name="get_registered_pid_for-1">get_registered_pid_for/1</a></h3>
+<div class="spec">
+<p><tt>get_registered_pid_for(Name::<a href="#type-registration_name">registration_name()</a>) -&gt; pid()</tt><br></p>
+<p> </p>
+</div><p><p>Returns the PID that should be already registered, as specified name.</p>
+
+ <p>Local registering will be requested first, if not found global one will be 
+tried.</p>
+
+ No specific waiting for registration will be performed, see
+ wait_for_*_registration_of instead.
+</p>
+
+<h3 class="function"><a name="get_registered_pid_for-2">get_registered_pid_for/2</a></h3>
+<div class="spec">
+<p><tt>get_registered_pid_for(Name::<a href="#type-registration_name">registration_name()</a>, RegistrationScope::<a href="#type-look_up_scope">look_up_scope()</a>) -&gt; pid()</tt><br></p>
+<p> </p>
+</div><p><p>Returns the PID that should be already registered, as specified name, at 
+specified scope.</p>
+
+ <p>Local registering will be requested first, if not found global one will be 
+tried.</p>
+
+ No specific waiting for registration will be performed, see
+ wait_for_*_registration_of instead.
+</p>
+
+<h3 class="function"><a name="is_registered-1">is_registered/1</a></h3>
+<div class="spec">
+<p><tt>is_registered(Name::<a href="#type-registration_name">registration_name()</a>) -&gt; pid() | not_registered</tt><br></p>
+<p> </p>
+</div><p><p>Tells whether specified name is registered in the specified local/global 
+context: if no, returns the 'not_registered' atom, otherwise returns the 
+corresponding PID.</p>
+
+ <p>Local registering will be requested first, if not found global one will be 
+tried.</p>
+
+ No specific waiting for registration will be performed, see
+ wait_for_*_registration_of instead.
+</p>
+
+<h3 class="function"><a name="is_registered-2">is_registered/2</a></h3>
+<div class="spec">
+<p><tt>is_registered(Name::<a href="#type-registration_name">registration_name()</a>, LookUpScope::<a href="#type-look_up_scope">look_up_scope()</a>) -&gt; pid() | not_registered</tt><br></p>
+<p> </p>
+</div><p><p>Tells whether specified name is registered in the specified scope: if no, 
+returns the 'not_registered' atom, otherwise returns the corresponding PID.</p>
+
+ No specific waiting for registration will be performed, see
+ wait_for_*_registration_of instead.
+</p>
+
+<h3 class="function"><a name="register_as-2">register_as/2</a></h3>
+<div class="spec">
+<p><tt>register_as(Name::<a href="#type-registration_name">registration_name()</a>, RegistrationScope::<a href="#type-registration_scope">registration_scope()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Registers the current process under specified name and scope. 
+be an atom.</p>
+
+ <p>Various kinds of registrations can be requested, depending on the targeted 
+visibility and the possibilities in terms of desired multiplicities (at any 
+scope, up to one process can register a given name).</p>
+
+ Throws an exception on failure (ex: if that name is already registered).
+</p>
+
+<h3 class="function"><a name="register_as-3">register_as/3</a></h3>
+<div class="spec">
+<p><tt>register_as(Pid::pid(), Name::<a href="#type-registration_name">registration_name()</a>, Other::<a href="#type-registration_scope">registration_scope()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Registers the specified process under specified name and scope.
+ be an atom.</p>
+
+<h3 class="function"><a name="register_or_return_registered-2">register_or_return_registered/2</a></h3>
+<div class="spec">
+<p><tt>register_or_return_registered(Name::<a href="#type-registration_name">registration_name()</a>, Scope::global_only | local_only) -&gt; registered | pid()</tt><br></p>
+<p> </p>
+</div><p><p>Registers specified PID under specified name (which must be an atom) and 
+scope (only local_only and global_only registration scopes permitted), and 
+returns 'registered', or returns the PID of any process already registered.</p>
+
+ <p>This is an atomic operation, which is not meant to fail.</p>
+
+ Allows for example a series of non-synchronised processes to all attempt to
+ register: the first will succeed, all the others will get its PID, none will
+ fail.
+</p>
+
+<h3 class="function"><a name="registration_to_look_up_scope-1">registration_to_look_up_scope/1</a></h3>
+<div class="spec">
+<p><tt>registration_to_look_up_scope(Scope::<a href="#type-registration_scope">registration_scope()</a>) -&gt; <a href="#type-look_up_scope">look_up_scope()</a></tt><br></p>
+<p> </p>
+</div><p><p>Converts a registration scope into a look-up one.</p>
+
+ <p>Note: only legit for a subset of the registration scopes, otherwise a case 
+clause is triggered.</p>
+
+ (helper)
+</p>
+
+<h3 class="function"><a name="unregister-2">unregister/2</a></h3>
+<div class="spec">
+<p><tt>unregister(Name::<a href="#type-registration_name">registration_name()</a>, X2::<a href="#type-registration_scope">registration_scope()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Unregisters specified name from specified registry.</p>
+
+ <p>Throws an exception in case of failure.</p>
+
+ Note: when a process terminates, it unregisters its name (if any)
+ automatically from all scopes.
+</p>
+
+<h3 class="function"><a name="wait_for_global_registration_of-1">wait_for_global_registration_of/1</a></h3>
+<div class="spec">
+<p><tt>wait_for_global_registration_of(Name::<a href="#type-registration_name">registration_name()</a>) -&gt; pid()</tt><br></p>
+<p> </p>
+</div><p><p>Waits (up to 10 seconds) until specified name is globally registered.</p>
+
+ Returns the resolved PID, or throws a {registration_waiting_timeout, Scope,
+ Name} exception.
+</p>
+
+<h3 class="function"><a name="wait_for_global_registration_of-2">wait_for_global_registration_of/2</a></h3>
+<div class="spec">
+<p><tt>wait_for_global_registration_of(Name, Seconds) -&gt; any()</tt></p>
+<p> </p>
+</div><p><p>Waits (up to to the specified number of seconds) until specified name is 
+globally registered.</p>
+
+ Returns the resolved PID, or throws a {registration_waiting_timeout, Scope,
+ Name} exception.
+</p>
+
+<h3 class="function"><a name="wait_for_local_registration_of-1">wait_for_local_registration_of/1</a></h3>
+<div class="spec">
+<p><tt>wait_for_local_registration_of(Name::<a href="#type-registration_name">registration_name()</a>) -&gt; pid() | port()</tt><br></p>
+<p> </p>
+</div><p><p>Waits (up to 5 seconds) until specified name is locally registered.</p>
+
+ Returns the resolved PID, or throws {registration_waiting_timeout, Scope,
+ Name}.
+</p>
+
+<h3 class="function"><a name="wait_for_local_registration_of-2">wait_for_local_registration_of/2</a></h3>
+<div class="spec">
+<p><tt>wait_for_local_registration_of(Name, Seconds) -&gt; any()</tt></p>
+<p> </p>
+</div><p><p>Waits (up to the specified number of seconds) until specified name is 
+locally registered.</p>
+
+ Returns the resolved PID, or throws {registration_waiting_timeout, Scope,
+ Name}.
+</p>
+
+<h3 class="function"><a name="wait_for_registration_of-2">wait_for_registration_of/2</a></h3>
+<div class="spec">
+<p><tt>wait_for_registration_of(Name::<a href="#type-registration_name">registration_name()</a>, LookUpScope::<a href="#type-look_up_scope">look_up_scope()</a>) -&gt; pid()</tt><br></p>
+<p> </p>
+</div><p><p>Waits (up to a few seconds) until specified name is registered, within 
+specified scope.</p>
+
+ Returns the resolved PID, or throws an exception.
+</p>
+
+<h3 class="function"><a name="wait_for_remote_local_registrations_of-2">wait_for_remote_local_registrations_of/2</a></h3>
+<div class="spec">
+<p><tt>wait_for_remote_local_registrations_of(RegisteredName::<a href="#type-registration_name">registration_name()</a>, Nodes::[<a href="#type-atom_node_name">atom_node_name()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Waits for specified name RegisteredName (an atom) to be locally 
+registered on all specified nodes before returning.</p>
+
+ A time-out is triggered if the waited duration exceeds 10 seconds.
+</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

@@ -1,0 +1,243 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module random_utils</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module random_utils</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various <b>random-related</b> facilities.
+
+
+<h2><a name="description">Description</a></h2><p>Gathering of various <b>random-related</b> facilities.</p>
+
+ See random_utils_test.erl for the corresponding test.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-count">count()</a></h3>
+<p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-random_state">random_state()</a></h3>
+<p><tt>random_state() = <a href="#type-seed">seed()</a> | <a href="http://www.erlang.org/edoc/doc/stdlib/doc/rand.html#type-state">rand:state()</a> | any()</tt></p>
+<p> For simpler generators, the state is just a seed, for all the others the state
+ is much more complex.</p>
+
+<h3 class="typedecl"><a name="type-seed">seed()</a></h3>
+<p><tt>seed() = {<a href="#type-seed_element">seed_element()</a>, <a href="#type-seed_element">seed_element()</a>, <a href="#type-seed_element">seed_element()</a>}</tt></p>
+
+
+<h3 class="typedecl"><a name="type-seed_element">seed_element()</a></h3>
+<p><tt>seed_element() = integer()</tt></p>
+<p> Not future-proof enough (ex: not compliant with other solutions like
+ SIMD-oriented Fast Mersenne Twister).</p>
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#can_be_seeded-0">can_be_seeded/0</a></td><td>Tells whether this random source can be seeded.</td></tr>
+<tr><td valign="top"><a href="#check_random_seed-1">check_random_seed/1</a></td><td>Checks that the specified seed is valid.</td></tr>
+<tr><td valign="top"><a href="#get_random_module_name-0">get_random_module_name/0</a></td><td>Returns the name of the module managing the random generation.</td></tr>
+<tr><td valign="top"><a href="#get_random_seed-0">get_random_seed/0</a></td><td>Returns a seed obtained from the random source in use.</td></tr>
+<tr><td valign="top"><a href="#get_random_state-0">get_random_state/0</a></td><td>Returns the random state of this process (it is useful for example for 
+process serialisations).</td></tr>
+<tr><td valign="top"><a href="#get_random_subset-2">get_random_subset/2</a></td><td>Returns a list of the specified number of unique elements drawn from 
+input list (so that there is no duplicate in the returned list).</td></tr>
+<tr><td valign="top"><a href="#get_random_value-0">get_random_value/0</a></td><td>Returns a random float uniformly distributed between 0.0 and 1.0, 
+updating the random state in the process dictionary.</td></tr>
+<tr><td valign="top"><a href="#get_random_value-1">get_random_value/1</a></td><td>Returns an integer random value generated from an uniform distribution.</td></tr>
+<tr><td valign="top"><a href="#get_random_value-2">get_random_value/2</a></td><td>Returns an integer random value generated from an uniform distribution in 
+[Nmin;Nmax] (thus with both bounds included), updating the random state in the 
+process dictionary.</td></tr>
+<tr><td valign="top"><a href="#get_random_values-2">get_random_values/2</a></td><td>Generates a list of Count elements uniformly drawn in [1,N].</td></tr>
+<tr><td valign="top"><a href="#get_random_values-3">get_random_values/3</a></td><td>Generates a list of Count elements uniformly drawn in [Nmin;Nmax].</td></tr>
+<tr><td valign="top"><a href="#get_uniform_floating_point_value-1">get_uniform_floating_point_value/1</a></td><td>Returns a floating-point random value in [0.0;N[ generated from an 
+uniform distribution.</td></tr>
+<tr><td valign="top"><a href="#get_uniform_floating_point_value-2">get_uniform_floating_point_value/2</a></td><td>Returns a floating-point random value in [Nmin, Nmax[ generated from an 
+uniform distribution.</td></tr>
+<tr><td valign="top"><a href="#reset_random_source-1">reset_random_source/1</a></td><td>Resets the random source with a new seed.</td></tr>
+<tr><td valign="top"><a href="#set_random_state-1">set_random_state/1</a></td><td>Sets the random state of this process (it is useful for example for 
+process serialisations).</td></tr>
+<tr><td valign="top"><a href="#start_random_source-1">start_random_source/1</a></td><td>Starts the random source with specified seeding.</td></tr>
+<tr><td valign="top"><a href="#start_random_source-3">start_random_source/3</a></td><td>Starts the random source with specified seeding.</td></tr>
+<tr><td valign="top"><a href="#stop_random_source-0">stop_random_source/0</a></td><td>Stops the random source.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="can_be_seeded-0">can_be_seeded/0</a></h3>
+<div class="spec">
+<p><tt>can_be_seeded() -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p><p>Tells whether this random source can be seeded.</p>
+
+ crypto cannot be seeded, but rand can.
+</p>
+
+<h3 class="function"><a name="check_random_seed-1">check_random_seed/1</a></h3>
+<div class="spec">
+<p><tt>check_random_seed(S::<a href="#type-seed">seed()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Checks that the specified seed is valid.</p>
+
+ Ex: at least with some algorithms, {0, 0, 0} does not yield a correct random
+ series.
+</p>
+
+<h3 class="function"><a name="get_random_module_name-0">get_random_module_name/0</a></h3>
+<div class="spec">
+<p><tt>get_random_module_name() -&gt; crypto</tt><br></p>
+<p> </p>
+</div><p><p>Returns the name of the module managing the random generation.</p>
+
+ Spec already specified, for all random settings.
+</p>
+
+<h3 class="function"><a name="get_random_seed-0">get_random_seed/0</a></h3>
+<div class="spec">
+<p><tt>get_random_seed() -&gt; <a href="#type-seed">seed()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns a seed obtained from the random source in use.</p>
+
+ This is a randomly-determined seed, meant to be used to create another random
+ generator.
+</p>
+
+<h3 class="function"><a name="get_random_state-0">get_random_state/0</a></h3>
+<div class="spec">
+<p><tt>get_random_state() -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-random_state">random_state()</a>)</tt><br></p>
+<p> </p>
+</div><p><p>Returns the random state of this process (it is useful for example for 
+process serialisations).</p>
+
+ Spec already specified, for all random settings.
+</p>
+
+<h3 class="function"><a name="get_random_subset-2">get_random_subset/2</a></h3>
+<div class="spec">
+<p><tt>get_random_subset(ValueCount::<a href="#type-count">count()</a>, InputList::list()) -&gt; list()</tt><br></p>
+<p> </p>
+</div><p><p>Returns a list of the specified number of unique elements drawn from 
+input list (so that there is no duplicate in the returned list).</p>
+
+ Note: defined to ease interface look-up, use directly
+ list_utils:draw_elements_from/2 instead.
+</p>
+
+<h3 class="function"><a name="get_random_value-0">get_random_value/0</a></h3>
+<div class="spec">
+<p><tt>get_random_value() -&gt; float()</tt><br></p>
+<p> </p>
+</div><p><p>Returns a random float uniformly distributed between 0.0 and 1.0, 
+updating the random state in the process dictionary.</p>
+
+ Spec already specified, for all random settings.
+</p>
+
+<h3 class="function"><a name="get_random_value-1">get_random_value/1</a></h3>
+<div class="spec">
+<p><tt>get_random_value(N::pos_integer()) -&gt; pos_integer()</tt><br></p>
+<p> </p>
+</div><p><p>Returns an integer random value generated from an uniform distribution.</p>
+
+ <p>Given an integer N &gt;= 1, returns a random integer uniformly distributed 
+between 1 and N (both included), updating the random state in the process 
+dictionary.</p>
+
+ Spec already specified, for all random settings.
+</p>
+
+<h3 class="function"><a name="get_random_value-2">get_random_value/2</a></h3>
+<div class="spec">
+<p><tt>get_random_value(Nmin::integer(), Nmax::integer()) -&gt; integer()</tt><br></p>
+<p> </p>
+</div><p><p>Returns an integer random value generated from an uniform distribution in 
+[Nmin;Nmax] (thus with both bounds included), updating the random state in the 
+process dictionary.</p>
+
+ Spec already specified, for all random settings.
+</p>
+
+<h3 class="function"><a name="get_random_values-2">get_random_values/2</a></h3>
+<div class="spec">
+<p><tt>get_random_values(N::pos_integer(), Count::<a href="#type-count">count()</a>) -&gt; [pos_integer()]</tt><br></p>
+<p> </p>
+</div><p>Generates a list of Count elements uniformly drawn in [1,N].</p>
+
+<h3 class="function"><a name="get_random_values-3">get_random_values/3</a></h3>
+<div class="spec">
+<p><tt>get_random_values(Nmin::integer(), Nmax::integer(), Count::<a href="#type-count">count()</a>) -&gt; [integer()]</tt><br></p>
+<p> </p>
+</div><p>Generates a list of Count elements uniformly drawn in [Nmin;Nmax].</p>
+
+<h3 class="function"><a name="get_uniform_floating_point_value-1">get_uniform_floating_point_value/1</a></h3>
+<div class="spec">
+<p><tt>get_uniform_floating_point_value(N::number()) -&gt; float()</tt><br></p>
+<p> </p>
+</div><p><p>Returns a floating-point random value in [0.0;N[ generated from an 
+uniform distribution.</p>
+
+ <p>Given a number (integer or float) N (positive or not), returns a random 
+floating-point value uniformly distributed between 0.0 (included) and N 
+(excluded), updating the random state in the process dictionary.</p>
+
+ Spec already specified, for all random settings.
+</p>
+
+<h3 class="function"><a name="get_uniform_floating_point_value-2">get_uniform_floating_point_value/2</a></h3>
+<div class="spec">
+<p><tt>get_uniform_floating_point_value(Nmin::number(), Nmax::number()) -&gt; float()</tt><br></p>
+<p> </p>
+</div><p><p>Returns a floating-point random value in [Nmin, Nmax[ generated from an 
+uniform distribution.</p>
+
+ <p>Given two numbers (integer or float) Nmin and Nmax (each being positive or 
+not), returns a random floating-point value uniformly distributed between Nmin 
+(included) and Nmax (excluded), updating the random state in the process 
+dictionary.</p>
+
+ Spec already specified, for all random settings.
+</p>
+
+<h3 class="function"><a name="reset_random_source-1">reset_random_source/1</a></h3>
+<div class="spec">
+<p><tt>reset_random_source(Seed::default_seed | time_based_seed | <a href="#type-seed">seed()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Resets the random source with a new seed.</p>
+
+<h3 class="function"><a name="set_random_state-1">set_random_state/1</a></h3>
+<div class="spec">
+<p><tt>set_random_state(NewState::<a href="#type-random_state">random_state()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Sets the random state of this process (it is useful for example for 
+process serialisations).</p>
+
+ Spec already specified, for all random settings.
+</p>
+
+<h3 class="function"><a name="start_random_source-1">start_random_source/1</a></h3>
+<div class="spec">
+<p><tt>start_random_source(X1::default_seed | time_based_seed | <a href="#type-seed">seed()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Starts the random source with specified seeding.</p>
+
+<h3 class="function"><a name="start_random_source-3">start_random_source/3</a></h3>
+<div class="spec">
+<p><tt>start_random_source(A::<a href="#type-seed_element">seed_element()</a>, B::<a href="#type-seed_element">seed_element()</a>, C::<a href="#type-seed_element">seed_element()</a>) -&gt; <a href="#type-random_state">random_state()</a></tt><br></p>
+<p> </p>
+</div><p>Starts the random source with specified seeding.</p>
+
+<h3 class="function"><a name="stop_random_source-0">stop_random_source/0</a></h3>
+<div class="spec">
+<p><tt>stop_random_source() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Stops the random source.</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

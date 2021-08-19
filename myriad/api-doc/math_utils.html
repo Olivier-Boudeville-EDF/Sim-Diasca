@@ -1,0 +1,253 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module math_utils</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module math_utils</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various <b>general-purpose basic math</b> facilities.
+
+
+<h2><a name="description">Description</a></h2><p>Gathering of various <b>general-purpose basic math</b> facilities.</p>
+
+ See <code>math_utils_test.erl</code> for the corresponding test.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-conversion_type">conversion_type()</a></h3>
+<p><tt>conversion_type() = exact | absolute | {absolute, float()} | relative | {relative, float()}</tt></p>
+<p> Describes a desired conversion, which is either exact or approximate, based on
+ an absolute or relative comparison, with a default epsilon threshold or a
+ user-defined one.</p>
+
+<h3 class="typedecl"><a name="type-integer_percent">integer_percent()</a></h3>
+<p><tt>integer_percent() = integer()</tt></p>
+<p> For integer percentages (in [0..100] generally).</p>
+
+<h3 class="typedecl"><a name="type-non_zero_integer">non_zero_integer()</a></h3>
+<p><tt>non_zero_integer() = pos_integer() | neg_integer()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-percent">percent()</a></h3>
+<p><tt>percent() = float()</tt></p>
+<p><p> For percentages (1.0 corresponding to 100%).</p>
+
+ See also: text_utils:percent_to_string/{1,2}.</p>
+
+<h3 class="typedecl"><a name="type-probability">probability()</a></h3>
+<p><tt>probability() = float()</tt></p>
+<p> For probabilities.</p>
+
+<h3 class="typedecl"><a name="type-standard_deviation">standard_deviation()</a></h3>
+<p><tt>standard_deviation() = float()</tt></p>
+<p> Standard deviation, as used to describe a Gaussian curve.</p>
+
+<h3 class="typedecl"><a name="type-variance">variance()</a></h3>
+<p><tt>variance() = float()</tt></p>
+<p> Variance, the square of a standard deviation.</p>
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#are_close-2">are_close/2</a></td><td>Returns true iff the two specified floating-point numbers are deemed
+ close enough to be equal, based on default epsilon threshold.</td></tr>
+<tr><td valign="top"><a href="#are_close-3">are_close/3</a></td><td>Returns true iff the two specified floating-point numbers are deemed
+ close enough to be equal, based on specified epsilon threshold.</td></tr>
+<tr><td valign="top"><a href="#are_relatively_close-2">are_relatively_close/2</a></td><td>Returns true iff the two specified floating-point numbers are deemed 
+close enough, relatively, to be equal.</td></tr>
+<tr><td valign="top"><a href="#are_relatively_close-3">are_relatively_close/3</a></td><td>Returns true iff the two specified (usually floating-point) numbers are 
+deemed close enough, relatively, to be equal.</td></tr>
+<tr><td valign="top"><a href="#canonify-1">canonify/1</a></td><td>Canonifies specified angle in degrees, ie ensures the returned value that
+ corresponds to the specified angle is in the [0;360[ interval.</td></tr>
+<tr><td valign="top"><a href="#ceiling-1">ceiling/1</a></td><td>Ceiling returns the smallest integer bigger than the specified 
+floating-point value.</td></tr>
+<tr><td valign="top"><a href="#clamp-3">clamp/3</a></td><td>Clamps specified value between specified bounds: the returned value V is 
+in [Min, Max].</td></tr>
+<tr><td valign="top"><a href="#float_to_integer-1">float_to_integer/1</a></td><td>Converts specified float to integer.</td></tr>
+<tr><td valign="top"><a href="#float_to_integer-2">float_to_integer/2</a></td><td>Converts specified float to integer, using specified conversion
+ tolerance.</td></tr>
+<tr><td valign="top"><a href="#floor-1">floor/1</a></td><td>Floor returns the biggest integer smaller than the specified 
+floating-point value.</td></tr>
+<tr><td valign="top"><a href="#get_relative_difference-2">get_relative_difference/2</a></td><td>Returns the relative difference between the two specified numbers.</td></tr>
+<tr><td valign="top"><a href="#is_null-1">is_null/1</a></td><td>Returns true iff the specified number (floating-point or even integer) is
+ deemed close enough to zero to be null.</td></tr>
+<tr><td valign="top"><a href="#modulo-2">modulo/2</a></td><td>Returns the positive remainder of the division of X by Y, in [0;Y[.</td></tr>
+<tr><td valign="top"><a href="#radian_to_degree-1">radian_to_degree/1</a></td><td>Converts specified angle in radian into the same angle expressed in
+ degrees.</td></tr>
+<tr><td valign="top"><a href="#round_after-2">round_after/2</a></td><td>Rounds the specified floating-point number at specified offset after the 
+decimal point.</td></tr>
+<tr><td valign="top"><a href="#squarify-1">squarify/1</a></td><td>Returns the square, augmented of a little margin, of the specified
+ element.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="are_close-2">are_close/2</a></h3>
+<div class="spec">
+<p><tt>are_close(X::number(), Y::number()) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Returns true iff the two specified floating-point numbers are deemed
+ close enough to be equal, based on default epsilon threshold.
+</p>
+
+<h3 class="function"><a name="are_close-3">are_close/3</a></h3>
+<div class="spec">
+<p><tt>are_close(X::number(), Y::number(), Epsilon::number()) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Returns true iff the two specified floating-point numbers are deemed
+ close enough to be equal, based on specified epsilon threshold.
+</p>
+
+<h3 class="function"><a name="are_relatively_close-2">are_relatively_close/2</a></h3>
+<div class="spec">
+<p><tt>are_relatively_close(X::number(), Y::number()) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p><p>Returns true iff the two specified floating-point numbers are deemed 
+close enough, relatively, to be equal.</p>
+
+ The difference between these numbers, divided by their average (a.k.a. the
+ relative error), must be smaller than the default epsilon threshold, ie the
+ maximum tolerance.
+</p>
+
+<h3 class="function"><a name="are_relatively_close-3">are_relatively_close/3</a></h3>
+<div class="spec">
+<p><tt>are_relatively_close(X::number(), Y::number(), Epsilon::number()) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p><p>Returns true iff the two specified (usually floating-point) numbers are 
+deemed close enough, relatively, to be equal.</p>
+
+ <p>The difference between these numbers, divided by their average (a.k.a. the 
+relative error), must be smaller than the specified epsilon threshold, 
+ie the maximum tolerance.</p>
+
+ Ex: to know whether X and Y are equal with a 5% tolerance, use:
+ math_utils:are_relatively_close( X, Y, _Tolerance=0.05 ).
+</p>
+
+<h3 class="function"><a name="canonify-1">canonify/1</a></h3>
+<div class="spec">
+<p><tt>canonify(AngleInDegrees::number()) -&gt; <a href="unit_utils.html#type-int_degrees">unit_utils:int_degrees()</a></tt><br></p>
+<p> </p>
+</div><p>Canonifies specified angle in degrees, ie ensures the returned value that
+ corresponds to the specified angle is in the [0;360[ interval.
+</p>
+
+<h3 class="function"><a name="ceiling-1">ceiling/1</a></h3>
+<div class="spec">
+<p><tt>ceiling(X::number()) -&gt; integer()</tt><br></p>
+<p> </p>
+</div><p><p>Ceiling returns the smallest integer bigger than the specified 
+floating-point value.</p>
+
+ <p>Inspired from <a href="http://schemecookbook.org/Erlang/NumberRounding" target="_top"><tt>http://schemecookbook.org/Erlang/NumberRounding</tt></a>.</p>
+
+ Note: used to be deprecated in favor of math:ceil/1, yet we prefer the version
+ here, which returns an integer rather than a float.
+</p>
+
+<h3 class="function"><a name="clamp-3">clamp/3</a></h3>
+<div class="spec">
+<p><tt>clamp(Min::number(), Max::number(), Value::number()) -&gt; number()</tt><br></p>
+<p> </p>
+</div><p><p>Clamps specified value between specified bounds: the returned value V is 
+in [Min, Max].</p>
+
+ We expect that <code>Min &lt;= Max</code>.
+</p>
+
+<h3 class="function"><a name="float_to_integer-1">float_to_integer/1</a></h3>
+<div class="spec">
+<p><tt>float_to_integer(F::float()) -&gt; integer()</tt><br></p>
+<p> </p>
+</div><p><p>Converts specified float to integer.</p>
+
+ <p>The float must exactly match the integer value.</p>
+
+ Ex: float_to_integer( 5.0 ) = 5, while float_to_integer( 5.0000001 ) will
+ crash.
+</p>
+
+<h3 class="function"><a name="float_to_integer-2">float_to_integer/2</a></h3>
+<div class="spec">
+<p><tt>float_to_integer(F::float(), ConversionType::<a href="#type-conversion_type">conversion_type()</a>) -&gt; integer()</tt><br></p>
+<p> </p>
+</div><p>Converts specified float to integer, using specified conversion
+ tolerance.
+</p>
+
+<h3 class="function"><a name="floor-1">floor/1</a></h3>
+<div class="spec">
+<p><tt>floor(X::number()) -&gt; integer()</tt><br></p>
+<p> </p>
+</div><p><p>Floor returns the biggest integer smaller than the specified 
+floating-point value.</p>
+
+ <p>Inspired from <a href="http://schemecookbook.org/Erlang/NumberRounding" target="_top"><tt>http://schemecookbook.org/Erlang/NumberRounding</tt></a>.</p>
+
+ Note: used to be deprecated in favor of math:floor/1, yet we prefer the
+ version here, which returns an integer rather than a float.
+</p>
+
+<h3 class="function"><a name="get_relative_difference-2">get_relative_difference/2</a></h3>
+<div class="spec">
+<p><tt>get_relative_difference(X::number(), Y::number()) -&gt; float() | difference_not_computable</tt><br></p>
+<p> </p>
+</div><p><p>Returns the relative difference between the two specified numbers.</p>
+
+ We consider that if both number are null, then their relative difference is
+ also null.
+</p>
+
+<h3 class="function"><a name="is_null-1">is_null/1</a></h3>
+<div class="spec">
+<p><tt>is_null(X::number()) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Returns true iff the specified number (floating-point or even integer) is
+ deemed close enough to zero to be null.
+</p>
+
+<h3 class="function"><a name="modulo-2">modulo/2</a></h3>
+<div class="spec">
+<p><tt>modulo(X::integer(), Y::<a href="#type-non_zero_integer">non_zero_integer()</a>) -&gt; non_neg_integer()</tt><br></p>
+<p> </p>
+</div><p><p>Returns the positive remainder of the division of X by Y, in [0;Y[.</p>
+
+ In Erlang, -5 rem 3 is -2, whereas this function will return 1,
+ since -5 = -2 * 3 + 1.
+</p>
+
+<h3 class="function"><a name="radian_to_degree-1">radian_to_degree/1</a></h3>
+<div class="spec">
+<p><tt>radian_to_degree(AngleInRadians::<a href="unit_utils.html#type-radians">unit_utils:radians()</a>) -&gt; <a href="unit_utils.html#type-degrees">unit_utils:degrees()</a></tt><br></p>
+<p> </p>
+</div><p>Converts specified angle in radian into the same angle expressed in
+ degrees.
+</p>
+
+<h3 class="function"><a name="round_after-2">round_after/2</a></h3>
+<div class="spec">
+<p><tt>round_after(F::float(), DigitCount::<a href="basic_utils.html#type-count">basic_utils:count()</a>) -&gt; float()</tt><br></p>
+<p> </p>
+</div><p><p>Rounds the specified floating-point number at specified offset after the 
+decimal point.</p>
+
+ Ex: round_after( 12.3456, 3 ) = 12.346.
+</p>
+
+<h3 class="function"><a name="squarify-1">squarify/1</a></h3>
+<div class="spec">
+<p><tt>squarify(L) -&gt; any()</tt></p>
+<p> </p>
+</div><p>Returns the square, augmented of a little margin, of the specified
+ element.
+</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

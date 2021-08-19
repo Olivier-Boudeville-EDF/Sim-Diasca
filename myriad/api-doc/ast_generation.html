@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module ast_generation</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module ast_generation</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Module in charge of <b>generating parts of an AST</b> (ex: elements of
+ forms).
+
+
+<h2><a name="description">Description</a></h2>Module in charge of <b>generating parts of an AST</b> (ex: elements of
+ forms).
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-count">count()</a></h3>
+<p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-form_element">form_element()</a></h3>
+<p><tt>form_element() = <a href="ast_base.html#type-form_element">ast_base:form_element()</a></tt></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#atoms_to_form-1">atoms_to_form/1</a></td><td>Returns the form element corresponding to the specified list of atoms.</td></tr>
+<tr><td valign="top"><a href="#enumerated_variables_to_form-1">enumerated_variables_to_form/1</a></td><td>Returns the form element corresponding to the list of variables 
+corresponding to the specified number of such variables.</td></tr>
+<tr><td valign="top"><a href="#form_to_atoms-1">form_to_atoms/1</a></td><td>Returns the list of atoms corresponding to the specified form element.</td></tr>
+<tr><td valign="top"><a href="#form_to_list-1">form_to_list/1</a></td><td>Transforms specified AST list into the corresponding plain list.</td></tr>
+<tr><td valign="top"><a href="#get_header_params-1">get_header_params/1</a></td><td>Returns, as form elements, conventional call parameter names, as form 
+elements, corresponding to a function of specified arity.</td></tr>
+<tr><td valign="top"><a href="#get_iterated_param_name-1">get_iterated_param_name/1</a></td><td>Returns, in AST form, a reference to an iterated variable.</td></tr>
+<tr><td valign="top"><a href="#list_to_form-1">list_to_form/1</a></td><td>Transforms specified list (whose elements are typically themselves form 
+elements already) into the AST version of a list.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="atoms_to_form-1">atoms_to_form/1</a></h3>
+<div class="spec">
+<p><tt>atoms_to_form(AtomList::[atom()]) -&gt; <a href="#type-form_element">form_element()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the form element corresponding to the specified list of atoms.</p>
+
+ Ex: {cons, FileLoc, {atom,FileLoc,a}, {cons, FileLoc, {atom,FileLoc,b}, {nil,
+ FileLoc} }} = atoms_to_form(['a', 'b']).
+</p>
+
+<h3 class="function"><a name="enumerated_variables_to_form-1">enumerated_variables_to_form/1</a></h3>
+<div class="spec">
+<p><tt>enumerated_variables_to_form(Count::<a href="#type-count">count()</a>) -&gt; <a href="#type-form_element">form_element()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the form element corresponding to the list of variables 
+corresponding to the specified number of such variables.</p>
+
+ <p>Ex: {cons, FileLoc, {var,FileLoc,'Myriad_Param_1'}, { cons, FileLoc, 
+{var,FileLoc,'Myriad_Param_2'}, {nil,FileLoc}}} = 
+enumerated_variables_to_form( 2 ).</p>
+
+ See also: get_header_params/1.
+</p>
+
+<h3 class="function"><a name="form_to_atoms-1">form_to_atoms/1</a></h3>
+<div class="spec">
+<p><tt>form_to_atoms(X1::<a href="#type-form_element">form_element()</a>) -&gt; [atom()]</tt><br></p>
+<p> </p>
+</div><p><p>Returns the list of atoms corresponding to the specified form element.</p>
+
+ Ex: ['a', 'b'] = atoms_to_form( {cons, FileLoc, {atom,FileLoc,a}, {cons,
+ FileLoc, {atom,FileLoc,b}, {nil,FileLoc}}}).
+</p>
+
+<h3 class="function"><a name="form_to_list-1">form_to_list/1</a></h3>
+<div class="spec">
+<p><tt>form_to_list(X1::<a href="#type-form_element">form_element()</a>) -&gt; list()</tt><br></p>
+<p> </p>
+</div><p><p>Transforms specified AST list into the corresponding plain list.</p>
+
+ <p>Ex: form_to_list( {cons, FileLoc, {atom,FileLoc,a}, {cons, FileLoc, 
+{atom,FileLoc,b}, {nil,FileLoc} }}) = [{atom,FileLoc,a}, {atom,FileLoc,b}].</p>
+
+ See list_to_form/1 for the reciprocal function.
+</p>
+
+<h3 class="function"><a name="get_header_params-1">get_header_params/1</a></h3>
+<div class="spec">
+<p><tt>get_header_params(Arity::arity()) -&gt; [<a href="#type-form_element">form_element()</a>]</tt><br></p>
+<p> </p>
+</div><p><p>Returns, as form elements, conventional call parameter names, as form 
+elements, corresponding to a function of specified arity.</p>
+
+ <p>This is typically useful when generating a function form, to define its 
+header, like in 'f(A,B)-&gt;...'.</p>
+
+ <p>Ex: [{var,FileLoc,'Myriad_Param_1'}, {var,FileLoc,'Myriad_Param_2'}] = 
+get_header_params( 2 ).</p>
+
+ See also: enumerated_variables_to_form/1.
+</p>
+
+<h3 class="function"><a name="get_iterated_param_name-1">get_iterated_param_name/1</a></h3>
+<div class="spec">
+<p><tt>get_iterated_param_name(Count::<a href="#type-count">count()</a>) -&gt; atom()</tt><br></p>
+<p> </p>
+</div><p><p>Returns, in AST form, a reference to an iterated variable.</p>
+
+ Ex: 'Myriad_Param_4' = get_iterated_param_name( 4 ).
+</p>
+
+<h3 class="function"><a name="list_to_form-1">list_to_form/1</a></h3>
+<div class="spec">
+<p><tt>list_to_form(List::list()) -&gt; <a href="#type-form_element">form_element()</a></tt><br></p>
+<p> </p>
+</div><p><p>Transforms specified list (whose elements are typically themselves form 
+elements already) into the AST version of a list.</p>
+
+ <p>Ex: list_to_form( [{atom,FileLoc,a}, {atom,FileLoc,b}]) = {cons, FileLoc, 
+{atom,FileLoc,a}, {cons, FileLoc, {atom,FileLoc,b}, {nil,FileLoc}}}.</p>
+
+ See form_to_list/1 for the reciprocal function.
+</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

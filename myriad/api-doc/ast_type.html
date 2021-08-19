@@ -1,0 +1,590 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module ast_type</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module ast_type</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Module in charge of handling <b>types, but also variables and values</b> 
+defined with an AST.
+
+
+<h2><a name="description">Description</a></h2><p>Module in charge of handling <b>types, but also variables and values</b> 
+defined with an AST.</p>
+
+ See the "7.7 Types" section of <a href="http://erlang.org/doc/apps/erts/absform.html" target="_top"><tt>http://erlang.org/doc/apps/erts/absform.html</tt></a>
+ for more information.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-ast_builtin_type">ast_builtin_type()</a></h3>
+<p><tt>ast_builtin_type() = #type{file_location = <a href="#type-file_loc">file_loc()</a>, name = <a href="#type-type_name">type_name()</a>, variables = [<a href="#type-ast_type">ast_type()</a>]}</tt></p>
+<p><p> Reference to a built-in type, in an AST.</p>
+
+ Ex:
+ - {type,45,atom,[]}                       -- for atom()
+ - {type,44,list,[{type,{44,5},boolean,[]}]}   -- for [ boolean() ]</p>
+
+<h3 class="typedecl"><a name="type-ast_element">ast_element()</a></h3>
+<p><tt>ast_element() = <a href="ast_base.html#type-ast_element">ast_base:ast_element()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-ast_field_description">ast_field_description()</a></h3>
+<p><tt>ast_field_description() = tuple()</tt></p>
+<p><p> The description of a field of a record.</p>
+
+ Ex : {typed_record_field, {record_field, 76, {atom,76,my_index}},
+           {remote_type, 76, [{atom,76,linear}, {atom,76,coordinate}, []]}},</p>
+
+<h3 class="typedecl"><a name="type-ast_remote_type">ast_remote_type()</a></h3>
+<p><tt>ast_remote_type() = #remote_type{file_location = <a href="#type-file_loc">file_loc()</a>, spec = [<a href="#type-ast_builtin_type">ast_builtin_type()</a> | [<a href="#type-ast_type">ast_type()</a>]]}</tt></p>
+<p><p> Reference to a remote type, in an AST.</p>
+
+ Example for basic_utils:maybe(float()):
+ {remote_type,43,[{atom,43,basic_utils},{atom,43,maybe},[{type,43,float,[]}]]}</p>
+
+<h3 class="typedecl"><a name="type-ast_transforms">ast_transforms()</a></h3>
+<p><tt>ast_transforms() = <a href="ast_transform.html#type-ast_transforms">ast_transform:ast_transforms()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-ast_type">ast_type()</a></h3>
+<p><tt>ast_type() = <a href="#type-ast_builtin_type">ast_builtin_type()</a> | <a href="#type-ast_user_type">ast_user_type()</a> | <a href="#type-ast_remote_type">ast_remote_type()</a></tt></p>
+<p> Any kind of reference onto a type.</p>
+
+<h3 class="typedecl"><a name="type-ast_type_definition">ast_type_definition()</a></h3>
+<p><tt>ast_type_definition() = <a href="ast_base.html#type-form">ast_base:form()</a></tt></p>
+<p> An in-AST definition of a type.</p>
+
+<h3 class="typedecl"><a name="type-ast_user_type">ast_user_type()</a></h3>
+<p><tt>ast_user_type() = #user_type{file_location = <a href="#type-file_loc">file_loc()</a>, name = <a href="#type-type_name">type_name()</a>, variables = [<a href="#type-ast_type">ast_type()</a>]}</tt></p>
+<p><p> Reference to a user-defined (local) type, in an AST.</p>
+
+ Ex: {user_type,{45,1},foo,[{type,45,atom,[]}]}     -- for foo( atom() )</p>
+
+<h3 class="typedecl"><a name="type-ast_variable_name">ast_variable_name()</a></h3>
+<p><tt>ast_variable_name() = atom()</tt></p>
+<p> Includes '_'.</p>
+
+<h3 class="typedecl"><a name="type-ast_variable_pattern">ast_variable_pattern()</a></h3>
+<p><tt>ast_variable_pattern() = {var, <a href="#type-file_loc">file_loc()</a>, <a href="#type-ast_variable_name">ast_variable_name()</a>}</tt></p>
+<p> Variable pattern.</p>
+
+<h3 class="typedecl"><a name="type-file_loc">file_loc()</a></h3>
+<p><tt>file_loc() = <a href="ast_base.html#type-file_loc">ast_base:file_loc()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-form_context">form_context()</a></h3>
+<p><tt>form_context() = <a href="ast_base.html#type-form_context">ast_base:form_context()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-located_form">located_form()</a></h3>
+<p><tt>located_form() = <a href="ast_info.html#type-located_form">ast_info:located_form()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-maybe_ast_type">maybe_ast_type()</a></h3>
+<p><tt>maybe_ast_type() = <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>(<a href="#type-ast_type">ast_type()</a>)</tt></p>
+
+
+<h3 class="typedecl"><a name="type-module_name">module_name()</a></h3>
+<p><tt>module_name() = <a href="meta_utils.html#type-module_name">meta_utils:module_name()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-record_table">record_table()</a></h3>
+<p><tt>record_table() = <a href="ast_info.html#type-record_table">ast_info:record_table()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-type_id">type_id()</a></h3>
+<p><tt>type_id() = <a href="type_utils.html#type-type_id">type_utils:type_id()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-type_name">type_name()</a></h3>
+<p><tt>type_name() = <a href="type_utils.html#type-type_name">type_utils:type_name()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-type_table">type_table()</a></h3>
+<p><tt>type_table() = <a href="ast_info.html#type-type_table">ast_info:type_table()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-variable_name">variable_name()</a></h3>
+<p><tt>variable_name() = <a href="meta_utils.html#type-variable_name">meta_utils:variable_name()</a></tt></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#check_ast_atom-1">check_ast_atom/1</a></td><td>Checks that the specified term is the AST version of an atom.</td></tr>
+<tr><td valign="top"><a href="#check_ast_atom-2">check_ast_atom/2</a></td><td>Checks that the specified term is the AST version of an atom.</td></tr>
+<tr><td valign="top"><a href="#check_record_name-1">check_record_name/1</a></td><td>Checks that the specified record name is legit.</td></tr>
+<tr><td valign="top"><a href="#check_record_name-2">check_record_name/2</a></td><td>Checks that the specified record name is legit.</td></tr>
+<tr><td valign="top"><a href="#check_type_definition-1">check_type_definition/1</a></td><td>Checks that the specified type definition is legit.</td></tr>
+<tr><td valign="top"><a href="#check_type_definition-2">check_type_definition/2</a></td><td>Checks that the specified type definition is legit.</td></tr>
+<tr><td valign="top"><a href="#check_type_id-1">check_type_id/1</a></td><td>Checks that the specified type identifier is legit.</td></tr>
+<tr><td valign="top"><a href="#check_type_id-2">check_type_id/2</a></td><td>Checks that the specified type identifier is legit.</td></tr>
+<tr><td valign="top"><a href="#check_type_ids-1">check_type_ids/1</a></td><td>Checks that the specified type identifiers are legit.</td></tr>
+<tr><td valign="top"><a href="#check_type_ids-2">check_type_ids/2</a></td><td>Checks that the specified type identifiers are legit.</td></tr>
+<tr><td valign="top"><a href="#check_type_name-1">check_type_name/1</a></td><td>Checks that the specified type name is legit.</td></tr>
+<tr><td valign="top"><a href="#check_type_name-2">check_type_name/2</a></td><td>Checks that the specified type name is legit.</td></tr>
+<tr><td valign="top"><a href="#check_type_variable-1">check_type_variable/1</a></td><td>Checks that the specified variable is legit.</td></tr>
+<tr><td valign="top"><a href="#check_type_variable-2">check_type_variable/2</a></td><td>Checks that the specified variable is legit.</td></tr>
+<tr><td valign="top"><a href="#check_type_variables-1">check_type_variables/1</a></td><td>Checks that the specified variables are legit.</td></tr>
+<tr><td valign="top"><a href="#check_type_variables-2">check_type_variables/2</a></td><td>Checks that the specified variables are legit.</td></tr>
+<tr><td valign="top"><a href="#forge_atom_type-0">forge_atom_type/0</a></td><td>Returns an AST-compliant type description for an atom, defined at the 
+very start of the current source file.</td></tr>
+<tr><td valign="top"><a href="#forge_atom_type-1">forge_atom_type/1</a></td><td>Returns an AST-compliant type description for an atom, defined at the 
+specified location of the current source file.</td></tr>
+<tr><td valign="top"><a href="#forge_boolean_type-0">forge_boolean_type/0</a></td><td>Returns an AST-compliant type description for a boolean, defined at the 
+very start of the current source file.</td></tr>
+<tr><td valign="top"><a href="#forge_boolean_type-1">forge_boolean_type/1</a></td><td>Returns an AST-compliant type description for a boolean, defined at the 
+specified location of the current source file.</td></tr>
+<tr><td valign="top"><a href="#forge_builtin_type-3">forge_builtin_type/3</a></td><td>Returns an AST-compliant type description for the specified built-in 
+type.</td></tr>
+<tr><td valign="top"><a href="#forge_float_type-0">forge_float_type/0</a></td><td>Returns an AST-compliant type description for a float, defined at the 
+very start of the current source file.</td></tr>
+<tr><td valign="top"><a href="#forge_float_type-1">forge_float_type/1</a></td><td>Returns an AST-compliant type description for a float, defined at the 
+specified location of the current source file.</td></tr>
+<tr><td valign="top"><a href="#forge_integer_type-0">forge_integer_type/0</a></td><td>Returns an AST-compliant type description for an integer, defined at the 
+very start of the current source file.</td></tr>
+<tr><td valign="top"><a href="#forge_integer_type-1">forge_integer_type/1</a></td><td>Returns an AST-compliant type description for an integer, defined at the 
+specified location of the current source file.</td></tr>
+<tr><td valign="top"><a href="#forge_list_type-1">forge_list_type/1</a></td><td>Returns an AST-compliant type description for a list, defined at the
+ very start of the current source file.</td></tr>
+<tr><td valign="top"><a href="#forge_list_type-2">forge_list_type/2</a></td><td>Returns an AST-compliant type description for a list, defined at the 
+specified location of the current source file.</td></tr>
+<tr><td valign="top"><a href="#forge_local_type-3">forge_local_type/3</a></td><td>Returns an AST-compliant representation of the specified local, 
+user-defined type definition.</td></tr>
+<tr><td valign="top"><a href="#forge_pid_type-0">forge_pid_type/0</a></td><td>Returns an AST-compliant type description for a PID, defined at the 
+very start of the current source file.</td></tr>
+<tr><td valign="top"><a href="#forge_pid_type-1">forge_pid_type/1</a></td><td>Returns an AST-compliant type description for a PID, defined at the 
+specified location of the current source file.</td></tr>
+<tr><td valign="top"><a href="#forge_remote_type-4">forge_remote_type/4</a></td><td>Returns an AST-compliant representation of the specified remote type.</td></tr>
+<tr><td valign="top"><a href="#forge_remote_type-6">forge_remote_type/6</a></td><td>Returns an AST-compliant representation of the specified remote type.</td></tr>
+<tr><td valign="top"><a href="#forge_tuple_type-1">forge_tuple_type/1</a></td><td>Returns an AST-compliant type description for a tuple, defined at the
+ very start of the current source file.</td></tr>
+<tr><td valign="top"><a href="#forge_tuple_type-2">forge_tuple_type/2</a></td><td>Returns an AST-compliant type description for a tuple, defined at the 
+specified location of the current source file.</td></tr>
+<tr><td valign="top"><a href="#forge_type_variable-2">forge_type_variable/2</a></td><td>Returns an AST-compliant representation of the specified variable
+ pattern.</td></tr>
+<tr><td valign="top"><a href="#forge_union_type-1">forge_union_type/1</a></td><td>Returns an AST-compliant type description for an union, defined at the
+ very start of the current source file.</td></tr>
+<tr><td valign="top"><a href="#forge_union_type-2">forge_union_type/2</a></td><td>Returns an AST-compliant type description for an union, defined at the 
+specified location of the current source file.</td></tr>
+<tr><td valign="top"><a href="#get_located_forms_for-2">get_located_forms_for/2</a></td><td>Returns a pair made of (two) lists of located forms regarding the type 
+exports.</td></tr>
+<tr><td valign="top"><a href="#transform_association_type-2">transform_association_type/2</a></td><td>Transforms specified association type.</td></tr>
+<tr><td valign="top"><a href="#transform_type-2">transform_type/2</a></td><td>Transforms types: traversing them recursively according to their 
+specified structure, applying on them the specified transformations.</td></tr>
+<tr><td valign="top"><a href="#transform_type_table-2">transform_type_table/2</a></td><td>Transforms the types in specified type table, according to the specified
+ transforms.</td></tr>
+<tr><td valign="top"><a href="#transform_type_variable-3">transform_type_variable/3</a></td><td>Transforms specified AST variable.</td></tr>
+<tr><td valign="top"><a href="#transform_types-2">transform_types/2</a></td><td>Transforms the specified list of types.</td></tr>
+<tr><td valign="top"><a href="#transform_types_in_record_table-2">transform_types_in_record_table/2</a></td><td>Transforms the types in specified record table, according to the
+ specified transforms.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="check_ast_atom-1">check_ast_atom/1</a></h3>
+<div class="spec">
+<p><tt>check_ast_atom(ASTAtom::term()) -&gt; <a href="ast_base.html#type-ast_atom">ast_base:ast_atom()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that the specified term is the AST version of an atom.</p>
+
+<h3 class="function"><a name="check_ast_atom-2">check_ast_atom/2</a></h3>
+<div class="spec">
+<p><tt>check_ast_atom(ASTAtom::term(), Context::<a href="#type-form_context">form_context()</a>) -&gt; <a href="ast_base.html#type-ast_atom">ast_base:ast_atom()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that the specified term is the AST version of an atom.</p>
+
+<h3 class="function"><a name="check_record_name-1">check_record_name/1</a></h3>
+<div class="spec">
+<p><tt>check_record_name(Name::term()) -&gt; <a href="basic_utils.html#type-record_name">basic_utils:record_name()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that the specified record name is legit.</p>
+
+<h3 class="function"><a name="check_record_name-2">check_record_name/2</a></h3>
+<div class="spec">
+<p><tt>check_record_name(Name::term(), Context::<a href="#type-form_context">form_context()</a>) -&gt; <a href="basic_utils.html#type-record_name">basic_utils:record_name()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that the specified record name is legit.</p>
+
+<h3 class="function"><a name="check_type_definition-1">check_type_definition/1</a></h3>
+<div class="spec">
+<p><tt>check_type_definition(TypeDef::term()) -&gt; <a href="#type-ast_type_definition">ast_type_definition()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that the specified type definition is legit.</p>
+
+<h3 class="function"><a name="check_type_definition-2">check_type_definition/2</a></h3>
+<div class="spec">
+<p><tt>check_type_definition(TypeDef::term(), Context::<a href="#type-form_context">form_context()</a>) -&gt; <a href="#type-ast_type_definition">ast_type_definition()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that the specified type definition is legit.</p>
+
+<h3 class="function"><a name="check_type_id-1">check_type_id/1</a></h3>
+<div class="spec">
+<p><tt>check_type_id(Id::term()) -&gt; <a href="#type-type_id">type_id()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that the specified type identifier is legit.</p>
+
+<h3 class="function"><a name="check_type_id-2">check_type_id/2</a></h3>
+<div class="spec">
+<p><tt>check_type_id(TypeId::term(), Context::<a href="#type-form_context">form_context()</a>) -&gt; <a href="#type-type_id">type_id()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that the specified type identifier is legit.</p>
+
+<h3 class="function"><a name="check_type_ids-1">check_type_ids/1</a></h3>
+<div class="spec">
+<p><tt>check_type_ids(Ids::term()) -&gt; [<a href="#type-type_id">type_id()</a>]</tt><br></p>
+<p> </p>
+</div><p>Checks that the specified type identifiers are legit.</p>
+
+<h3 class="function"><a name="check_type_ids-2">check_type_ids/2</a></h3>
+<div class="spec">
+<p><tt>check_type_ids(List::term(), Context::<a href="#type-form_context">form_context()</a>) -&gt; [<a href="#type-type_id">type_id()</a>]</tt><br></p>
+<p> </p>
+</div><p>Checks that the specified type identifiers are legit.</p>
+
+<h3 class="function"><a name="check_type_name-1">check_type_name/1</a></h3>
+<div class="spec">
+<p><tt>check_type_name(Name::term()) -&gt; <a href="#type-type_name">type_name()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that the specified type name is legit.</p>
+
+<h3 class="function"><a name="check_type_name-2">check_type_name/2</a></h3>
+<div class="spec">
+<p><tt>check_type_name(Name::term(), Context::<a href="#type-form_context">form_context()</a>) -&gt; <a href="#type-type_name">type_name()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that the specified type name is legit.</p>
+
+<h3 class="function"><a name="check_type_variable-1">check_type_variable/1</a></h3>
+<div class="spec">
+<p><tt>check_type_variable(ASTVariable::term()) -&gt; <a href="#type-ast_variable_pattern">ast_variable_pattern()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that the specified variable is legit.</p>
+
+<h3 class="function"><a name="check_type_variable-2">check_type_variable/2</a></h3>
+<div class="spec">
+<p><tt>check_type_variable(ASTVariable::term(), Context::<a href="#type-form_context">form_context()</a>) -&gt; <a href="#type-ast_variable_pattern">ast_variable_pattern()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that the specified variable is legit.</p>
+
+<h3 class="function"><a name="check_type_variables-1">check_type_variables/1</a></h3>
+<div class="spec">
+<p><tt>check_type_variables(ASTVariables::term()) -&gt; [<a href="#type-ast_variable_pattern">ast_variable_pattern()</a>]</tt><br></p>
+<p> </p>
+</div><p>Checks that the specified variables are legit.</p>
+
+<h3 class="function"><a name="check_type_variables-2">check_type_variables/2</a></h3>
+<div class="spec">
+<p><tt>check_type_variables(List::term(), Context::<a href="#type-form_context">form_context()</a>) -&gt; [<a href="#type-ast_variable_pattern">ast_variable_pattern()</a>]</tt><br></p>
+<p> </p>
+</div><p>Checks that the specified variables are legit.</p>
+
+<h3 class="function"><a name="forge_atom_type-0">forge_atom_type/0</a></h3>
+<div class="spec">
+<p><tt>forge_atom_type() -&gt; <a href="#type-ast_builtin_type">ast_builtin_type()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns an AST-compliant type description for an atom, defined at the 
+very start of the current source file.</p>
+
+ Ex: forge_atom_type() returns: {type,{0,1},atom,[]}.
+</p>
+
+<h3 class="function"><a name="forge_atom_type-1">forge_atom_type/1</a></h3>
+<div class="spec">
+<p><tt>forge_atom_type(FileLoc::<a href="#type-file_loc">file_loc()</a>) -&gt; <a href="#type-ast_builtin_type">ast_builtin_type()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns an AST-compliant type description for an atom, defined at the 
+specified location of the current source file.</p>
+
+ Ex: forge_atom_type(45) returns: {type,45,atom,[]}.
+</p>
+
+<h3 class="function"><a name="forge_boolean_type-0">forge_boolean_type/0</a></h3>
+<div class="spec">
+<p><tt>forge_boolean_type() -&gt; <a href="#type-ast_builtin_type">ast_builtin_type()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns an AST-compliant type description for a boolean, defined at the 
+very start of the current source file.</p>
+
+ Ex: forge_boolean_type() returns: {type,{0,1},boolean,[]}.
+</p>
+
+<h3 class="function"><a name="forge_boolean_type-1">forge_boolean_type/1</a></h3>
+<div class="spec">
+<p><tt>forge_boolean_type(FileLoc::<a href="#type-file_loc">file_loc()</a>) -&gt; <a href="#type-ast_builtin_type">ast_builtin_type()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns an AST-compliant type description for a boolean, defined at the 
+specified location of the current source file.</p>
+
+ Ex: forge_boolean_type(45) returns: {type,45,boolean,[]}.
+</p>
+
+<h3 class="function"><a name="forge_builtin_type-3">forge_builtin_type/3</a></h3>
+<div class="spec">
+<p><tt>forge_builtin_type(TypeName::<a href="#type-type_name">type_name()</a>, TypeVars::[<a href="#type-ast_type">ast_type()</a>], FileLoc::<a href="#type-file_loc">file_loc()</a>) -&gt; <a href="#type-ast_builtin_type">ast_builtin_type()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns an AST-compliant type description for the specified built-in 
+type.</p>
+
+ Ex: forge_builtin_type(atom, [], 45) returns: {type,45,atom,[]}.
+</p>
+
+<h3 class="function"><a name="forge_float_type-0">forge_float_type/0</a></h3>
+<div class="spec">
+<p><tt>forge_float_type() -&gt; <a href="#type-ast_builtin_type">ast_builtin_type()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns an AST-compliant type description for a float, defined at the 
+very start of the current source file.</p>
+
+ Ex: forge_float_type() returns: {type,{0,1},float,[]}.
+</p>
+
+<h3 class="function"><a name="forge_float_type-1">forge_float_type/1</a></h3>
+<div class="spec">
+<p><tt>forge_float_type(FileLoc::<a href="#type-file_loc">file_loc()</a>) -&gt; <a href="#type-ast_builtin_type">ast_builtin_type()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns an AST-compliant type description for a float, defined at the 
+specified location of the current source file.</p>
+
+ Ex: forge_float_type(45) returns: {type,45,float,[]}.
+</p>
+
+<h3 class="function"><a name="forge_integer_type-0">forge_integer_type/0</a></h3>
+<div class="spec">
+<p><tt>forge_integer_type() -&gt; <a href="#type-ast_builtin_type">ast_builtin_type()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns an AST-compliant type description for an integer, defined at the 
+very start of the current source file.</p>
+
+ Ex: forge_integer_type() returns: {type,{0,1},integer,[]}.
+</p>
+
+<h3 class="function"><a name="forge_integer_type-1">forge_integer_type/1</a></h3>
+<div class="spec">
+<p><tt>forge_integer_type(FileLoc::<a href="#type-file_loc">file_loc()</a>) -&gt; <a href="#type-ast_builtin_type">ast_builtin_type()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns an AST-compliant type description for an integer, defined at the 
+specified location of the current source file.</p>
+
+ Ex: forge_integer_type(45) returns: {type,45,integer,[]}.
+</p>
+
+<h3 class="function"><a name="forge_list_type-1">forge_list_type/1</a></h3>
+<div class="spec">
+<p><tt>forge_list_type(ElementType::<a href="#type-ast_type">ast_type()</a>) -&gt; <a href="#type-ast_builtin_type">ast_builtin_type()</a></tt><br></p>
+<p> </p>
+</div><p>Returns an AST-compliant type description for a list, defined at the
+ very start of the current source file.
+</p>
+
+<h3 class="function"><a name="forge_list_type-2">forge_list_type/2</a></h3>
+<div class="spec">
+<p><tt>forge_list_type(ElementType::<a href="#type-ast_type">ast_type()</a>, FileLoc::<a href="#type-file_loc">file_loc()</a>) -&gt; <a href="#type-ast_builtin_type">ast_builtin_type()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns an AST-compliant type description for a list, defined at the 
+specified location of the current source file.</p>
+
+ Ex: to represent the following type defined at line 39: [integer()],
+ forge_list_type(forge_integer_type(39), 39) returns:
+ {type, 39, list, [{type,39,integer,[]}]}.
+</p>
+
+<h3 class="function"><a name="forge_local_type-3">forge_local_type/3</a></h3>
+<div class="spec">
+<p><tt>forge_local_type(TypeName::<a href="#type-type_name">type_name()</a>, TypeVars::[<a href="#type-ast_type">ast_type()</a>], FileLoc::<a href="#type-file_loc">file_loc()</a>) -&gt; <a href="#type-ast_user_type">ast_user_type()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns an AST-compliant representation of the specified local, 
+user-defined type definition.</p>
+
+ Ex: to designate my_type() at line 40, forge_local_type(my_type, 40) returns:
+ {user_type, 40, my_type, []}.
+</p>
+
+<h3 class="function"><a name="forge_pid_type-0">forge_pid_type/0</a></h3>
+<div class="spec">
+<p><tt>forge_pid_type() -&gt; <a href="#type-ast_builtin_type">ast_builtin_type()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns an AST-compliant type description for a PID, defined at the 
+very start of the current source file.</p>
+
+ Ex: forge_pid_type() returns: {type,{0,1},pid,[]}.
+</p>
+
+<h3 class="function"><a name="forge_pid_type-1">forge_pid_type/1</a></h3>
+<div class="spec">
+<p><tt>forge_pid_type(FileLoc::<a href="#type-file_loc">file_loc()</a>) -&gt; <a href="#type-ast_builtin_type">ast_builtin_type()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns an AST-compliant type description for a PID, defined at the 
+specified location of the current source file.</p>
+
+ Ex: forge_pid_type(45) returns: {type,45,pid,[]}.
+</p>
+
+<h3 class="function"><a name="forge_remote_type-4">forge_remote_type/4</a></h3>
+<div class="spec">
+<p><tt>forge_remote_type(ModuleName::<a href="#type-module_name">module_name()</a>, TypeName::<a href="#type-type_name">type_name()</a>, TypeVars::[<a href="#type-ast_type">ast_type()</a>], FileLoc::<a href="#type-file_loc">file_loc()</a>) -&gt; <a href="#type-ast_remote_type">ast_remote_type()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns an AST-compliant representation of the specified remote type.</p>
+
+ Ex: to designate basic_utils:some_type(float()) at line 43, use:
+ forge_remote_type(basic_utils, some_type, [], 43), which returns:
+ {remote_type, 43, [{atom,43,basic_utils}, {atom,43,some_type},
+   [{type,43,float,[]}]]}
+</p>
+
+<h3 class="function"><a name="forge_remote_type-6">forge_remote_type/6</a></h3>
+<div class="spec">
+<p><tt>forge_remote_type(ModuleName::<a href="#type-module_name">module_name()</a>, TypeName::<a href="#type-type_name">type_name()</a>, TypeVars::[<a href="#type-ast_type">ast_type()</a>], FileLoc1::<a href="#type-file_loc">file_loc()</a>, FileLoc2::<a href="#type-file_loc">file_loc()</a>, FileLoc3::<a href="#type-file_loc">file_loc()</a>) -&gt; <a href="#type-ast_remote_type">ast_remote_type()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns an AST-compliant representation of the specified remote type.</p>
+
+ Ex: to designate basic_utils:some_type(float()) at lines 43, 44 and 45, use:
+ forge_remote_type(basic_utils, some_type, [], {43, 44, 45}) - which
+ returns: {remote_type, 43, [{atom,44,basic_utils}, {atom,45,some_type},
+ [{type,43,float,[]}]]}.
+</p>
+
+<h3 class="function"><a name="forge_tuple_type-1">forge_tuple_type/1</a></h3>
+<div class="spec">
+<p><tt>forge_tuple_type(ElementTypes::[<a href="#type-ast_type">ast_type()</a>]) -&gt; <a href="#type-ast_builtin_type">ast_builtin_type()</a></tt><br></p>
+<p> </p>
+</div><p>Returns an AST-compliant type description for a tuple, defined at the
+ very start of the current source file.
+</p>
+
+<h3 class="function"><a name="forge_tuple_type-2">forge_tuple_type/2</a></h3>
+<div class="spec">
+<p><tt>forge_tuple_type(ElementTypes::[<a href="#type-ast_type">ast_type()</a>], FileLoc::<a href="#type-file_loc">file_loc()</a>) -&gt; <a href="#type-ast_builtin_type">ast_builtin_type()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns an AST-compliant type description for a tuple, defined at the 
+specified location of the current source file.</p>
+
+ Ex: to represent the following type defined at line 39: {integer(), float()},
+ forge_tuple_type([forge_integer_type(39), forge_float_type(39)], 39)
+ returns: {type, 39, tuple, [{type,39,integer,[]}, {type,39,float,[]}]}.
+</p>
+
+<h3 class="function"><a name="forge_type_variable-2">forge_type_variable/2</a></h3>
+<div class="spec">
+<p><tt>forge_type_variable(VariableName::<a href="#type-variable_name">variable_name()</a>, FileLoc::<a href="#type-file_loc">file_loc()</a>) -&gt; <a href="#type-ast_variable_pattern">ast_variable_pattern()</a></tt><br></p>
+<p> </p>
+</div><p>Returns an AST-compliant representation of the specified variable
+ pattern.
+</p>
+
+<h3 class="function"><a name="forge_union_type-1">forge_union_type/1</a></h3>
+<div class="spec">
+<p><tt>forge_union_type(UnitedTypes::[<a href="#type-ast_type">ast_type()</a>]) -&gt; <a href="#type-ast_builtin_type">ast_builtin_type()</a></tt><br></p>
+<p> </p>
+</div><p>Returns an AST-compliant type description for an union, defined at the
+ very start of the current source file.
+</p>
+
+<h3 class="function"><a name="forge_union_type-2">forge_union_type/2</a></h3>
+<div class="spec">
+<p><tt>forge_union_type(UnitedTypes::[<a href="#type-ast_type">ast_type()</a>], FileLoc::<a href="#type-file_loc">file_loc()</a>) -&gt; <a href="#type-ast_builtin_type">ast_builtin_type()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns an AST-compliant type description for an union, defined at the 
+specified location of the current source file.</p>
+
+ Ex: to represent the following type defined at line 39: integer() | float(),
+ forge_union_type([forge_integer_type(39), forge_float_type(39)], 39) returns:
+ {type, 39, union, [{type,39,integer,[]}, {type,39,float,[]}]}.
+</p>
+
+<h3 class="function"><a name="get_located_forms_for-2">get_located_forms_for/2</a></h3>
+<div class="spec">
+<p><tt>get_located_forms_for(TypeExportTable::<a href="ast_info.html#type-type_export_table">ast_info:type_export_table()</a>, TypeTable::<a href="#type-type_table">type_table()</a>) -&gt; {[<a href="#type-located_form">located_form()</a>], [<a href="#type-located_form">located_form()</a>]}</tt><br></p>
+<p> </p>
+</div><p><p>Returns a pair made of (two) lists of located forms regarding the type 
+exports.</p>
+
+ <p>They corresponding to:</p>
+
+ <p>- all the type export declarations that are described in the specified type 
+export table</p>
+
+ - all the types definitions that are described in the specified type table
+</p>
+
+<h3 class="function"><a name="transform_association_type-2">transform_association_type/2</a></h3>
+<div class="spec">
+<p><tt>transform_association_type(X1::<a href="#type-ast_type">ast_type()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; <a href="#type-ast_type">ast_type()</a></tt><br></p>
+<p> </p>
+</div><p><p>Transforms specified association type.</p>
+
+ "If A is an association type K =&gt; V, where K and V are types, then Rep(A) =
+ {type, FILE_LOC, map_field_assoc, [Rep(K), Rep(V)]}."
+</p>
+
+<h3 class="function"><a name="transform_type-2">transform_type/2</a></h3>
+<div class="spec">
+<p><tt>transform_type(TypeDef::<a href="#type-ast_type">ast_type()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="#type-ast_type">ast_type()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Transforms types: traversing them recursively according to their 
+specified structure, applying on them the specified transformations.</p>
+
+ <p>Currently not going for a fully specialised, strict and 'just sufficient'
+ traversal as permitted by <a href="http://erlang.org/doc/apps/erts/absform.html" target="_top"><tt>http://erlang.org/doc/apps/erts/absform.html</tt></a>; yet 
+still getting inspiration from its section 7.7.</p>
+
+ <p>We currently consider that all type definitions correspond to an 
+ast_type(), i.e. one of:</p>
+
+ <p>- ast_utils:ast_builtin_type(): {type, FileLoc, TypeName, TypeVars}, where 
+TypeVars are often (not always) a list; ex: {type, FILE_LOC, union, [Rep(T_1), 
+..., Rep(T_k)]} or {type, FILE_LOC, map, any}; we manage specifically the most 
+common type designators, and traverse generically the others</p>
+
+ <p>- ast_utils:ast_remote_type(): {remote_type, FileLoc, [ModuleType, TypeName, 
+TypeVars]}</p>
+
+ <p>- ast_utils:ast_user_type(): {user_type, FileLoc, TypeName, TypeVars}</p>
+
+
+ <p>Notes:</p>
+
+ <p>- clauses ordered according to the first atom (all plain types, then all 
+remote types, then all user types)</p>
+
+ <p>- records like #type, #user_type, could be used instead</p>
+
+ (helper)
+</p>
+
+<h3 class="function"><a name="transform_type_table-2">transform_type_table/2</a></h3>
+<div class="spec">
+<p><tt>transform_type_table(TypeTable::<a href="#type-type_table">type_table()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="#type-type_table">type_table()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
+<p> </p>
+</div><p>Transforms the types in specified type table, according to the specified
+ transforms.
+</p>
+
+<h3 class="function"><a name="transform_type_variable-3">transform_type_variable/3</a></h3>
+<div class="spec">
+<p><tt>transform_type_variable(VariableName::<a href="#type-variable_name">variable_name()</a>, FileLoc::<a href="#type-file_loc">file_loc()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="#type-ast_element">ast_element()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
+<p> </p>
+</div><p>Transforms specified AST variable.</p>
+
+<h3 class="function"><a name="transform_types-2">transform_types/2</a></h3>
+<div class="spec">
+<p><tt>transform_types(Types::[<a href="#type-ast_type">ast_type()</a>], Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {[<a href="#type-ast_type">ast_type()</a>], <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
+<p> </p>
+</div><p>Transforms the specified list of types.</p>
+
+<h3 class="function"><a name="transform_types_in_record_table-2">transform_types_in_record_table/2</a></h3>
+<div class="spec">
+<p><tt>transform_types_in_record_table(RecordTable::<a href="#type-record_table">record_table()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="#type-record_table">record_table()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
+<p> </p>
+</div><p>Transforms the types in specified record table, according to the
+ specified transforms.
+</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

@@ -1,0 +1,241 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module csv_utils</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module csv_utils</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Management of <b>CSV</b> (Comma-Separated Values) data.
+
+
+<h2><a name="description">Description</a></h2><p>Management of <b>CSV</b> (Comma-Separated Values) data.</p>
+
+ <p>Note that such a data format is not at the state of the art: it is very basic 
+if not rudimentary, not formalised and quite limited (no meta-data, escaping 
+being required, etc.).</p>
+
+ <p>See also <a href="https://en.wikipedia.org/wiki/Comma-separated_values" target="_top"><tt>https://en.wikipedia.org/wiki/Comma-separated_values</tt></a>.</p>
+
+ See csv_utils_test.erl for the corresponding test.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-content">content()</a></h3>
+<p><tt>content() = [<a href="#type-row">row()</a>]</tt></p>
+<p> A CSV content, as an (ordered) list of rows.</p>
+
+<h3 class="typedecl"><a name="type-field_count">field_count()</a></h3>
+<p><tt>field_count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+<p> Number of fields.</p>
+
+<h3 class="typedecl"><a name="type-mixed_content">mixed_content()</a></h3>
+<p><tt>mixed_content() = [<a href="#type-row">row()</a> | [<a href="#type-value">value()</a>]]</tt></p>
+<p> A CSV content, as an (ordered) list of rows that match a row spec (ex:
+ expected number of fields) or not (then represented as a mere list of values).</p>
+
+<h3 class="typedecl"><a name="type-row">row()</a></h3>
+<p><tt>row() = tuple()</tt></p>
+<p><p> tuple( value() ). 
+A row of a CSV content, as a tuple of values.</p>
+
+ Logically a tuple, often more convenient as a list, yet kept as a tuple as
+ more compact in memory.</p>
+
+<h3 class="typedecl"><a name="type-row_count">row_count()</a></h3>
+<p><tt>row_count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+<p> Number of rows.</p>
+
+<h3 class="typedecl"><a name="type-separator">separator()</a></h3>
+<p><tt>separator() = char()</tt></p>
+<p> The field separator (delimiter) used between the values in a row (often
+ comma, sometimes semicolon or alike).</p>
+
+<h3 class="typedecl"><a name="type-value">value()</a></h3>
+<p><tt>value() = any()</tt></p>
+<p> The value V, in "CSV".</p>
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#are_all_empty-1">are_all_empty/1</a></td><td>Returns whether the specified list of values contains only empty ones.</td></tr>
+<tr><td valign="top"><a href="#check_all_empty-1">check_all_empty/1</a></td><td>Checks that specified row or list of values (typically coming from a row
+ of unspecified field count) contains only empty values (empty strings).</td></tr>
+<tr><td valign="top"><a href="#content_to_string-1">content_to_string/1</a></td><td>Returns a textual representation of specified content.</td></tr>
+<tr><td valign="top"><a href="#get_usual_separators-0">get_usual_separators/0</a></td><td>Returns the most usual separators used in CSV files.</td></tr>
+<tr><td valign="top"><a href="#interpret_file-1">interpret_file/1</a></td><td>Interprets specified file, with no prior knowledge about the separator or 
+the number of fields per row.</td></tr>
+<tr><td valign="top"><a href="#interpret_file-2">interpret_file/2</a></td><td>Interprets specified file, based on specified separator, with no prior 
+knowledge about the number of fields per row.</td></tr>
+<tr><td valign="top"><a href="#interpret_file-3">interpret_file/3</a></td><td>Interprets specified file, based on specified separator and number of 
+fields per row.</td></tr>
+<tr><td valign="top"><a href="#read_file-1">read_file/1</a></td><td>Reads specified file, expected to be in CSV format and supposed to be 
+homogeneous (all non-dropping rows having the same number of fields - 
+otherwise an exception is raised), using the default separator.</td></tr>
+<tr><td valign="top"><a href="#read_file-2">read_file/2</a></td><td>Reads specified file, expected to be in CSV format and supposed to be 
+homogeneous (all non-dropped rows having the same number of fields - otherwise 
+an exception is raised), using the specified separator.</td></tr>
+<tr><td valign="top"><a href="#write_file-2">write_file/2</a></td><td>Writes specified content (ie a list of homogeneous row tuples) in
+ specified CSV file, using the default separator for that.</td></tr>
+<tr><td valign="top"><a href="#write_file-3">write_file/3</a></td><td>Writes specified content (ie a list of homogeneous row tuples) in
+ specified CSV file, using specified separator for that.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="are_all_empty-1">are_all_empty/1</a></h3>
+<div class="spec">
+<p><tt>are_all_empty(Row::<a href="#type-row">row()</a> | [<a href="#type-value">value()</a>]) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Returns whether the specified list of values contains only empty ones.</p>
+
+<h3 class="function"><a name="check_all_empty-1">check_all_empty/1</a></h3>
+<div class="spec">
+<p><tt>check_all_empty(Row::<a href="#type-row">row()</a> | [<a href="#type-value">value()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that specified row or list of values (typically coming from a row
+ of unspecified field count) contains only empty values (empty strings).
+</p>
+
+<h3 class="function"><a name="content_to_string-1">content_to_string/1</a></h3>
+<div class="spec">
+<p><tt>content_to_string(Content::<a href="#type-content">content()</a>) -&gt; <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual representation of specified content.</p>
+
+<h3 class="function"><a name="get_usual_separators-0">get_usual_separators/0</a></h3>
+<div class="spec">
+<p><tt>get_usual_separators() -&gt; [<a href="#type-separator">separator()</a>]</tt><br></p>
+<p> </p>
+</div><p>Returns the most usual separators used in CSV files.</p>
+
+<h3 class="function"><a name="interpret_file-1">interpret_file/1</a></h3>
+<div class="spec">
+<p><tt>interpret_file(FilePath::<a href="file_utils.html#type-any_file_path">file_utils:any_file_path()</a>) -&gt; {<a href="#type-separator">separator()</a>, <a href="#type-field_count">field_count()</a>, <a href="#type-mixed_content">mixed_content()</a>, <a href="#type-row_count">row_count()</a>, <a href="#type-row_count">row_count()</a>, <a href="#type-row_count">row_count()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Interprets specified file, with no prior knowledge about the separator or 
+the number of fields per row.</p>
+
+ <p>Returns {Separator, FieldCount, MixedContent, MatchCount, UnmatchCount, 
+DropCount}, i.e.:</p>
+
+ <p>- the most likely separator in use</p>
+
+ <p>- the number of fields in each row, based on the first one</p>
+
+ <p>- a list (respecting the in-file order) whose elements are either a list of 
+the specified number of fields, or a pair whose first element is the 
+'non_matching' atom, and whose second element is a list whose elements were 
+obtained based on the same separator - yet in a different number than the 
+expected one</p>
+
+ <p>- the number of rows that match the row spec (i.e. the specified number of 
+fields), based on specified separator</p>
+
+ <p>- the number of rows that do not match said constraints</p>
+
+ - the number of rows that were dropped (typically because they were either
+ empty or containing a comment)
+</p>
+
+<h3 class="function"><a name="interpret_file-2">interpret_file/2</a></h3>
+<div class="spec">
+<p><tt>interpret_file(FilePath::<a href="file_utils.html#type-any_file_path">file_utils:any_file_path()</a>, Separator::<a href="#type-separator">separator()</a>) -&gt; {<a href="#type-field_count">field_count()</a>, <a href="#type-mixed_content">mixed_content()</a>, <a href="#type-row_count">row_count()</a>, <a href="#type-row_count">row_count()</a>, <a href="#type-row_count">row_count()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Interprets specified file, based on specified separator, with no prior 
+knowledge about the number of fields per row.</p>
+
+ <p>Returns {FieldCount, MixedContent, MatchCount, UnmatchCount, DropCount}, i.e.:</p>
+
+ <p>- the number of fields in each row, based on the first one</p>
+
+ <p>- a list (respecting the in-file order) whose elements are either a list of 
+the specified number of fields, or a pair whose first element is the 
+'non_matching' atom, and whose second element is a list whose elements were 
+obtained based on the same separator - yet in a different number than the 
+expected one</p>
+
+ <p>- the number of rows that match the row spec (i.e. the specified number of 
+fields), based on specified separator</p>
+
+ <p>- the number of rows that do not match said constraints</p>
+
+ - the number of rows that were dropped (typically because they were either
+ empty or containing a comment)
+</p>
+
+<h3 class="function"><a name="interpret_file-3">interpret_file/3</a></h3>
+<div class="spec">
+<p><tt>interpret_file(FilePath::<a href="file_utils.html#type-any_file_path">file_utils:any_file_path()</a>, Separator::<a href="#type-separator">separator()</a>, ExpectedFieldCount::<a href="#type-field_count">field_count()</a>) -&gt; {<a href="#type-mixed_content">mixed_content()</a>, <a href="#type-row_count">row_count()</a>, <a href="#type-row_count">row_count()</a>, <a href="#type-row_count">row_count()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Interprets specified file, based on specified separator and number of 
+fields per row.</p>
+
+ <p>Returns {MixedContent, MatchCount, UnmatchCount, DropCount}, i.e.:</p>
+
+ <p>- a list (respecting the in-file order) whose elements are either a list of 
+the specified number of fields, or a pair whose first element is the 
+'non_matching' atom, and whose second element is a list whose elements were 
+obtained based on the same separator - yet in a different number than the 
+expected one</p>
+
+ <p>- the number of rows that match the row spec (i.e. the specified number of 
+fields), based on specified separator</p>
+
+ <p>- the number of rows that do not match said constraints</p>
+
+ - the number of rows that were dropped (typically because they were either
+ empty or containing a comment)
+</p>
+
+<h3 class="function"><a name="read_file-1">read_file/1</a></h3>
+<div class="spec">
+<p><tt>read_file(Filename::<a href="file_utils.html#type-any_file_path">file_utils:any_file_path()</a>) -&gt; {<a href="#type-content">content()</a>, <a href="#type-row_count">row_count()</a>, <a href="#type-field_count">field_count()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Reads specified file, expected to be in CSV format and supposed to be 
+homogeneous (all non-dropping rows having the same number of fields - 
+otherwise an exception is raised), using the default separator.</p>
+
+ Returns:
+ - the corresponding content, as an ordered list of rows
+ - the number of rows found
+ - the number of fields they all have
+</p>
+
+<h3 class="function"><a name="read_file-2">read_file/2</a></h3>
+<div class="spec">
+<p><tt>read_file(FilePath::<a href="file_utils.html#type-any_file_path">file_utils:any_file_path()</a>, Separator::<a href="#type-separator">separator()</a>) -&gt; {<a href="#type-content">content()</a>, <a href="#type-row_count">row_count()</a>, <a href="#type-field_count">field_count()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Reads specified file, expected to be in CSV format and supposed to be 
+homogeneous (all non-dropped rows having the same number of fields - otherwise 
+an exception is raised), using the specified separator.</p>
+
+ Returns:
+ - the corresponding content, as an ordered list of rows
+ - the number of rows found
+ - the number of fields they all have
+</p>
+
+<h3 class="function"><a name="write_file-2">write_file/2</a></h3>
+<div class="spec">
+<p><tt>write_file(Content::<a href="#type-content">content()</a>, TargetFilePath::<a href="file_utils.html#type-any_file_path">file_utils:any_file_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Writes specified content (ie a list of homogeneous row tuples) in
+ specified CSV file, using the default separator for that.
+</p>
+
+<h3 class="function"><a name="write_file-3">write_file/3</a></h3>
+<div class="spec">
+<p><tt>write_file(Content::<a href="#type-content">content()</a>, TargetFilePath::<a href="file_utils.html#type-any_file_path">file_utils:any_file_path()</a>, Separator::<a href="#type-separator">separator()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Writes specified content (ie a list of homogeneous row tuples) in
+ specified CSV file, using specified separator for that.
+</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

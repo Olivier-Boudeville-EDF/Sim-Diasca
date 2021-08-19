@@ -1,0 +1,332 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module set_utils</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module set_utils</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various facilities about <b>sets</b>.
+
+
+<h2><a name="description">Description</a></h2><p>Gathering of various facilities about <b>sets</b>.</p>
+
+ <p>A set is a container that:</p>
+
+ <p>- does not allow duplicates (adding an element more than once is like adding 
+it only once)</p>
+
+ <p>- has no intrinsic order (yet can be iterated over)</p>
+
+ <p>Notes:</p>
+
+ <p>- we provide here a basic, general-purpose set support, and do not rely on any 
+lighter, alternate level of indirection</p>
+
+ <p>- if you feel the need for an associative table whose values do no matter, 
+your actual need is a set!</p>
+
+ <p>See set_utils_test.erl for the corresponding test.</p>
+
+ See also: list_utils.erl and set_utils_test.erl.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-count">count()</a></h3>
+<p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-element">element()</a></h3>
+<p><tt>element() = term()</tt></p>
+<p> Element of a set.</p>
+
+<h3 class="typedecl"><a name="type-iterator">iterator()</a></h3>
+<p><tt>iterator() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/gb_sets.html#type-iter">gb_sets:iter()</a></tt></p>
+<p> Internally, a kind of enumeration (list) of the elements in the set.</p>
+
+<h3 class="typedecl"><a name="type-set">set()</a></h3>
+<p><tt>set(T) = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/gb_sets.html#type-set">gb_sets:set</a>(T)</tt></p>
+<p> For homogeneous sets.</p>
+
+<h3 class="typedecl"><a name="type-set">set()</a></h3>
+<p><tt>set() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/gb_sets.html#type-set">gb_sets:set()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add-2">add/2</a></td><td>Returns a new set formed from the specified one with specified element
+ inserted.</td></tr>
+<tr><td valign="top"><a href="#add_as_new-2">add_as_new/2</a></td><td>Returns a new set formed from the specified one with specified element
+ inserted, checking that this element was not already in the original set
+ (otherwise a batmatch exception is thrown).</td></tr>
+<tr><td valign="top"><a href="#add_element_list-2">add_element_list/2</a></td><td>Returns a set made of the specified set to which the elements of the
+ specified plain list have been added.</td></tr>
+<tr><td valign="top"><a href="#are_equal-2">are_equal/2</a></td><td>Tells whether the two specified sets are equal (meaning that they contain 
+exactly the same elements).</td></tr>
+<tr><td valign="top"><a href="#check_set-1">check_set/1</a></td><td>Ensures that the specified term is a set, throws an exception if not.</td></tr>
+<tr><td valign="top"><a href="#delete-2">delete/2</a></td><td>Removes the specified element (if any) from the specified set, and 
+returns the resulting set.</td></tr>
+<tr><td valign="top"><a href="#delete_existing-2">delete_existing/2</a></td><td>Ensures that the specified element was indeed in the specified set before 
+removing it, and returning the resulting set.</td></tr>
+<tr><td valign="top"><a href="#difference-2">difference/2</a></td><td>Returns the difference between the first specified set and the second,
+ that is the elements of the first set that are not in the second one.</td></tr>
+<tr><td valign="top"><a href="#differences-2">differences/2</a></td><td>Returns the differences between the first specified set and the second,
+ as a pair, whose first element corresponds to the elements of the first set
+ that are not in the second one, and whose second element corresponds to the
+ elements of the second set that are not in the first one.</td></tr>
+<tr><td valign="top"><a href="#extract_if_existing-2">extract_if_existing/2</a></td><td>Extracts specified element (if any) from specified set: removes it from
+ the returned set; otherwise (that is: if that element does not exist in the
+ specified set), returns false.</td></tr>
+<tr><td valign="top"><a href="#from_list-1">from_list/1</a></td><td>Returns a set created from the specified list of elements.</td></tr>
+<tr><td valign="top"><a href="#intersection-1">intersection/1</a></td><td>Returns the intersection of the specified sets.</td></tr>
+<tr><td valign="top"><a href="#intersection-2">intersection/2</a></td><td>Returns the intersection of the two specified sets.</td></tr>
+<tr><td valign="top"><a href="#is_empty-1">is_empty/1</a></td><td>Returns whether the specified set is empty.</td></tr>
+<tr><td valign="top"><a href="#is_set-1">is_set/1</a></td><td>Returns whether the specified term appears to be a legit set.</td></tr>
+<tr><td valign="top"><a href="#is_subset-2">is_subset/2</a></td><td>Tells whether the first set is a subset of the second, that is if each
+ element of the first is also in the second.</td></tr>
+<tr><td valign="top"><a href="#iterator-1">iterator/1</a></td><td>Returns an iterator that can be used for traversing the entries of the 
+specified set.</td></tr>
+<tr><td valign="top"><a href="#member-2">member/2</a></td><td>Returns true iff the specified element is an element of the specified
+ set.</td></tr>
+<tr><td valign="top"><a href="#new-0">new/0</a></td><td>Returns a new, empty, set.</td></tr>
+<tr><td valign="top"><a href="#new-1">new/1</a></td><td>Returns a new set, containing the elements of specified list (possibly 
+unordered and containing duplicates).</td></tr>
+<tr><td valign="top"><a href="#next-1">next/1</a></td><td>Returns the next element and iterator, as obtained from the specified 
+iterator.</td></tr>
+<tr><td valign="top"><a href="#singleton-1">singleton/1</a></td><td>Returns a set comprising only specified element.</td></tr>
+<tr><td valign="top"><a href="#size-1">size/1</a></td><td>Returns the number of elements in the specified set.</td></tr>
+<tr><td valign="top"><a href="#to_list-1">to_list/1</a></td><td>Returns a list created from the elements of the specified set.</td></tr>
+<tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td>Returns a textual representation of the specified set.</td></tr>
+<tr><td valign="top"><a href="#union-1">union/1</a></td><td>Returns the union of the specified sets.</td></tr>
+<tr><td valign="top"><a href="#union-2">union/2</a></td><td>Returns the union of the two specified sets.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="add-2">add/2</a></h3>
+<div class="spec">
+<p><tt>add(Element::<a href="#type-element">element()</a>, Set::<a href="#type-set">set()</a>) -&gt; <a href="#type-set">set()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a new set formed from the specified one with specified element
+ inserted. If this element is already in the specified set, the returned set is
+ the same.
+</p>
+
+<h3 class="function"><a name="add_as_new-2">add_as_new/2</a></h3>
+<div class="spec">
+<p><tt>add_as_new(Element::<a href="#type-element">element()</a>, Set::<a href="#type-set">set()</a>) -&gt; <a href="#type-set">set()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a new set formed from the specified one with specified element
+ inserted, checking that this element was not already in the original set
+ (otherwise a batmatch exception is thrown).
+</p>
+
+<h3 class="function"><a name="add_element_list-2">add_element_list/2</a></h3>
+<div class="spec">
+<p><tt>add_element_list(Elements::[<a href="#type-element">element()</a>], Set::<a href="#type-set">set()</a>) -&gt; <a href="#type-set">set()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a set made of the specified set to which the elements of the
+ specified plain list have been added.
+</p>
+
+<h3 class="function"><a name="are_equal-2">are_equal/2</a></h3>
+<div class="spec">
+<p><tt>are_equal(Set1::<a href="#type-set">set()</a>, Set2::<a href="#type-set">set()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p><p>Tells whether the two specified sets are equal (meaning that they contain 
+exactly the same elements).</p>
+
+ Note: depending on set_impl, this function may or may not be useless, as
+ using the basic '==' term-level operator may be sufficient to compare some
+ types of sets (ex: ordsets).
+</p>
+
+<h3 class="function"><a name="check_set-1">check_set/1</a></h3>
+<div class="spec">
+<p><tt>check_set(Term::term()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Ensures that the specified term is a set, throws an exception if not.</p>
+
+<h3 class="function"><a name="delete-2">delete/2</a></h3>
+<div class="spec">
+<p><tt>delete(Element::<a href="#type-element">element()</a>, Set::<a href="#type-set">set()</a>) -&gt; <a href="#type-set">set()</a></tt><br></p>
+<p> </p>
+</div><p><p>Removes the specified element (if any) from the specified set, and 
+returns the resulting set.</p>
+
+ Note: does not fail if the element was not in the set; use delete_existing/2
+ to ensure that the element was present.
+</p>
+
+<h3 class="function"><a name="delete_existing-2">delete_existing/2</a></h3>
+<div class="spec">
+<p><tt>delete_existing(Element::<a href="#type-element">element()</a>, Set::<a href="#type-set">set()</a>) -&gt; <a href="#type-set">set()</a></tt><br></p>
+<p> </p>
+</div><p><p>Ensures that the specified element was indeed in the specified set before 
+removing it, and returning the resulting set.</p>
+
+ Note: use delete/2 to delete an element without checking whether the element
+ was already present in the set.
+</p>
+
+<h3 class="function"><a name="difference-2">difference/2</a></h3>
+<div class="spec">
+<p><tt>difference(FirstSet::<a href="#type-set">set()</a>, SecondSet::<a href="#type-set">set()</a>) -&gt; <a href="#type-set">set()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the difference between the first specified set and the second,
+ that is the elements of the first set that are not in the second one.
+</p>
+
+<h3 class="function"><a name="differences-2">differences/2</a></h3>
+<div class="spec">
+<p><tt>differences(FirstSet::<a href="#type-set">set()</a>, SecondSet::<a href="#type-set">set()</a>) -&gt; {<a href="#type-set">set()</a>, <a href="#type-set">set()</a>}</tt><br></p>
+<p> </p>
+</div><p>Returns the differences between the first specified set and the second,
+ as a pair, whose first element corresponds to the elements of the first set
+ that are not in the second one, and whose second element corresponds to the
+ elements of the second set that are not in the first one.
+</p>
+
+<h3 class="function"><a name="extract_if_existing-2">extract_if_existing/2</a></h3>
+<div class="spec">
+<p><tt>extract_if_existing(Element::<a href="#type-element">element()</a>, Set::<a href="#type-set">set()</a>) -&gt; false | <a href="#type-set">set()</a></tt><br></p>
+<p> </p>
+</div><p>Extracts specified element (if any) from specified set: removes it from
+ the returned set; otherwise (that is: if that element does not exist in the
+ specified set), returns false.
+</p>
+
+<h3 class="function"><a name="from_list-1">from_list/1</a></h3>
+<div class="spec">
+<p><tt>from_list(List::[<a href="#type-element">element()</a>]) -&gt; <a href="#type-set">set()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a set created from the specified list of elements.</p>
+
+<h3 class="function"><a name="intersection-1">intersection/1</a></h3>
+<div class="spec">
+<p><tt>intersection(ListOfSets::[<a href="#type-set">set()</a>]) -&gt; <a href="#type-set">set()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the intersection of the specified sets.</p>
+
+<h3 class="function"><a name="intersection-2">intersection/2</a></h3>
+<div class="spec">
+<p><tt>intersection(FirstSet::<a href="#type-set">set()</a>, SecondSet::<a href="#type-set">set()</a>) -&gt; <a href="#type-set">set()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the intersection of the two specified sets.</p>
+
+<h3 class="function"><a name="is_empty-1">is_empty/1</a></h3>
+<div class="spec">
+<p><tt>is_empty(Set::<a href="#type-set">set()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Returns whether the specified set is empty.</p>
+
+<h3 class="function"><a name="is_set-1">is_set/1</a></h3>
+<div class="spec">
+<p><tt>is_set(Term::term()) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Returns whether the specified term appears to be a legit set.</p>
+
+<h3 class="function"><a name="is_subset-2">is_subset/2</a></h3>
+<div class="spec">
+<p><tt>is_subset(FirstSet::<a href="#type-set">set()</a>, SecondSet::<a href="#type-set">set()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Tells whether the first set is a subset of the second, that is if each
+ element of the first is also in the second.
+</p>
+
+<h3 class="function"><a name="iterator-1">iterator/1</a></h3>
+<div class="spec">
+<p><tt>iterator(Set::<a href="#type-set">set()</a>) -&gt; <a href="#type-iterator">iterator()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns an iterator that can be used for traversing the entries of the 
+specified set.</p>
+
+ Note: the iterator is *not* the first iterated element of a set: next/1 shall
+ be used even for the very first element.
+</p>
+
+<h3 class="function"><a name="member-2">member/2</a></h3>
+<div class="spec">
+<p><tt>member(Element::<a href="#type-element">element()</a>, Set::<a href="#type-set">set()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Returns true iff the specified element is an element of the specified
+ set.
+</p>
+
+<h3 class="function"><a name="new-0">new/0</a></h3>
+<div class="spec">
+<p><tt>new() -&gt; <a href="#type-set">set()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a new, empty, set.</p>
+
+<h3 class="function"><a name="new-1">new/1</a></h3>
+<div class="spec">
+<p><tt>new(ElementList::[<a href="#type-element">element()</a>]) -&gt; <a href="#type-set">set()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns a new set, containing the elements of specified list (possibly 
+unordered and containing duplicates).</p>
+
+ See singleton/1 if wanting to create a set with one element.
+</p>
+
+<h3 class="function"><a name="next-1">next/1</a></h3>
+<div class="spec">
+<p><tt>next(Iterator::<a href="#type-iterator">iterator()</a>) -&gt; {<a href="#type-element">element()</a>, <a href="#type-iterator">iterator()</a>} | none</tt><br></p>
+<p> </p>
+</div><p><p>Returns the next element and iterator, as obtained from the specified 
+iterator.</p>
+
+ Allows the iterators to be gone through.
+</p>
+
+<h3 class="function"><a name="singleton-1">singleton/1</a></h3>
+<div class="spec">
+<p><tt>singleton(Element::<a href="#type-element">element()</a>) -&gt; <a href="#type-set">set()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns a set comprising only specified element.</p>
+
+ More elegant than set_utils:add(Foo, set_utils:new()).
+</p>
+
+<h3 class="function"><a name="size-1">size/1</a></h3>
+<div class="spec">
+<p><tt>size(Set::<a href="#type-set">set()</a>) -&gt; <a href="#type-count">count()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the number of elements in the specified set.</p>
+
+<h3 class="function"><a name="to_list-1">to_list/1</a></h3>
+<div class="spec">
+<p><tt>to_list(Set::<a href="#type-set">set()</a>) -&gt; [<a href="#type-element">element()</a>]</tt><br></p>
+<p> </p>
+</div><p>Returns a list created from the elements of the specified set.</p>
+
+<h3 class="function"><a name="to_string-1">to_string/1</a></h3>
+<div class="spec">
+<p><tt>to_string(Set::<a href="#type-set">set()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual representation of the specified set.</p>
+
+<h3 class="function"><a name="union-1">union/1</a></h3>
+<div class="spec">
+<p><tt>union(ListOfSets::[<a href="#type-set">set()</a>]) -&gt; <a href="#type-set">set()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the union of the specified sets.</p>
+
+<h3 class="function"><a name="union-2">union/2</a></h3>
+<div class="spec">
+<p><tt>union(FirstSet::<a href="#type-set">set()</a>, SecondSet::<a href="#type-set">set()</a>) -&gt; <a href="#type-set">set()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the union of the two specified sets.</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

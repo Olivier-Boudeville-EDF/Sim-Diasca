@@ -1,0 +1,156 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module sms_utils</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module sms_utils</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various convenient <b>SMS-related</b> facilities.
+
+
+<h2><a name="description">Description</a></h2><p>Gathering of various convenient <b>SMS-related</b> facilities.</p>
+
+ <p>They rely mostly on a web gateway for that. See <a href="http://mobile.esperide.org" target="_top"><tt>http://mobile.esperide.org</tt></a> 
+for one based typically on 3G devices.</p>
+
+ See sms_utils_test.erl for testing.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-count">count()</a></h3>
+<p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-credits">credits()</a></h3>
+<p><tt>credits() = <a href="#type-maybe">maybe</a>(<a href="#type-count">count()</a>)</tt></p>
+<p> Number of credits left (if applicable).</p>
+
+<h3 class="typedecl"><a name="type-diagnosis">diagnosis()</a></h3>
+<p><tt>diagnosis() = any()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-failure_reason">failure_reason()</a></h3>
+<p><tt>failure_reason() = {invalid_content, <a href="#type-ustring">ustring()</a>} | {invalid_phone_number, <a href="#type-ustring">ustring()</a>} | credits_exhausted | insufficient_credits | {invalid_password, <a href="#type-ustring">ustring()</a>} | {invalid_user, <a href="#type-ustring">ustring()</a>} | {invalid_content, <a href="#type-ustring">ustring()</a>} | {invalid_request, <a href="#type-ustring">ustring()</a>} | {error, <a href="#type-ustring">ustring()</a>} | {request_failed, <a href="#type-ustring">ustring()</a>}</tt></p>
+<p> Many steps may go wrong.</p>
+
+<h3 class="typedecl"><a name="type-message">message()</a></h3>
+<p><tt>message() = <a href="#type-ustring">ustring()</a></tt></p>
+<p> Message to be sent as SMS (up to 160 bytes).</p>
+
+<h3 class="typedecl"><a name="type-provider">provider()</a></h3>
+<p><tt>provider() = verysms</tt></p>
+<p> Name of a SMS provider (HTTP gateway), as an atom.</p>
+
+<h3 class="typedecl"><a name="type-recipient">recipient()</a></h3>
+<p><tt>recipient() = <a href="#type-ustring">ustring()</a></tt></p>
+<p> International mobile phone number of the recipient (ex: "+330616XXXXXX").</p>
+
+<h3 class="typedecl"><a name="type-sender_description">sender_description()</a></h3>
+<p><tt>sender_description() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><p> Any (short) alphanumerical string describing the sender, if this service is 
+provided.</p>
+
+ With verysms, supposedly only taken into account in the 'pro' class; but
+ actually SMS always shown as sent by the number "38200".</p>
+
+<h3 class="typedecl"><a name="type-sending_outcome">sending_outcome()</a></h3>
+<p><tt>sending_outcome() = success | {<a href="#type-failure_reason">failure_reason()</a>, <a href="#type-diagnosis">diagnosis()</a>}</tt></p>
+<p> Describes the result of the sending, as reported by the gateway.</p>
+
+<h3 class="typedecl"><a name="type-service_class">service_class()</a></h3>
+<p><tt>service_class() = eco | pro</tt></p>
+<p> Service class of a SMS being sent.</p>
+
+<h3 class="typedecl"><a name="type-sms">sms()</a></h3>
+<p><tt>sms() = #sms{message = <a href="#type-message">message()</a>, recipient = <a href="#type-recipient">recipient()</a>, sender_description = <a href="#type-sender_description">sender_description()</a>, service_class = <a href="#type-maybe">maybe</a>(<a href="#type-service_class">service_class()</a>)}</tt></p>
+
+
+<h3 class="typedecl"><a name="type-sms_account">sms_account()</a></h3>
+<p><tt>sms_account() = #sms_account{provider = <a href="#type-provider">provider()</a>, user_name = <a href="system_utils.html#type-user_name">system_utils:user_name()</a>, password = <a href="system_utils.html#type-password">system_utils:password()</a>, default_class = <a href="#type-service_class">service_class()</a>, credits = <a href="#type-credits">credits()</a>, sent_count = <a href="#type-count">count()</a>, sent_success_count = <a href="#type-count">count()</a>}</tt></p>
+<p> Describes a SMS account at a provider.</p>
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#account_to_string-1">account_to_string/1</a></td><td>Returns a textual description of the specified SMS account.</td></tr>
+<tr><td valign="top"><a href="#create_sms-3">create_sms/3</a></td><td>Creates a SMS record instance from specified information, the service
+ class being not defined, so that the default class of the account will
+ prevail.</td></tr>
+<tr><td valign="top"><a href="#create_sms-4">create_sms/4</a></td><td>Creates a SMS record instance from specified information.</td></tr>
+<tr><td valign="top"><a href="#send-2">send/2</a></td><td>Sends specified SMS, using specified account.</td></tr>
+<tr><td valign="top"><a href="#send-7">send/7</a></td><td>Sends specified SMS, using most detailed (explicit) settings.</td></tr>
+<tr><td valign="top"><a href="#sms_to_string-1">sms_to_string/1</a></td><td>Returns a textual description of the specified SMS.</td></tr>
+<tr><td valign="top"><a href="#update_credits-1">update_credits/1</a></td><td>Returns the specified SMS account, whose credit count has been updated, 
+telling whether the actual, provider-obtained count corresponds to the 
+recorded one ('matching') or not ('overwritten'), in which case the actual one 
+replaces the recorded one.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="account_to_string-1">account_to_string/1</a></h3>
+<div class="spec">
+<p><tt>account_to_string(Sms_account::<a href="#type-sms_account">sms_account()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of the specified SMS account.</p>
+
+<h3 class="function"><a name="create_sms-3">create_sms/3</a></h3>
+<div class="spec">
+<p><tt>create_sms(Message::<a href="#type-message">message()</a>, Recipient::<a href="#type-recipient">recipient()</a>, SenderDescription::<a href="#type-sender_description">sender_description()</a>) -&gt; <a href="#type-sms">sms()</a></tt><br></p>
+<p> </p>
+</div><p>Creates a SMS record instance from specified information, the service
+ class being not defined, so that the default class of the account will
+ prevail.
+</p>
+
+<h3 class="function"><a name="create_sms-4">create_sms/4</a></h3>
+<div class="spec">
+<p><tt>create_sms(Message::<a href="#type-message">message()</a>, Recipient::<a href="#type-recipient">recipient()</a>, SenderDescription::<a href="#type-sender_description">sender_description()</a>, ServiceClass::<a href="#type-maybe">maybe</a>(<a href="#type-service_class">service_class()</a>)) -&gt; <a href="#type-sms">sms()</a></tt><br></p>
+<p> </p>
+</div><p>Creates a SMS record instance from specified information.</p>
+
+<h3 class="function"><a name="send-2">send/2</a></h3>
+<div class="spec">
+<p><tt>send(Sms::<a href="#type-sms">sms()</a>, Account::<a href="#type-sms_account">sms_account()</a>) -&gt; {<a href="#type-sending_outcome">sending_outcome()</a>, <a href="#type-sms_account">sms_account()</a>}</tt><br></p>
+<p> </p>
+</div><p>Sends specified SMS, using specified account.</p>
+
+<h3 class="function"><a name="send-7">send/7</a></h3>
+<div class="spec">
+<p><tt>send(Provider::<a href="#type-provider">provider()</a>, ServiceClass::<a href="#type-service_class">service_class()</a>, Username::<a href="system_utils.html#type-user_name">system_utils:user_name()</a>, Password::<a href="system_utils.html#type-password">system_utils:password()</a>, Message::<a href="#type-message">message()</a>, Recipient::<a href="#type-recipient">recipient()</a>, SenderDescription::<a href="#type-sender_description">sender_description()</a>) -&gt; <a href="#type-sending_outcome">sending_outcome()</a></tt><br></p>
+<p> </p>
+</div><p><p>Sends specified SMS, using most detailed (explicit) settings.</p>
+
+ (base, only actual sending function)
+</p>
+
+<h3 class="function"><a name="sms_to_string-1">sms_to_string/1</a></h3>
+<div class="spec">
+<p><tt>sms_to_string(Sms::<a href="#type-sms">sms()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of the specified SMS.</p>
+
+<h3 class="function"><a name="update_credits-1">update_credits/1</a></h3>
+<div class="spec">
+<p><tt>update_credits(Account::<a href="#type-sms_account">sms_account()</a>) -&gt; {matching | overwritten | failed, <a href="#type-sms_account">sms_account()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Returns the specified SMS account, whose credit count has been updated, 
+telling whether the actual, provider-obtained count corresponds to the 
+recorded one ('matching') or not ('overwritten'), in which case the actual one 
+replaces the recorded one.</p>
+
+ If the operation failed, returns 'failed' with an unchanged account.
+</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

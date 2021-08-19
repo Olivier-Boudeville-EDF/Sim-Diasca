@@ -1,0 +1,618 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module executable_utils</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module executable_utils</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various convenient facilities regarding the <b>execution of
+ third-party programs</b>.
+
+
+<h2><a name="description">Description</a></h2><p>Gathering of various convenient facilities regarding the <b>execution of
+ third-party programs</b>.</p>
+
+ <p>See executable_utils_test.erl for the corresponding test, and shell_utils.erl 
+for the management of the shells and command lines.</p>
+
+ See system_utils.erl for the actual execution of programs.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-any_file_path">any_file_path()</a></h3>
+<p><tt>any_file_path() = <a href="file_utils.html#type-any_file_path">file_utils:any_file_path()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-command_output">command_output()</a></h3>
+<p><tt>command_output() = <a href="system_utils.html#type-command_output">system_utils:command_output()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-directory_path">directory_path()</a></h3>
+<p><tt>directory_path() = <a href="file_utils.html#type-directory_path">file_utils:directory_path()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-executable_name">executable_name()</a></h3>
+<p><tt>executable_name() = <a href="#type-ustring">ustring()</a></tt></p>
+<p> A name, not a path.</p>
+
+<h3 class="typedecl"><a name="type-executable_path">executable_path()</a></h3>
+<p><tt>executable_path() = <a href="file_utils.html#type-executable_path">file_utils:executable_path()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-file_path">file_path()</a></h3>
+<p><tt>file_path() = <a href="file_utils.html#type-file_path">file_utils:file_path()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-md5_sum">md5_sum()</a></h3>
+<p><tt>md5_sum() = non_neg_integer()</tt></p>
+<p> MD5 sum, a 128-bit hash value.</p>
+
+<h3 class="typedecl"><a name="type-sha1_sum">sha1_sum()</a></h3>
+<p><tt>sha1_sum() = non_neg_integer()</tt></p>
+<p> SHA1 sum, a 160-bit hash value.</p>
+
+<h3 class="typedecl"><a name="type-sha_sum">sha_sum()</a></h3>
+<p><tt>sha_sum() = non_neg_integer()</tt></p>
+<p> SHA sum, a hash value of unspecified size.</p>
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-width">width()</a></h3>
+<p><tt>width() = <a href="text_utils.html#type-width">text_utils:width()</a></tt></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#browse_images_in-1">browse_images_in/1</a></td><td>Allows to browse (without blocking) the images available in specified 
+directory (specified as a plain string).</td></tr>
+<tr><td valign="top"><a href="#can_generate_png_from_graph-0">can_generate_png_from_graph/0</a></td><td>Returns whether a PNG file can be generated from a graph file: either
+ confirms it, or returns an hint why not.</td></tr>
+<tr><td valign="top"><a href="#compute_md5_sum-1">compute_md5_sum/1</a></td><td>Returns the MD5 sum computed from the content of the specified file, as
+ an unsigned integer, actually of 128 bits (ex:
+ 96950473382892364268626543336313804804, corresponding to hexadecimal string
+ "48effb631c66e93c7054c10f798f5804").</td></tr>
+<tr><td valign="top"><a href="#compute_sha1_sum-1">compute_sha1_sum/1</a></td><td>Returns the SHA1 sum computed from the content of the specified file, as
+ an unsigned integer, actually of 160 bits (ex:
+ 189271338729529876450691804503218393830331783574, corresponding to hexadecimal
+ string "212738699f721d8d8c3e58dac2b113bb8d0c1996").</td></tr>
+<tr><td valign="top"><a href="#compute_sha_sum-2">compute_sha_sum/2</a></td><td>Returns the SHA sum computed from the content of the specified file, as
+ an unsigned integer, whose size depends on the specified algorithm: 1, 224,
+ 256, 384, 512, 512224, 512256 (see 'man shasum' for more details).</td></tr>
+<tr><td valign="top"><a href="#display_pdf_file-1">display_pdf_file/1</a></td><td>Displays (without blocking) to the user the specified PNG, using an 
+external viewer.</td></tr>
+<tr><td valign="top"><a href="#display_png_file-1">display_png_file/1</a></td><td>Displays (without blocking) to the user the specified PNG, using an 
+external viewer.</td></tr>
+<tr><td valign="top"><a href="#display_text_file-1">display_text_file/1</a></td><td>Displays, with blocking, a text file.</td></tr>
+<tr><td valign="top"><a href="#display_wide_text_file-2">display_wide_text_file/2</a></td><td>Displays, with blocking, a wide text file.</td></tr>
+<tr><td valign="top"><a href="#find_executable-1">find_executable/1</a></td><td>Finds specified executable program, whose name is specified as a string 
+(ex: "gcc") in the current user PATH.</td></tr>
+<tr><td valign="top"><a href="#generate_png_from_graph_file-2">generate_png_from_graph_file/2</a></td><td>Generates a PNG file from specified graph file.</td></tr>
+<tr><td valign="top"><a href="#generate_png_from_graph_file-3">generate_png_from_graph_file/3</a></td><td>Generates a PNG image file from specified graph file, that must respect 
+the dot (graphviz) syntax.</td></tr>
+<tr><td valign="top"><a href="#get_current_gnuplot_version-0">get_current_gnuplot_version/0</a></td><td>Returns, as a tuple (ex: {4,2} for the 4.2 version), the gnuplot version
+ actually available by default (in the PATH) on this computer.</td></tr>
+<tr><td valign="top"><a href="#get_current_gnuplot_version-1">get_current_gnuplot_version/1</a></td><td>Returns, as a tuple (ex: {4,2} for the 4.2 version), the gnuplot version
+ actually available on this computer.</td></tr>
+<tr><td valign="top"><a href="#get_default_bzip2_compress_tool-0">get_default_bzip2_compress_tool/0</a></td><td>Returns the default tool to use to decompress in the BZIP2 format.</td></tr>
+<tr><td valign="top"><a href="#get_default_bzip2_decompress_tool-0">get_default_bzip2_decompress_tool/0</a></td><td>Returns the default tool to use to decompress in the BZIP2 format.</td></tr>
+<tr><td valign="top"><a href="#get_default_erlang_interpreter_name-0">get_default_erlang_interpreter_name/0</a></td><td>Returns the name of the default Erlang interpreter.</td></tr>
+<tr><td valign="top"><a href="#get_default_erlang_interpreter_path-0">get_default_erlang_interpreter_path/0</a></td><td>Returns an absolute path to the default Erlang interpreter.</td></tr>
+<tr><td valign="top"><a href="#get_default_erlang_root-0">get_default_erlang_root/0</a></td><td>Returns an absolute path to the root directory of the current Erlang 
+installation.</td></tr>
+<tr><td valign="top"><a href="#get_default_image_browser_name-0">get_default_image_browser_name/0</a></td><td>Returns the name of the default image browser tool.</td></tr>
+<tr><td valign="top"><a href="#get_default_image_browser_path-0">get_default_image_browser_path/0</a></td><td>Returns an absolute path to the default image browser tool.</td></tr>
+<tr><td valign="top"><a href="#get_default_image_viewer_name-0">get_default_image_viewer_name/0</a></td><td>Returns the name of the default image viewer tool.</td></tr>
+<tr><td valign="top"><a href="#get_default_image_viewer_path-0">get_default_image_viewer_path/0</a></td><td>Returns an absolute path to the default image viewer tool.</td></tr>
+<tr><td valign="top"><a href="#get_default_java_runtime-0">get_default_java_runtime/0</a></td><td>Returns the default tool to execute Java programs.</td></tr>
+<tr><td valign="top"><a href="#get_default_jinterface_path-0">get_default_jinterface_path/0</a></td><td>Returns the default path to the .jar file implementing JInterface, 
+namely 'OtpErlang.jar'.</td></tr>
+<tr><td valign="top"><a href="#get_default_md5_tool-0">get_default_md5_tool/0</a></td><td>Returns the default tool to compute MD5 sums.</td></tr>
+<tr><td valign="top"><a href="#get_default_openssl_executable_name-0">get_default_openssl_executable_name/0</a></td><td>Returns the name default openssl-based executable.</td></tr>
+<tr><td valign="top"><a href="#get_default_openssl_executable_path-0">get_default_openssl_executable_path/0</a></td><td>Returns an absolute path to the default openssl-based executable.</td></tr>
+<tr><td valign="top"><a href="#get_default_pdf_viewer_name-0">get_default_pdf_viewer_name/0</a></td><td>Returns the name of the default PDF viewer tool.</td></tr>
+<tr><td valign="top"><a href="#get_default_pdf_viewer_path-0">get_default_pdf_viewer_path/0</a></td><td>Returns an absolute path to the default PDF viewer tool.</td></tr>
+<tr><td valign="top"><a href="#get_default_scp_executable_name-0">get_default_scp_executable_name/0</a></td><td>Returns the name default SSH-based scp executable.</td></tr>
+<tr><td valign="top"><a href="#get_default_scp_executable_path-0">get_default_scp_executable_path/0</a></td><td>Returns an absolute path to the default SSH-based scp executable.</td></tr>
+<tr><td valign="top"><a href="#get_default_sha_tool-0">get_default_sha_tool/0</a></td><td>Returns the default tool to compute SHA sums.</td></tr>
+<tr><td valign="top"><a href="#get_default_ssh_client_name-0">get_default_ssh_client_name/0</a></td><td>Returns the name of the default SSH client.</td></tr>
+<tr><td valign="top"><a href="#get_default_ssh_client_path-0">get_default_ssh_client_path/0</a></td><td>Returns an absolute path to the default SSH client.</td></tr>
+<tr><td valign="top"><a href="#get_default_text_viewer_name-0">get_default_text_viewer_name/0</a></td><td>Returns the name of the default text viewer tool.</td></tr>
+<tr><td valign="top"><a href="#get_default_text_viewer_path-0">get_default_text_viewer_path/0</a></td><td>Returns an absolute path to the default text viewer tool.</td></tr>
+<tr><td valign="top"><a href="#get_default_trace_viewer_name-0">get_default_trace_viewer_name/0</a></td><td>Returns the name of the default trace viewer tool.</td></tr>
+<tr><td valign="top"><a href="#get_default_trace_viewer_path-0">get_default_trace_viewer_path/0</a></td><td>Returns an absolute path to the default trace viewer tool.</td></tr>
+<tr><td valign="top"><a href="#get_default_web_browser_name-0">get_default_web_browser_name/0</a></td><td>Returns the name of the default web browser.</td></tr>
+<tr><td valign="top"><a href="#get_default_web_browser_path-0">get_default_web_browser_path/0</a></td><td>Returns an absolute path to the default web browser tool.</td></tr>
+<tr><td valign="top"><a href="#get_default_wide_text_viewer_name-1">get_default_wide_text_viewer_name/1</a></td><td>Returns the name of the default viewer tool for wider texts.</td></tr>
+<tr><td valign="top"><a href="#get_default_wide_text_viewer_path-1">get_default_wide_text_viewer_path/1</a></td><td>Returns an absolute path to the default viewer tool for wider texts.</td></tr>
+<tr><td valign="top"><a href="#get_default_xz_compress_tool-0">get_default_xz_compress_tool/0</a></td><td>Returns the default tool to use to compress in the XZ format.</td></tr>
+<tr><td valign="top"><a href="#get_default_xz_decompress_tool-0">get_default_xz_decompress_tool/0</a></td><td>Returns the default tool to use to decompress in the XZ format.</td></tr>
+<tr><td valign="top"><a href="#get_default_zip_compress_tool-0">get_default_zip_compress_tool/0</a></td><td>Returns the default tool to use to compress in the ZIP format.</td></tr>
+<tr><td valign="top"><a href="#get_default_zip_decompress_tool-0">get_default_zip_decompress_tool/0</a></td><td>Returns the default tool to use to decompress in the ZIP format.</td></tr>
+<tr><td valign="top"><a href="#get_gnuplot_path-0">get_gnuplot_path/0</a></td><td>Returns an absolute path to a gnuplot executable.</td></tr>
+<tr><td valign="top"><a href="#get_ssh_mute_option-0">get_ssh_mute_option/0</a></td><td>Returns a string to be inserted into a command-line call to ssh/scp so 
+that it can run as much as possible non-interactively.</td></tr>
+<tr><td valign="top"><a href="#is_batch-0">is_batch/0</a></td><td>Tells whether the program is run in batch mode.</td></tr>
+<tr><td valign="top"><a href="#lookup_executable-1">lookup_executable/1</a></td><td>Looks-up specified executable program, whose name is specified as a 
+string (ex: "gcc") in the current user PATH.</td></tr>
+<tr><td valign="top"><a href="#lookup_executable-2">lookup_executable/2</a></td><td>Looks-up specified executable program, whose name is specified as a 
+string (ex: "gcc") in the current user PATH, augmented of the specified list 
+of directories (whose existence is not checked), placed at first position.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="browse_images_in-1">browse_images_in/1</a></h3>
+<div class="spec">
+<p><tt>browse_images_in(DirectoryName::<a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Allows to browse (without blocking) the images available in specified 
+directory (specified as a plain string)</p>
+
+ <p>Returns the text output by the tool (if any).</p>
+
+ Throws an exception if an error occurs.
+</p>
+
+<h3 class="function"><a name="can_generate_png_from_graph-0">can_generate_png_from_graph/0</a></h3>
+<div class="spec">
+<p><tt>can_generate_png_from_graph() -&gt; true | <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns whether a PNG file can be generated from a graph file: either
+ confirms it, or returns an hint why not.
+</p>
+
+<h3 class="function"><a name="compute_md5_sum-1">compute_md5_sum/1</a></h3>
+<div class="spec">
+<p><tt>compute_md5_sum(Filename::<a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-md5_sum">md5_sum()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the MD5 sum computed from the content of the specified file, as
+ an unsigned integer, actually of 128 bits (ex:
+ 96950473382892364268626543336313804804, corresponding to hexadecimal string
+ "48effb631c66e93c7054c10f798f5804").
+</p>
+
+<h3 class="function"><a name="compute_sha1_sum-1">compute_sha1_sum/1</a></h3>
+<div class="spec">
+<p><tt>compute_sha1_sum(Filename::<a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-sha1_sum">sha1_sum()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the SHA1 sum computed from the content of the specified file, as
+ an unsigned integer, actually of 160 bits (ex:
+ 189271338729529876450691804503218393830331783574, corresponding to hexadecimal
+ string "212738699f721d8d8c3e58dac2b113bb8d0c1996").
+</p>
+
+<h3 class="function"><a name="compute_sha_sum-2">compute_sha_sum/2</a></h3>
+<div class="spec">
+<p><tt>compute_sha_sum(Filename::<a href="#type-any_file_path">any_file_path()</a>, SizeOfSHAAlgorithm::<a href="basic_utils.html#type-count">basic_utils:count()</a>) -&gt; <a href="#type-sha_sum">sha_sum()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the SHA sum computed from the content of the specified file, as
+ an unsigned integer, whose size depends on the specified algorithm: 1, 224,
+ 256, 384, 512, 512224, 512256 (see 'man shasum' for more details).
+</p>
+
+<h3 class="function"><a name="display_pdf_file-1">display_pdf_file/1</a></h3>
+<div class="spec">
+<p><tt>display_pdf_file(PDFFilename::<a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Displays (without blocking) to the user the specified PNG, using an 
+external viewer.</p>
+
+ <p>Returns the text output by the tool (if any).</p>
+
+ Throws an exception if an error occurs.
+</p>
+
+<h3 class="function"><a name="display_png_file-1">display_png_file/1</a></h3>
+<div class="spec">
+<p><tt>display_png_file(PNGFilename::<a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Displays (without blocking) to the user the specified PNG, using an 
+external viewer.</p>
+
+ <p>Returns the text output by the tool (if any).</p>
+
+ Throws an exception if an error occurs.
+</p>
+
+<h3 class="function"><a name="display_text_file-1">display_text_file/1</a></h3>
+<div class="spec">
+<p><tt>display_text_file(TextFilename::<a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-command_output">command_output()</a></tt><br></p>
+<p> </p>
+</div><p><p>Displays, with blocking, a text file.</p>
+
+ <p>Returns the text output by the tool (if any).</p>
+
+ Throws an exception if an error occurs.
+</p>
+
+<h3 class="function"><a name="display_wide_text_file-2">display_wide_text_file/2</a></h3>
+<div class="spec">
+<p><tt>display_wide_text_file(TextFilename::<a href="#type-file_path">file_path()</a>, CharacterWidth::<a href="#type-width">width()</a>) -&gt; <a href="#type-command_output">command_output()</a></tt><br></p>
+<p> </p>
+</div><p><p>Displays, with blocking, a wide text file.</p>
+
+ <p>Returns the text output by the tool (if any).</p>
+
+ Throws an exception if an error occurs.
+</p>
+
+<h3 class="function"><a name="find_executable-1">find_executable/1</a></h3>
+<div class="spec">
+<p><tt>find_executable(ExecutableName::<a href="#type-executable_name">executable_name()</a>) -&gt; <a href="#type-executable_path">executable_path()</a></tt><br></p>
+<p> </p>
+</div><p><p>Finds specified executable program, whose name is specified as a string 
+(ex: "gcc") in the current user PATH.</p>
+
+ Returns an absolute filename of the executable program (ex: "/usr/bin/gcc") or
+ throws an exception {executable_not_found,ExecutableName} if it was not found.
+</p>
+
+<h3 class="function"><a name="generate_png_from_graph_file-2">generate_png_from_graph_file/2</a></h3>
+<div class="spec">
+<p><tt>generate_png_from_graph_file(PNGFilename::<a href="#type-file_path">file_path()</a>, GraphFilename::<a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-command_output">command_output()</a></tt><br></p>
+<p> </p>
+</div><p><p>Generates a PNG file from specified graph file.</p>
+
+ By default does not crash if dot outputs some warnings but does not yield an
+ error exit status.
+</p>
+
+<h3 class="function"><a name="generate_png_from_graph_file-3">generate_png_from_graph_file/3</a></h3>
+<div class="spec">
+<p><tt>generate_png_from_graph_file(PNGFilePath::<a href="#type-file_path">file_path()</a>, GraphFilePath::<a href="#type-file_path">file_path()</a>, HaltOnDotOutput::boolean()) -&gt; <a href="#type-command_output">command_output()</a></tt><br></p>
+<p> </p>
+</div><p><p>Generates a PNG image file from specified graph file, that must respect 
+the dot (graphviz) syntax.</p>
+
+ <p>Arguments are:</p>
+
+  <p>- PNGFilePath the filename of the PNG to generate</p>
+
+  <p>- GraphFilePath the filename corresponding to the source graph</p>
+
+  <p>- HaltOnDotOutput tells whether the process should throw an exception should  
+dot output an error or a warning</p>
+
+ Returns the (possibly empty) string output by dot, or throws an exception.
+</p>
+
+<h3 class="function"><a name="get_current_gnuplot_version-0">get_current_gnuplot_version/0</a></h3>
+<div class="spec">
+<p><tt>get_current_gnuplot_version() -&gt; <a href="basic_utils.html#type-two_digit_version">basic_utils:two_digit_version()</a></tt><br></p>
+<p> </p>
+</div><p>Returns, as a tuple (ex: {4,2} for the 4.2 version), the gnuplot version
+ actually available by default (in the PATH) on this computer.
+</p>
+
+<h3 class="function"><a name="get_current_gnuplot_version-1">get_current_gnuplot_version/1</a></h3>
+<div class="spec">
+<p><tt>get_current_gnuplot_version(GnuplotPath::<a href="#type-executable_path">executable_path()</a>) -&gt; <a href="basic_utils.html#type-two_digit_version">basic_utils:two_digit_version()</a></tt><br></p>
+<p> </p>
+</div><p>Returns, as a tuple (ex: {4,2} for the 4.2 version), the gnuplot version
+ actually available on this computer.
+</p>
+
+<h3 class="function"><a name="get_default_bzip2_compress_tool-0">get_default_bzip2_compress_tool/0</a></h3>
+<div class="spec">
+<p><tt>get_default_bzip2_compress_tool() -&gt; <a href="#type-executable_path">executable_path()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the default tool to use to decompress in the BZIP2 format.</p>
+
+<h3 class="function"><a name="get_default_bzip2_decompress_tool-0">get_default_bzip2_decompress_tool/0</a></h3>
+<div class="spec">
+<p><tt>get_default_bzip2_decompress_tool() -&gt; <a href="#type-executable_path">executable_path()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the default tool to use to decompress in the BZIP2 format.</p>
+
+<h3 class="function"><a name="get_default_erlang_interpreter_name-0">get_default_erlang_interpreter_name/0</a></h3>
+<div class="spec">
+<p><tt>get_default_erlang_interpreter_name() -&gt; <a href="#type-executable_name">executable_name()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the name of the default Erlang interpreter.</p>
+
+<h3 class="function"><a name="get_default_erlang_interpreter_path-0">get_default_erlang_interpreter_path/0</a></h3>
+<div class="spec">
+<p><tt>get_default_erlang_interpreter_path() -&gt; <a href="#type-executable_path">executable_path()</a></tt><br></p>
+<p> </p>
+</div><p>Returns an absolute path to the default Erlang interpreter.</p>
+
+<h3 class="function"><a name="get_default_erlang_root-0">get_default_erlang_root/0</a></h3>
+<div class="spec">
+<p><tt>get_default_erlang_root() -&gt; <a href="#type-directory_path">directory_path()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns an absolute path to the root directory of the current Erlang 
+installation.</p>
+
+ Ex: if 'erl' is to be found in
+ ~/Software/Erlang/Erlang-current-install/bin/erl, will return:
+ ~/Software/Erlang/Erlang-current-install.
+</p>
+
+<h3 class="function"><a name="get_default_image_browser_name-0">get_default_image_browser_name/0</a></h3>
+<div class="spec">
+<p><tt>get_default_image_browser_name() -&gt; <a href="#type-executable_name">executable_name()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the name of the default image browser tool.</p>
+
+ Used to be: gqview (renamed since then).
+</p>
+
+<h3 class="function"><a name="get_default_image_browser_path-0">get_default_image_browser_path/0</a></h3>
+<div class="spec">
+<p><tt>get_default_image_browser_path() -&gt; <a href="#type-executable_path">executable_path()</a></tt><br></p>
+<p> </p>
+</div><p>Returns an absolute path to the default image browser tool.</p>
+
+<h3 class="function"><a name="get_default_image_viewer_name-0">get_default_image_viewer_name/0</a></h3>
+<div class="spec">
+<p><tt>get_default_image_viewer_name() -&gt; <a href="#type-executable_name">executable_name()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the name of the default image viewer tool.</p>
+
+ Could be also: xv, firefox, etc.
+</p>
+
+<h3 class="function"><a name="get_default_image_viewer_path-0">get_default_image_viewer_path/0</a></h3>
+<div class="spec">
+<p><tt>get_default_image_viewer_path() -&gt; <a href="#type-executable_path">executable_path()</a></tt><br></p>
+<p> </p>
+</div><p>Returns an absolute path to the default image viewer tool.</p>
+
+<h3 class="function"><a name="get_default_java_runtime-0">get_default_java_runtime/0</a></h3>
+<div class="spec">
+<p><tt>get_default_java_runtime() -&gt; <a href="#type-executable_path">executable_path()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the default tool to execute Java programs.</p>
+
+<h3 class="function"><a name="get_default_jinterface_path-0">get_default_jinterface_path/0</a></h3>
+<div class="spec">
+<p><tt>get_default_jinterface_path() -&gt; <a href="#type-file_path">file_path()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the default path to the .jar file implementing JInterface, 
+namely 'OtpErlang.jar'.</p>
+
+ <p>Indeed, to make use of JInterface, OtpErlang.jar must be found by the 
+counterpart Java program.</p>
+
+ <p>We chose conventionally its location to be 
+$(ERLANG_ROOT)/lib/erlang/jinterface/priv/OtpErlang.jar, 
+with ERLANG_ROOT being typically ~/Software/Erlang/Erlang-current-install.</p>
+
+ Indeed, we expect that in $(ERLANG_ROOT)/lib/erlang/ a symbolic link named
+ 'jinterface' has been specifically created in order to point to the directory
+ of the corresponding version of JInterface (ex: lib/jinterface-1.8/); our
+ install-erlang.sh script automatically enforces that convention.
+</p>
+
+<h3 class="function"><a name="get_default_md5_tool-0">get_default_md5_tool/0</a></h3>
+<div class="spec">
+<p><tt>get_default_md5_tool() -&gt; <a href="#type-executable_path">executable_path()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the default tool to compute MD5 sums.</p>
+
+<h3 class="function"><a name="get_default_openssl_executable_name-0">get_default_openssl_executable_name/0</a></h3>
+<div class="spec">
+<p><tt>get_default_openssl_executable_name() -&gt; <a href="#type-executable_name">executable_name()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the name default openssl-based executable.</p>
+
+<h3 class="function"><a name="get_default_openssl_executable_path-0">get_default_openssl_executable_path/0</a></h3>
+<div class="spec">
+<p><tt>get_default_openssl_executable_path() -&gt; <a href="#type-executable_path">executable_path()</a></tt><br></p>
+<p> </p>
+</div><p>Returns an absolute path to the default openssl-based executable.</p>
+
+<h3 class="function"><a name="get_default_pdf_viewer_name-0">get_default_pdf_viewer_name/0</a></h3>
+<div class="spec">
+<p><tt>get_default_pdf_viewer_name() -&gt; <a href="#type-executable_name">executable_name()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the name of the default PDF viewer tool.</p>
+
+ Could be also: xpdf, acroread, etc.
+</p>
+
+<h3 class="function"><a name="get_default_pdf_viewer_path-0">get_default_pdf_viewer_path/0</a></h3>
+<div class="spec">
+<p><tt>get_default_pdf_viewer_path() -&gt; <a href="#type-executable_path">executable_path()</a></tt><br></p>
+<p> </p>
+</div><p>Returns an absolute path to the default PDF viewer tool.</p>
+
+<h3 class="function"><a name="get_default_scp_executable_name-0">get_default_scp_executable_name/0</a></h3>
+<div class="spec">
+<p><tt>get_default_scp_executable_name() -&gt; <a href="#type-executable_name">executable_name()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the name default SSH-based scp executable.</p>
+
+<h3 class="function"><a name="get_default_scp_executable_path-0">get_default_scp_executable_path/0</a></h3>
+<div class="spec">
+<p><tt>get_default_scp_executable_path() -&gt; <a href="#type-executable_path">executable_path()</a></tt><br></p>
+<p> </p>
+</div><p>Returns an absolute path to the default SSH-based scp executable.</p>
+
+<h3 class="function"><a name="get_default_sha_tool-0">get_default_sha_tool/0</a></h3>
+<div class="spec">
+<p><tt>get_default_sha_tool() -&gt; <a href="#type-executable_path">executable_path()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the default tool to compute SHA sums.</p>
+
+<h3 class="function"><a name="get_default_ssh_client_name-0">get_default_ssh_client_name/0</a></h3>
+<div class="spec">
+<p><tt>get_default_ssh_client_name() -&gt; <a href="#type-executable_name">executable_name()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the name of the default SSH client.</p>
+
+<h3 class="function"><a name="get_default_ssh_client_path-0">get_default_ssh_client_path/0</a></h3>
+<div class="spec">
+<p><tt>get_default_ssh_client_path() -&gt; <a href="#type-executable_path">executable_path()</a></tt><br></p>
+<p> </p>
+</div><p>Returns an absolute path to the default SSH client.</p>
+
+<h3 class="function"><a name="get_default_text_viewer_name-0">get_default_text_viewer_name/0</a></h3>
+<div class="spec">
+<p><tt>get_default_text_viewer_name() -&gt; <a href="#type-executable_name">executable_name()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the name of the default text viewer tool.</p>
+
+ Could be also: nedit, emacs, etc.
+</p>
+
+<h3 class="function"><a name="get_default_text_viewer_path-0">get_default_text_viewer_path/0</a></h3>
+<div class="spec">
+<p><tt>get_default_text_viewer_path() -&gt; <a href="#type-executable_path">executable_path()</a></tt><br></p>
+<p> </p>
+</div><p>Returns an absolute path to the default text viewer tool.</p>
+
+<h3 class="function"><a name="get_default_trace_viewer_name-0">get_default_trace_viewer_name/0</a></h3>
+<div class="spec">
+<p><tt>get_default_trace_viewer_name() -&gt; <a href="#type-executable_name">executable_name()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the name of the default trace viewer tool.</p>
+
+ Could be also: nedit, gedit, etc.
+</p>
+
+<h3 class="function"><a name="get_default_trace_viewer_path-0">get_default_trace_viewer_path/0</a></h3>
+<div class="spec">
+<p><tt>get_default_trace_viewer_path() -&gt; <a href="#type-executable_path">executable_path()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns an absolute path to the default trace viewer tool.</p>
+
+ Could be also: nedit, gedit, etc.
+</p>
+
+<h3 class="function"><a name="get_default_web_browser_name-0">get_default_web_browser_name/0</a></h3>
+<div class="spec">
+<p><tt>get_default_web_browser_name() -&gt; <a href="#type-executable_name">executable_name()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the name of the default web browser.</p>
+
+<h3 class="function"><a name="get_default_web_browser_path-0">get_default_web_browser_path/0</a></h3>
+<div class="spec">
+<p><tt>get_default_web_browser_path() -&gt; <a href="#type-executable_path">executable_path()</a></tt><br></p>
+<p> </p>
+</div><p>Returns an absolute path to the default web browser tool.</p>
+
+<h3 class="function"><a name="get_default_wide_text_viewer_name-1">get_default_wide_text_viewer_name/1</a></h3>
+<div class="spec">
+<p><tt>get_default_wide_text_viewer_name(CharacterWidth::<a href="#type-width">width()</a>) -&gt; <a href="#type-executable_name">executable_name()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the name of the default viewer tool for wider texts.</p>
+
+<h3 class="function"><a name="get_default_wide_text_viewer_path-1">get_default_wide_text_viewer_path/1</a></h3>
+<div class="spec">
+<p><tt>get_default_wide_text_viewer_path(CharacterWidth::<a href="#type-width">width()</a>) -&gt; <a href="#type-executable_path">executable_path()</a></tt><br></p>
+<p> </p>
+</div><p>Returns an absolute path to the default viewer tool for wider texts.</p>
+
+<h3 class="function"><a name="get_default_xz_compress_tool-0">get_default_xz_compress_tool/0</a></h3>
+<div class="spec">
+<p><tt>get_default_xz_compress_tool() -&gt; <a href="#type-executable_path">executable_path()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the default tool to use to compress in the XZ format.</p>
+
+<h3 class="function"><a name="get_default_xz_decompress_tool-0">get_default_xz_decompress_tool/0</a></h3>
+<div class="spec">
+<p><tt>get_default_xz_decompress_tool() -&gt; <a href="#type-executable_path">executable_path()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the default tool to use to decompress in the XZ format.</p>
+
+<h3 class="function"><a name="get_default_zip_compress_tool-0">get_default_zip_compress_tool/0</a></h3>
+<div class="spec">
+<p><tt>get_default_zip_compress_tool() -&gt; <a href="#type-executable_path">executable_path()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the default tool to use to compress in the ZIP format.</p>
+
+<h3 class="function"><a name="get_default_zip_decompress_tool-0">get_default_zip_decompress_tool/0</a></h3>
+<div class="spec">
+<p><tt>get_default_zip_decompress_tool() -&gt; <a href="#type-executable_path">executable_path()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the default tool to use to decompress in the ZIP format.</p>
+
+<h3 class="function"><a name="get_gnuplot_path-0">get_gnuplot_path/0</a></h3>
+<div class="spec">
+<p><tt>get_gnuplot_path() -&gt; <a href="#type-executable_path">executable_path()</a></tt><br></p>
+<p> </p>
+</div><p>Returns an absolute path to a gnuplot executable.</p>
+
+<h3 class="function"><a name="get_ssh_mute_option-0">get_ssh_mute_option/0</a></h3>
+<div class="spec">
+<p><tt>get_ssh_mute_option() -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns a string to be inserted into a command-line call to ssh/scp so 
+that it can run as much as possible non-interactively.</p>
+
+ <p>Tries notably to avoid following message: "The authenticity of host 'Server 
+(XXXXX)' can't be established.  RSA key fingerprint is YYYYY. Are you sure you 
+want to continue connecting (yes/no)?".</p>
+
+ <p>Note: only to be used in a trusted environment.</p>
+
+ <p>Returns the text output by the tool (if any).</p>
+
+ Throws an exception if an error occurs.
+</p>
+
+<h3 class="function"><a name="is_batch-0">is_batch/0</a></h3>
+<div class="spec">
+<p><tt>is_batch() -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p><p>Tells whether the program is run in batch mode.</p>
+
+ <p>By default, a program is not in batch mode (hence is in interactive mode, 
+meaning it might trigger graphical displays).</p>
+
+ <p>The most prioritary setting is if the "--batch" command line argument has been 
+specified, provided it has been set as a plain argument, i.e. one that it is 
+specified *after* either "--" or, preferably, "-extra".</p>
+
+ <p>Otherwise, the application configuration will be read for the is_batch key 
+(typically set from any conf/sys.config file defined by the application; see 
+also the "-config" command-line option in 
+https://erlang.org/doc/man/config.html).</p>
+
+ <p>Finally, if not set elsewhere, the application resource file (*.app) will be 
+searched for such an is_batch key.</p>
+
+ Note that, if relying on application configuration, the result will depend on
+ the {application name, callsite} pair. Indeed, if application foo depends on
+ application bar, and foo defined in its conf/sys.config file {is_batch,false}
+ whereas bar defined in its own configuration file {is_batch,true}, should a
+ process belonging to bar call this function, it will return false.
+</p>
+
+<h3 class="function"><a name="lookup_executable-1">lookup_executable/1</a></h3>
+<div class="spec">
+<p><tt>lookup_executable(ExecutableName::<a href="#type-executable_name">executable_name()</a>) -&gt; <a href="#type-executable_path">executable_path()</a> | false</tt><br></p>
+<p> </p>
+</div><p><p>Looks-up specified executable program, whose name is specified as a 
+string (ex: "gcc") in the current user PATH.</p>
+
+ Returns an absolute filename of the executable program (ex: "/usr/bin/gcc"),
+ or the 'false' atom if it was not found.
+</p>
+
+<h3 class="function"><a name="lookup_executable-2">lookup_executable/2</a></h3>
+<div class="spec">
+<p><tt>lookup_executable(ExecutableName::<a href="#type-executable_name">executable_name()</a>, ExtraDirs::[<a href="#type-directory_path">directory_path()</a>]) -&gt; <a href="#type-executable_path">executable_path()</a> | false</tt><br></p>
+<p> </p>
+</div><p><p>Looks-up specified executable program, whose name is specified as a 
+string (ex: "gcc") in the current user PATH, augmented of the specified list 
+of directories (whose existence is not checked), placed at first position.</p>
+
+ <p>Returns an absolute filename of the executable program (ex: "/usr/bin/gcc"), 
+or the 'false' atom if it was not found.</p>
+
+ Ex: lookup_executable("my-foo-program", [".", "/tmp"])
+</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

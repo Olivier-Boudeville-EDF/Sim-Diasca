@@ -1,0 +1,780 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module wooper_serialisation</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module wooper_serialisation</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Module containing facilities for the <b>serialisation and deserialisation
+ of WOOPER instances</b>.
+
+
+<h2><a name="description">Description</a></h2><p>Module containing facilities for the <b>serialisation and deserialisation
+ of WOOPER instances</b>.</p>
+
+ Note: offseting as much as possible code from the counterpart class header in
+ this module allows for smaller, cache-friendly BEAMs, and short compilation
+ times.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-attribute_entry">attribute_entry()</a></h3>
+<p><tt>attribute_entry() = {<a href="#type-attribute_name">attribute_name()</a>, <a href="#type-attribute_value">attribute_value()</a>}</tt></p>
+
+
+<h3 class="typedecl"><a name="type-attribute_name">attribute_name()</a></h3>
+<p><tt>attribute_name() = <a href="wooper.html#type-attribute_name">wooper:attribute_name()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-attribute_value">attribute_value()</a></h3>
+<p><tt>attribute_value() = <a href="wooper.html#type-attribute_value">wooper:attribute_value()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-bin_serialisation">bin_serialisation()</a></h3>
+<p><tt>bin_serialisation() = binary()</tt></p>
+<p><p> The serialisation form of an instance, as an ext_binary, i.e. a binary data 
+object, structured according to the Erlang external term format:</p>
+
+ However erlang:ext_binary/0 is not exported:
+-type bin_serialisation() :: erlang:ext_binary().</p>
+
+<h3 class="typedecl"><a name="type-classname">classname()</a></h3>
+<p><tt>classname() = <a href="wooper.html#type-classname">wooper:classname()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-const_request_return">const_request_return()</a></h3>
+<p><tt>const_request_return(T) = <a href="wooper.html#type-const_request_return">wooper:const_request_return</a>(T)</tt></p>
+
+
+<h3 class="typedecl"><a name="type-entry_transformer">entry_transformer()</a></h3>
+<p><tt>entry_transformer() = <a href="#type-maybe">maybe</a>(fun((<a href="#type-attribute_entry">attribute_entry()</a>, <a href="basic_utils.html#type-user_data">basic_utils:user_data()</a>) -&gt; {<a href="#type-attribute_entry">attribute_entry()</a>, <a href="basic_utils.html#type-user_data">basic_utils:user_data()</a>}))</tt></p>
+<p><p> Any function that is able to transform the state of an instance.</p>
+
+ Note: see basic_utils:traverse_term/4, which may be useful in that context.</p>
+
+<h3 class="typedecl"><a name="type-instance_pid">instance_pid()</a></h3>
+<p><tt>instance_pid() = pid()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-method_argument">method_argument()</a></h3>
+<p><tt>method_argument() = <a href="wooper.html#type-method_argument">wooper:method_argument()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-method_arguments">method_arguments()</a></h3>
+<p><tt>method_arguments() = <a href="wooper.html#type-method_arguments">wooper:method_arguments()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-method_internal_result">method_internal_result()</a></h3>
+<p><tt>method_internal_result() = <a href="wooper.html#type-method_internal_result">wooper:method_internal_result()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-method_name">method_name()</a></h3>
+<p><tt>method_name() = <a href="wooper.html#type-method_name">wooper:method_name()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-oneway_name">oneway_name()</a></h3>
+<p><tt>oneway_name() = <a href="wooper.html#type-oneway_name">wooper:oneway_name()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-oneway_return">oneway_return()</a></h3>
+<p><tt>oneway_return() = <a href="wooper.html#type-oneway_return">wooper:oneway_return()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-request_name">request_name()</a></h3>
+<p><tt>request_name() = <a href="wooper.html#type-request_name">wooper:request_name()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-request_result">request_result()</a></h3>
+<p><tt>request_result() = any()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-request_result">request_result()</a></h3>
+<p><tt>request_result(T) = <a href="wooper.html#type-request_result">wooper:request_result</a>(T)</tt></p>
+
+
+<h3 class="typedecl"><a name="type-request_return">request_return()</a></h3>
+<p><tt>request_return(T) = <a href="wooper.html#type-request_result">wooper:request_result</a>(T)</tt></p>
+
+
+<h3 class="typedecl"><a name="type-requests_outcome">requests_outcome()</a></h3>
+<p><tt>requests_outcome() = <a href="wooper.html#type-requests_outcome">wooper:requests_outcome()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-restoration_marker">restoration_marker()</a></h3>
+<p><tt>restoration_marker() = wooper_restore_local_process | wooper_restore_local_file | wooper_restore_local_term</tt></p>
+
+
+<h3 class="typedecl"><a name="type-term_serialisation">term_serialisation()</a></h3>
+<p><tt>term_serialisation() = [<a href="#type-attribute_entry">attribute_entry()</a>]</tt></p>
+<p> The serialisation form of an instance, as an Erlang term.</p>
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#addKeyValueToAttribute-4">addKeyValueToAttribute/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#addToAttribute-3">addToAttribute/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#appendToAttribute-3">appendToAttribute/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#check_attributes_equal-3">check_attributes_equal/3</a></td><td>Checks that the specified attributes have the same value in the specified 
+state and in the specified entries, otherwise throws an exception.</td></tr>
+<tr><td valign="top"><a href="#concatToAttribute-3">concatToAttribute/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#decrementAttribute-2">decrementAttribute/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#deleteFromAttribute-3">deleteFromAttribute/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#deserialise-4">deserialise/4</a></td><td>Deserialises the specified instance from its serialised form (as a term, 
+not as a binary), to obtain its corresponding state, using specified entry 
+transformer and user data, then having the current executing process embody 
+this instance from then on.</td></tr>
+<tr><td valign="top"><a href="#executeConstOneway-2">executeConstOneway/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#executeConstOneway-3">executeConstOneway/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#executeConstOnewayAs-3">executeConstOnewayAs/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#executeConstOnewayAs-4">executeConstOnewayAs/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#executeConstRequest-2">executeConstRequest/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#executeConstRequest-3">executeConstRequest/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#executeConstRequestAs-3">executeConstRequestAs/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#executeConstRequestAs-4">executeConstRequestAs/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#executeOneway-2">executeOneway/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#executeOneway-3">executeOneway/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#executeOnewayAs-3">executeOnewayAs/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#executeOnewayAs-4">executeOnewayAs/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#executeRequest-2">executeRequest/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#executeRequest-3">executeRequest/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#executeRequestAs-3">executeRequestAs/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#executeRequestAs-4">executeRequestAs/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#getAttribute-2">getAttribute/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#getAttributes-2">getAttributes/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#handle_private_processes-2">handle_private_processes/2</a></td><td>Handles private processes (through the name of the corresponding 
+attributes), that is processes that are internal to an instance that is to be 
+serialised, so that any next serialisation will see instead of their (former) 
+PID a serialisation marker.</td></tr>
+<tr><td valign="top"><a href="#hasAttribute-2">hasAttribute/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#incrementAttribute-2">incrementAttribute/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#is_wooper_debug-0">is_wooper_debug/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#list_restoration_markers-0">list_restoration_markers/0</a></td><td>Returns a list of the known restoration markers.</td></tr>
+<tr><td valign="top"><a href="#load-1">load/1</a></td><td>Spawns a new instance of this class, based on the specified serialisation 
+information.</td></tr>
+<tr><td valign="top"><a href="#load-3">load/3</a></td><td>Spawns a new instance of this class, based on the specified serialisation 
+information, entry transformer and user data.</td></tr>
+<tr><td valign="top"><a href="#load_link-1">load_link/1</a></td><td>Spawns a new instance of this class, based on the specified serialisation 
+information, and links it to the current process.</td></tr>
+<tr><td valign="top"><a href="#load_link-3">load_link/3</a></td><td>Spawns a new instance of this class, based on the specified serialisation 
+information, entry transformer and user data, and links it to the current 
+process.</td></tr>
+<tr><td valign="top"><a href="#merge_list_for-3">merge_list_for/3</a></td><td>Extracts the value (supposedly, any type of list) of specified attribute 
+from specified entries, and append that list to the corresponding one found in 
+the specified state, stored under the same attribute name.</td></tr>
+<tr><td valign="top"><a href="#merge_lists_for-3">merge_lists_for/3</a></td><td>Extracts the value (supposedly, any type of list) of each of the 
+specified attributes from specified entries, and append that list to the 
+corresponding one found in the specified state, stored under the same 
+attribute name.</td></tr>
+<tr><td valign="top"><a href="#mute_attributes-2">mute_attributes/2</a></td><td>Mutes specified attributes (that is replaces any attribute value not 
+equal to 'undefined' by a term restoration marker), for example so that they 
+can escape the serialisation process.</td></tr>
+<tr><td valign="top"><a href="#popFromAttribute-2">popFromAttribute/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#post_deserialise_hook-1">post_deserialise_hook/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#post_serialise_hook-3">post_serialise_hook/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#pre_deserialise_hook-2">pre_deserialise_hook/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#pre_serialise_hook-1">pre_serialise_hook/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#remote_synchronisable_load_link-2">remote_synchronisable_load_link/2</a></td><td>Spawns on specified node a new instance of this class, based on the 
+specified serialisation information and links it to the current process.</td></tr>
+<tr><td valign="top"><a href="#remote_synchronisable_load_link-4">remote_synchronisable_load_link/4</a></td><td>Spawns on specified node a new instance of this class, based on the 
+specified serialisation information, entry transformer and user data, and 
+links it to the current process.</td></tr>
+<tr><td valign="top"><a href="#remote_synchronous_timed_load_link-2">remote_synchronous_timed_load_link/2</a></td><td>Spawns on specified node a new instance of this class, based on the 
+specified serialisation information, entry transformer and user data, and 
+links it to the current process.</td></tr>
+<tr><td valign="top"><a href="#remote_synchronous_timed_load_link-4">remote_synchronous_timed_load_link/4</a></td><td>Spawns on specified node a new instance of this class, based on the 
+specified serialisation information, entry transformer and user data, and 
+links it to the current process.</td></tr>
+<tr><td valign="top"><a href="#removeAttribute-2">removeAttribute/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#replace_attribute-3">replace_attribute/3</a></td><td>Replaces the value held in the specified state by the one of the 
+specified attribute found in specified entry.</td></tr>
+<tr><td valign="top"><a href="#replace_attributes-3">replace_attributes/3</a></td><td>Replaces the values held in the specified state by the ones of the 
+specified attributes found in specified entries.</td></tr>
+<tr><td valign="top"><a href="#serialise-3">serialise/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#setAttribute-3">setAttribute/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#setAttributes-2">setAttributes/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#subtractFromAttribute-3">subtractFromAttribute/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#swapInAttribute-3">swapInAttribute/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#synchronous_load-1">synchronous_load/1</a></td><td>Spawns a new instance of this class, based on the specified serialisation 
+information.</td></tr>
+<tr><td valign="top"><a href="#synchronous_load-3">synchronous_load/3</a></td><td>Spawns a new instance of this class, based on the specified serialisation 
+information, entry transformer and user data.</td></tr>
+<tr><td valign="top"><a href="#synchronous_load_link-1">synchronous_load_link/1</a></td><td>Spawns a new instance of this class, based on the specified serialisation 
+information, and links it to the current process.</td></tr>
+<tr><td valign="top"><a href="#synchronous_load_link-3">synchronous_load_link/3</a></td><td>Spawns a new instance of this class, based on the specified serialisation 
+information, entry transformer and user data, and links it to the current 
+process.</td></tr>
+<tr><td valign="top"><a href="#toggleAttribute-2">toggleAttribute/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#wooper_effective_method_execution-4">wooper_effective_method_execution/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#wooper_execute_method-3">wooper_execute_method/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#wooper_execute_method_as-4">wooper_execute_method_as/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#wooper_handle_local_oneway_execution-3">wooper_handle_local_oneway_execution/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#wooper_handle_local_request_execution-3">wooper_handle_local_request_execution/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#wooper_handle_remote_oneway_execution-3">wooper_handle_remote_oneway_execution/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#wooper_handle_remote_request_execution-4">wooper_handle_remote_request_execution/4</a></td><td></td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="addKeyValueToAttribute-4">addKeyValueToAttribute/4</a></h3>
+<div class="spec">
+<p><tt>addKeyValueToAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, Key::<a href="table.html#type-key">table:key()</a>, Value::<a href="table.html#type-value">table:value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="addToAttribute-3">addToAttribute/3</a></h3>
+<div class="spec">
+<p><tt>addToAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, Value::<a href="#type-attribute_value">attribute_value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="appendToAttribute-3">appendToAttribute/3</a></h3>
+<div class="spec">
+<p><tt>appendToAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, Element::<a href="#type-attribute_value">attribute_value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="check_attributes_equal-3">check_attributes_equal/3</a></h3>
+<div class="spec">
+<p><tt>check_attributes_equal(AttributeNames::[<a href="#type-attribute_name">attribute_name()</a>], AttributeEntries::[<a href="#type-attribute_entry">attribute_entry()</a>], State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Checks that the specified attributes have the same value in the specified 
+state and in the specified entries, otherwise throws an exception.</p>
+
+ (helper)
+</p>
+
+<h3 class="function"><a name="concatToAttribute-3">concatToAttribute/3</a></h3>
+<div class="spec">
+<p><tt>concatToAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, List::<a href="#type-attribute_value">attribute_value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="decrementAttribute-2">decrementAttribute/2</a></h3>
+<div class="spec">
+<p><tt>decrementAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="deleteFromAttribute-3">deleteFromAttribute/3</a></h3>
+<div class="spec">
+<p><tt>deleteFromAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, Element::<a href="#type-attribute_value">attribute_value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="deserialise-4">deserialise/4</a></h3>
+<div class="spec">
+<p><tt>deserialise(BinSerialisation::<a href="#type-bin_serialisation">bin_serialisation()</a>, EntryTransformer::<a href="#type-entry_transformer">entry_transformer()</a>, UserData::<a href="basic_utils.html#type-user_data">basic_utils:user_data()</a>, ListenerPid) -&gt; any()</tt>
+<ul class="definitions"><li><tt>ListenerPid = <a href="#type-maybe">maybe</a>(pid())</tt></li></ul></p>
+<p> </p>
+</div><p><p>Deserialises the specified instance from its serialised form (as a term, 
+not as a binary), to obtain its corresponding state, using specified entry 
+transformer and user data, then having the current executing process embody 
+this instance from then on.</p>
+
+ <p>Does not return, as the WOOPER main loop will manage from then this just 
+deserialised instance.</p>
+
+ <p>(helper, as the receiver process may not even be already a WOOPER instance)</p>
+
+ Note: the hosting process is not created here, as, for an increased
+ parallelism, we expect deserialisations to happen directly from the final
+ instance processes; we consider here that the process executing this helper is
+ the final host.
+</p>
+
+<h3 class="function"><a name="executeConstOneway-2">executeConstOneway/2</a></h3>
+<div class="spec">
+<p><tt>executeConstOneway(State::<a href="wooper.html#type-state">wooper:state()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="executeConstOneway-3">executeConstOneway/3</a></h3>
+<div class="spec">
+<p><tt>executeConstOneway(State::<a href="wooper.html#type-state">wooper:state()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="executeConstOnewayAs-3">executeConstOnewayAs/3</a></h3>
+<div class="spec">
+<p><tt>executeConstOnewayAs(State::<a href="wooper.html#type-state">wooper:state()</a>, Classname::<a href="#type-classname">classname()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="executeConstOnewayAs-4">executeConstOnewayAs/4</a></h3>
+<div class="spec">
+<p><tt>executeConstOnewayAs(State::<a href="wooper.html#type-state">wooper:state()</a>, Classname::<a href="#type-classname">classname()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="executeConstRequest-2">executeConstRequest/2</a></h3>
+<div class="spec">
+<p><tt>executeConstRequest(State::<a href="wooper.html#type-state">wooper:state()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>) -&gt; <a href="#type-method_internal_result">method_internal_result()</a></tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="executeConstRequest-3">executeConstRequest/3</a></h3>
+<div class="spec">
+<p><tt>executeConstRequest(State::<a href="wooper.html#type-state">wooper:state()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="#type-method_internal_result">method_internal_result()</a></tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="executeConstRequestAs-3">executeConstRequestAs/3</a></h3>
+<div class="spec">
+<p><tt>executeConstRequestAs(State::<a href="wooper.html#type-state">wooper:state()</a>, ParentClassname::<a href="#type-classname">classname()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>) -&gt; <a href="#type-method_internal_result">method_internal_result()</a></tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="executeConstRequestAs-4">executeConstRequestAs/4</a></h3>
+<div class="spec">
+<p><tt>executeConstRequestAs(State::<a href="wooper.html#type-state">wooper:state()</a>, Classname::<a href="#type-classname">classname()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="#type-method_internal_result">method_internal_result()</a></tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="executeOneway-2">executeOneway/2</a></h3>
+<div class="spec">
+<p><tt>executeOneway(State::<a href="wooper.html#type-state">wooper:state()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="executeOneway-3">executeOneway/3</a></h3>
+<div class="spec">
+<p><tt>executeOneway(State::<a href="wooper.html#type-state">wooper:state()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="executeOnewayAs-3">executeOnewayAs/3</a></h3>
+<div class="spec">
+<p><tt>executeOnewayAs(State::<a href="wooper.html#type-state">wooper:state()</a>, ParentClassname::<a href="#type-classname">classname()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="executeOnewayAs-4">executeOnewayAs/4</a></h3>
+<div class="spec">
+<p><tt>executeOnewayAs(State::<a href="wooper.html#type-state">wooper:state()</a>, Classname::<a href="#type-classname">classname()</a>, OnewayAtom::<a href="#type-oneway_name">oneway_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="executeRequest-2">executeRequest/2</a></h3>
+<div class="spec">
+<p><tt>executeRequest(State::<a href="wooper.html#type-state">wooper:state()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="executeRequest-3">executeRequest/3</a></h3>
+<div class="spec">
+<p><tt>executeRequest(State::<a href="wooper.html#type-state">wooper:state()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="executeRequestAs-3">executeRequestAs/3</a></h3>
+<div class="spec">
+<p><tt>executeRequestAs(State::<a href="wooper.html#type-state">wooper:state()</a>, ParentClassname::<a href="#type-classname">classname()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="executeRequestAs-4">executeRequestAs/4</a></h3>
+<div class="spec">
+<p><tt>executeRequestAs(State::<a href="wooper.html#type-state">wooper:state()</a>, Classname::<a href="#type-classname">classname()</a>, RequestAtom::<a href="#type-request_name">request_name()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="getAttribute-2">getAttribute/2</a></h3>
+<div class="spec">
+<p><tt>getAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; <a href="#type-attribute_value">attribute_value()</a></tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="getAttributes-2">getAttributes/2</a></h3>
+<div class="spec">
+<p><tt>getAttributes(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeNameList::[<a href="#type-attribute_name">attribute_name()</a>]) -&gt; [<a href="#type-attribute_value">attribute_value()</a>]</tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="handle_private_processes-2">handle_private_processes/2</a></h3>
+<div class="spec">
+<p><tt>handle_private_processes(PrivateAttributeNames::[<a href="#type-attribute_name">attribute_name()</a>], State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p> </p>
+</div><p><p>Handles private processes (through the name of the corresponding 
+attributes), that is processes that are internal to an instance that is to be 
+serialised, so that any next serialisation will see instead of their (former) 
+PID a serialisation marker.</p>
+
+ <p>Returns an updated state.</p>
+
+ (helper, typically used in pre_serialise_hook/1, to avoid trying to serialise
+ internal processes)
+</p>
+
+<h3 class="function"><a name="hasAttribute-2">hasAttribute/2</a></h3>
+<div class="spec">
+<p><tt>hasAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="incrementAttribute-2">incrementAttribute/2</a></h3>
+<div class="spec">
+<p><tt>incrementAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="is_wooper_debug-0">is_wooper_debug/0</a></h3>
+<div class="spec">
+<p><tt>is_wooper_debug() -&gt; boolean()</tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="list_restoration_markers-0">list_restoration_markers/0</a></h3>
+<div class="spec">
+<p><tt>list_restoration_markers() -&gt; [<a href="#type-restoration_marker">restoration_marker()</a>]</tt><br></p>
+<p> </p>
+</div><p><p>Returns a list of the known restoration markers.</p>
+
+ (helper)
+</p>
+
+<h3 class="function"><a name="load-1">load/1</a></h3>
+<div class="spec">
+<p><tt>load(BinSerialisation::<a href="#type-bin_serialisation">bin_serialisation()</a>) -&gt; <a href="#type-instance_pid">instance_pid()</a></tt><br></p>
+<p> </p>
+</div><p><p>Spawns a new instance of this class, based on the specified serialisation 
+information.</p>
+
+ <p>Returns the PID of the created instance for this loading.</p>
+
+ Creation is asynchronous: this function returns as soon as the creation is
+ triggered, without waiting for it to complete.
+</p>
+
+<h3 class="function"><a name="load-3">load/3</a></h3>
+<div class="spec">
+<p><tt>load(BinSerialisation::<a href="#type-bin_serialisation">bin_serialisation()</a>, EntryTransformer::<a href="#type-entry_transformer">entry_transformer()</a>, UserData::<a href="basic_utils.html#type-user_data">basic_utils:user_data()</a>) -&gt; <a href="#type-instance_pid">instance_pid()</a></tt><br></p>
+<p> </p>
+</div><p><p>Spawns a new instance of this class, based on the specified serialisation 
+information, entry transformer and user data.</p>
+
+ <p>Returns the PID of the created instance for this loading.</p>
+
+ Creation is asynchronous: this function returns as soon as the creation is
+ triggered, without waiting for it to complete.
+</p>
+
+<h3 class="function"><a name="load_link-1">load_link/1</a></h3>
+<div class="spec">
+<p><tt>load_link(BinSerialisation::<a href="#type-bin_serialisation">bin_serialisation()</a>) -&gt; <a href="#type-instance_pid">instance_pid()</a></tt><br></p>
+<p> </p>
+</div><p><p>Spawns a new instance of this class, based on the specified serialisation 
+information, and links it to the current process.</p>
+
+ <p>Returns the PID of the created instance for this loading.</p>
+
+ Creation is asynchronous: this function returns as soon as the creation is
+ triggered, without waiting for it to complete.
+</p>
+
+<h3 class="function"><a name="load_link-3">load_link/3</a></h3>
+<div class="spec">
+<p><tt>load_link(BinSerialisation::<a href="#type-bin_serialisation">bin_serialisation()</a>, EntryTransformer::<a href="#type-entry_transformer">entry_transformer()</a>, UserData::<a href="basic_utils.html#type-user_data">basic_utils:user_data()</a>) -&gt; <a href="#type-instance_pid">instance_pid()</a></tt><br></p>
+<p> </p>
+</div><p><p>Spawns a new instance of this class, based on the specified serialisation 
+information, entry transformer and user data, and links it to the current 
+process.</p>
+
+ <p>Returns the PID of the created instance for this loading.</p>
+
+ Creation is asynchronous: this function returns as soon as the creation is
+ triggered, without waiting for it to complete.
+</p>
+
+<h3 class="function"><a name="merge_list_for-3">merge_list_for/3</a></h3>
+<div class="spec">
+<p><tt>merge_list_for(AttributeName::<a href="#type-attribute_name">attribute_name()</a>, AttributeEntries::[<a href="#type-attribute_entry">attribute_entry()</a>], State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; {[<a href="#type-attribute_entry">attribute_entry()</a>], <a href="wooper.html#type-state">wooper:state()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Extracts the value (supposedly, any type of list) of specified attribute 
+from specified entries, and append that list to the corresponding one found in 
+the specified state, stored under the same attribute name.</p>
+
+ Returns the remaining entries, and an updated state.
+</p>
+
+<h3 class="function"><a name="merge_lists_for-3">merge_lists_for/3</a></h3>
+<div class="spec">
+<p><tt>merge_lists_for(AttributeNames::[<a href="#type-attribute_name">attribute_name()</a>], AttributeEntries::[<a href="#type-attribute_entry">attribute_entry()</a>], State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; {[<a href="#type-attribute_entry">attribute_entry()</a>], <a href="wooper.html#type-state">wooper:state()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Extracts the value (supposedly, any type of list) of each of the 
+specified attributes from specified entries, and append that list to the 
+corresponding one found in the specified state, stored under the same 
+attribute name.</p>
+
+ Returns the remaining entries, and an updated state.
+</p>
+
+<h3 class="function"><a name="mute_attributes-2">mute_attributes/2</a></h3>
+<div class="spec">
+<p><tt>mute_attributes(AttributeNameList::[<a href="#type-attribute_name">attribute_name()</a>], State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p> </p>
+</div><p><p>Mutes specified attributes (that is replaces any attribute value not 
+equal to 'undefined' by a term restoration marker), for example so that they 
+can escape the serialisation process.</p>
+
+ <p>Typically used in pre_serialise_hook/2, to store only relevant, useful 
+information.</p>
+
+ (helper)
+</p>
+
+<h3 class="function"><a name="popFromAttribute-2">popFromAttribute/2</a></h3>
+<div class="spec">
+<p><tt>popFromAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-attribute_value">attribute_value()</a>}</tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="post_deserialise_hook-1">post_deserialise_hook/1</a></h3>
+<div class="spec">
+<p><tt>post_deserialise_hook(State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="post_serialise_hook-3">post_serialise_hook/3</a></h3>
+<div class="spec">
+<p><tt>post_serialise_hook(Classname::<a href="#type-classname">classname()</a>, Entries::<a href="wooper_serialisation.html#type-term_serialisation">wooper_serialisation:term_serialisation()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; term()</tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="pre_deserialise_hook-2">pre_deserialise_hook/2</a></h3>
+<div class="spec">
+<p><tt>pre_deserialise_hook(SerialisationTerm::term(), UserData::<a href="basic_utils.html#type-user_data">basic_utils:user_data()</a>) -&gt; <a href="wooper_serialisation.html#type-term_serialisation">wooper_serialisation:term_serialisation()</a></tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="pre_serialise_hook-1">pre_serialise_hook/1</a></h3>
+<div class="spec">
+<p><tt>pre_serialise_hook(State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="remote_synchronisable_load_link-2">remote_synchronisable_load_link/2</a></h3>
+<div class="spec">
+<p><tt>remote_synchronisable_load_link(Node::<a href="net_utils.html#type-node_name">net_utils:node_name()</a>, BinSerialisation::<a href="#type-bin_serialisation">bin_serialisation()</a>) -&gt; <a href="#type-instance_pid">instance_pid()</a></tt><br></p>
+<p> </p>
+</div><p><p>Spawns on specified node a new instance of this class, based on the 
+specified serialisation information and links it to the current process.</p>
+
+ <p>Returns the PID of the created instance.</p>
+
+ Creation is asynchronous (the PID is directly returned), however a {
+ spawn_successful, SpawnedPid } message will be received once (if ever) the
+ instance is up and running. This allows to perform the actual instance
+ creations in parallel, by waiting bulks of creations.
+</p>
+
+<h3 class="function"><a name="remote_synchronisable_load_link-4">remote_synchronisable_load_link/4</a></h3>
+<div class="spec">
+<p><tt>remote_synchronisable_load_link(Node::<a href="net_utils.html#type-node_name">net_utils:node_name()</a>, BinSerialisation::<a href="#type-bin_serialisation">bin_serialisation()</a>, EntryTransformer::<a href="#type-entry_transformer">entry_transformer()</a>, UserData::<a href="basic_utils.html#type-user_data">basic_utils:user_data()</a>) -&gt; <a href="#type-instance_pid">instance_pid()</a></tt><br></p>
+<p> </p>
+</div><p><p>Spawns on specified node a new instance of this class, based on the 
+specified serialisation information, entry transformer and user data, and 
+links it to the current process.</p>
+
+ <p>Returns the PID of the created instance.</p>
+
+ Creation is asynchronous (the PID is directly returned), however a {
+ spawn_successful, SpawnedPid } message will be received once (if ever) the
+ instance is up and running. This allows to perform the actual instance
+ creations in parallel, by waiting bulks of creations.
+</p>
+
+<h3 class="function"><a name="remote_synchronous_timed_load_link-2">remote_synchronous_timed_load_link/2</a></h3>
+<div class="spec">
+<p><tt>remote_synchronous_timed_load_link(Node::<a href="net_utils.html#type-node_name">net_utils:node_name()</a>, BinSerialisation::<a href="#type-bin_serialisation">bin_serialisation()</a>) -&gt; <a href="#type-instance_pid">instance_pid()</a></tt><br></p>
+<p> </p>
+</div><p><p>Spawns on specified node a new instance of this class, based on the 
+specified serialisation information, entry transformer and user data, and 
+links it to the current process.</p>
+
+ <p>Returns the PID of the created instance for this loading, or the time_out 
+atom.</p>
+
+ Creation is synchronous: the call will return only when the created process
+ reports that it is up and running.
+</p>
+
+<h3 class="function"><a name="remote_synchronous_timed_load_link-4">remote_synchronous_timed_load_link/4</a></h3>
+<div class="spec">
+<p><tt>remote_synchronous_timed_load_link(Node::<a href="net_utils.html#type-node_name">net_utils:node_name()</a>, BinSerialisation::<a href="#type-bin_serialisation">bin_serialisation()</a>, EntryTransformer::<a href="#type-entry_transformer">entry_transformer()</a>, UserData::<a href="basic_utils.html#type-user_data">basic_utils:user_data()</a>) -&gt; <a href="#type-instance_pid">instance_pid()</a></tt><br></p>
+<p> </p>
+</div><p><p>Spawns on specified node a new instance of this class, based on the 
+specified serialisation information, entry transformer and user data, and 
+links it to the current process.</p>
+
+ <p>Returns the PID of the created instance for this loading, or the time_out 
+atom.</p>
+
+ Creation is synchronous: the call will return only when the created process
+ reports that it is up and running.
+</p>
+
+<h3 class="function"><a name="removeAttribute-2">removeAttribute/2</a></h3>
+<div class="spec">
+<p><tt>removeAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="replace_attribute-3">replace_attribute/3</a></h3>
+<div class="spec">
+<p><tt>replace_attribute(AttributeName::<a href="#type-attribute_name">attribute_name()</a>, AttributeEntries::[<a href="#type-attribute_entry">attribute_entry()</a>], State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; {[<a href="#type-attribute_entry">attribute_entry()</a>], <a href="wooper.html#type-state">wooper:state()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Replaces the value held in the specified state by the one of the 
+specified attribute found in specified entry.</p>
+
+ (helper)
+</p>
+
+<h3 class="function"><a name="replace_attributes-3">replace_attributes/3</a></h3>
+<div class="spec">
+<p><tt>replace_attributes(AttributeNames::[<a href="#type-attribute_name">attribute_name()</a>], AttributeEntries::[<a href="#type-attribute_entry">attribute_entry()</a>], State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; {[<a href="#type-attribute_entry">attribute_entry()</a>], <a href="wooper.html#type-state">wooper:state()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Replaces the values held in the specified state by the ones of the 
+specified attributes found in specified entries.</p>
+
+ (helper)
+</p>
+
+<h3 class="function"><a name="serialise-3">serialise/3</a></h3>
+<div class="spec">
+<p><tt>serialise(State::<a href="wooper.html#type-state">wooper:state()</a>, EntryTransformer::<a href="wooper_serialisation.html#type-entry_transformer">wooper_serialisation:entry_transformer()</a>, UserData::<a href="basic_utils.html#type-user_data">basic_utils:user_data()</a>) -&gt; <a href="#type-const_request_return">const_request_return</a>({<a href="wooper_serialisation.html#type-bin_serialisation">wooper_serialisation:bin_serialisation()</a>, <a href="basic_utils.html#type-user_data">basic_utils:user_data()</a>})</tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="setAttribute-3">setAttribute/3</a></h3>
+<div class="spec">
+<p><tt>setAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, AttributeValue::<a href="#type-attribute_value">attribute_value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="setAttributes-2">setAttributes/2</a></h3>
+<div class="spec">
+<p><tt>setAttributes(State::<a href="wooper.html#type-state">wooper:state()</a>, ListOfAttributePairs::[<a href="#type-attribute_entry">attribute_entry()</a>]) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="subtractFromAttribute-3">subtractFromAttribute/3</a></h3>
+<div class="spec">
+<p><tt>subtractFromAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, Value::<a href="#type-attribute_value">attribute_value()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="swapInAttribute-3">swapInAttribute/3</a></h3>
+<div class="spec">
+<p><tt>swapInAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>, NewAttributeValue::<a href="#type-attribute_value">attribute_value()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-attribute_value">attribute_value()</a>}</tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="synchronous_load-1">synchronous_load/1</a></h3>
+<div class="spec">
+<p><tt>synchronous_load(BinSerialisation::<a href="#type-bin_serialisation">bin_serialisation()</a>) -&gt; <a href="#type-instance_pid">instance_pid()</a></tt><br></p>
+<p> </p>
+</div><p><p>Spawns a new instance of this class, based on the specified serialisation 
+information.</p>
+
+ <p>Returns the PID of the created instance for this loading.</p>
+
+ Creation is synchronous: the call will return only when the created process
+ reports that it is up and running.
+</p>
+
+<h3 class="function"><a name="synchronous_load-3">synchronous_load/3</a></h3>
+<div class="spec">
+<p><tt>synchronous_load(BinSerialisation::<a href="#type-bin_serialisation">bin_serialisation()</a>, EntryTransformer::<a href="#type-entry_transformer">entry_transformer()</a>, UserData::<a href="basic_utils.html#type-user_data">basic_utils:user_data()</a>) -&gt; <a href="#type-instance_pid">instance_pid()</a></tt><br></p>
+<p> </p>
+</div><p><p>Spawns a new instance of this class, based on the specified serialisation 
+information, entry transformer and user data.</p>
+
+ <p>Returns the PID of the created instance for this loading.</p>
+
+ Creation is synchronous: the call will return only when the created process
+ reports that it is up and running.
+</p>
+
+<h3 class="function"><a name="synchronous_load_link-1">synchronous_load_link/1</a></h3>
+<div class="spec">
+<p><tt>synchronous_load_link(BinSerialisation::<a href="#type-bin_serialisation">bin_serialisation()</a>) -&gt; <a href="#type-instance_pid">instance_pid()</a></tt><br></p>
+<p> </p>
+</div><p><p>Spawns a new instance of this class, based on the specified serialisation 
+information, and links it to the current process.</p>
+
+ <p>Returns the PID of the created instance for this loading.</p>
+
+ Creation is synchronous: the call will return only when the created process
+ reports that it is up and running.
+</p>
+
+<h3 class="function"><a name="synchronous_load_link-3">synchronous_load_link/3</a></h3>
+<div class="spec">
+<p><tt>synchronous_load_link(BinSerialisation::<a href="#type-bin_serialisation">bin_serialisation()</a>, EntryTransformer::<a href="#type-entry_transformer">entry_transformer()</a>, UserData::<a href="basic_utils.html#type-user_data">basic_utils:user_data()</a>) -&gt; <a href="#type-instance_pid">instance_pid()</a></tt><br></p>
+<p> </p>
+</div><p><p>Spawns a new instance of this class, based on the specified serialisation 
+information, entry transformer and user data, and links it to the current 
+process.</p>
+
+ <p>Returns the PID of the created instance for this loading.</p>
+
+ Creation is synchronous: the call will return only when the created process
+ reports that it is up and running.
+</p>
+
+<h3 class="function"><a name="toggleAttribute-2">toggleAttribute/2</a></h3>
+<div class="spec">
+<p><tt>toggleAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, BooleanAttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="wooper_effective_method_execution-4">wooper_effective_method_execution/4</a></h3>
+<div class="spec">
+<p><tt>wooper_effective_method_execution(SelectedModule::module(), MethodAtom::<a href="#type-method_name">method_name()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, Parameters::<a href="#type-method_arguments">method_arguments()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="wooper_execute_method-3">wooper_execute_method/3</a></h3>
+<div class="spec">
+<p><tt>wooper_execute_method(MethodAtom::<a href="#type-method_name">method_name()</a>, Parameters::<a href="#type-method_arguments">method_arguments()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="wooper_execute_method_as-4">wooper_execute_method_as/4</a></h3>
+<div class="spec">
+<p><tt>wooper_execute_method_as(Classname::<a href="#type-classname">classname()</a>, MethodAtom::<a href="#type-method_name">method_name()</a>, Parameters::<a href="#type-method_arguments">method_arguments()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="wooper_handle_local_oneway_execution-3">wooper_handle_local_oneway_execution/3</a></h3>
+<div class="spec">
+<p><tt>wooper_handle_local_oneway_execution(OnewayAtom::<a href="#type-method_name">method_name()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="wooper_handle_local_request_execution-3">wooper_handle_local_request_execution/3</a></h3>
+<div class="spec">
+<p><tt>wooper_handle_local_request_execution(RequestAtom::<a href="#type-method_name">method_name()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="wooper_handle_remote_oneway_execution-3">wooper_handle_remote_oneway_execution/3</a></h3>
+<div class="spec">
+<p><tt>wooper_handle_remote_oneway_execution(OnewayAtom::<a href="#type-method_name">method_name()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="wooper_handle_remote_request_execution-4">wooper_handle_remote_request_execution/4</a></h3>
+<div class="spec">
+<p><tt>wooper_handle_remote_request_execution(RequestAtom::<a href="#type-method_name">method_name()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, ArgumentList::<a href="#type-method_arguments">method_arguments()</a>, CallerPid::pid()) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p> </p>
+</div>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

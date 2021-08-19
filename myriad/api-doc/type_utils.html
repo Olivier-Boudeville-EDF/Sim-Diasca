@@ -1,0 +1,600 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module type_utils</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module type_utils</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Module helping to manage <b>datatypes</b>, notably in ASTs.
+
+
+<h2><a name="description">Description</a></h2><p>Module helping to manage <b>datatypes</b>, notably in ASTs.</p>
+
+ <p>See <code>type_utils_test.erl</code> for the corresponding test.</p>
+
+ See also <code>meta_utils</code> for all topics regarding metaprogramming,
+ parse-transforms, etc.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-count">count()</a></h3>
+<p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-explicit_type">explicit_type()</a></h3>
+<p><tt>explicit_type() = <a href="#type-type">type()</a></tt></p>
+<p> An explicit type is a type that has been fully resolved in terms of built-in
+ constructs; it is thus autonomous, self-standing.</p>
+
+<h3 class="typedecl"><a name="type-level">level()</a></h3>
+<p><tt>level() = <a href="basic_utils.html#type-level">basic_utils:level()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-maybe">maybe()</a></h3>
+<p><tt>maybe(T) = T | undefined</tt></p>
+
+
+<h3 class="typedecl"><a name="type-nesting_depth">nesting_depth()</a></h3>
+<p><tt>nesting_depth() = {<a href="#type-count">count()</a>, <a href="#type-count">count()</a>}</tt></p>
+<p><p> Description of a nesting depth reached when parsing a type description.</p>
+
+ It is in pratice a {P,B} pair, where P is the parenthesis depth (ie the
+ number of the parentheses that have been opened and not closed yet) and B is
+ the bracket depth (ie the same principle, for "[]" instead of for "()").</p>
+
+<h3 class="typedecl"><a name="type-primitive_type_description">primitive_type_description()</a></h3>
+<p><tt>primitive_type_description() = atom | binary | boolean | float | function | integer | list | pid | port | record | reference | tuple</tt></p>
+<p><p> The "most precise" description of a primitive, simple type (ex: 'boolean' and 
+'atom') coexist, 'number' are not used, etc.</p>
+
+ <p>A note about Erlang floats: they are actually IEEE 754 double-precision 
+floating-point numbers, a format that occupies 8 bytes (64 bits) per float in 
+memory.</p>
+
+ <p>More precisely, as one can see in erts/emulator/beam/erl_term.h, a float_def 
+is an union able to contain a ieee754_8 datatype, aliased to the 'double' C 
+datatype.</p>
+
+ Polymorphic types (ex: lists) are described with no mention of the types they
+ may depend on (ex: 'list' can be specified, not 'list(float())' or anything
+ like that).</p>
+
+<h3 class="typedecl"><a name="type-tuploid">tuploid()</a></h3>
+<p><tt>tuploid(T) = tuple() | T</tt></p>
+<p> Probably that such a tuple would contain at least an element of type T.</p>
+
+<h3 class="typedecl"><a name="type-tuploid">tuploid()</a></h3>
+<p><tt>tuploid() = <a href="#type-tuploid">tuploid</a>(term())</tt></p>
+<p><p> We name tuploid a pseudo-tuple, ie a value that is either an actual tuple or 
+a single, standalone term, designated as a "basic tuploid".</p>
+
+ That is, a tuploid is a tuple of any size, except that the tuploid of size 1
+ is MyTerm, not {MYterm}.
+</p>
+
+<h3 class="typedecl"><a name="type-type">type()</a></h3>
+<p><tt>type() = term()</tt></p>
+<p><p> Internal, "formal", actual programmatic description of a type according to our 
+conventions: type-as-a-term (either contextual or explicit, F2 or F3), relying 
+on a translated version of the textual type (which is for example: 
+"[{float,boolean}]").</p>
+
+ <p>This "internal type language of the Myriad layer" is largely inspired from the 
+forms that can be found in actual ASTs.</p>
+
+ <p>Requirements for this term-based description were:</p>
+
+ <p>- be able to represent at least any actual (that can be readily instantiated, 
+hence non-polymorphic) type (like "-type a() :: ...", not "-type a(T) :: 
+..."); should, in the future, polymorphic types have to be *defined* (not 
+merely used), then (non-empty) parentheses could be introduced</p>
+
+ <p>- be able to nevertheless *use* polymorphic types, as they are certainly 
+useful (ex: associative tables, lists, etc.); a problem is that, in terms (as 
+opposed to in the textual counterpart), parentheses cannot be used to express 
+these polymorphic types (not only they denote function calls, but also are 
+not legit components of a term); therefore the convention chosen here is to 
+specify types as pairs, the first element being the name of the type, the 
+second one being the (ordered) list of the types it depends on; then the 
+textual type "a( T1, T2 )" is translated to the {a,[T1,T2]} type term; most 
+types being "monomorphic", they are represented as {my_simple_type,[]} (which 
+cannot be abbreviated by only the 'my_simple_type' atom, as it would lead to 
+ambiguous forms)</p>
+
+ <p>So, as an example, the type-as-a-term corresponding to "[{float,boolean}]" 
+is: {list, [{tuple, [{float,[]}, {boolean,[]} ]}]}</p>
+
+ <p>Note that an alternate type language (sticking more closely to its textual 
+counterpart) could have been a more direct [{float,boolean}] term (hence 
+getting rid of the parentheses and the pair with an empty list in second 
+position); reason for not doing so: then no possible support of the 
+polymorphic types that happen to be often needed.</p>
+
+ <p>The origin of this term-as-a-type notation is clearly the standard (Erlang) 
+type specifications; for example 'meta_utils:string_to_form( "-type a() :: 
+[{float(),boolean()}]." ).' returns following AST form:</p>
+
+  <p>'{attribute,1,type, {a,{type,1,list, [{type,1,tuple,[{type,1,float,[]},  
+{type,1,boolean,[]}]}]}'</p>
+
+ <p>As a result the counterpart to the aforementioned "[{float(), boolean()}]" 
+type string is translated in ASTs as:</p>
+
+ <p>{type, 1, list, [{type, 1, tuple, [{type, 1, float, []}, {type, 1, boolean, 
+[]}]}]}</p>
+
+ <p>Then one can remove:</p>
+
+ <p>- the 'type' (and 'user_type') atoms (not making then a specific distinction 
+between the origin of a type); a list of built-in types - names and arities - 
+is maintained, other types being then user ones)</p>
+
+ <p>- the line numbers (the '1's here), not useful in that context, hence stripped</p>
+
+ <p>Then we obtain our aforementioned term-as-a-type:    
+{list, [{tuple, [{float,[]}, {boolean,[]}]}]}</p>
+
+ <p>We can therefore describe this way arbitrary types as valid terms.</p>
+
+ <p>Next steps:</p>
+
+ <p>- define and document the full type language (elementary datatypes - like 
+boolean, integer, float, symbols - and constructs - like list, tuple, union, 
+atom)</p>
+
+ <p>- support it, notably define functions to tell whether a given term is an 
+instance of a specified type</p>
+
+ <p>Experiment with meta_utils:string_to_form/1 and have fun!</p>
+
+ <p>Ex: "-type a() :: [foobar()]." yields: '{attribute,1,type, {a,{type,1,    
+list,[{user_type,1,foobar,[]}]},[]}}'.</p>
+
+ <p>See also <a href="http://erlang.org/doc/apps/erts/absform.html" target="_top"><tt>http://erlang.org/doc/apps/erts/absform.html</tt></a>.</p>
+
+ <p>Finally, a direct string representation can be converted into a type(); maybe 
+writing a parser may not mandatory, as "{float(), atom()}" may be a string 
+expression evaluated with functions that we can bind to obtain a closer term, 
+such as: float() -&gt; {float, []}.</p>
+
+ <p>Of course, on a related note, if TextualType = "{ list, [ 
+{tuple,[float,boolean]} ] }", then meta_utils:string_to_value( TextualType ) 
+will return the expected: {list, [{tuple, [{float, []}, {boolean, []}]}]}</p>
+
+ Note that such a type may not be fully explicit, as it may contain unresolved
+ references to other types; for example: {list, [{count, []}]} does not specify
+ what the count() type is.</p>
+
+<h3 class="typedecl"><a name="type-type_arity">type_arity()</a></h3>
+<p><tt>type_arity() = <a href="#type-count">count()</a></tt></p>
+<p> Number of types a (possibly polymorphic) type depends on (possibly zero for
+ plain types).</p>
+
+<h3 class="typedecl"><a name="type-type_description">type_description()</a></h3>
+<p><tt>type_description() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><p> Textual type description: type-as-a-string, inspired from the syntax used for
+ type specifications (<a href="http://erlang.org/doc/reference_manual/typespec.html" target="_top"><tt>http://erlang.org/doc/reference_manual/typespec.html</tt></a>), 
+yet different. Notably, monomorphic types do not end with empty parentheses 
+(ex: "integer", not "integer()") and atoms are always surrounded by simple 
+quotes (ex: "'an_atom'|'another_one'").</p>
+
+ For example: "[{float, boolean}]".</p>
+
+<h3 class="typedecl"><a name="type-type_id">type_id()</a></h3>
+<p><tt>type_id() = {<a href="#type-type_name">type_name()</a>, <a href="#type-type_arity">type_arity()</a>}</tt></p>
+<p> Analoguous to function_id/0.</p>
+
+<h3 class="typedecl"><a name="type-type_name">type_name()</a></h3>
+<p><tt>type_name() = atom()</tt></p>
+<p><p> Describes the name of a type (without the names of the types it depends on, 
+for polymorphic ones).</p>
+
+ Ex: 'my_count'.</p>
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#are_types_identical-2">are_types_identical/2</a></td><td>Tells whether the two specified types are the same (ie designate the same
+ actual type, are aliases).</td></tr>
+<tr><td valign="top"><a href="#augment_tuploid-2">augment_tuploid/2</a></td><td>Augments the specified tuploid with specified term.</td></tr>
+<tr><td valign="top"><a href="#check_atom-1">check_atom/1</a></td><td>Checks that the specified term is an atom indeed, and returns it.</td></tr>
+<tr><td valign="top"><a href="#check_binaries-1">check_binaries/1</a></td><td>Checks that the specified term is a list of binaries indeed, and returns
+ it.</td></tr>
+<tr><td valign="top"><a href="#check_binary-1">check_binary/1</a></td><td>Checks that the specified term is a binary indeed, and returns it.</td></tr>
+<tr><td valign="top"><a href="#check_boolean-1">check_boolean/1</a></td><td>Checks that the specified term is a boolean indeed, and returns it.</td></tr>
+<tr><td valign="top"><a href="#check_float-1">check_float/1</a></td><td>Checks that the specified term is a float indeed, and returns it.</td></tr>
+<tr><td valign="top"><a href="#check_floats-1">check_floats/1</a></td><td>Checks that the specified term is a list of floats indeed, and returns
+ it.</td></tr>
+<tr><td valign="top"><a href="#check_integer-1">check_integer/1</a></td><td>Checks that the specified term is an integer indeed, and returns it.</td></tr>
+<tr><td valign="top"><a href="#check_integers-1">check_integers/1</a></td><td>Checks that the specified term is a list of integers indeed, and returns
+ it.</td></tr>
+<tr><td valign="top"><a href="#check_list-1">check_list/1</a></td><td>Checks that the specified term is a list indeed, and returns it.</td></tr>
+<tr><td valign="top"><a href="#check_maybe_float-1">check_maybe_float/1</a></td><td>Checks that the specified term is a maybe-float indeed, and returns it.</td></tr>
+<tr><td valign="top"><a href="#check_maybe_floats-1">check_maybe_floats/1</a></td><td>Checks that the specified term is a list of maybe-floats indeed, and
+ returns it.</td></tr>
+<tr><td valign="top"><a href="#check_maybe_integer-1">check_maybe_integer/1</a></td><td>Checks that the specified term is a maybe-integer indeed, and returns it.</td></tr>
+<tr><td valign="top"><a href="#check_maybe_integers-1">check_maybe_integers/1</a></td><td>Checks that the specified term is a list of maybe-integers indeed, and
+ returns it.</td></tr>
+<tr><td valign="top"><a href="#check_pid-1">check_pid/1</a></td><td>Checks that the specified term is a PID indeed, and returns it.</td></tr>
+<tr><td valign="top"><a href="#check_tuple-1">check_tuple/1</a></td><td>Checks that the specified term is a tuple indeed, and returns it.</td></tr>
+<tr><td valign="top"><a href="#description_to_type-1">description_to_type/1</a></td><td>Returns the actual type corresponding to specified type description: 
+parses the specified string to determine the type described therein.</td></tr>
+<tr><td valign="top"><a href="#ensure_binary-1">ensure_binary/1</a></td><td>Ensures that the specified term is a binary string, and returns it.</td></tr>
+<tr><td valign="top"><a href="#ensure_boolean-1">ensure_boolean/1</a></td><td>Ensures that the specified term is a boolean, and returns it.</td></tr>
+<tr><td valign="top"><a href="#ensure_float-1">ensure_float/1</a></td><td>Ensures that the specified term is a float, and returns it.</td></tr>
+<tr><td valign="top"><a href="#ensure_integer-1">ensure_integer/1</a></td><td>Ensures that the specified term is an integer, and returns it.</td></tr>
+<tr><td valign="top"><a href="#ensure_number-1">ensure_number/1</a></td><td>Ensures that the specified term is a number, and returns it.</td></tr>
+<tr><td valign="top"><a href="#ensure_string-1">ensure_string/1</a></td><td>Ensures that the specified term is a string, and returns it.</td></tr>
+<tr><td valign="top"><a href="#get_ast_simple_builtin_types-0">get_ast_simple_builtin_types/0</a></td><td>Returns a list of the possible types for immediate values (typically 
+found in an AST like, like 'undefined' in: {atom,42,undefined}).</td></tr>
+<tr><td valign="top"><a href="#get_elementary_types-0">get_elementary_types/0</a></td><td>Returns a list of the elementary, "atomic" types.</td></tr>
+<tr><td valign="top"><a href="#get_immediate_types-0">get_immediate_types/0</a></td><td>Returns a list of the possible types for immediate values.</td></tr>
+<tr><td valign="top"><a href="#get_simple_builtin_types-0">get_simple_builtin_types/0</a></td><td>Returns a list of the built-in, non-polymorphic types that can be
+ typically found in AST forms.</td></tr>
+<tr><td valign="top"><a href="#get_type_of-1">get_type_of/1</a></td><td>Returns an atom describing, as precisely as possible, the overall type of 
+the specified primitive term.</td></tr>
+<tr><td valign="top"><a href="#interpret_type_of-1">interpret_type_of/1</a></td><td>Returns a string describing, in a user-friendly manner, the type of the
+ specified term (up to one level of nesting detailed).</td></tr>
+<tr><td valign="top"><a href="#interpret_type_of-2">interpret_type_of/2</a></td><td>Returns a string describing, in a user-friendly manner, the type of the
+ specified term, up to the specified nesting level (either a positive integer
+ or the 'infinite' atom, to go as deep as possible in the term structure).</td></tr>
+<tr><td valign="top"><a href="#is_homogeneous-1">is_homogeneous/1</a></td><td>Tells whether specified non-empty container (list or tuple) is 
+homogeneous in terms of type, ie whether all its elements are of the same 
+type.</td></tr>
+<tr><td valign="top"><a href="#is_homogeneous-2">is_homogeneous/2</a></td><td>Tells whether specified non-empty container (list or tuple) is
+ homogeneous in terms of type, ie whether all its elements are of the same,
+ specified, primitive type.</td></tr>
+<tr><td valign="top"><a href="#is_of_described_type-2">is_of_described_type/2</a></td><td>Tells whether the specified term is of specified textually-described 
+type.</td></tr>
+<tr><td valign="top"><a href="#is_of_type-2">is_of_type/2</a></td><td>Tells whether specified term is of specified type (predicate).</td></tr>
+<tr><td valign="top"><a href="#is_type-1">is_type/1</a></td><td>Tells whether specified term designates a type (ie a type() instance).</td></tr>
+<tr><td valign="top"><a href="#tokenise_per_union-1">tokenise_per_union/1</a></td><td>Splits the specified type description according to union delimiters.</td></tr>
+<tr><td valign="top"><a href="#type_to_description-1">type_to_description/1</a></td><td>Returns the type description (in canonical form, notably without 
+whitespaces) corresponding to specified type.</td></tr>
+<tr><td valign="top"><a href="#type_to_string-1">type_to_string/1</a></td><td>Returns a textual representation of the specified type.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="are_types_identical-2">are_types_identical/2</a></h3>
+<div class="spec">
+<p><tt>are_types_identical(Type::<a href="#type-type">type()</a>, SecondType::<a href="#type-type">type()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Tells whether the two specified types are the same (ie designate the same
+ actual type, are aliases).
+</p>
+
+<h3 class="function"><a name="augment_tuploid-2">augment_tuploid/2</a></h3>
+<div class="spec">
+<p><tt>augment_tuploid(Tuploid::<a href="#type-tuploid">tuploid()</a>, ExtraTerm::term()) -&gt; <a href="#type-tuploid">tuploid()</a></tt><br></p>
+<p> </p>
+</div><p><p>Augments the specified tuploid with specified term.</p>
+
+ <p>Ex: augment_tuploid(a, 2.0) = {a, 2.0}     
+augment_tuploid({foo, 42}, 2.0) = {foo, 42, 2.0}</p>
+
+ Useful typically to augment returned error tuploids (either a single error
+ term such as 'invalid_name', or a tuple like '{invalid_name,"Arnold"}' with
+ caller-local information, to obtain in all cases a tuploid (a tuple here) with
+ that extra information.
+</p>
+
+<h3 class="function"><a name="check_atom-1">check_atom/1</a></h3>
+<div class="spec">
+<p><tt>check_atom(Atom::term()) -&gt; atom()</tt><br></p>
+<p> </p>
+</div><p>Checks that the specified term is an atom indeed, and returns it.</p>
+
+<h3 class="function"><a name="check_binaries-1">check_binaries/1</a></h3>
+<div class="spec">
+<p><tt>check_binaries(Binaries::term()) -&gt; [binary()]</tt><br></p>
+<p> </p>
+</div><p>Checks that the specified term is a list of binaries indeed, and returns
+ it.
+</p>
+
+<h3 class="function"><a name="check_binary-1">check_binary/1</a></h3>
+<div class="spec">
+<p><tt>check_binary(Binary::term()) -&gt; binary()</tt><br></p>
+<p> </p>
+</div><p>Checks that the specified term is a binary indeed, and returns it.</p>
+
+<h3 class="function"><a name="check_boolean-1">check_boolean/1</a></h3>
+<div class="spec">
+<p><tt>check_boolean(Other::term()) -&gt; atom()</tt><br></p>
+<p> </p>
+</div><p>Checks that the specified term is a boolean indeed, and returns it.</p>
+
+<h3 class="function"><a name="check_float-1">check_float/1</a></h3>
+<div class="spec">
+<p><tt>check_float(Float::term()) -&gt; float()</tt><br></p>
+<p> </p>
+</div><p>Checks that the specified term is a float indeed, and returns it.</p>
+
+<h3 class="function"><a name="check_floats-1">check_floats/1</a></h3>
+<div class="spec">
+<p><tt>check_floats(Floats::term()) -&gt; [float()]</tt><br></p>
+<p> </p>
+</div><p>Checks that the specified term is a list of floats indeed, and returns
+ it.
+</p>
+
+<h3 class="function"><a name="check_integer-1">check_integer/1</a></h3>
+<div class="spec">
+<p><tt>check_integer(Int::term()) -&gt; integer()</tt><br></p>
+<p> </p>
+</div><p>Checks that the specified term is an integer indeed, and returns it.</p>
+
+<h3 class="function"><a name="check_integers-1">check_integers/1</a></h3>
+<div class="spec">
+<p><tt>check_integers(Integers::term()) -&gt; [integer()]</tt><br></p>
+<p> </p>
+</div><p>Checks that the specified term is a list of integers indeed, and returns
+ it.
+</p>
+
+<h3 class="function"><a name="check_list-1">check_list/1</a></h3>
+<div class="spec">
+<p><tt>check_list(List::term()) -&gt; list()</tt><br></p>
+<p> </p>
+</div><p>Checks that the specified term is a list indeed, and returns it.</p>
+
+<h3 class="function"><a name="check_maybe_float-1">check_maybe_float/1</a></h3>
+<div class="spec">
+<p><tt>check_maybe_float(F::term()) -&gt; <a href="#type-maybe">maybe</a>(float())</tt><br></p>
+<p> </p>
+</div><p>Checks that the specified term is a maybe-float indeed, and returns it.</p>
+
+<h3 class="function"><a name="check_maybe_floats-1">check_maybe_floats/1</a></h3>
+<div class="spec">
+<p><tt>check_maybe_floats(MaybeFloats::term()) -&gt; [<a href="#type-maybe">maybe</a>(float())]</tt><br></p>
+<p> </p>
+</div><p>Checks that the specified term is a list of maybe-floats indeed, and
+ returns it.
+</p>
+
+<h3 class="function"><a name="check_maybe_integer-1">check_maybe_integer/1</a></h3>
+<div class="spec">
+<p><tt>check_maybe_integer(Int::term()) -&gt; <a href="#type-maybe">maybe</a>(integer())</tt><br></p>
+<p> </p>
+</div><p>Checks that the specified term is a maybe-integer indeed, and returns it.</p>
+
+<h3 class="function"><a name="check_maybe_integers-1">check_maybe_integers/1</a></h3>
+<div class="spec">
+<p><tt>check_maybe_integers(MaybeIntegers::term()) -&gt; [<a href="#type-maybe">maybe</a>(integer())]</tt><br></p>
+<p> </p>
+</div><p>Checks that the specified term is a list of maybe-integers indeed, and
+ returns it.
+</p>
+
+<h3 class="function"><a name="check_pid-1">check_pid/1</a></h3>
+<div class="spec">
+<p><tt>check_pid(Pid::term()) -&gt; pid()</tt><br></p>
+<p> </p>
+</div><p>Checks that the specified term is a PID indeed, and returns it.</p>
+
+<h3 class="function"><a name="check_tuple-1">check_tuple/1</a></h3>
+<div class="spec">
+<p><tt>check_tuple(Tuple::term()) -&gt; tuple()</tt><br></p>
+<p> </p>
+</div><p>Checks that the specified term is a tuple indeed, and returns it.</p>
+
+<h3 class="function"><a name="description_to_type-1">description_to_type/1</a></h3>
+<div class="spec">
+<p><tt>description_to_type(TypeDescription::<a href="#type-type_description">type_description()</a>) -&gt; <a href="#type-type">type()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the actual type corresponding to specified type description: 
+parses the specified string to determine the type described therein.</p>
+
+ Note: returns a correct type, but currently rarely the expected, most precise
+ one.
+</p>
+
+<h3 class="function"><a name="ensure_binary-1">ensure_binary/1</a></h3>
+<div class="spec">
+<p><tt>ensure_binary(S::term()) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Ensures that the specified term is a binary string, and returns it.</p>
+
+<h3 class="function"><a name="ensure_boolean-1">ensure_boolean/1</a></h3>
+<div class="spec">
+<p><tt>ensure_boolean(B::term()) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Ensures that the specified term is a boolean, and returns it.</p>
+
+<h3 class="function"><a name="ensure_float-1">ensure_float/1</a></h3>
+<div class="spec">
+<p><tt>ensure_float(N::number()) -&gt; float()</tt><br></p>
+<p> </p>
+</div><p><p>Ensures that the specified term is a float, and returns it.</p>
+
+ If it is an integer, will return a floating-point version of it.
+</p>
+
+<h3 class="function"><a name="ensure_integer-1">ensure_integer/1</a></h3>
+<div class="spec">
+<p><tt>ensure_integer(N::number()) -&gt; integer()</tt><br></p>
+<p> </p>
+</div><p><p>Ensures that the specified term is an integer, and returns it.</p>
+
+ If it is a float, will return a truncated (integer) version of it.
+</p>
+
+<h3 class="function"><a name="ensure_number-1">ensure_number/1</a></h3>
+<div class="spec">
+<p><tt>ensure_number(N::number()) -&gt; number()</tt><br></p>
+<p> </p>
+</div><p>Ensures that the specified term is a number, and returns it.</p>
+
+<h3 class="function"><a name="ensure_string-1">ensure_string/1</a></h3>
+<div class="spec">
+<p><tt>ensure_string(S::term()) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Ensures that the specified term is a string, and returns it.</p>
+
+<h3 class="function"><a name="get_ast_simple_builtin_types-0">get_ast_simple_builtin_types/0</a></h3>
+<div class="spec">
+<p><tt>get_ast_simple_builtin_types() -&gt; [<a href="#type-type_name">type_name()</a>]</tt><br></p>
+<p> </p>
+</div><p><p>Returns a list of the possible types for immediate values (typically 
+found in an AST like, like 'undefined' in: {atom,42,undefined}).</p>
+
+ <p>From <a href="http://erlang.org/doc/apps/erts/absform.html" target="_top"><tt>http://erlang.org/doc/apps/erts/absform.html</tt></a>:</p>
+
+ <p>"There are five kinds of atomic literals, which are represented in the same 
+way in patterns, expressions, and guards:</p>
+
+ <p>- If L is an atom literal, then Rep(L) = {atom,LINE,L}.</p>
+
+ <p>- If L is a character literal, then Rep(L) = {char,LINE,L}.</p>
+
+ <p>- If L is a float literal, then Rep(L) = {float,LINE,L}.</p>
+
+ <p>- If L is an integer literal, then Rep(L) = {integer,LINE,L}.</p>
+
+ <p>- If L is a string literal consisting of the characters C_1, ..., C_k, then 
+Rep(L) = {string,LINE,[C_1, ..., C_k]}."</p>
+
+ Actually additional types can be found in ASTs.
+</p>
+
+<h3 class="function"><a name="get_elementary_types-0">get_elementary_types/0</a></h3>
+<div class="spec">
+<p><tt>get_elementary_types() -&gt; [<a href="#type-type_name">type_name()</a>]</tt><br></p>
+<p> </p>
+</div><p>Returns a list of the elementary, "atomic" types.</p>
+
+<h3 class="function"><a name="get_immediate_types-0">get_immediate_types/0</a></h3>
+<div class="spec">
+<p><tt>get_immediate_types() -&gt; [<a href="#type-type_name">type_name()</a>]</tt><br></p>
+<p> </p>
+</div><p>Returns a list of the possible types for immediate values.</p>
+
+<h3 class="function"><a name="get_simple_builtin_types-0">get_simple_builtin_types/0</a></h3>
+<div class="spec">
+<p><tt>get_simple_builtin_types() -&gt; [<a href="#type-type_name">type_name()</a>]</tt><br></p>
+<p> </p>
+</div><p>Returns a list of the built-in, non-polymorphic types that can be
+ typically found in AST forms.
+</p>
+
+<h3 class="function"><a name="get_type_of-1">get_type_of/1</a></h3>
+<div class="spec">
+<p><tt>get_type_of(Term::term()) -&gt; <a href="#type-primitive_type_description">primitive_type_description()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns an atom describing, as precisely as possible, the overall type of 
+the specified primitive term.</p>
+
+ <p>Note: limited to primitive types, not compounded ones (like [float()]).</p>
+
+ <p>is_number/1, is_record/1, etc. not usable here.</p>
+
+ Note: often we do not want to retrieve the actual type of a term but need
+ instead to determine whether the term can be considered as an instance of a
+ specific type (this is not strictly the same need, as a given term in general
+ may be seen of being of multiple types).
+</p>
+
+<h3 class="function"><a name="interpret_type_of-1">interpret_type_of/1</a></h3>
+<div class="spec">
+<p><tt>interpret_type_of(Term::term()) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a string describing, in a user-friendly manner, the type of the
+ specified term (up to one level of nesting detailed).
+</p>
+
+<h3 class="function"><a name="interpret_type_of-2">interpret_type_of/2</a></h3>
+<div class="spec">
+<p><tt>interpret_type_of(Term::term(), MaxNestingLevel::<a href="#type-level">level()</a> | infinite) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a string describing, in a user-friendly manner, the type of the
+ specified term, up to the specified nesting level (either a positive integer
+ or the 'infinite' atom, to go as deep as possible in the term structure).
+</p>
+
+<h3 class="function"><a name="is_homogeneous-1">is_homogeneous/1</a></h3>
+<div class="spec">
+<p><tt>is_homogeneous(List::list() | tuple()) -&gt; {true, <a href="#type-primitive_type_description">primitive_type_description()</a>} | {false, {<a href="#type-primitive_type_description">primitive_type_description()</a>, <a href="#type-primitive_type_description">primitive_type_description()</a>}}</tt><br></p>
+<p> </p>
+</div><p><p>Tells whether specified non-empty container (list or tuple) is 
+homogeneous in terms of type, ie whether all its elements are of the same 
+type.</p>
+
+ If true, returns the common type.
+ If false, returns two of the different types found in the container.
+</p>
+
+<h3 class="function"><a name="is_homogeneous-2">is_homogeneous/2</a></h3>
+<div class="spec">
+<p><tt>is_homogeneous(List::list() | tuple(), Type::<a href="#type-primitive_type_description">primitive_type_description()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Tells whether specified non-empty container (list or tuple) is
+ homogeneous in terms of type, ie whether all its elements are of the same,
+ specified, primitive type.
+</p>
+
+<h3 class="function"><a name="is_of_described_type-2">is_of_described_type/2</a></h3>
+<div class="spec">
+<p><tt>is_of_described_type(Term::term(), TypeDescription::<a href="#type-type_description">type_description()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p><p>Tells whether the specified term is of specified textually-described 
+type.</p>
+
+ Note: currently no checking is made and the test always succeeds.
+</p>
+
+<h3 class="function"><a name="is_of_type-2">is_of_type/2</a></h3>
+<div class="spec">
+<p><tt>is_of_type(Term::term(), Type::<a href="#type-type">type()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p><p>Tells whether specified term is of specified type (predicate).</p>
+
+ Note: currently only a very partial checking is made, based on top-level
+ primitive types; later the type will be recursed into, in order to check
+ whether the term complies with this expected structure.
+</p>
+
+<h3 class="function"><a name="is_type-1">is_type/1</a></h3>
+<div class="spec">
+<p><tt>is_type(T::term()) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p><p>Tells whether specified term designates a type (ie a type() instance).</p>
+
+ (only the elementary types are currently recognised)
+</p>
+
+<h3 class="function"><a name="tokenise_per_union-1">tokenise_per_union/1</a></h3>
+<div class="spec">
+<p><tt>tokenise_per_union(TypeDescription::<a href="#type-type_description">type_description()</a>) -&gt; [<a href="#type-type_description">type_description()</a>]</tt><br></p>
+<p> </p>
+</div><p>Splits the specified type description according to union delimiters</p>
+
+<h3 class="function"><a name="type_to_description-1">type_to_description/1</a></h3>
+<div class="spec">
+<p><tt>type_to_description(Type::<a href="#type-type">type()</a>) -&gt; <a href="#type-type_description">type_description()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the type description (in canonical form, notably without 
+whitespaces) corresponding to specified type.</p>
+
+ Note: currently does not return a really relevant type description; basically
+ meant to be the function reciprocal to scan_type/1.
+</p>
+
+<h3 class="function"><a name="type_to_string-1">type_to_string/1</a></h3>
+<div class="spec">
+<p><tt>type_to_string(Type::<a href="#type-type">type()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual representation of the specified type.</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

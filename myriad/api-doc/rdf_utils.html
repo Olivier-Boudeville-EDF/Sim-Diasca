@@ -1,0 +1,171 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module rdf_utils</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module rdf_utils</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various facilities in relation with <b>RDF</b>,
+ namely <em>Resource Description Framework</em>.
+
+
+<h2><a name="description">Description</a></h2><p>Gathering of various facilities in relation with <b>RDF</b>,
+ namely <em>Resource Description Framework</em>.</p>
+
+ <p>See also:</p>
+
+ <p>- <a href="https://en.wikipedia.org/wiki/Resource_Description_Framework" target="_top"><tt>https://en.wikipedia.org/wiki/Resource_Description_Framework</tt></a></p>
+
+ <p>- <a href="https://www.w3.org/TR/rdf11-primer/" target="_top"><tt>https://www.w3.org/TR/rdf11-primer/</tt></a></p>
+
+ See rdf_utils_test.erl for the corresponding test.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-any_iri">any_iri()</a></h3>
+<p><tt>any_iri() = <a href="#type-iri">iri()</a> | <a href="#type-string_iri">string_iri()</a></tt></p>
+<p> Any type of IRI.</p>
+
+<h3 class="typedecl"><a name="type-content">content()</a></h3>
+<p><tt>content() = [<a href="#type-triple">triple()</a>]</tt></p>
+
+
+<h3 class="typedecl"><a name="type-iri">iri()</a></h3>
+<p><tt>iri() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></tt></p>
+<p><p> International Resource Identifier, in charge of, well, identifying a resource.</p>
+
+ <p>This is a generalization of the URIs (Uniform Resource Identifier), allowing
+ non-ASCII characters to be used; specified in RFC 3987 (see
+ <a href="http://www.ietf.org/rfc/rfc3987.txt" target="_top"><tt>http://www.ietf.org/rfc/rfc3987.txt</tt></a>).</p>
+
+ (note: type to be used internally, for efficiency)</p>
+
+<h3 class="typedecl"><a name="type-literal">literal()</a></h3>
+<p><tt>literal() = any()</tt></p>
+<p><p> Designates all basic values that are not IRIs, often in a textual version.</p>
+
+ <p>Examples of literals include strings such as "La Joconde", dates such as "the 
+4th of July, 1990" and numbers such as "3.14159".</p>
+
+ See
+ <a href="https://www.w3.org/TR/2014/REC-rdf11-concepts-20140225/#section-Datatypes" target="_top"><tt>https://www.w3.org/TR/2014/REC-rdf11-concepts-20140225/#section-Datatypes</tt></a>.</p>
+
+<h3 class="typedecl"><a name="type-object">object()</a></h3>
+<p><tt>object() = <a href="#type-iri">iri()</a> | <a href="#type-literal">literal()</a></tt></p>
+<p> The actual value specified in the triplet; defines how the subject and object
+ are related (output edge).</p>
+
+<h3 class="typedecl"><a name="type-predicate">predicate()</a></h3>
+<p><tt>predicate() = <a href="#type-iri">iri()</a></tt></p>
+<p> Defines some attribute of the subject, the nature of the relationship between
+ the subject and the object (directed edge).</p>
+
+<h3 class="typedecl"><a name="type-string_iri">string_iri()</a></h3>
+<p><tt>string_iri() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p> Version of an IRI specified (typically by the user) as a plain (Unicode)
+ string.</p>
+
+<h3 class="typedecl"><a name="type-subject">subject()</a></h3>
+<p><tt>subject() = <a href="#type-iri">iri()</a></tt></p>
+<p> Identifies uniquely what resource a RDF triplet is describing (input node).</p>
+
+<h3 class="typedecl"><a name="type-triple">triple()</a></h3>
+<p><tt>triple() = {<a href="#type-subject">subject()</a>, <a href="#type-predicate">predicate()</a>, <a href="#type-object">object()</a>}</tt></p>
+<p> A RDF statement, a property triplet (named triple as more usual here).</p>
+
+<h3 class="typedecl"><a name="type-user_vocabulary">user_vocabulary()</a></h3>
+<p><tt>user_vocabulary() = [<a href="#type-string_iri">string_iri()</a>]</tt></p>
+<p> Vocabulary, typically to be specified by the user (simpler form).</p>
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-vocabulary">vocabulary()</a></h3>
+<p><tt>vocabulary() = <a href="set_utils.html#type-set">set_utils:set</a>(<a href="#type-iri">iri()</a>)</tt></p>
+<p> Vocabulary, typically to be used for internal purposes.</p>
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#evaluate_statement-3">evaluate_statement/3</a></td><td>Evaluates specified statement, and returns whether it holds.</td></tr>
+<tr><td valign="top"><a href="#implies-2">implies/2</a></td><td>Tells whether the first vocabulary is a subset of the second,
+ that is whether the first properties imply that the second ones are met.</td></tr>
+<tr><td valign="top"><a href="#is_iri-1">is_iri/1</a></td><td>Tells whether specified term is an IRI.</td></tr>
+<tr><td valign="top"><a href="#is_literal-1">is_literal/1</a></td><td>Tells whether specified term is a (RDF) literal.</td></tr>
+<tr><td valign="top"><a href="#is_object-1">is_object/1</a></td><td>Tells whether specified term is a RDF object.</td></tr>
+<tr><td valign="top"><a href="#is_predicate-1">is_predicate/1</a></td><td>Tells whether specified term is a RDF predicate.</td></tr>
+<tr><td valign="top"><a href="#is_subject-1">is_subject/1</a></td><td>Tells whether specified term is a RDF subject.</td></tr>
+<tr><td valign="top"><a href="#vocabulary_to_string-1">vocabulary_to_string/1</a></td><td>Returns a textual representation of specified vocabulary.</td></tr>
+<tr><td valign="top"><a href="#vocabulary_to_string-2">vocabulary_to_string/2</a></td><td>Returns a textual representation of specified vocabulary, with specified
+ indentation level.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="evaluate_statement-3">evaluate_statement/3</a></h3>
+<div class="spec">
+<p><tt>evaluate_statement(Subject::<a href="#type-subject">subject()</a>, Predicate::<a href="#type-predicate">predicate()</a>, Object::<a href="#type-object">object()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Evaluates specified statement, and returns whether it holds.</p>
+
+<h3 class="function"><a name="implies-2">implies/2</a></h3>
+<div class="spec">
+<p><tt>implies(FirstVocabulary::<a href="#type-vocabulary">vocabulary()</a>, SecondVocabulary::<a href="#type-vocabulary">vocabulary()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Tells whether the first vocabulary is a subset of the second,
+ that is whether the first properties imply that the second ones are met.
+</p>
+
+<h3 class="function"><a name="is_iri-1">is_iri/1</a></h3>
+<div class="spec">
+<p><tt>is_iri(Term::term()) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Tells whether specified term is an IRI.</p>
+
+<h3 class="function"><a name="is_literal-1">is_literal/1</a></h3>
+<div class="spec">
+<p><tt>is_literal(Term::term()) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Tells whether specified term is a (RDF) literal.</p>
+
+<h3 class="function"><a name="is_object-1">is_object/1</a></h3>
+<div class="spec">
+<p><tt>is_object(Term::term()) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Tells whether specified term is a RDF object.</p>
+
+<h3 class="function"><a name="is_predicate-1">is_predicate/1</a></h3>
+<div class="spec">
+<p><tt>is_predicate(Term::term()) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Tells whether specified term is a RDF predicate.</p>
+
+<h3 class="function"><a name="is_subject-1">is_subject/1</a></h3>
+<div class="spec">
+<p><tt>is_subject(Term::term()) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Tells whether specified term is a RDF subject.</p>
+
+<h3 class="function"><a name="vocabulary_to_string-1">vocabulary_to_string/1</a></h3>
+<div class="spec">
+<p><tt>vocabulary_to_string(Vocabulary::<a href="#type-vocabulary">vocabulary()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual representation of specified vocabulary.</p>
+
+<h3 class="function"><a name="vocabulary_to_string-2">vocabulary_to_string/2</a></h3>
+<div class="spec">
+<p><tt>vocabulary_to_string(Vocabulary::<a href="#type-vocabulary">vocabulary()</a>, IndentationLevel::<a href="text_utils.html#type-indentation_level">text_utils:indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual representation of specified vocabulary, with specified
+ indentation level.
+</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

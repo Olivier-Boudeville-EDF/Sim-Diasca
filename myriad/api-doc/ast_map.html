@@ -1,0 +1,122 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module ast_map</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module ast_map</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Module in charge of handling <b>maps defined or used within an AST</b>.
+
+
+<h2><a name="description">Description</a></h2><p>Module in charge of handling <b>maps defined or used within an AST</b>.</p>
+
+ See <a href="http://erlang.org/doc/apps/erts/absform.html" target="_top"><tt>http://erlang.org/doc/apps/erts/absform.html</tt></a> for more information.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-ast_element">ast_element()</a></h3>
+<p><tt>ast_element() = <a href="ast_base.html#type-ast_element">ast_base:ast_element()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-ast_map">ast_map()</a></h3>
+<p><tt>ast_map(_KeyType, _ValueType) = <a href="#type-ast_element">ast_element()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-ast_map_association">ast_map_association()</a></h3>
+<p><tt>ast_map_association(KeyType, ValueType) = {<a href="#type-map_field_association_type">map_field_association_type()</a>, <a href="#type-file_loc">file_loc()</a>, KeyType, ValueType}</tt></p>
+
+
+<h3 class="typedecl"><a name="type-ast_map_association">ast_map_association()</a></h3>
+<p><tt>ast_map_association() = <a href="#type-ast_map_association">ast_map_association</a>(<a href="#type-ast_element">ast_element()</a>, <a href="#type-ast_element">ast_element()</a>)</tt></p>
+
+
+<h3 class="typedecl"><a name="type-ast_map_creation_form">ast_map_creation_form()</a></h3>
+<p><tt>ast_map_creation_form(KeyType, ValueType) = {map, <a href="#type-file_loc">file_loc()</a>, [<a href="#type-ast_map_association">ast_map_association</a>(KeyType, ValueType)]}</tt></p>
+
+
+<h3 class="typedecl"><a name="type-ast_map_creation_form">ast_map_creation_form()</a></h3>
+<p><tt>ast_map_creation_form() = <a href="#type-ast_map_creation_form">ast_map_creation_form</a>(<a href="#type-ast_element">ast_element()</a>, <a href="#type-ast_element">ast_element()</a>)</tt></p>
+<p> AST form corresponding to a map creation.</p>
+
+<h3 class="typedecl"><a name="type-ast_map_form">ast_map_form()</a></h3>
+<p><tt>ast_map_form() = <a href="#type-ast_map_creation_form">ast_map_creation_form()</a> | <a href="#type-ast_map_update_form">ast_map_update_form()</a></tt></p>
+<p> Possibly not relevant.</p>
+
+<h3 class="typedecl"><a name="type-ast_map_update_form">ast_map_update_form()</a></h3>
+<p><tt>ast_map_update_form(KeyType, ValueType) = {map, <a href="#type-file_loc">file_loc()</a>, <a href="#type-ast_map">ast_map</a>(KeyType, ValueType), [<a href="#type-ast_map_association">ast_map_association</a>(KeyType, ValueType)]}</tt></p>
+
+
+<h3 class="typedecl"><a name="type-ast_map_update_form">ast_map_update_form()</a></h3>
+<p><tt>ast_map_update_form() = <a href="#type-ast_map_update_form">ast_map_update_form</a>(<a href="#type-ast_element">ast_element()</a>, <a href="#type-ast_element">ast_element()</a>)</tt></p>
+<p> AST form corresponding to a map update.</p>
+
+<h3 class="typedecl"><a name="type-ast_transforms">ast_transforms()</a></h3>
+<p><tt>ast_transforms() = <a href="ast_transform.html#type-ast_transforms">ast_transform:ast_transforms()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-file_loc">file_loc()</a></h3>
+<p><tt>file_loc() = <a href="ast_base.html#type-file_loc">ast_base:file_loc()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-map_field_association_type">map_field_association_type()</a></h3>
+<p><tt>map_field_association_type() = map_field_assoc | map_field_exact</tt></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#transform_map_association-3">transform_map_association/3</a></td><td>Transforms specified map association involved in a map operation.</td></tr>
+<tr><td valign="top"><a href="#transform_map_associations-2">transform_map_associations/2</a></td><td>Transforms specified list of map associations involved in a map 
+operation.</td></tr>
+<tr><td valign="top"><a href="#transform_map_associations-3">transform_map_associations/3</a></td><td>Transforms specified list of map associations involved in a map
+ operation, applying to each association the specified function to perform the
+ relevant transformations (that depends on the context; ex: if being in a
+ guard, in an expression).</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="transform_map_association-3">transform_map_association/3</a></h3>
+<div class="spec">
+<p><tt>transform_map_association(X1::<a href="#type-ast_map_association">ast_map_association()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>, TransformFun::<a href="ast_transform.html#type-transform_fun">ast_transform:transform_fun()</a>) -&gt; {<a href="#type-ast_map_association">ast_map_association()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Transforms specified map association involved in a map operation.</p>
+
+ <p>"An association A is one of the following:</p>
+
+    <p>If A is an association K =&gt; V, then       
+Rep(A) = {map_field_assoc, FILE_LOC, Rep(K), Rep(V)}.</p>
+
+    If A is an association K := V, then
+       Rep(A) = {map_field_exact, FILE_LOC, Rep(K), Rep(V)}."
+</p>
+
+<h3 class="function"><a name="transform_map_associations-2">transform_map_associations/2</a></h3>
+<div class="spec">
+<p><tt>transform_map_associations(Associations::[<a href="#type-ast_map_association">ast_map_association()</a>], Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {[<a href="#type-ast_map_association">ast_map_association()</a>], <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Transforms specified list of map associations involved in a map 
+operation.</p>
+
+ Note: context-insensitive function, considering that any kind of expression
+ can be found for the association keys and values.
+</p>
+
+<h3 class="function"><a name="transform_map_associations-3">transform_map_associations/3</a></h3>
+<div class="spec">
+<p><tt>transform_map_associations(Associations::[<a href="#type-ast_map_association">ast_map_association()</a>], Transforms::<a href="#type-ast_transforms">ast_transforms()</a>, TransformFun::<a href="ast_transform.html#type-transform_fun">ast_transform:transform_fun()</a>) -&gt; {[<a href="#type-ast_map_association">ast_map_association()</a>], <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
+<p> </p>
+</div><p>Transforms specified list of map associations involved in a map
+ operation, applying to each association the specified function to perform the
+ relevant transformations (that depends on the context; ex: if being in a
+ guard, in an expression).
+</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

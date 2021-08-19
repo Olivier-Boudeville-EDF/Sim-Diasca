@@ -1,0 +1,649 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module ast_utils</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module ast_utils</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various convenient <b>facilities to manage ASTs</b> 
+(Abstract Syntax Trees): direct bridge towards plain Erlang AST.
+
+
+<h2><a name="description">Description</a></h2><p>Gathering of various convenient <b>facilities to manage ASTs</b> 
+(Abstract Syntax Trees): direct bridge towards plain Erlang AST.</p>
+
+ <p>Convenient to isolate processings from the current Erlang AST syntax, which 
+could change over time (a bit like the erl_syntax standard module, albeit with 
+a different set of conventions).</p>
+
+ <p>See also:</p>
+
+ <p>- the meta_utils module, for meta primitives less directly linked with syntax</p>
+
+ - the ast_scan module, to perform a full, strict traversal of an AST
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-ast">ast()</a></h3>
+<p><tt>ast() = <a href="ast_base.html#type-ast">ast_base:ast()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-ast_transforms">ast_transforms()</a></h3>
+<p><tt>ast_transforms() = <a href="ast_transform.html#type-ast_transforms">ast_transform:ast_transforms()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-file_loc">file_loc()</a></h3>
+<p><tt>file_loc() = <a href="ast_base.html#type-file_loc">ast_base:file_loc()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-file_name">file_name()</a></h3>
+<p><tt>file_name() = <a href="file_utils.html#type-file_name">file_utils:file_name()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-form">form()</a></h3>
+<p><tt>form() = <a href="ast_base.html#type-form">ast_base:form()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-form_context">form_context()</a></h3>
+<p><tt>form_context() = <a href="ast_base.html#type-form_context">ast_base:form_context()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-format_string">format_string()</a></h3>
+<p><tt>format_string() = <a href="text_utils.html#type-format_string">text_utils:format_string()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-format_values">format_values()</a></h3>
+<p><tt>format_values() = <a href="text_utils.html#type-format_values">text_utils:format_values()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-include_path">include_path()</a></h3>
+<p><tt>include_path() = [<a href="file_utils.html#type-directory_name">file_utils:directory_name()</a>]</tt></p>
+
+
+<h3 class="typedecl"><a name="type-issue_description">issue_description()</a></h3>
+<p><tt>issue_description() = term()</tt></p>
+<p> Description of a compilation-related issue (error or warning).</p>
+
+<h3 class="typedecl"><a name="type-issue_info">issue_info()</a></h3>
+<p><tt>issue_info() = {<a href="#type-file_loc">file_loc()</a>, module(), <a href="#type-issue_description">issue_description()</a>}</tt></p>
+<p><p> Full information about a compilation-related issue.</p>
+
+ The module is the one emitting that issue (ex: erl_lint).</p>
+
+<h3 class="typedecl"><a name="type-issue_report">issue_report()</a></h3>
+<p><tt>issue_report() = {<a href="#type-file_name">file_name()</a>, [<a href="#type-issue_info">issue_info()</a>]}</tt></p>
+<p> A warning regarding a source file, corresponding to a list of error
+ information.</p>
+
+<h3 class="typedecl"><a name="type-macro">macro()</a></h3>
+<p><tt>macro() = atom() | {atom(), term()}</tt></p>
+
+
+<h3 class="typedecl"><a name="type-maybe">maybe()</a></h3>
+<p><tt>maybe(T) = <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>(T)</tt></p>
+
+
+<h3 class="typedecl"><a name="type-module_name">module_name()</a></h3>
+<p><tt>module_name() = <a href="basic_utils.html#type-module_name">basic_utils:module_name()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-preprocessor_option">preprocessor_option()</a></h3>
+<p><tt>preprocessor_option() = {includes, <a href="#type-include_path">include_path()</a>} | {macros, [<a href="#type-macro">macro()</a>]} | {default_encoding, <a href="#type-source_encoding">source_encoding()</a>} | extra</tt></p>
+
+
+<h3 class="typedecl"><a name="type-source_context">source_context()</a></h3>
+<p><tt>source_context() = <a href="ast_base.html#type-source_context">ast_base:source_context()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-source_encoding">source_encoding()</a></h3>
+<p><tt>source_encoding() = latin1 | utf8</tt></p>
+
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-void">void()</a></h3>
+<p><tt>void() = <a href="basic_utils.html#type-void">basic_utils:void()</a></tt></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#beam_to_ast-1">beam_to_ast/1</a></td><td>Reads the specified BEAM file (expected to be compiled with debug 
+information) and returns the corresponding AST.</td></tr>
+<tr><td valign="top"><a href="#check_arity-1">check_arity/1</a></td><td>Checks that specified (function or type) arity is legit.</td></tr>
+<tr><td valign="top"><a href="#check_arity-2">check_arity/2</a></td><td>Checks that specified (function or type) arity is legit.</td></tr>
+<tr><td valign="top"><a href="#check_ast-1">check_ast/1</a></td><td>Checks whether specified AST is legit: lints it.</td></tr>
+<tr><td valign="top"><a href="#check_file_loc-1">check_file_loc/1</a></td><td>Checks that specified source, in-file location is legit.</td></tr>
+<tr><td valign="top"><a href="#check_file_loc-2">check_file_loc/2</a></td><td>Checks that specified source, in-file location is legit.</td></tr>
+<tr><td valign="top"><a href="#check_inline_options-1">check_inline_options/1</a></td><td>Checks that specified inline options are legit.</td></tr>
+<tr><td valign="top"><a href="#check_inline_options-2">check_inline_options/2</a></td><td>Checks that specified inline options are legit.</td></tr>
+<tr><td valign="top"><a href="#check_module_name-1">check_module_name/1</a></td><td>Checks that specified module name is legit.</td></tr>
+<tr><td valign="top"><a href="#check_module_name-2">check_module_name/2</a></td><td>Checks that specified module name is legit.</td></tr>
+<tr><td valign="top"><a href="#display_alert-1">display_alert/1</a></td><td>Displays specified text as alert.</td></tr>
+<tr><td valign="top"><a href="#display_alert-2">display_alert/2</a></td><td>Displays specified formatted text as alert.</td></tr>
+<tr><td valign="top"><a href="#display_critical-1">display_critical/1</a></td><td>Displays specified text as critical.</td></tr>
+<tr><td valign="top"><a href="#display_critical-2">display_critical/2</a></td><td>Displays specified formatted text as critical.</td></tr>
+<tr><td valign="top"><a href="#display_debug-1">display_debug/1</a></td><td>Displays specified text as debug.</td></tr>
+<tr><td valign="top"><a href="#display_debug-2">display_debug/2</a></td><td>Displays specified formatted text as debug.</td></tr>
+<tr><td valign="top"><a href="#display_emergency-1">display_emergency/1</a></td><td>Displays specified text as emergency.</td></tr>
+<tr><td valign="top"><a href="#display_emergency-2">display_emergency/2</a></td><td>Displays specified formatted text as emergency.</td></tr>
+<tr><td valign="top"><a href="#display_error-1">display_error/1</a></td><td>Displays specified text as error.</td></tr>
+<tr><td valign="top"><a href="#display_error-2">display_error/2</a></td><td>Displays specified formatted text as error.</td></tr>
+<tr><td valign="top"><a href="#display_info-1">display_info/1</a></td><td>Displays specified text as info.</td></tr>
+<tr><td valign="top"><a href="#display_info-2">display_info/2</a></td><td>Displays specified formatted text as info.</td></tr>
+<tr><td valign="top"><a href="#display_notice-1">display_notice/1</a></td><td>Displays specified text as notice.</td></tr>
+<tr><td valign="top"><a href="#display_notice-2">display_notice/2</a></td><td>Displays specified formatted text as notice.</td></tr>
+<tr><td valign="top"><a href="#display_warning-1">display_warning/1</a></td><td>Displays specified text as warning.</td></tr>
+<tr><td valign="top"><a href="#display_warning-2">display_warning/2</a></td><td>Displays specified formatted text as warning.</td></tr>
+<tr><td valign="top"><a href="#erl_to_ast-1">erl_to_ast/1</a></td><td>Reads specified Erlang source file (*.erl) and returns the corresponding 
+AST, based on default preprocessor options.</td></tr>
+<tr><td valign="top"><a href="#erl_to_ast-2">erl_to_ast/2</a></td><td>Reads specified Erlang source file (*.erl) and returns the corresponding 
+AST, based on specified preprocessor (eep) options.</td></tr>
+<tr><td valign="top"><a href="#file_loc_to_explicative_term-1">file_loc_to_explicative_term/1</a></td><td>Returns an explicative term (typically to be part of a thrown exception)
+ corresponding to the specified in-file location.</td></tr>
+<tr><td valign="top"><a href="#file_loc_to_line_string-1">file_loc_to_line_string/1</a></td><td>Returns a textual, user-friendly description of specified in-file
+ location, just specifying the line (defined for the cases where a column would
+ not be especially useful, like when referencing a clause).</td></tr>
+<tr><td valign="top"><a href="#file_loc_to_string-1">file_loc_to_string/1</a></td><td>Returns a textual, user-friendly description of specified in-file
+ location.</td></tr>
+<tr><td valign="top"><a href="#format_error-1">format_error/1</a></td><td>This function (whose name is standard, conventional) is to be defined on
+ a per-module basis (typically in the module defining the parse transform being
+ applied) and allows to convert error terms (that are, here, related to
+ parse-transforms) into textual messages that can be output by the build chain.</td></tr>
+<tr><td valign="top"><a href="#format_file_loc-1">format_file_loc/1</a></td><td>Returns a standard textual description of specified in-file location
+ (typically to output the usual, canonical reference expected by most tools,
+ often to report compilation issues).</td></tr>
+<tr><td valign="top"><a href="#format_file_loc_alt-1">format_file_loc_alt/1</a></td><td>Returns an alternative textual description of specified in-file location
+ (ex: in order to name variables in AST).</td></tr>
+<tr><td valign="top"><a href="#get_error_form-3">get_error_form/3</a></td><td>Returns an AST form in order to raise a (compile-time, standard) error 
+when applying a parse transform, to stop the build on failure and report the 
+actual error.</td></tr>
+<tr><td valign="top"><a href="#get_generated_code_location-0">get_generated_code_location/0</a></td><td>Returns the conventional virtual in-file (not AST) location denoting
+ generated code.</td></tr>
+<tr><td valign="top"><a href="#notify_warning-2">notify_warning/2</a></td><td>Notifies a warning, with specified context.</td></tr>
+<tr><td valign="top"><a href="#raise_error-1">raise_error/1</a></td><td>Raises a (compile-time, rather ad hoc) error when applying a parse 
+transform, to stop the build on failure and report the actual error, thanks to 
+the specified term (often, a list of error elements).</td></tr>
+<tr><td valign="top"><a href="#raise_error-2">raise_error/2</a></td><td>Raises an error, with specified context, thanks to the specified term 
+(often, a list of error elements), from the Myriad layer.</td></tr>
+<tr><td valign="top"><a href="#raise_error-3">raise_error/3</a></td><td>Raises an error, with specified context, from the specified layer 
+(expected to be above Myriad).</td></tr>
+<tr><td valign="top"><a href="#raise_usage_error-3">raise_usage_error/3</a></td><td>Raises a (compile-time, relatively standard) user-related error, with
+ specified source context, to stop the build on failure and report adequately
+ the actual error to the user.</td></tr>
+<tr><td valign="top"><a href="#raise_usage_error-4">raise_usage_error/4</a></td><td>Raises a (compile-time, relatively standard) user-related error, with
+ specified source context, to stop the build on failure and report adequately
+ the actual error to the user.</td></tr>
+<tr><td valign="top"><a href="#string_to_expressions-1">string_to_expressions/1</a></td><td>Converts the specified source code of a list of expressions (that is, a 
+string) into its corresponding AST (using the default in-file location 
+applying to generated code).</td></tr>
+<tr><td valign="top"><a href="#string_to_expressions-2">string_to_expressions/2</a></td><td>Converts the specified source code of a term (that is, a string) and a 
+location into the corresponding abstract form.</td></tr>
+<tr><td valign="top"><a href="#string_to_form-1">string_to_form/1</a></td><td>Converts the specified source code of a form (as a string) into its 
+corresponding abstract form (using the default in-file location applying to 
+generated code).</td></tr>
+<tr><td valign="top"><a href="#string_to_form-2">string_to_form/2</a></td><td>Converts the specified source code of a form (that is, a string) into its 
+corresponding abstract form, at the specified in-file location.</td></tr>
+<tr><td valign="top"><a href="#string_to_value-1">string_to_value/1</a></td><td>Converts the specified source code of a term (that is, a string) into its 
+corresponding value.</td></tr>
+<tr><td valign="top"><a href="#term_to_form-1">term_to_form/1</a></td><td>Converts the specified Erlang term (ex: the float '42.0') into a
+ corresponding form (ex: '{float, _FileLoc={0,1}, 42.0}').</td></tr>
+<tr><td valign="top"><a href="#variable_names_to_ast-2">variable_names_to_ast/2</a></td><td>Converts a list of names of variables into the corresponding AST, at 
+the specified in-file location.</td></tr>
+<tr><td valign="top"><a href="#write_ast_to_file-2">write_ast_to_file/2</a></td><td>Writes specified AST into specified (text) file.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="beam_to_ast-1">beam_to_ast/1</a></h3>
+<div class="spec">
+<p><tt>beam_to_ast(BeamFilename::<a href="#type-file_name">file_name()</a>) -&gt; <a href="#type-ast">ast()</a></tt><br></p>
+<p> </p>
+</div><p><p>Reads the specified BEAM file (expected to be compiled with debug 
+information) and returns the corresponding AST.</p>
+
+ Note that the filename must be a relative or absolute path pointing directly
+ to the BEAM file (it is not searched through the code path).
+</p>
+
+<h3 class="function"><a name="check_arity-1">check_arity/1</a></h3>
+<div class="spec">
+<p><tt>check_arity(Arity::term()) -&gt; arity()</tt><br></p>
+<p> </p>
+</div><p>Checks that specified (function or type) arity is legit.</p>
+
+<h3 class="function"><a name="check_arity-2">check_arity/2</a></h3>
+<div class="spec">
+<p><tt>check_arity(Arity::term(), Context::<a href="#type-form_context">form_context()</a>) -&gt; arity()</tt><br></p>
+<p> </p>
+</div><p>Checks that specified (function or type) arity is legit.</p>
+
+<h3 class="function"><a name="check_ast-1">check_ast/1</a></h3>
+<div class="spec">
+<p><tt>check_ast(AST::<a href="#type-ast">ast()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Checks whether specified AST is legit: lints it.</p>
+
+<h3 class="function"><a name="check_file_loc-1">check_file_loc/1</a></h3>
+<div class="spec">
+<p><tt>check_file_loc(Line::term()) -&gt; <a href="#type-file_loc">file_loc()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that specified source, in-file location is legit.</p>
+
+<h3 class="function"><a name="check_file_loc-2">check_file_loc/2</a></h3>
+<div class="spec">
+<p><tt>check_file_loc(Line::term(), Context::<a href="#type-maybe">maybe</a>(<a href="#type-form_context">form_context()</a>)) -&gt; <a href="#type-file_loc">file_loc()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that specified source, in-file location is legit.</p>
+
+<h3 class="function"><a name="check_inline_options-1">check_inline_options/1</a></h3>
+<div class="spec">
+<p><tt>check_inline_options(FunIds::term()) -&gt; [<a href="meta_utils.html#type-function_id">meta_utils:function_id()</a>]</tt><br></p>
+<p> </p>
+</div><p>Checks that specified inline options are legit.</p>
+
+<h3 class="function"><a name="check_inline_options-2">check_inline_options/2</a></h3>
+<div class="spec">
+<p><tt>check_inline_options(FunIds::term(), Context::<a href="#type-form_context">form_context()</a>) -&gt; [<a href="meta_utils.html#type-function_id">meta_utils:function_id()</a>]</tt><br></p>
+<p> </p>
+</div><p>Checks that specified inline options are legit.</p>
+
+<h3 class="function"><a name="check_module_name-1">check_module_name/1</a></h3>
+<div class="spec">
+<p><tt>check_module_name(Name::term()) -&gt; <a href="#type-module_name">module_name()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that specified module name is legit.</p>
+
+<h3 class="function"><a name="check_module_name-2">check_module_name/2</a></h3>
+<div class="spec">
+<p><tt>check_module_name(Name::term(), Context::<a href="#type-form_context">form_context()</a>) -&gt; <a href="#type-module_name">module_name()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that specified module name is legit.</p>
+
+<h3 class="function"><a name="display_alert-1">display_alert/1</a></h3>
+<div class="spec">
+<p><tt>display_alert(String::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Displays specified text as alert.</p>
+
+<h3 class="function"><a name="display_alert-2">display_alert/2</a></h3>
+<div class="spec">
+<p><tt>display_alert(FormatString::<a href="#type-format_string">format_string()</a>, Values::[term()]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Displays specified formatted text as alert.</p>
+
+<h3 class="function"><a name="display_critical-1">display_critical/1</a></h3>
+<div class="spec">
+<p><tt>display_critical(String::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Displays specified text as critical.</p>
+
+<h3 class="function"><a name="display_critical-2">display_critical/2</a></h3>
+<div class="spec">
+<p><tt>display_critical(FormatString::<a href="#type-format_string">format_string()</a>, Values::[term()]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Displays specified formatted text as critical.</p>
+
+<h3 class="function"><a name="display_debug-1">display_debug/1</a></h3>
+<div class="spec">
+<p><tt>display_debug(String::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Displays specified text as debug.</p>
+
+<h3 class="function"><a name="display_debug-2">display_debug/2</a></h3>
+<div class="spec">
+<p><tt>display_debug(FormatString::<a href="#type-format_string">format_string()</a>, Values::[term()]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Displays specified formatted text as debug.</p>
+
+<h3 class="function"><a name="display_emergency-1">display_emergency/1</a></h3>
+<div class="spec">
+<p><tt>display_emergency(String::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Displays specified text as emergency.</p>
+
+<h3 class="function"><a name="display_emergency-2">display_emergency/2</a></h3>
+<div class="spec">
+<p><tt>display_emergency(FormatString::<a href="#type-format_string">format_string()</a>, Values::[term()]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Displays specified formatted text as emergency.</p>
+
+<h3 class="function"><a name="display_error-1">display_error/1</a></h3>
+<div class="spec">
+<p><tt>display_error(String::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Displays specified text as error.</p>
+
+<h3 class="function"><a name="display_error-2">display_error/2</a></h3>
+<div class="spec">
+<p><tt>display_error(FormatString::<a href="#type-format_string">format_string()</a>, Values::[term()]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Displays specified formatted text as error.</p>
+
+<h3 class="function"><a name="display_info-1">display_info/1</a></h3>
+<div class="spec">
+<p><tt>display_info(String::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Displays specified text as info.</p>
+
+<h3 class="function"><a name="display_info-2">display_info/2</a></h3>
+<div class="spec">
+<p><tt>display_info(FormatString::<a href="#type-format_string">format_string()</a>, Values::[term()]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Displays specified formatted text as info.</p>
+
+<h3 class="function"><a name="display_notice-1">display_notice/1</a></h3>
+<div class="spec">
+<p><tt>display_notice(String::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Displays specified text as notice.</p>
+
+<h3 class="function"><a name="display_notice-2">display_notice/2</a></h3>
+<div class="spec">
+<p><tt>display_notice(FormatString::<a href="#type-format_string">format_string()</a>, Values::[term()]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Displays specified formatted text as notice.</p>
+
+<h3 class="function"><a name="display_warning-1">display_warning/1</a></h3>
+<div class="spec">
+<p><tt>display_warning(String::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Displays specified text as warning.</p>
+
+<h3 class="function"><a name="display_warning-2">display_warning/2</a></h3>
+<div class="spec">
+<p><tt>display_warning(FormatString::<a href="#type-format_string">format_string()</a>, Values::[term()]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Displays specified formatted text as warning.</p>
+
+<h3 class="function"><a name="erl_to_ast-1">erl_to_ast/1</a></h3>
+<div class="spec">
+<p><tt>erl_to_ast(ErlSourceFilename::<a href="#type-file_name">file_name()</a>) -&gt; <a href="#type-ast">ast()</a></tt><br></p>
+<p> </p>
+</div><p><p>Reads specified Erlang source file (*.erl) and returns the corresponding 
+AST, based on default preprocessor options.</p>
+
+ For example useful to debug a parse transform first separately from the
+ compile pipe-line, relying here on the usual, convenient error management
+ instead of having little informative messages like: 'undefined parse transform
+ 'foobar'' as soon as a call to a non-existing module:function/arity is made.
+</p>
+
+<h3 class="function"><a name="erl_to_ast-2">erl_to_ast/2</a></h3>
+<div class="spec">
+<p><tt>erl_to_ast(ErlSourceFilename::<a href="#type-file_name">file_name()</a>, PreprocessorOptions::[<a href="#type-preprocessor_option">preprocessor_option()</a>]) -&gt; <a href="#type-ast">ast()</a></tt><br></p>
+<p> </p>
+</div><p><p>Reads specified Erlang source file (*.erl) and returns the corresponding 
+AST, based on specified preprocessor (eep) options.</p>
+
+ For example useful to debug a parse transform first separately from the
+ compile pipe-line, relying here on the usual, convenient error management
+ instead of having little informative messages like: 'undefined parse transform
+ 'foobar'' as soon as a call to a non-existing module:function/arity is made.
+</p>
+
+<h3 class="function"><a name="file_loc_to_explicative_term-1">file_loc_to_explicative_term/1</a></h3>
+<div class="spec">
+<p><tt>file_loc_to_explicative_term(Line::<a href="#type-file_loc">file_loc()</a>) -&gt; term()</tt><br></p>
+<p> </p>
+</div><p>Returns an explicative term (typically to be part of a thrown exception)
+ corresponding to the specified in-file location.
+</p>
+
+<h3 class="function"><a name="file_loc_to_line_string-1">file_loc_to_line_string/1</a></h3>
+<div class="spec">
+<p><tt>file_loc_to_line_string(Line::<a href="#type-file_loc">file_loc()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual, user-friendly description of specified in-file
+ location, just specifying the line (defined for the cases where a column would
+ not be especially useful, like when referencing a clause).
+</p>
+
+<h3 class="function"><a name="file_loc_to_string-1">file_loc_to_string/1</a></h3>
+<div class="spec">
+<p><tt>file_loc_to_string(Line::<a href="#type-file_loc">file_loc()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual, user-friendly description of specified in-file
+ location.
+</p>
+
+<h3 class="function"><a name="format_error-1">format_error/1</a></h3>
+<div class="spec">
+<p><tt>format_error(ErrorTerm::<a href="basic_utils.html#type-error_reason">basic_utils:error_reason()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>This function (whose name is standard, conventional) is to be defined on
+ a per-module basis (typically in the module defining the parse transform being
+ applied) and allows to convert error terms (that are, here, related to
+ parse-transforms) into textual messages that can be output by the build chain.
+</p>
+
+<h3 class="function"><a name="format_file_loc-1">format_file_loc/1</a></h3>
+<div class="spec">
+<p><tt>format_file_loc(Line::<a href="#type-file_loc">file_loc()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a standard textual description of specified in-file location
+ (typically to output the usual, canonical reference expected by most tools,
+ often to report compilation issues).
+</p>
+
+<h3 class="function"><a name="format_file_loc_alt-1">format_file_loc_alt/1</a></h3>
+<div class="spec">
+<p><tt>format_file_loc_alt(Line::<a href="#type-file_loc">file_loc()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns an alternative textual description of specified in-file location
+ (ex: in order to name variables in AST).
+</p>
+
+<h3 class="function"><a name="get_error_form-3">get_error_form/3</a></h3>
+<div class="spec">
+<p><tt>get_error_form(ErrorTerm::<a href="basic_utils.html#type-error_reason">basic_utils:error_reason()</a>, FormatErrorModule::<a href="#type-module_name">module_name()</a>, FileLoc::<a href="#type-file_loc">file_loc()</a>) -&gt; <a href="#type-form">form()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns an AST form in order to raise a (compile-time, standard) error 
+when applying a parse transform, to stop the build on failure and report the 
+actual error.</p>
+
+ The specified error term will be transformed by the specified module into a
+ (textual) error message (see format_error/1), and then will be reported as
+ originating from the specified location in the source file of the module being
+ compiled.
+</p>
+
+<h3 class="function"><a name="get_generated_code_location-0">get_generated_code_location/0</a></h3>
+<div class="spec">
+<p><tt>get_generated_code_location() -&gt; <a href="#type-file_loc">file_loc()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the conventional virtual in-file (not AST) location denoting
+ generated code.
+</p>
+
+<h3 class="function"><a name="notify_warning-2">notify_warning/2</a></h3>
+<div class="spec">
+<p><tt>notify_warning(Elements::[term()], Context::<a href="#type-form_context">form_context()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Notifies a warning, with specified context.</p>
+
+<h3 class="function"><a name="raise_error-1">raise_error/1</a></h3>
+<div class="spec">
+<p><tt>raise_error(ErrorTerm::term()) -&gt; no_return()</tt><br></p>
+<p> </p>
+</div><p><p>Raises a (compile-time, rather ad hoc) error when applying a parse 
+transform, to stop the build on failure and report the actual error, thanks to 
+the specified term (often, a list of error elements).</p>
+
+ <p>Used to be a simple throw, but then for parse transforms the error message was 
+garbled in messages like:</p>
+
+ <pre> internal error in lint_module;
+ crash reason: function_clause
+
+  in function  erl_lint:'-compiler_options/1-lc$^0/1-0-'/1
+     called as erl_lint:'-compiler_options/1-lc$^0/1-0-'({
+ table_type_defined_more_than_once,{line,12},foo_hashtable,bar_hashtable})</pre>
+
+ <p>Note:</p>
+
+ <p>- this function is used to report errors detected by Myriad itself (not by the 
+Erlang toolchain)</p>
+
+ - prefer using raise_usage_error/* to report errors in a more standard,
+ convenient way
+</p>
+
+<h3 class="function"><a name="raise_error-2">raise_error/2</a></h3>
+<div class="spec">
+<p><tt>raise_error(ErrorTerm::term(), Context::<a href="#type-maybe">maybe</a>(<a href="#type-source_context">source_context()</a>)) -&gt; no_return()</tt><br></p>
+<p> </p>
+</div><p><p>Raises an error, with specified context, thanks to the specified term 
+(often, a list of error elements), from the Myriad layer.</p>
+
+ <p>Ex: raise_error([invalid_module_name, Other], _Context=112) shall 
+result in throwing {invalid_module_name, Other, {line, 112}}.</p>
+
+ <p>Note:</p>
+
+ <p>- this function is used to report errors detected by Myriad itself (not by the 
+Erlang toolchain)</p>
+
+ - prefer using raise_usage_error/* to report errors in a more standard,
+ convenient way
+</p>
+
+<h3 class="function"><a name="raise_error-3">raise_error/3</a></h3>
+<div class="spec">
+<p><tt>raise_error(Message::term(), Ast_transforms::<a href="#type-maybe">maybe</a>(<a href="#type-source_context">source_context()</a>), FileLoc::<a href="basic_utils.html#type-layer_name">basic_utils:layer_name()</a>) -&gt; no_return()</tt><br></p><p><tt>raise_error(Message::<a href="#type-ustring">ustring()</a>, Ast_transforms::<a href="#type-ast_transforms">ast_transforms()</a>, FileLoc::<a href="#type-file_loc">file_loc()</a>) -&gt; no_return()</tt><br></p>
+<p> </p>
+<p> </p>
+</div><p><p>Raises an error, with specified context, from the specified layer 
+(expected to be above Myriad).</p>
+
+ <p>Ex: raise_error([invalid_module_name, Other], _Context=112, 
+_OriginLayer="FooLayer") shall result in throwing {invalid_module_name, Other, 
+{line, 112}}.</p>
+
+ <p>Note:</p>
+
+ <p>- this function is used to report errors detected by Myriad itself (not by the 
+Erlang toolchain)</p>
+
+ - prefer using raise_usage_error/* to report errors in a more standard,
+ convenient way
+</p>
+
+<h3 class="function"><a name="raise_usage_error-3">raise_usage_error/3</a></h3>
+<div class="spec">
+<p><tt>raise_usage_error(ErrorFormatString::<a href="#type-format_string">format_string()</a>, ErrorValues::<a href="#type-format_values">format_values()</a>, Filename::<a href="#type-file_name">file_name()</a>) -&gt; no_return()</tt><br></p>
+<p> </p>
+</div><p>Raises a (compile-time, relatively standard) user-related error, with
+ specified source context, to stop the build on failure and report adequately
+ the actual error to the user.
+</p>
+
+<h3 class="function"><a name="raise_usage_error-4">raise_usage_error/4</a></h3>
+<div class="spec">
+<p><tt>raise_usage_error(ErrorFormatString::<a href="#type-format_string">format_string()</a>, ErrorValues::<a href="#type-format_values">format_values()</a>, Filename::<a href="#type-file_name">file_name()</a>, FileLoc::<a href="#type-maybe">maybe</a>(<a href="#type-file_loc">file_loc()</a>)) -&gt; no_return()</tt><br></p>
+<p> </p>
+</div><p>Raises a (compile-time, relatively standard) user-related error, with
+ specified source context, to stop the build on failure and report adequately
+ the actual error to the user.
+</p>
+
+<h3 class="function"><a name="string_to_expressions-1">string_to_expressions/1</a></h3>
+<div class="spec">
+<p><tt>string_to_expressions(ExpressionString::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-ast">ast()</a></tt><br></p>
+<p> </p>
+</div><p><p>Converts the specified source code of a list of expressions (that is, a 
+string) into its corresponding AST (using the default in-file location 
+applying to generated code).</p>
+
+ Ex: string_to_expressions("[{a, 1}, foobar]") may return:
+   [{cons,  {0,1}, {tuple,  {0,1}, [{atom, {0,1},a}, {integer, {0,1},1}]},
+    {cons,  {0,1}, {atom, {0,1},foobar}, {nil, {0,1}}}}]
+</p>
+
+<h3 class="function"><a name="string_to_expressions-2">string_to_expressions/2</a></h3>
+<div class="spec">
+<p><tt>string_to_expressions(ExpressionString::<a href="#type-ustring">ustring()</a>, FileLoc::<a href="#type-file_loc">file_loc()</a>) -&gt; <a href="#type-ast">ast()</a></tt><br></p>
+<p> </p>
+</div><p><p>Converts the specified source code of a term (that is, a string) and a 
+location into the corresponding abstract form.</p>
+
+ <p>Ex: string_to_expressions("[{a, 1}, foobar]", _Loc=42) may return   
+[ {cons, 42, {tuple, 42, [ {atom,42,a}, {integer,42,1} ]},     
+{cons, 42, {atom,42,foobar}, {nil,42} }}]</p>
+
+ Note: at least with OTP24, apparently FileLoc cannot include a column</p>
+
+<h3 class="function"><a name="string_to_form-1">string_to_form/1</a></h3>
+<div class="spec">
+<p><tt>string_to_form(FormString::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-form">form()</a></tt><br></p>
+<p> </p>
+</div><p><p>Converts the specified source code of a form (as a string) into its 
+corresponding abstract form (using the default in-file location applying to 
+generated code).</p>
+
+ Ex: string_to_form("f() -&gt; hello_world.") may return
+   {function,  {0,1}, f, 0, [{clause,  {0,1}, [], [],
+       [ {atom,  {0,1}, hello_world} ] } ] }
+</p>
+
+<h3 class="function"><a name="string_to_form-2">string_to_form/2</a></h3>
+<div class="spec">
+<p><tt>string_to_form(FormString::<a href="#type-ustring">ustring()</a>, FileLoc::<a href="#type-file_loc">file_loc()</a>) -&gt; <a href="#type-form">form()</a></tt><br></p>
+<p> </p>
+</div><p><p>Converts the specified source code of a form (that is, a string) into its 
+corresponding abstract form, at the specified in-file location.</p>
+
+ Ex: string_to_form("f() -&gt; hello_world.", 42) may return
+   {function, 42, f, 0, [{clause, 42, [], [], [{atom,42,hello_world}]}]}
+</p>
+
+<h3 class="function"><a name="string_to_value-1">string_to_value/1</a></h3>
+<div class="spec">
+<p><tt>string_to_value(ExpressionString::<a href="#type-ustring">ustring()</a>) -&gt; term()</tt><br></p>
+<p> </p>
+</div><p><p>Converts the specified source code of a term (that is, a string) into its 
+corresponding value.</p>
+
+ Ex: string_to_value("[{tiger,[lion,leopard]}]") returns the
+ [{tiger, [lion,leopard]}] term.
+</p>
+
+<h3 class="function"><a name="term_to_form-1">term_to_form/1</a></h3>
+<div class="spec">
+<p><tt>term_to_form(Term::term()) -&gt; <a href="#type-form">form()</a></tt><br></p>
+<p> </p>
+</div><p>Converts the specified Erlang term (ex: the float '42.0') into a
+ corresponding form (ex: '{float, _FileLoc={0,1}, 42.0}').
+</p>
+
+<h3 class="function"><a name="variable_names_to_ast-2">variable_names_to_ast/2</a></h3>
+<div class="spec">
+<p><tt>variable_names_to_ast(VariableNames::[<a href="#type-ustring">ustring()</a>], FileLoc::<a href="#type-file_loc">file_loc()</a>) -&gt; <a href="#type-ast">ast()</a></tt><br></p>
+<p> </p>
+</div><p><p>Converts a list of names of variables into the corresponding AST, at 
+the specified in-file location.</p>
+
+ Ex: if wanting to specify '[V1, Alpha, A]', we have: variable_names_to_ast(
+ ["V1", "Alpha", "A"], _FileLoc=0) = [ {cons,0, {var,0,'V1'},
+ {cons,0,{var,0,'Alpha'}, {cons,0,{var,0,'A'}, {nil,0}}}}]
+</p>
+
+<h3 class="function"><a name="write_ast_to_file-2">write_ast_to_file/2</a></h3>
+<div class="spec">
+<p><tt>write_ast_to_file(AST::<a href="#type-ast">ast()</a>, Filename::<a href="#type-file_name">file_name()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Writes specified AST into specified (text) file.</p>
+
+ Useful for example to determine differences between ASTs.
+</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

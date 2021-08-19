@@ -1,0 +1,503 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module hdf5_support</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module hdf5_support</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>This module centralises the support for <b>HDF5</b> (<em>Hierarchical
+ Data Format version 5</em>), a file format designed to store and organize 
+large amounts of numerical data.
+
+
+<h2><a name="description">Description</a></h2><p>This module centralises the support for <b>HDF5</b> (<em>Hierarchical
+ Data Format version 5</em>), a file format designed to store and organize 
+large amounts of numerical data.</p>
+
+ <p><a href="https://en.wikipedia.org/wiki/Hierarchical_Data_Format#HDF5">More
+ information</a>.</p>
+
+ <p>Some installation conventions should have been respected, typically so that
+ the libraries can be located. For that, refer to the <a href="https://github.com/Olivier-Boudeville-EDF/erlhdf5#installation-instructions">
+ Installation Instructions</a> section of our fork.</p>
+
+ See also <code>raw_hdf5_test.erl</code> for a lower-level, more direct access to HDF5.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-allocation_status">allocation_status()</a></h3>
+<p><tt>allocation_status() = not_allocated | partially_allocated | fully_allocated</tt></p>
+<p> Allocation status of a dataset.</p>
+
+<h3 class="typedecl"><a name="type-byte_order">byte_order()</a></h3>
+<p><tt>byte_order() = little_endian | big_endian | vax_mixed | mixed | none</tt></p>
+<p> Byte order of an atomic datatype.</p>
+
+<h3 class="typedecl"><a name="type-class">class()</a></h3>
+<p><tt>class() = attribute_creation | dataset_access | dataset_creation | dataset_transfer | datatype_access | datatype_creation | file_access | file_creation | file_mounting | group_access | group_creation | link_access | link_creation | object_copying | object_creation | string_creation</tt></p>
+<p> A class designates a kind of HDF5 objects:</p>
+
+<h3 class="typedecl"><a name="type-data">data()</a></h3>
+<p><tt>data() = [tuple()]</tt></p>
+<p><p> Array of vectors.</p>
+
+ Note that:
+ - all tuples must have the same number of elements
+ - that these elements must be all of the same type
+ - that this must be a supported type for that binding (see
+ supported_datatypes())</p>
+
+<h3 class="typedecl"><a name="type-dataset">dataset()</a></h3>
+<p><tt>dataset() = binary()</tt></p>
+<p> An HDF5 dataset, ie the actual data.</p>
+
+<h3 class="typedecl"><a name="type-dataset_name">dataset_name()</a></h3>
+<p><tt>dataset_name() = string()</tt></p>
+<p> The name of a HDF5 dataset.</p>
+
+<h3 class="typedecl"><a name="type-dataspace">dataspace()</a></h3>
+<p><tt>dataspace() = <a href="#type-handle">handle()</a></tt></p>
+<p> An HDF5 dataspace, ie metadata.</p>
+
+<h3 class="typedecl"><a name="type-datatype">datatype()</a></h3>
+<p><tt>datatype() = <a href="#type-handle">handle()</a></tt></p>
+<p> Datatype identifier as such.</p>
+
+<h3 class="typedecl"><a name="type-datatype_class_identifier">datatype_class_identifier()</a></h3>
+<p><tt>datatype_class_identifier() = no_class | integer | float | time | string | bitfield | opaque | compound | reference | enumeration | variable_length | array</tt></p>
+
+
+<h3 class="typedecl"><a name="type-datatype_specifier">datatype_specifier()</a></h3>
+<p><tt>datatype_specifier() = <a href="#type-predefined_datatype">predefined_datatype()</a> | <a href="#type-datatype">datatype()</a> | <a href="#type-dataset">dataset()</a></tt></p>
+<p> Specified to obtain datatypes.</p>
+
+<h3 class="typedecl"><a name="type-dimension">dimension()</a></h3>
+<p><tt>dimension() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+<p> Index of a dimension.</p>
+
+<h3 class="typedecl"><a name="type-dimension_extension">dimension_extension()</a></h3>
+<p><tt>dimension_extension() = {<a href="#type-dimension_size">dimension_size()</a>, <a href="#type-dimension_size">dimension_size()</a>}</tt></p>
+<p> Current and maximum number of elements of a dimension (of course current
+ cannot exceed maximum).</p>
+
+<h3 class="typedecl"><a name="type-dimension_size">dimension_size()</a></h3>
+<p><tt>dimension_size() = <a href="basic_utils.html#type-count">basic_utils:count()</a> | unlimited</tt></p>
+<p> Number of elements of a dimension.</p>
+
+<h3 class="typedecl"><a name="type-dimensions">dimensions()</a></h3>
+<p><tt>dimensions() = <a href="#type-dimension_size">dimension_size()</a> | tuple()</tt></p>
+<p><p> Dimensions of a dataspace (number of elements of each dimension).</p>
+
+ <p>Typically, for monodimensional data (ex: [4.0, 5.2]), we have dimensions :: 
+dimension(), which corresponds to the number of elements (here, 2).</p>
+
+ For bidimensional data (ex: [{1,2,3}, {4,5,6} ], we have Dimensions ::
+ {TupleCount :: dimension_size(), TupleSize :: dimension_size()} (corresponding
+ here to {2,3}).</p>
+
+<h3 class="typedecl"><a name="type-handle">handle()</a></h3>
+<p><tt>handle() = integer()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-hdf5_byte_order">hdf5_byte_order()</a></h3>
+<p><tt>hdf5_byte_order() = integer()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-hdf5_class_flag">hdf5_class_flag()</a></h3>
+<p><tt>hdf5_class_flag() = atom()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-hdf5_class_identifier">hdf5_class_identifier()</a></h3>
+<p><tt>hdf5_class_identifier() = integer()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-hdf5_file">hdf5_file()</a></h3>
+<p><tt>hdf5_file() = <a href="#type-handle">handle()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-hdf5_open_option">hdf5_open_option()</a></h3>
+<p><tt>hdf5_open_option() = atom()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-hdf5_predefined_datatype">hdf5_predefined_datatype()</a></h3>
+<p><tt>hdf5_predefined_datatype() = atom()</tt></p>
+<p> Note: such a datatype is an atom here (ex: 'H5T_NATIVE_DOUBLE'), for actual
+ HDF5 use it must be translated into an integer (using convert_type, defined in
+ erlh5t.c).</p>
+
+<h3 class="typedecl"><a name="type-native_long_float">native_long_float()</a></h3>
+<p><tt>native_long_float() = float() | nan | inf</tt></p>
+<p> Corresponds to a double in C, with Not-a-Number and Infinite.</p>
+
+<h3 class="typedecl"><a name="type-open_option">open_option()</a></h3>
+<p><tt>open_option() = check_non_existing | read_write | overwrite | debug | create | read_only</tt></p>
+
+
+<h3 class="typedecl"><a name="type-predefined_datatype">predefined_datatype()</a></h3>
+<p><tt>predefined_datatype() = native_integer | native_long_integer | native_float | native_long_float</tt></p>
+
+
+<h3 class="typedecl"><a name="type-property_list">property_list()</a></h3>
+<p><tt>property_list() = <a href="#type-handle">handle()</a></tt></p>
+<p> A property list is created according to a class and then possibly updated:</p>
+
+<h3 class="typedecl"><a name="type-rank">rank()</a></h3>
+<p><tt>rank() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+<p> Rank of a dataspace, namely its number of dimensions (dimensionality): (up to
+ 32 in the general case; usually 1, 2 or 3).</p>
+
+<h3 class="typedecl"><a name="type-supported_datatypes">supported_datatypes()</a></h3>
+<p><tt>supported_datatypes() = native_integer | native_long_float</tt></p>
+<p> Currently this binding supports only native ints and native long floats.</p>
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#check_data-1">check_data/1</a></td><td>Checks the format and typing of specified data, ie ensures that it is a 
+non-empty list of tuples of the same size (or unitary elements), with elements 
+of the same type, this type being a supported one, and determines its 
+structure.</td></tr>
+<tr><td valign="top"><a href="#close_dataset-1">close_dataset/1</a></td><td>Closes specified dataset.</td></tr>
+<tr><td valign="top"><a href="#close_dataspace-1">close_dataspace/1</a></td><td>Closes specified dataspace.</td></tr>
+<tr><td valign="top"><a href="#close_datatype-1">close_datatype/1</a></td><td>Closes specified datatype.</td></tr>
+<tr><td valign="top"><a href="#close_file-1">close_file/1</a></td><td>Closes specified opened HDF5 file.</td></tr>
+<tr><td valign="top"><a href="#close_property_list-1">close_property_list/1</a></td><td>Closes specified property list.</td></tr>
+<tr><td valign="top"><a href="#convert_byte_order-1">convert_byte_order/1</a></td><td>Converts our higher-level identifiers into binding ones.</td></tr>
+<tr><td valign="top"><a href="#convert_class-1">convert_class/1</a></td><td>Converts our higher-level identifiers into binding ones.</td></tr>
+<tr><td valign="top"><a href="#convert_datatype-1">convert_datatype/1</a></td><td>Converts our higher-level identifiers into binding ones (HDF5 ones - as
+ atoms, not as their final form as integer handles).</td></tr>
+<tr><td valign="top"><a href="#convert_datatype_class_identifier-1">convert_datatype_class_identifier/1</a></td><td>Converts our higher-level identifiers into binding ones.</td></tr>
+<tr><td valign="top"><a href="#convert_open_options-1">convert_open_options/1</a></td><td>Converts our higher-level identifiers into binding ones.</td></tr>
+<tr><td valign="top"><a href="#create_dataset-5">create_dataset/5</a></td><td>Creates specified dataset in specified HDF5 file, with specified name,
+ type for its elements, metadata (dataspace) and property list.</td></tr>
+<tr><td valign="top"><a href="#create_dataspace-1">create_dataspace/1</a></td><td>Creates specified dataspace, with specified dimensions of specified 
+maximum size, and opens it for access.</td></tr>
+<tr><td valign="top"><a href="#create_datatype-1">create_datatype/1</a></td><td>Returns the specified datatype, from a specification of a predefined
+ datatype, an already existing datatype or a dataset.</td></tr>
+<tr><td valign="top"><a href="#create_file-1">create_file/1</a></td><td>Creates an HDF5 file, of specified name, and expected not to exist
+ already.</td></tr>
+<tr><td valign="top"><a href="#create_file-2">create_file/2</a></td><td>Creates an HDF5 file with specified options, of specified name, and
+ expected not to exist already.</td></tr>
+<tr><td valign="top"><a href="#create_property_list_for-1">create_property_list_for/1</a></td><td>Creates a property list for specified class.</td></tr>
+<tr><td valign="top"><a href="#deconvert_byte_order-1">deconvert_byte_order/1</a></td><td>Converts binding identifiers to our higher-level ones.</td></tr>
+<tr><td valign="top"><a href="#get_allocation_status-1">get_allocation_status/1</a></td><td>Returns the allocation status of specified dataset.</td></tr>
+<tr><td valign="top"><a href="#get_byte_order-1">get_byte_order/1</a></td><td>Returns the byte order of the specified atomic datatype.</td></tr>
+<tr><td valign="top"><a href="#get_datatype_class-1">get_datatype_class/1</a></td><td>Returns the class identifier of the specified datatype.</td></tr>
+<tr><td valign="top"><a href="#get_dimension_extensions-1">get_dimension_extensions/1</a></td><td>Returns, for specified dataspace, an ordered list of, for each dimension, 
+a pair of current and maximum size.</td></tr>
+<tr><td valign="top"><a href="#get_dimension_extensions-2">get_dimension_extensions/2</a></td><td>Returns, for specified dataspace of specified rank, an ordered list of, 
+for each dimension, a pair of current and maximum size.</td></tr>
+<tr><td valign="top"><a href="#get_element_count-1">get_element_count/1</a></td><td>Returns the number of elements corresponding to specified dimensions.</td></tr>
+<tr><td valign="top"><a href="#get_known_datatypes-0">get_known_datatypes/0</a></td><td>Returns the high-level datatypes that are known.</td></tr>
+<tr><td valign="top"><a href="#get_rank-1">get_rank/1</a></td><td>Returns the rank (dimensionality) of the specified dataspace.</td></tr>
+<tr><td valign="top"><a href="#get_size-1">get_size/1</a></td><td>Returns the size, in bytes, of the specified datatype.</td></tr>
+<tr><td valign="top"><a href="#get_storage_size-1">get_storage_size/1</a></td><td>Returns the size, in bytes, used to store specified dataset.</td></tr>
+<tr><td valign="top"><a href="#get_supported_datatypes-0">get_supported_datatypes/0</a></td><td>Returns a list of the datatypes that this binding is expected to support.</td></tr>
+<tr><td valign="top"><a href="#open_dataset-2">open_dataset/2</a></td><td>Opens an existing dataset.</td></tr>
+<tr><td valign="top"><a href="#open_file-1">open_file/1</a></td><td>Opens an HDF5 file, of specified name, in read-only mode.</td></tr>
+<tr><td valign="top"><a href="#open_file-2">open_file/2</a></td><td>Opens an HDF5 file, of specified name, with specified options.</td></tr>
+<tr><td valign="top"><a href="#read-4">read/4</a></td><td>Reads the specified named dataset of specified type and tuple size from
+ specified file, returning it as a list of tuples of specified size.</td></tr>
+<tr><td valign="top"><a href="#read_strings-2">read_strings/2</a></td><td>Reads the specified named dataset expected to contain strings, and
+ returns an (ordered) list of these strings.</td></tr>
+<tr><td valign="top"><a href="#start-0">start/0</a></td><td>Starts (checks and inits) the HDF5 service support.</td></tr>
+<tr><td valign="top"><a href="#stop-0">stop/0</a></td><td>Stops the HDF5 support.</td></tr>
+<tr><td valign="top"><a href="#update-3">update/3</a></td><td>Updates the specified dataset at specified index (starting at #0) with
+ specified data.</td></tr>
+<tr><td valign="top"><a href="#write-2">write/2</a></td><td>Writes specified data (without checking it specifically) in specified
+ dataset.</td></tr>
+<tr><td valign="top"><a href="#write-3">write/3</a></td><td>Writes specified data (after having checked it, if requested) in
+ specified dataset.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="check_data-1">check_data/1</a></h3>
+<div class="spec">
+<p><tt>check_data(Data::<a href="#type-data">data()</a>) -&gt; {Datatype::<a href="#type-supported_datatypes">supported_datatypes()</a>, Dimensions::<a href="#type-dimensions">dimensions()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Checks the format and typing of specified data, ie ensures that it is a 
+non-empty list of tuples of the same size (or unitary elements), with elements 
+of the same type, this type being a supported one, and determines its 
+structure.</p>
+
+ Returns {Datatype, Dimensions} where Datatype designates the type of the
+ atomic data elements (type among the ones known of the binding) and Dimensions
+ lists the number of elements in each dimension (as soon as there are at least
+ two dimensions, it is a tuple; it is just directly the number of elements
+ itself for one dimension).
+</p>
+
+<h3 class="function"><a name="close_dataset-1">close_dataset/1</a></h3>
+<div class="spec">
+<p><tt>close_dataset(Dataset::<a href="#type-dataset">dataset()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Closes specified dataset.</p>
+
+<h3 class="function"><a name="close_dataspace-1">close_dataspace/1</a></h3>
+<div class="spec">
+<p><tt>close_dataspace(Dataspace::<a href="#type-dataspace">dataspace()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Closes specified dataspace.</p>
+
+<h3 class="function"><a name="close_datatype-1">close_datatype/1</a></h3>
+<div class="spec">
+<p><tt>close_datatype(Datatype::<a href="#type-datatype">datatype()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Closes specified datatype.</p>
+
+<h3 class="function"><a name="close_file-1">close_file/1</a></h3>
+<div class="spec">
+<p><tt>close_file(HDF5File::<a href="#type-hdf5_file">hdf5_file()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Closes specified opened HDF5 file.</p>
+
+<h3 class="function"><a name="close_property_list-1">close_property_list/1</a></h3>
+<div class="spec">
+<p><tt>close_property_list(PropertyList::<a href="#type-property_list">property_list()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Closes specified property list.</p>
+
+<h3 class="function"><a name="convert_byte_order-1">convert_byte_order/1</a></h3>
+<div class="spec">
+<p><tt>convert_byte_order(Other::<a href="#type-byte_order">byte_order()</a>) -&gt; <a href="#type-hdf5_byte_order">hdf5_byte_order()</a></tt><br></p>
+<p> </p>
+</div><p>Converts our higher-level identifiers into binding ones.</p>
+
+<h3 class="function"><a name="convert_class-1">convert_class/1</a></h3>
+<div class="spec">
+<p><tt>convert_class(Other::<a href="#type-class">class()</a>) -&gt; <a href="#type-hdf5_class_flag">hdf5_class_flag()</a></tt><br></p>
+<p> </p>
+</div><p>Converts our higher-level identifiers into binding ones.</p>
+
+<h3 class="function"><a name="convert_datatype-1">convert_datatype/1</a></h3>
+<div class="spec">
+<p><tt>convert_datatype(Other::<a href="#type-predefined_datatype">predefined_datatype()</a>) -&gt; <a href="#type-hdf5_predefined_datatype">hdf5_predefined_datatype()</a></tt><br></p>
+<p> </p>
+</div><p>Converts our higher-level identifiers into binding ones (HDF5 ones - as
+ atoms, not as their final form as integer handles).
+</p>
+
+<h3 class="function"><a name="convert_datatype_class_identifier-1">convert_datatype_class_identifier/1</a></h3>
+<div class="spec">
+<p><tt>convert_datatype_class_identifier(Other::<a href="#type-datatype_class_identifier">datatype_class_identifier()</a>) -&gt; <a href="#type-hdf5_class_identifier">hdf5_class_identifier()</a></tt><br></p>
+<p> </p>
+</div><p>Converts our higher-level identifiers into binding ones.</p>
+
+<h3 class="function"><a name="convert_open_options-1">convert_open_options/1</a></h3>
+<div class="spec">
+<p><tt>convert_open_options(Opts::[<a href="#type-open_option">open_option()</a>]) -&gt; <a href="#type-hdf5_open_option">hdf5_open_option()</a></tt><br></p>
+<p> </p>
+</div><p>Converts our higher-level identifiers into binding ones.</p>
+
+<h3 class="function"><a name="create_dataset-5">create_dataset/5</a></h3>
+<div class="spec">
+<p><tt>create_dataset(DatasetName::<a href="#type-dataset_name">dataset_name()</a>, Datatype::<a href="#type-datatype">datatype()</a>, Dataspace::<a href="#type-dataspace">dataspace()</a>, PropertyList::<a href="#type-property_list">property_list()</a>, File::<a href="#type-hdf5_file">hdf5_file()</a>) -&gt; <a href="#type-dataset">dataset()</a></tt><br></p>
+<p> </p>
+</div><p>Creates specified dataset in specified HDF5 file, with specified name,
+ type for its elements, metadata (dataspace) and property list.
+</p>
+
+<h3 class="function"><a name="create_dataspace-1">create_dataspace/1</a></h3>
+<div class="spec">
+<p><tt>create_dataspace(MonoDimension::<a href="#type-dimensions">dimensions()</a>) -&gt; <a href="#type-dataspace">dataspace()</a></tt><br></p>
+<p> </p>
+</div><p><p>Creates specified dataspace, with specified dimensions of specified 
+maximum size, and opens it for access.</p>
+
+ <p>Ex: to create a dataspace with two dimensions, of size 5 and 9 (hence with 
+5x9=45 elements), use: hdf5_support:create_dataspace( { 5, 9 } ).</p>
+
+ Single-dimension arrays can be declared directly, as in:
+ hdf5_support:create_dataspace( 20 ).
+</p>
+
+<h3 class="function"><a name="create_datatype-1">create_datatype/1</a></h3>
+<div class="spec">
+<p><tt>create_datatype(DatatypeSpecifier::<a href="#type-datatype_specifier">datatype_specifier()</a>) -&gt; <a href="#type-datatype">datatype()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the specified datatype, from a specification of a predefined
+ datatype, an already existing datatype or a dataset.
+</p>
+
+<h3 class="function"><a name="create_file-1">create_file/1</a></h3>
+<div class="spec">
+<p><tt>create_file(Filename::<a href="file_utils.html#type-file_name">file_utils:file_name()</a>) -&gt; <a href="#type-hdf5_file">hdf5_file()</a></tt><br></p>
+<p> </p>
+</div><p>Creates an HDF5 file, of specified name, and expected not to exist
+ already.
+</p>
+
+<h3 class="function"><a name="create_file-2">create_file/2</a></h3>
+<div class="spec">
+<p><tt>create_file(Filename::<a href="file_utils.html#type-file_name">file_utils:file_name()</a>, CreateFlags::[<a href="#type-open_option">open_option()</a>]) -&gt; <a href="#type-hdf5_file">hdf5_file()</a></tt><br></p>
+<p> </p>
+</div><p>Creates an HDF5 file with specified options, of specified name, and
+ expected not to exist already.
+</p>
+
+<h3 class="function"><a name="create_property_list_for-1">create_property_list_for/1</a></h3>
+<div class="spec">
+<p><tt>create_property_list_for(Class::<a href="#type-class">class()</a>) -&gt; <a href="#type-property_list">property_list()</a></tt><br></p>
+<p> </p>
+</div><p>Creates a property list for specified class.</p>
+
+<h3 class="function"><a name="deconvert_byte_order-1">deconvert_byte_order/1</a></h3>
+<div class="spec">
+<p><tt>deconvert_byte_order(Other) -&gt; any()</tt></p>
+<p> </p>
+</div><p>Converts binding identifiers to our higher-level ones.</p>
+
+<h3 class="function"><a name="get_allocation_status-1">get_allocation_status/1</a></h3>
+<div class="spec">
+<p><tt>get_allocation_status(Dataset::<a href="#type-dataset">dataset()</a>) -&gt; <a href="#type-allocation_status">allocation_status()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the allocation status of specified dataset.</p>
+
+<h3 class="function"><a name="get_byte_order-1">get_byte_order/1</a></h3>
+<div class="spec">
+<p><tt>get_byte_order(Datatype::<a href="#type-datatype">datatype()</a>) -&gt; <a href="#type-byte_order">byte_order()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the byte order of the specified atomic datatype.</p>
+
+<h3 class="function"><a name="get_datatype_class-1">get_datatype_class/1</a></h3>
+<div class="spec">
+<p><tt>get_datatype_class(Datatype::<a href="#type-datatype">datatype()</a>) -&gt; <a href="#type-datatype_class_identifier">datatype_class_identifier()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the class identifier of the specified datatype.</p>
+
+<h3 class="function"><a name="get_dimension_extensions-1">get_dimension_extensions/1</a></h3>
+<div class="spec">
+<p><tt>get_dimension_extensions(Dataspace::<a href="#type-dataspace">dataspace()</a>) -&gt; [<a href="#type-dimension_extension">dimension_extension()</a>]</tt><br></p>
+<p> </p>
+</div><p><p>Returns, for specified dataspace, an ordered list of, for each dimension, 
+a pair of current and maximum size.</p>
+
+ Ex: may return, for a dataspace of dimension { 5, 9 }, [ {5,5}, {9,9} ].
+</p>
+
+<h3 class="function"><a name="get_dimension_extensions-2">get_dimension_extensions/2</a></h3>
+<div class="spec">
+<p><tt>get_dimension_extensions(Rank::<a href="#type-rank">rank()</a>, Dataspace::<a href="#type-dataspace">dataspace()</a>) -&gt; [<a href="#type-dimension_extension">dimension_extension()</a>]</tt><br></p>
+<p> </p>
+</div><p><p>Returns, for specified dataspace of specified rank, an ordered list of, 
+for each dimension, a pair of current and maximum size.</p>
+
+ Ex: may return, for a dataspace of dimension { 5, 9 } (and thus rank 2), [
+ {5,5}, {9,9} ].
+</p>
+
+<h3 class="function"><a name="get_element_count-1">get_element_count/1</a></h3>
+<div class="spec">
+<p><tt>get_element_count(Dimensions::<a href="#type-dimensions">dimensions()</a>) -&gt; <a href="basic_utils.html#type-count">basic_utils:count()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the number of elements corresponding to specified dimensions.</p>
+
+<h3 class="function"><a name="get_known_datatypes-0">get_known_datatypes/0</a></h3>
+<div class="spec">
+<p><tt>get_known_datatypes() -&gt; [<a href="#type-predefined_datatype">predefined_datatype()</a>]</tt><br></p>
+<p> </p>
+</div><p>Returns the high-level datatypes that are known.</p>
+
+<h3 class="function"><a name="get_rank-1">get_rank/1</a></h3>
+<div class="spec">
+<p><tt>get_rank(Dataspace::<a href="#type-dataspace">dataspace()</a>) -&gt; <a href="#type-rank">rank()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the rank (dimensionality) of the specified dataspace.</p>
+
+<h3 class="function"><a name="get_size-1">get_size/1</a></h3>
+<div class="spec">
+<p><tt>get_size(DatatypeHandle::<a href="#type-datatype_specifier">datatype_specifier()</a>) -&gt; <a href="system_utils.html#type-byte_size">system_utils:byte_size()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the size, in bytes, of the specified datatype.</p>
+
+<h3 class="function"><a name="get_storage_size-1">get_storage_size/1</a></h3>
+<div class="spec">
+<p><tt>get_storage_size(Dataset::<a href="#type-dataset">dataset()</a>) -&gt; <a href="system_utils.html#type-byte_size">system_utils:byte_size()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the size, in bytes, used to store specified dataset.</p>
+
+<h3 class="function"><a name="get_supported_datatypes-0">get_supported_datatypes/0</a></h3>
+<div class="spec">
+<p><tt>get_supported_datatypes() -&gt; [<a href="#type-supported_datatypes">supported_datatypes()</a>]</tt><br></p>
+<p> </p>
+</div><p>Returns a list of the datatypes that this binding is expected to support.</p>
+
+<h3 class="function"><a name="open_dataset-2">open_dataset/2</a></h3>
+<div class="spec">
+<p><tt>open_dataset(DatasetName::<a href="#type-dataset_name">dataset_name()</a>, File::<a href="#type-hdf5_file">hdf5_file()</a>) -&gt; <a href="#type-dataset">dataset()</a></tt><br></p>
+<p> </p>
+</div><p>Opens an existing dataset.</p>
+
+<h3 class="function"><a name="open_file-1">open_file/1</a></h3>
+<div class="spec">
+<p><tt>open_file(Filename::<a href="file_utils.html#type-file_name">file_utils:file_name()</a>) -&gt; <a href="#type-hdf5_file">hdf5_file()</a></tt><br></p>
+<p> </p>
+</div><p>Opens an HDF5 file, of specified name, in read-only mode.</p>
+
+<h3 class="function"><a name="open_file-2">open_file/2</a></h3>
+<div class="spec">
+<p><tt>open_file(Filename::<a href="file_utils.html#type-file_name">file_utils:file_name()</a>, OpenFlags::[<a href="#type-open_option">open_option()</a>]) -&gt; <a href="#type-hdf5_file">hdf5_file()</a></tt><br></p>
+<p> </p>
+</div><p>Opens an HDF5 file, of specified name, with specified options.</p>
+
+<h3 class="function"><a name="read-4">read/4</a></h3>
+<div class="spec">
+<p><tt>read(DatasetName::string(), DataType::<a href="#type-supported_datatypes">supported_datatypes()</a>, TupleSize::<a href="basic_utils.html#type-count">basic_utils:count()</a>, File::<a href="#type-hdf5_file">hdf5_file()</a>) -&gt; <a href="#type-data">data()</a></tt><br></p>
+<p> </p>
+</div><p>Reads the specified named dataset of specified type and tuple size from
+ specified file, returning it as a list of tuples of specified size.
+</p>
+
+<h3 class="function"><a name="read_strings-2">read_strings/2</a></h3>
+<div class="spec">
+<p><tt>read_strings(DatasetName, File) -&gt; any()</tt></p>
+<p> </p>
+</div><p>Reads the specified named dataset expected to contain strings, and
+ returns an (ordered) list of these strings.
+</p>
+
+<h3 class="function"><a name="start-0">start/0</a></h3>
+<div class="spec">
+<p><tt>start() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Starts (checks and inits) the HDF5 service support.</p>
+
+<h3 class="function"><a name="stop-0">stop/0</a></h3>
+<div class="spec">
+<p><tt>stop() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Stops the HDF5 support.</p>
+
+<h3 class="function"><a name="update-3">update/3</a></h3>
+<div class="spec">
+<p><tt>update(Data::<a href="#type-data">data()</a>, Index::<a href="basic_utils.html#type-count">basic_utils:count()</a>, Dataset::<a href="#type-dataset">dataset()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Updates the specified dataset at specified index (starting at #0) with
+ specified data.
+</p>
+
+<h3 class="function"><a name="write-2">write/2</a></h3>
+<div class="spec">
+<p><tt>write(Data::<a href="#type-data">data()</a>, Dataset::<a href="#type-dataset">dataset()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Writes specified data (without checking it specifically) in specified
+ dataset.
+</p>
+
+<h3 class="function"><a name="write-3">write/3</a></h3>
+<div class="spec">
+<p><tt>write(Data::<a href="#type-data">data()</a>, Dataset::<a href="#type-dataset">dataset()</a>, CheckData::boolean()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Writes specified data (after having checked it, if requested) in
+ specified dataset.
+</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

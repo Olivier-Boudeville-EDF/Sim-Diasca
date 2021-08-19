@@ -1,0 +1,200 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module meta_utils</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module meta_utils</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various higher-level, convenient <b>meta-related
+ facilities</b>, notably regarding metaprogramming, types and parse transforms.
+
+
+<h2><a name="description">Description</a></h2><p>Gathering of various higher-level, convenient <b>meta-related
+ facilities</b>, notably regarding metaprogramming, types and parse transforms.</p>
+
+ <p>See meta_utils_test.erl for the corresponding test, and ast_info.erl for the 
+more basic services used by this module.</p>
+
+ <p>Note that this module is a prerequisite of at least most of our parse 
+transforms, hence it must be bootstrapped *before* they are built, and cannot 
+use them.</p>
+
+ <p>So, to compile it, just go to the root of this layer and execute for example 
+'make all'.</p>
+
+ To determine the other bootstrapped modules (i.e. the subset of our modules
+ that this module can use), see the BOOTSTRAP_MODULES variable in
+ GNUmakevars.inc.
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-clause_def">clause_def()</a></h3>
+<p><tt>clause_def() = <a href="#type-form">form()</a></tt></p>
+<p> The form corresponding to the definition of a clause of a function, typically
+ {clause, LINE, Rep(Ps), Rep(Gs), Rep(B)} for '( Ps ) when Gs -&gt; B'.</p>
+
+<h3 class="typedecl"><a name="type-form">form()</a></h3>
+<p><tt>form() = <a href="ast_base.html#type-form">ast_base:form()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-function_arity">function_arity()</a></h3>
+<p><tt>function_arity() = arity()</tt></p>
+<p> The arity of a function.</p>
+
+<h3 class="typedecl"><a name="type-function_id">function_id()</a></h3>
+<p><tt>function_id() = {<a href="#type-function_name">function_name()</a>, <a href="#type-function_arity">function_arity()</a>}</tt></p>
+<p> Declaration of a function based on a name with an arity (unique function
+ signature within a module).</p>
+
+<h3 class="typedecl"><a name="type-function_info">function_info()</a></h3>
+<p><tt>function_info() = <a href="ast_info.html#type-function_info">ast_info:function_info()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-function_name">function_name()</a></h3>
+<p><tt>function_name() = <a href="basic_utils.html#type-function_name">basic_utils:function_name()</a></tt></p>
+<p> The name of a function.</p>
+
+<h3 class="typedecl"><a name="type-function_spec">function_spec()</a></h3>
+<p><tt>function_spec() = <a href="#type-form">form()</a></tt></p>
+<p><p> The full type specification (if any) of that function, as an abstract form; 
+typically:</p>
+
+ {attribute, L, spec, { {foobar,Arity}, [{type,L,'fun', [{type,L,...</p>
+
+<h3 class="typedecl"><a name="type-function_type">function_type()</a></h3>
+<p><tt>function_type() = any()</tt></p>
+<p> The type of a function (currenty: unclear semantics).</p>
+
+<h3 class="typedecl"><a name="type-module_info">module_info()</a></h3>
+<p><tt>module_info() = <a href="ast_info.html#type-module_info">ast_info:module_info()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-module_name">module_name()</a></h3>
+<p><tt>module_name() = <a href="basic_utils.html#type-module_name">basic_utils:module_name()</a></tt></p>
+<p> The name of a module.</p>
+
+<h3 class="typedecl"><a name="type-parse_transform_options">parse_transform_options()</a></h3>
+<p><tt>parse_transform_options() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/proplists.html#type-proplist">proplists:proplist()</a></tt></p>
+<p><p> Options specified to a parse transform at runtime, like: report_warnings, 
+beam,report_errors, {cwd,"X"}, {outdir,"Y"}, {i,"Z"}, {parse_transform,P}, 
+debug_info, warnings_as_errors, etc.</p>
+
+ (hence not a list_table, anyway not available here)</p>
+
+<h3 class="typedecl"><a name="type-type_info">type_info()</a></h3>
+<p><tt>type_info() = <a href="ast_info.html#type-type_info">ast_info:type_info()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-variable_name">variable_name()</a></h3>
+<p><tt>variable_name() = atom()</tt></p>
+<p> The name of a variable (ex: 'X', or '_' in some cases).</p>
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add_function-3">add_function/3</a></td><td>Registers (includes exporting) specified (spec-less) function in
+ specified module.</td></tr>
+<tr><td valign="top"><a href="#add_function-4">add_function/4</a></td><td>Registers (includes exporting) specified (spec-less) function in
+ specified module.</td></tr>
+<tr><td valign="top"><a href="#add_type-2">add_type/2</a></td><td>Registers the specified, fully-described type in specified module.</td></tr>
+<tr><td valign="top"><a href="#apply_ast_transforms-2">apply_ast_transforms/2</a></td><td>Applies specified AST transformations (mostly depth-first) to the 
+specified module information.</td></tr>
+<tr><td valign="top"><a href="#check_potential_call-3">check_potential_call/3</a></td><td>Checks whether a potential upcoming call to the specified MFA
+ (Module,Function,Arguments) has a chance of succeeding.</td></tr>
+<tr><td valign="top"><a href="#get_arities_for-2">get_arities_for/2</a></td><td>Returns a list of the arities for which the specified function of the
+ specified module is exported.</td></tr>
+<tr><td valign="top"><a href="#is_function_exported-3">is_function_exported/3</a></td><td>Tells whether the specified function (name with arity) is exported by the
+ specified module.</td></tr>
+<tr><td valign="top"><a href="#list_exported_functions-1">list_exported_functions/1</a></td><td>Lists (in the order of their definition) all the functions ({Name,Arity})
+ that are exported by the specified module, expected to be found in the code
+ path.</td></tr>
+<tr><td valign="top"><a href="#remove_function-2">remove_function/2</a></td><td>Unregisters specified function from specified module.</td></tr>
+<tr><td valign="top"><a href="#remove_type-2">remove_type/2</a></td><td>Unregisters specified type from specified module.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="add_function-3">add_function/3</a></h3>
+<div class="spec">
+<p><tt>add_function(FunId::<a href="#type-function_id">function_id()</a>, Clauses::[<a href="#type-clause_def">clause_def()</a>], ModuleInfo::<a href="#type-module_info">module_info()</a>) -&gt; <a href="#type-module_info">module_info()</a></tt><br></p>
+<p> </p>
+</div><p>Registers (includes exporting) specified (spec-less) function in
+ specified module.
+</p>
+
+<h3 class="function"><a name="add_function-4">add_function/4</a></h3>
+<div class="spec">
+<p><tt>add_function(FunctionName::<a href="basic_utils.html#type-function_name">basic_utils:function_name()</a>, FunctionArity::<a href="meta_utils.html#type-function_arity">meta_utils:function_arity()</a>, Clauses::[<a href="#type-clause_def">clause_def()</a>], ModuleInfo::<a href="#type-module_info">module_info()</a>) -&gt; <a href="#type-module_info">module_info()</a></tt><br></p>
+<p> </p>
+</div><p>Registers (includes exporting) specified (spec-less) function in
+ specified module.
+</p>
+
+<h3 class="function"><a name="add_type-2">add_type/2</a></h3>
+<div class="spec">
+<p><tt>add_type(TypeInfo::<a href="#type-type_info">type_info()</a>, ModuleInfo::<a href="#type-module_info">module_info()</a>) -&gt; <a href="#type-module_info">module_info()</a></tt><br></p>
+<p> </p>
+</div><p>Registers the specified, fully-described type in specified module.</p>
+
+<h3 class="function"><a name="apply_ast_transforms-2">apply_ast_transforms/2</a></h3>
+<div class="spec">
+<p><tt>apply_ast_transforms(ModuleInfo::<a href="#type-module_info">module_info()</a>, Transforms::<a href="ast_transform.html#type-ast_transforms">ast_transform:ast_transforms()</a>) -&gt; {<a href="#type-module_info">module_info()</a>, <a href="ast_transform.html#type-ast_transforms">ast_transform:ast_transforms()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Applies specified AST transformations (mostly depth-first) to the 
+specified module information.</p>
+
+ (helper)
+</p>
+
+<h3 class="function"><a name="check_potential_call-3">check_potential_call/3</a></h3>
+<div class="spec">
+<p><tt>check_potential_call(ModuleName::<a href="#type-module_name">module_name()</a>, FunctionName::<a href="#type-function_name">function_name()</a>, Arguments::[<a href="basic_utils.html#type-argument">basic_utils:argument()</a>]) -&gt; ok | module_not_found | function_not_exported</tt><br></p>
+<p> </p>
+</div><p>Checks whether a potential upcoming call to the specified MFA
+ (Module,Function,Arguments) has a chance of succeeding.
+</p>
+
+<h3 class="function"><a name="get_arities_for-2">get_arities_for/2</a></h3>
+<div class="spec">
+<p><tt>get_arities_for(ModuleName::<a href="#type-module_name">module_name()</a>, FunctionName::<a href="#type-function_name">function_name()</a>) -&gt; [arity()]</tt><br></p>
+<p> </p>
+</div><p>Returns a list of the arities for which the specified function of the
+ specified module is exported.
+</p>
+
+<h3 class="function"><a name="is_function_exported-3">is_function_exported/3</a></h3>
+<div class="spec">
+<p><tt>is_function_exported(ModuleName::<a href="#type-module_name">module_name()</a>, FunctionName::<a href="#type-function_name">function_name()</a>, Arity::arity()) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Tells whether the specified function (name with arity) is exported by the
+ specified module.
+</p>
+
+<h3 class="function"><a name="list_exported_functions-1">list_exported_functions/1</a></h3>
+<div class="spec">
+<p><tt>list_exported_functions(ModuleName::<a href="#type-module_name">module_name()</a>) -&gt; [<a href="#type-function_id">function_id()</a>]</tt><br></p>
+<p> </p>
+</div><p>Lists (in the order of their definition) all the functions ({Name,Arity})
+ that are exported by the specified module, expected to be found in the code
+ path.
+</p>
+
+<h3 class="function"><a name="remove_function-2">remove_function/2</a></h3>
+<div class="spec">
+<p><tt>remove_function(FunInfo::<a href="#type-function_info">function_info()</a>, ModuleInfo::<a href="#type-module_info">module_info()</a>) -&gt; <a href="#type-module_info">module_info()</a></tt><br></p>
+<p> </p>
+</div><p>Unregisters specified function from specified module.</p>
+
+<h3 class="function"><a name="remove_type-2">remove_type/2</a></h3>
+<div class="spec">
+<p><tt>remove_type(TypeInfo::<a href="#type-type_info">type_info()</a>, ModuleInfo::<a href="#type-module_info">module_info()</a>) -&gt; <a href="#type-module_info">module_info()</a></tt><br></p>
+<p> </p>
+</div><p>Unregisters specified type from specified module.</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

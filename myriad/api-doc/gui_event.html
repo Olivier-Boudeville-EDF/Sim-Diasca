@@ -1,0 +1,279 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module gui_event</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module gui_event</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathers all elements relative to the <b>MyriadGUI</b> events, including
+ the event loop.
+
+
+<h2><a name="description">Description</a></h2>Gathers all elements relative to the <b>MyriadGUI</b> events, including
+ the event loop.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-event_dispatch_table">event_dispatch_table()</a></h3>
+<p><tt>event_dispatch_table() = <a href="list_table.html#type-table">list_table:table</a>(<a href="#type-event_type">event_type()</a>, [<a href="#type-event_subscriber_pid">event_subscriber_pid()</a>])</tt></p>
+<p> Tells, for a given event type (e.g. in the context of a specific GUI object),
+ to which event subscribers the corresponding GUI messages shall be sent.</p>
+
+<h3 class="typedecl"><a name="type-event_message">event_message()</a></h3>
+<p><tt>event_message() = {<a href="#type-event_type">event_type()</a>, [any()]}</tt></p>
+<p><p> An event message is a pair whose first element is the event type, as an atom 
+(ex: 'onWindowClosed'), and whose second element is a list, whose first 
+element is the GUI object that generated that event (the closed window, here), 
+and whose last element is the event context (intermediary elements carrying 
+event-specific information):</p>
+
+ <p>{event_type(), [ gui_object(), ..., event_context() ]}</p>
+
+ <p>Ex: {onWindowClosed, [Window, CloseContext]}.</p>
+
+ Note: these messages respect the WOOPER conventions, and this is done on
+ purpose, to facilitate any integration with upper layers.</p>
+
+<h3 class="typedecl"><a name="type-event_source">event_source()</a></h3>
+<p><tt>event_source() = <a href="#type-wx_event_handler">wx_event_handler()</a> | <a href="#type-myriad_event_handler">myriad_event_handler()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-event_subscriber_pid">event_subscriber_pid()</a></h3>
+<p><tt>event_subscriber_pid() = pid()</tt></p>
+<p> The PID of an event subscriber.</p>
+
+<h3 class="typedecl"><a name="type-event_subscription">event_subscription()</a></h3>
+<p><tt>event_subscription() = {<a href="#type-maybe_list">maybe_list</a>(<a href="#type-event_type">event_type()</a>), <a href="#type-maybe_list">maybe_list</a>(<a href="#type-gui_object">gui_object()</a>), <a href="#type-maybe_list">maybe_list</a>(<a href="#type-event_subscriber_pid">event_subscriber_pid()</a>)}</tt></p>
+<p> So that user process(es) can subscribe to GUI events.</p>
+
+<h3 class="typedecl"><a name="type-event_subscription_spec">event_subscription_spec()</a></h3>
+<p><tt>event_subscription_spec() = <a href="#type-maybe_list">maybe_list</a>(<a href="#type-event_subscription">event_subscription()</a>)</tt></p>
+<p> Specifies, for an event subscriber (by default: the calling process), any
+ combination of type of events and GUI objects that shall be listened to.</p>
+
+<h3 class="typedecl"><a name="type-event_table">event_table()</a></h3>
+<p><tt>event_table() = <a href="table.html#type-table">table:table</a>(<a href="#type-gui_object">gui_object()</a>, <a href="#type-event_dispatch_table">event_dispatch_table()</a>)</tt></p>
+<p><p> An indirection table dispatching events according to subscription 
+specifications.</p>
+
+ <p>For an incoming event, we see this type (virtually, logically) as: 
+table({gui_object(), event_type()}, set_utils:set( event_subscriber_pid())):</p>
+
+ <p>- the first key is the GUI object (e.g. widget) from which the event emanates 
+(ex: a frame)</p>
+
+ <p>- the second key is its corresponding (internal) event type (ex: 
+'onWindowClosed')</p>
+
+ <p>- the associated value is a list/set of the PID of the subscribers regarding 
+this (object,event) combination</p>
+
+ Note: two nested tables (one table(), one list_table()) are used also in
+ order to ensure that there is up to one entry per GUI object and per event
+ type stored.</p>
+
+<h3 class="typedecl"><a name="type-event_type">event_type()</a></h3>
+<p><tt>event_type() = onWindowClosed</tt></p>
+<p> Our own event types, independent from any backend.</p>
+
+<h3 class="typedecl"><a name="type-gui_event_context">gui_event_context()</a></h3>
+<p><tt>gui_event_context() = #gui_event_context{id = <a href="gui.html#type-id">gui:id()</a>, user_data = <a href="gui.html#type-user_data">gui:user_data()</a>, backend_event = <a href="#type-maybe">maybe</a>(<a href="gui.html#type-backend_event">gui:backend_event()</a>)}</tt></p>
+
+
+<h3 class="typedecl"><a name="type-gui_object">gui_object()</a></h3>
+<p><tt>gui_object() = <a href="gui.html#type-gui_object">gui:gui_object()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-instance_count">instance_count()</a></h3>
+<p><tt>instance_count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+<p> A count of instances of a given object type.</p>
+
+<h3 class="typedecl"><a name="type-instance_referential">instance_referential()</a></h3>
+<p><tt>instance_referential() = #instance_referential{instance_count = <a href="#type-instance_count">instance_count()</a>, instance_table = <a href="table.html#type-table">table:table</a>(<a href="gui.html#type-myriad_instance_pid">gui:myriad_instance_pid()</a>, <a href="gui.html#type-myriad_object_state">gui:myriad_object_state()</a>)}</tt></p>
+<p><p> To store, for a given MyriadGUI type (ex: 'canvas'), all information about all 
+instances.</p>
+
+ <p>- a total count of the instances already created for that type</p>
+
+ <p>- a table whose keys are the identifiers of the objects of that type, and 
+whose values are the actual state of these instances.</p>
+
+ Note: the total count is not the same as the size of the table, as instances
+ may be deleted.</p>
+
+<h3 class="typedecl"><a name="type-maybe_list">maybe_list()</a></h3>
+<p><tt>maybe_list(T) = <a href="list_utils.html#type-maybe_list">list_utils:maybe_list</a>(T)</tt></p>
+
+
+<h3 class="typedecl"><a name="type-myriad_event_handler">myriad_event_handler()</a></h3>
+<p><tt>myriad_event_handler() = <a href="gui_canvas.html#type-canvas">gui_canvas:canvas()</a></tt></p>
+<p> Only one currently.</p>
+
+<h3 class="typedecl"><a name="type-myriad_object_ref">myriad_object_ref()</a></h3>
+<p><tt>myriad_object_ref() = #myriad_object_ref{object_type = <a href="gui.html#type-myriad_object_type">gui:myriad_object_type()</a>, myriad_instance_pid = <a href="gui.html#type-myriad_instance_pid">gui:myriad_instance_pid()</a>}</tt></p>
+
+
+<h3 class="typedecl"><a name="type-myriad_type_table">myriad_type_table()</a></h3>
+<p><tt>myriad_type_table() = <a href="table.html#type-table">table:table</a>(<a href="gui.html#type-myriad_object_type">gui:myriad_object_type()</a>, <a href="#type-instance_referential">instance_referential()</a>)</tt></p>
+<p><p> To store the MyriadGUI instances (sorted by types) and manage them like wx 
+native objects.</p>
+
+ Keys are like 'canvas'.</p>
+
+<h3 class="typedecl"><a name="type-reassign_table">reassign_table()</a></h3>
+<p><tt>reassign_table() = <a href="table.html#type-table">table:table</a>(<a href="#type-gui_object">gui_object()</a>, <a href="#type-gui_object">gui_object()</a>)</tt></p>
+<p> To replace source events objects (ex: a panel) by others (ex: its associated
+ canvas, if any).</p>
+
+<h3 class="typedecl"><a name="type-user_pid">user_pid()</a></h3>
+<p><tt>user_pid() = pid()</tt></p>
+<p> The PID of a user calling process.</p>
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-wx_close_event_type">wx_close_event_type()</a></h3>
+<p><tt>wx_close_event_type() = close_window | end_session | query_end_session</tt></p>
+<p> Associated to wxCloseEvent.</p>
+
+<h3 class="typedecl"><a name="type-wx_event">wx_event()</a></h3>
+<p><tt>wx_event() = {wx, <a href="#type-wx_id">wx_id()</a>, <a href="http://www.erlang.org/edoc/doc/wx/doc/wx.html#type-wx_object">wx:wx_object()</a>, <a href="gui.html#type-user_data">gui:user_data()</a>, <a href="#type-wx_event_info">wx_event_info()</a>}</tt></p>
+<p><p> A #wx event record comprises:</p>
+
+ <p>- (the 'wx' record tag, if the record instance is seen as a tuple)</p>
+
+ <p>- id :: wx_id() the (integer) identifier of the object (e.g. widget) that 
+received the event (event source)</p>
+
+ <p>- obj :: wx:wx_object() is the reference of the wx object that was specified 
+in the connect/n call, i.e. on which connect/n was called (ex: 
+{wx_ref,35,wxFrame,[]})</p>
+
+ <p>- userData :: user_data() is the user-specified data that was specified in the 
+connect/n call (typically [], as not very useful)</p>
+
+ <p>- event :: wx_event_info() is the description of the event itself</p>
+
+ As always, same as: -record( wx,...</p>
+
+<h3 class="typedecl"><a name="type-wx_event_handler">wx_event_handler()</a></h3>
+<p><tt>wx_event_handler() = <a href="http://www.erlang.org/edoc/doc/wx/doc/wxEvtHandler.html#type-wxEvtHandler">wxEvtHandler:wxEvtHandler()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-wx_event_info">wx_event_info()</a></h3>
+<p><tt>wx_event_info() = tuple()</tt></p>
+<p><p> A wx-defined record describing an actual event.</p>
+
+ <p>WxFoobar record whose first field is 'type', and which may have other 
+fields.</p>
+
+ Examples of descriptions, as tuples: {wxClose,close_window}, or
+ {wxCommand,command_button_clicked,CmdString,CmdInt,...}</p>
+
+<h3 class="typedecl"><a name="type-wx_event_type">wx_event_type()</a></h3>
+<p><tt>wx_event_type() = <a href="#type-wx_close_event_type">wx_close_event_type()</a></tt></p>
+<p> Using the wx-event type, leaked by wx.hrl (enrich this union whenever needed).</p>
+
+<h3 class="typedecl"><a name="type-wx_id">wx_id()</a></h3>
+<p><tt>wx_id() = <a href="gui_wx_backend.html#type-wx_id">gui_wx_backend:wx_id()</a></tt></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#event_table_to_string-1">event_table_to_string/1</a></td><td>Returns a textual representation of specified event table.</td></tr>
+<tr><td valign="top"><a href="#get_instance_state-2">get_instance_state/2</a></td><td>Returns the internal state of the specified MyriadGUI instance.</td></tr>
+<tr><td valign="top"><a href="#instance_referential_to_string-1">instance_referential_to_string/1</a></td><td>Returns a textual representation of the specified type table.</td></tr>
+<tr><td valign="top"><a href="#propagate_event-1">propagate_event/1</a></td><td>Propagates the event designated by the specified context upward in the 
+widget hierarchy (instead of the default, which is considering that it has 
+been processed once for all, and thus shall not be propagated further).</td></tr>
+<tr><td valign="top"><a href="#reassign_table_to_string-1">reassign_table_to_string/1</a></td><td>Returns a textual representation of the specified reassign table.</td></tr>
+<tr><td valign="top"><a href="#set_instance_state-3">set_instance_state/3</a></td><td>Returns the internal state of the specified MyriadGUI instance.</td></tr>
+<tr><td valign="top"><a href="#start_main_event_loop-2">start_main_event_loop/2</a></td><td>Starts the internal, main event loop of MyriadGUI.</td></tr>
+<tr><td valign="top"><a href="#type_table_to_string-1">type_table_to_string/1</a></td><td>Returns a textual representation of the specified type table.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="event_table_to_string-1">event_table_to_string/1</a></h3>
+<div class="spec">
+<p><tt>event_table_to_string(EventTable::<a href="#type-event_table">event_table()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual representation of specified event table.</p>
+
+<h3 class="function"><a name="get_instance_state-2">get_instance_state/2</a></h3>
+<div class="spec">
+<p><tt>get_instance_state(X1::<a href="#type-myriad_object_ref">myriad_object_ref()</a>, TypeTable::<a href="#type-myriad_type_table">myriad_type_table()</a>) -&gt; <a href="gui.html#type-myriad_object_state">gui:myriad_object_state()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the internal state of the specified MyriadGUI instance.</p>
+
+<h3 class="function"><a name="instance_referential_to_string-1">instance_referential_to_string/1</a></h3>
+<div class="spec">
+<p><tt>instance_referential_to_string(Instance_referential::<a href="#type-instance_referential">instance_referential()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual representation of the specified type table.</p>
+
+<h3 class="function"><a name="propagate_event-1">propagate_event/1</a></h3>
+<div class="spec">
+<p><tt>propagate_event(Gui_event_context::<a href="#type-gui_event_context">gui_event_context()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Propagates the event designated by the specified context upward in the 
+widget hierarchy (instead of the default, which is considering that it has 
+been processed once for all, and thus shall not be propagated further).</p>
+
+ <p>Events are handled in order, from bottom to top in the widgets hierarchy, by 
+the last subscribed handler first. Most of the events have default event 
+handler(s) set.</p>
+
+ <p>As a result, calling this function results in having the corresponding event 
+handled by the other handler(s) afterwards.</p>
+
+ <p>In general, it is recommended to propagate all non-command events to allow the 
+default handling to take place. The command events are, however, normally not 
+propagated as usually a single command such as a button click or menu item 
+selection must only be processed by one handler.</p>
+
+ Note: to be called from an event handler, i.e. at least from a process which
+ set the wx environment.
+</p>
+
+<h3 class="function"><a name="reassign_table_to_string-1">reassign_table_to_string/1</a></h3>
+<div class="spec">
+<p><tt>reassign_table_to_string(ReassignTable::<a href="#type-reassign_table">reassign_table()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual representation of the specified reassign table.</p>
+
+<h3 class="function"><a name="set_instance_state-3">set_instance_state/3</a></h3>
+<div class="spec">
+<p><tt>set_instance_state(X1::<a href="#type-myriad_object_ref">myriad_object_ref()</a>, InstanceState::<a href="gui.html#type-myriad_object_state">gui:myriad_object_state()</a>, TypeTable::<a href="#type-myriad_type_table">myriad_type_table()</a>) -&gt; <a href="#type-myriad_type_table">myriad_type_table()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the internal state of the specified MyriadGUI instance.</p>
+
+<h3 class="function"><a name="start_main_event_loop-2">start_main_event_loop/2</a></h3>
+<div class="spec">
+<p><tt>start_main_event_loop(WxServer::<a href="gui.html#type-wx_server">gui:wx_server()</a>, WxEnv::<a href="http://www.erlang.org/edoc/doc/wx/doc/wx.html#type-wx_env">wx:wx_env()</a>) -&gt; no_return()</tt><br></p>
+<p> </p>
+</div><p><p>Starts the internal, main event loop of MyriadGUI.</p>
+
+ <p>The backend events received will result in callbacks to be triggered on their 
+respective subscribers.</p>
+
+ The goal is to devise a generic event loop, while still being able to be
+ notified of all relevant information (and only them).
+</p>
+
+<h3 class="function"><a name="type_table_to_string-1">type_table_to_string/1</a></h3>
+<div class="spec">
+<p><tt>type_table_to_string(Table::<a href="#type-myriad_type_table">myriad_type_table()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual representation of the specified type table.</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

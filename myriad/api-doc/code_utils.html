@@ -1,0 +1,556 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module code_utils</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module code_utils</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various facilities regarding the management of <b>Erlang
+ code</b> (typically BEAM files).
+
+
+<h2><a name="description">Description</a></h2><p>Gathering of various facilities regarding the management of <b>Erlang
+ code</b> (typically BEAM files).</p>
+
+ See code_utils_test.erl for the corresponding test.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-any_directory_path">any_directory_path()</a></h3>
+<p><tt>any_directory_path() = <a href="file_utils.html#type-any_directory_path">file_utils:any_directory_path()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-atom_node_name">atom_node_name()</a></h3>
+<p><tt>atom_node_name() = <a href="net_utils.html#type-atom_node_name">net_utils:atom_node_name()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-code_path">code_path()</a></h3>
+<p><tt>code_path() = [<a href="#type-directory_path">directory_path()</a>]</tt></p>
+<p> The code path used by a language, i.e. a list of directories (as plain
+ strings) to scan for runtime elements (Erlang -pa/-pz, Python sys.path with
+ PYTHONPATH, Java classpath, etc.).</p>
+
+<h3 class="typedecl"><a name="type-code_path_position">code_path_position()</a></h3>
+<p><tt>code_path_position() = first_position | last_position</tt></p>
+
+
+<h3 class="typedecl"><a name="type-count">count()</a></h3>
+<p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-directory_path">directory_path()</a></h3>
+<p><tt>directory_path() = <a href="file_utils.html#type-directory_path">file_utils:directory_path()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-env_variable_name">env_variable_name()</a></h3>
+<p><tt>env_variable_name() = <a href="system_utils.html#type-env_variable_name">system_utils:env_variable_name()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-error_map">error_map()</a></h3>
+<p><tt>error_map() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(<a href="#type-count">count()</a>, <a href="#type-ustring">ustring()</a>)</tt></p>
+<p><p> Argument-level error information in a stacktrace, typicially associated to the 
+'error_info' key in an error_info() term.</p>
+
+ Defined as #{pos_integer() =&gt; unicode:chardata()} by the erl_erts_errors
+ module.</p>
+
+<h3 class="typedecl"><a name="type-error_term">error_term()</a></h3>
+<p><tt>error_term() = <a href="basic_utils.html#type-error_term">basic_utils:error_term()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-file_name">file_name()</a></h3>
+<p><tt>file_name() = <a href="file_utils.html#type-file_name">file_utils:file_name()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-file_path">file_path()</a></h3>
+<p><tt>file_path() = <a href="file_utils.html#type-file_path">file_utils:file_path()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-function_name">function_name()</a></h3>
+<p><tt>function_name() = <a href="basic_utils.html#type-function_name">basic_utils:function_name()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-md5_sum">md5_sum()</a></h3>
+<p><tt>md5_sum() = <a href="executable_utils.html#type-md5_sum">executable_utils:md5_sum()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-module_name">module_name()</a></h3>
+<p><tt>module_name() = <a href="basic_utils.html#type-module_name">basic_utils:module_name()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-stack_info">stack_info()</a></h3>
+<p><tt>stack_info() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(atom(), term()) | <a href="list_table.html#type-list_table">list_table:list_table</a>(atom(), term())</tt></p>
+<p><p> The last element of a stack item.</p>
+
+ Ex: [ { file, file_path() }, { line, meta_utils:line() } ].</p>
+
+<h3 class="typedecl"><a name="type-stack_item">stack_item()</a></h3>
+<p><tt>stack_item() = {<a href="#type-module_name">module_name()</a>, <a href="#type-function_name">function_name()</a>, arity(), <a href="#type-stack_info">stack_info()</a>}</tt></p>
+
+
+<h3 class="typedecl"><a name="type-stack_trace">stack_trace()</a></h3>
+<p><tt>stack_trace() = [<a href="#type-stack_item">stack_item()</a>]</tt></p>
+
+
+<h3 class="typedecl"><a name="type-time_out">time_out()</a></h3>
+<p><tt>time_out() = <a href="time_utils.html#type-time_out">time_utils:time_out()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#code_path_to_string-0">code_path_to_string/0</a></td><td>Returns a textual description of the current code path, sorted in 
+alphabetical order.</td></tr>
+<tr><td valign="top"><a href="#code_path_to_string-1">code_path_to_string/1</a></td><td>Returns a textual description of the specified code path.</td></tr>
+<tr><td valign="top"><a href="#declare_beam_directories-1">declare_beam_directories/1</a></td><td>Declares specified directories as additional code paths where BEAM files 
+will be looked up by the VM, adding them at first position in the code path.</td></tr>
+<tr><td valign="top"><a href="#declare_beam_directories-2">declare_beam_directories/2</a></td><td>Declares specified directories as additional code paths where BEAM files 
+will be looked up by the VM, adding them either at first or last position in 
+the code path.</td></tr>
+<tr><td valign="top"><a href="#declare_beam_directory-1">declare_beam_directory/1</a></td><td>Declares specified directory as an additional code path where BEAM files 
+will be looked up by the VM, adding it at first position in the code path.</td></tr>
+<tr><td valign="top"><a href="#declare_beam_directory-2">declare_beam_directory/2</a></td><td>Declares specified directory as an additional code path where BEAM files 
+will be looked up by the VM, adding it as specified, at either first or last 
+position in the code path.</td></tr>
+<tr><td valign="top"><a href="#declare_beam_dirs_for-1">declare_beam_dirs_for/1</a></td><td>Declares automatically the relevant BEAM directories in the code path so 
+that the layer whose base directory is designated as the value associated to 
+the specified environment variable name is fully usable from then on.</td></tr>
+<tr><td valign="top"><a href="#declare_beam_dirs_for_myriad-0">declare_beam_dirs_for_myriad/0</a></td><td>Declares automatically the relevant BEAM directories in the code path so 
+that Ceylan-Myriad can be fully usable from then on.</td></tr>
+<tr><td valign="top"><a href="#deploy_modules-2">deploy_modules/2</a></td><td>Deploys the specified list of modules on the specified list of nodes 
+(specified as atoms): sends them these modules (as a binary), and loads them 
+so that they are ready for future use, using a default time-out.</td></tr>
+<tr><td valign="top"><a href="#deploy_modules-3">deploy_modules/3</a></td><td>Deploys the specified list of modules on the specified list of nodes 
+(specified as atoms): sends them these modules (as a binary), and loads them 
+so that they are ready for future use.</td></tr>
+<tr><td valign="top"><a href="#display_stacktrace-0">display_stacktrace/0</a></td><td>Displays the current stacktrace (not stopping the execution).</td></tr>
+<tr><td valign="top"><a href="#get_beam_dirs_for-1">get_beam_dirs_for/1</a></td><td>Returns the (ordered) list of (absolute) runtime BEAM directories 
+obtained from the build system located in the directory designated as the 
+value associated to the specified environment variable name.</td></tr>
+<tr><td valign="top"><a href="#get_beam_dirs_for_myriad-0">get_beam_dirs_for_myriad/0</a></td><td>Returns the (ordered) list of (absolute) runtime BEAM directories 
+corresponding to this layer (ie the Ceylan-Myriad one).</td></tr>
+<tr><td valign="top"><a href="#get_beam_filename-1">get_beam_filename/1</a></td><td>Returns the filename of the BEAM file corresponding to the specified
+ module.</td></tr>
+<tr><td valign="top"><a href="#get_code_for-1">get_code_for/1</a></td><td>Returns, by searching the code path, the in-file object code for
+ specified module, ie a {ModuleBinary, ModuleFilename} pair for the module
+ specified as an atom, or throws an exception.</td></tr>
+<tr><td valign="top"><a href="#get_code_path-0">get_code_path/0</a></td><td>Returns a normalised, representation of the current code path, sorted in 
+alphabetical order (without duplicates).</td></tr>
+<tr><td valign="top"><a href="#get_code_path_as_string-0">get_code_path_as_string/0</a></td><td>Returns a textual representation of the current code path, sorted in 
+alphabetical order.</td></tr>
+<tr><td valign="top"><a href="#get_erlang_root_path-0">get_erlang_root_path/0</a></td><td>Returns the root directory of Erlang/OTP, where it is installed.</td></tr>
+<tr><td valign="top"><a href="#get_md5_for_loaded_module-1">get_md5_for_loaded_module/1</a></td><td>Returns the MD5 for the specified loaded (in-memory, used by the VM) 
+module.</td></tr>
+<tr><td valign="top"><a href="#get_md5_for_stored_module-1">get_md5_for_stored_module/1</a></td><td>Returns the MD5 for the specified stored (on filesystem, found through
+ the code path) module.</td></tr>
+<tr><td valign="top"><a href="#get_stacktrace-0">get_stacktrace/0</a></td><td>Returns (without crashing the program) the current stack trace.</td></tr>
+<tr><td valign="top"><a href="#get_stacktrace-1">get_stacktrace/1</a></td><td>Returns (without crashing the program) the current stack trace, whose
+ SkipLastElemCount first elements have been dropped (to output a cleaner, more
+ relevant stacktrace).</td></tr>
+<tr><td valign="top"><a href="#interpret_error-2">interpret_error/2</a></td><td>Interprets specified error.</td></tr>
+<tr><td valign="top"><a href="#interpret_shortened_stacktrace-1">interpret_shortened_stacktrace/1</a></td><td>Returns a "smart" textual representation of the current stacktrace, once 
+specified extra depth has been skipped (not counting this call).</td></tr>
+<tr><td valign="top"><a href="#interpret_stacktrace-0">interpret_stacktrace/0</a></td><td>Returns a "smart" textual representation of the current stacktrace.</td></tr>
+<tr><td valign="top"><a href="#interpret_stacktrace-1">interpret_stacktrace/1</a></td><td>Returns a "smart" textual representation of specified stacktrace.</td></tr>
+<tr><td valign="top"><a href="#interpret_stacktrace-2">interpret_stacktrace/2</a></td><td>Returns a "smart", complete textual description of the specified error
+ stacktrace, including any argument-level analysis of the failure, listing just
+ the filename of the corresponding source files (no full path wanted).</td></tr>
+<tr><td valign="top"><a href="#interpret_undef_exception-3">interpret_undef_exception/3</a></td><td>Interprets an undef exception, typically after it has been raised.</td></tr>
+<tr><td valign="top"><a href="#is_beam_in_path-1">is_beam_in_path/1</a></td><td>Tells whether specified module has its BEAM file in the current code 
+path.</td></tr>
+<tr><td valign="top"><a href="#is_loaded_module_same_on_filesystem-1">is_loaded_module_same_on_filesystem/1</a></td><td>Tells whether the specified (supposedly loaded) module is the same as the
+ one found through the code path.</td></tr>
+<tr><td valign="top"><a href="#list_beams_in_path-0">list_beams_in_path/0</a></td><td>Lists (in alphabetical order) all modules that exist in the current 
+code path, based on the BEAM files found.</td></tr>
+<tr><td valign="top"><a href="#remove_beam_directory-1">remove_beam_directory/1</a></td><td>Removes specified directory (either specified verbatim or designated as 
+the ebin directory of a specified application) from the current code path.</td></tr>
+<tr><td valign="top"><a href="#remove_beam_directory_if_set-1">remove_beam_directory_if_set/1</a></td><td>Removes specified directory (either specified verbatim or designated as 
+the ebin directory of a specified application) from the current code path, if 
+it was already set (otherwise does nothing).</td></tr>
+<tr><td valign="top"><a href="#stack_info_to_string-1">stack_info_to_string/1</a></td><td>Returns a textual description of specified stack information.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="code_path_to_string-0">code_path_to_string/0</a></h3>
+<div class="spec">
+<p><tt>code_path_to_string() -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns a textual description of the current code path, sorted in 
+alphabetical order.</p>
+
+ Note that the sorting is more convenient for inspection yet implies that the
+ actual lookup order through these directories is most probably different.
+</p>
+
+<h3 class="function"><a name="code_path_to_string-1">code_path_to_string/1</a></h3>
+<div class="spec">
+<p><tt>code_path_to_string(CodePath::<a href="#type-code_path">code_path()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of the specified code path.</p>
+
+<h3 class="function"><a name="declare_beam_directories-1">declare_beam_directories/1</a></h3>
+<div class="spec">
+<p><tt>declare_beam_directories(Dirs::<a href="#type-code_path">code_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Declares specified directories as additional code paths where BEAM files 
+will be looked up by the VM, adding them at first position in the code path.</p>
+
+ Throws an exception if at least one of the directories does not exist.
+</p>
+
+<h3 class="function"><a name="declare_beam_directories-2">declare_beam_directories/2</a></h3>
+<div class="spec">
+<p><tt>declare_beam_directories(Dirs::<a href="#type-code_path">code_path()</a>, X2::<a href="#type-code_path_position">code_path_position()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Declares specified directories as additional code paths where BEAM files 
+will be looked up by the VM, adding them either at first or last position in 
+the code path.</p>
+
+ Throws an exception if at least one of the directories does not exist.
+</p>
+
+<h3 class="function"><a name="declare_beam_directory-1">declare_beam_directory/1</a></h3>
+<div class="spec">
+<p><tt>declare_beam_directory(Dir::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Declares specified directory as an additional code path where BEAM files 
+will be looked up by the VM, adding it at first position in the code path.</p>
+
+ <p>If this directory is already present in the code path, it is removed from its 
+old position and put first.</p>
+
+ Throws an exception if the directory does not exist.
+</p>
+
+<h3 class="function"><a name="declare_beam_directory-2">declare_beam_directory/2</a></h3>
+<div class="spec">
+<p><tt>declare_beam_directory(Dir::<a href="#type-any_directory_path">any_directory_path()</a>, X2::<a href="#type-code_path_position">code_path_position()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Declares specified directory as an additional code path where BEAM files 
+will be looked up by the VM, adding it as specified, at either first or last 
+position in the code path.</p>
+
+ <p>These functions ensure not to offset any given directory that was already in 
+the code path further in the code path.</p>
+
+ <p>Indeed, if this directory is already present in the code path: 
+- if first_position is specified, it is removed from its old position and put 
+first 
+- if last_position is specified, code path is not changed</p>
+
+ Throws an exception if the directory does not exist.
+</p>
+
+<h3 class="function"><a name="declare_beam_dirs_for-1">declare_beam_dirs_for/1</a></h3>
+<div class="spec">
+<p><tt>declare_beam_dirs_for(VariableName::<a href="#type-env_variable_name">env_variable_name()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Declares automatically the relevant BEAM directories in the code path so 
+that the layer whose base directory is designated as the value associated to 
+the specified environment variable name is fully usable from then on.</p>
+
+ Note: the determined directories are not specifically checked for existence,
+ and are added at the end of the code path.
+</p>
+
+<h3 class="function"><a name="declare_beam_dirs_for_myriad-0">declare_beam_dirs_for_myriad/0</a></h3>
+<div class="spec">
+<p><tt>declare_beam_dirs_for_myriad() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Declares automatically the relevant BEAM directories in the code path so 
+that Ceylan-Myriad can be fully usable from then on.</p>
+
+ <p>Note:</p>
+
+ <p>- the CEYLAN_MYRIAD environment variable must be defined and must point to the 
+corresponding root directory</p>
+
+ - the determined directories are not specifically checked for existence, and
+ are added at the end of the code path
+</p>
+
+<h3 class="function"><a name="deploy_modules-2">deploy_modules/2</a></h3>
+<div class="spec">
+<p><tt>deploy_modules(Modules::[module()], Nodes::[<a href="#type-atom_node_name">atom_node_name()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Deploys the specified list of modules on the specified list of nodes 
+(specified as atoms): sends them these modules (as a binary), and loads them 
+so that they are ready for future use, using a default time-out.</p>
+
+ If an exception is thrown with 'badfile' being reported as the error, this may
+ be caused by a version mistmatch between the Erlang environments in the source
+ and at least one of the remote target hosts (ex: ERTS 5.5.2 vs 5.8.2).
+</p>
+
+<h3 class="function"><a name="deploy_modules-3">deploy_modules/3</a></h3>
+<div class="spec">
+<p><tt>deploy_modules(Modules::[module()], Nodes::[<a href="#type-atom_node_name">atom_node_name()</a>], Timeout::<a href="#type-time_out">time_out()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Deploys the specified list of modules on the specified list of nodes 
+(specified as atoms): sends them these modules (as a binary), and loads them 
+so that they are ready for future use.</p>
+
+ <p>Timeout is the time-out duration, either an integer number of milliseconds, or 
+the 'infinity' atom.</p>
+
+ If an exception is thrown with 'badfile' being reported as the error, this may
+ be caused by a version mistmatch between the Erlang environments in the source
+ and at least one of the remote target hosts (ex: ERTS 5.5.2 vs 5.8.2).
+</p>
+
+<h3 class="function"><a name="display_stacktrace-0">display_stacktrace/0</a></h3>
+<div class="spec">
+<p><tt>display_stacktrace() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Displays the current stacktrace (not stopping the execution).</p>
+
+<h3 class="function"><a name="get_beam_dirs_for-1">get_beam_dirs_for/1</a></h3>
+<div class="spec">
+<p><tt>get_beam_dirs_for(VariableName::<a href="#type-env_variable_name">env_variable_name()</a>) -&gt; <a href="#type-code_path">code_path()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the (ordered) list of (absolute) runtime BEAM directories 
+obtained from the build system located in the directory designated as the 
+value associated to the specified environment variable name.</p>
+
+ <p>Allows to obtain the code path that shall be declared to the VM so that all 
+the corresponding BEAMs become available.</p>
+
+ <p>Note: all code run from that function shall rely on plain Erlang, so that 
+Myriad itself can be made available with that module. As a result, this module 
+can be copied or simply symlinked from any directory, and will be usable 
+(regarding the get_beam_dirs_for* functions) from there as such (i.e. with no 
+specific extra prerequisite to take into account).</p>
+
+ Ex: get_beam_dirs_for( "CEYLAN_MYRIAD" ).
+</p>
+
+<h3 class="function"><a name="get_beam_dirs_for_myriad-0">get_beam_dirs_for_myriad/0</a></h3>
+<div class="spec">
+<p><tt>get_beam_dirs_for_myriad() -&gt; <a href="#type-code_path">code_path()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the (ordered) list of (absolute) runtime BEAM directories 
+corresponding to this layer (ie the Ceylan-Myriad one).</p>
+
+ <p>Allows to obtain the code path that shall be declared to the VM so that all 
+the corresponding BEAMs become available.</p>
+
+ <p>The CEYLAN_MYRIAD environment variable must be defined and must point to the 
+corresponding root directory.</p>
+
+ <p>The layer top-level 'ebin' directory could be used for that now that OTP 
+conventions are used.</p>
+
+ Note: all code run from that function shall rely on plain Erlang, so that
+ Myriad itself can be made available with that module.
+</p>
+
+<h3 class="function"><a name="get_beam_filename-1">get_beam_filename/1</a></h3>
+<div class="spec">
+<p><tt>get_beam_filename(ModuleName::<a href="#type-module_name">module_name()</a>) -&gt; <a href="#type-file_name">file_name()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the filename of the BEAM file corresponding to the specified
+ module.
+</p>
+
+<h3 class="function"><a name="get_code_for-1">get_code_for/1</a></h3>
+<div class="spec">
+<p><tt>get_code_for(ModuleName::<a href="#type-module_name">module_name()</a>) -&gt; {binary(), <a href="#type-file_path">file_path()</a>}</tt><br></p>
+<p> </p>
+</div><p>Returns, by searching the code path, the in-file object code for
+ specified module, ie a {ModuleBinary, ModuleFilename} pair for the module
+ specified as an atom, or throws an exception.
+</p>
+
+<h3 class="function"><a name="get_code_path-0">get_code_path/0</a></h3>
+<div class="spec">
+<p><tt>get_code_path() -&gt; <a href="#type-code_path">code_path()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns a normalised, representation of the current code path, sorted in 
+alphabetical order (without duplicates).</p>
+
+ Note that the sorting is more convenient for inspection yet implies that the
+ actual lookup order through these directories is most probably different.
+</p>
+
+<h3 class="function"><a name="get_code_path_as_string-0">get_code_path_as_string/0</a></h3>
+<div class="spec">
+<p><tt>get_code_path_as_string() -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns a textual representation of the current code path, sorted in 
+alphabetical order.</p>
+
+ Note that the sorting is more convenient for inspection yet implies that the
+ actual lookup order through these directories is most probably different.
+</p>
+
+<h3 class="function"><a name="get_erlang_root_path-0">get_erlang_root_path/0</a></h3>
+<div class="spec">
+<p><tt>get_erlang_root_path() -&gt; <a href="#type-directory_path">directory_path()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the root directory of Erlang/OTP, where it is installed.</p>
+
+ Ex: "/home/joe/Software/Erlang/Erlang-23.1/lib/erlang" or
+ "/usr/local/otp/lib".
+</p>
+
+<h3 class="function"><a name="get_md5_for_loaded_module-1">get_md5_for_loaded_module/1</a></h3>
+<div class="spec">
+<p><tt>get_md5_for_loaded_module(ModuleName::<a href="#type-module_name">module_name()</a>) -&gt; <a href="#type-md5_sum">md5_sum()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the MD5 for the specified loaded (in-memory, used by the VM) 
+module.</p>
+
+ Otherwise returns a undefined function exception (ModuleName:module_info/1).
+</p>
+
+<h3 class="function"><a name="get_md5_for_stored_module-1">get_md5_for_stored_module/1</a></h3>
+<div class="spec">
+<p><tt>get_md5_for_stored_module(ModuleName::<a href="#type-module_name">module_name()</a>) -&gt; <a href="#type-md5_sum">md5_sum()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the MD5 for the specified stored (on filesystem, found through
+ the code path) module.
+</p>
+
+<h3 class="function"><a name="get_stacktrace-0">get_stacktrace/0</a></h3>
+<div class="spec">
+<p><tt>get_stacktrace() -&gt; <a href="#type-stack_trace">stack_trace()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns (without crashing the program) the current stack trace.</p>
+
+ A replacement for deprecated erlang:get_stacktrace/0.
+</p>
+
+<h3 class="function"><a name="get_stacktrace-1">get_stacktrace/1</a></h3>
+<div class="spec">
+<p><tt>get_stacktrace(SkipLastElemCount::<a href="#type-count">count()</a>) -&gt; <a href="#type-stack_trace">stack_trace()</a></tt><br></p>
+<p> </p>
+</div><p>Returns (without crashing the program) the current stack trace, whose
+ SkipLastElemCount first elements have been dropped (to output a cleaner, more
+ relevant stacktrace).
+</p>
+
+<h3 class="function"><a name="interpret_error-2">interpret_error/2</a></h3>
+<div class="spec">
+<p><tt>interpret_error(ErrorTerm::<a href="#type-error_term">error_term()</a>, Stacktrace::<a href="#type-stack_trace">stack_trace()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Interprets specified error.</p>
+
+<h3 class="function"><a name="interpret_shortened_stacktrace-1">interpret_shortened_stacktrace/1</a></h3>
+<div class="spec">
+<p><tt>interpret_shortened_stacktrace(SkipLastElemCount::<a href="basic_utils.html#type-count">basic_utils:count()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns a "smart" textual representation of the current stacktrace, once 
+specified extra depth has been skipped (not counting this call).</p>
+
+ Removing the specified number of last calls allows to skip unwanted
+ error-reporting functions and to return only a relevant stacktrace.
+</p>
+
+<h3 class="function"><a name="interpret_stacktrace-0">interpret_stacktrace/0</a></h3>
+<div class="spec">
+<p><tt>interpret_stacktrace() -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a "smart" textual representation of the current stacktrace.</p>
+
+<h3 class="function"><a name="interpret_stacktrace-1">interpret_stacktrace/1</a></h3>
+<div class="spec">
+<p><tt>interpret_stacktrace(Stacktrace::<a href="#type-stack_trace">stack_trace()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a "smart" textual representation of specified stacktrace.</p>
+
+<h3 class="function"><a name="interpret_stacktrace-2">interpret_stacktrace/2</a></h3>
+<div class="spec">
+<p><tt>interpret_stacktrace(Stacktrace::<a href="#type-stack_trace">stack_trace()</a>, MaybeErrorTerm::<a href="#type-maybe">maybe</a>(<a href="#type-error_term">error_term()</a>)) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a "smart", complete textual description of the specified error
+ stacktrace, including any argument-level analysis of the failure, listing just
+ the filename of the corresponding source files (no full path wanted).
+</p>
+
+<h3 class="function"><a name="interpret_undef_exception-3">interpret_undef_exception/3</a></h3>
+<div class="spec">
+<p><tt>interpret_undef_exception(ModuleName::<a href="#type-module_name">module_name()</a>, FunctionName::<a href="basic_utils.html#type-function_name">basic_utils:function_name()</a>, Arity::arity()) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Interprets an undef exception, typically after it has been raised.</p>
+
+<h3 class="function"><a name="is_beam_in_path-1">is_beam_in_path/1</a></h3>
+<div class="spec">
+<p><tt>is_beam_in_path(ModuleName::<a href="#type-module_name">module_name()</a>) -&gt; not_found | [<a href="#type-directory_path">directory_path()</a>]</tt><br></p>
+<p> </p>
+</div><p><p>Tells whether specified module has its BEAM file in the current code 
+path.</p>
+
+ <p>Returns either a list of its absolute, canonicalised, unordered paths (if 
+being available at least once), or 'not_found'.</p>
+
+ <p>Note:</p>
+
+  <p>- hence this function does not return a boolean</p>
+
+  - the returned list (if any) of paths respects the order in the code path; as
+  a result, its first element corresponds to the path containing the BEAM file
+  that would be loaded for the specified module
+</p>
+
+<h3 class="function"><a name="is_loaded_module_same_on_filesystem-1">is_loaded_module_same_on_filesystem/1</a></h3>
+<div class="spec">
+<p><tt>is_loaded_module_same_on_filesystem(ModuleName::<a href="#type-module_name">module_name()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Tells whether the specified (supposedly loaded) module is the same as the
+ one found through the code path.
+</p>
+
+<h3 class="function"><a name="list_beams_in_path-0">list_beams_in_path/0</a></h3>
+<div class="spec">
+<p><tt>list_beams_in_path() -&gt; [<a href="#type-module_name">module_name()</a>]</tt><br></p>
+<p> </p>
+</div><p><p>Lists (in alphabetical order) all modules that exist in the current 
+code path, based on the BEAM files found.</p>
+
+ Note that the sorting is more convenient for inspection yet implies that,
+ should a BEAM file be listed more than once (then being available in multiple
+ paths), the actual version that would be selected by the VM cannot be
+ determined. See is_beam_in_path/1 for that.
+</p>
+
+<h3 class="function"><a name="remove_beam_directory-1">remove_beam_directory/1</a></h3>
+<div class="spec">
+<p><tt>remove_beam_directory(NameOrDir::<a href="#type-directory_path">directory_path()</a> | <a href="otp_utils.html#type-application_name">otp_utils:application_name()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Removes specified directory (either specified verbatim or designated as 
+the ebin directory of a specified application) from the current code path.</p>
+
+ Throws an exception if the operation failed, including if it was not already
+ set.
+</p>
+
+<h3 class="function"><a name="remove_beam_directory_if_set-1">remove_beam_directory_if_set/1</a></h3>
+<div class="spec">
+<p><tt>remove_beam_directory_if_set(NameOrDir::<a href="#type-directory_path">directory_path()</a> | <a href="otp_utils.html#type-application_name">otp_utils:application_name()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Removes specified directory (either specified verbatim or designated as 
+the ebin directory of a specified application) from the current code path, if 
+it was already set (otherwise does nothing).</p>
+
+ Throws an exception if the operation failed otherwise.
+</p>
+
+<h3 class="function"><a name="stack_info_to_string-1">stack_info_to_string/1</a></h3>
+<div class="spec">
+<p><tt>stack_info_to_string(StackInfo::<a href="#type-stack_info">stack_info()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of specified stack information.</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module python_utils</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module python_utils</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of some convenient facilities for the <b>binding to the Python
+ language</b>.
+
+
+<h2><a name="description">Description</a></h2><p>Gathering of some convenient facilities for the <b>binding to the Python
+ language</b>.</p>
+
+ <p>See python_utils_test.erl for the corresponding tests.</p>
+
+ See also: java_utils.erl for a similar binding.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-body">body()</a></h3>
+<p><tt>body() = [any()]</tt></p>
+<p> The parameters of a request sent to Python.</p>
+
+<h3 class="typedecl"><a name="type-interpreter_pid">interpreter_pid()</a></h3>
+<p><tt>interpreter_pid() = pid()</tt></p>
+<p> PID corresponding to a Python interpreter.</p>
+
+<h3 class="typedecl"><a name="type-pep8_class_module">pep8_class_module()</a></h3>
+<p><tt>pep8_class_module() = atom()</tt></p>
+<p> The name of a Python module, according to the PEP8.</p>
+
+<h3 class="typedecl"><a name="type-pep8_classname">pep8_classname()</a></h3>
+<p><tt>pep8_classname() = atom()</tt></p>
+<p> The name of a Python class, according to the PEP8.</p>
+
+<h3 class="typedecl"><a name="type-result">result()</a></h3>
+<p><tt>result() = any()</tt></p>
+<p> The result from a request that was sent to Python.</p>
+
+<h3 class="typedecl"><a name="type-title">title()</a></h3>
+<p><tt>title() = atom()</tt></p>
+<p> The title of a request sent to Python.</p>
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#get_beam_directories_for_binding-0">get_beam_directories_for_binding/0</a></td><td>Finds the BEAM locations of all the dependencies required for binding to
+ Python.</td></tr>
+<tr><td valign="top"><a href="#pep8_class_to_pep8_module-1">pep8_class_to_pep8_module/1</a></td><td>Deduces the name of the Python module from the name of the Python class 
+(possibly prefixed with package names) that it implements, according notably 
+to the naming conventions adopted in PEP 8.</td></tr>
+<tr><td valign="top"><a href="#send_oneway-3">send_oneway/3</a></td><td>Requests specified interpreter to execute specified oneway.</td></tr>
+<tr><td valign="top"><a href="#wait_for_request_result-2">wait_for_request_result/2</a></td><td>Receives a message from the Python world, usually in answer to a
+ send_oneway/3 call having used the same MessageTitle argument, and tries to
+ match it with the different accepted types of messages.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="get_beam_directories_for_binding-0">get_beam_directories_for_binding/0</a></h3>
+<div class="spec">
+<p><tt>get_beam_directories_for_binding() -&gt; [<a href="file_utils.html#type-directory_name">file_utils:directory_name()</a>]</tt><br></p>
+<p> </p>
+</div><p>Finds the BEAM locations of all the dependencies required for binding to
+ Python.
+</p>
+
+<h3 class="function"><a name="pep8_class_to_pep8_module-1">pep8_class_to_pep8_module/1</a></h3>
+<div class="spec">
+<p><tt>pep8_class_to_pep8_module(Classname::<a href="#type-pep8_classname">pep8_classname()</a> | <a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-pep8_class_module">pep8_class_module()</a></tt><br></p>
+<p> </p>
+</div><p><p>Deduces the name of the Python module from the name of the Python class 
+(possibly prefixed with package names) that it implements, according notably 
+to the naming conventions adopted in PEP 8.</p>
+
+ Ex: 'Partner__TransportModel__MyFoobarExample' resulting in
+ 'partner.transport_model.my_foobar_example'.
+</p>
+
+<h3 class="function"><a name="send_oneway-3">send_oneway/3</a></h3>
+<div class="spec">
+<p><tt>send_oneway(InterpreterPid::<a href="#type-interpreter_pid">interpreter_pid()</a>, MessageTitle::<a href="#type-title">title()</a>, MessageBody::<a href="#type-body">body()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Requests specified interpreter to execute specified oneway.</p>
+
+<h3 class="function"><a name="wait_for_request_result-2">wait_for_request_result/2</a></h3>
+<div class="spec">
+<p><tt>wait_for_request_result(InterpreterPid::<a href="#type-interpreter_pid">interpreter_pid()</a>, MessageTitle::<a href="#type-title">title()</a>) -&gt; <a href="#type-result">result()</a></tt><br></p>
+<p> </p>
+</div><p>Receives a message from the Python world, usually in answer to a
+ send_oneway/3 call having used the same MessageTitle argument, and tries to
+ match it with the different accepted types of messages.
+</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

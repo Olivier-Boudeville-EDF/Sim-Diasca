@@ -1,0 +1,174 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module java_utils</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module java_utils</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of some convenient facilities for the <b>binding to the Java
+ language</b>.
+
+
+<h2><a name="description">Description</a></h2><p>Gathering of some convenient facilities for the <b>binding to the Java
+ language</b>.</p>
+
+ <p>See java_utils_test.erl for the corresponding tests.</p>
+
+ See also python_utils.erl for a similar binding.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-directory_path">directory_path()</a></h3>
+<p><tt>directory_path() = <a href="file_utils.html#type-directory_path">file_utils:directory_path()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-file_name">file_name()</a></h3>
+<p><tt>file_name() = <a href="file_utils.html#type-file_name">file_utils:file_name()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-java_bytecode_filename">java_bytecode_filename()</a></h3>
+<p><tt>java_bytecode_filename() = <a href="#type-file_name">file_name()</a></tt></p>
+<p> The name of a Java compiled file (ex: "Foobar.class").</p>
+
+<h3 class="typedecl"><a name="type-java_classname">java_classname()</a></h3>
+<p><tt>java_classname() = atom()</tt></p>
+<p> The name of a Java class (ex: 'Foobar').</p>
+
+<h3 class="typedecl"><a name="type-java_fully_qualified_classname">java_fully_qualified_classname()</a></h3>
+<p><tt>java_fully_qualified_classname() = <a href="#type-java_classname">java_classname()</a> | {<a href="#type-java_package_name">java_package_name()</a>, <a href="#type-java_classname">java_classname()</a>}</tt></p>
+<p> Designates as precisely as possible a Java class.</p>
+
+<h3 class="typedecl"><a name="type-java_mbox_pid">java_mbox_pid()</a></h3>
+<p><tt>java_mbox_pid() = pid()</tt></p>
+<p> PID associated to a Java mailbox (a Java-based pseudo-process).</p>
+
+<h3 class="typedecl"><a name="type-java_package_name">java_package_name()</a></h3>
+<p><tt>java_package_name() = atom()</tt></p>
+<p> The name of a Java package (ex: 'org.foobar.research.someteam').</p>
+
+<h3 class="typedecl"><a name="type-java_source_filename">java_source_filename()</a></h3>
+<p><tt>java_source_filename() = <a href="#type-file_name">file_name()</a></tt></p>
+<p> The name of a Java source file (ex: "Foobar.java").</p>
+
+<h3 class="typedecl"><a name="type-java_string_classname">java_string_classname()</a></h3>
+<p><tt>java_string_classname() = <a href="#type-ustring">ustring()</a></tt></p>
+<p> The name of a Java class, as a string (ex: "Foobar").</p>
+
+<h3 class="typedecl"><a name="type-java_string_package_name">java_string_package_name()</a></h3>
+<p><tt>java_string_package_name() = atom()</tt></p>
+<p> The name of a Java package, as a string (ex: "org.foobar.research.someteam").</p>
+
+<h3 class="typedecl"><a name="type-method_name">method_name()</a></h3>
+<p><tt>method_name() = atom()</tt></p>
+<p> Designates a method to trigger on the Java side.</p>
+
+<h3 class="typedecl"><a name="type-method_parameters">method_parameters()</a></h3>
+<p><tt>method_parameters() = [any()]</tt></p>
+<p> The parameters of a method triggered on the Java side.</p>
+
+<h3 class="typedecl"><a name="type-oneway_name">oneway_name()</a></h3>
+<p><tt>oneway_name() = <a href="#type-method_name">method_name()</a></tt></p>
+<p> Designates a oneway to trigger on the Java side.</p>
+
+<h3 class="typedecl"><a name="type-oneway_parameters">oneway_parameters()</a></h3>
+<p><tt>oneway_parameters() = [any()]</tt></p>
+<p> The parameters of a oneway triggered on the Java side.</p>
+
+<h3 class="typedecl"><a name="type-request_name">request_name()</a></h3>
+<p><tt>request_name() = <a href="#type-method_name">method_name()</a></tt></p>
+<p> Designates a request to trigger on the Java side.</p>
+
+<h3 class="typedecl"><a name="type-request_parameters">request_parameters()</a></h3>
+<p><tt>request_parameters() = [any()]</tt></p>
+<p> The parameters of a request triggered on the Java side.</p>
+
+<h3 class="typedecl"><a name="type-request_result">request_result()</a></h3>
+<p><tt>request_result() = any()</tt></p>
+<p> The result from a request that was sent to Java.</p>
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#classname_to_bytecode_filename-1">classname_to_bytecode_filename/1</a></td><td>Deduces the (root) name of a Java bytecode file from the name of the 
+class it implements, according to the naming conventions used by the language.</td></tr>
+<tr><td valign="top"><a href="#execute_request-3">execute_request/3</a></td><td>Sends for execution the specified request to the specified Java
+ pseudo-process, and collects (synchronously) the corresponding result.</td></tr>
+<tr><td valign="top"><a href="#fully_qualified_classname_to_string-1">fully_qualified_classname_to_string/1</a></td><td>Returns a textual description of specified fully qualified classname.</td></tr>
+<tr><td valign="top"><a href="#get_beam_directories_for_binding-0">get_beam_directories_for_binding/0</a></td><td>Finds the BEAM locations of all the dependencies required for binding to
+ Java.</td></tr>
+<tr><td valign="top"><a href="#send_oneway-3">send_oneway/3</a></td><td>Sends the specified oneway to the specified Java pseudo-process.</td></tr>
+<tr><td valign="top"><a href="#send_request-3">send_request/3</a></td><td>Sends the specified request to the specified Java pseudo-process.</td></tr>
+<tr><td valign="top"><a href="#wait_for_request_result-2">wait_for_request_result/2</a></td><td>Receives a message from the Java world, usually in answer to a
+ send_oneway/3 call having used the same MethodName argument, and tries to
+ match it with the different accepted types of messages.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="classname_to_bytecode_filename-1">classname_to_bytecode_filename/1</a></h3>
+<div class="spec">
+<p><tt>classname_to_bytecode_filename(Classname::<a href="#type-java_classname">java_classname()</a> | <a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-java_bytecode_filename">java_bytecode_filename()</a></tt><br></p>
+<p> </p>
+</div><p><p>Deduces the (root) name of a Java bytecode file from the name of the 
+class it implements, according to the naming conventions used by the language.</p>
+
+ With Java, both names are identical except the extension, hence we just check
+ if the name looks CamelCased, i.e. if at least its first letter is in upper
+ case.
+</p>
+
+<h3 class="function"><a name="execute_request-3">execute_request/3</a></h3>
+<div class="spec">
+<p><tt>execute_request(MailboxPid::<a href="#type-java_mbox_pid">java_mbox_pid()</a>, RequestName::<a href="#type-request_name">request_name()</a>, RequestParameters::<a href="#type-request_parameters">request_parameters()</a>) -&gt; <a href="#type-request_result">request_result()</a></tt><br></p>
+<p> </p>
+</div><p>Sends for execution the specified request to the specified Java
+ pseudo-process, and collects (synchronously) the corresponding result.
+</p>
+
+<h3 class="function"><a name="fully_qualified_classname_to_string-1">fully_qualified_classname_to_string/1</a></h3>
+<div class="spec">
+<p><tt>fully_qualified_classname_to_string(Classname::<a href="#type-java_fully_qualified_classname">java_fully_qualified_classname()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of specified fully qualified classname.</p>
+
+<h3 class="function"><a name="get_beam_directories_for_binding-0">get_beam_directories_for_binding/0</a></h3>
+<div class="spec">
+<p><tt>get_beam_directories_for_binding() -&gt; [<a href="#type-directory_path">directory_path()</a>]</tt><br></p>
+<p> </p>
+</div><p>Finds the BEAM locations of all the dependencies required for binding to
+ Java.
+</p>
+
+<h3 class="function"><a name="send_oneway-3">send_oneway/3</a></h3>
+<div class="spec">
+<p><tt>send_oneway(MailboxPid::<a href="#type-java_mbox_pid">java_mbox_pid()</a>, OnewayName::<a href="#type-oneway_name">oneway_name()</a>, OnewayParameters::<a href="#type-oneway_parameters">oneway_parameters()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Sends the specified oneway to the specified Java pseudo-process.</p>
+
+<h3 class="function"><a name="send_request-3">send_request/3</a></h3>
+<div class="spec">
+<p><tt>send_request(MailboxPid::<a href="#type-java_mbox_pid">java_mbox_pid()</a>, RequestName::<a href="#type-request_name">request_name()</a>, RequestParameters::<a href="#type-request_parameters">request_parameters()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Sends the specified request to the specified Java pseudo-process.</p>
+
+<h3 class="function"><a name="wait_for_request_result-2">wait_for_request_result/2</a></h3>
+<div class="spec">
+<p><tt>wait_for_request_result(MailboxPid::<a href="#type-java_mbox_pid">java_mbox_pid()</a>, MethodName::<a href="#type-method_name">method_name()</a>) -&gt; any()</tt><br></p>
+<p> </p>
+</div><p>Receives a message from the Java world, usually in answer to a
+ send_oneway/3 call having used the same MethodName argument, and tries to
+ match it with the different accepted types of messages.
+</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

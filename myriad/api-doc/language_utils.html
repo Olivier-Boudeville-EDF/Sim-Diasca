@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module language_utils</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module language_utils</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various convenient facilities regarding the <b>support of
+ various programming or communication languages</b>.
+
+
+<h2><a name="description">Description</a></h2><p>Gathering of various convenient facilities regarding the <b>support of
+ various programming or communication languages</b>.</p>
+
+ See language_utils_test.erl for the corresponding test.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-directory_path">directory_path()</a></h3>
+<p><tt>directory_path() = <a href="file_utils.html#type-directory_path">file_utils:directory_path()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-human_language">human_language()</a></h3>
+<p><tt>human_language() = english | french | spanish | german | italian | russian | chinese | japanese</tt></p>
+<p> Type to designate all supported human languages.</p>
+
+<h3 class="typedecl"><a name="type-java_vm_container_pid">java_vm_container_pid()</a></h3>
+<p><tt>java_vm_container_pid() = <a href="#type-runtime_container_pid">runtime_container_pid()</a></tt></p>
+<p> The PID of a Java virtual machine runtime container (ex: it can be a binding
+ agent, otherwise directly a controller mbox).</p>
+
+<h3 class="typedecl"><a name="type-language">language()</a></h3>
+<p><tt>language() = erlang | python | java</tt></p>
+<p> Type to designate all known programming languages.</p>
+
+<h3 class="typedecl"><a name="type-python_interpreter_container_pid">python_interpreter_container_pid()</a></h3>
+<p><tt>python_interpreter_container_pid() = <a href="python_utils.html#type-interpreter_pid">python_utils:interpreter_pid()</a></tt></p>
+<p> The PID of a Python interpreter runtime container.</p>
+
+<h3 class="typedecl"><a name="type-runtime_container_pid">runtime_container_pid()</a></h3>
+<p><tt>runtime_container_pid() = pid()</tt></p>
+<p> Type to designate an (Erlang) process driving a runtime container (ex: a
+ Python interpreter or a Java virtual machine) of a given language runtime
+ (typically on a given node).</p>
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#get_additional_beam_directories_for-1">get_additional_beam_directories_for/1</a></td><td>Returns the BEAM locations of all the dependencies related to the
+ specified language bindings.</td></tr>
+<tr><td valign="top"><a href="#get_supported_foreign_languages-0">get_supported_foreign_languages/0</a></td><td>Returns a list of the supported foreign (non-native, meaning non-Erlang)
+ programming languages.</td></tr>
+<tr><td valign="top"><a href="#get_supported_languages-0">get_supported_languages/0</a></td><td>Returns a list of all supported programming languages (including Erlang).</td></tr>
+<tr><td valign="top"><a href="#language_to_string-1">language_to_string/1</a></td><td>Returns a textual description of the specified language.</td></tr>
+<tr><td valign="top"><a href="#language_to_string-2">language_to_string/2</a></td><td>Returns an indented textual description of the specified language.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="get_additional_beam_directories_for-1">get_additional_beam_directories_for/1</a></h3>
+<div class="spec">
+<p><tt>get_additional_beam_directories_for(Languages::[<a href="#type-language">language()</a>]) -&gt; [<a href="#type-directory_path">directory_path()</a>]</tt><br></p>
+<p> </p>
+</div><p>Returns the BEAM locations of all the dependencies related to the
+ specified language bindings.
+</p>
+
+<h3 class="function"><a name="get_supported_foreign_languages-0">get_supported_foreign_languages/0</a></h3>
+<div class="spec">
+<p><tt>get_supported_foreign_languages() -&gt; [<a href="#type-language">language()</a>]</tt><br></p>
+<p> </p>
+</div><p>Returns a list of the supported foreign (non-native, meaning non-Erlang)
+ programming languages.
+</p>
+
+<h3 class="function"><a name="get_supported_languages-0">get_supported_languages/0</a></h3>
+<div class="spec">
+<p><tt>get_supported_languages() -&gt; [<a href="#type-language">language()</a>]</tt><br></p>
+<p> </p>
+</div><p>Returns a list of all supported programming languages (including Erlang).</p>
+
+<h3 class="function"><a name="language_to_string-1">language_to_string/1</a></h3>
+<div class="spec">
+<p><tt>language_to_string(Language::<a href="#type-language">language()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of the specified language.</p>
+
+<h3 class="function"><a name="language_to_string-2">language_to_string/2</a></h3>
+<div class="spec">
+<p><tt>language_to_string(Language::<a href="#type-language">language()</a>, IndentationLevel::<a href="text_utils.html#type-indentation_level">text_utils:indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns an indented textual description of the specified language.</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

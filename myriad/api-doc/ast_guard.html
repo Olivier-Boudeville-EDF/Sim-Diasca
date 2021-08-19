@@ -1,0 +1,120 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module ast_guard</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module ast_guard</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Module in charge of handling <b>guards defined with an AST</b>.
+
+
+<h2><a name="description">Description</a></h2><p>Module in charge of handling <b>guards defined with an AST</b>.</p>
+
+ See the "7.6 Guards" section of <a href="http://erlang.org/doc/apps/erts/absform.html" target="_top"><tt>http://erlang.org/doc/apps/erts/absform.html</tt></a>
+ for more information.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-ast_bitstring_bin_element">ast_bitstring_bin_element()</a></h3>
+<p><tt>ast_bitstring_bin_element() = <a href="ast_bitstring.html#type-bin_element">ast_bitstring:bin_element</a>(<a href="#type-ast_guard_test">ast_guard_test()</a>)</tt></p>
+<p> Defined in the context of a guard.</p>
+
+<h3 class="typedecl"><a name="type-ast_bitstring_constructor">ast_bitstring_constructor()</a></h3>
+<p><tt>ast_bitstring_constructor() = <a href="ast_bitstring.html#type-constructor">ast_bitstring:constructor</a>(<a href="#type-ast_guard_test">ast_guard_test()</a>)</tt></p>
+<p><p> "If Gt is a bitstring constructor <code>&lt;&lt;Gt_1:Size_1/TSL_1, ...,
+ Gt_k:Size_k/TSL_k&gt;&gt;</code>, where each Size_i is a guard test and each TSL_i is a 
+type specificer list, then Rep(Gt) = {bin, FILE_LOC, [{bin_element, FILE_LOC, 
+Rep(Gt_1), Rep(Size_1), Rep(TSL_1)}, ..., {bin_element, FILE_LOC, Rep(Gt_k), 
+Rep(Size_k), Rep(TSL_k)}]}. For Rep(TSL), see above.</p>
+
+ <p>An omitted Size_i is represented by default. An omitted TSL_i is 
+represented by default."</p>
+
+ So apparently a guard test is a recursive type.</p>
+
+<h3 class="typedecl"><a name="type-ast_guard">ast_guard()</a></h3>
+<p><tt>ast_guard() = [<a href="#type-ast_guard_test">ast_guard_test()</a>, ...]</tt></p>
+<p><p> The description of a guard in an AST.</p>
+
+ "A guard G is a non-empty sequence of guard tests Gt_1, ..., Gt_k, and Rep(G)
+ = [Rep(Gt_1), ..., Rep(Gt_k)]."</p>
+
+<h3 class="typedecl"><a name="type-ast_guard_sequence">ast_guard_sequence()</a></h3>
+<p><tt>ast_guard_sequence() = [<a href="#type-ast_guard">ast_guard()</a>]</tt></p>
+<p><p> The description of a sequence of guards in an AST.</p>
+
+ <p>"A guard sequence Gs is a sequence of guards G_1; ...; G_k, and Rep(Gs) = 
+[Rep(G_1), ..., Rep(G_k)]. If the guard sequence is empty, then Rep(Gs) = []."</p>
+
+ Ex: {call, 102, {atom,102,is_integer}, [{var,102,'X'}]}.</p>
+
+<h3 class="typedecl"><a name="type-ast_guard_test">ast_guard_test()</a></h3>
+<p><tt>ast_guard_test() = <a href="ast_bitstring.html#type-constructor">ast_bitstring:constructor</a>(<a href="#type-ast_guard_test">ast_guard_test()</a>) | {cons, <a href="#type-file_loc">file_loc()</a>, <a href="#type-ast_guard_test">ast_guard_test()</a>, <a href="#type-ast_guard_test">ast_guard_test()</a>} | {call, <a href="#type-file_loc">file_loc()</a>, {remote, <a href="#type-file_loc">file_loc()</a>, <a href="ast_base.html#type-ast_element">ast_base:ast_element()</a>, <a href="ast_base.html#type-ast_atom">ast_base:ast_atom()</a>} | <a href="ast_base.html#type-ast_atom">ast_base:ast_atom()</a>, [<a href="#type-ast_guard_test">ast_guard_test()</a>]} | <a href="ast_map.html#type-ast_map_form">ast_map:ast_map_form()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-ast_transforms">ast_transforms()</a></h3>
+<p><tt>ast_transforms() = <a href="ast_transform.html#type-ast_transforms">ast_transform:ast_transforms()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-file_loc">file_loc()</a></h3>
+<p><tt>file_loc() = <a href="ast_base.html#type-file_loc">ast_base:file_loc()</a></tt></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#transform_guard-2">transform_guard/2</a></td><td>Transforms specified guard, operating relevant AST transformations.</td></tr>
+<tr><td valign="top"><a href="#transform_guard_sequence-2">transform_guard_sequence/2</a></td><td>Transforms specified guard sequence, operating relevant AST 
+transformations.</td></tr>
+<tr><td valign="top"><a href="#transform_guard_test-2">transform_guard_test/2</a></td><td>Transforms specified guard test.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="transform_guard-2">transform_guard/2</a></h3>
+<div class="spec">
+<p><tt>transform_guard(GuardTests::<a href="#type-ast_guard">ast_guard()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="#type-ast_guard">ast_guard()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Transforms specified guard, operating relevant AST transformations.</p>
+
+ "A guard G is a non-empty sequence of guard tests Gt_1, ..., Gt_k, and Rep(G)
+ = [Rep(Gt_1), ..., Rep(Gt_k)]."
+</p>
+
+<h3 class="function"><a name="transform_guard_sequence-2">transform_guard_sequence/2</a></h3>
+<div class="spec">
+<p><tt>transform_guard_sequence(Guards::<a href="#type-ast_guard_sequence">ast_guard_sequence()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="#type-ast_guard_sequence">ast_guard_sequence()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Transforms specified guard sequence, operating relevant AST 
+transformations.</p>
+
+ <p>"A guard sequence Gs is a sequence of guards G_1; ...; G_k, and Rep(Gs) = 
+[Rep(G_1), ..., Rep(G_k)]. If the guard sequence is empty, then Rep(Gs) = []."</p>
+
+ Note: the cases where the sequence is empty is managed here as well.
+</p>
+
+<h3 class="function"><a name="transform_guard_test-2">transform_guard_test/2</a></h3>
+<div class="spec">
+<p><tt>transform_guard_test(GuardTest, Transforms) -&gt; any()</tt></p>
+<p> </p>
+</div><p><p>Transforms specified guard test.</p>
+
+ <p>Local call (to a builtin-only): 
+"If Gt is a function call A(Gt_1, ..., Gt_k), where A is an atom, then Rep(Gt) 
+= {call, FILE_LOC, Rep(A), [Rep(Gt_1), ..., Rep(Gt_k)]}."</p>
+
+ <p>Ex: {call, 102, {atom,102,is_integer}, [{var,102,'X'}]}</p>
+
+ Note: the subject of a special case in erl_id_trans (guard_test/1), delegated
+ appropriately to the direct counterpart.
+</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

@@ -1,0 +1,486 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module tracked_hashtable</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module tracked_hashtable</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Implementation of so-called <b>tracked hashtables</b>.
+
+
+<h2><a name="description">Description</a></h2><p>Implementation of so-called <b>tracked hashtables</b>.</p>
+
+ <p>See <code>tracked_hashtable_test.erl</code> for the corresponding test.
+ See <code>hashtable.erl</code>.</p>
+
+ <p>We provide different multiple types of hashtables, including:</p>
+
+ <p>- 'hashtable', the most basic, safest, reference implementation - and quite 
+efficient as well</p>
+
+ <p>- 'tracked_hashtable' (this module), an attempt of optimisation of it (not 
+necessarily the best)</p>
+
+ <p>- 'lazy_hashtable', deciding to optimise in a less costly way 
+than 'tracked_hashtable'</p>
+
+ <p>- 'map_hashtable', which is probably the most efficient implementation 
+(speed/size compromise)</p>
+
+ <p>- 'list_table', a list-based implementation, efficient for smaller tables (and 
+only them)</p>
+
+ They are to provide the same API (signatures and contracts).
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-accumulator">accumulator()</a></h3>
+<p><tt>accumulator() = <a href="basic_utils.html#type-accumulator">basic_utils:accumulator()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-entries">entries()</a></h3>
+<p><tt>entries() = [<a href="#type-entry">entry()</a>]</tt></p>
+
+
+<h3 class="typedecl"><a name="type-entry">entry()</a></h3>
+<p><tt>entry() = <a href="hashtable.html#type-entry">hashtable:entry()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-entry_count">entry_count()</a></h3>
+<p><tt>entry_count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-key">key()</a></h3>
+<p><tt>key() = <a href="hashtable.html#type-key">hashtable:key()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-tracked_hashtable">tracked_hashtable()</a></h3>
+<p><b>abstract datatype</b>: <tt>tracked_hashtable()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-value">value()</a></h3>
+<p><tt>value() = <a href="hashtable.html#type-value">hashtable:value()</a></tt></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add_entries-2">add_entries/2</a></td><td>Adds specified list of key/value pairs into the specified hashtable.</td></tr>
+<tr><td valign="top"><a href="#add_entry-3">add_entry/3</a></td><td>Adds specified key/value pair into the specified tracked hashtable.</td></tr>
+<tr><td valign="top"><a href="#add_to_entry-3">add_to_entry/3</a></td><td>Adds a specified value to the value of specified key, supposed the 
+existing one to be numerical.</td></tr>
+<tr><td valign="top"><a href="#append_to_entry-3">append_to_entry/3</a></td><td>Appends specified element to the value of specified key, supposing the 
+value to be a list.</td></tr>
+<tr><td valign="top"><a href="#delete_from_entry-3">delete_from_entry/3</a></td><td>Deletes the first match of specified element from the value associated to 
+specified key, that value being supposed to be a list.</td></tr>
+<tr><td valign="top"><a href="#display-1">display/1</a></td><td>Displays the specified hashtable on the standard output.</td></tr>
+<tr><td valign="top"><a href="#display-2">display/2</a></td><td>Displays the specified hashtable on the standard output, with the
+ specified title on top.</td></tr>
+<tr><td valign="top"><a href="#enumerate-1">enumerate/1</a></td><td>Returns a flat list whose elements are all the key/value pairs of the 
+hashtable.</td></tr>
+<tr><td valign="top"><a href="#extract_entry-2">extract_entry/2</a></td><td>Extracts specified entry from specified hashtable, ie returns the 
+associated value and removes that entry from the table.</td></tr>
+<tr><td valign="top"><a href="#fold_on_entries-3">fold_on_entries/3</a></td><td>Folds specified anonymous function on all entries of the specified 
+tracked hashtable.</td></tr>
+<tr><td valign="top"><a href="#get_all_values-2">get_all_values/2</a></td><td>Returns the (ordered) list of values that correspond to the specified 
+(ordered) list of keys of this table, ensuring all entries have been read, 
+otherwise throwing an exception.</td></tr>
+<tr><td valign="top"><a href="#get_value-2">get_value/2</a></td><td>Retrieves the value corresponding to specified key and returns it 
+directly.</td></tr>
+<tr><td valign="top"><a href="#get_value_with_defaults-3">get_value_with_defaults/3</a></td><td>Looks for specified entry in specified table and, if found, returns the
+ associated value; otherwise returns the specified default value.</td></tr>
+<tr><td valign="top"><a href="#get_values-2">get_values/2</a></td><td>Returns the (ordered) list of values that correspond to the specified 
+(ordered) list of keys of this table.</td></tr>
+<tr><td valign="top"><a href="#has_entry-2">has_entry/2</a></td><td>Looks-up specified entry (designated by its key) in specified tracked
+ hashtable: returns eigher true or false.</td></tr>
+<tr><td valign="top"><a href="#is_empty-1">is_empty/1</a></td><td>Returns whether the specified hashtable is empty (not storing any
+ key/value pair).</td></tr>
+<tr><td valign="top"><a href="#keys-1">keys/1</a></td><td>Returns a list containing all the keys of this hashtable.</td></tr>
+<tr><td valign="top"><a href="#lookup_entry-2">lookup_entry/2</a></td><td>Looks-up specified entry (designated by its key) in specified tracked 
+hashtable.</td></tr>
+<tr><td valign="top"><a href="#map_on_entries-2">map_on_entries/2</a></td><td>Applies (maps) the specified anonymous function to each of the key-value 
+entries contained in this hashtable.</td></tr>
+<tr><td valign="top"><a href="#map_on_values-2">map_on_values/2</a></td><td>Applies (maps) the specified anonymous function to each of the values 
+contained in this hashtable.</td></tr>
+<tr><td valign="top"><a href="#merge-2">merge/2</a></td><td>Returns a new tracked hashtable, which started from TrackedHashtableBase
+ and was enriched with the TrackedHashtableAdd entries whose keys where not
+ already in TrackedHashtableBase (if a key is in both tables, the one from
+ TrackedHashtableBase will be kept).</td></tr>
+<tr><td valign="top"><a href="#new-0">new/0</a></td><td>Creates a new empty tracker table.</td></tr>
+<tr><td valign="top"><a href="#new-1">new/1</a></td><td>As tracked hashtables manage by themselves their size, no need to specify
+ any target size.</td></tr>
+<tr><td valign="top"><a href="#new_with_buckets-1">new_with_buckets/1</a></td><td>Defined also to allow seamless change of hashtable modules.</td></tr>
+<tr><td valign="top"><a href="#optimise-1">optimise/1</a></td><td>Optimises this hashtable.</td></tr>
+<tr><td valign="top"><a href="#pop_from_entry-2">pop_from_entry/2</a></td><td>Pops the head of the value (supposed to be a list) associated to
+ specified key, and returns a pair made of the popped head and the new
+ hashtable.</td></tr>
+<tr><td valign="top"><a href="#remove_entry-2">remove_entry/2</a></td><td>Removes specified key/value pair from the specified hashtable.</td></tr>
+<tr><td valign="top"><a href="#select_entries-2">select_entries/2</a></td><td>Returns a list of key/value pairs corresponding to the list of specified
+ keys, or throws a badmatch is at least one key is not found.</td></tr>
+<tr><td valign="top"><a href="#size-1">size/1</a></td><td>Returns the size (number of entries, ie of key/value pairs) of the
+ specified table.</td></tr>
+<tr><td valign="top"><a href="#subtract_from_entry-3">subtract_from_entry/3</a></td><td>Subtracts specified value to the value, supposed to be numerical, 
+associated to specified key.</td></tr>
+<tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td>Returns a textual description of the specified hashtable.</td></tr>
+<tr><td valign="top"><a href="#to_string-2">to_string/2</a></td><td>Returns a textual description of the specified hashtable, with specified
+ display setting.</td></tr>
+<tr><td valign="top"><a href="#toggle_entry-2">toggle_entry/2</a></td><td>Toggles the boolean value associated with specified key: if true will be 
+false, if false will be true.</td></tr>
+<tr><td valign="top"><a href="#values-1">values/1</a></td><td>Returns a list containing all the values of this hashtable.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="add_entries-2">add_entries/2</a></h3>
+<div class="spec">
+<p><tt>add_entries(EntryList::<a href="#type-entries">entries()</a>, TrackedHashtable::<a href="#type-tracked_hashtable">tracked_hashtable()</a>) -&gt; <a href="#type-tracked_hashtable">tracked_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p><p>Adds specified list of key/value pairs into the specified hashtable.</p>
+
+ If there is already a pair with this key, then its previous value will be
+ replaced by the specified one.
+</p>
+
+<h3 class="function"><a name="add_entry-3">add_entry/3</a></h3>
+<div class="spec">
+<p><tt>add_entry(Key::<a href="#type-key">key()</a>, Value::<a href="#type-value">value()</a>, TrackedHashtable::<a href="#type-tracked_hashtable">tracked_hashtable()</a>) -&gt; <a href="#type-tracked_hashtable">tracked_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p><p>Adds specified key/value pair into the specified tracked hashtable.</p>
+
+ <p>If there is already a pair with this key, then its previous value will be 
+replaced by the specified one.</p>
+
+ As the load factor of the tracked hashtable is verified at each additional
+ entry, the tracked hashtable is optimised as soon as possible.
+</p>
+
+<h3 class="function"><a name="add_to_entry-3">add_to_entry/3</a></h3>
+<div class="spec">
+<p><tt>add_to_entry(Key::<a href="#type-key">key()</a>, Value::number(), TrackedHashtable::<a href="#type-tracked_hashtable">tracked_hashtable()</a>) -&gt; <a href="#type-tracked_hashtable">tracked_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p><p>Adds a specified value to the value of specified key, supposed the 
+existing one to be numerical.</p>
+
+ A case clause is triggered if the key did not exist; a bad arithm is triggered
+ if no addition can be performed on the associated value.
+</p>
+
+<h3 class="function"><a name="append_to_entry-3">append_to_entry/3</a></h3>
+<div class="spec">
+<p><tt>append_to_entry(Key::<a href="#type-key">key()</a>, Element::term(), TrackedHashtable::<a href="#type-tracked_hashtable">tracked_hashtable()</a>) -&gt; <a href="#type-tracked_hashtable">tracked_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p><p>Appends specified element to the value of specified key, supposing the 
+value to be a list.</p>
+
+ <p>A case clause is triggered if the entry does not exist.</p>
+
+ Note: no check is performed to ensure the value is a list indeed, and the
+ '[|]' operation will not complain if not.
+</p>
+
+<h3 class="function"><a name="delete_from_entry-3">delete_from_entry/3</a></h3>
+<div class="spec">
+<p><tt>delete_from_entry(Key::<a href="#type-key">key()</a>, Element::term(), TrackedHashtable::<a href="#type-tracked_hashtable">tracked_hashtable()</a>) -&gt; <a href="#type-tracked_hashtable">tracked_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p><p>Deletes the first match of specified element from the value associated to 
+specified key, that value being supposed to be a list.</p>
+
+ A case clause is triggered if the entry did not exist.
+ If the element is not in the specified list, the list will not be modified.
+</p>
+
+<h3 class="function"><a name="display-1">display/1</a></h3>
+<div class="spec">
+<p><tt>display(TrackedHashtable::<a href="#type-tracked_hashtable">tracked_hashtable()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Displays the specified hashtable on the standard output.</p>
+
+<h3 class="function"><a name="display-2">display/2</a></h3>
+<div class="spec">
+<p><tt>display(Title::<a href="#type-ustring">ustring()</a>, TrackedHashtable::<a href="#type-tracked_hashtable">tracked_hashtable()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Displays the specified hashtable on the standard output, with the
+ specified title on top.
+</p>
+
+<h3 class="function"><a name="enumerate-1">enumerate/1</a></h3>
+<div class="spec">
+<p><tt>enumerate(TrackedHashtable::<a href="#type-tracked_hashtable">tracked_hashtable()</a>) -&gt; <a href="#type-entries">entries()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns a flat list whose elements are all the key/value pairs of the 
+hashtable.</p>
+
+ Ex: [ {K1,V1}, {K2,V2}, ... ].
+</p>
+
+<h3 class="function"><a name="extract_entry-2">extract_entry/2</a></h3>
+<div class="spec">
+<p><tt>extract_entry(Key::<a href="#type-key">key()</a>, TrackedHashtable::<a href="#type-tracked_hashtable">tracked_hashtable()</a>) -&gt; {<a href="#type-value">value()</a>, <a href="#type-tracked_hashtable">tracked_hashtable()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Extracts specified entry from specified hashtable, ie returns the 
+associated value and removes that entry from the table.</p>
+
+ The key/value pair is expected to exist already, otherwise an exception is
+ raised.
+</p>
+
+<h3 class="function"><a name="fold_on_entries-3">fold_on_entries/3</a></h3>
+<div class="spec">
+<p><tt>fold_on_entries(Fun::fun((<a href="#type-entry">entry()</a>, <a href="#type-accumulator">accumulator()</a>) -&gt; <a href="#type-accumulator">accumulator()</a>), InitialAcc::<a href="#type-accumulator">accumulator()</a>, TrackedHashtable::<a href="#type-tracked_hashtable">tracked_hashtable()</a>) -&gt; <a href="#type-accumulator">accumulator()</a></tt><br></p>
+<p> </p>
+</div><p><p>Folds specified anonymous function on all entries of the specified 
+tracked hashtable.</p>
+
+ <p>The order of transformation for entries is not specified.</p>
+
+ Returns the final accumulator.
+</p>
+
+<h3 class="function"><a name="get_all_values-2">get_all_values/2</a></h3>
+<div class="spec">
+<p><tt>get_all_values(Keys::[<a href="#type-key">key()</a>], Hashtable::<a href="#type-tracked_hashtable">tracked_hashtable()</a>) -&gt; [<a href="#type-value">value()</a>]</tt><br></p>
+<p> </p>
+</div><p><p>Returns the (ordered) list of values that correspond to the specified 
+(ordered) list of keys of this table, ensuring all entries have been read, 
+otherwise throwing an exception.</p>
+
+ <p>The key/value pairs are expected to exist already, otherwise an exception is 
+raised.</p>
+
+ Ex: [Color=red, Age=23, Mass=51 ] = tracked_hashtable:get_all_values(
+                 [color, age, mass], [{color, red}, {mass, 51}, {age, 23}])
+</p>
+
+<h3 class="function"><a name="get_value-2">get_value/2</a></h3>
+<div class="spec">
+<p><tt>get_value(Key::<a href="#type-key">key()</a>, TrackedHashtable::<a href="#type-tracked_hashtable">tracked_hashtable()</a>) -&gt; <a href="#type-value">value()</a></tt><br></p>
+<p> </p>
+</div><p><p>Retrieves the value corresponding to specified key and returns it 
+directly.</p>
+
+ The key/value pair is expected to exist already, otherwise a bad match is
+ triggered.
+</p>
+
+<h3 class="function"><a name="get_value_with_defaults-3">get_value_with_defaults/3</a></h3>
+<div class="spec">
+<p><tt>get_value_with_defaults(Key::<a href="#type-key">key()</a>, DefaultValue::<a href="#type-value">value()</a>, TrackedHashtable::<a href="#type-tracked_hashtable">tracked_hashtable()</a>) -&gt; <a href="#type-value">value()</a></tt><br></p>
+<p> </p>
+</div><p>Looks for specified entry in specified table and, if found, returns the
+ associated value; otherwise returns the specified default value.
+</p>
+
+<h3 class="function"><a name="get_values-2">get_values/2</a></h3>
+<div class="spec">
+<p><tt>get_values(Keys::[<a href="#type-key">key()</a>], Hashtable::<a href="#type-tracked_hashtable">tracked_hashtable()</a>) -&gt; [<a href="#type-value">value()</a>]</tt><br></p>
+<p> </p>
+</div><p><p>Returns the (ordered) list of values that correspond to the specified 
+(ordered) list of keys of this table.</p>
+
+ <p>The key/value pairs are expected to exist already, otherwise an exception is 
+raised.</p>
+
+ Ex: [Color, Age, Mass] = tracked_hashtable:get_values([color, age, mass],
+ MyTable])
+</p>
+
+<h3 class="function"><a name="has_entry-2">has_entry/2</a></h3>
+<div class="spec">
+<p><tt>has_entry(Key::<a href="#type-key">key()</a>, TrackedHashtable::<a href="#type-tracked_hashtable">tracked_hashtable()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Looks-up specified entry (designated by its key) in specified tracked
+ hashtable: returns eigher true or false.
+</p>
+
+<h3 class="function"><a name="is_empty-1">is_empty/1</a></h3>
+<div class="spec">
+<p><tt>is_empty(TrackedHashtable::<a href="#type-tracked_hashtable">tracked_hashtable()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Returns whether the specified hashtable is empty (not storing any
+ key/value pair).
+</p>
+
+<h3 class="function"><a name="keys-1">keys/1</a></h3>
+<div class="spec">
+<p><tt>keys(TrackedHashtable::<a href="#type-tracked_hashtable">tracked_hashtable()</a>) -&gt; [<a href="#type-key">key()</a>]</tt><br></p>
+<p> </p>
+</div><p>Returns a list containing all the keys of this hashtable.</p>
+
+<h3 class="function"><a name="lookup_entry-2">lookup_entry/2</a></h3>
+<div class="spec">
+<p><tt>lookup_entry(Key::<a href="#type-key">key()</a>, TrackedHashtable::<a href="#type-tracked_hashtable">tracked_hashtable()</a>) -&gt; key_not_found | {value, <a href="#type-value">value()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Looks-up specified entry (designated by its key) in specified tracked 
+hashtable.</p>
+
+ Returns either 'key_not_found' if no such key is registered in the
+ table, or {value,Value}, with Value being the value associated to the
+ specified key.
+</p>
+
+<h3 class="function"><a name="map_on_entries-2">map_on_entries/2</a></h3>
+<div class="spec">
+<p><tt>map_on_entries(Fun::fun((<a href="#type-entry">entry()</a>) -&gt; <a href="#type-entry">entry()</a>), TrackedHashtable::<a href="#type-tracked_hashtable">tracked_hashtable()</a>) -&gt; <a href="#type-tracked_hashtable">tracked_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p><p>Applies (maps) the specified anonymous function to each of the key-value 
+entries contained in this hashtable.</p>
+
+ <p>Allows to apply "in-place" an operation on all entries without having to 
+enumerate the content of the hashtable and iterate on it (hence without having 
+to duplicate the whole content in memory).</p>
+
+ <p>Note: as the fun may return modified keys, the whole structure of the 
+hashtable may change (ex: different buckets used for replaced entries, 
+colliding keys resulting in having less entries afterwards, etc.).</p>
+
+ One may request the returned hashtable to be optimised after this call.
+</p>
+
+<h3 class="function"><a name="map_on_values-2">map_on_values/2</a></h3>
+<div class="spec">
+<p><tt>map_on_values(Fun::fun((<a href="#type-value">value()</a>) -&gt; <a href="#type-value">value()</a>), TrackedHashtable::<a href="#type-tracked_hashtable">tracked_hashtable()</a>) -&gt; <a href="#type-tracked_hashtable">tracked_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p><p>Applies (maps) the specified anonymous function to each of the values 
+contained in this hashtable.</p>
+
+ <p>Allows to apply "in-place" an operation on all values without having to 
+enumerate the content of the hashtable and iterate on it (hence without having 
+to duplicate the whole content in memory).</p>
+
+ Note: the keys are left as are, hence the structure of the hashtable does not
+ change.
+</p>
+
+<h3 class="function"><a name="merge-2">merge/2</a></h3>
+<div class="spec">
+<p><tt>merge(TrackedHashtableBase::<a href="#type-tracked_hashtable">tracked_hashtable()</a>, TrackedHashtableAdd::<a href="#type-tracked_hashtable">tracked_hashtable()</a>) -&gt; <a href="#type-tracked_hashtable">tracked_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a new tracked hashtable, which started from TrackedHashtableBase
+ and was enriched with the TrackedHashtableAdd entries whose keys where not
+ already in TrackedHashtableBase (if a key is in both tables, the one from
+ TrackedHashtableBase will be kept).
+</p>
+
+<h3 class="function"><a name="new-0">new/0</a></h3>
+<div class="spec">
+<p><tt>new() -&gt; <a href="#type-tracked_hashtable">tracked_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p><p>Creates a new empty tracker table.</p>
+
+ A new empty tracked hashtable is returned.
+</p>
+
+<h3 class="function"><a name="new-1">new/1</a></h3>
+<div class="spec">
+<p><tt>new(ExpectedNumberOfEntries) -&gt; any()</tt></p>
+<p> </p>
+</div><p>As tracked hashtables manage by themselves their size, no need to specify
+ any target size. This function is only defined so that we can transparently
+ switch APIs with the hashtable module.
+</p>
+
+<h3 class="function"><a name="new_with_buckets-1">new_with_buckets/1</a></h3>
+<div class="spec">
+<p><tt>new_with_buckets(NumberOfBuckets) -&gt; any()</tt></p>
+<p> </p>
+</div><p>Defined also to allow seamless change of hashtable modules.</p>
+
+<h3 class="function"><a name="optimise-1">optimise/1</a></h3>
+<div class="spec">
+<p><tt>optimise(Hashtable::<a href="#type-tracked_hashtable">tracked_hashtable()</a>) -&gt; <a href="#type-tracked_hashtable">tracked_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p><p>Optimises this hashtable.</p>
+
+ A no-operation for tracked hashtables.
+</p>
+
+<h3 class="function"><a name="pop_from_entry-2">pop_from_entry/2</a></h3>
+<div class="spec">
+<p><tt>pop_from_entry(Key::<a href="#type-key">key()</a>, TrackedHashtable::<a href="#type-tracked_hashtable">tracked_hashtable()</a>) -&gt; {term(), <a href="#type-tracked_hashtable">tracked_hashtable()</a>}</tt><br></p>
+<p> </p>
+</div><p>Pops the head of the value (supposed to be a list) associated to
+ specified key, and returns a pair made of the popped head and the new
+ hashtable.
+</p>
+
+<h3 class="function"><a name="remove_entry-2">remove_entry/2</a></h3>
+<div class="spec">
+<p><tt>remove_entry(Key::<a href="#type-key">key()</a>, TrackedHashtable::<a href="#type-tracked_hashtable">tracked_hashtable()</a>) -&gt; <a href="#type-tracked_hashtable">tracked_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p><p>Removes specified key/value pair from the specified hashtable.</p>
+
+ Does nothing if the key is not found.
+</p>
+
+<h3 class="function"><a name="select_entries-2">select_entries/2</a></h3>
+<div class="spec">
+<p><tt>select_entries(Keys::[<a href="#type-key">key()</a>], TrackedHashtable::<a href="#type-tracked_hashtable">tracked_hashtable()</a>) -&gt; <a href="#type-entries">entries()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a list of key/value pairs corresponding to the list of specified
+ keys, or throws a badmatch is at least one key is not found.
+</p>
+
+<h3 class="function"><a name="size-1">size/1</a></h3>
+<div class="spec">
+<p><tt>size(TrackedHashTable::<a href="#type-tracked_hashtable">tracked_hashtable()</a>) -&gt; <a href="#type-entry_count">entry_count()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the size (number of entries, ie of key/value pairs) of the
+ specified table.
+</p>
+
+<h3 class="function"><a name="subtract_from_entry-3">subtract_from_entry/3</a></h3>
+<div class="spec">
+<p><tt>subtract_from_entry(Key::<a href="#type-key">key()</a>, Value::number(), TrackedHashtable::<a href="#type-tracked_hashtable">tracked_hashtable()</a>) -&gt; <a href="#type-tracked_hashtable">tracked_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p><p>Subtracts specified value to the value, supposed to be numerical, 
+associated to specified key.</p>
+
+ A case clause is triggered if the key did not exist, a bad arithm is triggered
+ if no subtraction can be performed on the associated value.
+</p>
+
+<h3 class="function"><a name="to_string-1">to_string/1</a></h3>
+<div class="spec">
+<p><tt>to_string(TrackedHashtable::<a href="#type-tracked_hashtable">tracked_hashtable()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of the specified hashtable.</p>
+
+<h3 class="function"><a name="to_string-2">to_string/2</a></h3>
+<div class="spec">
+<p><tt>to_string(TrackedHashtable::<a href="#type-tracked_hashtable">tracked_hashtable()</a>, DescriptionType::internal | user_friendly) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of the specified hashtable, with specified
+ display setting.
+</p>
+
+<h3 class="function"><a name="toggle_entry-2">toggle_entry/2</a></h3>
+<div class="spec">
+<p><tt>toggle_entry(Key::<a href="#type-key">key()</a>, TrackedHashtable::<a href="#type-tracked_hashtable">tracked_hashtable()</a>) -&gt; <a href="#type-tracked_hashtable">tracked_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p><p>Toggles the boolean value associated with specified key: if true will be 
+false, if false will be true.</p>
+
+ A case clause is triggered if the entry does not exist or it is not a boolean
+ value.
+</p>
+
+<h3 class="function"><a name="values-1">values/1</a></h3>
+<div class="spec">
+<p><tt>values(TrackedHashtable::<a href="#type-tracked_hashtable">tracked_hashtable()</a>) -&gt; [<a href="#type-value">value()</a>]</tt><br></p>
+<p> </p>
+</div><p><p>Returns a list containing all the values of this hashtable.</p>
+
+ Ex: useful if the key was used as an index to generate this table first.
+</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

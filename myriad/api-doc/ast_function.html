@@ -1,0 +1,261 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module ast_function</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module ast_function</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Module in charge of providing constructs to manage <b>functions in an
+ AST</b>.
+
+
+<h2><a name="description">Description</a></h2><p>Module in charge of providing constructs to manage <b>functions in an
+ AST</b>.</p>
+
+ Note: function clauses are managed in the ast_clause module.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-ast_transforms">ast_transforms()</a></h3>
+<p><tt>ast_transforms() = <a href="ast_transform.html#type-ast_transforms">ast_transform:ast_transforms()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-form_context">form_context()</a></h3>
+<p><tt>form_context() = <a href="ast_base.html#type-form_context">ast_base:form_context()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-function_arity">function_arity()</a></h3>
+<p><tt>function_arity() = <a href="meta_utils.html#type-function_arity">meta_utils:function_arity()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-function_export_table">function_export_table()</a></h3>
+<p><tt>function_export_table() = <a href="ast_info.html#type-function_export_table">ast_info:function_export_table()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-function_id">function_id()</a></h3>
+<p><tt>function_id() = <a href="meta_utils.html#type-function_id">meta_utils:function_id()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-function_info">function_info()</a></h3>
+<p><tt>function_info() = <a href="ast_info.html#type-function_info">ast_info:function_info()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-function_name">function_name()</a></h3>
+<p><tt>function_name() = <a href="basic_utils.html#type-function_name">basic_utils:function_name()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-function_spec">function_spec()</a></h3>
+<p><tt>function_spec() = <a href="meta_utils.html#type-function_spec">meta_utils:function_spec()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-function_table">function_table()</a></h3>
+<p><tt>function_table() = <a href="ast_info.html#type-function_table">ast_info:function_table()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-function_type">function_type()</a></h3>
+<p><tt>function_type() = <a href="meta_utils.html#type-function_type">meta_utils:function_type()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-located_form">located_form()</a></h3>
+<p><tt>located_form() = <a href="ast_info.html#type-located_form">ast_info:located_form()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#check_function_id-1">check_function_id/1</a></td><td>Checks that the specified function identifier is legit.</td></tr>
+<tr><td valign="top"><a href="#check_function_id-2">check_function_id/2</a></td><td>Checks that the specified function identifier is legit.</td></tr>
+<tr><td valign="top"><a href="#check_function_ids-1">check_function_ids/1</a></td><td>Checks that the specified function identifiers are legit.</td></tr>
+<tr><td valign="top"><a href="#check_function_ids-2">check_function_ids/2</a></td><td>Checks that the specified function identifiers are legit.</td></tr>
+<tr><td valign="top"><a href="#check_function_name-1">check_function_name/1</a></td><td>Checks that the specified function name is legit.</td></tr>
+<tr><td valign="top"><a href="#check_function_name-2">check_function_name/2</a></td><td>Checks that the specified function name is legit.</td></tr>
+<tr><td valign="top"><a href="#check_function_type-2">check_function_type/2</a></td><td>Checks that the specified function type is legit.</td></tr>
+<tr><td valign="top"><a href="#check_function_type-3">check_function_type/3</a></td><td>Checks that the specified function type is legit.</td></tr>
+<tr><td valign="top"><a href="#check_function_types-2">check_function_types/2</a></td><td>Checks that the specified function types are legit.</td></tr>
+<tr><td valign="top"><a href="#check_function_types-3">check_function_types/3</a></td><td>Checks that the specified function types are legit.</td></tr>
+<tr><td valign="top"><a href="#clauses_to_string-2">clauses_to_string/2</a></td><td>Returns a textual description of the specified function clauses, using
+ specified indentation level.</td></tr>
+<tr><td valign="top"><a href="#get_located_forms_for-2">get_located_forms_for/2</a></td><td>Returns a pair made of (two) lists of located forms regarding exports.</td></tr>
+<tr><td valign="top"><a href="#transform_function-2">transform_function/2</a></td><td>Transforms specified function.</td></tr>
+<tr><td valign="top"><a href="#transform_function_constraint-2">transform_function_constraint/2</a></td><td>Transforms specified function constraint.</td></tr>
+<tr><td valign="top"><a href="#transform_function_constraints-2">transform_function_constraints/2</a></td><td>Transforms specified function constraints.</td></tr>
+<tr><td valign="top"><a href="#transform_function_spec-2">transform_function_spec/2</a></td><td>Transforms the specified function specification.</td></tr>
+<tr><td valign="top"><a href="#transform_function_type-2">transform_function_type/2</a></td><td>Transforms specified function type.</td></tr>
+<tr><td valign="top"><a href="#transform_functions-2">transform_functions/2</a></td><td>Transforms the functions in specified table, based on specified
+ transforms.</td></tr>
+<tr><td valign="top"><a href="#transform_spec-2">transform_spec/2</a></td><td>Transforms the specified function specification.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="check_function_id-1">check_function_id/1</a></h3>
+<div class="spec">
+<p><tt>check_function_id(Id::term()) -&gt; <a href="#type-function_id">function_id()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that the specified function identifier is legit.</p>
+
+<h3 class="function"><a name="check_function_id-2">check_function_id/2</a></h3>
+<div class="spec">
+<p><tt>check_function_id(FunctionId::term(), Context::<a href="#type-form_context">form_context()</a>) -&gt; <a href="#type-function_id">function_id()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that the specified function identifier is legit.</p>
+
+<h3 class="function"><a name="check_function_ids-1">check_function_ids/1</a></h3>
+<div class="spec">
+<p><tt>check_function_ids(Ids::term()) -&gt; [<a href="#type-function_id">function_id()</a>]</tt><br></p>
+<p> </p>
+</div><p>Checks that the specified function identifiers are legit.</p>
+
+<h3 class="function"><a name="check_function_ids-2">check_function_ids/2</a></h3>
+<div class="spec">
+<p><tt>check_function_ids(List::term(), Context::<a href="#type-form_context">form_context()</a>) -&gt; [<a href="#type-function_id">function_id()</a>]</tt><br></p>
+<p> </p>
+</div><p>Checks that the specified function identifiers are legit.</p>
+
+<h3 class="function"><a name="check_function_name-1">check_function_name/1</a></h3>
+<div class="spec">
+<p><tt>check_function_name(Name::term()) -&gt; <a href="#type-function_name">function_name()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that the specified function name is legit.</p>
+
+<h3 class="function"><a name="check_function_name-2">check_function_name/2</a></h3>
+<div class="spec">
+<p><tt>check_function_name(Name::term(), Context::<a href="#type-form_context">form_context()</a>) -&gt; <a href="#type-function_name">function_name()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that the specified function name is legit.</p>
+
+<h3 class="function"><a name="check_function_type-2">check_function_type/2</a></h3>
+<div class="spec">
+<p><tt>check_function_type(Type::term(), FunctionArity::<a href="#type-function_arity">function_arity()</a>) -&gt; <a href="#type-function_type">function_type()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that the specified function type is legit.</p>
+
+<h3 class="function"><a name="check_function_type-3">check_function_type/3</a></h3>
+<div class="spec">
+<p><tt>check_function_type(FunctionType::term(), FunctionArity::<a href="#type-function_arity">function_arity()</a>, Context::<a href="#type-form_context">form_context()</a>) -&gt; <a href="#type-function_type">function_type()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that the specified function type is legit.</p>
+
+<h3 class="function"><a name="check_function_types-2">check_function_types/2</a></h3>
+<div class="spec">
+<p><tt>check_function_types(Types::term(), FunctionArity::<a href="#type-function_arity">function_arity()</a>) -&gt; [<a href="#type-function_type">function_type()</a>]</tt><br></p>
+<p> </p>
+</div><p>Checks that the specified function types are legit.</p>
+
+<h3 class="function"><a name="check_function_types-3">check_function_types/3</a></h3>
+<div class="spec">
+<p><tt>check_function_types(List::term(), FunctionArity::<a href="#type-function_arity">function_arity()</a>, Context::<a href="#type-form_context">form_context()</a>) -&gt; [<a href="#type-function_type">function_type()</a>]</tt><br></p>
+<p> </p>
+</div><p>Checks that the specified function types are legit.</p>
+
+<h3 class="function"><a name="clauses_to_string-2">clauses_to_string/2</a></h3>
+<div class="spec">
+<p><tt>clauses_to_string(Clauses::<a href="meta_utils.html#type-clause_def">meta_utils:clause_def()</a>, IndentationLevel::<a href="text_utils.html#type-indentation_level">text_utils:indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of the specified function clauses, using
+ specified indentation level.
+</p>
+
+<h3 class="function"><a name="get_located_forms_for-2">get_located_forms_for/2</a></h3>
+<div class="spec">
+<p><tt>get_located_forms_for(FunctionExportTable::<a href="#type-function_export_table">function_export_table()</a>, FunctionTable::<a href="#type-function_table">function_table()</a>) -&gt; {[<a href="#type-located_form">located_form()</a>], [<a href="#type-located_form">located_form()</a>]}</tt><br></p>
+<p> </p>
+</div><p><p>Returns a pair made of (two) lists of located forms regarding exports.</p>
+
+ <p>These lists of located forms correspond to:</p>
+
+ <p>- all the function export declarations (possibly automatically enriched) that 
+are described in the specified function export table</p>
+
+ - all the function definitions and specs that are described in the specified
+ function table
+</p>
+
+<h3 class="function"><a name="transform_function-2">transform_function/2</a></h3>
+<div class="spec">
+<p><tt>transform_function(FunctionInfo::<a href="#type-function_info">function_info()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="#type-function_info">function_info()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
+<p> </p>
+</div><p>Transforms specified function.</p>
+
+<h3 class="function"><a name="transform_function_constraint-2">transform_function_constraint/2</a></h3>
+<div class="spec">
+<p><tt>transform_function_constraint(X1, Transforms) -&gt; any()</tt></p>
+<p> </p>
+</div><p><p>Transforms specified function constraint.</p>
+
+ "If C is a constraint V :: T, where V is a type variable and T is a type, then
+ Rep(C) = {type, FILE_LOC, constraint,[{atom, FILE_LOC, is_subtype},[Rep(V),
+ Rep(T)]]}."
+</p>
+
+<h3 class="function"><a name="transform_function_constraints-2">transform_function_constraints/2</a></h3>
+<div class="spec">
+<p><tt>transform_function_constraints(FunctionConstraints, Transforms) -&gt; any()</tt></p>
+<p> </p>
+</div><p><p>Transforms specified function constraints.</p>
+
+ <p>(Helper, corresponding to function_constraint/1 in erl_id_trans)</p>
+
+ "A function constraint Fc is a non-empty sequence of constraints C_1, ...,
+ C_k, and Rep(Fc) = [Rep(C_1), ..., Rep(C_k)]."
+</p>
+
+<h3 class="function"><a name="transform_function_spec-2">transform_function_spec/2</a></h3>
+<div class="spec">
+<p><tt>transform_function_spec(X1::<a href="#type-function_spec">function_spec()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="#type-function_spec">function_spec()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Transforms the specified function specification.</p>
+
+ "If F is a function specification -Spec Name Ft_1; ...; Ft_k, where Spec is
+ either the atom spec or the atom callback, and each Ft_i is a possibly
+ constrained function type with an argument sequence of the same length Arity,
+ then Rep(F) = {attribute, FileLoc, Spec, {{Name,Arity}, [Rep(Ft_1), ...,
+ Rep(Ft_k)]}}.
+</p>
+
+<h3 class="function"><a name="transform_function_type-2">transform_function_type/2</a></h3>
+<div class="spec">
+<p><tt>transform_function_type(UnexpectedFunType, Transforms) -&gt; any()</tt></p>
+<p> </p>
+</div><p><p>Transforms specified function type.</p>
+
+ <p>(helper, corresponding to function_type/1 in erl_id_trans)</p>
+
+ "If Ft is a function type (T_1, ..., T_n) -&gt; T_0, where each T_i is a type,
+ then Rep(Ft) = {type, FILE_LOC, 'fun', [{type, FILE_LOC, product, [Rep(T_1),
+ ..., Rep(T_n)]}, Rep(T_0)]}."
+</p>
+
+<h3 class="function"><a name="transform_functions-2">transform_functions/2</a></h3>
+<div class="spec">
+<p><tt>transform_functions(FunctionTable::<a href="#type-function_table">function_table()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="#type-function_table">function_table()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
+<p> </p>
+</div><p>Transforms the functions in specified table, based on specified
+ transforms.
+</p>
+
+<h3 class="function"><a name="transform_spec-2">transform_spec/2</a></h3>
+<div class="spec">
+<p><tt>transform_spec(OtherSpec, Transforms) -&gt; any()</tt></p>
+<p> </p>
+</div><p><p>Transforms the specified function specification.</p>
+
+ <p>(corresponds to function_type_list/1 in erl_id_trans)</p>
+
+ "If Ft is a constrained function type Ft_1 when Fc, where Ft_1 is a function
+ type and Fc is a function constraint, then Rep(T) = {type, FILE_LOC,
+ bounded_fun, [Rep(Ft_1), Rep(Fc)]}."
+</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

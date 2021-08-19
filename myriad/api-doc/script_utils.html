@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module script_utils</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module script_utils</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering helper functions for the <b>development and use of all kinds of
+ scripts</b> (Erlang escripts and shell scripts alike).
+
+
+<h2><a name="description">Description</a></h2><p>Gathering helper functions for the <b>development and use of all kinds of
+ scripts</b> (Erlang escripts and shell scripts alike).</p>
+
+ Intended use for escripts: add, in the script directory, a symbolic link to
+ this module so that the script can readily call it and thus bootstrap the use
+ of all others.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-directory_path">directory_path()</a></h3>
+<p><tt>directory_path() = <a href="file_utils.html#type-directory_path">file_utils:directory_path()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#get_arguments-1">get_arguments/1</a></td><td>Returns a table allowing to manage the specified command-line arguments 
+more easily.</td></tr>
+<tr><td valign="top"><a href="#get_myriad_base_directory-0">get_myriad_base_directory/0</a></td><td>Returns the root directory of the Myriad layer.</td></tr>
+<tr><td valign="top"><a href="#get_script_base_directory-0">get_script_base_directory/0</a></td><td>Returns the base directory of that script, that is where it is stored 
+(regardless of the possibly relative path whence it was launched).</td></tr>
+<tr><td valign="top"><a href="#is_running_as_escript-0">is_running_as_escript/0</a></td><td>Tells whether the currently running Erlang code is executed as an escript
+ or as a regular Erlang program.</td></tr>
+<tr><td valign="top"><a href="#update_code_path_for_myriad-0">update_code_path_for_myriad/0</a></td><td>Updates the VM code path so that all modules of the 'Myriad' layer can be 
+readily used from an escript.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="get_arguments-1">get_arguments/1</a></h3>
+<div class="spec">
+<p><tt>get_arguments(Args::[<a href="#type-ustring">ustring()</a>]) -&gt; <a href="shell_utils.html#type-argument_table">shell_utils:argument_table()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns a table allowing to manage the specified command-line arguments 
+more easily.</p>
+
+ <p>These arguments are simply to be transmitted as a list of the corresponding 
+strings, typically as directly obtained through the main/1 function of an 
+escript) once transformed into our "canonical", more convenient form, which is 
+the same as the one used by shell_utils:get_argument_table/0 and is itself 
+similar to the one used by Erlang for its user/system flags (i.e. for all its 
+non-plain options).</p>
+
+ <p>In this form, which by default is not available for escripts, options start 
+with a dash, may have any number of arguments, and may be specified more than 
+once in the command-line.</p>
+
+ <p>Note: switches to the Unicode encoding (ex: use "~tp" then).</p>
+
+ Allows to write code that can be seamlessly triggered by a erl interpreter or
+ by an escript, by putting them in the latter case in our "canonical" form.
+</p>
+
+<h3 class="function"><a name="get_myriad_base_directory-0">get_myriad_base_directory/0</a></h3>
+<div class="spec">
+<p><tt>get_myriad_base_directory() -&gt; <a href="#type-directory_path">directory_path()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the root directory of the Myriad layer.</p>
+
+ (note that a double path conversion between root and script directories can
+ hardly be avoided)
+</p>
+
+<h3 class="function"><a name="get_script_base_directory-0">get_script_base_directory/0</a></h3>
+<div class="spec">
+<p><tt>get_script_base_directory() -&gt; <a href="#type-directory_path">directory_path()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the base directory of that script, that is where it is stored 
+(regardless of the possibly relative path whence it was launched).</p>
+
+ Note: useful to locate resources (ex: other modules) defined in link to that
+ script and needed by it.
+</p>
+
+<h3 class="function"><a name="is_running_as_escript-0">is_running_as_escript/0</a></h3>
+<div class="spec">
+<p><tt>is_running_as_escript() -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Tells whether the currently running Erlang code is executed as an escript
+ or as a regular Erlang program.
+</p>
+
+<h3 class="function"><a name="update_code_path_for_myriad-0">update_code_path_for_myriad/0</a></h3>
+<div class="spec">
+<p><tt>update_code_path_for_myriad() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Updates the VM code path so that all modules of the 'Myriad' layer can be 
+readily used from an escript.</p>
+
+ <p>Note: this function and its helpers might be copied verbatim to the target 
+escript so that it can really be used from anywhere (not only from the 
+directory it is stored).</p>
+
+ (original version located in script_utils.erl)
+</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

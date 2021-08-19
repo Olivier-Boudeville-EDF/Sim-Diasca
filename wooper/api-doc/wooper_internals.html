@@ -1,0 +1,150 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module wooper_internals</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module wooper_internals</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of <b>WOOPER-internal</b> helpers.
+
+
+<h2><a name="description">Description</a></h2>Gathering of <b>WOOPER-internal</b> helpers.
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-ast_transforms">ast_transforms()</a></h3>
+<p><tt>ast_transforms() = <a href="ast_transform.html#type-ast_transforms">ast_transform:ast_transforms()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-classname">classname()</a></h3>
+<p><tt>classname() = <a href="wooper.html#type-classname">wooper:classname()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-file_loc">file_loc()</a></h3>
+<p><tt>file_loc() = <a href="ast_utils.html#type-file_loc">ast_utils:file_loc()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-format_string">format_string()</a></h3>
+<p><tt>format_string() = <a href="text_utils.html#type-format_string">text_utils:format_string()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-format_values">format_values()</a></h3>
+<p><tt>format_values() = <a href="text_utils.html#type-format_values">text_utils:format_values()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#notify_warning-1">notify_warning/1</a></td><td>Notifies a (compile-time, rather ad hoc) warning, with no specific 
+context, when applying this parse transform.</td></tr>
+<tr><td valign="top"><a href="#notify_warning-2">notify_warning/2</a></td><td>Notifies a (compile-time, rather ad hoc) warning, with specified context, 
+when applying this parse transform.</td></tr>
+<tr><td valign="top"><a href="#raise_error-1">raise_error/1</a></td><td>Raises a (compile-time, rather ad hoc) technical, internal error when
+ applying this parse transform, to stop the build on failure and report the
+ actual error.</td></tr>
+<tr><td valign="top"><a href="#raise_error-2">raise_error/2</a></td><td>Raises a (compile-time, rather ad hoc) technical, internal error, with
+ specified source context, when applying this parse transform, to stop the
+ build on failure and report the actual error.</td></tr>
+<tr><td valign="top"><a href="#raise_usage_error-1">raise_usage_error/1</a></td><td>Raises a (compile-time, rather ad hoc) user-related error (when no
+ specific source context is available), when applying this parse transform, to
+ stop the build on failure and report adequately the actual error to the user.</td></tr>
+<tr><td valign="top"><a href="#raise_usage_error-2">raise_usage_error/2</a></td><td>Raises a (compile-time, rather ad hoc) user-related error (when no
+ specific source context is available), when applying this parse transform, to
+ stop the build on failure and report adequately the actual error to the user.</td></tr>
+<tr><td valign="top"><a href="#raise_usage_error-3">raise_usage_error/3</a></td><td>Raises a (compile-time, rather ad hoc) user-related error, with specified
+ source context, when applying this parse transform, to stop the build on
+ failure and report adequately the actual error to the user.</td></tr>
+<tr><td valign="top"><a href="#raise_usage_error-4">raise_usage_error/4</a></td><td>Raises a (compile-time, rather ad hoc) user-related error, with specified
+ source context, when applying this parse transform, to stop the build on
+ failure and report the actual error.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="notify_warning-1">notify_warning/1</a></h3>
+<div class="spec">
+<p><tt>notify_warning(Elements::[term()]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Notifies a (compile-time, rather ad hoc) warning, with no specific 
+context, when applying this parse transform.</p>
+
+ Does not stop the build.
+</p>
+
+<h3 class="function"><a name="notify_warning-2">notify_warning/2</a></h3>
+<div class="spec">
+<p><tt>notify_warning(Elements::[term()], Context::<a href="ast_base.html#type-form_context">ast_base:form_context()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Notifies a (compile-time, rather ad hoc) warning, with specified context, 
+when applying this parse transform.</p>
+
+ Does not stop the build.
+</p>
+
+<h3 class="function"><a name="raise_error-1">raise_error/1</a></h3>
+<div class="spec">
+<p><tt>raise_error(ErrorTerm::term()) -&gt; no_return()</tt><br></p>
+<p> </p>
+</div><p>Raises a (compile-time, rather ad hoc) technical, internal error when
+ applying this parse transform, to stop the build on failure and report the
+ actual error.
+</p>
+
+<h3 class="function"><a name="raise_error-2">raise_error/2</a></h3>
+<div class="spec">
+<p><tt>raise_error(ErrorTerm::term(), Context::<a href="ast_base.html#type-source_context">ast_base:source_context()</a>) -&gt; no_return()</tt><br></p>
+<p> </p>
+</div><p>Raises a (compile-time, rather ad hoc) technical, internal error, with
+ specified source context, when applying this parse transform, to stop the
+ build on failure and report the actual error.
+</p>
+
+<h3 class="function"><a name="raise_usage_error-1">raise_usage_error/1</a></h3>
+<div class="spec">
+<p><tt>raise_usage_error(ErrorString::<a href="#type-ustring">ustring()</a>) -&gt; no_return()</tt><br></p>
+<p> </p>
+</div><p>Raises a (compile-time, rather ad hoc) user-related error (when no
+ specific source context is available), when applying this parse transform, to
+ stop the build on failure and report adequately the actual error to the user.
+</p>
+
+<h3 class="function"><a name="raise_usage_error-2">raise_usage_error/2</a></h3>
+<div class="spec">
+<p><tt>raise_usage_error(ErrorFormatString::<a href="#type-format_string">format_string()</a>, ErrorFormatValues::<a href="#type-format_values">format_values()</a>) -&gt; no_return()</tt><br></p>
+<p> </p>
+</div><p>Raises a (compile-time, rather ad hoc) user-related error (when no
+ specific source context is available), when applying this parse transform, to
+ stop the build on failure and report adequately the actual error to the user.
+</p>
+
+<h3 class="function"><a name="raise_usage_error-3">raise_usage_error/3</a></h3>
+<div class="spec">
+<p><tt>raise_usage_error(ErrorString::<a href="#type-ustring">ustring()</a>, Ast_transforms::<a href="#type-ast_transforms">ast_transforms()</a>, FileLoc::<a href="#type-maybe">maybe</a>(<a href="#type-file_loc">file_loc()</a>)) -&gt; no_return()</tt><br></p><p><tt>raise_usage_error(ErrorString::<a href="#type-ustring">ustring()</a>, Ast_transforms::<a href="#type-classname">classname()</a>, FileLoc::<a href="#type-maybe">maybe</a>(<a href="#type-file_loc">file_loc()</a>)) -&gt; no_return()</tt><br></p><p><tt>raise_usage_error(ErrorString::<a href="#type-format_string">format_string()</a>, Ast_transforms::<a href="#type-format_values">format_values()</a>, FileLoc::<a href="#type-classname">classname()</a>) -&gt; no_return()</tt><br></p>
+<p> </p>
+<p> </p>
+<p> </p>
+</div><p>Raises a (compile-time, rather ad hoc) user-related error, with specified
+ source context, when applying this parse transform, to stop the build on
+ failure and report adequately the actual error to the user.
+</p>
+
+<h3 class="function"><a name="raise_usage_error-4">raise_usage_error/4</a></h3>
+<div class="spec">
+<p><tt>raise_usage_error(ErrorFormatString::<a href="#type-format_string">format_string()</a>, ErrorValues::<a href="#type-format_values">format_values()</a>, TransformsOrClass::<a href="#type-ast_transforms">ast_transforms()</a> | <a href="#type-classname">classname()</a>, FileLoc::<a href="#type-file_loc">file_loc()</a>) -&gt; no_return()</tt><br></p>
+<p> </p>
+</div><p>Raises a (compile-time, rather ad hoc) user-related error, with specified
+ source context, when applying this parse transform, to stop the build on
+ failure and report the actual error.
+</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

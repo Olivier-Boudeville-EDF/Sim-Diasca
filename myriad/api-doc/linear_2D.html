@@ -1,0 +1,451 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module linear_2D</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module linear_2D</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various <b>two dimensional linear</b> facilities.
+
+
+<h2><a name="description">Description</a></h2><p>Gathering of various <b>two dimensional linear</b> facilities.</p>
+
+ See <code>linear_2D_test.erl</code> for the corresponding test.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-coordinate">coordinate()</a></h3>
+<p><tt>coordinate() = <a href="linear.html#type-coordinate">linear:coordinate()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-dimensions">dimensions()</a></h3>
+<p><tt>dimensions() = {Width::<a href="#type-coordinate">coordinate()</a>, Height::<a href="#type-coordinate">coordinate()</a>}</tt></p>
+
+
+<h3 class="typedecl"><a name="type-distance">distance()</a></h3>
+<p><tt>distance() = <a href="linear.html#type-distance">linear:distance()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-factor">factor()</a></h3>
+<p><tt>factor() = <a href="linear.html#type-factor">linear:factor()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-integer_coordinate">integer_coordinate()</a></h3>
+<p><tt>integer_coordinate() = <a href="linear.html#type-integer_coordinate">linear:integer_coordinate()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-integer_dimensions">integer_dimensions()</a></h3>
+<p><tt>integer_dimensions() = {Width::<a href="#type-integer_coordinate">integer_coordinate()</a>, Height::<a href="#type-integer_coordinate">integer_coordinate()</a>}</tt></p>
+
+
+<h3 class="typedecl"><a name="type-integer_point">integer_point()</a></h3>
+<p><tt>integer_point() = {X::<a href="#type-integer_coordinate">integer_coordinate()</a>, Y::<a href="#type-integer_coordinate">integer_coordinate()</a>}</tt></p>
+<p> 2D point, with integer coordinates.</p>
+
+<h3 class="typedecl"><a name="type-integer_vector">integer_vector()</a></h3>
+<p><tt>integer_vector() = {X::<a href="#type-integer_coordinate">integer_coordinate()</a>, Y::<a href="#type-integer_coordinate">integer_coordinate()</a>}</tt></p>
+
+
+<h3 class="typedecl"><a name="type-line">line()</a></h3>
+<p><tt>line() = {A::<a href="#type-factor">factor()</a>, B::<a href="#type-factor">factor()</a>, C::<a href="#type-factor">factor()</a>}</tt></p>
+<p> A line, whose equation A.x+B.y+C=0, can be defined by its three factors
+ {A,B,C}.</p>
+
+<h3 class="typedecl"><a name="type-point">point()</a></h3>
+<p><tt>point() = {X::<a href="#type-coordinate">coordinate()</a>, Y::<a href="#type-coordinate">coordinate()</a>}</tt></p>
+<p> 2D point, with floating-point coordinates.</p>
+
+<h3 class="typedecl"><a name="type-shape">shape()</a></h3>
+<p><tt>shape() = circle | rectangle | square | triangle | polygon</tt></p>
+
+
+<h3 class="typedecl"><a name="type-square_distance">square_distance()</a></h3>
+<p><tt>square_distance() = <a href="linear.html#type-square_distance">linear:square_distance()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-vector">vector()</a></h3>
+<p><tt>vector() = {X::<a href="#type-coordinate">coordinate()</a>, Y::<a href="#type-coordinate">coordinate()</a>}</tt></p>
+<p><p> A 2D vector, with floating-point coordinates.</p>
+
+ They are typically referenced as [X, Y].</p>
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#abs_angle_deg-3">abs_angle_deg/3</a></td><td>Returns the angle, in canonical degrees, between the vector AB and AC.</td></tr>
+<tr><td valign="top"><a href="#abs_angle_rad-3">abs_angle_rad/3</a></td><td>Returns the angle, in radians, between the vector AB and AC.</td></tr>
+<tr><td valign="top"><a href="#angle_deg-3">angle_deg/3</a></td><td>Returns the signed (oriented) angle, in canonical degrees, between the 
+vector AB and AC.</td></tr>
+<tr><td valign="top"><a href="#angle_rad-3">angle_rad/3</a></td><td>Returns the signed (oriented) angle, in radians, between the vector AB 
+and AC.</td></tr>
+<tr><td valign="top"><a href="#are_close-2">are_close/2</a></td><td>Returns whether the two specified points are close, that is if they could
+ be considered as representing the same point (equality operator on points).</td></tr>
+<tr><td valign="top"><a href="#compute_convex_hull-1">compute_convex_hull/1</a></td><td>Computes the convex hull corresponding to the specified list of points.</td></tr>
+<tr><td valign="top"><a href="#compute_max_overall_distance-1">compute_max_overall_distance/1</a></td><td>Computes the maximum distance between two points in the specified list of 
+points.</td></tr>
+<tr><td valign="top"><a href="#compute_smallest_enclosing_rectangle-1">compute_smallest_enclosing_rectangle/1</a></td><td>Computes the smallest rectangle that encloses the specified list of 
+points.</td></tr>
+<tr><td valign="top"><a href="#cross_product-2">cross_product/2</a></td><td>Returns the cross-product of the two specified 2D points, ie the
+ magnitude of the vector that would result from a regular 3D cross product of
+ the input vectors, taking their Z values implicitly as 0.</td></tr>
+<tr><td valign="top"><a href="#distance-2">distance/2</a></td><td>Returns the distance between the two specified points.</td></tr>
+<tr><td valign="top"><a href="#dot_product-2">dot_product/2</a></td><td>Returns the dot product of the two specified vectors.</td></tr>
+<tr><td valign="top"><a href="#find_pivot-1">find_pivot/1</a></td><td>Finds the pivot, ie the leftmost point with the highest ordinate.</td></tr>
+<tr><td valign="top"><a href="#get_abscissa_for_ordinate-2">get_abscissa_for_ordinate/2</a></td><td>Returns the abscissa of a point on line L having Y for ordinate.</td></tr>
+<tr><td valign="top"><a href="#get_center-2">get_center/2</a></td><td>Returns a vertex corresponding the middle of the two specified vertices,
+ returned with possibly floating-point coordinates.</td></tr>
+<tr><td valign="top"><a href="#get_integer_center-2">get_integer_center/2</a></td><td>Returns a vertex corresponding the middle of the two specified vertices,
+ returned with integer coordinates.</td></tr>
+<tr><td valign="top"><a href="#get_line-2">get_line/2</a></td><td>Returns the three coefficients {A,B,C} for the line passing by point P
+ and being perpendicular to vector V, whose equation A.x+B.y+C=0.</td></tr>
+<tr><td valign="top"><a href="#get_origin-0">get_origin/0</a></td><td>Returns the origin of this referential.</td></tr>
+<tr><td valign="top"><a href="#intersect-2">intersect/2</a></td><td>Returns the intersection of the two specified lines, if it is a point, 
+otherwise the atom no_point (the intersection can be void, if the lines are 
+parallel but different, or a full line, if they are the same line).</td></tr>
+<tr><td valign="top"><a href="#is_obtuse-1">is_obtuse/1</a></td><td>Returns whether specified angle (in degrees, canonical form) is obtuse.</td></tr>
+<tr><td valign="top"><a href="#is_strictly_on_the_right-3">is_strictly_on_the_right/3</a></td><td>Returns true iff P is strictly on the right of the oriented segment going
+ from P1 to P2.</td></tr>
+<tr><td valign="top"><a href="#is_within-3">is_within/3</a></td><td>Tells whether point P is within a distance D from point C, using some
+ margin to overcome numerical errors.</td></tr>
+<tr><td valign="top"><a href="#is_within_square-3">is_within_square/3</a></td><td>Tells whether point P is within a square distance SquareD from point C.</td></tr>
+<tr><td valign="top"><a href="#magnitude-1">magnitude/1</a></td><td>Returns the magnitude of the specified vector.</td></tr>
+<tr><td valign="top"><a href="#make_unit-1">make_unit/1</a></td><td>Returns the specified vector with an unit length (magnitude of 1).</td></tr>
+<tr><td valign="top"><a href="#normal_left-1">normal_left/1</a></td><td>Returns a (non-unit) vector which is normal to specified vector V, and is
+ on the left of V in the standard basis.</td></tr>
+<tr><td valign="top"><a href="#normal_right-1">normal_right/1</a></td><td>Returns a (non-unit) vector which is normal to specified vector V, and is
+ on the right of V in the standard basis.</td></tr>
+<tr><td valign="top"><a href="#roundify-1">roundify/1</a></td><td>Returns a point (or vector) whose coordinates have been rounded to the
+ nearest integer.</td></tr>
+<tr><td valign="top"><a href="#scale-2">scale/2</a></td><td>Scales specified vector of specified factor.</td></tr>
+<tr><td valign="top"><a href="#sort_by_angle-2">sort_by_angle/2</a></td><td>Returns a list containing the points sorted according to an increasing 
+angle between the abscissa axis and the vector from the pivot that each point.</td></tr>
+<tr><td valign="top"><a href="#square_distance-2">square_distance/2</a></td><td>Returns the square of the distance between the two specified points.</td></tr>
+<tr><td valign="top"><a href="#square_magnitude-1">square_magnitude/1</a></td><td>Returns the square of the magnitude of the specified vector.</td></tr>
+<tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td>Returns a precise textual representation of specified point.</td></tr>
+<tr><td valign="top"><a href="#to_string-2">to_string/2</a></td><td>Returns a human-friendly, approximated textual representation of
+ specified point, based on specified print-out precision (number of digits
+ after the comma).</td></tr>
+<tr><td valign="top"><a href="#translate-2">translate/2</a></td><td>Returns a point corresponding to the specified point P translated by the
+ specified vector V.</td></tr>
+<tr><td valign="top"><a href="#vectorize-2">vectorize/2</a></td><td>Returns a vector V made from the specified two points: V=P2-P1.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="abs_angle_deg-3">abs_angle_deg/3</a></h3>
+<div class="spec">
+<p><tt>abs_angle_deg(A::<a href="#type-point">point()</a>, B::<a href="#type-point">point()</a>, C::<a href="#type-point">point()</a>) -&gt; <a href="unit_utils.html#type-int_degrees">unit_utils:int_degrees()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the angle, in canonical degrees, between the vector AB and AC.</p>
+
+ Note: with this function we cannot tell whether one vector is ahead of the
+ other, ie if we should use the returned angle or its opposite to go from AB
+ to AC.
+</p>
+
+<h3 class="function"><a name="abs_angle_rad-3">abs_angle_rad/3</a></h3>
+<div class="spec">
+<p><tt>abs_angle_rad(A::<a href="#type-point">point()</a>, B::<a href="#type-point">point()</a>, C::<a href="#type-point">point()</a>) -&gt; <a href="unit_utils.html#type-radians">unit_utils:radians()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the angle, in radians, between the vector AB and AC.</p>
+
+ Note: with this function we cannot tell whether one vector is ahead of the
+ other, ie if we should use the returned angle or its opposite to go from AB
+ to AC.
+</p>
+
+<h3 class="function"><a name="angle_deg-3">angle_deg/3</a></h3>
+<div class="spec">
+<p><tt>angle_deg(A::<a href="#type-point">point()</a>, B::<a href="#type-point">point()</a>, C::<a href="#type-point">point()</a>) -&gt; <a href="unit_utils.html#type-int_degrees">unit_utils:int_degrees()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the signed (oriented) angle, in canonical degrees, between the 
+vector AB and AC.</p>
+
+ Note: with this function we can tell that we must rotate counter-clockwise of
+ the returned angle to go from AB to AC.
+</p>
+
+<h3 class="function"><a name="angle_rad-3">angle_rad/3</a></h3>
+<div class="spec">
+<p><tt>angle_rad(A::<a href="#type-point">point()</a>, B::<a href="#type-point">point()</a>, C::<a href="#type-point">point()</a>) -&gt; <a href="unit_utils.html#type-radians">unit_utils:radians()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the signed (oriented) angle, in radians, between the vector AB 
+and AC.</p>
+
+ Note: with this function we can tell that we must rotate counter-clockwise of
+ the returned angle to go from AB to AC.
+</p>
+
+<h3 class="function"><a name="are_close-2">are_close/2</a></h3>
+<div class="spec">
+<p><tt>are_close(P1::<a href="#type-point">point()</a>, P2::<a href="#type-point">point()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Returns whether the two specified points are close, that is if they could
+ be considered as representing the same point (equality operator on points).
+</p>
+
+<h3 class="function"><a name="compute_convex_hull-1">compute_convex_hull/1</a></h3>
+<div class="spec">
+<p><tt>compute_convex_hull(Points::[<a href="#type-point">point()</a>]) -&gt; [<a href="#type-point">point()</a>]</tt><br></p>
+<p> </p>
+</div><p><p>Computes the convex hull corresponding to the specified list of points.</p>
+
+ Returns the list of points that defines the hull.
+</p>
+
+<h3 class="function"><a name="compute_max_overall_distance-1">compute_max_overall_distance/1</a></h3>
+<div class="spec">
+<p><tt>compute_max_overall_distance(Points::[<a href="#type-point">point()</a>]) -&gt; {<a href="#type-point">point()</a>, <a href="#type-point">point()</a>, <a href="#type-square_distance">square_distance()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Computes the maximum distance between two points in the specified list of 
+points.</p>
+
+ <p>Returns {P1,P2,square_distance(P1,P2)} so that (square) distance is maximal.</p>
+
+ We ensure that each internal edge is examined only once: when the distance
+ between a given vertex V and all other vertices have been computed, V is
+ removed from the list and a new mAximum is searched within this subset.
+</p>
+
+<h3 class="function"><a name="compute_smallest_enclosing_rectangle-1">compute_smallest_enclosing_rectangle/1</a></h3>
+<div class="spec">
+<p><tt>compute_smallest_enclosing_rectangle(Points::[<a href="#type-point">point()</a>]) -&gt; {<a href="#type-point">point()</a>, <a href="#type-point">point()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Computes the smallest rectangle that encloses the specified list of 
+points.</p>
+
+ Returns {TopLeft, BottomRight}.
+</p>
+
+<h3 class="function"><a name="cross_product-2">cross_product/2</a></h3>
+<div class="spec">
+<p><tt>cross_product(X1::<a href="#type-point">point()</a>, X2::<a href="#type-point">point()</a>) -&gt; number()</tt><br></p>
+<p> </p>
+</div><p>Returns the cross-product of the two specified 2D points, ie the
+ magnitude of the vector that would result from a regular 3D cross product of
+ the input vectors, taking their Z values implicitly as 0.
+</p>
+
+<h3 class="function"><a name="distance-2">distance/2</a></h3>
+<div class="spec">
+<p><tt>distance(P1::<a href="#type-point">point()</a>, P2::<a href="#type-point">point()</a>) -&gt; <a href="#type-distance">distance()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the distance between the two specified points.</p>
+
+ <p>For comparison purposes, computing the square root is useless.</p>
+
+ Could rely on vectorize and magnitude as well.
+</p>
+
+<h3 class="function"><a name="dot_product-2">dot_product/2</a></h3>
+<div class="spec">
+<p><tt>dot_product(V1::<a href="#type-vector">vector()</a>, V2::<a href="#type-vector">vector()</a>) -&gt; number()</tt><br></p>
+<p> </p>
+</div><p>Returns the dot product of the two specified vectors.</p>
+
+<h3 class="function"><a name="find_pivot-1">find_pivot/1</a></h3>
+<div class="spec">
+<p><tt>find_pivot(PointList::[<a href="#type-point">point()</a>]) -&gt; {<a href="#type-point">point()</a>, [<a href="#type-point">point()</a>]}</tt><br></p>
+<p> </p>
+</div><p><p>Finds the pivot, ie the leftmost point with the highest ordinate.</p>
+
+ <p>The point list is supposed not having duplicates.</p>
+
+ Returns {Pivot, PivotLessList} where PivotLessList is the (unordered) input
+ list, without the Pivot.
+</p>
+
+<h3 class="function"><a name="get_abscissa_for_ordinate-2">get_abscissa_for_ordinate/2</a></h3>
+<div class="spec">
+<p><tt>get_abscissa_for_ordinate(L::<a href="#type-line">line()</a>, Y::<a href="#type-coordinate">coordinate()</a>) -&gt; <a href="#type-coordinate">coordinate()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the abscissa of a point on line L having Y for ordinate.</p>
+
+ Line L must not have for equation Y=constant (ie its A parameter must not be
+ null).
+</p>
+
+<h3 class="function"><a name="get_center-2">get_center/2</a></h3>
+<div class="spec">
+<p><tt>get_center(X1::<a href="#type-point">point()</a>, X2::<a href="#type-point">point()</a>) -&gt; <a href="#type-point">point()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a vertex corresponding the middle of the two specified vertices,
+ returned with possibly floating-point coordinates.
+</p>
+
+<h3 class="function"><a name="get_integer_center-2">get_integer_center/2</a></h3>
+<div class="spec">
+<p><tt>get_integer_center(P1::<a href="#type-point">point()</a>, P2::<a href="#type-point">point()</a>) -&gt; <a href="#type-integer_point">integer_point()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a vertex corresponding the middle of the two specified vertices,
+ returned with integer coordinates.
+</p>
+
+<h3 class="function"><a name="get_line-2">get_line/2</a></h3>
+<div class="spec">
+<p><tt>get_line(P::<a href="#type-point">point()</a>, V::<a href="#type-point">point()</a>) -&gt; <a href="#type-line">line()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the three coefficients {A,B,C} for the line passing by point P
+ and being perpendicular to vector V, whose equation A.x+B.y+C=0.
+</p>
+
+<h3 class="function"><a name="get_origin-0">get_origin/0</a></h3>
+<div class="spec">
+<p><tt>get_origin() -&gt; <a href="#type-point">point()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the origin of this referential.</p>
+
+<h3 class="function"><a name="intersect-2">intersect/2</a></h3>
+<div class="spec">
+<p><tt>intersect(D1::<a href="#type-line">line()</a>, D2::<a href="#type-line">line()</a>) -&gt; no_point | <a href="#type-point">point()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the intersection of the two specified lines, if it is a point, 
+otherwise the atom no_point (the intersection can be void, if the lines are 
+parallel but different, or a full line, if they are the same line).</p>
+
+ First line has for equation a.x+b.y+c=0, second has for equation u.x+v.y+w=0.
+</p>
+
+<h3 class="function"><a name="is_obtuse-1">is_obtuse/1</a></h3>
+<div class="spec">
+<p><tt>is_obtuse(AngleInDegrees::<a href="unit_utils.html#type-int_degrees">unit_utils:int_degrees()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Returns whether specified angle (in degrees, canonical form) is obtuse.</p>
+
+<h3 class="function"><a name="is_strictly_on_the_right-3">is_strictly_on_the_right/3</a></h3>
+<div class="spec">
+<p><tt>is_strictly_on_the_right(P::<a href="#type-point">point()</a>, P1::<a href="#type-point">point()</a>, P2::<a href="#type-point">point()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Returns true iff P is strictly on the right of the oriented segment going
+ from P1 to P2.
+</p>
+
+<h3 class="function"><a name="is_within-3">is_within/3</a></h3>
+<div class="spec">
+<p><tt>is_within(P::<a href="#type-point">point()</a>, C::<a href="#type-point">point()</a>, D::number()) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Tells whether point P is within a distance D from point C, using some
+ margin to overcome numerical errors.
+</p>
+
+<h3 class="function"><a name="is_within_square-3">is_within_square/3</a></h3>
+<div class="spec">
+<p><tt>is_within_square(P::<a href="#type-point">point()</a>, C::<a href="#type-point">point()</a>, SquareD::number()) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Tells whether point P is within a square distance SquareD from point C.</p>
+
+<h3 class="function"><a name="magnitude-1">magnitude/1</a></h3>
+<div class="spec">
+<p><tt>magnitude(V::<a href="#type-vector">vector()</a>) -&gt; <a href="#type-distance">distance()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the magnitude of the specified vector.</p>
+
+<h3 class="function"><a name="make_unit-1">make_unit/1</a></h3>
+<div class="spec">
+<p><tt>make_unit(V::<a href="#type-vector">vector()</a>) -&gt; <a href="#type-vector">vector()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the specified vector with an unit length (magnitude of 1).</p>
+
+ (epsilon-based test for null vectors with floating-point coordinates could
+ be done here).
+</p>
+
+<h3 class="function"><a name="normal_left-1">normal_left/1</a></h3>
+<div class="spec">
+<p><tt>normal_left(V::<a href="#type-vector">vector()</a>) -&gt; <a href="#type-vector">vector()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a (non-unit) vector which is normal to specified vector V, and is
+ on the left of V in the standard basis.
+</p>
+
+<h3 class="function"><a name="normal_right-1">normal_right/1</a></h3>
+<div class="spec">
+<p><tt>normal_right(V::<a href="#type-vector">vector()</a>) -&gt; <a href="#type-vector">vector()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a (non-unit) vector which is normal to specified vector V, and is
+ on the right of V in the standard basis.
+</p>
+
+<h3 class="function"><a name="roundify-1">roundify/1</a></h3>
+<div class="spec">
+<p><tt>roundify(X1::<a href="#type-point">point()</a>) -&gt; <a href="#type-integer_point">integer_point()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a point (or vector) whose coordinates have been rounded to the
+ nearest integer.
+</p>
+
+<h3 class="function"><a name="scale-2">scale/2</a></h3>
+<div class="spec">
+<p><tt>scale(V::<a href="#type-vector">vector()</a>, Factor::number()) -&gt; <a href="#type-vector">vector()</a></tt><br></p>
+<p> </p>
+</div><p>Scales specified vector of specified factor.</p>
+
+<h3 class="function"><a name="sort_by_angle-2">sort_by_angle/2</a></h3>
+<div class="spec">
+<p><tt>sort_by_angle(Pivot::<a href="#type-point">point()</a>, Points::[<a href="#type-point">point()</a>]) -&gt; [<a href="#type-point">point()</a>]</tt><br></p>
+<p> </p>
+</div><p><p>Returns a list containing the points sorted according to an increasing 
+angle between the abscissa axis and the vector from the pivot that each point.</p>
+
+ Note: all points having the same abscissa as the pivot, except the highest
+ one, will be removed from the returned list.
+</p>
+
+<h3 class="function"><a name="square_distance-2">square_distance/2</a></h3>
+<div class="spec">
+<p><tt>square_distance(X1::<a href="#type-point">point()</a>, X2::<a href="#type-point">point()</a>) -&gt; <a href="#type-square_distance">square_distance()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the square of the distance between the two specified points.</p>
+
+ <p>For comparison purposes, computing the square root is useless.</p>
+
+ Could rely on vectorize and square_magnitude as well.
+</p>
+
+<h3 class="function"><a name="square_magnitude-1">square_magnitude/1</a></h3>
+<div class="spec">
+<p><tt>square_magnitude(V::<a href="#type-vector">vector()</a>) -&gt; <a href="#type-square_distance">square_distance()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the square of the magnitude of the specified vector.</p>
+
+<h3 class="function"><a name="to_string-1">to_string/1</a></h3>
+<div class="spec">
+<p><tt>to_string(X1::<a href="#type-point">point()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a precise textual representation of specified point.</p>
+
+<h3 class="function"><a name="to_string-2">to_string/2</a></h3>
+<div class="spec">
+<p><tt>to_string(X1::<a href="#type-point">point()</a>, DigitCountAfterComma::<a href="basic_utils.html#type-count">basic_utils:count()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a human-friendly, approximated textual representation of
+ specified point, based on specified print-out precision (number of digits
+ after the comma).
+</p>
+
+<h3 class="function"><a name="translate-2">translate/2</a></h3>
+<div class="spec">
+<p><tt>translate(P::<a href="#type-point">point()</a>, V::<a href="#type-vector">vector()</a>) -&gt; <a href="#type-point">point()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a point corresponding to the specified point P translated by the
+ specified vector V.
+</p>
+
+<h3 class="function"><a name="vectorize-2">vectorize/2</a></h3>
+<div class="spec">
+<p><tt>vectorize(P1::<a href="#type-point">point()</a>, P2::<a href="#type-point">point()</a>) -&gt; <a href="#type-vector">vector()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a vector V made from the specified two points: V=P2-P1.</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>
