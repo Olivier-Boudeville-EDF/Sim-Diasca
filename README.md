@@ -34,4 +34,7 @@ Please refer to the full [Sim-Diasca official documentation](http://olivier-boud
 
 One may also have a look at the [Sim-Diasca wiki](https://github.com/Olivier-Boudeville-EDF/Sim-Diasca/wiki).
 
-This main branch corresponds to the current stable version (2.4.0) of Sim-Diasca.
+
+<!--This main branch corresponds to the current stable version (2.4.1) of Sim-Diasca.-->
+
+This main branch corresponds to the current in-development version (2.4.1) of Sim-Diasca.
