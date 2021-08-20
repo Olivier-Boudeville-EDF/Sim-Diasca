@@ -24,8 +24,9 @@ secure-doc-elements: SimDiasca-installation-guide-header-english.rst
 test:
 
 
+# Directory internal-version may not exist in public version:
 clean:
-	@for m in $(MODULES_DIRS); do (cd $$m && $(MAKE) -s clean); done
+	@for m in $(MODULES_DIRS); do if [ -d $$m ]; then cd $$m && $(MAKE) -s clean; fi; done
 
 
 clean-outputs:

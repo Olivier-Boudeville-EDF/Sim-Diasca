@@ -1,4 +1,8 @@
+[![Erlang CI](https://github.com/Olivier-Boudeville-EDF/Sim-Diasca/actions/workflows/erlang-ci.yml/badge.svg)](https://github.com/Olivier-Boudeville-EDF/Sim-Diasca/actions/workflows/erlang-ci.yml)
 # Sim-Diasca
+
+![](/sim-diasca/doc/common-elements/edf-related/sim-diasca.png)
+
 
 ## Purpose of this repository
 
