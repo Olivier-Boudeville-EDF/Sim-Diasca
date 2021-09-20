@@ -1909,7 +1909,7 @@ trigger_error( ExceptionClass, ExceptionTerm, Classname, ConstructionParameters,
 	log_error( "WOOPER error for PID ~w, "
 		"constructor (~ts:construct/~B) failed (exception class: ~p):~n~n"
 		" - with error term:~n  ~p~n~n"
-		" - stack trace was (latest calls first): ~ts~n"
+		" - stack trace was (latest calls first): ~ts~n~n"
 		" - for construction parameters:~n  ~p~n",
 		[ self(), Classname, Arity, ExceptionClass, ExceptionTerm,
 		  code_utils:interpret_stacktrace( Stacktrace, ExceptionTerm ),
@@ -2242,7 +2242,7 @@ log_error( Message ) ->
 log_error( FormatString, ValueList ) ->
 
 	Str = text_utils:format(
-			FormatString ++ "~n=END OF WOOPER ERROR REPORT FOR ~w ===",
+			FormatString ++ "~n= END OF WOOPER ERROR REPORT FOR ~w ===",
 			ValueList ++ [ self() ] ),
 
 	%trace_bridge:debug_fmt( "Error message: ~p.", [ Str ] ),
