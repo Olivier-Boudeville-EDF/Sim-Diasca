@@ -521,8 +521,8 @@ SD_MAIN_PAGE_BASE_DIR := main-page
 SD_MAIN_PAGE_INTERNAL_DIR := $(SD_MAIN_PAGE_BASE_DIR)/internal-version
 SD_MAIN_PAGE_PUBLIC_DIR := $(SD_MAIN_PAGE_BASE_DIR)/public-version
 
-SD_MAIN_PAGE_INTERNAL_NAME := Sim-Diasca-internal-main-page.
-SD_MAIN_PAGE_PUBLIC_NAME := Sim-Diasca-public-main-page.
+SD_MAIN_PAGE_INTERNAL_NAME := Sim-Diasca-internal-main-page
+SD_MAIN_PAGE_PUBLIC_NAME := Sim-Diasca-public-main-page
 
 SD_MAIN_PAGE_INTERNAL_SRC := $(SD_MAIN_PAGE_INTERNAL_NAME).rst
 SD_MAIN_PAGE_PUBLIC_SRC := $(SD_MAIN_PAGE_PUBLIC_NAME).rst
