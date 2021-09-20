@@ -161,12 +161,6 @@
 -define( LogOutput( Message, Format ), void ).
 
 
-% The default registration scope (must correspond to default_look_up_scope):
--define( default_registration_scope, global_only ).
-
-% The default look-up scope (must correspond to default_registration_scope):
--define( default_look_up_scope, global ).
-
 
 
 % The default period in seconds between two checks done by the watchdog (15
@@ -227,7 +221,9 @@
 %
 % The aggregator can be (optionally) plugged to an OTP supervision tree, thanks
 % to the Traces supervisor bridge (see the traces_sup module).
-
+%
+% The most usual registration scope for a trace aggregator is global_only; as
+% such this is the convention that was first prioritised and tuned for.
 
 
 % @doc Constructs a new trace aggregator.
@@ -585,7 +581,8 @@ destruct( State ) ->
 enableWatchdog( State ) ->
 
 	WatchState = enable_watchdog( ?trace_aggregator_name,
-		?default_look_up_scope, ?default_watchdog_period, State ),
+		?default_trace_aggregator_look_up_scope,
+		?default_watchdog_period, State ),
 
 	wooper:return_state( WatchState ).
 
@@ -598,7 +595,7 @@ enableWatchdog( State ) ->
 enableWatchdog( State, Period ) ->
 
 	WatchState = enable_watchdog( ?trace_aggregator_name,
-								  ?default_look_up_scope, Period, State ),
+		?default_trace_aggregator_look_up_scope, Period, State ),
 
 	wooper:return_state( WatchState ).
 
@@ -1148,7 +1145,8 @@ create( _UseSynchronousNew=false, TraceSeverity ) ->
 
 	% For registration scope, see also get_aggregator/{0,1}:
 	AggregatorPid = new_link( ?trace_aggregator_filename, TraceSeverity,
-		?TraceTitle, ?default_registration_scope, _IsBatch=false ),
+		?TraceTitle, ?default_trace_aggregator_registration_scope,
+		_IsBatch=false ),
 
 	wooper:return_static( AggregatorPid );
 
@@ -1159,8 +1157,8 @@ create( _UseSynchronousNew=true, TraceSeverity ) ->
 
 	% For registration scope, see also get_aggregator/{0,1}:
 	AggregatorPid = synchronous_new_link( ?trace_aggregator_filename,
-		TraceSeverity, ?TraceTitle, ?default_registration_scope,
-		_IsBatch=false ),
+		TraceSeverity, ?TraceTitle,
+		?default_trace_aggregator_registration_scope, _IsBatch=false ),
 
 	wooper:return_static( AggregatorPid ).
 
@@ -1180,7 +1178,8 @@ get_aggregator() ->
 
 
 
-% @doc Returns the PID of the current trace aggregator.
+% @doc Returns the PID of the current trace aggregator, using the default
+% look-up scope.
 %
 % The parameter is a boolean telling whether the aggregator should be created if
 % not available (if true), or if this method should just return a failure
@@ -1196,8 +1195,35 @@ get_aggregator() ->
 %
 -spec get_aggregator( boolean() ) ->
 			static_return( 'trace_aggregator_launch_failed'
-						   | 'trace_aggregator_not_found' | aggregator_pid() ).
+						 | 'trace_aggregator_not_found' | aggregator_pid() ).
 get_aggregator( CreateIfNotAvailable ) ->
+	AggRes = get_aggregator( CreateIfNotAvailable,
+							 ?default_trace_aggregator_look_up_scope ),
+	wooper:return_static( AggRes ).
+
+
+
+% @doc Returns the PID of the current trace aggregator, using specified look-up
+% scope.
+%
+% The parameter is a boolean telling whether the aggregator should be created if
+% not available (if true), or if this method should just return a failure
+% notification (if false).
+%
+% Note: to avoid race conditions between concurrent calls to this static method
+% (ex: due to multiple trace emitter instances created in parallel), an
+% execution might start with a call to this method with a blocking wait until
+% the aggregator pops up in registry services.
+%
+% Waits a bit before giving up: useful when client and aggregator processes are
+% launched almost simultaneously.
+%
+-spec get_aggregator( boolean(), look_up_scope() ) ->
+			static_return( 'trace_aggregator_launch_failed'
+						 | 'trace_aggregator_not_found' | aggregator_pid() ).
+get_aggregator( CreateIfNotAvailable, LookupScope ) ->
+
+	AggRegName = ?trace_aggregator_name,
 
 	% Only dealing with registered managers (instead of using directly their
 	% PID) allows to be sure only one instance (singleton) is being used, to
@@ -1210,8 +1236,7 @@ get_aggregator( CreateIfNotAvailable ) ->
 	%
 	AggRes = try
 
-		naming_utils:wait_for_registration_of( ?trace_aggregator_name,
-											   ?default_look_up_scope )
+		naming_utils:wait_for_registration_of( AggRegName, LookupScope )
 
 	catch { registration_waiting_timeout, _Name, _Scope } ->
 
@@ -1226,15 +1251,18 @@ get_aggregator( CreateIfNotAvailable ) ->
 
 				try
 
-					naming_utils:wait_for_registration_of(
-					  ?trace_aggregator_name, ?default_look_up_scope )
+					naming_utils:wait_for_registration_of( AggRegName,
+														   LookupScope )
 
 				catch { registration_waiting_timeout, _AName, _AScope } ->
 
-						trace_utils:error(
-						  "class_TraceAggregator:get_aggregator/1 unable to "
-						  "launch successfully the aggregator." ),
-						trace_aggregator_launch_failed
+					% Hopefully it is not a scope mismatch:
+					trace_utils:error_fmt(
+						"class_TraceAggregator:get_aggregator/2 seems unable "
+						"to launch successfully the aggregator "
+						"(lookup name: '~ts'; scope: ~ts).",
+						[ AggRegName, LookupScope ] ),
+					trace_aggregator_launch_failed
 
 				end;
 
@@ -1257,7 +1285,7 @@ get_aggregator( CreateIfNotAvailable ) ->
 remove() ->
 
 	case naming_utils:is_registered( ?trace_aggregator_name,
-									 ?default_look_up_scope ) of
+			?default_trace_aggregator_look_up_scope ) of
 
 		not_registered ->
 			wooper:return_static( trace_aggregator_not_found );

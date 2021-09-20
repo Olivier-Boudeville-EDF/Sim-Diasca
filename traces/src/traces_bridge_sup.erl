@@ -56,7 +56,7 @@
 -behaviour(supervisor_bridge).
 
 % User API of the bridge:
--export([ start_link/1 ]).
+-export([ start_link/2 ]).
 
 
 % Callbacks of the supervisor_bridge behaviour:
@@ -70,6 +70,10 @@
 -include("class_TraceAggregator.hrl").
 
 
+% Shorthands:
+
+-type init_args() :: traces_sup:init_args().
+
 
 % @doc Starts and links the Traces supervision bridge to the trace aggregator.
 %
@@ -77,24 +81,24 @@
 % (see traces_sup:init/1), hence generally triggered by the application
 % initialisation.
 %
--spec start_link( boolean() ) -> term().
-start_link( TraceSupervisorWanted ) ->
+%-spec start_link( init_arg_list() ) -> term().
+start_link( TraceSupervisorWanted, AggRegScope ) ->
 
 	% Apparently not displayed in a release context, yet executed:
 	trace_utils:debug_fmt( "Starting the Traces supervisor bridge, from ~w.",
 						   [ self() ] ),
 
-	supervisor_bridge:start_link( { local, ?bridge_name },
-		_Module=?MODULE, _InitArgs=TraceSupervisorWanted ).
+	supervisor_bridge:start_link( { local, ?bridge_name }, _Module=?MODULE,
+								  { TraceSupervisorWanted, AggRegScope } ).
 
 
 
 % @doc Callback to initialise this supervisor bridge, typically in answer to
 % start_link/1 above being executed.
 %
--spec init( boolean() ) -> { 'ok', pid(), State :: term() }
+-spec init( init_args() ) -> { 'ok', pid(), State :: term() }
 							| 'ignore' | { 'error', Error :: term() }.
-init( _Args=TraceSupervisorWanted ) ->
+init( { TraceSupervisorWanted, AggRegScope } ) ->
 
 	trace_utils:info_fmt( "Initializing the Traces supervisor bridge ~w "
 		"(trace supervisor wanted: ~ts).", [ self(), TraceSupervisorWanted ] ),
@@ -132,7 +136,7 @@ init( _Args=TraceSupervisorWanted ) ->
 	%
 	TraceAggregatorPid = traces_for_apps:app_start(
 		_ModuleName=?otp_application_module_name, InitTraceSupervisor,
-		_DisableExitTrapping=false ),
+		_DisableExitTrapping=false, AggRegScope ),
 
 	trace_utils:debug_fmt( "Traces supervisor bridge initialised, "
 		"with trace aggregator ~w.", [ TraceAggregatorPid ] ),
