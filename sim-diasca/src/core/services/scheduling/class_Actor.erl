@@ -1510,10 +1510,12 @@ beginTerminationDiasca( State, TickOffset, NewDiasca ) ->
 
 	% Actual termination now!
 
-	cond_utils:if_defined( simdiasca_debug_life_cycles, [
-		?debug( "Terminating now." ),
-		trace_utils:debug_fmt( "Actor ~w terminating now, at {~p,~p}.",
-							   [ self(), TickOffset, NewDiasca ] ) ] ),
+	cond_utils:if_defined( simdiasca_debug_life_cycles,
+		begin
+			?debug( "Terminating now." ),
+			trace_utils:debug_fmt( "Actor ~w terminating now, at {~p,~p}.",
+								   [ self(), TickOffset, NewDiasca ] )
+		end	),
 
 	cond_utils:if_defined( simdiasca_check_life_cycles,
 		begin
@@ -4394,15 +4396,16 @@ create_initial_actors( ActorConstructionList, LoadBalancerPid )
 	% No checking that the simulation is not started yet is needed, as it will
 	% be done load-balancer-side.
 
-	cond_utils:if_defined( simdiasca_debug_initial_creations, [
+	cond_utils:if_defined( simdiasca_debug_initial_creations,
+		begin
+			ActorLines = [ text_utils:format( "~p", [ CP ] )
+							|| CP <- ActorConstructionList ],
 
-		ActorLines = [ text_utils:format( "~p", [ CP ] )
-						|| CP <- ActorConstructionList ],
-
-		trace_utils:debug_fmt( "~w requesting the creation of ~B initial "
-			"actors, construction parameters being: ~ts",
-			[ self(), length( ActorConstructionList ),
-			  text_utils:strings_to_string( ActorLines ) ] ) ] ),
+			trace_utils:debug_fmt( "~w requesting the creation of ~B initial "
+				"actors, construction parameters being: ~ts",
+				[ self(), length( ActorConstructionList ),
+				  text_utils:strings_to_string( ActorLines ) ] )
+		end ),
 
 	LoadBalancerPid ! { createInitialActors,
 						[ ActorConstructionList, self() ] },
