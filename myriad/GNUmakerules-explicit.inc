@@ -13,13 +13,12 @@
 			all-parse-transforms bootstrap-modules make-all-parse-transforms \
 			build-debug rebuild test test-recurse doc-recurse build-tests    \
 			launch shell                                                     \
-			copy-beams-to-ebin                                               \
+			create-include-links clean-include-links copy-beams-to-ebin      \
 			install-all install-announce install-ebin install-bin            \
 			install-src install-include install-examples install-test        \
 			install-doc info-install info-install-locations                  \
 			info-install-content create-myriad-checkout                      \
 			rebar3-application set-rebar-conf set-rebar-conf-for-hex         \
-			rebar3-make-include-links rebar3-clean-include-links             \
 			rebar3-release rebar3-development-release                        \
 			rebar3-production-release rebar3-hide-unsupported-sources        \
 			rebar3-restore-unsupported-sources                               \
@@ -65,7 +64,7 @@ ifeq ($(BASE_MAKEFILE),true)
 #
 # (add 'echo " Entering module directory $$m"' if needing to troubleshoot)
 #
-all: all-pre-hook all-parse-transforms rebar3-make-include-links
+all: all-pre-hook all-parse-transforms create-include-links
 	@echo "  Building all, in parallel over $(CORE_COUNT) core(s), from $(PWD)"
 	@for m in $(MODULES_DIRS); do if ! (if [ -d $$m ]; then cd $$m && \
 		$(MAKE) -s all-recurse -j $(CORE_COUNT) && cd ..; else echo "     (directory $$m skipped)"; \
@@ -83,7 +82,10 @@ all: all-pre-hook all-parse-transforms rebar3-make-include-links
 #  _build-like directories)
 #
 clean: clean-layer-ebin clean-api-doc
-	-@if [ -d doc ]; then cd doc && $(MAKE) -s clean; fi
+
+# Most probably redundant:
+# clean:
+#-@if [ -d "doc" ]; then cd doc && $(MAKE) -s clean; fi
 
 else
 
@@ -274,6 +276,26 @@ shell:
 
 
 
+# This target creates appropriate symlinks for various tools (rebar, edoc, etc.)
+# that expect all includes to be directly available from the 'include' directory
+# - while still preserving our intented structure; rebar-wise, this is not
+# needed for the current layer, but is required by any upper layer in order to
+# compile:
+#
+create-include-links:
+	@echo "  Populating the include symlinks"
+	@cd include && for d in $$(find * -type d 2>/dev/null); do for h in $$(/bin/ls $$d/*.hrl 2>/dev/null); do ln -sf $$h; done; done
+
+
+# Gets rid of include symlinks created for tools like rebar or edoc (and only
+# the symlinks, as a layer may rely on flat, actual includes):
+#
+clean-include-links:
+	@echo "  Cleaning the include symlinks"
+	@cd include && find . -maxdepth 1 -type l -exec /bin/rm -f '{}' ';'
+
+
+
 # Section regarding installation and OTP integration.
 
 
@@ -454,7 +476,7 @@ create-myriad-checkout:
 # GIT)
 #
 rebar3-application: rebar3-real-clean clean rebar3-update set-rebar-conf      \
-					rebar3-make-include-links rebar3-hide-unsupported-sources \
+					create-include-links rebar3-hide-unsupported-sources \
 					rebar3-create-app-file
 	@echo "  Triggering the overall creation by rebar3 of an OTP application corresponding to $(PROJECT_NAME)"
 	-@/bin/rm -f rebar.lock 2>/dev/null
@@ -481,24 +503,6 @@ set-rebar-conf-for-hex:
 	@cd conf && $(MAKE) -s rebar-for-hex.config && /bin/cp -f rebar-for-hex.config ../rebar.config
 
 
-# This target creates appropriate symlinks for rebar, while preserving our
-# intented structure; this is not needed for the current layer, but is required
-# by any upper layer in order to compile:
-#
-rebar3-make-include-links:
-	@echo "  Populating the include symlinks"
-	@cd include && for d in $$(find * -type d 2>/dev/null); do for h in $$(/bin/ls $$d/*.hrl 2>/dev/null); do ln -sf $$h; done; done
-
-
-
-# Gets rid of include symlinks created for rebar (and only the symlinks, as a
-# layer may rely on flat, actual includes):
-#
-rebar3-clean-include-links:
-	@echo "  Cleaning the include symlinks"
-	@cd include && find . -maxdepth 1 -type l -exec /bin/rm -f '{}' ';'
-
-
 # Either a symlink or a copy (at least in the case of hex):
 remove-rebar-conf:
 	@echo "  Removing rebar configuration"
@@ -508,7 +512,7 @@ remove-rebar-conf:
 # Apparently no way of telling rebar to exclude some source files, so:
 rebar3-hide-unsupported-sources:
 	@echo "  Hiding unsupported sources"
-	@for f in $(UNSUPPORTED_SOURCES); do /bin/mv -f $$f $$f-hiddenFOO; done 2>/dev/null || true
+	@for f in $(UNSUPPORTED_SOURCES); do /bin/mv -f $$f $$f-hidden; done 2>/dev/null || true
 
 
 rebar3-restore-unsupported-sources:
@@ -533,7 +537,7 @@ rebar3-restore-unsupported-sources:
 # and will fail)
 #
 rebar3-compile-pre-hook: rebar3-hide-unsupported-sources \
-						 rebar3-make-include-links
+						 create-include-links
 	@echo "  rebar3 pre-compile hook executed in $$(pwd), with the '$(MYRIAD_REBAR_PROFILE)' profile"
 	@$(MAKE) -s all copy-beams-to-ebin
 
@@ -708,7 +712,7 @@ rebar3-copy-beams:
 	@find src -name '*.beam' -a ! -name '*_test.beam' -exec /bin/cp '{}' $(MYRIAD_REBAR_BUILD_DIR)/lib/$(PROJECT_NAME_FOR_REBAR)/ebin/ ';'
 
 
-rebar3-clean: rebar3-clean-include-links rebar3-restore-unsupported-sources
+rebar3-clean: clean-include-links rebar3-restore-unsupported-sources
 	@echo "  Removing any prior rebar3 build tree for this project ($(MYRIAD_REBAR_BUILD_BASE))"
 	-@/bin/rm -rf $(MYRIAD_REBAR_BUILD_BASE) 2>/dev/null
 	-@/bin/rm -f ebin/$(PROJECT_NAME_FOR_REBAR).app
@@ -847,7 +851,10 @@ sync-to-server: all
 
 
 # Main doc generator, directly relying on edoc:
-generate-api-doc: overview.edoc
+#
+# (include symlinks needed for layers having a full include tree)
+#
+generate-api-doc: overview.edoc create-include-links
 	@echo "  Generating API documentation with edoc"
 	@$(ERLANG_INTERPRETER) -noshell -run edoc_run application "'$(PROJECT_NAME)'" '"."' $(EDOC_OPTS) && echo "  API documentation generated in file://$$(realpath $(API_DOC_ROOT)/index.html)"
 	@$(MAKE) -s copy-static-content

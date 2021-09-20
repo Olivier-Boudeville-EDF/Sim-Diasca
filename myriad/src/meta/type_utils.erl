@@ -448,12 +448,11 @@
 
 
 -type tuploid() :: tuploid( term() ).
-% We name tuploid a pseudo-tuple, ie a value that is either an actual tuple or
+% We name tuploid a pseudo-tuple, i.e. a value that is either an actual tuple or
 % a single, standalone term, designated as a "basic tuploid".
 %
 % That is, a tuploid is a tuple of any size, except that the tuploid of size 1
 % is MyTerm, not {MYterm}.
-%
 
 
 -type tuploid( T ) :: tuple() | T.
@@ -469,9 +468,9 @@
 % Note: currently, only a very basic, ad hoc type support ("hand-made look-up
 % tables") is provided.
 %
-% Later we would like to really parse any type description (ex: "[ { float, [
-% boolean ] } ]") and be able to manage it as type() (including the checking of
-% terms against types).
+% Later we would like to really parse any type description (ex:
+% "[{float,[boolean]}]") and be able to manage it as type() (including the
+% checking of terms against types).
 
 
 
@@ -491,7 +490,7 @@
 		  ensure_string/1, ensure_binary/1 ]).
 
 
-% Checking:
+% Checking (see also: list_utils:are_*/1):
 -export([ check_atom/1, check_boolean/1, check_pid/1,
 
 		  check_integer/1, check_maybe_integer/1,

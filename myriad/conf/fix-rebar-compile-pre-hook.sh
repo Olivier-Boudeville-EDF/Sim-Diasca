@@ -147,7 +147,7 @@ if [ $fix_headers -eq 0 ]; then
 		# This may happen when multiple attempts of builds are performed for a
 		# direct-build, or when being built as a dependency:
 		#
-		echo "(${target_inc_dir} directory already existing)"
+		[ $verbose -eq 1 ] || echo "(${target_inc_dir} directory already existing)"
 
 		#echo "Warning: unexpected target ${target_inc_dir}: $(ls -l ${target_inc_dir})" 1>&2
 
@@ -199,7 +199,7 @@ if [ $fix_headers -eq 0 ]; then
 
 			# To prevent rebar from even seeing them afterwards:
 			if [ $do_hide -eq 0 ]; then
-				/bin/mv -f "$f" "$f-hidden"
+				/bin/mv -f "$f" "$f-hidden-for-rebar3"
 			fi
 
 	   done
@@ -299,7 +299,7 @@ if [ $fix_sources -eq 0 ]; then
 		# This may happen when multiple attempts of builds are performed for a
 		# direct-build, or when being built as a dependency:
 		#
-		echo "(${target_src_dir} directory already existing)"
+		[ $verbose -eq 1 ] || echo "(${target_src_dir} directory already existing)"
 
 		#echo "Warning: unexpected target ${target_src_dir}: $(ls -l ${target_src_dir})" 1>&2
 
@@ -330,7 +330,7 @@ if [ $fix_sources -eq 0 ]; then
 
 			# To prevent rebar from even seeing them afterwards:
 			if [ $do_hide -eq 0 ]; then
-				/bin/mv -f "$f" "$f-hidden"
+				/bin/mv -f "$f" "$f-hidden-for-rebar3"
 			fi
 
 		done
@@ -356,7 +356,7 @@ if [ $fix_sources -eq 0 ]; then
 
 			# To prevent rebar from even seeing them afterwards:
 			if [ $do_hide -eq 0 ]; then
-				/bin/mv -f "$f" "$f-hidden"
+				/bin/mv -f "$f" "$f-hidden-for-rebar3"
 			fi
 
 		done
@@ -398,7 +398,7 @@ if [ $fix_beams -eq 0 ]; then
 		# This may happen when multiple attempts of build are performed:
 		# (actually normal for ebin directories)
 
-		echo "(${target_ebin_dir} directory already existing)"
+		[ $verbose -eq 1 ] || echo "(${target_ebin_dir} directory already existing)"
 
 		#echo "Warning: unexpected target ${target_ebin_dir}: $(ls -l ${target_ebin_dir})" 1>&2
 
@@ -427,7 +427,7 @@ if [ $fix_beams -eq 0 ]; then
 		# (hiding BEAMs is most probably never a good idea)
 		#
 		#if [ $do_hide -eq 0 ]; then
-		#	/bin/mv -f "$f" "$f-hidden"
+		#	/bin/mv -f "$f" "$f-hidden-for-rebar3"
 		# fi
 
 	done

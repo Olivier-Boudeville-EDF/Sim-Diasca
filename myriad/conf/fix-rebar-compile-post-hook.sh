@@ -58,37 +58,37 @@ if [ $do_name_back -eq 0 ]; then
 
 	# Order matters again:
 
-	headers_to_rename=$(find src test include -name '*.hrl-hidden')
+	headers_to_rename=$(find src test include -name '*.hrl-hidden-for-rebar3')
 
 	[ $verbose -eq 1 ] || echo "  Renaming back headers: ${headers_to_rename}"
 
 	for f in ${headers_to_rename}; do
 
-		corrected_f="$(echo $f | sed 's|\.hrl-hidden$|.hrl|1')"
+		corrected_f="$(echo $f | sed 's|\.hrl-hidden-for-rebar3$|.hrl|1')"
 		/bin/mv -f "$f" "${corrected_f}"
 
 	done
 
 
-	sources_to_rename=$(find src test -name '*.erl-hidden')
+	sources_to_rename=$(find src test -name '*.erl-hidden-for-rebar3')
 
 	[ $verbose -eq 1 ] || echo "  Renaming back sources: ${sources_to_rename}"
 
 	for f in ${sources_to_rename}; do
 
-		corrected_f="$(echo $f | sed 's|\.erl-hidden$|.erl|1')"
+		corrected_f="$(echo $f | sed 's|\.erl-hidden-for-rebar3$|.erl|1')"
 		/bin/mv -f "$f" "${corrected_f}"
 
 	done
 
 
-	beams_to_rename=$(find ebin -name '*.beam-hidden')
+	beams_to_rename=$(find ebin -name '*.beam-hidden-for-rebar3')
 
 	[ $verbose -eq 1 ] || echo "  Renaming back BEAMs: ${beams_to_rename}"
 
 	for f in ${beams_to_rename}; do
 
-		corrected_f="$(echo $f | sed 's|\.beam-hidden$|.beam|1')"
+		corrected_f="$(echo $f | sed 's|\.beam-hidden-for-rebar3$|.beam|1')"
 		/bin/mv -f "$f" "${corrected_f}"
 
 	done

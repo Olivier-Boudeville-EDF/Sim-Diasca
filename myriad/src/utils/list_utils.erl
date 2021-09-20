@@ -48,7 +48,7 @@
 
 % Checks regarding lists:
 -export([ ensure_list/1, ensure_atoms/1, ensure_tuples/1, ensure_pids/1,
-		  are_integers/1, check_integers/1, are_pids/1,
+		  are_integers/1, check_integers/1, are_pids/1, are_atoms/1,
 		  check_strictly_ascending/1 ]).
 
 
@@ -800,6 +800,9 @@ append_at_end( Elem, L ) when is_list( L ) ->
 
 
 % @doc Returns whether the specified list contains only integers.
+%
+% Considers that an empty list complies.
+%
 -spec are_integers( term() ) -> boolean().
 are_integers( [] ) ->
 	true;
@@ -821,6 +824,9 @@ check_integers( Any ) ->
 
 
 % @doc Returns whether the specified list contains only PIDs.
+%
+% Considers that an empty list complies.
+%
 -spec are_pids( term() ) -> boolean().
 are_pids( [] ) ->
 	true;
@@ -831,6 +837,21 @@ are_pids( [ H | T ] ) when is_pid( H ) ->
 are_pids( _ ) ->
 	false.
 
+
+
+% @doc Returns whether the specified list contains only atoms.
+%
+% Considers that an empty list complies.
+%
+-spec are_atoms( term() ) -> boolean().
+are_atoms( [] ) ->
+	true;
+
+are_atoms( [ H | T ] ) when is_atom( H ) ->
+	are_atoms( T );
+
+are_atoms( _ ) ->
+	false.
 
 
 % @doc Checks that the terms in the specified list are in strict (no duplicates)

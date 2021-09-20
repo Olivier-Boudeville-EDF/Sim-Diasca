@@ -43,7 +43,7 @@ all:
 	@echo "  Run 'make doc' to generate the documentation of the 'Myriad' layer."
 
 
-doc: html pdf api-doc
+doc: html pdf create-api-doc
 
 
 html: local-html

@@ -36,9 +36,9 @@ shift
 do_hide=0
 #do_hide=1
 
-# Verbose by default (0):
-#verbose=1
-verbose=0
+# Not verbose by default (1):
+verbose=1
+#verbose=0
 
 if [ -n "$1" ]; then
 
@@ -56,6 +56,7 @@ if [ -n "$1" ]; then
 	if [ -n "$1" ]; then
 
 		if [ "$1" = "--verbose" ]; then
+			echo "(verbose mode activated)"
 			verbose=0
 		elif [ "$1" = "--no-verbose" ]; then
 			verbose=1

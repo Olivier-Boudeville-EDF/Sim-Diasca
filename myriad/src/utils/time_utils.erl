@@ -60,8 +60,11 @@
 
 
 % Date support:
--export([ is_canonical_date/1, check_canonical_date/1, compare_dates/2,
-		  check_date_order/2, get_date_difference/2 ]).
+-export([ is_canonical_date/1, check_canonical_date/1,
+		  is_user_date/1, check_user_date/1,
+		  compare_dates/2,
+		  check_date_order/2, get_date_difference/2,
+		  user_to_canonical_date/1, canonical_to_user_date/1 ]).
 
 
 -type day_index() :: 1..7.
@@ -78,7 +81,13 @@
 
 
 -type date() :: { year(), canonical_month(), canonical_day() }.
-% Calendar date; used instead of the less precise calendar:date/0 type.
+% Canonical calendar date; used instead of the less precise calendar:date/0
+% type. See also: user_date/0.
+
+
+-type user_date() :: { canonical_day(), canonical_month(), year() }.
+% Date in a format that is considered common to most users.
+% See also: date/0.
 
 
 -type date_in_year() :: { canonical_month(), canonical_day() }.
@@ -109,10 +118,9 @@
 % specified).
 
 
--export_type([ day_index/0, week_day/0, date/0, date_in_year/0, time/0,
-			   ms_since_year_0/0, ms_since_epoch/0, ms_monotonic/0,
-			   ms_duration/0,
-			   dhms_duration/0 ]).
+-export_type([ day_index/0, week_day/0, date/0, user_date/0, date_in_year/0,
+			   time/0, ms_since_year_0/0, ms_since_epoch/0, ms_monotonic/0,
+			   ms_duration/0, dhms_duration/0 ]).
 
 
 % Basics:
@@ -510,16 +518,44 @@ is_canonical_date( _Other ) ->
 
 
 
-% @doc Checks that specified date is a canonical one.
+% @doc Checks that the specified date is a canonical one.
 -spec check_canonical_date( date() ) -> void().
 check_canonical_date( Date ) ->
-	case is_canonical_date( Date) of
+	case is_canonical_date( Date ) of
 
 		true ->
 			ok;
 
 		false ->
 			throw( { non_canonical_date, Date } )
+
+	end.
+
+
+
+% @doc Tells whether the specified term is a user date.
+-spec is_user_date( term() ) -> boolean().
+is_user_date( _Date={ Day, Month, Year } ) when
+		is_integer( Year ) andalso is_integer( Month ) andalso
+		is_integer( Day ) andalso Month >= 1 andalso Month =< 12
+		andalso Day >= 1 andalso Day =< 31 ->
+	true;
+
+is_user_date( _Other ) ->
+	false.
+
+
+
+% @doc Checks that the specified date is a user one.
+-spec check_user_date( user_date() ) -> void().
+check_user_date( Date ) ->
+	case is_user_date( Date ) of
+
+		true ->
+			ok;
+
+		false ->
+			throw( { non_user_date, Date } )
 
 	end.
 
@@ -605,6 +641,19 @@ get_date_difference( FirstDate, SecondDate ) ->
 	SecondDayCount = calendar:date_to_gregorian_days( SecondDate ),
 
 	SecondDayCount - FirstDayCount.
+
+
+
+% @doc Converts specified user date into a canonical one.
+-spec user_to_canonical_date( user_date() ) -> date().
+user_to_canonical_date( { D, M, Y } ) ->
+	{ Y, M, D }.
+
+
+% @doc Converts specified canonical date into a user one.
+-spec canonical_to_user_date( date() ) -> user_date().
+canonical_to_user_date( { Y, M, D } ) ->
+	{ D, M, Y }.
 
 
 

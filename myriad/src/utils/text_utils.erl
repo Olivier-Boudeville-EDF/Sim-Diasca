@@ -71,7 +71,8 @@
 		  binaries_to_binary/1, binaries_to_binary/2,
 
 		  atoms_to_string/1, atoms_to_sorted_string/1, atoms_to_listed_string/1,
-		  integers_to_listed_string/1,
+		  atoms_to_quoted_listed_string/1,
+		  integers_to_listed_string/1, integer_ids_to_listed_string/1,
 		  proplist_to_string/1, version_to_string/1,
 		  atom_to_binary/1,
 
@@ -132,6 +133,7 @@
 		  trim_trailing_whitespaces/1,
 
 		  ellipse/1, ellipse/2, ellipse_fmt/2,
+		  tail/1, tail/2,
 
 		  get_default_bullet/0, get_bullet_for_level/1,
 		  format_text_for_width/2,
@@ -316,6 +318,10 @@
 			   parse_string/0,
 			   translation_table/0, length/0, width/0, indentation_level/0,
 			   distance/0 ]).
+
+
+% Shorthands:
+-type integer_id() :: id_utils:integer_id().
 
 
 
@@ -1097,10 +1103,9 @@ atoms_to_sorted_string( ListOfAtoms ) ->
 
 
 % @doc Returns a string that pretty-prints the specified list of atoms, listed
-% directly in the returned text.
+% directly (in an unquoted form) in the returned text.
 %
-% Ex: atoms_to_listed_string( [ red, blue, green ] ) returns "red, blue and
-% green".
+% Ex: atoms_to_listed_string([red, blue, green]) returns "red, blue and green".
 %
 -spec atoms_to_listed_string( [ atom() ] ) -> ustring().
 atoms_to_listed_string( ListOfAtoms ) ->
@@ -1108,14 +1113,41 @@ atoms_to_listed_string( ListOfAtoms ) ->
 	strings_to_listed_string( Strings ).
 
 
+
+% @doc Returns a string that pretty-prints the specified list of atoms, listed
+% directly, in a quoted form, in the returned text.
+%
+% Ex: atoms_to_quoted_listed_string([red, blue, green]) returns "'red', 'blue'
+% and 'green'".
+%
+-spec atoms_to_quoted_listed_string( [ atom() ] ) -> ustring().
+atoms_to_quoted_listed_string( ListOfAtoms ) ->
+	Strings = [ text_utils:format("'~ts'", [ A ] ) || A <- ListOfAtoms ],
+	strings_to_listed_string( Strings ).
+
+
+
+
 % @doc Returns a string that pretty-prints the specified list of integers,
 % listed directly in the returned text.
 %
-% Ex: integers_to_listed_string( [ 1, 13, 8 ] ) returns "1, 13 and 8".
+% Ex: integers_to_listed_string([1, 13, 8]) returns "1, 13 and 8".
 %
 -spec integers_to_listed_string( [ integer() ] ) -> ustring().
 integers_to_listed_string( ListOfIntegers ) ->
-	Strings = [ integer_to_string( A ) || A <- ListOfIntegers ],
+	Strings = [ integer_to_string( I ) || I <- ListOfIntegers ],
+	strings_to_listed_string( Strings ).
+
+
+
+% @doc Returns a string that pretty-prints the specified list of integer
+% identifiers, listed directly in the returned text.
+%
+% Ex: integer_ids_to_listed_string([1, 13, 8]) returns "#1, #13 and #8".
+%
+-spec integer_ids_to_listed_string( [ integer_id() ] ) -> ustring().
+integer_ids_to_listed_string( IntegerIds ) ->
+	Strings = [ text_utils:format( "#~B", [ I ] ) || I <- IntegerIds ],
 	strings_to_listed_string( Strings ).
 
 
@@ -1686,7 +1718,7 @@ format_ellipsed( FormatString, Values ) ->
 % Unicode inputs resulting on crashes afterwards.
 %
 -spec format_ellipsed( format_string(), format_values(), length() ) ->
-							 ustring().
+							ustring().
 format_ellipsed( FormatString, Values, MaxLen ) ->
 	ellipse( format( FormatString, Values ), MaxLen ).
 
@@ -1704,7 +1736,7 @@ format_ellipsed( FormatString, Values, MaxLen ) ->
 % depended on how many io*:format/* it was to go through (fragile at best).
 %
 -spec match_types( [ control_sequence() ], format_values(),
-					 basic_utils:count() ) -> ustring().
+				   basic_utils:count() ) -> ustring().
 match_types( _Seqs=[], _Values=[], _Count ) ->
 	"yet no mismatch detected";
 
@@ -3647,8 +3679,12 @@ trim_trailing_whitespaces( String ) ->
 
 
 
-% @doc Ellipses (shortens) the specified string, so that its total length
-% remains up to the default threshold.
+% @doc Ellipses (shortens by removing the end of) the specified string, so that
+% its total length remains up to the default threshold.
+%
+% Note: the specified threshold is expected to be equal at least to 6.
+%
+% See also: tail/1.
 %
 -spec ellipse( ustring() ) -> ustring().
 ellipse( String ) ->
@@ -3656,8 +3692,10 @@ ellipse( String ) ->
 
 
 
-% @doc Ellipses (shortens) the specified string, so that its total length
-% remains up to specified threshold.
+% @doc Ellipses (shortens by removing the end of) the specified string, so that
+% its total length remains up to specified threshold.
+%
+% Note: the specified threshold is expected to be equal at least to 6.
 %
 -spec ellipse( ustring(), length() | 'unlimited' ) -> ustring().
 ellipse( String, _MaxLen=unlimited ) ->
@@ -3686,9 +3724,58 @@ ellipse( String, MaxLen ) ->
 % @doc Ellipses (shortens) specified string to format, so that its total length
 % remains up to specified threshold.
 %
+% Note: the specified threshold is expected to be equal at least to 6.
+%
 -spec ellipse_fmt( format_string(), format_values() ) -> ustring().
 ellipse_fmt( FormatString, Values ) ->
 	ellipse( format( FormatString, Values ) ).
+
+
+
+% @doc Tails (shortens by removing the beginning of) the specified string, so
+% that its total length remains up to the default threshold.
+%
+% Note: the specified threshold is expected to be equal at least to 6.
+%
+% See also: ellipse/1.
+%
+-spec tail( ustring() ) -> ustring().
+tail( String ) ->
+	tail( String, _DefaultMaxLen=800 ).
+
+
+
+% @doc Tails (shortens by removing the beginning of) the specified string, so
+% that its total length remains up to specified threshold.
+%
+% Note: the specified threshold is expected to be equal at least to 6.
+%
+% See also: ellipse/2.
+%
+-spec tail( ustring(), length() | 'unlimited' ) -> ustring().
+tail( String, _MaxLen=unlimited ) ->
+	String;
+
+tail( String, MaxLen ) ->
+
+	Prefix = "[...] ",
+
+	% To avoid countless computations of a constant:
+	PrefixLen = 6,
+
+	Len = length( String ),
+
+	ExtraCount = Len - MaxLen,
+
+	case ExtraCount > 0 of
+
+		true ->
+			Prefix ++ string:slice( String, _Start=ExtraCount + PrefixLen );
+
+		_ ->
+			String
+
+	end.
 
 
 

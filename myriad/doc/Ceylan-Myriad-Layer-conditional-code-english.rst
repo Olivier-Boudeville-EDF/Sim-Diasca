@@ -49,7 +49,19 @@ Based on the defined tokens, code may be injected; this code can be any Erlang e
 Injecting a *single* expression (i.e. not multiple ones) is not a limitation: not only this single expression can be a function call (thus corresponding to arbitrarily many expressions), but more significantly a series of expressions can be nested in a ``begin`` / ``end`` block, making them a single expression [#]_.
 
 
-.. [#] A previous implementation of ``cond_utils`` allowed to specify the code to inject either as an expression or as a *list* of expressions. It was actually a mistake, as a single expression to return can be itself a list (ex: ``["red", "blue"]``), which bears a different semantics and should not be interpreted as a list of expressions to evaluate. For example, the result from the code to inject may be bound to a variable, in which case we expect ``A=["red", "blue"]`` rather than ``A="red", "blue"`` (this latter term being constructed but not used).
+.. [#] A previous implementation of ``cond_utils`` allowed to specify the code to inject either as an expression or as a *list* of expressions.
+
+	   It was actually a mistake, as a single expression to return can be itself a list (ex: ``["red", "blue"]``), which bears a different semantics and should not be interpreted as a list of expressions to evaluate. For example, the result from the code to inject may be bound to a variable, in which case we expect ``A=["red", "blue"]`` rather than ``A="red", "blue"`` (this latter term being constructed but not used).
+
+	   So the following code injection *is* faulty (a ``begin/end`` block was meant, not a list):
+
+	   .. code:: erlang
+
+		  cond_utils:if_defined( my_token, [
+			  A = 1,
+			  io:format( "Hello ~p!~n", [ A ] ) ] ),
+
+	   (and moreover such code will trigger a compilation error, the ``A`` in ``io:format/2`` being reported as unbounded then)
 
 
 

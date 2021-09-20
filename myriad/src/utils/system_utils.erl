@@ -150,11 +150,11 @@
 
 
 -opaque cpu_usage_info() ::
-			{ integer(), integer(), integer(), integer(), integer() }.
+		{ integer(), integer(), integer(), integer(), integer() }.
 
 
--type cpu_usage_percentages() :: { percent(), percent(), percent(), percent(),
-								   percent() }.
+-type cpu_usage_percentages() ::
+		{ percent(), percent(), percent(), percent(), percent() }.
 
 
 % For record declarations and shell commands:
@@ -185,28 +185,27 @@
 
 -record( fs_info, {
 
-		   % Device name (ex: /dev/sda5):
-		   filesystem :: directory_path(),
+		 % Device name (ex: /dev/sda5):
+		 filesystem :: directory_path(),
 
-		   % Mount point (ex: /boot):
-		   mount_point :: directory_path(),
+		 % Mount point (ex: /boot):
+		 mount_point :: directory_path(),
 
-		   % Filesystem type (ex: 'ext4'):
-		   type :: filesystem_type(),
+		 % Filesystem type (ex: 'ext4'):
+		 type :: filesystem_type(),
 
-		   % Used size, in bytes:
-		   used_size :: byte_size(),
+		 % Used size, in bytes:
+		 used_size :: byte_size(),
 
-		   % Available size, in bytes:
-		   available_size :: byte_size(),
+		 % Available size, in bytes:
+		 available_size :: byte_size(),
 
-		   % Number of used inodes:
-		   used_inodes :: count(),
+		 % Number of used inodes:
+		 used_inodes :: count(),
 
-		   % Number of available inodes:
-		   available_inodes :: count()
+		 % Number of available inodes:
+		 available_inodes :: count() } ).
 
-} ).
 
 -type fs_info() :: #fs_info{}.
 % Stores information about a filesystem.
@@ -310,6 +309,11 @@
 % The group identifier (gid) of a filesystem element.
 
 
+-type os_pid() :: count().
+% The PID of an operating-system process (OS-level, not Erlang-level, process
+% identifier).
+
+
 -export_type([ byte_size/0, cpu_usage_info/0, cpu_usage_percentages/0,
 			   host_static_info/0, host_dynamic_info/0,
 
@@ -328,7 +332,7 @@
 			   encoding/0, encoding_option/0, encoding_options/0,
 
 			   user_name/0, password/0, basic_credential/0, group_name/0,
-			   user_id/0, group_id/0 ]).
+			   user_id/0, group_id/0, os_pid/0 ]).
 
 
 % For myriad_spawn*:
@@ -1024,7 +1028,7 @@ get_line( Prompt, GetLineScriptPath ) ->
 	% not be able to write to the standard input (1):
 	%
 	%Cmd = text_utils:format( "get-line-as-external-program.sh \"~ts\" 1>&4",
-	%						 [ Prompt ] ),
+	%                         [ Prompt ] ),
 
 	io:format( Prompt ),
 
@@ -1107,13 +1111,13 @@ get_standard_environment() ->
 monitor_port( Port, Data ) ->
 
 	%trace_utils:debug_fmt( "Process ~p starting the monitoring of "
-	%					   "port ~p (data: '~p').", [ self(), Port, Data ] ),
+	%                       "port ~p (data: '~p').", [ self(), Port, Data ] ),
 
 	receive
 
 		{ Port, { data, NewData } } ->
 			%trace_utils:debug_fmt( "Port monitor ~p received data: '~p'.",
-			%					   [ self(), NewData ] ),
+			%                       [ self(), NewData ] ),
 
 			monitor_port( Port, [ NewData | Data ] );
 
@@ -1437,6 +1441,7 @@ get_environment_variable_for_library_lookup() ->
 -spec add_path_for_executable_lookup( directory_path() ) -> void().
 add_path_for_executable_lookup( PathName ) ->
 	add_paths_for_executable_lookup( [ PathName ] ).
+
 
 
 % @doc Adds the specified directories to the system's executable search paths

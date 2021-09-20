@@ -159,7 +159,7 @@ endif
 #
 # (useful in contexts where stacktraces tend to vanish)
 #
-MYRIAD_DEBUG_FLAGS += -Dmyriad_add_stacktraces
+#MYRIAD_DEBUG_FLAGS += -Dmyriad_add_stacktraces
 
 
 ERLANG_COMPILER_OPT_BASE += $(MYRIAD_DEBUG_FLAGS)             \
@@ -200,7 +200,7 @@ endif
 # The uniquely-defined version of this layer, for all uses (including rebar and
 # hex):
 #
-MYRIAD_VERSION := 1.0.19
+MYRIAD_VERSION := 1.0.20
 
 
 # PROJECT_VERSION should be defined on a per-project basis.
@@ -882,6 +882,9 @@ BEAM_DIRS += $(MYRIAD_BEAM_DIRS) $(MYRIAD_TOP)/.. $(MYRIAD_TOP)/ebin
 
 ERL_LAUNCHER = $(MYRIAD_SRC)/scripts/launch-erl.sh
 
+
+# If wanting to specify (Erlang) configuration file(s):
+# INTERNAL_OPTIONS += --config my-traces-test.config
 
 
 # Compiler section.

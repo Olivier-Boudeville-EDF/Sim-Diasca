@@ -48,7 +48,6 @@
 % {myName, "Sylvester the cat"}.
 % '''
 %
-%
 -module(preferences).
 
 
@@ -324,7 +323,8 @@ get_default_preferences_path() ->
 -spec get_registration_name( file_path() ) -> registration_name().
 get_registration_name( FilePath ) ->
 	CoreFilePath = file_utils:remove_upper_levels_and_extension( FilePath ),
-	RegistrationName = file_utils:path_to_variable_name( CoreFilePath, "" ),
+	RegistrationName = file_utils:path_to_variable_name( CoreFilePath,
+														 _Prefix="" ),
 	text_utils:string_to_atom( RegistrationName ).
 
 
@@ -412,8 +412,8 @@ server_main_run( SpawnerPid, RegistrationName, FilePath ) ->
 					add_preferences_from( FilePath, EmptyTable );
 
 				false ->
-					io:format( "No preferences file found "
-							   "(searched for '~ts').~n", [ FilePath ] ),
+					trace_bridge:info_fmt( "No preferences file found "
+						"(searched for '~ts').~n", [ FilePath ] ),
 					EmptyTable
 
 			end,
@@ -436,8 +436,8 @@ server_main_run( SpawnerPid, RegistrationName, FilePath ) ->
 % Main loop of the preferences server.
 server_main_loop( Table ) ->
 
-	%trace_utils:debug_fmt( "Waiting for preferences-related request, "
-	%    "having ~B recorded preferences.",[ table:size( Table ) ] ),
+	%trace_bridge:debug_fmt( "Waiting for preferences-related request, "
+	%    "having ~B recorded preferences.", [ table:size( Table ) ] ),
 
 	receive
 
@@ -489,7 +489,7 @@ server_main_loop( Table ) ->
 			server_main_loop( Table );
 
 		stop ->
-			%io:format( "Stopping preferences server.~n" ),
+			%trace_bridge:debug( "Stopping preferences server." ),
 			stopped
 
 	end.
@@ -514,17 +514,17 @@ add_preferences_from( FilePath, Table ) ->
 				ok ->
 					NewTable = table:add_entries( Entries, Table ),
 
-					%io:format( "Loaded from preferences file '~ts' "
-					%           "following entries: ~ts",
-					% [ PrefFilePath, table:to_string( NewTable ) ] ),
+					%trace_bridge:debug_fmt( "Loaded from preferences file "
+					%    "'~ts' following entries: ~ts",
+					%    [ PrefFilePath, table:to_string( NewTable ) ] ),
 
-				   %io:format( "Preferences file '~ts' loaded.~n",
-				   %	[ FilePath ] ),
+				   %trace_bridge:debug_fmt( "Preferences file '~ts' loaded.",
+				   %						[ FilePath ] ),
 
 				   NewTable;
 
 				ErrorString ->
-					trace_utils:error_fmt( "Error when reading preferences "
+					trace_bridge:error_fmt( "Error when reading preferences "
 						"file '~ts' (~ts), no preferences read.",
 						[ FilePath, ErrorString ] ),
 					Table
@@ -534,14 +534,14 @@ add_preferences_from( FilePath, Table ) ->
 
 		{ error, { Line, _Mod, Term } } ->
 			FlattenError = text_utils:format( "~p", [ Term ] ),
-			trace_utils:error_fmt( "Error in preferences file '~ts' "
+			trace_bridge:error_fmt( "Error in preferences file '~ts' "
 				"at line ~B (~ts), no preferences read.",
 					   [ FilePath, Line, FlattenError ] ),
 			Table;
 
 
 		{ error, Reason } ->
-			trace_utils:error_fmt( "Error when reading preferences file "
+			trace_bridge:error_fmt( "Error when reading preferences file "
 				"'~ts' (~p), no preferences read.", [ FilePath, Reason ] ),
 			Table
 

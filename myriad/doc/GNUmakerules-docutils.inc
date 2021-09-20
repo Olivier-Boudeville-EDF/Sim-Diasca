@@ -5,7 +5,7 @@
 
 .PHONY: doc doc-recurse info info-doc-tools info-doc-settings local full-doc   \
  create-doc create-html-doc create-pdf-doc full-html full-pdf regenerate-doc   \
- local-doc local-html local-pdf                                                \
+ local-doc local-html local-pdf create-api-doc                                 \
  make-doc-repository create-local-referential view-doc to-print check-dot      \
  info-doc info-doc-local info-doc-tools                                        \
  clean clean-doc-repository clean-generated clean-dot clean-doc-logs           \
@@ -148,6 +148,7 @@ OVERALL_DOCUMENT_HTML_TARGET = $(patsubst %.rst,%.html,$(OVERALL_DOCUMENT_SOURCE
 OVERALL_DOCUMENT_PDF_TARGET = $(patsubst %.rst,%.pdf,$(OVERALL_DOCUMENT_SOURCE))
 
 
+RST_TEMPLATE_FILES = $(wildcard *.rst.template)
 RST_FILES = $(wildcard *.rst)
 
 AUX_GENERATED_FILES  = $(patsubst %.rst,%.aux,$(RST_FILES))
@@ -155,8 +156,12 @@ TEX_GENERATED_FILES  = $(patsubst %.rst,%.tex,$(RST_FILES))
 OUT_GENERATED_FILES  = $(patsubst %.rst,%.out,$(RST_FILES))
 LOG_GENERATED_FILES  = $(patsubst %.rst,%.log,$(RST_FILES))
 TOC_GENERATED_FILES  = $(patsubst %.rst,%.toc,$(RST_FILES))
-HTML_GENERATED_FILES = $(patsubst %.rst,%.html,$(RST_FILES))
-PDF_GENERATED_FILES  = $(patsubst %.rst,%.pdf,$(RST_FILES))
+
+HTML_GENERATED_FILES = $(patsubst %.rst,%.html,$(RST_FILES)) \
+					   $(patsubst %.rst.template,%.html,$(RST_TEMPLATE_FILES))
+
+PDF_GENERATED_FILES  = $(patsubst %.rst,%.pdf,$(RST_FILES)) \
+					   $(patsubst %.rst.template,%.pdf,$(RST_TEMPLATE_FILES))
 
 
 RST_GENERATED_FILES =  $(AUX_GENERATED_FILES) $(TEX_GENERATED_FILES)      \
@@ -222,7 +227,7 @@ doc: $(GRAPH_PNG) $(PNG_FROM_PYTHON) $(PNG_FROM_PYTHON_NEGATED) doc-recurse #$(P
 clean: clean-doc
 
 clean-doc: clean-links clean-doc-repository
-	@echo "     Cleaning documentation elements"
+	@echo "     Cleaning documentation elements in $$(basename $$(pwd))"
 	-@/bin/rm -f *.aux *.log *.maf *.mtc* *.stc* *.tex *.toc $(RST_GENERATED_FILES)
 	-@/bin/rm -rf api-doc
 
@@ -292,7 +297,7 @@ local-pdf: $(OVERALL_DOCUMENT_SOURCE)
 
 
 # To generate an actual API documentation tree:
-api-doc:
+create-api-doc:
 	@cd $(LAYER_TOP) && $(MAKE) -s generate-api-doc
 
 

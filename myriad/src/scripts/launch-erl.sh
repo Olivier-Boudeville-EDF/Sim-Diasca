@@ -52,7 +52,7 @@ asynch_thread_count=128
 
 
 usage="
-Usage: $(basename $0) [-v] [-c a_cookie] [--sn a_short_node_name | --ln a_long_node_name | --nn an_ignored_node_name ] [--hostname a_hostname] [--tcp-range min_port max_port] [--epmd-port new_port] [--max-process-count max_count] [--busy-limit kb_size] [--async-thread-count thread_count] [--background] [--non-interactive] [--eval an_expression] [--no-auto-start] [-h|--help] [--beam-dir a_path] [--beam-paths path_1 path_2] [-start-verbatim-options [...]]: launches the Erlang interpreter with specified settings.
+Usage: $(basename $0) [-v] [-c a_cookie] [--sn a_short_node_name | --ln a_long_node_name | --nn an_ignored_node_name ] [--hostname a_hostname] [--tcp-range min_port max_port] [--epmd-port new_port] [--config cfg_filename] [--max-process-count max_count] [--busy-limit kb_size] [--async-thread-count thread_count] [--background] [--non-interactive] [--eval an_expression] [--no-auto-start] [-h|--help] [--beam-dir a_path] [--beam-paths path_1 path_2] [-start-verbatim-options [...]]: launches the Erlang interpreter with specified settings.
 
 Detailed options:
 	-v: be verbose
@@ -63,6 +63,7 @@ Detailed options:
 	--hostname a_hostname: specify the hostname to be used (typically a FQDN for long node names, and a short hostname for short node names)
 	--tcp-range min_port max_port: specify a TCP port range for inter-node communication (useful for firewalling issues)
 	--epmd-port new_port: specify a specific EPMD port (default: 4369); only relevant if the VM is to be distributed (using short or long names), initially or at runtime
+	--config cfg_filename: adds specified filename to the list of configuration ones (can be used multiple times)
 	--max-process-count max_count: specify the maximum number of processes per VM (default: ${max_process_count})
 	--busy-limit size: specify the distribution buffer busy limit, in kB (default: 1024)
 	--async-thread-count thread_count: specify the number of asynchronous threads for driver calls (default: ${asynch_thread_count})
@@ -134,7 +135,7 @@ to_erl=$(which to_erl)
 # If logs are redirected to file:
 default_log_file="Ceylan-Myriad-run.log"
 
-log_dir=$(pwd)
+log_dir="$(pwd)"
 
 
 # Defaults:
@@ -147,7 +148,7 @@ non_interactive=1
 # Erlang defaults (see http://erlang.org/doc/man/erl.html#+zdbbl):
 busy_limit=1024
 
-
+config_opts=""
 
 warning_prefix="[launch-erl.sh] Warning:"
 
@@ -243,6 +244,17 @@ while [ $# -gt 0 ] && [ $do_stop -eq 1 ]; do
 		# where to find EPMD).
 		token_eaten=0
 
+	fi
+
+	if [ "$1" = "--config" ]; then
+		shift
+		if [ -z "$1" ]; then
+			echo "  Error, no configuration filename specified after --config." 1>&2
+			exit 12
+		fi
+		#echo "Adding configuration filename '$1'."
+		config_opts="${config_opts} -config $1"
+		token_eaten=0
 	fi
 
 	if [ "$1" = "--hostname" ]; then
@@ -434,8 +446,8 @@ done
 filtered_verbatim_opt=""
 
 for opt in ${verbatim_opt}; do
-	if [ "$opt" != "-start-verbatim-options" ]; then
-		filtered_verbatim_opt="$filtered_verbatim_opt $opt"
+	if [ "${opt}" != "-start-verbatim-options" ]; then
+		filtered_verbatim_opt="${filtered_verbatim_opt} ${opt}"
 	fi
 done
 
@@ -502,7 +514,7 @@ export ERL_EPMD_RELAXED_COMMAND_CHECK=1
 
 
 # Shortening as much as possible the paths, for clarity:
-realpath_exec=$(which realpath 2>/dev/null)
+realpath_exec="$(which realpath 2>/dev/null)"
 
 
 if [ -x "${realpath_exec}" ]; then
@@ -521,14 +533,14 @@ if [ -x "${realpath_exec}" ]; then
 	for d in ${code_dirs}; do
 
 		#echo "  - $d"
-		#new_dir=$(realpath --relative-to=$current_dir $d)
+		#new_dir="$(realpath --relative-to=${current_dir} $d)"
 
 		# Side-effect: realpath by default checks that the directory exists.
-		new_dir=$(realpath $d 2>/dev/null)
+		new_dir="$(realpath $d 2>/dev/null)"
 
-		if [ -d "$new_dir" ]; then
+		if [ -d "${new_dir}" ]; then
 			#echo "  + $new_dir"
-			shortened_code_dirs="$shortened_code_dirs $new_dir"
+			shortened_code_dirs="${shortened_code_dirs} ${new_dir}"
 		else
 
 			# Very useful warning, yet now that we support Hex packages, we have
@@ -569,7 +581,7 @@ code_opt="${code_dirs_opt} -smp +K true +A ${asynch_thread_count} +zdbbl ${busy_
 
 
 # Adding the executable last to be able to prefix options:
-command="${log_opt} ${code_opt} +P ${max_process_count}"
+command="${log_opt} ${code_opt} +P ${max_process_count} ${config_opts}"
 
 # Adds a command-line cookie only if specified:
 if [ -n "${cookie}" ]; then
