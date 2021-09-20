@@ -5,7 +5,6 @@
 *.plt
 *.sdar
 *~
-*.config
 *erlang.log.*
 declared-types-in-*.txt
 sim-diasca/package-versions.hrl
