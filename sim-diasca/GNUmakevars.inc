@@ -84,7 +84,7 @@ ifndef PROJECT_NAME
 endif
 
 
-SIM_DIASCA_BASE_VERSION := 2.4.0
+SIM_DIASCA_BASE_VERSION := 2.4.1
 
 #SIM_DIASCA_VERSION := $(SIM_DIASCA_BASE_VERSION)-beta-$(date '+%Y%m%d-%Hh%M')
 #SIM_DIASCA_VERSION := $(SIM_DIASCA_BASE_VERSION)-for-foobar
@@ -431,7 +431,7 @@ endif
 # interpreter is run.
 #
 EXEC_EXTERNAL_OPTIONS := --sim-diasca-root $(SIM_DIASCA_TOP) \
-			--sim-diasca-version $(SIM_DIASCA_VERSION) $(EXEC_EXTERNAL_OPTIONS)
+			 --sim-diasca-version $(SIM_DIASCA_VERSION) $(EXEC_EXTERNAL_OPTIONS)
 
 
 # The script to convert spreadsheets into DUMF files:
@@ -498,8 +498,8 @@ SD_INST_GUIDE_NAME := installation-guide
 
 SD_INST_GUIDE_BASE_DIR := $(SD_INST_GUIDE_NAME)
 
-SD_INST_GUIDE_INTERNAL_DIR := $(SD_INST_GUIDE_NAME)/internal-version
-SD_INST_GUIDE_PUBLIC_DIR := $(SD_INST_GUIDE_NAME)/public-version
+SD_INST_GUIDE_INTERNAL_DIR := $(SD_INST_GUIDE_BASE_DIR)/internal-version
+SD_INST_GUIDE_PUBLIC_DIR := $(SD_INST_GUIDE_BASE_DIR)/public-version
 
 
 SD_INST_INTERNAL_GUIDE_BASE := $(SD_PREFIX)-internal-$(SD_INST_GUIDE_NAME)-$(SD_LANG)
@@ -513,6 +513,26 @@ SD_INST_PUBLIC_GUIDE_HTML := $(SD_INST_PUBLIC_GUIDE_BASE).html
 
 SD_INST_INTERNAL_GUIDE_PDF := $(SD_INST_INTERNAL_GUIDE_BASE).pdf
 SD_INST_PUBLIC_GUIDE_PDF := $(SD_INST_PUBLIC_GUIDE_BASE).pdf
+
+
+
+SD_MAIN_PAGE_BASE_DIR := main-page
+
+SD_MAIN_PAGE_INTERNAL_DIR := $(SD_MAIN_PAGE_BASE_DIR)/internal-version
+SD_MAIN_PAGE_PUBLIC_DIR := $(SD_MAIN_PAGE_BASE_DIR)/public-version
+
+SD_MAIN_PAGE_INTERNAL_NAME := Sim-Diasca-internal-main-page.
+SD_MAIN_PAGE_PUBLIC_NAME := Sim-Diasca-public-main-page.
+
+SD_MAIN_PAGE_INTERNAL_SRC := $(SD_MAIN_PAGE_INTERNAL_NAME).rst
+SD_MAIN_PAGE_PUBLIC_SRC := $(SD_MAIN_PAGE_PUBLIC_NAME).rst
+
+SD_MAIN_PAGE_INTERNAL_HTML := $(SD_MAIN_PAGE_INTERNAL_NAME).html
+SD_MAIN_PAGE_PUBLIC_HTML := $(SD_MAIN_PAGE_PUBLIC_NAME).html
+
+SD_MAIN_PAGE_INTERNAL_PDF := $(SD_MAIN_PAGE_INTERNAL_NAME).pdf
+SD_MAIN_PAGE_PUBLIC_PDF := $(SD_MAIN_PAGE_PUBLIC_NAME).pdf
+
 
 
 SD_DEV_GUIDE_NAME := developer-guide
@@ -542,30 +562,6 @@ SD_DATAFLOW_HOWTO_BASE := $(SD_PREFIX)-$(SD_DATAFLOW_HOWTO_NAME)-$(SD_LANG)
 SD_DATAFLOW_HOWTO_SRC := $(SD_DATAFLOW_HOWTO_BASE).rst
 SD_DATAFLOW_HOWTO_HTML := $(SD_DATAFLOW_HOWTO_BASE).html
 SD_DATAFLOW_HOWTO_PDF := $(SD_DATAFLOW_HOWTO_BASE).pdf
-
-SD_DOC_ROOT := $(SIM_DIASCA_TOP)/doc
-
-SD_DOC_COMMON_ELEMS := $(SD_DOC_ROOT)/common-elements
-
-
-# To share doc elements between the public/internal of the installation guide
-# versions while not introducing full-* targets:
-#
-SD_INST_COMMON_DOC_ELEMS = \
-	../SimDiasca-installation-guide-base-english.rst            \
-	../SimDiasca-installation-guide-header-english.rst          \
-	$(SD_DOC_COMMON_ELEMS)/css/pygments-default.css             \
-	$(SD_DOC_COMMON_ELEMS)/css/sim-diasca.css                   \
-	$(SD_DOC_COMMON_ELEMS)/edf-related/sim-diasca-icon.png      \
-	$(SD_DOC_COMMON_ELEMS)/edf-related/sim-diasca.png           \
-	$(SD_DOC_COMMON_ELEMS)/edf-related/logo-EDF-english.png     \
-	$(SD_DOC_COMMON_ELEMS)/licence/lgpl-v3-logo-bordered.png    \
-	$(SD_DOC_COMMON_ELEMS)/xkcd/xkcd-cautionary.png             \
-	$(SD_DOC_COMMON_ELEMS)/xkcd/xkcd-sandwich.png               \
-	$(SD_DOC_COMMON_ELEMS)/xkcd/xkcd-tar.png                    \
-	$(SD_DOC_COMMON_ELEMS)/xkcd/xkcd-compiling.png              \
-	$(TRACES_TOP)/doc/logmx-interface.png
-
 
 
 # As we prefer having a Sim-Diasca specific message, denoting the use of its
