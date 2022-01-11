@@ -66,7 +66,7 @@ smaller table (and only them)</p>
 
 <h3 class="typedecl"><a name="type-list_table">list_table()</a></h3>
 <p><b>abstract datatype</b>: <tt>list_table()</tt></p>
-
+<p> Not exactly as proplist:proplist/0 (pairs only, and any() as key).</p>
 
 <h3 class="typedecl"><a name="type-table">table()</a></h3>
 <p><b>abstract datatype</b>: <tt>table(K, V)</tt></p>
@@ -109,11 +109,14 @@ to specified key, this value being assumed to be a list.</td></tr>
  title on top.</td></tr>
 <tr><td valign="top"><a href="#enumerate-1">enumerate/1</a></td><td>Returns a flat list whose elements are all the key/value pairs of the 
 table, in no particular order.</td></tr>
-<tr><td valign="top"><a href="#extract_entry-2">extract_entry/2</a></td><td>Extracts specified entry from specified table, ie returns the 
+<tr><td valign="top"><a href="#extract_entries-2">extract_entries/2</a></td><td>Extracts specified entries from specified table, that is returns their 
+associated values (in-order) and removes these entries from the returned 
+table.</td></tr>
+<tr><td valign="top"><a href="#extract_entry-2">extract_entry/2</a></td><td>Extracts specified entry from specified table, that is returns the 
 associated value and removes that entry from the table.</td></tr>
-<tr><td valign="top"><a href="#extract_entry_if_existing-2">extract_entry_if_existing/2</a></td><td>Extracts specified entry (if any) from specified table, ie returns its 
-associated value and removes that entry from the returned table.</td></tr>
-<tr><td valign="top"><a href="#extract_entry_with_defaults-3">extract_entry_with_defaults/3</a></td><td>Extracts specified entry from specified table, ie returns the 
+<tr><td valign="top"><a href="#extract_entry_if_existing-2">extract_entry_if_existing/2</a></td><td>Extracts specified entry (if any) from specified table, that is returns 
+its associated value and removes that entry from the returned table.</td></tr>
+<tr><td valign="top"><a href="#extract_entry_with_defaults-3">extract_entry_with_defaults/3</a></td><td>Extracts specified entry from specified table, that is returns the 
 associated value and removes that entry from the table.</td></tr>
 <tr><td valign="top"><a href="#fold_on_entries-3">fold_on_entries/3</a></td><td>Folds specified anonymous function on all entries of the specified table.</td></tr>
 <tr><td valign="top"><a href="#get_all_values-2">get_all_values/2</a></td><td>Returns the (ordered) list of values that correspond to the specified 
@@ -135,18 +138,18 @@ it directly.</td></tr>
 entries contained in this table.</td></tr>
 <tr><td valign="top"><a href="#map_on_values-2">map_on_values/2</a></td><td>Applies (maps) the specified anonymous function to each of the values 
 contained in this table.</td></tr>
-<tr><td valign="top"><a href="#merge-2">merge/2</a></td><td>Returns a new table, which started from TableBase and was enriched with 
-the TableAdd entries whose keys were not already in TableBase (if a key is in 
-both tables, the one from TableBase will be kept).</td></tr>
+<tr><td valign="top"><a href="#merge-2">merge/2</a></td><td>Returns a table that started from TableBase and was enriched with the 
+TableAdd entries whose keys were not already in TableBase (if a key is in both 
+tables, the one from TableBase will be kept).</td></tr>
 <tr><td valign="top"><a href="#merge_in_key-3">merge_in_key/3</a></td><td>Gathers, from a table whose values are expected to be lists, all the 
 values associated to the keys listed in AlternateKeys and associates them to 
 ReferenceKey instead (in addition to any value that would already be 
 associated to it).</td></tr>
 <tr><td valign="top"><a href="#merge_in_keys-2">merge_in_keys/2</a></td><td>Performs a key merge, as merge_in_key/3, however not for a single 
 reference key / aliases entries, but for a set thereof.</td></tr>
-<tr><td valign="top"><a href="#new-0">new/0</a></td><td>Returns a new empty table dimensioned for the default number of entries.</td></tr>
-<tr><td valign="top"><a href="#new-1">new/1</a></td><td>Returns a new empty table dimensioned for the specified expected number
- of entries / a new table containing the specified (initial) entries.</td></tr>
+<tr><td valign="top"><a href="#new-0">new/0</a></td><td>Returns an empty table dimensioned for the default number of entries.</td></tr>
+<tr><td valign="top"><a href="#new-1">new/1</a></td><td>Returns an empty table dimensioned for the specified expected number of
+ entries / an table containing the specified (initial) entries.</td></tr>
 <tr><td valign="top"><a href="#optimise-1">optimise/1</a></td><td>Optimises the specified table.</td></tr>
 <tr><td valign="top"><a href="#pop_from_entry-2">pop_from_entry/2</a></td><td>Pops the head of the value (supposed to be a list) associated to
  specified key, and returns a pair made of the popped head and of the new
@@ -157,7 +160,7 @@ specified table.</td></tr>
 specified table.</td></tr>
 <tr><td valign="top"><a href="#select_entries-2">select_entries/2</a></td><td>Returns a list of key/value pairs corresponding to the list of specified
  keys, or throws a badmatch is at least one key is not found.</td></tr>
-<tr><td valign="top"><a href="#size-1">size/1</a></td><td>Returns the size (number of entries, ie of key/value pairs) of the
+<tr><td valign="top"><a href="#size-1">size/1</a></td><td>Returns the size (number of entries, that is of key/value pairs) of the
  specified table.</td></tr>
 <tr><td valign="top"><a href="#subtract_from_entry-3">subtract_from_entry/3</a></td><td>Subtracts specified number from the value, supposed to be numerical, 
 associated to specified key.</td></tr>
@@ -302,11 +305,26 @@ table, in no particular order.</p>
  Ex: [{K1,V1}, {K2,V2}, ...].
 </p>
 
+<h3 class="function"><a name="extract_entries-2">extract_entries/2</a></h3>
+<div class="spec">
+<p><tt>extract_entries(Keys::[<a href="#type-key">key()</a>], ListHashtable::<a href="#type-list_table">list_table()</a>) -&gt; {[<a href="#type-value">value()</a>], <a href="#type-list_table">list_table()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Extracts specified entries from specified table, that is returns their 
+associated values (in-order) and removes these entries from the returned 
+table.</p>
+
+ <p>Each key/value pair is expected to exist already, otherwise an exception is 
+raised (typically {badkey, KeyNotFound}).</p>
+
+ Ex: {[RedValue, GreenValue, BlueValue], ExtractedTable} =
+         list_table:extract_entries([red, green, blue], MyTable)
+</p>
+
 <h3 class="function"><a name="extract_entry-2">extract_entry/2</a></h3>
 <div class="spec">
 <p><tt>extract_entry(Key::<a href="#type-key">key()</a>, Table::<a href="#type-list_table">list_table()</a>) -&gt; {<a href="#type-value">value()</a>, <a href="#type-list_table">list_table()</a>}</tt><br></p>
 <p> </p>
-</div><p><p>Extracts specified entry from specified table, ie returns the 
+</div><p><p>Extracts specified entry from specified table, that is returns the 
 associated value and removes that entry from the table.</p>
 
  The key/value pair is expected to exist already in the specified table,
@@ -317,17 +335,17 @@ associated value and removes that entry from the table.</p>
 <div class="spec">
 <p><tt>extract_entry_if_existing(Key::<a href="#type-key">key()</a>, Table::<a href="#type-list_table">list_table()</a>) -&gt; false | {<a href="#type-value">value()</a>, <a href="#type-list_table">list_table()</a>}</tt><br></p>
 <p> </p>
-</div><p><p>Extracts specified entry (if any) from specified table, ie returns its 
-associated value and removes that entry from the returned table.</p>
+</div><p><p>Extracts specified entry (if any) from specified table, that is returns 
+its associated value and removes that entry from the returned table.</p>
 
- Otherwise, ie if that entry does not exist, returns false.
+ Otherwise, that is if that entry does not exist, returns false.
 </p>
 
 <h3 class="function"><a name="extract_entry_with_defaults-3">extract_entry_with_defaults/3</a></h3>
 <div class="spec">
 <p><tt>extract_entry_with_defaults(Key::<a href="#type-key">key()</a>, DefaultValue::<a href="#type-value">value()</a>, Table::<a href="#type-list_table">list_table()</a>) -&gt; {<a href="#type-value">value()</a>, <a href="#type-list_table">list_table()</a>}</tt><br></p>
 <p> </p>
-</div><p><p>Extracts specified entry from specified table, ie returns the 
+</div><p><p>Extracts specified entry from specified table, that is returns the 
 associated value and removes that entry from the table.</p>
 
  If no such key is available, returns the specified default value and the
@@ -462,9 +480,9 @@ duplicate the whole content in memory).</p>
 <div class="spec">
 <p><tt>merge(TableBase::<a href="#type-list_table">list_table()</a>, TableAdd::<a href="#type-list_table">list_table()</a>) -&gt; <a href="#type-list_table">list_table()</a></tt><br></p>
 <p> </p>
-</div><p><p>Returns a new table, which started from TableBase and was enriched with 
-the TableAdd entries whose keys were not already in TableBase (if a key is in 
-both tables, the one from TableBase will be kept).</p>
+</div><p><p>Returns a table that started from TableBase and was enriched with the 
+TableAdd entries whose keys were not already in TableBase (if a key is in both 
+tables, the one from TableBase will be kept).</p>
 
  Note: not the standard merge that one would expect, should values be lists.
 </p>
@@ -502,14 +520,14 @@ reference key / aliases entries, but for a set thereof.</p>
 <div class="spec">
 <p><tt>new() -&gt; <a href="#type-list_table">list_table()</a></tt><br></p>
 <p> </p>
-</div><p>Returns a new empty table dimensioned for the default number of entries.</p>
+</div><p>Returns an empty table dimensioned for the default number of entries.</p>
 
 <h3 class="function"><a name="new-1">new/1</a></h3>
 <div class="spec">
 <p><tt>new(ExpectedNumberOfEntries::<a href="#type-entry_count">entry_count()</a> | <a href="#type-entries">entries()</a>) -&gt; <a href="#type-list_table">list_table()</a></tt><br></p>
 <p> </p>
-</div><p>Returns a new empty table dimensioned for the specified expected number
- of entries / a new table containing the specified (initial) entries.
+</div><p>Returns an empty table dimensioned for the specified expected number of
+ entries / an table containing the specified (initial) entries.
 </p>
 
 <h3 class="function"><a name="optimise-1">optimise/1</a></h3>
@@ -566,7 +584,7 @@ specified table.</p>
 <div class="spec">
 <p><tt>size(Table::<a href="#type-list_table">list_table()</a>) -&gt; <a href="#type-entry_count">entry_count()</a></tt><br></p>
 <p> </p>
-</div><p>Returns the size (number of entries, ie of key/value pairs) of the
+</div><p>Returns the size (number of entries, that is of key/value pairs) of the
  specified table.
 </p>
 

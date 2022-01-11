@@ -45,6 +45,10 @@ canonical form transparently, for automated checking and exact conversion.</p>
 <p><tt>angle_units() = <a href="#type-angle_reference_unit">angle_reference_unit()</a> | degrees | int_degrees</tt></p>
 
 
+<h3 class="typedecl"><a name="type-any_hertz">any_hertz()</a></h3>
+<p><tt>any_hertz() = <a href="#type-hertz">hertz()</a> | <a href="#type-integer_hertz">integer_hertz()</a></tt></p>
+<p> Frequency in Hz.</p>
+
 <h3 class="typedecl"><a name="type-any_second">any_second()</a></h3>
 <p><tt>any_second() = <a href="#type-second">second()</a> | <a href="#type-float_second">float_second()</a></tt></p>
 <p> Any type of second (integer or float).</p>
@@ -173,6 +177,10 @@ here</p>
 
  - katal, for catalytic activity [kat]</p>
 
+<h3 class="typedecl"><a name="type-dimensionless">dimensionless()</a></h3>
+<p><tt>dimensionless() = float()</tt></p>
+
+
 <h3 class="typedecl"><a name="type-energy_reference_unit">energy_reference_unit()</a></h3>
 <p><tt>energy_reference_unit() = joules</tt></p>
 
@@ -199,7 +207,7 @@ here</p>
 
 <h3 class="typedecl"><a name="type-hertz">hertz()</a></h3>
 <p><tt>hertz() = float()</tt></p>
-<p> Frequency.</p>
+<p> Frequency in Hz, as a floating-point number.</p>
 
 <h3 class="typedecl"><a name="type-hour">hour()</a></h3>
 <p><tt>hour() = integer()</tt></p>
@@ -218,6 +226,10 @@ here</p>
 <h3 class="typedecl"><a name="type-int_millimeters">int_millimeters()</a></h3>
 <p><tt>int_millimeters() = integer()</tt></p>
 
+
+<h3 class="typedecl"><a name="type-integer_hertz">integer_hertz()</a></h3>
+<p><tt>integer_hertz() = non_neg_integer()</tt></p>
+<p> Frequency in Hz, as a (non-negative) integer.</p>
 
 <h3 class="typedecl"><a name="type-joules">joules()</a></h3>
 <p><tt>joules() = float()</tt></p>
@@ -312,7 +324,7 @@ here</p>
 
 
 <h3 class="typedecl"><a name="type-misc_units">misc_units()</a></h3>
-<p><tt>misc_units() = <a href="#type-rpm">rpm()</a></tt></p>
+<p><tt>misc_units() = <a href="#type-dimensionless">dimensionless()</a> | <a href="#type-rpm">rpm()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-month">month()</a></h3>
@@ -346,7 +358,11 @@ here</p>
 
 <h3 class="typedecl"><a name="type-radians">radians()</a></h3>
 <p><tt>radians() = float()</tt></p>
+<p><p> Angle in radians.</p>
 
+ <p>2π radians is equal to 360 degrees.</p>
+
+ Preferably to be kept in [0.0,2π[.</p>
 
 <h3 class="typedecl"><a name="type-rpm">rpm()</a></h3>
 <p><tt>rpm() = float()</tt></p>

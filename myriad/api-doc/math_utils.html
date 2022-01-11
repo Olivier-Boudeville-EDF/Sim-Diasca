@@ -19,29 +19,56 @@
 
 <h2><a name="types">Data Types</a></h2>
 
+<h3 class="typedecl"><a name="type-any_factor">any_factor()</a></h3>
+<p><tt>any_factor() = number()</tt></p>
+<p> A factor, typically in [0.0,1.0], that is a multiplier involved in an
+ equation.</p>
+
 <h3 class="typedecl"><a name="type-conversion_type">conversion_type()</a></h3>
 <p><tt>conversion_type() = exact | absolute | {absolute, float()} | relative | {relative, float()}</tt></p>
 <p> Describes a desired conversion, which is either exact or approximate, based on
  an absolute or relative comparison, with a default epsilon threshold or a
  user-defined one.</p>
 
+<h3 class="typedecl"><a name="type-factor">factor()</a></h3>
+<p><tt>factor() = <a href="unit_utils.html#type-dimensionless">unit_utils:dimensionless()</a></tt></p>
+<p> A floating-point factor, typically in [0.0,1.0], that is a multiplier involved
+ in an equation.</p>
+
+<h3 class="typedecl"><a name="type-integer_factor">integer_factor()</a></h3>
+<p><tt>integer_factor() = integer()</tt></p>
+<p> An integer factor, typically in [0.0,1.0], that is a multiplier involved in an
+ equation.</p>
+
 <h3 class="typedecl"><a name="type-integer_percent">integer_percent()</a></h3>
 <p><tt>integer_percent() = integer()</tt></p>
 <p> For integer percentages (in [0..100] generally).</p>
+
+<h3 class="typedecl"><a name="type-non_negative_factor">non_negative_factor()</a></h3>
+<p><tt>non_negative_factor() = <a href="#type-factor">factor()</a></tt></p>
+<p> A factor expected to be positive or null.</p>
 
 <h3 class="typedecl"><a name="type-non_zero_integer">non_zero_integer()</a></h3>
 <p><tt>non_zero_integer() = pos_integer() | neg_integer()</tt></p>
 
 
 <h3 class="typedecl"><a name="type-percent">percent()</a></h3>
-<p><tt>percent() = float()</tt></p>
+<p><tt>percent() = <a href="#type-ratio">ratio()</a></tt></p>
 <p><p> For percentages (1.0 corresponding to 100%).</p>
 
  See also: text_utils:percent_to_string/{1,2}.</p>
 
+<h3 class="typedecl"><a name="type-positive_factor">positive_factor()</a></h3>
+<p><tt>positive_factor() = <a href="#type-factor">factor()</a></tt></p>
+<p> A factor expected to be strictly positive.</p>
+
 <h3 class="typedecl"><a name="type-probability">probability()</a></h3>
 <p><tt>probability() = float()</tt></p>
 <p> For probabilities.</p>
+
+<h3 class="typedecl"><a name="type-ratio">ratio()</a></h3>
+<p><tt>ratio() = <a href="unit_utils.html#type-dimensionless">unit_utils:dimensionless()</a></tt></p>
+<p> A ration between two values.</p>
 
 <h3 class="typedecl"><a name="type-standard_deviation">standard_deviation()</a></h3>
 <p><tt>standard_deviation() = float()</tt></p>
@@ -56,21 +83,27 @@
  close enough to be equal, based on default epsilon threshold.</td></tr>
 <tr><td valign="top"><a href="#are_close-3">are_close/3</a></td><td>Returns true iff the two specified floating-point numbers are deemed
  close enough to be equal, based on specified epsilon threshold.</td></tr>
+<tr><td valign="top"><a href="#are_equal-2">are_equal/2</a></td><td>Returns true iff the two specified floating-point numbers are deemed 
+close enough to be equal, based on default epsilon threshold.</td></tr>
+<tr><td valign="top"><a href="#are_equal-3">are_equal/3</a></td><td>Returns true iff the two specified floating-point numbers are deemed 
+close enough to be equal, based on specified epsilon threshold.</td></tr>
 <tr><td valign="top"><a href="#are_relatively_close-2">are_relatively_close/2</a></td><td>Returns true iff the two specified floating-point numbers are deemed 
 close enough, relatively, to be equal.</td></tr>
 <tr><td valign="top"><a href="#are_relatively_close-3">are_relatively_close/3</a></td><td>Returns true iff the two specified (usually floating-point) numbers are 
 deemed close enough, relatively, to be equal.</td></tr>
 <tr><td valign="top"><a href="#canonify-1">canonify/1</a></td><td>Canonifies specified angle in degrees, ie ensures the returned value that
  corresponds to the specified angle is in the [0;360[ interval.</td></tr>
-<tr><td valign="top"><a href="#ceiling-1">ceiling/1</a></td><td>Ceiling returns the smallest integer bigger than the specified 
-floating-point value.</td></tr>
+<tr><td valign="top"><a href="#ceiling-1">ceiling/1</a></td><td>Returns the smallest integer bigger than the specified floating-point 
+value.</td></tr>
 <tr><td valign="top"><a href="#clamp-3">clamp/3</a></td><td>Clamps specified value between specified bounds: the returned value V is 
 in [Min, Max].</td></tr>
 <tr><td valign="top"><a href="#float_to_integer-1">float_to_integer/1</a></td><td>Converts specified float to integer.</td></tr>
 <tr><td valign="top"><a href="#float_to_integer-2">float_to_integer/2</a></td><td>Converts specified float to integer, using specified conversion
  tolerance.</td></tr>
-<tr><td valign="top"><a href="#floor-1">floor/1</a></td><td>Floor returns the biggest integer smaller than the specified 
+<tr><td valign="top"><a href="#floor-1">floor/1</a></td><td>Returns the biggest integer smaller than the specified 
 floating-point value.</td></tr>
+<tr><td valign="top"><a href="#get_next_power_of_two-1">get_next_power_of_two/1</a></td><td>Returns the smallest power of two that is greater or equal to the 
+specified integer.</td></tr>
 <tr><td valign="top"><a href="#get_relative_difference-2">get_relative_difference/2</a></td><td>Returns the relative difference between the two specified numbers.</td></tr>
 <tr><td valign="top"><a href="#is_null-1">is_null/1</a></td><td>Returns true iff the specified number (floating-point or even integer) is
  deemed close enough to zero to be null.</td></tr>
@@ -99,6 +132,26 @@ decimal point.</td></tr>
 <p> </p>
 </div><p>Returns true iff the two specified floating-point numbers are deemed
  close enough to be equal, based on specified epsilon threshold.
+</p>
+
+<h3 class="function"><a name="are_equal-2">are_equal/2</a></h3>
+<div class="spec">
+<p><tt>are_equal(X::number(), Y::number()) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p><p>Returns true iff the two specified floating-point numbers are deemed 
+close enough to be equal, based on default epsilon threshold.</p>
+
+ Note: alias of are_close/2, defined for consistency.
+</p>
+
+<h3 class="function"><a name="are_equal-3">are_equal/3</a></h3>
+<div class="spec">
+<p><tt>are_equal(X::number(), Y::number(), Epsilon::number()) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p><p>Returns true iff the two specified floating-point numbers are deemed 
+close enough to be equal, based on specified epsilon threshold.</p>
+
+ Note: alias of are_close/3, defined for consistency.
 </p>
 
 <h3 class="function"><a name="are_relatively_close-2">are_relatively_close/2</a></h3>
@@ -140,10 +193,8 @@ ie the maximum tolerance.</p>
 <div class="spec">
 <p><tt>ceiling(X::number()) -&gt; integer()</tt><br></p>
 <p> </p>
-</div><p><p>Ceiling returns the smallest integer bigger than the specified 
-floating-point value.</p>
-
- <p>Inspired from <a href="http://schemecookbook.org/Erlang/NumberRounding" target="_top"><tt>http://schemecookbook.org/Erlang/NumberRounding</tt></a>.</p>
+</div><p><p>Returns the smallest integer bigger than the specified floating-point 
+value.</p>
 
  Note: used to be deprecated in favor of math:ceil/1, yet we prefer the version
  here, which returns an integer rather than a float.
@@ -167,8 +218,7 @@ in [Min, Max].</p>
 
  <p>The float must exactly match the integer value.</p>
 
- Ex: float_to_integer( 5.0 ) = 5, while float_to_integer( 5.0000001 ) will
- crash.
+ Ex: float_to_integer(5.0) = 5, while float_to_integer(5.0000001) will crash.
 </p>
 
 <h3 class="function"><a name="float_to_integer-2">float_to_integer/2</a></h3>
@@ -183,13 +233,21 @@ in [Min, Max].</p>
 <div class="spec">
 <p><tt>floor(X::number()) -&gt; integer()</tt><br></p>
 <p> </p>
-</div><p><p>Floor returns the biggest integer smaller than the specified 
+</div><p><p>Returns the biggest integer smaller than the specified 
 floating-point value.</p>
-
- <p>Inspired from <a href="http://schemecookbook.org/Erlang/NumberRounding" target="_top"><tt>http://schemecookbook.org/Erlang/NumberRounding</tt></a>.</p>
 
  Note: used to be deprecated in favor of math:floor/1, yet we prefer the
  version here, which returns an integer rather than a float.
+</p>
+
+<h3 class="function"><a name="get_next_power_of_two-1">get_next_power_of_two/1</a></h3>
+<div class="spec">
+<p><tt>get_next_power_of_two(I::non_neg_integer()) -&gt; pos_integer()</tt><br></p>
+<p> </p>
+</div><p><p>Returns the smallest power of two that is greater or equal to the 
+specified integer.</p>
+
+ Ex: math_utils:get_next_power_of_two( 5 ) = 8.
 </p>
 
 <h3 class="function"><a name="get_relative_difference-2">get_relative_difference/2</a></h3>
@@ -235,7 +293,7 @@ floating-point value.</p>
 </div><p><p>Rounds the specified floating-point number at specified offset after the 
 decimal point.</p>
 
- Ex: round_after( 12.3456, 3 ) = 12.346.
+ Ex: round_after(12.3456, _DigitCount3) = 12.346.
 </p>
 
 <h3 class="function"><a name="squarify-1">squarify/1</a></h3>

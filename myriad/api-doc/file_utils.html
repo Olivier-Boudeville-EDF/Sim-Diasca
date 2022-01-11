@@ -47,7 +47,8 @@
 
 <h3 class="typedecl"><a name="type-any_path_element">any_path_element()</a></h3>
 <p><tt>any_path_element() = <a href="#type-path_element">path_element()</a> | <a href="#type-bin_path_element">bin_path_element()</a></tt></p>
-<p> Any type of a part of a path (ex: <code>&lt;&lt;"local"&gt;&gt;</code> in "/usr/local/share").</p>
+<p> Any (legit) type of a part of a path (ex: <code>&lt;&lt;"local"&gt;&gt;</code> in
+ "/usr/local/share"); preferably without whitespaces.</p>
 
 <h3 class="typedecl"><a name="type-any_string">any_string()</a></h3>
 <p><tt>any_string() = <a href="text_utils.html#type-any_string">text_utils:any_string()</a></tt></p>
@@ -55,14 +56,14 @@
 
 <h3 class="typedecl"><a name="type-any_suffix">any_suffix()</a></h3>
 <p><tt>any_suffix() = <a href="#type-any_string">any_string()</a></tt></p>
-<p> The suffix (final part) in a path element.</p>
+<p> The suffix (final part) in a path element (ex: "share" in "/usr/local/share").</p>
 
 <h3 class="typedecl"><a name="type-bin_directory_name">bin_directory_name()</a></h3>
-<p><tt>bin_directory_name() = binary()</tt></p>
+<p><tt>bin_directory_name() = <a href="#type-bin_string">bin_string()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-bin_directory_path">bin_directory_path()</a></h3>
-<p><tt>bin_directory_path() = binary()</tt></p>
+<p><tt>bin_directory_path() = <a href="#type-bin_string">bin_string()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-bin_executable_path">bin_executable_path()</a></h3>
@@ -70,24 +71,29 @@
 <p> Designates a path to an executable, as a binary.</p>
 
 <h3 class="typedecl"><a name="type-bin_file_name">bin_file_name()</a></h3>
-<p><tt>bin_file_name() = binary()</tt></p>
+<p><tt>bin_file_name() = <a href="#type-bin_string">bin_string()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-bin_file_path">bin_file_path()</a></h3>
-<p><tt>bin_file_path() = binary()</tt></p>
+<p><tt>bin_file_path() = <a href="#type-bin_string">bin_string()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-bin_path">bin_path()</a></h3>
-<p><tt>bin_path() = binary()</tt></p>
+<p><tt>bin_path() = <a href="#type-bin_string">bin_string()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-bin_path_element">bin_path_element()</a></h3>
-<p><tt>bin_path_element() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></tt></p>
-<p> A part of a path (ex: <code>&lt;&lt;"local"&gt;&gt;</code> in "/usr/local/share").</p>
+<p><tt>bin_path_element() = <a href="#type-bin_string">bin_string()</a></tt></p>
+<p> A (legit) part of a path (ex: <code>&lt;&lt;"local"&gt;&gt;</code> in "/usr/local/share"); preferably
+ without whitespaces.</p>
 
 <h3 class="typedecl"><a name="type-bin_script_path">bin_script_path()</a></h3>
 <p><tt>bin_script_path() = <a href="#type-bin_file_path">bin_file_path()</a></tt></p>
 <p> Designates a path to an (executable) script, as a binary.</p>
+
+<h3 class="typedecl"><a name="type-bin_string">bin_string()</a></h3>
+<p><tt>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></tt></p>
+
 
 <h3 class="typedecl"><a name="type-compression_format">compression_format()</a></h3>
 <p><tt>compression_format() = zip | bzip2 | xz</tt></p>
@@ -115,7 +121,8 @@
 
 <h3 class="typedecl"><a name="type-extension">extension()</a></h3>
 <p><tt>extension() = <a href="#type-ustring">ustring()</a></tt></p>
-<p> An extension in a filename (ex: "baz", in "foobar.baz.json").</p>
+<p> An extension in a filename, either unitary (ex: "baz", in "foobar.baz.json")
+ or composed (ex: "tar.gz" in "hello.tar.gz").</p>
 
 <h3 class="typedecl"><a name="type-file">file()</a></h3>
 <p><tt>file() = <a href="http://www.erlang.org/edoc/doc/kernel/doc/file.html#type-io_device">file:io_device()</a></tt></p>
@@ -152,6 +159,17 @@ description.</p>
 <p><tt>filename() = <a href="#type-file_name">file_name()</a></tt></p>
 <p> Just a convenience alias.</p>
 
+<h3 class="typedecl"><a name="type-filename_radix">filename_radix()</a></h3>
+<p><tt>filename_radix() = <a href="#type-ustring">ustring()</a></tt></p>
+<p> The part of a filename before the dot of the first extension.
+ Ex: the filename radix of "hello.tar.gz" is "hello".</p>
+
+<h3 class="typedecl"><a name="type-filepath_radix">filepath_radix()</a></h3>
+<p><tt>filepath_radix() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><p> The part of a file path before the dot of the first extension.</p>
+
+ Ex: the filepath radix of "/home/bond/hello.tar.gz" is "/home/bond/hello".</p>
+
 <h3 class="typedecl"><a name="type-format_string">format_string()</a></h3>
 <p><tt>format_string() = <a href="text_utils.html#type-format_string">text_utils:format_string()</a></tt></p>
 
@@ -181,7 +199,8 @@ description.</p>
 
 <h3 class="typedecl"><a name="type-path_element">path_element()</a></h3>
 <p><tt>path_element() = <a href="#type-ustring">ustring()</a></tt></p>
-<p> A part of a path (ex: "local" in "/usr/local/share").</p>
+<p> A (legit) part of a path (ex: "local" in "/usr/local/share"); preferably
+ without whitespaces.</p>
 
 <h3 class="typedecl"><a name="type-permission">permission()</a></h3>
 <p><tt>permission() = owner_read | owner_write | owner_execute | group_read | group_write | group_execute | other_read | other_write | other_execute | set_user_id | set_group_id</tt></p>
@@ -215,12 +234,12 @@ string.</td></tr>
 <tr><td valign="top"><a href="#change_permissions-2">change_permissions/2</a></td><td>Changes the permissions ("chmod") of specified filesystem element.</td></tr>
 <tr><td valign="top"><a href="#close-1">close/1</a></td><td>Closes specified file reference.</td></tr>
 <tr><td valign="top"><a href="#close-2">close/2</a></td><td>Closes specified file reference.</td></tr>
-<tr><td valign="top"><a href="#compress-1">compress/1</a></td><td>Compresses specified file: creates a new, compressed version thereof 
-(using the most efficient, compacity-wise, compression tool available), whose 
+<tr><td valign="top"><a href="#compress-1">compress/1</a></td><td>Compresses specified file: creates a compressed version thereof (using 
+the most efficient, compacity-wise, compression tool available), whose 
 filename, established based on usual conventions, is returned.</td></tr>
-<tr><td valign="top"><a href="#compress-2">compress/2</a></td><td>Compresses specified file: creates a new, compressed version thereof, 
-whose filename, established based on usual conventions, is returned.</td></tr>
-<tr><td valign="top"><a href="#convert_to_filename-1">convert_to_filename/1</a></td><td>Converts specified name to an acceptable filename, filesystem-wise.</td></tr>
+<tr><td valign="top"><a href="#compress-2">compress/2</a></td><td>Compresses specified file: creates a compressed version thereof, whose 
+filename, established based on usual conventions, is returned.</td></tr>
+<tr><td valign="top"><a href="#convert_to_filename-1">convert_to_filename/1</a></td><td>Converts the specified name into an acceptable filename, filesystem-wise.</td></tr>
 <tr><td valign="top"><a href="#copy_file-2">copy_file/2</a></td><td>Copies a specified file to a given destination filename (not a directory 
 name, see copy_file_in/2 for that), overwriting any previous file.</td></tr>
 <tr><td valign="top"><a href="#copy_file_if_existing-2">copy_file_if_existing/2</a></td><td>Copies a specified file to a given destination iff this source file is 
@@ -249,7 +268,7 @@ conventions, is returned: the name of the input file without its extension.</td>
 corresponding to the specified format: recreates the original, decompressed 
 version thereof, whose filename, established based on usual conventions, is 
 returned: the name of the input file without its extension.</td></tr>
-<tr><td valign="top"><a href="#ensure_path_is_absolute-1">ensure_path_is_absolute/1</a></td><td>Returns an absolute, normalised path corresponding to specified path.</td></tr>
+<tr><td valign="top"><a href="#ensure_path_is_absolute-1">ensure_path_is_absolute/1</a></td><td>Returns an absolute, normalised path corresponding to the specified path.</td></tr>
 <tr><td valign="top"><a href="#ensure_path_is_absolute-2">ensure_path_is_absolute/2</a></td><td>Returns an absolute, normalised path corresponding to the specified 
 target path, using base path as root directory (this must be an absolute path) 
 if the target path is not absolute.</td></tr>
@@ -409,6 +428,10 @@ exclusive, raw, etc).</td></tr>
 <tr><td valign="top"><a href="#read_etf_file-1">read_etf_file/1</a></td><td>Reads specified file supposedly in ETF format (Erlang Term Format): tries 
 to parse a list of terms (one per line, terminating with a dot) from it 
 (as file:consult/1 does), and returns it.</td></tr>
+<tr><td valign="top"><a href="#read_lines-1">read_lines/1</a></td><td>Reads the content of the specified file, expected to be a text one, based 
+on its filename specified as any kind of string (plain, binary, atom, etc) and 
+returns its content as a list of plain strings, or throws an exception on 
+failure.</td></tr>
 <tr><td valign="top"><a href="#read_terms-1">read_terms/1</a></td><td>Reads specified file supposedly in ETF format (Erlang Term Format): tries 
 to parse a list of terms (one per line, terminating with a dot) from it 
 (as file:consult/1 does), and returns it.</td></tr>
@@ -473,9 +496,11 @@ specified header and footer.</td></tr>
 <tr><td valign="top"><a href="#write_ustring-2">write_ustring/2</a></td><td>Writes specified Unicode string in the specified file.</td></tr>
 <tr><td valign="top"><a href="#write_ustring-3">write_ustring/3</a></td><td>Writes specified formatted content in the specified file.</td></tr>
 <tr><td valign="top"><a href="#write_whole-2">write_whole/2</a></td><td>Writes the specified content in specified file, whose filename is 
-specified as any kind of string, using the default encoding.</td></tr>
+specified as any kind of string, using a default encoding if a plain string is 
+specified.</td></tr>
 <tr><td valign="top"><a href="#write_whole-3">write_whole/3</a></td><td>Writes the specified content in specified file, whose filename is 
-specified as any kind of string, using the specified encoding for writing.</td></tr>
+specified as any kind of string, using the specified modes options, and 
+applying before a default encoding if a plain string is specified.</td></tr>
 <tr><td valign="top"><a href="#zipped_term_to_unzipped_file-1">zipped_term_to_unzipped_file/1</a></td><td>Reads specified binary, extracts the zipped file in it and writes it on 
 disk, in current directory.</td></tr>
 <tr><td valign="top"><a href="#zipped_term_to_unzipped_file-2">zipped_term_to_unzipped_file/2</a></td><td>Reads specified binary, extracts the zipped file in it and writes it on 
@@ -589,13 +614,12 @@ string.</p>
 <div class="spec">
 <p><tt>compress(Filename::<a href="#type-file_name">file_name()</a>) -&gt; <a href="#type-file_name">file_name()</a></tt><br></p>
 <p> </p>
-</div><p><p>Compresses specified file: creates a new, compressed version thereof 
-(using the most efficient, compacity-wise, compression tool available), whose 
+</div><p><p>Compresses specified file: creates a compressed version thereof (using 
+the most efficient, compacity-wise, compression tool available), whose 
 filename, established based on usual conventions, is returned. If a file with 
 that name already exists, it will be overwritten.</p>
 
- <p>For example, compress( "hello.png" ) will generate a "hello.png.xz" 
-file.</p>
+ <p>For example, compress("hello.png") will generate a "hello.png.xz" file.</p>
 
  <p>The original file remain as is.</p>
 
@@ -608,12 +632,11 @@ file.</p>
 <div class="spec">
 <p><tt>compress(Filename::<a href="#type-file_name">file_name()</a>, CompressionFormat::<a href="#type-compression_format">compression_format()</a>) -&gt; <a href="#type-file_name">file_name()</a></tt><br></p>
 <p> </p>
-</div><p><p>Compresses specified file: creates a new, compressed version thereof, 
-whose filename, established based on usual conventions, is returned. If a file 
-with that name already exists, it will be overwritten.</p>
+</div><p><p>Compresses specified file: creates a compressed version thereof, whose 
+filename, established based on usual conventions, is returned. If a file with 
+that name already exists, it will be overwritten.</p>
 
- <p>For example, compress( "hello.png", zip ) will generate a "hello.png.zip" 
-file.</p>
+ <p>For example, compress("hello.png", zip) will generate a "hello.png.zip" file.</p>
 
  <p>The original file remain as is.</p>
 
@@ -626,7 +649,7 @@ file.</p>
 <div class="spec">
 <p><tt>convert_to_filename(BinName::<a href="#type-any_string">any_string()</a>) -&gt; <a href="#type-any_file_name">any_file_name()</a></tt><br></p>
 <p> </p>
-</div><p><p>Converts specified name to an acceptable filename, filesystem-wise.</p>
+</div><p><p>Converts the specified name into an acceptable filename, filesystem-wise.</p>
 
  Returns the same string type as the parameter.
 </p>
@@ -807,7 +830,7 @@ name foo.extension_of(MY_FORMAT) into an uncompressed version of it named
 <p><tt>ensure_path_is_absolute(Path::<a href="#type-path">path()</a>) -&gt; <a href="#type-path">path()</a></tt><br></p><p><tt>ensure_path_is_absolute(Path::<a href="#type-bin_path">bin_path()</a>) -&gt; <a href="#type-bin_path">bin_path()</a></tt><br></p>
 <p> </p>
 <p> </p>
-</div><p><p>Returns an absolute, normalised path corresponding to specified path.</p>
+</div><p><p>Returns an absolute, normalised path corresponding to the specified path.</p>
 
  <p>Returns a string of the same type as the specified one.</p>
 
@@ -1791,7 +1814,7 @@ statement) system_utils:force_unicode_support/0.</p>
 <p> </p>
 </div><p><p>Reads specified number of bytes/characters from the specified file.</p>
 
- <p>Returns either { ok, Data } if at least some data could be read, or eof if at 
+ <p>Returns either {ok, Data} if at least some data could be read, or eof if at 
 least one element was to read and end of file was reached before anything at 
 all could be read.</p>
 
@@ -1820,6 +1843,21 @@ utf8} option, or have been written with content already properly encoded
  Throws an exception on error.
 </p>
 
+<h3 class="function"><a name="read_lines-1">read_lines/1</a></h3>
+<div class="spec">
+<p><tt>read_lines(FilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; [<a href="#type-ustring">ustring()</a>]</tt><br></p>
+<p> </p>
+</div><p><p>Reads the content of the specified file, expected to be a text one, based 
+on its filename specified as any kind of string (plain, binary, atom, etc) and 
+returns its content as a list of plain strings, or throws an exception on 
+failure.</p>
+
+ Each returned line has any (trailing) newline(s) removed (knowing that the
+ last one may or may not have a newline). See
+ <a href="https://erlang.org/doc/man/file.html#read_line-1" target="_top"><tt>https://erlang.org/doc/man/file.html#read_line-1</tt></a> for more details regarding
+ end-of-line characters.
+</p>
+
 <h3 class="function"><a name="read_terms-1">read_terms/1</a></h3>
 <div class="spec">
 <p><tt>read_terms(Filename::<a href="#type-file_path">file_path()</a>) -&gt; [term()]</tt><br></p>
@@ -1844,13 +1882,13 @@ utf8} option, or have been written with content already properly encoded
 
 <h3 class="function"><a name="read_whole-1">read_whole/1</a></h3>
 <div class="spec">
-<p><tt>read_whole(Filename::<a href="#type-any_file_name">any_file_name()</a>) -&gt; binary()</tt><br></p>
+<p><tt>read_whole(FilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; binary()</tt><br></p>
 <p> </p>
 </div><p><p>Reads the content of the specified file, based on its filename specified 
 as any kind of string (plain, binary, atom, etc), and returns the 
 corresponding binary, or throws an exception on failure.</p>
 
- See also: read_terms/1 to read directly Erlang terms.
+ See also: read_terms/1 to read directly Erlang terms instead.
 </p>
 
 <h3 class="function"><a name="remove_directory-1">remove_directory/1</a></h3>
@@ -2156,7 +2194,10 @@ normal mode as well).</p>
 <p><tt>write_whole(Filename::<a href="#type-any_file_name">any_file_name()</a>, Content::<a href="#type-ustring">ustring()</a> | binary()) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p><p>Writes the specified content in specified file, whose filename is 
-specified as any kind of string, using the default encoding.</p>
+specified as any kind of string, using a default encoding if a plain string is 
+specified.</p>
+
+ <p>Note that specifying a binary allows to avoid any potential unwanted encoding.</p>
 
  Throws an exception on failure.
 </p>
@@ -2166,11 +2207,14 @@ specified as any kind of string, using the default encoding.</p>
 <p><tt>write_whole(Filename::<a href="#type-any_file_name">any_file_name()</a>, StringContent::<a href="#type-ustring">ustring()</a> | binary(), Modes::[<a href="http://www.erlang.org/edoc/doc/kernel/doc/file.html#type-mode">file:mode()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p><p>Writes the specified content in specified file, whose filename is 
-specified as any kind of string, using the specified encoding for writing.</p>
+specified as any kind of string, using the specified modes options, and 
+applying before a default encoding if a plain string is specified.</p>
 
- <p>Note that no transparent encoding is expected to be specified through modes, 
-as this function performs (through text_utils:string_to_binary/1) such 
-encoding on plain strings.</p>
+ <p>Note that no transparent encoding-to-file is thus expected to be specified 
+through modes, as this function already performs (through 
+text_utils:string_to_binary/1) such encoding on plain strings (this would 
+result in a double encoding); specifying a binary allows to avoid any 
+potential unwanted encoding.</p>
 
  Throws an exception on failure.
 </p>

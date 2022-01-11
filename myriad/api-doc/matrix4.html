@@ -1,0 +1,396 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module matrix4</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module matrix4</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Module implementing the support for <b>4x4 matrices</b>.
+
+
+<h2><a name="description">Description</a></h2><p>Module implementing the support for <b>4x4 matrices</b>.</p>
+
+ See also:
+ - the corresponding (4D) vectors, in vector4.erl
+ - the (unspecialised) matrices of arbitrary dimensions, in matrix.erl
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-canonical_matrix4">canonical_matrix4()</a></h3>
+<p><tt>canonical_matrix4() = #matrix4{m11 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m12 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m13 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m14 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m21 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m22 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m23 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m24 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m31 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m32 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m33 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m34 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m41 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m42 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m43 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m44 = <a href="linear.html#type-coordinate">linear:coordinate()</a>}</tt></p>
+
+
+<h3 class="typedecl"><a name="type-compact_matrix4">compact_matrix4()</a></h3>
+<p><tt>compact_matrix4() = #compact_matrix4{m11 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m12 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m13 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, tx = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m21 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m22 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m23 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, ty = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m31 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m32 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m33 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, tz = <a href="linear.html#type-coordinate">linear:coordinate()</a>}</tt></p>
+
+
+<h3 class="typedecl"><a name="type-coordinate">coordinate()</a></h3>
+<p><tt>coordinate() = <a href="linear.html#type-coordinate">linear:coordinate()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-dimension">dimension()</a></h3>
+<p><tt>dimension() = <a href="linear.html#type-dimension">linear:dimension()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-dimensions">dimensions()</a></h3>
+<p><tt>dimensions() = <a href="matrix.html#type-dimensions">matrix:dimensions()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-factor">factor()</a></h3>
+<p><tt>factor() = <a href="math_utils.html#type-factor">math_utils:factor()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-matrix">matrix()</a></h3>
+<p><tt>matrix() = <a href="matrix.html#type-matrix">matrix:matrix()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-matrix3">matrix3()</a></h3>
+<p><tt>matrix3() = <a href="matrix3.html#type-matrix3">matrix3:matrix3()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-matrix4">matrix4()</a></h3>
+<p><tt>matrix4() = identity_4 | <a href="#type-canonical_matrix4">canonical_matrix4()</a> | <a href="#type-compact_matrix4">compact_matrix4()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-radians">radians()</a></h3>
+<p><tt>radians() = <a href="unit_utils.html#type-radians">unit_utils:radians()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-rot_matrix4">rot_matrix4()</a></h3>
+<p><tt>rot_matrix4() = <a href="#type-canonical_matrix4">canonical_matrix4()</a></tt></p>
+<p> A matrix describing a 4D rotation.</p>
+
+<h3 class="typedecl"><a name="type-scalar">scalar()</a></h3>
+<p><tt>scalar() = <a href="linear.html#type-scalar">linear:scalar()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-unit_vector3">unit_vector3()</a></h3>
+<p><tt>unit_vector3() = <a href="vector3.html#type-unit_vector3">vector3:unit_vector3()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-user_matrix">user_matrix()</a></h3>
+<p><tt>user_matrix() = <a href="matrix.html#type-user_matrix">matrix:user_matrix()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-user_matrix4">user_matrix4()</a></h3>
+<p><tt>user_matrix4() = <a href="#type-user_matrix">user_matrix()</a></tt></p>
+<p> A matrix4 can be specified as a list of same-size rows (akin to a user
+ arbitrary matrix) containing any kind of numerical coordinates.</p>
+
+<h3 class="typedecl"><a name="type-user_vector4">user_vector4()</a></h3>
+<p><tt>user_vector4() = <a href="vector4.html#type-user_vector4">vector4:user_vector4()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-vector3">vector3()</a></h3>
+<p><tt>vector3() = <a href="vector3.html#type-vector3">vector3:vector3()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-vector4">vector4()</a></h3>
+<p><tt>vector4() = <a href="vector4.html#type-vector4">vector4:vector4()</a></tt></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add-2">add/2</a></td><td>Returns the sum of the two specified matrices: M = Ma + Mb.</td></tr>
+<tr><td valign="top"><a href="#are_equal-2">are_equal/2</a></td><td>Tells whether the two specified (4x4) matrices are equal.</td></tr>
+<tr><td valign="top"><a href="#check-1">check/1</a></td><td>Checks that the specified matrix is legit, and returns it.</td></tr>
+<tr><td valign="top"><a href="#column-2">column/2</a></td><td>Returns the specified column of the specified matrix.</td></tr>
+<tr><td valign="top"><a href="#comatrix-1">comatrix/1</a></td><td>Returns the comatrix of the specified matrix (that is the matrix of its
+ cofactors).</td></tr>
+<tr><td valign="top"><a href="#determinant-1">determinant/1</a></td><td>Returns the determinant of the specified matrix.</td></tr>
+<tr><td valign="top"><a href="#dimension-0">dimension/0</a></td><td>Returns the dimension of these matrices.</td></tr>
+<tr><td valign="top"><a href="#dimensions-0">dimensions/0</a></td><td>Returns the dimensions of these matrices.</td></tr>
+<tr><td valign="top"><a href="#from_3D-2">from_3D/2</a></td><td>Returns the 4x4 compact matrix obtained from specified 3x3 matrix and
+ 3D (translation) vector.</td></tr>
+<tr><td valign="top"><a href="#from_arbitrary-1">from_arbitrary/1</a></td><td>Returns the 4x4 matrix corresponding to the specified
+ arbitrary-dimensioned matrix.</td></tr>
+<tr><td valign="top"><a href="#from_columns-4">from_columns/4</a></td><td>Returns the 4x4 matrix whose columns correspond to the specified 4 4D 
+vectors.</td></tr>
+<tr><td valign="top"><a href="#from_compact_coordinates-12">from_compact_coordinates/12</a></td><td>Returns the "4x4" (actually 3x4) compact matrix whose 12 actual
+ coordinates are the specified ones, as listed row after row.</td></tr>
+<tr><td valign="top"><a href="#from_coordinates-16">from_coordinates/16</a></td><td>Returns the (4x4, canonical) matrix whose (16) coordinates are the
+ specified ones, as listed row after row.</td></tr>
+<tr><td valign="top"><a href="#from_rows-4">from_rows/4</a></td><td>Returns the 4x4 matrix whose rows correspond to the specified 4 4D 
+vectors.</td></tr>
+<tr><td valign="top"><a href="#get_element-3">get_element/3</a></td><td>Returns the element at specified row and column of the specified matrix.</td></tr>
+<tr><td valign="top"><a href="#identity-0">identity/0</a></td><td>Returns the identity (4x4) matrix.</td></tr>
+<tr><td valign="top"><a href="#inverse-1">inverse/1</a></td><td>Returns the inverse of the specified matrix, if it is inversible (that is
+ iff its determinant is non-null), otherwise returns undefined.</td></tr>
+<tr><td valign="top"><a href="#mult-2">mult/2</a></td><td>Multiplies the first matrix by the second one: returns Mc = Ma.Mb.</td></tr>
+<tr><td valign="top"><a href="#new-1">new/1</a></td><td>Returns a 4D (canonical) matrix corresponding to the user-specified
+ matrix.</td></tr>
+<tr><td valign="top"><a href="#new-3">new/3</a></td><td>Returns a 4D compact matrix corresponding to the user-specified
+ row vectors.</td></tr>
+<tr><td valign="top"><a href="#null-0">null/0</a></td><td>Returns the null (4x4) matrix.</td></tr>
+<tr><td valign="top"><a href="#rotation-2">rotation/2</a></td><td>Returns the (4x4) homogeneous (thus compact) matrix corresponding to a 
+rotation of the specified angle around the 3D axis specified as a unit vector, 
+and to no translation.</td></tr>
+<tr><td valign="top"><a href="#row-2">row/2</a></td><td>Returns the specified row of the specified matrix.</td></tr>
+<tr><td valign="top"><a href="#scale-2">scale/2</a></td><td>Scales specified (4D) matrix of the specified factor.</td></tr>
+<tr><td valign="top"><a href="#set_element-4">set_element/4</a></td><td>Returns a matrix identical to the specified one except that its specified
+ element at specified location has been set to the specified value.</td></tr>
+<tr><td valign="top"><a href="#sub-2">sub/2</a></td><td>Returns the subtraction of the two specified matrices: M = Ma - Mb.</td></tr>
+<tr><td valign="top"><a href="#to_arbitrary-1">to_arbitrary/1</a></td><td>Returns the arbitrary-dimensioned matrix corresponding to the specified
+ 4x4 matrix.</td></tr>
+<tr><td valign="top"><a href="#to_canonical-1">to_canonical/1</a></td><td>Returns the canonical form of the specified 4x4 matrix.</td></tr>
+<tr><td valign="top"><a href="#to_compact-1">to_compact/1</a></td><td>Returns the compact form of specified (4x4) matrix.</td></tr>
+<tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td>Returns a textual representation of the specified (4x4) matrix.</td></tr>
+<tr><td valign="top"><a href="#transpose-1">transpose/1</a></td><td>Returns the transpose of the specified matrix.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="add-2">add/2</a></h3>
+<div class="spec">
+<p><tt>add(Ma::<a href="#type-matrix4">matrix4()</a>, Mb::<a href="#type-matrix4">matrix4()</a>) -&gt; <a href="#type-matrix4">matrix4()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the sum of the two specified matrices: M = Ma + Mb.</p>
+
+<h3 class="function"><a name="are_equal-2">are_equal/2</a></h3>
+<div class="spec">
+<p><tt>are_equal(Ma::<a href="#type-matrix4">matrix4()</a>, Mb::<a href="#type-matrix4">matrix4()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Tells whether the two specified (4x4) matrices are equal.</p>
+
+<h3 class="function"><a name="check-1">check/1</a></h3>
+<div class="spec">
+<p><tt>check(M::<a href="#type-matrix4">matrix4()</a>) -&gt; <a href="#type-matrix4">matrix4()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that the specified matrix is legit, and returns it.</p>
+
+<h3 class="function"><a name="column-2">column/2</a></h3>
+<div class="spec">
+<p><tt>column(ColumnCount::<a href="#type-dimension">dimension()</a>, Matrix4::<a href="#type-matrix4">matrix4()</a>) -&gt; <a href="#type-vector4">vector4()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the specified column of the specified matrix.</p>
+
+<h3 class="function"><a name="comatrix-1">comatrix/1</a></h3>
+<div class="spec">
+<p><tt>comatrix(M::<a href="#type-matrix4">matrix4()</a>) -&gt; <a href="#type-matrix4">matrix4()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the comatrix of the specified matrix (that is the matrix of its
+ cofactors).
+</p>
+
+<h3 class="function"><a name="determinant-1">determinant/1</a></h3>
+<div class="spec">
+<p><tt>determinant(M::<a href="#type-matrix4">matrix4()</a>) -&gt; <a href="#type-scalar">scalar()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the determinant of the specified matrix.</p>
+
+<h3 class="function"><a name="dimension-0">dimension/0</a></h3>
+<div class="spec">
+<p><tt>dimension() -&gt; <a href="#type-dimension">dimension()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the dimension of these matrices.</p>
+
+ Not useless, when using polymorphism based on module name.
+</p>
+
+<h3 class="function"><a name="dimensions-0">dimensions/0</a></h3>
+<div class="spec">
+<p><tt>dimensions() -&gt; <a href="#type-dimensions">dimensions()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the dimensions of these matrices.</p>
+
+ Not useless, when using polymorphism based on module name.
+</p>
+
+<h3 class="function"><a name="from_3D-2">from_3D/2</a></h3>
+<div class="spec">
+<p><tt>from_3D(Matrix3::<a href="#type-matrix3">matrix3()</a>, Vec3::<a href="#type-vector3">vector3()</a>) -&gt; <a href="#type-compact_matrix4">compact_matrix4()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the 4x4 compact matrix obtained from specified 3x3 matrix and
+ 3D (translation) vector.
+</p>
+
+<h3 class="function"><a name="from_arbitrary-1">from_arbitrary/1</a></h3>
+<div class="spec">
+<p><tt>from_arbitrary(Matrix::<a href="#type-matrix">matrix()</a>) -&gt; <a href="#type-matrix4">matrix4()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the 4x4 matrix corresponding to the specified
+ arbitrary-dimensioned matrix.
+</p>
+
+<h3 class="function"><a name="from_columns-4">from_columns/4</a></h3>
+<div class="spec">
+<p><tt>from_columns(Va::<a href="#type-vector4">vector4()</a>, Vb::<a href="#type-vector4">vector4()</a>, Vc::<a href="#type-vector4">vector4()</a>, Vd::<a href="#type-vector4">vector4()</a>) -&gt; <a href="#type-canonical_matrix4">canonical_matrix4()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the 4x4 matrix whose columns correspond to the specified 4 4D 
+vectors.</p>
+
+ Returns thus:
+  <pre>  [ Va Vb Vc Vd ]
+  [ |  |  |  |  ]
+  [ |  |  |  |  ]
+  [ |  |  |  |  ]</pre>
+</p>
+
+<h3 class="function"><a name="from_compact_coordinates-12">from_compact_coordinates/12</a></h3>
+<div class="spec">
+<p><tt>from_compact_coordinates(M11::<a href="#type-coordinate">coordinate()</a>, M12::<a href="#type-coordinate">coordinate()</a>, M13::<a href="#type-coordinate">coordinate()</a>, Tx::<a href="#type-coordinate">coordinate()</a>, M21::<a href="#type-coordinate">coordinate()</a>, M22::<a href="#type-coordinate">coordinate()</a>, M23::<a href="#type-coordinate">coordinate()</a>, Ty::<a href="#type-coordinate">coordinate()</a>, M31::<a href="#type-coordinate">coordinate()</a>, M32::<a href="#type-coordinate">coordinate()</a>, M33::<a href="#type-coordinate">coordinate()</a>, Tz::<a href="#type-coordinate">coordinate()</a>) -&gt; <a href="#type-compact_matrix4">compact_matrix4()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the "4x4" (actually 3x4) compact matrix whose 12 actual
+ coordinates are the specified ones, as listed row after row.
+</p>
+
+<h3 class="function"><a name="from_coordinates-16">from_coordinates/16</a></h3>
+<div class="spec">
+<p><tt>from_coordinates(M11::<a href="#type-coordinate">coordinate()</a>, M12::<a href="#type-coordinate">coordinate()</a>, M13::<a href="#type-coordinate">coordinate()</a>, M14::<a href="#type-coordinate">coordinate()</a>, M21::<a href="#type-coordinate">coordinate()</a>, M22::<a href="#type-coordinate">coordinate()</a>, M23::<a href="#type-coordinate">coordinate()</a>, M24::<a href="#type-coordinate">coordinate()</a>, M31::<a href="#type-coordinate">coordinate()</a>, M32::<a href="#type-coordinate">coordinate()</a>, M33::<a href="#type-coordinate">coordinate()</a>, M34::<a href="#type-coordinate">coordinate()</a>, M41::<a href="#type-coordinate">coordinate()</a>, M42::<a href="#type-coordinate">coordinate()</a>, M43::<a href="#type-coordinate">coordinate()</a>, M44::<a href="#type-coordinate">coordinate()</a>) -&gt; <a href="#type-canonical_matrix4">canonical_matrix4()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the (4x4, canonical) matrix whose (16) coordinates are the
+ specified ones, as listed row after row.
+</p>
+
+<h3 class="function"><a name="from_rows-4">from_rows/4</a></h3>
+<div class="spec">
+<p><tt>from_rows(Va::<a href="#type-vector4">vector4()</a>, Vb::<a href="#type-vector4">vector4()</a>, Vc::<a href="#type-vector4">vector4()</a>, Vd::<a href="#type-vector4">vector4()</a>) -&gt; <a href="#type-canonical_matrix4">canonical_matrix4()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the 4x4 matrix whose rows correspond to the specified 4 4D 
+vectors.</p>
+
+ Returns thus:
+  <pre> [ Va - - - ]
+ [ Vb - - - ]
+ [ Vc - - - ]
+ [ Vd - - - ]</pre>
+</p>
+
+<h3 class="function"><a name="get_element-3">get_element/3</a></h3>
+<div class="spec">
+<p><tt>get_element(R::<a href="#type-dimension">dimension()</a>, C::<a href="#type-dimension">dimension()</a>, Matrix4::<a href="#type-matrix4">matrix4()</a>) -&gt; <a href="#type-coordinate">coordinate()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the element at specified row and column of the specified matrix.</p>
+
+<h3 class="function"><a name="identity-0">identity/0</a></h3>
+<div class="spec">
+<p><tt>identity() -&gt; <a href="#type-matrix4">matrix4()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the identity (4x4) matrix.</p>
+
+<h3 class="function"><a name="inverse-1">inverse/1</a></h3>
+<div class="spec">
+<p><tt>inverse(M::<a href="#type-matrix4">matrix4()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-matrix4">matrix4()</a>)</tt><br></p>
+<p> </p>
+</div><p>Returns the inverse of the specified matrix, if it is inversible (that is
+ iff its determinant is non-null), otherwise returns undefined.
+</p>
+
+<h3 class="function"><a name="mult-2">mult/2</a></h3>
+<div class="spec">
+<p><tt>mult(Ma::<a href="#type-matrix4">matrix4()</a>, Mb::<a href="#type-matrix4">matrix4()</a>) -&gt; <a href="#type-matrix4">matrix4()</a></tt><br></p>
+<p> </p>
+</div><p>Multiplies the first matrix by the second one: returns Mc = Ma.Mb.</p>
+
+<h3 class="function"><a name="new-1">new/1</a></h3>
+<div class="spec">
+<p><tt>new(UserMatrix::<a href="#type-user_matrix4">user_matrix4()</a>) -&gt; <a href="#type-canonical_matrix4">canonical_matrix4()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a 4D (canonical) matrix corresponding to the user-specified
+ matrix.
+</p>
+
+<h3 class="function"><a name="new-3">new/3</a></h3>
+<div class="spec">
+<p><tt>new(UserVecRow1::<a href="#type-user_vector4">user_vector4()</a>, UserVecRow2::<a href="#type-user_vector4">user_vector4()</a>, UserVecRow3::<a href="#type-user_vector4">user_vector4()</a>) -&gt; <a href="#type-compact_matrix4">compact_matrix4()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a 4D compact matrix corresponding to the user-specified
+ row vectors.
+</p>
+
+<h3 class="function"><a name="null-0">null/0</a></h3>
+<div class="spec">
+<p><tt>null() -&gt; <a href="#type-canonical_matrix4">canonical_matrix4()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the null (4x4) matrix.</p>
+
+<h3 class="function"><a name="rotation-2">rotation/2</a></h3>
+<div class="spec">
+<p><tt>rotation(UnitAxis::<a href="#type-unit_vector3">unit_vector3()</a>, RadAngle::<a href="#type-radians">radians()</a>) -&gt; <a href="#type-compact_matrix4">compact_matrix4()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the (4x4) homogeneous (thus compact) matrix corresponding to a 
+rotation of the specified angle around the 3D axis specified as a unit vector, 
+and to no translation.</p>
+
+ <p>This will be a counterclockwise rotation for an observer placed so that the 
+specified axis points towards it.</p>
+
+ Note that this is not the general case of a rotation in 4D (which is of little
+ use, at least here), but this corresponds to (4x4) homogeneous matrices.
+</p>
+
+<h3 class="function"><a name="row-2">row/2</a></h3>
+<div class="spec">
+<p><tt>row(RowCount::<a href="#type-dimension">dimension()</a>, Matrix4::<a href="#type-matrix4">matrix4()</a>) -&gt; <a href="#type-vector4">vector4()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the specified row of the specified matrix.</p>
+
+<h3 class="function"><a name="scale-2">scale/2</a></h3>
+<div class="spec">
+<p><tt>scale(Compact_matrix4::<a href="#type-matrix4">matrix4()</a>, Factor::<a href="#type-factor">factor()</a>) -&gt; <a href="#type-matrix4">matrix4()</a></tt><br></p>
+<p> </p>
+</div><p>Scales specified (4D) matrix of the specified factor.</p>
+
+<h3 class="function"><a name="set_element-4">set_element/4</a></h3>
+<div class="spec">
+<p><tt>set_element(R::<a href="#type-dimension">dimension()</a>, C::<a href="#type-dimension">dimension()</a>, Value::<a href="#type-coordinate">coordinate()</a>, Matrix::<a href="#type-matrix4">matrix4()</a>) -&gt; <a href="#type-matrix4">matrix4()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a matrix identical to the specified one except that its specified
+ element at specified location has been set to the specified value.
+</p>
+
+<h3 class="function"><a name="sub-2">sub/2</a></h3>
+<div class="spec">
+<p><tt>sub(Ma::<a href="#type-matrix4">matrix4()</a>, Mb::<a href="#type-matrix4">matrix4()</a>) -&gt; <a href="#type-matrix4">matrix4()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the subtraction of the two specified matrices: M = Ma - Mb.</p>
+
+<h3 class="function"><a name="to_arbitrary-1">to_arbitrary/1</a></h3>
+<div class="spec">
+<p><tt>to_arbitrary(Matrix4::<a href="#type-matrix4">matrix4()</a>) -&gt; <a href="#type-matrix">matrix()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the arbitrary-dimensioned matrix corresponding to the specified
+ 4x4 matrix.
+</p>
+
+<h3 class="function"><a name="to_canonical-1">to_canonical/1</a></h3>
+<div class="spec">
+<p><tt>to_canonical(Compact_matrix4::<a href="#type-matrix4">matrix4()</a>) -&gt; <a href="#type-canonical_matrix4">canonical_matrix4()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the canonical form of the specified 4x4 matrix.</p>
+
+<h3 class="function"><a name="to_compact-1">to_compact/1</a></h3>
+<div class="spec">
+<p><tt>to_compact(M::<a href="#type-matrix4">matrix4()</a>) -&gt; <a href="#type-compact_matrix4">compact_matrix4()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the compact form of specified (4x4) matrix.</p>
+
+ Throws an exception if the specified matrix cannot be expressed as a compact
+ one.
+</p>
+
+<h3 class="function"><a name="to_string-1">to_string/1</a></h3>
+<div class="spec">
+<p><tt>to_string(Matrix::<a href="#type-matrix4">matrix4()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual representation of the specified (4x4) matrix.</p>
+
+<h3 class="function"><a name="transpose-1">transpose/1</a></h3>
+<div class="spec">
+<p><tt>transpose(M::<a href="#type-matrix4">matrix4()</a>) -&gt; <a href="#type-matrix4">matrix4()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the transpose of the specified matrix.</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

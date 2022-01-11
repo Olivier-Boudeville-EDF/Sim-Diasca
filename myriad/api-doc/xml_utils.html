@@ -1,0 +1,251 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module xml_utils</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module xml_utils</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of management facilities for <b>XML</b> processing.
+
+
+<h2><a name="description">Description</a></h2><p>Gathering of management facilities for <b>XML</b> processing.</p>
+
+ <p>See xml_utils_test.erl for the corresponding test.</p>
+
+ Mostly a wrapper around the standard, always available xmerl modules.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-any_file_path">any_file_path()</a></h3>
+<p><tt>any_file_path() = <a href="file_utils.html#type-any_file_path">file_utils:any_file_path()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-any_string">any_string()</a></h3>
+<p><tt>any_string() = <a href="text_utils.html#type-any_string">text_utils:any_string()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-attribute_record">attribute_record()</a></h3>
+<p><tt>attribute_record() = #xmlAttribute{}</tt></p>
+<p> Stores all information regarding an attribute in an XML tag.</p>
+
+<h3 class="typedecl"><a name="type-comment_record">comment_record()</a></h3>
+<p><tt>comment_record() = #xmlComment{}</tt></p>
+<p> Stores all information regarding a comment in an XML document.</p>
+
+<h3 class="typedecl"><a name="type-declaration_record">declaration_record()</a></h3>
+<p><tt>declaration_record() = #xmlDecl{}</tt></p>
+<p> Stores all information regarding an XML declaration (XML version, encoding,
+ etc.).</p>
+
+<h3 class="typedecl"><a name="type-element_record">element_record()</a></h3>
+<p><tt>element_record() = #xmlElement{}</tt></p>
+<p> Stores all information regarding an element (notably having a content) in an
+ XML document.</p>
+
+<h3 class="typedecl"><a name="type-instruction_record">instruction_record()</a></h3>
+<p><tt>instruction_record() = #xmlPI{}</tt></p>
+<p> Stores all information regarding a processing instruction in an XML document.</p>
+
+<h3 class="typedecl"><a name="type-io_list">io_list()</a></h3>
+<p><tt>io_list() = <a href="text_utils.html#type-io_list">text_utils:io_list()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-text_record">text_record()</a></h3>
+<p><tt>text_record() = #xmlText{}</tt></p>
+<p> Stores all information regarding a direct text in an XML document.</p>
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-xml_attribute">xml_attribute()</a></h3>
+<p><tt>xml_attribute() = {<a href="#type-xml_attribute_name">xml_attribute_name()</a>, <a href="#type-xml_attribute_value">xml_attribute_value()</a>} | <a href="#type-attribute_record">attribute_record()</a></tt></p>
+<p><p> The description of an attribute of a XML tag.</p>
+
+ Ex: {refCount,"4"} in: <Account refCount="4"> ...</Account></p>
+
+<h3 class="typedecl"><a name="type-xml_attribute_name">xml_attribute_name()</a></h3>
+<p><tt>xml_attribute_name() = atom()</tt></p>
+<p><p> The name of an attribute of a XML tag; we recommend to use (lower) camelCase 
+for them.</p>
+
+ Ex: 'refCount' in: <Account refCount="4"> ...</Account></p>
+
+<h3 class="typedecl"><a name="type-xml_attribute_value">xml_attribute_value()</a></h3>
+<p><tt>xml_attribute_value() = <a href="#type-io_list">io_list()</a> | atom() | integer()</tt></p>
+<p><p> The value of an attribute of a XML tag.</p>
+
+ Ex: "4" in: <Account refCount="4"> ...</Account></p>
+
+<h3 class="typedecl"><a name="type-xml_content">xml_content()</a></h3>
+<p><tt>xml_content() = [<a href="#type-xml_element">xml_element()</a>]</tt></p>
+<p><p> An in-memory representation of an XML content, mostly as a tree of markup 
+elements; note that this is always a flat list.</p>
+
+ See our 'Usage of xmerl' section for more details and examples.</p>
+
+<h3 class="typedecl"><a name="type-xml_document">xml_document()</a></h3>
+<p><tt>xml_document() = <a href="#type-xml_content">xml_content()</a></tt></p>
+<p> A full, standalone definition of a XML document.</p>
+
+<h3 class="typedecl"><a name="type-xml_element">xml_element()</a></h3>
+<p><tt>xml_element() = <a href="#type-xml_simple_tag">xml_simple_tag()</a> | <a href="#type-xml_iolist">xml_iolist()</a> | <a href="#type-xml_record">xml_record()</a></tt></p>
+<p><p> An element of an XML document (top-level or nested).</p>
+
+ It can be expressed in simple form (one of the three options based on a
+ xml_tag()), as an iolist, or based on one of the five xmerl's records.</p>
+
+<h3 class="typedecl"><a name="type-xml_iolist">xml_iolist()</a></h3>
+<p><tt>xml_iolist() = <a href="#type-io_list">io_list()</a></tt></p>
+<p> An XML element defined by an iolist.</p>
+
+<h3 class="typedecl"><a name="type-xml_prolog_value">xml_prolog_value()</a></h3>
+<p><tt>xml_prolog_value() = <a href="#type-xml_attribute_value">xml_attribute_value()</a></tt></p>
+<p><p> The value associated to the 'prolog' attribute within root attributes, 
+typically an (XML-escaped string).</p>
+
+ <p>Allows to define the header of the XML document, so that we becomes for 
+example:</p>
+
+ <p><code>&lt;?xml version="1.0" encoding="utf-8" ?&gt;</code></p>
+
+ <p>or:</p>
+
+ <p><code>&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+ &lt;!DOCTYPE birds SYSTEM "bird.dtd"&gt;</code></p>
+
+ <p>or:</p>
+
+ <p><code>&lt;?xml version="1.0"?&gt;
+ &lt;birds xmlns="http://foo.org/species" xmlns:c="http://bar.net/colors"&gt;</code></p>
+
+ <p>Another option to set the prolog is to alter the root XML element with
+ attributes like: <code>[{xmlns, SpeciesStr}, {</code>xmlns:c', ColorStr}]'</p>
+
+ If the root element is an xmlElement record, then a (single) namespace may be
+ specified thanks to its 'namespace' field:
+ RootElem = #xmlElement{name=birds,
+                        namespace=#xmlNamespace{default=SpeciesStr}, ...</p>
+
+<h3 class="typedecl"><a name="type-xml_record">xml_record()</a></h3>
+<p><tt>xml_record() = <a href="#type-text_record">text_record()</a> | <a href="#type-element_record">element_record()</a> | <a href="#type-instruction_record">instruction_record()</a> | <a href="#type-comment_record">comment_record()</a> | <a href="#type-declaration_record">declaration_record()</a></tt></p>
+<p> The internal records introduced by xmerl in order to denote XML elements.</p>
+
+<h3 class="typedecl"><a name="type-xml_root_attributes">xml_root_attributes()</a></h3>
+<p><tt>xml_root_attributes() = [<a href="#type-xml_attribute">xml_attribute()</a>]</tt></p>
+<p><p> The XML attributes for the root element of an XML document, the implicit 
+parent of the user-specified content.</p>
+
+ May notably include a XML prolog attribute.</p>
+
+<h3 class="typedecl"><a name="type-xml_simple_content">xml_simple_content()</a></h3>
+<p><tt>xml_simple_content() = [<a href="#type-xml_simple_tag">xml_simple_tag()</a>]</tt></p>
+<p> An in-memory representation of an XML content, only based on simple tags
+ (hence a special case of xml_content/0).</p>
+
+<h3 class="typedecl"><a name="type-xml_simple_tag">xml_simple_tag()</a></h3>
+<p><tt>xml_simple_tag() = <a href="#type-xml_tag">xml_tag()</a> | {<a href="#type-xml_tag">xml_tag()</a>, <a href="#type-xml_content">xml_content()</a>} | {<a href="#type-xml_tag">xml_tag()</a>, [<a href="#type-xml_attribute">xml_attribute()</a>], <a href="#type-xml_content">xml_content()</a>}</tt></p>
+<p> An XML tag, expressed in xmerl's simple form.</p>
+
+<h3 class="typedecl"><a name="type-xml_tag">xml_tag()</a></h3>
+<p><tt>xml_tag() = atom()</tt></p>
+<p><p> An XML tag; we recommend to use Upper CamelCase (PascalCase) for their name.</p>
+
+ Ex: 'AccountLog' in: <AccountLog level="red">Hello</AccountLog>.</p>
+
+<h3 class="typedecl"><a name="type-xml_text">xml_text()</a></h3>
+<p><tt>xml_text() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><p> A raw string containing XML (including markup), typically at least an extract 
+of an XML document.</p>
+
+ Ex: "<birds> <bird species="crow">Arthur</bird> </birds>".</p>
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#get_default_prolog-0">get_default_prolog/0</a></td><td>Returns the default prolog value, corresponding to:
+ <code>&lt;?xml version="1.0" encoding="utf-8" ?&gt;.</code>.</td></tr>
+<tr><td valign="top"><a href="#parse_xml_file-1">parse_xml_file/1</a></td><td>Returns an XML content structure resulting from the scan of the specified 
+file expected to contain an XML document.</td></tr>
+<tr><td valign="top"><a href="#string_to_xml-1">string_to_xml/1</a></td><td>Returns an XML content structure resulting from the scan of the specified 
+string expected to contain an XML document.</td></tr>
+<tr><td valign="top"><a href="#to_xml_text-1">to_xml_text/1</a></td><td>Escapes specified text (not expected to contain markup), so that it can
+ be included safely within an XML content.</td></tr>
+<tr><td valign="top"><a href="#xml_to_string-1">xml_to_string/1</a></td><td>Returns a string corresponding to the specified XML content structure,
+ using the default XML prolog, corresponding to:
+ <code>&lt;?xml version="1.0" encoding="utf-8" ?&gt;.</code></td></tr>
+<tr><td valign="top"><a href="#xml_to_string-2">xml_to_string/2</a></td><td>Returns a string corresponding to the specified XML content structure, 
+using the specified prolog.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="get_default_prolog-0">get_default_prolog/0</a></h3>
+<div class="spec">
+<p><tt>get_default_prolog() -&gt; <a href="#type-xml_prolog_value">xml_prolog_value()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the default prolog value, corresponding to:
+ <code>&lt;?xml version="1.0" encoding="utf-8" ?&gt;.</code>
+</p>
+
+<h3 class="function"><a name="parse_xml_file-1">parse_xml_file/1</a></h3>
+<div class="spec">
+<p><tt>parse_xml_file(FilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-xml_content">xml_content()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns an XML content structure resulting from the scan of the specified 
+file expected to contain an XML document.</p>
+
+ The returned XML content is a simple one, i.e. it is exclusively made of
+ simple tags (no XML records).
+</p>
+
+<h3 class="function"><a name="string_to_xml-1">string_to_xml/1</a></h3>
+<div class="spec">
+<p><tt>string_to_xml(XMLStr::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-xml_content">xml_content()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns an XML content structure resulting from the scan of the specified 
+string expected to contain an XML document.</p>
+
+ The returned XML content is a simple one, i.e. it is exclusively made of
+ simple tags (no XML records).
+</p>
+
+<h3 class="function"><a name="to_xml_text-1">to_xml_text/1</a></h3>
+<div class="spec">
+<p><tt>to_xml_text(Text::<a href="#type-any_string">any_string()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Escapes specified text (not expected to contain markup), so that it can
+ be included safely within an XML content.
+</p>
+
+<h3 class="function"><a name="xml_to_string-1">xml_to_string/1</a></h3>
+<div class="spec">
+<p><tt>xml_to_string(XMLContent::<a href="#type-xml_content">xml_content()</a>) -&gt; <a href="#type-io_list">io_list()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns a string corresponding to the specified XML content structure,
+ using the default XML prolog, corresponding to:
+ <code>&lt;?xml version="1.0" encoding="utf-8" ?&gt;.</code></p>
+
+ The returned XML serialised form is ready to be written on a file, sent over
+ the network, etc.
+</p>
+
+<h3 class="function"><a name="xml_to_string-2">xml_to_string/2</a></h3>
+<div class="spec">
+<p><tt>xml_to_string(XMLContent::<a href="#type-xml_content">xml_content()</a>, PrologValue::<a href="#type-xml_prolog_value">xml_prolog_value()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns a string corresponding to the specified XML content structure, 
+using the specified prolog.</p>
+
+ The returned XML serialised form is ready to be written on a file, sent over
+ the network, etc.
+</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

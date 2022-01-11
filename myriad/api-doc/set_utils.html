@@ -61,9 +61,9 @@ your actual need is a set!</p>
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add-2">add/2</a></td><td>Returns a new set formed from the specified one with specified element
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add-2">add/2</a></td><td>Returns a set formed from the specified one with specified element
  inserted.</td></tr>
-<tr><td valign="top"><a href="#add_as_new-2">add_as_new/2</a></td><td>Returns a new set formed from the specified one with specified element
+<tr><td valign="top"><a href="#add_as_new-2">add_as_new/2</a></td><td>Returns a set formed from the specified one with specified element
  inserted, checking that this element was not already in the original set
  (otherwise a batmatch exception is thrown).</td></tr>
 <tr><td valign="top"><a href="#add_element_list-2">add_element_list/2</a></td><td>Returns a set made of the specified set to which the elements of the
@@ -96,7 +96,7 @@ specified set.</td></tr>
 <tr><td valign="top"><a href="#member-2">member/2</a></td><td>Returns true iff the specified element is an element of the specified
  set.</td></tr>
 <tr><td valign="top"><a href="#new-0">new/0</a></td><td>Returns a new, empty, set.</td></tr>
-<tr><td valign="top"><a href="#new-1">new/1</a></td><td>Returns a new set, containing the elements of specified list (possibly 
+<tr><td valign="top"><a href="#new-1">new/1</a></td><td>Returns a set containing the elements of specified list (possibly 
 unordered and containing duplicates).</td></tr>
 <tr><td valign="top"><a href="#next-1">next/1</a></td><td>Returns the next element and iterator, as obtained from the specified 
 iterator.</td></tr>
@@ -114,7 +114,7 @@ iterator.</td></tr>
 <div class="spec">
 <p><tt>add(Element::<a href="#type-element">element()</a>, Set::<a href="#type-set">set()</a>) -&gt; <a href="#type-set">set()</a></tt><br></p>
 <p> </p>
-</div><p>Returns a new set formed from the specified one with specified element
+</div><p>Returns a set formed from the specified one with specified element
  inserted. If this element is already in the specified set, the returned set is
  the same.
 </p>
@@ -123,7 +123,7 @@ iterator.</td></tr>
 <div class="spec">
 <p><tt>add_as_new(Element::<a href="#type-element">element()</a>, Set::<a href="#type-set">set()</a>) -&gt; <a href="#type-set">set()</a></tt><br></p>
 <p> </p>
-</div><p>Returns a new set formed from the specified one with specified element
+</div><p>Returns a set formed from the specified one with specified element
  inserted, checking that this element was not already in the original set
  (otherwise a batmatch exception is thrown).
 </p>
@@ -270,7 +270,7 @@ specified set.</p>
 <div class="spec">
 <p><tt>new(ElementList::[<a href="#type-element">element()</a>]) -&gt; <a href="#type-set">set()</a></tt><br></p>
 <p> </p>
-</div><p><p>Returns a new set, containing the elements of specified list (possibly 
+</div><p><p>Returns a set containing the elements of specified list (possibly 
 unordered and containing duplicates).</p>
 
  See singleton/1 if wanting to create a set with one element.

@@ -23,6 +23,10 @@
 <p><tt>absolute_month() = <a href="unit_utils.html#type-absolute_month">unit_utils:absolute_month()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-any_hertz">any_hertz()</a></h3>
+<p><tt>any_hertz() = <a href="unit_utils.html#type-any_hertz">unit_utils:any_hertz()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-canonical_day">canonical_day()</a></h3>
 <p><tt>canonical_day() = <a href="unit_utils.html#type-canonical_day">unit_utils:canonical_day()</a></tt></p>
 
@@ -49,7 +53,8 @@
 
 <h3 class="typedecl"><a name="type-date">date()</a></h3>
 <p><tt>date() = {<a href="#type-year">year()</a>, <a href="#type-canonical_month">canonical_month()</a>, <a href="#type-canonical_day">canonical_day()</a>}</tt></p>
-<p> Calendar date; used instead of the less precise calendar:date/0 type.</p>
+<p> Canonical calendar date; used instead of the less precise calendar:date/0
+ type. See also: user_date/0.</p>
 
 <h3 class="typedecl"><a name="type-date_in_year">date_in_year()</a></h3>
 <p><tt>date_in_year() = {<a href="#type-canonical_month">canonical_month()</a>, <a href="#type-canonical_day">canonical_day()</a>}</tt></p>
@@ -106,19 +111,23 @@
 
 
 <h3 class="typedecl"><a name="type-ms_duration">ms_duration()</a></h3>
-<p><tt>ms_duration() = <a href="unit_utils.html#type-milliseconds">unit_utils:milliseconds()</a></tt></p>
-
+<p><tt>ms_duration() = <a href="#type-milliseconds">milliseconds()</a></tt></p>
+<p> A duration, in milliseconds.</p>
 
 <h3 class="typedecl"><a name="type-ms_monotonic">ms_monotonic()</a></h3>
-<p><tt>ms_monotonic() = <a href="unit_utils.html#type-milliseconds">unit_utils:milliseconds()</a></tt></p>
+<p><tt>ms_monotonic() = <a href="#type-milliseconds">milliseconds()</a></tt></p>
 <p> The internal, duration-friendly monotonic time.</p>
 
+<h3 class="typedecl"><a name="type-ms_period">ms_period()</a></h3>
+<p><tt>ms_period() = <a href="#type-ms_duration">ms_duration()</a></tt></p>
+<p> A period, in milliseconds.</p>
+
 <h3 class="typedecl"><a name="type-ms_since_epoch">ms_since_epoch()</a></h3>
-<p><tt>ms_since_epoch() = <a href="unit_utils.html#type-milliseconds">unit_utils:milliseconds()</a></tt></p>
+<p><tt>ms_since_epoch() = <a href="#type-milliseconds">milliseconds()</a></tt></p>
 <p> POSIX conventions.</p>
 
 <h3 class="typedecl"><a name="type-ms_since_year_0">ms_since_year_0()</a></h3>
-<p><tt>ms_since_year_0() = <a href="unit_utils.html#type-milliseconds">unit_utils:milliseconds()</a></tt></p>
+<p><tt>ms_since_year_0() = <a href="#type-milliseconds">milliseconds()</a></tt></p>
 <p> Also known as Gregorian milliseconds.</p>
 
 <h3 class="typedecl"><a name="type-posix_seconds">posix_seconds()</a></h3>
@@ -146,6 +155,11 @@
 <p><tt>timestamp() = {<a href="#type-date">date()</a>, <a href="#type-time">time()</a>}</tt></p>
 <p> Used to be calendar:datetime(), now uses our types.</p>
 
+<h3 class="typedecl"><a name="type-user_date">user_date()</a></h3>
+<p><tt>user_date() = {<a href="#type-canonical_day">canonical_day()</a>, <a href="#type-canonical_month">canonical_month()</a>, <a href="#type-year">year()</a>}</tt></p>
+<p> Date in a format that is considered common to most users.
+ See also: date/0.</p>
+
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
 <p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
 
@@ -167,8 +181,9 @@
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#canonicalise_month-1">canonicalise_month/1</a></td><td>Canonicalises specified month.</td></tr>
-<tr><td valign="top"><a href="#check_canonical_date-1">check_canonical_date/1</a></td><td>Checks that specified date is a canonical one.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#canonical_to_user_date-1">canonical_to_user_date/1</a></td><td>Converts specified canonical date into a user one.</td></tr>
+<tr><td valign="top"><a href="#canonicalise_month-1">canonicalise_month/1</a></td><td>Canonicalises specified month.</td></tr>
+<tr><td valign="top"><a href="#check_canonical_date-1">check_canonical_date/1</a></td><td>Checks that the specified date is a canonical one.</td></tr>
 <tr><td valign="top"><a href="#check_date_order-2">check_date_order/2</a></td><td>Ensures that the starting canonical date is strictly before the stopping 
 one.</td></tr>
 <tr><td valign="top"><a href="#check_maybe_timestamp-1">check_maybe_timestamp/1</a></td><td>Checks that specified term is a maybe-timestamp indeed.</td></tr>
@@ -176,6 +191,7 @@ one.</td></tr>
 <tr><td valign="top"><a href="#check_month_order-2">check_month_order/2</a></td><td>Ensures that the starting canonical month is strictly before the stopping
  one.</td></tr>
 <tr><td valign="top"><a href="#check_timestamp-1">check_timestamp/1</a></td><td>Checks that specified term is a timestamp indeed, and returns it.</td></tr>
+<tr><td valign="top"><a href="#check_user_date-1">check_user_date/1</a></td><td>Checks that the specified date is a user one.</td></tr>
 <tr><td valign="top"><a href="#compare_dates-2">compare_dates/2</a></td><td>Compares the specified two dates: tells whether the first date is 
 strictly before, after or the same as the second one.</td></tr>
 <tr><td valign="top"><a href="#date_to_weekday-1">date_to_weekday/1</a></td><td>Returns the week day (ex: 'Tuesday') corresponding to specified date.</td></tr>
@@ -197,6 +213,8 @@ the specified duration, expected to be expressed as a number of milliseconds
 'infinity' atom.</td></tr>
 <tr><td valign="top"><a href="#find_common_bank_holidays-3">find_common_bank_holidays/3</a></td><td>Returns the days-of-the-year that are common to the whole year range
  (start year included, stop one excluded).</td></tr>
+<tr><td valign="top"><a href="#frequency_to_period-1">frequency_to_period/1</a></td><td>Returns the non-null period, in milliseconds, corresponding to the
+ specified frequency.</td></tr>
 <tr><td valign="top"><a href="#from_posix_timestamp-1">from_posix_timestamp/1</a></td><td>Converts specified POSIX timestamp (typically the one obtained through
  file-level operations such as file_utils:get_last_modification_time/1) into a
  standard timestamp.</td></tr>
@@ -222,6 +240,10 @@ holidays, for specified year and country.</td></tr>
  French, like: "le 1/9/2009, à 11h46m53".</td></tr>
 <tr><td valign="top"><a href="#get_intertime_duration-2">get_intertime_duration/2</a></td><td>Returns the signed duration, in integer seconds, between the two 
 specified times.</td></tr>
+<tr><td valign="top"><a href="#get_local_date-0">get_local_date/0</a></td><td>Returns the local date, as reported by the underlying operating system.</td></tr>
+<tr><td valign="top"><a href="#get_local_time-0">get_local_time/0</a></td><td>Returns the local time, as reported by the underlying operating system.</td></tr>
+<tr><td valign="top"><a href="#get_local_timestamp-0">get_local_timestamp/0</a></td><td>Returns a local timestamp (date and time), as reported by the underlying
+ operating system.</td></tr>
 <tr><td valign="top"><a href="#get_monotonic_time-0">get_monotonic_time/0</a></td><td>Returns the current time, expressed in (absolute) internal time 
 (logically equivalent to a millisecond-based timestamp).</td></tr>
 <tr><td valign="top"><a href="#get_precise_duration-2">get_precise_duration/2</a></td><td>Returns the (signed) duration in milliseconds between the two specified
@@ -267,6 +289,7 @@ time zone and Daylight Saving Time correction depending on the underlying OS.</t
 <tr><td valign="top"><a href="#is_canonical_date-1">is_canonical_date/1</a></td><td>Tells whether the specified term is a canonical date.</td></tr>
 <tr><td valign="top"><a href="#is_dhms_duration-1">is_dhms_duration/1</a></td><td>Tells whether specified term is a DHMS duration.</td></tr>
 <tr><td valign="top"><a href="#is_timestamp-1">is_timestamp/1</a></td><td>Returns whether specified term is a legit timestamp.</td></tr>
+<tr><td valign="top"><a href="#is_user_date-1">is_user_date/1</a></td><td>Tells whether the specified term is a user date.</td></tr>
 <tr><td valign="top"><a href="#local_to_universal_time-1">local_to_universal_time/1</a></td><td>Converts specified timestamp expressed in local time (thus with time zone 
 and Daylight Saving Time) into a timestamp expressed in universal time (UTC).</td></tr>
 <tr><td valign="top"><a href="#month_to_string-1">month_to_string/1</a></td><td>Converts a month (an integer in [1,12] or a 12-multiple thereof, like 23)
@@ -286,7 +309,8 @@ and Daylight Saving Time) into a timestamp expressed in universal time (UTC).</t
  "1d12h0m0s" for an English one) to a DHMS duration.</td></tr>
 <tr><td valign="top"><a href="#string_to_timestamp-1">string_to_timestamp/1</a></td><td>Parses back a timestamp in the form of "14/4/2011 18:48:51" into a
  timestamp(), that is {_Date={Year,Month,Day}, _Time={Hour,Minute,Second}}.</td></tr>
-<tr><td valign="top"><a href="#time_of_day_to_string-1">time_of_day_to_string/1</a></td><td>Returns a textual description of the specified time of day.</td></tr>
+<tr><td valign="top"><a href="#time_of_day_to_string-1">time_of_day_to_string/1</a></td><td>Returns a textual, user-friendly description of the specified time of
+ day.</td></tr>
 <tr><td valign="top"><a href="#time_out_to_string-1">time_out_to_string/1</a></td><td>Returns an approximate textual (English) description of the specified 
 time-out, expected to be expressed as a signed number of milliseconds 
 (integer; otherwise, if being floating-point, it will be rounded), or as the 
@@ -297,6 +321,8 @@ the specified language, expected to be expressed as a number of milliseconds
 'infinity' atom.</td></tr>
 <tr><td valign="top"><a href="#time_to_seconds-1">time_to_seconds/1</a></td><td>Converts a HMS duration (in Hours/Minutes/Seconds) into a duration in
  seconds.</td></tr>
+<tr><td valign="top"><a href="#time_to_string-1">time_to_string/1</a></td><td>Returns a textual description of the specified time of day, like:
+ "09:14:57".</td></tr>
 <tr><td valign="top"><a href="#timestamp_to_seconds-0">timestamp_to_seconds/0</a></td><td>Returns the number of seconds elapsed since year 0 and now.</td></tr>
 <tr><td valign="top"><a href="#timestamp_to_seconds-1">timestamp_to_seconds/1</a></td><td>Returns the number of seconds elapsed since year 0 and specified 
 timestamp.</td></tr>
@@ -306,6 +332,10 @@ timestamp.</td></tr>
 <tr><td valign="top"><a href="#universal_to_local_time-1">universal_to_local_time/1</a></td><td>Converts specified timestamp expressed in universal time (UTC) into a
  timestamp expressedin local time (thus with time zone and Daylight Saving
  Time).</td></tr>
+<tr><td valign="top"><a href="#user_to_canonical_date-1">user_to_canonical_date/1</a></td><td>Converts specified user date into a canonical one.</td></tr>
+<tr><td valign="top"><a href="#wait_period_ending-2">wait_period_ending/2</a></td><td>Waits (approximately) until the end of the specified period, which is 
+expected to have started at the specified monotonic timestamp - which shall 
+have been obtained thanks to get_monotonic_time/0.</td></tr>
 <tr><td valign="top"><a href="#week_day_to_string-1">week_day_to_string/1</a></td><td>Returns the common name of a week day (ex: "Tuesday") based on the
  specified date or on the specified index in the week.</td></tr>
 <tr><td valign="top"><a href="#weeks_to_seconds-1">weeks_to_seconds/1</a></td><td>Converts a duration in weeks into a duration in seconds.</td></tr>
@@ -315,6 +345,12 @@ timestamp.</td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="canonical_to_user_date-1">canonical_to_user_date/1</a></h3>
+<div class="spec">
+<p><tt>canonical_to_user_date(X1::<a href="#type-date">date()</a>) -&gt; <a href="#type-user_date">user_date()</a></tt><br></p>
+<p> </p>
+</div><p>Converts specified canonical date into a user one.</p>
 
 <h3 class="function"><a name="canonicalise_month-1">canonicalise_month/1</a></h3>
 <div class="spec">
@@ -326,7 +362,7 @@ timestamp.</td></tr>
 <div class="spec">
 <p><tt>check_canonical_date(Date::<a href="#type-date">date()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p>Checks that specified date is a canonical one.</p>
+</div><p>Checks that the specified date is a canonical one.</p>
 
 <h3 class="function"><a name="check_date_order-2">check_date_order/2</a></h3>
 <div class="spec">
@@ -364,6 +400,12 @@ one.</p>
 <p><tt>check_timestamp(Term::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-timestamp">timestamp()</a></tt><br></p>
 <p> </p>
 </div><p>Checks that specified term is a timestamp indeed, and returns it.</p>
+
+<h3 class="function"><a name="check_user_date-1">check_user_date/1</a></h3>
+<div class="spec">
+<p><tt>check_user_date(Date::<a href="#type-user_date">user_date()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that the specified date is a user one.</p>
 
 <h3 class="function"><a name="compare_dates-2">compare_dates/2</a></h3>
 <div class="spec">
@@ -455,6 +497,14 @@ the specified duration, expected to be expressed as a number of milliseconds
 <p> </p>
 </div><p>Returns the days-of-the-year that are common to the whole year range
  (start year included, stop one excluded).
+</p>
+
+<h3 class="function"><a name="frequency_to_period-1">frequency_to_period/1</a></h3>
+<div class="spec">
+<p><tt>frequency_to_period(Freq::<a href="#type-any_hertz">any_hertz()</a>) -&gt; <a href="#type-ms_period">ms_period()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the non-null period, in milliseconds, corresponding to the
+ specified frequency.
 </p>
 
 <h3 class="function"><a name="from_posix_timestamp-1">from_posix_timestamp/1</a></h3>
@@ -556,6 +606,26 @@ specified times.</p>
 
  A positive duration will be returned iff the first specified time is before
  the second one.
+</p>
+
+<h3 class="function"><a name="get_local_date-0">get_local_date/0</a></h3>
+<div class="spec">
+<p><tt>get_local_date() -&gt; <a href="#type-date">date()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the local date, as reported by the underlying operating system.</p>
+
+<h3 class="function"><a name="get_local_time-0">get_local_time/0</a></h3>
+<div class="spec">
+<p><tt>get_local_time() -&gt; <a href="#type-time">time()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the local time, as reported by the underlying operating system.</p>
+
+<h3 class="function"><a name="get_local_timestamp-0">get_local_timestamp/0</a></h3>
+<div class="spec">
+<p><tt>get_local_timestamp() -&gt; <a href="#type-timestamp">timestamp()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a local timestamp (date and time), as reported by the underlying
+ operating system.
 </p>
 
 <h3 class="function"><a name="get_monotonic_time-0">get_monotonic_time/0</a></h3>
@@ -770,6 +840,12 @@ time zone and Daylight Saving Time correction depending on the underlying OS.</p
  Useful to vet user-specified timestamps.
 </p>
 
+<h3 class="function"><a name="is_user_date-1">is_user_date/1</a></h3>
+<div class="spec">
+<p><tt>is_user_date(Date::term()) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Tells whether the specified term is a user date.</p>
+
 <h3 class="function"><a name="local_to_universal_time-1">local_to_universal_time/1</a></h3>
 <div class="spec">
 <p><tt>local_to_universal_time(LocalTimestamp::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-timestamp">timestamp()</a></tt><br></p>
@@ -856,7 +932,9 @@ and Daylight Saving Time) into a timestamp expressed in universal time (UTC).</p
 <div class="spec">
 <p><tt>time_of_day_to_string(Time::<a href="#type-time">time()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
 <p> </p>
-</div><p>Returns a textual description of the specified time of day.</p>
+</div><p>Returns a textual, user-friendly description of the specified time of
+ day.
+</p>
 
 <h3 class="function"><a name="time_out_to_string-1">time_out_to_string/1</a></h3>
 <div class="spec">
@@ -892,6 +970,14 @@ the specified language, expected to be expressed as a number of milliseconds
 <p> </p>
 </div><p>Converts a HMS duration (in Hours/Minutes/Seconds) into a duration in
  seconds.
+</p>
+
+<h3 class="function"><a name="time_to_string-1">time_to_string/1</a></h3>
+<div class="spec">
+<p><tt>time_to_string(Time::<a href="#type-time">time()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of the specified time of day, like:
+ "09:14:57".
 </p>
 
 <h3 class="function"><a name="timestamp_to_seconds-0">timestamp_to_seconds/0</a></h3>
@@ -936,6 +1022,24 @@ timestamp.</p>
 </div><p>Converts specified timestamp expressed in universal time (UTC) into a
  timestamp expressedin local time (thus with time zone and Daylight Saving
  Time).
+</p>
+
+<h3 class="function"><a name="user_to_canonical_date-1">user_to_canonical_date/1</a></h3>
+<div class="spec">
+<p><tt>user_to_canonical_date(X1::<a href="#type-user_date">user_date()</a>) -&gt; <a href="#type-date">date()</a></tt><br></p>
+<p> </p>
+</div><p>Converts specified user date into a canonical one.</p>
+
+<h3 class="function"><a name="wait_period_ending-2">wait_period_ending/2</a></h3>
+<div class="spec">
+<p><tt>wait_period_ending(StartTime::<a href="#type-ms_monotonic">ms_monotonic()</a>, Period::<a href="#type-ms_period">ms_period()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p><p>Waits (approximately) until the end of the specified period, which is 
+expected to have started at the specified monotonic timestamp - which shall 
+have been obtained thanks to get_monotonic_time/0.</p>
+
+ Returns (after some relevant time) whether this waiting is expected to have
+ stopped on time.
 </p>
 
 <h3 class="function"><a name="week_day_to_string-1">week_day_to_string/1</a></h3>

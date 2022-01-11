@@ -1,0 +1,324 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module vector4</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module vector4</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Module implementing the support for <b>4D vectors</b>.
+
+
+<h2><a name="description">Description</a></h2><p>Module implementing the support for <b>4D vectors</b>.</p>
+
+ See also:
+ - the corresponding points (in point4.erl) and matrices (in matrix4.erl)
+ - the (unspecialised) vectors of arbitrary dimensions, in vector.erl
+ - the various 4D extra services in linear_4D.erl
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-any_coordinate">any_coordinate()</a></h3>
+<p><tt>any_coordinate() = <a href="linear.html#type-any_coordinate">linear:any_coordinate()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-any_point4">any_point4()</a></h3>
+<p><tt>any_point4() = <a href="#type-any_point4">any_point4()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-any_vector4">any_vector4()</a></h3>
+<p><tt>any_vector4() = <a href="#type-vector4">vector4()</a> | <a href="#type-integer_vector4">integer_vector4()</a></tt></p>
+<p> A 4D vector, with any types of numerical coordinates.
+ They are typically referenced as [X, Y, Z, W].</p>
+
+<h3 class="typedecl"><a name="type-coordinate">coordinate()</a></h3>
+<p><tt>coordinate() = <a href="linear.html#type-coordinate">linear:coordinate()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-distance">distance()</a></h3>
+<p><tt>distance() = <a href="linear.html#type-distance">linear:distance()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-factor">factor()</a></h3>
+<p><tt>factor() = <a href="math_utils.html#type-factor">math_utils:factor()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-integer_coordinate">integer_coordinate()</a></h3>
+<p><tt>integer_coordinate() = <a href="linear.html#type-integer_coordinate">linear:integer_coordinate()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-integer_vector4">integer_vector4()</a></h3>
+<p><tt>integer_vector4() = [<a href="#type-integer_coordinate">integer_coordinate()</a>]</tt></p>
+<p> A 4D vector, with (exactly) 4 integer coordinates.
+ They are typically referenced as [X, Y, Z, W].</p>
+
+<h3 class="typedecl"><a name="type-normal4">normal4()</a></h3>
+<p><tt>normal4() = <a href="#type-vector4">vector4()</a></tt></p>
+<p><p> A 4D vector orthogonal to a plane.</p>
+
+ Defined for documentation purpose.</p>
+
+<h3 class="typedecl"><a name="type-square_distance">square_distance()</a></h3>
+<p><tt>square_distance() = <a href="linear.html#type-square_distance">linear:square_distance()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-unit_normal4">unit_normal4()</a></h3>
+<p><tt>unit_normal4() = <a href="#type-unit_vector4">unit_vector4()</a></tt></p>
+<p><p> A unit 4D vector orthogonal to a plane.</p>
+
+ Defined for documentation purpose.</p>
+
+<h3 class="typedecl"><a name="type-unit_vector4">unit_vector4()</a></h3>
+<p><tt>unit_vector4() = <a href="#type-vector4">vector4()</a></tt></p>
+<p><p> A unit 4D vector, that is a vector of magnitude 1.0.</p>
+
+ Defined for documentation purpose.</p>
+
+<h3 class="typedecl"><a name="type-user_coordinate">user_coordinate()</a></h3>
+<p><tt>user_coordinate() = <a href="linear.html#type-user_coordinate">linear:user_coordinate()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-user_vector4">user_vector4()</a></h3>
+<p><tt>user_vector4() = [<a href="#type-any_coordinate">any_coordinate()</a>]</tt></p>
+<p> A user-specified 4D vector, as a list (hence not a tuple) with 4 integer or
+ floating-point coordinates.</p>
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-vector4">vector4()</a></h3>
+<p><tt>vector4() = [<a href="#type-coordinate">coordinate()</a>]</tt></p>
+<p> An (internal) 4D vector, with (exactly) 4 floating-point coordinates.
+ They are typically referenced as [X, Y, Z, W].</p>
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add-1">add/1</a></td><td>Returns the sum of all 4D vectors in the specified (supposedly non-empty)
+ list.</td></tr>
+<tr><td valign="top"><a href="#add-2">add/2</a></td><td>Returns the sum of the two specified 4D vectors: V = V1 + V2.</td></tr>
+<tr><td valign="top"><a href="#are_close-2">are_close/2</a></td><td>Returns whether the two specified 4D vectors are close, that is if they
+ could be considered as representing the same vector (equality operator on
+ vectors).</td></tr>
+<tr><td valign="top"><a href="#are_equal-2">are_equal/2</a></td><td>Returns whether the two specified 4D vectors are equal, that is if they
+ could be considered as representing the same vector (equality operator on
+ vectors).</td></tr>
+<tr><td valign="top"><a href="#check-1">check/1</a></td><td>Checks that the specified 4D vector is legit, and returns it.</td></tr>
+<tr><td valign="top"><a href="#check_integer-1">check_integer/1</a></td><td>Checks that the specified 4D integer vector is legit, and returns it.</td></tr>
+<tr><td valign="top"><a href="#check_unit_vector-1">check_unit_vector/1</a></td><td>Checks that the specified 4D vector is normalised, and returns it.</td></tr>
+<tr><td valign="top"><a href="#check_unit_vectors-1">check_unit_vectors/1</a></td><td>Checks that the specified 4D vectors are normalised, and returns them.</td></tr>
+<tr><td valign="top"><a href="#dot_product-2">dot_product/2</a></td><td>Returns the dot-product of the two specified 4D vectors: D = V1.V2.</td></tr>
+<tr><td valign="top"><a href="#from_point-1">from_point/1</a></td><td>Returns a 4D vector corresponding to the specified 4D point.</td></tr>
+<tr><td valign="top"><a href="#is_unitary-1">is_unitary/1</a></td><td>Returns whether the specified vector is unitary, that is whether it is of
+ magnitude 1.0.</td></tr>
+<tr><td valign="top"><a href="#magnitude-1">magnitude/1</a></td><td>Returns the magnitude of the specified 4D vector.</td></tr>
+<tr><td valign="top"><a href="#negate-1">negate/1</a></td><td>Negates the specified vector: returns the opposite one (of the same
+ magnitude).</td></tr>
+<tr><td valign="top"><a href="#new-1">new/1</a></td><td>Returns a 4D vector corresponding to the user-specified one.</td></tr>
+<tr><td valign="top"><a href="#new-4">new/4</a></td><td>Returns a 4D vector corresponding to the user-specified one.</td></tr>
+<tr><td valign="top"><a href="#new_integer-4">new_integer/4</a></td><td>Returns an integer 4D vector corresponding to the user-specified one.</td></tr>
+<tr><td valign="top"><a href="#normalise-1">normalise/1</a></td><td>Normalises the specified non-null 4D vector, that is returns it once
+ scaled to an unit length (whose magnitude is thus 1.0).</td></tr>
+<tr><td valign="top"><a href="#null-0">null/0</a></td><td>Returns the null (4D) vector, that is a 4D vector whose coordinates are
+ all null.</td></tr>
+<tr><td valign="top"><a href="#scale-2">scale/2</a></td><td>Scales the specified 4D vector of the specified scalar factor.</td></tr>
+<tr><td valign="top"><a href="#square_magnitude-1">square_magnitude/1</a></td><td>Returns the square of the magnitude of the specified 4D vector.</td></tr>
+<tr><td valign="top"><a href="#to_basic_string-1">to_basic_string/1</a></td><td>Returns a basic, not even fixed-width for floating-vector coordinates
+ (see linear.hrl for width and precision) representation of the specified 4D
+ vector.</td></tr>
+<tr><td valign="top"><a href="#to_compact_string-1">to_compact_string/1</a></td><td>Returns a compact, textual, informal representation of the specified 4D
+ vector.</td></tr>
+<tr><td valign="top"><a href="#to_point-1">to_point/1</a></td><td>Returns a 4D point corresponding to the specified 4D vector.</td></tr>
+<tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td>Returns a textual representation of the specified 4D vector; full float
+ precision is shown.</td></tr>
+<tr><td valign="top"><a href="#to_user_string-1">to_user_string/1</a></td><td>Returns a textual, more user-friendly representation of the specified 4D 
+vector; full float precision is shown.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="add-1">add/1</a></h3>
+<div class="spec">
+<p><tt>add(Vectors::[<a href="#type-vector4">vector4()</a>]) -&gt; <a href="#type-vector4">vector4()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the sum of all 4D vectors in the specified (supposedly non-empty)
+ list.
+</p>
+
+<h3 class="function"><a name="add-2">add/2</a></h3>
+<div class="spec">
+<p><tt>add(V1::<a href="#type-vector4">vector4()</a>, V2::<a href="#type-vector4">vector4()</a>) -&gt; <a href="#type-vector4">vector4()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the sum of the two specified 4D vectors: V = V1 + V2.</p>
+
+<h3 class="function"><a name="are_close-2">are_close/2</a></h3>
+<div class="spec">
+<p><tt>are_close(V1::<a href="#type-vector4">vector4()</a>, V2::<a href="#type-vector4">vector4()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Returns whether the two specified 4D vectors are close, that is if they
+ could be considered as representing the same vector (equality operator on
+ vectors).
+</p>
+
+<h3 class="function"><a name="are_equal-2">are_equal/2</a></h3>
+<div class="spec">
+<p><tt>are_equal(V1::<a href="#type-vector4">vector4()</a>, V2::<a href="#type-vector4">vector4()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Returns whether the two specified 4D vectors are equal, that is if they
+ could be considered as representing the same vector (equality operator on
+ vectors).
+</p>
+
+<h3 class="function"><a name="check-1">check/1</a></h3>
+<div class="spec">
+<p><tt>check(V::<a href="#type-vector4">vector4()</a>) -&gt; <a href="#type-vector4">vector4()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that the specified 4D vector is legit, and returns it.</p>
+
+<h3 class="function"><a name="check_integer-1">check_integer/1</a></h3>
+<div class="spec">
+<p><tt>check_integer(V::<a href="#type-integer_vector4">integer_vector4()</a>) -&gt; <a href="#type-integer_vector4">integer_vector4()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that the specified 4D integer vector is legit, and returns it.</p>
+
+<h3 class="function"><a name="check_unit_vector-1">check_unit_vector/1</a></h3>
+<div class="spec">
+<p><tt>check_unit_vector(V::<a href="#type-vector4">vector4()</a>) -&gt; <a href="#type-unit_vector4">unit_vector4()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that the specified 4D vector is normalised, and returns it.</p>
+
+<h3 class="function"><a name="check_unit_vectors-1">check_unit_vectors/1</a></h3>
+<div class="spec">
+<p><tt>check_unit_vectors(Vs::<a href="#type-vector4">vector4()</a>) -&gt; <a href="#type-unit_vector4">unit_vector4()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that the specified 4D vectors are normalised, and returns them.</p>
+
+<h3 class="function"><a name="dot_product-2">dot_product/2</a></h3>
+<div class="spec">
+<p><tt>dot_product(V1::<a href="#type-vector4">vector4()</a>, V2::<a href="#type-vector4">vector4()</a>) -&gt; float()</tt><br></p>
+<p> </p>
+</div><p>Returns the dot-product of the two specified 4D vectors: D = V1.V2.</p>
+
+<h3 class="function"><a name="from_point-1">from_point/1</a></h3>
+<div class="spec">
+<p><tt>from_point(P4::<a href="#type-any_point4">any_point4()</a>) -&gt; <a href="#type-vector4">vector4()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a 4D vector corresponding to the specified 4D point.</p>
+
+<h3 class="function"><a name="is_unitary-1">is_unitary/1</a></h3>
+<div class="spec">
+<p><tt>is_unitary(V::<a href="#type-vector4">vector4()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Returns whether the specified vector is unitary, that is whether it is of
+ magnitude 1.0.
+</p>
+
+<h3 class="function"><a name="magnitude-1">magnitude/1</a></h3>
+<div class="spec">
+<p><tt>magnitude(V::<a href="#type-vector4">vector4()</a>) -&gt; <a href="#type-distance">distance()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the magnitude of the specified 4D vector.</p>
+
+<h3 class="function"><a name="negate-1">negate/1</a></h3>
+<div class="spec">
+<p><tt>negate(V::<a href="#type-vector4">vector4()</a>) -&gt; <a href="#type-vector4">vector4()</a></tt><br></p>
+<p> </p>
+</div><p>Negates the specified vector: returns the opposite one (of the same
+ magnitude).
+</p>
+
+<h3 class="function"><a name="new-1">new/1</a></h3>
+<div class="spec">
+<p><tt>new(UserVector::<a href="#type-user_vector4">user_vector4()</a>) -&gt; <a href="#type-vector4">vector4()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a 4D vector corresponding to the user-specified one.</p>
+
+<h3 class="function"><a name="new-4">new/4</a></h3>
+<div class="spec">
+<p><tt>new(X::<a href="#type-user_coordinate">user_coordinate()</a>, Y::<a href="#type-user_coordinate">user_coordinate()</a>, Z::<a href="#type-user_coordinate">user_coordinate()</a>, W::<a href="#type-user_coordinate">user_coordinate()</a>) -&gt; <a href="#type-vector4">vector4()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a 4D vector corresponding to the user-specified one.</p>
+
+<h3 class="function"><a name="new_integer-4">new_integer/4</a></h3>
+<div class="spec">
+<p><tt>new_integer(X::<a href="#type-integer_coordinate">integer_coordinate()</a>, Y::<a href="#type-integer_coordinate">integer_coordinate()</a>, Z::<a href="#type-integer_coordinate">integer_coordinate()</a>, W::<a href="#type-integer_coordinate">integer_coordinate()</a>) -&gt; <a href="#type-integer_vector4">integer_vector4()</a></tt><br></p>
+<p> </p>
+</div><p>Returns an integer 4D vector corresponding to the user-specified one.</p>
+
+<h3 class="function"><a name="normalise-1">normalise/1</a></h3>
+<div class="spec">
+<p><tt>normalise(V::<a href="#type-vector4">vector4()</a>) -&gt; <a href="#type-unit_vector4">unit_vector4()</a></tt><br></p>
+<p> </p>
+</div><p>Normalises the specified non-null 4D vector, that is returns it once
+ scaled to an unit length (whose magnitude is thus 1.0).
+</p>
+
+<h3 class="function"><a name="null-0">null/0</a></h3>
+<div class="spec">
+<p><tt>null() -&gt; <a href="#type-vector4">vector4()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the null (4D) vector, that is a 4D vector whose coordinates are
+ all null.
+</p>
+
+<h3 class="function"><a name="scale-2">scale/2</a></h3>
+<div class="spec">
+<p><tt>scale(V::<a href="#type-vector4">vector4()</a>, Factor::<a href="#type-factor">factor()</a>) -&gt; <a href="#type-vector4">vector4()</a></tt><br></p>
+<p> </p>
+</div><p>Scales the specified 4D vector of the specified scalar factor.</p>
+
+<h3 class="function"><a name="square_magnitude-1">square_magnitude/1</a></h3>
+<div class="spec">
+<p><tt>square_magnitude(V::<a href="#type-vector4">vector4()</a>) -&gt; <a href="#type-square_distance">square_distance()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the square of the magnitude of the specified 4D vector.</p>
+
+<h3 class="function"><a name="to_basic_string-1">to_basic_string/1</a></h3>
+<div class="spec">
+<p><tt>to_basic_string(Vector::<a href="#type-vector4">vector4()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a basic, not even fixed-width for floating-vector coordinates
+ (see linear.hrl for width and precision) representation of the specified 4D
+ vector.
+</p>
+
+<h3 class="function"><a name="to_compact_string-1">to_compact_string/1</a></h3>
+<div class="spec">
+<p><tt>to_compact_string(Vector::<a href="#type-vector4">vector4()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a compact, textual, informal representation of the specified 4D
+ vector.
+</p>
+
+<h3 class="function"><a name="to_point-1">to_point/1</a></h3>
+<div class="spec">
+<p><tt>to_point(V4::<a href="#type-any_vector4">any_vector4()</a>) -&gt; <a href="#type-any_point4">any_point4()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a 4D point corresponding to the specified 4D vector.</p>
+
+<h3 class="function"><a name="to_string-1">to_string/1</a></h3>
+<div class="spec">
+<p><tt>to_string(Vector::<a href="#type-vector4">vector4()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual representation of the specified 4D vector; full float
+ precision is shown.
+</p>
+
+<h3 class="function"><a name="to_user_string-1">to_user_string/1</a></h3>
+<div class="spec">
+<p><tt>to_user_string(Vector::<a href="#type-vector4">vector4()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns a textual, more user-friendly representation of the specified 4D 
+vector; full float precision is shown.</p>
+
+ This is the recommended representation.
+</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

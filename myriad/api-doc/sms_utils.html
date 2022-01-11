@@ -42,13 +42,18 @@ for one based typically on 3G devices.</p>
 <p><tt>message() = <a href="#type-ustring">ustring()</a></tt></p>
 <p> Message to be sent as SMS (up to 160 bytes).</p>
 
+<h3 class="typedecl"><a name="type-phone_number">phone_number()</a></h3>
+<p><tt>phone_number() = <a href="#type-ustring">ustring()</a></tt></p>
+<p> A phone number, preferably international, preferably with no whitespaces (ex:
+ "+330616XXXXXX").</p>
+
 <h3 class="typedecl"><a name="type-provider">provider()</a></h3>
 <p><tt>provider() = verysms</tt></p>
 <p> Name of a SMS provider (HTTP gateway), as an atom.</p>
 
 <h3 class="typedecl"><a name="type-recipient">recipient()</a></h3>
-<p><tt>recipient() = <a href="#type-ustring">ustring()</a></tt></p>
-<p> International mobile phone number of the recipient (ex: "+330616XXXXXX").</p>
+<p><tt>recipient() = <a href="#type-phone_number">phone_number()</a></tt></p>
+<p> Phone number of a recipient, probably of a mobile phone (ex: "+330616XXXXXX").</p>
 
 <h3 class="typedecl"><a name="type-sender_description">sender_description()</a></h3>
 <p><tt>sender_description() = <a href="#type-ustring">ustring()</a></tt></p>

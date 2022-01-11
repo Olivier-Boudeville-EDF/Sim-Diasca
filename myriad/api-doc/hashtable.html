@@ -44,6 +44,10 @@ only them)</p>
 <p><tt>accumulator() = <a href="basic_utils.html#type-accumulator">basic_utils:accumulator()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-atom_entry">atom_entry()</a></h3>
+<p><tt>atom_entry() = <a href="#type-entry">entry</a>(atom(), term())</tt></p>
+<p> Very common, including in proplists.</p>
+
 <h3 class="typedecl"><a name="type-bucket">bucket()</a></h3>
 <p><tt>bucket(K, V) = [<a href="#type-entries">entries</a>(K, V)]</tt></p>
 
@@ -91,6 +95,14 @@ only them)</p>
 <h3 class="typedecl"><a name="type-key">key()</a></h3>
 <p><tt>key() = term()</tt></p>
 <p> Not necessarily an atom, a key can be any term.</p>
+
+<h3 class="typedecl"><a name="type-maybe_entries">maybe_entries()</a></h3>
+<p><tt>maybe_entries() = [<a href="#type-maybe_entry">maybe_entry()</a>]</tt></p>
+
+
+<h3 class="typedecl"><a name="type-maybe_entry">maybe_entry()</a></h3>
+<p><tt>maybe_entry() = {<a href="#type-key">key()</a>, <a href="#type-maybe">maybe</a>(<a href="#type-value">value()</a>)}</tt></p>
+
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
 <p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>

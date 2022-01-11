@@ -1,0 +1,327 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module quaternion</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module quaternion</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various facilities for <b>quaternion-related</b> operations.
+
+
+<h2><a name="description">Description</a></h2>Gathering of various facilities for <b>quaternion-related</b> operations.
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-any_coordinate">any_coordinate()</a></h3>
+<p><tt>any_coordinate() = <a href="linear.html#type-any_coordinate">linear:any_coordinate()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-coordinate">coordinate()</a></h3>
+<p><tt>coordinate() = <a href="linear.html#type-coordinate">linear:coordinate()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-distance">distance()</a></h3>
+<p><tt>distance() = <a href="linear.html#type-distance">linear:distance()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-factor">factor()</a></h3>
+<p><tt>factor() = <a href="math_utils.html#type-factor">math_utils:factor()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-matrix4">matrix4()</a></h3>
+<p><tt>matrix4() = <a href="matrix4.html#type-matrix4">matrix4:matrix4()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-quaternion">quaternion()</a></h3>
+<p><tt>quaternion() = {A::<a href="#type-coordinate">coordinate()</a>, B::<a href="#type-coordinate">coordinate()</a>, C::<a href="#type-coordinate">coordinate()</a>, D::<a href="#type-coordinate">coordinate()</a>}</tt></p>
+<p> Q = A + B.i + C.j + D.k, where i, j and k are the basic quaternions.
+ A quaternion encodes an axis-angle representation of a 3D rotation.</p>
+
+<h3 class="typedecl"><a name="type-radians">radians()</a></h3>
+<p><tt>radians() = <a href="unit_utils.html#type-radians">unit_utils:radians()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-rot_matrix3">rot_matrix3()</a></h3>
+<p><tt>rot_matrix3() = <a href="matrix3.html#type-rot_matrix3">matrix3:rot_matrix3()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-square_distance">square_distance()</a></h3>
+<p><tt>square_distance() = <a href="linear.html#type-square_distance">linear:square_distance()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-unit_quaternion">unit_quaternion()</a></h3>
+<p><tt>unit_quaternion() = <a href="#type-quaternion">quaternion()</a></tt></p>
+<p><p> A unit quaternion, known as versor, is a quaternion of magnitude (norm) 1.0.</p>
+
+ <p>For a unit quaternion, its inverse is its conjugate.</p>
+
+ Defined for documentation purpose.</p>
+
+<h3 class="typedecl"><a name="type-unit_vector3">unit_vector3()</a></h3>
+<p><tt>unit_vector3() = <a href="vector3.html#type-unit_vector3">vector3:unit_vector3()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-vector3">vector3()</a></h3>
+<p><tt>vector3() = <a href="vector3.html#type-vector3">vector3:vector3()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-vector_quaternion">vector_quaternion()</a></h3>
+<p><tt>vector_quaternion() = <a href="#type-quaternion">quaternion()</a></tt></p>
+<p><p> A quaternion whose scalar part (A) is null.</p>
+
+ Defined for documentation purpose.</p>
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add-2">add/2</a></td><td>Returns the sum of the two specified quaternions: Q = Q1 + Q2.</td></tr>
+<tr><td valign="top"><a href="#are_close-2">are_close/2</a></td><td>Returns whether the two specified quaternions are close, that is if they
+ could be considered as representing the same quaternion (equality operator on
+ quaternions).</td></tr>
+<tr><td valign="top"><a href="#are_equal-2">are_equal/2</a></td><td>Returns whether the two specified quaternions are equal, that is if they
+ could be considered as representing the same quaternion (equality operator on
+ quaternions).</td></tr>
+<tr><td valign="top"><a href="#conjugate-1">conjugate/1</a></td><td>Returns the conjugate of the specified quaternion.</td></tr>
+<tr><td valign="top"><a href="#from_vector3-1">from_vector3/1</a></td><td>Returns the quaternion obtained from the specified 3D vector, that is the
+ vector (a.k.a.</td></tr>
+<tr><td valign="top"><a href="#inverse-1">inverse/1</a></td><td>Returns the inverse of the specified quaternion.</td></tr>
+<tr><td valign="top"><a href="#is_unitary-1">is_unitary/1</a></td><td>Returns whether the specified quaternion is unitary, that is whether it
+ is of magnitude (norm) 1.0.</td></tr>
+<tr><td valign="top"><a href="#magnitude-1">magnitude/1</a></td><td>Returns the magnitude of the specified quaternion.</td></tr>
+<tr><td valign="top"><a href="#mult-2">mult/2</a></td><td>Returns the (Hamilton) product of the two specified quaternions.</td></tr>
+<tr><td valign="top"><a href="#negate-1">negate/1</a></td><td>Negates the specified quaternion: returns the opposite one (of the same 
+magnitude).</td></tr>
+<tr><td valign="top"><a href="#new-4">new/4</a></td><td>Returns a corresponding (checked) quaternion.</td></tr>
+<tr><td valign="top"><a href="#normalise-1">normalise/1</a></td><td>Normalises the specified non-null quaternion, that is returns it once
+ scaled to an unit length (whose magnitude is thus 1.0).</td></tr>
+<tr><td valign="top"><a href="#null-0">null/0</a></td><td>Returns the null quaternion.</td></tr>
+<tr><td valign="top"><a href="#rotate-2">rotate/2</a></td><td>Returns the specified vector once rotated according to the specified 
+unitary quaternion.</td></tr>
+<tr><td valign="top"><a href="#rotation-2">rotation/2</a></td><td>Returns the quaternion corresponding to a rotation of the specified angle 
+around the axis specified as a unit vector.</td></tr>
+<tr><td valign="top"><a href="#scale-2">scale/2</a></td><td>Scales the specified quaternion of the specified scalar factor.</td></tr>
+<tr><td valign="top"><a href="#square_magnitude-1">square_magnitude/1</a></td><td>Returns the square of the magnitude of the specified quaternion.</td></tr>
+<tr><td valign="top"><a href="#to_compact_string-1">to_compact_string/1</a></td><td>Returns a compact, textual, informal representation of the specified 
+quaternion.</td></tr>
+<tr><td valign="top"><a href="#to_matrix4-1">to_matrix4/1</a></td><td>Returns the 4x4 matrix representation of the specified quaternion.</td></tr>
+<tr><td valign="top"><a href="#to_rot_matrix3-1">to_rot_matrix3/1</a></td><td>Returns the 3x3 rotation matrix corresponding to the specified unitary
+ quaternion.</td></tr>
+<tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td>Returns a textual description of specified quaternion; full float
+ precision is shown.</td></tr>
+<tr><td valign="top"><a href="#to_user_string-1">to_user_string/1</a></td><td>Returns a textual, more user-friendly representation of the specified
+ quaternion; full float precision is shown.</td></tr>
+<tr><td valign="top"><a href="#to_vector3-1">to_vector3/1</a></td><td>Returns the vector part of the specified quaternion, expected to be a
+ vector quaternion (that is to have is scalar part null).</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="add-2">add/2</a></h3>
+<div class="spec">
+<p><tt>add(Q1::<a href="#type-quaternion">quaternion()</a>, Q2::<a href="#type-quaternion">quaternion()</a>) -&gt; <a href="#type-quaternion">quaternion()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the sum of the two specified quaternions: Q = Q1 + Q2.</p>
+
+ Addition is associative, commutative, and every quaternion Q has its opposite
+ -Q.
+</p>
+
+<h3 class="function"><a name="are_close-2">are_close/2</a></h3>
+<div class="spec">
+<p><tt>are_close(Q1::<a href="#type-quaternion">quaternion()</a>, Q2::<a href="#type-quaternion">quaternion()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Returns whether the two specified quaternions are close, that is if they
+ could be considered as representing the same quaternion (equality operator on
+ quaternions).
+</p>
+
+<h3 class="function"><a name="are_equal-2">are_equal/2</a></h3>
+<div class="spec">
+<p><tt>are_equal(Q1::<a href="#type-quaternion">quaternion()</a>, Q2::<a href="#type-quaternion">quaternion()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Returns whether the two specified quaternions are equal, that is if they
+ could be considered as representing the same quaternion (equality operator on
+ quaternions).
+</p>
+
+<h3 class="function"><a name="conjugate-1">conjugate/1</a></h3>
+<div class="spec">
+<p><tt>conjugate(Q::<a href="#type-quaternion">quaternion()</a>) -&gt; <a href="#type-quaternion">quaternion()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the conjugate of the specified quaternion.</p>
+
+<h3 class="function"><a name="from_vector3-1">from_vector3/1</a></h3>
+<div class="spec">
+<p><tt>from_vector3(V::<a href="#type-vector3">vector3()</a>) -&gt; <a href="#type-vector_quaternion">vector_quaternion()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the quaternion obtained from the specified 3D vector, that is the
+ vector (a.k.a. imaginary) quaternion whose vector part is this one.</p>
+
+<h3 class="function"><a name="inverse-1">inverse/1</a></h3>
+<div class="spec">
+<p><tt>inverse(Q::<a href="#type-quaternion">quaternion()</a>) -&gt; <a href="#type-quaternion">quaternion()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the inverse of the specified quaternion.</p>
+
+<h3 class="function"><a name="is_unitary-1">is_unitary/1</a></h3>
+<div class="spec">
+<p><tt>is_unitary(Q::<a href="#type-quaternion">quaternion()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Returns whether the specified quaternion is unitary, that is whether it
+ is of magnitude (norm) 1.0.
+</p>
+
+<h3 class="function"><a name="magnitude-1">magnitude/1</a></h3>
+<div class="spec">
+<p><tt>magnitude(Q::<a href="#type-quaternion">quaternion()</a>) -&gt; <a href="#type-distance">distance()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the magnitude of the specified quaternion.</p>
+
+<h3 class="function"><a name="mult-2">mult/2</a></h3>
+<div class="spec">
+<p><tt>mult(Q1::<a href="#type-quaternion">quaternion()</a>, Q2::<a href="#type-quaternion">quaternion()</a>) -&gt; <a href="#type-quaternion">quaternion()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the (Hamilton) product of the two specified quaternions.</p>
+
+ <p>This product is not commutative, but is associative.</p>
+
+ <p>Multiplying imaginary quaternions corresponds to computing the cross-product 
+of their coordinates.</p>
+
+ Dividing Q1 / Q2 would be multiplying Q1 by Q2^-1, the inverse of Q2, yet
+ multiplication is not commutative so Q1 / Q2 could be either Q1*Q2^-1 or
+ Q2^-1*Q1.
+</p>
+
+<h3 class="function"><a name="negate-1">negate/1</a></h3>
+<div class="spec">
+<p><tt>negate(Q::<a href="#type-quaternion">quaternion()</a>) -&gt; <a href="#type-quaternion">quaternion()</a></tt><br></p>
+<p> </p>
+</div><p><p>Negates the specified quaternion: returns the opposite one (of the same 
+magnitude).</p>
+
+ See also: conjugate/1.
+</p>
+
+<h3 class="function"><a name="new-4">new/4</a></h3>
+<div class="spec">
+<p><tt>new(A::<a href="#type-any_coordinate">any_coordinate()</a>, B::<a href="#type-any_coordinate">any_coordinate()</a>, C::<a href="#type-any_coordinate">any_coordinate()</a>, D::<a href="#type-any_coordinate">any_coordinate()</a>) -&gt; <a href="#type-quaternion">quaternion()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a corresponding (checked) quaternion.</p>
+
+<h3 class="function"><a name="normalise-1">normalise/1</a></h3>
+<div class="spec">
+<p><tt>normalise(Q::<a href="#type-quaternion">quaternion()</a>) -&gt; <a href="#type-unit_quaternion">unit_quaternion()</a></tt><br></p>
+<p> </p>
+</div><p>Normalises the specified non-null quaternion, that is returns it once
+ scaled to an unit length (whose magnitude is thus 1.0).
+</p>
+
+<h3 class="function"><a name="null-0">null/0</a></h3>
+<div class="spec">
+<p><tt>null() -&gt; <a href="#type-quaternion">quaternion()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the null quaternion.</p>
+
+<h3 class="function"><a name="rotate-2">rotate/2</a></h3>
+<div class="spec">
+<p><tt>rotate(Q::<a href="#type-unit_quaternion">unit_quaternion()</a>, V::<a href="#type-vector3">vector3()</a>) -&gt; <a href="#type-vector3">vector3()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the specified vector once rotated according to the specified 
+unitary quaternion.</p>
+
+ Another option, if multiple vectors have to be rotated, is to go through the
+ corresponding 3x3 matrix, computed once for all:
+    matrix3:apply( quaternion:to_rot_matrix3( Q ), V )
+</p>
+
+<h3 class="function"><a name="rotation-2">rotation/2</a></h3>
+<div class="spec">
+<p><tt>rotation(UnitAxis::<a href="#type-unit_vector3">unit_vector3()</a>, RadAngle::<a href="#type-radians">radians()</a>) -&gt; <a href="#type-quaternion">quaternion()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the quaternion corresponding to a rotation of the specified angle 
+around the axis specified as a unit vector.</p>
+
+ <p>This will be a counterclockwise rotation for an observer placed so that the 
+specified axis points towards it.</p>
+
+ <p>A rotation matrix is orthogonal, its inverse is its transpose, and its 
+determinant is 1.0.</p>
+
+ <p>These 3D rotation matrices form a group known as the special orthogonal group 
+SO(3).</p>
+
+ See also: rotate/2.
+</p>
+
+<h3 class="function"><a name="scale-2">scale/2</a></h3>
+<div class="spec">
+<p><tt>scale(Q::<a href="#type-quaternion">quaternion()</a>, Factor::<a href="#type-factor">factor()</a>) -&gt; <a href="#type-quaternion">quaternion()</a></tt><br></p>
+<p> </p>
+</div><p>Scales the specified quaternion of the specified scalar factor.</p>
+
+<h3 class="function"><a name="square_magnitude-1">square_magnitude/1</a></h3>
+<div class="spec">
+<p><tt>square_magnitude(Q::<a href="#type-quaternion">quaternion()</a>) -&gt; <a href="#type-square_distance">square_distance()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the square of the magnitude of the specified quaternion.</p>
+
+<h3 class="function"><a name="to_compact_string-1">to_compact_string/1</a></h3>
+<div class="spec">
+<p><tt>to_compact_string(Q::<a href="#type-quaternion">quaternion()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns a compact, textual, informal representation of the specified 
+quaternion.</p>
+
+ This is the recommended representation.
+</p>
+
+<h3 class="function"><a name="to_matrix4-1">to_matrix4/1</a></h3>
+<div class="spec">
+<p><tt>to_matrix4(Q::<a href="#type-quaternion">quaternion()</a>) -&gt; <a href="#type-matrix4">matrix4()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the 4x4 matrix representation of the specified quaternion.</p>
+
+<h3 class="function"><a name="to_rot_matrix3-1">to_rot_matrix3/1</a></h3>
+<div class="spec">
+<p><tt>to_rot_matrix3(Q::<a href="#type-unit_quaternion">unit_quaternion()</a>) -&gt; <a href="#type-rot_matrix3">rot_matrix3()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the 3x3 rotation matrix corresponding to the specified unitary
+ quaternion.
+</p>
+
+<h3 class="function"><a name="to_string-1">to_string/1</a></h3>
+<div class="spec">
+<p><tt>to_string(Q::<a href="#type-quaternion">quaternion()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of specified quaternion; full float
+ precision is shown.
+</p>
+
+<h3 class="function"><a name="to_user_string-1">to_user_string/1</a></h3>
+<div class="spec">
+<p><tt>to_user_string(Q::<a href="#type-quaternion">quaternion()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual, more user-friendly representation of the specified
+ quaternion; full float precision is shown.
+</p>
+
+<h3 class="function"><a name="to_vector3-1">to_vector3/1</a></h3>
+<div class="spec">
+<p><tt>to_vector3(Q::<a href="#type-vector_quaternion">vector_quaternion()</a>) -&gt; <a href="#type-vector3">vector3()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the vector part of the specified quaternion, expected to be a
+ vector quaternion (that is to have is scalar part null).
+</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

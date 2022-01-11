@@ -108,11 +108,11 @@ hashtable.</td></tr>
 entries contained in this hashtable.</td></tr>
 <tr><td valign="top"><a href="#map_on_values-2">map_on_values/2</a></td><td>Applies (maps) the specified anonymous function to each of the values 
 contained in this hashtable.</td></tr>
-<tr><td valign="top"><a href="#merge-2">merge/2</a></td><td>Returns a new tracked hashtable, which started from TrackedHashtableBase
- and was enriched with the TrackedHashtableAdd entries whose keys where not
- already in TrackedHashtableBase (if a key is in both tables, the one from
+<tr><td valign="top"><a href="#merge-2">merge/2</a></td><td>Returns a tracked hashtable which started from TrackedHashtableBase and
+ was enriched with the TrackedHashtableAdd entries whose keys where not already
+ in TrackedHashtableBase (if a key is in both tables, the one from
  TrackedHashtableBase will be kept).</td></tr>
-<tr><td valign="top"><a href="#new-0">new/0</a></td><td>Creates a new empty tracker table.</td></tr>
+<tr><td valign="top"><a href="#new-0">new/0</a></td><td>Creates an empty tracker table.</td></tr>
 <tr><td valign="top"><a href="#new-1">new/1</a></td><td>As tracked hashtables manage by themselves their size, no need to specify
  any target size.</td></tr>
 <tr><td valign="top"><a href="#new_with_buckets-1">new_with_buckets/1</a></td><td>Defined also to allow seamless change of hashtable modules.</td></tr>
@@ -361,9 +361,9 @@ to duplicate the whole content in memory).</p>
 <div class="spec">
 <p><tt>merge(TrackedHashtableBase::<a href="#type-tracked_hashtable">tracked_hashtable()</a>, TrackedHashtableAdd::<a href="#type-tracked_hashtable">tracked_hashtable()</a>) -&gt; <a href="#type-tracked_hashtable">tracked_hashtable()</a></tt><br></p>
 <p> </p>
-</div><p>Returns a new tracked hashtable, which started from TrackedHashtableBase
- and was enriched with the TrackedHashtableAdd entries whose keys where not
- already in TrackedHashtableBase (if a key is in both tables, the one from
+</div><p>Returns a tracked hashtable which started from TrackedHashtableBase and
+ was enriched with the TrackedHashtableAdd entries whose keys where not already
+ in TrackedHashtableBase (if a key is in both tables, the one from
  TrackedHashtableBase will be kept).
 </p>
 
@@ -371,7 +371,7 @@ to duplicate the whole content in memory).</p>
 <div class="spec">
 <p><tt>new() -&gt; <a href="#type-tracked_hashtable">tracked_hashtable()</a></tt><br></p>
 <p> </p>
-</div><p><p>Creates a new empty tracker table.</p>
+</div><p><p>Creates an empty tracker table.</p>
 
  A new empty tracked hashtable is returned.
 </p>

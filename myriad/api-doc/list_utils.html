@@ -40,8 +40,10 @@
 <p> These indexes start at 1.</p>
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#append_at_end-2">append_at_end/2</a></td><td>Appends specified element at the end of specified list, without changing 
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add_as_heads-2">add_as_heads/2</a></td><td>Adds the specified elements as heads of the specified lists.</td></tr>
+<tr><td valign="top"><a href="#append_at_end-2">append_at_end/2</a></td><td>Appends specified element at the end of specified list, without changing 
 the order of the list.</td></tr>
+<tr><td valign="top"><a href="#are_atoms-1">are_atoms/1</a></td><td>Returns whether the specified list contains only atoms.</td></tr>
 <tr><td valign="top"><a href="#are_integers-1">are_integers/1</a></td><td>Returns whether the specified list contains only integers.</td></tr>
 <tr><td valign="top"><a href="#are_pids-1">are_pids/1</a></td><td>Returns whether the specified list contains only PIDs.</td></tr>
 <tr><td valign="top"><a href="#cartesian_product-1">cartesian_product/1</a></td><td>Returns the cartesian product of the specified lists (collected in a 
@@ -71,6 +73,9 @@ order and content, except first occurrence removed).</td></tr>
  as a pair, whose first element corresponds to the elements of the first list
  that are not in the second one, and whose second element corresponds to the
  elements of the second list that are not in the first one.</td></tr>
+<tr><td valign="top"><a href="#dispatch_in-2">dispatch_in/2</a></td><td>Dispatches the specified list on the specified number of sublists, each 
+element being in turn placed in the next sublist, until going back at the 
+first (like a ring).</td></tr>
 <tr><td valign="top"><a href="#draw_element-1">draw_element/1</a></td><td>Draws one element at random of the specified list, knowing that they all
  have the same probability of being drawn (uniform probability).</td></tr>
 <tr><td valign="top"><a href="#draw_element-2">draw_element/2</a></td><td>Draws one element at random of the specified list, whose length must be
@@ -113,6 +118,7 @@ as opposed to indefinitively (as done recursively by lists:flatten/1);
 provides more control than a recursive counterpart.</td></tr>
 <tr><td valign="top"><a href="#flatten_tuples-1">flatten_tuples/1</a></td><td>Flattens a list of tuples into a simple list of their elements, without 
 tuples and in the same order.</td></tr>
+<tr><td valign="top"><a href="#get_all_permutations-1">get_all_permutations/1</a></td><td>Returns a list of all the permutations of the specified list.</td></tr>
 <tr><td valign="top"><a href="#get_duplicates-1">get_duplicates/1</a></td><td>Returns the duplicates in the specified list: returns an (unordered) list 
 of {DuplicatedTerm,DuplicationCount} pairs, where each duplicated term (that 
 is a term present more than once) is specified, alongside the total number of 
@@ -127,7 +133,12 @@ the) specified element in the specified list, or 'undefined' if the element is
 not found.</td></tr>
 <tr><td valign="top"><a href="#has_duplicates-1">has_duplicates/1</a></td><td>Tells whether there are in the specified list elements that are present
  more than once.</td></tr>
-<tr><td valign="top"><a href="#insert_element_at-3">insert_element_at/3</a></td><td>Inserts specified element at specified position in specified list.</td></tr>
+<tr><td valign="top"><a href="#heads-2">heads/2</a></td><td>Returns a pair made of the N first elements ("heads") of the specified 
+list, and of its remainder (tail).</td></tr>
+<tr><td valign="top"><a href="#insert_at_all_places-2">insert_at_all_places/2</a></td><td>Returns all the lists obtained from the specified one L, when inserting 
+the specified element at each possible place in L (including before and 
+after).</td></tr>
+<tr><td valign="top"><a href="#insert_element_at-3">insert_element_at/3</a></td><td>Inserts specified element at specified position in the specified list.</td></tr>
 <tr><td valign="top"><a href="#intersection-2">intersection/2</a></td><td>Returns the intersection of the two specified lists, that is the list of 
 all elements that are in both lists.</td></tr>
 <tr><td valign="top"><a href="#random_permute-1">random_permute/1</a></td><td>Returns a random uniform permutation of the specified list.</td></tr>
@@ -137,8 +148,20 @@ compared to random_permute/1.</td></tr>
 list.</td></tr>
 <tr><td valign="top"><a href="#remove_element_at-2">remove_element_at/2</a></td><td>Returns a list corresponding to the specified one with the element at 
 specified index removed.</td></tr>
+<tr><td valign="top"><a href="#remove_element_from-2">remove_element_from/2</a></td><td>Removes all occurrences (not the first one only: possibly zero, possibly
+ more than one) of the specified element from the specified list, and returns
+ the result (in the original order).</td></tr>
+<tr><td valign="top"><a href="#remove_elements_from-2">remove_elements_from/2</a></td><td>Removes all occurrences (not the first one only: possibly zero, possibly
+ more than one) of the specified elements from the specified list, and returns
+ the result (in the original order).</td></tr>
 <tr><td valign="top"><a href="#remove_first_elements-2">remove_first_elements/2</a></td><td>Removes the specified number first elements.</td></tr>
+<tr><td valign="top"><a href="#remove_first_occurrence-2">remove_first_occurrence/2</a></td><td>Deletes up to one occurrence (the first found) of the specified element
+ in the specified list, whose order is preserved.</td></tr>
+<tr><td valign="top"><a href="#remove_first_occurrences-2">remove_first_occurrences/2</a></td><td>Deletes up to one occurrence (the first found) of each of the specified
+ elements, from the specified list, whose order is preserved.</td></tr>
 <tr><td valign="top"><a href="#remove_last_element-1">remove_last_element/1</a></td><td>Removes the last element of the specified list.</td></tr>
+<tr><td valign="top"><a href="#set_element_at-3">set_element_at/3</a></td><td>Returns the specified list with the element at specified index replaced
+ by the specified element.</td></tr>
 <tr><td valign="top"><a href="#split_at-2">split_at/2</a></td><td>Splits the specified (plain) list in two parts (two plain lists, that are 
 returned): the first contains the first elements, up to MaxLen included (in 
 reverse order), and the second the others (if any).</td></tr>
@@ -158,6 +181,17 @@ in the kept elements is preserved.</td></tr>
 
 <h2><a name="functions">Function Details</a></h2>
 
+<h3 class="function"><a name="add_as_heads-2">add_as_heads/2</a></h3>
+<div class="spec">
+<p><tt>add_as_heads(Heads, Lists) -&gt; any()</tt></p>
+<p> </p>
+</div><p><p>Adds the specified elements as heads of the specified lists.</p>
+
+ <p>Ex: add_as_heads([a,b,c], [[u,v], [], [w]]) = [[a,u,v], [b], [c,w]].</p>
+
+ Of course the two lists shall have the same length.
+</p>
+
 <h3 class="function"><a name="append_at_end-2">append_at_end/2</a></h3>
 <div class="spec">
 <p><tt>append_at_end(Elem::<a href="#type-element">element()</a>, L::list()) -&gt; nonempty_list()</tt><br></p>
@@ -171,17 +205,32 @@ the order of the list.</p>
  costlier than adding them at head.
 </p>
 
+<h3 class="function"><a name="are_atoms-1">are_atoms/1</a></h3>
+<div class="spec">
+<p><tt>are_atoms(T::term()) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p><p>Returns whether the specified list contains only atoms.</p>
+
+ Considers that an empty list complies.
+</p>
+
 <h3 class="function"><a name="are_integers-1">are_integers/1</a></h3>
 <div class="spec">
 <p><tt>are_integers(T::term()) -&gt; boolean()</tt><br></p>
 <p> </p>
-</div><p>Returns whether the specified list contains only integers.</p>
+</div><p><p>Returns whether the specified list contains only integers.</p>
+
+ Considers that an empty list complies.
+</p>
 
 <h3 class="function"><a name="are_pids-1">are_pids/1</a></h3>
 <div class="spec">
 <p><tt>are_pids(T::term()) -&gt; boolean()</tt><br></p>
 <p> </p>
-</div><p>Returns whether the specified list contains only PIDs.</p>
+</div><p><p>Returns whether the specified list contains only PIDs.</p>
+
+ Considers that an empty list complies.
+</p>
 
 <h3 class="function"><a name="cartesian_product-1">cartesian_product/1</a></h3>
 <div class="spec">
@@ -232,7 +281,9 @@ ascending (Erlang) term order.</p>
 </div><p><p>Returns a copy of the specified list where all elements matching Elem are 
 deleted, whether or not there is any.</p>
 
- The element order of the specified list is preserved.
+ <p>The element order of the specified list is preserved.</p>
+
+ Note: kept only for backward compatibility; prefer remove_element_from/2.
 </p>
 
 <h3 class="function"><a name="delete_existing-2">delete_existing/2</a></h3>
@@ -282,6 +333,22 @@ order and content, except first occurrence removed).</p>
  as a pair, whose first element corresponds to the elements of the first list
  that are not in the second one, and whose second element corresponds to the
  elements of the second list that are not in the first one.
+</p>
+
+<h3 class="function"><a name="dispatch_in-2">dispatch_in/2</a></h3>
+<div class="spec">
+<p><tt>dispatch_in(SublistCount::<a href="#type-count">count()</a>, List::list()) -&gt; [list()]</tt><br></p>
+<p> </p>
+</div><p><p>Dispatches the specified list on the specified number of sublists, each 
+element being in turn placed in the next sublist, until going back at the 
+first (like a ring).</p>
+
+ <p>Note that the number of elements of the input list must be a multiple of the 
+specified number of sublists (hence all sublists will have the same length).</p>
+
+ <p>The order in each sublist is preserved.</p>
+
+ Ex: dispatch_in(3, [a, b, c, d, e, f]) = [[a,d], [b,e], [c,f]].
 </p>
 
 <h3 class="function"><a name="draw_element-1">draw_element/1</a></h3>
@@ -438,8 +505,10 @@ provides more control than a recursive counterpart.</p>
 
  <p>Element order is preserved.</p>
 
- Ex: if L=[ [1], [2,[3,4]] ], lists:flatten(L) yields [1,2,3,4] whereas
- list_utils:flatten_once(L) should yield [1,2,[3,4]].
+ <p>Ex: if L=[ [1], [2,[3,4]] ], lists:flatten(L) yields [1,2,3,4] whereas 
+list_utils:flatten_once(L) should yield [1,2,[3,4]].</p>
+
+ See text_utils:concatenate/1 for string-related operations.
 </p>
 
 <h3 class="function"><a name="flatten_tuples-1">flatten_tuples/1</a></h3>
@@ -450,6 +519,16 @@ provides more control than a recursive counterpart.</p>
 tuples and in the same order.</p>
 
  Ex: flatten_tuples([{1, 2, 3}, {4, 5, 6}]) = [1, 2, 3, 4, 5, 6])
+</p>
+
+<h3 class="function"><a name="get_all_permutations-1">get_all_permutations/1</a></h3>
+<div class="spec">
+<p><tt>get_all_permutations(L::list()) -&gt; [list()]</tt><br></p>
+<p> </p>
+</div><p><p>Returns a list of all the permutations of the specified list.</p>
+
+ Ex: get_all_permutations([a,b,c]) = [ [c,b,a], [c,a,b], [a,c,b], [b,c,a],
+                                       [b,a,c], [a,b,c] ]
 </p>
 
 <h3 class="function"><a name="get_duplicates-1">get_duplicates/1</a></h3>
@@ -535,13 +614,37 @@ not found.</p>
  more than once.
 </p>
 
+<h3 class="function"><a name="heads-2">heads/2</a></h3>
+<div class="spec">
+<p><tt>heads(List::list(), N::<a href="#type-count">count()</a>) -&gt; {list(), list()}</tt><br></p>
+<p> </p>
+</div><p><p>Returns a pair made of the N first elements ("heads") of the specified 
+list, and of its remainder (tail).</p>
+
+ <p>Ex: heads([a,b,c,d,e], _N=3) = {[a,b,c],[d,e]}.</p>
+
+ Like list:sublist/1 yet returning the tail (list:nthtail/1) as well.
+</p>
+
+<h3 class="function"><a name="insert_at_all_places-2">insert_at_all_places/2</a></h3>
+<div class="spec">
+<p><tt>insert_at_all_places(E::<a href="#type-element">element()</a>, L::list()) -&gt; [list()]</tt><br></p>
+<p> </p>
+</div><p><p>Returns all the lists obtained from the specified one L, when inserting 
+the specified element at each possible place in L (including before and 
+after).</p>
+
+ Ex: insert_at_all_places(a, [b,c,d]) =
+                  [ [b,c,d,a], [b,c,a,d], [b,a,c,d], [a,b,c,d] ]
+</p>
+
 <h3 class="function"><a name="insert_element_at-3">insert_element_at/3</a></h3>
 <div class="spec">
 <p><tt>insert_element_at(Element::<a href="#type-element">element()</a>, List::list(), Index::<a href="#type-positive_index">positive_index()</a>) -&gt; list()</tt><br></p>
 <p> </p>
-</div><p><p>Inserts specified element at specified position in specified list.</p>
+</div><p><p>Inserts specified element at specified position in the specified list.</p>
 
- For example, insert_element_at(foo, [a,b,c,d], 3) will return
+ For example, insert_element_at(foo, [a, b, c, d], 3) will return
  [a, b, foo, c, d].
 </p>
 
@@ -618,6 +721,24 @@ T;</p>
  Tail recursive version.
 </p>
 
+<h3 class="function"><a name="remove_element_from-2">remove_element_from/2</a></h3>
+<div class="spec">
+<p><tt>remove_element_from(Elem::<a href="#type-element">element()</a>, List::list()) -&gt; list()</tt><br></p>
+<p> </p>
+</div><p>Removes all occurrences (not the first one only: possibly zero, possibly
+ more than one) of the specified element from the specified list, and returns
+ the result (in the original order).
+</p>
+
+<h3 class="function"><a name="remove_elements_from-2">remove_elements_from/2</a></h3>
+<div class="spec">
+<p><tt>remove_elements_from(Elems::[<a href="#type-element">element()</a>], List::list()) -&gt; list()</tt><br></p>
+<p> </p>
+</div><p>Removes all occurrences (not the first one only: possibly zero, possibly
+ more than one) of the specified elements from the specified list, and returns
+ the result (in the original order).
+</p>
+
 <h3 class="function"><a name="remove_first_elements-2">remove_first_elements/2</a></h3>
 <div class="spec">
 <p><tt>remove_first_elements(List::list(), Count::<a href="#type-count">count()</a>) -&gt; list()</tt><br></p>
@@ -625,6 +746,22 @@ T;</p>
 </div><p><p>Removes the specified number first elements.</p>
 
  Ex: [c, d, e] = list_utils:remove_first_elements([a, b, c, d, e], 2).
+</p>
+
+<h3 class="function"><a name="remove_first_occurrence-2">remove_first_occurrence/2</a></h3>
+<div class="spec">
+<p><tt>remove_first_occurrence(Element::<a href="#type-element">element()</a>, List::list()) -&gt; list()</tt><br></p>
+<p> </p>
+</div><p>Deletes up to one occurrence (the first found) of the specified element
+ in the specified list, whose order is preserved.
+</p>
+
+<h3 class="function"><a name="remove_first_occurrences-2">remove_first_occurrences/2</a></h3>
+<div class="spec">
+<p><tt>remove_first_occurrences(ElementsToRemove::<a href="#type-element">element()</a>, List::list()) -&gt; list()</tt><br></p>
+<p> </p>
+</div><p>Deletes up to one occurrence (the first found) of each of the specified
+ elements, from the specified list, whose order is preserved.
 </p>
 
 <h3 class="function"><a name="remove_last_element-1">remove_last_element/1</a></h3>
@@ -637,6 +774,14 @@ T;</p>
 
  Note: not computationnally efficient, usually removing the last element
  suggests a bad code design.
+</p>
+
+<h3 class="function"><a name="set_element_at-3">set_element_at/3</a></h3>
+<div class="spec">
+<p><tt>set_element_at(Element::<a href="#type-element">element()</a>, List::list(), Index::<a href="#type-positive_index">positive_index()</a>) -&gt; list()</tt><br></p>
+<p> </p>
+</div><p>Returns the specified list with the element at specified index replaced
+ by the specified element.
 </p>
 
 <h3 class="function"><a name="split_at-2">split_at/2</a></h3>

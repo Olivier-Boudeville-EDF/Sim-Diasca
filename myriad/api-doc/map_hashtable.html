@@ -76,6 +76,18 @@ only them)</p>
 <p><b>abstract datatype</b>: <tt>map_hashtable()</tt></p>
 
 
+<h3 class="typedecl"><a name="type-maybe">maybe()</a></h3>
+<p><tt>maybe(T) = T | undefined</tt></p>
+
+
+<h3 class="typedecl"><a name="type-maybe_entries">maybe_entries()</a></h3>
+<p><tt>maybe_entries() = <a href="hashtable.html#type-maybe_entries">hashtable:maybe_entries()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-maybe_entry">maybe_entry()</a></h3>
+<p><tt>maybe_entry() = <a href="hashtable.html#type-maybe_entry">hashtable:maybe_entry()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
 <p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
 
@@ -91,6 +103,10 @@ only them)</p>
 <h2><a name="index">Function Index</a></h2>
 <table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add_entries-2">add_entries/2</a></td><td>Adds specified list of key/value pairs into the specified map table.</td></tr>
 <tr><td valign="top"><a href="#add_entry-3">add_entry/3</a></td><td>Adds specified key/value pair into the specified map hashtable.</td></tr>
+<tr><td valign="top"><a href="#add_maybe_entries-2">add_maybe_entries/2</a></td><td>Adds specified list of key/value pairs into the specified map table, each 
+entry being added iff its value is not undefined.</td></tr>
+<tr><td valign="top"><a href="#add_maybe_entry-3">add_maybe_entry/3</a></td><td>Adds specified key/value pair into the specified map hashtable, provided 
+the value is not undefined.</td></tr>
 <tr><td valign="top"><a href="#add_new_entries-2">add_new_entries/2</a></td><td>Adds specified list of key/value pairs into the specified map table,
  expecting that none of these keys is already defined in this table (otherwise
  an exception is thrown).</td></tr>
@@ -120,14 +136,14 @@ to specified key, this value being assumed to be a list.</td></tr>
  specified title on top.</td></tr>
 <tr><td valign="top"><a href="#enumerate-1">enumerate/1</a></td><td>Returns a flat list whose elements are all the key/value pairs of the 
 hashtable, in no particular order.</td></tr>
-<tr><td valign="top"><a href="#extract_entries-2">extract_entries/2</a></td><td>Extracts specified entries from specified hashtable, ie returns their 
-associated values (in-order) and removes these entries from the returned 
+<tr><td valign="top"><a href="#extract_entries-2">extract_entries/2</a></td><td>Extracts specified entries from specified hashtable, that is returns 
+their associated values (in-order) and removes these entries from the returned 
 table.</td></tr>
-<tr><td valign="top"><a href="#extract_entry-2">extract_entry/2</a></td><td>Extracts specified entry from specified hashtable, ie returns its 
+<tr><td valign="top"><a href="#extract_entry-2">extract_entry/2</a></td><td>Extracts specified entry from specified hashtable, that is returns its 
 associated value and removes that entry from the returned table.</td></tr>
-<tr><td valign="top"><a href="#extract_entry_if_existing-2">extract_entry_if_existing/2</a></td><td>Extracts specified entry (if any) from specified table, ie returns its 
-associated value and removes that entry from the returned table.</td></tr>
-<tr><td valign="top"><a href="#extract_entry_with_defaults-3">extract_entry_with_defaults/3</a></td><td>Extracts specified entry from specified table, ie returns the 
+<tr><td valign="top"><a href="#extract_entry_if_existing-2">extract_entry_if_existing/2</a></td><td>Extracts specified entry (if any) from specified table, that is returns 
+its associated value and removes that entry from the returned table.</td></tr>
+<tr><td valign="top"><a href="#extract_entry_with_defaults-3">extract_entry_with_defaults/3</a></td><td>Extracts specified entry from specified table, that is returns the 
 associated value and removes that entry from the table.</td></tr>
 <tr><td valign="top"><a href="#fold-3">fold/3</a></td><td>Folds specified anonymous function on all key/value pairs of the 
 specified map hashtable, based on specified initial accumulator.</td></tr>
@@ -167,7 +183,7 @@ unique (ie that they do not intersect), otherwise throws an exception.</td></tr>
 <tr><td valign="top"><a href="#new-0">new/0</a></td><td>Returns an empty, map-based hashtable.</td></tr>
 <tr><td valign="top"><a href="#new-1">new/1</a></td><td>Creates a table, either from specified initial entries or (solely for API 
 interoperability) from specified target number of entries.</td></tr>
-<tr><td valign="top"><a href="#new_from_unique_entries-1">new_from_unique_entries/1</a></td><td>Creates a new table from specified list of key/values pairs, expecting no 
+<tr><td valign="top"><a href="#new_from_unique_entries-1">new_from_unique_entries/1</a></td><td>Creates a table from specified list of key/values pairs, expecting no 
 duplicate in the keys, otherwise throwing an exception.</td></tr>
 <tr><td valign="top"><a href="#optimise-1">optimise/1</a></td><td>Optimises this hashtable.</td></tr>
 <tr><td valign="top"><a href="#pop_from_entry-2">pop_from_entry/2</a></td><td>Pops the head of the value (supposed to be a list) associated to
@@ -183,7 +199,8 @@ specified table.</td></tr>
 specified table.</td></tr>
 <tr><td valign="top"><a href="#select_entries-2">select_entries/2</a></td><td>Returns a list of key/value pairs corresponding to the list of specified
  keys, or throws a badmatch is at least one key is not found.</td></tr>
-<tr><td valign="top"><a href="#size-1">size/1</a></td><td>Returns the size (number of entries, ie of key/value pairs) of the
+<tr><td valign="top"><a href="#singleton-2">singleton/2</a></td><td>Returns a map-based hashtable comprising only the specified entry.</td></tr>
+<tr><td valign="top"><a href="#size-1">size/1</a></td><td>Returns the size (number of entries, that is of key/value pairs) of the
  specified table.</td></tr>
 <tr><td valign="top"><a href="#subtract_from_entry-3">subtract_from_entry/3</a></td><td>Subtracts specified value to the value, supposed to be numerical, 
 associated to specified key.</td></tr>
@@ -219,6 +236,31 @@ hashtable.</td></tr>
 <p><tt>add_entry(Key::<a href="#type-key">key()</a>, Value::<a href="#type-value">value()</a>, MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable">map_hashtable()</a></tt><br></p>
 <p> </p>
 </div><p><p>Adds specified key/value pair into the specified map hashtable.</p>
+
+ If there is already a pair with this key, then its previous value will be
+ replaced by the specified one (hence does not check whether or not the key
+ already exist in this table).
+</p>
+
+<h3 class="function"><a name="add_maybe_entries-2">add_maybe_entries/2</a></h3>
+<div class="spec">
+<p><tt>add_maybe_entries(MaybeEntryList::<a href="#type-maybe_entries">maybe_entries()</a>, MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable">map_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p><p>Adds specified list of key/value pairs into the specified map table, each 
+entry being added iff its value is not undefined. Useful to add maybe-entries 
+to a map.</p>
+
+ If there is already a pair with this key, then its previous value will be
+ replaced by the specified one (hence does not check whether or not keys
+ already exist in this table).
+</p>
+
+<h3 class="function"><a name="add_maybe_entry-3">add_maybe_entry/3</a></h3>
+<div class="spec">
+<p><tt>add_maybe_entry(Key::<a href="#type-key">key()</a>, MaybeValue::<a href="#type-maybe">maybe</a>(<a href="#type-value">value()</a>), MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable">map_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p><p>Adds specified key/value pair into the specified map hashtable, provided 
+the value is not undefined. Useful to add a maybe-entry to a map.</p>
 
  If there is already a pair with this key, then its previous value will be
  replaced by the specified one (hence does not check whether or not the key
@@ -375,22 +417,22 @@ hashtable, in no particular order.</p>
 <div class="spec">
 <p><tt>extract_entries(Keys::[<a href="#type-key">key()</a>], MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; {[<a href="#type-value">value()</a>], <a href="#type-map_hashtable">map_hashtable()</a>}</tt><br></p>
 <p> </p>
-</div><p><p>Extracts specified entries from specified hashtable, ie returns their 
-associated values (in-order) and removes these entries from the returned 
+</div><p><p>Extracts specified entries from specified hashtable, that is returns 
+their associated values (in-order) and removes these entries from the returned 
 table.</p>
 
  <p>Each key/value pair is expected to exist already, otherwise an exception is 
 raised (typically {badkey, KeyNotFound}).</p>
 
  Ex: {[RedValue, GreenValue, BlueValue], ExtractedTable} =
-         table:extract_entries([red, green, blue], MyTable)
+         map_hashtable:extract_entries([red, green, blue], MyTable)
 </p>
 
 <h3 class="function"><a name="extract_entry-2">extract_entry/2</a></h3>
 <div class="spec">
 <p><tt>extract_entry(Key::<a href="#type-key">key()</a>, MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; {<a href="#type-value">value()</a>, <a href="#type-map_hashtable">map_hashtable()</a>}</tt><br></p>
 <p> </p>
-</div><p><p>Extracts specified entry from specified hashtable, ie returns its 
+</div><p><p>Extracts specified entry from specified hashtable, that is returns its 
 associated value and removes that entry from the returned table.</p>
 
  The key/value pair is expected to exist already, otherwise an exception is
@@ -401,10 +443,10 @@ associated value and removes that entry from the returned table.</p>
 <div class="spec">
 <p><tt>extract_entry_if_existing(Key::<a href="#type-key">key()</a>, MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; false | {<a href="#type-value">value()</a>, <a href="#type-map_hashtable">map_hashtable()</a>}</tt><br></p>
 <p> </p>
-</div><p><p>Extracts specified entry (if any) from specified table, ie returns its 
-associated value and removes that entry from the returned table.</p>
+</div><p><p>Extracts specified entry (if any) from specified table, that is returns 
+its associated value and removes that entry from the returned table.</p>
 
- <p>Otherwise, ie if that entry does not exist, returns false.</p>
+ <p>Otherwise, that is if that entry does not exist, returns false.</p>
 
  Typically useful to iterate over options stored as a table and extracting them
  in turn, then to check that the resulting final table is empty as expected.
@@ -414,7 +456,7 @@ associated value and removes that entry from the returned table.</p>
 <div class="spec">
 <p><tt>extract_entry_with_defaults(Key::<a href="#type-key">key()</a>, DefaultValue::<a href="#type-value">value()</a>, Table::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; {<a href="#type-value">value()</a>, <a href="#type-map_hashtable">map_hashtable()</a>}</tt><br></p>
 <p> </p>
-</div><p><p>Extracts specified entry from specified table, ie returns the 
+</div><p><p>Extracts specified entry from specified table, that is returns the 
 associated value and removes that entry from the table.</p>
 
  If no such key is available, returns the specified default value and the
@@ -491,8 +533,8 @@ returns it directly.</p>
  <p>The key/value pairs are expected to exist already in the table, otherwise an 
 exception is raised.</p>
 
- Ex: [Color, Age, Mass] = map_hashtable:get_values( [color, age, mass],
-                                                    MyMapTable ] )
+ Ex: [Color, Age, Mass] =
+               map_hashtable:get_values([color, age, mass], MyMapTable])
 </p>
 
 <h3 class="function"><a name="has_entry-2">has_entry/2</a></h3>
@@ -642,7 +684,7 @@ and the previous values are ignored.</p>
 <div class="spec">
 <p><tt>new_from_unique_entries(InitialEntries) -&gt; any()</tt></p>
 <p> </p>
-</div><p><p>Creates a new table from specified list of key/values pairs, expecting no 
+</div><p><p>Creates a table from specified list of key/values pairs, expecting no 
 duplicate in the keys, otherwise throwing an exception.</p>
 
  Allows to safely load entries in a table without risking a silent overwrite of
@@ -723,11 +765,20 @@ specified table.</p>
  keys, or throws a badmatch is at least one key is not found.
 </p>
 
+<h3 class="function"><a name="singleton-2">singleton/2</a></h3>
+<div class="spec">
+<p><tt>singleton(Key::<a href="#type-key">key()</a>, Value::<a href="#type-value">value()</a>) -&gt; <a href="#type-map_hashtable">map_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns a map-based hashtable comprising only the specified entry.</p>
+
+ More elegant than map_hashtable:new([{K,V}], map_hashtable:new()).
+</p>
+
 <h3 class="function"><a name="size-1">size/1</a></h3>
 <div class="spec">
 <p><tt>size(MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; <a href="#type-entry_count">entry_count()</a></tt><br></p>
 <p> </p>
-</div><p>Returns the size (number of entries, ie of key/value pairs) of the
+</div><p>Returns the size (number of entries, that is of key/value pairs) of the
  specified table.
 </p>
 

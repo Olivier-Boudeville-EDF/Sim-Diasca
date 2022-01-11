@@ -57,7 +57,7 @@ large amounts of numerical data.</p>
 <p> An HDF5 dataset, ie the actual data.</p>
 
 <h3 class="typedecl"><a name="type-dataset_name">dataset_name()</a></h3>
-<p><tt>dataset_name() = string()</tt></p>
+<p><tt>dataset_name() = <a href="#type-ustring">ustring()</a></tt></p>
 <p> The name of a HDF5 dataset.</p>
 
 <h3 class="typedecl"><a name="type-dataspace">dataspace()</a></h3>
@@ -446,7 +446,7 @@ for each dimension, a pair of current and maximum size.</p>
 
 <h3 class="function"><a name="read-4">read/4</a></h3>
 <div class="spec">
-<p><tt>read(DatasetName::string(), DataType::<a href="#type-supported_datatypes">supported_datatypes()</a>, TupleSize::<a href="basic_utils.html#type-count">basic_utils:count()</a>, File::<a href="#type-hdf5_file">hdf5_file()</a>) -&gt; <a href="#type-data">data()</a></tt><br></p>
+<p><tt>read(DatasetName::<a href="#type-ustring">ustring()</a>, DataType::<a href="#type-supported_datatypes">supported_datatypes()</a>, TupleSize::<a href="basic_utils.html#type-count">basic_utils:count()</a>, File::<a href="#type-hdf5_file">hdf5_file()</a>) -&gt; <a href="#type-data">data()</a></tt><br></p>
 <p> </p>
 </div><p>Reads the specified named dataset of specified type and tuple size from
  specified file, returning it as a list of tuples of specified size.

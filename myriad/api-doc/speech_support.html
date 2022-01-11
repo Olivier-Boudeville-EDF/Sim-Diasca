@@ -1,0 +1,535 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module speech_support</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module speech_support</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various facilities regarding <b>speech support</b>, i.e.
+
+
+<h2><a name="description">Description</a></h2>Gathering of various facilities regarding <b>speech support</b>, i.e. TTS
+ (Text to Speech), in order to obtain an audio content corresponding to a
+ specified text.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-actual_speech_info">actual_speech_info()</a></h3>
+<p><tt>actual_speech_info() = #actual_speech_info{ssml_text = <a href="speech_support.html#type-ssml_text">speech_support:ssml_text()</a>, speech_settings_id = <a href="speech_support.html#type-speech_settings_id">speech_support:speech_settings_id()</a>, audio_filename = <a href="file_utils.html#type-bin_file_name">file_utils:bin_file_name()</a>}</tt></p>
+<p> Key information regarding an actual text-to-speech, that is the instantiation
+ of a logical speech, i.e. the speech settings that apply to this SSML text and
+ the resulting audio file (relative to the base directory of the speech
+ referential keeping track of the corresponding logical speech).</p>
+
+<h3 class="typedecl"><a name="type-age_played">age_played()</a></h3>
+<p><tt>age_played() = child | young_adult | older_adult | senior</tt></p>
+
+
+<h3 class="typedecl"><a name="type-any_directory_path">any_directory_path()</a></h3>
+<p><tt>any_directory_path() = <a href="file_utils.html#type-any_directory_path">file_utils:any_directory_path()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-any_locale">any_locale()</a></h3>
+<p><tt>any_locale() = <a href="locale_utils.html#type-any_locale">locale_utils:any_locale()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-any_path_element">any_path_element()</a></h3>
+<p><tt>any_path_element() = <a href="file_utils.html#type-any_path_element">file_utils:any_path_element()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-any_speech_base_name">any_speech_base_name()</a></h3>
+<p><tt>any_speech_base_name() = <a href="#type-any_path_element">any_path_element()</a></tt></p>
+<p> A short name (any kind of string) to designate a logical speech, able to be
+ used as a prefix of a filename; ex: "welcome-new-recruits"). Not an
+ identifier, but preferably unique.</p>
+
+<h3 class="typedecl"><a name="type-audio_stream_settings">audio_stream_settings()</a></h3>
+<p><tt>audio_stream_settings() = <a href="audio_utils.html#type-audio_stream_settings">audio_utils:audio_stream_settings()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-bin_file_name">bin_file_name()</a></h3>
+<p><tt>bin_file_name() = <a href="file_utils.html#type-bin_file_name">file_utils:bin_file_name()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-bin_file_path">bin_file_path()</a></h3>
+<p><tt>bin_file_path() = <a href="file_utils.html#type-bin_file_path">file_utils:bin_file_path()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-bin_locale">bin_locale()</a></h3>
+<p><tt>bin_locale() = <a href="locale_utils.html#type-bin_locale">locale_utils:bin_locale()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-bin_path_element">bin_path_element()</a></h3>
+<p><tt>bin_path_element() = <a href="file_utils.html#type-bin_path_element">file_utils:bin_path_element()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-bin_string">bin_string()</a></h3>
+<p><tt>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-count">count()</a></h3>
+<p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-file_path">file_path()</a></h3>
+<p><tt>file_path() = <a href="file_utils.html#type-file_path">file_utils:file_path()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-language_locale">language_locale()</a></h3>
+<p><tt>language_locale() = <a href="#type-bin_locale">bin_locale()</a></tt></p>
+<p> The language locale to be used (ex: <code>&lt;&lt;"fr-FR"&gt;&gt;</code>), knowing that for example a
+ voice may speak in multiple languages (ex: "Jenny Multilingual").</p>
+
+<h3 class="typedecl"><a name="type-locale_table">locale_table()</a></h3>
+<p><tt>locale_table() = <a href="#type-table">table</a>(<a href="#type-language_locale">language_locale()</a>, <a href="#type-actual_speech_info">actual_speech_info()</a>)</tt></p>
+<p> A table associating, in the context of a given logical speech, for each spoken
+ locale, the information of the corresponding text to speech.</p>
+
+<h3 class="typedecl"><a name="type-logical_speech">logical_speech()</a></h3>
+<p><tt>logical_speech() = #logical_speech{id = <a href="speech_support.html#type-speech_id">speech_support:speech_id()</a>, base_name = <a href="speech_support.html#type-speech_base_name">speech_support:speech_base_name()</a>, locale_table = <a href="speech_support.html#type-locale_table">speech_support:locale_table()</a>}</tt></p>
+<p> All information regarding a logical speech, possibly recorded based on
+ multiple, different spoken locales.</p>
+
+<h3 class="typedecl"><a name="type-role_played">role_played()</a></h3>
+<p><tt>role_played() = {<a href="#type-voice_gender">voice_gender()</a>, <a href="#type-age_played">age_played()</a>} | narrator</tt></p>
+<p> A role that a voice may play.</p>
+
+<h3 class="typedecl"><a name="type-speech_base_name">speech_base_name()</a></h3>
+<p><tt>speech_base_name() = <a href="#type-bin_path_element">bin_path_element()</a></tt></p>
+<p> A short name to designate a logical speech, able to be used as a prefix of a
+ filename; ex: <code>&lt;&lt;"welcome-new-recruits"&gt;&gt;</code>). Not an identifier, but preferably
+ unique.</p>
+
+<h3 class="typedecl"><a name="type-speech_id">speech_id()</a></h3>
+<p><tt>speech_id() = <a href="#type-count">count()</a></tt></p>
+<p> The identifier of a record about a logical speech.</p>
+
+<h3 class="typedecl"><a name="type-speech_referential">speech_referential()</a></h3>
+<p><tt>speech_referential() = #speech_referential{speech_table = <a href="speech_support.html#type-speech_table">speech_support:speech_table()</a>, reference_locale = <a href="speech_support.html#type-language_locale">speech_support:language_locale()</a>, base_dir = <a href="file_utils.html#type-bin_directory_path">file_utils:bin_directory_path()</a>, next_speech_id = <a href="speech_support.html#type-speech_id">speech_support:speech_id()</a>}</tt></p>
+<p> A datastructure collecting information regarding a set of logical speeches.</p>
+
+<h3 class="typedecl"><a name="type-speech_settings">speech_settings()</a></h3>
+<p><tt>speech_settings() = #speech_settings{voice_id = <a href="speech_support.html#type-voice_id">speech_support:voice_id()</a>, language_locale = <a href="#type-maybe">maybe</a>(<a href="speech_support.html#type-language_locale">speech_support:language_locale()</a>), voice_gender = <a href="#type-maybe">maybe</a>(<a href="speech_support.html#type-voice_gender">speech_support:voice_gender()</a>), speech_style = <a href="#type-maybe">maybe</a>(<a href="speech_support.html#type-supported_style">speech_support:supported_style()</a>), role = <a href="#type-maybe">maybe</a>(<a href="speech_support.html#type-role_played">speech_support:role_played()</a>)}</tt></p>
+<p> Information regarding a speech to be recorded (many of whom are optional).</p>
+
+<h3 class="typedecl"><a name="type-speech_settings_id">speech_settings_id()</a></h3>
+<p><tt>speech_settings_id() = <a href="#type-count">count()</a></tt></p>
+<p> The identifier of given speech settings in a table thereof.</p>
+
+<h3 class="typedecl"><a name="type-speech_settings_table">speech_settings_table()</a></h3>
+<p><tt>speech_settings_table() = <a href="#type-table">table</a>(<a href="#type-speech_settings_id">speech_settings_id()</a>, <a href="#type-speech_settings">speech_settings()</a>)</tt></p>
+
+
+<h3 class="typedecl"><a name="type-speech_state">speech_state()</a></h3>
+<p><b>abstract datatype</b>: <tt>speech_state()</tt></p>
+<p> The state of the speech support, to be carried between calls.</p>
+
+<h3 class="typedecl"><a name="type-speech_table">speech_table()</a></h3>
+<p><tt>speech_table() = <a href="#type-table">table</a>(<a href="#type-speech_id">speech_id()</a>, <a href="#type-logical_speech">logical_speech()</a>)</tt></p>
+<p> A table associating to the identifier of a logical speech the various
+ available information about it.</p>
+
+<h3 class="typedecl"><a name="type-ssml_text">ssml_text()</a></h3>
+<p><tt>ssml_text() = <a href="#type-xml_document">xml_document()</a></tt></p>
+<p><p> A text to be spoken, specified in Speech Synthesis Markup Language (SSML), 
+therefore as an XML document.</p>
+
+ <p>Special characters, such as quotation marks, apostrophes, and brackets will be 
+automatically escaped here.</p>
+
+ Refer to https://www.w3.org/TR/2004/REC-speech-synthesis-20040907/ and
+ https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/speech-synthesis-markup
+ for further SSML details.</p>
+
+<h3 class="typedecl"><a name="type-supported_style">supported_style()</a></h3>
+<p><tt>supported_style() = assistant | news_reading | news_reading_casual | news_reading_formal | story_narrating | work_narrating | conversing | customer_support | calm | fearful | angry | sad | envious | affectionate | gentle | depressed | serious | disgruntled | cheerful | embarrassed | empathetic | lyrical</tt></p>
+<p><p> Defines a style of speech that may be supported by voices.</p>
+
+ See, for a synthesis of the styles supported by each voice,
+ https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/speech-synthesis-markup
+ or enable the list_voices/1 the writing of the voice JSON listing.</p>
+
+<h3 class="typedecl"><a name="type-tts_provider">tts_provider()</a></h3>
+<p><tt>tts_provider() = google | aws | azure</tt></p>
+<p> Microsoft Azure (Neural)</p>
+
+<h3 class="typedecl"><a name="type-user_speech_info">user_speech_info()</a></h3>
+<p><tt>user_speech_info() = {<a href="#type-speech_settings_id">speech_settings_id()</a>, <a href="#type-ssml_text">ssml_text()</a>}</tt></p>
+<p> User-specified information regarding an actual text-to-speech, to allow for
+ the instantiation of a logical speech.</p>
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-voice_gender">voice_gender()</a></h3>
+<p><tt>voice_gender() = male | female</tt></p>
+<p> The gender of a voice.</p>
+
+<h3 class="typedecl"><a name="type-voice_id">voice_id()</a></h3>
+<p><tt>voice_id() = {<a href="#type-tts_provider">tts_provider()</a>, <a href="#type-voice_id_at_provider">voice_id_at_provider()</a>}</tt></p>
+<p> The absolute (reference) identifier of a voice (ex: {azure,
+ <code>&lt;&lt;"fr-FR-DeniseNeural"&gt;&gt;</code>}.</p>
+
+<h3 class="typedecl"><a name="type-voice_id_at_provider">voice_id_at_provider()</a></h3>
+<p><tt>voice_id_at_provider() = <a href="#type-bin_string">bin_string()</a></tt></p>
+<p> The identifier of a voice (ex: <code>&lt;&lt;"fr-FR-DeniseNeural"&gt;&gt;</code>,
+ <code>&lt;&lt;"ar-SA-Naayf"&gt;&gt;</code>) in the context of a specific TTS provider.</p>
+
+<h3 class="typedecl"><a name="type-voice_info">voice_info()</a></h3>
+<p><tt>voice_info() = #voice_info{name = <a href="speech_support.html#type-voice_name">speech_support:voice_name()</a>, id = <a href="speech_support.html#type-voice_id">speech_support:voice_id()</a>, type = <a href="speech_support.html#type-voice_type">speech_support:voice_type()</a>, gender = <a href="speech_support.html#type-voice_gender">speech_support:voice_gender()</a>, styles = <a href="#type-maybe">maybe</a>([<a href="speech_support.html#type-supported_style">speech_support:supported_style()</a>]), roles_played = <a href="#type-maybe">maybe</a>([<a href="speech_support.html#type-role_played">speech_support:role_played()</a>]), locale = <a href="locale_utils.html#type-bin_locale">locale_utils:bin_locale()</a>, locale_description = <a href="locale_utils.html#type-bin_locale_description">locale_utils:bin_locale_description()</a>, secondary_locales = [<a href="locale_utils.html#type-bin_locale">locale_utils:bin_locale()</a>], display_name = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a>, local_name = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a>, sample_rate = <a href="audio_utils.html#type-sample_rate">audio_utils:sample_rate()</a>}</tt></p>
+<p> Information regarding a voice for TTS.</p>
+
+<h3 class="typedecl"><a name="type-voice_name">voice_name()</a></h3>
+<p><tt>voice_name() = <a href="#type-bin_string">bin_string()</a></tt></p>
+<p><p> The full name (just informative) of a voice.</p>
+
+ Ex: <code>&lt;&lt;"Foobar Server Speech Text to Speech Voice (xr-XG, Yoda)"&gt;&gt;</code>.</p>
+
+<h3 class="typedecl"><a name="type-voice_table">voice_table()</a></h3>
+<p><tt>voice_table() = <a href="#type-table">table</a>(<a href="#type-voice_id">voice_id()</a>, <a href="#type-voice_info">voice_info()</a>)</tt></p>
+<p> A table associating the information regarding a voice based on its identifier.</p>
+
+<h3 class="typedecl"><a name="type-voice_type">voice_type()</a></h3>
+<p><tt>voice_type() = normal | neural</tt></p>
+<p> AI-produced.
+ The type of a voice.</p>
+
+<h3 class="typedecl"><a name="type-xml_document">xml_document()</a></h3>
+<p><tt>xml_document() = <a href="xml_utils.html#type-xml_document">xml_utils:xml_document()</a></tt></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#actual_speech_info_to_string-1">actual_speech_info_to_string/1</a></td><td>Returns a textual description of the specified information about an
+ actual speech.</td></tr>
+<tr><td valign="top"><a href="#check_availability-0">check_availability/0</a></td><td>Tells whether the speech support is available: 
+- if true, returns a preliminary, configured speech state 
+- if false, returns an extra textual diagnosis.</td></tr>
+<tr><td valign="top"><a href="#create_referential-1">create_referential/1</a></td><td>Returns an empty speech referential with the default "en-US" locale and
+ default audio settings, that is a referential not keeping track of any logical
+ speech defined (yet).</td></tr>
+<tr><td valign="top"><a href="#filter_by_gender-2">filter_by_gender/2</a></td><td>Returns a voice table corresponding to the specified one where only the
+ voice of the specified gender would be kept.</td></tr>
+<tr><td valign="top"><a href="#filter_by_locale-2">filter_by_locale/2</a></td><td>Returns a voice table corresponding to the specified one where only the
+ voice of the specified spoken locale (as primary or secondary) would be kept.</td></tr>
+<tr><td valign="top"><a href="#get_audio_format_string-1">get_audio_format_string/1</a></td><td>Returns the audio format description string corresponding to specified 
+settings.</td></tr>
+<tr><td valign="top"><a href="#get_audio_path_for-3">get_audio_path_for/3</a></td><td>Returns the absolute path of the audio file corresponding to the logical
+ speech specified through its identifier, for the specified locale.</td></tr>
+<tr><td valign="top"><a href="#get_default_audio_settings-0">get_default_audio_settings/0</a></td><td>Returns the default settings enforced for the speech audio output.</td></tr>
+<tr><td valign="top"><a href="#list_voices-1">list_voices/1</a></td><td>Returns the available information about all the voices offered by the
+ current TTS provider.</td></tr>
+<tr><td valign="top"><a href="#logical_speech_to_string-1">logical_speech_to_string/1</a></td><td>Returns a textual description of the specified logical speech.</td></tr>
+<tr><td valign="top"><a href="#record_logical_speech-3">record_logical_speech/3</a></td><td>Returns the identifier of the logical speech requested to be recorded, 
+together with the specified speech state whose speech referential has been 
+updated with that speech, created from a speech base name associated to a list 
+of actual speech information, so that the corresponding per-locale audio files 
+are recorded, each with their specified SSML text and speech settings, and 
+referenced.</td></tr>
+<tr><td valign="top"><a href="#record_speech-3">record_speech/3</a></td><td>Records the speech corresponding to the specified SSML message, according 
+to the (supposedly set) current speech settings, using the specified base name 
+to forge the filename in which the generated audio will be stored, in the 
+current directory; the corresponding audio path is returned; the corresponding 
+filename (relative to the elected directory) is returned.</td></tr>
+<tr><td valign="top"><a href="#record_speech-4">record_speech/4</a></td><td>Records the speech corresponding to the specified SSML message, according 
+to the (supposedly set) current speech settings, using the specified base name 
+to forge the filename in which the generated audio will be stored, in the 
+specified directory (otherwise in the current one); the corresponding filename 
+(relative to the elected directory) is returned.</td></tr>
+<tr><td valign="top"><a href="#record_speech-5">record_speech/5</a></td><td>Records the speech corresponding to the specified SSML message, according 
+to the specified speech settings, using the specified base name to forge the 
+filename in which the generated audio will be stored, in the specified 
+directory (otherwise in the current one); the corresponding filename (relative 
+to the elected directory) is returned.</td></tr>
+<tr><td valign="top"><a href="#register_speech_settings-2">register_speech_settings/2</a></td><td>Registers the specified speech settings in the specified state, and
+ returns it once updated, along with the identifier assigned to these settings.</td></tr>
+<tr><td valign="top"><a href="#role_to_string-1">role_to_string/1</a></td><td>Returns a textual description of the specified role.</td></tr>
+<tr><td valign="top"><a href="#speech_referential_to_string-1">speech_referential_to_string/1</a></td><td>Returns a textual description of the specified speech referential.</td></tr>
+<tr><td valign="top"><a href="#speech_settings_to_string-1">speech_settings_to_string/1</a></td><td>Returns a textual description of the specified speech settings.</td></tr>
+<tr><td valign="top"><a href="#speech_state_to_string-1">speech_state_to_string/1</a></td><td>Returns a textual description of the specified speech state.</td></tr>
+<tr><td valign="top"><a href="#start-1">start/1</a></td><td>Starts the speech support, initialising the embedded speech referential
+ with the current directory.</td></tr>
+<tr><td valign="top"><a href="#start-2">start/2</a></td><td>Starts the speech support, initialising the embedded speech referential
+ with the specified directory.</td></tr>
+<tr><td valign="top"><a href="#stop-1">stop/1</a></td><td>Stops the speech support.</td></tr>
+<tr><td valign="top"><a href="#tts_provider_to_string-1">tts_provider_to_string/1</a></td><td>Returns a textual description of the specified TTS provider.</td></tr>
+<tr><td valign="top"><a href="#voice_id_to_string-1">voice_id_to_string/1</a></td><td>Returns a textual description of the specified voice identifier.</td></tr>
+<tr><td valign="top"><a href="#voice_info_to_string-1">voice_info_to_string/1</a></td><td>Returns a textual description of the specified voice.</td></tr>
+<tr><td valign="top"><a href="#voice_table_to_string-1">voice_table_to_string/1</a></td><td>Returns a textual description of the specified voice table.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="actual_speech_info_to_string-1">actual_speech_info_to_string/1</a></h3>
+<div class="spec">
+<p><tt>actual_speech_info_to_string(Actual_speech_info::<a href="#type-actual_speech_info">actual_speech_info()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of the specified information about an
+ actual speech.
+</p>
+
+<h3 class="function"><a name="check_availability-0">check_availability/0</a></h3>
+<div class="spec">
+<p><tt>check_availability() -&gt; {true, <a href="#type-speech_state">speech_state()</a>} | {false, <a href="#type-ustring">ustring()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Tells whether the speech support is available: 
+- if true, returns a preliminary, configured speech state 
+- if false, returns an extra textual diagnosis</p>
+
+ Side-effect: ensures that a Myriad preferences server is running.
+</p>
+
+<h3 class="function"><a name="create_referential-1">create_referential/1</a></h3>
+<div class="spec">
+<p><tt>create_referential(BaseDir::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; <a href="#type-speech_referential">speech_referential()</a></tt><br></p>
+<p> </p>
+</div><p>Returns an empty speech referential with the default "en-US" locale and
+ default audio settings, that is a referential not keeping track of any logical
+ speech defined (yet).
+</p>
+
+<h3 class="function"><a name="filter_by_gender-2">filter_by_gender/2</a></h3>
+<div class="spec">
+<p><tt>filter_by_gender(Gender::<a href="#type-voice_gender">voice_gender()</a>, VoiceTable::<a href="#type-voice_table">voice_table()</a>) -&gt; <a href="#type-voice_table">voice_table()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a voice table corresponding to the specified one where only the
+ voice of the specified gender would be kept.
+</p>
+
+<h3 class="function"><a name="filter_by_locale-2">filter_by_locale/2</a></h3>
+<div class="spec">
+<p><tt>filter_by_locale(SpokenLocale::<a href="#type-any_locale">any_locale()</a>, VoiceTable::<a href="#type-voice_table">voice_table()</a>) -&gt; <a href="#type-voice_table">voice_table()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a voice table corresponding to the specified one where only the
+ voice of the specified spoken locale (as primary or secondary) would be kept.
+</p>
+
+<h3 class="function"><a name="get_audio_format_string-1">get_audio_format_string/1</a></h3>
+<div class="spec">
+<p><tt>get_audio_format_string(Audio_stream_settings::<a href="#type-audio_stream_settings">audio_stream_settings()</a>) -&gt; <a href="#type-bin_string">bin_string()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the audio format description string corresponding to specified 
+settings.</p>
+
+ <p>Not all combinations are supported: 
+- sampling rate is in [8, 16, 24, 48] 
+- channel layout can at least currently only be 'mono' 
+- bit depth is 8 or 16, otherwise it is a bit rate in [32, 48, 64, 96, 128,   
+160, 192] 
+- recommended container formats are ogg or riff 
+- strongly recommended audio format is opus</p>
+
+ Refer to
+ https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/rest-text-to-speech#audio-outputs for more information.
+</p>
+
+<h3 class="function"><a name="get_audio_path_for-3">get_audio_path_for/3</a></h3>
+<div class="spec">
+<p><tt>get_audio_path_for(LogSpeechId::<a href="#type-speech_id">speech_id()</a>, LangLocale::<a href="#type-language_locale">language_locale()</a>, Speech_state::<a href="#type-speech_state">speech_state()</a>) -&gt; <a href="#type-bin_file_path">bin_file_path()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the absolute path of the audio file corresponding to the logical
+ speech specified through its identifier, for the specified locale.
+</p>
+
+<h3 class="function"><a name="get_default_audio_settings-0">get_default_audio_settings/0</a></h3>
+<div class="spec">
+<p><tt>get_default_audio_settings() -&gt; <a href="#type-audio_stream_settings">audio_stream_settings()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the default settings enforced for the speech audio output.</p>
+
+<h3 class="function"><a name="list_voices-1">list_voices/1</a></h3>
+<div class="spec">
+<p><tt>list_voices(Speech_state::<a href="#type-speech_state">speech_state()</a>) -&gt; <a href="#type-voice_table">voice_table()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the available information about all the voices offered by the
+ current TTS provider.
+</p>
+
+<h3 class="function"><a name="logical_speech_to_string-1">logical_speech_to_string/1</a></h3>
+<div class="spec">
+<p><tt>logical_speech_to_string(Logical_speech::<a href="#type-logical_speech">logical_speech()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of the specified logical speech.</p>
+
+<h3 class="function"><a name="record_logical_speech-3">record_logical_speech/3</a></h3>
+<div class="spec">
+<p><tt>record_logical_speech(AnyBaseName::<a href="#type-any_speech_base_name">any_speech_base_name()</a>, UserSpeechInfos::[<a href="#type-user_speech_info">user_speech_info()</a>], SpeechState::<a href="#type-speech_state">speech_state()</a>) -&gt; {<a href="#type-speech_id">speech_id()</a>, <a href="#type-speech_state">speech_state()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Returns the identifier of the logical speech requested to be recorded, 
+together with the specified speech state whose speech referential has been 
+updated with that speech, created from a speech base name associated to a list 
+of actual speech information, so that the corresponding per-locale audio files 
+are recorded, each with their specified SSML text and speech settings, and 
+referenced.</p>
+
+ Note that all speech settings referenced for the generation have to have their
+ locale defined.
+</p>
+
+<h3 class="function"><a name="record_speech-3">record_speech/3</a></h3>
+<div class="spec">
+<p><tt>record_speech(SSMLText::<a href="#type-ssml_text">ssml_text()</a>, BaseName::<a href="#type-any_speech_base_name">any_speech_base_name()</a>, SpeechState::<a href="#type-speech_state">speech_state()</a>) -&gt; <a href="#type-file_path">file_path()</a></tt><br></p>
+<p> </p>
+</div><p><p>Records the speech corresponding to the specified SSML message, according 
+to the (supposedly set) current speech settings, using the specified base name 
+to forge the filename in which the generated audio will be stored, in the 
+current directory; the corresponding audio path is returned; the corresponding 
+filename (relative to the elected directory) is returned.</p>
+
+ <p>Ex: if BaseName is "hello-world", the current directory is 
+/home/bond/my-speeches", and the audio settings imply a Ogg container format 
+with an Opus audio format and the fr-FR locale, the specified speech will be 
+stored in "/home/bond/my-speeches/hello-world-fr-FR.ogg.opus".</p>
+
+ <p>A SSML message is an XML document, we recommend using the so-called "simple 
+form" to define it, refer to the "Defining one's XML document" in 
+xml_utils.erl for further details. Also spaces shall exist around tags.</p>
+
+ <p>Ex: record_speech(["Hello ", {prosody, [{volume, "+20.00%"}], [" John"]},...</p>
+
+ See record_speech/5 for further details.
+</p>
+
+<h3 class="function"><a name="record_speech-4">record_speech/4</a></h3>
+<div class="spec">
+<p><tt>record_speech(SSMLText::<a href="#type-ssml_text">ssml_text()</a>, BaseName::<a href="#type-any_speech_base_name">any_speech_base_name()</a>, MaybeOutputDir::<a href="#type-maybe">maybe</a>(<a href="#type-any_directory_path">any_directory_path()</a>), Speech_state::<a href="#type-speech_state">speech_state()</a>) -&gt; <a href="#type-bin_file_name">bin_file_name()</a></tt><br></p>
+<p> </p>
+</div><p><p>Records the speech corresponding to the specified SSML message, according 
+to the (supposedly set) current speech settings, using the specified base name 
+to forge the filename in which the generated audio will be stored, in the 
+specified directory (otherwise in the current one); the corresponding filename 
+(relative to the elected directory) is returned.</p>
+
+ <p>Ex: if BaseName is "hello-world", the specified directory is 
+/home/bond/my-speeches", and the audio settings imply a Ogg container format 
+with an Opus audio format and the fr-FR locale, the specified speech will be 
+stored in "/home/bond/my-speeches/hello-world-fr-FR.ogg.opus".</p>
+
+ <p>A SSML message is an XML document, we recommend using the so-called "simple 
+form" to define it, refer to the "Defining one's XML document" in 
+xml_utils.erl for further details.</p>
+
+ <p>Ex: record_speech(["Hello ", {prosody, [{volume, "+20.00%"}], [" John"]},...</p>
+
+ See record_speech/5 for further details.
+</p>
+
+<h3 class="function"><a name="record_speech-5">record_speech/5</a></h3>
+<div class="spec">
+<p><tt>record_speech(SSMLText::<a href="#type-ssml_text">ssml_text()</a>, AnyBaseName::<a href="#type-any_speech_base_name">any_speech_base_name()</a>, Speech_settings::<a href="#type-speech_settings">speech_settings()</a>, MaybeOutputDir::<a href="#type-maybe">maybe</a>(<a href="#type-any_directory_path">any_directory_path()</a>), Speech_state::<a href="#type-speech_state">speech_state()</a>) -&gt; <a href="#type-bin_file_name">bin_file_name()</a></tt><br></p>
+<p> </p>
+</div><p><p>Records the speech corresponding to the specified SSML message, according 
+to the specified speech settings, using the specified base name to forge the 
+filename in which the generated audio will be stored, in the specified 
+directory (otherwise in the current one); the corresponding filename (relative 
+to the elected directory) is returned.</p>
+
+ <p>Ex: if BaseName is "hello-world", the specified directory is 
+"/home/bond/my-speeches", and the audio settings imply a Ogg container format 
+with an Opus audio format and the fr-FR locale, the specified speech will be 
+stored in "/home/bond/my-speeches/hello-world-fr-FR.ogg.opus".</p>
+
+ <p>A SSML message is an XML document, we recommend using the so-called "simple 
+form" to define it, refer to the "Defining one's XML document" in 
+xml_utils.erl for further details.</p>
+
+ <p>Ex: record_speech(["Hello ", {prosody, [{volume, "+20.00%"}], [" John"]},...</p>
+
+ Restrictions:
+ - the text-to-speech must be an XML document, yet may be as simple as "Hello
+ world!"
+ - this is a single-voice speech (no multiple texts per recording, as expecting
+ to split these)
+ - style adjustments: 'styledegree' (stronger or softer style, to make the
+ speech more expressive or subdued) is not used (not offered by the voices
+ of interest, and anyway the supported 'style' conveys more meaning)
+</p>
+
+<h3 class="function"><a name="register_speech_settings-2">register_speech_settings/2</a></h3>
+<div class="spec">
+<p><tt>register_speech_settings(SpeechSettings::<a href="#type-speech_settings">speech_settings()</a>, SpeechState::<a href="#type-speech_state">speech_state()</a>) -&gt; {<a href="#type-speech_settings_id">speech_settings_id()</a>, <a href="#type-speech_state">speech_state()</a>}</tt><br></p>
+<p> </p>
+</div><p>Registers the specified speech settings in the specified state, and
+ returns it once updated, along with the identifier assigned to these settings.
+</p>
+
+<h3 class="function"><a name="role_to_string-1">role_to_string/1</a></h3>
+<div class="spec">
+<p><tt>role_to_string(X1::<a href="#type-role_played">role_played()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of the specified role.</p>
+
+<h3 class="function"><a name="speech_referential_to_string-1">speech_referential_to_string/1</a></h3>
+<div class="spec">
+<p><tt>speech_referential_to_string(Speech_referential::<a href="#type-speech_referential">speech_referential()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of the specified speech referential.</p>
+
+<h3 class="function"><a name="speech_settings_to_string-1">speech_settings_to_string/1</a></h3>
+<div class="spec">
+<p><tt>speech_settings_to_string(Speech_settings::<a href="#type-speech_settings">speech_settings()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of the specified speech settings.</p>
+
+<h3 class="function"><a name="speech_state_to_string-1">speech_state_to_string/1</a></h3>
+<div class="spec">
+<p><tt>speech_state_to_string(Speech_state::<a href="#type-speech_state">speech_state()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of the specified speech state.</p>
+
+<h3 class="function"><a name="start-1">start/1</a></h3>
+<div class="spec">
+<p><tt>start(SpeechState::<a href="#type-speech_state">speech_state()</a>) -&gt; <a href="#type-speech_state">speech_state()</a></tt><br></p>
+<p> </p>
+</div><p>Starts the speech support, initialising the embedded speech referential
+ with the current directory.
+</p>
+
+<h3 class="function"><a name="start-2">start/2</a></h3>
+<div class="spec">
+<p><tt>start(SpeechState::<a href="#type-speech_state">speech_state()</a>, AnyBaseDir::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; <a href="#type-speech_state">speech_state()</a></tt><br></p>
+<p> </p>
+</div><p>Starts the speech support, initialising the embedded speech referential
+ with the specified directory.
+</p>
+
+<h3 class="function"><a name="stop-1">stop/1</a></h3>
+<div class="spec">
+<p><tt>stop(SpeechState::<a href="#type-speech_state">speech_state()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Stops the speech support.</p>
+
+<h3 class="function"><a name="tts_provider_to_string-1">tts_provider_to_string/1</a></h3>
+<div class="spec">
+<p><tt>tts_provider_to_string(TTSProvider::<a href="#type-tts_provider">tts_provider()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of the specified TTS provider.</p>
+
+<h3 class="function"><a name="voice_id_to_string-1">voice_id_to_string/1</a></h3>
+<div class="spec">
+<p><tt>voice_id_to_string(VoiceId::<a href="#type-voice_id">voice_id()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of the specified voice identifier.</p>
+
+<h3 class="function"><a name="voice_info_to_string-1">voice_info_to_string/1</a></h3>
+<div class="spec">
+<p><tt>voice_info_to_string(Voice_info::<a href="#type-voice_info">voice_info()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of the specified voice.</p>
+
+<h3 class="function"><a name="voice_table_to_string-1">voice_table_to_string/1</a></h3>
+<div class="spec">
+<p><tt>voice_table_to_string(VoiceTable::<a href="#type-voice_table">voice_table()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of the specified voice table.</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

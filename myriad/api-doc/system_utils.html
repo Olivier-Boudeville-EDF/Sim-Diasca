@@ -29,6 +29,10 @@ facilities.</p>
 <p><tt>any_directory_path() = <a href="file_utils.html#type-any_directory_path">file_utils:any_directory_path()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-any_string">any_string()</a></h3>
+<p><tt>any_string() = <a href="text_utils.html#type-any_string">text_utils:any_string()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-basic_credential">basic_credential()</a></h3>
 <p><tt>basic_credential() = {<a href="#type-user_name">user_name()</a>, <a href="#type-password">password()</a>}</tt></p>
 
@@ -37,18 +41,30 @@ facilities.</p>
 <p><tt>bin_executable_path() = <a href="file_utils.html#type-bin_executable_path">file_utils:bin_executable_path()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-bit_size">bit_size()</a></h3>
+<p><tt>bit_size() = non_neg_integer()</tt></p>
+<p> Size, as a positive number of bits.</p>
+
+<h3 class="typedecl"><a name="type-byte_offset">byte_offset()</a></h3>
+<p><tt>byte_offset() = integer()</tt></p>
+<p> A (signed) offset expressed in bytes.</p>
+
 <h3 class="typedecl"><a name="type-byte_size">byte_size()</a></h3>
-<p><tt>byte_size() = integer()</tt></p>
-<p> Size, as a number of bytes.</p>
+<p><tt>byte_size() = non_neg_integer()</tt></p>
+<p> Size, as a positive number of bytes.</p>
 
 <h3 class="typedecl"><a name="type-command">command()</a></h3>
-<p><tt>command() = <a href="text_utils.html#type-any_string">text_utils:any_string()</a></tt></p>
-<p> Describes a command to be run (i.e. path to an executable, with possibly
+<p><tt>command() = <a href="#type-any_string">any_string()</a></tt></p>
+<p> Describes a command to be run (i.e. a path to an executable, with possibly
  command-line arguments).</p>
 
 <h3 class="typedecl"><a name="type-command_line_argument">command_line_argument()</a></h3>
-<p><tt>command_line_argument() = <a href="text_utils.html#type-any_string">text_utils:any_string()</a></tt></p>
-<p> Describes a (single) command-line argument.</p>
+<p><tt>command_line_argument() = <a href="#type-any_string">any_string()</a></tt></p>
+<p><p> Describes a (single) command-line argument.</p>
+
+ Note that each argument shall be unitary, "atomic"; for example "--color red"
+ is not an argument (the called executable would receive it as a whole), but
+ two: "--color" and "red".</p>
 
 <h3 class="typedecl"><a name="type-command_output">command_output()</a></h3>
 <p><tt>command_output() = <a href="#type-ustring">ustring()</a></tt></p>
@@ -107,7 +123,7 @@ facilities.</p>
 <p><tt>execution_pair() = {<a href="#type-bin_executable_path">bin_executable_path()</a>, [<a href="#type-command_line_argument">command_line_argument()</a>]}</tt></p>
 <p> A pair specifying a complete command-line ready to be executed by
  run_executable/n (convenient to store once for all if needing to launch it
- repeatedly).</p>
+ repeatedly). Generally more secure than command/1 as well.</p>
 
 <h3 class="typedecl"><a name="type-expression_outcome">expression_outcome()</a></h3>
 <p><tt>expression_outcome() = <a href="#type-ustring">ustring()</a></tt></p>
@@ -138,6 +154,11 @@ facilities.</p>
 <h3 class="typedecl"><a name="type-host_static_info">host_static_info()</a></h3>
 <p><tt>host_static_info() = #host_static_info{total_ram = <a href="basic_utils.html#type-count">basic_utils:count()</a>, total_swap = <a href="basic_utils.html#type-count">basic_utils:count()</a>, core_count = <a href="basic_utils.html#type-count">basic_utils:count()</a>, erlang_version = <a href="text_utils.html#type-ustring">text_utils:ustring()</a>}</tt></p>
 <p> Describes the static information about a computing host.</p>
+
+<h3 class="typedecl"><a name="type-os_pid">os_pid()</a></h3>
+<p><tt>os_pid() = <a href="#type-count">count()</a></tt></p>
+<p> The PID of an operating-system process (OS-level, not Erlang-level, process
+ identifier).</p>
 
 <h3 class="typedecl"><a name="type-package_name">package_name()</a></h3>
 <p><tt>package_name() = <a href="#type-ustring">ustring()</a></tt></p>
@@ -295,12 +316,12 @@ the current node.</td></tr>
  local system resources.</td></tr>
 <tr><td valign="top"><a href="#get_resource_limits_string-0">get_resource_limits_string/0</a></td><td>Returns a textual description of the current limits (ulimit) in terms of 
 local system resources.</td></tr>
-<tr><td valign="top"><a href="#get_size-1">get_size/1</a></td><td>Returns the size of specified term, in bytes, on the heap.</td></tr>
+<tr><td valign="top"><a href="#get_size-1">get_size/1</a></td><td>Returns the size of the specified term, in bytes.</td></tr>
 <tr><td valign="top"><a href="#get_size_of_vm_word-0">get_size_of_vm_word/0</a></td><td>Returns the size, in bytes, of a word of this Virtual Machine.</td></tr>
 <tr><td valign="top"><a href="#get_size_of_vm_word_string-0">get_size_of_vm_word_string/0</a></td><td>Returns a textual description of the size of a VM word.</td></tr>
-<tr><td valign="top"><a href="#get_standard_environment-0">get_standard_environment/0</a></td><td>Returns a default, standard environment for "porcelain"-like executions, 
-that is executions that are, as much as possible, reproducible in various 
-runtime contexts (typically: with locale-independent outputs).</td></tr>
+<tr><td valign="top"><a href="#get_standard_environment-0">get_standard_environment/0</a></td><td>Returns a default, standard, safe/secure environment for "porcelain"-like 
+executions, that is executions that are, as much as possible, reproducible in 
+various runtime contexts (typically: with locale-independent outputs).</td></tr>
 <tr><td valign="top"><a href="#get_swap_status-0">get_swap_status/0</a></td><td>Returns {UsedSwap, TotalSwap} where UsedSwap is the size of the used swap 
 and TotalSwap is the total amount of swap space on the local host, both 
 expressed in bytes.</td></tr>
@@ -337,15 +358,46 @@ approximate value).</td></tr>
 <tr><td valign="top"><a href="#is_json_support_available-0">is_json_support_available/0</a></td><td>Tells whether a JSON support is available.</td></tr>
 <tr><td valign="top"><a href="#monitor_port-2">monitor_port/2</a></td><td>Monitors a port: reads command data and signals from a port, and reports
  it.</td></tr>
-<tr><td valign="top"><a href="#run_background_command-1">run_background_command/1</a></td><td>Executes asynchronously, in the background, specified executable (with no 
-specific parameter nor port option, and from the current directory), in a 
+<tr><td valign="top"><a href="#run_background_command-1">run_background_command/1</a></td><td>Executes asynchronously, in the background, the specified command, in a 
 standard shell environment.</td></tr>
-<tr><td valign="top"><a href="#run_background_command-2">run_background_command/2</a></td><td>Executes asynchronously, in the background, specified executable (with no 
-specific parameter nor port option, and from the current directory), in the 
+<tr><td valign="top"><a href="#run_background_command-2">run_background_command/2</a></td><td>Executes asynchronously, in the background, the specified command, in the 
 specified shell environment.</td></tr>
-<tr><td valign="top"><a href="#run_background_command-3">run_background_command/3</a></td><td>Executes asynchronously, in the background, specified executable (with no 
-specific parameter nor port option), in the specified shell environment and 
-from the specified working directory.</td></tr>
+<tr><td valign="top"><a href="#run_background_command-3">run_background_command/3</a></td><td>Executes asynchronously, in the background, the specified command, in the 
+specified shell environment and from the specified working directory.</td></tr>
+<tr><td valign="top"><a href="#run_background_executable-1">run_background_executable/1</a></td><td>Executes asynchronously, in the background, the specified executable, 
+whose path is exactly the specified one (that is: taken verbatim, not 
+looked-up through any PATH environment variable; use, in the executable_utils 
+module, lookup_executable/{1,2} or find_executable/1 for that; not using any 
+intermediary shell either) with no specific command-line argument, with a 
+standard environment, from the current working directory and using the default 
+port options.</td></tr>
+<tr><td valign="top"><a href="#run_background_executable-2">run_background_executable/2</a></td><td>Executes asynchronously, in the background, the specified executable, 
+whose path is exactly the specified one (that is: taken verbatim, not 
+looked-up through any PATH environment variable; use, in the executable_utils 
+module, lookup_executable/{1,2} or find_executable/1 for that; not using any 
+intermediary shell either) with the specified command-line arguments, with a 
+standard environment, from the current working directory and using the default 
+port options.</td></tr>
+<tr><td valign="top"><a href="#run_background_executable-3">run_background_executable/3</a></td><td>Executes asynchronously, in the background, the specified executable, 
+whose path is exactly the specified one (that is: taken verbatim, not 
+looked-up through any PATH environment variable; use, in the executable_utils 
+module, lookup_executable/{1,2} or find_executable/1 for that; not using any 
+intermediary shell either) with the specified command-line arguments and 
+environment, from the current working directory and using the default port 
+options.</td></tr>
+<tr><td valign="top"><a href="#run_background_executable-4">run_background_executable/4</a></td><td>Executes asynchronously, in the background, the specified executable, 
+whose path is exactly the specified one (that is: taken verbatim, not 
+looked-up through any PATH environment variable; use, in the executable_utils 
+module, lookup_executable/{1,2} or find_executable/1 for that; not using any 
+intermediary shell either) with the specified command-line arguments, 
+environment and working directory, and using the default port options.</td></tr>
+<tr><td valign="top"><a href="#run_background_executable-5">run_background_executable/5</a></td><td>Executes asynchronously, in the background, the specified executable,
+ whose path is exactly the specified one (that is: taken verbatim, not
+ looked-up through any PATH environment variable; use, in the executable_utils
+ module, lookup_executable/{1,2} or find_executable/1 for that; not using any
+ intermediary shell either) with the specified command-line arguments,
+ environment, working directory and port options (see
+ <a href="http://erlang.org/doc/man/erlang.html#open_port-2" target="_top"><tt>http://erlang.org/doc/man/erlang.html#open_port-2</tt></a>).</td></tr>
 <tr><td valign="top"><a href="#run_command-1">run_command/1</a></td><td>Runs (synchronously) specified command (an executable path possibly 
 followed with command-line arguments; specified as a single, standalone 
 string), with no specific port option, with a standard environment, from the 
@@ -361,41 +413,42 @@ followed with command-line arguments; specified as a single, standalone
 string), with no specific port option, in specified shell environment and 
 working directory, and returns its return code (exit status) and its outputs 
 (both the standard and the error ones): {ReturnCode,CmdOutput}.</td></tr>
-<tr><td valign="top"><a href="#run_command-4">run_command/4</a></td><td>Executes (synchronously) specified executable (an executable path
+<tr><td valign="top"><a href="#run_command-4">run_command/4</a></td><td>Executes (synchronously) the specified command (an executable path
  possibly followed with command-line arguments; specified as a single,
- standalone string), in specified shell environment and working directory, with
- specified extra port options (possibly containing any relevant command-line
- arguments; see <a href="http://erlang.org/doc/man/erlang.html#open_port-2" target="_top"><tt>http://erlang.org/doc/man/erlang.html#open_port-2</tt></a>).</td></tr>
-<tr><td valign="top"><a href="#run_executable-1">run_executable/1</a></td><td>Executes (synchronously) specified executable, whose path is exactly the 
-specified one (that is: taken verbatim, not looked-up through any PATH 
+ standalone string), in the specified shell environment and working directory,
+ with specified extra port options (possibly containing any relevant
+ command-line arguments; see
+ <a href="http://erlang.org/doc/man/erlang.html#open_port-2" target="_top"><tt>http://erlang.org/doc/man/erlang.html#open_port-2</tt></a>).</td></tr>
+<tr><td valign="top"><a href="#run_executable-1">run_executable/1</a></td><td>Executes (synchronously) the specified executable, whose path is exactly 
+the specified one (that is: taken verbatim, not looked-up through any PATH 
 environment variable; use, in the executable_utils module, 
 lookup_executable/{1,2} or find_executable/1 for that; not using any 
 intermediary shell either) with no specific command-line argument, with a 
 standard environment, from the current working directory, using the default 
 port options.</td></tr>
-<tr><td valign="top"><a href="#run_executable-2">run_executable/2</a></td><td>Executes (synchronously) specified executable, whose path is exactly the 
-specified one (that is: taken verbatim, not looked-up through any PATH 
+<tr><td valign="top"><a href="#run_executable-2">run_executable/2</a></td><td>Executes (synchronously) the specified executable, whose path is exactly 
+the specified one (that is: taken verbatim, not looked-up through any PATH 
 environment variable; use, in the executable_utils module, 
 lookup_executable/{1,2} or find_executable/1 for that; not using any 
 intermediary shell either) with specified command-line arguments, with a 
 standard environment, from the current working directory, using the default 
 port options.</td></tr>
-<tr><td valign="top"><a href="#run_executable-3">run_executable/3</a></td><td>Executes (synchronously) specified executable, whose path is exactly the 
-specified one (that is: taken verbatim, not looked-up through any PATH 
+<tr><td valign="top"><a href="#run_executable-3">run_executable/3</a></td><td>Executes (synchronously) the specified executable, whose path is exactly 
+the specified one (that is: taken verbatim, not looked-up through any PATH 
 environment variable; use, in the executable_utils module, 
 lookup_executable/{1,2} or find_executable/1 for that; not using any 
 intermediary shell either) with specified command-line arguments and 
 environment variable, from the current working directory, using the default 
 port options.</td></tr>
-<tr><td valign="top"><a href="#run_executable-4">run_executable/4</a></td><td>Executes (synchronously) specified executable, whose path is exactly the 
-specified one (that is: taken verbatim, not looked-up through any PATH 
+<tr><td valign="top"><a href="#run_executable-4">run_executable/4</a></td><td>Executes (synchronously) the specified executable, whose path is exactly 
+the specified one (that is: taken verbatim, not looked-up through any PATH 
 environment variable; use, in the executable_utils module, 
 lookup_executable/{1,2} or find_executable/1 for that; not using any 
 intermediary shell either) with specified command-line arguments and 
 environment variable, from any specified working directory, using the default 
 port options.</td></tr>
-<tr><td valign="top"><a href="#run_executable-5">run_executable/5</a></td><td>Executes (synchronously) specified executable, whose path is exactly the 
-specified one (that is: taken verbatim, not looked-up through any PATH 
+<tr><td valign="top"><a href="#run_executable-5">run_executable/5</a></td><td>Executes (synchronously) the specified executable, whose path is exactly 
+the specified one (that is: taken verbatim, not looked-up through any PATH 
 environment variable; use, in the executable_utils module, 
 lookup_executable/{1,2} or find_executable/1 for that; not using any 
 intermediary shell either) with specified command-line arguments and 
@@ -941,13 +994,18 @@ local system resources.</p>
 
 <h3 class="function"><a name="get_size-1">get_size/1</a></h3>
 <div class="spec">
-<p><tt>get_size(Term::term()) -&gt; <a href="#type-byte_size">byte_size()</a></tt><br></p>
+<p><tt>get_size(Bin::term()) -&gt; <a href="#type-byte_size">byte_size()</a></tt><br></p>
 <p> </p>
-</div><p><p>Returns the size of specified term, in bytes, on the heap.</p>
+</div><p><p>Returns the size of the specified term, in bytes.</p>
 
- Note that off-heap data (such as binaries larger than 64 bytes) is not counted
- here. The (flat) size is incremented to account for the top term word (which
- is kept in a register or on the stack).
+ <p>This size is used in RAM, usually in the process heap, except for off-heap 
+data such as "large" binaries (larger than 64 bytes), which are stored in a 
+global heap (and reference-counted).</p>
+
+ <p>The (flat) size of on-heap terms is incremented to account for the top term 
+word (which is kept in a register or on the stack).</p>
+
+ See also <a href="https://www.erlang.org/doc/efficiency_guide/advanced.html" target="_top"><tt>https://www.erlang.org/doc/efficiency_guide/advanced.html</tt></a>.
 </p>
 
 <h3 class="function"><a name="get_size_of_vm_word-0">get_size_of_vm_word/0</a></h3>
@@ -969,9 +1027,9 @@ local system resources.</p>
 <div class="spec">
 <p><tt>get_standard_environment() -&gt; <a href="#type-environment">environment()</a></tt><br></p>
 <p> </p>
-</div><p><p>Returns a default, standard environment for "porcelain"-like executions, 
-that is executions that are, as much as possible, reproducible in various 
-runtime contexts (typically: with locale-independent outputs).</p>
+</div><p><p>Returns a default, standard, safe/secure environment for "porcelain"-like 
+executions, that is executions that are, as much as possible, reproducible in 
+various runtime contexts (typically: with locale-independent outputs).</p>
 
  To be used with run_{command,executable}/n.
 </p>
@@ -1151,10 +1209,9 @@ approximate value).</p>
 
 <h3 class="function"><a name="run_background_command-1">run_background_command/1</a></h3>
 <div class="spec">
-<p><tt>run_background_command(ExecPath::<a href="#type-command">command()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>run_background_command(Command::<a href="#type-command">command()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p><p>Executes asynchronously, in the background, specified executable (with no 
-specific parameter nor port option, and from the current directory), in a 
+</div><p><p>Executes asynchronously, in the background, the specified command, in a 
 standard shell environment.</p>
 
  <p>As a consequence it returns no return code (exit status) nor output.</p>
@@ -1169,10 +1226,9 @@ is spawned (and most probably lost).</p>
 
 <h3 class="function"><a name="run_background_command-2">run_background_command/2</a></h3>
 <div class="spec">
-<p><tt>run_background_command(ExecPath::<a href="#type-command">command()</a>, Environment::<a href="#type-environment">environment()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>run_background_command(Command::<a href="#type-command">command()</a>, Environment::<a href="#type-environment">environment()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p><p>Executes asynchronously, in the background, specified executable (with no 
-specific parameter nor port option, and from the current directory), in the 
+</div><p><p>Executes asynchronously, in the background, the specified command, in the 
 specified shell environment.</p>
 
  <p>As a consequence it returns no return code (exit status) nor output.</p>
@@ -1187,11 +1243,10 @@ is spawned (and most probably lost).</p>
 
 <h3 class="function"><a name="run_background_command-3">run_background_command/3</a></h3>
 <div class="spec">
-<p><tt>run_background_command(ExecPath::<a href="#type-command">command()</a>, Environment::<a href="#type-environment">environment()</a>, MaybeWorkingDir::<a href="#type-maybe">maybe</a>(<a href="#type-working_dir">working_dir()</a>)) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>run_background_command(Command::<a href="#type-command">command()</a>, Environment::<a href="#type-environment">environment()</a>, MaybeWorkingDir::<a href="#type-maybe">maybe</a>(<a href="#type-working_dir">working_dir()</a>)) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p><p>Executes asynchronously, in the background, specified executable (with no 
-specific parameter nor port option), in the specified shell environment and 
-from the specified working directory.</p>
+</div><p><p>Executes asynchronously, in the background, the specified command, in the 
+specified shell environment and from the specified working directory.</p>
 
  <p>As a consequence it returns no return code (exit status) nor output.</p>
 
@@ -1201,6 +1256,113 @@ is spawned (and most probably lost).</p>
  If this function is expected to be called many times, to avoid the process
  leak, one should consider using evaluate_background_shell_expression/2
  instead.
+</p>
+
+<h3 class="function"><a name="run_background_executable-1">run_background_executable/1</a></h3>
+<div class="spec">
+<p><tt>run_background_executable(ExecPath::<a href="#type-executable_path">executable_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Executes asynchronously, in the background, the specified executable, 
+whose path is exactly the specified one (that is: taken verbatim, not 
+looked-up through any PATH environment variable; use, in the executable_utils 
+module, lookup_executable/{1,2} or find_executable/1 for that; not using any 
+intermediary shell either) with no specific command-line argument, with a 
+standard environment, from the current working directory and using the default 
+port options.</p>
+
+ <p>As a consequence it returns no return code (exit status) nor output.</p>
+
+ <p>For that, as it is a process-blocking operation in Erlang, a dedicated process 
+is spawned (and most probably lost).</p>
+
+ If this function is expected to be called many times, to avoid the process
+ leak, one may consider using evaluate_background_shell_expression/1 instead.
+</p>
+
+<h3 class="function"><a name="run_background_executable-2">run_background_executable/2</a></h3>
+<div class="spec">
+<p><tt>run_background_executable(ExecPath::<a href="#type-executable_path">executable_path()</a>, Arguments::[<a href="#type-command_line_argument">command_line_argument()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Executes asynchronously, in the background, the specified executable, 
+whose path is exactly the specified one (that is: taken verbatim, not 
+looked-up through any PATH environment variable; use, in the executable_utils 
+module, lookup_executable/{1,2} or find_executable/1 for that; not using any 
+intermediary shell either) with the specified command-line arguments, with a 
+standard environment, from the current working directory and using the default 
+port options.</p>
+
+ <p>As a consequence it returns no return code (exit status) nor output.</p>
+
+ <p>For that, as it is a process-blocking operation in Erlang, a dedicated process 
+is spawned (and most probably lost).</p>
+
+ If this function is expected to be called many times, to avoid the process
+ leak, one may consider using evaluate_background_shell_expression/2 instead.
+</p>
+
+<h3 class="function"><a name="run_background_executable-3">run_background_executable/3</a></h3>
+<div class="spec">
+<p><tt>run_background_executable(ExecPath::<a href="#type-executable_path">executable_path()</a>, Arguments::[<a href="#type-command_line_argument">command_line_argument()</a>], Environment::<a href="#type-environment">environment()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Executes asynchronously, in the background, the specified executable, 
+whose path is exactly the specified one (that is: taken verbatim, not 
+looked-up through any PATH environment variable; use, in the executable_utils 
+module, lookup_executable/{1,2} or find_executable/1 for that; not using any 
+intermediary shell either) with the specified command-line arguments and 
+environment, from the current working directory and using the default port 
+options.</p>
+
+ <p>As a consequence it returns no return code (exit status) nor output.</p>
+
+ <p>For that, as it is a process-blocking operation in Erlang, a dedicated process 
+is spawned (and most probably lost).</p>
+
+ If this function is expected to be called many times, to avoid the process
+ leak, one may consider using evaluate_background_shell_expression/2 instead.
+</p>
+
+<h3 class="function"><a name="run_background_executable-4">run_background_executable/4</a></h3>
+<div class="spec">
+<p><tt>run_background_executable(ExecPath::<a href="#type-executable_path">executable_path()</a>, Arguments::[<a href="#type-command_line_argument">command_line_argument()</a>], Environment::<a href="#type-environment">environment()</a>, MaybeWorkingDir::<a href="#type-maybe">maybe</a>(<a href="#type-working_dir">working_dir()</a>)) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Executes asynchronously, in the background, the specified executable, 
+whose path is exactly the specified one (that is: taken verbatim, not 
+looked-up through any PATH environment variable; use, in the executable_utils 
+module, lookup_executable/{1,2} or find_executable/1 for that; not using any 
+intermediary shell either) with the specified command-line arguments, 
+environment and working directory, and using the default port options.</p>
+
+ <p>As a consequence it returns no return code (exit status) nor output.</p>
+
+ <p>For that, as it is a process-blocking operation in Erlang, a dedicated process 
+is spawned (and most probably lost).</p>
+
+ If this function is expected to be called many times, to avoid the process
+ leak, one may consider using evaluate_background_shell_expression/2 instead.
+</p>
+
+<h3 class="function"><a name="run_background_executable-5">run_background_executable/5</a></h3>
+<div class="spec">
+<p><tt>run_background_executable(ExecPath::<a href="#type-executable_path">executable_path()</a>, Arguments::[<a href="#type-command_line_argument">command_line_argument()</a>], Environment::<a href="#type-environment">environment()</a>, MaybeWorkingDir::<a href="#type-maybe">maybe</a>(<a href="#type-working_dir">working_dir()</a>), PortOptions::[<a href="#type-port_option">port_option()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Executes asynchronously, in the background, the specified executable,
+ whose path is exactly the specified one (that is: taken verbatim, not
+ looked-up through any PATH environment variable; use, in the executable_utils
+ module, lookup_executable/{1,2} or find_executable/1 for that; not using any
+ intermediary shell either) with the specified command-line arguments,
+ environment, working directory and port options (see
+ <a href="http://erlang.org/doc/man/erlang.html#open_port-2" target="_top"><tt>http://erlang.org/doc/man/erlang.html#open_port-2</tt></a>).</p>
+
+ <p>As a consequence it returns no return code (exit status) nor output.</p>
+
+ <p>For that, as it is a process-blocking operation in Erlang, a dedicated process 
+is spawned (and most probably lost).</p>
+
+ <p>If this function is expected to be called many times, to avoid the process 
+leak, one may consider using evaluate_background_shell_expression/2 instead.</p>
+
+ This is the recommended, most complete way of running an executable in the
+ background.
 </p>
 
 <h3 class="function"><a name="run_command-1">run_command/1</a></h3>
@@ -1217,9 +1379,13 @@ outputs (both the standard and the error ones): {ReturnCode,CmdOutput}.</p>
 (that would possibly run executables); see evaluate_shell_expression/{1,2} for 
 that.</p>
 
- So one should not try to abuse this function by adding an ampersand (<code>&amp;</code>) at
- the end to trigger a background launch - this would just be interpreted as a
- last argument. Use run_background_command/{1,2,3} in this module instead.
+ <p>So one should not try to abuse this function by adding an ampersand (<code>&amp;</code>) at 
+the end to trigger a background launch - this would just be interpreted as a 
+last argument. Use run_background_command/{1,2,3} in this module instead.</p>
+
+ Note: the run_executable/* functions shall be preferred (as being better
+ regarding encoding and security) to the run_command/* ones, which may be
+ considered available only for backward compatibility.
 </p>
 
 <h3 class="function"><a name="run_command-2">run_command/2</a></h3>
@@ -1235,9 +1401,13 @@ its outputs (both the standard and the error ones): {ReturnCode,CmdOutput}.</p>
  <p>This function will run a specific executable, not evaluate a shell expression 
 (that would possibly run executables).</p>
 
- So one should not try to abuse this function by adding an ampersand (<code>&amp;</code>) at
- the end to trigger a background launch - this would just be interpreted as a
- last argument. Use run_background_command/{1,2,3} in this module instead.
+ <p>So one should not try to abuse this function by adding an ampersand (<code>&amp;</code>) at 
+the end to trigger a background launch - this would just be interpreted as a 
+last argument. Use run_background_command/{1,2,3} in this module instead.</p>
+
+ Note: the run_executable/* functions shall be preferred (as being better
+ regarding encoding and security) to the run_command/* ones, which may be
+ considered available only for backward compatibility.
 </p>
 
 <h3 class="function"><a name="run_command-3">run_command/3</a></h3>
@@ -1253,31 +1423,47 @@ working directory, and returns its return code (exit status) and its outputs
  <p>This function will run a specific executable, not evaluate a shell expression 
 (that would possibly run executables).</p>
 
- So one should not try to abuse this function by adding an ampersand (<code>&amp;</code>) at
- the end to trigger a background launch - this would just be interpreted as a
- last argument. Use run_background_command/{1,2,3} in this module instead.
+ <p>So one should not try to abuse this function by adding an ampersand (<code>&amp;</code>) at 
+the end to trigger a background launch - this would just be interpreted as a 
+last argument. Use run_background_command/{1,2,3} in this module instead.</p>
+
+ Note: the run_executable/* functions shall be preferred (as being better
+ regarding encoding and security) to the run_command/* ones, which may be
+ considered available only for backward compatibility.
 </p>
 
 <h3 class="function"><a name="run_command-4">run_command/4</a></h3>
 <div class="spec">
 <p><tt>run_command(Command::<a href="#type-command">command()</a>, Environment::<a href="#type-environment">environment()</a>, MaybeWorkingDir::<a href="#type-maybe">maybe</a>(<a href="#type-working_dir">working_dir()</a>), PortOptions::[<a href="#type-port_option">port_option()</a>]) -&gt; <a href="#type-execution_outcome">execution_outcome()</a></tt><br></p>
 <p> </p>
-</div><p><p>Executes (synchronously) specified executable (an executable path
+</div><p><p>Executes (synchronously) the specified command (an executable path
  possibly followed with command-line arguments; specified as a single,
- standalone string), in specified shell environment and working directory, with
- specified extra port options (possibly containing any relevant command-line
- arguments; see <a href="http://erlang.org/doc/man/erlang.html#open_port-2" target="_top"><tt>http://erlang.org/doc/man/erlang.html#open_port-2</tt></a>).</p>
+ standalone string), in the specified shell environment and working directory,
+ with specified extra port options (possibly containing any relevant
+ command-line arguments; see
+ <a href="http://erlang.org/doc/man/erlang.html#open_port-2" target="_top"><tt>http://erlang.org/doc/man/erlang.html#open_port-2</tt></a>).</p>
 
- Returns its return code (exit status) and its outputs (both the standard and
- the error ones): {ReturnCode,CmdOutput}.
+ <p>Returns its return code (exit status) and its outputs (both the standard and 
+the error ones): {ReturnCode,CmdOutput}.</p>
+
+ <p>This function will run a specific executable, not evaluate a shell expression 
+(that would possibly run executables).</p>
+
+ <p>So one should not try to abuse this function by adding an ampersand (<code>&amp;</code>) at 
+the end to trigger a background launch - this would just be interpreted as a 
+last argument. Use run_background_command/{1,2,3} in this module instead.</p>
+
+ Note: the run_executable/* functions shall be preferred (as being better
+ regarding encoding and security) to the run_command/* ones, which may be
+ considered available only for backward compatibility.
 </p>
 
 <h3 class="function"><a name="run_executable-1">run_executable/1</a></h3>
 <div class="spec">
 <p><tt>run_executable(ExecPath::<a href="#type-executable_path">executable_path()</a>) -&gt; <a href="#type-execution_outcome">execution_outcome()</a></tt><br></p>
 <p> </p>
-</div><p><p>Executes (synchronously) specified executable, whose path is exactly the 
-specified one (that is: taken verbatim, not looked-up through any PATH 
+</div><p><p>Executes (synchronously) the specified executable, whose path is exactly 
+the specified one (that is: taken verbatim, not looked-up through any PATH 
 environment variable; use, in the executable_utils module, 
 lookup_executable/{1,2} or find_executable/1 for that; not using any 
 intermediary shell either) with no specific command-line argument, with a 
@@ -1285,15 +1471,15 @@ standard environment, from the current working directory, using the default
 port options.</p>
 
  Returns its return code (exit status) and its outputs (both the standard and
- the error ones): {ReturnCode,CmdOutput}.
+ the error ones): {ReturnCode, CmdOutput}.
 </p>
 
 <h3 class="function"><a name="run_executable-2">run_executable/2</a></h3>
 <div class="spec">
 <p><tt>run_executable(ExecPath::<a href="#type-executable_path">executable_path()</a>, Arguments::[<a href="#type-command_line_argument">command_line_argument()</a>]) -&gt; <a href="#type-execution_outcome">execution_outcome()</a></tt><br></p>
 <p> </p>
-</div><p><p>Executes (synchronously) specified executable, whose path is exactly the 
-specified one (that is: taken verbatim, not looked-up through any PATH 
+</div><p><p>Executes (synchronously) the specified executable, whose path is exactly 
+the specified one (that is: taken verbatim, not looked-up through any PATH 
 environment variable; use, in the executable_utils module, 
 lookup_executable/{1,2} or find_executable/1 for that; not using any 
 intermediary shell either) with specified command-line arguments, with a 
@@ -1301,15 +1487,15 @@ standard environment, from the current working directory, using the default
 port options.</p>
 
  Returns its return code (exit status) and its outputs (both the standard and
- the error ones): {ReturnCode,CmdOutput}.
+ the error ones): {ReturnCode, CmdOutput}.
 </p>
 
 <h3 class="function"><a name="run_executable-3">run_executable/3</a></h3>
 <div class="spec">
 <p><tt>run_executable(ExecPath::<a href="#type-executable_path">executable_path()</a>, Arguments::[<a href="#type-command_line_argument">command_line_argument()</a>], Environment::<a href="#type-environment">environment()</a>) -&gt; <a href="#type-execution_outcome">execution_outcome()</a></tt><br></p>
 <p> </p>
-</div><p><p>Executes (synchronously) specified executable, whose path is exactly the 
-specified one (that is: taken verbatim, not looked-up through any PATH 
+</div><p><p>Executes (synchronously) the specified executable, whose path is exactly 
+the specified one (that is: taken verbatim, not looked-up through any PATH 
 environment variable; use, in the executable_utils module, 
 lookup_executable/{1,2} or find_executable/1 for that; not using any 
 intermediary shell either) with specified command-line arguments and 
@@ -1317,15 +1503,15 @@ environment variable, from the current working directory, using the default
 port options.</p>
 
  Returns its return code (exit status) and its outputs (both the standard and
- the error ones): {ReturnCode,CmdOutput}.
+ the error ones): {ReturnCode, CmdOutput}.
 </p>
 
 <h3 class="function"><a name="run_executable-4">run_executable/4</a></h3>
 <div class="spec">
 <p><tt>run_executable(ExecPath::<a href="#type-executable_path">executable_path()</a>, Arguments::[<a href="#type-command_line_argument">command_line_argument()</a>], Environment::<a href="#type-environment">environment()</a>, MaybeWorkingDir::<a href="#type-maybe">maybe</a>(<a href="#type-working_dir">working_dir()</a>)) -&gt; <a href="#type-execution_outcome">execution_outcome()</a></tt><br></p>
 <p> </p>
-</div><p><p>Executes (synchronously) specified executable, whose path is exactly the 
-specified one (that is: taken verbatim, not looked-up through any PATH 
+</div><p><p>Executes (synchronously) the specified executable, whose path is exactly 
+the specified one (that is: taken verbatim, not looked-up through any PATH 
 environment variable; use, in the executable_utils module, 
 lookup_executable/{1,2} or find_executable/1 for that; not using any 
 intermediary shell either) with specified command-line arguments and 
@@ -1333,23 +1519,25 @@ environment variable, from any specified working directory, using the default
 port options.</p>
 
  Returns its return code (exit status) and its outputs (both the standard and
- the error ones): {ReturnCode,CmdOutput}.
+ the error ones): {ReturnCode, CmdOutput}.
 </p>
 
 <h3 class="function"><a name="run_executable-5">run_executable/5</a></h3>
 <div class="spec">
 <p><tt>run_executable(ExecPath::<a href="#type-executable_path">executable_path()</a>, Arguments::[<a href="#type-command_line_argument">command_line_argument()</a>], Environment::<a href="#type-environment">environment()</a>, MaybeWorkingDir::<a href="#type-maybe">maybe</a>(<a href="#type-working_dir">working_dir()</a>), PortOptions::[<a href="#type-port_option">port_option()</a>]) -&gt; <a href="#type-execution_outcome">execution_outcome()</a></tt><br></p>
 <p> </p>
-</div><p><p>Executes (synchronously) specified executable, whose path is exactly the 
-specified one (that is: taken verbatim, not looked-up through any PATH 
+</div><p><p>Executes (synchronously) the specified executable, whose path is exactly 
+the specified one (that is: taken verbatim, not looked-up through any PATH 
 environment variable; use, in the executable_utils module, 
 lookup_executable/{1,2} or find_executable/1 for that; not using any 
 intermediary shell either) with specified command-line arguments and 
 environment variable, from any specified working directory and any extra port 
 options.</p>
 
- Returns its return code (exit status) and its outputs (both the standard and
- the error ones): {ReturnCode,CmdOutput}.
+ <p>Returns its return code (exit status) and its outputs (both the standard and 
+the error ones): {ReturnCode, CmdOutput}.</p>
+
+ This is the recommended, most complete way of running an executable.
 </p>
 
 <h3 class="function"><a name="set_environment_variable-2">set_environment_variable/2</a></h3>

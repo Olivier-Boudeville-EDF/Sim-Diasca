@@ -60,6 +60,10 @@ dedicated OTP release for that.</p>
 <p><tt>directory_path() = <a href="file_utils.html#type-directory_path">file_utils:directory_path()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-execution_target">execution_target()</a></h3>
+<p><tt>execution_target() = <a href="basic_utils.html#type-execution_target">basic_utils:execution_target()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-module_name">module_name()</a></h3>
 <p><tt>module_name() = <a href="basic_utils.html#type-module_name">basic_utils:module_name()</a></tt></p>
 
@@ -89,6 +93,8 @@ based on specified module (expected to belong to that application).</td></tr>
 <tr><td valign="top"><a href="#get_priv_root-2">get_priv_root/2</a></td><td>Returns the root directory of the application-private tree ('priv'), 
 based on specified module (expected to belong to that application), being 
 silent (no trace) if requested.</td></tr>
+<tr><td valign="top"><a href="#get_restart_setting-1">get_restart_setting/1</a></td><td>Returns default, base restart settings depending on the specified 
+execution target.</td></tr>
 <tr><td valign="top"><a href="#get_string_application_name-1">get_string_application_name/1</a></td><td>Returns a string version of specified application name.</td></tr>
 <tr><td valign="top"><a href="#get_supervisor_settings-2">get_supervisor_settings/2</a></td><td>Returns the supervisor-level settings corresponding to the specified 
 restart strategy and execution context.</td></tr>
@@ -166,6 +172,19 @@ silent (no trace) if requested.</p>
  application of interest.
 </p>
 
+<h3 class="function"><a name="get_restart_setting-1">get_restart_setting/1</a></h3>
+<div class="spec">
+<p><tt>get_restart_setting(ExecutionTarget::<a href="#type-execution_target">execution_target()</a>) -&gt; <a href="http://www.erlang.org/edoc/doc/stdlib/doc/supervisor.html#type-restart">supervisor:restart()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns default, base restart settings depending on the specified 
+execution target.</p>
+
+ Note that the execution context must be explicitly specified (typically by
+ calling a get_execution_target/0 function defined in a key module of that
+ layer, based on Myriad's basic_utils.hrl), otherwise the one that would apply
+ is the one of Myriad - not the one of the calling layer.
+</p>
+
 <h3 class="function"><a name="get_string_application_name-1">get_string_application_name/1</a></h3>
 <div class="spec">
 <p><tt>get_string_application_name(AppName::<a href="#type-application_name">application_name()</a>) -&gt; <a href="#type-string_application_name">string_application_name()</a></tt><br></p>
@@ -174,7 +193,7 @@ silent (no trace) if requested.</p>
 
 <h3 class="function"><a name="get_supervisor_settings-2">get_supervisor_settings/2</a></h3>
 <div class="spec">
-<p><tt>get_supervisor_settings(RestartStrategy::<a href="http://www.erlang.org/edoc/doc/stdlib/doc/supervisor.html#type-strategy">supervisor:strategy()</a>, ExecutionTarget::<a href="basic_utils.html#type-execution_target">basic_utils:execution_target()</a>) -&gt; <a href="http://www.erlang.org/edoc/doc/stdlib/doc/supervisor.html#type-sup_flags">supervisor:sup_flags()</a></tt><br></p>
+<p><tt>get_supervisor_settings(RestartStrategy::<a href="http://www.erlang.org/edoc/doc/stdlib/doc/supervisor.html#type-strategy">supervisor:strategy()</a>, ExecutionTarget::<a href="#type-execution_target">execution_target()</a>) -&gt; <a href="http://www.erlang.org/edoc/doc/stdlib/doc/supervisor.html#type-sup_flags">supervisor:sup_flags()</a></tt><br></p>
 <p> </p>
 </div><p><p>Returns the supervisor-level settings corresponding to the specified 
 restart strategy and execution context.</p>
@@ -182,7 +201,7 @@ restart strategy and execution context.</p>
  <p>Note that the execution context must be explicitly specified (typically by 
 calling a get_execution_target/0 function defined in a key module of that 
 layer, based on Myriad's basic_utils.hrl), otherwise the one that would apply 
-is the one of Myriad, not the one of the calling layer.</p>
+is the one of Myriad - not the one of the calling layer.</p>
 
  See <a href="https://erlang.org/doc/design_principles/sup_princ.html#supervisor-flags" target="_top"><tt>https://erlang.org/doc/design_principles/sup_princ.html#supervisor-flags</tt></a>
  for further information.

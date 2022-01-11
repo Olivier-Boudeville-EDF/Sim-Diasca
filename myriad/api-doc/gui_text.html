@@ -16,6 +16,18 @@
 <h2><a name="description">Description</a></h2>Gathering of various facilities for <b>text rendering</b>.
 <h2><a name="types">Data Types</a></h2>
 
+<h3 class="typedecl"><a name="type-id">id()</a></h3>
+<p><tt>id() = <a href="gui.html#type-id">gui:id()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-point">point()</a></h3>
+<p><tt>point() = <a href="gui.html#type-point">gui:point()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-size">size()</a></h3>
+<p><tt>size() = <a href="gui.html#type-size">gui:size()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-static_text">static_text()</a></h3>
 <p><tt>static_text() = <a href="http://www.erlang.org/edoc/doc/wx/doc/wxStaticText.html#type-wxStaticText">wxStaticText:wxStaticText()</a></tt></p>
 
@@ -25,7 +37,7 @@
 
 
 <h3 class="typedecl"><a name="type-text_option">text_option()</a></h3>
-<p><tt>text_option() = {pos, <a href="linear_2D.html#type-point">linear_2D:point()</a>} | {size, <a href="linear_2D.html#type-dimensions">linear_2D:dimensions()</a>} | {style, [<a href="#type-style_option">style_option()</a>]}</tt></p>
+<p><tt>text_option() = {pos, <a href="#type-point">point()</a>} | {size, <a href="#type-size">size()</a>} | {style, [<a href="#type-style_option">style_option()</a>]}</tt></p>
 
 
 <h3 class="typedecl"><a name="type-text_options">text_options()</a></h3>
@@ -34,6 +46,10 @@
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
 <p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-window">window()</a></h3>
+<p><tt>window() = <a href="gui.html#type-window">gui:window()</a></tt></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -47,19 +63,19 @@
 
 <h3 class="function"><a name="create_static-2">create_static/2</a></h3>
 <div class="spec">
-<p><tt>create_static(Parent::<a href="gui.html#type-window">gui:window()</a>, Label::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-static_text">static_text()</a></tt><br></p>
+<p><tt>create_static(Parent::<a href="#type-window">window()</a>, Label::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-static_text">static_text()</a></tt><br></p>
 <p> </p>
 </div><p>Creates a static text, based on specified identifier and plain string.</p>
 
 <h3 class="function"><a name="create_static-3">create_static/3</a></h3>
 <div class="spec">
-<p><tt>create_static(Id::<a href="gui.html#type-id">gui:id()</a>, Parent::<a href="gui.html#type-window">gui:window()</a>, Label::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-static_text">static_text()</a></tt><br></p>
+<p><tt>create_static(Id::<a href="#type-id">id()</a>, Parent::<a href="#type-window">window()</a>, Label::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-static_text">static_text()</a></tt><br></p>
 <p> </p>
 </div><p>Creates a static text, based on specified identifier and plain string.</p>
 
 <h3 class="function"><a name="create_static-4">create_static/4</a></h3>
 <div class="spec">
-<p><tt>create_static(Id::<a href="gui.html#type-id">gui:id()</a>, Parent::<a href="gui.html#type-window">gui:window()</a>, Label::<a href="#type-ustring">ustring()</a>, Options::<a href="#type-text_options">text_options()</a>) -&gt; <a href="#type-static_text">static_text()</a></tt><br></p>
+<p><tt>create_static(Id::<a href="#type-id">id()</a>, Parent::<a href="#type-window">window()</a>, Label::<a href="#type-ustring">ustring()</a>, Options::<a href="#type-text_options">text_options()</a>) -&gt; <a href="#type-static_text">static_text()</a></tt><br></p>
 <p> </p>
 </div><p>Creates a static text, based on specified identifier, plain string and
  options.

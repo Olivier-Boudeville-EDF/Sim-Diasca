@@ -26,6 +26,10 @@ operations.</p>
 
  (useful for documentation purposes)</p>
 
+<h3 class="typedecl"><a name="type-activation_switch">activation_switch()</a></h3>
+<p><tt>activation_switch() = enable | disable</tt></p>
+<p> To specify whether a given feature shall be enabled or not.</p>
+
 <h3 class="typedecl"><a name="type-any_version">any_version()</a></h3>
 <p><tt>any_version() = <a href="#type-version">version()</a> | <a href="#type-two_digit_version">two_digit_version()</a></tt></p>
 
@@ -55,6 +59,10 @@ operations.</p>
 <p> Tells whether an operation succeeded; if not, an error reason is specified (as
  a term).</p>
 
+<h3 class="typedecl"><a name="type-bin_string">bin_string()</a></h3>
+<p><tt>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-bit_mask">bit_mask()</a></h3>
 <p><tt>bit_mask() = integer()</tt></p>
 <p> Describes a mask of bits.</p>
@@ -73,11 +81,11 @@ operations.</p>
 
 <h3 class="typedecl"><a name="type-diagnosed_error_reason">diagnosed_error_reason()</a></h3>
 <p><tt>diagnosed_error_reason(T) = {<a href="#type-error_tuploid">error_tuploid</a>(T), <a href="#type-error_message">error_message()</a>}</tt></p>
-<p> An error with its diagnosis.</p>
+<p> An error with its textual diagnosis.</p>
 
 <h3 class="typedecl"><a name="type-diagnosed_error_reason">diagnosed_error_reason()</a></h3>
 <p><tt>diagnosed_error_reason() = {<a href="#type-error_tuploid">error_tuploid()</a>, <a href="#type-error_message">error_message()</a>}</tt></p>
-<p> An error with its diagnosis.</p>
+<p> An error with its textual diagnosis.</p>
 
 <h3 class="typedecl"><a name="type-diagnosed_error_term">diagnosed_error_term()</a></h3>
 <p><tt>diagnosed_error_term(T) = {error, <a href="#type-diagnosed_error_reason">diagnosed_error_reason</a>(T)}</tt></p>
@@ -89,14 +97,22 @@ operations.</p>
 
 <h3 class="typedecl"><a name="type-diagnosed_fallible">diagnosed_fallible()</a></h3>
 <p><tt>diagnosed_fallible(TSuccess, TFailure) = <a href="#type-fallible">fallible</a>(TSuccess, <a href="#type-diagnosed_error_term">diagnosed_error_term</a>(TFailure))</tt></p>
-<p> Thus either {ok,T} or {error,{ErrorTuploid,ErrorMsg}}.</p>
+<p> Thus either {ok,TSuccess} or {error,{TuploidTFailure,ErrorMsg}}.</p>
 
 <h3 class="typedecl"><a name="type-diagnosed_fallible">diagnosed_fallible()</a></h3>
 <p><tt>diagnosed_fallible(T) = <a href="#type-fallible">fallible</a>(T, <a href="#type-diagnosed_error_term">diagnosed_error_term()</a>)</tt></p>
 <p> Thus either {ok,T} or {error,{ErrorTuploid,ErrorMsg}}.</p>
 
+<h3 class="typedecl"><a name="type-error_bin_diagnosis">error_bin_diagnosis()</a></h3>
+<p><tt>error_bin_diagnosis() = <a href="#type-bin_string">bin_string()</a></tt></p>
+<p> Designates a binary string explaning an error.</p>
+
+<h3 class="typedecl"><a name="type-error_diagnosis">error_diagnosis()</a></h3>
+<p><tt>error_diagnosis() = <a href="#type-ustring">ustring()</a></tt></p>
+<p> Designates a plain string explaning an error.</p>
+
 <h3 class="typedecl"><a name="type-error_message">error_message()</a></h3>
-<p><tt>error_message() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><tt>error_message() = <a href="#type-error_diagnosis">error_diagnosis()</a> | <a href="#type-error_bin_diagnosis">error_bin_diagnosis()</a></tt></p>
 <p> A textual description associated to an error (typically for richer traces).</p>
 
 <h3 class="typedecl"><a name="type-error_reason">error_reason()</a></h3>
@@ -109,13 +125,13 @@ operations.</p>
 
 <h3 class="typedecl"><a name="type-error_tuploid">error_tuploid()</a></h3>
 <p><tt>error_tuploid(T) = <a href="type_utils.html#type-tuploid">type_utils:tuploid</a>(T)</tt></p>
-<p> To specify at least some information about the error type.</p>
+<p> To specify at least some information about the error type of a tuploid.</p>
 
 <h3 class="typedecl"><a name="type-error_tuploid">error_tuploid()</a></h3>
 <p><tt>error_tuploid() = <a href="#type-error_tuploid">error_tuploid</a>(<a href="#type-error_reason">error_reason()</a>)</tt></p>
 <p><p> An error pseudo-tuple, i.e. an error tuple (ex: {invalid_name,1.0}) or a 
 single error term (instead of a tuple with a single element), preferably an 
-atom (like 'invalid_password').</p>
+atom (like 'invalid_password'). Typically to be thrown.</p>
 
  See also: throw_diagnosed/{1,2}.</p>
 
@@ -222,7 +238,8 @@ be of the expected type (as long as it has not been checked).</p>
 
 <h3 class="typedecl"><a name="type-positive_index">positive_index()</a></h3>
 <p><tt>positive_index() = pos_integer()</tt></p>
-<p> For all non-null index (i.e. the ones that start at 1).</p>
+<p> For all non-null indices (i.e. the ones that start at 1). This is the
+ convention that Myriad enforces as much as possible.</p>
 
 <h3 class="typedecl"><a name="type-process_info_result_item">process_info_result_item()</a></h3>
 <p><tt>process_info_result_item() = <a href="http://www.erlang.org/edoc/doc/erts/doc/erlang.html#type-process_info_result_item">erlang:process_info_result_item()</a></tt></p>
@@ -296,8 +313,15 @@ toolchain:</p>
 <p><tt>wildcardable(T) = T | any</tt></p>
 <p> To account for wildcard entries.</p>
 
+<h3 class="typedecl"><a name="type-zero_index">zero_index()</a></h3>
+<p><tt>zero_index() = non_neg_integer()</tt></p>
+<p> For the indices that may be null, typically starting at zero (ex: in some file
+ formats). Whenever possible, prefer positive_index/0.</p>
+
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#check_all_defined-1">check_all_defined/1</a></td><td>Checks that all elements of the specified list are "defined" (not
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#are_all_defined-1">are_all_defined/1</a></td><td>Returns whether all the elements specified are defined (that is are not
+ equal to the 'undefined' atom).</td></tr>
+<tr><td valign="top"><a href="#check_all_defined-1">check_all_defined/1</a></td><td>Checks that all elements of the specified list are "defined" (not
  'undefined'); returns that list.</td></tr>
 <tr><td valign="top"><a href="#check_all_undefined-1">check_all_undefined/1</a></td><td>Checks that all elements of the specified list are equal to 'undefined';
  returns that list.</td></tr>
@@ -422,6 +446,14 @@ ToAdd, WaitedSenderPid}.</td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="are_all_defined-1">are_all_defined/1</a></h3>
+<div class="spec">
+<p><tt>are_all_defined(Elems::[term()]) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Returns whether all the elements specified are defined (that is are not
+ equal to the 'undefined' atom).
+</p>
 
 <h3 class="function"><a name="check_all_defined-1">check_all_defined/1</a></h3>
 <div class="spec">

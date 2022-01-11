@@ -127,11 +127,11 @@ it directly.</td></tr>
 entries contained in this hashtable.</td></tr>
 <tr><td valign="top"><a href="#map_on_values-2">map_on_values/2</a></td><td>Applies (maps) the specified anonymous function to each of the values 
 contained in this hashtable.</td></tr>
-<tr><td valign="top"><a href="#merge-2">merge/2</a></td><td>Returns a new lazy hashtable, which started from LazyHashtableBase and 
-was enriched with the LazyHashtableAdd entries whose keys where not already in 
+<tr><td valign="top"><a href="#merge-2">merge/2</a></td><td>Returns a lazy hashtable that started from LazyHashtableBase and was 
+enriched with the LazyHashtableAdd entries whose keys where not already in 
 LazyHashtableBase (if a key is in both tables, the one from LazyHashtableBase 
 will be kept).</td></tr>
-<tr><td valign="top"><a href="#new-0">new/0</a></td><td>Returns a new empty lazy table.</td></tr>
+<tr><td valign="top"><a href="#new-0">new/0</a></td><td>Returns an empty lazy table.</td></tr>
 <tr><td valign="top"><a href="#new-1">new/1</a></td><td>As lazy hashtables manage by themselves their size, no need to specify
  any target size.</td></tr>
 <tr><td valign="top"><a href="#new_with_buckets-1">new_with_buckets/1</a></td><td>Defined also to allow seamless change of hashtable modules.</td></tr>
@@ -381,8 +381,8 @@ to duplicate the whole content in memory).</p>
 <div class="spec">
 <p><tt>merge(LazyHashtableBase::<a href="#type-lazy_hashtable">lazy_hashtable()</a>, LazyHashtableAdd::<a href="#type-lazy_hashtable">lazy_hashtable()</a>) -&gt; <a href="#type-lazy_hashtable">lazy_hashtable()</a></tt><br></p>
 <p> </p>
-</div><p><p>Returns a new lazy hashtable, which started from LazyHashtableBase and 
-was enriched with the LazyHashtableAdd entries whose keys where not already in 
+</div><p><p>Returns a lazy hashtable that started from LazyHashtableBase and was 
+enriched with the LazyHashtableAdd entries whose keys where not already in 
 LazyHashtableBase (if a key is in both tables, the one from LazyHashtableBase 
 will be kept).</p>
 
@@ -393,7 +393,7 @@ will be kept).</p>
 <div class="spec">
 <p><tt>new() -&gt; <a href="#type-lazy_hashtable">lazy_hashtable()</a></tt><br></p>
 <p> </p>
-</div><p>Returns a new empty lazy table.</p>
+</div><p>Returns an empty lazy table.</p>
 
 <h3 class="function"><a name="new-1">new/1</a></h3>
 <div class="spec">

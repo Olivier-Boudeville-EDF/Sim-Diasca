@@ -126,14 +126,11 @@ in terms of a parse-transform option, as: {d,my_other_test_token,51}).</p>
 the source file (to recreate the corresponding export form) and a list of the 
 identifiers of the functions to declare exported there.</p>
 
- <p>Note:</p>
-
- <p>- this table must be explicitly updated whenever adding or removing a function 
-in a module_info 'functions' field; see: meta_utils:add_function/2 and 
-meta_utils:remove_function/2</p>
-
- <p>- a list of function_id() is used, not a set, to better preserve order</p>
-
+ Note:
+ - this table must be explicitly updated whenever adding or removing a function
+ in a module_info 'functions' field; see: meta_utils:add_function/2 and
+ meta_utils:remove_function/2
+ - a list of function_id() is used, not a set, to better preserve order
  - the 'export_all' compile attribute may also have been set in compile options</p>
 
 <h3 class="typedecl"><a name="type-function_id">function_id()</a></h3>

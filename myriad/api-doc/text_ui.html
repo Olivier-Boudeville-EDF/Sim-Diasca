@@ -17,11 +17,9 @@ directly in raw text, with no cursor control.
 <h2><a name="description">Description</a></h2><p>This is the most basic, line-based monochrome <b>textual interface</b>, 
 directly in raw text, with no cursor control.</p>
 
- <p>See:</p>
-
- <p>- text_ui_test.erl for the corresponding test</p>
-
- <p>- gui.erl for a graphical counterpart</p>
+ <p>See: 
+- text_ui_test.erl for the corresponding test 
+- gui.erl for a graphical counterpart</p>
 
  See also: trace_utils.erl for another kind of output.
 
@@ -55,6 +53,10 @@ directly in raw text, with no cursor control.</p>
 <p><tt>format_string() = <a href="text_utils.html#type-format_string">text_utils:format_string()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-format_values">format_values()</a></h3>
+<p><tt>format_values() = <a href="text_utils.html#type-format_values">text_utils:format_values()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-label">label()</a></h3>
 <p><tt>label() = <a href="#type-text">text()</a></tt></p>
 
@@ -69,7 +71,7 @@ directly in raw text, with no cursor control.</p>
 
 <h3 class="typedecl"><a name="type-setting_table">setting_table()</a></h3>
 <p><tt>setting_table() = <a href="list_table.html#type-list_table">list_table:list_table</a>(<a href="#type-ui_setting_key">ui_setting_key()</a>, <a href="#type-ui_setting_value">ui_setting_value()</a>)</tt></p>
-<p> UI State.</p>
+
 
 <h3 class="typedecl"><a name="type-text">text()</a></h3>
 <p><tt>text() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
@@ -318,7 +320,7 @@ default item, an item among the specified ones, and returns its index.</p>
 
 <h3 class="function"><a name="display-2">display/2</a></h3>
 <div class="spec">
-<p><tt>display(FormatString::<a href="#type-format_string">format_string()</a>, Values::[term()]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>display(FormatString::<a href="#type-format_string">format_string()</a>, Values::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p>Displays specified formatted text, as a normal modal message.</p>
 
@@ -574,7 +576,7 @@ returning 'undefined'), based on an explicit state.</p>
 
 <h3 class="function"><a name="trace-2">trace/2</a></h3>
 <div class="spec">
-<p><tt>trace(Message::<a href="#type-message">message()</a>, UIState::<a href="#type-ui_state">ui_state()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p><p><tt>trace(Message::<a href="#type-format_string">format_string()</a>, UIState::[term()]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>trace(Message::<a href="#type-message">message()</a>, UIState::<a href="#type-ui_state">ui_state()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p><p><tt>trace(Message::<a href="#type-format_string">format_string()</a>, UIState::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 <p> </p>
 </div><p>Traces specified message, by displaying it, and possibly logging it.</p>

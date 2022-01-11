@@ -28,22 +28,32 @@ with OpenGL), for classical applications and multimedia ones (ex: games).</p>
 
 <h2><a name="types">Data Types</a></h2>
 
+<h3 class="typedecl"><a name="type-any_file_path">any_file_path()</a></h3>
+<p><tt>any_file_path() = <a href="file_utils.html#type-any_file_path">file_utils:any_file_path()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-back_buffer">back_buffer()</a></h3>
-<p><tt>back_buffer() = <a href="http://www.erlang.org/edoc/doc/wx/doc/wxMemoryDC.html#type-wxMemoryDC">wxMemoryDC:wxMemoryDC()</a></tt></p>
+<p><b>abstract datatype</b>: <tt>back_buffer()</tt></p>
 
 
 <h3 class="typedecl"><a name="type-backend_event">backend_event()</a></h3>
-<p><tt>backend_event() = <a href="gui_event.html#type-wx_event">gui_event:wx_event()</a></tt></p>
-<p><p> Current backend is wx (WxWidgets).</p>
-
- (useful to avoid including the header of wx in our own public ones)</p>
+<p><b>abstract datatype</b>: <tt>backend_event()</tt></p>
+<p> An (opaque) backend GUI event.</p>
 
 <h3 class="typedecl"><a name="type-bitmap">bitmap()</a></h3>
-<p><tt>bitmap() = <a href="http://www.erlang.org/edoc/doc/wx/doc/wxBitmap.html#type-wxBitmap">wxBitmap:wxBitmap()</a></tt></p>
+<p><b>abstract datatype</b>: <tt>bitmap()</tt></p>
+<p><p> Platform-dependent bitmap, either monochrome or colour (with or without alpha 
+channel).</p>
+
+ Intended to be a wrapper of whatever is the native image format, which is
+ quickest/easiest to draw to a display context.</p>
+
+<h3 class="typedecl"><a name="type-brush">brush()</a></h3>
+<p><b>abstract datatype</b>: <tt>brush()</tt></p>
 
 
 <h3 class="typedecl"><a name="type-button">button()</a></h3>
-<p><tt>button() = <a href="http://www.erlang.org/edoc/doc/wx/doc/wxButton.html#type-wxButton">wxButton:wxButton()</a></tt></p>
+<p><b>abstract datatype</b>: <tt>button()</tt></p>
 
 
 <h3 class="typedecl"><a name="type-button_style">button_style()</a></h3>
@@ -53,19 +63,27 @@ with OpenGL), for classical applications and multimedia ones (ex: games).</p>
 <h3 class="typedecl"><a name="type-button_style_opt">button_style_opt()</a></h3>
 <p><tt>button_style_opt() = default | left_justified | right_justified | top_justified | bottom_justified | exact_fit | flat</tt></p>
 <p> Options for button style, see
- <a href="http://docs.wxwidgets.org/stable/wx_wxbutton.html#wxbuttonwxbutton" target="_top"><tt>http://docs.wxwidgets.org/stable/wx_wxbutton.html#wxbuttonwxbutton</tt></a>.</p>
+ <a href="http://docs.wxwidgets.org/stable/classwx_button.html" target="_top"><tt>http://docs.wxwidgets.org/stable/classwx_button.html</tt></a>.</p>
 
 <h3 class="typedecl"><a name="type-canvas">canvas()</a></h3>
 <p><tt>canvas() = <a href="gui_canvas.html#type-canvas">gui_canvas:canvas()</a></tt></p>
-<p> To be used directly from the user code.</p>
+<p> A basic canvas (not to be mixed with an OpenGL one, opengl_canvas/0).</p>
 
 <h3 class="typedecl"><a name="type-color">color()</a></h3>
 <p><tt>color() = <a href="gui_color.html#type-color">gui_color:color()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-color_by_decimal">color_by_decimal()</a></h3>
+<p><tt>color_by_decimal() = <a href="gui_color.html#type-color_by_decimal">gui_color:color_by_decimal()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-color_by_decimal_with_alpha">color_by_decimal_with_alpha()</a></h3>
+<p><tt>color_by_decimal_with_alpha() = <a href="gui_color.html#type-color_by_decimal_with_alpha">gui_color:color_by_decimal_with_alpha()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-connect_opt">connect_opt()</a></h3>
 <p><tt>connect_opt() = {id, integer()} | {lastId, integer()} | {skip, boolean()} | callback | {callback, function()} | {userData, term()}</tt></p>
-<p> Options for event management connections.</p>
+
 
 <h3 class="typedecl"><a name="type-connect_options">connect_options()</a></h3>
 <p><tt>connect_options() = <a href="#type-connect_opt">connect_opt()</a> | [<a href="#type-connect_opt">connect_opt()</a>]</tt></p>
@@ -75,8 +93,17 @@ with OpenGL), for classical applications and multimedia ones (ex: games).</p>
 <p><tt>construction_parameters() = [term()]</tt></p>
 <p> The construction parameters of a MyriadGUI object.</p>
 
+<h3 class="typedecl"><a name="type-controller_pid">controller_pid()</a></h3>
+<p><tt>controller_pid() = pid()</tt></p>
+<p> The PID of a process whose role is to be a Controller in the sense of the MVC
+ pattern.</p>
+
 <h3 class="typedecl"><a name="type-coordinate">coordinate()</a></h3>
 <p><tt>coordinate() = <a href="linear.html#type-integer_coordinate">linear:integer_coordinate()</a></tt></p>
+<p> For a GUI, coordinates are an integer number of pixels.</p>
+
+<h3 class="typedecl"><a name="type-count">count()</a></h3>
+<p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-debug_level">debug_level()</a></h3>
@@ -88,12 +115,67 @@ with OpenGL), for classical applications and multimedia ones (ex: games).</p>
 <p> Mapped internally to 'none', 'verbose', 'trace', etc.; see
  convert_debug_level/1.</p>
 
+<h3 class="typedecl"><a name="type-device_context">device_context()</a></h3>
+<p><tt>device_context() = <a href="#type-wx_object">wx_object()</a></tt></p>
+<p> Designates an abstract device where rendering can take place, and which can be
+ the source or target of a blit. Akin to a surface in SDL (libsdl).</p>
+
+<h3 class="typedecl"><a name="type-dimensions">dimensions()</a></h3>
+<p><tt>dimensions() = <a href="linear_2D.html#type-integer_rect_dimensions">linear_2D:integer_rect_dimensions()</a></tt></p>
+<p> Dimensions in pixels, as {IntegerWidth,IntegerHeight}.</p>
+
 <h3 class="typedecl"><a name="type-error_message">error_message()</a></h3>
 <p><tt>error_message() = term()</tt></p>
 
 
+<h3 class="typedecl"><a name="type-event_subscription_spec">event_subscription_spec()</a></h3>
+<p><tt>event_subscription_spec() = <a href="gui_event.html#type-event_subscription_spec">gui_event:event_subscription_spec()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-font">font()</a></h3>
+<p><tt>font() = <a href="gui_font.html#type-font">gui_font:font()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-font_family">font_family()</a></h3>
+<p><tt>font_family() = <a href="gui_font.html#type-font_family">gui_font:font_family()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-font_option">font_option()</a></h3>
+<p><tt>font_option() = <a href="gui_font.html#type-font_option">gui_font:font_option()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-font_size">font_size()</a></h3>
+<p><tt>font_size() = <a href="gui_font.html#type-font_size">gui_font:font_size()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-font_style">font_style()</a></h3>
+<p><tt>font_style() = <a href="gui_font.html#type-font_style">gui_font:font_style()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-font_weight">font_weight()</a></h3>
+<p><tt>font_weight() = <a href="gui_font.html#type-font_weight">gui_font:font_weight()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-format_string">format_string()</a></h3>
+<p><tt>format_string() = <a href="text_utils.html#type-format_string">text_utils:format_string()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-format_values">format_values()</a></h3>
+<p><tt>format_values() = <a href="text_utils.html#type-format_values">text_utils:format_values()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-fps">fps()</a></h3>
+<p><tt>fps() = <a href="#type-count">count()</a></tt></p>
+<p><p> Number of frames per second.</p>
+
+ <p>The old Charlie Chaplin movies were shot at 16 frames per second and are 
+noticeably jerky.</p>
+
+ 60 frames per second is smoother than 30, and 120 is marginally better than
+ 60; beyond 120 fps has no real interest as it exceeds eye perception.</p>
+
 <h3 class="typedecl"><a name="type-frame">frame()</a></h3>
-<p><tt>frame() = <a href="http://www.erlang.org/edoc/doc/wx/doc/wxFrame.html#type-wxFrame">wxFrame:wxFrame()</a></tt></p>
+<p><b>abstract datatype</b>: <tt>frame()</tt></p>
 
 
 <h3 class="typedecl"><a name="type-frame_style">frame_style()</a></h3>
@@ -103,7 +185,7 @@ with OpenGL), for classical applications and multimedia ones (ex: games).</p>
 <h3 class="typedecl"><a name="type-frame_style_opt">frame_style_opt()</a></h3>
 <p><tt>frame_style_opt() = default | caption | minimize | minimize_box | maximize | maximize_box | close_box | stay_on_top | system_menu | resize_border | tool_window | no_taskbar</tt></p>
 <p> Options for frames, see
- <a href="http://docs.wxwidgets.org/stable/wx_wxframe.html#wxframewxframe" target="_top"><tt>http://docs.wxwidgets.org/stable/wx_wxframe.html#wxframewxframe</tt></a>.</p>
+ <a href="http://docs.wxwidgets.org/stable/classwx_frame.html" target="_top"><tt>http://docs.wxwidgets.org/stable/classwx_frame.html</tt></a>.</p>
 
 <h3 class="typedecl"><a name="type-gui_event_context">gui_event_context()</a></h3>
 <p><tt>gui_event_context() = #gui_event_context{id = <a href="gui.html#type-id">gui:id()</a>, user_data = <a href="gui.html#type-user_data">gui:user_data()</a>, backend_event = <a href="#type-maybe">maybe</a>(<a href="gui.html#type-backend_event">gui:backend_event()</a>)}</tt></p>
@@ -116,6 +198,10 @@ to a PID.</p>
 
  (ex: {wx_ref,35,wxFrame,[]} or {myriad_object_ref,canvas,12}).</p>
 
+<h3 class="typedecl"><a name="type-height">height()</a></h3>
+<p><tt>height() = <a href="#type-length">length()</a></tt></p>
+<p> An height, as a number of pixels.</p>
+
 <h3 class="typedecl"><a name="type-id">id()</a></h3>
 <p><tt>id() = <a href="#type-maybe">maybe</a>(<a href="#type-wx_id">wx_id()</a>)</tt></p>
 <p><p> wx-specific object identifier (defined so that the gui_event_context (public) 
@@ -124,24 +210,37 @@ record has no trace of the backend).</p>
  May not be defined if the actual event comes from MyriadGUI itself (and thus
  not wx).</p>
 
-<h3 class="typedecl"><a name="type-integer_distance">integer_distance()</a></h3>
-<p><tt>integer_distance() = <a href="linear.html#type-integer_distance">linear:integer_distance()</a></tt></p>
+<h3 class="typedecl"><a name="type-image">image()</a></h3>
+<p><tt>image() = <a href="gui_image.html#type-image">gui_image:image()</a></tt></p>
+<p><p> An image is a bitmap buffer of RGB bytes with an optional buffer for the alpha 
+bytes.</p>
 
+ It is thus generic, independent from platforms and image file formats.</p>
 
 <h3 class="typedecl"><a name="type-label">label()</a></h3>
 <p><tt>label() = <a href="#type-text">text()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-length">length()</a></h3>
-<p><tt>length() = <a href="linear.html#type-distance">linear:distance()</a></tt></p>
+<p><tt>length() = <a href="linear.html#type-integer_distance">linear:integer_distance()</a></tt></p>
+<p> A length, as a number of pixels.</p>
+
+<h3 class="typedecl"><a name="type-line2">line2()</a></h3>
+<p><tt>line2() = <a href="linear_2D.html#type-line2">linear_2D:line2()</a></tt></p>
 
 
-<h3 class="typedecl"><a name="type-myriad_instance_pid">myriad_instance_pid()</a></h3>
-<p><tt>myriad_instance_pid() = pid()</tt></p>
-<p> Myriad-specific instance identifier, a PID.</p>
+<h3 class="typedecl"><a name="type-model_pid">model_pid()</a></h3>
+<p><tt>model_pid() = pid()</tt></p>
+<p> The PID of a process whose role is to be a Model in the sense of the MVC
+ pattern.</p>
+
+<h3 class="typedecl"><a name="type-myriad_instance_id">myriad_instance_id()</a></h3>
+<p><tt>myriad_instance_id() = <a href="#type-count">count()</a></tt></p>
+<p> Myriad-specific instance identifier, corresponding a reference in the internal
+ MyriadGUI type table.</p>
 
 <h3 class="typedecl"><a name="type-myriad_object_ref">myriad_object_ref()</a></h3>
-<p><tt>myriad_object_ref() = #myriad_object_ref{object_type = <a href="gui.html#type-myriad_object_type">gui:myriad_object_type()</a>, myriad_instance_pid = <a href="gui.html#type-myriad_instance_pid">gui:myriad_instance_pid()</a>}</tt></p>
+<p><tt>myriad_object_ref() = #myriad_object_ref{object_type = <a href="gui.html#type-myriad_object_type">gui:myriad_object_type()</a>, myriad_instance_id = <a href="gui.html#type-myriad_instance_id">gui:myriad_instance_id()</a>}</tt></p>
 
 
 <h3 class="typedecl"><a name="type-myriad_object_state">myriad_object_state()</a></h3>
@@ -156,42 +255,55 @@ record has no trace of the backend).</p>
 <p><tt>object_type() = <a href="#type-wx_object_type">wx_object_type()</a> | <a href="#type-myriad_object_type">myriad_object_type()</a></tt></p>
 <p> Internal, overall types for all GUI objects.</p>
 
+<h3 class="typedecl"><a name="type-opengl_canvas">opengl_canvas()</a></h3>
+<p><tt>opengl_canvas() = <a href="gui_opengl.html#type-gl_canvas">gui_opengl:gl_canvas()</a></tt></p>
+<p> An OpenGL canvas (not to be mixed with a basic one, canvas/0).</p>
+
+<h3 class="typedecl"><a name="type-opengl_context">opengl_context()</a></h3>
+<p><tt>opengl_context() = <a href="gui_opengl.html#type-gl_context">gui_opengl:gl_context()</a></tt></p>
+<p> An OpenGL context.</p>
+
 <h3 class="typedecl"><a name="type-orientation">orientation()</a></h3>
 <p><tt>orientation() = vertical | horizontal</tt></p>
 <p> A vertical orientation means piling elements top to bottom for example, while
  an horizontal means left to right, for example.</p>
 
 <h3 class="typedecl"><a name="type-panel">panel()</a></h3>
-<p><tt>panel() = <a href="http://www.erlang.org/edoc/doc/wx/doc/wxPanel.html#type-wxPanel">wxPanel:wxPanel()</a></tt></p>
+<p><b>abstract datatype</b>: <tt>panel()</tt></p>
 
 
 <h3 class="typedecl"><a name="type-panel_option">panel_option()</a></h3>
 <p><tt>panel_option() = <a href="#type-window_option">window_option()</a></tt></p>
 <p> Options for panels, see
- <a href="http://docs.wxwidgets.org/stable/wx_wxpanel.html#wxpanelwxpanel" target="_top"><tt>http://docs.wxwidgets.org/stable/wx_wxpanel.html#wxpanelwxpanel</tt></a>.</p>
+ <a href="http://docs.wxwidgets.org/stable/classwx_panel.html" target="_top"><tt>http://docs.wxwidgets.org/stable/classwx_panel.html</tt></a>.</p>
 
 <h3 class="typedecl"><a name="type-panel_options">panel_options()</a></h3>
 <p><tt>panel_options() = [<a href="#type-panel_option">panel_option()</a>]</tt></p>
 
 
 <h3 class="typedecl"><a name="type-point">point()</a></h3>
-<p><tt>point() = <a href="linear_2D.html#type-integer_point">linear_2D:integer_point()</a></tt></p>
-<p> linear_2D:point() would allow for floating-point coordinates.</p>
+<p><tt>point() = <a href="point2.html#type-integer_point2">point2:integer_point2()</a></tt></p>
+<p> A pixel-wise GUI point (as point2:point2() would allow for floating-point
+ coordinates).</p>
+
+<h3 class="typedecl"><a name="type-point_size">point_size()</a></h3>
+<p><tt>point_size() = <a href="gui_font.html#type-point_size">gui_font:point_size()</a></tt></p>
+
 
 <h3 class="typedecl"><a name="type-position">position()</a></h3>
 <p><tt>position() = <a href="#type-point">point()</a> | auto</tt></p>
-
+<p> Position, in pixel coordinates, typically of a widget.</p>
 
 <h3 class="typedecl"><a name="type-size">size()</a></h3>
-<p><tt>size() = <a href="linear_2D.html#type-dimensions">linear_2D:dimensions()</a> | auto</tt></p>
+<p><tt>size() = <a href="#type-dimensions">dimensions()</a> | auto</tt></p>
 <p> Size, typically of a widget.</p>
 
 <h3 class="typedecl"><a name="type-sizer">sizer()</a></h3>
-<p><tt>sizer() = <a href="http://www.erlang.org/edoc/doc/wx/doc/wxSizer.html#type-wxSizer">wxSizer:wxSizer()</a></tt></p>
+<p><b>abstract datatype</b>: <tt>sizer()</tt></p>
 
 
 <h3 class="typedecl"><a name="type-sizer_child">sizer_child()</a></h3>
-<p><tt>sizer_child() = <a href="#type-window">window()</a> | <a href="#type-sizer">sizer()</a></tt></p>
+<p><b>abstract datatype</b>: <tt>sizer_child()</tt></p>
 <p> Elements that can be included in a sizer.</p>
 
 <h3 class="typedecl"><a name="type-sizer_flag">sizer_flag()</a></h3>
@@ -200,10 +312,10 @@ record has no trace of the backend).</p>
 
 <h3 class="typedecl"><a name="type-sizer_flag_opt">sizer_flag_opt()</a></h3>
 <p><tt>sizer_flag_opt() = default | top_border | bottom_border | left_border | right_border | all_borders | expand_fully | expand_shaped | fixed_size | counted_even_if_hidden | align_center | align_left | align_right | align_top | align_bottom | align_center_vertical | align_center_horizontal</tt></p>
-<p> Options for sizers, see <a href="http://docs.wxwidgets.org/stable/wx_wxsizer.html" target="_top"><tt>http://docs.wxwidgets.org/stable/wx_wxsizer.html</tt></a>.</p>
+<p> Options for sizers, see <a href="https://docs.wxwidgets.org/stable/classwx_sizer.html" target="_top"><tt>https://docs.wxwidgets.org/stable/classwx_sizer.html</tt></a></p>
 
 <h3 class="typedecl"><a name="type-sizer_item">sizer_item()</a></h3>
-<p><tt>sizer_item() = <a href="http://www.erlang.org/edoc/doc/wx/doc/wxSizerItem.html#type-wxSizerItem">wxSizerItem:wxSizerItem()</a></tt></p>
+<p><b>abstract datatype</b>: <tt>sizer_item()</tt></p>
 
 
 <h3 class="typedecl"><a name="type-sizer_option">sizer_option()</a></h3>
@@ -215,7 +327,7 @@ record has no trace of the backend).</p>
 
 
 <h3 class="typedecl"><a name="type-status_bar">status_bar()</a></h3>
-<p><tt>status_bar() = <a href="http://www.erlang.org/edoc/doc/wx/doc/wxStatusBar.html#type-wxStatusBar">wxStatusBar:wxStatusBar()</a></tt></p>
+<p><b>abstract datatype</b>: <tt>status_bar()</tt></p>
 
 
 <h3 class="typedecl"><a name="type-text">text()</a></h3>
@@ -234,9 +346,18 @@ record has no trace of the backend).</p>
 <p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
 
 
-<h3 class="typedecl"><a name="type-window">window()</a></h3>
-<p><tt>window() = <a href="#type-maybe">maybe</a>(<a href="http://www.erlang.org/edoc/doc/wx/doc/wxWindow.html#type-wxWindow">wxWindow:wxWindow()</a> | <a href="gui_canvas.html#type-canvas">gui_canvas:canvas()</a>)</tt></p>
+<h3 class="typedecl"><a name="type-view_pid">view_pid()</a></h3>
+<p><tt>view_pid() = pid()</tt></p>
+<p> The PID of a process whose role is to be a View in the sense of the MVC
+ pattern.</p>
 
+<h3 class="typedecl"><a name="type-width">width()</a></h3>
+<p><tt>width() = <a href="#type-length">length()</a></tt></p>
+<p> A width, as a number of pixels.</p>
+
+<h3 class="typedecl"><a name="type-window">window()</a></h3>
+<p><b>abstract datatype</b>: <tt>window()</tt></p>
+<p> Any kind of windows, that is widget (ex: any canvas is a window).</p>
 
 <h3 class="typedecl"><a name="type-window_option">window_option()</a></h3>
 <p><tt>window_option() = {pos, <a href="#type-point">point()</a>} | {size, <a href="#type-size">size()</a>} | {style, [<a href="#type-window_style_opt">window_style_opt()</a>]}</tt></p>
@@ -249,11 +370,14 @@ record has no trace of the backend).</p>
 <h3 class="typedecl"><a name="type-window_style_opt">window_style_opt()</a></h3>
 <p><tt>window_style_opt() = default | simple_border | double_border | sunken_border | raised_border | static_border | theme_border | no_border | transparent | tab_traversable | grab_all_keys | with_vertical_scrollbar | with_horizontal_scrollbar | never_hide_scrollbars | clip_children | grab_all_keys | full_repaint_on_resize</tt></p>
 <p> Options for windows, see
- <a href="http://docs.wxwidgets.org/stable/wx_wxwindow.html" target="_top"><tt>http://docs.wxwidgets.org/stable/wx_wxwindow.html</tt></a> and
- <a href="http://docs.wxwidgets.org/stable/wx_windowstyles.html#windowstyles" target="_top"><tt>http://docs.wxwidgets.org/stable/wx_windowstyles.html#windowstyles</tt></a>.</p>
+ <a href="http://docs.wxwidgets.org/stable/classwx_window.html" target="_top"><tt>http://docs.wxwidgets.org/stable/classwx_window.html</tt></a></p>
 
 <h3 class="typedecl"><a name="type-wx_id">wx_id()</a></h3>
 <p><tt>wx_id() = <a href="gui_wx_backend.html#type-wx_id">gui_wx_backend:wx_id()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-wx_object">wx_object()</a></h3>
+<p><tt>wx_object() = <a href="http://www.erlang.org/edoc/doc/wx/doc/wx.html#type-wx_object">wx:wx_object()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-wx_object_type">wx_object_type()</a></h3>
@@ -271,43 +395,65 @@ wx_native_object_type().</p>
 <table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add_to_sizer-2">add_to_sizer/2</a></td><td>Adds specified element, or elements with options, to the specified sizer.</td></tr>
 <tr><td valign="top"><a href="#add_to_sizer-3">add_to_sizer/3</a></td><td>Adds specified element (or elements), with (common) options, to the
  specified sizer.</td></tr>
+<tr><td valign="top"><a href="#batch-1">batch/1</a></td><td>Batches the sequence of GUI operations encasulated on the specified 
+function, and returns the value this function returned.</td></tr>
 <tr><td valign="top"><a href="#blit-1">blit/1</a></td><td>Blits the back-buffer of this canvas onto its visible area.</td></tr>
+<tr><td valign="top"><a href="#blit-5">blit/5</a></td><td>Blits (copies) the specified area of the source device context at the 
+specified position in the target device context.</td></tr>
+<tr><td valign="top"><a href="#blit-6">blit/6</a></td><td>Blits (copies) the specified area of the source device context at the 
+specified position in the target device context.</td></tr>
 <tr><td valign="top"><a href="#clear-1">clear/1</a></td><td>Clears the specified canvas.</td></tr>
+<tr><td valign="top"><a href="#clear_device_context-1">clear_device_context/1</a></td><td>Clears the specified device context, using the current background brush.</td></tr>
 <tr><td valign="top"><a href="#clear_sizer-1">clear_sizer/1</a></td><td>Clears specified sizer, detaching and deleting all its child windows.</td></tr>
 <tr><td valign="top"><a href="#clear_sizer-2">clear_sizer/2</a></td><td>Clears specified sizer, detaching all its child windows, and deleting
  them iff requested.</td></tr>
 <tr><td valign="top"><a href="#context_to_string-1">context_to_string/1</a></td><td>Returns a textual representation of the specified GUI event context.</td></tr>
-<tr><td valign="top"><a href="#create_button-2">create_button/2</a></td><td>Creates a new (labelled) button, with parent specified.</td></tr>
-<tr><td valign="top"><a href="#create_button-6">create_button/6</a></td><td>Creates a new button, with parent and most settings specified.</td></tr>
-<tr><td valign="top"><a href="#create_buttons-2">create_buttons/2</a></td><td>Creates new (labelled) buttons, with their (single, common) parent
- specified.</td></tr>
-<tr><td valign="top"><a href="#create_canvas-1">create_canvas/1</a></td><td>Creates a canvas, attached to specified parent window.</td></tr>
-<tr><td valign="top"><a href="#create_frame-0">create_frame/0</a></td><td>Creates a new frame, with default title, ID, parent, position, size and 
+<tr><td valign="top"><a href="#create_bitmap-1">create_bitmap/1</a></td><td>Returns a bitmap created from the specified image path.</td></tr>
+<tr><td valign="top"><a href="#create_blank_bitmap-1">create_blank_bitmap/1</a></td><td>Returns a blank bitmap of the specified size.</td></tr>
+<tr><td valign="top"><a href="#create_blank_bitmap-2">create_blank_bitmap/2</a></td><td>Returns a blank bitmap of the specified size.</td></tr>
+<tr><td valign="top"><a href="#create_blank_bitmap_for-1">create_blank_bitmap_for/1</a></td><td>Returns a blank bitmap whose size is the client one of the specified
+ window.</td></tr>
+<tr><td valign="top"><a href="#create_brush-1">create_brush/1</a></td><td>Returns a brush of the specified color.</td></tr>
+<tr><td valign="top"><a href="#create_button-2">create_button/2</a></td><td>Creates a (labelled) button, with parent specified.</td></tr>
+<tr><td valign="top"><a href="#create_button-6">create_button/6</a></td><td>Creates a button, with parent and most settings specified.</td></tr>
+<tr><td valign="top"><a href="#create_buttons-2">create_buttons/2</a></td><td>Creates (labelled) buttons, with their (single, common) parent specified.</td></tr>
+<tr><td valign="top"><a href="#create_canvas-1">create_canvas/1</a></td><td>Creates a (basic) canvas, attached to the specified parent window.</td></tr>
+<tr><td valign="top"><a href="#create_font-4">create_font/4</a></td><td>Creates a corresponding font object, to determine the appearance of
+ rendered text.</td></tr>
+<tr><td valign="top"><a href="#create_font-5">create_font/5</a></td><td>Creates a corresponding font object, to determine the appearance of
+ rendered text.</td></tr>
+<tr><td valign="top"><a href="#create_frame-0">create_frame/0</a></td><td>Creates a frame, with default title, ID, parent, position, size and 
 style.</td></tr>
-<tr><td valign="top"><a href="#create_frame-1">create_frame/1</a></td><td>Creates a new frame, with default position, size, style, ID and parent.</td></tr>
-<tr><td valign="top"><a href="#create_frame-2">create_frame/2</a></td><td>Creates a new frame, with specified size, and default ID and parent.</td></tr>
-<tr><td valign="top"><a href="#create_frame-3">create_frame/3</a></td><td>Creates a new frame, with default position, size and style.</td></tr>
-<tr><td valign="top"><a href="#create_frame-4">create_frame/4</a></td><td>Creates a new frame, with default parent.</td></tr>
-<tr><td valign="top"><a href="#create_frame-6">create_frame/6</a></td><td>Creates a new frame.</td></tr>
-<tr><td valign="top"><a href="#create_panel-0">create_panel/0</a></td><td>Creates a new panel.</td></tr>
-<tr><td valign="top"><a href="#create_panel-1">create_panel/1</a></td><td>Creates a new panel, associated to specified parent.</td></tr>
-<tr><td valign="top"><a href="#create_panel-2">create_panel/2</a></td><td>Creates a new panel, associated to specified parent and with specified
+<tr><td valign="top"><a href="#create_frame-1">create_frame/1</a></td><td>Creates a frame, with default position, size, style, ID and parent.</td></tr>
+<tr><td valign="top"><a href="#create_frame-2">create_frame/2</a></td><td>Creates a frame, with specified size, and default ID and parent.</td></tr>
+<tr><td valign="top"><a href="#create_frame-3">create_frame/3</a></td><td>Creates a frame, with default position, size and style.</td></tr>
+<tr><td valign="top"><a href="#create_frame-4">create_frame/4</a></td><td>Creates a frame, with default parent.</td></tr>
+<tr><td valign="top"><a href="#create_frame-6">create_frame/6</a></td><td>Creates a frame.</td></tr>
+<tr><td valign="top"><a href="#create_panel-0">create_panel/0</a></td><td>Creates a panel.</td></tr>
+<tr><td valign="top"><a href="#create_panel-1">create_panel/1</a></td><td>Creates a panel, associated to specified parent.</td></tr>
+<tr><td valign="top"><a href="#create_panel-2">create_panel/2</a></td><td>Creates a panel, associated to specified parent and with specified
  options.</td></tr>
-<tr><td valign="top"><a href="#create_panel-4">create_panel/4</a></td><td>Creates a new panel, associated to specified parent and with specified
+<tr><td valign="top"><a href="#create_panel-4">create_panel/4</a></td><td>Creates a panel, associated to specified parent and with specified
  position and dimensions.</td></tr>
-<tr><td valign="top"><a href="#create_panel-5">create_panel/5</a></td><td>Creates a new panel, associated to specified parent and with specified
+<tr><td valign="top"><a href="#create_panel-5">create_panel/5</a></td><td>Creates a panel, associated to specified parent and with specified
  position and dimensions.</td></tr>
-<tr><td valign="top"><a href="#create_panel-6">create_panel/6</a></td><td>Creates a new panel, associated to specified parent, with specified
+<tr><td valign="top"><a href="#create_panel-6">create_panel/6</a></td><td>Creates a panel, associated to specified parent, with specified
  position, dimensions and options.</td></tr>
 <tr><td valign="top"><a href="#create_sizer-1">create_sizer/1</a></td><td>Creates a sizer operating on specified orientation.</td></tr>
 <tr><td valign="top"><a href="#create_sizer_with_box-2">create_sizer_with_box/2</a></td><td>Creates a sizer operating on specified orientation, within specified
  parent, with a box drawn around.</td></tr>
 <tr><td valign="top"><a href="#create_sizer_with_labelled_box-3">create_sizer_with_labelled_box/3</a></td><td>Creates a sizer operating on specified orientation, within specified
  parent, with a box drawn around bearing specified label.</td></tr>
+<tr><td valign="top"><a href="#create_sizer_with_labelled_box-4">create_sizer_with_labelled_box/4</a></td><td>Creates a sizer operating on specified orientation, within specified
+ parent, with a box drawn around bearing specified label.</td></tr>
 <tr><td valign="top"><a href="#create_status_bar-1">create_status_bar/1</a></td><td>Creates and attaches a status bar to the specified frame.</td></tr>
-<tr><td valign="top"><a href="#create_window-0">create_window/0</a></td><td>Creates a new window.</td></tr>
-<tr><td valign="top"><a href="#create_window-1">create_window/1</a></td><td>Creates a new window of specified size.</td></tr>
-<tr><td valign="top"><a href="#destruct_window-1">destruct_window/1</a></td><td>Destructs specified window.</td></tr>
+<tr><td valign="top"><a href="#create_window-0">create_window/0</a></td><td>Creates a window.</td></tr>
+<tr><td valign="top"><a href="#create_window-1">create_window/1</a></td><td>Creates a window of specified size.</td></tr>
+<tr><td valign="top"><a href="#destruct_bitmap-1">destruct_bitmap/1</a></td><td>Destructs the specified bitmap (which must not be locked).</td></tr>
+<tr><td valign="top"><a href="#destruct_brush-1">destruct_brush/1</a></td><td>Tells that the specified (reference-counted) brush may be deleted.</td></tr>
+<tr><td valign="top"><a href="#destruct_window-1">destruct_window/1</a></td><td>Destructs the specified window.</td></tr>
+<tr><td valign="top"><a href="#draw_bitmap-3">draw_bitmap/3</a></td><td>Draws the specified bitmap in the specified device context, at the
+ specified position.</td></tr>
 <tr><td valign="top"><a href="#draw_circle-3">draw_circle/3</a></td><td>Renders specified circle (actually, depending on the fill color, it may
  be a disc) in specified canvas.</td></tr>
 <tr><td valign="top"><a href="#draw_circle-4">draw_circle/4</a></td><td>Renders specified circle (actually, depending on the fill color, it may
@@ -337,19 +483,32 @@ style.</td></tr>
  list, L2 for the next, etc.).</td></tr>
 <tr><td valign="top"><a href="#draw_polygon-2">draw_polygon/2</a></td><td>Draws the specified polygon, closing the lines and filling them.</td></tr>
 <tr><td valign="top"><a href="#draw_segment-4">draw_segment/4</a></td><td>Draws a segment of the line L between the two specified ordinates.</td></tr>
+<tr><td valign="top"><a href="#enable_repaint-1">enable_repaint/1</a></td><td>Updates the specified window-like object (ex: a canvas) so that its 
+client area can be painted.</td></tr>
+<tr><td valign="top"><a href="#get_client_size-1">get_client_size/1</a></td><td>Returns the client size (as {Width,Height}) of the specified window,
+ i.e.</td></tr>
 <tr><td valign="top"><a href="#get_rgb-2">get_rgb/2</a></td><td>Returns the RGB value of the pixel at specified position.</td></tr>
-<tr><td valign="top"><a href="#get_size-1">get_size/1</a></td><td>Returns the size (as a 2D vector, ie {Width,Height}) of specified window.</td></tr>
-<tr><td valign="top"><a href="#hide-1">hide/1</a></td><td>Hides specified window.</td></tr>
+<tr><td valign="top"><a href="#get_size-1">get_size/1</a></td><td>Returns the size (as {Width,Height}) of the specified window or bitmap.</td></tr>
+<tr><td valign="top"><a href="#hide-1">hide/1</a></td><td>Hides the specified window.</td></tr>
 <tr><td valign="top"><a href="#is_available-0">is_available/0</a></td><td>Tells whether this user-interface backend is available.</td></tr>
-<tr><td valign="top"><a href="#load_image-2">load_image/2</a></td><td>Loads image from specified path into specified canvas, pasting it at its
- upper left corner.</td></tr>
-<tr><td valign="top"><a href="#load_image-3">load_image/3</a></td><td>Loads image from specified path into specified canvas, pasting it at
+<tr><td valign="top"><a href="#load_image-2">load_image/2</a></td><td>Loads image from the specified path into specified canvas, pasting it at
+ its upper left corner.</td></tr>
+<tr><td valign="top"><a href="#load_image-3">load_image/3</a></td><td>Loads image from the specified path into specified canvas, pasting it at
  specified location.</td></tr>
+<tr><td valign="top"><a href="#lock_bitmap-1">lock_bitmap/1</a></td><td>Locks the specified bitmap, so that direct access to its content can be 
+done, through the returned device context.</td></tr>
+<tr><td valign="top"><a href="#lock_window-1">lock_window/1</a></td><td>Locks the specified window, so that direct access to its content can be 
+done, through the returned device context.</td></tr>
+<tr><td valign="top"><a href="#maximise_in_parent-1">maximise_in_parent/1</a></td><td>Maximises the specified widget (a specialised window; ex: a panel) in its
+ parent (adopting its maximum client size), and returns the new size of this
+ widget.</td></tr>
 <tr><td valign="top"><a href="#object_to_string-1">object_to_string/1</a></td><td>Returns a textual representation of the specified GUI object.</td></tr>
 <tr><td valign="top"><a href="#propagate_event-1">propagate_event/1</a></td><td>Propagates the event designated by the specified context upward in the 
 widget hierarchy (instead of the default, which is considering that it has 
 been processed once for all, and thus shall not be propagated further).</td></tr>
-<tr><td valign="top"><a href="#push_status_text-2">push_status_text/2</a></td><td>Pushes specified text in the specified status bar.</td></tr>
+<tr><td valign="top"><a href="#push_status_text-2">push_status_text/2</a></td><td>Pushes the specified text in the specified status bar.</td></tr>
+<tr><td valign="top"><a href="#push_status_text-3">push_status_text/3</a></td><td>Pushes the specified text in the specified status bar.</td></tr>
+<tr><td valign="top"><a href="#resize-2">resize/2</a></td><td>Resizes the specified canvas according to the specified new size.</td></tr>
 <tr><td valign="top"><a href="#set_background_color-2">set_background_color/2</a></td><td>Sets the background color of the specified window.</td></tr>
 <tr><td valign="top"><a href="#set_debug_level-1">set_debug_level/1</a></td><td>Sets the debug level(s) of the GUI.</td></tr>
 <tr><td valign="top"><a href="#set_draw_color-2">set_draw_color/2</a></td><td>Sets the color to be used for the drawing of the outline of shapes.</td></tr>
@@ -361,8 +520,14 @@ been processed once for all, and thus shall not be propagated further).</td></tr
 <tr><td valign="top"><a href="#start-0">start/0</a></td><td>Starts the MyriadGUI subsystem.</td></tr>
 <tr><td valign="top"><a href="#start-1">start/1</a></td><td>Starts the GUI subsystem, with specified debug level.</td></tr>
 <tr><td valign="top"><a href="#stop-0">stop/0</a></td><td>Stops the GUI subsystem.</td></tr>
-<tr><td valign="top"><a href="#subscribe_to_events-1">subscribe_to_events/1</a></td><td>Subscribes the current, calling process to the specified kind of events, 
-like {onWindowClosed, MyFrame}.</td></tr>
+<tr><td valign="top"><a href="#subscribe_to_events-1">subscribe_to_events/1</a></td><td>Subscribes the current, calling process to the specified kind of events 
+(event type and emitter), like {onWindowClosed, MyFrame}.</td></tr>
+<tr><td valign="top"><a href="#sync-1">sync/1</a></td><td>Synchronises the specified window, to ensure that no past operation is 
+still pending at its level.</td></tr>
+<tr><td valign="top"><a href="#unlock_bitmap-1">unlock_bitmap/1</a></td><td>Unlocks the specified bitmap, based on the specified device context
+ obtained from a previous locking.</td></tr>
+<tr><td valign="top"><a href="#unlock_window-1">unlock_window/1</a></td><td>Unlocks the specified window, based on the specified device context
+ obtained from a previous locking.</td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
@@ -383,6 +548,20 @@ like {onWindowClosed, MyFrame}.</td></tr>
  specified sizer.
 </p>
 
+<h3 class="function"><a name="batch-1">batch/1</a></h3>
+<div class="spec">
+<p><tt>batch(GUIFun::function()) -&gt; term()</tt><br></p>
+<p> </p>
+</div><p><p>Batches the sequence of GUI operations encasulated on the specified 
+function, and returns the value this function returned.</p>
+
+ <p>May improve performance of the command processing, by grabbing the backend 
+thread so that no event processing will be done before the complete batch of 
+commands is invoked.</p>
+
+ Example: Result = gui:batch(fun() -&gt; do_init(Config) end).
+</p>
+
 <h3 class="function"><a name="blit-1">blit/1</a></h3>
 <div class="spec">
 <p><tt>blit(Canvas::<a href="#type-canvas">canvas()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
@@ -392,11 +571,42 @@ like {onWindowClosed, MyFrame}.</td></tr>
  The back-buffer remains as it was before this call.
 </p>
 
+<h3 class="function"><a name="blit-5">blit/5</a></h3>
+<div class="spec">
+<p><tt>blit(SourceDC::<a href="#type-device_context">device_context()</a>, SrcTopLeft::<a href="#type-point">point()</a>, Size::<a href="#type-dimensions">dimensions()</a>, TargetDC::<a href="#type-device_context">device_context()</a>, TgtTopLeft::<a href="#type-point">point()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p><p>Blits (copies) the specified area of the source device context at the 
+specified position in the target device context.</p>
+
+ Returns a boolean of unspecified meaning.
+</p>
+
+<h3 class="function"><a name="blit-6">blit/6</a></h3>
+<div class="spec">
+<p><tt>blit(SourceDC::<a href="#type-device_context">device_context()</a>, SrcTopLeft::<a href="#type-point">point()</a>, Width::<a href="#type-width">width()</a>, Height::<a href="#type-height">height()</a>, TargetDC::<a href="#type-device_context">device_context()</a>, TgtTopLeft::<a href="#type-point">point()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p><p>Blits (copies) the specified area of the source device context at the 
+specified position in the target device context.</p>
+
+ Returns a boolean of unspecified meaning.
+</p>
+
 <h3 class="function"><a name="clear-1">clear/1</a></h3>
 <div class="spec">
 <p><tt>clear(Canvas::<a href="#type-canvas">canvas()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p>Clears the specified canvas.</p>
+</div><p><p>Clears the specified canvas.</p>
+
+ Note: the result will not be visible until the canvas is blitted.
+</p>
+
+<h3 class="function"><a name="clear_device_context-1">clear_device_context/1</a></h3>
+<div class="spec">
+<p><tt>clear_device_context(DC::<a href="#type-device_context">device_context()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Clears the specified device context, using the current background brush.
+ If none was set, a solid white brush is used.
+</p>
 
 <h3 class="function"><a name="clear_sizer-1">clear_sizer/1</a></h3>
 <div class="spec">
@@ -418,17 +628,49 @@ like {onWindowClosed, MyFrame}.</td></tr>
 <p> </p>
 </div><p>Returns a textual representation of the specified GUI event context.</p>
 
+<h3 class="function"><a name="create_bitmap-1">create_bitmap/1</a></h3>
+<div class="spec">
+<p><tt>create_bitmap(ImagePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-bitmap">bitmap()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a bitmap created from the specified image path.</p>
+
+<h3 class="function"><a name="create_blank_bitmap-1">create_blank_bitmap/1</a></h3>
+<div class="spec">
+<p><tt>create_blank_bitmap(Dimensions::<a href="#type-dimensions">dimensions()</a>) -&gt; <a href="#type-bitmap">bitmap()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a blank bitmap of the specified size.</p>
+
+<h3 class="function"><a name="create_blank_bitmap-2">create_blank_bitmap/2</a></h3>
+<div class="spec">
+<p><tt>create_blank_bitmap(Width::<a href="#type-width">width()</a>, Height::<a href="#type-height">height()</a>) -&gt; <a href="#type-bitmap">bitmap()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a blank bitmap of the specified size.</p>
+
+<h3 class="function"><a name="create_blank_bitmap_for-1">create_blank_bitmap_for/1</a></h3>
+<div class="spec">
+<p><tt>create_blank_bitmap_for(Window::<a href="#type-window">window()</a>) -&gt; <a href="#type-bitmap">bitmap()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a blank bitmap whose size is the client one of the specified
+ window.
+</p>
+
+<h3 class="function"><a name="create_brush-1">create_brush/1</a></h3>
+<div class="spec">
+<p><tt>create_brush(RGBColor::<a href="#type-color_by_decimal">color_by_decimal()</a>) -&gt; <a href="#type-brush">brush()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a brush of the specified color.</p>
+
 <h3 class="function"><a name="create_button-2">create_button/2</a></h3>
 <div class="spec">
 <p><tt>create_button(Label::<a href="#type-label">label()</a>, Parent::<a href="#type-window">window()</a>) -&gt; <a href="#type-button">button()</a></tt><br></p>
 <p> </p>
-</div><p>Creates a new (labelled) button, with parent specified.</p>
+</div><p>Creates a (labelled) button, with parent specified.</p>
 
 <h3 class="function"><a name="create_button-6">create_button/6</a></h3>
 <div class="spec">
 <p><tt>create_button(Label::<a href="#type-label">label()</a>, Position::<a href="#type-position">position()</a>, Size::<a href="#type-size">size()</a>, Style::<a href="#type-button_style">button_style()</a>, Id::<a href="#type-wx_id">wx_id()</a>, Parent::<a href="#type-window">window()</a>) -&gt; <a href="#type-button">button()</a></tt><br></p>
 <p> </p>
-</div><p><p>Creates a new button, with parent and most settings specified.</p>
+</div><p><p>Creates a button, with parent and most settings specified.</p>
 
  (internal use only)
 </p>
@@ -437,21 +679,38 @@ like {onWindowClosed, MyFrame}.</td></tr>
 <div class="spec">
 <p><tt>create_buttons(Labels::[<a href="#type-label">label()</a>], Parent::<a href="#type-window">window()</a>) -&gt; [<a href="#type-button">button()</a>]</tt><br></p>
 <p> </p>
-</div><p>Creates new (labelled) buttons, with their (single, common) parent
- specified.
-</p>
+</div><p>Creates (labelled) buttons, with their (single, common) parent specified.</p>
 
 <h3 class="function"><a name="create_canvas-1">create_canvas/1</a></h3>
 <div class="spec">
 <p><tt>create_canvas(Parent::<a href="#type-window">window()</a>) -&gt; <a href="#type-canvas">canvas()</a></tt><br></p>
 <p> </p>
-</div><p>Creates a canvas, attached to specified parent window.</p>
+</div><p><p>Creates a (basic) canvas, attached to the specified parent window.</p>
+
+ Note: not to be mixed up with gui_opengl:create_canvas/{1,2}.
+</p>
+
+<h3 class="function"><a name="create_font-4">create_font/4</a></h3>
+<div class="spec">
+<p><tt>create_font(FontSize::<a href="#type-font_size">font_size()</a> | <a href="#type-point_size">point_size()</a>, FontFamily::<a href="#type-font_family">font_family()</a>, FontStyle::<a href="#type-font_style">font_style()</a>, FontWeight::<a href="#type-font_weight">font_weight()</a>) -&gt; <a href="#type-font">font()</a></tt><br></p>
+<p> </p>
+</div><p>Creates a corresponding font object, to determine the appearance of
+ rendered text.
+</p>
+
+<h3 class="function"><a name="create_font-5">create_font/5</a></h3>
+<div class="spec">
+<p><tt>create_font(FontSize::<a href="#type-font_size">font_size()</a> | <a href="#type-point_size">point_size()</a>, FontFamily::<a href="#type-font_family">font_family()</a>, FontStyle::<a href="#type-font_style">font_style()</a>, FontWeight::<a href="#type-font_weight">font_weight()</a>, FontOpts::[<a href="#type-font_option">font_option()</a>]) -&gt; <a href="#type-font">font()</a></tt><br></p>
+<p> </p>
+</div><p>Creates a corresponding font object, to determine the appearance of
+ rendered text.
+</p>
 
 <h3 class="function"><a name="create_frame-0">create_frame/0</a></h3>
 <div class="spec">
 <p><tt>create_frame() -&gt; <a href="#type-frame">frame()</a></tt><br></p>
 <p> </p>
-</div><p><p>Creates a new frame, with default title, ID, parent, position, size and 
+</div><p><p>Creates a frame, with default title, ID, parent, position, size and 
 style.</p>
 
  Note: this version apparently does not correctly initialise the frame;
@@ -464,19 +723,19 @@ style.</p>
 <div class="spec">
 <p><tt>create_frame(Title::<a href="#type-title">title()</a>) -&gt; <a href="#type-frame">frame()</a></tt><br></p>
 <p> </p>
-</div><p>Creates a new frame, with default position, size, style, ID and parent.</p>
+</div><p>Creates a frame, with default position, size, style, ID and parent.</p>
 
 <h3 class="function"><a name="create_frame-2">create_frame/2</a></h3>
 <div class="spec">
 <p><tt>create_frame(Title::<a href="#type-title">title()</a>, Size::<a href="#type-size">size()</a>) -&gt; <a href="#type-frame">frame()</a></tt><br></p>
 <p> </p>
-</div><p>Creates a new frame, with specified size, and default ID and parent.</p>
+</div><p>Creates a frame, with specified size, and default ID and parent.</p>
 
 <h3 class="function"><a name="create_frame-3">create_frame/3</a></h3>
 <div class="spec">
 <p><tt>create_frame(Title::<a href="#type-title">title()</a>, Id::<a href="#type-wx_id">wx_id()</a>, Parent::<a href="#type-window">window()</a>) -&gt; <a href="#type-frame">frame()</a></tt><br></p>
 <p> </p>
-</div><p><p>Creates a new frame, with default position, size and style.</p>
+</div><p><p>Creates a frame, with default position, size and style.</p>
 
  (internal use only)
 </p>
@@ -485,13 +744,13 @@ style.</p>
 <div class="spec">
 <p><tt>create_frame(Title::<a href="#type-title">title()</a>, Position::<a href="#type-position">position()</a>, Size::<a href="#type-size">size()</a>, Style::<a href="#type-frame_style">frame_style()</a>) -&gt; <a href="#type-frame">frame()</a></tt><br></p>
 <p> </p>
-</div><p>Creates a new frame, with default parent.</p>
+</div><p>Creates a frame, with default parent.</p>
 
 <h3 class="function"><a name="create_frame-6">create_frame/6</a></h3>
 <div class="spec">
 <p><tt>create_frame(Title::<a href="#type-title">title()</a>, Position::<a href="#type-position">position()</a>, Size::<a href="#type-size">size()</a>, Style::<a href="#type-frame_style">frame_style()</a>, Id::<a href="#type-wx_id">wx_id()</a>, Parent::<a href="#type-window">window()</a>) -&gt; <a href="#type-frame">frame()</a></tt><br></p>
 <p> </p>
-</div><p><p>Creates a new frame.</p>
+</div><p><p>Creates a frame.</p>
 
  (internal use only)
 </p>
@@ -500,19 +759,19 @@ style.</p>
 <div class="spec">
 <p><tt>create_panel() -&gt; <a href="#type-panel">panel()</a></tt><br></p>
 <p> </p>
-</div><p>Creates a new panel.</p>
+</div><p>Creates a panel.</p>
 
 <h3 class="function"><a name="create_panel-1">create_panel/1</a></h3>
 <div class="spec">
 <p><tt>create_panel(Parent::<a href="#type-window">window()</a>) -&gt; <a href="#type-panel">panel()</a></tt><br></p>
 <p> </p>
-</div><p>Creates a new panel, associated to specified parent.</p>
+</div><p>Creates a panel, associated to specified parent.</p>
 
 <h3 class="function"><a name="create_panel-2">create_panel/2</a></h3>
 <div class="spec">
 <p><tt>create_panel(Parent::<a href="#type-window">window()</a>, Options::<a href="#type-panel_options">panel_options()</a>) -&gt; <a href="#type-panel">panel()</a></tt><br></p>
 <p> </p>
-</div><p>Creates a new panel, associated to specified parent and with specified
+</div><p>Creates a panel, associated to specified parent and with specified
  options.
 </p>
 
@@ -520,7 +779,7 @@ style.</p>
 <div class="spec">
 <p><tt>create_panel(Parent::<a href="#type-window">window()</a>, Position::<a href="#type-position">position()</a>, Size::<a href="#type-size">size()</a>, Options::<a href="#type-panel_options">panel_options()</a>) -&gt; <a href="#type-panel">panel()</a></tt><br></p>
 <p> </p>
-</div><p>Creates a new panel, associated to specified parent and with specified
+</div><p>Creates a panel, associated to specified parent and with specified
  position and dimensions.
 </p>
 
@@ -528,15 +787,15 @@ style.</p>
 <div class="spec">
 <p><tt>create_panel(Parent::<a href="#type-window">window()</a>, X::<a href="#type-coordinate">coordinate()</a>, Y::<a href="#type-coordinate">coordinate()</a>, Width::<a href="#type-length">length()</a>, Height::<a href="#type-length">length()</a>) -&gt; <a href="#type-panel">panel()</a></tt><br></p>
 <p> </p>
-</div><p>Creates a new panel, associated to specified parent and with specified
+</div><p>Creates a panel, associated to specified parent and with specified
  position and dimensions.
 </p>
 
 <h3 class="function"><a name="create_panel-6">create_panel/6</a></h3>
 <div class="spec">
-<p><tt>create_panel(Parent::<a href="#type-window">window()</a>, X::<a href="#type-coordinate">coordinate()</a>, Y::<a href="#type-coordinate">coordinate()</a>, Width::<a href="#type-length">length()</a>, Height::<a href="#type-length">length()</a>, Options::<a href="#type-panel_options">panel_options()</a>) -&gt; <a href="#type-panel">panel()</a></tt><br></p>
+<p><tt>create_panel(Parent::<a href="#type-window">window()</a>, X::<a href="#type-coordinate">coordinate()</a>, Y::<a href="#type-coordinate">coordinate()</a>, Width::<a href="#type-width">width()</a>, Height::<a href="#type-height">height()</a>, Options::<a href="#type-panel_options">panel_options()</a>) -&gt; <a href="#type-panel">panel()</a></tt><br></p>
 <p> </p>
-</div><p>Creates a new panel, associated to specified parent, with specified
+</div><p>Creates a panel, associated to specified parent, with specified
  position, dimensions and options.
 </p>
 
@@ -562,6 +821,14 @@ style.</p>
  parent, with a box drawn around bearing specified label.
 </p>
 
+<h3 class="function"><a name="create_sizer_with_labelled_box-4">create_sizer_with_labelled_box/4</a></h3>
+<div class="spec">
+<p><tt>create_sizer_with_labelled_box(Orientation::<a href="#type-orientation">orientation()</a>, Parent::<a href="#type-window">window()</a>, FormatString::<a href="#type-format_string">format_string()</a>, FormatValues::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-sizer">sizer()</a></tt><br></p>
+<p> </p>
+</div><p>Creates a sizer operating on specified orientation, within specified
+ parent, with a box drawn around bearing specified label.
+</p>
+
 <h3 class="function"><a name="create_status_bar-1">create_status_bar/1</a></h3>
 <div class="spec">
 <p><tt>create_status_bar(Frame::<a href="#type-frame">frame()</a>) -&gt; <a href="#type-status_bar">status_bar()</a></tt><br></p>
@@ -572,23 +839,43 @@ style.</p>
 <div class="spec">
 <p><tt>create_window() -&gt; <a href="#type-window">window()</a></tt><br></p>
 <p> </p>
-</div><p>Creates a new window.</p>
+</div><p>Creates a window.</p>
 
 <h3 class="function"><a name="create_window-1">create_window/1</a></h3>
 <div class="spec">
 <p><tt>create_window(Size::<a href="#type-size">size()</a>) -&gt; <a href="#type-window">window()</a></tt><br></p>
 <p> </p>
-</div><p>Creates a new window of specified size.</p>
+</div><p>Creates a window of specified size.</p>
+
+<h3 class="function"><a name="destruct_bitmap-1">destruct_bitmap/1</a></h3>
+<div class="spec">
+<p><tt>destruct_bitmap(Bitmap::<a href="#type-bitmap">bitmap()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Destructs the specified bitmap (which must not be locked).</p>
+
+<h3 class="function"><a name="destruct_brush-1">destruct_brush/1</a></h3>
+<div class="spec">
+<p><tt>destruct_brush(Brush::<a href="#type-brush">brush()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Tells that the specified (reference-counted) brush may be deleted.</p>
 
 <h3 class="function"><a name="destruct_window-1">destruct_window/1</a></h3>
 <div class="spec">
 <p><tt>destruct_window(Window::<a href="#type-window">window()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p>Destructs specified window.</p>
+</div><p>Destructs the specified window.</p>
+
+<h3 class="function"><a name="draw_bitmap-3">draw_bitmap/3</a></h3>
+<div class="spec">
+<p><tt>draw_bitmap(SourceBitmap::<a href="#type-bitmap">bitmap()</a>, TargetDC::<a href="#type-device_context">device_context()</a>, PosInTarget::<a href="#type-point">point()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Draws the specified bitmap in the specified device context, at the
+ specified position.
+</p>
 
 <h3 class="function"><a name="draw_circle-3">draw_circle/3</a></h3>
 <div class="spec">
-<p><tt>draw_circle(Canvas::<a href="#type-canvas">canvas()</a>, Center::<a href="#type-point">point()</a>, Radius::<a href="#type-integer_distance">integer_distance()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>draw_circle(Canvas::<a href="#type-canvas">canvas()</a>, Center::<a href="#type-point">point()</a>, Radius::<a href="#type-length">length()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p>Renders specified circle (actually, depending on the fill color, it may
  be a disc) in specified canvas.
@@ -596,7 +883,7 @@ style.</p>
 
 <h3 class="function"><a name="draw_circle-4">draw_circle/4</a></h3>
 <div class="spec">
-<p><tt>draw_circle(Canvas::<a href="#type-canvas">canvas()</a>, Center::<a href="#type-point">point()</a>, Radius::<a href="#type-integer_distance">integer_distance()</a>, Color::<a href="#type-color">color()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>draw_circle(Canvas::<a href="#type-canvas">canvas()</a>, Center::<a href="#type-point">point()</a>, Radius::<a href="#type-length">length()</a>, Color::<a href="#type-color">color()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p>Renders specified circle (actually, depending on the fill color, it may
  be a disc) in specified canvas.
@@ -612,7 +899,7 @@ style.</p>
 
 <h3 class="function"><a name="draw_cross-3">draw_cross/3</a></h3>
 <div class="spec">
-<p><tt>draw_cross(Canvas::<a href="#type-canvas">canvas()</a>, Location::<a href="#type-point">point()</a>, EdgeLength::<a href="#type-integer_distance">integer_distance()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>draw_cross(Canvas::<a href="#type-canvas">canvas()</a>, Location::<a href="#type-point">point()</a>, EdgeLength::<a href="#type-length">length()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p>Draws an upright cross at specified location (2D point), with specified
  edge length.
@@ -620,7 +907,7 @@ style.</p>
 
 <h3 class="function"><a name="draw_cross-4">draw_cross/4</a></h3>
 <div class="spec">
-<p><tt>draw_cross(Canvas::<a href="#type-canvas">canvas()</a>, Location::<a href="#type-point">point()</a>, EdgeLength::<a href="#type-integer_distance">integer_distance()</a>, Color::<a href="#type-color">color()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>draw_cross(Canvas::<a href="#type-canvas">canvas()</a>, Location::<a href="#type-point">point()</a>, EdgeLength::<a href="#type-length">length()</a>, Color::<a href="#type-color">color()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p>Draws an upright cross at specified location (2D point), with specified
  edge length and color.
@@ -636,7 +923,7 @@ style.</p>
 
 <h3 class="function"><a name="draw_labelled_cross-4">draw_labelled_cross/4</a></h3>
 <div class="spec">
-<p><tt>draw_labelled_cross(Canvas::<a href="#type-canvas">canvas()</a>, Location::<a href="#type-point">point()</a>, EdgeLength::<a href="#type-integer_distance">integer_distance()</a>, LabelText::<a href="#type-label">label()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>draw_labelled_cross(Canvas::<a href="#type-canvas">canvas()</a>, Location::<a href="#type-point">point()</a>, EdgeLength::<a href="#type-length">length()</a>, LabelText::<a href="#type-label">label()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p>Draws an upright cross at specified location (2D point), with specified
  edge length and companion label.
@@ -644,7 +931,7 @@ style.</p>
 
 <h3 class="function"><a name="draw_labelled_cross-5">draw_labelled_cross/5</a></h3>
 <div class="spec">
-<p><tt>draw_labelled_cross(Canvas::<a href="#type-canvas">canvas()</a>, Location::<a href="#type-point">point()</a>, EdgeLength::<a href="#type-integer_distance">integer_distance()</a>, Color::<a href="#type-color">color()</a>, LabelText::<a href="#type-label">label()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>draw_labelled_cross(Canvas::<a href="#type-canvas">canvas()</a>, Location::<a href="#type-point">point()</a>, EdgeLength::<a href="#type-length">length()</a>, Color::<a href="#type-color">color()</a>, LabelText::<a href="#type-label">label()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p>Draws an upright cross at specified location (2D point), with specified
  edge length and companion label, and with specified color.
@@ -699,7 +986,7 @@ style.</p>
 
 <h3 class="function"><a name="draw_segment-4">draw_segment/4</a></h3>
 <div class="spec">
-<p><tt>draw_segment(Canvas::<a href="#type-canvas">canvas()</a>, L::<a href="linear_2D.html#type-line">linear_2D:line()</a>, Y1::<a href="#type-coordinate">coordinate()</a>, Y2::<a href="#type-coordinate">coordinate()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>draw_segment(Canvas::<a href="#type-canvas">canvas()</a>, L::<a href="#type-line2">line2()</a>, Y1::<a href="#type-coordinate">coordinate()</a>, Y2::<a href="#type-coordinate">coordinate()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p><p>Draws a segment of the line L between the two specified ordinates.</p>
 
@@ -707,23 +994,44 @@ style.</p>
  null).
 </p>
 
+<h3 class="function"><a name="enable_repaint-1">enable_repaint/1</a></h3>
+<div class="spec">
+<p><tt>enable_repaint(Window::<a href="#type-window">window()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Updates the specified window-like object (ex: a canvas) so that its 
+client area can be painted.</p>
+
+ <p>To be called from a repaint event handler.</p>
+
+ See <a href="https://www.erlang.org/doc/man/wxpaintdc#description" target="_top"><tt>https://www.erlang.org/doc/man/wxpaintdc#description</tt></a> for more details.
+</p>
+
+<h3 class="function"><a name="get_client_size-1">get_client_size/1</a></h3>
+<div class="spec">
+<p><tt>get_client_size(Canvas::<a href="#type-window">window()</a>) -&gt; <a href="#type-dimensions">dimensions()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the client size (as {Width,Height}) of the specified window,
+ i.e. the actual size of the area that can be drawn upon (excluded menu, bars,
+ etc.)
+</p>
+
 <h3 class="function"><a name="get_rgb-2">get_rgb/2</a></h3>
 <div class="spec">
-<p><tt>get_rgb(Canvas::<a href="#type-canvas">canvas()</a>, Point::<a href="#type-point">point()</a>) -&gt; <a href="gui_color.html#type-color_by_decimal_with_alpha">gui_color:color_by_decimal_with_alpha()</a></tt><br></p>
+<p><tt>get_rgb(Canvas::<a href="#type-canvas">canvas()</a>, Point::<a href="#type-point">point()</a>) -&gt; <a href="#type-color_by_decimal_with_alpha">color_by_decimal_with_alpha()</a></tt><br></p>
 <p> </p>
 </div><p>Returns the RGB value of the pixel at specified position.</p>
 
 <h3 class="function"><a name="get_size-1">get_size/1</a></h3>
 <div class="spec">
-<p><tt>get_size(Canvas::<a href="#type-window">window()</a>) -&gt; <a href="linear_2D.html#type-vector">linear_2D:vector()</a></tt><br></p>
+<p><tt>get_size(Canvas::<a href="#type-window">window()</a> | <a href="#type-bitmap">bitmap()</a>) -&gt; <a href="#type-dimensions">dimensions()</a></tt><br></p>
 <p> </p>
-</div><p>Returns the size (as a 2D vector, ie {Width,Height}) of specified window.</p>
+</div><p>Returns the size (as {Width,Height}) of the specified window or bitmap.</p>
 
 <h3 class="function"><a name="hide-1">hide/1</a></h3>
 <div class="spec">
 <p><tt>hide(Window::<a href="#type-window">window()</a>) -&gt; boolean()</tt><br></p>
 <p> </p>
-</div><p><p>Hides specified window.</p>
+</div><p><p>Hides the specified window.</p>
 
  Returns whether anything had to be done.
 </p>
@@ -736,18 +1044,47 @@ style.</p>
 
 <h3 class="function"><a name="load_image-2">load_image/2</a></h3>
 <div class="spec">
-<p><tt>load_image(Canvas::<a href="#type-canvas">canvas()</a>, Filename::<a href="file_utils.html#type-file_name">file_utils:file_name()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>load_image(Canvas::<a href="#type-canvas">canvas()</a>, Filename::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p>Loads image from specified path into specified canvas, pasting it at its
- upper left corner.
+</div><p>Loads image from the specified path into specified canvas, pasting it at
+ its upper left corner.
 </p>
 
 <h3 class="function"><a name="load_image-3">load_image/3</a></h3>
 <div class="spec">
-<p><tt>load_image(Canvas::<a href="#type-canvas">canvas()</a>, Position::<a href="#type-point">point()</a>, FilePath::<a href="file_utils.html#type-file_path">file_utils:file_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>load_image(Canvas::<a href="#type-canvas">canvas()</a>, Position::<a href="#type-point">point()</a>, FilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p>Loads image from specified path into specified canvas, pasting it at
+</div><p>Loads image from the specified path into specified canvas, pasting it at
  specified location.
+</p>
+
+<h3 class="function"><a name="lock_bitmap-1">lock_bitmap/1</a></h3>
+<div class="spec">
+<p><tt>lock_bitmap(Bitmap::<a href="#type-bitmap">bitmap()</a>) -&gt; <a href="#type-device_context">device_context()</a></tt><br></p>
+<p> </p>
+</div><p><p>Locks the specified bitmap, so that direct access to its content can be 
+done, through the returned device context.</p>
+
+ Once the desired changes will have been made, this bitmap must be unlocked.
+</p>
+
+<h3 class="function"><a name="lock_window-1">lock_window/1</a></h3>
+<div class="spec">
+<p><tt>lock_window(Window::<a href="#type-window">window()</a>) -&gt; <a href="#type-device_context">device_context()</a></tt><br></p>
+<p> </p>
+</div><p><p>Locks the specified window, so that direct access to its content can be 
+done, through the returned device context.</p>
+
+ Once the desired changes will have been made, this window must be unlocked.
+</p>
+
+<h3 class="function"><a name="maximise_in_parent-1">maximise_in_parent/1</a></h3>
+<div class="spec">
+<p><tt>maximise_in_parent(Widget::<a href="#type-window">window()</a>) -&gt; <a href="#type-dimensions">dimensions()</a></tt><br></p>
+<p> </p>
+</div><p>Maximises the specified widget (a specialised window; ex: a panel) in its
+ parent (adopting its maximum client size), and returns the new size of this
+ widget.
 </p>
 
 <h3 class="function"><a name="object_to_string-1">object_to_string/1</a></h3>
@@ -784,7 +1121,19 @@ selection must only be processed by one handler.</p>
 <div class="spec">
 <p><tt>push_status_text(Text::<a href="#type-text">text()</a>, StatusBar::<a href="#type-status_bar">status_bar()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p>Pushes specified text in the specified status bar.</p>
+</div><p>Pushes the specified text in the specified status bar.</p>
+
+<h3 class="function"><a name="push_status_text-3">push_status_text/3</a></h3>
+<div class="spec">
+<p><tt>push_status_text(FormatString::<a href="#type-format_string">format_string()</a>, FormatValues::<a href="#type-format_values">format_values()</a>, StatusBar::<a href="#type-status_bar">status_bar()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Pushes the specified text in the specified status bar.</p>
+
+<h3 class="function"><a name="resize-2">resize/2</a></h3>
+<div class="spec">
+<p><tt>resize(Canvas::<a href="#type-canvas">canvas()</a>, NewSize::<a href="#type-size">size()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Resizes the specified canvas according to the specified new size.</p>
 
 <h3 class="function"><a name="set_background_color-2">set_background_color/2</a></h3>
 <div class="spec">
@@ -806,9 +1155,12 @@ selection must only be processed by one handler.</p>
 
 <h3 class="function"><a name="set_fill_color-2">set_fill_color/2</a></h3>
 <div class="spec">
-<p><tt>set_fill_color(Canvas::<a href="#type-canvas">canvas()</a>, Color::<a href="#type-color">color()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>set_fill_color(Canvas::<a href="#type-canvas">canvas()</a>, Color::<a href="#type-maybe">maybe</a>(<a href="#type-color">color()</a>)) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p>Sets the color to be using for filling surfaces.</p>
+</div><p><p>Sets the color to be using for filling surfaces.</p>
+
+ An undefined color corresponds to a fully transparent one.
+</p>
 
 <h3 class="function"><a name="set_rgb-2">set_rgb/2</a></h3>
 <div class="spec">
@@ -860,18 +1212,52 @@ selection must only be processed by one handler.</p>
 
 <h3 class="function"><a name="subscribe_to_events-1">subscribe_to_events/1</a></h3>
 <div class="spec">
-<p><tt>subscribe_to_events(SubscribedEvents::<a href="gui_event.html#type-event_subscription_spec">gui_event:event_subscription_spec()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>subscribe_to_events(SubscribedEvents::<a href="#type-event_subscription_spec">event_subscription_spec()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p><p>Subscribes the current, calling process to the specified kind of events, 
-like {onWindowClosed, MyFrame}.</p>
+</div><p><p>Subscribes the current, calling process to the specified kind of events 
+(event type and emitter), like {onWindowClosed, MyFrame}.</p>
 
  <p>This process will then receive MyriadGUI callback messages whenever events 
-that match happen, such as: {onWindowClosed, [MyFrame, Context]}.</p>
+that match happen, such as: {onWindowClosed, [MyFrame, EventContext]}.</p>
 
- By default the corresponding event will not be transmitted upward in the
- widget hierarchy (as this event will be expected to be processed for good by
- the subscriber(s) it has been dispatched to), unless the propagate_event/1
- function is called from one of them.
+ <p>By default the corresponding event will not be transmitted upward in the 
+widget hierarchy (as this event will be expected to be processed for good by 
+the subscriber(s) it has been dispatched to), unless the propagate_event/1 
+function is called from one of them.</p>
+
+ Note that, at least when creating the main frame, if having subscribed to
+ onShown and onResized, on creation first a onResized event will be received by
+ the subscriber (typically for a 20x20 size), then a onShow event.
+</p>
+
+<h3 class="function"><a name="sync-1">sync/1</a></h3>
+<div class="spec">
+<p><tt>sync(Window::<a href="#type-window">window()</a>) -&gt; <a href="#type-dimensions">dimensions()</a></tt><br></p>
+<p> </p>
+</div><p><p>Synchronises the specified window, to ensure that no past operation is 
+still pending at its level.</p>
+
+ <p>Useful if there exists some means of interacting with it directly (ex: thanks 
+to an OpenGL NIF) that could create a race condition (ex: presumably 
+message-based resizing immediately followed by a direct OpenGL rendering).</p>
+
+ See gui_opengl_minimal_test:on_main_frame_resize/1 for further details.
+</p>
+
+<h3 class="function"><a name="unlock_bitmap-1">unlock_bitmap/1</a></h3>
+<div class="spec">
+<p><tt>unlock_bitmap(DC::<a href="#type-device_context">device_context()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Unlocks the specified bitmap, based on the specified device context
+ obtained from a previous locking.
+</p>
+
+<h3 class="function"><a name="unlock_window-1">unlock_window/1</a></h3>
+<div class="spec">
+<p><tt>unlock_window(DC::<a href="#type-device_context">device_context()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Unlocks the specified window, based on the specified device context
+ obtained from a previous locking.
 </p>
 <hr>
 

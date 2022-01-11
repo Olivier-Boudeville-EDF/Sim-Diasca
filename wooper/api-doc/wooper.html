@@ -980,7 +980,7 @@ but have different arities).</p>
 
 <h3 class="function"><a name="log_error-2">log_error/2</a></h3>
 <div class="spec">
-<p><tt>log_error(FormatString::<a href="#type-format_string">format_string()</a>, ValueList::[term()]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>log_error(FormatString::<a href="#type-format_string">format_string()</a>, ValueList::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p>Reports (as synchronously as possible, in order to avoid loosing this
  notification) the specified error to the user, typically by displaying an
@@ -989,7 +989,7 @@ but have different arities).</p>
 
 <h3 class="function"><a name="log_error-3">log_error/3</a></h3>
 <div class="spec">
-<p><tt>log_error(FormatString::<a href="#type-format_string">format_string()</a>, ValueList::[term()], State::<a href="wooper.html#type-state">wooper:state()</a> | <a href="basic_utils.html#type-module_name">basic_utils:module_name()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>log_error(FormatString::<a href="#type-format_string">format_string()</a>, ValueList::<a href="#type-format_values">format_values()</a>, State::<a href="wooper.html#type-state">wooper:state()</a> | <a href="basic_utils.html#type-module_name">basic_utils:module_name()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p>Reports (as synchronously as possible, in order to avoid loosing this
  notification) the specified error about the current WOOPER instance
@@ -1024,7 +1024,7 @@ but have different arities).</p>
 
 <h3 class="function"><a name="log_warning-2">log_warning/2</a></h3>
 <div class="spec">
-<p><tt>log_warning(FormatString::<a href="#type-format_string">format_string()</a>, ValueList::[term()]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>log_warning(FormatString::<a href="#type-format_string">format_string()</a>, ValueList::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p>Reports (on a best-effort basis) the specified warning to the user,
  typically by displaying a warning report on the console.

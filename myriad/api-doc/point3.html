@@ -1,0 +1,386 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module point3</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module point3</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Module implementing the support for <b>3D points</b>.
+
+
+<h2><a name="description">Description</a></h2><p>Module implementing the support for <b>3D points</b>.</p>
+
+ See also:
+ - the corresponding vectors (in vector3.erl) and matrices (in matrix3.erl)
+ - the (unspecialised) points of arbitrary dimensions, in point.erl
+ - the various 3D services in linear_3D.erl
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-any_coordinate">any_coordinate()</a></h3>
+<p><tt>any_coordinate() = <a href="linear.html#type-any_coordinate">linear:any_coordinate()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-any_point3">any_point3()</a></h3>
+<p><tt>any_point3() = <a href="#type-point3">point3()</a> | <a href="#type-integer_point3">integer_point3()</a></tt></p>
+<p> A point in a 3D space, with any numerical coordinates (3 of them).</p>
+
+<h3 class="typedecl"><a name="type-any_vector3">any_vector3()</a></h3>
+<p><tt>any_vector3() = <a href="vector3.html#type-any_vector3">vector3:any_vector3()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-any_vertex3">any_vertex3()</a></h3>
+<p><tt>any_vertex3() = <a href="#type-any_point3">any_point3()</a></tt></p>
+<p> A 3D vertex of a polygon, with any numerical coordinates (3 of them).</p>
+
+<h3 class="typedecl"><a name="type-coordinate">coordinate()</a></h3>
+<p><tt>coordinate() = <a href="linear.html#type-coordinate">linear:coordinate()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-distance">distance()</a></h3>
+<p><tt>distance() = <a href="linear.html#type-distance">linear:distance()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-factor">factor()</a></h3>
+<p><tt>factor() = <a href="math_utils.html#type-factor">math_utils:factor()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-integer_coordinate">integer_coordinate()</a></h3>
+<p><tt>integer_coordinate() = <a href="linear.html#type-integer_coordinate">linear:integer_coordinate()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-integer_point3">integer_point3()</a></h3>
+<p><tt>integer_point3() = {X::<a href="#type-integer_coordinate">integer_coordinate()</a>, Y::<a href="#type-integer_coordinate">integer_coordinate()</a>, Z::<a href="#type-integer_coordinate">integer_coordinate()</a>}</tt></p>
+<p> A point in a 3D space, with (exactly) 3 integer coordinates.</p>
+
+<h3 class="typedecl"><a name="type-integer_vertex3">integer_vertex3()</a></h3>
+<p><tt>integer_vertex3() = <a href="#type-point3">point3()</a></tt></p>
+<p> A 3D integer vertex of a mesh.</p>
+
+<h3 class="typedecl"><a name="type-point3">point3()</a></h3>
+<p><tt>point3() = {X::<a href="#type-coordinate">coordinate()</a>, Y::<a href="#type-coordinate">coordinate()</a>, Z::<a href="#type-coordinate">coordinate()</a>}</tt></p>
+<p> A point in a 3D space, with (exactly) 3 floating-point coordinates.</p>
+
+<h3 class="typedecl"><a name="type-square_distance">square_distance()</a></h3>
+<p><tt>square_distance() = <a href="linear.html#type-square_distance">linear:square_distance()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-user_coordinate">user_coordinate()</a></h3>
+<p><tt>user_coordinate() = <a href="linear.html#type-user_coordinate">linear:user_coordinate()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-user_point3">user_point3()</a></h3>
+<p><tt>user_point3() = <a href="#type-any_point3">any_point3()</a> | [<a href="#type-any_coordinate">any_coordinate()</a>]</tt></p>
+<p> A user-specified point, preferably as a tuple, otherwise as a list (hence as a
+ vector), with 3 integer or floating-point coordinates.</p>
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-vector3">vector3()</a></h3>
+<p><tt>vector3() = <a href="vector3.html#type-vector3">vector3:vector3()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-vertex3">vertex3()</a></h3>
+<p><tt>vertex3() = <a href="#type-point3">point3()</a></tt></p>
+<p> A 3D (floating-point) vertex of a mesh.</p>
+
+<h3 class="typedecl"><a name="type-yup_point3">yup_point3()</a></h3>
+<p><tt>yup_point3() = <a href="#type-point3">point3()</a></tt></p>
+<p> A point in a 3D space, yet with Y-UP conventions (as opposed to Myriad's Z-UP
+ ones). Refer to the design notes in linear_3D.erl for further details.</p>
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#are_close-2">are_close/2</a></td><td>Returns whether the two specified 3D points are close, that is if they
+ could be considered as representing the same point (equality operator on
+ points).</td></tr>
+<tr><td valign="top"><a href="#are_equal-2">are_equal/2</a></td><td>Returns whether the two specified 3D points are equal, that is if they
+ could be considered as representing the same point (equality operator on
+ points).</td></tr>
+<tr><td valign="top"><a href="#check-1">check/1</a></td><td>Checks that the specified 3D point is legit, and returns it.</td></tr>
+<tr><td valign="top"><a href="#distance-2">distance/2</a></td><td>Returns the distance between the two specified 3D points.</td></tr>
+<tr><td valign="top"><a href="#from_vector-1">from_vector/1</a></td><td>Returns a 3D point corresponding to the specified vector (expected to be
+ type-homogeneous).</td></tr>
+<tr><td valign="top"><a href="#get_center-2">get_center/2</a></td><td>Returns a point corresponding the midpoint (middle) of the two specified
+ points.</td></tr>
+<tr><td valign="top"><a href="#get_integer_center-2">get_integer_center/2</a></td><td>Returns a point corresponding the middle of the two specified points,
+ returned with integer coordinates.</td></tr>
+<tr><td valign="top"><a href="#is_within-3">is_within/3</a></td><td>Tells whether the specified 3D point P1 is within a distance D from 3D
+ point P2, using some margin to overcome numerical errors.</td></tr>
+<tr><td valign="top"><a href="#is_within_square-3">is_within_square/3</a></td><td>Tells whether the specified 3D point P1 is within a square distance
+ SquareD from 3D point P2.</td></tr>
+<tr><td valign="top"><a href="#new-1">new/1</a></td><td>Returns a 3D point corresponding to the user-specified one (preferably a 
+tuple rather than a list).</td></tr>
+<tr><td valign="top"><a href="#new-3">new/3</a></td><td>Returns a 3D point corresponding to the user-specified one.</td></tr>
+<tr><td valign="top"><a href="#new_integer-3">new_integer/3</a></td><td>Returns an integer 3D point corresponding to the user-specified one.</td></tr>
+<tr><td valign="top"><a href="#null-0">null/0</a></td><td>Returns a 3D point whose coordinates are all null, that is the origin of 
+the local referential.</td></tr>
+<tr><td valign="top"><a href="#point3_to_yup-1">point3_to_yup/1</a></td><td>Converts a usual 3D point into one that follows the Y-UP convention (as
+ opposed to the Myriad Z-UP one, see the design notes in linear_3D).</td></tr>
+<tr><td valign="top"><a href="#point3_to_yups-1">point3_to_yups/1</a></td><td>Converts usual 3D points into ones that follow the Y-UP convention (as
+ opposed to the Myriad Z-UP one, see the design notes in linear_3D).</td></tr>
+<tr><td valign="top"><a href="#roundify-1">roundify/1</a></td><td>Returns a point whose floating-point coordinates have been rounded to the
+ respective nearest integers.</td></tr>
+<tr><td valign="top"><a href="#scale-2">scale/2</a></td><td>Scales the specified 3D point of the specified scalar factor.</td></tr>
+<tr><td valign="top"><a href="#square_distance-2">square_distance/2</a></td><td>Returns the square of the distance between the two specified 3D points.</td></tr>
+<tr><td valign="top"><a href="#to_any_vector-1">to_any_vector/1</a></td><td>Returns a 3D vector (with coordinates of the same type) corresponding to
+ the specified 3D point.</td></tr>
+<tr><td valign="top"><a href="#to_basic_string-1">to_basic_string/1</a></td><td>Returns a basic, not even fixed-width for floating-point coordinates (see
+ linear.hrl for width and precision) representation of the specified 3D point.</td></tr>
+<tr><td valign="top"><a href="#to_compact_string-1">to_compact_string/1</a></td><td>Returns a compact, textual, informal representation of the specified
+ 3D point.</td></tr>
+<tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td>Returns a textual representation of the specified 3D point; full float
+ precision is shown.</td></tr>
+<tr><td valign="top"><a href="#to_user_string-1">to_user_string/1</a></td><td>Returns a textual, more user-friendly representation of the specified 
+3D point; full float precision is shown.</td></tr>
+<tr><td valign="top"><a href="#to_vector-1">to_vector/1</a></td><td>Returns a 3D vector (with floating-vector coordinates) corresponding to
+ the specified 3D point.</td></tr>
+<tr><td valign="top"><a href="#translate-2">translate/2</a></td><td>Returns a point corresponding to the specified point translated of the
+ specified vector.</td></tr>
+<tr><td valign="top"><a href="#vectorize-2">vectorize/2</a></td><td>Returns a vector V made from the specified two points: V=P2-P1.</td></tr>
+<tr><td valign="top"><a href="#yup_to_point3-1">yup_to_point3/1</a></td><td>Converts a 3D following the Y-UP convention (as opposed to the Myriad
+ Z-UP one, see the design notes in linear_3D) into a usual one.</td></tr>
+<tr><td valign="top"><a href="#yup_to_point3s-1">yup_to_point3s/1</a></td><td>Converts a 3D following the Y-UP convention (as opposed to the Myriad
+ Z-UP one, see the design notes in linear_3D) into a usual one.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="are_close-2">are_close/2</a></h3>
+<div class="spec">
+<p><tt>are_close(P1::<a href="#type-point3">point3()</a>, P2::<a href="#type-point3">point3()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Returns whether the two specified 3D points are close, that is if they
+ could be considered as representing the same point (equality operator on
+ points).
+</p>
+
+<h3 class="function"><a name="are_equal-2">are_equal/2</a></h3>
+<div class="spec">
+<p><tt>are_equal(P1::<a href="#type-point3">point3()</a>, P2::<a href="#type-point3">point3()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Returns whether the two specified 3D points are equal, that is if they
+ could be considered as representing the same point (equality operator on
+ points).
+</p>
+
+<h3 class="function"><a name="check-1">check/1</a></h3>
+<div class="spec">
+<p><tt>check(P::<a href="#type-point3">point3()</a>) -&gt; <a href="#type-point3">point3()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that the specified 3D point is legit, and returns it.</p>
+
+<h3 class="function"><a name="distance-2">distance/2</a></h3>
+<div class="spec">
+<p><tt>distance(P1::<a href="#type-point3">point3()</a>, P2::<a href="#type-point3">point3()</a>) -&gt; <a href="#type-distance">distance()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the distance between the two specified 3D points.</p>
+
+ Note: just for comparison purposes, computing the square root is useless.
+</p>
+
+<h3 class="function"><a name="from_vector-1">from_vector/1</a></h3>
+<div class="spec">
+<p><tt>from_vector(V3::<a href="#type-any_vector3">any_vector3()</a>) -&gt; <a href="#type-any_point3">any_point3()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a 3D point corresponding to the specified vector (expected to be
+ type-homogeneous).
+</p>
+
+<h3 class="function"><a name="get_center-2">get_center/2</a></h3>
+<div class="spec">
+<p><tt>get_center(P1::<a href="#type-point3">point3()</a>, P2::<a href="#type-point3">point3()</a>) -&gt; <a href="#type-point3">point3()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a point corresponding the midpoint (middle) of the two specified
+ points.
+</p>
+
+<h3 class="function"><a name="get_integer_center-2">get_integer_center/2</a></h3>
+<div class="spec">
+<p><tt>get_integer_center(P1::<a href="#type-point3">point3()</a>, P2::<a href="#type-point3">point3()</a>) -&gt; <a href="#type-integer_point3">integer_point3()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a point corresponding the middle of the two specified points,
+ returned with integer coordinates.
+</p>
+
+<h3 class="function"><a name="is_within-3">is_within/3</a></h3>
+<div class="spec">
+<p><tt>is_within(P1::<a href="#type-point3">point3()</a>, P2::<a href="#type-point3">point3()</a>, D::<a href="#type-distance">distance()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Tells whether the specified 3D point P1 is within a distance D from 3D
+ point P2, using some margin to overcome numerical errors.
+</p>
+
+<h3 class="function"><a name="is_within_square-3">is_within_square/3</a></h3>
+<div class="spec">
+<p><tt>is_within_square(P1::<a href="#type-point3">point3()</a>, P2::<a href="#type-point3">point3()</a>, SquareD::<a href="#type-square_distance">square_distance()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Tells whether the specified 3D point P1 is within a square distance
+ SquareD from 3D point P2.
+</p>
+
+<h3 class="function"><a name="new-1">new/1</a></h3>
+<div class="spec">
+<p><tt>new(UserPoint3::<a href="#type-user_point3">user_point3()</a>) -&gt; <a href="#type-any_point3">any_point3()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns a 3D point corresponding to the user-specified one (preferably a 
+tuple rather than a list).</p>
+
+ We do not check whether all coordinates are either integer or floating-point
+ ones.
+</p>
+
+<h3 class="function"><a name="new-3">new/3</a></h3>
+<div class="spec">
+<p><tt>new(X::<a href="#type-user_coordinate">user_coordinate()</a>, Y::<a href="#type-user_coordinate">user_coordinate()</a>, Z::<a href="#type-user_coordinate">user_coordinate()</a>) -&gt; <a href="#type-point3">point3()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a 3D point corresponding to the user-specified one.</p>
+
+<h3 class="function"><a name="new_integer-3">new_integer/3</a></h3>
+<div class="spec">
+<p><tt>new_integer(X::<a href="#type-integer_coordinate">integer_coordinate()</a>, Y::<a href="#type-integer_coordinate">integer_coordinate()</a>, Z::<a href="#type-integer_coordinate">integer_coordinate()</a>) -&gt; <a href="#type-integer_point3">integer_point3()</a></tt><br></p>
+<p> </p>
+</div><p>Returns an integer 3D point corresponding to the user-specified one.</p>
+
+<h3 class="function"><a name="null-0">null/0</a></h3>
+<div class="spec">
+<p><tt>null() -&gt; <a href="#type-point3">point3()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns a 3D point whose coordinates are all null, that is the origin of 
+the local referential.</p>
+
+ See also linear_3D:get_origin/0.
+</p>
+
+<h3 class="function"><a name="point3_to_yup-1">point3_to_yup/1</a></h3>
+<div class="spec">
+<p><tt>point3_to_yup(P::<a href="#type-point3">point3()</a>) -&gt; <a href="#type-yup_point3">yup_point3()</a></tt><br></p>
+<p> </p>
+</div><p>Converts a usual 3D point into one that follows the Y-UP convention (as
+ opposed to the Myriad Z-UP one, see the design notes in linear_3D).
+</p>
+
+<h3 class="function"><a name="point3_to_yups-1">point3_to_yups/1</a></h3>
+<div class="spec">
+<p><tt>point3_to_yups(Points::[<a href="#type-point3">point3()</a>]) -&gt; [<a href="#type-yup_point3">yup_point3()</a>]</tt><br></p>
+<p> </p>
+</div><p>Converts usual 3D points into ones that follow the Y-UP convention (as
+ opposed to the Myriad Z-UP one, see the design notes in linear_3D).
+</p>
+
+<h3 class="function"><a name="roundify-1">roundify/1</a></h3>
+<div class="spec">
+<p><tt>roundify(P::<a href="#type-point3">point3()</a>) -&gt; <a href="#type-integer_point3">integer_point3()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a point whose floating-point coordinates have been rounded to the
+ respective nearest integers.
+</p>
+
+<h3 class="function"><a name="scale-2">scale/2</a></h3>
+<div class="spec">
+<p><tt>scale(P::<a href="#type-any_point3">any_point3()</a>, Factor::<a href="#type-factor">factor()</a>) -&gt; <a href="#type-point3">point3()</a></tt><br></p>
+<p> </p>
+</div><p>Scales the specified 3D point of the specified scalar factor.</p>
+
+<h3 class="function"><a name="square_distance-2">square_distance/2</a></h3>
+<div class="spec">
+<p><tt>square_distance(P1::<a href="#type-point3">point3()</a>, P2::<a href="#type-point3">point3()</a>) -&gt; <a href="#type-square_distance">square_distance()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the square of the distance between the two specified 3D points.</p>
+
+ <p>For comparison purposes, computing the square root is useless.</p>
+
+ Could rely on vectorize and square_magnitude as well.
+</p>
+
+<h3 class="function"><a name="to_any_vector-1">to_any_vector/1</a></h3>
+<div class="spec">
+<p><tt>to_any_vector(P3::<a href="#type-any_point3">any_point3()</a>) -&gt; <a href="#type-any_vector3">any_vector3()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a 3D vector (with coordinates of the same type) corresponding to
+ the specified 3D point.
+</p>
+
+<h3 class="function"><a name="to_basic_string-1">to_basic_string/1</a></h3>
+<div class="spec">
+<p><tt>to_basic_string(Point3::<a href="#type-any_point3">any_point3()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a basic, not even fixed-width for floating-point coordinates (see
+ linear.hrl for width and precision) representation of the specified 3D point.
+</p>
+
+<h3 class="function"><a name="to_compact_string-1">to_compact_string/1</a></h3>
+<div class="spec">
+<p><tt>to_compact_string(Point3::<a href="#type-any_point3">any_point3()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a compact, textual, informal representation of the specified
+ 3D point.
+</p>
+
+<h3 class="function"><a name="to_string-1">to_string/1</a></h3>
+<div class="spec">
+<p><tt>to_string(Point3::<a href="#type-any_point3">any_point3()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual representation of the specified 3D point; full float
+ precision is shown.
+</p>
+
+<h3 class="function"><a name="to_user_string-1">to_user_string/1</a></h3>
+<div class="spec">
+<p><tt>to_user_string(Point3::<a href="#type-any_point3">any_point3()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns a textual, more user-friendly representation of the specified 
+3D point; full float precision is shown.</p>
+
+ This is the recommended representation.
+</p>
+
+<h3 class="function"><a name="to_vector-1">to_vector/1</a></h3>
+<div class="spec">
+<p><tt>to_vector(P3::<a href="#type-any_point3">any_point3()</a>) -&gt; <a href="#type-vector3">vector3()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a 3D vector (with floating-vector coordinates) corresponding to
+ the specified 3D point.
+</p>
+
+<h3 class="function"><a name="translate-2">translate/2</a></h3>
+<div class="spec">
+<p><tt>translate(P::<a href="#type-point3">point3()</a>, V::<a href="#type-vector3">vector3()</a>) -&gt; <a href="#type-point3">point3()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a point corresponding to the specified point translated of the
+ specified vector.
+</p>
+
+<h3 class="function"><a name="vectorize-2">vectorize/2</a></h3>
+<div class="spec">
+<p><tt>vectorize(P1::<a href="#type-point3">point3()</a>, P2::<a href="#type-point3">point3()</a>) -&gt; <a href="#type-vector3">vector3()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a vector V made from the specified two points: V=P2-P1.</p>
+
+<h3 class="function"><a name="yup_to_point3-1">yup_to_point3/1</a></h3>
+<div class="spec">
+<p><tt>yup_to_point3(P::<a href="#type-yup_point3">yup_point3()</a>) -&gt; <a href="#type-point3">point3()</a></tt><br></p>
+<p> </p>
+</div><p>Converts a 3D following the Y-UP convention (as opposed to the Myriad
+ Z-UP one, see the design notes in linear_3D) into a usual one.
+</p>
+
+<h3 class="function"><a name="yup_to_point3s-1">yup_to_point3s/1</a></h3>
+<div class="spec">
+<p><tt>yup_to_point3s(Points::[<a href="#type-yup_point3">yup_point3()</a>]) -&gt; [<a href="#type-point3">point3()</a>]</tt><br></p>
+<p> </p>
+</div><p>Converts a 3D following the Y-UP convention (as opposed to the Myriad
+ Z-UP one, see the design notes in linear_3D) into a usual one.
+</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

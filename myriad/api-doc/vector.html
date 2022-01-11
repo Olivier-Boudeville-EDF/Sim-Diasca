@@ -1,0 +1,320 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module vector</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module vector</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Module implementing the support for vectors of <b>arbitrary
+ dimension</b>.
+
+
+<h2><a name="description">Description</a></h2><p>Module implementing the support for vectors of <b>arbitrary
+ dimension</b>.</p>
+
+ See also:
+ - the corresponding arbitrary-dimensioned points (in point.erl) and matrices
+ (in matrix.erl)
+ - the specialised vectors, such as vector{2,3,4}.erl
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-any_coordinate">any_coordinate()</a></h3>
+<p><tt>any_coordinate() = <a href="linear.html#type-any_coordinate">linear:any_coordinate()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-any_point">any_point()</a></h3>
+<p><tt>any_point() = <a href="point.html#type-any_point">point:any_point()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-any_vector">any_vector()</a></h3>
+<p><tt>any_vector() = <a href="#type-vector">vector()</a> | <a href="#type-integer_vector">integer_vector()</a></tt></p>
+<p> A vector of any dimension, with any types of numerical coordinates.</p>
+
+<h3 class="typedecl"><a name="type-coordinate">coordinate()</a></h3>
+<p><tt>coordinate() = <a href="linear.html#type-coordinate">linear:coordinate()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-dimension">dimension()</a></h3>
+<p><tt>dimension() = <a href="linear.html#type-dimension">linear:dimension()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-distance">distance()</a></h3>
+<p><tt>distance() = <a href="linear.html#type-distance">linear:distance()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-factor">factor()</a></h3>
+<p><tt>factor() = <a href="math_utils.html#type-factor">math_utils:factor()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-integer_coordinate">integer_coordinate()</a></h3>
+<p><tt>integer_coordinate() = <a href="linear.html#type-integer_coordinate">linear:integer_coordinate()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-integer_vector">integer_vector()</a></h3>
+<p><tt>integer_vector() = [<a href="#type-integer_coordinate">integer_coordinate()</a>]</tt></p>
+<p> A vector of arbitrary dimension, with integer coordinates.</p>
+
+<h3 class="typedecl"><a name="type-normal">normal()</a></h3>
+<p><tt>normal() = <a href="#type-vector">vector()</a></tt></p>
+<p><p> A vector orthogonal to a plane.</p>
+
+ Defined for documentation purpose.</p>
+
+<h3 class="typedecl"><a name="type-point">point()</a></h3>
+<p><tt>point() = <a href="point.html#type-point">point:point()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-specialised_vector">specialised_vector()</a></h3>
+<p><tt>specialised_vector() = <a href="vector2.html#type-vector2">vector2:vector2()</a> | <a href="vector3.html#type-vector3">vector3:vector3()</a> | <a href="vector4.html#type-vector4">vector4:vector4()</a></tt></p>
+<p> A specialised vector that is of one of the specifically supported dimensions.</p>
+
+<h3 class="typedecl"><a name="type-square_distance">square_distance()</a></h3>
+<p><tt>square_distance() = <a href="linear.html#type-square_distance">linear:square_distance()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-unit_normal">unit_normal()</a></h3>
+<p><tt>unit_normal() = <a href="#type-unit_vector">unit_vector()</a></tt></p>
+<p><p> A unit vector orthogonal to a plane.</p>
+
+ Defined for documentation purpose.</p>
+
+<h3 class="typedecl"><a name="type-unit_vector">unit_vector()</a></h3>
+<p><tt>unit_vector() = <a href="#type-vector">vector()</a></tt></p>
+<p><p> A unit vector, that is a vector of magnitude 1.0.</p>
+
+ Defined for documentation purpose.</p>
+
+<h3 class="typedecl"><a name="type-user_vector">user_vector()</a></h3>
+<p><tt>user_vector() = [<a href="#type-any_coordinate">any_coordinate()</a>]</tt></p>
+<p> A user-specified vector, as a list (hence not a tuple) with integer or
+ floating-point coordinates.</p>
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-vector">vector()</a></h3>
+<p><tt>vector() = [<a href="#type-coordinate">coordinate()</a>]</tt></p>
+<p> An (internal) vector of arbitrary dimension (with floating-point coordinates).</p>
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add-1">add/1</a></td><td>Returns the sum of all vectors (supposedly of the same dimension) in the
+ specified (supposedly non-empty) list.</td></tr>
+<tr><td valign="top"><a href="#add-2">add/2</a></td><td>Returns the sum of the two specified vectors (supposedly of the same
+ dimension).</td></tr>
+<tr><td valign="top"><a href="#are_equal-2">are_equal/2</a></td><td>Returns true iff the two specified vectors are considered equal.</td></tr>
+<tr><td valign="top"><a href="#check-1">check/1</a></td><td>Checks that the specified vector is legit, and returns it.</td></tr>
+<tr><td valign="top"><a href="#check_integer-1">check_integer/1</a></td><td>Checks that the specified integer vector is legit, and returns it.</td></tr>
+<tr><td valign="top"><a href="#dimension-1">dimension/1</a></td><td>Returns the dimension of the specified vector.</td></tr>
+<tr><td valign="top"><a href="#dot_product-2">dot_product/2</a></td><td>Returns the dot-product of the two specified vectors.</td></tr>
+<tr><td valign="top"><a href="#from_point-1">from_point/1</a></td><td>Returns an (arbitrary) vector corresponding to the specified point.</td></tr>
+<tr><td valign="top"><a href="#is_unitary-1">is_unitary/1</a></td><td>Returns whether the specified vector is unitary, that is whether it is of
+ magnitude 1.0.</td></tr>
+<tr><td valign="top"><a href="#magnitude-1">magnitude/1</a></td><td>Returns the magnitude of the specified vector.</td></tr>
+<tr><td valign="top"><a href="#mult-2">mult/2</a></td><td>Returns the Hadamard product of the two specified vectors.</td></tr>
+<tr><td valign="top"><a href="#negate-1">negate/1</a></td><td>Negates the specified vector: returns the opposite one (of the same
+ magnitude).</td></tr>
+<tr><td valign="top"><a href="#new-1">new/1</a></td><td>Returns an (arbitrary) vector corresponding to the user-specified one.</td></tr>
+<tr><td valign="top"><a href="#normalise-1">normalise/1</a></td><td>Normalises the specified non-null vector, that is returns it once scaled
+ to an unit length (whose magnitude is thus 1.0).</td></tr>
+<tr><td valign="top"><a href="#null-1">null/1</a></td><td>Returns an (arbitrary) vector of specified dimension whose coordinates
+ are all null.</td></tr>
+<tr><td valign="top"><a href="#scale-2">scale/2</a></td><td>Scales the specified vector of the specified factor.</td></tr>
+<tr><td valign="top"><a href="#square_magnitude-1">square_magnitude/1</a></td><td>Returns the square of the magnitude of the specified vector.</td></tr>
+<tr><td valign="top"><a href="#sub-2">sub/2</a></td><td>Returns the subtraction of the two specified vectors (supposedly of the
+ same dimension): V = V1 - V2.</td></tr>
+<tr><td valign="top"><a href="#to_basic_string-1">to_basic_string/1</a></td><td>Returns a basic, not even fixed-width for floating-vector coordinates
+ (see linear.hrl for width and precision) representation of the specified
+ vector.</td></tr>
+<tr><td valign="top"><a href="#to_compact_string-1">to_compact_string/1</a></td><td>Returns a compact, textual, informal representation of the specified
+ vector.</td></tr>
+<tr><td valign="top"><a href="#to_point-1">to_point/1</a></td><td>Returns an (arbitrary, and with floating-point coordinates) point
+ corresponding to the specified vector.</td></tr>
+<tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td>Returns a textual representation of the specified vector; full float
+ precision is shown.</td></tr>
+<tr><td valign="top"><a href="#to_user_string-1">to_user_string/1</a></td><td>Returns a textual, more user-friendly representation of the specified 
+vector; full float precision is shown.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="add-1">add/1</a></h3>
+<div class="spec">
+<p><tt>add(Vectors::[<a href="#type-vector">vector()</a>]) -&gt; <a href="#type-vector">vector()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the sum of all vectors (supposedly of the same dimension) in the
+ specified (supposedly non-empty) list.
+</p>
+
+<h3 class="function"><a name="add-2">add/2</a></h3>
+<div class="spec">
+<p><tt>add(V1::<a href="#type-vector">vector()</a>, V2::<a href="#type-vector">vector()</a>) -&gt; <a href="#type-vector">vector()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the sum of the two specified vectors (supposedly of the same
+ dimension).
+</p>
+
+<h3 class="function"><a name="are_equal-2">are_equal/2</a></h3>
+<div class="spec">
+<p><tt>are_equal(V1::<a href="#type-vector">vector()</a>, V2::<a href="#type-vector">vector()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Returns true iff the two specified vectors are considered equal.</p>
+
+<h3 class="function"><a name="check-1">check/1</a></h3>
+<div class="spec">
+<p><tt>check(V::<a href="#type-vector">vector()</a>) -&gt; <a href="#type-vector">vector()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that the specified vector is legit, and returns it.</p>
+
+<h3 class="function"><a name="check_integer-1">check_integer/1</a></h3>
+<div class="spec">
+<p><tt>check_integer(V::<a href="#type-integer_vector">integer_vector()</a>) -&gt; <a href="#type-integer_vector">integer_vector()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that the specified integer vector is legit, and returns it.</p>
+
+<h3 class="function"><a name="dimension-1">dimension/1</a></h3>
+<div class="spec">
+<p><tt>dimension(V::<a href="#type-any_vector">any_vector()</a>) -&gt; <a href="#type-dimension">dimension()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the dimension of the specified vector.</p>
+
+<h3 class="function"><a name="dot_product-2">dot_product/2</a></h3>
+<div class="spec">
+<p><tt>dot_product(V1::<a href="#type-vector">vector()</a>, V2::<a href="#type-vector">vector()</a>) -&gt; float()</tt><br></p>
+<p> </p>
+</div><p>Returns the dot-product of the two specified vectors.</p>
+
+<h3 class="function"><a name="from_point-1">from_point/1</a></h3>
+<div class="spec">
+<p><tt>from_point(P::<a href="#type-any_point">any_point()</a>) -&gt; <a href="#type-vector">vector()</a></tt><br></p>
+<p> </p>
+</div><p>Returns an (arbitrary) vector corresponding to the specified point.</p>
+
+<h3 class="function"><a name="is_unitary-1">is_unitary/1</a></h3>
+<div class="spec">
+<p><tt>is_unitary(V::<a href="#type-vector">vector()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Returns whether the specified vector is unitary, that is whether it is of
+ magnitude 1.0.
+</p>
+
+<h3 class="function"><a name="magnitude-1">magnitude/1</a></h3>
+<div class="spec">
+<p><tt>magnitude(V::<a href="#type-vector">vector()</a>) -&gt; <a href="#type-distance">distance()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the magnitude of the specified vector.</p>
+
+<h3 class="function"><a name="mult-2">mult/2</a></h3>
+<div class="spec">
+<p><tt>mult(V1::<a href="#type-vector">vector()</a>, V2::<a href="#type-vector">vector()</a>) -&gt; <a href="#type-vector">vector()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the Hadamard product of the two specified vectors.</p>
+
+ Each coordinate of the result vector is the product of the coordinates of the
+ same ranks in the two input vectors.
+</p>
+
+<h3 class="function"><a name="negate-1">negate/1</a></h3>
+<div class="spec">
+<p><tt>negate(V::<a href="#type-vector">vector()</a>) -&gt; <a href="#type-vector">vector()</a></tt><br></p>
+<p> </p>
+</div><p>Negates the specified vector: returns the opposite one (of the same
+ magnitude).
+</p>
+
+<h3 class="function"><a name="new-1">new/1</a></h3>
+<div class="spec">
+<p><tt>new(UserVector::<a href="#type-user_vector">user_vector()</a>) -&gt; <a href="#type-vector">vector()</a></tt><br></p>
+<p> </p>
+</div><p>Returns an (arbitrary) vector corresponding to the user-specified one.</p>
+
+<h3 class="function"><a name="normalise-1">normalise/1</a></h3>
+<div class="spec">
+<p><tt>normalise(V::<a href="#type-vector">vector()</a>) -&gt; <a href="#type-unit_vector">unit_vector()</a></tt><br></p>
+<p> </p>
+</div><p>Normalises the specified non-null vector, that is returns it once scaled
+ to an unit length (whose magnitude is thus 1.0).
+</p>
+
+<h3 class="function"><a name="null-1">null/1</a></h3>
+<div class="spec">
+<p><tt>null(Dim::<a href="#type-dimension">dimension()</a>) -&gt; <a href="#type-vector">vector()</a></tt><br></p>
+<p> </p>
+</div><p>Returns an (arbitrary) vector of specified dimension whose coordinates
+ are all null.
+</p>
+
+<h3 class="function"><a name="scale-2">scale/2</a></h3>
+<div class="spec">
+<p><tt>scale(V::<a href="#type-vector">vector()</a>, Factor::<a href="#type-factor">factor()</a>) -&gt; <a href="#type-vector">vector()</a></tt><br></p>
+<p> </p>
+</div><p>Scales the specified vector of the specified factor.</p>
+
+<h3 class="function"><a name="square_magnitude-1">square_magnitude/1</a></h3>
+<div class="spec">
+<p><tt>square_magnitude(V::<a href="#type-vector">vector()</a>) -&gt; <a href="#type-square_distance">square_distance()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the square of the magnitude of the specified vector.</p>
+
+<h3 class="function"><a name="sub-2">sub/2</a></h3>
+<div class="spec">
+<p><tt>sub(V1::<a href="#type-vector">vector()</a>, V2::<a href="#type-vector">vector()</a>) -&gt; <a href="#type-vector">vector()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the subtraction of the two specified vectors (supposedly of the
+ same dimension): V = V1 - V2.
+</p>
+
+<h3 class="function"><a name="to_basic_string-1">to_basic_string/1</a></h3>
+<div class="spec">
+<p><tt>to_basic_string(Vector::<a href="#type-any_vector">any_vector()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a basic, not even fixed-width for floating-vector coordinates
+ (see linear.hrl for width and precision) representation of the specified
+ vector.
+</p>
+
+<h3 class="function"><a name="to_compact_string-1">to_compact_string/1</a></h3>
+<div class="spec">
+<p><tt>to_compact_string(Vector::<a href="#type-vector">vector()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a compact, textual, informal representation of the specified
+ vector.
+</p>
+
+<h3 class="function"><a name="to_point-1">to_point/1</a></h3>
+<div class="spec">
+<p><tt>to_point(V::<a href="#type-vector">vector()</a>) -&gt; <a href="#type-point">point()</a></tt><br></p>
+<p> </p>
+</div><p>Returns an (arbitrary, and with floating-point coordinates) point
+ corresponding to the specified vector.
+</p>
+
+<h3 class="function"><a name="to_string-1">to_string/1</a></h3>
+<div class="spec">
+<p><tt>to_string(Vector::<a href="#type-vector">vector()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual representation of the specified vector; full float
+ precision is shown.
+</p>
+
+<h3 class="function"><a name="to_user_string-1">to_user_string/1</a></h3>
+<div class="spec">
+<p><tt>to_user_string(Vector::<a href="#type-vector">vector()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns a textual, more user-friendly representation of the specified 
+vector; full float precision is shown.</p>
+
+ This is the recommended representation.
+</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

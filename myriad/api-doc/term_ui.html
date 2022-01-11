@@ -17,13 +17,10 @@ with colors, dialog boxes, etc., relying on the 'dialog' or 'whiptail' tools.
 <h2><a name="description">Description</a></h2><p>This is the second most basic, terminal-based <b>textual interface</b>, 
 with colors, dialog boxes, etc., relying on the 'dialog' or 'whiptail' tools.</p>
 
- <p>See:</p>
-
- <p>- term_ui_test.erl for the corresponding test</p>
-
- <p>- text_ui.erl for a more basic text interface</p>
-
- <p>- gui.erl for a graphical counterpart</p>
+ <p>See: 
+- term_ui_test.erl for the corresponding test 
+- text_ui.erl for a more basic text interface 
+- gui.erl for a graphical counterpart</p>
 
  See also: trace_utils.erl for another kind of output and test-dialog.sh for an
  autonomous, standalone test.
@@ -78,6 +75,10 @@ with colors, dialog boxes, etc., relying on the 'dialog' or 'whiptail' tools.</p
 
 <h3 class="typedecl"><a name="type-format_string">format_string()</a></h3>
 <p><tt>format_string() = <a href="text_utils.html#type-format_string">text_utils:format_string()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-format_values">format_values()</a></h3>
+<p><tt>format_values() = <a href="text_utils.html#type-format_values">text_utils:format_values()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-label">label()</a></h3>
@@ -468,7 +469,7 @@ no specific designator provided), and returns its index.</p>
 
 <h3 class="function"><a name="display-2">display/2</a></h3>
 <div class="spec">
-<p><tt>display(FormatString::<a href="#type-format_string">format_string()</a>, Values::[term()]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>display(FormatString::<a href="#type-format_string">format_string()</a>, Values::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p>Displays specified formatted text, as a normal modal message.</p>
 
@@ -480,7 +481,7 @@ no specific designator provided), and returns its index.</p>
 
 <h3 class="function"><a name="display_error-2">display_error/2</a></h3>
 <div class="spec">
-<p><tt>display_error(FormatString::<a href="#type-format_string">format_string()</a>, Values::[term()]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>display_error(FormatString::<a href="#type-format_string">format_string()</a>, Values::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p>Displays specified formatted text, as an error message.</p>
 
@@ -498,7 +499,7 @@ no specific designator provided), and returns its index.</p>
 
 <h3 class="function"><a name="display_instant-2">display_instant/2</a></h3>
 <div class="spec">
-<p><tt>display_instant(FormatString::<a href="#type-format_string">format_string()</a>, Values::[term()]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>display_instant(FormatString::<a href="#type-format_string">format_string()</a>, Values::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p>Displays specified formatted text, as a normal non-modal message.</p>
 
@@ -516,7 +517,7 @@ no specific designator provided), and returns its index.</p>
 
 <h3 class="function"><a name="display_warning-2">display_warning/2</a></h3>
 <div class="spec">
-<p><tt>display_warning(FormatString::<a href="#type-format_string">format_string()</a>, Values::[term()]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>display_warning(FormatString::<a href="#type-format_string">format_string()</a>, Values::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p>Displays specified formatted text, as a warning message.</p>
 

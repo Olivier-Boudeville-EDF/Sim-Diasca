@@ -1,0 +1,465 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module matrix</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module matrix</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Module implementing the support for matrices of <b>arbitrary
+ dimensions</b>.
+
+
+<h2><a name="description">Description</a></h2><p>Module implementing the support for matrices of <b>arbitrary
+ dimensions</b>.</p>
+
+ See also:
+ - the corresponding arbitrary vectors, in vector.erl
+ - the specialised matrices, such as matrix{2,3,4}.erl
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-column">column()</a></h3>
+<p><tt>column() = <a href="#type-vector">vector()</a></tt></p>
+<p> Matrix elements, top to bottom.</p>
+
+<h3 class="typedecl"><a name="type-column_count">column_count()</a></h3>
+<p><tt>column_count() = <a href="#type-dimension">dimension()</a></tt></p>
+<p> A number of columns.</p>
+
+<h3 class="typedecl"><a name="type-column_index">column_index()</a></h3>
+<p><tt>column_index() = <a href="#type-dimension">dimension()</a></tt></p>
+<p> A column index.</p>
+
+<h3 class="typedecl"><a name="type-coordinate">coordinate()</a></h3>
+<p><tt>coordinate() = <a href="linear.html#type-coordinate">linear:coordinate()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-dimension">dimension()</a></h3>
+<p><tt>dimension() = <a href="linear.html#type-dimension">linear:dimension()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-dimensions">dimensions()</a></h3>
+<p><tt>dimensions() = {<a href="#type-row_count">row_count()</a>, <a href="#type-column_count">column_count()</a>}</tt></p>
+<p> Number of rows and columns of a matrix.</p>
+
+<h3 class="typedecl"><a name="type-factor">factor()</a></h3>
+<p><tt>factor() = <a href="math_utils.html#type-factor">math_utils:factor()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-matrix">matrix()</a></h3>
+<p><tt>matrix() = [<a href="#type-row">row()</a>]</tt></p>
+<p> A matrix of arbitrary dimensions (at least one row), stored in row-major
+ order (all rows shall contain the same number of elements).</p>
+
+<h3 class="typedecl"><a name="type-radians">radians()</a></h3>
+<p><tt>radians() = <a href="unit_utils.html#type-radians">unit_utils:radians()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-rot_matrix">rot_matrix()</a></h3>
+<p><tt>rot_matrix() = <a href="#type-square_matrix">square_matrix()</a></tt></p>
+<p> A matrix describing a rotation.</p>
+
+<h3 class="typedecl"><a name="type-row">row()</a></h3>
+<p><tt>row() = <a href="#type-vector">vector()</a></tt></p>
+<p> Matrix elements, left to right.</p>
+
+<h3 class="typedecl"><a name="type-row_count">row_count()</a></h3>
+<p><tt>row_count() = <a href="#type-dimension">dimension()</a></tt></p>
+<p> A number of rows.</p>
+
+<h3 class="typedecl"><a name="type-row_index">row_index()</a></h3>
+<p><tt>row_index() = <a href="#type-dimension">dimension()</a></tt></p>
+<p> A row index.</p>
+
+<h3 class="typedecl"><a name="type-scalar">scalar()</a></h3>
+<p><tt>scalar() = <a href="linear.html#type-scalar">linear:scalar()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-specialised_matrix">specialised_matrix()</a></h3>
+<p><tt>specialised_matrix() = <a href="matrix2.html#type-matrix2">matrix2:matrix2()</a> | <a href="matrix3.html#type-matrix3">matrix3:matrix3()</a> | <a href="matrix4.html#type-matrix4">matrix4:matrix4()</a></tt></p>
+<p> Regroups all types of specialised (square) matrices.</p>
+
+<h3 class="typedecl"><a name="type-specialised_module">specialised_module()</a></h3>
+<p><tt>specialised_module() = matrix2 | matrix3 | matrix4</tt></p>
+<p> The modules implementing specialised matrices.</p>
+
+<h3 class="typedecl"><a name="type-square_matrix">square_matrix()</a></h3>
+<p><tt>square_matrix() = <a href="#type-matrix">matrix()</a></tt></p>
+<p> A square matrix, that is whose number of rows is equal to its number of
+ columns.</p>
+
+<h3 class="typedecl"><a name="type-unit_vector">unit_vector()</a></h3>
+<p><tt>unit_vector() = <a href="vector3.html#type-unit_vector3">vector3:unit_vector3()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-user_matrix">user_matrix()</a></h3>
+<p><tt>user_matrix() = [<a href="#type-user_row">user_row()</a>]</tt></p>
+<p> A user-specified matrix, as a list a rows comprising integer or floating-point
+ coordinates.</p>
+
+<h3 class="typedecl"><a name="type-user_row">user_row()</a></h3>
+<p><tt>user_row() = <a href="#type-user_vector">user_vector()</a></tt></p>
+<p> Matrix user-specified elements, left to right.</p>
+
+<h3 class="typedecl"><a name="type-user_vector">user_vector()</a></h3>
+<p><tt>user_vector() = <a href="vector.html#type-user_vector">vector:user_vector()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-vector">vector()</a></h3>
+<p><tt>vector() = <a href="vector.html#type-vector">vector:vector()</a></tt></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add-2">add/2</a></td><td>Returns the sum of the two specified matrices, supposedly of the same
+ dimensions.</td></tr>
+<tr><td valign="top"><a href="#apply-2">apply/2</a></td><td>Applies (on the right) the specified vector V to the specified matrix M: 
+returns M.V.</td></tr>
+<tr><td valign="top"><a href="#are_equal-2">are_equal/2</a></td><td>Returns true iff the two specified matrices are considered equal.</td></tr>
+<tr><td valign="top"><a href="#check-1">check/1</a></td><td>Checks that the specified matrix is legit, and returns it.</td></tr>
+<tr><td valign="top"><a href="#column-2">column/2</a></td><td>Returns the specified column of the specified matrix.</td></tr>
+<tr><td valign="top"><a href="#comatrix-1">comatrix/1</a></td><td>Returns the comatrix of the specified matrix (that is the matrix of its
+ cofactors).</td></tr>
+<tr><td valign="top"><a href="#determinant-1">determinant/1</a></td><td>Returns the determinant of the specified (square) matrix.</td></tr>
+<tr><td valign="top"><a href="#dimensions-1">dimensions/1</a></td><td>Returns the dimensions of the specified matrix.</td></tr>
+<tr><td valign="top"><a href="#from_columns-1">from_columns/1</a></td><td>Returns the matrix whose columns correspond to the specified vectors.</td></tr>
+<tr><td valign="top"><a href="#from_coordinates-2">from_coordinates/2</a></td><td>Returns the matrix of the specified dimensions having the specified 
+coordinates, as listed row after row.</td></tr>
+<tr><td valign="top"><a href="#from_rows-1">from_rows/1</a></td><td>Returns the matrix whose rows correspond to the specified vectors.</td></tr>
+<tr><td valign="top"><a href="#get_element-3">get_element/3</a></td><td>Returns the element at specified row and column of the specified matrix.</td></tr>
+<tr><td valign="top"><a href="#get_specialised_module_for-1">get_specialised_module_for/1</a></td><td>Returns the module corresponding to the specialised matrix version that
+ would apply to specified (arbitrary) matrix.</td></tr>
+<tr><td valign="top"><a href="#get_specialised_module_of-1">get_specialised_module_of/1</a></td><td>Returns the module corresponding to the specified specialised matrix.</td></tr>
+<tr><td valign="top"><a href="#identity-1">identity/1</a></td><td>Returns the identity (square) matrix of the specified dimension.</td></tr>
+<tr><td valign="top"><a href="#inverse-1">inverse/1</a></td><td>Returns the inverse of the specified (square) matrix, iff it is 
+inversible (that is iff its determinant is non-null), otherwise returns 
+undefined.</td></tr>
+<tr><td valign="top"><a href="#mult-2">mult/2</a></td><td>Returns the multiplication of the two specified matrices, supposedly of
+ the right dimensions (the number of rows of one being equal to the number of
+ columns of the other, and reciprocally).</td></tr>
+<tr><td valign="top"><a href="#new-1">new/1</a></td><td>Returns an (arbitrary) matrix corresponding to the user-specified one.</td></tr>
+<tr><td valign="top"><a href="#null-1">null/1</a></td><td>Returns a null, square (arbitrary) matrix of the specified dimension.</td></tr>
+<tr><td valign="top"><a href="#null-2">null/2</a></td><td>Returns a null (arbitrary) matrix of the specified dimensions.</td></tr>
+<tr><td valign="top"><a href="#rotation-2">rotation/2</a></td><td>Returns the matrix corresponding to a rotation of the specified angle 
+around the axis specified as a unit vector.</td></tr>
+<tr><td valign="top"><a href="#row-2">row/2</a></td><td>Returns the specified row of the specified matrix.</td></tr>
+<tr><td valign="top"><a href="#scale-2">scale/2</a></td><td>Scales each coordinate of the specified matrix of the specified factor.</td></tr>
+<tr><td valign="top"><a href="#set_element-4">set_element/4</a></td><td>Returns a matrix identical to the specified one except that its specified
+ element at specified location has been set to the specified value.</td></tr>
+<tr><td valign="top"><a href="#specialise-1">specialise/1</a></td><td>Returns a specialised matrix corresponding to the specified arbitrary
+ matrix.</td></tr>
+<tr><td valign="top"><a href="#sub-2">sub/2</a></td><td>Returns the subtraction of the two specified matrices (supposedly of the
+ same dimensions: M = M1 - M2.</td></tr>
+<tr><td valign="top"><a href="#to_basic_string-1">to_basic_string/1</a></td><td>Returns a basic, not even fixed-width for floating-vector coordinates 
+(see linear.hrl for width and precision) representation of the specified 
+vector.</td></tr>
+<tr><td valign="top"><a href="#to_coordinates-1">to_coordinates/1</a></td><td>Returns the list of coordinates contained in the specified matrix, row 
+after row.</td></tr>
+<tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td>Returns a textual representation of the specified (arbitrary) matrix;
+ full float precision is shown.</td></tr>
+<tr><td valign="top"><a href="#to_user_string-1">to_user_string/1</a></td><td>Returns a textual, more user-friendly representation of the specified 
+(arbitrary) matrix; full float precision is shown; all coordinates occupy the 
+same space (the one with the longest representation).</td></tr>
+<tr><td valign="top"><a href="#transpose-1">transpose/1</a></td><td>Returns the transpose of the specified matrix.</td></tr>
+<tr><td valign="top"><a href="#unspecialise-1">unspecialise/1</a></td><td>Returns an arbitrary matrix corresponding to the specified specialised
+ matrix.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="add-2">add/2</a></h3>
+<div class="spec">
+<p><tt>add(M1::<a href="#type-matrix">matrix()</a>, M2::<a href="#type-matrix">matrix()</a>) -&gt; <a href="#type-matrix">matrix()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the sum of the two specified matrices, supposedly of the same
+ dimensions.
+</p>
+
+<h3 class="function"><a name="apply-2">apply/2</a></h3>
+<div class="spec">
+<p><tt>apply(M::<a href="#type-matrix">matrix()</a>, V::<a href="#type-vector">vector()</a>) -&gt; <a href="#type-vector">vector()</a></tt><br></p>
+<p> </p>
+</div><p><p>Applies (on the right) the specified vector V to the specified matrix M: 
+returns M.V.</p>
+
+ Not a clause of mult/2 for an increased clarity.
+</p>
+
+<h3 class="function"><a name="are_equal-2">are_equal/2</a></h3>
+<div class="spec">
+<p><tt>are_equal(M1::<a href="#type-matrix">matrix()</a>, M2::<a href="#type-matrix">matrix()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Returns true iff the two specified matrices are considered equal.</p>
+
+<h3 class="function"><a name="check-1">check/1</a></h3>
+<div class="spec">
+<p><tt>check(M::<a href="#type-matrix">matrix()</a>) -&gt; <a href="#type-matrix">matrix()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that the specified matrix is legit, and returns it.</p>
+
+<h3 class="function"><a name="column-2">column/2</a></h3>
+<div class="spec">
+<p><tt>column(ColCount::<a href="#type-dimension">dimension()</a>, Matrix::<a href="#type-matrix">matrix()</a>) -&gt; <a href="#type-vector">vector()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the specified column of the specified matrix.</p>
+
+<h3 class="function"><a name="comatrix-1">comatrix/1</a></h3>
+<div class="spec">
+<p><tt>comatrix(M::<a href="#type-matrix">matrix()</a>) -&gt; <a href="#type-matrix">matrix()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the comatrix of the specified matrix (that is the matrix of its
+ cofactors).
+</p>
+
+<h3 class="function"><a name="determinant-1">determinant/1</a></h3>
+<div class="spec">
+<p><tt>determinant(M::<a href="#type-square_matrix">square_matrix()</a>) -&gt; <a href="#type-scalar">scalar()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the determinant of the specified (square) matrix.</p>
+
+ Relies on https://en.wikipedia.org/wiki/Laplace_expansion for which we choose
+ i=1 (first row) and iterate on j, so:
+      det(M) = sum(j=1..n, (-1)^(j+1).M1j.Minor1j)
+</p>
+
+<h3 class="function"><a name="dimensions-1">dimensions/1</a></h3>
+<div class="spec">
+<p><tt>dimensions(M::<a href="#type-matrix">matrix()</a>) -&gt; <a href="#type-dimensions">dimensions()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the dimensions of the specified matrix.</p>
+
+<h3 class="function"><a name="from_columns-1">from_columns/1</a></h3>
+<div class="spec">
+<p><tt>from_columns(Columns::[<a href="#type-vector">vector()</a>]) -&gt; <a href="#type-matrix">matrix()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the matrix whose columns correspond to the specified vectors.</p>
+
+ Returns thus:
+  <pre>  [ Va Vb Vc ... Vn ]
+  [ |  |  |  ... |  ]
+  [ |  |  |  ... |  ]
+  [ |  |  |  ... |  ]</pre>
+</p>
+
+<h3 class="function"><a name="from_coordinates-2">from_coordinates/2</a></h3>
+<div class="spec">
+<p><tt>from_coordinates(Coords::[<a href="#type-coordinate">coordinate()</a>], ColumnCount::<a href="#type-dimension">dimension()</a>) -&gt; <a href="#type-matrix">matrix()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the matrix of the specified dimensions having the specified 
+coordinates, as listed row after row.</p>
+
+ Row count is implicit.
+</p>
+
+<h3 class="function"><a name="from_rows-1">from_rows/1</a></h3>
+<div class="spec">
+<p><tt>from_rows(M::[<a href="#type-vector">vector()</a>]) -&gt; <a href="#type-matrix">matrix()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the matrix whose rows correspond to the specified vectors.</p>
+
+ Returns thus:
+  <pre> [ Va - - - ]
+ [ Vb - - - ]
+ [ Vc - - - ]
+ ...
+ [ Vn - - - ]</pre>
+</p>
+
+<h3 class="function"><a name="get_element-3">get_element/3</a></h3>
+<div class="spec">
+<p><tt>get_element(R::<a href="#type-dimension">dimension()</a>, C::<a href="#type-dimension">dimension()</a>, Matrix::<a href="#type-matrix">matrix()</a>) -&gt; <a href="#type-coordinate">coordinate()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the element at specified row and column of the specified matrix.</p>
+
+<h3 class="function"><a name="get_specialised_module_for-1">get_specialised_module_for/1</a></h3>
+<div class="spec">
+<p><tt>get_specialised_module_for(M::<a href="#type-matrix">matrix()</a>) -&gt; <a href="#type-specialised_module">specialised_module()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the module corresponding to the specialised matrix version that
+ would apply to specified (arbitrary) matrix.
+</p>
+
+<h3 class="function"><a name="get_specialised_module_of-1">get_specialised_module_of/1</a></h3>
+<div class="spec">
+<p><tt>get_specialised_module_of(M::<a href="#type-specialised_matrix">specialised_matrix()</a>) -&gt; <a href="#type-specialised_module">specialised_module()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the module corresponding to the specified specialised matrix.</p>
+
+<h3 class="function"><a name="identity-1">identity/1</a></h3>
+<div class="spec">
+<p><tt>identity(Dim::<a href="#type-dimension">dimension()</a>) -&gt; <a href="#type-square_matrix">square_matrix()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the identity (square) matrix of the specified dimension.</p>
+
+<h3 class="function"><a name="inverse-1">inverse/1</a></h3>
+<div class="spec">
+<p><tt>inverse(M::<a href="#type-square_matrix">square_matrix()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-square_matrix">square_matrix()</a>)</tt><br></p>
+<p> </p>
+</div><p><p>Returns the inverse of the specified (square) matrix, iff it is 
+inversible (that is iff its determinant is non-null), otherwise returns 
+undefined.</p>
+
+ Note: often the inverse can be obtained differently (ex: by applying reverse
+ operations starting from identity) or computed differently (ex: by Gaussian
+ elimination), or can be replaced by a mere lower–upper (LU) decomposition.
+</p>
+
+<h3 class="function"><a name="mult-2">mult/2</a></h3>
+<div class="spec">
+<p><tt>mult(M1::<a href="#type-matrix">matrix()</a>, M2::<a href="#type-matrix">matrix()</a>) -&gt; <a href="#type-matrix">matrix()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the multiplication of the two specified matrices, supposedly of
+ the right dimensions (the number of rows of one being equal to the number of
+ columns of the other, and reciprocally).
+</p>
+
+<h3 class="function"><a name="new-1">new/1</a></h3>
+<div class="spec">
+<p><tt>new(UserMatrix::<a href="#type-matrix">matrix()</a>) -&gt; <a href="#type-matrix">matrix()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns an (arbitrary) matrix corresponding to the user-specified one.</p>
+
+ <p>Coordinates must already be floating-point ones.</p>
+
+ No clause just based on a list of coordinates exists, as multiple combinations
+ of dimensions could correspond. See from_coordinates/2.
+</p>
+
+<h3 class="function"><a name="null-1">null/1</a></h3>
+<div class="spec">
+<p><tt>null(SquareDim::<a href="#type-dimension">dimension()</a>) -&gt; <a href="#type-square_matrix">square_matrix()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a null, square (arbitrary) matrix of the specified dimension.</p>
+
+<h3 class="function"><a name="null-2">null/2</a></h3>
+<div class="spec">
+<p><tt>null(RowCount::<a href="#type-dimension">dimension()</a>, ColumnCount::<a href="#type-dimension">dimension()</a>) -&gt; <a href="#type-matrix">matrix()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a null (arbitrary) matrix of the specified dimensions.</p>
+
+<h3 class="function"><a name="rotation-2">rotation/2</a></h3>
+<div class="spec">
+<p><tt>rotation(UnitAxis::<a href="#type-unit_vector">unit_vector()</a>, RadAngle::<a href="#type-radians">radians()</a>) -&gt; <a href="#type-matrix">matrix()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the matrix corresponding to a rotation of the specified angle 
+around the axis specified as a unit vector.</p>
+
+ <p>In 2D, the axis has no meaning in this context and will thus be ignored; in 3D 
+the usual rotation matrix will be returned; in 4D the returned matrix will be 
+an homogeneous (compact) one. No dimension higher than 4 is supported.</p>
+
+ This will be a counterclockwise rotation for an observer placed so that the
+ specified axis points towards it.
+</p>
+
+<h3 class="function"><a name="row-2">row/2</a></h3>
+<div class="spec">
+<p><tt>row(RowCount::<a href="#type-dimension">dimension()</a>, Matrix::<a href="#type-matrix">matrix()</a>) -&gt; <a href="#type-vector">vector()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the specified row of the specified matrix.</p>
+
+<h3 class="function"><a name="scale-2">scale/2</a></h3>
+<div class="spec">
+<p><tt>scale(Matrix::<a href="#type-matrix">matrix()</a>, Factor::<a href="#type-factor">factor()</a>) -&gt; <a href="#type-matrix">matrix()</a></tt><br></p>
+<p> </p>
+</div><p>Scales each coordinate of the specified matrix of the specified factor.</p>
+
+<h3 class="function"><a name="set_element-4">set_element/4</a></h3>
+<div class="spec">
+<p><tt>set_element(R::<a href="#type-dimension">dimension()</a>, C::<a href="#type-dimension">dimension()</a>, Value::<a href="#type-coordinate">coordinate()</a>, Matrix::<a href="#type-matrix">matrix()</a>) -&gt; <a href="#type-matrix">matrix()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a matrix identical to the specified one except that its specified
+ element at specified location has been set to the specified value.
+</p>
+
+<h3 class="function"><a name="specialise-1">specialise/1</a></h3>
+<div class="spec">
+<p><tt>specialise(M::<a href="#type-matrix">matrix()</a>) -&gt; <a href="#type-specialised_matrix">specialised_matrix()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a specialised matrix corresponding to the specified arbitrary
+ matrix.
+</p>
+
+<h3 class="function"><a name="sub-2">sub/2</a></h3>
+<div class="spec">
+<p><tt>sub(M1::<a href="#type-matrix">matrix()</a>, M2::<a href="#type-matrix">matrix()</a>) -&gt; <a href="#type-matrix">matrix()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the subtraction of the two specified matrices (supposedly of the
+ same dimensions: M = M1 - M2.
+</p>
+
+<h3 class="function"><a name="to_basic_string-1">to_basic_string/1</a></h3>
+<div class="spec">
+<p><tt>to_basic_string(Matrix::<a href="#type-matrix">matrix()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns a basic, not even fixed-width for floating-vector coordinates 
+(see linear.hrl for width and precision) representation of the specified 
+vector.</p>
+
+ Note: not a convincing representation, prefer the more expensive, truer
+ to_user_string/1.
+</p>
+
+<h3 class="function"><a name="to_coordinates-1">to_coordinates/1</a></h3>
+<div class="spec">
+<p><tt>to_coordinates(Matrix::<a href="#type-matrix">matrix()</a>) -&gt; [<a href="#type-coordinate">coordinate()</a>]</tt><br></p>
+<p> </p>
+</div><p><p>Returns the list of coordinates contained in the specified matrix, row 
+after row.</p>
+
+ Dimensions are not specifically reported.
+</p>
+
+<h3 class="function"><a name="to_string-1">to_string/1</a></h3>
+<div class="spec">
+<p><tt>to_string(Matrix::<a href="#type-matrix">matrix()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual representation of the specified (arbitrary) matrix;
+ full float precision is shown.
+</p>
+
+<h3 class="function"><a name="to_user_string-1">to_user_string/1</a></h3>
+<div class="spec">
+<p><tt>to_user_string(Matrix::<a href="#type-matrix">matrix()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns a textual, more user-friendly representation of the specified 
+(arbitrary) matrix; full float precision is shown; all coordinates occupy the 
+same space (the one with the longest representation).</p>
+
+ <p>This is the recommended representation.</p>
+
+ Another version where minimal widths would be determined per-column.
+</p>
+
+<h3 class="function"><a name="transpose-1">transpose/1</a></h3>
+<div class="spec">
+<p><tt>transpose(M::<a href="#type-matrix">matrix()</a>) -&gt; <a href="#type-matrix">matrix()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the transpose of the specified matrix.</p>
+
+ We proceed recursively, iterating in turn through all the elements of the
+ first row (which will end up being the first column, i.e. each being the first
+ element of the rows of the transpose matrix).
+</p>
+
+<h3 class="function"><a name="unspecialise-1">unspecialise/1</a></h3>
+<div class="spec">
+<p><tt>unspecialise(M::<a href="#type-specialised_matrix">specialised_matrix()</a>) -&gt; <a href="#type-matrix">matrix()</a></tt><br></p>
+<p> </p>
+</div><p>Returns an arbitrary matrix corresponding to the specified specialised
+ matrix.
+</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

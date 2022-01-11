@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.13.1: http://docutils.sourceforge.net/" />
 <title>Welcome to the Ceylan-Traces documentation</title>
 <meta content="Traces, log, browse, emit, layer, generic, general-purpose, helper code, library, layer" name="keywords" />
 <link rel="stylesheet" href="pygments-default.css" type="text/css" />
@@ -23,7 +23,7 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Organisation:</th><td class="field-body"><p class="first">Copyright (C) 2010-2021 Olivier Boudeville</p>
+<tr class="field"><th class="field-name">Organisation:</th><td class="field-body"><p class="first">Copyright (C) 2010-2022 Olivier Boudeville</p>
 </td>
 </tr>
 <tr class="field"><th class="field-name">Contact:</th><td class="field-body"><p class="first">about (dash) traces (at) esperide (dot) com</p>
@@ -32,10 +32,10 @@
 <tr class="field"><th class="field-name">Creation date:</th><td class="field-body"><p class="first">Sunday, August 15, 2010</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Lastly updated:</th><td class="field-body"><p class="first">Thursday, August 19, 2021</p>
+<tr class="field"><th class="field-name">Lastly updated:</th><td class="field-body"><p class="first">Tuesday, January 11, 2022</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Version:</th><td class="field-body"><p class="first">1.0.6</p>
+<tr class="field"><th class="field-name">Version:</th><td class="field-body"><p class="first">1.0.9</p>
 </td>
 </tr>
 <tr class="field"><th class="field-name">Status:</th><td class="field-body"><p class="first">Stable</p>
@@ -58,7 +58,7 @@ The next level of information is either to browse the <a class="reference extern
 <p></p>
 <p><span class="raw-html"><a name="traces_toc"></a></span></p>
 <div class="contents topic" id="id1">
-<span id="table-of-contents"></span><p class="topic-title"><strong>Table of Contents</strong></p>
+<span id="table-of-contents"></span><p class="topic-title first"><strong>Table of Contents</strong></p>
 <ul class="simple">
 <li><a class="reference internal" href="#overview" id="id32">Overview</a></li>
 <li><a class="reference internal" href="#trace-severities" id="id33">Trace Severities</a></li>
@@ -85,22 +85,23 @@ The next level of information is either to browse the <a class="reference extern
 <li><a class="reference internal" href="#internal-trace-format" id="id50">Internal Trace Format</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#licence" id="id51">Licence</a></li>
-<li><a class="reference internal" href="#current-stable-version-download" id="id52">Current Stable Version &amp; Download</a><ul>
-<li><a class="reference internal" href="#using-cutting-edge-git" id="id53">Using Cutting-Edge GIT</a></li>
-<li><a class="reference internal" href="#using-otp-related-conventions" id="id54">Using OTP-Related Conventions</a><ul>
-<li><a class="reference internal" href="#using-rebar3" id="id55">Using Rebar3</a></li>
-<li><a class="reference internal" href="#build-time-conventions" id="id56">Build-time Conventions</a></li>
-<li><a class="reference internal" href="#compile-time-conventions" id="id57">Compile-time Conventions</a></li>
-<li><a class="reference internal" href="#runtime-conventions" id="id58">Runtime Conventions</a></li>
+<li><a class="reference internal" href="#supported-platforms" id="id51">Supported Platforms</a></li>
+<li><a class="reference internal" href="#licence" id="id52">Licence</a></li>
+<li><a class="reference internal" href="#current-stable-version-download" id="id53">Current Stable Version &amp; Download</a><ul>
+<li><a class="reference internal" href="#using-cutting-edge-git" id="id54">Using Cutting-Edge GIT</a></li>
+<li><a class="reference internal" href="#using-otp-related-conventions" id="id55">Using OTP-Related Conventions</a><ul>
+<li><a class="reference internal" href="#using-rebar3" id="id56">Using Rebar3</a></li>
+<li><a class="reference internal" href="#build-time-conventions" id="id57">Build-time Conventions</a></li>
+<li><a class="reference internal" href="#compile-time-conventions" id="id58">Compile-time Conventions</a></li>
+<li><a class="reference internal" href="#runtime-conventions" id="id59">Runtime Conventions</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#testing-traces" id="id59">Testing Traces</a></li>
-<li><a class="reference internal" href="#support" id="id60">Support</a></li>
-<li><a class="reference internal" href="#please-react" id="id61">Please React!</a></li>
-<li><a class="reference internal" href="#ending-word" id="id62">Ending Word</a></li>
+<li><a class="reference internal" href="#testing-traces" id="id60">Testing Traces</a></li>
+<li><a class="reference internal" href="#support" id="id61">Support</a></li>
+<li><a class="reference internal" href="#please-react" id="id62">Please React!</a></li>
+<li><a class="reference internal" href="#ending-word" id="id63">Ending Word</a></li>
 </ul>
 </div>
 <p></p>
@@ -110,7 +111,7 @@ The next level of information is either to browse the <a class="reference extern
 <p>This means that both user-originating traces (that your code emits thanks the Traces API) and standard Erlang logs are routed and centralised in a single view whose purpose is to help monitoring your application(s) as a whole.</p>
 <p>For that, various types of components have been designed and implemented, such as a trace aggregator, emitter, listener, supervisor, bridge, etc.</p>
 <p>They collectively constitute the <a class="reference external" href="http://traces.esperide.org/">Traces</a> layer, whose only prerequisites (besides Erlang itself, of course) are the <a class="reference external" href="http://wooper.esperide.org/">WOOPER</a> layer (for object-oriented primitives) and the <a class="reference external" href="http://myriad.esperide.org/">Myriad</a> layer (for many lower-level services; itself a prerequisite of WOOPER).</p>
-<p>The project repository is located <a class="reference external" href="https://github.com/Olivier-Boudeville/Ceylan-Traces">here</a>.</p>
+<p>Traces can be readily built and run on most Unices (including of course GNU/Linux) and on Windows. The project repository is located <a class="reference external" href="https://github.com/Olivier-Boudeville/Ceylan-Traces">here</a>.</p>
 <p>The main purpose of this <strong>Traces</strong> layer is thus to provide adequate traces (i.e. advanced logs) for distributed systems (a rather critical feature in order to debug in these difficult contexts), and to ease their study and browsing. A few backends are available for that, from the direct reading of basic (text) trace files to considerably more user-friendly solutions, such as the generation of PDF reports or the use of our more advanced trace format, which can be read notably by commercial tools such as <a class="reference external" href="http://www.logmx.com/">LogMX</a> <a class="footnote-reference" href="#id4" id="id3">[1]</a>.</p>
 <table class="docutils footnote" frame="void" id="id4" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
@@ -124,6 +125,7 @@ The next level of information is either to browse the <a class="reference extern
 <span id="trace-severity"></span><h1><a class="toc-backref" href="#id33">Trace Severities</a></h1>
 <p>Traces now relies on the same conventions as the ones of the newer standard logging facility in Erlang/OTP, <a class="reference external" href="https://erlang.org/doc/man/logger.html">logger</a>, which itself obeys the Syslog protocol, as defined in <a class="reference external" href="https://www.ietf.org/rfc/rfc5424.txt">RFC 5424</a>.</p>
 <p>There are eight built-in levels for trace channels, of increasing severity:</p>
+<p><span class="raw-html"><center></span></p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="58%" />
@@ -161,6 +163,7 @@ The next level of information is either to browse the <a class="reference extern
 </tr>
 </tbody>
 </table>
+<p><span class="raw-html"></center></span></p>
 <p>Starting from <tt class="docutils literal">warning</tt> onward (thus included), these severities are considered as error-like, and as such will never be disabled and will be echoed on the console as well.</p>
 <p>There is also an addition trace severity, <tt class="docutils literal">void</tt>, that designates traces that shall be muted in all cases.</p>
 <p>Its purpose is to provide another means of muting/unmuting some traces, instead of commenting out/uncommenting said traces.</p>
@@ -406,8 +409,13 @@ whose troubleshooting mode is enabled.
 <p></p>
 </div>
 </div>
+<div class="section" id="supported-platforms">
+<h1><a class="toc-backref" href="#id51">Supported Platforms</a></h1>
+<p>Traces can be readily built and run on most Unices (including of course GNU/Linux) and on Windows.</p>
+<p>Refer to <a class="reference external" href="http://myriad.esperide.org/#supported-platforms">the Myriad counterpart section</a> for more details.</p>
+</div>
 <div class="section" id="licence">
-<span id="free-software"></span><h1><a class="toc-backref" href="#id51">Licence</a></h1>
+<span id="free-software"></span><h1><a class="toc-backref" href="#id52">Licence</a></h1>
 <p>Ceylan-Traces is licensed by its author (Olivier Boudeville) under a disjunctive tri-license giving you the choice of one of the three following sets of free software/open source licensing terms:</p>
 <ul class="simple">
 <li><a class="reference external" href="http://www.mozilla.org/MPL/MPL-1.1.html">Mozilla Public License</a> (MPL), version 1.1 or later (very close to the former <a class="reference external" href="http://www.erlang.org/EPLICENSE">Erlang Public License</a>, except aspects regarding Ericsson and/or the Swedish law)</li>
@@ -419,12 +427,12 @@ whose troubleshooting mode is enabled.
 <p>We hope that enhancements will be back-contributed (ex: thanks to pull requests), so that everyone will be able to benefit from them.</p>
 </div>
 <div class="section" id="current-stable-version-download">
-<h1><a class="toc-backref" href="#id52">Current Stable Version &amp; Download</a></h1>
+<h1><a class="toc-backref" href="#id53">Current Stable Version &amp; Download</a></h1>
 <p>As mentioned, the single, direct prerequisite of <a class="reference external" href="https://github.com/Olivier-Boudeville/Ceylan-Traces">Ceylan-Traces</a> is <a class="reference external" href="https://github.com/Olivier-Boudeville/Ceylan-WOOPER">Ceylan-WOOPER</a>, which implies in turn <a class="reference external" href="https://github.com/Olivier-Boudeville/Ceylan-Myriad">Ceylan-Myriad</a> and <a class="reference external" href="http://erlang.org">Erlang</a>.</p>
 <p>We prefer using GNU/Linux, sticking to the latest stable release of Erlang, and building it from sources, thanks to GNU <tt class="docutils literal">make</tt>.</p>
 <p>Refer to the corresponding <a class="reference external" href="http://myriad.esperide.org#prerequisites">Myriad prerequisite section</a>  for more precise guidelines, knowing that Ceylan-Traces does not need any module with conditional support such as <tt class="docutils literal">crypto</tt> or <tt class="docutils literal">wx</tt>.</p>
 <div class="section" id="using-cutting-edge-git">
-<h2><a class="toc-backref" href="#id53">Using Cutting-Edge GIT</a></h2>
+<h2><a class="toc-backref" href="#id54">Using Cutting-Edge GIT</a></h2>
 <p>This is the installation method that we use and recommend; the Traces <tt class="docutils literal">master</tt> branch is meant to stick to the latest stable version: we try to ensure that this main line always stays functional (sorry for the pun). Evolutions are to take place in feature branches and to be merged only when ready.</p>
 <p>Once Erlang is available, it should be just a matter of executing:</p>
 <pre class="code bash literal-block">
@@ -449,9 +457,9 @@ $ make trace_management_run
 <p><span class="raw-html"><a name="otp"></a></span></p>
 </div>
 <div class="section" id="using-otp-related-conventions">
-<span id="otp-build"></span><h2><a class="toc-backref" href="#id54">Using OTP-Related Conventions</a></h2>
+<span id="otp-build"></span><h2><a class="toc-backref" href="#id55">Using OTP-Related Conventions</a></h2>
 <div class="section" id="using-rebar3">
-<h3><a class="toc-backref" href="#id55">Using Rebar3</a></h3>
+<h3><a class="toc-backref" href="#id56">Using Rebar3</a></h3>
 <p>The usual rebar3 machinery is in place and functional, so the Traces prerequisites (<a class="reference external" href="https://myriad.esperide.org">Myriad</a> and <a class="reference external" href="https://wooper.esperide.org">WOOPER</a>) and Traces itself can be obtained simply thanks to:</p>
 <pre class="code bash literal-block">
 $ git clone https://github.com/Olivier-Boudeville/Ceylan-Traces.git traces
@@ -462,7 +470,7 @@ $ rebar3 compile
 <p>Note that rebar3 is an alternate way of building Traces, as one may rely directly on our make-based system instead.</p>
 </div>
 <div class="section" id="build-time-conventions">
-<h3><a class="toc-backref" href="#id56">Build-time Conventions</a></h3>
+<h3><a class="toc-backref" href="#id57">Build-time Conventions</a></h3>
 <p>As discussed in these sections of <a class="reference external" href="http://myriad.esperide.org/myriad.html#otp">Myriad</a> and <a class="reference external" href="http://wooper.esperide.org/index.html#otp">WOOPER</a>, we added the (optional) possibility of generating a Traces <em>OTP application</em> out of the build tree, ready to be integrated into an <em>(OTP) release</em>. For that we rely on <a class="reference external" href="https://www.rebar3.org/">rebar3</a>, <a class="reference external" href="https://github.com/erlware/relx">relx</a> and <a class="reference external" href="https://hex.pm/">hex</a>.</p>
 <p>Unlike Myriad (which is an OTP <em>library</em> application), Traces is (like WOOPER) an OTP <em>active</em> application, meaning the reliance on an application that can be started/stopped (<tt class="docutils literal">traces_app</tt>) and on a root supervisor (<tt class="docutils literal">traces_sup</tt>); unlike WOOPER this time - whose main server (the class manager) is a <tt class="docutils literal">gen_server</tt> - Traces relies on a trace aggregator that is a background server process yet that does not implement the <tt class="docutils literal">gen_server</tt> behaviour but the <a class="reference external" href="http://erlang.org/doc/man/supervisor_bridge.html">supervisor_bridge</a> one: the trace aggregator is indeed <a class="reference external" href="http://wooper.esperide.org/index.html#otp_for_instances">a WOOPER instance</a>.</p>
 <p>As for Myriad and WOOPER, most versions of Traces used to be also published as <a class="reference external" href="https://hex.pm/packages/traces">Hex packages</a>, yet finally our workflow does not rely on Hex, so we do not update the Hex packages anymore. Just drop us an email if needing a recent one.</p>
@@ -475,12 +483,12 @@ $ rebar3 compile
 <p>One may run <tt class="docutils literal">make <span class="pre">create-traces-checkout</span></tt> in order to create, based on our conventions, a suitable <tt class="docutils literal">_checkouts</tt> directory so that rebar3 can directly take into account local, directly available (in-development) dependencies (here, Myriad and WOOPER).</p>
 </div>
 <div class="section" id="compile-time-conventions">
-<h3><a class="toc-backref" href="#id57">Compile-time Conventions</a></h3>
+<h3><a class="toc-backref" href="#id58">Compile-time Conventions</a></h3>
 <p>To see a full example of Ceylan-Traces use in an OTP context, one may refer to the <a class="reference external" href="https://github.com/Olivier-Boudeville/us-common">US-Common</a> project.</p>
 <p>This includes the <a class="reference external" href="https://github.com/Olivier-Boudeville/us-common/blob/master/test/us_common_otp_application_test.erl">us_common_otp_application_test.erl</a> test, a way of testing a Traces-using OTP application (here, US-Common) outside of any OTP release.</p>
 </div>
 <div class="section" id="runtime-conventions">
-<h3><a class="toc-backref" href="#id58">Runtime Conventions</a></h3>
+<h3><a class="toc-backref" href="#id59">Runtime Conventions</a></h3>
 <p>Whether or not a graphical trace supervisor is launched depends on the batch mode, which can be set through the <tt class="docutils literal">is_batch</tt> key in the <tt class="docutils literal">traces</tt> section of the release's <tt class="docutils literal">sys.config</tt> file.</p>
 <p>We found convenient to define alternatively a shell environment variable (possibly named <tt class="docutils literal">BATCH</tt>), and whose value can be <tt class="docutils literal"><span class="pre">CMD_LINE_OPT=&quot;--batch&quot;</span></tt>, for an easier switch from the command-line.</p>
 <p>Then, for example for a test module defined in <tt class="docutils literal">foobar_test.erl</tt>, running from the command-line <tt class="docutils literal">make foobar_run</tt> will result in the trace supervisor (typically LogMX) to be spawned, whereas <tt class="docutils literal">make foobar_run $BATCH</tt> will not (i.e. the traces will be emitted and collected as usual, but will not be specifically supervised graphically).</p>
@@ -488,7 +496,7 @@ $ rebar3 compile
 </div>
 </div>
 <div class="section" id="testing-traces">
-<h1><a class="toc-backref" href="#id59">Testing Traces</a></h1>
+<h1><a class="toc-backref" href="#id60">Testing Traces</a></h1>
 <p>Once the prerequisites (<a class="reference external" href="https://myriad.esperide.org">Myriad</a> and <a class="reference external" href="https://wooper.esperide.org">WOOPER</a>) and Traces itself have been secured (for that refer to either <a class="reference internal" href="#using-cutting-edge-git">Using Cutting-Edge GIT</a> or <a class="reference internal" href="#using-rebar3">Using Rebar3</a>), just run from the root directory of Traces:</p>
 <pre class="code bash literal-block">
 $ make <span class="nb">test</span>
@@ -501,15 +509,15 @@ Reciprocally this procedure applies to the projects based on it (ex: <a class="r
 </div>
 </div>
 <div class="section" id="support">
-<h1><a class="toc-backref" href="#id60">Support</a></h1>
+<h1><a class="toc-backref" href="#id61">Support</a></h1>
 <p>Bugs, questions, remarks, patches, requests for enhancements, etc. are to be reported to the <a class="reference external" href="https://github.com/Olivier-Boudeville/Ceylan-Traces">project interface</a> (typically <a class="reference external" href="https://github.com/Olivier-Boudeville/Ceylan-Traces/issues">issues</a>) or directly at the email address mentioned at the beginning of this document.</p>
 </div>
 <div class="section" id="please-react">
-<h1><a class="toc-backref" href="#id61">Please React!</a></h1>
+<h1><a class="toc-backref" href="#id62">Please React!</a></h1>
 <p>If you have information more detailed or more recent than those presented in this document, if you noticed errors, neglects or points insufficiently discussed, drop us a line! (for that, follow the <a class="reference internal" href="#support">Support</a> guidelines).</p>
 </div>
 <div class="section" id="ending-word">
-<h1><a class="toc-backref" href="#id62">Ending Word</a></h1>
+<h1><a class="toc-backref" href="#id63">Ending Word</a></h1>
 <p>Have fun with Ceylan-Traces!</p>
 <p><span class="raw-html"><center><img src="traces-title.png" id="responsive-image-small"></img></center></span>
 </p>

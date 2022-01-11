@@ -26,7 +26,7 @@ global).</p>
 
 
 <h3 class="typedecl"><a name="type-look_up_scope">look_up_scope()</a></h3>
-<p><tt>look_up_scope() = global | local | local_and_global | local_otherwise_global</tt></p>
+<p><tt>look_up_scope() = global | local | local_and_global | local_otherwise_global | global_otherwise_local</tt></p>
 <p> Not to be mixed up with a registration scope.</p>
 
 <h3 class="typedecl"><a name="type-registration_name">registration_name()</a></h3>
@@ -43,7 +43,7 @@ global).</p>
 on specified node: that process is expected to be locally registered on that 
 specified node.</td></tr>
 <tr><td valign="top"><a href="#get_registered_names-1">get_registered_names/1</a></td><td>Returns a list of the names of the registered processes, for specified
- look-up scope.</td></tr>
+ global or local look-up scope.</td></tr>
 <tr><td valign="top"><a href="#get_registered_pid_for-1">get_registered_pid_for/1</a></td><td>Returns the PID that should be already registered, as specified name.</td></tr>
 <tr><td valign="top"><a href="#get_registered_pid_for-2">get_registered_pid_for/2</a></td><td>Returns the PID that should be already registered, as specified name, at 
 specified scope.</td></tr>
@@ -59,6 +59,8 @@ scope (only local_only and global_only registration scopes permitted), and
 returns 'registered', or returns the PID of any process already registered.</td></tr>
 <tr><td valign="top"><a href="#registration_to_look_up_scope-1">registration_to_look_up_scope/1</a></td><td>Converts a registration scope into a look-up one.</td></tr>
 <tr><td valign="top"><a href="#unregister-2">unregister/2</a></td><td>Unregisters specified name from specified registry.</td></tr>
+<tr><td valign="top"><a href="#vet_registration_name-1">vet_registration_name/1</a></td><td>Tells whether the specified term is a legit registration name.</td></tr>
+<tr><td valign="top"><a href="#vet_registration_scope-1">vet_registration_scope/1</a></td><td>Tells whether the specified term is a legit registration scope.</td></tr>
 <tr><td valign="top"><a href="#wait_for_global_registration_of-1">wait_for_global_registration_of/1</a></td><td>Waits (up to 10 seconds) until specified name is globally registered.</td></tr>
 <tr><td valign="top"><a href="#wait_for_global_registration_of-2">wait_for_global_registration_of/2</a></td><td>Waits (up to to the specified number of seconds) until specified name is 
 globally registered.</td></tr>
@@ -95,7 +97,7 @@ specified node.</p>
 <p><tt>get_registered_names(LookUpScope::<a href="#type-look_up_scope">look_up_scope()</a>) -&gt; [<a href="#type-registration_name">registration_name()</a>]</tt><br></p>
 <p> </p>
 </div><p>Returns a list of the names of the registered processes, for specified
- look-up scope.
+ global or local look-up scope.
 </p>
 
 <h3 class="function"><a name="get_registered_pid_for-1">get_registered_pid_for/1</a></h3>
@@ -210,6 +212,18 @@ clause is triggered.</p>
  Note: when a process terminates, it unregisters its name (if any)
  automatically from all scopes.
 </p>
+
+<h3 class="function"><a name="vet_registration_name-1">vet_registration_name/1</a></h3>
+<div class="spec">
+<p><tt>vet_registration_name(Name::term()) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Tells whether the specified term is a legit registration name.</p>
+
+<h3 class="function"><a name="vet_registration_scope-1">vet_registration_scope/1</a></h3>
+<div class="spec">
+<p><tt>vet_registration_scope(Other::term()) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Tells whether the specified term is a legit registration scope.</p>
 
 <h3 class="function"><a name="wait_for_global_registration_of-1">wait_for_global_registration_of/1</a></h3>
 <div class="spec">

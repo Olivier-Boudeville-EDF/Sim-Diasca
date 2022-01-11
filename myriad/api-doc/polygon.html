@@ -21,29 +21,57 @@
 
 <h2><a name="types">Data Types</a></h2>
 
+<h3 class="typedecl"><a name="type-any_point2">any_point2()</a></h3>
+<p><tt>any_point2() = <a href="point2.html#type-any_point2">point2:any_point2()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-any_vertex2">any_vertex2()</a></h3>
+<p><tt>any_vertex2() = <a href="point2.html#type-any_vertex2">point2:any_vertex2()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-area">area()</a></h3>
+<p><tt>area() = <a href="linear.html#type-area">linear:area()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-bounding_algorithm">bounding_algorithm()</a></h3>
+<p><tt>bounding_algorithm() = <a href="bounding_box2.html#type-bounding_algorithm">bounding_box2:bounding_algorithm()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-canvas">canvas()</a></h3>
+<p><tt>canvas() = <a href="gui.html#type-canvas">gui:canvas()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-color">color()</a></h3>
 <p><tt>color() = <a href="gui_color.html#type-color">gui_color:color()</a></tt></p>
 
 
-<h3 class="typedecl"><a name="type-point">point()</a></h3>
-<p><tt>point() = <a href="linear_2D.html#type-point">linear_2D:point()</a></tt></p>
+<h3 class="typedecl"><a name="type-distance">distance()</a></h3>
+<p><tt>distance() = <a href="linear.html#type-distance">linear:distance()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-polygon">polygon()</a></h3>
-<p><tt>polygon() = #polygon{vertices = [<a href="linear_2D.html#type-point">linear_2D:point()</a>], rendering = <a href="option_list.html#type-option_list">option_list:option_list()</a>, bounding_box = <a href="#type-maybe">maybe</a>(<a href="bounding_box.html#type-bounding_box">bounding_box:bounding_box()</a>)}</tt></p>
+<p><tt>polygon() = #polygon{vertices = [<a href="point2.html#type-any_vertex2">point2:any_vertex2()</a>], rendering = <a href="option_list.html#type-option_list">option_list:option_list()</a>, bounding_box = <a href="#type-maybe">maybe</a>(<a href="bounding_box2.html#type-bounding_box2">bounding_box2:bounding_box2()</a>)}</tt></p>
+<p> Describes a polygon, convex or not, simple or not.</p>
+
+<h3 class="typedecl"><a name="type-square_distance">square_distance()</a></h3>
+<p><tt>square_distance() = <a href="linear.html#type-square_distance">linear:square_distance()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
 
 
 <h2><a name="index">Function Index</a></h2>
 <table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#get_area-1">get_area/1</a></td><td>Returns the (unsigned) area enclosed of the polygon, supposed to be 
 non-self-intersecting and having at least two vertices.</td></tr>
-<tr><td valign="top"><a href="#get_diameter-1">get_diameter/1</a></td><td>Returns a polygon diameter, ie two points in the polygon which are at the 
-maximum distance one of the other.</td></tr>
+<tr><td valign="top"><a href="#get_diameter-1">get_diameter/1</a></td><td>Returns a polygon diameter, that is two points in the polygon that are at 
+the maximum distance one of the other.</td></tr>
 <tr><td valign="top"><a href="#get_edge_color-1">get_edge_color/1</a></td><td>Returns the current edge color of the specified polygon, if specified,
  otherwise 'undefined'.</td></tr>
 <tr><td valign="top"><a href="#get_fill_color-1">get_fill_color/1</a></td><td>Returns the current fill color of the specified polygon, if specified,
  otherwise 'undefined'.</td></tr>
 <tr><td valign="top"><a href="#get_polygon-1">get_polygon/1</a></td><td>Returns a new polygon whose vertices are the specified ones.</td></tr>
-<tr><td valign="top"><a href="#get_smallest_enclosing_rectangle-1">get_smallest_enclosing_rectangle/1</a></td><td>Returns the smallest upright rectangle which encompasses the specified 
+<tr><td valign="top"><a href="#get_smallest_enclosing_rectangle-1">get_smallest_enclosing_rectangle/1</a></td><td>Returns the smallest upright rectangle that encompasses the specified 
 polygon.</td></tr>
 <tr><td valign="top"><a href="#get_triangle-3">get_triangle/3</a></td><td>Returns a triangle (defined as a polygon) corresponding to the specified
  three vertices.</td></tr>
@@ -55,24 +83,24 @@ polygon.</td></tr>
  (otherwise they are in counter-clockwise order).</td></tr>
 <tr><td valign="top"><a href="#render-2">render/2</a></td><td>Renders specified polygon in specified canvas.</td></tr>
 <tr><td valign="top"><a href="#set_edge_color-2">set_edge_color/2</a></td><td>Sets the edge color of specified polygon.</td></tr>
-<tr><td valign="top"><a href="#set_fill_color-2">set_fill_color/2</a></td><td>Sets the fill color of specified polygon.</td></tr>
+<tr><td valign="top"><a href="#set_fill_color-2">set_fill_color/2</a></td><td>Sets the fill color of the specified polygon.</td></tr>
 <tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td>Returns a textual description of the specified polygon.</td></tr>
 <tr><td valign="top"><a href="#update_bounding_box-2">update_bounding_box/2</a></td><td>Updates, for the specified polygon, its internal bounding-box, with 
-regard to the specified bounding-box request.</td></tr>
+regard to the specified bounding-box algorithm.</td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
 <h3 class="function"><a name="get_area-1">get_area/1</a></h3>
 <div class="spec">
-<p><tt>get_area(Polygon::<a href="#type-polygon">polygon()</a>) -&gt; <a href="linear.html#type-area">linear:area()</a></tt><br></p>
+<p><tt>get_area(Polygon::<a href="#type-polygon">polygon()</a>) -&gt; <a href="#type-area">area()</a></tt><br></p>
 <p> </p>
 </div><p><p>Returns the (unsigned) area enclosed of the polygon, supposed to be 
 non-self-intersecting and having at least two vertices.</p>
 
  <p>Vertices can be listed clockwise or counter-clockwise.</p>
 
- <p>Should there be no absolute value computed, and if the polygon was convex, 
+ <p>Should there be no absolute value computed, and should the polygon be convex, 
 then the area would be positive iff vertices were listed in counter-clockwise 
 order.</p>
 
@@ -81,13 +109,13 @@ order.</p>
 
 <h3 class="function"><a name="get_diameter-1">get_diameter/1</a></h3>
 <div class="spec">
-<p><tt>get_diameter(Polygon::<a href="#type-polygon">polygon()</a>) -&gt; {<a href="#type-point">point()</a>, <a href="#type-point">point()</a>, <a href="linear.html#type-square_distance">linear:square_distance()</a>}</tt><br></p>
+<p><tt>get_diameter(Polygon::<a href="#type-polygon">polygon()</a>) -&gt; {<a href="#type-any_vertex2">any_vertex2()</a>, <a href="#type-any_vertex2">any_vertex2()</a>, <a href="#type-square_distance">square_distance()</a>}</tt><br></p>
 <p> </p>
-</div><p><p>Returns a polygon diameter, ie two points in the polygon which are at the 
-maximum distance one of the other.</p>
+</div><p><p>Returns a polygon diameter, that is two points in the polygon that are at 
+the maximum distance one of the other.</p>
 
- Returns {V1,V2,D} when V1 and V2 are the endpoints of a diameter and D is its
- square length: <code>D = square_distance(V1, V2)</code>.
+ Returns {P1,P2,D} when P1 and P2 are the endpoints of a diameter and SquareD
+ is its square length: <code>SquareD = square_distance(P1, P2)</code>.
 </p>
 
 <h3 class="function"><a name="get_edge_color-1">get_edge_color/1</a></h3>
@@ -108,24 +136,24 @@ maximum distance one of the other.</p>
 
 <h3 class="function"><a name="get_polygon-1">get_polygon/1</a></h3>
 <div class="spec">
-<p><tt>get_polygon(Vertices::[<a href="#type-point">point()</a>]) -&gt; <a href="#type-polygon">polygon()</a></tt><br></p>
+<p><tt>get_polygon(Vertices::[<a href="#type-any_vertex2">any_vertex2()</a>]) -&gt; <a href="#type-polygon">polygon()</a></tt><br></p>
 <p> </p>
 </div><p>Returns a new polygon whose vertices are the specified ones.</p>
 
 <h3 class="function"><a name="get_smallest_enclosing_rectangle-1">get_smallest_enclosing_rectangle/1</a></h3>
 <div class="spec">
-<p><tt>get_smallest_enclosing_rectangle(Polygon::<a href="#type-polygon">polygon()</a>) -&gt; {<a href="#type-point">point()</a>, <a href="#type-point">point()</a>}</tt><br></p>
+<p><tt>get_smallest_enclosing_rectangle(Polygon::<a href="#type-polygon">polygon()</a>) -&gt; {<a href="#type-any_point2">any_point2()</a>, <a href="#type-any_point2">any_point2()</a>}</tt><br></p>
 <p> </p>
-</div><p><p>Returns the smallest upright rectangle which encompasses the specified 
+</div><p><p>Returns the smallest upright rectangle that encompasses the specified 
 polygon.</p>
 
- More precisely, {TopLeftCorner, BottomRightCorner} is returned, which defines
- the rectangle from two opposite points.
+ More precisely a {TopLeftCorner, BottomRightCorner} pair is returned, which
+ defines the rectangle from two opposite points.
 </p>
 
 <h3 class="function"><a name="get_triangle-3">get_triangle/3</a></h3>
 <div class="spec">
-<p><tt>get_triangle(V1::<a href="#type-point">point()</a>, V2::<a href="#type-point">point()</a>, V3::<a href="#type-point">point()</a>) -&gt; <a href="#type-polygon">polygon()</a></tt><br></p>
+<p><tt>get_triangle(P1::<a href="#type-any_point2">any_point2()</a>, P2::<a href="#type-any_point2">any_point2()</a>, P3::<a href="#type-any_point2">any_point2()</a>) -&gt; <a href="#type-polygon">polygon()</a></tt><br></p>
 <p> </p>
 </div><p>Returns a triangle (defined as a polygon) corresponding to the specified
  three vertices.
@@ -133,7 +161,7 @@ polygon.</p>
 
 <h3 class="function"><a name="get_upright_square-2">get_upright_square/2</a></h3>
 <div class="spec">
-<p><tt>get_upright_square(Center::<a href="#type-point">point()</a>, EdgeLength::<a href="linear.html#type-distance">linear:distance()</a>) -&gt; <a href="#type-polygon">polygon()</a></tt><br></p>
+<p><tt>get_upright_square(Center::<a href="#type-any_vertex2">any_vertex2()</a>, EdgeLength::<a href="#type-distance">distance()</a>) -&gt; <a href="#type-polygon">polygon()</a></tt><br></p>
 <p> </p>
 </div><p>Returns an upright square corresponding to the specified center and edge
  length.
@@ -146,9 +174,7 @@ polygon.</p>
 </div><p><p>Tells whether the specified polygon is convex (iff true) or concave 
 (otherwise).</p>
 
- <p>Polygon must have at least one vertex.</p>
-
- Sign is either 'undefined' (initially), or 'positive', or 'negative'.
+ Polygon must have at least one vertex.
 </p>
 
 <h3 class="function"><a name="is_in_clockwise_order-1">is_in_clockwise_order/1</a></h3>
@@ -161,7 +187,7 @@ polygon.</p>
 
 <h3 class="function"><a name="render-2">render/2</a></h3>
 <div class="spec">
-<p><tt>render(Polygon::<a href="#type-polygon">polygon()</a>, Canvas::<a href="gui.html#type-canvas">gui:canvas()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>render(Polygon::<a href="#type-polygon">polygon()</a>, Canvas::<a href="#type-canvas">canvas()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p><p>Renders specified polygon in specified canvas.</p>
 
@@ -178,23 +204,23 @@ polygon.</p>
 <div class="spec">
 <p><tt>set_fill_color(Color::<a href="#type-color">color()</a>, Polygon::<a href="#type-polygon">polygon()</a>) -&gt; <a href="#type-polygon">polygon()</a></tt><br></p>
 <p> </p>
-</div><p><p>Sets the fill color of specified polygon.</p>
+</div><p><p>Sets the fill color of the specified polygon.</p>
 
  Use 'none' to disable filling.
 </p>
 
 <h3 class="function"><a name="to_string-1">to_string/1</a></h3>
 <div class="spec">
-<p><tt>to_string(Polygon::<a href="#type-polygon">polygon()</a>) -&gt; <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt><br></p>
+<p><tt>to_string(Polygon::<a href="#type-polygon">polygon()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
 <p> </p>
 </div><p>Returns a textual description of the specified polygon.</p>
 
 <h3 class="function"><a name="update_bounding_box-2">update_bounding_box/2</a></h3>
 <div class="spec">
-<p><tt>update_bounding_box(X1::lazy_circle, Polygon::<a href="#type-polygon">polygon()</a>) -&gt; <a href="#type-polygon">polygon()</a></tt><br></p>
+<p><tt>update_bounding_box(X1::<a href="#type-bounding_algorithm">bounding_algorithm()</a>, Polygon::<a href="#type-polygon">polygon()</a>) -&gt; <a href="#type-polygon">polygon()</a></tt><br></p>
 <p> </p>
 </div><p><p>Updates, for the specified polygon, its internal bounding-box, with 
-regard to the specified bounding-box request.</p>
+regard to the specified bounding-box algorithm.</p>
 
  Returns a polygon with updated information.
 </p>

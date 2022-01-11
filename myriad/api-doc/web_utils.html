@@ -11,17 +11,21 @@
 
 <h1>Module web_utils</h1>
 <ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of services for <b>web-related</b> uses, notably for <b>HTML
- generation</b> or <b>HTTP management</b>.
+ generation</b> or <b>HTTP/HTTPS management</b>.
 
 
 <h2><a name="description">Description</a></h2><p>Gathering of services for <b>web-related</b> uses, notably for <b>HTML
- generation</b> or <b>HTTP management</b>.</p>
+ generation</b> or <b>HTTP/HTTPS management</b>.</p>
 
  <p>See web_utils_test.erl for the corresponding test.</p>
 
  See also: rest_utils.erl.
 
 <h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-activation_switch">activation_switch()</a></h3>
+<p><tt>activation_switch() = <a href="basic_utils.html#type-activation_switch">basic_utils:activation_switch()</a></tt></p>
+
 
 <h3 class="typedecl"><a name="type-any_directory_path">any_directory_path()</a></h3>
 <p><tt>any_directory_path() = <a href="file_utils.html#type-any_directory_path">file_utils:any_directory_path()</a></tt></p>
@@ -39,6 +43,32 @@
 <p><tt>any_url() = <a href="#type-url">url()</a> | <a href="#type-bin_url">bin_url()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-api_endpoint">api_endpoint()</a></h3>
+<p><tt>api_endpoint() = <a href="#type-bin_string">bin_string()</a></tt></p>
+<p><p> The API endpoint (with no deployment-related prefix such as 
+"https://francecentral.") of a given service.</p>
+
+ Ex: <code>&lt;&lt;"api.cognitive.microsoft.com/sts/v1.0/issuetoken"&gt;&gt;</code>.</p>
+
+<h3 class="typedecl"><a name="type-azure_instance_info">azure_instance_info()</a></h3>
+<p><tt>azure_instance_info() = #azure_instance_info{instance_key = <a href="web_utils.html#type-azure_instance_key">web_utils:azure_instance_key()</a>, instance_location = <a href="web_utils.html#type-azure_instance_location">web_utils:azure_instance_location()</a>}</tt></p>
+<p> Information regarding an instance hosted by the Microsoft Azure cloud
+ provider.</p>
+
+<h3 class="typedecl"><a name="type-azure_instance_key">azure_instance_key()</a></h3>
+<p><tt>azure_instance_key() = <a href="#type-instance_key">instance_key()</a></tt></p>
+<p> The key of a Microsoft Azure instance.
+ Ex: <code>&lt;&lt;"a59c98302e7f4a22be4b355125df8e9"&gt;&gt;</code>.</p>
+
+<h3 class="typedecl"><a name="type-azure_instance_location">azure_instance_location()</a></h3>
+<p><tt>azure_instance_location() = <a href="#type-bin_string">bin_string()</a></tt></p>
+<p> The location of a Microsoft Azure instance.
+ Ex: <code>&lt;&lt;"francecentral"&gt;&gt;</code>.</p>
+
+<h3 class="typedecl"><a name="type-bin_body">bin_body()</a></h3>
+<p><tt>bin_body() = binary()</tt></p>
+<p> A body in binary form, which is the recommended one.</p>
+
 <h3 class="typedecl"><a name="type-bin_string">bin_string()</a></h3>
 <p><tt>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></tt></p>
 
@@ -52,7 +82,16 @@
 
 
 <h3 class="typedecl"><a name="type-body">body()</a></h3>
-<p><tt>body() = <a href="#type-ustring">ustring()</a> | binary()</tt></p>
+<p><tt>body() = <a href="#type-string_body">string_body()</a> | <a href="#type-bin_body">bin_body()</a></tt></p>
+<p> The body of a HTTP message. The binary form is strongly recommended (more
+ compact, and, more importantly, a lot less problematic regarding encodings).</p>
+
+<h3 class="typedecl"><a name="type-cloud_instance_info">cloud_instance_info()</a></h3>
+<p><tt>cloud_instance_info() = <a href="#type-azure_instance_info">azure_instance_info()</a></tt></p>
+<p> Information regarding an instance hosted by a cloud provider.</p>
+
+<h3 class="typedecl"><a name="type-cloud_provider">cloud_provider()</a></h3>
+<p><tt>cloud_provider() = azure | aws | google_cloud</tt></p>
 
 
 <h3 class="typedecl"><a name="type-content_type">content_type()</a></h3>
@@ -73,7 +112,7 @@
 
 <h3 class="typedecl"><a name="type-headers_as_list">headers_as_list()</a></h3>
 <p><tt>headers_as_list() = <a href="#type-old_style_options">old_style_options()</a></tt></p>
-<p> Example: {"content-type", "application/jose+json"}.</p>
+<p> Example: {"User-Agent", "Godzilla The Mighty"}.</p>
 
 <h3 class="typedecl"><a name="type-headers_as_maps">headers_as_maps()</a></h3>
 <p><tt>headers_as_maps() = <a href="#type-new_style_options">new_style_options()</a></tt></p>
@@ -88,7 +127,7 @@
 
 
 <h3 class="typedecl"><a name="type-http_options">http_options()</a></h3>
-<p><tt>http_options() = <a href="#type-options_for_httpc">options_for_httpc()</a> | <a href="http://www.erlang.org/edoc/doc/stdlib/doc/maps.html#type-maps">maps:maps</a>(atom(), term())</tt></p>
+<p><tt>http_options() = <a href="#type-options_for_httpc">options_for_httpc()</a> | <a href="#type-map_options">map_options()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-http_status_class">http_status_class()</a></h3>
@@ -99,13 +138,34 @@
 <p><tt>http_status_code() = non_neg_integer()</tt></p>
 
 
+<h3 class="typedecl"><a name="type-instance_key">instance_key()</a></h3>
+<p><tt>instance_key() = <a href="#type-bin_string">bin_string()</a></tt></p>
+<p> The key of an instance hosted by a cloud provider.
+ Ex: <code>&lt;&lt;"a59c98302e7f4a22be4b355125df8e9"&gt;&gt;</code>.</p>
+
 <h3 class="typedecl"><a name="type-json_body">json_body()</a></h3>
 <p><tt>json_body() = <a href="#type-body">body()</a></tt></p>
 <p> Encoded in JSON.</p>
 
+<h3 class="typedecl"><a name="type-list_options">list_options()</a></h3>
+<p><tt>list_options() = [{atom(), term()}]</tt></p>
+
+
 <h3 class="typedecl"><a name="type-location">location()</a></h3>
 <p><tt>location() = atom()</tt></p>
 
+
+<h3 class="typedecl"><a name="type-map_options">map_options()</a></h3>
+<p><tt>map_options() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/maps.html#type-maps">maps:maps</a>(atom(), term())</tt></p>
+
+
+<h3 class="typedecl"><a name="type-media_type">media_type()</a></h3>
+<p><tt>media_type() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/unicode.html#type-chardata">unicode:chardata()</a></tt></p>
+<p><p> A media type (formerly known as "MIME type").</p>
+
+ <p>Ex: "audio/ogg".</p>
+
+ Refer to <a href="https://en.wikipedia.org/wiki/Media_type" target="_top"><tt>https://en.wikipedia.org/wiki/Media_type</tt></a>.</p>
 
 <h3 class="typedecl"><a name="type-method">method()</a></h3>
 <p><tt>method() = <a href="rest_utils.html#type-method">rest_utils:method()</a></tt></p>
@@ -120,8 +180,8 @@
 
 
 <h3 class="typedecl"><a name="type-old_style_options">old_style_options()</a></h3>
-<p><tt>old_style_options() = [{<a href="#type-ustring">ustring()</a>, <a href="#type-ustring">ustring()</a>}]</tt></p>
-<p> [{field() :: ustring(), value() :: ustring()}].</p>
+<p><tt>old_style_options() = [{Field::<a href="#type-ustring">ustring()</a>, Value::<a href="#type-ustring">ustring()</a>}]</tt></p>
+
 
 <h3 class="typedecl"><a name="type-option_list">option_list()</a></h3>
 <p><tt>option_list() = <a href="option_list.html#type-option_list">option_list:option_list()</a></tt></p>
@@ -141,18 +201,27 @@
  it).</p>
 
 <h3 class="typedecl"><a name="type-request_result">request_result()</a></h3>
-<p><tt>request_result() = {<a href="#type-http_status_code">http_status_code()</a>, <a href="#type-headers_as_maps">headers_as_maps()</a>, <a href="#type-body">body()</a>} | {error, <a href="basic_utils.html#type-error_reason">basic_utils:error_reason()</a>}</tt></p>
-<p><p> Keys:</p>
+<p><tt>request_result() = {<a href="#type-http_status_code">http_status_code()</a>, <a href="#type-headers_as_maps">headers_as_maps()</a>, <a href="#type-bin_body">bin_body()</a>} | {error, <a href="basic_utils.html#type-error_reason">basic_utils:error_reason()</a>}</tt></p>
 
- <p>- body :: body()</p>
 
- <p>- headers :: headers()</p>
+<h3 class="typedecl"><a name="type-service_endpoint">service_endpoint()</a></h3>
+<p><tt>service_endpoint() = <a href="#type-bin_string">bin_string()</a></tt></p>
+<p><p> The full, readily usable endpoint of a given service.</p>
 
- - status_code: http_status_code()</p>
+ Ex:
+ <code>&lt;&lt;"https://francecentral.api.cognitive.microsoft.com/sts/v1.0/issuetoken"&gt;&gt;</code>.</p>
 
 <h3 class="typedecl"><a name="type-ssl_opt">ssl_opt()</a></h3>
 <p><tt>ssl_opt() = no_ssl | ssl</tt></p>
 <p> Tells whether the SSL support is needed (typically for https).</p>
+
+<h3 class="typedecl"><a name="type-ssl_options">ssl_options()</a></h3>
+<p><tt>ssl_options() = <a href="#type-list_options">list_options()</a></tt></p>
+<p> map_options().</p>
+
+<h3 class="typedecl"><a name="type-string_body">string_body()</a></h3>
+<p><tt>string_body() = <a href="#type-ustring">ustring()</a></tt></p>
+<p> A body as a plain string (beware to encodings).</p>
 
 <h3 class="typedecl"><a name="type-uri">uri()</a></h3>
 <p><tt>uri() = <a href="#type-ustring">ustring()</a></tt></p>
@@ -171,25 +240,32 @@
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#download_file-2">download_file/2</a></td><td>Downloads the file designated by specified URL, in the specified 
-directory (under its name in URL), and returns the corresponding full path of 
-that file.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#cloud_instance_info_to_string-1">cloud_instance_info_to_string/1</a></td><td>Returns a textual description of the specified cloud instance.</td></tr>
+<tr><td valign="top"><a href="#download_file-2">download_file/2</a></td><td>Downloads the file designated by specified URL, in the specified 
+directory (under its name in URL), with no specific HTTP options, and returns 
+the corresponding full path of that file.</td></tr>
 <tr><td valign="top"><a href="#encode_as_url-1">encode_as_url/1</a></td><td>Encodes specified list of {Key, Value} pairs so that it can used into an 
 URL.</td></tr>
 <tr><td valign="top"><a href="#encode_element_as_url-1">encode_element_as_url/1</a></td><td>Encodes specified element so that it can be used in an URL.</td></tr>
-<tr><td valign="top"><a href="#escape_as_html_content-1">escape_as_html_content/1</a></td><td>Escapes specified text, so that it can be included safely as an HTML
- content.</td></tr>
+<tr><td valign="top"><a href="#escape_as_html_content-1">escape_as_html_content/1</a></td><td>Escapes specified text, so that it can be included safely as an HTML 
+content.</td></tr>
 <tr><td valign="top"><a href="#escape_as_url-1">escape_as_url/1</a></td><td>Escapes specified list of {Key,Value} pairs so that it can used into some 
 URL.</td></tr>
 <tr><td valign="top"><a href="#escape_term_as_html_content-1">escape_term_as_html_content/1</a></td><td>Escapes specified term (most probably non-string), so that it can be
  included safely as an HTML content.</td></tr>
 <tr><td valign="top"><a href="#get-3">get/3</a></td><td>Sends a (synchronous) HTTP/1.1 client GET request.</td></tr>
+<tr><td valign="top"><a href="#get_azure_instance_information-2">get_azure_instance_information/2</a></td><td>Returns a Microsoft Azure instance information based on specified
+ settings.</td></tr>
 <tr><td valign="top"><a href="#get_http_status_class-1">get_http_status_class/1</a></td><td>Returns the status class (if any) corresponding to the specified HTTP
  status code.</td></tr>
 <tr><td valign="top"><a href="#get_last_path_element-1">get_last_path_element/1</a></td><td>Returns the last element, the final path "filename" pointed by specified 
 URL.</td></tr>
 <tr><td valign="top"><a href="#get_ordered_list-1">get_ordered_list/1</a></td><td>Returns the HTML code of an ordered (numbered bullets) list corresponding
  to specified list of elements.</td></tr>
+<tr><td valign="top"><a href="#get_ssl_verify_options-0">get_ssl_verify_options/0</a></td><td>Returns default SSL options regarding the verification of remote peers 
+for HTTPS connections.</td></tr>
+<tr><td valign="top"><a href="#get_ssl_verify_options-1">get_ssl_verify_options/1</a></td><td>Returns SSL options regarding the verification of remote peers for HTTPS 
+connections:.</td></tr>
 <tr><td valign="top"><a href="#get_unordered_list-1">get_unordered_list/1</a></td><td>Returns the HTML code of an unordered list corresponding to specified
  list of elements.</td></tr>
 <tr><td valign="top"><a href="#http_status_class_to_string-1">http_status_class_to_string/1</a></td><td>Returns a textual description of specified HTTP status class.</td></tr>
@@ -211,18 +287,24 @@ fragment.</td></tr>
 
 <h2><a name="functions">Function Details</a></h2>
 
+<h3 class="function"><a name="cloud_instance_info_to_string-1">cloud_instance_info_to_string/1</a></h3>
+<div class="spec">
+<p><tt>cloud_instance_info_to_string(Azure_instance_info::<a href="#type-cloud_instance_info">cloud_instance_info()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of the specified cloud instance.</p>
+
 <h3 class="function"><a name="download_file-2">download_file/2</a></h3>
 <div class="spec">
 <p><tt>download_file(Url::<a href="#type-url">url()</a>, TargetDir::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; <a href="#type-file_path">file_path()</a></tt><br></p>
 <p> </p>
 </div><p><p>Downloads the file designated by specified URL, in the specified 
-directory (under its name in URL), and returns the corresponding full path of 
-that file.</p>
+directory (under its name in URL), with no specific HTTP options, and returns 
+the corresponding full path of that file.</p>
 
- <p>Ex: web_utils:download_file( _Url="https://foobar.org/baz.txt",                    
-_TargetDir="/tmp" ) shall result in a "/tmp/baz.txt" file.</p>
+ <p>Ex: web_utils:download_file(_Url="https://foobar.org/baz.txt",   
+_TargetDir="/tmp") shall result in a "/tmp/baz.txt" file.</p>
 
- Starts the HTTP support as a side effect.
+ Starts, if needed, the HTTP and SSL supports as a side effect.
 </p>
 
 <h3 class="function"><a name="encode_as_url-1">encode_as_url/1</a></h3>
@@ -235,9 +317,9 @@ URL.</p>
  <p>Full example:</p>
 
  <p>inets:start(), 
-httpc:request( post, { "http://localhost:3000/foo", [],  
+httpc:request(post, {"http://localhost:3000/foo", [],  
 "application/x-www-form-urlencoded",  
-encode_as_url( [ {"username", "bob"}, {"password", "123456"} ] ) }, [], [] ).</p>
+encode_as_url([{"username", "bob"}, {"password", "123456"}])}, [], []).</p>
 
  <p>Directly inspired from: 
 http://stackoverflow.com/questions/114196/url-encode-in-erlang</p>
@@ -255,8 +337,10 @@ http://stackoverflow.com/questions/114196/url-encode-in-erlang</p>
 <div class="spec">
 <p><tt>escape_as_html_content(BinString::<a href="#type-any_string">any_string()</a>) -&gt; <a href="#type-html_element">html_element()</a></tt><br></p>
 <p> </p>
-</div><p>Escapes specified text, so that it can be included safely as an HTML
- content.
+</div><p><p>Escapes specified text, so that it can be included safely as an HTML 
+content.</p>
+
+ Returns an HTML element, as a plain string.
 </p>
 
 <h3 class="function"><a name="escape_as_url-1">escape_as_url/1</a></h3>
@@ -286,8 +370,19 @@ URL.</p>
 
  <p>The HTTP support (possibly with SSL if needed) must be started.</p>
 
+ <p>For HTTPS requests, we recommend that the HttpOptions include a {ssl, 
+web_utils:get_ssl_verify_options()} pair.</p>
+
  For more advanced uses (ex: re-using of permanent connections, HTTP/2, etc.),
  consider relying on Gun or Shotgun.
+</p>
+
+<h3 class="function"><a name="get_azure_instance_information-2">get_azure_instance_information/2</a></h3>
+<div class="spec">
+<p><tt>get_azure_instance_information(InstKey::<a href="#type-azure_instance_key">azure_instance_key()</a>, InstLoc::<a href="#type-azure_instance_location">azure_instance_location()</a>) -&gt; <a href="#type-azure_instance_info">azure_instance_info()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a Microsoft Azure instance information based on specified
+ settings.
 </p>
 
 <h3 class="function"><a name="get_http_status_class-1">get_http_status_class/1</a></h3>
@@ -315,6 +410,33 @@ URL.</p>
 <p> </p>
 </div><p>Returns the HTML code of an ordered (numbered bullets) list corresponding
  to specified list of elements.
+</p>
+
+<h3 class="function"><a name="get_ssl_verify_options-0">get_ssl_verify_options/0</a></h3>
+<div class="spec">
+<p><tt>get_ssl_verify_options() -&gt; <a href="#type-ssl_options">ssl_options()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns default SSL options regarding the verification of remote peers 
+for HTTPS connections.</p>
+
+ See get_ssl_verify_options/1 for more information.
+</p>
+
+<h3 class="function"><a name="get_ssl_verify_options-1">get_ssl_verify_options/1</a></h3>
+<div class="spec">
+<p><tt>get_ssl_verify_options(Switch::<a href="#type-activation_switch">activation_switch()</a>) -&gt; <a href="#type-ssl_options">ssl_options()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns SSL options regarding the verification of remote peers for HTTPS 
+connections:</p>
+
+ <p>- if the switch is specified to 'disable', this peer will not be verified 
+(exposing the program to a man-in-the-middle attack)</p>
+
+ - if the switch is specified to 'enable', the system DER-encoded certificates
+ are used (see https://erlang.org/doc/man/ssl.html#type-cert) and trusted in
+ order to check peers, so that not only the TLS protection against "casual"
+ eavesdroppers applies, but also, here, the one against any Man-in-the-Middle
+ (so we check that we indeed interact safely with the *expected* server)
 </p>
 
 <h3 class="function"><a name="get_unordered_list-1">get_unordered_list/1</a></h3>
@@ -348,6 +470,9 @@ URL.</p>
 
  <p>The HTTP support (possibly with SSL if needed) must be started.</p>
 
+ <p>For HTTPS requests, we recommend that the HttpOptions include a {ssl, 
+web_utils:get_ssl_verify_options()} pair.</p>
+
  For more advanced uses (ex: re-using of permanent connections, HTTP/2, etc.),
  consider relying on Gun or Shotgun.
 </p>
@@ -358,9 +483,14 @@ URL.</p>
 <p> </p>
 </div><p><p>Sends a (synchronous) HTTP/1.1 client POST request.</p>
 
- <p>If a body is specified, ?default_content_type will be used.</p>
+ <p>If a body is specified yet no content-type is set, ?default_content_type will 
+be used. To avoid encoding issues, we strongly recommend to pass binary bodies 
+rather than string ones.</p>
 
  <p>The HTTP support (possibly with SSL if needed) must be started.</p>
+
+ <p>For HTTPS requests, we recommend that the HttpOptions include a {ssl, 
+web_utils:get_ssl_verify_options()} pair.</p>
 
  For more advanced uses (ex: re-using of permanent connections, HTTP/2, etc.),
  consider relying on Gun or Shotgun.
@@ -373,9 +503,13 @@ URL.</p>
 </div><p><p>Sends a (synchronous) HTTP/1.1 client POST request.</p>
 
  <p>If a body is specified yet no content-type is set, ?default_content_type will 
-be used.</p>
+be used. To avoid encoding issues, we strongly recommend to pass binary bodies 
+rather than string ones.</p>
 
  <p>The HTTP support (possibly with SSL if needed) must be started.</p>
+
+ <p>For HTTPS requests, we recommend that the HttpOptions include a {ssl, 
+web_utils:get_ssl_verify_options()} pair.</p>
 
  For more advanced uses (ex: re-using of permanent connections, HTTP/2, etc.),
  consider relying on Gun or Shotgun.
@@ -383,11 +517,14 @@ be used.</p>
 
 <h3 class="function"><a name="request-6">request/6</a></h3>
 <div class="spec">
-<p><tt>request(Method::<a href="#type-method">method()</a>, Uri::<a href="#type-uri">uri()</a>, Headers::<a href="#type-headers">headers()</a>, HttpOptions::<a href="#type-http_options">http_options()</a>, MaybeBody::<a href="#type-maybe">maybe</a>(<a href="#type-body">body()</a>), MaybeContentType::<a href="#type-maybe">maybe</a>(<a href="#type-content_type">content_type()</a>)) -&gt; <a href="#type-request_result">request_result()</a></tt><br></p>
+<p><tt>request(Method::<a href="#type-method">method()</a>, Uri::<a href="#type-uri">uri()</a>, Headers::<a href="#type-headers">headers()</a>, HttpOptions::<a href="#type-http_options">http_options()</a>, MaybeBody::<a href="#type-maybe">maybe</a>(<a href="#type-bin_body">bin_body()</a>), MaybeContentType::<a href="#type-maybe">maybe</a>(<a href="#type-content_type">content_type()</a>)) -&gt; <a href="#type-request_result">request_result()</a></tt><br></p>
 <p> </p>
 </div><p><p>Sends a (synchronous) HTTP/1.1 client request (GET or POST).</p>
 
  <p>The HTTP support (possibly with SSL if needed) must be started.</p>
+
+ <p>For HTTPS requests, we recommend that the HttpOptions include a {ssl, 
+web_utils:get_ssl_verify_options()} pair.</p>
 
  For more advanced uses (ex: re-using of permanent connections, HTTP/2, etc.),
  consider relying on Gun or Shotgun.
@@ -397,7 +534,11 @@ be used.</p>
 <div class="spec">
 <p><tt>start() -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p>Starts the HTTP support, with default settings.</p>
+</div><p><p>Starts the HTTP support, with default settings.</p>
+
+ Does not fail if already started, throws an exception in case of unrecoverable
+ error.
+</p>
 
 <h3 class="function"><a name="start-1">start/1</a></h3>
 <div class="spec">

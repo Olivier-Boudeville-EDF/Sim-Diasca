@@ -1,0 +1,1039 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module gltf_support</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module gltf_support</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various facilities about the <b>glTF 2.0</b> file format (GL 
+Transmission Format).
+
+
+<h2><a name="description">Description</a></h2><p>Gathering of various facilities about the <b>glTF 2.0</b> file format (GL 
+Transmission Format).</p>
+
+ See <a href="https://en.wikipedia.org/wiki/GlTF" target="_top"><tt>https://en.wikipedia.org/wiki/GlTF</tt></a>.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-accessor_index">accessor_index()</a></h3>
+<p><tt>accessor_index() = <a href="#type-gltf_index">gltf_index()</a></tt></p>
+<p> Index of an accessor in a glTF content.</p>
+
+<h3 class="typedecl"><a name="type-any_file_path">any_file_path()</a></h3>
+<p><tt>any_file_path() = <a href="file_utils.html#type-any_file_path">file_utils:any_file_path()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-base_name">base_name()</a></h3>
+<p><tt>base_name() = <a href="#type-ustring">ustring()</a></tt></p>
+<p> A base name to be used for named glTF objects.</p>
+
+<h3 class="typedecl"><a name="type-basic_content_settings">basic_content_settings()</a></h3>
+<p><tt>basic_content_settings() = {<a href="#type-scene_index">scene_index()</a>, <a href="#type-material_index">material_index()</a>, <a href="#type-light_index">light_index()</a>, <a href="#type-camera_type_index">camera_type_index()</a>, <a href="#type-camera_node_index">camera_node_index()</a>, <a href="#type-gltf_content">gltf_content()</a>}</tt></p>
+<p> All settings corresponding to a basic content.</p>
+
+<h3 class="typedecl"><a name="type-bijective_table">bijective_table()</a></h3>
+<p><tt>bijective_table(F, S) = <a href="bijective_table.html#type-bijective_table">bijective_table:bijective_table</a>(F, S)</tt></p>
+
+
+<h3 class="typedecl"><a name="type-bin_string">bin_string()</a></h3>
+<p><tt>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-buffer_index">buffer_index()</a></h3>
+<p><tt>buffer_index() = <a href="#type-gltf_index">gltf_index()</a></tt></p>
+<p> Index of a buffer in a glTF content.</p>
+
+<h3 class="typedecl"><a name="type-buffer_table">buffer_table()</a></h3>
+<p><tt>buffer_table() = <a href="#type-table">table</a>(<a href="#type-buffer_index">buffer_index()</a>, <a href="#type-raw_buffer">raw_buffer()</a>)</tt></p>
+<p> A table associating to a given buffer index its in-memory, decoded,
+ readily-usable binary.</p>
+
+<h3 class="typedecl"><a name="type-buffer_view_index">buffer_view_index()</a></h3>
+<p><tt>buffer_view_index() = <a href="#type-gltf_index">gltf_index()</a></tt></p>
+<p> Index of a buffer view in a glTF content.</p>
+
+<h3 class="typedecl"><a name="type-buffer_view_target">buffer_view_target()</a></h3>
+<p><tt>buffer_view_target() = array_buffer | element_array_buffer</tt></p>
+<p> The hint representing the intended GPU buffer type to use with this buffer
+ view.</p>
+
+<h3 class="typedecl"><a name="type-camera_node_index">camera_node_index()</a></h3>
+<p><tt>camera_node_index() = <a href="#type-node_index">node_index()</a></tt></p>
+<p> Index of a node of a camera in a glTF content.</p>
+
+<h3 class="typedecl"><a name="type-camera_type_index">camera_type_index()</a></h3>
+<p><tt>camera_type_index() = <a href="#type-gltf_index">gltf_index()</a></tt></p>
+<p> Index of a camera type in a glTF content.</p>
+
+<h3 class="typedecl"><a name="type-component_type">component_type()</a></h3>
+<p><tt>component_type() = <a href="type_utils.html#type-low_level_type">type_utils:low_level_type()</a></tt></p>
+<p> The (Myriad) datatype of a component of an accessor, for instance 'uint16'.</p>
+
+<h3 class="typedecl"><a name="type-component_value">component_value()</a></h3>
+<p><tt>component_value() = number()</tt></p>
+<p> The value of a component of an accessor.</p>
+
+<h3 class="typedecl"><a name="type-count">count()</a></h3>
+<p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-element_type">element_type()</a></h3>
+<p><tt>element_type() = scalar | vector2 | vector3 | vector4 | matrix2 | matrix3 | matrix4</tt></p>
+<p><p> Specifies if the glTF elements of an accessor are scalars, vectors, or 
+matrices.</p>
+
+ The (Myriad-defined) datatype of a component of that element is to be
+ specified with component_type/0.</p>
+
+<h3 class="typedecl"><a name="type-generator_name">generator_name()</a></h3>
+<p><tt>generator_name() = <a href="#type-ustring">ustring()</a></tt></p>
+<p> The name chosen for this glTF generator.</p>
+
+<h3 class="typedecl"><a name="type-gltf_accessor">gltf_accessor()</a></h3>
+<p><tt>gltf_accessor() = #gltf_accessor{name = <a href="#type-maybe">maybe</a>(<a href="gltf_support.html#type-object_name">gltf_support:object_name()</a>), buffer_view = <a href="#type-maybe">maybe</a>(<a href="gltf_support.html#type-buffer_view_index">gltf_support:buffer_view_index()</a>), element_type = <a href="gltf_support.html#type-element_type">gltf_support:element_type()</a>, component_type = <a href="gltf_support.html#type-component_type">gltf_support:component_type()</a>, count = <a href="basic_utils.html#type-count">basic_utils:count()</a>, max = <a href="#type-maybe">maybe</a>([<a href="gltf_support.html#type-component_value">gltf_support:component_value()</a>]), min = <a href="#type-maybe">maybe</a>([<a href="gltf_support.html#type-component_value">gltf_support:component_value()</a>])}</tt></p>
+<p> A typed view into a (glTF) buffer view that contains raw binary data.</p>
+
+<h3 class="typedecl"><a name="type-gltf_attributes">gltf_attributes()</a></h3>
+<p><tt>gltf_attributes() = #gltf_attributes{position = <a href="gltf_support.html#type-accessor_index">gltf_support:accessor_index()</a>, normal = <a href="#type-maybe">maybe</a>(<a href="gltf_support.html#type-accessor_index">gltf_support:accessor_index()</a>), tangent = <a href="#type-maybe">maybe</a>(<a href="gltf_support.html#type-accessor_index">gltf_support:accessor_index()</a>), texcoord_0 = <a href="#type-maybe">maybe</a>(<a href="gltf_support.html#type-accessor_index">gltf_support:accessor_index()</a>)}</tt></p>
+<p> The (glTF) attributes of a primitive, corresponding to the vertex attributes
+ used in the draw calls.</p>
+
+<h3 class="typedecl"><a name="type-gltf_buffer">gltf_buffer()</a></h3>
+<p><tt>gltf_buffer() = #gltf_buffer{name = <a href="#type-maybe">maybe</a>(<a href="gltf_support.html#type-object_name">gltf_support:object_name()</a>), uri = <a href="web_utils.html#type-uri">web_utils:uri()</a>, size = <a href="system_utils.html#type-byte_size">system_utils:byte_size()</a>}</tt></p>
+<p> A (glTF) buffer of raw data, whose elements could be vertex indexes, vertex
+ attributes, animation keyframes, etc.</p>
+
+<h3 class="typedecl"><a name="type-gltf_buffer_view">gltf_buffer_view()</a></h3>
+<p><tt>gltf_buffer_view() = #gltf_buffer_view{name = <a href="#type-maybe">maybe</a>(<a href="gltf_support.html#type-object_name">gltf_support:object_name()</a>), buffer = <a href="gltf_support.html#type-buffer_index">gltf_support:buffer_index()</a>, offset = <a href="#type-maybe">maybe</a>(<a href="system_utils.html#type-byte_offset">system_utils:byte_offset()</a>), size = <a href="system_utils.html#type-byte_size">system_utils:byte_size()</a>}</tt></p>
+<p> A view onto a given (glTF) buffer.</p>
+
+<h3 class="typedecl"><a name="type-gltf_buffer_view_target">gltf_buffer_view_target()</a></h3>
+<p><tt>gltf_buffer_view_target() = <a href="#type-gltf_enum">gltf_enum()</a></tt></p>
+<p> The glTF lower-level hint representing the intended GPU buffer type to use
+ with this buffer view.</p>
+
+<h3 class="typedecl"><a name="type-gltf_camera_type">gltf_camera_type()</a></h3>
+<p><tt>gltf_camera_type() = <a href="#type-gltf_orthographic_camera">gltf_orthographic_camera()</a> | <a href="#type-gltf_perspective_camera">gltf_perspective_camera()</a></tt></p>
+<p><p> A type of camera defined in a glTF content.</p>
+
+ This corresponds to a camera type rather than a camera instance, as the actual
+ cameras are created based on nodes each referring to a camera type.</p>
+
+<h3 class="typedecl"><a name="type-gltf_component_type">gltf_component_type()</a></h3>
+<p><tt>gltf_component_type() = <a href="#type-gltf_enum">gltf_enum()</a></tt></p>
+<p> A glTF lower-level type identifier. Ex: '5120' for sint8.</p>
+
+<h3 class="typedecl"><a name="type-gltf_content">gltf_content()</a></h3>
+<p><tt>gltf_content() = #gltf_content{default_scene = <a href="#type-maybe">maybe</a>(<a href="gltf_support.html#type-scene_index">gltf_support:scene_index()</a>), scenes = [<a href="gltf_support.html#type-gltf_scene">gltf_support:gltf_scene()</a>], nodes = [<a href="gltf_support.html#type-gltf_node">gltf_support:gltf_node()</a>], materials = [<a href="gltf_support.html#type-gltf_material">gltf_support:gltf_material()</a>], camera_types = [<a href="gltf_support.html#type-gltf_camera_type">gltf_support:gltf_camera_type()</a>], meshes = [<a href="gltf_support.html#type-gltf_mesh">gltf_support:gltf_mesh()</a>], accessors = [<a href="gltf_support.html#type-gltf_accessor">gltf_support:gltf_accessor()</a>], buffers = [<a href="gltf_support.html#type-gltf_buffer">gltf_support:gltf_buffer()</a>], buffer_views = [<a href="gltf_support.html#type-gltf_buffer_view">gltf_support:gltf_buffer_view()</a>]}</tt></p>
+<p> Gathers all information regarding a glTF 2.0 content.</p>
+
+<h3 class="typedecl"><a name="type-gltf_element_type">gltf_element_type()</a></h3>
+<p><tt>gltf_element_type() = <a href="#type-bin_string">bin_string()</a></tt></p>
+<p> Lower-level glTF specification of the datatype of a component.</p>
+
+<h3 class="typedecl"><a name="type-gltf_enum">gltf_enum()</a></h3>
+<p><tt>gltf_enum() = pos_integer()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-gltf_index">gltf_index()</a></h3>
+<p><tt>gltf_index() = <a href="basic_utils.html#type-zero_index">basic_utils:zero_index()</a></tt></p>
+<p><p> Note that glTF indexes start at zero, unlike most of the Myriad indices 
+(including the ones defined in the linear module).</p>
+
+ So, for glTF, "index"/"indexes" have been preferred to "indice"/"indices" to
+ further reduce the risk of being mixed with linear:indice() and other Myriad
+ conventions.</p>
+
+<h3 class="typedecl"><a name="type-gltf_indexed_triangle">gltf_indexed_triangle()</a></h3>
+<p><tt>gltf_indexed_triangle() = {<a href="#type-gltf_vertex_index">gltf_vertex_index()</a>, <a href="#type-gltf_vertex_index">gltf_vertex_index()</a>, <a href="#type-gltf_vertex_index">gltf_vertex_index()</a>}</tt></p>
+<p><p> An index-based glTF triangle.</p>
+
+ Note that these indexes start at 0 for glTF, unlike ours, and that usually the
+ vertex order matters (regarding culling).</p>
+
+<h3 class="typedecl"><a name="type-gltf_light">gltf_light()</a></h3>
+<p><tt>gltf_light() = #gltf_node{name = <a href="#type-maybe">maybe</a>(<a href="gltf_support.html#type-object_name">gltf_support:object_name()</a>), mesh = <a href="#type-maybe">maybe</a>(<a href="gltf_support.html#type-mesh_index">gltf_support:mesh_index()</a>), rotation = <a href="#type-maybe">maybe</a>(<a href="quaternion.html#type-quaternion">quaternion:quaternion()</a>), translation = <a href="#type-maybe">maybe</a>(<a href="vector3.html#type-vector3">vector3:vector3()</a>), camera = <a href="#type-maybe">maybe</a>(<a href="gltf_support.html#type-camera_type_index">gltf_support:camera_type_index()</a>)}</tt></p>
+<p><p> A light defined in a glTF content.</p>
+
+ As no specific type exists for light, it is a mere glTF node.</p>
+
+<h3 class="typedecl"><a name="type-gltf_material">gltf_material()</a></h3>
+<p><tt>gltf_material() = #gltf_material{name = <a href="#type-maybe">maybe</a>(<a href="gltf_support.html#type-object_name">gltf_support:object_name()</a>), double_sided = <a href="#type-maybe">maybe</a>(boolean()), pbr_metallic_roughness = <a href="#type-maybe">maybe</a>(<a href="gltf_support.html#type-gltf_pbr_metallic_roughness">gltf_support:gltf_pbr_metallic_roughness()</a>)}</tt></p>
+<p> A material defined in a glTF content.</p>
+
+<h3 class="typedecl"><a name="type-gltf_mesh">gltf_mesh()</a></h3>
+<p><tt>gltf_mesh() = #gltf_mesh{name = <a href="#type-maybe">maybe</a>(<a href="gltf_support.html#type-object_name">gltf_support:object_name()</a>), primitives = [<a href="gltf_support.html#type-gltf_primitive">gltf_support:gltf_primitive()</a>]}</tt></p>
+<p> A mesh defined in a glTF content.</p>
+
+<h3 class="typedecl"><a name="type-gltf_node">gltf_node()</a></h3>
+<p><tt>gltf_node() = #gltf_node{name = <a href="#type-maybe">maybe</a>(<a href="gltf_support.html#type-object_name">gltf_support:object_name()</a>), mesh = <a href="#type-maybe">maybe</a>(<a href="gltf_support.html#type-mesh_index">gltf_support:mesh_index()</a>), rotation = <a href="#type-maybe">maybe</a>(<a href="quaternion.html#type-quaternion">quaternion:quaternion()</a>), translation = <a href="#type-maybe">maybe</a>(<a href="vector3.html#type-vector3">vector3:vector3()</a>), camera = <a href="#type-maybe">maybe</a>(<a href="gltf_support.html#type-camera_type_index">gltf_support:camera_type_index()</a>)}</tt></p>
+<p> A node defined in a glTF content.</p>
+
+<h3 class="typedecl"><a name="type-gltf_object_name">gltf_object_name()</a></h3>
+<p><tt>gltf_object_name() = <a href="#type-bin_string">bin_string()</a></tt></p>
+<p> Any top-level glTF object MAY have a name string property.</p>
+
+<h3 class="typedecl"><a name="type-gltf_orthographic_camera">gltf_orthographic_camera()</a></h3>
+<p><tt>gltf_orthographic_camera() = #gltf_orthographic_camera{name = <a href="#type-maybe">maybe</a>(<a href="gltf_support.html#type-object_name">gltf_support:object_name()</a>), x_magnification = <a href="math_utils.html#type-positive_factor">math_utils:positive_factor()</a>, y_magnification = <a href="math_utils.html#type-positive_factor">math_utils:positive_factor()</a>, z_near_distance = <a href="linear.html#type-distance">linear:distance()</a>, z_far_distance = <a href="linear.html#type-distance">linear:distance()</a>}</tt></p>
+<p> A type of orthographic camera defined in a glTF content.</p>
+
+<h3 class="typedecl"><a name="type-gltf_pbr_metallic_roughness">gltf_pbr_metallic_roughness()</a></h3>
+<p><tt>gltf_pbr_metallic_roughness() = #gltf_pbr_metallic_roughness{base_color_factor = <a href="gui_color.html#type-render_color">gui_color:render_color()</a>, metallic_factor = <a href="math_utils.html#type-factor">math_utils:factor()</a>, roughness_factor = <a href="math_utils.html#type-factor">math_utils:factor()</a>}</tt></p>
+<p> Describes the (glTF) metallic roughness of a material, based on the
+ Physically-Based Rendering (PBR) methodology.</p>
+
+<h3 class="typedecl"><a name="type-gltf_perspective_camera">gltf_perspective_camera()</a></h3>
+<p><tt>gltf_perspective_camera() = #gltf_perspective_camera{name = <a href="#type-maybe">maybe</a>(<a href="gltf_support.html#type-object_name">gltf_support:object_name()</a>), aspect_ratio = <a href="#type-maybe">maybe</a>(<a href="math_utils.html#type-ratio">math_utils:ratio()</a>), y_field_of_view = <a href="unit_utils.html#type-radians">unit_utils:radians()</a>, z_near_distance = <a href="linear.html#type-distance">linear:distance()</a>, z_far_distance = <a href="#type-maybe">maybe</a>(<a href="linear.html#type-distance">linear:distance()</a>)}</tt></p>
+<p> A type of perspective camera defined in a glTF content.</p>
+
+<h3 class="typedecl"><a name="type-gltf_primitive">gltf_primitive()</a></h3>
+<p><tt>gltf_primitive() = #gltf_primitive{attributes = <a href="gltf_support.html#type-gltf_attributes">gltf_support:gltf_attributes()</a>, indexes = <a href="#type-maybe">maybe</a>(<a href="gltf_support.html#type-accessor_index">gltf_support:accessor_index()</a>), material = <a href="#type-maybe">maybe</a>(<a href="gltf_support.html#type-accessor_index">gltf_support:accessor_index()</a>), mode = <a href="#type-maybe">maybe</a>(<a href="linear_2D.html#type-topology_type">linear_2D:topology_type()</a>)}</tt></p>
+<p> A primitive defined in a mesh in a glTF content, corresponding to the data
+ required for GPU draw calls.</p>
+
+<h3 class="typedecl"><a name="type-gltf_scene">gltf_scene()</a></h3>
+<p><tt>gltf_scene() = #gltf_scene{name = <a href="#type-maybe">maybe</a>(<a href="gltf_support.html#type-object_name">gltf_support:object_name()</a>), nodes = [<a href="gltf_support.html#type-node_index">gltf_support:node_index()</a>]}</tt></p>
+<p> A scene defined in a glTF content.</p>
+
+<h3 class="typedecl"><a name="type-gltf_topology">gltf_topology()</a></h3>
+<p><tt>gltf_topology() = [<a href="#type-gltf_indexed_triangle">gltf_indexed_triangle()</a>]</tt></p>
+<p> An index-based actual glTF topology of a glTF mesh.
+ Note that these indexes start at 0 for glTF, unlike ours.</p>
+
+<h3 class="typedecl"><a name="type-gltf_topology_type">gltf_topology_type()</a></h3>
+<p><tt>gltf_topology_type() = <a href="#type-gltf_enum">gltf_enum()</a></tt></p>
+<p> Lower-level glTF topology ("mode") of a primitive (ex: corresponding to point,
+ line_loop, etc.).</p>
+
+<h3 class="typedecl"><a name="type-gltf_vertex_index">gltf_vertex_index()</a></h3>
+<p><tt>gltf_vertex_index() = <a href="#type-gltf_index">gltf_index()</a></tt></p>
+<p> The (glTF) index of a vertex (they start at zero).</p>
+
+<h3 class="typedecl"><a name="type-indexed_triangle">indexed_triangle()</a></h3>
+<p><tt>indexed_triangle() = <a href="linear.html#type-indexed_triangle">linear:indexed_triangle()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-json">json()</a></h3>
+<p><tt>json() = <a href="json_utils.html#type-json">json_utils:json()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-light_index">light_index()</a></h3>
+<p><tt>light_index() = <a href="#type-gltf_index">gltf_index()</a></tt></p>
+<p> Index of a light (actually: a node, as no specific type exists for light) in a
+ glTF content.</p>
+
+<h3 class="typedecl"><a name="type-material_index">material_index()</a></h3>
+<p><tt>material_index() = <a href="#type-gltf_index">gltf_index()</a></tt></p>
+<p> Index of a material in a glTF content.</p>
+
+<h3 class="typedecl"><a name="type-mesh_index">mesh_index()</a></h3>
+<p><tt>mesh_index() = <a href="#type-gltf_index">gltf_index()</a></tt></p>
+<p> Index of a mesh in a glTF content.</p>
+
+<h3 class="typedecl"><a name="type-mesh_name">mesh_name()</a></h3>
+<p><tt>mesh_name() = <a href="#type-gltf_object_name">gltf_object_name()</a></tt></p>
+<p> The name of a glTF mesh.</p>
+
+<h3 class="typedecl"><a name="type-node_index">node_index()</a></h3>
+<p><tt>node_index() = <a href="#type-gltf_index">gltf_index()</a></tt></p>
+<p> Index of a node in a glTF content.</p>
+
+<h3 class="typedecl"><a name="type-object_name">object_name()</a></h3>
+<p><tt>object_name() = <a href="#type-ustring">ustring()</a></tt></p>
+<p> Any top-level glTF object MAY have a name string property.</p>
+
+<h3 class="typedecl"><a name="type-parser_state">parser_state()</a></h3>
+<p><tt>parser_state() = <a href="json_utils.html#type-parser_state">json_utils:parser_state()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-primitive_index">primitive_index()</a></h3>
+<p><tt>primitive_index() = <a href="#type-gltf_index">gltf_index()</a></tt></p>
+<p> Index of a primitive in a glTF mesh.</p>
+
+<h3 class="typedecl"><a name="type-primitive_name">primitive_name()</a></h3>
+<p><tt>primitive_name() = <a href="#type-gltf_object_name">gltf_object_name()</a></tt></p>
+<p> There exists no name per se for glTF primitives, yet their buffers can be
+ named accordingly.</p>
+
+<h3 class="typedecl"><a name="type-raw_buffer">raw_buffer()</a></h3>
+<p><tt>raw_buffer() = binary()</tt></p>
+<p> An actual, raw (binary) buffer, to which a glTF buffer object applies.</p>
+
+<h3 class="typedecl"><a name="type-scene_index">scene_index()</a></h3>
+<p><tt>scene_index() = <a href="#type-gltf_index">gltf_index()</a></tt></p>
+<p> Index of a scene in a glTF content.</p>
+
+<h3 class="typedecl"><a name="type-specialised_normal">specialised_normal()</a></h3>
+<p><tt>specialised_normal() = <a href="linear.html#type-specialised_normal">linear:specialised_normal()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-specialised_point">specialised_point()</a></h3>
+<p><tt>specialised_point() = <a href="linear.html#type-specialised_point">linear:specialised_point()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-specialised_texture_coordinates">specialised_texture_coordinates()</a></h3>
+<p><tt>specialised_texture_coordinates() = <a href="linear.html#type-specialised_texture_coordinates">linear:specialised_texture_coordinates()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-specialised_type">specialised_type()</a></h3>
+<p><tt>specialised_type() = <a href="linear.html#type-specialised_type">linear:specialised_type()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-specialised_vector">specialised_vector()</a></h3>
+<p><tt>specialised_vector() = <a href="linear.html#type-specialised_vector">linear:specialised_vector()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-specialised_vertex">specialised_vertex()</a></h3>
+<p><tt>specialised_vertex() = <a href="linear.html#type-specialised_vertex">linear:specialised_vertex()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-topology_type">topology_type()</a></h3>
+<p><tt>topology_type() = <a href="linear_2D.html#type-topology_type">linear_2D:topology_type()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add_accessor_to_content-2">add_accessor_to_content/2</a></td><td>Adds the specified accessor to the specified glTF content; returns the
+ index of that accessor, and the updated content.</td></tr>
+<tr><td valign="top"><a href="#add_basic_camera_to_content-1">add_basic_camera_to_content/1</a></td><td>Adds a basic unamed camera to the specified glTF content; returns the
+ index of that camera type and node, and the updated content.</td></tr>
+<tr><td valign="top"><a href="#add_basic_camera_to_content-2">add_basic_camera_to_content/2</a></td><td>Adds a basic named camera to the specified glTF content; returns the
+ index of that camera type and node, and the updated content.</td></tr>
+<tr><td valign="top"><a href="#add_basic_light_to_content-1">add_basic_light_to_content/1</a></td><td>Adds a basic light to the specified glTF content; returns the index of
+ that light and the updated content.</td></tr>
+<tr><td valign="top"><a href="#add_basic_light_to_content-2">add_basic_light_to_content/2</a></td><td>Adds a basic, named, light to the specified glTF content; returns the
+ index of that light and the updated content.</td></tr>
+<tr><td valign="top"><a href="#add_basic_mesh_to_content-2">add_basic_mesh_to_content/2</a></td><td>Adds a basic mesh, based on specified primitive, to the specified glTF
+ content, by creating a dedicated basic node; returns the index of that mesh,
+ and the updated content.</td></tr>
+<tr><td valign="top"><a href="#add_basics_to_content-1">add_basics_to_content/1</a></td><td>Adds the basics to the specified glTF content: default scene, material,
+ light, camera, etc.</td></tr>
+<tr><td valign="top"><a href="#add_basics_to_content-2">add_basics_to_content/2</a></td><td>Adds named basics to the specified glTF content: default scene, material,
+ light, camera, etc.</td></tr>
+<tr><td valign="top"><a href="#add_buffer_to_content-2">add_buffer_to_content/2</a></td><td>Adds the specified buffer to the specified glTF content; returns the
+ index of that buffer, and the updated content.</td></tr>
+<tr><td valign="top"><a href="#add_buffer_view_to_content-2">add_buffer_view_to_content/2</a></td><td>Adds the specified buffer-view to the specified glTF content; returns the
+ index of that buffer-view, and the updated content.</td></tr>
+<tr><td valign="top"><a href="#add_camera_to_content-3">add_camera_to_content/3</a></td><td>Adds specified unamed camera to the specified glTF content; returns the 
+index of that camera type and of a node instantiating it, and the updated 
+content.</td></tr>
+<tr><td valign="top"><a href="#add_camera_to_content-4">add_camera_to_content/4</a></td><td>Adds specified named camera to the specified glTF content; returns the 
+index of that camera type and of a node instantiating it, and the updated 
+content.</td></tr>
+<tr><td valign="top"><a href="#add_camera_type_to_content-2">add_camera_type_to_content/2</a></td><td>Adds the specified camera type to the specified glTF content; returns the
+ index of that camera type, and the updated content.</td></tr>
+<tr><td valign="top"><a href="#add_empty_mesh-2">add_empty_mesh/2</a></td><td>Adds a named, empty mesh (that is: a mesh with no primitive) to the 
+specified content; returns the index of this mesh and the corresponding 
+updated glTF content.</td></tr>
+<tr><td valign="top"><a href="#add_full_scene_to_content-1">add_full_scene_to_content/1</a></td><td>Adds a full scene to the specified glTF content, that is a scene
+ comprising all known nodes.</td></tr>
+<tr><td valign="top"><a href="#add_light_to_content-2">add_light_to_content/2</a></td><td>Adds the specified light to the specified glTF content; returns the index 
+of that light and the updated content.</td></tr>
+<tr><td valign="top"><a href="#add_material_to_content-2">add_material_to_content/2</a></td><td>Adds the specified material to the specified glTF content; returns the
+ index of that material, and the updated content.</td></tr>
+<tr><td valign="top"><a href="#add_mesh_to_content-2">add_mesh_to_content/2</a></td><td>Adds the specified mesh to the specified glTF content; returns the index
+ of that mesh, and the updated content.</td></tr>
+<tr><td valign="top"><a href="#add_metallic_material_to_content-1">add_metallic_material_to_content/1</a></td><td>Adds a basic, metallic material to the specified glTF content; returns
+ the index of that material and the updated content.</td></tr>
+<tr><td valign="top"><a href="#add_metallic_material_to_content-2">add_metallic_material_to_content/2</a></td><td>Adds a basic, named, metallic material to the specified glTF content;
+ returns the index of that material and the updated content.</td></tr>
+<tr><td valign="top"><a href="#add_node_to_content-2">add_node_to_content/2</a></td><td>Adds the specified node to the specified glTF content; returns the index
+ of that node, and the updated content.</td></tr>
+<tr><td valign="top"><a href="#add_node_to_scene-3">add_node_to_scene/3</a></td><td>Adds the specified node to the specified scene of specified glTF content;
+ returns the updated content.</td></tr>
+<tr><td valign="top"><a href="#add_primitive-8">add_primitive/8</a></td><td>Encodes the specified primitive information as an additional primitive of 
+the specified mesh of the specified glTF content.</td></tr>
+<tr><td valign="top"><a href="#add_primitive-9">add_primitive/9</a></td><td>Encodes the specified primitive information as an additional primitive of 
+the specified already-existing mesh of the specified glTF content.</td></tr>
+<tr><td valign="top"><a href="#add_primitive_to_mesh-2">add_primitive_to_mesh/2</a></td><td>Adds the specified primitive to the specified glTF mesh; returns the
+ index of that primitive, and the updated mesh.</td></tr>
+<tr><td valign="top"><a href="#add_scene_to_content-2">add_scene_to_content/2</a></td><td>Adds the specified scene to the specified glTF content; returns the index
+ of that scene, and the updated content.</td></tr>
+<tr><td valign="top"><a href="#buffer_view_target_to_gltf-1">buffer_view_target_to_gltf/1</a></td><td>Converts a (Myriad-level) buffer-view target into a (lower-level) glTF
+ one.</td></tr>
+<tr><td valign="top"><a href="#component_type_to_gltf-1">component_type_to_gltf/1</a></td><td>Converts a (Myriad-level) component type into a (lower-level) glTF one.</td></tr>
+<tr><td valign="top"><a href="#decode_primitive-4">decode_primitive/4</a></td><td>Decodes the specified primitive of the specified mesh, as defined in the
+ specified glTF content: returns its vertices, normals, texture coordinates and
+ (glTF) indexes (which may account for vertices and/or normals and/or texture
+ coordinates).</td></tr>
+<tr><td valign="top"><a href="#decode_vertices-5">decode_vertices/5</a></td><td>Decodes the vertices defined in the specified glTF content.</td></tr>
+<tr><td valign="top"><a href="#element_type_to_gltf-1">element_type_to_gltf/1</a></td><td>Converts a (Myriad-level) component type into a (lower-level) glTF one.</td></tr>
+<tr><td valign="top"><a href="#extract_all_float32_little-1">extract_all_float32_little/1</a></td><td>Extracts from the specified binary all single-precision (32 bit) floats,
+ supposed encoded in little-endian.</td></tr>
+<tr><td valign="top"><a href="#extract_all_uint16_little-1">extract_all_uint16_little/1</a></td><td>Extracts from the specified binary all 16 bit unsigned integers, supposed
+ encoded in little-endian.</td></tr>
+<tr><td valign="top"><a href="#extract_points-4">extract_points/4</a></td><td>Extracts specified points from specified binary (typically obtained from
+ a buffer view).</td></tr>
+<tr><td valign="top"><a href="#extract_vectors-4">extract_vectors/4</a></td><td>Extracts specified vectors from specified binary (typically obtained from
+ a buffer view).</td></tr>
+<tr><td valign="top"><a href="#file_to_gltf_buffer_embedded-1">file_to_gltf_buffer_embedded/1</a></td><td>Returns a glTF buffer corresponding to the specified (binary) file,
+ embedding the file content directly into a relevant base64-encoded URI, and
+ named accordingly.</td></tr>
+<tr><td valign="top"><a href="#generate_buffer-3">generate_buffer/3</a></td><td>Generates a binary buffer corresponding to the specified elements.</td></tr>
+<tr><td valign="top"><a href="#get_basic_camera_node-0">get_basic_camera_node/0</a></td><td>Returns a basic perspective glTF camera node.</td></tr>
+<tr><td valign="top"><a href="#get_basic_camera_settings-0">get_basic_camera_settings/0</a></td><td>Returns basic glTF camera settings: a (perspective) camera type and a
+ node (not yet referencing it, as the camera type has not been registered and
+ thus has not an index yet).</td></tr>
+<tr><td valign="top"><a href="#get_basic_camera_type-0">get_basic_camera_type/0</a></td><td>Returns a basic (perspective) glTF camera type.</td></tr>
+<tr><td valign="top"><a href="#get_basic_content-0">get_basic_content/0</a></td><td>Returns all settings regarding a basic glTF content, with defaults in
+ terms of scene, material, light, camera, etc.</td></tr>
+<tr><td valign="top"><a href="#get_basic_content-1">get_basic_content/1</a></td><td>Returns all settings regarding a basic glTF content, with defaults in
+ terms of scene, material, light, camera, etc., and specified base name for the
+ various named elements.</td></tr>
+<tr><td valign="top"><a href="#get_basic_mesh-0">get_basic_mesh/0</a></td><td>Returns a basic, empty, unregistered glTF mesh.</td></tr>
+<tr><td valign="top"><a href="#get_basic_mesh-1">get_basic_mesh/1</a></td><td>Returns a basic, empty, named, unregistered glTF mesh.</td></tr>
+<tr><td valign="top"><a href="#get_basic_node-0">get_basic_node/0</a></td><td>Returns a basic, empty, unregistered glTF scene node.</td></tr>
+<tr><td valign="top"><a href="#get_basic_node-1">get_basic_node/1</a></td><td>Returns a basic, empty, named, unregistered glTF scene node.</td></tr>
+<tr><td valign="top"><a href="#get_basic_orthographic_camera_type-0">get_basic_orthographic_camera_type/0</a></td><td>Returns a basic orthographic glTF camera type.</td></tr>
+<tr><td valign="top"><a href="#get_basic_perspective_camera_type-0">get_basic_perspective_camera_type/0</a></td><td>Returns a basic perspective glTF camera type.</td></tr>
+<tr><td valign="top"><a href="#get_blank_content-0">get_blank_content/0</a></td><td>Returns a blank glTF content.</td></tr>
+<tr><td valign="top"><a href="#get_buffer_view_target_associations-0">get_buffer_view_target_associations/0</a></td><td>Returns the two-way associations regarding Myriad/glTF buffer-view 
+targets.</td></tr>
+<tr><td valign="top"><a href="#get_component_type_associations-0">get_component_type_associations/0</a></td><td>Returns the two-way associations regarding Myriad/glTF component types.</td></tr>
+<tr><td valign="top"><a href="#get_element_type_associations-0">get_element_type_associations/0</a></td><td>Returns the two-way associations regarding Myriad/glTF element types.</td></tr>
+<tr><td valign="top"><a href="#get_mesh-2">get_mesh/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_metallic_material-0">get_metallic_material/0</a></td><td>Returns a basic, metallic, double-sided, unregistered glTF material.</td></tr>
+<tr><td valign="top"><a href="#get_metallic_material-1">get_metallic_material/1</a></td><td>Returns a basic, metallic, double-sided, named, unregistered glTF
+ material.</td></tr>
+<tr><td valign="top"><a href="#get_topology_type_associations-0">get_topology_type_associations/0</a></td><td>Returns the two-way associations regarding Myriad/glTF topology types.</td></tr>
+<tr><td valign="top"><a href="#gltf_buffer_embedded_to_raw_buffer-1">gltf_buffer_embedded_to_raw_buffer/1</a></td><td>Returns a binary corresponding to the specified glTF buffer.</td></tr>
+<tr><td valign="top"><a href="#gltf_content_to_json-3">gltf_content_to_json/3</a></td><td>Converts the specified glTF content into a JSON counterpart.</td></tr>
+<tr><td valign="top"><a href="#gltf_to_buffer_view_target-1">gltf_to_buffer_view_target/1</a></td><td>Converts a (lower-level) glTF buffer-view target into a Myriad-level one.</td></tr>
+<tr><td valign="top"><a href="#gltf_to_component_type-1">gltf_to_component_type/1</a></td><td>Converts a (lower-level) glTF component type into a Myriad-level one.</td></tr>
+<tr><td valign="top"><a href="#gltf_to_element_type-1">gltf_to_element_type/1</a></td><td>Converts a (lower-level) glTF component type into a Myriad-level one.</td></tr>
+<tr><td valign="top"><a href="#gltf_to_topology_type-1">gltf_to_topology_type/1</a></td><td>Converts a (lower-level) glTF component type into a Myriad-level one.</td></tr>
+<tr><td valign="top"><a href="#indexed_triangle_to_gltf-1">indexed_triangle_to_gltf/1</a></td><td>Returns a (zero-based) glTF indexed triangle from the specified one.</td></tr>
+<tr><td valign="top"><a href="#indexed_triangles_to_gltf-1">indexed_triangles_to_gltf/1</a></td><td>Returns (zero-based) glTF indexed triangles from the specified ones.</td></tr>
+<tr><td valign="top"><a href="#indexes_to_triangles-1">indexes_to_triangles/1</a></td><td>Returns the list of (indexed) triangles corresponding to the specified
+ flat list of vertex indexes.</td></tr>
+<tr><td valign="top"><a href="#json_to_gltf_content-2">json_to_gltf_content/2</a></td><td>Converts the specified JSON content into an (internal) glTF counterpart.</td></tr>
+<tr><td valign="top"><a href="#raw_buffer_to_gltf_buffer_embedded-1">raw_buffer_to_gltf_buffer_embedded/1</a></td><td>Returns an (anonymous) glTF buffer corresponding to the specified binary,
+ embedding its content directly into a relevant base64-encoded URI.</td></tr>
+<tr><td valign="top"><a href="#raw_buffer_to_gltf_buffer_embedded-2">raw_buffer_to_gltf_buffer_embedded/2</a></td><td>Returns a glTF buffer corresponding to the specified binary, embedding
+ its content directly into a relevant base64-encoded URI.</td></tr>
+<tr><td valign="top"><a href="#read_gltf_content-2">read_gltf_content/2</a></td><td>Reads the glTF content defined in the specified glTF file.</td></tr>
+<tr><td valign="top"><a href="#set_default_scene-2">set_default_scene/2</a></td><td>Sets the specified scene as the default one (overriding any prior).</td></tr>
+<tr><td valign="top"><a href="#set_node_mesh-2">set_node_mesh/2</a></td><td>Sets the specified mesh index of the specified glTF node; returns the
+ updated node.</td></tr>
+<tr><td valign="top"><a href="#topology_type_to_gltf-1">topology_type_to_gltf/1</a></td><td>Converts a (Myriad-level) topology type into a (lower-level) glTF one.</td></tr>
+<tr><td valign="top"><a href="#triangles_to_indexes-1">triangles_to_indexes/1</a></td><td>Returns a flat list of vertex indexes corresponding to the specified list
+ of (indexed) triangles.</td></tr>
+<tr><td valign="top"><a href="#update_mesh-3">update_mesh/3</a></td><td>Updates the specified mesh in content with the specified one.</td></tr>
+<tr><td valign="top"><a href="#write_gltf_content-3">write_gltf_content/3</a></td><td>Writes the specified glTF content in the specified file, which is
+ expected not to exist already, using a default generator name and the
+ specified state of the JSON parser.</td></tr>
+<tr><td valign="top"><a href="#write_gltf_content-4">write_gltf_content/4</a></td><td>Writes the specified glTF content in the specified file, which is
+ expected not to exist, using specified generator name and the specified state
+ of the JSON parser.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="add_accessor_to_content-2">add_accessor_to_content/2</a></h3>
+<div class="spec">
+<p><tt>add_accessor_to_content(Accessor::<a href="#type-gltf_accessor">gltf_accessor()</a>, Content::<a href="#type-gltf_content">gltf_content()</a>) -&gt; {<a href="#type-accessor_index">accessor_index()</a>, <a href="#type-gltf_content">gltf_content()</a>}</tt><br></p>
+<p> </p>
+</div><p>Adds the specified accessor to the specified glTF content; returns the
+ index of that accessor, and the updated content.
+</p>
+
+<h3 class="function"><a name="add_basic_camera_to_content-1">add_basic_camera_to_content/1</a></h3>
+<div class="spec">
+<p><tt>add_basic_camera_to_content(Content::<a href="#type-gltf_content">gltf_content()</a>) -&gt; {<a href="#type-camera_type_index">camera_type_index()</a>, <a href="#type-camera_node_index">camera_node_index()</a>, <a href="#type-gltf_content">gltf_content()</a>}</tt><br></p>
+<p> </p>
+</div><p>Adds a basic unamed camera to the specified glTF content; returns the
+ index of that camera type and node, and the updated content.
+</p>
+
+<h3 class="function"><a name="add_basic_camera_to_content-2">add_basic_camera_to_content/2</a></h3>
+<div class="spec">
+<p><tt>add_basic_camera_to_content(Content::<a href="#type-gltf_content">gltf_content()</a>, BaseName::<a href="#type-base_name">base_name()</a>) -&gt; {<a href="#type-camera_type_index">camera_type_index()</a>, <a href="#type-camera_node_index">camera_node_index()</a>, <a href="#type-gltf_content">gltf_content()</a>}</tt><br></p>
+<p> </p>
+</div><p>Adds a basic named camera to the specified glTF content; returns the
+ index of that camera type and node, and the updated content.
+</p>
+
+<h3 class="function"><a name="add_basic_light_to_content-1">add_basic_light_to_content/1</a></h3>
+<div class="spec">
+<p><tt>add_basic_light_to_content(Content::<a href="#type-gltf_content">gltf_content()</a>) -&gt; {<a href="#type-light_index">light_index()</a>, <a href="#type-gltf_content">gltf_content()</a>}</tt><br></p>
+<p> </p>
+</div><p>Adds a basic light to the specified glTF content; returns the index of
+ that light and the updated content.
+</p>
+
+<h3 class="function"><a name="add_basic_light_to_content-2">add_basic_light_to_content/2</a></h3>
+<div class="spec">
+<p><tt>add_basic_light_to_content(Content::<a href="#type-gltf_content">gltf_content()</a>, BaseName::<a href="#type-base_name">base_name()</a>) -&gt; {<a href="#type-light_index">light_index()</a>, <a href="#type-gltf_content">gltf_content()</a>}</tt><br></p>
+<p> </p>
+</div><p>Adds a basic, named, light to the specified glTF content; returns the
+ index of that light and the updated content.
+</p>
+
+<h3 class="function"><a name="add_basic_mesh_to_content-2">add_basic_mesh_to_content/2</a></h3>
+<div class="spec">
+<p><tt>add_basic_mesh_to_content(Primitive::<a href="#type-gltf_primitive">gltf_primitive()</a>, Content::<a href="#type-gltf_content">gltf_content()</a>) -&gt; {<a href="#type-node_index">node_index()</a>, <a href="#type-mesh_index">mesh_index()</a>, <a href="#type-primitive_index">primitive_index()</a>, <a href="#type-gltf_content">gltf_content()</a>}</tt><br></p>
+<p> </p>
+</div><p>Adds a basic mesh, based on specified primitive, to the specified glTF
+ content, by creating a dedicated basic node; returns the index of that mesh,
+ and the updated content.
+</p>
+
+<h3 class="function"><a name="add_basics_to_content-1">add_basics_to_content/1</a></h3>
+<div class="spec">
+<p><tt>add_basics_to_content(Content::<a href="#type-gltf_content">gltf_content()</a>) -&gt; <a href="#type-basic_content_settings">basic_content_settings()</a></tt><br></p>
+<p> </p>
+</div><p>Adds the basics to the specified glTF content: default scene, material,
+ light, camera, etc.
+</p>
+
+<h3 class="function"><a name="add_basics_to_content-2">add_basics_to_content/2</a></h3>
+<div class="spec">
+<p><tt>add_basics_to_content(Content::<a href="#type-gltf_content">gltf_content()</a>, BaseName::<a href="#type-base_name">base_name()</a>) -&gt; <a href="#type-basic_content_settings">basic_content_settings()</a></tt><br></p>
+<p> </p>
+</div><p>Adds named basics to the specified glTF content: default scene, material,
+ light, camera, etc.
+</p>
+
+<h3 class="function"><a name="add_buffer_to_content-2">add_buffer_to_content/2</a></h3>
+<div class="spec">
+<p><tt>add_buffer_to_content(Buffer::<a href="#type-gltf_buffer">gltf_buffer()</a>, Content::<a href="#type-gltf_content">gltf_content()</a>) -&gt; {<a href="#type-buffer_index">buffer_index()</a>, <a href="#type-gltf_content">gltf_content()</a>}</tt><br></p>
+<p> </p>
+</div><p>Adds the specified buffer to the specified glTF content; returns the
+ index of that buffer, and the updated content.
+</p>
+
+<h3 class="function"><a name="add_buffer_view_to_content-2">add_buffer_view_to_content/2</a></h3>
+<div class="spec">
+<p><tt>add_buffer_view_to_content(BufferView::<a href="#type-gltf_buffer_view">gltf_buffer_view()</a>, Content::<a href="#type-gltf_content">gltf_content()</a>) -&gt; {<a href="#type-buffer_view_index">buffer_view_index()</a>, <a href="#type-gltf_content">gltf_content()</a>}</tt><br></p>
+<p> </p>
+</div><p>Adds the specified buffer-view to the specified glTF content; returns the
+ index of that buffer-view, and the updated content.
+</p>
+
+<h3 class="function"><a name="add_camera_to_content-3">add_camera_to_content/3</a></h3>
+<div class="spec">
+<p><tt>add_camera_to_content(CameraType::<a href="#type-gltf_camera_type">gltf_camera_type()</a>, CameraNode::<a href="#type-gltf_node">gltf_node()</a>, Content::<a href="#type-gltf_content">gltf_content()</a>) -&gt; {<a href="#type-camera_type_index">camera_type_index()</a>, <a href="#type-node_index">node_index()</a>, <a href="#type-gltf_content">gltf_content()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Adds specified unamed camera to the specified glTF content; returns the 
+index of that camera type and of a node instantiating it, and the updated 
+content.</p>
+
+ Updates the specified node so that it references this camera type (hence
+ creating an instance thereof); any previous camera is replaced.
+</p>
+
+<h3 class="function"><a name="add_camera_to_content-4">add_camera_to_content/4</a></h3>
+<div class="spec">
+<p><tt>add_camera_to_content(CameraType::<a href="#type-gltf_camera_type">gltf_camera_type()</a>, CameraNode::<a href="#type-gltf_node">gltf_node()</a>, Content::<a href="#type-gltf_content">gltf_content()</a>, BaseName::<a href="#type-base_name">base_name()</a>) -&gt; {<a href="#type-camera_type_index">camera_type_index()</a>, <a href="#type-node_index">node_index()</a>, <a href="#type-gltf_content">gltf_content()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Adds specified named camera to the specified glTF content; returns the 
+index of that camera type and of a node instantiating it, and the updated 
+content.</p>
+
+ Updates the specified node so that it references this camera type (hence
+ creating an instance thereof); any previous camera is replaced.
+</p>
+
+<h3 class="function"><a name="add_camera_type_to_content-2">add_camera_type_to_content/2</a></h3>
+<div class="spec">
+<p><tt>add_camera_type_to_content(CameraType::<a href="#type-gltf_camera_type">gltf_camera_type()</a>, Content::<a href="#type-gltf_content">gltf_content()</a>) -&gt; {<a href="#type-camera_type_index">camera_type_index()</a>, <a href="#type-gltf_content">gltf_content()</a>}</tt><br></p>
+<p> </p>
+</div><p>Adds the specified camera type to the specified glTF content; returns the
+ index of that camera type, and the updated content.
+</p>
+
+<h3 class="function"><a name="add_empty_mesh-2">add_empty_mesh/2</a></h3>
+<div class="spec">
+<p><tt>add_empty_mesh(MeshName::<a href="#type-mesh_name">mesh_name()</a>, Content::<a href="#type-gltf_content">gltf_content()</a>) -&gt; {<a href="#type-mesh_index">mesh_index()</a>, <a href="#type-gltf_content">gltf_content()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Adds a named, empty mesh (that is: a mesh with no primitive) to the 
+specified content; returns the index of this mesh and the corresponding 
+updated glTF content.</p>
+
+ Does not create any node referencing that mesh.
+</p>
+
+<h3 class="function"><a name="add_full_scene_to_content-1">add_full_scene_to_content/1</a></h3>
+<div class="spec">
+<p><tt>add_full_scene_to_content(Content::<a href="#type-gltf_content">gltf_content()</a>) -&gt; {<a href="#type-scene_index">scene_index()</a>, <a href="#type-gltf_content">gltf_content()</a>}</tt><br></p>
+<p> </p>
+</div><p>Adds a full scene to the specified glTF content, that is a scene
+ comprising all known nodes.
+</p>
+
+<h3 class="function"><a name="add_light_to_content-2">add_light_to_content/2</a></h3>
+<div class="spec">
+<p><tt>add_light_to_content(Light::<a href="#type-gltf_light">gltf_light()</a>, Content::<a href="#type-gltf_content">gltf_content()</a>) -&gt; {<a href="#type-light_index">light_index()</a>, <a href="#type-gltf_content">gltf_content()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Adds the specified light to the specified glTF content; returns the index 
+of that light and the updated content.</p>
+
+ Note that lights do not exist per se for glTF: they are mere nodes.
+</p>
+
+<h3 class="function"><a name="add_material_to_content-2">add_material_to_content/2</a></h3>
+<div class="spec">
+<p><tt>add_material_to_content(Material::<a href="#type-gltf_material">gltf_material()</a>, Content::<a href="#type-gltf_content">gltf_content()</a>) -&gt; {<a href="#type-material_index">material_index()</a>, <a href="#type-gltf_content">gltf_content()</a>}</tt><br></p>
+<p> </p>
+</div><p>Adds the specified material to the specified glTF content; returns the
+ index of that material, and the updated content.
+</p>
+
+<h3 class="function"><a name="add_mesh_to_content-2">add_mesh_to_content/2</a></h3>
+<div class="spec">
+<p><tt>add_mesh_to_content(Mesh::<a href="#type-gltf_mesh">gltf_mesh()</a>, Content::<a href="#type-gltf_content">gltf_content()</a>) -&gt; {<a href="#type-mesh_index">mesh_index()</a>, <a href="#type-gltf_content">gltf_content()</a>}</tt><br></p>
+<p> </p>
+</div><p>Adds the specified mesh to the specified glTF content; returns the index
+ of that mesh, and the updated content.
+</p>
+
+<h3 class="function"><a name="add_metallic_material_to_content-1">add_metallic_material_to_content/1</a></h3>
+<div class="spec">
+<p><tt>add_metallic_material_to_content(Content::<a href="#type-gltf_content">gltf_content()</a>) -&gt; {<a href="#type-material_index">material_index()</a>, <a href="#type-gltf_content">gltf_content()</a>}</tt><br></p>
+<p> </p>
+</div><p>Adds a basic, metallic material to the specified glTF content; returns
+ the index of that material and the updated content.
+</p>
+
+<h3 class="function"><a name="add_metallic_material_to_content-2">add_metallic_material_to_content/2</a></h3>
+<div class="spec">
+<p><tt>add_metallic_material_to_content(Content::<a href="#type-gltf_content">gltf_content()</a>, BaseName::<a href="#type-base_name">base_name()</a>) -&gt; {<a href="#type-material_index">material_index()</a>, <a href="#type-gltf_content">gltf_content()</a>}</tt><br></p>
+<p> </p>
+</div><p>Adds a basic, named, metallic material to the specified glTF content;
+ returns the index of that material and the updated content.
+</p>
+
+<h3 class="function"><a name="add_node_to_content-2">add_node_to_content/2</a></h3>
+<div class="spec">
+<p><tt>add_node_to_content(Node::<a href="#type-gltf_node">gltf_node()</a>, Content::<a href="#type-gltf_content">gltf_content()</a>) -&gt; {<a href="#type-node_index">node_index()</a>, <a href="#type-gltf_content">gltf_content()</a>}</tt><br></p>
+<p> </p>
+</div><p>Adds the specified node to the specified glTF content; returns the index
+ of that node, and the updated content.
+</p>
+
+<h3 class="function"><a name="add_node_to_scene-3">add_node_to_scene/3</a></h3>
+<div class="spec">
+<p><tt>add_node_to_scene(NodeIndex::<a href="#type-node_index">node_index()</a>, SceneIndex::<a href="#type-scene_index">scene_index()</a>, Content::<a href="#type-gltf_content">gltf_content()</a>) -&gt; <a href="#type-gltf_content">gltf_content()</a></tt><br></p>
+<p> </p>
+</div><p>Adds the specified node to the specified scene of specified glTF content;
+ returns the updated content.
+</p>
+
+<h3 class="function"><a name="add_primitive-8">add_primitive/8</a></h3>
+<div class="spec">
+<p><tt>add_primitive(Vertices::[<a href="#type-specialised_vertex">specialised_vertex()</a>], Normals::[<a href="#type-specialised_normal">specialised_normal()</a>], TexCoords::[<a href="#type-specialised_texture_coordinates">specialised_texture_coordinates()</a>], TopologyType::<a href="#type-topology_type">topology_type()</a>, IndexedTriangles::<a href="#type-gltf_topology">gltf_topology()</a>, MaterialAccessorIndex::<a href="#type-material_index">material_index()</a>, MeshIndex::<a href="#type-mesh_index">mesh_index()</a>, Content::<a href="#type-gltf_content">gltf_content()</a>) -&gt; {<a href="#type-primitive_index">primitive_index()</a>, <a href="#type-gltf_content">gltf_content()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Encodes the specified primitive information as an additional primitive of 
+the specified mesh of the specified glTF content.</p>
+
+ Directly embeds the resulting buffer; returns the index of the new primitive
+ (in that mesh) and an updated glTF content.
+</p>
+
+<h3 class="function"><a name="add_primitive-9">add_primitive/9</a></h3>
+<div class="spec">
+<p><tt>add_primitive(MaybePrimName::<a href="#type-maybe">maybe</a>(<a href="#type-primitive_name">primitive_name()</a>), Vertices::[<a href="#type-specialised_vertex">specialised_vertex()</a>], Normals::[<a href="#type-specialised_normal">specialised_normal()</a>], TexCoords::[<a href="#type-specialised_texture_coordinates">specialised_texture_coordinates()</a>], TopologyType::<a href="#type-topology_type">topology_type()</a>, IndexedTriangles::<a href="#type-gltf_topology">gltf_topology()</a>, MaterialAccessorIndex::<a href="#type-material_index">material_index()</a>, MeshIndex::<a href="#type-mesh_index">mesh_index()</a>, Content::<a href="#type-gltf_content">gltf_content()</a>) -&gt; {<a href="#type-primitive_index">primitive_index()</a>, <a href="#type-gltf_content">gltf_content()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Encodes the specified primitive information as an additional primitive of 
+the specified already-existing mesh of the specified glTF content.</p>
+
+ <p>Primitives do not have stored names, yet buffer names can use that 
+information.</p>
+
+ Directly embeds the resulting buffer; returns the index of the new primitive
+ (in that mesh) and an updated glTF content.
+</p>
+
+<h3 class="function"><a name="add_primitive_to_mesh-2">add_primitive_to_mesh/2</a></h3>
+<div class="spec">
+<p><tt>add_primitive_to_mesh(Primitive::<a href="#type-gltf_primitive">gltf_primitive()</a>, Mesh::<a href="#type-gltf_mesh">gltf_mesh()</a>) -&gt; {<a href="#type-primitive_index">primitive_index()</a>, <a href="#type-gltf_mesh">gltf_mesh()</a>}</tt><br></p>
+<p> </p>
+</div><p>Adds the specified primitive to the specified glTF mesh; returns the
+ index of that primitive, and the updated mesh.
+</p>
+
+<h3 class="function"><a name="add_scene_to_content-2">add_scene_to_content/2</a></h3>
+<div class="spec">
+<p><tt>add_scene_to_content(Scene::<a href="#type-gltf_scene">gltf_scene()</a>, Content::<a href="#type-gltf_content">gltf_content()</a>) -&gt; {<a href="#type-scene_index">scene_index()</a>, <a href="#type-gltf_content">gltf_content()</a>}</tt><br></p>
+<p> </p>
+</div><p>Adds the specified scene to the specified glTF content; returns the index
+ of that scene, and the updated content.
+</p>
+
+<h3 class="function"><a name="buffer_view_target_to_gltf-1">buffer_view_target_to_gltf/1</a></h3>
+<div class="spec">
+<p><tt>buffer_view_target_to_gltf(BufferViewTarget::<a href="#type-buffer_view_target">buffer_view_target()</a>) -&gt; <a href="#type-gltf_buffer_view_target">gltf_buffer_view_target()</a></tt><br></p>
+<p> </p>
+</div><p>Converts a (Myriad-level) buffer-view target into a (lower-level) glTF
+ one.
+</p>
+
+<h3 class="function"><a name="component_type_to_gltf-1">component_type_to_gltf/1</a></h3>
+<div class="spec">
+<p><tt>component_type_to_gltf(ComponentType::<a href="#type-component_type">component_type()</a>) -&gt; <a href="#type-gltf_component_type">gltf_component_type()</a></tt><br></p>
+<p> </p>
+</div><p>Converts a (Myriad-level) component type into a (lower-level) glTF one.</p>
+
+<h3 class="function"><a name="decode_primitive-4">decode_primitive/4</a></h3>
+<div class="spec">
+<p><tt>decode_primitive(MeshIndex::<a href="#type-mesh_index">mesh_index()</a>, PrimitiveIndex::<a href="#type-primitive_index">primitive_index()</a>, Gltf_content::<a href="#type-gltf_content">gltf_content()</a>, BufferTable::<a href="#type-buffer_table">buffer_table()</a>) -&gt; {[<a href="#type-specialised_vertex">specialised_vertex()</a>], [<a href="#type-specialised_normal">specialised_normal()</a>], [<a href="#type-specialised_texture_coordinates">specialised_texture_coordinates()</a>], [<a href="#type-gltf_index">gltf_index()</a>], <a href="#type-buffer_table">buffer_table()</a>}</tt><br></p>
+<p> </p>
+</div><p>Decodes the specified primitive of the specified mesh, as defined in the
+ specified glTF content: returns its vertices, normals, texture coordinates and
+ (glTF) indexes (which may account for vertices and/or normals and/or texture
+ coordinates).
+</p>
+
+<h3 class="function"><a name="decode_vertices-5">decode_vertices/5</a></h3>
+<div class="spec">
+<p><tt>decode_vertices(AccessorIndex::<a href="#type-accessor_index">accessor_index()</a>, Accessors::[<a href="#type-gltf_accessor">gltf_accessor()</a>], Buffers::[<a href="#type-gltf_buffer">gltf_buffer()</a>], BufferViews::[<a href="#type-gltf_buffer_view">gltf_buffer_view()</a>], BufferTable::<a href="#type-buffer_table">buffer_table()</a>) -&gt; {[<a href="#type-specialised_vertex">specialised_vertex()</a>], <a href="#type-buffer_table">buffer_table()</a>}</tt><br></p>
+<p> </p>
+</div><p>Decodes the vertices defined in the specified glTF content.</p>
+
+<h3 class="function"><a name="element_type_to_gltf-1">element_type_to_gltf/1</a></h3>
+<div class="spec">
+<p><tt>element_type_to_gltf(ElemType::<a href="#type-element_type">element_type()</a>) -&gt; <a href="#type-gltf_element_type">gltf_element_type()</a></tt><br></p>
+<p> </p>
+</div><p>Converts a (Myriad-level) component type into a (lower-level) glTF one.</p>
+
+<h3 class="function"><a name="extract_all_float32_little-1">extract_all_float32_little/1</a></h3>
+<div class="spec">
+<p><tt>extract_all_float32_little(Bin::<a href="#type-raw_buffer">raw_buffer()</a>) -&gt; [float()]</tt><br></p>
+<p> </p>
+</div><p>Extracts from the specified binary all single-precision (32 bit) floats,
+ supposed encoded in little-endian.
+</p>
+
+<h3 class="function"><a name="extract_all_uint16_little-1">extract_all_uint16_little/1</a></h3>
+<div class="spec">
+<p><tt>extract_all_uint16_little(Bin::<a href="#type-raw_buffer">raw_buffer()</a>) -&gt; [integer()]</tt><br></p>
+<p> </p>
+</div><p>Extracts from the specified binary all 16 bit unsigned integers, supposed
+ encoded in little-endian.
+</p>
+
+<h3 class="function"><a name="extract_points-4">extract_points/4</a></h3>
+<div class="spec">
+<p><tt>extract_points(Bin::<a href="#type-raw_buffer">raw_buffer()</a>, ElementCount::<a href="#type-count">count()</a>, ElemType::<a href="#type-element_type">element_type()</a>, ComponentType::<a href="#type-component_type">component_type()</a>) -&gt; [<a href="#type-specialised_point">specialised_point()</a>]</tt><br></p>
+<p> </p>
+</div><p>Extracts specified points from specified binary (typically obtained from
+ a buffer view).
+</p>
+
+<h3 class="function"><a name="extract_vectors-4">extract_vectors/4</a></h3>
+<div class="spec">
+<p><tt>extract_vectors(Bin::<a href="#type-raw_buffer">raw_buffer()</a>, ElementCount::<a href="#type-count">count()</a>, ElemType::<a href="#type-element_type">element_type()</a>, ComponentType::<a href="#type-component_type">component_type()</a>) -&gt; [<a href="#type-specialised_vector">specialised_vector()</a>]</tt><br></p>
+<p> </p>
+</div><p>Extracts specified vectors from specified binary (typically obtained from
+ a buffer view).
+</p>
+
+<h3 class="function"><a name="file_to_gltf_buffer_embedded-1">file_to_gltf_buffer_embedded/1</a></h3>
+<div class="spec">
+<p><tt>file_to_gltf_buffer_embedded(FilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-gltf_buffer">gltf_buffer()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a glTF buffer corresponding to the specified (binary) file,
+ embedding the file content directly into a relevant base64-encoded URI, and
+ named accordingly.
+</p>
+
+<h3 class="function"><a name="generate_buffer-3">generate_buffer/3</a></h3>
+<div class="spec">
+<p><tt>generate_buffer(ElementType::<a href="#type-element_type">element_type()</a>, ComponentType::<a href="#type-component_type">component_type()</a>, Elements::[<a href="#type-specialised_type">specialised_type()</a>]) -&gt; <a href="#type-raw_buffer">raw_buffer()</a></tt><br></p>
+<p> </p>
+</div><p>Generates a binary buffer corresponding to the specified elements.</p>
+
+<h3 class="function"><a name="get_basic_camera_node-0">get_basic_camera_node/0</a></h3>
+<div class="spec">
+<p><tt>get_basic_camera_node() -&gt; <a href="#type-gltf_node">gltf_node()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a basic perspective glTF camera node.</p>
+
+<h3 class="function"><a name="get_basic_camera_settings-0">get_basic_camera_settings/0</a></h3>
+<div class="spec">
+<p><tt>get_basic_camera_settings() -&gt; {<a href="#type-gltf_camera_type">gltf_camera_type()</a>, <a href="#type-gltf_node">gltf_node()</a>}</tt><br></p>
+<p> </p>
+</div><p>Returns basic glTF camera settings: a (perspective) camera type and a
+ node (not yet referencing it, as the camera type has not been registered and
+ thus has not an index yet).
+</p>
+
+<h3 class="function"><a name="get_basic_camera_type-0">get_basic_camera_type/0</a></h3>
+<div class="spec">
+<p><tt>get_basic_camera_type() -&gt; <a href="#type-gltf_camera_type">gltf_camera_type()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a basic (perspective) glTF camera type.</p>
+
+<h3 class="function"><a name="get_basic_content-0">get_basic_content/0</a></h3>
+<div class="spec">
+<p><tt>get_basic_content() -&gt; <a href="#type-basic_content_settings">basic_content_settings()</a></tt><br></p>
+<p> </p>
+</div><p>Returns all settings regarding a basic glTF content, with defaults in
+ terms of scene, material, light, camera, etc.
+</p>
+
+<h3 class="function"><a name="get_basic_content-1">get_basic_content/1</a></h3>
+<div class="spec">
+<p><tt>get_basic_content(BaseName::<a href="#type-base_name">base_name()</a>) -&gt; <a href="#type-basic_content_settings">basic_content_settings()</a></tt><br></p>
+<p> </p>
+</div><p>Returns all settings regarding a basic glTF content, with defaults in
+ terms of scene, material, light, camera, etc., and specified base name for the
+ various named elements.
+</p>
+
+<h3 class="function"><a name="get_basic_mesh-0">get_basic_mesh/0</a></h3>
+<div class="spec">
+<p><tt>get_basic_mesh() -&gt; <a href="#type-gltf_mesh">gltf_mesh()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a basic, empty, unregistered glTF mesh.</p>
+
+<h3 class="function"><a name="get_basic_mesh-1">get_basic_mesh/1</a></h3>
+<div class="spec">
+<p><tt>get_basic_mesh(MeshName::<a href="#type-object_name">object_name()</a>) -&gt; <a href="#type-gltf_mesh">gltf_mesh()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a basic, empty, named, unregistered glTF mesh.</p>
+
+<h3 class="function"><a name="get_basic_node-0">get_basic_node/0</a></h3>
+<div class="spec">
+<p><tt>get_basic_node() -&gt; <a href="#type-gltf_node">gltf_node()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a basic, empty, unregistered glTF scene node.</p>
+
+<h3 class="function"><a name="get_basic_node-1">get_basic_node/1</a></h3>
+<div class="spec">
+<p><tt>get_basic_node(NodeName::<a href="#type-object_name">object_name()</a>) -&gt; <a href="#type-gltf_node">gltf_node()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a basic, empty, named, unregistered glTF scene node.</p>
+
+<h3 class="function"><a name="get_basic_orthographic_camera_type-0">get_basic_orthographic_camera_type/0</a></h3>
+<div class="spec">
+<p><tt>get_basic_orthographic_camera_type() -&gt; <a href="#type-gltf_camera_type">gltf_camera_type()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a basic orthographic glTF camera type.</p>
+
+<h3 class="function"><a name="get_basic_perspective_camera_type-0">get_basic_perspective_camera_type/0</a></h3>
+<div class="spec">
+<p><tt>get_basic_perspective_camera_type() -&gt; <a href="#type-gltf_camera_type">gltf_camera_type()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a basic perspective glTF camera type.</p>
+
+<h3 class="function"><a name="get_blank_content-0">get_blank_content/0</a></h3>
+<div class="spec">
+<p><tt>get_blank_content() -&gt; <a href="#type-gltf_content">gltf_content()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a blank glTF content.</p>
+
+<h3 class="function"><a name="get_buffer_view_target_associations-0">get_buffer_view_target_associations/0</a></h3>
+<div class="spec">
+<p><tt>get_buffer_view_target_associations() -&gt; <a href="#type-bijective_table">bijective_table</a>(<a href="#type-buffer_view_target">buffer_view_target()</a>, <a href="#type-gltf_buffer_view_target">gltf_buffer_view_target()</a>)</tt><br></p>
+<p> </p>
+</div><p><p>Returns the two-way associations regarding Myriad/glTF buffer-view 
+targets.</p>
+
+ Refer to
+ https://www.khronos.org/registry/glTF/specs/2.0/glTF-2.0.html#_buffer_view_target
+</p>
+
+<h3 class="function"><a name="get_component_type_associations-0">get_component_type_associations/0</a></h3>
+<div class="spec">
+<p><tt>get_component_type_associations() -&gt; <a href="#type-bijective_table">bijective_table</a>(<a href="#type-component_type">component_type()</a>, <a href="#type-gltf_component_type">gltf_component_type()</a>)</tt><br></p>
+<p> </p>
+</div><p><p>Returns the two-way associations regarding Myriad/glTF component types.</p>
+
+ Refer to
+ https://www.khronos.org/registry/glTF/specs/2.0/glTF-2.0.html#accessor-data-types
+</p>
+
+<h3 class="function"><a name="get_element_type_associations-0">get_element_type_associations/0</a></h3>
+<div class="spec">
+<p><tt>get_element_type_associations() -&gt; <a href="#type-bijective_table">bijective_table</a>(<a href="#type-element_type">element_type()</a>, <a href="#type-gltf_element_type">gltf_element_type()</a>)</tt><br></p>
+<p> </p>
+</div><p><p>Returns the two-way associations regarding Myriad/glTF element types.</p>
+
+ Refer to
+ https://www.khronos.org/registry/glTF/specs/2.0/glTF-2.0.html#accessor-data-types
+</p>
+
+<h3 class="function"><a name="get_mesh-2">get_mesh/2</a></h3>
+<div class="spec">
+<p><tt>get_mesh(MeshIndex::<a href="#type-mesh_index">mesh_index()</a>, Content::<a href="#type-gltf_content">gltf_content()</a>) -&gt; <a href="#type-gltf_mesh">gltf_mesh()</a></tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_metallic_material-0">get_metallic_material/0</a></h3>
+<div class="spec">
+<p><tt>get_metallic_material() -&gt; <a href="#type-gltf_material">gltf_material()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a basic, metallic, double-sided, unregistered glTF material.</p>
+
+<h3 class="function"><a name="get_metallic_material-1">get_metallic_material/1</a></h3>
+<div class="spec">
+<p><tt>get_metallic_material(MaterialName::<a href="#type-object_name">object_name()</a>) -&gt; <a href="#type-gltf_material">gltf_material()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a basic, metallic, double-sided, named, unregistered glTF
+ material.
+</p>
+
+<h3 class="function"><a name="get_topology_type_associations-0">get_topology_type_associations/0</a></h3>
+<div class="spec">
+<p><tt>get_topology_type_associations() -&gt; <a href="#type-bijective_table">bijective_table</a>(<a href="#type-topology_type">topology_type()</a>, <a href="#type-gltf_topology_type">gltf_topology_type()</a>)</tt><br></p>
+<p> </p>
+</div><p><p>Returns the two-way associations regarding Myriad/glTF topology types.</p>
+
+ Refer to
+ https://www.khronos.org/registry/glTF/specs/2.0/glTF-2.0.html#_mesh_primitive_mode
+</p>
+
+<h3 class="function"><a name="gltf_buffer_embedded_to_raw_buffer-1">gltf_buffer_embedded_to_raw_buffer/1</a></h3>
+<div class="spec">
+<p><tt>gltf_buffer_embedded_to_raw_buffer(Gltf_buffer::<a href="#type-gltf_buffer">gltf_buffer()</a>) -&gt; <a href="#type-raw_buffer">raw_buffer()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a binary corresponding to the specified glTF buffer.</p>
+
+<h3 class="function"><a name="gltf_content_to_json-3">gltf_content_to_json/3</a></h3>
+<div class="spec">
+<p><tt>gltf_content_to_json(Gltf_content::<a href="#type-gltf_content">gltf_content()</a>, GeneratorName::<a href="#type-generator_name">generator_name()</a>, ParserState::<a href="#type-parser_state">parser_state()</a>) -&gt; <a href="#type-json">json()</a></tt><br></p>
+<p> </p>
+</div><p>Converts the specified glTF content into a JSON counterpart.</p>
+
+<h3 class="function"><a name="gltf_to_buffer_view_target-1">gltf_to_buffer_view_target/1</a></h3>
+<div class="spec">
+<p><tt>gltf_to_buffer_view_target(GltfBufferViewTarget::<a href="#type-gltf_buffer_view_target">gltf_buffer_view_target()</a>) -&gt; <a href="#type-buffer_view_target">buffer_view_target()</a></tt><br></p>
+<p> </p>
+</div><p>Converts a (lower-level) glTF buffer-view target into a Myriad-level one.</p>
+
+<h3 class="function"><a name="gltf_to_component_type-1">gltf_to_component_type/1</a></h3>
+<div class="spec">
+<p><tt>gltf_to_component_type(GltfComponentType::<a href="#type-gltf_component_type">gltf_component_type()</a>) -&gt; <a href="#type-component_type">component_type()</a></tt><br></p>
+<p> </p>
+</div><p>Converts a (lower-level) glTF component type into a Myriad-level one.</p>
+
+<h3 class="function"><a name="gltf_to_element_type-1">gltf_to_element_type/1</a></h3>
+<div class="spec">
+<p><tt>gltf_to_element_type(GltfElemType::<a href="#type-gltf_element_type">gltf_element_type()</a>) -&gt; <a href="#type-element_type">element_type()</a></tt><br></p>
+<p> </p>
+</div><p>Converts a (lower-level) glTF component type into a Myriad-level one.</p>
+
+<h3 class="function"><a name="gltf_to_topology_type-1">gltf_to_topology_type/1</a></h3>
+<div class="spec">
+<p><tt>gltf_to_topology_type(GltfTopologyTypeType::<a href="#type-gltf_topology_type">gltf_topology_type()</a>) -&gt; <a href="#type-topology_type">topology_type()</a></tt><br></p>
+<p> </p>
+</div><p>Converts a (lower-level) glTF component type into a Myriad-level one.</p>
+
+<h3 class="function"><a name="indexed_triangle_to_gltf-1">indexed_triangle_to_gltf/1</a></h3>
+<div class="spec">
+<p><tt>indexed_triangle_to_gltf(IndTriangle::<a href="#type-indexed_triangle">indexed_triangle()</a>) -&gt; <a href="#type-gltf_indexed_triangle">gltf_indexed_triangle()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a (zero-based) glTF indexed triangle from the specified one.</p>
+
+<h3 class="function"><a name="indexed_triangles_to_gltf-1">indexed_triangles_to_gltf/1</a></h3>
+<div class="spec">
+<p><tt>indexed_triangles_to_gltf(IndTriangles::[<a href="#type-indexed_triangle">indexed_triangle()</a>]) -&gt; [<a href="#type-gltf_indexed_triangle">gltf_indexed_triangle()</a>]</tt><br></p>
+<p> </p>
+</div><p>Returns (zero-based) glTF indexed triangles from the specified ones.</p>
+
+<h3 class="function"><a name="indexes_to_triangles-1">indexes_to_triangles/1</a></h3>
+<div class="spec">
+<p><tt>indexes_to_triangles(Indexes::[<a href="#type-gltf_vertex_index">gltf_vertex_index()</a>]) -&gt; [<a href="#type-indexed_triangle">indexed_triangle()</a>]</tt><br></p>
+<p> </p>
+</div><p>Returns the list of (indexed) triangles corresponding to the specified
+ flat list of vertex indexes.
+</p>
+
+<h3 class="function"><a name="json_to_gltf_content-2">json_to_gltf_content/2</a></h3>
+<div class="spec">
+<p><tt>json_to_gltf_content(JSonContent::<a href="#type-json">json()</a>, ParserState::<a href="#type-parser_state">parser_state()</a>) -&gt; <a href="#type-gltf_content">gltf_content()</a></tt><br></p>
+<p> </p>
+</div><p><p>Converts the specified JSON content into an (internal) glTF counterpart.</p>
+
+ Note: not implemented yet.
+</p>
+
+<h3 class="function"><a name="raw_buffer_to_gltf_buffer_embedded-1">raw_buffer_to_gltf_buffer_embedded/1</a></h3>
+<div class="spec">
+<p><tt>raw_buffer_to_gltf_buffer_embedded(BinContent::<a href="#type-raw_buffer">raw_buffer()</a>) -&gt; <a href="#type-gltf_buffer">gltf_buffer()</a></tt><br></p>
+<p> </p>
+</div><p>Returns an (anonymous) glTF buffer corresponding to the specified binary,
+ embedding its content directly into a relevant base64-encoded URI.
+</p>
+
+<h3 class="function"><a name="raw_buffer_to_gltf_buffer_embedded-2">raw_buffer_to_gltf_buffer_embedded/2</a></h3>
+<div class="spec">
+<p><tt>raw_buffer_to_gltf_buffer_embedded(BinContent::<a href="#type-raw_buffer">raw_buffer()</a>, MaybeBufferName::<a href="#type-maybe">maybe</a>(<a href="#type-object_name">object_name()</a>)) -&gt; <a href="#type-gltf_buffer">gltf_buffer()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a glTF buffer corresponding to the specified binary, embedding
+ its content directly into a relevant base64-encoded URI.
+</p>
+
+<h3 class="function"><a name="read_gltf_content-2">read_gltf_content/2</a></h3>
+<div class="spec">
+<p><tt>read_gltf_content(InputFilePath::<a href="#type-any_file_path">any_file_path()</a>, ParserState::<a href="#type-parser_state">parser_state()</a>) -&gt; <a href="#type-gltf_content">gltf_content()</a></tt><br></p>
+<p> </p>
+</div><p>Reads the glTF content defined in the specified glTF file.</p>
+
+<h3 class="function"><a name="set_default_scene-2">set_default_scene/2</a></h3>
+<div class="spec">
+<p><tt>set_default_scene(SceneIndex::<a href="#type-scene_index">scene_index()</a>, Content::<a href="#type-gltf_content">gltf_content()</a>) -&gt; <a href="#type-gltf_content">gltf_content()</a></tt><br></p>
+<p> </p>
+</div><p>Sets the specified scene as the default one (overriding any prior).</p>
+
+<h3 class="function"><a name="set_node_mesh-2">set_node_mesh/2</a></h3>
+<div class="spec">
+<p><tt>set_node_mesh(MeshIndex::<a href="#type-mesh_index">mesh_index()</a>, Node::<a href="#type-gltf_node">gltf_node()</a>) -&gt; <a href="#type-gltf_node">gltf_node()</a></tt><br></p>
+<p> </p>
+</div><p>Sets the specified mesh index of the specified glTF node; returns the
+ updated node.
+</p>
+
+<h3 class="function"><a name="topology_type_to_gltf-1">topology_type_to_gltf/1</a></h3>
+<div class="spec">
+<p><tt>topology_type_to_gltf(TopologyType::<a href="#type-topology_type">topology_type()</a>) -&gt; <a href="#type-gltf_topology_type">gltf_topology_type()</a></tt><br></p>
+<p> </p>
+</div><p>Converts a (Myriad-level) topology type into a (lower-level) glTF one.</p>
+
+<h3 class="function"><a name="triangles_to_indexes-1">triangles_to_indexes/1</a></h3>
+<div class="spec">
+<p><tt>triangles_to_indexes(Triangles::[<a href="#type-indexed_triangle">indexed_triangle()</a>]) -&gt; [<a href="#type-gltf_vertex_index">gltf_vertex_index()</a>]</tt><br></p>
+<p> </p>
+</div><p>Returns a flat list of vertex indexes corresponding to the specified list
+ of (indexed) triangles.
+</p>
+
+<h3 class="function"><a name="update_mesh-3">update_mesh/3</a></h3>
+<div class="spec">
+<p><tt>update_mesh(Mesh::<a href="#type-gltf_mesh">gltf_mesh()</a>, MeshIndex::<a href="#type-mesh_index">mesh_index()</a>, Content::<a href="#type-gltf_content">gltf_content()</a>) -&gt; <a href="#type-gltf_content">gltf_content()</a></tt><br></p>
+<p> </p>
+</div><p>Updates the specified mesh in content with the specified one.</p>
+
+<h3 class="function"><a name="write_gltf_content-3">write_gltf_content/3</a></h3>
+<div class="spec">
+<p><tt>write_gltf_content(GlTfContent::<a href="#type-gltf_content">gltf_content()</a>, OutputFilePath::<a href="#type-any_file_path">any_file_path()</a>, ParserState::<a href="#type-parser_state">parser_state()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Writes the specified glTF content in the specified file, which is
+ expected not to exist already, using a default generator name and the
+ specified state of the JSON parser.
+</p>
+
+<h3 class="function"><a name="write_gltf_content-4">write_gltf_content/4</a></h3>
+<div class="spec">
+<p><tt>write_gltf_content(GlTfContent::<a href="#type-gltf_content">gltf_content()</a>, OutputFilePath::<a href="#type-any_file_path">any_file_path()</a>, GeneratorName::<a href="#type-generator_name">generator_name()</a>, ParserState::<a href="#type-parser_state">parser_state()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Writes the specified glTF content in the specified file, which is
+ expected not to exist, using specified generator name and the specified state
+ of the JSON parser.
+</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

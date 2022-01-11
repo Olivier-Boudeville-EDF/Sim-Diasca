@@ -22,6 +22,10 @@
 
 <h2><a name="types">Data Types</a></h2>
 
+<h3 class="typedecl"><a name="type-byte_size">byte_size()</a></h3>
+<p><tt>byte_size() = <a href="system_utils.html#type-byte_size">system_utils:byte_size()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
 <p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
 
@@ -34,6 +38,17 @@
 <h3 class="typedecl"><a name="type-level">level()</a></h3>
 <p><tt>level() = <a href="basic_utils.html#type-level">basic_utils:level()</a></tt></p>
 
+
+<h3 class="typedecl"><a name="type-low_level_type">low_level_type()</a></h3>
+<p><tt>low_level_type() = uint8 | sint8 | uint16 | sint16 | uint32 | sint32 | uint64 | sint64 | float32 | float64</tt></p>
+<p><p> Designates lower-level types, with a prefix and a size in bits.</p>
+
+ <p>Following prefixes are defined: 
+- u for unsigned 
+- s for signed</p>
+
+ Datatypes are 'int' (for integer) and 'float' (for standard IEEE signed,
+ floating-point values).</p>
 
 <h3 class="typedecl"><a name="type-maybe">maybe()</a></h3>
 <p><tt>maybe(T) = T | undefined</tt></p>
@@ -64,18 +79,26 @@ datatype.</p>
  may depend on (ex: 'list' can be specified, not 'list(float())' or anything
  like that).</p>
 
+<h3 class="typedecl"><a name="type-record">record()</a></h3>
+<p><tt>record() = tuple()</tt></p>
+<p> Designates a record instance, to discriminate from a mere tuple.</p>
+
+<h3 class="typedecl"><a name="type-tuple">tuple()</a></h3>
+<p><tt>tuple(_T) = tuple()</tt></p>
+<p> Designates an uniform tuple (of unspecified size), that is a tuple whose
+ elements are all of the specified type.</p>
+
 <h3 class="typedecl"><a name="type-tuploid">tuploid()</a></h3>
 <p><tt>tuploid(T) = tuple() | T</tt></p>
 <p> Probably that such a tuple would contain at least an element of type T.</p>
 
 <h3 class="typedecl"><a name="type-tuploid">tuploid()</a></h3>
 <p><tt>tuploid() = <a href="#type-tuploid">tuploid</a>(term())</tt></p>
-<p><p> We name tuploid a pseudo-tuple, ie a value that is either an actual tuple or 
+<p><p> We name tuploid a pseudo-tuple, i.e. a value that is either an actual tuple or 
 a single, standalone term, designated as a "basic tuploid".</p>
 
  That is, a tuploid is a tuple of any size, except that the tuploid of size 1
- is MyTerm, not {MYterm}.
-</p>
+ is MyTerm, not {MYterm}.</p>
 
 <h3 class="typedecl"><a name="type-type">type()</a></h3>
 <p><tt>type() = term()</tt></p>
@@ -236,6 +259,8 @@ parses the specified string to determine the type described therein.</td></tr>
 found in an AST like, like 'undefined' in: {atom,42,undefined}).</td></tr>
 <tr><td valign="top"><a href="#get_elementary_types-0">get_elementary_types/0</a></td><td>Returns a list of the elementary, "atomic" types.</td></tr>
 <tr><td valign="top"><a href="#get_immediate_types-0">get_immediate_types/0</a></td><td>Returns a list of the possible types for immediate values.</td></tr>
+<tr><td valign="top"><a href="#get_low_level_type_size-1">get_low_level_type_size/1</a></td><td>Returns the number of bytes used by each value of the specified low-level
+ type.</td></tr>
 <tr><td valign="top"><a href="#get_simple_builtin_types-0">get_simple_builtin_types/0</a></td><td>Returns a list of the built-in, non-polymorphic types that can be
  typically found in AST forms.</td></tr>
 <tr><td valign="top"><a href="#get_type_of-1">get_type_of/1</a></td><td>Returns an atom describing, as precisely as possible, the overall type of 
@@ -476,6 +501,14 @@ Rep(L) = {string,LINE,[C_1, ..., C_k]}."</p>
 <p><tt>get_immediate_types() -&gt; [<a href="#type-type_name">type_name()</a>]</tt><br></p>
 <p> </p>
 </div><p>Returns a list of the possible types for immediate values.</p>
+
+<h3 class="function"><a name="get_low_level_type_size-1">get_low_level_type_size/1</a></h3>
+<div class="spec">
+<p><tt>get_low_level_type_size(X1::<a href="#type-low_level_type">low_level_type()</a>) -&gt; <a href="#type-byte_size">byte_size()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the number of bytes used by each value of the specified low-level
+ type.
+</p>
 
 <h3 class="function"><a name="get_simple_builtin_types-0">get_simple_builtin_types/0</a></h3>
 <div class="spec">

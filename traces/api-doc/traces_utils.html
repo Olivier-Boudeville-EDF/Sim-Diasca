@@ -10,7 +10,7 @@
 <hr>
 
 <h1>Module traces_utils</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Module gathering various <b>trace-related facilities</b>, notably in link 
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Module gathering various <b>trace-related facilities</b>, notably in link 
 with OTP.
 
 
@@ -19,12 +19,42 @@ with OTP.</p>
 
  Note: not to be mixed up with the trace_utils module from Myriad.
 
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-look_up_scope">look_up_scope()</a></h3>
+<p><tt>look_up_scope() = <a href="naming_utils.html#type-look_up_scope">naming_utils:look_up_scope()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-registration_scope">registration_scope()</a></h3>
+<p><tt>registration_scope() = <a href="naming_utils.html#type-registration_scope">naming_utils:registration_scope()</a></tt></p>
+
+
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#name_trace_file_from-1">name_trace_file_from/1</a></td><td>Names the trace file currently managed by the trace aggregator according 
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#get_aggregator_look_up_scope-0">get_aggregator_look_up_scope/0</a></td><td>Returns the look-up scope that applies to the trace aggregator in the
+ current context.</td></tr>
+<tr><td valign="top"><a href="#get_aggregator_registration_scope-0">get_aggregator_registration_scope/0</a></td><td>Returns the registration scope that applies to the trace aggregator in
+ the current context.</td></tr>
+<tr><td valign="top"><a href="#name_trace_file_from-1">name_trace_file_from/1</a></td><td>Names the trace file currently managed by the trace aggregator according 
 to specified name.</td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="get_aggregator_look_up_scope-0">get_aggregator_look_up_scope/0</a></h3>
+<div class="spec">
+<p><tt>get_aggregator_look_up_scope() -&gt; <a href="#type-look_up_scope">look_up_scope()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the look-up scope that applies to the trace aggregator in the
+ current context.
+</p>
+
+<h3 class="function"><a name="get_aggregator_registration_scope-0">get_aggregator_registration_scope/0</a></h3>
+<div class="spec">
+<p><tt>get_aggregator_registration_scope() -&gt; <a href="#type-registration_scope">registration_scope()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the registration scope that applies to the trace aggregator in
+ the current context.
+</p>
 
 <h3 class="function"><a name="name_trace_file_from-1">name_trace_file_from/1</a></h3>
 <div class="spec">
@@ -34,7 +64,8 @@ to specified name.</td></tr>
 to specified name.</p>
 
  <p>Note: the aggregator is supposed to have been launched with the 'later' 
-initial supervision setting.</p>
+initial supervision setting, and will be looked-up according to our 
+scope conventions.</p>
 
  Typically useful from an OTP context, where the Traces application is started
  without being able to defined programatically the resulting trace file.

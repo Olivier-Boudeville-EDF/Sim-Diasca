@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module protobuf_support</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module protobuf_support</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Support for the <b>Protocol Buffer</b> facilities, a.k.a.
+
+
+<h2><a name="description">Description</a></h2><p>Support for the <b>Protocol Buffer</b> facilities, a.k.a. Protobuf.</p>
+
+ <p>We generally prefer using the proto3 version (rather than the proto2 one).</p>
+
+ See protobuf_support_test.erl for the corresponding test, and
+ http://myriad.esperide.org/#about-protobuf for further information.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-bin_package_name">bin_package_name()</a></h3>
+<p><tt>bin_package_name() = <a href="#type-bin_string">bin_string()</a></tt></p>
+<p> The name of a Protobuf package, as a binary string, such as the user-defined
+ <code>&lt;&lt;"myriad.protobuf.test"&gt;&gt;</code> one.</p>
+
+<h3 class="typedecl"><a name="type-bin_string">bin_string()</a></h3>
+<p><tt>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-message">message()</a></h3>
+<p><tt>message() = <a href="type_utils.html#type-record">type_utils:record()</a></tt></p>
+<p> A (non-serialised, i.e. as an Erlang term) message instance.</p>
+
+<h3 class="typedecl"><a name="type-message_type">message_type()</a></h3>
+<p><tt>message_type() = atom()</tt></p>
+<p><p> The name of a type of Protobuf messages, as defined in a specification file.</p>
+
+ <p>For example, if defining a "Person" message type in a "myriad.protobuf.test" 
+package, the resulting record is #myriad_protobuf_test_person{}, corresponding 
+to a myriad_protobuf_test_person() type.</p>
+
+ See myriad_example.proto for a test example.</p>
+
+<h3 class="typedecl"><a name="type-package_name">package_name()</a></h3>
+<p><tt>package_name() = <a href="#type-ustring">ustring()</a></tt></p>
+<p> The name of a Protobuf package, as a plain string, such as the user-defined
+ "myriad.protobuf.test" one.</p>
+
+<h3 class="typedecl"><a name="type-serialisation">serialisation()</a></h3>
+<p><tt>serialisation() = binary()</tt></p>
+<p> A binary, serialised form, expected to contain Protobuff messages respecting
+ our conventions.</p>
+
+<h3 class="typedecl"><a name="type-spec_file_path">spec_file_path()</a></h3>
+<p><tt>spec_file_path() = <a href="file_utils.html#type-any_file_path">file_utils:any_file_path()</a></tt></p>
+<p> A path to a Protobuf specification file respecting our conventions (ex:
+ "/home/joe/foobar.proto").</p>
+
+<h3 class="typedecl"><a name="type-spec_name">spec_name()</a></h3>
+<p><tt>spec_name() = atom()</tt></p>
+<p> The name of a Protobuf specification (ex: foobar), corresponding both to a
+ specification file (ex: "foobar.proto") and the corresponding module name
+ generated from it ('foobar').</p>
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#decode-3">decode/3</a></td><td>Decodes specified serialised form into a message of specified type, as
+ defined in specified specification.</td></tr>
+<tr><td valign="top"><a href="#encode-2">encode/2</a></td><td>Encodes specified message (record instance) defined in specified
+ specification, and returns the corresponding serialised form.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="decode-3">decode/3</a></h3>
+<div class="spec">
+<p><tt>decode(SpecName::<a href="#type-spec_name">spec_name()</a>, MessageType::<a href="#type-message_type">message_type()</a>, BinSerialisation::<a href="#type-serialisation">serialisation()</a>) -&gt; <a href="#type-message">message()</a></tt><br></p>
+<p> </p>
+</div><p>Decodes specified serialised form into a message of specified type, as
+ defined in specified specification.
+</p>
+
+<h3 class="function"><a name="encode-2">encode/2</a></h3>
+<div class="spec">
+<p><tt>encode(SpecName::<a href="#type-spec_name">spec_name()</a>, MessageTerm::<a href="#type-message">message()</a>) -&gt; <a href="#type-serialisation">serialisation()</a></tt><br></p>
+<p> </p>
+</div><p>Encodes specified message (record instance) defined in specified
+ specification, and returns the corresponding serialised form.
+</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

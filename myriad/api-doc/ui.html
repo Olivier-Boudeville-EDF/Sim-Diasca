@@ -19,13 +19,10 @@
 that they can at runtime select the best available UI backend for the context 
 at hand.</p>
 
- <p>See:</p>
-
- <p>- <code>text_ui_test.erl</code> for the test of the most basic text interface</p>
-
- <p>- <code>term_ui.erl</code> for a more advanced text interface (ncurses-based)</p>
-
- <p>- <code>gui.erl</code> for a graphical counterpart thereof</p>
+ <p>See:
+ - <code>text_ui_test.erl</code> for the test of the most basic text interface
+ - <code>term_ui.erl</code> for a more advanced text interface (ncurses-based)
+ - <code>gui.erl</code> for a graphical counterpart thereof</p>
 
  See also: <code>trace_utils.erl</code> for another kind of output.
 
@@ -476,7 +473,7 @@ no specific designator provided), and returns its index.</p>
 
 <h3 class="function"><a name="display_instant-2">display_instant/2</a></h3>
 <div class="spec">
-<p><tt>display_instant(FormatString::<a href="#type-format_string">format_string()</a>, Values::[term()]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>display_instant(FormatString::<a href="#type-format_string">format_string()</a>, Values::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p>Displays specified formatted text, as a normal non-modal message.</p>
 
@@ -711,7 +708,7 @@ option (as an argument table).</p>
 
 <h3 class="function"><a name="trace-2">trace/2</a></h3>
 <div class="spec">
-<p><tt>trace(FormatString::<a href="#type-format_string">format_string()</a>, Values::[term()]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>trace(FormatString::<a href="#type-format_string">format_string()</a>, Values::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p>Displays and logs specified formatted text.</p>
 

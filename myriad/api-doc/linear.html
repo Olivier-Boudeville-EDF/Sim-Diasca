@@ -24,10 +24,6 @@
 <p><tt>any_distance() = number()</tt></p>
 <p> Distance between two points (ex: to express lengths).</p>
 
-<h3 class="typedecl"><a name="type-any_factor">any_factor()</a></h3>
-<p><tt>any_factor() = number()</tt></p>
-<p> Usually multipliers involved in equations.</p>
-
 <h3 class="typedecl"><a name="type-any_radius">any_radius()</a></h3>
 <p><tt>any_radius() = <a href="#type-any_distance">any_distance()</a></tt></p>
 <p> Radius.</p>
@@ -43,15 +39,29 @@
 
 <h3 class="typedecl"><a name="type-coordinate">coordinate()</a></h3>
 <p><tt>coordinate() = float()</tt></p>
-<p> Cartesian (floating-point) coordinates in a referential.</p>
+<p> Cartesian real (actually double-precision floating-point) coordinates in a
+ referential.</p>
+
+<h3 class="typedecl"><a name="type-count">count()</a></h3>
+<p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-dimension">dimension()</a></h3>
+<p><tt>dimension() = <a href="#type-count">count()</a></tt></p>
+<p> The dimension of a space (ex: number of rows or columns for a matrix).</p>
 
 <h3 class="typedecl"><a name="type-distance">distance()</a></h3>
 <p><tt>distance() = float()</tt></p>
 
 
-<h3 class="typedecl"><a name="type-factor">factor()</a></h3>
-<p><tt>factor() = float()</tt></p>
-<p> Usually (floating-point) multipliers involved in equations.</p>
+<h3 class="typedecl"><a name="type-indexed_triangle">indexed_triangle()</a></h3>
+<p><tt>indexed_triangle() = {<a href="#type-indice">indice()</a>, <a href="#type-indice">indice()</a>, <a href="#type-indice">indice()</a>}</tt></p>
+<p> A definition of a triangle, based on the indices of its three vertices, in a
+ vertex container (ex: a list).</p>
+
+<h3 class="typedecl"><a name="type-indice">indice()</a></h3>
+<p><tt>indice() = <a href="basic_utils.html#type-positive_index">basic_utils:positive_index()</a></tt></p>
+<p> The indice/index of an element (ex: of a vertex in an array thereof).</p>
 
 <h3 class="typedecl"><a name="type-integer_coordinate">integer_coordinate()</a></h3>
 <p><tt>integer_coordinate() = integer()</tt></p>
@@ -60,10 +70,6 @@
 <h3 class="typedecl"><a name="type-integer_distance">integer_distance()</a></h3>
 <p><tt>integer_distance() = integer()</tt></p>
 <p> Integer distance between two points (ex: to express lengths).</p>
-
-<h3 class="typedecl"><a name="type-integer_factor">integer_factor()</a></h3>
-<p><tt>integer_factor() = integer()</tt></p>
-<p> Usually multipliers involved in equations.</p>
 
 <h3 class="typedecl"><a name="type-integer_radius">integer_radius()</a></h3>
 <p><tt>integer_radius() = <a href="#type-integer_distance">integer_distance()</a></tt></p>
@@ -75,20 +81,99 @@
  compute, when applying the square root operator is not needed, like when
  comparing distances).</p>
 
+<h3 class="typedecl"><a name="type-matrix2">matrix2()</a></h3>
+<p><tt>matrix2() = <a href="matrix2.html#type-matrix2">matrix2:matrix2()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-matrix3">matrix3()</a></h3>
+<p><tt>matrix3() = <a href="matrix3.html#type-matrix3">matrix3:matrix3()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-matrix4">matrix4()</a></h3>
+<p><tt>matrix4() = <a href="matrix4.html#type-matrix4">matrix4:matrix4()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-point2">point2()</a></h3>
+<p><tt>point2() = <a href="point2.html#type-point2">point2:point2()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-point3">point3()</a></h3>
+<p><tt>point3() = <a href="point3.html#type-point3">point3:point3()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-point4">point4()</a></h3>
+<p><tt>point4() = <a href="point4.html#type-point4">point4:point4()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-radius">radius()</a></h3>
 <p><tt>radius() = <a href="#type-distance">distance()</a></tt></p>
 <p> Radius (as floating-point).</p>
+
+<h3 class="typedecl"><a name="type-scalar">scalar()</a></h3>
+<p><tt>scalar() = float()</tt></p>
+<p> A scalar, that is a 1-D vector / square matrix.</p>
+
+<h3 class="typedecl"><a name="type-specialised_matrix">specialised_matrix()</a></h3>
+<p><tt>specialised_matrix() = <a href="#type-matrix2">matrix2()</a> | <a href="#type-matrix3">matrix3()</a> | <a href="#type-matrix4">matrix4()</a></tt></p>
+<p> Any kind of specialised (fixed-size - not of arbitrary dimension) matrix.</p>
+
+<h3 class="typedecl"><a name="type-specialised_normal">specialised_normal()</a></h3>
+<p><tt>specialised_normal() = <a href="#type-specialised_vector">specialised_vector()</a></tt></p>
+<p> Any kind of specialised (fixed-size - not of arbitrary dimension) vertex.</p>
+
+<h3 class="typedecl"><a name="type-specialised_point">specialised_point()</a></h3>
+<p><tt>specialised_point() = <a href="#type-point2">point2()</a> | <a href="#type-point3">point3()</a> | <a href="#type-point4">point4()</a></tt></p>
+<p> Any kind of specialised (fixed-size - not of arbitrary dimension) point.</p>
+
+<h3 class="typedecl"><a name="type-specialised_texture_coordinates">specialised_texture_coordinates()</a></h3>
+<p><tt>specialised_texture_coordinates() = <a href="#type-specialised_point">specialised_point()</a></tt></p>
+<p> Any kind of specialised (fixed-size - not of arbitrary dimension) texture
+ coordinates.</p>
+
+<h3 class="typedecl"><a name="type-specialised_type">specialised_type()</a></h3>
+<p><tt>specialised_type() = <a href="#type-scalar">scalar()</a> | <a href="#type-specialised_point">specialised_point()</a> | <a href="#type-specialised_vector">specialised_vector()</a> | <a href="#type-specialised_matrix">specialised_matrix()</a></tt></p>
+<p> The well-known specialised (fixed-size) linear types that are of use when
+ performing geometry.</p>
+
+<h3 class="typedecl"><a name="type-specialised_vector">specialised_vector()</a></h3>
+<p><tt>specialised_vector() = <a href="#type-vector2">vector2()</a> | <a href="#type-vector3">vector3()</a> | <a href="#type-vector4">vector4()</a></tt></p>
+<p> Any kind of specialised (fixed-size - not of arbitrary dimension) vector.
+ Any kind of basic, fixed-size (not of arbitrary dimension) vector.</p>
+
+<h3 class="typedecl"><a name="type-specialised_vertex">specialised_vertex()</a></h3>
+<p><tt>specialised_vertex() = <a href="#type-specialised_point">specialised_point()</a></tt></p>
+<p> Any kind of specialised (fixed-size - not of arbitrary dimension) vertex.</p>
 
 <h3 class="typedecl"><a name="type-square_distance">square_distance()</a></h3>
 <p><tt>square_distance() = float()</tt></p>
 
 
+<h3 class="typedecl"><a name="type-user_coordinate">user_coordinate()</a></h3>
+<p><tt>user_coordinate() = number()</tt></p>
+<p> User-specified coordinates in a referential.</p>
+
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
 <p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-vector2">vector2()</a></h3>
+<p><tt>vector2() = <a href="vector2.html#type-vector2">vector2:vector2()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-vector3">vector3()</a></h3>
+<p><tt>vector3() = <a href="vector3.html#type-vector3">vector3:vector3()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-vector4">vector4()</a></h3>
+<p><tt>vector4() = <a href="vector4.html#type-vector4">vector4:vector4()</a></tt></p>
+
+
 <h2><a name="index">Function Index</a></h2>
 <table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#coord_to_string-1">coord_to_string/1</a></td><td>Returns a textual representation of a coordinate.</td></tr>
+<tr><td valign="top"><a href="#coords_to_best_width_strings-1">coords_to_best_width_strings/1</a></td><td>Returns textual representations of the specified coordinates of a common,
+ best (maximal) width; full float precision is shown in returned strings.</td></tr>
+<tr><td valign="top"><a href="#get_element_count-1">get_element_count/1</a></td><td>Returns the number of elements (coordinates) stored in the specified
+ specialised type.</td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
@@ -98,6 +183,22 @@
 <p><tt>coord_to_string(Coord::<a href="#type-any_coordinate">any_coordinate()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
 <p> </p>
 </div><p>Returns a textual representation of a coordinate.</p>
+
+<h3 class="function"><a name="coords_to_best_width_strings-1">coords_to_best_width_strings/1</a></h3>
+<div class="spec">
+<p><tt>coords_to_best_width_strings(Coords::[<a href="#type-any_coordinate">any_coordinate()</a>]) -&gt; [<a href="#type-ustring">ustring()</a>]</tt><br></p>
+<p> </p>
+</div><p>Returns textual representations of the specified coordinates of a common,
+ best (maximal) width; full float precision is shown in returned strings.
+</p>
+
+<h3 class="function"><a name="get_element_count-1">get_element_count/1</a></h3>
+<div class="spec">
+<p><tt>get_element_count(Type::<a href="#type-specialised_type">specialised_type()</a>) -&gt; <a href="#type-count">count()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the number of elements (coordinates) stored in the specified
+ specialised type.
+</p>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

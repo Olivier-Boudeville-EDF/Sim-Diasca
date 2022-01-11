@@ -15,7 +15,9 @@
 
 <h2><a name="description">Description</a></h2><p>Gathering of management facilities for <b>JSON</b> processing.</p>
 
- See json_utils_test.erl for the corresponding test.
+ <p>See json_utils_test.erl for the corresponding test.</p>
+
+ Refer to http://myriad.esperide.org/#json-use for more details.
 
 <h2><a name="types">Data Types</a></h2>
 
@@ -32,10 +34,8 @@
 
 
 <h3 class="typedecl"><a name="type-decoded_json">decoded_json()</a></h3>
-<p><tt>decoded_json() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(<a href="#type-decoded_json_key">decoded_json_key()</a>, <a href="#type-decoded_json_value">decoded_json_value()</a>) | integer() | float() | binary() | atom() | term()</tt></p>
-<p> An (Erlang) term obtained from a decoded JSON document, at least often a map
- whose keys are binary strings and whose values are decoded_json() or basic
- types such as integers, floats, strings, etc.).</p>
+<p><tt>decoded_json() = <a href="#type-json_term">json_term()</a></tt></p>
+
 
 <h3 class="typedecl"><a name="type-decoded_json_key">decoded_json_key()</a></h3>
 <p><tt>decoded_json_key() = <a href="#type-bin_string">bin_string()</a></tt></p>
@@ -53,6 +53,10 @@
 <p><tt>directory_path() = <a href="file_utils.html#type-directory_path">file_utils:directory_path()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-file_path">file_path()</a></h3>
+<p><tt>file_path() = <a href="file_utils.html#type-file_path">file_utils:file_path()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-json">json()</a></h3>
 <p><tt>json() = <a href="#type-bin_json">bin_json()</a> | <a href="#type-string_json">string_json()</a></tt></p>
 <p> A JSON document.</p>
@@ -66,6 +70,13 @@
 <p><tt>json_encoding_option() = any()</tt></p>
 <p> Options for the JSON encoding (they shall be usable transparently with all
  supported backends).</p>
+
+<h3 class="typedecl"><a name="type-json_term">json_term()</a></h3>
+<p><tt>json_term() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(<a href="#type-decoded_json_key">decoded_json_key()</a>, <a href="#type-decoded_json_value">decoded_json_value()</a>) | integer() | float() | binary() | atom() | term()</tt></p>
+<p> An (Erlang) term corresponding to a JSON document (ex: a decoded one, or one
+ not encoded yet), at least often a map whose keys are binary strings and whose
+ values are json_term() or basic types such as integers, floats, strings,
+ etc.).</p>
 
 <h3 class="typedecl"><a name="type-parser_backend_name">parser_backend_name()</a></h3>
 <p><tt>parser_backend_name() = jsx | jiffy | <a href="otp_utils.html#type-application_name">otp_utils:application_name()</a></tt></p>
@@ -90,10 +101,12 @@
  updated state if yes, otherwise throws an exception.</td></tr>
 <tr><td valign="top"><a href="#from_json-1">from_json/1</a></td><td>Converts (decodes) specified JSON element into an Erlang term 
 counterpart, recursively so that it cab return a table containing tables, 
-themselves containing potentially tables, and so on.</td></tr>
+themselves containing potentially tables, and so on, using the looked-up 
+default JSON backend for that.</td></tr>
 <tr><td valign="top"><a href="#from_json-2">from_json/2</a></td><td>Converts (decodes) specified JSON element into an Erlang term 
 counterpart, recursively so that it returns a table containing tables, 
-themselves containing potentially tables, and so on.</td></tr>
+themselves containing potentially tables, and so on, using the specified JSON 
+backend for that.</td></tr>
 <tr><td valign="top"><a href="#from_json_file-1">from_json_file/1</a></td><td>Converts (decodes) specified JSON file recursively into an Erlang term 
 counterpart, so that it returns typically a table containing tables, 
 themselves containing potentially tables, and so on, with specified parser 
@@ -125,6 +138,10 @@ available).</td></tr>
 counterpart element, using the looked-up default JSON backend for that.</td></tr>
 <tr><td valign="top"><a href="#to_json-2">to_json/2</a></td><td>Converts (encodes) specified Erlang term into a JSON counterpart element, 
 using directly the JSON backend designated by the specified parser state.</td></tr>
+<tr><td valign="top"><a href="#to_json_file-2">to_json_file/2</a></td><td>Converts (encodes) specified JSON-compliant Erlang term into a JSON file, 
+using the looked-up default JSON backend for that.</td></tr>
+<tr><td valign="top"><a href="#to_json_file-3">to_json_file/3</a></td><td>Converts (encodes) specified JSON-compliant Erlang term into a JSON file, 
+using the specified JSON backend for that.</td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
@@ -147,11 +164,12 @@ using directly the JSON backend designated by the specified parser state.</td></
 
 <h3 class="function"><a name="from_json-1">from_json/1</a></h3>
 <div class="spec">
-<p><tt>from_json(Json::<a href="#type-json">json()</a>) -&gt; <a href="#type-decoded_json">decoded_json()</a></tt><br></p>
+<p><tt>from_json(Json::<a href="#type-json">json()</a>) -&gt; <a href="#type-json_term">json_term()</a></tt><br></p>
 <p> </p>
 </div><p><p>Converts (decodes) specified JSON element into an Erlang term 
 counterpart, recursively so that it cab return a table containing tables, 
-themselves containing potentially tables, and so on.</p>
+themselves containing potentially tables, and so on, using the looked-up 
+default JSON backend for that.</p>
 
  Note that if in a given scope a key is present more than once, only one of its
  values will be retained (actually the lastly defined one).
@@ -159,11 +177,12 @@ themselves containing potentially tables, and so on.</p>
 
 <h3 class="function"><a name="from_json-2">from_json/2</a></h3>
 <div class="spec">
-<p><tt>from_json(Json::<a href="#type-json">json()</a>, ParserState::<a href="#type-parser_state">parser_state()</a>) -&gt; <a href="#type-decoded_json">decoded_json()</a></tt><br></p>
+<p><tt>from_json(Json::<a href="#type-json">json()</a>, ParserState::<a href="#type-parser_state">parser_state()</a>) -&gt; <a href="#type-json_term">json_term()</a></tt><br></p>
 <p> </p>
 </div><p><p>Converts (decodes) specified JSON element into an Erlang term 
 counterpart, recursively so that it returns a table containing tables, 
-themselves containing potentially tables, and so on.</p>
+themselves containing potentially tables, and so on, using the specified JSON 
+backend for that.</p>
 
  Note that if in a given scope a key is present more than once, only one of its
  values will be retained (actually the lastly defined one).
@@ -171,7 +190,7 @@ themselves containing potentially tables, and so on.</p>
 
 <h3 class="function"><a name="from_json_file-1">from_json_file/1</a></h3>
 <div class="spec">
-<p><tt>from_json_file(JsonFilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-decoded_json">decoded_json()</a></tt><br></p>
+<p><tt>from_json_file(JsonFilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-json_term">json_term()</a></tt><br></p>
 <p> </p>
 </div><p><p>Converts (decodes) specified JSON file recursively into an Erlang term 
 counterpart, so that it returns typically a table containing tables, 
@@ -184,7 +203,7 @@ state.</p>
 
 <h3 class="function"><a name="from_json_file-2">from_json_file/2</a></h3>
 <div class="spec">
-<p><tt>from_json_file(JsonFilePath::<a href="#type-any_file_path">any_file_path()</a>, ParserState::<a href="#type-parser_state">parser_state()</a>) -&gt; <a href="#type-decoded_json">decoded_json()</a></tt><br></p>
+<p><tt>from_json_file(JsonFilePath::<a href="#type-any_file_path">any_file_path()</a>, ParserState::<a href="#type-parser_state">parser_state()</a>) -&gt; <a href="#type-json_term">json_term()</a></tt><br></p>
 <p> </p>
 </div><p><p>Converts (decodes) specified JSON file recursively into an Erlang term 
 counterpart, so that it returns typically a table containing tables, 
@@ -288,27 +307,53 @@ available).</p>
 
 <h3 class="function"><a name="to_json-1">to_json/1</a></h3>
 <div class="spec">
-<p><tt>to_json(Term::<a href="#type-decoded_json">decoded_json()</a>) -&gt; <a href="#type-json">json()</a></tt><br></p>
+<p><tt>to_json(Term::<a href="#type-json_term">json_term()</a>) -&gt; <a href="#type-json">json()</a></tt><br></p>
 <p> </p>
 </div><p><p>Converts (encodes) specified JSON-compliant Erlang term into a JSON 
 counterpart element, using the looked-up default JSON backend for that.</p>
 
- Ex: <code>json_utils:to_json( #{ &lt;&lt;"protected"&gt;&gt; =&gt; Protected,
-							  &lt;&lt;"payload"&gt;&gt; =&gt; Payload,
-							  &lt;&lt;"signature"&gt;&gt; =&gt; EncSigned } )</code>.
+ Ex: <code>json_utils:to_json( #{&lt;&lt;"protected"&gt;&gt; =&gt; Protected,
+                            &lt;&lt;"payload"&gt;&gt; =&gt; Payload,
+                            &lt;&lt;"signature"&gt;&gt; =&gt; EncSigned} )</code>.
 </p>
 
 <h3 class="function"><a name="to_json-2">to_json/2</a></h3>
 <div class="spec">
-<p><tt>to_json(Term::<a href="#type-decoded_json">decoded_json()</a>, ParserState::<a href="#type-parser_state">parser_state()</a>) -&gt; <a href="#type-json">json()</a></tt><br></p>
+<p><tt>to_json(Term::<a href="#type-json_term">json_term()</a>, ParserState::<a href="#type-parser_state">parser_state()</a>) -&gt; <a href="#type-json">json()</a></tt><br></p>
 <p> </p>
 </div><p><p>Converts (encodes) specified Erlang term into a JSON counterpart element, 
 using directly the JSON backend designated by the specified parser state.</p>
 
- Ex: <code>json_utils:to_json( #{
+ Ex: <code>json_utils:to_json(#{
      &lt;&lt;"protected"&gt;&gt; =&gt; Protected,
      &lt;&lt;"payload"&gt;&gt; =&gt; Payload,
      &lt;&lt;"signature"&gt;&gt; =&gt; EncSigned }, _ParserName=jsx )</code>.
+</p>
+
+<h3 class="function"><a name="to_json_file-2">to_json_file/2</a></h3>
+<div class="spec">
+<p><tt>to_json_file(Term::<a href="#type-json_term">json_term()</a>, TargetJsonFilePath::<a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Converts (encodes) specified JSON-compliant Erlang term into a JSON file, 
+using the looked-up default JSON backend for that.</p>
+
+ Ex: <code>json_utils:to_json_file(#{
+                   &lt;&lt;"protected"&gt;&gt; =&gt; Protected,
+                   &lt;&lt;"payload"&gt;&gt; =&gt; Payload,
+                   &lt;&lt;"signature"&gt;&gt; =&gt; EncSigned}, TargetJsonFilePath )</code>.
+</p>
+
+<h3 class="function"><a name="to_json_file-3">to_json_file/3</a></h3>
+<div class="spec">
+<p><tt>to_json_file(Term::<a href="#type-json_term">json_term()</a>, TargetJsonFilePath::<a href="#type-file_path">file_path()</a>, ParserState::<a href="#type-parser_state">parser_state()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Converts (encodes) specified JSON-compliant Erlang term into a JSON file, 
+using the specified JSON backend for that.</p>
+
+ Ex: <code>json_utils:to_json_file(#{
+          &lt;&lt;"protected"&gt;&gt; =&gt; Protected,
+          &lt;&lt;"payload"&gt;&gt; =&gt; Payload,
+          &lt;&lt;"signature"&gt;&gt; =&gt; EncSigned}, TargetJsonFilePath, ParserState )</code>.
 </p>
 <hr>
 

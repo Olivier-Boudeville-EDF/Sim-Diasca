@@ -28,6 +28,10 @@ for the management of the shells and command lines.</p>
 <p><tt>any_file_path() = <a href="file_utils.html#type-any_file_path">file_utils:any_file_path()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-command_line_argument">command_line_argument()</a></h3>
+<p><tt>command_line_argument() = <a href="system_utils.html#type-command_line_argument">system_utils:command_line_argument()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-command_output">command_output()</a></h3>
 <p><tt>command_output() = <a href="system_utils.html#type-command_output">system_utils:command_output()</a></tt></p>
 
@@ -99,6 +103,11 @@ the dot (graphviz) syntax.</td></tr>
  actually available by default (in the PATH) on this computer.</td></tr>
 <tr><td valign="top"><a href="#get_current_gnuplot_version-1">get_current_gnuplot_version/1</a></td><td>Returns, as a tuple (ex: {4,2} for the 4.2 version), the gnuplot version
  actually available on this computer.</td></tr>
+<tr><td valign="top"><a href="#get_default_audio_player_info-0">get_default_audio_player_info/0</a></td><td>Returns the name and absolute path to the default audio player.</td></tr>
+<tr><td valign="top"><a href="#get_default_audio_player_name-0">get_default_audio_player_name/0</a></td><td>Returns the name of the default audio player.</td></tr>
+<tr><td valign="top"><a href="#get_default_audio_player_options-1">get_default_audio_player_options/1</a></td><td>Returns a list of the command-line options suitable for the specified
+ audio player, notably so that it can run as much as possible
+ non-interactively.</td></tr>
 <tr><td valign="top"><a href="#get_default_bzip2_compress_tool-0">get_default_bzip2_compress_tool/0</a></td><td>Returns the default tool to use to decompress in the BZIP2 format.</td></tr>
 <tr><td valign="top"><a href="#get_default_bzip2_decompress_tool-0">get_default_bzip2_decompress_tool/0</a></td><td>Returns the default tool to use to decompress in the BZIP2 format.</td></tr>
 <tr><td valign="top"><a href="#get_default_erlang_interpreter_name-0">get_default_erlang_interpreter_name/0</a></td><td>Returns the name of the default Erlang interpreter.</td></tr>
@@ -120,6 +129,7 @@ namely 'OtpErlang.jar'.</td></tr>
 <tr><td valign="top"><a href="#get_default_scp_executable_name-0">get_default_scp_executable_name/0</a></td><td>Returns the name default SSH-based scp executable.</td></tr>
 <tr><td valign="top"><a href="#get_default_scp_executable_path-0">get_default_scp_executable_path/0</a></td><td>Returns an absolute path to the default SSH-based scp executable.</td></tr>
 <tr><td valign="top"><a href="#get_default_sha_tool-0">get_default_sha_tool/0</a></td><td>Returns the default tool to compute SHA sums.</td></tr>
+<tr><td valign="top"><a href="#get_default_sql_client-0">get_default_sql_client/0</a></td><td>Returns the default client to interact with a SQL database.</td></tr>
 <tr><td valign="top"><a href="#get_default_ssh_client_name-0">get_default_ssh_client_name/0</a></td><td>Returns the name of the default SSH client.</td></tr>
 <tr><td valign="top"><a href="#get_default_ssh_client_path-0">get_default_ssh_client_path/0</a></td><td>Returns an absolute path to the default SSH client.</td></tr>
 <tr><td valign="top"><a href="#get_default_text_viewer_name-0">get_default_text_viewer_name/0</a></td><td>Returns the name of the default text viewer tool.</td></tr>
@@ -135,6 +145,7 @@ namely 'OtpErlang.jar'.</td></tr>
 <tr><td valign="top"><a href="#get_default_zip_compress_tool-0">get_default_zip_compress_tool/0</a></td><td>Returns the default tool to use to compress in the ZIP format.</td></tr>
 <tr><td valign="top"><a href="#get_default_zip_decompress_tool-0">get_default_zip_decompress_tool/0</a></td><td>Returns the default tool to use to decompress in the ZIP format.</td></tr>
 <tr><td valign="top"><a href="#get_gnuplot_path-0">get_gnuplot_path/0</a></td><td>Returns an absolute path to a gnuplot executable.</td></tr>
+<tr><td valign="top"><a href="#get_secondary_default_audio_player_name-0">get_secondary_default_audio_player_name/0</a></td><td>Returns the name of the secondary default audio player.</td></tr>
 <tr><td valign="top"><a href="#get_ssh_mute_option-0">get_ssh_mute_option/0</a></td><td>Returns a string to be inserted into a command-line call to ssh/scp so 
 that it can run as much as possible non-interactively.</td></tr>
 <tr><td valign="top"><a href="#is_batch-0">is_batch/0</a></td><td>Tells whether the program is run in batch mode.</td></tr>
@@ -143,18 +154,20 @@ string (ex: "gcc") in the current user PATH.</td></tr>
 <tr><td valign="top"><a href="#lookup_executable-2">lookup_executable/2</a></td><td>Looks-up specified executable program, whose name is specified as a 
 string (ex: "gcc") in the current user PATH, augmented of the specified list 
 of directories (whose existence is not checked), placed at first position.</td></tr>
+<tr><td valign="top"><a href="#playback_audio_file-1">playback_audio_file/1</a></td><td>Plays the specified audio file, in a non-blocking (in the background) 
+way.</td></tr>
+<tr><td valign="top"><a href="#playback_audio_file-2">playback_audio_file/2</a></td><td>Plays the specified audio file, either in a blocking or in a non-blocking 
+(in the background) way.</td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
 <h3 class="function"><a name="browse_images_in-1">browse_images_in/1</a></h3>
 <div class="spec">
-<p><tt>browse_images_in(DirectoryName::<a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>browse_images_in(DirectoryPath::<a href="#type-directory_path">directory_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p><p>Allows to browse (without blocking) the images available in specified 
 directory (specified as a plain string)</p>
-
- <p>Returns the text output by the tool (if any).</p>
 
  Throws an exception if an error occurs.
 </p>
@@ -210,7 +223,7 @@ external viewer.</p>
 
 <h3 class="function"><a name="display_png_file-1">display_png_file/1</a></h3>
 <div class="spec">
-<p><tt>display_png_file(PNGFilename::<a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>display_png_file(PNGFilePath::<a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p><p>Displays (without blocking) to the user the specified PNG, using an 
 external viewer.</p>
@@ -296,6 +309,27 @@ dot output an error or a warning</p>
 <p> </p>
 </div><p>Returns, as a tuple (ex: {4,2} for the 4.2 version), the gnuplot version
  actually available on this computer.
+</p>
+
+<h3 class="function"><a name="get_default_audio_player_info-0">get_default_audio_player_info/0</a></h3>
+<div class="spec">
+<p><tt>get_default_audio_player_info() -&gt; {<a href="#type-executable_name">executable_name()</a>, <a href="#type-executable_path">executable_path()</a>}</tt><br></p>
+<p> </p>
+</div><p>Returns the name and absolute path to the default audio player.</p>
+
+<h3 class="function"><a name="get_default_audio_player_name-0">get_default_audio_player_name/0</a></h3>
+<div class="spec">
+<p><tt>get_default_audio_player_name() -&gt; <a href="#type-executable_name">executable_name()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the name of the default audio player.</p>
+
+<h3 class="function"><a name="get_default_audio_player_options-1">get_default_audio_player_options/1</a></h3>
+<div class="spec">
+<p><tt>get_default_audio_player_options(AudioPlayerName::<a href="#type-executable_name">executable_name()</a>) -&gt; [<a href="#type-command_line_argument">command_line_argument()</a>]</tt><br></p>
+<p> </p>
+</div><p>Returns a list of the command-line options suitable for the specified
+ audio player, notably so that it can run as much as possible
+ non-interactively.
 </p>
 
 <h3 class="function"><a name="get_default_bzip2_compress_tool-0">get_default_bzip2_compress_tool/0</a></h3>
@@ -441,6 +475,12 @@ with ERLANG_ROOT being typically ~/Software/Erlang/Erlang-current-install.</p>
 <p> </p>
 </div><p>Returns the default tool to compute SHA sums.</p>
 
+<h3 class="function"><a name="get_default_sql_client-0">get_default_sql_client/0</a></h3>
+<div class="spec">
+<p><tt>get_default_sql_client() -&gt; <a href="#type-executable_path">executable_path()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the default client to interact with a SQL database.</p>
+
 <h3 class="function"><a name="get_default_ssh_client_name-0">get_default_ssh_client_name/0</a></h3>
 <div class="spec">
 <p><tt>get_default_ssh_client_name() -&gt; <a href="#type-executable_name">executable_name()</a></tt><br></p>
@@ -540,6 +580,12 @@ with ERLANG_ROOT being typically ~/Software/Erlang/Erlang-current-install.</p>
 <p> </p>
 </div><p>Returns an absolute path to a gnuplot executable.</p>
 
+<h3 class="function"><a name="get_secondary_default_audio_player_name-0">get_secondary_default_audio_player_name/0</a></h3>
+<div class="spec">
+<p><tt>get_secondary_default_audio_player_name() -&gt; <a href="#type-executable_name">executable_name()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the name of the secondary default audio player.</p>
+
 <h3 class="function"><a name="get_ssh_mute_option-0">get_ssh_mute_option/0</a></h3>
 <div class="spec">
 <p><tt>get_ssh_mute_option() -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
@@ -609,6 +655,26 @@ of directories (whose existence is not checked), placed at first position.</p>
 or the 'false' atom if it was not found.</p>
 
  Ex: lookup_executable("my-foo-program", [".", "/tmp"])
+</p>
+
+<h3 class="function"><a name="playback_audio_file-1">playback_audio_file/1</a></h3>
+<div class="spec">
+<p><tt>playback_audio_file(AudioFilePath::<a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Plays the specified audio file, in a non-blocking (in the background) 
+way.</p>
+
+ Throws an exception if an error occurs.
+</p>
+
+<h3 class="function"><a name="playback_audio_file-2">playback_audio_file/2</a></h3>
+<div class="spec">
+<p><tt>playback_audio_file(AudioFilePath::<a href="#type-file_path">file_path()</a>, DoBlock::boolean()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Plays the specified audio file, either in a blocking or in a non-blocking 
+(in the background) way.</p>
+
+ Throws an exception if an error occurs.
 </p>
 <hr>
 

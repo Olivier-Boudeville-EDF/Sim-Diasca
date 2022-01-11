@@ -1,0 +1,434 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module gui_opengl</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module gui_opengl</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various facilities for <b>OpenGL rendering</b>, notably done 
+through wxWidgets.
+
+
+<h2><a name="description">Description</a></h2><p>Gathering of various facilities for <b>OpenGL rendering</b>, notably done 
+through wxWidgets.</p>
+
+ <p>See gui_opengl_test.erl for the corresponding test.</p>
+
+ <p>See gui.erl for more general rendering topics.</p>
+
+ Refer to <a href="https://myriad.esperide.org/#for-3d-applications" target="_top"><tt>https://myriad.esperide.org/#for-3d-applications</tt></a> for further
+ information.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-any_file_path">any_file_path()</a></h3>
+<p><tt>any_file_path() = <a href="file_utils.html#type-any_file_path">file_utils:any_file_path()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-bit_size">bit_size()</a></h3>
+<p><tt>bit_size() = <a href="system_utils.html#type-bit_size">system_utils:bit_size()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-brush">brush()</a></h3>
+<p><tt>brush() = <a href="gui.html#type-brush">gui:brush()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-color_by_decimal">color_by_decimal()</a></h3>
+<p><tt>color_by_decimal() = <a href="gui_color.html#type-color_by_decimal">gui_color:color_by_decimal()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-coordinate">coordinate()</a></h3>
+<p><tt>coordinate() = <a href="gui.html#type-coordinate">gui:coordinate()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-device_context_attribute">device_context_attribute()</a></h3>
+<p><tt>device_context_attribute() = rgba | bgra | double_buffer | {min_red_size, <a href="#type-bit_size">bit_size()</a>} | {min_green_size, <a href="#type-bit_size">bit_size()</a>} | {min_blue_size, <a href="#type-bit_size">bit_size()</a>} | {depth_buffer_size, <a href="#type-bit_size">bit_size()</a>}</tt></p>
+
+
+<h3 class="typedecl"><a name="type-dimensions">dimensions()</a></h3>
+<p><tt>dimensions() = <a href="gui.html#type-dimensions">gui:dimensions()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-enum">enum()</a></h3>
+<p><tt>enum() = non_neg_integer()</tt></p>
+<p> A value belonging to an OpenGL enumeration.</p>
+
+<h3 class="typedecl"><a name="type-factor">factor()</a></h3>
+<p><tt>factor() = <a href="math_utils.html#type-factor">math_utils:factor()</a></tt></p>
+<p> A floating-point factor, typically in [0.0,1.0].</p>
+
+<h3 class="typedecl"><a name="type-font">font()</a></h3>
+<p><tt>font() = <a href="gui_font.html#type-font">gui_font:font()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-gl_canvas">gl_canvas()</a></h3>
+<p><b>abstract datatype</b>: <tt>gl_canvas()</tt></p>
+<p> An OpenGL-based, back-buffered canvas (not to be mixed with a basic
+ gui:canvas/0 one), to which an OpenGL context shall be set in order to execute
+ OpenGL commands.</p>
+
+<h3 class="typedecl"><a name="type-gl_canvas_option">gl_canvas_option()</a></h3>
+<p><tt>gl_canvas_option() = {gl_attributes, [<a href="#type-device_context_attribute">device_context_attribute()</a>]} | <a href="gui_wx_backend.html#type-other_wx_device_context_attribute">gui_wx_backend:other_wx_device_context_attribute()</a></tt></p>
+<p> Options of an OpenGL canvas.</p>
+
+<h3 class="typedecl"><a name="type-gl_context">gl_context()</a></h3>
+<p><b>abstract datatype</b>: <tt>gl_context()</tt></p>
+<p> An OpenGL context represents the state of an OpenGL state machine and the
+ connection between OpenGL and the running system.</p>
+
+<h3 class="typedecl"><a name="type-gl_error">gl_error()</a></h3>
+<p><b>abstract datatype</b>: <tt>gl_error()</tt></p>
+<p> An error code reported by OpenGL.</p>
+
+<h3 class="typedecl"><a name="type-glu_id">glu_id()</a></h3>
+<p><b>abstract datatype</b>: <tt>glu_id()</tt></p>
+<p> An identifier (actually a pointer) returned by GLU (ex: when creating a
+ quadrics). A null value usually means that there was not enough memory to
+ allocate the object.</p>
+
+<h3 class="typedecl"><a name="type-glxinfo_report">glxinfo_report()</a></h3>
+<p><tt>glxinfo_report() = [<a href="#type-ustring">ustring()</a>]</tt></p>
+<p> A report issued by the glxinfo executable.</p>
+
+<h3 class="typedecl"><a name="type-image">image()</a></h3>
+<p><tt>image() = <a href="gui_image.html#type-image">gui_image:image()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-image_format">image_format()</a></h3>
+<p><tt>image_format() = <a href="gui_image.html#type-image_format">gui_image:image_format()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-length_factor">length_factor()</a></h3>
+<p><tt>length_factor() = <a href="math_utils.html#type-factor">math_utils:factor()</a></tt></p>
+<p> A floating-point factor, typically in [0.0,1.0], typically to designate
+ widths, heights, etc.</p>
+
+<h3 class="typedecl"><a name="type-mesh">mesh()</a></h3>
+<p><tt>mesh() = <a href="mesh.html#type-mesh">mesh:mesh()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-mipmap_level">mipmap_level()</a></h3>
+<p><tt>mipmap_level() = non_neg_integer()</tt></p>
+<p> 0 is the base level.</p>
+
+<h3 class="typedecl"><a name="type-position">position()</a></h3>
+<p><tt>position() = <a href="gui.html#type-position">gui:position()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-texture">texture()</a></h3>
+<p><tt>texture() = #texture{id = <a href="gui_opengl.html#type-texture_id">gui_opengl:texture_id()</a>, width = <a href="gui.html#type-length">gui:length()</a>, height = <a href="gui.html#type-length">gui:length()</a>, min_x = <a href="gui_opengl.html#type-length_factor">gui_opengl:length_factor()</a>, min_y = <a href="gui_opengl.html#type-length_factor">gui_opengl:length_factor()</a>, max_x = <a href="gui_opengl.html#type-length_factor">gui_opengl:length_factor()</a>, max_y = <a href="gui_opengl.html#type-length_factor">gui_opengl:length_factor()</a>}</tt></p>
+<p> Information regarding to a (2D) texture.</p>
+
+<h3 class="typedecl"><a name="type-texture_id">texture_id()</a></h3>
+<p><tt>texture_id() = non_neg_integer()</tt></p>
+<p> An OpenGL texture "name" (meant to be unique), an identifier.</p>
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-window">window()</a></h3>
+<p><tt>window() = <a href="gui.html#type-window">gui:window()</a></tt></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#check_error-0">check_error/0</a></td><td>Checks whether an OpenGL-related error occurred; if yes, displays 
+information regarding it, and throws an exception.</td></tr>
+<tr><td valign="top"><a href="#create_canvas-1">create_canvas/1</a></td><td>Creates and returns an OpenGL canvas with default settings: RGBA and 
+double-buffering.</td></tr>
+<tr><td valign="top"><a href="#create_canvas-2">create_canvas/2</a></td><td>Creates and returns an OpenGL canvas with specified settings.</td></tr>
+<tr><td valign="top"><a href="#create_context-1">create_context/1</a></td><td>Returns the OpenGL context obtained from the specified OpenGL canvas; it
+ is created but not bound yet (not set as current, hence not usable yet, no
+ OpenGL command can be issued yet).</td></tr>
+<tr><td valign="top"><a href="#create_texture_from_text-4">create_texture_from_text/4</a></td><td>Creates a texture corresponding to the specified text, rendered with
+ specified font, brush and color.</td></tr>
+<tr><td valign="top"><a href="#create_texture_from_text-5">create_texture_from_text/5</a></td><td>Creates a texture corresponding to the specified text, rendered with
+ specified font, brush and color, flipping it vertically if requested.</td></tr>
+<tr><td valign="top"><a href="#delete_texture-1">delete_texture/1</a></td><td>Deletes the specified texture.</td></tr>
+<tr><td valign="top"><a href="#delete_textures-1">delete_textures/1</a></td><td>Deletes the specified textures.</td></tr>
+<tr><td valign="top"><a href="#enter_2d_mode-1">enter_2d_mode/1</a></td><td>Enters in 2D mode for the specified window: applies relevant general
+ state changes, and specific to modelview (which is reset) and to projection (a
+ projection matrix relevant for 2D operations is applied).</td></tr>
+<tr><td valign="top"><a href="#generate_texture_id-0">generate_texture_id/0</a></td><td>Returns a new, unique, texture identifier.</td></tr>
+<tr><td valign="top"><a href="#get_glxinfo_strings-0">get_glxinfo_strings/0</a></td><td>Returns the list of strings (if any) returned by glxinfo when requesting 
+basic information.</td></tr>
+<tr><td valign="top"><a href="#get_renderer_name-0">get_renderer_name/0</a></td><td>Returns the name of the OpenGL renderer of the current driver (typically 
+specific to a particular configuration of a hardware platform).</td></tr>
+<tr><td valign="top"><a href="#get_shading_language_version-0">get_shading_language_version/0</a></td><td>Returns the version /release number of the currently used OpenGL 
+shading language.</td></tr>
+<tr><td valign="top"><a href="#get_texture_dimensions-1">get_texture_dimensions/1</a></td><td>Returns texture dimensions that are suitable for a (2D) content of the
+ specified dimensions.</td></tr>
+<tr><td valign="top"><a href="#get_vendor_name-0">get_vendor_name/0</a></td><td>Returns the name of the OpenGL vendor of the current driver, that is the 
+company responsible for this OpenGL implementation.</td></tr>
+<tr><td valign="top"><a href="#get_version-0">get_version/0</a></td><td>Returns the version / release number of the currently used OpenGL 
+implementation.</td></tr>
+<tr><td valign="top"><a href="#interpret_error-1">interpret_error/1</a></td><td>Returns a (textual) diagnosis regarding the specified OpenGL error.</td></tr>
+<tr><td valign="top"><a href="#is_hardware_accelerated-0">is_hardware_accelerated/0</a></td><td>Tells whether OpenGL hardware acceleration is available on this host,
+ based on the glxinfo executable.</td></tr>
+<tr><td valign="top"><a href="#is_hardware_accelerated-1">is_hardware_accelerated/1</a></td><td>Tells whether OpenGL hardware acceleration is available on this host,
+ based on specified glxinfo report.</td></tr>
+<tr><td valign="top"><a href="#leave_2d_mode-0">leave_2d_mode/0</a></td><td>Leaves the 2D mode, resets modelview and projection matrices.</td></tr>
+<tr><td valign="top"><a href="#load_texture_from_file-1">load_texture_from_file/1</a></td><td>Creates a texture from the specified image file.</td></tr>
+<tr><td valign="top"><a href="#load_texture_from_file-2">load_texture_from_file/2</a></td><td>Creates a texture from the specified image file of the specified type.</td></tr>
+<tr><td valign="top"><a href="#load_texture_from_image-1">load_texture_from_image/1</a></td><td>Creates a texture from the specified image instance.</td></tr>
+<tr><td valign="top"><a href="#render_mesh-1">render_mesh/1</a></td><td>Renders the specified mesh in a supposedly appropriate OpenGL context.</td></tr>
+<tr><td valign="top"><a href="#render_texture-2">render_texture/2</a></td><td>Renders the specified texture, at the specified position.</td></tr>
+<tr><td valign="top"><a href="#render_texture-3">render_texture/3</a></td><td>Renders the specified texture, at the specified position.</td></tr>
+<tr><td valign="top"><a href="#set_context-2">set_context/2</a></td><td>Sets the specified (OpenGL) context to the specified (OpenGL) canvas, so 
+that it applies to the next operations (OpenGL calls) made on it.</td></tr>
+<tr><td valign="top"><a href="#swap_buffers-1">swap_buffers/1</a></td><td>Swaps the double-buffer of the corresponding OpenGL canvas (making the 
+back-buffer the front-buffer and vice versa), so that the output of the 
+previous OpenGL commands is displayed on this window.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="check_error-0">check_error/0</a></h3>
+<div class="spec">
+<p><tt>check_error() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Checks whether an OpenGL-related error occurred; if yes, displays 
+information regarding it, and throws an exception.</p>
+
+ Note that an OpenGL must already exist, otherwise a no_gl_context error will
+ be triggered.
+</p>
+
+<h3 class="function"><a name="create_canvas-1">create_canvas/1</a></h3>
+<div class="spec">
+<p><tt>create_canvas(Parent::<a href="#type-window">window()</a>) -&gt; <a href="#type-gl_canvas">gl_canvas()</a></tt><br></p>
+<p> </p>
+</div><p><p>Creates and returns an OpenGL canvas with default settings: RGBA and 
+double-buffering.</p>
+
+ Note: not to be mixed up with gui:create_canvas/1.
+</p>
+
+<h3 class="function"><a name="create_canvas-2">create_canvas/2</a></h3>
+<div class="spec">
+<p><tt>create_canvas(Parent::<a href="#type-window">window()</a>, Opts::[<a href="#type-gl_canvas_option">gl_canvas_option()</a>]) -&gt; <a href="#type-gl_canvas">gl_canvas()</a></tt><br></p>
+<p> </p>
+</div><p><p>Creates and returns an OpenGL canvas with specified settings.</p>
+
+ <p>If the device context attributes are not set, following default apply: RGBA 
+and double-buffering.</p>
+
+ Note: not to be mixed up with gui:create_canvas/1.
+</p>
+
+<h3 class="function"><a name="create_context-1">create_context/1</a></h3>
+<div class="spec">
+<p><tt>create_context(Canvas::<a href="#type-gl_canvas">gl_canvas()</a>) -&gt; <a href="#type-gl_context">gl_context()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the OpenGL context obtained from the specified OpenGL canvas; it
+ is created but not bound yet (not set as current, hence not usable yet, no
+ OpenGL command can be issued yet).
+</p>
+
+<h3 class="function"><a name="create_texture_from_text-4">create_texture_from_text/4</a></h3>
+<div class="spec">
+<p><tt>create_texture_from_text(Text::<a href="#type-ustring">ustring()</a>, Font::<a href="#type-font">font()</a>, Brush::<a href="#type-brush">brush()</a>, Color::<a href="#type-color_by_decimal">color_by_decimal()</a>) -&gt; <a href="#type-texture">texture()</a></tt><br></p>
+<p> </p>
+</div><p>Creates a texture corresponding to the specified text, rendered with
+ specified font, brush and color.
+</p>
+
+<h3 class="function"><a name="create_texture_from_text-5">create_texture_from_text/5</a></h3>
+<div class="spec">
+<p><tt>create_texture_from_text(Text::<a href="#type-ustring">ustring()</a>, Font::<a href="#type-font">font()</a>, Brush::<a href="#type-brush">brush()</a>, Color::<a href="#type-color_by_decimal">color_by_decimal()</a>, Flip::boolean()) -&gt; <a href="#type-texture">texture()</a></tt><br></p>
+<p> </p>
+</div><p>Creates a texture corresponding to the specified text, rendered with
+ specified font, brush and color, flipping it vertically if requested.
+</p>
+
+<h3 class="function"><a name="delete_texture-1">delete_texture/1</a></h3>
+<div class="spec">
+<p><tt>delete_texture(Texture::<a href="#type-texture">texture()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Deletes the specified texture.</p>
+
+<h3 class="function"><a name="delete_textures-1">delete_textures/1</a></h3>
+<div class="spec">
+<p><tt>delete_textures(Textures::[<a href="#type-texture">texture()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Deletes the specified textures.</p>
+
+<h3 class="function"><a name="enter_2d_mode-1">enter_2d_mode/1</a></h3>
+<div class="spec">
+<p><tt>enter_2d_mode(Window::<a href="#type-window">window()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Enters in 2D mode for the specified window: applies relevant general
+ state changes, and specific to modelview (which is reset) and to projection (a
+ projection matrix relevant for 2D operations is applied).
+</p>
+
+<h3 class="function"><a name="generate_texture_id-0">generate_texture_id/0</a></h3>
+<div class="spec">
+<p><tt>generate_texture_id() -&gt; <a href="#type-texture_id">texture_id()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a new, unique, texture identifier.</p>
+
+<h3 class="function"><a name="get_glxinfo_strings-0">get_glxinfo_strings/0</a></h3>
+<div class="spec">
+<p><tt>get_glxinfo_strings() -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-glxinfo_report">glxinfo_report()</a>)</tt><br></p>
+<p> </p>
+</div><p><p>Returns the list of strings (if any) returned by glxinfo when requesting 
+basic information.</p>
+
+ Of course the 'glxinfo' executable must be available on the PATH (install it
+ on Arch Linux with 'pacman -S mesa-utils').
+</p>
+
+<h3 class="function"><a name="get_renderer_name-0">get_renderer_name/0</a></h3>
+<div class="spec">
+<p><tt>get_renderer_name() -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the name of the OpenGL renderer of the current driver (typically 
+specific to a particular configuration of a hardware platform).</p>
+
+ For example: "FOOBAR Frobinator GTX 1060 6GB/PCIe/SSE2".
+</p>
+
+<h3 class="function"><a name="get_shading_language_version-0">get_shading_language_version/0</a></h3>
+<div class="spec">
+<p><tt>get_shading_language_version() -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the version /release number of the currently used OpenGL 
+shading language.</p>
+
+ Example: "4.60 FOOBAR".
+</p>
+
+<h3 class="function"><a name="get_texture_dimensions-1">get_texture_dimensions/1</a></h3>
+<div class="spec">
+<p><tt>get_texture_dimensions(Dims::<a href="#type-dimensions">dimensions()</a>) -&gt; <a href="#type-dimensions">dimensions()</a></tt><br></p>
+<p> </p>
+</div><p>Returns texture dimensions that are suitable for a (2D) content of the
+ specified dimensions.
+</p>
+
+<h3 class="function"><a name="get_vendor_name-0">get_vendor_name/0</a></h3>
+<div class="spec">
+<p><tt>get_vendor_name() -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the name of the OpenGL vendor of the current driver, that is the 
+company responsible for this OpenGL implementation.</p>
+
+ For example: "FOOBAR Corporation".
+</p>
+
+<h3 class="function"><a name="get_version-0">get_version/0</a></h3>
+<div class="spec">
+<p><tt>get_version() -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the version / release number of the currently used OpenGL 
+implementation.</p>
+
+ Example: "4.6.0 FOOBAR 495.44".
+</p>
+
+<h3 class="function"><a name="interpret_error-1">interpret_error/1</a></h3>
+<div class="spec">
+<p><tt>interpret_error(Other::<a href="#type-gl_error">gl_error()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a (textual) diagnosis regarding the specified OpenGL error.</p>
+
+<h3 class="function"><a name="is_hardware_accelerated-0">is_hardware_accelerated/0</a></h3>
+<div class="spec">
+<p><tt>is_hardware_accelerated() -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Tells whether OpenGL hardware acceleration is available on this host,
+ based on the glxinfo executable.
+</p>
+
+<h3 class="function"><a name="is_hardware_accelerated-1">is_hardware_accelerated/1</a></h3>
+<div class="spec">
+<p><tt>is_hardware_accelerated(GlxinfoStrs::<a href="#type-glxinfo_report">glxinfo_report()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Tells whether OpenGL hardware acceleration is available on this host,
+ based on specified glxinfo report.
+</p>
+
+<h3 class="function"><a name="leave_2d_mode-0">leave_2d_mode/0</a></h3>
+<div class="spec">
+<p><tt>leave_2d_mode() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Leaves the 2D mode, resets modelview and projection matrices.</p>
+
+<h3 class="function"><a name="load_texture_from_file-1">load_texture_from_file/1</a></h3>
+<div class="spec">
+<p><tt>load_texture_from_file(ImagePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-texture">texture()</a></tt><br></p>
+<p> </p>
+</div><p><p>Creates a texture from the specified image file.</p>
+
+ Prefer load_texture_from_file/2 if applicable.
+</p>
+
+<h3 class="function"><a name="load_texture_from_file-2">load_texture_from_file/2</a></h3>
+<div class="spec">
+<p><tt>load_texture_from_file(ImageFormat::<a href="#type-image_format">image_format()</a>, ImagePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-texture">texture()</a></tt><br></p>
+<p> </p>
+</div><p>Creates a texture from the specified image file of the specified type.</p>
+
+<h3 class="function"><a name="load_texture_from_image-1">load_texture_from_image/1</a></h3>
+<div class="spec">
+<p><tt>load_texture_from_image(Image::<a href="#type-image">image()</a>) -&gt; <a href="#type-texture">texture()</a></tt><br></p>
+<p> </p>
+</div><p><p>Creates a texture from the specified image instance.</p>
+
+ The image instance is safe to be deallocated afterwards.
+</p>
+
+<h3 class="function"><a name="render_mesh-1">render_mesh/1</a></h3>
+<div class="spec">
+<p><tt>render_mesh(Mesh::<a href="#type-mesh">mesh()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Renders the specified mesh in a supposedly appropriate OpenGL context.</p>
+
+ See gui_opengl_test.erl for an usage example.
+</p>
+
+<h3 class="function"><a name="render_texture-2">render_texture/2</a></h3>
+<div class="spec">
+<p><tt>render_texture(Texture::<a href="#type-texture">texture()</a>, Pos::<a href="#type-position">position()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Renders the specified texture, at the specified position.</p>
+
+<h3 class="function"><a name="render_texture-3">render_texture/3</a></h3>
+<div class="spec">
+<p><tt>render_texture(Texture::<a href="#type-texture">texture()</a>, X::<a href="#type-coordinate">coordinate()</a>, Y::<a href="#type-coordinate">coordinate()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Renders the specified texture, at the specified position.</p>
+
+<h3 class="function"><a name="set_context-2">set_context/2</a></h3>
+<div class="spec">
+<p><tt>set_context(Canvas::<a href="#type-gl_canvas">gl_canvas()</a>, Context::<a href="#type-gl_context">gl_context()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Sets the specified (OpenGL) context to the specified (OpenGL) canvas, so 
+that it applies to the next operations (OpenGL calls) made on it.</p>
+
+ To be only called when the parent window is shown on screen; see
+ gui_opengl_test.erl for an example thereof.
+</p>
+
+<h3 class="function"><a name="swap_buffers-1">swap_buffers/1</a></h3>
+<div class="spec">
+<p><tt>swap_buffers(Canvas::<a href="#type-gl_canvas">gl_canvas()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Swaps the double-buffer of the corresponding OpenGL canvas (making the 
+back-buffer the front-buffer and vice versa), so that the output of the 
+previous OpenGL commands is displayed on this window.</p>
+
+ The corresponding window must already be shown.
+</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>
