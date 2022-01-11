@@ -11,13 +11,13 @@
 
 
 .literal {
-  color: #162143;
+  color: #155704;
   font-weight: bold;
 }
 
 
 body {
-  color: #122155;
+  color: #000000;
   background-color: #ffffff;
   font-family: Verdana, Arial, Helvetica, sans-serif;
   font-size: 15px;
@@ -28,14 +28,14 @@ body {
 p {
   margin-top: 0%;
   margin-bottom: 0.5%;
-  /*margin-left: 2%;*/
+  background-color: #ffffff;
+   /*margin-left: 2%;*/
 }
 
 
 /* needs to leave room at the top for shortcut panel */
 h1 {
-  /*color: #1c3071;*/
-  color: #000000;
+  color: #003600;
   font-size: 32px;
   background: transparent;
   font-weight: bold;
@@ -43,9 +43,10 @@ h1 {
 }
 
 
+
 h2 {
   /*color: #0010FF;*/
-  color: #000066;
+  color: #004900;
   font-size: 24px;
   background: transparent;
   margin-top: 3%;
@@ -62,7 +63,7 @@ h2.indextitle {
 
 
 h3 {
-  color: #001274;
+  color: #668855;
   font-size: 17px;
   background: transparent;
   margin-left: 0%;
@@ -145,9 +146,10 @@ ul.index {
 }
 
 
+/*
 dt {
   color: #000000;
-  background: green;
+  background: black;
   font-weight: bold;
 }
 
@@ -157,7 +159,7 @@ dd {
   font-weight: normal;
   margin-bottom: 3%;
 }
-
+*/
 
 
 ul {
@@ -174,7 +176,7 @@ ul li {
 
 
 ol li {
-  color: #333333;s
+  color: #333333;
   margin-top: 1%;
   margin-bottom: 1%;
   margin-left: 0%;
@@ -189,6 +191,7 @@ tt {
   margin-bottom: 0.5%;
   font-family: monospace, serif;
   color: #000000;
+  background-color: #efefef;
 }
 
 
@@ -272,7 +275,7 @@ a.index {
 
 
 a:link {
-  color:#053CDA;
+  color:#37821b;
   background: transparent;
   font-weight: bold;
   text-decoration: none;
@@ -281,7 +284,7 @@ a:link {
 
 
 a:visited {
-  color: #487df4;
+  color: #7bb066;
   background: transparent;
   font-weight: bold;
   text-decoration: none;
@@ -292,6 +295,7 @@ a:hover {
   text-decoration: underline;
 }
 
+
 a.module {
 	text-decoration:none
 }
@@ -300,6 +304,24 @@ a.module:hover {
 	background-color: #eeeeee;
 }
 
+a:link {
+  color:#37821b;
+  background: transparent;
+  text-decoration: none;
+  /*font-size: 110%;  */
+}
+
+
+a:visited {
+  color: #7bb066;
+  background: transparent;
+  text-decoration: none;
+}
+
+
+a:hover {
+  text-decoration: underline;
+}
 
 ul.index a {
 	/*font-weight: bold;*/
@@ -308,11 +330,11 @@ ul.index a {
 
 
 code {
-  color: #0F0F0F;
+  color: #155704;
   font-size: 17px;
   font-weight: normal;
   font-family: Courier, serif;
-  background: #dedeff;
+  background: #ddeedd;
   /* disabled:
   border-left-style: solid;
   border-left-width: 3px;
@@ -324,7 +346,7 @@ code {
 
 
 b {
-  color: #202088;
+  color: #002000;
   font-size: 15px;
   font-weight: bold;
 }

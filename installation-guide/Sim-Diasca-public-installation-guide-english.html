@@ -32,7 +32,7 @@
 </tr>
 <tr class="field"><th class="field-name">Creation date:</th><td class="field-body">Monday, February 8, 2010</td>
 </tr>
-<tr class="field"><th class="field-name">Lastly updated:</th><td class="field-body">Monday, January 10, 2022</td>
+<tr class="field"><th class="field-name">Lastly updated:</th><td class="field-body">Tuesday, January 11, 2022</td>
 </tr>
 <tr class="field"><th class="field-name">Version:</th><td class="field-body">2.4.2</td>
 </tr>
@@ -452,57 +452,24 @@ $ sudo apt-get install bzip2 coreutils build-essential g++       <span class="se
 <div class="section" id="preparing-the-sim-diasca-sources">
 <h2><a class="toc-backref" href="#id51">Preparing the Sim-Diasca sources</a></h2>
 <p>The sources of Sim-Diasca can be obtained either from a GIT repository (recommended approach) or from an archive file. Both cases are detailed below.</p>
-<div class="section" id="installation-from-the-sim-diasca-internal-git-repository">
-<h3>Installation From the Sim-Diasca Internal GIT Repository</h3>
-<p>This is now the usual procedure.</p>
-<div class="section" id="cloning">
-<h4>Cloning</h4>
-<p>The EDF-internal GIT repository is hosted by the PAM infrastructure as a GitLab project, at the following location: <a class="reference external" href="https://gitlab.pleiade.edf.fr/Sim-Diasca/sim-diasca">https://gitlab.pleiade.edf.fr/Sim-Diasca/sim-diasca</a> <a class="footnote-reference" href="#id12" id="id11">[8]</a>.</p>
+<div class="section" id="installation-from-the-sim-diasca-public-git-repository">
+<h3>Installation From the Sim-Diasca Public GIT Repository</h3>
+<p>Unless you have access to the EDF-internal Sim-Diasca GIT repository (which should then be preferred, as it contains more content, and is by design more recent), you can clone the public GIT repository (which should be fine as well <a class="footnote-reference" href="#id12" id="id11">[8]</a>), at the following location: <a class="reference external" href="https://github.com/Olivier-Boudeville-EDF/Sim-Diasca">https://github.com/Olivier-Boudeville-EDF/Sim-Diasca</a>.</p>
 <table class="docutils footnote" frame="void" id="id12" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id11">[8]</a></td><td>Knowing that the location of the former internal GitLab project was <a class="reference external" href="https://git.forge.pleiade.edf.fr/git/sim-diasca">this one</a> .</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id11">[8]</a></td><td>Please tell us (typically thanks to the e-mail address at the top of this document) if ever the current public version seems to date back a bit too much, as we do not always update the public version once an internal one has been released.</td></tr>
 </tbody>
 </table>
-<p>It can thus be obtained, on a GNU/Linux host connected to the RIN (EDF internal network), thanks to:</p>
+<p>It can thus be obtained, typically from a GNU/Linux host, thanks to:</p>
 <pre class="code bash literal-block">
-$ git clone https://gitlab.pleiade.edf.fr/Sim-Diasca/sim-diasca sim-diasca-clone
+$ git clone https://github.com/Olivier-Boudeville-EDF/Sim-Diasca
 </pre>
-<p>From now on, non-absolute paths (ex: <tt class="docutils literal"><span class="pre">mock-simulators/soda-test/...</span></tt>) must be understood as being relative to the root directory of (the current branch of) this clone.</p>
 <p>Then a right branch or tag shall be selected, knowing that versions bear annotated tags now labelled as: <tt class="docutils literal"><span class="pre">sim-diasca-x.y.z-version</span></tt>.</p>
-<p>The <tt class="docutils literal">master</tt> branch is the main one, and contains the current reference version of Sim-Diasca (preparation of the next release, as a rolling release candidate).</p>
-<p>For further details regarding the Sim-Diasca conventions in terms of version control, please refer to the <strong>Sim-Diasca Developer Guide</strong>.</p>
-</div>
-<div class="section" id="selecting-one-s-branch-as-a-developer">
-<h4>Selecting One's Branch as a Developer</h4>
-<p>When multiple <em>developers</em> have to collaborate on the codebase, they shall rely on different branches, per-developer (designated by: first name, dash, last name, all in lowercase; like in the <tt class="docutils literal"><span class="pre">joe-dalton</span></tt> branch) if not per-developer and per-feature (ex: a <tt class="docutils literal"><span class="pre">joe-dalton-ui-rework</span></tt> branch).</p>
-<p>So typically a new developer would select the branch from which to derive (ex: <tt class="docutils literal">master</tt>), and, if not already created, would derive his/her working branch from it:</p>
-<pre class="code bash literal-block">
-$ git checkout my_start_branch
-$ git checkout -branch joe-dalton
-</pre>
-</div>
-<div class="section" id="selecting-one-s-branch-as-a-user">
-<h4>Selecting One's Branch as a User</h4>
-<p>Most <em>users</em> will prefer sticking to the latest stable release, which can be obtained with:</p>
-<pre class="code bash literal-block">
-$ git tag -l <span class="s2">&quot;sim-diasca-*-version&quot;</span> <span class="p">|</span> sort <span class="p">|</span> head -n <span class="m">1</span>
-</pre>
-<p>For example, at the time of this writing, this results in the <tt class="docutils literal"><span class="pre">sim-diasca-2.3.10-version</span></tt> tag.</p>
-<p>Then, for example:</p>
-<pre class="code bash literal-block">
-$ git checkout sim-diasca-2.3.10-version
-</pre>
-</div>
-<div class="section" id="obtaining-logmx">
-<h4>Obtaining LogMX</h4>
-<p>We rely internally on the professional version of LogMX.</p>
-<p>You should thus have been given a LogMX licence file (ex: <tt class="docutils literal">license.properties</tt>).</p>
-<p>As for the LogMX archive (ex: <tt class="docutils literal">LogMX_vx.y.z_pro.zip</tt>), it can be downloaded from <a class="reference external" href="https://gitlab.pleiade.edf.fr/Sim-Diasca/prerequisites/-/tree/master/LogMX">the repository dedicated to the Sim-Diasca prerequisites</a> (just pick the latest LogMX version available).</p>
+<p>The <tt class="docutils literal">master</tt> branch is the main one, and contains the latest public version of Sim-Diasca that has been released, so most people will happily stick to this <tt class="docutils literal">master</tt> branch.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Within EDF, both shall be used instead of the base ones that are mentioned later in this document.</p>
-</div>
+<p class="last">The public repository is not the actual one that is used to develop Sim-Diasca, yet pull requests or any interaction may be based on it; if appropriate, we will take care of any integration that would be useful, and such improvements are to benefit to the community as a whole, in the next public versions to be released afterwards.</p>
 </div>
 </div>
 <div class="section" id="installation-from-a-sim-diasca-archive">
