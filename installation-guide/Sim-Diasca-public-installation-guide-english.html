@@ -16,8 +16,12 @@
 <h1 class="title">Sim-Diasca Installation Guide</h1>
 <h2 class="subtitle" id="public-version">Public Version</h2>
 
+<p><a href="#id1"><span class="problematic" id="id2">:raw-html:`&lt;a name=&quot;sim_diasca_top&quot;&gt;&lt;/a&gt;`</span></a></p>
+<div class="system-message" id="id1">
+<p class="system-message-title">System Message: ERROR/3 (<tt class="docutils">Sim-Diasca-public-installation-guide-english.rst</tt>, line 10); <em><a href="#id2">backlink</a></em></p>
+Unknown interpreted text role &quot;raw-html&quot;.</div>
 <p><span class="raw-html"><a name="sim_diasca_top"></a></span></p>
-<p><span class="raw-html"><div class="banner"><p><em>Sim-Diasca public documentation</em> <a href="FIXME">browse latest</a> <a href="Sim-Diasca-public-installation-guide-english.pdf">get PDF</a> <a href="#"sim_diasca_top">go to top</a> <a href="#"sim_diasca_bottom">go to bottom</a> <a href="https://github.com/Olivier-Boudeville-EDF/Sim-Diasca">public project</a><a href="mailto:olivier(dot)boudeville(at)edf(dot)fr?subject=[Sim-Diasca]%20Remark">email us</a></p></div></span></p>
+<p><span class="raw-html"><div class="banner"><p><em>Sim-Diasca public documentation</em> <a href="https://olivier-boudeville-edf.github.io/Sim-Diasca">browse latest</a> <a href="Sim-Diasca-public-installation-guide-english.pdf">get PDF</a> <a href="#sim_diasca_top">go to top</a> <a href="#sim_diasca_bottom">go to bottom</a> <a href="https://github.com/Olivier-Boudeville-EDF/Sim-Diasca">public project</a><a href="mailto:olivier(dot)boudeville(at)edf(dot)fr?subject=[Sim-Diasca]%20Remark">email us</a></p></div></span></p>
 <p><span class="raw-html"><center><table><tr colspan="2"><center><img src="sim-diasca.png" style="width:500px"></center></tr><tr><td><center><img src="logo-EDF-english.png" style="width:150px"></center></td><td><center><img src="lgpl-v3-logo-bordered.png" style="width:140px"></center></td></tr></table></span></p>
 <p></p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -52,62 +56,62 @@
 <div class="contents topic" id="table-of-contents">
 <p class="topic-title first"><strong>Table of Contents</strong></p>
 <ul class="simple">
-<li><a class="reference internal" href="#objective-context" id="id46">Objective &amp; Context</a></li>
-<li><a class="reference internal" href="#basic-system-wide-network-settings" id="id47">Basic System-wide Network Settings</a><ul>
-<li><a class="reference internal" href="#recommended-rules" id="id48">Recommended Rules</a></li>
+<li><a class="reference internal" href="#objective-context" id="id48">Objective &amp; Context</a></li>
+<li><a class="reference internal" href="#basic-system-wide-network-settings" id="id49">Basic System-wide Network Settings</a><ul>
+<li><a class="reference internal" href="#recommended-rules" id="id50">Recommended Rules</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#software-prerequisites" id="id49">Software Prerequisites</a><ul>
-<li><a class="reference internal" href="#software-needed" id="id50">Software Needed</a></li>
-<li><a class="reference internal" href="#preparing-the-sim-diasca-sources" id="id51">Preparing the Sim-Diasca sources</a></li>
+<li><a class="reference internal" href="#software-prerequisites" id="id51">Software Prerequisites</a><ul>
+<li><a class="reference internal" href="#software-needed" id="id52">Software Needed</a></li>
+<li><a class="reference internal" href="#preparing-the-sim-diasca-sources" id="id53">Preparing the Sim-Diasca sources</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#installing-erlang" id="id52">Installing Erlang</a></li>
-<li><a class="reference internal" href="#installing-logmx" id="id53">Installing LogMX</a><ul>
-<li><a class="reference internal" href="#getting-logmx" id="id54">Getting LogMX</a></li>
-<li><a class="reference internal" href="#setting-up-logmx" id="id55">Setting Up LogMX</a></li>
+<li><a class="reference internal" href="#installing-erlang" id="id54">Installing Erlang</a></li>
+<li><a class="reference internal" href="#installing-logmx" id="id55">Installing LogMX</a><ul>
+<li><a class="reference internal" href="#getting-logmx" id="id56">Getting LogMX</a></li>
+<li><a class="reference internal" href="#setting-up-logmx" id="id57">Setting Up LogMX</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#enabling-the-python-binding-if-needed-installing-erlport" id="id56">Enabling the Python binding if needed: installing <tt class="docutils literal">ErlPort</tt></a><ul>
-<li><a class="reference internal" href="#python-configuration" id="id57">Python Configuration</a></li>
-<li><a class="reference internal" href="#erlport-installation" id="id58">ErlPort Installation</a></li>
+<li><a class="reference internal" href="#enabling-the-python-binding-if-needed-installing-erlport" id="id58">Enabling the Python binding if needed: installing <tt class="docutils literal">ErlPort</tt></a><ul>
+<li><a class="reference internal" href="#python-configuration" id="id59">Python Configuration</a></li>
+<li><a class="reference internal" href="#erlport-installation" id="id60">ErlPort Installation</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#checking-which-tools-sim-diasca-will-use" id="id59">Checking Which Tools Sim-Diasca Will Use</a></li>
-<li><a class="reference internal" href="#building-sim-diasca" id="id60">Building Sim-Diasca</a></li>
-<li><a class="reference internal" href="#enabling-the-distributed-mode-of-operation" id="id61">Enabling The Distributed Mode Of Operation</a><ul>
-<li><a class="reference internal" href="#basic-network-configuration" id="id62">Basic Network Configuration</a></li>
-<li><a class="reference internal" href="#password-less-authentication" id="id63">Password-less Authentication</a></li>
-<li><a class="reference internal" href="#managing-the-simulator-codebase" id="id64">Managing the Simulator Codebase</a></li>
-<li><a class="reference internal" href="#miscellaneous" id="id65">Miscellaneous</a></li>
-<li><a class="reference internal" href="#cleaning-up" id="id66">Cleaning Up</a></li>
+<li><a class="reference internal" href="#checking-which-tools-sim-diasca-will-use" id="id61">Checking Which Tools Sim-Diasca Will Use</a></li>
+<li><a class="reference internal" href="#building-sim-diasca" id="id62">Building Sim-Diasca</a></li>
+<li><a class="reference internal" href="#enabling-the-distributed-mode-of-operation" id="id63">Enabling The Distributed Mode Of Operation</a><ul>
+<li><a class="reference internal" href="#basic-network-configuration" id="id64">Basic Network Configuration</a></li>
+<li><a class="reference internal" href="#password-less-authentication" id="id65">Password-less Authentication</a></li>
+<li><a class="reference internal" href="#managing-the-simulator-codebase" id="id66">Managing the Simulator Codebase</a></li>
+<li><a class="reference internal" href="#miscellaneous" id="id67">Miscellaneous</a></li>
+<li><a class="reference internal" href="#cleaning-up" id="id68">Cleaning Up</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#testing-sim-diasca" id="id67">Testing Sim-Diasca</a></li>
-<li><a class="reference internal" href="#installing-sim-diasca" id="id68">Installing Sim-Diasca</a></li>
-<li><a class="reference internal" href="#credits" id="id69">Credits</a></li>
-<li><a class="reference internal" href="#please-react" id="id70">Please React!</a></li>
-<li><a class="reference internal" href="#support" id="id71">Support</a></li>
-<li><a class="reference internal" href="#ending-word" id="id72">Ending Word</a></li>
+<li><a class="reference internal" href="#testing-sim-diasca" id="id69">Testing Sim-Diasca</a></li>
+<li><a class="reference internal" href="#installing-sim-diasca" id="id70">Installing Sim-Diasca</a></li>
+<li><a class="reference internal" href="#credits" id="id71">Credits</a></li>
+<li><a class="reference internal" href="#please-react" id="id72">Please React!</a></li>
+<li><a class="reference internal" href="#support" id="id73">Support</a></li>
+<li><a class="reference internal" href="#ending-word" id="id74">Ending Word</a></li>
 </ul>
 </div>
 <p></p>
 <div class="section" id="objective-context">
-<h1><a class="toc-backref" href="#id46">Objective &amp; Context</a></h1>
+<h1><a class="toc-backref" href="#id48">Objective &amp; Context</a></h1>
 <p>The goal here is to set up a fully functional Sim-Diasca installation, and to be able to test it and to develop with it, for example so that the implementation of new simulation cases and models can be directly experimented.</p>
 <p>In the context of this public version, the installation will be performed:</p>
 <ul class="simple">
 <li>either from an archive (ex: <tt class="docutils literal"><span class="pre">Sim-Diasca-x.y.z.tar.bz2</span></tt>), supposedly already transmitted (typically after a request made through the contact form available at <a class="reference external" href="http://www.sim-diasca.com">the official Sim-Diasca website</a> (pointing, at the time of this writing, to <a class="reference external" href="https://www.edf.fr/en/the-edf-group/world-s-largest-power-company/activities/research-and-development/scientific-communities/simulation-softwares?logiciel=10832">this actual page</a>)</li>
 <li>or  from its <a class="reference external" href="https://github.com/Olivier-Boudeville-EDF/Sim-Diasca">official public repository</a></li>
 </ul>
-<p>The operating system is supposed here to be GNU/Linux <a class="footnote-reference" href="#id2" id="id1">[3]</a> (32 or, most probably, 64 bits):</p>
+<p>The operating system is supposed here to be GNU/Linux <a class="footnote-reference" href="#id4" id="id3">[3]</a> (32 or, most probably, 64 bits):</p>
 <p><span class="raw-html"><center><img src="xkcd-cautionary.png" id="responsive-image-medium"></img></center></span>
 </p>
 <p>(see the <a class="reference internal" href="#credits">credits</a> section about the comic strips)</p>
-<table class="docutils footnote" frame="void" id="id2" rules="none">
+<table class="docutils footnote" frame="void" id="id4" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id1">[3]</a></td><td>This is the platform we use routinely, although other UNIX systems and possibly Windows platforms <em>could</em> be targeted. Sim-Diasca is also quite close to be able to run on Mac OS X, when a few perks will be ironed out (ex: <tt class="docutils literal">/proc/cpuinfo</tt> replacement). Patches welcome!</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id3">[3]</a></td><td>This is the platform we use routinely, although other UNIX systems and possibly Windows platforms <em>could</em> be targeted. Sim-Diasca is also quite close to be able to run on Mac OS X, when a few perks will be ironed out (ex: <tt class="docutils literal">/proc/cpuinfo</tt> replacement). Patches welcome!</td></tr>
 </tbody>
 </table>
 <p>Root access is not necessary, but recommended so that any lacking prerequisite can be installed directly and with little effort:</p>
@@ -117,9 +121,9 @@
 <p>Finally, in all cases, i.e. even in the context of simulations to be run on a single machine (rather than in a distributed mode), the network configuration (on all hosts involved) must be adequate (notably so that any switch to a distributed mode of operation is as painless as possible).</p>
 </div>
 <div class="section" id="basic-system-wide-network-settings">
-<h1><a class="toc-backref" href="#id47">Basic System-wide Network Settings</a></h1>
+<h1><a class="toc-backref" href="#id49">Basic System-wide Network Settings</a></h1>
 <div class="section" id="recommended-rules">
-<h2><a class="toc-backref" href="#id48">Recommended Rules</a></h2>
+<h2><a class="toc-backref" href="#id50">Recommended Rules</a></h2>
 <p>We observed in a few cases less-than-optimal network configurations (see also issues #3 and #4 in the <em>Most Common Issues</em> section of the <em>Sim-Diasca Technical Manual</em>); in short, if wanting to stay on the safer, UNIX-legit side (at least so that the Erlang VM can resolve consistently the local hostname), then ensure that (supposing this local hostname is meant to be <tt class="docutils literal">hurricane</tt>):</p>
 <ul class="simple">
 <li>in <tt class="docutils literal">/etc/hosts</tt>, for each name referring to the local host (hence in the <tt class="docutils literal">127/8</tt> network, usually <tt class="docutils literal">127.0.0.1</tt>):<ul>
@@ -187,7 +191,7 @@ $ erl -name my_test
 </div>
 </div>
 <div class="section" id="software-prerequisites">
-<h1><a class="toc-backref" href="#id49">Software Prerequisites</a></h1>
+<h1><a class="toc-backref" href="#id51">Software Prerequisites</a></h1>
 <p>This installation procedure is quite detailed and takes into account different cases. Applying it should not be too difficult or time-consuming, and anyway it just needs to be done once; upgrading the Sim-Diasca version will then be transparent afterwards.</p>
 <p>Some best-effort support is generally available by email (see contact address at the top of this document), should an issue be encountered.</p>
 <p>We preferred to list below the widest possible range of tools here. This includes:</p>
@@ -199,7 +203,7 @@ $ erl -name my_test
 <li>finally, the <strong>toolchain</strong> that can be used to <em>build</em> the simulation engine and its dependencies (ex: to recreate the Sim-Diasca trace parser based on <tt class="docutils literal">LogMX</tt>)</li>
 </ul>
 <div class="section" id="software-needed">
-<h2><a class="toc-backref" href="#id50">Software Needed</a></h2>
+<h2><a class="toc-backref" href="#id52">Software Needed</a></h2>
 <p>Software prerequisites for a given <strong>host</strong> (computer) depend on the role of this host.</p>
 <p>One must indeed distinguish here between two kinds of <strong>nodes</strong> (in the sense of Erlang) involved in a Sim-Diasca simulation:</p>
 <ul class="simple">
@@ -217,12 +221,12 @@ $ erl -name my_test
 </div>
 <div class="section" id="tool-list-for-the-user-node">
 <h3>Tool List For the User Node</h3>
-<p>On the targeted host the specific tools listed below and tagged <tt class="docutils literal">Mandatory</tt> <em>must</em> be available: if not readily available, the corresponding packages <a class="footnote-reference" href="#id4" id="id3">[4]</a> ought to be installed.</p>
+<p>On the targeted host the specific tools listed below and tagged <tt class="docutils literal">Mandatory</tt> <em>must</em> be available: if not readily available, the corresponding packages <a class="footnote-reference" href="#id6" id="id5">[4]</a> ought to be installed.</p>
 <p>Some hints about each tool are specified below the table. Afterwards, all installation procedures that are not trivial are described.</p>
-<table class="docutils footnote" frame="void" id="id4" rules="none">
+<table class="docutils footnote" frame="void" id="id6" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id3">[4]</a></td><td>The package names are the ones used by Debian-based distributions, including Ubuntu. Other distributions might use (often slightly) different names.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id5">[4]</a></td><td>The package names are the ones used by Debian-based distributions, including Ubuntu. Other distributions might use (often slightly) different names.</td></tr>
 </tbody>
 </table>
 <p><span class="raw-html"><center></span></p>
@@ -400,17 +404,17 @@ Sim-Diasca-enabled LogMX parser.</td>
 <div class="section" id="package-walk-through">
 <h3>Package Walk-Through</h3>
 <p>Erlang and Sim-Diasca (including its <a class="reference external" href="https://olivier-boudeville.github.io/Ceylan-Myriad/">Myriad</a>, <a class="reference external" href="https://olivier-boudeville.github.io/Ceylan-WOOPER">WOOPER</a> and <a class="reference external" href="https://olivier-boudeville.github.io/Ceylan-Traces">Traces</a> layers) are of course needed and their installation is detailed in the next sections.</p>
-<p>The use of a custom-built <tt class="docutils literal">Erlang</tt> environment is <em>strongly</em> recommended, to be able to rely on an adequately-configured and up-to-date version <a class="footnote-reference" href="#id7" id="id5">[5]</a>. Thus no need to install any distribution-specific prebuilt Erlang package <a class="footnote-reference" href="#id8" id="id6">[6]</a>, however the <tt class="docutils literal">GCC</tt> compiler (or any similar C compiler) must be available so that the build of Erlang can be performed.</p>
-<table class="docutils footnote" frame="void" id="id7" rules="none">
+<p>The use of a custom-built <tt class="docutils literal">Erlang</tt> environment is <em>strongly</em> recommended, to be able to rely on an adequately-configured and up-to-date version <a class="footnote-reference" href="#id9" id="id7">[5]</a>. Thus no need to install any distribution-specific prebuilt Erlang package <a class="footnote-reference" href="#id10" id="id8">[6]</a>, however the <tt class="docutils literal">GCC</tt> compiler (or any similar C compiler) must be available so that the build of Erlang can be performed.</p>
+<table class="docutils footnote" frame="void" id="id9" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id5">[5]</a></td><td>In the past, some distributions shipped stripped-down versions of Erlang that happened to be incorrectly built (ex: lacking some components). Nowadays some include versions of Erlang that are way too ancient to be conveniently used. The last stable version of Erlang is always the best bet, and the Sim-Diasca developments tend to stick to it (possibly using bleeding edge additions, thus often <em>requiring</em> recent-enough versions of Erlang).</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id7">[5]</a></td><td>In the past, some distributions shipped stripped-down versions of Erlang that happened to be incorrectly built (ex: lacking some components). Nowadays some include versions of Erlang that are way too ancient to be conveniently used. The last stable version of Erlang is always the best bet, and the Sim-Diasca developments tend to stick to it (possibly using bleeding edge additions, thus often <em>requiring</em> recent-enough versions of Erlang).</td></tr>
 </tbody>
 </table>
-<table class="docutils footnote" frame="void" id="id8" rules="none">
+<table class="docutils footnote" frame="void" id="id10" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id6">[6]</a></td><td>It is even safer not to have any <em>system-level</em> installation of Erlang, so that no version mismatch can ever happen, despite potential mistakes made in the user shell settings (note that a runtime checking of all the actual Erlang versions in use by each distributed host is performed). Thus one may only install first the dependencies of Erlang, i.e. the ones listed by the <a class="reference external" href="https://wiki.archlinux.org/index.php/Pacman/Rosetta#Querying_package_dependencies">&quot;show dependencies&quot; action</a> for your distribution of choice.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id8">[6]</a></td><td>It is even safer not to have any <em>system-level</em> installation of Erlang, so that no version mismatch can ever happen, despite potential mistakes made in the user shell settings (note that a runtime checking of all the actual Erlang versions in use by each distributed host is performed). Thus one may only install first the dependencies of Erlang, i.e. the ones listed by the <a class="reference external" href="https://wiki.archlinux.org/index.php/Pacman/Rosetta#Querying_package_dependencies">&quot;show dependencies&quot; action</a> for your distribution of choice.</td></tr>
 </tbody>
 </table>
 <p>In the context of the evaluation of dataflow, some simulation actors, typically dataflow processing units, may be implemented in <a class="reference external" href="https://www.python.org/">Python</a> (precisely: Python3``), in which case the Python binding shall be enabled; for that, <a class="reference external" href="http://erlport.org/">ErlPort</a> is needed, as well a recent enough version of Python.</p>
@@ -419,11 +423,11 @@ Sim-Diasca-enabled LogMX parser.</td>
 <p class="first admonition-title">Note</p>
 <p class="last">Please note that such bindings are meant to apply <em>only in a dataflow context</em> (i.e. for the specific API borne by the processing unit): these are not general-purpose, actor-level bindings. Even if developing such generic bindings would certainly be feasible, no sufficient need arose yet to trigger their development. Contributions welcome!</p>
 </div>
-<p>An image viewer, a PDF viewer and a video player are generally useful to browse Sim-Diasca outputs. Defaults are, respectively: <em>Geeqie</em> (<tt class="docutils literal">geeqie</tt>, previously known as <tt class="docutils literal">gqview</tt>), <em>Evince</em> (<tt class="docutils literal">evince</tt>), and <em>Mplayer</em> (<tt class="docutils literal">mplayer</tt>), but they can be replaced very easily, in Sim-Diasca code, by any counterparts that would be preferred <a class="footnote-reference" href="#id10" id="id9">[7]</a>.</p>
-<table class="docutils footnote" frame="void" id="id10" rules="none">
+<p>An image viewer, a PDF viewer and a video player are generally useful to browse Sim-Diasca outputs. Defaults are, respectively: <em>Geeqie</em> (<tt class="docutils literal">geeqie</tt>, previously known as <tt class="docutils literal">gqview</tt>), <em>Evince</em> (<tt class="docutils literal">evince</tt>), and <em>Mplayer</em> (<tt class="docutils literal">mplayer</tt>), but they can be replaced very easily, in Sim-Diasca code, by any counterparts that would be preferred <a class="footnote-reference" href="#id12" id="id11">[7]</a>.</p>
+<table class="docutils footnote" frame="void" id="id12" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id9">[7]</a></td><td>For that refer to the <em>default tool section</em> in <tt class="docutils literal">myriad/src/utils/executable_utils.erl</tt>.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id11">[7]</a></td><td>For that refer to the <em>default tool section</em> in <tt class="docutils literal">myriad/src/utils/executable_utils.erl</tt>.</td></tr>
 </tbody>
 </table>
 <p>Depending on the version of the <tt class="docutils literal">Java Runtime Environment</tt> (JRE) which is available on the user host, the prebuilt Sim-Diasca trace parser may be directly used (this is generally the case), otherwise it will have to be rebuilt from its sources. In this latter (unlikely) case only, <tt class="docutils literal">Ant</tt> and a <tt class="docutils literal">Java SDK</tt> will be needed.</p>
@@ -450,15 +454,15 @@ $ sudo apt-get install bzip2 coreutils build-essential g++       <span class="se
 </div>
 </div>
 <div class="section" id="preparing-the-sim-diasca-sources">
-<h2><a class="toc-backref" href="#id51">Preparing the Sim-Diasca sources</a></h2>
+<h2><a class="toc-backref" href="#id53">Preparing the Sim-Diasca sources</a></h2>
 <p>The sources of Sim-Diasca can be obtained either from a GIT repository (recommended approach) or from an archive file. Both cases are detailed below.</p>
 <div class="section" id="installation-from-the-sim-diasca-public-git-repository">
 <h3>Installation From the Sim-Diasca Public GIT Repository</h3>
-<p>Unless you have access to the EDF-internal Sim-Diasca GIT repository (which should then be preferred, as it contains more content, and is by design more recent), you can clone the public GIT repository (which should be fine as well <a class="footnote-reference" href="#id12" id="id11">[8]</a>), at the following location: <a class="reference external" href="https://github.com/Olivier-Boudeville-EDF/Sim-Diasca">https://github.com/Olivier-Boudeville-EDF/Sim-Diasca</a>.</p>
-<table class="docutils footnote" frame="void" id="id12" rules="none">
+<p>Unless you have access to the EDF-internal Sim-Diasca GIT repository (which should then be preferred, as it contains more content, and is by design more recent), you can clone the public GIT repository (which should be fine as well <a class="footnote-reference" href="#id14" id="id13">[8]</a>), at the following location: <a class="reference external" href="https://github.com/Olivier-Boudeville-EDF/Sim-Diasca">https://github.com/Olivier-Boudeville-EDF/Sim-Diasca</a>.</p>
+<table class="docutils footnote" frame="void" id="id14" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id11">[8]</a></td><td>Please tell us (typically thanks to the e-mail address at the top of this document) if ever the current public version seems to date back a bit too much, as we do not always update the public version once an internal one has been released.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id13">[8]</a></td><td>Please tell us (typically thanks to the e-mail address at the top of this document) if ever the current public version seems to date back a bit too much, as we do not always update the public version once an internal one has been released.</td></tr>
 </tbody>
 </table>
 <p>It can thus be obtained, typically from a GNU/Linux host, thanks to:</p>
@@ -488,7 +492,7 @@ $ tar xvf Sim-Diasca-a.b.c.tar.xz
 </div>
 </div>
 <div class="section" id="installing-erlang">
-<h1><a class="toc-backref" href="#id52">Installing Erlang</a></h1>
+<h1><a class="toc-backref" href="#id54">Installing Erlang</a></h1>
 <p>Sim-Diasca is essentially written in <a class="reference external" href="http://erlang.org">Erlang</a>, thus as soon as it will have to run on a given host, it will require a proper Erlang environment to be available on this host beforehand.</p>
 <p>This means that <strong>all the computing hosts that may be used in the context of a distributed simulation must have access to such an Erlang environment</strong>, with compatible versions. There are various ways of ensuring it, including the cases where:</p>
 <ul class="simple">
@@ -497,11 +501,11 @@ $ tar xvf Sim-Diasca-a.b.c.tar.xz
 <li>a dedicated installation is performed on each of them</li>
 </ul>
 <p>Although older versions of Erlang were supported (initially starting from <tt class="docutils literal"><span class="pre">R12B-5</span></tt>, released on November 5, 2008), API and typing changes require now using Erlang versions that are considerably more recent. One may preferably rely on the latest stable version available, as it is both more robust and efficient, and this is the one that is used by the developers of the engine. This version was usually in the form <tt class="docutils literal">RxBy</tt>, like <tt class="docutils literal">R16B</tt>, and now is named typically as <tt class="docutils literal">OTP 23.2</tt> at the time of this writing. As the engine relies on some features introduced in <tt class="docutils literal">OTP 23.0</tt>, this version, or more recent, shall be used.</p>
-<p><strong>Erlang will then be preferably built from sources, rather than be installed thanks to the package manager of the distribution at hand</strong>, in order to benefit from an unmodified cutting-edge stable version that additionally will be built with the finely-tuned configuration deemed the most appropriate in a Sim-Diasca context <a class="footnote-reference" href="#id14" id="id13">[9]</a>.</p>
-<table class="docutils footnote" frame="void" id="id14" rules="none">
+<p><strong>Erlang will then be preferably built from sources, rather than be installed thanks to the package manager of the distribution at hand</strong>, in order to benefit from an unmodified cutting-edge stable version that additionally will be built with the finely-tuned configuration deemed the most appropriate in a Sim-Diasca context <a class="footnote-reference" href="#id16" id="id15">[9]</a>.</p>
+<table class="docutils footnote" frame="void" id="id16" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id13">[9]</a></td><td>We already saw very popular distributions attempting to split the Erlang environment into subpackages and ending up with a very non-functional software.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id15">[9]</a></td><td>We already saw very popular distributions attempting to split the Erlang environment into subpackages and ending up with a very non-functional software.</td></tr>
 </tbody>
 </table>
 <div class="admonition note">
@@ -517,24 +521,24 @@ $ sudo apt-get install g++ make libncurses5-dev openssl <span class="se">\
 </span>  libglu1-mesa-dev libpng3
 </pre>
 </div>
-<p>For such an installation from sources, in the <tt class="docutils literal">myriad/conf</tt> directory of the Sim-Diasca codebase a script named <tt class="docutils literal"><span class="pre">install-erlang.sh</span></tt> is provided <a class="footnote-reference" href="#id16" id="id15">[10]</a>.</p>
-<table class="docutils footnote" frame="void" id="id16" rules="none">
+<p>For such an installation from sources, in the <tt class="docutils literal">myriad/conf</tt> directory of the Sim-Diasca codebase a script named <tt class="docutils literal"><span class="pre">install-erlang.sh</span></tt> is provided <a class="footnote-reference" href="#id18" id="id17">[10]</a>.</p>
+<table class="docutils footnote" frame="void" id="id18" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id15">[10]</a></td><td>Also available at <a class="reference external" href="https://github.com/Olivier-Boudeville/Ceylan-Myriad/blob/master/conf/install-erlang.sh">install-erlang.sh</a>.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id17">[10]</a></td><td>Also available at <a class="reference external" href="https://github.com/Olivier-Boudeville/Ceylan-Myriad/blob/master/conf/install-erlang.sh">install-erlang.sh</a>.</td></tr>
 </tbody>
 </table>
 <p>If you have a direct connection to the Internet, it can automatically download the Erlang sources, and then build and install them appropriately; otherwise, typically if being behind a proxy, one may download first by oneself the relevant archives (namely <tt class="docutils literal">OTP x.y Source File</tt> and <tt class="docutils literal">OTP x.y HTML Documentation File</tt>) from <a class="reference external" href="https://www.erlang.org/downloads">here</a>.</p>
 <p>You can then either run the installation script &quot;as is&quot; (with or without a prefix being specified as parameter) or, if preferred, modify its settings appropriately beforehand, or just get inspiration from it instead and then install Erlang directly from the shell.</p>
 <p><tt class="docutils literal"><span class="pre">install-erlang.sh</span> <span class="pre">--help</span></tt> will provide more usage information, notably on whether it should be run as root or not, installed in a prefixed directory or in the system tree, with a selection of options (ex: to prevent any attempt of downloading said archives), etc.</p>
-<p>From a well-chosen, separate directory (ex: <tt class="docutils literal">~/Software/Erlang</tt>, to avoid mixing the sources of Erlang with the ones of Sim-Diasca), one could run <a class="footnote-reference" href="#id18" id="id17">[11]</a> for example:</p>
+<p>From a well-chosen, separate directory (ex: <tt class="docutils literal">~/Software/Erlang</tt>, to avoid mixing the sources of Erlang with the ones of Sim-Diasca), one could run <a class="footnote-reference" href="#id20" id="id19">[11]</a> for example:</p>
 <pre class="code bash literal-block">
 <span class="nv">$DIR</span>/myriad/conf/install-erlang.sh
 </pre>
-<table class="docutils footnote" frame="void" id="id18" rules="none">
+<table class="docutils footnote" frame="void" id="id20" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id17">[11]</a></td><td>Just ensure that any pre-dowloaded archives are available from that directory.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id19">[11]</a></td><td>Just ensure that any pre-dowloaded archives are available from that directory.</td></tr>
 </tbody>
 </table>
 <p>or, if a specific installation prefix is to be used:</p>
@@ -543,12 +547,12 @@ $ sudo apt-get install g++ make libncurses5-dev openssl <span class="se">\
 </pre>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">One should not execute this script directly from its containing directory (<tt class="docutils literal">myriad/conf</tt>); instead the script shall be run <strong>from outside any build tree related to Sim-Diasca</strong> - a safe, recommended choice being <tt class="docutils literal">~/Software/Erlang</tt> <a class="footnote-reference" href="#id20" id="id19">[12]</a>.</p>
+<p class="last">One should not execute this script directly from its containing directory (<tt class="docutils literal">myriad/conf</tt>); instead the script shall be run <strong>from outside any build tree related to Sim-Diasca</strong> - a safe, recommended choice being <tt class="docutils literal">~/Software/Erlang</tt> <a class="footnote-reference" href="#id22" id="id21">[12]</a>.</p>
 </div>
-<table class="docutils footnote" frame="void" id="id20" rules="none">
+<table class="docutils footnote" frame="void" id="id22" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id19">[12]</a></td><td><p class="first">Otherwise, as the Erlang source archive is extracted in the current directory of the install script, the full build tree of Erlang (typically named <tt class="docutils literal">otp_src_x.y</tt>) would end up in <tt class="docutils literal">myriad/conf</tt>.</p>
+<tr><td class="label"><a class="fn-backref" href="#id21">[12]</a></td><td><p class="first">Otherwise, as the Erlang source archive is extracted in the current directory of the install script, the full build tree of Erlang (typically named <tt class="docutils literal">otp_src_x.y</tt>) would end up in <tt class="docutils literal">myriad/conf</tt>.</p>
 <p>Then, at deployment time, when Sim-Diasca scans recursively the build trees of its prerequisite layers (namely, from bottom-up: <a class="reference external" href="http://myriad.esperide.org/">Myriad</a>, <a class="reference external" href="http://wooper.esperide.org/">WOOPER</a> and <a class="reference external" href="http://traces.esperide.org/">Traces</a>; note that for convenience they are already integrated into the distributed Sim-Diasca codebase) in order to gather their BEAM files in its simulation package, it would select unnecessarily all the ones of Erlang itself as well (whereas they are expected to already be installed in each node) - leading for example to drastically longer deployment durations, very large simulation archives typically ending up with deployment time-outs.</p>
 <p class="last">A mechanism has been added in order to detect such cases.</p>
 </td></tr>
@@ -589,11 +593,11 @@ $ tree -L <span class="m">1</span> -d ~/Software/Erlang/
 <span class="p">|</span>-- Erlang-current-documentation -&gt; Erlang-23.2-documentation
 <span class="sb">`</span>-- Erlang-current-install -&gt; Erlang-23.2
 </pre>
-<p>In the general case (i.e. unless run as root with no prefix specified), the new Erlang environment will be installed in a prefix, thus probably it will not be readily available from the shell. As a consequence one should ensure that the Erlang compiler (<tt class="docutils literal">erlc</tt>) and the corresponding interpreter (<tt class="docutils literal">erl</tt>) <a class="footnote-reference" href="#id25" id="id24">[13]</a> can be found directly from the <tt class="docutils literal">PATH</tt> (both are in the same directory).</p>
-<table class="docutils footnote" frame="void" id="id25" rules="none">
+<p>In the general case (i.e. unless run as root with no prefix specified), the new Erlang environment will be installed in a prefix, thus probably it will not be readily available from the shell. As a consequence one should ensure that the Erlang compiler (<tt class="docutils literal">erlc</tt>) and the corresponding interpreter (<tt class="docutils literal">erl</tt>) <a class="footnote-reference" href="#id27" id="id26">[13]</a> can be found directly from the <tt class="docutils literal">PATH</tt> (both are in the same directory).</p>
+<table class="docutils footnote" frame="void" id="id27" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id24">[13]</a></td><td>The Erlang compiler transforms Erlang code (in <tt class="docutils literal">*.erl</tt>/<tt class="docutils literal">*.hrl</tt> files) into BEAM bytecodes (<tt class="docutils literal">*.beam</tt>) suitable for the <em>Erlang Virtual Machine</em>. They can then be executed by the Erlang interpreter.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id26">[13]</a></td><td>The Erlang compiler transforms Erlang code (in <tt class="docutils literal">*.erl</tt>/<tt class="docutils literal">*.hrl</tt> files) into BEAM bytecodes (<tt class="docutils literal">*.beam</tt>) suitable for the <em>Erlang Virtual Machine</em>. They can then be executed by the Erlang interpreter.</td></tr>
 </tbody>
 </table>
 <p>For example, directly from a <tt class="docutils literal">bash</tt> shell:</p>
@@ -625,7 +629,7 @@ Eshell V11.1.4  <span class="o">(</span>abort with ^G<span class="o">)</span>
 <p>Refer to the <a class="reference internal" href="#name-resolving">Name Resolving</a> section should this test fail.</p>
 </div>
 <div class="section" id="installing-logmx">
-<h1><a class="toc-backref" href="#id53">Installing LogMX</a></h1>
+<h1><a class="toc-backref" href="#id55">Installing LogMX</a></h1>
 <p>LogMX is the default tool used here to monitor the distributed simulation traces (refer to the <a class="reference external" href="http://traces.esperide.org/">Ceylan-Traces website</a> for more information on that layer).</p>
 <p>Using this proprietary tool is fully optional: adding the command-line option <tt class="docutils literal"><span class="pre">CMD_LINE_OPT=&quot;--batch&quot;</span></tt> will disable its automatic launching by the engine. As, however, we believe that being able to easily inspect the simulation traces is essential in order to make the best use of the engine, we recommend to install this tool.</p>
 <p>Although its purpose is only to allow to supervise the Sim-Diasca traces, its installation requires quite a lot of explanations, especially to deal with the case where the Sim-Diasca parser for LogMX has to be rebuilt from its sources (this is generally not needed, though).</p>
@@ -648,11 +652,11 @@ java version <span class="s2">&quot;1.6.0_10&quot;</span>
 Java<span class="o">(</span>TM<span class="o">)</span> SE Runtime Environment <span class="o">(</span>build <span class="m">1</span>.6.0_10-b33<span class="o">)</span>
 Java HotSpot<span class="o">(</span>TM<span class="o">)</span> Client VM <span class="o">(</span>build <span class="m">11</span>.0-b15, mixed mode, sharing<span class="o">)</span>
 </pre>
-<p>If not available, either the package manager of the distribution <a class="footnote-reference" href="#id27" id="id26">[14]</a> or this <a class="reference external" href="http://java.sun.com/javase/downloads/index.jsp">link</a> for the Sun version should be used.</p>
-<table class="docutils footnote" frame="void" id="id27" rules="none">
+<p>If not available, either the package manager of the distribution <a class="footnote-reference" href="#id29" id="id28">[14]</a> or this <a class="reference external" href="http://java.sun.com/javase/downloads/index.jsp">link</a> for the Sun version should be used.</p>
+<table class="docutils footnote" frame="void" id="id29" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id26">[14]</a></td><td>Example: for Debian-based distributions, <tt class="docutils literal"><span class="pre">apt-get</span> install <span class="pre">openjdk-8-jdk</span></tt> or <tt class="docutils literal"><span class="pre">apt-get</span> install <span class="pre">sun-java8-jdk</span></tt> can be used; or, for Arch Linux, <tt class="docutils literal">pacman <span class="pre">-S</span> <span class="pre">jdk8-openjdk</span></tt> may be used.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id28">[14]</a></td><td>Example: for Debian-based distributions, <tt class="docutils literal"><span class="pre">apt-get</span> install <span class="pre">openjdk-8-jdk</span></tt> or <tt class="docutils literal"><span class="pre">apt-get</span> install <span class="pre">sun-java8-jdk</span></tt> can be used; or, for Arch Linux, <tt class="docutils literal">pacman <span class="pre">-S</span> <span class="pre">jdk8-openjdk</span></tt> may be used.</td></tr>
 </tbody>
 </table>
 <p>Note that if only the <tt class="docutils literal">Java SE Runtime Environment</tt> (i.e. the JRE) is installed (instead of the <tt class="docutils literal">Java SE Development Kit</tt>, i.e. the JDK), then Java code can be executed indeed, but not generated.</p>
@@ -662,7 +666,7 @@ Java HotSpot<span class="o">(</span>TM<span class="o">)</span> Client VM <span c
 <p class="last">With some distributions (ex: Ubuntu), the default JRE is headless (which means that the JRE does not provide the dependencies used for the graphical components). Fixing this issue is as easy as installing the missing dependencies (<tt class="docutils literal"><span class="pre">apt-get</span> install <span class="pre">openjdk-8-jre</span></tt>).</p>
 </div>
 <div class="section" id="getting-logmx">
-<h2><a class="toc-backref" href="#id54">Getting LogMX</a></h2>
+<h2><a class="toc-backref" href="#id56">Getting LogMX</a></h2>
 <p>LogMX is a proprietary software, thus it cannot be found in package repositories.
 If not supplied by your organisation, it should be directly downloaded from <a class="reference external" href="http://www.logmx.com/p_download.php">that location</a>, in its latest version, either the free <tt class="docutils literal">Evaluation</tt> version or the <tt class="docutils literal">Professional</tt> one (both of which can be used by Sim-Diasca).</p>
 <div class="admonition note">
@@ -680,7 +684,7 @@ $ unzip LogMX_vx.y.z.zip
 <p>It must then be appropriately configured and linked to a proper Sim-Diasca parser, as shown below.</p>
 </div>
 <div class="section" id="setting-up-logmx">
-<h2><a class="toc-backref" href="#id55">Setting Up LogMX</a></h2>
+<h2><a class="toc-backref" href="#id57">Setting Up LogMX</a></h2>
 <div class="section" id="configuration-files">
 <h3>Configuration Files</h3>
 <p>Sim-Diasca provides, in the <tt class="docutils literal">traces/conf/logmx</tt> directory, the following configuration files:</p>
@@ -788,10 +792,10 @@ Total time: <span class="m">2</span> seconds
 </div>
 </div>
 <div class="section" id="enabling-the-python-binding-if-needed-installing-erlport">
-<h1><a class="toc-backref" href="#id56">Enabling the Python binding if needed: installing <tt class="docutils literal">ErlPort</tt></a></h1>
+<h1><a class="toc-backref" href="#id58">Enabling the Python binding if needed: installing <tt class="docutils literal">ErlPort</tt></a></h1>
 <p>In the context of the evaluation of a dataflow, some simulation actors may be implemented in <a class="reference external" href="https://www.python.org/">Python</a>, in which case the (fully-optional) Python dataflow binding shall be enabled (see the <tt class="docutils literal">USE_PYTHON_BINDING</tt> variable in <tt class="docutils literal">myriad/GNUmakevars.inc</tt> for that). One should skip this section if not planning to use Python-based (dataflow) actors.</p>
 <div class="section" id="python-configuration">
-<h2><a class="toc-backref" href="#id57">Python Configuration</a></h2>
+<h2><a class="toc-backref" href="#id59">Python Configuration</a></h2>
 <p>Python 3 (<tt class="docutils literal">3.5.2</tt> or newer) is required here, and - as for the other runtime dependencies - must thus be available on the target system (i.e. on the user host and also on all additional computing hosts - if any).</p>
 <p>Often, on a given host (typically a computing one), multiple generations of Python coexist (Python 2 or 3), as well as multiple versions thereof (ex: 3.5.2, 3.6.3, etc.).</p>
 <p>We leave the choice of the actual Python version to be used by the engine up to the developer, who can select it by creating a symbolic link named <tt class="docutils literal"><span class="pre">python-for-sim-diasca</span></tt> that should point to the Python version of interest, and be found from the default user PATH.</p>
@@ -811,20 +815,20 @@ $ ln -s /usr/bin/python3 python-for-sim-diasca
 </pre>
 </div>
 <div class="section" id="erlport-installation">
-<h2><a class="toc-backref" href="#id58">ErlPort Installation</a></h2>
+<h2><a class="toc-backref" href="#id60">ErlPort Installation</a></h2>
 <p>As this binding relies on <a class="reference external" href="http://erlport.org/">ErlPort</a>, this dependency must be installed beforehand. We currently rely on the original codebase (not on one of the forks thereof).</p>
 <p>Our guidelines recommend that it is located in the <tt class="docutils literal">~/Software/ErlPort</tt> directory, and that an <tt class="docutils literal"><span class="pre">ErlPort-current-install</span></tt> symbolic link points to it.</p>
-<p>Knowing that the actual installation directory <em>must</em> be named <tt class="docutils literal">erlport</tt> <a class="footnote-reference" href="#id33" id="id32">[15]</a>, one should target a tree structure such as:</p>
+<p>Knowing that the actual installation directory <em>must</em> be named <tt class="docutils literal">erlport</tt> <a class="footnote-reference" href="#id35" id="id34">[15]</a>, one should target a tree structure such as:</p>
 <pre class="code bash literal-block">
 $ tree -L <span class="m">1</span> ~/Software/ErlPort
 /home/batman/Software/ErlPort
 <span class="p">|</span>-- erlport
 <span class="sb">`</span>-- ErlPort-current-install -&gt; erlport/
 </pre>
-<table class="docutils footnote" frame="void" id="id33" rules="none">
+<table class="docutils footnote" frame="void" id="id35" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id32">[15]</a></td><td>Otherwise the interpreter initialization on the computing nodes would fail (with the <tt class="docutils literal"><span class="pre">{not_found,&quot;erlport/priv&quot;}</span></tt> error).</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id34">[15]</a></td><td>Otherwise the interpreter initialization on the computing nodes would fail (with the <tt class="docutils literal"><span class="pre">{not_found,&quot;erlport/priv&quot;}</span></tt> error).</td></tr>
 </tbody>
 </table>
 <p>To do so, one can issue the following commands:</p>
@@ -840,11 +844,11 @@ $ <span class="nb">cd</span> erlport
 </span>$ git checkout 246b77
 </pre>
 <p>Another option is to download the <a class="reference external" href="http://erlport.org/downloads/">latest source version</a> of ErlPort directly, as it is usually appropriate.</p>
-<p>Then, depending on your version of Python 3.x, typically if it is in the 3.5-3.7 range, it may need a minor code change, located, from the <tt class="docutils literal">erlport</tt> directory, in <tt class="docutils literal">priv/python3/erlport/erlang.py</tt> <a class="footnote-reference" href="#id35" id="id34">[16]</a>.</p>
-<table class="docutils footnote" frame="void" id="id35" rules="none">
+<p>Then, depending on your version of Python 3.x, typically if it is in the 3.5-3.7 range, it may need a minor code change, located, from the <tt class="docutils literal">erlport</tt> directory, in <tt class="docutils literal">priv/python3/erlport/erlang.py</tt> <a class="footnote-reference" href="#id37" id="id36">[16]</a>.</p>
+<table class="docutils footnote" frame="void" id="id37" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id34">[16]</a></td><td>We have our own version of this file that <em>should</em> manage most, if not all, Python 3.x versions, to be found in the <tt class="docutils literal"><span class="pre">sim-diasca/src/core/services/bindings/python/</span></tt> (just replace,in <tt class="docutils literal">erlport/priv/python3/erlport</tt>, the original <tt class="docutils literal">erlang.py</tt> with this one then).</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id36">[16]</a></td><td>We have our own version of this file that <em>should</em> manage most, if not all, Python 3.x versions, to be found in the <tt class="docutils literal"><span class="pre">sim-diasca/src/core/services/bindings/python/</span></tt> (just replace,in <tt class="docutils literal">erlport/priv/python3/erlport</tt>, the original <tt class="docutils literal">erlang.py</tt> with this one then).</td></tr>
 </tbody>
 </table>
 <p>Indeed the line near the top reading as:</p>
@@ -874,7 +878,7 @@ $ <span class="nb">cd</span> erlport
 </div>
 </div>
 <div class="section" id="checking-which-tools-sim-diasca-will-use">
-<h1><a class="toc-backref" href="#id59">Checking Which Tools Sim-Diasca Will Use</a></h1>
+<h1><a class="toc-backref" href="#id61">Checking Which Tools Sim-Diasca Will Use</a></h1>
 <p>It is mandatory to have Sim-Diasca know where the tools it needs can be found. To check which main tools would be used, run from the <tt class="docutils literal"><span class="pre">sim-diasca</span></tt> directory:</p>
 <pre class="code bash literal-block">
 $ make info-tools
@@ -891,7 +895,7 @@ $ make info-tools
 <p></p>
 </div>
 <div class="section" id="building-sim-diasca">
-<h1><a class="toc-backref" href="#id60">Building Sim-Diasca</a></h1>
+<h1><a class="toc-backref" href="#id62">Building Sim-Diasca</a></h1>
 <p>The good news is that Sim-Diasca is written in Erlang, thus it requires to be compiled:</p>
 <p><span class="raw-html"><center><img src="xkcd-compiling.png" id="responsive-image-small"></img></center></span>
 </p>
@@ -920,18 +924,18 @@ Building all, in parallel over <span class="m">8</span> cores, from <span class=
 </pre>
 <p>Then <strong>you should have a version of Sim-Diasca properly built, and fully able to run, locally or not</strong>.</p>
 <p>However, should multiple computing hosts be used, a few system-level checks shall be performed first, to ensure that the distributed mode of operation is correctly enabled - as discussed in the next section.</p>
-<p id="domain-configuration">Just before, a note about what we believe is a rather common network misconfiguration of too many Linux computers, which may impact even local, single-host simulations <a class="footnote-reference" href="#id37" id="id36">[17]</a>: one should ensure that, if FQDN hostnames are associated to IPs for the local host in <tt class="docutils literal">/etc/hosts</tt> (ex: <tt class="docutils literal">127.0.1.1 hurricane.foobar.org hurricane</tt>), their domain matches the one (if any) specified in <tt class="docutils literal">/etc/resolv.conf</tt>.</p>
+<p id="domain-configuration">Just before, a note about what we believe is a rather common network misconfiguration of too many Linux computers, which may impact even local, single-host simulations <a class="footnote-reference" href="#id39" id="id38">[17]</a>: one should ensure that, if FQDN hostnames are associated to IPs for the local host in <tt class="docutils literal">/etc/hosts</tt> (ex: <tt class="docutils literal">127.0.1.1 hurricane.foobar.org hurricane</tt>), their domain matches the one (if any) specified in <tt class="docutils literal">/etc/resolv.conf</tt>.</p>
 <p>Often one can see there <tt class="docutils literal">domain localdomain</tt> (instead of, say, <tt class="docutils literal">domain foobar.org</tt>), which may lead to resolve the local FQDN as <tt class="docutils literal">hurricane.localdomain</tt> instead of <tt class="docutils literal">hurricane.foobar.org</tt> (which may be a problem at least for the Erlang VM).</p>
-<table class="docutils footnote" frame="void" id="id37" rules="none">
+<table class="docutils footnote" frame="void" id="id39" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id36">[17]</a></td><td>The network configuration still plays a role even in a non-distributed mode of operation, as the user node is to launch, on that same given host, a computing node, and this spawned one is to connect back to the user node by designating it with either just a node name (ex: <tt class="docutils literal">my_user_node</tt>) or with a node name <em>and</em> a (local, here) hostname (ex: <tt class="docutils literal">my_user_node&#64;LOCAL_HOSTNAME</tt>). A problem with the aforementioned discrepancy is that, if we just specify <tt class="docutils literal">my_user_node</tt>, it will be expanded by the VM in <tt class="docutils literal">my_user_node&#64;hurricane.localdomain</tt> instead of <tt class="docutils literal">my_user_node&#64;hurricane.foobar.org</tt>, and that computing node will never be seen by the user node.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id38">[17]</a></td><td>The network configuration still plays a role even in a non-distributed mode of operation, as the user node is to launch, on that same given host, a computing node, and this spawned one is to connect back to the user node by designating it with either just a node name (ex: <tt class="docutils literal">my_user_node</tt>) or with a node name <em>and</em> a (local, here) hostname (ex: <tt class="docutils literal">my_user_node&#64;LOCAL_HOSTNAME</tt>). A problem with the aforementioned discrepancy is that, if we just specify <tt class="docutils literal">my_user_node</tt>, it will be expanded by the VM in <tt class="docutils literal">my_user_node&#64;hurricane.localdomain</tt> instead of <tt class="docutils literal">my_user_node&#64;hurricane.foobar.org</tt>, and that computing node will never be seen by the user node.</td></tr>
 </tbody>
 </table>
 <p></p>
 </div>
 <div class="section" id="enabling-the-distributed-mode-of-operation">
-<h1><a class="toc-backref" href="#id61">Enabling The Distributed Mode Of Operation</a></h1>
+<h1><a class="toc-backref" href="#id63">Enabling The Distributed Mode Of Operation</a></h1>
 <p>A key point of scalability lies in the possibility of harnessing distributed resources.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -944,7 +948,7 @@ Building all, in parallel over <span class="m">8</span> cores, from <span class=
 <p>From now on, the <em>user node</em> will designate the Erlang node from which the user will run the simulation (ex: the one created when issuing a command like <tt class="docutils literal">make my_simulation_run</tt> from the user shell). That Erlang node will never take part directly to the computing. However, depending on the simulation settings, the <em>host</em> this node runs on may or may not be used as a computing resource, thanks to the automatic creation of another (local, simulation-dedicated) computing node.</p>
 <p>One can also refer to the <em>distributed cheat sheet</em> of the <em>Sim-Diasca Technical Manual</em> for further guidance.</p>
 <div class="section" id="basic-network-configuration">
-<h2><a class="toc-backref" href="#id62">Basic Network Configuration</a></h2>
+<h2><a class="toc-backref" href="#id64">Basic Network Configuration</a></h2>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Sim-Diasca will check automatically all the points discussed in this section, whose purpose is only to inform the reader and to provide some guidelines, should a check determine that the network is not properly configured.</p>
@@ -952,11 +956,11 @@ Building all, in parallel over <span class="m">8</span> cores, from <span class=
 <div class="section" id="interconnectivity">
 <h3>Interconnectivity</h3>
 <p>All hosts able to take part to a (distributed) simulation should be able to reach all other hosts thanks to the network.</p>
-<p>To check that at least a basic interconnectivity is available, Sim-Diasca will ping all eligible hosts from the user host, and retain only the alive ones (i.e. hosts that cannot be ping'ed are deemed not available for the simulation) <a class="footnote-reference" href="#id39" id="id38">[18]</a>.</p>
-<table class="docutils footnote" frame="void" id="id39" rules="none">
+<p>To check that at least a basic interconnectivity is available, Sim-Diasca will ping all eligible hosts from the user host, and retain only the alive ones (i.e. hosts that cannot be ping'ed are deemed not available for the simulation) <a class="footnote-reference" href="#id41" id="id40">[18]</a>.</p>
+<table class="docutils footnote" frame="void" id="id41" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id38">[18]</a></td><td>Note however that we could imagine that the user host pings successfully <tt class="docutils literal">h1</tt> and  <tt class="docutils literal">h2</tt>, while <tt class="docutils literal">h1</tt> is still not able to communicate with <tt class="docutils literal">h2</tt>. However such awkward network configuration issues seldom occur, and any non fully-meshed connectivity would be detected later, at simulation-time.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id40">[18]</a></td><td>Note however that we could imagine that the user host pings successfully <tt class="docutils literal">h1</tt> and  <tt class="docutils literal">h2</tt>, while <tt class="docutils literal">h1</tt> is still not able to communicate with <tt class="docutils literal">h2</tt>. However such awkward network configuration issues seldom occur, and any non fully-meshed connectivity would be detected later, at simulation-time.</td></tr>
 </tbody>
 </table>
 <p>Once this <em>host</em> interconnectivity is established, <em>node</em> interconnectivity is automatically checked further.</p>
@@ -985,13 +989,13 @@ hurricane.foobar.org
 </div>
 </div>
 <div class="section" id="password-less-authentication">
-<h2><a class="toc-backref" href="#id63">Password-less Authentication</a></h2>
-<p>This can be done with SSH quite simply, without requiring specific permissions <a class="footnote-reference" href="#id41" id="id40">[19]</a>, but thanks to a proper configuration.</p>
+<h2><a class="toc-backref" href="#id65">Password-less Authentication</a></h2>
+<p>This can be done with SSH quite simply, without requiring specific permissions <a class="footnote-reference" href="#id43" id="id42">[19]</a>, but thanks to a proper configuration.</p>
 <p>Let's suppose a user <tt class="docutils literal">foobar</tt> on host <tt class="docutils literal">host_a.foobar.org</tt> wants to set-up password-less connections to <tt class="docutils literal">host_b.foobar.org</tt> (supposedly with the same username).</p>
-<table class="docutils footnote" frame="void" id="id41" rules="none">
+<table class="docutils footnote" frame="void" id="id43" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id40">[19]</a></td><td>Provided that the SSH server running on the target host allows it (see the <tt class="docutils literal">PubkeyAuthentication yes</tt> entry in the <tt class="docutils literal">/etc/ssh/sshd_config</tt> file); it is generally the case.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id42">[19]</a></td><td>Provided that the SSH server running on the target host allows it (see the <tt class="docutils literal">PubkeyAuthentication yes</tt> entry in the <tt class="docutils literal">/etc/ssh/sshd_config</tt> file); it is generally the case.</td></tr>
 </tbody>
 </table>
 <p><tt class="docutils literal">foobar</tt> just has to generate, when logged on <tt class="docutils literal">host_a.foobar.org</tt>, a key pair with:</p>
@@ -1053,17 +1057,17 @@ $ ssh -q foo.bar.org erl -eval <span class="se">\
 Eshell V7.3  <span class="o">(</span>abort with ^G<span class="o">)</span>
 This host would use Erlang version <span class="m">18</span>.
 </pre>
-<p>In that case, this host should be able to take part to the simulation, provided the firewall policy does not prevent it <a class="footnote-reference" href="#id43" id="id42">[20]</a>.</p>
-<table class="docutils footnote" frame="void" id="id43" rules="none">
+<p>In that case, this host should be able to take part to the simulation, provided the firewall policy does not prevent it <a class="footnote-reference" href="#id45" id="id44">[20]</a>.</p>
+<table class="docutils footnote" frame="void" id="id45" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id42">[20]</a></td><td>Note that Sim-Diasca provides a way of specifying a non-standard EPMD port and a range of allowed TCP ports (see <tt class="docutils literal">FIREWALL_OPT</tt> in <tt class="docutils literal">myriad/GNUmakevars.inc</tt> or, preferably, the <tt class="docutils literal">firewall_restrictions</tt> field of the <tt class="docutils literal">deployment_settings</tt> record). However the usual practice, and by far safest, is to avoid the use of specific firewall policies between internal hosts: there are already plenty of reasons for a distributed application to experience runtime issues, no need to add more potential problems.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id44">[20]</a></td><td>Note that Sim-Diasca provides a way of specifying a non-standard EPMD port and a range of allowed TCP ports (see <tt class="docutils literal">FIREWALL_OPT</tt> in <tt class="docutils literal">myriad/GNUmakevars.inc</tt> or, preferably, the <tt class="docutils literal">firewall_restrictions</tt> field of the <tt class="docutils literal">deployment_settings</tt> record). However the usual practice, and by far safest, is to avoid the use of specific firewall policies between internal hosts: there are already plenty of reasons for a distributed application to experience runtime issues, no need to add more potential problems.</td></tr>
 </tbody>
 </table>
 <p>Note also that the Sim-Diasca host configuration file allows to specify which UNIX user should be used on which host (as one may use different logins on different hosts).</p>
 </div>
 <div class="section" id="managing-the-simulator-codebase">
-<h2><a class="toc-backref" href="#id64">Managing the Simulator Codebase</a></h2>
+<h2><a class="toc-backref" href="#id66">Managing the Simulator Codebase</a></h2>
 <p>In a distributed context, the proper code (software) must of course be available on each of the computing hosts, so that this host is able to run a part of the simulation.</p>
 <p>However installing manually everything on each host would be soon strenuous, error-prone, and could happen many times (ex: when fine-tuning some models).</p>
 <p>With Sim-Diasca, the only prerequisite that must be available on a host before this host is able to take part to a simulation are:</p>
@@ -1076,11 +1080,11 @@ This host would use Erlang version <span class="m">18</span>.
 <p>Such a deployment is based on a deployment archive (a <tt class="docutils literal">.sdar</tt> file, for <em>Sim-Diasca archive</em> - a compressed, binary file automatically sent over the network), which can be either prebuilt once and then just specified to each Sim-Diasca run, or that can be automatically built on the fly by Sim-Diasca, from the build tree it is run from on the user node (this latter case is the default one).</p>
 </div>
 <div class="section" id="miscellaneous">
-<h2><a class="toc-backref" href="#id65">Miscellaneous</a></h2>
+<h2><a class="toc-backref" href="#id67">Miscellaneous</a></h2>
 <p>One should ensure that the <tt class="docutils literal">/tmp</tt> directory is writable by the user on each computing node, and that sufficient free space is available.</p>
 </div>
 <div class="section" id="cleaning-up">
-<h2><a class="toc-backref" href="#id66">Cleaning Up</a></h2>
+<h2><a class="toc-backref" href="#id68">Cleaning Up</a></h2>
 <p>Under some circumstances (ex: a model-level failure encountered during a simulation), some pending nodes, created by the deployment manager, may linger on a computing host; this should not be an issue, as the next launching of Sim-Diasca will wipe them out.</p>
 <p>To remove them manually, the <em>Erlang Port Mapper Daemon</em> can be used, just run on that host:</p>
 <pre class="code bash literal-block">
@@ -1094,7 +1098,7 @@ $ epmd -kill
 </div>
 </div>
 <div class="section" id="testing-sim-diasca">
-<h1><a class="toc-backref" href="#id67">Testing Sim-Diasca</a></h1>
+<h1><a class="toc-backref" href="#id69">Testing Sim-Diasca</a></h1>
 <p>Several test cases that can be run to experiment with Sim-Diasca: when a class <tt class="docutils literal">X</tt> is defined (in <tt class="docutils literal">class_X.erl</tt>), it is recommended to add a corresponding unitary test case (in <tt class="docutils literal">class_X_test.erl</tt>).</p>
 <p>To run such a test, once Sim-Diasca has been successfully built, one just has to go to the directory where that test is defined, and to run <tt class="docutils literal">make class_X_run</tt>: the Sim-Diasca Make system will take care of compiling this test if needed and run it with an appropriately-configured Erlang interpreter.</p>
 <p>For example, if wanting to run a Sim-Diasca built-in soda-vending test:</p>
@@ -1140,16 +1144,16 @@ make<span class="o">[</span><span class="m">1</span><span class="o">]</span>: Le
 <pre class="code bash literal-block">
 $ make demo
 </pre>
-<p>Three windows should pop up <a class="footnote-reference" href="#id45" id="id44">[21]</a>:</p>
+<p>Three windows should pop up <a class="footnote-reference" href="#id47" id="id46">[21]</a>:</p>
 <ul class="simple">
 <li>a first <tt class="docutils literal">Geeqie/Gqview</tt> window, displaying the two simulation results (two time series) as graphs (plots), representing the number over time of cans available in each of the two soda vending machines</li>
 <li>a second <tt class="docutils literal">Geeqie/Gqview</tt> window, displaying the measures aggregated by the performance tracker (resource consumption, number of instance per node, etc.), if this service is enabled (true by default)</li>
 <li>a <tt class="docutils literal">LogMX</tt> console, for the supervision of the distributed simulation traces (if traces are enabled, which is true by default)</li>
 </ul>
-<table class="docutils footnote" frame="void" id="id45" rules="none">
+<table class="docutils footnote" frame="void" id="id47" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id44">[21]</a></td><td>When running a test from the command line, simulation results are displayed, whereas when the same test is run as part of a test suite, its outputs are generated but not displayed, since it must be run in batch (i.e. silently). Note that how tests are run regarding their outputs is unrelated to the operation mode of the time manager (batch or interactive mode).</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id46">[21]</a></td><td>When running a test from the command line, simulation results are displayed, whereas when the same test is run as part of a test suite, its outputs are generated but not displayed, since it must be run in batch (i.e. silently). Note that how tests are run regarding their outputs is unrelated to the operation mode of the time manager (batch or interactive mode).</td></tr>
 </tbody>
 </table>
 <p>When not useful any more, all windows can be safely closed. The end of the simulation session occurs when the trace supervision window is closed.</p>
@@ -1157,7 +1161,7 @@ $ make demo
 <p>To further discover how Sim-Diasca works and can be used, the next steps could be to peer in the source code of tests and of classes, before playing around and adding some toy models.</p>
 </div>
 <div class="section" id="installing-sim-diasca">
-<h1><a class="toc-backref" href="#id68">Installing Sim-Diasca</a></h1>
+<h1><a class="toc-backref" href="#id70">Installing Sim-Diasca</a></h1>
 <p>This completely optional action (that is generally not needed) allows to install all Sim-Diasca related packages (i.e. the <tt class="docutils literal">Myriad</tt>, <tt class="docutils literal">WOOPER</tt>, etc. packages), and Sim-Diasca itself, out of the build tree.</p>
 <p>To do so, one just has to execute, from the top source directory (the one that contains the top-level directories like <tt class="docutils literal"><span class="pre">sim-diasca</span></tt>, <tt class="docutils literal">wooper</tt>, etc.):</p>
 <pre class="code bash literal-block">
@@ -1171,25 +1175,26 @@ $ make install <span class="nv">INSTALLATION_PREFIX</span><span class="o">=</spa
 <p>In all cases, under the installation directory, all Sim-Diasca related packages will be properly installed, mostly according to the Erlang recommended practices (i.e. with a hierarchy based on standard nested directories like <tt class="docutils literal">ebin</tt>, <tt class="docutils literal">examples</tt>, <tt class="docutils literal">include</tt>, <tt class="docutils literal">src</tt>, <tt class="docutils literal">test</tt>, etc.).</p>
 </div>
 <div class="section" id="credits">
-<h1><a class="toc-backref" href="#id69">Credits</a></h1>
+<h1><a class="toc-backref" href="#id71">Credits</a></h1>
 <p>Special thanks to <strong>Randall Munroe</strong> who is the author of all the comic strips that enliven this documentation, and who kindly allowed their use in this material.</p>
 <p>See his <a class="reference external" href="http://xkcd.com/">XKCD</a> website for all information, including for all his delightful other strips.</p>
 <p></p>
 </div>
 <div class="section" id="please-react">
-<h1><a class="toc-backref" href="#id70">Please React!</a></h1>
+<h1><a class="toc-backref" href="#id72">Please React!</a></h1>
 <p>If you have information more detailed or more recent than those presented in this document, if you noticed errors, neglects or points insufficiently discussed, drop us a line! (for that, follow the <a class="reference internal" href="#support">Support</a> guidelines).</p>
 </div>
 <div class="section" id="support">
-<h1><a class="toc-backref" href="#id71">Support</a></h1>
+<h1><a class="toc-backref" href="#id73">Support</a></h1>
 <p>Bugs, questions, remarks, patches, requests for enhancements, etc. regarding the installation procedure are to be reported to the <a class="reference external" href="https://github.com/Olivier-Boudeville-EDF/Sim-Diasca">project interface</a> (typically <a class="reference external" href="https://github.com/Olivier-Boudeville-EDF/Sim-Diasca/issues">issues</a>) or directly at the email address mentioned at the beginning of this document.</p>
 </div>
 <div class="section" id="ending-word">
-<h1><a class="toc-backref" href="#id72">Ending Word</a></h1>
+<h1><a class="toc-backref" href="#id74">Ending Word</a></h1>
 <p>We hope that the installation went smooth!</p>
 <p>Now is maybe a good time to run some examples found in the <tt class="docutils literal"><span class="pre">mock-simulators</span></tt> tree (located at the root of the Sim-Diasca clone) - typically a <tt class="docutils literal"><span class="pre">soda-test</span></tt>?</p>
 <p><span class="raw-html"><center><img src="sim-diasca.png" id="responsive-image-small"></img></center></span>
 </p>
+<p><span class="raw-html"><a name="sim_diasca_bottom"></a></span></p>
 <p><span class="raw-html"><a name="sim_diasca_bottom"></a></span></p>
 </div>
 </div>

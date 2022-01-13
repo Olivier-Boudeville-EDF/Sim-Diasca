@@ -17,68 +17,99 @@
 
 <p><span class="raw-html"><center><table><tr colspan="2"><img src="sim-diasca.png" style="width:500px"></tr><tr><td><img src="logo-EDF-english.png" style="width:150px"></td><td><img src="lgpl-v3-logo-bordered.png" style="width:140px"></td></tr></table></span></p>
 <p></p>
+<p><span class="raw-html"></center></span></p>
 <p></p>
+<p>We recommend to have a look at the <a class="reference external" href="https://raw.githubusercontent.com/wiki/Olivier-Boudeville-EDF/Sim-Diasca/documents/sim-diasca-general-purpose-english.pdf">Sim-Diasca General-Purpose Presentation</a> first, in order to discover the engine.</p>
+<p>Afterwards, one may refer to the installation guide below.</p>
+<p>Alternatively, much shorter versions thereof are:</p>
+<ul class="simple">
+<li>either to follow these quickstart instructions:</li>
+</ul>
+<pre class="code bash literal-block">
+<span class="c1"># Ensure that a recent Erlang version is installed, then:
+</span>$ git clone https://github.com/Olivier-Boudeville-EDF/Sim-Diasca.git
+$ <span class="nb">cd</span> Sim-Diasca <span class="o">&amp;&amp;</span> make <span class="nb">test</span>
+</pre>
+<ul class="simple">
+<li>or to have a look at the streamlined <a class="reference external" href="https://github.com/Olivier-Boudeville-EDF/Sim-Diasca/blob/main/.github/workflows/erlang-ci.yml#L24">executable procedure</a> on which we rely for continuous integration</li>
+</ul>
 <p>The following public documentation for <strong>Sim-Diasca</strong> version 2.4.2 is available from here:</p>
+<p><span class="raw-html"><center></span></p>
 <table border="1" class="colwidths-given docutils">
 <colgroup>
-<col width="76%" />
-<col width="13%" />
-<col width="11%" />
+<col width="22%" />
+<col width="72%" />
+<col width="3%" />
+<col width="3%" />
 </colgroup>
 <tbody valign="top">
 <tr><td>The <strong>Sim-Diasca Technical Manual</strong></td>
+<td>The richest detailed source of information regarding the engine (except the code itself of course).</td>
 <td><a class="reference external" href="technical-manual/Sim-Diasca-technical-manual-english.html">[html]</a></td>
 <td><a class="reference external" href="technical-manual/Sim-Diasca-technical-manual-english.pdf">[pdf]</a></td>
 </tr>
 <tr><td>The <strong>Sim-Diasca Installation Guide</strong></td>
+<td>A much detailed installation walkthrough, if needed.</td>
 <td><a class="reference external" href="installation-guide/Sim-Diasca-public-installation-guide-english.html">[html]</a></td>
 <td><a class="reference external" href="installation-guide/Sim-Diasca-public-installation-guide-english.pdf">[pdf]</a></td>
 </tr>
 <tr><td>The <strong>Sim-Diasca Modeller Guide</strong></td>
+<td>Hints to better design simulation models.</td>
 <td><a class="reference external" href="modeller-guide/Sim-Diasca-modeller-guide-english.html">[html]</a></td>
 <td><a class="reference external" href="modeller-guide/Sim-Diasca-modeller-guide-english.pdf">[pdf]</a></td>
 </tr>
 <tr><td>The <strong>Sim-Diasca Developer Guide</strong></td>
+<td>General recommendations when developing services offered by the engine (also applicable for model implementation).</td>
 <td><a class="reference external" href="developer-guide/Sim-Diasca-developer-guide-english.html">[html]</a></td>
 <td><a class="reference external" href="developer-guide/Sim-Diasca-developer-guide-english.pdf">[pdf]</a></td>
 </tr>
 <tr><td>The <strong>Sim-Diasca Dataflow HOWTO</strong></td>
+<td>For the very specific use cases where a dataflow paradigm would be more suitable than a multi-agent one.</td>
 <td><a class="reference external" href="dataflow-howto/Sim-Diasca-dataflow-howto-english.html">[html]</a></td>
 <td><a class="reference external" href="dataflow-howto/Sim-Diasca-dataflow-howto-english.pdf">[pdf]</a></td>
 </tr>
 <tr><td>The <strong>Sim-Diasca Coupling HOWTO</strong></td>
+<td>When having to couple third-party models, instead of writing them directly as Sim-Diasca ones.</td>
 <td><a class="reference external" href="coupling-howto/Sim-Diasca-coupling-howto-english.html">[html]</a></td>
 <td><a class="reference external" href="coupling-howto/Sim-Diasca-coupling-howto-english.pdf">[pdf]</a></td>
 </tr>
 </tbody>
 </table>
+<p><span class="raw-html"></center></span></p>
 <p>Seasoned Sim-Diasca users may just bookmark the <a class="reference external" href="technical-manual/Sim-Diasca-technical-manual-english.html#sim-diasca-cheat-sheet">Sim-Diasca Cheat Sheet</a>.</p>
 <p>One may also be interested in the interface of the <a class="reference external" href="https://github.com/Olivier-Boudeville-EDF/Sim-Diasca">public main project</a>  and in its <a class="reference external" href="https://github.com/Olivier-Boudeville-EDF/Sim-Diasca/wiki">wiki</a>.</p>
-<p>The documentation of the lower layers are available from here as well:</p>
+<p>A mirrored documentation of the lower layers used by Sim-Diasca is available from here as well:</p>
+<p><span class="raw-html"><center></span></p>
 <table border="1" class="colwidths-given docutils">
 <colgroup>
-<col width="67%" />
 <col width="18%" />
-<col width="16%" />
+<col width="73%" />
+<col width="4%" />
+<col width="4%" />
 </colgroup>
 <tbody valign="top">
 <tr><td>The <strong>Traces Manual</strong></td>
+<td>To benefit from convenient, distributed traces in order to collect all information of interest from the simulation.</td>
 <td><a class="reference external" href="traces/index.html">[html]</a></td>
 <td><a class="reference external" href="traces/Ceylan-Traces-Layer-technical-manual-english.pdf">[pdf]</a></td>
 </tr>
 <tr><td>The <strong>WOOPER Manual</strong></td>
+<td>So that the model implementation can rely on a suitable object-oriented paradigm.</td>
 <td><a class="reference external" href="wooper/index.html">[html]</a></td>
 <td><a class="reference external" href="wooper/Ceylan-WOOPER-Layer-technical-manual-english.pdf">[pdf]</a></td>
 </tr>
 <tr><td>The <strong>Myriad Manual</strong></td>
+<td>To take advantage of a general-purpose toolbox providing a range of built-in transverse services.</td>
 <td><a class="reference external" href="myriad/index.html">[html]</a></td>
 <td><a class="reference external" href="myriad/Ceylan-Myriad-Layer-technical-manual-english.pdf">[pdf]</a></td>
 </tr>
 </tbody>
 </table>
+<p><span class="raw-html"></center></span></p>
 <p>Seasoned WOOPER users may just bookmark the <a class="reference external" href="wooper/index.html#class-developer-cheat-sheet">WOOPER Cheat Sheet</a>.</p>
+<p>Finally, regarding the overall implementation language, <a class="reference external" href="http://erlang.org">Erlang</a>, one may refer to <a class="reference external" href="https://www.erlang.org/doc/search">its searchable online documentation</a>, including its <a class="reference external" href="https://www.erlang.org/doc/man_index.html">module index</a>.</p>
 <p><span class="raw-html"><center></span></p>
-<p><em>This public overview page for Sim-Diasca version 2.4.2 has been last updated on Tuesday, January 11, 2022.</em></p>
+<p><em>This public overview page for Sim-Diasca version 2.4.2 has been last updated on Thursday, January 13, 2022.</em></p>
 <p><span class="raw-html"></center></span></p>
 </div>
 </body>
