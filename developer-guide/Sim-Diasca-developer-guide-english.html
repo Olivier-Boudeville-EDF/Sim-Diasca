@@ -50,64 +50,64 @@
 <div class="contents topic" id="table-of-contents">
 <p class="topic-title first"><strong>Table of Contents</strong></p>
 <ul class="simple">
-<li><a class="reference internal" href="#sim-diasca-code-conventions" id="id30">Sim-Diasca Code Conventions</a><ul>
-<li><a class="reference internal" href="#foreword" id="id31">Foreword</a></li>
-<li><a class="reference internal" href="#text-conventions" id="id32">Text Conventions</a></li>
-<li><a class="reference internal" href="#general-view-of-the-software-stack" id="id33">General View of the Software Stack</a></li>
-<li><a class="reference internal" href="#erlang-conventions" id="id34">Erlang Conventions</a></li>
-<li><a class="reference internal" href="#myriad-conventions" id="id35">Myriad Conventions</a></li>
-<li><a class="reference internal" href="#wooper-conventions" id="id36">WOOPER Conventions</a></li>
-<li><a class="reference internal" href="#traces-conventions" id="id37">Traces Conventions</a></li>
-<li><a class="reference internal" href="#sim-diasca-conventions" id="id38">Sim-Diasca Conventions</a><ul>
-<li><a class="reference internal" href="#thou-shalt-not-bypass-the-simulation-engine" id="id39">Thou Shalt Not Bypass The Simulation Engine</a><ul>
-<li><a class="reference internal" href="#proper-inter-actor-communication" id="id40">Proper Inter-Actor Communication</a></li>
-<li><a class="reference internal" href="#proper-actor-life-cycle" id="id41">Proper Actor Life-Cycle</a></li>
+<li><a class="reference internal" href="#sim-diasca-code-conventions" id="id29">Sim-Diasca Code Conventions</a><ul>
+<li><a class="reference internal" href="#foreword" id="id30">Foreword</a></li>
+<li><a class="reference internal" href="#text-conventions" id="id31">Text Conventions</a></li>
+<li><a class="reference internal" href="#general-view-of-the-software-stack" id="id32">General View of the Software Stack</a></li>
+<li><a class="reference internal" href="#erlang-conventions" id="id33">Erlang Conventions</a></li>
+<li><a class="reference internal" href="#myriad-conventions" id="id34">Myriad Conventions</a></li>
+<li><a class="reference internal" href="#wooper-conventions" id="id35">WOOPER Conventions</a></li>
+<li><a class="reference internal" href="#traces-conventions" id="id36">Traces Conventions</a></li>
+<li><a class="reference internal" href="#sim-diasca-conventions" id="id37">Sim-Diasca Conventions</a><ul>
+<li><a class="reference internal" href="#thou-shalt-not-bypass-the-simulation-engine" id="id38">Thou Shalt Not Bypass The Simulation Engine</a><ul>
+<li><a class="reference internal" href="#proper-inter-actor-communication" id="id39">Proper Inter-Actor Communication</a></li>
+<li><a class="reference internal" href="#proper-actor-life-cycle" id="id40">Proper Actor Life-Cycle</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#actor-scheduling" id="id42">Actor Scheduling</a><ul>
-<li><a class="reference internal" href="#id12" id="id43">Basics</a></li>
-<li><a class="reference internal" href="#id19" id="id44">Actor Scheduling</a></li>
-<li><a class="reference internal" href="#planning-future-spontaneous-behaviour" id="id45">Planning Future Spontaneous Behaviour</a></li>
+<li><a class="reference internal" href="#actor-scheduling" id="id41">Actor Scheduling</a><ul>
+<li><a class="reference internal" href="#id12" id="id42">Basics</a></li>
+<li><a class="reference internal" href="#id19" id="id43">Actor Scheduling</a></li>
+<li><a class="reference internal" href="#planning-future-spontaneous-behaviour" id="id44">Planning Future Spontaneous Behaviour</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#data-management" id="id46">Data Management</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a class="reference internal" href="#sim-diasca-implementation-spotlights" id="id47">Sim-Diasca Implementation Spotlights</a><ul>
-<li><a class="reference internal" href="#about-erlang-nodes-and-simulation-identifiers" id="id48">About Erlang Nodes and Simulation Identifiers</a><ul>
-<li><a class="reference internal" href="#how-many-erlang-nodes-are-involved-in-a-simulation" id="id49">How Many Erlang Nodes Are Involved in a Simulation?</a></li>
-<li><a class="reference internal" href="#how-are-launched-the-erlang-nodes" id="id50">How Are Launched the Erlang nodes?</a></li>
-<li><a class="reference internal" href="#what-is-the-simulation-instance-identifier" id="id51">What is the <em>Simulation Instance Identifier</em>?</a></li>
-<li><a class="reference internal" href="#how-erlang-nodes-are-named" id="id52">How Erlang nodes are named?</a></li>
-<li><a class="reference internal" href="#how-is-it-ensured-that-no-two-simulations-can-interfere" id="id53">How Is It Ensured that No Two Simulations Can Interfere?</a></li>
+<li><a class="reference internal" href="#data-management" id="id45">Data Management</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#sim-diasca-technical-gotchas" id="id54">Sim-Diasca Technical Gotchas</a><ul>
-<li><a class="reference internal" href="#the-code-was-updated-yet-seems-to-linger" id="id55">The Code Was Updated, Yet Seems To Linger</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#developer-hints" id="id56">Developer Hints</a><ul>
-<li><a class="reference internal" href="#choosing-the-right-datastructures" id="id57">Choosing The Right Datastructures</a></li>
-<li><a class="reference internal" href="#running-bullet-proof-experiments" id="id58">Running Bullet-Proof Experiments</a></li>
-<li><a class="reference internal" href="#using-type-specifications-with-sim-diasca" id="id59">Using Type Specifications With Sim-Diasca</a><ul>
-<li><a class="reference internal" href="#type-specifications-what-for" id="id60">Type Specifications: What For?</a></li>
-<li><a class="reference internal" href="#type-specifications-how" id="id61">Type Specifications: How?</a><ul>
-<li><a class="reference internal" href="#prerequisites" id="id62">Prerequisites</a></li>
-<li><a class="reference internal" href="#expressing-type-specifications" id="id63">Expressing Type Specifications</a></li>
-<li><a class="reference internal" href="#checking-type-specifications" id="id64">Checking Type Specifications</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#references" id="id65">References</a></li>
+<li><a class="reference internal" href="#sim-diasca-implementation-spotlights" id="id46">Sim-Diasca Implementation Spotlights</a><ul>
+<li><a class="reference internal" href="#about-erlang-nodes-and-simulation-identifiers" id="id47">About Erlang Nodes and Simulation Identifiers</a><ul>
+<li><a class="reference internal" href="#how-many-erlang-nodes-are-involved-in-a-simulation" id="id48">How Many Erlang Nodes Are Involved in a Simulation?</a></li>
+<li><a class="reference internal" href="#how-are-launched-the-erlang-nodes" id="id49">How Are Launched the Erlang nodes?</a></li>
+<li><a class="reference internal" href="#what-is-the-simulation-instance-identifier" id="id50">What is the <em>Simulation Instance Identifier</em>?</a></li>
+<li><a class="reference internal" href="#how-erlang-nodes-are-named" id="id51">How Erlang nodes are named?</a></li>
+<li><a class="reference internal" href="#how-is-it-ensured-that-no-two-simulations-can-interfere" id="id52">How Is It Ensured that No Two Simulations Can Interfere?</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id29" id="id66">Credits</a></li>
-<li><a class="reference internal" href="#what-to-do-next" id="id67">What To Do Next?</a></li>
+<li><a class="reference internal" href="#sim-diasca-technical-gotchas" id="id53">Sim-Diasca Technical Gotchas</a><ul>
+<li><a class="reference internal" href="#the-code-was-updated-yet-seems-to-linger" id="id54">The Code Was Updated, Yet Seems To Linger</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#developer-hints" id="id55">Developer Hints</a><ul>
+<li><a class="reference internal" href="#choosing-the-right-datastructures" id="id56">Choosing The Right Datastructures</a></li>
+<li><a class="reference internal" href="#running-bullet-proof-experiments" id="id57">Running Bullet-Proof Experiments</a></li>
+<li><a class="reference internal" href="#using-type-specifications-with-sim-diasca" id="id58">Using Type Specifications With Sim-Diasca</a><ul>
+<li><a class="reference internal" href="#type-specifications-what-for" id="id59">Type Specifications: What For?</a></li>
+<li><a class="reference internal" href="#type-specifications-how" id="id60">Type Specifications: How?</a><ul>
+<li><a class="reference internal" href="#prerequisites" id="id61">Prerequisites</a></li>
+<li><a class="reference internal" href="#expressing-type-specifications" id="id62">Expressing Type Specifications</a></li>
+<li><a class="reference internal" href="#checking-type-specifications" id="id63">Checking Type Specifications</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#references" id="id64">References</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id28" id="id65">Credits</a></li>
+<li><a class="reference internal" href="#what-to-do-next" id="id66">What To Do Next?</a></li>
 </ul>
 </div>
 <p></p>
@@ -118,9 +118,9 @@
 <p class="last">As we believe that these conventions may benefit to third-party users, we share them as well.</p>
 </div>
 <div class="section" id="sim-diasca-code-conventions">
-<h1><a class="toc-backref" href="#id30">Sim-Diasca Code Conventions</a></h1>
+<h1><a class="toc-backref" href="#id29">Sim-Diasca Code Conventions</a></h1>
 <div class="section" id="foreword">
-<h2><a class="toc-backref" href="#id31">Foreword</a></h2>
+<h2><a class="toc-backref" href="#id30">Foreword</a></h2>
 <p>At all levels of the technical architecture, we tried to enforce a few conventions, that are detailed below.</p>
 <p>Some of them are necessary, others are mere good practices, a few are arbitrary (notably in terms of style), but we believe that, for the sake of clarity and homogeneity, all of them should be respected in the code of the Sim-Diasca stack, and preferably also in code using it (typically models, tools, etc.).</p>
 <p><span class="raw-html"><center><img src="xkcd-code_quality.png"></img></center></span>
@@ -131,7 +131,7 @@
 </p>
 </div>
 <div class="section" id="text-conventions">
-<h2><a class="toc-backref" href="#id32">Text Conventions</a></h2>
+<h2><a class="toc-backref" href="#id31">Text Conventions</a></h2>
 <p>We now recommend to directly stick to the <a class="reference external" href="http://myriad.esperide.org/#myriad-main-conventions">Myriad ones</a> <a class="reference external" href="https://olivier-boudeville.github.io/Ceylan-Myriad/#myriad-main-conventions">[mirror]</a>.</p>
 <p><span class="raw-html"><center><img src="xkcd-real_programmers.png"></img></center></span>
 </p>
@@ -143,7 +143,7 @@
 <p></p>
 </div>
 <div class="section" id="general-view-of-the-software-stack">
-<h2><a class="toc-backref" href="#id33">General View of the Software Stack</a></h2>
+<h2><a class="toc-backref" href="#id32">General View of the Software Stack</a></h2>
 <p>We see Sim-Diasca as a stack of layers, so that a given layer only depends on the ones below it, and never from the ones above.</p>
 <p>Top-to-bottom, we have:</p>
 <p><span class="raw-html"><center></span></p>
@@ -195,7 +195,7 @@
 <p></p>
 </div>
 <div class="section" id="erlang-conventions">
-<h2><a class="toc-backref" href="#id34">Erlang Conventions</a></h2>
+<h2><a class="toc-backref" href="#id33">Erlang Conventions</a></h2>
 <p><span class="raw-html"><center><img src="xkcd-parenthesis.png"></img></center></span>
 </p>
 <p>The most obvious conventions are:</p>
@@ -214,7 +214,6 @@
 <li><strong>spacing homogeneity</strong> across Sim-Diasca source files should be enforced; for example three blank lines should exist between two function definitions, one between the clauses of any given function (possibly two in case of longer clauses), arguments should be separated by spaces (ex: <tt class="docutils literal">f( X ) <span class="pre">-&gt;</span> ...</tt>, not <tt class="docutils literal">f(X) <span class="pre">-&gt;</span> ...</tt>), especially if they are a bit complex (<tt class="docutils literal">f( <span class="pre">A={U,V},</span> B, _C ) <span class="pre">-&gt;</span> ...</tt>, not <tt class="docutils literal"><span class="pre">f(A={U,V},B,_C)</span> <span class="pre">-&gt;</span> ...</tt>)</li>
 <li>see the <a class="reference internal" href="#using-type-specifications-with-sim-diasca">Using Type Specifications With Sim-Diasca</a> section for <strong>type-related conventions</strong>; at least all exported functions shall have a <tt class="docutils literal"><span class="pre">-spec</span></tt> declaration; if an actual type is referenced more than once (notably in a given module), a specific user-defined type shall be defined; types shall be defined in &quot;semantic&quot; terms rather than on technical ones (ex: <tt class="docutils literal"><span class="pre">-type</span> temperature() :: ...</tt> than <tt class="docutils literal">float()</tt>); developers may refer to, or enrich, <tt class="docutils literal">myriad/src/utils/unit_utils.erl</tt> for that</li>
 <li>the <strong>latest stable version of Erlang</strong> should be used, preferably built thanks to our <tt class="docutils literal"><span class="pre">myriad/conf/install-erlang.sh</span></tt> script</li>
-<li>the official <em>Programming Rules and Conventions</em> should be enforced, as defined <a class="reference external" href="http://www.erlang.se/doc/programming_rules.shtml">here</a></li>
 </ul>
 <p><span class="raw-html"><center><img src="xkcd-functional.png"></img></center></span>
 </p>
@@ -269,7 +268,7 @@ Of course we cannot stress enough that securing a sufficient code quality is ess
 <p></p>
 </div>
 <div class="section" id="myriad-conventions">
-<h2><a class="toc-backref" href="#id35">Myriad Conventions</a></h2>
+<h2><a class="toc-backref" href="#id34">Myriad Conventions</a></h2>
 <p>The general goal is to collect recurring generic lower-level patterns and solutions in that layer.</p>
 <p>When an helper mechanism is already available in <tt class="docutils literal">Myriad</tt>, it should be used instead of being defined multiple times in the software stack.</p>
 <p>Reciprocally, when a well-defined generic sequence of instructions is used more than once, it should be integrated (commented and tested) in that <tt class="docutils literal">Myriad</tt> layer.</p>
@@ -289,7 +288,7 @@ Of course we cannot stress enough that securing a sufficient code quality is ess
 </table>
 </div>
 <div class="section" id="wooper-conventions">
-<h2><a class="toc-backref" href="#id36">WOOPER Conventions</a></h2>
+<h2><a class="toc-backref" href="#id35">WOOPER Conventions</a></h2>
 <p>One should respect the WOOPER conventions (please refer to the <a class="reference external" href="http://wooper.esperide.org/">WOOPER</a> documentation).</p>
 <p>For example,  <tt class="docutils literal">oneway</tt>, <tt class="docutils literal">request</tt> or <tt class="docutils literal">helper function</tt> (possibly with qualifiers like <tt class="docutils literal">const</tt>) should be specified in each method header.</p>
 <p>WOOPER type conventions shall be used as well, for example:</p>
@@ -319,7 +318,7 @@ Of course we cannot stress enough that securing a sufficient code quality is ess
 <p></p>
 </div>
 <div class="section" id="traces-conventions">
-<h2><a class="toc-backref" href="#id37">Traces Conventions</a></h2>
+<h2><a class="toc-backref" href="#id36">Traces Conventions</a></h2>
 <p>So that log messages can be kept track of over time, a distributed trace system is provided, with relevant components: trace emitter, listener, supervisor, aggregator, etc.</p>
 <p>At implementation time, one just has to choose:</p>
 <ul class="simple">
@@ -352,16 +351,16 @@ $ make my_case_run <span class="nv">$BATCH</span>
 <p></p>
 </div>
 <div class="section" id="sim-diasca-conventions">
-<h2><a class="toc-backref" href="#id38">Sim-Diasca Conventions</a></h2>
+<h2><a class="toc-backref" href="#id37">Sim-Diasca Conventions</a></h2>
 <p>In this section the conventions to be respected with regard to Sim-Diasca are detailed.</p>
 <div class="section" id="thou-shalt-not-bypass-the-simulation-engine">
-<h3><a class="toc-backref" href="#id39">Thou Shalt Not Bypass The Simulation Engine</a></h3>
+<h3><a class="toc-backref" href="#id38">Thou Shalt Not Bypass The Simulation Engine</a></h3>
 <p>The Sim-Diasca services should be used whenever applicable. Notably, bypassing the simulation mechanisms (for actor creation, communication, deletion, etc.) is absolutely prohibited, as essential properties, like the respect of causality, would then be lost.</p>
 <p>Such a short-time &quot;simplification&quot; would be considered still more harmful than others like the use of the <tt class="docutils literal">goto</tt> statement in <tt class="docutils literal">C</tt>:</p>
 <p><span class="raw-html"><center><img src="xkcd-goto.png"></img></center></span>
 </p>
 <div class="section" id="proper-inter-actor-communication">
-<h4><a class="toc-backref" href="#id40">Proper Inter-Actor Communication</a></h4>
+<h4><a class="toc-backref" href="#id39">Proper Inter-Actor Communication</a></h4>
 <p>To implement the communication between two actors, neither plain Erlang messages nor arbitrary WOOPER messages can be used: as we aim to develop a distributed <em>simulation</em>, as opposed to a mere distributed <em>application</em>, we have to make use of the Sim-Diasca mechanisms for automatic inter-actor message reordering.</p>
 <p>This means that, for inter-actor communication purpose, <em>only</em> the following helper functions shall be used:</p>
 <ul class="simple">
@@ -371,7 +370,7 @@ $ make my_case_run <span class="nv">$BATCH</span>
 <p>Of course one may rely on higher-level specialization layers, making use of Sim-Diasca but providing another API. The point is that inter-actor messages should be ultimately managed by Sim-Diasca, rather than being sent directly with the <tt class="docutils literal">!</tt> operator provided by Erlang.</p>
 </div>
 <div class="section" id="proper-actor-life-cycle">
-<h4><a class="toc-backref" href="#id41">Proper Actor Life-Cycle</a></h4>
+<h4><a class="toc-backref" href="#id40">Proper Actor Life-Cycle</a></h4>
 <p>Very similarly, life-cycle of actors should be ultimately managed by the engine, not directly by the developer: the creation and termination of actors must respect the conventions detailed below.</p>
 <div class="section" id="proper-actor-creation">
 <h5>Proper Actor Creation</h5>
@@ -620,9 +619,9 @@ triggered termination</td>
 </div>
 </div>
 <div class="section" id="actor-scheduling">
-<h3><a class="toc-backref" href="#id42">Actor Scheduling</a></h3>
+<h3><a class="toc-backref" href="#id41">Actor Scheduling</a></h3>
 <div class="section" id="id12">
-<h4><a class="toc-backref" href="#id43">Basics</a></h4>
+<h4><a class="toc-backref" href="#id42">Basics</a></h4>
 <div class="section" id="simulation-time-of-ticks-and-diascas">
 <h5>Simulation Time: Of Ticks and Diascas</h5>
 <p>Simulation time is fully decorrelated from wall-clock time, and is controlled by the time manager(s): the <tt class="docutils literal">fundamental frequency</tt> of the simulation (ex: 50Hz) leads to a unit time-step (a.k.a. <tt class="docutils literal">simulation tick</tt>) to be defined (ex: 20ms, in simulation time), each time-step lasting, in wall-clock time, for any duration needed so that all relevant actors can be evaluated for that tick.</p>
@@ -682,7 +681,7 @@ triggered termination</td>
 </div>
 </div>
 <div class="section" id="id19">
-<h4><a class="toc-backref" href="#id44">Actor Scheduling</a></h4>
+<h4><a class="toc-backref" href="#id43">Actor Scheduling</a></h4>
 <p>The basic granularity in virtual time is the tick, further split on as many diascas as needed (logical moments).</p>
 <p>The engine is able to automatically:</p>
 <ul class="simple">
@@ -710,7 +709,7 @@ triggered termination</td>
 <p>Thus the developer just has to define the various actor oneways that the model should support (i.e. the ones that other actors could trigger thanks to an actor message), and the spontaneous behaviour of that model (i.e. its <tt class="docutils literal">actSpontaneous/1</tt> oneway). Then the simulation engine takes care of the rest.</p>
 </div>
 <div class="section" id="planning-future-spontaneous-behaviour">
-<h4><a class="toc-backref" href="#id45">Planning Future Spontaneous Behaviour</a></h4>
+<h4><a class="toc-backref" href="#id44">Planning Future Spontaneous Behaviour</a></h4>
 <p>Each actor is able to specify, while being scheduled for any reason (an actor message having been received, and/or a spontaneous action taking place), at least one additional tick at which it should be spontaneously scheduled later. An actor can be scheduled for a spontaneous action up to once per tick.</p>
 <p>To do so, it can rely on a very simple API, defined in <tt class="docutils literal">class_Actor</tt>:</p>
 <ul class="simple">
@@ -730,7 +729,7 @@ triggered termination</td>
 </div>
 </div>
 <div class="section" id="data-management">
-<h3><a class="toc-backref" href="#id46">Data Management</a></h3>
+<h3><a class="toc-backref" href="#id45">Data Management</a></h3>
 <p>In a distributed context, on each computing host, the current working directory of the simulation is set automatically to a temporary root directory, which will be appropriately cleaned-up and re-created.</p>
 <p>This root directory is in <tt class="docutils literal">/tmp</tt>, to store all live data, deployed for the simulation or produced by it.</p>
 <p>Its name starts with <tt class="docutils literal"><span class="pre">sim-diasca</span></tt> (to prevent clashes with other applications), then continues with the name of the simulation case (so that multiple cases can run in the same context), then finishes with the user name (so that multiple users can run the same cases on the same hosts with no interference).</p>
@@ -772,18 +771,18 @@ triggered termination</td>
 </div>
 </div>
 <div class="section" id="sim-diasca-implementation-spotlights">
-<h1><a class="toc-backref" href="#id47">Sim-Diasca Implementation Spotlights</a></h1>
+<h1><a class="toc-backref" href="#id46">Sim-Diasca Implementation Spotlights</a></h1>
 <p>In this section, various technical pieces of information (not of interest for users, but relevant for engine maintainers) will be discussed regarding the <em>mode of operation</em> of Sim-Diasca.</p>
 <div class="section" id="about-erlang-nodes-and-simulation-identifiers">
-<h2><a class="toc-backref" href="#id48">About Erlang Nodes and Simulation Identifiers</a></h2>
+<h2><a class="toc-backref" href="#id47">About Erlang Nodes and Simulation Identifiers</a></h2>
 <div class="section" id="how-many-erlang-nodes-are-involved-in-a-simulation">
-<h3><a class="toc-backref" href="#id49">How Many Erlang Nodes Are Involved in a Simulation?</a></h3>
+<h3><a class="toc-backref" href="#id48">How Many Erlang Nodes Are Involved in a Simulation?</a></h3>
 <p>By default (unless the case specifies otherwise), only the local host is involved, yet there are two VMs (Erlang virtual machines) running then: the one of the user node, and the one of a (local) computing node.</p>
 <p>In the general case, distributed simulations running on <tt class="docutils literal">N</tt> hosts will involve by default <tt class="docutils literal">N+1</tt> nodes: one user node (on the user host) and <tt class="docutils literal">N</tt> computing nodes (including one on the user host).</p>
 <p>See the <tt class="docutils literal">computing_hosts</tt> field in the <tt class="docutils literal">deployment_settings</tt> record (defined in <tt class="docutils literal">class_DeploymentManager.hrl</tt>) for further options.</p>
 </div>
 <div class="section" id="how-are-launched-the-erlang-nodes">
-<h3><a class="toc-backref" href="#id50">How Are Launched the Erlang nodes?</a></h3>
+<h3><a class="toc-backref" href="#id49">How Are Launched the Erlang nodes?</a></h3>
 <p>By default, <a class="reference external" href="http://erlang.org/doc/reference_manual/distributed.html">long names</a> are used for all Sim-Diasca related nodes.</p>
 <p>To avoid any possible cross-talk, we have to ensure that a simulation (live or post-mortem) remains fully self-contained and immune to interferences (notably from other simulations that would be run in parallel or afterwards, i.e. both at runtime and regarding the on-disk generated information).</p>
 <p>Erlang ensures (thanks to EPMD) that, on any given host, regardless of the Erlang installations, of their version, of the UNIX users involved, no two nodes can bear the same (long) name (otherwise the second node will fail to launch).</p>
@@ -801,7 +800,7 @@ Sim-Diasca-soda_deterministic_case-john-43416933-computing-node-on-volt
 </pre>
 </div>
 <div class="section" id="what-is-the-simulation-instance-identifier">
-<span id="simulation-instance-identifier"></span><h3><a class="toc-backref" href="#id51">What is the <em>Simulation Instance Identifier</em>?</a></h3>
+<span id="simulation-instance-identifier"></span><h3><a class="toc-backref" href="#id50">What is the <em>Simulation Instance Identifier</em>?</a></h3>
 <p>This information, whose shorthand is <tt class="docutils literal">SII</tt>, is a string made of alphanumerical characters, dashes (<tt class="docutils literal">-</tt>) and underscores (<tt class="docutils literal">_</tt>), and is meant to guarantee the uniqueness of a given instance of a simulation (i.e. no two simulations, run simultaneously or not, should ever bear the same SII).</p>
 <p>By default the SII is automatically generated and managed by Sim-Diasca. It is based on a <a class="reference external" href="https://en.wikipedia.org/wiki/Universally_unique_identifier">UUID</a> (<em>Universally unique identifier</em>) determined at start-up <a class="footnote-reference" href="#id25" id="id24">[11]</a>. An example of a UUID is <tt class="docutils literal"><span class="pre">4f8fbacd-93d2-487d-86ff-23f75339c191</span></tt>.</p>
 <table class="docutils footnote" frame="void" id="id25" rules="none">
@@ -829,12 +828,12 @@ $ make my_foobar_case
 </ul>
 </div>
 <div class="section" id="how-erlang-nodes-are-named">
-<span id="node-naming"></span><h3><a class="toc-backref" href="#id52">How Erlang nodes are named?</a></h3>
+<span id="node-naming"></span><h3><a class="toc-backref" href="#id51">How Erlang nodes are named?</a></h3>
 <p>So the SII is either user-supplied or determined at runtime, by the engine itself. As a result, the name of the user node cannot be determined statically in the general case (the node must run so that it may draw its UUID then determine its SII).</p>
 <p>Knowing that additionally a node created as a distributed one (here with the &quot;long names&quot; command-line option) cannot be renamed (<tt class="docutils literal">net_kernel:stop/0</tt> not allowed), the only relevant design is, from the Sim-Diasca layer onward (lower ones relying on long names) to start the user-node in non-distributed mode (thanks to the <tt class="docutils literal"><span class="pre">--nn</span></tt> option of <tt class="docutils literal"><span class="pre">launch-erl.sh</span></tt>), establish the name it shall bear, and then only execute <tt class="docutils literal">net_kernel:start/1</tt>.</p>
 </div>
 <div class="section" id="how-is-it-ensured-that-no-two-simulations-can-interfere">
-<h3><a class="toc-backref" href="#id53">How Is It Ensured that No Two Simulations Can Interfere?</a></h3>
+<h3><a class="toc-backref" href="#id52">How Is It Ensured that No Two Simulations Can Interfere?</a></h3>
 <p>The naming of nodes is a first-level security, which should prevent most accidental collisions.</p>
 <p>If ever all other safety measures failed for any reason, a node naming clash will happen, yet it will be detected and will lead to making the clashing simulations fail, so no silent failure shall be feared.</p>
 <p>This protection is obtained thanks to Erlang cookies using transparently the UUID mentioned in the previous section (UUIDs will be used in all cases for cookies, even if a third-party SII is specified - for an increased safety, should clashing SIIs be provided by mistake).</p>
@@ -843,10 +842,10 @@ $ make my_foobar_case
 </div>
 </div>
 <div class="section" id="sim-diasca-technical-gotchas">
-<h1><a class="toc-backref" href="#id54">Sim-Diasca Technical Gotchas</a></h1>
+<h1><a class="toc-backref" href="#id53">Sim-Diasca Technical Gotchas</a></h1>
 <p>We mention here the main technical sources of puzzlement that may affect the unwary developer.</p>
 <div class="section" id="the-code-was-updated-yet-seems-to-linger">
-<h2><a class="toc-backref" href="#id55">The Code Was Updated, Yet Seems To Linger</a></h2>
+<h2><a class="toc-backref" href="#id54">The Code Was Updated, Yet Seems To Linger</a></h2>
 <p>This may happen <strong>if the code source has been changed yet has not been recompiled before launching a simulation</strong>: Sim-Diasca, once executed, will attempt to compile it, and hopefully succeed.</p>
 <p>Then the corresponding BEAM modules will be available in their newer version and, when they will be referenced for the first time, they will be loaded - thus in their newer form.</p>
 <p>However, some modules may have already been loaded by the engine (for its internal mode of operation), <em>before</em> it triggered the compilation update.</p>
@@ -863,9 +862,9 @@ $ make my_foobar_case
 </div>
 </div>
 <div class="section" id="developer-hints">
-<h1><a class="toc-backref" href="#id56">Developer Hints</a></h1>
+<h1><a class="toc-backref" href="#id55">Developer Hints</a></h1>
 <div class="section" id="choosing-the-right-datastructures">
-<h2><a class="toc-backref" href="#id57">Choosing The Right Datastructures</a></h2>
+<h2><a class="toc-backref" href="#id56">Choosing The Right Datastructures</a></h2>
 <p>Writing models involves a lot of algorithmic design decisions, and many of them deal with data-structures.</p>
 <p><span class="raw-html"><center><img src="xkcd-set_theory.png"></img></center></span>
 </p>
@@ -887,7 +886,7 @@ $ make my_foobar_case
 </p>
 </div>
 <div class="section" id="running-bullet-proof-experiments">
-<h2><a class="toc-backref" href="#id58">Running Bullet-Proof Experiments</a></h2>
+<h2><a class="toc-backref" href="#id57">Running Bullet-Proof Experiments</a></h2>
 <p>Making use of large-scale HPC infrastructures is not straightforward: they often behave like black boxes, and because of the number and specificities of the hardware and software elements that are involved, they tend to exhibit unanticipated behaviours.</p>
 <p>Here is a list of recommended steps to go through, in order to have a better chance of making good use of these resources:</p>
 <ol class="arabic">
@@ -934,9 +933,9 @@ sim-diasca/conf/clusters/sim-diasca-launcher.sh --debug
 <p></p>
 </div>
 <div class="section" id="using-type-specifications-with-sim-diasca">
-<h2><a class="toc-backref" href="#id59">Using Type Specifications With Sim-Diasca</a></h2>
+<h2><a class="toc-backref" href="#id58">Using Type Specifications With Sim-Diasca</a></h2>
 <div class="section" id="type-specifications-what-for">
-<h3><a class="toc-backref" href="#id60">Type Specifications: What For?</a></h3>
+<h3><a class="toc-backref" href="#id59">Type Specifications: What For?</a></h3>
 <p>Adding a type specification (shorthand: <em>spec</em>) to the source code of a function means specifying what are its intended input and output parameters, in terms of number and types. This can be applied to records as well.</p>
 <p>Once all Sim-Diasca code (including prerequisites, like <tt class="docutils literal">Myriad</tt>, <tt class="docutils literal">WOOPER</tt> and <tt class="docutils literal">Traces</tt>) and the one of user applications based on it (ex: <tt class="docutils literal"><span class="pre">Mock-Simulators</span></tt> or any actual simulator) have been instrumented with type specifications (i.e. when all exported functions and records of all modules have a proper spec), then:</p>
 <ul class="simple">
@@ -946,9 +945,9 @@ sim-diasca/conf/clusters/sim-diasca-launcher.sh --debug
 <p>Some versions of Sim-Diasca are referenced in <a class="reference external" href="http://dialyzer.softlab.ntua.gr/apps/#Sim-Diasca-2-0-10">Dialyzer's application repository</a>.</p>
 </div>
 <div class="section" id="type-specifications-how">
-<h3><a class="toc-backref" href="#id61">Type Specifications: How?</a></h3>
+<h3><a class="toc-backref" href="#id60">Type Specifications: How?</a></h3>
 <div class="section" id="prerequisites">
-<h4><a class="toc-backref" href="#id62">Prerequisites</a></h4>
+<h4><a class="toc-backref" href="#id61">Prerequisites</a></h4>
 <div class="section" id="taking-care-of-erlang-otp">
 <h5>Taking Care of Erlang/OTP</h5>
 <p>First of all, type information must have been already extracted from the Erlang/OTP files of the install that will be used, and stored in a PLT (for <em>Persistent Lookup Table</em>) file for later-reuse (this is a preprocessing stage). Such a file is preferably created one time for all for each Erlang environment being used. Therefore a PLT file is better produced as the last step of an Erlang installation (see the <tt class="docutils literal"><span class="pre">--generate-plt</span></tt> option of our <tt class="docutils literal"><span class="pre">install-erlang.sh</span></tt> script, which streamlines it). This operation is rather long (ex: one hour and a half).</p>
@@ -971,7 +970,7 @@ $ list-available-types.sh <span class="p">|</span> tee declared-types-in-Erlang-
 </div>
 </div>
 <div class="section" id="expressing-type-specifications">
-<h4><a class="toc-backref" href="#id63">Expressing Type Specifications</a></h4>
+<h4><a class="toc-backref" href="#id62">Expressing Type Specifications</a></h4>
 <p>The complete syntax is described <a class="reference external" href="http://erlang.org/doc/reference_manual/typespec.html#id74368">here</a>. This will be the main reference to be used and kept ready when writing type specs.</p>
 <p>Following conventions are to respect:</p>
 <ul class="simple">
@@ -995,7 +994,7 @@ $ list-available-types.sh <span class="p">|</span> tee declared-types-in-Erlang-
 </div>
 </div>
 <div class="section" id="checking-type-specifications">
-<h4><a class="toc-backref" href="#id64">Checking Type Specifications</a></h4>
+<h4><a class="toc-backref" href="#id63">Checking Type Specifications</a></h4>
 <p>In the context of each layer, one may routinely run:</p>
 <pre class="code bash literal-block">
 $ make clean all generate-local-plt
@@ -1031,7 +1030,7 @@ Checking module <span class="s1">'bar.beam'</span> against relevant PLT
 </div>
 </div>
 <div class="section" id="references">
-<h3><a class="toc-backref" href="#id65">References</a></h3>
+<h3><a class="toc-backref" href="#id64">References</a></h3>
 <ul class="simple">
 <li><a class="reference external" href="http://www.it.uu.se/research/group/hipe/dialyzer">Dialyzer homepage</a></li>
 <li><a class="reference external" href="http://www.ejabberd.im/dialyzer">a useful Dialyzer practical guide</a></li>
@@ -1043,13 +1042,13 @@ Checking module <span class="s1">'bar.beam'</span> against relevant PLT
 </div>
 </div>
 </div>
-<div class="section" id="id29">
-<span id="credits"></span><h1><a class="toc-backref" href="#id66">Credits</a></h1>
+<div class="section" id="id28">
+<span id="credits"></span><h1><a class="toc-backref" href="#id65">Credits</a></h1>
 <p>Special thanks to <strong>Randall Munroe</strong> who is the author of all the comic strips that enliven this documentation, and who kindly allowed their use in this material.</p>
 <p>See his <a class="reference external" href="http://xkcd.com/">XKCD</a> website for all information, including for all his delightful other strips.</p>
 </div>
 <div class="section" id="what-to-do-next">
-<h1><a class="toc-backref" href="#id67">What To Do Next?</a></h1>
+<h1><a class="toc-backref" href="#id66">What To Do Next?</a></h1>
 <p>Congratulations, you reached the end of this developer guide!</p>
 <p><span class="raw-html"><center><img src="xkcd-anti_mind_virus.png"></img></center></span>
 </p>

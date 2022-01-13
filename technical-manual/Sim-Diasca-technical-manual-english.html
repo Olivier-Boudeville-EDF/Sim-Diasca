@@ -871,7 +871,7 @@ arise (ex: faulty model).</td>
 <p>Uncoupling as much as possible models from implementations allows to reduce the dependency on a specific set of simulation tools, even though inevitably constraints remain.</p>
 <p>In the case of the AMM project, two completely different simulation environments were developed, based on a common view of the system:</p>
 <ul class="simple">
-<li><strong>AMM-Jade</strong>, making use of the <a class="reference external" href="http://jade.tilab.com/">Jade</a> multi-agent system, for fast prototyping purposes</li>
+<li><strong>AMM-Jade</strong>, making use of the <a class="reference external" href="https://jade.tilab.com/">Jade</a> multi-agent system, for fast prototyping purposes</li>
 <li><strong>Sim-Diasca</strong>, discussed here, making use of <a class="reference external" href="http://www.erlang.org/">Erlang</a> and of various custom-made layers, for finer modelling and HPC simulation purposes</li>
 </ul>
 <p>These two threads of activity did not share any code but had a common approach to modelling.</p>
@@ -880,7 +880,7 @@ arise (ex: faulty model).</td>
 <p>A model can be seen roughly as a class in object-oriented programming (OOP).</p>
 <p>Then each particular element of the simulation - say, a given meter - is an instance of a model - say, the <tt class="docutils literal">AMM Meter</tt> model.</p>
 <p>In agent-based simulations like the ones described here, all instances communicate <em>only</em> by message passing, i.e. shared (global) variables are not allowed. Added to code that is free from side-effects, seamless distribution of the processing becomes possible.</p>
-<p>Unlike OOP though, the instances are not only made of a state and of code operating on them (methods): each and every instance also has its own thread of execution. All instances live their life concurrently, independently from the others. This is the concept of <a class="reference external" href="http://en.wikipedia.org/wiki/Intelligent_agent/">agents</a>.</p>
+<p>Unlike OOP though, the instances are not only made of a state and of code operating on them (methods): each and every instance also has its own thread of execution. All instances live their life concurrently, independently from the others. This is the concept of <a class="reference external" href="http://en.wikipedia.org/wiki/Intelligent_agent">agents</a>.</p>
 <p>Relying on them is particularly appropriate here, as the reality we want to simulate is itself concurrent: in real life, the behaviour of all meters is concurrent indeed. Thus using concurrent software is a way of bridging the semantic gap between the real elements and their simulated counterparts, so that models can be expressed more easily and executed more efficiently.</p>
 <p>Besides, these agents have to follow some conventions, some technical rules, to ensure that the aforementioned list of simulation properties can be met.</p>
 <p>We finally call such a well-behaving agent a <em>simulation actor</em>, or simply an <em>actor</em>.
@@ -1879,7 +1879,7 @@ Sim-Diasca_My_Case-on-2015-12-10-at-10h-05m-59s-by-boudevil-1f793a6ba507
 <li>a finer pattern-based selection: only results whose name matches <strong>at least one targeted pattern</strong>, and <strong>none of the blacklisted patterns</strong>, are to be selected (most general case)</li>
 </ul>
 <p>Patterns are to be expressed according to the <em>Perl Compatible Regular Expressions</em> conventions, or <tt class="docutils literal">PCRE</tt> for short.</p>
-<p>For more information on the pattern format, see following <a class="reference external" href="http://www.bitcetera.com/page_attachments/0000/0030/regex_in_a_nutshell.pdf">cheat sheet</a> and the <a class="reference external" href="http://erlang.org/doc/man/re.html">re module</a>.</p>
+<p>For more information on the pattern format, see the <a class="reference external" href="http://erlang.org/doc/man/re.html">re module</a>.</p>
 <p><span class="raw-html"><center><img src="xkcd-perl_problems.png" id="responsive-image-medium"></img></center></span>
 </p>
 <p>The detailed supported syntax is specified in the <tt class="docutils literal"><span class="pre">sim-diasca/src/core/src/scheduling/class_TimeManager.hrl</span></tt> header file; see the <tt class="docutils literal">result_specification</tt> field of the <tt class="docutils literal">simulation_settings</tt> record. Examples can be found in the cases available in the <tt class="docutils literal"><span class="pre">mock-simulators</span></tt> directory.</p>
@@ -2149,7 +2149,7 @@ $ <span class="k">for</span> m in <span class="nv">$HOSTS</span> <span class="p"
 </pre>
 <p>So the path must be specified at the <em>beginning</em> of the file, rather than later.</p>
 <p>Simulations can then run on the user host and the 10 additional ones.</p>
-<p>Then their failure can be simulated from the command-line, using tools provided by the vendor of the virtual infrastructure (ex: <tt class="docutils literal">VBoxManage controlvm</tt> with <a class="reference external" href="https://www.virtualbox.org/">VirtualBox</a>, with <a class="reference external" href="http://vmware.com/info?id=1126">VMWare vSphere command-line interface</a>, etc.) or UNIX brutal kills through SSH.</p>
+<p>Then their failure can be simulated from the command-line, using tools provided by the vendor of the virtual infrastructure (ex: <tt class="docutils literal">VBoxManage controlvm</tt> with <a class="reference external" href="https://www.virtualbox.org/">VirtualBox</a>, with VMWare vSphere command-line interface, etc.) or UNIX brutal kills through SSH.</p>
 <p>Of course once the initial testing and troubleshooting has been done thanks to this setting, real-life situations (involving notably network links to be unplugged at random moments while a simulation is running) must be reproduced.</p>
 <p>As sneaking into an HPC control room in order to perform selective sabotage on the relevant cables is not really an option, such a testing is better be done on a simple ad-hoc set of networked computers.</p>
 </div>
@@ -2188,7 +2188,7 @@ $ <span class="k">for</span> m in <span class="nv">$HOSTS</span> <span class="p"
 <tr><td class="label"><a class="fn-backref" href="#id59">[28]</a></td><td>HPC meaning <em>High Performance Computing</em> here.</td></tr>
 </tbody>
 </table>
-<p>We made significant use of <a class="reference external" href="http://en.wikipedia.org/wiki/Portable_Batch_System">PBS-based</a> clusters, then of ones relying on <a class="reference external" href="https://computing.llnl.gov/linux/slurm/">SLURM</a>. A lightweight abstraction layer has been built over both (see <tt class="docutils literal"><span class="pre">sim-diasca/conf/clusters/sim-diasca-launcher.sh</span></tt>). Other cluster scripts have been developed to respectively deploy, launch and collect results for <em>sets</em> of experiments (ex: automating the launching of 72 simulations, to perform some parametric studies).</p>
+<p>We made significant use of <a class="reference external" href="http://en.wikipedia.org/wiki/Portable_Batch_System">PBS-based</a> clusters, then of ones relying on <a class="reference external" href="https://slurm.schedmd.com/">SLURM</a>. A lightweight abstraction layer has been built over both (see <tt class="docutils literal"><span class="pre">sim-diasca/conf/clusters/sim-diasca-launcher.sh</span></tt>). Other cluster scripts have been developed to respectively deploy, launch and collect results for <em>sets</em> of experiments (ex: automating the launching of 72 simulations, to perform some parametric studies).</p>
 </div>
 <div class="section" id="tools-for-the-sim-diasca-simulation-engine-itself">
 <h2><a class="toc-backref" href="#id197">Tools For the Sim-Diasca Simulation Engine Itself</a></h2>
@@ -3096,7 +3096,7 @@ of x0.047.
 <table class="docutils footnote" frame="void" id="id106" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id105">[40]</a></td><td>These restrictions surely apply to, say, lower-level C++-based simulation engines which demand that models are written that way; and, more generally, models whose behaviour is intrinsically to be described algorithmically need anyway a programming language to be specified. However some of these languages are more suitable than others. To take a real-life example, for the <a class="reference external" href="http://www.cleveronline.org/">CLEVER</a> project, 5 days of Erlang training, 5 days of basic Sim-Diasca training and 3 days of advanced Sim-Diasca training have been sufficient so that a team with no prior knowledge about these topics was able to write not only models but even a whole specialisation layer of Sim-Diasca for the simulation of metering systems.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id105">[40]</a></td><td>These restrictions surely apply to, say, lower-level C++-based simulation engines which demand that models are written that way; and, more generally, models whose behaviour is intrinsically to be described algorithmically need anyway a programming language to be specified. However some of these languages are more suitable than others. To take a real-life example, for the CLEVER project, 5 days of Erlang training, 5 days of basic Sim-Diasca training and 3 days of advanced Sim-Diasca training have been sufficient so that a team with no prior knowledge about these topics was able to write not only models but even a whole specialisation layer of Sim-Diasca for the simulation of metering systems.</td></tr>
 </tbody>
 </table>
 </div>
@@ -4513,7 +4513,8 @@ $ add-header-to-files.sh ../licence-header-erlang.txt MyNewFile.erl
 <li><a class="reference external" href="http://research.microsoft.com/users/lamport/pubs/time-clocks.pdf">Time, Clocks, and the Ordering of Events in a Distributed System</a>, by Leslie Lamport</li>
 <li><a class="reference external" href="http://www.usingcsp.com/cspbook.pdf">Communicating Sequential Processes (CSP)</a>, by C.A.R. Hoare</li>
 <li><a class="reference external" href="http://citeseer.ist.psu.edu/carlson95sim.html">Sim94, A concurrent simulator for plan-driven troops</a> (1995), by Bjorn Carlson</li>
-<li><a class="reference external" href="http://ftp.csd.uu.se/pub/papers/masters-theses/0178-ekstrom.pdf">Sim94, Design Patterns for Simulations in Erlang/OTP</a>, by Ulf Ekström`_</li>
+</ul>
+<ul class="simple">
 <li><a class="reference external" href="http://citeseer.ist.psu.edu/706010.html">An Evaluation of Conservative Protocols for Bulk-Synchronous Parallel Discrete-Event Simulation</a>, by  Mauricio Marin</li>
 </ul>
 <p>Some books are relevant as well:</p>
@@ -4533,7 +4534,7 @@ $ add-header-to-files.sh ../licence-header-erlang.txt MyNewFile.erl
 </div>
 <div class="section" id="sim-diasca-license">
 <span id="lgpl"></span><h1><a class="toc-backref" href="#id259">Sim-Diasca License</a></h1>
-<p>Sim-Diasca is free software; it has been developed by <a class="reference external" href="http://innovation.edf.com">EDF R&amp;D</a> and is released under the <a class="reference external" href="http://www.gnu.org/licenses/lgpl.html">GNU LGPL licence</a> (GNU LESSER GENERAL PUBLIC LICENSE, Version 3).</p>
+<p>Sim-Diasca is free software; it has been developed by <a class="reference external" href="https://www.edf.fr/en/the-edf-group/inventing-the-future-of-energy/r-d-global-expertise">EDF R&amp;D</a> and is released under the <a class="reference external" href="http://www.gnu.org/licenses/lgpl.html">GNU LGPL licence</a> (GNU LESSER GENERAL PUBLIC LICENSE, Version 3).</p>
 <p></p>
 </div>
 <div class="section" id="contributing-to-sim-diasca">
