@@ -1,4 +1,4 @@
-% Copyright (C) 2015-2021 Olivier Boudeville
+% Copyright (C) 2015-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -24,7 +24,6 @@
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Friday, July 24, 2015.
-
 
 
 % @doc Gathering of <b>time management</b> facilities.
@@ -60,8 +59,11 @@
 
 
 % Date support:
--export([ is_canonical_date/1, check_canonical_date/1, compare_dates/2,
-		  check_date_order/2, get_date_difference/2 ]).
+-export([ is_canonical_date/1, check_canonical_date/1,
+		  is_user_date/1, check_user_date/1,
+		  compare_dates/2,
+		  check_date_order/2, get_date_difference/2,
+		  user_to_canonical_date/1, canonical_to_user_date/1 ]).
 
 
 -type day_index() :: 1..7.
@@ -78,7 +80,13 @@
 
 
 -type date() :: { year(), canonical_month(), canonical_day() }.
-% Calendar date; used instead of the less precise calendar:date/0 type.
+% Canonical calendar date; used instead of the less precise calendar:date/0
+% type. See also: user_date/0.
+
+
+-type user_date() :: { canonical_day(), canonical_month(), year() }.
+% Date in a format that is considered common to most users.
+% See also: date/0.
 
 
 -type date_in_year() :: { canonical_month(), canonical_day() }.
@@ -89,18 +97,23 @@
 % Time in the day; used to be {hour(), minute(), second()} or calendar:time().
 
 
--type ms_since_year_0() :: unit_utils:milliseconds().
+-type ms_since_year_0() :: milliseconds().
 % Also known as Gregorian milliseconds.
 
 
--type ms_since_epoch() :: unit_utils:milliseconds().
+-type ms_since_epoch() :: milliseconds().
 % POSIX conventions.
 
 
--type ms_monotonic() :: unit_utils:milliseconds().
+-type ms_monotonic() :: milliseconds().
 % The internal, duration-friendly monotonic time.
 
--type ms_duration() :: unit_utils:milliseconds().
+
+-type ms_duration() :: milliseconds().
+% A duration, in milliseconds.
+
+-type ms_period() :: ms_duration().
+% A period, in milliseconds.
 
 
 -type dhms_duration() :: { days(), hours(), minutes(), seconds() }.
@@ -109,14 +122,14 @@
 % specified).
 
 
--export_type([ day_index/0, week_day/0, date/0, date_in_year/0, time/0,
-			   ms_since_year_0/0, ms_since_epoch/0, ms_monotonic/0,
-			   ms_duration/0,
-			   dhms_duration/0 ]).
+-export_type([ day_index/0, week_day/0, date/0, user_date/0, date_in_year/0,
+			   time/0, ms_since_year_0/0, ms_since_epoch/0, ms_monotonic/0,
+			   ms_duration/0, ms_period/0, dhms_duration/0 ]).
 
 
 % Basics:
--export([ get_textual_date/1, from_posix_timestamp/1 ]).
+-export([ get_textual_date/1, from_posix_timestamp/1,
+		  get_local_timestamp/0, get_local_date/0, get_local_time/0 ]).
 
 
 % For rough, averaged conversions:
@@ -130,7 +143,7 @@
 
 
 % Duration-related section.
--export([ get_intertime_duration/2,
+-export([ get_intertime_duration/2, frequency_to_period/1, wait_period_ending/2,
 		  duration_to_string/1, duration_to_string/2,
 		  duration_to_french_string/1,
 		  time_out_to_string/1, time_out_to_string/2 ]).
@@ -161,7 +174,8 @@
 		  get_textual_timestamp_with_dashes/1,
 		  timestamp_to_string/1, short_string_to_timestamp/1,
 		  gregorian_ms_to_timestamp/1,
-		  string_to_timestamp/1, dhms_to_string/1, time_of_day_to_string/1,
+		  string_to_timestamp/1, dhms_to_string/1,
+		  time_to_string/1, time_of_day_to_string/1,
 		  timestamp_to_seconds/0, timestamp_to_seconds/1,
 		  timestamp_to_weekday/1, date_to_weekday/1,
 		  local_to_universal_time/1, universal_to_local_time/1,
@@ -222,6 +236,7 @@
 -type canonical_day() :: unit_utils:canonical_day().
 -type canonical_month() :: unit_utils:canonical_month().
 
+-type any_hertz() :: unit_utils:any_hertz().
 -type country() :: locale_utils:country().
 
 
@@ -229,7 +244,7 @@
 % @doc Returns a string corresponding to the specified date, like: "30/11/2009".
 -spec get_textual_date( date() ) -> ustring().
 get_textual_date( { Year, Month, Day } ) ->
-	io_lib:format( "~B/~B/~B", [ Day, Month, Year ] ).
+	text_utils:format( "~B/~B/~B", [ Day, Month, Year ] ).
 
 
 
@@ -248,7 +263,30 @@ from_posix_timestamp( PosixTimestamp ) ->
 	% time:
 	%
 	calendar:universal_time_to_local_time(
-	  { { 1970 + Post1970Year, Month, Day }, Time } ).
+		{ { 1970 + Post1970Year, Month, Day }, Time } ).
+
+
+
+% @doc Returns a local timestamp (date and time), as reported by the underlying
+% operating system.
+%
+-spec get_local_timestamp() -> timestamp().
+get_local_timestamp() ->
+	calendar:local_time().
+
+
+% @doc Returns the local date, as reported by the underlying operating system.
+-spec get_local_date() -> date().
+get_local_date() ->
+	{ Date, _Time } = calendar:local_time(),
+	Date.
+
+
+% @doc Returns the local time, as reported by the underlying operating system.
+-spec get_local_time() -> time().
+get_local_time() ->
+	{ _Date, Time } = calendar:local_time(),
+	Time.
 
 
 
@@ -510,16 +548,44 @@ is_canonical_date( _Other ) ->
 
 
 
-% @doc Checks that specified date is a canonical one.
+% @doc Checks that the specified date is a canonical one.
 -spec check_canonical_date( date() ) -> void().
 check_canonical_date( Date ) ->
-	case is_canonical_date( Date) of
+	case is_canonical_date( Date ) of
 
 		true ->
 			ok;
 
 		false ->
 			throw( { non_canonical_date, Date } )
+
+	end.
+
+
+
+% @doc Tells whether the specified term is a user date.
+-spec is_user_date( term() ) -> boolean().
+is_user_date( _Date={ Day, Month, Year } ) when
+		is_integer( Year ) andalso is_integer( Month ) andalso
+		is_integer( Day ) andalso Month >= 1 andalso Month =< 12
+		andalso Day >= 1 andalso Day =< 31 ->
+	true;
+
+is_user_date( _Other ) ->
+	false.
+
+
+
+% @doc Checks that the specified date is a user one.
+-spec check_user_date( user_date() ) -> void().
+check_user_date( Date ) ->
+	case is_user_date( Date ) of
+
+		true ->
+			ok;
+
+		false ->
+			throw( { non_user_date, Date } )
 
 	end.
 
@@ -569,7 +635,7 @@ compare_helper( _FirstDate={ _Yf, _Mf, Df },
 
 % Df =:= Ds, equality:
 %compare_helper( _FirstDate={ _Yf, _Mf, _Df },
-%				_SecondDate={ _Ys, _Ms, _Ds } ) ->
+%                _SecondDate={ _Ys, _Ms, _Ds } ) ->
 compare_helper( _FirstDate, _SecondDate ) ->
 	equal.
 
@@ -605,6 +671,19 @@ get_date_difference( FirstDate, SecondDate ) ->
 	SecondDayCount = calendar:date_to_gregorian_days( SecondDate ),
 
 	SecondDayCount - FirstDayCount.
+
+
+
+% @doc Converts specified user date into a canonical one.
+-spec user_to_canonical_date( user_date() ) -> date().
+user_to_canonical_date( { D, M, Y } ) ->
+	{ Y, M, D }.
+
+
+% @doc Converts specified canonical date into a user one.
+-spec canonical_to_user_date( date() ) -> user_date().
+canonical_to_user_date( { Y, M, D } ) ->
+	{ D, M, Y }.
 
 
 
@@ -678,19 +757,19 @@ string_to_dhms( DurationString ) ->
 	{ D, DRest } = case text_utils:split_at_first( $j, TrimmedDurStr ) of
 
 		none_found ->
-			% Enlish one maybe?
+			% English one maybe?
 			case text_utils:split_at_first( $d, TrimmedDurStr ) of
 
 				none_found ->
 					{ 0, TrimmedDurStr };
 
-				% Ex: { "113", "0h10m3s" } (English version)
+				% Ex: {"113", "0h10m3s"} (English version)
 				{ EnDStr, EnNonDStr } ->
 					{ text_utils:string_to_integer( EnDStr ), EnNonDStr }
 
 			end;
 
-		% Ex: { "113", "0h10m3s" } (French version)
+		% Ex: {"113", "0h10m3s"} (French version)
 		{ FrDStr, FrNonDStr } ->
 			{ text_utils:string_to_integer( FrDStr ), FrNonDStr }
 
@@ -702,7 +781,7 @@ string_to_dhms( DurationString ) ->
 		none_found ->
 			{ 0, DRest };
 
-		% Ex: { "0", "10m3s" }
+		% Ex: {"0", "10m3s"}
 		{ HStr, NonHStr } ->
 			{ text_utils:string_to_integer( HStr ), NonHStr }
 
@@ -726,7 +805,7 @@ string_to_dhms( DurationString ) ->
 		none_found ->
 			0;
 
-		% Ex: { "3", "" }
+		% Ex: {"3", ""}
 		{ SStr, _NonSStr="" } ->
 			text_utils:string_to_integer( SStr )
 
@@ -789,6 +868,41 @@ get_intertime_duration( { H1, M1, S1 }, { H2, M2, S2 } ) ->
 
 
 
+% @doc Returns the non-null period, in milliseconds, corresponding to the
+% specified frequency.
+%
+-spec frequency_to_period( any_hertz() ) -> ms_period().
+frequency_to_period( Freq ) ->
+	math_utils:ceiling( 1 / Freq ).
+
+
+
+% @doc Waits (approximately) until the end of the specified period, which is
+% expected to have started at the specified monotonic timestamp - which shall
+% have been obtained thanks to get_monotonic_time/0.
+%
+% Returns (after some relevant time) whether this waiting is expected to have
+% stopped on time.
+%
+-spec wait_period_ending( ms_monotonic(), ms_period() ) -> boolean().
+wait_period_ending( StartTime, Period ) ->
+
+	Now = get_monotonic_time(),
+	case _ToWait=StartTime + Period - Now of
+
+		Duration when Duration > 0 ->
+			timer:sleep( Duration ),
+			true;
+
+		_ ->
+			trace_utils:warning( "Unable to wait for the end of the "
+								 "specified period." ),
+			false
+
+	end.
+
+
+
 % Direct time-related section.
 
 
@@ -841,7 +955,7 @@ get_system_time() ->
 -spec get_timestamp() -> timestamp().
 get_timestamp() ->
 
-	% Was: { erlang:date(), erlang:time() }.
+	% Was: {erlang:date(), erlang:time()}.
 	%
 	% Better:
 	%
@@ -872,9 +986,9 @@ get_epoch_milliseconds_since_year_0() ->
 -spec is_timestamp( term() ) -> boolean().
 is_timestamp( { Date={ Y, M, D }, _Time={ Hour, Min, Sec } } )
   when is_integer( Y ) andalso is_integer( M ) andalso is_integer( D )
-	   andalso is_integer( Hour ) andalso is_integer( Min )
-	   andalso is_integer( Sec ) andalso Hour =< 24 andalso Min =< 60
-	   andalso Sec =< 60 ->
+		andalso is_integer( Hour ) andalso is_integer( Min )
+		andalso is_integer( Sec ) andalso Hour =< 24 andalso Min =< 60
+		andalso Sec =< 60 ->
 	calendar:valid_date( Date );
 
 is_timestamp( _Other ) ->
@@ -933,15 +1047,15 @@ get_textual_timestamp() ->
 %
 -spec get_textual_timestamp( timestamp() ) -> ustring().
 get_textual_timestamp( { { Year, Month, Day }, { Hour, Minute, Second } } ) ->
-	io_lib:format( "~B/~B/~B ~B:~2..0B:~2..0B",
-				   [ Year, Month, Day, Hour, Minute, Second ] ).
+	text_utils:format( "~B/~B/~B ~B:~2..0B:~2..0B",
+					   [ Year, Month, Day, Hour, Minute, Second ] ).
 
 
 % @doc Returns a string corresponding to the specified timestamp in a
 % user-friendly manner, like: "Wednesday, January 6, 2021 at 11:46:53".
 %
 get_user_friendly_textual_timestamp( { Date={ Year, Month, Day }, Time } ) ->
-	io_lib:format( "~ts, ~ts ~B, ~B, at ~ts",
+	text_utils:format( "~ts, ~ts ~B, ~B, at ~ts",
 		[ week_day_to_string( Date ), month_to_string( Month ), Day,
 		  Year, time_of_day_to_string( Time ) ] ).
 
@@ -954,7 +1068,7 @@ get_french_textual_timestamp( { { Year, Month, Day },
 								{ Hour, Minute, Second } } ) ->
 
 	%trace_utils:debug_fmt( "le ~B/~B/~B, à ~Bh~2..0Bm~2..0Bs",
-	%					   [ Day, Month, Year, Hour, Minute, Second ] ),
+	%                       [ Day, Month, Year, Hour, Minute, Second ] ),
 
 	case Second of
 
@@ -962,18 +1076,18 @@ get_french_textual_timestamp( { { Year, Month, Day },
 			case Minute of
 
 				0 ->
-					io_lib:format( "le ~B/~B/~B, à ~Bh",
-								   [ Day, Month, Year, Hour ] );
+					text_utils:format( "le ~B/~B/~B, à ~Bh",
+						[ Day, Month, Year, Hour ] );
 
 				_ ->
-					io_lib:format( "le ~B/~B/~B, à ~Bh~2..0B",
-								   [ Day, Month, Year, Hour, Minute ] )
+					text_utils:format( "le ~B/~B/~B, à ~Bh~2..0B",
+						[ Day, Month, Year, Hour, Minute ] )
 
 			end;
 
 		_ ->
-			io_lib:format( "le ~B/~B/~B, à ~Bh~2..0Bm~2..0Bs",
-						   [ Day, Month, Year, Hour, Minute, Second ] )
+			text_utils:format( "le ~B/~B/~B, à ~Bh~2..0Bm~2..0Bs",
+				[ Day, Month, Year, Hour, Minute, Second ] )
 
 	end.
 
@@ -1004,8 +1118,8 @@ get_time2_textual_timestamp() ->
 -spec get_time2_textual_timestamp( timestamp() ) -> ustring().
 get_time2_textual_timestamp( { { Year, Month, Day },
 							   { Hour, Minute, Second } } ) ->
-	io_lib:format( "~4..0B-~2..0B-~2..0B ~2..0B:~2..0B:~2..0B",
-				   [ Year, Month, Day, Hour, Minute, Second ] ).
+	text_utils:format( "~4..0B-~2..0B-~2..0B ~2..0B:~2..0B:~2..0B",
+					   [ Year, Month, Day, Hour, Minute, Second ] ).
 
 
 
@@ -1024,7 +1138,7 @@ get_textual_timestamp_for_path() ->
 -spec get_textual_timestamp_for_path( timestamp() ) -> ustring().
 get_textual_timestamp_for_path( { { Year, Month, Day },
 								  { Hour, Minute, Second } } ) ->
-	io_lib:format( "~p-~p-~p-at-~Bh-~2..0Bm-~2..0Bs",
+	text_utils:format( "~p-~p-~p-at-~Bh-~2..0Bm-~2..0Bs",
 				   [ Year, Month, Day, Hour, Minute, Second ] ).
 
 
@@ -1034,7 +1148,7 @@ get_textual_timestamp_for_path( { { Year, Month, Day },
 -spec get_textual_timestamp_with_dashes( timestamp() ) -> ustring().
 get_textual_timestamp_with_dashes( { { Year, Month, Day },
 									 { Hour, Minute, Second } } ) ->
-	io_lib:format( "~B-~2..0B-~2..0B ~B:~2..0B:~2..0B",
+	text_utils:format( "~B-~2..0B-~2..0B ~B:~2..0B:~2..0B",
 				   [ Year, Month, Day, Hour, Minute, Second ] ).
 
 
@@ -1056,7 +1170,7 @@ timestamp_to_string( Timestamp ) ->
 short_string_to_timestamp( TimestampString ) ->
 
 	%trace_utils:debug_fmt( "Converting short string '~ts' to timestamp.",
-	%					   [ TimestampString ] ),
+	%                       [ TimestampString ] ),
 
 	case string:tokens( TimestampString, _Sep=" :/" ) of
 
@@ -1087,7 +1201,7 @@ gregorian_ms_to_timestamp( GregorianMs ) ->
 	GregorianSecs = round( GregorianMs / 1000 ),
 
 	calendar:universal_time_to_local_time(
-	  calendar:gregorian_seconds_to_datetime( GregorianSecs ) ).
+		calendar:gregorian_seconds_to_datetime( GregorianSecs ) ).
 
 
 
@@ -1127,7 +1241,17 @@ dhms_to_string( DHMS ) ->
 
 
 
-% @doc Returns a textual description of the specified time of day.
+% @doc Returns a textual description of the specified time of day, like:
+% "09:14:57".
+%
+-spec time_to_string( time() ) -> ustring().
+time_to_string( _Time={ H, M, S } ) ->
+	text_utils:format( "~B:~2..0B:~2..0B", [ H, M, S ] ).
+
+
+% @doc Returns a textual, user-friendly description of the specified time of
+% day.
+%
 -spec time_of_day_to_string( time() ) -> ustring().
 time_of_day_to_string( _Time={ 0, 0, 0 } ) ->
 	% To be understood as very beginning of day, as opposed to very end of it:
@@ -1137,13 +1261,13 @@ time_of_day_to_string( _Time={ 12, 0, 0 } ) ->
 	"noon";
 
 time_of_day_to_string( _Time={ H, 0, 0 } ) ->
-	io_lib:format( "~B", [ H ] );
+	text_utils:format( "~B", [ H ] );
 
 time_of_day_to_string( _Time={ H, M, 0 } ) ->
-	io_lib:format( "~B:~2..0B", [ H, M ] );
+	text_utils:format( "~B:~2..0B", [ H, M ] );
 
 time_of_day_to_string( _Time={ H, M, S } ) ->
-	io_lib:format( "~B:~2..0B:~2..0B", [ H, M, S ] ).
+	text_utils:format( "~B:~2..0B:~2..0B", [ H, M, S ] ).
 
 
 
@@ -1324,7 +1448,7 @@ get_textual_duration( FirstTimestamp, SecondTimestamp ) ->
 	% {Days, {Hour, Minute, Second}} = calendar:seconds_to_daystime(
 	%   get_duration(FirstTimestamp, SecondTimestamp)),
 
-	%lists:flatten( io_lib:format( "~B day(s), ~B hour(s), ~B minute(s) "
+	%lists:flatten( text_utils:format( "~B day(s), ~B hour(s), ~B minute(s) "
 	%  "and ~B second(s)", [ Days, Hour, Minute, Second ] ) ).
 
 	Duration = get_duration( FirstTimestamp, SecondTimestamp ),
@@ -1405,7 +1529,7 @@ duration_to_string( Milliseconds ) when is_integer( Milliseconds )->
 			[ "1 day" ];
 
 		_ ->
-			[ io_lib:format( "~B days", [ Days ] ) ]
+			[ text_utils:format( "~B days", [ Days ] ) ]
 
 	end,
 
@@ -1418,7 +1542,7 @@ duration_to_string( Milliseconds ) when is_integer( Milliseconds )->
 			[ "1 hour" | ListWithDays ];
 
 		_ ->
-			[ io_lib:format( "~B hours", [ Hours ] )
+			[ text_utils:format( "~B hours", [ Hours ] )
 			  | ListWithDays ]
 
 	end,
@@ -1432,7 +1556,7 @@ duration_to_string( Milliseconds ) when is_integer( Milliseconds )->
 		  [ "1 minute" | ListWithHours ];
 
 		_ ->
-		  [ io_lib:format( "~B minutes", [ Minutes ] ) | ListWithHours ]
+		  [ text_utils:format( "~B minutes", [ Minutes ] ) | ListWithHours ]
 
 	end,
 
@@ -1445,7 +1569,7 @@ duration_to_string( Milliseconds ) when is_integer( Milliseconds )->
 			[ "1 second" | ListWithMinutes ];
 
 		_ ->
-			[ io_lib:format( "~B seconds", [ Seconds ] ) | ListWithMinutes ]
+			[ text_utils:format( "~B seconds", [ Seconds ] ) | ListWithMinutes ]
 
 	end,
 
@@ -1460,7 +1584,7 @@ duration_to_string( Milliseconds ) when is_integer( Milliseconds )->
 			[ "1 millisecond" | ListWithSeconds ];
 
 		_ ->
-			[ io_lib:format( "~B milliseconds", [ ActualMilliseconds ] )
+			[ text_utils:format( "~B milliseconds", [ ActualMilliseconds ] )
 			  | ListWithSeconds ]
 
 	end,
@@ -1519,7 +1643,7 @@ duration_to_french_string( Milliseconds ) when is_integer( Milliseconds )->
 			[ "1 jour" ];
 
 		_ ->
-			[ io_lib:format( "~B jours", [ Days ] ) ]
+			[ text_utils:format( "~B jours", [ Days ] ) ]
 
 	end,
 
@@ -1532,7 +1656,7 @@ duration_to_french_string( Milliseconds ) when is_integer( Milliseconds )->
 			[ "1 heure" | ListWithDays ];
 
 		_ ->
-			[ io_lib:format( "~B heures", [ Hours ] )
+			[ text_utils:format( "~B heures", [ Hours ] )
 			  | ListWithDays ]
 
 	end,
@@ -1546,7 +1670,7 @@ duration_to_french_string( Milliseconds ) when is_integer( Milliseconds )->
 		  [ "1 minute" | ListWithHours ];
 
 		_ ->
-		  [ io_lib:format( "~B minutes", [ Minutes ] ) | ListWithHours ]
+		  [ text_utils:format( "~B minutes", [ Minutes ] ) | ListWithHours ]
 
 	end,
 
@@ -1559,7 +1683,8 @@ duration_to_french_string( Milliseconds ) when is_integer( Milliseconds )->
 			[ "1 seconde" | ListWithMinutes ];
 
 		_ ->
-			[ io_lib:format( "~B secondes", [ Seconds ] ) | ListWithMinutes ]
+			[ text_utils:format( "~B secondes", [ Seconds ] )
+						| ListWithMinutes ]
 
 	end,
 
@@ -1574,7 +1699,7 @@ duration_to_french_string( Milliseconds ) when is_integer( Milliseconds )->
 			[ "1 milliseconde" | ListWithSeconds ];
 
 		_ ->
-			[ io_lib:format( "~B millisecondes", [ ActualMilliseconds ] )
+			[ text_utils:format( "~B millisecondes", [ ActualMilliseconds ] )
 			  | ListWithSeconds ]
 
 	end,

@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2021 Olivier Boudeville
+% Copyright (C) 2003-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,33 +25,20 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 
 
-% Unit tests for the linear 3D facilities.
+% @doc Unit tests for the <b>linear 3D facilities</b>.
 %
 % See the linear_3D tested module.
 %
 -module(linear_3D_test).
 
 
-
 % For run/0 export and al:
 -include("test_facilities.hrl").
-
 
 
 -spec run() -> no_return().
 run() ->
 
 	test_facilities:start( ?MODULE ),
-
-	V1 = { 9,   1,     0 },
-	V2 = { 10,  10,    5 },
-	V3 = { 0.0, 0.0, 0.0 },
-	V4 = { 1,   2,     3 },
-
-	Vectors = [ V1, V2, V3, V4 ],
-
-	{ 20.0, 13.0, 8.0 } = Sum = linear_3D:add( Vectors ),
-
-	test_facilities:display( "Sum of vectors ~p is ~p.", [ Vectors, Sum ] ),
 
 	test_facilities:stop().

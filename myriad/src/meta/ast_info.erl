@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2021 Olivier Boudeville
+% Copyright (C) 2018-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -207,7 +207,7 @@
 
 
 -type attribute_table() :: ?table:?table( attribute_name(),
-							   [ { attribute_value(), located_form() } ] ).
+								[ { attribute_value(), located_form() } ] ).
 % For easy access to the values and AST forms associated to a parse attribute,
 % from its name.
 %
@@ -272,13 +272,10 @@
 % identifiers of the functions to declare exported there.
 %
 % Note:
-%
 % - this table must be explicitly updated whenever adding or removing a function
 % in a module_info 'functions' field; see: meta_utils:add_function/2 and
 % meta_utils:remove_function/2
-%
 % - a list of function_id() is used, not a set, to better preserve order
-%
 % - the 'export_all' compile attribute may also have been set in compile options
 
 
@@ -886,7 +883,7 @@ recompose_ast_from_module_info( Unexpected ) ->
 get_ordered_ast_from( UnorderedLocatedAST, MarkerTable ) ->
 
 	%ast_utils:display_debug( "Unordered, non-immediate located input AST:~n~p",
-	%						  [ UnorderedLocatedAST ] ),
+	%                         [ UnorderedLocatedAST ] ),
 
 	% We replace any non-immediate location by an immediate one, and have the
 	% whole sorted, then unlocated:
@@ -895,7 +892,7 @@ get_ordered_ast_from( UnorderedLocatedAST, MarkerTable ) ->
 
 	% One of the most useful view of output:
 	%ast_utils:display_debug( "Ordered, unlocated output AST:~n~p",
-	%						  [ ReorderedAST ] ),
+	%                         [ ReorderedAST ] ),
 
 	ReorderedAST.
 
@@ -1066,7 +1063,7 @@ insert_after_located_forms( LocAfter, LocForms,
 % Returns {RevUnlocPrefix, BaseForm, LocSuffix} so that:
 %
 % InputLocForms = (reversed, located version of RevUnlocPrefix) ++
-% [{Loc,BaseForm} | LocSuffix]
+%     [{Loc,BaseForm} | LocSuffix]
 %
 % The specified location is expected to be found in the specified (ordered) AST.
 %
@@ -1076,7 +1073,7 @@ insert_after_located_forms( LocAfter, LocForms,
 							{ located_ast(), form(), located_ast() }.
 split_at_location( ASTLoc, InputLocForms ) ->
 	%trace_utils:debug_fmt( "Splitting at location ~p following forms:~n~p",
-	%						[ ASTLoc, InputLocForms ] ),
+	%                       [ ASTLoc, InputLocForms ] ),
 	split_at_location( ASTLoc, InputLocForms, _Acc=[] ).
 
 

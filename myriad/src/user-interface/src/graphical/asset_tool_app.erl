@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2021 Olivier Boudeville
+% Copyright (C) 2003-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -23,7 +23,6 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
-
 
 
 % @doc The very beginning of a tool to manage <b>assets</b>, especially for
@@ -52,14 +51,16 @@
 		  quit_button = undefined :: gui:button(),
 		  info_sizer = undefined :: gui:sizer(),
 		  left_panel = undefined :: gui:panel(),
-		  canvas = undefined :: gui:canvas()
-
-}).
+		  canvas = undefined :: gui:canvas() }).
 
 
 -type app_state() :: #app_state{}.
 % The application state.
 
+
+% Shorthands:
+-type coordinate() :: linear:coordinate().
+-type canvas() :: gui_canvas:canvas().
 
 % FIXME:
 -export_type([ app_state/0 ]).
@@ -67,25 +68,25 @@
 
 
 % @doc Returns the width of the main window.
--spec get_main_window_width() -> linear:coordinate().
+-spec get_main_window_width() -> coordinate().
 get_main_window_width() ->
 	800.
 
 
 % @doc Returns the height of the main window.
--spec get_main_window_height() -> linear:coordinate().
+-spec get_main_window_height() -> coordinate().
 get_main_window_height() ->
 	600.
 
 
 % @doc Returns the width of the displayed canvas.
--spec get_canvas_width() -> linear:coordinate().
+-spec get_canvas_width() -> coordinate().
 get_canvas_width() ->
 	640.
 
 
 % @doc Returns the height of the displayed canvas.
--spec get_canvas_height() -> linear:coordinate().
+-spec get_canvas_height() -> coordinate().
 get_canvas_height() ->
 	480.
 
@@ -198,7 +199,7 @@ app_main_loop( _, _ ) ->
 
 
 % @doc Renders the main view of the tool.
--spec render_main_view( gui_canvas:canvas() ) -> void().
+-spec render_main_view( canvas() ) -> void().
 render_main_view( Canvas ) ->
 
 	app_facilities:display( "Rendering main view." ),
@@ -225,62 +226,62 @@ gui_main_loop( _GUIState=#app_state{ main_frame=_MainFrame,
 
 	%% Update = receive
 
-	%%	#wx{ obj=MainFrame, event={wxClose,close_window} } ->
-	%%		app_facilities:display( "Quitting GUI app." ),
-	%%		quit;
+	%	#wx{ obj=MainFrame, event={wxClose,close_window} } ->
+	%		app_facilities:display( "Quitting GUI app." ),
+	%		quit;
 
-	%%	#wx{ obj=LoadImageButton,
-	%%		 event=#wxCommand{ type=command_button_clicked } } ->
-	%%		app_facilities:display( "Load image clicked." ),
-	%%		Texts = load_image( Canvas ),
-	%%		gui_canvas:blit( Canvas ),
-	%%		update_information_sizer( InfoSizer, LeftPanel, Texts ),
-	%%		State;
+	%	#wx{ obj=LoadImageButton,
+	%		 event=#wxCommand{ type=command_button_clicked } } ->
+	%		app_facilities:display( "Load image clicked." ),
+	%		Texts = load_image( Canvas ),
+	%		gui_canvas:blit( Canvas ),
+	%		update_information_sizer( InfoSizer, LeftPanel, Texts ),
+	%		State;
 
-	%%	#wx{ obj=QuitButton,
-	%%		 event=#wxCommand{ type=command_button_clicked } } ->
-	%%		app_facilities:display( "Quit button clicked." ),
-	%%		quit;
+	%	#wx{ obj=QuitButton,
+	%		 event=#wxCommand{ type=command_button_clicked } } ->
+	%		app_facilities:display( "Quit button clicked." ),
+	%		quit;
 
-	%%	#wx{ obj=Any, event=#wxCommand{ type=command_button_clicked } } ->
-	%%		app_facilities:display( "Following button clicked: ~w.", [ Any ] ),
-	%%		quit;
-
-
-	%%	% Received for example when another window overlapped:
-	%%	#wx{ event=#wxPaint{} } ->
-	%%		render_main_view( Canvas ),
-	%%		State ;
+	%	#wx{ obj=Any, event=#wxCommand{ type=command_button_clicked } } ->
+	%		app_facilities:display( "Following button clicked: ~w.", [ Any ] ),
+	%		quit;
 
 
-	%%	#wx{ event=#wxSize{ size=NewSize } } ->
-
-	%%		app_facilities:display( "Resizing to ~w.", [ NewSize ] ),
-
-	%%		NewCanvas = gui_canvas:resize( Canvas, NewSize ),
-
-	%%		render_main_view( NewCanvas ),
-
-	%%		State#app_state{ canvas=NewCanvas };
+	%	% Received for example when another window overlapped:
+	%	#wx{ event=#wxPaint{} } ->
+	%		render_main_view( Canvas ),
+	%		State ;
 
 
-	%%	Any ->
-	%%		app_facilities:display( "GUI got event '~w' (ignored).",
-	%%								[ Any ] ),
-	%%		State
+	%	#wx{ event=#wxSize{ size=NewSize } } ->
 
-	%% end,
+	%		app_facilities:display( "Resizing to ~w.", [ NewSize ] ),
 
-	%% case Update of
+	%		NewCanvas = gui_canvas:resize( Canvas, NewSize ),
 
-	%%	quit ->
-	%%		% Simply stop recursing:
-	%%		ok;
+	%		render_main_view( NewCanvas ),
 
-	%%	NewState ->
-	%%		gui_main_loop( NewState )
+	%		State#app_state{ canvas=NewCanvas };
 
-	%% end.
+
+	%	Any ->
+	%		app_facilities:display( "GUI got event '~w' (ignored).",
+	%								[ Any ] ),
+	%		State
+
+	% end,
+
+	% case Update of
+
+	%	quit ->
+	%		% Simply stop recursing:
+	%		ok;
+
+	%	NewState ->
+	%		gui_main_loop( NewState )
+
+	% end.
 
 
 
@@ -301,7 +302,8 @@ update_information_sizer( InfoSizer, Panel, Texts ) ->
 	TextOpts = [ { flag, [ expand_fully ] }, { border, 10 } ],
 
    [ gui:add_to_sizer( InfoSizer, gui_text:create_static( Panel, T ),
-						TextOpts ) || T <- Texts ].
+					   TextOpts ) || T <- Texts ].
+
 
 
 % @doc Executes that application.

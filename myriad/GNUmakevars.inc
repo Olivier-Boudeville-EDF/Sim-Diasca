@@ -71,14 +71,17 @@ ifndef EXECUTION_TARGET
 endif
 
 
-# We have to define a symbol specific to the 'production' execution target
+# We defined a symbol specific to the 'production' execution target
 # (exec_target_is_production) instead of relying only on an execution_target
-# variable that could be set either to 'development' or 'production', as the
-# Erlang preprocessor allows only to test whether a symbol is defined (with
-# -ifdef), we cannot test its value.
+# variable that could be set either to 'development' or 'production', as we
+# thought (apparently erroneously; or maybe it was improved over time) that the
+# Erlang preprocessor allowed only to test whether a symbol is defined (with
+# -ifdef), and did not allow to test its value (however '-if(...).' seems to
+# allow that).
 #
-# So the code is to use '-ifdef(target_production_exec)' instead of something
-# like '-ifdef(execution_target,production)'.
+# So our code uses '-ifdef(exec_target_is_production)' instead of something like
+# '-if(execution_target ## production)'.' where ## could be '=', '==', '=:='
+# (not able to find the syntax for such macro conditions)
 #
 ifeq ($(EXECUTION_TARGET),development)
 
@@ -120,26 +123,74 @@ endif
 # conditional compilation primitives (see cond_utils for their management):
 
 # Topics covered by flags:
+# - third_party_execution: the execution of third-party elements such as
+#    executables, commands, shell expressions
 #  - code_path: how the VM code path is managed
 #  - otp_integration: how OTP conventions (notably regarding applications) are
 #	 handled
 #  - web_exchanges: http/https exchanges
 #  - strings: notably for mismatches between plain and binary ones
 #  - registration: regarding naming registering
+#  - sql_support: the support of SQL (database) operations
+#  - protobuf_support: regarding how Protocol Buffer shall be managed
+#
+#  - user_interface: all support regarding user interfaces of all sorts
+#  - repaint_logic: how MyriadGUI manages repaints
+#  - events: how MyriadGUI manages interface-related events
+#  - canvas: how MyriadGUI manages canvases
+#  - instances: how MyriadGUI manages widget instances
+#  - memory: how MyriadGUI manages memory allocated and related lower-level
+#    operations
+#
+#  - linear: for operations on vectors, matrices, etc.
+#  - mesh: for the management of (3D) meshes
+#  - bounding_boxes: for computations of bounding boxes
+#  - opengl: outcome of OpenGL-related operations
+#  - gltf_support: for the support of the glTF 2.0 format
 #
 # Defining debug flags (at least the most verbose are by default commented-out):
 ifeq ($(ENABLE_DEBUG),true)
+
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_third_party_execution
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_code_path
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_otp_integration
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_web_exchanges
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_strings
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_registration
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_sql_support
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_protobuf_support
+
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_user_interface
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_gui_repaint_logic
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_gui_events
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_gui_canvas
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_gui_font
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_gui_instances
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_gui_memory
+
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_linear
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_mesh
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_bounding_boxes
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_opengl
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_gltf_support
+
 endif
 
 # Defining check flags:
 ifeq ($(EXECUTION_TARGET),development)
-	# MYRIAD_CHECK_FLAGS += -Dmyriad_check_strings
+
+	#MYRIAD_CHECK_FLAGS += -Dmyriad_check_strings
+	#MYRIAD_CHECK_FLAGS += -Dmyriad_check_protobuf_support
+	#MYRIAD_CHECK_FLAGS += -Dmyriad_check_user_interface
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_check_opengl
+	#MYRIAD_CHECK_FLAGS += -Dmyriad_check_linear
+	#MYRIAD_CHECK_FLAGS += -Dmyriad_check_mesh
+
 endif
+
+
+# Some test-specific debug flags:
+#MYRIAD_DEBUG_FLAGS += -Dmyriad_gui_test_verbose
 
 
 # As, with Myriad, the trace system relies on console output, the default here
@@ -159,7 +210,7 @@ endif
 #
 # (useful in contexts where stacktraces tend to vanish)
 #
-MYRIAD_DEBUG_FLAGS += -Dmyriad_add_stacktraces
+#MYRIAD_DEBUG_FLAGS += -Dmyriad_add_stacktraces
 
 
 ERLANG_COMPILER_OPT_BASE += $(MYRIAD_DEBUG_FLAGS)             \
@@ -200,7 +251,7 @@ endif
 # The uniquely-defined version of this layer, for all uses (including rebar and
 # hex):
 #
-MYRIAD_VERSION := 1.0.19
+MYRIAD_VERSION := 1.0.22
 
 
 # PROJECT_VERSION should be defined on a per-project basis.
@@ -344,10 +395,14 @@ MYRIAD_BEAM := $(MYRIAD_TOP)/src
 # BEAM_DIRS are relative paths of BEAM files, ABS_BEAM_DIRS are the
 # corresponding absolute paths.
 #
-# As the 'include' structure matches the one of 'src' (only drawback: includes a
+
+# As the 'include' structure mostly matches the one of 'src', we just replace
+# the first 'src' by 'include', knowing that any extra 'src' may be useful for
+# sources (as a 'doc' directory may coexist at the same level) yet has no
+# interest for includes, hence is stripped out (only drawback: includes a
 # non-necessary 'ebin' directory):
 #
-INC += $(foreach dir,$(BEAM_DIRS),-I$$(echo $(dir)|sed 's|src|include|1'))
+INC += $(foreach dir,$(BEAM_DIRS),-I$$(echo $(dir) | sed 's|src|include|1' | sed 's|/src||g'))
 
 
 # Special-cased includes for bootstrapped modules, which by default are
@@ -360,13 +415,25 @@ BOOTSTRAP_INCLUDES := -I$(MYRIAD_TOP)/../../include/meta      \
 
 # Extra prerequisite includes:
 
+
 # Optional services, relying on third-party prerequisites:
 #
 # (for them, we do not force the corresponding variable here, in order to let
 # the upper layers be able to decide; if not, the defaults apply)
 #
 # We chose the USE_* variables to be set with '=' rather than with ':=' yet it
-# is not believed to really matter in this case.
+# is not believed to really matter in this case, except that a makefile should
+# include these files (probably indirectly GNUmakesettings.inc) before testing
+# these variables.
+
+# This first service is not strictly a third-party one, as if detected at build
+# time it will pertain to the standard Erlang install; yet it may or may not be
+# available, for long has not existed, and, like gs, may be deprecated some
+# day):
+#
+#USE_WXWINDOWS = false
+#USE_WXWINDOWS = true
+
 
 # For the reading and writing of large, often scientific-oriented data:
 #USE_HDF5 = false
@@ -380,9 +447,32 @@ BOOTSTRAP_INCLUDES := -I$(MYRIAD_TOP)/../../include/meta      \
 #USE_JSON = false
 #USE_JSON = true
 
-# For SQL database operations, based on SQLite 3 operations:
+# To be able to serialise data with the Protobuf (Protocol Buffer) format:
+#USE_PROTOBUF = false
+#USE_PROTOBUF = true
+
+
+
+# To enable SQL with its default backend:
+#USE_SQL = false
+#USE_SQL = true
+
+
+# For SQL lightweight database operations, based on SQLite 3:
+# (see also the 'myriad_sql_backend' preprocessor flag, possibly set to
+# 'sqlite3')
+#
 #USE_SQLITE = false
 #USE_SQLITE = true
+
+# For more demanding SQL database operations, based on PostgreSQL:
+# (see also the 'myriad_sql_backend' preprocessor flag, possibly set to
+# 'postgresql')
+#
+#USE_POSTGRESQL = false
+#USE_POSTGRESQL = true
+
+
 
 # For using an Erlang/Python binding, based on the ErlPort library:
 #USE_PYTHON_BINDING = false
@@ -392,6 +482,24 @@ BOOTSTRAP_INCLUDES := -I$(MYRIAD_TOP)/../../include/meta      \
 #USE_JAVA_BINDING = false
 #USE_JAVA_BINDING = true
 
+
+# Enabled by default, as it is the GUI library used by Erlang whenever
+# available:
+#
+ifndef USE_WXWINDOWS
+	USE_USE_WXWINDOWS = true
+endif
+
+
+ifeq ($(USE_WXWINDOWS),true)
+
+	# myriad_gui_backend may also be either not defined, or set to 'none':
+	GUI_OPTS = -Dmyriad_gui_backend=wxwindows \
+			   -Dmyriad_gui_skip_extra_repaints
+
+	ERLANG_COMPILER_GENERAL_OPT += $(GUI_OPTS)
+
+endif
 
 
 # Deactivated by default, as requires specific prerequisites (the HDF5 library
@@ -451,10 +559,17 @@ ifeq ($(USE_JSON),true)
 		#
 		# $ mkdir -p ~/Software/jsx
 		# $ cd ~/Software/jsx
+
 		# $ git clone git@github.com:talentdeficit/jsx.git
+		#  - or -
+		# $ git clone https://github.com/talentdeficit/jsx.git
+
 		# $ ln -s jsx jsx-current-install
-		# $ cd jsx/
-		# $ rebar3 compile && rebar3 eunit
+
+		# Rebar3 must be already available (otherwise see Ceylan-Hull's
+		# install-rebar3.sh script):
+		#
+		# $ cd jsx/ && rebar3 compile && rebar3 eunit
 
 		# Actually not used, as decided at runtime rather than at compile time:
 		#JSON_OPT = -Duse_jsx_json_backend
@@ -522,28 +637,182 @@ endif
 
 
 
-# Deactivated by default, as requires specific prerequisites:
-#
-# - the SQLite 3 library, ex: sqlite3 and sqlite3-dev packages in Debian, sqlite
-#    on Arch Linux
-# - the SQLite 3 Erlang binding we retained, erlang-sqlite3 (cf
-#    https://github.com/alexeyr/erlang-sqlite3.git)
-#
+# Always defined for example to clean them whereas USE_PROTOBUF disabled:
+PROTOBUF_SPEC_FILES = $(wildcard *.proto)
+
+PROTOBUF_GENERATED_HRL_FILES = $(patsubst %.proto,%.hrl,$(PROTOBUF_SPEC_FILES))
+PROTOBUF_GENERATED_ERL_FILES = $(patsubst %.proto,%.erl,$(PROTOBUF_SPEC_FILES))
+
+PROTOBUF_GENERATED_FILES = $(PROTOBUF_GENERATED_HRL_FILES) $(PROTOBUF_GENERATED_ERL_FILES)
+
+ifeq ($(USE_PROTOBUF),true)
+
+	# Refer to https://myriad.esperide.org/#about-protobuf
+
+
+	# So that user code may conditionally include generated header files of
+	# Protobuf accessors:
+	#
+	ERLANG_COMPILER_GENERAL_OPT += -Dmyriad_uses_protobuf
+
+	# We rely on the gpb compiler.
+
+	USE_GPB = true
+	#USE_GPB = false
+
+	ifeq ($(USE_GPB),true)
+
+		# The GPB compiler is available at
+		# https://github.com/tomas-abrahamsson/gpb
+
+		# Install obtained thanks to (see also
+		# https://myriad.esperide.org/#about-protobuf)
+		#
+		# $ mkdir -p ~/Software/gpb
+		# $ cd ~/Software/gpb
+
+		# $ git clone git@github.com:tomas-abrahamsson/gpb.git
+		#  - or -
+		# $ git clone https://github.com/tomas-abrahamsson/gpb.git
+
+		# $ ln -s gpb gpb-current-install
+		# $ cd gpb && make all
+
+		# A convention of our own that one may want to respect:
+		GPB_SOFTWARE_BASE := $$HOME/Software/gpb/gpb-current-install
+		GPB_SOFTWARE_INSTALL_BASE := $(GPB_SOFTWARE_BASE)/_build/default/lib/gpb
+
+		GPB_COMPILER := $$(PATH=$(GPB_SOFTWARE_BASE)/bin:$$PATH which protoc-erl 2>/dev/null)
+
+		GBP_INC := $(GPB_SOFTWARE_BASE)/include
+
+		# For the compilation of the generated files:
+		INC += -I$(GBP_INC)
+
+		PB_DEPS_FILE = GNUmakedeps.protobuf
+
+		# For the meaning of options, refer to
+		# https://myriad.esperide.org/#about-protobuf
+
+
+		# Currently the generation of dependency files has been disabled as,
+		# should an error be detected in the .proto file, it would not be
+		# displayed with the failing command but would only end up in said
+		# dependency file:
+		#
+		#GPB_SUFFIX_OPT := 1>$(PB_DEPS_FILE)
+		GPB_SUFFIX_OPT :=
+
+
+		# -I$(GBP_INC) is not needed here
+		# -MMD currently removed, as dependencies disabled (see above)
+		#
+		GPB_BASE_OPT := -I. -strbin -pkgs -rename msg_fqname:snake_case -rename msg_fqname:dots_to_underscores -Werror -W1
+
+		ifeq ($(EXECUTION_TARGET),development)
+			GPB_OPT := $(GPB_BASE_OPT) -v always -vdrp -preserve-unknown-fields
+		else
+			GPB_OPT := $(GPB_BASE_OPT) -v never
+		 endif
+
+
+		# PB for Protobuff in general:
+		PB_COMPILER := $(GPB_COMPILER)
+
+		PB_OPT := $(GPB_OPT)
+
+		# No includes for GPB:
+		#INC +=
+
+		# ($(GPB_*_INSTALL_BASE)/ebin/*.beam found at runtime)
+
+		BEAM_DIRS += $(GPB_REBAR_INSTALL_BASE)/ebin
+		ABS_BEAM_DIRS += $(GPB_SOFTWARE_INSTALL_BASE)/ebin
+
+	endif
+
+endif
+
+
+
+
+ifeq ($(USE_SQL),true)
+
+	# Enforce default backend:
+	# (if set to true or not set)
+	#
+	ifneq ($(USE_SQLITE),true)
+		# Default:
+		USE_POSTGRESQL = true
+	endif
+
+	ifeq ($(USE_SQLITE),true)
+		SQL_BACKEND_OPT = -Dmyriad_sql_backend=sqlite3
+	endif
+
+	ifeq ($(USE_POSTGRESQL),true)
+		SQL_BACKEND_OPT = -Dmyriad_sql_backend=postgresql
+	endif
+
+	# myriad_sql_backend may also be either not defined, or set to 'none':
+	ifndef SQL_BACKEND_OPT
+		SQL_BACKEND_OPT = -Dmyriad_sql_backend=none
+	endif
+
+	SQL_OPTS = $(SQL_BACKEND_OPT)
+
+	ERLANG_COMPILER_GENERAL_OPT += $(SQL_OPTS)
+
+
+	# Deactivated by default, as requires specific prerequisites:
+	#
+	# - the SQLite 3 library, ex: sqlite3 and sqlite3-dev packages in Debian, sqlite
+	#    on Arch Linux
+	# - the SQLite 3 Erlang binding we retained, erlang-sqlite3 (cf
+	#    https://github.com/alexeyr/erlang-sqlite3.git)
+	#
+	ifeq ($(USE_SQLITE),true)
+
+		ifndef SQLITE3_BASE
+			SQLITE3_BASE := $$HOME/Software/erlang-sqlite3
+		endif
+
+		INC += -I$(SQLITE3_BASE)/include
+
+		# ($(SQLITE3_BASE)/ebin/*.beam found at runtime)
+
+		ABS_BEAM_DIRS += $(SQLITE3_BASE)/ebin
+
+	endif
+
+	# If not using a (pre-installed) pgsql command-line client, needing
+	# https://github.com/epgsql/epgsql, e.g.:
+	#  $ mkdir -p ~/Software && cd $_
+	#  $ git clone https://github.com/epgsql/epgsql.git
+	#  $ cd epgsql && make all && ln -s ./_build/default/lib/epgsql/ebin
+	#
+	ifeq ($(USE_POSTGRESQL),true)
+
+		ifndef POSTGRESQL_BASE
+			POSTGRESQL_BASE := $$HOME/Software/epgsql
+		endif
+
+		INC += -I$(POSTGRESQL_BASE)/include
+
+		ABS_BEAM_DIRS += $(POSTGRESQL_BASE)/ebin
+
+	endif
+
+endif
+
+
 ifndef USE_SQLITE
 	USE_SQLITE = false
 endif
 
 
-ifeq ($(USE_SQLITE),true)
-
-	SQLITE3_BASE := $$HOME/Software/erlang-sqlite3
-
-	INC += -I$(SQLITE3_BASE)/include
-
-	# ($(SQLITE3_BASE)/ebin/*.beam found at runtime)
-
-	ABS_BEAM_DIRS += $(SQLITE3_BASE)/ebin
-
+ifndef USE_POSTGRESQL
+	USE_POSTGRESQL = false
 endif
 
 
@@ -623,6 +892,23 @@ ifndef BASE_PLT
 endif
 
 
+# For the user interface testing:
+ifndef UI_TEST_BACKEND
+  #UI_TEST_BACKEND = text_ui
+  UI_TEST_BACKEND = term_ui
+  #UI_TEST_BACKEND  = gui
+endif
+
+
+# Single-quoting is necessary, otherwise the selected test backend will be
+# interpreted by make as a target:
+#
+ifndef UI_TEST_OPT
+  ifdef UI_TEST_BACKEND
+	UI_TEST_OPT = "'--use-ui-backend $(UI_TEST_BACKEND)'"
+  endif
+endif
+
 
 # To test conditional checks:
 ERLANG_COMPILER_TEST_TOKEN_OPT := -Dmy_first_test_token            \
@@ -658,10 +944,14 @@ ifeq ($(USE_JSON),false)
 endif
 
 
-ifeq ($(USE_SQLITE),false)
+ifeq ($(USE_SQL),false)
 	EXCLUDED_SOURCES := $(EXCLUDED_SOURCES) sql_support.erl sql_support_test.erl
 endif
 
+
+#ifeq ($(USE_PROTOBUF),false)
+#	EXCLUDED_SOURCES := $(EXCLUDED_SOURCES) $(PROTOBUF_GENERATED_ERL_FILES)
+#endif
 
 ERL_FILES = $(filter-out $(EXCLUDED_SOURCES), $(ALL_ERL_FILES))
 
@@ -767,9 +1057,9 @@ ERLANG_COMPILER := $$(PATH=$(ERLANG_USUAL_ROOT)/bin:$$PATH which erlc 2>/dev/nul
 #ERLANG_COMPILER := echo "COMPILE OPTIONS:"
 
 
-ERLANG_BIN_ROOT := $(shell dirname $(ERLANG_COMPILER) )
+ERLANG_BIN_ROOT := $(shell dirname "$(ERLANG_COMPILER)")
 
-ERLANG_ROOT := $(shell dirname $(ERLANG_BIN_ROOT) )
+ERLANG_ROOT := $(shell dirname "$(ERLANG_BIN_ROOT)")
 
 
 # Note that at least some versions of dialyzer (ex: the one shipped with 17.1)
@@ -798,7 +1088,7 @@ ERLANG_INTERPRETER := $$(PATH=$(ERLANG_USUAL_ROOT)/bin:$$PATH which erl 2>/dev/n
 
 
 # Not using '-smp auto' anymore, as the SMP mode is needed even with a single
-# core if GUI (WxWindows) is to be used:
+# core if wxWindows is to be relied upon:
 #
 # (currently not used)
 #
@@ -856,6 +1146,7 @@ MYRIAD_BEAM_DIRS := $(MYRIAD_BEAM)/apps/generate-password       \
 					$(MYRIAD_BEAM)/scripts                      \
 					$(MYRIAD_BEAM)/user-interface/src/graphical \
 					$(MYRIAD_BEAM)/user-interface/src/textual   \
+					$(MYRIAD_BEAM)/user-interface/src/audio     \
 					$(MYRIAD_BEAM)/user-interface/src           \
 					$(MYRIAD_BEAM)/utils
 
@@ -880,8 +1171,11 @@ MYRIAD_BEAM_DIRS := $(MYRIAD_BEAM)/apps/generate-password       \
 BEAM_DIRS += $(MYRIAD_BEAM_DIRS) $(MYRIAD_TOP)/.. $(MYRIAD_TOP)/ebin
 
 
-ERL_LAUNCHER = $(MYRIAD_SRC)/scripts/launch-erl.sh
+ERL_LAUNCHER = "$(MYRIAD_SRC)/scripts/launch-erl.sh"
 
+
+# If wanting to specify (Erlang) configuration file(s):
+# INTERNAL_OPTIONS += --config my-traces-test.config
 
 
 # Compiler section.

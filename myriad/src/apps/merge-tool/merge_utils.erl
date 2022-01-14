@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2021 Olivier Boudeville
+% Copyright (C) 2016-2022 Olivier Boudeville
 %
 % Transferred from merge-tree.escript to benefit from a more user-friendly
 % debugging.
@@ -6,7 +6,6 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 %
 % Released as LGPL software.
-%
 
 
 % @doc Module in charge of providing the actual support for the <b>management of
@@ -112,25 +111,25 @@
 %
 -record( file_data, {
 
-		   % Path of this file (an identifier thereof), relative to the tree
-		   % root:
-		   %
-		   path :: bin_file_path(),
+	% Path of this file (an identifier thereof), relative to the tree
+	% root:
+	%
+	path :: bin_file_path(),
 
-		   % Type of the file element:
-		   type :: file_utils:entry_type(),
+	% Type of the file element:
+	type :: file_utils:entry_type(),
 
-		   % Precise size, in bytes, of that file:
-		   size :: byte_size(),
+	% Precise size, in bytes, of that file:
+	size :: byte_size(),
 
-		   % Timestamp of the last content modification of this file, as known
-		   % of the filesystem, and as an integer number of seconds since
-		   % 1970-01-01 00:00 UTC:
-		   %
-		   timestamp :: posix_seconds(),
+	% Timestamp of the last content modification of this file, as known of the
+	% filesystem, and as an integer number of seconds since 1970-01-01 00:00
+	% UTC:
+	%
+	timestamp :: posix_seconds(),
 
-		   % SHA1 sum of the content of that file:
-		   sha1_sum :: sha1() } ).
+	% SHA1 sum of the content of that file:
+	sha1_sum :: sha1() } ).
 
 -type file_data() :: #file_data{}.
 % Data associated (in-memory) to a given file-like element.
@@ -154,37 +153,33 @@
 % Data associated to a content tree.
 -record( tree_data, {
 
-		   % The full hostname where the corresponding tree exists (as we may
-		   % check an actual, local tree against a copy of a cache file for a
-		   % remote tree)
-		   %
-		   hostname :: bin_fqdn(),
+	% The full hostname where the corresponding tree exists (as we may check an
+	% actual, local tree against a copy of a cache file for a remote tree)
+	%
+	hostname :: bin_fqdn(),
 
-		   % Base, absolute (binary) path of the root of that tree in the
-		   % filesystem:
-		   %
-		   root :: bin_directory_path(),
+	% Base, absolute (binary) path of the root of that tree in the filesystem:
+	root :: bin_directory_path(),
 
-		   % Each key is the SHA1 sum of a file content, each value is a list of
-		   % the file entries whose content matches that sum (hence are supposed
-		   % the same).
-		   %
-		   entries = table:new() :: sha1_table(),
+	% Each key is the SHA1 sum of a file content, each value is a list of the
+	% file entries whose content matches that sum (hence are supposed the same).
+	%
+	entries = table:new() :: sha1_table(),
 
-		   % Total count of the regular files found in this tree:
-		   file_count = 0 :: count(),
+	% Total count of the regular files found in this tree:
+	file_count = 0 :: count(),
 
-		   % Total count of the directories found in this tree:
-		   directory_count = 0 :: count(),
+	% Total count of the directories found in this tree:
+	directory_count = 0 :: count(),
 
-		   % Total count of the symbolic links found in this tree:
-		   symlink_count = 0 :: count(),
+	% Total count of the symbolic links found in this tree:
+	symlink_count = 0 :: count(),
 
-		   % Total count of the devices found in this tree:
-		   device_count = 0 :: count(),
+	% Total count of the devices found in this tree:
+	device_count = 0 :: count(),
 
-		   % Total count of the other elements found in this tree:
-		   other_count = 0 :: count() } ).
+	% Total count of the other elements found in this tree:
+	other_count = 0 :: count() } ).
 
 -type tree_data() :: #tree_data{}.
 % Data associated to a content tree.
@@ -592,8 +587,8 @@ handle_equalize_option( FirstTreePath, SecondTreePath, EqualizeArgTable,
 
 	BinSecondTreePath = text_utils:ensure_binary( SecondTreePath ),
 
-	BinAbsSecondTreePath = file_utils:ensure_path_is_absolute(
-								BinSecondTreePath, BinBaseDir ),
+	BinAbsSecondTreePath =
+		file_utils:ensure_path_is_absolute(	BinSecondTreePath, BinBaseDir ),
 
 	% Prepare for various outputs:
 	UserState = start_user_service( ?default_log_filename ),
@@ -647,14 +642,14 @@ handle_equalize_option( FirstTreePath, SecondTreePath, EqualizeArgTable,
 	% duplicates-wise:
 	%
 	%display_tree_data( FirstTreeData, text_utils:format(
-	%						"Resulting first equalized tree '~ts'",
-	%						[ FirstTreeData#tree_data.root ] ), UserState ),
+	%   "Resulting first equalized tree '~ts'",
+	%   [ FirstTreeData#tree_data.root ] ), UserState ),
 
 	%ui:set_setting( title, "Equalize report for second tree" ),
 
 	%display_tree_data( SecondTreeData, text_utils:format(
-	%						"Resulting second equalized tree '~ts'",
-	%						[ SecondTreeData#tree_data.root ] ), UserState ),
+	%   "Resulting second equalized tree '~ts'",
+	%   [ SecondTreeData#tree_data.root ] ), UserState ),
 
 	write_cache_file( FirstTreeData, UserState ),
 	write_cache_file( SecondTreeData, UserState ),
@@ -857,8 +852,8 @@ stop_on_option_error( Option, ExpectedParamCount, Params, ErrorCode ) ->
 
 		[] ->
 			text_utils:format( "no parameter specified for the '-~ts' option, "
-							   "whereas expecting ~B of them",
-							   [ Option, ExpectedParamCount ] );
+				"whereas expecting ~B of them",
+				[ Option, ExpectedParamCount ] );
 
 		[ Param ] ->
 			text_utils:format( "a single parameter specified for "
@@ -918,8 +913,8 @@ scan( BinTreePath, AnalyzerRing, UserState ) ->
 		true ->
 
 			ChoicePrompt = text_utils:format(
-					   "A cache file already exists for '~ts'. We can:",
-					   [ BinTreePath ] ),
+				"A cache file already exists for '~ts'. We can:",
+				[ BinTreePath ] ),
 
 			% No 'strong_check' deemed useful (synonym of recreating from
 			% scratch, hence of 'ignore').
@@ -942,7 +937,7 @@ scan( BinTreePath, AnalyzerRing, UserState ) ->
 					% file:
 					%
 					%ui:display( "Performing a weak check of '~ts'.",
-					%			[ CacheFilename ] ),
+					%            [ CacheFilename ] ),
 					UpTreeData = update_content_tree( BinTreePath, AnalyzerRing,
 													  UserState ),
 
@@ -962,7 +957,7 @@ scan( BinTreePath, AnalyzerRing, UserState ) ->
 
 				no_check ->
 					%ui:display( "Re-using '~ts' with no specific check.",
-					%			[ CacheFilename ] ),
+					%            [ CacheFilename ] ),
 					read_cache_file( CacheFilename, UserState );
 
 				C when C =:= abort orelse C =:= ui_cancel ->
@@ -1004,7 +999,7 @@ perform_scan( TreePath, AnalyzerRing, UserState ) ->
 	TreeData = scan_helper( TreePath, AnalyzerRing, UserState ),
 
 	%ui:display( "Scan result stored in '~ts': ~ts",
-	%			[ CacheFilename, tree_data_to_string( TreeData ) ] ),
+	%            [ CacheFilename, tree_data_to_string( TreeData ) ] ),
 
 	TreeData.
 
@@ -1189,12 +1184,12 @@ rescan_files( FileSet, _Entries=[], TreeData, BinTreePath, AnalyzerRing,
 			%
 			lists:foldl(
 			  fun( Filename, AccRing ) ->
-					  { AnalyzerPid, NewAccRing } = ring_utils:head( AccRing ),
-					  trace_debug( "Checking new file ~ts", [ Filename ],
-								   UserState ),
-					  AnalyzerPid !
-						  { checkNewFile, [ BinTreePath, Filename ], self() },
-					  NewAccRing
+				{ AnalyzerPid, NewAccRing } = ring_utils:head( AccRing ),
+				trace_debug( "Checking new file ~ts", [ Filename ],
+							 UserState ),
+				AnalyzerPid !
+					{ checkNewFile, [ BinTreePath, Filename ], self() },
+				NewAccRing
 			  end,
 			  _Acc0=AnalyzerRing,
 			  _List=ExtraFiles ),
@@ -1202,12 +1197,12 @@ rescan_files( FileSet, _Entries=[], TreeData, BinTreePath, AnalyzerRing,
 			% Waiting for all corresponding file_data elements:
 			ExtraFileDatas = lists:foldl(
 			  fun( _Count, AccFileDatas ) ->
-					  receive
+				receive
 
-						  { file_checked, FileData } ->
-							  [ FileData | AccFileDatas ]
+					  { file_checked, FileData } ->
+						  [ FileData | AccFileDatas ]
 
-					  end
+				end
 			  end,
 			  _SecondAcc0=[],
 			  _SecondList=lists:seq( 1, length( ExtraFiles ) ) ),
@@ -1360,13 +1355,13 @@ check_file_datas_for_scan( _FileDatas=[
 						% Different size, recreating the record from scratch:
 						OtherSize ->
 							NewNotif = text_utils:format(
-							   "file '~ts' had a different size (moved "
-							   "from '~ts' to '~ts'), it has thus been "
-							   "reindexed.",
-							   [ FullPath, system_utils:interpret_byte_size(
-								  RecordedSize ),
-								 system_utils:interpret_byte_size( OtherSize )
-							   ] ),
+								"file '~ts' had a different size (moved "
+								"from '~ts' to '~ts'), it has thus been "
+								"reindexed.",
+								[ FullPath, system_utils:interpret_byte_size(
+											  RecordedSize ),
+								  system_utils:interpret_byte_size( OtherSize )
+								] ),
 
 							trace_debug( NewNotif, UserState ),
 
@@ -1388,7 +1383,8 @@ check_file_datas_for_scan( _FileDatas=[
 				OtherTimestamp ->
 
 					NewNotif = text_utils:format( "file '~ts' had a different "
-					  "timestamp, it has thus been reindexed.", [ FullPath ] ),
+						"timestamp, it has thus been reindexed.",
+						[ FullPath ] ),
 
 					trace_debug( NewNotif, UserState ),
 
@@ -1595,8 +1591,8 @@ resync_files( FileSet, _Entries=[], TreeData, BinTreePath, AnalyzerRing,
 			lists:foldl(
 			  fun( Filename, AccRing ) ->
 					  { AnalyzerPid, NewAccRing } = ring_utils:head( AccRing ),
-					  AnalyzerPid ! { checkNewFile,
-									  [ BinTreePath, Filename ], self() },
+					  AnalyzerPid !
+						  { checkNewFile, [ BinTreePath, Filename ], self() },
 					  NewAccRing
 			  end,
 			  _Acc0=AnalyzerRing,
@@ -1724,13 +1720,13 @@ check_file_datas_for_sync( _FileDatas=[
 						% Different size, recreating the record from scratch:
 						OtherSize ->
 							NewNotif = text_utils:format(
-							   "file '~ts' had a different size (moved "
-							   "from '~ts' to '~ts'), it has thus been "
-							   "reindexed.",
-							   [ FullPath, system_utils:interpret_byte_size(
-								  RecordedSize ),
-								 system_utils:interpret_byte_size( OtherSize )
-							   ] ),
+								 "file '~ts' had a different size (moved "
+								 "from '~ts' to '~ts'), it has thus been "
+								 "reindexed.",
+								 [ FullPath, system_utils:interpret_byte_size(
+											   RecordedSize ),
+								   system_utils:interpret_byte_size( OtherSize )
+								 ] ),
 
 							trace_debug( NewNotif, UserState ),
 
@@ -1860,8 +1856,8 @@ merge( InputTreePath, ReferenceTreePath ) ->
 	end,
 
 	trace_debug(
-	  "Merging (possibly newer) tree '~ts' into reference tree '~ts'...",
-	  [ InputTreePath, ReferenceTreePath ], UserState ),
+		"Merging (possibly newer) tree '~ts' into reference tree '~ts'...",
+		[ InputTreePath, ReferenceTreePath ], UserState ),
 
 	check_content_trees( InputTreePath, ReferenceTreePath ),
 
@@ -1922,10 +1918,10 @@ merge_trees( InputTree=#tree_data{ root=InputRootDir,
 
 		0 ->
 			ui:display( "The content of the input tree path ('~ts') is "
-			  "strictly included into the one of the reference tree ('~ts'), "
-			  "hence nothing special is to merge, removing directly "
-			  "the input tree.",
-			  [ InputRootDir, ReferenceRootDir ] ),
+				"strictly included into the one of the reference tree ('~ts'), "
+				"hence nothing special is to merge, removing directly "
+				"the input tree.",
+				[ InputRootDir, ReferenceRootDir ] ),
 
 			remove_tree( InputRootDir, UserState ),
 
@@ -2146,7 +2142,9 @@ integrate_content_to_merge(
 
 		delete ->
 			% Might happen, typically for empty files:
+			%
 			% (possibly one content, multiple elements)
+			%
 			DelPrompt = text_utils:format( "Really delete the ~B "
 				"unique content element(s) found in the input tree ('~ts')?",
 				[ ContentCount, InputRootDir ] ),
@@ -2320,7 +2318,7 @@ move_content_to_integrate( _ToMove=[ SHA1 | T ], InputRootDir, InputEntries,
 			%DefaultChoiceIndex = hd( Choices ),
 
 			%Index = case ui:choose_numbered_item_with_default( Prompt, Choices,
-			%								DefaultChoiceIndex ) of
+			%                               DefaultChoiceIndex ) of
 
 			Index = case ui:choose_numbered_item( Prompt, Choices ) of
 
@@ -2722,7 +2720,7 @@ cherry_pick_files_to_merge( _SHA1sToPick=[ SHA1 | T ], InputRootDir,
 
 			% Avoiding defining defaults:
 			%case ui:choose_designated_item_with_default( Prompt, PickChoices,
-			%		_DefaultChoiceDesignator=move ) of
+			%   _DefaultChoiceDesignator=move ) of
 
 			case ui:choose_designated_item( Prompt, PickChoices ) of
 
@@ -2882,8 +2880,8 @@ delete_content_to_merge( SHA1sToDelete, InputRootDir, InputEntries,
 						 UserState ) ->
 
 	Paths = [ begin
-				  FileDatas = table:get_value( SHA1, InputEntries ),
-				  [ file_utils:bin_join( InputRootDir, P )
+				FileDatas = table:get_value( SHA1, InputEntries ),
+				[ file_utils:bin_join( InputRootDir, P )
 					|| #file_data{ path=P } <- FileDatas ]
 			  end || SHA1 <- SHA1sToDelete ],
 
@@ -2901,9 +2899,9 @@ delete_content_to_merge( SHA1sToDelete, InputRootDir, InputEntries,
 
 		SymlinksToRemove ->
 			[ begin
-				  LnkFullPath = file_utils:bin_join( InputRootDir, LnkPath ),
-				  % Trace emitted just afterwards:
-				  file_utils:remove_symlink( LnkFullPath )
+				LnkFullPath = file_utils:bin_join( InputRootDir, LnkPath ),
+				% Trace emitted just afterwards:
+				file_utils:remove_symlink( LnkFullPath )
 			  end || LnkPath <- SymlinksToRemove ],
 			trace_debug( "Removed ~B extraneous symlinks from '~ts': ~ts",
 				[ length( SymlinksToRemove ), InputRootDir,
@@ -2957,8 +2955,8 @@ safe_move( SourceRootDir, SourceRelPath, TargetRootDir, TargetSubPath,
 				file_utils:get_non_clashing_entry_name_from( AbsTargetPath ),
 
 			ui:display_warning(
-			  "File '~ts', due to a clash in target location '~ts', had to be "
-			  "moved to '~ts' instead.",
+				"File '~ts', due to a clash in target location '~ts', "
+			  "had to be moved to '~ts' instead.",
 			  [ AbsSourcePath, AbsTargetPath, FixedAbsTargetPath ] ),
 
 			% Nothing simpler than:
@@ -3012,8 +3010,8 @@ safe_copy( SourceRootDir, SourceRelPath, TargetRootDir, UserState ) ->
 				file_utils:get_non_clashing_entry_name_from( AbsTargetPath ),
 
 			ui:display_warning(
-			  "File '~ts', due to a clash, had to be copied to '~ts'.",
-			  [ AbsSourcePath, FixedAbsTargetPath ] ),
+				"File '~ts', due to a clash, had to be copied to '~ts'.",
+				[ AbsSourcePath, FixedAbsTargetPath ] ),
 
 			% Nothing simpler than:
 			FixedRelTargetPath = file_utils:make_relative( FixedAbsTargetPath,
@@ -3397,8 +3395,8 @@ handle_newest_timestamp( NewestTimestamp, ContentFiles, CacheFilePath,
 
 				TreeData ->
 					ui:display_instant(
-					  "Cache file seems to match actual tree '~ts', "
-					  "considering it legit.", [ BinTreePath ] ),
+						"Cache file seems to match actual tree '~ts', "
+						"considering it legit.", [ BinTreePath ] ),
 					TreeData
 
 			end
@@ -3550,12 +3548,12 @@ write_entries( File,
 			% Cannot do better to store a list of Unicode codepoints:
 			Comment = text_utils:format( "~n% Corresponds to '~ts' "
 				"(not an Unicode filename):~n", [ RelativePath ] ),
-			{ Comment, io_lib:format( "~w", [ RelativePath ] ) };
+			{ Comment, text_utils:format( "~w", [ RelativePath ] ) };
 
 		UnicodeStr ->
 			% Will be readable and usable afterwards:
-			PathDesc = io_lib:format( "<<\"~ts\"/utf8>>",
-								[ file_utils:escape_path( UnicodeStr ) ] ),
+			PathDesc = text_utils:format( "<<\"~ts\"/utf8>>",
+				[ file_utils:escape_path( UnicodeStr ) ] ),
 			{ undefined, PathDesc }
 
 	end,
@@ -3837,7 +3835,7 @@ analyze_loop() ->
 				file_utils:bin_join( AbsTreeBinPath, RelativeBinFilename ),
 
 			%trace_bridge:debug_fmt( "Analyzer ~w taking in charge '~ts'...",
-			%						[ self(), BinFilePath ] ),
+			%                        [ self(), BinFilePath ] ),
 
 			case file_utils:is_existing_file( BinFilePath ) of
 
@@ -3847,10 +3845,10 @@ analyze_loop() ->
 					   path=RelativeBinFilename,
 					   type=file_utils:get_type_of( BinFilePath ),
 					   size=file_utils:get_size( BinFilePath ),
-					   timestamp=
-						 file_utils:get_last_modification_time( BinFilePath ),
+					   timestamp=file_utils:get_last_modification_time(
+									BinFilePath ),
 					   sha1_sum=
-						 executable_utils:compute_sha1_sum( BinFilePath ) },
+							executable_utils:compute_sha1_sum( BinFilePath ) },
 
 					% To avoid overheating:
 					timer:sleep( 50 ),
@@ -4032,8 +4030,8 @@ manage_duplicates( EntryTable, BinRootDir, UserState ) ->
 			Choices = [
 				{ resolve, "Resolve duplication cases one by one" },
 				{ auto, "Elect automatically (based on shortest path) "
-				  "for each case a reference file to which the other "
-				  "duplicates are symlinked" },
+					"for each case a reference file to which the other "
+					"duplicates are symlinked" },
 				{ abort, "Abort deduplication" } ],
 
 			case ui:choose_designated_item( Prompt, Choices ) of
@@ -4114,7 +4112,7 @@ process_duplications_helper( _DupCases=[], _TotalDupCount,
 		_UserState ) ->
 
 	%trace_debug( "Post-deduplication unique table: ~ts",
-	%			 [ table:to_string( AccTable ) ], UserState ),
+	%             [ table:to_string( AccTable ) ], UserState ),
 
 	{ AccTable, AccRemoveCount };
 
@@ -4411,16 +4409,16 @@ auto_dedup( _DuplicationCases=[ { Sha1Key, DuplicateList } | T ], AccTable,
 
 	[ begin
 
-		  AbsLnkPath = file_utils:bin_join( BinRootDir, LnkPath ),
+			AbsLnkPath = file_utils:bin_join( BinRootDir, LnkPath ),
 
-		  remove_file( AbsLnkPath, UserState ),
+			remove_file( AbsLnkPath, UserState ),
 
-		  RelTargetPath = file_utils:make_relative( AbsRefPath,
+			RelTargetPath = file_utils:make_relative( AbsRefPath,
 									file_utils:get_base_path( AbsLnkPath ) ),
 
-		  file_utils:create_link( RelTargetPath, AbsLnkPath )
+			file_utils:create_link( RelTargetPath, AbsLnkPath )
 
-		  end || LnkPath <- SymLnkPaths ],
+	  end || LnkPath <- SymLnkPaths ],
 
 	NewAccTable = table:add_entry( Sha1Key, [ RefFD ], AccTable ),
 
@@ -5014,14 +5012,14 @@ describe_content( SHA1, SHA1Table, RootPath, MaybeDeltaFile ) ->
 		[ FirstFileData, _SecondFileData ] ->
 			FirstContentPath = FirstFileData#file_data.path,
 			{ FirstContentPath, text_utils:format(
-									"in '~ts' (and in another duplicate)",
-									[ FirstContentPath ] ) };
+				"in '~ts' (and in another duplicate)",
+				[ FirstContentPath ] ) };
 
 		[ FirstFileData| T ] ->
 			FirstContentPath = FirstFileData#file_data.path,
 			{ FirstContentPath, text_utils:format(
-								"in '~ts' (and in ~B other duplicates)",
-								[ FirstContentPath, length( T ) ] ) }
+				"in '~ts' (and in ~B other duplicates)",
+				[ FirstContentPath, length( T ) ] ) }
 
 	end,
 
@@ -5314,4 +5312,4 @@ file_data_to_string( #file_data{ path=Path,
 sha1_to_string( SHA1 ) ->
 	% Mimics the output of the sha1sum executable:
 	text_utils:to_lowercase(
-	  text_utils:integer_to_hexastring( SHA1, _AddPrefix=false ) ).
+		text_utils:integer_to_hexastring( SHA1, _AddPrefix=false ) ).

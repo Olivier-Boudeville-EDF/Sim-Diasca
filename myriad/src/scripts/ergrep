@@ -1,10 +1,11 @@
 #!/bin/sh
 
-usage="Usage: $(basename $0) [-v|--verbose] [-q|--quiet] [-f|--filenames-only] [-i|--insensitive] EXPR [TARGET_BASE_DIR]: recursive grep in Erlang source files in order to search for the specified expression in the target sources, either from the TARGET_BASE_DIR directory, if specified, otherwise from the current directory.
+usage="Usage: $(basename $0) [-v|--verbose] [-q|--quiet] [-hd|--headers-only] [-f|--filenames-only] [-i|--insensitive] EXPR [TARGET_BASE_DIR]: recursive grep in Erlang source files in order to search for the specified expression in the target sources, either from the TARGET_BASE_DIR directory, if specified, otherwise from the current directory.
 
   Options:
    -v or --verbose: be specifically verbose
    -q or --quiet: be specifically quiet, just listing matches
+   -hd or --headers-only: searches only in header files (*.hrl; not in *.erl files)
    -f or --filenames-only: display only filenames, not also the matched patterns, and if there are multiple matches in the same file, its filename will be output only once (implies quiet); useful for scripts
    -i or --insensitive: perform case-insensitive searches in the content of files, and also in the searched Erlang filenames
 
@@ -43,6 +44,8 @@ verbose=1
 quiet=1
 
 insensitive_opt=""
+
+headers_only=1
 filenames_only=1
 
 
@@ -93,6 +96,13 @@ while [ ${token_eaten} -eq 0 ]; do
 		quiet=0
 		#echo "Quiet mode activated."
 		token_eaten=0
+	fi
+
+	if [ "${read_parameter}" = "--headers-only" -o "${read_parameter}" = "-hd" ]; then
+		headers_only=0
+		[ ${quiet} -eq 0 ] || echo "Only headers will be displayed."
+		token_eaten=0
+
 	fi
 
 	if [ "${read_parameter}" = "--filenames-only" -o "${read_parameter}" = "-f" ]; then
@@ -162,7 +172,7 @@ searched_expr="${read_parameter}"
 #echo "searched_expr = ${searched_expr}"
 
 
-# Then check no parameter remains:
+# Then check that no parameter remains:
 
 if [ $# -ge 1 ]; then
 
@@ -175,8 +185,14 @@ fi
 
 base_grep_opt="--color"
 
-# NEVER surround these single quotes by double ones:
-filter_erl='*.?rl'
+if [ $headers_only -eq 0 ]; then
+	filter_erl='*.hrl'
+	filter_msg="all Erlang header files"
+else
+	# NEVER surround these single quotes by double ones:
+	filter_erl='*.?rl'
+	filter_msg="all Erlang files"
+fi
 
 # Unable to properly define a correctly-protected variable:
 #filter_expr="${name_opt} ${filter_erl}"
@@ -192,7 +208,7 @@ fi
 
 
 [ ${quiet} -eq 0 ] || echo "
-  Recursive grep for expression <${searched_expr}> in all Erlang files from '${full_base_dir}' (i.e. '${target_base_dir}'):
+  Recursive grep for expression <${searched_expr}> in all ${filter_msg} from '${full_base_dir}' (i.e. '${target_base_dir}'):
 	"
 
 if [ ${filenames_only} -eq 1 ]; then

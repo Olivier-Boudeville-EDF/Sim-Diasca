@@ -1,4 +1,4 @@
-% Copyright (C) 2015-2021 Olivier Boudeville
+% Copyright (C) 2015-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -24,7 +24,6 @@
 
 % Creation date: Friday, July 31, 2015
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
-
 
 
 % @doc This module centralises the support for <b>HDF5</b> (<em>Hierarchical
@@ -187,7 +186,7 @@
 % Byte order of an atomic datatype.
 
 
--type dataset_name() :: string().
+-type dataset_name() :: ustring().
 % The name of a HDF5 dataset.
 
 
@@ -937,7 +936,8 @@ create_dataset( DatasetName, Datatype, Dataspace, PropertyList, File ) ->
 -spec open_dataset( dataset_name(), hdf5_file() ) -> dataset().
 open_dataset( DatasetName, File ) ->
 
-	%io:format( "Opening dataset '~s' from file ~p.~n", [ DatasetName, File ] ),
+	%trace_utils:debug_fmt( "Opening dataset '~ts' from file ~p.",
+	%   [ DatasetName, File ] ),
 
 	case erlhdf5:h5dopen( File, DatasetName ) of
 
@@ -1080,7 +1080,7 @@ update( Data, Index, Dataset ) ->
 % @doc Reads the specified named dataset of specified type and tuple size from
 % specified file, returning it as a list of tuples of specified size.
 %
--spec read( string(), supported_datatypes(), basic_utils:count(),
+-spec read( ustring(), supported_datatypes(), basic_utils:count(),
 			hdf5_file() ) -> data().
 read( DatasetName, DataType, TupleSize, File ) ->
 

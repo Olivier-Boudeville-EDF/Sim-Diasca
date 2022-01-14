@@ -1,95 +1,210 @@
 ;; This is an initialization script written in elisp.
 ;; Refer to https://www.gnu.org/software/emacs/manual/html_node/elisp/
 
-;; Inspired from https://github.com/erlang-ls/erlang_ls/blob/main/misc/dotemacs
-;; This configuration can be compared with the exammple one, ex:
-;; emacs -q -l ~/Software/erlang_ls/misc/dotemacs XXX.erl
+
+;; Section for package management with straight.el
+
+; straight.el is a replacement for package.el (not use-package).
+;; use-package can be used with either package.el or straight.el.
+
+(setq package-enable-at-startup nil)
+
+(defvar bootstrap-version)
+(let ((bootstrap-file
+	   (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+	  (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+	(with-current-buffer
+		(url-retrieve-synchronously
+		 "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+		 'silent 'inhibit-cookies)
+	  (goto-char (point-max))
+	  (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
+(straight-use-package 'use-package)
 
 
-;; Note: on a new install, or to update an older one, uncomment once
-;; (temporarily) the 'package-refresh-contents)' line below.
 
+;; For proper mouse search:
 
-
-;; Temporarily added, to silence 'Package cl is deprecated':
-(setq byte-compile-warnings '(cl-functions))
-
-;; Use our 'update-emacs-modules.sh' script to update the *.el files of
-;; interest.
+;; Do not consider underscores and dashes as word separators (otherwise
+;; mouse-based search changes its selection during search):
 ;;
-;; (disabled, as now preferring the Emacs 'packages' system)
+;; (probably a bad idea, search patterns seem not to be found when having a
+;; prefix)
 ;;
-;;(setq load-path (cons "~/.emacs.d/my-modules" load-path))
-
-(require 'package)
-
-(add-to-list 'package-archives
-			 '("melpa" . "https://melpa.org/packages/") t)
-
-(package-initialize)
-
-;; Not necessarily a good idea, as launching Emacs becomes slow and dependent
-;; on the availability of network for the lookup of the package referential:
-;;
-;;(package-refresh-contents)
+;;(global-superword-mode 1)
 
 
-;; Utility function that either installs a package (if it is
-;; missing) or requires it (if it already installed).
-;;
-(defun package-require (pkg &optional require-name)
-  "Install a package iff it is not already installed."
-  (when (not (package-installed-p pkg))
-	(package-install pkg))
-  (if require-name
-	  (require require-name)
-	(require pkg)))
-
-(require 'package)
+;; Not useful finally for mouse searches:
+;;(straight-use-package 'helm)
 
 
+;; See https://stackoverflow.com/questions/202803/searching-for-marked-selected-text-in-emacs:
+(defun jrh-isearch-with-region ()
+  "Use region as the isearch text."
+  (interactive)
+  (when mark-active
+	(let ((region (funcall region-extract-function nil)))
+	  (deactivate-mark)
+	  (isearch-push-state)
+	  (isearch-yank-string region))))
 
-;; No more annoying, unmutable bell (ex: when reaching buffer bounds):
+(add-hook 'isearch-mode-hook #'jrh-isearch-with-region)
+
+(progn
+
+  ;; set arrow keys in isearch. left/right is backward/forward, up/down is
+  ;; history. press Return to exit
+
+  (define-key isearch-mode-map (kbd "<up>") 'isearch-ring-retreat )
+  (define-key isearch-mode-map (kbd "<down>") 'isearch-ring-advance )
+
+  (define-key isearch-mode-map (kbd "<left>") 'isearch-repeat-backward)
+  (define-key isearch-mode-map (kbd "<right>") 'isearch-repeat-forward)
+
+  (define-key isearch-mode-map [(mouse-3)] 'isearch-repeat-forward)
+
+  ;; Only drawback: as the mark is at the end of the expression, we have to
+  ;; request each previous occurrence twice:
+  ;;
+  (define-key isearch-mode-map [(shift mouse-3)] 'isearch-repeat-backward)
+
+  (define-key minibuffer-local-isearch-map (kbd "<left>") 'isearch-reverse-exit-minibuffer)
+  (define-key minibuffer-local-isearch-map (kbd "<right>") 'isearch-forward-exit-minibuffer))
+
+
+;;(require 'acme-search)
+;;(global-set-key [(mouse-3)] #'acme-search-forward)
+;;(global-set-key [(shift mouse-3)] #'acme-search-backward)
+
+
+;;(global-set-key [(mouse-3)] #'jrh-isearch-with-region)
+(global-set-key [(mouse-3)] #'isearch-forward)
+
+;;(global-set-key [(shift mouse-3)] #'acme-search-backward)
+(global-set-key [(shift mouse-3)] #'isearch-backward)
+
+
+
+;; Set foreground and background colors:
+
+(set-foreground-color "white")
+(set-background-color "black")
+
+;;; Set highlighting colors for isearch and drag
+;;(set-face-foreground 'highlight "white")
+
+;; Color for the cursor line:
+(set-face-background 'highlight "gray19")
+;;(set-face-background 'highlight "black")
+
+(set-face-foreground 'region "black")
+(set-face-background 'region "lightgreen")
+
+;;(set-face-foreground 'secondary-selection "skyblue")
+;;(set-face-background 'secondary-selection "darkblue")
+(set-face-foreground 'secondary-selection "red")
+(set-face-background 'secondary-selection "green")
+
+;; Turns off a blinking cursor:
+(if (fboundp 'blink-cursor-mode)
+	(blink-cursor-mode -1))
+
+;;(setq frame-background-mode 'dark)
+'(frame-background-mode (quote dark))
+
+(global-font-lock-mode t)
+(setq font-lock-maximum-decoration t)
+(setq font-lock-maximum-size nil)
+(transient-mark-mode t)
+
+(setq use-file-dialog nil)
+
+;;(standard-display-european 1)
+
+(setq vc-follow-symlinks nil)
+(setq line-move-visual nil)
+
+
+;; Moves the cursor across "physical lines":
+;; (finally deactivated, as the 'go to end of line' key was leading to the
+;; cursor going downward...)
+;;(require 'physical-line)
+;;(add-hook 'find-file-hooks 'physical-line-mode-without-exception)
+
+
+;; Only for older Emacs apparently:(setq default-tab-width 4)
+(setq-default tab-width 4)
+
+(setq tab-width 4)
+
+(setq scroll-step 1)
+(show-paren-mode 1)
+(delete-selection-mode 1)
+(transient-mark-mode 1)
+(savehist-mode 1)
+
+(setq frame-title-format '("%b" (buffer-file-name ": %f")))
+
+
+(server-start)
+
+;; No more question about clients being still there:
+;; (must be *after* server-start)
+(remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function)
+
+
+(setq tags-table-list '("~/.ctags.d"))
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(blink-cursor-mode nil)
+ '(column-number-mode t)
+ ;;'(package-selected-packages '(flycheck yasnippet which-key lsp-origami helm-lsp erlang))
+ '(package-selected-packages '(flycheck which-key erlang))
+ '(show-paren-mode t)
+ ;; Not wanting this mostly useless graphical toolbar at the top:
+ '(tool-bar-mode nil))
+
+;; :height 95 for some resolutions:
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(default ((t (:inherit nil :stipple nil :background "black" :foreground "white" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 105 :width normal :foundry "unknown" :family "DejaVu Sans Mono"))))
+ '(rst-level-1-face ((t (:background "#00f" :foreground "#fff"))) t)
+ '(rst-level-2-face ((t (:background "#00a" :foreground "#ddd"))) t)
+ '(rst-level-3-face ((t (:background "#003" :foreground "#bbb"))) t)
+ '(rst-level-4-face ((t (:background "#000" :foreground "#999"))) t)
+ '(rst-level-5-face ((t (:background "#010" :foreground "#666"))) t)
+ '(rst-level-6-face ((t (:background "#020" :foreground "#555"))) t))
+
+
+ ;; No more annoying, unmutable bell (ex: when reaching buffer bounds):
 (setq ring-bell-function 'ignore)
 
+(straight-use-package 'server)
 
-;; To avoid having the Warnings buffer be opened with a message like:
-;;
-;; """
-;; Warning (server): Unable to start the Emacs server.
-;; There is an existing Emacs server, named "server".
-;; To start the server in this Emacs process, stop the existing
-;; server or call ‘M-x server-force-delete’ to forcibly disconnect it.
-;; """
-;;
-;; when opening an extraneous emacs:
-;;
-;; (does not seem to work, though, hence commented-out)
-(require 'server)
-(or (server-running-p)
-	(server-start))
-;;
-;; Also tried:
-;;(load "server")
-;;(unless (server-running-p) (server-start))
-
-;; Compiles .el files newer than their .elc counterpart, or not having one:
-;; One can also use M-x byte-compile-file to precompile .el files (ex: linum).
-;; Warning: apparently, unless the .elc file is removed, changes will be
-;; effective only when having started emacs again *twice*.
-;; Now disabled, to avoid spurious errors, like load-path not being then found,
-;; or complaints about free variables:
-;;(byte-recompile-directory "~/.emacs.d" 0)
-
-(package-require 'flycheck)
+(straight-use-package 'flycheck)
 
 (add-hook 'after-init-hook #'global-flycheck-mode)
+
+;; Flycheck is interesting yet confused by the Myriad, WOOPER, etc. parse
+;; transforms:
+;;
+(setq flycheck-global-modes '(not erlang-mode))
 
 
 ;; RST files support section.
 
 ;; May be disabled if slowing emacs down way too much:
-(require 'rst)
+(straight-use-package 'rst)
 (setq auto-mode-alist
 	  (append '(("\\.txt$"  . rst-mode)
 				("\\.rst$"  . rst-mode)
@@ -116,6 +231,30 @@
 
 
 
+
+(defun fix-behaviours-for-text-modes ()
+  ;;(message "############## Fixing behaviours for text modes ###########")
+
+  ;; Advanced automatic indentation not adapted to text modes:
+  (remove-hook 'find-file-hooks 'set-advanced-ret-behaviour)
+
+  ;; This basic indentation is fine with text modes:
+  (global-set-key (kbd "RET") 'newline-and-indent)
+
+  ;;Long lines are normal in text modes:
+  ;;(remove-hook 'find-file-hook 'highlight-80+-mode)
+  ;; Surely an hack, but works great:
+  ;;(setq-local whitespace-line-column 9999)
+
+  ;; No 'lines' or 'empty':
+  (setq-local whitespace-style '(face
+	tabs trailing space-before-tab newline
+	indentation space-after-tab))
+  )
+
+(add-hook 'text-mode-hook 'fix-behaviours-for-text-modes)
+
+
 ;; Erlang support:
 
 ;; Adapted from the README distributed with the OTP tarballs:
@@ -139,6 +278,11 @@
 (setq exec-path (cons "/usr/local/lib/erlang/bin" exec-path))
 
 
+;; Allows to have Emacs automatically insert newlines to word-wrap:
+;; (see https://www.emacswiki.org/emacs/AutoFillMode)
+;;
+;; See https://erlang.org/doc/apps/tools/erlang_mode_chapter.html
+;;
 ;; Only in some language modes, not all text modes nor even all programming
 ;; modes where it is more of a nuisance:
 ;;
@@ -149,7 +293,6 @@
 
 ;;(require 'erlang-start)
 
-
 ;; Not wanting single '%' to be set at the default column 48:
 (add-hook 'erlang-mode-hook (lambda () (setq-local comment-column 0)))
 
@@ -159,50 +302,64 @@
 ;;(setq erlang-electric-commands '(erlang-electric-comma
 ;;								 erlang-electric-g))
 
-;; Install the official Erlang mode:
-(package-require 'erlang)
+;; Disable all electric commands:
+(setq erlang-electric-commands '())
 
-;; erlang-electric-semicolon removed, as more a nuisance than a help (function
-;; headers generally pasted from first):
-;;
-;;(setq erlang-electric-commands '(erlang-electric-comma
-;;								 erlang-electric-g))
+(setq auto-mode-alist
+	  (append '(("\\.escript$" . erlang-mode)) auto-mode-alist))
 
 
-
-;; Section to show line and column numbers on the left border:
-;; more info: https://www.emacswiki.org/emacs/LineNumbers
-
-;; (obsolete now; see also 'longlines')
-;;(require 'linum)
-;;(add-hook 'find-file-hook (lambda () (linum-mode 1)))
-
-;;(add-hook 'erlang-mode-hook 'linum-mode)
-;;(add-hook 'erlang-mode-hook 'column-number-mode)
+(straight-use-package 'erlang)
 
 
-;; Now:
-(package-require 'display-line-numbers)
 
-;; List of a major modes on which to disable line numbers:
-(defcustom display-line-numbers-exempt-modes
-  ;; Finally not including 'rst-mode' here, as useful for the debugging of
-  ;; document generation:
-  ;;
-  '(vterm-mode eshell-mode shell-mode term-mode ansi-term-mode)
-  "Major modes :."
-  :group 'display-line-numbers
-  :type 'list
-  :version "green")
+;; Indentation:
 
-(defun display-line-numbers--turn-on ()
-  "Turn on line numbers except for certain major modes.
-Exempt major modes are defined in `display-line-numbers-exempt-modes'."
-  (unless (or (minibufferp)
-			  (member major-mode display-line-numbers-exempt-modes))
-	(display-line-numbers-mode)))
+; Automatic indentation while typing:
 
-(global-display-line-numbers-mode)
+;; Does not work correctly with inner bullet lists:
+;;(setq indent-line-function 'indent-relative-maybe)
+
+;; Just indents by default at the same level when Enter is hit:
+;;(add-hook 'find-file-hooks '(lambda ()
+;;      (local-set-key (kbd "RET") 'newline-and-indent)))
+
+
+;; Useful for most programming modes, but disrupts sub-bullet lists in
+;; text (ex: RST) modes (puts them all at the same level):
+;; (not defined as a lambda in order to be able to remove it)
+(defun set-advanced-ret-behaviour ()
+  ;;(message "############ Setting advanced RET behaviour ###########")
+  ;;(local-set-key (kbd "RET") 'reindent-then-newline-and-indent)
+  (global-set-key (kbd "RET") 'reindent-then-newline-and-indent)
+  )
+
+;;(add-hook 'find-file-hooks 'set-advanced-ret-behaviour)
+
+
+
+;; Starting from its second line, a multi-line statement should be
+;; indented of 2 characters from the beginning of line, not relatively
+;; to, say, the opening parenthesis which can be close to the right edge
+;; of the line.
+(setq c-offsets-alist '(
+		;; Otherwise parameters are aligned with the first, whereas we want a
+		;; fixed offset:
+		(arglist-cont-nonempty . 2)
+		(arglist-intro . 2)))
+
+
+;; Support for C-like languages:
+;; (customizations for all of c-mode, c++-mode, objc-mode, java-mode)
+(defun my-c-mode-common-hook ()
+  (setq cc-default-style "bsd")
+  (c-set-offset 'substatement-open 0))
+
+(add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
+(add-hook 'cc-mode-common-hook 'my-c-mode-common-hook)
+
+;; Not working apparently with emacs 22.2.1:
+;;(auto-raise-mode t)
 
 
 
@@ -217,7 +374,7 @@ Exempt major modes are defined in `display-line-numbers-exempt-modes'."
 ;; Then add ${HOME}/Software/erlang_ls/bin to your PATH.
 
 ;; Include the Language Server Protocol Clients:
-(package-require 'lsp-mode)
+;;(package-require 'lsp-mode)
 
 ;; Customize prefix for key-bindings:
 ;; (would clash with "Go to line")
@@ -225,9 +382,9 @@ Exempt major modes are defined in `display-line-numbers-exempt-modes'."
 
 ;; Enable LSP for Erlang files:
 ;;
-;; (to be disabled if too many usability concerns)
+;; (disabled due too many usability concerns)
 ;;
-(add-hook 'erlang-mode-hook #'lsp)
+;;(add-hook 'erlang-mode-hook #'lsp)
 
 ;; Require and enable the Yasnippet templating system:
 ;;(package-require 'yasnippet)
@@ -284,27 +441,63 @@ Exempt major modes are defined in `display-line-numbers-exempt-modes'."
 ;;(add-hook 'after-init-hook 'global-company-mode)
 
 ;;(setq company-minimum-prefix-length 1
-;;	  company-idle-delay 0.0) ;; default is 0.2
+;;    company-idle-delay 0.0) ;; default is 0.2
 
 ;; Which-key integration:
-(package-require 'which-key)
-(add-hook 'erlang-mode-hook 'which-key-mode)
+;;(package-require 'which-key)
+;;(add-hook 'erlang-mode-hook 'which-key-mode)
+
 ;;(with-eval-after-load 'lsp-mode
 ;; (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration))
 
 ;; Always show diagnostics at the bottom, using 1/3 of the available space:
 ;;(add-to-list 'display-buffer-alist
-;;			 `(,(rx bos "*LSP errors*" eos)
-;;			  (display-buffer-reuse-window
-;;			   display-buffer-in-side-window)
-;;			  (side            . bottom)
-;;			  (reusable-frames . visible)
-;;			  (window-height   . 0.33)))
+;;   `(,(rx bos "*LSP errors*" eos)
+;;    (display-buffer-reuse-window
+;;     display-buffer-in-side-window)
+;;    (side            . bottom)
+;;    (reusable-frames . visible)
+;;    (window-height   . 0.33)))
 
 
 
 ;; Not used anymore, as faulty errors are triggered when using WOOPER:
 ;;(require 'erlang-flymake)
+
+
+;; Section to show line and column numbers on the left border:
+;; more info: https://www.emacswiki.org/emacs/LineNumbers
+
+;; (obsolete now; see also 'longlines')
+;;(require 'linum)
+;;(add-hook 'find-file-hook (lambda () (linum-mode 1)))
+
+;;(add-hook 'erlang-mode-hook 'linum-mode)
+;;(add-hook 'erlang-mode-hook 'column-number-mode)
+
+(straight-use-package 'display-line-numbers)
+
+
+;; List of a major modes on which to disable line numbers:
+(defcustom display-line-numbers-exempt-modes
+  ;; Finally not including 'rst-mode' here, as useful for the debugging of
+  ;; document generation:
+  ;;
+  '(vterm-mode eshell-mode shell-mode term-mode ansi-term-mode)
+  "Major modes :."
+  :group 'display-line-numbers
+  :type 'list
+  :version "green")
+
+(defun display-line-numbers--turn-on ()
+  "Turn on line numbers except for certain major modes.
+Exempt major modes are defined in `display-line-numbers-exempt-modes'."
+  (unless (or (minibufferp)
+			  (member major-mode display-line-numbers-exempt-modes))
+	(display-line-numbers-mode)))
+
+(global-display-line-numbers-mode)
+
 
 ;; To be able to move between windows simply thanks to S-<arrow> (i.e. holding
 ;; shift, and hitting one of the 4 arrow keys; however the block selection
@@ -314,120 +507,6 @@ Exempt major modes are defined in `display-line-numbers-exempt-modes'."
 
 ;; No limit in the buffer list:
 (setq buffers-menu-max-size nil)
-
-
-;; Taken from
-;; https://stackoverflow.com/questions/11043004/emacs-compile-buffer-auto-close:
-
-(defun bury-compile-buffer-if-successful (buffer string)
- "Bury a compilation buffer if succeeded without warnings "
- (when (and
-		 (buffer-live-p buffer)
-		 (string-match "compilation" (buffer-name buffer))
-		 (string-match "finished" string)
-		 (not
-		  (with-current-buffer buffer
-			(goto-char (point-min))
-			(search-forward "warning" nil t))))
-	(run-with-timer 1 nil
-					(lambda (buf)
-					  (bury-buffer buf)
-					  (switch-to-prev-buffer (get-buffer-window buf) 'kill))
-					buffer)))
-
-;;(add-hook 'compilation-finish-functions 'bury-compile-buffer-if-successful)
-
-
-(setq auto-mode-alist
-	  (append '(("\\.escript$"  . erlang-mode)) auto-mode-alist))
-
-;;(add-hook 'erlang-mode-hook 'my-erlang-mode-hook)
-
-;; Allows to have Emacs automatically insert newlines to word-wrap:
-;; (see https://www.emacswiki.org/emacs/AutoFillMode)
-;;(defun my-erlang-mode-hook () (turn-on-auto-fill) )
-
-(message "<<<<<<######### init.el version 1.0 #########>>>>>>")
-
-;; Indentation:
-;; Starting from its second line, a multi-line statement should be
-;; indented of 2 characters from the beginning of line, not relatively
-;; to, say, the opening parenthesis which can be close to the right edge
-;; of the line.
-(setq c-offsets-alist '(
-		;; Otherwise parameters are aligned with the first, whereas we want a
-		;; fixed offset:
-		(arglist-cont-nonempty . 2)
-		(arglist-intro . 2)))
-
-
-;; Support for C-like languages:
-;; (customizations for all of c-mode, c++-mode, objc-mode, java-mode)
-(defun my-c-mode-common-hook ()
-  (setq cc-default-style "bsd")
-  (c-set-offset 'substatement-open 0))
-
-(add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
-(add-hook 'cc-mode-common-hook 'my-c-mode-common-hook)
-
-
-;; Not working apparently with emacs 22.2.1:
-;;(auto-raise-mode t)
-
-
-;; Moves the cursor across "physical lines":
-;; (finally deactivated, as the 'go to end of line' key was leading to the
-;; cursor going downward...)
-;;(require 'physical-line)
-;;(add-hook 'find-file-hooks 'physical-line-mode-without-exception)
-
-
-
-;; Automatic indentation while typing:
-
-;; Does not work correctly with inner bullet lists:
-;;(setq indent-line-function 'indent-relative-maybe)
-
-;; Just indents by default at the same level when Enter is hit:
-;;(add-hook 'find-file-hooks '(lambda ()
-;;      (local-set-key (kbd "RET") 'newline-and-indent)))
-
-
-;; Useful for most programming modes, but disrupts sub-bullet lists in
-;; text (ex: RST) modes (puts them all at the same level):
-;; (not defined as a lambda in order to be able to remove it)
-(defun set-advanced-ret-behaviour ()
-  ;;(message "############ Setting advanced RET behaviour ###########")
-  ;;(local-set-key (kbd "RET") 'reindent-then-newline-and-indent)
-  (global-set-key (kbd "RET") 'reindent-then-newline-and-indent)
-  )
-
-
-;;(add-hook 'find-file-hooks 'set-advanced-ret-behaviour)
-
-
-
-(defun fix-behaviours-for-text-modes ()
-  (message "############## Fixing behaviours for text modes ###########")
-
-  ;; Advanced automatic indentation not adapted to text modes:
-  (remove-hook 'find-file-hooks 'set-advanced-ret-behaviour)
-
-  ;; This basic indentation is fine with text modes:
-  (global-set-key (kbd "RET") 'newline-and-indent)
-
-  ;;Long lines are normal in text modes:
-  ;;(remove-hook 'find-file-hook 'highlight-80+-mode)
-  ;; Surely an hack, but works great:
-  ;;(setq-local whitespace-line-column 9999)
-
-  ;; No 'lines' or 'empty':
-  (setq-local whitespace-style '(face
-	tabs trailing space-before-tab newline
-	indentation space-after-tab))
-  )
-
-(add-hook 'text-mode-hook 'fix-behaviours-for-text-modes)
 
 
 
@@ -461,12 +540,12 @@ Exempt major modes are defined in `display-line-numbers-exempt-modes'."
 )
 
 
-(require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward)
 (setq uniquify-after-kill-buffer-p 1)
 (setq uniquify-ignore-buffers-re "^\\*")
 
-(require 'whitespace)
+
+(straight-use-package 'whitespace)
 (global-whitespace-mode 1)
 
 ;;(setq-default show-trailing-whitespace nil)
@@ -496,7 +575,26 @@ Exempt major modes are defined in `display-line-numbers-exempt-modes'."
 ;;(add-to-list 'default-frame-alist (cons 'height 36))
 
 ;; For a normal screen:
-(add-to-list 'default-frame-alist (cons 'height 56))
+;;(add-to-list 'default-frame-alist (cons 'height 56))
+
+
+(setq my-preferred-font
+	  (cond ((eq system-type 'windows-nt) "consolas")
+			;;((eq system-type 'gnu/linux) "mono")
+			((eq system-type 'gnu/linux) "DejaVu Sans Mono")
+			(t nil)))
+
+(setq my-preferred-height
+	  (cond ((eq system-type 'windows-nt) 47)
+			((eq system-type 'gnu/linux) 56)
+			(t nil)))
+
+
+(when my-preferred-font
+  (set-frame-font my-preferred-font nil t))
+
+(when my-preferred-height
+  (set-frame-height (selected-frame) my-preferred-height))
 
 
 ;; Key section:
@@ -572,7 +670,6 @@ Exempt major modes are defined in `display-line-numbers-exempt-modes'."
  (save-buffer)
  (kill-this-buffer)
 )
-
 
 
 ;; Not triggered when hitting F12, but triggered when hitting F1 on my keyboard:
@@ -673,7 +770,9 @@ Exempt major modes are defined in `display-line-numbers-exempt-modes'."
 
 
 (global-set-key "\C-Z" 'undo)
-(global-set-key "\C-P" 'recompile)
+
+;;(global-set-key "\C-P" 'recompile)
+(global-set-key "\C-P" 'compile)
 
 ;; C-s must be dedicated to search, not save, as repeated search will use
 ;; it anyway:
@@ -701,19 +800,43 @@ Exempt major modes are defined in `display-line-numbers-exempt-modes'."
 ;; Compilation section.
 ;; Mostly taken from http://ensiwiki.ensimag.fr/index.php/Dot_Emacs
 
-;; make compile window disappear after successful compilation:
-(setq compilation-finish-function
-	  (lambda (buf str)
-		(if (string-match "*Compilation*" (buffer-name buf))
-			(if (string-match "abnormally" str)
-				(message "There were errors :-(")
-			  ;; No errors, make the compilation window go away in 2 seconds:
-			  (run-at-time 2 nil
-						   (lambda (buf)
-							 (delete-windows-on buf)
-							 (bury-buffer buf))
-						   buf)
-			  (message "No errors :-)")))))
+;; Taken from
+;; https://stackoverflow.com/questions/11043004/emacs-compile-buffer-auto-close:
+;; and https://www.emacswiki.org/emacs/ModeCompile
+
+ (defun bury-compile-buffer-if-successful (buffer string)
+  "Bury a compilation buffer if succeeded without warnings "
+  (when (and
+		;; (buffer-live-p buffer)
+		 (string-match "compilation" (buffer-name buffer))
+		 (string-match "finished" string)
+		 (not
+		  (with-current-buffer buffer
+			(goto-char (point-min))
+			(search-forward "warning" nil t))))
+	(run-with-timer 1 nil
+					(lambda (buf)
+					  (bury-buffer buf)
+					  (switch-to-prev-buffer (get-buffer-window buf) 'kill))
+					buffer)))
+
+(add-hook 'compilation-finish-functions 'bury-compile-buffer-if-successful)
+
+
+;; ;; make compile window disappear after successful compilation:
+;; (setq compilation-finish-function
+;;	  (lambda (buf str)
+;;		(if (string-match "*Compilation*" (buffer-name buf))
+;;			(if (string-match "abnormally" str)
+;;				(message "There were errors :-(")
+;;			  ;; No errors, make the compilation window go away in 2 seconds:
+;;			  (run-at-time 2 nil
+;;						   (lambda (buf)
+;;							 (delete-windows-on buf)
+;;							 (bury-buffer buf))
+;;						   buf)
+;;			  (message "No errors :-)")))))
+
 
 ;;my-compile is smarter about how to display the new buffer
 (defun display-buffer-by-splitting-largest (buffer force-other-window)
@@ -732,6 +855,7 @@ Exempt major modes are defined in `display-line-numbers-exempt-modes'."
   (let ((display-buffer-function 'display-buffer-by-splitting-largest))
 	(call-interactively 'compile)))
 
+
 ;; Misc compilation settings:
 (setq-default
  compile-command "make"
@@ -739,18 +863,9 @@ Exempt major modes are defined in `display-line-numbers-exempt-modes'."
  compilation-scroll-output 'first-error
  compilation-ask-about-save nil
  compilation-window-height 10
- compilation-skip-threshold 0
+ ;; Bad jump location if enabled: compilation-skip-threshold 0
  compilation-auto-jump-to-first-error 1)
 
-(global-font-lock-mode t)
-(setq font-lock-maximum-decoration t)
-(setq font-lock-maximum-size nil)
-(transient-mark-mode t)
-
-
-(setq use-file-dialog nil)
-
-;;(standard-display-european 1)
 
 
 ;; Spelling section.
@@ -786,8 +901,6 @@ Exempt major modes are defined in `display-line-numbers-exempt-modes'."
 ;;(eval-after-load "flyspell-guess" '(flyspell-insinuate-guess-indicator))
 
 
-
-
 (show-paren-mode t)
 (setq show-paren-style 'parenthesis)
 
@@ -813,87 +926,12 @@ Exempt major modes are defined in `display-line-numbers-exempt-modes'."
 
 (setq-default fill-column 80)
 
+
 ;; Set cursor color
 (set-cursor-color "white")
 
 ;; Set mouse color
 (set-mouse-color "white")
-
-;; Do not consider underscores and dashes as word separators (otherwise
-;; mouse-based search changes its selection during search):
-;;
-;; (probably a bad idea, search patterns seem not to be found when having a
-;; prefix)
-;;
-;;(global-superword-mode 1)
-
-
-;; For proper mouse search:
-;;(require 'acme-search)
-;;(global-set-key [(mouse-3)] 'acme-search-forward)
-;;(global-set-key [(shift mouse-3)] 'acme-search-backward)
-
-
-
-;; Set foreground and background
-(set-foreground-color "white")
-;;(set-background-color "darkblue")
-(set-background-color "black")
-
-
-;;; Set highlighting colors for isearch and drag
-;;(set-face-foreground 'highlight "white")
-
-
-;; Color for the cursor line:
-(set-face-background 'highlight "gray19")
-;;(set-face-background 'highlight "black")
-
-(set-face-foreground 'region "black")
-(set-face-background 'region "lightgreen")
-
-;;(set-face-foreground 'secondary-selection "skyblue")
-;;(set-face-background 'secondary-selection "darkblue")
-(set-face-foreground 'secondary-selection "red")
-(set-face-background 'secondary-selection "green")
-
-;; Turns off a blinking cursor:
-(if (fboundp 'blink-cursor-mode)
-	(blink-cursor-mode -1))
-
-;;(setq frame-background-mode 'dark)
-'(frame-background-mode (quote dark))
-
-(setq vc-follow-symlinks nil)
-(setq line-move-visual nil)
-
-;; Only for older Emacs apparently:(setq default-tab-width 4)
-(setq-default tab-width 4)
-
-(setq tab-width 4)
-
-(setq scroll-step 1)
-(show-paren-mode 1)
-(delete-selection-mode 1)
-(transient-mark-mode 1)
-(savehist-mode 1)
-
-(setq frame-title-format '("%b" (buffer-file-name ": %f")))
-
-
-;; Wrong: (setq default-tab-width 4)
-(setq-default tab-width 4)
-
-(setq tab-width 4)
-
-
-(setq tool-bar-mode nil)
-
-(server-start)
-
-;; No more question about clients being still there:
-;; (must be *after* server-start)
-(remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function)
 
 
 
@@ -925,35 +963,7 @@ Exempt major modes are defined in `display-line-numbers-exempt-modes'."
 (defvar backup-dir (concat "/tmp/emacs_backups/" (user-login-name) "/"))
 (setq backup-directory-alist (list (cons "." backup-dir)))
 
+(message "<<<<<<######### init.el version 1.2 #########>>>>>>")
 
-
-;; '(package-selected-packages '(flycheck))
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(blink-cursor-mode nil)
- '(column-number-mode t)
- ;;'(package-selected-packages '(flycheck yasnippet which-key lsp-origami helm-lsp erlang))
- '(package-selected-packages '(flycheck which-key erlang))
- '(show-paren-mode t)
- '(tool-bar-mode nil))
-
-
-;; :height 95 for some resolutions:
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "black" :foreground "white" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 105 :width normal :foundry "unknown" :family "DejaVu Sans Mono"))))
- '(rst-level-1-face ((t (:background "#00f" :foreground "#fff"))) t)
- '(rst-level-2-face ((t (:background "#00a" :foreground "#ddd"))) t)
- '(rst-level-3-face ((t (:background "#003" :foreground "#bbb"))) t)
- '(rst-level-4-face ((t (:background "#000" :foreground "#999"))) t)
- '(rst-level-5-face ((t (:background "#010" :foreground "#666"))) t)
- '(rst-level-6-face ((t (:background "#020" :foreground "#555"))) t))
 
 (delete-other-windows)

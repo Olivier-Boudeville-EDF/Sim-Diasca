@@ -1,4 +1,4 @@
-% Copyright (C) 2013-2021 Olivier Boudeville
+% Copyright (C) 2013-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -26,20 +26,19 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 
 
-
 % @doc Service dedicated to the <b>management of user-defined preferences</b>.
 %
 % A preferences element is designated by a key (an atom), associated to a value
-% (that can be any term).
-%
-% Preferences can be stored in file(s).
+% (that can be any term). No difference is made between a non-registered key and
+% a key registered to 'undefined'.
 %
 % This is typically a way of storing durable information in one's user account
 % in a transverse way compared to programs and versions thereof, and of sharing
 % them conveniently (ex: for passwords, settings).
 %
-% The format of preferences is a series of Erlang terms as strings, each ended
-% with a dot (ie the format understood by `file:consult/1').
+% Preferences can be stored in file(s), in the ETF format. This format of
+% preferences is a series of Erlang terms as strings, each ended with a dot
+% (i.e. it is the basic, standard format understood by `file:consult/1').
 %
 % Example of content of a preferences file:
 % ```
@@ -48,6 +47,7 @@
 % {myName, "Sylvester the cat"}.
 % '''
 %
+% Refer to https://myriad.esperide.org/#etf for more information.
 %
 -module(preferences).
 
@@ -86,8 +86,11 @@
 
 
 % Shorthands:
+
 -type file_path() :: file_utils:file_path().
 -type ustring() :: text_utils:ustring().
+
+-type maybe_list( T ) :: list_utils:maybe_list( T ).
 
 
 
@@ -111,10 +114,10 @@
 %-define( default_preferences_server_name, ceylan_preferences_server ).
 
 
-% Name of the default preferences file (searched at the root of the user
+% Name of the default preferences ETF file (searched at the root of the user
 % account):
 %
--define( default_preferences_filename, ".ceylan-settings.txt" ).
+-define( default_preferences_filename, ".ceylan-settings.etf" ).
 
 
 
@@ -148,9 +151,9 @@ start_link() ->
 % Returns in any case the PID of the corresponding preferences server.
 %
 -spec start( file_path() ) -> preferences_pid().
-start( FileName ) ->
+start( FilePath ) ->
 
-	RegistrationName = get_registration_name( FileName ),
+	RegistrationName = get_registration_name( FilePath ),
 
 	case naming_utils:is_registered( RegistrationName, global ) of
 
@@ -164,9 +167,10 @@ start( FileName ) ->
 			% No sensible link to be created here, so we must beware of a silent
 			% crash of this server:
 			%
-			?myriad_spawn( fun() ->
-					   server_main_run( CallerPid, RegistrationName, FileName )
-						   end ),
+			?myriad_spawn(
+				fun() ->
+					server_main_run( CallerPid, RegistrationName, FilePath )
+				end ),
 
 			receive
 
@@ -188,9 +192,9 @@ start( FileName ) ->
 % Returns in any case the PID of the corresponding preferences server.
 %
 -spec start_link( file_path() ) -> preferences_pid().
-start_link( FileName ) ->
+start_link( FilePath ) ->
 
-	RegistrationName = get_registration_name( FileName ),
+	RegistrationName = get_registration_name( FilePath ),
 
 	case naming_utils:is_registered( RegistrationName, global ) of
 
@@ -205,7 +209,7 @@ start_link( FileName ) ->
 			% crash of this server:
 			%
 			?myriad_spawn_link( fun() ->
-				server_main_run( CallerPid, RegistrationName, FileName )
+				server_main_run( CallerPid, RegistrationName, FilePath )
 								end ),
 
 			receive
@@ -222,31 +226,44 @@ start_link( FileName ) ->
 
 
 
-% @doc Returns the value associated to specified key in the preferences (if
-% any), otherwise 'undefined', based on the default preferences file, and
-% possibly launching a corresponding preferences server if needed.
+% @doc Returns the value associated to each of the specified key(s) in the
+% preferences (if any), otherwise 'undefined', based on the default preferences
+% file, and possibly launching a corresponding preferences server if needed.
 %
--spec get( key() ) -> maybe( value() ).
-get( Key ) ->
-	get( Key, get_default_preferences_path() ).
-
-
-
-% @doc Returns the value associated to specified key in the preferences (if
-% any), otherwise 'undefined', based on the specified preferences file, and
-% possibly launching a corresponding preferences server if needed.
+% Examples:
+%  "Hello!" = preferences:get(hello)
+%  ["Hello!", 42, undefined] = preferences:get([hello, my_number, some_maybe])
 %
--spec get( key(), file_path() ) -> maybe( value() ).
-get( Key, FileName ) ->
+-spec get( maybe_list( key() ) ) -> maybe_list( maybe( value() ) ).
+get( KeyMaybes ) ->
+	get( KeyMaybes, get_default_preferences_path() ).
 
-	ServerPid = start( FileName ),
 
-	ServerPid ! { get_preference, Key, self() },
 
+% @doc Returns the value associated to each of the specified key(s) in the
+% preferences (if any), otherwise 'undefined', based on the specified
+% preferences file (and possibly launching a corresponding preferences server if
+% needed) or on the specified PID of an already-running preferences server.
+%
+% Examples:
+%  "Hello!" = preferences:get(hello, "/var/foobar.etf")
+%  ["Hello!", 42, undefined] =
+%     preferences:get([hello, my_number, some_maybe], "/var/foobar.etf")
+%  ["Hello!", 42, undefined] =
+%     preferences:get([hello, my_number, some_maybe], MyPrefServerPid)
+%
+-spec get( maybe_list( key() ), file_path() | preferences_pid() ) ->
+										maybe_list( maybe( value() ) ).
+get( KeyMaybes, FilePath ) when is_list( FilePath ) ->
+	PrefServerPid = start( FilePath ),
+	get( KeyMaybes, PrefServerPid );
+
+get( KeyMaybes, PrefServerPid ) when is_pid( PrefServerPid ) ->
+	PrefServerPid ! { get_preferences, KeyMaybes, self() },
 	receive
 
-		{ notify_preference, V } ->
-			V
+		{ notify_preferences, ValueMaybes } ->
+			ValueMaybes
 
 	end.
 
@@ -262,15 +279,17 @@ set( Key, Value ) ->
 
 
 % @doc Associates, in specified preferences, specified value to specified key
-% (possibly overwriting any previous value).
+% (possibly overwriting any previous value), based on the specified preferences
+% file (and possibly launching a corresponding preferences server if needed) or
+% on the specified PID of an already-running preferences server..
 %
--spec set( key(), value(), file_path() ) -> void().
-set( Key, Value, FilePath ) ->
+-spec set( key(), value(), file_path() | preferences_pid() ) -> void().
+set( Key, Value, FilePath ) when is_list( FilePath ) ->
+	PrefServerPid = start( FilePath ),
+	set( Key, Value, PrefServerPid );
 
-	ServerPid = start( FilePath ),
-
-	ServerPid ! { set_preference, Key, Value }.
-
+set( Key, Value, PrefServerPid ) when is_pid( PrefServerPid ) ->
+	PrefServerPid ! { set_preferences, Key, Value }.
 
 
 
@@ -324,7 +343,8 @@ get_default_preferences_path() ->
 -spec get_registration_name( file_path() ) -> registration_name().
 get_registration_name( FilePath ) ->
 	CoreFilePath = file_utils:remove_upper_levels_and_extension( FilePath ),
-	RegistrationName = file_utils:path_to_variable_name( CoreFilePath, "" ),
+	RegistrationName = file_utils:path_to_variable_name( CoreFilePath,
+														 _Prefix="" ),
 	text_utils:string_to_atom( RegistrationName ).
 
 
@@ -412,8 +432,8 @@ server_main_run( SpawnerPid, RegistrationName, FilePath ) ->
 					add_preferences_from( FilePath, EmptyTable );
 
 				false ->
-					io:format( "No preferences file found "
-							   "(searched for '~ts').~n", [ FilePath ] ),
+					trace_bridge:info_fmt( "No preferences file found "
+						"(searched for '~ts').~n", [ FilePath ] ),
 					EmptyTable
 
 			end,
@@ -433,32 +453,50 @@ server_main_run( SpawnerPid, RegistrationName, FilePath ) ->
 
 
 
+% (helper)
+get_value_maybes( Key, Table ) when is_atom( Key ) ->
+	case table:lookup_entry( Key, Table ) of
+
+		key_not_found ->
+			undefined;
+
+		{ value, V } ->
+			V
+	end;
+
+get_value_maybes( Keys, Table ) ->
+	get_value_maybes( Keys, Table, _Acc=[] ).
+
+
+
+% (helper)
+get_value_maybes( _Keys=[], _Table, Acc ) ->
+	lists:reverse( Acc );
+
+get_value_maybes( _Keys=[ K | T ], Table, Acc ) ->
+	V = get_value_maybes( K, Table ),
+	get_value_maybes( T, Table, [ V | Acc ] ).
+
+
+
 % Main loop of the preferences server.
 server_main_loop( Table ) ->
 
-	%trace_utils:debug_fmt( "Waiting for preferences-related request, "
-	%    "having ~B recorded preferences.",[ table:size( Table ) ] ),
+	%trace_bridge:debug_fmt( "Waiting for preferences-related request, "
+	%    "having ~B recorded preferences.", [ table:size( Table ) ] ),
 
 	receive
 
-		{ get_preference, Key, SenderPid } ->
+		{ get_preferences, KeyMaybes, SenderPid } ->
 
-			Answer = case table:lookup_entry( Key, Table ) of
+			Answer = get_value_maybes( KeyMaybes, Table ),
 
-				key_not_found ->
-					undefined;
-
-				{ value, V } ->
-					V
-
-			end,
-
-			SenderPid ! { notify_preference, Answer },
+			SenderPid ! { notify_preferences, Answer },
 
 			server_main_loop( Table );
 
 
-		{ set_preference, Key, Value } ->
+		{ set_preferences, Key, Value } ->
 
 			NewTable = table:add_entry( Key, Value, Table ),
 
@@ -489,7 +527,7 @@ server_main_loop( Table ) ->
 			server_main_loop( Table );
 
 		stop ->
-			%io:format( "Stopping preferences server.~n" ),
+			%trace_bridge:debug( "Stopping preferences server." ),
 			stopped
 
 	end.
@@ -514,17 +552,17 @@ add_preferences_from( FilePath, Table ) ->
 				ok ->
 					NewTable = table:add_entries( Entries, Table ),
 
-					%io:format( "Loaded from preferences file '~ts' "
-					%           "following entries: ~ts",
-					% [ PrefFilePath, table:to_string( NewTable ) ] ),
+					%trace_bridge:debug_fmt( "Loaded from preferences file "
+					%    "'~ts' following entries: ~ts",
+					%    [ PrefFilePath, table:to_string( NewTable ) ] ),
 
-				   %io:format( "Preferences file '~ts' loaded.~n",
-				   %	[ FilePath ] ),
+				   %trace_bridge:debug_fmt( "Preferences file '~ts' loaded.",
+				   %                        [ FilePath ] ),
 
 				   NewTable;
 
 				ErrorString ->
-					trace_utils:error_fmt( "Error when reading preferences "
+					trace_bridge:error_fmt( "Error when reading preferences "
 						"file '~ts' (~ts), no preferences read.",
 						[ FilePath, ErrorString ] ),
 					Table
@@ -534,14 +572,14 @@ add_preferences_from( FilePath, Table ) ->
 
 		{ error, { Line, _Mod, Term } } ->
 			FlattenError = text_utils:format( "~p", [ Term ] ),
-			trace_utils:error_fmt( "Error in preferences file '~ts' "
+			trace_bridge:error_fmt( "Error in preferences file '~ts' "
 				"at line ~B (~ts), no preferences read.",
-					   [ FilePath, Line, FlattenError ] ),
+				[ FilePath, Line, FlattenError ] ),
 			Table;
 
 
 		{ error, Reason } ->
-			trace_utils:error_fmt( "Error when reading preferences file "
+			trace_bridge:error_fmt( "Error when reading preferences file "
 				"'~ts' (~p), no preferences read.", [ FilePath, Reason ] ),
 			Table
 

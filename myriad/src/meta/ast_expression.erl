@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2021 Olivier Boudeville
+% Copyright (C) 2018-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -24,7 +24,6 @@
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Sunday, February 4, 2018.
-
 
 
 % @doc Module in charge of handling <b>expressions defined with an AST</b>.
@@ -1131,10 +1130,11 @@ transform_expression( E={ 'fun', _FileLoc, { 'function', _Name, _Arity } },
 transform_expression( E={ 'fun', _FileLoc,
 						  _F={ 'function', Module, Name, Arity } },
 					  Transforms ) when is_atom( Module )
-	  andalso is_atom( Name ) andalso is_integer( Arity ) ?andalso_rec_guard ->
+		andalso is_atom( Name ) andalso is_integer( Arity )
+		?andalso_rec_guard ->
 
 	%ast_utils:display_warning( "Pre-R15 fun expression '~p' detected, "
-	%							"this warning should be silenced.", [ E ] ),
+	%                           "this warning should be silenced.", [ E ] ),
 
 	?log_enter( "Transforming pre-R15 fun expression ~p...", [ E ] ),
 
@@ -1641,7 +1641,16 @@ transform_record_field_init( { 'record_field', FileLocField,
 
 	NewExpr = { 'record_field', FileLocField, FieldNameASTAtom, NewFieldValue },
 
-	{ [ NewExpr ], NewTransforms }.
+	{ [ NewExpr ], NewTransforms };
+
+transform_record_field_init( { 'record_field', FileLocField, OtherForm,
+							   _FieldValue }, _Transforms ) ?rec_guard ->
+
+	trace_utils:error_fmt( "Unexpected record field initialisation "
+		"at ~ts:~n ~p",
+		[ ast_utils:file_loc_to_string( FileLocField ), OtherForm ] ),
+
+	ast_utils:raise_error( [ unexpected_record_field_init, OtherForm ] ).
 
 
 

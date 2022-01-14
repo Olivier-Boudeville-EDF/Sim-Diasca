@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2021 Olivier Boudeville
+% Copyright (C) 2003-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -33,3 +33,11 @@
 % distance between P1 and P2 is below epsilon.
 %
 -define( epsilon, 1.0e-6 ).
+
+
+% A threshold to denote unbounded values:
+%
+% (corresponds to the maximum value of 32-bit floats, i.e. the maximum
+% representable IEEE 754 floating-point value)
+%
+-define( infinity, 3.402823e+38 ).

@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 Olivier Boudeville
+% Copyright (C) 2008-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -136,6 +136,7 @@
 		  open/2, open/3, close/1, close/2,
 		  read/2, write/2, write_ustring/2, write_ustring/3,
 		  read_whole/1, write_whole/2, write_whole/3,
+		  read_lines/1,
 		  read_etf_file/1, read_terms/1,
 		  write_etf_file/2, write_etf_file/4,
 		  write_terms/2, write_terms/4,
@@ -169,7 +170,7 @@
 % root directories possibly specified).
 
 
--type bin_path() :: binary().
+-type bin_path() :: bin_string().
 
 
 -type any_path() :: path() | bin_path().
@@ -189,8 +190,8 @@
 % "../my_dir/other/foobar.txt".
 
 
--type bin_file_name() :: binary().
--type bin_file_path() :: binary().
+-type bin_file_name() :: bin_string().
+-type bin_file_path() :: bin_string().
 
 
 -type any_file_name() :: file_name() | bin_file_name().
@@ -225,13 +226,13 @@
 
 
 -type directory_name() :: path().
--type bin_directory_name() :: binary().
+-type bin_directory_name() :: bin_string().
 
 -type any_directory_name() :: directory_name() | bin_directory_name().
 
 
 -type directory_path() :: path().
--type bin_directory_path() :: binary().
+-type bin_directory_path() :: bin_string().
 
 -type any_directory_path() :: directory_path() | bin_directory_path().
 
@@ -239,24 +240,38 @@
 % Sometimes useful.
 
 
+-type filename_radix() :: ustring().
+% The part of a filename before the dot of the first extension.
+% Ex: the filename radix of "hello.tar.gz" is "hello".
+
+
+-type filepath_radix() :: ustring().
+% The part of a file path before the dot of the first extension.
+%
+% Ex: the filepath radix of "/home/bond/hello.tar.gz" is "/home/bond/hello".
+
 -type extension() :: ustring().
-% An extension in a filename (ex: "baz", in "foobar.baz.json").
+% An extension in a filename, either unitary (ex: "baz", in "foobar.baz.json")
+% or composed (ex: "tar.gz" in "hello.tar.gz").
 
 
 -type any_suffix() :: any_string().
-% The suffix (final part) in a path element.
+% The suffix (final part) in a path element (ex: "share" in "/usr/local/share").
 
 
 -type path_element() :: ustring().
-% A part of a path (ex: "local" in "/usr/local/share").
+% A (legit) part of a path (ex: "local" in "/usr/local/share"); preferably
+% without whitespaces.
 
 
--type bin_path_element() :: text_utils:bin_string().
-% A part of a path (ex: `<<"local">>' in "/usr/local/share").
+-type bin_path_element() :: bin_string().
+% A (legit) part of a path (ex: `<<"local">>' in "/usr/local/share"); preferably
+% without whitespaces.
 
 
 -type any_path_element() :: path_element() | bin_path_element().
-% Any type of a part of a path (ex: `<<"local">>' in "/usr/local/share").
+% Any (legit) type of a part of a path (ex: `<<"local">>' in
+% "/usr/local/share"); preferably without whitespaces.
 
 
 -type leaf_name() :: path_element().
@@ -349,7 +364,7 @@
 			   script_path/0, bin_script_path/0,
 			   directory_name/0, bin_directory_name/0,
 			   directory_path/0, bin_directory_path/0,
-			   extension/0, any_suffix/0,
+			   filename_radix/0, filepath_radix/0, extension/0, any_suffix/0,
 			   path_element/0, bin_path_element/0, any_path_element/0,
 			   leaf_name/0,
 			   entry_type/0, parent_creation/0,
@@ -361,8 +376,13 @@
 % Shorthands:
 
 -type ustring() :: text_utils:ustring().
+-type bin_string() :: text_utils:bin_string().
 -type any_string() :: text_utils:any_string().
+
 -type format_string() :: text_utils:format_string().
+
+
+-define( default_read_ahead_size, 2000 ).
 
 
 
@@ -372,7 +392,7 @@
 % (then a transparent encoding will be done), yet we found it safer and offering
 % more control not to request such an automatic encoding, and to secure it by
 % ourselves, either by relying on write_ustring/{2,3} or by calling write/2 with
-% a content that is already properly encoded (see
+% a binary content that is already properly encoded (see
 % text_utils:to_unicode_{list,binary}/{1,2}); otherwise for example a double
 % encoding could easily happen or, possibly, the encoding may fail with little
 % control; so we tend now to stay away from get_default_encoding_option/0 for
@@ -383,8 +403,9 @@
 % strings like "cœur" afterwards (no matter any encoding or lack thereof was
 % experimented); as mentioned, it proved useful to open such a file for writing
 % without specifying any encoding, and then only to write it directly with
-% pre-encoded content (a "~ts" formatter then sufficed); so the 'encoding'
-% options, at least for writing, may not be that convenient
+% pre-encoded content (a "~ts" formatter then sufficed, but binaries tend to be
+% even safer bets); so the 'encoding' options, at least for writing, may not be
+% that convenient
 %
 % - so the content itself may have to be encoded before writing; for example,
 % writing "éèôù" (interpreted to be latin1 or alike) in a file opened as utf8
@@ -401,24 +422,27 @@
 %
 % - notably in this module, calls akin to text_utils:binary_to_string/1 shall be
 % carefully studied, as conversions from binaries to strings shall be avoided
-% whenever possible due to their limitations
+% whenever possible due to their limitations; sticking to binaries everywhere
+% might be a safer option
 
 % - the way the VM is started matters; see the comment about the "-noinput"
 % option, in open/{2,3}; one may use the following to check the current settings
 % of the VM:
 %
 % trace_utils:info_fmt( "Encoding: ~p.",
-%					  [ lists:keyfind(encoding, 1, io:getopts()) ] ),
+%                       [ lists:keyfind(encoding, 1, io:getopts()) ] ),
 %
 % See also:
 % [https://erlang.org/doc/apps/stdlib/unicode_usage.html#unicode-data-in-files]
+%
 % Summary: use the 'file' module only for files opened for bytewise access
 % ({encoding,latin1}) - otherwise use the 'io' module.
 
 
-% Regarding identifiers (ex: user_id), they can be converted in actual names,
-% yet apparently with nothing simpler than:
-
+% Regarding filesystem identifiers (ex: user_id), they can be converted from
+% integers to actual names, yet apparently with nothing simpler than something
+% akin to:
+%
 % awk -v val=USER_ID -F ":" '$3==val{print $1}' /etc/passwd
 
 
@@ -744,7 +768,7 @@ get_last_path_element( AnyPath ) ->
 
 
 
-% @doc Converts specified name to an acceptable filename, filesystem-wise.
+% @doc Converts the specified name into an acceptable filename, filesystem-wise.
 %
 % Returns the same string type as the parameter.
 %
@@ -759,8 +783,9 @@ convert_to_filename( Name ) ->
 	% and file names (see net_utils:generate_valid_node_name_from/1).
 
 	% Note however that now we duplicate the code instead of calling the
-	% net_utils module from here, as otherwise there would be one more module
-	% to deploy under some circumstances.
+	% net_utils module from here, as otherwise there would be one more module to
+	% deploy under some circumstances (and over time they may have to be
+	% different).
 
 	re:replace( lists:flatten( Name ), ?patterns_to_replace_for_paths,
 				?replacement_for_paths, [ global, { return, list } ] ).
@@ -3557,7 +3582,7 @@ is_absolute_path( AnyPath ) ->
 
 
 
-% @doc Returns an absolute, normalised path corresponding to specified path.
+% @doc Returns an absolute, normalised path corresponding to the specified path.
 %
 % Returns a string of the same type as the specified one.
 %
@@ -4459,7 +4484,7 @@ close( File, _FailureMode=overcome_failure ) ->
 
 % @doc Reads specified number of bytes/characters from the specified file.
 %
-% Returns either { ok, Data } if at least some data could be read, or eof if at
+% Returns either {ok, Data} if at least some data could be read, or eof if at
 % least one element was to read and end of file was reached before anything at
 % all could be read.
 %
@@ -4528,7 +4553,7 @@ write_ustring( File, Str ) ->
 	Bin = text_utils:to_unicode_binary( Str ),
 	%trace_utils:debug_fmt( " - Bin: ~p.", [ Bin ] ),
 
-	%BinStr = io_lib:format("~ts", [ Bin ] ),
+	%BinStr = io_lib:format( "~ts", [ Bin ] ),
 	%trace_utils:debug_fmt( " - BinStr: ~p.", [ BinStr ] ),
 
 	% Using current encoding (i.e. the one that file was opened with):
@@ -4562,66 +4587,125 @@ write_ustring( File, FormatString, Values ) ->
 % as any kind of string (plain, binary, atom, etc), and returns the
 % corresponding binary, or throws an exception on failure.
 %
-% See also: read_terms/1 to read directly Erlang terms.
+% See also: read_terms/1 to read directly Erlang terms instead.
 %
--spec read_whole( any_file_name() ) -> binary().
-read_whole( Filename ) ->
+-spec read_whole( any_file_path() ) -> binary().
+read_whole( FilePath ) ->
 
-	%trace_utils:debug_fmt( "Reading as a whole '~ts'.", [ Filename ] ),
+	%trace_utils:debug_fmt( "Reading as a whole '~ts'.", [ FilePath ] ),
 
-	case file:read_file( Filename ) of
+	case file:read_file( FilePath ) of
 
 		{ ok, Binary } ->
 			Binary;
 
 		{ error, eacces } ->
-			throw( { read_whole_failed, Filename, access_denied,
-					 get_access_denied_info( Filename ) } );
+			throw( { read_whole_failed, FilePath, access_denied,
+					 get_access_denied_info( FilePath ) } );
 
 		{ error, Error } ->
-			throw( { read_whole_failed, Filename, Error } )
+			throw( { read_whole_failed, FilePath, Error } )
+
+	end.
+
+
+
+% @doc Reads the content of the specified file, expected to be a text one, based
+% on its filename specified as any kind of string (plain, binary, atom, etc) and
+% returns its content as a list of plain strings, or throws an exception on
+% failure.
+%
+% Each returned line has any (trailing) newline(s) removed (knowing that the
+% last one may or may not have a newline). See
+% [https://erlang.org/doc/man/file.html#read_line-1] for more details regarding
+% end-of-line characters.
+%
+-spec read_lines( any_file_path() ) -> [ ustring() ].
+read_lines( FilePath ) ->
+
+	%trace_utils:debug_fmt( "Reading all lines from '~ts'.", [ FilePath ] ),
+
+	Modes = [ read, raw, { read_ahead, ?default_read_ahead_size } ],
+
+	File = case file:open( FilePath, Modes ) of
+
+		{ ok, F } ->
+			F;
+
+		{ error, eacces } ->
+			throw( { read_lines_failed, FilePath, access_denied,
+					 get_access_denied_info( FilePath ) } );
+
+		{ error, Error } ->
+			throw( { read_lines_failed, FilePath, opening, Error } )
+
+	end,
+
+	read_lines( File, FilePath, _Acc=[] ).
+
+
+
+% (helper)
+read_lines( File, FilePath, Acc ) ->
+	case file:read_line( File ) of
+
+		{ ok, Line } ->
+			% If any, are removed:
+			CleanedLine = text_utils:remove_ending_carriage_return( Line ),
+			read_lines( File, FilePath, [ CleanedLine | Acc ] );
+
+		eof ->
+			file:close( File ),
+			lists:reverse( Acc );
+
+		{ error, Error } ->
+			% No 'file:close( File )'?
+			throw( { read_lines_failed, FilePath, reading, Error } )
 
 	end.
 
 
 
 % @doc Writes the specified content in specified file, whose filename is
-% specified as any kind of string, using the default encoding.
+% specified as any kind of string, using a default encoding if a plain string is
+% specified.
+%
+% Note that specifying a binary allows to avoid any potential unwanted encoding.
 %
 % Throws an exception on failure.
 %
 -spec write_whole( any_file_name(), ustring() | binary() ) -> void().
 write_whole( Filename, Content ) ->
-
-	% Now we prefer no automatic encoding, and ensure it has been done
-	% beforehand:
-	%
-	%Mode = [ system_utils:get_default_encoding_option() ],
-	Mode = [],
-
-	write_whole( Filename, Content, Mode ).
+	write_whole( Filename, Content, _Modes=[] ).
 
 
 
 % @doc Writes the specified content in specified file, whose filename is
-% specified as any kind of string, using the specified encoding for writing.
+% specified as any kind of string, using the specified modes options, and
+% applying before a default encoding if a plain string is specified.
 %
-% Note that no transparent encoding is expected to be specified through modes,
-% as this function performs (through text_utils:string_to_binary/1) such
-% encoding on plain strings.
+% Note that no transparent encoding-to-file is thus expected to be specified
+% through modes, as this function already performs (through
+% text_utils:string_to_binary/1) such encoding on plain strings (this would
+% result in a double encoding); specifying a binary allows to avoid any
+% potential unwanted encoding.
 %
 % Throws an exception on failure.
 %
 -spec write_whole( any_file_name(), ustring() | binary(), [ file:mode() ] ) ->
-							void().
+														void().
 write_whole( Filename, StringContent, Modes ) when is_list( StringContent ) ->
+
+	% Warning, implies performing an encoding (typically based on
+	% unicode:characters_to_binary/1):
+	%
 	write_whole( Filename, text_utils:string_to_binary( StringContent ),
 				 Modes );
 
 write_whole( Filename, BinaryContent, Modes ) ->
 
 	%trace_utils:debug_fmt( "Writing to '~ts', with modes ~p, "
-	%	"following content:~n~ts", [ Filename, Modes, BinaryContent ] ),
+	%   "following content:~n~ts", [ Filename, Modes, BinaryContent ] ),
 
 	% 'write' and 'binary' are implicit here; if relevant BinaryContent must be
 	% correctly Unicode-encoded:
@@ -4828,13 +4912,12 @@ get_extension_for( _CompressionFormat=xz ) ->
 
 
 
-% @doc Compresses specified file: creates a new, compressed version thereof
-% (using the most efficient, compacity-wise, compression tool available), whose
+% @doc Compresses specified file: creates a compressed version thereof (using
+% the most efficient, compacity-wise, compression tool available), whose
 % filename, established based on usual conventions, is returned. If a file with
 % that name already exists, it will be overwritten.
 %
-% For example, compress( "hello.png" ) will generate a "hello.png.xz"
-% file.
+% For example, compress("hello.png") will generate a "hello.png.xz" file.
 %
 % The original file remain as is.
 %
@@ -4848,12 +4931,11 @@ compress( Filename ) ->
 
 
 
-% @doc Compresses specified file: creates a new, compressed version thereof,
-% whose filename, established based on usual conventions, is returned. If a file
-% with that name already exists, it will be overwritten.
+% @doc Compresses specified file: creates a compressed version thereof, whose
+% filename, established based on usual conventions, is returned. If a file with
+% that name already exists, it will be overwritten.
 %
-% For example, compress( "hello.png", zip ) will generate a "hello.png.zip"
-% file.
+% For example, compress("hello.png", zip) will generate a "hello.png.zip" file.
 %
 % The original file remain as is.
 %

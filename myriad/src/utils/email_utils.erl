@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2021 Olivier Boudeville
+% Copyright (C) 2021-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -39,12 +39,12 @@
 % Type declarations.
 
 
--type address() :: ustring().
+-type email_address() :: ustring().
 % Electronic address for email (ex: "john@hello.org").
 
 
--type bin_address() :: bin_string().
-% Binary email address.
+-type bin_email_address() :: bin_string().
+% Binary email address (ex: `<<"john@hello.org">>').
 
 
 % Shorthands:
@@ -53,4 +53,4 @@
 -type bin_string() :: text_utils:bin_string().
 
 
--export_type([ address/0, bin_address/0 ]).
+-export_type([ email_address/0, bin_email_address/0 ]).

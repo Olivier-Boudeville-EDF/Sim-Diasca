@@ -4,7 +4,7 @@
 
 ![](/doc/myriad-title.png)
 
-This repository corresponds to the part of the [Ceylan project](https://github.com/Olivier-Boudeville/Ceylan) gathering all Erlang-based, all-purpose/generic base developments (formerly known as the 'Common' layer).
+This repository corresponds to the part of the [Ceylan project](https://github.com/Olivier-Boudeville/Ceylan) gathering all Erlang-based, all-purpose/generic base developments.
 
 Please refer to the [Myriad official documentation](http://myriad.esperide.org), otherwise to its [mirror](http://olivier-boudeville.github.io/Ceylan-Myriad/).
 

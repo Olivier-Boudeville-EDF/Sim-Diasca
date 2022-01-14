@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2021 Olivier Boudeville
+% Copyright (C) 2018-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -622,7 +622,7 @@ direct_transform_guard_test( _GuardTest={ 'op', FileLoc, Operator, Operand },
 	%						  [ GuardTest ] ),
 
 	case erl_internal:arith_op( Operator, 1 )
-		orelse erl_internal:bool_op( Operator, 1 ) of
+			orelse erl_internal:bool_op( Operator, 1 ) of
 
 		true ->
 			{ NewOperand, NewTransforms } =
@@ -781,6 +781,16 @@ direct_transform_guard_test( E={ AtomicLiteralType, _FileLoc, _Value },
 		 orelse AtomicLiteralType =:= 'string' ) ?andalso_rec_guard ->
 
 	ast_value:transform_value( E, Transforms );
+
+
+% Typically if specifying an invalid guard test such as "when X=#some_record{}"
+% instead of "when X=:=#some_record{}":
+%
+direct_transform_guard_test( _E={ 'match', FileLoc, _Expr1, _Expr2 },
+							 Transforms ) ?rec_guard ->
+	ast_utils:raise_usage_error( "invalid match in guard test.",
+		_Values=[], Transforms#ast_transforms.transformed_module_name,
+		FileLoc );
 
 
 % Default, catch-all error clause:

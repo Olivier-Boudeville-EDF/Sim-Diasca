@@ -1,4 +1,4 @@
-% Copyright (C) 2013-2021 Olivier Boudeville
+% Copyright (C) 2013-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,7 +25,7 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 
 
-% Unit tests for the preferences service.
+% @doc Unit tests for the <b>preferences</b> service.
 %
 % See the preferences.erl tested module.
 %
@@ -51,19 +51,26 @@ run() ->
 	test_facilities:display( "Preferences after the service is just started: "
 							 "~ts", [ preferences:to_string() ] ),
 
-	TargetKey = test_key,
+	FirstTargetKey = first_test_key,
 
 	test_facilities:display( "Value associated to ~ts before it is set "
-		"from test: ~p", [ TargetKey, preferences:get( TargetKey ) ] ),
+		"from test: ~p",
+		[ FirstTargetKey, preferences:get( FirstTargetKey ) ] ),
 
-	Target_value = "This is a test value!",
+	FirstTargetValue = "This is the first test value!",
 
-	preferences:set( TargetKey, Target_value ),
+	preferences:set( FirstTargetKey, FirstTargetValue ),
 
 	test_facilities:display( "Value associated to ~ts after it is set "
-		"from test: ~p", [ TargetKey, preferences:get( TargetKey ) ] ),
+		"from test: ~p",
+		[ FirstTargetKey, preferences:get( FirstTargetKey ) ] ),
 
-	Target_value = preferences:get( TargetKey ),
+	SecondTargetKey = second_test_key,
+	SecondTargetValue = "This is the second test value!",
+	preferences:set( SecondTargetKey, SecondTargetValue ),
+
+	[ FirstTargetValue, SecondTargetValue ] =
+		preferences:get( [ FirstTargetKey, SecondTargetKey ] ),
 
 	test_facilities:display( preferences:to_string() ),
 

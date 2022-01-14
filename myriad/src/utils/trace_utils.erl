@@ -1,4 +1,4 @@
-% Copyright (C) 2017-2021 Olivier Boudeville
+% Copyright (C) 2017-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -24,7 +24,6 @@
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Friday, November 1, 2013.
-
 
 
 % @doc Gathering of various very <b>low-level trace-related facilities</b> on
@@ -60,42 +59,38 @@
 -compile( { no_auto_import, [ error/1 ] } ).
 
 
-% Shorthand:
--type ustring() :: text_utils:ustring().
-
-
 -type trace_message() :: ustring().
 % An actual trace message.
 
 
 -type trace_severity() ::
 
-		% For debug-level messages:
-		'debug'
+	% For debug-level messages:
+	'debug'
 
-		% For informational, lower-level messages:
-	  | 'info'
+	% For informational, lower-level messages:
+	| 'info'
 
-		% For normal yet significant conditions:
-	  | 'notice'
+	% For normal yet significant conditions:
+	| 'notice'
 
-		% For warning conditions:
-	  | 'warning'
+	% For warning conditions:
+	| 'warning'
 
-		% For error conditions:
-	  | 'error'
+	% For error conditions:
+	| 'error'
 
-		% For critical conditions:
-	  | 'critical'
+	% For critical conditions:
+	| 'critical'
 
-		% For actions that must be taken immediately:
-	  | 'alert'
+	% For actions that must be taken immediately:
+	| 'alert'
 
-		% Highest criticity, when system became unusable:
-	  | 'emergency'
+	% Highest criticity, when system became unusable:
+	| 'emergency'
 
-	  % For messages that shall be fully muted (disabled):
-	  | 'void'.
+	% For messages that shall be fully muted (disabled):
+	| 'void'.
 % Defining, according to the Erlang newer logger API and thus in accordance with
 % the Syslog protocol (RFC 5424), 8 levels of severity (plus a 'void' one), from
 % least important to most: debug, info, notice, warning, error, critical, alert
@@ -184,6 +179,10 @@
  -define( ellipse_length, 2000 ).
 
 -endif.
+
+
+% Shorthand:
+-type ustring() :: text_utils:ustring().
 
 
 
@@ -498,7 +497,7 @@ emergency_categorized( Message, MessageCategorization ) ->
 % categorization and time information.
 %
 -spec emergency_categorized_timed( trace_message(),
-			   trace_message_categorization(), trace_timestamp() ) -> void().
+			trace_message_categorization(), trace_timestamp() ) -> void().
 emergency_categorized_timed( Message, _MessageCategorization=uncategorized,
 							 Timestamp ) ->
 	severe_display( "[emergency][at ~ts] ~ts", [ Timestamp, Message ] );
@@ -846,7 +845,7 @@ log( _LogEvent=#{ level := Level,
 			{ FmtStr, FmtValues } = logger:format_report( Report ),
 			text_utils:format( FmtStr, FmtValues );
 
-		  { string, S } ->
+		{ string, S } ->
 			S;
 
 		{ FmtStr, FmtValues } ->
@@ -859,8 +858,8 @@ log( _LogEvent=#{ level := Level,
 
 
 	%io:format( "### Logging following event:~n ~p~n(with config: ~p)~n "
-	%  "resulting in: '~ts' (severity: ~p).",
-	%  [ LogEvent, Config, TraceMsg, Severity ] ),
+	%   "resulting in: '~ts' (severity: ~p).",
+	%   [ LogEvent, Config, TraceMsg, Severity ] ),
 
 	% No the standard level corresponds directly to our severity:
 	echo( TraceMsg, _Severity=Level, "erlang_logger" );
@@ -934,4 +933,7 @@ actual_display( Format, Values ) ->
 	%basic_utils:display( Format, Values ).
 
 	% If wanting a faster, less safe version:
-	io:format( Format ++ "~n", Values ).
+	%io:format( Format ++ "~n", Values ).
+
+	% Safest of all, recommended:
+	actual_display( text_utils:format( Format, Values ) ).

@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2021 Olivier Boudeville
+% Copyright (C) 2018-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -531,13 +531,17 @@ transform_pattern( E, Transforms )
 					"MyVar=#my_record was meant?~n", [ element( 2, E ) ] ),
 				ast_utils:raise_error( [ invalid_record_use, E ] );
 
+			% Was possibly a pattern like 'P = f(X) = g(T)':
 			false ->
 				%ast_utils:display_warning( "Letting unhandled pattern ~p as "
 				%  "is.", [ E ] ),
 				% E.
-				ast_utils:display_error( "Illegal pattern found at line #~p "
+				FileLocStr = ast_utils:file_loc_to_string( element( 2, E ) ),
+
+				ast_utils:display_error( "Illegal pattern found at ~ts "
 					"(not supported by the current version of the "
-					"Erlang syntax).~n", [ element( 2, E ) ] ),
+					"Erlang syntax).~n", [ FileLocStr ] ),
+
 				ast_utils:raise_error( [ unexpected_pattern_to_transform, E ] )
 
 	end.

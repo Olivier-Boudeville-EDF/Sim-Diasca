@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2021 Olivier Boudeville
+% Copyright (C) 2003-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -38,13 +38,12 @@
 
 -type static_text() :: wxStaticText:wxStaticText().
 
-
 -type style_option() :: 'align_left' | 'center' | 'align_right'
 						| 'no_autoresize'.
 
 
--type text_option() ::   { 'pos', linear_2D:point() }
-					   | { 'size', linear_2D:dimensions() }
+-type text_option() ::   { 'pos', point() }
+					   | { 'size', size() }
 					   | { 'style', [ style_option() ] }.
 
 
@@ -52,6 +51,7 @@
 
 
 -export_type([ static_text/0, style_option/0, text_option/0, text_options/0 ]).
+
 
 
 % For related defines:
@@ -62,19 +62,28 @@
 
 
 % Shorthands:
+
+-type bit_mask() :: basic_utils:bit_mask().
+
 -type ustring() :: text_utils:ustring().
+
+-type window() :: gui:window().
+-type id() :: gui:id().
+
+-type point() :: gui:point().
+-type size() :: gui:size().
 
 
 
 % @doc Creates a static text, based on specified identifier and plain string.
--spec create_static( gui:window(), ustring() ) -> static_text().
+-spec create_static( window(), ustring() ) -> static_text().
 create_static( Parent, Label ) ->
 	create_static( _DefaultId=-1, Parent, Label ).
 
 
 
 % @doc Creates a static text, based on specified identifier and plain string.
--spec create_static( gui:id(), gui:window(), ustring() ) -> static_text().
+-spec create_static( id(), window(), ustring() ) -> static_text().
 create_static( Id, Parent, Label ) ->
 	create_static( Id, Parent, Label, _Options=[] ).
 
@@ -83,8 +92,8 @@ create_static( Id, Parent, Label ) ->
 % @doc Creates a static text, based on specified identifier, plain string and
 % options.
 %
--spec create_static( gui:id(), gui:window(), ustring(), text_options() ) ->
-							static_text().
+-spec create_static( id(), window(), ustring(), text_options() ) ->
+												static_text().
 create_static( Id, Parent, Label, Options ) ->
 
 	ActualOpts = get_text_options( Options ),
@@ -120,7 +129,7 @@ get_text_options( [ H | T ], Acc ) ->
 % (helper)
 %
 -spec style_option_to_bitmask( style_option() | [ style_option() ] ) ->
-										basic_utils:bit_mask().
+														bit_mask().
 style_option_to_bitmask( StyleList ) when is_list( StyleList ) ->
 
 	lists:foldl( fun( S, Acc ) -> style_option_to_bitmask( S ) bor Acc end,

@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2021 Olivier Boudeville
+% Copyright (C) 2014-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -61,7 +61,7 @@
 		  remove_entry/2, remove_entries/2,
 		  lookup_entry/2, has_entry/2,
 		  extract_entry/2, extract_entry_with_defaults/3,
-		  extract_entry_if_existing/2,
+		  extract_entry_if_existing/2, extract_entries/2,
 		  get_value/2, get_value_with_defaults/3,
 		  get_values/2, get_all_values/2,
 		  add_to_entry/3, subtract_from_entry/3, toggle_entry/2,
@@ -83,24 +83,29 @@
 
 -type entry() :: hashtable:entry().
 
+
 -type entries() :: [ entry() ].
 
 -type entry_count() :: basic_utils:count().
 
 
 -opaque list_table() :: [ { key(), value() } ].
+% Not exactly as proplist:proplist/0 (pairs only, and any() as key).
 
 -opaque list_table( K, V ) :: [ { K, V } ].
 
 % Preferred naming:
 -opaque table() :: list_table().
+
 -opaque table( K, V ) :: list_table( K, V ).
+
 
 -export_type([ key/0, value/0, entry/0, entries/0, entry_count/0,
 			   list_table/0, list_table/2, table/0, table/2 ]).
 
 
 % Shorthands:
+
 -type accumulator() :: basic_utils:accumulator().
 -type ustring() :: text_utils:ustring().
 
@@ -120,15 +125,15 @@
 -define( default_bullet, " + " ).
 
 
-% @doc Returns a new empty table dimensioned for the default number of entries.
+% @doc Returns an empty table dimensioned for the default number of entries.
 -spec new() -> list_table().
 new() ->
 	[].
 
 
 
-% @doc Returns a new empty table dimensioned for the specified expected number
-% of entries / a new table containing the specified (initial) entries.
+% @doc Returns an empty table dimensioned for the specified expected number of
+% entries / an table containing the specified (initial) entries.
 %
 -spec new( entry_count() | entries() ) -> list_table().
 new( ExpectedNumberOfEntries ) when is_integer( ExpectedNumberOfEntries ) ->
@@ -290,7 +295,7 @@ get_value( Key, Table ) ->
 
 
 
-% @doc Extracts specified entry from specified table, ie returns the
+% @doc Extracts specified entry from specified table, that is returns the
 % associated value and removes that entry from the table.
 %
 % The key/value pair is expected to exist already in the specified table,
@@ -312,7 +317,7 @@ extract_entry( Key, Table ) ->
 
 
 
-% @doc Extracts specified entry from specified table, ie returns the
+% @doc Extracts specified entry from specified table, that is returns the
 % associated value and removes that entry from the table.
 %
 % If no such key is available, returns the specified default value and the
@@ -334,10 +339,10 @@ extract_entry_with_defaults( Key, DefaultValue, Table ) ->
 
 
 
-% @doc Extracts specified entry (if any) from specified table, ie returns its
-% associated value and removes that entry from the returned table.
+% @doc Extracts specified entry (if any) from specified table, that is returns
+% its associated value and removes that entry from the returned table.
 %
-% Otherwise, ie if that entry does not exist, returns false.
+% Otherwise, that is if that entry does not exist, returns false.
 %
 -spec extract_entry_if_existing( key(), list_table() ) ->
 					'false' | { value(), list_table() }.
@@ -352,6 +357,31 @@ extract_entry_if_existing( Key, Table ) ->
 			false
 
 	end.
+
+
+
+% @doc Extracts specified entries from specified table, that is returns their
+% associated values (in-order) and removes these entries from the returned
+% table.
+%
+% Each key/value pair is expected to exist already, otherwise an exception is
+% raised (typically {badkey, KeyNotFound}).
+%
+% Ex: {[RedValue, GreenValue, BlueValue], ExtractedTable} =
+%         list_table:extract_entries([red, green, blue], MyTable)
+%
+-spec extract_entries( [ key() ], list_table() ) ->
+										{ [ value() ], list_table() }.
+extract_entries( Keys, ListHashtable ) ->
+	{ RevValues, FinalTable } = lists:foldl(
+		fun( K, { AccValues, AccTable } ) ->
+			{ V, NewAccTable } = extract_entry( K, AccTable ),
+			{ [ V | AccValues ], NewAccTable }
+		end,
+		_Acc0={ [], ListHashtable },
+		_List=Keys ),
+
+	{ lists:reverse( RevValues ), FinalTable }.
 
 
 
@@ -556,9 +586,9 @@ toggle_entry( Key, Table ) ->
 
 
 
-% @doc Returns a new table, which started from TableBase and was enriched with
-% the TableAdd entries whose keys were not already in TableBase (if a key is in
-% both tables, the one from TableBase will be kept).
+% @doc Returns a table that started from TableBase and was enriched with the
+% TableAdd entries whose keys were not already in TableBase (if a key is in both
+% tables, the one from TableBase will be kept).
 %
 % Note: not the standard merge that one would expect, should values be lists.
 %
@@ -821,7 +851,7 @@ is_empty( _Table ) ->
 
 
 
-% @doc Returns the size (number of entries, ie of key/value pairs) of the
+% @doc Returns the size (number of entries, that is of key/value pairs) of the
 % specified table.
 %
 -spec size( list_table() ) -> entry_count().

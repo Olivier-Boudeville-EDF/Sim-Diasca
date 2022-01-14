@@ -1,4 +1,4 @@
-% Copyright (C) 2019-2021 Olivier Boudeville
+% Copyright (C) 2019-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -69,7 +69,7 @@
 -type application_run_context() ::
 		% If using Ceylan native build/run system:
 		'as_native'
-		% If using OTP release:
+		% If using an OTP release (hence OTP applications as well):
 	  | 'as_otp_release'.
 % Designates how an (OTP) application is run.
 
@@ -88,7 +88,7 @@
 
 		  stop_application/1, stop_applications/1, stop_user_applications/1,
 
-		  get_supervisor_settings/2,
+		  get_supervisor_settings/2, get_restart_setting/1,
 
 		  check_application_run_context/1, application_run_context_to_string/1,
 
@@ -102,6 +102,7 @@
 % Shorthands:
 
 -type module_name() :: basic_utils:module_name().
+-type execution_target() :: basic_utils:execution_target().
 
 -type file_name() :: file_utils:file_name().
 -type file_path() :: file_utils:file_path().
@@ -120,21 +121,21 @@
 
 -record( app_info, {
 
-		   % Stored here also only for convenience:
-		   app_name :: application_name(),
+	% Stored here also only for convenience:
+	app_name :: application_name(),
 
-		   % The (absolute) base root of that application:
-		   root_dir :: bin_directory_path(),
+	% The (absolute) base root of that application:
+	root_dir :: bin_directory_path(),
 
-		   % The (absolute) ebin directory root of that application:
-		   ebin_dir :: bin_directory_path(),
+	% The (absolute) ebin directory root of that application:
+	ebin_dir :: bin_directory_path(),
 
-		   % If set, means that it is an active application:
-		   start_mod_args ::
-				maybe( { module_name(), basic_utils:arguments() } ),
+	% If set, means that it is an active application:
+	start_mod_args ::
+			maybe( { module_name(), basic_utils:arguments() } ),
 
-		   % As contained in its .app file:
-		   spec :: app_spec() }).
+	% As contained in its .app file:
+	spec :: app_spec() } ).
 
 
 -type app_info() :: #app_info{}.
@@ -837,8 +838,8 @@ interpret_app_file( AppFilePath, AppName, EBinPath, BaseDir ) ->
 				{ value, [] } ->
 					% No module declared (weird); supposing that alles gut:
 					%trace_bridge:warning_fmt( "Application '~ts' did not "
-					%	"declare any module; supposing that it is fully built.",
-					%	[ AppName ] ),
+					%   "declare any module; supposing that it is fully built.",
+					%   [ AppName ] ),
 					ok;
 
 				% Testing just the first module found:
@@ -1007,7 +1008,7 @@ start_applications( [ AppName | T ], RestartType, BlacklistedApps ) ->
 
 	%?debug_fmt( "Starting application '~ts' with restart type '~ts', "
 	%   "whereas blacklisted applications are: ~p.",
-	%	[ AppName, RestartType, BlacklistedApps ] ),
+	%   [ AppName, RestartType, BlacklistedApps ] ),
 
 	case lists:member( AppName, BlacklistedApps ) of
 
@@ -1107,13 +1108,13 @@ stop_user_applications( AppNames ) ->
 % Note that the execution context must be explicitly specified (typically by
 % calling a get_execution_target/0 function defined in a key module of that
 % layer, based on Myriad's basic_utils.hrl), otherwise the one that would apply
-% is the one of Myriad, not the one of the calling layer.
+% is the one of Myriad - not the one of the calling layer.
 %
 % See [https://erlang.org/doc/design_principles/sup_princ.html#supervisor-flags]
 % for further information.
 %
--spec get_supervisor_settings( supervisor:strategy(),
-					basic_utils:execution_target() ) -> supervisor:sup_flags().
+-spec get_supervisor_settings( supervisor:strategy(), execution_target() ) ->
+			supervisor:sup_flags().
 get_supervisor_settings( RestartStrategy, _ExecutionTarget=development ) ->
 
 	% No restart wanted in development mode; we do not want the supervisor to
@@ -1137,6 +1138,27 @@ get_supervisor_settings( RestartStrategy, _ExecutionTarget=production ) ->
 
 
 
+% @doc Returns default, base restart settings depending on the specified
+% execution target.
+%
+% Note that the execution context must be explicitly specified (typically by
+% calling a get_execution_target/0 function defined in a key module of that
+% layer, based on Myriad's basic_utils.hrl), otherwise the one that would apply
+% is the one of Myriad - not the one of the calling layer.
+%
+-spec get_restart_setting( execution_target() ) -> supervisor:restart().
+get_restart_setting( _ExecutionTarget=development ) ->
+	% In development, failing as clearly as possible; here at least so that
+	% tests fail in case of problem (ex: if no configuration file is found):
+	%
+	_NeverRestarted=temporary;
+
+get_restart_setting( _ExecutionTarget=production ) ->
+	% In production, as reliable as possible:
+	_AlwaysRestarted=permanent.
+
+
+
 % @doc Checks that the specified application run context is legit.
 -spec check_application_run_context( application_run_context() ) -> void().
 check_application_run_context( _AppRunContext=as_native ) ->
@@ -1154,10 +1176,10 @@ check_application_run_context( OtherAppRunContext ) ->
 -spec application_run_context_to_string( application_run_context() ) ->
 												ustring().
 application_run_context_to_string( _AppRunContext=as_native ) ->
-	"based on the Ceylan native native build/run system";
+	"based on the Ceylan native build/run system";
 
 application_run_context_to_string( _AppRunContext=as_otp_release ) ->
-	"as an OTP release".
+	"as an OTP application".
 
 
 
@@ -1189,23 +1211,23 @@ get_priv_root( ModuleName, BeSilent ) ->
 
    case code:priv_dir( ModuleName ) of
 
-	   % May happen even if being listed in the 'modules' entry of the relevant
-	   % .app/.app.src files.
-	   %
-	   { error, PError } ->
+		% May happen even if being listed in the 'modules' entry of the relevant
+		% .app/.app.src files.
+		%
+		{ error, PError } ->
 
-		   % PError=bad_name, not that useful:
-		   case BeSilent of
+			% PError=bad_name, not that useful:
+			case BeSilent of
 
-			   true ->
-				   ok;
+				true ->
+					ok;
 
-			   false ->
-					trace_bridge:warning_fmt( "Unable to determine 'priv' "
+				false ->
+					trace_bridge:warning_fmt( "Unable to determine the 'priv' "
 						"directory from module '~ts': ~w.",
 						[ ModuleName, PError ] )
 
-		   end,
+			end,
 
 			case code:which( ModuleName ) of
 

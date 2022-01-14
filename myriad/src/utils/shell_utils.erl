@@ -1,4 +1,4 @@
-% Copyright (C) 2020-2021 Olivier Boudeville
+% Copyright (C) 2020-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -37,6 +37,16 @@
 
 % Section for command-line facilities:
 -export([ protect_from_shell/1 ]).
+
+
+% Implementation notes:
+%
+% It does not seem possible with sh to properly pass arguments that contain at
+% least a space (ex: my-script.sh "has a space"), regardless the use of $@ and
+% IFS; for bash, refer to
+% https://unix.stackexchange.com/questions/472589/pass-to-command-preserving-quotes
+% for more information; this is not a limitation induced by Erlang or thus
+% module.
 
 
 % For easy table type substitution (note though that lists:keytake/3 is used):
@@ -262,7 +272,7 @@ get_argument_table() ->
 	Args = init:get_plain_arguments(),
 
 	%trace_utils:debug_fmt( "Arguments obtained by get_argument_table/0: ~p.",
-	%					   [ Args ] ),
+	%                       [ Args ] ),
 
 	% To convert a list of strings into per-option list of values:
 	get_argument_table_from_strings( Args ).

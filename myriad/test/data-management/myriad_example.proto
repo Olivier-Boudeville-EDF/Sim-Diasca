@@ -1,0 +1,54 @@
+/*
+ * For the test of the Protobuf support.
+ *
+ * Refer to https://developers.google.com/protocol-buffers/docs/proto3 for a
+ * documentation of the language.
+ *
+ * See https://myriad.esperide.org/#about-protobuf
+ *
+ */
+
+syntax = "proto3";
+
+package myriad.protobuf.test;
+
+message Person {
+  string name = 1;
+  int32 id = 2;
+  string email = 3;
+}
+
+
+
+message SearchRequest {
+  string query = 1;
+  int32 page_number = 2;
+  int32 result_per_page = 3;
+}
+
+
+
+message Point {
+  int32 x = 1;
+  int32 y = 2;
+  string label = 3;
+}
+
+
+message Line {
+  Point start = 1;
+  Point end = 2;
+  string label = 3;
+}
+
+
+message Polyline {
+  repeated Point point = 1;
+  string label = 2;
+}
+
+
+message DoubleList {
+	// Not packed:
+	repeated double data = 1;
+}

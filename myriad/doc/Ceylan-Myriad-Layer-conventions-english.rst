@@ -20,7 +20,7 @@ The use of syntax highlighting is encouraged.
 
 Recommended text editors are:
 
-- `Emacs <https://www.gnu.org/software/emacs/>`_ (see our `init.el <https://github.com/Olivier-Boudeville/Ceylan-Myriad/tree/master/conf/init.el>`_)
+- `Emacs <#emacs-settings>`_
 - `Visual Studio Code <https://en.wikipedia.org/wiki/Visual_Studio_Code>`_ (a.k.a. Vscode)
 - `ErlIDE <https://erlide.org/>`_ (based on Eclipse)
 - Vim, IntelliJ, Gedit, Nedit, etc.
@@ -107,6 +107,10 @@ The most obvious conventions are:
 
 - some conventional variable names are, and may be, extensively used: ``Res`` for result, ``H`` and ``T`` for respectively the head and tail of a list on which we recursively iterate
 
+.. _indices:
+
+- indices shall, as much as possible, start at index ``1`` (rather than 0); this is a general Erlang convention (`for lists <https://erlang.org/doc/man/lists.html#description>`_, like with ``lists:nth/2``, for tuples, etc. - unlike `arrays <https://erlang.org/doc/man/array.html#description>`_, though); see ``basic_utils:positive_index/0``
+
 - when needing an **associative table**, use the ``table`` pseudo-module; a key/value pair shall be designated as a table *entry* (ex: variable named as ``RoadEntry``)
 
 - regarding the in-code management of **text**:
@@ -126,6 +130,7 @@ The most obvious conventions are:
 As not all typos may be detected at compilation-time (ex: wrong spelling for a module), we recommend, for source code, the use of additional static checkers, as discussed in the `type-checking`_ section.
 
 
+.. _`execution target`:
 
 Execution Targets
 =================
@@ -137,7 +142,7 @@ Two execution target modes have been defined:
 
 These execution targets are *compile-time* modes, i.e. they are set once for all when building the layer at hand (probably based, if using OTP, on the rebar corresponding modes - respectively ``dev`` and ``prod``).
 
-See ``EXECUTION_TARGET`` in ``GNUmakevars.inc`` to read and/or set them.
+See the ``EXECUTION_TARGET`` variable in ``GNUmakevars.inc`` to read and/or set them.
 
 The current execution target is of course available at runtime on a per-layer level, see ``basic_utils:get_execution_target/0`` for more information.
 
@@ -146,24 +151,6 @@ This function shall be compiled once per layer to be accurate, in one of its mod
  -include_lib("myriad/utils/basic_utils.hrl").
 
 
-
-Geometric Conventions
-=====================
-
-:raw-html:`<center><img src="myriad-space-time-referential.png" id="responsive-image-tiny"></img></center>`
-:raw-latex:`\begin{figure}[h] \centering \includegraphics[scale=1]{myriad-space-time-referential.png} \end{figure}`
-
-For **space** coordinates, three axes are defined for a global referential:
-
-- abscissa: X axis (in red, ``#FF0000``)
-- ordinate: Y axis (in green, ``#008000``)
-- depth: Z axis (in blue, ``#0000FF``)
-
-For each of them, generally ``1.0`` corresponds to 1 meter, otherwise to 1 `light-second <https://en.wikipedia.org/wiki/Light-second>`_ (i.e. roughly 300 000 km [#]_).
-
-.. [#] Then for more human-sized distances, a scale of one light-nanosecond (10^-9 second) might be more convenient, as it corresponds almost to 30 cm.
-
-For **time** coordinate, a single axis is defined for a global referential: the T axis (in yellow, ``#F6DE2D``), for which ``1.0`` corresponds to 1 second.
 
 
 Tooling Conventions
@@ -177,7 +164,7 @@ Erlang LS
 
 The `Language Server Protocol <https://en.wikipedia.org/wiki/Language_Server_Protocol>`_ (also known as LSP) may be used by one's editor of choice in order to provide various services facilitating the developments in various languages, including Erlang.
 
-For that `Erlang LS <https://erlang-ls.github.io/>`_ should be used. We then recommend to rely on our `erlang_ls.config <https://github.com/Olivier-Boudeville/Ceylan-Myriad/tree/master/erlang_ls.config>`_ configuration file, which may be installed that way:
+For that `Erlang LS <https://erlang-ls.github.io/>`_ should be used. We then recommend to rely on our `erlang_ls.config <https://github.com/Olivier-Boudeville/Ceylan-Myriad/blob/master/conf/erlang_ls.config>`_ configuration file, which may be installed that way:
 
 .. code:: bash
 
@@ -197,9 +184,34 @@ As for the installation of `Erlang LS <https://erlang-ls.github.io/>`_ itself, w
 
 Then one would just have to ensure that ``~/Software/erlang_ls/bin`` is indeed in one's PATH.
 
-Note that not all bells and whistles of LSP may be retained, knowing that at least some of them are confused by various elements, especially when applied to code that is parse-transformed.
+Note that not all bells and whistles of LSP may be retained, knowing that at least some of them are confused by various elements, especially when applied to code that is parse-transformed; as a result we did find LS features much useful.
 
 The Emacs configuration that we use (see the corresponding `init.el <https://github.com/Olivier-Boudeville/Ceylan-Myriad/blob/master/conf/init.el>`_) attempts to find some sweet spot in this matter.
+
+Another option is to use ``ctags`` to generate Emacs' compliant `tags <https://www.emacswiki.org/emacs/EmacsTags>`_ (see the ``generate-tags`` make target); we did not find this solution very satisfactory either.
+
+
+
+For Documentation Generation
+----------------------------
+
+We rely on RST (*Restructured Text*, from Docutils) in order to generate both HTML targets (a set of static web pages) and PDF ones (for any of our layers), notably thanks to our ``generate-docutils.sh`` script.
+
+In the context of our HTML target, in order to output beautiful mathematical symbols (equations, matrices, etc.), we rely on MathJax. It shall thus be installed once for all first. For example, on Arch Linux, as ``root``, it is sufficient to execute:
+
+.. code:: bash
+
+   $ pacman -Sy mathjax
+
+Then, to enable the use of MathJax for a given website, run from its root (often a ``doc`` directory):
+
+.. code:: bash
+
+  make create-mathjax-symlink
+
+(this target is defined in ``myriad/doc/GNUmakerules-docutils.inc``).
+
+
 
 
 Other Conventions

@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2021 Olivier Boudeville
+% Copyright (C) 2010-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -24,7 +24,6 @@
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Monday, February 15, 2010.
-
 
 
 % @doc Gathering of various <b>facilities for Graphical User Interfaces</b>
@@ -56,12 +55,53 @@
 %
 % Providing improved and enriched APIs for all kinds of GUI.
 %
-% Relying optionally on:
-%
-% - OpenGL, for efficient 3D rendering
-%
-% - esdl, for adequate lower-level primitives (ex: management of input devices)
+% Relying optionally:
+% - on OpenGL, for efficient 2D/3D rendering (see gui_opengl.erl)
+% - possibly, some day, on esdl (https://github.com/dgud/esdl), for adequate
+% lower-level primitives (ex: management of input devices)
 
+
+
+% General use:
+%
+% From a user process (a test, an application, etc.) the GUI support is first
+% started (gui:start/0), then widgets (windows, frames, panels, buttons, etc.)
+% are created (ex: gui:create_frame/6) and the user process subscribes to the
+% events it is interested in (as a combination of an event type and a
+% widget-as-an-event-emitter; for example:
+% gui:subscribe_to_events({onWindowClosed, MainFrame})). It triggers also any
+% relevant operation (ex: clearing widgets, setting various parameters),
+% generally shows at least a main frame and records the GUI state that it needs
+% (typically containing at least the MyriadGUI references of the widgets that it
+% created).
+%
+% Then the user process enters its (GUI) specific main loop, from which it will
+% receive the events that it subscribed to, to which it will react by performing
+% application-specific operations and/or GUI-related operations (creating,
+% modifying, deleting widgets).
+%
+% Beware of asynchronous operations (i.e. the sending of oneways) to the GUI
+% main loop process, as they may introduce nasty race conditions. For example,
+% if the subscribing to events (ex: to the main frame being shown) was left
+% asynchronous, then the operations coming next from the user code may be fast
+% enough so that a wx instance (ex: the main frame) processes these events (ex:
+% requesting the main frame to be shown) before even that the GUI main loop had
+% a chance to declare its connection to them. This would result in an expected
+% event (onShown here) never to be emitted and thus never to be received.
+%
+% Another race condition can happen when destructing a resource (ex: when
+% issuing 'gui:destruct_window(MainFrame)' whereas some previous operations may
+% not have been processed yet (ex: gui_canvas:set_draw_color/2), resulting in
+% access errors (ex: {unknown_env,{wxPen,new,2}}) due to an
+% use-after-destroy. Short of making most operations synchronous, no real
+% solution seems to exist. The issue exists maybe even without MyriadGUI, but
+% having a middle process increases the likeliness of such a problem due to the
+% extra induced latency.
+%
+% Generally at least one condition is defined in order to leave that main loop
+% and stop the GUI (gui:stop/0).
+%
+% See lorenz_test.erl as a full, executable usage example thereof.
 
 
 % Implementation notes:
@@ -107,10 +147,10 @@
 -record( gui_env, {
 
 	% Reference to the current top-level wx server:
-	wx_server :: wx:wx_object(),
+	wx_server ::wx_object(),
 
 	% PID of the main loop:
-	loop_pid :: pid() }).
+	loop_pid :: pid() } ).
 
 
 
@@ -121,19 +161,43 @@
 % using a naming service or having to keep around a bound variable.
 
 
--type backend_event() :: gui_event:wx_event().
 % Current backend is wx (WxWidgets).
 %
 % (useful to avoid including the header of wx in our own public ones)
+-opaque backend_event() :: gui_event:wx_event().
+% An (opaque) backend GUI event.
+
+
+
+% With wx, device contexts (ex: obtained from wxMemoryDC:new/1) must be
+% explicitly managed (ex: wxMemoryDC:destroy/1 must be called when finished with
+% them), which is inconvenient and error-prone.
+%
+-type device_context() :: wx_object().
+% Designates an abstract device where rendering can take place, and which can be
+% the source or target of a blit. Akin to a surface in SDL (libsdl).
+
 
 
 -type canvas() :: gui_canvas:canvas().
-% To be used directly from the user code.
+% A basic canvas (not to be mixed with an OpenGL one, opengl_canvas/0).
+
+
+
+-type opengl_canvas() :: gui_opengl:gl_canvas().
+% An OpenGL canvas (not to be mixed with a basic one, canvas/0).
+
+-type opengl_context() :: gui_opengl:gl_context().
+% An OpenGL context.
+
 
 
 % Basic GUI operations.
 -export([ is_available/0, start/0, start/1, set_debug_level/1, stop/0 ]).
 
+
+% Extra overall operations.
+-export([ batch/1 ]).
 
 
 % Event-related operations.
@@ -160,7 +224,9 @@
 
 % Windows:
 -export([ create_window/0, create_window/1, create_window/2, create_window/5,
-		  set_sizer/2, show/1, hide/1, get_size/1, destruct_window/1 ]).
+		  set_sizer/2, show/1, hide/1, get_size/1, get_client_size/1,
+		  maximise_in_parent/1, sync/1, enable_repaint/1,
+		  lock_window/1, unlock_window/1, destruct_window/1 ]).
 
 
 % Frames:
@@ -183,12 +249,17 @@
 
 % Sizers:
 -export([ create_sizer/1, create_sizer_with_box/2,
-		  create_sizer_with_labelled_box/3, add_to_sizer/2, add_to_sizer/3,
+		  create_sizer_with_labelled_box/3, create_sizer_with_labelled_box/4,
+		  add_to_sizer/2, add_to_sizer/3,
 		  clear_sizer/1, clear_sizer/2 ]).
 
 
 % Status bars:
--export([ create_status_bar/1, push_status_text/2 ]).
+-export([ create_status_bar/1, push_status_text/2, push_status_text/3 ]).
+
+
+% Brushes:
+-export([ create_brush/1, destruct_brush/1 ]).
 
 
 % Canvas support (forwarded to gui_canvas).
@@ -200,8 +271,22 @@
 		  draw_cross/2, draw_cross/3, draw_cross/4, draw_labelled_cross/4,
 		  draw_labelled_cross/5, draw_circle/3, draw_circle/4,
 		  draw_numbered_points/2,
-		  load_image/2, load_image/3, blit/1, clear/1 ]).
+		  load_image/2, load_image/3,
+		  resize/2, blit/1, clear/1 ]).
 
+
+% Bitmaps:
+-export([ create_bitmap/1, create_blank_bitmap/1, create_blank_bitmap/2,
+		  create_blank_bitmap_for/1,
+		  lock_bitmap/1, draw_bitmap/3, unlock_bitmap/1, destruct_bitmap/1 ]).
+
+
+% Device contexts:
+-export([ clear_device_context/1, blit/5, blit/6 ]).
+
+
+% Fonts:
+-export([ create_font/4, create_font/5 ]).
 
 
 % For related, public defines:
@@ -218,23 +303,72 @@
 
 % Type declarations:
 
--type length() :: linear:distance().
+-type length() :: linear:integer_distance().
+% A length, as a number of pixels.
+
+-type width() :: length().
+% A width, as a number of pixels.
+
+-type height() :: length().
+% An height, as a number of pixels.
+
+
 -type coordinate() :: linear:integer_coordinate().
+% For a GUI, coordinates are an integer number of pixels.
 
 
--type point() :: linear_2D:integer_point().
-% linear_2D:point() would allow for floating-point coordinates.
+-type point() :: point2:integer_point2().
+% A pixel-wise GUI point (as point2:point2() would allow for floating-point
+% coordinates).
 
 -type position() :: point() | 'auto'.
+% Position, in pixel coordinates, typically of a widget.
 
 
--type size() :: linear_2D:dimensions() | 'auto'.
+-type dimensions() :: linear_2D:integer_rect_dimensions().
+% Dimensions in pixels, as {IntegerWidth,IntegerHeight}.
+
+-type size() :: dimensions() | 'auto'.
 % Size, typically of a widget.
 
 
 -type orientation() :: 'vertical' | 'horizontal'.
 % A vertical orientation means piling elements top to bottom for example, while
 % an horizontal means left to right, for example.
+
+
+-type fps() :: count().
+% Number of frames per second.
+%
+% The old Charlie Chaplin movies were shot at 16 frames per second and are
+% noticeably jerky.
+%
+% 60 frames per second is smoother than 30, and 120 is marginally better than
+% 60; beyond 120 fps has no real interest as it exceeds eye perception.
+
+
+
+% MVC (Model-View-Controller) section.
+%
+% Generally the view knows (i.e. has the PID of) the model, the controller knows
+% the model and the model does not know specifically either of them.
+
+% See https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller for
+% further information.
+
+-type model_pid() :: pid().
+% The PID of a process whose role is to be a Model in the sense of the MVC
+% pattern.
+
+
+-type view_pid() :: pid().
+% The PID of a process whose role is to be a View in the sense of the MVC
+% pattern.
+
+
+-type controller_pid() :: pid().
+% The PID of a process whose role is to be a Controller in the sense of the MVC
+% pattern.
 
 
 
@@ -276,8 +410,9 @@
 % The construction parameters of a MyriadGUI object.
 
 
--type myriad_instance_pid() :: pid().
-% Myriad-specific instance identifier, a PID.
+-type myriad_instance_id() :: count().
+% Myriad-specific instance identifier, corresponding a reference in the internal
+% MyriadGUI type table.
 
 
 -type id() :: maybe( wx_id() ).
@@ -302,45 +437,53 @@
 % Defining the actual widget types corresponding to wx_object_type():
 
 
--type window() :: maybe( wxWindow:wxWindow() | gui_canvas:canvas() ).
+-opaque window() :: maybe( wxWindow:wxWindow() | gui_canvas:canvas() ).
+% Any kind of windows, that is widget (ex: any canvas is a window).
 
--type frame() :: wxFrame:wxFrame().
+-opaque frame() :: wxFrame:wxFrame().
 
--type panel() :: wxPanel:wxPanel().
+-opaque panel() :: wxPanel:wxPanel().
 
--type button() :: wxButton:wxButton().
+-opaque button() :: wxButton:wxButton().
 
--type sizer() :: wxSizer:wxSizer().
+-opaque sizer() :: wxSizer:wxSizer().
 
 
--type sizer_child() :: window() | sizer().
+-opaque sizer_child() :: window() | sizer().
 % Elements that can be included in a sizer.
 
 
--type sizer_item() :: wxSizerItem:wxSizerItem().
+-opaque sizer_item() :: wxSizerItem:wxSizerItem().
 
--type status_bar() :: wxStatusBar:wxStatusBar().
-
--type bitmap() :: wxBitmap:wxBitmap().
-
--type back_buffer() :: wxMemoryDC:wxMemoryDC().
+-opaque status_bar() :: wxStatusBar:wxStatusBar().
 
 
-
-% Type shorthands:
-
--type ustring() :: text_utils:ustring().
-
--type text() :: ustring().
-
--type wx_id() :: gui_wx_backend:wx_id().
-
--type integer_distance() :: linear:integer_distance().
-
--type color() :: gui_color:color().
+-opaque bitmap() :: gui_image:bitmap().
+% Platform-dependent bitmap, either monochrome or colour (with or without alpha
+% channel).
+%
+% Intended to be a wrapper of whatever is the native image format, which is
+% quickest/easiest to draw to a display context.
 
 
-% Aliases:
+-opaque brush() :: wxBrush:wxBrush().
+
+-opaque back_buffer() :: wxMemoryDC:wxMemoryDC().
+
+
+-type font() :: gui_font:font().
+
+-type font_size() :: gui_font:font_size().
+
+-type point_size() :: gui_font:point_size().
+
+-type font_family() :: gui_font:font_family().
+
+-type font_style() :: gui_font:font_style().
+
+-type font_weight() :: gui_font:font_weight().
+
+-type font_option() :: gui_font:font_option().
 
 -type title() :: text().
 -type label() :: text().
@@ -368,9 +511,7 @@
 						  | 'grab_all_keys'
 						  | 'full_repaint_on_resize'.
 % Options for windows, see
-% [http://docs.wxwidgets.org/stable/wx_wxwindow.html] and
-% [http://docs.wxwidgets.org/stable/wx_windowstyles.html#windowstyles].
-
+% [http://docs.wxwidgets.org/stable/classwx_window.html]
 
 
 -type window_style() :: window_style_opt() | [ window_style_opt() ].
@@ -395,7 +536,7 @@
 						 | 'tool_window'
 						 | 'no_taskbar'.
 % Options for frames, see
-% [http://docs.wxwidgets.org/stable/wx_wxframe.html#wxframewxframe].
+% [http://docs.wxwidgets.org/stable/classwx_frame.html].
 
 
 
@@ -404,7 +545,7 @@
 
 -type panel_option() :: window_option().
 % Options for panels, see
-% [http://docs.wxwidgets.org/stable/wx_wxpanel.html#wxpanelwxpanel].
+% [http://docs.wxwidgets.org/stable/classwx_panel.html].
 
 
 -type panel_options() :: [ panel_option() ].
@@ -418,7 +559,7 @@
 						  | 'exact_fit'
 						  | 'flat'.
 % Options for button style, see
-% [http://docs.wxwidgets.org/stable/wx_wxbutton.html#wxbuttonwxbutton].
+% [http://docs.wxwidgets.org/stable/classwx_button.html].
 
 
 -type button_style() :: button_style_opt() | [ button_style_opt() ].
@@ -441,7 +582,7 @@
 						| 'align_bottom'
 						| 'align_center_vertical'
 						| 'align_center_horizontal'.
-% Options for sizers, see [http://docs.wxwidgets.org/stable/wx_wxsizer.html].
+% Options for sizers, see [https://docs.wxwidgets.org/stable/classwx_sizer.html]
 
 
 -type sizer_flag() :: sizer_flag_opt() | [ sizer_flag_opt() ].
@@ -455,9 +596,19 @@
 -type sizer_options() :: [ sizer_option() ].
 
 
+-type image() :: gui_image:image().
+% An image is a bitmap buffer of RGB bytes with an optional buffer for the alpha
+% bytes.
+%
+% It is thus generic, independent from platforms and image file formats.
+
+
 -type connect_opt() ::   { 'id', integer() }
 					   | { lastId, integer() }
 					   | { skip, boolean() }
+						% Triggers handle_sync_event/3, see the wx_object
+						% behaviour:
+						%
 					   |   callback
 					   | { callback, function() }
 					   | { userData, term() }.
@@ -479,19 +630,33 @@
 
 
 
--export_type([ length/0, coordinate/0, point/0, position/0, size/0,
-			   orientation/0, object_type/0, wx_object_type/0,
-			   myriad_object_type/0, myriad_instance_pid/0,
+-export_type([ length/0, width/0, height/0,
+			   coordinate/0, point/0, position/0, size/0,
+			   orientation/0, fps/0,
+			   model_pid/0, view_pid/0, controller_pid/0,
+			   object_type/0, wx_object_type/0,
+			   myriad_object_type/0, myriad_instance_id/0,
 			   title/0, label/0, user_data/0,
 			   id/0, gui_object/0, wx_server/0,
 			   window/0, frame/0, panel/0, button/0,
 			   sizer/0, sizer_child/0, sizer_item/0, status_bar/0,
-			   bitmap/0, back_buffer/0, canvas/0,
+
+			   font/0, font_size/0, point_size/0, font_family/0, font_style/0,
+			   font_weight/0,
+
+			   bitmap/0, brush/0, back_buffer/0, device_context/0, canvas/0,
+			   opengl_canvas/0, opengl_context/0,
 			   construction_parameters/0, backend_event/0, connect_options/0,
 			   window_style/0, frame_style/0, button_style/0,
+
+			   window_style_opt/0, window_option/0,
+			   frame_style_opt/0,
+			   panel_option/0, panel_options/0,
+			   button_style_opt/0,
 			   sizer_flag_opt/0, sizer_flag/0, sizer_option/0, sizer_options/0,
-			   connect_opt/0, debug_level_opt/0, debug_level/0,
-			   error_message/0 ]).
+			   image/0,
+			   connect_opt/0,
+			   debug_level_opt/0, debug_level/0, error_message/0 ]).
 
 
 % To avoid unused warnings:
@@ -502,6 +667,32 @@
 -import( gui_wx_backend, [ to_wx_parent/1, to_wx_id/1, to_wx_position/1,
 						   to_wx_size/1, to_wx_orientation/1,
 						   frame_style_to_bitmask/1, get_panel_options/1 ]).
+
+
+% Type shorthands:
+
+-type count() :: basic_utils:count().
+
+-type ustring() :: text_utils:ustring().
+
+-type format_string() :: text_utils:format_string().
+-type format_values() :: text_utils:format_values().
+
+-type text() :: ustring().
+
+-type any_file_path() :: file_utils:any_file_path().
+
+-type line2() :: linear_2D:line2().
+
+-type color() :: gui_color:color().
+-type color_by_decimal() :: gui_color:color_by_decimal().
+-type color_by_decimal_with_alpha() :: gui_color:color_by_decimal_with_alpha().
+
+-type event_subscription_spec() :: gui_event:event_subscription_spec().
+
+-type wx_id() :: gui_wx_backend:wx_id().
+
+-type wx_object() :: wx:wx_object().
 
 
 % GUI-specific defines:
@@ -545,8 +736,9 @@ start() ->
 	LoopPid = ?myriad_spawn_link( gui_event, start_main_event_loop,
 								  [ WxServer, WxEnv ] ),
 
-	trace_utils:info_fmt( "Main loop running on ~w (created from ~w).",
-						  [ LoopPid, self() ] ),
+	cond_utils:if_defined( myriad_debug_user_interface, trace_utils:info_fmt(
+		"Main loop running on GUI process ~w (created from user process ~w).",
+		[ LoopPid, self() ] ) ),
 
 	GUIEnv = #gui_env{ wx_server=WxServer, loop_pid=LoopPid },
 
@@ -573,30 +765,48 @@ set_debug_level( DebugLevel ) ->
 
 
 
-% @doc Subscribes the current, calling process to the specified kind of events,
-% like {onWindowClosed, MyFrame}.
+% @doc Subscribes the current, calling process to the specified kind of events
+% (event type and emitter), like {onWindowClosed, MyFrame}.
 %
 % This process will then receive MyriadGUI callback messages whenever events
-% that match happen, such as: {onWindowClosed, [MyFrame, Context]}.
+% that match happen, such as: {onWindowClosed, [MyFrame, EventContext]}.
 %
 % By default the corresponding event will not be transmitted upward in the
 % widget hierarchy (as this event will be expected to be processed for good by
 % the subscriber(s) it has been dispatched to), unless the propagate_event/1
 % function is called from one of them.
 %
--spec subscribe_to_events( gui_event:event_subscription_spec() ) -> void().
+% Note that, at least when creating the main frame, if having subscribed to
+% onShown and onResized, on creation first a onResized event will be received by
+% the subscriber (typically for a 20x20 size), then a onShow event.
+%
+-spec subscribe_to_events( event_subscription_spec() ) -> void().
 subscribe_to_events( SubscribedEvents ) when is_list( SubscribedEvents ) ->
-
-	trace_utils:info_fmt( "Subscribing to following events: ~p.",
-						  [ SubscribedEvents ] ),
 
 	GUIEnv = get_gui_env(),
 
 	LoopPid = GUIEnv#gui_env.loop_pid,
 
-	% Oneway:
-	LoopPid ! { subscribeToEvents, [ SubscribedEvents, self() ] };
+	% This is, in logical terms, a oneway (received in
+	% gui_event:process_event_message/2), yet it must be a request (i.e. it must
+	% be synchronous), otherwise a race condition exists (ex: the user
+	% subscribes to 'onShown' for the main frame, and just after executes
+	% 'gui:show(MainFrame)'. If subscribing is non-blocking, then the main frame
+	% may be shown before being connected to the main loop, and thus it will not
+	% notify the GUI main loop it is shown...
 
+	LoopPid ! { subscribeToEvents, [ SubscribedEvents, self() ] },
+
+	cond_utils:if_defined( myriad_debug_gui_events,
+		trace_utils:info_fmt( "User process subscribing as ~w to ~w about "
+			"following events:~n~p.", [ self(), LoopPid, SubscribedEvents ] ) ),
+
+	receive
+
+		onEventSubscriptionProcessed ->
+		  ok
+
+	end;
 
 subscribe_to_events( SubscribedEvent ) when is_tuple( SubscribedEvent ) ->
 	subscribe_to_events( [ SubscribedEvent ] ).
@@ -640,6 +850,20 @@ stop() ->
 
 
 
+% @doc Batches the sequence of GUI operations encasulated on the specified
+% function, and returns the value this function returned.
+%
+% May improve performance of the command processing, by grabbing the backend
+% thread so that no event processing will be done before the complete batch of
+% commands is invoked.
+%
+% Example: Result = gui:batch(fun() -> do_init(Config) end).
+%
+-spec batch( function() ) -> term().
+batch( GUIFun ) ->
+	wx:batch( GUIFun ).
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -660,7 +884,7 @@ set_tooltip( _Canvas={ myriad_object_ref, canvas, CanvasId }, Label ) ->
 set_tooltip( Window, Label ) ->
 
 	%trace_utils:debug_fmt( "Setting tooltip '~ts' to ~ts.",
-	%					   [ Label, object_to_string( Window ) ] ),
+	%                       [ Label, object_to_string( Window ) ] ),
 
 	% For an unknown reason, works on panels but never on buttons:
 	wxWindow:setToolTip( Window, Label ).
@@ -674,13 +898,13 @@ set_tooltip( Window, Label ) ->
 % are not, however, as they do not appear on screen themselves.
 
 
-% @doc Creates a new window.
+% @doc Creates a window.
 -spec create_window() -> window().
 create_window() ->
 	wxWindow:new().
 
 
-% @doc Creates a new window of specified identifier.
+% @doc Creates a window of specified identifier.
 %
 % @hidden (internal use only)
 %
@@ -693,28 +917,28 @@ create_window( Id, Parent ) ->
 	wxWindow:new( ActualParent, ActualId ).
 
 
-% @doc Creates a new window of specified size.
+% @doc Creates a window of specified size.
 -spec create_window( size() ) -> window().
 create_window( Size ) ->
 
 	ActualId = to_wx_id( undefined ),
 	ActualParent = to_wx_parent( undefined ),
 
-	Options =  [ to_wx_size( Size ) ],
+	Options = [ to_wx_size( Size ) ],
 
 	wxWindow:new( ActualParent, ActualId, Options ).
 
 
-% @doc Creates a new window of specified settings.
+% @doc Creates a window of specified settings.
 %
 % @hidden (internal use only)
 %
 -spec create_window( position(), size(), window_style(), wx_id(), window() ) ->
-							window().
+												window().
 create_window( Position, Size, Style, Id, Parent ) ->
 
 	Options = [ to_wx_position( Position ), to_wx_size( Size ),
-				 { style, gui_wx_backend:window_style_to_bitmask( Style ) } ],
+				{ style, gui_wx_backend:window_style_to_bitmask( Style ) } ],
 
 	ActualId = to_wx_id( Id ),
 	ActualParent = to_wx_parent( Parent ),
@@ -727,10 +951,12 @@ create_window( Position, Size, Style, Id, Parent ) ->
 % Canvas section.
 
 
-% @doc Creates a canvas, attached to specified parent window.
+% @doc Creates a (basic) canvas, attached to the specified parent window.
+%
+% Note: not to be mixed up with gui_opengl:create_canvas/{1,2}.
+%
 -spec create_canvas( window() ) -> canvas().
 create_canvas( Parent ) ->
-
 	% Returns the corresponding myriad_object_ref:
 	execute_instance_creation( canvas, [ Parent ] ).
 
@@ -744,7 +970,10 @@ set_draw_color( _Canvas={ myriad_object_ref, canvas, CanvasId }, Color ) ->
 
 
 % @doc Sets the color to be using for filling surfaces.
--spec set_fill_color( canvas(), color() ) -> void().
+%
+% An undefined color corresponds to a fully transparent one.
+%
+-spec set_fill_color( canvas(), maybe( color() ) ) -> void().
 set_fill_color( _Canvas={ myriad_object_ref, canvas, CanvasId }, Color ) ->
 	get_main_loop_pid() ! { setCanvasFillColor, [ CanvasId, Color ] }.
 
@@ -756,7 +985,7 @@ set_background_color( _Canvas={ myriad_object_ref, canvas, CanvasId },
 					  Color ) ->
 
 	%trace_utils:debug_fmt( "Setting background color of canvas ~w to ~p.",
-	%					   [ Canvas, Color ] ),
+	%                       [ Canvas, Color ] ),
 
 	get_main_loop_pid() ! { setCanvasBackgroundColor, [ CanvasId, Color ] };
 
@@ -769,8 +998,7 @@ set_background_color( Window, Color ) ->
 
 
 % @doc Returns the RGB value of the pixel at specified position.
--spec get_rgb( canvas(), point() ) ->
-						gui_color:color_by_decimal_with_alpha().
+-spec get_rgb( canvas(), point() ) -> color_by_decimal_with_alpha().
 get_rgb( _Canvas={ myriad_object_ref, canvas, CanvasId }, Point ) ->
 
 	get_main_loop_pid() ! { getCanvasRGB, [ CanvasId, Point ], self() },
@@ -803,8 +1031,7 @@ draw_line( _Canvas={ myriad_object_ref, canvas, CanvasId }, P1, P2 ) ->
 % @doc Draws a line between the specified two points in specified canvas, with
 % specified color.
 %
--spec draw_line( canvas(), point(), point(),
-				 color() ) -> void().
+-spec draw_line( canvas(), point(), point(), color() ) -> void().
 draw_line( _Canvas={ myriad_object_ref, canvas, CanvasId }, P1, P2, Color ) ->
 	get_main_loop_pid() ! { drawCanvasLine, [ CanvasId, P1, P2, Color ] }.
 
@@ -822,8 +1049,7 @@ draw_lines( _Canvas={ myriad_object_ref, canvas, CanvasId }, Points ) ->
 % @doc Draws lines between specified list of points in specified canvas, with
 % specified color.
 %
--spec draw_lines( canvas(), [ point() ], color() ) ->
-						void().
+-spec draw_lines( canvas(), [ point() ], color() ) -> void().
 draw_lines( _Canvas={ myriad_object_ref, canvas, CanvasId }, Points, Color ) ->
 	get_main_loop_pid() ! { drawCanvasLines, [ CanvasId, Points, Color ] }.
 
@@ -834,8 +1060,7 @@ draw_lines( _Canvas={ myriad_object_ref, canvas, CanvasId }, Points, Color ) ->
 % Line L must not have for equation Y=constant (i.e. its A parameter must not be
 % null).
 %
--spec draw_segment( canvas(), linear_2D:line(), coordinate(), coordinate() ) ->
-							void().
+-spec draw_segment( canvas(), line2(), coordinate(), coordinate() ) -> void().
 draw_segment( _Canvas={ myriad_object_ref, canvas, CanvasId }, L, Y1, Y2 ) ->
 	get_main_loop_pid() ! { drawCanvasSegment, [ CanvasId, L, Y1, Y2 ] }.
 
@@ -869,7 +1094,7 @@ draw_cross( _Canvas={ myriad_object_ref, canvas, CanvasId }, Location ) ->
 % @doc Draws an upright cross at specified location (2D point), with specified
 % edge length.
 %
--spec draw_cross( canvas(), point(), integer_distance() ) -> void().
+-spec draw_cross( canvas(), point(), length() ) -> void().
 draw_cross( _Canvas={ myriad_object_ref, canvas, CanvasId }, Location,
 			EdgeLength ) ->
 	get_main_loop_pid() ! { drawCanvasCross,
@@ -880,7 +1105,7 @@ draw_cross( _Canvas={ myriad_object_ref, canvas, CanvasId }, Location,
 % @doc Draws an upright cross at specified location (2D point), with specified
 % edge length and color.
 %
--spec draw_cross( canvas(), point(), integer_distance(), color() ) -> void().
+-spec draw_cross( canvas(), point(), length(), color() ) -> void().
 draw_cross( _Canvas={ myriad_object_ref, canvas, CanvasId }, Location,
 			EdgeLength, Color ) ->
 	get_main_loop_pid() ! { drawCanvasCross,
@@ -891,8 +1116,7 @@ draw_cross( _Canvas={ myriad_object_ref, canvas, CanvasId }, Location,
 % @doc Draws an upright cross at specified location (2D point), with specified
 % edge length and companion label.
 %
--spec draw_labelled_cross( canvas(), point(), integer_distance(), label()  ) ->
-								 void().
+-spec draw_labelled_cross( canvas(), point(), length(), label()  ) -> void().
 draw_labelled_cross( _Canvas={ myriad_object_ref, canvas, CanvasId }, Location,
 					 EdgeLength, LabelText ) ->
 	get_main_loop_pid() ! { drawCanvasLabelledCross,
@@ -903,8 +1127,8 @@ draw_labelled_cross( _Canvas={ myriad_object_ref, canvas, CanvasId }, Location,
 % @doc Draws an upright cross at specified location (2D point), with specified
 % edge length and companion label, and with specified color.
 %
--spec draw_labelled_cross( canvas(), point(), integer_distance(), color(),
-						   label() ) -> void().
+-spec draw_labelled_cross( canvas(), point(), length(), color(), label() ) ->
+									 void().
 draw_labelled_cross( _Canvas={ myriad_object_ref, canvas, CanvasId }, Location,
 					 EdgeLength, Color, LabelText ) ->
 	get_main_loop_pid() ! { drawCanvasLabelledCross,
@@ -915,9 +1139,10 @@ draw_labelled_cross( _Canvas={ myriad_object_ref, canvas, CanvasId }, Location,
 % @doc Renders specified circle (actually, depending on the fill color, it may
 % be a disc) in specified canvas.
 %
--spec draw_circle( canvas(), point(), integer_distance() ) -> void().
+-spec draw_circle( canvas(), point(), length() ) -> void().
 draw_circle( _Canvas={ myriad_object_ref, canvas, CanvasId }, Center,
 			 Radius ) ->
+	%trace_utils:debug_fmt( "Drawing circle centered at ~p.", [ Center ] ),
 	get_main_loop_pid() ! { drawCanvasCircle, [ CanvasId, Center, Radius ] }.
 
 
@@ -925,11 +1150,15 @@ draw_circle( _Canvas={ myriad_object_ref, canvas, CanvasId }, Center,
 % @doc Renders specified circle (actually, depending on the fill color, it may
 % be a disc) in specified canvas.
 %
--spec draw_circle( canvas(), point(), integer_distance(), color() ) -> void().
+-spec draw_circle( canvas(), point(), length(), color() ) -> void().
 draw_circle( _Canvas={ myriad_object_ref, canvas, CanvasId }, Center, Radius,
 			 Color ) ->
-	get_main_loop_pid() ! { drawCanvasCircle,
-							[ CanvasId, Center, Radius, Color ] }.
+
+	%trace_utils:debug_fmt( "Drawing circle centered at ~p, of colour ~p.",
+	%                       [ Center, Color ] ),
+
+	get_main_loop_pid() !
+		{ drawCanvasCircle, [ CanvasId, Center, Radius, Color ] }.
 
 
 
@@ -937,30 +1166,36 @@ draw_circle( _Canvas={ myriad_object_ref, canvas, CanvasId }, Center, Radius,
 % one cross and a label, at the same rank order (L1 for the first point of the
 % list, L2 for the next, etc.).
 %
--spec draw_numbered_points( canvas(), [ point() ] ) ->  void().
+-spec draw_numbered_points( canvas(), [ point() ] ) -> void().
 draw_numbered_points( _Canvas={ myriad_object_ref, canvas, CanvasId },
 					  Points ) ->
 	get_main_loop_pid() ! { drawCanvasNumberedPoints, [ CanvasId, Points ] }.
 
 
 
-% @doc Loads image from specified path into specified canvas, pasting it at its
-% upper left corner.
+% @doc Loads image from the specified path into specified canvas, pasting it at
+% its upper left corner.
 %
--spec load_image( canvas(), file_utils:file_name() ) -> void().
+-spec load_image( canvas(), any_file_path() ) -> void().
 load_image( _Canvas={ myriad_object_ref, canvas, CanvasId }, Filename ) ->
 	get_main_loop_pid() ! { loadCanvasImage, [ CanvasId, Filename ] }.
 
 
 
-% @doc Loads image from specified path into specified canvas, pasting it at
+% @doc Loads image from the specified path into specified canvas, pasting it at
 % specified location.
 %
--spec load_image( canvas(), point(), file_utils:file_path() ) ->
-						void().
+-spec load_image( canvas(), point(), any_file_path() ) -> void().
 load_image( _Canvas={ myriad_object_ref, canvas, CanvasId }, Position,
 			FilePath ) ->
 	get_main_loop_pid() ! { loadCanvasImage, [ CanvasId, Position, FilePath ] }.
+
+
+
+% @doc Resizes the specified canvas according to the specified new size.
+-spec resize( canvas(), size() ) -> void().
+resize( _Canvas={ myriad_object_ref, canvas, CanvasId }, NewSize ) ->
+	get_main_loop_pid() ! { resizeCanvas, [ CanvasId, NewSize ] }.
 
 
 
@@ -974,6 +1209,9 @@ blit( _Canvas={ myriad_object_ref, canvas, CanvasId } ) ->
 
 
 % @doc Clears the specified canvas.
+%
+% Note: the result will not be visible until the canvas is blitted.
+%
 -spec clear( canvas() ) -> void().
 clear( _Canvas={ myriad_object_ref, canvas, CanvasId } ) ->
 	get_main_loop_pid() ! { clearCanvas, CanvasId }.
@@ -1007,16 +1245,23 @@ set_sizer( Window, Sizer ) ->
 %
 -spec show( window() | [ window() ] ) -> boolean().
 show( Windows ) when is_list( Windows )->
+
+	% Note: onShown used to be sent to the MyriadGUI loop, as some widgets had
+	% to be adjusted then, but it is no longer useful.
+
+	%trace_utils:debug_fmt( "Showing windows ~p.", [ Windows ] ),
 	Res = show_helper( Windows, _Acc=false ),
-	get_main_loop_pid() ! { onShow, [ Windows ] },
+	%get_main_loop_pid() ! { onShown, [ Windows ] },
 	Res;
 
 show( Window ) ->
+	%trace_utils:debug_fmt( "Showing window ~p.", [ Window ] ),
 	Res = wxWindow:show( Window ),
-	get_main_loop_pid() ! { onShow, [ [ Window ] ] },
+	%get_main_loop_pid() ! { onShown, [ [ Window ] ] },
 	Res.
 
 
+% (helper)
 show_helper( _Windows=[], Acc ) ->
 	Acc;
 
@@ -1026,7 +1271,7 @@ show_helper( _Windows=[ W | T ], Acc ) ->
 
 
 
-% @doc Hides specified window.
+% @doc Hides the specified window.
 %
 % Returns whether anything had to be done.
 %
@@ -1036,8 +1281,8 @@ hide( Window ) ->
 
 
 
-% @doc Returns the size (as a 2D vector, ie {Width,Height}) of specified window.
--spec get_size( window() ) -> linear_2D:vector().
+% @doc Returns the size (as {Width,Height}) of the specified window or bitmap.
+-spec get_size( window() | bitmap() ) -> dimensions().
 get_size( _Canvas={ myriad_object_ref, canvas, CanvasId } ) ->
 
 	%trace_utils:debug_fmt( "Getting size of canvas #~B.", [ CanvasId ] ),
@@ -1050,12 +1295,103 @@ get_size( _Canvas={ myriad_object_ref, canvas, CanvasId } ) ->
 
 	end;
 
+get_size( Bitmap={ wx_ref, _Id, wxBitmap, _List } ) ->
+	{ wxBitmap:getWidth( Bitmap ), wxBitmap:getHeight( Bitmap ) };
+
 get_size( Window ) ->
 	wxWindow:getSize( Window ).
 
 
 
-% @doc Destructs specified window.
+% @doc Returns the client size (as {Width,Height}) of the specified window,
+% i.e. the actual size of the area that can be drawn upon (excluded menu, bars,
+% etc.)
+%
+-spec get_client_size( window() ) -> dimensions().
+get_client_size( _Canvas={ myriad_object_ref, canvas, CanvasId } ) ->
+
+	get_main_loop_pid() ! { getCanvasClientSize, CanvasId, self() },
+	receive
+
+		{ notifyCanvasClientSize, Size } ->
+			Size
+
+	end;
+
+get_client_size( Window ) ->
+	wxWindow:getClientSize( Window ).
+
+
+
+% @doc Maximises the specified widget (a specialised window; ex: a panel) in its
+% parent (adopting its maximum client size), and returns the new size of this
+% widget.
+%
+-spec maximise_in_parent( window() ) -> dimensions().
+maximise_in_parent( Widget ) ->
+	ParentWindow = wxWindow:getParent( Widget ),
+	ParentWindowClientSize = wxWindow:getClientSize( ParentWindow ),
+	wxWindow:setSize( Widget, ParentWindowClientSize ),
+	ParentWindowClientSize.
+
+
+
+% @doc Synchronises the specified window, to ensure that no past operation is
+% still pending at its level.
+%
+% Useful if there exists some means of interacting with it directly (ex: thanks
+% to an OpenGL NIF) that could create a race condition (ex: presumably
+% message-based resizing immediately followed by a direct OpenGL rendering).
+%
+% See gui_opengl_minimal_test:on_main_frame_resize/1 for further details.
+%
+-spec sync( window() ) -> dimensions().
+sync( Window ) ->
+	% The result in itself may be of no use, the point here is just, through a
+	% synchronous operation (a request), to ensure that the specified window is
+	% "ready" (that it has processed its previous messages) with a sufficient
+	% probability (with certainty if past operations were triggered by the same
+	% process as this calling one):
+	%
+	wxWindow:getSize( Window ).
+
+
+
+% @doc Updates the specified window-like object (ex: a canvas) so that its
+% client area can be painted.
+%
+% To be called from a repaint event handler.
+%
+% See [https://www.erlang.org/doc/man/wxpaintdc#description] for more details.
+%
+-spec enable_repaint( window() ) -> void().
+enable_repaint( Window ) ->
+	DC= wxPaintDC:new( Window ),
+	wxPaintDC:destroy( DC ).
+
+
+
+% @doc Locks the specified window, so that direct access to its content can be
+% done, through the returned device context.
+%
+% Once the desired changes will have been made, this window must be unlocked.
+%
+-spec lock_window( window() ) -> device_context().
+lock_window( Window ) ->
+	gui_image:lock_window( Window ).
+
+
+
+% @doc Unlocks the specified window, based on the specified device context
+% obtained from a previous locking.
+%
+-spec unlock_window( device_context() ) -> void().
+unlock_window( DC ) ->
+	gui_image:unlock_window( DC ).
+
+
+
+% @doc Destructs the specified window.
 -spec destruct_window( window() ) -> void().
 destruct_window( Window ) ->
 	wxWindow:destroy( Window ).
@@ -1069,10 +1405,10 @@ destruct_window( Window ) ->
 % a menu bar, toolbar and status bar. A frame can contain any window that is not
 % a frame or dialog.
 %
-% Source: http://docs.wxwidgets.org/stable/wx_wxframe.html#wxframewxframe
+% Source: http://docs.wxwidgets.org/stable/classwx_frame.html
 
 
-% @doc Creates a new frame, with default title, ID, parent, position, size and
+% @doc Creates a frame, with default title, ID, parent, position, size and
 % style.
 %
 % Note: this version apparently does not correctly initialise the frame;
@@ -1085,18 +1421,18 @@ create_frame() ->
 	wxFrame:new().
 
 
-% @doc Creates a new frame, with default position, size, style, ID and parent.
+% @doc Creates a frame, with default position, size, style, ID and parent.
 -spec create_frame( title() ) -> frame().
 create_frame( Title ) ->
 	wxFrame:new( to_wx_parent( undefined ), to_wx_id( undefined ), Title ).
 
 
 
-% @doc Creates a new frame, with specified size, and default ID and parent.
+% @doc Creates a frame, with specified size, and default ID and parent.
 -spec create_frame( title(), size() ) -> frame().
 create_frame( Title, Size ) ->
 
-	Options =  [ to_wx_size( Size ) ],
+	Options = [ to_wx_size( Size ) ],
 
 	%trace_utils:debug_fmt( "create_frame options: ~p.", [ Options ] ),
 
@@ -1105,7 +1441,7 @@ create_frame( Title, Size ) ->
 
 
 
-% @doc Creates a new frame, with default position, size and style.
+% @doc Creates a frame, with default position, size and style.
 %
 % (internal use only)
 %
@@ -1114,7 +1450,7 @@ create_frame( Title, Id, Parent ) ->
 	wxFrame:new( to_wx_parent( Parent ), to_wx_id( Id ), Title ).
 
 
-% @doc Creates a new frame, with default parent.
+% @doc Creates a frame, with default parent.
 -spec create_frame( title(), position(), size(), frame_style() ) -> frame().
 create_frame( Title, Position, Size, Style ) ->
 
@@ -1128,7 +1464,7 @@ create_frame( Title, Position, Size, Style ) ->
 
 
 
-% @doc Creates a new frame.
+% @doc Creates a frame.
 %
 % (internal use only)
 %
@@ -1151,21 +1487,21 @@ create_frame( Title, Position, Size, Style, Id, Parent ) ->
 % Panel section.
 
 
-% @doc Creates a new panel.
+% @doc Creates a panel.
 -spec create_panel() -> panel().
 create_panel() ->
 	wxPanel:new().
 
 
 
-% @doc Creates a new panel, associated to specified parent.
+% @doc Creates a panel, associated to specified parent.
 -spec create_panel( window() ) -> panel().
 create_panel( Parent ) ->
 	wxPanel:new( Parent ).
 
 
 
-% @doc Creates a new panel, associated to specified parent and with specified
+% @doc Creates a panel, associated to specified parent and with specified
 % options.
 %
 -spec create_panel( window(), panel_options() ) -> panel().
@@ -1177,7 +1513,7 @@ create_panel( Parent, Options ) ->
 
 
 
-% @doc Creates a new panel, associated to specified parent and with specified
+% @doc Creates a panel, associated to specified parent and with specified
 % position and dimensions.
 %
 -spec create_panel( window(), coordinate(), coordinate(), length(),
@@ -1187,7 +1523,7 @@ create_panel( Parent, X, Y, Width, Height ) ->
 
 
 
-% @doc Creates a new panel, associated to specified parent and with specified
+% @doc Creates a panel, associated to specified parent and with specified
 % position and dimensions.
 %
 -spec create_panel( window(), position(), size() ) -> panel().
@@ -1196,7 +1532,7 @@ create_panel( Parent, Position, Size ) ->
 								 { size, to_wx_size( Size ) } ] ).
 
 
-% @doc Creates a new panel, associated to specified parent and with specified
+% @doc Creates a panel, associated to specified parent and with specified
 % position and dimensions.
 %
 -spec create_panel( window(), position(), size(), panel_options() ) -> panel().
@@ -1206,18 +1542,18 @@ create_panel( Parent, Position, Size, Options ) ->
 		++ [ to_wx_position( Position ), to_wx_size( Size ) ],
 
 	%trace_utils:debug_fmt( "Creating panel: parent: ~w, position: ~w, "
-	%					   "size: ~w, options: ~w, full options: ~w.",
-	%					   [ Parent, Position, Size, Options, FullOptions ] ),
+	%    "size: ~w, options: ~w, full options: ~w.",
+	%    [ Parent, Position, Size, Options, FullOptions ] ),
 
 	wxPanel:new( Parent, FullOptions ).
 
 
 
-% @doc Creates a new panel, associated to specified parent, with specified
+% @doc Creates a panel, associated to specified parent, with specified
 % position, dimensions and options.
 %
--spec create_panel( window(), coordinate(), coordinate(),
-					length(), length(), panel_options() ) -> panel().
+-spec create_panel( window(), coordinate(), coordinate(), width(), height(),
+					panel_options() ) -> panel().
 create_panel( Parent, X, Y, Width, Height, Options ) ->
 
 	ActualOptions = get_panel_options( Options ),
@@ -1231,7 +1567,7 @@ create_panel( Parent, X, Y, Width, Height, Options ) ->
 
 
 
-% @doc Creates a new (labelled) button, with parent specified.
+% @doc Creates a (labelled) button, with parent specified.
 -spec create_button( label(), window() ) -> button().
 create_button( Label, Parent ) ->
 
@@ -1246,14 +1582,13 @@ create_button( Label, Parent ) ->
 
 
 
-% @doc Creates new (labelled) buttons, with their (single, common) parent
-% specified.
-%
+% @doc Creates (labelled) buttons, with their (single, common) parent specified.
 -spec create_buttons( [ label() ], window() ) -> [ button() ].
 create_buttons( Labels, Parent ) ->
 	create_buttons_helper( Labels, Parent, _Acc=[] ).
 
 
+% (helper)
 create_buttons_helper( _Labels=[], _Parent, Acc ) ->
 	lists:reverse( Acc );
 
@@ -1264,7 +1599,7 @@ create_buttons_helper( [ Label | T ], Parent, Acc ) ->
 
 
 
-% @doc Creates a new button, with parent and most settings specified.
+% @doc Creates a button, with parent and most settings specified.
 %
 % (internal use only)
 %
@@ -1320,17 +1655,27 @@ create_sizer_with_labelled_box( Orientation, Parent, Label ) ->
 	wxStaticBoxSizer:new( ActualOrientation, Parent, [ { label, Label } ] ).
 
 
+% @doc Creates a sizer operating on specified orientation, within specified
+% parent, with a box drawn around bearing specified label.
+%
+-spec create_sizer_with_labelled_box( orientation(), window(),
+			format_string(), format_values() ) -> sizer().
+create_sizer_with_labelled_box( Orientation, Parent, FormatString,
+								FormatValues ) ->
+	Label = text_utils:format( FormatString, FormatValues ),
+	create_sizer_with_labelled_box( Orientation, Parent, Label ).
+
 
 % @doc Adds specified element, or elements with options, to the specified sizer.
 -spec add_to_sizer( sizer(), sizer_child() ) -> sizer_item();
 				  ( sizer(), [ { sizer_child(), sizer_options() } ] ) -> void().
 add_to_sizer( Sizer, _Element={ myriad_object_ref, canvas, CanvasId } ) ->
 	get_main_loop_pid() ! { getPanelForCanvas, CanvasId, self() },
-	io:format( "SEND"),
+	%io:format( "SEND"),
 	receive
 
 		{ notifyCanvasPanel, AssociatedPanel } ->
-	io:format( "RECEIVED"),
+			%io:format( "RECEIVED"),
 			add_to_sizer( Sizer, AssociatedPanel )
 
 	end;
@@ -1344,7 +1689,7 @@ add_to_sizer( Sizer, _Elements=[ { Elem, Opts } | T ] ) ->
 	add_to_sizer( Sizer, T );
 
 add_to_sizer( Sizer, Element ) ->
-	trace_utils:debug_fmt( "Adding ~w to sizer ~w.", [ Element, Sizer ] ),
+	%trace_utils:debug_fmt( "Adding ~w to sizer ~w.", [ Element, Sizer ] ),
 	wxSizer:add( Sizer, Element ).
 
 
@@ -1409,11 +1754,163 @@ create_status_bar( Frame ) ->
 
 
 
-% @doc Pushes specified text in the specified status bar.
+% @doc Pushes the specified text in the specified status bar.
 -spec push_status_text( text(), status_bar() ) -> void().
 push_status_text( Text, StatusBar ) ->
 	wxStatusBar:pushStatusText( StatusBar, Text ).
 
+
+% @doc Pushes the specified text in the specified status bar.
+-spec push_status_text( format_string(), format_values(), status_bar() ) ->
+											void().
+push_status_text( FormatString, FormatValues, StatusBar ) ->
+	Text = text_utils:format( FormatString, FormatValues ),
+	push_status_text( Text, StatusBar ).
+
+
+
+% Brush section.
+
+
+% @doc Returns a brush of the specified color.
+-spec create_brush( color_by_decimal() ) -> brush().
+create_brush( RGBColor ) ->
+	wxBrush:new( RGBColor ).
+
+
+% @doc Tells that the specified (reference-counted) brush may be deleted.
+-spec destruct_brush( brush() ) -> void().
+destruct_brush( Brush ) ->
+	wxBrush:destroy( Brush ).
+
+
+
+% Bitmap section.
+
+
+% @doc Returns a bitmap created from the specified image path.
+-spec create_bitmap( any_file_path() ) -> bitmap().
+create_bitmap( ImagePath ) ->
+	gui_image:create_bitmap( ImagePath ).
+
+
+
+% @doc Returns a blank bitmap of the specified size.
+-spec create_blank_bitmap( dimensions() ) -> bitmap().
+create_blank_bitmap( Dimensions ) ->
+	gui_image:create_blank_bitmap( Dimensions ).
+
+
+
+% @doc Returns a blank bitmap of the specified size.
+-spec create_blank_bitmap( width(), height() ) -> bitmap().
+create_blank_bitmap( Width, Height ) ->
+	gui_image:create_blank_bitmap( Width, Height ).
+
+
+
+% @doc Returns a blank bitmap whose size is the client one of the specified
+% window.
+%
+-spec create_blank_bitmap_for( window() ) -> bitmap().
+create_blank_bitmap_for( Window ) ->
+	ClientSize = wxWindow:getClientSize( Window ),
+	create_blank_bitmap( ClientSize ).
+
+
+
+% @doc Locks the specified bitmap, so that direct access to its content can be
+% done, through the returned device context.
+%
+% Once the desired changes will have been made, this bitmap must be unlocked.
+%
+-spec lock_bitmap( bitmap() ) -> device_context().
+lock_bitmap( Bitmap ) ->
+	gui_image:lock_bitmap( Bitmap ).
+
+
+
+% @doc Draws the specified bitmap in the specified device context, at the
+% specified position.
+%
+-spec draw_bitmap( bitmap(), device_context(), point() ) -> void().
+draw_bitmap( SourceBitmap, TargetDC, PosInTarget ) ->
+	gui_image:draw_bitmap( SourceBitmap, TargetDC, PosInTarget ).
+
+
+
+% @doc Unlocks the specified bitmap, based on the specified device context
+% obtained from a previous locking.
+%
+-spec unlock_bitmap( device_context() ) -> void().
+unlock_bitmap( DC ) ->
+	gui_image:unlock_bitmap( DC ).
+
+
+
+% @doc Destructs the specified bitmap (which must not be locked).
+-spec destruct_bitmap( bitmap() ) -> void().
+destruct_bitmap( Bitmap ) ->
+	gui_image:destruct_bitmap( Bitmap ).
+
+
+
+% Device context section.
+
+
+% @doc Clears the specified device context, using the current background brush.
+% If none was set, a solid white brush is used.
+%
+-spec clear_device_context( device_context() ) -> void().
+clear_device_context( DC ) ->
+	gui_image:clear_device_context( DC ).
+
+
+
+% @doc Blits (copies) the specified area of the source device context at the
+% specified position in the target device context.
+%
+% Returns a boolean of unspecified meaning.
+%
+-spec blit( device_context(), point(), dimensions() , device_context(),
+			point() ) -> boolean().
+blit( SourceDC, SrcTopLeft, Size, TargetDC, TgtTopLeft ) ->
+	gui_image:blit( SourceDC, SrcTopLeft, Size, TargetDC, TgtTopLeft ).
+
+
+
+% @doc Blits (copies) the specified area of the source device context at the
+% specified position in the target device context.
+%
+% Returns a boolean of unspecified meaning.
+%
+-spec blit( device_context(), point(), width(), height(), device_context(),
+			point() ) -> boolean().
+blit( SourceDC, SrcTopLeft, Width, Height, TargetDC, TgtTopLeft ) ->
+	gui_image:blit( SourceDC, SrcTopLeft, Width, Height, TargetDC, TgtTopLeft ).
+
+
+
+
+% Font section.
+
+
+% @doc Creates a corresponding font object, to determine the appearance of
+% rendered text.
+%
+-spec create_font( font_size() | point_size(), font_family(), font_style(),
+				   font_weight() ) -> font().
+create_font( FontSize, FontFamily, FontStyle, FontWeight ) ->
+	gui_font:create( FontSize, FontFamily, FontStyle, FontWeight ).
+
+
+% @doc Creates a corresponding font object, to determine the appearance of
+% rendered text.
+%
+-spec create_font( font_size() | point_size(), font_family(), font_style(),
+				   font_weight(), [ font_option() ] ) -> font().
+create_font( FontSize, FontFamily, FontStyle, FontWeight, FontOpts ) ->
+	gui_font:create( FontSize, FontFamily, FontStyle, FontWeight, FontOpts ).
 
 
 
@@ -1427,9 +1924,10 @@ push_status_text( Text, StatusBar ) ->
 						construction_parameters() ) -> myriad_object_ref().
 execute_instance_creation( ObjectType, ConstructionParams ) ->
 
-	trace_utils:debug_fmt( "Requesting the creation of a '~ts' instance, "
-		"based on following construction parameters:~n~w.",
-		[ ObjectType, ConstructionParams ] ),
+	cond_utils:if_defined( myriad_debug_gui_instances,
+		trace_utils:debug_fmt( "Requesting the creation of a '~ts' instance, "
+			"based on following construction parameters:~n~w.",
+			[ ObjectType, ConstructionParams ] ) ),
 
 	LoopPid = get_main_loop_pid(),
 
@@ -1440,8 +1938,9 @@ execute_instance_creation( ObjectType, ConstructionParams ) ->
 		% Match on the object type:
 		{ instance_created, ObjectType, ObjectRef } ->
 
-			trace_utils:debug_fmt( "'~ts' instance created, now referenced "
-				"as ~w.", [ ObjectType, ObjectRef ] ),
+			cond_utils:if_defined( myriad_debug_gui_instances,
+				trace_utils:debug_fmt( "'~ts' instance created, now referenced "
+									   "as ~w.", [ ObjectType, ObjectRef ] ) ),
 
 			ObjectRef
 
@@ -1469,7 +1968,7 @@ get_gui_env() ->
 
 		undefined ->
 			trace_utils:error_fmt( "No MyriadGUI environment available for "
-				"process ~w.", [ self() ] ),
+								   "process ~w.", [ self() ] ),
 			throw( { no_myriad_gui_env, self() } );
 
 		Env ->
@@ -1489,8 +1988,8 @@ get_gui_env() ->
 % @doc Returns a textual representation of the specified GUI object.
 -spec object_to_string( gui_object() ) -> ustring().
 object_to_string( #myriad_object_ref{ object_type=ObjectType,
-									  myriad_instance_pid=InstancePid } ) ->
-	text_utils:format( "~ts-~B", [ ObjectType, InstancePid ] );
+									  myriad_instance_id=InstanceId } ) ->
+	text_utils:format( "~ts-~B", [ ObjectType, InstanceId ] );
 
 object_to_string( { wx_ref, InstanceRef, WxObjectType, _State=[] } ) ->
 	% Ex: {wx_ref,35,wxFrame,[]}
@@ -1501,6 +2000,7 @@ object_to_string( { wx_ref, InstanceRef, WxObjectType, State } ) ->
 	ObjectType = gui_wx_backend:from_wx_object_type( WxObjectType ),
 	text_utils:format( "~ts-~B whose state is ~p",
 					   [ ObjectType, InstanceRef, State ] ).
+
 
 
 % @doc Returns a textual representation of the specified GUI event context.

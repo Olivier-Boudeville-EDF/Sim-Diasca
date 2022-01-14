@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2021 Olivier Boudeville
+% Copyright (C) 2014-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -24,7 +24,6 @@
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Friday, December 19, 2014.
-
 
 
 % @doc Module helping to manage <b>datatypes</b>, notably in ASTs.
@@ -134,11 +133,11 @@
 
 % We need to be able to specify immediate values even at a type level, as we
 % might want to define a type as a set of possible values (such as: [2,3,5,7,11]
-% or [ 'orange', 'blue', 'red' ]).
+% or ['orange', 'blue', 'red']).
 
 % Let T1 be a type defined from an immediate value V of a type that is named T2
 % (hence T1 is a type comprising a single value); T1 is specified as "V"
-% (knowing that T2 can be inferred from V), and D(T1) = { T2, V }.
+% (knowing that T2 can be inferred from V), and D(T1) = {T2, V}.
 %
 % So, for example:
 %
@@ -443,35 +442,60 @@
 % constructs; it is thus autonomous, self-standing.
 
 
+-type low_level_type() :: 'uint8'  | 'sint8'
+						| 'uint16' | 'sint16'
+						| 'uint32' | 'sint32'
+						| 'uint64' | 'sint64'
+						| 'float32'
+						| 'float64'.
+% Designates lower-level types, with a prefix and a size in bits.
+%
+% Following prefixes are defined:
+% - u for unsigned
+% - s for signed
+%
+% Datatypes are 'int' (for integer) and 'float' (for standard IEEE signed,
+% floating-point values).
+
+
+-type record() :: tuple().
+% Designates a record instance, to discriminate from a mere tuple.
+
 
 % Tuploids. See also augment_tuploid/2.
 
 
 -type tuploid() :: tuploid( term() ).
-% We name tuploid a pseudo-tuple, ie a value that is either an actual tuple or
+% We name tuploid a pseudo-tuple, i.e. a value that is either an actual tuple or
 % a single, standalone term, designated as a "basic tuploid".
 %
 % That is, a tuploid is a tuple of any size, except that the tuploid of size 1
 % is MyTerm, not {MYterm}.
-%
 
 
 -type tuploid( T ) :: tuple() | T.
 % Probably that such a tuple would contain at least an element of type T.
 
 
+-type tuple( _T ) :: tuple().
+% Designates an uniform tuple (of unspecified size), that is a tuple whose
+% elements are all of the specified type.
+
+
 -export_type([ type_name/0, type_arity/0, type_id/0,
 			   primitive_type_description/0,
 			   type_description/0, nesting_depth/0, type/0, explicit_type/0,
-			   tuploid/0, tuploid/1 ]).
+			   low_level_type/0, record/0,
+			   tuploid/0, tuploid/1,
+			   tuple/1 ]).
 
 
 % Note: currently, only a very basic, ad hoc type support ("hand-made look-up
 % tables") is provided.
 %
-% Later we would like to really parse any type description (ex: "[ { float, [
-% boolean ] } ]") and be able to manage it as type() (including the checking of
-% terms against types).
+% Later we would like to really parse any type description (ex:
+% "[{float,[boolean]}]") and be able to manage it as type() (including the
+% checking of terms against types).
 
 
 
@@ -482,7 +506,8 @@
 		  get_elementary_types/0, get_simple_builtin_types/0,
 		  is_type/1, is_of_type/2,
 		  is_of_described_type/2, is_homogeneous/1, is_homogeneous/2,
-		  are_types_identical/2 ]).
+		  are_types_identical/2,
+		  get_low_level_type_size/1 ]).
 
 
 
@@ -491,7 +516,7 @@
 		  ensure_string/1, ensure_binary/1 ]).
 
 
-% Checking:
+% Checking (see also: list_utils:are_*/1):
 -export([ check_atom/1, check_boolean/1, check_pid/1,
 
 		  check_integer/1, check_maybe_integer/1,
@@ -520,6 +545,7 @@
 
 -type ustring() :: text_utils:ustring().
 
+-type byte_size() :: system_utils:byte_size().
 
 % (cannot use our extended types here)
 -type maybe( T ) :: T | 'undefined'.
@@ -558,11 +584,11 @@ description_to_type( TypeDescription ) ->
 %scan_type( TypeDescription ) ->
 	%case tokenise_per_union( TypeDescription ) of
 
-	%	[ T ] ->
-	%		T;
+	%   [ T ] ->
+	%       T;
 
-	%	UnionisedTypes ->
-	%		{ union, [ scan_type( T ) || T <- UnionisedTypes ] }
+	%   UnionisedTypes ->
+	%       { union, [ scan_type( T ) || T <- UnionisedTypes ] }
 
 	%end;
 % Last: all other types.
@@ -748,8 +774,7 @@ get_type_of( Term ) ->
 %
 -spec interpret_type_of( term() ) -> ustring().
 interpret_type_of( Term ) ->
-	interpret_type_helper( Term, _CurrentNestingLevel=0,
-						   _MaxNestingLevel=1 ).
+	interpret_type_helper( Term, _CurrentNestingLevel=0, _MaxNestingLevel=1 ).
 
 
 % @doc Returns a string describing, in a user-friendly manner, the type of the
@@ -962,10 +987,10 @@ get_simple_builtin_types() ->
 %
 -spec is_type( term() ) -> boolean().
 %is_type( { Tag, SubTypes } ) when is_list( SubTypes ) ->
-%	lists:member( Tag, get_elementary_types() );
+%   lists:member( Tag, get_elementary_types() );
 %
 %is_type( _T ) ->
-%	false.
+%   false.
 
 % To be implemented:
 is_type( _T ) ->
@@ -1099,6 +1124,26 @@ are_types_identical( Type, Type ) ->
 are_types_identical( _FirstType, _SecondType ) ->
 	false.
 
+
+
+% @doc Returns the number of bytes used by each value of the specified low-level
+% type.
+%
+-spec get_low_level_type_size( low_level_type() ) -> byte_size().
+get_low_level_type_size( uint8 ) -> 1;
+get_low_level_type_size( sint8 ) -> 1;
+
+get_low_level_type_size( uint16 ) -> 2;
+get_low_level_type_size( sint16 ) -> 2;
+
+get_low_level_type_size( uint32 ) -> 4;
+get_low_level_type_size( sint32 ) -> 4;
+
+get_low_level_type_size( uint64 ) -> 8;
+get_low_level_type_size( sint64 ) -> 8;
+
+get_low_level_type_size( float32 ) -> 4;
+get_low_level_type_size( float64 ) -> 8.
 
 
 

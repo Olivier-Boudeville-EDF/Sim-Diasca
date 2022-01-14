@@ -1,4 +1,4 @@
-% Copyright (C) 2019-2021 Olivier Boudeville
+% Copyright (C) 2019-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -26,9 +26,8 @@
 % Creation date: Tuesday, June 25, 2019.
 
 
-
 % @doc Gathering of services for <b>web-related</b> uses, notably for <b>HTML
-% generation</b> or <b>HTTP management</b>.
+% generation</b> or <b>HTTP/HTTPS management</b>.
 %
 % See web_utils_test.erl for the corresponding test.
 %
@@ -82,7 +81,16 @@
 % Full information about an URL (prefer uri_string:uri_map() now).
 
 
--type body() :: ustring() | binary().
+-type body() :: string_body() | bin_body().
+% The body of a HTTP message. The binary form is strongly recommended (more
+% compact, and, more importantly, a lot less problematic regarding encodings).
+
+-type string_body() :: ustring().
+% A body as a plain string (beware to encodings).
+
+-type bin_body() :: binary().
+% A body in binary form, which is the recommended one.
+
 
 -type json_body() :: body().
 % Encoded in JSON.
@@ -90,14 +98,14 @@
 -type content_type() :: ustring().
 
 
--type old_style_options() :: [ { ustring(), ustring() } ].
-% [{field() :: ustring(), value() :: ustring()}].
+-type old_style_options() :: [ { Field :: ustring(), Value :: ustring() } ].
+
 
 -type new_style_options() :: maps:maps( bin_string(), bin_string() ).
 
 
 -type headers_as_list() :: old_style_options().
-% Example: {"content-type", "application/jose+json"}.
+% Example: {"User-Agent", "Godzilla The Mighty"}.
 
 
 -type headers_httpc_style() :: headers_as_list().
@@ -113,24 +121,29 @@
 
 -type options_for_httpc() :: [ http_option() ].
 
--type http_options() :: options_for_httpc() | maps:maps( atom(), term() ).
+-type list_options() :: [ { atom(), term() } ].
+-type map_options() :: maps:maps( atom(), term() ).
+
+-type http_options() :: options_for_httpc() | map_options().
+
+-type ssl_options() :: list_options(). % map_options().
 
 
-%-type _result() :: maps:map( atom(), term() ).
--type request_result() :: { http_status_code(), headers_as_maps(), body() }
+-type request_result() :: { http_status_code(), headers_as_maps(), bin_body() }
 						| { 'error', basic_utils:error_reason() }.
-% Keys:
-%
-% - body :: body()
-%
-% - headers :: headers()
-%
-% - status_code: http_status_code()
 
 
 -type location() :: atom().
 
 -type nonce() :: bin_string().
+
+
+-type media_type() :: unicode:chardata().
+% A media type (formerly known as "MIME type").
+%
+% Ex: "audio/ogg".
+%
+% Refer to [https://en.wikipedia.org/wiki/Media_type].
 
 
 -type html_element() :: any_string().
@@ -163,15 +176,69 @@
 -type http_status_code() :: non_neg_integer().
 
 
+
+% Cloud-related section.
+
+-type cloud_provider() :: 'azure' | 'aws' | 'google_cloud'.
+
+-type service_endpoint() :: bin_string().
+% The full, readily usable endpoint of a given service.
+%
+% Ex:
+% `<<"https://francecentral.api.cognitive.microsoft.com/sts/v1.0/issuetoken">>'.
+
+
+-type api_endpoint() :: bin_string().
+% The API endpoint (with no deployment-related prefix such as
+% "https://francecentral.") of a given service.
+%
+% Ex: `<<"api.cognitive.microsoft.com/sts/v1.0/issuetoken">>'.
+
+
+-type instance_key() :: bin_string().
+% The key of an instance hosted by a cloud provider.
+% Ex: `<<"a59c98302e7f4a22be4b355125df8e9">>'.
+
+
+-type cloud_instance_info() :: azure_instance_info().
+% Information regarding an instance hosted by a cloud provider.
+
+
+-type azure_instance_info() :: #azure_instance_info{}.
+% Information regarding an instance hosted by the Microsoft Azure cloud
+% provider.
+
+
+-type azure_instance_key() :: instance_key().
+% The key of a Microsoft Azure instance.
+% Ex: `<<"a59c98302e7f4a22be4b355125df8e9">>'.
+
+
+-type azure_instance_location() :: bin_string().
+% The location of a Microsoft Azure instance.
+% Ex: `<<"francecentral">>'.
+
+
+
 -export_type([ ssl_opt/0,
 			   url/0, bin_url/0, any_url/0,
 			   uri/0, bin_uri/0, any_uri/0,
 			   protocol_type/0, path/0, url_info/0,
 
-			   body/0, json_body/0, headers/0, http_option/0, location/0,
-			   nonce/0,
+			   body/0, string_body/0, bin_body/0, json_body/0,
+			   headers/0, map_options/0,
+			   http_option/0, http_options/0, ssl_options/0,
+			   location/0, nonce/0,
 
-			   html_element/0, http_status_class/0, http_status_code/0 ]).
+			   media_type/0,
+			   html_element/0, http_status_class/0, http_status_code/0,
+
+			   cloud_provider/0,
+			   service_endpoint/0, api_endpoint/0,
+			   instance_key/0, cloud_instance_info/0,
+
+			   azure_instance_info/0, azure_instance_key/0,
+			   azure_instance_location/0 ]).
 
 
 % HTTP-related section:
@@ -193,16 +260,27 @@
 		  interpret_http_status_code/1 ]).
 
 
-% http-related operations:
+% HTTP-related operations:
 -export([ start/0, start/1,
 		  request/6, get/3, post/3, post/4, post/5,
 		  download_file/2,
 		  stop/0 ]).
 
+
+% SSL-related operations:
+-export([ get_ssl_verify_options/0, get_ssl_verify_options/1 ]).
+
+
+% Cloud-related operations:
+-export([ get_azure_instance_information/2, cloud_instance_info_to_string/1 ]).
+
+
 -define( default_content_type, "text/html; charset=UTF-8" ).
 
 
 % Shorthands:
+
+-type activation_switch() :: basic_utils:activation_switch().
 
 -type option_list() :: option_list:option_list().
 
@@ -246,9 +324,9 @@
 % Full example:
 %
 % inets:start(),
-% httpc:request( post, { "http://localhost:3000/foo", [],
+% httpc:request(post, {"http://localhost:3000/foo", [],
 %  "application/x-www-form-urlencoded",
-%  encode_as_url( [ {"username", "bob"}, {"password", "123456"} ] ) }, [], [] ).
+%  encode_as_url([{"username", "bob"}, {"password", "123456"}])}, [], []).
 %
 % Directly inspired from:
 % http://stackoverflow.com/questions/114196/url-encode-in-erlang
@@ -458,6 +536,8 @@ get_unordered_list( Elements ) ->
 % @doc Escapes specified text, so that it can be included safely as an HTML
 % content.
 %
+% Returns an HTML element, as a plain string.
+%
 -spec escape_as_html_content( any_string() ) -> html_element().
 escape_as_html_content( BinString ) when is_binary( BinString ) ->
 	escape_as_html_content( text_utils:binary_to_string( BinString ) );
@@ -467,6 +547,10 @@ escape_as_html_content( String ) ->
 	escape_as_html_content( text_utils:to_unicode_list( String ), _Acc=[] ).
 
 
+% The escaping done is exactly sufficient for XML and correct for HTML; see
+% https://stackoverflow.com/questions/7248958/which-are-the-html-and-xml-special-characters
+% for further reference.
+%
 % (helper)
 escape_as_html_content( _String=[], Acc ) ->
 	lists:reverse( text_utils:to_unicode_list( Acc ) );
@@ -478,6 +562,7 @@ escape_as_html_content( _String=[ $& | T ], Acc ) ->
 escape_as_html_content( _String=[ $< | T ], Acc ) ->
 	escape_as_html_content( T, [ ";tl&" | Acc ] ) ;
 
+% Not strictly necessary for HTML:
 escape_as_html_content( _String=[ $> | T ], Acc ) ->
 	escape_as_html_content( T, [ ";tg&" | Acc ] ) ;
 
@@ -487,8 +572,12 @@ escape_as_html_content( _String=[ $> | T ], Acc ) ->
 escape_as_html_content( _String=[ $" | T ], Acc ) ->
 	escape_as_html_content( T, [ ";touq&" | Acc ] ) ;
 
+% Not strictly necessary for HTML; even in XML, single quotes only need to be
+% escaped if they occur in an attribute value enclosed by single quotes.
+%
 escape_as_html_content( _String=[ $' | T ], Acc ) ->
-	escape_as_html_content( T, [ ";93#&" | Acc ] ) ;
+	%escape_as_html_content( T, [ ";93#&" | Acc ] ) ;
+	escape_as_html_content( T, [ ";sopa&" | Acc ] ) ;
 
 % All others:
 escape_as_html_content( _String=[ Other | T ], Acc ) ->
@@ -572,6 +661,9 @@ interpret_http_status_code( StatusCode ) ->
 		interpret_http_status_code_helper( StatusCode ), StatusCode,
 		http_status_class_to_string( get_http_status_class( StatusCode ) ) ] ).
 
+
+% (helper)
+%
 % informational_response class:
 interpret_http_status_code_helper( _StatusCode=100 ) ->
 	"continue";
@@ -778,10 +870,14 @@ interpret_http_status_code_helper( _StatusCode ) ->
 
 
 
-% http-related operations.
+% HTTP-related operations.
 
 
 % @doc Starts the HTTP support, with default settings.
+%
+% Does not fail if already started, throws an exception in case of unrecoverable
+% error.
+%
 -spec start() -> void().
 start() ->
 	start( no_ssl ).
@@ -806,9 +902,10 @@ start( Option ) ->
 		ok ->
 			ok;
 
-		{ error, { already_started, Module } } ->
-			trace_bridge:info_fmt( "Starting web_utils reported that module "
-				"'~ts' was already started.", [ Module ] ),
+		% Module expected to be 'inets':
+		{ error, { already_started, _Module } } ->
+			%trace_bridge:info_fmt( "Starting web_utils reported that module "
+			%   "'~ts' was already started.", [ Module ] ),
 			ok;
 
 		{ error, InetsReason } ->
@@ -845,10 +942,13 @@ start( Option ) ->
 %
 % The HTTP support (possibly with SSL if needed) must be started.
 %
+% For HTTPS requests, we recommend that the HttpOptions include a {ssl,
+% web_utils:get_ssl_verify_options()} pair.
+%
 % For more advanced uses (ex: re-using of permanent connections, HTTP/2, etc.),
 % consider relying on Gun or Shotgun.
 %
--spec request( method(), uri(), headers(), http_options(), maybe( body() ),
+-spec request( method(), uri(), headers(), http_options(), maybe( bin_body() ),
 			   maybe( content_type() ) ) -> request_result().
 request( _Method=get, Uri, Headers, HttpOptions, _MaybeBody=undefined,
 		 _MaybeContentType=undefined ) ->
@@ -863,6 +963,7 @@ request( _Method=post, Uri, Headers, HttpOptions, MaybeBody,
 		 MaybeContentType ) ->
 	post( Uri, Headers, HttpOptions, MaybeBody, MaybeContentType );
 
+% Not supported: head |  put | trace | options | delete | patch:
 request( Method, Uri, _Headers, _HttpOptions, _MaybeBody, _MaybeContentType ) ->
 	throw( { invalid_method, Method, Uri } ).
 
@@ -871,6 +972,9 @@ request( Method, Uri, _Headers, _HttpOptions, _MaybeBody, _MaybeContentType ) ->
 % @doc Sends a (synchronous) HTTP/1.1 client GET request.
 %
 % The HTTP support (possibly with SSL if needed) must be started.
+%
+% For HTTPS requests, we recommend that the HttpOptions include a {ssl,
+% web_utils:get_ssl_verify_options()} pair.
 %
 % For more advanced uses (ex: re-using of permanent connections, HTTP/2, etc.),
 % consider relying on Gun or Shotgun.
@@ -890,8 +994,10 @@ get( Uri, Headers, HttpOptions ) ->
 
 	HttpOptionsForHttpc = to_httpc_options( HttpOptions ),
 
-	% Wanting the resulting body, headers, and the entire status line:
-	Options = [ { full_result, true } ],
+	% Wanting the resulting body (as a binary rather than as a plain string),
+	% headers, and the entire status line:
+	%
+	Options = [ { full_result, true }, { body_format, binary } ],
 
 	cond_utils:if_defined( myriad_debug_web_exchanges,
 		trace_bridge:debug_fmt( "[~w] Actual parameters of the httpc GET "
@@ -931,6 +1037,9 @@ get( Uri, Headers, HttpOptions ) ->
 %
 % The HTTP support (possibly with SSL if needed) must be started.
 %
+% For HTTPS requests, we recommend that the HttpOptions include a {ssl,
+% web_utils:get_ssl_verify_options()} pair.
+%
 % For more advanced uses (ex: re-using of permanent connections, HTTP/2, etc.),
 % consider relying on Gun or Shotgun.
 %
@@ -942,9 +1051,14 @@ post( Uri, Headers, HttpOptions ) ->
 
 % @doc Sends a (synchronous) HTTP/1.1 client POST request.
 %
-% If a body is specified, ?default_content_type will be used.
+% If a body is specified yet no content-type is set, ?default_content_type will
+% be used. To avoid encoding issues, we strongly recommend to pass binary bodies
+% rather than string ones.
 %
 % The HTTP support (possibly with SSL if needed) must be started.
+%
+% For HTTPS requests, we recommend that the HttpOptions include a {ssl,
+% web_utils:get_ssl_verify_options()} pair.
 %
 % For more advanced uses (ex: re-using of permanent connections, HTTP/2, etc.),
 % consider relying on Gun or Shotgun.
@@ -959,9 +1073,13 @@ post( Uri, Headers, HttpOptions, MaybeBody ) ->
 % @doc Sends a (synchronous) HTTP/1.1 client POST request.
 %
 % If a body is specified yet no content-type is set, ?default_content_type will
-% be used.
+% be used. To avoid encoding issues, we strongly recommend to pass binary bodies
+% rather than string ones.
 %
 % The HTTP support (possibly with SSL if needed) must be started.
+%
+% For HTTPS requests, we recommend that the HttpOptions include a {ssl,
+% web_utils:get_ssl_verify_options()} pair.
 %
 % For more advanced uses (ex: re-using of permanent connections, HTTP/2, etc.),
 % consider relying on Gun or Shotgun.
@@ -973,12 +1091,13 @@ post( Uri, Headers, HttpOptions, MaybeBody, MaybeContentType ) ->
 	cond_utils:if_defined( myriad_debug_web_exchanges,
 		trace_bridge:debug_fmt( "[~w] POST request to URI "
 			"'~ts', with following headers:~n  ~p~nHTTP options:~n  ~p~n"
-			"Body: ~p~nContent-type: ~ts", [ self(), Uri, Headers, HttpOptions,
-											MaybeBody, MaybeContentType ] ) ),
+			"Body: ~p~nContent-type: ~ts",
+			[ self(), Uri, Headers, HttpOptions, MaybeBody,
+			  MaybeContentType ] ) ),
 
 	HeadersForHttpc = to_httpc_headers( Headers ),
 
-	% Any content-type expected in headers, and no specific body for POST:
+	% Any content-type expected in headers:
 	Req = case MaybeBody of
 
 		undefined ->
@@ -1001,8 +1120,10 @@ post( Uri, Headers, HttpOptions, MaybeBody, MaybeContentType ) ->
 
 	HttpOptionsForHttpc = to_httpc_options( HttpOptions ),
 
-	% Wanting the resulting body, headers, and the entire status line:
-	Options = [ { full_result, true } ],
+	% Wanting the resulting body (as a binary rather than as a plain string),
+	% headers, and the entire status line:
+	%
+	Options = [ { full_result, true }, { body_format, binary } ],
 
 	cond_utils:if_defined( myriad_debug_web_exchanges,
 		trace_bridge:debug_fmt( "[~w] Actual parameters of the httpc POST "
@@ -1018,7 +1139,7 @@ post( Uri, Headers, HttpOptions, MaybeBody, MaybeContentType ) ->
 			cond_utils:if_defined( myriad_debug_web_exchanges,
 				trace_bridge:debug_fmt( "[~w] Received HTTP version: ~ts, "
 					"status code: ~B, reason: ~ts; headers are:~n  ~p"
-					"Returned body is ~p", [ self(), ReqHttpVersion,
+					"Returned body is:~n ~p", [ self(), ReqHttpVersion,
 						ReqStatusCode, ReqReason, ReqHeaders, ReqBody ] ),
 				basic_utils:ignore_unused( [ ReqHttpVersion, ReqReason ] ) ),
 
@@ -1043,8 +1164,7 @@ to_httpc_headers( Headers ) when is_list( Headers ) ->
 
 to_httpc_headers( Headers ) when is_map( Headers ) ->
 	[ { text_utils:binary_to_string( K ), text_utils:binary_to_string( V ) }
-	  || { K, V } <- maps:to_list( Headers ) ].
-
+		|| { K, V } <- maps:to_list( Headers ) ].
 
 
 % @doc Converts httpc headers into map-based ones.
@@ -1052,31 +1172,62 @@ to_httpc_headers( Headers ) when is_map( Headers ) ->
 from_httpc_headers( Headers ) ->
 	maps:from_list( [ { text_utils:string_to_binary( K ),
 						text_utils:string_to_binary( V ) }
-					  || { K, V } <- Headers ] ).
+								|| { K, V } <- Headers ] ).
 
 
-% @doc Returns http options suitable for httpc.
+
+% @doc Returns http options that are suitable for httpc.
 -spec to_httpc_options( http_options() ) -> options_for_httpc().
 to_httpc_options( HttpOptions ) when is_list( HttpOptions ) ->
 	HttpOptions;
 
 to_httpc_options( HttpOptionMap ) when is_map( HttpOptionMap ) ->
-	maps:to_list( HttpOptionMap ).
+	% We have to recursively transform maps into lists (ex: for {ssl,Opts}):
+	[ { K, case is_map( V ) of
+
+			   true ->
+					maps:to_list( V );
+
+			   false ->
+					V
+
+		   end } || { K, V } <- maps:to_list( HttpOptionMap ) ].
 
 
 
 
 % @doc Downloads the file designated by specified URL, in the specified
-% directory (under its name in URL), and returns the corresponding full path of
-% that file.
+% directory (under its name in URL), with no specific HTTP options, and returns
+% the corresponding full path of that file.
 %
-% Ex: web_utils:download_file( _Url="https://foobar.org/baz.txt",
-%                    _TargetDir="/tmp" ) shall result in a "/tmp/baz.txt" file.
+% Ex: web_utils:download_file(_Url="https://foobar.org/baz.txt",
+%   _TargetDir="/tmp") shall result in a "/tmp/baz.txt" file.
 %
-% Starts the HTTP support as a side effect.
+% Starts, if needed, the HTTP and SSL supports as a side effect.
 %
 -spec download_file( url(), any_directory_path() ) -> file_path().
 download_file( Url, TargetDir ) ->
+	download_file( Url, TargetDir,
+				   _HttpOptions=[ { ssl, get_ssl_verify_options() } ] ).
+
+
+
+% @doc Downloads the file designated by specified URL, in the specified
+% directory (under its name in URL), with specified HTTP options, and returns
+% the corresponding full path of that file.
+%
+% Popular settings are HttpOptions = [{ssl,get_ssl_verify_options()}] to avoid
+% any Man-in-the-Middle attack about any target HTTPS server (in addition to TLS
+% protection against "casual" eavesdroppers).
+%
+% Ex: web_utils:download_file(_Url="https://foobar.org/baz.txt",
+%   _TargetDir="/tmp", HttpOptions  shall result in a "/tmp/baz.txt" file.
+%
+% Starts, if needed, the HTTP and SSL supports as a side effect.
+%
+-spec download_file( url(), any_directory_path(), http_options() ) ->
+													file_path().
+download_file( Url, TargetDir, HttpOptions ) ->
 
 	% Using only built-in modules:
 
@@ -1110,9 +1261,9 @@ download_file( Url, TargetDir ) ->
 	FilePath = file_utils:join( TargetDir, Filename ),
 
 	%trace_bridge:debug_fmt( "Downloading '~ts' from '~ts'.",
-	%						[ FilePath, Url ] ),
+	%                        [ FilePath, Url ] ),
 
-	case httpc:request( get, { Url, _Headers=[] }, _HTTPOptions=[],
+	case httpc:request( _Method=get, _Req={ Url, _Headers=[] }, HttpOptions,
 						_Opts=[ { stream, FilePath } ] ) of
 
 		{ ok, saved_to_file } ->
@@ -1141,3 +1292,80 @@ stop() ->
 	ssl:stop(),
 
 	ok = inets:stop().
+
+
+
+% SSL-related operations.
+
+
+% @doc Returns default SSL options regarding the verification of remote peers
+% for HTTPS connections.
+%
+% See get_ssl_verify_options/1 for more information.
+%
+-spec get_ssl_verify_options() -> ssl_options().
+get_ssl_verify_options() ->
+	get_ssl_verify_options( enable ).
+
+
+
+% @doc Returns SSL options regarding the verification of remote peers for HTTPS
+% connections:
+%
+% - if the switch is specified to 'disable', this peer will not be verified
+% (exposing the program to a man-in-the-middle attack)
+%
+% - if the switch is specified to 'enable', the system DER-encoded certificates
+% are used (see https://erlang.org/doc/man/ssl.html#type-cert) and trusted in
+% order to check peers, so that not only the TLS protection against "casual"
+% eavesdroppers applies, but also, here, the one against any Man-in-the-Middle
+% (so we check that we indeed interact safely with the *expected* server)
+%
+-spec get_ssl_verify_options( activation_switch() ) -> ssl_options().
+get_ssl_verify_options( _Switch=enable ) ->
+
+  MatchFun = public_key:pkix_verify_hostname_match_fun( https ),
+
+  % Apparently httpc expects list_options(), not map_options():
+
+  %#{ verify => verify_peer,
+  %   cacertfile => "/etc/ssl/certs/ca-certificates.crt",
+  %   depth => 3,
+  %   customize_hostname_check => [ { match_fun, MatchFun } ] };
+
+  [ { verify, verify_peer },
+	{ cacertfile, "/etc/ssl/certs/ca-certificates.crt" },
+	{ depth, 3 },
+	{ customize_hostname_check, [ { match_fun, MatchFun } ] } ];
+
+
+get_ssl_verify_options( _Switch=disable ) ->
+
+	% Apparently httpc expects list_options(), not map_options():
+
+	%#{ verify => verify_none }.
+
+	[ { verify, verify_none } ].
+
+
+
+% @doc Returns a Microsoft Azure instance information based on specified
+% settings.
+%
+-spec get_azure_instance_information( azure_instance_key(),
+						azure_instance_location() ) -> azure_instance_info().
+get_azure_instance_information( InstKey, InstLoc ) ->
+	#azure_instance_info{
+		instance_key=text_utils:ensure_binary( InstKey ),
+		instance_location=text_utils:ensure_binary( InstLoc ) }.
+
+
+
+% @doc Returns a textual description of the specified cloud instance.
+-spec cloud_instance_info_to_string( cloud_instance_info() ) -> ustring().
+cloud_instance_info_to_string( #azure_instance_info{
+									instance_key=_InstKey,
+									instance_location=InstLoc } ) ->
+	% Not disclosing of the key here:
+	text_utils:format( "Microsoft Azure instance located in '~ts'",
+					   [ InstLoc ] ).

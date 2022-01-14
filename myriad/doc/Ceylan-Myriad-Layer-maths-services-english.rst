@@ -19,7 +19,7 @@ Some simple maths-related operations are defined in the ``myriad/src/maths`` dir
 
   - the associated **typing** information
 
-- linear-related operations are defined; for example the **2D** operations are defined in ``linear_2D.erl`` (their **3D** counterparts being defined in ``linear_3D.erl``, their **4D** counterparts in ``linear_4D.erl``; base ones in ``linear.erl``) and include:
+- linear-related operations are defined (refer to the `Spatial Support`_ section for more details); for example the **2D** operations are defined in ``linear_2D.erl`` (their **3D** counterparts being defined in ``linear_3D.erl``, their **4D** counterparts in ``linear_4D.erl``; base ones in ``linear.erl``) and include:
 
   - operations on **points**: ``are_close/2``, ``is_within/3``, ``square_distance/2``, ``distance/2``, ``cross_product/2``, ``roundify/1``, ``get_integer_center/2``, ``get_center/2``, ``translate/2``, etc.
 
@@ -41,11 +41,8 @@ Some simple maths-related operations are defined in the ``myriad/src/maths`` dir
 
   - managing their **bounding boxes**: ``update_bounding_box/2``, etc.
 
-- **bounding-boxes in general** are supported in ``bounding_box.erl``, including ``get_lazy_circle_box/1``, ``get_minimal_enclosing_circle_box/1``, etc.
+- **bounding-boxes in general** are supported in ``bounding_box{2,3}.erl``, including ``get_lazy_circle_box/1``, ``get_minimal_enclosing_circle_box/1``, etc.
 
-- a minimalist `Runge-Kutta solver <https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods#The_Runge.E2.80.93Kutta_method>`_ is defined in ``rk4_solver.erl``
+- a minimalist `Runge-Kutta solver <https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods#The_Runge.E2.80.93Kutta_method>`_ is defined in ``rk4_solver.erl`` (see also the corresponding `Lorenz test`_)
 
-A few geometry-related conventions used in Myriad:
 
-- implicit homogeneous `w` coordinates are ``1.0``
-- front-facing polygons are the ones whose signed area is strictly positive: their vertices shall be seen in counter-clockwise winding order when front-facing towards the viewer (as in OpenGL's ``GL_CCW``); see also: ``polygon:{get_area,get_signed_area}/1``

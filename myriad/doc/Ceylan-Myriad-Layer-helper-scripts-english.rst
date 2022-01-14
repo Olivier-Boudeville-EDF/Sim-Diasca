@@ -87,7 +87,7 @@ Regarding Basic Performance Measurement
 
 
 `benchmark-command.escript <https://github.com/Olivier-Boudeville/Ceylan-Myriad/blob/master/src/scripts/benchmark-command.escript>`_
-  Returns a mean resource consumption for the specified shell command (one may prefer relying on `benchmark-command.sh <https://github.com/Olivier-Boudeville/Ceylan-Hull/blob/master/src/scripts/benchmark-command.sh>`_).
+  Returns a mean resource consumption for the specified shell command (one may prefer relying on `benchmark-command.sh <https://github.com/Olivier-Boudeville/Ceylan-Hull/blob/master/benchmark-command.sh>`_).
 
   | Usage: benchmark-command.escript COMMAND: returns a mean resource consumption for the specified shell command.
   Example: benchmark-command.escript "my_script.sh 1 2"

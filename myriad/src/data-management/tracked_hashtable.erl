@@ -1,4 +1,4 @@
-% Copyright (C) 2011-2021 Olivier Boudeville
+% Copyright (C) 2011-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -65,10 +65,10 @@
 % - Hashtable is a hashtable(), refer to the hashtable module for more detail
 %
 % - NumberOfEntries represents the number of entries in the hashtable; it is
-% zero when a new hashtable is created
+% zero when an hashtable is created
 %
 % - NumberOfBuckets is the number of buckets of the internal hashtable; a
-% default number of buckets is chosen at the creation of a new hashtable
+% default number of buckets is chosen at the creation of an hashtable
 %
 % Directly depends on the hashtable module.
 %
@@ -135,7 +135,7 @@
 
 
 
-% @doc Creates a new empty tracker table.
+% @doc Creates an empty tracker table.
 %
 % A new empty tracked hashtable is returned.
 %
@@ -480,9 +480,9 @@ fold_on_entries( Fun, InitialAcc, _TrackedHashtable={ Hashtable, _NEnt, _NBuck }
 
 
 
-% @doc Returns a new tracked hashtable, which started from TrackedHashtableBase
-% and was enriched with the TrackedHashtableAdd entries whose keys where not
-% already in TrackedHashtableBase (if a key is in both tables, the one from
+% @doc Returns a tracked hashtable which started from TrackedHashtableBase and
+% was enriched with the TrackedHashtableAdd entries whose keys where not already
+% in TrackedHashtableBase (if a key is in both tables, the one from
 % TrackedHashtableBase will be kept).
 %
 -spec merge( tracked_hashtable(), tracked_hashtable() ) -> tracked_hashtable().

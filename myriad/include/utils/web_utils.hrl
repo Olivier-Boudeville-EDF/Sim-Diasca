@@ -1,4 +1,4 @@
-% Copyright (C) 2015-2021 Olivier Boudeville
+% Copyright (C) 2015-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,6 +25,25 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 
 
+% Information regarding an instance hosted by the Microsoft Azure cloud
+% provider.
+%
+-record( azure_instance_info, {
+
+	% The key of a Microsoft Azure instance:
+	instance_key :: web_utils:azure_instance_key(),
+
+	% The location (sometimes designated as "endpoint") of a Microsoft Azure
+	% instance:
+	%
+	instance_location :: web_utils:azure_instance_location() } ).
+
+
+
+% Information regarding an instance hosted by the Microsoft Azure cloud
+% provider.
+
+
 % Describes fully an URL, like: 'https://www.foo.org:8081/access/login'.
 %
 % Note: not to be used anymore, the Erlang-native uri_string module shall be
@@ -32,16 +51,14 @@
 %
 -record( url_info, {
 
-		   % Protocol (scheme) of the URL (ex: 'https'):
-		   protocol = 'http' :: web_utils:protocol_type(),
+	% Protocol (scheme) of the URL (ex: 'https'):
+	protocol = 'http' :: web_utils:protocol_type(),
 
-		   % Host of the server (ex: 'www.foo.org'):
-		   host_identifier :: net_utils:host_identifier(),
+	% Host of the server (ex: 'www.foo.org'):
+	host_identifier :: net_utils:host_identifier(),
 
-		   % Ex: 8081; possibly undefined.
-		   port = 80 :: maybe( net_utils:net_port() ),
+	% Ex: 8081; possibly undefined.
+	port = 80 :: maybe( net_utils:net_port() ),
 
-		   % Ex: 'access/login'.
-		   path :: web_utils:path()
-
-} ).
+	% Ex: 'access/login'.
+	path :: web_utils:path() } ).

@@ -64,7 +64,7 @@ Myriad-level Third-Party Dependencies
 
 Myriad as such has no mandatory dependency (except Erlang itself of course), but *optional* ones may be enabled, for:
 
-- a basic `JSON <https://en.wikipedia.org/wiki/JSON>`_ support (see our `json_utils <https://github.com/Olivier-Boudeville/Ceylan-Myriad/blob/master/src/utils/json_utils.erl>`_ module), thanks to a suitable actual JSON parser, either `jsx <https://github.com/talentdeficit/jsx/>`_ or `jiffy <https://github.com/davisp/jiffy>`_; note that the detection and use of these parsers are done transparently at runtime, hence none of them is a declared dependency of Myriad, which will adapt to any choice made by the overall application that includes both Myriad and one of such parsers (provided, as mentioned above, that the proper ``USE_*`` make variables are set)
+- a basic `JSON <https://en.wikipedia.org/wiki/JSON>`_ support (see our `json_utils <https://github.com/Olivier-Boudeville/Ceylan-Myriad/blob/master/src/data-management/json_utils.erl>`_ module), thanks to a suitable actual JSON parser, either `jsx <https://github.com/talentdeficit/jsx/>`_ or `jiffy <https://github.com/davisp/jiffy>`_; note that the detection and use of these parsers are done transparently at runtime, hence none of them is a declared dependency of Myriad, which will adapt to any choice made by the overall application that includes both Myriad and one of such parsers (provided, as mentioned above, that the proper ``USE_*`` make variables are set)
 - a first-level support of the `HDF5 <https://www.hdfgroup.org/HDF5/>`_ file format (see our `hdf5_support <https://github.com/Olivier-Boudeville/Ceylan-Myriad/blob/master/src/data-management/hdf5_support.erl>`_ module), based on - and thus requiring - the `enhanced fork <https://github.com/Olivier-Boudeville-EDF/erlhdf5>`_ that we made of `erlhdf5 <https://github.com/RomanShestakov/erlhdf5>`_
 - `Python <https://en.wikipedia.org/wiki/Python_(programming_language)>`_ (see our `python_utils <https://github.com/Olivier-Boudeville/Ceylan-Myriad/blob/master/src/utils/python_utils.erl>`_ module), thanks to `erlport <https://github.com/hdima/erlport>`_
 - `SQLite <https://en.wikipedia.org/wiki/SQLite>`_ (see our `sql_support <https://github.com/Olivier-Boudeville/Ceylan-Myriad/blob/master/src/data-management/sql_support.erl>`_ module), thanks to the SQLite 3 Erlang binding that we retained, `erlang-sqlite3 <https://github.com/alexeyr/erlang-sqlite3.git>`_
@@ -136,7 +136,9 @@ Testing & Troubleshooting
 
 In order to **quick-check** whether long-name connectivity is available and to rule out the most obvious culprits, open two terminals.
 
-In the first::
+In the first:
+
+.. code:: bash
 
  # Check (with root permissions) that the firewall rules are safe; for example:
  $ iptables -nL
@@ -160,7 +162,9 @@ In the first::
  (n1@hurricane.foobar.org)1>
 
 
-In the second terminal, try to find the previous node::
+In the second terminal, try to find the previous node:
+
+.. code:: bash
 
  $ ERL_EPMD_PORT=4032 erl -name n2 -setcookie aa
  Erlang/OTP 23 [erts-11.1.4] [source] [64-bit] [smp:4:4] [ds:4:4:10] [async-threads:1] [hipe]
@@ -171,3 +175,20 @@ In the second terminal, try to find the previous node::
 
 
 If you see ``pang`` here, run to the nearest altar and make a sacrifice to any Distribution God you may believe in (Norse ones being presumably the most effective here), and apply the hints listed in the `Enabling the Interconnection of Erlang nodes`_ section.
+
+
+
+Using the Erlang Shell for Debugging
+====================================
+
+It may be convenient to run an Erlang shell in order to investigate and fix issues.
+
+One may execute ``make shell`` to launch a shell that is parameterised so that all modules of all layers (hence having Myriad from Myriad) are in its code path.
+
+The `built-in shell commands <https://erlang.org/doc/man/shell.html#shell-commands>`_ are then very convenient, notably:
+
+- ``v(-1)`` to get the *result* of the last command
+- less relevant in a Myriad context: ``c(my_module)`` to compile (if possible with default settings - thus notably with no parse transform involved)  and (re)load the specified module
+- ``l(my_module)`` to (re)load the specified module; useful when it has to be recompiled by Myriad (typically thanks to a ``make`` issued in another terminal)
+
+Do not mix up this last command with ``rl(XXX)``, which does not perform a module reload but prints a record definition (and will not complain if given an unrelated module name, thus not reloading anything...).

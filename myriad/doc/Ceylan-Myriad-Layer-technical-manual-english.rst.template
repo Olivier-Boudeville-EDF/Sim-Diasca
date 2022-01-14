@@ -54,7 +54,7 @@ Technical Manual of the ``Ceylan-Myriad`` Layer
 The latest version of this documentation is to be found at the `official Ceylan-Myriad website <http://myriad.esperide.org>`_ (``http://myriad.esperide.org``).
 
 
-:raw-html:`This Myriad documentation is also available in the PDF format (see <a href="Ceylan-Myriad-technical-manual-english.pdf">Ceylan-Myriad-technical-manual-english.pdf</a>), and mirrored <a href="http://olivier-boudeville.github.io/Ceylan-Myriad/">here</a>.`
+:raw-html:`This Myriad documentation is also available in the PDF format (see <a href="Ceylan-Myriad-Layer-technical-manual-english.pdf">Ceylan-Myriad-Layer-technical-manual-english.pdf</a>), and mirrored <a href="http://olivier-boudeville.github.io/Ceylan-Myriad/">here</a>.`
 
 :raw-latex:`This documentation is also mirrored \href{https://olivier-boudeville.github.io/Ceylan-Myriad/}{here}.`
 
@@ -106,6 +106,8 @@ The latest version of this documentation is to be found at the `official Ceylan-
 .. include:: Ceylan-Myriad-Layer-utility-toolbox-english.rst
 
 .. include:: Ceylan-Myriad-Layer-metaprogramming-english.rst
+
+.. include:: Ceylan-Myriad-Layer-spatial-support-english.rst
 
 .. include:: Ceylan-Myriad-Layer-management-of-units-english.rst
 

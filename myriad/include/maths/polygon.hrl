@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2021 Olivier Boudeville
+% Copyright (C) 2010-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -23,30 +23,26 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
-
+% Creation date: Monday, February 15, 2010.
 
 
 % Describes a polygon, convex or not, simple or not.
 -record( polygon, {
 
-
-		% List of points:
-		vertices = [] :: [ linear_2D:point() ],
-
-
-		% Rendering information, if any, as an option list.
-		%
-		% Supported options:
-		%   - edge_color :: gui_color:color_by_decimal()
-		%   - fill_color :: gui_color:color_by_decimal()
-		%
-		rendering = [] :: option_list:option_list(),
+	% The points defining that polygon:
+	vertices = [] :: [ point2:any_vertex2() ],
 
 
-		% Bounding-box information:
-		% (can be for example a circle or a right_cuboid)
-		%
-		bounding_box = undefined :: maybe( bounding_box:bounding_box() )
+	% Rendering information, if any, as an option list.
+	%
+	% Supported options:
+	% - edge_color :: gui_color:color_by_decimal()
+	% - fill_color :: gui_color:color_by_decimal()
+	%
+	rendering = [] :: option_list:option_list(),
 
 
-}).
+	% Bounding-box information:
+	% (can be for example a rectangle or a circle)
+	%
+	bounding_box = undefined :: maybe( bounding_box2:bounding_box2() ) } ).

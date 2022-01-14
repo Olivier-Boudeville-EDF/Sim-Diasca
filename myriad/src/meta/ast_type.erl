@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2021 Olivier Boudeville
+% Copyright (C) 2018-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -736,8 +736,7 @@ transform_type( TypeDef={ 'type', FileLoc, BuiltinType, _TypeVars=[] },
 				bool ->
 					ast_utils:raise_error( "the bool/0 type does not exist "
 						"as a builtin type; use boolean/0 instead.",
-						Transforms, FileLoc ),
-					halt( 5 );
+						Transforms, FileLoc );
 
 				_ ->
 					ast_utils:display_warning( "Not expecting type '~ts' "
@@ -1600,7 +1599,7 @@ check_ast_atom( ASTAtom={ atom, _FileLoc, Atom }, _Context )
 check_ast_atom( Other, Context ) ->
 
 	%trace_utils:debug_fmt( "AST non-atom: ~p (context: ~p)",
-	%					   [ Other, Context ] ),
+	%                       [ Other, Context ] ),
 
 	ast_utils:raise_error( [ invalid_ast_atom, Other ], Context ).
 

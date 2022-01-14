@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2021 Olivier Boudeville
+% Copyright (C) 2016-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -26,14 +26,11 @@
 % Creation date: Wednesday, May 2, 2018.
 
 
-
 % @doc This is the most basic, line-based monochrome <b>textual interface</b>,
 % directly in raw text, with no cursor control.
 %
 % See:
-%
 % - text_ui_test.erl for the corresponding test
-%
 % - gui.erl for a graphical counterpart
 %
 % See also: trace_utils.erl for another kind of output.
@@ -143,6 +140,7 @@
 
 -type ustring() :: text_utils:ustring().
 -type format_string() :: text_utils:format_string().
+-type format_values() :: text_utils:format_values().
 
 
 
@@ -256,7 +254,7 @@ display( Text ) ->
 
 
 % @doc Displays specified formatted text, as a normal modal message.
--spec display( format_string(), [ term() ] ) -> void().
+-spec display( format_string(), format_values() ) -> void().
 display( FormatString, Values ) ->
 	display_helper( _Channel=standard_io, FormatString, Values ).
 
@@ -555,21 +553,20 @@ choose_designated_item( Label, Choices, UIState ) ->
 	ChoiceCount = length( Choices ),
 
 	{ _FinalCount, NumberedText } = lists:foldl(
-					 fun( Text, { Count, AccText } ) ->
+		fun( Text, { Count, AccText } ) ->
 
-						NewText = text_utils:format( "[~B] ~ts",
-													 [ Count, Text ] ),
+			NewText = text_utils:format( "[~B] ~ts", [ Count, Text ] ),
 
-						NewAccText = [ NewText | AccText ],
+				NewAccText = [ NewText | AccText ],
 
-						{ Count+1, NewAccText }
+				{ Count+1, NewAccText }
 
-					 end,
-					 _Acc0= { 1, [] },
-					 _List=Texts ),
+		end,
+		_Acc0= { 1, [] },
+		_List=Texts ),
 
 	Text = text_utils:strings_to_string(
-			 lists:reverse( NumberedText ), _Bullet=" " ),
+				lists:reverse( NumberedText ), _Bullet=" " ),
 
 	FullLabel = text_utils:format( "~ts~ts~nChoice> ", [ Label, Text ] ),
 
@@ -651,21 +648,20 @@ choose_numbered_item( Label, Choices, UIState ) ->
 	ChoiceCount = length( Choices ),
 
 	{ _FinalCount, NumberedText } = lists:foldl(
-					 fun( Text, { Count, AccText } ) ->
+		fun( Text, { Count, AccText } ) ->
 
-						NewText = text_utils:format( "[~B] ~ts",
-													 [ Count, Text ] ),
+			NewText = text_utils:format( "[~B] ~ts", [ Count, Text ] ),
 
-						NewAccText = [ NewText | AccText ],
+			NewAccText = [ NewText | AccText ],
 
-						{ Count+1, NewAccText }
+			{ Count+1, NewAccText }
 
-					 end,
-					 _Acc0= { 1, [] },
-					 _List=Choices ),
+		end,
+		_Acc0= { 1, [] },
+		_List=Choices ),
 
 	Text = text_utils:strings_to_string(
-			 lists:reverse( NumberedText ), _Bullet=" " ),
+				lists:reverse( NumberedText ), _Bullet=" " ),
 
 	FullLabel = text_utils:format( "~ts~ts~nChoice> ", [ Label, Text ] ),
 
@@ -683,8 +679,8 @@ choose_numbered_item( Label, Choices, UIState ) ->
 
 		N when N > ChoiceCount ->
 			display_error(
-			  "Specified choice shall not be greater than ~B (not ~B).",
-			  [ ChoiceCount, N ] ),
+				"Specified choice shall not be greater than ~B (not ~B).",
+				[ ChoiceCount, N ] ),
 			%throw( { invalid_choice, too_high, N } );
 			choose_numbered_item( Label, Choices, UIState );
 
@@ -722,7 +718,7 @@ choose_numbered_item_with_default( Choices, DefaultChoiceIndex ) ->
 										 ui_state() ) -> choice_index();
 									   ( label(), [ choice_element() ],
 										 maybe( choice_index() ) ) ->
-											   choice_index().
+												choice_index().
 choose_numbered_item_with_default( Choices, DefaultChoiceIndex, UIState )
   when is_record( UIState, text_ui_state ) ->
 
@@ -763,7 +759,7 @@ choose_numbered_item_with_default( Label, Choices, DefaultChoiceIndex,
 	end,
 
 	{ _FinalCount, NumberedText } = lists:foldl(
-					 fun( Text, { Count, AccText } ) ->
+					fun( Text, { Count, AccText } ) ->
 
 						NewText = text_utils:format( "[~B] ~ts",
 													 [ Count, Text ] ),
@@ -773,7 +769,7 @@ choose_numbered_item_with_default( Label, Choices, DefaultChoiceIndex,
 						{ Count+1, NewAccText }
 
 					 end,
-					 _Acc0= { 1, [] },
+					 _Acc0= { _Count=1, [] },
 					 _List=Choices ),
 
 	Text = text_utils:strings_to_string(
@@ -820,7 +816,7 @@ trace( Message ) ->
 
 % @doc Traces specified message, by displaying it, and possibly logging it.
 -spec trace( message(), ui_state() ) -> void();
-		   ( format_string(), [ term() ] ) -> void().
+		   ( format_string(), format_values() ) -> void().
 trace( Message, UIState ) when is_record( UIState, text_ui_state ) ->
 
 	%trace_utils:debug_fmt( "UIState: ~p", [ UIState ] ),
@@ -852,7 +848,6 @@ trace( FormatString, Values ) ->
 
 
 
-
 % @doc Stops the UI.
 -spec stop() -> void().
 stop() ->
@@ -874,7 +869,7 @@ stop( #text_ui_state{ log_file=LogFile } ) ->
 
 stop_helper() ->
 	[ process_dictionary:remove( Key )
-	  || Key <- [ ?ui_name_key, ?ui_state_key ] ].
+		|| Key <- [ ?ui_name_key, ?ui_state_key ] ].
 
 
 
@@ -887,7 +882,7 @@ stop_helper() ->
 %
 -spec set_state( ui_state() ) -> void().
 set_state( UIState ) ->
-	%trace_utils:debug_fmt( "Setting ~p in ", [ UIState, ?ui_state_key ] ),
+	%trace_utils:debug_fmt( "Setting ~p in ~p.", [ UIState, ?ui_state_key ] ),
 	process_dictionary:put( ?ui_state_key, UIState ).
 
 
@@ -910,6 +905,7 @@ get_state() ->
 	end.
 
 
+
 % @doc Displays specified text, on specified channel.
 %
 % (helper)
@@ -925,7 +921,7 @@ display_helper( Channel, Text ) ->
 display_helper( Channel, FormatString, Values ) ->
 
 	%trace_utils:debug_fmt( "Displaying, on channel '~p', '~p', with '~p'.",
-	%					   [ Channel, FormatString, Values ] ),
+	%                       [ Channel, FormatString, Values ] ),
 
 	UIState = get_state(),
 
@@ -967,7 +963,7 @@ set_setting( SettingKey, SettingValue ) ->
 
 % @doc Sets the specified setting to specified value, in the specified UI state.
 -spec set_setting( ui_setting_key(), ui_setting_value(), ui_state() ) ->
-						 ui_state().
+													ui_state().
 set_setting( SettingKey, SettingValue,
 			 UIState=#text_ui_state{ settings=SettingTable } ) ->
 

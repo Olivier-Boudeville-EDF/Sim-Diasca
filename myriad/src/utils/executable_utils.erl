@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 Olivier Boudeville
+% Copyright (C) 2008-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -47,7 +47,9 @@
 % Section for most usual commands:
 -export([ can_generate_png_from_graph/0, generate_png_from_graph_file/2,
 		  generate_png_from_graph_file/3, display_png_file/1,
-		  browse_images_in/1, display_pdf_file/1, display_text_file/1,
+		  browse_images_in/1,
+		  playback_audio_file/1, playback_audio_file/2,
+		  display_pdf_file/1, display_text_file/1,
 		  display_wide_text_file/2, get_ssh_mute_option/0,
 		  compute_md5_sum/1, compute_sha1_sum/1, compute_sha_sum/2 ]).
 
@@ -72,6 +74,11 @@
 
 		 get_default_wide_text_viewer_name/1,
 		 get_default_wide_text_viewer_path/1,
+
+		 get_default_audio_player_name/0,
+		 get_secondary_default_audio_player_name/0,
+		 get_default_audio_player_info/0,
+		 get_default_audio_player_options/1,
 
 		 get_default_trace_viewer_name/0,
 		 get_default_trace_viewer_path/0,
@@ -104,6 +111,8 @@
 
 		 get_default_md5_tool/0,
 		 get_default_sha_tool/0,
+
+		 get_default_sql_client/0,
 
 		 get_default_java_runtime/0,
 		 get_default_jinterface_path/0 ]).
@@ -148,6 +157,7 @@
 -type directory_path() :: file_utils:directory_path().
 
 -type command_output() :: system_utils:command_output().
+-type command_line_argument() :: system_utils:command_line_argument().
 
 
 
@@ -204,7 +214,7 @@ lookup_executable( ExecutableName, ExtraDirs ) ->
 -spec find_executable( executable_name() ) -> executable_path().
 find_executable( ExecutableName ) ->
 
-	case lookup_executable( ExecutableName) of
+	case lookup_executable( ExecutableName ) of
 
 		false ->
 			throw( { executable_not_found, ExecutableName } );
@@ -299,24 +309,55 @@ generate_png_from_graph_file( PNGFilePath, GraphFilePath,
 % Throws an exception if an error occurs.
 %
 -spec display_png_file( file_path() ) -> void().
-display_png_file( PNGFilename ) ->
+display_png_file( PNGFilePath ) ->
 	% Viewer output is ignored:
 	system_utils:run_background_command(
-		get_default_image_viewer_path() ++ " " ++ PNGFilename  ).
+		get_default_image_viewer_path() ++ " " ++ PNGFilePath ).
 
 
 
 % @doc Allows to browse (without blocking) the images available in specified
 % directory (specified as a plain string)
 %
-% Returns the text output by the tool (if any).
+% Throws an exception if an error occurs.
+%
+-spec browse_images_in( directory_path() ) -> void().
+browse_images_in( DirectoryPath ) ->
+	system_utils:run_background_command(
+		get_default_image_browser_path() ++ " " ++ DirectoryPath ).
+
+
+% @doc Plays the specified audio file, in a non-blocking (in the background)
+% way.
 %
 % Throws an exception if an error occurs.
 %
--spec browse_images_in( file_path() ) -> void().
-browse_images_in( DirectoryName ) ->
-	system_utils:run_background_command(
-		get_default_image_browser_path() ++ " " ++ DirectoryName ).
+-spec playback_audio_file( file_path() ) -> void().
+playback_audio_file( AudioFilePath ) ->
+	playback_audio_file( AudioFilePath, _DoBlock=false ).
+
+
+
+% @doc Plays the specified audio file, either in a blocking or in a non-blocking
+% (in the background) way.
+%
+% Throws an exception if an error occurs.
+%
+-spec playback_audio_file( file_path(), boolean() ) -> void().
+playback_audio_file( AudioFilePath, DoBlock ) ->
+
+	{ PlayerName, PlayerPath } = get_default_audio_player_info(),
+	Args = get_default_audio_player_options( PlayerName ) ++ [ AudioFilePath ],
+
+	case DoBlock of
+
+		true ->
+			system_utils:run_executable( PlayerPath, Args );
+
+		false ->
+			system_utils:run_background_executable( PlayerPath, Args )
+
+	end.
 
 
 
@@ -395,7 +436,7 @@ display_wide_text_file( TextFilename, CharacterWidth ) ->
 %
 -spec get_ssh_mute_option() -> ustring().
 get_ssh_mute_option() ->
-  " -o \"StrictHostKeyChecking no\" ".
+	" -o \"StrictHostKeyChecking no\" ".
 
 
 
@@ -469,11 +510,11 @@ compute_sha_sum( Filename, SizeOfSHAAlgorithm )
 	end,
 
 	%trace_utils:debug_fmt( "Computing SHA~B sum of '~ts'.",
-	%					  [ SizeOfSHAAlgorithm, Filename ] ),
+	%                       [ SizeOfSHAAlgorithm, Filename ] ),
 
 	% 'utf8' expected as terminal default:
 	%trace_utils:debug_fmt( "Filename encoding mode: ~ts",
-	%					   [ file:native_name_encoding() ] ),
+	%                       [ file:native_name_encoding() ] ),
 
 	% We used to rely on run_command/n, yet correct Unicode arguments ("raw
 	% filenames") could not then be properly passed to the executable. So now we
@@ -649,6 +690,62 @@ get_default_wide_text_viewer_name( _CharacterWidth ) ->
 get_default_wide_text_viewer_path( CharacterWidth ) ->
 	% Could be: io_lib:format( "nedit -column ~B", [ CharacterWidth ] )
 	find_executable( get_default_wide_text_viewer_name( CharacterWidth ) ).
+
+
+
+% @doc Returns the name of the default audio player.
+-spec get_default_audio_player_name() -> executable_name().
+get_default_audio_player_name() ->
+	"mplayer".
+
+
+% @doc Returns the name of the secondary default audio player.
+-spec get_secondary_default_audio_player_name() -> executable_name().
+get_secondary_default_audio_player_name() ->
+	% Command-line VLC client:
+	"cvlc".
+
+
+
+% @doc Returns the name and absolute path to the default audio player.
+-spec get_default_audio_player_info() ->
+							{ executable_name(), executable_path() }.
+get_default_audio_player_info() ->
+	PrimaryPlayerName = get_default_audio_player_name(),
+	case lookup_executable( PrimaryPlayerName ) of
+
+		false ->
+			SecondaryPlayerName = get_secondary_default_audio_player_name(),
+			case lookup_executable( SecondaryPlayerName ) of
+
+				false ->
+					throw( { no_audio_player_found,
+								{ PrimaryPlayerName, SecondaryPlayerName } } );
+
+				SecPath ->
+					{ SecondaryPlayerName, SecPath }
+
+			end;
+
+		PrimPath ->
+			{ PrimaryPlayerName, PrimPath }
+
+	end.
+
+
+
+% @doc Returns a list of the command-line options suitable for the specified
+% audio player, notably so that it can run as much as possible
+% non-interactively.
+%
+-spec get_default_audio_player_options( executable_name() ) ->
+			[ command_line_argument() ].
+get_default_audio_player_options( _AudioPlayerName="mplayer") ->
+	[ "-vc", "null", "-vo", "null", "-really-quiet", "-nolirc", "-msglevel",
+	  "all=0:demuxer=0" ];
+
+get_default_audio_player_options( _AudioPlayerName="cvlc") ->
+	[ "--quiet", "--novideo", "--play-and-exit" ].
 
 
 
@@ -852,6 +949,11 @@ get_default_md5_tool() ->
 get_default_sha_tool() ->
 	find_executable( "shasum" ).
 
+
+% @doc Returns the default client to interact with a SQL database.
+-spec get_default_sql_client() -> executable_path().
+get_default_sql_client() ->
+	find_executable( "psql" ).
 
 
 % @doc Returns the default tool to execute Java programs.

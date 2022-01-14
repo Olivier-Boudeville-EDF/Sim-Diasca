@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2021 Olivier Boudeville
+% Copyright (C) 2007-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -907,7 +907,7 @@ check_node_availability( NodeName, CurrentDurationStep, ElapsedDuration,
 		pang ->
 
 			%trace_utils:debug_fmt( " - node '~ts' NOT found available after "
-			%                     "~B ms.", [ NodeName, NewElapsedDuration ] ),
+			%   "~B ms.", [ NodeName, NewElapsedDuration ] ),
 
 			% Too early, let's retry later:
 			NewCurrentDurationStep = erlang:min( 2 * CurrentDurationStep,
@@ -924,7 +924,7 @@ check_node_availability( _NodeName, _CurrentDurationStep, ElapsedDuration,
 						 _SpecifiedMaxDuration ) ->
 
 	%trace_utils:debug_fmt( " - node '~ts' found NOT available, after ~B ms.",
-	%						[ NodeName, ElapsedDuration ] ),
+	%                       [ NodeName, ElapsedDuration ] ),
 
 	{ false, ElapsedDuration }.
 
@@ -1281,7 +1281,7 @@ try_start_distribution( NodeName, NamingMode, NameType, RemainingAttempts ) ->
 		{ error, Reason } ->
 
 			%trace_utils:warning_fmt( "Cannot start node '~ts' as ~ts:"
-			%	"~n  ~p.", [ NodeName, NameType, Reason ] ),
+			%   "~n  ~p.", [ NodeName, NameType, Reason ] ),
 
 			case RemainingAttempts of
 
@@ -1320,7 +1320,7 @@ try_start_distribution( NodeName, NamingMode, NameType, RemainingAttempts ) ->
 
 		{ ok, _NetKernelPid } ->
 			%trace_utils:debug_fmt( "Node '~ts' started as ~ts.",
-			%					   [ NodeName, NameType ] ),
+			%                       [ NodeName, NameType ] ),
 			{ ok, NamingMode }
 
 	end.
@@ -1354,8 +1354,7 @@ secure_distribution( UserNodeName ) ->
 			NamingMode;
 
 		{ error, ErrorReason } ->
-			throw( { cannot_secure_distribution, UserNodeName,
-					 ErrorReason } )
+			throw( { cannot_secure_distribution, UserNodeName, ErrorReason } )
 
 end.
 
@@ -1423,8 +1422,8 @@ shutdown_node( NodeName ) when is_list( NodeName ) ->
 
 shutdown_node( NodeName ) when is_atom( NodeName ) ->
 
-	%trace_utils:debug_fmt( "Request to shut down node '~ts' from node '~ts'.",
-	%						[ NodeName, node() ] ),
+	%trace_utils:debug_fmt( "Request to shutdown node '~ts' from node '~ts'.",
+	%                       [ NodeName, node() ] ),
 
 	case lists:member( NodeName, nodes() ) of
 
@@ -1609,8 +1608,8 @@ get_tcp_port_range_option( { MinTCPPort, MaxTCPPort } )
 	   andalso MinTCPPort < MaxTCPPort ->
 	%trace_utils:debug_fmt( "Enforcing following TCP range: [~B,~B].",
 	%						[ MinTCPPort, MaxTCPPort ] ),
-	io_lib:format( " -kernel inet_dist_listen_min ~B inet_dist_listen_max ~B ",
-				   [ MinTCPPort, MaxTCPPort ] ).
+	text_utils:format( " -kernel inet_dist_listen_min ~B "
+					   "inet_dist_listen_max ~B ", [ MinTCPPort, MaxTCPPort ] ).
 
 
 
@@ -1734,7 +1733,7 @@ send_file( FilePath, RecipientPid ) ->
 			% Hostname = text_utils:binary_to_string( BinHostname ),
 
 			%trace_utils:debug_fmt( "~w connecting to ~ts:~B to send '~ts'.",
-			%     [ self(), ipv4_to_string( RemoteIP ), Port, FilePath ] ),
+			%   [ self(), ipv4_to_string( RemoteIP ), Port, FilePath ] ),
 
 			DataSocket = case gen_tcp:connect( RemoteIP, Port,
 						[ binary, { packet, 0 }, { active, false } ] ) of
@@ -1895,7 +1894,7 @@ receive_file( EmitterPid, TargetDir, MinTCPPort, MaxTCPPort )
 		{ sendFile, [ BinFilename, Permissions, EmitterPid ] } ->
 
 			{ ListenSock, ActualTCPPort } = listen_to_next_available_port(
-									 MinTCPPort, MinTCPPort, MaxTCPPort ),
+										MinTCPPort, MinTCPPort, MaxTCPPort ),
 
 			%trace_utils:debug_fmt( "File '~ts' will be received through "
 			%   "local TCP port ~p.", [ BinFilename, ActualTCPPort ] ),
@@ -2078,7 +2077,6 @@ ipv6_to_string( { N1, N2, N3, N4, N5, N6 } ) ->
 -spec ipv6_to_string( ip_v6_address(), net_port() ) -> ustring().
 ipv6_to_string( Ipv6={ _N1, _N2, _N3, _N4, _N5, _N6 }, Port ) ->
 	text_utils:format( "~ts:~B", [ ipv6_to_string( Ipv6 ), Port ] ).
-
 
 
 

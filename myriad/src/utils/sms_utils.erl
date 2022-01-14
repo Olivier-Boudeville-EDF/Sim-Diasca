@@ -1,4 +1,4 @@
-% Copyright (C) 2013-2021 Olivier Boudeville
+% Copyright (C) 2013-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -96,8 +96,13 @@
 % Message to be sent as SMS (up to 160 bytes).
 
 
--type recipient() :: ustring().
-% International mobile phone number of the recipient (ex: "+330616XXXXXX").
+-type phone_number() :: ustring().
+% A phone number, preferably international, preferably with no whitespaces (ex:
+% "+330616XXXXXX").
+
+
+-type recipient() :: phone_number().
+% Phone number of a recipient, probably of a mobile phone (ex: "+330616XXXXXX").
 
 
 -type sender_description() :: ustring().
@@ -173,8 +178,8 @@
 
 
 
--export_type([ provider/0, credits/0, sms_account/0, message/0, recipient/0,
-			   sender_description/0, service_class/0, sms/0,
+-export_type([ provider/0, credits/0, sms_account/0, message/0, phone_number/0,
+			   recipient/0, sender_description/0, service_class/0, sms/0,
 			   sending_outcome/0 ]).
 
 

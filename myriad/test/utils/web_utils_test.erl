@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2021 Olivier Boudeville
+% Copyright (C) 2019-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -26,8 +26,7 @@
 % Creation date: Tuesday, June 25, 2019.
 
 
-
-% Unit tests for the services related to web content.
+% Unit tests for the services related to <b>web content</b>.
 %
 % See the web_utils.erl tested module.
 %
@@ -42,8 +41,8 @@
 -compile( { nowarn_unused_function, [ test_local/0, test_online/0 ] } ).
 
 
-% Just an example. A webserver is expected to run at the specified location (see
-% US-Web from an example thereof).
+% @doc Just an example. A webserver is expected to run at the specified location
+% (see US-Web from an example thereof).
 %
 test_local() ->
 
@@ -96,7 +95,7 @@ run() ->
 
 	TestString = "I'm a \"test\" string & I am more (>) proud of it than <<<.",
 
-	EncodedString = "I&#39;m a &quot;test&quot; string &amp; I am more (&gt;) "
+	EncodedString = "I&apos;m a &quot;test&quot; string &amp; I am more (&gt;) "
 		"proud of it than &lt;&lt;&lt;.",
 
 	% Check:

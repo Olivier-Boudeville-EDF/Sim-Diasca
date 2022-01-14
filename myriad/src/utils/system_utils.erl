@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2021 Olivier Boudeville
+% Copyright (C) 2010-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -73,6 +73,10 @@
 		  run_background_command/1, run_background_command/2,
 		  run_background_command/3,
 
+		  run_background_executable/1, run_background_executable/2,
+		  run_background_executable/3, run_background_executable/4,
+		  run_background_executable/5,
+
 		  evaluate_background_shell_expression/1,
 		  evaluate_background_shell_expression/2,
 
@@ -126,6 +130,13 @@
 -define( library_search_path_variable, "LD_LIBRARY_PATH" ).
 
 
+% Implementation notes:
+%
+% The use of text_utils (instead of io_lib) has not been generalised, as this
+% module may be a pioneer one, and thus as such should be as autonomous as
+% possible.
+
+
 
 % Prerequisite-related section.
 
@@ -145,16 +156,24 @@
 
 
 
--type byte_size() :: integer().
-% Size, as a number of bytes.
+-type byte_size() :: non_neg_integer().
+% Size, as a positive number of bytes.
+
+
+-type byte_offset() :: integer().
+% A (signed) offset expressed in bytes.
+
+
+-type bit_size() :: non_neg_integer().
+% Size, as a positive number of bits.
 
 
 -opaque cpu_usage_info() ::
-			{ integer(), integer(), integer(), integer(), integer() }.
+		{ integer(), integer(), integer(), integer(), integer() }.
 
 
--type cpu_usage_percentages() :: { percent(), percent(), percent(), percent(),
-								   percent() }.
+-type cpu_usage_percentages() ::
+		{ percent(), percent(), percent(), percent(), percent() }.
 
 
 % For record declarations and shell commands:
@@ -185,48 +204,51 @@
 
 -record( fs_info, {
 
-		   % Device name (ex: /dev/sda5):
-		   filesystem :: directory_path(),
+	% Device name (ex: /dev/sda5):
+	filesystem :: directory_path(),
 
-		   % Mount point (ex: /boot):
-		   mount_point :: directory_path(),
+	% Mount point (ex: /boot):
+	mount_point :: directory_path(),
 
-		   % Filesystem type (ex: 'ext4'):
-		   type :: filesystem_type(),
+	% Filesystem type (ex: 'ext4'):
+	type :: filesystem_type(),
 
-		   % Used size, in bytes:
-		   used_size :: byte_size(),
+	% Used size, in bytes:
+	used_size :: byte_size(),
 
-		   % Available size, in bytes:
-		   available_size :: byte_size(),
+	% Available size, in bytes:
+	available_size :: byte_size(),
 
-		   % Number of used inodes:
-		   used_inodes :: count(),
+	% Number of used inodes:
+	used_inodes :: count(),
 
-		   % Number of available inodes:
-		   available_inodes :: count()
+	% Number of available inodes:
+	available_inodes :: count() } ).
 
-} ).
 
 -type fs_info() :: #fs_info{}.
 % Stores information about a filesystem.
 
 
 
--type command() :: text_utils:any_string().
-% Describes a command to be run (i.e. path to an executable, with possibly
+-type command() :: any_string().
+% Describes a command to be run (i.e. a path to an executable, with possibly
 % command-line arguments).
 
--type command_line_argument() :: text_utils:any_string().
-% Describes a (single) command-line argument.
 
+-type command_line_argument() :: any_string().
+% Describes a (single) command-line argument.
+%
+% Note that each argument shall be unitary, "atomic"; for example "--color red"
+% is not an argument (the called executable would receive it as a whole), but
+% two: "--color" and "red".
 
 
 -type execution_pair() ::
 		{ bin_executable_path(), [ command_line_argument() ] }.
 % A pair specifying a complete command-line ready to be executed by
 % run_executable/n (convenient to store once for all if needing to launch it
-% repeatedly).
+% repeatedly). Generally more secure than command/1 as well.
 
 
 -type port_option() :: { 'packet', 1 | 2 | 4 }
@@ -310,7 +332,13 @@
 % The group identifier (gid) of a filesystem element.
 
 
--export_type([ byte_size/0, cpu_usage_info/0, cpu_usage_percentages/0,
+-type os_pid() :: count().
+% The PID of an operating-system process (OS-level, not Erlang-level, process
+% identifier).
+
+
+-export_type([ byte_size/0, byte_offset/0, bit_size/0,
+			   cpu_usage_info/0, cpu_usage_percentages/0,
 			   host_static_info/0, host_dynamic_info/0,
 
 			   actual_filesystem_type/0, pseudo_filesystem_type/0,
@@ -328,7 +356,7 @@
 			   encoding/0, encoding_option/0, encoding_options/0,
 
 			   user_name/0, password/0, basic_credential/0, group_name/0,
-			   user_id/0, group_id/0 ]).
+			   user_id/0, group_id/0, os_pid/0 ]).
 
 
 % For myriad_spawn*:
@@ -340,6 +368,7 @@
 -type count() :: basic_utils:count().
 
 -type ustring() :: text_utils:ustring().
+-type any_string() :: text_utils:any_string().
 
 -type directory_path() :: file_utils:directory_path().
 -type any_directory_path() :: file_utils:any_directory_path().
@@ -693,7 +722,8 @@ await_output_completion( _TimeOut ) ->
 % properly translated to Unicode, whereas the run_executable/n variations rely
 % on 'spawn_executable', which offers a full proper Unicode support (typically
 % if an argument is a raw filename). So the run_executable/n variations shall be
-% preferred.
+% preferred, for this reason and also for security ones, see
+% https://erlef.github.io/security-wg/secure_coding_and_deployment_hardening/external_executables
 
 
 
@@ -710,6 +740,10 @@ await_output_completion( _TimeOut ) ->
 % So one should not try to abuse this function by adding an ampersand (`&') at
 % the end to trigger a background launch - this would just be interpreted as a
 % last argument. Use run_background_command/{1,2,3} in this module instead.
+%
+% Note: the run_executable/* functions shall be preferred (as being better
+% regarding encoding and security) to the run_command/* ones, which may be
+% considered available only for backward compatibility.
 %
 -spec run_command( command() ) -> execution_outcome().
 run_command( Command ) ->
@@ -730,6 +764,10 @@ run_command( Command ) ->
 % the end to trigger a background launch - this would just be interpreted as a
 % last argument. Use run_background_command/{1,2,3} in this module instead.
 %
+% Note: the run_executable/* functions shall be preferred (as being better
+% regarding encoding and security) to the run_command/* ones, which may be
+% considered available only for backward compatibility.
+%
 -spec run_command( command(), environment() ) -> execution_outcome().
 run_command( Command, Environment ) ->
 	run_command( Command, Environment, _WorkingDir=undefined ).
@@ -749,6 +787,10 @@ run_command( Command, Environment ) ->
 % the end to trigger a background launch - this would just be interpreted as a
 % last argument. Use run_background_command/{1,2,3} in this module instead.
 %
+% Note: the run_executable/* functions shall be preferred (as being better
+% regarding encoding and security) to the run_command/* ones, which may be
+% considered available only for backward compatibility.
+%
 -spec run_command( command(), environment(), maybe( working_dir() ) ) ->
 							execution_outcome().
 run_command( Command, Environment, MaybeWorkingDir ) ->
@@ -757,23 +799,39 @@ run_command( Command, Environment, MaybeWorkingDir ) ->
 
 
 
-% @doc Executes (synchronously) specified executable (an executable path
+% @doc Executes (synchronously) the specified command (an executable path
 % possibly followed with command-line arguments; specified as a single,
-% standalone string), in specified shell environment and working directory, with
-% specified extra port options (possibly containing any relevant command-line
-% arguments; see [http://erlang.org/doc/man/erlang.html#open_port-2]).
+% standalone string), in the specified shell environment and working directory,
+% with specified extra port options (possibly containing any relevant
+% command-line arguments; see
+% [http://erlang.org/doc/man/erlang.html#open_port-2]).
 %
 % Returns its return code (exit status) and its outputs (both the standard and
 % the error ones): {ReturnCode,CmdOutput}.
+%
+% This function will run a specific executable, not evaluate a shell expression
+% (that would possibly run executables).
+%
+% So one should not try to abuse this function by adding an ampersand (`&') at
+% the end to trigger a background launch - this would just be interpreted as a
+% last argument. Use run_background_command/{1,2,3} in this module instead.
+%
+% Note: the run_executable/* functions shall be preferred (as being better
+% regarding encoding and security) to the run_command/* ones, which may be
+% considered available only for backward compatibility.
 %
 -spec run_command( command(), environment(), maybe( working_dir() ),
 				   [ port_option() ] ) -> execution_outcome().
 run_command( Command, Environment, MaybeWorkingDir, PortOptions ) ->
 
-	%trace_utils:debug_fmt( "Running command: '~ts' with "
-	%	"~ts from working directory '~ts', with options ~w.",
-	%	[ Command, environment_to_string( Environment ), MaybeWorkingDir,
-	%	  PortOptions ] ), timer:sleep( 200 ),
+	cond_utils:if_defined( myriad_debug_third_party_execution,
+		begin
+			trace_utils:debug_fmt( "Running command: '~ts' with "
+				"~ts from working directory '~ts', with port options ~w.",
+				[ Command, environment_to_string( Environment ),
+				  MaybeWorkingDir, PortOptions ] ),
+			timer:sleep( 200 )
+		end ),
 
 	PortOptsWithEnv = [ { env, Environment } | PortOptions ],
 
@@ -791,14 +849,14 @@ run_command( Command, Environment, MaybeWorkingDir, PortOptions ) ->
 	Port = open_port( { spawn, Command }, PortOptsWithPath ),
 
 	%trace_utils:debug_fmt( "Spawned port ~p for command '~ts'.",
-	%					   [ Port, Command ] ),
+	%                       [ Port, Command ] ),
 
 	read_port( Port, _Data=[] ).
 
 
 
-% @doc Executes (synchronously) specified executable, whose path is exactly the
-% specified one (that is: taken verbatim, not looked-up through any PATH
+% @doc Executes (synchronously) the specified executable, whose path is exactly
+% the specified one (that is: taken verbatim, not looked-up through any PATH
 % environment variable; use, in the executable_utils module,
 % lookup_executable/{1,2} or find_executable/1 for that; not using any
 % intermediary shell either) with no specific command-line argument, with a
@@ -806,7 +864,7 @@ run_command( Command, Environment, MaybeWorkingDir, PortOptions ) ->
 % port options.
 %
 % Returns its return code (exit status) and its outputs (both the standard and
-% the error ones): {ReturnCode,CmdOutput}.
+% the error ones): {ReturnCode, CmdOutput}.
 %
 -spec run_executable( executable_path() ) -> execution_outcome().
 run_executable( ExecPath ) ->
@@ -815,8 +873,8 @@ run_executable( ExecPath ) ->
 
 
 
-% @doc Executes (synchronously) specified executable, whose path is exactly the
-% specified one (that is: taken verbatim, not looked-up through any PATH
+% @doc Executes (synchronously) the specified executable, whose path is exactly
+% the specified one (that is: taken verbatim, not looked-up through any PATH
 % environment variable; use, in the executable_utils module,
 % lookup_executable/{1,2} or find_executable/1 for that; not using any
 % intermediary shell either) with specified command-line arguments, with a
@@ -824,7 +882,7 @@ run_executable( ExecPath ) ->
 % port options.
 %
 % Returns its return code (exit status) and its outputs (both the standard and
-% the error ones): {ReturnCode,CmdOutput}.
+% the error ones): {ReturnCode, CmdOutput}.
 %
 -spec run_executable( executable_path(), [ command_line_argument() ] ) ->
 							execution_outcome().
@@ -834,8 +892,8 @@ run_executable( ExecPath, Arguments ) ->
 
 
 
-% @doc Executes (synchronously) specified executable, whose path is exactly the
-% specified one (that is: taken verbatim, not looked-up through any PATH
+% @doc Executes (synchronously) the specified executable, whose path is exactly
+% the specified one (that is: taken verbatim, not looked-up through any PATH
 % environment variable; use, in the executable_utils module,
 % lookup_executable/{1,2} or find_executable/1 for that; not using any
 % intermediary shell either) with specified command-line arguments and
@@ -843,7 +901,7 @@ run_executable( ExecPath, Arguments ) ->
 % port options.
 %
 % Returns its return code (exit status) and its outputs (both the standard and
-% the error ones): {ReturnCode,CmdOutput}.
+% the error ones): {ReturnCode, CmdOutput}.
 %
 -spec run_executable( executable_path(), [ command_line_argument() ],
 					  environment() ) -> execution_outcome().
@@ -853,8 +911,8 @@ run_executable( ExecPath, Arguments, Environment ) ->
 
 
 
-% @doc Executes (synchronously) specified executable, whose path is exactly the
-% specified one (that is: taken verbatim, not looked-up through any PATH
+% @doc Executes (synchronously) the specified executable, whose path is exactly
+% the specified one (that is: taken verbatim, not looked-up through any PATH
 % environment variable; use, in the executable_utils module,
 % lookup_executable/{1,2} or find_executable/1 for that; not using any
 % intermediary shell either) with specified command-line arguments and
@@ -862,7 +920,7 @@ run_executable( ExecPath, Arguments, Environment ) ->
 % port options.
 %
 % Returns its return code (exit status) and its outputs (both the standard and
-% the error ones): {ReturnCode,CmdOutput}.
+% the error ones): {ReturnCode, CmdOutput}.
 %
 -spec run_executable( executable_path(), [ command_line_argument() ],
 		environment(), maybe( working_dir() ) ) -> execution_outcome().
@@ -872,8 +930,8 @@ run_executable( ExecPath, Arguments, Environment, MaybeWorkingDir ) ->
 
 
 
-% @doc Executes (synchronously) specified executable, whose path is exactly the
-% specified one (that is: taken verbatim, not looked-up through any PATH
+% @doc Executes (synchronously) the specified executable, whose path is exactly
+% the specified one (that is: taken verbatim, not looked-up through any PATH
 % environment variable; use, in the executable_utils module,
 % lookup_executable/{1,2} or find_executable/1 for that; not using any
 % intermediary shell either) with specified command-line arguments and
@@ -881,7 +939,9 @@ run_executable( ExecPath, Arguments, Environment, MaybeWorkingDir ) ->
 % options.
 %
 % Returns its return code (exit status) and its outputs (both the standard and
-% the error ones): {ReturnCode,CmdOutput}.
+% the error ones): {ReturnCode, CmdOutput}.
+%
+% This is the recommended, most complete way of running an executable.
 %
 -spec run_executable( executable_path(), [ command_line_argument() ],
 		environment(), maybe( working_dir() ), [ port_option() ] ) ->
@@ -889,10 +949,15 @@ run_executable( ExecPath, Arguments, Environment, MaybeWorkingDir ) ->
 run_executable( ExecPath, Arguments, Environment, MaybeWorkingDir,
 				PortOptions ) ->
 
-	%trace_utils:debug_fmt( "Running executable: '~ts' with arguments ~p "
-	%   "and with ~ts from working directory '~ts', with options ~w.",
-	%   [ ExecPath, Arguments, environment_to_string( Environment ),
-	%     MaybeWorkingDir, PortOptions ] ), timer:sleep( 200 ),
+	cond_utils:if_defined( myriad_debug_third_party_execution,
+		begin
+			trace_utils:debug_fmt( "Running executable '~ts' "
+				"with arguments:~n ~p and with ~ts "
+				"from working directory '~ts', with port options ~w.",
+				[ ExecPath, Arguments, environment_to_string( Environment ),
+				  MaybeWorkingDir, PortOptions ] ),
+			timer:sleep( 200 )
+		end ),
 
 	PortOptsWithEnv =
 		[ { args, Arguments }, { env, Environment } | PortOptions ],
@@ -910,7 +975,7 @@ run_executable( ExecPath, Arguments, Environment, MaybeWorkingDir,
 	Port = open_port( { spawn_executable, ExecPath }, PortOptsWithPath ),
 
 	%trace_utils:debug_fmt( "Spawned port ~p for executable '~ts'.",
-	%						[ Port, ExecPath ] ),
+	%                       [ Port, ExecPath ] ),
 
 	read_port( Port, _Data=[] ).
 
@@ -941,7 +1006,7 @@ read_port( Port, Data ) ->
 		{ Port, eof } ->
 
 			%trace_utils:debug_fmt( "Received eof (first), closing ~p.",
-			%					   [ Port ] ),
+			%                       [ Port ] ),
 
 			port_close( Port ),
 
@@ -956,7 +1021,7 @@ read_port( Port, Data ) ->
 					% always "\n":
 					%
 					Output = text_utils:remove_ending_carriage_return(
-							   lists:flatten( lists:reverse( Data ) ) ),
+								lists:flatten( lists:reverse( Data ) ) ),
 
 					{ ExitStatus, Output }
 
@@ -965,18 +1030,18 @@ read_port( Port, Data ) ->
 		{ Port, { exit_status, ExitStatus } } ->
 
 			%trace_utils:debug_fmt( "Received exit_status (first): ~p.",
-			%						[ ExitStatus ] ),
+			%                       [ ExitStatus ] ),
 
 			receive
 
 				{ Port, eof } ->
 					%trace_utils:debug_fmt( "Received eof (second), "
-					%					   "closing ~p.", [ Port ] ),
+					%                       "closing ~p.", [ Port ] ),
 
 					port_close( Port ),
 
 					Output = text_utils:remove_ending_carriage_return(
-							   lists:flatten( lists:reverse( Data ) ) ),
+								lists:flatten( lists:reverse( Data ) ) ),
 
 					{ ExitStatus, Output }
 
@@ -995,9 +1060,9 @@ read_port( Port, Data ) ->
 		% relation to other ongoing ports):
 		%
 		%Other ->
-		%	trace_utils:warning_fmt( "Received unexpected message: ~p.",
-		%							 [ Other ] ),
-		%	Other
+		%   trace_utils:warning_fmt( "Received unexpected message: ~p.",
+		%                            [ Other ] ),
+		%   Other
 
 	 end.
 
@@ -1024,7 +1089,7 @@ get_line( Prompt, GetLineScriptPath ) ->
 	% not be able to write to the standard input (1):
 	%
 	%Cmd = text_utils:format( "get-line-as-external-program.sh \"~ts\" 1>&4",
-	%						 [ Prompt ] ),
+	%                         [ Prompt ] ),
 
 	io:format( Prompt ),
 
@@ -1075,9 +1140,9 @@ get_line_helper_script() ->
 
 
 
-% @doc Returns a default, standard environment for "porcelain"-like executions,
-% that is executions that are, as much as possible, reproducible in various
-% runtime contexts (typically: with locale-independent outputs).
+% @doc Returns a default, standard, safe/secure environment for "porcelain"-like
+% executions, that is executions that are, as much as possible, reproducible in
+% various runtime contexts (typically: with locale-independent outputs).
 %
 % To be used with run_{command,executable}/n.
 %
@@ -1107,13 +1172,13 @@ get_standard_environment() ->
 monitor_port( Port, Data ) ->
 
 	%trace_utils:debug_fmt( "Process ~p starting the monitoring of "
-	%					   "port ~p (data: '~p').", [ self(), Port, Data ] ),
+	%                       "port ~p (data: '~p').", [ self(), Port, Data ] ),
 
 	receive
 
 		{ Port, { data, NewData } } ->
 			%trace_utils:debug_fmt( "Port monitor ~p received data: '~p'.",
-			%					   [ self(), NewData ] ),
+			%                       [ self(), NewData ] ),
 
 			monitor_port( Port, [ NewData | Data ] );
 
@@ -1200,8 +1265,9 @@ evaluate_shell_expression( Expression, Environment ) ->
 
 	FullExpression = get_actual_expression( Expression, Environment ),
 
-	%trace_utils:debug_fmt( "Evaluation shell expression '~ts' "
-	%  "in ~ts", [ FullExpression, environment_to_string( Environment ) ] ),
+	cond_utils:if_defined( myriad_debug_third_party_execution,
+		trace_utils:debug_fmt( "Evaluation shell expression '~ts' in ~ts",
+			[ FullExpression, environment_to_string( Environment ) ] ) ),
 
 	% No return code available, success supposed:
 	text_utils:remove_ending_carriage_return( os:cmd( FullExpression ) ).
@@ -1212,8 +1278,10 @@ evaluate_shell_expression( Expression, Environment ) ->
 
 
 
-% @doc Executes asynchronously, in the background, specified executable (with no
-% specific parameter nor port option, and from the current directory), in a
+% Section about background commands.
+
+
+% @doc Executes asynchronously, in the background, the specified command, in a
 % standard shell environment.
 %
 % As a consequence it returns no return code (exit status) nor output.
@@ -1226,13 +1294,12 @@ evaluate_shell_expression( Expression, Environment ) ->
 % instead.
 %
 -spec run_background_command( command() ) -> void().
-run_background_command( ExecPath ) ->
-	run_background_command( ExecPath, get_standard_environment() ).
+run_background_command( Command ) ->
+	run_background_command( Command, get_standard_environment() ).
 
 
 
-% @doc Executes asynchronously, in the background, specified executable (with no
-% specific parameter nor port option, and from the current directory), in the
+% @doc Executes asynchronously, in the background, the specified command, in the
 % specified shell environment.
 %
 % As a consequence it returns no return code (exit status) nor output.
@@ -1245,14 +1312,13 @@ run_background_command( ExecPath ) ->
 % instead.
 %
 -spec run_background_command( command(), environment() ) -> void().
-run_background_command( ExecPath, Environment ) ->
-	run_background_command( ExecPath, Environment, _WorkingDir=undefined ).
+run_background_command( Command, Environment ) ->
+	run_background_command( Command, Environment, _WorkingDir=undefined ).
 
 
 
-% @doc Executes asynchronously, in the background, specified executable (with no
-% specific parameter nor port option), in the specified shell environment and
-% from the specified working directory.
+% @doc Executes asynchronously, in the background, the specified command, in the
+% specified shell environment and from the specified working directory.
 %
 % As a consequence it returns no return code (exit status) nor output.
 %
@@ -1265,14 +1331,14 @@ run_background_command( ExecPath, Environment ) ->
 %
 -spec run_background_command( command(), environment(),
 							  maybe( working_dir() ) ) -> void().
-run_background_command( ExecPath, Environment, MaybeWorkingDir ) ->
-	run_background_command( ExecPath, Environment, MaybeWorkingDir,
+run_background_command( Command, Environment, MaybeWorkingDir ) ->
+	run_background_command( Command, Environment, MaybeWorkingDir,
 							_PortOptions=[] ).
 
 
 
-% @doc Executes asynchronously, in the background, specified executable, in the
-% specified shell environment and working directory, with specified options
+% @doc Executes asynchronously, in the background, the specified command, in the
+% specified shell environment and working directory, with the specified options
 % (possibly containing any relevant command-line arguments; see
 % [http://erlang.org/doc/man/erlang.html#open_port-2]).
 %
@@ -1286,14 +1352,15 @@ run_background_command( ExecPath, Environment, MaybeWorkingDir ) ->
 % instead.
 %
 -spec run_background_command( command(), environment(),
-						  maybe( working_dir() ), [ port_option() ] ) -> void().
+						maybe( working_dir() ), [ port_option() ] ) -> void().
 run_background_command( Command, Environment, MaybeWorkingDir,
 						PortOptions ) ->
 
-	%trace_utils:debug_fmt( "Running executable '~ts' with ~ts "
-	%   "from working directory '~ts', with options ~p.",
-	%   [ ExecPath, environment_to_string( Environment ), MaybeWorkingDir,
-	%     PortOptions ] ),
+	cond_utils:if_defined( myriad_debug_third_party_execution,
+		trace_utils:debug_fmt( "Running command '~ts' in the background "
+			"with ~ts from working directory '~ts', with port options ~w.",
+			[ Command, environment_to_string( Environment ), MaybeWorkingDir,
+			  PortOptions ] ) ),
 
 	% Apparently using a port-based launch and a background execution will block
 	% the current process, so we sacrifice a process here - yet we monitor it:
@@ -1304,7 +1371,160 @@ run_background_command( Command, Environment, MaybeWorkingDir,
 								   PortOptions ),
 
 		% Does not seem to be ever executed:
-		trace_utils:debug_fmt( "Execution outcome: ~p.", [ ExecOutcome ] )
+		trace_utils:debug_fmt( "Command execution outcome: ~p.",
+							   [ ExecOutcome ] )
+
+						end ).
+
+
+
+
+% Section about background executables.
+
+
+% @doc Executes asynchronously, in the background, the specified executable,
+% whose path is exactly the specified one (that is: taken verbatim, not
+% looked-up through any PATH environment variable; use, in the executable_utils
+% module, lookup_executable/{1,2} or find_executable/1 for that; not using any
+% intermediary shell either) with no specific command-line argument, with a
+% standard environment, from the current working directory and using the default
+% port options.
+%
+% As a consequence it returns no return code (exit status) nor output.
+%
+% For that, as it is a process-blocking operation in Erlang, a dedicated process
+% is spawned (and most probably lost).
+%
+% If this function is expected to be called many times, to avoid the process
+% leak, one may consider using evaluate_background_shell_expression/1 instead.
+%
+-spec run_background_executable( executable_path() ) -> void().
+run_background_executable( ExecPath ) ->
+	run_background_executable( ExecPath, _Arguments=[],
+		get_standard_environment(), _MaybeWorkingDir=undefined,
+		get_default_port_options() ).
+
+
+
+% @doc Executes asynchronously, in the background, the specified executable,
+% whose path is exactly the specified one (that is: taken verbatim, not
+% looked-up through any PATH environment variable; use, in the executable_utils
+% module, lookup_executable/{1,2} or find_executable/1 for that; not using any
+% intermediary shell either) with the specified command-line arguments, with a
+% standard environment, from the current working directory and using the default
+% port options.
+%
+% As a consequence it returns no return code (exit status) nor output.
+%
+% For that, as it is a process-blocking operation in Erlang, a dedicated process
+% is spawned (and most probably lost).
+%
+% If this function is expected to be called many times, to avoid the process
+% leak, one may consider using evaluate_background_shell_expression/2 instead.
+%
+-spec run_background_executable( executable_path(),
+								 [ command_line_argument() ] ) -> void().
+run_background_executable( ExecPath, Arguments ) ->
+	run_background_executable( ExecPath, Arguments, get_standard_environment(),
+		_MaybeWorkingDir=undefined, get_default_port_options() ).
+
+
+
+% @doc Executes asynchronously, in the background, the specified executable,
+% whose path is exactly the specified one (that is: taken verbatim, not
+% looked-up through any PATH environment variable; use, in the executable_utils
+% module, lookup_executable/{1,2} or find_executable/1 for that; not using any
+% intermediary shell either) with the specified command-line arguments and
+% environment, from the current working directory and using the default port
+% options.
+%
+% As a consequence it returns no return code (exit status) nor output.
+%
+% For that, as it is a process-blocking operation in Erlang, a dedicated process
+% is spawned (and most probably lost).
+%
+% If this function is expected to be called many times, to avoid the process
+% leak, one may consider using evaluate_background_shell_expression/2 instead.
+%
+-spec run_background_executable( executable_path(), [ command_line_argument() ],
+								 environment() ) -> void().
+run_background_executable( ExecPath, Arguments, Environment ) ->
+	run_background_executable( ExecPath, Arguments, Environment,
+		_MaybeWorkingDir=undefined, get_default_port_options() ).
+
+
+
+% @doc Executes asynchronously, in the background, the specified executable,
+% whose path is exactly the specified one (that is: taken verbatim, not
+% looked-up through any PATH environment variable; use, in the executable_utils
+% module, lookup_executable/{1,2} or find_executable/1 for that; not using any
+% intermediary shell either) with the specified command-line arguments,
+% environment and working directory, and using the default port options.
+%
+% As a consequence it returns no return code (exit status) nor output.
+%
+% For that, as it is a process-blocking operation in Erlang, a dedicated process
+% is spawned (and most probably lost).
+%
+% If this function is expected to be called many times, to avoid the process
+% leak, one may consider using evaluate_background_shell_expression/2 instead.
+%
+-spec run_background_executable( executable_path(), [ command_line_argument() ],
+				environment(), maybe( working_dir() ) ) -> void().
+run_background_executable( ExecPath, Arguments, Environment,
+						   MaybeWorkingDir ) ->
+	run_background_executable( ExecPath, Arguments, Environment,
+		MaybeWorkingDir, get_default_port_options() ).
+
+
+
+% @doc Executes asynchronously, in the background, the specified executable,
+% whose path is exactly the specified one (that is: taken verbatim, not
+% looked-up through any PATH environment variable; use, in the executable_utils
+% module, lookup_executable/{1,2} or find_executable/1 for that; not using any
+% intermediary shell either) with the specified command-line arguments,
+% environment, working directory and port options (see
+% [http://erlang.org/doc/man/erlang.html#open_port-2]).
+%
+% As a consequence it returns no return code (exit status) nor output.
+%
+% For that, as it is a process-blocking operation in Erlang, a dedicated process
+% is spawned (and most probably lost).
+%
+% If this function is expected to be called many times, to avoid the process
+% leak, one may consider using evaluate_background_shell_expression/2 instead.
+%
+% This is the recommended, most complete way of running an executable in the
+% background.
+%
+-spec run_background_executable( executable_path(), [ command_line_argument() ],
+		environment(), maybe( working_dir() ), [ port_option() ] ) -> void().
+run_background_executable( ExecPath, Arguments, Environment, MaybeWorkingDir,
+						   PortOptions ) ->
+
+	cond_utils:if_defined( myriad_debug_third_party_execution,
+		begin
+			trace_utils:debug_fmt( "Running executable '~ts' in the background "
+				"with arguments:~n ~p and with ~ts "
+				"from working directory '~ts', with port options ~w.",
+				[ ExecPath, Arguments, environment_to_string( Environment ),
+				  MaybeWorkingDir, PortOptions ] ),
+			timer:sleep( 200 )
+		end ),
+
+	% Apparently using a port-based launch and a background execution will block
+	% the current process, so we sacrifice a process here - yet we monitor it:
+	%
+	?myriad_spawn_link( fun() ->
+
+		ExecOutcome = run_executable( ExecPath, Arguments, Environment,
+									  MaybeWorkingDir, PortOptions ),
+
+		cond_utils:if_defined( myriad_debug_third_party_execution,
+				% Is displayed:
+				trace_utils:debug_fmt( "Execution outcome: ~p.",
+									   [ ExecOutcome ] ),
+				basic_utils:ignore_unused( ExecOutcome ) )
 
 						end ).
 
@@ -1333,9 +1553,10 @@ evaluate_background_shell_expression( Expression, Environment ) ->
 
 	FullExpression = get_actual_expression( Expression, Environment ),
 
-	%trace_utils:debug_fmt(
-	%  "Evaluating in the background following shell expression: '~ts'.",
-	%  [ FullExpression ] ),
+	cond_utils:if_defined( myriad_debug_third_party_execution,
+		trace_utils:debug_fmt(
+			"Evaluating in the background following shell expression: '~ts'.",
+			[ FullExpression ] ) ),
 
 	os:cmd( FullExpression ++ " &" ).
 
@@ -1437,6 +1658,7 @@ get_environment_variable_for_library_lookup() ->
 -spec add_path_for_executable_lookup( directory_path() ) -> void().
 add_path_for_executable_lookup( PathName ) ->
 	add_paths_for_executable_lookup( [ PathName ] ).
+
 
 
 % @doc Adds the specified directories to the system's executable search paths
@@ -1682,15 +1904,22 @@ get_size_of_vm_word_string() ->
 
 
 
-% @doc Returns the size of specified term, in bytes, on the heap.
+% @doc Returns the size of the specified term, in bytes.
 %
-% Note that off-heap data (such as binaries larger than 64 bytes) is not counted
-% here. The (flat) size is incremented to account for the top term word (which
-% is kept in a register or on the stack).
+% This size is used in RAM, usually in the process heap, except for off-heap
+% data such as "large" binaries (larger than 64 bytes), which are stored in a
+% global heap (and reference-counted).
+%
+% The (flat) size of on-heap terms is incremented to account for the top term
+% word (which is kept in a register or on the stack).
+%
+% See also [https://www.erlang.org/doc/efficiency_guide/advanced.html].
 %
 -spec get_size( term() ) -> byte_size().
-get_size( Term ) ->
+get_size( Bin ) when is_binary( Bin ) ->
+	byte_size( Bin );
 
+get_size( Term ) ->
 	% With sharing taken into account:
 	% use ( erts_debug:size( Term ) + 1 ) * get_size_of_vm_word()
 	%
@@ -1723,7 +1952,7 @@ interpret_byte_size( SizeInBytes ) ->
 	end,
 
 	SizeAfterGiga = SizeInBytes rem Giga,
-	%io:format( "SizeAfterGiga = ~B.~n", [ SizeAfterGiga ] ),
+	%io:format( "SizeAfterGiga = ~B.", [ SizeAfterGiga ] ),
 
 	ListWithMega = case SizeAfterGiga div Mega of
 
@@ -1961,8 +2190,9 @@ get_total_physical_memory_string() ->
 					  [ interpret_byte_size( get_total_physical_memory() ) ] )
 
 	catch _AnyClass:Exception ->
-			io_lib:format( "no total physical RAM information could be "
-						   "obtained (~p)", [ Exception ] )
+
+		io_lib:format( "no total physical RAM information could be "
+					   "obtained (~p)", [ Exception ] )
 
 	end.
 
@@ -2031,7 +2261,7 @@ get_total_memory_used() ->
 	% Avoid locale and greps 'buffers/cache:' (ex: on Debian) as well as
 	% 'buff/cache' (ex: on Arch)
 	%MemoryInfo = os:cmd( "LANG= free -b | grep '/cache' "
-	%					 "| awk '{print $3,$4}'" ),
+	%                     "| awk '{print $3,$4}'" ),
 
 	% Converts MemoryInfo from "a b\n" to ["a","b\n"]
 	%[ AppliUsedString, TotalFreeTermString ] =
@@ -2047,7 +2277,7 @@ get_total_memory_used() ->
 	%AppliUsedSize = text_utils:string_to_integer( AppliUsedString ),
 
 	%TotalFreeString = text_utils:remove_ending_carriage_return(
-	%													TotalFreeTermString ),
+	%                                       TotalFreeTermString ),
 
 	% This is H:
 	%TotalFreeSize = text_utils:string_to_integer( TotalFreeString ),
@@ -2472,17 +2702,15 @@ get_cpu_usage_counters() ->
 	[ "cpu", UserString, NiceString, SystemString, IdleString | T ] =
 						string:tokens( StatString, " " ),
 
-	User   = text_utils:string_to_integer( UserString ),
-	Nice   = text_utils:string_to_integer( NiceString ),
-	System = text_utils:string_to_integer( SystemString ),
-	Idle   = text_utils:string_to_integer( IdleString ),
+	[ User, Nice, System, Idle ] = [ text_utils:string_to_integer( S )
+		|| S <- [ UserString, NiceString, SystemString, IdleString ] ],
 
 	% Adapts to any architecture and update (iowait, irq, softirq, steal, guest,
 	% etc.):
 	Other = lists:sum( [ text_utils:string_to_integer( E ) || E <- T ] ),
 
 	%io:format( "user = ~f, nice = ~f, system = ~f, idle = ~f, other = ~f, "
-	%			"T = ~p~n", [ User, Nice, System, Idle, Other, T ] ),
+	%           "T = ~p~n", [ User, Nice, System, Idle, Other, T ] ),
 
 	{ User, Nice, System, Idle, Other }.
 
@@ -2575,7 +2803,7 @@ get_mount_points() ->
 get_exclude_pseudo_fs_opt() ->
 
 	Excludes = [ " --exclude-type=" ++ text_utils:atom_to_string( P )
-				 || P <- get_known_pseudo_filesystems() ],
+					|| P <- get_known_pseudo_filesystems() ],
 
 	text_utils:join( _Sep=" ", Excludes ).
 
@@ -2605,16 +2833,16 @@ get_filesystem_info( FilesystemPath ) ->
 
 					% df outputs kiB, not kB:
 					#fs_info{
-					  filesystem=Fs,
-					  mount_point=Mount,
-					  type=get_filesystem_type( Type ),
-					  used_size = 1024 * text_utils:string_to_integer( USize ),
-					  available_size = 1024 *
-						  text_utils:string_to_integer( ASize ),
-					  used_inodes = text_utils:string_to_integer( Uinodes ),
-					  available_inodes =
-						  text_utils:string_to_integer( Ainodes )
-				 };
+						filesystem=Fs,
+						mount_point=Mount,
+						type=get_filesystem_type( Type ),
+						used_size =
+							1024 * text_utils:string_to_integer( USize ),
+						available_size =
+							1024 * text_utils:string_to_integer( ASize ),
+						used_inodes = text_utils:string_to_integer( Uinodes ),
+						available_inodes =
+							text_utils:string_to_integer( Ainodes ) };
 
 				_ ->
 					get_filesystem_info_alternate( FilesystemPath )
@@ -2650,15 +2878,15 @@ get_filesystem_info_alternate( FilesystemPath ) ->
 
 					% df outputs kiB, not kB:
 					#fs_info{
-					  filesystem=Fs,
-					  mount_point=Mount,
-					  type=unknown,
-					  used_size = 1024 * text_utils:string_to_integer( USize ),
-					  available_size = 1024 *
+						filesystem=Fs,
+						mount_point=Mount,
+						type=unknown,
+						used_size =
+							1024 * text_utils:string_to_integer( USize ),
+						available_size = 1024 *
 							text_utils:string_to_integer( ASize ),
-					  used_inodes = 0,
-					  available_inodes = 0
-					};
+						used_inodes = 0,
+						available_inodes = 0 };
 
 				_ ->
 					throw( { filesystem_inquiry_failed, FilesystemPath,
@@ -2841,8 +3069,9 @@ get_operating_system_description_string() ->
 					   [ get_operating_system_description() ] )
 
 	catch _AnyClass:Exception ->
-			io_lib:format( "no information about the operating system "
-						   "could be obtained (~p)", [ Exception ] )
+
+		io_lib:format( "no information about the operating system "
+					   "could be obtained (~p)", [ Exception ] )
 
 	end.
 
@@ -2946,7 +3175,7 @@ get_dependency_base_directory( PackageName="ErlPort" ) ->
 							   PackageName, "erlport" ],
 
 			DefaultDir = file_utils:normalise_path(
-						   file_utils:join( PathComponents ) ),
+							file_utils:join( PathComponents ) ),
 
 			case file_utils:is_existing_directory_or_link( DefaultDir ) of
 
@@ -3051,17 +3280,17 @@ get_json_unavailability_hint() ->
 get_json_unavailability_hint( _Backend=undefined ) ->
 	% Note: the hints are *not* truncated here, this is normal:
 	"Hint: inspect, in myriad/GNUmakevars.inc, the USE_JSON and "
-	"JSX_BASE / JIFFY_BASE variables, knowing that the "
+	"JSX_BASE / JIFFY_BASE runtime variables, knowing that the "
 		++ code_utils:get_code_path_as_string();
 
 get_json_unavailability_hint( _Backend=jsx ) ->
 	"Hint: inspect, in myriad/GNUmakevars.inc, the USE_JSON and "
-	"JSX_BASE variables, knowing that the "
+	"JSX_BASE runtime variables, knowing that the "
 		++ code_utils:get_code_path_as_string();
 
 get_json_unavailability_hint( _Backend=jiffy ) ->
 	"Hint: inspect, in myriad/GNUmakevars.inc, the USE_JSON and "
-	"JIFFY_BASE variables, knowing that the "
+	"JIFFY_BASE runtime variables, knowing that the "
 		++ code_utils:get_code_path_as_string().
 
 

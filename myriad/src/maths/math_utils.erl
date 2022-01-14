@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2021 Olivier Boudeville
+% Copyright (C) 2010-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -36,7 +36,8 @@
 % General operations:
 -export([ floor/1, ceiling/1, round_after/2,
 		  float_to_integer/1, float_to_integer/2,
-		  modulo/2, clamp/3, squarify/1 ]).
+		  modulo/2, clamp/3, squarify/1,
+		  get_next_power_of_two/1 ]).
 
 -compile({ inline, [ floor/1, ceiling/1, round_after/2,
 					 float_to_integer/1, float_to_integer/2,
@@ -44,7 +45,7 @@
 
 
 % Operations on floating-point values (in Erlang, a float is a C double):
--export([ are_close/2, are_close/3,
+-export([ are_close/2, are_close/3, are_equal/2, are_equal/3,
 		  are_relatively_close/2, are_relatively_close/3,
 		  get_relative_difference/2, is_null/1 ]).
 
@@ -69,6 +70,29 @@
 -type non_zero_integer() :: pos_integer() | neg_integer().
 
 
+-type factor() :: unit_utils:dimensionless().
+% A floating-point factor, typically in [0.0,1.0], that is a multiplier involved
+% in an equation.
+
+
+-type integer_factor() :: integer().
+% An integer factor, typically in [0.0,1.0], that is a multiplier involved in an
+% equation.
+
+-type any_factor() :: number().
+% A factor, typically in [0.0,1.0], that is a multiplier involved in an
+% equation.
+
+
+-type positive_factor() :: factor().
+% A factor expected to be strictly positive.
+
+
+-type non_negative_factor() :: factor().
+% A factor expected to be positive or null.
+
+
+
 -type standard_deviation() :: float().
 % Standard deviation, as used to describe a Gaussian curve.
 
@@ -77,7 +101,11 @@
 % Variance, the square of a standard deviation.
 
 
--type percent() :: float().
+-type ratio() :: unit_utils:dimensionless().
+% A ration between two values.
+
+
+-type percent() :: ratio().
 % For percentages (1.0 corresponding to 100%).
 %
 % See also: text_utils:percent_to_string/{1,2}.
@@ -98,9 +126,10 @@
 % user-defined one.
 
 
--export_type([ non_zero_integer/0, standard_deviation/0, variance/0,
-			   percent/0, integer_percent/0, probability/0 ]).
-
+-export_type([ factor/0, integer_factor/0, any_factor/0,
+			   positive_factor/0, non_negative_factor/0,
+			   non_zero_integer/0, standard_deviation/0, variance/0,
+			   ratio/0, percent/0, integer_percent/0, probability/0 ]).
 
 
 
@@ -108,10 +137,8 @@
 % General section.
 
 
-% @doc Floor returns the biggest integer smaller than the specified
+% @doc Returns the biggest integer smaller than the specified
 % floating-point value.
-%
-% Inspired from [http://schemecookbook.org/Erlang/NumberRounding].
 %
 % Note: used to be deprecated in favor of math:floor/1, yet we prefer the
 % version here, which returns an integer rather than a float.
@@ -141,10 +168,8 @@ floor( X ) ->
 
 
 
-% @doc Ceiling returns the smallest integer bigger than the specified
-% floating-point value.
-%
-% Inspired from [http://schemecookbook.org/Erlang/NumberRounding].
+% @doc Returns the smallest integer bigger than the specified floating-point
+% value.
 %
 % Note: used to be deprecated in favor of math:ceil/1, yet we prefer the version
 % here, which returns an integer rather than a float.
@@ -172,7 +197,7 @@ ceiling( X ) ->
 % @doc Rounds the specified floating-point number at specified offset after the
 % decimal point.
 %
-% Ex: round_after( 12.3456, 3 ) = 12.346.
+% Ex: round_after(12.3456, _DigitCount3) = 12.346.
 %
 -spec round_after( float(), basic_utils:count() ) -> float().
 round_after( F, DigitCount ) ->
@@ -190,8 +215,7 @@ round_after( F, DigitCount ) ->
 %
 % The float must exactly match the integer value.
 %
-% Ex: float_to_integer( 5.0 ) = 5, while float_to_integer( 5.0000001 ) will
-% crash.
+% Ex: float_to_integer(5.0) = 5, while float_to_integer(5.0000001) will crash.
 %
 -spec float_to_integer( float() ) -> integer().
 float_to_integer( F ) ->
@@ -299,13 +323,32 @@ clamp( _Min, _Max, Value ) ->
 % element.
 %
 squarify( L ) ->
-	% "Taylor series", square( epsilon ) is negligible here:
+	% "Taylor series", square(epsilon) is negligible here:
 	L * ( L + ?epsilon ).
 
 
 
+% @doc Returns the smallest power of two that is greater or equal to the
+% specified integer.
+%
+% Ex: math_utils:get_next_power_of_two( 5 ) = 8.
+%
+-spec get_next_power_of_two( non_neg_integer() ) -> pos_integer().
+get_next_power_of_two( I ) ->
+	get_next_power_of_two( I, _MinCandidate=1 ).
+
+
+% (helper)
+get_next_power_of_two( I, Candidate ) when Candidate >= I ->
+	Candidate;
+
+get_next_power_of_two( I, Candidate ) ->
+	get_next_power_of_two( I, 2*Candidate ).
+
+
 
 % Floating-point section.
+
 
 
 % @doc Returns true iff the two specified floating-point numbers are deemed
@@ -321,6 +364,27 @@ are_close( X, Y ) ->
 %
 -spec are_close( number(), number(), number() ) -> boolean().
 are_close( X, Y, Epsilon ) ->
+	erlang:abs( X - Y ) < Epsilon.
+
+
+
+% @doc Returns true iff the two specified floating-point numbers are deemed
+% close enough to be equal, based on default epsilon threshold.
+%
+% Note: alias of are_close/2, defined for consistency.
+%
+-spec are_equal( number(), number() ) -> boolean().
+are_equal( X, Y ) ->
+	erlang:abs( X - Y ) < ?epsilon.
+
+
+% @doc Returns true iff the two specified floating-point numbers are deemed
+% close enough to be equal, based on specified epsilon threshold.
+%
+% Note: alias of are_close/3, defined for consistency.
+%
+-spec are_equal( number(), number(), number() ) -> boolean().
+are_equal( X, Y, Epsilon ) ->
 	erlang:abs( X - Y ) < Epsilon.
 
 
@@ -358,10 +422,11 @@ are_relatively_close( X, Y, Epsilon ) ->
 			% X+Y=0, okay; they will be relatively close iff absolutely close
 			% (between them, and to zero) here (think for example to X=3 and
 			% Y=-3):
+			%
 			are_close( X, Y, Epsilon );
 
 		_ ->
-			%io:format( "X= ~p, Y= ~p~n", [ X, Y ] ),
+			%trace_utils:debug_fmt( "X= ~p, Y= ~p~n", [ X, Y ] ),
 			2 * erlang:abs( ( X - Y ) / ( X + Y ) ) < Epsilon
 
 	end.
@@ -374,7 +439,7 @@ are_relatively_close( X, Y, Epsilon ) ->
 % also null.
 %
 -spec get_relative_difference( number(), number() ) ->
-									 float() | 'difference_not_computable'.
+										float() | 'difference_not_computable'.
 get_relative_difference( X, Y ) ->
 
 	% Previously was:

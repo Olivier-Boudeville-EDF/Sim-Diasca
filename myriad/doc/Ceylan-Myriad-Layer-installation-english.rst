@@ -10,18 +10,30 @@ Getting Myriad
 Prerequisites
 =============
 
-The **operating system** is supposed to be any not-so-old ``GNU/Linux`` distribution [#]_.
+
+Supported Platforms
+-------------------
+
+The **operating system** is supposed to be most Unices, in particular any not-so-old ``GNU/Linux`` distribution [#]_.
+
+.. [#] For what it is worth, we prefer `Arch Linux <https://www.archlinux.org/>`_, but this does not really matter here.
+
+
+.. _Windows:
+
+Myriad can be built and tested successfully on the ``Windows`` platform; for that we rely on `MSYS2 <https://www.msys2.org/>`_. Refer to `this section <http://hull.esperide.org#windows-support>`_ of Ceylan-Hull for information regarding our recommended Windows developer settings in terms of shells and general environment.
 
 People reported uses of Myriad on ``macOS``, yet no extensive testing has been done there.
 
-Whereas Erlang supports ``Windows`` and we tried to be as cross-platform as possible, even with tools like ``MSYS2`` / ``MinGW-w64`` we suppose that quite a lot of special cases would have to be addressed (patches welcome, though!).
-
-.. [#] For what it is worth, we prefer `Arch Linux <https://www.archlinux.org/>`_, but this does not really matter here.
 
 .. _`getting-erlang`:
 
 .. _`getting erlang`:
 
+
+
+Software Prerequisites
+----------------------
 
 
 The main tool prerequisite is of course having the `Erlang <http://erlang.org>`_ environment available, in its ``24.0`` version [#]_ or more recent.
@@ -40,7 +52,7 @@ A simple use of it is:
  $ ./install-erlang.sh --doc-install --generate-plt
 
 
-One may execute ``./install-erlang.sh --help`` for more guidance about how to configure it, notably in order to enable all modules of interest (``crypto``, ``wx``, etc.).
+One may execute ``./install-erlang.sh --help`` for more guidance about how to configure it, notably in order to enable all modules of interest (``crypto``, ``wx``, etc.). See also the `GUI Backend`_ section to secure any related prerequisite.
 
 
 
@@ -75,7 +87,7 @@ The parallel build of the whole layer (services and tests alike) shall complete 
 
 One may just run ``make`` by itself in order to list the main available options.
 
-Note that by default our native, make-based, build system is used. Alternatively, a rebar3-based build can be done (see the `OTP Build`_ section for more details).
+Note that by default our native, make-based, build system is used (see the `build section <http://howtos.esperide.org/Build.html>`_ of Ceylan-HOWTOs for further details). Alternatively, a rebar3-based build can be done (refer to the `OTP Build`_ section).
 
 In this case one may run ``make create-myriad-checkout`` in order to create, based on our conventions, a suitable ``_checkouts`` directory so that rebar3 can directly take into account local, directly available (in-development) dependencies (although Myriad does not have any, beside Erlang itself - this make target is useful for the layers built on top of Myriad).
 
@@ -232,12 +244,16 @@ Myriad is not an *active* OTP application, and as such does not rely on, or prov
 Getting rebar3
 ..............
 
-There are `various ways <https://www.rebar3.org/docs/getting-started>`_  for obtaining ``rebar3``; we prefer::
+There are `various ways <https://www.rebar3.org/docs/getting-started>`_  for obtaining ``rebar3``; we prefer:
 
-  $ cd ~/Software && git clone https://github.com/erlang/rebar3.git
-	  && cd rebar3 && ./bootstrap
+.. code:: bash
 
-Alternatively, should you just want to update a (pre-existing) rebar3 install, first get the current version (``rebar3 -v``) to check it afterwards, then issue ``rebar3 local upgrade``; however this would involve running rebar from ``.cache/rebar3/bin``, so instead we prefer using (typically from ``~/Software/rebar3``)::
+ $ cd ~/Software && git clone https://github.com/erlang/rebar3.git
+	&& cd rebar3 && ./bootstrap
+
+Alternatively, should you just want to update a (pre-existing) rebar3 install, first get the current version (``rebar3 -v``) to check it afterwards, then issue ``rebar3 local upgrade``; however this would involve running rebar from ``.cache/rebar3/bin``, so instead we prefer using (typically from ``~/Software/rebar3``):
+
+.. code:: bash
 
  $ git pull && ./bootstrap
 

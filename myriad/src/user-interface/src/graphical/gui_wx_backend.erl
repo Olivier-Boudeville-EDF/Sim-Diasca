@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2021 Olivier Boudeville
+% Copyright (C) 2010-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -26,8 +26,8 @@
 % Creation date: Wednesday, October 4, 2017.
 
 
-% @doc Gathers all elements relative to the (Erlang) <b>wx backend</b> (itself
-% based on WxWidgets).
+% @doc Gathers all elements relative to the (Erlang) <b>wx backend</b> version
+% 2.1 (itself based on WxWidgets).
 %
 -module(gui_wx_backend).
 
@@ -46,7 +46,8 @@
 % MyriadGUI-object (most probably made from wx ones, like in the case of the
 % canvas).
 %
-% GUI objects are created with new/*, and deleted with destroy/1.
+% MyriadGUI objects are created with {new,create}/*, and, when appropriate,
+% deleted with destruct/1.
 %
 % For information regarding events, refer to gui_event.erl.
 
@@ -55,7 +56,8 @@
 % Understanding the wx base widgets hierarchy:
 %
 % (offsets meaning "inheriting from", corresponding local types specified
-% between brackets):
+% between brackets; a hierarchy is a truncated view as a wx class may inherit
+% from more than one parent one):
 %
 % .
 % ├── wxObject
@@ -73,44 +75,53 @@
 % └── wxTrackable
 
 
-% In a more detailed view, with the corresponding MyriadGUI types being
-% specified between brackets:
+% In a more detailed view, with the direct parent classes listed between
+% parentheses, and with the corresponding MyriadGUI types being specified
+% between brackets:
 %
-% - wxObject [gui_object]: root class of all wxWidgets classes
+% - wxObject() [gui_object]: root class of all wxWidgets classes
 %
-%   - wxEvtHandler [event_handler]: a class that can handle events from the
-%   windowing system
+%   - wxEvtHandler(wxObject) [event_handler]: a class that can handle events
+%   from the windowing system
 %
-%      - wxWindow [window]: the base class for all windows and represents any
-%      visible object on screen For colors, refer to the color module
+%      - wxWindow(wxEvtHandler) [window]: the base class for all windows and
+%      represents any visible object on screen For colors, refer to the color
+%      module
 %
-%        - wxControl: base class for a control or "widget"; generally a small
-%        window which processes user input and/or displays one or more item of
-%        data
+%        - wxControl(wxWindow): base class for a control or
+%        "widget"; generally a small window which processes user input and/or
+%        displays one or more item of data
 %
-%          - wxButton: a control that contains a text string, and is one of the
-%          most common elements of a GUI; may be placed on any window, notably
-%          dialog boxes or panels
+%          - wxButton(wxControl): a control that contains a text string, and is
+%          one of the most common elements of a GUI; may be placed on any
+%          window, notably dialog boxes or panels
 %
-%        - wxPanel [panel]: a window on which controls are placed; usually
-%        placed within a frame
+%        - wxPanel(wxWindow) [panel]: a window on which controls are placed;
+%        usually placed within a frame
 %
-%        - wxTopLevelWindow: abstract base class for wxDialog and wxFrame
+%        - wxTopLevelWindow(wxWindow): abstract base class for wxDialog and
+%        wxFrame
 %
-%           - wxDialog: a window with a title bar and sometimes a system menu,
-%           which can be moved around the screen; often used to allow the user
-%           to make some choice or to answer a question
+%           - wxDialog(wxTopLevelWindow): a window with a title bar and
+%           sometimes a system menu, which can be moved around the screen; often
+%           used to allow the user to make some choice or to answer a question
 %
-%           - wxFrame [frame]: a window whose size and position can (usually) be
-%           changed by the user. It usually has thick borders and a title bar,
-%           and can optionally contain a menu bar, toolbar and status bar. A
-%           frame can contain any window that is not a frame or dialog
+%           - wxFrame(wxTopLevelWindow) [frame]: a window whose size and
+%           position can (usually) be changed by the user. It usually has thick
+%           borders and a title bar, and can optionally contain a menu bar,
+%           toolbar and status bar. A frame can contain any window that is not a
+%           frame or dialog
 %
-%        - wxStatusBar: narrow window that can be placed along the bottom of a
-%        frame
+%      - wxStatusBar(wxEvtHandler): narrow window that can be placed along the
+%      bottom of a frame
 %
-%   - wxSizer (also derives from wxClientDataContainer): abstract base class
-%   used for laying out subwindows in a window
+%   - wxSizer(wxClientDataContainer): abstract base class used for laying out
+%   subwindows in a window
+
+
+% See also all the classes of wxwidgets:
+% https://docs.wxwidgets.org/3.0/page_class_cat.html and
+% https://docs.wxwidgets.org/3.0/classes.html
 
 
 % Additional widgets
@@ -145,6 +156,9 @@
 		  sizer_flag_to_bitmask/1,
 		  to_wx_id/1, to_wx_parent/1, to_wx_position/1, to_wx_size/1,
 		  to_wx_orientation/1, wx_id_to_window/1, wx_id_to_string/1,
+
+		  to_wx_device_context_attributes/1,
+
 		  connect/2, connect/3, disconnect/1 ]).
 
 
@@ -164,7 +178,7 @@
 %
 -define( wx_default_position, { -1, -1 } ).
 
--type wx_position() :: { 'pos', linear_2D:point() }.
+-type wx_position() :: { 'pos', gui:point() }.
 
 
 % Default size, chosen by either the windowing system or wxWidgets,
@@ -172,7 +186,7 @@
 %
 -define( wx_default_size, { -1, -1 } ).
 
--type wx_size() :: { 'size', linear_2D:dimensions() }.
+-type wx_size() :: { 'size', gui:size() }.
 
 
 -type wx_orientation() :: ?wxVERTICAL | ?wxHORIZONTAL.
@@ -211,21 +225,87 @@
 % No enumeration like 'wxWindow' | 'wxFrame' | ... found in wx.
 
 
+
+-type wx_window_option() :: term().
+
+-type wx_event_handler_option() :: { 'id', integer() }
+								 | { 'lastId', integer() }
+								 | { 'skip', boolean() }
+								 | 'callback'
+								 | {'callback', function() }
+								 | {'userData', term() }.
+% Refer to https://erlang.org/doc/man/wxEvtHandler.html
+
+-type wx_panel_option() :: wx_window_option() | wx_event_handler_option().
+
+% Precisely:
+%    {id, integer()} |
+%    {pos, {X :: integer(), Y :: integer()}} |
+%    {size, {W :: integer(), H :: integer()}} |
+%    {style, integer()} |
+%    {name, unicode:chardata()} |
+%    {palette, wxPalette:wxPalette()}
+%
+-type other_wx_device_context_attribute() :: atom_entry().
+
+
+-type wx_device_context_attribute() ::
+		{ 'attribList', integer() } | other_wx_device_context_attribute().
+% Refer to wxGLCanvas: https://www.erlang.org/doc/man/wxglcanvas#new-2.
+
+
+-type wx_enum() :: wx:wx_enum().
+% A wxWidgets enumerated value.
+
+
+-export_type([ wx_native_object_type/0, wx_window_option/0,
+			   wx_event_handler_option/0, wx_panel_option/0,
+			   other_wx_device_context_attribute/0,
+			   wx_device_context_attribute/0, wx_enum/0 ]).
+
+
+% Preferably no -export_type here to avoid leakage of backend conventions.
+
+
 % Shorthands:
 
 -type bit_mask() :: basic_utils:bit_mask().
 
+-type maybe_list(T) :: list_utils:maybe_list( T ).
+
+-type atom_entry() :: hashtable:atom_entry().
+
 -type ustring() :: text_utils:ustring().
 
--type event_type() :: gui_event:event_type().
--type event_source() :: gui_event:event_source().
 
 -type wx_object_type() :: gui:wx_object_type().
 -type myriad_object_type() :: gui:myriad_object_type().
+-type myriad_instance_id() :: gui:myriad_instance_id().
+-type window() :: gui:window().
+-type window_style() :: gui:window_style().
+-type window_option() :: gui:window_option().
+-type frame_style() :: gui:frame_style().
+-type panel_option() :: gui:panel_option().
+-type button_style() :: gui:button_style().
+-type sizer_options() :: gui:sizer_options().
+-type sizer_flag() :: gui:sizer_flag().
+-type position() :: gui:position().
+-type size() :: gui:size().
+-type orientation() :: gui:orientation().
+-type connect_options() :: gui:connect_options().
+
+-type wx_event_type() :: gui_event:wx_event_type().
+-type event_type() :: gui_event:event_type().
+-type event_source() :: gui_event:event_source().
+
+-type device_context_attribute() :: gui_opengl:device_context_attribute().
+
+% To improve:
+-type wx_sizer_options() :: sizer_options().
 
 
 % To avoid unused warnings:
--export_type([ wx_id/0, wx_native_object_type/0 ]).
+-export_type([ wx_id/0 ]).
 
 
 % For canvas_state():
@@ -338,44 +418,48 @@ from_wx_object_type( Other ) ->
 
 
 
-
-
 % Event type section.
 
 
 % @doc Converts a MyriadGUI type of event into a wx one.
--spec to_wx_event_type( event_type() ) -> gui_event:wx_event_type().
-to_wx_event_type( onWindowClosed ) ->
-	close_window;
+-spec to_wx_event_type( event_type() ) -> wx_event_type().
+to_wx_event_type( onRepaintNeeded ) ->
+	paint;
 
 to_wx_event_type( onButtonClicked ) ->
 	command_button_clicked;
 
-to_wx_event_type( onRepaintNeeded ) ->
-	paint;
-
 to_wx_event_type( onResized ) ->
 	size;
 
+to_wx_event_type( onWindowClosed ) ->
+	close_window;
+
+to_wx_event_type( onShown ) ->
+	show;
+
 to_wx_event_type( Other ) ->
-	throw( { unsupported_wx_event_type, Other } ).
+	throw( { unsupported_gui_event_type, Other } ).
 
 
 
 
 % @doc onverts a wx type of event into a MyriadGUI one.
--spec from_wx_event_type( gui_event:wx_event_type() ) -> event_type().
-from_wx_event_type( close_window ) ->
-	onWindowClosed;
+-spec from_wx_event_type( wx_event_type() ) -> event_type().
+from_wx_event_type( paint ) ->
+	onRepaintNeeded;
 
 from_wx_event_type( command_button_clicked ) ->
 	onButtonClicked;
 
-from_wx_event_type( paint ) ->
-	onRepaintNeeded;
-
 from_wx_event_type( size ) ->
 	onResized;
+
+from_wx_event_type( close_window ) ->
+	onWindowClosed;
+
+from_wx_event_type( show ) ->
+	onShown;
 
 from_wx_event_type( Other ) ->
 	throw( { unsupported_wx_event_type, Other } ).
@@ -415,9 +499,8 @@ to_wx_debug_level( _DebugLevel=life_cycle ) ->
 %
 % (helper)
 %
--spec window_style_to_bitmask( gui:window_style() ) -> bit_mask().
+-spec window_style_to_bitmask( window_style() ) -> bit_mask().
 window_style_to_bitmask( StyleList ) when is_list( StyleList ) ->
-
 	lists:foldl( fun( S, Acc ) -> window_style_to_bitmask( S ) bor Acc end,
 				 _InitialAcc=0,
 				 _List=StyleList );
@@ -468,6 +551,10 @@ window_style_to_bitmask( _Style=clip_children ) ->
 	?wxCLIP_CHILDREN;
 
 window_style_to_bitmask( _Style=full_repaint_on_resize ) ->
+	% Forces a complete redraw of the window whenever it is resized instead of
+	% redrawing just the part of the window affected by resizing:
+	% (see https://docs.wxwidgets.org/3.0/classwx_window.html)
+	%
 	?wxFULL_REPAINT_ON_RESIZE.
 
 
@@ -477,6 +564,7 @@ window_style_to_bitmask( _Style=full_repaint_on_resize ) ->
 %
 % (exported helper)
 %
+-spec get_window_options( [ window_option() ] ) -> [ wx_window_option() ].
 get_window_options( Options ) ->
 	get_window_options( Options, _Acc=[] ).
 
@@ -501,7 +589,7 @@ get_window_options( _Options=[ H | T ], Acc ) ->
 %
 % (helper)
 %
--spec frame_style_to_bitmask( gui:frame_style() ) -> bit_mask().
+-spec frame_style_to_bitmask( frame_style() ) -> bit_mask().
 frame_style_to_bitmask( StyleList ) when is_list( StyleList ) ->
 
 	lists:foldl( fun( S, Acc ) -> frame_style_to_bitmask( S ) bor Acc end,
@@ -554,6 +642,7 @@ frame_style_to_bitmask( _Style=no_taskbar ) ->
 %
 % (exported helper)
 %
+-spec get_panel_options( [ panel_option() ] ) -> [ wx_panel_option() ].
 get_panel_options( Options ) ->
 	get_window_options( Options ).
 
@@ -568,7 +657,7 @@ get_panel_options( Options ) ->
 %
 % (helper)
 %
--spec button_style_to_bitmask( gui:button_style() ) -> bit_mask().
+-spec button_style_to_bitmask( button_style() ) -> bit_mask().
 button_style_to_bitmask( StyleList ) when is_list( StyleList ) ->
 
 	lists:foldl( fun( S, Acc ) -> button_style_to_bitmask( S ) bor Acc end,
@@ -607,7 +696,7 @@ button_style_to_bitmask( _Style=flat ) ->
 %
 % (helper)
 %
--spec to_wx_sizer_options( gui:sizer_options() ) -> gui:sizer_options().
+-spec to_wx_sizer_options( sizer_options() ) -> wx_sizer_options().
 to_wx_sizer_options( Options ) ->
 	to_wx_sizer_options( Options, _Acc=[] ).
 
@@ -627,7 +716,7 @@ to_wx_sizer_options(_Options=[ H | T ], Acc ) ->
 %
 % (helper)
 %
--spec sizer_flag_to_bitmask( gui:sizer_flag() ) -> bit_mask().
+-spec sizer_flag_to_bitmask( sizer_flag() ) -> bit_mask().
 sizer_flag_to_bitmask( FlagList ) when is_list( FlagList ) ->
 
 	lists:foldl( fun( F, Acc ) -> sizer_flag_to_bitmask( F ) bor Acc end,
@@ -692,7 +781,7 @@ sizer_flag_to_bitmask( _Flag=align_center_horizontal ) ->
 %
 % (helper)
 %
--spec to_wx_id( maybe( gui:myriad_instance_pid() ) ) -> wx_id().
+-spec to_wx_id( maybe( myriad_instance_id() ) ) -> wx_id().
 to_wx_id( undefined ) ->
 	?any_id;
 
@@ -700,12 +789,13 @@ to_wx_id( Other ) ->
 	Other.
 
 
+
 % @doc Converts specified MyriadGUI identifier in a wx-specific parent widget
 % identifier.
 %
 % (helper)
 %
--spec to_wx_parent( maybe( gui:myriad_instance_pid() ) ) -> wx_id().
+-spec to_wx_parent( maybe( myriad_instance_id() ) ) -> wx_id().
 to_wx_parent( undefined ) ->
 	?no_parent;
 
@@ -719,7 +809,7 @@ to_wx_parent( Other ) ->
 %
 % (helper)
 %
--spec to_wx_position( gui:position() ) -> wx_position().
+-spec to_wx_position( position() ) -> wx_position().
 to_wx_position( _Position=auto ) ->
 	{ pos, ?wx_default_position };
 
@@ -732,7 +822,7 @@ to_wx_position( Position ) ->
 %
 % (helper)
 %
--spec to_wx_size( gui:size() ) -> wx_size().
+-spec to_wx_size( size() ) -> wx_size().
 to_wx_size( _Size=auto ) ->
 	{ size, ?wx_default_size };
 
@@ -746,12 +836,56 @@ to_wx_size( Size ) ->
 %
 % (helper)
 %
--spec to_wx_orientation( gui:orientation() ) -> wx_orientation().
+-spec to_wx_orientation( orientation() ) -> wx_orientation().
 to_wx_orientation( vertical ) ->
 	?wxVERTICAL;
 
 to_wx_orientation( horizontal ) ->
 	?wxHORIZONTAL.
+
+
+
+% @doc Converts the specified MyriadGUI device context attributes to wx
+% conventions.
+%
+-spec to_wx_device_context_attributes( [ device_context_attribute() ] ) ->
+											[ wx_device_context_attribute() ].
+to_wx_device_context_attributes( Attrs ) ->
+	to_wx_device_context_attributes( Attrs, _Acc=[] ).
+
+
+% (helper)
+%
+% Adding in a reverse form:
+to_wx_device_context_attributes( _Attrs=[], Acc ) ->
+	lists:reverse( [ 0 | Acc ] );
+
+to_wx_device_context_attributes( _Attrs=[ rgba | T ], Acc ) ->
+	to_wx_device_context_attributes( T, [ ?WX_GL_RGBA | Acc ] );
+
+% Not existing:
+%to_wx_device_context_attributes( _Attrs=[ bgra | T ], Acc ) ->
+%   to_wx_device_context_attributes( T, [ ?WX_GL_BGRA | Acc ] );
+
+to_wx_device_context_attributes( _Attrs=[ double_buffer | T ], Acc ) ->
+	to_wx_device_context_attributes( T, [ ?WX_GL_DOUBLEBUFFER | Acc ] );
+
+to_wx_device_context_attributes( _Attrs=[ { min_red_size, S } | T ], Acc ) ->
+	to_wx_device_context_attributes( T, [ S, ?WX_GL_MIN_RED | Acc ] );
+
+to_wx_device_context_attributes( _Attrs=[ { min_green_size, S } | T ],
+								 Acc ) ->
+	to_wx_device_context_attributes( T, [ S, ?WX_GL_MIN_GREEN | Acc ] );
+
+to_wx_device_context_attributes( _Attrs=[ { min_blue_size, S } | T ], Acc ) ->
+	to_wx_device_context_attributes( T, [ S, ?WX_GL_MIN_BLUE | Acc ] );
+
+to_wx_device_context_attributes( _Attrs=[ { depth_buffer_size, S } | T ],
+								 Acc ) ->
+	to_wx_device_context_attributes( T, [ S, ?WX_GL_DEPTH_SIZE | Acc ] );
+
+to_wx_device_context_attributes( _Attrs=[ Other | _T ], _Acc ) ->
+	throw( { unsupported_device_context_attribute, Other } ).
 
 
 
@@ -771,7 +905,7 @@ to_wx_orientation( horizontal ) ->
 %
 % (internal use only)
 %
--spec wx_id_to_window( wx_id() ) -> gui:window().
+-spec wx_id_to_window( wx_id() ) -> window().
 wx_id_to_window( Id ) ->
 	wxWindow:findWindowById( Id ).
 
@@ -791,43 +925,65 @@ wx_id_to_string( Id ) ->
 
 
 
-% @doc Subscribes the current process to the specified type of event of the
-% specified object (receiving for that a message).
-%
-% Said otherwise: requests the specified widget to send a message-based event
-% when the specified kind of event happens, overriding its default behaviour.
-%
-% Note: only useful internally or when bypasssing the default main loop.
-%
--spec connect( event_source(), event_type() ) -> void().
-connect( #canvas_state{ panel=Panel }, EventType ) ->
-	connect( Panel, EventType );
-
-connect( EventSource, EventType ) ->
-	connect( EventSource, EventType, _Options=[] ).
 
 
 
-% @doc Subscribes the current process to the specified type of event of the
-% specified object (receiving for that a message).
+% Connection-related section.
+
+
+% @doc Subscribes the current process to the specified type(s) of events
+% regarding the specified object (receiving for that a message).
 %
-% Said otherwise: requests the specified widget to send a message-based event
-% when the specified kind of event happens, overriding its default behaviour
-% based on specified options.
+% Said otherwise: requests the specified widget to send to the current process a
+% message-based event when the specified kind of event happens, overriding its
+% default behaviour.
 %
-% Note: only useful internally or when bypasssing the default main loop.
+% Note:
+%  - apparently registering more than once a given type has no effect (not N
+%  messages of that type sent afterwards)
+%  - only useful internally or when bypasssing the default main loop
 %
--spec connect( event_source(), event_type(), gui:connect_options() ) -> void().
-connect( #canvas_state{ panel=Panel }, EventType, Options ) ->
-	connect( Panel, EventType, Options );
+-spec connect( event_source(), maybe_list( event_type() ) ) -> void().
+connect( EventSource, EventTypeOrTypes ) ->
+	connect( EventSource, EventTypeOrTypes, _Options=[] ).
+
+
+
+% @doc Subscribes the current process to the specified type(s) of events
+% regarding the specified object (receiving for that a message).
+%
+% Said otherwise: requests the specified widget to send to the current process a
+% message-based event when the specified kind of event happens, overriding its
+% default behaviour based on specified options.
+%
+% Note:
+%  - apparently registering more than once a given type has no effect (not N
+%  messages of that type sent afterwards)
+%  - only useful internally or when bypasssing the default main loop
+%
+-spec connect( event_source(), maybe_list( event_type() ),
+			   connect_options() ) -> void().
+% Was not used apparently:
+%connect( #canvas_state{ panel=Panel }, EventTypeOrTypes, Options ) ->
+%	connect( Panel, EventTypeOrTypes, Options );
+
+connect( SourceObject, EventTypes, Options ) when is_list( EventTypes ) ->
+
+	%trace_utils:debug_fmt( "Connecting ~p for event types ~w with options ~p.",
+	%                       [ SourceObject, EventTypes, Options ] ),
+
+	[ connect( SourceObject, ET, Options ) || ET <- EventTypes ];
 
 connect( SourceObject, EventType, Options ) ->
 
 	% Events to be processed through messages, not callbacks:
 	WxEventType = to_wx_event_type( EventType ),
 
-	trace_utils:debug_fmt( "Connecting event source '~ts' to ~w for ~p.",
-		[ gui:object_to_string( SourceObject ), self(), EventType ] ),
+	cond_utils:if_defined( myriad_debug_gui_events,
+	   trace_utils:debug_fmt( " - connecting event source '~ts' to ~w "
+			"for ~p (i.e. ~p), with options ~p.",
+			[ gui:object_to_string( SourceObject ), self(), EventType,
+			  WxEventType, Options ] ) ),
 
 	wxEvtHandler:connect( SourceObject, WxEventType, Options ).
 
@@ -839,4 +995,4 @@ disconnect( #canvas_state{ panel=Panel } ) ->
 	disconnect( Panel );
 
 disconnect( EventSource ) ->
-		wxEvtHandler:disconnect( EventSource ).
+	wxEvtHandler:disconnect( EventSource ).

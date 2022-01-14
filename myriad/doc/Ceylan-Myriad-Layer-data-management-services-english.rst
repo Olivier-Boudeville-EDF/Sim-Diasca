@@ -80,7 +80,12 @@ Other Datatypes
 
 They include ``pair.erl``, ``option_list.erl``, ``preferences.erl``, ``tree.erl``.
 
-One may also refer to ``set_utils.erl`` and ``ring_utils.erl``.
+One may also refer for operations on:
+
+- sets: ``set_utils.erl``
+- lists: ``list_utils.erl``
+- rings (i.e. `circular buffers <https://en.wikipedia.org/wiki/Circular_buffer>`_): ``ring_utils.erl``
+- binaries (i.e. raw binary information): ``bin_utils.erl``
 
 
 Pseudo-Builtin Types
@@ -98,30 +103,107 @@ Basic File Formats
 ..................
 
 
-A built-in very basic support for the `CSV <https://en.wikipedia.org/wiki/Comma-separated_values>`_ (see ``csv_utils``) and `RDF <https://en.wikipedia.org/wiki/Resource_Description_Framework>`_ (see ``rdf_utils``) conventions is provided.
+A built-in very basic support for the `CSV <https://en.wikipedia.org/wiki/Comma-separated_values>`_, for *Comma-Separated Values* (see ``csv_utils``) and `RDF <https://en.wikipedia.org/wiki/Resource_Description_Framework>`_ (see ``rdf_utils``) conventions is provided.
 
 
 Most Usual, Standard File Formats
 .................................
 
-An optional support (as it depends on third-party prerequisites) is proposed for:
+Besides the support for XML, an optional support (as it depends on third-party prerequisites) is proposed for:
 
 - JSON
 - HDF5
 - SQLite
 
+.. _`XML use`:
+
+Some useful information for **XML use**:
+
+- Myriad's XML support is implemented by the ``xml_utils`` module (so one shall refer to ``xml_utils.{e,h}rl`` and ``xml_utils_test.erl``), which relies on the built-in ``xmerl`` modules
+- XML documents can be parsed from strings (see ``string_to_xml/1``) or files (see ``parse_xml_file/1``), and conversely can be serialised to strings (see ``xml_to_string/{1,2}``)
+- an XML document is made from a list of XML elements, that can exist as three different forms that can be freely mixed: as "simple-form", as IOLists and/or as XML (xmerl) records
+- we recommend the use of the "simple-form", which should be sufficient for at least most cases
+
+This last form is based on simple tags, used in order to easily have (Erlang) terms that are direct counterparts of XML tags.
+
+For example the following two elements (respectively in simple-form and as an XML document) are equivalent (if using the default XML prolog):
+
+.. code:: erlang
+
+ XMLSimpleContent = [
+   myFirstTag,
+   {mySecondTag, [myNestedTag]},
+   {myThirdTag, [{color, "red"}, {age, 71}], ["This is a text!"]}].
+
+
+and:
+
+.. code:: xml
+
+ <?xml version="1.0" encoding="utf-8" ?>
+ <myFirstTag/>
+ <mySecondTag><myNestedTag/></mySecondTag>
+ <myThirdTag color="red" age="71">This is a text!</myThirdTag>
+
+
+Refer to the ``xml_utils`` module for further details.
+
+
+
+.. _`JSON use`:
+
+Some useful information for **JSON use**:
+
+- the nesting of elements shall be done thanks to (Erlang) maps, whose keys are binary strings (``text_utils:bin_string/0``); their order should not matter
+- it may thus be convenient to add ``-define(table_type, map_hashtable).`` in a user module, so that the ``table`` pseudo-module can be relied upon when building a ``json_term``, while being sure that the JSON parser at hand will be fed afterwards with the relevant datastructure
+- no comments shall be specified (even though some parsers may be configured to support them)
+- strings shall be specified as binary ones
+- the actual JSON backend used are either `jsx <https://github.com/talentdeficit/jsx/>`_ or `jiffy <https://github.com/davisp/jiffy>`_; to better understand their (mostly common) mapping between Erlang and JSON, one may refer to the `this section <https://github.com/talentdeficit/jsx/#json---erlang-mapping>`_ of the jsx documentation  and to `this one <https://github.com/davisp/jiffy#data-format>`_ regarding jiffy
+
+Example:
+
+.. code:: erlang
+
+ MyJSONTerm = table:add_entries([
+   {<<"asset">>, #{<<"generator">> => <<"My Generator">>,
+				   <<"version">> => <<"2.0">>}},
+   {<<"other">>, 42}
+								], table:new()),
+
+ JSONString = json_utils:to_json(MyJSONTerm)
+
+
+shall result in a JSON document like:
+
+
+.. code:: json
+
+ {
+   "asset": {
+	 "generator": "My Generator",
+	 "version": "2.0"
+   },
+   "other": 42
+ }
+
+
+Hint: the `jq <https://stedolan.github.io/jq/>`_ command-line tool may be very convenient in JSON contexts.
+
 Refer to the `Myriad-level Third-Party Dependencies`_ section for further information.
+
 
 
 .. _etf:
 
-
 For Pure Erlang uses: the ETF File Format
 .........................................
 
-For many needs in terms of Erlang internal data storage (ex: regarding configuration settings), we recommend the use of the file format that `file:consult/1 <https://erlang.org/doc/man/file.html#consult-1>`_  can directly read, that we named, for reference purpose, ``ETF`` (for *Erlang Term Format*).
+For many needs in terms of Erlang internal data storage (ex: regarding configuration settings), we recommend the use of the file format that `file:consult/1 <https://erlang.org/doc/man/file.html#consult-1>`_  can directly read, that we named, for reference purpose, ``ETF`` (for *Erlang Term Format* [#]_). We recommend that ETF files have for extension ``.etf``, like in: ``~/.ceylan-settings.etf`` (see also our support for `user preferences`_).
 
-This is just a text format for which:
+.. [#] Not to be mixed up with the `Erlang External Term Format <https://www.erlang.org/doc/apps/erts/erl_ext_dist.html>`_, which is used for serialisation_.
+
+
+ETF is just a text format for which:
 
 - a line starting with a ``%`` character is considered to be a comment, and is thus ignored
 - other lines are terminated by a dot, and correspond each to an Erlang term (ex: ``{base_log_dir, "/var/log"}.``)
@@ -130,7 +212,6 @@ See `this example <https://github.com/Olivier-Boudeville/us-common/blob/master/p
 
 A basic support for these ETF files is available in ``file_utils:{read,write}_etf_file/*``.
 
-
 If expecting to read UTF-8 content from such a file, it should:
 
 - have been then opened for writing typically while including the ``{encoding,utf8}`` option, or have been written with content already properly encoded (maybe more reliable that way)
@@ -138,3 +219,167 @@ If expecting to read UTF-8 content from such a file, it should:
 - start with a ``%% -*- coding: utf-8 -*-`` header
 
 
+ETF files are notably used as **configuration files**. In this case following extra conventions apply:
+
+- their extension is preferably changed from ``.etf`` to ``.config``
+- before each entry, a comment describing it in general terms shall be available, with typing information
+- entries are pairs:
+
+  - whose first element is an atom
+  - their second element can be any value, typically of algebraic types; if a string value is included, for readability purpose it shall preferably be specified as a plain one (ex: ``"James Bond"``) rather than a binary one (ex: ``<<"James Bond">>``); it is up to the reading logic to accommodate both forms; it is tolerated to reference, in the comments of these configuration files, types that actually include *binary* strings (not plain ones, even though plain ones are used in the configuration files)
+
+
+.. _`glTF file format`:
+
+To Export 3D Scenes
+...................
+
+A basic support of `glTF <https://en.wikipedia.org/wiki/GlTF>`_ (*Graphics Language Transmission Format*) version 2.0 has been implemented in ``gltf_support.{hrl,erl}``.
+
+The various elements associated to that model (scenes, nodes, meshes, primitives, materials, lights, cameras, buffers, buffer-views, accessors) can be handled from Erlang, in an already integrated way to Myriad's `spatial services and conventions`_.
+
+See the `glTF 2.0 Reference Guide <https://www.khronos.org/files/gltf20-reference-guide.pdf>`_ and the `glTF 2.0 Specification <https://www.khronos.org/registry/glTF/specs/2.0/glTF-2.0.html>`_ for more information. See also our `HOW-TO about 3D <http://howtos.esperide.org/ThreeDimensional.html>`_ for both more general and practical considerations.
+
+
+
+Regarding Data Exchange
+-----------------------
+
+
+.. _`serialisation`:
+
+
+Serialisation: Marshalling / Demarshalling
+..........................................
+
+
+Purpose
+*******
+
+When trusted Erlang nodes and Erlang applications are to communicate, they are likely to rely on the (Erlang) `External Term Format <https://www.erlang.org/doc/apps/erts/erl_ext_dist.html>`_ for that.
+
+To communicate with other systems (non-Erlang and/or non-trusted) over a network stream (over a transport protocol such as TCP/IP), a common `data-serialisation format <https://en.wikipedia.org/wiki/Comparison_of_data-serialization_formats>`_ must be chosen in order to marshall and demarshall the applicative data to be exchanged.
+
+This format can be ad hoc (defined with one's conventions) or standard. We prefer here the latter solution, as a standard format favors interoperability and reduces tedious, error-prone transformations.
+
+Moreover various well-supported standard options exist, like `XDR <https://en.wikipedia.org/wiki/External_Data_Representation>`_, `ASN.1 <https://en.wikipedia.org/wiki/ASN.1>`_, `Protobuf <https://en.wikipedia.org/wiki/Protocol_Buffers>`_ (a.k.a. *Protocol Buffer*), `Piqi <http://piqi.org/>`_ and many others.
+
+
+
+Choice of format
+****************
+
+The two formats that we thought were the most suitable and standard were **ASN.1** (with a proper, efficient encoding selected), or **Protobuff**.
+
+As ASN.1 has been defined for long and is properly supported by Erlang (natively), and that there are `apparently valid claims <https://reasonablypolymorphic.com/blog/protos-are-wrong/index.html>`_ that Protobuf has some flaws, ASN.1 seemed to us the more relevant technical choice.
+
+
+About ASN.1
+***********
+
+Erlang supports, out of the box, `three main ASN.1 encodings <https://www.erlang.org/doc/man/asn1ct.html#compile-2>`_:
+
+- BER (`Basic Encoding Rules <https://en.wikipedia.org/wiki/X.690#BER_encoding>`_): a type-length-value encoding, too basic to be compact; its DER (for *Distinguished Encoding Rules*) variation is also available
+- PER (*Packed Encoding Rules*): a bit-level serialisation stream, either aligned to byte boundaries (PER) or not (UPER, for *Unaligned PER*); if both are very compact and complex to marshall/demarshall, it is especially true for the size/processing trade-off of UPER
+- JER (*JSON Encoding Rules*), hence based on JSON_
+
+
+Our preference goes towards first UPER, then PER. A strength of ASN.1 is the expected ability to switch encodings easily; so, should the OER encoding (*Octet Encoding Rules*; faster to decode/encode than BER and PER, and almost as compact as PER) be supported in the future, it could be adopted "transparently".
+
+
+An issue of this approach is that, beyond Erlang, the (U)PER encoding does not seem so widely available as free software: besides commercial offers (like `this one <https://www.obj-sys.com/products/asn1c/index.php>`_), some languages could be covered to some extent (ex: `Python <https://github.com/eerimoq/asn1tools>`_, Java with `[1] <https://github.com/alexvoronov/gcdc-asn1/tree/master/asn1-uper>`_ or `[2] <https://github.com/ericsson-mts/mts-asn1>`_), but for example no such solution could be found for the .NET language family (ex: for C#); also the complexity of the encoding may lead to solutions supporting only a subset of the standard.
+
+So, at least for the moment, we chose Protobuf.
+
+
+
+About Protobuf
+**************
+
+Compared to ASN.1 UPER, Protobuf is probably simpler/more limited, and less compact - yet also less demanding in terms of processing regarding (de)marshalling.
+
+Albeit Protobuf is considerably more recent, implementations of it in free software are rather widely available in terms of languages, with `reference implementations <https://developers.google.com/protocol-buffers/docs/reference/overview>`_ and third-party ones (example for `.NET <https://github.com/protobuf-net/protobuf-net>`_).
+
+In the case of Erlang, Protobuf is not natively supported, yet various libraries offer such a support.
+
+`gpb <https://github.com/tomas-abrahamsson/gpb>`_ seems to be the recommended option, this is therefore the backend that we retained. For increased performance, `enif_protobuf <https://github.com/jg513/enif_protobuf>`_ could be considered as a possible drop-in replacement.
+
+Our procedure to install ``gpb``:
+
+.. code:: bash
+
+ $ cd ~/Software/gpb
+ $ git clone git@github.com:tomas-abrahamsson/gpb.git
+ $ ln -s gpb gpb-current-install
+ $ cd gpb && make all
+
+Then, so that ``protoc-erl`` is available on the shell, one may add in one's ``~/.bashrc``:
+
+.. code:: bash
+
+ # Erlang protobuf gpb support:
+ export GPB_ROOT="${HOME}/Software/gpb/gpb-current-install"
+ export PATH="${GPB_ROOT}/bin:${PATH}"
+
+
+
+Our preferred settings (configurable, yet by default enforced natively by Myriad's build system) are: (between parentheses, the gbp API counterpart to the ``protoc-erl`` command-line options)
+
+- ``proto3`` version rather than ``proto2`` (so ``{proto_defs_version,3}``)
+- messages shall be decoded as tuples/records rather than maps (so not specifying the ``-maps`` / ``maps`` option, not even ``-mapfields-as-maps``) for a better compactness and a clearer, more statically-defined structure - even if it implies including the generated ``*.hrl`` files in the user code and complexifying the build (ex: tests having to compile with or without a Protobuff backend available, with or without generated headers; refer to ``protobuf_support_test.erl`` for a full, integrated example)
+- decoded strings should be returned as binaries rather than plain ones (so specifying the ``-strbin`` / ``strings_as_binaries`` option)
+- ``-pkgs`` /  ``use_packages`` (and ``{pkg_name, {prefix, "MyPackage"}``) to prefix a message name by its package (regardless of the ``.proto`` filename in which it is defined)
+- ``-rename msg_fqname:snake_case`` then ``-rename msg_fqname:dots_to_underscores`` (in that order), so that a message type named ``Person`` defined in package ``myriad.protobuf.test`` results in the definition of a ``myriad_protobuf_test_person()`` type and in a ``#myriad_protobuf_test_person{}`` record
+- ``-preserve-unknown-fields`` (thus ``preserve_unknown_fields``) will be set iff ``EXECUTION_TARGET`` has been set to ``development`` (``myriad_check_protobuf`` is enabled), and in this case will be checked so that a warning trace is sent if decoding unknown fields
+- ``-MMD`` / ``list_deps_and_generate`` to generate a ``GNUmakedeps.protobuf`` makefile tracing dependencies between message types
+- ``-v`` / ``verify`` set to  ``never``, unless ``EXECUTION_TARGET`` has been set to ``development`` (``myriad_check_protobuf`` is enabled), in which case it is set to  ``always``
+- ``-vdrp`` / ``verify_decode_required_present`` set iff ``EXECUTION_TARGET`` has been set to ``development`` (``myriad_check_protobuf`` is enabled)
+- ``-Werror`` / ``warnings_as_errors``, ``-W1`` / ``return_warnings``, ``return_errors`` (preferably to their ``report*`` counterparts)
+
+
+We prefer generating Protobuff (Erlang) accessors thanks to the command-line rather than driving the generating through a specific Erlang program relying on the gpb API.
+
+See our ``protobuf_support`` module for further information.
+
+
+This support may be enabled from Myriad's ``GNUmakevars.inc``, thanks to the ``USE_PROTOBUF`` boolean variable that implies in turn the ``USE_GPB`` one.
+
+One may also rely on our:
+
+- ``GNUmakerules-protobuf.inc``, in ``src/data-management``, to include in turn any relevant dependency information; dependencies are by default automatically generated in a ``GNUmakedeps.protobuf`` file
+- general explicit rules, for example ``generate-protobuf`` (to generate accessors), ``info-protobuf`` and ``clean-protobuf`` (to remove generated accessors)
+- automatic rules, for example ``make X.beam`` when a ``X.proto`` exists in the current directory; applies our recommended settings)
+
+
+One may note that:
+
+- a Protobuff message, i.e. the (binary) serialised form of a term (here being a record), is generally smaller than this term (for example, ``protobuf_support_test`` reports a binary of 39 bytes, to be compared to the 112 bytes reported for the corresponding record/tuple)
+- the encoding of the serialised form does not imply any specific obfuscation; for example binary strings comprised in the term to serialise may be directly readable from its binary serialisation, as clear text
+
+
+References:
+
+- `general Protobuf Wikipedia presentation <https://en.wikipedia.org/wiki/Protocol_Buffers>`_
+- `official page of Protobuf <https://developers.google.com/protocol-buffers>`_
+- `proto3 Language Guide <https://developers.google.com/protocol-buffers/docs/proto3>`_
+- gpb-related information:
+
+  - command-line options: ``protoc-erl -h``
+  - `gpb API documentation <https://hexdocs.pm/gpb/>`_, notably the many options of `gpb_compile documentation <https://hexdocs.pm/gpb/gpb_compile.html#option-use_packages>`_ and the `Erlang-Protobuff mapping <https://hexdocs.pm/gpb/gpb_compile.html#description>`_
+
+
+
+For Basic, Old-School Ciphering
+...............................
+
+The spirit here is to go another route than modern public-key cryptography: the classic, basic, chained, symmetric cryptography techniques used in this section apply to contexts where a preliminary, safe exchange *can* happen between peers (ex: based on a real-life communication).
+
+Then any number of passes of low-key, unfashioned algorithms (including one based on a Mealy machine) are applied to the data that is to cypher or decypher.
+
+We believe that, should the corresponding shared "key" (the combination of parameterised transformations to apply on the data) remain uncompromised, the encrypted data is at least as safe as if cyphered with the current, modern algorithms (which may be, intentionally or not, flawed, or may be specifically threatened by potential progresses for example in terms of quantum computing).
+
+So this is surely an instance of "security by obscurity", a pragmatic strategy (which may be used in conjunction with the "security by design" and "open security" ones) discouraged by standards bodies, yet in our opinion likely - for data of lesser importance - to resist well (as we do not expect then attackers to specifically target our very own set of measures, since the specific efforts incurred would not be outweighed by the expected gains).
+
+We thus see such old-school ciphering as a complementary measure to the standard, ubiquitous measures whose effectiveness is difficult to assess for individuals and thus require some level of trust.
+
+Refer to ``cipher_utils`` and its associated test for more details, and also to our `mini-HOWTO regarding cybersecurity <http://howtos.esperide.org/Cybersecurity.html>`_.

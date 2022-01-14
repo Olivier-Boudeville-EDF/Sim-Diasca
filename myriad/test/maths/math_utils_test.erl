@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2021 Olivier Boudeville
+% Copyright (C) 2003-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -45,17 +45,17 @@ run() ->
 
 	% Not used anymore, as erlang:floor/1 has been introduced since then:
 	%[ test_facilities:display( "Floor for ~p is ~p.", [ V,
-	%		math_utils:floor(V) ] ) || V <- Roundings ],
+	%    math_utils:floor(V) ] ) || V <- Roundings ],
 
 	[ test_facilities:display( "Ceiling for ~p is ~p.", [ V,
 			math_utils:ceiling(V) ] ) || V <- Roundings ],
 
-	TruncateTargets = [ - 12345.6789, -1.23456789, 0.0, 12.3456789, 123.4568 ],
+	TruncateTargets = [ -12345.6789, -1.23456789, 0.0, 12.3456789, 123.4568 ],
 
 	[
 	 [ test_facilities:display( "Rounding ~p after ~B digit(s) is ~p.", [ V, D,
 			math_utils:round_after( V, D ) ] ) || V <- TruncateTargets ]
-	 || D <- [ 0, 1, 2, 3 ] ],
+				 || D <- [ 0, 1, 2, 3 ] ],
 
 
 	Modulo = 3,
@@ -74,9 +74,11 @@ run() ->
 	1.0 = math_utils:clamp( 1.0, 3.0, 0 ),
 	3.0 = math_utils:clamp( 1.0, 3.0, 6 ),
 
+	8 = math_utils:get_next_power_of_two( 5 ),
+	8 = math_utils:get_next_power_of_two( 8 ),
 
 	[ test_facilities:display( "Canonical form for ~p degrees is ~p degrees.",
-							  [ A, math_utils:canonify(A) ] ) ||
+							   [ A, math_utils:canonify(A) ] ) ||
 		A <- [ -721, -721.0, -720, -720.0, -719, -719.0, -100, -100.0,
 			   0, 0.0, 100, 100.0, 359, 359.0, 360, 360.0, 361, 361.0,
 			   400, 400.0 ] ],
@@ -104,7 +106,7 @@ run() ->
 
 	% '°' does not output well on the console (ex: "90.000000 Â°."):
 	[ test_facilities:display( "Angle ~p rad is ~f degrees.", [ Angle,
-			math_utils:radian_to_degree( Angle ) ] ) || Angle <-
-				   [ 0, math:pi()/2, 1.0, math:pi(), 2*math:pi() ] ],
+			math_utils:radian_to_degree( Angle ) ] )
+		|| Angle <- [ 0, math:pi()/2, 1.0, math:pi(), 2*math:pi() ] ],
 
 	test_facilities:stop().

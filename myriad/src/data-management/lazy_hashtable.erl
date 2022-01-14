@@ -1,4 +1,4 @@
-% Copyright (C) 2011-2021 Olivier Boudeville
+% Copyright (C) 2011-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -143,7 +143,7 @@
 -include("lazy_hashtable.hrl").
 
 
-% @doc Returns a new empty lazy table.
+% @doc Returns an empty lazy table.
 -spec new() -> lazy_hashtable().
 new() ->
 
@@ -473,8 +473,8 @@ toggle_entry( Key, _LazyHashtable={ Hashtable, OpCount } ) ->
 
 
 
-% @doc Returns a new lazy hashtable, which started from LazyHashtableBase and
-% was enriched with the LazyHashtableAdd entries whose keys where not already in
+% @doc Returns a lazy hashtable that started from LazyHashtableBase and was
+% enriched with the LazyHashtableAdd entries whose keys where not already in
 % LazyHashtableBase (if a key is in both tables, the one from LazyHashtableBase
 % will be kept).
 %
@@ -510,7 +510,7 @@ optimise( Hashtable ) ->
 % @doc Checks whether an optimisation of the internal hashtable is deemed
 % potentially useful, ie if the operation count is past a threshold.
 %
-% Returns {H, NewOpCount} (ie a lazy table) where H is either an optimised
+% Returns {H, NewOpCount} (that is a lazy table) where H is either an optimised
 % hashtable or the specified one, and NewOpCount is either zero or the specified
 % CurrentOpCount, depending on whether an optimisation was triggered or not.
 %

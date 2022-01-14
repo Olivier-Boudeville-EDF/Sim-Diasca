@@ -1,6 +1,6 @@
 MYRIAD_TOP = ../..
 
-.PHONY: all test-hdf5 clean clean-local
+.PHONY: all test-hdf5 info-local clean clean-local
 
 
 all:
@@ -20,13 +20,24 @@ test-sql:
 	@$(MAKE) sql_support_run && sqlitebrowser sql_support_test.sqlite3
 
 
+# Order matters, as may define 'USE_PROTOBUF = true' (not with ':='):
+include $(MYRIAD_TOP)/GNUmakesettings.inc
+
+
+# Needed so that the generation of the example accessor can done:
+ifeq ($(USE_PROTOBUF),true)
+
+protobuf_support_test.beam: myriad_example.hrl
+
+endif
+
+
+info-local:
+	@echo "USE_PROTOBUF = $(USE_PROTOBUF)"
+
 
 clean: clean-local
 
 clean-local:
 	-@/bin/rm -f raw_hdf5_test-fixture-*.hdf5 hdf5_support_test.hdf5 \
 				 sql_support_test.sqlite3
-
-
-
-include $(MYRIAD_TOP)/GNUmakesettings.inc

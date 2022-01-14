@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2021 Olivier Boudeville
+% Copyright (C) 2007-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -159,8 +159,7 @@
 
 
 % @doc Generates a list of Count elements uniformly drawn in [1,N].
--spec get_random_values( pos_integer(), count() ) ->
-								[ pos_integer() ].
+-spec get_random_values( pos_integer(), count() ) -> [ pos_integer() ].
 get_random_values( N, Count ) ->
 	get_random_values_helper( N, Count, _Acc=[] ).
 
@@ -174,8 +173,7 @@ get_random_values_helper( N, Count, Acc ) ->
 
 
 % @doc Generates a list of Count elements uniformly drawn in [Nmin;Nmax].
--spec get_random_values( integer(), integer(), count() ) ->
-								[ integer() ].
+-spec get_random_values( integer(), integer(), count() ) -> [ integer() ].
 get_random_values( Nmin, Nmax, Count ) ->
 	get_random_values_helper( Nmin, Nmax, Count, _Acc=[] ).
 

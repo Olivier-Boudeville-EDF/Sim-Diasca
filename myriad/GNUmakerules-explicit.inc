@@ -11,15 +11,16 @@
 
 .PHONY-myriad-explicit:  all all-pre-hook all-parallel-recurse all-recurse   \
 			all-parse-transforms bootstrap-modules make-all-parse-transforms \
-			build-debug rebuild test test-recurse doc-recurse build-tests    \
-			launch shell                                                     \
-			copy-beams-to-ebin                                               \
+			build-debug rebuild                                              \
+			test test-recurse test-interactive test-interactive-recurse      \
+			doc-recurse build-tests                                          \
+			launch shell generate-tags                                       \
+			create-include-links clean-include-links copy-beams-to-ebin      \
 			install-all install-announce install-ebin install-bin            \
 			install-src install-include install-examples install-test        \
 			install-doc info-install info-install-locations                  \
 			info-install-content create-myriad-checkout                      \
 			rebar3-application set-rebar-conf set-rebar-conf-for-hex         \
-			rebar3-make-include-links rebar3-clean-include-links             \
 			rebar3-release rebar3-development-release                        \
 			rebar3-production-release rebar3-hide-unsupported-sources        \
 			rebar3-restore-unsupported-sources                               \
@@ -33,17 +34,20 @@
 			rebar3-cache-clean rebar3-info rebar3-hex-publish                \
 			rebar3-local-update                                              \
 			test-hex-package                                                 \
+			generate-protobuf                                                \
 			sync-to-server                                                   \
 			generate-api-doc generate-api-alt-doc copy-static-content        \
 			clean-api-doc clean-api-alt-doc                                  \
 			generate-list-of-erlang-types generate-list-of-local-types       \
 			generate-local-plt self-check-against-plt write-debug-key-file   \
 			check check-hook help-erl                                        \
-			clean clean-erlang clean-layer-ebin clean-python clean-database  \
-			clean-recurse clean-outputs clean-ast-debug real-clean track     \
+			clean clean-erlang clean-layer-ebin clean-python clean-protobuf  \
+			clean-database clean-recurse clean-outputs clean-ast-debug       \
+			real-clean track                                                 \
 			info-platform info-hardware info-software info-source-layout     \
 			info info-files info-meta info-erlang info-python info-java      \
-			info-sync info-check info-rebar3 info-compile                    \
+			info-protobuf                                                    \
+			info-sync info-check info-rebar3 info-compile info-options       \
 			info-parse-transform info-doc
 
 
@@ -65,7 +69,7 @@ ifeq ($(BASE_MAKEFILE),true)
 #
 # (add 'echo " Entering module directory $$m"' if needing to troubleshoot)
 #
-all: all-pre-hook all-parse-transforms rebar3-make-include-links
+all: all-pre-hook all-parse-transforms create-include-links
 	@echo "  Building all, in parallel over $(CORE_COUNT) core(s), from $(PWD)"
 	@for m in $(MODULES_DIRS); do if ! (if [ -d $$m ]; then cd $$m && \
 		$(MAKE) -s all-recurse -j $(CORE_COUNT) && cd ..; else echo "     (directory $$m skipped)"; \
@@ -83,7 +87,10 @@ all: all-pre-hook all-parse-transforms rebar3-make-include-links
 #  _build-like directories)
 #
 clean: clean-layer-ebin clean-api-doc
-	-@if [ -d doc ]; then cd doc && $(MAKE) -s clean; fi
+
+# Most probably redundant:
+# clean:
+#-@if [ -d "doc" ]; then cd doc && $(MAKE) -s clean; fi
 
 else
 
@@ -177,10 +184,10 @@ rebuild: clean all
 # in 'src/meta', which are then built generically.
 
 # A difficulty is that we have to generate each BEAM file in the same directory
-# as their source (hence the 'cd $$(dirname $@)'), however the automatically-set
-# MYRIAD_TOP variable points only to the root of Myriad. As a result, paths
-# (typically include ones) will not be correct, so we added BOOTSTRAP_INCLUDES
-# to insert the correct ones.
+# as their source (hence the 'cd "$$(dirname $@)"'), however the
+# automatically-set MYRIAD_TOP variable points only to the root of Myriad. As a
+# result, paths (typically include ones) will not be correct, so we added
+# BOOTSTRAP_INCLUDES to insert the correct ones.
 
 
 # Note:
@@ -198,17 +205,17 @@ rebuild: clean all
 
 $(MYRIAD_TOP)/src/utils/basic_utils.beam: $(MYRIAD_TOP)/src/utils/basic_utils.erl $(MYRIAD_TOP)/include/utils/basic_utils.hrl
 	@echo "		Compiling bootstrap module $<"
-	@beam_file=$$(basename $@); cd $$(dirname $@) && $(ERLANG_COMPILER) $(ERLANG_COMPILER_OPT_FOR_BOOTSTRAPPED) -o $$beam_file $$(echo $$beam_file | sed 's|.beam$$|.erl|1')
+	@beam_file=$$(basename $@); cd "$$(dirname $@)" && "$(ERLANG_COMPILER)" $(ERLANG_COMPILER_OPT_FOR_BOOTSTRAPPED) -o $$beam_file $$(echo $$beam_file | sed 's|.beam$$|.erl|1')
 
 
 $(MYRIAD_TOP)/src/utils/text_utils.beam: $(MYRIAD_TOP)/src/utils/text_utils.erl
 	@echo "		Compiling bootstrap module $<"
-	@beam_file=$$(basename $@); cd $$(dirname $@) && $(ERLANG_COMPILER) $(ERLANG_COMPILER_OPT_FOR_BOOTSTRAPPED) -o $$beam_file $$(echo $$beam_file | sed 's|.beam$$|.erl|1')
+	@beam_file=$$(basename $@); cd "$$(dirname $@)" && "$(ERLANG_COMPILER)" $(ERLANG_COMPILER_OPT_FOR_BOOTSTRAPPED) -o $$beam_file $$(echo $$beam_file | sed 's|.beam$$|.erl|1')
 
 
 $(MYRIAD_TOP)/src/utils/id_utils.beam: $(MYRIAD_TOP)/src/utils/id_utils.erl
 	@echo "		Compiling bootstrap module $<"
-	@beam_file=$$(basename $@); cd $$(dirname $@) && $(ERLANG_COMPILER) $(ERLANG_COMPILER_OPT_FOR_BOOTSTRAPPED) -o $$beam_file $$(echo $$beam_file | sed 's|.beam$$|.erl|1')
+	@beam_file=$$(basename $@); cd "$$(dirname $@)" && "$(ERLANG_COMPILER)" $(ERLANG_COMPILER_OPT_FOR_BOOTSTRAPPED) -o $$beam_file $$(echo $$beam_file | sed 's|.beam$$|.erl|1')
 
 
 
@@ -219,7 +226,7 @@ $(MYRIAD_TOP)/src/utils/id_utils.beam: $(MYRIAD_TOP)/src/utils/id_utils.erl
 #
 $(MYRIAD_TOP)/src/meta/%.beam: $(MYRIAD_TOP)/src/meta/%.erl
 	@echo "		Compiling bootstrap meta module $<"
-	@beam_file=$$(basename $@); cd $$(dirname $@) && $(ERLANG_COMPILER) $(ERLANG_COMPILER_OPT_FOR_BOOTSTRAPPED) -o $$beam_file $$(echo $$beam_file | sed 's|.beam$$|.erl|1')
+	@beam_file=$$(basename $@); cd "$$(dirname $@)" && "$(ERLANG_COMPILER)" $(ERLANG_COMPILER_OPT_FOR_BOOTSTRAPPED) -o $$beam_file $$(echo $$beam_file | sed 's|.beam$$|.erl|1')
 
 
 
@@ -227,23 +234,38 @@ $(MYRIAD_TOP)/src/meta/%.beam: $(MYRIAD_TOP)/src/meta/%.erl
 
 #$(MYRIAD_TOP)/src/data-management/list_table.beam: $(MYRIAD_TOP)/src/data-management/list_table.erl
 #	@echo "		Compiling bootstrap module $<"
-#	@beam_file=$$(basename $@); cd $$(dirname $@) && $(ERLANG_COMPILER) $(ERLANG_COMPILER_OPT_FOR_BOOTSTRAPPED) -o $$beam_file $$(echo $$beam_file | sed 's|.beam$$|.erl|1')
+#	@beam_file=$$(basename $@); cd "$$(dirname $@)" && "$(ERLANG_COMPILER)" $(ERLANG_COMPILER_OPT_FOR_BOOTSTRAPPED) -o $$beam_file $$(echo $$beam_file | sed 's|.beam$$|.erl|1')
 
 
 $(MYRIAD_TOP)/src/data-management/map_hashtable.beam: $(MYRIAD_TOP)/src/data-management/map_hashtable.erl
 	@echo "		Compiling bootstrap module $<"
-	@beam_file=$$(basename $@); cd $$(dirname $@) && $(ERLANG_COMPILER) $(ERLANG_COMPILER_OPT_FOR_BOOTSTRAPPED) -o $$beam_file $$(echo $$beam_file | sed 's|.beam$$|.erl|1')
+	@beam_file=$$(basename $@); cd "$$(dirname $@)" && "$(ERLANG_COMPILER)" $(ERLANG_COMPILER_OPT_FOR_BOOTSTRAPPED) -o $$beam_file $$(echo $$beam_file | sed 's|.beam$$|.erl|1')
 
 
 
-
+# By default, tests are run in batch mode:
 test: all test-recurse
 	@for t in $(TEST_TARGETS); do if ! $(MAKE) -s $$(echo $$t|sed 's|_test$$|_run|1') CMD_LINE_OPT="${CMD_LINE_OPT} --batch"; then echo "Test failed." 1>&2; exit 1; else echo; fi; done
 
 
 test-recurse:
-	@echo "   Testing all in $$(basename $(PWD))"
+	@echo "   Testing all in batch mode in $$(basename $(PWD))"
 	@for m in $(MODULES_DIRS); do if ! (if [ -d $$m ]; then cd $$m && $(MAKE) -s test CMD_LINE_OPT="${CMD_LINE_OPT}" && cd ..; else echo "	  (directory $$m skipped)"; fi); then exit 1; fi; done
+
+
+# To run tests in interactive mode, possibly with a specific UI backend:
+#
+# (ex: 'make test-interactive UI_TEST_BACKEND=text_ui' or by modifying this
+# variable directly in GNUmakevars.inc)
+#
+test-interactive: #all test-interactive-recurse
+	@for t in $(TEST_TARGETS); do if ! $(MAKE) -s $$(echo $$t|sed 's|_test$$|_run|1') CMD_LINE_OPT="${CMD_LINE_OPT} -extra $(UI_TEST_OPT)"; then echo "Interactive test failed." 1>&2; exit 11; else echo; fi; done
+
+
+test-interactive-recurse:
+	@echo "   Testing all in interactive mode (UI backend option: '${UI_TEST_OPT}') in $$(basename $(PWD))"
+	@for m in $(MODULES_DIRS); do if ! (if [ -d $$m ]; then cd $$m && $(MAKE) -s test-interactive CMD_LINE_OPT="${CMD_LINE_OPT}" && cd ..; else echo "	  (directory $$m skipped)"; fi); then exit 11; fi; done
+
 
 
 # Best placed here rather than in GNUmakerules-docutils.inc:
@@ -262,7 +284,7 @@ build-tests: $(BEAM_FILES)
 
 launch: Emakefile
 	@echo "		Launching interpreter with default Ceylan settings"
-	@${ERL_PARAMETERIZED_LAUNCHER} $(NODE_NAMING) test_shell-$$USER $(EXEC_INTERNAL_OPTIONS) $(CMD_LINE_OPT)
+	@$(ERL_PARAMETERIZED_LAUNCHER) $(NODE_NAMING) test_shell-$$USER $(EXEC_INTERNAL_OPTIONS) ${CMD_LINE_OPT}
 
 
 # To have an Erlang shell with the right configuration to rely on Myriad (ex:
@@ -270,7 +292,48 @@ launch: Emakefile
 #
 shell:
 	@echo "		Launching an Erlang shell enabled for $(PROJECT_NAME)"
-	@$(ERL_PARAMETERIZED_LAUNCHER) $(NODE_NAMING) shell-for-$$USER $(INTERNAL_OPTIONS)
+	@${ERL_PARAMETERIZED_LAUNCHER} $(NODE_NAMING) shell-for-$$USER $(INTERNAL_OPTIONS)
+
+
+
+# Generates Emacs' etags, in order to record all sorts of information about
+# source files in large development projects: files, functions, variables,
+# etc. are indexed.
+#
+# See https://erlang.org/doc/apps/tools/erlang_mode_chapter.html#etags and
+# https://www.emacswiki.org/emacs/BuildTags for more information.
+#
+# The Erlang LSP server may be a more recent alternative.
+#
+# To get ctags: 'pacman -Sy ctags'
+#
+# If having strange ctags errors, wipe the content of ~/.ctags.d/.
+#
+# Better than 'find . -name "*.[he]rl" -print | etags -':
+# (we also avoid symlinks so that the includes are scanned once, not twice)
+#
+generate-tags:
+	@mkdir -p ~/.ctags.d && ctags -f ~/.ctags.d/$(PROJECT_SHORT_NAME).ctags --language-force=Erlang -e -R $$(find src/ include/ -type f -a \( -name '*.hrl' -o -name '*.erl' 2>/dev/null \))
+
+
+
+# This target creates appropriate symlinks for various tools (rebar, edoc, etc.)
+# that expect all includes to be directly available from the 'include' directory
+# - while still preserving our intented structure; rebar-wise, this is not
+# needed for the current layer, but is required by any upper layer in order to
+# compile:
+#
+create-include-links:
+	@echo "  Populating the include symlinks"
+	@cd include && for d in $$(find * -type d 2>/dev/null); do for h in $$(/bin/ls $$d/*.hrl 2>/dev/null); do ln -sf $$h; done; done
+
+
+# Gets rid of include symlinks created for tools like rebar or edoc (and only
+# the symlinks, as a layer may rely on flat, actual includes):
+#
+clean-include-links:
+	@echo "  Cleaning the include symlinks"
+	@cd include && find . -maxdepth 1 -type l -exec /bin/rm -f '{}' ';'
 
 
 
@@ -280,11 +343,39 @@ shell:
 # All of them should be available only from the root of the layer:
 ifeq ($(BASE_MAKEFILE),true)
 
-
 # For a better compliance to OTP conventions:
 copy-beams-to-ebin:
 	@echo "  Copying BEAM files to local ebin ($$(pwd)/ebin)"
 	@mkdir -p ebin; find src -name '*.beam' -exec /bin/cp -f '{}' ebin ';'
+
+
+FAKE_OTP_ROOT := /tmp/ceylan-fake-otp-projects/$(PROJECT_NAME_FOR_REBAR)
+
+# Section for newer OTP management: we create now automatically from our actual
+# source tree (in GIT) a simpler, fake one that respects the conventions that
+# rebar3 expects (instead of trying to have our actual build tree be somewhat
+# compliant with rebar3, which proved utterly complicated and frustrating) .
+#
+# Unfortunately this will not work either, as even in this case rebar will try
+# to recompile these BEAMs... (and fail; sigh).
+#
+create-fake-otp-project: all
+	@echo "  Creating a fake OTP project for $(PROJECT_NAME_FOR_REBAR) in $(FAKE_OTP_ROOT)"
+	-@/bin/rm -rf $(FAKE_OTP_ROOT)
+	@mkdir -p $(FAKE_OTP_ROOT)/{src,include,priv,ebin}
+	@find . -name '*.erl' -a ! -name '*_test.*' -exec /bin/cp -f '{}' $(FAKE_OTP_ROOT)/src/ ';'
+	@find . -name '*.hrl' -a ! -name '*_test.*' -exec /bin/cp -f '{}' $(FAKE_OTP_ROOT)/include/ ';'
+	@find . -name '*.beam' -a ! -name '*_test.*' -exec /bin/cp -f '{}' $(FAKE_OTP_ROOT)/ebin/ ';'
+	# Copy rebar.config in root, myriad.app in ebin, etc.
+
+
+real-clean: rebar3-real-clean
+
+endif
+
+# End of the section regarding installation and OTP integration:
+
+
 
 
 # Installation section (in an ad-hoc way).
@@ -454,7 +545,7 @@ create-myriad-checkout:
 # GIT)
 #
 rebar3-application: rebar3-real-clean clean rebar3-update set-rebar-conf      \
-					rebar3-make-include-links rebar3-hide-unsupported-sources \
+					create-include-links rebar3-hide-unsupported-sources \
 					rebar3-create-app-file
 	@echo "  Triggering the overall creation by rebar3 of an OTP application corresponding to $(PROJECT_NAME)"
 	-@/bin/rm -f rebar.lock 2>/dev/null
@@ -481,24 +572,6 @@ set-rebar-conf-for-hex:
 	@cd conf && $(MAKE) -s rebar-for-hex.config && /bin/cp -f rebar-for-hex.config ../rebar.config
 
 
-# This target creates appropriate symlinks for rebar, while preserving our
-# intented structure; this is not needed for the current layer, but is required
-# by any upper layer in order to compile:
-#
-rebar3-make-include-links:
-	@echo "  Populating the include symlinks"
-	@cd include && for d in $$(find * -type d 2>/dev/null); do for h in $$(/bin/ls $$d/*.hrl 2>/dev/null); do ln -sf $$h; done; done
-
-
-
-# Gets rid of include symlinks created for rebar (and only the symlinks, as a
-# layer may rely on flat, actual includes):
-#
-rebar3-clean-include-links:
-	@echo "  Cleaning the include symlinks"
-	@cd include && find . -maxdepth 1 -type l -exec /bin/rm -f '{}' ';'
-
-
 # Either a symlink or a copy (at least in the case of hex):
 remove-rebar-conf:
 	@echo "  Removing rebar configuration"
@@ -508,7 +581,7 @@ remove-rebar-conf:
 # Apparently no way of telling rebar to exclude some source files, so:
 rebar3-hide-unsupported-sources:
 	@echo "  Hiding unsupported sources"
-	@for f in $(UNSUPPORTED_SOURCES); do /bin/mv -f $$f $$f-hiddenFOO; done 2>/dev/null || true
+	@for f in $(UNSUPPORTED_SOURCES); do /bin/mv -f $$f $$f-hidden; done 2>/dev/null || true
 
 
 rebar3-restore-unsupported-sources:
@@ -533,7 +606,7 @@ rebar3-restore-unsupported-sources:
 # and will fail)
 #
 rebar3-compile-pre-hook: rebar3-hide-unsupported-sources \
-						 rebar3-make-include-links
+						 create-include-links
 	@echo "  rebar3 pre-compile hook executed in $$(pwd), with the '$(MYRIAD_REBAR_PROFILE)' profile"
 	@$(MAKE) -s all copy-beams-to-ebin
 
@@ -708,7 +781,7 @@ rebar3-copy-beams:
 	@find src -name '*.beam' -a ! -name '*_test.beam' -exec /bin/cp '{}' $(MYRIAD_REBAR_BUILD_DIR)/lib/$(PROJECT_NAME_FOR_REBAR)/ebin/ ';'
 
 
-rebar3-clean: rebar3-clean-include-links rebar3-restore-unsupported-sources
+rebar3-clean: clean-include-links rebar3-restore-unsupported-sources
 	@echo "  Removing any prior rebar3 build tree for this project ($(MYRIAD_REBAR_BUILD_BASE))"
 	-@/bin/rm -rf $(MYRIAD_REBAR_BUILD_BASE) 2>/dev/null
 	-@/bin/rm -f ebin/$(PROJECT_NAME_FOR_REBAR).app
@@ -830,6 +903,10 @@ test-hex-package: rebar-test-clean
 # End of the longer rebar-related section.
 
 
+# Implies PROTOBUF_GENERATED_HRL_FILES:
+generate-protobuf: $(PROTOBUF_GENERATED_ERL_FILES)
+
+
 # Synchronises the sources of the current layer to the specified server
 # location.
 
@@ -847,7 +924,10 @@ sync-to-server: all
 
 
 # Main doc generator, directly relying on edoc:
-generate-api-doc: overview.edoc
+#
+# (include symlinks needed for layers having a full include tree)
+#
+generate-api-doc: overview.edoc create-include-links
 	@echo "  Generating API documentation with edoc"
 	@$(ERLANG_INTERPRETER) -noshell -run edoc_run application "'$(PROJECT_NAME)'" '"."' $(EDOC_OPTS) && echo "  API documentation generated in file://$$(realpath $(API_DOC_ROOT)/index.html)"
 	@$(MAKE) -s copy-static-content
@@ -891,33 +971,6 @@ clean-api-alt-doc:
 #
 generate-list-of-erlang-types:
 	@if [ -z "$$ERLANG_SOURCE_ROOT" ]; then echo "  Error, no ERLANG_SOURCE_ROOT variable specified."; exit 15; fi; if [ ! -d "$$ERLANG_SOURCE_ROOT" ]; then echo "  Error, specified directory (ERLANG_SOURCE_ROOT=$$ERLANG_SOURCE_ROOT) does not exist."; exit 16; fi; target_file="declared-types-in-Erlang.txt"; erl="$(ERLANG_INTERPRETER)"; target_path=$$(echo $$erl|sed "s|/bin/erl$$|/$$target_file|1"); echo "  Generating the list of types declared in the Erlang runtime..." &&  $(MYRIAD_TOP)/src/scripts/list-available-types.sh "$$ERLANG_SOURCE_ROOT" > $$target_path && echo "  Types have been collected in '$$target_path'."
-
-
-FAKE_OTP_ROOT := /tmp/ceylan-fake-otp-projects/$(PROJECT_NAME_FOR_REBAR)
-
-# Section for newer OTP management: we create now automatically from our actual
-# source tree (in GIT) a simpler, fake one that respects the conventions that
-# rebar3 expects (instead of trying to have our actual build tree be somewhat
-# compliant with rebar3, which proved utterly complicated and frustrating) .
-#
-# Unfortunately this will not work either, as even in this case rebar will try
-# to recompile these BEAMs... (and fail; sigh).
-#
-create-fake-otp-project: all
-	@echo "  Creating a fake OTP project for $(PROJECT_NAME_FOR_REBAR) in $(FAKE_OTP_ROOT)"
-	-@/bin/rm -rf $(FAKE_OTP_ROOT)
-	@mkdir -p $(FAKE_OTP_ROOT)/{src,include,priv,ebin}
-	@find . -name '*.erl' -a ! -name '*_test.*' -exec /bin/cp -f '{}' $(FAKE_OTP_ROOT)/src/ ';'
-	@find . -name '*.hrl' -a ! -name '*_test.*' -exec /bin/cp -f '{}' $(FAKE_OTP_ROOT)/include/ ';'
-	@find . -name '*.beam' -a ! -name '*_test.*' -exec /bin/cp -f '{}' $(FAKE_OTP_ROOT)/ebin/ ';'
-	# Copy rebar.config in root, myriad.app in ebin, etc.
-
-
-real-clean: rebar3-real-clean
-
-# End of the section regarding installation and OTP integration:
-endif
-
 
 
 generate-list-of-local-types:
@@ -988,8 +1041,8 @@ help-erl:
 		"then 'hello:world().', then CTRL-C CTRL-C"
 
 
-clean: clean-erlang clean-python clean-java clean-database clean-override \
-	   clean-recurse
+clean: clean-erlang clean-python clean-java clean-protobuf clean-database \
+	   clean-override clean-recurse
 
 
 # Not calling the 'clean-layer-ebin' target from here (too demanding):
@@ -1012,6 +1065,11 @@ clean-python:
 # We can have a Java binding:
 clean-java:
 	-@/bin/rm -f *.class
+
+
+clean-protobuf:
+	@#echo "   Cleaning Protobuf-generated files"
+	-@/bin/rm -f GNUmakedeps.protobuf $(PROTOBUF_GENERATED_FILES)
 
 
 clean-database:
@@ -1137,6 +1195,8 @@ info-meta:
 
 
 info-erlang:
+	@echo "ERLANG_COMPILER        = $(ERLANG_COMPILER)"
+	@echo "ERLANG_COMPILER_OPT    = $(ERLANG_COMPILER_OPT)"
 	@echo "ERLANG_INTERPRETER     = $(ERLANG_INTERPRETER)"
 	@echo "ERLANG_INTERPRETER_OPT = $(ERLANG_INTERPRETER_OPT)"
 	@echo "ERLANG_ROOT            = $(ERLANG_ROOT)"
@@ -1158,6 +1218,14 @@ info-java:
 	@echo "JINTERFACE_ROOT = $(JINTERFACE_ROOT)"
 	@echo "JAVAC_OPT = $(JAVAC_OPT)"
 
+
+info-protobuf:
+	@echo "USE_PROTOBUF = $(USE_PROTOBUF)"
+	@echo "USE_GPB = $(USE_GPB)"
+	@echo "PB_COMPILER = $(PB_COMPILER)"
+	@echo "PB_OPT = $(PB_OPT)"
+	@echo "PROTOBUF_SPEC_FILES = $(PROTOBUF_SPEC_FILES)"
+	@echo "PROTOBUF_GENERATED_FILES = $(PROTOBUF_GENERATED_FILES)"
 
 
 info-sync:
@@ -1201,6 +1269,18 @@ info-compile:
 	@echo "ERLANG_INTERPRETER = $(ERLANG_INTERPRETER)"
 	@echo "UNSUPPORTED_SOURCES = $(UNSUPPORTED_SOURCES)"
 	@echo "NOTIFIER_TOOL = $(NOTIFIER_TOOL)"
+
+
+# To test the propagation of variables (hint: use 'export' pass variable to a
+# sub-make; refer to
+# https://www.gnu.org/software/make/manual/html_node/Recursion.html#Recursion)
+#
+# MAKEFLAGS automatically set by make:
+#
+info-options:
+	@echo "UI_TEST_OPT = $(UI_TEST_OPT)"
+	@echo "CMD_LINE_OPT = $(CMD_LINE_OPT)"
+	@echo "MAKEFLAGS = $(MAKEFLAGS)"
 
 
 info-parse-transform:

@@ -55,4 +55,4 @@ echo "  Successful end of hex compile hook script for ${guessed_package_name}, i
 #
 # (not needing to hide any source file in 'test')
 #
-find src -name '*rl' -exec /bin/mv -f '{}' '{}'-hidden ';'
+find src -name '*rl' -exec /bin/mv -f '{}' '{}'-hidden-for-rebar3 ';'

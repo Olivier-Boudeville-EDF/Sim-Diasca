@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2021 Olivier Boudeville
+% Copyright (C) 2014-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -72,9 +72,12 @@ run() ->
 
 	test_facilities:display( "Testing cond_utils:if_debug/1." ),
 
+	% Never specify a *list* of expressions if the intended meaning is a body
+	% (i.e. a sequence of expressions):
+	%
 	cond_utils:if_debug( begin
-							 io:format( "We are in debug mode!~n" ),
-							 trace_utils:notice( "And we like it!" )
+							io:format( "We are in debug mode!~n" ),
+							trace_utils:notice( "And we like it!" )
 						 end ),
 
 	cond_utils:if_debug( io:format( "Of course specifying directly a single, "
@@ -133,8 +136,8 @@ run() ->
 			process_dictionary:put( process_test_key, 6 )
 		end,
 		begin
-		  process_dictionary:put( process_test_key, 7 ),
-		  trace_utils:notice(
+			process_dictionary:put( process_test_key, 7 ),
+			trace_utils:notice(
 			"Other test token detected and managed as expected (7)." )
 		end ),
 
@@ -145,7 +148,7 @@ run() ->
 		begin
 			process_dictionary:put( process_test_key, 8 ),
 			trace_utils:notice(
-			  "Other test token detected and managed as expected (8)." )
+				"Other test token detected and managed as expected (8)." )
 		end,
 		begin
 			process_dictionary:put( process_test_key, 9 ),
@@ -168,7 +171,9 @@ run() ->
 
 	11 = process_dictionary:get( process_test_key ),
 
-
+	test_facilities:display( "Testing cond_utils:switch_execution_target/2: "
+		"we are in ~ts mode.",
+		[ cond_utils:switch_execution_target( "development", "production" ) ] ),
 
 	test_facilities:display( "Testing cond_utils:switch_set_to/2." ),
 
@@ -179,14 +184,14 @@ run() ->
 
 		% Would return 'ok':
 		{ 100, begin
-				   process_dictionary:put( process_test_key, 20 ),
-				   io:format( "Hello from 100!~n" )
+					process_dictionary:put( process_test_key, 20 ),
+					io:format( "Hello from 100!~n" )
 				end },
 
 		{ 200, begin
-				   trace_utils:notice( "Hello from 200!" ),
-				   process_dictionary:put( process_test_key, 22 ),
-				   my_target_clause
+					trace_utils:notice( "Hello from 200!" ),
+					process_dictionary:put( process_test_key, 22 ),
+					my_target_clause
 			   end },
 
 		{ 300, an_immediate_atom } ] ),
@@ -202,13 +207,13 @@ run() ->
 	cond_utils:switch_set_to( non_existing_token, [
 
 		{ 100, begin
-				   process_dictionary:put( process_test_key, 25 ),
-				   io:format( "Hello from 100!~n" )
+					process_dictionary:put( process_test_key, 25 ),
+					io:format( "Hello from 100!~n" )
 			   end },
 
 		{ 200, begin
-				   trace_utils:notice( "Hello from 200!" ),
-				   process_dictionary:put( process_test_key, 26 )
+					trace_utils:notice( "Hello from 200!" ),
+					process_dictionary:put( process_test_key, 26 )
 			   end },
 
 		{ 300, an_immediate_atom } ],
@@ -227,13 +232,13 @@ run() ->
 	cond_utils:switch_set_to( my_second_test_token, [
 
 		{ 100, begin
-				   process_dictionary:put( process_test_key, 27 ),
-				   io:format( "Hello from 100!~n" )
+					process_dictionary:put( process_test_key, 27 ),
+					io:format( "Hello from 100!~n" )
 			   end },
 
 		{ 201, begin
-				   trace_utils:notice( "Hello from 201!" ),
-				   process_dictionary:put( process_test_key, 28 )
+					trace_utils:notice( "Hello from 201!" ),
+					process_dictionary:put( process_test_key, 28 )
 			   end },
 
 		{ 300, an_immediate_atom } ],

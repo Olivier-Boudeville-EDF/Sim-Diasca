@@ -5,7 +5,8 @@ MYRIAD_TOP = .
 		register-version-in-header register-myriad list-beam-dirs             \
 		add-prerequisite-plts prepare-base-plt add-erlhdf5-plt add-jsx-plt    \
 		add-sqlite3-plt link-plt clean-ast-outputs clean-local stats          \
-		info-context info-versions info-paths info-settings                   \
+		info-context info-versions info-paths                                 \
+		info-settings info-json info-sql                                      \
 		info-parse-transform-local info-conditionals
 
 
@@ -62,9 +63,9 @@ help-batch:
 
 
 register-version-in-header:
-	@if [ -z "$(VERSION_FILE)" ] ; then \
-	echo "Error, no version file defined." 1>&2 ; exit 50 ; else \
-	$(MAKE) register-myriad ; fi
+	@if [ -z "$(VERSION_FILE)" ]; then \
+	echo "Error, no version file defined." 1>&2; exit 50; else \
+	$(MAKE) register-myriad; fi
 
 
 register-myriad:
@@ -74,7 +75,7 @@ register-myriad:
 
 # Useful to extract internal layout for re-use in upper layers:
 list-beam-dirs:
-	@for d in $(MYRIAD_BEAM_DIRS) ; do echo $$(readlink -f $$d) ; done
+	@for d in $(MYRIAD_BEAM_DIRS); do echo $$(readlink -f $$d); done
 
 
 
@@ -90,21 +91,21 @@ prepare-base-plt:
 
 # First prerequisite operates on predecessor (here, the Erlang PLT):
 add-erlhdf5-plt:
-	@if [ "$(USE_HDF5)" == "true" ] ; then echo "   Generating PLT for prerequisite erlhdf5" ; $(DIALYZER) --add_to_plt --output_plt $(PLT_FILE) -r $(ERLHDF5_BASE)/ebin --plt $(PLT_FILE); if [ $$? -eq 1 ] ; then exit 1 ; fi ; else echo "(no PLT determined for non-available erlhdf5 prerequisite; unknown functions in the erlhdf5 module will be found)" ; fi
+	@if [ "$(USE_HDF5)" == "true" ]; then echo "   Generating PLT for prerequisite erlhdf5"; $(DIALYZER) --add_to_plt --output_plt $(PLT_FILE) -r $(ERLHDF5_BASE)/ebin --plt $(PLT_FILE); if [ $$? -eq 1 ]; then exit 1; fi; else echo "(no PLT determined for non-available erlhdf5 prerequisite; unknown functions in the erlhdf5 module will be found)"; fi
 
 
 # From the second, operating on the current PLT:
 add-jsx-plt:
-	@if [ "$(USE_JSON)" == "true" ] ; then echo "   Generating PLT for prerequisite jsx" ; $(DIALYZER) --add_to_plt --output_plt $(PLT_FILE) -r $(JSX_BASE)/ebin --plt $(PLT_FILE); if [ $$? -eq 1 ] ; then exit 1 ; fi ; else echo "(no PLT determined for non-available jsx prerequisite; unknown functions in the jsx module will be found)" ; fi
+	@if [ "$(USE_JSON)" == "true" ]; then echo "   Generating PLT for prerequisite jsx"; $(DIALYZER) --add_to_plt --output_plt $(PLT_FILE) -r $(JSX_BASE)/ebin --plt $(PLT_FILE); if [ $$? -eq 1 ]; then exit 1; fi; else echo "(no PLT determined for non-available jsx prerequisite; unknown functions in the jsx module will be found)"; fi
 
 
 add-sqlite3-plt:
-	@if [ "$(USE_SQLITE)" == "true" ] ; then echo "   Generating PLT for prerequisite sqlite3" ; $(DIALYZER) --add_to_plt --output_plt $(PLT_FILE) -r $(SQLITE3_BASE)/ebin --plt $(PLT_FILE); if [ $$? -eq 1 ] ; then exit 1 ; fi ; else echo "(no PLT determined for non-available sqlite3 prerequisite; unknown functions in the sqlite3 module will be found)" ; fi
+	@if [ "$(USE_SQLITE)" == "true" ]; then echo "   Generating PLT for prerequisite sqlite3"; $(DIALYZER) --add_to_plt --output_plt $(PLT_FILE) -r $(SQLITE3_BASE)/ebin --plt $(PLT_FILE); if [ $$? -eq 1 ]; then exit 1; fi; else echo "(no PLT determined for non-available sqlite3 prerequisite; unknown functions in the sqlite3 module will be found)"; fi
 
 
 # As upper layers may rely on the 'myriad' naming:
 link-plt:
-	@if [ ! "$(PLT_FILE)" = "$(MYRIAD_PLT_FILE)" ]; then /bin/ln -s --force $(PLT_FILE) $(MYRIAD_PLT_FILE) ; fi
+	@if [ ! "$(PLT_FILE)" = "$(MYRIAD_PLT_FILE)" ]; then /bin/ln -s --force $(PLT_FILE) $(MYRIAD_PLT_FILE); fi
 
 
 # Removes the text files that may be spit by the myriad parse transform for
@@ -136,13 +137,25 @@ info-paths:
 	@echo "BEAM_PATH_OPT = $(BEAM_PATH_OPT)"
 
 
-info-settings:
-	@echo "USE_HDF5   = $(USE_HDF5)"
-	@echo "USE_JSON   = $(USE_JSON)"
-	@echo "USE_JSX    = $(USE_JSX)"
-	@echo "USE_JIFFY  = $(USE_JIFFY)"
-	@echo "USE_REST   = $(USE_REST)"
-	@echo "USE_SQLITE = $(USE_SQLITE)"
+
+info-settings: info-json info-sql info-protobuf
+	@echo "USE_HDF5       = $(USE_HDF5)"
+	@echo "USE_REST       = $(USE_REST)"
+
+
+info-json:
+	@echo "USE_JSON       = $(USE_JSON)"
+	@echo "USE_JSX        = $(USE_JSX)"
+	@echo "USE_JIFFY      = $(USE_JIFFY)"
+
+
+info-sql:
+	@echo "USE_SQL         = $(USE_SQL)"
+	@echo "USE_SQLITE      = $(USE_SQLITE)"
+	@echo "USE_POSTGRESQL  = $(USE_POSTGRESQL)"
+	@echo "SQLITE3_BASE    = $(SQLITE3_BASE)"
+	@echo "POSTGRESQL_BASE = $(POSTGRESQL_BASE)"
+	@echo "SQL_OPTS        = $(SQL_OPTS)"
 
 
 info-parse-transform: info-parse-transform-local

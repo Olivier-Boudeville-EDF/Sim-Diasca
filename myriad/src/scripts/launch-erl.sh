@@ -14,7 +14,7 @@
 
 # Previously the specified code was run with 'erl -eval [...]'. This was simple,
 # however none of the execution facilities offered by the 'init' module ("-s",
-# "-eval" and "-run") allows to run a VM which would resist exceptions (ex: the
+# "-eval" and "-run") allows to run a VM that would resist exceptions (ex: the
 # first remote node to crash would trigger a 'noconnection' exception that would
 # make the launched node crash).
 #
@@ -26,6 +26,8 @@
 # may terminate in an open shell. So the default is still not using run_erl,
 # unless the --daemon option is specified (in which case the log directory will
 # be the one from which this script is run):
+#
+# (then such VM may be stopped with echo "init:stop()." > "${write_pipe}")
 
 # Default is false (1):
 use_run_erl=1
@@ -52,7 +54,7 @@ asynch_thread_count=128
 
 
 usage="
-Usage: $(basename $0) [-v] [-c a_cookie] [--sn a_short_node_name | --ln a_long_node_name | --nn an_ignored_node_name ] [--hostname a_hostname] [--tcp-range min_port max_port] [--epmd-port new_port] [--max-process-count max_count] [--busy-limit kb_size] [--async-thread-count thread_count] [--background] [--non-interactive] [--eval an_expression] [--no-auto-start] [-h|--help] [--beam-dir a_path] [--beam-paths path_1 path_2] [-start-verbatim-options [...]]: launches the Erlang interpreter with specified settings.
+Usage: $(basename $0) [-v] [-c a_cookie] [--sn a_short_node_name | --ln a_long_node_name | --nn an_ignored_node_name ] [--hostname a_hostname] [--tcp-range min_port max_port] [--epmd-port new_port] [--config cfg_filename] [--max-process-count max_count] [--busy-limit kb_size] [--async-thread-count thread_count] [--background] [--non-interactive] [--eval an_expression] [--no-auto-start] [-h|--help] [--beam-dir a_path] [--beam-paths path_1 path_2] [-start-verbatim-options [...]]: launches the Erlang interpreter with specified settings.
 
 Detailed options:
 	-v: be verbose
@@ -63,6 +65,7 @@ Detailed options:
 	--hostname a_hostname: specify the hostname to be used (typically a FQDN for long node names, and a short hostname for short node names)
 	--tcp-range min_port max_port: specify a TCP port range for inter-node communication (useful for firewalling issues)
 	--epmd-port new_port: specify a specific EPMD port (default: 4369); only relevant if the VM is to be distributed (using short or long names), initially or at runtime
+	--config cfg_filename: adds specified filename to the list of configuration ones (can be used multiple times)
 	--max-process-count max_count: specify the maximum number of processes per VM (default: ${max_process_count})
 	--busy-limit size: specify the distribution buffer busy limit, in kB (default: 1024)
 	--async-thread-count thread_count: specify the number of asynchronous threads for driver calls (default: ${asynch_thread_count})
@@ -120,11 +123,11 @@ cmd_file="launch-erl-input-command.sh"
 #echo "$0 $*" > ${cmd_file} && chmod +x ${cmd_file} && echo "(input launch command stored in ${cmd_file})"
 
 
-#erl=/usr/bin/erl
-erl=$(which erl)
+#erl="/usr/bin/erl"
+erl="$(which erl 2>/dev/null)"
 
-run_erl=$(which run_erl)
-to_erl=$(which to_erl)
+run_erl="$(which run_erl 2>/dev/null)"
+to_erl="$(which to_erl 2>/dev/null)"
 
 
 #CEYLAN_MYRIAD_ROOT=$(dirname $0)/../..
@@ -134,7 +137,7 @@ to_erl=$(which to_erl)
 # If logs are redirected to file:
 default_log_file="Ceylan-Myriad-run.log"
 
-log_dir=$(pwd)
+log_dir="$(pwd)"
 
 
 # Defaults:
@@ -147,7 +150,7 @@ non_interactive=1
 # Erlang defaults (see http://erlang.org/doc/man/erl.html#+zdbbl):
 busy_limit=1024
 
-
+config_opts=""
 
 warning_prefix="[launch-erl.sh] Warning:"
 
@@ -243,6 +246,18 @@ while [ $# -gt 0 ] && [ $do_stop -eq 1 ]; do
 		# where to find EPMD).
 		token_eaten=0
 
+	fi
+
+	if [ "$1" = "--config" ]; then
+		shift
+		if [ -z "$1" ]; then
+			echo "  Error, no configuration filename specified after --config." 1>&2
+			exit 12
+		fi
+		#echo "Adding configuration filename '$1'."
+		# Order respected, if it matters:
+		config_opts="${config_opts} -config $1"
+		token_eaten=0
 	fi
 
 	if [ "$1" = "--hostname" ]; then
@@ -406,8 +421,8 @@ while [ $# -gt 0 ] && [ $do_stop -eq 1 ]; do
 		shift
 
 		# No difference:
-		verbatim_opt="${verbatim_opt} $*"
-		#verbatim_opt="${verbatim_opt} $@"
+		#verbatim_opt="${verbatim_opt} $*"
+		verbatim_opt="${verbatim_opt} $@"
 
 		#echo "verbatim_opt = ${verbatim_opt}"
 
@@ -427,6 +442,10 @@ it 'as is' to command-line." 1>&2
 
 done
 
+
+#echo "Unfiltered verbatim_opt = '${verbatim_opt}'"
+
+
 # The user might have specified one (or more) '-start-verbatim-options', and
 # this option is also added for internal purpose, so we remove any duplicate of
 # it to keep only the actual verbatim options:
@@ -434,14 +453,14 @@ done
 filtered_verbatim_opt=""
 
 for opt in ${verbatim_opt}; do
-	if [ "$opt" != "-start-verbatim-options" ]; then
-		filtered_verbatim_opt="$filtered_verbatim_opt $opt"
+	if [ "${opt}" != "-start-verbatim-options" ]; then
+		filtered_verbatim_opt="${filtered_verbatim_opt} ${opt}"
 	fi
 done
 
 verbatim_opt="${filtered_verbatim_opt}"
 
-#echo "Verbatim options: '${verbatim_opt}'."
+#echo "Filtered verbatim options: '${verbatim_opt}'."
 
 
 
@@ -502,7 +521,7 @@ export ERL_EPMD_RELAXED_COMMAND_CHECK=1
 
 
 # Shortening as much as possible the paths, for clarity:
-realpath_exec=$(which realpath 2>/dev/null)
+realpath_exec="$(which realpath 2>/dev/null)"
 
 
 if [ -x "${realpath_exec}" ]; then
@@ -521,14 +540,14 @@ if [ -x "${realpath_exec}" ]; then
 	for d in ${code_dirs}; do
 
 		#echo "  - $d"
-		#new_dir=$(realpath --relative-to=$current_dir $d)
+		#new_dir="$(realpath --relative-to=${current_dir} $d)"
 
 		# Side-effect: realpath by default checks that the directory exists.
-		new_dir=$(realpath $d 2>/dev/null)
+		new_dir="$(realpath $d 2>/dev/null)"
 
-		if [ -d "$new_dir" ]; then
+		if [ -d "${new_dir}" ]; then
 			#echo "  + $new_dir"
-			shortened_code_dirs="$shortened_code_dirs $new_dir"
+			shortened_code_dirs="${shortened_code_dirs} ${new_dir}"
 		else
 
 			# Very useful warning, yet now that we support Hex packages, we have
@@ -554,6 +573,12 @@ else
 fi
 
 
+# Needed to adapt to the platform at hand (ex: at least on Windows with MSYS,
+# some command like hostname accept different options):
+#
+os_short_name="$(uname |cut -c 1-4)"
+
+
 # Not using '-smp auto' anymore, as the SMP mode is needed even with a single
 # core if GUI (WxWindows) is to be used:
 #
@@ -569,7 +594,7 @@ code_opt="${code_dirs_opt} -smp +K true +A ${asynch_thread_count} +zdbbl ${busy_
 
 
 # Adding the executable last to be able to prefix options:
-command="${log_opt} ${code_opt} +P ${max_process_count}"
+command="${log_opt} ${code_opt} +P ${max_process_count} ${config_opts}"
 
 # Adds a command-line cookie only if specified:
 if [ -n "${cookie}" ]; then
@@ -620,7 +645,16 @@ if [ -n "${short_name}" ]; then
 
 		if [ -z "${hostname}" ]; then
 
-			hostname="$(hostname -s)"
+			if [ "${os_short_name}" = "MSYS" ]; then
+
+				# As the -s option is not supported there:
+				hostname="$(hostname)"
+
+			else
+				hostname="$(hostname -s)"
+
+			fi
+
 			#echo "Guessed (short) hostname is '${hostname}'."
 
 		fi
@@ -782,7 +816,7 @@ else
 	fi
 
 	#echo "Launching a VM, using direct command-line execution."
-	final_command="${erl} ${to_eval} ${command}"
+	#final_command="${erl} ${to_eval} ${command}"
 
 fi
 
@@ -794,7 +828,7 @@ fi
 #echo "$0 running final command: ${final_command}, with use_run_erl = $use_run_erl" > launch-erl-command.txt
 
 # Log to console:
-#echo; echo "##### $0 running final command: '${final_command}', with use_run_erl = $use_run_erl"
+#echo; echo "##### $0 running final command: '${final_command}', with use_run_erl = $use_run_erl"csc
 
 
 if [ $use_run_erl -eq 0 ]; then
@@ -832,7 +866,13 @@ else
 
 	# Not using run_erl here, direct launch (the current default):
 
-	#echo "direct command: ${final_command}"
+	# We used to define above a final_command variable that comprised ${erl},
+	# yet on Windows, no matter the quoting that we tried, we did not succeed in
+	# having the shell see '/c/Program Files/erl-XXX/bin/erl' as a single path
+	# (it was then looking up a '/c/Program' executable). Now this is fixed by
+	# having a separate ${erl} command:
+
+	#echo "direct command: ${command}"
 
 	if [ $be_verbose -eq 0 ]; then
 
@@ -840,7 +880,9 @@ else
 
 	fi
 
-	${final_command}
+	#${command}
+	#echo "${erl}" ${to_eval} ${command}
+	"${erl}" ${to_eval} ${command}
 
 fi
 
@@ -859,7 +901,6 @@ elif [ $use_run_erl -eq 1 ]; then
 	echo "(command success reported)"
 
 fi
-
 
 #pid=$!
 

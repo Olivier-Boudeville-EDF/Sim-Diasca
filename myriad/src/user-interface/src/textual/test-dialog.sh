@@ -11,7 +11,7 @@ echo "  Testing '${target_tool_name}'..."
 
 target_tool=$(which ${target_tool_name} 2>/dev/null)
 
-if [ ! -x "${target_tool}" ] ; then
+if [ ! -x "${target_tool}" ]; then
 
 	echo " Error, no '${target_tool_name}' tool found." 1>&2
 	exit 5

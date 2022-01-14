@@ -1,7 +1,7 @@
 
 :raw-latex:`\pagebreak`
 
-.. _'code injection':
+.. _`code injection`:
 
 
 Support for Code Injection
@@ -46,10 +46,22 @@ Defining the code to inject
 
 Based on the defined tokens, code may be injected; this code can be any Erlang expression, and the value to which it will evaluate (at runtime) can be used as any other value in the program.
 
-Injecting a *single* expression (i.e. not multiple ones) is not a limitation: not only this single expression can be a function call (thus corresponding to arbitrarily many expressions), but more significantly a series of expressions can be nested in a ``begin`` / ``end`` block, making them a single expression [#]_.
+Injecting a *single* expression (i.e. not multiple ones) is not a limitation: not only this single expression can be a function call (thus corresponding to arbitrarily many expressions), but more significantly a sequence of expressions (a.k.a. a *body*) can be nested in a ``begin`` / ``end`` block, making them a single expression [#]_.
 
 
-.. [#] A previous implementation of ``cond_utils`` allowed to specify the code to inject either as an expression or as a *list* of expressions. It was actually a mistake, as a single expression to return can be itself a list (ex: ``["red", "blue"]``), which bears a different semantics and should not be interpreted as a list of expressions to evaluate. For example, the result from the code to inject may be bound to a variable, in which case we expect ``A=["red", "blue"]`` rather than ``A="red", "blue"`` (this latter term being constructed but not used).
+.. [#] A previous implementation of ``cond_utils`` allowed to specify the code to inject either as an expression or as a *list* of expressions.
+
+	   It was actually a mistake, as a single expression to return can be itself a list (ex: ``["red", "blue"]``), which bears a different semantics and should not be interpreted as a list of expressions to evaluate. For example, the result from the code to inject may be bound to a variable, in which case we expect ``A=["red", "blue"]`` rather than ``A="red", "blue"`` (this latter term being constructed but not used).
+
+	   So the following code injection *is* faulty (a ``begin/end`` block was meant, not a list):
+
+	   .. code:: erlang
+
+		  cond_utils:if_defined(my_token, [
+			  A = 1,
+			  io:format("Hello ~p!~n", [A])]),
+
+	   (and moreover such code will trigger a compilation error, the ``A`` in ``io:format/2`` being reported as unbounded then)
 
 
 
@@ -107,10 +119,10 @@ For example:
 
 .. code:: erlang
 
-   % Older versions being less secure:
-   TLSSupportedVersions = cond_utils:if_defined(us_web_relaxed_security,
-				['tlsv1.3', 'tlsv1.2', 'tlsv1.1', 'tlsv1'],
-				['tlsv1.3'])
+ % Older versions being less secure:
+ TLSSupportedVersions = cond_utils:if_defined(us_web_relaxed_security,
+   ['tlsv1.3', 'tlsv1.2', 'tlsv1.1', 'tlsv1'],
+   ['tlsv1.3'])
 
 If ``us_web_relaxed_security`` has been defined, the first list will be injected, otherwise the second will.
 
@@ -149,6 +161,21 @@ Example:
 
   Level = cond_utils:if_set_to(my_token, foobar_enabled, 1.0, 0.0) + 4.5
 
+
+A similar construct in spirit  is ``switch_execution_target/2``, which will, depending on the current build-time `execution target`_, inject a corresponding expression:
+
+.. code:: erlang
+
+ cond_utils:switch_execution_target(EXPR_IF_IN_DEVELOPMENT_MODE, EXPR_IF_IN_PRODUCTION_MODE)
+
+So if the current execution target is development, the compilation will inject ``EXPR_IF_IN_DEVELOPMENT_MODE``, otherwise ``EXPR_IF_IN_PRODUCTION_MODE`` will be.
+
+Example:
+
+.. code:: erlang
+
+  io:format( "We are in ~ts mode.",
+	  [cond_utils:switch_execution_target("development", "production")])
 
 
 Finally, the ``switch_set_to/{2,3}`` primitives allow to generalise these ``if``-like constructs, with one among any number of code branches selected based on the build-time value of a token, possibly with defaults (should the token not be defined at all, or defined to a value that is not among the ones associated to a code branch).
@@ -242,6 +269,7 @@ This may be useful for example to control, on a per-theme basis, the level of ch
 
 Note that, in this case, a given level of checking should include the one just below it (ex: ``more_involved_testing()`` should call ``basic_testing()``).
 
+Finally, if assertions are too limited (ex: because they lead to unused variables depending on a token being defined or not), using one of the ``cond_utils:if*`` primitives relying on two branches (one expression if a condition is true, another if not) should sufficient to overcome such issue.
 
 
 Usage Hints

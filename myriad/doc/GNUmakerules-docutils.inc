@@ -5,8 +5,10 @@
 
 .PHONY: doc doc-recurse info info-doc-tools info-doc-settings local full-doc   \
  create-doc create-html-doc create-pdf-doc full-html full-pdf regenerate-doc   \
- local-doc local-html local-pdf                                                \
- make-doc-repository create-local-referential view-doc to-print check-dot      \
+ local-doc local-html local-pdf create-api-doc                                 \
+ make-doc-repository create-local-referential                                  \
+ create-mathjax-symlink check-mathjax                                          \
+ view-doc to-print check-dot                                                   \
  info-doc info-doc-local info-doc-tools                                        \
  clean clean-doc-repository clean-generated clean-dot clean-doc-logs           \
  clean-gnuplot clean-png clean-rst
@@ -15,9 +17,9 @@
 # Content typically to be deployed to webservers:
 #
 # /bin/ls is used so that any lacking element in a layer (ex: no api-doc
-# generated) does not trigger an error.
+# generatedn, no MathJax available) does not trigger an error.
 #
-WEB_CONTENT = $$(/bin/ls -d *.html *.css *.png *.pdf api-doc 2>/dev/null)
+WEB_CONTENT = $$(/bin/ls -d *.html *.css *.png *.pdf api-doc mathjax 2>/dev/null)
 
 
 # Generic rules.
@@ -148,6 +150,7 @@ OVERALL_DOCUMENT_HTML_TARGET = $(patsubst %.rst,%.html,$(OVERALL_DOCUMENT_SOURCE
 OVERALL_DOCUMENT_PDF_TARGET = $(patsubst %.rst,%.pdf,$(OVERALL_DOCUMENT_SOURCE))
 
 
+RST_TEMPLATE_FILES = $(wildcard *.rst.template)
 RST_FILES = $(wildcard *.rst)
 
 AUX_GENERATED_FILES  = $(patsubst %.rst,%.aux,$(RST_FILES))
@@ -155,11 +158,15 @@ TEX_GENERATED_FILES  = $(patsubst %.rst,%.tex,$(RST_FILES))
 OUT_GENERATED_FILES  = $(patsubst %.rst,%.out,$(RST_FILES))
 LOG_GENERATED_FILES  = $(patsubst %.rst,%.log,$(RST_FILES))
 TOC_GENERATED_FILES  = $(patsubst %.rst,%.toc,$(RST_FILES))
-HTML_GENERATED_FILES = $(patsubst %.rst,%.html,$(RST_FILES))
-PDF_GENERATED_FILES  = $(patsubst %.rst,%.pdf,$(RST_FILES))
+
+HTML_GENERATED_FILES = $(patsubst %.rst,%.html,$(RST_FILES)) \
+					   $(patsubst %.rst.template,%.html,$(RST_TEMPLATE_FILES))
+
+PDF_GENERATED_FILES  = $(patsubst %.rst,%.pdf,$(RST_FILES)) \
+					   $(patsubst %.rst.template,%.pdf,$(RST_TEMPLATE_FILES))
 
 
-RST_GENERATED_FILES =  $(AUX_GENERATED_FILES) $(TEX_GENERATED_FILES)      \
+RST_GENERATED_FILES = $(AUX_GENERATED_FILES) $(TEX_GENERATED_FILES)       \
 	$(OUT_GENERATED_FILES) $(LOG_GENERATED_FILES) $(TOC_GENERATED_FILES)  \
 	$(HTML_GENERATED_FILES) $(PDF_GENERATED_FILES) $(GENERATOR_LOG_FILE)
 
@@ -222,7 +229,7 @@ doc: $(GRAPH_PNG) $(PNG_FROM_PYTHON) $(PNG_FROM_PYTHON_NEGATED) doc-recurse #$(P
 clean: clean-doc
 
 clean-doc: clean-links clean-doc-repository
-	@echo "     Cleaning documentation elements"
+	@echo "     Cleaning documentation elements in $$(basename $$(pwd))"
 	-@/bin/rm -f *.aux *.log *.maf *.mtc* *.stc* *.tex *.toc $(RST_GENERATED_FILES)
 	-@/bin/rm -rf api-doc
 
@@ -264,7 +271,8 @@ full-doc: create-doc
 # The documentation source is also listed among the prerequisites, as this X.rst
 # might be generated from a X.rst.template file:
 #
-create-doc: $(OVERALL_DOCUMENT_SOURCE) regenerate-doc clean-doc-repository make-doc-repository
+create-doc: $(OVERALL_DOCUMENT_SOURCE) regenerate-doc clean-doc-repository \
+		make-doc-repository
 	@echo "     Generating full documentation from \
 	$(OVERALL_DOCUMENT_SOURCE) in $(TMP_RST_REPOSITORY) \
 	(log in $(GENERATOR_LOG_FILE))"
@@ -292,7 +300,7 @@ local-pdf: $(OVERALL_DOCUMENT_SOURCE)
 
 
 # To generate an actual API documentation tree:
-api-doc:
+create-api-doc:
 	@cd $(LAYER_TOP) && $(MAKE) -s generate-api-doc
 
 
@@ -333,6 +341,22 @@ make-doc-repository:
 	@echo "     Copying documentation sources to $(TMP_RST_REPOSITORY)"
 	@mkdir -p $(TMP_RST_REPOSITORY)
 	@find $(DOCUTILS_TOP) -name $(TMP_RST_REPOSITORY) -prune -o \( -name '*.rst.template' -o -name '*.rst' -o -name '*.png' -o -name '*.css' \) -exec /bin/cp -f '{}' $(TMP_RST_REPOSITORY) ';'
+
+
+
+MATHJAX_ROOT="/usr/share/mathjax"
+
+# In order to generate beautiful math formulas for the HTML output; here a local
+# MathJax install is expected.
+#
+# See myriad/src/scripts/generate-docutils.sh for more details.
+#
+create-mathjax-symlink:
+	@if [ -e "${MATHJAX_ROOT}" ]; then ln -sf "${MATHJAX_ROOT}"; else echo "Error, no pre-existing MathJax install found (no '${MATHJAX_ROOT}'; consider installation with 'pacman -Sy mathjax' or alike)." 1>&2 ; exit 75; fi
+
+
+check-mathjax:
+	@if [ ! -e "${MATHJAX_ROOT}" ]; then echo "Error, no MathJax install found (no '${MATHJAX_ROOT}'; consider installation with 'pacman -Sy mathjax' or alike)." 1>&2 ; exit 75; fi
 
 
 

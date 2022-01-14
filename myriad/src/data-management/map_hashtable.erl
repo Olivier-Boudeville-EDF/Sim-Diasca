@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2021 Olivier Boudeville
+% Copyright (C) 2014-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -24,7 +24,6 @@
 
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Tuesday, December 2, 2014.
-
 
 
 % @doc Implementation of an <b>associative table based on the <code>map</code>
@@ -63,8 +62,9 @@
 
 
 % Mostly the same API as the one of hashtable (but richer):
--export([ new/0, new/1, new_from_unique_entries/1,
+-export([ new/0, singleton/2, new/1, new_from_unique_entries/1,
 		  add_entry/3, add_entries/2, add_new_entry/3, add_new_entries/2,
+		  add_maybe_entry/3, add_maybe_entries/2,
 		  update_entry/3, update_entries/2,
 		  swap_value/3,
 		  remove_entry/2, remove_existing_entry/2,
@@ -95,6 +95,11 @@
 
 -type entry() :: hashtable:entry().
 
+-type maybe_entry() :: hashtable:maybe_entry().
+
+-type maybe_entries() :: hashtable:maybe_entries().
+
+
 -type entries() :: hashtable:entries().
 
 -type entry_count() :: basic_utils:count().
@@ -107,9 +112,15 @@
 -opaque map_hashtable( _K, _V ) :: map().
 
 
--export_type([ key/0, value/0, entry/0, entries/0, entry_count/0,
+-export_type([ key/0, value/0, entry/0, entries/0,
+			   entry_count/0, maybe_entry/0, maybe_entries/0,
 			   map_hashtable/0, map_hashtable/2 ]).
 
+
+% Shorthands:
+
+% As this module is not parse-transformed:
+-type maybe( T ) :: T | 'undefined'.
 
 
 % Implementation notes:
@@ -143,6 +154,17 @@ new() ->
 	#{}.
 
 
+
+% @doc Returns a map-based hashtable comprising only the specified entry.
+%
+% More elegant than map_hashtable:new([{K,V}], map_hashtable:new()).
+%
+-spec singleton( key(), value() ) -> map_hashtable().
+singleton( Key, Value ) ->
+	#{ Key => Value }.
+
+
+
 % @doc Creates a table, either from specified initial entries or (solely for API
 % interoperability) from specified target number of entries.
 %
@@ -163,7 +185,7 @@ new( InitialEntries ) when is_list( InitialEntries ) ->
 
 
 
-% @doc Creates a new table from specified list of key/values pairs, expecting no
+% @doc Creates a table from specified list of key/values pairs, expecting no
 % duplicate in the keys, otherwise throwing an exception.
 %
 % Allows to safely load entries in a table without risking a silent overwrite of
@@ -230,13 +252,47 @@ add_entry( Key, Value, MapHashtable ) ->
 %
 -spec add_entries( entries(), map_hashtable() ) -> map_hashtable().
 add_entries( EntryList, MapHashtable ) ->
-
 	lists:foldl( fun( { K, V }, Map ) ->
 					%Map#{ K => V }
 					maps:put( K, V, Map )
 				 end,
 				 _Acc0=MapHashtable,
 				 _List=EntryList ).
+
+
+
+% @doc Adds specified key/value pair into the specified map hashtable, provided
+% the value is not undefined. Useful to add a maybe-entry to a map.
+%
+% If there is already a pair with this key, then its previous value will be
+% replaced by the specified one (hence does not check whether or not the key
+% already exist in this table).
+%
+-spec add_maybe_entry( key(), maybe( value() ), map_hashtable() ) ->
+			map_hashtable().
+add_maybe_entry( _Key, _MaybeValue=undefined, MapHashtable ) ->
+	MapHashtable;
+
+add_maybe_entry( Key, MaybeValue, MapHashtable ) ->
+	add_entry( Key, MaybeValue, MapHashtable ).
+
+
+
+% @doc Adds specified list of key/value pairs into the specified map table, each
+% entry being added iff its value is not undefined. Useful to add maybe-entries
+% to a map.
+%
+% If there is already a pair with this key, then its previous value will be
+% replaced by the specified one (hence does not check whether or not keys
+% already exist in this table).
+%
+-spec add_maybe_entries( maybe_entries(), map_hashtable() ) -> map_hashtable().
+add_maybe_entries( MaybeEntryList, MapHashtable ) ->
+	lists:foldl( fun( { K, MV }, Map ) ->
+					add_maybe_entry( K, MV, Map )
+				 end,
+				 _Acc0=MapHashtable,
+				 _List=MaybeEntryList ).
 
 
 
@@ -414,10 +470,10 @@ remove_existing_entries( Keys, MapHashtable ) ->
 						'key_not_found' | { 'value', value() }.
 % Not supported in 17.3:
 % lookup_entry( Key, #{ Key := Value } ) ->
-%	{ value, Key };
+%   { value, Key };
 
 % lookup_entry( _Key, _MapHashtable ) ->
-%	key_not_found.
+%   key_not_found.
 lookup_entry( Key, MapHashtable ) ->
 
 	case maps:find( Key, MapHashtable ) of
@@ -478,8 +534,8 @@ get_value( Key, MapHashtable ) ->
 % The key/value pairs are expected to exist already in the table, otherwise an
 % exception is raised.
 %
-% Ex: [Color, Age, Mass] = map_hashtable:get_values( [color, age, mass],
-%                                                    MyMapTable ] )
+% Ex: [Color, Age, Mass] =
+%               map_hashtable:get_values([color, age, mass], MyMapTable])
 %
 -spec get_values( [ key() ], map_hashtable() ) -> [ value() ].
 get_values( Keys, Hashtable ) ->
@@ -552,7 +608,7 @@ get_all_values( Keys, Hashtable ) ->
 
 
 
-% @doc Extracts specified entry from specified hashtable, ie returns its
+% @doc Extracts specified entry from specified hashtable, that is returns its
 % associated value and removes that entry from the returned table.
 %
 % The key/value pair is expected to exist already, otherwise an exception is
@@ -568,7 +624,7 @@ extract_entry( Key, MapHashtable ) ->
 
 
 
-% @doc Extracts specified entry from specified table, ie returns the
+% @doc Extracts specified entry from specified table, that is returns the
 % associated value and removes that entry from the table.
 %
 % If no such key is available, returns the specified default value and the
@@ -590,10 +646,10 @@ extract_entry_with_defaults( Key, DefaultValue, Table ) ->
 
 
 
-% @doc Extracts specified entry (if any) from specified table, ie returns its
-% associated value and removes that entry from the returned table.
+% @doc Extracts specified entry (if any) from specified table, that is returns
+% its associated value and removes that entry from the returned table.
 %
-% Otherwise, ie if that entry does not exist, returns false.
+% Otherwise, that is if that entry does not exist, returns false.
 %
 % Typically useful to iterate over options stored as a table and extracting them
 % in turn, then to check that the resulting final table is empty as expected.
@@ -615,15 +671,15 @@ extract_entry_if_existing( Key, MapHashtable ) ->
 
 
 
-% @doc Extracts specified entries from specified hashtable, ie returns their
-% associated values (in-order) and removes these entries from the returned
+% @doc Extracts specified entries from specified hashtable, that is returns
+% their associated values (in-order) and removes these entries from the returned
 % table.
 %
 % Each key/value pair is expected to exist already, otherwise an exception is
 % raised (typically {badkey, KeyNotFound}).
 %
 % Ex: {[RedValue, GreenValue, BlueValue], ExtractedTable} =
-%         table:extract_entries([red, green, blue], MyTable)
+%         map_hashtable:extract_entries([red, green, blue], MyTable)
 %
 -spec extract_entries( [ key() ], map_hashtable() ) ->
 							{ [ value() ], map_hashtable() }.
@@ -704,7 +760,7 @@ map_on_values( Fun, MapHashtable ) ->
 
 	% Still not maps:map/2, whose fun takes an entry, not just a value:
 	NewEntries = [ { K, Fun( V ) }
-				   || { K, V } <- maps:to_list( MapHashtable ) ],
+					|| { K, V } <- maps:to_list( MapHashtable ) ],
 
 	maps:from_list( NewEntries ).
 
@@ -1139,7 +1195,7 @@ is_empty( _MapHashtable ) ->
 
 
 
-% @doc Returns the size (number of entries, ie of key/value pairs) of the
+% @doc Returns the size (number of entries, that is of key/value pairs) of the
 % specified table.
 %
 -spec size( map_hashtable() ) -> entry_count().

@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2021 Olivier Boudeville
+% Copyright (C) 2003-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -24,7 +24,6 @@
 %
 % Creation date: Saturday, February 20, 2010.
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
-
 
 
 % @doc An implementation of <b>option lists</b>, loosely based on `proplist'.
@@ -69,16 +68,14 @@
 
 
 
-% @doc Creates a new, empty option list.
+% @doc Returns an empty option list.
 -spec new() -> option_list().
 new() ->
 	[].
 
 
 
-% @doc Creates a new option list from specified list containing {Key,Value}
-% pairs.
-%
+% @doc Creates an option list from specified list containing {Key,Value} pairs.
 -spec new( entries() ) -> option_list().
 new( Entries ) ->
 	% The internal representation happens to be the same:
@@ -86,7 +83,7 @@ new( Entries ) ->
 
 
 
-% @doc Sets, in specified option list, the specified entry.
+% @doc Sets, in the specified option list, the specified entry.
 %
 % Returns an updated option list.
 %

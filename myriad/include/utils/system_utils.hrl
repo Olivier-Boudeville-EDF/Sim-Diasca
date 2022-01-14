@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2021 Olivier Boudeville
+% Copyright (C) 2003-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -29,66 +29,56 @@
 % Shared records and defines.
 
 
-% This records stores static information about the host this Erlang node runs
-% on.
-%
-% Used for example by the performance tracker.
-%
+% This record stores static information about the host this Erlang node runs on.
 -record( host_static_info, {
 
-		% The total amount of physical RAM, in megabytes (MB).
-		total_ram :: basic_utils:count(),
+	% The total amount of physical RAM, in megabytes (MB).
+	total_ram :: basic_utils:count(),
 
-		% The total amount of physical swap space, in megabytes (MB).
-		total_swap :: basic_utils:count(),
+	% The total amount of physical swap space, in megabytes (MB).
+	total_swap :: basic_utils:count(),
 
-		% The number of detected cores:
-		core_count :: basic_utils:count(),
+	% The number of detected cores:
+	core_count :: basic_utils:count(),
 
-		% The version string of this Erlang VM:
-		erlang_version :: text_utils:ustring()
-
-} ).
+	% The version string of this Erlang VM:
+	erlang_version :: text_utils:ustring() } ).
 
 
 
-% This records stores dynamic information about the host this Erlang node runs
+% This record stores dynamic information about the host this Erlang node runs
 % on.
 %
 -record( host_dynamic_info, {
 
-
-		% The name of the corresponding node on this host:
-		node_name :: net_utils:atom_node_name(),
-
-
-		% The amount of swap used, in gibibytes (GiB, not GB).
-		swap_used :: basic_utils:count(),
+	% The name of the corresponding node on this host:
+	node_name :: net_utils:atom_node_name(),
 
 
-		% {PercentRamUsedByApplication, PercentRamUsedByOthers} where
-		% PercentRamUsedByApplication is the percentage of the total physical
-		% RAM of the local computer used by this Erlang VM (including all its
-		% processes) and PercentRamUsedByOthers corresponds to the percentage of
-		% total RAM used by all other applications; both percentages are floats
-		% in the [0,100] range, and the difference between their sum and 100
-		% corresponds to the free RAM.
-		%
-		ram_use :: { float(), float() },
+	% The amount of swap used, in gibibytes (GiB, not GB).
+	swap_used :: basic_utils:count(),
 
 
-		% The total, aggregated (on all cores of all CPUs on this host)
-		% per-usage CPU percentages (floats in [0,100]), since last update, or
-		% 'undefined' (if not usage could be computed).
-		%
-		cpu_usage :: maybe( system_utils:cpu_usage_percentages() ),
+	% {PercentRamUsedByApplication, PercentRamUsedByOthers} where
+	% PercentRamUsedByApplication is the percentage of the total physical RAM of
+	% the local computer used by this Erlang VM (including all its processes)
+	% and PercentRamUsedByOthers corresponds to the percentage of total RAM used
+	% by all other applications; both percentages are floats in the [0,100]
+	% range, and the difference between their sum and 100 corresponds to the
+	% free RAM.
+	%
+	ram_use :: { float(), float() },
 
 
-		% The number of Erlang processes running on this node:
-		process_count :: basic_utils:count()
+	% The total, aggregated (on all cores of all CPUs on this host) per-usage
+	% CPU percentages (floats in [0,100]), since last update, or 'undefined' (if
+	% not usage could be computed).
+	%
+	cpu_usage :: maybe( system_utils:cpu_usage_percentages() ),
 
 
-} ).
+	% The number of Erlang processes running on this node:
+	process_count :: basic_utils:count() } ).
 
 
 
@@ -146,6 +136,7 @@
 % file opening
 %
 -define( default_encoding, utf8 ).
+
 
 % Generally not to be used, as directly writing encoded content is safer and
 % offers more control:

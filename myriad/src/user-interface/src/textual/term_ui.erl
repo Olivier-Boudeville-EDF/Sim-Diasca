@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2021 Olivier Boudeville
+% Copyright (C) 2018-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -26,16 +26,12 @@
 % Creation date: Wednesday, May 2, 2018.
 
 
-
 % @doc This is the second most basic, terminal-based <b>textual interface</b>,
 % with colors, dialog boxes, etc., relying on the 'dialog' or 'whiptail' tools.
 %
 % See:
-%
 % - term_ui_test.erl for the corresponding test
-%
 % - text_ui.erl for a more basic text interface
-%
 % - gui.erl for a graphical counterpart
 %
 % See also: trace_utils.erl for another kind of output and test-dialog.sh for an
@@ -108,7 +104,7 @@
 % 'passwordbox' dialog: a request for the user to type a non-echoed string
 %
 % - ex: LANG= dialog  --passwordbox "Enter some password:" 8 40
-%	(no input echoed, but written to standard error, possibly redirected)
+%   (no input echoed, but written to standard error, possibly redirected)
 
 
 % 'textbox' dialog: displays the content of a file
@@ -327,6 +323,7 @@
 
 -type ustring() :: text_utils:ustring().
 -type format_string() :: text_utils:format_string().
+-type format_values() :: text_utils:format_values().
 
 -type file_path() :: file_utils:file_path().
 
@@ -375,6 +372,8 @@ start( Options ) ->
 	DialogUIState = case lookup_dialog_tool() of
 
 		undefined ->
+			trace_utils:error( "No dialog tool found: neither "
+				"'dialog' nor 'whiptail' is available." ),
 			throw( no_dialog_tool_available );
 
 		{ Tool, ToolPath } ->
@@ -400,7 +399,7 @@ start_helper( _Options=[], UIState ) ->
 	end,
 
 	%trace_utils:debug_fmt( "Storing following initial UI state: ~ts",
-	%					   [ to_string( UIState ) ] ),
+	%                       [ to_string( UIState ) ] ),
 
 	% No prior state expected:
 	case process_dictionary:put( ?ui_state_key, UIState ) of
@@ -439,6 +438,7 @@ start_helper( SingleElem, UIState ) ->
 	start_helper( [ SingleElem ], UIState ).
 
 
+
 % @doc Initialises the UI state.
 %
 % (helper)
@@ -468,7 +468,7 @@ init_state_with_dimensions( Tool=dialog, DialogPath ) ->
 			Width = text_utils:string_to_integer( WidthString ),
 
 			DimSettings = ?ui_table:new(
-							 [ { max_height, Height }, { max_width, Width } ] ),
+							[ { max_height, Height }, { max_width, Width } ] ),
 
 			#term_ui_state{ dialog_tool=Tool,
 							dialog_tool_path=DialogPath,
@@ -533,7 +533,7 @@ display( Text ) ->
 	EscapedText = text_utils:escape_double_quotes( Text ),
 
 	%trace_utils:debug_fmt( "Original text: '~ts'; once escaped: '~ts'.",
-	%					   [ Text, EscapedText ] ),
+	%                       [ Text, EscapedText ] ),
 
 	#term_ui_state{ dialog_tool_path=ToolPath,
 					settings=SettingTable } = get_state(),
@@ -576,7 +576,7 @@ display( Text ) ->
 
 
 % @doc Displays specified formatted text, as a normal modal message.
--spec display( format_string(), [ term() ] ) -> void().
+-spec display( format_string(), format_values() ) -> void().
 display( FormatString, Values ) ->
 	display( text_utils:format( FormatString, Values ) ).
 
@@ -604,7 +604,7 @@ display_instant( Text ) ->
 	EscapedText = text_utils:escape_double_quotes( Text ),
 
 	%trace_utils:debug_fmt( "Original text: '~ts'; once escaped: '~ts'.",
-	%					   [ Text, EscapedText ] ),
+	%                       [ Text, EscapedText ] ),
 
 	#term_ui_state{ dialog_tool_path=ToolPath,
 					settings=SettingTable } = get_state(),
@@ -646,7 +646,7 @@ display_instant( Text ) ->
 
 
 % @doc Displays specified formatted text, as a normal non-modal message.
--spec display_instant( format_string(), [ term() ] ) -> void().
+-spec display_instant( format_string(), format_values() ) -> void().
 display_instant( FormatString, Values ) ->
 	display_instant( text_utils:format( FormatString, Values ) ).
 
@@ -663,7 +663,7 @@ display_warning( Text ) ->
 	EscapedText = text_utils:escape_double_quotes( Text ),
 
 	%trace_utils:debug_fmt( "Original text: '~ts'; once escaped: '~ts'.",
-	%					   [ Text, EscapedText ] ),
+	%                       [ Text, EscapedText ] ),
 
 	#term_ui_state{ dialog_tool_path=ToolPath,
 					settings=SettingTable } = get_state(),
@@ -711,7 +711,7 @@ display_warning( Text ) ->
 
 
 % @doc Displays specified formatted text, as a warning message.
--spec display_warning( format_string(), [ term() ] ) -> void().
+-spec display_warning( format_string(), format_values() ) -> void().
 display_warning( FormatString, Values ) ->
 	display_warning( text_utils:format( FormatString, Values ) ).
 
@@ -728,7 +728,7 @@ display_error( Text ) ->
 	EscapedText = text_utils:escape_double_quotes( Text ),
 
 	%trace_utils:debug_fmt( "Original text: '~ts'; once escaped: '~ts'.",
-	%					   [ Text, EscapedText ] ),
+	%                       [ Text, EscapedText ] ),
 
 	#term_ui_state{ dialog_tool_path=ToolPath,
 					settings=SettingTable } = get_state(),
@@ -776,7 +776,7 @@ display_error( Text ) ->
 
 
 % @doc Displays specified formatted text, as an error message.
--spec display_error( format_string(), [ term() ] ) -> void().
+-spec display_error( format_string(), format_values() ) -> void().
 display_error( FormatString, Values ) ->
 	display_error( text_utils:format( FormatString, Values ) ).
 
@@ -786,6 +786,7 @@ display_error( FormatString, Values ) ->
 display_error_numbered_list( Label, Lines ) ->
 	LineStrings = text_utils:strings_to_enumerated_string( Lines ),
 	display_error( Label ++ LineStrings ).
+
 
 
 % @doc Adds a default separation between previous and next content.
@@ -1079,7 +1080,7 @@ ask_yes_no( Prompt, BinaryDefault, #term_ui_state{ dialog_tool_path=ToolPath,
 choose_designated_item( Choices ) ->
 
 	Prompt = text_utils:format( "Select among these ~B choices:",
-							   [ length( Choices ) + 1 ] ),
+								[ length( Choices ) + 1 ] ),
 
 	choose_designated_item( Prompt, Choices ).
 
@@ -1143,8 +1144,8 @@ choose_designated_item( Prompt, Choices,
 	NumChoices = lists:zip( lists:seq( 1, ChoiceCount ), Texts ),
 
 	NumStrings = lists:foldl( fun( { Num, Text }, AccStrings ) ->
-									 [ text_utils:format( " ~B \"~ts\"",
-											[ Num, Text ] ) | AccStrings ]
+								  [ text_utils:format( " ~B \"~ts\"",
+									  [ Num, Text ] ) | AccStrings ]
 							  end,
 							  _Acc0=[],
 							  _List=NumChoices ),
@@ -1156,7 +1157,7 @@ choose_designated_item( Prompt, Choices,
 
 	DialogStrings = [ "--menu", "\"" ++ Prompt ++ "\"", AutoSizeString,
 	  _MenuHeight=text_utils:integer_to_string( ChoiceCount )
-		 | lists:reverse( [ get_redirect_string_for_code() | NumStrings ] ) ],
+		| lists:reverse( [ get_redirect_string_for_code() | NumStrings ] ) ],
 
 	CmdStrings = [ ToolPath, SettingString | DialogStrings ],
 
@@ -1202,7 +1203,7 @@ choose_designated_item( Prompt, Choices,
 choose_designated_item_with_default( Choices, DefaultChoiceDesignator ) ->
 
 	Prompt = text_utils:format( "Select among these ~B choices:",
-							   [ length( Choices ) + 1 ] ),
+								[ length( Choices ) + 1 ] ),
 
 	choose_designated_item_with_default( Prompt, Choices,
 						DefaultChoiceDesignator, get_state() ).
@@ -1327,7 +1328,7 @@ choose_designated_item_with_default( Prompt, Choices, DefaultChoiceDesignator,
 
 	DialogStrings = [ "--radiolist", "\"" ++ Prompt ++ "\"", AutoSizeString,
 	  _MenuHeight=text_utils:integer_to_string( ChoiceCount )
-		 | lists:reverse( [ get_redirect_string_for_code() | NumStrings ] ) ],
+		| lists:reverse( [ get_redirect_string_for_code() | NumStrings ] ) ],
 
 	CmdStrings = [ ToolPath, SettingString | DialogStrings ],
 
@@ -1383,7 +1384,7 @@ choose_numbered_item( Choices, UIState )
   when is_record( UIState, term_ui_state ) ->
 
 	Prompt = text_utils:format( "Select among these ~B choices:",
-							   [ length( Choices ) ] ),
+								[ length( Choices ) ] ),
 
 	choose_numbered_item( Prompt, Choices, UIState );
 
@@ -1452,14 +1453,14 @@ choose_numbered_item_with_default( Choices, DefaultChoiceText ) ->
 % atom, should the user prefer to cancel that operation.
 %
 -spec choose_numbered_item_with_default( [ choice_text() ], choice_index(),
-										 ui_state() ) -> choice_index();
+											ui_state() ) -> choice_index();
 									   ( prompt(), [ choice_text() ],
-										 choice_index() ) -> choice_index().
+											choice_index() ) -> choice_index().
 choose_numbered_item_with_default( Choices, DefaultChoiceText, UIState )
   when is_record( UIState, term_ui_state ) ->
 
 	Prompt = text_utils:format( "Select among these ~B choices:",
-							   [ length( Choices ) ] ),
+								[ length( Choices ) ] ),
 
 	choose_numbered_item_with_default( Prompt, Choices, DefaultChoiceText,
 									   UIState );
@@ -1504,7 +1505,7 @@ choose_numbered_item_with_default( Prompt, Choices, DefaultChoiceText,
 
 	% Choice designators are simply integers here:
 	case choose_designated_item_with_default( Prompt, ChoiceElements,
-										DefaultChoiceIndex, UIState ) of
+											  DefaultChoiceIndex, UIState ) of
 
 		ui_cancel ->
 			0;
@@ -1640,12 +1641,12 @@ lookup_dialog_tool() ->
 	case executable_utils:lookup_executable( "dialog" ) of
 
 		false ->
-			% Maybe in the future:
+			% Maybe in the future (currently not supported):
 			%AcceptWhiptail = true,
 			AcceptWhiptail = false,
 
-			case AcceptWhiptail andalso
-				executable_utils:lookup_executable( "whiptail" ) of
+			case AcceptWhiptail
+					andalso executable_utils:lookup_executable( "whiptail" ) of
 
 				false ->
 					undefined;
@@ -1695,6 +1696,7 @@ get_state() ->
 	end.
 
 
+
 % @doc Returns the command-line options corresponding to specified table: a
 % settings string, a suffix string (dealing with size and redirection for an
 % output returned as a return code).
@@ -1706,7 +1708,7 @@ get_dialog_settings_for_return_code( SettingTable ) ->
 	{ SettingsString, SuffixString } = get_dialog_base_settings( SettingTable ),
 
 	{ SettingsString, text_utils:format( "~ts ~ts",
-					   [ SuffixString, get_redirect_string_for_code() ] ) }.
+						[ SuffixString, get_redirect_string_for_code() ] ) }.
 
 
 
@@ -1715,13 +1717,13 @@ get_dialog_settings_for_return_code( SettingTable ) ->
 % output returned as a temporary file).
 %
 -spec get_dialog_settings_for_file_return( setting_table() ) ->
-					{ ustring(), ustring() }.
+										    { ustring(), ustring() }.
 get_dialog_settings_for_file_return( SettingTable ) ->
 
 	{ SettingsString, SuffixString } = get_dialog_base_settings( SettingTable ),
 
 	{ SettingsString, text_utils:format( "~ts ~ts",
-					   [ SuffixString, get_redirect_string_for_file() ] ) }.
+						[ SuffixString, get_redirect_string_for_file() ] ) }.
 
 
 
@@ -1741,7 +1743,7 @@ get_dialog_base_settings( SettingTable ) ->
 	end,
 
 	BacktitleOpt = case ?ui_table:get_value_with_defaults( 'backtitle',
-								   _BackDefault=undefined, SettingTable ) of
+									_BackDefault=undefined, SettingTable ) of
 
 		undefined ->
 			"";
@@ -1905,7 +1907,7 @@ get_setting( SettingKey ) ->
 							maybe( ui_setting_value() ).
 get_setting( SettingKey, #term_ui_state{ settings=SettingTable } ) ->
 	?ui_table:get_value_with_defaults( SettingKey, _Default=undefined,
-									SettingTable ).
+									   SettingTable ).
 
 
 

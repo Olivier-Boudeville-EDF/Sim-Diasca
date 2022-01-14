@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2009-2021 Olivier Boudeville
+# Copyright (C) 2009-2022 Olivier Boudeville
 #
 # Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 #
@@ -9,15 +9,54 @@
 
 LANG=C; export LANG
 
+# Parallel build and type checking might be quite power consuming, at the risk
+# of overheat.
+#
+# We try to prevent that by forcing a lesser (actually: least) favorable
+# scheduling for the corresponding processes; however 'nice' has little to no
+# effect (it is only useful to enforce respective priorities between running
+# executables), generating the PLT still leads to higher temperatures; see next
+# cpulimit section.
+#
+#nice_opt=""
+nice_opt="nice --adjustment=19"
 
-# Note: if one wants to download src or doc archives by oneself, point directly
-# to http://erlang.org/download/.
+
+# cpulimit allows to enforce a stricter CPU usage limit to a process.
+#
+# It may not be available on the local host (with Arch Linux, use 'pacman -Sy
+# cpulimit').
+#
+# No root priviledges specifically needed.
+#
+cpulimit="$(which cpulimit 2>/dev/null)"
+
+if [ -x "${cpulimit}" ]; then
+
+	# Only 50% of one "CPU" (presumably one core - hence not a lot at all):
+	cpu_limit_percentage=50
+
+	# For testing:
+	#cpu_limit_percentage=1
+
+	# We leave any active 'nice'.
+
+	# Add -v for a lot more information:
+	cpu_limit_expr="${cpulimit} --limit=${cpu_limit_percentage} --include-children"
+
+fi
 
 
+# Note: if one wants to download src or doc base (i.e. not patch ones) archives
+# by oneself, one may also point directly to http://erlang.org/download/.
 
 # Now we keep the MD5 sums of the sources of former Erlang/OTP versions, in
 # order to be able to switch back and forth more easily:
 
+erlang_md5_for_24_2="ebb6e865738255ae31ff680cc96d71a9"
+erlang_md5_for_24_1_5="39927334547d84ef0dc9e3a39b5c32ff"
+erlang_md5_for_24_1_4="392a5faf394304f7b8fb5cde0deca582"
+erlang_md5_for_24_1="e740b90a20c0f63108f879ce1f228582"
 erlang_md5_for_24_0="7227024b8619e4d97a7af4f4cf98d4db"
 erlang_md5_for_23_3="d6660705f01afbe3466c0a5de21ab361"
 erlang_md5_for_23_2="e315f59eb9e420a0e469c09649f4303f"
@@ -34,15 +73,15 @@ erlang_md5_for_20_1="4c9eb112cd0e56f17c474218825060ee"
 
 
 # Current stable (an update of the next two lines is needed):
-erlang_version="24.0"
-erlang_md5="${erlang_md5_for_24_0}"
+erlang_version="24.2"
+erlang_md5="${erlang_md5_for_24_2}"
 
 
 # Candidate version (ex: either cutting-edge or, most probably, the previous
 # version that we deem stable enough, should the current introduce regressions):
 #
-erlang_version_candidate="23.3"
-erlang_md5_candidate="${erlang_md5_for_23_3}"
+erlang_version_candidate="24.1.5"
+erlang_md5_candidate="${erlang_md5_for_24_1_5}"
 
 base_install_dir="${HOME}/Software/Erlang"
 
@@ -73,8 +112,12 @@ plt_opt_long="--generate-plt"
 download_opt_short="-n"
 download_opt_long="--no-download"
 
+# Not shown anymore:
 patch_opt_short="-np"
 patch_opt_long="--no-patch"
+
+limit_opt_short="-ncl"
+limit_opt_long="-no-cpu-limit"
 
 previous_opt_short="-p"
 previous_opt_long="--previous"
@@ -86,21 +129,24 @@ previous_opt_long="--previous"
 #   ${patch_opt_short} or ${patch_opt_long}: disable the automatic patching we
 #   make use of
 
-usage="Usage: $(basename $0) [${help_opt_short}|${help_opt_long}] [${version_opt_short}|${version_opt_long}] [${doc_opt_short}|${doc_opt_long}] [${plt_opt_short}|${plt_opt_long}] [${download_opt_short}|${download_opt_long}] [${previous_opt_short}|${previous_opt_long}] [<base install directory>]: downloads, builds and installs a fresh ${erlang_version} Erlang version in the specified base install directory (if defined), or in default directory, and in this case adds a symbolic link pointing to it from its parent directory so that an 'Erlang-current-install' symbolic link always points to the latest installed version.
+usage="Usage: $(basename $0) [${help_opt_short}|${help_opt_long}] [${version_opt_short}|${version_opt_long}] [${doc_opt_short}|${doc_opt_long}] [${plt_opt_short}|${plt_opt_long}] [${download_opt_short}|${download_opt_long}] [${limit_opt_short}|${limit_opt_long}] [${previous_opt_short}|${previous_opt_long}] [<base install directory>]: downloads, builds and installs a fresh ${erlang_version} Erlang version in the specified base install directory (if defined), or in default directory, and in this case adds a symbolic link pointing to it from its parent directory so that an 'Erlang-current-install' symbolic link always points to the latest installed version.
 
 Note that, if relevant archives are found in the current directory, they will be used, even if the user did not specify a 'no download' option.
 
 If no base install directory is specified, then:
- - if this script is run as root thanks to a sudo (i.e. 'sudo $(basename $0)...'), Erlang will be built by the (supposedly non-privileged) original sudoer in the current directory, before being installed as root in /usr/local/ (i.e. system-wide); no Erlang-current-install symbolic link applies then
+ - if this script is run as root thanks to a sudo (i.e. 'sudo $(basename $0)...'), Erlang will be built by the (supposedly non-priviledged) original sudoer in the current directory, before being installed as root in /usr/local/ (i.e. system-wide); no Erlang-current-install symbolic link applies then
  - otherwise it will be installed in ${base_install_dir}/Erlang-${erlang_version}/.
 
 Otherwise, i.e. if a base install directory MY_DIR is specified, then Erlang will be installed into MY_DIR/Erlang/Erlang-${erlang_version}/.
+
+Note that unless specified otherwise the whole procedure is slowed down to avoid any overheat of the local host.
 
 Options:
 	${doc_opt_short} or ${doc_opt_long}: download and install the corresponding documentation as well
 	${version_opt_short} or ${version_opt_long}: just returns the current version of Erlang that would be installed
 	${plt_opt_short} or ${plt_opt_long}: generate the PLT file (${plt_file}) for Dialyzer corresponding to this Erlang/OTP install
 	${download_opt_short} or ${download_opt_long}: do not attempt to download anything; expect that needed files are already available (useful if not having a direct access to the Internet)
+	${limit_opt_short} or ${limit_opt_long}: do not slow down the build
 	${previous_opt_short} or ${previous_opt_long}: use, instead of the current Erlang version registered for installation (i.e. ${erlang_version}), the previous one (ex: latest supported release candidate version otherwise the lastly supported stable version), namely, currently, ${erlang_version_candidate}
 
 Example:
@@ -120,15 +166,14 @@ For Debian-based distributions, you should preferably run beforehand, as root: '
 # Additional notes:
 
 # On some distributions (ex: Arch Linux), the wx module is not available, as
-# WxWidget is not detected.
+# wxWidgets is not detected.
 #
 # The root of the problem is that no /bin/wx-config executable is found.
 #
 # One may have to run, as root: 'cd /bin && ln -s wx-config-2.8 wx-config' for
 # example.
 #
-# Once Erlang is compiled, it can be tested with:
-# wx:demo().
+# Once Erlang is compiled, this backend can be tested with: wx:demo().
 #
 # Another related problem is that libtinfo.so might not be found. A solution is
 # to create a symlink to libncurses, which include it:
@@ -156,11 +201,18 @@ use_prefix=0
 #
 do_patch=1
 
+# By default, enforce a limit in CPU usage:
+do_cpulimit=0
 
-erlang_download_location="http://erlang.org/download"
+# Only for base (non-patch) release:
+#erlang_download_location="https://erlang.org/download"
+
+
+# See list in https://github.com/erlang/otp/releases:
+erlang_download_location="https://github.com/erlang/otp/releases/download/OTP-${erlang_version}"
 
 # The user that is to perform the build (everything but installation):
-build_user=$(id -un)
+build_user="$(id -un)"
 
 
 # Sets the wget variable appropriately.
@@ -169,7 +221,7 @@ set_wget()
 
 	if [ -z "${wget}" ]; then
 
-		wget=$(which wget)
+		wget="$(which wget)"
 
 		if [ ! -x "${wget}" ]; then
 
@@ -182,6 +234,8 @@ set_wget()
 
 }
 
+wget_opts="--progress=bar"
+
 
 
 # Read all known options:
@@ -191,19 +245,19 @@ token_eaten=0
 while [ $token_eaten -eq 0 ]; do
 
 	read_parameter="$1"
-	#echo "read_parameter = $read_parameter"
+	#echo "read_parameter = ${read_parameter}"
 
 	token_eaten=1
 
 
-	if [ "$1" = "${help_opt_short}" -o "$1" = "${help_opt_long}" ]; then
+	if [ "$1" = "${help_opt_short}" ] || [ "$1" = "${help_opt_long}" ]; then
 
 		echo "${usage}"
 		exit
 
 	fi
 
-	if [ "$1" = "${version_opt_short}" -o "$1" = "${version_opt_long}" ]; then
+	if [ "$1" = "${version_opt_short}" ] || [ "$1" = "${version_opt_long}" ]; then
 
 		echo "${erlang_version}"
 		exit
@@ -211,7 +265,7 @@ while [ $token_eaten -eq 0 ]; do
 	fi
 
 
-	if [ "$1" = "${previous_opt_short}" -o "$1" = "${previous_opt_long}" ]; then
+	if [ "$1" = "${previous_opt_short}" ] || [ "$1" = "${previous_opt_long}" ]; then
 
 		erlang_version="${erlang_version_candidate}"
 		erlang_md5="${erlang_md5_candidate}"
@@ -224,7 +278,7 @@ while [ $token_eaten -eq 0 ]; do
 	fi
 
 
-	if [ "$1" = "${doc_opt_short}" -o "$1" = "${doc_opt_long}" ]; then
+	if [ "$1" = "${doc_opt_short}" ] || [ "$1" = "${doc_opt_long}" ]; then
 
 		echo "Will manage the corresponding documentation."
 		do_manage_doc=0
@@ -233,7 +287,7 @@ while [ $token_eaten -eq 0 ]; do
 	fi
 
 
-	if [ "$1" = "${plt_opt_short}" -o "$1" = "${plt_opt_long}" ]; then
+	if [ "$1" = "${plt_opt_short}" ] || [ "$1" = "${plt_opt_long}" ]; then
 
 		echo "Will generate the PLT file ${plt_file} for Dialyzer."
 		do_generate_plt=0
@@ -242,7 +296,7 @@ while [ $token_eaten -eq 0 ]; do
 	fi
 
 
-	if [ "$1" = "${download_opt_short}" -o "$1" = "${download_opt_long}" ]; then
+	if [ "$1" = "${download_opt_short}" ] || [ "$1" = "${download_opt_long}" ]; then
 
 		echo "No file will be downloaded."
 		do_download=1
@@ -250,8 +304,19 @@ while [ $token_eaten -eq 0 ]; do
 
 	fi
 
+	if [ "$1" = "${limit_opt_short}" ] || [ "$1" = "${limit_opt_long}" ]; then
 
-	if [ "$1" = "${patch_opt_short}" -o "$1" = "${patch_opt_long}" ]; then
+		echo "Build will not be slowed down."
+		do_cpulimit=1
+		nice_opt=""
+		cpu_limit_expr=""
+
+		token_eaten=0
+
+	fi
+
+
+	if [ "$1" = "${patch_opt_short}" ] || [ "$1" = "${patch_opt_long}" ]; then
 
 		echo "No patch will be applied to the Erlang sources."
 		do_patch=1
@@ -266,10 +331,9 @@ while [ $token_eaten -eq 0 ]; do
 done
 
 
-# We had to define that variable, as for a (non-privileged) user U, at
-# least on some settings, sudo -u U <a command> will fail ("Sorry,
-# user U is not allowed to execute 'XXX' as U on H."), so now we
-# execute sudo iff strictly necessary:
+# We had to define that variable, as for a (non-priviledged) user U, at least on
+# some settings, sudo -u U <a command> will fail ("Sorry, user U is not allowed
+# to execute 'XXX' as U on H."), so now we execute sudo iff strictly necessary:
 #
 sudo_cmd=""
 
@@ -282,39 +346,39 @@ do_remove_build_tree=0
 
 if [ -z "${read_parameter}" ]; then
 
-   # Here no base installation directory was specified:
+	# Here no base installation directory was specified:
 
-   if [ $(id -u) -eq 0 ]; then
+	if [ "$(id -u)" = "0" ]; then
 
-	   if [ -z "${SUDO_USER}" ]; then
+		if [ -z "${SUDO_USER}" ]; then
 
-		   echo "Error, if this script is to be run as root, 'sudo' shall be used, so that build operations can be performed as a normal user (not with root privileges)." 1>&2
-		   exit 55
+			echo "Error, if this script is to be run as root, 'sudo' shall be used, so that build operations can be performed as a normal user (not with root priviledges)." 1>&2
+			exit 55
 
-	   fi
+		fi
 
-	   build_user="${SUDO_USER}"
+		build_user="${SUDO_USER}"
 
-	   # Run as root, no prefix specified, thus:
-	   use_prefix=1
+		# Run as root, no prefix specified, thus:
+		use_prefix=1
 
-	   # Thus not relevant:
-	   #prefix="/usr/local"
+		# Thus not relevant:
+		#prefix="/usr/local"
 
-	   echo "Run as sudo root, thus using default system installation directory, falling back to user '${build_user}' for the operations that permit it."
+		echo "Run as sudo root, thus using default system installation directory, falling back to user '${build_user}' for the operations that permit it."
 
-	   # So here sudo is a way to decrease, not increase, privileges:
-	   sudo_cmd="sudo -u ${build_user}"
+		# So here sudo is a way to decrease, not increase, priviledges:
+		sudo_cmd="sudo -u ${build_user}"
 
-   else
+	else
 
-	   prefix="${base_install_dir}/Erlang-${erlang_version}"
-	   echo "Not run as root, thus using default installation directory '${prefix}' (and user '${build_user}')."
+		prefix="${base_install_dir}/Erlang-${erlang_version}"
+		echo "Not run as root, thus using default installation directory '${prefix}' (and user '${build_user}')."
 
-	   # In this case the Erlang build tree will *not* be removed (as it is more
-	   # convenient for "more advanced" usage):
-	   #
-	   do_remove_build_tree=1
+		# In this case the Erlang build tree will *not* be removed (as it is
+		# more convenient for "more advanced" usage):
+		#
+		do_remove_build_tree=1
 
    fi
 
@@ -331,22 +395,38 @@ else
 fi
 
 
+if [ -n "${cpu_limit_expr}" ]; then
+
+	echo "The slowing down of the build is enabled and the cpulimit tool has been found, so limiting the CPU usage of that build to ${cpu_limit_percentage}% of a single core."
+
+elif [ $do_cpulimit -eq 0 ]; then
+
+	echo "Warning: slow down enabled, yet no 'cpulimit' executable found, so no such limitation is to take place (except 'nice', if enabled)." 1>&2
+
+fi
+
+
 #echo "do_download = $do_download"
 #echo "do_manage_doc = $do_manage_doc"
 #echo "do_generate_plt = $do_generate_plt"
 
 #echo "build_user=${build_user}"
 
-
+# On official site or on Github:
 erlang_src_prefix="otp_src_${erlang_version}"
 #erlang_src_prefix="otp-OTP-${erlang_version}"
 
 erlang_src_archive="${erlang_src_prefix}.tar.gz"
 
-# Not knowning currently where newer doc archives can be obtained:
-erlang_doc_prefix="otp_doc_html_${erlang_version}"
+# As documentation archives were not generated for patch versions (ex: 24.1.4),
+# only for "base" versions" (ex: 24.1):
+#
+#erlang_doc_prefix="$(echo "otp_doc_html_${erlang_version}" | awk -F. '{print otp_doc_html_$1"."$2""}')"
 
-erlang_doc_archive="${erlang_doc_prefix}.tar.gz"
+
+# on Github now:
+#erlang_doc_archive="${erlang_doc_prefix}.tar.gz"
+erlang_doc_archive="otp_doc_html_${erlang_version}.tar.gz"
 
 
 # Some early checkings:
@@ -374,7 +454,7 @@ if [ $check_ssl -eq 0 ]; then
 
 		read res
 
-		if [ ! "$res" = "y" ]; then
+		if [ ! "${res}" = "y" ]; then
 
 			echo "  Build stopped. Consider installing the SSL headers (typically a 'libssl-dev' package)." 1>&2
 
@@ -389,7 +469,7 @@ fi
 
 if [ $do_patch -eq 0 ]; then
 
-	patch_tool=$(which patch)
+	patch_tool="$(which patch)"
 
 	if [ ! -x "${patch_tool}" ]; then
 
@@ -402,7 +482,20 @@ if [ $do_patch -eq 0 ]; then
 fi
 
 
-md5sum=$(which md5sum)
+if [ -n "${nice_opt}" ]; then
+
+	echo "Warning: this installation is intentionally slowed down with 'nice' to better share computing resources." 1>&2
+
+fi
+
+if [ -n "${cpu_limit_expr}" ]; then
+
+	echo "Warning: this installation is intentionally slowed down with 'cpulimit' to avoid any overheat." 1>&2
+
+fi
+
+
+md5sum="$(which md5sum)"
 
 # Archives are not available by default:
 src_available=1
@@ -416,7 +509,7 @@ if [ $do_download -eq 0 ]; then
 
 		if [ -x "${md5sum}" ]; then
 
-			md5_res=$( ${md5sum} ${erlang_src_archive} )
+			md5_res=$( ${md5sum} "${erlang_src_archive}" )
 
 			computed_md5=$( echo ${md5_res}| awk '{printf $1}' )
 
@@ -444,9 +537,7 @@ if [ $do_download -eq 0 ]; then
 
 		echo "Downloading now ${erlang_target_src_url}"
 		set_wget
-		${sudo_cmd} ${wget} ${erlang_target_src_url} 1>/dev/null 2>&1
-
-		if [ ! $? -eq 0 ]; then
+		if ! ${sudo_cmd} ${wget} ${wget_opts} "${erlang_target_src_url}" ; then
 			echo "  Error while downloading ${erlang_target_src_url}, quitting." 1>&2
 			exit 15
 		fi
@@ -461,9 +552,7 @@ if [ $do_download -eq 0 ]; then
 
 			echo "Downloading now ${erlang_target_doc_url}"
 			set_wget
-			${sudo_cmd} ${wget} ${erlang_target_doc_url} 1>/dev/null 2>&1
-
-			if [ ! $? -eq 0 ]; then
+			if ! ${sudo_cmd} ${wget} ${wget_opts} ${erlang_target_doc_url}; then
 				echo "  Error while downloading ${erlang_target_doc_url}, quitting." 1>&2
 				exit 16
 			fi
@@ -502,9 +591,11 @@ if [ ! -x "${md5sum}" ]; then
 
 else
 
-	md5_res=$( ${md5sum} ${erlang_src_archive} )
+	echo "Checksum for ${erlang_src_archive}"
 
-	computed_md5=$( echo ${md5_res}| awk '{printf $1}' )
+	md5_res=$( ${md5sum} "${erlang_src_archive}" )
+
+	computed_md5=$( echo "${md5_res}"| awk '{printf $1}' )
 
 	if [ "${computed_md5}" = "${erlang_md5}" ]; then
 		echo "MD5 sum for Erlang source archive matches."
@@ -530,7 +621,7 @@ if [ $use_prefix -eq 0 ]; then
 
 	echo "Erlang version ${erlang_version} will be installed in ${prefix}."
 
-	${sudo_cmd} ${mkdir} -p ${prefix}
+	${sudo_cmd} ${mkdir} -p "${prefix}"
 
 	# Removes any previous extracted directory, renamed or not:
 	if [ -e "${erlang_extracted_prefix}" ]; then
@@ -557,21 +648,19 @@ else
 fi
 
 
-${sudo_cmd} ${tar} xvzf ${erlang_src_archive}
-
-if [ ! $? -eq 0 ]; then
+if ! ${sudo_cmd} ${nice_opt} ${cpu_limit_expr} ${tar} xf "${erlang_src_archive}"; then
 	echo "  Error while extracting ${erlang_src_archive}, quitting." 1>&2
 	exit 50
 fi
 
-initial_path=$(pwd)
+initial_path="$(pwd)"
 
 # Corrects any extracted root directory, like 'R15B03' instead of 'R15B03-1':
 if [ ! -d "${erlang_src_prefix}" ]; then
 
 	if [ -d "${erlang_extracted_prefix}" ]; then
 
-		${sudo_cmd} ${mv} -f ${erlang_extracted_prefix} ${erlang_src_prefix}
+		${sudo_cmd} ${mv} -f "${erlang_extracted_prefix}" "${erlang_src_prefix}"
 
 	else
 
@@ -584,7 +673,7 @@ fi
 
 # Starting from the source tree:
 
-cd ${erlang_src_prefix}
+cd "${erlang_src_prefix}"
 
 
 # Apparently not needed since Erlang 21.0, where 'infinity' is specified in
@@ -621,9 +710,7 @@ End-of-script
 
 	) > ceylan-auth.patch
 
-	${sudo_cmd} ${patch_tool} -p0 < ceylan-auth.patch
-
-	if [ ! $? -eq 0 ]; then
+	if ! ${sudo_cmd} ${patch_tool} -p0 < ceylan-auth.patch; then
 
 		echo "Error, the patching of Erlang sources (auth.erl) failed." 1>&2
 
@@ -658,7 +745,7 @@ fi
 
 echo "  Building Erlang environment..."
 
-if ! ${sudo_cmd} ./configure ${configure_opt} ${prefix_opt} ; then
+if ! ${sudo_cmd} ${nice_opt} ${cpu_limit_expr} ./configure ${configure_opt} ${prefix_opt}; then
 
 	echo "Configuration failed, exiting." 1>&2
 	exit 60
@@ -666,7 +753,7 @@ if ! ${sudo_cmd} ./configure ${configure_opt} ${prefix_opt} ; then
 fi
 
 
-if ! ${sudo_cmd} make; then
+if ! ${sudo_cmd} ${nice_opt} ${cpu_limit_expr} make; then
 
 	echo "Build failed, exiting." 1>&2
 	exit 61
@@ -675,7 +762,7 @@ fi
 
 
 # No sudo here:
-if ! make install; then
+if ! ${nice_opt} ${cpu_limit_expr} make install; then
 
 	echo "Installation failed, exiting." 1>&2
 	exit 62
@@ -689,12 +776,12 @@ echo "  Erlang successfully built and installed in ${prefix}."
 # More global than 'if [ $use_prefix -eq 0 ]; then' so that most installs
 # include these links:
 #
-if [ -n ${prefix} ]; then
+if [ -n "${prefix}" ]; then
 
 	# First, let's create a symbolic link so that this new version can be
 	# transparently used by emacs:
 	#
-	cd ${prefix}/lib/erlang
+	cd "${prefix}/lib/erlang"
 
 	# Exactly one match expected for the wildcard (ex: tools-2.8.2), useful to
 	# avoid having to update our ~/.emacs.d/init.el file whenever the 'tools'
@@ -711,7 +798,7 @@ if [ -n ${prefix} ]; then
 	${ln} -sf lib/jinterface-* jinterface
 
 	# Then go again in the install (not source) tree to create the base link:
-	cd ${prefix}/..
+	cd "${prefix}/.."
 
 	# Ex: we are in ${base_install_dir} now.
 
@@ -722,7 +809,7 @@ if [ -n ${prefix} ]; then
 
 	fi
 
-	${ln} -sf Erlang-${erlang_version} Erlang-current-install
+	${ln} -sf "Erlang-${erlang_version}" Erlang-current-install
 
 fi
 
@@ -731,7 +818,7 @@ if [ $do_manage_doc -eq 0 ]; then
 
 	if [ $use_prefix -eq 0 ]; then
 
-		cd ${prefix}/..
+		cd "${prefix}/.."
 
 	else
 
@@ -754,10 +841,7 @@ if [ $do_manage_doc -eq 0 ]; then
 
 	cd "${erlang_doc_root}"
 
-	${tar} xvzf ${initial_path}/${erlang_doc_archive}
-
-
-	if [ ! $? -eq 0 ]; then
+	if ! ${nice_opt} ${cpu_limit_expr} ${tar} xf "${initial_path}/${erlang_doc_archive}"; then
 		echo "  Error while extracting ${erlang_doc_archive}, quitting." 1>&2
 		exit 70
 	fi
@@ -771,7 +855,7 @@ if [ $do_manage_doc -eq 0 ]; then
 
 	fi
 
-	${ln} -sf ${erlang_doc_root} Erlang-current-documentation
+	${ln} -sf "${erlang_doc_root}" Erlang-current-documentation
 
 	echo "Erlang documentation successfully installed."
 
@@ -781,7 +865,7 @@ fi
 
 if [ $do_remove_build_tree -eq 0 ]; then
 
-	${rm} -rf ${initial_path}/${erlang_src_prefix}
+	${rm} -rf "${initial_path}/${erlang_src_prefix}"
 
 else
 
@@ -802,9 +886,7 @@ fi
 if [ $do_generate_plt -eq 0 ]; then
 
 	if [ $use_prefix -eq 1 ]; then
-
 		prefix="/usr/local"
-
 	fi
 
 	actual_plt_file="${prefix}/${plt_file}"
@@ -813,8 +895,7 @@ if [ $do_generate_plt -eq 0 ]; then
 	dialyzer_exec="${prefix}/bin/dialyzer"
 	erlang_beam_root="${prefix}/lib/erlang"
 
-	cd ${prefix}
-
+	cd "${prefix}"
 
 	if [ ! -x "${dialyzer_exec}" ]; then
 
@@ -843,22 +924,25 @@ if [ $do_generate_plt -eq 0 ]; then
 	# generating with '--output_plt ${actual_plt_file}' and doing '${ln} -s
 	# ${actual_plt_file} ${actual_plt_link}' we proceed the other way round:
 
-	# No sudo, as PLT file might be in system tree:
-	${dialyzer_exec} --build_plt -r ${erlang_beam_root} --output_plt ${actual_plt_link}
+	# sudo left out here, as PLT file might be in system tree:
+	#
+	# (this is the place where cpulimit is the most useful)
+	#
+	${nice_opt} ${cpu_limit_expr} ${dialyzer_exec} --build_plt -r ${erlang_beam_root} --output_plt ${actual_plt_link}
 	res=$?
 
-	if [ $res -eq 0 ]; then
+	if [ ${res} -eq 0 ]; then
 		echo "The Erlang PLT file was successfully generated."
-	elif [ $res -eq 2 ]; then
+	elif [ ${res} -eq 2 ]; then
 		echo "The Erlang PLT file was generated, but warnings were issued."
 	else
-		echo "  Error, the PLT generation failed (error code: $res)." 1>&2
+		echo "  Error, the PLT generation failed (error code: ${res})." 1>&2
 		exit 90
 	fi
 
 	# To include a PLT without knowing the current Erlang version:
 	# (reversed symlink better than a copy)
-	${ln} -s ${actual_plt_link} ${actual_plt_file}
+	${ln} -s "${actual_plt_link}" "${actual_plt_file}"
 
 fi
 

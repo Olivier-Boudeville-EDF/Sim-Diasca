@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2021 Olivier Boudeville
+% Copyright (C) 2014-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -35,9 +35,7 @@
 % a different set of conventions).
 %
 % See also:
-%
 % - the meta_utils module, for meta primitives less directly linked with syntax
-%
 % - the ast_scan module, to perform a full, strict traversal of an AST
 %
 -module(ast_utils).
@@ -188,7 +186,7 @@ check_ast( AST ) ->
 		{ ok, Warnings } ->
 			%display_error(
 			%  "Warnings, reported as errors: ~p~n",
-			%		   [ Warnings ] ),
+			%  [ Warnings ] ),
 			interpret_issue_reports( Warnings ),
 			%exit( warning_reported );
 			warning_reported;

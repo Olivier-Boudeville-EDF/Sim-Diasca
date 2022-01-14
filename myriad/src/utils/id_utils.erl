@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2021 Olivier Boudeville
+% Copyright (C) 2007-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -51,6 +51,13 @@
 % uuidgen_internal/0 exported for testing:
 -export([ generate_uuid/0, uuidgen_internal/0 ]).
 
+
+% Most basic integer identifiers.
+
+-type integer_id() :: non_neg_integer().
+% Integer identifiers start at 1.
+
+-export_type([ integer_id/0 ]).
 
 
 % Sortable identifier section.

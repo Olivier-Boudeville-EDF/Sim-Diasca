@@ -34,14 +34,46 @@ docutils_common_opt="--report=error --tab-width=4 --no-generator --no-datestamp 
 
 
 # Obtained from 'rst2html -h':
+
+# (a real issue is to protect correctly parameters like '--math-output="aaa
+# bbb"' - never working here with rst2html)
+
 docutils_html_opt="${docutils_common_opt} --cloak-email-addresses --link-stylesheet --no-section-numbering"
+
+
+# --math-output=MathML: (ERROR/3) Environment not supported! Supported
+# --environment: "matrix".
+#                       (ERROR/3) Unknown LaTeX command: overrightarrow
+
+# --math-output=HTML: not the right matrices
+
+# --math-output=MathJax: requires MathJax files or outbound accesses Adds:
+# <script type="text/javascript"
+# src="file:/usr/share/javascript/mathjax/MathJax.js?config=TeX-AMS_CHTML"></script>
+# (not existing by default, corresponding to MathJax version 2, not version 3)
+
+# --math-output="MathJax
+# --https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js": works yet
+# --performs a cross-scripting web access
+
+#<script async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_CHTML"></script>
+
+
+# --math-output=LaTeX: not interpreted
+
+
+#one of "MathML", "HTML", "MathJax" or "LaTeX". Default: "HTML math.css"
+#--math-output='MathJax https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js'"
 
 
 # Obtained from 'rst2latex -h':
 doc_class=article
 #doc_class=report
 
-# Allows to directly add inlined graphics:
+
+# Allows to directly add inlined graphics; \usepackage{amsmath} not strictly
+# necessary apparently:
+#
 docutils_pdf_opt="${docutils_common_opt} --documentclass=${doc_class} --compound-enumerators --latex-preamble=\\usepackage{graphicx}"
 
 
@@ -216,10 +248,36 @@ manage_rst_to_html()
 
 	echo "${begin_marker} building HTML target ${target} from source"
 
+	# For some reason we have *never* been able to store the -math-output option
+	# in a separate variable. We have always:
+	#   - either, if using ${test_opt}: 'rst2html: error: Maximum 2 arguments
+	#     allowed.'
+	#   - or if using "${test_opt}": '# (ERROR/3) math-output format ""mathjax"
+	# not supported falling back to "latex"
 
-	#echo ${docutils_html} ${docutils_html_opt} "${source}" "${target}"
-	${docutils_html} ${docutils_html_opt} "${source}" "${target}"
+	#test_opt='--math-output="MathJax file://hello"'
+	#test_opt="--math-output=\"MathJax file://hello\""
 
+	#${docutils_html} ${docutils_html_opt} ${test_opt} "${source}" "${target}"
+
+	# So finally it had to be specified literally:
+	#
+
+	# It supposes that MathJax is installed (ex: 'pacman -Sy mathjax') and that
+	# typically a local symlink points to it: 'ln -s /usr/share/mathjax';
+	# otherwise we default to a basic, non-MathJax output and the '* Unknown
+	# equation environment bmatrix' error is likely:
+	#
+	if [ -e "mathjax" ]; then
+
+		${docutils_html} ${docutils_html_opt} --math-output="MathJax mathjax/tex-mml-chtml.js" "${source}" "${target}"
+
+	else
+
+		echo "Warning: no local MathJax available, math formulas may be ugly." 1>&2
+		${docutils_html} ${docutils_html_opt} "${source}" "${target}"
+
+	fi
 
 	if [ ! $? -eq 0 ]; then
 		echo "${begin_marker} Error: HTML generation with ${docutils_html} failed for ${source}." 1>&2

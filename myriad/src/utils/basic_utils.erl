@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2021 Olivier Boudeville
+% Copyright (C) 2007-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -66,7 +66,7 @@
 		  stop/0, stop/1, stop_on_success/0, stop_on_failure/0,
 		  stop_on_failure/1,
 		  identity/1,
-		  check_undefined/1, check_all_undefined/1,
+		  check_undefined/1, check_all_undefined/1, are_all_defined/1,
 		  check_defined/1, check_not_undefined/1, check_all_defined/1,
 		  ignore_unused/1,
 		  freeze/0, crash/0, enter_infinite_loop/0,
@@ -84,8 +84,8 @@
 %
 % - or, maybe better:
 %
-% erlang:element( 2, erlang:element( 2, erlang:process_info( self(),
-%   current_function ) ) ) ).
+% erlang:element(2, erlang:element(2,
+%   erlang:process_info(self(), current_function)))).
 
 
 
@@ -145,6 +145,14 @@
 
 -type error_reason() :: reason().
 
+-type error_diagnosis() :: ustring().
+% Designates a plain string explaning an error.
+
+
+-type error_bin_diagnosis() :: bin_string().
+% Designates a binary string explaning an error.
+
+
 
 -type error_type() :: atom().
 % Designates an error type (a specific, simple error reason), when we know it is
@@ -154,25 +162,25 @@
 -type error_tuploid() :: error_tuploid( error_reason() ).
 % An error pseudo-tuple, i.e. an error tuple (ex: {invalid_name,1.0}) or a
 % single error term (instead of a tuple with a single element), preferably an
-% atom (like 'invalid_password').
+% atom (like 'invalid_password'). Typically to be thrown.
 %
 % See also: throw_diagnosed/{1,2}.
 
 
 -type error_tuploid( T ) :: type_utils:tuploid( T ).
-% To specify at least some information about the error type.
+% To specify at least some information about the error type of a tuploid.
 
 
--type error_message() :: ustring().
+-type error_message() :: error_diagnosis() | error_bin_diagnosis().
 % A textual description associated to an error (typically for richer traces).
 
 
 -type diagnosed_error_reason() :: { error_tuploid(), error_message() }.
-% An error with its diagnosis.
+% An error with its textual diagnosis.
 
 
 -type diagnosed_error_reason( T ) :: { error_tuploid( T ), error_message() }.
-% An error with its diagnosis.
+% An error with its textual diagnosis.
 
 
 -type error_term() :: { 'error', error_reason() } | error_reason().
@@ -219,7 +227,7 @@
 
 -type diagnosed_fallible( TSuccess, TFailure ) ::
 		fallible( TSuccess, diagnosed_error_term( TFailure ) ).
-% Thus either {ok,T} or {error,{ErrorTuploid,ErrorMsg}}.
+% Thus either {ok,TSuccess} or {error,{TuploidTFailure,ErrorMsg}}.
 
 
 -type external_data() :: term().
@@ -259,7 +267,13 @@
 
 
 -type positive_index() :: pos_integer().
-% For all non-null index (i.e. the ones that start at 1).
+% For all non-null indices (i.e. the ones that start at 1). This is the
+% convention that Myriad enforces as much as possible.
+
+
+-type zero_index() :: non_neg_integer().
+% For the indices that may be null, typically starting at zero (ex: in some file
+% formats). Whenever possible, prefer positive_index/0.
 
 
 -type module_name() :: atom().
@@ -303,6 +317,10 @@
 % To store (UNIX-like) user names.
 
 
+-type activation_switch() :: 'enable' | 'disable'.
+% To specify whether a given feature shall be enabled or not.
+
+
 -type comparison_result() :: 'lower' | 'equal' | 'higher'.
 % Possible outcome of a partial-order comparison of two elements.
 
@@ -337,9 +355,9 @@
 
 -export_type([ void/0, count/0, non_null_count/0, level/0,
 			   bit_mask/0, message/0, pid_or_port/0, atom_key/0,
-			   reason/0, exit_reason/0,
-			   error_reason/0, error_type/0, error_tuploid/0,
-			   error_message/0,
+			   reason/0, exit_reason/0, error_reason/0,
+			   error_diagnosis/0, error_bin_diagnosis/0,
+			   error_type/0, error_tuploid/0, error_message/0,
 			   diagnosed_error_reason/0, error_term/0, diagnosed_error_term/0,
 			   base_status/0, maybe/1, wildcardable/1,
 			   fallible/1, fallible/2,
@@ -347,10 +365,11 @@
 			   external_data/0, unchecked_data/0, user_data/0,
 			   accumulator/0,
 			   version_number/0, version/0, two_digit_version/0, any_version/0,
-			   positive_index/0,
+			   positive_index/0, zero_index/0,
 			   module_name/0, function_name/0, argument/0, arguments/0,
 			   command_spec/0, layer_name/0, record_name/0, field_name/0,
 			   user_name/0, atom_user_name/0,
+			   activation_switch/0,
 			   comparison_result/0, execution_target/0, execution_context/0,
 			   exception_class/0, exception_term/0, status_code/0,
 			   fixme/0 ]).
@@ -370,7 +389,9 @@
 
 -type format_string() :: text_utils:format_string().
 -type format_values() :: text_utils: format_values().
+
 -type ustring() :: text_utils:ustring().
+-type bin_string() :: text_utils:bin_string().
 
 -type atom_node_name() :: net_utils:atom_node_name().
 
@@ -507,6 +528,21 @@ check_all_defined( List ) ->
 
 
 
+% @doc Returns whether all the elements specified are defined (that is are not
+% equal to the 'undefined' atom).
+%
+-spec are_all_defined( [ term() ] ) -> boolean().
+are_all_defined( _Elems=[] ) ->
+	true;
+
+are_all_defined( _Elems=[ undefined | _T ] ) ->
+	false;
+
+are_all_defined( _Elems=[ _E | T ] ) ->
+	are_all_defined( T ).
+
+
+
 % @doc Ignores specified argument.
 %
 % Useful to define, for debugging purposes, terms that will be (temporarily)
@@ -519,7 +555,7 @@ ignore_unused( _Term ) ->
 	% Preferred silent:
 	ok.
 	%trace_utils:warning_fmt( "unused term (~p) ignored "
-	%			 "(thanks to basic_utils:ignore_unused/1).", [ _Term ] ).
+	%               "(thanks to basic_utils:ignore_unused/1).", [ _Term ] ).
 
 
 
@@ -1553,7 +1589,7 @@ get_process_specific_value( Pid ) ->
 	Z = T+1,
 
 	% Hash part probably a bit overkill:
-	Res = X*Y*Z + erlang:phash2( erlang:make_ref() ),
+	Res = X*Y*Z + erlang:phash2( erlang:make_ref(), _MaxRange=1 bsl 32 ),
 
 	%trace_utils:debug_fmt( "Process-specific value: ~B.", [ Res ] ),
 	Res.
@@ -1589,7 +1625,7 @@ get_process_size( Pid ) ->
 	%ProcessPropList = erlang:process_info( Pid ),
 
 	%trace_utils:debug_fmt( "Process info for ~w:~n~p",
-	%					   [ Pid, ProcessPropList ] ),
+	%                       [ Pid, ProcessPropList ] ),
 
 	% Includes call stack, heap, and internal structures:
 	% (apparentlyalready in bytes, not words:

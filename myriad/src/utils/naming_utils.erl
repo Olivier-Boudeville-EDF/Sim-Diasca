@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2021 Olivier Boudeville
+% Copyright (C) 2003-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -38,6 +38,7 @@
 -export([ register_as/2, register_as/3, register_or_return_registered/2,
 		  unregister/2,
 
+		  vet_registration_name/1, vet_registration_scope/1,
 		  registration_to_look_up_scope/1,
 
 		  get_registered_pid_for/1, get_registered_pid_for/2,
@@ -63,10 +64,12 @@
 							| 'none'.
 % Not to be mixed up with a look-up scope.
 
+
 -type look_up_scope() :: 'global'
 					   | 'local'
 					   | 'local_and_global'
-					   | 'local_otherwise_global'.
+					   | 'local_otherwise_global'
+					   | 'global_otherwise_local'.
 % Not to be mixed up with a registration scope.
 
 
@@ -280,6 +283,35 @@ unregister( _Name, none ) ->
 
 
 
+% @doc Tells whether the specified term is a legit registration name.
+-spec vet_registration_name( term() ) -> boolean().
+vet_registration_name( Name ) when is_atom( Name ) ->
+	true;
+
+vet_registration_name( _Other ) ->
+	false.
+
+
+
+% @doc Tells whether the specified term is a legit registration scope.
+-spec vet_registration_scope( term() ) -> boolean().
+vet_registration_scope( global_only ) ->
+	true;
+
+vet_registration_scope( local_only ) ->
+	true;
+
+vet_registration_scope( local_and_global ) ->
+	true;
+
+vet_registration_scope( none ) ->
+	true;
+
+vet_registration_scope( _Other ) ->
+	false.
+
+
+
 % @doc Returns the PID that should be already registered, as specified name.
 %
 % Local registering will be requested first, if not found global one will be
@@ -349,6 +381,29 @@ get_registered_pid_for( Name, _RegistrationScope=global ) ->
 
 	end;
 
+get_registered_pid_for( Name, _RegistrationScope=global_otherwise_local ) ->
+
+	try
+
+		get_registered_pid_for( Name, global )
+
+	catch
+
+		{ not_registered_globally, _Name } ->
+
+			try
+
+				get_registered_pid_for( Name, local )
+
+			catch
+
+				{ not_registered_locally, Name } ->
+					throw( { neither_registered_globally_nor_locally, Name } )
+
+			end
+
+	end;
+
 % So that the atom used for registration can be used for look-up as well,
 % notably in static methods (see the registration_scope defines).
 %
@@ -380,9 +435,10 @@ get_locally_registered_pid_for( Name, TargetNode ) ->
 
 
 % @doc Returns a list of the names of the registered processes, for specified
-% look-up scope.
+% global or local look-up scope.
 %
 -spec get_registered_names( look_up_scope() ) -> [ registration_name() ].
+% Preferring not matching other look-up scopes:
 get_registered_names( _LookUpScope=global ) ->
 	global:registered_names();
 
@@ -484,6 +540,17 @@ is_registered( Name, _LookUpScope=local_and_global ) ->
 							"globally registered; the ones that are are:~n  ~p",
 							[ Name, get_registered_names( global ) ] ) ),
 
+					not_registered;
+
+				OtherPid ->
+
+					cond_utils:if_defined( myriad_debug_registration,
+						trace_utils:warning_fmt( "The name '~ts' is "
+							"globally registered, but to a PID (~w) different "
+							"from the local one (~w), hence considered NOT "
+							"registered.", [ Name, OtherPid, Pid ] ),
+						basic_utils:ignore_unused( OtherPid	) ),
+
 					not_registered
 
 			end
@@ -497,6 +564,18 @@ is_registered( Name, _LookUpScope=local_otherwise_global ) ->
 
 		not_registered ->
 			is_registered( Name, global );
+
+		Pid ->
+			Pid
+
+	end;
+
+is_registered( Name, _LookUpScope=global_otherwise_local ) ->
+
+	case is_registered( Name, global ) of
+
+		not_registered ->
+			is_registered( Name, local );
 
 		Pid ->
 			Pid
@@ -536,20 +615,10 @@ wait_for_registration_of( Name, _LookUpScope=local_and_global ) ->
 	wait_for_local_registration_of( Name );
 
 wait_for_registration_of( Name, _LookUpScope=local_otherwise_global ) ->
-	try
+	wait_for_local_otherwise_global_registration_of( Name );
 
-		wait_for_local_registration_of( Name )
-
-	catch _ ->
-
-		cond_utils:if_defined( myriad_debug_registration,
-			trace_utils:debug_fmt( "Time-out when waiting for a local "
-				"registration of '~ts', switching to a global look-up.",
-				[ Name ] ) ),
-
-		wait_for_global_registration_of( Name )
-
-	end;
+wait_for_registration_of( Name, _LookUpScope=global_otherwise_local ) ->
+	wait_for_global_otherwise_local_registration_of( Name );
 
 wait_for_registration_of( Name, _LookUpScope=none ) ->
 	throw( { no_look_up_scope_for, Name } );
@@ -619,6 +688,96 @@ wait_for_local_registration_of( Name, SecondsToWait ) ->
 		undefined ->
 			timer:sleep( 1000 ),
 			wait_for_local_registration_of( Name, SecondsToWait-1 );
+
+		Pid ->
+			Pid
+
+	end.
+
+
+
+% @doc Waits (up to 10 seconds) until specified name is locally, otherwise
+% globally, registered.
+%
+% Returns the resolved PID, or throws a {registration_waiting_timeout, Scope,
+% Name} exception.
+%
+-spec wait_for_local_otherwise_global_registration_of( registration_name() ) ->
+																pid().
+wait_for_local_otherwise_global_registration_of( Name ) ->
+	wait_for_local_otherwise_global_registration_of( Name, _Seconds=10 ).
+
+
+
+% @doc Waits (up to to the specified number of seconds) until specified name is
+% locally, otherwise globally registered.
+%
+% Returns the resolved PID, or throws a {registration_waiting_timeout, Scope,
+% Name} exception.
+%
+wait_for_local_otherwise_global_registration_of( Name, _Seconds=0 ) ->
+	throw( { registration_waiting_timeout, Name, local_otherwise_global } );
+
+wait_for_local_otherwise_global_registration_of( Name, SecondsToWait ) ->
+	case erlang:whereis( Name ) of
+
+		undefined ->
+			case global:whereis_name( Name ) of
+
+				undefined ->
+					timer:sleep( 1000 ),
+					wait_for_local_otherwise_global_registration_of( Name,
+						SecondsToWait-1 );
+
+				Pid ->
+					Pid
+
+			end;
+
+		Pid ->
+			Pid
+
+	end.
+
+
+
+% @doc Waits (up to 10 seconds) until specified name is globally, otherwise
+% locally, registered.
+%
+% Returns the resolved PID, or throws a {registration_waiting_timeout, Scope,
+% Name} exception.
+%
+-spec wait_for_global_otherwise_local_registration_of( registration_name() ) ->
+																pid().
+wait_for_global_otherwise_local_registration_of( Name ) ->
+	wait_for_global_otherwise_local_registration_of( Name, _Seconds=10 ).
+
+
+
+% @doc Waits (up to to the specified number of seconds) until specified name is
+% globally, otherwise locally registered.
+%
+% Returns the resolved PID, or throws a {registration_waiting_timeout, Scope,
+% Name} exception.
+%
+wait_for_global_otherwise_local_registration_of( Name, _Seconds=0 ) ->
+	throw( { registration_waiting_timeout, Name, global_otherwise_local } );
+
+wait_for_global_otherwise_local_registration_of( Name, SecondsToWait ) ->
+	case global:whereis_name( Name ) of
+
+		undefined ->
+			case erlang:whereis( Name ) of
+
+				undefined ->
+					timer:sleep( 1000 ),
+					wait_for_global_otherwise_local_registration_of( Name,
+						SecondsToWait-1 );
+
+				Pid ->
+					Pid
+
+			end;
 
 		Pid ->
 			Pid

@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2021 Olivier Boudeville
+% Copyright (C) 2003-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -134,8 +134,15 @@
 -type entry() :: { key(), value() }.
 -type entry( K, V ) :: { K, V }.
 
+-type atom_entry() :: entry( atom(), term() ).
+% Very common, including in proplists.
+
 -type entries() :: [ entry() ].
 -type entries( K, V ) :: [ { K, V } ].
+
+-type maybe_entry() :: { key(), maybe( value() ) }.
+-type maybe_entries() :: [ maybe_entry() ].
+
 
 -type entry_count() :: basic_utils:count().
 
@@ -160,7 +167,8 @@
 -type description_type() :: bullet() | 'user_friendly' | 'full' | 'internal'.
 
 
--export_type([ key/0, value/0, entry/0, entry/2, entries/0, entries/2,
+-export_type([ key/0, value/0, entry/0, entry/2, atom_entry/0,
+			   entries/0, entries/2, maybe_entry/0, maybe_entries/0,
 			   entry_count/0, bucket/0, bucket/2, bucket_count/0,
 			   hashtable/0, bullet/0, description_type/0 ]).
 
@@ -278,12 +286,12 @@ add_diagnosed_entries( Entries, Hashtable ) ->
 
 					% Implicitly, Diag is 'updated' here:
 					( _Entry={K,V}, _Acc={ Table, _Diag } ) ->
-						 % Returns directly { NewTable, NewDiagnosis }:
+						 % Returns directly {NewTable, NewDiagnosis}:
 						 add_diagnosed_entry( K, V, Table )
 
-					end,
-					_InitialAcc={ Hashtable, _InitialDiag=updated },
-					_List=Entries ).
+				 end,
+				 _InitialAcc={ Hashtable, _InitialDiag=updated },
+				 _List=Entries ).
 
 
 

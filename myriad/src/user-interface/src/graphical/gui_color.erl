@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2021 Olivier Boudeville
+% Copyright (C) 2010-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -44,28 +44,110 @@
 		  get_random_colors/1 ]).
 
 
+-include("gui_color.hrl").
+
+
 % For related defines:
 -include("gui.hrl").
 
 
 -type color_by_name() :: atom().
 
--type color_by_decimal() :: { byte(), byte(), byte() } | 'none'.
-% No alpha coordinate here.
+-type color_by_decimal() :: { Red :: byte(), Green :: byte(), Blue :: byte() }.
+% RGB (integer, in [0;255]) color; no alpha coordinate here.
 
--type color_by_decimal_with_alpha() :: { byte(), byte(), byte(), byte() }
-									 | 'none'.
+-type color_by_decimal_with_alpha() ::
+		{ Red :: byte(), Green :: byte(), Blue :: byte(), Alpha :: byte() }.
+% RGBA (integer, in [0;255]) color.
 
 
 -type color() :: color_by_name() | color_by_decimal().
+% Any kind of RGB (integer) color.
 
 
--export_type ([ color_by_name/0,
-				color_by_decimal/0, color_by_decimal_with_alpha/0,
-				color/0 ]).
+-type color_coordinate() :: float().
+% Color coordinate, in [0,1].
+
+-type alpha_coordinate() :: color_coordinate().
+% An alpha-transparency color coordinate.
+
+
+
+-type render_rgb_color() :: { Red :: color_coordinate(),
+			Green :: color_coordinate(), Blue :: color_coordinate() }.
+% A floating-point RGB color (whose coordinates are typically in [0.0, 1.0]).
+%
+% The three components shall be encoded with the sRGB transfer function.
+%
+% For example useful with OpenGL.
+
+
+-type render_rgba_color() :: { Red ::color_coordinate(),
+			Green :: color_coordinate(), Blue ::color_coordinate(),
+			Alpha :: alpha_coordinate() }.
+% A floating-point RGBA color.
+%
+% The first three components (RGB) shall be encoded with the sRGB transfer
+% function.
+%
+% For example useful with OpenGL.
+
+
+-type render_color() :: render_rgb_color() | render_rgba_color().
+% A floating-point RGB or RGBA color.
+%
+% The first three components (RGB) shall be encoded with the sRGB transfer
+% function.
+%
+% For example useful with OpenGL.
+
+
+
+-type color_buffer() :: rgb_color_buffer() | rgba_color_buffer().
+% A buffer of pixel colors coded as a sequence of RGB or RGBA binary elements
+% (ex: RGBRGBRGB..., or RGBARGBARGBA...), from the top-left pixel to
+% bottom-right one, row per row.
+%
+% Useful for direct image manipulation.
+
+
+-type rgb_color_buffer() :: binary().
+% A buffer of pixel colors coded as a sequence of RGB binary elements
+% (RGBRGBRGB), from the top-left pixel to bottom-right one, row per row.
+%
+% Useful for direct image manipulation.
+
+
+-type rgba_color_buffer() :: binary().
+% A buffer of pixel colors coded as a sequence of RGBA binary elements
+% (RGBARGBARGBA), from the top-left pixel to bottom-right one, row per row.
+%
+% Useful for direct image manipulation.
+
+
+-type alpha_buffer() :: binary().
+% A buffer of pixel alpha coordinates, from the top-left pixel to bottom-right
+% one, row per row.
+%
+% Useful for direct image manipulation.
+
+
+-export_type([ color_by_name/0,
+
+			   color_by_decimal/0, color_by_decimal_with_alpha/0,
+			   color/0,
+
+			   color_coordinate/0, alpha_coordinate/0,
+			   render_rgb_color/0, render_rgba_color/0, render_color/0,
+
+			   color_buffer/0, rgb_color_buffer/0, rgba_color_buffer/0,
+			   alpha_buffer/0 ]).
 
 
 % Shorthands:
+
+-type count() :: basic_utils:count().
+
 -type ustring() :: text_utils:ustring().
 
 
@@ -233,14 +315,12 @@ get_colors() ->
 % @doc Returns the RGB definition of the color specified by name (atom) or
 % directly as a triplet of color components.
 %
--spec get_color( color() | 'none' ) -> color_by_decimal().
+% No 'undefined' color (meaning transparent) accepted.
+%
+-spec get_color( color() ) -> color_by_decimal().
 get_color( Color={ _R, _G, _B } ) ->
 	% Optimised for this most frequent form (first pattern):
 	Color;
-
-get_color( none ) ->
-	% none is a special case, for example to disable filling (transparent):
-	none;
 
 get_color( ColorName ) when is_atom( ColorName ) ->
 	case proplists:get_value( ColorName, get_colors() ) of
@@ -261,12 +341,12 @@ get_color_for_gnuplot( _Color={ _R, _G, _B } ) ->
 	throw( hexadecimal_conversion_not_implemented );
 
 get_color_for_gnuplot( ColorName ) ->
-	io_lib:format( "~ts", [ ColorName ] ).
+	text_utils:format( "~ts", [ ColorName ] ).
 
 
 
 % @doc Returns a list of the specified number of different colors.
--spec get_random_colors( basic_utils:count() ) -> [ color_by_decimal() ].
+-spec get_random_colors( count() ) -> [ color_by_decimal() ].
 get_random_colors( ColorCount ) ->
 
 	AllColors = get_colors(),

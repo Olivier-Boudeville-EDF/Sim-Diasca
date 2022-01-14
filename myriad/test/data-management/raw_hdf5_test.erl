@@ -1,4 +1,4 @@
-% Copyright (C) 2015-2021 Olivier Boudeville
+% Copyright (C) 2015-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -23,10 +23,10 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
-% Creation date: Friday, July 31, 2015
+% Creation date: Friday, July 31, 2015.
 
 
-% Unit tests for the HDF5 low-level support, i.e. relying directly on our
+% <b>Unit tests for the HDF5 low-level support</b>, i.e. relying directly on our
 % erlhdf5 fork (https://github.com/Olivier-Boudeville-EDF/erlhdf5) rather than
 % on our higher-level hdf5_support module.
 %
@@ -188,10 +188,10 @@ get_hyperslab_settings( S, TupleSize ) when S =:= two_dim_integer
 
 	% With the two_dim_int example, we now target:
 	%
-	%       [ {   1,   2,   3 },
-	%		  { 100, 101, 102 },
-	%		  {   7,   8,   9 },
-	%		  {  10,  11,  12 } ],
+	% [ {   1,   2,   3 },
+	%   { 100, 101, 102 },
+	%   {   7,   8,   9 },
+	%   {  10,  11,  12 } ],
 	%
 	% thus we want to replace the second line (tuple) by { 100, 101, 102 }; this
 	% corresponds to the following in-file hyperslab:
@@ -243,7 +243,7 @@ run( TestFixture ) ->
 	FileName = text_utils:format( "raw_hdf5_test-fixture-~p.hdf5",
 								  [ TestFixture ] ),
 
-	test_facilities:display( "~nStarting by writing a new '~ts' HDF5 file "
+	test_facilities:display( "~nStarting by writing a '~ts' HDF5 file "
 		"for test fixture ~p.", [ FileName, TestFixture ] ),
 
 	{ ok, WriteFile } = erlhdf5:h5fcreate( FileName, 'H5F_ACC_TRUNC' ),
@@ -293,7 +293,7 @@ run( TestFixture ) ->
 
 	DatasetName = "/my-dataset",
 
-	% Creates a new dataset:
+	% Creates a dataset:
 	{ ok, Dataset } = erlhdf5:h5dcreate( WriteFile, DatasetName, CellType,
 										 Dataspace, DatasetPropList ),
 
@@ -351,11 +351,11 @@ run( TestFixture ) ->
 	% Reads dataset:
 	{ ok, RawReadData } = case MetaDatatype of
 
-			native_integer ->
-				erlhdf5:h5lt_read_dataset_int( ReadFile, DatasetName );
+		native_integer ->
+			erlhdf5:h5lt_read_dataset_int( ReadFile, DatasetName );
 
-			native_long_float ->
-				erlhdf5:h5lt_read_dataset_double( ReadFile, DatasetName )
+		native_long_float ->
+			erlhdf5:h5lt_read_dataset_double( ReadFile, DatasetName )
 
 	end,
 
@@ -372,10 +372,10 @@ run( TestFixture ) ->
 							 "(overwriting in full)." ),
 
 	% For example, in the two_dim_int case, InitialData = [
-	%			 { 500, 501, 502 },
-	%			 { 503, 504, 505 },
-	%			 { 506, 507, 508 },
-	%			 { 509, 510, 511 } ],
+	%   { 500, 501, 502 },
+	%   { 503, 504, 505 },
+	%   { 506, 507, 508 },
+	%   { 509, 510, 511 } ],
 
 
 	% First let's get the target dataset (from the already opened file) that
@@ -385,10 +385,10 @@ run( TestFixture ) ->
 	{ ok, Rank } = erlhdf5:h5ltget_dataset_ndims( ReadFile, DatasetName ),
 
 	% With the two_dim_int example, FullUpdateData = [
-	%				   { 1,   2,  3 },
-	%				   { 4  , 5,  6 },
-	%				   { 7,   8,  9 },
-	%				   { 10, 11, 12 } ],
+	%   { 1,   2,  3 },
+	%   { 4  , 5,  6 },
+	%   { 7,   8,  9 },
+	%   { 10, 11, 12 } ],
 
 	% Then fully overwrites it with different data:
 	ok = erlhdf5:h5dwrite( ReadDataset, FullUpdateData ),

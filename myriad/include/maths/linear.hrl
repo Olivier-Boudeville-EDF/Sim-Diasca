@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2021 Olivier Boudeville
+% Copyright (C) 2003-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,14 +25,38 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 
 
-% A threshold to denote unbounded values:
-%
-% (corresponds to the maximum value of 32-bit floats, i.e. the maximum
-% representable IEEE 754 floating-point value)
-%
--define( infinity, 3.402823e+38 ).
-
-
 % To properly format (as text), typically coordinates:
 -define( printout_width, "14" ).
--define( printout_precision, "10" ).
+
+
+% For floats, precision is the number of digits after the decimal point. The
+% default precision is 6.
+%
+-define( printout_precision, "2" ).
+
+
+% Finally we do not set a maximum width, we let the necessary one happen and
+% adjust accordingly; otherwise, depending on the precision and the part of the
+% float before/after the decimal, it may not be correctly represented as a
+% string (resulting in "****").
+%
+% Hopefully these format strings are resolved at compile-time:
+
+-define( coord_float_format,
+		 "~" ++ ?printout_width ++ "." ++ ?printout_precision ++ ". f" ).
+
+% Not fixed-width:
+%-define( coord_float_format, "~." ++ ?printout_precision ++ ". f" ).
+
+
+% For integer, the precision corresponds to the base, not of interest here (we
+% use of course the default, 10):
+%
+%-define( coord_integer_format,
+%         "~" ++ ?printout_width ++ "." ++ ?printout_precision ++ ". B" ).
+
+-define( coord_integer_format, "~" ++ ?printout_width ++ ".. B" ).
+
+
+% Relatively aggressive inlining for basic operations:
+-define( inline_size, 48 ).
