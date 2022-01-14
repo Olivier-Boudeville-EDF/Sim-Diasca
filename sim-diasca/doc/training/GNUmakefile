@@ -1,10 +1,12 @@
 SIM_DIASCA_TOP = ../..
 
 
+.PHONY: doc html pdf doc-local clean clean-local info-doc info-local-doc
+
 MODULES_DIRS = correction
 
 
-TRAINING_PREFIX = SimDiasca-training
+TRAINING_PREFIX = Sim-Diasca-training
 
 OVERALL_DOCUMENT_SOURCE = $(TRAINING_PREFIX).rst
 
@@ -19,7 +21,12 @@ TRAINING_ARCHIVE_FILENAME = $(TRAINING_ARCHIVE).tar.bz2
 
 
 doc:
-	@echo "  Run 'make full-doc' to generate the Sim-Diasca Training material (in english)."
+	@echo "  Run 'make full-doc' to generate the Sim-Diasca Training material (in English)."
+
+
+html: full-html
+
+pdf: full-pdf
 
 
 generate-training-archive: clean full-doc

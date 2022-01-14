@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 %
 % This file is part of the Sim-Diasca training material.
 %
@@ -33,9 +33,9 @@ construct( State, ActorSettings, MachineName, InitialCanCount, CanCost )
 										?trace_categorize(MachineName) ),
 
 	?send_notice_fmt( ActorState,
-					"Creating a new soda vending machine named '~ts', "
-					"having initially ~B can(s), costing each ~B euro(s).",
-					[ MachineName, InitialCanCount, CanCost ] ),
+		"Creating a soda vending machine named '~ts', "
+		"having initially ~B can(s), costing each ~B euro(s).",
+		[ MachineName, InitialCanCount, CanCost ] ),
 
 	StockProbeRef = class_Probe:new(
 		text_utils:format( "~ts Soda Stock Probe", [ MachineName ] ),

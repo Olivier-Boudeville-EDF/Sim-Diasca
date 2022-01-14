@@ -1,0 +1,123 @@
+=========================================================================
+Welcome to the Sim-Diasca PROJECT_VERSION_TAG Documentation Overview Page
+=========================================================================
+
+--------------
+Public Version
+--------------
+
+
+.. role:: raw-html(raw)
+   :format: html
+
+.. role:: raw-latex(raw)
+   :format: latex
+
+
+.. Unable to have proper table formatting without specialising:
+
+
+.. Scale does not seem taken into account:
+:raw-html:`<center><table><tr colspan="2"><img src="sim-diasca.png" style="width:500px"></tr><tr><td><img src="logo-EDF-english.png" style="width:150px"></td><td><img src="lgpl-v3-logo-bordered.png" style="width:140px"></td></tr></table>`
+
+
+:raw-latex:`\begin{center} \begin{tabular}{c c c} \multicolumn{2}{c}{\includegraphics[scale=0.3]{sim-diasca.png}} \\  \includegraphics[scale=0.4]{logo-EDF-english.png} & \includegraphics[scale=0.8]{lgpl-v3-logo-bordered.png} \\ \end{tabular} \end{center}`
+
+
+.. role:: raw-html(raw)
+   :format: html
+
+.. role:: raw-latex(raw)
+   :format: latex
+
+.. :Abstract:
+
+	This document is the main entry point to the Sim-Diasca public documentation.
+
+
+:raw-html:`</center>`
+
+:raw-latex:`\pagebreak`
+
+
+We recommend to have a look at the `Sim-Diasca General-Purpose Presentation <https://raw.githubusercontent.com/wiki/Olivier-Boudeville-EDF/Sim-Diasca/documents/sim-diasca-general-purpose-english.pdf>`_ first, in order to discover the engine.
+
+Afterwards, one may refer to the installation guide below.
+
+Alternatively, much shorter versions thereof are:
+
+- either to follow these quickstart instructions:
+
+.. code:: bash
+
+ # Ensure that a recent Erlang version is installed, then:
+ $ git clone https://github.com/Olivier-Boudeville-EDF/Sim-Diasca.git
+ $ cd Sim-Diasca && make test
+
+
+- or to have a look at the streamlined `executable procedure <https://github.com/Olivier-Boudeville-EDF/Sim-Diasca/blob/main/.github/workflows/erlang-ci.yml#L24>`_ on which we rely for continuous integration
+
+
+The following public documentation for **Sim-Diasca** version PROJECT_VERSION_TAG is available from here:
+
+:raw-html:`<center>`
+
+.. table::
+  :widths: 15, 50, 2, 2
+
+  ===================================== ================================================================================================================== ================================================================================== ==============================================================================
+  The **Sim-Diasca Technical Manual**   The richest detailed source of information regarding the engine (except the code itself of course).                `[html] <technical-manual/Sim-Diasca-technical-manual-english.html>`_              `[pdf] <technical-manual/Sim-Diasca-technical-manual-english.pdf>`_
+
+  The **Sim-Diasca Installation Guide** A much detailed installation walkthrough, if needed.                                                               `[html] <installation-guide/Sim-Diasca-public-installation-guide-english.html>`_   `[pdf] <installation-guide/Sim-Diasca-public-installation-guide-english.pdf>`_
+
+  The **Sim-Diasca Modeller Guide**     Hints to better design simulation models.                                                                          `[html] <modeller-guide/Sim-Diasca-modeller-guide-english.html>`_                  `[pdf] <modeller-guide/Sim-Diasca-modeller-guide-english.pdf>`_
+
+  The **Sim-Diasca Developer Guide**    General recommendations when developing services offered by the engine (also applicable for model implementation). `[html] <developer-guide/Sim-Diasca-developer-guide-english.html>`_                `[pdf] <developer-guide/Sim-Diasca-developer-guide-english.pdf>`_
+
+  The **Sim-Diasca Dataflow HOWTO**     For the very specific use cases where a dataflow paradigm would be more suitable than a multi-agent one.           `[html] <dataflow-howto/Sim-Diasca-dataflow-howto-english.html>`_                  `[pdf] <dataflow-howto/Sim-Diasca-dataflow-howto-english.pdf>`_
+
+  The **Sim-Diasca Coupling HOWTO**     When having to couple third-party models, instead of writing them directly as Sim-Diasca ones.                     `[html] <coupling-howto/Sim-Diasca-coupling-howto-english.html>`_                  `[pdf] <coupling-howto/Sim-Diasca-coupling-howto-english.pdf>`_
+  ===================================== ================================================================================================================== ================================================================================== ==============================================================================
+
+:raw-html:`</center>`
+
+
+Seasoned Sim-Diasca users may just bookmark the `Sim-Diasca Cheat Sheet <technical-manual/Sim-Diasca-technical-manual-english.html#sim-diasca-cheat-sheet>`_.
+
+.. We are already in this: its `documentation counterpart <https://olivier-boudeville-edf.github.io/Sim-Diasca/>`_
+
+One may also be interested in the interface of the `public main project <https://github.com/Olivier-Boudeville-EDF/Sim-Diasca>`_ and in its `wiki <https://github.com/Olivier-Boudeville-EDF/Sim-Diasca/wiki>`_.
+
+
+.. comment training
+
+
+
+A mirrored documentation of the lower layers used by Sim-Diasca is available from here as well:
+
+:raw-html:`<center>`
+
+.. table::
+  :widths: 9, 36, 2, 2
+
+  ======================= =================================================================================================================== =================================== ==================================================================
+  The **Traces Manual**   To benefit from convenient, distributed traces in order to collect all information of interest from the simulation. `[html] <traces/index.html>`_       `[pdf] <traces/Ceylan-Traces-Layer-technical-manual-english.pdf>`_
+  The **WOOPER Manual**   So that the model implementation can rely on a suitable object-oriented paradigm.                                   `[html] <wooper/index.html>`_       `[pdf] <wooper/Ceylan-WOOPER-Layer-technical-manual-english.pdf>`_
+  The **Myriad Manual**   To take advantage of a general-purpose toolbox providing a range of built-in transverse services.                   `[html] <myriad/index.html>`_       `[pdf] <myriad/Ceylan-Myriad-Layer-technical-manual-english.pdf>`_
+  ======================= =================================================================================================================== =================================== ==================================================================
+
+:raw-html:`</center>`
+
+
+Seasoned WOOPER users may just bookmark the `WOOPER Cheat Sheet <wooper/index.html#class-developer-cheat-sheet>`_.
+
+Finally, regarding the overall implementation language, `Erlang <http://erlang.org>`_, one may refer to `its searchable online documentation <https://www.erlang.org/doc/search>`_, including its `module index <https://www.erlang.org/doc/man_index.html>`_.
+
+.. comment: currently not used: Any local `Erlang documentation <erlang/index.html>`_ may also be accessed from here; refer to our `this page <https://myriad.esperide.org/#software-prerequisites>`_ for further information.
+
+
+:raw-html:`<center>`
+
+*This public overview page for Sim-Diasca version PROJECT_VERSION_TAG has been last updated on GENERATION_DATE_TAG.*
+
+:raw-html:`</center>`

@@ -16,7 +16,7 @@ CORRECTION_ARCHIVE_FILENAME = $(CORRECTION_ARCHIVE).tar.bz2
 .PHONY: doc generate-correction-archive clean clean-correction
 
 doc:
-	@echo "  Run 'make full-doc' to generate the corrections corresponding to the Sim-Diasca Training material (in english)."
+	@echo "  Run 'make full-doc' to generate the corrections corresponding to the Sim-Diasca Training material (in English)."
 
 
 generate-correction-archive: clean full-doc

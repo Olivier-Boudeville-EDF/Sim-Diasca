@@ -17,7 +17,7 @@ DIAGRAMS := dataflow-city-example.dia dataflow-basic-example.graph    \
 		info-tool info-archive info-doc info-local-doc
 
 
-OVERALL_DOCUMENT_SOURCE := SimDiasca-dataflow-howto-english.rst
+OVERALL_DOCUMENT_SOURCE := Sim-Diasca-dataflow-howto-english.rst
 
 
 # Default do-nothing target:

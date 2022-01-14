@@ -1,9 +1,13 @@
 SIM_DIASCA_TOP = ../..
 
-.PHONY: all doc test clean clean-outputs real-clean
+.PHONY: all doc secure-doc-elements test clean clean-outputs real-clean
 
 
-MODULES_DIRS = internal-version public-version
+# Not defining MODULES_DIRS here, as not wanting to recurse in a possibly (for
+# the public version) non-existing tree:
+#
+COND_MODULES_DIRS = internal-version public-version
+
 
 
 # Default do-nothing target:
@@ -12,13 +16,13 @@ all:
 
 
 doc:
-	@for m in $(MODULES_DIRS); do (cd $$m && $(MAKE) -s doc); done
+	@for m in $(COND_MODULES_DIRS); do if [ -d $$m ]; then (cd $$m && $(MAKE) -s doc); fi; done
 
 
 # To be shared between public/internal.
 #
 # Header must be (re)-generated:
-secure-doc-elements: SimDiasca-installation-guide-header-english.rst
+secure-doc-elements: Sim-Diasca-installation-guide-header-english.rst
 
 
 test:
@@ -26,7 +30,7 @@ test:
 
 # Directory internal-version may not exist in public version:
 clean:
-	@for m in $(MODULES_DIRS); do if [ -d $$m ]; then cd $$m && $(MAKE) -s clean; fi; done
+	@for m in $(COND_MODULES_DIRS); do if [ -d $$m ]; then (cd $$m && $(MAKE) -s clean); fi; done
 
 
 clean-outputs:

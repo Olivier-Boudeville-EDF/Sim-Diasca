@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 %
 % This file is part of the Sim-Diasca training material.
 %
@@ -34,7 +34,7 @@
 -type ustring() :: text_utils:ustring().
 
 
-% Constructs a new PinkFlamingo.
+% @doc Constructs a pink flamingo.
 %
 % Note: this is *not* a Sim-Diasca actor.
 %
@@ -52,7 +52,7 @@ construct( State, Name, Height ) when is_list( Name )
 
 
 
-% Requests the flamingo to filter plankton in specified location.
+% @doc Requests the flamingo to filter plankton in specified location.
 -spec filterPlankton( wooper:state(), filetring_location() ) -> oneway_return().
 filterPlankton( State, camargue ) ->
 
@@ -75,7 +75,7 @@ filterPlankton( State, chile ) ->
 
 
 
-% Returns the feather color of the flamingo.
+% @doc Returns the feather color of the flamingo.
 %
 % Could be a static method if we knew for sure that all flamingos were pink.
 %
@@ -85,8 +85,8 @@ getFeatherColor( State ) ->
 
 
 
-% Returns the mean children count for that flamingo (actually does not depend on
-% any specific flamingo).
+% @doc Returns the mean children count for that flamingo (actually does not
+% depend on any specific flamingo).
 %
 -spec getMeanChildrenCount( wooper:state() ) ->
 								const_request_return( basic_utils:count() ).
@@ -98,7 +98,7 @@ getMeanChildrenCount( State ) ->
 % Static section.
 
 
-% Let's say an average means something here:
+% @doc Let's say an average means something here.
 
 % (this is a static method, as it does not depend on a state)
 %

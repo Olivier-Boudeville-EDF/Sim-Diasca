@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 %
 % This file is part of the Sim-Diasca training material.
 %
@@ -34,10 +34,10 @@
 
 % The class-specific attributes of such a flamingo are:
 -define( class_attributes, [
-  { heigth, heigth(), "Heigth of this flamingo" },
-  { feather_color, color(), "From grey to pink" },
-  { rival_flamingo, maybe( flamingo_pid() ), "PID of any rival" },
-  { filter_location, filtering_location(), "the current filtering spot" } ] ).
+	{ heigth, heigth(), "Height of this flamingo" },
+	{ feather_color, color(), "From grey to pink" },
+	{ rival_flamingo, maybe( flamingo_pid() ), "PID of any rival" },
+	{ filter_location, filtering_location(), "the current filtering spot" } ] ).
 
 
 -export_type([ heigth/0, color/0, flamingo_pid/0, filtering_location/0 ]).
@@ -45,7 +45,7 @@
 
 
 
-% Constructs a new VilifyingPinkFlamingo:
+% @doc Constructs a VilifyingPinkFlamingo:
 %
 % - ActorSettings corresponds to the engine settings for this actor
 %
@@ -82,7 +82,7 @@ construct( State, ActorSettings, Name, Heigth )
 
 
 
-% Overridden destructor:
+% @doc Overridden destructor:
 -spec delete( wooper:state() ) -> wooper:state().
 delete( State ) ->
 
@@ -93,7 +93,7 @@ delete( State ) ->
 
 
 
-% The spontaneous behaviour of a vilifying pink flamingo.
+% @doc The spontaneous behaviour of a vilifying pink flamingo.
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
@@ -124,7 +124,7 @@ actSpontaneous( State ) ->
 % Actor oneway section.
 
 
-% Notifies this flamingo that it has just been vilified.
+% @doc Notifies this flamingo that it has just been vilified.
 %
 % If a flamingo is vilified by another one which was not its rival, then the
 % vilifier becomes its new rival.
@@ -164,7 +164,7 @@ beVilified( State, VilificationMessage, SendingActorPid ) ->
 % Request section.
 
 
-% Returns the feather color of the flamingo.
+% @doc Returns the feather color of the flamingo.
 -spec getFeatherColor( wooper:state() ) -> const_request_return( color() ).
 getFeatherColor( State ) ->
 	wooper:const_return_result( ?getAttr(feather_color) ).
@@ -175,7 +175,7 @@ getFeatherColor( State ) ->
 % Oneway section.
 
 
-% Makes this flamingo discover a new rival to vilify.
+% @doc Makes this flamingo discover a new rival to vilify.
 %
 % The flamingo forgets any previously identified rival.
 %
@@ -190,7 +190,7 @@ beNotifiedOfRival( State, RivalPid ) ->
 % Static section.
 
 
-% Let's say an average means something here:
+% @doc Let's say an average means something here.
 -spec get_mean_children_count() -> static_return( basic_utils:count() ).
 get_mean_children_count() ->
 	wooper:return_static( 1.7 ).
@@ -201,7 +201,7 @@ get_mean_children_count() ->
 % Helper function section.
 
 
-% Action to be done when this flamingo decides to mumble.
+% @doc Action to be done when this flamingo decides to mumble.
 %
 % Returns an updated state.
 %
@@ -214,7 +214,7 @@ mumble( State ) ->
 
 
 
-% Action to be done when this flamingo decides to vilify another flamingo.
+% @doc Action to be done when this flamingo decides to vilify another flamingo.
 %
 % Returns an updated state.
 %
@@ -234,7 +234,7 @@ vilify( RivalPid, State ) ->
 
 
 
-% Requests the flamingo to filter plankton in specified location.
+% @doc Requests the flamingo to filter plankton in specified location.
 %
 % Note: this is a modified version of the previous oneway.
 %

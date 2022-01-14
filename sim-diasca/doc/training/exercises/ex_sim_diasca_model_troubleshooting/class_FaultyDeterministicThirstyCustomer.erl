@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 %
 % This file is part of the Sim-Diasca training material.
 %
@@ -27,7 +27,7 @@
 
 
 
-% Constructs a new faulty deterministic thirsty customer.
+% @doc Constructs a faulty deterministic thirsty customer.
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 class_Actor:name(), class_SodaVendingMachine:machine_pid(),
 				 duration(), amount() ) -> wooper:state().
@@ -35,10 +35,10 @@ construct( State, ActorSettings, CustomerName, KnownMachine,
 		   RepletionDuration, InitialBudget ) ->
 
 	ActorState = class_Actor:construct( State, ActorSettings,
-										?trace_categorize( CustomerName ) ),
+										?trace_categorize(CustomerName) ),
 
 	?send_notice_fmt( ActorState,
-		"Creating a new deterministic thirsty customer named '~ts', "
+		"Creating a deterministic thirsty customer named '~ts', "
 		"having initially ~B euro(s), knowing the following vending machine: ~w"
 		" and being thirsty ~B minutes after having drunk.",
 		[ CustomerName, InitialBudget, KnownMachine, RepletionDuration ] ),
@@ -53,7 +53,7 @@ construct( State, ActorSettings, CustomerName, KnownMachine,
 
 
 
-% Overridden destructor.
+% @doc Overridden destructor.
 -spec delete( wooper:state() ) -> wooper:state().
 delete( State ) ->
 
@@ -75,7 +75,7 @@ delete( State ) ->
 % Management section of the actor.
 
 
-% The core of the customer behaviour.
+% @doc The core of the customer behaviour.
 -spec actSpontaneous( wooper:state() ) -> const_oneway_return().
 actSpontaneous( State ) ->
 
