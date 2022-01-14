@@ -5,7 +5,6 @@
 *.plt
 *.sdar
 *~
-*.config
 *erlang.log.*
 declared-types-in-*.txt
 sim-diasca/package-versions.hrl
@@ -18,5 +17,4 @@ erl_crash.dump
 *.pyc
 launch-erl-input-command.sh
 sim-diasca/include/*.hrl
-/dao1_0/
 */ebin/*.app
