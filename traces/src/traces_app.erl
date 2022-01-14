@@ -1,4 +1,4 @@
-% Copyright (C) 2019-2021 Olivier Boudeville
+% Copyright (C) 2019-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -46,6 +46,8 @@
 -export([ start/2, stop/1 ]).
 
 
+% For default_registration_scope:
+-include("class_TraceAggregator.hrl").
 
 % @doc Starts the Traces services.
 %
@@ -65,13 +67,20 @@ start( RestartType, StartArgs ) ->
 		"start arguments: ~w, supervisor wanted: ~ts).",
 		[ RestartType, StartArgs, TraceSupervisorWanted ] ),
 
+	AggRegScope = traces_utils:get_aggregator_registration_scope(),
+
 	% Previously, no specific root supervisor was to launch, but:
 	%class_TraceAggregator:start().
+
+	% Will go through several modules:
+	%
+	%TraceInitArgs = { TraceSupervisorWanted, AggRegName, AggRegScope },
+	TraceInitArgs = { TraceSupervisorWanted, AggRegScope },
 
 	% We now create a root supervisor that has a supervisor_bridge child, which
 	% takes care of the interface to the (non-OTP) trace aggregator:
 	%
-	case traces_sup:start_link( TraceSupervisorWanted ) of
+	case traces_sup:start_link( TraceInitArgs ) of
 
 		R={ ok, _RootSupervisorPid } ->
 			R;

@@ -1,4 +1,4 @@
-% Copyright (C) 2019-2021 Olivier Boudeville
+% Copyright (C) 2019-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -69,8 +69,13 @@ test_traces_application( OrderedAppNames ) ->
 	test_facilities:display( "Traces version: ~p.",
 		[ system_utils:get_application_version( traces ) ] ),
 
-	AggPid = class_TraceAggregator:get_aggregator(
-			   _CreateIfNotAvailable=false ),
+	% As specified in *.config file(s):
+	test_facilities:display( "Traces configuration settings: ~p.",
+		[ application:get_all_env( traces ) ] ),
+
+
+	AggPid =
+		class_TraceAggregator:get_aggregator( _CreateIfNotAvailable=false ),
 
 
 	% The top-level user process may not be aware that an OTP application fails

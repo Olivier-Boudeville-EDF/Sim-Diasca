@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2021 Olivier Boudeville
+% Copyright (C) 2007-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -26,8 +26,7 @@
 % Creation date: July 1, 2007.
 
 
-
-% Unit tests for the implementation of trace management.
+% @doc Unit tests for the implementation of <b>trace management</b>.
 %
 % See the following modules:
 % - class_TraceAggregator
@@ -62,7 +61,7 @@ send_traces( TraceEmitter, SequenceCount ) ->
 
 
 
-% Run the tests.
+% @doc Run the tests.
 %
 % Note: this test is among the only ones that do not use the trace
 % functionalities for their own behaviours (since it is the subject of these
@@ -92,7 +91,7 @@ run() ->
 	end,
 
 
-	test_facilities:display( "Creating a new TestTraceEmitter." ),
+	test_facilities:display( "Creating a TestTraceEmitter." ),
 
 	Name = "I am a test emitter of traces",
 

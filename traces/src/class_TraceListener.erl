@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2021 Olivier Boudeville
+% Copyright (C) 2007-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -119,8 +119,7 @@
 
 
 
-% @doc Constructs a new trace listener, synchronised to specified trace
-% aggregator.
+% @doc Constructs a trace listener, synchronised to specified trace aggregator.
 %
 % TraceAggregatorPid is the PID of the trace aggregator to which this listener
 % will be synchronized.
@@ -183,7 +182,7 @@ construct( State, TraceAggregatorPid, CloseListenerPid ) ->
 
 
 
-% @doc Constructs a new trace listener, whose listening sockets will have to be
+% @doc Constructs a trace listener whose listening sockets will have to be
 % elected within the specified range of TCP ports, synchronised to specified
 % trace aggregator.
 %
@@ -216,10 +215,10 @@ construct( State, TraceAggregatorPid, MinTCPPort, MaxTCPPort,
 	ManagedState = manage_send_traces( CompressedFilename, State ),
 
 	SetState = setAttributes( ManagedState, [
-				{ trace_aggregator_pid, TraceAggregatorPid },
-				{ temp_dir, TempDir },
-				{ supervision_waiter_pid, undefined },
-				{ close_listener_pid, CloseListenerPid } ] ),
+		{ trace_aggregator_pid, TraceAggregatorPid },
+		{ temp_dir, TempDir },
+		{ supervision_waiter_pid, undefined },
+		{ close_listener_pid, CloseListenerPid } ] ),
 
 	EndState = executeOneway( SetState, monitor ),
 

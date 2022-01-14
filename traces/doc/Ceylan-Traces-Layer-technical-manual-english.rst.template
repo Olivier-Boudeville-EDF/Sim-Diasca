@@ -84,7 +84,7 @@ For that, various types of components have been designed and implemented, such a
 
 They collectively constitute the `Traces <http://traces.esperide.org/>`_ layer, whose only prerequisites (besides Erlang itself, of course) are the `WOOPER <http://wooper.esperide.org/>`_ layer (for object-oriented primitives) and the `Myriad <http://myriad.esperide.org/>`_ layer (for many lower-level services; itself a prerequisite of WOOPER).
 
-The project repository is located `here <https://github.com/Olivier-Boudeville/Ceylan-Traces>`_.
+Traces can be readily built and run on most Unices (including of course GNU/Linux) and on Windows. The project repository is located `here <https://github.com/Olivier-Boudeville/Ceylan-Traces>`_.
 
 The main purpose of this **Traces** layer is thus to provide adequate traces (i.e. advanced logs) for distributed systems (a rather critical feature in order to debug in these difficult contexts), and to ease their study and browsing. A few backends are available for that, from the direct reading of basic (text) trace files to considerably more user-friendly solutions, such as the generation of PDF reports or the use of our more advanced trace format, which can be read notably by commercial tools such as `LogMX <http://www.logmx.com/>`_ [#]_.
 
@@ -106,6 +106,8 @@ Traces now relies on the same conventions as the ones of the newer standard logg
 
 There are eight built-in levels for trace channels, of increasing severity:
 
+:raw-html:`<center>`
+
 ===================== ===============
 Trace Severity        Mapped Priority
 ===================== ===============
@@ -118,6 +120,8 @@ Trace Severity        Mapped Priority
 ``alert``             1
 ``emergency``         0
 ===================== ===============
+
+:raw-html:`</center>`
 
 Starting from ``warning`` onward (thus included), these severities are considered as error-like, and as such will never be disabled and will be echoed on the console as well.
 
@@ -457,6 +461,15 @@ or::
 
 
 :raw-latex:`\pagebreak`
+
+
+-------------------
+Supported Platforms
+-------------------
+
+Traces can be readily built and run on most Unices (including of course GNU/Linux) and on Windows.
+
+Refer to `the Myriad counterpart section <http://myriad.esperide.org/#supported-platforms>`_ for more details.
 
 
 .. _`free software`:

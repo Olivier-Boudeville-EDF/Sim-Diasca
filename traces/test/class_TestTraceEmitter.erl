@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2021 Olivier Boudeville
+% Copyright (C) 2007-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -26,6 +26,7 @@
 % Creation date: July 1, 2007.
 
 
+% @doc A trace emitter introduced <b>for testing</b>.
 -module(class_TestTraceEmitter).
 
 
@@ -62,12 +63,12 @@
 
 
 
-% Constructs a new test trace emitter.
+% @doc Constructs a test trace emitter.
 -spec construct( wooper:state(), class_TraceEmitter:emitter_init() ) ->
-					 wooper:state().
+						wooper:state().
 construct( State, TraceEmitterName ) ->
 
-	trace_utils:notice_fmt( "~ts Creating a new test trace emitter, whose name "
+	trace_utils:notice_fmt( "~ts Creating a test trace emitter, whose name "
 		"is ~p, whose PID is ~w.", [ ?LogPrefix, TraceEmitterName, self() ] ),
 
 	% First the direct mother classes, then this class-specific actions:
@@ -91,7 +92,7 @@ construct( State, TraceEmitterName ) ->
 
 
 
-% Overridden destructor.
+% @doc Overridden destructor.
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -152,7 +153,7 @@ sendAsyncTraces( State ) ->
 % Helper functions.
 
 
-% We should be testing all forms of traces here.
+% @doc We should be testing all forms of traces here.
 -spec send_traces( wooper:state() ) -> void().
 send_traces( State ) ->
 
@@ -267,8 +268,8 @@ send_traces( State ) ->
 
 
 
-% To test compilation problems when only one non-maskable trace is used (ex:
-% variable unused, or term constructed whereas not used either).
+% @doc To test compilation problems when only one non-maskable trace is used
+% (ex: variable unused, or term constructed whereas not used either).
 %
 -spec send_emergency_trace( wooper:state() ) -> void().
 send_emergency_trace( State ) ->
@@ -283,7 +284,7 @@ send_emergency_trace( State ) ->
 
 
 
-% To test compilation problems when only one maskable trace is used (ex:
+% @doc To test compilation problems when only one maskable trace is used (ex:
 % variable unused, or term constructed whereas not used either).
 %
 -spec send_debug_trace( wooper:state() ) -> void().

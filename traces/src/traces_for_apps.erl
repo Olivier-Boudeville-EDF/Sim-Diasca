@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2021 Olivier Boudeville
+% Copyright (C) 2007-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -32,7 +32,7 @@
 -module(traces_for_apps).
 
 
--export([ app_start/2, app_start/3,
+-export([ app_start/2, app_start/3, app_start/4,
 		  app_stop/3, app_immediate_stop/2, app_stop_on_shell/2 ]).
 
 
@@ -57,9 +57,9 @@
 % Shorthands:
 
 -type module_name() :: basic_utils:module_name().
-
 -type aggregator_pid() :: class_TraceAggregator:aggregator_pid().
-
+-type initialize_supervision() ::
+		class_TraceAggregator:initialize_supervision().
 
 
 % @doc Starts the specified application.
@@ -77,8 +77,9 @@
 % most probably remain unnoticed (just leading to an EXIT message happily
 % sitting in the mailbox of the app process).
 %
--spec app_start( module_name(),
-		class_TraceAggregator:initialize_supervision() ) -> aggregator_pid().
+% The resulting trace aggregator will be registered globally (only).
+%
+-spec app_start( module_name(), initialize_supervision() ) -> aggregator_pid().
 app_start( ModuleName, InitTraceSupervisor ) ->
 	app_start( ModuleName, InitTraceSupervisor, _DisableExitTrapping=true ).
 
@@ -96,12 +97,37 @@ app_start( ModuleName, InitTraceSupervisor ) ->
 % app_start/2). However it may also be left as it is, notably when this function
 % is executed from a supervisor (see traces_bridge_sup:init/1), whose trapping
 % of EXITs shall not be altered (otherwise, for example, shutdowns may freeze).
-
--spec app_start( module_name(),
-			class_TraceAggregator:initialize_supervision(), boolean() ) ->
+%
+% The resulting trace aggregator will be registered globally (only).
+%
+-spec app_start( module_name(), initialize_supervision(), boolean() ) ->
 						aggregator_pid().
 % All values possible for InitTraceSupervisor here:
 app_start( ModuleName, InitTraceSupervisor, DisableExitTrapping ) ->
+	app_start( ModuleName, InitTraceSupervisor, DisableExitTrapping,
+			   _AggRegScope=global_only ).
+
+
+
+% @doc Starts specified (Myriad - not specifically related to OTP) application,
+% deciding whether EXIT messages shall be trapped and the registration scope of
+% the resulting trace aggregator.
+%
+% The trace supervisor can be requested to be initialized now or not at all, or
+% later (typically only once the desired filename for the traces file will be
+% known for good, i.e. at its first renaming).
+%
+% The trapping of EXIT messages may be disabled (by setting DisableExitTrapping
+% to true), typically in most tests / cases (see comments in
+% app_start/2). However it may also be left as it is, notably when this function
+% is executed from a supervisor (see traces_bridge_sup:init/1), whose trapping
+% of EXITs shall not be altered (otherwise, for example, shutdowns may freeze).
+%
+-spec app_start( module_name(), initialize_supervision(), boolean(),
+				 naming_utils:registration_scope() ) -> aggregator_pid().
+% All values possible for InitTraceSupervisor here:
+app_start( ModuleName, InitTraceSupervisor, DisableExitTrapping,
+		   AggRegScope ) ->
 
 	% See also the comments of app_start/2:
 	case DisableExitTrapping of
@@ -136,8 +162,7 @@ app_start( ModuleName, InitTraceSupervisor, DisableExitTrapping ) ->
 	% to be notified of it (see app_stop/2):
 	%
 	TraceAggregatorPid = class_TraceAggregator:synchronous_new_link(
-		TraceFilename, ?TraceType, ?TraceTitle,
-		_MaybeRegistrationScope=global_only, AppIsBatch,
+		TraceFilename, ?TraceType, ?TraceTitle, AggRegScope, AppIsBatch,
 		_AggInitTraceSupervisor=false ),
 
 	case ModuleName of

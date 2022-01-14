@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2021 Olivier Boudeville
+% Copyright (C) 2007-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -182,10 +182,25 @@
 % - they are echoed on the console as well
 
 
+% Regarding the look-up scope of the trace aggregator:
+%
+% Its most common registration scope is global, yet in some (less common) cases,
+% we prefer having one aggregator per node (ex: multiple applications able to
+% interact, yet each with its own autonomy and node); for scalability reasons,
+% we do not want all trace emitters to have to specify an extra parameter at
+% construction or to read each the configuration information in order to select
+% a relevant look-up scope; so all go first for the general case ('global'
+% registration of the aggregator) and fall back to 'local' in the other cases.
+%
+% To avoid any unnecessary global look-up or to designate a specific trace
+% aggregator, use construct/3.
+%
+-define( emitter_look_up_scope, global_otherwise_local ).
 
 
-% @doc Constructs a new trace emitter, from EmitterInit, which must be here a
-% pair made of this name and another plain string, its emitter categorization,
+
+% @doc Constructs a trace emitter, from EmitterInit, which must be here a pair
+% made of this name and another plain string, its emitter categorization,
 % listing increasingly detailed sub-categories about this trace emitter,
 % separated by dots (ex: "topics.sports.basketball.coach").
 %
@@ -199,8 +214,8 @@ construct( State, _EmitterInit={ EmitterName, EmitterCategorization } ) ->
   % when is_list( EmitterName ) andalso is_list( EmitterCategorization ) ->
 
 	%trace_utils:debug_fmt( "~ts Creating a trace emitter whose name is '~ts', "
-	%	"whose PID is ~w and whose categorization is '~ts'.",
-	%	[ ?LogPrefix, EmitterName, self(), EmitterCategorization ] ),
+	%   "whose PID is ~w and whose categorization is '~ts'.",
+	%   [ ?LogPrefix, EmitterName, self(), EmitterCategorization ] ),
 
 	InitState = init( State ),
 
@@ -226,8 +241,8 @@ construct( State, EmitterName ) ->
 
 
 
-% @doc Constructs a new trace emitter, from EmitterInit, which must be here a
-% pair made of this name and another plain string, its emitter categorization,
+% @doc Constructs a trace emitter, from EmitterInit, which must be here a pair
+% made of this name and another plain string, its emitter categorization,
 % listing increasingly detailed sub-categories about this trace emitter,
 % separated by dots (ex: "topics.sports.basketball.coach"), and from the
 % specified trace aggregator.
@@ -241,15 +256,15 @@ construct( State, EmitterName ) ->
 %  registration
 %
 -spec construct( wooper:state(),
-			 { emitter_name(), emitter_categorization() }, aggregator_pid() ) ->
-		  wooper:state().
+			{ emitter_name(), emitter_categorization() }, aggregator_pid() ) ->
+		wooper:state().
 construct( State, _EmitterInit={ EmitterName, EmitterCategorization },
 		   TraceAggregatorPid ) ->
 
 	%trace_utils:debug_fmt( "~ts Creating a trace emitter whose name is '~ts', "
-	%	"whose PID is ~w, whose categorization is '~ts' and using trace "
+	%   "whose PID is ~w, whose categorization is '~ts' and using trace "
 	%   "aggregator ~w.",
-	%	[ ?LogPrefix, EmitterName, self(), EmitterCategorization,
+	%   [ ?LogPrefix, EmitterName, self(), EmitterCategorization,
 	%     TraceAggregatorPid ] ),
 
 	BinName = check_and_binarise_name( EmitterName ),
@@ -514,7 +529,7 @@ get_all_base_attribute_names() ->
 		wooper_introspection:get_class_specific_attribute_names( ?MODULE )
 		++ list_utils:flatten_once(
 			 [ wooper_introspection:get_class_specific_attribute_names( C )
-			   || C <- ?superclasses ] ),
+				 || C <- ?superclasses ] ),
 
 	wooper:return_static( AttrNames ).
 
@@ -546,7 +561,7 @@ send_from_test( TraceSeverity, Message, EmitterCategorization ) ->
 
 	% Follows the order of our trace format; oneway call:
 	case naming_utils:get_registered_pid_for( ?trace_aggregator_name,
-											  global ) of
+											  ?emitter_look_up_scope ) of
 
 		undefined ->
 
@@ -558,20 +573,20 @@ send_from_test( TraceSeverity, Message, EmitterCategorization ) ->
 		AggregatorPid ->
 
 			TimestampText = text_utils:string_to_binary(
-							  time_utils:get_textual_timestamp() ),
+								time_utils:get_textual_timestamp() ),
 
 			AggregatorPid ! { send, [
 				 _TraceEmitterPid=self(),
 				 _TraceEmitterName=
-					 text_utils:string_to_binary( "test" ),
+						text_utils:string_to_binary( "test" ),
 				 _TraceEmitterCategorization=
-					 text_utils:string_to_binary( EmitterCategorization ),
+						text_utils:string_to_binary( EmitterCategorization ),
 				 _AppTimestamp=none,
 				 _Time=TimestampText,
 				 % No State available here
 				 _Location=net_utils:localnode_as_binary(),
 				 _MessageCategorization=
-					 text_utils:string_to_binary( "Test" ),
+						text_utils:string_to_binary( "Test" ),
 				 _Priority=trace_utils:get_priority_for( TraceSeverity ),
 				 _Message=text_utils:string_to_binary( Message ) ] }
 
@@ -607,7 +622,7 @@ send_from_case( TraceSeverity, Message, EmitterCategorization ) ->
 
 	% Follows the order of our trace format; oneway call:
 	case naming_utils:get_registered_pid_for( ?trace_aggregator_name,
-											  global ) of
+											  ?emitter_look_up_scope ) of
 
 		undefined ->
 
@@ -624,15 +639,15 @@ send_from_case( TraceSeverity, Message, EmitterCategorization ) ->
 			AggregatorPid ! { send, [
 				 _TraceEmitterPid=self(),
 				 _TraceEmitterName=
-					 text_utils:string_to_binary( "case" ),
+						text_utils:string_to_binary( "case" ),
 				 _TraceEmitterCategorization=
-					 text_utils:string_to_binary( EmitterCategorization ),
+						text_utils:string_to_binary( EmitterCategorization ),
 				 _AppTimestamp=none,
 				 _Time=TimestampText,
 				 % No State available here:
 				 _Location=net_utils:localnode_as_binary(),
 				 _MessageCategorization=
-					 text_utils:string_to_binary( "Case" ),
+						text_utils:string_to_binary( "Case" ),
 				 _Priority=trace_utils:get_priority_for( TraceSeverity ),
 				 _Message=text_utils:string_to_binary( Message ) ] }
 
@@ -665,7 +680,7 @@ send_standalone( TraceSeverity, Message, EmitterCategorization ) ->
 
 	% Follows the order of our trace format; oneway call:
 	case naming_utils:get_registered_pid_for( ?trace_aggregator_name,
-											  global ) of
+											  ?emitter_look_up_scope ) of
 
 		undefined ->
 
@@ -688,13 +703,13 @@ send_standalone( TraceSeverity, Message, EmitterCategorization ) ->
 				 _TraceEmitterPid=self(),
 				 _TraceEmitterName=text_utils:string_to_binary( PidName ),
 				 _TraceEmitterCategorization=
-					 text_utils:string_to_binary( EmitterCategorization ),
+						text_utils:string_to_binary( EmitterCategorization ),
 				 _AppTimestamp=none,
 				 _Time=TimestampText,
 				 % No State available here:
 				 _Location=net_utils:localnode_as_binary(),
 				 _MessageCategorization=
-					 text_utils:string_to_binary( MessageCategorization ),
+						text_utils:string_to_binary( MessageCategorization ),
 				 _Priority=trace_utils:get_priority_for( TraceSeverity ),
 				 _Message=text_utils:string_to_binary( Message ) ] }
 
@@ -729,7 +744,7 @@ send_standalone( TraceSeverity, Message, EmitterName, EmitterCategorization,
 
 	% Follows the order of our trace format; oneway call:
 	case naming_utils:get_registered_pid_for( ?trace_aggregator_name,
-											  global ) of
+											  ?emitter_look_up_scope ) of
 
 		undefined ->
 			trace_utils:error( "class_TraceEmitter:send_standalone/5: "
@@ -872,7 +887,7 @@ send_standalone_safe( TraceSeverity, Message, EmitterName,
 
 	% Follows the order of our trace format; request call:
 	case naming_utils:get_registered_pid_for( ?trace_aggregator_name,
-											  global ) of
+											  ?emitter_look_up_scope ) of
 
 		undefined ->
 
@@ -1063,12 +1078,16 @@ init( State ) ->
 
 	% Context-specific, useful to re-use, for example for deserialisation:
 
-	% Retrieves the trace aggregator (false: do not launch it if not available,
-	% otherwise the creation of multiple emitters would result in a race
-	% condition that would lead to the creation of multiple aggregators):
+	% Retrieves the trace aggregator:
 	%
-	AggregatorPid =
-		class_TraceAggregator:get_aggregator( _LaunchAggregator=false ),
+	% - do not launch it if not available, otherwise the quasi-simultaneous
+	% creations of multiple emitters would result in a race condition that would
+	% lead to the creation of multiple aggregators
+	%
+	% - see implementation notes regarding the trace aggregator look-up scope
+	%
+	AggregatorPid = class_TraceAggregator:get_aggregator(
+		_LaunchAggregator=false, ?emitter_look_up_scope ),
 
 	setAttributes( State, [
 		{ emitter_node, net_utils:localnode_as_binary() },

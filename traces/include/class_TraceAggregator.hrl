@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2021 Olivier Boudeville
+% Copyright (C) 2007-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -28,7 +28,17 @@
 
 % The name under which the trace aggregator process is to be registered:
 % (use ?trace_aggregator_name to have it)
+%
 -define(trace_aggregator_name,ceylan_trace_aggregator).
+
+
+% The default registration scope (must correspond to default_trace):
+-define( default_trace_aggregator_registration_scope, global_only ).
+
+% The default look-up scope (must correspond to
+% default_trace_aggregator_registration_scope):
+%
+-define( default_trace_aggregator_look_up_scope, global_otherwise_local ).
 
 
 % For TraceExtension:

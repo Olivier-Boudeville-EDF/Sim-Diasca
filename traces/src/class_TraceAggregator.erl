@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2021 Olivier Boudeville
+% Copyright (C) 2007-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -24,7 +24,7 @@
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: July 1, 2007.
-%
+
 
 % @doc The <b>trace aggregator</b> class, in charge of collecting and storing
 % the traces sent by emitters.
@@ -161,12 +161,6 @@
 -define( LogOutput( Message, Format ), void ).
 
 
-% The default registration scope (must correspond to default_look_up_scope):
--define( default_registration_scope, global_only ).
-
-% The default look-up scope (must correspond to default_registration_scope):
--define( default_look_up_scope, global ).
-
 
 
 % The default period in seconds between two checks done by the watchdog (15
@@ -227,10 +221,13 @@
 %
 % The aggregator can be (optionally) plugged to an OTP supervision tree, thanks
 % to the Traces supervisor bridge (see the traces_sup module).
+%
+% The most usual registration scope for a trace aggregator is global_only; as
+% such this is the convention that was first prioritised and tuned for.
 
 
 
-% @doc Constructs a new trace aggregator.
+% @doc Constructs a trace aggregator.
 %
 % Construction parameters are:
 %
@@ -261,7 +258,7 @@ construct( State, TraceFilename, TraceSupervisionType, TraceTitle,
 
 
 
-% Constructs a new trace aggregator, telling whether a trace supervisor shall be
+% Constructs a trace aggregator, telling whether a trace supervisor shall be
 % created.
 %
 % Construction parameters are:
@@ -295,13 +292,17 @@ construct( State, TraceFilename, TraceSupervisionType, TraceTitle,
 		   MaybeRegistrationScope, IsBatch, InitTraceSupervisor ) ->
 
 	%trace_utils:debug_fmt( "Starting trace aggregator, with initial trace "
-	%	"filename '~ts' (init supervisor: ~w).",
-	%	[ TraceFilename, InitTraceSupervisor ] ),
+	%   "filename '~ts' (init supervisor: ~w).",
+	%   [ TraceFilename, InitTraceSupervisor ] ),
 
 	% Wanting a better control by resisting to exit messages being received (see
 	% the onWOOPERExitReceived/3 callback):
 	%
 	erlang:process_flag( trap_exit, true ),
+
+	% Surely that these aggregators can be overwhelmed by (trace) messages:
+	erlang:process_flag( message_queue_data, off_heap ),
+
 
 	% First the direct mother classes (none here), then this class-specific
 	% actions:
@@ -341,8 +342,8 @@ construct( State, TraceFilename, TraceSupervisionType, TraceTitle,
 	end,
 
 	%trace_utils:debug_fmt( "InitTraceSupervisor=~ts, IsBatch=~ts, "
-	%	"ShouldInitTraceSupervisor=~ts.",
-	%	[ InitTraceSupervisor, IsBatch, ShouldInitTraceSupervisor ] ),
+	%   "ShouldInitTraceSupervisor=~ts.",
+	%   [ InitTraceSupervisor, IsBatch, ShouldInitTraceSupervisor ] ),
 
 	SetState = setAttributes( State, [
 		{ trace_filename, AbsBinTraceFilename },
@@ -585,7 +586,8 @@ destruct( State ) ->
 enableWatchdog( State ) ->
 
 	WatchState = enable_watchdog( ?trace_aggregator_name,
-		?default_look_up_scope, ?default_watchdog_period, State ),
+		?default_trace_aggregator_look_up_scope,
+		?default_watchdog_period, State ),
 
 	wooper:return_state( WatchState ).
 
@@ -598,7 +600,7 @@ enableWatchdog( State ) ->
 enableWatchdog( State, Period ) ->
 
 	WatchState = enable_watchdog( ?trace_aggregator_name,
-								  ?default_look_up_scope, Period, State ),
+		?default_trace_aggregator_look_up_scope, Period, State ),
 
 	wooper:return_state( WatchState ).
 
@@ -921,7 +923,7 @@ addTraceListener( State, ListenerPid ) ->
 					Message = text_utils:format( "Adding trace listener ~w "
 					   "failed, hence has been ignored: exception '~w' was "
 					   "raised.~nStacktrace was: ~ts", [ ListenerPid, Exception,
-						 code_utils:interpret_stacktrace( Stacktrace ) ] ),
+							code_utils:interpret_stacktrace( Stacktrace ) ] ),
 					% Will be duplicated on the console anyway:
 					%trace_utils:error( Message ),
 					send_internal_deferred( error, Message ),
@@ -1013,7 +1015,7 @@ sync( State ) ->
 % A size of zero leads to unconditinal rotation.
 %
 -spec setMinimumTraceFileSizeForRotation( wooper:state(), byte_size() ) ->
-											 oneway_return().
+												oneway_return().
 setMinimumTraceFileSizeForRotation( State, MinFileSize )
   when is_integer( MinFileSize ) ->
 
@@ -1028,7 +1030,7 @@ setMinimumTraceFileSizeForRotation( State, MinFileSize )
 
 % @doc Rotates the current trace file (asynchronous version): provided that its
 % size is above the current threshold, closes the current file, renames it,
-% compresses it and creates a new file from scratch to avoid it becomes too
+% compresses it and creates a file from scratch to avoid it becomes too
 % large. No trace can be lost in the process.
 %
 % If the current trace file is named 'my_file.traces', its rotated version could
@@ -1047,7 +1049,7 @@ rotateTraceFile( State ) ->
 
 % @doc Rotates the current trace file (synchronous version): provided that its
 % size is above the current threshold, closes the current file, renames it,
-% compresses it and creates a new file from scratch to avoid it becomes too
+% compresses it and creates a file from scratch to avoid it becomes too
 % large. No trace can be lost in the process.
 %
 % If the current trace file is named 'my_file.traces', its rotated version could
@@ -1080,7 +1082,7 @@ rotateTraceFileSync( State ) ->
 % crashed in turn.
 %
 -spec onWOOPERExitReceived( wooper:state(), pid(),
-					basic_utils:exit_reason() ) -> oneway_return().
+							basic_utils:exit_reason() ) -> oneway_return().
 onWOOPERExitReceived( State, StopPid, _ExitType=normal ) ->
 
 	Msg = text_utils:format( "Ignoring normal exit from process ~w.",
@@ -1148,7 +1150,8 @@ create( _UseSynchronousNew=false, TraceSeverity ) ->
 
 	% For registration scope, see also get_aggregator/{0,1}:
 	AggregatorPid = new_link( ?trace_aggregator_filename, TraceSeverity,
-		?TraceTitle, ?default_registration_scope, _IsBatch=false ),
+		?TraceTitle, ?default_trace_aggregator_registration_scope,
+		_IsBatch=false ),
 
 	wooper:return_static( AggregatorPid );
 
@@ -1159,8 +1162,8 @@ create( _UseSynchronousNew=true, TraceSeverity ) ->
 
 	% For registration scope, see also get_aggregator/{0,1}:
 	AggregatorPid = synchronous_new_link( ?trace_aggregator_filename,
-		TraceSeverity, ?TraceTitle, ?default_registration_scope,
-		_IsBatch=false ),
+		TraceSeverity, ?TraceTitle,
+		?default_trace_aggregator_registration_scope, _IsBatch=false ),
 
 	wooper:return_static( AggregatorPid ).
 
@@ -1180,7 +1183,8 @@ get_aggregator() ->
 
 
 
-% @doc Returns the PID of the current trace aggregator.
+% @doc Returns the PID of the current trace aggregator, using the default
+% look-up scope.
 %
 % The parameter is a boolean telling whether the aggregator should be created if
 % not available (if true), or if this method should just return a failure
@@ -1196,8 +1200,35 @@ get_aggregator() ->
 %
 -spec get_aggregator( boolean() ) ->
 			static_return( 'trace_aggregator_launch_failed'
-						   | 'trace_aggregator_not_found' | aggregator_pid() ).
+						 | 'trace_aggregator_not_found' | aggregator_pid() ).
 get_aggregator( CreateIfNotAvailable ) ->
+	AggRes = get_aggregator( CreateIfNotAvailable,
+							 ?default_trace_aggregator_look_up_scope ),
+	wooper:return_static( AggRes ).
+
+
+
+% @doc Returns the PID of the current trace aggregator, using specified look-up
+% scope.
+%
+% The parameter is a boolean telling whether the aggregator should be created if
+% not available (if true), or if this method should just return a failure
+% notification (if false).
+%
+% Note: to avoid race conditions between concurrent calls to this static method
+% (ex: due to multiple trace emitter instances created in parallel), an
+% execution might start with a call to this method with a blocking wait until
+% the aggregator pops up in registry services.
+%
+% Waits a bit before giving up: useful when client and aggregator processes are
+% launched almost simultaneously.
+%
+-spec get_aggregator( boolean(), look_up_scope() ) ->
+			static_return( 'trace_aggregator_launch_failed'
+						 | 'trace_aggregator_not_found' | aggregator_pid() ).
+get_aggregator( CreateIfNotAvailable, LookupScope ) ->
+
+	AggRegName = ?trace_aggregator_name,
 
 	% Only dealing with registered managers (instead of using directly their
 	% PID) allows to be sure only one instance (singleton) is being used, to
@@ -1210,8 +1241,7 @@ get_aggregator( CreateIfNotAvailable ) ->
 	%
 	AggRes = try
 
-		naming_utils:wait_for_registration_of( ?trace_aggregator_name,
-											   ?default_look_up_scope )
+		naming_utils:wait_for_registration_of( AggRegName, LookupScope )
 
 	catch { registration_waiting_timeout, _Name, _Scope } ->
 
@@ -1226,15 +1256,18 @@ get_aggregator( CreateIfNotAvailable ) ->
 
 				try
 
-					naming_utils:wait_for_registration_of(
-					  ?trace_aggregator_name, ?default_look_up_scope )
+					naming_utils:wait_for_registration_of( AggRegName,
+														   LookupScope )
 
 				catch { registration_waiting_timeout, _AName, _AScope } ->
 
-						trace_utils:error(
-						  "class_TraceAggregator:get_aggregator/1 unable to "
-						  "launch successfully the aggregator." ),
-						trace_aggregator_launch_failed
+					% Hopefully it is not a scope mismatch:
+					trace_utils:error_fmt(
+						"class_TraceAggregator:get_aggregator/2 seems unable "
+						"to launch successfully the aggregator "
+						"(lookup name: '~ts'; scope: ~ts).",
+						[ AggRegName, LookupScope ] ),
+					trace_aggregator_launch_failed
 
 				end;
 
@@ -1257,7 +1290,7 @@ get_aggregator( CreateIfNotAvailable ) ->
 remove() ->
 
 	case naming_utils:is_registered( ?trace_aggregator_name,
-									 ?default_look_up_scope ) of
+			?default_trace_aggregator_look_up_scope ) of
 
 		not_registered ->
 			wooper:return_static( trace_aggregator_not_found );
@@ -1730,9 +1763,9 @@ get_row_separator( DashType ) ->
 
 % @doc Formats specified trace according to specified trace type.
 -spec format_trace_for( trace_supervision_type(),
-		 { emitter_pid(), emitter_name(), emitter_categorization(),
-		   app_timestamp(), traces:time(), location(),
-		   message_categorization(), priority(), message() } ) -> ustring().
+		{ emitter_pid(), emitter_name(), emitter_categorization(),
+		  app_timestamp(), traces:time(), location(),
+		  message_categorization(), priority(), message() } ) -> ustring().
 format_trace_for( advanced_traces, { TraceEmitterPid,
 		TraceEmitterName, TraceEmitterCategorization, AppTimestamp, Time,
 		Location, MessageCategorization, Priority, Message } ) ->
@@ -1743,7 +1776,7 @@ format_trace_for( advanced_traces, { TraceEmitterPid,
 	 %
 	 %io_lib:format(
 	 text_utils:format(
-	   "~w|~ts|~ts|~ts|~ts|~ts|~ts|~B|~ts~n",
+		"~w|~ts|~ts|~ts|~ts|~ts|~ts|~B|~ts~n",
 		[ TraceEmitterPid, TraceEmitterName, TraceEmitterCategorization,
 		  AppTimestamp, Time, Location, MessageCategorization, Priority,
 		  Message ] ) );

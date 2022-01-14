@@ -1,4 +1,4 @@
-% Copyright (C) 2020-2022 Olivier Boudeville
+% Copyright (C) 2021-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -23,15 +23,12 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
-% Creation date: Wednesday, October 21, 2020.
+% Creation date: Wednesday, September 15, 2021
 
 
-% Testing the actual use of a trace bridge, in the context of Ceylan-Traces.
+% @doc Allows to test 
 %
-% See also, in Ceylan-Myriad, trace_bridge_test.erl for a similar test when no
-% specific bridge is registered.
-%
--module(trace_bridging_test).
+-module(trace_config_test).
 
 
 % Test target:
@@ -44,28 +41,23 @@ run() ->
 
 	?test_start,
 
-	?test_info( "Testing first when no trace bridge is registered." ),
+	?test_debug( "Hello debug!" ),
 
-	% Note that we rely on the same test sending as the one done in Myriad, to
-	% better showcase it can be transparently switched:
-	%
-	trace_bridge_test:emit_traces(),
+	case executable_utils:is_batch() of
 
-	?test_info( "Then testing the trace bridge with a Ceylan-Traces bridge "
-				"registered for this test process." ),
+		true ->
+			?test_warning( "Running in batch mode." );
 
-	% We define our own bridge spec and apply it to ourself:
+		false ->
+			?test_warning( "Running in interactive mode." )
 
-	BridgeSpec = trace_bridge:get_bridge_spec( _MyEmitterName="MyBridgeTester",
-		_MyCateg="MyTraceCategory", class_TraceAggregator:get_aggregator() ),
+	end,
 
-	trace_bridge:register( BridgeSpec ),
+	% Pipe being the field separator used internally for traces:
+	?test_debug( "Testing a message with pipes: AA|BB|CC|" ),
 
-	trace_bridge:register_if_not_already( BridgeSpec ),
-
-	trace_bridge_test:emit_traces(),
-
-	trace_bridge:unregister(),
+	?test_debug( "Testing a message with non-Latin1 characters: "
+				 "àâäéèêëîïôöùûü" ),
 
 	?test_debug_fmt( "End of test for ~ts.", [ ?MODULE ] ),
 
