@@ -1144,10 +1144,10 @@ MYRIAD_BEAM_DIRS := $(MYRIAD_BEAM)/apps/generate-password       \
 					$(MYRIAD_BEAM)/maths                        \
 					$(MYRIAD_BEAM)/meta                         \
 					$(MYRIAD_BEAM)/scripts                      \
-					$(MYRIAD_BEAM)/user-interface/src/graphical \
-					$(MYRIAD_BEAM)/user-interface/src/textual   \
-					$(MYRIAD_BEAM)/user-interface/src/audio     \
-					$(MYRIAD_BEAM)/user-interface/src           \
+					$(MYRIAD_BEAM)/user-interface/graphical     \
+					$(MYRIAD_BEAM)/user-interface/textual       \
+					$(MYRIAD_BEAM)/user-interface/audio         \
+					$(MYRIAD_BEAM)/user-interface               \
 					$(MYRIAD_BEAM)/utils
 
 
