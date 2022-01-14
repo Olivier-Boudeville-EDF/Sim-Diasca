@@ -2,7 +2,7 @@ SIM_DIASCA_TOP = ../../..
 
 
 
-CORRECTION_PREFIX = SimDiasca-training-corrected-exercises
+CORRECTION_PREFIX = Sim-Diasca-training-corrected-exercises
 
 OVERALL_DOCUMENT_SOURCE = $(CORRECTION_PREFIX).rst
 
