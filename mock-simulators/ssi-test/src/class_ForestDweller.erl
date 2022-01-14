@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,11 +19,12 @@
 % Author: Jingxuan Ma (jingxuan.ma@edf.fr)
 
 
+% @doc Class modelling a generic forest dweller.
 -module(class_ForestDweller).
 
 
 -define( class_description,
-		 "Class modeling a forest dweller. This module is an abstract one "
+		 "Class modelling a forest dweller. This module is an abstract one "
 		 "derived from class_Actor.erl and defining some common forest dweller "
 		 "attributes and spontaneous behaviours." ).
 
@@ -47,9 +48,9 @@
 
 
 
-% Constructs a new forest dweller actor:
+% @doc Constructs a forest dweller actor:
 %
-% - is_registered: shows if the actor is registed to a forest
+% - is_registered: shows if the actor is registered to a forest
 %
 % - givenAge: for an initially created actor,an given age can be other than 0
 % for making difference between all initially created ones; it is 0 for an actor
@@ -73,7 +74,7 @@ construct( State, ActorSettings, DwellerName, GivenAge, ForestPid ) ->
 
 	% Firstly, the mother class:
 	ActorState = class_Actor:construct( State, ActorSettings,
-										?trace_categorize( DwellerName ) ),
+										?trace_categorize(DwellerName) ),
 
 	% Then the class-specific attributes:
 	setAttributes( ActorState, [
@@ -92,7 +93,7 @@ construct( State, ActorSettings, DwellerName, GivenAge, ForestPid ) ->
 
 
 
-% Message received from the forest with the forest PID in parameter.
+% @doc Message received from the forest with the forest PID in parameter.
 -spec beRegistered( wooper:state(), actor_pid() ) -> actor_oneway_return().
 beRegistered( State, ForestPid ) ->
 
@@ -105,17 +106,18 @@ beRegistered( State, ForestPid ) ->
 
 
 
-% Called whenever an Alert message is received.
+% @doc Called whenever an Alert message is received.
 %
 % This method will be overridden by the specific dweller.
 %
--spec beAlert( wooper:state(), alert(), sending_actor_pid() ) -> const_actor_oneway_return().
+-spec beAlert( wooper:state(), alert(), sending_actor_pid() ) ->
+										const_actor_oneway_return().
 beAlert( State, _Alert, _SendingActorPID ) ->
 	actor:const_return().
 
 
 
-% Allows to prepare the termination of a dweller.
+% @doc Allows to prepare the termination of a dweller.
 %
 % (helper)
 %
@@ -125,5 +127,5 @@ prepareTermination( State ) ->
 	CurrentOffset = ?getAttr(current_tick_offset),
 
 	setAttributes( State, [
-		 { termination_initiated, true },
-		 { termination_tick_offset, CurrentOffset } ] ).
+		{ termination_initiated, true },
+		{ termination_tick_offset, CurrentOffset } ] ).

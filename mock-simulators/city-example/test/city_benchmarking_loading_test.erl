@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2021 EDF R&D
+% Copyright (C) 2014-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,21 +19,17 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-% The purpose of this module is to load and start a simulation from the full
-% description of the initial state of a city, as stored in file by the
+% @doc The purpose of this module is to load and start a simulation <b>from the
+% full description of the initial state of a city</b>, as stored in file by the
 % counterpart generation module.
 %
 % See the city_benchmarking_generation_test.erl to generate such a
 % initialisation file.
-
-
-
+%
 % This is useful for larger cases like this one, as the procedural generation
 % might be very long: better generate the initial state once for all, and re-use
 % it at will in various simulation instances.
-
-
-
+%
 % Example of intended use:
 %
 % make city_benchmarking_loading_run CMD_LINE_OPT="--batch --duration long
@@ -81,10 +77,16 @@
 % huge" EXECUTION_TARGET=production';
 
 
+% Shorthands:
+
+-type benchmarking_scale() :: city_benchmarking:benchmarking_scale().
+
+-type benchmarking_duration() :: city_benchmarking:benchmarking_duration().
 
 
-% Runs the test, determining the settings from the command-line, otherwise using
-% defaults.
+
+% @doc Runs the test, determining the settings from the command-line, otherwise
+% using defaults.
 %
 -spec run() -> no_return().
 run() ->
@@ -95,9 +97,8 @@ run() ->
 
 
 
-% Runs the test with specified settings.
--spec run( city_benchmarking:benchmarking_scale(),
-		   city_benchmarking:benchmarking_duration() ) -> no_return().
+% @doc Runs the test with specified settings.
+-spec run( benchmarking_scale(), benchmarking_duration() ) -> no_return().
 run( ScaleSetting, DurationSetting ) ->
 
 	city_benchmarking:check_scale_setting( ScaleSetting ),
@@ -107,8 +108,7 @@ run( ScaleSetting, DurationSetting ) ->
 
 
 % Helper, common to all specifications.
--spec run_common( city_benchmarking:benchmarking_scale(),
-				  city_benchmarking:benchmarking_duration(), boolean() ) ->
+-spec run_common( benchmarking_scale(), benchmarking_duration(), boolean() ) ->
 						no_return() | void().
 run_common( ScaleSetting, DurationSetting, StopShell ) ->
 
@@ -117,14 +117,14 @@ run_common( ScaleSetting, DurationSetting, StopShell ) ->
 	VersionString = text_utils:version_to_string( ?city_example_version ),
 
 	Filename = text_utils:format(
-				 "city-example-instances-version-~s-scale-~s.init",
-				 [ VersionString, ScaleSetting ] ),
+				"city-example-instances-version-~ts-scale-~ts.init",
+				[ VersionString, ScaleSetting ] ),
 
 	io:format( "Running a City-example simulation from an initial state "
-			   "corresponding to version ~s, with scale '~s', to be read "
-			   "from pre-generated file '~s' and run with a '~s' simulation "
-			   "duration.~n",
-			   [ VersionString, ScaleSetting, Filename, DurationSetting ] ),
+		"corresponding to version ~ts, with scale '~ts', to be read "
+		"from pre-generated file '~ts' and run with a '~ts' simulation "
+		"duration.~n",
+		[ VersionString, ScaleSetting, Filename, DurationSetting ] ),
 
 
 	case file_utils:is_existing_file_or_link( Filename ) of
@@ -134,12 +134,11 @@ run_common( ScaleSetting, DurationSetting, StopShell ) ->
 
 		false ->
 
-			?notify_error_fmt( "Initialisation file '~s' not found, "
-							   "one may run: '"
-							   "make city_benchmarking_loading_run "
-							   "CMD_LINE_OPT=\"--batch --scale ~s\"' to "
-							   "generate it first.~n",
-							   [ Filename, ScaleSetting ] ),
+			?notify_error_fmt( "Initialisation file '~ts' not found, "
+				"one may run: 'make city_benchmarking_loading_run "
+				"CMD_LINE_OPT=\"--batch --scale ~ts\"' to "
+				"generate it first.~n",
+				[ Filename, ScaleSetting ] ),
 
 			throw( { initialisation_file_not_found, Filename } )
 
@@ -147,23 +146,24 @@ run_common( ScaleSetting, DurationSetting, StopShell ) ->
 
 
 	{ _CityDescription, EndTimestamp={ EndDate, EndTime }, TimestepDuration } =
-	  city_benchmarking:get_benchmark_settings( ScaleSetting, DurationSetting ),
+		city_benchmarking:get_benchmark_settings( ScaleSetting,
+												  DurationSetting ),
 
 
 	% Use default simulation settings (50Hz, batch reproducible):
 	SimulationSettings = #simulation_settings{
 
-	  simulation_name="Sim-Diasca City-example Benchmarking Loading Case",
+		simulation_name="Sim-Diasca City-example Benchmarking Loading Case",
 
-	  tick_duration=TimestepDuration,
+		tick_duration=TimestepDuration,
 
-	  initialisation_files=[ Filename ],
+		initialisation_files=[ Filename ],
 
-	  % We restrict the wanted results, as otherwise larger cases could exhaust
-	  % the number of used file descriptors; so we keep only the probes
-	  % associated to some incinerators:
-	  %
-	  result_specification=no_output },
+		% We restrict the wanted results, as otherwise larger cases could
+		% exhaust the number of used file descriptors; so we keep only the
+		% probes associated to some incinerators:
+		%
+		result_specification=no_output },
 
 
 	DeploymentSettings = #deployment_settings{
@@ -179,15 +179,15 @@ run_common( ScaleSetting, DurationSetting, StopShell ) ->
 		additional_elements_to_deploy=[ { ".", code } ],
 
 		plugin_directories=[
-					 "../../../sim-diasca/src/core/src/plugins/tests/" ],
+					"../../../sim-diasca/src/core/src/plugins/tests/" ],
 
 		% Would alter wrongly the benchmark:
 		enable_performance_tracker=false },
 
 
 	% A deployment manager is created directly on the user node:
-	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-											DeploymentSettings ),
+	DeploymentManagerPid =
+		sim_diasca:init( SimulationSettings, DeploymentSettings ),
 
 	GISPid = naming_utils:get_registered_pid_for( ?gis_name, _Scope=global ),
 
@@ -206,7 +206,7 @@ run_common( ScaleSetting, DurationSetting, StopShell ) ->
 
 	RootTimeManagerPid ! { setFinalSimulationTimestamp, [ EndDate, EndTime ] },
 
-	?test_info_fmt( "Starting simulation, for a stop at ending timestamp ~s.",
+	?test_info_fmt( "Starting simulation, for a stop at ending timestamp ~ts.",
 					[ time_utils:get_textual_timestamp( EndTimestamp ) ] ),
 
 

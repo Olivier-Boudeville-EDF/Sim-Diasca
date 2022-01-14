@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,8 +19,8 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-
-% Unit tests for the GIS (Geographic Information System) basic services.
+% @doc Unit tests for the <b>GIS</b> (Geographic Information System) basic
+% services.
 %
 % See the class_GIS.erl tested class.
 %
@@ -45,21 +45,20 @@ run() ->
 	WGS84CartesianCoord = class_GIS:wgs84_polar_to_cartesian( WGS84PolarCoord ),
 
 	test_facilities:display( "Testing the conversion of WGS84 polar "
-							 "coordinates into WGS84 cartesian ones: "
-							 "'~s' becomes '~s'.",
-			 [ class_GIS:wgs84_polar_to_string( WGS84PolarCoord ),
-			   class_GIS:wgs84_cartesian_to_string( WGS84CartesianCoord ) ] ),
+		"coordinates into WGS84 cartesian ones: '~ts' becomes '~ts'.",
+		[ class_GIS:wgs84_polar_to_string( WGS84PolarCoord ),
+		  class_GIS:wgs84_cartesian_to_string( WGS84CartesianCoord ) ] ),
 
 	% Use default simulation settings (50Hz, batch reproducible):
 	SimulationSettings = #simulation_settings{
 
-	  simulation_name = "Sim-Diasca City-example GIS Test Case",
+		simulation_name = "Sim-Diasca City-example GIS Test Case",
 
-	  tick_duration = 0.2,
+		tick_duration = 0.2,
 
-	  result_specification = [ { targeted_patterns, [
+		result_specification = [ { targeted_patterns, [
 
-					  { "Incinerator-1.*", [ data_and_rendering ] }
+						{ "Incinerator-1.*", [ data_and_rendering ] }
 
 								] } ] },
 
@@ -67,14 +66,15 @@ run() ->
 	DeploymentSettings = #deployment_settings{
 
 		computing_hosts = { use_host_file_otherwise_local,
-					   "sim-diasca-host-candidates-for-scale-benchmarks.txt" },
+						"sim-diasca-host-candidates-for-scale-benchmarks.txt" },
 
 		%node_availability_tolerance = fail_on_unavailable_node,
 
 		% We want to embed additionally this test and its specific
 		% prerequisites, defined in the Mock Simulators:
-		additional_elements_to_deploy = [{ ".", code },
-										 { "gis_location.txt", data } ] },
+		%
+		additional_elements_to_deploy = [ { ".", code },
+										  { "gis_location.txt", data } ] },
 
 
 	% Default load balancing settings (round-robin placement heuristic):
@@ -82,19 +82,19 @@ run() ->
 
 	% A deployment manager is created directly on the user node:
 	_DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-								 DeploymentSettings, LoadBalancingSettings ),
+								DeploymentSettings, LoadBalancingSettings ),
 
 
 	% Testing the GIS service by itself:
 
 	GISPid = class_Actor:create_initial_actor( class_GIS,
-						   [ "gis_location.txt", _PrepareRendering=false ] ),
+						[ "gis_location.txt", _PrepareRendering=false ] ),
 
 	GISPid ! { toString, [], self() },
 
 	GISString = test_receive(),
 
-	test_facilities:display( "GIS current state is: ~s.", [ GISString ] ),
+	test_facilities:display( "GIS current state is: ~ts.", [ GISString ] ),
 
 	class_GIS:shutdown( GISPid ),
 

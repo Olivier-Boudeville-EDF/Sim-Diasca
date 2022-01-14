@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2021 EDF R&D
+% Copyright (C) 2016-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,6 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Example of transportation-related <b>dataflow unit</b>.
 -module(class_TransportationDemandUnit).
 
 
@@ -37,12 +38,12 @@
 % The attributes specific to this processing unit are:
 -define( class_attributes, [
 
-  { vehicle_sharing_probability, math_utils:percent(), "is the likeliness of "
-	"resorting to vehicle sharing for a transportation need" },
+	{ vehicle_sharing_probability, math_utils:percent(), "is the likeliness of "
+	  "resorting to vehicle sharing for a transportation need" },
 
-  { ambient_pollution, float(), "describes the ambient, overall pollution in "
-	"the city, in g.cm^-3 (mainly a way of showing that processing units may "
-	"be stateful)" } ] ).
+	{ ambient_pollution, float(), "describes the ambient, overall pollution in "
+	  "the city, in g.cm^-3 (mainly a way of showing that processing units may "
+	  "be stateful)" } ] ).
 
 
 % Must be included before class_TraceEmitter header:
@@ -79,8 +80,13 @@
 % will not unset.
 
 
+% Shorthands:
 
-% Constructs a new dataflow unit instance, in charge of evaluating the need for
+-type ustring() :: text_utils:ustring().
+
+
+
+% @doc Constructs a dataflow unit instance, in charge of evaluating the need for
 % transport:
 %
 % - ActorSettings describes the actor abstract identifier (AAI) and seed of this
@@ -119,7 +125,7 @@ construct( State, ActorSettings, UnitName, LevelOfVehicleSharing,
 
 
 
-% Sets the defaults for the input ports that may or may not be connected.
+% @doc Sets the defaults for the input ports that may or may not be connected.
 %
 % (helper)
 %
@@ -156,15 +162,15 @@ set_input_port_defaults( State ) ->
 
 
 
-% Callback executed automatically whenever the unit is activated.
+% @doc Callback executed automatically whenever the unit is activated.
 %
 % Meant to be overridden.
 %
 -spec activate( wooper:state() ) -> oneway_return().
 activate( State ) ->
 
-	?info_fmt( "Evaluating now the transportation demand for ~s.",
-				[ to_string( State ) ] ),
+	?info_fmt( "Evaluating now the transportation demand for ~ts.",
+			   [ to_string( State ) ] ),
 
 	% We are activated, hence we must have at least one input port set.
 	%
@@ -183,7 +189,7 @@ activate( State ) ->
 
 		{ set, ReadAdultCount } ->
 			%?debug_fmt( "Read value ~B for the set 'adult_count' input port.",
-			%			[ ReadAdultCount ] ),
+			%            [ ReadAdultCount ] ),
 			ReadAdultCount
 
 	end,
@@ -209,15 +215,15 @@ activate( State ) ->
 	%InputPortTable = ?getAttr(input_ports),
 	%
 	%{ AverageJourney, JourneyPortTable } = case
-	%		 class_DataflowBlock:extract_input_port_value(
-	%		   "average_journey", InputPortTable, State ) of
+	%       class_DataflowBlock:extract_input_port_value(
+	%           "average_journey", InputPortTable, State ) of
 	%
 	%	port_already_unset ->
 	%		throw( { unset_input_port, "average_journey" } );
 	%
 	%	ReadJourney={ _ReadAverageJourney, _ReadJourneyTable } ->
 	%		%?debug_fmt( "Read value ~f for the set 'average_journey' input "
-	%		%			"port.", [ ReadAverageJourney ] ),
+	%		%            "port.", [ ReadAverageJourney ] ),
 	%		ReadJourney
 	%
 	%end,
@@ -235,8 +241,7 @@ activate( State ) ->
 
 		{ set, ReadAverageJourney } ->
 			%?debug_fmt( "Read value ~B for the set 'average_journey' "
-			%			 "input port.",
-			%			 [ ReadAverageJourney ] ),
+			%   "input port.", [ ReadAverageJourney ] ),
 			ReadAverageJourney
 
 	end,
@@ -251,8 +256,8 @@ activate( State ) ->
 			throw( { unset_input_port, "area_type" } );
 
 		{ set, ReadAreaType } ->
-			%?debug_fmt( "Read value ~s for the set 'area_type' input port.",
-			%			 [ ReadAreaType ] ),
+			%?debug_fmt( "Read value ~ts for the set 'area_type' input port.",
+			%            [ ReadAreaType ] ),
 			ReadAreaType
 
 	end,
@@ -277,8 +282,8 @@ activate( State ) ->
 						[ ?pollution_emission_semantics ], "g.cm^-3", "float" ),
 
 	SetState = class_DataflowBlock:set_output_port_values( [
-				{ "energy_needed", EnergyValue },
-				{ "pollution_exhausted", PollutionValue } ], State ),
+		{ "energy_needed", EnergyValue },
+		{ "pollution_exhausted", PollutionValue } ], State ),
 
 
 	%FinalState = setAttribute( SetState, input_ports, JourneyPortTable ),
@@ -288,8 +293,9 @@ activate( State ) ->
 
 
 
-% The core of this transportation pseudo-model, i.e. the place where its actual
-% domain-specific computations are done, from the dataflow-originating values.
+% @doc The core of this transportation pseudo-model, i.e. the place where its
+% actual domain-specific computations are done, from the dataflow-originating
+% values.
 %
 % Note: this logic is pure, has strictly no link with anything related to a
 % dataflow or even to the internal state of this unit.
@@ -311,7 +317,7 @@ compute_transportation_metrics( AdultCount, ChildCount, AverageJourney,
 
 	?info_fmt( "Transportation demand evaluated for ~B adult(s), "
 		"~B child(ren), an average journey of ~f kilometers and an area of "
-		"type ~s: energy needed is ~f kW.h, pollution exhausted is ~f g.cm^-3",
+		"type ~ts: energy needed is ~f kW.h, pollution exhausted is ~f g.cm^-3",
 		[ AdultCount, ChildCount, AverageJourney, AreaType,
 		  EnergyNeeded, PollutionExhausted ] ),
 
@@ -320,7 +326,7 @@ compute_transportation_metrics( AdultCount, ChildCount, AverageJourney,
 
 
 
-% Computes the energy needed for specified transportation.
+% @doc Computes the energy needed for specified transportation.
 %
 % (helper)
 %
@@ -346,7 +352,7 @@ compute_energy_needed( AdultCount, ChildCount, AverageJourney, _AreaType=urban,
 
 
 
-% Computes the pollution exhausted because of specified transportation.
+% @doc Computes the pollution exhausted because of specified transportation.
 %
 % (helper)
 %
@@ -365,14 +371,14 @@ compute_pollution_exhausted( AverageJourney, _AreaType=urban,
 % Static section.
 
 
-% Returns the specifications for the input and output ports of that dataflow
-% block.
+% @doc Returns the specifications for the input and output ports of that
+% dataflow block.
 %
 -spec get_port_specifications() ->
 			static_return( { [ input_port_spec() ], [ output_port_spec() ] } ).
 get_port_specifications() ->
 	wooper:return_static(
-	  { get_input_port_specs(), get_output_port_specs() } ).
+		{ get_input_port_specs(), get_output_port_specs() } ).
 
 
 
@@ -420,8 +426,8 @@ get_input_port_specs() ->
 
 
 
-% Returns a list of the specifications of the (initial) output ports for that
-% unit.
+% @doc Returns a list of the specifications of the (initial) output ports for
+% that unit.
 %
 -spec get_output_port_specs() -> static_return( [ output_port_spec() ] ).
 get_output_port_specs() ->
@@ -449,7 +455,7 @@ get_output_port_specs() ->
 
 
 
-% Returns the semantics statically declared by this processing unit.
+% @doc Returns the semantics statically declared by this processing unit.
 %
 % Defining this method allows to ensure that all the ports ever created by this
 % processing unit will rely on user-level semantics among this explicitly stated
@@ -466,7 +472,7 @@ get_declared_semantics() ->
 
 
 
-% Returns the types statically declared by this unit.
+% @doc Returns the types statically declared by this unit.
 -spec get_declared_types() -> static_return( class_TypeServer:type_entries() ).
 get_declared_types() ->
 	wooper:return_static( [ { 'area_type', "'rural'|'urban'" } ] ).
@@ -477,11 +483,11 @@ get_declared_types() ->
 % Helper functions.
 
 
-% Returns a textual description of this unit.
--spec to_string( wooper:state() ) -> string().
+% @doc Returns a textual description of this unit.
+-spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 	text_utils:format( "Transportation demand unit with a probability of "
 		"vehicle sharing of ~f% and an ambient pollution "
-		"of ~f g.cm^-3; this is a ~s",
+		"of ~f g.cm^-3; this is a ~ts",
 		[ ?getAttr(vehicle_sharing_probability), ?getAttr(ambient_pollution),
 		  class_DataflowProcessingUnit:to_string( State ) ] ).

@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2021 EDF R&D
+% Copyright (C) 2012-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,6 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Class modelling the <b>generation of cities</b>.
 -module(class_CityGenerator).
 
 
@@ -35,29 +36,29 @@
 % The class-specific attributes of a City Generator instance are:
 -define( class_attributes, [
 
-  { city_name, string(), "the name of the city" },
+	{ city_name, ustring(), "the name of the city" },
 
-  { dimensions, linear3D:point(),
-	"the opposite point to the origin delimiting the world box" },
+	{ dimensions, point3(),
+	  "the opposite corner to the origin delimiting the world box" },
 
-  { load_balancer_pid, load_balancer_pid(), "the PID of the load balancer" },
+	{ load_balancer_pid, load_balancer_pid(), "the PID of the load balancer" },
 
-  { location_generator_pid, location_generator_pid(),
-	"the PID of the internal location generator" },
+	{ location_generator_pid, location_generator_pid(),
+	  "the PID of the internal location generator" },
 
-  { incinerators, [ incinerator_pid() ],
-	"a plain list of the created incinerators" },
+	{ incinerators, [ incinerator_pid() ],
+	  "a plain list of the created incinerators" },
 
-  { residential_sources, [ residential_ws_pid() ],
-	"a plain list of the created residential sources" },
+	{ residential_sources, [ residential_ws_pid() ],
+	  "a plain list of the created residential sources" },
 
-  { industrial_sources, [ industry_ws_pid() ],
-	"a plain list of the created industrial sources" },
+	{ industrial_sources, [ industry_ws_pid() ],
+	  "a plain list of the created industrial sources" },
 
-  { road_junctions, [ junction_pid() ],
-	"a plain list of the created road junctions" },
+	{ road_junctions, [ junction_pid() ],
+	  "a plain list of the created road junctions" },
 
-  { roads, [ road_pid() ], "a plain list of the created roads" } ] ).
+	{ roads, [ road_pid() ], "a plain list of the created roads" } ] ).
 
 
 -export([ report/2, report/3 ]).
@@ -83,8 +84,8 @@
 % creation.
 
 
-% Description of a city that is to be procedurally created:
 -type city_description() :: #city_description{}.
+% Description of a city that is to be procedurally created.
 
 
 
@@ -104,17 +105,22 @@
 
 % Shorthands:
 
+-type count() :: basic_utils:count().
+
 -type ustring() :: text_utils:ustring().
 
 -type meters() :: unit_utils:meters().
 
+%-type point3() :: point3:point3().
 
-% Constructs a new city generator, from the specified city description (refer to
-% the city_description record definition in class_CityGenerator.hrl), passing
+
+
+% @doc Constructs a city generator, from the specified city description (refer
+% to the city_description record definition in class_CityGenerator.hrl), passing
 % also the PID of the GIS.
 %
 -spec construct( wooper:state(), city_description(), gis_pid() ) ->
-					   wooper:state().
+												wooper:state().
 construct( State, CityDescription=#city_description{
 					 name=Name,
 					 dimensions=Dimensions }, GISPid ) ->
@@ -125,14 +131,14 @@ construct( State, CityDescription=#city_description{
 	random_utils:start_random_source( default_seed ),
 
 	EmitterName = ?trace_categorize(
-					 text_utils:format( "City Generator for ~s", [ Name ] ) ),
+					text_utils:format( "City Generator for ~ts", [ Name ] ) ),
 
 	EmitterState = class_EngineBaseObject:construct( State, EmitterName ),
 
 	LoadBalancerPid = class_LoadBalancer:get_balancer(),
 
 	LocationGeneratorPid = class_LocationGenerator:new_link(
-							 "City Location Generator", Dimensions ),
+								"City Location Generator", Dimensions ),
 
 	setAttributes( EmitterState, [
 		{ dimensions, Dimensions },
@@ -158,7 +164,9 @@ destruct( State ) ->
 
 
 
-% Generates the initial state of a city corresponding to the stored description.
+% @doc Generates the initial state of a city corresponding to the stored
+% description.
+%
 -spec generateCity( wooper:state() ) -> request_return( 'city_generated' ).
 generateCity( State ) ->
 
@@ -170,8 +178,8 @@ generateCity( State ) ->
 
 
 
-% Writes in specified file the initialisation data corresponding to a generated
-% city.
+% @doc Writes in specified file the initialisation data corresponding to a
+% generated city.
 %
 -spec writeInitialisation( wooper:state(), file_utils:file() ) ->
 							const_request_return( 'initialisation_written' ).
@@ -187,7 +195,7 @@ writeInitialisation( State, File ) ->
 
 	file_utils:write_ustring( File,
 		"~n~n% Global section.~n~n"
-		"\"~s\" <- { class_GIS, [none, false] }.", [ GISId ] ),
+		"\"~ts\" <- { class_GIS, [none, false] }.", [ GISId ] ),
 
 	GISIdRef = { user_id, GISId },
 
@@ -210,8 +218,8 @@ writeInitialisation( State, File ) ->
 	% directly the following oneway, so that we can interleave actor and
 	% definition creations:
 
-	LoadBalancerPid ! { createInitialActors,
-						[ IncineratorDefsWithPid, self() ] },
+	LoadBalancerPid !
+		{ createInitialActors, [ IncineratorDefsWithPid, self() ] },
 
 	% We collect the user identifiers (names) of incinerators and other point of
 	% interest to initialise later waste trucks thanks to these references.
@@ -223,7 +231,7 @@ writeInitialisation( State, File ) ->
 		RefArgs = replace_in_last_arg( GISPid, GISIdRef, Args ),
 
 		% Using ~w rather than ~p to remain mono-line:
-		file_utils:write_ustring( File, "\"~s\" <- { ~s, ~w }.~n~n",
+		file_utils:write_ustring( File, "\"~ts\" <- { ~ts, ~w }.~n~n",
 								  [ Name, Class, RefArgs ]  ),
 
 		{ user_id, Name }
@@ -244,8 +252,8 @@ writeInitialisation( State, File ) ->
 	file_utils:write_ustring( File, "~n~n~n% Landfill section.~n~n", [] ),
 
 	LandfillDefsWithPid = class_Landfill:generate_definitions(
-						CityDescription#city_description.landfill_count,
-						LocationGeneratorPid, GISPid ),
+		CityDescription#city_description.landfill_count,
+		LocationGeneratorPid, GISPid ),
 
 	LoadBalancerPid ! { createInitialActors, [ LandfillDefsWithPid, self() ] },
 
@@ -255,7 +263,7 @@ writeInitialisation( State, File ) ->
 		RefArgs = replace_in_last_arg( GISPid, GISIdRef, Args ),
 
 		% Using ~w rather than ~p to remain mono-line:
-		file_utils:write_ustring( File, "\"~s\" <- { ~s, ~w }.~n~n",
+		file_utils:write_ustring( File, "\"~ts\" <- { ~ts, ~w }.~n~n",
 								  [ Name, Class, RefArgs ] ),
 
 		{ user_id, Name }
@@ -281,8 +289,8 @@ writeInitialisation( State, File ) ->
 			CityDescription#city_description.residential_waste_source_count,
 			LocationGeneratorPid, GISPid ),
 
-	LoadBalancerPid ! { createInitialActors,
-						[ IndusWasteSourceDefsWithPid, self() ] },
+	LoadBalancerPid !
+		{ createInitialActors, [ IndusWasteSourceDefsWithPid, self() ] },
 
 	% Class is class_IndustrialWasteSource (File: closure):
 	IndusRefs = [ begin
@@ -290,11 +298,10 @@ writeInitialisation( State, File ) ->
 		RefArgs = replace_in_last_arg( GISPid, GISIdRef, Args ),
 
 		% Using ~w rather than ~p to remain mono-line:
-		file_utils:write_ustring( File, "\"~s\" <- { ~s, ~w }.~n~n",
+		file_utils:write_ustring( File, "\"~ts\" <- { ~ts, ~w }.~n~n",
 								  [ Name, Class, RefArgs ] ),
 
 		{ user_id, Name }
-
 
 				  end ||
 				  { Class, Args=[ Name | _ ] } <- IndusWasteSourceDefsWithPid ],
@@ -316,8 +323,8 @@ writeInitialisation( State, File ) ->
 			CityDescription#city_description.residential_waste_source_count,
 			LocationGeneratorPid, GISPid ),
 
-	LoadBalancerPid ! { createInitialActors,
-						[ ResidWasteSourceDefsWithPid, self() ] },
+	LoadBalancerPid !
+		{ createInitialActors, [ ResidWasteSourceDefsWithPid, self() ] },
 
 	% Class is class_ResidentialWasteSource (File: closure):
 	ResRefs = [ begin
@@ -325,7 +332,7 @@ writeInitialisation( State, File ) ->
 		RefArgs = replace_in_last_arg( GISPid, GISIdRef, Args ),
 
 		% Using ~w rather than ~p to remain mono-line:
-		file_utils:write_ustring( File, "\"~s\" <- { ~s, ~w }.~n~n",
+		file_utils:write_ustring( File, "\"~ts\" <- { ~ts, ~w }.~n~n",
 								  [ Name, Class, RefArgs ] ),
 
 		{ user_id, Name }
@@ -363,11 +370,10 @@ writeInitialisation( State, File ) ->
 		RefArgs = replace_in_last_arg( GISPid, GISIdRef, Args ),
 
 		% Using ~w rather than ~p to remain mono-line:
-		file_utils:write_ustring( File, "\"~s\" <- { ~s, ~w }.~n~n",
+		file_utils:write_ustring( File, "\"~ts\" <- { ~ts, ~w }.~n~n",
 								  [ Name, Class, RefArgs ] ),
 
 		{ user_id, Name }
-
 
 				 end || { Class, Args=[ Name | _ ] } <- JunctionDefsWithPid ],
 
@@ -383,7 +389,7 @@ writeInitialisation( State, File ) ->
 	file_utils:write_ustring( File, "~n~n~n% Waste truck section.~n~n", [] ),
 
 
-	%trace_utils:debug_fmt( "Junction PIDs: ~p.~n", [ JuncPids ] ),
+	%trace_utils:debug_fmt( "Junction PIDs: ~p.", [ JuncPids ] ),
 
 	% All points of interest where trucks may begin:
 	POIRefs = IncRefs ++ LandRefs ++ IndusRefs ++ ResRefs ++ JuncRefs,
@@ -397,7 +403,7 @@ writeInitialisation( State, File ) ->
 	[ begin
 
 		  % Using ~w rather than ~p to remain mono-line:
-		  file_utils:write_ustring( File, "\"~s\" <- { ~s, ~w }.~n~n",
+		  file_utils:write_ustring( File, "\"~ts\" <- { ~ts, ~w }.~n~n",
 									[ Name, Class, Args ] )
 
 	  end || { Class, Args=[ Name | _H ] } <- TruckDefs ],
@@ -437,29 +443,29 @@ writeInitialisation( State, File ) ->
 
 	[ begin
 
-		  % In initialisation data, we cannot specify PIDs, hence we have to
-		  % convert the PID of the source and target point of interest into a
-		  % proper user identifier reference:
+		% In initialisation data, we cannot specify PIDs, hence we have to
+		% convert the PID of the source and target point of interest into a
+		% proper user identifier reference:
 
-		  SourcePOI ! { getName, [], self() },
-		  SourceRef = receive
+		SourcePOI ! { getName, [], self() },
+		SourceRef = receive
 
-				{ wooper_result, NSource } ->
-					{ user_id, text_utils:binary_to_string( NSource ) }
+			{ wooper_result, NSource } ->
+				{ user_id, text_utils:binary_to_string( NSource ) }
 
-		  end,
+		end,
 
-		  TargetPOI ! { getName, [], self() },
-		  TargetRef = receive
+		TargetPOI ! { getName, [], self() },
+		TargetRef = receive
 
-			  { wooper_result, NTarget } ->
-				  { user_id, text_utils:binary_to_string( NTarget ) }
+			{ wooper_result, NTarget } ->
+				{ user_id, text_utils:binary_to_string( NTarget ) }
 
-		  end,
+		end,
 
-		  % Using ~w rather than ~p to remain mono-line:
-		  file_utils:write_ustring( File, "\"~s\" <- { ~s, ~w }.~n~n",
-				[ Name, Class, [ Name, SourceRef, TargetRef | H ] ] )
+		% Using ~w rather than ~p to remain mono-line:
+		file_utils:write_ustring( File, "\"~ts\" <- { ~ts, ~w }.~n~n",
+			[ Name, Class, [ Name, SourceRef, TargetRef | H ] ] )
 
 	  end
 	  || { Class, _Args=[ Name, SourcePOI, TargetPOI | H ] } <- FullRoadDefs ],
@@ -480,7 +486,7 @@ writeInitialisation( State, File ) ->
 	[ begin
 
 		% Using ~w rather than ~p to remain mono-line:
-		file_utils:write_ustring( File, "\"~s\" <- { ~s, ~w }.~n~n",
+		file_utils:write_ustring( File, "\"~ts\" <- { ~ts, ~w }.~n~n",
 								  [ Name, Class, Args ] )
 
 	  end || { Class, Args=[ Name | _T ] } <- WeatherDefs ],
@@ -493,8 +499,8 @@ writeInitialisation( State, File ) ->
 
 
 
-% Returns a string describing the state of this instance.
--spec to_string( wooper:state() ) -> const_request_return(ustring() ).
+% @doc Returns a textual description of the state of this instance.
+-spec to_string( wooper:state() ) -> const_request_return( ustring() ).
 to_string( State ) ->
 
 	FinalString = text_utils:format( "City generator having for "
@@ -510,7 +516,7 @@ to_string( State ) ->
 % Section for static methods.
 
 
-% Returns the length (in meters) of the side of a square whose area is the
+% @doc Returns the length (in meters) of the side of a square whose area is the
 % specified one, expressed in square kilometers.
 %
 -spec area_to_side_length( linear:area() ) -> static_return( meters() ).
@@ -522,7 +528,7 @@ area_to_side_length( Area ) ->
 % Section for helper functions.
 
 
-% Generates the full specified city.
+% @doc Generates the full specified city.
 generate_city( #city_description{
 						name=Name,
 						dimensions={ Length, Width, _Height },
@@ -688,14 +694,14 @@ generate_city( #city_description{
 	RoadJunctionCount =      length( RoadJunctions ),
 	WasteTruckCount =        length( WasteTrucks ),
 
-	report( "Following city elements were created for city ~s:~n"
+	report( "Following city elements were created for city ~ts:~n"
 		" - ~B incinerators~n"
 		" - ~B landfills~n"
-		 " - ~B residential waste sources~n"
-		 " - ~B industrial waste sources~n"
-		 " - ~B road junctions~n"
-		 " - ~B roads~n"
-		 " - ~B waste trucks~n",
+		" - ~B residential waste sources~n"
+		" - ~B industrial waste sources~n"
+		" - ~B road junctions~n"
+		" - ~B roads~n"
+		" - ~B waste trucks~n",
 		[ Name, IncineratorCount, LandfillCount, ResidentialSourceCount,
 		  IndustrialSourceCount, RoadJunctionCount, length( Roads ),
 		  WasteTruckCount ], State ),
@@ -712,8 +718,8 @@ generate_city( #city_description{
 
 
 
-% Generates a complete road network, so that notably each point of interest can
-% be reached (inbound) and go away from (outbound).
+% @doc Generates a complete road network, so that notably each point of interest
+% can be reached (inbound) and go away from (outbound).
 %
 % For that, roads are to be created.
 %
@@ -794,7 +800,7 @@ generate_road_network( Incinerators, Landfills, ResidentialSources,
 
 
 
-% Completes all road junctions.
+% @doc Completes all road junctions.
 add_roads_for( RoadJunctions, GISPid ) ->
 	add_roads_for( RoadJunctions, GISPid, _AccRoads=[] ).
 
@@ -821,7 +827,7 @@ add_roads_for( _RoadJunctions=[ J | T ], GISPid, AccRoads ) ->
 									  GISPid );
 
 		{ wooper_result, { lacking_both, LackInboundCount, InboundPOIs,
-						  LackOutboundCount, OutboundPOIs } } ->
+						   LackOutboundCount, OutboundPOIs } } ->
 
 			InRoads = find_and_create_inbound( J, LackInboundCount,
 											   InboundPOIs, GISPid ),
@@ -837,13 +843,13 @@ add_roads_for( _RoadJunctions=[ J | T ], GISPid, AccRoads ) ->
 
 
 
-% Creates Count outbound roads from specified junction, not duplicating any
+% @doc Creates Count outbound roads from specified junction, not duplicating any
 % pre-existing road.
 %
 find_and_create_outbound( Junction, Count, CurrentOutbounds, GISPid ) ->
 
 	GISPid ! { searchNearestPointsOfInterest, [ Junction,
-				  _ExcludedPOIs=CurrentOutbounds, Count ], self() },
+					_ExcludedPOIs=CurrentOutbounds, Count ], self() },
 
 	receive
 
@@ -854,13 +860,13 @@ find_and_create_outbound( Junction, Count, CurrentOutbounds, GISPid ) ->
 
 
 
-% Creates Count inbound roads from specified junction, not duplicating any
+% @doc Creates Count inbound roads from specified junction, not duplicating any
 % pre-existing road.
 %
 find_and_create_inbound( Junction, Count, CurrentInbounds, GISPid ) ->
 
 	GISPid ! { searchNearestPointsOfInterest, [ Junction,
-				  _ExcludedPOIs=CurrentInbounds, Count ], self() },
+					_ExcludedPOIs=CurrentInbounds, Count ], self() },
 
 	receive
 
@@ -871,8 +877,8 @@ find_and_create_inbound( Junction, Count, CurrentInbounds, GISPid ) ->
 
 
 
-% Returns the roads that were needed so that all specified POIs have both at
-% least one inbound and one outbound connection.
+% @doc Returns the roads that were needed so that all specified POIs have both
+% at least one inbound and one outbound connection.
 %
 force_connectivity( POIList, GISPid ) ->
 	force_connectivity( POIList, GISPid, _AccRoads=[] ).
@@ -916,7 +922,7 @@ force_connectivity( _POIList=[ P | T ], GISPid, AccRoads ) ->
 
 
 
-% Creates base road definitions from specified POI(s) to specified POI(s).
+% @doc Creates base road definitions from specified POI(s) to specified POI(s).
 get_road_defs( From, To ) when is_list( From ) andalso is_pid( To ) ->
 	[ { F, To } || F <- From ];
 
@@ -925,9 +931,9 @@ get_road_defs( From, To ) when is_pid( From ) andalso is_list( To ) ->
 
 
 
-% Returns { CellsPerEdge, CellCount }.
+% @doc Returns {CellsPerEdge, CellCount}.
 -spec get_cell_infos( meters(), meters() ) ->
-				static_return( { basic_utils:count(), basic_utils:count() } ).
+									static_return( { count(), count() } ).
 get_cell_infos( Length, Width ) ->
 
 	MinCellsForLength = math_utils:ceiling( Length / ?weather_cell_length ),
@@ -946,7 +952,7 @@ get_cell_infos( Length, Width ) ->
 
 
 
-% Reports specified message.
+% @doc Reports specified message.
 %
 % Centralised to be easily enabled/disabled.
 %
@@ -960,7 +966,7 @@ report( Message, State ) ->
 
 
 
-% Reports specified formatted message.
+% @doc Reports the specified formatted message.
 %
 % Centralised to be easily enabled/disabled.
 %

@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,11 +19,12 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Class modelling a <b>deterministic thirsty customer</b>.
 -module(class_DeterministicThirstyCustomer).
 
 
 -define( class_description,
-		 "Class modeling a deterministic thirsty customer." ).
+		 "Class modelling a deterministic thirsty customer." ).
 
 
 % Determines what are the direct mother classes of this class (if any):
@@ -33,7 +34,8 @@
 % Design notes:
 %
 % A generic ThirstyCustomer class could have been introduced to factor at least
-% a part of the state and behaviour.
+% a part of the state and behaviour between deterministic and stochastic
+% clients.
 
 
 -type customer_pid() :: actor_pid().
@@ -45,27 +47,29 @@
 
 -type machine_pid() :: class_SodaVendingMachine:machine_pid().
 
+
+
 % The class-specific attributes of a deterministic thirsty customer are:
 -define( class_attributes, [
 
-  { known_machine_pid, machine_pid(),
-	"the PID of the soda-vending machine that this customer knows" },
+	{ known_machine_pid, machine_pid(),
+	  "the PID of the soda-vending machine that this customer knows" },
 
-  { can_cost, maybe( amount() ), "the cost of a can from this machine (as a "
-	"floating-point number of euros)" },
+	{ can_cost, maybe( amount() ), "the cost of a can from this machine (as a "
+	  "floating-point number of euros)" },
 
-  { repletion_duration, maybe( class_TimeManager:tick_offset() ),
-	"the duration before, once having drunk, this customer will be thirsty "
-	"again" },
+	{ repletion_duration, maybe( class_TimeManager:tick_offset() ),
+	  "the duration before, once having drunk, this customer will be thirsty "
+	  "again" },
 
-  { next_thirsty_tick, class_TimeManager:tick_offset(),
-	"the next tick offset at which this customer will be thirsty again" },
+	{ next_thirsty_tick, class_TimeManager:tick_offset(),
+	  "the next tick offset at which this customer will be thirsty again" },
 
-  { current_money, amount(),
-	"the (floating-point) number of euros this customer has in pocket" },
+	{ current_money, amount(),
+	  "the (floating-point) number of euros this customer has in pocket" },
 
-  { transaction_in_progress, boolean(),
-	"tells whether a transaction with its machine is in progress" } ] ).
+	{ transaction_in_progress, boolean(),
+	  "tells whether a transaction with its machine is in progress" } ] ).
 
 
 % For common types defined in this Soda-Test example:
@@ -88,7 +92,7 @@
 
 
 
-% Creates a new deterministic thirsty customer.
+% @doc Creates a deterministic thirsty customer.
 %
 % Parameters are:
 % - ActorSettings corresponds to the engine settings for this actor
@@ -110,7 +114,7 @@ construct( State, ActorSettings, CustomerName, KnownMachinePid,
 										?trace_categorize(CustomerName) ),
 
 	?send_info_fmt( ActorState,
-		"Creating a new deterministic thirsty customer named '~s', "
+		"Creating a deterministic thirsty customer named '~ts', "
 		"having initially ~.2f euro(s), knowing the following vending machine: "
 		"~w and being thirsty ~B minutes after having drunk.",
 		[ CustomerName, InitialBudget, KnownMachinePid, RepletionDuration ] ),
@@ -128,13 +132,13 @@ construct( State, ActorSettings, CustomerName, KnownMachinePid,
 
 
 
-% Overridden destructor.
+% @doc Overridden destructor.
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
 	% Class-specific actions:
 
-	?notice_fmt( "Deleting deterministic thirsty customer named '~s', "
+	?notice_fmt( "Deleting deterministic thirsty customer named '~ts', "
 		"who had finally ~.2f euros left in pocket.",
 		[ ?getAttr(name), ?getAttr(current_money) ] ),
 
@@ -151,7 +155,7 @@ destruct( State ) ->
 % Management section of the actor.
 
 
-% Simply schedules this just created actor at the next tick (diasca 0).
+% @doc imply schedules this just created actor at the next tick (diasca 0).
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
 							actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
@@ -165,7 +169,7 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-% The core of the customer behaviour.
+% @doc The core of the customer behaviour.
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
@@ -192,7 +196,7 @@ actSpontaneous( State ) ->
 
 
 
-% Called by the known machine, in return to a getCanCost/2 call.
+% @doc Called by the known machine, in return to a getCanCost/2 call.
 -spec setCanCost( wooper:state(), amount(), sending_actor_pid() ) ->
 						actor_oneway_return().
 setCanCost( State, CanCost, MachinePid ) ->
@@ -213,7 +217,7 @@ setCanCost( State, CanCost, MachinePid ) ->
 
 
 
-% Called by the machine in return to a orderSoda/3 call, when a can was
+% @doc Called by the machine in return to a orderSoda/3 call, when a can was
 % available.
 %
 -spec getCan( wooper:state(), sending_actor_pid() ) -> actor_oneway_return().
@@ -238,7 +242,9 @@ getCan( State, _SendingMachinePid ) ->
 
 
 
-% Called whenever a can was requested to a machine, whereas none is available.
+% @doc Called whenever a can was requested to a machine, whereas none is
+% available.
+%
 -spec onNoCanAvailable( wooper:state(), sending_actor_pid() ) ->
 								actor_oneway_return().
 onNoCanAvailable( State, _SendingMachinePid ) ->
@@ -250,8 +256,8 @@ onNoCanAvailable( State, _SendingMachinePid ) ->
 
 
 
-% Called whenever the customer requested a new can but actually cannot afford it
-% (this should never happen).
+% @doc Called whenever the customer requested a new can but actually cannot
+% afford it (this should never happen).
 %
 -spec onNotEnoughMoney( wooper:state(), sending_actor_pid() ) ->
 								actor_oneway_return().
@@ -265,10 +271,11 @@ onNotEnoughMoney( State, MachinePid ) ->
 
 
 
+
 % Helper functions.
 
 
-% Requests the known machine to return the cost of one of its cans.
+% @doc Requests the known machine to return the cost of one of its cans.
 %
 % Triggers back a setCanCost/3 call.
 %
@@ -279,7 +286,7 @@ onNotEnoughMoney( State, MachinePid ) ->
 -spec request_cost( wooper:state() ) -> wooper:state().
 request_cost( State ) ->
 
-	?notice( "Investigating how much costs a soda; requesting the machine." ),
+	?notice( "Investigating how much a soda costs; requesting the machine." ),
 
 	% Expect our setCanCost/3 oneway to be called back by the vending machine:
 	class_Actor:send_actor_message( ?getAttr(known_machine_pid), getCanCost,
@@ -287,7 +294,7 @@ request_cost( State ) ->
 
 
 
-% Determines the behaviour of the customer with regard to his thirst.
+% @doc Determines the behaviour of the customer with regard to his thirst.
 %
 % Returns an updated state.
 %
@@ -341,10 +348,10 @@ manage_thirst( State ) ->
 								"trying to buy a can.", [ Budget ] ),
 
 							class_Actor:send_actor_message(
-							  ?getAttr(known_machine_pid),
-							  { orderSoda, Budget },
-							  setAttribute( State, transaction_in_progress,
-											true ) )
+								?getAttr(known_machine_pid),
+								{ orderSoda, Budget },
+								setAttribute( State, transaction_in_progress,
+											  true ) )
 
 					end
 
@@ -363,7 +370,7 @@ manage_thirst( State ) ->
 
 
 
-% Returns whether this customer is thirsty.
+% @doc Returns whether this customer is thirsty.
 %
 % (helper)
 %
@@ -384,7 +391,7 @@ is_thirsty( State ) ->
 
 
 
-% Computes the next thirsty tick and records it.
+% @doc Computes the next thirsty tick and records it.
 %
 % Returns an updated state.
 %

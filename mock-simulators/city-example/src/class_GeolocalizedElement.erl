@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2021 EDF R&D
+% Copyright (C) 2012-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,11 +19,14 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Class modelling any model element that can be <b>geolocalized in the
+% simulation world</b>.
+%
 -module(class_GeolocalizedElement).
 
 
 -define( class_description,
-		 "Class modeling any model element that can be geolocalized, in the "
+		 "Class modelling any model element that can be geolocalized in the "
 		 "simulation world."
 		 "See also: class_GIS.erl" ).
 
@@ -45,25 +48,34 @@
 -include_lib("wooper/include/wooper.hrl").
 
 
+
+% Shorthands:
+
+-type ustring() :: text_utils:ustring().
+
+
 % The class-specific attributes of an instance of a geolocalized element are:
 -define( class_attributes, [
 
-  { location, class_GIS:geo_coordinate(), "is either the current location of "
-	"this element or the PID of its immediate including geocontainer" },
+	{ location, class_GIS:geo_coordinate(), "is either the current location of "
+	  "this element or the PID of its immediate including geocontainer" },
 
-  { local_tracker_pid, instance_tracker_pid(),
-	"the PID of the local instance tracker (only for debugging purposes)" } ] ).
+	{ local_tracker_pid, instance_tracker_pid(),
+	  "the PID of the local instance tracker (only for debugging purposes)" }
+
+] ).
 
 
 
-% Creates a new geolocalized element.
+
+% @doc Creates a geolocalized element.
 %
 % The only parameter is the starting location, which is either:
 %
 %  - GeoContainerPid :: class_GeoContainer:container_pid() the PÏD of a
 %  geo-container instance in which this element will be located initially
 %
-%  - { CoordinateType, Location }
+%  - {CoordinateType, Location}
 %
 %  - Location, where Location is implicitly a WGS84 polar coordinate
 %
@@ -94,17 +106,17 @@ construct( State, ImplicitlyWGS84PolarCoord ) ->
 % Methods section.
 
 
-% Returns the current location of this element (possibly the PID of a
+% @doc Returns the current location of this element (possibly the PID of a
 % container).
 %
 -spec getLocation( wooper:state() ) ->
-						 const_request_return( class_GIS:geo_coordinate() ).
+							const_request_return( class_GIS:geo_coordinate() ).
 getLocation( State ) ->
 	wooper:const_return_result( ?getAttr(location) ).
 
 
 
-% Returns the current actual (raw) location of this element.
+% @doc Returns the current actual (raw) location of this element.
 -spec getActualLocation( wooper:state() ) ->
 						 const_request_return( class_GIS:raw_location() ).
 getActualLocation( State ) ->
@@ -131,7 +143,7 @@ getActualLocation( State ) ->
 
 
 
-% Sets the current location of this element.
+% @doc Sets the current location of this element.
 -spec setLocation( wooper:state(), class_GIS:geo_coordinate() ) ->
 						 oneway_return().
 setLocation( State, NewLocation ) ->
@@ -145,7 +157,7 @@ setLocation( State, NewLocation ) ->
 % Helper functions.
 
 
-% Enters in specified geo-container, expecting this operation to succeed.
+% @doc Enters in specified geo-container, expecting this operation to succeed.
 %
 % Returns an updated state.
 %
@@ -160,10 +172,10 @@ enter_in( GeoContainerPid, State ) ->
 	receive
 
 		{ wooper_result, entered } ->
-			setAttributes( State,
-						   [ { location, GeoContainerPid },
-							 { local_tracker_pid,
-							   class_InstanceTracker:get_local_tracker() } ] );
+			setAttributes( State, [
+				{ location, GeoContainerPid },
+				{ local_tracker_pid,
+				  class_InstanceTracker:get_local_tracker() } ] );
 
 		{ wooper_result, entry_refused } ->
 			throw( { entry_refused, GeoContainerPid } )
@@ -172,11 +184,11 @@ enter_in( GeoContainerPid, State ) ->
 
 
 
-% Returns a textual description of the location of this element.
+% @doc Returns a textual description of the location of this element.
 %
 % (helper)
 %
--spec interpret_location( wooper:state() ) -> string().
+-spec interpret_location( wooper:state() ) -> ustring().
 interpret_location( State ) ->
 
 	case ?getAttr(location) of

@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2021 EDF R&D
+% Copyright (C) 2016-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,10 +19,9 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-
-% Integration test for the 'Dataflow Urban Example' case, based on the
-% management of changesets like if the simulation was driven by an overall
-% platform (that is emulated here).
+% @doc Integration test for the 'Dataflow Urban Example' case, based on the
+% <b>management of changesets like if the simulation was driven by an overall
+% platform</b> (that is emulated here).
 %
 % The purpose of this module is to perform an overall, integrated testing of the
 % dataflow support.
@@ -97,8 +96,7 @@
 
 
 
-% Runs the case.
-%
+% @doc Runs the case.
 -spec run() -> no_return().
 run() ->
 
@@ -117,27 +115,25 @@ run() ->
 
 	% Just for the sake of checking it on the display:
 	ExpectedTimestepCount = round( time_utils:years_to_seconds(
-							  SimulationDurationInYears ) / TickDuration ),
+								SimulationDurationInYears ) / TickDuration ),
 
 	SimulationDurationInYears = ExpectedTimestepCount,
 
 	TimestepString = time_utils:duration_to_string(
-					   _Microseconds=1000*TickDuration ),
+						_Microseconds=1000*TickDuration ),
 
 	test_facilities:display( "Running a 'Dataflow Urban Example' simulation "
-							 "case with a timestep of ~s and a duration of "
-							 "~B years (hence corresponding to ~p expected "
-							 "timesteps), in a changeset-based way.",
-							 [ TimestepString, SimulationDurationInYears,
-							   ExpectedTimestepCount ] ),
+		"case with a timestep of ~ts and a duration of "
+		"~B years (hence corresponding to ~p expected "
+		"timesteps), in a changeset-based way.",
+		[ TimestepString, SimulationDurationInYears, ExpectedTimestepCount ] ),
 
 	test_facilities:display( "Of course this is merely a technical example "
-							 "being happily meaningless in terms of urban "
-							 "matters." ),
+		"being happily meaningless in terms of urban matters." ),
 
 	SimulationSettings = #simulation_settings{
-	  simulation_name="Urban Dataflow Platform-Emulating Example",
-	  tick_duration=TickDuration },
+		simulation_name="Urban Dataflow Platform-Emulating Example",
+		tick_duration=TickDuration },
 
 
 	DeploymentSettings = #deployment_settings{
@@ -145,14 +141,12 @@ run() ->
 		% We want to embed additionally this test and its specific
 		% prerequisites, defined in the Mock Simulators:
 		%
-		additional_elements_to_deploy = [ { ".", code } ]
-
-	},
+		additional_elements_to_deploy = [ { ".", code } ] },
 
 
 	% We will initialise first the engine:
-	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-											DeploymentSettings ),
+	DeploymentManagerPid =
+		sim_diasca:init( SimulationSettings, DeploymentSettings ),
 
 	LoadBalancerPid = class_LoadBalancer:get_balancer(),
 
@@ -171,8 +165,8 @@ run() ->
 
 	% Creating first the (here, single, overall) dataflow of interest:
 	DataflowPid = class_Actor:create_initial_actor( class_Dataflow,
-			[ "Urban Platform-Emulating Dataflow", ExperimentManagerPid ],
-			LoadBalancerPid ),
+		[ "Urban Platform-Emulating Dataflow", ExperimentManagerPid ],
+		LoadBalancerPid ),
 
 	% A single dataflow here:
 	Dataflows = [ DataflowPid ],
@@ -243,14 +237,13 @@ run() ->
 		[ { class_DistrictObjectManager, [ class_District ] } ],
 
 	?test_info_fmt( "Creating directly following default dataflow "
-					"object managers, taking in charge following types of "
-					"dataflow objects: ~p.",
-					[ DefaultObjectManagerDefs ] ),
+		"object managers, taking in charge following types of "
+		"dataflow objects: ~p.", [ DefaultObjectManagerDefs ] ),
 
 	_DefaultObjectManagers =
 		class_DataflowObjectManager:create_default_managers(
-		  DefaultObjectManagerDefs, WorldManagerPid, LoadBalancerPid,
-		  IdentificationServerPid ),
+			DefaultObjectManagerDefs, WorldManagerPid, LoadBalancerPid,
+			IdentificationServerPid ),
 
 	% Only one specifically-defined object manager:
 	%
@@ -261,8 +254,8 @@ run() ->
 
 	_SpecificObjectManagers = [ _BuildingHouseholdManagerPid ] =
 		class_DataflowObjectManager:create_specific_managers(
-		  SpecificObjectManagers, WorldManagerPid, LoadBalancerPid,
-		  IdentificationServerPid ),
+			SpecificObjectManagers, WorldManagerPid, LoadBalancerPid,
+			IdentificationServerPid ),
 
 
 	% In a rather similar manner as for object managers, we define dataflow unit
@@ -310,8 +303,8 @@ run() ->
 	StartDate = { StartYear, 1, 1 },
 	StartTime = { 0, 0, 0 },
 
-	RootTimeManagerPid ! { setInitialSimulationTimestamp,
-						   [ StartDate, StartTime ] },
+	RootTimeManagerPid !
+		{ setInitialSimulationTimestamp, [ StartDate, StartTime ] },
 
 	% ...and end specified years later:
 	EndDate = { StartYear + SimulationDurationInYears, 1, 1 },
@@ -326,10 +319,10 @@ run() ->
 	StartTimestamp = { StartDate, StartTime },
 	EndTimestamp = { EndDate, EndTime },
 
-	?test_info_fmt( "Starting simulation at ~s, "
-					"for an expected stop at ending timestamp ~s.",
-					[ time_utils:get_textual_timestamp( StartTimestamp ),
-					  time_utils:get_textual_timestamp( EndTimestamp ) ] ),
+	?test_info_fmt( "Starting simulation at ~ts, "
+		"for an expected stop at ending timestamp ~ts.",
+		[ time_utils:get_textual_timestamp( StartTimestamp ),
+		  time_utils:get_textual_timestamp( EndTimestamp ) ] ),
 
 
 	% Termination decided by the exit point, by not triggering the entry point

@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2021 EDF R&D
+% Copyright (C) 2016-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,6 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Example of a platform-emulating experiment exit point.
 -module(class_UrbanExperimentPlatformEmulatingExitPoint).
 
 
@@ -54,12 +55,19 @@
 % Attributes that are specific to the urban experiment exit point are:
 -define( class_attributes, [
 
-  { exit_probe_ref, probe_ref(), "a basic probe allowing to monitor the data "
-	"extracted by this exit point from the dataflow" } ] ).
+    { exit_probe_ref, probe_ref(), "a basic probe allowing to monitor the data "
+	  "extracted by this exit point from the dataflow" } ] ).
+
+
+% Shorthands:
+
+-type ustring() :: text_utils:ustring().
+
+-type step_count() :: class_ExperimentManager:step_count().
 
 
 
-% Constructs the urban-example experiment exit point, from:
+% @doc Constructs the urban-example experiment exit point, from:
 %
 % - ActorSettings describes the actor abstract identifier (AAI) and seed of this
 % actor, as assigned by the load balancer
@@ -79,10 +87,9 @@
 % - WorldManagerPid is the PID of the world manager
 %
 -spec construct( wooper:state(), class_Actor:actor_settings(),
-				 [ dataflow_pid() ], class_ExperimentManager:step_count(),
-				 class_ExperimentManager:step_count(),
-				 experiment_entry_point_pid(), experiment_manager_pid(),
-				 world_manager_pid() ) -> wooper:state().
+	[ dataflow_pid() ], step_count(),step_count(),
+	experiment_entry_point_pid(), experiment_manager_pid(),
+	world_manager_pid() ) -> wooper:state().
 construct( State, ActorSettings, Dataflows, ExperimentStepStart,
 		   ExperimentStepStop, ExperimentEntryPointPid,
 		   ExperimentManagerPid, WorldManagerPid ) ->
@@ -114,7 +121,7 @@ construct( State, ActorSettings, Dataflows, ExperimentStepStart,
 
 
 
-% The core of the behaviour of this exit point.
+% @doc The core of the behaviour of this exit point.
 %
 % Overrides the default behaviour, yet reuses it.
 %
@@ -154,11 +161,11 @@ actSpontaneous( State ) ->
 % Helper functions.
 
 
-% Returns a textual description of this exit point.
+% @doc Returns a textual description of this exit point.
 %
 % (helper)
 %
--spec to_string( wooper:state() ) -> string().
+-spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
 	ExitString = class_ExperimentExitPoint:to_string( State ),
@@ -184,5 +191,5 @@ to_string( State ) ->
 
 	end,
 
-	text_utils:format( "Urban ~s, ~s, ~s",
+	text_utils:format( "Urban ~ts, ~ts, ~ts",
 					   [ ExitString, EnergyDemandString, ProbeString ] ).

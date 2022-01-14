@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,8 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-
-% Integration test for the soda stochastic example case.
+% @doc <b>Integration test</b> for the soda stochastic example case.
 %
 % See also:
 %  - class_SodaVendingMachine.erl
@@ -42,10 +41,11 @@
 % or not, depending on the test being run in batch or not.
 
 
-% Returns the settings for a test required to be more or less long.
+% @doc Returns the settings for a test required to be more or less long.
+%
 % Returns { {FirstInitialCanCount, FirstInitialBudget},
 % {SecondInitialCanCount, SecondInitialBudget}, StopTick }
-
+%
 get_settings_for( base_test ) ->
 
 	FirstInitialCanCount = 150,
@@ -79,7 +79,7 @@ get_settings_for( longer_test ) ->
 
 
 
-% Run the test.
+% @doc Runs the test.
 -spec run() -> no_return().
 run() ->
 	run( base_test ).
@@ -101,16 +101,16 @@ run( TestType ) ->
 	% Use default simulation settings (50Hz, batch reproducible):
 	SimulationSettings = #simulation_settings{
 
-	  simulation_name="Soda Stochastic Integration Test"
+		simulation_name="Soda Stochastic Integration Test"
 
-	  % Using default simulation frequency (50Hz, period of 20ms).
+		% Using default simulation frequency (50Hz, period of 20ms).
 
-	  % We leave it to the default specification (all_outputs):
-	  %result_specification =
-	  % [ { targeted_patterns, [ {".*",[data_and_rendering] } ] },
-	  %   { blacklisted_patterns, ["^Second" ] } ]
+		% We leave it to the default specification (all_outputs):
+		%result_specification =
+		% [ { targeted_patterns, [ {".*",[data_and_rendering] } ] },
+		%   { blacklisted_patterns, ["^Second" ] } ]
 
-	  %result_specification = no_output
+		%result_specification = no_output
 
 	},
 
@@ -127,8 +127,8 @@ run( TestType ) ->
 
 
 	% A deployment manager is created directly on the user node:
-	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-											DeploymentSettings ),
+	DeploymentManagerPid =
+		sim_diasca:init( SimulationSettings, DeploymentSettings ),
 
 	{ { FirstInitialCanCount, FirstInitialBudget },
 	 { SecondInitialCanCount, SecondInitialBudget }, StopTick } =
@@ -151,11 +151,11 @@ run( TestType ) ->
 	[ SVM2, _TC1 ] = class_Actor:create_initial_actors( [
 
 		{ class_SodaVendingMachine, [ _SecondMachineName="Second soda machine",
-			 SecondInitialCanCount, _SecondCanCost=1.5 ] },
+			SecondInitialCanCount, _SecondCanCost=1.5 ] },
 
 		{ class_StochasticThirstyCustomer, [ _FirstCustomerName="John",
-			 _FirstKnownMachine=SVM1, _FirstRepletionDurationLaw={uniform,10},
-			 FirstInitialBudget ] }
+			_FirstKnownMachine=SVM1, _FirstRepletionDurationLaw={uniform,10},
+			FirstInitialBudget ] }
 
 														] ),
 
@@ -164,15 +164,15 @@ run( TestType ) ->
 	% pockets:
 	%
 	_TC2 = class_Actor:create_initial_actor( class_StochasticThirstyCustomer,
-	  [ _SecondCustomerName="Terry", _SecondKnownMachine=SVM1,
-		_SecondRepletionDurationLaw={gaussian,3,1},
-		SecondInitialBudget ] ),
+		[ _SecondCustomerName="Terry", _SecondKnownMachine=SVM1,
+		  _SecondRepletionDurationLaw={gaussian,3,1},
+		  SecondInitialBudget ] ),
 
 	% Third customer uses SVM2, is thirsty 2 minutes after having drunk
 	% (deterministically), and has 15 euros in his pockets:
 	_TC3 = class_Actor:create_initial_actor( class_DeterministicThirstyCustomer,
-	  [ _ThirdCustomerName="Michael", _ThirdKnownMachine=SVM2,
-		_ThirdRepletionDuration=2, _ThirdInitialBudget=15.0 ] ),
+		[ _ThirdCustomerName="Michael", _ThirdKnownMachine=SVM2,
+		  _ThirdRepletionDuration=2, _ThirdInitialBudget=15.0 ] ),
 
 
 	TC4Name = "George",
@@ -181,31 +181,32 @@ run( TestType ) ->
 
 	ActorPids = [ _TC4, _TC5, _TC6 ] = class_Actor:create_initial_actors( [
 
-		 % Now commented-out, as will not be used afterwards, and would trigger
-		 % warnings about empty plots:
-		 %{ class_SodaVendingMachine, [ "Other soda machine", 5, 2.0 ] },
+		% Now commented-out, as will not be used afterwards, and would trigger
+		% warnings about empty plots:
+		%
+		%{ class_SodaVendingMachine, [ "Other soda machine", 5, 2.0 ] },
 
-		 { class_StochasticThirstyCustomer,
-		  [ TC4Name, SVM2, {uniform,10}, 100.0 ], "George's Hint!" },
+		{ class_StochasticThirstyCustomer,
+			[ TC4Name, SVM2, {uniform,10}, 100.0 ], "George's Hint!" },
 
-		 { class_StochasticThirstyCustomer,
-		  [ TC5Name, SVM2, {gaussian,4,2}, 250.0 ] },
+		{ class_StochasticThirstyCustomer,
+			[ TC5Name, SVM2, {gaussian,4,2}, 250.0 ] },
 
-		 { class_StochasticThirstyCustomer,
-		  [ TC6Name, SVM1, {gaussian,7,3}, 120.0 ] } ] ),
+		{ class_StochasticThirstyCustomer,
+			[ TC6Name, SVM1, {gaussian,7,3}, 120.0 ] } ] ),
 
 	% Ensures that creations are in-order indeed by checking the names of the
 	% customers:
 	%
-	ExpectedNames = [ text_utils:string_to_binary( N ) ||
-						N <- [ TC4Name, TC5Name, TC6Name ] ],
+	ExpectedNames = [ text_utils:string_to_binary( N )
+						|| N <- [ TC4Name, TC5Name, TC6Name ] ],
 
 	% Pattern-matches:
 	ExpectedNames =
 		[ begin TC ! { sayName, [], self() }, Name = test_receive(),
-				%io:format( "Name of ~w is ~s.~n", [ TC, Name ] ),
-				Name end
-		  || TC <- ActorPids ],
+				%io:format( "Name of ~w is ~ts.~n", [ TC, Name ] ),
+				Name
+		  end || TC <- ActorPids ],
 
 
 	DeploymentManagerPid ! { getRootTimeManager, [], self() },

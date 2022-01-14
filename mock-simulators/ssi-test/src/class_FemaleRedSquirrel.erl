@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -22,13 +22,13 @@
 % This file is part of forest ecosystem test case, which is a Sim-Diasca
 % integration test example.
 
-% The objective of this module is to show the significant features of a
+
+% @doc The objective of this module is to show the significant features of a
 % Sim-Diasca actor in multiple scheduling modes.
 %
 % This means that it has a periodic schedule and that it can be also triggered
 % by messages.
-
-
+%
 -module(class_FemaleRedSquirrel).
 
 
@@ -54,7 +54,7 @@
 
 
 
-% Constructs a new female red squirrel actor:
+% @doc Constructs a female red squirrel actor:
 %
 % - number_of_offsprings: the total number of offsprings of this female
 %
@@ -73,7 +73,7 @@ construct( State, ActorSettings, SquirrelName, GivenAge, ForestPid ) ->
 
 	% Firstly, the mother class:
 	SquirrelState = class_Squirrel:construct( State, ActorSettings,
-			?trace_categorize( SquirrelName ), GivenAge, ForestPid ),
+		?trace_categorize(SquirrelName), GivenAge, ForestPid ),
 
 	StartingState = setAttributes( SquirrelState, [
 		{ gender, female },
@@ -87,7 +87,7 @@ construct( State, ActorSettings, SquirrelName, GivenAge, ForestPid ) ->
 		{ gestation_period, 5 },
 		{ nursing_period, 10 } ] ),
 
-	?send_info( StartingState, "Creating a new female squirrel." ),
+	?send_info( StartingState, "Creating a female squirrel." ),
 
 	StartingState.
 
@@ -97,9 +97,9 @@ construct( State, ActorSettings, SquirrelName, GivenAge, ForestPid ) ->
 
 
 
-% Simply schedules this just created actor at the next tick (diasca 0).
+% @doc Simply schedules this just created actor at the next tick (diasca 0).
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
-						   actor_oneway_return().
+										actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 
 	ScheduledState = executeOneway( State, scheduleNextSpontaneousTick ),
@@ -108,7 +108,7 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-% The spontaneous behaviour of a squirrel instance.
+% @doc The spontaneous behaviour of a squirrel instance.
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
@@ -162,16 +162,16 @@ actSpontaneous( State ) ->
 
 
 
-% To be called when an alert is received from another actor.
+% @doc To be called when an alert is received from another actor.
 -spec beAlert( wooper:state(), alert(), sending_actor_pid() ) ->
-					 actor_oneway_return().
+						actor_oneway_return().
 beAlert( State, Alert, _SendingActorPID ) ->
 
 	NewState = case Alert of
 
 		savage ->
-			?notice_fmt( "A ~s alert is received, I am preparing my deferred "
-					   "termination.", [ Alert ] ),
+			?notice_fmt( "A ~ts alert is received, I am preparing my deferred "
+						 "termination.", [ Alert ] ),
 			executeOneway( State, notifyTermination );
 
 		famine ->
@@ -179,16 +179,16 @@ beAlert( State, Alert, _SendingActorPID ) ->
 
 				AState when (AState=:=weak) or (AState=:=gestation) ->
 
-					?notice_fmt( "I am in ~s state and a ~s alert is received, "
-							   "I am preparing my deferred termination.",
-							   [ AState, Alert ] ),
+					?notice_fmt( "I am in ~ts state and a ~ts alert "
+						"is received, I am preparing my deferred termination.",
+						[ AState, Alert ] ),
 
 					executeOneway( State, notifyTermination );
 
 				_otherState ->
 
-					?notice_fmt( "I received a ~s alert, but I am surviving.",
-							   [ Alert ] ),
+					?notice_fmt( "I received a ~ts alert, but I am surviving.",
+								 [ Alert ] ),
 					State
 			end;
 
@@ -201,15 +201,15 @@ beAlert( State, Alert, _SendingActorPID ) ->
 													beginCompetition, State ) ;
 
 				_OtherState ->
-					?notice_fmt( "I received a ~s alert, but I am not available.",
-							   [ Alert ] ),
+					?notice_fmt( "I received a ~ts alert, but I am not "
+								 "available.", [ Alert ] ),
 					State
 
 			end;
 
 		_Others ->
-			?notice_fmt( "I received a ~s alert, but I am surviving.",
-					   [ Alert ] ),
+			?notice_fmt( "I received a ~ts alert, but I am surviving.",
+						 [ Alert ] ),
 			State
 
 	end,
@@ -218,8 +218,8 @@ beAlert( State, Alert, _SendingActorPID ) ->
 
 
 
-% Called by the forest for informing the winner pid of the competition; then the
-% actor sends a "youAreWinner" message to the winner.
+% @doc Called by the forest for informing the winner of the competition; then
+% the actor sends a "youAreWinner" message to the winner.
 %
 -spec theWinner( wooper:state(), pid(), pid() ) -> actor_oneway_return().
 theWinner( State, WinnerPid, _SendingActorPid ) when is_pid( WinnerPid ) ->
@@ -233,10 +233,12 @@ theWinner( State, WinnerPid, _SendingActorPid ) when is_pid( WinnerPid ) ->
 	NewAvailableTick = ?getAttr(current_tick_offset)
 		+ ?getAttr(gestation_period),
 
-	UpdatedState = setAttributes( NState, [	{ state, gestation },
-											{ available_tick, NewAvailableTick } ] ),
+	UpdatedState = setAttributes( NState, [
+		{ state, gestation },
+		{ available_tick, NewAvailableTick } ] ),
 
-	FinalState = executeOneway( UpdatedState, addSpontaneousTick, NewAvailableTick ),
+	FinalState = executeOneway( UpdatedState, addSpontaneousTick,
+								NewAvailableTick ),
 
 	actor:return_state( FinalState );
 
@@ -247,7 +249,7 @@ theWinner( State, _WinnerPid, _Sender )  ->
 
 
 
-% Returned the breeding tick list of this female squirrel.
+% @doc Returned the breeding tick list of this female squirrel.
 get_breeding_tick_list( State ) ->
 	BreedingNumber = ?getAttr(lifespan) div ?getAttr(breeding_age),
 	get_list( State, _BreedingTickList=[], BreedingNumber ).
@@ -271,14 +273,14 @@ get_list( State, TickList, BreedingNumber ) ->
 give_birth( State, 0 ) ->
 
 	UpdatedNumberOfChildren = ?getAttr(number_of_offsprings) +
-								  ?getAttr(offsprings_per_litter),
+									?getAttr(offsprings_per_litter),
 
 	NewAvailableTick = ?getAttr(current_tick_offset) + ?getAttr(nursing_period),
 
 	UpdateState = setAttributes( State, [
-						   { number_of_offsprings, UpdatedNumberOfChildren },
-						   { state, nursing },
-						   { available_tick, NewAvailableTick } ] ),
+		{ number_of_offsprings, UpdatedNumberOfChildren },
+		{ state, nursing },
+		{ available_tick, NewAvailableTick } ] ),
 
 	executeOneway( UpdateState, addSpontaneousTick, NewAvailableTick );
 
@@ -294,12 +296,12 @@ give_birth( State, NbBirth ) ->
 	CreateNewActorState = case get_gender( State ) of
 
 		male ->
-			% The squirrel actor creates a new male actor at runtime:
+			% The squirrel actor creates a male actor at runtime:
 			class_Actor:create_actor( class_MaleRedSquirrel,
 					ConstructParameters, State );
 
 		female ->
-			% The squirrel actor creates a new female actor at runtime:
+			% The squirrel actor creates a female actor at runtime:
 			class_Actor:create_actor( class_FemaleRedSquirrel,
 					ConstructParameters, State )
 
@@ -308,13 +310,14 @@ give_birth( State, NbBirth ) ->
 	UpdatedState = setAttribute( CreateNewActorState, number_of_offsprings,
 					 ?getAttr(number_of_offsprings) + 1 ),
 
-	?notice_fmt( "~s has a new child, its name is ~s.", [ ?getAttr(name), ChildName ] ),
+	?notice_fmt( "~ts has a new child, its name is ~ts.",
+				 [ ?getAttr(name), ChildName ] ),
 
 	give_birth( UpdatedState, NbBirth-1 ).
 
 
 
-% Decides a gender for a new born.
+% @doc Decides a gender for a newborn.
 %
 % For reproductivity reasons, this function assures that the first newborn is
 % male, the second one is female and so on.
@@ -333,7 +336,7 @@ get_gender( State ) ->
 
 
 
-% This helper function groups all spontaneous activities of this actor.
+% @doc This helper function groups all spontaneous activities of this actor.
 %
 % (helper)
 %

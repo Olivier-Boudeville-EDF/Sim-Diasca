@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2021 EDF R&D
+% Copyright (C) 2010-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -39,7 +39,7 @@
 
 
 
-% This test shows and tests:
+% @doc This test shows:
 %
 % - the different ways for actor creation:
 %
@@ -83,7 +83,7 @@
 
 
 
-% Runs the test.
+% @doc Runs the test.
 -spec run() -> no_return().
 run() ->
 
@@ -97,21 +97,22 @@ run() ->
 		result_specification = no_output },
 
 
-	% Specifies the list of computing hosts that can be used: (see the
-	% sim-diasca-host-candidates-sample.txt example in the sim-diasca/conf
-	% directory)
+	% Specifies the list of computing hosts that can be used:
+	%
+	% (see the sim-diasca-host-candidates-sample.txt example in the
+	% sim-diasca/conf directory)
+	%
 	DeploymentSettings = #deployment_settings{
 
 		% We want to embed additionally this test and its specific
 		% prerequisites, defined in the Mock Simulators:
+		%
 		additional_elements_to_deploy = [
-			 { "..", code },
-			 { "ssi_test.dat", data },
-			 { "ssi_test.cfg", data } ],
+			{ "..", code },
+			{ "ssi_test.dat", data },
+			{ "ssi_test.cfg", data } ],
 
-		enable_data_logger = true
-
-	},
+		enable_data_logger = true },
 
 	?test_info_fmt( "This test will deploy a distributed simulation"
 		" based on computing hosts specified as ~p.",
@@ -119,8 +120,8 @@ run() ->
 
 
 	% A deployment manager is created directly on the user node:
-	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-											DeploymentSettings ),
+	DeploymentManagerPid =
+		sim_diasca:init( SimulationSettings, DeploymentSettings ),
 
 	?test_info( "Deployment manager created, retrieving the load balancer." ),
 	DeploymentManagerPid ! { getLoadBalancer, [], self() },
@@ -152,7 +153,7 @@ run() ->
 				"an initial forest." ),
 
 	ForestPid = class_Actor:create_initial_actor( class_Forest,
-			[ _ForestName="Forest", _ForestLongevity=2000 ], LoadBalancerPid ),
+		[ _ForestName="Forest", _ForestLongevity=2000 ], LoadBalancerPid ),
 
 	% Then, all initial forest dwellers (placed or non placed) are created by
 	% sending initialForestCreation to forest with the number of initial actor

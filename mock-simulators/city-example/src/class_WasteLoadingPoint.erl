@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2021 EDF R&D
+% Copyright (C) 2012-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,6 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Class modelling a <b>waste loading point</b>.
 -module(class_WasteLoadingPoint).
 
 
@@ -43,7 +44,7 @@
 -define( class_attributes, [
 
 	{ waste_capacity, [ waste_capacity() ],
-	  "is a plain list storing the state of the waste storage tanks" } ] ).
+	  "a plain list storing the state of the waste storage tanks" } ] ).
 
 
 
@@ -64,7 +65,7 @@
 
 
 
-% Creates a new waste loading point.
+% @doc Creates a waste loading point.
 %
 % Construction parameters are:
 %
@@ -73,7 +74,7 @@
 % - CapacityInformation describes the waste storage capacity of this point
 %
 -spec construct( wooper:state(), class_GIS:location(), waste_capacity() ) ->
-					   wooper:state().
+						wooper:state().
 construct( State, Location, CapacityInformation ) ->
 
 	ContainerState = class_GeoContainer:construct( State, Location ),
@@ -89,10 +90,10 @@ construct( State, Location, CapacityInformation ) ->
 
 
 
-% Tries to load from this loading point as much as possible of the specified
-% mass compatible with specified waste type into the calling actor, which is
-% expected to be a waste transport, located at this point and looking for
-% additional waste.
+% @doc Tries to load from this loading point as much as possible of the
+% specified mass compatible with specified waste type into the calling actor,
+% which is expected to be a waste transport, located at this point and looking
+% for additional waste.
 %
 % The answer (the actor message sent back) will be:
 %
@@ -102,7 +103,7 @@ construct( State, Location, CapacityInformation ) ->
 % - or a notifyNoLoadedWaste to report that no waste loading will occur this
 % time (transaction failed)
 %
--spec loadWaste( wooper:state(), waste_type(), unit_utils:tons(), 
+-spec loadWaste( wooper:state(), waste_type(), unit_utils:tons(),
 				 sending_actor_pid() ) -> actor_oneway_return().
 loadWaste( State, WasteType, MaxWantedMass, WasteLoaderPid ) ->
 
@@ -113,17 +114,17 @@ loadWaste( State, WasteType, MaxWantedMass, WasteLoaderPid ) ->
 	{ _State, DescString } = executeRequest( State, toString ),
 
 	?info_fmt( "Trying to load up to ~f tons of waste of "
-				"type compatible with '~s' from the ~B tanks of ~s "
-				"to docked waste transport ~w.~n",
-				[ MaxWantedMass, WasteType, length( WasteTanks ),
-				  DescString, WasteLoaderPid ] ),
+		"type compatible with '~ts' from the ~B tanks of ~ts "
+		"to docked waste transport ~w.",
+		[ MaxWantedMass, WasteType, length( WasteTanks ),
+		  DescString, WasteLoaderPid ] ),
 
 	LoadState = case get_waste_from_tanks( WasteType, MaxWantedMass,
 										   WasteTanks ) of
 
 		false ->
 			?info_fmt( "No waste could be loaded to transport ~w.",
-						[ WasteLoaderPid ] ),
+					   [ WasteLoaderPid ] ),
 
 			class_Actor:send_actor_message( WasteLoaderPid,
 											notifyNoLoadedWaste, State );
@@ -137,32 +138,31 @@ loadWaste( State, WasteType, MaxWantedMass, WasteLoaderPid ) ->
 			LoadingTickCount = get_loading_duration( Type, LoadedMass, State ),
 
 			?info_fmt( "Loading, to transport ~w, ~f tons of waste "
-						"of type ~s, this will last for ~B ticks.",
-						[ WasteLoaderPid, LoadedMass, Type,
-						  LoadingTickCount ] ),
+				"of type ~ts, this will last for ~B ticks.",
+				[ WasteLoaderPid, LoadedMass, Type, LoadingTickCount ] ),
 
 			SentState = class_Actor:send_actor_message( WasteLoaderPid,
-					{ notifyLoadedWaste,
-					  [ LoadedMass, Type, LoadingTickCount ] },
-														State ),
+				{ notifyLoadedWaste,
+					[ LoadedMass, Type, LoadingTickCount ] },
+				State ),
 
 			setAttribute( SentState, waste_capacity, NewWasteTanks )
 
 	end,
 
 	[ waste_utils:check_waste_tank( T )
-	  || T <- getAttribute( LoadState, waste_capacity ) ],
+		|| T <- getAttribute( LoadState, waste_capacity ) ],
 
 	{ _SameState, Desc } = executeRequest( LoadState, toString ),
 
-	?info_fmt( "After this loading attempt, new state is: ~s.", [ Desc ] ),
+	?info_fmt( "After this loading attempt, new state is: ~ts.", [ Desc ] ),
 
 	actor:return_state( LoadState ).
 
 
 
-% Does its best to retrieve the specified quantity of waste (compatible with the
-% specified type) from the specified waste tanks.
+% @doc Does its best to retrieve the specified quantity of waste (compatible
+% with the specified type) from the specified waste tanks.
 %
 % Returns either 'false' if no waste at all was taken from tanks, otherwise
 % returns a triplet made of updated waste tanks, the remaining requested mass
@@ -196,8 +196,8 @@ get_waste_from_tanks( WasteType, RemainingFreeMass, _WasteTanks=[
 
 
 get_waste_from_tanks( WasteType, RemainingFreeMass, _WasteTanks=[
-		  Tank=#waste_tank{ current_type=TankWasteType,
-							current_mass_stored=CurrentTankMass } | T ],
+			Tank=#waste_tank{ current_type=TankWasteType,
+							  current_mass_stored=CurrentTankMass } | T ],
 					  AccTanks, LoadedWasteType ) ->
 
 
@@ -250,7 +250,7 @@ get_waste_from_tanks( WasteType, RemainingFreeMass, _WasteTanks=[
 % Helper functions.
 
 
-% Checkings.
+% @doc Checkings.
 %
 % (helper)
 %
@@ -260,8 +260,8 @@ manage_capacity_information( CapacityInformation ) ->
 
 
 
-% Returns the duration needed, in ticks, for the loading of specified mass of
-% specified waste type in a waste transport.
+% @doc Returns the duration needed, in ticks, for the loading of specified mass
+% of specified waste type in a waste transport.
 %
 % (helper)
 %

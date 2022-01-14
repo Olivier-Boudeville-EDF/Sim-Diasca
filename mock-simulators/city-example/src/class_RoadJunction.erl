@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2021 EDF R&D
+% Copyright (C) 2012-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,6 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Class modelling a <b>road junction</b>, where at least two roads meet.
 -module(class_RoadJunction).
 
 
@@ -31,13 +32,12 @@
 
 
 
-
 % Must be included before class_TraceEmitter header:
 -define( trace_emitter_categorization, "City-example.Traffic.Road" ).
 
 
 
--type road_count() :: basic_utils:count().
+-type road_count() :: count().
 
 -export_type([ road_count/0 ]).
 
@@ -58,7 +58,8 @@
 -define( class_attributes, [
 
   { connectivity, { road_count(), road_count() },
-	"respectively the expected final number of inbound and outbound roads" } ] ).
+	"respectively the expected final number of inbound and outbound "
+	"roads" } ] ).
 
 
 
@@ -72,8 +73,6 @@
 
 
 
-
-
 % Implementation notes:
 %
 % The connectivity (with roads) is resolved after the construction of the
@@ -81,7 +80,15 @@
 
 
 
-% Creates a new road junction.
+% Shorthands:
+
+-type ustring() :: text_utils:ustring().
+
+-type count() :: basic_utils:count().
+
+
+
+% @doc Creates a road junction.
 %
 % Construction parameters are:
 %
@@ -97,8 +104,7 @@
 %
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 class_Actor:name(), class_GIS:static_location(),
-				 basic_utils:count(), basic_utils:count(), gis_pid() ) ->
-					   wooper:state().
+				 road_count(), road_count(), gis_pid() ) -> wooper:state().
 construct( State, ActorSettings, Name, Location, InboundCount, OutboundCount,
 		   GISPid ) ->
 
@@ -118,13 +124,14 @@ construct( State, ActorSettings, Name, Location, InboundCount, OutboundCount,
 
 
 
-% First scheduling on a road junction.
--spec onFirstDiasca( wooper:state(), sending_actor_pid() ) -> actor_oneway_return().
+% @doc First scheduling on a road junction.
+-spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
+										actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 
 	% This actor is mostly passive.
 
-	?info_fmt( "Road junction just created: ~s", [ to_string( State ) ] ),
+	?info_fmt( "Road junction just created: ~ts", [ to_string( State ) ] ),
 
 	% Done once, to be able to trace a state in which the connectivity has been
 	% updated (roads notify their endpoint in first diasca):
@@ -136,30 +143,30 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-% The definition of the spontaneous behaviour of this road junction.
+% @doc The definition of the spontaneous behaviour of this road junction.
 -spec actSpontaneous( wooper:state() ) -> const_oneway_return().
 actSpontaneous( State ) ->
 
 	% Output once (no next tick planned):
-	?info_fmt( "~s ready.", [ to_string( State ) ] ),
+	?info_fmt( "~ts ready.", [ to_string( State ) ] ),
 
 	wooper:const_return().
 
 
 
-% Returns the unsatisfied connections (if any) for that junction, i.e.:
+% @doc Returns the unsatisfied connections (if any) for that junction, i.e.:
 %
 % - 'fully_connected' if that junction is full
 %
-% - or { lacking_outbounds, LackOutboundCount, OutboundPOIs } if outbound
+% - or {lacking_outbounds, LackOutboundCount, OutboundPOIs} if outbound
 % connections are lacking (LackOutboundCount is their count, OutboundPOIs is the
 % list of PIDs of the already-connected outbound POIs)
 %
-% - or { lacking_inbounds, LackInboundCount, InboundPOIs } is the same for
+% - or {lacking_inbounds, LackInboundCount, InboundPOIs} is the same for
 % inbounds
 %
-% - or { lacking_both, LackInboundCount, InboundPOIs, LackOutboundCount,
-% OutboundPOIs } if connections are lacking in both directions
+% - or {lacking_both, LackInboundCount, InboundPOIs, LackOutboundCount,
+% OutboundPOIs} if connections are lacking in both directions
 %
 getUnsatisfiedConnections( State ) ->
 
@@ -184,8 +191,8 @@ getUnsatisfiedConnections( State ) ->
 
 					LackOutboundCount = OutboundCount - OutboundLen,
 
-					OutboundPOIs = [ resolve_road_endpoint( R )
-									 || R <- Outbound ],
+					OutboundPOIs =
+						[ resolve_road_endpoint( R ) || R <- Outbound ],
 
 					{ lacking_outbounds, LackOutboundCount, OutboundPOIs }
 
@@ -199,8 +206,8 @@ getUnsatisfiedConnections( State ) ->
 				true ->
 					LackInboundCount = InboundCount - InboundLen,
 
-					InboundPOIs = [ resolve_road_endpoint( R )
-									|| R <- Inbound ],
+					InboundPOIs =
+						[ resolve_road_endpoint( R ) || R <- Inbound ],
 
 					{ lacking_inbounds, LackInboundCount, InboundPOIs };
 
@@ -208,13 +215,13 @@ getUnsatisfiedConnections( State ) ->
 
 					LackOutboundCount = OutboundCount - OutboundLen,
 
-					OutboundPOIs = [ resolve_road_endpoint( R )
-									 || R <- Outbound ],
+					OutboundPOIs =
+						[ resolve_road_endpoint( R ) || R <- Outbound ],
 
 					LackInboundCount = InboundCount - InboundLen,
 
-					InboundPOIs = [ resolve_road_endpoint( R )
-									|| R <- Inbound ],
+					InboundPOIs =
+						[ resolve_road_endpoint( R ) || R <- Inbound ],
 
 					{ lacking_both, LackInboundCount, InboundPOIs,
 					  LackOutboundCount, OutboundPOIs }
@@ -228,8 +235,7 @@ getUnsatisfiedConnections( State ) ->
 
 
 
-
-% Returns the PID of the POI at the other end of the specified road.
+% @doc Returns the PID of the POI at the other end of the specified road.
 %
 % (helper)
 %
@@ -250,19 +256,19 @@ resolve_road_endpoint( RoadPid ) ->
 % Static method section.
 
 
-% Generates a list of instance definitions for the specified number of
+% @doc Generates a list of instance definitions for the specified number of
 % initial road junctions.
 %
--spec generate_definitions( basic_utils:count(), location_generator_pid(),
+-spec generate_definitions( count(), location_generator_pid(),
 							gis_pid() | instance_loading:id_ref() ) ->
 					static_return( [ class_Actor:instance_creation_spec() ] ).
 generate_definitions( JunctionCount, LocationGeneratorPid, GISInfo ) ->
 
 	% Triggers the location generation request in parallel:
 	LocationGeneratorPid ! { generateNonAdjacentLocations,
-			   [ JunctionCount,
-				 get_min_distance_between_road_junctions_and_others(),
-				 get_min_distance_between_two_road_junctions() ], self() },
+		[ JunctionCount,
+		  get_min_distance_between_road_junctions_and_others(),
+		  get_min_distance_between_two_road_junctions() ], self() },
 
 	CreationSpecs = define_junctions( JunctionCount, GISInfo, _Acc=[] ),
 
@@ -285,14 +291,13 @@ define_junctions( _Junctioncount=0, GISInfo, Acc ) ->
 
 define_junctions( JunctionCount, GISInfo, Acc ) ->
 
-	% Defines the build parameters for a new junction; we want to end up with a
-	%   list of {class_RoadJunction, [Name, Location, InboundCount,
-	%                                 OutboundCount, GISInfo]} elements.
+	% Defines the build parameters for a junction; we want to end up with a list
+	% of {class_RoadJunction, [ Name, Location, InboundCount, OutboundCount,
+	% GISInfo]} elements.
 
 	Name = text_utils:format( "RoadJunction-~B", [ JunctionCount ] ),
 
 	% Inbound and outbound must be each:
-	%
 	% - positive integer
 	% - at least 1
 	% - on average, 3
@@ -302,10 +307,10 @@ define_junctions( JunctionCount, GISInfo, Acc ) ->
 	StdDeviation = 2,
 
 	DrawnInboundCount = min( 5,
-			  1 + class_RandomManager:get_positive_integer_gaussian_value(
+		1 + class_RandomManager:get_positive_integer_gaussian_value(
 												Mean, StdDeviation ) ),
 	DrawnOutboundCount = min( 1,
-			  1 + class_RandomManager:get_positive_integer_gaussian_value(
+		1 + class_RandomManager:get_positive_integer_gaussian_value(
 												Mean, StdDeviation ) ),
 
 
@@ -316,7 +321,7 @@ define_junctions( JunctionCount, GISInfo, Acc ) ->
 
 
 
-% Adds the location to the road build parameters (a kind of zip operation):
+% @doc Adds the location to the road build parameters (a kind of zip operation):
 merge_parameters( Params, Locations, GISInfo ) ->
 	% In-order is better:
 	lists:reverse( merge_parameters( Params, Locations, _Acc=[], GISInfo ) ).
@@ -349,14 +354,14 @@ get_min_distance_between_two_road_junctions() ->
 
 
 
-% Returns a textual representation of this instance.
+% @doc Returns a textual representation of this instance.
 %
 % (helper)
 %
--spec to_string( wooper:state() ) -> string().
+-spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
-	text_utils:format( "Road junction '~s' (AAI: ~B) located at ~s (~s), "
+	text_utils:format( "Road junction '~ts' (AAI: ~B) located at ~ts (~ts), "
 		"whose random state is ~w",
 		[ ?getAttr(name),
 		  class_Actor:get_abstract_identifier( State ),

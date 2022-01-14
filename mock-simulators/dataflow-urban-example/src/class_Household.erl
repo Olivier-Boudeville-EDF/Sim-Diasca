@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2021 EDF R&D
+% Copyright (C) 2016-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,6 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Example <b>dataflow object</b>.
 -module(class_Household).
 
 
@@ -55,8 +56,8 @@
 -include("urban_example_defines.hrl").
 
 
--type household_name() :: string().
--type family_name() :: string().
+-type household_name() :: ustring().
+-type family_name() :: ustring().
 -type income() :: float().
 -type distance() :: float().
 
@@ -69,7 +70,13 @@
 % unique peer instead.
 
 
-% Constructs a new dataflow household object instance, in charge of modelling
+% Shorthands:
+
+-type ustring() :: text_utils:ustring().
+
+
+
+% @doc Constructs a dataflow household object instance, in charge of modelling
 % the state of a household:
 %
 % - ActorSettings describes the actor abstract identifier (AAI) and seed of this
@@ -117,7 +124,7 @@ construct( State, ActorSettings, HouseholdName,
 
 
 
-% Overridden destructor.
+% @doc Overridden destructor.
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -131,7 +138,7 @@ destruct( State ) ->
 		BuildingPid ->
 			% Normal if no disassociation event was specified:
 			?info_fmt( "Destructed, yet still referencing the parent "
-						"building ~w.", [ BuildingPid ] )
+					   "building ~w.", [ BuildingPid ] )
 
 	end,
 
@@ -143,12 +150,13 @@ destruct( State ) ->
 % Member methods section.
 
 
-% Sets the parent building of this household: this household will live-in this
-% building.
+% @doc Sets the parent building of this household: this household will live-in
+% this building.
 %
 -spec setBuilding( wooper:state(), building_pid(), sending_actor_pid() ) ->
 						 actor_oneway_return().
-setBuilding( State, BuildingPid, _SendingActorPid ) when is_pid( BuildingPid ) ->
+setBuilding( State, BuildingPid, _SendingActorPid )
+						when is_pid( BuildingPid ) ->
 
 	% No reassignment permitted:
 	undefined = ?getAttr(building_pid),
@@ -161,11 +169,11 @@ setBuilding( State, BuildingPid, _SendingActorPid ) when is_pid( BuildingPid ) -
 
 
 
-% Unsets the parent building of this household: this household will no more
+% @doc Unsets the parent building of this household: this household will no more
 % live-in in this building.
 %
 -spec unsetBuilding( wooper:state(), building_pid(), sending_actor_pid() ) ->
-						 actor_oneway_return().
+							actor_oneway_return().
 unsetBuilding( State, BuildingPid, _SendingActorPid )
   when is_pid( BuildingPid ) ->
 
@@ -183,7 +191,7 @@ unsetBuilding( State, BuildingPid, _SendingActorPid )
 % Static section.
 
 
-% Allows to fully specify the dataflow attributes of this object.
+% @doc Allows to fully specify the dataflow attributes of this object.
 -spec get_dataflow_attribute_specs() ->
 						  static_return( [ dataflow_attribute_spec() ] ).
 get_dataflow_attribute_specs() ->
@@ -228,9 +236,9 @@ get_dataflow_attribute_specs() ->
 % Helper section.
 
 
-% Returns the (indirect) parent district of this household.
+% @doc Returns the (indirect) parent district of this household.
 -spec getParentDistrict( wooper:state() ) ->
-				 const_request_return( { 'parent_district', district_pid() } ).
+				const_request_return( { 'parent_district', district_pid() } ).
 getParentDistrict( State ) ->
 
 	Res = case ?getAttr(building_pid) of
@@ -248,7 +256,7 @@ getParentDistrict( State ) ->
 
 
 
-% Returns the (direct) parent building of this household.
+% @doc Returns the (direct) parent building of this household.
 -spec getParentBuilding( wooper:state() ) ->
 		const_request_return( { 'parent_building', maybe( building_pid() ) } ).
 getParentBuilding( State ) ->
@@ -260,8 +268,8 @@ getParentBuilding( State ) ->
 
 
 
-% Returns a textual description of this household dataflow object.
--spec to_string( wooper:state() ) -> string().
+% @doc Returns a textual description of this household dataflow object.
+-spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
 	BuildingString = case ?getAttr(building_pid) of
@@ -274,6 +282,6 @@ to_string( State ) ->
 
 	end,
 
-	text_utils:format( "Household object named '~s', ~s and having ~s",
+	text_utils:format( "Household object named '~ts', ~ts and having ~ts",
 		[ ?getAttr(name), BuildingString,
 		  class_DataflowObject:attributes_to_string( State ) ] ).

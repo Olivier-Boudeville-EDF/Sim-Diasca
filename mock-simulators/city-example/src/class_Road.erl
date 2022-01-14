@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2021 EDF R&D
+% Copyright (C) 2012-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,6 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Class modelling a <b>road</b>.
 -module(class_Road).
 
 
@@ -32,8 +33,8 @@
 
 
 
-% Number of vehicle slots that a road can offer.
 -type capacity() :: basic_utils:count().
+% Number of vehicle slots that a road can offer.
 
 
 -export_type([ capacity/0 ]).
@@ -50,26 +51,29 @@
 % The class-specific attributes of an instance of a road are:
 -define( class_attributes, [
 
-  { source_poi, poi_pid(), "the PID of the source POI of this road" },
+	{ source_poi, poi_pid(), "the PID of the source POI of this road" },
 
-  { target_poi, poi_pid(), "the PID of the target POI of this road" },
+	{ target_poi, poi_pid(), "the PID of the target POI of this road" },
 
-  { length, unit_utils:meters(), "the length of this road" },
+	{ length, unit_utils:meters(), "the length of this road" },
 
-  { current_capacity, capacity(), "the current vehicle capacity of this road" },
+	{ current_capacity, capacity(),
+	  "the current vehicle capacity of this road" },
 
-  { max_capacity, capacity(), "the maximum vehicle capacity of this road" },
+	{ max_capacity, capacity(), "the maximum vehicle capacity of this road" },
 
-  { max_average_speed, unit_utils:km_per_second(),
-	"the maximum (i.e. if the road had no previous traffic) average speed that "
-	"can be reached on this road" },
+	{ max_average_speed, unit_utils:km_per_second(),
+	  "the maximum (i.e. if the road had no previous traffic) average speed "
+	  "that can be reached on this road" },
 
-  { vehicle_queue, queue:queue(), "the queue (FIFO) corresponding to this "
-	"road: the first vehicle to enter the road (inserted at its back) is bound "
-	"to be the first to leave it (no overtaking)" },
+	{ vehicle_queue, queue:queue(), "the queue (FIFO) corresponding to this "
+	  "road: the first vehicle to enter the road (inserted at its back) is "
+	  "bound to be the first to leave it (no overtaking)" },
 
-  { local_tracker_pid, instance_tracker_pid(),
-	"the PID of the local instance tracker (only for debugging purposes)" } ] ).
+	{ local_tracker_pid, instance_tracker_pid(),
+	  "the PID of the local instance tracker (only for debugging purposes)" }
+
+						   ] ).
 
 
 % Must be included before class_TraceEmitter header:
@@ -122,8 +126,13 @@
 -define( load_factor, 45 ).
 
 
+% Shorthands:
 
-% Creates a new road, which starts empty (with no vehicles).
+-type ustring() :: text_utils:ustring().
+
+
+
+% @doc Creates a road, which starts empty (with no vehicles).
 %
 % Construction parameters are:
 %
@@ -142,7 +151,7 @@
 %
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 class_Actor:name(), poi_pid(), poi_pid(), capacity() ) ->
-					   wooper:state().
+						wooper:state().
 construct( State, ActorSettings, Name, SourcePOI, TargetPOI, MaxCapacity ) ->
 
 	ActorState = class_Actor:construct( State, ActorSettings,
@@ -167,8 +176,8 @@ construct( State, ActorSettings, Name, SourcePOI, TargetPOI, MaxCapacity ) ->
 	% reaching MaxAverageSpeed, not increasing anymore then. Still in km/hour:
 	%
 	AverageSpeed = min( MaxAverageSpeed, MinAverageSpeed
-		 + ( MaxAverageSpeed - MinAverageSpeed )
-					   * ( Length / 1000 ) / HighwayThreshold ),
+		+ ( MaxAverageSpeed - MinAverageSpeed )
+						* ( Length / 1000 ) / HighwayThreshold ),
 
 	setAttributes( GraphableState, [
 		{ source_poi, SourcePOI },
@@ -186,8 +195,9 @@ construct( State, ActorSettings, Name, SourcePOI, TargetPOI, MaxCapacity ) ->
 % Methods section.
 
 
-% First scheduling of an industrial waste source.
--spec onFirstDiasca( wooper:state(), sending_actor_pid() ) -> actor_oneway_return().
+% @doc First scheduling of an industrial waste source.
+-spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
+										actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 
 	OutState = class_Actor:send_actor_message( ?getAttr(source_poi),
@@ -204,17 +214,17 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 	%SourcePOIPid = ?getAttr(source_poi),
 	%SourcePOIAAI = class_InstanceTracker:get_identifier_for( SourcePOIPid,
-	%														 TrackerPid ),
+	%                                                         TrackerPid ),
 
 	%trace_utils:debug_fmt( "road ~B -> ~B", [ SourcePOIAAI, MyAAI ] ),
 
 	%TargetPOIPid = ?getAttr(target_poi),
 	%TargetPOIAAI = class_InstanceTracker:get_identifier_for( TargetPOIPid,
-	%														 TrackerPid ),
+	%                                                         TrackerPid ),
 
 	%trace_utils:debug_fmt( "road ~B -> ~B", [ MyAAI, TargetPOIAAI ] ),
 
-	?info_fmt( "Road just created: ~s", [ to_string( InState ) ] ),
+	?info_fmt( "Road just created: ~ts", [ to_string( InState ) ] ),
 
 	% Creates an initial deadline at the tick, to trigger the burners:
 	actor:return_state( InState ).
@@ -222,7 +232,7 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-% The definition of the spontaneous behaviour of this road.
+% @doc The definition of the spontaneous behaviour of this road.
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
@@ -243,8 +253,8 @@ actSpontaneous( State ) ->
 
 			% Notifies all exiting vehicles:
 			SentState = lists:foldl( fun( VehiclePid, AccState ) ->
-					class_Actor:send_actor_message( VehiclePid,
-							   { notifyRoadExit, OutPoi }, AccState )
+				class_Actor:send_actor_message( VehiclePid,
+					{ notifyRoadExit, OutPoi }, AccState )
 									 end,
 									_Acc0=State,
 									_List=VehicleList ),
@@ -265,7 +275,7 @@ actSpontaneous( State ) ->
 
 
 
-% Tells this road that the specified vehicle entered it.
+% @doc Tells this road that the specified vehicle entered it.
 %
 % Triggers in return a notifyRoadExit call to the vehicle once it reaches the
 % end of that road.
@@ -292,12 +302,10 @@ driveIn( State, VehiclePid, _SendingActorPid ) ->
 	% of having a procedurally generated benchmarking case:
 	%
 	TickDuration = class_Actor:convert_seconds_to_non_null_ticks(
-					 TraversalDuration,
-					 _MaxRelativeError=?city_max_relative_error,
-					 State ),
+		TraversalDuration, _MaxRelativeError=?city_max_relative_error, State ),
 
 	?info_fmt( "On this road of length ~f meters, the current average speed "
-		"is ~f km/h, resulting on a traversal duration of ~s (i.e. ~B ticks).",
+		"is ~f km/h, resulting on a traversal duration of ~ts (i.e. ~B ticks).",
 		[ RoadLength,
 		  unit_utils:meters_per_second_to_km_per_hour(NewAverageSpeed),
 		  time_utils:duration_to_string( 1000 * TraversalDuration ),
@@ -314,14 +322,14 @@ driveIn( State, VehiclePid, _SendingActorPid ) ->
 		{ empty, _Queue } ->
 			% Empty queue, no overtaking problem here:
 			{ queue:in( _Item={ DepartureTickOffset, [ VehiclePid ] }, Queue ),
-					   DepartureTickOffset };
+			  DepartureTickOffset };
 
 		% There is here a last departing time in the queue that can be fetched:
 		{ { value, { LastTickOffset, _VehicleList } }, _Q }
-								  when LastTickOffset < DepartureTickOffset ->
+									when LastTickOffset < DepartureTickOffset ->
 			% Another easy case, natural order is fine:
 			{ queue:in( _Item={ DepartureTickOffset, [ VehiclePid ] }, Queue ),
-					   DepartureTickOffset };
+			  DepartureTickOffset };
 
 		% Here, same departure tick, hence vehicle list growing:
 		{ { value, { DepartureTickOffset, VehicleList } }, TruncQ } ->
@@ -337,8 +345,9 @@ driveIn( State, VehiclePid, _SendingActorPid ) ->
 		{ { value, { LastTickOffset, _VehicleList } }, _TruncQ } ->
 
 			ThisDepartureOffset = LastTickOffset + 1
-				   + class_RandomManager:get_positive_integer_gaussian_value(
-								_Mu=float( TickDuration*NewLoad ), _Sigma=2.0 ),
+				+ class_RandomManager:get_positive_integer_gaussian_value(
+					_Mu=float( TickDuration*NewLoad ), _Sigma=2.0 ),
+
 			% By design in a strict future, no previous entry for that tick:
 			AddQueue = queue:in( _Item={ DepartureTickOffset, [ VehiclePid ] },
 								 Queue ),
@@ -354,23 +363,23 @@ driveIn( State, VehiclePid, _SendingActorPid ) ->
 													 SentState ),
 
 	FinalState = setAttributes( PlannedState, [
-								   { current_capacity, NewCapacity },
-								   { vehicle_queue, NewQueue } ] ),
+									{ current_capacity, NewCapacity },
+									{ vehicle_queue, NewQueue } ] ),
 
 	actor:return_state( FinalState ).
 
 
 
-% Returns the source POI of this road.
+% @doc Returns the source POI of this road.
 -spec getSourcePOI( wooper:state() ) -> const_request_return( poi_pid() ).
 getSourcePOI( State ) ->
 	wooper:const_return_result( ?getAttr(source_poi) ).
 
 
 
-% Returns the AAI of this road and its target POI.
+% @doc Returns the AAI of this road and its target POI.
 -spec getTargetPOI( wooper:state() ) ->
-					  const_request_return( { class_Actor:aai(), poi_pid() } ).
+			const_request_return( { class_Actor:aai(), poi_pid() } ).
 getTargetPOI( State ) ->
 
 	% To help the caller multiplex such requests yet be still reproducible:
@@ -380,25 +389,27 @@ getTargetPOI( State ) ->
 
 
 
-% Registers this road into the specified GIS.
+% @doc Registers this road into the specified GIS.
 -spec registerInGIS( wooper:state(), gis_pid() ) -> const_oneway_return().
 registerInGIS( State, GISPid ) ->
 
-	GISPid ! { declareRoad, [ self(), ?getAttr(source_poi),
-							  ?getAttr(target_poi) ] },
+	GISPid !
+		{ declareRoad, [ self(), ?getAttr(source_poi), ?getAttr(target_poi) ] },
 
 	wooper:const_return().
+
+
 
 
 
 % Static method section.
 
 
-% Generates full instance definitions from the specified list of initial base
-% definitions, which are simply { SourcePOI, TargetPOI } pairs of PID.
+% @doc Generates full instance definitions from the specified list of initial
+% base definitions, which are simply {SourcePOI, TargetPOI} pairs of PIDs.
 %
 -spec generate_definitions( [ { poi_pid(), poi_pid() } ] ) ->
-		 static_return( [ class_Actor:instance_creation_spec() ] ).
+			static_return( [ class_Actor:instance_creation_spec() ] ).
 generate_definitions( BaseDefs ) ->
 	CreationSpecs = generate_definitions( BaseDefs, _Count=0, _Acc=[] ),
 	wooper:return_static( CreationSpecs ).
@@ -424,19 +435,19 @@ generate_definitions( _BaseDefs=[ { SourcePOI, TargetPOI } | T ], Count,
 
 
 	MaxCapacity = 1 + class_RandomManager:get_positive_integer_gaussian_value(
-					  _Mean=Length/?vehicle_slot_length, _StdDeviation=2 ),
+						_Mean=Length/?vehicle_slot_length, _StdDeviation=2 ),
 
 	NewDef = { class_Road, [ Name, SourcePOI, TargetPOI, MaxCapacity ] },
 
-	generate_definitions( T, Count + 1, [ NewDef | Acc ] ).
+	generate_definitions( T, Count+1, [ NewDef | Acc ] ).
 
 
 
-% Returns a textual representation of this instance.
+% @doc Returns a textual representation of this instance.
 %
 % (helper)
 %
--spec to_string( wooper:state() ) -> string().
+-spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
 	TrackerPid = ?getAttr(local_tracker_pid),
@@ -450,7 +461,7 @@ to_string( State ) ->
 															 TrackerPid ),
 
 
-	text_utils:format( "Road '~s' (AAI: ~B) from POI ~p (~w) to POI ~p (~w), "
+	text_utils:format( "Road '~ts' (AAI: ~B) from POI ~p (~w) to POI ~p (~w), "
 		"whose length is ~f meters, whose current capacity is ~B/~B, "
 		"whose current traffic is made of ~B vehicles, "
 		"whose random state is ~w",
@@ -465,12 +476,13 @@ to_string( State ) ->
 % Helper section.
 
 
-% Returns the average speed for a vehicle on that road, in meters per second.
+% @doc Returns the average speed for a vehicle on that road, in meters per
+% second.
 %
 % (helper)
 %
 -spec get_average_speed( math_utils:percent(), wooper:state() ) ->
-							   unit_utils:meters_per_second().
+								unit_utils:meters_per_second().
 get_average_speed( Load, State ) ->
 
 	% Speeds are in km/h:

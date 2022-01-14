@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2021 EDF R&D
+% Copyright (C) 2012-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,6 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Class modelling an <b>industrial waste source</b>.
 -module(class_IndustrialWasteSource).
 
 
@@ -47,16 +48,16 @@
 %
 -define( class_attributes, [
 
-  { production_type, waste_type(),
-	"the (single) type of waste produced by this source" },
+	{ production_type, waste_type(),
+	  "the (single) type of waste produced by this source" },
 
-  { production_quantity, unit_utils:tons(),
-	"the (average) quantity of waste produced by a production cycle" },
+	{ production_quantity, unit_utils:tons(),
+	  "the (average) quantity of waste produced by a production cycle" },
 
-  { production_duration, unit_utils:seconds(),
-	"the (average) duration of a production cycle" },
+	{ production_duration, unit_utils:seconds(),
+	  "the (average) duration of a production cycle" },
 
-  { probe_ref, "the PID of the production probe (if any)" } ] ).
+	{ probe_ref, "the PID of the production probe (if any)" } ] ).
 
 
 
@@ -73,8 +74,15 @@
 -include("sim_diasca_for_actors.hrl").
 
 
+% Shorthands:
 
-% Creates a new industrial waste source.
+-type count() :: basic_utils:count().
+
+-type ustring() :: text_utils:ustring().
+
+
+
+% @doc Creates an industrial waste source.
 %
 % Construction parameters are:
 %
@@ -102,15 +110,15 @@ construct( State, ActorSettings, Name, Location, ProductionType,
 	% using an Actor state. Hence we declare this law in a second time:
 	%
 	ActorState = class_StochasticActor:construct( State, ActorSettings, Name, [
-	  { production_quantity_law,
-		{ gaussian, _Mu=ProductionQuantity, _Sigma=1.0 } } ] ),
+		{ production_quantity_law,
+		  { gaussian, _Mu=ProductionQuantity, _Sigma=1.0 } } ] ),
 
 	ProductionTickDuration = class_Actor:convert_seconds_to_ticks(
-				  ProductionDuration, ?city_max_relative_error, ActorState ),
+					ProductionDuration, ?city_max_relative_error, ActorState ),
 
 	AddedState = class_StochasticActor:add_law( production_duration_law,
-	  { positive_integer_exponential, _Lamba=1/ProductionTickDuration },
-	  ActorState ),
+		{ positive_integer_exponential, _Lamba=1/ProductionTickDuration },
+		ActorState ),
 
 	% One tank per industrial source, initially empty:
 	Tank = #waste_tank{ id=1,
@@ -135,23 +143,21 @@ construct( State, ActorSettings, Name, Location, ProductionType,
 	%
 	WasteStockProbeRef = class_Actor:declare_probe(
 
-				_Name=text_utils:format( "~s Produced Waste Stock Probe",
-										 [ Name ] ),
+		_Name=text_utils:format( "~ts Produced Waste Stock Probe", [ Name ] ),
 
-				_Curves=[ text_utils:format( "Quantity of waste of type ~w "
-					 "still in tank (in tons)", [ ProductionType ] ) ],
+		_Curves=[ text_utils:format( "Quantity of waste of type ~w "
+			"still in tank (in tons)", [ ProductionType ] ) ],
 
-				_Zones=[],
+		_Zones=[],
 
-				_Title=text_utils:format( "Waste Production & Storage "
-					"Monitoring for Industrial Waste Source ~s", [ Name ] ),
+		_Title=text_utils:format( "Waste Production & Storage "
+			"Monitoring for Industrial Waste Source ~ts", [ Name ] ),
 
-				_XLabel="Simulation time",
+		_XLabel="Simulation time",
 
-				_YLabel="Tons of wastes still stored by this "
-						"industrial waste source",
+		_YLabel="Tons of wastes still stored by this industrial waste source",
 
-				POIState ),
+		POIState ),
 
 	setAttributes( POIState, [ { production_type, ProductionType },
 							   { production_quantity, ProductionQuantity },
@@ -164,11 +170,12 @@ construct( State, ActorSettings, Name, Location, ProductionType,
 % Methods section.
 
 
-% First scheduling of an industrial waste source.
--spec onFirstDiasca( wooper:state(), sending_actor_pid() ) -> actor_oneway_return().
+% @doc First scheduling of an industrial waste source.
+-spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
+												actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 
-	?info_fmt( "~s just created", [ to_string( State ) ] ),
+	?info_fmt( "~ts just created", [ to_string( State ) ] ),
 
 	case ?getAttr(probe_ref) of
 
@@ -186,12 +193,11 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-
-% The definition of the spontaneous behaviour of this industrial source.
+% @doc The definition of the spontaneous behaviour of this industrial source.
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
-	?info_fmt( "~s acting spontaneously.", [ to_string( State ) ] ),
+	?info_fmt( "~ts acting spontaneously.", [ to_string( State ) ] ),
 
 	CurrentTickOffset = ?getAttr(current_tick_offset),
 
@@ -208,7 +214,7 @@ actSpontaneous( State ) ->
 			   [ ProducedMass, NewProductionDuration ] ),
 
 	ActualAddedMass = case Tank#waste_tank.max_mass_stored -
-								  Tank#waste_tank.current_mass_stored  of
+								Tank#waste_tank.current_mass_stored  of
 
 		Margin when Margin < ProducedMass ->
 
@@ -245,9 +251,10 @@ actSpontaneous( State ) ->
 
 
 
-% Tries to load from this waste source as much as possible of the specified mass
-% compatible with specified waste type into the calling actor, which is expected
-% to be a waste transport, located in this point, looking for additional waste.
+% @doc Tries to load from this waste source as much as possible of the specified
+% mass compatible with specified waste type into the calling actor, which is
+% expected to be a waste transport, located in this point, looking for
+% additional waste.
 %
 % The answer (the actor message sent back) will be:
 %
@@ -278,14 +285,14 @@ loadWaste( State, WasteType, MaxWantedMass, WasteLoaderPid ) ->
 
 
 
-% Returns a textual description of this instance.
--spec toString( wooper:state() ) -> const_request_return( string() ).
+% @doc Returns a textual description of this instance.
+-spec toString( wooper:state() ) -> const_request_return( ustring() ).
 toString( State ) ->
 	wooper:const_return_result( to_string( State ) ).
 
 
 
-% Computes the newly produced mass of waste and the duration of the next
+% @doc Computes the newly produced mass of waste and the duration of the next
 % production iteration.
 %
 % (helper)
@@ -306,7 +313,7 @@ compute_production_parameters( State ) ->
 
 	% At least one tick away:
 	NextDuration = max( 1, class_StochasticActor:get_random_value_from(
-							   production_duration_law, State ) ),
+								production_duration_law, State ) ),
 
 	{ AdditionalMass, NextDuration }.
 
@@ -318,12 +325,11 @@ compute_production_parameters( State ) ->
 
 
 
-% Generates a list of instance definitions for the specified number of
+% @doc Generates a list of instance definitions for the specified number of
 % industrial waste sources.
 %
--spec generate_definitions( basic_utils:count(), location_generator_pid(),
-							gis_info() ) ->
-		 static_return( [ class_Actor:instance_creation_spec() ] ).
+-spec generate_definitions( count(), location_generator_pid(), gis_info() ) ->
+				static_return( [ class_Actor:instance_creation_spec() ] ).
 generate_definitions( IndustrialSourceCount, LocationGeneratorPid, GISInfo ) ->
 
 	% Triggers the location generation request in parallel:
@@ -358,8 +364,8 @@ define_industrial_waste_sources( _IndustrialSourceCount=0, GISInfo, Acc ) ->
 define_industrial_waste_sources( IndustrialSourceCount, GISInfo, Acc ) ->
 
 	% Defines the build parameters for a new industrial source; we want to end
-	% up with a list of { class_IndustrialWasteSource, [ Name, Location,
-	%  ProductionType, ProductionQuantity, ProductionDuration ] } elements.
+	% up with a list of {class_IndustrialWasteSource, [Name, Location,
+	%  ProductionType, ProductionQuantity, ProductionDuration]} elements.
 
 	Name = text_utils:format( "IndustrialWasteSource-~B",
 							  [ IndustrialSourceCount ] ),
@@ -374,7 +380,7 @@ define_industrial_waste_sources( IndustrialSourceCount, GISInfo, Acc ) ->
 	% 26 tons on average:
 	LocalStorage = 20 +
 		class_RandomManager:get_positive_integer_exponential_value(
-														  _StoreLambda=1/6 ),
+														_StoreLambda=1/6 ),
 
 	% 8 hours on average, in seconds:
 	ProductionDuration = 2 * 60 * 60 +
@@ -385,14 +391,12 @@ define_industrial_waste_sources( IndustrialSourceCount, GISInfo, Acc ) ->
 	NewAcc = [ { Name, ProductionType, float(ProductionQuantity),
 				 float( LocalStorage ), ProductionDuration } | Acc ],
 
-	define_industrial_waste_sources( IndustrialSourceCount - 1, GISInfo,
-									 NewAcc ).
+	define_industrial_waste_sources( IndustrialSourceCount-1, GISInfo, NewAcc ).
 
 
 
-
-% Adds the location to the wastesource build parameters (a kind of zip
-% operation):
+% @doc Adds the location to the wastesource build parameters (a kind of zip
+% operation).
 %
 merge_parameters( Params, Locations, GISInfo ) ->
 	% In-order is better:
@@ -407,18 +411,18 @@ merge_parameters( _Params=[ { Name, ProductionType, ProductionQuantity,
 				  _Locations=[ Loc | Tl ], Acc, GISInfo ) ->
 
 	NewIndustrialSourceDef = { class_IndustrialWasteSource, [ Name,
-		   { wgs84_cartesian, Loc }, ProductionType, ProductionQuantity,
+			{ wgs84_cartesian, Loc }, ProductionType, ProductionQuantity,
 						LocalStorage, ProductionDuration, GISInfo ] },
 
 	merge_parameters( Tp, Tl, [ NewIndustrialSourceDef | Acc ], GISInfo ).
 
 
 
-% Returns a textual representation of this instance.
+% @doc Returns a textual representation of this instance.
 %
 % (helper)
 %
--spec to_string( wooper:state() ) -> string().
+-spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
 	DurationInSeconds = class_Actor:convert_ticks_to_seconds(
@@ -427,9 +431,9 @@ to_string( State ) ->
 	% One one tank per source:
 	[ WasteTank ] = ?getAttr(waste_capacity),
 
-	text_utils:format( "Industrial waste source '~s' (AAI: ~B) located at ~s "
-		"(~s) generating on average ~f tons of waste of type ~p "
-		"every ~s (~B ticks) on average, using for storage ~s, "
+	text_utils:format( "Industrial waste source '~ts' (AAI: ~B) located at ~ts "
+		"(~ts) generating on average ~f tons of waste of type ~p "
+		"every ~ts (~B ticks) on average, using for storage ~ts, "
 		"whose random state is ~p",
 		[ ?getAttr(name),
 		  class_Actor:get_abstract_identifier( State ),

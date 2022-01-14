@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,14 +19,13 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-% Benchmarking case obtained from the soda deterministic example case.
+% @doc <b>Benchmarking case</b> obtained from the soda deterministic example
+% case.
 %
 % See also:
 %
 % - class_SodaVendingMachine.erl
-%
 % - class_DeterministicThirstyCustomer.erl
-%
 % - soda_full_loading_test.erl for the same simulated case using instance
 % loading from file instead of instances created programmatically
 %
@@ -50,7 +49,7 @@
 
 
 
-% Returns the main settings to choose the size of this test.
+% @doc Returns the main settings to choose the size of this test.
 -spec get_benchmark_settings( 'minimal' | 'normal' ) ->
 								{ count(), count(), tick_offset() }.
 get_benchmark_settings( minimal ) ->
@@ -87,8 +86,8 @@ get_benchmark_settings( normal ) ->
 
 
 
-% Creates the specified number of soda vending machines, and returns a list of
-% their PID.
+% @doc Creates the specified number of soda vending machines, and returns a list
+% of their PID.
 %
 -spec create_vending_machines( count() ) -> [ actor_pid() ].
 create_vending_machines( Count ) ->
@@ -120,7 +119,7 @@ create_vending_machines( Count, Acc ) ->
 
 
 
-% Creates the specified number of thirsty customers, knowing each one soda
+% @doc Creates the specified number of thirsty customers, knowing each one soda
 % vending machine among the specified ones, and returns a list of the PID of
 % these customers.
 %
@@ -150,33 +149,33 @@ create_thirsty_customers( CustomerCount, VendingMachines, Acc ) ->
 
 
 
-% Creates a new deterministic thirsty customer, knowing one of the specified
+% @doc Creates a deterministic thirsty customer, knowing one of the specified
 % vending machines.
 %
 -spec create_deterministic_customer( count(), [ actor_pid() ] ) -> actor_pid().
 create_deterministic_customer( CustomerCount, VendingMachines ) ->
 
 	CustomerName = text_utils:format( "Customer #~B - deterministic",
-								  [ CustomerCount ] ),
+									  [ CustomerCount ] ),
 
-	ElectedMachineIndex = class_RandomManager:get_uniform_value(
-							length( VendingMachines ) ),
+	ElectedMachineIndex =
+		class_RandomManager:get_uniform_value( length( VendingMachines ) ),
 
 	ElectedMachine = list_utils:get_element_at( VendingMachines,
 												ElectedMachineIndex ),
 
 	RepletionDuration = 250 + round( class_RandomManager:get_exponential_value(
-									   _Lamba=0.05 ) ),
+										_Lamba=0.05 ) ),
 
 	InitialBudget = 15.0 + class_RandomManager:get_uniform_value( 200 ),
 
 	class_Actor:create_initial_actor( class_DeterministicThirstyCustomer,
-		  [ CustomerName, ElectedMachine, RepletionDuration, InitialBudget ] ).
+		[ CustomerName, ElectedMachine, RepletionDuration, InitialBudget ] ).
 
 
 
 
-% Creates a new stochastic thirsty customer, knowing one of the specified
+% @doc Creates a stochastic thirsty customer, knowing one of the specified
 % vending machines.
 %
 -spec create_stochastic_customer( count(), [ actor_pid() ] ) -> actor_pid().
@@ -199,12 +198,12 @@ create_stochastic_customer( CustomerCount, VendingMachines ) ->
 	InitialBudget = 10.0 + class_RandomManager:get_uniform_value( 200 ),
 
 	class_Actor:create_initial_actor( class_StochasticThirstyCustomer,
-		  [ CustomerName, ElectedMachine, RepletionDuration, InitialBudget ] ).
+		[ CustomerName, ElectedMachine, RepletionDuration, InitialBudget ] ).
 
 
 
 
-% Runs the test.
+% @doc Runs the test.
 -spec run() -> no_return().
 run() ->
 	run( _Settings=minimal ).
@@ -219,14 +218,14 @@ run( Settings ) ->
 	% Use default simulation settings (50Hz, batch reproducible):
 	SimulationSettings = #simulation_settings{
 
-	  simulation_name="Soda Benchmarking Test"
+		simulation_name="Soda Benchmarking Test"
 
-	  % We leave it to the default specification (all_outputs):
-	  % result_specification =
-	  %  [ { targeted_patterns, [ {".*",[data_and_rendering] } ] },
-	  %    { blacklisted_patterns, ["^Second" ] } ]
+		% We leave it to the default specification (all_outputs):
+		% result_specification =
+		%  [ { targeted_patterns, [ {".*",[data_and_rendering] } ] },
+		%    { blacklisted_patterns, ["^Second" ] } ]
 
-	  %result_specification = [ { targeted_patterns, [ {".*",data_only} ] } ]
+		%result_specification = [ { targeted_patterns, [ {".*",data_only} ] } ]
 
 	},
 
@@ -268,6 +267,7 @@ run( Settings ) ->
 
 	% First customer uses SVM1, is thirsty 1 minute after having drunk, and has
 	% 6 euros in his pockets:
+	%
 	_TC1 = class_Actor:create_initial_actor( class_DeterministicThirstyCustomer,
 		[ _FirstCustomerName="John", _FirstKnownMachine=SVM1,
 		  _FirstRepletionDuration=1, _FirstInitialBudget=6.0 ] ),
@@ -275,6 +275,7 @@ run( Settings ) ->
 
 	% Second customer uses SVM1 too, is thirsty 3 minutes after having drunk,
 	% and has 8 euros in his pockets:
+	%
 	_TC2 = class_Actor:create_initial_actor( class_DeterministicThirstyCustomer,
 		[ _SecondCustomerName="Terry", _SecondKnownMachine=SVM1,
 		  _SecondRepletionDuration=3, _SecondInitialBudget=80.0 ] ),
@@ -282,6 +283,7 @@ run( Settings ) ->
 
 	% Third customer uses SVM2, is thirsty 2 minutes after having drunk, and has
 	% 15 euros in his pockets:
+	%
 	_TC3 = class_Actor:create_initial_actor( class_DeterministicThirstyCustomer,
 		[ _ThirdCustomerName="Michael", _ThirdKnownMachine=SVM2,
 		  _ThirdRepletionDuration=2, _ThirdInitialBudget=15.0 ] ),
@@ -295,8 +297,8 @@ run( Settings ) ->
 	DeploymentManagerPid ! { getRootTimeManager, [], self() },
 	RootTimeManagerPid = test_receive(),
 
-	?test_info_fmt( "Starting simulation, "
-					"for a stop at tick offset ~B.", [ StopTick ] ),
+	?test_info_fmt( "Starting simulation, for a stop at tick offset ~B.",
+					[ StopTick ] ),
 
 	RootTimeManagerPid ! { start, [ StopTick, self() ] },
 

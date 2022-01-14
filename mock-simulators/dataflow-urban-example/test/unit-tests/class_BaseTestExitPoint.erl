@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2021 EDF R&D
+% Copyright (C) 2016-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,6 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Experiment exit point, defined for testing.
 -module(class_BaseTestExitPoint).
 
 
@@ -58,15 +59,23 @@
 % Attributes that are specific to this test experiment exit point are:
 -define( class_attributes, [
 
-	{ current_step, class_ExperimentManager:step_count(),
+	{ current_step, step_count(), 
 	  "the current step at which the experiment is" },
 
-	{ max_step, class_ExperimentManager:step_count(),
+	{ max_step, step_count(),
 	  "the maximum step that the experiment may reach" } ] ).
 
 
 
-% Constructs the urban-example experiment exit point, from:
+% Shorthands:
+
+-type ustring() :: text_utils:ustring().
+
+-type step_count() :: class_ExperimentManager:step_count().
+
+
+
+% @doc Constructs the urban-example experiment exit point, from:
 %
 % - ActorSettings describes the actor abstract identifier (AAI) and seed of this
 % actor, as assigned by the load balancer
@@ -86,21 +95,20 @@
 % - WorldManagerPid is the PID of the world manager
 %
 -spec construct( wooper:state(), class_Actor:actor_settings(),
-				 [ dataflow_pid() ], class_ExperimentManager:step_count(),
-				 class_ExperimentManager:step_count(),
-				 experiment_entry_point_pid(), experiment_manager_pid(),
-				 world_manager_pid() ) -> wooper:state().
+	[ dataflow_pid() ], step_count(), step_count(),
+	experiment_entry_point_pid(), experiment_manager_pid(),
+	world_manager_pid() ) -> wooper:state().
 construct( State, ActorSettings, Dataflows, ExperimentStepStart,
 		   ExperimentStepStop, ExperimentEntryPointPid,
 		   ExperimentManagerPid, WorldManagerPid ) ->
 
 	% First the direct mother class:
 	ExitState = class_ExperimentExitPoint:construct( State, ActorSettings,
-						Dataflows, ExperimentEntryPointPid,
-						ExperimentManagerPid, WorldManagerPid ),
+		Dataflows, ExperimentEntryPointPid,
+		ExperimentManagerPid, WorldManagerPid ),
 
 	% Then the class-specific actions:
-	setAttributes( ExitState, [	{ current_step, ExperimentStepStart },
+	setAttributes( ExitState, [ { current_step, ExperimentStepStart },
 								{ max_step, ExperimentStepStop } ] ).
 
 
@@ -108,7 +116,7 @@ construct( State, ActorSettings, Dataflows, ExperimentStepStart,
 % Methods section.
 
 
-% The core of the behaviour of this base exit point, mostly adding to the
+% @doc The core of the behaviour of this base exit point, mostly adding to the
 % default exit point a fixed termination step.
 %
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
@@ -117,7 +125,7 @@ actSpontaneous( State ) ->
 	CurrentStep = ?getAttr(current_step),
 	MaxStep = ?getAttr(max_step),
 
-	?debug_fmt( "Base exit point at step ~B/~B, in ~s phase.",
+	?debug_fmt( "Base exit point at step ~B/~B, in ~ts phase.",
 				[ CurrentStep, MaxStep, ?getAttr(phase) ] ),
 
 	NewState = case CurrentStep of
@@ -137,6 +145,7 @@ actSpontaneous( State ) ->
 
 
 
+
 % Helper functions.
 
 
@@ -144,9 +153,9 @@ actSpontaneous( State ) ->
 %
 % (helper)
 %
--spec to_string( wooper:state() ) -> string().
+-spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
 	ExitString = class_ExperimentExitPoint:to_string( State ),
 
-	text_utils:format( "Test programmatic ~s", [ ExitString ] ).
+	text_utils:format( "Test programmatic ~ts", [ ExitString ] ).

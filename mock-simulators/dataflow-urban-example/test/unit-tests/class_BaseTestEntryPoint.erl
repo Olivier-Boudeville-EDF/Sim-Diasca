@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2021 EDF R&D
+% Copyright (C) 2016-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,6 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Base experiment entry point, defined for testing.
 -module(class_BaseTestEntryPoint).
 
 
@@ -52,24 +53,32 @@
 % The attributes that are specific to this base test entry point are:
 -define( class_attributes, [
 
-  { current_step, class_ExperimentManager:step_count(),
-	"the current step at which the experiment is" },
+	{ current_step, step_count(),
+	  "the current step at which the experiment is" },
 
-  { max_step, class_ExperimentManager:step_count(),
-	"the maximum step that the experiment may reach" },
+	{ max_step, step_count(),
+	  "the maximum step that the experiment may reach" },
 
-  { test_dataflow_objects, [ test_dataflow_object_pid() ],
-	"a list of the test dataflow objects known of this entry point" },
+	{ test_dataflow_objects, [ test_dataflow_object_pid() ],
+	  "a list of the test dataflow objects known of this entry point" },
 
-  { test_processing_units, [ test_processing_unit_pid() ],
-	"a list of the test processing units known of this entry point" },
+	{ test_processing_units, [ test_processing_unit_pid() ],
+	  "a list of the test processing units known of this entry point" },
 
-  { unit_managers, [ unit_manager_pid() ],
-	"a list of the unit managers driven by this entry point" } ] ).
+	{ unit_managers, [ unit_manager_pid() ],
+	  "a list of the unit managers driven by this entry point" } ] ).
 
 
 
-% Constructs the base experiment entry point for testing, from:
+% Shorthands:
+
+-type ustring() :: text_utils:ustring().
+
+-type step_count() :: class_ExperimentManager:step_count().
+
+
+
+% @doc Constructs the base experiment entry point for testing, from:
 %
 % - ActorSettings describes the actor abstract identifier (AAI) and seed of this
 % actor, as assigned by the load balancer
@@ -85,10 +94,8 @@
 % - WorldManagerPid is the PID of the world manager
 %
 -spec construct( wooper:state(), class_Actor:actor_settings(),
-				 [ dataflow_pid() ], class_ExperimentManager:step_count(),
-				 class_ExperimentManager:step_count(),
-				 experiment_manager_pid(), world_manager_pid() ) ->
-					   wooper:state().
+	[ dataflow_pid() ], step_count(), step_count(),
+	experiment_manager_pid(), world_manager_pid() ) -> wooper:state().
 construct( State, ActorSettings, Dataflows, ExperimentStepStart,
 		   ExperimentStepStop, ExperimentManagerPid, WorldManagerPid ) ->
 
@@ -106,8 +113,8 @@ construct( State, ActorSettings, Dataflows, ExperimentStepStart,
 
 
 
-% Registers specified test dataflow objects to this entry point, so that it is
-% able to act upon them (ex: attribute update).
+% @doc Registers specified test dataflow objects to this entry point, so that it
+% is able to act upon them (ex: attribute update).
 %
 -spec registerTestDataflowObjects( wooper:state(),
 								   [ test_dataflow_object_pid() ] ) ->
@@ -124,8 +131,8 @@ registerTestDataflowObjects( State, TestDataflowObjects ) ->
 
 
 
-% Registers specified test processing units to this entry point, so that it is
-% able to act upon them.
+% @doc Registers specified test processing units to this entry point, so that it
+% is able to act upon them.
 %
 -spec registerTestProcessingUnits( wooper:state(),
 								   [ test_processing_unit_pid() ] ) ->
@@ -146,12 +153,12 @@ registerTestProcessingUnits( State, TestProcessingUnits ) ->
 % Section for actor oneways.
 
 
-% Starts the evaluation of the urban experiment for the current tick.
+% @doc Starts the evaluation of the urban experiment for the current tick.
 %
 % Typically called by the experiment exit point, for synchronisation reasons.
 %
 -spec startExperimentTick( wooper:state(), sending_actor_pid() ) ->
-								 actor_oneway_return().
+									actor_oneway_return().
 startExperimentTick( State, _SenderActorPid ) ->
 
 	CurrentStep = ?getAttr(current_step),
@@ -171,10 +178,10 @@ startExperimentTick( State, _SenderActorPid ) ->
 
 			% Settings the 'foo' attribute of Obj1 to 42:
 			TestUpdateEvent = #update_event{
-								 object_type=class_BaseTestDataflowObject,
-								 object_pid=Obj1Pid,
-								 updates=[ { "foo", 42 } ],
-								 dataflow_pid=TargetDataflowPid },
+				object_type=class_BaseTestDataflowObject,
+				object_pid=Obj1Pid,
+				updates=[ { "foo", 42 } ],
+				dataflow_pid=TargetDataflowPid },
 
 			Changeset = [ TestUpdateEvent ],
 
@@ -195,13 +202,13 @@ startExperimentTick( State, _SenderActorPid ) ->
 			PU1Pid = hd( ?getAttr(test_processing_units) ),
 
 			TestConnectionEvent = #connection_event{
-						source_block_type=class_BaseTestDataflowObject,
-						target_block_type=class_BaseTestProcessingUnit,
-						source_block_pid=Obj1Pid,
-						target_block_pid=PU1Pid,
-						output_port_name="foo",
-						input_port_name="my_input_port",
-						dataflow_pid=TargetDataflowPid },
+				source_block_type=class_BaseTestDataflowObject,
+				target_block_type=class_BaseTestProcessingUnit,
+				source_block_pid=Obj1Pid,
+				target_block_pid=PU1Pid,
+				output_port_name="foo",
+				input_port_name="my_input_port",
+				dataflow_pid=TargetDataflowPid },
 
 			Changeset = [ TestConnectionEvent ],
 
@@ -228,12 +235,12 @@ startExperimentTick( State, _SenderActorPid ) ->
 % Section for plain methods (ex: not actor oneways).
 
 
-% Declares the specified unit managers to this entry point.
+% @doc Declares the specified unit managers to this entry point.
 %
 % (request, for synchronicity)
 %
 -spec addUnitManagers( wooper:state(), [ unit_manager_pid() ] ) ->
-							 request_return( 'unit_managers_registered' ).
+								request_return( 'unit_managers_registered' ).
 addUnitManagers( State, UnitManagers ) ->
 
 	?info_fmt( "Adding unit managers ~w.", [ UnitManagers ] ),
@@ -250,11 +257,11 @@ addUnitManagers( State, UnitManagers ) ->
 % Helper functions.
 
 
-% Returns a textual description of this entry point.
+% @doc Returns a textual description of this entry point.
 %
 % (helper)
 %
--spec to_string( wooper:state() ) -> string().
+-spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
 	EntryString = class_ExperimentEntryPoint:to_string( State ),
@@ -293,6 +300,5 @@ to_string( State ) ->
 
 	end,
 
-	text_utils:format( "Test programmatic ~s, ~s, ~s, ~s",
-					   [ EntryString, ObjectString, UnitString,
-						 UnitManagerString ] ).
+	text_utils:format( "Test programmatic ~ts, ~ts, ~ts, ~ts",
+		[ EntryString, ObjectString, UnitString, UnitManagerString ] ).

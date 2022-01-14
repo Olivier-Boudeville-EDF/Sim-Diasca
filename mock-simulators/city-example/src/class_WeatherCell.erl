@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2021 EDF R&D
+% Copyright (C) 2014-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,6 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Class modelling a <b>weather cell</b>, part of a weather system.
 -module(class_WeatherCell).
 
 
@@ -37,36 +38,36 @@
 % The class-specific attributes of an instance of a weather cell are:
 -define( class_attributes, [
 
-  { weather_state, linear_3D:vector(), "is the state vector of this cell "
-	"(storing local temperature, pressure and hydrometry, supposedly uniform "
-	"in this cell)" },
+	{ weather_state, vector3(), "the state vector of this cell "
+	  "(storing local temperature, pressure and hydrometry, supposedly uniform "
+	  "in this cell)" },
 
-  { left_cell, cell_pid(), "the cell on the left of this cell" },
+	{ left_cell, cell_pid(), "the cell on the left of this cell" },
 
-  { right_cell, cell_pid(), "the cell on the right of this cell" },
+	{ right_cell, cell_pid(), "the cell on the right of this cell" },
 
-  { top_cell, cell_pid(), "the cell at the top of this cell" },
+	{ top_cell, cell_pid(), "the cell at the top of this cell" },
 
-  { bottom_cell, cell_pid(), "the cell at the bottom of this cell" },
+	{ bottom_cell, cell_pid(), "the cell at the bottom of this cell" },
 
-  { weather_system_pid, weather_system_pid(),
-	"the PID of the overall weather system" },
+	{ weather_system_pid, weather_system_pid(),
+	  "the PID of the overall weather system" },
 
-  { period, unit_utils:seconds(),
-	"the number of seconds between two weather updates of this cell" },
+	{ period, unit_utils:seconds(),
+	  "the number of seconds between two weather updates of this cell" },
 
-  { period_in_ticks, class_TimeManager:tick_offset(),
-	"the number of ticks between two successive evaluations of this cell" },
+	{ period_in_ticks, class_TimeManager:tick_offset(),
+	  "the number of ticks between two successive evaluations of this cell" },
 
-  { spreading_factor, basic_utils:count(),
-	"determines on how many ticks the cells are spread, scheduling-wise" },
+	{ spreading_factor, count(),
+	  "determines on how many ticks the cells are spread, scheduling-wise" },
 
-  { solver_iteration_count, basic_utils:count(),
-	"the number of iterations performed to compute an updated weather" },
+	{ solver_iteration_count, count(),
+	  "the number of iterations performed to compute an updated weather" },
 
-  { solver_time_step, unit_utils:milliseconds(), "dictates the length of an "
-	"elementary time-step of the solver (beware to numerical stability if it "
-	"is too high)" } ] ).
+	{ solver_time_step, unit_utils:milliseconds(), "dictates the length of an "
+	  "elementary time-step of the solver (beware to numerical stability if it "
+	  "is too high)" } ] ).
 
 
 % Exported helpers:
@@ -80,7 +81,7 @@
 % The (uniform) weather in a cell is made of temperature, pressure and
 % hydrometry:
 %
--type weather_vector() :: linear_3D:vector().
+-type weather_vector() :: vector3().
 
 
 -export_type([ weather_vector/0 ]).
@@ -108,10 +109,19 @@
 % conditions (state vector).
 
 
+% Shorthands:
+
+%-type count() :: basic_utils:count().
+
+-type ustring() :: text_utils:ustring().
+
+-type point3() :: point3:point3().
+-type vector3() :: vector3:vector3().
 
 
 
-% Creates a new weather cell.
+
+% @doc Creates a weather cell.
 %
 % Construction parameters are:
 %
@@ -134,7 +144,7 @@ construct( State, ActorSettings, Name, InitialConditions,
 		   WeatherSystemPid ) ->
 
 	ActorState = class_Actor:construct( State, ActorSettings,
-										?trace_categorize( Name ) ),
+										?trace_categorize(Name) ),
 
 	% 4 hours of simulated time between two computational updates:
 	Period = 4 * 3600,
@@ -143,6 +153,7 @@ construct( State, ActorSettings, Name, InitialConditions,
 
 	% Not used anymore, as the timestep must be fine enough, otherwise
 	% computations will diverge and crash:
+	%
 	%Timestep = Period / IterationCount,
 	Timestep = 0.005,
 
@@ -151,26 +162,26 @@ construct( State, ActorSettings, Name, InitialConditions,
 
 	NewState = setAttributes( ActorState, [
 
-			{ weather_state, InitialConditions },
+		{ weather_state, InitialConditions },
 
-			{ left_cell, LeftCell },
-			{ right_cell, RightCell },
-			{ top_cell, TopCell },
-			{ bottom_cell, BottomCell },
+		{ left_cell, LeftCell },
+		{ right_cell, RightCell },
+		{ top_cell, TopCell },
+		{ bottom_cell, BottomCell },
 
-			{ weather_system_pid, WeatherSystemPid },
+		{ weather_system_pid, WeatherSystemPid },
 
-			{ period, Period },
-			{ period_in_ticks, SpreadingFactor },
+		{ period, Period },
+		{ period_in_ticks, SpreadingFactor },
 
-			{ spreading_factor, SpreadingFactor },
+		{ spreading_factor, SpreadingFactor },
 
-			% The number of solver iterations for the Lorenz system to be
-			% computed is also a way of setting the intensity in terms of
-			% calculations:
-			%
-			{ solver_iteration_count, IterationCount },
-			{ solver_time_step, Timestep } ] ),
+		% The number of solver iterations for the Lorenz system to be
+		% computed is also a way of setting the intensity in terms of
+		% calculations:
+		%
+		{ solver_iteration_count, IterationCount },
+		{ solver_time_step, Timestep } ] ),
 
 
 	?send_info_fmt( NewState, "Initialised with conditions ~p.",
@@ -181,13 +192,13 @@ construct( State, ActorSettings, Name, InitialConditions,
 
 
 
-% Overridden destructor.
+% @doc Overridden destructor.
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
 	% If ever wanting to compare final states:
 	%
-	%trace_utils:debug_fmt( "cell stop ~p ~s ~w",
+	%trace_utils:debug_fmt( "cell stop ~p ~ts ~w",
 	%  [ ?getAttr(actor_abstract_id), ?getAttr(name),
 	%    ?getAttr(weather_state) ] ),
 
@@ -204,8 +215,9 @@ destruct( State ) ->
 % Methods section.
 
 
-% First scheduling of a weather cell.
--spec onFirstDiasca( wooper:state(), sending_actor_pid() ) -> actor_oneway_return().
+% @doc First scheduling of a weather cell.
+-spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
+										actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 
 	SentState = class_Actor:send_actor_message( ?getAttr(weather_system_pid),
@@ -228,21 +240,22 @@ onFirstDiasca( State, _SendingActorPid ) ->
 	PlanState = class_Actor:add_spontaneous_tick( InitialTick, SentState ),
 
 	%PeriodInTicks = class_Actor:convert_seconds_to_ticks( ?getAttr(period),
-	%													  PlanState ),
+	%                                                      PlanState ),
 
 	?notice_fmt( "Ready, with ~p ticks per period, "
 		"and ~B solver iteration count.",
 		[ ?getAttr(period_in_ticks), ?getAttr(solver_iteration_count) ] ),
 
-	%trace_utils:debug_fmt( "cell start ~p ~s ~w", [ ?getAttr(actor_abstract_id),
-	%					   ?getAttr(name), ?getAttr(weather_state) ] ),
+	%trace_utils:debug_fmt( "cell start ~p ~ts ~w",
+	%    [ ?getAttr(actor_abstract_id), ?getAttr(name),
+	%      ?getAttr(weather_state) ] ),
 
 	actor:return_state( PlanState ).
 
 
 
 
-% The definition of the spontaneous behaviour of this weather cell.
+% @doc The definition of the spontaneous behaviour of this weather cell.
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
@@ -274,42 +287,44 @@ actSpontaneous( State ) ->
 
 	% Let's notify the neighbours:
 	FinalState = lists:foldl(
-				   fun
+		fun
 
-					   ( _NeighbourPid=border, AccState ) ->
-						   AccState;
+			( _NeighbourPid=border, AccState ) ->
+				AccState;
 
-					   ( NeighbourPid, AccState ) ->
-						   class_Actor:send_actor_message( NeighbourPid,
-							  { notifyWeather, [ NewWeatherState ] }, AccState )
+			( NeighbourPid, AccState ) ->
+				class_Actor:send_actor_message( NeighbourPid,
+					{ notifyWeather, [ NewWeatherState ] }, AccState )
 
-				   end,
+		end,
 
-				   _Acc0=UpdatedState,
+		_Acc0=UpdatedState,
 
-				   _List=[ ?getAttr(left_cell), ?getAttr(right_cell),
-						   ?getAttr(top_cell), ?getAttr(bottom_cell) ] ),
+		_List=[ ?getAttr(left_cell), ?getAttr(right_cell),
+				?getAttr(top_cell), ?getAttr(bottom_cell) ] ),
 
 	wooper:return_state( FinalState ).
 
 
 
-% Called by a neighbouring cell so that this one knows its border conditions and
-% can update its own weather accordingly.
+% @doc Called by a neighbouring cell so that this one knows its border
+% conditions and can update its own weather accordingly.
 %
 -spec notifyWeather( wooper:state(), weather_vector(), cell_pid() ) ->
-						   actor_oneway_return().
+											actor_oneway_return().
 notifyWeather( State, NeighbourWeather, _NeighbourCellPid ) ->
 
 	%?debug_fmt( "Received weather ~p from cell ~p.",
-	%			[ NeighbourWeather, NeighbourCellPid ] ),
+	%            [ NeighbourWeather, NeighbourCellPid ] ),
 
 	% Here the adjacent weathers have a moderate impact:
 	ImpactFactor = 1.0 / 12,
 
-	ScaledWeather = linear_3D:scale( NeighbourWeather, ImpactFactor ),
+	ScaledWeatherP = point3:scale( NeighbourWeather, ImpactFactor ),
 
-	NewWeather = linear_3D:translate( ?getAttr(weather_state), ScaledWeather ),
+	ScaledWeatherV = point3:to_vector( ScaledWeatherP ),
+
+	NewWeather = point3:translate( ?getAttr(weather_state), ScaledWeatherV ),
 
 	NewState = setAttribute( State, weather_state, NewWeather ),
 
@@ -318,17 +333,16 @@ notifyWeather( State, NeighbourWeather, _NeighbourCellPid ) ->
 
 
 
-% Returns a textual representation of this instance.
+% @doc Returns a textual representation of this instance.
 %
 % (helper)
 %
--spec to_string( wooper:state() ) -> string().
+-spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
-	text_utils:format(
-	  "Weather cell '~s' (AAI: ~B), whose random state is ~p ", [
-							?getAttr(name),
-							class_Actor:get_abstract_identifier( State ),
-							random_utils:get_random_state() ] ).
+	text_utils:format( "Weather cell '~ts' (AAI: ~B), "
+		"whose random state is ~p ",
+		[ ?getAttr(name), class_Actor:get_abstract_identifier( State ),
+		  random_utils:get_random_state() ] ).
 
 
 
@@ -336,7 +350,7 @@ to_string( State ) ->
 % Helper section.
 
 
-% Evaluates the next weather based on current one and the number of solver
+% @doc Evaluates the next weather based on current one and the number of solver
 % iterations requested.
 %
 % Returns the updated weather.
@@ -348,26 +362,24 @@ evaluate_weather( _IterationCount=0, CurrentWeatherState, _Time, _Timestep ) ->
 
 evaluate_weather( IterationCount, CurrentWeatherState, Time, Timestep ) ->
 
-	NewWeatherState = rk4_solver:compute_next_estimate( fun lorenz_function/2,
+	NewWeatherState = rk4_solver:compute_next_estimate3p( fun lorenz_function/2,
 						CurrentWeatherState, Time, Timestep ),
 
-	evaluate_weather( IterationCount - 1, NewWeatherState, Time + Timestep,
+	evaluate_weather( IterationCount-1, NewWeatherState, Time + Timestep,
 					  Timestep ).
 
 
 
 
-
-% Function f( t, v ) corresponding to the equations of the Lorenz system.
+% @doc Function f(t,v) corresponding to the equations of the Lorenz system.
 %
 % See http://en.wikipedia.org/wiki/Lorenz_system
 %
--spec lorenz_function( rk4_solver:time(), rk4_solver:vector() ) ->
-							rk4_solver:vector().
+-spec lorenz_function( rk4_solver:time(), point3() ) -> point3().
 lorenz_function( _Time, _Vector={ X0, Y0, Z0 } ) ->
 
 	%trace_utils:debug_fmt( "Current weather state of ~p: { ~p, ~p, ~p }.",
-	%					   [ self(), X0, Y0, Z0 ] ),
+	%                       [ self(), X0, Y0, Z0 ] ),
 
 	% These equations do not depend directly on time.
 

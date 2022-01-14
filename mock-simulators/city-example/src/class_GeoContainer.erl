@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2021 EDF R&D
+% Copyright (C) 2012-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,11 +19,12 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Class modelling a <b>geographical container</b>.
 -module(class_GeoContainer).
 
 
 -define( class_description,
-		 "Class modeling a geographical container, which is a geolocalized "
+		 "Class modelling a geographical container, which is a geolocalized "
 		 "element containing potentially other geolocalized elements." ).
 
 
@@ -34,8 +35,8 @@
 % The class-specific attributes of an instance of a geo-container element are:
 -define( class_attributes, [
 
-  { contained, [ geolocalized_pid() ], "a list of the geolocalized elements "
-	"currently contained by this geocontainer" } ] ).
+	{ contained, [ geolocalized_pid() ], "a list of the geolocalized elements "
+	  "currently contained by this geocontainer" } ] ).
 
 
 % Exported helpers:
@@ -68,15 +69,21 @@
 
 
 
-% Creates a new geo-container, initially empty.
+% Shorthands:
+
+-type ustring() :: text_utils:ustring().
+
+
+
+% @doc Creates a geo-container, initially empty.
 %
 % The only parameter is the starting location, which is either:
 %
 % - ContainerPid :: container_pid() is the PID of a parent geo-container,
 % supposedly able to accept this container
 %
-% - { CoordinateType :: class_GIS:geolocation_flavour(), Location::
-% class_GIS:geolocation_coordinate() }
+% - {CoordinateType :: class_GIS:geolocation_flavour(), Location::
+% class_GIS:geolocation_coordinate()}
 %
 % - Location :: class_GIS:geolocation_coordinate(), where Location is implicitly
 % a WGS84 polar coordinate
@@ -95,7 +102,7 @@ construct( State, AnyKindOfLocation ) ->
 % Methods section.
 
 
-% Requests this container to enter.
+% @doc Requests this container to enter.
 %
 % This default implementation always accepts this incoming geo-element.
 %
@@ -110,7 +117,7 @@ requestEntry( State ) ->
 
 
 
-% Traces current state.
+% @doc Traces current state.
 -spec traceContent( wooper:state() ) -> const_oneway_return().
 traceContent( State ) ->
 
@@ -120,8 +127,8 @@ traceContent( State ) ->
 
 
 
-% Returns a string describing the state of this instance.
--spec toString( wooper:state() ) -> const_request_return( string() ).
+% @doc Returns a string describing the state of this instance.
+-spec toString( wooper:state() ) -> const_request_return( ustring() ).
 toString( State ) ->
 	wooper:const_return_result( to_string( State ) ).
 
@@ -146,7 +153,7 @@ request_entry( GeoRequester, State ) ->
 
 
 
-% Returns a textual description of that instance.
+% @doc Returns a textual description of that instance.
 %
 % (helper)
 %
@@ -163,5 +170,5 @@ to_string( State ) ->
 
 	end,
 
-	text_utils:format( "geocontainer named '~s' located at ~w ~s",
+	text_utils:format( "geocontainer named '~ts' located at ~w ~ts",
 				   [ ?getAttr(name), ?getAttr(location), ContainedString ] ).

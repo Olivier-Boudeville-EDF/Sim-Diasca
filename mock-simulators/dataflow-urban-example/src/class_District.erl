@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2021 EDF R&D
+% Copyright (C) 2016-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,6 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Example of a district-related <b>dataflow object</b>.
 -module(class_District).
 
 
@@ -31,13 +32,16 @@
 -define( superclasses, [ class_DataflowObject ] ).
 
 
--type administrative_name() :: string().
+-type administrative_name() :: ustring().
+
 -type surface() :: float().
+
+
 
 % Plain (standard) attributes specific to a district object are:
 -define( class_attributes, [
 
-	{ districts,  [ building_pid() ], "a list of the buildings that this "
+	{ districts, [ building_pid() ], "a list of the buildings that this "
 	  "district contains (not owning them)" } ] ).
 
 
@@ -66,10 +70,14 @@
 % multiple peer instead.
 
 
+% Shorthands:
+
+-type ustring() :: text_utils:ustring().
 
 
-% Constructs a new dataflow district object instance, in charge of modelling the
-% state of a district:
+
+% @doc Constructs a dataflow district object instance, in charge of modelling
+% the state of a district:
 %
 % - ActorSettings describes the actor abstract identifier (AAI) and seed of this
 % actor, as assigned by the load balancer
@@ -85,9 +93,8 @@
 % - DataflowPid is the PID of the dataflow instance
 %
 -spec construct( wooper:state(), class_Actor:actor_settings(),
-				 class_Actor:name(),
-				 [ administrative_name() | surface() | area_type() ],
-				 dataflow_pid() ) -> wooper:state().
+	class_Actor:name(), [ administrative_name() | surface() | area_type() ],
+	dataflow_pid() ) -> wooper:state().
 construct( State, ActorSettings, DistrictName,
 		   [ AdministrativeName, GroundSurface, Type ], DataflowPid ) ->
 
@@ -97,7 +104,7 @@ construct( State, ActorSettings, DistrictName,
 
 	% First the direct mother class:
 	ObjectState = class_DataflowObject:construct( State, ActorSettings,
-		?trace_categorize( DistrictName ), AttributeSpecs,
+		?trace_categorize(DistrictName), AttributeSpecs,
 		InitialAttributeValues, _SpecForUniquePeers=[],
 		_SpecForMultiplePeers=[], DataflowPid ),
 
@@ -106,7 +113,7 @@ construct( State, ActorSettings, DistrictName,
 
 
 
-% Overridden destructor.
+% @doc Overridden destructor.
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -133,12 +140,11 @@ destruct( State ) ->
 % Member methods section.
 
 
-
-% Registers specified building to this district: the specified building is
+% @doc Registers specified building to this district: the specified building is
 % located-in this district.
 %
 -spec registerBuilding( wooper:state(), building_pid(), sending_actor_pid() ) ->
-						 actor_oneway_return().
+							actor_oneway_return().
 registerBuilding( State, BuildingPid, _SendingActorPid )
   when is_pid( BuildingPid ) ->
 
@@ -159,29 +165,30 @@ registerBuilding( State, BuildingPid, _SendingActorPid )
 
 % Allows to fully specify the dataflow attributes of this object.
 -spec get_dataflow_attribute_specs() ->
-						  static_return( [ dataflow_attribute_spec() ] ).
+							static_return( [ dataflow_attribute_spec() ] ).
 get_dataflow_attribute_specs() ->
+
 	wooper:return_static( [
 
-	 #dataflow_attribute_spec{
-		attribute_name="administrative_name",
-		semantics=[ ?name_semantics ],
-		unit="dimensionless",
-		type_description="string" },
+		#dataflow_attribute_spec{
+			attribute_name="administrative_name",
+			semantics=[ ?name_semantics ],
+			unit="dimensionless",
+			type_description="string" },
 
-	 #dataflow_attribute_spec{
-		attribute_name="ground_surface",
-		semantics=[ ?surface_semantics ],
-		unit="m^2",
-		type_description="float",
-		constraints = [ positive ] },
+		#dataflow_attribute_spec{
+			attribute_name="ground_surface",
+			semantics=[ ?surface_semantics ],
+			unit="m^2",
+			type_description="float",
+			constraints = [ positive ] },
 
-	 #dataflow_attribute_spec{
-		attribute_name="type",
-		semantics=[ ?area_type_semantics ],
-		unit="dimensionless",
-		type_description="area_type",
-		constraints = [ positive ] } ] ).
+	   #dataflow_attribute_spec{
+			attribute_name="type",
+			semantics=[ ?area_type_semantics ],
+			unit="dimensionless",
+			type_description="area_type",
+			constraints = [ positive ] } ] ).
 
 
 
@@ -189,8 +196,8 @@ get_dataflow_attribute_specs() ->
 % Helper section.
 
 
-% Returns a textual description of this district dataflow object.
--spec to_string( wooper:state() ) -> string().
+% @doc Returns a textual description of this district dataflow object.
+-spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
 	BuildingString = case ?getAttr(buildings) of
@@ -204,7 +211,7 @@ to_string( State ) ->
 
 	end,
 
-	text_utils:format( "District object named '~s', containing ~s and "
-					   "having ~s",
-					   [ ?getAttr(name), BuildingString,
-						 class_DataflowObject:attributes_to_string( State ) ] ).
+	text_utils:format( "District object named '~ts', containing ~ts and "
+		"having ~ts",
+		[ ?getAttr(name), BuildingString,
+		  class_DataflowObject:attributes_to_string( State ) ] ).

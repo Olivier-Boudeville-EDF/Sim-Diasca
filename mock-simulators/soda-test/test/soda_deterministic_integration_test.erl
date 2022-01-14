@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,7 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-% Integration test for the soda deterministic example case.
+% @doc <b>Integration test</b> for the soda deterministic example case.
 %
 % See also:
 % - class_SodaVendingMachine.erl
@@ -34,7 +34,7 @@
 
 
 
-% Runs the test.
+% @doc Runs the test.
 -spec run() -> no_return().
 run() ->
 
@@ -44,17 +44,17 @@ run() ->
 	% Use default simulation settings (50Hz, batch reproducible):
 	SimulationSettings = #simulation_settings{
 
-	  simulation_name="Soda Deterministic Integration Test",
+		simulation_name="Soda Deterministic Integration Test",
 
-	  % Using 100Hz here:
-	  tick_duration=0.01
+		% Using 100Hz here:
+		tick_duration=0.01
 
-	  % We leave it to the default specification (all_outputs):
-	  % result_specification =
-	  %  [ { targeted_patterns, [ {".*",[data_and_rendering]} ] },
-	  %    { blacklisted_patterns, ["^Second" ] } ]
+		% We leave it to the default specification (all_outputs):
+		% result_specification =
+		%  [ { targeted_patterns, [ {".*",[data_and_rendering]} ] },
+		%    { blacklisted_patterns, ["^Second" ] } ]
 
-	  %result_specification = [ { targeted_patterns, [ {".*",data_only} ] } ]
+		%result_specification = [ { targeted_patterns, [ {".*",data_only} ] } ]
 
 	},
 
@@ -70,8 +70,8 @@ run() ->
 
 
 	% A deployment manager is created directly on the user node:
-	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-											DeploymentSettings ),
+	DeploymentManagerPid =
+		sim_diasca:init( SimulationSettings, DeploymentSettings ),
 
 
 	% Now that the engine is initialised, let's create the initial instances:
@@ -89,23 +89,26 @@ run() ->
 
 	% First customer uses SVM1, is thirsty 1 minute after having drunk, and has
 	% 6 euros in his pockets:
+	%
 	_TC1 = class_Actor:create_initial_actor( class_DeterministicThirstyCustomer,
-	  [ _FirstCustomerName="John", _FirstKnownMachine=SVM1,
-		_FirstRepletionDuration=1, _FirstInitialBudget=35.0 ] ),
+		[ _FirstCustomerName="John", _FirstKnownMachine=SVM1,
+		  _FirstRepletionDuration=1, _FirstInitialBudget=35.0 ] ),
 
 
 	% Second customer uses SVM1 too, is thirsty 3 minutes after having drunk,
 	% and has 8 euros in his pockets:
+	%
 	_TC2 = class_Actor:create_initial_actor( class_DeterministicThirstyCustomer,
-	  [ _SecondCustomerName="Terry", _SecondKnownMachine=SVM1,
-		_SecondRepletionDuration=7, _SecondInitialBudget=40.0 ] ),
+		[ _SecondCustomerName="Terry", _SecondKnownMachine=SVM1,
+		  _SecondRepletionDuration=7, _SecondInitialBudget=40.0 ] ),
 
 
 	% Third customer uses SVM2, is thirsty 2 minutes after having drunk, and has
 	% 15 euros in his pockets:
+	%
 	_TC3 = class_Actor:create_initial_actor( class_DeterministicThirstyCustomer,
-	  [ _ThirdCustomerName="Michael", _ThirdKnownMachine=SVM2,
-		_ThirdRepletionDuration=2, _ThirdInitialBudget=77.0 ] ),
+		[ _ThirdCustomerName="Michael", _ThirdKnownMachine=SVM2,
+		  _ThirdRepletionDuration=2, _ThirdInitialBudget=77.0 ] ),
 
 
 	% We want this test to end once a specified virtual duration elapsed, in

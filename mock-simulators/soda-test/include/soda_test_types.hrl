@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -23,20 +23,19 @@
 
 
 
-% Duration, in minutes:
-%
-% Note: a better approach would be to specify a duration in minutes (of virtual
-% time), and to convert it at simulation time into a number of ticks (depending
-% on the simulation frequency).
-%
 -type duration() :: unit_utils:minutes().
+% A duration, in minutes (of virtual time), that will be converted at simulation
+% time into a number of ticks (depending on the simulation frequency).
+%
+% Certainly a better approach than to specify directly an (hardcoded) number of
+% ticks.
 
 
-% Amount of money:
 -type amount() :: float().
+% Amount of money (ex: euros).
 
 
-% Can count:
+% A can count:
 -type can_count() :: basic_utils:count().
 
 -type deterministic_customer_pid() ::

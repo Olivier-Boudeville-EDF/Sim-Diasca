@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2021 EDF R&D
+% Copyright (C) 2012-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,6 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Class modelling an <b>abstract waste transport</b>.
 -module(class_WasteTransport).
 
 
@@ -34,9 +35,10 @@
 %
 -define( class_attributes, [
 
-  { tank, waste_tank(), "the tank this transport stores waste in" },
+	{ tank, waste_tank(), "the tank this transport stores waste in" },
 
-  { probe_ref, probe_ref(), "the probe (if any) associated to this transport" } ] ).
+	{ probe_ref, probe_ref(),
+	  "the probe (if any) associated to this transport" } ] ).
 
 
 
@@ -49,16 +51,16 @@
 % - currently a waste transport only transports one kind of waste (even if it,
 % when empty, can load various different types of wastes)
 %
-% - a waste transport embeds exactly one waste tank
+% - a waste transport comprises exactly one waste tank
+
 
 
 % Type section.
 
 
+-type supported_waste_state() :: physical_state().
 % Describes the state (ex: liquid, solid, etc.) of the wastes that can be
 % transported.
-%
--type supported_waste_state() :: physical_state().
 
 
 -export_type([ supported_waste_state/0 ]).
@@ -73,8 +75,13 @@
 -include("sim_diasca_for_actors.hrl").
 
 
+% Shorthands:
 
-% Constructs a new waste transport, from following parameters:
+-type ustring() :: text_utils:ustring().
+
+
+
+% @doc Constructs a waste transport, from following parameters:
 %
 % - InitialLocation is the (initial) location of this waste transport (generally
 % a point of interest)
@@ -103,17 +110,18 @@ construct( State, ActorSettings, TransportName, InitialLocation,
 	GeoState = class_GeolocalizedElement:construct( ActorState,
 													InitialLocation ),
 
-	Tank = #waste_tank{ id=1,
+	Tank = #waste_tank{
+		id=1,
 
-						% All types allowed here:
-						allowed_types=SupportedWasteStates,
+		% All types allowed here:
+		allowed_types=SupportedWasteStates,
 
-						current_type=none,
-						current_volume_stored=0.0,
-						max_volume_stored=MaxTransportedVolume,
-						current_mass_stored=0.0,
-						max_mass_stored=MaxTransportedMass,
-						busy=false },
+		current_type=none,
+		current_volume_stored=0.0,
+		max_volume_stored=MaxTransportedVolume,
+		current_mass_stored=0.0,
+		max_mass_stored=MaxTransportedMass,
+		busy=false },
 
 	ActualName = pair:first( FullName ),
 
@@ -121,15 +129,15 @@ construct( State, ActorSettings, TransportName, InitialLocation,
 	% the corresponding result is wanted) or a 'non_wanted_probe' atom:
 	%
 	TransportProbeRef = class_Actor:declare_probe(
-				_Name=text_utils:format( "~s Transported Waste Stock Probe",
-										 [ ActualName ] ),
-				_Curves=[ "Quantity of waste currently stored (in tons)" ],
-				_Zones=[],
-				_Title=text_utils:format( "Waste Storage Monitoring "
-					  "for Transport ~s", [ ActualName ] ),
-				_XLabel="Simulation time",
-				_YLabel="Tons of wastes currently transported",
-				GeoState ),
+		_Name=text_utils:format( "~ts Transported Waste Stock Probe",
+								 [ ActualName ] ),
+		_Curves=[ "Quantity of waste currently stored (in tons)" ],
+		_Zones=[],
+		_Title=text_utils:format( "Waste Storage Monitoring "
+								  "for Transport ~ts", [ ActualName ] ),
+		_XLabel="Simulation time",
+		_YLabel="Tons of wastes currently transported",
+		GeoState ),
 
 	setAttributes( GeoState, [ { tank, Tank },
 							   { probe_ref, TransportProbeRef } ] ).
@@ -140,8 +148,7 @@ construct( State, ActorSettings, TransportName, InitialLocation,
 % Section for member methods.
 
 
-
-% Sends an update to the associated probe.
+% @doc Sends an update to the associated probe.
 -spec updateProbe( wooper:state() ) -> const_oneway_return().
 updateProbe( State ) ->
 
@@ -151,7 +158,7 @@ updateProbe( State ) ->
 	% been rejected by the result manager:
 	%
 	class_Probe:send_data( ?getAttr(probe_ref), CurrentTickOffset,
-						  { (?getAttr(tank))#waste_tank.current_mass_stored } ),
+		{ (?getAttr(tank))#waste_tank.current_mass_stored } ),
 
 	wooper:const_return().
 
@@ -159,13 +166,14 @@ updateProbe( State ) ->
 
 % Section for plain methods.
 
-% Returns a string describing the state of this instance.
--spec toString( wooper:state() ) -> const_request_return( string() ).
+
+% @doc Returns a string describing the state of this instance.
+-spec toString( wooper:state() ) -> const_request_return( ustring() ).
 toString( State ) ->
 
 	Tank = ?getAttr(tank),
 
-	FinalString = text_utils:format( "Waste transport containing ~s",
+	FinalString = text_utils:format( "Waste transport containing ~ts",
 					[ waste_utils:waste_tank_to_string( Tank ) ] ),
 
 	wooper:const_return_result( FinalString ).

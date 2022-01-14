@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -22,13 +22,13 @@
 % This file is part of forest ecosystem test case, which is a Sim-Diasca
 % integration test example.
 
-% The purpose of this class is to show the significant features of a Sim-Diasca
-% actor scheduled totally in passive mode.
+
+% @doc The purpose of this class is to show the significant features of a
+% Sim-Diasca actor scheduled totally in passive mode.
 %
 % The passive mode scheduling means that activities are only triggered by
 % received messages (no specific spontaneous behaviour).
-
-
+%
 -module(class_Oak).
 
 
@@ -51,7 +51,7 @@
 
 
 
-% Constructs a new Oak actor:
+% @doc Constructs an Oak actor:
 %
 % - local_squirrel: is a list of squirrel PIDs living in this oak
 %
@@ -60,13 +60,12 @@
 % overload
 %
 -spec construct( wooper:state(), class_Actor:actor_settings(),
-				class_Actor:name(), age(), pid() ) -> wooper:state().
-construct( State, ActorSettings, OakName, GivenAge,
-		 ForestPid ) ->
+				 class_Actor:name(), age(), pid() ) -> wooper:state().
+construct( State, ActorSettings, OakName, GivenAge, ForestPid ) ->
 
 	% Firstly, the mother class:
 	DwellerState = class_ForestDweller:construct( State, ActorSettings,
-					  ?trace_categorize( OakName ), GivenAge, ForestPid ),
+						?trace_categorize(OakName), GivenAge, ForestPid ),
 
 	% Then the class-specific attributes:
 	UpdatedState = setAttributes( DwellerState, [
@@ -74,7 +73,7 @@ construct( State, ActorSettings, OakName, GivenAge,
 		{ max_inhabitant, 5 },
 		{ termination_waiting_ticks, 3 } ] ),
 
-	?send_info( UpdatedState, "Creating a new Oak." ),
+	?send_info( UpdatedState, "Creating an Oak." ),
 
 	UpdatedState.
 
@@ -85,9 +84,9 @@ construct( State, ActorSettings, OakName, GivenAge,
 
 
 
-% Simply schedules this just created actor at the next tick (diasca 0).
--spec onFirstDiasca( wooper:state(), sending_actor_pid() ) -> 
-						   actor_oneway_return().
+% @doc Simply schedules this just created actor at the next tick (diasca 0).
+-spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
+							actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 
 	ScheduledState = executeOneway( State, scheduleNextSpontaneousTick ),
@@ -96,7 +95,7 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-% The spontaneous behaviour of this Oak actor, which is mostly passive.
+% @doc The spontaneous behaviour of this Oak actor, which is mostly passive.
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
@@ -170,13 +169,13 @@ actSpontaneous( State ) ->
 % Following section deals with the messages received from other actors.
 
 
-% An Alert is received from other actor.
+% @doc An Alert is received from other actor.
 %
 % When it is a fire alert, the oak actor will inform its forest of its
 % termination.
 %
 -spec beAlert( wooper:state(), alert(), sending_actor_pid() ) ->
-					 actor_oneway_return().
+						actor_oneway_return().
 beAlert( State, Alert, _SendingActorPID ) ->
 
 	NewStated = case Alert of
@@ -187,7 +186,7 @@ beAlert( State, Alert, _SendingActorPID ) ->
 
 		_Others ->
 			?notice_fmt( "I received a ~p alert, but I am surviving.",
-					   [ Alert ] ),
+						 [ Alert ] ),
 			State
 
 	end,
@@ -196,7 +195,7 @@ beAlert( State, Alert, _SendingActorPID ) ->
 
 
 
-% Called by forest with the new affected squirrel PID.
+% @doc Called by the forest with the new affected squirrel PID.
 -spec beAffected( wooper:state(), sending_actor_pid() ) ->
 						actor_oneway_return().
 beAffected( State, AffectedSquirrelPid ) ->
@@ -214,8 +213,8 @@ beAffected( State, AffectedSquirrelPid ) ->
 			CurrentOffset = ?getAttr(current_tick_offset),
 
 			TermState = setAttributes( State, [
-						{ local_squirrel, UpdatedList },
-						{ termination_tick_offset, CurrentOffset } ] ),
+				{ local_squirrel, UpdatedList },
+				{ termination_tick_offset, CurrentOffset } ] ),
 
 			NextState = executeOneway( TermState, scheduleNextSpontaneousTick ),
 
@@ -230,24 +229,24 @@ beAffected( State, AffectedSquirrelPid ) ->
 
 
 
-% Removes specified squirrel from the known ones.
+% @doc Removes specified squirrel from the known ones.
 -spec deleteFromPeers( wooper:state(), actor_pid(), sending_actor_pid() ) ->
 							 actor_oneway_return().
 deleteFromPeers( State, SquirrelPid, _SendingActorPid ) ->
 
 	?notice_fmt( "Squirrel ~w is deleted from Oak ~w.",
-			   [ SquirrelPid, self() ] ),
+				 [ SquirrelPid, self() ] ),
 
 	SquirrelList = ?getAttr(local_squirrel),
 
 	UpdatedSquirrelList = lists:delete( SquirrelPid, SquirrelList ),
 
 	actor:return_state(
-	  setAttribute( State, local_squirrel, UpdatedSquirrelList ) ).
+		setAttribute( State, local_squirrel, UpdatedSquirrelList ) ).
 
 
 
-% Registers specified squirrel.
+% @doc Registers specified squirrel.
 -spec addInPeers( wooper:state(), actor_pid(), sending_actor_pid() ) ->
 						actor_oneway_return().
 addInPeers( State, SquirrelPid, _SendingActorPid ) ->
@@ -259,13 +258,13 @@ addInPeers( State, SquirrelPid, _SendingActorPid ) ->
 
 
 
-% Notification that the forest is destroyed.
+% @doc Notification that the forest is destroyed.
 -spec forestDestroyed( wooper:state(), sending_actor_pid() ) ->
 							 actor_oneway_return().
 forestDestroyed( State, SendingActorPid )->
 
 	?notice_fmt( "~w ~w will terminate, as its forest is destroyed.",
-			   [ self(), ?getAttr(name) ] ),
+				 [ self(), ?getAttr(name) ] ),
 
 	TargetPeers = ?getAttr(target_peers),
 
@@ -282,7 +281,7 @@ forestDestroyed( State, SendingActorPid )->
 % Helper functions
 
 
-% Registers to its forest, if any.
+% @doc Registers to its forest, if any.
 %
 % Returns an updated state.
 %
@@ -303,14 +302,14 @@ try_to_register( State ) ->
 			TargetPeers = ?getAttr(target_peers),
 
 			setAttributes( NewState, [
-						 { is_registered, true },
-						 { target_peers, [ ForestPid | TargetPeers ] } ] )
+				{ is_registered, true },
+				{ target_peers, [ ForestPid | TargetPeers ] } ] )
 
 	end.
 
 
 
-% Sending message to its forest for notifying its termination
+% @doc Sending message to its forest for notifying its termination
 %
 % (helper)
 %
@@ -344,8 +343,8 @@ notify_termination( State ) ->
 			% Informs its dwellers of its termination:
 			SendFun = fun( InhabitantPid, FunState ) ->
 				% Returns an updated state:
-				class_Actor:send_actor_message( InhabitantPid,
-												beMoved, FunState )
+				class_Actor:send_actor_message( InhabitantPid, beMoved,
+												FunState )
 			end,
 
 			% Returns an updated state:
@@ -359,7 +358,7 @@ notify_termination( State ) ->
 
 
 
-% Resets the waiting.
+% @doc Resets the waiting.
 -spec reset_termination_waiting_ticks( wooper:state() ) -> oneway_return().
 reset_termination_waiting_ticks( State ) ->
 	wooper:return_state( setAttribute( State, termination_waiting_ticks, 3 ) ).

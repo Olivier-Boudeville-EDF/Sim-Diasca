@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2021 EDF R&D
+% Copyright (C) 2016-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,6 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc <b>Base dataflow object</b>, defined for testing.
 -module(class_BaseTestDataflowObject).
 
 
@@ -49,16 +50,21 @@
 -include("dataflow_unit_test_defines.hrl").
 
 
--type object_name() :: string().
+-type object_name() :: ustring().
 
 
 % Two dataflow attributes are declared by this object:
-%
 % - foo, of type integer
 % - bar, of type string
 
 
-% Constructs a new test dataflow object instance:
+% Shorthands:
+
+-type ustring() :: text_utils:ustring().
+
+
+
+% @doc Constructs a test dataflow object instance:
 %
 % - ActorSettings describes the actor abstract identifier (AAI) and seed of this
 % actor, as assigned by the load balancer
@@ -66,7 +72,7 @@
 % - DataflowPid is the PID of the dataflow instance
 %
 -spec construct( wooper:state(), class_Actor:actor_settings(), object_name(),
-				 [ integer() | string() ], dataflow_pid() ) -> wooper:state().
+				 [ integer() | ustring() ], dataflow_pid() ) -> wooper:state().
 construct( State, ActorSettings, ObjectName,
 		   InitialAttributeValues=[ _FooAttributeValue, _BarAttributeValue ],
 		   DataflowPid ) ->
@@ -75,7 +81,7 @@ construct( State, ActorSettings, ObjectName,
 
 	% First the direct mother class:
 	class_DataflowObject:construct( State, ActorSettings,
-		?trace_categorize( ObjectName ), AttributeSpecs,
+		?trace_categorize(ObjectName), AttributeSpecs,
 		InitialAttributeValues, _SpecForUniquePeers=[],
 		_SpecForMultiplePeers=[], DataflowPid ).
 
@@ -84,9 +90,9 @@ construct( State, ActorSettings, ObjectName,
 % Static section.
 
 
-% Allows to fully specify the dataflow attributes of this object.
+% @doc Allows to fully specify the dataflow attributes of this object.
 -spec get_dataflow_attribute_specs() ->
-						 static_return( [ dataflow_attribute_spec() ] ).
+							static_return( [ dataflow_attribute_spec() ] ).
 get_dataflow_attribute_specs() ->
 	wooper:return_static( [
 
@@ -109,9 +115,9 @@ get_dataflow_attribute_specs() ->
 % Helper section.
 
 
-% Returns a textual description of this household dataflow object.
--spec to_string( wooper:state() ) -> string().
+% @doc Returns a textual description of this household dataflow object.
+-spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
-	text_utils:format( "Basic test dataflow object named '~s', having ~s",
-					   [ ?getAttr(name),
-						 class_DataflowObject:attributes_to_string( State ) ] ).
+	text_utils:format( "Basic test dataflow object named '~ts', having ~ts",
+		[ ?getAttr(name),
+		  class_DataflowObject:attributes_to_string( State ) ] ).

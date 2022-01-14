@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2021 EDF R&D
+% Copyright (C) 2014-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,7 +19,8 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-% Test for the loading of the initial state of a soda simulation from files.
+% @doc Test for the <b>loading of the initial state</b> of a soda simulation
+% from files.
 %
 -module(soda_loading_test).
 
@@ -30,8 +31,7 @@
 
 
 
-% Runs the test.
-%
+% @doc Runs the test.
 -spec run() -> no_return().
 run() ->
 
@@ -40,14 +40,14 @@ run() ->
 	% Use default simulation settings (50Hz, batch reproducible):
 	SimulationSettings = #simulation_settings{
 
-	  simulation_name="Initial State Loading Test",
+		simulation_name="Initial State Loading Test",
 
-	  % Using 100Hz here:
-	  tick_duration=0.01,
+		% Using 100Hz here:
+		tick_duration=0.01,
 
-	  % To load from file a part of the initial state of the simulation:
-	  %initialisation_files = []
-	  initialisation_files=[ "soda-instances.init" ] },
+		% To load from file a part of the initial state of the simulation:
+		%initialisation_files = []
+		initialisation_files=[ "soda-instances.init" ] },
 
 
 	DeploymentSettings = #deployment_settings{
@@ -57,7 +57,7 @@ run() ->
 		%
 		enable_data_exchanger={ true, [ "soda_parameters.cfg" ] },
 
-		enable_performance_tracker=true	},
+		enable_performance_tracker=true },
 
 
 	% Default load balancing settings (round-robin placement heuristic):
@@ -65,7 +65,7 @@ run() ->
 
 	% A deployment manager is created directly on the user node:
 	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-							   DeploymentSettings, LoadBalancingSettings ),
+								DeploymentSettings, LoadBalancingSettings ),
 
 
 	% We loaded instances from file, but of course we can still create others
@@ -84,24 +84,27 @@ run() ->
 
 	% First customer is deterministic, uses SVM1, is thirsty 2 minutes after
 	% having drunk, and has 35 euros in his pockets:
+	%
 	_TC1 = class_Actor:create_initial_actor( class_DeterministicThirstyCustomer,
-	  [ _FirstCustomerName="John", _FirstKnownMachine=SVM1,
-		_FirstRepletionDuration=2, _FirstInitialBudget=35.0 ] ),
+		[ _FirstCustomerName="John", _FirstKnownMachine=SVM1,
+		  _FirstRepletionDuration=2, _FirstInitialBudget=35.0 ] ),
 
 
 	% Second customer uses SVM1 too, yet is stochastic: he will be thirsty again
 	% between 1 and 7 minutes after having drunk, and has 40 euros in his
 	% pockets initially:
+	%
 	_TC2 = class_Actor:create_initial_actor( class_StochasticThirstyCustomer,
-	  [ _SecondCustomerName="Terry", _SecondKnownMachine=SVM1,
-		_SecondRepletionLaw={ uniform, 7 }, _SecondInitialBudget=40.0 ] ),
+		[ _SecondCustomerName="Terry", _SecondKnownMachine=SVM1,
+		  _SecondRepletionLaw={ uniform, 7 }, _SecondInitialBudget=40.0 ] ),
 
 
 	% Third customer uses SVM2, is deterministic and thirsty 2 minutes after
 	% having drunk, and has 77 euros in his pockets:
+	%
 	_TC3 = class_Actor:create_initial_actor( class_DeterministicThirstyCustomer,
-	  [ _ThirdCustomerName="Michael", _ThirdKnownMachine=SVM2,
-		_ThirdRepletionDuration=2, _ThirdInitialBudget=77.0 ] ),
+		[ _ThirdCustomerName="Michael", _ThirdKnownMachine=SVM2,
+		  _ThirdRepletionDuration=2, _ThirdInitialBudget=77.0 ] ),
 
 
 	% We want this test to end once a specified virtual duration elapsed, in

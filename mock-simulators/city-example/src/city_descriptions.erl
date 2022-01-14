@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2021 EDF R&D
+% Copyright (C) 2014-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,7 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-% This module centralises city descriptions.
+% This module centralises <b>city descriptions</b>.
 -module(city_descriptions).
 
 
@@ -30,8 +30,13 @@
 -export([ get_description_for/1, to_string/1 ]).
 
 
+% Shorthands:
 
--spec get_description_for( string() ) -> class_CityGenerator:city_description().
+-type ustring() :: text_utils:ustring().
+
+
+-spec get_description_for( ustring() ) ->
+						class_CityGenerator:city_description().
 get_description_for( _CityName="Yzeure" ) ->
 
 	% km²:
@@ -48,19 +53,19 @@ get_description_for( _CityName="Yzeure" ) ->
 	%
 	#city_description{
 
-			name="Yzeure",
+		name="Yzeure",
 
-			dimensions={ SideLen, SideLen, MaxAltitude - MinAltitude },
+		dimensions={ SideLen, SideLen, MaxAltitude - MinAltitude },
 
-			center={ - SideLen / 2, - SideLen / 2,
-					( MinAltitude + MaxAltitude ) / 2 },
+		center={ - SideLen / 2, - SideLen / 2,
+				 ( MinAltitude + MaxAltitude ) / 2 },
 
-			incinerator_count=1,
-			landfill_count=2,
-			residential_waste_source_count=5,
-			industrial_waste_source_count=4,
-			road_junction_count=15,
-			waste_truck_count=5 };
+		incinerator_count=1,
+		landfill_count=2,
+		residential_waste_source_count=5,
+		industrial_waste_source_count=4,
+		road_junction_count=15,
+		waste_truck_count=5 };
 
 
 
@@ -82,19 +87,19 @@ get_description_for( _CityName="Orleans" ) ->
 	%
 	#city_description{
 
-			name="Orleans",
+		name="Orleans",
 
-			dimensions={ SideLen, SideLen, MaxAltitude - MinAltitude },
+		dimensions={ SideLen, SideLen, MaxAltitude - MinAltitude },
 
-			center={ - SideLen / 2, - SideLen / 2,
-					( MinAltitude + MaxAltitude ) / 2 },
+		center={ - SideLen / 2, - SideLen / 2,
+				( MinAltitude + MaxAltitude ) / 2 },
 
-			incinerator_count=18*Factor,
-			landfill_count=14*Factor,
-			residential_waste_source_count=450*Factor,
-			industrial_waste_source_count=130*Factor,
-			road_junction_count=500*Factor,
-			waste_truck_count=180*Factor };
+		incinerator_count=18*Factor,
+		landfill_count=14*Factor,
+		residential_waste_source_count=450*Factor,
+		industrial_waste_source_count=130*Factor,
+		road_junction_count=500*Factor,
+		waste_truck_count=180*Factor };
 
 
 
@@ -114,19 +119,19 @@ get_description_for( _CityName="Rennes" ) ->
 	%
 	#city_description{
 
-			name="Rennes",
+		name="Rennes",
 
-			dimensions={ SideLen, SideLen, MaxAltitude - MinAltitude },
+		dimensions={ SideLen, SideLen, MaxAltitude - MinAltitude },
 
-			center={ - SideLen / 2, - SideLen / 2,
-					( MinAltitude + MaxAltitude ) / 2 },
+		center={ - SideLen / 2, - SideLen / 2,
+				( MinAltitude + MaxAltitude ) / 2 },
 
-			incinerator_count=124,
-			landfill_count=59,
-			residential_waste_source_count=1700,
-			industrial_waste_source_count=430,
-			road_junction_count=1950,
-			waste_truck_count=1007 };
+		incinerator_count=124,
+		landfill_count=59,
+		residential_waste_source_count=1700,
+		industrial_waste_source_count=430,
+		road_junction_count=1950,
+		waste_truck_count=1007 };
 
 
 
@@ -145,19 +150,19 @@ get_description_for( _CityName="Paris" ) ->
 	% origin (for X and Y, it is centered):
 	#city_description{
 
-			name="Paris",
+		name="Paris",
 
-			dimensions={ SideLen, SideLen, MaxAltitude - MinAltitude },
+		dimensions={ SideLen, SideLen, MaxAltitude - MinAltitude },
 
-			center={ - SideLen / 2, - SideLen / 2,
-					( MinAltitude + MaxAltitude ) / 2 },
+		center={ - SideLen / 2, - SideLen / 2,
+				( MinAltitude + MaxAltitude ) / 2 },
 
-			incinerator_count=248,
-			landfill_count=218,
-			residential_waste_source_count=6500,
-			industrial_waste_source_count=980,
-			road_junction_count=8500,
-			waste_truck_count=4912 };
+		incinerator_count=248,
+		landfill_count=218,
+		residential_waste_source_count=6500,
+		industrial_waste_source_count=980,
+		road_junction_count=8500,
+		waste_truck_count=4912 };
 
 
 
@@ -176,41 +181,41 @@ get_description_for( _CityName="Beijing" ) ->
 	% origin (for X and Y, it is centered):
 	#city_description{
 
-			name="Beijing",
+		name="Beijing",
 
-			dimensions={ SideLen, SideLen, MaxAltitude - MinAltitude },
+		dimensions={ SideLen, SideLen, MaxAltitude - MinAltitude },
 
-			center={ - SideLen / 2, - SideLen / 2,
-					( MinAltitude + MaxAltitude ) / 2 },
+		center={ - SideLen / 2, - SideLen / 2,
+				( MinAltitude + MaxAltitude ) / 2 },
 
-			incinerator_count=672,
-			landfill_count=495,
-			residential_waste_source_count=20000,
-			industrial_waste_source_count=4000,
-			road_junction_count=80000,
-			waste_truck_count=95100 }.
+		incinerator_count=672,
+		landfill_count=495,
+		residential_waste_source_count=20000,
+		industrial_waste_source_count=4000,
+		road_junction_count=80000,
+		waste_truck_count=95100 }.
 
 
 
 % Returns a textual description of specified city.
--spec to_string( class_CityGenerator:city_description() ) -> string().
+-spec to_string( class_CityGenerator:city_description() ) -> ustring().
 to_string( #city_description{
 
-			name=Name,
+		name=Name,
 
-			dimensions={ Length, Width, _Height },
+		dimensions={ Length, Width, _Height },
 
-			center=_Position,
+		center=_Position,
 
-			incinerator_count=IncCount,
-			landfill_count=LandCount,
-			residential_waste_source_count=ResidCount,
-			industrial_waste_source_count=IndusCount,
-			road_junction_count=JuncCount,
-			waste_truck_count=TruckCount } ) ->
+		incinerator_count=IncCount,
+		landfill_count=LandCount,
+		residential_waste_source_count=ResidCount,
+		industrial_waste_source_count=IndusCount,
+		road_junction_count=JuncCount,
+		waste_truck_count=TruckCount } ) ->
 
-	{ _CellsPerEdge, CellCount } = class_CityGenerator:get_cell_infos( Length,
-																	   Width ),
+	{ _CellsPerEdge, CellCount } =
+		class_CityGenerator:get_cell_infos( Length, Width ),
 
 	Elements = text_utils:strings_to_string( [
 		text_utils:format( "~B incinerators", [ IncCount ] ),
@@ -225,4 +230,4 @@ to_string( #city_description{
 											 ],
 										   _Bullet="%   + " ),
 
-	text_utils:format( "~s city has: ~s~n", [ Name, Elements ] ).
+	text_utils:format( "~ts city has: ~ts~n", [ Name, Elements ] ).

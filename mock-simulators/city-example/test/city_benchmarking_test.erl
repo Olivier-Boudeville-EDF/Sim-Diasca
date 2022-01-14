@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2021 EDF R&D
+% Copyright (C) 2012-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,8 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-
-% Benchmarking case, based on City-example.
+% @doc <b>Benchmarking case</b>, based on City-example.
 %
 % The purpose of this case is to recreate a sharable yet representative
 % simulation case that is scalable enough in order to benchmark Sim-Diasca on
@@ -66,8 +65,8 @@
 %
 % This should translate into having the user:
 %
-% - create a new 'sim-diasca-host-candidates-for-scale-benchmarks.txt' file,
-% listing all the hosts that shall be used in the distributed simulation (see
+% - create a 'sim-diasca-host-candidates-for-scale-benchmarks.txt' file, listing
+% all the hosts that shall be used in the distributed simulation (see
 % sim-diasca-host-candidates.txt for an example)
 %
 % - rebuild everything accordingly, from the Sim-Diasca root directory: 'make
@@ -78,10 +77,16 @@
 % EXECUTION_TARGET=production'
 
 
+% Shorthands:
+
+-type benchmarking_scale() :: city_benchmarking:benchmarking_scale().
+
+-type benchmarking_duration() :: city_benchmarking:benchmarking_duration().
 
 
-% Runs the test, determining the settings from the command-line, otherwise using
-% defaults.
+
+% @doc Runs the test, determining the settings from the command-line, otherwise
+% using defaults.
 %
 -spec run() -> no_return().
 run() ->
@@ -92,9 +97,10 @@ run() ->
 
 
 
-% Runs a series of tests of constant scale, iterating in terms of durations.
--spec run_constant_scale( city_benchmarking:benchmarking_scale() ) ->
-								no_return().
+% @doc Runs a series of tests of constant scale, iterating in terms of
+% durations.
+%
+-spec run_constant_scale( benchmarking_scale() ) -> no_return().
 run_constant_scale( Scale ) ->
 
 	Durations = city_benchmarking:get_duration_options(),
@@ -102,13 +108,12 @@ run_constant_scale( Scale ) ->
 	io:format( "~nRunning ~B ~p simulations, of increasing duration:~n",
 			   [ length( Durations ), Scale ] ),
 
-	[
-	  begin
+	[ begin
 
-		  io:format( "~n~n  Running a ~p simulation for a ~p duration...~n~n",
-					 [ Scale, D ] ),
+		io:format( "~n~n  Running a ~p simulation for a ~p duration...~n~n",
+					   [ Scale, D ] ),
 
-		  run( Scale, D )
+		run( Scale, D )
 
 	  end || D <- Durations ],
 
@@ -116,9 +121,11 @@ run_constant_scale( Scale ) ->
 
 
 
-% Runs a series of tests of constant duration, iterating in terms of scales.
--spec run_constant_duration( city_benchmarking:benchmarking_duration() ) ->
-								   no_return().
+% @doc Runs a series of tests of constant duration, iterating in terms of
+% scales.
+%
+-spec run_constant_duration( benchmarking_duration() ) ->
+									no_return().
 run_constant_duration( Duration ) ->
 
 	Scales = city_benchmarking:get_scale_options(),
@@ -126,25 +133,22 @@ run_constant_duration( Duration ) ->
 	io:format( "~nRunning ~B ~p simulations, of increasing scale:~n",
 			   [ length( Scales ), Duration ] ),
 
-	[
-	  begin
+	[ begin
 
-		  io:format( "~n~n  Running a ~p simulation for a ~p scale...~n~n",
-					 [ Duration, S ] ),
+		io:format( "~n~n  Running a ~p simulation for a ~p scale...~n~n",
+				   [ Duration, S ] ),
 
-		  run( S, Duration )
+		run( S, Duration )
 
 	  end || S <- Scales ],
 
-	io:format( "~n~n All ~p simulations successfully run.~n",
-			   [ Duration ] ).
+	io:format( "~n~n All ~p simulations successfully run.~n", [ Duration ] ).
 
 
 
 
-% Runs the test with specified settings.
--spec run( city_benchmarking:benchmarking_scale(),
-		   city_benchmarking:benchmarking_duration() ) -> void().
+% @doc Runs the test with specified settings.
+-spec run( benchmarking_scale(), benchmarking_duration() ) -> void().
 run( ScaleSetting, DurationSetting ) ->
 
 	city_benchmarking:check_scale_setting( ScaleSetting ),
@@ -155,17 +159,16 @@ run( ScaleSetting, DurationSetting ) ->
 
 
 % Helper, common to all specifications.
--spec run_common( city_benchmarking:benchmarking_scale(),
-				  city_benchmarking:benchmarking_duration(), boolean() ) ->
+-spec run_common( benchmarking_scale(), benchmarking_duration(), boolean() ) ->
 						no_return() | void().
 run_common( ScaleSetting, DurationSetting, StopShell ) ->
 
 	?case_start,
 
-	io:format( "Running the City-example benchmarking case v.~s, "
-			   "with scale '~s' and duration '~s'.~n",
-			   [ text_utils:version_to_string( ?city_example_version ),
-				 ScaleSetting, DurationSetting ] ),
+	io:format( "Running the City-example benchmarking case v.~ts, "
+		"with scale '~ts' and duration '~ts'.~n",
+		[ text_utils:version_to_string( ?city_example_version ),
+		  ScaleSetting, DurationSetting ] ),
 
 	{ CityDescription, EndTimestamp={ EndDate, EndTime }, TimestepDuration } =
 	  city_benchmarking:get_benchmark_settings( ScaleSetting, DurationSetting ),
@@ -174,21 +177,21 @@ run_common( ScaleSetting, DurationSetting, StopShell ) ->
 	% Use default simulation settings (50Hz, batch reproducible):
 	SimulationSettings = #simulation_settings{
 
-	  simulation_name="Sim-Diasca City-example Benchmarking Case",
+		simulation_name="Sim-Diasca City-example Benchmarking Case",
 
-	  tick_duration=TimestepDuration,
+		tick_duration=TimestepDuration,
 
-	  % We restrict the wanted results, as otherwise larger cases could exhaust
-	  % the number of used file descriptors; so we keep only some probes
-	  % associated to incinerators:
-	  %
-	  result_specification=no_output },
+		% We restrict the wanted results, as otherwise larger cases could
+		% exhaust the number of used file descriptors; so we keep only some
+		% probes associated to incinerators:
+		%
+		result_specification=no_output },
 
 
 	DeploymentSettings = #deployment_settings{
 
 		computing_hosts={ use_host_file_otherwise_local,
-					   "sim-diasca-host-candidates-for-scale-benchmarks.txt" },
+						"sim-diasca-host-candidates-for-scale-benchmarks.txt" },
 
 		%node_availability_tolerance = fail_on_unavailable_node,
 
@@ -198,23 +201,23 @@ run_common( ScaleSetting, DurationSetting, StopShell ) ->
 		additional_elements_to_deploy=[ { ".", code } ],
 
 		plugin_directories=[
-					 "../../../sim-diasca/src/core/src/plugins/tests/" ],
+					"../../../sim-diasca/src/core/src/plugins/tests/" ],
 
 		% Would alter wrongly the benchmark:
 		enable_performance_tracker=false },
 
 
 	% A deployment manager is created directly on the user node:
-	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-											DeploymentSettings ),
+	DeploymentManagerPid =
+		sim_diasca:init( SimulationSettings, DeploymentSettings ),
 
 	IsBatch = executable_utils:is_batch(),
 
 	GISPid = class_Actor:create_initial_actor( class_GIS,
 					 [ _DataSource=none, _PrepareRendering= not IsBatch ] ),
 
-	CityGeneratorPid = class_CityGenerator:synchronous_new_link(
-						 CityDescription, GISPid ),
+	CityGeneratorPid =
+		class_CityGenerator:synchronous_new_link( CityDescription, GISPid ),
 
 
 	CityGeneratorPid ! { generateCity, [], self() },
@@ -267,7 +270,7 @@ run_common( ScaleSetting, DurationSetting, StopShell ) ->
 
 	RootTimeManagerPid ! { setFinalSimulationTimestamp, [ EndDate, EndTime ] },
 
-	?test_info_fmt( "Starting simulation, for a stop at ending timestamp ~s.",
+	?test_info_fmt( "Starting simulation, for a stop at ending timestamp ~ts.",
 					[ time_utils:get_textual_timestamp( EndTimestamp ) ] ),
 
 	% Generator not needed anymore here:
@@ -297,8 +300,8 @@ run_common( ScaleSetting, DurationSetting, StopShell ) ->
 			ok;
 
 		false ->
-			RoadNetworkPid ! { displayRenderingIn,
-							   [ OutputDirectory ], self() },
+			RoadNetworkPid !
+				{ displayRenderingIn, [ OutputDirectory ], self() },
 
 			test_receive( rendering_displayed )
 

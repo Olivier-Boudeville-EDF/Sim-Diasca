@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2021 EDF R&D
+% Copyright (C) 2012-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,6 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Class modelling a <b>landfill</b>.
 -module(class_Landfill).
 
 
@@ -37,8 +38,8 @@
 % The class-specific attributes of a landfill are:
 -define( class_attributes, [
 
-  { probe_ref, class_Probe:probe_ref(), "the PID (if any) of the probe "
-	"declared to track waste stocks in this landfill" } ] ).
+   { probe_ref, class_Probe:probe_ref(), "the PID (if any) of the probe "
+	 "declared to track waste stocks in this landfill" } ] ).
 
 
 % Inherited attributes of interest:
@@ -67,8 +68,15 @@
 % generally huge.
 
 
+% Shorthands:
 
-% Creates a new landfill.
+-type count() :: basic_utils:count().
+
+-type ustring() :: text_utils:ustring().
+
+
+
+% @doc Creates a landfill.
 %
 % Construction parameters are:
 %
@@ -82,7 +90,7 @@
 %
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 class_Actor:name(), class_GIS:static_location(), gis_pid() ) ->
-					   wooper:state().
+						wooper:state().
 construct( State, ActorSettings, Name, Location, GISPid ) ->
 
 	ActorState = class_Actor:construct( State, ActorSettings,
@@ -100,14 +108,14 @@ construct( State, ActorSettings, Name, Location, GISPid ) ->
 	% the corresponding result is wanted) or a 'non_wanted_probe' atom:
 	%
 	WasteStockProbeRef = class_Actor:declare_probe(
-				_Name=text_utils:format( "~s Waste Stock Probe", [ Name ] ),
-				_Curves=TankCurveNames,
-				_Zones=[],
-				_Title=text_utils:format( "Waste Storage Monitoring "
-										  "for Landfill ~s", [ Name ] ),
-				_XLabel="Simulation time",
-				_YLabel="Tons of wastes in each tank of this landfill",
-				PointState ),
+		_Name=text_utils:format( "~ts Waste Stock Probe", [ Name ] ),
+		_Curves=TankCurveNames,
+		_Zones=[],
+		_Title=text_utils:format( "Waste Storage Monitoring "
+								  "for Landfill ~ts", [ Name ] ),
+		_XLabel="Simulation time",
+		_YLabel="Tons of wastes in each tank of this landfill",
+		PointState ),
 
 	setAttributes( PointState, [ { waste_capacity, CapacityInformation },
 								 { probe_ref, WasteStockProbeRef },
@@ -119,8 +127,9 @@ construct( State, ActorSettings, Name, Location, GISPid ) ->
 
 
 
-% First scheduling of a landfill.
--spec onFirstDiasca( wooper:state(), sending_actor_pid() ) -> actor_oneway_return().
+% @doc First scheduling of a landfill.
+-spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
+										actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 
 	% A landfill is mostly passive.
@@ -135,7 +144,7 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 	end,
 
-	?info_fmt( "Landfill just created: ~s", [ to_string( State ) ] ),
+	?info_fmt( "Landfill just created: ~ts", [ to_string( State ) ] ),
 
 	% To record initial state in probe (and possibly trace state):
 	PlanState = class_Actor:scheduleNextSpontaneousTick( State ),
@@ -144,23 +153,22 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-
-% The definition of the spontaneous behaviour of this landfill.
+% @doc The definition of the spontaneous behaviour of this landfill.
 -spec actSpontaneous( wooper:state() ) -> const_oneway_return().
 actSpontaneous( State ) ->
 
 	% No spontaneous life by itself (mostly triggered).
 	send_data_to_probe( State ),
 
-	?info_fmt( "~s just created", [ to_string( State ) ] ),
+	?info_fmt( "~ts just created", [ to_string( State ) ] ),
 
 	wooper:const_return().
 
 
 
-% Tries to unload to this landfill as much as possible of the specified mass of
-% specified waste type (possibly any) from the caller (which is expected to be a
-% waste transport requesting to empty its waste).
+% @doc Tries to unload to this landfill as much as possible of the specified
+% mass of specified waste type (possibly any) from the caller (which is expected
+% to be a waste transport requesting to empty its waste).
 %
 % The answer (the actor message sent back) will be:
 %
@@ -184,22 +192,22 @@ unloadWaste( State, WasteType, ProposedMass, WasteUnloaderPid ) ->
 
 
 
+
 % Static methods section.
 
 
-% Generates a list of instance definitions for the specified number of initial
-% landfills.
+% @doc Generates a list of instance definitions for the specified number of
+% initial landfills.
 %
--spec generate_definitions( basic_utils:count(), location_generator_pid(),
-							gis_info() ) ->
+-spec generate_definitions( count(), location_generator_pid(), gis_info() ) ->
 		 static_return( [ class_Actor:instance_creation_spec() ] ).
 generate_definitions( LandfillCount, LocationGeneratorPid, GISInfo ) ->
 
 	% Triggers the location generation request in parallel:
 	LocationGeneratorPid ! { generateNonAdjacentLocations,
-			   [ LandfillCount,
-				 get_min_distance_between_landfills_and_others(),
-				 get_min_distance_between_two_landfills() ], self() },
+		[ LandfillCount,
+		  get_min_distance_between_landfills_and_others(),
+		  get_min_distance_between_two_landfills() ], self() },
 
 	CreationSpecs = define_landfills( LandfillCount, GISInfo, _Acc=[] ),
 
@@ -226,7 +234,7 @@ define_landfills( _LandfillCount=0, GISInfo, Acc ) ->
 define_landfills( LandfillCount, GISInfo, Acc ) ->
 
 	% Defines the build parameters for a new landfill; we want to end up with a
-	% list of { class_Landfill, [ Name, Location ] } elements.
+	% list of {class_Landfill, [Name, Location]} elements.
 
 	Name = text_utils:format( "Landfill-~B", [ LandfillCount ] ),
 
@@ -234,8 +242,8 @@ define_landfills( LandfillCount, GISInfo, Acc ) ->
 
 
 
-% Adds the location to the landfill build parameters (a kind of zip
-% operation):
+% @doc Adds the location to the landfill build parameters (a kind of zip
+% operation).
 %
 merge_parameters( Params, Locations, GISInfo ) ->
 	% In-order is better:
@@ -248,10 +256,11 @@ merge_parameters( _Params=[], _Locations=[], Acc, _GISInfo ) ->
 merge_parameters( _Params=[ Name | Tp ], _Locations=[ Loc | Tl ], Acc,
 				  GISInfo ) ->
 
-	NewLandfillDef = { class_Landfill, [ Name, { wgs84_cartesian, Loc },
-										 GISInfo ] },
+	NewLandfillDef = { class_Landfill,
+						[ Name, { wgs84_cartesian, Loc }, GISInfo ] },
 
 	merge_parameters( Tp, Tl, [ NewLandfillDef | Acc ], GISInfo ).
+
 
 
 % In meters:
@@ -265,7 +274,7 @@ get_min_distance_between_two_landfills() ->
 
 
 
-% Sends waste data to probe (if any).
+% @doc Sends waste data to probe (if any).
 %
 % (helper)
 %
@@ -284,7 +293,7 @@ send_data_to_probe( State ) ->
 			TankList = ?getAttr(waste_capacity),
 
 			WasteStockSample = list_to_tuple( [
-				  Tank#waste_tank.current_mass_stored || Tank <- TankList ]),
+				Tank#waste_tank.current_mass_stored || Tank <- TankList ] ),
 
 			class_Probe:send_data( ProbePid, ?getAttr(current_tick_offset),
 								   WasteStockSample )
@@ -293,18 +302,18 @@ send_data_to_probe( State ) ->
 
 
 
-% Returns a textual representation of this instance.
+% @doc Returns a textual representation of this instance.
 %
 % (helper)
 %
--spec to_string( wooper:state() ) -> string().
+-spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
-	CapacityInfo = waste_utils:waste_capacity_to_string(
-					 ?getAttr(waste_capacity) ),
+	CapacityInfo =
+		waste_utils:waste_capacity_to_string( ?getAttr(waste_capacity) ),
 
-	text_utils:format( "Landfill '~s' (AAI: ~B) located at ~s (~s) making use "
-		"of ~s, whose random state is ~p",
+	text_utils:format( "landfill '~ts' (AAI: ~B) located at ~ts (~ts) "
+		"making use of ~ts, whose random state is ~p",
 		[ ?getAttr(name),
 		  class_Actor:get_abstract_identifier( State ),
 		  class_GeolocalizedElement:interpret_location( State ),
@@ -313,7 +322,7 @@ to_string( State ) ->
 
 
 
-% Returns a pair made of the waste capacities for a landfill, and a list of
+% @doc Returns a pair made of the waste capacities for a landfill, and a list of
 % corresponding curve descriptions.
 %
 build_capacity() ->
@@ -342,12 +351,12 @@ create_waste_tank( _WasteType=[ Type | T ], AccTank, AccDesc, Count ) ->
 						   % The maximum mass of waste stored:
 						   max_mass_stored=40000000000.0,
 
-							% Tells whether the tank is being processed (used)
-							% or idle:
+						   % Tells whether the tank is being processed (used) or
+						   % idle:
 						   %
 						   busy=false },
 
 	NewDesc = text_utils:format( "Quantity of waste stored in waste tank #~B "
-		"used for waste type '~s' (in tons)", [ Id, Type ] ),
+		"used for waste type '~ts' (in tons)", [ Id, Type ] ),
 
 	create_waste_tank( T, [ NewTank | AccTank ], [ NewDesc | AccDesc ], Id ).

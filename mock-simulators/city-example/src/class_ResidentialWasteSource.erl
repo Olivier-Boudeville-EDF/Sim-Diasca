@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2021 EDF R&D
+% Copyright (C) 2012-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,6 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Class modelling a <b>residential waste source</b>.
 -module(class_ResidentialWasteSource).
 
 
@@ -45,16 +46,16 @@
 % The class-specific attributes of a residential waste source instance are:
 -define( class_attributes, [
 
-  { production_type, waste_type(),
-	"the (single) type of waste produced by this source" },
+	{ production_type, waste_type(),
+	  "the (single) type of waste produced by this source" },
 
-  { production_quantity, unit_utils:tons(),
-	"the (average) quantity of waste produced by a production cycle" },
+	{ production_quantity, unit_utils:tons(),
+	  "the (average) quantity of waste produced by a production cycle" },
 
-  { production_duration, unit_utils:seconds(),
-	"the (average) duration of a production cycle" },
+	{ production_duration, unit_utils:seconds(),
+	  "the (average) duration of a production cycle" },
 
-  { probe_ref, probe_ref(), "the PID of the production probe (if any)" } ] ).
+	{ probe_ref, probe_ref(), "the PID of the production probe (if any)" } ] ).
 
 
 
@@ -73,7 +74,13 @@
 
 
 
-% Creates a new residential waste source.
+% Shorthands:
+
+-type ustring() :: text_utils:ustring().
+
+
+
+% @doc Creates a residential waste source.
 %
 % Construction parameters are:
 %
@@ -103,14 +110,14 @@ construct( State, ActorSettings, Name, Location, ProductionType,
 	ActorState = class_StochasticActor:construct( State, ActorSettings,
 												  ?trace_categorize(Name),
 	  [ { production_quantity_law,
-		  { gaussian, _Mu=ProductionQuantity, _Sigma=2.0 } } ] ),
+			{ gaussian, _Mu=ProductionQuantity, _Sigma=2.0 } } ] ),
 
 	ProductionTickDuration = class_Actor:convert_seconds_to_ticks(
 				ProductionDuration, ?city_max_relative_error, ActorState ),
 
 	AddedState = class_StochasticActor:add_law( production_duration_law,
-	  { positive_integer_exponential, _Lamba=1/ProductionTickDuration },
-	  ActorState ),
+		{ positive_integer_exponential, _Lamba=1/ProductionTickDuration },
+		ActorState ),
 
 	% One tank per residential source, initially empty:
 	Tank = #waste_tank{ id=1,
@@ -134,17 +141,16 @@ construct( State, ActorSettings, Name, Location, ProductionType,
 	% the corresponding result is wanted) or a 'non_wanted_probe' atom:
 	%
 	WasteStockProbeRef = class_Actor:declare_probe(
-				_Name=text_utils:format( "~s Produced Waste Stock Probe",
-										 [ Name ] ),
-				_Curves=[ text_utils:format( "Quantity of waste of type ~w "
-							 "still in tank (in tons)", [ ProductionType ] ) ],
-				_Zones=[],
-				_Title=text_utils:format( "Waste Production & Storage "
-					"Monitoring for Residential Waste Source ~s", [ Name ] ),
-				_XLabel="Simulation time",
-				_YLabel="Tons of wastes still stored by this "
-						"residential waste source",
-				POIState ),
+		_Name=text_utils:format( "~ts Produced Waste Stock Probe", [ Name ] ),
+		_Curves=[ text_utils:format( "Quantity of waste of type ~w "
+					"still in tank (in tons)", [ ProductionType ] ) ],
+		_Zones=[],
+		_Title=text_utils:format( "Waste Production & Storage "
+			"Monitoring for Residential Waste Source ~ts", [ Name ] ),
+		_XLabel="Simulation time",
+		_YLabel="Tons of wastes still stored by this "
+				"residential waste source",
+		POIState ),
 
 	setAttributes( POIState, [ { production_type, ProductionType },
 							   { production_quantity, ProductionQuantity },
@@ -158,11 +164,12 @@ construct( State, ActorSettings, Name, Location, ProductionType,
 
 
 
-% First scheduling of a residential waste source.
--spec onFirstDiasca( wooper:state(), sending_actor_pid() ) -> actor_oneway_return().
+% @doc First scheduling of a residential waste source.
+-spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
+										actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 
-	?info_fmt( "~s just created", [ to_string( State ) ] ),
+	?info_fmt( "~ts just created", [ to_string( State ) ] ),
 
 	case ?getAttr(probe_ref) of
 
@@ -180,12 +187,11 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-
-% The definition of the spontaneous behaviour of this residential source.
+% @doc The definition of the spontaneous behaviour of this residential source.
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
-	?info_fmt( "~s acting spontaneously.", [ to_string( State ) ] ),
+	?info_fmt( "~ts acting spontaneously.", [ to_string( State ) ] ),
 
 	CurrentTickOffset = ?getAttr(current_tick_offset),
 
@@ -202,7 +208,7 @@ actSpontaneous( State ) ->
 			   [ ProducedMass, NewProductionDuration ] ),
 
 	ActualAddedMass = case Tank#waste_tank.max_mass_stored -
-								  Tank#waste_tank.current_mass_stored  of
+									Tank#waste_tank.current_mass_stored  of
 
 		Margin when Margin < ProducedMass ->
 
@@ -239,9 +245,10 @@ actSpontaneous( State ) ->
 
 
 
-% Tries to load from this waste source as much as possible of the specified mass
-% compatible with specified waste type into the calling actor, which is expected
-% to be a waste transport, located in this point, looking for additional waste.
+% @doc Tries to load from this waste source as much as possible of the specified
+% mass compatible with specified waste type into the calling actor, which is
+% expected to be a waste transport, located in this point, looking for
+% additional waste.
 %
 % The answer (the actor message sent back) will be:
 %
@@ -257,7 +264,7 @@ loadWaste( State, WasteType, MaxWantedMass, WasteLoaderPid ) ->
 
 	% First call the parent base implementation:
 	ParentState = executeOnewayAs( State, class_WasteLoadingPoint, loadWaste,
-						   [ WasteType, MaxWantedMass, WasteLoaderPid ] ),
+							[ WasteType, MaxWantedMass, WasteLoaderPid ] ),
 
 	% Then update the probe:
 
@@ -272,14 +279,14 @@ loadWaste( State, WasteType, MaxWantedMass, WasteLoaderPid ) ->
 
 
 
-% Returns a textual description of this instance.
--spec toString( wooper:state() ) -> const_request_return( string() ).
+% @doc Returns a textual description of this instance.
+-spec toString( wooper:state() ) -> const_request_return( ustring() ).
 toString( State ) ->
 	wooper:const_return_result( to_string( State ) ).
 
 
 
-% Computes the newly produced mass of waste and the duration of the next
+% @doc Computes the newly produced mass of waste and the duration of the next
 % production iteration.
 %
 compute_production_parameters( State ) ->
@@ -298,7 +305,7 @@ compute_production_parameters( State ) ->
 
 	% At least one tick away:
 	NextDuration = max( 1, class_StochasticActor:get_random_value_from(
-							   production_duration_law, State ) ),
+								production_duration_law, State ) ),
 
 	{ AdditionalMass, NextDuration }.
 
@@ -310,7 +317,7 @@ compute_production_parameters( State ) ->
 
 
 
-% Generates a list of instance definitions for the specified number of
+% @doc Generates a list of instance definitions for the specified number of
 % residential waste sources.
 %
 -spec generate_definitions( basic_utils:count(), location_generator_pid(),
@@ -358,7 +365,7 @@ define_residential_waste_sources( ResidentialSourceCount, GISInfo, Acc ) ->
 							  [ ResidentialSourceCount ] ),
 
 	ProductionType = list_utils:draw_element(
-					   waste_utils:get_incinerable_waste_types() ),
+						waste_utils:get_incinerable_waste_types() ),
 
 	% 60 kg on average, before being set to at least 10 kg:
 	ProductionQuantity = max( 0.01,
@@ -367,7 +374,7 @@ define_residential_waste_sources( ResidentialSourceCount, GISInfo, Acc ) ->
 	% 500 kg on average:
 	LocalStorage = 0.3 +
 		class_RandomManager:get_positive_integer_exponential_value(
-														  _StoreLambda=0.2 ),
+															_StoreLambda=0.2 ),
 
 	% Twice per week (homes are therefore synchronized and will remain so), in
 	% seconds:
@@ -377,15 +384,14 @@ define_residential_waste_sources( ResidentialSourceCount, GISInfo, Acc ) ->
 
 	% Location to be added later:
 	NewAcc = [ { Name, ProductionType, float( ProductionQuantity ),
-				float( LocalStorage ), ProductionDuration } | Acc ],
+				 float( LocalStorage ), ProductionDuration } | Acc ],
 
 	define_residential_waste_sources( ResidentialSourceCount - 1, GISInfo,
 									  NewAcc ).
 
 
 
-
-% Adds the location to the wastesource build parameters (a kind of zip
+% @doc Adds the location to the waste source build parameters (a kind of zip
 % operation):
 %
 merge_parameters( Params, Locations, GISInfo ) ->
@@ -396,34 +402,34 @@ merge_parameters( Params, Locations, GISInfo ) ->
 merge_parameters( _Params=[], _Locations=[], Acc, _GISInfo ) ->
 	Acc;
 
-merge_parameters( _Params=[ {  Name, ProductionType, ProductionQuantity,
-							   LocalStorage, ProductionDuration } | Tp ],
+merge_parameters( _Params=[ { Name, ProductionType, ProductionQuantity,
+							  LocalStorage, ProductionDuration } | Tp ],
 				  _Locations=[ Loc | Tl ], Acc, GISInfo ) ->
 
 	NewResidentialSourceDef = { class_ResidentialWasteSource, [ Name,
-		   { wgs84_cartesian, Loc }, ProductionType, ProductionQuantity,
-						LocalStorage, ProductionDuration, GISInfo ] },
+		{ wgs84_cartesian, Loc }, ProductionType, ProductionQuantity,
+		LocalStorage, ProductionDuration, GISInfo ] },
 
 	merge_parameters( Tp, Tl, [ NewResidentialSourceDef | Acc ], GISInfo ).
 
 
 
-% Returns a textual representation of this instance.
+% @doc Returns a textual representation of this instance.
 %
 % (helper)
 %
--spec to_string( wooper:state() ) -> string().
+-spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
 	DurationInSeconds = class_Actor:convert_ticks_to_seconds(
-						  ?getAttr(production_duration), State ),
+							?getAttr(production_duration), State ),
 
 	% One one tank per source:
 	[ WasteTank ] = ?getAttr(waste_capacity),
 
-	text_utils:format( "Residential waste source '~s' (AAI: ~B) located at ~s "
-		"(~s), generating on average ~f tons of waste of type ~p "
-		"every ~s (~B ticks) on average, using for storage ~s, "
+	text_utils:format( "Residential waste source '~ts' (AAI: ~B) located at ~ts"
+		" (~ts), generating on average ~f tons of waste of type ~p "
+		"every ~ts (~B ticks) on average, using for storage ~ts, "
 		"whose random state is ~p",
 		[ ?getAttr(name),
 		  class_Actor:get_abstract_identifier( State ),

@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2021 EDF R&D
+% Copyright (C) 2018-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,9 +19,8 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-
-% Test regarding the reemission of past values sent by an output port whenever
-% it gets connected again.
+% @doc Test regarding the reemission of past values sent by an output port
+% whenever it gets connected again.
 %
 % See also its descrition in the 'Unit Tests Overview'
 % (cf. unit-tests-overview.rst).
@@ -37,7 +36,7 @@
 -include("dataflow_unit_test_defines.hrl").
 
 
-% Runs the case.
+% @doc Runs the case.
 -spec run() -> no_return().
 run() ->
 
@@ -48,7 +47,7 @@ run() ->
 
 	TickCount = 50,
 
-	test_facilities:display( "Running a ~s test, in a programmatic way, "
+	test_facilities:display( "Running a ~ts test, in a programmatic way, "
 							 "for ~B ticks.", [ ?MODULE, TickCount ] ),
 
 	SimulationSettings = #simulation_settings{},
@@ -60,8 +59,8 @@ run() ->
 
 
 	% We will initialise first the engine:
-	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-											DeploymentSettings ),
+	DeploymentManagerPid =
+		sim_diasca:init( SimulationSettings, DeploymentSettings ),
 
 	LoadBalancerPid = class_LoadBalancer:get_balancer(),
 
@@ -108,8 +107,8 @@ run() ->
 		[ { class_DataflowObjectManager, [ class_BaseTestDataflowObject ] } ],
 
 	?test_info_fmt( "Creating directly following default dataflow "
-					"object managers, taking in charge following types of "
-					"dataflow objects: ~p.", [ DefaultObjectManagerDefs ] ),
+		"object managers, taking in charge following types of "
+		"dataflow objects: ~p.", [ DefaultObjectManagerDefs ] ),
 
 	DefaultObjectManagers = class_DataflowObjectManager:create_default_managers(
 		  DefaultObjectManagerDefs, WorldManagerPid, LoadBalancerPid ),
@@ -161,16 +160,16 @@ run() ->
 	% downstream:
 	%
 	BaseTestProcessingUnitPid = class_DataflowUnitManager:create_initial_unit(
-			BaseUnitManagerPid, class_BaseTestProcessingUnit, DataflowPid,
-			_ConstructParams=[ "MyBaseTestProcessingUnit" ] ),
+		BaseUnitManagerPid, class_BaseTestProcessingUnit, DataflowPid,
+		_ConstructParams=[ "MyBaseTestProcessingUnit" ] ),
 
 	BaseTestDataflowUnits = [ BaseTestProcessingUnitPid ],
 
 	% For the sake of this testing, this experiment entry point directly knows
 	% this test unit as well:
 	%
-	TestExperimentEntryPointPid ! { registerTestProcessingUnits,
-									[ BaseTestDataflowUnits ], self() },
+	TestExperimentEntryPointPid !
+		{ registerTestProcessingUnits, [ BaseTestDataflowUnits ], self() },
 
 	test_dataflow_units_registered = test_receive(),
 
@@ -180,8 +179,8 @@ run() ->
 	StartDate = { 0, 1, 1 },
 	StartTime = { 0, 0, StartTick },
 
-	RootTimeManagerPid ! { setInitialSimulationTimestamp,
-						   [ StartDate, StartTime ] },
+	RootTimeManagerPid !
+		{ setInitialSimulationTimestamp, [ StartDate, StartTime ] },
 
 	% ...and end specified ticks later:
 	EndDate = StartDate,
@@ -190,10 +189,10 @@ run() ->
 	StartTimestamp = { StartDate, StartTime },
 	EndTimestamp = { EndDate, EndTime },
 
-	?test_info_fmt( "Starting simulation at ~s, "
-					"for an expected stop at ending timestamp ~s.",
-					[ time_utils:get_textual_timestamp( StartTimestamp ),
-					  time_utils:get_textual_timestamp( EndTimestamp ) ] ),
+	?test_info_fmt( "Starting simulation at ~ts, "
+		"for an expected stop at ending timestamp ~ts.",
+		[ time_utils:get_textual_timestamp( StartTimestamp ),
+		  time_utils:get_textual_timestamp( EndTimestamp ) ] ),
 
 
 	RootTimeManagerPid ! { start, self() },

@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2021 EDF R&D
+% Copyright (C) 2016-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,6 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Example of a programmatic experiment entry point.
 -module(class_UrbanExperimentProgrammaticEntryPoint).
 
 
@@ -36,36 +37,37 @@
 % Attributes that are specific to this urban experiment entry point are:
 -define( class_attributes, [
 
-  { current_step, class_ExperimentManager:step_count(),
-	"the current step at which the experiment is" },
+	{ current_step, step_count(),
+	  "the current step at which the experiment is" },
 
-  { max_step, class_ExperimentManager:step_count(),
-	"the maximum step that the experiment may reach" },
+	{ max_step, step_count(),
+	  "the maximum step that the experiment may reach" },
 
-  { transport_units, [ transport_unit_pid() ],
-	"the transportation units known of this entry point" },
+	{ transport_units, [ transport_unit_pid() ],
+	  "the transportation units known of this entry point" },
 
-  { energy_demand_units, [ energy_demand_unit_pid() ],
-	"the energy demand units known of this entry point" },
+	{ energy_demand_units, [ energy_demand_unit_pid() ],
+	  "the energy demand units known of this entry point" },
 
-  { district_objects, [ district_pid() ],
-	"a list of the district dataflow objects known of this entry point" },
+	{ district_objects, [ district_pid() ],
+	  "a list of the district dataflow objects known of this entry point" },
 
-  { household_objects, [ household_pid() ],
-	"a list of the household dataflow objects known of this entry point" },
+	{ household_objects, [ household_pid() ],
+	  "a list of the household dataflow objects known of this entry point" },
 
-  { base_distance_covered, unit_utils:kilometers(), "the mean total distance "
-	"covered by all the persons of a given household at simulation start "
-	"(meant to vary over time)" },
+	{ base_distance_covered, unit_utils:kilometers(), "the mean total distance "
+	  "covered by all the persons of a given household at simulation start "
+	  "(meant to vary over time)" },
 
-  { base_transformer_efficiency, math_utils:percent(), "the transformer "
-	"performance at simulation start (meant to vary over time)" },
+	{ base_transformer_efficiency, math_utils:percent(), "the transformer "
+	  "performance at simulation start (meant to vary over time)" },
 
-  { unit_managers, [ unit_manager_pid() ],
-	"a list of the unit managers driven by this entry point" },
+	{ unit_managers, [ unit_manager_pid() ],
+	  "a list of the unit managers driven by this entry point" },
 
-  { entry_probe_ref, class_Probe:probe_ref(), "a basic probe (if any) allowing "
-	"to monitor the data injected by this entry point into the dataflow" } ] ).
+	{ entry_probe_ref, class_Probe:probe_ref(), "a basic probe (if any) "
+	  "allowing to monitor the data injected by this entry point into the "
+	  "dataflow" } ] ).
 
 
 % Helpers:
@@ -87,7 +89,15 @@
 
 
 
-% Constructs the urban-example experiment entry point, from:
+% Shorthands:
+
+-type ustring() :: text_utils:ustring().
+
+-type step_count() :: class_ExperimentManager:step_count().
+
+
+
+% @doc Constructs the urban-example experiment entry point, from:
 %
 % - ActorSettings describes the actor abstract identifier (AAI) and seed of this
 % actor, as assigned by the load balancer
@@ -103,10 +113,8 @@
 % - WorldManagerPid is the PID of the world manager
 %
 -spec construct( wooper:state(), class_Actor:actor_settings(),
-				 [ dataflow_pid() ], class_ExperimentManager:step_count(),
-				 class_ExperimentManager:step_count(),
-				 experiment_manager_pid(), world_manager_pid() ) ->
-					   wooper:state().
+	[ dataflow_pid() ], step_count(), step_count(),
+	experiment_manager_pid(), world_manager_pid() ) -> wooper:state().
 construct( State, ActorSettings, Dataflows, ExperimentStepStart,
 		   ExperimentStepStop, ExperimentManagerPid, WorldManagerPid ) ->
 
@@ -142,8 +150,8 @@ construct( State, ActorSettings, Dataflows, ExperimentStepStart,
 
 
 
-% Registers specified district dataflow objects to this entry point, so that it
-% is able to act upon them (ex: attribute update).
+% @doc Registers specified district dataflow objects to this entry point, so
+% that it is able to act upon them (ex: attribute update).
 %
 -spec registerDistrictObjects( wooper:state(), [ district_pid() ] ) ->
 				request_return( 'district_objects_registered' ).
@@ -157,8 +165,8 @@ registerDistrictObjects( State, Districts ) ->
 
 
 
-% Registers specified household dataflow objects to this entry point, so that it
-% is able to act upon them (ex: attribute update).
+% @doc Registers specified household dataflow objects to this entry point, so
+% that it is able to act upon them (ex: attribute update).
 %
 -spec registerHouseholdObjects( wooper:state(), [ household_pid() ] ) ->
 				request_return( 'household_objects_registered' ).
@@ -176,7 +184,7 @@ registerHouseholdObjects( State, Households ) ->
 % Section for actor oneways.
 
 
-% Starts the evaluation of the urban experiment for the current tick.
+% @doc Starts the evaluation of the urban experiment for the current tick.
 %
 % Typically called by the experiment exit point, for synchronisation reasons.
 %
@@ -193,9 +201,8 @@ startExperimentTick( State, _SenderActorPid ) ->
 	MaxStep = ?getAttr(max_step),
 
 	?debug_fmt( "Starting experiment step ~B/~B, first updating ~B "
-				"transport units: ~w.",
-				[ CurrentStep, MaxStep, length( TransportUnits ),
-				  TransportUnits ] ),
+		"transport units: ~w.",
+		[ CurrentStep, MaxStep, length( TransportUnits ), TransportUnits ] ),
 
 
 	% For this example, we emulate the use of an external source of information
@@ -225,13 +232,13 @@ startExperimentTick( State, _SenderActorPid ) ->
 
 
 
-% Creates new (hence dynamic, runtime) units, to demonstrate how structural
+% @doc Creates new (hence dynamic, runtime) units, to demonstrate how structural
 % dataflow changes may be done.
 %
 % (helper)
 %
--spec update_dataflow_structure( wooper:state(),
-			 class_ExperimentManager:step_count() ) -> wooper:state().
+-spec update_dataflow_structure( wooper:state(), step_count() ) ->
+						wooper:state().
 update_dataflow_structure( CurrentStep, State ) ->
 
 	UnitManagers = [ UrbanUnitManagerPid ] = ?getAttr(unit_managers),
@@ -244,12 +251,11 @@ update_dataflow_structure( CurrentStep, State ) ->
 
 		2025 ->
 			?info_fmt( "Determined that a new energy demand unit is needed, "
-						"notifying the unit manager ~w.",
-						[ UrbanUnitManagerPid ] ),
+				"notifying the unit manager ~w.", [ UrbanUnitManagerPid ] ),
 
 			class_Actor:send_actor_message( UrbanUnitManagerPid,
-					{ notifyEvent, [ new_energy_demand_unit_needed,
-									 "My 2025 Energy Demand Unit" ] }, State );
+				{ notifyEvent, [ new_energy_demand_unit_needed,
+								 "My 2025 Energy Demand Unit" ] }, State );
 
 		_ ->
 			State
@@ -258,22 +264,20 @@ update_dataflow_structure( CurrentStep, State ) ->
 
 
 
-% Assigns the input ports of specified transport units to demonstrate unit
-% updates (i.e. state changes of dataflow elements)
+% @doc Assigns the input ports of specified transport units to demonstrate unit
+% updates (i.e. state changes of dataflow elements).
 %
--spec assign_input_ports( [ transport_unit_pid() ],
-			  class_ExperimentManager:step_count(),
-			  class_ExperimentManager:step_count(), wooper:state() ) ->
-								wooper:state().
+-spec assign_input_ports( [ transport_unit_pid() ], step_count(), step_count(),
+						  wooper:state() ) -> wooper:state().
 assign_input_ports( TransportUnits, CurrentStep, MaxStep, State ) ->
 
 	%trace_utils:debug_fmt( "CurrentStep=~p, MaxStep=~p.",
-	%						[ CurrentStep, MaxStep ] ),
+	%                       [ CurrentStep, MaxStep ] ),
 
 	BaseAverageJourney = 0.29 * ( MaxStep - CurrentStep ),
 
-	{ TransportState, AverageJourney } = update_transport_units(
-							  TransportUnits, BaseAverageJourney, State ),
+	{ TransportState, AverageJourney } =
+		update_transport_units( TransportUnits, BaseAverageJourney, State ),
 
 	% Note: we select here the past energy demand units, not any newly created
 	% one:
@@ -297,13 +301,13 @@ assign_input_ports( TransportUnits, CurrentStep, MaxStep, State ) ->
 
 
 
-% Triggers the update of specified transport units, prior to evaluating the
+% @doc Triggers the update of specified transport units, prior to evaluating the
 % experiment for the corresponding new step.
 %
 % (helper)
 %
 -spec update_transport_units( [ transport_unit_pid() ], average_journey(),
-			 wooper:state() ) -> { wooper:state(), [ average_journey() ] }.
+				wooper:state() ) -> { wooper:state(), [ average_journey() ] }.
 update_transport_units( TransportUnits, BaseAverageJourney, State ) ->
 
 	% Here we feed the 'average_journey' input port of each of these
@@ -327,7 +331,7 @@ update_average_journey( _TransportUnits=[], _SpecificDistance, State, Acc ) ->
 	{ State, lists:reverse( Acc ) };
 
 update_average_journey( _TransportUnits=[ TransportUnitPid | T ],
-						 SpecificDistance, State, Acc ) ->
+						SpecificDistance, State, Acc ) ->
 
 	% The affine function to have a different value for each unit, yet the port
 	% constraint ({lower_than,4.0}, in km) shall still be accommodated:
@@ -336,13 +340,13 @@ update_average_journey( _TransportUnits=[ TransportUnitPid | T ],
 
 	% Uncomment elements to test some error cases:
 	FullValue = class_Dataflow:create_channel_value(
-				  _Value=NewSpecificDistance,
-				  %_Semantics="http://foobar.org/urban/1.1/faulty",
-				  % As a value may comprise semantics not known of a port:
-				  _Semantics=[ ?path_length_semantics, ?extra_semantics ],
-				  %_Unit="m",
-				  _Unit="km",
-				  _Type="float" ),
+		_Value=NewSpecificDistance,
+		%_Semantics="http://foobar.org/urban/1.1/faulty",
+		% As a value may comprise semantics not known of a port:
+		_Semantics=[ ?path_length_semantics, ?extra_semantics ],
+		%_Unit="m",
+		_Unit="km",
+		_Type="float" ),
 
 	Message = { setInputPortValue,
 				[ _InputPortName="average_journey", FullValue ] },
@@ -355,12 +359,12 @@ update_average_journey( _TransportUnits=[ TransportUnitPid | T ],
 
 
 
-% Triggers the update of specified energy demand units, prior to evaluating the
-% experiment for the corresponding new step.
+% @doc Triggers the update of specified energy demand units, prior to evaluating
+% the experiment for the corresponding new step.
 %
 -spec update_energy_demand_units( [ energy_unit_pid() ],
 		transformer_efficiency(), wooper:state() ) ->
-					  { wooper:state(), [ transformer_efficiency() ] }.
+						{ wooper:state(), [ transformer_efficiency() ] }.
 update_energy_demand_units( EnergyUnits, Efficiency, State ) ->
 
 	% Here all these units are notified at the common, uniform transformer
@@ -378,11 +382,11 @@ update_transformer_efficiency( _EnergyUnits=[ EnergyDemandUnitPid | T ],
 
 	% Uncomment elements to test some error cases:
 	FullValue = class_Dataflow:create_channel_value(
-				  _Value=Efficiency,
-				  %_Semantics="http://foobar.org/urban/1.1/faulty",
-				  _Semantics=[ ?transformation_efficiency_semantics ],
-				  _Unit="dimensionless",
-				  _Type="float" ),
+		_Value=Efficiency,
+		%_Semantics="http://foobar.org/urban/1.1/faulty",
+		_Semantics=[ ?transformation_efficiency_semantics ],
+		_Unit="dimensionless",
+		_Type="float" ),
 
 	Message = { setInputPortValue,
 				[ _InputPortName="transformer_efficiency", FullValue ] },
@@ -395,10 +399,11 @@ update_transformer_efficiency( _EnergyUnits=[ EnergyDemandUnitPid | T ],
 
 
 
+
 % Section for plain methods (ex: not actor oneways).
 
 
-% Declares the specified unit managers to this entry point.
+% @doc Declares the specified unit managers to this entry point.
 %
 % (request, for synchronicity)
 %
@@ -416,7 +421,7 @@ addUnitManagers( State, UnitManagers ) ->
 
 
 
-% Sets the transport units known of this entry point.
+% @doc Sets the transport units known of this entry point.
 -spec setTransportUnits( wooper:state(), [ transport_unit_pid() ] ) ->
 				request_return( 'transport_units_registered' ).
 setTransportUnits( State, TransportUnits ) ->
@@ -429,7 +434,7 @@ setTransportUnits( State, TransportUnits ) ->
 
 
 
-% Sets the energy demand units known of this entry point.
+% @doc Sets the energy demand units known of this entry point.
 -spec setEnergyDemandUnits( wooper:state(), [ energy_demand_unit_pid() ] ) ->
 				request_return( 'energy_demand_units_registered' ).
 setEnergyDemandUnits( State, EnergyDemandUnits ) ->
@@ -446,11 +451,11 @@ setEnergyDemandUnits( State, EnergyDemandUnits ) ->
 % Helper functions.
 
 
-% Returns a textual description of this entry point.
+% @doc Returns a textual description of this entry point.
 %
 % (helper)
 %
--spec to_string( wooper:state() ) -> string().
+-spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
 	EntryString = class_ExperimentEntryPoint:to_string( State ),
@@ -498,5 +503,6 @@ to_string( State ) ->
 
 	end,
 
-	text_utils:format( "Urban programmatic ~s, ~s, ~s, ~s, ~s", [ EntryString,
-	   TransportString, EnergyDemandString, UnitManagerString, ProbeString ] ).
+	text_utils:format( "Urban programmatic ~ts, ~ts, ~ts, ~ts, ~ts",
+		[ EntryString, TransportString, EnergyDemandString, UnitManagerString,
+		  ProbeString ] ).

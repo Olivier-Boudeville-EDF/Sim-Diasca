@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2021 EDF R&D
+% Copyright (C) 2014-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -34,7 +34,6 @@
 % simulation fails at any given scale:
 %
 -define( city_max_relative_error, 0.5 ).
-
 
 
 % Length of the edge of a weather cell, in meters:

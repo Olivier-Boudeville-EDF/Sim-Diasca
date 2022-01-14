@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2021 EDF R&D
+% Copyright (C) 2012-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,6 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Class modelling an <b>incinerator</b>.
 -module(class_Incinerator).
 
 
@@ -47,16 +48,17 @@
 % The class-specific attributes of an incinerator are:
 -define( class_attributes, [
 
-  { ash_tank_id, tank_id(),
-	"the identifier of the ash tank (for faster look-ups)" },
+	{ ash_tank_id, tank_id(),
+	  "the identifier of the ash tank (for faster look-ups)" },
 
-  { burners, [ burner() ], "describes the burners that this incinerator uses" },
+	{ burners, [ burner() ],
+	  "describes the burners that this incinerator uses" },
 
-  { deadlines, [ class_TimeManager:tick_offset() ], "allows to check the "
-	"incineration scheduling (fully optional)" },
+	{ deadlines, [ tick_offset() ], "allows to check the "
+	  "incineration scheduling (fully optional)" },
 
-  { probe_ref, class_Probe:probe_ref(), "the PID (if any) of the probe "
-	"declared to track waste stocks in this incinerator" } ] ).
+	{ probe_ref, class_Probe:probe_ref(), "the PID (if any) of the probe "
+	  "declared to track waste stocks in this incinerator" } ] ).
 
 
 
@@ -81,23 +83,22 @@
 % Burner type, part of an incinerator:
 -record( burner, {
 
-		% The types of wastes that can be burnt in this burner:
-		incinerable_types :: [ incinerable_waste() ],
+	% The types of wastes that can be burnt in this burner:
+	incinerable_types :: [ incinerable_waste() ],
 
-		% Maximum mass that can be burnt during a single phase:
-		burning_capacity :: unit_utils:tons(),
+	% Maximum mass that can be burnt during a single phase:
+	burning_capacity :: tons(),
 
-		% No 'burning_duration :: unit_utils:minutes()' defined, as it depends
-		% on the actual burning mass.
+	% No 'burning_duration :: unit_utils:minutes()' defined, as it depends on
+	% the actual burning mass.
 
-		% Records at what time the current incineration (if any) is to finish:
-		end_of_incineration ::
-				   maybe( { class_TimeManager:tick_offset(), tank_id() } ),
+	% Records at what time the current incineration (if any) is to finish:
+	end_of_incineration :: maybe( { tick_offset(), tank_id() } ),
 
-		% Records the type and quantity of waste being incinerated, so that the
-		% corresponding bottom ash can be generated once incineration is over:
-		%
-		waste_consumed :: { waste_type(), unit_utils:tons() } } ).
+	% Records the type and quantity of waste being incinerated, so that the
+	% corresponding bottom ash can be generated once incineration is over:
+	%
+	waste_consumed :: { waste_type(), tons() } } ).
 
 -type burner() :: #burner{}.
 
@@ -125,8 +126,19 @@
 
 
 
+% Shorthands:
 
-% Creates a new incinerator.
+-type count() :: basic_utils:count().
+
+-type ustring() :: text_utils:ustring().
+
+-type tons() :: unit_utils:tons().
+
+-type tick_offset() :: class_TimeManager:tick_offset().
+
+
+
+% @doc Creates an incinerator.
 %
 % Construction parameters are:
 %
@@ -143,7 +155,7 @@
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 class_Actor:name(), class_GIS:static_location(),
 				 waste_capacity(), burner_capacity(), gis_pid() ) ->
-					   wooper:state().
+						wooper:state().
 construct( State, ActorSettings, Name, Location, CapacityInformation,
 		   BurnerInformation, GISPid ) ->
 
@@ -169,14 +181,14 @@ construct( State, ActorSettings, Name, Location, CapacityInformation,
 	% the corresponding result is wanted) or a 'non_wanted_probe' atom:
 	%
 	WasteStockProbeRef = class_Actor:declare_probe(
-				_Name=text_utils:format( "~s Waste Stock Probe", [ Name ] ),
-				_Curves=TankCurves,
-				_Zones=[],
-				_Title=text_utils:format( "Waste Storage & "
-					"Treatment Monitoring for Incinerator ~s", [ Name ] ),
-				_XLabel="Simulation time",
-				_YLabel="Tons of wastes in each tank of this incinerator",
-				PointState ),
+		_Name=text_utils:format( "~ts Waste Stock Probe", [ Name ] ),
+		_Curves=TankCurves,
+		_Zones=[],
+		_Title=text_utils:format( "Waste Storage & "
+			"Treatment Monitoring for Incinerator ~ts", [ Name ] ),
+		_XLabel="Simulation time",
+		_YLabel="Tons of wastes in each tank of this incinerator",
+		PointState ),
 
 	AshTankId = length( CapacityInformation ) + 1,
 
@@ -192,9 +204,9 @@ construct( State, ActorSettings, Name, Location, CapacityInformation,
 % Methods section.
 
 
-% First scheduling of an incinerator.
+% @doc First scheduling of an incinerator.
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
-						   actor_oneway_return().
+							actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 
 	% No diasca-direct behaviour needed, real behaviour to start at the next
@@ -213,7 +225,7 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 	end,
 
-	?info_fmt( "Incinerator just created: ~s", [ to_string( State ) ] ),
+	?info_fmt( "Incinerator just created: ~ts", [ to_string( State ) ] ),
 
 	% Creates an initial deadline at the tick, to trigger the burners:
 	actor:return_state( setAttribute( PlanState, deadlines,
@@ -222,11 +234,11 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-% The definition of the spontaneous behaviour of this incinerator.
+% @doc The definition of the spontaneous behaviour of this incinerator.
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
-	?info_fmt( "~s acting spontaneously.", [ to_string( State ) ] ),
+	?info_fmt( "~ts acting spontaneously.", [ to_string( State ) ] ),
 
 	CurrentTickOffset = ?getAttr(current_tick_offset),
 
@@ -252,10 +264,10 @@ actSpontaneous( State ) ->
 
 
 
-% Tries to load from this incinerator point as much as possible of the specified
-% mass compatible with specified waste type (actually only bottom ash can be
-% loaded from an incinerator) into the calling actor, which is expected to be a
-% waste transport, located in this point, looking for additional waste.
+% @doc Tries to load from this incinerator point as much as possible of the
+% specified mass compatible with specified waste type (actually only bottom ash
+% can be loaded from an incinerator) into the calling actor, which is expected
+% to be a waste transport, located in this point, looking for additional waste.
 %
 % The answer (the actor message sent back) will be:
 %
@@ -265,7 +277,7 @@ actSpontaneous( State ) ->
 % - or a notifyNoLoadedWaste to report that no waste loading will occur this
 % time (transaction failed)
 %
--spec loadWaste( wooper:state(), waste_type(), unit_utils:tons(),
+-spec loadWaste( wooper:state(), waste_type(), tons(),
 				 sending_actor_pid() ) -> actor_oneway_return().
 loadWaste( State, WasteType, MaxWantedMass, WasteLoaderPid )
   when WasteType =:= none orelse WasteType =:= bottom_ash ->
@@ -276,7 +288,7 @@ loadWaste( State, WasteType, MaxWantedMass, WasteLoaderPid )
 	% constraint:
 	%
 	ParentState = executeOnewayAs( State, class_WasteLoadingPoint, loadWaste,
-						  [ bottom_ash, MaxWantedMass, WasteLoaderPid ] ),
+							[ bottom_ash, MaxWantedMass, WasteLoaderPid ] ),
 
 	send_data_to_probe( ParentState ),
 
@@ -295,9 +307,9 @@ loadWaste( State, _WasteType, _MaxWantedMass, WasteLoaderPid ) ->
 
 
 
-% Tries to unload to this unloading point as much as possible of the specified
-% mass of specified waste type into the caller (which is expected to be a waste
-% transport requesting to empty its waste).
+% @doc Tries to unload to this unloading point as much as possible of the
+% specified mass of specified waste type into the caller (which is expected to
+% be a waste transport requesting to empty its waste).
 %
 % The answer (the actor message sent back) will be:
 %
@@ -306,7 +318,7 @@ loadWaste( State, _WasteType, _MaxWantedMass, WasteLoaderPid ) ->
 % - or a notifyNoUnloadedWaste to report that no waste unloading will occur this
 % time (transaction failed)
 %
--spec unloadWaste( wooper:state(), waste_type(), unit_utils:tons(),
+-spec unloadWaste( wooper:state(), waste_type(), tons(),
 				   sending_actor_pid() ) -> actor_oneway_return().
 unloadWaste( State, _WasteType=bottom_ash, _ProposedMass, WasteUnloaderPid ) ->
 
@@ -323,7 +335,7 @@ unloadWaste( State, WasteType, ProposedMass, WasteUnloaderPid ) ->
 	% bottom ash, so basically we call the parent method here:
 	%
 	ParentState = executeOnewayAs( State, class_WasteUnloadingPoint,
-				   unloadWaste, [ WasteType, ProposedMass, WasteUnloaderPid ] ),
+		unloadWaste, [ WasteType, ProposedMass, WasteUnloaderPid ] ),
 
 	send_data_to_probe( ParentState ),
 
@@ -331,14 +343,14 @@ unloadWaste( State, WasteType, ProposedMass, WasteUnloaderPid ) ->
 
 
 
-% Returns a textual description of this instance.
--spec toString( wooper:state() ) -> const_request_return( string() ).
+% @doc Returns a textual description of this instance.
+-spec toString( wooper:state() ) -> const_request_return( ustring() ).
 toString( State ) ->
 	wooper:const_return_result( to_string( State ) ).
 
 
 
-% Applies the deadline: find the burners having finished, updates the
+% @doc Applies the deadline: find the burners having finished, updates the
 % corresponding tanks.
 %
 % (helper)
@@ -346,8 +358,8 @@ toString( State ) ->
 apply_deadline( CurrentTickOffset, State ) ->
 
 	{ AddedAsh, Burners, Tanks } = apply_finished_burners( ?getAttr(burners),
-		 ?getAttr(waste_capacity), _AccAsh=0.0, _AccBurners=[],
-		 CurrentTickOffset, State ),
+		?getAttr(waste_capacity), _AccAsh=0.0, _AccBurners=[],
+		CurrentTickOffset, State ),
 
 	[ waste_utils:check_waste_tank( T ) || T <- Tanks ],
 
@@ -383,14 +395,14 @@ apply_deadline( CurrentTickOffset, State ) ->
 			lists:delete( CurrentTickOffset, ?getAttr(deadlines) ) ),
 
 	setAttributes( PlanState, [
-			{ burners, ActiveBurners ++ PreviouslyIdleBurners },
-			{ waste_capacity, [ UpdatedAshTank | OtherTanks ++ UpdatedTanks ] },
-			{ deadlines, NewDeadlines } ] ).
+		{ burners, ActiveBurners ++ PreviouslyIdleBurners },
+		{ waste_capacity, [ UpdatedAshTank | OtherTanks ++ UpdatedTanks ] },
+		{ deadlines, NewDeadlines } ] ).
 
 
 
-% Returns updated burners and tanks (as a pair), once the current incinerations
-% are just over.
+% @doc Returns updated burners and tanks (as a pair), once the current
+% incinerations are just over.
 %
 % Iterates on the burners.
 %
@@ -424,13 +436,13 @@ apply_finished_burners( _Burners=[ Burner | OtherBurners ], Tanks, AccAsh,
 		_ ->
 			% Either idle or still incinerating:
 			apply_finished_burners( OtherBurners, Tanks, AccAsh,
-					   [ Burner | AccBurners ], CurrentTickOffset, State )
+				[ Burner | AccBurners ], CurrentTickOffset, State )
 
 	end.
 
 
 
-% Returns { InputTanks, UpdatedAshTank } where UpdatedAshTank is the ash tank
+% @doc Returns {InputTanks, UpdatedAshTank} where UpdatedAshTank is the ash tank
 % once updated with the specified quantity of bottom ash being added and
 % InputTanks are a list of the other tanks.
 %
@@ -460,8 +472,8 @@ update_ash_tank( AddedAsh, Tanks, State ) ->
 			% We do not want this benchmarking case to fail because of a
 			% non-connected enough incinerator:
 			%?error_fmt( "Incinerator full, exceeding maximum bottom ash "
-			%			"capacity (~f tons over a maximum of ~f).",
-			%			[ TooMuch, MaxMass ] ),
+			%   "capacity (~f tons over a maximum of ~f).",
+			%   [ TooMuch, MaxMass ] ),
 			%throw( { incinerator_overflow, ?getAttr(name), TooMuch,
 			%         MaxMass } );
 
@@ -482,9 +494,9 @@ update_ash_tank( AddedAsh, Tanks, State ) ->
 
 
 
-% Sorts burners according to their operating state.
+% @doc Sorts burners according to their operating state.
 %
-% Returns { IdleBurners, ActiveBurners }.
+% Returns {IdleBurners, ActiveBurners}.
 %
 split_idle_burners( Burners ) ->
 	split_idle_burners( Burners, _AccIdle=[], _AccActive=[] ).
@@ -503,14 +515,13 @@ split_idle_burners( _Burners=[ B | T ], AccIdle, AccActive ) ->
 
 
 
-
-% Returns a pair made of the updated specified tank to take into account
+% @doc Returns a pair made of the updated specified tank to take into account
 % specified burnt mass, and the resulting mass of bottom ash produced.
 %
 % (state needed for traces)
 %
 update_tank_after_burning( Tank,
-			#burner{ waste_consumed={ WasteType, BurntMass } }, _State ) ->
+		#burner{ waste_consumed={ WasteType, BurntMass } }, _State ) ->
 
 	% The tank mass has already been decreased, when the incineration started.
 
@@ -526,19 +537,17 @@ update_tank_after_burning( Tank,
 
 
 
-% Generates a list of instance definitions for the specified number of initial
-% incinerators.
+% @doc Generates a list of instance definitions for the specified number of
+% initial incinerators.
 %
--spec generate_definitions( basic_utils:count(), location_generator_pid(),
-							gis_info() ) ->
-		 static_return( [ class_Actor:instance_creation_spec() ] ).
+-spec generate_definitions( count(), location_generator_pid(), gis_info() ) ->
+				static_return( [ class_Actor:instance_creation_spec() ] ).
 generate_definitions( IncineratorCount, LocationGeneratorPid, GISInfo ) ->
 
 	% Triggers the location generation requests in parallel:
 	LocationGeneratorPid ! { generateNonAdjacentLocations,
-			   [ IncineratorCount,
-				 get_min_distance_between_incinerators_and_others(),
-				 get_min_distance_between_two_incinerators() ], self() },
+		[ IncineratorCount, get_min_distance_between_incinerators_and_others(),
+		  get_min_distance_between_two_incinerators() ], self() },
 
 	CreationSpecs = define_incinerators( IncineratorCount, GISInfo, _Acc=[] ),
 
@@ -565,13 +574,13 @@ define_incinerators( _IncineratorCount=0, GISInfo, Acc ) ->
 define_incinerators( IncineratorCount, GISInfo, Acc ) ->
 
 	% Defines the build parameters for a new incinerator; we want to end up with
-	% a list of { class_Incinerator, [ Name, CapacityInformation,
-	% BurnerInformation ] } elements.
+	% a list of {class_Incinerator, [Name, CapacityInformation,
+	% BurnerInformation]} elements.
 
 	Name = text_utils:format( "Incinerator-~B", [ IncineratorCount ] ),
 
 	DrawnTankCount = class_RandomManager:get_positive_integer_gaussian_value(
-											   _Mean=3, _StdDeviation=2 ),
+												_Mean=3, _StdDeviation=2 ),
 
 	% At least one tank, no more than eight:
 	TankCount = math_utils:clamp( 1, 8, DrawnTankCount ),
@@ -589,11 +598,11 @@ define_incinerators( IncineratorCount, GISInfo, Acc ) ->
 	% Location to be added later:
 	NewAcc = [ { Name, CapacityInformation, BurnerInformation } | Acc ],
 
-	define_incinerators( IncineratorCount - 1, GISInfo, NewAcc ).
+	define_incinerators( IncineratorCount-1, GISInfo, NewAcc ).
 
 
 
-% Adds the location to the incinerator build parameters (a kind of zip
+% @doc Adds the location to the incinerator build parameters (a kind of zip
 % operation):
 %
 merge_parameters( Params, Locations, GISInfo ) ->
@@ -609,13 +618,15 @@ merge_parameters( _Params=[ { Name, CapacityInfo, BurnerInfo } | Tp ],
 				  _Locations=[ Loc | Tl ], Acc, GISInfo ) ->
 
 	NewIncineratorDef = { class_Incinerator, [ Name, { wgs84_cartesian, Loc },
-										  CapacityInfo, BurnerInfo, GISInfo ] },
+										CapacityInfo, BurnerInfo, GISInfo ] },
 
 	merge_parameters( Tp, Tl, [ NewIncineratorDef | Acc ], GISInfo ).
 
 
 
-% Generates the specified number of waste tanks, to form a capacity information.
+% @doc Generates the specified number of waste tanks, to form a capacity
+% information.
+%
 generate_tanks( TankCount ) ->
 	generate_tanks( TankCount, _Acc=[] ).
 
@@ -630,7 +641,7 @@ generate_tanks( TankCount, Acc ) ->
 	% In cubic meters:
 	{ MinPossibleVolume, MaxPossibleVolume } = { 500, 20000 },
 	Volume = MinPossibleVolume + class_RandomManager:get_uniform_value(
-								   MaxPossibleVolume - MinPossibleVolume + 1 ),
+									MaxPossibleVolume - MinPossibleVolume + 1 ),
 
 	% In tons:
 	MeanMass = 30,
@@ -638,7 +649,7 @@ generate_tanks( TankCount, Acc ) ->
 
 	% Negative values could be drawn:
 	Mass = erlang:abs(
-			 class_RandomManager:get_gaussian_value( MeanMass, StdDeviationMass ) ),
+		class_RandomManager:get_gaussian_value( MeanMass, StdDeviationMass ) ),
 
 	MaxVolume = math_utils:round_after( float( Volume ), 0 ),
 
@@ -673,11 +684,11 @@ generate_tanks( TankCount, Acc ) ->
 
 		busy=false },
 
-	generate_tanks( TankCount - 1, [ NewTank | Acc ] ).
+	generate_tanks( TankCount-1, [ NewTank | Acc ] ).
 
 
 
-% Returns the set of waste types that this incinerator can burn.
+% @doc Returns the set of waste types that this incinerator can burn.
 %
 % (helper)
 %
@@ -720,7 +731,7 @@ add_waste_types( _AllowedTypes=[ Type | T ], Acc ) ->
 
 
 
-% Returns the specified list of tanks, ordered by increasing ID.
+% @doc Returns the specified list of tanks, ordered by increasing ID.
 -spec list_ordered_tanks( [ waste_tank() ] ) -> [ waste_tank() ].
 list_ordered_tanks( Tanks ) ->
 
@@ -735,13 +746,13 @@ list_ordered_tanks( Tanks ) ->
 
 
 
-% Returns the type and associated mass of all wastes stored into this
+% @doc Returns the type and associated mass of all wastes stored into this
 % incinerator, in an aggregated list (i.e. a waste type is listed at most once).
 %
 % (helper)
 %
 -spec get_current_waste_stored( wooper:state() ) ->
-									  [ { waste_type(), unit_utils:tons() } ].
+										[ { waste_type(), tons() } ].
 get_current_waste_stored( State ) ->
 
 	Tanks = ?getAttr(waste_capacity),
@@ -773,7 +784,9 @@ totalize_waste(
 
 
 
-% Generates the specified number of waste burners, to form a burner information.
+% @doc Generates the specified number of waste burners, to form a burner
+% information.
+%
 generate_burners( BurnerCount, CapacityInformation ) when BurnerCount >= 1 ->
 	WasteTypesToCover = list_waste_types( CapacityInformation ),
 	generate_burners( BurnerCount, WasteTypesToCover, _BurnerAcc=[] ).
@@ -814,7 +827,7 @@ generate_burners( BurnerCount, WasteTypesToCover, BurnerAcc ) ->
 
 	% The drawn value may be negative, we surely do not want this to happen:
 	Mass = erlang:abs( class_RandomManager:get_gaussian_value( MeanMass,
-												   StdDeviationMass ) ),
+													StdDeviationMass ) ),
 
 	NewBurner = #burner{ incinerable_types=[ UniqueType ],
 						 burning_capacity=Mass },
@@ -827,9 +840,9 @@ generate_burners( BurnerCount, WasteTypesToCover, BurnerAcc ) ->
 % Helper functions.
 
 
-% Returns the corresponding tanks and their curve descriptions.
+% @doc Returns the corresponding tanks and their curve descriptions.
 -spec manage_capacity_information( waste_capacity() ) ->
-										 { [ waste_tank() ], [ string() ] }.
+											{ [ waste_tank() ], [ ustring() ] }.
 manage_capacity_information( CapacityInformation ) ->
 
 	% We automatically add one additional tank, to output bottom ash:
@@ -882,7 +895,7 @@ manage_capacity_information( _CapacityInformation=[
 
 
 
-% Returns the corresponding burners.
+% @doc Returns the corresponding burners.
 -spec manage_burner_information( [ burner() ] ) -> [ burner() ].
 manage_burner_information( BurnerInformation ) ->
 	manage_burner_information( BurnerInformation, _Acc=[] ).
@@ -899,7 +912,7 @@ manage_burner_information( _BurnerInformation=[
 
 
 
-% Returns the waste types that a new tank may contain.
+% @doc Returns the waste types that a new tank may contain.
 get_waste_types_for_tank() ->
 
 	% Currently only one type of waste can be contain in any tank:
@@ -921,15 +934,16 @@ get_min_distance_between_two_incinerators() ->
 
 
 
-% Returns { SortedIdleNonEmptyTanks, OtherTanks } where SortedIdleNonEmptyTanks
-% are the tanks that are idle and non-empty (having waste to incinerate), sorted
-% by decreasing load factor, and OtherTanks are the others.
+% @doc Returns {SortedIdleNonEmptyTanks, OtherTanks} where
+% SortedIdleNonEmptyTanks are the tanks that are idle and non-empty (having
+% waste to incinerate), sorted by decreasing load factor, and OtherTanks are the
+% others.
 %
 % (helper)
 %
 get_sorted_tanks( Tanks ) ->
 
-	% Will create a [ { Tank, LoadFactor } ] list in IdleNonEmptyTanksAcc:
+	% Will create a [{ Tank, LoadFactor}] list in IdleNonEmptyTanksAcc:
 	get_sorted_tanks( Tanks, _IdleNonEmptyTanksAcc=[], _OtherTanksAcc=[] ).
 
 
@@ -944,8 +958,8 @@ get_sorted_tanks( _Tanks=[], IdleNonEmptyTanksAcc, OtherTanksAcc ) ->
 							lists:keysort( _Index=2, IdleNonEmptyTanksAcc ) ),
 
 	% Now that sorted, removing the load factors:
-	StrippedNonEmptyTanks = [ Tank
-						 || { Tank, _LoadFactor } <- SortedIdleNonEmptyTanks ],
+	StrippedNonEmptyTanks =
+		[ Tank || { Tank, _LoadFactor } <- SortedIdleNonEmptyTanks ],
 
 	{ StrippedNonEmptyTanks, OtherTanksAcc };
 
@@ -975,14 +989,14 @@ get_sorted_tanks( _Tanks=[ Tank | OtherTanks ], IdleNonEmptyTanksAcc,
 
 
 
-% Assigns idle burners to the most loaded tanks, and starts incineration.
+% @doc Assigns idle burners to the most loaded tanks, and starts incineration.
 %
-% Returns { PreviouslyIdleBurners, UpdatedTanks,  IncinerationEndTicks }.
+% Returns {PreviouslyIdleBurners, UpdatedTanks,  IncinerationEndTicks}.
 %
 % Note: apparently carrying around a state is not necessary.
 %
 -spec assign_burners( [ burner() ], [ waste_tank() ], wooper:state() ) ->
-	{  [ burner() ], [ waste_tank() ], [ class_TimeManager:tick_offset() ] }.
+	{  [ burner() ], [ waste_tank() ], [ tick_offset() ] }.
 assign_burners( Burners, SortedTanks, State ) ->
 
 	%trace_utils:debug_fmt( "SortedTanks = ~p", [ SortedTanks ] ),
@@ -1009,9 +1023,9 @@ assign_burners( _Burners=[ Burner | OtherBurners ], SortedTanks, AccBurners,
 			undefined = Burner#burner.end_of_incineration,
 			undefined = Burner#burner.waste_consumed,
 
-			%trace_utils:debug_fmt( "For burner ~s, found tank ~s.~n",
-			%	  [ burner_to_string( Burner ),
-			%	   waste_utils:waste_tank_to_string( MatchingTank ) ] ),
+			%trace_utils:debug_fmt( "For burner ~ts, found tank ~ts.",
+			%   [ burner_to_string( Burner ),
+			%     waste_utils:waste_tank_to_string( MatchingTank ) ] ),
 
 			MassToBurn = min( Burner#burner.burning_capacity,
 							  MatchingTank#waste_tank.current_mass_stored ),
@@ -1044,6 +1058,7 @@ assign_burners( _Burners=[ Burner | OtherBurners ], SortedTanks, AccBurners,
 			% Note: the mass that will be burnt by a given incineration is
 			% removed as soon as the incineration starts, otherwise it could be
 			% loaded by a truck in-between:
+			%
 			DepletedTank = waste_utils:remove_waste_from_tank( MatchingTank,
 							   MassToBurn, TankWasteType ),
 
@@ -1054,6 +1069,7 @@ assign_burners( _Burners=[ Burner | OtherBurners ], SortedTanks, AccBurners,
 			% We must remove the tank from the candidate list, as the waste mass
 			% will decrease only once the incineration will be over (otherwise
 			% multiple burners could treat the same wastes):
+			%
 			assign_burners( OtherBurners, OtherTanks,
 							[ UpdatedBurner | AccBurners ],
 							[ UpdatedTank | AccTanks ],
@@ -1062,8 +1078,8 @@ assign_burners( _Burners=[ Burner | OtherBurners ], SortedTanks, AccBurners,
 
 		no_tank_found ->
 
-			%trace_utils:debug_fmt( "No tank found for burner '~s'.",
-			%					   [ burner_to_string( Burner ) ] ),
+			%trace_utils:debug_fmt( "No tank found for burner '~ts'.",
+			%                       [ burner_to_string( Burner ) ] ),
 
 			% Relevant tanks must be empty, burner will remain idle then:
 			assign_burners( OtherBurners, SortedTanks, [ Burner | AccBurners ],
@@ -1073,9 +1089,9 @@ assign_burners( _Burners=[ Burner | OtherBurners ], SortedTanks, AccBurners,
 
 
 
-% Returns { MatchingTank, OtherTanks } where MatchingTank is the first tank in
-% the list that has waste that correspond to one of the specified waste types,
-% and OtherTanks is the list of other tanks.
+% @doc Returns {MatchingTank, OtherTanks} where MatchingTank is the first tank
+% in the list that has waste that correspond to one of the specified waste
+% types, and OtherTanks is the list of other tanks.
 %
 % If no such compatible tank is found, returns 'no_tank_found'.
 %
@@ -1103,13 +1119,13 @@ find_first_matching_tank( WasteTypes, _Tanks=[ Tank | T ], Acc ) ->
 
 
 
-% Returns the tank whose ID is the specified one, and the list without it:
-% { FoundTank, OtherTanks }.
+% @doc Returns the tank whose ID is the specified one, and the list without it:
+% {FoundTank, OtherTanks}.
 %
 % (helper)
 %
 -spec remove_tank_by_id( tank_id(), [ waste_tank() ] ) ->
-						 { waste_tank(), [ waste_tank() ] }.
+								{ waste_tank(), [ waste_tank() ] }.
 remove_tank_by_id( TankID, Tanks ) ->
 	remove_tank_by_id( TankID, Tanks, _Acc=[] ).
 
@@ -1127,18 +1143,18 @@ remove_tank_by_id( TankID, _Tanks=[ Tank | T ], Acc ) ->
 
 
 
-% Computes the duration needed to incinerate specified waste with specified
+% @doc Computes the duration needed to incinerate specified waste with specified
 % burner.
 %
--spec compute_incineration_duration( unit_utils:tons(), waste_type(), burner(),
-					 wooper:state() ) -> class_TimeManager:tick_offset().
+-spec compute_incineration_duration( tons(), waste_type(), burner(),
+									 wooper:state() ) -> tick_offset().
 compute_incineration_duration( MassToBurn, _Wastetype=incinerable_waste_type_1,
 							   _Burner, State ) ->
 
 	SecondsNeeded = 2.7 * 40 * math:sqrt( 12 * MassToBurn ),
 
 	class_Actor:convert_seconds_to_non_null_ticks( SecondsNeeded,
-			_RelaxedMaxRelativeError=?city_max_relative_error, State );
+		_RelaxedMaxRelativeError=?city_max_relative_error, State );
 
 
 compute_incineration_duration( MassToBurn, _Wastetype=incinerable_waste_type_2,
@@ -1147,11 +1163,11 @@ compute_incineration_duration( MassToBurn, _Wastetype=incinerable_waste_type_2,
 	SecondsNeeded = 5.8 * 40 * math:sqrt( 4 * MassToBurn ),
 
 	class_Actor:convert_seconds_to_non_null_ticks( SecondsNeeded,
-			_RelaxedMaxRelativeError=?city_max_relative_error, State ).
+		_RelaxedMaxRelativeError=?city_max_relative_error, State ).
 
 
 
-% Computes the mass of bottom ash produced due to the incineration of the
+% @doc Computes the mass of bottom ash produced due to the incineration of the
 % specified mass of specified waste.
 %
 compute_ash_produced( BurntMass, _WasteType=incinerable_waste_type_1 ) ->
@@ -1165,7 +1181,7 @@ compute_ash_produced( BurntMass, _OtherWasteType ) ->
 
 
 
-% Sends waste data to probe (if any).
+% @doc Sends waste data to probe (if any).
 %
 % (helper)
 %
@@ -1182,7 +1198,7 @@ send_data_to_probe( State ) ->
 			TankList = list_ordered_tanks( ?getAttr(waste_capacity) ),
 
 			WasteStockSample = list_to_tuple( [
-				  Tank#waste_tank.current_mass_stored || Tank <- TankList ] ),
+				Tank#waste_tank.current_mass_stored || Tank <- TankList ] ),
 
 			class_Probe:send_data( ProbePid, ?getAttr(current_tick_offset),
 								   WasteStockSample )
@@ -1195,7 +1211,7 @@ burners_to_string( Burners ) ->
 
 	BurnerList = [ burner_to_string( B ) || B <- Burners ],
 
-	text_utils:format( "~B burners: ~s", [ length( BurnerList ),
+	text_utils:format( "~B burners: ~ts", [ length( BurnerList ),
 						 text_utils:strings_to_string( BurnerList ) ] ).
 
 
@@ -1206,8 +1222,8 @@ burner_to_string( #burner{ incinerable_types=WasteTypes,
 						   waste_consumed=WasteConsumed } ) ->
 
 	Base = text_utils:format( "burner able to incinerate up to ~f tons "
-				   "(approximatively) of wastes of type ~p",
-				   [ math_utils:round_after( BurnCapacity, 2 ), WasteTypes ] ),
+				"(approximatively) of wastes of type ~p",
+				[ math_utils:round_after( BurnCapacity, 2 ), WasteTypes ] ),
 
 	case End of
 
@@ -1228,11 +1244,11 @@ burner_to_string( #burner{ incinerable_types=WasteTypes,
 
 
 
-% Returns a textual representation of this instance.
+% @doc Returns a textual representation of this instance.
 %
 % (helper)
 %
--spec to_string( wooper:state() ) -> string().
+-spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
 	CapacityInfo = waste_utils:waste_capacity_to_string(
@@ -1240,8 +1256,8 @@ to_string( State ) ->
 
 	BurnerInfo = burners_to_string( ?getAttr(burners) ),
 
-	text_utils:format( "Incinerator '~s' (AAI: ~B) located at ~s (~s)"
-		"making use of a ~s and relying on ~s, whose random state is ~p",
+	text_utils:format( "Incinerator '~ts' (AAI: ~B) located at ~ts (~ts)"
+		"making use of a ~ts and relying on ~ts, whose random state is ~p",
 		[ ?getAttr(name), class_Actor:get_abstract_identifier( State ),
 		  class_GeolocalizedElement:interpret_location( State ),
 		  class_PointOfInterest:to_string( State ), CapacityInfo, BurnerInfo,

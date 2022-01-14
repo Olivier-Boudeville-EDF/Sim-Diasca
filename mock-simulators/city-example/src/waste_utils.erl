@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2021 EDF R&D
+% Copyright (C) 2012-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,8 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-
-% Various facilities about waste management.
+% @doc Various facilities about waste management.
 -module(waste_utils).
 
 
@@ -71,6 +70,13 @@
 
 
 
+% Shorthands:
+
+-type ustring() :: text_utils:ustring().
+
+-type tons() :: unit_utils:tons().
+
+
 
 % Implementation notes:
 %
@@ -78,51 +84,54 @@
 % city_example_types.hrl.
 
 
-% Green-house gases (GHG):
+% @doc Returns all types of green-house gases (GHG).
 -spec get_green_house_gas_types() -> [ green_house_gas() ].
 get_green_house_gas_types() ->
 	[ 'carbon_dioxide', 'methane' ].
 
 
-% Gases (all kinds of):
+% @doc Returns all types of gases.
 -spec get_gas_types() -> [ gas() ].
 get_gas_types() ->
 	get_green_house_gas_types() ++ [ 'biogas', 'exhaust_gas' ].
 
 
-% Wastes that could be valorized:
+% @doc Returns the types of wastes that can be valorized.
 -spec get_recyclable_waste_types() -> [ waste_type() ].
 get_recyclable_waste_types() ->
 	[ 'recyclable_waste' ].
 
 
-% Wastes that can be incinerated:
+% @doc Returns the types of wastes that can be incinerated.
 -spec get_incinerable_waste_types() -> [ waste_type() ].
 get_incinerable_waste_types() ->
 	[ 'incinerable_waste_type_1', 'incinerable_waste_type_2' ].
 
 
-% Wastes that cannot be valorized:
+% @doc Returns the types of wastes that cannot be valorized.
 -spec get_treated_waste_types() -> [ waste_type() ].
 get_treated_waste_types() ->
 	[ 'bottom_ash', 'residual_waste' ].
 
 
-% Wastes (all kinds of solid wastes, in tons):
+% @doc Returns the types of wastes (all kinds of solid wastes, in tons).
 -spec get_waste_types() -> [ waste_type() ].
 get_waste_types() ->
 	get_recyclable_waste_types() ++ get_incinerable_waste_types()
 		++ get_treated_waste_types().
 
 
-
-% Energy used or released, under different possible forms:
+% @doc Returns the types of energy used or released, under different possible
+% forms.
+%
 -spec get_energy_form_types() -> [ energy_form() ].
 get_energy_form_types() ->
 	[ 'heat', 'electricity', 'momentum', 'fuel' ].
 
 
-% Emissions, whether or not they are deemed being pollutants:
+% @doc Returns the types of emissions, whether or not they are deemed being
+% pollutants.
+%
 -spec get_emission_types() -> [ waste_type() ].
 get_emission_types() ->
 	get_gas_types() ++ get_waste_types() ++ get_energy_form_types().
@@ -132,8 +141,8 @@ get_emission_types() ->
 % Waste-based operations.
 
 
-% Tells whether the two specified waste types can be mixed into a single waste
-% tank.
+% @doc Tells whether the two specified waste types can be mixed into a single
+% waste tank.
 %
 -spec can_be_mixed( waste_type(), waste_type() ) -> boolean().
 can_be_mixed( X, X ) ->
@@ -150,10 +159,9 @@ can_be_mixed( _X, _Y ) ->
 
 
 
-
-% Tells whether the specified type of POI (ex: an incinerator) may produce the
-% specified type of waste (condition that is necessary but not sufficient - some
-% instances may not produce all the waste types that their class may list).
+% @doc Tells whether the specified type of POI (ex: an incinerator) may produce
+% the specified type of waste (condition that is necessary but not sufficient -
+% some instances may not produce all the waste types that their class may list).
 %
 % The 'none' waste type means any waste.
 %
@@ -175,11 +183,13 @@ can_produce( _POIType, _WasteType=none ) ->
 can_produce( _POIType=class_IndustrialWasteSource, WasteType ) ->
 	% Each industrial waste source *may* produce one waste type among the
 	% incinerable ones:
+	%
 	lists:member( WasteType, get_incinerable_waste_types() );
 
 can_produce( _POIType=class_ResidentialWasteSource, WasteType ) ->
 	% Each residential waste source *may* produce one waste type among the
 	% incinerable ones:
+	%
 	lists:member( WasteType, get_incinerable_waste_types() );
 
 can_produce( _POIType=class_Incinerator, _WasteType=bottom_ash ) ->
@@ -187,15 +197,14 @@ can_produce( _POIType=class_Incinerator, _WasteType=bottom_ash ) ->
 
 % Implied:
 %can_produce( _POIType=class_Incinerator, _WasteType ) ->
-%	false;
+%   false;
 
 can_produce( _POIType, _WasteType ) ->
 	false.
 
 
 
-
-% Tells whether the specified type of POI may consume the specified type of
+% @doc Tells whether the specified type of POI may consume the specified type of
 % waste (condition that is necessary but not sufficient - some instances may not
 % consume all the waste types that their class may list).
 %
@@ -219,7 +228,7 @@ can_consume( _POIType, _WasteType ) ->
 
 
 
-% Returns all the possible types of loading points.
+% @doc Returns all the possible types of loading points.
 %
 % (helper)
 %
@@ -230,7 +239,7 @@ get_all_loading_point_types() ->
 
 
 
-% Returns all the possible types of unloading points.
+% @doc Returns all the possible types of unloading points.
 %
 % (helper)
 %
@@ -240,14 +249,14 @@ get_all_unloading_point_types() ->
 
 
 
-% Tells whether the specified POI type is a loading point.
+% @doc Tells whether the specified POI type is a loading point.
 -spec is_poi_type_loadable( poi_type() ) -> boolean().
 is_poi_type_loadable( PoiType ) ->
 	lists:member( PoiType, get_all_loading_point_types() ).
 
 
 
-% Tells whether the specified POI type is an unloading point.
+% @doc Tells whether the specified POI type is an unloading point.
 -spec is_poi_type_unloadable( poi_type() ) -> boolean().
 is_poi_type_unloadable( PoiType ) ->
 	lists:member( PoiType, get_all_unloading_point_types() ).
@@ -258,7 +267,7 @@ is_poi_type_unloadable( PoiType ) ->
 % Checking section.
 
 
-% Checks that the specified waste type is valid.
+% @doc Checks that the specified waste type is valid.
 -spec check_waste_type( atom() ) -> void().
 check_waste_type( Type ) ->
 
@@ -274,7 +283,7 @@ check_waste_type( Type ) ->
 
 
 
-% Checks that all the waste types specified in the list are valid.
+% @doc Checks that all the waste types specified in the list are valid.
 -spec check_waste_types( [ atom() ] ) -> void().
 check_waste_types( TypeList ) ->
 	[ check_waste_type( T ) || T <- TypeList ].
@@ -301,15 +310,14 @@ check_masses( CurrentMass, MaxMass ) ->
 
 
 
-% Checks that the specified description of a waste tank is valid.
+% @doc Checks that the specified description of a waste tank is valid.
 -spec check_waste_tank( waste_tank() ) -> void().
-check_waste_tank( Tank=#waste_tank{
-				allowed_types=WasteTypes,
-				current_volume_stored=CurrentVolume,
-				max_volume_stored=MaxVolume,
-				current_mass_stored=CurrentMass,
-				max_mass_stored=MaxMass,
-				current_type=CurrentType } ) ->
+check_waste_tank( Tank=#waste_tank{ allowed_types=WasteTypes,
+									current_volume_stored=CurrentVolume,
+									max_volume_stored=MaxVolume,
+									current_mass_stored=CurrentMass,
+									max_mass_stored=MaxMass,
+									current_type=CurrentType } ) ->
 
 	check_waste_types( WasteTypes ),
 
@@ -338,7 +346,10 @@ check_waste_tank( Tank=#waste_tank{
 	 end.
 
 
-% Ensures that specified waste capacity (i.e. list of waste tanks) is valid.
+
+% @doc Ensures that specified waste capacity (i.e. list of waste tanks) is
+% valid.
+%
 -spec check_waste_capacity( waste_capacity() ) -> void().
 check_waste_capacity( Tanks ) ->
 	[ check_waste_tank( T ) || T <- Tanks ].
@@ -351,14 +362,13 @@ check_incinerable( WasteType ) ->
 
 
 
-% Adds the specified quantity (in terms of mass) of waste (of specified type) to
-% specified tank.
+% @doc Adds the specified quantity (in terms of mass) of waste (of specified
+% type) to specified tank.
 %
 % Note: useful to perform checkings, and notably to ensure the waste type is
 % correctly updated if needed.
 %
--spec add_waste_to_tank( waste_tank(), unit_utils:tons(), waste_type() )
-					   -> waste_tank().
+-spec add_waste_to_tank( waste_tank(), tons(), waste_type() ) -> waste_tank().
 add_waste_to_tank( _Tank, _MassToAdd, _WasteType=none ) ->
 	throw( unspecified_added_waste_type );
 
@@ -408,15 +418,14 @@ add_waste_to_tank( Tank=#waste_tank{ current_mass_stored=CurrentMass,
 
 
 
-
-% Removes the specified quantity (in terms of mass) of waste (of current type)
-% from specified tank.
+% @doc Removes the specified quantity (in terms of mass) of waste (of current
+% type) from specified tank.
 %
 % Note: useful to perform checkings, and notably to ensure the waste type is
 % correctly updated if needed.
 %
--spec remove_waste_from_tank( waste_tank(), unit_utils:tons(), waste_type() ) ->
-									waste_tank().
+-spec remove_waste_from_tank( waste_tank(), tons(), waste_type() ) ->
+														waste_tank().
 remove_waste_from_tank( _Tank, _MassToRemove, _WasteType=none ) ->
 	throw( unspecified_removed_waste_type );
 
@@ -429,7 +438,7 @@ remove_waste_from_tank( Tank=#waste_tank{ current_type=WasteType },
 % Removes the specified quantity (in terms of mass) of waste (of current type)
 % from specified tank.
 %
--spec remove_waste_from_tank( waste_tank(), unit_utils:tons() ) -> waste_tank().
+-spec remove_waste_from_tank( waste_tank(), tons() ) -> waste_tank().
 remove_waste_from_tank( Tank=#waste_tank{ current_mass_stored=CurrentMass },
 				MassToRemove ) when MassToRemove > CurrentMass + ?epsilon ->
 	throw( { too_large_removal_from_tank, MassToRemove, Tank } );
@@ -451,13 +460,14 @@ remove_waste_from_tank( Tank=#waste_tank{ current_mass_stored=CurrentMass },
 
 
 
-% Returns whether the specified tank is empty.
+% @doc Returns whether the specified tank is empty.
 -spec is_tank_empty( waste_tank() ) -> boolean().
 is_tank_empty( Tank ) ->
+	% No relative comparison needed, as exact by design:
 	Tank#waste_tank.current_mass_stored =:= 0.0.
 
 
-% Returns whether the specified tank is full.
+% @doc Returns whether the specified tank is full.
 -spec is_tank_full( waste_tank() ) -> boolean().
 is_tank_full( Tank ) ->
 	Tank#waste_tank.current_mass_stored =:= Tank#waste_tank.max_mass_stored.
@@ -468,19 +478,19 @@ is_tank_full( Tank ) ->
 
 
 % Returns a textual representation of specified waste capacity.
--spec waste_capacity_to_string( waste_capacity() ) -> string().
+-spec waste_capacity_to_string( waste_capacity() ) -> ustring().
 waste_capacity_to_string( Tanks ) ->
 
 	TankStrings = [ waste_tank_to_string( T ) || T <- Tanks ],
 
-	text_utils:format( "Waste capacity made of ~B waste tanks: ~s",
-				   [ length( Tanks ),
-					 text_utils:strings_to_string( TankStrings ) ] ).
+	text_utils:format( "Waste capacity made of ~B waste tanks: ~ts",
+		[ length( Tanks ),
+		  text_utils:strings_to_string( TankStrings ) ] ).
 
 
 
-% Returns a textual representation of specified waste tank.
--spec waste_tank_to_string( waste_tank() ) -> string().
+% @doc Returns a textual representation of the specified waste tank.
+-spec waste_tank_to_string( waste_tank() ) -> ustring().
 waste_tank_to_string( Tank ) ->
 
 	BusyString = case Tank#waste_tank.busy of
@@ -493,15 +503,15 @@ waste_tank_to_string( Tank ) ->
 
 	end,
 
-	text_utils:format( "waste tank #~B, currently ~s, "
-				   "able to store following waste types: ~p; "
-				   "current volume stored: ~f cubic meters (max: ~f); "
-				   "current mass stored: ~f tons (max: ~f) of waste of type ~s",
-					[ Tank#waste_tank.id,
-					  BusyString,
-					  Tank#waste_tank.allowed_types,
-					  Tank#waste_tank.current_volume_stored,
-					  Tank#waste_tank.max_volume_stored,
-					  Tank#waste_tank.current_mass_stored,
-					  Tank#waste_tank.max_mass_stored,
-					  Tank#waste_tank.current_type ] ).
+	text_utils:format( "waste tank #~B, currently ~ts, "
+		"able to store following waste types: ~p; "
+		"current volume stored: ~f cubic meters (max: ~f); "
+		"current mass stored: ~f tons (max: ~f) of waste of type ~ts",
+		[ Tank#waste_tank.id,
+		  BusyString,
+		  Tank#waste_tank.allowed_types,
+		  Tank#waste_tank.current_volume_stored,
+		  Tank#waste_tank.max_volume_stored,
+		  Tank#waste_tank.current_mass_stored,
+		  Tank#waste_tank.max_mass_stored,
+		  Tank#waste_tank.current_type ] ).

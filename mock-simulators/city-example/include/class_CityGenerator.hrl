@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2021 EDF R&D
+% Copyright (C) 2012-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,8 +19,6 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-
-
 % Description of a city that is to be procedurally created.
 %
 % The city is defined into a 3D cartesian system (orthonormal basis).
@@ -39,50 +37,46 @@
 %
 -record( city_description, {
 
-
-		% Name of the city:
-		name :: string(),
-
-
-		% Vector from the origin of the coordinate system to the center of the
-		% right cuboid corresponding to the city:
-		%
-		% (useful for example to take altitudes into account)
-		%
-		center :: linear_3D:vector(),
+	% Name of the city:
+	name :: text_utils:ustring(),
 
 
-		% Dimensions of the city { XLen, YLen, ZLen } in its local referential
-		% (which is the absolute referential translated by the center
-		% vector): extent of the city (which is a contained into a right_cuboid
-		% bounding box), from the origin and alongside the three canonical axes,
-		% specified thanks to the point opposite to the origin:
-		%
-		dimensions :: linear_3D:point(),
+	% Vector from the origin of the coordinate system to the center of the
+	% right cuboid corresponding to the city:
+	%
+	% (useful for example to take altitudes into account)
+	%
+	center :: vector3:vector3(),
 
 
-		% Number of incinerators in the city;
-		incinerator_count :: basic_utils:count(),
+	% Dimensions of the city {XLen, YLen, ZLen} in its local referential (which
+	% is the absolute referential translated by the center vector): extent of
+	% the city (which is a contained into a right_cuboid bounding box), from the
+	% origin and alongside the three canonical axes, specified thanks to the
+	% point opposite to the origin:
+	%
+	dimensions :: point3:point3(),
 
 
-		% Number of landfills in the city;
-		landfill_count :: basic_utils:count(),
+	% Number of incinerators in the city;
+	incinerator_count :: basic_utils:count(),
 
 
-		% Number of residential waste source in the city:
-		residential_waste_source_count :: basic_utils:count(),
+	% Number of landfills in the city;
+	landfill_count :: basic_utils:count(),
 
 
-		% Number of industrial waste source in the city:
-		industrial_waste_source_count :: basic_utils:count(),
+	% Number of residential waste source in the city:
+	residential_waste_source_count :: basic_utils:count(),
 
 
-		% The number of road junctions in the city:
-		road_junction_count :: basic_utils:count(),
+	% Number of industrial waste source in the city:
+	industrial_waste_source_count :: basic_utils:count(),
 
 
-		% The number of waste trucks operating in the city:
-		waste_truck_count :: basic_utils:count()
+	% The number of road junctions in the city:
+	road_junction_count :: basic_utils:count(),
 
 
-						 } ).
+	% The number of waste trucks operating in the city:
+	waste_truck_count :: basic_utils:count() } ).

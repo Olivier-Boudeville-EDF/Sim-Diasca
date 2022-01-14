@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2021 EDF R&D
+% Copyright (C) 2016-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -28,11 +28,12 @@
 -include("dataflow_defines.hrl").
 
 
-% The dataflow-level events that unit managers may handle:
 -type urban_dataflow_event() :: 'new_energy_demand_unit_needed'.
+% The dataflow-level events that unit managers may handle.
 
-% Event-associated data:
+
 -type event_data() :: any().
+% Event-associated data.
 
 
 % Centralisation of defines, type definitions, semantics, etc. for the Urban

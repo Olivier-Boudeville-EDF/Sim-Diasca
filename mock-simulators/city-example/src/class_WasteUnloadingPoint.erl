@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2021 EDF R&D
+% Copyright (C) 2012-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,6 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Class modelling a <b>waste unloading point</b>.
 -module(class_WasteUnloadingPoint).
 
 
@@ -57,7 +58,7 @@
 
 
 
-% Creates a new waste unloading point.
+% @doc Creates a waste unloading point.
 %
 % Construction parameters are:
 %
@@ -66,7 +67,7 @@
 % - CapacityInformation describes the waste storage capacity of this point
 %
 -spec construct( wooper:state(), class_GIS:location(), waste_capacity() ) ->
-					   wooper:state().
+						wooper:state().
 construct( State, Location, CapacityInformation ) ->
 
 	ContainerState = class_GeoContainer:construct( State, Location ),
@@ -81,9 +82,9 @@ construct( State, Location, CapacityInformation ) ->
 % Methods section.
 
 
-% Tries to unload to this unloading point as much as possible of the specified
-% mass of specified waste type (possibly any) from the caller (which is expected
-% to be a waste transport requesting to empty its waste).
+% @doc Tries to unload to this unloading point as much as possible of the
+% specified mass of specified waste type (possibly any) from the caller (which
+% is expected to be a waste transport requesting to empty its waste).
 %
 % The answer (the actor message sent back) will be:
 %
@@ -105,9 +106,9 @@ unloadWaste( State, WasteType, ProposedMass, WasteUnloaderPid ) ->
 
 	{ _State, DescString } = executeRequest( State, toString ),
 
-	?info_fmt( "Trying to dispatch ~f tons of waste of type ~s "
-				"into ~B tanks in ~s.",
-				[ ProposedMass, WasteType, length( WasteTanks ), DescString ] ),
+	?info_fmt( "Trying to dispatch ~f tons of waste of type ~ts "
+		"into ~B tanks in ~ts.",
+		[ ProposedMass, WasteType, length( WasteTanks ), DescString ] ),
 
 	UnloadState = case dispatch_waste_into_tanks( WasteType, ProposedMass,
 												  WasteTanks ) of
@@ -126,20 +127,20 @@ unloadWaste( State, WasteType, ProposedMass, WasteUnloaderPid ) ->
 				 get_unloading_duration( WasteType, UnloadedMass, State ),
 
 			?info_fmt( "Unloading, from transport ~w, ~f tons of waste "
-				"of type ~s, this will last for ~B ticks.",
+				"of type ~ts, this will last for ~B ticks.",
 				[ WasteUnloaderPid, UnloadedMass, WasteType,
 				  UnloadingTickCount ] ),
 
 			SentState = class_Actor:send_actor_message( WasteUnloaderPid,
 				{ notifyUnloadedWaste,
-				  [ UnloadedMass, WasteType, UnloadingTickCount ] }, State ),
+					[ UnloadedMass, WasteType, UnloadingTickCount ] }, State ),
 
 			setAttribute( SentState, waste_capacity, NewWasteTanks )
 
 	end,
 
 	[ waste_utils:check_waste_tank( T )
-	  || T <- getAttribute( UnloadState, waste_capacity ) ],
+		|| T <- getAttribute( UnloadState, waste_capacity ) ],
 
 	actor:return_state( UnloadState ).
 
@@ -158,7 +159,7 @@ manage_capacity_information( CapacityInformation ) ->
 
 
 
-% Does its best to dispatch the specified quantity of waste (of a specified
+% @doc Does its best to dispatch the specified quantity of waste (of a specified
 % type) into the specified waste tanks.
 %
 % Returns either 'false' if no waste at all was transferred to tanks, otherwise
@@ -185,7 +186,7 @@ dispatch_waste_into_tanks( _WasteType, RemainingMass, _WasteTanks=[],
 
 
 dispatch_waste_into_tanks( WasteType, RemainingMass, _WasteTanks=[
-	  Tank=#waste_tank{	allowed_types=AllowedTypes,
+	  Tank=#waste_tank{ allowed_types=AllowedTypes,
 						current_type=TankWasteType,
 						current_mass_stored=CurrentMass,
 						max_mass_stored=MaxMass } | T ], AccTank ) ->
@@ -194,7 +195,7 @@ dispatch_waste_into_tanks( WasteType, RemainingMass, _WasteTanks=[
 	% compatible with what is already stored (if any):
 	%
 	case lists:member( WasteType, AllowedTypes )
-		andalso	waste_utils:can_be_mixed( TankWasteType, WasteType ) of
+		andalso waste_utils:can_be_mixed( TankWasteType, WasteType ) of
 
 		true ->
 
@@ -244,8 +245,9 @@ dispatch_waste_into_tanks( WasteType, RemainingMass, _WasteTanks=[
 
 		false ->
 
-			%trace_utils:debug_fmt( "Non-compatible waste types (tank: ~s, waste: ~s),"
-			%	   "continuing iterating.", [ TankWasteType, WasteType ] ),
+			%trace_utils:debug_fmt( "Non-compatible waste types (tank: ~ts, "
+			%   "waste: ~ts), "continuing iterating.",
+			%   [ TankWasteType, WasteType ] ),
 
 			dispatch_waste_into_tanks( WasteType, RemainingMass, T,
 									   [ Tank | AccTank ] )
@@ -254,8 +256,8 @@ dispatch_waste_into_tanks( WasteType, RemainingMass, _WasteTanks=[
 
 
 
-% Returns the duration needed, in ticks, for the unloading of specified mass of
-% specified waste type in a waste transport.
+% @doc Returns the duration needed, in ticks, for the unloading of specified
+% mass of specified waste type in a waste transport.
 %
 % (helper)
 %

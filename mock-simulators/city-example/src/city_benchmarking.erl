@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2021 EDF R&D
+% Copyright (C) 2012-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,8 +19,8 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-% This module gathers various helpers in order to ease the creation of
-% simulation cases for the City-Example.
+% This module gathers various helpers in order to ease the <b>creation of
+% simulation cases</b> for the City-Example.
 %
 -module(city_benchmarking).
 
@@ -35,20 +35,25 @@
 -include("class_TimeManager.hrl").
 
 
-
-% Allows to select the intended simulation scale:
 -type benchmarking_scale() :: 'tiny' | 'small' | 'medium' | 'large' | 'huge'.
+% Allows to select the intended simulation scale.
 
 
-% Allows to select the intended simulation duration:
 -type benchmarking_duration() :: 'brief' | 'short' | 'medium' | 'long'.
+% Allows to select the intended simulation duration.
 
 
 -export_type([ benchmarking_scale/0, benchmarking_duration/0 ]).
 
 
 
-% Returns the duration (in simulation time) of a fundamental time-step.
+% Shorthands:
+
+-type ustring() :: text_utils:ustring().
+
+
+
+% @doc Returns the duration (in simulation time) of a fundamental time-step.
 get_time_step_duration() ->
 
 	% 5 seconds per time step, expressed in virtual seconds:
@@ -56,7 +61,7 @@ get_time_step_duration() ->
 
 
 
-% Returns the main settings to determine the size of this test, in terms of
+% @doc Returns the main settings to determine the size of this test, in terms of
 % scale (of the virtual city) and duration (which depends on the simulation
 % frequency and on the virtual time and date until the simulation should run,
 % starting from 1/1/2000 at 00:00).
@@ -72,16 +77,16 @@ get_benchmark_settings( BenchmarkingScale, BenchmarkingDuration ) ->
 			"Yzeure";
 
 		small ->
-			  "Orleans" ;
+			"Orleans" ;
 
 		medium ->
-			  "Rennes" ;
+			"Rennes" ;
 
 		large ->
-			  "Paris" ;
+			"Paris" ;
 
 		huge ->
-			  "Beijing"
+			"Beijing"
 
 	end,
 
@@ -94,8 +99,8 @@ get_benchmark_settings( BenchmarkingScale, BenchmarkingDuration ) ->
 
 
 
-% Returns the list of the allowed settings in order to specify the scale of this
-% use case.
+% @doc Returns the list of the allowed settings in order to specify the scale of
+% this use case.
 %
 -spec get_scale_options() -> [ benchmarking_scale() ].
 get_scale_options() ->
@@ -103,8 +108,8 @@ get_scale_options() ->
 
 
 
-% Returns the list of the allowed settings in order to specify the duration of
-% this use case.
+% @doc Returns the list of the allowed settings in order to specify the duration
+% of this use case.
 %
 -spec get_duration_options() -> [ benchmarking_duration() ].
 get_duration_options() ->
@@ -113,9 +118,9 @@ get_duration_options() ->
 
 
 
-% Returns the date and time of the end (in virtual time) of the simulation.
+% @doc Returns the date and time of the end (in virtual time) of the simulation.
 -spec get_benchmark_ending_deadline( benchmarking_duration() ) ->
-										   time_utils:timestamp().
+										    time_utils:timestamp().
 get_benchmark_ending_deadline( brief ) ->
 	% Just a simulation for 8 hours:
 	{ { 2000, 1, 1 }, { 8, 0, 0 } };
@@ -134,8 +139,8 @@ get_benchmark_ending_deadline( long ) ->
 
 
 
-% Returns {ScaleSetting, DurationSetting}, i.e. the scale and duration settings
-% for this simulation case.
+% @doc Returns {ScaleSetting, DurationSetting}, i.e. the scale and duration
+% settings for this simulation case.
 %
 get_case_settings() ->
 
@@ -177,7 +182,7 @@ get_case_settings() ->
 
 
 
-% Ensures the specified scale setting is valid.
+% @doc Ensures the specified scale setting is valid.
 check_scale_setting( ScaleSetting ) ->
 
 	case lists:member( ScaleSetting, get_scale_options() ) of
@@ -192,7 +197,7 @@ check_scale_setting( ScaleSetting ) ->
 
 
 
-% Ensures the specified duration setting is valid.
+% @doc Ensures the specified duration setting is valid.
 check_duration_setting( DurationSetting ) ->
 
 	case lists:member( DurationSetting, get_duration_options() ) of
@@ -207,10 +212,10 @@ check_duration_setting( DurationSetting ) ->
 
 
 
-% Returns the name of the city that corresponds to the specified benchmarking
-% scale.
+% @doc Returns the name of the city that corresponds to the specified
+% benchmarking scale.
 %
--spec get_city_name_from_scale( benchmarking_scale() ) -> string().
+-spec get_city_name_from_scale( benchmarking_scale() ) -> ustring().
 get_city_name_from_scale( _BenchmarkingScale=tiny ) ->
 	"Yzeure";
 

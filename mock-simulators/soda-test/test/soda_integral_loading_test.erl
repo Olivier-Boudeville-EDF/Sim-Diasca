@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,14 +19,13 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-% Benchmarking case obtained from the soda deterministic example case.
+% @doc <b>Benchmarking case</b> obtained from the soda deterministic example
+% case.
 %
 % See also:
 %
 % - class_SodaVendingMachine.erl
-%
 % - class_DeterministicThirstyCustomer.erl
-%
 % - soda_benchmarking_test for a counterpart test case, exactly the same except
 % that it creates its initial instances programmatically
 %
@@ -37,7 +36,7 @@
 -include("sim_diasca_for_cases.hrl").
 
 
-% Runs the test.
+% @doc Runs the test.
 -spec run() -> no_return().
 run() ->
 
@@ -46,9 +45,9 @@ run() ->
 	% Use default simulation settings (50Hz, batch reproducible):
 	SimulationSettings = #simulation_settings{
 
-	  simulation_name="Soda Integral Loading Test",
+		simulation_name="Soda Integral Loading Test",
 
-	  initialisation_files=[ "soda-integral-loading-test.init" ] },
+		initialisation_files=[ "soda-integral-loading-test.init" ] },
 
 
 	DeploymentSettings = #deployment_settings{
@@ -60,8 +59,8 @@ run() ->
 
 
 	% A deployment manager is created directly on the user node:
-	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-											DeploymentSettings ),
+	DeploymentManagerPid =
+		sim_diasca:init( SimulationSettings, DeploymentSettings ),
 
 	StopTick = 50000,
 

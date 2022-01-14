@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,10 +19,11 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Class modelling a <b>soda vending machine</b>.
 -module(class_SodaVendingMachine).
 
 
--define( class_description, "Class modeling a soda vending machine." ).
+-define( class_description, "Class modelling a soda vending machine." ).
 
 
 % Determines what are the direct mother classes of this class (if any):
@@ -51,19 +52,19 @@
 % The class-specific attributes of a soda vending machine are:
 -define( class_attributes, [
 
-  { can_count, can_count(),
-	"the (positive integer) number of cans this machine currently holds" },
+	{ can_count, can_count(),
+	  "the (positive integer) number of cans this machine currently holds" },
 
-  { can_cost, amount(), "the cost of a can from this machine (as a "
-	"floating-point number of euros)" },
+	{ can_cost, amount(), "the cost of a can from this machine (as a "
+	  "floating-point number of euros)" },
 
-  { probe_ref, class_Probe:probe_ref(),
-	"the PID of the probe (if any) declared by this vending machine" } ] ).
-
-
+	{ probe_ref, class_Probe:probe_ref(),
+	  "the PID of the probe (if any) declared by this vending machine" } ] ).
 
 
-% Creates a new soda vending machine.
+
+
+% @doc Creates a soda vending machine.
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 class_Actor:name(), can_count(), amount() ) -> wooper:state().
 construct( State, ActorSettings, MachineName, InitialCanCount, CanCost )
@@ -73,7 +74,7 @@ construct( State, ActorSettings, MachineName, InitialCanCount, CanCost )
 										?trace_categorize(MachineName) ),
 
 	?send_info_fmt( ActorState,
-		"Creating a new soda vending machine named '~s', "
+		"Creating a soda vending machine named '~ts', "
 		"having initially ~B can(s), costing each ~.2f euro(s).",
 		[ MachineName, InitialCanCount, CanCost ] ),
 
@@ -84,8 +85,8 @@ construct( State, ActorSettings, MachineName, InitialCanCount, CanCost )
 	% 'non_wanted_probe' atom:
 	%
 	StockProbeRef = class_Actor:declare_probe(
-		_Name=text_utils:format( "~s Soda Stock Probe", [ MachineName ] ),
-		_Curves=[ text_utils:format( "~s can stock", [ MachineName ] ) ],
+		_Name=text_utils:format( "~ts Soda Stock Probe", [ MachineName ] ),
+		_Curves=[ text_utils:format( "~ts can stock", [ MachineName ] ) ],
 		_Zones=[],
 		_Title="Monitoring the soda consumption",
 		_XLabel=undefined,
@@ -99,12 +100,12 @@ construct( State, ActorSettings, MachineName, InitialCanCount, CanCost )
 
 
 
-% Overridden destructor.
+% @doc Overridden destructor.
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
 	% Class-specific actions:
-	?notice_fmt( "Deleting soda vending machine named '~s', whose final can "
+	?notice_fmt( "Deleting soda vending machine named '~ts', whose final can "
 				 "stock was ~B.", [ ?getAttr(name), ?getAttr(can_count) ] ),
 
 	% Then allow chaining:
@@ -120,8 +121,8 @@ destruct( State ) ->
 % Management section of the actor.
 
 
-% We want to synchronise here our probes starting from the very first diasca of
-% the simulation.
+% @doc We want to synchronise here our probes starting from the very first
+% diasca of the simulation.
 %
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
 							const_actor_oneway_return().
@@ -142,7 +143,7 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-% Called by a customer wanting to know the cost of a can for this machine.
+% @doc Called by a customer wanting to know the cost of a can for this machine.
 -spec getCanCost( wooper:state(), sending_actor_pid() ) ->
 						actor_oneway_return().
 getCanCost( State, CustomerPid ) ->
@@ -156,7 +157,7 @@ getCanCost( State, CustomerPid ) ->
 
 
 
-% Called by a customer wanting to purchase a can.
+% @doc Called by a customer wanting to purchase a can.
 -spec orderSoda( wooper:state(), amount(), sending_actor_pid() ) ->
 						actor_oneway_return().
 orderSoda( State, CustomerBudget, CustomerPid ) ->

@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2021 EDF R&D
+% Copyright (C) 2016-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,6 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc A programmatic example of experiment exit point.
 -module(class_UrbanExperimentProgrammaticExitPoint).
 
 
@@ -59,21 +60,28 @@
 % Attributes that are specific to the urban experiment exit point are:
 -define( class_attributes, [
 
-  { current_step, class_ExperimentManager:step_count()
-	"the current step at which the experiment is" },
+	{ current_step, step_count(),
+	  "the current step at which the experiment is" },
 
-  { max_step, class_ExperimentManager:step_count(),
-	"the maximum step that the experiment may reach" },
+	{ max_step, step_count(),
+	  "the maximum step that the experiment may reach" },
 
-  { energy_demand_units, [ energy_demand_unit_pid() ],
-	"the energy demand units known of this exit point" },
+	{ energy_demand_units, [ energy_demand_unit_pid() ],
+	  "the energy demand units known of this exit point" },
 
-  { exit_probe_ref, class_Probe:probe_ref(), "a basic probe (if any) allowing "
-	"to monitor the data extracted by this exit point from the dataflow" } ] ).
+	{ exit_probe_ref, class_Probe:probe_ref(), "a basic probe (if any) "
+	  "allowing to monitor the data extracted by this exit point from the "
+	  "dataflow" } ] ).
 
 
+% Shorthands:
 
-% Constructs the urban-example experiment exit point, from:
+-type ustring() :: text_utils:ustring().
+
+-type step_count() :: class_ExperimentManager:step_count().
+
+
+% @doc Constructs the urban-example experiment exit point, from:
 %
 % - ActorSettings describes the actor abstract identifier (AAI) and seed of this
 % actor, as assigned by the load balancer
@@ -93,18 +101,17 @@
 % - WorldManagerPid is the PID of the world manager
 %
 -spec construct( wooper:state(), class_Actor:actor_settings(),
-				 [ dataflow_pid() ], class_ExperimentManager:step_count(),
-				 class_ExperimentManager:step_count(),
-				 experiment_entry_point_pid(), experiment_manager_pid(),
-				 world_manager_pid() ) -> wooper:state().
+	[ dataflow_pid() ], step_count(), step_count(),
+	experiment_entry_point_pid(), experiment_manager_pid(),
+	world_manager_pid() ) -> wooper:state().
 construct( State, ActorSettings, Dataflows, ExperimentStepStart,
 		   ExperimentStepStop, ExperimentEntryPointPid,
 		   ExperimentManagerPid, WorldManagerPid ) ->
 
 	% First the direct mother class:
 	ExitState = class_ExperimentExitPoint:construct( State, ActorSettings,
-						Dataflows, ExperimentEntryPointPid,
-						ExperimentManagerPid, WorldManagerPid ),
+		Dataflows, ExperimentEntryPointPid, ExperimentManagerPid,
+		WorldManagerPid ),
 
 	ProbeName = "Monitoring the setting of output ports over the dataflow, "
 		"thanks to a probe attached to the urban experiment exit point",
@@ -128,9 +135,11 @@ construct( State, ActorSettings, Dataflows, ExperimentStepStart,
 % Methods section.
 
 
-% Sets (registers) the energy demand units that are known of this exit point.
+% @doc Sets (registers) the energy demand units that are known of this exit
+% point.
+%
 -spec setEnergyDemandUnits( wooper:state(), [ energy_demand_unit_pid() ] ) ->
-			   request_return( 'energy_demand_units_registered' ).
+				request_return( 'energy_demand_units_registered' ).
 setEnergyDemandUnits( State, EnergyDemandUnits ) ->
 
 	?info_fmt( "Setting energy demand units to ~p.", [ EnergyDemandUnits ] ),
@@ -141,7 +150,7 @@ setEnergyDemandUnits( State, EnergyDemandUnits ) ->
 
 
 
-% The core of the behaviour of this exit point.
+% @doc The core of the behaviour of this exit point.
 %
 % Overrides the default behaviour, yet reuses it.
 %
@@ -192,9 +201,9 @@ actSpontaneous( State ) ->
 
 
 
-% Called in answer to a requestOutputPortStatus/3 inquiry.
+% @doc Called in answer to a requestOutputPortStatus/3 inquiry.
 -spec notifyOutputPortStatus( wooper:state(), value_status(),
-							  sending_actor_pid() ) -> const_actor_oneway_return().
+					sending_actor_pid() ) -> const_actor_oneway_return().
 notifyOutputPortStatus( State, OutputPortStatus, SendingActorPid ) ->
 
 	?debug_fmt( "Received output port status ~p from ~w.",
@@ -219,11 +228,11 @@ notifyOutputPortStatus( State, OutputPortStatus, SendingActorPid ) ->
 % Helper functions.
 
 
-% Returns a textual description of this exit point.
+% @doc Returns a textual description of this exit point.
 %
 % (helper)
 %
--spec to_string( wooper:state() ) -> string().
+-spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
 	ExitString = class_ExperimentExitPoint:to_string( State ),
@@ -234,7 +243,7 @@ to_string( State ) ->
 			"not referencing any energy demand unit";
 
 		EnergyDemandUnits ->
-			 text_utils:format( "referencing ~B energy demand units: ~p",
+			text_utils:format( "referencing ~B energy demand units: ~p",
 				[ length( EnergyDemandUnits ), EnergyDemandUnits ] )
 
 	end,
@@ -249,5 +258,5 @@ to_string( State ) ->
 
 	end,
 
-	text_utils:format( "Urban programmatic ~s, ~s, ~s",
+	text_utils:format( "Urban programmatic ~ts, ~ts, ~ts",
 					   [ ExitString, EnergyDemandString, ProbeString ] ).

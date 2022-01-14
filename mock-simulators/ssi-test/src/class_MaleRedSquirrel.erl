@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -21,11 +21,10 @@
 % This file is part of forest ecosystem integration test case.
 
 
-% The objective of this module is to show the main features of an actor in
-% multiple scheduling modes. These instances have indeed a periodic schedule and
-% can be also triggered by messages.
-
-
+% @doc The objective of this module is to show the main features of an actor in
+% <b>multiple scheduling modes</b>. These instances have indeed a periodic
+% schedule and can be also triggered by messages.
+%
 -module(class_MaleRedSquirrel).
 
 
@@ -53,23 +52,26 @@
 
 
 
-% Constructs a new male red squirrel actor:
+% Shorthands:
+
+-type ustring() :: text_utils:ustring().
+
+
+
+% @doc Constructs a male red squirrel actor:
 %
 % - ActorSettings corresponds to the engine settings for this actor
-%
 % - SquirrelName is the name of the squirrel, as a plain string
-%
 % - GivenAge is the initial age of this squirrel
-%
 % - ForestPid is the PID of the forest this squirrel is in
 %
--spec construct( wooper:state(), class_Actor:actor_settings(), string(), age(),
+-spec construct( wooper:state(), class_Actor:actor_settings(), ustring(), age(),
 				 actor_pid() ) -> wooper:state().
 construct( State, ActorSettings, SquirrelName, GivenAge, ForestPid ) ->
 
 	% First, the mother class:
 	SquirrelState = class_Squirrel:construct( State, ActorSettings,
-					  ?trace_categorize( SquirrelName ), GivenAge, ForestPid ),
+		?trace_categorize(SquirrelName), GivenAge, ForestPid ),
 
 	% Attribute descriptions:
 	% - frame_of_mind: can be 'available' or 'weak'
@@ -78,7 +80,7 @@ construct( State, ActorSettings, SquirrelName, GivenAge, ForestPid ) ->
 		{ frame_of_mind, undefined },
 		{ tail_length, get_initial_tail_length() } ] ),
 
-	?send_info( StartingState, "Creating a new male red squirrel." ),
+	?send_info( StartingState, "Creating a male red squirrel." ),
 
 	StartingState.
 
@@ -89,9 +91,9 @@ construct( State, ActorSettings, SquirrelName, GivenAge, ForestPid ) ->
 
 
 
-% Simply schedules this just created actor at the next tick (diasca 0).
+% @doc Simply schedules this just created actor at the next tick (diasca 0).
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
-						   actor_oneway_return().
+							actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 
 	ScheduledState = executeOneway( State, scheduleNextSpontaneousTick ),
@@ -100,7 +102,7 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-% The spontaneous behaviour of a male red squirrel instance.
+% @doc The spontaneous behaviour of a male red squirrel instance.
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
@@ -122,7 +124,7 @@ actSpontaneous( State ) ->
 
 
 
-% Called when this squirrel succeeded in a contest.
+% @doc Called when this squirrel succeeded in a contest.
 %
 % When a youWon message is received, the squirrel switches for an arrogant
 % frame_of_mind for a defined period.
@@ -144,7 +146,7 @@ youWon( State, _SendingActorPid ) ->
 
 
 
-% Called when this squirrel failed in a contest.
+% @doc Called when this squirrel failed in a contest.
 -spec youLose( wooper:state(), sending_actor_pid() ) -> actor_oneway_return().
 youLose( State, _SendingActorPid ) ->
 
@@ -157,16 +159,16 @@ youLose( State, _SendingActorPid ) ->
 
 
 
-% Called when an alert message is received from the forest.
+% @doc Called when an alert message is received from the forest.
 -spec beAlert( wooper:state(), alert(), sending_actor_pid() ) ->
-					 actor_oneway_return().
+										actor_oneway_return().
 beAlert( State, Alert, _SendingActorPid ) ->
 
 	NewState = case Alert of
 
 		savage ->
 			?notice( "A savage alert is received, I am preparing my deferred "
-				   "termination." ),
+					 "termination." ),
 			executeOneway( State, notifyTermination );
 
 		famine ->
@@ -174,19 +176,20 @@ beAlert( State, Alert, _SendingActorPid ) ->
 
 				Mindset when (Mindset=:=weak) orelse (Mindset=:=gestation) ->
 					?notice_fmt( "I am in ~p frame of mind and "
-							   "a famine alert is received, I am preparing "
-							   "my deferred termination.", [ Mindset ] ),
+						"a famine alert is received, I am preparing "
+						"my deferred termination.", [ Mindset ] ),
 					executeOneway( State, notifyTermination );
 
 				_OtherMindset ->
 					?notice_fmt( "I received a ~p alert, but I am surviving.",
-							   [ Alert ] ),
+								 [ Alert ] ),
 					State
 
 			end;
 
 		_OtherAlert ->
-			?notice_fmt( "I received a ~p alert, but I am surviving.", [ Alert ] ),
+			?notice_fmt( "I received a ~p alert, but I am surviving.",
+						 [ Alert ] ),
 			State
 
 	end,
@@ -199,7 +202,7 @@ beAlert( State, Alert, _SendingActorPid ) ->
 % length.
 %
 -spec beInvited( wooper:state(), actor_pid(), sending_actor_pid() ) ->
-					   actor_oneway_return().
+											actor_oneway_return().
 beInvited( State, LauncherPid, SendingActorPid ) ->
 
 	?notice_fmt( "I, male red squirrel ~w, receive a invitation.", [ self() ] ),
@@ -207,18 +210,19 @@ beInvited( State, LauncherPid, SendingActorPid ) ->
 	TailLength = case ?getAttr(frame_of_mind) of
 
 		weak ->
-			 ?notice( "I cannot participate to the competition, I am to young." ),
+			 ?notice( "I cannot participate to the competition, "
+					  "I am too young." ),
 			 refused;
 
 		_Others ->
-			?notice( "I received a competition invitation, I believe that I will win." ),
+			?notice( "I received a competition invitation, "
+					 "I believe that I will win." ),
 			?getAttr(tail_length)
 
 	end,
 
 	SentState = class_Actor:send_actor_message( SendingActorPid,
-				 { informedParticipation, [ LauncherPid, TailLength ] },
-				 State ),
+		{ informedParticipation, [ LauncherPid, TailLength ] }, State ),
 
   actor:return_state( SentState ).
 
@@ -230,7 +234,7 @@ beInvited( State, LauncherPid, SendingActorPid ) ->
 
 
 
-% Once a squirrel eats, its tail gains 0.1cm.
+% @doc Once a squirrel eats, its tail gains 0.1cm.
 eat_nuts( State ) ->
 
 	NewLength = math_utils:round_after( ?getAttr(tail_length) + 0.1,
@@ -242,16 +246,16 @@ eat_nuts( State ) ->
 
 
 
-% Returns a random tail length, between 3 - 6 for a newborn.
+% @doc Returns a random tail length, between 3 - 6 for a newborn.
 %
-% This function is called only one time when a new male is created.
+% This function is called only one time when a male is created.
 %
 get_initial_tail_length()->
 	3 + random_utils:get_random_value( 3 ).
 
 
 
-% This helper function groups all termination related activities.
+% @doc This helper function groups all termination related activities.
 %
 % Returns an updated state.
 %
@@ -283,7 +287,7 @@ termination_relative_activities( State ) ->
 
 
 
-% This helper function groups all spontaneous activities of this actor.
+% @doc This helper function groups all spontaneous activities of this actor.
 %
 % Returns an updated state.
 %
@@ -311,11 +315,12 @@ spontaneous_activities( State ) ->
 					executeOneway( FrameState, scheduleNextSpontaneousTick );
 
 				arrogant when CurrentOffset < AvailableTick ->
-						?notice( "I am the most beautiful squirrel." ),
-						State;
+					?notice( "I am the most beautiful squirrel." ),
+					State;
 
 				_Others ->
-						eat_nuts( State )
+					eat_nuts( State )
+
 			end
 
 	end.

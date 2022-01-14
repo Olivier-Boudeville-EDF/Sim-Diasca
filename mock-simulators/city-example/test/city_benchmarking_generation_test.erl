@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2021 EDF R&D
+% Copyright (C) 2014-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,16 +19,14 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-% The purpose of this module is to generate the full description of the initial
-% state of a city and store it in file, in the prospect of running a simulation
-% of it afterwards (see city_benchmarking_loading_test.erl).
-
+% @doc The purpose of this module is to generate the full description of the
+% initial state of a city and store it in file, in the prospect of running a
+% simulation of it afterwards (see city_benchmarking_loading_test.erl).
+%
 % This is useful for larger cases like this one, as the procedural generation
 % might be very long: better generate the initial state once for all, and re-use
 % at will in various simulation instances.
-
-
-
+%
 % Example of intended use:
 %
 % make city_benchmarking_generation_run CMD_LINE_OPT="--batch --duration long
@@ -72,10 +70,16 @@
 % huge" EXECUTION_TARGET=production'
 
 
+% Shorthands:
+
+-type benchmarking_scale() :: city_benchmarking:benchmarking_scale().
+
+-type benchmarking_duration() :: city_benchmarking:benchmarking_duration().
 
 
-% Runs the test, determining the settings from the command-line, otherwise using
-% defaults.
+
+% @doc Runs the test, determining the settings from the command-line, otherwise
+% using defaults.
 %
 -spec run() -> no_return().
 run() ->
@@ -86,9 +90,8 @@ run() ->
 
 
 
-% Runs the test with specified settings.
--spec run( city_benchmarking:benchmarking_scale(),
-		   city_benchmarking:benchmarking_duration() ) -> no_return().
+% @doc Runs the test with specified settings.
+-spec run( benchmarking_scale(), benchmarking_duration() ) -> no_return().
 run( ScaleSetting, DurationSetting ) ->
 
 	city_benchmarking:check_scale_setting( ScaleSetting ),
@@ -98,8 +101,7 @@ run( ScaleSetting, DurationSetting ) ->
 
 
 % Helper, common to all specifications.
--spec run_common( city_benchmarking:benchmarking_scale(),
-				  city_benchmarking:benchmarking_duration(), boolean() ) ->
+-spec run_common( benchmarking_scale(), benchmarking_duration(), boolean() ) ->
 						no_return() | void().
 run_common( ScaleSetting, DurationSetting, StopShell ) ->
 
@@ -108,12 +110,12 @@ run_common( ScaleSetting, DurationSetting, StopShell ) ->
 	VersionString = text_utils:version_to_string( ?city_example_version),
 
 	io:format( "Generating an initial state for the City-example benchmarking "
-			   "case v.~s, with scale '~s'.~n",
+			   "case v.~ts, with scale '~ts'.~n",
 			   [ VersionString, ScaleSetting ] ),
 
 	Filename = text_utils:format(
-				 "city-example-instances-version-~s-scale-~s.init",
-				 [ VersionString, ScaleSetting ] ),
+				"city-example-instances-version-~ts-scale-~ts.init",
+				[ VersionString, ScaleSetting ] ),
 
 	case file_utils:is_existing_file( Filename ) of
 
@@ -122,10 +124,9 @@ run_common( ScaleSetting, DurationSetting, StopShell ) ->
 			BackupFilename = Filename ++ "-"
 				++ time_utils:get_textual_timestamp_for_path(),
 
-			?notify_warning_fmt( "Initialisation file '~s' was already "
-								 "existing, it has been moved to backup "
-								 "file '~s'.",
-								 [ Filename, BackupFilename ] ),
+			?notify_warning_fmt( "Initialisation file '~ts' was already "
+				"existing, it has been moved to backup file '~ts'.",
+				[ Filename, BackupFilename ] ),
 
 			file_utils:move_file( Filename, BackupFilename );
 
@@ -148,37 +149,37 @@ run_common( ScaleSetting, DurationSetting, StopShell ) ->
 	file_utils:write_ustring( InitFile,
 		"% This is a Sim-Diasca initialisation file "
 		"for the City-example case.~n~n"
-		"% Version: ~s.~n% Scale: ~s.~n~n"
-		"% Created on ~s by ~s, on host ~s.~n~n"
-		"% City description: ~s~n",
+		"% Version: ~ts.~n% Scale: ~ts.~n~n"
+		"% Created on ~ts by ~ts, on host ~ts.~n~n"
+		"% City description: ~ts~n",
 		[ VersionString, ScaleSetting, time_utils:get_textual_timestamp(),
 		  system_utils:get_user_name(), net_utils:localhost(),
 		  city_descriptions:to_string( CityDescription ) ] ),
 
 	% Rather than creating a very rich mock-up environment, it is simpler to
-	% initialise the engine ( with minimal settings) and to never start it:
+	% initialise the engine (with minimal settings) and to never start it:
 	%
 	SimulationSettings = #simulation_settings{
-	  simulation_name="Sim-Diasca City-example Benchmarking Generation Case",
-	  tick_duration=TimestepDuration,
-	  result_specification=no_output },
+		simulation_name="Sim-Diasca City-example Benchmarking Generation Case",
+		tick_duration=TimestepDuration,
+		result_specification=no_output },
 
 
 	DeploymentSettings = #deployment_settings{
 
-	   computing_hosts={ use_host_file_otherwise_local,
-						 "sim-diasca-host-candidates.txt" },
+		computing_hosts={ use_host_file_otherwise_local,
+						  "sim-diasca-host-candidates.txt" },
 
-	   % All code from mock-simulators/city-example/src:
-	   additional_elements_to_deploy=[ { ".", code } ] },
+		% All code from mock-simulators/city-example/src:
+		additional_elements_to_deploy=[ { ".", code } ] },
 
 
 	% A deployment manager is created directly on the user node:
-	_DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-											 DeploymentSettings ),
+	_DeploymentManagerPid =
+		sim_diasca:init( SimulationSettings, DeploymentSettings ),
 
 	GISPid = class_Actor:create_initial_actor( class_GIS,
-							   [ _DataSource=none, _PrepareRendering=false ] ),
+							[ _DataSource=none, _PrepareRendering=false ] ),
 
 
 	CityGeneratorPid = class_CityGenerator:synchronous_new_link(
@@ -202,7 +203,7 @@ run_common( ScaleSetting, DurationSetting, StopShell ) ->
 	file_utils:close( InitFile ),
 
 	Message = text_utils:format(
-	  "~nInitialisation file '~s' successfully generated.~n~n", [ Filename ] ),
+	  "~nInitialisation file '~ts' successfully generated.~n~n", [ Filename ] ),
 
 	?notify_info( Message ),
 	io:format( Message ),

@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2021 EDF R&D
+% Copyright (C) 2016-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,6 +19,7 @@
 % Author: Robin Huart (robin-externe.huart@edf.fr)
 
 
+% @doc Example of a <b>dataflow unit</b> regarding vehicle types.
 -module(class_VehicleTypeUnit).
 
 
@@ -55,16 +56,16 @@
 % The class-specific attributes of a vehicle type unit are:
 -define( class_attributes, [
 
-  { age, unit_utils:years(), "the age of the vehicle" },
+	{ age, years(), "the age of the vehicle" },
 
-  { origin_year, unit_utils:year(), "the year at which the car was made " },
+	{ origin_year, year(), "the year at which the car was made " },
 
-  { energy_efficiency, efficiency(), "a constant coefficient modifying the energy "
-	"consumption of households per vehicle" },
+	{ energy_efficiency, efficiency(), "a constant coefficient modifying the "
+	  "energy consumption of households per vehicle" },
 
-  { pollution_ref_efficiency, efficiency(), "another coefficient (an efficiency of "
-	"reference) modifying per vehicle the quantity of pollution emitted by "
-	"households" } ] ).
+	{ pollution_ref_efficiency, efficiency(), "another coefficient "
+	  "(an efficiency of reference) modifying per vehicle the quantity of "
+	  "pollution emitted by households" } ] ).
 
 
 
@@ -94,8 +95,15 @@
 % vehicle, hence the 'ref' in 'pollution_ref_efficiency'.
 
 
+% Shorthands:
 
-% Constructs a new dataflow unit instance, in charge of evaluating the impacts
+-type ustring() :: text_utils:ustring().
+
+-type year() :: unit_utils:year().
+
+
+
+% @doc Constructs a dataflow unit instance, in charge of evaluating the impacts
 % of the vehicle type on the need for energy and on the pollution emissions:
 %
 % - ActorSettings describes the actor abstract identifier (AAI) and seed of this
@@ -111,7 +119,7 @@
 % - DataflowPid is the PID of the dataflow instance
 %
 -spec construct( wooper:state(), class_Actor:actor_settings(),
-		class_DataflowProcessingUnit:unit_name(), unit_utils:year(),
+		class_DataflowProcessingUnit:unit_name(), year(),
 		efficiency(), efficiency(), dataflow_pid() ) -> wooper:state().
 construct( State, ActorSettings, UnitName, YearOfOrigin, EnergyEfficiency,
 		   PollutionRefEfficiency, DataflowPid ) ->
@@ -121,9 +129,9 @@ construct( State, ActorSettings, UnitName, YearOfOrigin, EnergyEfficiency,
 
 	% First the direct mother class:
 	UnitState = class_DataflowProcessingUnit:construct(
-				  State, ActorSettings, ?trace_categorize(UnitName),
-				  _ActivationPolicy=activate_when_all_set, InputPortSpecs,
-				  OutputPortSpecs, DataflowPid ),
+		State, ActorSettings, ?trace_categorize(UnitName),
+		_ActivationPolicy=activate_when_all_set, InputPortSpecs,
+		OutputPortSpecs, DataflowPid ),
 
 	% Then the class-specific actions:
 	setAttributes( UnitState, [
@@ -138,7 +146,7 @@ construct( State, ActorSettings, UnitName, YearOfOrigin, EnergyEfficiency,
 % Methods section.
 
 
-% Callback executed automatically whenever this unit gets activated.
+% @doc Callback executed automatically whenever this unit gets activated.
 %
 % Meant to be overridden.
 %
@@ -154,7 +162,7 @@ activate( State ) ->
 	AgedState = setAttribute( State, age, CurrentYear - OriginYear ),
 
 	?info_fmt( "Evaluating the effects of a vehicle type on the energy "
-		"consumptions and the pollution emissions for ~s.",
+		"consumptions and the pollution emissions for ~ts.",
 		[ to_string( AgedState ) ] ),
 
 	% Here we enter the actual unit; currently, internally we manage values
@@ -169,7 +177,7 @@ activate( State ) ->
 
 	% And also all the estimated pollution emitted:
 	PollutionEstimates = class_DataflowBlock:get_all_input_iteration_values(
-							 "pollution_estimates", AgedState ),
+							"pollution_estimates", AgedState ),
 
 	% Finally, we can determine the actual impacts of the vehicle(s) in terms of
 	% energy demand and pollution:
@@ -193,8 +201,8 @@ activate( State ) ->
 
 
 
-% This is the core of this "vehicle efficiency" pseudo-model, the function where
-% its actual domain-specific computations are performed from the
+% @doc This is the core of this "vehicle efficiency" pseudo-model, the function
+% where its actual domain-specific computations are performed from the
 % dataflow-originating values.
 %
 % Note: this logic is pure, has strictly no link with anything related to a
@@ -222,7 +230,7 @@ compute_vehicle_effects( EnergyEstimates, PollutionEstimates, State ) ->
 	ActualPollution = lists:sum( PollutionEstimates ) *
 						  PollutionRefEfficiency * ( 1 + 0.03*CurrentAge ),
 
-	?info_fmt( "Impacts of all the vehicle(s) of type '~s': energy needed is "
+	?info_fmt( "Impacts of all the vehicle(s) of type '~ts': energy needed is "
 		"~f kW.h, pollution emitted is ~f g.cm^-3",
 		[ ?getAttr(name), ActualEnergyDemand, ActualPollution ] ),
 
@@ -230,8 +238,8 @@ compute_vehicle_effects( EnergyEstimates, PollutionEstimates, State ) ->
 
 
 
-% Returns the specifications for the input and output ports of that dataflow
-% processing unit.
+% @doc Returns the specifications for the input and output ports of that
+% dataflow processing unit.
 %
 -spec get_port_specifications() ->
 		static_return( { [ input_port_spec() ], [ output_port_spec() ] } ).
@@ -241,8 +249,8 @@ get_port_specifications() ->
 
 
 
-% Returns a list of the specifications of the (initial) input ports for that
-% dataflow block.
+% @doc Returns a list of the specifications of the (initial) input ports for
+% that dataflow block.
 %
 -spec get_input_port_specs() -> static_return( [ input_port_spec() ] ).
 get_input_port_specs() ->
@@ -274,12 +282,12 @@ get_input_port_specs() ->
 		value_constraints=[ positive ] },
 
 	wooper:return_static(
-	  [ EnergyIterationIPort, PollutionIterationIPort ] ).
+	    [ EnergyIterationIPort, PollutionIterationIPort ] ).
 
 
 
-% Returns a list of the specifications of the (initial) output ports for that
-% unit.
+% @doc Returns a list of the specifications of the (initial) output ports for
+% that unit.
 %
 -spec get_output_port_specs() -> static_return( [ output_port_spec() ] ).
 get_output_port_specs() ->
@@ -306,7 +314,7 @@ get_output_port_specs() ->
 
 
 
-% Returns the semantics statically declared by this processing unit.
+% @doc Returns the semantics statically declared by this processing unit.
 %
 % Defining this method allows to ensure that all the ports ever created by this
 % processing unit will rely on user-level semantics among this explicitly stated
@@ -325,7 +333,7 @@ get_declared_semantics( X ) ->
 
 
 
-% Returns the types statically declared by this unit.
+% @doc Returns the types statically declared by this unit.
 -spec get_declared_types( term() ) ->
 				   static_return( class_TypeServer:type_entries() ).
 get_declared_types( X ) ->
@@ -339,9 +347,9 @@ get_declared_types( X ) ->
 % Helper functions.
 
 
-% Returns a textual description of this unit.
--spec to_string( wooper:state() ) -> static_return( string() ).
+% @doc Returns a textual description of this unit.
+-spec to_string( wooper:state() ) -> static_return( ustring() ).
 to_string( State ) ->
 	wooper:return_static(
-		text_utils:format( "Vehicle type unit; this is a ~s",
+		text_utils:format( "Vehicle type unit; this is a ~ts",
 			[ class_DataflowProcessingUnit:to_string( State ) ] ) ).

@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2021 EDF R&D
+% Copyright (C) 2016-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -20,8 +20,8 @@
 
 
 
-% Programmatic test for the 'Dataflow Urban Example' case, illustrating the use
-% of a processing unit specified as a DUMF mockup.
+% @doc Programmatic test for the 'Dataflow Urban Example' case, illustrating the
+% use of a <b>processing unit specified as a DUMF mockup</b>.
 %
 % The purpose of this module is to perform an overall, integrated testing of the
 % dataflow support taking into account the DUMF format.
@@ -44,8 +44,7 @@
 
 
 
-% Runs the case.
-%
+% @doc Runs the case.
 -spec run() -> no_return().
 run() ->
 
@@ -60,30 +59,29 @@ run() ->
 
 	% Just for the sake of checking it on the display:
 	ExpectedTimestepCount = round( time_utils:years_to_seconds(
-							  SimulationDurationInYears ) / TickDuration ),
+								SimulationDurationInYears ) / TickDuration ),
 
 	SimulationDurationInYears = ExpectedTimestepCount,
 
-	TimestepString = time_utils:duration_to_string(
-					   _Microseconds=1000*TickDuration ),
+	TimestepString =
+		time_utils:duration_to_string( _Microseconds=1000*TickDuration ),
 
 	DUMFFilename = "VehicleTypeMockup.dumf",
 
 	test_facilities:display( "Running a 'Dataflow Urban Example' simulation "
-							 "case with a timestep of ~s and a duration of "
-							 "~B years (hence corresponding to ~p expected "
-							 "timesteps), in a programmatic way, involving "
-							 "a processing unit based on the '~s' DUMF file.",
-							 [ TimestepString, SimulationDurationInYears,
-							   ExpectedTimestepCount, DUMFFilename ] ),
+		"case with a timestep of ~ts and a duration of "
+		"~B years (hence corresponding to ~p expected "
+		"timesteps), in a programmatic way, involving "
+		"a processing unit based on the '~ts' DUMF file.",
+		[ TimestepString, SimulationDurationInYears,
+		  ExpectedTimestepCount, DUMFFilename ] ),
 
 	test_facilities:display( "Of course this is merely a technical example "
-							 "being happily meaningless in terms of urban "
-							 "matters." ),
+		"being happily meaningless in terms of urban matters." ),
 
 	SimulationSettings = #simulation_settings{
-	  simulation_name="Urban Dataflow Programmatic DUMF Example",
-	  tick_duration=TickDuration },
+		simulation_name="Urban Dataflow Programmatic DUMF Example",
+		tick_duration=TickDuration },
 
 
 	DeploymentSettings = #deployment_settings{
@@ -95,8 +93,8 @@ run() ->
 
 
 	% We will initialise first the engine:
-	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-											DeploymentSettings ),
+	DeploymentManagerPid =
+		sim_diasca:init( SimulationSettings, DeploymentSettings ),
 
 	LoadBalancerPid = class_LoadBalancer:get_balancer(),
 
@@ -112,8 +110,8 @@ run() ->
 
 	% Creating first the (here, single, overall) dataflow of interest:
 	DataflowPid = class_Actor:create_initial_actor( class_Dataflow,
-			[ "Urban Programmatic DUMF Example Dataflow",
-			  ExperimentManagerPid ], LoadBalancerPid ),
+		[ "Urban Programmatic DUMF Example Dataflow", ExperimentManagerPid ],
+		LoadBalancerPid ),
 
 	% A single dataflow here:
 	Dataflows = [ DataflowPid ],
@@ -184,12 +182,11 @@ run() ->
 		[ { class_DistrictObjectManager, [ class_District ] } ],
 
 	?test_info_fmt( "Creating directly following default dataflow "
-					"object managers, taking in charge following types of "
-					"dataflow objects: ~p.",
-					[ DefaultObjectManagerDefs ] ),
+		"object managers, taking in charge following types of "
+		"dataflow objects: ~p.", [ DefaultObjectManagerDefs ] ),
 
 	DefaultObjectManagers = class_DataflowObjectManager:create_default_managers(
-		  DefaultObjectManagerDefs, WorldManagerPid, LoadBalancerPid ),
+		DefaultObjectManagerDefs, WorldManagerPid, LoadBalancerPid ),
 
 	% For load-balancing purposes, multiple object managers may be created, we
 	% just select one of them here:
@@ -205,7 +202,7 @@ run() ->
 
 	_SpecificObjectManagers = [ BuildingHouseholdManagerPid ] =
 		class_DataflowObjectManager:create_specific_managers(
-		  SpecificObjectManagers, WorldManagerPid, LoadBalancerPid ),
+			SpecificObjectManagers, WorldManagerPid, LoadBalancerPid ),
 
 
 	% In a very similar manner as for object managers, we define dataflow unit
@@ -224,8 +221,7 @@ run() ->
 
 	_UnitManagers = [ UrbanUnitManagerPid ] =
 		class_DataflowUnitManager:create_managers( UnitManagerNames,
-						ExperimentManagerPid, ActualBindingManagers,
-						LoadBalancerPid ),
+			ExperimentManagerPid, ActualBindingManagers, LoadBalancerPid ),
 
 
 	% To show that semantics and types can be introduced from the simulation
@@ -264,8 +260,8 @@ run() ->
 	% type (rural or urban).
 	%
 	DistrictPid = class_DataflowObjectManager:create_initial_object(
-					DistrictManagerPid, class_District, DataflowPid,
-					[ "District-9", [ "Columbia District", 1210.0, urban ] ] ),
+		DistrictManagerPid, class_District, DataflowPid,
+		[ "District-9", [ "Columbia District", 1210.0, urban ] ] ),
 
 	% A single district of interest here:
 	Districts = [ DistrictPid ],
@@ -273,8 +269,8 @@ run() ->
 	% For the sake of this testing, this experiment entry point directly knows
 	% the district involved, so that it can assign their input ports:
 	%
-	UrbanExperimentEntryPointPid ! { registerDistrictObjects, [ Districts ],
-									 self() },
+	UrbanExperimentEntryPointPid !
+		{ registerDistrictObjects, [ Districts ], self() },
 
 	district_objects_registered = test_receive(),
 
@@ -283,17 +279,17 @@ run() ->
 	%
 	_Buildings = [ FirstBuildingPid, _SecondBuildingPid ] =
 		class_DataflowObjectManager:create_initial_objects(
-		  BuildingHouseholdManagerPid, class_Building, DataflowPid,
-		  [
+			BuildingHouseholdManagerPid, class_Building, DataflowPid,
+			[
 
-			  % The construction parameters to create a building are its name,
-			  % its postal address and its parent district:
-			  %
-			  [ "First Building",
-				[ "4 Main Street, Forest Hills, NY", DistrictPid ] ],
+				% The construction parameters to create a building are its name,
+				% its postal address and its parent district:
+				%
+				[ "First Building",
+					[ "4 Main Street, Forest Hills, NY", DistrictPid ] ],
 
-			  [ "Second Building",
-				[ "12 Walnut Avenue, Denver, Colorado",	DistrictPid ] ] ] ),
+				[ "Second Building",
+					[ "12 Walnut Avenue, Denver, Colorado", DistrictPid ] ] ] ),
 
 
 	% Finally the households associated to each building are created, as
@@ -302,22 +298,22 @@ run() ->
 	_Households = [ _FirstHouseholdPid, _SecondHouseholdPid,
 					_ThirdHouseholdPid ] =
 		class_DataflowObjectManager:create_initial_objects(
-		  BuildingHouseholdManagerPid, class_Household, DataflowPid,
-		  [
+			BuildingHouseholdManagerPid, class_Household, DataflowPid,
+			[
 
-			% The construction parameters to create an household are the
-			% household name, last name, number of adults, number of children,
-			% disposable income (in euros per year), mean distance covered (in
-			% km) and the parent building:
-			%
-		   [ "Household-1", [ "The Stallones", 0, 1, 951000, 1.15,
-							  FirstBuildingPid ] ],
+				% The construction parameters to create an household are the
+				% household name, last name, number of adults, number of
+				% children, disposable income (in euros per year), mean distance
+				% covered (in km) and the parent building:
+				%
+				[ "Household-1", [ "The Stallones", 0, 1, 951000, 1.15,
+								   FirstBuildingPid ] ],
 
-		   [ "Household-2", [ "The Ramones", 4, 0, 210000, 1.71,
-							  FirstBuildingPid ] ],
+				[ "Household-2", [ "The Ramones", 4, 0, 210000, 1.71,
+								   FirstBuildingPid ] ],
 
-		   [ "Household-3", [ "The Evans", 2, 2, 280000, 2.18,
-							  FirstBuildingPid ] ] ] ),
+				[ "Household-3", [ "The Evans", 2, 2, 280000, 2.18,
+								   FirstBuildingPid ] ] ] ),
 
 
 
@@ -336,14 +332,15 @@ run() ->
 	% specify to which dataflow these units will be associated):
 	%
 	TransportUnits = class_DataflowUnitManager:create_initial_units(
-				UrbanUnitManagerPid, class_TransportationDemandUnit,
-				DataflowPid,
-				% A transport unit takes here two specific construction
-				% parameters, its name and its level of car sharing (as a
-				% percentage):
-				[ [ "My First Initial Transport Unit",  0.22 ],
-				  [ "My Second Initial Transport Unit", 0.17 ],
-				  [ "My Third Initial Transport Unit",  0.24 ] ] ),
+		UrbanUnitManagerPid, class_TransportationDemandUnit,
+		DataflowPid,
+		% A transport unit takes here two specific construction
+		% parameters, its name and its level of car sharing (as a
+		% percentage):
+		%
+		[ [ "My First Initial Transport Unit",  0.22 ],
+		  [ "My Second Initial Transport Unit", 0.17 ],
+		  [ "My Third Initial Transport Unit",  0.24 ] ] ),
 
 	[ FirstTransportUnit, SecondTransportUnit, ThirdTransportUnit ] =
 		TransportUnits,
@@ -352,8 +349,8 @@ run() ->
 	% For the sake of this testing, this experiment entry point directly knows
 	% the transportation units:
 	%
-	UrbanExperimentEntryPointPid ! { setTransportUnits, [ TransportUnits ],
-									 self() },
+	UrbanExperimentEntryPointPid !
+		{ setTransportUnits, [ TransportUnits ], self() },
 
 	transport_units_registered = test_receive(),
 
@@ -362,13 +359,13 @@ run() ->
 	% Second, we consider the creation of two vehicle units, both based on
 	% a mock-up unit whose spec is obtained from a DUMF file:
 	%
-	VehicleTypeSpec = class_DataflowMockupUnit:read_mockup_unit_spec(
-								DUMFFilename ),
+	VehicleTypeSpec =
+		class_DataflowMockupUnit:read_mockup_unit_spec(	DUMFFilename ),
 
 	VehicleUnits = [ FirstVehicleUnit, SecondVehicleUnit ] =
-			class_DataflowUnitManager:create_initial_mockup_units(
-			  UrbanUnitManagerPid, VehicleTypeSpec, DataflowPid,
-			  [ "Zohe", "Yarix" ] ),
+		class_DataflowUnitManager:create_initial_mockup_units(
+			UrbanUnitManagerPid, VehicleTypeSpec, DataflowPid,
+			[ "Zohe", "Yarix" ] ),
 
 	% Then the creation of the single initial energy demand unit (a second one
 	% will be created in the course of the simulation).
@@ -376,24 +373,24 @@ run() ->
 	% The only construction parameter used here is the name of the unit.
 	%
 	EnergyUnit = class_DataflowUnitManager:create_initial_unit(
-				   UrbanUnitManagerPid, class_EnergyDemandUnit,
-				   DataflowPid, [ "My Single Initial Energy Demand Unit" ] ),
+					UrbanUnitManagerPid, class_EnergyDemandUnit,
+					DataflowPid, [ "My Single Initial Energy Demand Unit" ] ),
 
 	EnergyUnits = [ EnergyUnit ],
 
 	% The entry point directly knows here the energy units as well, in order to
 	% feed them:
 	%
-	UrbanExperimentEntryPointPid ! { setEnergyDemandUnits, [ EnergyUnits ],
-									 self() },
+	UrbanExperimentEntryPointPid !
+		{ setEnergyDemandUnits, [ EnergyUnits ], self() },
 
 	energy_demand_units_registered = test_receive(),
 
 	% The exit point needs to know the energy units as well, so that it can
 	% fetch output values from them:
 	%
-	UrbanExperimentExitPointPid ! { setEnergyDemandUnits, [ EnergyUnits ],
-									self() },
+	UrbanExperimentExitPointPid !
+		{ setEnergyDemandUnits, [ EnergyUnits ], self() },
 
 	energy_demand_units_registered = test_receive(),
 
@@ -403,35 +400,35 @@ run() ->
 	% vehicle units to the input port iterations of the energy unit:
 
 	% For energy:
-	%
-	class_DataflowUnitManager:connect_to_iterated_initially(
-	  UrbanUnitManagerPid,
-	  { [ FirstTransportUnit, SecondTransportUnit ],
-		"energy_needed" },
-	  { FirstVehicleUnit, "energy_demand_estimates" } ),
 
 	class_DataflowUnitManager:connect_to_iterated_initially(
-	  UrbanUnitManagerPid,
-	  { [ ThirdTransportUnit ], "energy_needed" },
-	  { SecondVehicleUnit, "energy_demand_estimates" } ),
+		UrbanUnitManagerPid,
+		{ [ FirstTransportUnit, SecondTransportUnit ],
+		  "energy_needed" },
+		{ FirstVehicleUnit, "energy_demand_estimates" } ),
 
 	class_DataflowUnitManager:connect_to_iterated_initially(
-	  UrbanUnitManagerPid,
-	  { VehicleUnits, "actual_energy_need" },
-	  { EnergyUnit, "energy_demand" } ),
+		UrbanUnitManagerPid,
+		{ [ ThirdTransportUnit ], "energy_needed" },
+		{ SecondVehicleUnit, "energy_demand_estimates" } ),
+
+	class_DataflowUnitManager:connect_to_iterated_initially(
+		UrbanUnitManagerPid,
+		{ VehicleUnits, "actual_energy_need" },
+		{ EnergyUnit, "energy_demand" } ),
 
 	% For pollution:
-	%
-	class_DataflowUnitManager:connect_to_iterated_initially(
-	  UrbanUnitManagerPid,
-	  { [ FirstTransportUnit, SecondTransportUnit ],
-		"pollution_exhausted" },
-	  { FirstVehicleUnit, "pollution_estimates" } ),
 
 	class_DataflowUnitManager:connect_to_iterated_initially(
-	  UrbanUnitManagerPid,
-	  { [ ThirdTransportUnit ], "pollution_exhausted" },
-	  { SecondVehicleUnit, "pollution_estimates" } ),
+		UrbanUnitManagerPid,
+		{ [ FirstTransportUnit, SecondTransportUnit ],
+		  "pollution_exhausted" },
+		{ FirstVehicleUnit, "pollution_estimates" } ),
+
+	class_DataflowUnitManager:connect_to_iterated_initially(
+		UrbanUnitManagerPid,
+		{ [ ThirdTransportUnit ], "pollution_exhausted" },
+		{ SecondVehicleUnit, "pollution_estimates" } ),
 
 
 	% Now the dataflow description is complete and we can specify
@@ -444,8 +441,8 @@ run() ->
 	StartDate = { StartYear, 1, 1 },
 	StartTime = { 0, 0, 0 },
 
-	RootTimeManagerPid ! { setInitialSimulationTimestamp,
-						   [ StartDate, StartTime ] },
+	RootTimeManagerPid !
+		{ setInitialSimulationTimestamp, [ StartDate, StartTime ] },
 
 	% ...and end specified years later:
 	EndDate = { StartYear + SimulationDurationInYears, 1, 1 },
@@ -460,10 +457,10 @@ run() ->
 	StartTimestamp = { StartDate, StartTime },
 	EndTimestamp = { EndDate, EndTime },
 
-	?test_info_fmt( "Starting simulation at ~s, "
-					"for an expected stop at ending timestamp ~s.",
-					[ time_utils:get_textual_timestamp( StartTimestamp ),
-					  time_utils:get_textual_timestamp( EndTimestamp ) ] ),
+	?test_info_fmt( "Starting simulation at ~ts, "
+		"for an expected stop at ending timestamp ~ts.",
+		[ time_utils:get_textual_timestamp( StartTimestamp ),
+		  time_utils:get_textual_timestamp( EndTimestamp ) ] ),
 
 
 	RootTimeManagerPid ! { start, self() },

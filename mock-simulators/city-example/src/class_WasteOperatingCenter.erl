@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2021 EDF R&D
+% Copyright (C) 2012-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,6 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Class modelling a <b>waste operating center</b>.
 -module(class_WasteOperatingCenter).
 
 
@@ -33,8 +34,8 @@
 
 
 
-% Possible answer to an entry request:
 -type entry_outcome() :: 'entered' | 'entry_refused'.
+% Possible answer to an entry request.
 
 
 
@@ -45,15 +46,15 @@
 % The class-specific attributes of a geolocalized element are:
 -define( class_attributes, [
 
-  { location, class_GIS:geo_coordinate(),
-	"the current location of this element" } ] ).
+	{ location, class_GIS:geo_coordinate(),
+	  "the current location of this element" } ] ).
 
 
 -include_lib("wooper/include/wooper.hrl").
 
 
 
-% Creates a new waste operating center.
+% @doc Creates a waste operating center.
 %
 % The only parameter is the starting location, which is either:
 %
@@ -85,12 +86,10 @@ construct( State, ImplicitlyWGS84PolarCoord ) ->
 
 
 
-
-
 % Methods section.
 
 
-% Requests this container to enter.
+% @doc Requests this container to enter.
 -spec requestStaticEntry( wooper:state() ) -> request_return( entry_outcome() ).
 requestStaticEntry( _State ) ->
 	throw( is_abstract ).

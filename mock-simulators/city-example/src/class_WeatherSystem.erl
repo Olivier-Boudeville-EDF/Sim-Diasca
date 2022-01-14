@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2021 EDF R&D
+% Copyright (C) 2014-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,6 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Class modelling a <b>weather system</b> over the city.
 -module(class_WeatherSystem).
 
 
@@ -34,14 +35,14 @@
 % The class-specific attributes of a wheather system are:
 -define( class_attributes, [
 
-  { cells, [ weather_cell() ], "a list of all weather cells composing this "
-	"system (which does not need to know how they are interconnected); the "
-	"system owns these cells" },
+	{ cells, [ weather_cell() ], "a list of all weather cells composing this "
+	  "system (which does not need to know how they are interconnected); the "
+	  "system owns these cells" },
 
-  { location_generator_pid, location_generator_pid(),
-	"the PID of the location generator" },
+	{ location_generator_pid, location_generator_pid(),
+	  "the PID of the location generator" },
 
-  { gis_pid, gis_pid(), "the PID of the GIS" } ] ).
+	{ gis_pid, gis_pid(), "the PID of the GIS" } ] ).
 
 
 
@@ -52,24 +53,24 @@
 -type cell_pid() :: actor_pid().
 
 
-% In each direction, a cell may be adjacent to either another cell or a border:
 -type cell_neighbour() :: cell_pid() | 'border'.
+% In each direction, a cell may be adjacent to either another cell or a border.
 
 
-% We could have used a simple [ cell_pid() ] as well:
+% We could have used a simple [cell_pid()] as well:
 -record( cell_environment, {
 
-		   % The cell on the left (if any):
-		   left :: cell_neighbour(),
+	% The cell on the left (if any):
+	left :: cell_neighbour(),
 
-		   % The cell on the right (if any):
-		   right :: cell_neighbour(),
+	% The cell on the right (if any):
+	right :: cell_neighbour(),
 
-		   % The cell at the top (if any):
-		   top :: cell_neighbour(),
+	% The cell at the top (if any):
+	top :: cell_neighbour(),
 
-		   % The cell at the bottom (if any):
-		   bottom :: cell_neighbour() } ).
+	% The cell at the bottom (if any):
+	bottom :: cell_neighbour() } ).
 
 -type cell_environment() :: #cell_environment{}.
 
@@ -128,8 +129,13 @@
 % adversely the traffic on them.
 
 
+% Shorthands:
 
-% Creates a new weather system.
+-type ustring() :: text_utils:ustring().
+
+
+
+% @doc Creates a weather system.
 %
 % Construction parameters are:
 %
@@ -142,17 +148,16 @@
 % - GISPid is the PID of the GIS
 %
 -spec construct( wooper:state(), class_Actor:actor_settings(),
-		class_Actor:name(), location_generator_pid(), gis_pid() ) ->
-					   wooper:state().
+	class_Actor:name(), location_generator_pid(), gis_pid() ) -> wooper:state().
 construct( State, ActorSettings, Name, LocationGeneratorPid, GISPid ) ->
 
 	ActorState = class_Actor:construct( State, ActorSettings,
-										?trace_categorize( Name ) ),
+										?trace_categorize(Name) ),
 
 	InitState = setAttributes( ActorState, [
-			{ cells, [] },
-			{ location_gen_pid, LocationGeneratorPid },
-			{ gis_pid, GISPid } ] ),
+		{ cells, [] },
+		{ location_gen_pid, LocationGeneratorPid },
+		{ gis_pid, GISPid } ] ),
 
 	?send_info( InitState, "Initialised." ),
 
@@ -161,7 +166,7 @@ construct( State, ActorSettings, Name, LocationGeneratorPid, GISPid ) ->
 
 
 
-% Overridden destructor.
+% @doc Overridden destructor.
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -186,16 +191,16 @@ destruct( State ) ->
 
 
 
-% First scheduling of the system.
+% @doc First scheduling of the system.
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
-						   const_actor_oneway_return().
+							const_actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 	% Purely passive from now:
 	actor:const_return().
 
 
 
-% Registers the calling cell, so that this system supervises it.
+% @doc Registers the calling cell, so that this system supervises it.
 %
 % This system takes ownership of it.
 %
@@ -208,7 +213,7 @@ register( State, CellPid ) ->
 
 
 
-% The definition of the spontaneous behaviour of this system.
+% @doc The definition of the spontaneous behaviour of this system.
 -spec actSpontaneous( wooper:state() ) -> const_oneway_return().
 actSpontaneous( State ) ->
 	% Purely passive.
@@ -216,11 +221,11 @@ actSpontaneous( State ) ->
 
 
 
-% Returns a textual representation of this instance.
+% @doc Returns a textual representation of this instance.
 %
 % (helper)
 %
--spec to_string( wooper:state() ) -> string().
+-spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 	text_utils:format( "Weather system made of ~B cells",
 					   [ length( ?getAttr(cells) ) ] ).
@@ -230,8 +235,8 @@ to_string( State ) ->
 % Static section.
 
 
-% Generates a list of instance definitions for the full weather system, cells
-% included.
+% @doc Generates a list of instance definitions for the full weather system,
+% cells included.
 %
 -spec generate_definitions( basic_utils:count() ) ->
 					static_return( [ class_Actor:instance_creation_spec() ] ).
@@ -248,8 +253,8 @@ generate_definitions( CellsPerEdge ) ->
 	BaseInitialConditions = { 0.1, 0.0, 0.0 },
 
 	Cells = [ create_cell( X, Y, CellsPerEdge, BaseInitialConditions )
-			  || X <- lists:seq( 1, CellsPerEdge ),
-				 Y <- lists:seq( 1, CellsPerEdge ) ],
+				|| X <- lists:seq( 1, CellsPerEdge ),
+				   Y <- lists:seq( 1, CellsPerEdge ) ],
 
 	wooper:return_static( [ SystemDef | Cells ] ).
 
@@ -260,7 +265,7 @@ generate_definitions( CellsPerEdge ) ->
 
 
 
-% Returns a creation definition for the cell located at (X,Y).
+% @doc Returns a creation definition for the cell located at (X,Y).
 %
 % (helper)
 
@@ -286,8 +291,8 @@ create_cell( X, Y, CellsPerEdge, _BaseInitialConditions={ Xc, Yc, Zc } ) ->
 
 
 
-% Returns the appropriate name for the cells at ( X, Y ) (supposedly within the
-% system, not out of bounds)
+% @doc Returns the appropriate name for the cells at ( X, Y ) (supposedly within
+% the system, not out of bounds)
 %
 % (helper)
 %
@@ -297,7 +302,7 @@ get_name_for( X, Y, CellsPerEdge ) when X > 0
 
 
 
-% Returns the name of the left neighbour, or 'border':
+% @doc Returns the name of the left neighbour, or 'border':
 %
 % (helper)
 %
@@ -305,11 +310,11 @@ get_left_neighbour( _X=1, _Y, _CellsPerEdge ) ->
 	border;
 
 get_left_neighbour( X, Y, CellsPerEdge ) ->
-	{ user_id, get_name_for( X - 1, Y, CellsPerEdge ) }.
+	{ user_id, get_name_for( X-1, Y, CellsPerEdge ) }.
 
 
 
-% Returns the name of the right neighbour, or 'border':
+% @doc Returns the name of the right neighbour, or 'border':
 %
 % (helper)
 %
@@ -317,11 +322,11 @@ get_right_neighbour( _X=CellsPerEdge, _Y, CellsPerEdge ) ->
 	border;
 
 get_right_neighbour( X, Y, CellsPerEdge ) ->
-	{ user_id, get_name_for( X + 1, Y, CellsPerEdge ) }.
+	{ user_id, get_name_for( X+1, Y, CellsPerEdge ) }.
 
 
 
-% Returns the name of the top neighbour, or 'border':
+% @doc Returns the name of the top neighbour, or 'border':
 %
 % (helper)
 %
@@ -329,11 +334,11 @@ get_top_neighbour( _X, _Y=1, _CellsPerEdge ) ->
 	border;
 
 get_top_neighbour( X, Y, CellsPerEdge ) ->
-	{ user_id, get_name_for( X, Y - 1, CellsPerEdge ) }.
+	{ user_id, get_name_for( X, Y-1, CellsPerEdge ) }.
 
 
 
-% Returns the name of the bottom neighbour, or 'border':
+% @doc Returns the name of the bottom neighbour, or 'border':
 %
 % (helper)
 %
@@ -341,4 +346,4 @@ get_bottom_neighbour( _X, _Y=CellsPerEdge, CellsPerEdge ) ->
 	border;
 
 get_bottom_neighbour( X, Y, CellsPerEdge ) ->
-	{ user_id, get_name_for( X, Y + 1, CellsPerEdge ) }.
+	{ user_id, get_name_for( X, Y+1, CellsPerEdge ) }.

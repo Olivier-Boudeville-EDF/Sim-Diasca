@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2021 EDF R&D
+% Copyright (C) 2016-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,6 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Example of a <b>dataflow object</b>.
 -module(class_Building).
 
 
@@ -35,11 +36,13 @@
 % Plain (standard) attributes specific to a building object are:
 -define( class_attributes, [
 
-  { district_pid, maybe( district_pid() ), "the PID of the parent  district "
-	"of this building (may not be set initially)" },
+	{ district_pid, maybe( district_pid() ), "the PID of the parent  district "
+	  "of this building (may not be set initially)" },
 
-  { households, [ household_pid() ],
-	"a list of the households that this building hosts (they live in it)" } ] ).
+	{ households, [ household_pid() ],
+	  "a list of the households that this building hosts (they live in it)" }
+
+] ).
 
 
 
@@ -59,9 +62,9 @@
 -include("urban_example_defines.hrl").
 
 
--type building_name() :: string().
+-type building_name() :: ustring().
 
--type postal_address() :: string().
+-type postal_address() :: ustring().
 
 
 
@@ -73,10 +76,14 @@
 % been defined as, respectively, unique and multiple peers instead.
 
 
+% Shorthands:
+
+-type ustring() :: text_utils:ustring().
 
 
-% Constructs a new dataflow building object instance, in charge of modelling the
-% state of a building:
+
+% @doc Constructs a dataflow building object instance, in charge of modelling
+% the state of a building:
 %
 % - ActorSettings describes the actor abstract identifier (AAI) and seed of this
 % actor, as assigned by the load balancer
@@ -104,9 +111,9 @@ construct( State, ActorSettings, BuildingName,
 
 	% First the direct mother class:
 	ObjectState = class_DataflowObject:construct( State, ActorSettings,
-						?trace_categorize( BuildingName ), AttributeSpecs,
-						InitialAttributeValues, _SpecForUniquePeers=[],
-						_SpecForMultiplePeers=[], DataflowPid ),
+		?trace_categorize(BuildingName), AttributeSpecs,
+		InitialAttributeValues, _SpecForUniquePeers=[],
+		_SpecForMultiplePeers=[], DataflowPid ),
 
 	% Then the class-specific actions:
 	setAttributes( ObjectState, [ { district_pid, DistrictPid },
@@ -114,7 +121,7 @@ construct( State, ActorSettings, BuildingName,
 
 
 
-% Overridden destructor.
+% @doc Overridden destructor.
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -154,12 +161,13 @@ destruct( State ) ->
 % Member methods section.
 
 
-% Sets the parent district of this building: this building will be located-in
-% the specified district.
+% @doc Sets the parent district of this building: this building will be
+% located-in the specified district.
 %
 -spec setDistrict( wooper:state(), district_pid(), sending_actor_pid() ) ->
-						 actor_oneway_return().
-setDistrict( State, DistrictPid, _SendingActorPid ) when is_pid( DistrictPid ) ->
+							actor_oneway_return().
+setDistrict( State, DistrictPid, _SendingActorPid )
+								when is_pid( DistrictPid ) ->
 
 	% No reassignment permitted:
 	undefined = ?getAttr(district_pid),
@@ -172,12 +180,11 @@ setDistrict( State, DistrictPid, _SendingActorPid ) when is_pid( DistrictPid ) -
 
 
 
-
-% Registers specified household to this building: the specified household will
-% live-in this building.
+% @doc Registers specified household to this building: the specified household
+% will live-in this building.
 %
--spec registerHousehold( wooper:state(), household_pid(), sending_actor_pid() ) ->
-							   actor_oneway_return().
+-spec registerHousehold( wooper:state(), household_pid(),
+						 sending_actor_pid() ) -> actor_oneway_return().
 registerHousehold( State, HouseholdPid, _SendingActorPid )
   when is_pid( HouseholdPid ) ->
 
@@ -192,8 +199,8 @@ registerHousehold( State, HouseholdPid, _SendingActorPid )
 
 
 
-% Unregisters specified household from this building: the specified household
-% will no longer live-in this building.
+% @doc Unregisters specified household from this building: the specified
+% household will no longer live-in this building.
 %
 -spec unregisterHousehold( wooper:state(), household_pid(),
 						   sending_actor_pid() ) -> actor_oneway_return().
@@ -211,7 +218,7 @@ unregisterHousehold( State, HouseholdPid, _SendingActorPid )
 
 
 
-% Returns the (indirect) parent district of this building.
+% @doc Returns the (indirect) parent district of this building.
 -spec getParentDistrict( wooper:state() ) ->
 				const_request_return( { 'parent_district', district_pid() } ).
 getParentDistrict( State ) ->
@@ -224,9 +231,9 @@ getParentDistrict( State ) ->
 % Static section.
 
 
-% Allows to fully specify the dataflow attributes of this object.
+% @doc Allows to fully specify the dataflow attributes of this object.
 -spec get_dataflow_attribute_specs() ->
-								  static_return( [ dataflow_attribute_spec() ] ).
+								static_return( [ dataflow_attribute_spec() ] ).
 get_dataflow_attribute_specs() ->
 	wooper:return_static( [
 
@@ -273,8 +280,8 @@ get_dataflow_attribute_specs() ->
 % Helper section.
 
 
-% Returns a textual description of this building dataflow object.
--spec to_string( wooper:state() ) -> string().
+% @doc Returns a textual description of this building dataflow object.
+-spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
 	HouseholdString = case ?getAttr(households) of
@@ -298,7 +305,7 @@ to_string( State ) ->
 
 	end,
 
-	text_utils:format( "Building object named '~s', hosting ~s, "
-					   "having ~s, and having ~s",
-					   [ ?getAttr(name), HouseholdString, ParentString,
-						 class_DataflowObject:attributes_to_string( State ) ] ).
+	text_utils:format( "Building object named '~ts', hosting ~ts, "
+		"having ~ts, and having ~ts",
+		[ ?getAttr(name), HouseholdString, ParentString,
+		  class_DataflowObject:attributes_to_string( State ) ] ).

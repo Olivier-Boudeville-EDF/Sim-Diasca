@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2021 EDF R&D
+% Copyright (C) 2016-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,6 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Base processing unit, defined for testing.
 -module(class_BaseTestProcessingUnit).
 
 
@@ -46,9 +47,13 @@
 -include("dataflow_unit_test_defines.hrl").
 
 
+% Shorthands:
+
+-type ustring() :: text_utils:ustring().
 
 
-% Constructs a new test dataflow unit instance.
+
+% @doc Constructs a test dataflow unit instance.
 %
 % - ActorSettings describes the actor abstract identifier (AAI) and seed of this
 % actor, as assigned by the load balancer
@@ -60,7 +65,7 @@
 %
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 class_DataflowProcessingUnit:unit_name(), dataflow_pid() ) ->
-					   wooper:state().
+						wooper:state().
 construct( State, ActorSettings, UnitName, DataflowPid ) ->
 
 	% We start with two input iterations and two outputs:
@@ -68,9 +73,9 @@ construct( State, ActorSettings, UnitName, DataflowPid ) ->
 
 	% First the direct mother class:
 	UnitState = class_DataflowProcessingUnit:construct(
-				  State, ActorSettings, ?trace_categorize( UnitName ),
-				  _ActivationPolicy=activate_on_new_set, InputPortSpecs,
-				  OutputPortSpecs, DataflowPid ),
+		State, ActorSettings, ?trace_categorize(UnitName),
+		_ActivationPolicy=activate_on_new_set, InputPortSpecs,
+		OutputPortSpecs, DataflowPid ),
 
 	% No class-specific actions:
 	UnitState.
@@ -82,7 +87,7 @@ construct( State, ActorSettings, UnitName, DataflowPid ) ->
 
 
 
-% Callback executed automatically whenever this unit gets activated.
+% @doc Callback executed automatically whenever this unit gets activated.
 %
 % Meant to be overridden.
 %
@@ -101,8 +106,8 @@ activate( State ) ->
 	SetState = class_DataflowBlock:set_output_port_value( "my_output_port",
 												 OutputChannelValue, State ),
 
-	?notice_fmt( "Activated! Current state: ~s; read from input: ~p; "
-		"written to output: ~s.",
+	?notice_fmt( "Activated! Current state: ~ts; read from input: ~p; "
+		"written to output: ~ts.",
 		[ to_string( State ), InputRawValue,
 		  class_DataflowBlock:value_to_string( OutputChannelValue ) ] ),
 
@@ -114,8 +119,8 @@ activate( State ) ->
 % Static section.
 
 
-% Returns the specifications for the input and output ports of that dataflow
-% processing unit.
+% @doc Returns the specifications for the input and output ports of that
+% dataflow processing unit.
 %
 -spec get_port_specifications() ->
 			static_return( { [ input_port_spec() ], [ output_port_spec() ] } ).
@@ -124,8 +129,8 @@ get_port_specifications() ->
 
 
 
-% Returns a list of the specifications of the (initial) input ports for that
-% dataflow block.
+% @doc Returns a list of the specifications of the (initial) input ports for
+% that dataflow block.
 %
 -spec get_input_port_specs() -> static_return( [ input_port_spec() ] ).
 get_input_port_specs() ->
@@ -139,8 +144,8 @@ get_input_port_specs() ->
 
 
 
-% Returns a list of the specifications of the (initial) output ports for that
-% unit.
+% @doc Returns a list of the specifications of the (initial) output ports for
+% that unit.
 %
 -spec get_output_port_specs() -> static_return( [ output_port_spec() ] ).
 get_output_port_specs() ->
@@ -157,8 +162,8 @@ get_output_port_specs() ->
 % Helper functions.
 
 
-% Returns a textual description of this unit.
--spec to_string( wooper:state() ) -> string().
+% @doc Returns a textual description of this unit.
+-spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
-	text_utils:format( "Basic test unit; this is a ~s",
+	text_utils:format( "Basic test unit; this is a ~ts",
 					   [ class_DataflowProcessingUnit:to_string( State ) ] ).

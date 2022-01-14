@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2021 EDF R&D
+% Copyright (C) 2016-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,6 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Example of <b>object manager</b>.
 -module(class_BuildingHouseholdObjectManager).
 
 -define( class_description,
@@ -68,7 +69,7 @@
 % No attribute is specific to this object manager.
 
 
-% Constructs a building and household manager, from:
+% @doc Constructs a building and household manager, from:
 %
 % - ActorSettings describes the actor abstract identifier (AAI) and seed of this
 % actor, as automatically assigned by the load balancer
@@ -82,8 +83,7 @@
 %
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 class_DataflowObjectManager:parent_pid(), load_balancer_pid(),
-				 basic_utils:maybe( identification_server_pid() ) ) ->
-						wooper:state().
+				 maybe( identification_server_pid() ) ) -> wooper:state().
 construct( State, ActorSettings, WorldManagerPid, LoadBalancerPid,
 		   IdentificationServerPid ) ->
 
@@ -98,16 +98,16 @@ construct( State, ActorSettings, WorldManagerPid, LoadBalancerPid,
 % Methods section.
 
 
-% Applies the specified changeset (a list of world events).
+% @doc Applies the specified changeset (a list of world events).
 -spec applyChangeset( wooper:state(), changeset(), actor_pid() ) ->
-							 actor_oneway_return().
+								actor_oneway_return().
 applyChangeset( State, Changeset, SendingActorPid ) ->
 
 	% This oneway has been overridden so that the domain-specific
 	% 'located_in_district' and 'living_in_building' associations can be
 	% managed:
 	%
-	?debug_fmt( "Applying ~s (received from ~w)",
+	?debug_fmt( "Applying ~ts (received from ~w)",
 		[ dataflow_support:changeset_to_string( Changeset ),
 		  SendingActorPid ] ),
 
@@ -126,7 +126,7 @@ applyChangeset( State, Changeset, SendingActorPid ) ->
 
 
 
-% Filters the specified events: selects a subset of them (the ones managed
+% @doc Filters the specified events: selects a subset of them (the ones managed
 % specifically by this child object manager) and process them, and returns the
 % other, unmanaged events (expected to be managed generically by the object
 % manager class).
@@ -159,17 +159,17 @@ filter_world_events(
 				 | T ], Acc, State ) ->
 
 	?debug_fmt( "Object manager ~p associating (located-in) the building "
-				"instance named '~s' to the district named '~s'.",
-				[ self(), BuildingExternalId, DistrictExternalId ] ),
+		"instance named '~ts' to the district named '~ts'.",
+		[ self(), BuildingExternalId, DistrictExternalId ] ),
 
 	[ BuildingPid, DistrictPid ] = class_DataflowObjectManager:get_object_pids(
 					[ BuildingExternalId, DistrictExternalId ], State ),
 
 	BuildingSentState = class_Actor:send_actor_message( BuildingPid,
-				{ setDistrict, [ DistrictPid ] }, State ),
+		{ setDistrict, [ DistrictPid ] }, State ),
 
 	DistrictSentState = class_Actor:send_actor_message( DistrictPid,
-				{ registerBuilding, [ BuildingPid ] }, BuildingSentState ),
+		{ registerBuilding, [ BuildingPid ] }, BuildingSentState ),
 
 	% Hence handled next diasca, as wanted; probably better than having the
 	% building or the district report all these information by itself:
@@ -178,8 +178,8 @@ filter_world_events(
 		{ onBinaryAssociationEstablished, [ EventId ] }, DistrictSentState ),
 
 	UpdatedBinAssocEvent = BinAssocEvent#binary_association_event{
-							 source_object_pid=BuildingPid,
-							 target_object_pid=DistrictPid },
+								source_object_pid=BuildingPid,
+								target_object_pid=DistrictPid },
 
 	% To prepare upcoming completion:
 	RegisterState = appendToAttribute( SelfSentState, triggered_events,
@@ -202,8 +202,8 @@ filter_world_events(
 		target_object_pid=undefined } | T ], Acc, State ) ->
 
 	?debug_fmt( "Object manager ~p associating (living-in) the household "
-				"instance named '~s' to the building named '~s'.",
-				[ self(), HouseholdExternalId, BuildingExternalId ] ),
+		"instance named '~ts' to the building named '~ts'.",
+		[ self(), HouseholdExternalId, BuildingExternalId ] ),
 
 	[ HouseholdPid, BuildingPid ] = class_DataflowObjectManager:get_object_pids(
 					[ HouseholdExternalId, BuildingExternalId ], State ),
@@ -238,24 +238,24 @@ filter_world_events(
 		external_id=HouseholdExternalId,
 		object_pid=undefined,
 		disassociation_information={ living_in_building, BuildingExtId } }
-				 | T ],
+					| T ],
   Acc, State ) ->
 
 	% May be specified by the user as a string or a binary:
 	BuildingExternalId = text_utils:ensure_binary( BuildingExtId ),
 
 	?debug_fmt( "Object manager ~p disassociating (was: living-in) the "
-				"household instance named '~s' from the building named '~s'.",
-				[ self(), HouseholdExternalId, BuildingExternalId ] ),
+		"household instance named '~ts' from the building named '~ts'.",
+		[ self(), HouseholdExternalId, BuildingExternalId ] ),
 
 	[ HouseholdPid, BuildingPid ] = class_DataflowObjectManager:get_object_pids(
 					[ HouseholdExternalId, BuildingExternalId ], State ),
 
 	 HouseholdSentState = class_Actor:send_actor_message( HouseholdPid,
-				{ unsetBuilding, [ BuildingPid ] }, State ),
+		{ unsetBuilding, [ BuildingPid ] }, State ),
 
 	 BuildingSentState = class_Actor:send_actor_message( BuildingPid,
-				{ unregisterHousehold, [ HouseholdPid ] }, HouseholdSentState ),
+		{ unregisterHousehold, [ HouseholdPid ] }, HouseholdSentState ),
 
 	% Hence handled next diasca (by the mother class), as wanted:
 	SelfSentState = class_Actor:send_actor_message( self(),
@@ -268,8 +268,8 @@ filter_world_events(
 	% { 'living_in_building', text_utils:bin_string(), object_pid() }.
 	%
 	UpdatedDisassocEvent = DisassocEvent#disassociation_event{
-							 object_pid=HouseholdPid,
-							 disassociation_information={ living_in_building,
+		object_pid=HouseholdPid,
+		disassociation_information={ living_in_building,
 									 BuildingExternalId, BuildingPid } },
 
 	RegisterState = appendToAttribute( SelfSentState, triggered_events,
@@ -281,8 +281,8 @@ filter_world_events(
 filter_world_events( _WorldEvents=[ Event | T ], Acc, State ) ->
 
 	?debug_fmt( "World event '~p' not specifically handled by this object "
-				"manager, its processing will be delegated to the generic, "
-				"parent one (i.e. defined in the DataflowObjectManager mother "
-				"class).", [ Event ] ),
+		"manager, its processing will be delegated to the generic, "
+		"parent one (i.e. defined in the DataflowObjectManager mother class).",
+		[ Event ] ),
 
 	filter_world_events( T, [ Event | Acc ], State ).

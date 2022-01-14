@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2021 EDF R&D
+% Copyright (C) 2016-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,6 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc A joint <b>test unit manager</b>.
 -module(class_UrbanUnitManager).
 
 
@@ -34,13 +35,13 @@
 % Attributes that are specific to this unit manager singleton are:
 -define( class_attributes, [
 
-  { transport_table, table:table( household_pid(), transportation_unit_pid() ),
-	"a table telling, for an household PID, the PID of its associated "
-	"transportation unit (if any)" },
+	{ transport_table, table( household_pid(), transportation_unit_pid() ),
+	  "a table telling, for an household PID, the PID of its associated "
+	  "transportation unit (if any)" },
 
-  { energy_table, table:table( building_pid(), energy_unit_pid() ),
-	"a table telling, for a building PID, the PID of its associated energy "
-	"unit (if any)" } ] ).
+	{ energy_table, table( building_pid(), energy_unit_pid() ),
+	  "a table telling, for a building PID, the PID of its associated energy "
+	  "unit (if any)" } ] ).
 
 
 % Helpers:
@@ -69,7 +70,13 @@
 
 
 
-% Constructs an urban unit manager, from:
+% Shorthands:
+
+-type ustring() :: text_utils:ustring().
+
+
+
+% @doc Constructs a urban unit manager, from:
 %
 % - ActorSettings describes the actor abstract identifier (AAI) and seed of this
 % actor, as automatically assigned by the load balancer
@@ -97,9 +104,9 @@ construct( State, ActorSettings, ExperimentManagerPid, BindingManagers,
 	EmitterName = ?MODULE,
 
 	BaseState = class_DataflowUnitManager:construct( State, ActorSettings,
-			?trace_categorize(EmitterName), ManagedUnitSpec,
-			ListenedEventMatches, ExperimentManagerPid, BindingManagers,
-			LoadBalancerPid, IdentificationServerPid ),
+		?trace_categorize(EmitterName), ManagedUnitSpec,
+		ListenedEventMatches, ExperimentManagerPid, BindingManagers,
+		LoadBalancerPid, IdentificationServerPid ),
 
 	EmptyTable = table:new(),
 
@@ -112,8 +119,8 @@ construct( State, ActorSettings, ExperimentManagerPid, BindingManagers,
 % Methods section.
 
 
-% Returns the synchronization event matches that this unit manager is interested
-% in.
+% @doc Returns the synchronization event matches that this unit manager is
+% interested in.
 %
 -spec get_listened_event_matches() -> static_return( [ event_match() ] ).
 get_listened_event_matches() ->
@@ -133,31 +140,32 @@ get_listened_event_matches() ->
 			  object_type_match=class_Household },
 
 	HouseholdAssociationMatch = #binary_association_event_match{
-			  association_type_match=living_in_building,
-			  source_object_type_match=class_Household
-			  % Implied: target_object_type_match=class_Building
+		association_type_match=living_in_building,
+		source_object_type_match=class_Household
+		% Implied: target_object_type_match=class_Building
 								  },
 
 	HouseholdDestructionMatch = #destruction_event_match{
-			  object_type_match=class_Household },
+		object_type_match=class_Household },
 
 	BuildingCreationMatch = #creation_event_match{
-			  object_type_match=class_Building },
+		object_type_match=class_Building },
 
 	BuildingAssociationMatch = #binary_association_event_match{
-			  association_type_match=located_in_district,
-			  source_object_type_match=class_Building
-			  % Implied: target_object_type_match=class_District
+		association_type_match=located_in_district,
+		source_object_type_match=class_Building
+		% Implied: target_object_type_match=class_District
 								 },
 
 	% A lot more precise than a simple 'any_event_type':
 	wooper:return_static( [ HouseholdCreationMatch, HouseholdAssociationMatch,
-							HouseholdDestructionMatch, BuildingCreationMatch,
-							BuildingAssociationMatch ] ).
+		HouseholdDestructionMatch, BuildingCreationMatch,
+		BuildingAssociationMatch ] ).
 
 
-% Called so that this unit manager can perform domain-specific actions of its
-% choice whenever a building or a household has just been created.
+
+% @doc Called so that this unit manager can perform domain-specific actions of
+% its choice whenever a building or a household has just been created.
 %
 % As a result, if the created dataflow object is:
 %
@@ -170,11 +178,11 @@ get_listened_event_matches() ->
 -spec onCreationEventMatched( wooper:state(), creation_event() ) ->
 									oneway_return().
 onCreationEventMatched( State, #creation_event{
-								  id=EventId,
-								  object_type=class_Building,
-								  object_pid=BuildingPid,
-								  construction_parameters=ConstructParams,
-								  dataflow_pid=DataflowPid } ) ->
+								id=EventId,
+								object_type=class_Building,
+								object_pid=BuildingPid,
+								construction_parameters=ConstructParams,
+								dataflow_pid=DataflowPid } ) ->
 
 	% Here we create with relevant parameters an energy demand unit
 	% corresponding to this building:
@@ -182,10 +190,10 @@ onCreationEventMatched( State, #creation_event{
 	BuildingName = hd( ConstructParams ),
 
 	UnitName = text_utils:format(
-		"Energy Demand unit for the '~s' building", [ BuildingName ] ),
+		"Energy Demand unit for the '~ts' building", [ BuildingName ] ),
 
 	?debug_fmt( "Reacting to the creation of a building (~w; event #~B) "
-		"by creating in turn its associated energy unit, to be named '~s'.",
+		"by creating in turn its associated energy unit, to be named '~ts'.",
 		[ BuildingPid, EventId, UnitName ] ),
 
 	% In the same dataflow:
@@ -200,23 +208,23 @@ onCreationEventMatched( State, #creation_event{
 
 
 onCreationEventMatched( State, #creation_event{
-								  id=EventId,
-								  object_type=class_Household,
-								  object_pid=HouseholdPid,
-								  construction_parameters=ConstructParams,
-								  dataflow_pid=DataflowPid } ) ->
+									id=EventId,
+									object_type=class_Household,
+									object_pid=HouseholdPid,
+									construction_parameters=ConstructParams,
+									dataflow_pid=DataflowPid } ) ->
 
 	% Here we create with relevant parameters a transportation demand unit
 	% corresponding to this household:
 
 	HouseholdName = hd( ConstructParams ),
 
-	UnitName = text_utils:format( "Transportation Demand unit for the '~s' "
+	UnitName = text_utils:format( "Transportation Demand unit for the '~ts' "
 								  "household", [ HouseholdName ] ),
 
 	?debug_fmt( "Reacting to the creation of an household (~w; event #~B) "
 		"by creating in turn its associated transportation unit, "
-		"to be named '~s'.", [ HouseholdPid, EventId, UnitName ] ),
+		"to be named '~ts'.", [ HouseholdPid, EventId, UnitName ] ),
 
 	% Constant 10% here:
 	LevelOfVehicleSharing = 0.1,
@@ -237,24 +245,24 @@ onCreationEventMatched( State, #creation_event{
 
 
 
-% Called so that this unit manager can perform domain-specific actions of its
-% choice whenever a household has just been destructed.
+% @doc Called so that this unit manager can perform domain-specific actions of
+% its choice whenever a household has just been destructed.
 %
 % As a result, its corresponding transportation unit shall be removed as well,
 % once having been disconnected.
 %
 -spec onDestructionEventMatched( wooper:state(), destruction_event() ) ->
-									   oneway_return().
+										oneway_return().
 onDestructionEventMatched( State, #destruction_event{
-									 id=EventId,
-									 % Just a check:
-									 object_type=class_Household,
-									 external_id=HouseholdExtId,
-									 object_pid=HouseholdPid,
-									 dataflow_pid=DataflowPid } ) ->
+									id=EventId,
+									% Just a check:
+									object_type=class_Household,
+									external_id=HouseholdExtId,
+									object_pid=HouseholdPid,
+									dataflow_pid=DataflowPid } ) ->
 
 	?debug_fmt( "Reacting to the destruction of an household, named "
-		"'~s', of PID ~w, in dataflow ~w, in the context of event #~B.",
+		"'~ts', of PID ~w, in dataflow ~w, in the context of event #~B.",
 		[ HouseholdExtId, HouseholdPid, DataflowPid, EventId ] ),
 
 	% We have to destruct in turn the (transportation demand) unit associated to
@@ -273,11 +281,11 @@ onDestructionEventMatched( State, #destruction_event{
 
 
 
-% Called so that this unit manager can perform domain-specific actions of its
-% choice whenever a matching binary association happened.
+% @doc Called so that this unit manager can perform domain-specific actions of
+% its choice whenever a matching binary association happened.
 %
 -spec onBinaryAssociationEventMatched( wooper:state(),
-					   binary_association_event() ) -> const_oneway_return().
+						binary_association_event() ) -> const_oneway_return().
 onBinaryAssociationEventMatched( State,
 								 BinAssociationEvent=#binary_association_event{
 									id=EventId,
@@ -291,7 +299,7 @@ onBinaryAssociationEventMatched( State,
 	%trace_utils:debug_fmt( "association: household ~p living in building "
 	%  "~p: ~p", [ HouseholdPid, BuildingPid, BinAssociationEvent ] ),
 
-	?debug_fmt( "Reacting to the association of an household (event #~B): ~s",
+	?debug_fmt( "Reacting to the association of an household (event #~B): ~ts",
 		[ EventId,
 		  dataflow_support:world_event_to_string( BinAssociationEvent ) ] ),
 
@@ -311,7 +319,7 @@ onBinaryAssociationEventMatched( State,
 	%trace_utils:debug_fmt( "association: building ~p located in district ~p: "
 	% "~p", [ BuildingPid, DistrictPid, BinAssociationEvent ] ),
 
-	?debug_fmt( "Reacting to the association of an household (event #~B): ~s",
+	?debug_fmt( "Reacting to the association of an household (event #~B): ~ts",
 		[ EventId,
 		  dataflow_support:world_event_to_string( BinAssociationEvent ) ] ),
 
@@ -319,8 +327,8 @@ onBinaryAssociationEventMatched( State,
 
 
 
-% Notifies this unit manager how a dataflow-level event shall be handled, not
-% relying on the changeset system for that (just useful in the context of a
+% @doc Notifies this unit manager how a dataflow-level event shall be handled,
+% not relying on the changeset system for that (just useful in the context of a
 % programmatic case).
 %
 -spec notifyEvent( wooper:state(), urban_dataflow_event(), event_data(),
@@ -328,20 +336,20 @@ onBinaryAssociationEventMatched( State,
 notifyEvent( State, _Event=new_energy_demand_unit_needed, UnitName,
 			 _SendingActorPid ) ->
 
-	?debug_fmt( "Creating a new energy demand unit, named '~s'.",
+	?debug_fmt( "Creating an energy demand unit, named '~ts'.",
 				[ UnitName ] ),
 
 	CreatedState = class_DataflowUnitManager:create_runtime_unit(
-					 _UnitClassname={ erlang, class_EnergyDemandUnit },
-					 _CoreConstructionParameters=[ UnitName ], State ),
+		_UnitClassname={ erlang, class_EnergyDemandUnit },
+		_CoreConstructionParameters=[ UnitName ], State ),
 
 	actor:return_state( CreatedState ).
 
 
 
 
-% Called whenever a unit has been created, so that channels between this new
-% unit and the rest of the dataflow can be created.
+% @doc Called whenever a unit has been created, so that channels between this
+% new unit and the rest of the dataflow can be created.
 %
 % Parameters are:
 %
@@ -375,14 +383,14 @@ onUnitCreated( State, _CreatedUnitType=class_EnergyDemandUnit,
 		[ { "energy_needed", "total_energy_demand" } ],
 
 	?debug_fmt( "Energy Demand Unit ~w created, from construction "
-				"parameters '~p'; creating now channels towards its related "
-				"building (~w), namely: ~p",
-				[ CreatedEnergyUnitPid, CreatedUnitConstructParams,
-				  BuildingPid, hd( BuildingChannelEndpointNames ) ] ),
+		"parameters '~p'; creating now channels towards its related "
+		"building (~w), namely: ~p",
+		[ CreatedEnergyUnitPid, CreatedUnitConstructParams,
+		  BuildingPid, hd( BuildingChannelEndpointNames ) ] ),
 
 	BuildingChannelState = class_DataflowUnitManager:create_channels_for(
-							  EventId, CreatedEnergyUnitPid, BuildingPid,
-							  BuildingChannelEndpointNames, State ),
+								EventId, CreatedEnergyUnitPid, BuildingPid,
+								BuildingChannelEndpointNames, State ),
 
 	% We do not create the upstream connections of this energy demand unit
 	% (created after a building is created) here, as they will done later, when
@@ -414,7 +422,7 @@ onUnitCreated( State, _CreatedUnitType=class_TransportationDemandUnit,
 
 	?debug_fmt( "Transportation Demand Unit ~w created, from construction "
 		"parameters '~p'; creating now channels from its related "
-		"household (~w), namely: ~s",
+		"household (~w), namely: ~ts",
 		[ CreatedTransportUnitPid, CreatedUnitConstructParams,
 		  HouseholdPid,
 		  text_utils:strings_to_string( HouseholdChannelEndpointNames ) ] ),
@@ -467,8 +475,8 @@ onUnitCreated( State, _CreatedUnitType=class_TransportationDemandUnit,
 
 	% These creations will be managed transparently from then by the base class:
 	DistrictChannelState = class_DataflowUnitManager:create_channels_for(
-				EventId, DistrictPid, CreatedTransportUnitPid,
-				DistrictChannelEndpointNames, HouseholdChannelState ),
+		EventId, DistrictPid, CreatedTransportUnitPid,
+		DistrictChannelEndpointNames, HouseholdChannelState ),
 
 	% Now it is time for the last connectivity-related action: to create the
 	% downstream connections of this transportation unit.
@@ -512,7 +520,7 @@ onUnitCreated( State, _CreatedUnitType=class_TransportationDemandUnit,
 	% port iteration:
 	%
 	TransportChannelEndpointNames = [ { "energy_needed",
-				  { input_iteration_name, "energy_demand" } } ],
+					{ input_iteration_name, "energy_demand" } } ],
 
 	?debug_fmt( "Creating now a channel from this just created transportation "
 		"unit (~w) to the energy demand unit (~w) corresponding to the parent "
@@ -529,7 +537,7 @@ onUnitCreated( State, _CreatedUnitType=class_TransportationDemandUnit,
 	% associated transportation unit:
 	%
 	NewTransportTable = table:add_new_entry( HouseholdPid,
-			   CreatedTransportUnitPid, ?getAttr(transport_table) ),
+		CreatedTransportUnitPid, ?getAttr(transport_table) ),
 
 	% Maybe clearer than using addKeyValueToAttribute/4:
 	RecordedState = setAttribute( TransportChannelState,
@@ -542,7 +550,7 @@ onUnitCreated( State, _CreatedUnitType=class_TransportationDemandUnit,
 onUnitCreated( State, CreatedUnitType, CreatedUnitConstructParams,
 			   CreatedEnergyUnitPid, EventId, CreationContext ) ->
 
-	?error_fmt( "Unhandled unit creation, for type '~s', for construction "
+	?error_fmt( "Unhandled unit creation, for type '~ts', for construction "
 		"parameters ~p; the unit for event #~B was ~w "
 		"(associated context being ~p).",
 		[ CreatedUnitType, CreatedUnitConstructParams, EventId,
@@ -552,8 +560,8 @@ onUnitCreated( State, CreatedUnitType, CreatedUnitConstructParams,
 
 
 
-% Returns a textual description of this unit manager
--spec to_string( wooper:state() ) -> string().
+% @doc Returns a textual description of this unit manager.
+-spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
 	EnergyString = case table:enumerate( ?getAttr(energy_table) ) of
@@ -563,24 +571,24 @@ to_string( State ) ->
 
 		Pairs ->
 			Strings = [ text_utils:format(
-						  "to building ~w is associated the energy unit ~w",
-						  [ BuildingPid, EnergyUnitPid ] )
+							"to building ~w is associated the energy unit ~w",
+							[ BuildingPid, EnergyUnitPid ] )
 						|| { BuildingPid, EnergyUnitPid } <- Pairs ],
 			text_utils:format( "~B building/energy unit associations "
-							   "are known: ~s", [ length( Pairs ),
+							   "are known: ~ts", [ length( Pairs ),
 				text_utils:strings_to_string( Strings ) ] )
 
 	end,
 
-	text_utils:format( "Urban unit manager knowing ~s", [ EnergyString ] ).
+	text_utils:format( "Urban unit manager knowing ~ts", [ EnergyString ] ).
 
 
 
-% Returns the PID of the energy unit associated to specified building.
+% @doc Returns the PID of the energy unit associated to specified building.
 %
 % (helper)
 %
 -spec get_energy_unit_for( building_pid(), wooper:state() ) ->
-								 energy_unit_pid().
+									energy_unit_pid().
 get_energy_unit_for( BuildingPid, State ) ->
 	table:get_value( BuildingPid, ?getAttr(energy_table) ).

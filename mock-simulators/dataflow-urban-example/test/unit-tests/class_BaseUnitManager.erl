@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2021 EDF R&D
+% Copyright (C) 2016-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,6 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Unit manager defined for <b>channel testing</b>.
 -module(class_BaseUnitManager).
 
 
@@ -50,7 +51,13 @@
 
 
 
-% Constructs a test unit manager, from:
+% Shorthands:
+
+-type ustring() :: text_utils:ustring().
+
+
+
+% @doc Constructs a test unit manager, from:
 %
 % - ActorSettings describes the actor abstract identifier (AAI) and seed of this
 % actor, as automatically assigned by the load balancer
@@ -65,8 +72,7 @@
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 experiment_manager_pid(), binding_managers(),
 				 load_balancer_pid(),
-				 basic_utils:maybe( identification_server_pid() ) ) ->
-					   wooper:state().
+				 maybe( identification_server_pid() ) ) -> wooper:state().
 construct( State, ActorSettings, ExperimentManagerPid, BindingManagers,
 		   LoadBalancerPid, IdentificationServerPid ) ->
 
@@ -77,9 +83,9 @@ construct( State, ActorSettings, ExperimentManagerPid, BindingManagers,
 	EmitterName = ?MODULE,
 
 	BaseState = class_DataflowUnitManager:construct( State, ActorSettings,
-			?trace_categorize( EmitterName ), ManagedUnitSpec,
-			ListenedEventMatches, ExperimentManagerPid, BindingManagers,
-			LoadBalancerPid, IdentificationServerPid ),
+		?trace_categorize(EmitterName), ManagedUnitSpec,
+		ListenedEventMatches, ExperimentManagerPid, BindingManagers,
+		LoadBalancerPid, IdentificationServerPid ),
 
 	setAttributes( BaseState, [ { test_objects, [] },
 								{ test_units, [] } ] ).
@@ -90,8 +96,8 @@ construct( State, ActorSettings, ExperimentManagerPid, BindingManagers,
 % Methods section.
 
 
-% Returns the synchronization event matches that this unit manager is interested
-% in.
+% @doc Returns the synchronization event matches that this unit manager is
+% interested in.
 %
 -spec get_listened_event_matches() -> static_return( [ event_match() ] ).
 get_listened_event_matches() ->
@@ -101,18 +107,18 @@ get_listened_event_matches() ->
 	% without world events that could be intercepted):
 
 	%TestObjectCreationMatch = #creation_event_match{
-	%		  object_type_match=class_BaseTestDataflowObject },
+	%   object_type_match=class_BaseTestDataflowObject },
 
 	TestConnectionMatch = #connection_event_match{
-			source_block_type_match=class_BaseTestDataflowObject,
-			target_block_type_match=class_BaseTestProcessingUnit },
+		source_block_type_match=class_BaseTestDataflowObject,
+		target_block_type_match=class_BaseTestProcessingUnit },
 
 	wooper:return_static( [ TestConnectionMatch ] ).
 
 
 
-% Called so that this unit manager can perform domain-specific actions of its
-% choice whenever a matching connection happened.
+% @doc Called so that this unit manager can perform domain-specific actions of
+% its choice whenever a matching connection happened.
 %
 % Note: catch-all placeholder implementation, meant to be overridden.
 %
@@ -127,7 +133,7 @@ onConnectionEventMatched( State, ConnectionEvent=#connection_event{
 							output_port_name=OutputPortName,
 							input_port_name=InputPortName } ) ->
 
-	?debug_fmt( "Connection event notified: ~s.",
+	?debug_fmt( "Connection event notified: ~ts.",
 				[ dataflow_support:world_event_to_string( ConnectionEvent ) ] ),
 
 	ChannelEndpoints = [ { OutputPortName, InputPortName } ],
@@ -139,7 +145,7 @@ onConnectionEventMatched( State, ConnectionEvent=#connection_event{
 
 
 
-% Registers specified test blocks.
+% @doc Registers specified test blocks.
 %
 % Typically called by the base entry point.
 %
@@ -160,9 +166,9 @@ registerTestBlocks( State, TestDataflowObjectPid, TestProcessingUnitPid,
 
 
 
-% To create a channel between Obj1:foo and PU1:my_input_port.
--spec createTestChannel( wooper:state(), sending_actor_pid() ) -> 
-							   actor_oneway_return().
+% @doc To create a channel between Obj1:foo and PU1:my_input_port.
+-spec createTestChannel( wooper:state(), sending_actor_pid() ) ->
+								actor_oneway_return().
 createTestChannel( State, _SendingActorPid ) ->
 
 	SourceObjectPid = hd( ?getAttr(test_objects) ),
@@ -171,24 +177,22 @@ createTestChannel( State, _SendingActorPid ) ->
 	TargetUnitPid = hd( ?getAttr(test_units) ),
 	TargetInputPortName = "my_input_port",
 
-	?debug_fmt( "Creating a test channel between attribute '~s' "
-				"of source object ~w, and input port '~s' of unit ~w.",
-				[ SourceAttributeName, SourceObjectPid, TargetInputPortName,
-				  TargetUnitPid ] ),
+	?debug_fmt( "Creating a test channel between attribute '~ts' "
+		"of source object ~w, and input port '~ts' of unit ~w.",
+		[ SourceAttributeName, SourceObjectPid, TargetInputPortName,
+		  TargetUnitPid ] ),
 
 	EventId = 17,
 
 	ConnectedState = class_DataflowUnitManager:create_channels_for( EventId,
-						SourceObjectPid, TargetUnitPid,
-						[ { SourceAttributeName, TargetInputPortName } ],
-						State ),
+		SourceObjectPid, TargetUnitPid,
+		[ { SourceAttributeName, TargetInputPortName } ], State ),
 
 	actor:return_state( ConnectedState ).
 
 
 
-
-% Returns a textual description of this unit manager
--spec to_string( wooper:state() ) -> string().
+% @doc Returns a textual description of this unit manager
+-spec to_string( wooper:state() ) -> ustring().
 to_string( _State ) ->
 	"Base test unit manager".
