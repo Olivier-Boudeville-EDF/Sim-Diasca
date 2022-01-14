@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2021 Olivier Boudeville
+% Copyright (C) 2003-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER examples.
 %
@@ -7,6 +7,10 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 
 
+% @doc Class modelling any kind of <b>reptile</b>.
+%
+% This class allows to test an exploratory resilience support.
+%
 -module(class_Reptile).
 
 
@@ -31,8 +35,7 @@
 -include("ecosystem_types.hrl").
 
 
-% Triggered just before serialisation.
-%
+% @doc Triggered just before serialisation.
 -spec pre_serialise_hook( wooper:state() ) -> wooper:state().
 pre_serialise_hook( State ) ->
 	trace_utils:info( "Pre-serialising a reptile!" ),
@@ -40,7 +43,7 @@ pre_serialise_hook( State ) ->
 
 
 
-% Triggered just after serialisation.
+% @doc Triggered just after serialisation.
 %
 % (using WOOPER default hook implementation augmented of an trace_utils:info)
 %
@@ -53,8 +56,7 @@ post_serialise_hook( Classname, Entries, _State ) ->
 
 
 
-% Triggered just before deserialisation.
-%
+% @doc Triggered just before deserialisation.
 -spec pre_deserialise_hook( term(), basic_utils:user_data() ) ->
 							wooper_serialisation:term_serialisation().
 pre_deserialise_hook( _SerialisedEntries={ _Classname, Entries }, _UserData ) ->
@@ -63,8 +65,7 @@ pre_deserialise_hook( _SerialisedEntries={ _Classname, Entries }, _UserData ) ->
 
 
 
-% Triggered just after deserialisation.
-%
+% @doc Triggered just after deserialisation.
 -spec post_deserialise_hook( wooper:state() ) -> wooper:state().
 post_deserialise_hook( State ) ->
 	trace_utils:info( "Post-deserialising a reptile!" ),
@@ -72,9 +73,7 @@ post_deserialise_hook( State ) ->
 
 
 
-
-
-% Constructs a new Reptile.
+% @doc Constructs a reptile.
 -spec construct( wooper:state(), age(), gender() ) -> wooper:state().
 construct( State, Age, Gender ) ->
 	class_Creature:construct( State, Age, Gender ).
@@ -82,7 +81,7 @@ construct( State, Age, Gender ) ->
 	%an_unexpected_initial_state.
 
 
-% Overridden destructor
+% @doc Overridden destructor
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 	trace_utils:info( "Deleting a Reptile." ),
@@ -95,8 +94,8 @@ destruct( State ) ->
 % Method implementations.
 
 
-% Sets correctly the age of this Mammal (not like faulty implementation of the
-% Creature mother class).
+% @doc Sets correctly the age of this Mammal (not like faulty implementation of
+% the Creature mother class).
 %
 % Overridden from Creature, useful to show the use of executeOneway.
 % Note: used to test WOOPER management of error conditions.
@@ -109,7 +108,7 @@ setAge( State, NewAge ) ->
 
 
 
-% All reptiles are cold-blooded.
+% @doc All reptiles are cold-blooded.
 %
 % Note: used to test WOOPER management of error conditions.
 %
@@ -120,7 +119,7 @@ isHotBlooded( State ) ->
 	wooper:const_return_result( false ).
 
 
-% All reptiles can moult:
+% @doc All reptiles can moult.
 -spec canMoult( wooper:state() ) -> const_request_return( boolean() ).
 canMoult( State ) ->
 	wooper:const_return_result( true ).

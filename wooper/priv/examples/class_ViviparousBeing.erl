@@ -1,11 +1,13 @@
-% Copyright (C) 2003-2021 Olivier Boudeville
+% Copyright (C) 2003-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER examples.
 %
 % It has been placed in the public domain.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
-%
+
+
+% @doc Class modelling any kind of <b>viviparous being</b>.
 -module(class_ViviparousBeing).
 
 
@@ -16,7 +18,8 @@
 -define( superclasses, [] ).
 
 -define( class_attributes, [
-			{ birth_given_count, non_neg_integer(), "Birth count" } ] ).
+
+	{ birth_given_count, non_neg_integer(), "Birth count" } ] ).
 
 
 % Allows to define WOOPER base variables and methods for that class:
@@ -27,8 +30,7 @@
 -include("ecosystem_types.hrl").
 
 
-% Constructs a new Viviparous being (parameter-less constructor).
-%
+% @doc Constructs a viviparous being (parameter-less constructor).
 -spec construct( wooper:state() ) -> wooper:state().
 construct( State ) ->
 	setAttribute( State, birth_given_count, 0 ).
@@ -38,7 +40,7 @@ construct( State ) ->
 % Method implementations.
 
 
-% Let's say an average means something here:
+% @doc Let's say an average means something here.
 %
 % (request; actually this ought to be a static method, as it does not depend on
 % a state here)
@@ -50,7 +52,7 @@ getMeanChildrenCount( State ) ->
 
 
 
-% Returns the number of times this viviparous being gave birth:
+% @doc Returns the number of times this viviparous being gave birth:
 -spec getBirthGivenCount( wooper:state() ) ->
 								const_request_return( children_count() ).
 getBirthGivenCount( State ) ->
@@ -58,7 +60,7 @@ getBirthGivenCount( State ) ->
 
 
 
-% Increases the number of times this viviparous being gave birth.
+% @doc Increases the number of times this viviparous being gave birth.
 -spec giveBirth( wooper:state(), children_count() ) -> oneway_return().
 giveBirth( State, NumberOfNewChildren ) ->
 

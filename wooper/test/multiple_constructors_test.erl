@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2021 Olivier Boudeville
+% Copyright (C) 2018-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -45,7 +45,7 @@ run() ->
 
 	I1Name = "Ian",
 
-	test_facilities:display( "Creating a new instance of ~ts, named '~ts'.",
+	test_facilities:display( "Creating an instance of ~ts, named '~ts'.",
 							 [ TestedClass, I1Name ] ),
 
 	I1Pid = TestedClass:new_link( I1Name, male ),
@@ -77,7 +77,7 @@ run() ->
 
 	I2Name = "Murdock",
 
-	test_facilities:display( "Creating a new instance of ~ts, named '~ts'.",
+	test_facilities:display( "Creating an instance of ~ts, named '~ts'.",
 							 [ TestedClass, I2Name ] ),
 
 	I2Pid = TestedClass:new_link( I2Name ),
@@ -107,7 +107,7 @@ run() ->
 	end,
 
 
-	test_facilities:display( "Creating a new, anonymous instance of ~ts.",
+	test_facilities:display( "Creating an anonymous instance of ~ts.",
 							 [ TestedClass ] ),
 
 	I3Pid = TestedClass:new_link(),

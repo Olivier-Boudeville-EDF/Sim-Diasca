@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2021 Olivier Boudeville
+% Copyright (C) 2007-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -23,7 +23,9 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
-%
+
+
+% @doc A test of WOOPER <b>attribute management</b>.
 -module(class_AttributeTester).
 
 
@@ -44,7 +46,7 @@
 
 
 
-% Constructs a new test instance.
+% @doc Constructs a test instance.
 -spec construct( wooper:state() ) -> wooper:state().
 construct( State ) ->
 
@@ -124,7 +126,9 @@ not_crashing_examples( State ) ->
 
 
 
-% Usually operations are commented-out as we do not want to fail on purpose:
+% @doc Usually operations are commented-out as we do not want to fail on
+% purpose.
+%
 -spec crashing_examples( wooper:state() ) -> const_request_return( test_ok ).
 crashing_examples( State ) ->
 
@@ -171,8 +175,8 @@ not_crashing_test_hashtable( State ) ->
 	% Check was registered indeed:
 	ReadTable = getAttribute( EntrySetState, test_hashtable ),
 
-	{ value, my_value } = ?wooper_table_type:lookup_entry( my_key,
-														   ReadTable ),
+	{ value, my_value } =
+		?wooper_table_type:lookup_entry( my_key, ReadTable ),
 
 	test_ok.
 

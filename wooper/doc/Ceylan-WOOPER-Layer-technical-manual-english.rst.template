@@ -82,7 +82,7 @@ WOOPER, which stands for *Wrapper for Object-Oriented Programming in Erlang*, is
 
 .. This documentation applies to the WOOPER 2.0 version.
 
-WOOPER is a rather autonomous part of the `Ceylan <https://github.com/Olivier-Boudeville/Ceylan>`_ project (yet it uses `Myriad <https://github.com/Olivier-Boudeville/Ceylan-Myriad>`_ and is used by `Traces <https://github.com/Olivier-Boudeville/Ceylan-Traces>`_).
+WOOPER is a rather autonomous part of the `Ceylan <https://github.com/Olivier-Boudeville/Ceylan>`_ project (yet it uses `Myriad <https://github.com/Olivier-Boudeville/Ceylan-Myriad>`_ and is used by `Traces <https://github.com/Olivier-Boudeville/Ceylan-Traces>`_). WOOPER can be readily built and run on most Unices (including of course GNU/Linux) and on Windows.
 
 The project repository is located `here <https://github.com/Olivier-Boudeville/Ceylan-WOOPER>`_.
 
@@ -273,8 +273,9 @@ Examples of this kind of systems are multi-agent simulations. If they often need
 
 The example_ mentioned through the current guide is an illustration [#]_ of the interacting lives of numerous animals of various species. Obviously, they have to share behaviours (ex: all ovoviviparous beings may lay eggs, all creatures can live and die, all have an age, etc.), which cannot be mapped easily (read: automatically) to Erlang concepts without adding some generic constructs.
 
-.. [#] This example is not a *simulation*, it is just a multi-agent system. For real, massive, discrete-time simulations of complex systems in Erlang (using WOOPER), one may refer to `Sim-Diasca <http://www.sim-diasca.com>`_ instead (a free software simulation engine).
+.. [#] This example is not a *simulation*, it is just a multi-agent system. For real, massive, discrete-time simulations of complex systems in Erlang (using WOOPER), one may refer to `Sim-Diasca <https://github.com/Olivier-Boudeville-EDF/Sim-Diasca>`_ instead (a free software discrete-time simulation engine).
 
+.. one may refer to `Sim-Diasca <http://www.sim-diasca.com>`_ instead (a free software simulation engine).
 
 WOOPER, which stands for *Wrapper for OOP in Erlang*, is a lightweight yet effective (performance-wise, but also regarding the user-side  developing efforts) means of making these constructs available, notably in terms of state management and multiple inheritance.
 
@@ -2773,9 +2774,14 @@ For server-like activities, it may be useful to have instances of WOOPER classes
 
 Exactly like by default any Erlang process is not able to readily take part to an OTP supervision tree [#]_, a WOOPER instance must specifically support such an integration.
 
-.. [#] For that such process has to comply with a relevant applicative protocol in order to properly interact with its supervisor, either directly by itself or through its implementation of an OTP behaviour like `gen_server <https://erlang.org/doc/man/gen_server.html>`_.
+.. [#] For that, such process has to comply with a relevant applicative protocol in order to properly interact with its supervisor, either directly by itself or through its implementation of a worker-compliant OTP behaviour like `gen_server <https://erlang.org/doc/man/gen_server.html>`_.
 
-A `supervisor bridge <https://erlang.org/doc/man/supervisor_bridge.html>`_ (i.e. a process in charge of integrating properly such a non-OTP process into an OTP supervision tree) is the tool of choice here.
+A `supervisor bridge <https://erlang.org/doc/man/supervisor_bridge.html>`_ (i.e. a process in charge of integrating properly such a non-OTP process into an OTP supervision tree) is the tool of choice here [#]_.
+
+.. [#] Otherwise, as we understand it, should WOOPER instances be directly declared in a supervision tree as mere workers, they would have to implement typically the ``gen_server`` behaviour, which implies relying on ``handle_{call,cast,info}`` functions and on a behaviour-specific main loop - rather than on the counterpart method-based facilities offered by WOOPER.
+
+	   A consequence is the need for an extra, mostly idle process sitting between such a supervised WOOPER instance and its supervisor. In some cases (ex: a webserver processing each request based on a WOOPER instance), this overhead would be excessive; then defining a WOOPER-specific supervisor, able to handle directly its WOOPER instances as workers, could be devised.
+
 
 Rather than declaring the corresponding behaviour and its implemented API directly in the target class (ex: in ``class_Foobar``), we recommend for *clarity* (as, even if the bridge was declared in the same module, it would be still an intermediate, autonomous process sitting between the OTP supervisor and the WOOPER instance of interest) and for *separation of concerns* (leaving an OTP integration as an optional feature) to introduce a specific module for that, like done with `traces_bridge_sup <https://github.com/Olivier-Boudeville/Ceylan-Traces/blob/master/src/traces_bridge_sup.erl>`_ for `class_TraceAggregator.erl <https://github.com/Olivier-Boudeville/Ceylan-Traces/blob/master/src/class_TraceAggregator.erl>`_ or `us_common_config_bridge_sup <https://github.com/Olivier-Boudeville/us-common/blob/master/src/us_common_config_bridge_sup.erl>`_ for `class_USConfigServer.erl <https://github.com/Olivier-Boudeville/us-common/blob/master/src/class_USConfigServer.erl>`_.
 
@@ -2915,6 +2921,7 @@ WOOPER is in some ways adding features quite similar to the ones available with 
 
 
 
+
 WOOPER limitations
 ------------------
 
@@ -3036,6 +3043,17 @@ Some more general (mostly unrelated) **Erlang-level conventions** that we like:
 
 
 :raw-latex:`\pagebreak`
+
+
+
+Supported Platforms
+===================
+
+WOOPER can be readily built and run on most Unices (including of course GNU/Linux) and on Windows.
+
+Refer to `the Myriad counterpart section <http://myriad.esperide.org/#supported-platforms>`_ for more details.
+
+
 
 Troubleshooting
 ===============
@@ -3735,9 +3753,13 @@ Sources, Inspirations & Alternate Solutions
 
 - `ECT <http://www.erlang-factory.com/upload/presentations/162/ECT.pdf>`_, an Object-Oriented Extension to Erlang, very promising yet apparently not maintained anymore
 
-- As Burkhard Neppert suggested, an alternative way of implementing OOP here could be to use Erlang behaviours. This is the way OTP handles generic functionalities that can be specialised (e.g. ``gen_server``). One approach could be to map each object-oriented base class to an Erlang **behaviour**; see some guidelines about `defining <http://wiki.trapexit.org/index.php/Defining_Your_Own_Behaviour>`_ your own behaviours and making them `cascade <http://wiki.trapexit.org/index.php/Cascading_Behaviours>`_ (warning: probably dead links now)
+- As Burkhard Neppert suggested, an alternative way of implementing OOP here could be to use Erlang behaviours. This is the way OTP handles generic functionalities that can be specialised (e.g. ``gen_server``). One approach could be to map each object-oriented base class to an Erlang **behaviour**, and to make them cascade
 
-- As mentioned by Niclas Eklund, despite relying on quite different operating modes, WOOPER and `Orber <http://www1.erlang.org/doc/apps/orber/index.html>`_, an Erlang implementation of a **CORBA ORB** (*Object Request Broker*) offer similar OOP features, as CORBA IDL implies an object-oriented approach (see their `OMG IDL to Erlang Mapping <http://www.erlang.org/doc/apps/orber/ch_idl_to_erlang_mapping.html#6>`_; warning: probably a dead link now)
+.. One approach could be to map each object-oriented base class to an Erlang **behaviour**; see some guidelines about `defining <http://wiki.trapexit.org/index.php/Defining_Your_Own_Behaviour>`_ your own behaviours and making them `cascade <http://wiki.trapexit.org/index.php/Cascading_Behaviours>`_ (warning: probably dead links now)
+
+- As mentioned by Niclas Eklund, despite relying on quite different operating modes, WOOPER and Orber, an Erlang implementation of a **CORBA ORB** (*Object Request Broker*) offer similar OOP features, as CORBA IDL implies an object-oriented approach (with on OMG IDL to Erlang Mapping)
+
+.. comment - As mentioned by Niclas Eklund, despite relying on quite different operating modes, WOOPER and `Orber <http://www.erlang.org/doc/apps/orber/index.html>`_, an Erlang implementation of a **CORBA ORB** (*Object Request Broker*) offer similar OOP features, as CORBA IDL implies an object-oriented approach (see their `OMG IDL to Erlang Mapping <http://www.erlang.org/doc/apps/orber/ch_idl_to_erlang_mapping.html#6>`_; warning: probably a dead link now)
 
 
 WOOPER and Orber are rather different beasts, though: WOOPER is quite lightweight (less than 25 000 lines of code, including blank lines, numerous comments, tests and examples), does not involve a specific (IDL) compiler generating several stub/skeleton Erlang files, nor depends on OTP or on Mnesia (but depends on Myriad), whereas Orber offers a full, standard, CORBA implementation, including IDL language mapping, CosNaming, IIOP, Interface Repository, etc.

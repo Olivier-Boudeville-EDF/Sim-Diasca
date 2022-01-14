@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2021 Olivier Boudeville
+% Copyright (C) 2007-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -23,7 +23,9 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
-%
+
+
+% @doc Tests the support of multiple constructors.
 -module(class_MultipleConstructors).
 
 
@@ -45,7 +47,7 @@
 -type gender() :: atom().
 
 
-% Constructs a new instance from two construction parameters.
+% @doc Constructs an instance from two construction parameters.
 -spec construct( wooper:state(), name(), gender() ) -> wooper:state().
 construct( State, Name, Gender ) ->
 	% No mother class.
@@ -53,7 +55,7 @@ construct( State, Name, Gender ) ->
 
 
 
-% Constructs a new instance from a single construction parameter.
+% @doc Constructs an instance from a single construction parameter.
 %
 % Of course multiple clauses may exist:
 %
@@ -67,14 +69,15 @@ construct( State, Name ) ->
 	setAttributes( State, [ { name, Name }, { gender, unknown } ] ).
 
 
-% Simplest possible signature:
+% @doc Simplest possible signature:
 -spec construct( wooper:state() ) -> wooper:state().
 construct( State ) ->
 	% No mother class.
 	setAttributes( State, [ { name, "Terry" }, { gender, unknown } ] ).
 
 
-% Overriding the default destructor:
+
+% @doc Overriding the default destructor:
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 	io:format( "  I am ~ts, and I am just destructed.~n", [ ?getAttr(name) ] ),
@@ -85,13 +88,13 @@ destruct( State ) ->
 % Method implementations.
 
 
-% Returns the name of this instance.
+% @doc Returns the name of this instance.
 -spec getName( wooper:state() ) -> const_request_return( name() ).
 getName( State ) ->
 	wooper:const_return_result( ?getAttr(name) ).
 
 
-% Returns the gender of this instance.
+% @doc Returns the gender of this instance.
 -spec getGender( wooper:state() ) -> const_request_return( gender() ).
 getGender( State ) ->
 	wooper:const_return_result( ?getAttr(gender) ).

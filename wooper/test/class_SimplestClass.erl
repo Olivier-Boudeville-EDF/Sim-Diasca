@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2021 Olivier Boudeville
+% Copyright (C) 2007-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -23,7 +23,9 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
-%
+
+
+% @doc Test of a <b>most basic class</b>.
 -module(class_SimplestClass).
 
 
@@ -49,10 +51,11 @@
 
 
 % Shorthands:
+
 -type ustring() :: text_utils:ustring().
 
 
-% Constructs a new Creature.
+% @doc Constructs an instance of this class.
 -spec construct( wooper:state(), age(), gender() ) -> wooper:state().
 construct( State, Age, Gender ) ->
 	% No mother class.
@@ -60,9 +63,9 @@ construct( State, Age, Gender ) ->
 
 
 
-% This useless destructor overriding was made to silence Dialyzer (which is not
-% able to determine that this function will never be called, as WOOPER performs
-% the appropriate test is made beforehand):
+% @doc This useless destructor overriding was made to silence Dialyzer (which is
+% not able to determine that this function will never be called, as WOOPER
+% performs the appropriate test is made beforehand):
 %
 % Allows to test also the automatic destructor generation:
 %
@@ -75,14 +78,14 @@ destruct( State ) ->
 % Method implementations.
 
 
-% Returns the age of this creature.
+% @doc Returns the age of this creature.
 -spec getAge( wooper:state() ) -> const_request_return( age() ).
 getAge( State ) ->
 	wooper:const_return_result( ?getAttr(age) ).
 
 
 
-% Sets the age of this creature.
+% @doc Sets the age of this creature.
 -spec setAge( wooper:state(), age() ) -> oneway_return().
 setAge( State, _NewAge ) ->
 	% Mother implementation chosen faulty to check override:
@@ -90,7 +93,7 @@ setAge( State, _NewAge ) ->
 
 
 
-% Increments the age of this creature.
+% @doc Increments the age of this creature.
 -spec declareBirthday( wooper:state() ) -> oneway_return().
 declareBirthday( State ) ->
 	wooper:return_state(
@@ -98,21 +101,21 @@ declareBirthday( State ) ->
 
 
 
-% Returns the gender of this creature.
+% @doc Returns the gender of this creature.
 -spec getGender( wooper:state() ) -> const_request_return( gender() ).
 getGender( State ) ->
 	wooper:const_return_result( ?getAttr(gender) ).
 
 
 
-% Returns a class-specific arbitrary number.
+% @doc Returns a class-specific arbitrary number.
 -spec getArbitraryNumber( wooper:state() ) -> const_request_return( number() ).
 getArbitraryNumber( State ) ->
 	wooper:const_return_result( 10 ).
 
 
 
-% Tests direct (synchronous) self-invocation of methods (oneway).
+% @doc Tests direct (synchronous) self-invocation of methods (oneway).
 %
 % To be called only from a Mammal instance, as there is an hardcoded
 % pattern-matching that should work only for a Mammal.
@@ -153,11 +156,11 @@ testDirectMethodExecution( State, NewAge ) ->
 
 
 
-% Allows to test that calling an attribute macro with a state parameter returned
-% by a function will trigger that function only once.
+% @doc Allows to test that calling an attribute macro with a state parameter
+% returned by a function will trigger that function only once.
 %
 % Indeed a faulty implementation, due to a macro pitfall, used to make a
-% statement like 'setAttribute( f(State), attr, value )' call f/1 twice.
+% statement like 'setAttribute(f(State), attr, value)' call f/1 twice.
 %
 % The returned value of the setAttribute call was correct, but any side-effect
 % triggered by f (sending a message, writing a trace, etc.) happened twice.
@@ -181,13 +184,13 @@ side_effect_function( State ) ->
 % Helper function.
 
 
-% Just to show it can exist:
+% @doc Just to show it can exist.
 -spec example_fun() -> 'ok'.
 example_fun() ->
 	ok.
 
 
-% This looks like a method, but it is not (returning only a string):
+% @doc This looks like a method, but it is not (returning only a string).
 -spec toString( wooper:state() ) -> ustring().
 toString( State ) ->
 	table:to_string( State#state_holder.attribute_table ).

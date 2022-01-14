@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2021 Olivier Boudeville
+% Copyright (C) 2007-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -197,7 +197,7 @@ wooper_execute_method( MethodAtom, Parameters, State )
 					% is displayed as a list:
 					%
 					wooper:log_error(
-					  "Oneway ~ts:~ts/~B not found, parameters were:~n~p~n",
+					  "oneway ~ts:~ts/~B not found, parameters were:~n~p~n",
 					  [ Classname, MethodAtom, MethodArity, Parameters ],
 					  State ),
 
@@ -212,7 +212,7 @@ wooper_execute_method( MethodAtom, Parameters, State )
 					% send back a relevant answer):
 					%
 					wooper:log_error(
-					  "Request ~ts:~ts/~B not found, parameters were:~n~p~n",
+					  "request ~ts:~ts/~B not found, parameters were:~n~p~n",
 					  [ Classname, MethodAtom, MethodArity, Parameters ],
 					  State ),
 
@@ -267,7 +267,7 @@ wooper_execute_method( MethodAtom, Parameters, State ) ->
 					% as a list:
 					%
 					wooper:log_error(
-					  "Oneway ~ts:~ts/~B not found, parameters were:~n~p",
+					  "oneway ~ts:~ts/~B not found, parameters were:~n~p",
 					  [ Classname, MethodAtom, MethodArity, Parameters ] ),
 
 					throw( { wooper_oneway_not_found, self(), Classname,
@@ -281,7 +281,7 @@ wooper_execute_method( MethodAtom, Parameters, State ) ->
 					% back a relevant answer):
 					%
 					wooper:log_error(
-					  "Request ~ts:~ts/~B not found, parameters were:~n~p~n",
+					  "request ~ts:~ts/~B not found, parameters were:~n~p~n",
 					  [ Classname, MethodAtom, MethodArity, Parameters ] ),
 
 					throw( { wooper_request_not_found, self(), Classname,

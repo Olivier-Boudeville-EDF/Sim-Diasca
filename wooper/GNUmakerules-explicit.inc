@@ -97,4 +97,4 @@ info-compile-wooper:
 #
 $(WOOPER_TOP)/src/wooper_info.beam: $(WOOPER_TOP)/src/wooper_info.erl
 	@echo "     Compiling bootstrap module $<"
-	@$(ERLANG_COMPILER) $(ERLANG_COMPILER_OPT_FOR_STANDARD_MODULES) -o src $<
+	@"$(ERLANG_COMPILER)" $(ERLANG_COMPILER_OPT_FOR_STANDARD_MODULES) -o src $<

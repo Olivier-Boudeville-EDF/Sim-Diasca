@@ -1,11 +1,13 @@
-% Copyright (C) 2003-2021 Olivier Boudeville
+% Copyright (C) 2003-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER examples.
 %
 % It has been placed in the public domain.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
-%
+
+
+% @doc Class modelling any kind of <b>platypus</b>.
 -module(class_Platypus).
 
 
@@ -16,9 +18,13 @@
 -define( superclasses, [ class_Mammal, class_OvoviviparousBeing ] ).
 
 
--define( class_attributes, [ { nozzle_color, "the color of the nozzle" },
-							 alternate_names,
-							 { cat_pid, pid(), "PID of a cat" } ] ).
+-define( class_attributes, [
+
+	{ nozzle_color, "the color of the nozzle" },
+
+	alternate_names,
+
+	{ cat_pid, pid(), "PID of a cat" } ] ).
 
 
 % Allows to define WOOPER base variables and methods for that class:
@@ -31,7 +37,7 @@
 
 
 
-% Constructs a new Platypus.
+% @doc Constructs a platypus.
 -spec construct( wooper:state(), age(), gender(), fur_color(),
 				 nozzle_color() ) -> wooper:state().
 construct( State, Age, Gender, FurColor, NozzleColor ) ->
@@ -50,9 +56,9 @@ construct( State, Age, Gender, FurColor, NozzleColor ) ->
 
 	% Then the class-specific attributes:
 	setAttributes( OvoviviparousMammalState, [
-		  { nozzle_color, NozzleColor },
-		  { alternate_names, [ hector, edgar, roger, sean ] },
-		  { cat_pid, undefined } ] ).
+		{ nozzle_color, NozzleColor },
+		{ alternate_names, [ hector, edgar, roger, sean ] },
+		{ cat_pid, undefined } ] ).
 
 
 
@@ -62,7 +68,7 @@ getMeanEggsCount( State ) ->
 
 
 
-% Returns the number of teats a platypus has.
+% @doc Returns the number of teats a platypus has.
 %
 % It is a mammal, though!
 %
@@ -72,7 +78,7 @@ getTeatCount( State ) ->
 
 
 
-% Tells whether this platypus can eat specified food.
+% @doc Tells whether this platypus can eat specified food.
 %
 % Platypuses are supposed carnivorous though:
 -spec canEat( wooper:state(), food() ) -> const_request_return( boolean() ).
@@ -93,7 +99,7 @@ canEat( State, _OtherFood ) ->
 
 
 
-% Returns the color of the nozzle of this platypus.
+% @doc Returns the color of the nozzle of this platypus.
 -spec getNozzleColor( wooper:state() ) ->
 							const_request_return( nozzle_color() ).
 getNozzleColor( State )->
@@ -107,14 +113,14 @@ getNozzleColor( State )->
 
 
 
-% Returns the list of alternate names for this platypus.
+% @doc Returns the list of alternate names for this platypus.
 -spec getAlternateNames( wooper:state() ) -> const_request_return( [ atom() ] ).
 getAlternateNames( State ) ->
 	wooper:const_return_result( ?getAttr(alternate_names) ).
 
 
 
-% Returns the first alternate name for this platypus and forget it.
+% @doc Returns the first alternate name for this platypus and forget it.
 -spec popFirstAlternateName( wooper:state() ) -> request_return( atom() ).
 popFirstAlternateName( State ) ->
 	{ NewState, Name } = popFromAttribute( State, alternate_names ),
@@ -122,7 +128,7 @@ popFirstAlternateName( State ) ->
 
 
 
-% Allows to test the creation and deletion of other WOOPER instances.
+% @doc Allows to test the creation and deletion of other WOOPER instances.
 -spec testCreationDeletion( wooper:state() ) -> oneway_return().
 testCreationDeletion( State ) ->
 
@@ -158,8 +164,8 @@ testCreationDeletion( State ) ->
 
 
 
-% Callback triggered, as we trap exits, whenever a linked process stops (here,
-% the created cat instance).
+% @doc Callback triggered, as we trap exits, whenever a linked process stops
+% (here, the created cat instance).
 %
 -spec onWOOPERExitReceived( wooper:state(), pid(),
 						basic_utils:exit_reason() ) -> const_oneway_return().

@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2021 Olivier Boudeville
+% Copyright (C) 2003-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER examples.
 %
@@ -7,6 +7,7 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 
 
+% @doc Class modelling any kind of <b>ovoviviparous being</b>.
 -module(class_OvoviviparousBeing).
 
 
@@ -31,7 +32,7 @@
 
 
 
-% Constructs a new Ovoviviparous being (parameter-less constructor).
+% @doc Constructs an ovoviviparous being (parameter-less constructor).
 -spec construct( wooper:state() ) -> wooper:state() .
 construct( State ) ->
 
@@ -42,10 +43,7 @@ construct( State ) ->
 
 
 
-% This useless destructor overriding was made to silence Dialyzer (which is not
-% able to determine that this function will never be called, as WOOPER performs
-% the appropriate test is made beforehand):
-%
+% @doc This is a useless destructor that may not have been defined.
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -58,20 +56,22 @@ destruct( State ) ->
 % Method implementations.
 
 
-% Let's say an average means something here:
+% @doc Let's say an average means something here.
+%
 % (this ought to be a static method, as it does not depend on a state)
+%
 -spec getMeanEggsCount( wooper:state() ) -> const_request_return( egg_count() ).
 getMeanEggsCount( State ) ->
 	wooper:const_return_result( 1000 ).
 
 
-% Returns the number of eggs this ovoviviparous laid:
+% @doc Returns the number of eggs this ovoviviparous laid:
 -spec getEggsLaidCount( wooper:state() ) -> const_request_return( egg_count() ).
 getEggsLaidCount( State ) ->
 	wooper:const_return_result( ?getAttr(eggs_count) ).
 
 
-% Increases the number of eggs that this ovoviviparous being laid:
+% @doc Increases the number of eggs that this ovoviviparous being already laid:
 -spec layEggs( wooper:state(), egg_count() ) -> oneway_return().
 layEggs( State, NumberOfNewEggs ) ->
 

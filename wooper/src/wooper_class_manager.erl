@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2021 Olivier Boudeville
+% Copyright (C) 2007-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -305,7 +305,7 @@ start_link( MaybeClientPid ) ->
 
 		Success={ ok, ManagerPid } ->
 			%trace_utils:debug_fmt( "WOOPER class manager created, as ~w.",
-			%					   [ ManagerPid ] ),
+			%                       [ ManagerPid ] ),
 			case MaybeClientPid of
 
 				undefined ->
@@ -448,6 +448,9 @@ init( _Args=[] ) ->
 	% expected to happen here.
 
 	% Registering already done by gen_server:start*.
+
+	% Should this manager be overwhelmed by instance creations:
+	erlang:process_flag( message_queue_data, off_heap ),
 
 	% Infinite time-out:
 	{ ok, get_initial_state() }.

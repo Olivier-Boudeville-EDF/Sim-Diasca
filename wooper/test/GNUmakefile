@@ -1,6 +1,6 @@
 WOOPER_TOP = ..
 
-.PHONY: all test test-local prepare-otp-test info-options
+.PHONY: all test test-local prepare-otp-test info-test-options
 
 
 # Helper modules (ex: from Myriad like basic_utils.beam, or directly from WOOPER
@@ -20,7 +20,7 @@ prepare-otp-test:
 	@cd $(WOOPER_TOP) && $(MAKE) -s rebar3-create-app-file
 
 
-info-options:
+info-test-options:
 	@echo "ERL_PARAMETERIZED_LAUNCHER = $(ERL_PARAMETERIZED_LAUNCHER)"
 	@echo "EXEC_INTERNAL_OPTIONS = $(EXEC_INTERNAL_OPTIONS)"
 	@echo "EXEC_EXTERNAL_OPTIONS = $(EXEC_EXTERNAL_OPTIONS)"

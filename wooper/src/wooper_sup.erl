@@ -1,4 +1,4 @@
-% Copyright (C) 2019-2021 Olivier Boudeville
+% Copyright (C) 2019-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -69,29 +69,34 @@ init( Args=undefined ) ->
 	trace_utils:debug_fmt(
 	  "Initializing the WOOPER root supervisor (args: ~p).", [ Args ] ),
 
+	ExecTarget= wooper:get_execution_target(),
+
 	% Restart only children that terminate.
 	% Never expected to fail, though:
 	%
 	SupSettings = otp_utils:get_supervisor_settings(
-					_RestartStrategy=one_for_one,
-					wooper:get_execution_target() ),
+					_RestartStrategy=one_for_one, ExecTarget ),
 
 	% The WOOPER class manager is a rather basic gen_server:
 	ClassManagerChildSpec = #{
 
-	  id => wooper_class_manager_id,
+		id => wooper_class_manager_id,
 
-	  start => { _Mod=wooper_class_manager, _Fun=start_link, _Args=[] },
+		start => { _Mod=wooper_class_manager, _Fun=start_link, _Args=[] },
 
-	  % Always restarted:
-	  restart => permanent,
+		% Always restarted in production:
+		restart => otp_utils:get_restart_setting( ExecTarget ),
 
-	  % 2-second termination allowed before brutal killing:
-	  shutdown => 2000,
+		% 2-second termination allowed for a worker before its brutal killing:
+		shutdown => 2000,
 
-	  type => worker,
+		% Hence not a supervisor (the WOOPER class manager is not a WOOPER
+		% instance, it happens to implement the gen_server behaviour):
+		%
+		type => worker,
 
-	  modules => [ wooper_class_manager ] },
+		modules => [ wooper_class_manager ] },
+
 
 	ChildrenSpec = [ ClassManagerChildSpec ],
 
