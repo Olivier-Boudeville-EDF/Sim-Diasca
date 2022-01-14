@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2021 EDF R&D
+% Copyright (C) 2016-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -170,9 +170,7 @@
 
 
 
-% @doc Constructs a new binding agent managing, on a given node, the use of
-% Java.
-%
+% @doc Constructs a binding agent managing, on a given node, the use of Java.
 -spec construct( wooper:state(), net_utils:tcp_port(), code_path(),
 				 class_JavaBindingManager:manager_pid() ) -> wooper:state().
 construct( State, EpmdPort, ClassPath, JavaBindingManagerPid ) ->
@@ -291,7 +289,7 @@ onJavaNoticeMessage( State, TraceMessage ) ->
 
 % @doc Notifies this agent that the Java side sent a warning message.
 -spec onJavaWarningMessage( wooper:state(), ustring() ) ->
-		  const_oneway_return().
+										const_oneway_return().
 onJavaWarningMessage( State, WarningMessage ) ->
 
 	?warning_fmt( "[Forwarded from Java runtime container] ~ts",
@@ -314,7 +312,7 @@ onJavaErrorMessage( State, ErrorMessage ) ->
 
 % @doc Notifies this agent that the Java side sent an critical message.
 -spec onJavaCriticalMessage( wooper:state(), ustring() ) ->
-		  const_oneway_return().
+										const_oneway_return().
 onJavaCriticalMessage( State, CriticalMessage ) ->
 
 	?critical_fmt( "[Forwarded from Java runtime container] ~ts",
@@ -337,7 +335,7 @@ onJavaAlertMessage( State, AlertMessage ) ->
 
 % @doc Notifies this agent that the Java side sent an emergency message.
 -spec onJavaEmergencyMessage( wooper:state(), ustring() ) ->
-		  const_oneway_return().
+										const_oneway_return().
 onJavaEmergencyMessage( State, EmergencyMessage ) ->
 
 	?emergency_fmt( "[Forwarded from Java runtime container] ~ts",
@@ -350,7 +348,7 @@ onJavaEmergencyMessage( State, EmergencyMessage ) ->
 
 % @doc Notifies this agent that an exception was thrown from the Java side.
 -spec onJavaExceptionThrown( wooper:state(), ustring() ) ->
-		  const_oneway_return().
+										const_oneway_return().
 onJavaExceptionThrown( State, ExceptionString ) ->
 
 	?error_fmt( "Java exception thrown: '~ts', terminating.",

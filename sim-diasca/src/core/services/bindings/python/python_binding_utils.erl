@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2021 EDF R&D
+% Copyright (C) 2016-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -18,7 +18,6 @@
 
 % Authors: Robin Huart (robin-externe.huart@edf.fr)
 %          Olivier Boudeville (olivier.boudeville@edf.fr)
-
 
 
 % @doc Module storing all the helper functions dedicated to the support of the
@@ -63,6 +62,11 @@
 -type result() :: any().
 
 
+% Shorthands:
+
+-type emitter_info() :: traces:emitter_info().
+
+
 
 % @doc Executes specified request specified a Python interpreter, by sending a
 % message decomposed as a title and a body.
@@ -71,7 +75,7 @@
 % well.
 %
 -spec execute_request( python_utils:interpreter_pid(), title(), body(),
-		traces:emitter_info() | wooper:state() ) -> result().
+					   emitter_info() | wooper:state() ) -> result().
 execute_request( InterpreterPid, MessageTitle, MessageBody,
 				 TraceInfoOrState ) ->
 	python_utils:send_oneway( InterpreterPid, MessageTitle, MessageBody ),
@@ -85,7 +89,7 @@ execute_request( InterpreterPid, MessageTitle, MessageBody,
 % state of a particular interpreter (ex: static methods only).
 %
 -spec execute_request_locally( title(), body(),
-			traces:emitter_info() | wooper:state() ) -> result().
+							   emitter_info() | wooper:state() ) -> result().
 execute_request_locally( MessageTitle, MessageBody, TraceInfoOrState ) ->
 
 	% Gets the PID of the global instance managing Python interpreters:
@@ -109,7 +113,7 @@ execute_request_locally( MessageTitle, MessageBody, TraceInfoOrState ) ->
 % received, or an exception has been raised in the interpreter.
 %
 -spec handle_request_results( python_utils:interpreter_pid(), title(),
-						traces:emitter_info() | wooper:state() ) -> result().
+							  emitter_info() | wooper:state() ) -> result().
 handle_request_results( InterpreterPid, MessageTitle,
 		TraceEmitterInfo={ TraceEmitterName, TraceEmitterCategorization } ) ->
 
@@ -221,7 +225,7 @@ handle_request_results( InterpreterPid, MessageTitle,
 	end;
 
 
-% Here the third element is a state, not a traces:emitter_info():
+% Here the third element is a state, not a emitter_info():
 handle_request_results( InterpreterPid, MessageTitle, State )
   % Would require to include the .hrl: when is_record( State, state_holder ) ->
   when is_tuple( State ) ->

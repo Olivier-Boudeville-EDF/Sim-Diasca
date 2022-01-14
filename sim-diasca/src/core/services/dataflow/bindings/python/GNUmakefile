@@ -2,8 +2,8 @@ SIM_DIASCA_TOP = ../../../../../..
 
 
 .PHONY: generate-internal-api-src-archive generate-standalone-api-src-archive \
-		generate-api-doc generate-api-doc-archive info-doc info-doc-local     \
-		clean-local clean-doc-local
+		generate-python-api-doc generate-python-api-doc-archive               \
+		info-doc info-doc-local clean-local clean-doc-local
 
 
 MODULES_DIRS = api
@@ -70,12 +70,12 @@ generate-api-src-archive:
 
 
 # Generates the documentation of the API:
-generate-api-doc:
+generate-python-api-doc:
 	-@/bin/rm -rf latex html doxygen_sqlite3.db
 	@( cat  $(DOXYGEN_CONF) ; echo "PROJECT_NUMBER=$(PYTHON_API_VERSION)" ) | $(DOXYGEN) - && echo -e "\n  The documentation of the Python Dataflow API has been generated, you can point your browser to file://$$PWD/html/index.html"
 
 
-generate-api-doc-archive: generate-api-doc
+generate-python-api-doc-archive: generate-python-api-doc
 	@echo -e "   Generating the documentation of the internal Python Dataflow API"
 	-@/bin/rm -rf $(DOC_ARCHIVE_BASENAME)
 	@/bin/mv html $(DOC_ARCHIVE_BASENAME)

@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2021 EDF R&D
+% Copyright (C) 2016-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -58,7 +58,7 @@
 % So, prefer defining (if only initial ports are used):
 
 % -spec get_port_specifications() ->
-%		static_return( { [ input_port_spec() ], [ output_port_spec() ] } ).
+%         static_return( { [ input_port_spec() ], [ output_port_spec() ] } ).
 
 % otherwise:
 
@@ -72,7 +72,7 @@
 
 
 
-% Returns the semantics statically declared by this processing unit.
+% @doc Returns the semantics statically declared by this processing unit.
 %
 % Defining this method allows to ensure that all the ports ever created by this
 % processing unit will rely on user-level semantics among this explicitly stated
@@ -87,7 +87,7 @@
 %	 wooper:return_static( [ "an example" ] ).
 
 
-% Returns the types statically declared by this processing unit.
+% @doc Returns the types statically declared by this processing unit.
 %-spec get_declared_types() -> static_return( class_TypeServer:type_entries() ).
 %get_declared_types() ->
 %	wooper:return_static( [ { 'my_type', "'something'|'other thing'" } ] ).
@@ -107,6 +107,8 @@
 % overridden) activate/1 oneway.
 
 
+-type activation_policy() :: 'activate_on_new_set'
+						   | 'activate_when_all_set' | 'custom_activation'.
 % About processing unit activation policies:
 %
 % - activate_on_new_set: the processing unit will be activated at most once per
@@ -122,9 +124,6 @@
 %
 % - custom_activation: the activation of the processing unit is managed by the
 % unit itself (not expected to be a common case)
-%
--type activation_policy() :: 'activate_on_new_set'
-						   | 'activate_when_all_set' | 'custom_activation'.
 
 
 -export_type([ unit_name/0, activation_policy/0 ]).
@@ -174,11 +173,12 @@
 
 
 % Shorthands:
+
 -type ustring() :: text_utils:ustring().
 
 
 
-% @doc Constructs a new dataflow processing unit.
+% @doc Constructs a dataflow processing unit.
 %
 % Parameters are:
 %
@@ -450,7 +450,7 @@ list_unset_input_ports( State ) ->
 
 	UnsetPortNames = [ text_utils:binary_to_string( PortName )
 		|| { PortName, #input_port{ value_status=unset } }
-			   <- table:enumerate( InputTable ) ],
+				<- table:enumerate( InputTable ) ],
 
 	text_utils:format(
 	  "the following ~B input ports (over ~B) are not set: ~ts",

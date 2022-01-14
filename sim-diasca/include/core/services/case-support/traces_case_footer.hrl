@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2021 EDF R&D
+% Copyright (C) 2012-2022 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -39,14 +39,14 @@
 
 
 
-% Define functions as late as possible:
+% Define functions as late as possible in headers:
 
 -ifndef(tracing_activated).
 
 
+% Allows to avoid warnings about variables not be used when traces are disabled.
 
-% Allows to avoid warnings about variables not be used when traces are disabled:
-%
+
 -spec case_trace_disabled( any() ) -> 'case_trace_disabled'.
 case_trace_disabled( _ ) ->
 	case_trace_disabled.
@@ -56,7 +56,6 @@ case_trace_disabled( _ ) ->
 -spec case_trace_disabled( any(), any() ) -> 'case_trace_disabled'.
 case_trace_disabled( _, _ ) ->
 	case_trace_disabled.
-
 
 
 -endif. % tracing_activated

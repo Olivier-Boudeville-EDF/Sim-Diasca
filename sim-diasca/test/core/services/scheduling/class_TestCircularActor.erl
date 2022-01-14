@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,11 +19,12 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Basic circular test of the Actor class, regarding <b>time management</b>.
 -module(class_TestCircularActor).
 
 
 -define( class_description,
-		 "Basic test of Actor class, regarding time management." ).
+		 "Basic circular test of the Actor class, regarding time management." ).
 
 
 % Determines what are the direct mother classes of this class (if any):
@@ -42,21 +43,27 @@
 
 
 
-% Constructs a new test actor.
+% Shorthands:
+
+-type ustring() :: text_utils:ustring().
+
+
+
+% @doc Constructs a circular test actor.
 -spec construct( wooper:state(), class_Actor:actor_settings(),
-				 class_Actor:name(), string() ) -> wooper:state().
+				 class_Actor:name(), ustring() ) -> wooper:state().
 construct( State, ActorSettings, ActorName, Message ) ->
 
 	% First the direct mother classes, then this class-specific actions:
 	ActorState = class_Actor:construct( State, ActorSettings,
-										?trace_categorize( ActorName ) ),
+										?trace_categorize(ActorName) ),
 
-	?send_info( ActorState, "Creating a new test circular actor." ),
+	?send_info( ActorState, "Creating a test circular actor." ),
 
 	%trace_utils:debug_fmt(
-	%  "- creating a new class_TestCircularActor: PID: ~w, AAI: ~B, seed: ~w",
-	%		   [ self(), getAttribute( ActorState, actor_abstract_id ),
-	%			 getAttribute( ActorState, random_seed ) ] ),
+	%  "- creating a class_TestCircularActor: PID: ~w, AAI: ~B, seed: ~w",
+	%       [ self(), getAttribute( ActorState, actor_abstract_id ),
+	%         getAttribute( ActorState, random_seed ) ] ),
 
 	%ReverseInitialCreation = true,
 	ReverseInitialCreation = false,
@@ -84,7 +91,7 @@ construct( State, ActorSettings, ActorName, Message ) ->
 
 
 
-% Overridden destructor.
+% @doc Overridden destructor.
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -97,23 +104,23 @@ destruct( State ) ->
 
 
 
+
 % Management section of the actor.
 
 
-
-% This actor oneway is automatically called the next diasca after an actor is
-% created or, if the simulation was not running, on diasca 1 (i.e. just after
-% the spontaneous behaviours) of tick offset #0.
+% @doc This actor oneway is automatically called the next diasca after an actor
+% is created or, if the simulation was not running, on diasca 1 (that is just
+% after the spontaneous behaviours) of tick offset #0.
 %
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
-						   actor_oneway_return().
+							actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 	ScheduledState = executeOneway( State, scheduleNextSpontaneousTick ),
 	actor:return_state( ScheduledState ).
 
 
 
-% The core of the test actor behaviour.
+% @doc The core of the test actor behaviour.
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
@@ -140,7 +147,7 @@ actSpontaneous( State ) ->
 
 
 
-% Adds specified peer to known peers.
+% @doc Adds specified peer to known peers.
 -spec addPeer( wooper:state(), actor_pid() ) -> oneway_return().
 addPeer( State, PeerPid ) ->
 
@@ -151,13 +158,13 @@ addPeer( State, PeerPid ) ->
 
 
 % Receives a hello message.
--spec receiveMessage( wooper:state(), class_Actor:name(), string(),
+-spec receiveMessage( wooper:state(), class_Actor:name(), ustring(),
 					  sending_actor_pid() ) -> actor_oneway_return().
 receiveMessage( State, SenderName, Message, SenderPid ) ->
 
-	?notice_fmt( "Received following message from ~s (~w): '~s', "
-			   "using this message from now on.",
-			   [ SenderName, SenderPid, Message ] ),
+	?notice_fmt( "Received following message from ~ts (~w): '~ts', "
+		"using this message from now on.",
+		[ SenderName, SenderPid, Message ] ),
 
 	actor:return_state( setAttribute( State, message, Message ) ).
 
@@ -167,7 +174,8 @@ receiveMessage( State, SenderName, Message, SenderPid ) ->
 % Section for helper functions (not methods).
 
 
-% Says hello to all peers.
+% @doc Says hello to all peers.
+%
 % Returns an updated state.
 %
 % (helper function)
@@ -176,13 +184,14 @@ say_something( State ) ->
 
 	Peer = ?getAttr(peer),
 
-	?notice_fmt( "Sending '~s' to ~w.", [ ?getAttr(message), Peer ] ),
+	?notice_fmt( "Sending '~ts' to ~w.", [ ?getAttr(message), Peer ] ),
 
 	case Peer of
 
 		Peer when is_pid( Peer ) ->
 			class_Actor:send_actor_message( Peer,
-			 { receiveMessage, [ ?getAttr(name), ?getAttr(message) ] }, State );
+				{ receiveMessage, [ ?getAttr(name), ?getAttr(message) ] },
+				State );
 
 		undefined ->
 			State
@@ -191,7 +200,7 @@ say_something( State ) ->
 
 
 
-% Outputs specified message in console, iff talkative.
+% @doc Outputs specified message in console, iff talkative.
 %
 % (helper)
 %
@@ -201,8 +210,8 @@ output( Message, State ) ->
 
 		true ->
 			TickOffset = class_Actor:get_current_tick_offset( State ),
-			trace_utils:debug_fmt( " [~s (~w) at ~p] " ++ Message,
-					   [ ?getAttr(name), self(), TickOffset ] );
+			trace_utils:debug_fmt( " [~ts (~w) at ~p] " ++ Message,
+				[ ?getAttr(name), self(), TickOffset ] );
 
 		false ->
 			ok
@@ -211,7 +220,7 @@ output( Message, State ) ->
 
 
 
-% Outputs specified formatted message in console, iff talkative.
+% @doc Outputs specified formatted message in console, iff talkative.
 %
 % (helper)
 %

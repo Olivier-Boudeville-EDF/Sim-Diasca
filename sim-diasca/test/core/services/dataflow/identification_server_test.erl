@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2021 EDF R&D
+% Copyright (C) 2016-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -25,7 +25,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-% The purpose of this module is to test the support provided by the
+% @doc The purpose of this module is to test the support provided by the
 % identification server.
 %
 % See also class_IdentificationServer.erl.
@@ -43,8 +43,8 @@
 
 
 
-% Runs the test, determining the settings from the command-line, otherwise using
-% defaults.
+% @doc Runs the test, determining the settings from the command-line, otherwise
+% using defaults.
 %
 -spec run() -> no_return().
 run() ->
@@ -56,8 +56,8 @@ run() ->
 	IdentificationServerPid ! { getStatus, [], self() },
 	InitialStatusString = test_receive(),
 
-	?test_notice_fmt( "Initial status of server: ~s", [ InitialStatusString ] ),
-
+	?test_notice_fmt( "Initial status of server: ~ts",
+					  [ InitialStatusString ] ),
 
 	FirstBlockPid = self(),
 
@@ -70,8 +70,8 @@ run() ->
 	identifier_association_declared = test_receive(),
 
 
-	IdentificationServerPid ! { getExternalIdentifier, [ FirstBlockPid ],
-								self() },
+	IdentificationServerPid !
+		{ getExternalIdentifier, [ FirstBlockPid ],	self() },
 
 	FirstExternalID = test_receive(),
 
@@ -82,22 +82,22 @@ run() ->
 	IdentificationServerPid ! { getStatus, [], self() },
 	IntermediateStatusString = test_receive(),
 
-	?test_notice_fmt( "Intermediate status of server: ~s",
-					[ IntermediateStatusString ] ),
+	?test_notice_fmt( "Intermediate status of server: ~ts",
+					  [ IntermediateStatusString ] ),
 
 
 
 	% To have a different (quickly dead) PID:
 	SecondBlockPid = ?myriad_spawn( fun() -> ok end ),
 
-	SecondExternalID = class_IdentificationServer:forge_external_identifier(
-						 SecondBlockPid ),
+	SecondExternalID =
+		class_IdentificationServer:forge_external_identifier( SecondBlockPid ),
 
 	IdAssociations = [ { FirstBlockPid, FirstExternalID },
 					   { SecondBlockPid, SecondExternalID } ],
 
-	IdentificationServerPid ! { declareIdentifierAssociations,
-								[ IdAssociations ],	self() },
+	IdentificationServerPid !
+		{ declareIdentifierAssociations, [ IdAssociations ], self() },
 
 	identifier_associations_declared = test_receive(),
 
@@ -112,7 +112,7 @@ run() ->
 	IdentificationServerPid ! { getStatus, [], self() },
 	FinalStatusString = test_receive(),
 
-	?test_notice_fmt( "Final status of server: ~s", [ FinalStatusString ] ),
+	?test_notice_fmt( "Final status of server: ~ts", [ FinalStatusString ] ),
 
 	class_IdentificationServer:stop(),
 

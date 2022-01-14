@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2021 EDF R&D
+% Copyright (C) 2016-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -129,15 +129,15 @@
 
 
 -record( match_tables, {
-		   any_match_table                :: any_match_table(),
-		   creation_match_table           :: creation_match_table(),
-		   destruction_match_table        :: destruction_match_table(),
-		   association_match_table        :: association_match_table(),
-		   binary_association_match_table :: binary_association_match_table(),
-		   disassociation_match_table     :: disassociation_match_table(),
-		   connection_match_table         :: connection_match_table(),
-		   disconnection_match_table      :: disconnection_match_table(),
-		   update_match_table             :: update_match_table() } ).
+			any_match_table                :: any_match_table(),
+			creation_match_table           :: creation_match_table(),
+			destruction_match_table        :: destruction_match_table(),
+			association_match_table        :: association_match_table(),
+			binary_association_match_table :: binary_association_match_table(),
+			disassociation_match_table     :: disassociation_match_table(),
+			connection_match_table         :: connection_match_table(),
+			disconnection_match_table      :: disconnection_match_table(),
+			update_match_table             :: update_match_table() } ).
 
 
 -type match_tables() :: #match_tables{}.
@@ -1063,7 +1063,7 @@ dispatch_next_event(
 
 		false ->
 			?void_fmt( "Dropped ~ts.", [ dataflow_support:world_event_to_string(
-										   DisconnectionEvent ) ] ),
+											DisconnectionEvent ) ] ),
 			dispatch_next_event( T, MatchTables, DisconnectionState )
 
 	end;
@@ -1147,18 +1147,18 @@ dispatch_creation_event( CreationEvent, CreationTable, State ) ->
 				[ unit_manager_pid() ], { wooper:state(), boolean() } ) ->
 									{ wooper:state(), boolean() }.
 dispatch_creation_event( CreationEvent=#creation_event{
-							 id=Id,
-							 object_type=ObjectType,
-							 external_id=ExternalId,
-							 % Non-matched: object_pid=ObjectPid,
-							 construction_parameters=ConstructParams,
-							 dataflow_pid=DataflowPid },
+							id=Id,
+							object_type=ObjectType,
+							external_id=ExternalId,
+							% Non-matched: object_pid=ObjectPid,
+							construction_parameters=ConstructParams,
+							dataflow_pid=DataflowPid },
 						 Match=#creation_event_match{
-							 object_type_match=ObjectTypeMatch,
-							 external_id_match=ExternalIdMatch,
-							 % Non-matched: object_pid_match=ObjectPidMatch,
-							 construction_parameters_match=ConstructParamsMatch,
-							 dataflow_pid_match=DataflowPidMatch },
+							object_type_match=ObjectTypeMatch,
+							external_id_match=ExternalIdMatch,
+							% Non-matched: object_pid_match=ObjectPidMatch,
+							construction_parameters_match=ConstructParamsMatch,
+							dataflow_pid_match=DataflowPidMatch },
 						 UnitManagers, Param={ State, IsWaiting } ) ->
 
 	?void_fmt( "Confronting creation event ~p to match ~p.",
@@ -1185,8 +1185,8 @@ dispatch_creation_event( CreationEvent=#creation_event{
 
 		false ->
 			%?debug_fmt( "Creation event not matched: ~ts.",
-			%			[ dataflow_support:world_event_to_string(
-			%				CreationEvent ) ] ),
+			%   [ dataflow_support:world_event_to_string(
+			%     CreationEvent ) ] ),
 			Param
 
 	end.
@@ -1250,8 +1250,8 @@ dispatch_destruction_event( DestructionEvent=#destruction_event{
 
 		false ->
 			%?debug_fmt( "Destruction event not matched: ~ts.",
-			%			 [ dataflow_support:world_event_to_string(
-			%				DestructionEvent ) ] ),
+			%            [ dataflow_support:world_event_to_string(
+			%              DestructionEvent ) ] ),
 			Param
 
 
@@ -1286,18 +1286,18 @@ dispatch_association_event( AssociationEvent, AssociationTable, State ) ->
 		association_event_match(), [ unit_manager_pid() ],
 			{ wooper:state(), boolean() } ) -> { wooper:state(), boolean() }.
 dispatch_association_event( AssociationEvent=#association_event{
-							  id=Id,
-							  object_type=ObjectType,
-							  external_id=ExternalId,
-							  % Non-matched: object_pid=ObjectPid,
-							  association_information=AssocInfos,
-							  dataflow_pid=DataflowPid },
+								id=Id,
+								object_type=ObjectType,
+								external_id=ExternalId,
+								% Non-matched: object_pid=ObjectPid,
+								association_information=AssocInfos,
+								dataflow_pid=DataflowPid },
 							#association_event_match{
-							  object_type_match=ObjectTypeMatch,
-							  external_id_match=ExternalIdMatch,
-							  % Non-matched: object_pid_match=ObjectPidMatch,
-							  association_info_match=AssocInfosMatch,
-							  dataflow_pid_match=DataflowPidMatch },
+								object_type_match=ObjectTypeMatch,
+								external_id_match=ExternalIdMatch,
+								% Non-matched: object_pid_match=ObjectPidMatch,
+								association_info_match=AssocInfosMatch,
+								dataflow_pid_match=DataflowPidMatch },
 							UnitManagers, Param={ State, IsWaiting } ) ->
 	case object_type_match( ObjectType, ObjectTypeMatch )
 			andalso external_id_match( ExternalId, ExternalIdMatch )
@@ -1309,7 +1309,7 @@ dispatch_association_event( AssociationEvent=#association_event{
 							SentState = class_Actor:send_actor_message(
 								UnitManagerPid,
 								{ processAssociationEventMatched,
-								  [ AssociationEvent ] },
+									[ AssociationEvent ] },
 								AccState ),
 							register_waited_ack( Id, UnitManagerPid, SentState )
 						   end,
@@ -1319,8 +1319,7 @@ dispatch_association_event( AssociationEvent=#association_event{
 
 		false ->
 			%?debug_fmt( "Association event not matched: ~ts.",
-			%			[ dataflow_support:world_event_to_string(
-			%				AssociationEvent ) ] ),
+			%  [ dataflow_support:world_event_to_string( AssociationEvent ) ] ),
 			Param
 
 	end.
@@ -1356,28 +1355,28 @@ dispatch_binary_association_event( BinAssocEvent, BinAssocTable, State ) ->
 		binary_association_event_match(), [ unit_manager_pid() ],
 			{ wooper:state(), boolean() } ) -> { wooper:state(), boolean() }.
 dispatch_binary_association_event( BinAssocEvent=#binary_association_event{
-							  id=Id,
-							  association_type=AssocType,
-							  source_object_type=SourceObjectType,
-							  target_object_type=TargetObjectType,
-							  source_external_id=SourceExternalId,
-							  target_external_id=TargetExternalId,
-							  % Non-matched:
-							  % source_object_pid=SourceObjectPid,
-							  % target_object_pid=TargetObjectPid,
-							  association_information=AssocInfos,
-							  dataflow_pid=DataflowPid },
+							id=Id,
+							association_type=AssocType,
+							source_object_type=SourceObjectType,
+							target_object_type=TargetObjectType,
+							source_external_id=SourceExternalId,
+							target_external_id=TargetExternalId,
+							% Non-matched:
+							% source_object_pid=SourceObjectPid,
+							% target_object_pid=TargetObjectPid,
+							association_information=AssocInfos,
+							dataflow_pid=DataflowPid },
 								   #binary_association_event_match{
-							   association_type_match=AssocTypeMatch,
-							   source_object_type_match=SourceObjectTypeMatch,
-							   target_object_type_match=TargetObjectTypeMatch,
-							   source_external_id_match=SourceExternalIdMatch,
-							   target_external_id_match=TargetExternalIdMatch,
-							   % Non-matched:
-							   % source_object_pid_match=SourceObjectPidMatch,
-							   % target_object_pid_match=TargetObjectPidMatch,
-							   association_info_match=AssocInfosMatch,
-							   dataflow_pid_match=DataflowPidMatch },
+							association_type_match=AssocTypeMatch,
+							source_object_type_match=SourceObjectTypeMatch,
+							target_object_type_match=TargetObjectTypeMatch,
+							source_external_id_match=SourceExternalIdMatch,
+							target_external_id_match=TargetExternalIdMatch,
+							% Non-matched:
+							% source_object_pid_match=SourceObjectPidMatch,
+							% target_object_pid_match=TargetObjectPidMatch,
+							association_info_match=AssocInfosMatch,
+							dataflow_pid_match=DataflowPidMatch },
 								   UnitManagers, Param={ State, IsWaiting } ) ->
 	case association_type_match( AssocType, AssocTypeMatch )
 			andalso object_type_match( SourceObjectType, SourceObjectTypeMatch )
@@ -1402,8 +1401,8 @@ dispatch_binary_association_event( BinAssocEvent=#binary_association_event{
 
 		false ->
 			%?debug_fmt( "Association event not matched: ~ts.",
-			%			 [ dataflow_support:world_event_to_string(
-			%				AssociationEvent ) ] ),
+			%   [ dataflow_support:world_event_to_string(
+			%           AssociationEvent ) ] ),
 			Param
 
 	end.
@@ -1441,18 +1440,18 @@ dispatch_disassociation_event( DisassociationEvent, DisassociationTable,
 	disassociation_event_match(), [ unit_manager_pid() ],
 		{ wooper:state(), boolean() } ) -> { wooper:state(), boolean() }.
 dispatch_disassociation_event( DisassociationEvent=#disassociation_event{
-							 id=Id,
-							 object_type=ObjectType,
-							 external_id=ExternalId,
-							 % Non-matched: object_pid=ObjectPid,
-							 disassociation_information=DisassociationInfo,
-							 dataflow_pid=DataflowPid },
+							id=Id,
+							object_type=ObjectType,
+							external_id=ExternalId,
+							% Non-matched: object_pid=ObjectPid,
+							disassociation_information=DisassociationInfo,
+							dataflow_pid=DataflowPid },
 							   #disassociation_event_match{
-							 object_type_match=ObjectTypeMatch,
-							 external_id_match=ExternalIdMatch,
-							 % Non-matched: object_pid_match=ObjectPidMatch,
-							 disassociation_info_match=DisassociationInfoMatch,
-							 dataflow_pid_match=DataflowPidMatch },
+							object_type_match=ObjectTypeMatch,
+							external_id_match=ExternalIdMatch,
+							% Non-matched: object_pid_match=ObjectPidMatch,
+							disassociation_info_match=DisassociationInfoMatch,
+							dataflow_pid_match=DataflowPidMatch },
 							   UnitManagers, Param={ State, IsWaiting } ) ->
 	case object_type_match( ObjectType, ObjectTypeMatch )
 			andalso external_id_match( ExternalId, ExternalIdMatch )
@@ -1475,8 +1474,8 @@ dispatch_disassociation_event( DisassociationEvent=#disassociation_event{
 
 		false ->
 			%?debug_fmt( "Disassociation event not matched: ~ts.",
-			%			 [ dataflow_support:world_event_to_string(
-			%				DisassociationEvent ) ] ),
+			%   [ dataflow_support:world_event_to_string(
+			%           DisassociationEvent ) ] ),
 			Param
 
 	end.
@@ -1510,28 +1509,28 @@ dispatch_connection_event( ConnectionEvent, ConnectionTable, State ) ->
 				[ unit_manager_pid() ], { wooper:state(), boolean() } ) ->
 									{ wooper:state(), boolean() }.
 dispatch_connection_event( ConnectionEvent=#connection_event{
-							 id=Id,
-							 source_block_type=SourceBlockType,
-							 target_block_type=TargetBlockType,
-							 source_external_id=SourceExternalId,
-							 target_external_id=TargetExternalId,
-							 % Non-matched: source_block_pid=BlockPid,
-							 % Non-matched: target_block_pid=BlockPid,
-							 output_port_name=SourceAttrName,
-							 input_port_name=TargetAttrName,
-							 dataflow_pid=DataflowPid },
+							id=Id,
+							source_block_type=SourceBlockType,
+							target_block_type=TargetBlockType,
+							source_external_id=SourceExternalId,
+							target_external_id=TargetExternalId,
+							% Non-matched: source_block_pid=BlockPid,
+							% Non-matched: target_block_pid=BlockPid,
+							output_port_name=SourceAttrName,
+							input_port_name=TargetAttrName,
+							dataflow_pid=DataflowPid },
 						   _Match=#connection_event_match{
-							 source_block_type_match=SourceBlockTypeMatch,
-							 target_block_type_match=TargetBlockTypeMatch,
-							 source_external_id_match=SourceExternalIdMatch,
-							 target_external_id_match=TargetExternalIdMatch,
-							 output_port_name_match=OutputPortNameMatch,
-							 input_port_name_match=InputPortNameMatch,
-							 dataflow_pid_match=DataflowPidMatch },
+							source_block_type_match=SourceBlockTypeMatch,
+							target_block_type_match=TargetBlockTypeMatch,
+							source_external_id_match=SourceExternalIdMatch,
+							target_external_id_match=TargetExternalIdMatch,
+							output_port_name_match=OutputPortNameMatch,
+							input_port_name_match=InputPortNameMatch,
+							dataflow_pid_match=DataflowPidMatch },
 						   UnitManagers, Param={ State, IsWaiting } ) ->
 
 	%?debug_fmt( "Confronting connection event ~p to match ~p.",
-	%			 [ ConnectionEvent, Match ] ),
+	%   [ ConnectionEvent, Match ] ),
 
 	case        block_type_match( SourceBlockType, SourceBlockTypeMatch )
 		andalso block_type_match( TargetBlockType, TargetBlockTypeMatch )
@@ -1593,24 +1592,24 @@ dispatch_disconnection_event( DisconnectionEvent, DisconnectionTable, State ) ->
 		disconnection_event_match(), [ unit_manager_pid() ],
 		{ wooper:state(), boolean() } ) -> { wooper:state(), boolean() }.
 dispatch_disconnection_event( DisconnectionEvent=#disconnection_event{
-							 id=Id,
-							 source_block_type=SourceBlockType,
-							 target_block_type=TargetBlockType,
-							 source_external_id=SourceExternalId,
-							 target_external_id=TargetExternalId,
-							 % Non-matched: source_block_pid=BlockPid,
-							 % Non-matched: target_block_pid=BlockPid,
-							 output_port_name=OutputPortName,
-							 input_port_name=InputPortName,
-							 dataflow_pid=DataflowPid },
+						id=Id,
+						source_block_type=SourceBlockType,
+						target_block_type=TargetBlockType,
+						source_external_id=SourceExternalId,
+						target_external_id=TargetExternalId,
+						% Non-matched: source_block_pid=BlockPid,
+						% Non-matched: target_block_pid=BlockPid,
+						output_port_name=OutputPortName,
+						input_port_name=InputPortName,
+						dataflow_pid=DataflowPid },
 							  #disconnection_event_match{
-							 source_block_type_match=SourceBlockTypeMatch,
-							 target_block_type_match=TargetBlockTypeMatch,
-							 source_external_id_match=SourceExternalIdMatch,
-							 target_external_id_match=TargetExternalIdMatch,
-							 output_port_name_match=OutputPortNameMatch,
-							 input_port_name_match=InputPortNameMatch,
-							 dataflow_pid_match=DataflowPidMatch },
+						source_block_type_match=SourceBlockTypeMatch,
+						target_block_type_match=TargetBlockTypeMatch,
+						source_external_id_match=SourceExternalIdMatch,
+						target_external_id_match=TargetExternalIdMatch,
+						output_port_name_match=OutputPortNameMatch,
+						input_port_name_match=InputPortNameMatch,
+						dataflow_pid_match=DataflowPidMatch },
 							  UnitManagers, Param={ State, IsWaiting } ) ->
 	case        block_type_match( SourceBlockType, SourceBlockTypeMatch )
 		andalso block_type_match( TargetBlockType, TargetBlockTypeMatch )
@@ -1635,8 +1634,8 @@ dispatch_disconnection_event( DisconnectionEvent=#disconnection_event{
 
 		false ->
 			%?debug_fmt( "Disconnection event not matched: ~ts.",
-			%			 [ dataflow_support:world_event_to_string(
-			%				DisconnectionEvent ) ] ),
+			%   [ dataflow_support:world_event_to_string(
+			%           DisconnectionEvent ) ] ),
 			Param
 
 	end.
@@ -1665,20 +1664,20 @@ dispatch_update_event( UpdateEvent, UpdateTable, State ) ->
 % declared an interest for (at least a subset) of the update events.
 %
 -spec dispatch_update_event( update_event(), update_event_match(),
-   [ unit_manager_pid() ], { wooper:state(), boolean() } ) -> wooper:state().
+	[ unit_manager_pid() ], { wooper:state(), boolean() } ) -> wooper:state().
 dispatch_update_event( UpdateEvent=#update_event{
-							 id=Id,
-							 object_type=ObjectType,
-							 external_id=ExternalId,
-							 % Non-matched: object_pid=ObjectPid,
-							 updates=AttrUpdates,
-							 dataflow_pid=DataflowPid },
+							id=Id,
+							object_type=ObjectType,
+							external_id=ExternalId,
+							% Non-matched: object_pid=ObjectPid,
+							updates=AttrUpdates,
+							dataflow_pid=DataflowPid },
 						 #update_event_match{
-							 object_type_match=ObjectTypeMatch,
-							 external_id_match=ExternalIdMatch,
-							 % Non-matched: object_pid_match=ObjectPidMatch,
-							 attribute_update_match=AttrUpdateMatch,
-							 dataflow_pid_match=DataflowPidMatch },
+							object_type_match=ObjectTypeMatch,
+							external_id_match=ExternalIdMatch,
+							% Non-matched: object_pid_match=ObjectPidMatch,
+							attribute_update_match=AttrUpdateMatch,
+							dataflow_pid_match=DataflowPidMatch },
 						 UnitManagers, Param={ State, IsWaiting } ) ->
 	case            object_type_match( ObjectType, ObjectTypeMatch )
 			andalso external_id_match( ExternalId, ExternalIdMatch )
@@ -1699,8 +1698,7 @@ dispatch_update_event( UpdateEvent=#update_event{
 
 		false ->
 			%?debug_fmt( "Update event not matched: ~ts.",
-			%			 [ dataflow_support:world_event_to_string(
-			%				UpdateEvent ) ] ),
+			%   [ dataflow_support:world_event_to_string( UpdateEvent ) ] ),
 			Param
 
 	end.
@@ -1990,14 +1988,14 @@ to_string( State ) ->
 	MatchString = match_tables_to_string( State ),
 
 	text_utils:format( "experiment manager ~ts, ~ts, ~ts, ~ts, ~ts, ~ts, ~ts "
-		"and ~ts", [ WorldString, DataflowString, EntryPointString,
-					 ExitPointString, UnitString, PendingString, AckString,
-					 MatchString ] ).
+		"and ~ts",
+		[ WorldString, DataflowString, EntryPointString, ExitPointString,
+		  UnitString, PendingString, AckString, MatchString ] ).
 
 
 
 % @doc Returns a textual description of the acknowledgement waited table.
--spec ack_table_to_string( ack_table() ) -> string().
+-spec ack_table_to_string( ack_table() ) -> ustring().
 ack_table_to_string( AckTable ) ->
 
 	case lists:foldl( fun
@@ -2028,7 +2026,7 @@ ack_table_to_string( AckTable ) ->
 
 
 % @doc Returns a textual description of the event match tables.
--spec match_tables_to_string( wooper:state() ) -> string().
+-spec match_tables_to_string( wooper:state() ) -> ustring().
 match_tables_to_string( State ) ->
 
 	MatchTables = ?getAttr(match_tables),
@@ -2192,7 +2190,7 @@ match_tables_to_string( State ) ->
 		DisconnectionLen ->
 
 			DisconnectionStrings = [ event_clause_to_string( CM, Managers )
-									 || { CM, Managers } <- DisconnectionList ],
+								|| { CM, Managers } <- DisconnectionList ],
 
 			DisconnectionBulletString = text_utils:strings_to_string(
 				DisconnectionStrings, text_utils:get_bullet_for_level( 1 ) ),

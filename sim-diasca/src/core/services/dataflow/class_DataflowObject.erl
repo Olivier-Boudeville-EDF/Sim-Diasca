@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2021 EDF R&D
+% Copyright (C) 2016-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -17,7 +17,7 @@
 % If not, see <http://www.gnu.org/licenses/>.
 
 % Authors: Olivier Boudeville (olivier.boudeville@edf.fr)
-%		   Samuel Thiriot (samuel.thiriot@edf.fr)
+%          Samuel Thiriot (samuel.thiriot@edf.fr)
 
 
 % @doc Class defining a <b>Dataflow Object</b>, corresponding to the
@@ -307,8 +307,8 @@ pre_init( TraceEmitterName, State ) ->
 
 
 
-% @doc Constructs (second stage) a new dataflow object, whose role is to
-% represent in the dataflow a part of the state of the target system.
+% @doc Constructs (second stage) a dataflow object, whose role is to represent
+% in the dataflow a part of the state of the target system.
 %
 % Parameters are:
 %
@@ -417,18 +417,18 @@ construct( State, ActorSettings, DataflowObjectName, DataflowAttributeSpecs,
 	end,
 
 	SuspendedState = setAttributes( ElemState, [
-			{ run_status, suspended },
-			{ attribute_specs, AllAttrSpecs },
-			{ unique_peer_table, UniquePeerTypeTable },
-			{ multiple_peer_table, MultiplePeerTypeTable },
-			{ peer_to_name_table, UniquePeersToNameTable },
+		{ run_status, suspended },
+		{ attribute_specs, AllAttrSpecs },
+		{ unique_peer_table, UniquePeerTypeTable },
+		{ multiple_peer_table, MultiplePeerTypeTable },
+		{ peer_to_name_table, UniquePeersToNameTable },
 
-			% Defaults:
-			{ accept_multiple_valued_attrs, MultAttr },
-			{ accept_non_valued_attrs, NonAttr },
-			{ accept_extra_attr_values, ExtraAttr },
+		% Defaults:
+		{ accept_multiple_valued_attrs, MultAttr },
+		{ accept_non_valued_attrs, NonAttr },
+		{ accept_extra_attr_values, ExtraAttr },
 
-			{ identification_server_pid, MaybeIdServer } ] ),
+		{ identification_server_pid, MaybeIdServer } ] ),
 
 	% Suspension will be declared to the dataflow at the first diasca of this
 	% object (as it is an actor oneway), as a side-effect of its registration as
@@ -551,39 +551,39 @@ create_attribute_specs_for_peer( PeerName ) ->
 create_attribute_specs_for_peer( PeerName, _Typename=string,
 								 _PeerMultiplicity=unique ) ->
 	#dataflow_attribute_spec{
-	   attribute_name=PeerName,
-	   semantics=[],
-	   unit="dimensionless",
-	   type_description="string",
-	   % Add 'non_empty', once available:
-	   constraints=[] };
+	    attribute_name=PeerName,
+	    semantics=[],
+	    unit="dimensionless",
+	    type_description="string",
+	    % Add 'non_empty', once available:
+	    constraints=[] };
 
 create_attribute_specs_for_peer( PeerName, _Typename=pid,
 								 _PeerMultiplicity=unique ) ->
 	#dataflow_attribute_spec{
-	   attribute_name=PeerName,
-	   semantics=[],
-	   unit="dimensionless",
-	   type_description="pid",
-	   constraints=[] };
+	    attribute_name=PeerName,
+	    semantics=[],
+	    unit="dimensionless",
+	    type_description="pid",
+	    constraints=[] };
 
 create_attribute_specs_for_peer( PeerName, _Typename=string,
 								 _PeerMultiplicity=multiple ) ->
 	#dataflow_attribute_spec{
-	   attribute_name=PeerName,
-	   semantics=[],
-	   unit="dimensionless",
-	   type_description="[string]",
-	   constraints=[] };
+	    attribute_name=PeerName,
+	    semantics=[],
+	    unit="dimensionless",
+	    type_description="[string]",
+	    constraints=[] };
 
 create_attribute_specs_for_peer( PeerName, _Typename=pid,
 								 _PeerMultiplicity=multiple ) ->
 	#dataflow_attribute_spec{
-	   attribute_name=PeerName,
-	   semantics=[],
-	   unit="dimensionless",
-	   type_description="[pid]",
-	   constraints=[] }.
+	    attribute_name=PeerName,
+	    semantics=[],
+	    unit="dimensionless",
+	    type_description="[pid]",
+	    constraints=[] }.
 
 
 
@@ -685,7 +685,7 @@ get_multiple_peer_table( _SpecForMultiplePeers=[ PeerType | T ], Acc )
 
 
 
-% @DOC Translates specified attribute specs into their corresponding input and
+% @doc Translates specified attribute specs into their corresponding input and
 % output ports.
 %
 -spec get_port_specs_for( [ dataflow_attribute_spec() ] ) ->
@@ -886,7 +886,7 @@ assign_channel_value_to_attribute( ChannelValue, BinAttrName, State ) ->
 -spec assign_channel_value_to_attribute( channel_value(),
 			dataflow_attribute_bin_name(), input_port_table(),
 			output_port_table(), wooper:state() ) ->
-				   { input_port_table(), output_port_table(), wooper:state() }.
+				    { input_port_table(), output_port_table(), wooper:state() }.
 assign_channel_value_to_attribute( ChannelValue, BinAttrName, InputPortTable,
 								   OutputPortTable, State ) ->
 
@@ -943,6 +943,7 @@ unset_attribute( BinAttrName, State ) ->
 
 	% Silent update (not triggering downstream blocks):
 	assign_raw_value_to_attribute( _RawValue=undefined, BinAttrName, State ).
+
 
 
 
@@ -1047,7 +1048,7 @@ registerPeerAs( State, PeerPid, PeerType, _SendingActorPid ) ->
 register_peer( PeerPid, PeerType, State ) when is_pid( PeerPid ) ->
 
 	%?info_fmt( "Request to register a peer of type '~ts': ~w.",
-	%			[ PeerType, PeerPid ] ),
+	%           [ PeerType, PeerPid ] ),
 
 	% Searching first in the multiple peer table, as it is the most common type
 	% of peers:
@@ -1988,7 +1989,7 @@ decode_initial_attribute_values( AttributeSpecs, NameValueAttrPairs, State ) ->
 
 	?debug_fmt( "Initial value setting: ~ts", [ text_utils:strings_to_string(
 		[ text_utils:format( "attribute '~ts' set to ~p", [ N, V ] )
-		   || { N, V } <- lists:zip( ExpectedAttrNames, InitialValues ) ] ) ] ),
+		  || { N, V } <- lists:zip( ExpectedAttrNames, InitialValues ) ] ) ] ),
 
 	InitialValues.
 

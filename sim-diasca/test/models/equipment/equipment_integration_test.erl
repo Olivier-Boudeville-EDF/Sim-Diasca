@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,9 +19,8 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-
-% Integration tests for the interaction between the time manager, an equipment
-% and failure and repair models.
+% @doc Integration tests for the interaction between the time manager, an
+% equipment and failure and repair models.
 %
 % See class_TimeManager.erl, class_Equipment.erl, class_FailureModel.erl,
 % class_RepairModel.erl, class_ExponentialFailureModel.erl,
@@ -35,7 +34,7 @@
 
 
 
-% Creates a series of Count equipments, named accordingly, stopping at 100.
+% @doc Creates a series of Count equipments, named accordingly, stopping at 100.
 %
 % Returns a list of the corresponding PIDs.
 %
@@ -50,11 +49,11 @@ createEquipment( Count, FailureModelPid, RepairModelPid ) ->
 		[ ActorName, _StopTick=100+Count, FailureModelPid, RepairModelPid ] ),
 
 	[ NewActorPid
-	  | createEquipment( Count-1, FailureModelPid, RepairModelPid ) ].
+		| createEquipment( Count-1, FailureModelPid, RepairModelPid ) ].
 
 
 
-% Runs the test.
+% @doc Runs the test.
 %
 % Note: some probes are created specifically from this test, because we do not
 % want all (potentially numerous) equipments to carry each a probe.
@@ -67,12 +66,12 @@ run() ->
 	% Use default simulation settings (50Hz, batch reproducible):
 	SimulationSettings = #simulation_settings{
 
-	  simulation_name = "Sim-Diasca Equipment Integration Test"
+	  simulation_name="Sim-Diasca Equipment Integration Test"
 
 	  % We leave it to the default specification (all_outputs):
 	  % result_specification =
-	  %	  [ { targeted_patterns, [ {".*",[data_and_rendering]} ] },
-	  %		{ blacklisted_patterns, ["^Second" ] } ]
+	  %   [ { targeted_patterns, [ {".*", [data_and_rendering]} ] },
+	  %     { blacklisted_patterns, [ "^Second" ] } ]
 
 	},
 
@@ -86,7 +85,7 @@ run() ->
 	LoadBalancingSettings = #load_balancing_settings{},
 
 	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-								  DeploymentSettings, LoadBalancingSettings ),
+									DeploymentSettings, LoadBalancingSettings ),
 
 
 	?test_info( "Creating an exponential failure model." ),
@@ -99,7 +98,7 @@ run() ->
 
 	% Parameters are {MTTFday,MTTFhour,MTTFminute,MTTFsecond},MTTFStdDeviation:
 	MyGaussianFailureModel = class_Actor:create_initial_actor(
-							   class_GaussianFailureModel, [ {0,0,0,3}, 3 ] ),
+								class_GaussianFailureModel, [ {0,0,0,3}, 3 ] ),
 
 
 	?test_info( "Creating a uniform repair model." ),
@@ -112,7 +111,7 @@ run() ->
 
 	% Parameters are {MTTRday,MTTRhour,MTTRminute,MTTRsecond},MTTFStdDeviation:
 	MyGaussianRepairModel = class_Actor:create_initial_actor(
-							  class_GaussianRepairModel, [ {0,0,0,10}, 2 ] ),
+								class_GaussianRepairModel, [ {0,0,0,10}, 2 ] ),
 
 
 

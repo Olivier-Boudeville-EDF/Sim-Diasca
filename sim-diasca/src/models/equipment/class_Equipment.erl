@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,6 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Class modelling a <b>simple equipment</b>.
 -module(class_Equipment).
 
 
@@ -123,7 +124,7 @@
 
 
 
-% Constructs a new equipment actor, regarding notably failure and reparation.
+% @doc Constructs an equipment actor, regarding notably failure and reparation.
 %
 % Parameters are:
 %
@@ -176,7 +177,7 @@ construct( State, ActorSettings, EquipmentName, FailureModelPid,
 		{ reliability_probe, undefined } ] ),
 
 	?send_info_fmt( StartingState,
-		"Creating a new equipment whose failure model is ~w and "
+		"Creating an equipment whose failure model is ~w and "
 		"whose repair model is ~w.", [ FailureModelPid, RepairModelPid ] ),
 
 	StartingState.
@@ -190,7 +191,7 @@ construct( State, ActorSettings, EquipmentName, FailureModelPid,
 % Management section of the equipment.
 
 
-% Called by the failure model, in answer to a getNextFailure call.
+% @doc Called by the failure model, in answer to a getNextFailure call.
 %
 % Third parameter of the request (sender PID, the failure model) is ignored.
 %
@@ -213,8 +214,8 @@ setNextFailure( State, FailureTick, _SendingActorPid ) ->
 										  FailureTick ),
 
 			setAttributes( PlannedState, [
-								{ next_failure_tick, FailureTick },
-								{ next_repair_tick, uninitialized } ] );
+				{ next_failure_tick, FailureTick },
+				{ next_repair_tick, uninitialized } ] );
 
 		termination_triggered ->
 			State
@@ -225,7 +226,7 @@ setNextFailure( State, FailureTick, _SendingActorPid ) ->
 
 
 
-% Called by the repair model, in answer to a getNextRepair call.
+% @doc Called by the repair model, in answer to a getNextRepair call.
 %
 % Third parameter (sender Pid, the repair model) is ignored.
 %
@@ -248,8 +249,8 @@ setNextRepair( State, RepairTick, _SendingActorPid ) ->
 										  RepairTick ),
 
 			setAttributes( PlannedState, [
-						{ next_failure_tick, uninitialized },
-						{ next_repair_tick, RepairTick } ] ) ;
+				{ next_failure_tick, uninitialized },
+				{ next_repair_tick, RepairTick } ] ) ;
 
 		termination_triggered ->
 			State
@@ -264,7 +265,7 @@ setNextRepair( State, RepairTick, _SendingActorPid ) ->
 % Management section of the equipment actor.
 
 
-% The core of the equipment generic behaviour.
+% @doc The core of the equipment generic behaviour.
 %
 % Manages transition between failure and repair, and triggers actions associated
 % for both of these states.
@@ -275,8 +276,8 @@ actSpontaneous( State ) ->
 	%?debug( "Equipment acting." ),
 
 	%trace_utils:debug_fmt( "actSpontaneous at ~B: state is ~p.",
-	% [ class_Actor:get_current_tick( State ),
-	%  ?getAttr(current_failure_state) ] ),
+	%   [ class_Actor:get_current_tick( State ),
+	%     ?getAttr(current_failure_state) ] ),
 
 	% Reliability is probed at tick begin:
 	NewState = case ?getAttr(current_failure_state) of
@@ -303,7 +304,7 @@ actSpontaneous( State ) ->
 
 
 
-% Default implementation of the actNominal oneway.
+% @doc Default implementation of the actNominal oneway.
 %
 % Note: made to be overridden for actual equipments.
 %
@@ -316,8 +317,8 @@ actNominal( State ) ->
 
 
 
-% Default implementation of the actInDysfunction oneway.
-
+% @doc Default implementation of the actInDysfunction oneway.
+%
 % Note: made to be overridden for actual equipments.
 %
 -spec actInDysfunction( wooper:state() ) -> const_oneway_return().
@@ -329,9 +330,9 @@ actInDysfunction( State ) ->
 
 
 
-% Simply schedules this just created actor at the next tick (diasca 0).
+% @doc Simply schedules this just created actor at the next tick (diasca 0).
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
-						   actor_oneway_return().
+							actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 
 	ScheduledState = executeOneway( State, scheduleNextSpontaneousTick ),
@@ -340,7 +341,7 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-% Default implementation of the onFailure oneway.
+% @doc Default implementation of the onFailure oneway.
 %
 % Note: made to be overridden for actual equipments.
 %
@@ -353,7 +354,7 @@ onFailure( State ) ->
 
 
 
-% Default implementation of the onReparation oneway.
+% @doc Default implementation of the onReparation oneway.
 %
 % Note: made to be overridden for actual equipments.
 %
@@ -366,17 +367,17 @@ onReparation( State ) ->
 
 
 
-% Returns the current status of this equipment regarding reliability, i.e.
-% either nominal or dysfunction.
+% @doc Returns the current status of this equipment regarding reliability, that
+% is either nominal or dysfunction.
 %
 -spec getReliabilityStatus( wooper:state()) ->
-								  const_request_return( reliability_status() ).
+								const_request_return( reliability_status() ).
 getReliabilityStatus( State ) ->
 	wooper:const_return_result( ?getAttr(current_failure_state) ).
 
 
 
-% Links specified reliability probe to this equipment.
+% @doc Links specified reliability probe to this equipment.
 %
 % (request, for synchronisation purpose)
 %
@@ -398,7 +399,7 @@ setReliabilityProbe( State, ProbePid ) ->
 % Section for helper functions (not methods).
 
 
-% Called whenever a failure happens.
+% @doc Called whenever a failure happens.
 %
 % Returns an updated state.
 %
@@ -420,7 +421,7 @@ trigger_failure( State ) ->
 
 
 
-% Called whenever a repair happens.
+% @doc Called whenever a repair happens.
 %
 % Returns an updated state.
 %
@@ -443,7 +444,7 @@ trigger_repair( State ) ->
 
 
 
-% Helper function for the actSpontaneous/1 oneway.
+% @doc Helper function for the actSpontaneous/1 oneway.
 %
 % Returns an updated state.
 %
@@ -461,7 +462,7 @@ handle_nominal( State ) ->
 
 			%trace_utils:debug_fmt(
 			%   "handle_nominal at #~B: no next failure set.",
-			%	[ CurrentTickOffset ] ),
+			%   [ CurrentTickOffset ] ),
 
 			send_probe( CurrentTickOffset, nominal, State ),
 
@@ -484,7 +485,7 @@ handle_nominal( State ) ->
 		CurrentTickOffset ->
 
 			%trace_utils:debug_fmt( "handle_nominal at #~B: failing!~n",
-			%	[ CurrentTickOffset ] ),
+			%   [ CurrentTickOffset ] ),
 
 			send_probe( CurrentTickOffset-1, nominal, State ),
 			send_probe( CurrentTickOffset, dysfunction, State ),
@@ -508,7 +509,7 @@ handle_nominal( State ) ->
 			% Includes any other failure tick and the 'waiting' atom:
 
 			%trace_utils:debug_fmt( "handle_nominal at #~B: acting normally.~n",
-			%	[ CurrentTickOffset ] ),
+			%   [ CurrentTickOffset ] ),
 
 			send_probe( CurrentTickOffset, nominal, State ),
 
@@ -519,7 +520,7 @@ handle_nominal( State ) ->
 
 
 
-% Helper function for the actSpontaneous/1 oneway.
+% @doc Helper function for the actSpontaneous/1 oneway.
 %
 % Returns an updated state.
 %
@@ -534,6 +535,7 @@ handle_dysfunction( State ) ->
 
 	% If out of order, watch for repair.
 	% Repair tick was already set when last failure was triggered.
+	%
 	case ?getAttr(next_repair_tick) of
 
 		 uninitialized->
@@ -566,7 +568,7 @@ handle_dysfunction( State ) ->
 
 			%trace_utils:debug_fmt(
 			%   "handle_dysfunction at #~B: being repaired!",
-			%	[ CurrentTickOffset ] ),
+			%   [ CurrentTickOffset ] ),
 
 			send_probe( CurrentTickOffset-1, dysfunction, State ),
 			send_probe( CurrentTickOffset, nominal, State ),
@@ -589,7 +591,7 @@ handle_dysfunction( State ) ->
 
 			%trace_utils:debug_fmt(
 			%   "handle_dysfunction at #~B: being out of order.",
-			%	[ CurrentTickOffset ] ),
+			%   [ CurrentTickOffset ] ),
 
 			send_probe( CurrentTickOffset, dysfunction, State ),
 
@@ -604,7 +606,7 @@ handle_dysfunction( State ) ->
 
 
 
-% Notifies any reliability listener that this equipment failed.
+% @doc Notifies any reliability listener that this equipment failed.
 %
 % Returns an updated state.
 %
@@ -625,7 +627,7 @@ notify_failure( State ) ->
 
 
 
-% Notifies any reliability listener that this equipment was repaired.
+% @doc Notifies any reliability listener that this equipment was repaired.
 %
 % Returns an updated state.
 %
@@ -646,7 +648,7 @@ notify_reparation( State ) ->
 	end.
 
 
-% Sends reliability information to the probe.
+% @doc Sends reliability information to the probe.
 %
 % (helper)
 %

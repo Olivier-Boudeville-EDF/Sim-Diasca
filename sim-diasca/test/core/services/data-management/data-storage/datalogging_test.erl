@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,8 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-
-% Overall unit test of the Sim-Diasca data-logging facilities.
+% @doc Overall unit test of the Sim-Diasca data-logging facilities.
 -module(datalogging_test).
 
 
@@ -32,22 +31,28 @@
 -include("sim_diasca_for_cases.hrl").
 
 
+% Shorthands:
 
-% Creates a virtual probe directly from the simulation test case as well.
--spec manage_facility_probe( string() ) -> void().
+-type ustring() :: text_utils:ustring().
+
+
+
+% @doc Creates a virtual probe directly from the simulation test case as well.
+-spec manage_facility_probe( ustring() ) -> void().
 manage_facility_probe( ProbeName ) ->
 
 	ProbeRef = case class_DataLogger:create_virtual_probe(
-		   ProbeName,
-		   _Curves=[ "My first curve", "My second curve" ],
-		   _Zones=[],
-		   _Title="My manually defined virtual probe",
-		   _XLabel="Any notion of time",
-		   _YLabel="Any unit" ) of
+			ProbeName,
+			_Curves=[ "My first curve", "My second curve" ],
+			_Zones=[],
+			_Title="My manually defined virtual probe",
+			_XLabel="Any notion of time",
+			_YLabel="Any unit" ) of
 
 		non_wanted_virtual_probe ->
 			?test_info( "The virtual probe directly created from the test case "
-				"did not match the result specification, thus was not created." ),
+				"did not match the result specification, thus was not "
+				"created." ),
 			 non_wanted_virtual_probe;
 
 		% Depending on the result specification, this virtual probe ID may or
@@ -106,7 +111,7 @@ manage_facility_probe( ProbeName ) ->
 			Tick7 = 14,
 
 			DataLoggerPid ! { setDataSynchronous, [ MyVirtualProbeID, Tick7,
-				   _Sample8={ undefined, undefined, 8 } ], self() },
+					_Sample8={ undefined, undefined, 8 } ], self() },
 			datalogging_set_done = test_receive(),
 
 			?test_info( "Performing a synchronous merge "
@@ -169,8 +174,7 @@ manage_facility_probe( ProbeName ) ->
 
 
 
-
-% Generates some data to test the data-logging.
+% @doc Generates some data to test the data-logging.
 -spec run() -> no_return().
 run() ->
 
@@ -181,7 +185,7 @@ run() ->
 	%
 	SimulationSettings = #simulation_settings{
 
-		simulation_name = "Datalogging test"
+		simulation_name="Datalogging test"
 
 		% Allows to test various combinations of result specifications:
 
@@ -190,31 +194,32 @@ run() ->
 
 		% Correct, accepted specifications:
 
-		%result_specification = no_output
-		%result_specification = all_outputs
-		%result_specification = all_basic_probes_only
-		%result_specification = all_virtual_probes_only
+		%result_specification=no_output
+		%result_specification=all_outputs
+		%result_specification=all_basic_probes_only
+		%result_specification=all_virtual_probes_only
 
 		% Will select nothing:
-		%result_specification = []
+		%result_specification=[]
 
 		% Will select all (virtual) probes:
-		%result_specification = [ { targeted_patterns, [ ".*" ] } ]
+		%result_specification=[ { targeted_patterns, [ ".*" ] } ]
 
 		% Will select only the probe whose name begins with "Curves A for" (not
 		% the Curve B counterpart, neither the one created directly from this
 		% test):
+		%
 		%result_specification = [
-		%	  { targeted_patterns, [ {"^Curves.*",[rendering_only]} ] },
-		%	  { blacklisted_patterns, ["Curves B" ] } ]
+		%   { targeted_patterns, [ {"^Curves.*", [rendering_only]} ] },
+		%	{ blacklisted_patterns, ["Curves B" ] } ]
 
 
 		% Incorrect, rejected specifications:
 
-		%result_specification = unexpected_option
-		%result_specification = [ { targeted_patterns, unexpected_pattern } ]
-		%result_specification = [ { targeted_patterns, [ ".*" ] },
-		%					unexpected_option ]
+		%result_specification=unexpected_option
+		%result_specification=[ { targeted_patterns, unexpected_pattern } ]
+		%result_specification=[ { targeted_patterns, [ ".*" ] },
+		%						unexpected_option ]
 
 	},
 
@@ -224,8 +229,8 @@ run() ->
 	% the data-logger:
 	%
 	DeploymentSettings = #deployment_settings{
-			  enable_data_logger=true
-			  %node_availability_tolerance=fail_on_unavailable_node
+		enable_data_logger=true
+		%node_availability_tolerance=fail_on_unavailable_node
 	},
 
 
@@ -240,7 +245,7 @@ run() ->
 
 	% Directly created on the user node, as usual:
 	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-							   DeploymentSettings, LoadBalancingSettings ),
+								DeploymentSettings, LoadBalancingSettings ),
 
 
 	?test_info( "Deployment manager created, retrieving the load balancer." ),
@@ -253,8 +258,8 @@ run() ->
 	?test_info( "Creating an actor that will make use of two virtual probes." ),
 
 	_ActorPid = class_Actor:create_initial_actor( class_DataLoggingActor,
-			   [ "First data-logging test actor", _TerminationTickOffset=200,
-				 _Listener=self() ] ),
+		[ "First data-logging test actor", _TerminationTickOffset=200,
+		  _Listener=self() ] ),
 
 
 	?test_info( "Creating also a virtual probe directly from the test." ),
@@ -295,8 +300,7 @@ run() ->
 
 			% 'tv' deprecated in favor of 'observer':
 			%test_facilities:display( "~n(hit CTRL-M on the TV window to view "
-			%		  "the virtual probe tables, by double-clicking "
-			%		  "on their name)~n" ),
+			%   "the virtual probe tables, by double-clicking on their name)" ),
 
 			test_facilities:display( "~n(on the Observer window, once the "
 				"'Table Viewer' tab is displayed, select, "

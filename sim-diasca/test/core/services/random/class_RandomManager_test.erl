@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,8 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-
-% Overall unit tests for the RandomManager class implementation.
+% @doc Overall unit tests for the <b>RandomManager class</b> implementation.
 %
 % See the class_RandomManager.erl module.
 %
@@ -105,11 +104,11 @@ draw_exponential_values( Count, Table, Lambda, RandomManagerPid ) ->
 
 	RandomManagerPid ! { getPositiveIntegerExponentialValue, Lambda, self() },
 
-	% Wanting a random value in ]1,?table_span]:
+	% Wanting a random value in ]1, ?table_span]:
 	receive
 
 		{ wooper_result, { positive_integer_exponential_value, Value } }
-				when Value > ?table_span ; Value =< 0 ->
+				when Value > ?table_span orelse Value =< 0 ->
 			draw_exponential_values( Count, Table, Lambda, RandomManagerPid );
 
 		{ wooper_result, { positive_integer_exponential_value, Value } } ->
@@ -121,15 +120,13 @@ draw_exponential_values( Count, Table, Lambda, RandomManagerPid ) ->
 
 
 
-
 show_gaussian( RandomManagerPid ) ->
 
 	Mu = 5,
 	Sigma = 2 ,
 
 	?test_debug_fmt( "Requesting a Gaussian random value "
-		"with following settings: mean = ~p, deviation = ~p.",
-		[ Mu, Sigma ] ),
+		"with following settings: mean = ~p, deviation = ~p.", [ Mu, Sigma ] ),
 
 	RandomManagerPid ! { getGaussianValue, [ Mu, Sigma ], self() },
 
@@ -146,7 +143,7 @@ show_gaussian( RandomManagerPid ) ->
 show_gaussian( RandomManagerPid, Mu, Sigma ) ->
 
 	?test_debug_fmt( "Requesting a Gaussian random value with "
-					"mean = ~p, deviation = ~p.", [ Mu, Sigma ] ),
+					 "mean = ~p, deviation = ~p.", [ Mu, Sigma ] ),
 
 	RandomManagerPid ! { getGaussianValue, [ Mu, Sigma ], self() },
 
@@ -164,14 +161,14 @@ draw_gaussian_values( 0, Table, _Mu, _Sigma, _RandomManagerPid ) ->
 	Table;
 
 draw_gaussian_values( Count, Table, Mu, Sigma, RandomManagerPid ) ->
-	RandomManagerPid ! { getPositiveIntegerGaussianValue, [ Mu, Sigma ],
-						 self() },
+	RandomManagerPid !
+		{ getPositiveIntegerGaussianValue, [ Mu, Sigma ], self() },
 
 	% Wanting a random value in ] 1, ?table_span ]:
 	receive
 
 		{ wooper_result, { positive_integer_gaussian_value, Value } }
-				when Value > ?table_span ; Value == 0 ->
+				when Value > ?table_span orelse Value == 0 ->
 			draw_gaussian_values( Count, Table, Mu, Sigma, RandomManagerPid );
 
 		{ wooper_result, { positive_integer_gaussian_value, Value } } ->
@@ -224,8 +221,8 @@ test_uniform_random( RandomManagerPid, MaxValue ) ->
 	show_uniform( RandomManagerPid, MaxValue ),
 	show_uniform( RandomManagerPid, MaxValue ),
 
-	?test_info( "Computing and displaying the full actual uniform distribution."
-			   ),
+	?test_info(
+		"Computing and displaying the full actual uniform distribution." ),
 
 	Values = make_table( ?table_span ),
 
@@ -244,7 +241,7 @@ test_uniform_random( RandomManagerPid, MaxValue ) ->
 	Mean = compute_mean( FourthUniformTable ),
 
 	?test_notice_fmt( "Mean of this full actual uniform distribution is ~f.",
-					[ Mean ] ).
+					  [ Mean ] ).
 
 
 test_exponential_random( RandomManagerPid, Lambda ) ->
@@ -266,18 +263,18 @@ test_exponential_random( RandomManagerPid, Lambda ) ->
 													 RandomManagerPid ),
 
 	SecondExponentialTable = draw_exponential_values( 500-50,
-			FirstExponentialTable, Lambda, RandomManagerPid ),
+		FirstExponentialTable, Lambda, RandomManagerPid ),
 
 	ThirdExponentialTable = draw_exponential_values( 5000-500,
-			SecondExponentialTable, Lambda, RandomManagerPid ),
+		SecondExponentialTable, Lambda, RandomManagerPid ),
 
 	FourthExponentialTable = draw_exponential_values( 50000-5000,
-					   ThirdExponentialTable, Lambda, RandomManagerPid ),
+		ThirdExponentialTable, Lambda, RandomManagerPid ),
 
 	Mean = compute_mean( FourthExponentialTable ),
 
-	?test_notice_fmt( "Mean of this full actual exponential distribution is ~f.",
-					[ Mean ] ).
+	?test_notice_fmt( "Mean of this full actual exponential distribution "
+					  "is ~f.",	[ Mean ] ).
 
 
 test_gaussian_random( RandomManagerPid, Mu, Sigma ) ->
@@ -303,10 +300,10 @@ test_gaussian_random( RandomManagerPid, Mu, Sigma ) ->
 
 	Values = make_table( ?table_span ),
 
-	FirstGaussianTable = draw_gaussian_values( 50, Values, Mu, Sigma,
-											   RandomManagerPid ),
+	FirstGaussianTable =
+		draw_gaussian_values( 50, Values, Mu, Sigma, RandomManagerPid ),
 
-	%io:format( "Gaussian table = ~w~n", [ FirstGaussianTable ] ),
+	%trace_utils:debug_fmt( "Gaussian table = ~w", [ FirstGaussianTable ] ),
 
 	SecondGaussianTable = draw_gaussian_values( 500-50, FirstGaussianTable,
 												Mu, Sigma, RandomManagerPid ),
@@ -324,7 +321,7 @@ test_gaussian_random( RandomManagerPid, Mu, Sigma ) ->
 
 
 
-% Runs the tests, no prior RandomManager expected to be alive.
+% @doc Runs the tests, no prior RandomManager expected to be alive.
 -spec run() -> no_return().
 run() ->
 
@@ -332,11 +329,11 @@ run() ->
 
 	class_ResultManager:create_mockup_environment(),
 
-	?test_info( "Creating a new RandomManager." ),
+	?test_info( "Creating a random manager." ),
 	class_RandomManager:create(),
 
-	RandomManagerPid = naming_utils:wait_for_global_registration_of(
-						 ?random_manager_name ),
+	RandomManagerPid =
+		naming_utils:wait_for_global_registration_of( ?random_manager_name ),
 
 	Max = ?table_span,
 	test_uniform_random( RandomManagerPid, Max ),

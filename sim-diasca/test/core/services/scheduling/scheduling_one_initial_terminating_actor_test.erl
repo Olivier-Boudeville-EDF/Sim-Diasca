@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,10 +19,8 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-
-% Overall unit test of the Sim-Diasca actor scheduling.
-
-
+% @doc Overall unit test of the Sim-Diasca actor scheduling.
+%
 % The test will run until tick offset #120, however the only actor expects to
 % terminate at tick offset #80, thus the simulation will finish before the
 % specified user duration, since having no more actor to schedule.
@@ -36,8 +34,7 @@
 
 
 
-% Runs the local test simulation.
-%
+% @doc Runs the local test simulation.
 -spec run() -> no_return().
 run() ->
 
@@ -47,7 +44,7 @@ run() ->
 	% Default simulation settings (50Hz, batch reproducible) are used, except
 	% for the name:
 	SimulationSettings = #simulation_settings{
-		simulation_name="Scheduling one initial terminating actor test"	},
+		simulation_name="Scheduling one initial terminating actor test" },
 
 
 	% Default deployment settings (unavailable nodes allowed, on-the-fly
@@ -84,10 +81,10 @@ run() ->
 	?test_info( "Requesting the creation of a first initial test actor." ),
 
 	ActorPid = class_Actor:create_initial_actor( class_TestActor,
-			[ _Name="First erratic test actor",
-			  _SchedulingSettings={ erratic, 7 },
-			  _CreationSettings=no_creation,
-			  _TerminationTickOffset=80 ] ),
+		[ _Name="First erratic test actor",
+		  _SchedulingSettings={ erratic, 7 },
+		  _CreationSettings=no_creation,
+		  _TerminationTickOffset=80 ] ),
 
 
 	ActorPid ! { getAAI, [], self() },
@@ -107,7 +104,7 @@ run() ->
 	RootTimeManagerPid ! { getTextualTimings, [], self() },
 	FirstTimingString = test_receive(),
 
-	?test_notice_fmt( "Received first time: ~s.", [ FirstTimingString ] ),
+	?test_notice_fmt( "Received first time: ~ts.", [ FirstTimingString ] ),
 
 
 	% Waits until simulation is finished:
@@ -124,7 +121,7 @@ run() ->
 	RootTimeManagerPid ! { getTextualTimings, [], self() },
 	SecondTimingString = test_receive(),
 
-	?test_notice_fmt( "Received second time: ~s.", [ SecondTimingString ] ),
+	?test_notice_fmt( "Received second time: ~ts.", [ SecondTimingString ] ),
 
 	sim_diasca:shutdown(),
 

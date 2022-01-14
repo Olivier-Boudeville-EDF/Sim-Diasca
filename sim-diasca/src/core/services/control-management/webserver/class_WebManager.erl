@@ -1,4 +1,4 @@
-% Copyright (C) 2019-2021 EDF R&D
+% Copyright (C) 2019-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -89,6 +89,7 @@
 
 
 % Shorthands:
+
 -type ustring() :: text_utils:ustring().
 
 -type directory_path() :: file_utils:directory_path().
@@ -149,6 +150,7 @@
 
 
 % Shorthands:
+
 -type tcp_port() :: net_utils:tcp_port().
 
 
@@ -266,17 +268,16 @@ construct( State, SII, EngineRootDir, InteractivityMode, ServerContentRoot,
 	EmptyTable = table:new(),
 
 	CreatedState = setAttributes( BaseState, [
-			{ webserver_install_root, NewMaybeBinServerInstallRoot },
-			{ webserver_content_root, NewBinServerContentRoot },
-			{ result_manager_pid, ResultManagerPid },
-			{ result_dir, undefined },
-			{ tcp_port, TCPPort },
-			{ support_table, EmptyTable },
-			{ probe_table, EmptyTable },
-			{ interactivity_mode, InteractivityMode },
-			{ sii, SII },
-			{ engine_root_dir,
-			  text_utils:string_to_binary( EngineRootDir ) } ] ),
+		{ webserver_install_root, NewMaybeBinServerInstallRoot },
+		{ webserver_content_root, NewBinServerContentRoot },
+		{ result_manager_pid, ResultManagerPid },
+		{ result_dir, undefined },
+		{ tcp_port, TCPPort },
+		{ support_table, EmptyTable },
+		{ probe_table, EmptyTable },
+		{ interactivity_mode, InteractivityMode },
+		{ sii, SII },
+		{ engine_root_dir, text_utils:string_to_binary( EngineRootDir ) } ] ),
 
 	% No more webserver needed:
 
@@ -284,7 +285,7 @@ construct( State, SII, EngineRootDir, InteractivityMode, ServerContentRoot,
 	%    NewServerInstallRoot, NewServerContentRoot, TCPPort, CreatedState ),
 
 	%start_webserver( NewServerInstallRoot, NewServerContentRoot,
-	%				 CfgFilename, CreatedState ),
+	%                 CfgFilename, CreatedState ),
 
 	?send_debug_fmt( CreatedState, "Created ~ts",
 					 [ to_string( CreatedState ) ] ),
@@ -329,7 +330,7 @@ declareWebProbe( State, BinProbeName, WebProbeClassname, MaybeBinProbeDir ) ->
 
 		{ value, { BinClashingName, _Dir } } ->
 			throw( { web_probe_already_registered, ProbePid,
-					 { BinClashingName, BinProbeName } } );
+						{ BinClashingName, BinProbeName } } );
 
 		key_not_found ->
 			table:add_entry( _K=ProbePid, _V={ BinProbeName, MaybeBinProbeDir },
@@ -540,7 +541,8 @@ check_settings( ServerContentRoot, _MaybeServerInstallRoot, MaybeTCPPort,
 		file_utils:ensure_path_is_absolute( ServerContentRoot ),
 
 	CheckedServerContentRoot = case
-		  file_utils:is_existing_directory_or_link( CanonServerContentRoot ) of
+			file_utils:is_existing_directory_or_link(
+				CanonServerContentRoot ) of
 
 		true ->
 			?error_fmt( "The root directory of the webserver content, "
@@ -613,7 +615,7 @@ generate_webserver_configuration_file( SII, BinServerInstallRoot,
 		true ->
 
 			BackupName = text_utils:format( "~ts-~ts", [ TargetFilePath,
-							 time_utils:get_textual_timestamp_for_path() ] ),
+								time_utils:get_textual_timestamp_for_path() ] ),
 
 			?warning_fmt( "A Node.js configuration file has been found already "
 				"existing, '~ts'; moving it out of the way by "
@@ -762,7 +764,7 @@ manage_support_termination( State ) ->
 		|| { Classname, _IsInit=true } <- table:enumerate( SupportTable ) ],
 
 	%trace_utils:debug_fmt( "Support classes to terminate: ~p",
-	%					   [ SupportClassnamesToTerminate ] ),
+	%                       [ SupportClassnamesToTerminate ] ),
 
 	[ case meta_utils:is_function_exported( Mod=Classname,
 								Fun=terminate_support, _Arity=3 ) of
@@ -841,7 +843,7 @@ write_web_probes( [ WebProbeInfo ], BinServerContentRoot, File ) ->
 write_web_probes( WebProbeInfos, BinServerContentRoot, File ) ->
 
 	ProbeLinks = [ get_probe_link( I, BinServerContentRoot )
-				   || I <- WebProbeInfos ],
+						|| I <- WebProbeInfos ],
 
 	file_utils:write_ustring( File, "<a name=\"web_probes\"></a>~n"
 		"<p>~B web probes enabled:~n~ts</p>~n",
@@ -892,7 +894,7 @@ write_basic_probes( _BasicProbeInfos=[ { ProbeName, _BinDirPath } ],
 write_basic_probes( BasicProbeInfos, BinServerContentRoot, File ) ->
 
 	ProbeLinks = [ get_html_link_for( PName, BinServerContentRoot )
-				   || { PName, _BinDirPath } <- BasicProbeInfos ],
+					|| { PName, _BinDirPath } <- BasicProbeInfos ],
 
 	file_utils:write_ustring( File,
 	  "<a name=\"basic_probes\"></a>~n<p>~B basic probes enabled: ~ts</p>~n",
@@ -933,18 +935,19 @@ get_html_link_for( BinProbeName, BinServerContentRoot ) ->
 % @doc Writes down the fact that there is no probe available.
 write_no_probe( File ) ->
 	file_utils:write_ustring( File,
-	  "<p>No tracked probe available (see the <code>result_specification</code>"
-	  " field of the <code>simulation_settings</code> record to enable any "
-	  "potential, either basic or web, probe).</p>~n", [] ).
+		"<p>No tracked probe available (see the "
+		" <code>result_specification</code> field of the "
+		"<code>simulation_settings</code> record to enable any "
+		"potential, either basic or web, probe).</p>~n", [] ).
 
 
 % @doc Writes the footer of the web page.
 write_footer( File ) ->
 	file_utils:write_ustring( File,
-	  "     <hr>~n"
-	  "     <p><center><img src=\""?logo_filename"\" width=15%></center></p>~n"
-	  "  </body>~n"
-	  "</html>~n", [] ).
+		"   <hr>~n"
+		"   <p><center><img src=\""?logo_filename"\" width=15%></center></p>~n"
+		" </body>~n"
+		"</html>~n", [] ).
 
 
 
@@ -986,10 +989,10 @@ start_webserver( ServerInstallRoot, _ServerContentRoot, ConfigFilename,
 	% obsolete content root, this error shall not be hidden.
 
 	%LogFilename = file_utils:join( NewServerContentRoot,
-	%							   "sim-diasca-web-launch.log" ),
+	%                               "sim-diasca-web-launch.log" ),
 
 	%Command = text_utils:join( _Sep=" ", [ NodePath, ConfigFilename,
-	%				text_utils:format( " 1> ~ts 2>&1", [ LogFilename ] ) ),
+	%               text_utils:format( " 1> ~ts 2>&1", [ LogFilename ] ) ),
 
 	% TO-DO: perform a direct HTTP test prior to a new launch.
 

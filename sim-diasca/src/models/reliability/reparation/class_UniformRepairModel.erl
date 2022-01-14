@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,13 +19,16 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Class modelling the reparation behaviour of equipments according to a
+% uniform law.
+%
 -module(class_UniformRepairModel).
 
 
 -define( class_description,
-		 "Class modeling the reparation behaviour of equipments according "
+		 "Class modelling the reparation behaviour of equipments according "
 		 "to a uniform law (probability density)."
-		 "It is a less common repair model than the gaussian one."
+		 "It is a less common repair model than the Gaussian one."
 		 "See: class_GaussianRepairModel." ).
 
 
@@ -43,7 +46,7 @@
 -include("sim_diasca_for_actors.hrl").
 
 
-% Constructs a new repair model actor.
+% @doc Constructs a uniform repair model actor.
 %
 % - ActorSettings corresponds to the engine settings for this actor, as
 % determined by the load-balancer
@@ -57,8 +60,6 @@
 % Affecting more resources leads to decreased repair durations. So it is a
 % measure of the failure gravity in itself, not depending on the repair
 % resources.
-%
-% Note: a random manager must be running beforehand.
 %
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 class_RepairModel:mttr() ) -> wooper:state().
@@ -75,7 +76,7 @@ construct( State, ActorSettings,
 		?trace_categorize("Uniform repair model"), { uniform, MaxTTR } ),
 
 	?send_info_fmt( RepairState,
-		"Creating a new uniform repair model "
+		"Creating an uniform repair model "
 		"whose maximum time-to-repair is ~B seconds.", [ MaxTTR ] ),
 
 	RepairState.

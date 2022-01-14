@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,7 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-% @doc This is the mother class of <b>all actors</b>.
+% @doc This is the mother class of <b>all (simulation) actors</b>.
 -module(class_Actor).
 
 
@@ -43,6 +43,8 @@
 
 
 % Shorthands:
+
+-type count() :: basic_utils:count().
 
 -type ustring() :: text_utils:ustring().
 -type title() :: text_utils:title().
@@ -161,11 +163,11 @@
 % PID of a just created actor.
 
 
--type actor_count() :: basic_utils:count().
+-type actor_count() :: count().
 % A number of actors.
 
 
--type diasca_count() :: basic_utils:count().
+-type diasca_count() :: count().
 % A number of diascas (counting them generally leads to bad practices, as they
 % account for the sorting out of causality - they do not represent durations).
 
@@ -746,7 +748,7 @@
 % Meant to be inlined as much as possible to lessen the cost of such traces.
 %
 -spec get_trace_timestamp( tick_offset(), diasca(), wooper:state() ) ->
-			ustring().
+															ustring().
 get_trace_timestamp( TickOffset, Diasca, State ) ->
 
 	CurrentTick = ?getAttr(initial_tick) + TickOffset,
@@ -764,7 +766,7 @@ get_trace_timestamp( TickOffset, Diasca, State ) ->
 
 
 
-% @doc Constructs a new simulation actor.
+% @doc Constructs a simulation actor.
 %
 % Construction parameters:
 %
@@ -809,7 +811,7 @@ construct( State,
 	%
 	random_utils:start_random_source( ActorSeed ),
 
-	%?send_info_fmt( TraceState, "Creating a new actor named '~ts' "
+	%?send_info_fmt( TraceState, "Creating an actor named '~ts' "
 	%    "and bearing abstract identifier ~B.",
 	%    [ ActorName, ActorAbstractIdentifier ] ),
 
@@ -902,7 +904,7 @@ construct( State,
 	{ TickDuration, StartInformation } = receive
 
 		{ wooper_result, { time_subscribed, TickDur, StartInfo } } ->
-				 { TickDur, StartInfo };
+				{ TickDur, StartInfo };
 
 		{ wooper_result, already_time_subscribed } ->
 			?send_error( TimeAwareState, "Actor constructor failed: "
@@ -1003,20 +1005,19 @@ destruct( State ) ->
 % security to discriminate among answers to requests).
 %
 -spec simulationStarted( wooper:state(), tick(), logical_timestamp() ) ->
-				request_return( { 'actor_started', actor_pid() } ).
+							request_return( { 'actor_started', actor_pid() } ).
 simulationStarted( State, SimulationInitialTick,
 			 _CurrentTimestamp={ CurrentTickOffset, CurrentDiasca } ) ->
 
 	%?info_fmt( "This initial actor is notified of simulation start, "
-	%           "with a simulation initial tick of ~B, "
-	%           "while current tick offset is #~B and diasca ~B.",
-	%			[ SimulationInitialTick, CurrentTickOffset, CurrentDiasca ] ),
+	%   "with a simulation initial tick of ~B, "
+	%   "while current tick offset is #~B and diasca ~B.",
+	%   [ SimulationInitialTick, CurrentTickOffset, CurrentDiasca ] ),
 
 	%trace_utils:debug_fmt( "class_Actor:simulationStarted called for ~w, "
-	%			"with simulation initial tick ~p, with current tick #~B "
-	%			"and diasca ~B.",
-	%			[ self(), SimulationInitialTick, CurrentTickOffset,
-	%			CurrentDiasca ] ),
+	%   "with simulation initial tick ~p, with current tick #~B "
+	%   "and diasca ~B.",
+	%   [ self(), SimulationInitialTick, CurrentTickOffset, CurrentDiasca ] ),
 
 	wooper:check_all_undefined( [ initial_tick, current_tick_offset,
 		current_diasca, actor_creation_tick_offset ], State ),
@@ -1071,20 +1072,20 @@ simulationEnded( State ) ->
 % scheduling at the next tick:
 %
 %-spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
-%							actor_oneway_return().
+%                                               actor_oneway_return().
 % onFirstDiasca( State, _SendingActorPid ) ->
-%	ScheduledState = executeOneway( State, scheduleNextSpontaneousTick ),
-%	wooper:return_state( ScheduledState ).
+%   ScheduledState = executeOneway( State, scheduleNextSpontaneousTick ),
+%   wooper:return_state( ScheduledState ).
 %
 % or even, if wanting this actor to remain passive:
 %
 %-spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
 %							const_actor_oneway_return().
 %onFirstDiasca( State, _SendingActorPid ) ->
-%	actor:const_return().
+%   actor:const_return().
 %
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
-							actor_oneway_return().
+										actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 
 	{ _IgnoredState, ActualClassname } = executeRequest( State, getClassname ),
@@ -1510,17 +1511,19 @@ beginTerminationDiasca( State, TickOffset, NewDiasca ) ->
 
 	% Actual termination now!
 
-	cond_utils:if_defined( simdiasca_debug_life_cycles, [
-		?debug( "Terminating now." ),
-		trace_utils:debug_fmt( "Actor ~w terminating now, at {~p,~p}.",
-							   [ self(), TickOffset, NewDiasca ] ) ] ),
+	cond_utils:if_defined( simdiasca_debug_life_cycles,
+		begin
+			?debug( "Terminating now." ),
+			trace_utils:debug_fmt( "Actor ~w terminating now, at {~p,~p}.",
+								   [ self(), TickOffset, NewDiasca ] )
+		end ),
 
 	cond_utils:if_defined( simdiasca_check_life_cycles,
 		begin
 			{ terminated, no_diasca_requested } = ?getAttr(next_action),
 			check_termination_time_consistency( TickOffset, NewDiasca, State ),
 			[] = ?getAttr(current_agenda)
-		end  ),
+		end ),
 
 	cond_utils:if_defined( simdiasca_check_model_behaviours,
 		case ?getAttr(pending_messages) of
@@ -1686,8 +1689,8 @@ check_messages_at_new_diasca_helper( _PendingMessages=[], _CurrentTickOffset,
 % first):
 %
 check_messages_at_new_diasca_helper(
-	  [ #actor_message{ tick_offset=CurrentTickOffset, diasca=CurrentDiasca }
-	   | T ], CurrentTickOffset, CurrentDiasca ) ->
+		[ #actor_message{ tick_offset=CurrentTickOffset, diasca=CurrentDiasca }
+			| T ], CurrentTickOffset, CurrentDiasca ) ->
 	% Same diasca, most common case:
 	check_messages_at_new_diasca_helper( T, CurrentTickOffset, CurrentDiasca );
 
@@ -1702,7 +1705,7 @@ check_messages_at_new_diasca_helper(
 check_messages_at_new_diasca_helper( [ M | _T ], CurrentTickOffset,
 									 CurrentDiasca ) ->
 	throw( { invalid_logical_timestamp_in_message_at_new_diasca,
-			 { CurrentTickOffset, CurrentDiasca }, M } ).
+				{ CurrentTickOffset, CurrentDiasca }, M } ).
 
 
 
@@ -1844,7 +1847,7 @@ addSpontaneousTick( State, SpontaneousTickToAdd ) ->
 % in a single spontaneous scheduling at that tick).
 %
 -spec addSpontaneousTicks( wooper:state(), [ tick_offset() ]  ) ->
-									oneway_return().
+															oneway_return().
 addSpontaneousTicks( State, SpontaneousTicksToAdd ) ->
 
 	NewState = add_spontaneous_ticks( SpontaneousTicksToAdd, State ),
@@ -1859,8 +1862,7 @@ addSpontaneousTicks( State, SpontaneousTicksToAdd ) ->
 % Note: adding a given tick more than once is allowed (and will result of course
 % for that actor in a single spontaneous scheduling at that tick).
 %
--spec add_spontaneous_tick( tick_offset(), wooper:state() ) ->
-									wooper:state().
+-spec add_spontaneous_tick( tick_offset(), wooper:state() ) -> wooper:state().
 add_spontaneous_tick( SpontaneousTickToAdd, State )
   when is_integer( SpontaneousTickToAdd ) ->
 
@@ -2164,10 +2166,10 @@ receiveActorMessage( State, MessageTickOffset, MessageTargetDiasca,
 
 	cond_utils:if_defined( simdiasca_debug_time_management,
 		trace_utils:debug_fmt( "receiveActorMessage '~p' for ~w: current tick "
-		   "offset is #~p, current diasca is ~B, message tick offset is #~p, "
-		   "message target diasca is ~B.",
-		   [ ActorOneway, self(), CurrentTickOffset, CurrentDiasca,
-		   MessageTickOffset, MessageTargetDiasca ] ) ),
+			"offset is #~p, current diasca is ~B, message tick offset is #~p, "
+			"message target diasca is ~B.",
+			[ ActorOneway, self(), CurrentTickOffset, CurrentDiasca,
+			  MessageTickOffset, MessageTargetDiasca ] ) ),
 
 
 	% First, some checkings.
@@ -2419,7 +2421,7 @@ acknowledgeMessage( State, CalledActorPid ) ->
 notify_diasca_ended( State ) ->
 
 	cond_utils:if_defined( simdiasca_check_time_management,
-		[] = ?getAttr(waited_acks) ),
+						   [] = ?getAttr(waited_acks) ),
 
 	% Let's try to ease as much as possible the work of the time manager:
 	AddedTicks = list_utils:uniquify( ?getAttr(added_spontaneous_ticks) ),
@@ -2935,7 +2937,7 @@ convert_ticks_to_seconds_explicit( Ticks, TickDuration ) ->
 	Res = Ticks * TickDuration,
 
 	%trace_utils:debug_fmt( "Ticks: ~p, tick duration: ~p, secs: ~p.",
-	%						[ Ticks, TickDuration, Res ] ),
+	%                       [ Ticks, TickDuration, Res ] ),
 
 	Res.
 
@@ -3176,7 +3178,8 @@ get_current_tick( State ) ->
 %
 % An actor message parameter describes the behaviour (actor oneway, translating
 % to an Erlang function) to trigger when this message will be taken into account
-% by the targeted actor, once messages will have been properly reordered.
+% by the targeted actor, once incoming messages will have been properly
+% reordered.
 %
 % This sent message corresponds to a oneway, not a request, to avoid any
 % blocking operation, as the time management service must be the only one to
@@ -3199,22 +3202,25 @@ get_current_tick( State ) ->
 % actor message will be performed with on additional parameter, which is the PID
 % of the sending actor (its AAI will be sent as well, yet will not be available
 % to the users). These extra parameters are transparently added, so an actor
-% oneway which looks like a call to a oneway with N parameters specified will
+% oneway that looks like a call to a oneway with N parameters specified will
 % trigger a call to a function whose arity is N+2: the state, then the N
 % parameters, then the PID of the sending actor (i.e.: in that order).
 %
 % So a typical call made by an actor whose PID is P1 to an actor P2 can be made
 % thanks to the following actor message:
-% NewState = class_Actor:send_actor_message( P2, {setColor,[red,15]}, AState )
+% NewState = class_Actor:send_actor_message(P2, {setColor,[red,15]}, AState)
 %
 % This would trigger on the target actor, setColor/4 on the next tick, as the
 % PID of the sending actor is automatically added as last parameter:
-% 'setColor( State, red, 15, P1 ) ->'.
+% 'setColor(State, red, 15, P1) ->'.
 %
 % Note that:
 % - an actor is allowed to send an actor message to itself
 % - actor messages shall not be sent from a constructor; the first legit moment
 % to do so is the onFirstDiasca/2 actor oneway
+% - to preserve reproducibility, a message that references an actor shall
+% designate it by its AAI rather than by its PID (refer to getAAI/1 and
+% class_InstanceTracker:get_identifier_for/2)
 %
 % Returns an updated state, appropriate to wait automatically for this call to
 % be acknowledged.
@@ -3226,7 +3232,8 @@ get_current_tick( State ) ->
 send_actor_message( ActorPid, ActorOneway, State ) when is_pid( ActorPid ) ->
 
 	cond_utils:if_defined( simdiasca_debug_model_behaviours,
-	  trace_utils:debug_fmt( "~w sending an actor message to ~w at {~p,~p}: ~p",
+		trace_utils:debug_fmt( "~w sending an actor message to ~w "
+			"at {~p,~p}: ~p",
 			[ self(), ActorPid, ?getAttr(current_tick_offset),
 			  ?getAttr(current_diasca), ActorOneway ] ) ),
 
@@ -3284,54 +3291,57 @@ send_actor_message( Unexpected, _ActorOneway, _State ) ->
 
 
 
-% @doc Sends specified message to the specified listed actors, records these
-% sendings to wait for the corresponding acknowledgements, and returns an
+% @doc Sends specified (actor) message to the specified listed actors, records
+% these sendings to wait for the corresponding acknowledgements, and returns an
 % updated state. These inter-actor messages exchanged during simulation are the
 % only allowed way of communicating between actors.
 %
 % An actor message parameter describes the behaviour (actor oneway, translating
 % to an Erlang function) to trigger when this message will be taken into account
-% by the targeted actor, once messages will have been properly reordered.
+% by the targeted actor, once incoming messages will have been properly
+% reordered.
 %
 % This sent message corresponds to a oneway, not a request, to avoid any
 % blocking operation, as the time management service must be the only one to
 % control the course of the simulation.
 %
-% The sender PID is automatically added, thus it does not need to be specified
-% explicitly here. The sender AAI is also automatically added as well, as the
-% receiver will need it to reorder its incoming actor messages.
+% The sender PID is automatically added to the message, thus it does not need to
+% be specified explicitly here. The sender AAI is also automatically added as
+% well, as the receiver will need it to reorder its incoming actor messages.
 %
 % The specified diasca is the one expected for the delivery, i.e. the next
 % diasca, hence the +1.
 %
 % The actor message is a oneway call: it is described by the name of the actor
 % oneway to trigger on the target actor (specified as an atom, ex: 'setColor')
-% on the next tick, and by a (possibly empty) list of the corresponding
+% on the next diasca, and by a (possibly empty) list of the corresponding
 % arguments; so the call is either 'my_oneway' or
 % '{my_oneway, SingleNonListParameter}' or '{my_oneway, [ Arg1, ...]}'.
 %
-% In all cases, the actual call, in the case of an actor message, will be
-% performed with an additional parameter, the PID of the sending actor. This
-% extra parameter will be transparently added, so an actor oneway which looks
-% like a call to a oneway with N parameters specified will trigger a call to a
-% function whose arity is N+2: the state, then the N parameters, then the PID of
-% the sending actor (i.e.: in that order).
+% As mentioned, in all cases, the actual call resulting from the sending of this
+% actor message will be performed with on additional parameter, which is the PID
+% of the sending actor (its AAI will be sent as well, yet will not be available
+% to the users). These extra parameters are transparently added, so an actor
+% oneway that looks like a call to a oneway with N parameters specified will
+% trigger a call to a function whose arity is N+2: the state, then the N
+% parameters, then the PID of the sending actor (i.e.: in that order).
 %
 % So a typical call made by an actor whose PID is P1 to actors P2 and P3 can be
 % made thanks to the following actor message:
-%
-% NewState = class_Actor:send_actor_messages( [ P2, P3 ], {setColor,[red,15]},
-% AState )
+% NewState = class_Actor:send_actor_messages([P2, P3], {setColor,[red,15]},
+% AState)
 %
 % This would trigger on the target actors, setColor/4 on the next tick, as the
 % PID of the sending actor is automatically added as last parameter:
-%
-% setColor( State, red, 15, P1 ) ->
+% 'setColor(State, red, 15, P1) ->'.
 %
 % Note that:
 % - an actor is allowed to send an actor message to itself
 % - actor messages shall not be sent from a constructor; the first legit moment
 % to do so is the onFirstDiasca/2 actor oneway
+% - to preserve reproducibility, a message that references an actor shall
+% designate it by its AAI rather than by its PID (refer to getAAI/1 and
+% class_InstanceTracker:get_identifier_for/2)
 %
 % Returns an updated state, appropriate to wait automatically for this call to
 % be acknowledged.
@@ -3484,7 +3494,7 @@ self_trigger_actor_message_in( DiascaOffset, ActorOneway, State )
 
 	% Reserved to avoid name clashes:
 	SelfActorOneway={ 'sd_reserved_selfTrigger',
-					  [ DiascaOffset-1, ActorOneway ] },
+						[ DiascaOffset-1, ActorOneway ] },
 
 	send_actor_message( self(), SelfActorOneway, State );
 
@@ -3497,7 +3507,7 @@ self_trigger_actor_message_in( DiascaOffset, ActorOneway, _State ) ->
 %
 % See self_trigger_actor_message_in/3.
 %
-% Note: defining such actir oneway (not a mere helper) is necessary.
+% Note: defining such actor oneway (not a mere helper) is necessary.
 %
 -spec sd_reserved_selfTrigger( wooper:state(), diasca_count(), oneway_call(),
 							   sending_actor_pid() ) -> actor_oneway_return().
@@ -3580,7 +3590,7 @@ check_future_messages( _FutureMessages=[ M=#actor_message{
 	   orelse MessageDiasca > CurrentDiasca + 1->
 
 	throw( { message_from_unexpected_future, { MessageOffset, MessageDiasca },
-			 { CurrentTickOffset, CurrentDiasca }, M } );
+				{ CurrentTickOffset, CurrentDiasca }, M } );
 
 % Only correct case is same offset, next diasca (same diasca not possible -
 % these are all future messages):
@@ -3618,205 +3628,202 @@ execute_reordered_oneways( _Messages=[
 
 	NewState = try
 
-				   executeOneway( State, OnewayName, FullArgs )
+					executeOneway( State, OnewayName, FullArgs )
 
-			   catch ExceptionClass:Exception:FullStackTrace ->
+		catch ExceptionClass:Exception:FullStackTrace ->
 
-					% Not relevant anymore since 21.0:
-					%
-					% Strangely enough, the call must not be synchronous, as if
-					% placed later in this clause we might have a stack trace
-					% corresponding to io_lib_{format,pretty}:
-					%
-					%FullStackTrace = erlang:get_stacktrace(),
+			% Not relevant anymore since 21.0:
+			%
+			% Strangely enough, the call must not be synchronous, as if
+			% placed later in this clause we might have a stack trace
+			% corresponding to io_lib_{format,pretty}:
+			%
+			%FullStackTrace = erlang:get_stacktrace(),
 
-					% We try, as early as possible, to get all relevant
-					% information from (and about) the sending actor:
-					%
-					SenderPid ! { getActorInfo, [], self() },
+			% We try, as early as possible, to get all relevant
+			% information from (and about) the sending actor:
+			%
+			SenderPid ! { getActorInfo, [], self() },
 
-					ExceptionString = case Exception of
+			ExceptionString = case Exception of
 
-						undef ->
+				undef ->
 
-							{ M, F, Args, _Loc } = hd( FullStackTrace ),
+					{ M, F, Args, _Loc } = hd( FullStackTrace ),
 
-							Arity = length( Args ),
+					Arity = length( Args ),
 
-							DiagnoseString =
-								code_utils:interpret_undef_exception( M, F,
-																	  Arity ),
+					DiagnoseString = code_utils:interpret_undef_exception( M, F,
+																	Arity ),
 
-							% Call needed for newline:
-							text_utils:format( "undef exception raised: ~ts "
-								"(full information about current code path and "
-								"available BEAM files is available in the "
-								"traces).~n", [ DiagnoseString ] );
+					% Call needed for newline:
+					text_utils:format( "undef exception raised: ~ts "
+						"(full information about current code path and "
+						"available BEAM files is available in the "
+						"traces).~n", [ DiagnoseString ] );
 
-						_ ->
-							text_utils:format( "The exception is:~n  ~p~n",
-											   [ Exception ] )
+				_ ->
+					text_utils:format( "The exception is:~n  ~p~n",
+									   [ Exception ] )
 
-					end,
+			end,
 
-					UsrStackTraceString = get_user_stacktrace( FullStackTrace ),
+			UsrStackTraceString = get_user_stacktrace( FullStackTrace ),
 
 
-					% For State and SenderPid:
-					OnewayArity = length( OnewayArgList ) + 2,
+			% For State and SenderPid:
+			OnewayArity = length( OnewayArgList ) + 2,
 
-					ActorClassname = wooper:get_classname( State ),
+			ActorClassname = wooper:get_classname( State ),
 
-					LocString = locate_error( hd( FullStackTrace ),
-									ActorClassname, OnewayName, OnewayArity ),
+			LocString = locate_error( hd( FullStackTrace ),
+							ActorClassname, OnewayName, OnewayArity ),
 
-					SimLogicalTimestamp = { CurrentTickOffset, _CurrentDiasca }
-						   = get_current_logical_timestamp( State ),
+			SimLogicalTimestamp = { CurrentTickOffset, _CurrentDiasca }
+							= get_current_logical_timestamp( State ),
 
-					SimUserTimestamp = convert_tick_offset_to_timestamp(
-											CurrentTickOffset, State ),
+			SimUserTimestamp = convert_tick_offset_to_timestamp(
+									CurrentTickOffset, State ),
 
-					SimUserTimestampString =
-						time_utils:get_textual_timestamp( SimUserTimestamp ),
+			SimUserTimestampString =
+				time_utils:get_textual_timestamp( SimUserTimestamp ),
 
-					StateString = state_to_string( State ),
+			StateString = state_to_string( State ),
 
-					FullStackTraceString =
-						   code_utils:interpret_stacktrace( FullStackTrace ),
+			FullStackTraceString =
+				code_utils:interpret_stacktrace( FullStackTrace ),
 
-					DictString =
-						   list_table:to_string( list_table:new( get() ) ),
+			DictString = list_table:to_string( list_table:new( get() ) ),
 
-					SenderInfoString =
+			SenderInfoString =
 
-						   receive
+				receive
 
-							  % AAI matched:
-							  { wooper_result, #actor_info{
-												  classname=SenderActorClass,
-												  name=SenderActorName,
-												  aai=SenderAAI } } ->
-									text_utils:format( ", corresponding to "
-										"a ~ts instance named '~ts'",
-									   [ SenderActorClass, SenderActorName ] )
+				  % AAI matched:
+				  { wooper_result, #actor_info{
+										classname=SenderActorClass,
+										name=SenderActorName,
+										aai=SenderAAI } } ->
+						text_utils:format( ", corresponding to "
+							"a ~ts instance named '~ts'",
+						   [ SenderActorClass, SenderActorName ] )
 
-							% Time-out, sending actor does not seem to answer:
-							after 5000 ->
-									""
-					end,
+				% Time-out, sending actor does not seem to answer:
+				after 5000 ->
+					""
+				end,
 
-					CoreParamString = case OnewayArity - 2 of
+				CoreParamString = case OnewayArity - 2 of
 
-						% No core parameter here:
-						0 ->
-							"with no core parameter specified (beyond initial "
-							"state and final sending actor PID).";
+					% No core parameter here:
+					0 ->
+						"with no core parameter specified (beyond initial "
+						"state and final sending actor PID).";
 
-						1 ->
-							% By design a one-element list:
-							text_utils:format( "and the single core parameter "
-								"of the actor oneway was (initial state and "
-								"final sending actor PID parameters "
-								"being omitted):~n  ~p", OnewayArgList );
+					1 ->
+						% By design a one-element list:
+						text_utils:format( "and the single core parameter "
+							"of the actor oneway was (initial state and "
+							"final sending actor PID parameters "
+							"being omitted):~n  ~p", OnewayArgList );
 
-						CoreParamCount ->
-							ArgStrings = [ text_utils:format( "~p", [ Arg ] )
-											|| Arg <- OnewayArgList ],
+					CoreParamCount ->
+						ArgStrings = [ text_utils:format( "~p", [ Arg ] )
+										|| Arg <- OnewayArgList ],
 
-							ArgString = text_utils:strings_to_enumerated_string(
-											ArgStrings ),
+						ArgString = text_utils:strings_to_enumerated_string(
+										ArgStrings ),
 
-							text_utils:format( "and the ~B core parameters of "
-								"the actor oneway were (initial state and "
-								"final sending actor PID parameters "
-								"being omitted):~n  ~ts",
-								[ CoreParamCount, ArgString ] )
+						text_utils:format( "and the ~B core parameters of "
+							"the actor oneway were (initial state and "
+							"final sending actor PID parameters "
+							"being omitted):~n  ~ts",
+							[ CoreParamCount, ArgString ] )
 
-					end,
+				end,
 
-					% Information about the failing actor:
-					ActorName = ?getAttr(name),
-					ActorPid = self(),
-					ActorAAI = ?getAttr(actor_abstract_id),
+				% Information about the failing actor:
+				ActorName = ?getAttr(name),
+				ActorPid = self(),
+				ActorAAI = ?getAttr(actor_abstract_id),
 
-					ErrorMessage = text_utils:format(
-						"Actor oneway ~ts/~B failed (~ts~ts) "
-						%"on node '~ts' "
-						"for ~ts instance named '~ts' of PID ~w (AAI: ~B).~n"
-						"~n~ts~n"
-						"This actor message was sent by actor ~w (AAI: ~B~ts) "
-						"~ts~n"
-						"The simulation timestamp was ~p, corresponding to ~ts "
-						"(wallclock time: ~ts), and the corresponding "
-						"user-level stack trace of the crashing actor "
-						"(on node '~ts') was: ~ts~n"
-						"Its actor-specific state was made of the "
-						"following ~ts",
-						[ OnewayName, OnewayArity, ExceptionClass, LocString,
-						  %node(),
-						  ActorClassname, ActorName, ActorPid, ActorAAI,
-						  ExceptionString, SenderPid, SenderAAI,
-						  SenderInfoString, CoreParamString,
-						  SimLogicalTimestamp, SimUserTimestampString,
-						  time_utils:get_textual_timestamp(),
-						  node(), UsrStackTraceString, StateString ] ),
+				ErrorMessage = text_utils:format(
+					"Actor oneway ~ts/~B failed (~ts~ts) "
+					%"on node '~ts' "
+					"for ~ts instance named '~ts' of PID ~w (AAI: ~B).~n"
+					"~n~ts~n"
+					"This actor message was sent by actor ~w (AAI: ~B~ts) "
+					"~ts~n"
+					"The simulation timestamp was ~p, corresponding to ~ts "
+					"(wallclock time: ~ts), and the corresponding "
+					"user-level stack trace of the crashing actor "
+					"(on node '~ts') was: ~ts~n"
+					"Its actor-specific state was made of the "
+					"following ~ts",
+					[ OnewayName, OnewayArity, ExceptionClass, LocString,
+					  %node(),
+					  ActorClassname, ActorName, ActorPid, ActorAAI,
+					  ExceptionString, SenderPid, SenderAAI,
+					  SenderInfoString, CoreParamString,
+					  SimLogicalTimestamp, SimUserTimestampString,
+					  time_utils:get_textual_timestamp(),
+					  node(), UsrStackTraceString, StateString ] ),
 
-					logger:error( ErrorMessage ),
+				logger:error( ErrorMessage ),
 
-					Beams = code_utils:list_beams_in_path(),
+				Beams = code_utils:list_beams_in_path(),
 
-					KnownBeamString =
-						text_utils:atoms_to_sorted_string( Beams ),
+				KnownBeamString = text_utils:atoms_to_sorted_string( Beams ),
 
-					BaseString = "Here are the fully detailed, internal extra "
-						"information about the exception reported "
-						"in the error trace just sent. The purpose of the "
-						"current trace is to help any complex troubleshooting "
-						"that could even involve the engine itself.~n",
+				BaseString = "Here are the fully detailed, internal extra "
+					"information about the exception reported "
+					"in the error trace just sent. The purpose of the "
+					"current trace is to help any complex troubleshooting "
+					"that could even involve the engine itself.~n",
 
-					DebugMessage = case Exception of
+				DebugMessage = case Exception of
 
-						undef ->
-							% Internal state and process dictionary are not
-							% needed:
-							%
-							text_utils:format( BaseString ++
-							  "Full stack trace is: ~ts~n~nThe ~ts~n~n"
-							  "Consequently, following ~B BEAM files are "
-							  "available (listed in alphabetical order): ~ts~n",
-							  [ FullStackTraceString,
-								code_utils:get_code_path_as_string(),
-								length( Beams ), KnownBeamString ] );
+					undef ->
+						% Internal state and process dictionary are not
+						% needed:
+						%
+						text_utils:format( BaseString ++
+						  "Full stack trace is: ~ts~n~nThe ~ts~n~n"
+						  "Consequently, following ~B BEAM files are "
+						  "available (listed in alphabetical order): ~ts~n",
+						  [ FullStackTraceString,
+							code_utils:get_code_path_as_string(),
+							length( Beams ), KnownBeamString ] );
 
-						_ ->
-							text_utils:format( BaseString ++
-							  "Full stack trace is: ~ts~n~n~ts~n"
-							  "Process dictionary here shown as a ~ts",
-							  [ FullStackTraceString,
-								wooper:state_to_string( State ), DictString ] )
+					_ ->
+						text_utils:format( BaseString ++
+						  "Full stack trace is: ~ts~n~n~ts~n"
+						  "Process dictionary here shown as a ~ts",
+						  [ FullStackTraceString,
+							wooper:state_to_string( State ), DictString ] )
 
-					end,
+				end,
 
-					logger:debug( DebugMessage ),
+				logger:debug( DebugMessage ),
 
-					% Wait a bit (also for past error reported), as logger (at
-					% least former error_logger) seems asynchronous:
-					%
-					system_utils:await_output_completion( 500 ),
+				% Wait a bit (also for past error reported), as logger (at
+				% least former error_logger) seems asynchronous:
+				%
+				system_utils:await_output_completion( 500 ),
 
-					% Commented out to avoid duplicated output, should it
-					% propagate to beginDiasca/3.
+				% Commented out to avoid duplicated output, should it
+				% propagate to beginDiasca/3.
 
-					% Less detailed:
-					%throw( { actor_oneway_failed, ExceptionClass,
-					%			ActorClassname, ActorName,
-					%			{ ActorPid, ActorAAI },
-					%			{ OnewayName, OnewayArity }, Exception } )
+				% Less detailed:
+				%throw( { actor_oneway_failed, ExceptionClass,
+				%           ActorClassname, ActorName,
+				%           { ActorPid, ActorAAI },
+				%           { OnewayName, OnewayArity }, Exception } )
 
-					% The 'ERROR REPORT' does not add much information:
-					%erlang:error( oneway_failed )
+				% The 'ERROR REPORT' does not add much information:
+				%erlang:error( oneway_failed )
 
-					basic_utils:stop( _StatusCode=15 )
+				basic_utils:stop( _StatusCode=15 )
 
 	end,
 
@@ -3832,7 +3839,7 @@ execute_reordered_oneways( _Messages=[
 	Oneway = { OnewayName, [ OnewaySingleNonListArg ] },
 
 	execute_reordered_oneways( [ { SenderPid, SenderAAI, Oneway }
-								 | MessageTuples ], State );
+									| MessageTuples ], State );
 
 % No parameter here:
 execute_reordered_oneways( _Messages=[
@@ -3842,7 +3849,7 @@ execute_reordered_oneways( _Messages=[
 	Oneway = { OnewayName, [] },
 
 	execute_reordered_oneways( [ { SenderPid, SenderAAI, Oneway }
-								 | MessageTuples ], State ).
+									| MessageTuples ], State ).
 
 
 
@@ -4001,7 +4008,7 @@ insert_in_agenda( TickOffset, [ TickOffset | _T ]=Agenda,
 	% was specified multiple times:
 	%
 	%throw( { tick_already_in_agenda, TickOffset,
-	%	lists:reverse( FirstAgendaEntries ) ++ Agenda } );
+	%   lists:reverse( FirstAgendaEntries ) ++ Agenda } );
 
 	% So now we just ignore repeated tick declarations and return the original
 	% agenda:
@@ -4094,7 +4101,7 @@ split_messages_over_time( [ #actor_message{ sender_pid=Pid, sender_aai=Aai,
 
 
 
-% @doc Creates synchronously a new initial actor, whereas the simulation has not
+% @doc Creates synchronously an initial actor, whereas the simulation has not
 % been started yet.
 %
 % This must be called only directly from test/simulation cases, to create the
@@ -4133,7 +4140,7 @@ create_initial_actor( ActorClassname ) ->
 
 
 
-% @doc Creates synchronously a new initial actor, whereas the simulation has not
+% @doc Creates synchronously an initial actor, whereas the simulation has not
 % been started yet.
 %
 % This must be called only directly from test/simulation cases, to create the
@@ -4179,7 +4186,7 @@ create_initial_actor( ActorClassname, ActorConstructionParameters ) ->
 
 
 
-% @doc Creates synchronously a new initial actor, whereas the simulation has not
+% @doc Creates synchronously an initial actor, whereas the simulation has not
 % been started yet.
 %
 % Behaves exactly like the create_initial_actor/2 static method, except it
@@ -4235,8 +4242,8 @@ create_initial_actor( ActorClassname, ActorConstructionParameters,
 
 
 
-% @doc Creates synchronously a new, placed, initial actor, whereas the
-% simulation has not been started yet.
+% @doc Creates synchronously a placed initial actor, whereas the simulation has
+% not been started yet.
 %
 % This must be called only directly from test/simulation cases, to create the
 % initial situation before the simulation time starts to progress.
@@ -4289,7 +4296,7 @@ create_initial_placed_actor( ActorClassname, ActorConstructionParameters,
 
 
 
-% @doc Creates synchronously a new initial actor, whereas the simulation has not
+% @doc Creates synchronously an initial actor, whereas the simulation has not
 % been started yet.
 %
 % Behaves exactly like the create_initial_placed_actor/3 static method, except
@@ -4326,7 +4333,7 @@ create_initial_placed_actor( ActorClassname, ActorConstructionParameters,
 				ActorConstructionParameters, PlacementHint, self() ] },
 
 	%trace_utils:debug_fmt(
-	%     "~w waiting for the placed creation acknowledgment.", [ self() ] ),
+	%   "~w waiting for the placed creation acknowledgment.", [ self() ] ),
 
 	receive
 
@@ -4394,15 +4401,16 @@ create_initial_actors( ActorConstructionList, LoadBalancerPid )
 	% No checking that the simulation is not started yet is needed, as it will
 	% be done load-balancer-side.
 
-	cond_utils:if_defined( simdiasca_debug_initial_creations, [
+	cond_utils:if_defined( simdiasca_debug_initial_creations,
+		begin
+			ActorLines = [ text_utils:format( "~p", [ CP ] )
+							|| CP <- ActorConstructionList ],
 
-		ActorLines = [ text_utils:format( "~p", [ CP ] )
-						|| CP <- ActorConstructionList ],
-
-		trace_utils:debug_fmt( "~w requesting the creation of ~B initial "
-			"actors, construction parameters being: ~ts",
-			[ self(), length( ActorConstructionList ),
-			  text_utils:strings_to_string( ActorLines ) ] ) ] ),
+			trace_utils:debug_fmt( "~w requesting the creation of ~B initial "
+				"actors, construction parameters being: ~ts",
+				[ self(), length( ActorConstructionList ),
+				  text_utils:strings_to_string( ActorLines ) ] )
+		end ),
 
 	LoadBalancerPid ! { createInitialActors,
 						[ ActorConstructionList, self() ] },
@@ -4470,8 +4478,8 @@ is_running( State ) ->
 
 
 
-% @doc Triggers the creation of a new actor, while the simulation is running,
-% with no user tag specified.
+% @doc Triggers the creation of an actor, while the simulation is running, with
+% no user tag specified.
 %
 % This is an actor-level helper function, which takes care automatically of the
 % sending (at this tick T, diasca D) of the createActor actor message to the
@@ -4516,12 +4524,12 @@ create_actor( ActorClassname, ActorConstructionParameters, State )
 	% The checking that the simulation is already running is done in
 	% send_actor_message/3.
 
-	%?info_fmt( "Actor '~ts' (~w) creating at runtime a new instance of ~p.",
-	%			[ ?getAttr(name), self(), ActorClassname ] ),
+	%?info_fmt( "Actor '~ts' (~w) creating at runtime an instance of ~p.",
+	%           [ ?getAttr(name), self(), ActorClassname ] ),
 
 	cond_utils:if_defined( simdiasca_debug_runtime_creations,
 		trace_utils:info_fmt(
-			"Actor '~ts' (~w) creating at runtime a new instance of ~p.",
+			"Actor '~ts' (~w) creating at runtime an instance of ~p.",
 			[ ?getAttr(name), self(), ActorClassname ] ) ),
 
 	% The load balancer is an actor, thus two diascas will be requested.
@@ -4537,8 +4545,8 @@ create_actor( ActorClassname, ActorConstructionParameters, State )
 
 
 
-% @doc Triggers the creation of a new actor, while the simulation is running,
-% using the specified user tag for that.
+% @doc Triggers the creation of an actor, while the simulation is running, using
+% the specified user tag for that.
 %
 % This is an actor-level helper function, which takes care automatically of the
 % sending (at this tick T, diasca D) of the createActor actor message to the
@@ -4587,7 +4595,7 @@ create_actor( ActorClassname, ActorConstructionParameters, ActorTag, State )
 	% send_actor_message/3.
 
 	cond_utils:if_defined( simdiasca_debug_runtime_creations,
-		?info_fmt( "Actor '~ts' (~w) creating at runtime a new instance of ~p "
+		?info_fmt( "Actor '~ts' (~w) creating at runtime an instance of ~p "
 			"with user tag '~p'.",
 			[ ?getAttr(name), self(), ActorClassname, ActorTag ] ) ),
 
@@ -4601,7 +4609,7 @@ create_actor( ActorClassname, ActorConstructionParameters, ActorTag, State )
 
 
 
-% @doc Triggers the creation of a set of new actors, while the simulation is
+% @doc Triggers the creation of a set of actors, while the simulation is
 % running, each instance creation being able to include a creation tag.
 %
 % This is an actor-level helper function, which takes care automatically of the
@@ -4639,7 +4647,7 @@ create_actor( ActorClassname, ActorConstructionParameters, ActorTag, State )
 		[ instance_creation_spec() | tagged_instance_creation_spec() ],
 		wooper:state() ) -> wooper:state().
 create_actors( ActorConstructionList, State )
-  when is_list( ActorConstructionList ) ->
+								when is_list( ActorConstructionList ) ->
 
 	% Note: not tested yet, beware!
 
@@ -4647,7 +4655,7 @@ create_actors( ActorConstructionList, State )
 	% send_actor_message/3.
 
 	cond_utils:if_defined( simdiasca_debug_runtime_creations,
-		?info_fmt( "Actor '~ts' (~w) creating at runtime ~B new actors, "
+		?info_fmt( "Actor '~ts' (~w) creating at runtime ~B actors, "
 			"whose creation list is: ~ts",
 			[ ?getAttr(name), self(), length( ActorConstructionList ),
 			  text_utils:strings_to_string( [ text_utils:format( "~p",
@@ -4671,7 +4679,7 @@ create_actors( ActorConstructionList, State )
 
 
 
-% @doc Triggers the creation of a new actor with a placement hint, while the
+% @doc Triggers the creation of an actor with a placement hint, while the
 % simulation is running.
 %
 % This is an actor-level helper function, which takes care automatically of the
@@ -4725,8 +4733,8 @@ create_placed_actor( ActorClassname, ActorConstructionParameters,
 
 
 
-% @doc Triggers the creation of a new actor with a user-defined tag and a
-% placement hint, while the simulation is running.
+% @doc Triggers the creation of an actor with a user-defined tag and a placement
+% hint, while the simulation is running.
 %
 % This is an actor-level helper function, which takes care automatically of the
 % sending (at this tick T, diasca D) of the createActor actor message to the
@@ -5202,7 +5210,7 @@ state_to_string( State ) ->
 	AttrPairs = get_actor_specialised_attributes( State ),
 
 	AttrStrings = lists:sort( [ text_utils:format( "~ts: ~ts", [ AttrName,
-		   text_utils:term_to_bounded_string( AttrValue, _MaxLen=1000 ) ] )
+		text_utils:term_to_bounded_string( AttrValue, _MaxLen=1000 ) ] )
 								|| { AttrName, AttrValue } <- AttrPairs ] ),
 
 	EnumString = text_utils:strings_to_string( AttrStrings ),

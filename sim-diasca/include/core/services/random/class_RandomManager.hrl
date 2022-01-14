@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,13 +19,13 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-
 % The name under which the random manager process is to be registered:
 -define( random_manager_name, sim_diasca_random_manager ).
 
 
 % The default value for Mu (mean of zero).
 -define( default_mu, 0 ).
+
 
 % The default value for Sigma (standard deviation of one).
 -define( default_sigma, 1 ).

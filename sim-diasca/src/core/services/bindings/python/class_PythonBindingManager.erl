@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2021 EDF R&D
+% Copyright (C) 2016-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -127,7 +127,7 @@
 
 
 
-% @doc Constructs a new manager of a set of Python interpreters.
+% @doc Constructs a manager of a set of Python interpreters.
 %
 % Parameters:
 %
@@ -393,7 +393,7 @@ destruct( State ) ->
 
 				[] ->
 					?info( "Manager destructed (no Python interpreter "
-							"was registered)." ),
+						   "was registered)." ),
 					State;
 
 				InterpreterPids ->

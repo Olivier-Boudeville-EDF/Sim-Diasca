@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,6 +19,9 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Locatable class, base of all instances having <b>in-world 3D
+% coordinates</b>.
+%
 -module(class_Locatable).
 
 
@@ -39,8 +42,8 @@
 -export([ describe_location/1 ]).
 
 
-% Describes a location in the 3D context:
--type location() :: linear_3D:point().
+-type location() :: point3:point3().
+% Describes a location in the 3D environment.
 
 
 
@@ -55,7 +58,15 @@
 
 
 
-% Constructs a new locatable instance, based on a record of an in-world
+% Shorthands:
+
+-type ustring() :: text_utils:ustring().
+
+-type coordinate() :: linear:coordinate().
+
+
+
+% @doc Constructs a locatable instance, based on a record of an in-world
 % location.
 %
 -spec construct( wooper:state(), location() ) -> wooper:state().
@@ -65,8 +76,8 @@ construct( State, Location ) ->
 	%TraceState = class_TraceEmitter:construct( State, "Locatable" ),
 
 	%?send_notice_fmt( TraceState,
-	%	"Creating a new locatable whose location is ~s.",
-	%	[ space:location_to_string( Location ) ] ),
+	%   "Creating a locatable whose location is ~ts.",
+	%   [ space:location_to_string( Location ) ] ),
 
 	setAttribute( State, location, Location ).
 
@@ -76,23 +87,22 @@ construct( State, Location ) ->
 % Methods section.
 
 
-% Returns the in-world location of this locatable.
+% @doc Returns the in-world location of this locatable.
 -spec getLocation( wooper:state() ) -> const_request_return( location() ).
 getLocation( State ) ->
 	wooper:const_return_result( ?getAttr(location) ).
 
 
 
-% Sets the in-world location of this locatable.
+% @doc Sets the in-world location of this locatable.
 -spec setLocation( wooper:state(), location() ) -> oneway_return().
 setLocation( State, NewLocation ) ->
 	wooper:return_state( setAttribute( State, location, NewLocation ) ).
 
 
 
-% Returns the in-world abscissa of this locatable.
--spec getAbscissa( wooper:state() ) ->
-						 const_request_return( linear:coordinate() ).
+% @doc Returns the in-world abscissa of this locatable.
+-spec getAbscissa( wooper:state() ) -> const_request_return( coordinate() ).
 getAbscissa( State ) ->
 
 	{ X, _Y, _Z } = ?getAttr(location),
@@ -101,8 +111,8 @@ getAbscissa( State ) ->
 
 
 
-% Sets the in-world abscissa of this locatable.
--spec setAbscissa( wooper:state(), linear:coordinate() ) -> oneway_return().
+% @doc Sets the in-world abscissa of this locatable.
+-spec setAbscissa( wooper:state(), coordinate() ) -> oneway_return().
 setAbscissa( State, NewX ) ->
 
 	{ _X, Y, Z } = ?getAttr(location),
@@ -112,9 +122,9 @@ setAbscissa( State, NewX ) ->
 
 
 
-% Returns the in-world ordinate of this locatable.
+% @doc Returns the in-world ordinate of this locatable.
 -spec getOrdinate( wooper:state() ) ->
-						 const_request_return( linear:coordinate() ).
+								const_request_return( coordinate() ).
 getOrdinate( State ) ->
 
 	{ _X, Y, _Z } = ?getAttr(location),
@@ -123,8 +133,8 @@ getOrdinate( State ) ->
 
 
 
-% Sets the in-world ordinate of this locatable.
--spec setOrdinate( wooper:state(), linear:coordinate() ) -> oneway_return().
+% @doc Sets the in-world ordinate of this locatable.
+-spec setOrdinate( wooper:state(), coordinate() ) -> oneway_return().
 setOrdinate( State, NewY ) ->
 
 	{ X, _Y, Z } = ?getAttr(location),
@@ -133,9 +143,9 @@ setOrdinate( State, NewY ) ->
 
 
 
-% Returns the in-world altitude of this locatable.
+% @doc Returns the in-world altitude of this locatable.
 -spec getAltitude( wooper:state() ) ->
-						 const_request_return( linear:coordinate() ).
+									const_request_return( coordinate() ).
 getAltitude( State ) ->
 
 	{ _X, _Y, Z } = ?getAttr(location),
@@ -144,8 +154,8 @@ getAltitude( State ) ->
 
 
 
-% Sets the in-world altitude of this locatable.
--spec setAltitude( wooper:state(), linear:coordinate() ) -> oneway_return().
+% @doc Sets the in-world altitude of this locatable.
+-spec setAltitude( wooper:state(), coordinate() ) -> oneway_return().
 setAltitude( State, NewZ ) ->
 
 	{ X, Y, _Z } = ?getAttr(location),
@@ -158,10 +168,10 @@ setAltitude( State, NewZ ) ->
 % Section for helper functions (not methods).
 
 
-% Returns the location of this Locatable.
+% @doc Returns the location of this Locatable.
 %
 % Note: is never and cannot be overloaded.
 %
--spec describe_location( wooper:state() ) -> string().
+-spec describe_location( wooper:state() ) -> ustring().
 describe_location( State ) ->
 	text_utils:format( "~w", [ ?getAttr(location) ] ).

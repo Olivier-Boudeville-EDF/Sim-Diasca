@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2021 EDF R&D
+% Copyright (C) 2012-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -23,18 +23,11 @@
 -define( resilience_manager_name, sim_diasca_resilience_manager ).
 
 
-% Shorthands:
--type node_name() :: net_utils:atom_node_name().
--type node_list() :: [ node_name() ].
-
-
-% A k-record is the entry for a node; to be stored in the k-map.
+% A k-record is the entry for a node; to be stored in a k-map.
 -record( k_record, {
 
-		% The nodes that this node secures:
-		securing = [] :: node_list(),
+	% The nodes that this node secures:
+	securing = [] :: [ net_utils:atom_node_name() ],
 
-		% The nodes that secure this node:
-		secured_by = [] :: node_list()
-
-} ).
+	% The nodes that secure this node:
+	secured_by = [] :: [ net_utils:atom_node_name() ] } ).

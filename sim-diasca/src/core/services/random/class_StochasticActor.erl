@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,11 +19,14 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-% This child class offers basic services in order to easily obtain values from
-% pre-declared random laws.
+% @doc This child class offers basic services in order to easily <b>obtain
+% values from random laws</b>.
 %
 % Basic actors may also directly generate their random values (see
 % class_RandomManager.erl for that).
+%
+% Important note: this way of managing random values is deprecated, as a full
+% stochastic support is now available in all instances of class_Actor.
 %
 -module(class_StochasticActor).
 
@@ -59,10 +62,6 @@
 -include("sim_diasca_for_actors.hrl").
 
 
-% Important note: this way of managing random values is deprecated, as a full
-% stochastic support is now available in all instances of class_Actor.
-
-
 
 % Implementation notes:
 %
@@ -75,8 +74,7 @@
 % automatic mechanism to buffer appropriately random values retrieved from a
 % singleton public random manager
 %
-% - or spawn a new private random manager that would be used by this instance
-% only
+% - or spawn a private random manager that would be used by this instance only
 %
 % First approach was complex and needed to set an upper bound to the number of
 % stochastic values that could be requested per tick, second approach induced
@@ -89,19 +87,17 @@
 % Request identifiers allow to designate a particular law of a stochastic actor.
 
 
+-type law_identifier() :: term().
 % Designates a model-specific random law (usually an atom), so that can once a
 % law is defined we can request random values out of it:
-%
--type law_identifier() :: term().
 
 
-
-% Describes a law entry set in this stochastic actor.
 -type law_entry() :: { law_identifier(), class_RandomManager:random_law() }.
+% Describes a law entry set in this stochastic actor.
 
 
 
-% Constructs a new stochastic actor.
+% @doc Constructs a stochastic actor.
 %
 % - ActorSettings corresponds to the engine settings for this actor, as
 % determined by the load-balancer
@@ -137,21 +133,21 @@ construct( State, ActorSettings, StochasticActorName, ListOfRandomLaws ) ->
 	% Now we have an initialized actor, hence properly seeded.
 
 	[ check_law_definition( LawDef )
-	  || { _LawId, LawDef } <- ListOfRandomLaws ],
+			|| { _LawId, LawDef } <- ListOfRandomLaws ],
 
 	% random_laws is the list of random laws, each element being like
-	% { attribute_name_of_law, RandomType }:
+	% {attribute_name_of_law, RandomType}:
 	%
 	StartingState = setAttribute( ActorState, random_laws, ListOfRandomLaws ),
 
-	% ?send_info_fmt( StartingState, "Creating a new stochastic actor "
-	%                  "with random laws ~p.", [ ListOfRandomLaws ] ),
+	% ?send_info_fmt( StartingState, "Creating a stochastic actor "
+	%                 "with random laws ~p.", [ ListOfRandomLaws ] ),
 
 	StartingState.
 
 
 
-% Overridden destructor.
+% @doc Overridden destructor.
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -179,7 +175,7 @@ destruct( State ) ->
 % Helper section.
 
 
-% Returns a new random value from the random law which specified by its
+% @doc Returns a new random value from the random law which specified by its
 % identifier (as declared at creation).
 %
 % State is unchanged hence not returned.
@@ -217,8 +213,8 @@ get_random_value_from( LawIdentifier, State ) ->
 
 
 
-% Declares the specified random law in the returned state, for a later possible
-% reuse.
+% @doc Declares the specified random law in the returned state, for a later
+% possible reuse.
 %
 % Any law declared with the same identifier will be overridden by this one.
 %
@@ -241,7 +237,7 @@ add_law( LawIdentifier, LawDefinition, State ) ->
 
 
 
-% Removes specified random law from the known laws.
+% @doc Removes specified random law from the known laws.
 %
 % (helper)
 %
@@ -270,7 +266,7 @@ remove_law( LawIdentifier, State ) ->
 
 
 
-% Returns the settings of the random law specified by its identifier.
+% @doc Returns the settings of the random law specified by its identifier.
 %
 % (helper)
 %
@@ -287,24 +283,23 @@ get_law_settings_for( LawIdentifier,
 
 
 
-% Checks that specified law definition is correct.
+% @doc Checks that specified law definition is correct.
 %
 % Note: usually this checking can also be done statically by Dialyzer.
 %
-check_law_definition( { uniform, N } )
-  when is_integer( N ) andalso N > 0 ->
+check_law_definition( { uniform, N } ) when is_integer( N ) andalso N > 0 ->
 	ok;
 
 check_law_definition( { exponential, Lambda } )
-  when is_number( Lambda ) andalso Lambda > 0 ->
+								when is_number( Lambda ) andalso Lambda > 0 ->
 	ok;
 
 check_law_definition( { positive_integer_exponential, Lambda } )
-  when is_number( Lambda) andalso Lambda > 0 ->
+								when is_number( Lambda) andalso Lambda > 0 ->
 	ok;
 
 check_law_definition( { gaussian, Mu, Sigma } )
-  when is_number( Mu ) andalso is_number( Sigma ) andalso Sigma >= 0 ->
+		when is_number( Mu ) andalso is_number( Sigma ) andalso Sigma >= 0 ->
 	ok;
 
 check_law_definition( { positive_integer_gaussian, Mu, Sigma } )

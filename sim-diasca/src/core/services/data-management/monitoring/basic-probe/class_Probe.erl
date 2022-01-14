@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -502,7 +502,7 @@
 
 
 
-% @doc Constructs a new (basic) probe, from following parameters: NameOptions,
+% @doc Constructs a (basic) probe, from following parameters: NameOptions,
 % CurveNames, Title, Zones, MaybeXLabel, YLabel (no tick duration nor extra
 % settings specified here).
 %
@@ -539,9 +539,9 @@
 % that can be taken into account in the probe-generated data files
 %
 -spec construct( wooper:state(),
-		  probe_name_init() | { probe_name_init(), probe_options() },
-		  [ declared_curve_name() ], [ declared_zone() ], title(),
-		  label(), label(), class_ResultManager:meta_data() ) -> wooper:state().
+		probe_name_init() | { probe_name_init(), probe_options() },
+		[ declared_curve_name() ], [ declared_zone() ], title(),
+		label(), label(), class_ResultManager:meta_data() ) -> wooper:state().
 construct( State, NameTerm, CurveNames, Zones, Title,
 		   MaybeXLabel, YLabel, MetaData ) ->
 	construct( State, NameTerm, CurveNames, Zones, Title,
@@ -550,7 +550,7 @@ construct( State, NameTerm, CurveNames, Zones, Title,
 
 
 
-% @doc Constructs a new (basic) probe, from following parameters: NameOptions,
+% @doc Constructs a (basic) probe, from following parameters: NameOptions,
 % CurveNames, Title, Zones, MaybeXLabel, YLabel, ExtraSettingsTable, where:
 %
 % - NameOptions is either NameInit or {NameInit, ProbeOptions}, where NameInit
@@ -645,7 +645,6 @@ construct( State, { NameInit, ProbeOptions }, CurveNames, Zones, Title,
 
 	DataFilename = file_utils:join( ProbeDir, get_data_filename( ProbeName ) ),
 
-
 	StartState = setAttributes( ProducerState, [
 		{ settings, ProbeSettings },
 		{ command_file_up_to_date, false },
@@ -732,7 +731,6 @@ construct( State, NameInit, CurveNames, Zones, Title, MaybeXLabel, YLabel,
 	construct( State, { NameInit, _DefaultProbeOptions=#probe_options{} },
 			   CurveNames, Zones, Title, MaybeXLabel, YLabel, MetaData,
 			   MaybeExtraSettingsTable, MaybeTickDuration ).
-
 
 
 
@@ -905,7 +903,7 @@ setData( State, Tick, Samples ) ->
 addCurve( State, CurveName ) ->
 
 	%trace_utils:debug_fmt( "addCurve '~ts' for probe '~ts'.",
-	%						[ CurveName, ?getAttr(name) ] ),
+	%                       [ CurveName, ?getAttr(name) ] ),
 
 	{ NewCurveCount, NewCurveEntries } =
 		add_curve( CurveName, ?getAttr(curve_count), ?getAttr(curve_entries) ),
@@ -933,7 +931,7 @@ addCurve( State, CurveName ) ->
 addCurves( State, CurveNames ) ->
 
 	%trace_utils:debug_fmt( "addCurves '~p' for probe '~ts'.",
-	%						[ CurveNames, ?getAttr(name) ] ),
+	%                       [ CurveNames, ?getAttr(name) ] ),
 
 	{ NewCurveCount, NewCurveEntries } = lists:foldl(
 			fun( CurveName, _Acc={ CurveCount, CurveEntries } ) ->
@@ -1091,8 +1089,8 @@ setCurveRenderOrder( State, Names ) ->
 			% report will be requested:
 			%
 			wooper:return_state( setAttributes( State, [
-					 { curve_entries, NewCurveEntries },
-					 { command_file_up_to_date, false } ] ) );
+				{ curve_entries, NewCurveEntries },
+				{ command_file_up_to_date, false } ] ) );
 
 		_Other ->
 			throw( { invalid_name_count, Names, Len } )
@@ -1131,7 +1129,7 @@ setPlotStyle( State, NewPlotStyle, GenerateFile ) ->
 
 	UpdatedState = setAttribute( State, settings,
 		Settings#probe_settings{
-			  plot_style=text_utils:string_to_binary( NewPlotStyle ) } ),
+				plot_style=text_utils:string_to_binary( NewPlotStyle ) } ),
 
 	% Forces the regeneration of the command file if requested:
 	CommandState = trigger_command_file_update( GenerateFile, UpdatedState ),
@@ -1186,11 +1184,11 @@ setCanvasSize( State, NewWidth, NewHeight ) ->
 
 	wooper:return_state( setAttributes( State, [
 
-			  { settings, Settings#probe_settings{ canvas_width=NewWidth,
-												   canvas_height=NewHeight } },
+		{ settings, Settings#probe_settings{ canvas_width=NewWidth,
+											canvas_height=NewHeight } },
 
-			   % Forcing a later re-creation:
-			   { command_file_up_to_date, false } ] ) ).
+		% Forcing a later re-creation:
+		{ command_file_up_to_date, false } ] ) ).
 
 
 
@@ -1227,10 +1225,10 @@ setPointSize( State, PointSize ) ->
 
 	wooper:return_state( setAttributes( State, [
 
-			{ settings, Settings#probe_settings{ point_size=PointSize } },
+		{ settings, Settings#probe_settings{ point_size=PointSize } },
 
-			% Forcing a later re-creation:
-			{ command_file_up_to_date, false } ] ) ).
+		% Forcing a later re-creation:
+		{ command_file_up_to_date, false } ] ) ).
 
 
 
@@ -1370,14 +1368,14 @@ setRotatedTickLabels( State ) ->
 	Settings = ?getAttr(settings),
 
 	%wooper:return_state( setAttribute( State, settings,
-	%	Settings#probe_settings{ x_tick=text_utils:string_to_binary(
-	%		   "format \"%.0f\" border out rotate by 90 offset 0,graph 0.05"
+	%   Settings#probe_settings{ x_tick=text_utils:string_to_binary(
+	%          "format \"%.0f\" border out rotate by 90 offset 0,graph 0.05"
 
 	wooper:return_state( setAttributes( State, [
 
 		{ settings, Settings#probe_settings{
 		  x_tick=text_utils:string_to_binary(
-				   ?rotate_cw_tick_label_option ) } },
+					?rotate_cw_tick_label_option ) } },
 
 		{ command_file_up_to_date, false } ] ) ).
 
@@ -1901,8 +1899,8 @@ declare_result_probe( NameOptions, CurveEntries, ZoneEntries, Title,
 					  MaybeXLabel, YLabel ) ->
 
 	Res = declare_result_probe( NameOptions, CurveEntries, ZoneEntries, Title,
-			MaybeXLabel, YLabel, _MaybeExtraSettingsTable=undefined,
-			_MaybeTickDuration=undefined ),
+		MaybeXLabel, YLabel, _MaybeExtraSettingsTable=undefined,
+		_MaybeTickDuration=undefined ),
 
 	wooper:return_static( Res ).
 
@@ -2505,7 +2503,7 @@ get_actual_probe_name( EmitterName ) ->
 wait_result_declaration_outcome( ProbeName, State ) ->
 
 	%trace_utils:info_fmt( "Waiting for the result declaration outcome for "
-	%					   "probe '~ts'.", [ ProbeName ] ),
+	%                      "probe '~ts'.", [ ProbeName ] ),
 
 	% Finally waits the answer from the result manager to a prior declareProbe/2
 	% call or similar:
@@ -2518,7 +2516,7 @@ wait_result_declaration_outcome( ProbeName, State ) ->
 		{ wooper_result, output_not_requested } ->
 
 			?info_fmt( "The probe '~ts' would not produce an expected result.",
-						[ ProbeName ] ),
+					   [ ProbeName ] ),
 
 			setAttribute( State, enabled_producer, false );
 
@@ -2555,17 +2553,17 @@ get_probe_settings( Title, MaybeXLabel, YLabel, MaybeGnuplotVersion ) ->
 	end,
 
 	#probe_settings{
-	   title=text_utils:string_to_binary( Title ),
-	   x_tick=Xtick,
-	   key_options=KeyOption,
-	   %image_format = <<"svg">>,
-	   y_tick= <<"auto">>,
-	   x_label=text_utils:string_to_binary( ActualXLabel ),
-	   y_label=text_utils:string_to_binary( YLabel ),
-	   x_range=undefined,
-	   y_range=undefined,
-	   plot_style = <<"linespoints">>,
-	   fill_style = <<"empty">> }.
+		title=text_utils:string_to_binary( Title ),
+		x_tick=Xtick,
+		key_options=KeyOption,
+		%image_format = <<"svg">>,
+		y_tick= <<"auto">>,
+		x_label=text_utils:string_to_binary( ActualXLabel ),
+		y_label=text_utils:string_to_binary( YLabel ),
+		x_range=undefined,
+		y_range=undefined,
+		plot_style = <<"linespoints">>,
+		fill_style = <<"empty">> }.
 
 
 
@@ -2580,7 +2578,7 @@ get_basic_options( _MaybeGnuplotVersion=undefined ) ->
 
 	% For an increased safety:
 	%trace_utils:warning( "Determining gnuplot options whereas its version "
-	%					 "is not known." ),
+	%                     "is not known." ),
 
 	get_basic_options_for_older_gnuplot();
 
@@ -2666,7 +2664,7 @@ add_probe_index_back( [ Name | T ], CurveEntries, Acc ) ->
 
 		{ Index, _Name, PlotSuffix } ->
 			add_probe_index_back( T, CurveEntries,
-					[ { Index, BinName, PlotSuffix } | Acc ] )
+								  [ { Index, BinName, PlotSuffix } | Acc ] )
 
 	end.
 
@@ -2856,10 +2854,10 @@ update_tick_options( _TickOptions={ XtickOpt, YtickOpt },
 		ProbeSettings=#probe_settings{ x_tick=Xtick, y_tick=Ytick } ) ->
 
 	NewXtick = text_utils:bin_format( "~ts ~ts",
-					[ Xtick, get_tick_option( XtickOpt ) ] ),
+									  [ Xtick, get_tick_option( XtickOpt ) ] ),
 
 	NewYtick = text_utils:bin_format( "~ts ~ts",
-					[ Ytick, get_tick_option( YtickOpt ) ] ),
+									  [ Ytick, get_tick_option( YtickOpt ) ] ),
 
 	ProbeSettings#probe_settings{ x_tick=NewXtick, y_tick=NewYtick };
 
@@ -2906,7 +2904,7 @@ update_ticks_options( _TicksOptions={ MaybeXticksOpt, MaybeYticksOpt },
 			ProbeSettings#probe_settings.y_ticks;
 
 		YticksStr ->
-			teyt_utils:string_to_binary( YticksStr )
+			text_utils:string_to_binary( YticksStr )
 
 	end,
 
@@ -2987,7 +2985,7 @@ generate_command_file( State ) ->
 	CommandFileName = get_command_filename( Name, ProbeDir ),
 
 	case ?getAttr(command_file_up_to_date)
-			 andalso file_utils:is_existing_file( CommandFileName ) of
+			andalso file_utils:is_existing_file( CommandFileName ) of
 
 		true ->
 			State;
@@ -3222,7 +3220,7 @@ write_header( File, CurveEntries, ZoneEntries, Settings, Name, Metadata ) ->
 	ReorderedCurveEntries = lists:keysort( _Index=1, CurveEntries ),
 
 	%trace_utils:debug_fmt( "Listed curve entries: ~p~nReordered: ~p.",
-	%						[ CurveEntries, ReorderedCurveEntries ] ),
+	%                       [ CurveEntries, ReorderedCurveEntries ] ),
 
 	CurveDescriptions = format_curve_info( ReorderedCurveEntries, _Acc=[] ),
 
@@ -3233,7 +3231,7 @@ write_header( File, CurveEntries, ZoneEntries, Settings, Name, Metadata ) ->
 	Title = Settings#probe_settings.title,
 
 	MetadataAllStrings = [ text_utils:binary_to_string( BinText )
-						   || { _Key, BinText } <- Metadata ],
+							|| { _Key, BinText } <- Metadata ],
 
 	MetadataString = text_utils:strings_to_string( MetadataAllStrings,
 												   _Sep="# - " ),
@@ -3334,8 +3332,7 @@ forge_format_string_for( CurveCount ) ->
 	% timestamp, if available), then as many values as needed (some of which
 	% being possibly 'undefined', hence '~p'):
 	%
-	"~ts " ++ lists:flatten( lists:duplicate( CurveCount, "~w " ) )
-		++ " ~n".
+	"~ts " ++ lists:flatten( lists:duplicate( CurveCount, "~w " ) )	++ " ~n".
 
 
 
@@ -3392,8 +3389,8 @@ format_row( TimestampString, Sample, CurveCount, RowFormatString ) ->
 
 		LargerCount ->
 			throw( { too_many_sample_values, {got,LargerCount},
-					 {expected,CurveCount}, {sample,Sample},
-					 {timestamp,TimestampString} } )
+						{expected,CurveCount}, {sample,Sample},
+						{timestamp,TimestampString} } )
 
 	end.
 
@@ -3628,13 +3625,13 @@ get_timestamp_settings(
 	end,
 
 	PreambleStr = text_utils:format(
-					"set xdata time~n"
+		"set xdata time~n"
 
-					% As read from the data (our standard format):
-					"set timefmt \"%Y/%m/%d %H:%M:%S\"~n"
+		% As read from the data (our standard format):
+		"set timefmt \"%Y/%m/%d %H:%M:%S\"~n"
 
-					 % As shall be displayed:
-					"set format x ~ts~n", [ TimeFormatStr ] ),
+		 % As shall be displayed:
+		"set format x ~ts~n", [ TimeFormatStr ] ),
 
 	{ PreambleStr, _CurveOffset=1 };
 
@@ -3703,7 +3700,7 @@ remove_zone_specific_curves( CurveEntries, ZoneEntries ) ->
 	CurvesToRemove = select_curves( ZoneEntries, _Acc=[] ),
 
 	Selector = fun( { CurveIndex, _CurveName, _CurvePlotSuffix } ) ->
-					   not lists:member( CurveIndex, CurvesToRemove ) end,
+						not lists:member( CurveIndex, CurvesToRemove ) end,
 
 	lists:filter( Selector, CurveEntries ).
 
@@ -3731,9 +3728,9 @@ select_curves( _ZoneEntries=[ { _ZoneName, { C1, C2 } } | T ], Acc ) ->
 get_plot_commands_for_curves( CurveEntries, CurveOffset, Settings ) ->
 
 	% After some potential reordering, curve entries might be:
-	% [ {3,<<"c">>}, {1,<<"a">>}, {2,<<"b">>} ]
+	% [{3,<<"c">>}, {1,<<"a">>}, {2,<<"b">>}]
 	%
-	% We expect: [ "4 title \"c\"", "2 title \"a\"", "3 title \"b\"" ]
+	% We expect: ["4 title \"c\"", "2 title \"a\"", "3 title \"b\""]
 	%
 	% (note that each curve index is incremented, as the first column is the
 	% tick)
@@ -3786,7 +3783,7 @@ get_plot_commands_for_zones( ZoneEntries, CurveOffset, Settings ) ->
 -spec get_zone_command( zone_definition(), curve_offset(), probe_settings() ) ->
 								command_element().
 get_zone_command( _ZoneEntry={ BinZoneName,
-							   { FirstExtendedCurve, SecondExtendedCurve } },
+								{ FirstExtendedCurve, SecondExtendedCurve } },
 				  CurveOffset, _Settings ) ->
 
 	FirstPart = case FirstExtendedCurve of
@@ -3902,7 +3899,6 @@ generate_report( Name, State ) ->
 
 	%trace_utils:debug_fmt( "Generating plot based on ~ts.",
 	%                       [ GeneratingFile ] ),
-
 
 
 	% We must change the current directory (in the command, as we do not want to

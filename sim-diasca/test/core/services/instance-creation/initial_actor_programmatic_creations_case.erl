@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,12 +19,9 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-
-
-% Overall unit test of the Sim-Diasca actor creation, dealing only with the
+% @doc Overall unit test of the Sim-Diasca actor creation, dealing only with the
 % programmatic creation of initial actors.
-
-
+%
 % The test case will run until tick offset #120, however the only actor expects
 % to terminate at tick offset #80, thus the simulation will finish before the
 % specified user duration, since having no more actor to schedule.
@@ -38,8 +35,7 @@
 
 
 
-% Runs the local test simulation.
-%
+% @doc Runs the local test simulation.
 -spec run() -> no_return().
 run() ->
 
@@ -48,15 +44,13 @@ run() ->
 	% Default simulation settings (50Hz, batch reproducible) are used, except
 	% for the name:
 	SimulationSettings = #simulation_settings{
-
-		simulation_name = "Initial actor programmatic creations test"
-
-	},
+		simulation_name="Initial actor programmatic creations test" },
 
 
 	% Default deployment settings (unavailable nodes allowed, on-the-fly
 	% generation of the deployment package requested), but computing hosts are
 	% specified (to be updated depending on your environment):
+	%
 	% (note that localhost is implied)
 	%
 	DeploymentSettings = #deployment_settings{
@@ -92,34 +86,35 @@ run() ->
 	?test_info( "Requesting the creation of a first initial test actor." ),
 
 	FirstActorPid = class_Actor:create_initial_actor( class_TestActor,
-			[ _FirstName="First programmatic test actor",
-			  _FirstSchedulingSettings={ erratic, 7 },
-			  _FirstCreationSettings=no_creation,
-			  _FirstTerminationTickOffset=80 ] ),
+		[ _FirstName="First programmatic test actor",
+		  _FirstSchedulingSettings={ erratic, 7 },
+		  _FirstCreationSettings=no_creation,
+		  _FirstTerminationTickOffset=80 ] ),
 
 	LoadBalancerPid ! { traceState, [ "after first initial creation" ] },
 
 
 	_SecondActorPid = class_Actor:create_initial_placed_actor( class_TestActor,
-			[ _SecondName="Second programmatic test actor",
-			  _SecondchedulingSettings={ erratic, 6 },
-			  _SecondCreationSettings=no_creation,
-			  _SecondTerminationTickOffset=100 ],
-			my_second_placement_hint ),
+		[ _SecondName="Second programmatic test actor",
+		  _SecondchedulingSettings={ erratic, 6 },
+		  _SecondCreationSettings=no_creation,
+		  _SecondTerminationTickOffset=100 ], my_second_placement_hint ),
 
 	LoadBalancerPid ! { traceState, [ "after second initial creation" ] },
 
 
 	ActorList = [ _ThirdActorPid, _FourthActorPid, _FifthActorPid ] =
 		class_Actor:create_initial_actors( [
-		  { class_TestActor, [ "Third programmatic actor", {erratic,5},
-							  no_creation, 120 ] },
-		  { class_TestActor, [ "Fourth programmatic actor", {erratic,5},
-							  no_creation, 150 ],
-			my_fourth_placement_hint },
-		  { class_TestActor, [ "Fifth programmatic actor", {erratic,5},
-							   no_creation, 200 ] }
-											] ),
+
+			{ class_TestActor, [ "Third programmatic actor", {erratic,5},
+								 no_creation, 120 ] },
+
+			{ class_TestActor, [ "Fourth programmatic actor", {erratic,5},
+								 no_creation, 150 ],
+			  my_fourth_placement_hint },
+
+			{ class_TestActor, [ "Fifth programmatic actor", {erratic,5},
+								 no_creation, 200 ] } ] ),
 
 	LoadBalancerPid ! { traceState,
 						[ "after third (multiple) initial creation" ] },
@@ -147,7 +142,7 @@ run() ->
 	RootTimeManagerPid ! { getTextualTimings, [], self() },
 	FirstTimingString = test_receive(),
 
-	?test_notice_fmt( "Received first time: ~s.", [ FirstTimingString ] ),
+	?test_notice_fmt( "Received first time: ~ts.", [ FirstTimingString ] ),
 
 	LoadBalancerPid ! { traceState, [ "possibly during simulation" ] },
 
@@ -166,7 +161,7 @@ run() ->
 	RootTimeManagerPid ! { getTextualTimings, [], self() },
 	SecondTimingString = test_receive(),
 
-	?test_notice_fmt( "Received second time: ~s.", [ SecondTimingString ] ),
+	?test_notice_fmt( "Received second time: ~ts.", [ SecondTimingString ] ),
 
 	LoadBalancerPid ! { traceState, [ "at shutdown" ] },
 

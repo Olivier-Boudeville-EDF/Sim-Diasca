@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2021 EDF R&D
+% Copyright (C) 2016-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -18,7 +18,6 @@
 
 % Authors: Robin Huart (robin-externe.huart@edf.fr)
 %          Olivier Boudeville (olivier.boudeville@edf.fr)
-
 
 
 % @doc Module storing all the helper functions facilitating the support of the
@@ -155,13 +154,13 @@ handle_request_results( MailboxPid, RequestName, TraceEmitterCategorization )
   when is_list( TraceEmitterCategorization ) ->
 
 	%trace_utils:debug_fmt( "Waiting for the result of request '~ts', from ~w.",
-	%						[ RequestName, MailboxPid ] ),
+	%                       [ RequestName, MailboxPid ] ),
 
 	case java_utils:wait_for_request_result( MailboxPid, RequestName ) of
 
 		{ request_completed, ReceivedData } ->
 			%trace_utils:debug_fmt( "Result from ~w, for request '~ts':~p.",
-			%					   [ MailboxPid, RequestName, ReceivedData ] ),
+			%                       [ MailboxPid, RequestName, ReceivedData ] ),
 			ReceivedData;
 
 		{ trace_emitted, debug, TraceFormattedMessage } ->
@@ -214,10 +213,10 @@ handle_request_results( MailboxPid, RequestName, TraceEmitterCategorization )
 
 		{ trace_emitted, OtherTraceType, TraceFormattedMessage } ->
 			?notify_warning_fmt_cat(
-			   "Invalid trace received from Java: the trace type '~p' is not "
-			   "known; the original trace message is:~n~n'~ts'.",
-			   [ OtherTraceType, TraceFormattedMessage ],
-			   TraceEmitterCategorization ),
+				"Invalid trace received from Java: the trace type '~p' is not "
+				"known; the original trace message is:~n~n'~ts'.",
+				[ OtherTraceType, TraceFormattedMessage ],
+				TraceEmitterCategorization ),
 			handle_request_results( MailboxPid, RequestName,
 									TraceEmitterCategorization );
 

@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2021 EDF R&D
+% Copyright (C) 2016-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -164,7 +164,7 @@ startExperimentTick( State, _SenderActorPid ) ->
 	% Then corresponding blocks may be activated, and the dataflow evaluated.
 
 	%SentState = class_Actor:send_actor_messages( ?getAttr(dataflows),
-	%						{ startExperimentTick, [...], State },
+	%                   { startExperimentTick, [...], State },
 
 	%actor:return_state( SentState ).
 

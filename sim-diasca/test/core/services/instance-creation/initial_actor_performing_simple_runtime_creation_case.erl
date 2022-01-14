@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,8 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-
-% Unit test of the Sim-Diasca actor creation, dealing with a runtime actor
+% @doc Unit test of the Sim-Diasca actor creation, dealing with a runtime actor
 % creation (hence from another - initial- actor).
 %
 -module(initial_actor_performing_simple_runtime_creation_case).
@@ -32,8 +31,7 @@
 
 
 
-% Runs the local test simulation.
-%
+% @doc Runs the local test simulation.
 -spec run() -> no_return().
 run() ->
 
@@ -42,10 +40,7 @@ run() ->
 	% Default simulation settings (50Hz, batch reproducible) are used, except
 	% for the name:
 	SimulationSettings = #simulation_settings{
-
-		simulation_name = "Initial actor performing simple runtime creation"
-
-	},
+		simulation_name="Initial actor performing simple runtime creation" },
 
 
 	% Default deployment settings (unavailable nodes allowed, on-the-fly
@@ -99,10 +94,10 @@ run() ->
 	FirstCreationSettings = { InterCreationTickCount, NextPair },
 
 	_FirstActorPid = class_Actor:create_initial_actor( class_TestActor,
-			[ _FirstName="First programmatic test actor",
-			  _FirstSchedulingSettings={ erratic, 7 },
-			  FirstCreationSettings,
-			  _FirstTerminationTickOffset=80 ] ),
+		[ _FirstName="First programmatic test actor",
+		  _FirstSchedulingSettings={ erratic, 7 },
+		  FirstCreationSettings,
+		  _FirstTerminationTickOffset=80 ] ),
 
 	LoadBalancerPid ! { traceState,
 						[ "after first programmatic initial creation" ] },
@@ -122,7 +117,7 @@ run() ->
 	RootTimeManagerPid ! { getTextualTimings, [], self() },
 	FirstTimingString = test_receive(),
 
-	?test_notice_fmt( "Received first time: ~s.", [ FirstTimingString ] ),
+	?test_notice_fmt( "Received first time: ~ts.", [ FirstTimingString ] ),
 
 	LoadBalancerPid ! { traceState, [ "possibly during simulation" ] },
 
@@ -141,7 +136,7 @@ run() ->
 	RootTimeManagerPid ! { getTextualTimings, [], self() },
 	SecondTimingString = test_receive(),
 
-	?test_notice_fmt( "Received second time: ~s.", [ SecondTimingString ] ),
+	?test_notice_fmt( "Received second time: ~ts.", [ SecondTimingString ] ),
 
 	LoadBalancerPid ! { traceState, [ "at shutdown" ] },
 

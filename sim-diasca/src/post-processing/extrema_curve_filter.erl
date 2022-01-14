@@ -1,4 +1,4 @@
-% Copyright (C) 2011-2021 EDF R&D
+% Copyright (C) 2011-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,7 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-% This is an example of a curve filter: it simply records the minimum and
+% This is an <b>example of a curve filter</b>: it simply records the minimum and
 % maximum values reached by that curves, for which tick(s) (i.e. to each
 % extremum is associated the list of the ticks at which it was reached).
 %
@@ -28,21 +28,26 @@
 
 -export([ create/2 ]).
 
+% Shorthands:
+
+-type ustring() :: text_utils:ustring().
 
 
+% @doc Creates a filter process.
+%
 % We specify at creation the name of that curve.
 %
--spec create( string(), [] ) -> 'ok' | { 'onFilterEnded', pid() }.
+-spec create( ustring(), [] ) -> 'ok' | { 'onFilterEnded', pid() }.
 create( CurveName, [] ) ->
 
 	% The state of that process is the name of the curve, and respectively
-	% { MinValue, MinTicks } and { MaxValue, MaxTicks } pairs.
+	% {MinValue, MinTicks} and {MaxValue, MaxTicks} pairs.
 	%
 	filter_loop( CurveName, { undefined, undefined },
-				{ undefined, undefined } ).
+				 { undefined, undefined } ).
 
 
-
+% (helper)
 filter_loop( CurveName, MinE={ MinValue, MinTicks },
 			 MaxE={ MaxValue, MaxTicks } ) ->
 
@@ -93,19 +98,18 @@ filter_loop( CurveName, MinE={ MinValue, MinTicks },
 			case MinValue of
 
 				undefined ->
-					io:format( "The curve '~s' had not recorded value, "
-							   "thus no extremum could be determined.~n",
-							   [ CurveName ] );
+					io:format( "The curve '~ts' had not recorded value, "
+						"thus no extremum could be determined.~n",
+						[ CurveName ] );
 
 				_ ->
-					io:format( "The curve '~s' had for minimum value ~f, "
-							   "which was reached ~B times, at ticks ~w, and "
-							   "for maximum value ~f, "
-							   "which was reached ~B times, at ticks ~w.~n~n",
-							   [ CurveName, MinValue, length( MinTicks ),
-								lists:reverse( MinTicks ),
-								MaxValue, length( MaxTicks ),
-								lists:reverse( MaxTicks ) ] )
+					io:format( "The curve '~ts' had for minimum value ~f, "
+						"which was reached ~B times, at ticks ~w, and "
+						"for maximum value ~f, "
+						"which was reached ~B times, at ticks ~w.~n~n",
+						[ CurveName, MinValue, length( MinTicks ),
+						  lists:reverse( MinTicks ), MaxValue,
+						  length( MaxTicks ), lists:reverse( MaxTicks ) ] )
 
 			% Terminating.
 			end,

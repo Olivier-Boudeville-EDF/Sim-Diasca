@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,11 +19,8 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-
-% Overall unit test of the Sim-Diasca actor scheduling.
-
-
-
+% @doc Overall unit test of the Sim-Diasca actor scheduling.
+%
 % The test will run until tick offset #80, however the only actor expects to
 % terminate at tick offset #120, thus the simulation will finish while it is
 % still alive.
@@ -36,7 +33,7 @@
 
 
 
-% Runs the local test simulation.
+% @doc Runs the local test simulation.
 -spec run() -> no_return().
 run() ->
 
@@ -47,13 +44,14 @@ run() ->
 	% for the name:
 	SimulationSettings = #simulation_settings{
 
-		simulation_name="Scheduling one initial non-terminating actor test"	},
+		simulation_name="Scheduling one initial non-terminating actor test" },
 
 
 	% Default deployment settings (unavailable nodes allowed, on-the-fly
 	% generation of the deployment package requested), but computing hosts are
 	% specified (to be updated depending on your environment):
 	% (note that localhost is implied)
+	%
 	DeploymentSettings = #deployment_settings{
 
 		computing_hosts =
@@ -73,7 +71,7 @@ run() ->
 
 	% Directly created on the user node:
 	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-								 DeploymentSettings, LoadBalancingSettings ),
+								DeploymentSettings, LoadBalancingSettings ),
 
 
 	?test_info( "Deployment manager created." ),
@@ -84,10 +82,10 @@ run() ->
 	?test_info( "Requesting the creation of a first initial test actor." ),
 
 	ActorPid = class_Actor:create_initial_actor( class_TestActor,
-			[ _Name="First erratic test actor",
-			  _SchedulingSettings={ erratic, 5 },
-			  _CreationSettings=no_creation,
-			  _TerminationTickOffset=120 ] ),
+		[ _Name="First erratic test actor",
+		  _SchedulingSettings={ erratic, 5 },
+		  _CreationSettings=no_creation,
+		  _TerminationTickOffset=120 ] ),
 
 
 	ActorPid ! { getAAI, [], self() },
@@ -107,7 +105,7 @@ run() ->
 	RootTimeManagerPid ! { getTextualTimings, [], self() },
 	FirstTimingString = test_receive(),
 
-	?test_notice_fmt( "Received first time: ~s.", [ FirstTimingString ] ),
+	?test_notice_fmt( "Received first time: ~ts.", [ FirstTimingString ] ),
 
 
 	% Waits until simulation is finished:
@@ -124,7 +122,7 @@ run() ->
 	RootTimeManagerPid ! { getTextualTimings, [], self() },
 	SecondTimingString = test_receive(),
 
-	?test_notice_fmt( "Received second time: ~s.", [ SecondTimingString ] ),
+	?test_notice_fmt( "Received second time: ~ts.", [ SecondTimingString ] ),
 
 	sim_diasca:shutdown(),
 

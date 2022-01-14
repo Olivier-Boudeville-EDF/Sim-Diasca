@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,7 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-% Unit tests for the Graphable class implementation.
+% Unit tests for the <b>Graphable</b> class implementation.
 %
 % See the class_Graphable module.
 %
@@ -31,16 +31,16 @@
 
 
 
-% Runs the tests.
+% @doc Runs the tests.
 -spec run() -> no_return().
 run() ->
 
 	?case_start,
 
-	?test_info( "Creating a new test Graphable." ),
+	?test_info( "Creating a test Graphable." ),
 
 	MyGraphable =
-		class_Graphable:new_link( [	{ label, "hello" }, { color, red } ] ),
+		class_Graphable:new_link( [ { label, "hello" }, { color, red } ] ),
 
 
 	MyGraphable ! { getNodeName, [], self() },

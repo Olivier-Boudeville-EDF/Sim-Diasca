@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2021 EDF R&D
+% Copyright (C) 2016-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -92,6 +92,7 @@
 
 
 % Shorthands:
+
 -type ustring() :: text_utils:ustring().
 
 
@@ -244,7 +245,7 @@ actSpontaneous( State ) ->
 			EntryPointPid = ?getAttr(entry_point_pid),
 
 			%?debug_fmt( "Normal trigger of entry point ~p.",
-			%			 [ EntryPointPid ] ),
+			%            [ EntryPointPid ] ),
 
 			SentState = class_Actor:send_actor_message( EntryPointPid,
 									startExperimentTick, State ),

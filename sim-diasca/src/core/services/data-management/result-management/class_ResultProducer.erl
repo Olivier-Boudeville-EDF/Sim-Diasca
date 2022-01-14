@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2021 EDF R&D
+% Copyright (C) 2010-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -126,7 +126,7 @@
 
 
 
-% @doc Constructs a new result producer.
+% @doc Constructs a result producer.
 %
 % ProducerName is the name of this producer, specified as a plain string.
 %
@@ -248,7 +248,7 @@ getEnableStatus( State ) ->
 % - {self(), archive, BinArchive} where BinArchive is a binary corresponding to
 % a ZIP archive of a set of files (ex: data and command file)
 %
-% - or {self(), raw, { BinFilename, BinContent}} where BinFilename is the
+% - or {self(), raw, {BinFilename, BinContent}} where BinFilename is the
 % filename (as a binary) of the transferred file, and BinContent is a binary of
 % its content (ex: a PNG file, which should better not be transferred as an
 % archive)
@@ -270,8 +270,7 @@ sendResults( _State, _Options ) ->
 % @doc Forces the status of this producer, regarding its results being produced
 % or not.
 %
--spec setResultProducedStatus( wooper:state(), boolean() ) ->
-									oneway_return().
+-spec setResultProducedStatus( wooper:state(), boolean() ) -> oneway_return().
 setResultProducedStatus( State, AreProduced ) ->
 	wooper:return_state( setAttribute( State, result_produced, AreProduced ) ).
 
@@ -280,8 +279,7 @@ setResultProducedStatus( State, AreProduced ) ->
 % @doc Forces the status of this producer regarding its results being collected
 % or not.
 %
--spec setResultCollectedStatus( wooper:state(), boolean() ) ->
-									oneway_return().
+-spec setResultCollectedStatus( wooper:state(), boolean() ) -> oneway_return().
 setResultCollectedStatus( State, AreCollected ) ->
 	wooper:return_state(
 		setAttribute( State, result_collected, AreCollected ) ).

@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2021 EDF R&D
+% Copyright (C) 2012-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,6 +19,13 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Class in charge of managing the <b>resilience operations on a specific
+% computing host</b>.
+%
+% Note that the serialisation of a complete simulation is a complex challenge
+% and that these resilience -oriented elements constitute only a first
+% experiment, neither complete nor reliable.
+%
 -module(class_ResilienceAgent).
 
 
@@ -50,28 +57,26 @@
 	{ probes, [ probe_pid() ], "a list of the PIDs of the local probes "
 	  "that this agent shall manage" },
 
-	{ node_suffix, string(), "the suffix to be used for this node, typically "
+	{ node_suffix, ustring(), "the suffix to be used for this node, typically "
 	  "to forge serialisation filenames (we do not want to use the full "
 	  "node name, as it is too long and includes '@', which should be avoided "
 	  "in a filename)" },
 
-	{ resilience_dir, file_utils:bin_directory_path(), "the (local) directory "
+	{ resilience_dir, bin_directory_path(), "the (local) directory "
 	  "where resilience information should be written (as a binary)" },
 
 	{ serialisation_info,
-	  [ { class_TimeManager:tick_offset(),
-		  class_TimeManager:diasca(),
-		  [ { net_utils:atom_node_name(), file_utils:filename() } ] } ],
+	  [ { tick_offset(), diasca(), [ { atom_node_name(), file_path() } ] } ],
 	  "a list (in reversed chronological order) of entries describing "
-	  "serialisations, notably, for one occurring at { Tick, Diasca }, a list "
+	  "serialisations, notably, for one occurring at {Tick, Diasca}, a list "
 	  "of the serialisation files that correspond to each of the then "
 	  "secured nodes" } ] ).
 
 
 
-
-% PID of a resilience agent:
 -type agent_pid() :: sim_diasca:agent_pid().
+% PID of a resilience agent.
+
 
 -export_type([ agent_pid/0 ]).
 
@@ -115,8 +120,22 @@
 -define( resilience_marker, sim_diasca_resilience_marker ).
 
 
-% Shorthand:
+% Shorthands:
+
+-type ustring() :: text_utils:ustring().
+-type bin_string() :: text_utils:bin_string().
+
+%-type file_path() :: file_utils:file_path().
+%-type bin_directory_path() :: file_utils:bin_directory_path().
+
+-type atom_node_name() :: net_utils:atom_node_name().
+
+-type tick_offset() :: class_TimeManager:tick_offset().
+-type diasca() :: class_TimeManager:diasca().
+
 -type resilience_manager_pid() :: class_ResilienceManager:manager_pid().
+
+-type probe_pid() :: class_Probe:probe_pid().
 
 
 
@@ -171,8 +190,7 @@
 
 
 
-
-% Constructs a new resilience agent, from following parameters:
+% @doc Constructs a resilience agent, from following parameters:
 %
 % - ResilienceManagerPid, the PID of the resilience manager
 %
@@ -183,14 +201,14 @@
 % - ResilienceDirBin, the path to the (local) directory where resilience
 % information should be written
 %
--spec construct( wooper:state(), resilience_manager_pid(), [ node_name() ],
-				 [ node_name() ], text_utils:bin_string() ) ->  wooper:state().
+-spec construct( wooper:state(), resilience_manager_pid(), [ atom_node_name() ],
+				 [ atom_node_name() ], bin_string() ) ->  wooper:state().
 construct( State, ResilienceManagerPid, SecuringNodes, SecuredByNodes,
 		   ResilienceDirBin ) ->
 
 	Node = node(),
 
-	EmitterName = io_lib:format( "Resilience Agent on node ~s", [ Node ] ),
+	EmitterName = text_utils:format( "Resilience Agent on node ~ts", [ Node ] ),
 
 	TraceState = class_EngineBaseObject:construct( State,
 										?trace_categorize(EmitterName) ),
@@ -225,7 +243,7 @@ construct( State, ResilienceManagerPid, SecuringNodes, SecuredByNodes,
 
 
 
-% Overridden destructor.
+% @doc Overridden destructor.
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -247,19 +265,18 @@ destruct( State ) ->
 % Methods section.
 
 
-% Serialises all the information needed for the node this agent runs on.
+% @doc Serialises all the information needed for the node this agent runs on.
 %
 % Typically called by the resilience manager, on each agent.
 %
--spec serialiseNode( wooper:state(), class_TimeManager:tick_offset(),
-	   class_TimeManager:diasca() ) ->
-			   request_return( { 'node_serialised', agent_pid() } ).
+-spec serialiseNode( wooper:state(), tick_offset(), diasca() ) ->
+						request_return( { 'node_serialised', agent_pid() } ).
 serialiseNode( State, Tick, Diasca ) ->
 
 	?debug_fmt( "Serialising now, at ~p.", [ { Tick, Diasca } ] ),
 
-	trace_utils:notice_fmt( "Serialising now on ~s (~w) at {~p,~p}.",
-						  [ node(), self(), Tick, Diasca ] ),
+	trace_bridge:notice_fmt( "Serialising now on ~ts (~w) at {~p,~p}.",
+							 [ node(), self(), Tick, Diasca ] ),
 
 	% Serialising is basically writing the state of all local elements (actors,
 	% agents, result producers, etc.) which could not be re-created by a new
@@ -307,9 +324,11 @@ serialiseNode( State, Tick, Diasca ) ->
 
 
 
-% Notifies this agent of the local probes it should manage, serialisation-wise.
--spec notifyOfLocalProbes( wooper:state(), [ class_Probe:probe_pid() ] ) ->
-		 request_return( { 'probes_recorded', agent_pid() } ).
+% @doc Notifies this agent of the local probes it should manage,
+% serialisation-wise.
+%
+-spec notifyOfLocalProbes( wooper:state(), [ probe_pid() ] ) ->
+			request_return( { 'probes_recorded', agent_pid() } ).
 notifyOfLocalProbes( State, ProbeList ) ->
 
 	NotifiedState = setAttribute( State, probes, ProbeList ),
@@ -318,25 +337,25 @@ notifyOfLocalProbes( State, ProbeList ) ->
 
 
 
-% Tells this agent to recover the specified nodes, i.e. to respawn locally their
-% serialised instances.
+% @doc Tells this agent to recover the specified nodes, that is to respawn
+% locally their serialised instances.
 %
--spec recoverNodes( wooper:state(), [ net_utils:atom_node_name() ],
-		   class_TimeManager:tick_offset(), class_TimeManager:diasca() ) ->
-		const_request_return( { 'nodes_recovered', agent_pid() } ).
+-spec recoverNodes( wooper:state(), [ atom_node_name() ], tick_offset(),
+	diasca() ) -> const_request_return( { 'nodes_recovered', agent_pid() } ).
 recoverNodes( State, NodesToRecover, Tick, Diasca ) ->
 
 	NodeFilenames = [ { Node,
 						get_serialisation_filename_for( Node, Tick, Diasca ) }
-					  || Node <- NodesToRecover ],
+								|| Node <- NodesToRecover ],
 
-	NodeStrings = [ io_lib:format( "node ~s (file: ~s)", [ Node, Filename ] )
-					|| { Node, Filename } <- NodeFilenames ],
+	NodeStrings = [ text_utils:format( "node ~ts (file: ~ts)",
+									   [ Node, Filename ] )
+								|| { Node, Filename } <- NodeFilenames ],
 
-	?debug_fmt( "Node ~s recovering serialisation done at ~p "
-				"for following nodes: ~s",
-				[ node(), { Tick, Diasca },
-				  text_utils:strings_to_string( NodeStrings ) ] ),
+	?debug_fmt( "Node ~ts recovering serialisation done at ~p "
+		"for following nodes: ~ts",
+		[ node(), { Tick, Diasca },
+		  text_utils:strings_to_string( NodeStrings ) ] ),
 
 	AgentPid = self(),
 
@@ -361,7 +380,7 @@ recoverNodes( State, NodesToRecover, Tick, Diasca ) ->
 			end
 
 											  end )
-						 || { _Node, SerialisationFilename } <- NodeFilenames ],
+						|| { _Node, SerialisationFilename } <- NodeFilenames ],
 
 
 	% As deserialisations may fail (ex: outage in their course), we have to
@@ -375,34 +394,34 @@ recoverNodes( State, NodesToRecover, Tick, Diasca ) ->
 		MaxDurationInSeconds, _AckReceiveAtom=serialisation_read,
 		_ThrowAtom=serialisation_reading_time_out ),
 
-	trace_utils:notice_fmt( "Node ~s successfully read ~B serialisation files.",
-							[ node(), length( FileReaderPidList ) ] ),
+	trace_bridge:notice_fmt( "Node ~ts successfully read ~B serialisation "
+		"files.", [ node(), length( FileReaderPidList ) ] ),
 
-	?debug_fmt( "Node ~s successfully read ~B serialisation files.",
+	?debug_fmt( "Node ~ts successfully read ~B serialisation files.",
 				[ node(), length( FileReaderPidList ) ] ),
 
 	wooper:const_return_result( { nodes_recovered, self() } ).
 
 
 
-% Tells this agent to relink the node-local instances.
+% @doc Tells this agent to relink the node-local instances.
 -spec relinkInstances( wooper:state() ) ->
-		 const_request_return( { 'nodes_relinked', agent_pid() } ).
+			const_request_return( { 'nodes_relinked', agent_pid() } ).
 relinkInstances( State ) ->
 
 	% Local instances are: actors, simulation agents, result producers:
 
-	?debug_fmt( "Node ~s successfully relinked.", [ node() ] ),
+	?debug_fmt( "Node ~ts successfully relinked.", [ node() ] ),
 
 	wooper:const_return_result( { nodes_relinked, self() } ).
 
 
 
-% Updates the resilence mapping for that agent, i.e. which nodes it secures, by
-% which it is secured.
+% @doc Updates the resilence mapping for that agent, that is which nodes it
+% secures, by which it is secured.
 %
--spec updateResilienceMapping( wooper:state(), [ net_utils:atom_node_name() ],
-					  [ net_utils:atom_node_name() ] ) -> oneway_return().
+-spec updateResilienceMapping( wooper:state(), [ atom_node_name() ],
+							   [ atom_node_name() ] ) -> oneway_return().
 updateResilienceMapping( State, NewSecuringNodes, NewSecuredByNodes ) ->
 
 	% Taking advantage of this call to zero the now obsolete PIDs:
@@ -415,8 +434,8 @@ updateResilienceMapping( State, NewSecuringNodes, NewSecuredByNodes ) ->
 
 
 
-% Returns a textual description of this manager.
--spec toString( wooper:state() ) -> const_request_return( string() ).
+% @doc Returns a textual description of this manager.
+-spec toString( wooper:state() ) -> const_request_return( ustring() ).
 toString( State ) ->
 	wooper:const_return_result( to_string( State ) ).
 
@@ -426,8 +445,8 @@ toString( State ) ->
 % Section for helper functions (not methods).
 
 
-% The entry point of the processes in charge of feeding the write process with
-% the various serialised states.
+% @doc The entry point of the processes in charge of feeding the write process
+% with the various serialised states.
 %
 % (note that, due to the parallel processing, the updating of the user data term
 % is per-serialiser, not done uniformly)
@@ -439,7 +458,7 @@ serialiser_loop( FileWriterPid, EntryTransformer,
 
 		{ serialise_actor, ActorPid } ->
 
-			trace_utils:debug_fmt( " - actor ~w to be written", [ ActorPid ] ),
+			trace_bridge:debug_fmt( " - actor ~w to be written", [ ActorPid ] ),
 
 			% We delegate the actual serialisation to the actor itself:
 			ActorPid ! { serialise, [ EntryTransformer, UserData ], self() },
@@ -459,9 +478,9 @@ serialiser_loop( FileWriterPid, EntryTransformer,
 
 					FileWriterPid ! { write_content, Binary },
 
-					trace_utils:debug_fmt(
-					  " - actor ~w written (payload: ~B bytes)",
-					  [ ActorPid, Size ] ),
+					trace_bridge:debug_fmt(
+						" - actor ~w written (payload: ~B bytes)",
+						[ ActorPid, Size ] ),
 
 					serialiser_loop( FileWriterPid, EntryTransformer,
 									 NewUserData )
@@ -471,7 +490,7 @@ serialiser_loop( FileWriterPid, EntryTransformer,
 
 		{ serialise_probe, ProbePid } ->
 
-			trace_utils:debug_fmt( " - probe ~w to be written", [ ProbePid ] ),
+			trace_bridge:debug_fmt( " - probe ~w to be written", [ ProbePid ] ),
 
 			% Delegated serialisation again:
 			ProbePid ! { serialise, [ EntryTransformer, UserData ], self() },
@@ -491,9 +510,9 @@ serialiser_loop( FileWriterPid, EntryTransformer,
 
 					FileWriterPid ! { write_content, Binary },
 
-					trace_utils:debug_fmt(
-					  " - probe ~w written (payload: ~B bytes)",
-					  [ ProbePid, Size ] ),
+					trace_bridge:debug_fmt(
+						" - probe ~w written (payload: ~B bytes)",
+						[ ProbePid, Size ] ),
 
 					serialiser_loop( FileWriterPid, EntryTransformer,
 									 NewUserData )
@@ -503,7 +522,7 @@ serialiser_loop( FileWriterPid, EntryTransformer,
 
 		{ serialise_agent, AgentPid } ->
 
-			trace_utils:debug_fmt( " - agent ~w to be written", [ AgentPid ] ),
+			trace_bridge:debug_fmt( " - agent ~w to be written", [ AgentPid ] ),
 
 			% Actual serialisation still delegated:
 			AgentPid ! { serialise, [ EntryTransformer, UserData ], self() },
@@ -523,9 +542,9 @@ serialiser_loop( FileWriterPid, EntryTransformer,
 
 					FileWriterPid ! { write_content, Binary },
 
-					trace_utils:debug_fmt(
-					  " - agent ~w written (payload: ~B bytes)",
-					  [ AgentPid, Size ] ),
+					trace_bridge:debug_fmt(
+						" - agent ~w written (payload: ~B bytes)",
+						[ AgentPid, Size ] ),
 
 					serialiser_loop( FileWriterPid, EntryTransformer,
 									 NewUserData )
@@ -535,7 +554,7 @@ serialiser_loop( FileWriterPid, EntryTransformer,
 
 		terminate ->
 
-			trace_utils:debug_fmt( "Serialiser ~w terminated.", [ self() ] ),
+			trace_bridge:debug_fmt( "Serialiser ~w terminated.", [ self() ] ),
 
 			% To avoid serialiser-level race conditions:
 			FileWriterPid ! serialisation_sent
@@ -551,11 +570,11 @@ serialiser_loop( FileWriterPid, EntryTransformer,
 %
 dispatch_serialisations( SerialisationKind, InstancePidList, SerialiserRing ) ->
 
-	trace_utils:debug_fmt(
-	  "- dispatching ~B serialisations of type ~p onto a ring of "
-	  "~B serialisers",
-	  [ length( InstancePidList ), SerialisationKind,
-		ring_utils:size( SerialiserRing ) ] ),
+	trace_bridge:debug_fmt(
+		"- dispatching ~B serialisations of type ~p onto a ring of "
+		"~B serialisers",
+		[ length( InstancePidList ), SerialisationKind,
+		  ring_utils:size( SerialiserRing ) ] ),
 
 	dispatch_serialisations( SerialisationKind, InstancePidList,
 							 SerialiserRing, _Count=0 ).
@@ -566,7 +585,7 @@ dispatch_serialisations( _SerialisationKind, _InstancePidList=[],
 	{ Count, SerialiserRing };
 
 dispatch_serialisations( SerialisationKind,
-			 _InstancePidList=[ InstancePid | T ], SerialiserRing, Count ) ->
+				_InstancePidList=[ InstancePid | T ], SerialiserRing, Count ) ->
 
 	{ SerialiserPid, UpdatedRing } = ring_utils:head( SerialiserRing ),
 
@@ -581,8 +600,8 @@ dispatch_serialisations( SerialisationKind,
 % Writer process section.
 
 
-% The entry point of the process in charge of the actual file writing of the
-% serialisation information, sent by all serialisers.
+% @doc The entry point of the process in charge of the actual file writing of
+% the serialisation information, sent by all serialisers.
 %
 writer_run( SerialisationPath, SerialiserCount, AgentPid ) ->
 
@@ -608,7 +627,7 @@ writer_run( SerialisationPath, SerialiserCount, AgentPid ) ->
 
 
 
-% The main loop of the writer process.
+% @doc The main loop of the writer process.
 %
 % The serialisation agent has already notified the serialisers that all
 % serialisation requests had been sent, and is waiting for this writer, which is
@@ -648,7 +667,7 @@ writer_loop( File, SerialiserCount, AgentPid ) ->
 % Reader process section.
 
 
-% The entry point of the process in charge of the actual reading of a
+% @doc The entry point of the process in charge of the actual reading of a
 % serialisation archive.
 %
 reader_run( SerialisationPath, AgentPid, LocalInstanceTracker ) ->
@@ -681,13 +700,13 @@ reader_run( SerialisationPath, AgentPid, LocalInstanceTracker ) ->
 
 
 
-% Reads all elements for specified file.
+% @doc Reads all elements for specified file.
 reader_loop( File, AgentPid, LocalInstanceTracker ) ->
 	reader_loop( File, AgentPid, LocalInstanceTracker, _Waited=[] ).
 
 
 
-% The main loop of the reader process.
+% @doc The main loop of the reader process.
 %
 % Creations are asynchronous and run in parallel.
 %
@@ -721,12 +740,12 @@ reader_loop( File, AgentPid, LocalInstanceTracker, Waited ) ->
 
 		eof ->
 
-			%trace_utils:debug_fmt( "End of file reached, waiting for:~n~p",
-			%					   [ Waited ] ),
+			%trace_bridge:debug_fmt( "End of file reached, waiting for:~n~p",
+			%                        [ Waited ] ),
 
 			wait_for_readings( Waited ),
 
-			%trace_utils:debug_fmt( "Serialisation file fully processed." ),
+			%trace_bridge:debug_fmt( "Serialisation file fully processed." ),
 
 			AgentPid ! { serialisation_read, self() };
 
@@ -740,7 +759,7 @@ reader_loop( File, AgentPid, LocalInstanceTracker, Waited ) ->
 
 
 
-% Reads a serialised actor from file.
+% @doc Reads a serialised actor from file.
 %
 % Returns its PID.
 %
@@ -760,9 +779,9 @@ read_actor( File, _AgentPid, LocalInstanceTracker ) ->
 	%
 	ActorPid = ?myriad_spawn_link( fun() ->
 
-		trace_utils:debug_fmt(
-		  "Reading actor, serialised in ~B bytes, becoming ~p.",
-		  [ ContentSize, self() ] ),
+		trace_bridge:debug_fmt(
+			"Reading actor, serialised in ~B bytes, becoming ~p.",
+			[ ContentSize, self() ] ),
 
 		{ Classname, RawEntries } = binary_to_term( BinContent ),
 
@@ -794,8 +813,7 @@ read_actor( File, _AgentPid, LocalInstanceTracker ) ->
 
 
 
-
-% Reads a serialised probe from file.
+% @doc Reads a serialised probe from file.
 read_probe( File, _AgentPid, _LocalInstanceTracker ) ->
 
 	% The data format is fully specified in the 'Probe serialisation' section of
@@ -850,10 +868,11 @@ read_probe( File, _AgentPid, _LocalInstanceTracker ) ->
 
 		TotalSize = ContentSize + CommandSize + DataSize,
 
-		trace_utils:debug_fmt(
-		  "Reading probe, serialised in a total of ~B bytes "
-		  "(instance size: ~B, command size: ~B, data size: ~B), becoming ~p.",
-		  [ TotalSize, ContentSize, CommandSize, DataSize, self() ] ),
+		trace_bridge:debug_fmt(
+			"Reading probe, serialised in a total of ~B bytes "
+			"(instance size: ~B, command size: ~B, data size: ~B), "
+			"becoming ~p.",
+			[ TotalSize, ContentSize, CommandSize, DataSize, self() ] ),
 
 		% Will never return:
 		class_Probe:deserialise( BinStateContent, BinCommand, BinData,
@@ -863,21 +882,20 @@ read_probe( File, _AgentPid, _LocalInstanceTracker ) ->
 
 
 
-
-% Reads a serialised simulation agent from specified file.
+% @doc Reads a serialised simulation agent from specified file.
 %
 % Returns either the PID of a new agent that is to be waited, or 'none_to_wait'.
 %
 read_agent( File, _AgentPid, _LocalInstanceTracker ) ->
 
-	trace_utils:debug( "Reading agent." ),
+	trace_bridge:debug( "Reading agent." ),
 
 	{ ok, << ContentSize:32 >> } = file_utils:read( File, _SizeSize=4 ),
 
 	{ ok, BinContent } = file_utils:read( File, ContentSize ),
 
 	% Here, all depends on the kind of this agent; if it is a time manager, we
-	% are not to create a new instance thereof, we are to merge that serialised
+	% are not to create an instance thereof, we are to merge that serialised
 	% information into the redeployed one:
 	%
 	{ Classname, RawEntries } = binary_to_term( BinContent ),
@@ -908,8 +926,8 @@ wait_for_readings( WaitedList ) ->
 
 		{ onDeserialisation, [ CreatedProcessPid, _FinalUserData ] } ->
 
-			NewWaitedList = list_utils:delete_existing( CreatedProcessPid,
-														WaitedList ),
+			NewWaitedList =
+				list_utils:delete_existing( CreatedProcessPid, WaitedList ),
 
 			wait_for_readings( NewWaitedList )
 
@@ -917,10 +935,12 @@ wait_for_readings( WaitedList ) ->
 
 
 
-% Returns the filename corresponding to the specified node, tick and diasca.
+% @doc Returns the filename corresponding to the specified node, tick and
+% diasca.
+%
 get_serialisation_filename_for( NodeName, Tick, Diasca ) ->
-	io_lib:format( "serialisation-~B-~B-from-~s.bin",
-				   [ Tick, Diasca, get_node_suffix_from( NodeName ) ] ).
+	text_utils:format( "serialisation-~B-~B-from-~ts.bin",
+					   [ Tick, Diasca, get_node_suffix_from( NodeName ) ] ).
 
 
 % Returns a node suffix from the specified name, typically a node name.
@@ -964,7 +984,7 @@ produce_serialisation_file( SerialisationPath, State ) ->
 
 	% The single file writer process, fed by all serialiser ones:
 	FileWriterPid = ?myriad_spawn_link( fun() ->
-			 writer_run( SerialisationPath, SerialiserCount, AgentPid )
+				writer_run( SerialisationPath, SerialiserCount, AgentPid )
 										end ),
 
 
@@ -974,7 +994,7 @@ produce_serialisation_file( SerialisationPath, State ) ->
 	% This in a term_transformer() (see meta_utils.erl):
 	%
 	%_MarkerTransformer = fun( _AtomTerm=?resilience_marker,
-	%						 _MarkUserData=InstancePid ) ->
+	%                          _MarkUserData=InstancePid ) ->
 
 	%	% Never allowed in actual states:
 	%	throw( { resilience_marker_in_attribute, ?resilience_marker,
@@ -1013,7 +1033,7 @@ produce_serialisation_file( SerialisationPath, State ) ->
 
 	%		end,
 
-			%trace_utils:debug_fmt( "PID ~w resolved in '~p'.",
+			%trace_bridge:debug_fmt( "PID ~w resolved in '~p'.",
 			%					   [ Pid, PidTranslation ] ),
 
 			% Replaces that found PID by its translation, wrapped in a
@@ -1050,8 +1070,8 @@ produce_serialisation_file( SerialisationPath, State ) ->
 			% Then transform the PIDs:
 			% (API update to integrate)
 			%{ TransformedValue, NewUserData } = meta_utils:traverse_term(
-			%	  AttributeValue, _TypeDescription=pid, PidTransformer,
-			%	  _TermUserData=EntryUserData ),
+			%     AttributeValue, _TypeDescription=pid, PidTransformer,
+			%     _TermUserData=EntryUserData ),
 
 			throw( not_integrated ),
 
@@ -1074,12 +1094,12 @@ produce_serialisation_file( SerialisationPath, State ) ->
 	%
 	SerialiserPids = [ ?myriad_spawn_link( fun() ->
 
-			trace_utils:debug_fmt( "Serialiser ~w spawned.", [ self() ] ),
+			trace_bridge:debug_fmt( "Serialiser ~w spawned.", [ self() ] ),
 
 			serialiser_loop( FileWriterPid, EntryTransformer, UserData )
 										   end )
 
-					   || _ <- lists:seq( 1, SerialiserCount ) ],
+						|| _ <- lists:seq( 1, SerialiserCount ) ],
 
 	% Dispatching now the serialisation effort onto these serialisation workers:
 	SerialiserRing = ring_utils:from_list( SerialiserPids ),
@@ -1093,8 +1113,8 @@ produce_serialisation_file( SerialisationPath, State ) ->
 	% Answer from getAllLocalActors/1 finally collected:
 	ActorPidList = receive
 
-					   { wooper_result, ActorPids } ->
-						   ActorPids
+		{ wooper_result, ActorPids } ->
+			ActorPids
 
 	end,
 
@@ -1110,10 +1130,9 @@ produce_serialisation_file( SerialisationPath, State ) ->
 	{ ProbeCount, _ProbeSerialiserRing } = dispatch_serialisations(
 					serialise_probe, ProbePidList, ActorSerialiserRing ),
 
-	trace_utils:debug_fmt( "Writing serialisation data in file '~s', "
-			   "~w serialising ~B agents, ~B actors and ~B probes.~n",
-			   [ SerialisationPath, self(), AgentCount, ActorCount,
-				 ProbeCount ] ),
+	trace_bridge:debug_fmt( "Writing serialisation data in file '~ts', "
+		"~w serialising ~B agents, ~B actors and ~B probes.",
+		[ SerialisationPath, self(), AgentCount, ActorCount, ProbeCount ] ),
 
 
 	% Sent in order to avoid any race condition, as the file writer has no other
@@ -1237,10 +1256,11 @@ exchange_serialisation_files( SerialisationPath, State ) ->
 
 			% However we do not know yet which receiver process at the other end
 			% shall be used (as there are also multiple receiver workers), so:
+			%
 			ReceiverWorkerPid = receive
 
-						{ declareSerialisationRecipient, Pid } ->
-							Pid
+				{ declareSerialisationRecipient, Pid } ->
+					Pid
 
 			end,
 
@@ -1248,7 +1268,7 @@ exchange_serialisation_files( SerialisationPath, State ) ->
 
 			ThisAgent ! { serialisation_sent, self(), node( SecuringAgentPid ) }
 
-										   end )
+								end )
 
 						|| SecuringAgentPid <- SecuringAgentPidList ],
 
@@ -1285,7 +1305,7 @@ exchange_serialisation_files( SerialisationPath, State ) ->
 								 end )
 
 
-	end || _ <- SecuredNodes ],
+	 end || _ <- SecuredNodes ],
 
 
 	% As serialisations may fail (ex: outage in their course), we have to define
@@ -1296,19 +1316,19 @@ exchange_serialisation_files( SerialisationPath, State ) ->
 	InitialTimestamp = time_utils:get_timestamp(),
 
 	% Now wait for both sets of parallel tasks to complete:
-	NodePathList = wait_for_serialisation_acks(
-					 _WaitedSentCount=NodeCount, _WaitedReceivedCount=NodeCount,
-					 InitialTimestamp, MaxWaiting, _ReceiveAcc=[] ),
+	NodePathList = wait_for_serialisation_acks( _WaitedSentCount=NodeCount,
+		_WaitedReceivedCount=NodeCount, InitialTimestamp, MaxWaiting,
+		_ReceiveAcc=[] ),
 
-	?debug_fmt( "Node ~s received following ~B serialisation files: ~s",
+	?debug_fmt( "Node ~ts received following ~B serialisation files: ~ts",
 		[ node(), length( NodePathList ), text_utils:strings_to_string(
-			[ text_utils:format( "for secured node '~s': ~s", [ Node, Path ] )
-			  || { Node, Path } <- NodePathList ] ) ] ),
+			[ text_utils:format( "for secured node '~ts': ~ts", [ Node, Path ] )
+				|| { Node, Path } <- NodePathList ] ) ] ),
 
 	% A priori no need to keep our own backup:
 	file_utils:remove_file( SerialisationPath ),
 
-	trace_utils:info_fmt( "Serialisation finished by ~w on node '~s'.",
+	trace_bridge:info_fmt( "Serialisation finished by ~w on node '~ts'.",
 						  [ self(), node() ] ),
 
 	NodePathList.
@@ -1323,7 +1343,7 @@ exchange_serialisation_files( SerialisationPath, State ) ->
 % (helper)
 %
 wait_for_serialisation_acks( _WaitedSentCount=0, _WaitedReceivedCount=0,
-				_InitialTimestamp, _MaxWaiting, ReceiveAcc ) ->
+							 _InitialTimestamp, _MaxWaiting, ReceiveAcc ) ->
 	ReceiveAcc;
 
 wait_for_serialisation_acks( WaitedSentCount, WaitedReceivedCount,
@@ -1353,8 +1373,8 @@ wait_for_serialisation_acks( WaitedSentCount, WaitedReceivedCount,
 				_ ->
 					% Continues waiting then:
 					wait_for_serialisation_acks( WaitedSentCount,
-							WaitedReceivedCount, InitialTimestamp, MaxWaiting,
-							ReceiveAcc )
+						WaitedReceivedCount, InitialTimestamp, MaxWaiting,
+						ReceiveAcc )
 
 			end
 
@@ -1366,15 +1386,15 @@ wait_for_serialisation_acks( WaitedSentCount, WaitedReceivedCount,
 %
 % (helper)
 %
--spec to_string( wooper:state() ) -> string().
+-spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
 	Securing = ?getAttr(securing),
 	SecuredBy = ?getAttr(secured_by),
 
-	text_utils:format( "Resilience agent on node ~s, using directory ~s, "
-		"securing following ~B node(s): ~s and secured by following ~B "
-		"node(s): ~s",
+	text_utils:format( "Resilience agent on node ~ts, using directory ~ts, "
+		"securing following ~B node(s): ~ts and secured by following ~B "
+		"node(s): ~ts",
 		[ node(), ?getAttr(resilience_dir), length( Securing ),
 		  text_utils:atoms_to_string( Securing ), length( SecuredBy ),
 		  text_utils:atoms_to_string( SecuredBy ) ] ).

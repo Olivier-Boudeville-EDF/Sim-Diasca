@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,8 +19,8 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-% Unit test for the RandomManager class implementation, regarding the
-% exponential distribution.
+% @doc Unit test for the RandomManager class implementation, regarding the
+% <b>exponential distribution</b>.
 %
 % See the class_RandomManager.erl module.
 %
@@ -63,7 +63,7 @@ draw_exponential_values( _Count=0, Table, _Lambda, _RandomManagerPid ) ->
 draw_exponential_values( Count, Table, Lambda, RandomManagerPid ) ->
 	RandomManagerPid ! { getPositiveIntegerExponentialValue, Lambda, self() },
 
-	% Wanting a random value in ]1,?table_span]:
+	% Wanting a random value in ]1, ?table_span]:
 	receive
 
 		{ wooper_result, { positive_integer_exponential_value, Value } }
@@ -76,7 +76,6 @@ draw_exponential_values( Count, Table, Lambda, RandomManagerPid ) ->
 				setelement( Value, Table, NewCount ), Lambda, RandomManagerPid )
 
 	end.
-
 
 
 
@@ -145,7 +144,7 @@ test_exponential_random( RandomManagerPid, Lambda ) ->
 	show_exponential( RandomManagerPid, Lambda ),
 
 	?test_info( "Computing and displaying the full actual "
-		"exponential distribution." ),
+				"exponential distribution." ),
 
 	Values = make_table( ?table_span ),
 
@@ -159,30 +158,30 @@ test_exponential_random( RandomManagerPid, Lambda ) ->
 							SecondExponentialTable, Lambda, RandomManagerPid ),
 
 	FourthExponentialTable = draw_exponential_values( 500000-50000,
-						  ThirdExponentialTable, Lambda, RandomManagerPid ),
+							ThirdExponentialTable, Lambda, RandomManagerPid ),
 
 	FifthExponentialTable = draw_exponential_values( 5000000-500000,
-						  FourthExponentialTable, Lambda, RandomManagerPid ),
+							FourthExponentialTable, Lambda, RandomManagerPid ),
 
 	Mean = compute_mean( FifthExponentialTable ),
 
-	?test_notice_fmt( "Mean of this full actual exponential distribution is ~p.",
-					  [ Mean ] ),
+	?test_notice_fmt( "Mean of this full actual exponential distribution "
+					  "is ~p.", [ Mean ] ),
 
 	MyExponentialProbe = class_Probe:create_facility_probe(
 
 		_Title="Exponential probe",
 
-		_Curves=[ "After 500 draws","After 5000 draws","After 50000 draws",
+		_Curves=[ "After 500 draws", "After 5000 draws", "After 50000 draws",
 				  "After 500000 draws", "After 5000000 draws" ],
 
 		_Zones=[],
 
-		io_lib:format( "Test of the generation of exponential random "
-					   "distributions with lambda = ~p.", [ Lambda ] ),
+		text_utils:format( "Test of the generation of exponential random "
+						   "distributions with lambda = ~p.", [ Lambda ] ),
 
-		io_lib:format( "Drawn values (mean value is ~p, "
-					   "expected to be ~p)", [ Mean, 1 / Lambda ] ),
+		text_utils:format( "Drawn values (mean value is ~p, "
+						   "expected to be ~p)", [ Mean, 1 / Lambda ] ),
 
 		"Number of times a value has been drawn" ),
 
@@ -198,7 +197,7 @@ test_exponential_random( RandomManagerPid, Lambda ) ->
 
 
 
-% Runs the tests, no prior RandomManager expected to be alive.
+% @doc Runs the tests, no prior RandomManager expected to be alive.
 -spec run() -> no_return().
 run() ->
 
@@ -206,11 +205,11 @@ run() ->
 
 	class_ResultManager:create_mockup_environment(),
 
-	?test_info( "Creating a new RandomManager." ),
+	?test_info( "Creating a random manager." ),
 	class_RandomManager:create(),
 
-	RandomManagerPid = naming_utils:wait_for_global_registration_of(
-						 ?random_manager_name ),
+	RandomManagerPid =
+		naming_utils:wait_for_global_registration_of( ?random_manager_name ),
 
 	Lambda = 0.1,
 	test_exponential_random( RandomManagerPid, Lambda ),

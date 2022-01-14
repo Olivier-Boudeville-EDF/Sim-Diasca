@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,11 +19,8 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-
-% Overall unit test of the Sim-Diasca actor placement.
-
-
-
+% @doc Overall unit test of the Sim-Diasca actor placement.
+%
 % The test will try to create all initial actors on the same node, bypassing the
 % default placement policy.
 %
@@ -35,7 +32,7 @@
 
 
 
-% Runs the local test simulation.
+% @doc Runs the local test simulation.
 -spec run() -> no_return().
 run() ->
 
@@ -43,6 +40,7 @@ run() ->
 
 	% Default simulation settings (50Hz, batch reproducible) are used, except
 	% for the name:
+	%
 	SimulationSettings = #simulation_settings{
 		simulation_name="Scheduling initial placement hint test" },
 
@@ -54,10 +52,10 @@ run() ->
 	%
 	DeploymentSettings = #deployment_settings{
 
-	  computing_hosts =
+		computing_hosts =
 			{ use_host_file_otherwise_local, "sim-diasca-host-candidates.txt" },
 
-	  perform_initial_node_cleanup=true	},
+		perform_initial_node_cleanup=true },
 
 
 	% Default load balancing settings (round-robin placement heuristic):
@@ -70,7 +68,7 @@ run() ->
 
 
 	sim_diasca:init( SimulationSettings, DeploymentSettings,
-					LoadBalancingSettings ),
+					 LoadBalancingSettings ),
 
 
 	?test_info( "Deployment manager created." ),
@@ -83,16 +81,16 @@ run() ->
 	TerminationTickOffset = 80,
 
 	FirstActorPid = class_Actor:create_initial_placed_actor( class_TestActor,
-			[ "First test actor", SchedulingSettings, CreationSettings,
-			 TerminationTickOffset ], this_is_my_placement_hint ),
+		[ "First test actor", SchedulingSettings, CreationSettings,
+		  TerminationTickOffset ], this_is_my_placement_hint ),
 
 	SecondActorPid = class_Actor:create_initial_placed_actor( class_TestActor,
-			[ "Second test actor", SchedulingSettings, CreationSettings,
-			 TerminationTickOffset ], this_is_my_placement_hint ),
+		[ "Second test actor", SchedulingSettings, CreationSettings,
+		  TerminationTickOffset ], this_is_my_placement_hint ),
 
 	ThirdActorPid = class_Actor:create_initial_placed_actor( class_TestActor,
-			[ "Third test actor", SchedulingSettings, CreationSettings,
-			 TerminationTickOffset ], this_is_my_placement_hint ),
+		[ "Third test actor", SchedulingSettings, CreationSettings,
+		  TerminationTickOffset ], this_is_my_placement_hint ),
 
 
 	FirstActorPid ! { getHostingNode, [], self() },

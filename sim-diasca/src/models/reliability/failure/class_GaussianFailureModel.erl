@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,12 +19,15 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Class modelling the failure behaviour of equipments according to a
+% Gaussian (normal) law (probability density).
+%
 -module(class_GaussianFailureModel).
 
 
 -define( class_description,
-		 "Class modeling the failure behaviour of equipments according to a "
-		 "gaussian (normal) law (probability density). "
+		 "Class modelling the failure behaviour of equipments according to a "
+		 "Gaussian (normal) law (probability density). "
 		 "It is a less common failure model than the exponential one. "
 		 "See: class_ExponentialFailureModel." ).
 
@@ -43,7 +46,7 @@
 
 
 
-% Constructs a new gaussian failure model actor.
+% @doc Constructs a Gaussian failure model actor.
 %
 % MTTF is Mean Time To Failure, the mean (average) duration before a working
 % system fails.
@@ -57,9 +60,10 @@
 %
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 class_FailureModel:mttf(), math_utils:standard_deviation() ) ->
-					   wooper:state().
+						wooper:state().
 construct( State, ActorSettings,
-		  _MTTF={ MTTFday, MTTFhour, MTTFminute, MTTFsecond }, MTTFStdDeviation ) ->
+		   _MTTF={ MTTFday, MTTFhour, MTTFminute, MTTFsecond },
+		   MTTFStdDeviation ) ->
 
 	% First the direct mother classes:
 
@@ -72,8 +76,8 @@ construct( State, ActorSettings,
 		{ positive_integer_gaussian, MTTF, MTTFStdDeviation } ),
 
 	?send_info_fmt( FailureState,
-		"Creating a new gaussian failure model whose MTTF is ~B seconds "
-		"and whose standard deviation is ~B.", [ MTTF, MTTFStdDeviation ] ),
+		"Creating a Gaussian failure model whose MTTF is ~p seconds "
+		"and whose standard deviation is ~p.", [ MTTF, MTTFStdDeviation ] ),
 
 	FailureState.
 

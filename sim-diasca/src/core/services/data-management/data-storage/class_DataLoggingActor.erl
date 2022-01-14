@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,11 +19,12 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Test actor for the <b>datalogging service</b>.
 -module(class_DataLoggingActor).
 
 
 -define( class_description,
-		 "Test of the data-logger facilities, from a simulation actor." ).
+		 "Test of the datalogger facilities, from a simulation actor." ).
 
 
 % Determines what are the direct mother classes of this class (if any):
@@ -33,20 +34,20 @@
 % The class-specific attributes of a datalogging actor instance:
 -define( class_attributes, [
 
-	 { first_probe_ref, class_DataLogger:virtual_probe_reference(),
-	   "reference onto the first virtual probe created" },
+	{ first_probe_ref, virtual_probe_reference(),
+	  "reference onto the first virtual probe created" },
 
-	 { second_probe_ref, class_DataLogger:virtual_probe_reference(),
-	   "reference onto the second virtual probe created" },
+	{ second_probe_ref, virtual_probe_reference(),
+	  "reference onto the second virtual probe created" },
 
 	{ listener_pid, maybe( pid() ),
 	  "the PID of any process (ex: the test case) listening to this test "
 	  "actor; allows to notify it that the report generation is over" },
 
-	 { talkative, boolean(), "tells whether this actor is talkative" },
+	{ talkative, boolean(), "tells whether this actor is talkative" },
 
-	 { termination_tick_offset, class_TimeManager:tick_offset(),
-	   "the tick offset at which this test actor will terminate" } ] ).
+	{ termination_tick_offset, tick_offset(),
+	  "the tick offset at which this test actor will terminate" } ] ).
 
 
 
@@ -59,8 +60,14 @@
 
 
 
+% Shorthands:
 
-% Constructs a new test actor for data-logging:
+-type tick_offset() :: class_TimeManager:tick_offset().
+%-type virtual_probe_reference() :: class_DataLogger:virtual_probe_reference().
+
+
+
+% @doc Constructs a test actor for data-logging:
 %
 % - ActorSettings corresponds to the engine settings for this actor, as
 % determined by the load-balancer
@@ -74,14 +81,13 @@
 % This test actor creates two (virtual) probes.
 %
 -spec construct( wooper:state(), class_Actor:actor_settings(),
-		class_Actor:name(), class_TimeManager:tick_offset(), pid() ) ->
-						wooper:state().
+		class_Actor:name(), tick_offset(), pid() ) -> wooper:state().
 construct( State, ActorSettings, ActorName, TerminationTickOffset,
 		   ListenerPid ) ->
 
 	% Cannot use 'output' yet (no talkative attribute):
 	%trace_utils:debug_fmt( "Creating a test actor named '~ts'.",
-	%	[ ActorName ] ),
+	%   [ ActorName ] ),
 
 	% First the direct mother classes, then this class-specific actions:
 	ActorState = class_Actor:construct( State, ActorSettings,
@@ -91,24 +97,24 @@ construct( State, ActorSettings, ActorName, TerminationTickOffset,
 	FirstTitle = text_utils:format( "Curves A for actor ~w", [ self() ] ),
 
 	FirstVirtualProbePair = class_DataLogger:create_virtual_probe(
-			 _FirstProbeName=FirstTitle,
-			 _FirstCurveNames=[ "Curve A1", "Curve A2" ],
-			 _FirstZones=[],
-			 _FirstTitle=FirstTitle,
-			 _FirstXLabel="Simulation tick",
-			 _FirstYLabel="Curve A values" ),
+		_FirstProbeName=FirstTitle,
+		_FirstCurveNames=[ "Curve A1", "Curve A2" ],
+		_FirstZones=[],
+		_FirstTitle=FirstTitle,
+		_FirstXLabel="Simulation tick",
+		_FirstYLabel="Curve A values" ),
 
 	SecondTitle = text_utils:format( "Curves B for actor ~w", [ self() ] ),
 
 	SecondVirtualProbePair = class_DataLogger:create_virtual_probe(
-			 _SecondProbeName=SecondTitle,
-			 _SecondCurveNames=[ "Curve B1", "Curve B2", "Curve B3" ],
-			 _SecondZones=[],
-			 _SecondTitle=SecondTitle,
-			 _SecondXLabel="Simulation tick",
-			 _SecondYLabel="Curve B values" ),
+		_SecondProbeName=SecondTitle,
+		_SecondCurveNames=[ "Curve B1", "Curve B2", "Curve B3" ],
+		_SecondZones=[],
+		_SecondTitle=SecondTitle,
+		_SecondXLabel="Simulation tick",
+		_SecondYLabel="Curve B values" ),
 
-	?send_notice_fmt( ActorState, "Creating a new datalogging test actor, "
+	?send_notice_fmt( ActorState, "Creating a datalogging test actor, "
 		"terminating no sooner than tick offset #~w.",
 		[ TerminationTickOffset ] ),
 
@@ -126,7 +132,7 @@ construct( State, ActorSettings, ActorName, TerminationTickOffset,
 
 
 
-% Overridden destructor.
+% @doc Overridden destructor.
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -147,8 +153,7 @@ destruct( State ) ->
 % Management section of the actor.
 
 
-
-% The core of the test actor behaviour.
+% @doc The core of the test actor behaviour.
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
@@ -199,7 +204,7 @@ onFirstDiasca( State, _SendingActorPid ) ->
 % Section for helper functions (not methods).
 
 
-% Outputs specified message in console, iff talkative.
+% @doc Outputs specified message in console, iff talkative.
 %
 % (helper)
 %
@@ -221,7 +226,7 @@ output( MessageFormat, FormatValues, State ) ->
 
 
 
-% Sends data to the virtual probes (if any was selected).
+% @doc Sends data to the virtual probes (if any was selected).
 send_probe_data( CurrentOffset, State ) ->
 
 	% Depending on the result specification, one probe may be wanted while the
@@ -231,10 +236,10 @@ send_probe_data( CurrentOffset, State ) ->
 	% sample will be sent to it:
 
 	class_DataLogger:send_data( ?getAttr(first_probe_ref), CurrentOffset,
-					_FirstSample={ random_utils:get_random_value( 50 ),
-								   random_utils:get_random_value( 30 ) } ),
+		_FirstSample={ random_utils:get_random_value( 50 ),
+					   random_utils:get_random_value( 30 ) } ),
 
 	class_DataLogger:send_data( ?getAttr(second_probe_ref), CurrentOffset,
-					_SecondSample={ random_utils:get_random_value( 100 ),
-									random_utils:get_random_value( 30 ),
-									random_utils:get_random_value( 150 ) } ).
+		_SecondSample={ random_utils:get_random_value( 100 ),
+						random_utils:get_random_value( 30 ),
+						random_utils:get_random_value( 150 ) } ).

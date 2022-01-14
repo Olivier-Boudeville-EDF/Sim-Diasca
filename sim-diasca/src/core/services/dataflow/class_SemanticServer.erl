@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2021 EDF R&D
+% Copyright (C) 2016-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,6 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Class in charge of <b>managing semantic information</b>.
 -module(class_SemanticServer).
 
 
@@ -128,7 +129,7 @@
 
 
 
-% @doc Constructs a new semantic server.
+% @doc Constructs a semantic server.
 %
 % MinDistance is the minimum lexicographic distance allowed between two semantic
 % elements (Levenshtein distance).
@@ -424,7 +425,7 @@ add_semantic_element( SemanticElement, State ) ->
 					% No restriction here, hence directly included (shortcut):
 
 					%?info_fmt( "Semantic element '~ts' directly accepted.",
-					%			[ SemanticElement ] ),
+					%           [ SemanticElement ] ),
 
 					IncState = include_element( SemanticElement,
 						 StringSemanticElement, Vocabulary, StringVocabulary,
@@ -443,7 +444,7 @@ add_semantic_element( SemanticElement, State ) ->
 
 						true ->
 							%?info_fmt( "Semantic element '~ts' accepted.",
-							%			[ SemanticElement ] ),
+							%           [ SemanticElement ] ),
 
 							IncState = include_element( SemanticElement,
 								StringSemanticElement, Vocabulary,

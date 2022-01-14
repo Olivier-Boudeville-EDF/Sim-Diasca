@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,17 +19,15 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-% Unit tests for the core_utils module.
+% @doc Unit tests for the <b>core_utils</b> module.
 %
 % See core_utils.erl module.
 %
 -module(core_utils_test).
 
 
-
 % For facilities common to all cases:
 -include("sim_diasca_for_cases.hrl").
-
 
 
 % For random_manager_name:
@@ -37,7 +35,7 @@
 
 
 
-% Runs the tests.
+% @doc Runs the tests.
 -spec run() -> no_return().
 run() ->
 
@@ -45,11 +43,11 @@ run() ->
 
 	class_InstanceTracker:create_mockup_environment(),
 
-	?test_info( "Creating a new RandomManager." ),
+	?test_info( "Creating a random manager." ),
 	class_RandomManager:create(),
 
 	RandomManagerPid = naming_utils:wait_for_global_registration_of(
-						 ?random_manager_name ),
+							?random_manager_name ),
 
 	?test_info( "Testing the random drawing of items in lists." ),
 
@@ -60,7 +58,7 @@ run() ->
 		core_utils:draw_item_from( DrawableList, RandomManagerPid ),
 
 	?test_notice_fmt( "From list ~p, extracted ~B, remaining: ~p.",
-					[ DrawableList, DrawnItem, FirstRemainingList ] ),
+					  [ DrawableList, DrawnItem, FirstRemainingList ] ),
 
 	FirstItemCount = 4,
 
@@ -68,22 +66,23 @@ run() ->
 		DrawableList, FirstItemCount, RandomManagerPid ),
 
 	?test_notice_fmt( "From list ~p, extracted ~B items: ~p, remaining: ~p.",
-		[ DrawableList, FirstItemCount, FirstDrawnItemList, SecondRemainingList
-		] ),
+		[ DrawableList, FirstItemCount, FirstDrawnItemList,
+		  SecondRemainingList ] ),
 
 	SecondItemCount = length( DrawableList ),
 
 	{ SecondDrawnItemList, ThirdRemainingList } = core_utils:draw_items_from(
 		DrawableList, SecondItemCount, RandomManagerPid ),
 
-	?test_notice_fmt( "From list ~p, extracted all ~B items: ~p, remaining: ~p.",
-					  [ DrawableList, SecondItemCount, SecondDrawnItemList,
-						ThirdRemainingList ] ),
+	?test_notice_fmt( "From list ~p, extracted all ~B items: ~p, "
+		"remaining: ~p.",
+		[ DrawableList, SecondItemCount, SecondDrawnItemList,
+		  ThirdRemainingList ] ),
 
 	ThirdItemCount = length( DrawableList ) + 1,
 
 	too_many_drawn_items = core_utils:draw_items_from( DrawableList,
-										 ThirdItemCount, RandomManagerPid ),
+											ThirdItemCount, RandomManagerPid ),
 
 	?test_info( "Extracting too many items from a list is correctly detected."),
 

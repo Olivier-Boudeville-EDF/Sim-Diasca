@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -29,14 +29,11 @@
 % As notify_mute needs an implicit 'State' variable, it cannot be a function, it
 % is therefore a macro, and notify_by_speak too for homogeneity.
 
--define( notify_mute( Message ),
-	?info( Message )
-).
+-define( notify_mute( Message ), ?info( Message ) ).
 
 
 -define( notify_mute_fmt( Message, Values ),
-	?info_fmt( Message, Values )
-).
+	?info_fmt( Message, Values ) ).
 
 
 % Tells whether the simulation system should be talkative.
@@ -46,20 +43,15 @@
 
 -ifdef(talkative).
 
--define( notify_by_speak( Message ),
-	basic_utils:speak( Message )
-).
+-define( notify_by_speak( Message ), basic_utils:speak( Message ) ).
 
 -else. % talkative
 
--define( notify_by_speak( Message ),
-	speak_muted
-).
+-define( notify_by_speak( Message ), speak_muted ).
 
 -endif. % talkative
 
 
 -define( notify_user( Message ),
 	?notify_mute( Message ),
-	?notify_by_speak( Message )
-).
+	?notify_by_speak( Message ) ).

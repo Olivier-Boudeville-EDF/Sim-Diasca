@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -32,6 +32,8 @@
 
 
 % Shorthands:
+
+-type count() :: basic_utils:count().
 -type ustring() :: text_utils:ustring().
 
 
@@ -61,7 +63,7 @@ get_case_arguments() ->
 	% interpretation of argument names:
 	%
 	%trace_utils:debug_fmt( "Got, regarding arguments, ~p, whereas keys to "
-	%						"ignore are ~p.", [ AllArgs, KeysToIgnore ] ),
+	%                       "ignore are ~p.", [ AllArgs, KeysToIgnore ] ),
 
 	list_table:remove_entries( KeysToIgnore, AllArgs ).
 
@@ -72,7 +74,7 @@ get_case_arguments() ->
 get_title() ->
 
 	case shell_utils:get_command_arguments_for_option(
-		   ?engine_arg_version_key ) of
+		    ?engine_arg_version_key ) of
 
 		undefined ->
 			"Sim-Diasca distributed branch (unspecified version)";
@@ -172,7 +174,7 @@ draw_item_from( DrawableList, RandomManagerPid ) when DrawableList =/= [] ->
 % generally (ex: for actors) be obtained without direct exchange with a random
 % manager).
 %
--spec draw_items_from( [ T ], basic_utils:count(), random_manager_pid() ) ->
+-spec draw_items_from( [ T ], count(), random_manager_pid() ) ->
 								'too_many_drawn_items' | { [ T ], [ T ] }.
 draw_items_from( DrawableList, ItemCount, RandomManagerPid ) ->
 	draw_items_from( DrawableList, ItemCount, RandomManagerPid, _Acc=[] ).

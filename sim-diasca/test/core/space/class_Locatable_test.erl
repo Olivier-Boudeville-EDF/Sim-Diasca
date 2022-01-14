@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,7 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-% Unit tests for the Locatable class implementation.
+% @doc Unit tests for the <b>Locatable</b> class implementation.
 %
 % See the class_Locatable module.
 %
@@ -31,13 +31,13 @@
 
 
 
-% Runs the tests.
+% @doc Runs the tests.
 -spec run() -> no_return().
 run() ->
 
 	?test_start,
 
-	?test_info( "Creating a new test Locatable." ),
+	?test_info( "Creating a test Locatable." ),
 
 	MyLocation = { 1, 2, 3 },
 

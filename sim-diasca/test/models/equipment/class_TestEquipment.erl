@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,6 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc A class to model a <b>test equipment</b>.
 -module(class_TestEquipment).
 
 
@@ -39,7 +40,7 @@
 
 
 
-% Constructs a new test equipment.
+% @doc Constructs a piece of equipment.
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 class_Actor:name(), class_TimeManager:tick_offset(),
 				 class_FailureModel:model_pid(),
@@ -62,7 +63,7 @@ construct( State, ActorSettings, EquipmentName, TerminationTickOffset,
 	StartingState = setAttribute( EquipmentState, termination_tick_offset,
 								  TerminationTickOffset ),
 
-	?send_info( StartingState, "Creating a new test equipment." ),
+	?send_info( StartingState, "Creating a test equipment." ),
 
 	StartingState.
 
@@ -73,7 +74,7 @@ construct( State, ActorSettings, EquipmentName, TerminationTickOffset,
 % Methods section.
 
 
-% Behaviour when being in nominal state.
+% @doc Behaviour when being in nominal state.
 %
 % Note: tick termination will be handled by act_common/1.
 %
@@ -86,7 +87,7 @@ actNominal( State ) ->
 
 
 
-% Behaviour when being in dysfunction state.
+% @doc Behaviour when being in dysfunction state.
 %
 % Note: tick termination will be handled by act_common/1.
 %
@@ -103,7 +104,7 @@ actInDysfunction( State ) ->
 % Section for helper functions (not methods).
 
 
-% Manage the termination of this test equipment.
+% @doc Manage the termination of this test equipment.
 %
 % Common to nominal and dysfunction.
 %
@@ -146,9 +147,9 @@ act_common( State ) ->
 
 
 
-% Simply schedules this just created actor at the next tick (diasca 0).
+% @doc Simply schedules this just created actor at the next tick (diasca 0).
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
-						   actor_oneway_return().
+							actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 
 	ScheduledState = executeOneway( State, scheduleNextSpontaneousTick ),

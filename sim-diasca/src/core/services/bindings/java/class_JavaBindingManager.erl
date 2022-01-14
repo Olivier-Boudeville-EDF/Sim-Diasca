@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2021 EDF R&D
+% Copyright (C) 2016-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -74,6 +74,12 @@
 
 
 
+% Shorthands:
+
+-type ustring() :: text_utils:ustring().
+
+
+
 % Allows to define WOOPER base variables and methods for that class:
 -include_lib("wooper/include/wooper.hrl").
 
@@ -127,7 +133,7 @@
 
 
 
-% @doc Constructs a new manager of Java resources (resource manager).
+% @doc Constructs a manager of Java resources (resource manager).
 %
 % Parameters:
 %
@@ -205,7 +211,7 @@ notifyNodeMailboxes( State, ControllerMailboxPid, WorkerMailboxPids,
 						ControllerMailboxPid, ?getAttr(controller_table) ),
 
 	NewWorkerTable = table:add_new_entry( BindingAgentPid, WorkerMailboxPids,
-										 ?getAttr(worker_table) ),
+										  ?getAttr(worker_table) ),
 
 	NewWaited = list_utils:delete_existing( BindingAgentPid,
 											?getAttr(waited_agents) ),
@@ -410,7 +416,7 @@ initialise_java_nodes( ComputingNodes, EpmdPort, ClassPath, State ) ->
 	NodePidPairs = [ { Node,
 					   class_JavaBindingAgent:remote_synchronous_timed_new_link(
 							Node, EpmdPort, ClassPath, self() ) }
-					 || Node <- ComputingNodes ],
+						|| Node <- ComputingNodes ],
 
 	% Storing, for each computing node, the PID of its Java binding agent,
 	% knowing that controller mailboxes will be notified later, once their
@@ -433,7 +439,7 @@ initialise_java_nodes( ComputingNodes, EpmdPort, ClassPath, State ) ->
 
 
 % @doc Returns a textual description of this manager.
--spec to_string( wooper:state() ) -> string().
+-spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
 	MotherString = class_LanguageBindingManager:to_string( State ),
@@ -441,16 +447,16 @@ to_string( State ) ->
 	ControlPairs = table:enumerate( ?getAttr(controller_table) ),
 
 	ControlStrings = [ text_utils:format(
-						 "for agent ~w, controller mailbox is ~w",
-						 [ AgentPid, CtlMboxPid ] )
-					   || { AgentPid, CtlMboxPid } <- ControlPairs ],
+						"for agent ~w, controller mailbox is ~w",
+						[ AgentPid, CtlMboxPid ] )
+							|| { AgentPid, CtlMboxPid } <- ControlPairs ],
 
 	WorkerPairs = table:enumerate( ?getAttr(worker_table) ),
 
 	WorkerStrings = [ text_utils:format(
-						"for agent ~w, worker mailboxes are ~w",
-						 [ AgentPid, WorkerMboxPids ] )
-					   || { AgentPid, WorkerMboxPids } <- WorkerPairs ],
+					   "for agent ~w, worker mailboxes are ~w",
+					   [ AgentPid, WorkerMboxPids ] )
+							|| { AgentPid, WorkerMboxPids } <- WorkerPairs ],
 
 	text_utils:format( "Java ~ts~nFollowing controller mailboxes are "
 		"associated to their corresponding Java binding "

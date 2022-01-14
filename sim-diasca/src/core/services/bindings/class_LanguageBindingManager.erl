@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2021 EDF R&D
+% Copyright (C) 2016-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -43,22 +43,22 @@
 % The class-specific attributes:
 -define( class_attributes, [
 
-		{ node_table, node_table(), "table associating to each computing node "
-		  "the PID of the binding container running on that node" },
+	{ node_table, node_table(), "table associating to each computing node "
+	  "the PID of the binding container running on that node" },
 
-		{ engine_root_dir, directory_path(),
-		  "root directory in which the engine is located, on the user node" },
+	{ engine_root_dir, directory_path(),
+	  "root directory in which the engine is located, on the user node" },
 
-		{ epmd_port, net_utils:tcp_port(), "the TCP port at which the EPMD "
-		  "daemon of interest can be reached (ex: so that any binding-created "
-		  "node can find it)" },
+	{ epmd_port, net_utils:tcp_port(), "the TCP port at which the EPMD "
+	  "daemon of interest can be reached (ex: so that any binding-created "
+	  "node can find it)" },
 
-		{ code_path, code_utils:code_path(), "the overall code path (if any) "
-		  "to be used by each binding container in order to locate the binary "
-		  "elements it is to load" },
+	{ code_path, code_utils:code_path(), "the overall code path (if any) "
+	  "to be used by each binding container in order to locate the binary "
+	  "elements it is to load" },
 
-		{ deployment_manager_pid, deployment_manager_pid(),
-		  "PID of the deployment manager" } ] ).
+	{ deployment_manager_pid, deployment_manager_pid(),
+	  "PID of the deployment manager" } ] ).
 
 
 -type manager_pid() :: agent_pid().
@@ -119,21 +119,21 @@
 -include("class_DataflowBlock_defines.hrl").
 
 
--type binary_value_semantics() :: binary().
-% Describes (as a binary) the semantics associated to a dataflow value.
+-type binary_value_semantics() :: bin_string().
+% Describes (as a binary string) the semantics associated to a dataflow value.
 
 
--type binary_value_unit() :: binary().
-% Describes (as a binary) the unit associated to a dataflow value.
+-type binary_value_unit() :: bin_string().
+% Describes (as a binary string) the unit associated to a dataflow value.
 
 
--type binary_value_type() :: binary().
-% Describes (as a binary) the type associated to a dataflow value.
+-type binary_value_type() :: bin_string().
+% Describes (as a binary string) the type associated to a dataflow value.
 
 
 -type activation_result() :: { output_port_name(),
-							   { actual_value(), binary_value_semantics(),
-								 binary_value_unit(), binary_value_type() } }.
+								{ actual_value(), binary_value_semantics(),
+								  binary_value_unit(), binary_value_type() } }.
 % A list of the changes to perform on the output ports of a binding-implemented
 % processing unit after its activation (i.e. the execution of its activate/1
 % method, done in a runtime container of a binding).
@@ -146,6 +146,7 @@
 % Shorthands:
 
 -type ustring() :: text_utils:ustring().
+-type bin_string() :: text_utils:bin_string().
 
 -type directory_path() :: file_utils:directory_path().
 
@@ -173,7 +174,7 @@
 
 
 
-% @doc Constructs a new, abstract, named, language binding manager.
+% @doc Constructs an abstract, named, language binding manager.
 %
 % Parameters:
 %
@@ -319,10 +320,10 @@ get_encoded_input_ports_data( State ) ->
 	% Zips these encoded port names with the associated port statuses:
 	[ begin
 
-		  InputPortStatus = class_DataflowBlock:get_input_port_status(
+			InputPortStatus = class_DataflowBlock:get_input_port_status(
 													InputPortBinName, State ),
 
-		  { InputPortBinName, InputPortStatus }
+			{ InputPortBinName, InputPortStatus }
 
 	  end || InputPortBinName <- InputPortBinNames ].
 
@@ -350,7 +351,7 @@ get_encoded_input_port_iterations_data( State ) ->
 		InputPortIteration#input_port_iteration.multiplicity,
 		InputPortIteration#input_port_iteration.port_indexes }
 
-	  || InputPortIteration <- AllInputPortIterations ].
+		|| InputPortIteration <- AllInputPortIterations ].
 
 
 
@@ -375,7 +376,7 @@ get_encoded_output_port_iterations_data( State ) ->
 		OutputPortIteration#output_port_iteration.multiplicity,
 		OutputPortIteration#output_port_iteration.port_indexes }
 
-	  || OutputPortIteration <- AllOutputPortIterations ].
+		|| OutputPortIteration <- AllOutputPortIterations ].
 
 
 
@@ -395,14 +396,14 @@ apply_activation_results( ActivationResults, State ) ->
 	% Creates the channel values by decoding the fetched data:
 	ChannelValues = [ begin
 
-		  StringSems = [ text_utils:binary_to_string( Sem ) || Sem <- BinSems ],
+		StringSems = [ text_utils:binary_to_string( Sem ) || Sem <- BinSems ],
 
-		  Unit = text_utils:binary_to_string( BinUnit ),
-		  Type = text_utils:binary_to_string( BinType ),
+		Unit = text_utils:binary_to_string( BinUnit ),
+		Type = text_utils:binary_to_string( BinType ),
 
-		  class_Dataflow:create_channel_value( Value, StringSems, Unit, Type )
+		class_Dataflow:create_channel_value( Value, StringSems, Unit, Type )
 
-		  end || { Value, BinSems, BinUnit, BinType } <- ChannelValueData ],
+		end || { Value, BinSems, BinUnit, BinType } <- ChannelValueData ],
 
 	% Sets the channel values on the corresponding output ports:
 	OutputPortPairs = lists:zip( BinOutputPortNames, ChannelValues ),
@@ -414,7 +415,7 @@ apply_activation_results( ActivationResults, State ) ->
 % @doc Turns all the binaries in the encoded input port specs (keys and values
 % as well) into the types expected by the 'parse_raw_input_port_spec' function.
 %
--spec decode_input_port_specs( [ { binary(), term() } ] ) ->
+-spec decode_input_port_specs( [ { bin_string(), term() } ] ) ->
 										[ { atom(), term() } ].
 decode_input_port_specs( EncodedInputPortSpecs ) ->
 	% Grabs the values and converts them one by one, according to their meaning:
@@ -444,7 +445,7 @@ decode_input_port_specs_values( [ { <<"comment">>, BinComment } | T ], Acc )
 
 
 decode_input_port_specs_values(
-			[ _IterSpec={ <<"is_iteration">>, IterSpecVal } | T ], Acc ) ->
+		[ _IterSpec={ <<"is_iteration">>, IterSpecVal } | T ], Acc ) ->
 
 	% An iteration specification from a binding can only be a boolean, or an
 	% integer, or a tuple, or imbricated tuples containing integers.
@@ -550,7 +551,7 @@ decode_input_port_specs_values( [ OtherSpec | _T ], _Acc ) ->
 % @doc Turns all the binaries in the encoded output port specs (keys and values
 % as well) into the types expected by the 'parse_raw_output_port_spec' function.
 %
--spec decode_output_port_specs( [ { binary(), term() } ] ) ->
+-spec decode_output_port_specs( [ { bin_string(), term() } ] ) ->
 										[ { atom(), term() } ].
 decode_output_port_specs( EncodedOutputPortSpecs ) ->
 	% Grabs the values and converts them one by one, according to their meaning:
@@ -562,16 +563,16 @@ decode_output_port_specs_values( _Proplist=[], Acc ) ->
 	lists:reverse( Acc );
 
 decode_output_port_specs_values( [ { <<"name">>, BinName } | T ], Acc )
-  when is_binary( BinName ) ->
+			when is_binary( BinName ) ->
 
 	NewAcc = [ { output_port_name, text_utils:binary_to_string( BinName ) }
-			   | Acc ],
+				| Acc ],
 
 	decode_output_port_specs_values( T, NewAcc );
 
 
 decode_output_port_specs_values( [ { <<"comment">>, BinComment } | T ], Acc )
-  when is_binary( BinComment ) ->
+			when is_binary( BinComment ) ->
 
 	NewAcc = [ { comment, text_utils:binary_to_string( BinComment ) } | Acc ],
 
@@ -579,7 +580,7 @@ decode_output_port_specs_values( [ { <<"comment">>, BinComment } | T ], Acc )
 
 
 decode_output_port_specs_values(
-  [ _IterSpec={ <<"is_iteration">>, IterSpecVal } | T ], Acc ) ->
+			[ _IterSpec={ <<"is_iteration">>, IterSpecVal } | T ], Acc ) ->
 
 	% An iteration specification from a binding can only be a boolean, or an
 	% int, or a tuple, or imbricated tuples containing integers.
@@ -592,7 +593,7 @@ decode_output_port_specs_values(
 
 
 decode_output_port_specs_values(
-  [ _ResultSpec={ <<"produces_result">>, SpecVal } | T ], Acc ) ->
+			[ _ResultSpec={ <<"produces_result">>, SpecVal } | T ], Acc ) ->
 
 	% A 'produces_result' specification from a binding can only be a boolean
 	% value.
@@ -605,8 +606,8 @@ decode_output_port_specs_values(
 
 
 decode_output_port_specs_values(
-  [ { <<"value_semantics">>, BinSemList } | T ], Acc )
-  when is_list( BinSemList ) ->
+			[ { <<"value_semantics">>, BinSemList } | T ], Acc )
+			when is_list( BinSemList ) ->
 
 	StringSems = [ text_utils:binary_to_string( BinSem )
 				   || BinSem <- BinSemList ],
@@ -625,8 +626,8 @@ decode_output_port_specs_values( [ { <<"value_unit">>, BinUnit } | T ], Acc )
 
 
 decode_output_port_specs_values(
-  [ { <<"value_type_description">>, BinTypeDesc } | T ], Acc )
-  when is_binary( BinTypeDesc ) ->
+			[ { <<"value_type_description">>, BinTypeDesc } | T ], Acc )
+			when is_binary( BinTypeDesc ) ->
 
 	NewAcc = [ { value_type_description,
 				 text_utils:binary_to_string( BinTypeDesc ) } | Acc ],
@@ -635,8 +636,8 @@ decode_output_port_specs_values(
 
 
 decode_output_port_specs_values(
-  [ { <<"value_constraints">>, BinConstraints } | T ], Acc )
-  when is_list( BinConstraints ) ->
+			[ { <<"value_constraints">>, BinConstraints } | T ], Acc )
+			when is_list( BinConstraints ) ->
 
 	true = lists:all( fun( C ) -> is_binary( C ) end, BinConstraints ),
 

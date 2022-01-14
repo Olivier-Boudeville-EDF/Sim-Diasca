@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,10 +19,8 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-
-% Overall unit test of the Sim-Diasca deployment and scheduling framework.
+% @doc Overall unit test of the Sim-Diasca deployment and scheduling framework.
 -module(scheduling_one_creating_actor_test).
-
 
 
 % For facilities common to all cases:
@@ -30,7 +28,7 @@
 
 
 
-% Runs a distributed simulation (of course if relevant computing hosts are
+% @doc Runs a distributed simulation (of course if relevant computing hosts are
 % specified).
 %
 -spec run() -> no_return().
@@ -40,6 +38,7 @@ run() ->
 
 	% Default simulation settings (50Hz, batch reproducible) are used,
 	% except for the name:
+	%
 	SimulationSettings = #simulation_settings{
 		simulation_name="Scheduling one creating actor test" },
 
@@ -48,6 +47,7 @@ run() ->
 	% generation of the deployment package requested), but computing hosts are
 	% specified (to be updated depending on your environment):
 	% (note that localhost is implied)
+	%
 	DeploymentSettings = #deployment_settings{
 
 		computing_hosts =
@@ -61,8 +61,8 @@ run() ->
 
 
 	?test_notice_fmt( "This test will deploy a distributed simulation"
-				" based on computing hosts specified as ~p.",
-				[ DeploymentSettings#deployment_settings.computing_hosts ] ),
+		" based on computing hosts specified as ~p.",
+		[ DeploymentSettings#deployment_settings.computing_hosts ] ),
 
 
 	% Directly created on the user node:
@@ -80,15 +80,15 @@ run() ->
 
 	% Describes how actors will be created, later:
 	ActorCreationPolicy = { _ActorInterCount=10,
-		_CreatedActorPolicy = { _ActorSchedulingPolicy={ periodic, 4 },
-			_ActorCreationPolicy=no_creation } },
+		_CreatedActorPolicy={ _ActorSchedulingPolicy={ periodic, 4 },
+							  _ActorCreationPolicy=no_creation } },
 
 	% The created actor *will* create actors in the course of the simulation,
 	% but these will not in turn create actors:
 
 	FirstActorPid = class_Actor:create_initial_actor( class_TestActor,
-			[ "First periodic test actor", { periodic, _Period=3 },
-			ActorCreationPolicy, _TerminationTickOffset=80 ], LoadBalancerPid ),
+		[ "First periodic test actor", { periodic, _Period=3 },
+		  ActorCreationPolicy, _TerminationTickOffset=80 ], LoadBalancerPid ),
 
 
 	FirstActorPid ! { getAAI, [], self() },

@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2021 EDF R&D
+% Copyright (C) 2010-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,10 +19,9 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-
-% Allows to generate the plots (PNG files, usually for probe reports)
-% corresponding to all the time series (*.dat and *.p) files found in the
-% current directory.
+% @doc Allows to generate the <b>plots</b> (PNG files, usually for probe
+% reports) corresponding to all the <b>time series</b> (*.dat and *.p) files
+% found in the current directory.
 %
 -module(generate_plots_for_time_series).
 
@@ -38,6 +37,7 @@
 -include_lib("myriad/include/spawn_utils.hrl").
 
 
+% @doc Runs the plot generator.
 -spec run( file_utils:directory_path() ) -> void().
 run( Dir ) ->
 
@@ -72,7 +72,7 @@ run( Dir ) ->
 
 
 
-% Returns a list of the filenames corresponding to time series.
+% @doc Returns a list of the filenames corresponding to time series.
 select_data_files( DirectoryName ) ->
 
 	{ RegularFiles, _Symlinks, _Directories, _OtherFiles, _Devices } =
@@ -96,8 +96,8 @@ manage_workers( _DataFilenames=[], _CurrentWorkers=[], GeneratedFilenames,
 manage_workers( _DataFilenames=[], _CurrentWorkers=[], GeneratedFilenames,
 				ReportedErrors, _MaxWorkerCount ) ->
 
-	ErrorStrings = [ io_lib:format( "for ~ts: ~ts", [ File, Error ] )
-					 || { File, Error } <- ReportedErrors ],
+	ErrorStrings = [ text_utils:format( "for ~ts: ~ts", [ File, Error ] )
+						|| { File, Error } <- ReportedErrors ],
 
 	GenLen = length( GeneratedFilenames ),
 	ErrLen = length( ReportedErrors ),
@@ -168,7 +168,7 @@ update_workers( DataFilenames, Workers, MaxWorkerCount )
 manage_plot( DataFilename, DispatcherPid ) ->
 
 	CommandFilename =
-		file_utils:replace_extension( DataFilename, ".dat",	".p" ),
+		file_utils:replace_extension( DataFilename, ".dat", ".p" ),
 
 	case file_utils:is_existing_file( CommandFilename ) of
 
@@ -180,8 +180,8 @@ manage_plot( DataFilename, DispatcherPid ) ->
 					DispatcherPid ! { work_done, self(), TargetFilename };
 
 				{ failure, Reason } ->
-					DispatcherPid ! { work_failed, self(),
-									  { DataFilename, Reason } }
+					DispatcherPid !
+						{ work_failed, self(), { DataFilename, Reason } }
 
 			end;
 
@@ -238,13 +238,13 @@ generate_report( DataFilename, CommandFilename ) ->
 					{ success, DataFilename };
 
 				false->
-					{ failure, io_lib:format( "no generated file for ~ts",
-											  [ DataFilename ] ) }
+					{ failure, text_utils:format( "no generated file for ~ts",
+												  [ DataFilename ] ) }
 
 			end;
 
 		false ->
-			{ failure, io_lib:format( "generation failed for ~ts",
-									  [ DataFilename ] ) }
+			{ failure, text_utils:format( "generation failed for ~ts",
+										  [ DataFilename ] ) }
 
 	end.

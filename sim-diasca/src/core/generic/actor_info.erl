@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2021 EDF R&D
+% Copyright (C) 2018-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,8 +19,8 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-% Module centralising most <b>actor-level</b> information, in the context of the
-% Sim-Diasca parse transform.
+% @doc Module centralising most <b>actor-level</b> information, in the context
+% of the Sim-Diasca parse transform.
 %
 -module(actor_info).
 
@@ -79,40 +79,40 @@ init_actor_class_info() ->
 	% or being initialised at record construction:
 	%
 	#actor_class_info{ class=undefined,
-				 superclasses=[],
-				 attributes=EmptyTable,
-				 inherited_attributes=EmptyTable,
-				 compilation_options=EmptyTable,
-				 %compilation_option_defs
-				 parse_attributes=EmptyTable,
-				 %remote_spec_defs
-				 %includes
-				 %include_defs
-				 type_exports=EmptyTable,
-				 types=EmptyTable,
-				 records=EmptyTable,
-				 function_imports=EmptyTable,
-				 %function_imports_defs
-				 function_exports=EmptyTable,
-				 functions=EmptyTable,
-				 constructors=EmptyTable,
-				 new_operators=EmptyTable,
-				 destructor=undefined,
-				 request_exports=EmptyTable,
-				 requests=EmptyTable,
-				 oneway_exports=EmptyTable,
-				 oneways=EmptyTable,
-				 actor_oneway_exports=EmptyTable,
-				 actor_oneways=EmptyTable,
-				 static_exports=EmptyTable,
-				 statics=EmptyTable,
-				 %optional_callbacks_defs
-				 %debug_mode
-				 %last_line
-				 markers=EmptyTable
-				 %errors
-				 %unhandled_forms
-			   }.
+		superclasses=[],
+		attributes=EmptyTable,
+		inherited_attributes=EmptyTable,
+		compilation_options=EmptyTable,
+		%compilation_option_defs
+		parse_attributes=EmptyTable,
+		%remote_spec_defs
+		%includes
+		%include_defs
+		type_exports=EmptyTable,
+		types=EmptyTable,
+		records=EmptyTable,
+		function_imports=EmptyTable,
+		%function_imports_defs
+		function_exports=EmptyTable,
+		functions=EmptyTable,
+		constructors=EmptyTable,
+		new_operators=EmptyTable,
+		destructor=undefined,
+		request_exports=EmptyTable,
+		requests=EmptyTable,
+		oneway_exports=EmptyTable,
+		oneways=EmptyTable,
+		actor_oneway_exports=EmptyTable,
+		actor_oneways=EmptyTable,
+		static_exports=EmptyTable,
+		statics=EmptyTable,
+		%optional_callbacks_defs
+		%debug_mode
+		%last_line
+		markers=EmptyTable
+		%errors
+		%unhandled_forms
+	}.
 
 
 
@@ -145,40 +145,40 @@ actor_class_info_to_string( ActorInfo, DoIncludeForms ) ->
 -spec actor_class_info_to_string( actor_class_info(), boolean(),
 								  indentation_level() ) -> ustring().
 actor_class_info_to_string( #actor_class_info{
-							   class=ClassEntry,
-							   superclasses=SuperclassesEntry,
-							   attributes=AttributeTable,
-							   inherited_attributes=InheritedAttributes,
-							   compilation_options=CompileOpts,
-							   compilation_option_defs=CompileOptDefs,
-							   parse_attributes=ParseAttributeTable,
-							   remote_spec_defs=RemoteSpecDefs,
-							   includes=Includes,
-							   include_defs=IncludeDefs,
-							   type_exports=TypeExportTable,
-							   types=TypeTable,
-							   records=RecordTable,
-							   function_imports=FunctionImportTable,
-							   function_imports_defs=FunctionImportDefs,
-							   function_exports=_FunctionExportTable,
-							   functions=FunctionTable,
-							   constructors=ConstructorTable,
-							   new_operators=NewOperatorTable,
-							   destructor=DestructorInfo,
-							   request_exports=_RequestExports,
-							   requests=RequestTable,
-							   oneway_exports=_OnewayExports,
-							   oneways=OnewayTable,
-							   actor_oneway_exports=_ActorOnewayExports,
-							   actor_oneways=ActorOnewayTable,
-							   static_exports=_StaticExports,
-							   statics=StaticTable,
-							   optional_callbacks_defs=OptCallbacksDefs,
-							   debug_mode=IsDebugMode,
-							   last_file_location=LastLineLocDef,
-							   markers=MarkerTable,
-							   errors=Errors,
-							   unhandled_forms=UnhandledForms },
+								class=ClassEntry,
+								superclasses=SuperclassesEntry,
+								attributes=AttributeTable,
+								inherited_attributes=InheritedAttributes,
+								compilation_options=CompileOpts,
+								compilation_option_defs=CompileOptDefs,
+								parse_attributes=ParseAttributeTable,
+								remote_spec_defs=RemoteSpecDefs,
+								includes=Includes,
+								include_defs=IncludeDefs,
+								type_exports=TypeExportTable,
+								types=TypeTable,
+								records=RecordTable,
+								function_imports=FunctionImportTable,
+								function_imports_defs=FunctionImportDefs,
+								function_exports=_FunctionExportTable,
+								functions=FunctionTable,
+								constructors=ConstructorTable,
+								new_operators=NewOperatorTable,
+								destructor=DestructorInfo,
+								request_exports=_RequestExports,
+								requests=RequestTable,
+								oneway_exports=_OnewayExports,
+								oneways=OnewayTable,
+								actor_oneway_exports=_ActorOnewayExports,
+								actor_oneways=ActorOnewayTable,
+								static_exports=_StaticExports,
+								statics=StaticTable,
+								optional_callbacks_defs=OptCallbacksDefs,
+								debug_mode=IsDebugMode,
+								last_file_location=LastLineLocDef,
+								markers=MarkerTable,
+								errors=Errors,
+								unhandled_forms=UnhandledForms },
 							DoIncludeForms,
 							IndentationLevel ) ->
 
@@ -240,7 +240,7 @@ actor_class_info_to_string( #actor_class_info{
 			  ast_info:records_to_string( RecordTable, NextIndentationLevel ),
 
 			  ast_info:function_imports_to_string( FunctionImportTable,
-				  FunctionImportDefs, DoIncludeForms, NextIndentationLevel ),
+					FunctionImportDefs, DoIncludeForms, NextIndentationLevel ),
 
 			  ast_info:functions_to_string( FunctionTable, DoIncludeForms,
 											NextIndentationLevel ),
@@ -249,7 +249,7 @@ actor_class_info_to_string( #actor_class_info{
 								DoIncludeForms, NextIndentationLevel ),
 
 			  "regarding new operators, " ++ ast_info:functions_to_string(
-				   NewOperatorTable, DoIncludeForms, NextIndentationLevel ),
+					NewOperatorTable, DoIncludeForms, NextIndentationLevel ),
 
 			  wooper_info:destructor_to_string( DestructorInfo, DoIncludeForms,
 									NextIndentationLevel ),
@@ -296,7 +296,7 @@ actor_oneways_to_string( ActorOnewayTable, DoIncludeForms, IndentationLevel ) ->
 		ActInfos ->
 			ActString = text_utils:strings_to_string( [
 				actor_oneway_info_to_string( ActInfo, DoIncludeForms,
-						   IndentationLevel ) || ActInfo <- ActInfos ],
+						IndentationLevel ) || ActInfo <- ActInfos ],
 													  IndentationLevel ),
 
 			text_utils:format( "~B actor oneway(s) defined: ~ts",

@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2021 EDF R&D
+% Copyright (C) 2016-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,7 +19,7 @@
 % Author: Robin Huart (robin-externe.huart@edf.fr)
 
 
-% Module storing all the helper functions to facilitate the support of the
+% @doc Module storing all the helper functions to facilitate the support of the
 % binding APIs for the Java language.
 %
 -module(dataflow_java_binding_utils).

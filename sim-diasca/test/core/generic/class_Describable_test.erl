@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,7 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-% Unit tests for the Describable class implementation.
+% @doc Unit tests for the <b>Describable</b> class implementation.
 %
 % See the class_Describable module.
 %
@@ -31,13 +31,13 @@
 
 
 
-% Runs the tests.
+% @doc runs the tests.
 -spec run() -> no_return().
 run() ->
 
 	?case_start,
 
-	?test_info( "Creating a new test Describable." ),
+	?test_info( "Creating a test Describable." ),
 
 	Description = "King Of Brittain",
 

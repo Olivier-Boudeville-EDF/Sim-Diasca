@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2021 EDF R&D
+% Copyright (C) 2014-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,10 +19,9 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-% Integration test for the spatial support.
+% @doc Integration test for the spatial support.
 %
 % See also:
-%
 % - class_TwoDimensionalEnvironment.erl
 % - class_SpatialisedActor.erl
 %
@@ -34,27 +33,26 @@
 
 
 
-% Runs the test.
+% @doc Runs the test.
 -spec run() -> no_return().
 run() ->
 
 	?case_start,
 
-
 	% Use default simulation settings (50Hz, batch reproducible):
 	SimulationSettings = #simulation_settings{
 
-	  simulation_name="Sim-Diasca Spatial Integration Test",
+		simulation_name="Sim-Diasca Spatial Integration Test",
 
-	  % Using 100Hz here:
-	  tick_duration=0.01
+		% Using 100Hz here:
+		tick_duration=0.01
 
-	  % We leave it to the default specification (all_outputs):
-	  % result_specification =
-	  %  [ { targeted_patterns, [ {".*",[data_and_rendering]} ] },
-	  %    { blacklisted_patterns, ["^Second" ] } ]
+		% We leave it to the default specification (all_outputs):
+		% result_specification =
+		%  [ { targeted_patterns, [ {".*",[data_and_rendering]} ] },
+		%    { blacklisted_patterns, ["^Second" ] } ]
 
-	  %result_specification = [ { targeted_patterns, [ {".*",data_only} ] } ]
+		%result_specification = [ { targeted_patterns, [ {".*",data_only} ] } ]
 
 	},
 
@@ -70,7 +68,7 @@ run() ->
 
 	% A deployment manager is created directly on the user node:
 	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-							   DeploymentSettings, LoadBalancingSettings ),
+								DeploymentSettings, LoadBalancingSettings ),
 
 
 	% Let's create first a proper environment:
@@ -84,18 +82,18 @@ run() ->
 	% speed to test updates triggered by the environment)
 
 	_FirstActorPid = class_Actor:create_initial_actor(
-			class_TestSpatialisedActor,
-			[ _FName="First Actor", _FInitialPosition={ -100.0, 0.0 },
-			  _FPerceptionRadius=40.0, _FPerceptionPeriod=20,
-			  _FMaxSpeed=5.0, _FTerminationOffset=500, EnvPid ] ),
+		class_TestSpatialisedActor,
+		[ _FName="First Actor", _FInitialPosition={ -100.0, 0.0 },
+		  _FPerceptionRadius=40.0, _FPerceptionPeriod=20,
+		  _FMaxSpeed=5.0, _FTerminationOffset=500, EnvPid ] ),
 
 
 	% This one just sits idle at the origin:
 	_SecondActorPid = class_Actor:create_initial_actor(
-			class_TestSpatialisedActor,
-			[ _SName="Second Actor", _SInitialPosition={ 0.0, 999990.0 },
-			  _SPerceptionRadius=80.0, _SPerceptionPeriod=1500000,
-			  _SMaxSpeed=undefined, _STerminationOffset=none, EnvPid ] ),
+		class_TestSpatialisedActor,
+		[ _SName="Second Actor", _SInitialPosition={ 0.0, 999990.0 },
+		  _SPerceptionRadius=80.0, _SPerceptionPeriod=1500000,
+		  _SMaxSpeed=undefined, _STerminationOffset=none, EnvPid ] ),
 
 
 	% During the eastward movement of the first actor:
@@ -125,6 +123,7 @@ run() ->
 
 	% Currently disabled as fails in class_TimeManager:beginTimeManagerTick/2,
 	% in:
+	%
 	% true = set_utils:is_empty( ?getAttr(actors_to_trigger_in_one_diasca) ),
 
 	%RootTimeManagerPid ! { startFor, [ SimulationDuration, self() ] },
@@ -134,9 +133,9 @@ run() ->
 
 	%receive
 
-	%	simulation_stopped ->
-	%		?test_info( "Simulation stopped spontaneously, "
-	%				   "specified stop tick must have been reached." )
+	%   simulation_stopped ->
+	%       ?test_info( "Simulation stopped spontaneously, "
+	%                   "specified stop tick must have been reached." )
 
 	%end,
 

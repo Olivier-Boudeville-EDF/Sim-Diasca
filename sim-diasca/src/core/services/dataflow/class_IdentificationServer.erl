@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2021 EDF R&D
+% Copyright (C) 2016-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -105,6 +105,7 @@
 -type ustring() :: text_utils:ustring().
 -type bin_string() :: text_utils:bin_string().
 
+-type indentation_level() :: text_utils:indentation_level().
 
 
 % Implementation notes:
@@ -115,7 +116,7 @@
 
 
 
-% @doc Constructs a new identification server.
+% @doc Constructs an identification server.
 -spec construct( wooper:state() ) -> wooper:state().
 construct( State ) ->
 
@@ -294,8 +295,8 @@ removeIdentifierAssociation( State, BlockPid ) ->
 				table:remove_entry( ExtId, ?getAttr(inbound_table) ),
 
 			RemovedState = setAttributes( State, [
-							{ outbound_table, NewOutboundTable },
-							{ inbound_table, NewInboundTable } ] ),
+				{ outbound_table, NewOutboundTable },
+				{ inbound_table, NewInboundTable } ] ),
 
 			wooper:return_state_result( RemovedState,
 										identifier_associations_removed );
@@ -496,8 +497,8 @@ getBlockPIDs( State, ExternalIdentifiers ) ->
 
 	InboundTable = ?getAttr(inbound_table),
 
-	BlockPids = get_block_pids( ExternalIdentifiers, InboundTable, State,
-								_Acc=[] ),
+	BlockPids =
+		get_block_pids( ExternalIdentifiers, InboundTable, State, _Acc=[] ),
 
 	wooper:const_return_result( BlockPids ).
 
@@ -539,8 +540,8 @@ getAnyBlockPIDs( State, ExternalIdentifiers ) ->
 
 	InboundTable = ?getAttr(inbound_table),
 
-	BlockPids = get_any_block_pids( ExternalIdentifiers, InboundTable, State,
-									_Acc=[] ),
+	BlockPids =
+		get_any_block_pids( ExternalIdentifiers, InboundTable, State, _Acc=[] ),
 
 	wooper:const_return_result( BlockPids ).
 
@@ -554,7 +555,7 @@ get_any_block_pids( _ExtIDs=[], _InboundTable, _State, Acc ) ->
 
 get_any_block_pids( _ExtIDs=[ ExtID | T ], InboundTable, State, Acc ) ->
 
-	 BlockPid = case table:lookup_entry( ExtID, InboundTable ) of
+	BlockPid = case table:lookup_entry( ExtID, InboundTable ) of
 
 		{ value, Pid } ->
 			Pid;
@@ -672,8 +673,8 @@ to_string( State ) ->
 
 	InString = inbound_to_string( IndentationLevel, ?getAttr(inbound_table) ),
 
-	OutString = outbound_to_string( IndentationLevel,
-									?getAttr(outbound_table) ),
+	OutString =
+		outbound_to_string( IndentationLevel, ?getAttr(outbound_table) ),
 
 	text_utils:format( "Identification server with an ~ts and with an ~ts",
 					   [ InString, OutString ] ).
@@ -681,8 +682,7 @@ to_string( State ) ->
 
 
 % @doc Returns a textual description of the specified inbound table.
--spec inbound_to_string( text_utils:indentation_level(), inbound_table() ) ->
-								ustring().
+-spec inbound_to_string( indentation_level(), inbound_table() ) -> ustring().
 inbound_to_string( IndentationLevel, InboundTable ) ->
 
 	InEntries = table:enumerate( InboundTable ),
@@ -710,8 +710,7 @@ inbound_to_string( IndentationLevel, InboundTable ) ->
 
 
 % @doc Returns a textual description of the specified outbound table.
--spec outbound_to_string( text_utils:indentation_level(), outbound_table() ) ->
-								ustring().
+-spec outbound_to_string( indentation_level(), outbound_table() ) -> ustring().
 outbound_to_string( IndentationLevel, OutboundTable ) ->
 
 	OutEntries = table:enumerate( OutboundTable ),
@@ -728,7 +727,7 @@ outbound_to_string( IndentationLevel, OutboundTable ) ->
 				[ Pid, Ext ] ) || { Pid, Ext } <- OutEntries ],
 
 			ListString = text_utils:strings_to_sorted_string( OutStrings,
-													   IndentationLevel ),
+													IndentationLevel ),
 
 			text_utils:format( "outbound table able to convert ~B block PIDs "
 				"into as many external identifiers: ~ts",

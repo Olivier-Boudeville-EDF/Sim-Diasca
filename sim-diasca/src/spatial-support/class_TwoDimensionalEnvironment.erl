@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2021 EDF R&D
+% Copyright (C) 2014-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -20,7 +20,7 @@
 
 
 % @doc Class modelling a <b>two-dimensional upright rectangular environment</b>,
-% in a centralised way.
+% in a simple, centralised way.
 %
 -module(class_TwoDimensionalEnvironment).
 
@@ -96,7 +96,6 @@
 %
 % E may be now anywhere in a disc whose center is Pe and whose radius is Re = (
 % T - Te ) * ve_max. If:
-%
 % - R > D + Re, then E is certainly inside the specified disc
 % - R < D - Re then E is certainly outside the specified disc
 % - otherwise: we do not know, we have to update E's position
@@ -157,7 +156,7 @@
 % Describes the extent of a border.
 
 
--type position() :: linear_2D:point().
+-type position() :: point2:point2().
 % Position of an entity within an environment.
 
 
@@ -166,22 +165,21 @@
 
 
 
--type timed_position() ::
-		maybe( { position(), class_TimeManager:tick_offset() } ).
+-type timed_position() :: maybe( { position(), tick_offset() } ).
 % The position of an entity in an environment, at specified simulation
 % timestamp (possibly 'undefined' if the simulation is not started yet).
 
 
 -record( entity, {
 
-		% Last known position, with its corresponding timestamp:
-		last_timed_position = undefined :: maybe( timed_position() ),
+	% Last known position, with its corresponding timestamp:
+	last_timed_position = undefined :: maybe( timed_position() ),
 
-		% An upper-bound (if any) to the speed of this entity:
-		max_speed = undefined :: maybe( meters_per_tick() ),
+	% An upper-bound (if any) to the speed of this entity:
+	max_speed = undefined :: maybe( meters_per_tick() ),
 
-		% The entity's class name is cached here to accelerate some queries:
-		classname :: classname() } ).
+	% The entity's class name is cached here to accelerate some queries:
+	classname :: classname() } ).
 
 
 -type entity() :: #entity{}.
@@ -204,23 +202,24 @@
 % Section about spatial queries.
 
 
+% Describes a query regarding vicinity established based solely on presence in a
+% disc:
+%
 -record( disc_query, {
 
-		   % Center of the vicinity disc:
-		   center :: position(),
+	% Center of the vicinity disc:
+	center :: position(),
 
-		   % Radius of the vicinity disc:
-		   radius :: linear:radius(),
+	% Radius of the vicinity disc:
+	radius :: radius(),
 
-		   % Entities already known to be in that disc:
-		   entities_in :: [ entity_pid() ],
+	% Entities already known to be in that disc:
+	entities_in :: [ entity_pid() ],
 
-		   % Entities whose position has been requested, to determine whether
-		   % they are in that disc (they may be in):
-		   %
-		   entities_requested :: [ entity_pid() ]
-
-} ).
+	% Entities whose position has been requested, to determine whether
+	% they are in that disc (they may be in):
+	%
+	entities_requested :: [ entity_pid() ] } ).
 
 
 -type disc_query() :: #disc_query{}.
@@ -253,6 +252,7 @@
 -include("sim_diasca_for_actors.hrl").
 
 
+
 % Shorthands:
 
 -type ustring() :: text_utils:ustring().
@@ -260,9 +260,13 @@
 -type meters_per_second() :: unit_utils:meters_per_second().
 -type meters_per_tick() :: unit_utils:meters_per_tick().
 
+-type radius() :: linear:radius().
+
+-type tick_offset() :: class_TimeManager:tick_offset().
 
 
-% @doc Creates a new 2D environment.
+
+% @doc Creates a 2D environment.
 %
 % Construction parameters are:
 %
@@ -286,12 +290,12 @@ construct( State, ActorSettings, Width, Height, BorderSettings ) ->
 	EmptyTable = table:new(),
 
 	setAttributes( ActorState, [
-			{ width, Width },
-			{ height, Height },
-			{ border_settings, BorderSettings },
-			{ entities, EmptyTable },
-			{ query_table, EmptyTable },
-			{ request_table, EmptyTable } ] ).
+		{ width, Width },
+		{ height, Height },
+		{ border_settings, BorderSettings },
+		{ entities, EmptyTable },
+		{ query_table, EmptyTable },
+		{ request_table, EmptyTable } ] ).
 
 
 
@@ -302,8 +306,7 @@ construct( State, ActorSettings, Width, Height, BorderSettings ) ->
 % Actor oneways.
 
 
-
-% @doc First scheduling on an environment.
+% @doc First scheduling of an environment.
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
 							const_actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
@@ -417,8 +420,8 @@ undeclareEntity( State, SpatialisedActorPid ) ->
 % The environment takes advantage of this call to update its knowledge about the
 % position of the caller actor.
 %
--spec getEntitiesWithin( wooper:state(), position(), linear:radius(),
-				sending_actor_pid() ) -> actor_oneway_return().
+-spec getEntitiesWithin( wooper:state(), position(), radius(),
+								sending_actor_pid() ) -> actor_oneway_return().
 getEntitiesWithin( State, Position, Radius, SpatialisedActorPid ) ->
 
 	?debug_fmt( "Vicinity request from ~p at ~p: radius ~p m.",
@@ -479,8 +482,8 @@ getEntitiesWithin( State, Position, Radius, SpatialisedActorPid ) ->
 
 		{ EntitiesIn, EntitiesMaybeIn } ->
 
-			?debug_fmt( "Entities in: ~p, maybe in: ~p.",
-				[ EntitiesIn, EntitiesMaybeIn ] ),
+			%?debug_fmt( "Entities in: ~p, maybe in: ~p.",
+			%            [ EntitiesIn, EntitiesMaybeIn ] ),
 
 			% Not able to answer directly, requests shall be issued (updates
 			% requesters):
@@ -504,8 +507,8 @@ getEntitiesWithin( State, Position, Radius, SpatialisedActorPid ) ->
 			case table:has_entry( SpatialisedActorPid, QueryTable ) of
 
 				true ->
-					throw( { multiple_pending_requests,
-							 SpatialisedActorPid } ) ;
+					throw(
+					  { multiple_pending_requests, SpatialisedActorPid } ) ;
 
 				false ->
 					ok
@@ -536,8 +539,7 @@ getEntitiesWithin( State, Position, Radius, SpatialisedActorPid ) ->
 % position of the caller actor.
 %
 -spec getTypedEntitiesWithin( wooper:state(), classname(), position(),
-							  linear:radius(), sending_actor_pid() ) ->
-									actor_oneway_return().
+			radius(), sending_actor_pid() ) -> actor_oneway_return().
 getTypedEntitiesWithin( State, TargetClass, Position, Radius,
 						SpatialisedActorPid ) ->
 
@@ -584,14 +586,14 @@ getTypedEntitiesWithin( State, TargetClass, Position, Radius,
 	UpdatedState = setAttribute( State, entities, FullEntityTable ),
 
 	NewState = case lists:foldl(
-						SelectFun,
-						_InitialAcc={ _InitialIns=[], _InitialMaybeIns=[] },
-						_List=table:enumerate( ShrunkEntityTable ) ) of
+			SelectFun,
+			_InitialAcc={ _InitialIns=[], _InitialMaybeIns=[] },
+			_List=table:enumerate( ShrunkEntityTable ) ) of
 
 
 		{ EntitiesIn, _EntitiesMaybeIn=[] } ->
 
-			?debug_fmt( "Direct answer: all ~p entities in.", [ EntitiesIn ] ),
+			%?debug_fmt( "Direct answer: all ~p entities in.", [ EntitiesIn ] ),
 
 			% Maybe none in vicinity; anyway able to answer directly:
 			class_Actor:send_actor_message( SpatialisedActorPid,
@@ -600,8 +602,8 @@ getTypedEntitiesWithin( State, TargetClass, Position, Radius,
 
 		{ EntitiesIn, EntitiesMaybeIn } ->
 
-			?debug_fmt( "Entities in: ~p, maybe in: ~p.",
-						[ EntitiesIn, EntitiesMaybeIn ] ),
+			%?debug_fmt( "Entities in: ~p, maybe in: ~p.",
+			%            [ EntitiesIn, EntitiesMaybeIn ] ),
 
 			% Not able to answer directly, requests shall be issued (updates
 			% requesters):
@@ -625,8 +627,8 @@ getTypedEntitiesWithin( State, TargetClass, Position, Radius,
 			case table:has_entry( SpatialisedActorPid, QueryTable ) of
 
 				true ->
-					throw( { multiple_pending_requests,
-							 SpatialisedActorPid } ) ;
+					throw(
+					  { multiple_pending_requests, SpatialisedActorPid } ) ;
 
 				false ->
 					ok
@@ -661,8 +663,8 @@ notifyPosition( State, Position, EntityPid ) ->
 	EntityTable = ?getAttr(entities),
 
 	% First, updates that position:
-	{ NewEntityRecord, ShrunkEntityTable } = update_position( EntityPid,
-								Position, CurrentTickOffset, EntityTable ),
+	{ NewEntityRecord, ShrunkEntityTable } =
+		update_position( EntityPid, Position, CurrentTickOffset, EntityTable ),
 
 	% Second, manages the implicitly pending getEntitiesWithin call; this
 	% updated position can unblock multiple requests regarding vicinity:
@@ -677,21 +679,21 @@ notifyPosition( State, Position, EntityPid ) ->
 	%
 	{ FoldState, FoldQueryTable } = lists:foldl(
 
-		   fun( RequesterPid, { AccState, AccQueryTable } ) ->
+		fun( RequesterPid, { AccState, AccQueryTable } ) ->
 
-				{ Query, NewQueryTable } =
-						table:extract_entry( _K=RequesterPid, AccQueryTable ),
+			{ Query, NewQueryTable } =
+				table:extract_entry( _K=RequesterPid, AccQueryTable ),
 
-				% Returns an updated accumulator:
-				update_query( Query, RequesterPid, EntityPid, Position,
-							  NewQueryTable, AccState )
+			% Returns an updated accumulator:
+			update_query( Query, RequesterPid, EntityPid, Position,
+						  NewQueryTable, AccState )
 
-			end,
-			_Acc0={ State, ?getAttr(query_table) },
-			_List=RequesterList ),
+		end,
+		_Acc0={ State, ?getAttr(query_table) },
+		_List=RequesterList ),
 
 	NewEntityTable = table:add_entry( EntityPid, NewEntityRecord,
-									 ShrunkEntityTable ),
+									  ShrunkEntityTable ),
 
 	FinalState = setAttributes( FoldState, [
 						{ entities, NewEntityTable },
@@ -765,15 +767,16 @@ convert_max_speed( MeterPerSecondSpeed, State ) ->
 
 
 % @doc Returns whether specified tracked entity is exactly of specified class
-% and in range (i.e. within specified radius) of specified referenced position.
+% and in range (that is within specified radius) of specified referenced
+% position.
 %
 % See implementation notes ('About vicinity determination') for more
 % information.
 %
 % (helper)
 %
--spec is_in_range( classname(), position(), linear:radius(), entity(),
-				   class_TimeManager:tick_offset() ) -> range_outcome().
+-spec is_in_range( classname(), position(), radius(), entity(),
+				   tick_offset() ) -> range_outcome().
 is_in_range( TargetClass,
 			 ReferencedPosition,
 			 Radius,
@@ -793,15 +796,16 @@ is_in_range( _TargetClass,
 
 
 % @doc Returns whether specified tracked entity is exactly of specified class
-% and in range (i.e. within specified radius) of specified referenced position.
+% and in range (that is within specified radius) of specified referenced
+% position.
 %
 % See implementation notes ('About vicinity determination') for more
 % information.
 %
 % (helper)
 %
--spec is_in_range( position(), linear:radius(), entity(),
-				   class_TimeManager:tick_offset() ) -> range_outcome().
+-spec is_in_range( position(), radius(), entity(), tick_offset() ) ->
+													range_outcome().
 is_in_range( ReferencedPosition,
 			 Radius,
 			 #entity{ last_timed_position={ EntPosition, CurrentTickOffset },
@@ -813,7 +817,7 @@ is_in_range( ReferencedPosition,
 	% fortunately their timestamps are matching (possibly both set to
 	% 'undefined'), we thus will be able to decide directly:
 	%
-	case linear_2D:is_within( EntPosition, ReferencedPosition, Radius ) of
+	case point2:is_within( EntPosition, ReferencedPosition, Radius ) of
 
 		true ->
 			in_range;
@@ -841,7 +845,7 @@ is_in_range( ReferencedPosition, Radius,
 			 CurrentTickOffset ) ->
 
 	% Here, we have a maximum speed specified:
-	D = linear_2D:distance( ReferencedPosition, EntPosition ),
+	D = point2:distance( ReferencedPosition, EntPosition ),
 
 	Re = ( CurrentTickOffset - EntTimestamp ) * MaxSpeed,
 
@@ -963,7 +967,7 @@ update_query( Query=#disc_query{ center=Center, radius=Radius, entities_in=Ins,
 								 entities_requested=Requested },
 			  RequesterPid, EntityPid, EntityPosition, QueryTable, State ) ->
 
-	NewIns = case linear_2D:is_within( EntityPosition, Center, Radius ) of
+	NewIns = case point2:is_within( EntityPosition, Center, Radius ) of
 
 		true ->
 			[ EntityPid | Ins ];

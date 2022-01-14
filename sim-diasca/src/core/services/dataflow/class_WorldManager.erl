@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2021 EDF R&D
+% Copyright (C) 2016-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -88,8 +88,7 @@
 % events.
 
 
--type dispatch_table() ::
-		table( object_manager_pid(), [ world_event() ] ).
+-type dispatch_table() :: table( object_manager_pid(), [ world_event() ] ).
 % Table allowing to keep track of the world events that have been dispatched to
 % a given object manager (and hence are waited for their report completion).
 %
@@ -207,6 +206,7 @@
 
 
 % Shorthands:
+
 -type ustring() :: text_utils:ustring().
 
 
@@ -216,7 +216,7 @@
 % load balancer.
 %
 -spec construct( wooper:state(), class_Actor:actor_settings() ) ->
-			wooper:state().
+												wooper:state().
 construct( State, ActorSettings ) ->
 
 	% First the direct mother class:
@@ -283,8 +283,8 @@ setExperimentManager( State, ExperimentManagerPid ) ->
 
 	?info_fmt( "Experiment manager set, is ~w.", [ ExperimentManagerPid ] ),
 
-	NewState = setAttribute( State, experiment_manager_pid,
-							 ExperimentManagerPid ),
+	NewState =
+		setAttribute( State, experiment_manager_pid, ExperimentManagerPid ),
 
 	actor:return_state( NewState ).
 
@@ -878,7 +878,7 @@ reportChangesetCompletion( State, CompletedEventInfos, InjectedChangeset,
 		"injected changeset is: ~ts",
 		[ SendingObjectManagerPid, CompletedEventInfos,
 		  dataflow_support:changeset_to_string( InjectedChangeset,
-												_IsVerbose=false) ] ),
+												_IsVerbose=false ) ] ),
 
 	% Based on their IDs, we extract the corresponding waited events, append
 	% them to the completed ones, and possibly inject their induced events, if
@@ -991,7 +991,7 @@ extract_and_complete_events( _EventInfos=[ { Id, ExtraInfo } | T ],
 
 		{ CompletedEvent, DataflowPid, SuspendSet } ->
 			{ CompletedEvent, list_table:append_list_to_entry( DataflowPid,
-											   SuspendSet, SuspendTable ) };
+												SuspendSet, SuspendTable ) };
 
 		CompletedEvent ->
 			{ CompletedEvent, SuspendTable }
@@ -1048,16 +1048,16 @@ finalise_event( BinAssociationEvent=#binary_association_event{},
 				_BinAssocExtraInfo={ SourceObjectPid, TargetObjectPid } ) ->
 	% No object suspension here:
 	BinAssociationEvent#binary_association_event{
-	  source_object_pid=SourceObjectPid,
-	  target_object_pid=TargetObjectPid };
+		source_object_pid=SourceObjectPid,
+		target_object_pid=TargetObjectPid };
 
 
 finalise_event( DisassociationEvent=#disassociation_event{},
 				_DisassocExtraInfo={ ObjectPid, DisassociationInfo } ) ->
 	% No object suspension here:
 	DisassociationEvent#disassociation_event{
-	  object_pid=ObjectPid,
-	  disassociation_information=DisassociationInfo };
+		object_pid=ObjectPid,
+		disassociation_information=DisassociationInfo };
 
 
 finalise_event( ConnectionEvent=#connection_event{},
@@ -1117,12 +1117,12 @@ declare_suspensions( SuspendTable, State ) ->
 	%trace_utils:debug_fmt( "Suspending ~p.", [ SuspendPairs ] ),
 
 	lists:foldl(
-	  fun( { DataflowPid, SuspendSet }, AccState ) ->
-			  class_Actor:send_actor_message( DataflowPid,
-					{ declareSuspendedBlocks, [ SuspendSet ] }, AccState )
-	  end,
-	  _Acc0=State,
-	  _List=SuspendPairs ).
+		fun( { DataflowPid, SuspendSet }, AccState ) ->
+			class_Actor:send_actor_message( DataflowPid,
+				{ declareSuspendedBlocks, [ SuspendSet ] }, AccState )
+		end,
+		_Acc0=State,
+		_List=SuspendPairs ).
 
 
 
@@ -1398,7 +1398,7 @@ dispatch_event( Event=#binary_association_event{
 		{ value, ListOfManagerPids } ->
 
 			ObjectManagerPid = select_object_manager_for_event( ExternalId,
-													 ListOfManagerPids ),
+														ListOfManagerPids ),
 
 			?void_fmt( "Binary association event for object type '~ts' (~ts) "
 				"dispatched to object manager ~w.", [ ObjectType,
@@ -1493,8 +1493,8 @@ dispatch_event( Event=#disconnection_event{ induced_events=InducedEvents },
 
 	StrippedEvent = Event#disconnection_event{ induced_events=[] },
 
-	HandledState = handle_pass_through_event( StrippedEvent, InducedEvents,
-											  State ),
+	HandledState =
+		handle_pass_through_event( StrippedEvent, InducedEvents, State ),
 
 	{ DispatchTable, HandledState };
 
@@ -1509,7 +1509,7 @@ dispatch_event( Event=#update_event{ object_type=ObjectType,
 		{ value, ListOfManagerPids } ->
 
 			ObjectManagerPid = select_object_manager_for_event( ExternalId,
-														 ListOfManagerPids ),
+															ListOfManagerPids ),
 
 			?void_fmt( "Update event for object type '~ts' (~ts) dispatched "
 				"to object manager ~w.", [ ObjectType,

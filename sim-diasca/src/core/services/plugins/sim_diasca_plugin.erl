@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2021 EDF R&D
+% Copyright (C) 2014-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,8 +19,8 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-% Definition of the behaviour that shall be implemented by all Sim-Diasca
-% plugins.
+% Definition of the <b>behaviour that shall be implemented by all Sim-Diasca
+% plugins</b>.
 %
 -module(sim_diasca_plugin).
 
@@ -30,24 +30,15 @@
 % shall be triggered on a usual, successful simulation setting.
 
 
+-type plugin_data() :: maybe( term() ).
 % A plugin may wish to have a state kept by the engine.
 %
 % The initial state of all plugins is the atom 'undefined'.
 %
 % Note that we expect that, more often, stateful plugins will create processes
 % to keep their state, these processes being registered in a naming service.
-%
--type plugin_data() :: any().
 
 
-
-% Events the plugins will be notified of (corresponds to the functions they
-% shall all implement):
-%
-% (note: they are listed in their usual expected nominal order of appearance,
-% although this order is not guaranteed, for example 'on_result_gathering_start'
-% may happen before 'on_simulation_stop': race conditions are tolerated here)
-%
 -type plugin_event() ::  'on_simulator_start'
 					   | 'on_deployment_start'
 					   | 'on_deployment_stop'
@@ -64,15 +55,20 @@
 					   | 'on_result_gathering_stop'
 					   | 'on_simulator_stop'
 					   | 'on_case_specific_event'.
+% Events the plugins will be notified of (corresponds to the functions they
+% shall all implement):
+%
+% (note: they are listed in their usual expected nominal order of appearance,
+% although this order is not guaranteed, for example 'on_result_gathering_start'
+% may happen before 'on_simulation_stop': race conditions are tolerated here)
 
 
-% Case-specific events can be used additionally:
 -type case_specific_event() :: atom().
+% Case-specific events can be used additionally.
 
 
 % For the configuration_changes, technical_settings records:
 -include("sim_diasca_plugin.hrl").
-
 
 
 -type configuration_changes() :: #configuration_changes{}.
@@ -80,9 +76,8 @@
 -type technical_settings() :: #technical_settings{}.
 
 
-
-% Any data sent with events allowing it:
 -type event_data() :: term().
+% Any data sent with events allowing it.
 
 
 -export_type([ plugin_data/0, plugin_event/0, case_specific_event/0,
@@ -91,10 +86,8 @@
 
 
 
-
-
-% Callback triggered as soon as the simulator is started (or almost, as basic
-% services, including the trace one, are already up).
+% @doc Callback triggered as soon as the simulator is started (or almost, as
+% basic services, including the trace one, are already up).
 %
 % This is also the chance for a given plugin to request configuration changes.
 %
@@ -106,19 +99,19 @@
 % effectiveness of this request (ex: if plugins requested incompatible changes).
 %
 -callback on_simulator_start( configuration_changes(), plugin_data() ) ->
-	{ configuration_changes(), plugin_data() }.
+								{ configuration_changes(), plugin_data() }.
 
 
 
-% Callback triggered when the deployment phase starts.
+% @doc Callback triggered when the deployment phase starts.
 -callback on_deployment_start( plugin_data() ) -> plugin_data().
 
 
-% Callback triggered when the deployment phase stops.
+% @doc Callback triggered when the deployment phase stops.
 -callback on_deployment_stop( plugin_data() ) -> plugin_data().
 
 
-% Callback triggered when the simulation technical settings are available,
+% @doc Callback triggered when the simulation technical settings are available,
 % notably once the deployment phase is over.
 %
 -callback on_technical_settings_available( technical_settings(),
@@ -126,61 +119,62 @@
 
 
 
-% Callback triggered when the simulation case starts the creation of the initial
-% state of the simulation.
+% @doc Callback triggered when the simulation case starts the creation of the
+% initial state of the simulation.
 %
 -callback on_case_initialisation_start( plugin_data() ) -> plugin_data().
 
 
-% Callback triggered when the simulation case finished the creation of the
+% @doc Callback triggered when the simulation case finished the creation of the
 % initial state of the simulation.
 %
 -callback on_case_initialisation_stop( plugin_data() ) -> plugin_data().
 
 
 
-% Callback triggered when the simulation is started (first tick, first diasca).
+% @doc Callback triggered when the simulation is started (first tick, first
+% diasca).
 %
 -callback on_simulation_start( plugin_data() ) -> plugin_data().
 
 
-% Callback triggered when the simulation is just started and must evaluate the
-% first diasca of all initial actors.
+% @doc Callback triggered when the simulation is just started and must evaluate
+% the first diasca of all initial actors.
 %
 -callback on_simulation_bootstrap_start( plugin_data() ) -> plugin_data().
 
 
-% Callback triggered when the evaluation of the first diasca of all initial
+% @doc Callback triggered when the evaluation of the first diasca of all initial
 % actors is over.
 %
 -callback on_simulation_bootstrap_stop( plugin_data() ) -> plugin_data().
 
 
 
-% Callback triggered when a wallclock milestone is met (i.e. when a given
+% @doc Callback triggered when a wallclock milestone is met (i.e. when a given
 % duration in real time elapsed).
 %
 -callback on_simulation_wallclock_milestone_met( unit_utils:milliseconds(),
 						  plugin_data() ) -> plugin_data().
 
 
-% Callback triggered when a tick milestone is met (i.e. when a given
-% number of ticks have been evaluated).
+% @doc Callback triggered when a tick milestone is met (i.e. when a given number
+% of ticks have been evaluated).
 %
 -callback on_simulation_tick_milestone_met( class_TimeManager:tick_offset(),
-						plugin_data() ) -> plugin_data().
+											plugin_data() ) -> plugin_data().
 
 
 
-% Callback triggered when the simulation is stopped (an ending criterion was
-% just met; only called on successful ending).
+% @doc Callback triggered when the simulation is stopped (an ending criterion
+% was just met; only called on successful ending).
 %
 -callback on_simulation_stop( plugin_data() ) -> plugin_data().
 
 
 
-% Callback triggered when the results start being gathered, after simulation
-% termination.
+% @doc Callback triggered when the results start being gathered, after
+% simulation termination.
 %
 -callback on_result_gathering_start( plugin_data() ) -> plugin_data().
 
@@ -190,14 +184,14 @@
 
 
 
-% Callback triggered when the simulator execution stopped under normal
+% @doc Callback triggered when the simulator execution stopped under normal
 % circumstances (i.e. not crashing).
 %
 -callback on_simulator_stop( plugin_data() ) -> plugin_data().
 
 
 
-% Callback triggered iff a case decided to notify the plugins of a specific
+% @doc Callback triggered iff a case decided to notify the plugins of a specific
 % event.
 %
 -callback on_case_specific_event( case_specific_event(), event_data(),

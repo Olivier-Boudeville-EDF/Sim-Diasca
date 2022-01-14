@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,6 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc A simple probe to denote <b>reliability metrics</b>.
 -module(class_ReliabilityProbe).
 
 
@@ -56,7 +57,7 @@
 
 
 
-% Constructs a new reliability probe:
+% @doc Constructs a reliability probe:
 %
 % - Name is the name of this probe, and will be used for the generated data and
 % command files
@@ -98,7 +99,7 @@ construct( State, Name, Title ) ->
 
 
 
-% Generates the appropriate gnuplot command file.
+% @doc Generates the appropriate gnuplot command file.
 %
 % Note: mostly defined to override its inherited version and branch to the
 % helper just below.
@@ -209,7 +210,8 @@ generateCommandFile( State ) ->
 % Helper section.
 
 
-% Returns (as a plain string) an appropriate gnuplot command for this probe.
+% @doc Returns (as a plain string) an appropriate gnuplot command for this
+% probe.
 %
 % (helper)
 %
@@ -234,7 +236,7 @@ get_plot_command( Name, State ) ->
 
 
 
-% Returns a probe_settings record with updated informations (expressed as
+% @doc Returns a probe_settings record with updated informations (expressed as
 % plain strings) and default values for the other fields.
 %
 -spec update_probe_settings( probe_settings() ) -> probe_settings().
@@ -242,18 +244,18 @@ update_probe_settings( Settings ) ->
 
 	Settings#probe_settings{
 
-	  key_options="outside center bottom horizontal width 1 height 1",
+		key_options="outside center bottom horizontal width 1 height 1",
 
-	  %x_tick=text_utils:string_to_binary( "auto" ),
-	  %y_tick=text_utils:string_to_binary( "auto" ),
+		%x_tick=text_utils:string_to_binary( "auto" ),
+		%y_tick=text_utils:string_to_binary( "auto" ),
 
-	  y_range={ -2, 2 },
+		y_range={ -2, 2 },
 
-	  x_ticks="",
-	  y_ticks=
-		  "(\"Dysfunctional\" -1.0, \"\" 0.0, \"Operational\" 1.0) in rotate",
+		x_ticks="",
+		y_ticks=
+			"(\"Dysfunctional\" -1.0, \"\" 0.0, \"Operational\" 1.0) in rotate",
 
-	  % x_label left as is.
+		% x_label left as is.
 
-	  y_label=text_utils:string_to_binary( "Equipment Condition" ),
-	  plot_style=text_utils:string_to_binary( "filledcurves" ) }.
+		y_label=text_utils:string_to_binary( "Equipment Condition" ),
+		plot_style=text_utils:string_to_binary( "filledcurves" ) }.

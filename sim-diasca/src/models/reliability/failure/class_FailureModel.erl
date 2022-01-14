@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,9 +19,11 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Class modelling <b>failure behaviours</b>, typically of equipments.
 -module(class_FailureModel).
 
 
+% @doc Class modelling failure behaviours, typically of equipments.
 -define( class_description,
 		 "Class modelling failure behaviours, typically of equipments. "
 		 "Most failure models rely on underlying random generators. "
@@ -52,7 +54,7 @@
 
 
 
-% Constructs a new failure model:
+% @doc Constructs a failure model:
 %
 % - ActorSettings corresponds to the engine settings for this actor, as
 % determined by the load-balancer
@@ -88,7 +90,7 @@ construct( State, ActorSettings, FailureModelName, RandomProfile ) ->
 
 	% Then the class-specific actions:
 
-	?send_info_fmt( StochasticState, "Creating a new failure model "
+	?send_info_fmt( StochasticState, "Creating a failure model "
 		"whose failure profile is ~w, with, "
 		"as default upper-bound of random consumption.", [ RandomProfile ] ),
 
@@ -106,7 +108,7 @@ construct( State, ActorSettings, FailureModelName, RandomProfile ) ->
 % thrown.
 %
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
-						   const_oneway_return().
+							const_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 	wooper:const_return().
 
@@ -139,11 +141,11 @@ getNextFailure( State, EquipmentPid ) ->
 	% to fail.
 	%
 	FailureDurationInTicks = erlang:max( 2,
-	  class_Actor:convert_seconds_to_ticks( FailureDurationInSeconds,
-					 _MaxRelativeError=0.5, State ) ),
+		class_Actor:convert_seconds_to_ticks( FailureDurationInSeconds,
+											  _MaxRelativeError=0.5, State ) ),
 
 	%trace_utils:debug_fmt( "Failure duration: ~w seconds, i.e. ~B ticks.",
-	%				  [ FailureDurationInSeconds, FailureDurationInTicks ] ),
+	%   [ FailureDurationInSeconds, FailureDurationInTicks ] ),
 
 	FailureTickOffset = class_Actor:get_current_tick_offset( State )
 		+ FailureDurationInTicks,

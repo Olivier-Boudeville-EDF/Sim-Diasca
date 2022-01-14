@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2021 EDF R&D
+% Copyright (C) 2016-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -17,7 +17,6 @@
 % If not, see <http://www.gnu.org/licenses/>.
 
 % Author: Robin Huart (robin-externe.huart@edf.fr)
-
 
 
 % @doc Module storing all the helper functions defined to facilitate the

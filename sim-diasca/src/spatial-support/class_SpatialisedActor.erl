@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2021 EDF R&D
+% Copyright (C) 2014-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -18,12 +18,19 @@
 
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
+
+% @doc Class modelling an actor taking part to a <b>spatial environment</b>.
 -module(class_SpatialisedActor).
 
 
 -define( class_description,
 		 "Class modelling an actor taking part to a spatial environment, "
 		 "i.e. being at a given position in this environment." ).
+
+
+% Note: at least currently, the environment is only 2D, and simplistic
+% (centralised in a single process). A quadtree would be more relevant (for 3D
+% environments, an octree could be more suitable).
 
 
 % Determines what are the direct mother classes of this class (if any):
@@ -38,19 +45,19 @@
 	  "must always be up to date, as it might be requested directly "
 	  "(bypassing actor messages) by the environment in some cases" },
 
-	{ max_speed, maybe( class_TwoDimensionalEnvironment:max_speed() ),
+	{ max_speed, maybe( max_speed() ),
 	  "upper-bound (if any) of the maximum speed of this actor" },
 
 	{ environment_pid, environment_pid(),
 	  "PID of the environment this actor will live in" },
 
-	{ env_width, class_TwoDimensionalEnvironment:border_extent(),
+	{ env_width, border_extent(),
 	  "abscissa extent of the environment, from its origin" },
 
-	{ env_height, class_TwoDimensionalEnvironment:border_extent(),
+	{ env_height, border_extent(),
 	  "ordinate extent of the environment, from its origin" },
 
-	{ border_settings, class_TwoDimensionalEnvironment:border_description(),
+	{ border_settings, border_description(),
 	  "describes how border crossing shall be managed" } ] ).
 
 
@@ -73,12 +80,22 @@
 
 % Shorthands:
 
+
+-type ustring() :: text_utils:ustring().
+
 -type environment_pid() :: class_TwoDimensionalEnvironment:environment_pid().
 -type position() :: class_TwoDimensionalEnvironment:position().
 
+-type border_extent() :: class_TwoDimensionalEnvironment:border_extent().
+
+-type border_description() ::
+		class_TwoDimensionalEnvironment:border_description().
+
+-type max_speed() :: class_TwoDimensionalEnvironment:max_speed().
 
 
-% Creates a new spatialised actor, in a 2D environment.
+
+% @doc Creates a spatialised actor, in a 2D environment.
 %
 % Construction parameters are:
 %
@@ -95,29 +112,27 @@
 % - EnvironmentPid is the PID of the environment this actor will live in
 %
 -spec construct( wooper:state(), class_Actor:actor_settings(),
-		class_Actor:name(), position(),
-		class_TwoDimensionalEnvironment:max_speed(), environment_pid() ) ->
-					   wooper:state().
+		class_Actor:name(), position(), max_speed(), environment_pid() ) ->
+						wooper:state().
 construct( State, ActorSettings, Name, InitialPosition, MaxSpeed,
 		   EnvironmentPid ) ->
 
 	ActorState = class_Actor:construct( State, ActorSettings,
-										?trace_categorize( Name ) ),
+										?trace_categorize(Name) ),
 
 	setAttributes( ActorState, [
+		{ position, InitialPosition },
+		{ max_speed, MaxSpeed },
+		{ environment_pid, EnvironmentPid },
 
-			{ position, InitialPosition },
-			{ max_speed, MaxSpeed },
-			{ environment_pid, EnvironmentPid },
-
-			% Will serve as cached environment information:
-			{ env_width, undefined },
-			{ env_height, undefined },
-			{ border_settings, undefined } ] ).
-
+		% Will serve as cached environment information:
+		{ env_width, undefined },
+		{ env_height, undefined },
+		{ border_settings, undefined } ] ).
 
 
-% Overridden destructor.
+
+% @doc Overridden destructor.
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -128,7 +143,7 @@ destruct( State ) ->
 
 	% This can be done easily thanks to:
 	%SentState = class_Actor:send_actor_message( ?getAttr(environment_pid),
-	%											undeclare, State ),
+	%                                            undeclare, State ),
 
 	% Then allow chaining:
 	State.
@@ -141,17 +156,17 @@ destruct( State ) ->
 
 
 
-% First scheduling on this spatialised actor.
+% @doc First scheduling on this spatialised actor.
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
-						   actor_oneway_return().
+										actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 
 	% Declaring ourself to the environment:
 	SentState = class_Actor:send_actor_message(
-				  ?getAttr(environment_pid),
-				  { declareEntity, [ ?getAttr(position), ?getAttr(max_speed),
-									 wooper:get_classname( State ) ] },
-				  State ),
+		?getAttr(environment_pid),
+		{ declareEntity, [ ?getAttr(position), ?getAttr(max_speed),
+						   wooper:get_classname( State ) ] },
+		State ),
 
 	% Creates an initial deadline at the tick, to trigger the burners:
 	actor:return_state( SentState ).
@@ -159,8 +174,7 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-% The definition of the spontaneous behaviour of this incinerator.
-%
+% @doc The definition of the spontaneous behaviour of this spatialised actor.
 -spec actSpontaneous( wooper:state() ) -> const_actor_oneway_return().
 actSpontaneous( State ) ->
 	% Nothing specific here, no futur planned spontaneous action.
@@ -168,12 +182,12 @@ actSpontaneous( State ) ->
 
 
 
-% Requests this actor to return back its current position.
+% @doc Requests this actor to return back its current position.
 %
 % Notably called by the environment.
 %
 -spec getPosition( wooper:state(), sending_actor_pid() ) ->
-						 actor_oneway_return().
+											actor_oneway_return().
 getPosition( State, SenderPid ) ->
 
 	SentState = class_Actor:send_actor_message( SenderPid,
@@ -183,34 +197,33 @@ getPosition( State, SenderPid ) ->
 
 
 
--spec notifyEnvironmentSettings( wooper:state(),
-			class_TwoDimensionalEnvironment:border_extent(),
-			class_TwoDimensionalEnvironment:border_extent(),
-			class_TwoDimensionalEnvironment:border_description(),
-						sending_actor_pid() ) -> actor_oneway_return().
+% @doc Returns the settings of the current environment.
+-spec notifyEnvironmentSettings( wooper:state(), border_extent(),
+			border_extent(), border_description(), sending_actor_pid() ) ->
+										actor_oneway_return().
 notifyEnvironmentSettings( State, Width, Height, BorderSettings, _EnvPid ) ->
 
 	actor:return_state( setAttributes( State, [
-			{ env_width, Width },
-			{ env_height, Height },
-			{ border_settings, BorderSettings } ] ) ).
+		{ env_width, Width },
+		{ env_height, Height },
+		{ border_settings, BorderSettings } ] ) ).
 
 
 
-% Returns a textual description of this instance.
--spec toString( wooper:state() ) -> const_request_return( string() ).
+% @doc Returns a textual description of this instance.
+-spec toString( wooper:state() ) -> const_request_return( ustring() ).
 toString( State ) ->
 	 wooper:const_return_result( to_string( State ) ).
 
 
 
-% Returns a textual representation of this instance.
+% @doc Returns a textual representation of this instance.
 %
 % (helper)
 %
--spec to_string( wooper:state() ) -> string().
+-spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 	text_utils:format( "Spatialised actor ~w whose position is ~p (max speed: "
-					   "~p meters per second), using environment ~w",
-					   [ self(), ?getAttr(position), ?getAttr(max_speed),
-						 ?getAttr(environment_pid) ] ).
+		"~p meters per second), using environment ~w",
+		[ self(), ?getAttr(position), ?getAttr(max_speed),
+		  ?getAttr(environment_pid) ] ).

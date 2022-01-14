@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2021 EDF R&D
+% Copyright (C) 2016-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -170,7 +170,7 @@
 
 
 -type unit_creation_action() :: { 'unit_creation', dataflow_unit_type(),
-	   wooper:construction_parameters(), event_id(), unit_creation_context() }.
+		wooper:construction_parameters(), event_id(), unit_creation_context() }.
 % Action corresponding to the creation of a unit.
 
 
@@ -250,7 +250,7 @@
 
 
 -type unit_disconnection_action() :: { 'unit_disconnection', event_id(),
-	   block_pid(), unit_disconnection_context() }.
+		block_pid(), unit_disconnection_context() }.
 % Action corresponding to the disconnection of a unit to the dataflow, i.e. the
 % removal of a set of channels.
 
@@ -259,7 +259,7 @@
 
 
 
--type action_id() :: basic_utils:count().
+-type action_id() :: count().
 % Allows to keep track of the actions performed by this unit manager.
 
 
@@ -267,7 +267,7 @@
 % Keeps track of the actions in progress.
 
 
--type action_count() :: basic_utils:count().
+-type action_count() :: count().
 % Allows to set action identifiers.
 
 
@@ -306,6 +306,7 @@
 
 % Shorthands:
 
+-type count() :: basic_utils:count().
 -type ustring() :: text_utils:ustring().
 -type connection_info() :: class_DataflowBlock:connection_info().
 
@@ -313,12 +314,12 @@
 
 % Implementation notes:
 %
-% A unit manager is not linked to any dataflow (as there may exist multiple
-% dataflow instances anyway).
+% A unit manager is not linked to any dataflow instance (as there may exist
+% multiple dataflow instances anyway).
 
 
 
-% Constructs a unit manager.
+% @doc Constructs a unit manager.
 %
 % Parameters are:
 %
@@ -945,7 +946,7 @@ createInitialUnitInstances( State, _UnitSpec={ UnitType, _Language=erlang },
 							DataflowPid, CoreConstructParamLists ) ->
 
 	ParamStrings = [ text_utils:format( "~p", [ CPL ] )
-					 || CPL <- CoreConstructParamLists ],
+						|| CPL <- CoreConstructParamLists ],
 
 	?debug_fmt( "Creating ~B initial instances of unit type '~ts', associated "
 		"to dataflow ~w, based on following list of core construction "
@@ -956,7 +957,7 @@ createInitialUnitInstances( State, _UnitSpec={ UnitType, _Language=erlang },
 	% Prepares a list of { Classname, FullConstructParams }:
 	ConstructEntries = [ { UnitType,
 						   list_utils:append_at_end( DataflowPid, CPL ) }
-						 || CPL <- CoreConstructParamLists ],
+								|| CPL <- CoreConstructParamLists ],
 
 	LoadBalancerPid = ?getAttr(load_balancer_pid),
 
@@ -979,7 +980,7 @@ createInitialUnitInstances( State, _UnitSpec={ UnitType, Language },
 							DataflowPid, CoreConstructParamLists ) ->
 
 	ParamStrings = [ text_utils:format( "~p", [ CPL ] )
-					 || CPL <- CoreConstructParamLists ],
+						|| CPL <- CoreConstructParamLists ],
 
 	?debug_fmt( "Creating ~B initial instances of unit type '~ts', relying on "
 		"the ~ts binding, associated to dataflow ~w, based on following "
@@ -996,7 +997,7 @@ createInitialUnitInstances( State, _UnitSpec={ UnitType, Language },
 	% Prepares a list of { Classname, FullConstructParams }:
 	ConstructEntries = [ { ActualUnitType,
 						   [ UnitType, CPL, DataflowPid, BindingManagerPid ] }
-						 || CPL <- CoreConstructParamLists ],
+								|| CPL <- CoreConstructParamLists ],
 
 	LoadBalancerPid = ?getAttr(load_balancer_pid),
 
@@ -1058,12 +1059,12 @@ createInitialMockupUnitInstances( State, MockupUnitSpec, DataflowPid,
 		[ length( UnitNames ), UnitType,
 		  text_utils:format( "~p", [ MockupUnitSpec ] ) ] ),
 
-	% Prepares a list of { Classname, FullConstructParams }:
+	% Prepares a list of {Classname, FullConstructParams}:
 	CoreConstructParamList = [ [ UN, MockupUnitSpec ] || UN <- UnitNames ],
 
 	ConstructEntries = [ { class_DataflowMockupUnit,
 						   list_utils:append_at_end( DataflowPid, CP ) }
-						 || CP <- CoreConstructParamList ],
+								|| CP <- CoreConstructParamList ],
 
 	LoadBalancerPid = ?getAttr(load_balancer_pid),
 
@@ -1155,8 +1156,8 @@ createUnit( State, _UnitSpec={ UnitType, Language }, UnitConstructParams,
 		++ [ DataflowPid, BindingManagerPid ],
 
 	%trace_utils:debug_fmt( "ActualUnitType: '~p', "
-	%					   "FullUnitConstructParams: '~p'.",
-	%					   [ ActualUnitType, FullUnitConstructParams ] ),
+	%   "FullUnitConstructParams: '~p'.",
+	%   [ ActualUnitType, FullUnitConstructParams ] ),
 
 	CreatedState = class_Actor:create_actor( ActualUnitType,
 					   FullUnitConstructParams, _Tag=NewActionId, State ),
@@ -1466,7 +1467,7 @@ unit_table_to_string( State ) ->
 	case table:enumerate( ?getAttr(unit_table) ) of
 
 		[] ->
-			 "not managing any unit type";
+			"not managing any unit type";
 
 		Types ->
 
@@ -1570,8 +1571,7 @@ manage_possible_event_completion( Event, State ) ->
 
 	ActionList = get_actions_for_event( EventId, EventTable ),
 
-	manage_possible_event_completion( ActionList, EventId, EventTable,
-									  State ).
+	manage_possible_event_completion( ActionList, EventId, EventTable, State ).
 
 
 
@@ -1605,7 +1605,6 @@ create_channels_for( EventId, UpstreamBlockPid, DownstreamBlockPid,
 					 ConnectionSpecs, State ) ->
 
 	% Block endpoints and state specified to report clearer errors:
-	%
 	CanonicalConnectionSpecs = canonicalize_connection_specs( ConnectionSpecs,
 								UpstreamBlockPid, DownstreamBlockPid, State ),
 
@@ -1961,7 +1960,7 @@ create_initial_mockup_unit( UnitManagerPid, MockupUnitSpec, DataflowPid,
 							UnitName ) ->
 
 	UnitManagerPid ! { createInitialMockupUnitInstance,
-					   [ MockupUnitSpec, DataflowPid, UnitName ], self() },
+						[ MockupUnitSpec, DataflowPid, UnitName ], self() },
 
 	receive
 
@@ -1988,7 +1987,7 @@ create_initial_mockup_unit( UnitManagerPid, MockupUnitSpec, DataflowPid,
 % Defined for convenience, typically when implementing a simulation case.
 %
 -spec create_initial_units( unit_manager_pid(), managed_unit_spec(),
-							dataflow_pid(), [ construction_parameters() ] ) ->
+					dataflow_pid(), [ construction_parameters() ] ) ->
 									static_return( [ unit_pid() ] ).
 create_initial_units( UnitManagerPid, UnitSpec, DataflowPid,
 					  CoreConstructionParamLists ) ->
@@ -2131,7 +2130,7 @@ connect_to_iterated_initially( UnitManagerPid,
 						   text_utils:string_to_binary( InputIterationName ) },
 
 	UnitManagerPid ! { connectToIteratedInitially,
-					   [ BinSourcePorts, BinTargetIteration ], self() },
+						[ BinSourcePorts, BinTargetIteration ], self() },
 
 	receive
 
@@ -2246,8 +2245,8 @@ canonicalize_downstream_connection_spec( InputPortStringName, UpstreamBlockPid,
 										 DownstreamBlockPid, State )
   when is_list( InputPortStringName )->
 	canonicalize_downstream_connection_spec(
-	  { input_port_name, InputPortStringName }, UpstreamBlockPid,
-	  DownstreamBlockPid, State );
+		{ input_port_name, InputPortStringName }, UpstreamBlockPid,
+		DownstreamBlockPid, State );
 
 canonicalize_downstream_connection_spec( Other, UpstreamBlockPid,
 										 DownstreamBlockPid, State ) ->
@@ -2326,7 +2325,7 @@ connection_specs_to_string( _ConnectionSpecs=[] ) ->
 connection_specs_to_string( ConnectionSpecs ) ->
 
 	ConnectionString = text_utils:strings_to_string(
-		  [ connection_spec_to_string( Spec ) || Spec <- ConnectionSpecs ] ),
+		[ connection_spec_to_string( Spec ) || Spec <- ConnectionSpecs ] ),
 
 	text_utils:format( "following ~B connection specifications: ~ts",
 					   [ length( ConnectionSpecs ), ConnectionString ] ).

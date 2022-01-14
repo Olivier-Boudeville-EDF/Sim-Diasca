@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2021 EDF R&D
+% Copyright (C) 2016-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -34,7 +34,7 @@
 
 
 
--type java_ref() :: basic_utils:count().
+-type java_ref() :: count().
 % Designates the Java reference corresponding to a processing unit instance
 % (relatively to its worker thread).
 
@@ -86,7 +86,11 @@
 
 
 % Shorthands:
+
+-type count() :: basic_utils:count().
+
 -type ustring() :: text_utils:ustring().
+
 
 
 % Design notes:
@@ -108,7 +112,7 @@
 
 
 
-% @doc Constructs a new dataflow Java processing unit.
+% @doc Constructs a dataflow Java processing unit.
 %
 % Parameters:
 %
@@ -156,8 +160,8 @@ construct( State, ActorSettings, UnitClassname,
 	% Instantiates the Java processing unit in its associated worker thread, and
 	% gets back the initial data (attributes or not) needed in the Erlang world:
 
-	JavaInitialData = [ JavaFullyQualifiedClassname,
-						JavaConstructionParameters ],
+	JavaInitialData =
+		[ JavaFullyQualifiedClassname, JavaConstructionParameters ],
 
 	TraceEmitterInfo = ?trace_categorize(UnitName),
 
@@ -257,7 +261,7 @@ activate( State ) ->
 		  text_utils:strings_to_sorted_string(
 			[ text_utils:format( "'~ts' is ~ts", [ IPName,
 						dataflow_support:value_status_to_string( ValStatus ) ] )
-					  || { IPName, ValStatus } <- InputPortStatuses ] ) ] ),
+					|| { IPName, ValStatus } <- InputPortStatuses ] ) ] ),
 
 	% Builds the list of encoded data relative to input port iterations that
 	% might be necessary for computations involved in the Java activate/1
@@ -265,7 +269,7 @@ activate( State ) ->
 	%
 	InputPortIterationPieces =
 		class_LanguageBindingManager:get_encoded_input_port_iterations_data(
-		  State ),
+			State ),
 
 	% Builds the list of encoded data relative to output port iterations that
 	% might be necessary for the unit to know how many output ports are actually
@@ -273,7 +277,7 @@ activate( State ) ->
 	%
 	OutputPortIterationPieces =
 		class_LanguageBindingManager:get_encoded_output_port_iterations_data(
-		  State ),
+			State ),
 
 	% Gathers all relevant input data, calls the activate/1 method of the
 	% associated Java processing unit and gets back its computation results:
@@ -289,11 +293,11 @@ activate( State ) ->
 
 	?debug_fmt( "Just after activation, following ~B output ports are "
 		"to be set: ~ts", [ length( ActivationResults ),
-				  text_utils:strings_to_sorted_string(
+				text_utils:strings_to_sorted_string(
 					[ text_utils:format( "'~ts' set to: ~p", [ OPName,
 						%class_DataflowBlock:value_to_string( ChValue ) ] )
 						ChValue ] )
-					  || { OPName, ChValue } <- ActivationResults ] ) ] ),
+					|| { OPName, ChValue } <- ActivationResults ] ) ] ),
 
 	% Interprets then ActivationResults as a list of tasks to achieve on the
 	% output ports, then performs them:
@@ -329,7 +333,7 @@ get_static_trace_info( UnitType ) ->
 %
 -spec get_port_specifications( dataflow_unit_type() ) ->
 	static_return( { [ input_port_spec() ], [ output_port_spec() ] }
-				   | 'no_port_specifications_declared' ).
+				 | 'no_port_specifications_declared' ).
 get_port_specifications( UnitType ) ->
 
 	JavaFullClass =
@@ -341,7 +345,7 @@ get_port_specifications( UnitType ) ->
 		get_static_trace_info( UnitType ) ),
 
 	trace_utils:debug_fmt( "get_port_specifications returned '~ts' type (~ts).",
-				[ type_utils:get_type_of( RequestResult ), RequestResult ] ),
+		[ type_utils:get_type_of( RequestResult ), RequestResult ] ),
 
 	% Returns the 'no_port_specifications_declared' atom if no static port
 	% declaration has been found in Java, otherwise decodes the specifications
@@ -363,14 +367,16 @@ get_port_specifications( UnitType ) ->
 		{ EncodedInputPortSpecs, EncodedOutputPortSpecs } ->
 
 			InputPortSpecs = [ begin
-			  DecodedIPS = class_LanguageBindingManager:decode_input_port_specs(
-							 EIPS ),
-			  class_DataflowBlock:parse_raw_input_port_spec( DecodedIPS )
+				DecodedIPS =
+					class_LanguageBindingManager:decode_input_port_specs(
+						EIPS ),
+				class_DataflowBlock:parse_raw_input_port_spec( DecodedIPS )
 							   end || EIPS <- EncodedInputPortSpecs ],
 
 			OutputPortSpecs = [ begin
 				DecodedOPS =
-				  class_LanguageBindingManager:decode_output_port_specs( EOPS ),
+					class_LanguageBindingManager:decode_output_port_specs(
+						EOPS ),
 				class_DataflowBlock:parse_raw_output_port_spec( DecodedOPS )
 								end || EOPS <- EncodedOutputPortSpecs ],
 
@@ -405,7 +411,7 @@ get_declared_semantics( UnitType ) ->
 		get_static_trace_info( UnitType ) ),
 
 	%trace_utils:debug_fmt( "get_declared_semantics returned '~ts' type (~p).",
-	%	[ type_utils:get_type_of( RequestResult ), RequestResult ] ),
+	%   [ type_utils:get_type_of( RequestResult ), RequestResult ] ),
 
 	% Returns the 'no_semantics_declared' atom if no static declaration of
 	% semantics has been found in Java, or decodes the received one otherwise:
@@ -433,7 +439,7 @@ get_declared_semantics( UnitType ) ->
 
 		EncodedSemantics when is_list( EncodedSemantics ) ->
 			[ text_utils:binary_to_atom( BinSem )
-			  || BinSem <- EncodedSemantics ]
+				|| BinSem <- EncodedSemantics ]
 
 	end,
 
@@ -481,7 +487,7 @@ get_declared_types( UnitType ) ->
 		EncodedTypes when is_list( EncodedTypes ) ->
 			[ { text_utils:binary_to_atom( BinTypeName ),
 				text_utils:binary_to_string( BinExplicitType ) }
-			  || { BinTypeName, BinExplicitType } <- EncodedTypes ]
+					|| { BinTypeName, BinExplicitType } <- EncodedTypes ]
 
 	end,
 

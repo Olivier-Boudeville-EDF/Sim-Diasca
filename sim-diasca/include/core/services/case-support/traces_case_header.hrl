@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2021 EDF R&D
+% Copyright (C) 2012-2022 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -24,7 +24,7 @@
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 %
-% Creation date: Tuesday, January 11, 2011
+% Creation date: Tuesday, January 11, 2011.
 
 
 
@@ -54,195 +54,117 @@
 % Section for trace output macros.
 
 
--ifdef(tracing_activated).
+% We moved away from the tracing_activated conditional sections the most severe
+% trace sendings (namely emergency, alert, critical, error and warning), as in
+% all cases (whether or not the traces are activated), we want them, and both as
+% actual traces and as console outputs.
+
+% All traces sent from a case are safe (i.e. explicitly synchronised), yet only
+% error-like ones are echoed on the console.
 
 
 
 -define( case_emergency( Message ),
-
-		 io:format( "Emergency case trace message: ~ts~n", [ Message ] ),
-
-		 class_TraceEmitter:send_from_case( emergency, Message ),
-
-		 % To ensure the asynchronous output of the trace has a chance to
-		 % complete, possibly before the interpreter is crashed:
-		 %
-		 system_utils:await_output_completion()
+		 class_TraceEmitter:send_standalone_safe( emergency, Message )
 ).
 
 
 -define( case_emergency_fmt( MessageFormat, FormatValues ),
-
-		 io:format( "Emergency trace message: " ++ MessageFormat ++ "~n",
-					FormatValues ),
-
-		 class_TraceEmitter:send_from_case( emergency,
-							io_lib:format( MessageFormat, FormatValues ) ),
-
-		 % To ensure the asynchronous output of the trace has a chance to
-		 % complete, possibly before the interpreter is crashed:
-		 %
-		 system_utils:await_output_completion()
+		 class_TraceEmitter:send_standalone_safe( emergency,
+					text_utils:format( MessageFormat, FormatValues ) )
 ).
 
 
 
 -define( case_alert( Message ),
-
-		 io:format( "Alert case trace message: ~ts~n", [ Message ] ),
-
-		 class_TraceEmitter:send_from_case( alert, Message ),
-
-		 % To ensure the asynchronous output of the trace has a chance to
-		 % complete, possibly before the interpreter is crashed:
-		 %
-		 system_utils:await_output_completion()
+		 class_TraceEmitter:send_standalone_safe( alert, Message )
 ).
 
 
 -define( case_alert_fmt( MessageFormat, FormatValues ),
-
-		 io:format( "Alert trace message: " ++ MessageFormat ++ "~n",
-					FormatValues ),
-
-		 class_TraceEmitter:send_from_case( alert,
-							io_lib:format( MessageFormat, FormatValues ) ),
-
-		 % To ensure the asynchronous output of the trace has a chance to
-		 % complete, possibly before the interpreter is crashed:
-		 %
-		 system_utils:await_output_completion()
+		 class_TraceEmitter:send_standalone_safe( alert,
+					text_utils:format( MessageFormat, FormatValues ) )
 ).
 
 
 
 -define( case_critical( Message ),
-
-		 io:format( "Critical case trace message: ~ts~n", [ Message ] ),
-
-		 class_TraceEmitter:send_from_case( critical, Message ),
-
-		 % To ensure the asynchronous output of the trace has a chance to
-		 % complete, possibly before the interpreter is crashed:
-		 %
-		 system_utils:await_output_completion()
+		 class_TraceEmitter:send_standalone_safe( critical, Message )
 ).
 
 
 -define( case_critical_fmt( MessageFormat, FormatValues ),
-
-		 io:format( "Critical trace message: " ++ MessageFormat ++ "~n",
-					FormatValues ),
-
-		 class_TraceEmitter:send_from_case( critical,
-							io_lib:format( MessageFormat, FormatValues ) ),
-
-		 % To ensure the asynchronous output of the trace has a chance to
-		 % complete, possibly before the interpreter is crashed:
-		 %
-		 system_utils:await_output_completion()
+		 class_TraceEmitter:send_standalone_safe( critical,
+					text_utils:format( MessageFormat, FormatValues ) )
 ).
 
 
 
 -define( case_error( Message ),
-
-		 io:format( "Error case trace message: ~ts~n", [ Message ] ),
-
-		 class_TraceEmitter:send_from_case( error, Message ),
-
-		 % To ensure the asynchronous output of the trace has a chance to
-		 % complete, possibly before the interpreter is crashed:
-		 %
-		 system_utils:await_output_completion()
+		 class_TraceEmitter:send_standalone_safe( error, Message )
 ).
 
 
 -define( case_error_fmt( MessageFormat, FormatValues ),
-
-		 io:format( "Error case trace message: " ++ MessageFormat ++ "~n",
-					FormatValues ),
-
-		 class_TraceEmitter:send_from_case( error,
-						io_lib:format( MessageFormat, FormatValues ) ),
-
-		 % To ensure the asynchronous output of the trace has a chance to
-		 % complete, possibly before the interpreter is crashed:
-		 %
-		 system_utils:await_output_completion()
+		 class_TraceEmitter:send_standalone_safe( error,
+					text_utils:format( MessageFormat, FormatValues ) )
 ).
 
 
 
 -define( case_warning( Message ),
-
-		 io:format( "Warning case trace message: ~ts~n", [ Message ] ),
-
-		 class_TraceEmitter:send_from_case( warning, Message ),
-
-		 % To ensure the asynchronous output of the trace has a chance to
-		 % complete, possibly before the interpreter is crashed:
-		 %
-		 system_utils:await_output_completion()
+		 class_TraceEmitter:send_standalone_safe( warning, Message )
 ).
 
 
 -define( case_warning_fmt( MessageFormat, FormatValues ),
-
-		 io:format( "Warning case trace message: " ++ MessageFormat ++ "~n",
-					FormatValues ),
-
-		 class_TraceEmitter:send_from_case( warning,
-						io_lib:format( MessageFormat, FormatValues ) ),
-
-		 % To ensure the asynchronous output of the trace has a chance to
-		 % complete, possibly before the interpreter is crashed:
-		 %
-		 system_utils:await_output_completion()
+		 class_TraceEmitter:send_standalone_safe( warning,
+					text_utils:format( MessageFormat, FormatValues ) )
 ).
 
 
 
--define( case_notice( Message ),
-		 class_TraceEmitter:send_from_case( notice, Message )
 
+-ifdef(tracing_activated).
+
+
+-define( case_notice( Message ),
+		 class_TraceEmitter:send_standalone_safe( notice, Message )
 ).
 
 
 -define( case_notice_fmt( MessageFormat, FormatValues ),
-		 class_TraceEmitter:send_from_case( notice,
-						io_lib:format( MessageFormat, FormatValues ) )
-
+		 class_TraceEmitter:send_standalone_safe( notice,
+						text_utils:format( MessageFormat, FormatValues ) )
 ).
 
 
 
 -define( case_info( Message ),
-		 class_TraceEmitter:send_from_case( info, Message )
+		 class_TraceEmitter:send_standalone_safe( info, Message )
 
 ).
 
 
 -define( case_info_fmt( MessageFormat, FormatValues ),
-		 class_TraceEmitter:send_from_case( info,
-						io_lib:format( MessageFormat, FormatValues ) )
-
+		 class_TraceEmitter:send_standalone_safe( info,
+						text_utils:format( MessageFormat, FormatValues ) )
 ).
 
 
 
 -define( case_debug( Message ),
-		 class_TraceEmitter:send_from_case( debug, Message )
-
+		 class_TraceEmitter:send_standalone_safe( debug, Message )
 ).
 
 
 -define( case_debug_fmt( MessageFormat, FormatValues ),
-		 class_TraceEmitter:send_from_case( debug,
-							io_lib:format( MessageFormat, FormatValues ) )
-
+		 class_TraceEmitter:send_standalone_safe( debug,
+						text_utils:format( MessageFormat, FormatValues ) )
 ).
 
+
+% 'void' section put near the end of this file.
 
 
 
@@ -253,174 +175,28 @@
 % Here tracing_activated is not defined: non-critical traces are disabled.
 
 
-
-% Message is returned, as otherwise some variables in calling code could be
-% determined as unused, and thus would trigger a warning:
-
-
-
--define( case_emergency( Message ),
-
-		 io:format( "Emergency case trace message: ~ts~n", [ Message ] ),
-
-		 class_TraceEmitter:send_from_case( emergency, Message ),
-
-		 % To ensure the asynchronous output of the trace has a chance to
-		 % complete, possibly before the interpreter is crashed:
-		 %
-		 system_utils:await_output_completion()
-).
-
-
--define( case_alert( Message ),
-
-		 io:format( "Alert case trace message: ~ts~n", [ Message ] ),
-
-		 class_TraceEmitter:send_from_case( alert, Message ),
-
-		 % To ensure the asynchronous output of the trace has a chance to
-		 % complete, possibly before the interpreter is crashed:
-		 %
-		 system_utils:await_output_completion()
-).
-
-
--define( case_critical( Message ),
-
-		 io:format( "Critical case trace message: ~ts~n", [ Message ] ),
-
-		 class_TraceEmitter:send_from_case( critical, Message ),
-
-		 % To ensure the asynchronous output of the trace has a chance to
-		 % complete, possibly before the interpreter is crashed:
-		 %
-		 system_utils:await_output_completion()
-).
-
-
--define( case_error( Message ),
-
-		 io:format( "Error case trace message: ~ts~n", [ Message ] ),
-
-		 class_TraceEmitter:send_from_case( error, Message ),
-
-		 % To ensure the asynchronous output of the trace has a chance to
-		 % complete, possibly before the interpreter is crashed:
-		 %
-		 system_utils:await_output_completion()
-).
-
-
--define( case_warning( Message ),
-
-		 io:format( "Warning case trace message: ~ts~n", [ Message ] ),
-
-		 class_TraceEmitter:send_from_case( warning, Message ),
-
-		 % To ensure the asynchronous output of the trace has a chance to
-		 % complete, possibly before the interpreter is crashed:
-		 %
-		 system_utils:await_output_completion()
-).
-
-
 -define( case_notice( Message ), case_trace_disabled( Message ) ).
-
--define( case_info( Message ), case_trace_disabled( Message ) ).
-
--define( case_debug( Message ), case_trace_disabled( Message ) ).
-
-
-
-
--define( case_emergency_fmt( MessageFormat, FormatValues ),
-
-		 io:format( "Emergency case trace message: " ++ MessageFormat ++ "~n",
-					FormatValues ),
-
-		 class_TraceEmitter:send_from_case( emergency,
-						io_lib:format( MessageFormat, FormatValues ) ),
-
-		 % To ensure the asynchronous output of the trace has a chance to
-		 % complete, possibly before the interpreter is crashed:
-		 %
-		 system_utils:await_output_completion()
-).
-
-
-
--define( case_alert_fmt( MessageFormat, FormatValues ),
-
-		 io:format( "Alert case trace message: " ++ MessageFormat ++ "~n",
-					FormatValues ),
-
-		 class_TraceEmitter:send_from_case( alert,
-						io_lib:format( MessageFormat, FormatValues ) ),
-
-		 % To ensure the asynchronous output of the trace has a chance to
-		 % complete, possibly before the interpreter is crashed:
-		 %
-		 system_utils:await_output_completion()
-).
-
-
-
--define( case_critical_fmt( MessageFormat, FormatValues ),
-
-		 io:format( "Critical case trace message: " ++ MessageFormat ++ "~n",
-					FormatValues ),
-
-		 class_TraceEmitter:send_from_case( critical,
-						io_lib:format( MessageFormat, FormatValues ) ),
-
-		 % To ensure the asynchronous output of the trace has a chance to
-		 % complete, possibly before the interpreter is crashed:
-		 %
-		 system_utils:await_output_completion()
-).
-
-
-
--define( case_error_fmt( MessageFormat, FormatValues ),
-
-		 io:format( "Error case trace message: " ++ MessageFormat ++ "~n",
-					FormatValues ),
-
-		 class_TraceEmitter:send_from_case( error,
-						io_lib:format( MessageFormat, FormatValues ) ),
-
-		 % To ensure the asynchronous output of the trace has a chance to
-		 % complete, possibly before the interpreter is crashed:
-		 %
-		 system_utils:await_output_completion()
-).
-
-
--define( case_warning_fmt( MessageFormat, FormatValues ),
-
-		 io:format( "Warning case trace message: " ++ MessageFormat ++ "~n",
-					FormatValues ),
-
-		 class_TraceEmitter:send_from_case( warning,
-						io_lib:format( MessageFormat, FormatValues ) ),
-
-		 % To ensure the asynchronous output of the trace has a chance to
-		 % complete, possibly before the interpreter is crashed:
-		 %
-		 system_utils:await_output_completion()
-).
 
 
 -define( case_notice_fmt( Message, FormatValues ),
 		 case_trace_disabled( Message, FormatValues ) ).
 
 
+
+-define( case_info( Message ), case_trace_disabled( Message ) ).
+
+
 -define( case_info_fmt( Message, FormatValues ),
 		 case_trace_disabled( Message, FormatValues ) ).
 
 
+
+-define( case_debug( Message ), case_trace_disabled( Message ) ).
+
+
 -define( case_debug_fmt( Message, FormatValues ),
 		 case_trace_disabled( Message, FormatValues ) ).
+
 
 
 -endif. % tracing_activated

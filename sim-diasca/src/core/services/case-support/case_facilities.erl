@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2021 EDF R&D
+% Copyright (C) 2012-2022 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -43,7 +43,11 @@
 
 
 % Shorthands:
+
 -type ustring() :: text_utils:ustring().
+
+-type format_string() :: text_utils:format_string().
+-type format_values() :: text_utils:format_values().
 
 
 
@@ -60,7 +64,7 @@
 					void().
 start( Module ) when is_atom( Module ) ->
 	erlang:process_flag( trap_exit, false ),
-	basic_utils:display( "~n~n--> Running case ~s.~n", [ Module ] );
+	basic_utils:display( "~n~n--> Running case ~ts.~n", [ Module ] );
 
 start( Modules ) when is_list( Modules ) ->
 	erlang:process_flag( trap_exit, false ),
@@ -89,7 +93,7 @@ display( Message ) ->
 % FormatString is an io:format-style format string, ValueList is the
 % corresponding list of field values.
 %
--spec display( ustring(), list() ) -> void().
+-spec display( format_string(), format_values() ) -> void().
 display( FormatString, ValueList ) ->
 	basic_utils:display( FormatString, ValueList ).
 
@@ -141,13 +145,13 @@ finished() ->
 %
 % Ex: case_facilities:fail( "server on strike" )
 %
--spec fail( string() ) -> no_return().
+-spec fail( ustring() ) -> no_return().
 fail( Reason ) ->
 
 	% For some reason erlang:error is unable to interpret strings as strings,
 	% they are always output as unreadable lists.
 
-	basic_utils:display( "~n!!!! Case failed, reason: ~s.~n~n", [ Reason ] ),
+	basic_utils:display( "~n!!!! Case failed, reason: ~ts.~n~n", [ Reason ] ),
 
 	% Never returns:
 	erlang:error( "Case failed" ),
@@ -168,18 +172,18 @@ fail( Reason ) ->
 % FormatString is an io:format-style format string, ValueList is the
 % corresponding list of field values.
 %
-% Ex: case_facilities:fail("server ~s on strike", ["foobar.org"])
+% Ex: case_facilities:fail("server ~ts on strike", ["foobar.org"])
 %
--spec fail( ustring(), list() ) -> no_return().
+-spec fail( format_string(), format_values() ) -> no_return().
 fail( FormatString, ValueList ) ->
 
 	% For some reason, erlang:error is unable to interpret strings as strings,
 	% they are always output as unreadable lists.
 
-	ErrorMessage = io_lib:format( "~n!!!! Case failed, reason: ~s.~n~n",
-								[ io_lib:format( FormatString, ValueList ) ] ),
+	ErrorMessage = text_utils:format( "~n!!!! Case failed, reason: ~ts.~n~n",
+		[ text_utils:format( FormatString, ValueList ) ] ),
 
-	basic_utils:display( "~n!!!! Case failed, reason: ~s.~n~n",
+	basic_utils:display( "~n!!!! Case failed, reason: ~ts.~n~n",
 						 [ ErrorMessage ] ),
 
 	erlang:error( "Case failed" ),
@@ -191,4 +195,5 @@ fail( FormatString, ValueList ) ->
 
 	% Useless, but otherwise Dialyzer will complain that this function has no
 	% local return:
+	%
 	case_failed.

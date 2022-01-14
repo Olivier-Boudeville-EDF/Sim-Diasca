@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -38,39 +38,46 @@
 %
 -record( actor_info, {
 
-		% The actual class name of this instance:
-		classname :: wooper:classname(),
+	% The actual class name of this instance:
+	classname :: wooper:classname(),
 
-		% The name of this instance, as an (optional) binary:
-		name :: maybe( text_utils:bin_string() ),
 
-		% The AAI of this instance:
-		aai :: class_Actor:aai() } ).
+	% The name of this instance, as an (optional) binary:
+	name :: maybe( text_utils:bin_string() ),
+
+
+	% The AAI of this instance:
+	aai :: class_Actor:aai() } ).
 
 
 -type actor_info() :: #actor_info{}.
+% Stores information about a model instance (an actor).
+%
+% All these information are authoritative but are duplicates, since they are
+% already available in the first place at the level of the corresponding actor.
+%
+% PID is not stored there, as each actual record will be actually a value
+% associated to a key, which is the PID of the actor.
 
 
 
+-type service_name() :: naming_utils:registration_name().
 % The name of a (possibly distributed) simulation service.
 %
 % Used for process registration as well.
-%
--type service_name() :: naming_utils:registration_name().
 
 
+
+-type agent_ref() :: { wooper:classname(), net_utils:atom_node_name() }.
 % Abstract (as opposed to a PID) reference to an agent of a simulation service
 % on a given node (akin to the actor's AAI).
 %
-% For example, { 'class_TimeManager', 'my_node@example.org' }.
-%
--type agent_ref() :: { wooper:classname(), net_utils:atom_node_name() }.
+% For example, {'class_TimeManager', 'my_node@example.org'}.
 
 
 
+-type producer_ref() :: text_utils:bin_string().
 % Abstract (as opposed to a PID) reference to a result producer (akin to the
 % actor's AAI).
 %
 % For example, <<"My Foobar Probe">>.
-%
--type producer_ref() :: text_utils:bin_string().

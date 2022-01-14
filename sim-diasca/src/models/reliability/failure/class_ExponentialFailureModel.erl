@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,11 +19,14 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Class modelling the <b>failure behaviour</b> of pieces of equipment
+% according to an exponential law (probability density).
+%
 -module(class_ExponentialFailureModel).
 
 
 -define( class_description,
-		 "Class modeling the failure behaviour of equipments according to an "
+		 "Class modelling the failure behaviour of equipments according to an "
 		 "exponential law (probability density)."
 		 "Note: it is the most common failure model, most electronic "
 		 "equipments respect this statistical rule."
@@ -44,7 +47,7 @@
 
 
 
-% Constructs a new exponential failure model actor.
+% @doc Constructs an exponential failure model actor.
 %
 % MTTF is Mean Time To Failure, the mean (average) time before a working system
 % fails.
@@ -72,13 +75,13 @@ construct( State, ActorSettings, MTTF ) ->
 
 	% Defines an exponential failure profile, for stochastic class to manage it:
 	FailureState = class_FailureModel:construct( State, ActorSettings,
-		?trace_categorize( "Exponential failure model" ),
+		?trace_categorize("Exponential failure model"),
 		{ exponential, Lambda } ),
 
 	% Then the class-specific actions:
 
 	?send_info_fmt( FailureState,
-		"Creating a new exponential failure model whose MTTF is ~B seconds "
+		"Creating an exponential failure model whose MTTF is ~B seconds "
 		"(lambda is ~f).", [ MTTFInSec, Lambda ] ),
 
 	FailureState.

@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,11 +19,8 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-
-% Overall unit test of the Sim-Diasca deployment and scheduling framework.
-
-
-
+% @doc Overall unit test of the Sim-Diasca deployment and scheduling framework.
+%
 % The test could run until tick offset #120, however the next tick after offset
 % #80 at which this only actor will be scheduled will trigger its
 % termination. Therefore the simulation should end automatically at this tick.
@@ -40,7 +37,7 @@
 
 
 
-% Runs a distributed simulation (of course if relevant computing hosts are
+% @doc Runs a distributed simulation (of course if relevant computing hosts are
 % specified).
 %
 -spec run() -> no_return().
@@ -51,7 +48,6 @@ run() ->
 	% Default simulation settings (50Hz, batch reproducible) are used, except
 	% for the name:
 	SimulationSettings = #simulation_settings{
-
 		simulation_name="Scheduling one periodic actor test" },
 
 
@@ -80,7 +76,7 @@ run() ->
 
 	% Directly created on the user node:
 	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-								   DeploymentSettings, LoadBalancingSettings ),
+									DeploymentSettings, LoadBalancingSettings ),
 
 
 	?test_info( "Deployment manager created, retrieving the load balancer." ),
@@ -92,17 +88,17 @@ run() ->
 
 	% Here we use the variation when the PID of the load balancer is specified:
 	FirstActorPid = class_Actor:create_initial_placed_actor( class_TestActor,
-			[ "First periodic test actor",
-			  _SchedulingSettings={periodic,_Period=3},
-			  _CreationSettings=no_creation,
-			  _TerminationTickOffset=80 ],
-			LoadBalancerPid ),
+		[ "First periodic test actor",
+		  _SchedulingSettings={periodic,_Period=3},
+		  _CreationSettings=no_creation,
+		  _TerminationTickOffset=80 ],
+		LoadBalancerPid ),
 
 	FirstActorPid ! { getAAI, [], self() },
 	2 = test_receive(),
 
 	?test_notice_fmt( "First actor has for PID ~w, and for AAI 2.",
-					[ FirstActorPid ] ),
+					  [ FirstActorPid ] ),
 
 	?test_info( "First actor has a correct AAI." ),
 
@@ -119,7 +115,7 @@ run() ->
 	RootTimeManagerPid ! { getTextualTimings, [], self() },
 	FirstTimingString = test_receive(),
 
-	?test_notice_fmt( "Received first time: ~s.", [ FirstTimingString ] ),
+	?test_notice_fmt( "Received first time: ~ts.", [ FirstTimingString ] ),
 
 
 	% Waits until simulation is finished:
@@ -136,7 +132,7 @@ run() ->
 	RootTimeManagerPid ! { getTextualTimings, [], self() },
 	SecondTimingString = test_receive(),
 
-	?test_notice_fmt( "Received second time: ~s.", [ SecondTimingString ] ),
+	?test_notice_fmt( "Received second time: ~ts.", [ SecondTimingString ] ),
 
 	sim_diasca:shutdown(),
 

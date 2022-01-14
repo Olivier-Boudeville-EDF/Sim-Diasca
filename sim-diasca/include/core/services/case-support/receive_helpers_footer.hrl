@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2021 EDF R&D
+% Copyright (C) 2012-2022 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -56,15 +56,15 @@
 %
 % Returns the received value.
 %
-% Ex: Pid ! { getBaz, [], self() }, MyBaz = case_receive(), ...
+% Ex: Pid ! {getBaz, [], self()}, MyBaz = case_receive(), ...
 %
 % to be used instead of:
 %
-% Pid ! { getBaz, [], self() },
+% Pid ! {getBaz, [], self()},
 % receive
 %
-%   { wooper_result, V } ->
-%			V
+%   {wooper_result, V} ->
+%        V
 %
 % end,
 % ...

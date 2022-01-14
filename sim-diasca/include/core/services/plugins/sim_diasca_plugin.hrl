@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2021 EDF R&D
+% Copyright (C) 2014-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -38,13 +38,12 @@
 % Describes the technical settings to be shared with the plugins by the engine.
 -record( technical_settings, {
 
+	% List of the computing nodes actually used:
+	%
+	% (user node is the one on which plugins run)
+	%
+	computing_nodes = [] :: [ net_utils:atom_node_name() ],
 
-		   % List of the computing nodes actually used:
-		   %
-		   % (user node is the one on which plugins run)
-		   %
-		   computing_nodes = [] :: [ net_utils:atom_node_name() ],
 
-
-		   % Cookie used by this instance of the simulator:
-		   cookie :: net_utils:cookie() } ).
+	% Cookie used by this instance of the simulator:
+	cookie :: net_utils:cookie() } ).

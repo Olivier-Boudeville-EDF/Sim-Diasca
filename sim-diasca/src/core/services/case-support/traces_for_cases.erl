@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2021 EDF R&D
+% Copyright (C) 2012-2022 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -27,7 +27,6 @@
 
 
 % Directly obtained from traces_for_tests.erl.
-
 
 
 % @doc This module gathers all code that allows to lighten the <b>trace macros
@@ -90,8 +89,8 @@ case_start( ModuleName, InitTraceSupervisor ) ->
 	% on the command-line:
 
 	% The actual option is: "--trace-type XXX":
-	TraceType =
-		case shell_utils:get_command_arguments_for_option( '-trace-type' ) of
+	TraceType = case shell_utils:get_command_arguments_for_option(
+						'-trace-type' ) of
 
 		undefined ->
 			trace_utils:info( "No trace type specified, defaulting "

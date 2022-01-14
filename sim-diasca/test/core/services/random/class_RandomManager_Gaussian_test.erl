@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,8 +19,8 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-% Unit test for the RandomManager class implementation, regarding the gaussian
-% distribution.
+% @doc Unit test for the RandomManager class implementation, regarding the
+% <b>Gaussian distribution</b>.
 %
 % See the class_RandomManager.erl module.
 %
@@ -88,7 +88,7 @@ draw_gaussian_values( Count, Table, Mu, Sigma, RandomManagerPid ) ->
 	receive
 
 		{ wooper_result, { positive_integer_gaussian_value, Value } }
-				when Value > ?table_span ; Value == 0 ->
+				when Value > ?table_span orelse Value == 0 ->
 			draw_gaussian_values( Count, Table, Mu, Sigma, RandomManagerPid );
 
 		{ wooper_result, { positive_integer_gaussian_value, Value } } ->
@@ -150,7 +150,7 @@ compute_mean( [], _Index, Acc ) ->
 	Acc;
 
 compute_mean( [ H | T ], Index, Acc ) ->
-	compute_mean( T, Index + 1, Acc + H * Index ).
+	compute_mean( T, Index+1, Acc + H * Index ).
 
 
 
@@ -190,27 +190,27 @@ test_gaussian_random( RandomManagerPid, Mu, Sigma ) ->
 											   Mu, Sigma, RandomManagerPid ),
 
 	FourthGaussianTable = draw_gaussian_values( 500000-50000,
-			ThirdGaussianTable, Mu, Sigma, RandomManagerPid ),
+		ThirdGaussianTable, Mu, Sigma, RandomManagerPid ),
 
 	FifthGaussianTable = draw_gaussian_values( 5000000-500000,
-			FourthGaussianTable, Mu, Sigma, RandomManagerPid ),
+		FourthGaussianTable, Mu, Sigma, RandomManagerPid ),
 
 	Mean = compute_mean( FifthGaussianTable ),
 
-	?test_notice_fmt( "Mean of this full actual gaussian distribution is ~p.",
+	?test_notice_fmt( "Mean of this full actual Gaussian distribution is ~p.",
 					  [ Mean ] ),
 
 	MyGaussianProbe = class_Probe:create_facility_probe(
 
 		_Title="Gaussian probe",
 
-		_Curves=[ "After 500 draws","After 5000 draws","After 50000 draws",
+		_Curves=[ "After 500 draws", "After 5000 draws", "After 50000 draws",
 				  "After 500000 draws", "After 5000000 draws" ],
 
 		_Zones=[],
 
 		text_utils:format( "Test of a gaussian distribution with mean mu = ~p "
-					   "and standard deviation sigma = ~p.", [ Mu, Sigma ] ),
+			"and a standard deviation sigma = ~p.", [ Mu, Sigma ] ),
 
 		text_utils:format( "Drawn values (mean value is ~w)", [ Mean ] ),
 
@@ -219,7 +219,7 @@ test_gaussian_random( RandomManagerPid, Mu, Sigma ) ->
 	send_tables( FirstGaussianTable, SecondGaussianTable, ThirdGaussianTable,
 				 FourthGaussianTable, FifthGaussianTable, MyGaussianProbe ),
 
-	?test_info( "Requesting the generation of gaussian probe report." ),
+	?test_info( "Requesting the generation of Gaussian probe report." ),
 
 	class_Probe:generate_report_for( MyGaussianProbe ),
 
@@ -227,8 +227,7 @@ test_gaussian_random( RandomManagerPid, Mu, Sigma ) ->
 
 
 
-
-% Runs the tests, no prior RandomManager expected to be alive.
+% @doc Runs the tests, no prior RandomManager expected to be alive.
 -spec run() -> no_return().
 run() ->
 
@@ -236,11 +235,11 @@ run() ->
 
 	class_ResultManager:create_mockup_environment(),
 
-	?test_info( "Creating a new RandomManager." ),
+	?test_info( "Creating a random manager." ),
 	class_RandomManager:create(),
 
-	RandomManagerPid = naming_utils:wait_for_global_registration_of(
-						 ?random_manager_name ),
+	RandomManagerPid =
+		naming_utils:wait_for_global_registration_of( ?random_manager_name ),
 
 	Mu = 20,
 	Sigma = 10,

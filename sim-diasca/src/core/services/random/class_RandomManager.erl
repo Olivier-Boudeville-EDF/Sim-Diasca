@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -20,7 +20,7 @@
 %          Samuel Thiriot      (samuel.thiriot@edf.fr)
 
 
-% Class offering services in terms of <b>random number generation</b>.
+% @doc Class offering services in terms of <b>random number generation</b>.
 -module(class_RandomManager).
 
 
@@ -182,7 +182,7 @@
 
 
 
-% @doc Constructs a new random manager.
+% @doc Constructs a random manager.
 %
 % Construction parameters:
 %
@@ -285,9 +285,9 @@ destruct( State ) ->
 
 
 % For each random distribution, there is at least:
-% - a request-based method
-% - a static method, which thus relies on the state of random generation of the
-% caller process
+%  - a request-based method
+%  - a static method, which thus relies on the state of random generation of the
+%  caller process
 
 
 % All these functions are doubled, to support the request of one random value or
@@ -512,7 +512,7 @@ getPositiveIntegerExponentialValue( State, Lambda ) ->
 	Value = round( get_exponential_value( Lambda ) ),
 
 	%?debug_fmt( "Returning positive integer exponential value ~w.",
-	%			 [ Value ] ),
+	%            [ Value ] ),
 
 	wooper:const_return_result(
 		{ positive_integer_exponential_value, Value } ).
@@ -551,7 +551,7 @@ get_positive_integer_exponential_value( Lambda ) ->
 % Using inverse transform sampling.
 %
 -spec get_exponential_values( number(), count() ) ->
-									static_return( [ float() ] ).
+											static_return( [ float() ] ).
 get_exponential_values( Lambda, Count ) ->
 	V = generate_exponential_list( Lambda, Count ),
 	wooper:return_static( V ).

@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2021 EDF R&D
+% Copyright (C) 2016-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -103,7 +103,7 @@
 
 
 
-% @doc Constructs a new dataflow, to account for an actual dataflow.
+% @doc Constructs a dataflow instace, to account for an actual dataflow.
 %
 % Parameters are:
 %

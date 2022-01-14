@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -34,24 +34,24 @@
 
 -type activity_state() :: 'idle' | 'active'.
 
--type period_count() :: basic_utils:count().
+-type period_count() :: count().
 
 -export_type([ activity_state/0, period_count/0 ]).
 
 
+
 -define( class_attributes, [
 
-		{ actor_state, activity_state(),
-		  "stores the activity level of this actor" },
+	{ actor_state, activity_state(),
+	  "stores the activity level of this actor" },
 
-		{ periodic, period_count(),
-		  "number of periods to wait between actor creations" },
+	{ periodic, period_count(),
+	  "number of periods to wait between actor creations" },
 
-		{ created_actor_count, basic_utils:count(),
-		  "number of actors already created" },
+	{ created_actor_count, count(), "number of actors already created" },
 
-		{ termination_tick_offset, class_TimeManager:tick_offset(),
-		  "the tick offset at which this test actor will terminate" } ] ).
+	{ termination_tick_offset, tick_offset(),
+	  "the tick offset at which this test actor will terminate" } ] ).
 
 
 
@@ -64,7 +64,14 @@
 
 
 
-% Constructs a new test actor for the performance tracker:
+% Shorthands:
+
+-type count() :: basic_utils:count().
+-type tick_offset() :: class_TimeManager:tick_offset().
+
+
+
+% @doc Constructs a test actor for the performance tracker:
 %
 % - ActorSettings is the AAI assigned to this actor by the load
 % balancer
@@ -75,21 +82,20 @@
 %
 % The Performance Tracker test actor spontaneous behaviours is the following:
 % after each elapsed period (according to the predefined 'periodic' attribute),
-% every existing test actor creates a new performance tracker actor.
+% every existing test actor creates a performance tracker actor.
 %
 % The memory_load_loop/1 function can be activated for an increasing memory
 % consumption.
 %
 -spec construct( wooper:state(), class_Actor:actor_settings(),
-				 class_Actor:name(), class_TimeManager:tick_offset() ) ->
-					   wooper:state().
+				 class_Actor:name(), tick_offset() ) -> wooper:state().
 construct( State, ActorSettings, ActorName, TerminationTickOffset ) ->
 
 	% First the direct mother classes, then these class-specific actions:
 	ActorState = class_Actor:construct( State, ActorSettings,
-										?trace_categorize( ActorName ) ),
+										?trace_categorize(ActorName) ),
 
-	?send_info( ActorState, "Creating a new performance tracker test actor" ),
+	?send_info( ActorState, "Creating a performance tracker test actor" ),
 
 	setAttributes( ActorState, [
 
@@ -140,13 +146,13 @@ actSpontaneous( State ) ->
 			% have the same name.
 			%
 			CreatedActorName = text_utils:format(
-						"My Performance Tracker test actor #~B",
-						[ UpdatedCreationCounter ] ),
+				"My Performance Tracker test actor #~B",
+				[ UpdatedCreationCounter ] ),
 
 			NewState = class_Actor:create_actor(
-					_CreatedClassname=class_PerformanceTracker_TestActor,
-					[ CreatedActorName, ?getAttr(termination_tick_offset) ],
-					State ),
+				_CreatedClassname=class_PerformanceTracker_TestActor,
+				[ CreatedActorName, ?getAttr(termination_tick_offset) ],
+				State ),
 
 			CreatedState = setAttribute( NewState, created_actor_count,
 										 UpdatedCreationCounter ),
@@ -160,10 +166,9 @@ actSpontaneous( State ) ->
 
 
 
-
 % Simply schedules this just created actor at the next tick (diasca 0).
--spec onFirstDiasca( wooper:state(), sending_actor_pid() ) -> 
-						   actor_oneway_return().
+-spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
+							actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 
 	ScheduledState = executeOneway( State, scheduleNextSpontaneousTick ),

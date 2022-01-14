@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,11 +19,9 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-
-% Overall unit test of the Sim-Diasca actor creation, dealing only with the
+% @doc Overall unit test of the Sim-Diasca actor creation, dealing only with the
 % data-based (here the stream is a file) creation of initial actors.
-
-
+%
 % The test will run until tick offset #120, however the only actor expects to
 % terminate at tick offset #80, thus the simulation will finish before the
 % specified user duration, since having no more actor to schedule.
@@ -37,7 +35,7 @@
 
 
 
-% Runs the local test simulation.
+% @doc Runs the local test simulation.
 -spec run() -> no_return().
 run() ->
 
@@ -48,9 +46,9 @@ run() ->
 	%
 	SimulationSettings = #simulation_settings{
 
-		simulation_name = "Initial actor data-based creations test",
+		simulation_name="Initial actor data-based creations test",
 
-		initialisation_files = [ "test-instances.init" ] },
+		initialisation_files=[ "test-instances.init" ] },
 
 
 	% Default deployment settings (unavailable nodes allowed, on-the-fly
@@ -60,8 +58,8 @@ run() ->
 	%
 	DeploymentSettings = #deployment_settings{
 
-		computing_hosts =
-			{ use_host_file_otherwise_local, "sim-diasca-host-candidates.txt" } },
+		computing_hosts = { use_host_file_otherwise_local,
+							"sim-diasca-host-candidates.txt" } },
 
 
 	% Default load balancing settings (round-robin placement heuristic):
@@ -101,7 +99,7 @@ run() ->
 	RootTimeManagerPid ! { getTextualTimings, [], self() },
 	FirstTimingString = test_receive(),
 
-	?test_notice_fmt( "Received first time: ~s.", [ FirstTimingString ] ),
+	?test_notice_fmt( "Received first time: ~ts.", [ FirstTimingString ] ),
 
 	LoadBalancerPid ! { traceState, [ "possibly during simulation" ] },
 
@@ -120,7 +118,7 @@ run() ->
 	RootTimeManagerPid ! { getTextualTimings, [], self() },
 	SecondTimingString = test_receive(),
 
-	?test_notice_fmt( "Received second time: ~s.", [ SecondTimingString ] ),
+	?test_notice_fmt( "Received second time: ~ts.", [ SecondTimingString ] ),
 
 	LoadBalancerPid ! { traceState, [ "at shutdown" ] },
 

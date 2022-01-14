@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2021 EDF R&D
+% Copyright (C) 2016-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -101,7 +101,7 @@
 
 
 
-% @doc Constructs a new type server.
+% @doc Constructs a type server.
 -spec construct( wooper:state() ) -> wooper:state().
 construct( State ) ->
 
@@ -245,28 +245,28 @@ record_type( TypeName, TypeDefinition, TypeTable, State )
 
 		{ accepted, CanonicalTypeDefinition } ->
 
-		   case table:lookup_entry( TypeName, TypeTable ) of
+			case table:lookup_entry( TypeName, TypeTable ) of
 
-			   { value, CanonicalTypeDefinition } ->
-				   % Matching an already known type, nothing changed:
-				   { ok, TypeTable };
+				{ value, CanonicalTypeDefinition } ->
+					% Matching an already known type, nothing changed:
+					{ ok, TypeTable };
 
-			   { value, OtherTypeDefinition } ->
-				   % A more precise checking comparison shall be conducted:
-				   ?error_fmt( "Received a non-matching definition for "
+				{ value, OtherTypeDefinition } ->
+					% A more precise checking comparison shall be conducted:
+					?error_fmt( "Received a non-matching definition for "
 						"type '~ts': '~p', translated as '~p', "
 						"instead of the known one '~p'.",
 						[ TypeName, TypeDefinition, CanonicalTypeDefinition,
 						  OtherTypeDefinition ] ),
-				   { error, { unmatching_type_definition_for, TypeName,
+					{ error, { unmatching_type_definition_for, TypeName,
 							  TypeDefinition, OtherTypeDefinition } };
 
-			   key_not_found ->
-				   ?info_fmt( "Type '~ts', defined as '~ts', "
+				key_not_found ->
+					?info_fmt( "Type '~ts', defined as '~ts', "
 						"recorded as '~ts'.",
 						[ TypeName, TypeDefinition, CanonicalTypeDefinition ] ),
-				   { ok,
-					 table:add_entry( TypeName, TypeDefinition,  TypeTable ) }
+					{ ok,
+					  table:add_entry( TypeName, TypeDefinition,  TypeTable ) }
 
 		   end;
 
@@ -285,7 +285,7 @@ record_type( TypeName, TypeDefinition, _TypeTable, State ) ->
 
 % @doc Checks and records the specified types.
 -spec record_types( [ type_entries() ], type_table(), wooper:state() ) ->
-						fallible( type_table() ).
+											fallible( type_table() ).
 record_types( _TypeEntries=[], TypeTable, _State ) ->
 	{ ok, TypeTable };
 

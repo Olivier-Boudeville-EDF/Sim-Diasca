@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2021 EDF R&D
+% Copyright (C) 2018-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -21,7 +21,6 @@
 
 % Actor-specific type shorthands (to avoid having to prefix them with a module
 % name):
-
 
 -type actor_pid() :: class_Actor:actor_pid().
 % PID of an actor.

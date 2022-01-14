@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,8 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-
-% Overall unit test of the Sim-Diasca result management facilities.
+% @doc Overall unit test of the Sim-Diasca result management facilities.
 -module(result_management_test).
 
 
@@ -60,8 +59,8 @@ run() ->
 
 		% Will select nothing here, as blacklisted:
 		%result_specification=[
-		%	  { targeted_patterns, [ {".*",[rendering_only]} ] },
-		%	  { blacklisted_patterns, ["My virtual probe" ] } ]
+		%   { targeted_patterns, [ {".*",[rendering_only]} ] },
+		%   { blacklisted_patterns, [ "My virtual probe" ] } ]
 
 
 		% Incorrect, rejected specifications:
@@ -69,7 +68,7 @@ run() ->
 		%result_specification=unexpected_option
 		%result_specification=[ { targeted_patterns, unexpected_pattern } ]
 		%result_specification=[ { targeted_patterns, [ ".*" ] },
-		%						  unexpected_option ]
+		%                       unexpected_option ]
 
 	},
 
@@ -110,20 +109,19 @@ run() ->
 	?test_info( "Creating an actor that will make use of two virtual probes." ),
 
 	_ActorPid = class_Actor:create_initial_actor(
-		   class_DataLoggingActor,
-		   [ "First data-logging test actor", _TerminationTickOffset=200,
-			 _Listener=self() ],
-		   LoadBalancerPid ),
+		class_DataLoggingActor,
+		[ "First data-logging test actor", _TerminationTickOffset=200,
+			 _Listener=self() ], LoadBalancerPid ),
 
 
 	?test_info( "Creating also a basic probe directly from the test." ),
 
 	class_Probe_test:manage_facility_probe(
-	  "My basic probe created from test", _UseTickOffsets=true ),
+		"My basic probe created from test", _UseTickOffsets=true ),
 
 	?test_info( "Creating also a virtual probe directly from the test." ),
 	datalogging_test:manage_facility_probe(
-	  "My virtual probe created from test" ),
+		"My virtual probe created from test" ),
 
 
 	DeploymentManagerPid ! { getRootTimeManager, [], self() },

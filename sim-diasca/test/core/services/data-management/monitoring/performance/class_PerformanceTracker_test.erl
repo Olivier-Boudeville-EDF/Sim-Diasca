@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -21,7 +21,8 @@
 %   Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-% Unit tests for the PerformanceTracker class implementation.
+% @doc Unit tests for the PerformanceTracker class implementation.
+%
 % See the class_PerformanceTracker.erl module.
 %
 -module(class_PerformanceTracker_test).
@@ -33,7 +34,7 @@
 
 
 
-% Runs the test.
+% @doc Runs the test.
 -spec run() -> no_return().
 run() ->
 
@@ -47,10 +48,10 @@ run() ->
 	% Default deployment setting
 
 	DeploymentSettings=#deployment_settings{
-						  enable_performance_tracker = true },
+							enable_performance_tracker=true },
 
-	?test_notice_fmt( "This test will deploy a distributed simulation"
-		" based on computing hosts specified as ~p.",
+	?test_notice_fmt( "This test will deploy a distributed simulation "
+		"based on computing hosts specified as ~p.",
 		[ DeploymentSettings#deployment_settings.computing_hosts ] ),
 
 	% Default load balancing settings (round-robin placement heuristic):
@@ -59,7 +60,7 @@ run() ->
 
 	% A deployment manager is created directly on the user node:
 	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-								 DeploymentSettings, LoadBalancingSettings ),
+								DeploymentSettings, LoadBalancingSettings ),
 
 	?test_info( "Deployment manager created, retrieving the load balancer." ),
 	DeploymentManagerPid ! { getLoadBalancer, [], self() },
@@ -72,17 +73,13 @@ run() ->
 
 	?test_info( "Creating the initial test actors." ),
 
-	class_Actor:create_initial_actor(
-	  class_PerformanceTracker_TestActor,
-	  [ "First Initial Performance Tracker Test Actor",
-	   _TerminationTickOffset1=80 ],
-	  LoadBalancerPid ),
+	class_Actor:create_initial_actor( class_PerformanceTracker_TestActor,
+		[ "First Initial Performance Tracker Test Actor",
+		  _TerminationTickOffset1=80 ], LoadBalancerPid ),
 
-	class_Actor:create_initial_actor(
-	  class_PerformanceTracker_TestActor,
-	  [ "Second Initial Performance Tracker Test Actor",
-	   _TerminationTickOffset2=100 ],
-	  LoadBalancerPid ),
+	class_Actor:create_initial_actor( class_PerformanceTracker_TestActor,
+		[ "Second Initial Performance Tracker Test Actor",
+		  _TerminationTickOffset2=100 ], LoadBalancerPid ),
 
 
 	PerformanceTrackerPid = class_PerformanceTracker:get_tracker(),

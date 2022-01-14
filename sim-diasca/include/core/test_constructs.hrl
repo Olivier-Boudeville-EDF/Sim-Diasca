@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -44,9 +44,7 @@
 
 
 % For deployment_settings:
--include("class_DeploymentManager.h%% l
-%% l
-rl").
+-include("class_DeploymentManager.hrl").
 
 
 % For load_balancing_settings:

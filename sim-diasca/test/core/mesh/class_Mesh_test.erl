@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,7 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-% Unit tests for the Mesh class implementation.
+% @doc Unit tests for the <b>Mesh</b> class implementation.
 %
 % See the class_Mesh module.
 %
@@ -31,14 +31,14 @@
 
 
 
-% Runs the tests.
+% @doc Runs the tests.
 -spec run() -> no_return().
 run() ->
 
 	% Not a case:
 	?test_start,
 
-	?test_info( "Creating a new test Mesh." ),
+	?test_info( "Creating a test Mesh." ),
 
 	% Acyclic:
 	MyMesh = class_Mesh:new_link( "My test mesh",
@@ -82,7 +82,7 @@ run() ->
 	NewLinks = test_receive(),
 
 	?test_notice_fmt( "This mesh has now following links defined "
-					"(not really readable): ~p.", [ NewLinks ] ),
+					  "(not really readable): ~p.", [ NewLinks ] ),
 
 	MyMesh ! { getMeshInformation, [], self() },
 	FirstInfos = test_receive(),
@@ -91,7 +91,7 @@ run() ->
 
 	% Uncomment this to see what happens when a cycle is made in an acyclic
 	% mesh:
-	%MyMesh ! { addLink, [ ThirdNode, FirstNode ] },
+	% MyMesh ! { addLink, [ ThirdNode, FirstNode ] },
 
 
 	MyMesh ! delete,
@@ -150,7 +150,7 @@ run() ->
 	{ Link, LinkLabel } = test_receive(),
 
 	?test_notice_fmt( "Link from first to second graphable is ~p, "
-					  "whose label is ~s.", [ Link, LinkLabel ] ),
+					  "whose label is ~ts.", [ Link, LinkLabel ] ),
 
 
 	MyGraphableMesh ! { findPath, [ N1, N4 ], self() },
@@ -192,7 +192,8 @@ run() ->
 
 		Hint ->
 			?test_warning_fmt(
-			   "No support found for the rendering of a graph: ~s.", [ Hint ] )
+				"No support found for the rendering of a graph: ~ts.",
+				[ Hint ] )
 
 	end,
 

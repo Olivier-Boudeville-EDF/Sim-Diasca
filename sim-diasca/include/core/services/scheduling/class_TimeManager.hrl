@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -20,8 +20,7 @@
 
 
 
-
-% The name under which the time manager process is to be registered:
+% The name under which a time manager is to be registered:
 %
 % (this information must be shared with its clients)
 %
@@ -82,7 +81,6 @@
 
 % Allows to store most general simulation settings.
 -record( simulation_settings, {
-
 
 	% The name of that simulation, as a plain string (otherwise as a module
 	% name).
@@ -156,15 +154,15 @@
 	%  - {targeted_patterns, TargetPatterns} where TargetPatterns is a list of
 	%  elements, each being:
 	%
-	%	 - either a standalone regular expression pattern, expressed as a plain
-	%	 string, that allows to select which outputs are to be promoted to
-	%	 results; no option is specified here, thus default ones will be used
+	%   - either a standalone regular expression pattern, expressed as a plain
+	%    string, that allows to select which outputs are to be promoted to
+	%    results; no option is specified here, thus default ones will be used
 	%
-	%	 - or a pair, whose first element is such a regular expression pattern,
-	%	 and second one is either a standalone option (specified as an atom,
-	%	 among 'data_only', 'rendering_only', and 'data_and_rendering',
-	%	 depending on what is requested by the user) or a list of such
-	%	 corresponding producer options
+	%    - or a pair, whose first element is such a regular expression pattern,
+	%    and second one is either a standalone option (specified as an atom,
+	%    among 'data_only', 'rendering_only', and 'data_and_rendering',
+	%    depending on what is requested by the user) or a list of such
+	%    corresponding producer options
 	%
 	%  - {blacklisted_patterns, BlacklistPatterns} where BlacklistPatterns is
 	%  a list of regular expression patterns, expressed as plain strings,
@@ -183,10 +181,10 @@
 	%
 	% Ex: result_specification = [
 	%
-	%   { targeted_patterns, [ {"*-case-A-*",rendering_only}, "*-case-B-*",
-	%						   {"my-test-probe",[data_and_rendering]} ] },
+	%   {targeted_patterns, [{"*-case-A-*",rendering_only}, "*-case-B-*",
+	%                           {"my-test-probe", [data_and_rendering]}]},
 	%
-	%   { blacklisted_patterns, [ "*-emitter-(first|second)-*" ] } ]
+	%   {blacklisted_patterns, ["*-emitter-(first|second)-*"]}]
 	%
 	% Note that if strings are not separated by commas (ex: ["aaa" "bbb"],
 	% instead of ["aaa", "bbb"]), then they will be concatenated by the
@@ -207,7 +205,7 @@
 	% See also: http://erlang.org/doc/man/re.html
 	%
 	result_specification = all_outputs ::
-	  class_ResultManager:result_specification(),
+				class_ResultManager:result_specification(),
 
 
 	% Tells whether the troubleshooting mode for models is to be enabled. If
@@ -215,7 +213,7 @@
 	% instances will be kept, so that information about a faulty instance can be
 	% retrieved despite its lack of cooperation.
 	%
-	troubleshooting_mode = enabled :: troubleshooting_mode() }).
+	troubleshooting_mode = enabled :: troubleshooting_mode() } ).
 
 
 -type simulation_settings() :: #simulation_settings{}.
@@ -225,5 +223,4 @@
 % It may be more efficient to handle larger numbers of actors per chunk.
 %
 % The number of actors per chunk:
-%
 -define( chunk_size, 2000 ).

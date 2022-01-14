@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -20,19 +20,20 @@
 % Creation date: Tuesday, June 18, 2019
 
 
-% Describes options that apply to web probes.
+% Describes options that apply to web probes:
 -record( web_probe_options, {
 
-		   % If true, this probe will register itself to the result manager, and
-		   % be driven by it.
-		   %
-		   register_as_tracked_producer = true :: boolean(),
+	% If true, this probe will register itself to the result manager, and be
+	% driven by it.
+	%
+	register_as_tracked_producer = true :: boolean(),
 
-		   % Specifies the directory in which the files related to this probe
-		   % (ex: *.p, *.data, *.png) should be written.
-		   %
-		   probe_directory = undefined :: maybe( file_utils:directory_name() )
 
-}).
+	% Specifies the directory in which the files related to this probe (ex: *.p,
+	% *.data, *.png) should be written.
+	%
+	probe_directory = undefined :: maybe( file_utils:directory_name() ) } ).
+
 
 -type web_probe_options() :: #web_probe_options{}.
+% Describes options that apply to web probes.

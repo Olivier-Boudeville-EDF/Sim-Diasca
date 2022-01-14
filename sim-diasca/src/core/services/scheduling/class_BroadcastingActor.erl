@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,6 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Base class for <n>Broadcasting actors</b>.
 -module(class_BroadcastingActor).
 
 
@@ -82,7 +83,11 @@
 
 
 
-% Shorthand:
+% Shorthands:
+
+-type tick_offset() :: class_TimeManager:tick_offset().
+-type diasca() :: class_TimeManager:diasca().
+
 -type actor_table() :: table( actor_pid(), class_Actor:actor_count() ).
 
 
@@ -111,8 +116,8 @@
 -compile({ nowarn_unused_function, [ get_trace_timestamp/3 ] }).
 
 
-% Returns a rather detailed (hence more expensive) timestamp to be included in
-% traces.
+% @doc Returns a rather detailed (hence more expensive) timestamp to be included
+% in traces.
 %
 % Meant to be inlined as much as possible to lessen the cost of such traces.
 %
@@ -126,7 +131,7 @@ get_trace_timestamp( TickOffset, Diasca, State ) ->
 	%CurrentSecond = class_Actor:convert_ticks_to_seconds( CurrentTick, State ),
 	CurrentSecond = CurrentTick * ?getAttr(simulation_tick_duration),
 
-	Timestamp = 
+	Timestamp =
 		calendar:gregorian_seconds_to_datetime( round( CurrentSecond ) ),
 
 	% Cannot include a newline as it would break the trace format:
@@ -135,13 +140,13 @@ get_trace_timestamp( TickOffset, Diasca, State ) ->
 
 
 
-% Constructs a new broadcasting actor:
+% @doc Constructs a broadcasting actor:
 %
-% - ActorSettings :: actor_settings() describes the actor abstract identifier
-% (AAI) and seed of this actor, as assigned by the load balancer
+% - ActorSettings describes the actor abstract identifier (AAI) and seed of this
+% actor, as assigned by the load balancer
 %
-% - ActorName :: ustring() is a human-readable name for that actor (as a plain
-% string); it is preferably not too long and without whitespaces
+% - ActorName is a human-readable name for that actor (as a plain string); it is
+% preferably not too long and without whitespaces
 %
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 class_Actor:name() ) -> wooper:state().
@@ -161,14 +166,13 @@ construct( State, ActorSettings, ActorName ) ->
 % Methods section.
 
 
-% Called by the local time manager in order to schedule this actor for a new
-% tick, starting with its spontaneous behaviour (diasca 0).
+% @doc Called by the local time manager in order to schedule this actor for a
+% new tick, starting with its spontaneous behaviour (diasca 0).
 %
 % Returns an updated state, and triggers back a notification to the
 % corresponding time manager when the spontaneous action has been completed.
 %
--spec beginTick( wooper:state(), class_TimeManager:tick_offset() ) ->
-					    oneway_return().
+-spec beginTick( wooper:state(), tick_offset() ) -> oneway_return().
 beginTick( State, NewTickOffset ) ->
 
 	% Note: exactly as the class_Actor counterpart, except for waited_acks:
@@ -189,13 +193,13 @@ beginTick( State, NewTickOffset ) ->
 
 	% Other attributes set at the end of previous scheduling:
 	PreState = setAttributes( SpontaneousUpdatedState, [
-			{ current_tick_offset, NewTickOffset },
-			{ current_diasca, 0 },
+		{ current_tick_offset, NewTickOffset },
+		{ current_diasca, 0 },
 
-			cond_utils:if_defined( exec_target_is_production,
-			  { trace_timestamp, { NewTickOffset, 0 } },
-			  { trace_timestamp,
-				get_trace_timestamp( NewTickOffset, _Diasca=0, State ) } ) ] ),
+		cond_utils:if_defined( exec_target_is_production,
+			{ trace_timestamp, { NewTickOffset, 0 } },
+			{ trace_timestamp,
+			  get_trace_timestamp( NewTickOffset, _Diasca=0, State ) } ) ] ),
 
 	SpontaneousState = executeOneway( PreState, actSpontaneous ),
 
@@ -222,14 +226,13 @@ beginTick( State, NewTickOffset ) ->
 
 
 
-% Called by the local time manager in order to schedule this actor for a new
-% non-null diasca, after its spontaneous behaviour.
+% @doc Called by the local time manager in order to schedule this actor for a
+% new non-null diasca, after its spontaneous behaviour.
 %
 % Returns an updated state, and triggers back a notification to the
 % corresponding time manager when the triggered actions have been completed.
 %
--spec beginDiasca( wooper:state(), class_TimeManager:tick_offset(),
-				   class_TimeManager:diasca() ) -> oneway_return().
+-spec beginDiasca( wooper:state(), tick_offset(), diasca() ) -> oneway_return().
 beginDiasca( State, TickOffset, NewDiasca ) ->
 
 	% Note: exactly as the class_Actor counterpart, except for waited_acks:
@@ -281,8 +284,8 @@ beginDiasca( State, TickOffset, NewDiasca ) ->
 
 
 
-% Callback triggered by the reception of an acknowledgement of an actor to which
-% this actor sent a message.
+% @doc Callback triggered by the reception of an acknowledgement of an actor to
+% which this actor sent a message.
 %
 -spec acknowledgeMessage( wooper:state(), actor_pid() ) -> oneway_return().
 acknowledgeMessage( State, CalledActorPid ) ->
@@ -292,8 +295,8 @@ acknowledgeMessage( State, CalledActorPid ) ->
 	WaitedAcks = ?getAttr(waited_acks),
 
 	%trace_utils:debug_fmt( "~w received message acknowledgement from "
-	%          "actor ~w, while waiting for:~n~p.",
-	%		   [ self(), CalledActorPid, table:enumerate( WaitedAcks ) ] ),
+	%   "actor ~w, while waiting for:~n~p.",
+	%   [ self(), CalledActorPid, table:enumerate( WaitedAcks ) ] ),
 
 	% Checks we are indeed waiting for this ack, removes it from list, sees if
 	% it was the last waited one:
@@ -339,8 +342,8 @@ acknowledgeMessage( State, CalledActorPid ) ->
 
 
 
-% Sends specified actor message on as many diascas as needed to reach all actors
-% whose PIDs are listed in the attribute of specified name.
+% @doc Sends specified actor message on as many diascas as needed to reach all
+% actors whose PIDs are listed in the attribute of specified name.
 %
 -spec sendActorMessagesOverDiascas( wooper:state(), oneway_call(),
 			attribute_name(), sending_actor_pid() ) -> actor_oneway_return().
@@ -353,7 +356,8 @@ sendActorMessagesOverDiascas( State, ActorMessage, AttributeName, _SelfPid ) ->
 
 
 
-% Sends to the local time manager a notification that the current diasca ended.
+% @doc Sends to the local time manager a notification that the current diasca
+% ended.
 %
 % Returns an updated state.
 %
@@ -367,7 +371,7 @@ notify_diasca_ended( State ) ->
 	% Let's try to ease as much as possible the work of the time manager:
 	AddedTicks = list_utils:uniquify( ?getAttr(added_spontaneous_ticks) ),
 
-	WithdrawnTicks = 
+	WithdrawnTicks =
 		list_utils:uniquify( ?getAttr(withdrawn_spontaneous_ticks) ),
 
 	CurrentTickOffset = ?getAttr(current_tick_offset),
@@ -404,8 +408,8 @@ notify_diasca_ended( State ) ->
 	end,
 
 	%trace_utils:debug_fmt(
-	%       "Broadcasting actor ~w at {~p,~p}: next action is ~p.",
-	%		[ self(), CurrentTickOffset, CurrentDiasca, NextNotifiedAction ] ),
+	%   "Broadcasting actor ~w at {~p,~p}: next action is ~p.",
+	%   [ self(), CurrentTickOffset, CurrentDiasca, NextNotifiedAction ] ),
 
 	% No more actor message waited this diasca:
 	NotificationMessage = case CurrentDiasca of
@@ -416,7 +420,7 @@ notify_diasca_ended( State ) ->
 
 		_ ->
 			{ notifyTriggeredActionsCompleted, [ CurrentTickOffset,
-				CurrentDiasca, self(), NextNotifiedAction, AddedTicks, 
+				CurrentDiasca, self(), NextNotifiedAction, AddedTicks,
 				WithdrawnTicks ] }
 
 	end,
@@ -437,9 +441,8 @@ notify_diasca_ended( State ) ->
 
 
 
-
-% Returns (asynchronously, to avoid deadlocks) the current list of waited actors
-% (if any) for that actor.
+% @doc Returns (asynchronously, to avoid deadlocks) the current list of waited
+% actors (if any) for that actor.
 %
 % Allows the time manager to know why this actor may be stalling the simulation,
 % and who it is.
@@ -455,8 +458,8 @@ nudge( State, SenderPid ) ->
 
 
 
-% Sends specified message to the specified actor, records this sending to wait
-% for its acknowledgement, and returns an updated state. These inter-actor
+% @doc Sends specified message to the specified actor, records this sending to
+% wait for its acknowledgement, and returns an updated state. These inter-actor
 % messages exchanged during simulation are the only allowed way of communicating
 % between actors.
 %
@@ -504,9 +507,9 @@ nudge( State, SenderPid ) ->
 send_actor_message( ActorPid, ActorOneway, State ) ->
 
 	%trace_utils:debug_fmt(
-	%         "  ~w sending an actor message to ~w at {~p,~p}: ~p",
-	%		  [ self(), ActorPid, ?getAttr(current_tick_offset),
-	%			?getAttr(current_diasca), ActorOneway ] ),
+	%   "  ~w sending an actor message to ~w at {~p,~p}: ~p",
+	%   [ self(), ActorPid, ?getAttr(current_tick_offset),
+	%     ?getAttr(current_diasca), ActorOneway ] ),
 
 	% The simulation shall be already started:
 	true = class_Actor:is_running( State ),
@@ -564,15 +567,15 @@ send_actor_message( ActorPid, ActorOneway, State ) ->
 	% This works, as all time managers are notified of all diascas, regardless
 	% of what they are to schedule.
 	%
-	setAttributes( State, [ { waited_acks, NewWaited }, 
+	setAttributes( State, [ { waited_acks, NewWaited },
 							{ next_action, NewAction } ] ).
 
 
 
-% Sends specified message to the specified listed actors, records these sendings
-% to wait for the corresponding acknowledgements, and returns an updated
-% state. These inter-actor messages exchanged during simulation are the only
-% allowed way of communicating between actors.
+% @doc Sends specified message to the specified listed actors, records these
+% sendings to wait for the corresponding acknowledgements, and returns an
+% updated state. These inter-actor messages exchanged during simulation are the
+% only allowed way of communicating between actors.
 %
 % An actor message parameter describes the behaviour (actor oneway, translating
 % to an Erlang function) to trigger when this message will be taken into account
@@ -605,13 +608,12 @@ send_actor_message( ActorPid, ActorOneway, State ) ->
 % So a typical call made by an actor whose PID is P1 to actors P2 and P3 can be
 % made thanks to the following actor message:
 %
-% NewState = class_Actor:send_actor_messages( [ P2, P3 ], {setColor,[red,15]},
-% AState )
+% NewState = class_Actor:send_actor_messages([P2, P3], {setColor, [red, 15]},
+% AState)
 %
 % This would trigger on the target actors, setColor/4 on the next tick, as the
 % PID of the sending actor is automatically added as last parameter:
-%
-% setColor( State, red, 15, P1 ) ->
+% setColor(State, red, 15, P1) ->
 %
 % Returns an updated state, appropriate to wait automatically for this call to
 % be acknowledged.
@@ -625,9 +627,9 @@ send_actor_messages( _ActorPidList=[], _ActorOneway, State ) ->
 send_actor_messages( ActorPidList, ActorOneway, State ) ->
 
 	%trace_utils:debug_fmt(
-	%           "  ~w sending an actor message to ~w at {~p,~p}: ~p",
-	%			[ self(), ActorPidList, ?getAttr(current_tick_offset),
-	%			   ?getAttr(current_diasca), ActorOneway ] ),
+	%   "  ~w sending an actor message to ~w at {~p,~p}: ~p",
+	%   [ self(), ActorPidList, ?getAttr(current_tick_offset),
+	%     ?getAttr(current_diasca), ActorOneway ] ),
 
 	ActorMessage = { receiveActorMessage,
 				[ ?getAttr(current_tick_offset), ?getAttr(current_diasca)+1,
@@ -649,7 +651,7 @@ send_actor_messages( ActorPidList, ActorOneway, State ) ->
 
 		_ ->
 			%trace_utils:debug_fmt( "Actor ~w requesting a new diasca, "
-			%	"after having sent an actor message.", [ self() ] ),
+			%   "after having sent an actor message.", [ self() ] ),
 			new_diasca_needed
 
 	end,
@@ -677,7 +679,7 @@ send_actor_messages( ActorPidList, ActorOneway, State ) ->
 
 
 
-% Adds specified list of waited actors to the specified table.
+% @doc Adds specified list of waited actors to the specified table.
 -spec add_waited( [ actor_pid() ], actor_table() ) -> actor_table().
 add_waited( _ActorPidList=[], ActorTable ) ->
 	ActorTable;
@@ -699,7 +701,7 @@ add_waited( _ActorPidList=[ Pid | T ], ActorTable ) ->
 
 
 
-% Sends specified (actor) message to the actors designated by the specified
+% @doc Sends specified (actor) message to the actors designated by the specified
 % attribute, supposed to be a plain list (from which this function will remove
 % elements). If the list is too long, the sending will be done by chunks (one
 % chunk per diasca), and as many additional diascas as needed will be requested
@@ -722,8 +724,8 @@ send_actor_messages_over_diascas( AttributeName, ActorOneway, State ) ->
 
 	%trace_utils:debug_fmt(
 	%   "Actor message ~p sent to a chunk of ~B actors at ~p.",
-	%	[ ActorOneway, length( FirstActors ),
-	%	  { ?getAttr(current_tick_offset), ?getAttr(current_diasca) } ] ),
+	%   [ ActorOneway, length( FirstActors ),
+	%     { ?getAttr(current_tick_offset), ?getAttr(current_diasca) } ] ),
 
 	SentState = send_actor_messages( FirstActors, ActorOneway, State ),
 

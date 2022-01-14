@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,11 +19,8 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-
-% Overall unit test of the Sim-Diasca deployment and scheduling framework.
-
-
-
+% @doc Overall unit test of the Sim-Diasca deployment and scheduling framework.
+%
 % Three coupled erratic actors will be created prior to starting the simulation,
 % planning to terminate at tick offsets #80, #100 and #150, whereas the
 % simulation stops at #120.
@@ -36,7 +33,7 @@
 
 
 
-% Runs a distributed simulation (of course if relevant computing hosts are
+% @doc Runs a distributed simulation (of course if relevant computing hosts are
 % specified).
 %
 -spec run() -> no_return().
@@ -55,6 +52,7 @@ run() ->
 	% generation of the deployment package requested), but computing
 	% hosts are specified (to be updated depending on your environment):
 	% (note that localhost is implied)
+	%
 	DeploymentSettings = #deployment_settings{
 
 		computing_hosts =
@@ -74,7 +72,7 @@ run() ->
 
 	% Directly created on the user node:
 	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-							 DeploymentSettings, LoadBalancingSettings ),
+								DeploymentSettings, LoadBalancingSettings ),
 
 
 	?test_info( "Deployment manager created, retrieving the load balancer." ),
@@ -83,25 +81,25 @@ run() ->
 	LoadBalancerPid = test_receive(),
 
 	?test_info( "Requesting to the load balancer the creation of "
-		"a first initial test actor." ),
+				"a first initial test actor." ),
 
 	FirstActorPid = class_Actor:create_initial_actor( class_TestActor,
-			[ "First test actor", { erratic, _FirstMinRange=5 },
-			 no_creation, _FirstTerminationTickOffset=80 ], LoadBalancerPid ),
+		[ "First test actor", { erratic, _FirstMinRange=5 }, no_creation,
+		  _FirstTerminationTickOffset=80 ], LoadBalancerPid ),
 
 	FirstActorPid ! { getAAI, [], self() },
 	2 = test_receive(),
 
 
 	?test_notice_fmt( "First actor has for PID ~w and for AAI 2.",
-					[ FirstActorPid ] ),
+					  [ FirstActorPid ] ),
 
 	?test_info( "First actor has a correct AAI." ),
 
 
 	SecondActorPid = class_Actor:create_initial_actor( class_TestActor,
-			[ "Second test actor", { erratic, _SecondMinRange=7 },
-			 no_creation, _SecondTerminationTickOffset=100 ], LoadBalancerPid ),
+		[ "Second test actor", { erratic, _SecondMinRange=7 },
+		  no_creation, _SecondTerminationTickOffset=100 ], LoadBalancerPid ),
 
 	SecondActorPid ! { getAAI, [], self() },
 	3 = test_receive(),
@@ -109,8 +107,8 @@ run() ->
 
 	% Meant to be still living at the end of the simulation:
 	ThirdActorPid = class_Actor:create_initial_actor( class_TestActor,
-			[ "Third test actor", { erratic, _ThirdMinRange=10 },
-			no_creation, _ThirdTerminationTickOffset=150 ], LoadBalancerPid ),
+		[ "Third test actor", { erratic, _ThirdMinRange=10 },
+		  no_creation, _ThirdTerminationTickOffset=150 ], LoadBalancerPid ),
 
 	ThirdActorPid ! { getAAI, [], self() },
 	4 = test_receive(),
@@ -142,7 +140,7 @@ run() ->
 	RootTimeManagerPid ! { getTextualTimings, [],self() },
 	FirstTimingString = test_receive(),
 
-	?test_notice_fmt( "Received first time: ~s.", [ FirstTimingString ] ),
+	?test_notice_fmt( "Received first time: ~ts.", [ FirstTimingString ] ),
 
 
 	% Waits until simulation is finished:
@@ -159,7 +157,7 @@ run() ->
 	RootTimeManagerPid ! { getTextualTimings, [], self() },
 	SecondTimingString = test_receive(),
 
-	?test_notice_fmt( "Received second time: ~s.", [ SecondTimingString ] ),
+	?test_notice_fmt( "Received second time: ~ts.", [ SecondTimingString ] ),
 
 	sim_diasca:shutdown(),
 

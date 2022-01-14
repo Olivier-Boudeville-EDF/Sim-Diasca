@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -36,86 +36,62 @@
 
 % So that test primitives are still available from cases:
 
--define( test_emergency( Message ),
-  ?case_emergency( Message )
-).
+-define( test_emergency( Message ), ?case_emergency( Message ) ).
 
 -define( test_emergency_fmt( MessageFormat, FormatValues ),
-  ?case_emergency_fmt( MessageFormat, FormatValues )
-).
+  ?case_emergency_fmt( MessageFormat, FormatValues ) ).
 
 
 
--define( test_alert( Message ),
-  ?case_alert( Message )
-).
+-define( test_alert( Message ), ?case_alert( Message ) ).
 
 -define( test_alert_fmt( MessageFormat, FormatValues ),
-  ?case_alert_fmt( MessageFormat, FormatValues )
-).
+  ?case_alert_fmt( MessageFormat, FormatValues ) ).
 
 
 
--define( test_critical( Message ),
-  ?case_critical( Message )
-).
+-define( test_critical( Message ), ?case_critical( Message ) ).
 
 -define( test_critical_fmt( MessageFormat, FormatValues ),
-  ?case_critical_fmt( MessageFormat, FormatValues )
-).
+  ?case_critical_fmt( MessageFormat, FormatValues ) ).
 
 
 
--define( test_error( Message ),
-  ?case_error( Message )
-).
+-define( test_error( Message ), ?case_error( Message ) ).
 
 -define( test_error_fmt( MessageFormat, FormatValues ),
-  ?case_error_fmt( MessageFormat, FormatValues )
-).
+  ?case_error_fmt( MessageFormat, FormatValues ) ).
 
 
 
--define( test_warning( Message ),
-  ?case_warning( Message )
-).
+-define( test_warning( Message ), ?case_warning( Message ) ).
 
 -define( test_warning_fmt( MessageFormat, FormatValues ),
-  ?case_warning_fmt( MessageFormat, FormatValues )
-).
+  ?case_warning_fmt( MessageFormat, FormatValues ) ).
 
 
 
--define( test_notice( Message ),
-  ?case_notice( Message )
-).
+-define( test_notice( Message ), ?case_notice( Message ) ).
 
 
 -define( test_notice_fmt( MessageFormat, FormatValues ),
-  ?case_notice_fmt( MessageFormat, FormatValues )
-).
+  ?case_notice_fmt( MessageFormat, FormatValues ) ).
 
 
 
--define( test_info( Message ),
-  ?case_info( Message )
-).
+-define( test_info( Message ), ?case_info( Message ) ).
 
 
 -define( test_info_fmt( MessageFormat, FormatValues ),
-  ?case_info_fmt( MessageFormat, FormatValues )
-).
+  ?case_info_fmt( MessageFormat, FormatValues ) ).
 
 
 
--define( test_debug( Message ),
-  ?case_debug( Message )
-).
+-define( test_debug( Message ), ?case_debug( Message ) ).
 
 
 -define( test_debug_fmt( MessageFormat, FormatValues ),
-  ?case_debug_fmt( MessageFormat, FormatValues )
-).
+  ?case_debug_fmt( MessageFormat, FormatValues ) ).
 
 
 % For trace facilities:

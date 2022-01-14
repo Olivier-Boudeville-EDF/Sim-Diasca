@@ -1,4 +1,4 @@
-% Copyright (C) 2017-2021 EDF R&D
+% Copyright (C) 2017-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -68,7 +68,7 @@
 
 
 
-% @doc Constructs a new, named Sim-Diasca base object.
+% @doc Constructs a named Sim-Diasca base object.
 -spec construct( wooper:state(), class_TraceEmitter:emitter_init() ) ->
 						wooper:state().
 construct( State, InstanceName ) ->
@@ -85,7 +85,7 @@ construct( State, InstanceName ) ->
 % tree.
 %
 -spec get_deployment_root_directory() ->
-					static_return( file_utils:directory_name() ).
+					static_return( file_utils:directory_path() ).
 get_deployment_root_directory() ->
 
 	% Returns typically /tmp/sim-diasca-$CASE-$USER-$TIME/deployed-elements",
@@ -105,7 +105,7 @@ get_all_base_attribute_names() ->
 	AttrNames =
 		wooper_introspection:get_class_specific_attribute_names( ?MODULE )
 		++ list_utils:flatten_once(
-			 [ wooper_introspection:get_class_specific_attribute_names( C )
+			[ wooper_introspection:get_class_specific_attribute_names( C )
 					|| C <- ?superclasses ] ),
 
 	wooper:return_static( AttrNames ).

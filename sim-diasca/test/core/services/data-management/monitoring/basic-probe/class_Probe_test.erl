@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -17,7 +17,6 @@
 % If not, see <http://www.gnu.org/licenses/>.
 
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
-
 
 
 % @doc Unit tests for the Probe class implementation.
@@ -48,6 +47,7 @@
 
 
 % Shorthands:
+
 -type ustring() :: text_utils:ustring().
 
 
@@ -63,10 +63,9 @@ manage_facility_probe( ProbeName, UseTickOffsets ) ->
 
 	% To test different settings:
 	%
-	ProbeOptions = #probe_options{
-						create_command_file_initially=false,
-						deferred_data_writes=true,
-						probe_directory=TargetDir },
+	ProbeOptions = #probe_options{ create_command_file_initially=false,
+								   deferred_data_writes=true,
+								   probe_directory=TargetDir },
 
 	% Corresponds to the first second of Y2K (with default settings):
 	InitialTick = 3155695200000,
@@ -174,8 +173,7 @@ manage_facility_probe( ProbeName, UseTickOffsets ) ->
 
 
 
-
-% Creates a basic test probe (hence, seen as a result) directly from the
+% @doc Creates a basic test probe (hence, seen as a result) directly from the
 % simulation test case.
 %
 -spec manage_test_probe( ustring() ) -> probe_ref().
@@ -249,7 +247,7 @@ manage_test_probe( ProbeName ) ->
 			CurveNames = test_receive(),
 
 			?test_notice_fmt( "Original curve names: ~ts.",
-							[ text_utils:strings_to_string( CurveNames ) ] ),
+							  [ text_utils:strings_to_string( CurveNames ) ] ),
 
 			% Let's suppose we want to reorder these curves:
 			[ N1, N2, N3 ] = CurveNames,
@@ -257,7 +255,7 @@ manage_test_probe( ProbeName ) ->
 			NewCurveNames = [ N1, N2, N3 ],
 
 			?test_notice_fmt( "Curve names after reordering: ~ts.",
-							[ text_utils:strings_to_string( NewCurveNames ) ] ),
+				[ text_utils:strings_to_string( NewCurveNames ) ] ),
 
 			ProbePid ! { setCurveRenderOrder, [ NewCurveNames ] },
 
@@ -265,8 +263,8 @@ manage_test_probe( ProbeName ) ->
 									 _FirstLocation={2,1} ] },
 
 			ProbePid ! { addLabel, [ "This is another label",
-						  _SecondLocation={8,5}, _SecondColor="#FF00FF",
-						  _Orientation=45, _Position=right ] },
+							_SecondLocation={8,5}, _SecondColor="#FF00FF",
+							_Orientation=45, _Position=right ] },
 
 			ProbePid
 
@@ -282,7 +280,7 @@ manage_test_probe( ProbeName ) ->
 
 
 
-% Runs the tests for all basic probes not created from an actor:
+%@doc Runs the tests for all basic probes not created from an actor:
 % - facility probes
 % - test-specific probes (a.k.a. case-specific probes)
 %
@@ -300,7 +298,7 @@ run( UseTickOffsets ) ->
 	%
 	SimulationSettings = #simulation_settings{
 
-		simulation_name = "Basic probe test"
+		simulation_name="Basic probe test"
 
 		% Allows to test various combinations of result specifications:
 
@@ -309,21 +307,21 @@ run( UseTickOffsets ) ->
 
 		% Correct, accepted specifications:
 
-		%result_specification = no_output
-		%result_specification = all_outputs
-		%result_specification = all_basic_probes_only
-		%result_specification = all_virtual_probes_only
+		%result_specification=no_output
+		%result_specification=all_outputs
+		%result_specification=all_basic_probes_only
+		%result_specification=all_virtual_probes_only
 
 		% Will select nothing:
-		%result_specification = []
+		%result_specification=[]
 
 		% Will select all (basic) probes:
-		%result_specification = [ {targeted_patterns, [ ".*" ] } ]
+		%result_specification=[ {targeted_patterns, [ ".*" ] } ]
 
 		% Will select nothing here, as blacklisted:
-		%result_specification = [
-		%	  { targeted_patterns, [ {".*",[rendering_only]} ] },
-		%	  { blacklisted_patterns, ["Test probe" ]} ]
+		%result_specification=[
+		%   { targeted_patterns, [ {".*",[rendering_only]} ] },
+		%   { blacklisted_patterns, ["Test probe" ]} ]
 
 
 		% Incorrect, rejected specifications:
@@ -331,7 +329,7 @@ run( UseTickOffsets ) ->
 		%result_specification = unexpected_option
 		%result_specification = [ {targeted_patterns, unexpected_pattern} ]
 		%result_specification = [ {targeted_patterns, [ ".*" ]},
-		%					unexpected_option ]
+		%                         unexpected_option ]
 
 	},
 
@@ -340,8 +338,8 @@ run( UseTickOffsets ) ->
 	% generation of the deployment package requested, use an host file otherwise
 	% fall back to local).
 	%
-	DeploymentSettings = #deployment_settings{
-									enable_performance_tracker=false },
+	DeploymentSettings =
+		#deployment_settings{ enable_performance_tracker=false },
 
 
 	% Default load balancing settings (round-robin placement heuristic):
@@ -355,13 +353,13 @@ run( UseTickOffsets ) ->
 
 	% Directly created on the user node:
 	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-								 DeploymentSettings, LoadBalancingSettings ),
+								DeploymentSettings, LoadBalancingSettings ),
 
 
 	?test_info( "Creating a facility probe." ),
 
 	FacilityProbePid = manage_facility_probe(
-				 _FacilityProbeName="Test Facility Probe", UseTickOffsets ),
+				_FacilityProbeName="Test Facility Probe", UseTickOffsets ),
 
 
 	?test_info( "Creating a test probe." ),

@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2021 EDF R&D
+% Copyright (C) 2016-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -301,8 +301,7 @@ construct( State, ActorSettings, Name, ManagedObjectTypes, WorldManagerPid,
 									object_table().
 prepare_for_objects( ObjectTypes, State ) ->
 
-	case class_DataflowBlock:declare_static_information_for( ObjectTypes )
-			of
+	case class_DataflowBlock:declare_static_information_for( ObjectTypes ) of
 
 		ok ->
 			?notice_fmt( "All semantics and types for objects ~p successfully "
@@ -521,11 +520,11 @@ apply_world_events( _WorldEvents=[], _ManagedTypes, State ) ->
 % can be defined:
 %
 apply_world_events( _WorldEvents=[ CreationEvent=#creation_event{
-	  object_type=ObjectType,
-	  external_id=ExternalID,
-	  object_pid=undefined,
-	  construction_parameters=ConstructParams,
-	  dataflow_pid=DataflowPid } | T ], ManagedTypes, State ) ->
+		object_type=ObjectType,
+		external_id=ExternalID,
+		object_pid=undefined,
+		construction_parameters=ConstructParams,
+		dataflow_pid=DataflowPid } | T ], ManagedTypes, State ) ->
 
 	% We do not have to specifically suspend just created dataflow objects, as
 	% they start as such.
@@ -561,7 +560,7 @@ apply_world_events( _WorldEvents=[ CreationEvent=#creation_event{
 				[ self(), ObjectType, ActualConstructParams ] ),
 
 			%?void_fmt( "Object manager ~p creating a '~ts' instance.",
-			%			[ self(), ObjectType ] ),
+			%           [ self(), ObjectType ] ),
 
 			% Will trigger back onActorCreated/4:
 			CreationState = class_Actor:create_actor( ObjectType,
@@ -578,13 +577,12 @@ apply_world_events( _WorldEvents=[ CreationEvent=#creation_event{
 	end;
 
 
-
 % Destruction events can also be generically managed, yet for that the PID of
 % the target dataflow object must be known:
 %
 apply_world_events( _WorldEvents=[ DestructionEvent=#destruction_event{
-	  external_id=ExternalID,
-	  object_pid=undefined } | T ], ManagedTypes, State ) ->
+		external_id=ExternalID,
+		object_pid=undefined } | T ], ManagedTypes, State ) ->
 
 	% Here we have a destruction event, yet not the corresponding PID, that must
 	% be obtained first (object expected to be already existing; direct message
@@ -598,13 +596,13 @@ apply_world_events( _WorldEvents=[ DestructionEvent=#destruction_event{
 		{ wooper_result, ObjectPid } when is_pid( ObjectPid ) ->
 
 			% Reinjecting a now complete event for next clause:
-			DestructiondEvents = [ DestructionEvent#destruction_event{
-									object_pid=ObjectPid } | T ],
+			DestructiondEvents =
+				[ DestructionEvent#destruction_event{ object_pid=ObjectPid }
+						| T ],
 
 			apply_world_events( DestructiondEvents, ManagedTypes, State )
 
 	end;
-
 
 
 % Sufficiently complete destruction event, processing it for good:
@@ -711,8 +709,8 @@ apply_world_events( _WorldEvents=[ UpdateEvent=#update_event{
 	SentState = class_Actor:send_actor_message( ObjectPid,
 					{ updateAttributes, [ BinUpdates, EventId ] }, State ),
 
-	TrigState = appendToAttribute( SentState, triggered_events,
-								   UpdateEvent ),
+	TrigState =
+		appendToAttribute( SentState, triggered_events, UpdateEvent ),
 
 	apply_world_events( T, ManagedTypes, TrigState );
 
@@ -749,7 +747,7 @@ apply_world_events(_WorldEvents=[ BinAssocEvent=#binary_association_event{
 			% Get the PID of these two objects:
 			[ SourcePid, TargetPid ] =
 				class_DataflowObjectManager:get_object_pids(
-				  [ SourceExternalId, TargetExternalId ], State ),
+					[ SourceExternalId, TargetExternalId ], State ),
 
 			% Requests to both of these objects to declare these peers:
 			SourceSentState = class_Actor:send_actor_message( SourcePid,
@@ -953,8 +951,8 @@ onAssociationEstablished( State, EventId, _SendingActorPid ) ->
 
 	% To complement the reference event, held by the world manager:
 	BinAssocExtraInfo = {
-	  BinAssocEvent#binary_association_event.source_object_pid,
-	  BinAssocEvent#binary_association_event.target_object_pid },
+		BinAssocEvent#binary_association_event.source_object_pid,
+		BinAssocEvent#binary_association_event.target_object_pid },
 
 	CompletionInfo = { EventId, BinAssocExtraInfo },
 
@@ -995,8 +993,8 @@ onBinaryAssociationEstablished( State, EventId, _SendingActorPid ) ->
 
 	% To complement the reference event, held by the world manager:
 	BinAssocExtraInfo = {
-	  BinAssocEvent#binary_association_event.source_object_pid,
-	  BinAssocEvent#binary_association_event.target_object_pid },
+		BinAssocEvent#binary_association_event.source_object_pid,
+		BinAssocEvent#binary_association_event.target_object_pid },
 
 	CompletionInfo = { EventId, BinAssocExtraInfo },
 
@@ -1092,7 +1090,6 @@ onAttributeUpdatePerformed( State, EventId, _SendingActorPid ) ->
 
 
 
-
 % @doc Called automatically after a requested destruction of a dataflow object
 % is performed (the sender being this destructed object).
 %
@@ -1182,11 +1179,11 @@ manage_post_event( _RemainingTriggeredEvents=[], CompletedEventInfos, State ) ->
 	?void_fmt( "Reporting ~B completed events (identifiers: ~w) "
 		"to the world manager, and injecting following changeset: ~ts",
 		[ length( CompletedEventInfos ),
-		  [ Id || { Id, _ExtraInfo } <- CompletedEventInfos ],
-		  dataflow_support:changeset_to_string( InjectedEvents ) ] ),
+			[ Id || { Id, _ExtraInfo } <- CompletedEventInfos ],
+			dataflow_support:changeset_to_string( InjectedEvents ) ] ),
 
 	SentState = class_Actor:send_actor_message( ?getAttr(world_manager_pid),
-		  { reportChangesetCompletion,
+		{ reportChangesetCompletion,
 			[ CompletedEventInfos, InjectedEvents ] }, State ),
 
 	% Reset for next tick:
@@ -1200,8 +1197,8 @@ manage_post_event( RemainingTriggeredEvents, CompletedEventInfos, State ) ->
 	?void_fmt( "Still ~B triggered events waited: ~ts",
 			   [ length( RemainingTriggeredEvents ),
 				 text_utils:strings_to_string(
-				   [ dataflow_support:world_event_to_string( E )
-						|| E <- RemainingTriggeredEvents ] ) ] ),
+					[ dataflow_support:world_event_to_string( E )
+							|| E <- RemainingTriggeredEvents ] ) ] ),
 
 	setAttributes( State, [ { triggered_events, RemainingTriggeredEvents },
 							{ completed_event_infos, CompletedEventInfos } ] ).
@@ -1212,7 +1209,7 @@ manage_post_event( RemainingTriggeredEvents, CompletedEventInfos, State ) ->
 
 
 % @doc Returns a textual description of the object instances currently managed.
--spec object_table_to_string( wooper:state() ) -> string().
+-spec object_table_to_string( wooper:state() ) -> ustring().
 object_table_to_string( State ) ->
 
 	case table:enumerate( ?getAttr(object_table) ) of
@@ -1264,7 +1261,8 @@ to_string( State ) ->
 
 		Events ->
 			ListString = text_utils:strings_to_string(
-			  [ dataflow_support:world_event_to_string( E ) || E <- Events ] ),
+				[ dataflow_support:world_event_to_string( E )
+						|| E <- Events ] ),
 
 			text_utils:format( "waiting for the completion of ~B world "
 							   "events: ~ts", [ length( Events ), ListString ] )
@@ -1298,7 +1296,7 @@ create_default_managers( ObjectManagerDefs, WorldManagerPid,
 						 LoadBalancerPid ) ->
 
 	Managers = create_default_managers( ObjectManagerDefs, WorldManagerPid,
-			 LoadBalancerPid, _IdentificationServerPid=undefined ),
+				LoadBalancerPid, _IdentificationServerPid=undefined ),
 
 	wooper:return_static( Managers ).
 
@@ -1386,8 +1384,8 @@ create_specific_managers( ObjectManagerNames, WorldManagerPid,
 create_specific_managers( ObjectManagerNames, WorldManagerPid, LoadBalancerPid,
 						  IdentificationServerPid ) ->
 
-	ConstructionParameters = [ WorldManagerPid, LoadBalancerPid,
-							   IdentificationServerPid ],
+	ConstructionParameters =
+		[ WorldManagerPid, LoadBalancerPid, IdentificationServerPid ],
 
 	% By convention the name of a object manager is its classname:
 	Managers = [ class_Actor:create_initial_actor( Classname,
@@ -1415,12 +1413,13 @@ create_specific_managers( ObjectManagerNames, WorldManagerPid, LoadBalancerPid,
 % Defined for convenience, typically when implementing a simulation case.
 %
 -spec create_initial_object( object_manager_pid(), dataflow_object_type(),
-   dataflow_pid(), construction_parameters() ) -> static_return( object_pid() ).
+							 dataflow_pid(), construction_parameters() ) ->
+			static_return( object_pid() ).
 create_initial_object( ObjectManagerPid, ObjectClassname, DataflowPid,
 					   CoreConstructionParameters ) ->
 
-	ObjectManagerPid ! { createInitialObjectInstance, [ ObjectClassname,
-							DataflowPid, CoreConstructionParameters ], self() },
+	ObjectManagerPid ! { createInitialObjectInstance,
+		[ ObjectClassname, DataflowPid, CoreConstructionParameters ], self() },
 
 	receive
 
@@ -1484,8 +1483,8 @@ create_runtime_object( ObjectType, DataflowPid, CoreConstructionParameters,
 
 	% Building the full construction parameters for the new object:
 
-	FullConstructParams = list_utils:append_at_end( DataflowPid,
-												CoreConstructionParameters ),
+	FullConstructParams =
+		list_utils:append_at_end( DataflowPid, CoreConstructionParameters ),
 
 	% Returns an updated state; the PID of the created actor will be recorded in
 	% onActorCreated/4.

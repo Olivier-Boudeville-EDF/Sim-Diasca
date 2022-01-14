@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,8 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-
-% Unit tests for the rendering of (basic, generic) probes.
+% @doc Unit tests for the <b>rendering of (basic, generic) probes</b>.
 %
 % This is not an integration test like class_Probe_test, we just focus on the
 % probe own behaviour.
@@ -43,14 +42,14 @@
 
 
 
-% Runs the tests.
+% @doc Runs the tests.
 -spec run() -> no_return().
 run() ->
 	run( _UseTickOffsets=true ).
 
 
 
-% UseTickOffsets tells whether we should display full ticks or tick offsets
+% @doc UseTickOffsets tells whether we should display full ticks or tick offsets
 % (note: their origin can be freely defined, there are not necessarily
 % simulation tick offsets):
 %
@@ -66,7 +65,7 @@ run( UseTickOffsets ) ->
 
 	_MockResultManager = class_ResultManager:create_mockup_environment(),
 
-	?test_info( "Creating a new Probe." ),
+	?test_info( "Creating a probe." ),
 
 	% Must not be synchronous (otherwise deadlock):
 	MyProbe = class_Probe:create_facility_probe( "Test probe",
@@ -129,8 +128,8 @@ run( UseTickOffsets ) ->
 	MyProbe ! { getCurveRenderOrder, [], self() },
 	CurveNames = test_receive(),
 
-	?test_notice_fmt( "Original curve names: ~s.",
-					[ text_utils:strings_to_string( CurveNames ) ] ),
+	?test_notice_fmt( "Original curve names: ~ts.",
+					  [ text_utils:strings_to_string( CurveNames ) ] ),
 
 	% Let's suppose we want to swap the third and fourth curves:
 	[ N1, N2, N3, N4 ] = CurveNames,
@@ -138,7 +137,7 @@ run( UseTickOffsets ) ->
 	NewCurveNames = [ N1, N2, N4, N3 ],
 
 
-	?test_notice_fmt( "Curve names after reordering: ~s.",
+	?test_notice_fmt( "Curve names after reordering: ~ts.",
 					  [ text_utils:strings_to_string( NewCurveNames ) ] ),
 
 	MyProbe ! { setCurveRenderOrder, [ NewCurveNames ] },

@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -20,7 +20,7 @@
 
 
 
-% Unit tests for the interaction between the random manager and stochastic
+% @doc Unit tests for the interaction between the random manager and stochastic
 % actors.
 %
 % See the class_RandomManager.erl and class_TestStochasticActor.erl tested
@@ -34,7 +34,7 @@
 
 
 
-% Runs the test.
+% @doc Runs the test.
 -spec run() -> no_return().
 run() ->
 
@@ -42,7 +42,7 @@ run() ->
 
 	% Prefer reusing most default settings:
 	SimulationSettings = #simulation_settings{
-							simulation_name = "Stochastic Actor Test" },
+							simulation_name="Stochastic Actor Test" },
 
 
 	DeploymentSettings = #deployment_settings{},
@@ -51,10 +51,11 @@ run() ->
 
 	% A deployment manager is created directly on the user node:
 	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-								 DeploymentSettings, LoadBalancingSettings ),
+								DeploymentSettings, LoadBalancingSettings ),
 
 	% The random laws the test actor will rely on:
-	% ({ RandomLawName, RandomSettings })
+	% ({RandomLawName, RandomSettings})
+	%
 	RandomLaws = [ { my_first_uniform,  {uniform,     5} },
 				   { my_second_uniform, {uniform,   100} },
 				   { my_gaussian,       {gaussian, 50,2} },
@@ -63,18 +64,19 @@ run() ->
 
 	% Creates an actor that will automatically subscribe itself to the manager
 	% and that will terminate on specified tick:
+	%
 	class_Actor:create_initial_actor( class_TestStochasticActor,
-			  [ "Cartman", RandomLaws, _CartmanTerminationProbability=20 ] ),
+		[ "Cartman", RandomLaws, _CartmanTerminationProbability=20 ] ),
 
 	% Other actors:
 	class_Actor:create_initial_actor( class_TestStochasticActor,
-			  [ "Kenny", RandomLaws, _KennyTerminationProbability=99 ] ),
+		[ "Kenny", RandomLaws, _KennyTerminationProbability=99 ] ),
 
 	class_Actor:create_initial_actor( class_TestStochasticActor,
-			  [ "Kyle", RandomLaws, _KyleTerminationProbability=10 ] ),
+		[ "Kyle", RandomLaws, _KyleTerminationProbability=10 ] ),
 
 	class_Actor:create_initial_actor( class_TestStochasticActor,
-			  [ "Stan", RandomLaws, _StanTerminationProbability=0 ] ),
+		[ "Stan", RandomLaws, _StanTerminationProbability=0 ] ),
 
 
 	% A TestStochasticActor requesting - and consuming - no law was successfully
@@ -99,7 +101,7 @@ run() ->
 
 		simulation_stopped ->
 			?test_info( "Simulation stopped spontaneously, "
-					   "specified stop tick must have been reached." )
+						"specified stop tick must have been reached." )
 
 	end,
 

@@ -1,4 +1,4 @@
-% Copyright (C) 2011-2021 EDF R&D
+% Copyright (C) 2011-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,8 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-
-% Overall unit test of the Sim-Diasca data exchange facilities.
+% @doc Overall unit test of the Sim-Diasca data exchange facilities.
 -module(data_exchange_test).
 
 
@@ -29,7 +28,8 @@
 -include("sim_diasca_for_cases.hrl").
 
 
-% Generates some data to test the data exchange service.
+
+% @doc Generates some data to test the data exchange service.
 -spec run() -> no_return().
 run() ->
 
@@ -51,7 +51,7 @@ run() ->
 		"valid_example_configuration_file.cfg" ),
 
 	%InvalidConfigurationFilename = file_utils:join( LocalPath,
-	%	"invalid_example_configuration_file.cfg" ),
+	%   "invalid_example_configuration_file.cfg" ),
 
 
 	% Default deployment settings (unavailable nodes allowed, on-the-fly
@@ -83,11 +83,11 @@ run() ->
 		%enable_data_exchanger={ true, [ InvalidConfigurationFilename ] }
 
 		%enable_data_exchanger={ true, [ InvalidConfigurationFilename,
-		%							   ValidConfigurationFilename ] }
+		%                                ValidConfigurationFilename ] }
 
 		% Would lead to data being defined twice:
 		%enable_data_exchanger={ true, [ ValidConfigurationFilename,
-		%							   ValidConfigurationFilename ] }
+		%                                ValidConfigurationFilename ] }
 
 		% Will result in an error:
 		%enable_data_exchanger=false
@@ -128,10 +128,10 @@ run() ->
 
 	% We can use a data list as well:
 	class_DataExchanger:define_initial_data( [
-			{ example_key_2, example_value_2 },
-			{ example_key_3, example_value_3 },
-			{ example_key_5, example_value_5, mutable },
-			{ example_key_for_actors, 1, mutable } ] ),
+		{ example_key_2, example_value_2 },
+		{ example_key_3, example_value_3 },
+		{ example_key_5, example_value_5, mutable },
+		{ example_key_for_actors, 1, mutable } ] ),
 
 	% Trying to define an already defined data:
 	%class_DataExchanger:define_initial_data( example_key_1, whatever ),
@@ -155,11 +155,11 @@ run() ->
 
 	% Trying a disallowed overwriting (target data is already defined):
 	%class_DataExchanger:define_initial_data( example_key_2, example_value_2,
-	%	mutable, ExchangeSettings ),
+	%   mutable, ExchangeSettings ),
 
 	% Trying a disallowed overwriting (target data is const):
 	%class_DataExchanger:modify_initial_data( example_key_2, example_value_2,
-	%	mutable, ExchangeSettings ),
+	%   mutable, ExchangeSettings ),
 
 	% Trying an allowed overwriting (target data is mutable):
 	class_DataExchanger:modify_initial_data( example_key_4,
@@ -167,7 +167,7 @@ run() ->
 
 	% Attempt to perform a const violation:
 	%class_DataExchanger:modify_initial_data( example_key_4,
-	%	other_example_value_4, const, ExchangeSettings ),
+	%   other_example_value_4, const, ExchangeSettings ),
 
 	RootDataExchangerPid ! { traceDistributedData, [], self() },
 	distributed_data_traced = test_receive(),
@@ -199,11 +199,11 @@ run() ->
 
 	% This one should fail, as now is const due to the last call:
 	%class_DataExchanger:modify_initial_data( example_key_for_actors, 4,
-	%										 ExchangeSettings ),
+	%                                         ExchangeSettings ),
 
 	% Setting a non-already defined key will not be allowed:
 	%class_DataExchanger:modify_initial_data( other_example_key_for_actors, 1,
-	%					mutable, ExchangeSettings ),
+	%                                         mutable, ExchangeSettings ),
 
 	class_DataExchanger:define_initial_data( other_example_key_for_actors, 1,
 											 mutable, ExchangeSettings ),
@@ -227,24 +227,22 @@ run() ->
 	SecondKey = key_2,
 
 	class_DataExchanger:define_initial_data( [ { FirstKey, 0, mutable },
-			{ SecondKey, 0, mutable } ], ExchangeSettings ),
+		{ SecondKey, 0, mutable } ], ExchangeSettings ),
 
 	?test_info( "Creating two initial data-exchanging test actors." ),
 
 	% This one will terminate before the end of the simulation:
 	_FirstActorPid = class_Actor:create_initial_actor(
-		   class_DataExchangeTestActor,
-		   [ "First data-exchange test actor", FirstKey,
-			 _FirstTerminationTickOffset=100 ],
-		   LoadBalancerPid ),
+		class_DataExchangeTestActor,
+		[ "First data-exchange test actor", FirstKey,
+		  _FirstTerminationTickOffset=100 ], LoadBalancerPid ),
 
 
 	% This one will terminate after the end of the simulation:
 	_SecondActorPid =class_Actor:create_initial_actor(
-		   class_DataExchangeTestActor,
-		   [ "Second data-exchange test actor", SecondKey,
-			 _SecondTerminationTickOffset=200 ],
-		   LoadBalancerPid ),
+		class_DataExchangeTestActor,
+		[ "Second data-exchange test actor", SecondKey,
+			 _SecondTerminationTickOffset=200 ], LoadBalancerPid ),
 
 
 	RootDataExchangerPid ! { traceDistributedData, [], self() },

@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2021 EDF R&D
+% Copyright (C) 2016-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -311,7 +311,7 @@
 
 
 
-% @doc Constructs a new dataflow block.
+% @doc Constructs a dataflow block.
 %
 % Parameters:
 %
@@ -358,10 +358,10 @@ construct( State, ActorSettings, BlockName, InputPortSpecs, OutputPortSpecs,
 
 	% Prepare for the use of register_{in,out}put_ports/4:
 	BlanckPortState = setAttributes( ActorState, [
-			{ input_ports, EmptyTable },
-			{ input_iterations, EmptyTable },
-			{ output_ports, EmptyTable },
-			{ output_iterations, EmptyTable } ] ),
+		{ input_ports, EmptyTable },
+		{ input_iterations, EmptyTable },
+		{ output_ports, EmptyTable },
+		{ output_iterations, EmptyTable } ] ),
 
 	{ InputTable, InputIterationTable } = register_input_ports(
 			InputPortSpecs, SemanticServerPid, TypeServerPid, BlanckPortState ),
@@ -562,7 +562,7 @@ register_input_ports( [ InputPortSpec=#input_port_spec{
 
 % Invalid case:
 register_input_ports( _InputPortSpecs=[ FaultyInputPortSpecs | _T ],
-		 _InputTable, _InputIterationTable, _SemanticServerPid,
+		_InputTable, _InputIterationTable, _SemanticServerPid,
 		_TypeServerPid, State ) ->
 	?error_fmt( "Invalid input port specification: ~p",
 				[ FaultyInputPortSpecs ] ),
@@ -574,7 +574,7 @@ register_input_ports( _InputPortSpecs=[ FaultyInputPortSpecs | _T ],
 % specified iteration, and returns a list of their names.
 %
 -spec createInputIteratedPorts( wooper:state(), input_iteration_name(),
-			   iterated_count() ) -> request_return( [ input_port_name() ] ).
+				iterated_count() ) -> request_return( [ input_port_name() ] ).
 createInputIteratedPorts( State, InputIterationName, PortCount ) ->
 
 	InputIteration = get_input_port_iteration( InputIterationName, State ),
@@ -659,19 +659,19 @@ register_output_ports( _OutputPortSpecs=[], OutputTable, OutputIterationTable,
 
 % Not a port iteration here:
 register_output_ports( [ _OutputPortSpec=#output_port_spec{
-							 name=Name,
-							 comment=Comment,
-							 is_iteration=false,
-							 produces_result=ResultSettings,
-							 value_semantics=Semantics,
-							 value_unit=Unit,
-							 value_type_description=TypeDescription,
-							 value_constraints=Constraints } | T ],
+							name=Name,
+							comment=Comment,
+							is_iteration=false,
+							produces_result=ResultSettings,
+							value_semantics=Semantics,
+							value_unit=Unit,
+							value_type_description=TypeDescription,
+							value_constraints=Constraints } | T ],
 					   OutputTable, OutputIterationTable, SemanticServerPid,
 					   TypeServerPid, State ) ->
 
 	%?debug_fmt( "Registering a new direct, standard output port: ~ts",
-	%			[ output_port_spec_to_string( OutputPortSpec ) ] ),
+	%            [ output_port_spec_to_string( OutputPortSpec ) ] ),
 
 	PortName = validate_port_name( Name, State ),
 
@@ -713,14 +713,14 @@ register_output_ports(
 
 % Port iteration here:
 register_output_ports( [ OutputPortSpec=#output_port_spec{
-							 name=Name,
-							 comment=Comment,
-							 is_iteration=IterationSpec,
-							 produces_result=ResultSettings,
-							 value_semantics=Semantics,
-							 value_unit=Unit,
-							 value_type_description=TypeDescription,
-							 value_constraints=Constraints } | T ],
+							name=Name,
+							comment=Comment,
+							is_iteration=IterationSpec,
+							produces_result=ResultSettings,
+							value_semantics=Semantics,
+							value_unit=Unit,
+							value_type_description=TypeDescription,
+							value_constraints=Constraints } | T ],
 					   OutputTable, OutputIterationTable, SemanticServerPid,
 					   TypeServerPid, State ) ->
 
@@ -1410,7 +1410,7 @@ requestInboundConnections( State, InboundConnectionInfos, ListenerActorPid,
 	% instantiated (if any):
 	%
 	Oneway = { onInboundConnectionsCreated,
-			   [ PortPairs, ListenerActorPid, ActionId ] },
+				[ PortPairs, ListenerActorPid, ActionId ] },
 
 	SentState = class_Actor:send_actor_message( UpstreamBlockPid, Oneway,
 												AppliedState ),
@@ -1519,8 +1519,8 @@ apply_connections( UpstreamBlockPid, _InboundConnectionInfo=[
 	NewInputIterationTable = table:update_entry( InputIterationBinName,
 									NewInputIteration, InputIterationTable ),
 
-	NewAccPortPairs = [ { OutputPortBinName, NewIteratedInputPortName }
-						| AccPortPairs ],
+	NewAccPortPairs =
+		[ { OutputPortBinName, NewIteratedInputPortName } | AccPortPairs ],
 
 	apply_connections( UpstreamBlockPid, T, NewInputPortTable,
 					   NewInputIterationTable, NewAccPortPairs, State ).
@@ -1669,12 +1669,12 @@ create_input_iterated_ports( CreationCount,
 -spec create_input_iterated_entry( iterated_index(), input_port_iteration(),
 					output_port_id() ) -> { input_port_name(), input_port() }.
 create_input_iterated_entry( Index, #input_port_iteration{
-									   base_name=BaseName,
-									   comment=Comment,
-									   value_semantics=Semantics,
-									   value_unit=Unit,
-									   value_type=Type,
-									   value_constraints=Constraints },
+										base_name=BaseName,
+										comment=Comment,
+										value_semantics=Semantics,
+										value_unit=Unit,
+										value_type=Type,
+										value_constraints=Constraints },
 							 OutputPortId ) ->
 
 	PortName = get_iterated_port_name( BaseName, Index ),
@@ -1702,8 +1702,8 @@ create_input_iterated_entry( Index, #input_port_iteration{
 	   { [ output_port_name() ], output_port_table(), output_port_iteration() }.
 create_output_iterated_ports( CreationCount,
 							  OutputIteration=#output_port_iteration{
-												 multiplicity=Multiplicity,
-												 port_indexes=Indexes },
+												multiplicity=Multiplicity,
+												port_indexes=Indexes },
 							  OutputPortTable ) ->
 
 	{ NewPortCount, _Bounds } = NewMultiplicity =
@@ -1995,12 +1995,12 @@ send_suspended_values( _OutputPorts=[], _PortTimestamp, AccPortTable, State ) ->
 
 send_suspended_values( _OutputPorts=[ { OutputPortName,
 										OutputPort=#output_port{
-						  value_semantics=Semantics,
-						  value_unit=Unit,
-						  value_type=Type,
-						  value_status={ set, Value },
-						  last_sending=send_on_resume,
-						  fed_ports=FedPorts } } | T ],
+							value_semantics=Semantics,
+							value_unit=Unit,
+							value_type=Type,
+							value_status={ set, Value },
+							last_sending=send_on_resume,
+							fed_ports=FedPorts } } | T ],
 					   PortTimestamp, AccPortTable, State ) ->
 
 	% We can directly reuse the stored, raw value, as it has been supposedly
@@ -2013,7 +2013,7 @@ send_suspended_values( _OutputPorts=[ { OutputPortName,
 		"ports:~n~ts",
 		[ value_to_string( ChannelValue ), text_utils:strings_to_string(
 					[ dataflow_support:port_id_to_string( PortId )
-					  || PortId <- FedPorts ] ) ] ),
+							|| PortId <- FedPorts ] ) ] ),
 
 	SentState = notify_fed_input_ports( ChannelValue, FedPorts, State ),
 
@@ -2067,7 +2067,7 @@ disconnect_input_ports_from( BlockPid, InputPortTable ) ->
 	InputPorts = table:enumerate( InputPortTable ),
 
 	NewInputPorts = [ { PortName, disconnect_input_port( BlockPid, InputPort ) }
-					  || { PortName, InputPort } <- InputPorts ],
+						|| { PortName, InputPort } <- InputPorts ],
 
 	table:new( NewInputPorts ).
 
@@ -2075,7 +2075,7 @@ disconnect_input_ports_from( BlockPid, InputPortTable ) ->
 
 % (helper)
 disconnect_input_port( BlockPid,
-	   InputPort=#input_port{ feeder_port={ BlockPid, _OutputPortName } } ) ->
+		InputPort=#input_port{ feeder_port={ BlockPid, _OutputPortName } } ) ->
 	InputPort#input_port{ feeder_port=undefined };
 
 disconnect_input_port( _BlockPid, InputPort ) ->
@@ -2090,7 +2090,7 @@ disconnect_output_ports_from( BlockPid, OutputPortTable ) ->
 
 	NewOutputPorts = [ { PortName,
 						 disconnect_output_port( BlockPid, OutputPort ) }
-					   || { PortName, OutputPort } <- OutputPorts ],
+							|| { PortName, OutputPort } <- OutputPorts ],
 
 	table:new( NewOutputPorts ).
 
@@ -2209,7 +2209,7 @@ get_input_port_status( InputBinPortName, State )
 	ValueStatus = InputPort#input_port.value_status,
 
 	%?debug_fmt( "Reading for input port '~ts' value status ~p.",
-	%			[ InputPortName, ValueStatus ] ),
+	%            [ InputPortName, ValueStatus ] ),
 
 	ValueStatus.
 
@@ -2324,7 +2324,7 @@ get_output_port_status( BinOutputPortName, State )
 	ValueStatus = OutputPort#output_port.value_status,
 
 	%?debug_fmt( "Reading for output port '~ts' value status ~p.",
-	%			[ BinOutputPortName, ValueStatus ] ),
+	%            [ BinOutputPortName, ValueStatus ] ),
 
 	ValueStatus;
 
@@ -2511,15 +2511,15 @@ get_directly_connected_blocks( State ) ->
 -spec validate_value_for_input_port( channel_value(), input_port(),
 			input_port_name(), wooper:state() ) -> void().
 validate_value_for_input_port( ChannelValue=#channel_value{
-								  actual_value=Value,
-								  semantics=ValueSemantics,
-								  unit={ ValueUnitBinString, ValueUnit },
-								  type=ValueType },
+									actual_value=Value,
+									semantics=ValueSemantics,
+									unit={ ValueUnitBinString, ValueUnit },
+									type=ValueType },
 							   #input_port{
-								  value_semantics=PortSemantics,
-								  value_unit={ PortUnitBinString, PortUnit },
-								  value_type=PortType,
-								  value_constraints=PortConstraints },
+									value_semantics=PortSemantics,
+									value_unit={ PortUnitBinString, PortUnit },
+									value_type=PortType,
+									value_constraints=PortConstraints },
 							   PortName, State ) ->
 
 	case rdf_utils:implies( ValueSemantics, PortSemantics ) of
@@ -2552,7 +2552,7 @@ validate_value_for_input_port( ChannelValue=#channel_value{
 			% PortSemList = set_utils:to_list( PortSemantics ),
 			%
 			% throw( { incompatible_semantics, { { value, ValueSemList },
-			%							 { input_port, PortSemList } } } )
+			%           { input_port, PortSemList } } } )
 
 	end,
 
@@ -2632,15 +2632,15 @@ validate_value_for_input_port( Value, _InputPort, _PortName, _State )
 -spec validate_value_for_output_port( channel_value(), output_port(),
 			output_port_name(), wooper:state() ) -> void().
 validate_value_for_output_port( ChannelValue=#channel_value{
-								  actual_value=Value,
-								  semantics=ValueSemantics,
-								  unit={ ValueUnitBinString, ValueUnit },
-								  type=ValueType },
+									actual_value=Value,
+									semantics=ValueSemantics,
+									unit={ ValueUnitBinString, ValueUnit },
+									type=ValueType },
 								#output_port{
-								  value_semantics=PortSemantics,
-								  value_unit={ PortUnitBinString, PortUnit },
-								  value_type=PortType,
-								  value_constraints=PortConstraints },
+									value_semantics=PortSemantics,
+									value_unit={ PortUnitBinString, PortUnit },
+									value_type=PortType,
+									value_constraints=PortConstraints },
 								PortName, State ) ->
 
 	case rdf_utils:implies( ValueSemantics, PortSemantics ) of
@@ -2670,7 +2670,7 @@ validate_value_for_output_port( ChannelValue=#channel_value{
 			% PortSemList = set_utils:to_list( PortSemantics ),
 			%
 			% throw( { incompatible_semantics, { { value, ValueSemList },
-			%							{ output_port, PortSemList } } } )
+			%                   { output_port, PortSemList } } } )
 
 	end,
 
@@ -2901,15 +2901,15 @@ notify_fed_input_ports( ChannelValue,
 -spec get_input_iterated_ports( input_port_iteration(), wooper:state() ) ->
 										[ input_port_id() ].
 get_input_iterated_ports( #input_port_iteration{
-							 base_name=BaseName,
-							 port_indexes=Indexes }, State ) ->
+								base_name=BaseName,
+								port_indexes=Indexes }, State ) ->
 
 	InputPortTable = ?getAttr(input_ports),
 
 	[ begin
-		  PortName = get_iterated_port_name( BaseName, I ),
-		  InputPort = get_input_port( PortName, InputPortTable, State ),
-		  { PortName, InputPort }
+			PortName = get_iterated_port_name( BaseName, I ),
+			InputPort = get_input_port( PortName, InputPortTable, State ),
+			{ PortName, InputPort }
 	  end || I <- Indexes ].
 
 
@@ -2943,10 +2943,10 @@ get_all_input_iteration_values( InputIterationName, State )
 
 	% Returns ChannelValues, or raises an exception if ever a port was not set:
 	lists:foldl( fun( { set, V }, Acc ) ->
-						 [ V | Acc ];
+						[ V | Acc ];
 
 					( unset, _Acc ) ->
-						 throw( { unset_iterated_port_in, InputIterationName } )
+						throw( { unset_iterated_port_in, InputIterationName } )
 
 				 end,
 				 _Acc0=[],
@@ -2984,6 +2984,7 @@ set_all_output_iteration_values( OutputIterationName, Values, State )
 		0 ->
 			% If the (output) port iteration is empty (not connected at all),
 			% the setting of any number of values is tolerated, yet ignored:
+			%
 			State;
 
 		ValueCount ->
@@ -3125,7 +3126,7 @@ set_input_port_direct_values_helper(
 
 	% Not relevant by design:
 	%validate_value_for_input_port( ChannelValue, InputPort, BinPortName,
-	%							   State ),
+	%                               State ),
 
 	% Minimal type-based checking done:
 	NewInputPort = assign_input_value( ChannelValue, InputPort, InputPortName,
@@ -3361,7 +3362,7 @@ set_output_port_direct_values_helper(
 
 	% Would be useless, as valid by design:
 	%validate_value_for_output_port( ChannelValue, OutputPort, BinPortName,
-	%								 State ),
+	%                                State ),
 
 
 	% As the channel value passed to assign_output_value/4 is only used to fetch
@@ -3504,7 +3505,7 @@ get_and_trigger_semantics( BlockTypeModule, SemanticServerPid ) ->
 
 		ActualSemantics ->
 			%trace_utils:debug_fmt( "Requesting validation for semantics ~p.",
-			%						[ ActualSemantics ] ),
+			%                       [ ActualSemantics ] ),
 
 			% Will then trigger back a validation_outcome() as result:
 			SemanticServerPid ! { validateSemantics, [ ActualSemantics ],
@@ -3551,7 +3552,7 @@ get_and_trigger_types( BlockTypeModule, TypeServerPid ) ->
 
 		ActualTypes ->
 			%trace_utils:debug_fmt( "Requesting validation for types ~p.~n",
-			%						[ ActualTypes ] ),
+			%                       [ ActualTypes ] ),
 			TypeServerPid ! { validateTypes, [ ActualTypes ], self() },
 			wooper:return_static( true )
 
@@ -3598,7 +3599,7 @@ wait_for( IsSemanticWaited, _IsTypeWaited=true ) ->
 get_referenced_semantics( InputPortSpecs, OutputPortSpecs ) ->
 
 	InputSemantics = [ IS#input_port_spec.value_semantics
-					   || IS <- InputPortSpecs ],
+						|| IS <- InputPortSpecs ],
 
 	OutputSemantics = [ OS#output_port_spec.value_semantics
 						|| OS <- OutputPortSpecs ],
@@ -3616,7 +3617,7 @@ get_referenced_semantics( InputPortSpecs, OutputPortSpecs ) ->
 get_referenced_types( InputPortSpecs, OutputPortSpecs ) ->
 
 	InputTypes = [ IS#input_port_spec.value_type_description
-				   || IS <- InputPortSpecs ],
+					|| IS <- InputPortSpecs ],
 
 	OutputTypes = [ OS#output_port_spec.value_type_description
 					|| OS <- OutputPortSpecs ],
@@ -3745,9 +3746,9 @@ get_static_information( State ) ->
 			{ WOOPERPythonClass, python };
 
 		%class_DataflowJavaProcessingUnit ->
-		%	WOOPERJavaClass = wooper_utils:java_class_to_wooper_class(
-		%						?getAttr(java_class) ),
-		%	{ WOOPERJavaClass, java };
+		%   WOOPERJavaClass = wooper_utils:java_class_to_wooper_class(
+		%                       ?getAttr(java_class) ),
+		%   { WOOPERJavaClass, java };
 
 		AnyOtherClassname ->
 			AnyOtherClassname
@@ -3858,8 +3859,8 @@ createOutputPorts( State, OutputPortSpecs ) ->
 		?getAttr(semantic_server_pid), ?getAttr(type_server_pid), State ),
 
 	OutputState = setAttributes( State, [
-			{ output_ports, NewOutputTable },
-			{ output_iterations, NewOutputIterationTable } ] ),
+		{ output_ports, NewOutputTable },
+		{ output_iterations, NewOutputIterationTable } ] ),
 
 	wooper:return_state_result( OutputState, output_ports_created ).
 

@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,12 +19,15 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Class modelling the <b>reparation behaviour</b> of equipment according to
+% a Gaussian (normal) law (probability density).
+%
 -module(class_GaussianRepairModel).
 
 
 -define( class_description,
 		 "Class modelling the reparation behaviour of equipments according to "
-		 "a gaussian (normal) law (probability density). "
+		 "a Gaussian (normal) law (probability density). "
 		 "It is the most common repair model, most equipments respect this "
 		 "statistical rule. "
 		 "See also: class_UniformRepairModel." ).
@@ -45,7 +48,7 @@
 
 
 
-% Constructs a new gaussian repair model actor.
+% @doc Constructs a gaussian repair model actor.
 %
 % - ActorSettings corresponds to the engine settings for this actor, as
 % determined by the load-balancer
@@ -56,11 +59,9 @@
 %
 % - RepairStdDeviation is the standard deviation of the repair gaussian law
 %
-% Note: a random manager must be running beforehand.
-%
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 class_RepairModel:mttr(), math_utils:standard_deviation() ) ->
-					   wooper:state().
+						wooper:state().
 construct( State, ActorSettings,
 		  { MTTRday, MTTRhour, MTTRminute, MTTRsecond }, MTTRStdDeviation ) ->
 
@@ -76,8 +77,8 @@ construct( State, ActorSettings,
 
 	% Then the class-specific actions:
 
-	?send_info_fmt( RepairState, "Creating a new gaussian repair model "
-		"whose MTTR is ~B and whose standard deviation is ~B.",
+	?send_info_fmt( RepairState, "Creating a Gaussian repair model "
+		"whose MTTR is ~p and whose standard deviation is ~p.",
 		[ MTTR, MTTRStdDeviation ] ),
 
 	RepairState.

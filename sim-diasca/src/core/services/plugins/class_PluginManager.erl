@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2021 EDF R&D
+% Copyright (C) 2014-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,12 +19,15 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc <b>Manager of the Sim-Diasca plugins</b>, which allows third-party tools
+% to interface to the engine.
+%
 -module(class_PluginManager).
 
 
 -define( class_description,
 		 "Manager of the Sim-Diasca plugins, which allows third-party tools "
-		 "to interface% to the engine." ).
+		 "to interface  to the engine." ).
 
 
 % Determines what are the direct mother classes of this class (if any):
@@ -77,17 +80,17 @@
 -type ustring() :: text_utils:ustring().
 
 -type directory_path() :: file_utils:directory_path().
--type file_name() :: file_utils:file_name().
+-type file_path() :: file_utils:file_path().
 
 -type plugin_event() :: sim_diasca_plugin:plugin_event().
 -type event_data() :: sim_diasca_plugin:event_data().
 -type configuration_changes() :: sim_diasca_plugin:configuration_changes().
+-type case_specific_event() :: sim_diasca_plugin:case_specific_event().
 
 
 
-% Constructs a new plugin manager, from following parameter: PluginDirectories
-% :: [ directory_path() ], a list of the paths that should be
-% searched into, in order to look-up for plugins
+% @doc Constructs a plugin manager, from a list of the paths that should be
+% searched into, in order to look-up for plugins.
 %
 -spec construct( wooper:state(), [ directory_path() ] ) -> wooper:state().
 construct( State, PluginDirectories ) ->
@@ -106,14 +109,14 @@ construct( State, PluginDirectories ) ->
 			"no plugin directory specified.";
 
 		_ ->
-			text_utils:format( "following ~B plugin directories specified: ~s",
+			text_utils:format( "following ~B plugin directories specified: ~ts",
 				[ length( PluginDirectories ),
 				  text_utils:strings_to_string( PluginDirectories ) ] )
 
 	end,
 
-	?send_info( TraceState, "Initialising plugin manager, with "
-				++ DirMessage ),
+	?send_info( TraceState,
+				"Initialising plugin manager, with " ++ DirMessage ),
 
 
 	% List of absolute paths, extension-less BEAMs:
@@ -132,7 +135,7 @@ construct( State, PluginDirectories ) ->
 
 
 
-% Overridden destructor.
+% @doc Overridden destructor.
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -154,7 +157,7 @@ destruct( State ) ->
 % Methods section.
 
 
-% Requests all plugins to be notified of following standard event.
+% @doc Requests all plugins to be notified of the specified standard event.
 -spec notifyEvent( wooper:state(), plugin_event() ) ->
 						request_return( 'event_notified' ).
 notifyEvent( State, Event ) ->
@@ -165,8 +168,8 @@ notifyEvent( State, Event ) ->
 
 
 
-% Requests all plugins to be notified of the start of the simulatr, and gives
-% them a chance of updating the requested configuration changes.
+% @doc Requests all plugins to be notified of the start of the simulator, and
+% gives them a chance of performing the requested configuration changes.
 %
 % (request, for synchronicity)
 %
@@ -174,9 +177,8 @@ notifyEvent( State, Event ) ->
 		request_return( configuration_changes() ).
 notifySimulatorStart( State ) ->
 
-	?info( "Notifying all plugins that the simulator starts, "
-		   "giving them a chance of updating the requested "
-		   "configuration changes." ),
+	?info( "Notifying all plugins that the simulator starts, giving them "
+		   "a chance of updating the requested configuration changes." ),
 
 	BlankConfChanges = #configuration_changes{},
 
@@ -185,13 +187,13 @@ notifySimulatorStart( State ) ->
 	{ FinalChanges, FinalTable } = lists:foldl(
 		fun( { Mod, PlugState }, { Changes, Table } ) ->
 
-				{ NewChanges, NewPlugState } =
-					Mod:on_simulator_start( Changes, PlugState ),
+			{ NewChanges, NewPlugState } =
+				Mod:on_simulator_start( Changes, PlugState ),
 
-				% Update state:
-				NewTable = table:add_entry( _K=Mod, _V=NewPlugState, Table ),
+			% Update state:
+			NewTable = table:add_entry( _K=Mod, _V=NewPlugState, Table ),
 
-				{ NewChanges, NewTable }
+			{ NewChanges, NewTable }
 
 		end,
 		_Acc0={ BlankConfChanges, InitialPluginTable },
@@ -205,12 +207,12 @@ notifySimulatorStart( State ) ->
 
 
 
-% Requests all plugins to be notified of following parametrised event.
+% @doc Requests all plugins to be notified of following parametrised event.
 %
 % (request, for synchronicity)
 %
 -spec notifyParametrisedEvent( wooper:state(), plugin_event(), event_data() ) ->
-				 request_return( 'parametrised_event_notified' ).
+					request_return( 'parametrised_event_notified' ).
 notifyParametrisedEvent( State, Event, Parameters ) ->
 
 	NewState = notify_parametrised_event( Event, Parameters, State ),
@@ -219,14 +221,13 @@ notifyParametrisedEvent( State, Event, Parameters ) ->
 
 
 
-% Requests all plugins to be notified of following case-specific event, with
-% its associated parameter.
+% @doc Requests all plugins to be notified of following case-specific event,
+% with its associated parameter.
 %
 % (request, for synchronicity)
 %
--spec notifyCaseSpecificEvent( wooper:state(),
-		sim_diasca_plugin:case_specific_event(), event_data() ) ->
-				request_return( 'case_specific_event_notified' ).
+-spec notifyCaseSpecificEvent( wooper:state(), case_specific_event(),
+			event_data() ) -> request_return( 'case_specific_event_notified' ).
 notifyCaseSpecificEvent( State, CaseSpecificEvent, EventParameter ) ->
 
 	NewState =
@@ -240,11 +241,10 @@ notifyCaseSpecificEvent( State, CaseSpecificEvent, EventParameter ) ->
 % Helper functions.
 
 
-% Returns a list of plugins found, as a list of the extension-less absolute
+% @doc Returns a list of plugins found, as a list of the extension-less absolute
 % paths of the plugin modules.
 %
--spec get_plugins_from( [ directory_path() ], wooper:state() ) ->
-							[ ustring() ].
+-spec get_plugins_from( [ directory_path() ], wooper:state() ) -> [ ustring() ].
 get_plugins_from( PluginDirectories, State ) ->
 	get_plugins_from( PluginDirectories, State, _AccPlugins=[] ).
 
@@ -264,12 +264,12 @@ get_plugins_from( _PluginDirectories=[ Dir | T ], State, AccPlugins ) ->
 			NewPlugins = case get_plugins_from_dir( AbsDir ) of
 
 				[] ->
-					?debug_fmt( "No plugin found in directory '~s'.",
+					?debug_fmt( "No plugin found in directory '~ts'.",
 								[ AbsDir ] ),
 					[];
 
 				Plugins ->
-					?debug_fmt( "~B plugin(s) found in directory '~s': ~p.",
+					?debug_fmt( "~B plugin(s) found in directory '~ts': ~p.",
 								[ length( Plugins ), AbsDir, Plugins ] ),
 					Plugins
 
@@ -278,24 +278,24 @@ get_plugins_from( _PluginDirectories=[ Dir | T ], State, AccPlugins ) ->
 			get_plugins_from( T, State, NewPlugins ++ AccPlugins );
 
 		false ->
-			?debug_fmt( "Plugin directory '~s' does not exist.", [ AbsDir ] ),
+			?debug_fmt( "Plugin directory '~ts' does not exist.", [ AbsDir ] ),
 			get_plugins_from( T, State, AccPlugins )
 
 	end.
 
 
 
-% Returns a list of the BEAM files (absolute paths, but with their extension
-% removed) found in the specified directory.
+% @doc Returns a list of the BEAM files (absolute paths, but with their
+% extension removed) found in the specified directory.
 %
 % (helper)
 %
--spec get_plugins_from_dir( directory_path() ) -> [ file_name() ].
-get_plugins_from_dir( DirectoryName ) ->
+-spec get_plugins_from_dir( directory_path() ) -> [ file_path() ].
+get_plugins_from_dir( DirectoryPath ) ->
 
 	% First, select all BEAM regular files:
 	{ Files, _Symlinks, _Dirs, _Others, _Devs } =
-		file_utils:list_dir_elements( DirectoryName ),
+		file_utils:list_dir_elements( DirectoryPath ),
 
 	Beams = file_utils:filter_by_extension( Files, ".beam" ),
 
@@ -303,14 +303,14 @@ get_plugins_from_dir( DirectoryName ) ->
 	% paths:
 	%
 	Modules = [ file_utils:replace_extension( _Filename=B,
-		   _SourceExtension=".beam", _TargetExtension="" ) || B <- Beams ],
+			_SourceExtension=".beam", _TargetExtension="" ) || B <- Beams ],
 
 	% Full paths needed:
-	[ file_utils:join( DirectoryName, M ) || M <- Modules ].
+	[ file_utils:join( DirectoryPath, M ) || M <- Modules ].
 
 
 
-% Initialises and returns the plugin table.
+% @doc Initialises and returns the plugin table.
 %
 % (helper)
 %
@@ -328,9 +328,8 @@ create_initial_plugin_table( Plugins, State ) ->
 
 			Count = length( Plugins ),
 
-			?info_fmt( "Plugin manager started, with ~B plugin(s): ~s",
-					   [ Count,
-						 text_utils:strings_to_string( StringModules ) ] ),
+			?info_fmt( "Plugin manager started, with ~B plugin(s): ~ts",
+				[ Count, text_utils:strings_to_string( StringModules ) ] ),
 
 			Modules = [ text_utils:string_to_atom( S ) || S <- StringModules ],
 
@@ -338,7 +337,7 @@ create_initial_plugin_table( Plugins, State ) ->
 
 			lists:foldl( fun( Mod, Table ) ->
 							% Initial plugin state is undefined:
-							table:add_entry( _K=Mod, _V='undefined', Table )
+							table:add_entry( _K=Mod, _V=undefined, Table )
 						 end,
 						 _Acc0=EmptyTable,
 						 _List=Modules )
@@ -359,19 +358,19 @@ load_plugin( Plugin, State ) ->
 	case code:load_abs( Plugin ) of
 
 		{ error, Reason } ->
-			?error_fmt( "Loading of plugin '~s' failed: ~s.",
+			?error_fmt( "Loading of plugin '~ts' failed: ~ts.",
 						[ Plugin, Reason ] ),
 			throw( { plugin_loading_failed, Plugin, Reason } );
 
 		{ module, Module } ->
-			?debug_fmt( "Plugin '~s' successfully loaded from '~s'.",
+			?debug_fmt( "Plugin '~ts' successfully loaded from '~ts'.",
 						[ Module, filename:dirname( Plugin ) ] )
 
 	end.
 
 
 
-% Notifies known plugins of specified event; returns an updated state.
+% @doc Notifies known plugins of specified event; returns an updated state.
 %
 % (helper)
 %
@@ -379,7 +378,7 @@ notify_event( Event, State ) ->
 
 	PluginTable = ?getAttr(plugin_table),
 
-	?info_fmt( "Notifying all plugins of event '~s'.", [ Event ] ),
+	?info_fmt( "Notifying all plugins of event '~ts'.", [ Event ] ),
 
 	NewTable = lists:foldl( fun( { Mod, PlugState }, Table ) ->
 
@@ -396,8 +395,8 @@ notify_event( Event, State ) ->
 
 
 
-% Notifies known plugins of specified parametrised event; returns an updated
-% state.
+% @doc Notifies known plugins of specified parametrised event; returns an
+% updated state.
 %
 % (helper)
 %
@@ -405,7 +404,7 @@ notify_parametrised_event( Event, Parameters, State ) ->
 
 	PluginTable = ?getAttr(plugin_table),
 
-	?info_fmt( "Notifying all plugins of event '~s' "
+	?info_fmt( "Notifying all plugins of event '~ts' "
 			   "parametrised with '~p'.", [ Event, Parameters ] ),
 
 	NewTable = lists:foldl( fun( { Mod, PlugState }, Table ) ->
@@ -423,8 +422,8 @@ notify_parametrised_event( Event, Parameters, State ) ->
 
 
 
-% Notifies known plugins of specified case-specific event; returns an updated
-% state.
+% @doc Notifies known plugins of specified case-specific event; returns an
+% updated state.
 %
 % (helper)
 %
@@ -432,7 +431,7 @@ notify_case_specific_event( CaseSpecificEvent, EventParameter, State ) ->
 
 	PluginTable = ?getAttr(plugin_table),
 
-	?info_fmt( "Notifying all plugins of case-specific event '~s' "
+	?info_fmt( "Notifying all plugins of case-specific event '~ts' "
 			   "with parameter '~p'.", [ CaseSpecificEvent, EventParameter ] ),
 
 	NewTable = lists:foldl( fun( { Mod, PlugState }, Table ) ->
@@ -455,12 +454,12 @@ notify_case_specific_event( CaseSpecificEvent, EventParameter, State ) ->
 % Static section.
 
 
-% To notify from any place the plugin manager of an event.
+% @doc To notify from any place the plugin manager of an event.
 -spec notify( plugin_event() ) -> static_void_return().
 notify( Event ) ->
 
 	PluginManagerPid = naming_utils:get_registered_pid_for(
-						 ?plugin_manager_name, _Scope=?look_up_scope ),
+							?plugin_manager_name, _Scope=?look_up_scope ),
 
 
 	PluginManagerPid ! { notifyEvent, [ Event ], self() },
@@ -474,8 +473,8 @@ notify( Event ) ->
 
 
 
-% To notify from any place the plugin manager - provided it is registered - of
-% an event.
+% @doc To notify from any place the plugin manager - provided it is registered -
+% of an event.
 %
 -spec notify_if_registered( plugin_event() ) -> static_void_return().
 notify_if_registered( Event ) ->
@@ -500,14 +499,14 @@ notify_if_registered( Event ) ->
 
 
 
-% Notifies that the simulator started, in order to allow plugins to return
+% @doc Notifies that the simulator started, in order to allow plugins to return
 % requests for configuration changes.
 %
 -spec notify_simulator_start() -> static_return( configuration_changes() ).
 notify_simulator_start() ->
 
 	PluginManagerPid = naming_utils:get_registered_pid_for(
-							 ?plugin_manager_name, _Scope=?look_up_scope ),
+								?plugin_manager_name, _Scope=?look_up_scope ),
 
 	% Starts with blank changes:
 	PluginManagerPid ! { notifySimulatorStart, [], self() },
@@ -521,7 +520,7 @@ notify_simulator_start() ->
 
 
 
-% To notify from any place the plugin manager of a parametrised event.
+% @doc To notify from any place the plugin manager of a parametrised event.
 -spec notify( plugin_event(), event_data() ) -> static_void_return().
 notify( Event, Parameters ) ->
 
@@ -541,9 +540,9 @@ notify( Event, Parameters ) ->
 
 
 
-% To notify from any place the plugin manager of a case-specific event.
--spec notify_case_specific( sim_diasca_plugin:case_specific_event(),
-							event_data() ) -> static_void_return().
+% @doc To notify from any place the plugin manager of a case-specific event.
+-spec notify_case_specific( case_specific_event(), event_data() ) ->
+										static_void_return().
 notify_case_specific( Event, EventParameter ) ->
 
 	PluginManagerPid = naming_utils:get_registered_pid_for(

@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -76,8 +76,8 @@ run() ->
 	LoadBalancingSettings = #load_balancing_settings{},
 
 
-	?test_notice_fmt( "This test will deploy a distributed simulation"
-		" based on computing hosts specified as ~p.",
+	?test_notice_fmt( "This test will deploy a distributed simulation "
+		"based on computing hosts specified as ~p.",
 		[ DeploymentSettings#deployment_settings.computing_hosts ] ),
 
 

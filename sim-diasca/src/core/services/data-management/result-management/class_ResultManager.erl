@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2021 EDF R&D
+% Copyright (C) 2010-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,6 +19,9 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc The result manager allows to declare, keep track of, retrieve, make
+% available, possibly post-process the <b>results of the simulation</b>.
+%
 -module(class_ResultManager).
 
 
@@ -44,7 +47,7 @@
 	  "or a pair made of two lists (targeted/blacklisted); elements of the "
 	  "targeted list are {BinaryPattern, PrecompiledMatchSpec, OptionList} "
 	  "triplets, whereas elements of the blacklisted list are "
-	  "{ BinaryPatttern, PrecompiledMatchSpec } pairs; for both lists we keep "
+	  "{BinaryPatttern, PrecompiledMatchSpec} pairs; for both lists we keep "
 	  "the original pattern so that we can know easily which to remove (not "
 	  "sure match specs can be reliably compared)" },
 
@@ -117,47 +120,47 @@
 % See class_TimeManager.hrl for a detailed description of their meaning.
 
 
-% The name of a probe, as a binary:
 -type bin_probe_name() :: bin_string().
+% The name of a probe, as a binary.
 
 
-% Typically an information transmitted to the web manager:
 -type probe_info() :: { bin_probe_name(), maybe( bin_directory_path() ) }.
+% Typically an information transmitted to the web manager.
 
 
-% Describes a Regex pattern to select results:
 -type base_result_pattern() :: text_utils:regex_string().
+% Describes a Regex pattern to select results.
+
 
 -type target_pattern() :: base_result_pattern()
 		| { base_result_pattern(), producer_options() }.
 
 
-% Allows to whitelist specific results:
 -type targeted_elements() :: { 'targeted_patterns', [ target_pattern() ] }.
+% Allows to whitelist specific results.
 
 
-% Allows to blacklist specific results:
 -type blacklisted_elements() :: [ base_result_pattern() ].
+% Allows to blacklist specific results.
 
 
 -type selection_pattern() :: targeted_elements() | blacklisted_elements().
 
-% PID of a result manager:
 -type manager_pid() :: sim_diasca:agent_pid().
+% PID of a result manager.
 
 
-% User-specified result spec:
 -type result_specification() :: 'all_outputs'
 							  | 'no_output'
 							  | 'all_basic_probes_only'
 							  | 'all_virtual_probes_only'
 							  | 'all_web_probes_only'
 							  | [ selection_pattern() ].
+% User-specified result spec.
 
 
-
-% Additional information to be passed to result producers:
 -type meta_data() :: option_list:option_list( atom(), bin_string() ).
+% Additional information to be passed to result producers.
 
 
 % Records the result queue corresponding to a computing node, in order to
@@ -165,34 +168,36 @@
 %
 -record( result_queue, {
 
-		% The identifier of this queue (a simple counter):
-		id :: count(),
+	% The identifier of this queue (a simple counter):
+	id :: count(),
 
-		% The name of the computing host this result queue applies to:
-		host_name :: atom_host_name(),
+	% The name of the computing host this result queue applies to:
+	host_name :: atom_host_name(),
 
-		% The name of the corresponding computing node:
-		node_name :: atom_node_name(),
+	% The name of the corresponding computing node:
+	node_name :: atom_node_name(),
 
-		% An evaluation of the maximum number of simultaneous workers (depending
-		% notably on the number of available cores) that can be used to generate
-		% results on the corresponding node:
-		%
-		max_worker_count :: count(),
+	% An evaluation of the maximum number of simultaneous workers (depending
+	% notably on the number of available cores) that can be used to generate
+	% results on the corresponding node:
+	%
+	max_worker_count :: count(),
 
-		% A list of the result producers that are currently working:
-		waited_producers :: [ producer_pid() ],
+	% A list of the result producers that are currently working:
+	waited_producers :: [ producer_pid() ],
 
-		% A list of the names (as binaries) of the result producers whose
-		% generation is still pending:
-		%
-		% (we list names rather than PIDs as the names are (and must be) the
-		% keys of the table)
-		%
-		pending_results :: [ bin_string() ] } ).
+	% A list of the names (as binaries) of the result producers whose generation
+	% is still pending:
+	%
+	% (we list names rather than PIDs as the names are (and must be) the keys of
+	% the table)
+	%
+	pending_results :: [ bin_string() ] } ).
 
 
 -type result_queue() :: #result_queue{}.
+% The result queue corresponding to a computing node, in order to control its
+% load when generating the results, and not overload/crash it.
 
 
 
@@ -216,7 +221,13 @@
 	% The directory in which that probe is to produce content, if not tracked:
 	probe_dir :: maybe( bin_directory_path() ) } ).
 
+
 -type basic_probe_entry() :: #basic_probe_entry{}.
+% Describes a basic probe, as seen by the result manager.
+%
+% Such an entry is the value associated to the (binary) probe name, in the probe
+% table.
+
 
 
 
@@ -236,8 +247,12 @@
 	% Tells whether this probe is to be tracked as a result:
 	is_tracked :: boolean() } ).
 
--type web_probe_entry() :: #web_probe_entry{}.
 
+-type web_probe_entry() :: #web_probe_entry{}.
+% Describes a web probe, as seen by the result manager.
+%
+% Such an entry is the value associated to the (binary) probe name, in the web
+% probe table.
 
 
 -export_type([ manager_pid/0, result_specification/0, meta_data/0,
@@ -358,7 +373,7 @@
 
 
 
-% Constructs a new result manager, from following parameters:
+% @doc Constructs a  result manager, from following parameters:
 %
 % - ResultSpecification allows to specify coarsely what are the outputs to be
 % promoted to results
@@ -389,6 +404,9 @@ construct( State, ResultSpecification, DataLoggerEnabled,
 	% First the direct mother classes:
 	TraceState = class_EngineBaseObject:construct( State,
 							?trace_categorize("Result Manager") ),
+
+	% As a result manager may receive a larger number of messages:
+	erlang:process_flag( message_queue_data, off_heap ),
 
 	ProcessedResultSpec =
 		check_and_transform_result_specification( ResultSpecification ),
@@ -444,7 +462,7 @@ construct( State, ResultSpecification, DataLoggerEnabled,
 
 
 
-% Overridden destructor.
+% @doc Overridden destructor.
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -456,7 +474,7 @@ destruct( State ) ->
 
 	BasicProbePidList = [ Pid || #basic_probe_entry{ probe_pid=Pid,
 													 is_tracked=true }
-							  <- table:values( ?getAttr(basic_probe_table) ) ],
+							<- table:values( ?getAttr(basic_probe_table) ) ],
 
 	case BasicProbePidList of
 
@@ -505,8 +523,8 @@ destruct( State ) ->
 % Member methods section.
 
 
-% Notifies this manager of the information about nodes, hosts and their core
-% count.
+% @doc Notifies this manager of the information about nodes, hosts and their
+% core count.
 %
 % The user node (and host) has to be specified as well, as the result producers
 % directly created from the simulation case will end up being processed by the
@@ -528,7 +546,7 @@ setResourceMapping( State, HostCoreList, UserNodeInfos ) ->
 
 
 
-% Creates the initial (empty) result queues.
+% @doc Creates the initial (empty) result queues.
 %
 % One objective is to ensure that the user host has a queue (and only one), as
 % result producers may be created directly from the simulation case.
@@ -541,7 +559,7 @@ create_initial_queues( _HostCoreList=[], _Count, Acc ) ->
 	Acc;
 
 create_initial_queues( _HostCoreList=[ { HostName, NodeName, CoreCount } | T ],
-			 Count, Acc ) ->
+					   Count, Acc ) ->
 
 	 NewQueue = #result_queue{ id=Count,
 							   host_name=HostName,
@@ -562,7 +580,7 @@ create_initial_queues( _HostCoreList=[ { HostName, NodeName, CoreCount } | T ],
 
 
 
-% Processes the declaration of the specified (basic) probe, whose name is a
+% @doc Processes the declaration of the specified (basic) probe, whose name is a
 % binary here, and whose elements shall be written in specified directory (if
 % any).
 %
@@ -627,8 +645,8 @@ declareProbe( State, BinProbeName, IsToBeTracked, MaybeProbeBinDir ) ->
 
 
 
-% Processes the declaration of the specified web probe, whose name is a binary
-% here.
+% @doc Processes the declaration of the specified web probe, whose name is a
+% binary here.
 %
 % IsToBeTracked tells whether this manager is to track this (web) probe as the
 % producer of actual simulation results (if true) or just as a producer of
@@ -690,7 +708,7 @@ declareWebProbe( State, BinProbeName, IsToBeTracked ) ->
 
 
 
-% Registers specified (basic) probe, returns an updated state.
+% @doc Registers specified (basic) probe, returns an updated state.
 %
 % (helper)
 %
@@ -766,7 +784,7 @@ register_web_probe( BinProbeName, ProbeOptions, IsToBeTracked, ProbePid,
 	% Mostly the same as register_basic_probe/5:
 
 	%trace_utils:debug_fmt( "Adding web probe '~ts' (~w); "
-	% "is to be tracked: ~ts.", [ BinProbeName, ProbePid, IsToBeTracked ] ),
+	%    "is to be tracked: ~ts.", [ BinProbeName, ProbePid, IsToBeTracked ] ),
 
 	ProbeEntry = #web_probe_entry{ probe_pid=ProbePid,
 								   probe_options=ProbeOptions,
@@ -829,8 +847,9 @@ register_web_probe( BinProbeName, ProbeOptions, IsToBeTracked, ProbePid,
 % Section for targeted patterns.
 
 
-% Tells whether the results of the specified producer, specified as a binary
-% string, are wanted, i.e. whether they match the result specification.
+% @doc Tells whether the results of the specified producer, specified as a
+% binary string, are wanted, that is whether they match the result
+% specification.
 %
 % If not, then they will not be retrieved, thus there is no point in producing
 % them anyway, and the corresponding producer should preferably not even be
@@ -851,9 +870,9 @@ isResultProducerWanted( State, ProducerName ) ->
 
 
 
-% Tells whether the outputs of the specified producer, whose name is specified
-% as a binary string, are wanted, i.e. whether the name matches the result
-% specification.
+% @doc Tells whether the outputs of the specified producer, whose name is
+% specified as a binary string, are wanted, that is whether the name matches the
+% result specification.
 %
 % If not, then these outputs will not be retrieved, thus there is no point in
 % producing them anyway, and the corresponding producer should preferably not
@@ -883,8 +902,9 @@ isResultProducerWanted( State, ProducerName, Nature ) ->
 
 
 
-% Tells whether the results of the specified producer, specified as a binary
-% string, are wanted, i.e. whether they match the result specification.
+% @doc Tells whether the results of the specified producer, specified as a
+% binary string, are wanted, that is whether they match the result
+% specification.
 %
 % If not, then they will not be retrieved, thus there is no point in producing
 % them anyway, and the corresponding producer should preferably not even be
@@ -909,9 +929,9 @@ isResultProducerWantedWithOptions( State, ProducerName, Nature ) ->
 
 
 
-% Adds specified targeted result pattern, expressed as a plain string, to the
-% current result specification, which must be already using targeted/blacklisted
-% patterns (and not shortcut atoms).
+% @doc Adds specified targeted result pattern, expressed as a plain string, to
+% the current result specification, which must be already using
+% targeted/blacklisted patterns (and not shortcut atoms).
 %
 % Note: one must of course ensure that the patterns are changed *before* a
 % producer whose name is intended to match or not match declares itself.
@@ -948,9 +968,9 @@ addTargetedPattern( State, Pattern ) ->
 
 
 
-% Adds specified targeted result patterns, expressed as plain strings, to the
-% current result specification, which must be already using targeted/blacklisted
-% patterns (and not shortcut atoms).
+% @doc Adds specified targeted result patterns, expressed as plain strings, to
+% the current result specification, which must be already using
+% targeted/blacklisted patterns (and not shortcut atoms).
 %
 % Note: one must of course ensure that the patterns are changed *before* a
 % producer whose name is intended to match or not match declares itself.
@@ -987,8 +1007,8 @@ addTargetedPatterns( State, Patterns ) ->
 
 
 
-% Removes specified targeted result pattern, expressed as a plain string, from
-% the current result specification, which must be already using
+% @doc Removes specified targeted result pattern, expressed as a plain string,
+% from the current result specification, which must be already using
 % targeted/blacklisted patterns (and not shortcut atoms).
 %
 % Note: one must of course ensure that the patterns are changed *before* a
@@ -1028,8 +1048,8 @@ removeTargetedPattern( State, Pattern ) ->
 
 
 
-% Removes specified targeted result patterns, expressed as plain strings, from
-% the current result specification, which must be already using
+% @doc Removes specified targeted result patterns, expressed as plain strings,
+% from the current result specification, which must be already using
 % targeted/blacklisted patterns (and not shortcut atoms).
 %
 % Note: one must of course ensure that the patterns are changed *before* a
@@ -1068,9 +1088,9 @@ removeTargetedPatterns( State, Patterns ) ->
 
 
 
-% Replaces the current targeted result patterns by the specified ones, expressed
-% as plain strings, in the current result specification, which must be already
-% using targeted/blacklisted patterns (and not shortcut atoms).
+% @doc Replaces the current targeted result patterns by the specified ones,
+% expressed as plain strings, in the current result specification, which must be
+% already using targeted/blacklisted patterns (and not shortcut atoms).
 %
 % Note: one must of course ensure that the patterns are changed *before* a
 % producer whose name is intended to match or not match declares itself.
@@ -1112,9 +1132,9 @@ setTargetedPatterns( State, NewPatterns ) ->
 % Section for blacklisted patterns.
 
 
-% Adds specified blacklisted result pattern, expressed as a plain string, to the
-% current result specification, which must be already using targeted/blacklisted
-% patterns (and not shortcut atoms).
+% @doc Adds specified blacklisted result pattern, expressed as a plain string,
+% to the current result specification, which must be already using
+% targeted/blacklisted patterns (and not shortcut atoms).
 %
 % Note: one must of course ensure that the patterns are changed *before* a
 % producer whose name is intended to match or not match declares itself.
@@ -1151,9 +1171,9 @@ addBlacklistedPattern( State, Pattern ) ->
 
 
 
-% Adds specified blacklisted result patterns, expressed as plain strings, to the
-% current result specification, which must be already using targeted/blacklisted
-% patterns (and not shortcut atoms).
+% @doc Adds specified blacklisted result patterns, expressed as plain strings,
+% to the current result specification, which must be already using
+% targeted/blacklisted patterns (and not shortcut atoms).
 %
 % Note: one must of course ensure that the patterns are changed *before* a
 % producer whose name is intended to match or not match declares itself.
@@ -1190,8 +1210,8 @@ addBlacklistedPatterns( State, Patterns ) ->
 
 
 
-% Removes specified blacklisted result pattern, expressed as a plain string,
-% from the current result specification, which must be already using
+% @doc Removes specified blacklisted result pattern, expressed as a plain
+% string, from the current result specification, which must be already using
 % targeted/blacklisted patterns (and not shortcut atoms).
 %
 % Note: one must of course ensure that the patterns are changed *before* a
@@ -1231,8 +1251,8 @@ removeBlacklistedPattern( State, Pattern ) ->
 
 
 
-% Removes specified blacklisted result patterns, expressed as plain strings,
-% from the current result specification, which must be already using
+% @doc Removes specified blacklisted result patterns, expressed as plain
+% strings, from the current result specification, which must be already using
 % targeted/blacklisted patterns (and not shortcut atoms).
 %
 % Note: one must of course ensure that the patterns are changed *before* a
@@ -1271,7 +1291,7 @@ removeBlacklistedPatterns( State, Patterns ) ->
 
 
 
-% Replaces the current blacklisted result patterns by the specified ones,
+% @doc Replaces the current blacklisted result patterns by the specified ones,
 % expressed as plain strings, in the current result specification, which must be
 % already using targeted/blacklisted patterns (and not shortcut atoms).
 %
@@ -1311,8 +1331,8 @@ setBlacklistedPatterns( State, NewPatterns ) ->
 
 
 
-% Updates (adds any non-existing entry, overwrites it otherwise) the current
-% meta-data with the specified (possibly, user-originating) one.
+% @doc Updates (adds any non-existing entry, overwrites it otherwise) the
+% current meta-data with the specified (possibly, user-originating) one.
 %
 % (request, for synchronicity)
 %
@@ -1332,7 +1352,8 @@ updateMetaData( State, UpdatingMetaData ) ->
 
 
 
-% Tells each resilience agent what are its (local) probes that it must manage.
+% @doc Tells each resilience agent what are its (local) probes that it must
+% manage.
 %
 % Typically called by the resilience manager, when a serialisation must take
 % place.
@@ -1340,14 +1361,14 @@ updateMetaData( State, UpdatingMetaData ) ->
 % (request, for synchronicity)
 %
 -spec notifyResilienceAgentsOfProbes( wooper:state(),
-			[ resilience_agent_pid() ] ) ->
+									  [ resilience_agent_pid() ] ) ->
 							const_request_return( 'probes_notified' ).
 notifyResilienceAgentsOfProbes( State, NodeAgents ) ->
 
 	% Retrieving first the PID of all basic probes:
 	ProbePids = [ ProbePid || { _NameKey,
 			_Value=#basic_probe_entry{ probe_pid=ProbePid } }
-				 <- table:enumerate( ?getAttr(basic_probe_table) ) ],
+					<- table:enumerate( ?getAttr(basic_probe_table) ) ],
 
 	% Note: virtual and web probes to be managed.
 
@@ -1358,8 +1379,8 @@ notifyResilienceAgentsOfProbes( State, NodeAgents ) ->
 	%
 	EmptyNodeTable = lists:foldl(
 			fun( AgentPid, TableAcc ) ->
-				   table:add_entry( _K=node( AgentPid ),
-									_V={ AgentPid, _Probes=[] }, TableAcc )
+					table:add_entry( _K=node( AgentPid ),
+									 _V={ AgentPid, _Probes=[] }, TableAcc )
 			end,
 			_EmptyInitialAcc=table:new(),
 			_EmptyList=NodeAgents ),
@@ -1380,7 +1401,7 @@ notifyResilienceAgentsOfProbes( State, NodeAgents ) ->
 
 	% Now we can notify each resilience agent of its probes:
 	[ AgentPid ! { notifyOfLocalProbes, [ AgentProbeList ], self() }
-	  || { AgentPid, AgentProbeList } <- table:values( FilledNodeTable ) ],
+		|| { AgentPid, AgentProbeList } <- table:values( FilledNodeTable ) ],
 
 	wooper:wait_for_request_answers( _RequestedList=NodeAgents,
 									 _AckAtom=probes_recorded ),
@@ -1389,7 +1410,7 @@ notifyResilienceAgentsOfProbes( State, NodeAgents ) ->
 
 
 
-% Returns probe-related base information.
+% @doc Returns probe-related base information.
 %
 % Typically called by the web manager.
 %
@@ -1407,12 +1428,14 @@ getBaseProbeInfos( State ) ->
 
 
 
+% @doc Returns the information regarding all basic probes.
 get_basic_probe_infos( State ) ->
 	[ get_basic_probe_info( Name, Entry )
 	  || { Name, Entry } <- table:enumerate( ?getAttr(basic_probe_table) ) ].
 
 
 
+% @doc Returns the information regarding specified basic probe.
 get_basic_probe_info( Name, #basic_probe_entry{ probe_dir=MaybeBinDir } ) ->
 	{ Name, MaybeBinDir }.
 
@@ -1424,10 +1447,11 @@ get_virtual_probe_infos( _State ) ->
 
 
 
+
 % Simulation listener section.
 
 
-% Optimises result tables and lists all known registered results.
+% @doc Optimises result tables and lists all known registered results.
 -spec simulation_started( wooper:state() ) -> oneway_return().
 simulation_started( State ) ->
 
@@ -1519,21 +1543,21 @@ simulation_started( State ) ->
 
 
 
-% Notification ignored.
+% @doc Notification ignored.
 -spec simulation_suspended( wooper:state() ) -> const_oneway_return().
 simulation_suspended( State ) ->
 	wooper:const_return().
 
 
-% Notification ignored.
+% @doc Notification ignored.
 -spec simulation_resumed( wooper:state() ) -> const_oneway_return().
 simulation_resumed( State ) ->
 	wooper:const_return().
 
 
-% This corresponds to a message, interpreted as a oneway call, being sent by the
-% root time manager whenever the simulation succeeded, knowing this result
-% manager subscribed to it as a simulation listener.
+% @doc This corresponds to a message, interpreted as a oneway call, being sent
+% by the root time manager whenever the simulation succeeded, knowing this
+% result manager subscribed to it as a simulation listener.
 %
 -spec simulation_succeeded( wooper:state() ) -> oneway_return().
 simulation_succeeded( State ) ->
@@ -1549,7 +1573,7 @@ simulation_succeeded( State ) ->
 	%RunDir = ?getAttr(simulation_run_dir),
 	%
 	%?debug_fmt( "Switching from '~ts' to '~ts'.",
-	%			[ file_utils:get_current_directory(), RunDir ] ),
+	%            [ file_utils:get_current_directory(), RunDir ] ),
 	%
 	%file_utils:set_current_directory( RunDir ),
 
@@ -1633,7 +1657,7 @@ simulation_succeeded( State ) ->
 
 
 
-% Requests the data-logger for any result needed.
+% @doc Requests the data-logger for any result needed.
 %
 % Returns an updated state, with updated queues.
 %
@@ -1658,7 +1682,7 @@ trigger_virtual_probe_results( State ) ->
 			DataloggerPid = class_DataLogger:get_main_datalogger(),
 
 			DataloggerPid ! { sendResults,
-							 [ ?getAttr(datalogger_default_options) ], self() },
+						[ ?getAttr(datalogger_default_options) ], self() },
 
 
 			% Then registers this generation:
@@ -1678,7 +1702,7 @@ trigger_virtual_probe_results( State ) ->
 
 			% Waited list was presumably empty:
 			NewWaited = [ DataloggerPid
-						 | DataloggerQueue#result_queue.waited_producers ],
+							| DataloggerQueue#result_queue.waited_producers ],
 
 			NewDataloggerQueue =
 				DataloggerQueue#result_queue{ waited_producers=NewWaited },
@@ -1694,8 +1718,8 @@ trigger_virtual_probe_results( State ) ->
 
 
 
-% Requests by chunks (whose size depends on the core count of the target host)
-% all relevant probes to send their result(s).
+% @doc Requests by chunks (whose size depends on the core count of the target
+% host) all relevant probes to send their result(s).
 %
 % Returns an updated state.
 %
@@ -1750,6 +1774,7 @@ manage_all_producers( State ) ->
 
 
 
+% (helper)
 compute_producer_count( _Queues=[], Sum ) ->
 	Sum;
 
@@ -1761,10 +1786,10 @@ compute_producer_count( _Queues=[ #result_queue{ pending_results=Pending,
 
 
 
-% Ensures that each result queue has all possible workers working.
+% @doc Ensures that each result queue has all possible workers working.
 %
-% Returns a { TriggeredQueues, PidToQueueTable } pair, where TriggeredQueues is
-% a list of updated queues and PidToQueueTable is an updated 'PID to queue ID'
+% Returns a {TriggeredQueues, PidToQueueTable} pair, where TriggeredQueues is a
+% list of updated queues and PidToQueueTable is an updated 'PID to queue ID'
 % translation table.
 %
 load_result_queues( Queues, PidToQueueTable, ProbeTable ) ->
@@ -1792,7 +1817,7 @@ load_result_queues( _Queues=[ Q | T ], PidToQueueTable, ProbeTable,
 
 
 
-% Loads as much as possible specified queue.
+% @doc Loads as much as possible specified queue.
 %
 % Returns {UpdatedQueue, ProducerPidList}.
 %
@@ -1821,7 +1846,7 @@ load_result_queue( Queue=#result_queue{ max_worker_count=MaxCount,
 
 
 
-% Triggers specified producers.
+% @doc Triggers the specified producers.
 %
 % Returns a list of their PIDs.
 %
@@ -1840,7 +1865,7 @@ trigger_producers( _Producers=[ ProducerName | T ], ProbeTable, Acc ) ->
 
 
 
-% Triggers specified result producer, and returns its PID.
+% @doc Triggers the specified result producer, and returns its PID.
 %
 % Defined for reusability.
 %
@@ -1858,7 +1883,7 @@ trigger_producer( ProducerName, ProbeTable ) ->
 	end,
 
 	%trace_utils:debug_fmt( "Triggering producer ~ts (~w).",
-	%					   [ ProducerName, ProducerPid ] ),
+	%                       [ ProducerName, ProducerPid ] ),
 
 	ProducerPid ! { sendResults, [ Options ], self() },
 
@@ -1866,8 +1891,8 @@ trigger_producer( ProducerName, ProbeTable ) ->
 
 
 
-% Waits for current triggered producers to finish, and replenish workers for all
-% queues, until no result is pending.
+% @doc Waits for current triggered producers to finish, and replenish workers
+% for all queues, until no result is pending.
 %
 % Returns the updated queues.
 %
@@ -1885,7 +1910,7 @@ wait_and_exhaust_queues( Queues, PidToQueueTable, TotalProducerCount,
 						 ProbeTable, ProducerTimeout, State ) ->
 
 	%trace_utils:debug_fmt( "Still ~B producers waited.",
-	%					   [ TotalProducerCount ] ),
+	%                       [ TotalProducerCount ] ),
 
 	% Hijacks the WOOPER main loop to better manage time-outs.
 	%
@@ -1950,9 +1975,10 @@ wait_and_exhaust_queues( Queues, PidToQueueTable, TotalProducerCount,
 
 
 
-% Updates the queues after the reception of the result from specified producer.
+% @doc Updates the queues after the reception of the result from specified
+% producer.
 %
-% Returns { NewQueues, NewPidToQueueTable }.
+% Returns {NewQueues, NewPidToQueueTable}.
 %
 update_queues_after_result( ProducerPid, PidToQueueTable, ProbeTable,
 							Queues ) ->
@@ -1975,7 +2001,7 @@ update_queues_after_result( ProducerPid, PidToQueueTable, ProbeTable,
 		[ ProducerName | T ] ->
 
 			%trace_utils:debug_fmt( "Replenishing queue #~B with '~ts'.",
-			%						[ QueueId, ProducerName ] ),
+			%                       [ QueueId, ProducerName ] ),
 
 			NewProducerPid = trigger_producer( ProducerName, ProbeTable ),
 
@@ -1992,7 +2018,7 @@ update_queues_after_result( ProducerPid, PidToQueueTable, ProbeTable,
 
 
 
-% Ensures that all result queues have been fully processed indeed.
+% @doc Ensures that all result queues have been fully processed indeed.
 check_queues_empty( _Queues=[] ) ->
 	ok;
 
@@ -2001,23 +2027,23 @@ check_queues_empty( _Queues=[
 	check_queues_empty( T ).
 
 
-% Notification ignored.
+% @doc Notification ignored.
 -spec simulation_stopped( wooper:state() ) -> const_oneway_return().
 simulation_stopped( State ) ->
 	wooper:const_return().
 
 
 
-% Returns the current result directory in use.
+% @doc Returns the current result directory in use.
 -spec getResultDirectory( wooper:state() ) ->
 							const_request_return( directory_path() ).
 getResultDirectory( State ) ->
 	wooper:const_return_result( ?getAttr(result_dir) ).
 
 
-% Requires the result reports to be browsed.
+% @doc Requires the result reports to be browsed.
 -spec browseResultReports( wooper:state() ) ->
-								 const_request_return( 'results_browsed' ).
+								const_request_return( 'results_browsed' ).
 browseResultReports( State ) ->
 
 	% Checking:
@@ -2066,7 +2092,7 @@ browseResultReports( State ) ->
 
 
 
-% Adds specified process as a result listener, that will be notified of any
+% @doc Adds specified process as a result listener, that will be notified of any
 % event it missed.
 %
 -spec addResultListener( wooper:state(), result_listener_pid() ) ->
@@ -2089,7 +2115,7 @@ addResultListener( State, ListenerPid ) ->
 
 
 
-% Removes specified process from the known result listeners.
+% @doc Removes specified process from the known result listeners.
 -spec removeResultListener( wooper:state(), result_listener_pid() ) ->
 								oneway_return().
 removeResultListener( State, ListenerPid ) ->
@@ -2104,7 +2130,7 @@ removeResultListener( State, ListenerPid ) ->
 % Static methods section.
 
 
-% Returns the atom corresponding to the name the result manager should be
+% @doc Returns the atom corresponding to the name the result manager should be
 % registered as.
 %
 -spec get_registration_name() -> static_return( atom_node_name() ).
@@ -2113,7 +2139,7 @@ get_registration_name() ->
 
 
 
-% Returns the PID of the (unique) result manager.
+% @doc Returns the PID of the (unique) result manager.
 %
 % (static method, to be used by clients of the result manager, notably result
 % producers).
@@ -2128,7 +2154,7 @@ get_result_manager() ->
 
 
 
-% Returns the path to the current result directory.
+% @doc Returns the path to the current result directory.
 -spec get_result_directory() -> static_return( directory_path() ).
 get_result_directory() ->
 
@@ -2145,7 +2171,7 @@ get_result_directory() ->
 
 
 
-% Browse reports.
+% @doc Triggers the browsing of simulation reports.
 %
 % Allows to request the automatic displaying of graphical reports (ex: plots
 % from plots) depending on the batch mode being enabled or not, and to wait for
@@ -2162,7 +2188,8 @@ browse_reports() ->
 
 
 
-% Browse reports.
+% @doc Triggers the browsing of simulation reports, with possibly a display of
+% them.
 %
 % Allows to request the automatic displaying of graphical reports (ex: plots
 % from plots) depending on the batch mode being enabled or not, and to wait for
@@ -2224,15 +2251,16 @@ browse_reports( TriggerBasicDisplay ) ->
 					ResultManagerPid ! { addResultListener, self() },
 
 					trace_utils:notice(
-					  "In batch mode, no browsing of results performed. "
-					  "Waiting for their processing and retrieval." ),
+						"In batch mode, no browsing of results performed. "
+						"Waiting for their processing and retrieval." ),
 
 
 					receive
 
 						{ results_collected, ResultBinDir } ->
 							trace_utils:notice_fmt( "Results are available "
-							  "now, in the '~ts' directory.", [ ResultBinDir ] )
+								"now, in the '~ts' directory.",
+								[ ResultBinDir ] )
 
 					end
 
@@ -2323,12 +2351,12 @@ browse_reports( TriggerBasicDisplay ) ->
 
 
 
-% Returns a plain string describing the specified result-related meta-data.
+% @doc Returns a plain string describing the specified result-related meta-data.
 -spec get_metadata_string( meta_data() ) -> static_return( ustring() ).
 get_metadata_string( Metadata ) ->
 
 	MetadataAllStrings = [ text_utils:binary_to_string( BinText )
-						   || { _Key, BinText } <- Metadata ],
+							|| { _Key, BinText } <- Metadata ],
 
 	Desc = text_utils:strings_to_string( MetadataAllStrings ),
 
@@ -2337,8 +2365,8 @@ get_metadata_string( Metadata ) ->
 
 
 
-% Creates a mock-up environment suitable for the test of result producers in
-% isolation (i.e. without creating all the simulation services).
+% @doc Creates a mock-up environment suitable for the test of result producers
+% in isolation (that is without creating all the simulation services).
 %
 % See also: class_InstanceTracker:create_mockup_environment/0.
 %
@@ -2358,9 +2386,9 @@ create_mockup_environment() ->
 
 
 
-% Forces the executing process to linger (will never terminate); otherwise for
-% example a probe destructor would not find its expected instance tracker as a
-% still registered process.
+% @doc Forces the executing process to linger (will never terminate); otherwise
+% for example a probe destructor would not find its expected instance tracker as
+% a still registered process.
 %
 % (helper)
 %
@@ -2389,8 +2417,8 @@ create_mockup_environment_loop() ->
 
 		Unexpected ->
 			trace_utils:error_fmt(
-			  "Mock-up result environment received an unexpected (hence "
-			  "ignored) message:~n  ~p", [ Unexpected ] )
+				"Mock-up result environment received an unexpected (hence "
+				"ignored) message:~n  ~p", [ Unexpected ] )
 
 	end,
 
@@ -2446,7 +2474,7 @@ manage_patterns( [ { blacklisted_patterns, L } | T ], Targets, Blacklists )
 	manage_patterns( T, Targets, manage_blacklists( L ) ++ Blacklists );
 
 manage_patterns( [ { blacklisted_patterns, L } | _T ], _Targets,
-				_Blacklists ) ->
+				 _Blacklists ) ->
 	throw( { invalid_result_blacklist_pattern, L } );
 
 manage_patterns( [ Any | _T ], _Targets, _Blacklists ) ->
@@ -2465,8 +2493,8 @@ manage_targets( _Targets=[], Acc ) ->
 	Acc;
 
 % Wanting a list of options, if it is not the 'undefined' atom:
-manage_targets( [ { Target, Option } | T ], Acc ) when is_atom( Option )
-			  andalso Option =/= undefined ->
+manage_targets( [ { Target, Option } | T ], Acc )
+						when is_atom( Option ) andalso Option =/= undefined ->
 	manage_targets( [ { Target, [ Option ] } | T ], Acc );
 
 % We have a list of options here:
@@ -2510,7 +2538,7 @@ manage_blacklists( [ BlackList | T ], Acc ) ->
 
 		true ->
 			NewAcc = [ { text_utils:string_to_binary( BlackList ),
-						compile( BlackList ) } | Acc ],
+						 compile( BlackList ) } | Acc ],
 			manage_blacklists( T, NewAcc );
 
 		false ->
@@ -2540,7 +2568,7 @@ check_target_option( _Options=[ H | T ] ) ->
 
 
 
-% Returns a precompiled regular expression.
+% @doc Returns a precompiled regular expression.
 compile( Pattern ) ->
 
 	%trace_utils:debug_fmt( "Compiling pattern '~ts'.", [ Pattern ] ),
@@ -2557,7 +2585,8 @@ compile( Pattern ) ->
 
 
 
-% Returns either 'false' or a {'true', Options} pair, where Options is a list.
+% @doc Returns either 'false' or a {'true', Options} pair, where Options is a
+% list.
 %
 % ProducerName must be a binary string.
 %
@@ -2631,10 +2660,10 @@ is_result_wanted( ProducerName, Nature, State ) ->
 	end,
 
 	%trace_utils:debug_fmt( "Is result producer '~ts' wanted? '~p'.",
-	%		  [ ProducerName, WantedInfos ] ),
+	%                       [ ProducerName, WantedInfos ] ),
 
 	%?info_fmt( "Is result producer '~ts' wanted? '~p'.",
-	%		  [ ProducerName, WantedInfos ] ),
+	%           [ ProducerName, WantedInfos ] ),
 
 	WantedInfos.
 
@@ -2683,7 +2712,7 @@ check_targeted( _ProducerName, _TargetPatterns=[] ) ->
 check_targeted( ProducerName, [ { _BinPattern, MatchSpec, Opts } | T ] ) ->
 
 	%trace_utils:debug_fmt( "Checking '~ts' against targeted pattern ~p.",
-	%						[ ProducerName, BinPattern ] ),
+	%                       [ ProducerName, BinPattern ] ),
 
 	case re:run( ProducerName, MatchSpec ) of
 
@@ -2704,7 +2733,7 @@ check_blacklisted( _ProducerName, _BlacklistPatterns=[] ) ->
 check_blacklisted( ProducerName, [ { _BinPattern, MatchSpec } | T ] ) ->
 
 	%trace_utils:debug_fmt( "Checking '~ts' against blacklisted pattern ~p.",
-	%						[ ProducerName, BinPattern ] ),
+	%                       [ ProducerName, BinPattern ] ),
 
 	case re:run( ProducerName, MatchSpec ) of
 
@@ -2803,11 +2832,11 @@ to_string( #result_queue{ id=Id,
 	end,
 
 	text_utils:format(
-	  "Result queue whose ID is #~B, on host '~ts' (node: '~ts') "
-	  "with up to ~B workers allowed, currently waiting for "
-	  "producers ~w, having ~ts",
-	  [ Id, Hostname, Nodename, MaxWorkerCount, WaitedProducers,
-		PendingString ] ).
+		"Result queue whose ID is #~B, on host '~ts' (node: '~ts') "
+		"with up to ~B workers allowed, currently waiting for "
+		"producers ~w, having ~ts",
+		[ Id, Hostname, Nodename, MaxWorkerCount, WaitedProducers,
+		  PendingString ] ).
 
 
 
@@ -2815,11 +2844,11 @@ to_string( #result_queue{ id=Id,
 display_queues( Queues ) ->
 
 	% Sorts by ID:
-	QueueStrings = [ to_string( Q )
-					 || Q <- lists:keysort( _IndexId=2, Queues ) ],
+	QueueStrings =
+		[ to_string( Q ) || Q <- lists:keysort( _IndexId=2, Queues ) ],
 
 	trace_utils:debug_fmt( "Result queues:~n ~ts",
-			[ text_utils:strings_to_string( QueueStrings ) ] ).
+						   [ text_utils:strings_to_string( QueueStrings ) ] ).
 
 
 

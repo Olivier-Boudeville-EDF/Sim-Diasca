@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2021 EDF R&D
+% Copyright (C) 2016-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -17,7 +17,6 @@
 % If not, see <http://www.gnu.org/licenses/>.
 
 % Author: Robin Huart (robin-externe.huart@edf.fr)
-
 
 
 % @doc Base class for all the <b>Python-based processing units</b>.
@@ -95,6 +94,7 @@
 
 
 % Shorthands:
+
 -type ustring() :: text_utils:ustring().
 
 
@@ -117,7 +117,7 @@
 
 
 
-% Constructs a new dataflow Python processing unit.
+% @doc Constructs a dataflow Python processing unit.
 %
 % Parameters:
 %
@@ -157,7 +157,7 @@ construct( State, ActorSettings, UnitClassname,
 
 	% Gets the Python interpreter in charge of that unit:
 	InterpreterPid =
-		class_PythonBindingManager:get_interpreter(	PythonBindingManagerPid ),
+		class_PythonBindingManager:get_interpreter( PythonBindingManagerPid ),
 
 	% Instantiates the Python processing unit in its interpreter, and gets back
 	% the initial data (attributes or not) needed in the Erlang world:
@@ -189,13 +189,14 @@ construct( State, ActorSettings, UnitClassname,
 	ActivationPolicy = text_utils:binary_to_atom( BinActivationPolicy ),
 
 	InputPortSpecs = [ begin
-	  DecodedIPS = class_LanguageBindingManager:decode_input_port_specs( EIPS ),
-	  class_DataflowBlock:parse_raw_input_port_spec( DecodedIPS )
+		DecodedIPS =
+			class_LanguageBindingManager:decode_input_port_specs( EIPS ),
+		class_DataflowBlock:parse_raw_input_port_spec( DecodedIPS )
 					   end || EIPS <- EncodedInputPortSpecs ],
 
 	OutputPortSpecs = [ begin
-	  DecodedOPS = class_LanguageBindingManager:decode_output_port_specs(
-					 EOPS ),
+		DecodedOPS =
+			class_LanguageBindingManager:decode_output_port_specs( EOPS ),
 		class_DataflowBlock:parse_raw_output_port_spec( DecodedOPS )
 						end || EOPS <- EncodedOutputPortSpecs ],
 
@@ -258,7 +259,7 @@ activate( State ) ->
 		  text_utils:strings_to_sorted_string(
 			[ text_utils:format( "'~ts' is ~ts", [ IPName,
 						dataflow_support:value_status_to_string( ValStatus ) ] )
-			  || { IPName, ValStatus } <- InputPortStatuses ] ) ] ),
+				|| { IPName, ValStatus } <- InputPortStatuses ] ) ] ),
 
 	% Builds the list of encoded data relative to input port iterations that
 	% might be necessary for computations involved in the Python activate/1
@@ -266,7 +267,7 @@ activate( State ) ->
 	%
 	InputPortIterationPieces =
 		class_LanguageBindingManager:get_encoded_input_port_iterations_data(
-		  State ),
+			State ),
 
 	% Builds the list of encoded data relative to output port iterations that
 	% might be necessary for the unit to know how many output ports are actually
@@ -295,13 +296,13 @@ activate( State ) ->
 			[ text_utils:format( "'~ts' set to: ~p", [ OPName,
 					%class_DataflowBlock:value_to_string( ChValue ) ] )
 													   ChValue ] )
-			  || { OPName, ChValue } <- ActivationResults ] ) ] ),
+				|| { OPName, ChValue } <- ActivationResults ] ) ] ),
 
 	% Interprets then ActivationResults as a list of tasks to achieve on the
 	% output ports, then performs them:
 	%
 	FinalState = class_LanguageBindingManager:apply_activation_results(
-				   ActivationResults, State ),
+					ActivationResults, State ),
 
 	wooper:return_state( FinalState ).
 

@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2021 EDF R&D
+% Copyright (C) 2012-2022 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -193,15 +193,15 @@
 
 
 
-% Handles a case failure, using specified string as advertised reason.
+% @doc Handles a case failure, using specified string as advertised reason.
 -spec case_failed( text_utils:ustring() ) -> no_return().
 case_failed( Reason ) ->
 
 	% For some reason erlang:error is unable to interpret strings as strings,
 	% they are always output as unreadable lists.
 
-	Message = io_lib:format( "Case ~ts failed, reason: ~ts.",
-							 [ ?MODULE, Reason ] ),
+	Message = text_utils:format( "Case ~ts failed, reason: ~ts.",
+								 [ ?MODULE, Reason ] ),
 
 	trace_utils:error( Message ),
 
@@ -214,14 +214,14 @@ case_failed( Reason ) ->
 
 
 
-% Handles a case failure, using specified first string as an advertised reason
-% with format characters (ex: '~w') and specified list as actual values to be
-% formatted.
+% @doc Handles a case failure, using specified first string as an advertised
+% reason with format characters (ex: '~w') and specified list as actual values
+% to be formatted.
 %
--spec case_failed( text_utils:format_string(), [ any() ] ) ->
-							no_return().
-case_failed( Reason, FormattedValue ) ->
-	case_failed( io_lib:format( Reason, FormattedValue ) ).
+-spec case_failed( text_utils:format_string(), text_utils:format_values() ) ->
+						no_return().
+case_failed( Reason, FormatValues ) ->
+	case_failed( text_utils:format( Reason, FormatValues ) ).
 
 
 

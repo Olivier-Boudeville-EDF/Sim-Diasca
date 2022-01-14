@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,8 +19,9 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-
-% Overall unit test of the Sim-Diasca web-based result management facilities.
+% @doc Overall unit test of the Sim-Diasca web-based result management
+% facilities.
+%
 -module(web_result_management_test).
 
 
@@ -29,7 +30,7 @@
 
 
 
-% Runs the test.
+% @doc Runs the test.
 -spec run() -> no_return().
 run() ->
 
@@ -61,14 +62,14 @@ run() ->
 
 	% Directly created on the user node:
 	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-								  DeploymentSettings, LoadBalancingSettings ),
+									DeploymentSettings, LoadBalancingSettings ),
 
 
 	?test_info( "Creating directly (from case, not from an actor) "
 				"some web probes." ),
 
 	_MyTestActorPid = class_Actor:create_initial_actor( class_TestWebActor,
-												   [ "My test web actor" ] ),
+													[ "My test web actor" ] ),
 
 	FacilityProbeName = "My test facility web probe",
 
@@ -82,11 +83,11 @@ run() ->
 	% (note that this test used to automatically remove at its end the file
 	% produced by this probe - but it is now left behind)
 	%
-	MyFacilityProbePid = class_WebProbe:create_facility_probe(
-						   FacilityProbeName ),
+	MyFacilityProbePid =
+		class_WebProbe:create_facility_probe( FacilityProbeName ),
 
 	MyFacilityProbePid ! { setMainContent,
-			   [ "<p>Content of my test facility web probe.</p>" ], self() },
+				[ "<p>Content of my test facility web probe.</p>" ], self() },
 	content_set = test_receive(),
 
 
@@ -114,8 +115,8 @@ run() ->
 	% Finally we prefer leaving behind the test, typically, a file named
 	% web-probe-My_test_facility_web_probe.html (clearer):
 	%
-	% FacilityProbeFilename = class_WebProbe:get_filename_for( FacilityProbeName
-	% ),
+	% FacilityProbeFilename =
+	%   class_WebProbe:get_filename_for( FacilityProbeName ),
 	%
 	%file_utils:remove_file_if_existing( FacilityProbeFilename ),
 

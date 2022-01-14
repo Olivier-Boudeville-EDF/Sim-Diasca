@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,6 +19,10 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Test of the Stochastic Actor class, regarding <b>random management</b>.
+%
+% Note: to be used with randomManagerAndStochasticActorPair_test.erl.
+%
 -module(class_TestStochasticActor).
 
 -define( class_description,
@@ -47,22 +51,22 @@
 
 
 
-% Constructs a new test stochastic actor.
+% @doc Constructs a test stochastic actor.
 %
 % TerminationProbability is a probability (here in [0,0.6], which gives the
 % probability that this actor terminates, when deciding what to do next.
 %
 -spec construct( wooper:state(), class_Actor:actor_settings(),
-				class_Actor:name(), [ class_RandomManager:random_law() ],
-				math_utils:probability() ) -> wooper:state().
+				 class_Actor:name(), [ class_RandomManager:random_law() ],
+				 math_utils:probability() ) -> wooper:state().
 construct( State, ActorSettings, ActorName, ListOfRandomLaws,
 		   TerminationProbability ) ->
 
 	% First the direct mother classes, then this class-specific actions:
 	StochasticState = class_StochasticActor:construct( State, ActorSettings,
-							?trace_categorize( ActorName ), ListOfRandomLaws ),
+							?trace_categorize(ActorName), ListOfRandomLaws ),
 
-	?send_info( StochasticState, "Creating a new test stochastic actor." ),
+	?send_info( StochasticState, "Creating a test stochastic actor." ),
 
 	% Probabilities of all possible behaviours:
 	Behaviours = [ { terminate, round( 100 * TerminationProbability ) },
@@ -74,7 +78,7 @@ construct( State, ActorSettings, ActorName, ListOfRandomLaws,
 
 
 
-% Overridden destructor.
+% @doc Overridden destructor.
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
@@ -97,7 +101,7 @@ destruct( State ) ->
 
 
 
-% The core of the test stochastic actor behaviour.
+% @doc The core of the test stochastic actor behaviour.
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
@@ -130,7 +134,7 @@ actSpontaneous( State ) ->
 
 	% Now let's decide what we do next:
 	NextState = case list_utils:draw_element_weighted(
-					   ?getAttr(behaviour_table) ) of
+						?getAttr(behaviour_table) ) of
 
 
 		terminate ->
@@ -160,9 +164,9 @@ actSpontaneous( State ) ->
 
 
 
-% Called at first diasca only.
+% @doc Called at first diasca only.
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
-						   actor_oneway_return().
+							actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 
 	% Just schedule the first next tick:

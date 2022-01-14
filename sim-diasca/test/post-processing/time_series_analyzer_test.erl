@@ -1,4 +1,4 @@
-% Copyright (C) 2011-2021 EDF R&D
+% Copyright (C) 2011-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,8 +19,9 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-
-% Overall unit test of the Sim-Diasca time-series post-processing facilities.
+% @doc Overall unit test of the Sim-Diasca <b>time-series post-processing
+% facilities</b>.
+%
 -module(time_series_analyzer_test).
 
 
@@ -30,7 +31,7 @@
 
 
 
-% Generates some data to test the data-logging.
+% @doc Generates some data to test the datalogging.
 -spec run() -> no_return().
 run() ->
 
@@ -42,6 +43,7 @@ run() ->
 
 	% Parameters for the "selector" series filter: we select only the first two
 	% curves, and the fourth (out of 6, here), in that order.
+	%
 	CurveSelection = [ 1, 2, 4 ],
 
 	AnalyzerPid = class_TimeSeriesAnalyzer:synchronous_new_link(

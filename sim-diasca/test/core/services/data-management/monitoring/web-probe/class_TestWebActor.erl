@@ -1,4 +1,4 @@
-% Copyright (C) 2019-2021 EDF R&D
+% Copyright (C) 2019-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -20,6 +20,7 @@
 % Creation date: Wednesday, June 19, 2019.
 
 
+% @doc Actor test class regarding web probes.
 -module(class_TestWebActor).
 
 
@@ -47,11 +48,13 @@
 -include("sim_diasca_for_actors.hrl").
 
 
+% Shorthands:
+
 -type tick_offset() :: class_TimeManager:tick_offset().
 
 
 
-% Constructs a new test actor:
+% @doc Constructs a test actor:
 %
 % - ActorSettings corresponds to the various information (ex: AAI, seeding,
 % ordering mode, etc.) that the load-balancer sets for each newly created actor
@@ -64,15 +67,14 @@ construct( State, ActorSettings, ActorName ) ->
 
 	% First the direct mother classes, then this class-specific actions:
 	ActorState = class_Actor:construct( State, ActorSettings,
-										?trace_categorize( ActorName ) ),
+										?trace_categorize(ActorName) ),
 
-	ProbeName = text_utils:format( "Test probe for ~s", [ ActorName ] ),
+	ProbeName = text_utils:format( "Test probe for ~ts", [ ActorName ] ),
 
 	ProbeRef = class_TestWebProbe:declare_result_probe( ProbeName ),
 
-	setAttributes( ActorState, [
-			{ web_probe_ref, ProbeRef },
-			{ termination_tick_offset, 150 } ] ).
+	setAttributes( ActorState, [ { web_probe_ref, ProbeRef },
+								 { termination_tick_offset, 150 } ] ).
 
 
 
@@ -83,7 +85,7 @@ construct( State, ActorSettings, ActorName ) ->
 % Management section of the actor.
 
 
-% The core of the test actor behaviour.
+% @doc The core of the test actor behaviour.
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
@@ -106,11 +108,11 @@ actSpontaneous( State ) ->
 
 
 
-% Overridden, in order to synchronise correctly the internal planning that this
-% test actor maintains, and to start its behaviour.
+% @doc Overridden, in order to synchronise correctly the internal planning that
+% this test actor maintains, and to start its behaviour.
 %
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
-						   actor_oneway_return().
+							actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 
 	UpdatedState = executeOneway( State, scheduleNextSpontaneousTick ),
@@ -118,7 +120,8 @@ onFirstDiasca( State, _SendingActorPid ) ->
 	actor:return_state( UpdatedState ).
 
 
-% Manages the normal, non-termination behaviour of this actor.
+
+% @doc Manages the normal, non-termination behaviour of this actor.
 %
 % Returns an updated state.
 %

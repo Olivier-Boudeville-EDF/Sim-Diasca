@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2021 EDF R&D
+% Copyright (C) 2014-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,7 +19,9 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc A test class for <b>spatialised tests</b>.
 -module(class_TestSpatialisedActor).
+
 
 -define( class_description, "Test class for spatialised tests." ).
 
@@ -40,19 +42,20 @@
 % The class-specific attributes of a spatialised test actor:
 -define( class_attributes, [
 
-  { speed, unit_utils:meters_per_tick(),
-	"the speed of this test actor (at least one upper-bound thereof)" },
+	{ speed, unit_utils:meters_per_tick(),
+	  "the speed of this test actor (at least one upper-bound thereof)" },
 
-  { perception_radius, linear:radius(), "the perception radius of this actor" },
+	{ perception_radius, linear:radius(),
+	  "the perception radius of this actor" },
 
-  { perception_period, tick_offset(),
-	"the period at which this actor will trigger a perception request" },
+	{ perception_period, tick_offset(),
+	  "the period at which this actor will trigger a perception request" },
 
-  { move_period, tick_offset(),
-	"the period at which this actor will move (i.e. update its position)" },
+	{ move_period, tick_offset(),
+	  "the period at which this actor will move (i.e. update its position)" },
 
-  { termination_offset, union( tick_offset(), 'none' ),
-	"the tick offset at which this actor will terminate" } ] ).
+	{ termination_offset, union( tick_offset(), 'none' ),
+	  "the tick offset at which this actor will terminate" } ] ).
 
 
 
@@ -67,7 +70,7 @@
 
 
 
-% Creates a new test spatialised actor, in a 2D environment.
+% @doc Creates a test spatialised actor, in a 2D environment.
 %
 % Construction parameters are:
 %
@@ -88,7 +91,6 @@
 %
 % - EnvironmentPid is the PID of the environment this actor will live in
 %
-
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 class_Actor:name(), class_SpatialisedActor:position(),
 				 linear:radius(), tick_offset(),
@@ -99,22 +101,21 @@ construct( State, ActorSettings, Name, InitialPosition, PerceptionRadius,
 		   EnvironmentPid ) ->
 
 	SpatialState = class_SpatialisedActor:construct( State, ActorSettings,
-						?trace_categorize( Name ),
-						InitialPosition, MaxSpeed, EnvironmentPid ),
+		?trace_categorize(Name), InitialPosition, MaxSpeed, EnvironmentPid ),
 
 	setAttributes( SpatialState, [
 
-			% We consider that the speed of this actor is constantly its maximum
-			% one.
-			%
-			% Temporarily in meters per second:
-			%
-			{ speed, MaxSpeed },
+		% We consider that the speed of this actor is constantly its maximum
+		% one.
+		%
+		% Temporarily in meters per second:
+		%
+		{ speed, MaxSpeed },
 
-			{ perception_radius, PerceptionRadius },
-			{ perception_period, PerceptionPeriod },
-			{ move_period, 5 },
-			{ termination_offset, TerminationTickOffset } ] ).
+		{ perception_radius, PerceptionRadius },
+		{ perception_period, PerceptionPeriod },
+		{ move_period, 5 },
+		{ termination_offset, TerminationTickOffset } ] ).
 
 
 
@@ -123,9 +124,9 @@ construct( State, ActorSettings, Name, InitialPosition, PerceptionRadius,
 
 
 
-% First scheduling on this test actor.
+% @doc First scheduling on this test actor.
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
-						   actor_oneway_return().
+											actor_oneway_return().
 onFirstDiasca( State, SendingActorPid ) ->
 
 	MetersPerSecond = ?getAttr(speed),
@@ -144,9 +145,9 @@ onFirstDiasca( State, SendingActorPid ) ->
 	end,
 
 	?notice_fmt( "Overall speed of ~p meters per second, "
-			   "converted to ~p meters per tick "
-			   "(duration of a tick: ~p virtual seconds).",
-			   [ MetersPerSecond, VirtualSpeed, TickDuration ] ),
+		"converted to ~p meters per tick "
+		"(duration of a tick: ~p virtual seconds).",
+		[ MetersPerSecond, VirtualSpeed, TickDuration ] ),
 
 	% First, local actions; converting to meters per tick:
 	LocalState = setAttribute( State, speed, VirtualSpeed ),
@@ -161,7 +162,7 @@ onFirstDiasca( State, SendingActorPid ) ->
 
 
 
-% The definition of the spontaneous behaviour of this test actor.
+% @doc The definition of the spontaneous behaviour of this test actor.
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
@@ -170,12 +171,12 @@ actSpontaneous( State ) ->
 	TerminationTickOffset = ?getAttr(termination_offset),
 
 	ActState = case ( TerminationTickOffset =/= none )
-				   andalso ( CurrentTickOffset >= TerminationTickOffset ) of
+					andalso ( CurrentTickOffset >= TerminationTickOffset ) of
 
 		true ->
 			trace_utils:info_fmt(
-			  "~w decided to terminate (at #~p, diasca O).",
-			  [ self(), CurrentTickOffset ] ),
+				"~w decided to terminate (at #~p, diasca O).",
+				[ self(), CurrentTickOffset ] ),
 
 			UndeclaredState = class_Actor:send_actor_message(
 					?getAttr(environment_pid), undeclareEntity, State ),
@@ -209,7 +210,7 @@ act_normally( CurrentTickOffset, State ) ->
 
 		S ->
 			XOffset = S * MovePeriod,
-			linear_2D:translate( Position, { XOffset, _YOffset=0 } )
+			point2:translate( Position, _V=[ XOffset, _YOffset=0 ] )
 
 	end,
 
@@ -223,9 +224,9 @@ act_normally( CurrentTickOffset, State ) ->
 
 		0 ->
 			class_Actor:send_actor_message( ?getAttr(environment_pid),
-					{ getTypedEntitiesWithin,
-					  [ class_TestSpatialisedActor, Position,
-						?getAttr(perception_radius) ] }, State );
+				{ getTypedEntitiesWithin,
+				  [ class_TestSpatialisedActor, Position,
+					?getAttr(perception_radius) ] }, State );
 
 		_ ->
 			State
@@ -241,7 +242,7 @@ act_normally( CurrentTickOffset, State ) ->
 
 
 
-% Called in response to the getEntitiesWithin request.
+% @doc Called in response to the getEntitiesWithin request.
 -spec notifyEntitiesNearby( wooper:state(), [ entity_pid() ],
 							environment_pid() ) -> const_actor_oneway_return().
 notifyEntitiesNearby( State, _NearbyEntities=[], _EnvironmentPid ) ->

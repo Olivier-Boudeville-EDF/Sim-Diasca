@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -36,8 +36,8 @@
 % ticks.
 
 
--type label_location() :: linear_2D:point().
-% Corresponds to the 2D coordinates of the label on the plot.
+-type label_location() :: gui:point().
+% Corresponds to the 2D integer coordinates of the label on the plot.
 
 
 -type label_text() :: text_utils:bin_string().
@@ -65,30 +65,34 @@
 
 
 
+% Recrod that fully defines a label on a probe rendering:
 -record( probe_label, {
 
-		% 2D coordinates of the label on the plot:
-		location :: label_location(),
+	% 2D coordinates of the label on the plot:
+	location :: label_location(),
 
-		% Actual text of the label:
-		text :: label_text(),
+	% Actual text of the label:
+	text :: label_text(),
 
-		% Color of the text:
-		color :: label_color(),
+	% Color of the text:
+	color :: label_color(),
 
-		% Position of the text based on to the location for the label:
-		position :: label_position(),
+	% Position of the text based on to the location for the label:
+	position :: label_position(),
 
-		% The label may be rendered with an angle from the abscissa axis:
-		orientation :: label_orientation()
-
-} ).
+	% The label may be rendered with an angle from the abscissa axis:
+	orientation :: label_orientation() } ).
 
 
 -type probe_label() :: #probe_label{}.
 % Fully defines a label on a probe rendering.
 
 
+
+% Records the (rendering) settings of a probe.
+%
+% Used by plain probes and by the datalogger.
+%
 -record( probe_settings, {
 
 	% Title of any probe report (as a binary):
@@ -127,7 +131,7 @@
 
 	% The display time format to use if the x axis is a timestamped one:
 	x_ticks_timestamp_time_format ::
-					  maybe( class_Probe:timestamp_time_format() ),
+						maybe( class_Probe:timestamp_time_format() ),
 
 
 	% Fine control of the major (labeled) ticks on the ordinate axis (as a
@@ -184,46 +188,47 @@
 
 
 
+% Describes management (not rendering) options that apply to (basic) probes:
 -record( probe_options, {
 
-
-		% If true, the gnuplot command file will be written at probe start-up,
-		% thus preventing the taking into account of any subsequent change in
-		% the rendering parameters, but remaining available even if the
-		% simulation was to be interrupted.
-		%
-		create_command_file_initially = false :: boolean(),
-
-
-		% If true, received sample data will be stored in memory instead of
-		% being directly written to disk (default: false, as the memory
-		% footprint might become then very significant).
-		%
-		deferred_data_writes = false :: boolean(),
+	% If true, the gnuplot command file will be written at probe start-up, thus
+	% preventing the taking into account of any subsequent change in the
+	% rendering parameters, but remaining available even if the simulation was
+	% to be interrupted.
+	%
+	create_command_file_initially = false :: boolean(),
 
 
-		% If true, this probe will register itself to the result manager, and be
-		% driven by it.
-		%
-		register_as_tracked_producer = true :: boolean(),
+	% If true, received sample data will be stored in memory instead of being
+	% directly written to disk (default: false, as the memory footprint might
+	% become then very significant).
+	%
+	deferred_data_writes = false :: boolean(),
 
 
-		% Specifies the directory in which the files related to this probe
-		% (ex: *.p, *.data, *.png) should be written.
-		%
-		probe_directory = undefined :: maybe( file_utils:directory_name() ),
+	% If true, this probe will register itself to the result manager, and be
+	% driven by it.
+	%
+	register_as_tracked_producer = true :: boolean(),
 
 
-		% Allows to disable from the very start, at construction-time, the
-		% support for probe rendering, typically to bypass the lookup and
-		% version check of gnuplot (which may exhaust the number of opened file
-		% descriptors, should many probes be created)
-		%
-		rendering_enabled = true :: boolean() }).
+	% Specifies the directory in which the files related to this probe (ex: *.p,
+	% *.data, *.png) should be written.
+	%
+	probe_directory = undefined :: maybe( file_utils:directory_name() ),
+
+
+	% Allows to disable from the very start, at construction-time, the support
+	% for probe rendering, typically to bypass the lookup and version check of
+	% gnuplot (which may exhaust the number of opened file descriptors, should
+	% many probes be created)
+	%
+	rendering_enabled = true :: boolean() } ).
 
 
 -type probe_options() :: #probe_options{}.
 % Describes management (not rendering) options that apply to (basic) probes.
+
 
 
 -type string_curve_name() :: text_utils:ustring().

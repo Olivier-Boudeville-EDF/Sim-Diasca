@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,8 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-
-% Overall unit test of the Sim-Diasca deployment and scheduling framework.
+% @doc Overall unit test of the Sim-Diasca deployment and scheduling framework.
 -module(scheduling_one_recursive_creating_actor_test).
 
 
@@ -30,7 +29,7 @@
 
 
 
-% Runs a distributed simulation (of course if relevant computing hosts are
+% @doc Runs a distributed simulation (of course if relevant computing hosts are
 % specified).
 %
 -spec run() -> no_return().
@@ -41,7 +40,6 @@ run() ->
 	% Default simulation settings (50Hz, batch reproducible) are used, except
 	% for the name:
 	SimulationSettings = #simulation_settings{
-
 		simulation_name="Scheduling one recursive creating actor test" },
 
 
@@ -49,6 +47,7 @@ run() ->
 	% generation of the deployment package requested), but computing hosts are
 	% specified (to be updated depending on your environment):
 	% (note that localhost is implied)
+	%
 	DeploymentSettings = #deployment_settings{
 
 		computing_hosts =
@@ -68,7 +67,7 @@ run() ->
 
 	% Directly created on the user node:
 	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-								 DeploymentSettings, LoadBalancingSettings ),
+								DeploymentSettings, LoadBalancingSettings ),
 
 
 	?test_info( "Deployment manager created, retrieving the load balancer." ),
@@ -86,22 +85,24 @@ run() ->
 	Gen3CreationPolicy = no_creation,
 
 	Gen2CreationPolicy = { _Gen2InterCount=5,
-		_Gen2CreatedActorPolicy = { _Gen3SchedulingPolicy = { periodic, 10 },
-		   Gen3CreationPolicy } },
+		_Gen2CreatedActorPolicy={ _Gen3SchedulingPolicy={ periodic, 10 },
+		Gen3CreationPolicy } },
 
-	% Describes how actors will be created, later: (first generation is erratic
-	% and will itself create periodic actors, less frequently)
+	% Describes how actors will be created, later:
+	%
+	% (first generation is erratic and will itself create periodic actors, less
+	% frequently)
+	%
 	Gen1CreationPolicy = { _Gen1InterCount=3,
-		_Gen1CreatedActorPolicy = { _Gen2SchedulingPolicy={ erratic, 4 },
-		   Gen2CreationPolicy} },
+		_Gen1CreatedActorPolicy={ _Gen2SchedulingPolicy={ erratic, 4 },
+								  Gen2CreationPolicy} },
 
 	% The created actor *will* create actors in the course of the simulation,
 	% but these will not in turn create actors:
 
 	FirstActorPid = class_Actor:create_initial_actor( class_TestActor,
-			[ "First periodic test actor", { periodic, _Period=3 },
-			Gen1CreationPolicy, _TerminationTickOffset = 100 ],
-			LoadBalancerPid ),
+		[ "First periodic test actor", { periodic, _Period=3 },
+		Gen1CreationPolicy, _TerminationTickOffset = 100 ], LoadBalancerPid ),
 
 
 	FirstActorPid ! { getAAI, [], self() },
@@ -109,7 +110,7 @@ run() ->
 
 
 	?test_notice_fmt( "First actor has for PID ~w and for AAI 2.",
-		[ FirstActorPid ] ),
+					  [ FirstActorPid ] ),
 
 	?test_info( "First actor has a correct AAI." ),
 
@@ -127,7 +128,7 @@ run() ->
 	RootTimeManagerPid ! { getTextualTimings, [], self() },
 	FirstTimingString = test_receive(),
 
-	?test_notice_fmt( "Received first time: ~s.", [ FirstTimingString ] ),
+	?test_notice_fmt( "Received first time: ~ts.", [ FirstTimingString ] ),
 
 
 	% Waits until simulation is finished:
@@ -143,7 +144,7 @@ run() ->
 
 	RootTimeManagerPid ! { getTextualTimings, [], self() },
 	SecondTimingString = test_receive(),
-	?test_notice_fmt( "Received second time: ~s.", [ SecondTimingString ] ),
+	?test_notice_fmt( "Received second time: ~ts.", [ SecondTimingString ] ),
 
 	sim_diasca:shutdown(),
 

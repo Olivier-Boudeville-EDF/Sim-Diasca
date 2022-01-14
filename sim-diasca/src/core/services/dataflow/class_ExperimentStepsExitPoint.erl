@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2021 EDF R&D
+% Copyright (C) 2016-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -85,7 +85,9 @@
 
 
 % Shorthands:
+
 -type ustring() :: text_utils:ustring().
+
 
 
 % @doc Constructs such experiment exit point.
@@ -120,8 +122,8 @@ construct( State, ActorSettings, Dataflows, ExperimentStepStart,
 
 	% First the direct mother class:
 	ActorState = class_ExperimentExitPoint:construct( State, ActorSettings,
-					Dataflows, ExperimentEntryPointPid,
-					ExperimentManagerPid, WorldManagerPid ),
+		Dataflows, ExperimentEntryPointPid, ExperimentManagerPid,
+		WorldManagerPid ),
 
 	% Then the class-specific actions:
 	setAttributes( ActorState, [ { current_step, ExperimentStepStart },
@@ -174,7 +176,7 @@ actSpontaneous( State ) ->
 	SpontaneousState = executeOnewayAs( StepState, class_ExperimentExitPoint,
 										actSpontaneous ),
 
-	NewStep = CurrentStep + 1,
+	NewStep = CurrentStep+1,
 
 	YearState = setAttribute( SpontaneousState, current_step, NewStep ),
 

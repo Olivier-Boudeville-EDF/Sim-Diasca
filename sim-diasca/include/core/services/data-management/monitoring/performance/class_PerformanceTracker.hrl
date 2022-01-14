@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -22,5 +22,6 @@
 % The name under which the performance tracker process is to be registered:
 -define( performance_tracker_name, sim_diasca_performance_tracker ).
 
-% Where the performance tracker is registered.
+
+% Scope of the registration of the performance tracker:
 -define( performance_tracker_registration_scope, local_and_global ).

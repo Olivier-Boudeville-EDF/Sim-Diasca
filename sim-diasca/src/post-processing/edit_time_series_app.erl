@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2021 EDF R&D
+% Copyright (C) 2010-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,9 +19,8 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-
-% This is an Erlang script preferably to be called by the edit-time-series.sh
-% wrapper script, for convenience.
+% @doc This is an Erlang script preferably to be called by the
+% edit-time-series.sh wrapper script, for convenience.
 %
 -module(edit_time_series_app).
 

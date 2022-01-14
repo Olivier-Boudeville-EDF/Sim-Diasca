@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,9 +19,8 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-
-% Overall unit test of the Sim-Diasca deployment framework: saving a deployment
-% package.
+% @doc Overall unit test of the Sim-Diasca deployment framework: saving a
+% deployment package.
 %
 -module(deployment_saving_package_test).
 
@@ -31,7 +30,7 @@
 
 
 
-% Runs a distributed simulation (of course if relevant computing hosts are
+% @doc Runs a distributed simulation (of course if relevant computing hosts are
 % specified).
 %
 -spec run() -> no_return().
@@ -43,7 +42,6 @@ run() ->
 	% for the name:
 	%
 	SimulationSettings = #simulation_settings{
-
 		simulation_name="Test of the saving of deployment package" },
 
 
@@ -51,6 +49,7 @@ run() ->
 	% generation of the deployment package requested), but computing
 	% hosts are specified (to be updated depending on your environment):
 	% (note that localhost is implied)
+	%
 	% Here we request the deployment package to be created:
 	DeploymentSettings = #deployment_settings{
 
@@ -74,7 +73,7 @@ run() ->
 
 	% Directly created on the user node:
 	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-								  DeploymentSettings, LoadBalancingSettings ),
+									DeploymentSettings, LoadBalancingSettings ),
 
 
 	?test_info( "Here we do not create any actor, "
@@ -92,7 +91,7 @@ run() ->
 	RootTimeManagerPid ! { getTextualTimings, [], self() },
 	FirstTimingString = test_receive(),
 
-	?test_notice_fmt( "Received first time: ~s.", [ FirstTimingString ] ),
+	?test_notice_fmt( "Received first time: ~ts.", [ FirstTimingString ] ),
 
 
 	% Waits until simulation is finished:
@@ -109,7 +108,7 @@ run() ->
 	RootTimeManagerPid ! { getTextualTimings, [], self() },
 	SecondTimingString = test_receive(),
 
-	?test_notice_fmt( "Received second time: ~s.", [ SecondTimingString ] ),
+	?test_notice_fmt( "Received second time: ~ts.", [ SecondTimingString ] ),
 
 	sim_diasca:shutdown(),
 

@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -52,8 +52,8 @@
 % The class-specific attributes:
 -define( class_attributes, [
 
-			{ node_name, net_utils:string_node_name(),
-			  "the node name of interest" } ] ).
+	{ node_name, net_utils:string_node_name(),
+	  "the node name of interest" } ] ).
 
 
 % Helper functions.
@@ -87,10 +87,12 @@
 
 
 % Shorthands:
+
 -type ustring() :: text_utils:ustring().
 
 
-% @doc Constructs a new graphable instance.
+
+% @doc Constructs a graphable instance.
 %
 % OptionParameters is:
 %
@@ -273,6 +275,7 @@ select_attributes_from( _AttributeList=[ P={ Name, _Value } | T ], Acc ) ->
 
 		false ->
 			select_attributes_from( T, Acc )
+
 	end.
 
 

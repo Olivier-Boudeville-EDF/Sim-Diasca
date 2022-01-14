@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,11 +19,13 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc Class modelling the <b>reparation behaviour</b> of equipments.
 -module(class_RepairModel).
 
 
+% @doc Class modelling the repair behaviour of equipments.
 -define( class_description,
-		 "Class modeling the repair behaviour of equipments."
+		 "Class modelling the reparation behaviour of equipments."
 		 "Most repair models rely on underlying random generators."
 		 "Their instances must be simulation actors, so that the total "
 		 "ordering of their incoming messages is recreated, otherwise the "
@@ -52,7 +54,7 @@
 
 
 
-% Constructs a new repair model:
+% @doc Constructs a repair model:
 %
 % - ActorSettings corresponds to the engine settings for this actor, as
 % determined by the load-balancer
@@ -65,21 +67,20 @@
 %
 % RandomProfile can be among:
 %
-% - { uniform, N } for uniform laws (positive integer)
+% - {uniform, N} for uniform laws (positive integer)
 %
-% - { exponential, Lambda } for exponential laws (floating-point)
+% - {exponential, Lambda} for exponential laws (floating-point)
 %
-% - { positive_integer_exponential, Lambda } for exponential laws (positive
+% - {positive_integer_exponential, Lambda} for exponential laws (positive
 % integer)
 %
-% - { gaussian, Mu, Sigma } for gaussian laws
+% - {gaussian, Mu, Sigma} for gaussian laws
 %
-% - { positive_integer_gaussian, Mu, Sigma } for gaussian laws (positive
-% integer)
+% - {positive_integer_gaussian, Mu, Sigma} for gaussian laws (positive integer)
 %
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 class_Actor:name(), class_Equipment:random_profile() ) ->
-					   wooper:state().
+						wooper:state().
 construct( State, ActorSettings, RepairModelName, RandomProfile ) ->
 
 	% First the direct mother classes:
@@ -91,7 +92,7 @@ construct( State, ActorSettings, RepairModelName, RandomProfile ) ->
 
 	% Then the class-specific actions:
 
-	?send_info_fmt( StochasticState, "Creating a new repair model "
+	?send_info_fmt( StochasticState, "Creating a reparation model "
 		"whose repair profile is ~w, with, as default upper-bound of "
 		"random consumption.", [ RandomProfile ] ) ,
 
@@ -105,19 +106,19 @@ construct( State, ActorSettings, RepairModelName, RandomProfile ) ->
 % Management section of the actor.
 
 
-% Defined simply to avoid a useless warning to be issued / an exception to be
-% thrown.
+% @doc Defined simply to avoid a useless warning to be issued / an exception to
+% be thrown.
 %
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
-						   const_actor_oneway_return().
+										const_actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 	actor:const_return().
 
 
 
-% Requests this model to determine (asynchronously) the tick of next reparation,
-% i.e. computes the next tick at which the caller equipment will be repaired
-% (assuming it just failed).
+% @doc Requests this model to determine (asynchronously) the tick of next
+% reparation, that is computes the next tick at which the caller equipment will
+% be repaired (assuming it just failed).
 %
 % (actor oneway, but triggers back a oneway on the caller)
 %
@@ -125,8 +126,8 @@ onFirstDiasca( State, _SendingActorPid ) ->
 getNextRepair( State, EquipmentPid ) ->
 
 	% Uses directly stochastic mother class (automatic background refill):
-	RepairDurationInSeconds = class_StochasticActor:get_random_value_from(
-								repair_profile, State ),
+	RepairDurationInSeconds =
+		class_StochasticActor:get_random_value_from( repair_profile, State ),
 
 
 	% RepairDuration is in seconds, converting to ticks:
@@ -138,16 +139,16 @@ getNextRepair( State, EquipmentPid ) ->
 	% to fail.
 	%
 	RepairDurationInTicks = erlang:max( 2,
-	   class_Actor:convert_seconds_to_ticks( RepairDurationInSeconds,
-					  _MaxRelativeError=0.5, State ) ),
+		class_Actor:convert_seconds_to_ticks( RepairDurationInSeconds,
+						_MaxRelativeError=0.5, State ) ),
 
 	% FailureDuration is in seconds, converting to ticks:
 	%
 	% (results in at least two ticks, so that the caller is never supposed to
 	% fail at the same tick it receives that information)
 
-	%io:format( "Repair duration: ~w seconds, i.e. ~B ticks.~n",
-	%	[RepairDurationInSeconds,RepairDurationInTicks] ),
+	%?debug_fmt( "Repair duration: ~w seconds, i.e. ~B ticks.",
+	%  [RepairDurationInSeconds,RepairDurationInTicks] ),
 
 	RepairTickOffset = class_Actor:get_current_tick_offset( State )
 		+ RepairDurationInTicks,

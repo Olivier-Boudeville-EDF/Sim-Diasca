@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2021 EDF R&D
+% Copyright (C) 2014-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,7 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-% Module dedicated to the loading of instances.
+% @doc Module dedicated to the <b>loading of instances</b>.
 %
 % The typical use case is to load from a set of files a description of the
 % initial state of the simulation, i.e. the construction parameters of initial
@@ -63,41 +63,35 @@
 % Types related to creation lines.
 
 
-% To identify a construction line in a file:
--type line_number() :: basic_utils:count().
+-type line_number() :: count().
+% To identify a construction line in a file.
 
 
-% Full line being examined (as a binary):
--type line() :: text_utils:bin_string().
+-type line() :: bin_string().
+% A full line being examined (as a binary).
 
 
-% Information about a read creation line:
 -type line_info() :: { line_number(), line() }.
+% Information about a read creation line.
 
 
-% Shorthand:
--type classname() :: wooper:classname().
--type method_argument() :: wooper:method_argument().
-
-
-% Full information to create a new instance:
 -type creation_spec() :: { classname(), [ method_argument() ],
 						   class_LoadBalancer:placement_hint(), line_number() }.
+% Full information to create an instance.
 
 
-
-% Full context of a parsed creation line (file origin, etc.):
 -type line_context() :: { file_utils:bin_file_name(), line_number(), line() }.
+% Full context of a parsed creation line (file origin, etc.).
 
 
--type user_identifier() :: text_utils:bin_string().
+-type user_identifier() :: bin_string().
 
 
 -type id_ref() :: { 'user_id', user_identifier() }.
 
 
-% Either the user identifier itself (as a binary) or 'none'.
 -type identifier_info() :: user_identifier() | 'none'.
+% Either the user identifier itself (as a binary) or 'none'.
 
 
 -export_type([ line_number/0, creation_spec/0, user_identifier/0, id_ref/0,
@@ -122,6 +116,7 @@
 -type file_path() :: file_utils:file_path().
 -type file() :: file_utils:file().
 
+-type ustring() :: text_utils:ustring().
 -type bin_string() :: text_utils:bin_string().
 
 -type id_resolver_pid() :: pid().
@@ -129,6 +124,9 @@
 -type reader_pid() :: pid().
 -type loader_pid() :: pid().
 -type instance_pid() :: pid().
+
+-type classname() :: wooper:classname().
+-type method_argument() :: wooper:method_argument().
 
 
 % For myriad_spawn*:
@@ -190,14 +188,14 @@
 %
 % (helper)
 %
--spec manage_initialisation( [ file_path() ], count(), load_balancer_pid() ) -> 
-								   no_return().
+-spec manage_initialisation( [ file_path() ], count(), load_balancer_pid() ) ->
+									no_return().
 manage_initialisation( InitialisationFiles, NodeCount, LoadBalancerPid ) ->
 
 	LoadStartTimestamp = time_utils:get_precise_timestamp(),
 
 	ShortenInitFiles = [ text_utils:format( "file '~ts'",
-		    [ filename:basename( F ) ] ) || F <- InitialisationFiles ],
+		[ filename:basename( F ) ] ) || F <- InitialisationFiles ],
 
 	trace_utils:info_fmt( "Loading initial instances from: ~ts",
 			   [ text_utils:strings_to_string( ShortenInitFiles ) ] ),
@@ -216,7 +214,7 @@ manage_initialisation( InitialisationFiles, NodeCount, LoadBalancerPid ) ->
 				CompressExt ->
 
 					%trace_utils:info_fmt( "Decompressing '~ts'.",
-					%					   [ Filename ] ),
+					%                      [ Filename ] ),
 
 					DecompressedFilename =
 						file_utils:decompress( Filename, CompressionFormat ),
@@ -244,7 +242,7 @@ manage_initialisation( InitialisationFiles, NodeCount, LoadBalancerPid ) ->
 	InstanceLoaderPid = self(),
 
 	%trace_utils:info_fmt( "Creating user_id resolver from ~w.",
-	%					   [ InstanceLoaderPid ] ),
+	%                      [ InstanceLoaderPid ] ),
 
 	% Let's first create the resolver of user identifiers first, as it is needed
 	% by the creators:
@@ -265,8 +263,8 @@ manage_initialisation( InitialisationFiles, NodeCount, LoadBalancerPid ) ->
 	%
 	CreatorsCount = 1,
 
-	%trace_utils:info_fmt( "Creating ~B instance creator(s).", 
-	%    [ CreatorsCount ] ),
+	%trace_utils:info_fmt( "Creating ~B instance creator(s).",
+	%                      [ CreatorsCount ] ),
 
 	Creators = [ ?myriad_spawn_link(
 		fun() ->
@@ -297,7 +295,7 @@ manage_initialisation( InitialisationFiles, NodeCount, LoadBalancerPid ) ->
 	end,
 
 	%trace_utils:info_fmt( "Reading following initialisation file(s): ~ts",
-	%					   [ text_utils:strings_to_string( ReadyInitFiles ) ] ),
+	%                      [ text_utils:strings_to_string( ReadyInitFiles ) ] ),
 
 	Readers = [ ?myriad_spawn_link(
 				fun() ->
@@ -313,12 +311,12 @@ manage_initialisation( InitialisationFiles, NodeCount, LoadBalancerPid ) ->
 	% to be sent in the course of the loading to the load balancer):
 	%
 	initialisation_waiting_loop( UserIdResolverPid, _CreationCount=0,
-			    Creators, Readers, LoadStartTimestamp, LoadBalancerPid ).
+				Creators, Readers, LoadStartTimestamp, LoadBalancerPid ).
 
 
 
 
-% Main loop driving the loadings.
+% @doc Main loop driving the loadings.
 -spec initialisation_waiting_loop( id_resolver_pid(), count(),
 			[ creator_pid() ], [ reader_pid() ],
 			time_utils:precise_timestamp(), load_balancer_pid() ) -> void().
@@ -348,8 +346,8 @@ initialisation_waiting_loop( UserIdResolverPid, CreationCount, Creators,
 	LoadDurationString = time_utils:duration_to_string( LoadDuration ),
 
 	Message = text_utils:format( "All ~B initial instances have been "
-			"successfully loaded from the initialisation sources, in ~ts.~n~n",
-			[ CreationCount, LoadDurationString ] ),
+		"successfully loaded from the initialisation sources, in ~ts.~n~n",
+		[ CreationCount, LoadDurationString ] ),
 
 	?notify_debug_cat( Message, ?loader_cat ),
 	trace_utils:info( Message ),
@@ -375,7 +373,7 @@ initialisation_waiting_loop( UserIdResolverPid, CreationCount, Creators,
 
 			%trace_utils:info_fmt( "Instance reader ~w finished "
 			%   "(~B new instances created).",
-            %   [ ReaderPid, InstanceCreationCount ] ),
+			%   [ ReaderPid, InstanceCreationCount ] ),
 
 			?notify_debug_fmt_cat( "Instance reader ~w finished.",
 								   [ ReaderPid ], ?loader_cat ),
@@ -423,8 +421,8 @@ initialisation_waiting_loop( UserIdResolverPid, CreationCount, Creators,
 
 
 
-% Code entry point for a reader of a given initialisation file.
--spec read_init_file( file_name(), [ creator_pid() ], loader_pid() ) -> 
+% @doc Code entry point for a reader of a given initialisation file.
+-spec read_init_file( file_name(), [ creator_pid() ], loader_pid() ) ->
 							no_return().
 read_init_file( Filename, Creators, InstanceLoaderPid ) ->
 
@@ -452,7 +450,7 @@ read_init_file( Filename, Creators, InstanceLoaderPid ) ->
 	% on a per-line basis (and lower-level caching is to happen anyway).
 	%
 	InitFile = file_utils:open( Filename,
-	   _Options=[ read, raw, binary, { read_ahead, _Size=1024*256 } ] ),
+		_Options=[ read, raw, binary, { read_ahead, _Size=1024*256 } ] ),
 
 	% The target number of construction lines to be gathered in a creation chunk
 	% (allows to perform more parallel creations; actual chunk size is often
@@ -470,10 +468,10 @@ read_init_file( Filename, Creators, InstanceLoaderPid ) ->
 	% message box as many chunks to process as there are file readers. No
 	% problem here.
 	%
-	InstanceCreationCount = 
+	InstanceCreationCount =
 		read_all_lines( InitFile, CreationChunkCount, Creators, Filename ),
 
-	InstanceLoaderPid ! { initialisation_file_read, InstanceCreationCount, 
+	InstanceLoaderPid ! { initialisation_file_read, InstanceCreationCount,
 						  self() } ,
 
 	% Terminates just afterwards:
@@ -482,11 +480,11 @@ read_init_file( Filename, Creators, InstanceLoaderPid ) ->
 
 
 
-% Reads all lines of specified file, by chunks of specified size, and feeds them
-% to creators as early as possible.
+% @doc Reads all lines of specified file, by chunks of specified size, and feeds
+% them to creators as early as possible.
 %
--spec read_all_lines( file(), count(), [ creator_pid() ], file_name() ) -> 
-							count().
+-spec read_all_lines( file(), count(), [ creator_pid() ], file_name() ) ->
+													count().
 read_all_lines( File, ChunkCount, Creators, Filename ) ->
 
 	?notify_debug_fmt_cat( "Reading all lines from '~ts'.", [ Filename ],
@@ -548,21 +546,21 @@ read_all_lines( File, ChunkCount, CreationCount, RemainingFreeCreators,
 					% None left, let's then wait for the first to become free:
 					receive
 
-						{ chunk_processed, AdditionalCreationCount, 
+						{ chunk_processed, AdditionalCreationCount,
 						  CreatorPid } ->
 
 							% Reallocate this creator immediately:
 							CreatorPid ! ChunkMessage,
 
 							?notify_debug_fmt_cat(
-							   "Chunk assigned to instance creator ~p.",
-							   [ CreatorPid ], ?loader_cat ),
+								"Chunk assigned to instance creator ~p.",
+								[ CreatorPid ], ?loader_cat ),
 
 							read_all_lines( File, ChunkCount,
 								CreationCount + AdditionalCreationCount,
 								_RemainingFreeCreators=[],
 								% CreatorPid already there by design:
-								_NewWaited=WaitedCreators, BinFilename, 
+								_NewWaited=WaitedCreators, BinFilename,
 								NewLineCount )
 
 					end;
@@ -574,8 +572,8 @@ read_all_lines( File, ChunkCount, CreationCount, RemainingFreeCreators,
 					FreeCreatorPid ! ChunkMessage,
 
 					?notify_debug_fmt_cat(
-					   "Chunk assigned to instance creator ~p.",
-					   [ FreeCreatorPid ], ?loader_cat ),
+						"Chunk assigned to instance creator ~p.",
+						[ FreeCreatorPid ], ?loader_cat ),
 
 					read_all_lines( File, ChunkCount, CreationCount,
 						_RemainingFreeCreators=T,
@@ -588,7 +586,7 @@ read_all_lines( File, ChunkCount, CreationCount, RemainingFreeCreators,
 
 
 
-% Returns {InfoLines,LineCount}, where:
+% @doc Returns {InfoLines,LineCount}, where:
 %
 % - InfoLines is a list of up to ChunkCount pairs, made of a line number and of
 % a line (as a binary), read from specified file
@@ -599,7 +597,7 @@ read_all_lines( File, ChunkCount, CreationCount, RemainingFreeCreators,
 % the one of the read file), but, as we record the line number anyway, and will
 % rely on it to preserve reproducibility, this is not a problem.
 %
--spec read_chunk( file(), count(), line_number() ) -> 
+-spec read_chunk( file(), count(), line_number() ) ->
 						{ [ line_info() ], line_number() }.
 read_chunk( File, ChunkCount, LineCount ) ->
 	read_chunk( File, ChunkCount, LineCount, _AccLines=[] ).
@@ -635,13 +633,13 @@ read_chunk( File, ChunkCount, LineCount, AccLines ) ->
 
 
 
-% Main loop of an instance creator process.
+% @doc Main loop of an instance creator process.
 -spec instance_creator_loop( count(), id_resolver_pid(),
 		load_balancer_pid(), loader_pid() ) -> no_return().
-instance_creator_loop( NodeCount, IdResolverPid, LoadBalancerPid, 
+instance_creator_loop( NodeCount, IdResolverPid, LoadBalancerPid,
 					   InstanceLoaderPid ) ->
 
-	?notify_debug_fmt_cat( "Instance creator ~w waiting.", [ self() ], 
+	?notify_debug_fmt_cat( "Instance creator ~w waiting.", [ self() ],
 						   ?reader_cat ),
 
 	receive
@@ -649,12 +647,12 @@ instance_creator_loop( NodeCount, IdResolverPid, LoadBalancerPid,
 		{ process_chunk, _Chunk={ LineInfos, BinFilename }, ReaderPid } ->
 
 			%trace_utils:debug_fmt( "Creator ~w processing chunk of ~B "
-			%	"elements:~ts", [ self(), length( LineInfos ),
-			%		text_utils:terms_to_string( LineInfos ) ] ),
+			%   "elements:~ts", [ self(), length( LineInfos ),
+			%       text_utils:terms_to_string( LineInfos ) ] ),
 
 			?notify_debug_fmt_cat(
-			   "Instance creator ~w processing chunk of ~B elements.",
-			   [ self(), length( LineInfos ) ], ?reader_cat ),
+				"Instance creator ~w processing chunk of ~B elements.",
+				[ self(), length( LineInfos ) ], ?reader_cat ),
 
 			% We could, instead of directly creating instances in the course of
 			% this function, aggregate a set of fully-prepared creation data per
@@ -684,8 +682,8 @@ instance_creator_loop( NodeCount, IdResolverPid, LoadBalancerPid,
 			end,
 
 			%trace_utils:debug_fmt(
-			%	"Waiting for embodiement of ~w actors: ~w...",
-			%	[ length( FilteredWaited ), FilteredWaited ] ),
+			%   "Waiting for embodiement of ~w actors: ~w...",
+			%   [ length( FilteredWaited ), FilteredWaited ] ),
 
 			% Anticipated processing:
 			NewCreationCount = length( FilteredWaited ),
@@ -696,7 +694,7 @@ instance_creator_loop( NodeCount, IdResolverPid, LoadBalancerPid,
 				_ThrowAtom=embodiement_time_out ),
 
 			%trace_utils:debug_fmt( "...embodiement of ~w finished.",
-			%					   [ FilteredWaited ] ),
+			%                       [ FilteredWaited ] ),
 
 			% Synchronous:
 			ReaderPid ! { chunk_processed, NewCreationCount, self() },
@@ -736,8 +734,8 @@ instance_creator_loop( NodeCount, IdResolverPid, LoadBalancerPid,
 
 
 
-% Parses (supposedly from an instance creator process) the specified creation
-% line, possibly resulting on an instance creation and on various blank
+% @doc Parses (supposedly from an instance creator process) the specified
+% creation line, possibly resulting on an instance creation and on various blank
 % processes to be created.
 %
 % Synchronicity enforced here, for a better control.
@@ -751,7 +749,7 @@ parse_creation_line( _LineInfo={ LineNumber, BinLine }, BinFilename,
 
 		0 ->
 			ShortenFilename = filename:basename(
-						 text_utils:binary_to_string( BinFilename ) ),
+							text_utils:binary_to_string( BinFilename ) ),
 
 			trace_utils:info_fmt(
 				" - processing creation line #~B from ~ts at ~ts",
@@ -765,8 +763,8 @@ parse_creation_line( _LineInfo={ LineNumber, BinLine }, BinFilename,
 
 	% Removes the ending newline for readability:
 	%trace_utils:debug_fmt( "Parsing line #~B: '~ts'.", [ LineNumber,
-	%	list_utils:remove_last_element(
-	%	  text_utils:binary_to_string( BinLine ) ) ] ),
+	%   list_utils:remove_last_element(
+	%     text_utils:binary_to_string( BinLine ) ) ] ),
 
 	% Note: for multi-file reading, the filename as well shall be associated to
 	% the line number.
@@ -806,8 +804,8 @@ parse_creation_line( _LineInfo={ LineNumber, BinLine }, BinFilename,
 		% Comment:
 		[ $% | _T ] ->
 			% Starting by '%' means comments, that are ignored:
-			%trace_utils:debug_fmt( "Comment '~ts' at line #~B ignored.~n",
-			%		   [ Line, LineNumber ] ),
+			%trace_utils:debug_fmt( "Comment '~ts' at line #~B ignored.",
+			%                       [ Line, LineNumber ] ),
 			no_creation;
 
 
@@ -824,13 +822,13 @@ parse_creation_line( _LineInfo={ LineNumber, BinLine }, BinFilename,
 			%trace_utils:debug_fmt( "~p processing '~ts': "
 			%    "user identifier '~ts' defined", [ self(), L, BinUserId ] ),
 
-			InstancePid = create_instance_from( CreationClause, 
-                _IdInfo=BinUserId, LineContext, IdResolverPid, 
-                LoadBalancerPid ),
+			InstancePid = create_instance_from( CreationClause,
+				_IdInfo=BinUserId, LineContext, IdResolverPid,
+				LoadBalancerPid ),
 
 			%trace_utils:debug_fmt( "Instance corresponding to line #~B (user "
-			%	"id: '~ts') will have for PID ~w.",
-			%	[ LineNumber, BinUserId, InstancePid ] ),
+			%   "id: '~ts') will have for PID ~w.",
+			%   [ LineNumber, BinUserId, InstancePid ] ),
 
 			InstancePid;
 
@@ -846,7 +844,7 @@ parse_creation_line( _LineInfo={ LineNumber, BinLine }, BinFilename,
 								LineContext, IdResolverPid, LoadBalancerPid ),
 
 			%trace_utils:debug_fmt( "Instance corresponding to line #~B will "
-			%	"have for PID ~w.", [ LineNumber, InstancePid ] ),
+			%   "have for PID ~w.", [ LineNumber, InstancePid ] ),
 
 			InstancePid;
 
@@ -863,16 +861,16 @@ parse_creation_line( _LineInfo={ LineNumber, BinLine }, BinFilename,
 
 
 
-% Returns {BinUserId,ActualCreationLine} from specified string, akin to:
-% 'John" <- {class_Beatle,[{user_id,"Paul"},{user_id,"George"}]}.'
-% (note that there is no leading '"' expected here)
+% @doc Returns {BinUserId,ActualCreationLine} from specified string, akin to:
+% 'John" <- {class_Beatle,[{user_id,"Paul"},{user_id,"George"}]}.'  (note that
+% there is no leading '"' expected here)
 %
 % Should return : { <<"John">>,
 %   "{class_Beatle,[{user_id,\"Paul\"},{user_id,\"George\"}]}." }
 %
 % LineContext is {BinFilename,LineNumber,BinLine}:
 %
--spec extract_id( string(), line_context() ) -> { bin_string(), string() }.
+-spec extract_id( ustring(), line_context() ) -> { bin_string(), ustring() }.
 extract_id( String, LineContext ) ->
 
 	case text_utils:split_at_first( $", String ) of
@@ -915,19 +913,19 @@ extract_id( String, LineContext ) ->
 
 
 
-% Creates corresponding instance, from the specified actual creation clause,
-% like: {class_Foo, [ "Hello world!", {user_id,"Charles"}, 154.06 ],
+% @doc Creates corresponding instance, from the specified actual creation
+% clause, like: {class_Foo, [ "Hello world!", {user_id,"Charles"}, 154.06 ],
 % _PlacementHint="greetings"} and user_id information for this instance to
 % create.
 %
--spec create_instance_from( string(), identifier_info(), line_context(),
+-spec create_instance_from( ustring(), identifier_info(), line_context(),
 		id_resolver_pid(), load_balancer_pid() ) -> instance_pid().
 create_instance_from( CreationClause, IdInfo,
-		LineContext={ _BinFilename, LineNumber, _BinLine }, IdResolverPid, 
-        LoadBalancerPid ) ->
+		LineContext={ _BinFilename, LineNumber, _BinLine }, IdResolverPid,
+		LoadBalancerPid ) ->
 
 	%trace_utils:debug_fmt( "~p creating instance from '~ts', with id=~p.",
-	%					   [ self(), CreationClause, IdInfo ] ),
+	%                       [ self(), CreationClause, IdInfo ] ),
 
 	case erl_scan:string( CreationClause, _StartLocation=1 ) of
 
@@ -949,7 +947,7 @@ create_instance_from( CreationClause, IdInfo,
 
 					% A bit of interleaving will not hurt:
 					LoadBalancerPid ! { getActorCreationInformationFromHint,
-							    [ PlacementHint, LineNumber, Class ], self() },
+								[ PlacementHint, LineNumber, Class ], self() },
 
 					case IdInfo of
 
@@ -968,9 +966,8 @@ create_instance_from( CreationClause, IdInfo,
 											LoadBalancerPid, LineContext ),
 
 					%trace_utils:debug_fmt( "using '~p' as placement hint and "
-					%                      "'~p' as construction parameters.",
-					%		   [ PlacementHint,
-					%			 ActualConstructionParameters ] ),
+					%   "'~p' as construction parameters.",
+					%   [ PlacementHint, ActualConstructionParameters ] ),
 
 					% Return from getActorCreationInformationFromHint/3:
 					{ TargetNode, ActorSettings } = receive
@@ -981,18 +978,18 @@ create_instance_from( CreationClause, IdInfo,
 					end,
 
 					BlankPid = wooper:create_hosting_process( _Loc=TargetNode,
-										    _ToLinkWithPid=LoadBalancerPid ),
+											_ToLinkWithPid=LoadBalancerPid ),
 
-					FullParams = 
+					FullParams =
 						[ ActorSettings | ActualConstructionParameters ],
 
 					%trace_utils:debug_fmt(
-					%	   " - embodiement of an instance of class ~ts",
-					%		[ Class ] ),
+					%   " - embodiement of an instance of class ~ts",
+					%   [ Class ] ),
 
 					%trace_utils:debug_fmt( " - embodiement of an instance "
-					%       "of class ~ts with parameters ~p.",
-					%		[ Class, FullParams ] ),
+					%   "of class ~ts with parameters ~p.",
+					%   [ Class, FullParams ] ),
 
 					BlankPid ! { embody, [ Class, FullParams ], self() },
 
@@ -1014,7 +1011,7 @@ create_instance_from( CreationClause, IdInfo,
 
 
 				% Without placement hints:
-				{ ok, { Class, Args } } 
+				{ ok, { Class, Args } }
 				  when is_atom( Class ) andalso is_list( Args ) ->
 
 					%trace_utils:debug( "Parse OK, without placement hint." ),
@@ -1092,7 +1089,7 @@ create_instance_from( CreationClause, IdInfo,
 
 					end,
 
-					FullParams = 
+					FullParams =
 						[ ActorSettings | ActualConstructionParameters ],
 
 					%trace_utils:debug_fmt(
@@ -1115,7 +1112,7 @@ create_instance_from( CreationClause, IdInfo,
 					report_parse_error( non_atom_class, LineContext );
 
 				{ error, ErrorInfo } ->
-					report_parse_error( { term_parsing, ErrorInfo }, 
+					report_parse_error( { term_parsing, ErrorInfo },
 										LineContext )
 
 			end;
@@ -1123,13 +1120,13 @@ create_instance_from( CreationClause, IdInfo,
 
 		{ error, ErrorInfo, ErrorLocation } ->
 			report_parse_error( { term_tokenizing,
-					    { ErrorInfo, ErrorLocation } }, LineContext )
+						{ ErrorInfo, ErrorLocation } }, LineContext )
 
 	end.
 
 
 
-% Explores and transforms specified construction arguments, replacing
+% @doc Explores and transforms specified construction arguments, replacing
 % {user_id,Id} by the corresponding PID to be used for that identifier, and
 % returning a {ActualConstructionParameters, FirstUserIdFound} pair made of the
 % transformed parameters and the first user identifier referenced in them (if
@@ -1162,8 +1159,8 @@ replace_identifiers_by_pid( Arguments, IdResolverPid, LoadBalancerPid,
 
 
 
-% Transforms specified argument, replacing {user_id,Id} by the corresponding PID
-% to be used, and updating the first user identifier found.
+% @doc Transforms specified argument, replacing {user_id,Id} by the
+% corresponding PID to be used, and updating the first user identifier found.
 %
 % Returns {TransformedArgument, FirstUserId}.
 %
@@ -1189,7 +1186,7 @@ transform_argument( Arg, IdResolverPid, LoadBalancerPid, FirstUserId,
 			end,
 
 			%trace_utils:debug_fmt( "  + transformed user ID '~ts' "
-			%						"into '~p'", [ Id, InstancePid ] ),
+			%                       "into '~p'", [ Id, InstancePid ] ),
 
 			NewCurrentFirstId = case CurrentFirstId of
 
@@ -1213,8 +1210,8 @@ transform_argument( Arg, IdResolverPid, LoadBalancerPid, FirstUserId,
 			%Line = text_utils:binary_to_string( BinLine ),
 
 			throw( { non_string_user_id, NonStringId, Filename,
-					 { line, LineNumber } } );
-					 %,Line } );
+						{ line, LineNumber } } );
+						%,Line } );
 
 
 		( Term, UserData ) ->
@@ -1227,7 +1224,7 @@ transform_argument( Arg, IdResolverPid, LoadBalancerPid, FirstUserId,
 								  IdTransformer, _UserData=FirstUserId ).
 
 
-% Reports specified error while parsing specified creation line.
+% @doc Reports specified error while parsing specified creation line.
 -spec report_parse_error( atom() | { atom(), any() }, line_context() ) ->
 								no_return().
 report_parse_error( Reason,
@@ -1255,13 +1252,13 @@ report_parse_error( Reason,
 % Section about user identifiers.
 
 
-% Launcher of the resolver of user identifiers.
+% @doc Launcher of the resolver of user identifiers.
 user_identifier_resolver_loop( InstanceLoaderPid ) ->
 	user_identifier_resolver_loop( _IdTable=table:new(), InstanceLoaderPid ).
 
 
 
-% Main loop of the resolver of user identifiers.
+% @doc Main loop of the resolver of user identifiers.
 %
 % Its role is to keep track of user identifiers, and associate to each of them
 % the PID of a process meant to host, sooner or later, the corresponding
@@ -1273,7 +1270,7 @@ user_identifier_resolver_loop( InstanceLoaderPid ) ->
 % a table whose keys are user identifiers (as binary strings), and whose values
 % are:
 %
-%   - either { blank_pid, P } where P is a blank PID that will host the
+%   - either {blank_pid, P} where P is a blank PID that will host the
 %   corresponding instance once it will be constructed
 %
 %   - or a PID already corresponding to that instance (if already created,
@@ -1319,8 +1316,9 @@ user_identifier_resolver_loop( IdTable, InstanceLoaderPid ) ->
 
 
 
-
-% Returns an updated identifier table, and sends back a pid_assigned message.
+% @doc Returns an updated identifier table, and sends back a pid_assigned
+% message.
+%
 declare_id( BinId, TargetNode, IdTable, LoadBalancerPid, CallerPid ) ->
 
 	% We declare here a user identifier being defined, expected to be new:
@@ -1330,11 +1328,11 @@ declare_id( BinId, TargetNode, IdTable, LoadBalancerPid, CallerPid ) ->
 
 			% All new instances shall be linked to the load balancer:
 			BlankPid = wooper:create_hosting_process( TargetNode,
-									  _ToLinkWithPid=LoadBalancerPid ),
+										_ToLinkWithPid=LoadBalancerPid ),
 
 			%trace_utils:debug_fmt(
-			%       "Blank process ~w created for user id '~ts'.",
-			%		[ BlankPid, BinId ] ),
+			%   "Blank process ~w created for user id '~ts'.",
+			%   [ BlankPid, BinId ] ),
 
 			CallerPid ! { pid_assigned, BlankPid },
 
@@ -1344,7 +1342,7 @@ declare_id( BinId, TargetNode, IdTable, LoadBalancerPid, CallerPid ) ->
 		{ value, { blank_pid, BlankPid } } ->
 
 			%trace_utils:debug_fmt( "Blank process ~w reused "
-            %   "for user id '~ts'.", [ BlankPid, BinId ] ),
+			%   "for user id '~ts'.", [ BlankPid, BinId ] ),
 
 			CallerPid ! { pid_assigned, BlankPid },
 
@@ -1367,7 +1365,9 @@ declare_id( BinId, TargetNode, IdTable, LoadBalancerPid, CallerPid ) ->
 
 
 
-% Returns an updated identifier table, and sends back a pid_resolved message.
+% @doc Returns an updated identifier table, and sends back a pid_resolved
+% message.
+%
 resolve_id( BinId, IdTable, LoadBalancerPid, CallerPid ) ->
 
 	case table:lookup_entry( _Key=BinId, IdTable ) of
@@ -1392,10 +1392,10 @@ resolve_id( BinId, IdTable, LoadBalancerPid, CallerPid ) ->
 			CallerPid ! { pid_resolved, BlankPid },
 
 			%trace_utils:debug_fmt(
-			%    "Blank process ~w associated to user id '~ts'.", 
-            %    [ BlankPid, BinId ] ),
+			%   "Blank process ~w associated to user id '~ts'.",
+			%   [ BlankPid, BinId ] ),
 
-			table:add_entry( _K=BinId, _Value={ blank_pid, BlankPid }, 
+			table:add_entry( _K=BinId, _Value={ blank_pid, BlankPid },
 							 IdTable );
 
 
@@ -1405,8 +1405,8 @@ resolve_id( BinId, IdTable, LoadBalancerPid, CallerPid ) ->
 			CallerPid ! { pid_resolved, BlankPid },
 
 			%trace_utils:debug_fmt(
-			%          "Already-existing blank process ~w returned for "
-			%		   "user id '~ts'.", [ BlankPid, BinId ] ),
+			%   "Already-existing blank process ~w returned for "
+			%   "user id '~ts'.", [ BlankPid, BinId ] ),
 
 			IdTable;
 
@@ -1417,8 +1417,8 @@ resolve_id( BinId, IdTable, LoadBalancerPid, CallerPid ) ->
 			CallerPid ! { pid_resolved, AssociatedPid },
 
 			%trace_utils:debug_fmt(
-			%       "Already-constructed process ~w returned for "
-			%		"user id '~ts'.", [ AssociatedPid, BinId ] ),
+			%   "Already-constructed process ~w returned for "
+			%   "user id '~ts'.", [ AssociatedPid, BinId ] ),
 
 			IdTable
 
@@ -1426,8 +1426,7 @@ resolve_id( BinId, IdTable, LoadBalancerPid, CallerPid ) ->
 
 
 
-
-% Does not return any result of interest.
+% @doc Does not return any result of interest.
 wrap_up_and_terminate( IdTable ) ->
 
 	% Let's scan the table to ensure no blank_pid remains (the accumulator will
@@ -1435,12 +1434,12 @@ wrap_up_and_terminate( IdTable ) ->
 
 	CheckFun = fun
 
-				   ( { BinId, { blank_pid, _BlankPid } }, IdAcc ) ->
-					   [ BinId | IdAcc ];
+					( { BinId, { blank_pid, _BlankPid } }, IdAcc ) ->
+						[ BinId | IdAcc ];
 
 
-				  ( { _BinId, _Pid }, IdAcc ) ->
-					   IdAcc
+				   ( { _BinId, _Pid }, IdAcc ) ->
+						IdAcc
 
 			   end,
 
@@ -1454,7 +1453,8 @@ wrap_up_and_terminate( IdTable ) ->
 			StringID = text_utils:binary_to_string( UndefinedId ),
 
 			?notify_error_fmt_cat( "Error, user identifier ~p was referenced "
-			  "at least once, but never defined.", [ StringID ], ?loader_cat ),
+				"at least once, but never defined.", [ StringID ],
+				?loader_cat ),
 
 			throw( { undefined_user_identifier, StringID } );
 
@@ -1465,14 +1465,14 @@ wrap_up_and_terminate( IdTable ) ->
 			RevUndefinedIds = lists:sort( UndefinedIds ),
 
 			?notify_error_fmt_cat(
-			   "Error, ~B user identifiers were referenced "
-			   "at least once, but never defined: ~ts",
-			   [ length( UndefinedIds ),
-				 text_utils:binaries_to_string( RevUndefinedIds ) ],
-			   ?loader_cat ),
+				"Error, ~B user identifiers were referenced "
+				"at least once, but never defined: ~ts",
+				[ length( UndefinedIds ),
+				  text_utils:binaries_to_string( RevUndefinedIds ) ],
+				?loader_cat ),
 
 			StringIds = [ text_utils:binary_to_string( I )
-						  || I <- RevUndefinedIds ],
+							|| I <- RevUndefinedIds ],
 
 			throw( { undefined_user_identifiers, StringIds } )
 
@@ -1481,14 +1481,14 @@ wrap_up_and_terminate( IdTable ) ->
 
 
 
-% Returns a string corresponding to the specified initialisation information,
-% like:
+% @doc Returns a string corresponding to the specified initialisation
+% information, like:
 %
 % "my_city" <- {class_City, [ "Paris", "city_pa" ]}.
 %
 -spec get_instance_initialisation_line( wooper:classname(),
-		wooper:method_arguments(), identifier_info() ) -> string().
-get_instance_initialisation_line( Classname, Parameters, 
+		wooper:method_arguments(), identifier_info() ) -> ustring().
+get_instance_initialisation_line( Classname, Parameters,
 								  _UserIdentifier=none ) ->
 	% Here like: { class_City, [ "Paris", "city_pa" ] }.
 	get_instance_description( Classname, Parameters );

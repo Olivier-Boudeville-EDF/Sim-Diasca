@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,20 +19,19 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
+% @doc A <b>test class for actors</b>.
 -module(class_TestActor).
 
 
+% @doc Test of the <b>Actor</b> class.
 -define( class_description,
-		 "Test of Actor class, regarding time management, communication, "
+		 "Test of the Actor class, regarding time management, communication, "
 		 "actor creation, etc." ).
 
 
 % Determines what are the direct mother classes of this class (if any):
 -define( superclasses, [ class_Actor ] ).
 
-
-% Shorthands:
--type tick_offset() :: class_TimeManager:tick_offset().
 
 
 % Tne class-specific attributes of this test actor are:
@@ -55,7 +54,7 @@
 	  "create actors, ex: {_InterCount=10, {_SchedulingPolicy={periodic,4}, "
 	  "_CreationPolicy=no_creation}}" },
 
-	{ creation_countdown, union( 'no_creation', basic_utils:count() ),
+	{ creation_countdown, union( 'no_creation', count() ),
 	  "keeps track of the number of spontaneous actions before the next actor "
 	  "creation, if not equal to 'no_creation'" },
 
@@ -103,7 +102,6 @@
 
 % Allows to use macros for trace sending:
 -include("sim_diasca_for_actors.hrl").
-
 
 
 % Implementation notes:
@@ -180,7 +178,6 @@
 
 
 
-
 % Two ways of adding a peer have to be defined. Indeed, to do so initially, we
 % need to perform some synchronisation, thus we need a request (thus
 % addInitialPeer/2), whereas adding a peer while the simulation is running
@@ -191,7 +188,13 @@
 
 
 
-% Constructs a new test actor:
+% Shorthands:
+
+-type tick_offset() :: class_TimeManager:tick_offset().
+
+
+
+% @doc Constructs a test actor:
 %
 % - ActorSettings corresponds to the various information (ex: AAI, seeding,
 % ordering mode, etc.) that the load-balancer sets for each newly created actor
@@ -201,10 +204,10 @@
 % - SchedulingSettings describes how this test actor is to drive its scheduling,
 % among:
 %
-%  - { periodic, P } where P is the requested number of ticks between two
+%  - {periodic, P} where P is the requested number of ticks between two
 %  spontaneous behaviours
 %
-%  - { erratic, MinRange } where MinRange allows to set up to how many ticks
+%  - {erratic, MinRange} where MinRange allows to set up to how many ticks
 %  should elapse in general between two erratic scheduling
 %
 % - CreationSettings describes if and how this test actor is to create other
@@ -212,9 +215,9 @@
 %
 %  - no_creation: never creates an actor
 %
-%  - { InterCount, KindOfCreatedActor } where Count specifies the number of
+%  - {InterCount, KindOfCreatedActor} where Count specifies the number of
 %  spontaneous schedulings before an actor is created, and KindOfCreatedActor,
-%  describes its policies, thanks to a { SchedulingPolicy, CreationPolicy } pair
+%  describes its policies, thanks to a {SchedulingPolicy, CreationPolicy} pair
 %
 % - TerminationTickOffset the duration after which this actor should terminate
 %
@@ -257,11 +260,11 @@ construct( State, ActorSettings, ActorName, SchedulingPolicy, CreationPolicy,
 			false = class_Actor:is_running( ActorState ),
 
 			InitialName = text_utils:format(
-						   "Initial Circular Actor created by '~s'",
-						   [ ActorName ] ),
+				"Initial Circular Actor created by '~ts'",
+				[ ActorName ] ),
 
-			%trace_utils:debug_fmt( "Creating circular '~s'.~n",
-			%                      [ InitialName ] ),
+			%trace_utils:debug_fmt( "Creating circular '~ts'.",
+			%                       [ InitialName ] ),
 
 			CircularPid = class_Actor:create_initial_actor(
 				class_TestCircularActor, [ InitialName, "My Message" ] ),
@@ -285,14 +288,13 @@ construct( State, ActorSettings, ActorName, SchedulingPolicy, CreationPolicy,
 			true = class_Actor:is_running( ActorState ),
 
 			RuntimeName = text_utils:format(
-						   "Runtime Circular Actor created by '~s'",
-						   [ ActorName ] ),
+				"Runtime Circular Actor created by '~ts'", [ ActorName ] ),
 
-			%trace_utils:debug_fmt( "Creating circular '~s'.",
-			%                    [ RuntimeName ] ),
+			%trace_utils:debug_fmt( "Creating circular '~ts'.",
+			%                       [ RuntimeName ] ),
 
 			class_Actor:create_actor( class_TestCircularActor,
-							  [ RuntimeName, "My Message" ], ActorState );
+								[ RuntimeName, "My Message" ], ActorState );
 
 		_ ->
 			ActorState
@@ -343,15 +345,14 @@ construct( State, ActorSettings, ActorName, SchedulingPolicy, CreationPolicy,
 		{ attr_14, get_sized_value() },
 		{ attr_15, get_sized_value() } ] ),
 
-	?send_notice_fmt( TraceState, "Creating a new test actor (PID: ~w, AAI: ~B, "
-					"seed: ~w), terminating no sooner than tick offset #~w.",
-					[ self(), getAttribute( TraceState, actor_abstract_id ),
-					  getAttribute( TraceState, random_seed ),
-					  TerminationTickOffset ] ),
+	?send_notice_fmt( TraceState, "Creating a test actor (PID: ~w, "
+		"AAI: ~B, seed: ~w), terminating no sooner than tick offset #~w.",
+		[ self(), getAttribute( TraceState, actor_abstract_id ),
+		  getAttribute( TraceState, random_seed ), TerminationTickOffset ] ),
 
-	output( "new class_TestActor created: AAI: ~B, seed: ~w~n",
-			   [ getAttribute( TraceState, actor_abstract_id ),
-				 getAttribute( TraceState, random_seed ) ], TraceState ),
+	output( "class_TestActor created: AAI: ~B, seed: ~w",
+			[ getAttribute( TraceState, actor_abstract_id ),
+			  getAttribute( TraceState, random_seed ) ], TraceState ),
 
 	TraceState.
 
@@ -369,18 +370,18 @@ get_sized_value() ->
 % Management section of the actor.
 
 
-% The core of the test actor behaviour.
+% @doc The core of the test actor behaviour.
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
 	%?notice_fmt( "actSpontaneous: local agenda is ~w.",
-	%			 [ ?getAttr(next_planned) ] ),
+	%             [ ?getAttr(next_planned) ] ),
 
 	case ?getAttr(trace_intensity) of
 
 		high ->
-			?notice_fmt( "Test Actor acting, having for peers: ~p.~n",
-					   [ ?getAttr(target_peers) ] );
+			?notice_fmt( "Test Actor acting, having for peers: ~p.",
+						 [ ?getAttr(target_peers) ] );
 
 		_ ->
 			ok
@@ -408,11 +409,11 @@ actSpontaneous( State ) ->
 
 
 
-% Overridden, in order to synchronise correctly the internal planning that this
-% test actor maintains, and to start its behaviour.
+% @doc Overridden, in order to synchronise correctly the internal planning that
+% this test actor maintains, and to start its behaviour.
 %
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
-						   actor_oneway_return().
+							actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 
 	output( "onFirstDiasca called at diasca ~B",
@@ -443,7 +444,7 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 				1 ->
 					class_Actor:send_actor_message( TargetPeer,
-									   { hello, [ ?getAttr(name) ] }, State )
+										{ hello, [ ?getAttr(name) ] }, State )
 
 			end
 
@@ -459,7 +460,7 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 
 
-% Manages the planned spontaneous actions.
+% @doc Manages the planned spontaneous actions.
 %
 % Returns an updated state.
 %
@@ -482,7 +483,7 @@ update_plan( CurrentTickOffset, State ) ->
 
 
 
-% Manages the termination behaviour of this actor.
+% @doc Manages the termination behaviour of this actor.
 %
 % Returns an updated state.
 %
@@ -522,7 +523,7 @@ terminate( PastOffset, State ) ->
 
 
 
-% Manages the normal, non-termination behaviour of this actor.
+% @doc Manages the normal, non-termination behaviour of this actor.
 %
 % Returns an updated state.
 %
@@ -531,7 +532,7 @@ terminate( PastOffset, State ) ->
 -spec behave_normally( tick_offset(), wooper:state() ) -> wooper:state().
 behave_normally( CurrentOffset, State ) ->
 
-	output( "acting spontaneously at #~B on ~s",
+	output( "acting spontaneously at #~B on ~ts",
 			[ CurrentOffset, net_utils:localnode() ], State ),
 
 	CreationState = manage_actor_creation( CurrentOffset, State ),
@@ -555,7 +556,7 @@ behave_normally( CurrentOffset, State ) ->
 			% Here we clamp to the termination tick and prepare for the
 			% termination:
 			InternalState = appendToAttribute( CreationState,
-								  next_planned, TerminationOffset ),
+								next_planned, TerminationOffset ),
 
 			executeOneway( InternalState, addSpontaneousTick,
 						   TerminationOffset );
@@ -577,14 +578,14 @@ behave_normally( CurrentOffset, State ) ->
 
 
 
-% Determines the next spontaneous tick (if any), or 'undefined'.
+% @doc Determines the next spontaneous tick (if any), or 'undefined'.
 %
 % Returns an updated tick offset.
 %
 % (helper)
 %
 -spec determine_next_spontaneous_tick( tick_offset(), wooper:state() ) ->
-											 maybe( tick_offset() ).
+												maybe( tick_offset() ).
 determine_next_spontaneous_tick( CurrentOffset, State ) ->
 
 	TargetOffset = case ?getAttr(scheduling_policy) of
@@ -606,8 +607,8 @@ determine_next_spontaneous_tick( CurrentOffset, State ) ->
 
 
 
-% Ensures that specified tick offset is locally declared in the local planning,
-% exactly once.
+% @doc Ensures that specified tick offset is locally declared in the local
+% planning, exactly once.
 %
 % Returns an updated state.
 %
@@ -646,14 +647,14 @@ manage_actor_creation( CurrentOffset, State ) ->
 
 		0 ->
 
-			% Let's create a new actor:
+			% Let's create an actor:
 			{ InterCount, { NewSchedulingPolicy, NewCreationPolicy } } =
 				?getAttr(creation_policy),
 
 			NewActorCount = length( ?getAttr(created_actors) ) + 1,
 
-			NewActorName = lists:flatten( text_utils:format( "~s-~B",
-									   [ ?getAttr(name), NewActorCount ] ) ),
+			NewActorName = lists:flatten( text_utils:format( "~ts-~B",
+										[ ?getAttr(name), NewActorCount ] ) ),
 
 
 			ActorTerminationTickOffset = CurrentOffset + 5
@@ -727,8 +728,8 @@ manage_actor_creation( CurrentOffset, State ) ->
 			NextCount = NonNullCount - 1,
 
 			%trace_utils:debug_fmt(
-			%  "(this actor will create an actor in ~B activations)",
-			%  [ NextCount ] ),
+			%   "(this actor will create an actor in ~B activations)",
+			%   [ NextCount ] ),
 
 			setAttribute( State, creation_countdown, NextCount )
 
@@ -736,14 +737,14 @@ manage_actor_creation( CurrentOffset, State ) ->
 
 
 
-% Lowers the trace sending intensity of this actor.
+% @doc Lowers the trace sending intensity of this actor.
 -spec lowerTraceIntensity( wooper:state() ) -> oneway_return().
 lowerTraceIntensity( State ) ->
 	wooper:return_state( setAttribute( State, trace_intensity, low ) ).
 
 
 
-% Overridden oneway, called by the load balancer whenever it performed the
+% @doc Overridden oneway, called by the load balancer whenever it performed the
 % corresponding creation request.
 %
 -spec onActorCreated( wooper:state(), actor_pid(), class_Actor:tag(),
@@ -754,8 +755,8 @@ onActorCreated( State, CreatedActorPid, CreatedActorTag, _LoadBalancerPid ) ->
 			[ CreatedActorPid, CreatedActorTag ], State ),
 
 	%?debug_fmt( "Test actor notified that actor ~w with tag ~p was created "
-	%			"on its behalf; adding it as a peer.",
-	%			[ CreatedActorPid, CreatedActorTag ] ),
+	%   "on its behalf; adding it as a peer.",
+	%   [ CreatedActorPid, CreatedActorTag ] ),
 
 	PeerState = add_peer( CreatedActorPid, State ),
 
@@ -764,7 +765,8 @@ onActorCreated( State, CreatedActorPid, CreatedActorTag, _LoadBalancerPid ) ->
 
 
 
-% Adds specified peer to known target peers, if it is not already registered.
+% @doc Adds specified peer to known target peers, if it is not already
+% registered.
 %
 % To be called initially, from tests, before the simulation is started.
 %
@@ -780,7 +782,7 @@ addInitialPeer( State, PeerPid ) ->
 
 
 
-% Adds specified peer to known target peers.
+% @doc Adds specified peer to known target peers.
 %
 % To be called from an actor, while the simulation is running.
 %
@@ -792,7 +794,7 @@ addPeer( State, PeerPid ) ->
 	case ?getAttr(trace_intensity) of
 
 		true ->
-			?notice_fmt( "Peer ~w added.~n", [ PeerPid ] );
+			?notice_fmt( "Peer ~w added.", [ PeerPid ] );
 
 		_ ->
 			ok
@@ -813,8 +815,8 @@ addPeer( State, PeerPid ) ->
 
 
 
-% Actor oneway called by a peer requesting this actor not to send it anymore
-% messages, for example because this actor is terminating.
+% @doc Actor oneway called by a peer requesting this actor not to send it
+% anymore messages, for example because this actor is terminating.
 %
 -spec removePeer( wooper:state(), sending_actor_pid() ) ->
 						actor_oneway_return().
@@ -828,7 +830,7 @@ removePeer( State, PeerPid ) ->
 
 
 
-% Oneway called by a peer telling this actor that it will never send hello
+% @doc Oneway called by a peer telling this actor that it will never send hello
 % messages any more to it, and thus that the latter can forget the former.
 %
 -spec forgetPeer( wooper:state(), sending_actor_pid() ) ->
@@ -840,7 +842,7 @@ forgetPeer( State, PeerPid ) ->
 
 
 
-% Receives an 'hello' message.
+% @doc Receives an 'hello' message.
 -spec hello( wooper:state(), class_Actor:internal_name(),
 			 sending_actor_pid() ) -> actor_oneway_return().
 hello( State, SenderName, SendingActorPid ) ->
@@ -849,16 +851,16 @@ hello( State, SenderName, SendingActorPid ) ->
 
 	%trace_utils:debug_fmt(
 	%    " - for ~w at #~B, instant_spontaneous_requested: ~p",
-	%	 [ self(), CurrentOffset, ?getAttr(instant_spontaneous_requested) ] ),
+	%    [ self(), CurrentOffset, ?getAttr(instant_spontaneous_requested) ] ),
 
-	%output( "being said hello by ~s (i.e. ~w) at #~B",
-	%		[ SenderName, SendingActorPid, CurrentOffset ], State ),
+	%output( "being said hello by ~ts (i.e. ~w) at #~B",
+	%        [ SenderName, SendingActorPid, CurrentOffset ], State ),
 
 	case ?getAttr(trace_intensity) of
 
 		high ->
-			?notice_fmt( "Received an hello message from ~s (~w).",
-					   [ SenderName, SendingActorPid ] );
+			?notice_fmt( "Received an hello message from ~ts (~w).",
+						 [ SenderName, SendingActorPid ] );
 
 		_ ->
 			ok
@@ -885,7 +887,8 @@ hello( State, SenderName, SendingActorPid ) ->
 
 
 
-% Adds the list of specified peers to the specified target peer, synchronously.
+% @doc Adds the list of specified peers to the specified target peer,
+% synchronously.
 %
 % Note: define for convenience, to avoid code duplication in tests.
 %
@@ -898,8 +901,8 @@ add_initial_peers( TargetPeer, Peers ) ->
 	[ TargetPeer ! { addInitialPeer, P, self() } || P <- Peers ],
 
 	% A nice side effect is that we can run these operations in parallel:
-	[ receive { wooper_result, peer_added } -> ok end ||
-		_X <- lists:seq( 1, length( Peers ) ) ],
+	[ receive { wooper_result, peer_added } -> ok end
+				|| _X <- lists:seq( 1, length( Peers ) ) ],
 
 	wooper:return_static_void().
 
@@ -910,7 +913,7 @@ add_initial_peers( TargetPeer, Peers ) ->
 
 
 
-% Adds specified target peer to actor.
+% @doc Adds specified target peer to actor.
 %
 % Returns a new state.
 %
@@ -932,7 +935,7 @@ add_peer( PeerPid, State ) ->
 			case ?getAttr(trace_intensity) of
 
 				true ->
-					?notice_fmt( "Peer ~w added.~n", [ PeerPid ] );
+					?notice_fmt( "Peer ~w added.", [ PeerPid ] );
 
 				_ ->
 					ok
@@ -945,7 +948,7 @@ add_peer( PeerPid, State ) ->
 
 
 
-% Says hello to all target peers.
+% @doc Says hello to all target peers.
 %
 % Returns an updated state.
 %
@@ -959,8 +962,8 @@ say_hello( State ) ->
 
 		[] ->
 			%?info_fmt( "Test Actor acting spontaneously at tick offset #~B, "
-			%			"but having no target peer to say hello to.",
-			%			[ CurrentTickOffset ] ),
+			%   "but having no target peer to say hello to.",
+			%   [ CurrentTickOffset ] ),
 			State;
 
 		Peers ->
@@ -969,8 +972,8 @@ say_hello( State ) ->
 
 				true ->
 					?notice_fmt( "Test Actor acting spontaneously "
-							   "at tick offset #~B, saying hello to ~w.",
-							   [ CurrentTickOffset, Peers ] );
+						"at tick offset #~B, saying hello to ~w.",
+						[ CurrentTickOffset, Peers ] );
 
 				false ->
 					ok
@@ -1005,9 +1008,9 @@ say_hello( State ) ->
 
 
 
-% Notifies all source peers that this actor is terminating, thus they must not
-% send any more messages to it, otherwise they will wait for ever for an answer
-% and will stall the simulation.
+% @doc Notifies all source peers that this actor is terminating, thus they must
+% not send any more messages to it, otherwise they will wait for ever for an
+% answer and will stall the simulation.
 %
 % Returns an updated state.
 %
@@ -1026,14 +1029,13 @@ notify_termination( State ) ->
 
 		[] ->
 			?info_fmt( "Test Actor terminating at tick offset #~B, "
-						"having no source peer to notify.",
-						[ CurrentTickOffset ] ),
+				"having no source peer to notify.", [ CurrentTickOffset ] ),
 			State;
 
 		SourcePeers ->
 			?notice_fmt( "Test Actor terminating at tick offset #~B, "
-					   "requesting source peers ~w to stop sending messages.",
-					   [ CurrentTickOffset, SourcePeers ] ),
+				"requesting source peers ~w to stop sending messages.",
+				[ CurrentTickOffset, SourcePeers ] ),
 
 			SourceSendFun = fun( Peer, FunState ) ->
 
@@ -1041,7 +1043,7 @@ notify_termination( State ) ->
 						State ),
 
 				%?notice_fmt( "Requesting ~w to stop sending messages.",
-				%		  [ Peer ] ),
+				%             [ Peer ] ),
 
 				% Returns an updated state:
 				class_Actor:send_actor_message( Peer, removePeer, FunState )
@@ -1108,7 +1110,7 @@ notify_termination( State ) ->
 
 
 
-% Outputs specified message in console, iff talkative.
+% @doc Outputs specified message in console, iff talkative.
 %
 % (helper)
 %
@@ -1118,8 +1120,8 @@ output( Message, State ) ->
 
 		true ->
 			TickOffset = class_Actor:get_current_tick_offset( State ),
-			trace_utils:debug_fmt( " [~s (~w) at ~p] " ++ Message ++ "~n",
-					   [ ?getAttr(name), self(), TickOffset ] );
+			trace_utils:debug_fmt( " [~ts (~w) at ~p] " ++ Message,
+								   [ ?getAttr(name), self(), TickOffset ] );
 
 		false ->
 			ok
@@ -1128,7 +1130,7 @@ output( Message, State ) ->
 
 
 
-% Outputs specified formatted message in console, iff talkative.
+% @doc Outputs specified formatted message in console, iff talkative.
 %
 % (helper)
 %

@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2021 EDF R&D
+% Copyright (C) 2008-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,14 +19,14 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-% @doc Mesh class, for all kinds of <b>graph-based systems</b> (such as
+% @doc Mesh class, to manage all kinds of <b>graph-based systems</b> (such as
 % networks).
 %
 -module(class_Mesh).
 
 
--define( class_description, "Mesh class, for all kinds of graph-based systems "
-		 "(such as networks)." ).
+-define( class_description, "Mesh class, to manage kinds of graph-based "
+		 "systems (such as networks)." ).
 
 
 
@@ -256,7 +256,7 @@
 
 
 
-% @doc Constructs a new mesh instance.
+% @doc Constructs a mesh instance.
 %
 % Parameters are:
 %
@@ -288,12 +288,12 @@ construct( State, { Name, OutputDirectory }, MeshOptions ) ->
 	Filename = file_utils:convert_to_filename( Name ),
 
 	init_common( MeshOptions, setAttributes( TraceState, [
-			{ graph_filename, Filename },
-			{ graph_directory, OutputDirectory },
-			{ graph_directory_created, false },
-			{ digraph, undefined },
-			{ marked_links, [] },
-			{ marked_nodes, [] } ] ) );
+		{ graph_filename, Filename },
+		{ graph_directory, OutputDirectory },
+		{ graph_directory_created, false },
+		{ digraph, undefined },
+		{ marked_links, [] },
+		{ marked_nodes, [] } ] ) );
 
 
 construct( State, Name, MeshOptions ) ->
@@ -303,12 +303,12 @@ construct( State, Name, MeshOptions ) ->
 									?trace_categorize(Name) ),
 
 	init_common( MeshOptions, setAttributes( TraceState, [
-			{ graph_filename, file_utils:convert_to_filename( Name ) },
-			{ graph_directory, undefined },
-			{ graph_directory_created, true },
-			{ digraph, undefined },
-			{ marked_links, [] },
-			{ marked_nodes, [] } ] ) ).
+		{ graph_filename, file_utils:convert_to_filename( Name ) },
+		{ graph_directory, undefined },
+		{ graph_directory_created, true },
+		{ digraph, undefined },
+		{ marked_links, [] },
+		{ marked_nodes, [] } ] ) ).
 
 
 
@@ -572,8 +572,8 @@ addLink( State, AddedLink, FromNode, ToNode, AssociatedLinkContent ) ->
 addStaticLink( State, FromNode, ToNode, AssociatedLinkContent ) ->
 
 	%trace_utils:debug_fmt(
-	%	"addStaticLink: FromNode =~w, ToNode=~w, AssociatedLinkContent=~w.",
-	%	[ FromNode, ToNode, AssociatedLinkContent ] ),
+	%   "addStaticLink: FromNode =~w, ToNode=~w, AssociatedLinkContent=~w.",
+	%   [ FromNode, ToNode, AssociatedLinkContent ] ),
 
 	case digraph:add_edge( ?getAttr(digraph), FromNode, ToNode,
 						   AssociatedLinkContent ) of
@@ -1162,7 +1162,7 @@ format_options( NodeOptions ) ->
 	%trace_utils:debug_fmt( "Formatting ~p.", [ NodeOptions ] ),
 
 	Strings = [ text_utils:format( "~ts = \"~ts\"", [ Name, Value ] )
-				|| { Name, Value } <- NodeOptions ],
+					|| { Name, Value } <- NodeOptions ],
 
 	text_utils:join( ", ", Strings ).
 
@@ -1480,7 +1480,7 @@ init_common( Options, State ) ->
 
 	end,
 
-	?notice_fmt( "Creating a new mesh whose name is ~ts, which will be ~ts.",
+	?notice_fmt( "Creating a mesh whose name is ~ts, which will be ~ts.",
 				 [ Name, CycleString ] ),
 
 	GraphLabel =

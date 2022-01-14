@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2021 EDF R&D
+% Copyright (C) 2012-2022 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -19,8 +19,7 @@
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-
-% Unit tests for the implementation of the resilience manager.
+% @doc Unit tests for the implementation of the <b>resilience manager</b>.
 %
 % See the class_ResilienceManager.erl module.
 %
@@ -40,7 +39,7 @@
 
 
 
-% Runs the tests.
+% @doc Runs the tests.
 -spec run() -> no_return().
 run() ->
 
@@ -56,7 +55,7 @@ run() ->
 	FirstTestKMap = class_ResilienceManager:build_k_map( FirstResilienceLevel,
 														 FirstProtectedNodes ),
 
-	?test_notice_fmt( "For a resilience level of ~B, result is: ~s",
+	?test_notice_fmt( "For a resilience level of ~B, result is: ~ts",
 		[ FirstResilienceLevel,
 		  class_ResilienceManager:k_map_to_string( FirstTestKMap ) ] ),
 
@@ -71,9 +70,9 @@ run() ->
 					  [ SecondResilienceLevel, NodeCount ] ),
 
 	SecondProtectedNodes = [ class_Graphable:new_link( [
-								{ label, io_lib:format( "Node ~s", [ N ] ) } ] )
-							 || N <- FirstProtectedNodes ],
-							%|| N <- lists:seq( 1, NodeCount ) ],
+		{ label, text_utils:format( "Node ~ts", [ N ] ) } ] )
+		 || N <- FirstProtectedNodes ],
+		%|| N <- lists:seq( 1, NodeCount ) ],
 
 
 	?test_notice_fmt( "Building a k-map for k=~B and ~B nodes (~p).",
@@ -92,12 +91,12 @@ run() ->
 	KPairs = table:enumerate( SecondTestKMap ),
 
 	% Two passes are needed, as all nodes must be declared first:
-	[ ResilienceMesh ! { addNode, [ N ] }  || { N, _KRecord } <- KPairs ],
+	[ ResilienceMesh ! { addNode, [ N ] } || { N, _KRecord } <- KPairs ],
 
 	[ begin
 		  [ begin
-			   Link = class_Graphable:new_link( [ { label, "" } ] ),
-			   ResilienceMesh ! { addLink, [ Link, N, Secured ] }
+				Link = class_Graphable:new_link( [ { label, "" } ] ),
+				ResilienceMesh ! { addLink, [ Link, N, Secured ] }
 			end
 			|| Secured <- KRecord#k_record.securing ]
 
@@ -111,7 +110,7 @@ run() ->
 
 		Hint ->
 			?test_warning_fmt(
-			   "No support found for the rendering of a graph: ~s.", [ Hint ] )
+			   "No support found for the rendering of a graph: ~ts.", [ Hint ] )
 
 	end,
 
