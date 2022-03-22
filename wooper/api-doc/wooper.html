@@ -30,6 +30,10 @@
 <p> A term (often an atom) used to denote an acknowlegment (i.e. a conventional
  symbol to ensure that a request was synchronously executed).</p>
 
+<h3 class="typedecl"><a name="type-atom_node_name">atom_node_name()</a></h3>
+<p><tt>atom_node_name() = <a href="net_utils.html#type-atom_node_name">net_utils:atom_node_name()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-attribute_entry">attribute_entry()</a></h3>
 <p><tt>attribute_entry() = {<a href="#type-attribute_name">attribute_name()</a>, <a href="#type-attribute_value">attribute_value()</a>}</tt></p>
 
@@ -144,6 +148,10 @@
 <h3 class="typedecl"><a name="type-method_qualifiers">method_qualifiers()</a></h3>
 <p><tt>method_qualifiers() = [<a href="#type-method_qualifier">method_qualifier()</a>]</tt></p>
 <p> The qualifiers applying to a method.</p>
+
+<h3 class="typedecl"><a name="type-monitor_node_info">monitor_node_info()</a></h3>
+<p><tt>monitor_node_info() = <a href="monitor_utils.html#type-monitor_node_info">monitor_utils:monitor_node_info()</a></tt></p>
+
 
 <h3 class="typedecl"><a name="type-oneway_arity">oneway_arity()</a></h3>
 <p><tt>oneway_arity() = <a href="#type-method_arity">method_arity()</a></tt></p>
@@ -584,7 +592,7 @@ oneway.</p>
 
 <h3 class="function"><a name="default_node_down_handler-3">default_node_down_handler/3</a></h3>
 <div class="spec">
-<p><tt>default_node_down_handler(Node::<a href="net_utils.html#type-atom_node_name">net_utils:atom_node_name()</a>, MonitorNodeInfo::<a href="monitor_utils.html#type-monitor_node_info">monitor_utils:monitor_node_info()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><tt>default_node_down_handler(Node::<a href="#type-atom_node_name">atom_node_name()</a>, MonitorNodeInfo::<a href="#type-monitor_node_info">monitor_node_info()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
 <p> </p>
 </div><p><p>WOOPER default node down handler.</p>
 
@@ -599,7 +607,7 @@ oneway.</p>
 
 <h3 class="function"><a name="default_node_up_handler-3">default_node_up_handler/3</a></h3>
 <div class="spec">
-<p><tt>default_node_up_handler(Node::<a href="net_utils.html#type-atom_node_name">net_utils:atom_node_name()</a>, MonitorNodeInfo::<a href="monitor_utils.html#type-monitor_node_info">monitor_utils:monitor_node_info()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><tt>default_node_up_handler(Node::<a href="#type-atom_node_name">atom_node_name()</a>, MonitorNodeInfo::<a href="#type-monitor_node_info">monitor_node_info()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
 <p> </p>
 </div><p><p>WOOPER default node up handler.</p>
 

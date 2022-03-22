@@ -19,12 +19,36 @@
 
 <h2><a name="types">Data Types</a></h2>
 
+<h3 class="typedecl"><a name="type-any_app_info">any_app_info()</a></h3>
+<p><tt>any_app_info() = <a href="#type-app_info">app_info()</a> | <a href="#type-app_info_map">app_info_map()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-any_string">any_string()</a></h3>
+<p><tt>any_string() = <a href="text_utils.html#type-any_string">text_utils:any_string()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-any_version">any_version()</a></h3>
+<p><tt>any_version() = <a href="basic_utils.html#type-any_version">basic_utils:any_version()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-app_info">app_info()</a></h3>
+<p><tt>app_info() = #app_info{name = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a>, version = <a href="basic_utils.html#type-any_version">basic_utils:any_version()</a>, author = <a href="#type-maybe">maybe</a>(<a href="text_utils.html#type-bin_string">text_utils:bin_string()</a>), os_family = <a href="system_utils.html#type-os_family">system_utils:os_family()</a>, os_name = <a href="system_utils.html#type-os_name">system_utils:os_name()</a>}</tt></p>
+
+
+<h3 class="typedecl"><a name="type-app_info_map">app_info_map()</a></h3>
+<p><tt>app_info_map() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/filename.html#type-basedir_opts">filename:basedir_opts()</a></tt></p>
+<p> Needed by some standard functions in the filename module.</p>
+
 <h3 class="typedecl"><a name="type-format_string">format_string()</a></h3>
 <p><tt>format_string() = <a href="text_utils.html#type-format_string">text_utils:format_string()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-format_values">format_values()</a></h3>
 <p><tt>format_values() = <a href="text_utils.html#type-format_values">text_utils:format_values()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-string_like">string_like()</a></h3>
+<p><tt>string_like() = <a href="text_utils.html#type-string_like">text_utils:string_like()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
@@ -39,6 +63,11 @@ immediately.</td></tr>
 <tr><td valign="top"><a href="#fail-2">fail/2</a></td><td>To be called whenever an application is to fail (crash on error)
  immediately.</td></tr>
 <tr><td valign="top"><a href="#finished-0">finished/0</a></td><td>Called whenever the execution is finished.</td></tr>
+<tr><td valign="top"><a href="#get_app_info-2">get_app_info/2</a></td><td>Returns an application information corresponding to specified application
+ name and version.</td></tr>
+<tr><td valign="top"><a href="#get_app_info-3">get_app_info/3</a></td><td>Returns an application information corresponding to specified application
+ name, version and possibly author description.</td></tr>
+<tr><td valign="top"><a href="#get_app_info_map-1">get_app_info_map/1</a></td><td>Returns a map typically relevant for filename:basedir/3.</td></tr>
 <tr><td valign="top"><a href="#start-1">start/1</a></td><td>Starts an application; expected to be the first application statement.</td></tr>
 <tr><td valign="top"><a href="#stop-0">stop/0</a></td><td>Stops an application; expected to be the last application statement in
  the normal case.</td></tr>
@@ -91,6 +120,28 @@ immediately.</p>
 <p><tt>finished() -&gt; no_return()</tt><br></p>
 <p> </p>
 </div><p>Called whenever the execution is finished.</p>
+
+<h3 class="function"><a name="get_app_info-2">get_app_info/2</a></h3>
+<div class="spec">
+<p><tt>get_app_info(AppName::<a href="#type-string_like">string_like()</a>, AppVersion::<a href="#type-any_version">any_version()</a>) -&gt; <a href="#type-app_info">app_info()</a></tt><br></p>
+<p> </p>
+</div><p>Returns an application information corresponding to specified application
+ name and version.
+</p>
+
+<h3 class="function"><a name="get_app_info-3">get_app_info/3</a></h3>
+<div class="spec">
+<p><tt>get_app_info(AppName::<a href="#type-string_like">string_like()</a>, AppVersion::<a href="#type-any_version">any_version()</a>, MaybeAuthorDesc::<a href="#type-maybe">maybe</a>(<a href="#type-any_string">any_string()</a>)) -&gt; <a href="#type-app_info">app_info()</a></tt><br></p>
+<p> </p>
+</div><p>Returns an application information corresponding to specified application
+ name, version and possibly author description.
+</p>
+
+<h3 class="function"><a name="get_app_info_map-1">get_app_info_map/1</a></h3>
+<div class="spec">
+<p><tt>get_app_info_map(App_info::<a href="#type-app_info">app_info()</a>) -&gt; <a href="#type-app_info_map">app_info_map()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a map typically relevant for filename:basedir/3.</p>
 
 <h3 class="function"><a name="start-1">start/1</a></h3>
 <div class="spec">

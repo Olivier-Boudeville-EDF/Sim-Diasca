@@ -58,8 +58,11 @@ ascending (Erlang) term order.</td></tr>
 <tr><td valign="top"><a href="#delete_all_in-2">delete_all_in/2</a></td><td>Returns a copy of the specified list where all elements matching Elem are 
 deleted, whether or not there is any.</td></tr>
 <tr><td valign="top"><a href="#delete_existing-2">delete_existing/2</a></td><td>Returns a copy of the specified list where the first element matching
- Elem is deleted, ensuring at least one of these elements exists (as opposed to
- lists:delete/2).</td></tr>
+ Elem is deleted, ensuring that at least one of these elements exists (as
+ opposed to lists:delete/2).</td></tr>
+<tr><td valign="top"><a href="#delete_existing_elements-2">delete_existing_elements/2</a></td><td>Returns a copy of the specified list where the first element matching
+ each of the specified elements is deleted, ensuring that at least one of these
+ elements exists (as opposed to lists:delete/2).</td></tr>
 <tr><td valign="top"><a href="#delete_if_existing-2">delete_if_existing/2</a></td><td>Deletes the first matching of specified element from specified list, 
 returning whether an element has been removed: either the 'not_found' atom (in 
 which case the list remained the same) or the corresponding new list (same 
@@ -104,6 +107,9 @@ its own if not already a list.</td></tr>
  tuple in a list of its own if not already a list, or check that this list is
  only populated of tuples.</td></tr>
 <tr><td valign="top"><a href="#extract_element_at-2">extract_element_at/2</a></td><td>Extracts element from the specified list, at the specified index.</td></tr>
+<tr><td valign="top"><a href="#extract_element_if_existing-2">extract_element_if_existing/2</a></td><td>Extracts the (first occurrence of the) specified element from the
+ specified list, if existing there, then returning the shrunk list (with that
+ element removed, and in its original order), otherwise returning false.</td></tr>
 <tr><td valign="top"><a href="#extract_elements_from-2">extract_elements_from/2</a></td><td>Extracts the specified number of elements at random from the specified 
 list, knowing that they all have the same probability of being extracted 
 initially, but when an element is extracted, it is removed from the candidate 
@@ -131,6 +137,7 @@ the) specified element in the specified list.</td></tr>
 <tr><td valign="top"><a href="#get_maybe_index_of-2">get_maybe_index_of/2</a></td><td>Returns the index, in <code>[1..length(List)]</code>, of the (first occurrence of 
 the) specified element in the specified list, or 'undefined' if the element is 
 not found.</td></tr>
+<tr><td valign="top"><a href="#group_by-2">group_by/2</a></td><td>Splits the specified list by groups of Count elements.</td></tr>
 <tr><td valign="top"><a href="#has_duplicates-1">has_duplicates/1</a></td><td>Tells whether there are in the specified list elements that are present
  more than once.</td></tr>
 <tr><td valign="top"><a href="#heads-2">heads/2</a></td><td>Returns a pair made of the N first elements ("heads") of the specified 
@@ -163,8 +170,7 @@ specified index removed.</td></tr>
 <tr><td valign="top"><a href="#set_element_at-3">set_element_at/3</a></td><td>Returns the specified list with the element at specified index replaced
  by the specified element.</td></tr>
 <tr><td valign="top"><a href="#split_at-2">split_at/2</a></td><td>Splits the specified (plain) list in two parts (two plain lists, that are 
-returned): the first contains the first elements, up to MaxLen included (in 
-reverse order), and the second the others (if any).</td></tr>
+returned):.</td></tr>
 <tr><td valign="top"><a href="#subtract_all_duplicates-2">subtract_all_duplicates/2</a></td><td>Returns a list equal to L1 except that all elements found in L2 have been 
 removed, even if in L1 they were duplicated.</td></tr>
 <tr><td valign="top"><a href="#union-2">union/2</a></td><td>Returns the union of the two specified lists, that is the list of all
@@ -291,8 +297,18 @@ deleted, whether or not there is any.</p>
 <p><tt>delete_existing(Elem::<a href="#type-element">element()</a>, List::list()) -&gt; list()</tt><br></p>
 <p> </p>
 </div><p>Returns a copy of the specified list where the first element matching
- Elem is deleted, ensuring at least one of these elements exists (as opposed to
- lists:delete/2). The order of the specified list is preserved.
+ Elem is deleted, ensuring that at least one of these elements exists (as
+ opposed to lists:delete/2). The order of the specified list is preserved.
+</p>
+
+<h3 class="function"><a name="delete_existing_elements-2">delete_existing_elements/2</a></h3>
+<div class="spec">
+<p><tt>delete_existing_elements(Elems::[<a href="#type-element">element()</a>], List::list()) -&gt; list()</tt><br></p>
+<p> </p>
+</div><p>Returns a copy of the specified list where the first element matching
+ each of the specified elements is deleted, ensuring that at least one of these
+ elements exists (as opposed to lists:delete/2). The order of the specified
+ list is preserved.
 </p>
 
 <h3 class="function"><a name="delete_if_existing-2">delete_if_existing/2</a></h3>
@@ -384,8 +400,11 @@ sum up to 1.0).</p>
  <p>Ex: ElementList = [{first,1}, {second,2}, {third,1}] is excepted to return on 
 average 'second' twice as frequently as 'first' or 'third'.</p>
 
- Using [{first,1}, {second,0}, {third,1}] instead would mean that 'second'
- would never be drawn.
+ <p>Using [{first,1}, {second,0}, {third,1}] instead would mean that 'second' 
+would never be drawn.</p>
+
+ See also random_utils:generate_random_state_from/1 and
+ random_utils:get_sample[s]_from/1.
 </p>
 
 <h3 class="function"><a name="draw_elements_from-2">draw_elements_from/2</a></h3>
@@ -458,6 +477,15 @@ its own if not already a list.</p>
  <p>Returns that element and the resulting, shrunk list.</p>
 
  Ex: {b, [a, c]} = extract_element_at([ a, b, c], 2).
+</p>
+
+<h3 class="function"><a name="extract_element_if_existing-2">extract_element_if_existing/2</a></h3>
+<div class="spec">
+<p><tt>extract_element_if_existing(Elem::<a href="#type-element">element()</a>, List::list()) -&gt; false | list()</tt><br></p>
+<p> </p>
+</div><p>Extracts the (first occurrence of the) specified element from the
+ specified list, if existing there, then returning the shrunk list (with that
+ element removed, and in its original order), otherwise returning false.
 </p>
 
 <h3 class="function"><a name="extract_elements_from-2">extract_elements_from/2</a></h3>
@@ -604,6 +632,17 @@ not found.</p>
  Ex:
    3 = get_maybe_index_of(bar, [foo, ugh, bar, baz])
    undefined = get_maybe_index_of(xxx, [foo, ugh, bar, baz])
+</p>
+
+<h3 class="function"><a name="group_by-2">group_by/2</a></h3>
+<div class="spec">
+<p><tt>group_by(Count::<a href="#type-count">count()</a>, List::list()) -&gt; [list()]</tt><br></p>
+<p> </p>
+</div><p><p>Splits the specified list by groups of Count elements.</p>
+
+ <p>The last group may have less than Count elements.</p>
+
+ Ex: [[a,b], [c,d], [e]] = group_by(_Count=2, [a,b,c,d,e])
 </p>
 
 <h3 class="function"><a name="has_duplicates-1">has_duplicates/1</a></h3>
@@ -758,7 +797,7 @@ T;</p>
 
 <h3 class="function"><a name="remove_first_occurrences-2">remove_first_occurrences/2</a></h3>
 <div class="spec">
-<p><tt>remove_first_occurrences(ElementsToRemove::<a href="#type-element">element()</a>, List::list()) -&gt; list()</tt><br></p>
+<p><tt>remove_first_occurrences(ElementsToRemove::[<a href="#type-element">element()</a>], List::list()) -&gt; list()</tt><br></p>
 <p> </p>
 </div><p>Deletes up to one occurrence (the first found) of each of the specified
  elements, from the specified list, whose order is preserved.
@@ -789,8 +828,11 @@ T;</p>
 <p><tt>split_at(MaxLen::<a href="#type-count">count()</a>, List::list()) -&gt; {list(), list()}</tt><br></p>
 <p> </p>
 </div><p><p>Splits the specified (plain) list in two parts (two plain lists, that are 
-returned): the first contains the first elements, up to MaxLen included (in 
-reverse order), and the second the others (if any).</p>
+returned):</p>
+
+ <p>- the first contains the first elements, up to MaxLen included, and in   
+reverse order 
+- the second contains the remaining elements (if any)</p>
 
  Ex: split_at(3, [a, b, c, d, e]) = {[c, b, a], [d, e]}
 </p>

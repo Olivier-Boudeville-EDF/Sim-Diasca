@@ -34,7 +34,7 @@
 
 
 <h3 class="typedecl"><a name="type-bounding_algorithm">bounding_algorithm()</a></h3>
-<p><tt>bounding_algorithm() = <a href="bounding_box2.html#type-bounding_algorithm">bounding_box2:bounding_algorithm()</a></tt></p>
+<p><tt>bounding_algorithm() = <a href="bounding_surface.html#type-bounding_algorithm">bounding_surface:bounding_algorithm()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-canvas">canvas()</a></h3>
@@ -50,7 +50,7 @@
 
 
 <h3 class="typedecl"><a name="type-polygon">polygon()</a></h3>
-<p><tt>polygon() = #polygon{vertices = [<a href="point2.html#type-any_vertex2">point2:any_vertex2()</a>], rendering = <a href="option_list.html#type-option_list">option_list:option_list()</a>, bounding_box = <a href="#type-maybe">maybe</a>(<a href="bounding_box2.html#type-bounding_box2">bounding_box2:bounding_box2()</a>)}</tt></p>
+<p><tt>polygon() = #polygon{vertices = [<a href="point2.html#type-any_vertex2">point2:any_vertex2()</a>], rendering = <a href="option_list.html#type-option_list">option_list:option_list()</a>, bounding_surface = <a href="#type-maybe">maybe</a>(<a href="bounding_surface.html#type-bounding_surface">bounding_surface:bounding_surface()</a>)}</tt></p>
 <p> Describes a polygon, convex or not, simple or not.</p>
 
 <h3 class="typedecl"><a name="type-square_distance">square_distance()</a></h3>
@@ -85,8 +85,8 @@ polygon.</td></tr>
 <tr><td valign="top"><a href="#set_edge_color-2">set_edge_color/2</a></td><td>Sets the edge color of specified polygon.</td></tr>
 <tr><td valign="top"><a href="#set_fill_color-2">set_fill_color/2</a></td><td>Sets the fill color of the specified polygon.</td></tr>
 <tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td>Returns a textual description of the specified polygon.</td></tr>
-<tr><td valign="top"><a href="#update_bounding_box-2">update_bounding_box/2</a></td><td>Updates, for the specified polygon, its internal bounding-box, with 
-regard to the specified bounding-box algorithm.</td></tr>
+<tr><td valign="top"><a href="#update_bounding_surface-2">update_bounding_surface/2</a></td><td>Updates, for the specified polygon, its internal bounding surface, with 
+regard to the specified bounding-surface algorithm.</td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
@@ -215,12 +215,12 @@ polygon.</p>
 <p> </p>
 </div><p>Returns a textual description of the specified polygon.</p>
 
-<h3 class="function"><a name="update_bounding_box-2">update_bounding_box/2</a></h3>
+<h3 class="function"><a name="update_bounding_surface-2">update_bounding_surface/2</a></h3>
 <div class="spec">
-<p><tt>update_bounding_box(X1::<a href="#type-bounding_algorithm">bounding_algorithm()</a>, Polygon::<a href="#type-polygon">polygon()</a>) -&gt; <a href="#type-polygon">polygon()</a></tt><br></p>
+<p><tt>update_bounding_surface(X1::<a href="#type-bounding_algorithm">bounding_algorithm()</a>, Polygon::<a href="#type-polygon">polygon()</a>) -&gt; <a href="#type-polygon">polygon()</a></tt><br></p>
 <p> </p>
-</div><p><p>Updates, for the specified polygon, its internal bounding-box, with 
-regard to the specified bounding-box algorithm.</p>
+</div><p><p>Updates, for the specified polygon, its internal bounding surface, with 
+regard to the specified bounding-surface algorithm.</p>
 
  Returns a polygon with updated information.
 </p>

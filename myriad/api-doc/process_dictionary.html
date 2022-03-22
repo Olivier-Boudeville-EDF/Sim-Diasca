@@ -34,7 +34,7 @@ obeyed a table-like API applying only to a singleton.</p>
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-entries">entries()</a></h3>
-<p><tt>entries() = [<a href="#type-entry">entry()</a>]</tt></p>
+<p><tt>entries() = <a href="hashtable.html#type-entries">hashtable:entries()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-entry">entry()</a></h3>
@@ -47,11 +47,16 @@ obeyed a table-like API applying only to a singleton.</p>
 
 <h3 class="typedecl"><a name="type-key">key()</a></h3>
 <p><tt>key() = <a href="hashtable.html#type-key">hashtable:key()</a></tt></p>
-<p> Actually any term.</p>
+<p> Actually any term, yet often an atom. All 'myriad_*' atoms shall be considered
+ as reserved.</p>
 
 <h3 class="typedecl"><a name="type-process_dictionary">process_dictionary()</a></h3>
 <p><tt>process_dictionary() = <a href="list_table.html#type-list_table">list_table:list_table()</a></tt></p>
 <p> Explicit form thereof, as a term.</p>
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
 
 <h3 class="typedecl"><a name="type-value">value()</a></h3>
 <p><tt>value() = <a href="hashtable.html#type-value">hashtable:value()</a></tt></p>
@@ -68,12 +73,12 @@ obeyed a table-like API applying only to a singleton.</p>
 <tr><td valign="top"><a href="#get_keys-0">get_keys/0</a></td><td>Returns a list of all keys present in the process dictionary.</td></tr>
 <tr><td valign="top"><a href="#get_keys_for-1">get_keys_for/1</a></td><td>Returns a list of keys that are associated to the specified value in the
  process dictionary.</td></tr>
-<tr><td valign="top"><a href="#put-2">put/2</a></td><td>Puts specified entry in the process dictionary; returns any value that
- was previously associated to that key.</td></tr>
-<tr><td valign="top"><a href="#put_as_new-2">put_as_new/2</a></td><td>Puts specified entry in the process dictionary; raises an exception if
- ever the specified key was already registered in the process dictionary.</td></tr>
-<tr><td valign="top"><a href="#remove-1">remove/1</a></td><td>Removes any entry in the process dictionary corresponding to specified
- key, returning any value that was associated to it.</td></tr>
+<tr><td valign="top"><a href="#put-2">put/2</a></td><td>Puts the specified entry in the process dictionary; returns any value
+ that was previously associated to that key.</td></tr>
+<tr><td valign="top"><a href="#put_as_new-2">put_as_new/2</a></td><td>Puts the specified entry in the process dictionary; raises an exception
+ if ever the specified key was already registered in the process dictionary.</td></tr>
+<tr><td valign="top"><a href="#remove-1">remove/1</a></td><td>Removes any entry in the process dictionary corresponding to the
+ specified key, returning any value that was associated to it.</td></tr>
 <tr><td valign="top"><a href="#remove_existing-1">remove_existing/1</a></td><td>Removes the entry in the process dictionary expected to correspond to the
  specified key and returns, otherwise throws an exception, should no value be
  associated to specified key.</td></tr>
@@ -131,24 +136,24 @@ obeyed a table-like API applying only to a singleton.</p>
 <div class="spec">
 <p><tt>put(Key::<a href="#type-key">key()</a>, Value::<a href="#type-value">value()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-value">value()</a>)</tt><br></p>
 <p> </p>
-</div><p>Puts specified entry in the process dictionary; returns any value that
- was previously associated to that key.
+</div><p>Puts the specified entry in the process dictionary; returns any value
+ that was previously associated to that key.
 </p>
 
 <h3 class="function"><a name="put_as_new-2">put_as_new/2</a></h3>
 <div class="spec">
 <p><tt>put_as_new(Key::<a href="#type-key">key()</a>, Value::<a href="#type-value">value()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p>Puts specified entry in the process dictionary; raises an exception if
- ever the specified key was already registered in the process dictionary.
+</div><p>Puts the specified entry in the process dictionary; raises an exception
+ if ever the specified key was already registered in the process dictionary.
 </p>
 
 <h3 class="function"><a name="remove-1">remove/1</a></h3>
 <div class="spec">
 <p><tt>remove(Key::<a href="#type-key">key()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-value">value()</a>)</tt><br></p>
 <p> </p>
-</div><p>Removes any entry in the process dictionary corresponding to specified
- key, returning any value that was associated to it.
+</div><p>Removes any entry in the process dictionary corresponding to the
+ specified key, returning any value that was associated to it.
 </p>
 
 <h3 class="function"><a name="remove_existing-1">remove_existing/1</a></h3>
@@ -162,7 +167,7 @@ obeyed a table-like API applying only to a singleton.</p>
 
 <h3 class="function"><a name="to_string-0">to_string/0</a></h3>
 <div class="spec">
-<p><tt>to_string() -&gt; <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt><br></p>
+<p><tt>to_string() -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
 <p> </p>
 </div><p>Returns a textual description of the current state of the process
  dictionary.

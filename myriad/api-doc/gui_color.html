@@ -53,7 +53,8 @@ bottom-right one, row per row.</p>
 
 <h3 class="typedecl"><a name="type-color_coordinate">color_coordinate()</a></h3>
 <p><tt>color_coordinate() = float()</tt></p>
-<p> Color coordinate, in [0,1].</p>
+<p> Color coordinate, in [0.0,1.0].
+ For example used and clamped by OpenGL.</p>
 
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
 <p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
@@ -70,7 +71,7 @@ function.</p>
 
 <h3 class="typedecl"><a name="type-render_rgb_color">render_rgb_color()</a></h3>
 <p><tt>render_rgb_color() = {Red::<a href="#type-color_coordinate">color_coordinate()</a>, Green::<a href="#type-color_coordinate">color_coordinate()</a>, Blue::<a href="#type-color_coordinate">color_coordinate()</a>}</tt></p>
-<p><p> A floating-point RGB color (whose coordinates are typically in [0.0, 1.0]).</p>
+<p><p> A floating-point RGB color (whose coordinates are typically in [0.0,1.0]).</p>
 
  <p>The three components shall be encoded with the sRGB transfer function.</p>
 

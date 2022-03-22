@@ -133,6 +133,7 @@ the local referential.</td></tr>
  the specified 3D point.</td></tr>
 <tr><td valign="top"><a href="#to_basic_string-1">to_basic_string/1</a></td><td>Returns a basic, not even fixed-width for floating-point coordinates (see
  linear.hrl for width and precision) representation of the specified 3D point.</td></tr>
+<tr><td valign="top"><a href="#to_buffer-1">to_buffer/1</a></td><td>Returns a binary buffer of floats, corresponding to the specified points.</td></tr>
 <tr><td valign="top"><a href="#to_compact_string-1">to_compact_string/1</a></td><td>Returns a compact, textual, informal representation of the specified
  3D point.</td></tr>
 <tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td>Returns a textual representation of the specified 3D point; full float
@@ -313,6 +314,15 @@ the local referential.</p>
 <p> </p>
 </div><p>Returns a basic, not even fixed-width for floating-point coordinates (see
  linear.hrl for width and precision) representation of the specified 3D point.
+</p>
+
+<h3 class="function"><a name="to_buffer-1">to_buffer/1</a></h3>
+<div class="spec">
+<p><tt>to_buffer(Points::[<a href="#type-point3">point3()</a>]) -&gt; binary()</tt><br></p>
+<p> </p>
+</div><p><p>Returns a binary buffer of floats, corresponding to the specified points.</p>
+
+ Typically suitable for OpenGL.
 </p>
 
 <h3 class="function"><a name="to_compact_string-1">to_compact_string/1</a></h3>

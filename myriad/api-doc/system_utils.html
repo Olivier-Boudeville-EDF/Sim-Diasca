@@ -33,6 +33,14 @@ facilities.</p>
 <p><tt>any_string() = <a href="text_utils.html#type-any_string">text_utils:any_string()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-any_version">any_version()</a></h3>
+<p><tt>any_version() = <a href="basic_utils.html#type-any_version">basic_utils:any_version()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-application_name">application_name()</a></h3>
+<p><tt>application_name() = <a href="otp_utils.html#type-application_name">otp_utils:application_name()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-basic_credential">basic_credential()</a></h3>
 <p><tt>basic_credential() = {<a href="#type-user_name">user_name()</a>, <a href="#type-password">password()</a>}</tt></p>
 
@@ -155,10 +163,26 @@ facilities.</p>
 <p><tt>host_static_info() = #host_static_info{total_ram = <a href="basic_utils.html#type-count">basic_utils:count()</a>, total_swap = <a href="basic_utils.html#type-count">basic_utils:count()</a>, core_count = <a href="basic_utils.html#type-count">basic_utils:count()</a>, erlang_version = <a href="text_utils.html#type-ustring">text_utils:ustring()</a>}</tt></p>
 <p> Describes the static information about a computing host.</p>
 
+<h3 class="typedecl"><a name="type-milliseconds">milliseconds()</a></h3>
+<p><tt>milliseconds() = <a href="unit_utils.html#type-milliseconds">unit_utils:milliseconds()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-os_family">os_family()</a></h3>
+<p><tt>os_family() = unix | win32</tt></p>
+<p> Coarse categorization of an operating system.</p>
+
+<h3 class="typedecl"><a name="type-os_name">os_name()</a></h3>
+<p><tt>os_name() = linux | sunos | nt | atom()</tt></p>
+
+
 <h3 class="typedecl"><a name="type-os_pid">os_pid()</a></h3>
 <p><tt>os_pid() = <a href="#type-count">count()</a></tt></p>
 <p> The PID of an operating-system process (OS-level, not Erlang-level, process
  identifier).</p>
+
+<h3 class="typedecl"><a name="type-os_type">os_type()</a></h3>
+<p><tt>os_type() = {<a href="#type-os_family">os_family()</a>, <a href="#type-os_name">os_name()</a>}</tt></p>
+<p> The general type of an operating system.</p>
 
 <h3 class="typedecl"><a name="type-package_name">package_name()</a></h3>
 <p><tt>package_name() = <a href="#type-ustring">ustring()</a></tt></p>
@@ -255,8 +279,8 @@ in specified environment.</td></tr>
 <tr><td valign="top"><a href="#get_actual_expression-2">get_actual_expression/2</a></td><td>Returns the full, actual shell expression corresponding to specified
  expression and environment.</td></tr>
 <tr><td valign="top"><a href="#get_application_version-1">get_application_version/1</a></td><td>Returns the version information (as a 2 or 3-part tuple) corresponding to 
-the specified Erlang application (ex: for 'kernel', could return {3,0} or 
-{2,16,3}).</td></tr>
+the specified Erlang standard application (ex: for 'kernel', could return 
+{3,0} or {2,16,3}).</td></tr>
 <tr><td valign="top"><a href="#get_core_count-0">get_core_count/0</a></td><td>Returns the number of cores available on the local host.</td></tr>
 <tr><td valign="top"><a href="#get_core_count_string-0">get_core_count_string/0</a></td><td>Returns a textual description of the number of the local processing 
 cores.</td></tr>
@@ -309,6 +333,7 @@ needing to open a file for writing - should such an option be used.</td></tr>
  pseudo-filesystems).</td></tr>
 <tr><td valign="top"><a href="#get_operating_system_description-0">get_operating_system_description/0</a></td><td>Returns a string describing the current operating system.</td></tr>
 <tr><td valign="top"><a href="#get_operating_system_description_string-0">get_operating_system_description_string/0</a></td><td>Returns a textual description of the operating system being used.</td></tr>
+<tr><td valign="top"><a href="#get_operating_system_type-0">get_operating_system_type/0</a></td><td>Returns the type of the local operating system.</td></tr>
 <tr><td valign="top"><a href="#get_process_count-0">get_process_count/0</a></td><td>Returns the number of live Erlang processes on the current node.</td></tr>
 <tr><td valign="top"><a href="#get_process_count_string-0">get_process_count_string/0</a></td><td>Returns a textual description of the number of live Erlang processes on 
 the current node.</td></tr>
@@ -525,7 +550,7 @@ cases insufficient (ex: for error traces to be sent, received and stored
 
 <h3 class="function"><a name="await_output_completion-1">await_output_completion/1</a></h3>
 <div class="spec">
-<p><tt>await_output_completion(TimeOut::<a href="unit_utils.html#type-millisecond">unit_utils:millisecond()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>await_output_completion(MsTimeOut::<a href="#type-milliseconds">milliseconds()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p><p>Awaits the completion of a io:format request, with a specified time-out, 
 in milliseconds.</p>
@@ -690,11 +715,11 @@ in specified environment.</p>
 
 <h3 class="function"><a name="get_application_version-1">get_application_version/1</a></h3>
 <div class="spec">
-<p><tt>get_application_version(Application::atom()) -&gt; <a href="basic_utils.html#type-any_version">basic_utils:any_version()</a></tt><br></p>
+<p><tt>get_application_version(ApplicationName::<a href="#type-application_name">application_name()</a>) -&gt; <a href="#type-any_version">any_version()</a></tt><br></p>
 <p> </p>
 </div><p><p>Returns the version information (as a 2 or 3-part tuple) corresponding to 
-the specified Erlang application (ex: for 'kernel', could return {3,0} or 
-{2,16,3}).</p>
+the specified Erlang standard application (ex: for 'kernel', could return 
+{3,0} or {2,16,3}).</p>
 
  Throws an exception if the information could not be retrieved.
 </p>
@@ -958,6 +983,12 @@ needing to open a file for writing - should such an option be used.</p>
  Cannot crash.
 </p>
 
+<h3 class="function"><a name="get_operating_system_type-0">get_operating_system_type/0</a></h3>
+<div class="spec">
+<p><tt>get_operating_system_type() -&gt; <a href="#type-os_type">os_type()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the type of the local operating system.</p>
+
 <h3 class="function"><a name="get_process_count-0">get_process_count/0</a></h3>
 <div class="spec">
 <p><tt>get_process_count() -&gt; <a href="#type-count">count()</a></tt><br></p>
@@ -1010,7 +1041,7 @@ word (which is kept in a register or on the stack).</p>
 
 <h3 class="function"><a name="get_size_of_vm_word-0">get_size_of_vm_word/0</a></h3>
 <div class="spec">
-<p><tt>get_size_of_vm_word() -&gt; <a href="#type-count">count()</a></tt><br></p>
+<p><tt>get_size_of_vm_word() -&gt; <a href="#type-byte_size">byte_size()</a></tt><br></p>
 <p> </p>
 </div><p>Returns the size, in bytes, of a word of this Virtual Machine.</p>
 

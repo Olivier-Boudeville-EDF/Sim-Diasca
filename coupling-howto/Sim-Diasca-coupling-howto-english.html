@@ -35,10 +35,10 @@
 <tr class="field"><th class="field-name">Creation Date:</th><td class="field-body"><p class="first">Tuesday, January 3, 2017</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Lastly updated:</th><td class="field-body"><p class="first">Thursday, January 13, 2022</p>
+<tr class="field"><th class="field-name">Lastly updated:</th><td class="field-body"><p class="first">Tuesday, March 22, 2022</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Version:</th><td class="field-body"><p class="first">2.4.2</p>
+<tr class="field"><th class="field-name">Version:</th><td class="field-body"><p class="first">2.4.3</p>
 </td>
 </tr>
 <tr class="field"><th class="field-name">Status:</th><td class="field-body"><p class="first">Stable</p>
@@ -658,6 +658,8 @@ If yes, refer to <a class="reference internal" href="#choosing-a-dataflow-option
 <p>Some interworking solutions are quite low-level, they induce little overhead (ex: for linked-in drivers or for NIFs, no extra operating system process is needed) yet they may affect adversely the Erlang VM (should they crash, leak memory, block their associated scheduler or do not terminate), while others offer higher-level, more integrated solutions (for example to transform adequately and transparently the datastructures being exchanged).</p>
 <p>In these latter cases, care must be taken about scalability. For example, depending on the number of integrated instances that are involved, too many system processes might be created or too many file descriptors may be opened, as for each port one process is spawned while one file descriptor is used for reading and one is used for writing.</p>
 <p>Custom protocols over IPC (ex: files, pipes, UNIX sockets, Internet ones, etc.), based on the exchange of binary messages, can also always be devised. This would show a priori little advantage over any of the already available standard protocols, yet would allow to add support for virtually any language or exchange channel. Extending <tt class="docutils literal">ErlPort</tt> could be another option.</p>
+<p><span class="raw-html"><center><img src="sim-diasca.png" id="responsive-image-small"></img></center></span>
+</p>
 <p><span class="raw-html"><a name="sim_diasca_bottom"></a></span></p>
 </div>
 </div>

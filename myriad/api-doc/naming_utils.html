@@ -25,6 +25,12 @@ global).</p>
 <p><tt>atom_node_name() = <a href="net_utils.html#type-atom_node_name">net_utils:atom_node_name()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-local_designator">local_designator()</a></h3>
+<p><tt>local_designator() = pid() | <a href="#type-registration_name">registration_name()</a></tt></p>
+<p> The two ways according to which a locally-registered process can be
+ designated: either directly thanks to its PID or to the name under which it is
+ locally registered.</p>
+
 <h3 class="typedecl"><a name="type-look_up_scope">look_up_scope()</a></h3>
 <p><tt>look_up_scope() = global | local | local_and_global | local_otherwise_global | global_otherwise_local</tt></p>
 <p> Not to be mixed up with a registration scope.</p>

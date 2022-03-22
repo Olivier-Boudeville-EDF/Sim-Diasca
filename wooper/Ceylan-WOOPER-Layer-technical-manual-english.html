@@ -29,9 +29,9 @@
 </tr>
 <tr class="field"><th class="field-name">Creation date:</th><td class="field-body">Sunday, August 17, 2008</td>
 </tr>
-<tr class="field"><th class="field-name">Lastly updated:</th><td class="field-body">Tuesday, January 11, 2022</td>
+<tr class="field"><th class="field-name">Lastly updated:</th><td class="field-body">Tuesday, March 22, 2022</td>
 </tr>
-<tr class="field"><th class="field-name">Version:</th><td class="field-body">2.0.15</td>
+<tr class="field"><th class="field-name">Version:</th><td class="field-body">2.0.16</td>
 </tr>
 <tr class="field"><th class="field-name">Status:</th><td class="field-body">Stable</td>
 </tr>
@@ -1232,7 +1232,7 @@ setFurColor(State,FurColor) -&gt;
 </pre>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Currently, these information are only of use for the developer (i.e. for documentation purpose). No check is made about whether they are used, whether no other attributes are used, whether the type is meaningful and indeed enforced, the default initial value is not set, etc. Some of these information might be handled by future WOOPER versions.</p>
+<p class="last">Currently, these information are only of use for the developer (i.e. for documentation purpose). No check is made about whether they are used, whether no other attributes are used, whether the type is meaningful and indeed enforced, the default initial value is not set, etc; yet some of these information might be handled by future WOOPER versions.</p>
 </div>
 <p>Shorter attribute declarations can also used, then with less than the 4 aforementioned pieces of information mentioned:</p>
 <ul class="simple">
@@ -1245,8 +1245,7 @@ setFurColor(State,FurColor) -&gt;
 <pre class="code erlang literal-block">
 <span class="p">-</span><span class="ni">define</span><span class="p">(</span><span class="no">class_attributes</span><span class="p">,[</span>
           <span class="n">name</span><span class="p">,</span>
-          <span class="p">{</span><span class="n">age</span><span class="p">,</span><span class="n">integer</span><span class="p">(),{</span><span class="n">initial</span><span class="p">,</span><span class="mi">18</span><span class="p">},</span>
-               <span class="s">&quot;stores the current age of this creature&quot;</span><span class="p">},</span>
+          <span class="p">{</span><span class="n">age</span><span class="p">,</span><span class="n">integer</span><span class="p">(),</span><span class="s">&quot;stores the current age of this creature&quot;</span><span class="p">},</span>
           <span class="n">birth_date</span><span class="p">,</span>
           <span class="p">{</span><span class="n">weight</span><span class="p">,</span><span class="s">&quot;total weight measured&quot;</span><span class="p">}]).</span>
 </pre>

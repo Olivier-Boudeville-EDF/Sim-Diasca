@@ -300,10 +300,10 @@ being supposed to use send_file/2.</td></tr>
  address {N1, N2, N3, N4}, or an atom describing why it failed.</td></tr>
 <tr><td valign="top"><a href="#reverse_lookup-2">reverse_lookup/2</a></td><td>Returns a string telling the DNS name corresponding to the specified IPv4
  address {N1, N2, N3, N4}, or an atom describing why it failed.</td></tr>
-<tr><td valign="top"><a href="#secure_distribution-1">secure_distribution/1</a></td><td>Tries to enable the distribution on the current node, trying first to use 
-long names, otherwise short names, doing its best to avoid that the operation 
-fails; in case of success returns the enabled naming mode, otherwise throws an 
-exception.</td></tr>
+<tr><td valign="top"><a href="#secure_distribution-1">secure_distribution/1</a></td><td>Tries to enable the distribution on the current node with the specified 
+name, trying first to use long names, otherwise short names, doing its best to 
+avoid that the operation fails; in case of success, returns the enabled naming 
+mode, otherwise throws an exception.</td></tr>
 <tr><td valign="top"><a href="#send_file-2">send_file/2</a></td><td>Sends specified file (probably over the network) to the specified
  recipient PID, supposed to have already called one of the receive_file/{1,2,3}
  functions.</td></tr>
@@ -816,15 +816,15 @@ being supposed to use send_file/2.</p>
 
 <h3 class="function"><a name="secure_distribution-1">secure_distribution/1</a></h3>
 <div class="spec">
-<p><tt>secure_distribution(UserNodeName::<a href="#type-node_name">node_name()</a>) -&gt; <a href="#type-node_naming_mode">node_naming_mode()</a></tt><br></p>
+<p><tt>secure_distribution(NodeName::<a href="#type-node_name">node_name()</a>) -&gt; <a href="#type-node_naming_mode">node_naming_mode()</a></tt><br></p>
 <p> </p>
-</div><p><p>Tries to enable the distribution on the current node, trying first to use 
-long names, otherwise short names, doing its best to avoid that the operation 
-fails; in case of success returns the enabled naming mode, otherwise throws an 
-exception.</p>
+</div><p><p>Tries to enable the distribution on the current node with the specified 
+name, trying first to use long names, otherwise short names, doing its best to 
+avoid that the operation fails; in case of success, returns the enabled naming 
+mode, otherwise throws an exception.</p>
 
- <p>Especially useful in context of continuous integration and/or from within a 
-container facility such as Docker or Singularity, where enabling the 
+ <p>Especially useful in the context of continuous integration and/or from within 
+a container facility such as Docker or Singularity, where enabling the 
 distribution of nodes may fail for varied reasons.</p>
 
  See enable_distribution_mode/2 for more details.

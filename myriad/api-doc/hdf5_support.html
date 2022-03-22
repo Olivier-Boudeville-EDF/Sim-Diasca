@@ -42,6 +42,10 @@ large amounts of numerical data.</p>
 <p><tt>class() = attribute_creation | dataset_access | dataset_creation | dataset_transfer | datatype_access | datatype_creation | file_access | file_creation | file_mounting | group_access | group_creation | link_access | link_creation | object_copying | object_creation | string_creation</tt></p>
 <p> A class designates a kind of HDF5 objects:</p>
 
+<h3 class="typedecl"><a name="type-count">count()</a></h3>
+<p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-data">data()</a></h3>
 <p><tt>data() = [tuple()]</tt></p>
 <p><p> Array of vectors.</p>
@@ -57,12 +61,12 @@ large amounts of numerical data.</p>
 <p> An HDF5 dataset, ie the actual data.</p>
 
 <h3 class="typedecl"><a name="type-dataset_name">dataset_name()</a></h3>
-<p><tt>dataset_name() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><tt>dataset_name() = string()</tt></p>
 <p> The name of a HDF5 dataset.</p>
 
 <h3 class="typedecl"><a name="type-dataspace">dataspace()</a></h3>
 <p><tt>dataspace() = <a href="#type-handle">handle()</a></tt></p>
-<p> An HDF5 dataspace, ie metadata.</p>
+<p> An HDF5 dataspace, that is metadata.</p>
 
 <h3 class="typedecl"><a name="type-datatype">datatype()</a></h3>
 <p><tt>datatype() = <a href="#type-handle">handle()</a></tt></p>
@@ -70,14 +74,14 @@ large amounts of numerical data.</p>
 
 <h3 class="typedecl"><a name="type-datatype_class_identifier">datatype_class_identifier()</a></h3>
 <p><tt>datatype_class_identifier() = no_class | integer | float | time | string | bitfield | opaque | compound | reference | enumeration | variable_length | array</tt></p>
-
+<p> Class identifier of a datatype.</p>
 
 <h3 class="typedecl"><a name="type-datatype_specifier">datatype_specifier()</a></h3>
 <p><tt>datatype_specifier() = <a href="#type-predefined_datatype">predefined_datatype()</a> | <a href="#type-datatype">datatype()</a> | <a href="#type-dataset">dataset()</a></tt></p>
 <p> Specified to obtain datatypes.</p>
 
 <h3 class="typedecl"><a name="type-dimension">dimension()</a></h3>
-<p><tt>dimension() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+<p><tt>dimension() = <a href="#type-count">count()</a></tt></p>
 <p> Index of a dimension.</p>
 
 <h3 class="typedecl"><a name="type-dimension_extension">dimension_extension()</a></h3>
@@ -86,7 +90,7 @@ large amounts of numerical data.</p>
  cannot exceed maximum).</p>
 
 <h3 class="typedecl"><a name="type-dimension_size">dimension_size()</a></h3>
-<p><tt>dimension_size() = <a href="basic_utils.html#type-count">basic_utils:count()</a> | unlimited</tt></p>
+<p><tt>dimension_size() = <a href="#type-count">count()</a> | unlimited</tt></p>
 <p> Number of elements of a dimension.</p>
 
 <h3 class="typedecl"><a name="type-dimensions">dimensions()</a></h3>
@@ -102,7 +106,7 @@ dimension(), which corresponds to the number of elements (here, 2).</p>
 
 <h3 class="typedecl"><a name="type-handle">handle()</a></h3>
 <p><tt>handle() = integer()</tt></p>
-
+<p> Handle managed by the HDF5 library.</p>
 
 <h3 class="typedecl"><a name="type-hdf5_byte_order">hdf5_byte_order()</a></h3>
 <p><tt>hdf5_byte_order() = integer()</tt></p>
@@ -118,7 +122,9 @@ dimension(), which corresponds to the number of elements (here, 2).</p>
 
 <h3 class="typedecl"><a name="type-hdf5_file">hdf5_file()</a></h3>
 <p><tt>hdf5_file() = <a href="#type-handle">handle()</a></tt></p>
+<p><p> Designates an actual HDF5 file:</p>
 
+ (HDF5 handle, not a file_utils:file())</p>
 
 <h3 class="typedecl"><a name="type-hdf5_open_option">hdf5_open_option()</a></h3>
 <p><tt>hdf5_open_option() = atom()</tt></p>
@@ -147,13 +153,17 @@ dimension(), which corresponds to the number of elements (here, 2).</p>
 <p> A property list is created according to a class and then possibly updated:</p>
 
 <h3 class="typedecl"><a name="type-rank">rank()</a></h3>
-<p><tt>rank() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+<p><tt>rank() = <a href="#type-count">count()</a></tt></p>
 <p> Rank of a dataspace, namely its number of dimensions (dimensionality): (up to
  32 in the general case; usually 1, 2 or 3).</p>
 
 <h3 class="typedecl"><a name="type-supported_datatypes">supported_datatypes()</a></h3>
 <p><tt>supported_datatypes() = native_integer | native_long_float</tt></p>
 <p> Currently this binding supports only native ints and native long floats.</p>
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
 
 <h2><a name="index">Function Index</a></h2>
 <table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#check_data-1">check_data/1</a></td><td>Checks the format and typing of specified data, ie ensures that it is a 
@@ -392,7 +402,7 @@ for each dimension, a pair of current and maximum size.</p>
 
 <h3 class="function"><a name="get_element_count-1">get_element_count/1</a></h3>
 <div class="spec">
-<p><tt>get_element_count(Dimensions::<a href="#type-dimensions">dimensions()</a>) -&gt; <a href="basic_utils.html#type-count">basic_utils:count()</a></tt><br></p>
+<p><tt>get_element_count(Dimensions::<a href="#type-dimensions">dimensions()</a>) -&gt; <a href="#type-count">count()</a></tt><br></p>
 <p> </p>
 </div><p>Returns the number of elements corresponding to specified dimensions.</p>
 
@@ -446,7 +456,7 @@ for each dimension, a pair of current and maximum size.</p>
 
 <h3 class="function"><a name="read-4">read/4</a></h3>
 <div class="spec">
-<p><tt>read(DatasetName::<a href="#type-ustring">ustring()</a>, DataType::<a href="#type-supported_datatypes">supported_datatypes()</a>, TupleSize::<a href="basic_utils.html#type-count">basic_utils:count()</a>, File::<a href="#type-hdf5_file">hdf5_file()</a>) -&gt; <a href="#type-data">data()</a></tt><br></p>
+<p><tt>read(DatasetName::<a href="#type-ustring">ustring()</a>, DataType::<a href="#type-supported_datatypes">supported_datatypes()</a>, TupleSize::<a href="#type-count">count()</a>, File::<a href="#type-hdf5_file">hdf5_file()</a>) -&gt; <a href="#type-data">data()</a></tt><br></p>
 <p> </p>
 </div><p>Reads the specified named dataset of specified type and tuple size from
  specified file, returning it as a list of tuples of specified size.
@@ -454,7 +464,7 @@ for each dimension, a pair of current and maximum size.</p>
 
 <h3 class="function"><a name="read_strings-2">read_strings/2</a></h3>
 <div class="spec">
-<p><tt>read_strings(DatasetName, File) -&gt; any()</tt></p>
+<p><tt>read_strings(DatasetName::<a href="#type-ustring">ustring()</a>, File::<a href="#type-hdf5_file">hdf5_file()</a>) -&gt; [<a href="#type-ustring">ustring()</a>]</tt><br></p>
 <p> </p>
 </div><p>Reads the specified named dataset expected to contain strings, and
  returns an (ordered) list of these strings.
@@ -474,7 +484,7 @@ for each dimension, a pair of current and maximum size.</p>
 
 <h3 class="function"><a name="update-3">update/3</a></h3>
 <div class="spec">
-<p><tt>update(Data::<a href="#type-data">data()</a>, Index::<a href="basic_utils.html#type-count">basic_utils:count()</a>, Dataset::<a href="#type-dataset">dataset()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>update(Data::<a href="#type-data">data()</a>, Index::<a href="#type-count">count()</a>, Dataset::<a href="#type-dataset">dataset()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p>Updates the specified dataset at specified index (starting at #0) with
  specified data.

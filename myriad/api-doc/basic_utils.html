@@ -31,7 +31,7 @@ operations.</p>
 <p> To specify whether a given feature shall be enabled or not.</p>
 
 <h3 class="typedecl"><a name="type-any_version">any_version()</a></h3>
-<p><tt>any_version() = <a href="#type-version">version()</a> | <a href="#type-two_digit_version">two_digit_version()</a></tt></p>
+<p><tt>any_version() = <a href="#type-two_digit_version">two_digit_version()</a> | <a href="#type-three_digit_version">three_digit_version()</a> | <a href="#type-four_digit_version">four_digit_version()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-argument">argument()</a></h3>
@@ -66,6 +66,10 @@ operations.</p>
 <h3 class="typedecl"><a name="type-bit_mask">bit_mask()</a></h3>
 <p><tt>bit_mask() = integer()</tt></p>
 <p> Describes a mask of bits.</p>
+
+<h3 class="typedecl"><a name="type-byte_size">byte_size()</a></h3>
+<p><tt>byte_size() = <a href="system_utils.html#type-byte_size">system_utils:byte_size()</a></tt></p>
+
 
 <h3 class="typedecl"><a name="type-command_spec">command_spec()</a></h3>
 <p><tt>command_spec() = {<a href="#type-module_name">module_name()</a>, <a href="#type-function_name">function_name()</a>, <a href="#type-arguments">arguments()</a>}</tt></p>
@@ -199,6 +203,11 @@ be of the expected type (as long as it has not been checked).</p>
 <p><tt>format_values() = <a href="text_utils.html#type-format_values">text_utils:format_values()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-four_digit_version">four_digit_version()</a></h3>
+<p><tt>four_digit_version() = {<a href="#type-version_number">version_number()</a>, <a href="#type-version_number">version_number()</a>, <a href="#type-version_number">version_number()</a>, <a href="#type-version_number">version_number()</a>}</tt></p>
+<p> Version as a quadruplet of integers, typically {MajorVersion, MinorVersion,
+ ReleaseVersion, SubreleaseVersion}.</p>
+
 <h3 class="typedecl"><a name="type-function_name">function_name()</a></h3>
 <p><tt>function_name() = atom()</tt></p>
 
@@ -263,13 +272,18 @@ be of the expected type (as long as it has not been checked).</p>
 <p><tt>status_code() = 0..255</tt></p>
 <p> The status code returned by a shell command.</p>
 
+<h3 class="typedecl"><a name="type-three_digit_version">three_digit_version()</a></h3>
+<p><tt>three_digit_version() = {<a href="#type-version_number">version_number()</a>, <a href="#type-version_number">version_number()</a>, <a href="#type-version_number">version_number()</a>}</tt></p>
+<p> Version as a triplet of integers, typically {MajorVersion, MinorVersion,
+ ReleaseVersion}.</p>
+
 <h3 class="typedecl"><a name="type-time_out">time_out()</a></h3>
 <p><tt>time_out() = <a href="time_utils.html#type-time_out">time_utils:time_out()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-two_digit_version">two_digit_version()</a></h3>
 <p><tt>two_digit_version() = {<a href="#type-version_number">version_number()</a>, <a href="#type-version_number">version_number()</a>}</tt></p>
-
+<p> Version as a pair of integerss, typically {MajorVersion, MinorVersion}.</p>
 
 <h3 class="typedecl"><a name="type-unchecked_data">unchecked_data()</a></h3>
 <p><tt>unchecked_data() = term()</tt></p>
@@ -288,8 +302,8 @@ be of the expected type (as long as it has not been checked).</p>
 
 
 <h3 class="typedecl"><a name="type-version">version()</a></h3>
-<p><tt>version() = {<a href="#type-version_number">version_number()</a>, <a href="#type-version_number">version_number()</a>, <a href="#type-version_number">version_number()</a>}</tt></p>
-<p> By default we consider that a version is a triplet of integer numbers.</p>
+<p><tt>version() = <a href="#type-three_digit_version">three_digit_version()</a></tt></p>
+<p> By default we consider that a version is a triplet of integers.</p>
 
 <h3 class="typedecl"><a name="type-version_number">version_number()</a></h3>
 <p><tt>version_number() = non_neg_integer()</tt></p>
@@ -332,9 +346,9 @@ toolchain:</p>
 <tr><td valign="top"><a href="#check_undefined-1">check_undefined/1</a></td><td>Checks that specified term is 'undefined'.</td></tr>
 <tr><td valign="top"><a href="#check_version-1">check_version/1</a></td><td>Checks that specified term is a triplet-based version.</td></tr>
 <tr><td valign="top"><a href="#checkpoint-1">checkpoint/1</a></td><td>Displays a numbered checkpoint.</td></tr>
-<tr><td valign="top"><a href="#compare_versions-2">compare_versions/2</a></td><td>Compares the two pairs or triplets, which describe two version numbers 
-(ex: {0,1,0} or {4,2}) and returns either first_bigger, second_bigger, or 
-equal.</td></tr>
+<tr><td valign="top"><a href="#compare_versions-2">compare_versions/2</a></td><td>Compares the two pairs, triplets or quadruplets (expected to be of the 
+same size), which describe two version numbers (ex: {0,1,0} and {0,1,7}) and 
+returns either first_bigger, second_bigger, or equal.</td></tr>
 <tr><td valign="top"><a href="#crash-0">crash/0</a></td><td>Crashes the current process immediately.</td></tr>
 <tr><td valign="top"><a href="#create_uniform_tuple-2">create_uniform_tuple/2</a></td><td>Creates a tuple of specified size, all elements having the same,
  specified, value.</td></tr>
@@ -383,10 +397,12 @@ equal.</td></tr>
 <tr><td valign="top"><a href="#get_process_size-1">get_process_size/1</a></td><td>Returns the total size in (RAM) memory used by specified (local, alive) 
 process, in bytes: this includes call stack, heap, and internal structures.</td></tr>
 <tr><td valign="top"><a href="#get_process_specific_value-0">get_process_specific_value/0</a></td><td>Returns a value (a strictly positive integer) expected to be as much as 
-possible specific to the current process.</td></tr>
+possible specific to the current (Erlang) process.</td></tr>
 <tr><td valign="top"><a href="#get_process_specific_value-1">get_process_specific_value/1</a></td><td>Returns a value (a strictly positive integer) expected to be as much as 
-possible specific to the specified PID.</td></tr>
-<tr><td valign="top"><a href="#get_process_specific_value-2">get_process_specific_value/2</a></td><td>Returns a process-specific value in [Min,Max[.</td></tr>
+possible specific to the specified (Erlang) PID.</td></tr>
+<tr><td valign="top"><a href="#get_process_specific_value-2">get_process_specific_value/2</a></td><td>Returns a (Erlang) process-specific value in [Min,Max[.</td></tr>
+<tr><td valign="top"><a href="#get_unix_process_specific_string-0">get_unix_process_specific_string/0</a></td><td>Returns a string that should be unique for the current UNIX process (of 
+the VM), based on its operating system PID and on millisecond-precise time.</td></tr>
 <tr><td valign="top"><a href="#identity-1">identity/1</a></td><td>Identity function: returns its argument as it is.</td></tr>
 <tr><td valign="top"><a href="#ignore_unused-1">ignore_unused/1</a></td><td>Ignores specified argument.</td></tr>
 <tr><td valign="top"><a href="#is_alive-1">is_alive/1</a></td><td>Tells whether the specified process, designated by its PID, by a textual
@@ -483,7 +499,7 @@ ToAdd, WaitedSenderPid}.</td></tr>
 <div class="spec">
 <p><tt>check_no_pending_message() -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p><p>Ensures that no message is pending in the mailbox of this process</p>
+</div><p><p>Ensures that no message is pending in the mailbox of this process.</p>
 
  <p>Does not block.</p>
 
@@ -519,15 +535,13 @@ ToAdd, WaitedSenderPid}.</td></tr>
 
 <h3 class="function"><a name="compare_versions-2">compare_versions/2</a></h3>
 <div class="spec">
-<p><tt>compare_versions(X1::<a href="#type-any_version">any_version()</a>, X2::<a href="#type-any_version">any_version()</a>) -&gt; equal | first_bigger | second_bigger</tt><br></p>
+<p><tt>compare_versions(A::<a href="#type-any_version">any_version()</a>, B::<a href="#type-any_version">any_version()</a>) -&gt; equal | first_bigger | second_bigger</tt><br></p>
 <p> </p>
-</div><p><p>Compares the two pairs or triplets, which describe two version numbers 
-(ex: {0,1,0} or {4,2}) and returns either first_bigger, second_bigger, or 
-equal.</p>
+</div><p><p>Compares the two pairs, triplets or quadruplets (expected to be of the 
+same size), which describe two version numbers (ex: {0,1,0} and {0,1,7}) and 
+returns either first_bigger, second_bigger, or equal.</p>
 
- <p>The two compared versions must have the same number of digits.</p>
-
- Note: the default term order is already what we needed.
+ The two compared versions must have the same number of digits.
 </p>
 
 <h3 class="function"><a name="crash-0">crash/0</a></h3>
@@ -700,7 +714,7 @@ occurs.</p>
 
 <h3 class="function"><a name="get_process_size-1">get_process_size/1</a></h3>
 <div class="spec">
-<p><tt>get_process_size(Pid::pid()) -&gt; <a href="system_utils.html#type-byte_size">system_utils:byte_size()</a></tt><br></p>
+<p><tt>get_process_size(Pid::pid()) -&gt; <a href="#type-byte_size">byte_size()</a></tt><br></p>
 <p> </p>
 </div><p><p>Returns the total size in (RAM) memory used by specified (local, alive) 
 process, in bytes: this includes call stack, heap, and internal structures.</p>
@@ -714,7 +728,7 @@ process, in bytes: this includes call stack, heap, and internal structures.</p>
 <p><tt>get_process_specific_value() -&gt; pos_integer()</tt><br></p>
 <p> </p>
 </div><p><p>Returns a value (a strictly positive integer) expected to be as much as 
-possible specific to the current process.</p>
+possible specific to the current (Erlang) process.</p>
 
  <p>Mostly based on its PID.</p>
 
@@ -732,7 +746,7 @@ smooth the accesses over time.</p>
 <p><tt>get_process_specific_value(Pid::pid()) -&gt; pos_integer()</tt><br></p>
 <p> </p>
 </div><p><p>Returns a value (a strictly positive integer) expected to be as much as 
-possible specific to the specified PID.</p>
+possible specific to the specified (Erlang) PID.</p>
 
  <p>Useful for example when a large number of similar processes try to access to 
 the same resource (ex: a set of file descriptors) at the same time: they can 
@@ -747,7 +761,20 @@ smooth the accesses over time.</p>
 <div class="spec">
 <p><tt>get_process_specific_value(Min::integer(), Max::integer()) -&gt; integer()</tt><br></p>
 <p> </p>
-</div><p>Returns a process-specific value in [Min,Max[.</p>
+</div><p>Returns a (Erlang) process-specific value in [Min,Max[.</p>
+
+<h3 class="function"><a name="get_unix_process_specific_string-0">get_unix_process_specific_string/0</a></h3>
+<div class="spec">
+<p><tt>get_unix_process_specific_string() -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns a string that should be unique for the current UNIX process (of 
+the VM), based on its operating system PID and on millisecond-precise time.</p>
+
+ <p>Reasonably unique (add the PID of the Erlang process if concurrent creations 
+may happen), and suitable for file creation.</p>
+
+ Ex: "myriad-596330--576460741437" (negative monotonic time).
+</p>
 
 <h3 class="function"><a name="identity-1">identity/1</a></h3>
 <div class="spec">
@@ -871,7 +898,7 @@ specified set, and returns the number of sent messages.</p>
 
 <h3 class="function"><a name="size-1">size/1</a></h3>
 <div class="spec">
-<p><tt>size(Term::term()) -&gt; <a href="system_utils.html#type-byte_size">system_utils:byte_size()</a></tt><br></p>
+<p><tt>size(Term::term()) -&gt; <a href="#type-byte_size">byte_size()</a></tt><br></p>
 <p> </p>
 </div><p>Returns the number of bytes used by specified term.</p>
 

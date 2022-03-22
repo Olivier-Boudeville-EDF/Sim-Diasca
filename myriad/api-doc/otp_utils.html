@@ -64,6 +64,10 @@ dedicated OTP release for that.</p>
 <p><tt>execution_target() = <a href="basic_utils.html#type-execution_target">basic_utils:execution_target()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-milliseconds">milliseconds()</a></h3>
+<p><tt>milliseconds() = <a href="unit_utils.html#type-milliseconds">unit_utils:milliseconds()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-module_name">module_name()</a></h3>
 <p><tt>module_name() = <a href="basic_utils.html#type-module_name">basic_utils:module_name()</a></tt></p>
 
@@ -84,10 +88,18 @@ dedicated OTP release for that.</p>
 <p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-worker_pid">worker_pid()</a></h3>
+<p><tt>worker_pid() = pid()</tt></p>
+<p> The PID of an OTP worker, managed by a supervisor.</p>
+
 <h2><a name="index">Function Index</a></h2>
 <table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#app_info_to_string-1">app_info_to_string/1</a></td><td>Returns a textual representation of specified application information.</td></tr>
 <tr><td valign="top"><a href="#application_run_context_to_string-1">application_run_context_to_string/1</a></td><td>Returns a textual representation of specified application run context.</td></tr>
 <tr><td valign="top"><a href="#check_application_run_context-1">check_application_run_context/1</a></td><td>Checks that the specified application run context is legit.</td></tr>
+<tr><td valign="top"><a href="#get_application_root-1">get_application_root/1</a></td><td>Returns the path to the root of the specified OTP application (i.e.</td></tr>
+<tr><td valign="top"><a href="#get_maximum_shutdown_duration-1">get_maximum_shutdown_duration/1</a></td><td>Returns a default, reasonable shutdown maximum duration to be used by a
+ supervisor for its basic OTP workers, depending on the specified execution
+ target.</td></tr>
 <tr><td valign="top"><a href="#get_priv_root-1">get_priv_root/1</a></td><td>Returns the root directory of the application-private tree ('priv'), 
 based on specified module (expected to belong to that application).</td></tr>
 <tr><td valign="top"><a href="#get_priv_root-2">get_priv_root/2</a></td><td>Returns the root directory of the application-private tree ('priv'), 
@@ -100,29 +112,32 @@ execution target.</td></tr>
 restart strategy and execution context.</td></tr>
 <tr><td valign="top"><a href="#prepare_for_execution-2">prepare_for_execution/2</a></td><td>Prepares the VM environment so that the specified top-level prerequisite
  application(s) to be involved in a non-OTP execution - and also all their own
- prerequisites recursively in turn - can be run, based on the specified current
- base tree.</td></tr>
+ prerequisites recursively in turn - can be later started, based on the
+ specified current base tree.</td></tr>
 <tr><td valign="top"><a href="#prepare_for_execution-3">prepare_for_execution/3</a></td><td>Prepares the VM environment so that the specified top-level prerequisite 
 application(s) to be involved in a non-OTP execution - and also all their own 
-prerequisites recursively in turn - can be run, based on the specified current 
-base tree, provided that they are not blacklisted.</td></tr>
+prerequisites recursively in turn - can be later started, based on the 
+specified current base tree, provided that they are not blacklisted.</td></tr>
 <tr><td valign="top"><a href="#start_application-1">start_application/1</a></td><td>Starts the specified OTP application, with the 'temporary' restart type.</td></tr>
 <tr><td valign="top"><a href="#start_application-2">start_application/2</a></td><td>Starts the specified OTP application, with the specified restart type.</td></tr>
 <tr><td valign="top"><a href="#start_application-3">start_application/3</a></td><td>Starts the specified OTP application, with the specified restart type, 
 blacklisting specified applications.</td></tr>
-<tr><td valign="top"><a href="#start_applications-1">start_applications/1</a></td><td>Starts the specified OTP applications (if not started yet), sequentially 
-and in the specified order, all with the 'temporary' restart type.</td></tr>
-<tr><td valign="top"><a href="#start_applications-2">start_applications/2</a></td><td>Starts the specified OTP applications (if not started yet), sequentially 
-and in the specified order, all with the specified restart type.</td></tr>
-<tr><td valign="top"><a href="#start_applications-3">start_applications/3</a></td><td>Starts the specified OTP applications (if not started yet), sequentially 
-and in the specified order, all with the specified restart type.</td></tr>
+<tr><td valign="top"><a href="#start_applications-1">start_applications/1</a></td><td>Starts each of the specified OTP applications (if not started yet), 
+sequentially and in the specified order, all with the 'temporary' restart 
+type.</td></tr>
+<tr><td valign="top"><a href="#start_applications-2">start_applications/2</a></td><td>Starts each of the specified OTP applications (if not started yet), 
+sequentially and in the specified order, all with the specified restart type, 
+while not blacklisting any specific application.</td></tr>
+<tr><td valign="top"><a href="#start_applications-3">start_applications/3</a></td><td>Starts each of the specified OTP applications (if not started yet, and 
+provided it is not blacklisted), sequentially and in the specified order, all 
+with the specified restart type.</td></tr>
 <tr><td valign="top"><a href="#stop_application-1">stop_application/1</a></td><td>Stops the specified OTP application.</td></tr>
-<tr><td valign="top"><a href="#stop_applications-1">stop_applications/1</a></td><td>Stops the specified OTP applications, sequentially and in their 
-*reversed* specified order (so that the same list of prerequisite applications 
-can be used both for start and stop).</td></tr>
+<tr><td valign="top"><a href="#stop_applications-1">stop_applications/1</a></td><td>Stops the specified OTP applications, sequentially and in the *reverse* 
+order of the specified one (so that the same list of prerequisite applications 
+can be used both for starting and stopping).</td></tr>
 <tr><td valign="top"><a href="#stop_user_applications-1">stop_user_applications/1</a></td><td>Stops the specified user (non-VM essential) OTP applications, 
-sequentially and in their *reversed* specified order (so that the same list of 
-prerequisite applications can be used both for start and stop).</td></tr>
+sequentially and in the *reverse* order of the specified one (so that the same 
+list of prerequisite applications can be used both for starting and stopping).</td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
@@ -144,6 +159,32 @@ prerequisite applications can be used both for start and stop).</td></tr>
 <p><tt>check_application_run_context(AppRunContext::<a href="#type-application_run_context">application_run_context()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p>Checks that the specified application run context is legit.</p>
+
+<h3 class="function"><a name="get_application_root-1">get_application_root/1</a></h3>
+<div class="spec">
+<p><tt>get_application_root(AppName::<a href="#type-application_name">application_name()</a>) -&gt; <a href="#type-directory_path">directory_path()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the path to the root of the specified OTP application (i.e. its 
+top directory, a.k.a. its "library directory"), for an application located 
+under $OTPROOT/lib or on a directory referred to with environment variable 
+ERL_LIBS.</p>
+
+ <p>Ex: "/home/bond/Software/Erlang/Erlang-24.2/lib/erlang/lib/mnesia-4.20.1" =               
+otp_utils:get_application_root( mnesia ).</p>
+
+ For this look-up, it is expected that an application named 'foobar' defined a
+ module of the same name (which is thus expected to be compiled as
+ "foobar.beam").
+</p>
+
+<h3 class="function"><a name="get_maximum_shutdown_duration-1">get_maximum_shutdown_duration/1</a></h3>
+<div class="spec">
+<p><tt>get_maximum_shutdown_duration(ExecutionTarget::<a href="#type-execution_target">execution_target()</a>) -&gt; <a href="#type-milliseconds">milliseconds()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a default, reasonable shutdown maximum duration to be used by a
+ supervisor for its basic OTP workers, depending on the specified execution
+ target.
+</p>
 
 <h3 class="function"><a name="get_priv_root-1">get_priv_root/1</a></h3>
 <div class="spec">
@@ -213,8 +254,8 @@ is the one of Myriad - not the one of the calling layer.</p>
 <p> </p>
 </div><p>Prepares the VM environment so that the specified top-level prerequisite
  application(s) to be involved in a non-OTP execution - and also all their own
- prerequisites recursively in turn - can be run, based on the specified current
- base tree.
+ prerequisites recursively in turn - can be later started, based on the
+ specified current base tree.
 </p>
 <p><b>See also:</b> <a href="#prepare_for_execution-2">prepare_for_execution/2</a>.</p>
 
@@ -224,8 +265,8 @@ is the one of Myriad - not the one of the calling layer.</p>
 <p> </p>
 </div><p><p>Prepares the VM environment so that the specified top-level prerequisite 
 application(s) to be involved in a non-OTP execution - and also all their own 
-prerequisites recursively in turn - can be run, based on the specified current 
-base tree, provided that they are not blacklisted.</p>
+prerequisites recursively in turn - can be later started, based on the 
+specified current base tree, provided that they are not blacklisted.</p>
 
  <p>Ensures that their .app can be found (supposing thus that they are available 
 and built, checks being performed), including afterwards by OTP, when starting 
@@ -295,8 +336,9 @@ blacklisting specified applications.</p>
 <div class="spec">
 <p><tt>start_applications(AppNames::[<a href="#type-application_name">application_name()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p><p>Starts the specified OTP applications (if not started yet), sequentially 
-and in the specified order, all with the 'temporary' restart type.</p>
+</div><p><p>Starts each of the specified OTP applications (if not started yet), 
+sequentially and in the specified order, all with the 'temporary' restart 
+type.</p>
 
  Note: any non-included prerequisite application shall have been started
  beforehand (not relying on OTP here, hence no automatic start of
@@ -307,8 +349,9 @@ and in the specified order, all with the 'temporary' restart type.</p>
 <div class="spec">
 <p><tt>start_applications(AppNames::[<a href="#type-application_name">application_name()</a>], RestartType::<a href="#type-restart_type">restart_type()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p><p>Starts the specified OTP applications (if not started yet), sequentially 
-and in the specified order, all with the specified restart type.</p>
+</div><p><p>Starts each of the specified OTP applications (if not started yet), 
+sequentially and in the specified order, all with the specified restart type, 
+while not blacklisting any specific application.</p>
 
  Note: any non-included prerequisite application shall have been started
  beforehand (not relying on OTP here, hence no automatic start of
@@ -319,8 +362,9 @@ and in the specified order, all with the specified restart type.</p>
 <div class="spec">
 <p><tt>start_applications(AppNames::[<a href="#type-application_name">application_name()</a>], RestartType::<a href="#type-restart_type">restart_type()</a>, BlacklistedApps::[<a href="#type-application_name">application_name()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p><p>Starts the specified OTP applications (if not started yet), sequentially 
-and in the specified order, all with the specified restart type.</p>
+</div><p><p>Starts each of the specified OTP applications (if not started yet, and 
+provided it is not blacklisted), sequentially and in the specified order, all 
+with the specified restart type.</p>
 
  Note: any non-included prerequisite application shall have been started
  beforehand (not relying on OTP here, hence no automatic start of
@@ -341,9 +385,9 @@ and in the specified order, all with the specified restart type.</p>
 <div class="spec">
 <p><tt>stop_applications(AppNames::[<a href="#type-application_name">application_name()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p><p>Stops the specified OTP applications, sequentially and in their 
-*reversed* specified order (so that the same list of prerequisite applications 
-can be used both for start and stop).</p>
+</div><p><p>Stops the specified OTP applications, sequentially and in the *reverse* 
+order of the specified one (so that the same list of prerequisite applications 
+can be used both for starting and stopping).</p>
 
  Note: not relying on OTP here, hence dependencies shall be explicitly stopped,
  in the reverse order of the starting of these applications.
@@ -354,11 +398,11 @@ can be used both for start and stop).</p>
 <p><tt>stop_user_applications(AppNames::[<a href="#type-application_name">application_name()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p><p>Stops the specified user (non-VM essential) OTP applications, 
-sequentially and in their *reversed* specified order (so that the same list of 
-prerequisite applications can be used both for start and stop).</p>
+sequentially and in the *reverse* order of the specified one (so that the same 
+list of prerequisite applications can be used both for starting and stopping).</p>
 
  <p>Not stopping the base Erlang applications allows to remain with a functional 
-VM (ex: able to finish a test, to perform consol outputs, etc.).</p>
+VM (ex: able to finish a test, to perform console outputs, etc.).</p>
 
  Note: not relying on OTP here, hence dependencies shall be explicitly stopped,
  in the reverse order of the starting of these applications.

@@ -187,15 +187,19 @@ wx-specific bit mask.</td></tr>
 regarding the specified object (receiving for that a message).</td></tr>
 <tr><td valign="top"><a href="#connect-3">connect/3</a></td><td>Subscribes the current process to the specified type(s) of events 
 regarding the specified object (receiving for that a message).</td></tr>
-<tr><td valign="top"><a href="#disconnect-1">disconnect/1</a></td><td>Unsubscribes the event source, for all event types.</td></tr>
+<tr><td valign="top"><a href="#disconnect-1">disconnect/1</a></td><td>Unsubscribes the current process from the specified object, for all event 
+types.</td></tr>
+<tr><td valign="top"><a href="#disconnect-2">disconnect/2</a></td><td>Unsubscribes the current process from the specified object, for the 
+specified event type(s).</td></tr>
 <tr><td valign="top"><a href="#frame_style_to_bitmask-1">frame_style_to_bitmask/1</a></td><td>Converts specified MyriadGUI frame style into the appropriate wx-specific 
 bit mask.</td></tr>
-<tr><td valign="top"><a href="#from_wx_event_type-1">from_wx_event_type/1</a></td><td>onverts a wx type of event into a MyriadGUI one.</td></tr>
+<tr><td valign="top"><a href="#from_wx_event_type-1">from_wx_event_type/1</a></td><td>Converts a wx type of event into a MyriadGUI one.</td></tr>
 <tr><td valign="top"><a href="#from_wx_object_type-1">from_wx_object_type/1</a></td><td>Converts a wx type of object into a MyriadGUI one.</td></tr>
 <tr><td valign="top"><a href="#get_panel_options-1">get_panel_options/1</a></td><td>Converts specified MyriadGUI panel options into the appropriate 
 wx-specific options.</td></tr>
 <tr><td valign="top"><a href="#get_window_options-1">get_window_options/1</a></td><td>Converts specified MyriadGUI window options into the appropriate 
 wx-specific options.</td></tr>
+<tr><td valign="top"><a href="#get_wx_version-0">get_wx_version/0</a></td><td>Returns the build-time version of wx (wxWidgets).</td></tr>
 <tr><td valign="top"><a href="#sizer_flag_to_bitmask-1">sizer_flag_to_bitmask/1</a></td><td>Converts specified MyriadGUI sizer flag into the appropriate wx-specific 
 bit mask.</td></tr>
 <tr><td valign="top"><a href="#to_wx_debug_level-1">to_wx_debug_level/1</a></td><td>Converts the debug level from MyriadGUI to the one of wx.</td></tr>
@@ -267,9 +271,25 @@ default behaviour based on specified options.</p>
 
 <h3 class="function"><a name="disconnect-1">disconnect/1</a></h3>
 <div class="spec">
-<p><tt>disconnect(Canvas_state::<a href="#type-event_source">event_source()</a>) -&gt; boolean()</tt><br></p>
+<p><tt>disconnect(SourceObject::<a href="#type-event_source">event_source()</a>) -&gt; boolean()</tt><br></p>
 <p> </p>
-</div><p>Unsubscribes the event source, for all event types.</p>
+</div><p><p>Unsubscribes the current process from the specified object, for all event 
+types.</p>
+
+ The meaning of the returned boolean is not specified, presumably whether the
+ operation went well.
+</p>
+
+<h3 class="function"><a name="disconnect-2">disconnect/2</a></h3>
+<div class="spec">
+<p><tt>disconnect(SourceObject::<a href="#type-event_source">event_source()</a>, EventTypes::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-event_type">event_type()</a>)) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p><p>Unsubscribes the current process from the specified object, for the 
+specified event type(s).</p>
+
+ The meaning of the returned boolean is not specified, presumably whether the
+ operation went well.
+</p>
 
 <h3 class="function"><a name="frame_style_to_bitmask-1">frame_style_to_bitmask/1</a></h3>
 <div class="spec">
@@ -285,7 +305,7 @@ bit mask.</p>
 <div class="spec">
 <p><tt>from_wx_event_type(Other::<a href="#type-wx_event_type">wx_event_type()</a>) -&gt; <a href="#type-event_type">event_type()</a></tt><br></p>
 <p> </p>
-</div><p>onverts a wx type of event into a MyriadGUI one.</p>
+</div><p>Converts a wx type of event into a MyriadGUI one.</p>
 
 <h3 class="function"><a name="from_wx_object_type-1">from_wx_object_type/1</a></h3>
 <div class="spec">
@@ -312,6 +332,12 @@ wx-specific options.</p>
 
  (exported helper)
 </p>
+
+<h3 class="function"><a name="get_wx_version-0">get_wx_version/0</a></h3>
+<div class="spec">
+<p><tt>get_wx_version() -&gt; <a href="basic_utils.html#type-four_digit_version">basic_utils:four_digit_version()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the build-time version of wx (wxWidgets).</p>
 
 <h3 class="function"><a name="sizer_flag_to_bitmask-1">sizer_flag_to_bitmask/1</a></h3>
 <div class="spec">

@@ -31,9 +31,9 @@
 </tr>
 <tr class="field"><th class="field-name">Creation date:</th><td class="field-body">Monday, February 8, 2010</td>
 </tr>
-<tr class="field"><th class="field-name">Lastly updated:</th><td class="field-body">Thursday, January 13, 2022</td>
+<tr class="field"><th class="field-name">Lastly updated:</th><td class="field-body">Tuesday, March 22, 2022</td>
 </tr>
-<tr class="field"><th class="field-name">Version:</th><td class="field-body">2.4.2</td>
+<tr class="field"><th class="field-name">Version:</th><td class="field-body">2.4.3</td>
 </tr>
 <tr class="field"><th class="field-name">Status:</th><td class="field-body">Stable</td>
 </tr>
@@ -51,154 +51,155 @@
 <div class="contents topic" id="table-of-contents">
 <p class="topic-title first"><strong>Table of Contents</strong></p>
 <ul class="simple">
-<li><a class="reference internal" href="#overview-context" id="id148">Overview &amp; Context</a><ul>
-<li><a class="reference internal" href="#sim-diasca" id="id149">Sim-Diasca</a></li>
-<li><a class="reference internal" href="#current-status" id="id150">Current Status</a></li>
-<li><a class="reference internal" href="#minimal-quick-start-for-early-technical-testing" id="id151">Minimal Quick-Start For Early Technical Testing</a></li>
+<li><a class="reference internal" href="#overview-context" id="id153">Overview &amp; Context</a><ul>
+<li><a class="reference internal" href="#sim-diasca" id="id154">Sim-Diasca</a></li>
+<li><a class="reference internal" href="#current-status" id="id155">Current Status</a></li>
+<li><a class="reference internal" href="#minimal-quick-start-for-early-technical-testing" id="id156">Minimal Quick-Start For Early Technical Testing</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#how-to-read-this-manual" id="id152">How to Read This Manual</a></li>
-<li><a class="reference internal" href="#let-s-start-with-a-short-ontology" id="id153">Let's Start With A Short Ontology</a><ul>
-<li><a class="reference internal" href="#what-is-an-ontology" id="id154">What is an Ontology?</a></li>
-<li><a class="reference internal" href="#simulation-concepts-in-relation" id="id155">Simulation Concepts in Relation</a></li>
-<li><a class="reference internal" href="#simulation-terms-defined" id="id156">Simulation Terms Defined</a></li>
+<li><a class="reference internal" href="#how-to-read-this-manual" id="id157">How to Read This Manual</a></li>
+<li><a class="reference internal" href="#let-s-start-with-a-short-ontology" id="id158">Let's Start With A Short Ontology</a><ul>
+<li><a class="reference internal" href="#what-is-an-ontology" id="id159">What is an Ontology?</a></li>
+<li><a class="reference internal" href="#simulation-concepts-in-relation" id="id160">Simulation Concepts in Relation</a></li>
+<li><a class="reference internal" href="#simulation-terms-defined" id="id161">Simulation Terms Defined</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#sim-diasca-specifications" id="id157">Sim-Diasca Specifications</a><ul>
-<li><a class="reference internal" href="#simulator-potential-role" id="id158">Simulator Potential Role</a></li>
-<li><a class="reference internal" href="#simulator-potential-context-of-use" id="id159">Simulator Potential Context of Use</a></li>
-<li><a class="reference internal" href="#functional-technical-requirements" id="id160">Functional &amp; Technical Requirements</a></li>
+<li><a class="reference internal" href="#sim-diasca-specifications" id="id162">Sim-Diasca Specifications</a><ul>
+<li><a class="reference internal" href="#simulator-potential-role" id="id163">Simulator Potential Role</a></li>
+<li><a class="reference internal" href="#simulator-potential-context-of-use" id="id164">Simulator Potential Context of Use</a></li>
+<li><a class="reference internal" href="#functional-technical-requirements" id="id165">Functional &amp; Technical Requirements</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#sim-diasca-functional-coverage" id="id161">Sim-Diasca Functional Coverage</a></li>
-<li><a class="reference internal" href="#modelling-approach" id="id162">Modelling Approach</a><ul>
-<li><a class="reference internal" href="#questions-metrics-models" id="id163">Questions, Metrics &amp; Models</a></li>
-<li><a class="reference internal" href="#implementation-of-models" id="id164">Implementation Of Models</a></li>
+<li><a class="reference internal" href="#sim-diasca-functional-coverage" id="id166">Sim-Diasca Functional Coverage</a></li>
+<li><a class="reference internal" href="#modelling-approach" id="id167">Modelling Approach</a><ul>
+<li><a class="reference internal" href="#questions-metrics-models" id="id168">Questions, Metrics &amp; Models</a></li>
+<li><a class="reference internal" href="#implementation-of-models" id="id169">Implementation Of Models</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#a-short-overview-of-simulation-services" id="id165">A Short Overview of Simulation Services</a></li>
-<li><a class="reference internal" href="#sim-diasca-time-management-explained" id="id166">Sim-Diasca Time Management Explained</a><ul>
-<li><a class="reference internal" href="#some-general-technical-considerations-first" id="id167">Some General Technical Considerations First</a></li>
-<li><a class="reference internal" href="#preservation-of-properties" id="id168">Preservation of Properties</a></li>
-<li><a class="reference internal" href="#approaches-to-time-management" id="id169">Approaches to Time Management</a></li>
-<li><a class="reference internal" href="#sim-diasca-time-management-algorithm" id="id170">Sim-Diasca Time Management Algorithm</a></li>
-<li><a class="reference internal" href="#how-virtual-time-is-managed" id="id171">How Virtual Time is Managed</a></li>
-<li><a class="reference internal" href="#in-depth-scheduling-implementation" id="id172">In-Depth: Scheduling Implementation</a></li>
+<li><a class="reference internal" href="#a-short-overview-of-simulation-services" id="id170">A Short Overview of Simulation Services</a></li>
+<li><a class="reference internal" href="#sim-diasca-time-management-explained" id="id171">Sim-Diasca Time Management Explained</a><ul>
+<li><a class="reference internal" href="#some-general-technical-considerations-first" id="id172">Some General Technical Considerations First</a></li>
+<li><a class="reference internal" href="#preservation-of-properties" id="id173">Preservation of Properties</a></li>
+<li><a class="reference internal" href="#approaches-to-time-management" id="id174">Approaches to Time Management</a></li>
+<li><a class="reference internal" href="#sim-diasca-time-management-algorithm" id="id175">Sim-Diasca Time Management Algorithm</a></li>
+<li><a class="reference internal" href="#how-virtual-time-is-managed" id="id176">How Virtual Time is Managed</a></li>
+<li><a class="reference internal" href="#in-depth-scheduling-implementation" id="id177">In-Depth: Scheduling Implementation</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#sim-diasca-management-of-probabilistic-laws" id="id173">Sim-Diasca Management of Probabilistic Laws</a><ul>
-<li><a class="reference internal" href="#principles" id="id174">Principles</a></li>
-<li><a class="reference internal" href="#built-in-random-distributions" id="id175">Built-in Random Distributions</a></li>
-<li><a class="reference internal" href="#actual-management-of-randomness" id="id176">Actual Management of Randomness</a></li>
-<li><a class="reference internal" href="#randomness-pitfalls" id="id177">Randomness Pitfalls</a></li>
+<li><a class="reference internal" href="#sim-diasca-management-of-probabilistic-laws" id="id178">Sim-Diasca Management of Probabilistic Laws</a><ul>
+<li><a class="reference internal" href="#principles" id="id179">Principles</a></li>
+<li><a class="reference internal" href="#built-in-random-distributions" id="id180">Built-in Random Distributions</a></li>
+<li><a class="reference internal" href="#user-specified-random-distributions" id="id181">User-Specified Random Distributions</a></li>
+<li><a class="reference internal" href="#actual-management-of-randomness" id="id182">Actual Management of Randomness</a></li>
+<li><a class="reference internal" href="#randomness-pitfalls" id="id183">Randomness Pitfalls</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#sim-diasca-management-of-simulation-inputs" id="id178">Sim-Diasca Management of Simulation Inputs</a><ul>
-<li><a class="reference internal" href="#id32" id="id179">Principles</a></li>
-<li><a class="reference internal" href="#requirements" id="id180">Requirements</a></li>
-<li><a class="reference internal" href="#creation-of-the-initial-state-of-the-simulation" id="id181">Creation of the Initial State of the Simulation</a></li>
+<li><a class="reference internal" href="#sim-diasca-management-of-simulation-inputs" id="id184">Sim-Diasca Management of Simulation Inputs</a><ul>
+<li><a class="reference internal" href="#id32" id="id185">Principles</a></li>
+<li><a class="reference internal" href="#requirements" id="id186">Requirements</a></li>
+<li><a class="reference internal" href="#creation-of-the-initial-state-of-the-simulation" id="id187">Creation of the Initial State of the Simulation</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#sim-diasca-management-of-simulation-outputs" id="id182">Sim-Diasca Management of Simulation Outputs</a><ul>
-<li><a class="reference internal" href="#id41" id="id183">Principles</a></li>
-<li><a class="reference internal" href="#managing-the-outputs" id="id184">Managing The Outputs</a></li>
-<li><a class="reference internal" href="#result-generation" id="id185">Result Generation</a></li>
-<li><a class="reference internal" href="#post-processing-the-results" id="id186">Post-Processing the Results</a></li>
-<li><a class="reference internal" href="#interpreting-the-outcome" id="id187">Interpreting the Outcome</a></li>
+<li><a class="reference internal" href="#sim-diasca-management-of-simulation-outputs" id="id188">Sim-Diasca Management of Simulation Outputs</a><ul>
+<li><a class="reference internal" href="#id41" id="id189">Principles</a></li>
+<li><a class="reference internal" href="#managing-the-outputs" id="id190">Managing The Outputs</a></li>
+<li><a class="reference internal" href="#result-generation" id="id191">Result Generation</a></li>
+<li><a class="reference internal" href="#post-processing-the-results" id="id192">Post-Processing the Results</a></li>
+<li><a class="reference internal" href="#interpreting-the-outcome" id="id193">Interpreting the Outcome</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#sim-diasca-reliability" id="id188">Sim-Diasca Reliability</a><ul>
-<li><a class="reference internal" href="#context" id="id189">Context</a></li>
-<li><a class="reference internal" href="#a-tunable-resilience-service" id="id190">A Tunable Resilience Service</a></li>
-<li><a class="reference internal" href="#id54" id="id191">Mode of Operation</a></li>
-<li><a class="reference internal" href="#testing" id="id192">Testing</a></li>
-<li><a class="reference internal" href="#future-improvements" id="id193">Future Improvements</a></li>
+<li><a class="reference internal" href="#sim-diasca-reliability" id="id194">Sim-Diasca Reliability</a><ul>
+<li><a class="reference internal" href="#context" id="id195">Context</a></li>
+<li><a class="reference internal" href="#a-tunable-resilience-service" id="id196">A Tunable Resilience Service</a></li>
+<li><a class="reference internal" href="#id54" id="id197">Mode of Operation</a></li>
+<li><a class="reference internal" href="#testing" id="id198">Testing</a></li>
+<li><a class="reference internal" href="#future-improvements" id="id199">Future Improvements</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#sim-diasca-technical-architecture" id="id194">Sim-Diasca Technical Architecture</a><ul>
-<li><a class="reference internal" href="#general-view" id="id195">General View</a></li>
-<li><a class="reference internal" href="#supported-platforms" id="id196">Supported Platforms</a></li>
-<li><a class="reference internal" href="#tools-for-the-sim-diasca-simulation-engine-itself" id="id197">Tools For the Sim-Diasca Simulation Engine Itself</a></li>
-<li><a class="reference internal" href="#complementary-tools" id="id198">Complementary Tools</a></li>
-<li><a class="reference internal" href="#other-tools" id="id199">Other Tools</a></li>
+<li><a class="reference internal" href="#sim-diasca-technical-architecture" id="id200">Sim-Diasca Technical Architecture</a><ul>
+<li><a class="reference internal" href="#general-view" id="id201">General View</a></li>
+<li><a class="reference internal" href="#supported-platforms" id="id202">Supported Platforms</a></li>
+<li><a class="reference internal" href="#tools-for-the-sim-diasca-simulation-engine-itself" id="id203">Tools For the Sim-Diasca Simulation Engine Itself</a></li>
+<li><a class="reference internal" href="#complementary-tools" id="id204">Complementary Tools</a></li>
+<li><a class="reference internal" href="#other-tools" id="id205">Other Tools</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#sim-diasca-building-blocks" id="id200">Sim-Diasca Building Blocks</a><ul>
-<li><a class="reference internal" href="#id72" id="id201">Simulation Traces</a></li>
-<li><a class="reference internal" href="#id78" id="id202">Probes</a></li>
-<li><a class="reference internal" href="#id82" id="id203">Data-Logger</a></li>
-<li><a class="reference internal" href="#id85" id="id204">Console Tracker</a></li>
-<li><a class="reference internal" href="#id88" id="id205">Data Exchanger</a></li>
-<li><a class="reference internal" href="#spatialised-support" id="id206">Spatialised Support</a></li>
+<li><a class="reference internal" href="#sim-diasca-building-blocks" id="id206">Sim-Diasca Building Blocks</a><ul>
+<li><a class="reference internal" href="#id72" id="id207">Simulation Traces</a></li>
+<li><a class="reference internal" href="#id78" id="id208">Probes</a></li>
+<li><a class="reference internal" href="#id82" id="id209">Data-Logger</a></li>
+<li><a class="reference internal" href="#id85" id="id210">Console Tracker</a></li>
+<li><a class="reference internal" href="#id88" id="id211">Data Exchanger</a></li>
+<li><a class="reference internal" href="#spatialised-support" id="id212">Spatialised Support</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#sim-diasca-helper-tools" id="id207">Sim-Diasca Helper Tools</a><ul>
-<li><a class="reference internal" href="#performance-tracker" id="id208">Performance Tracker</a></li>
-<li><a class="reference internal" href="#post-processing-services" id="id209">Post-Processing Services</a></li>
-<li><a class="reference internal" href="#plugin-infrastructure" id="id210">Plugin Infrastructure</a></li>
+<li><a class="reference internal" href="#sim-diasca-helper-tools" id="id213">Sim-Diasca Helper Tools</a><ul>
+<li><a class="reference internal" href="#performance-tracker" id="id214">Performance Tracker</a></li>
+<li><a class="reference internal" href="#post-processing-services" id="id215">Post-Processing Services</a></li>
+<li><a class="reference internal" href="#plugin-infrastructure" id="id216">Plugin Infrastructure</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#sim-diasca-modelling-guide" id="id211">Sim-Diasca Modelling Guide</a><ul>
-<li><a class="reference internal" href="#objective-context" id="id212">Objective &amp; Context</a></li>
-<li><a class="reference internal" href="#basics-of-simulation-operation-mode" id="id213">Basics Of Simulation Operation Mode</a></li>
-<li><a class="reference internal" href="#main-choices-in-terms-of-actor-modelling" id="id214">Main Choices In Terms Of Actor Modelling</a></li>
-<li><a class="reference internal" href="#modelling-process" id="id215">Modelling Process</a></li>
+<li><a class="reference internal" href="#sim-diasca-modelling-guide" id="id217">Sim-Diasca Modelling Guide</a><ul>
+<li><a class="reference internal" href="#objective-context" id="id218">Objective &amp; Context</a></li>
+<li><a class="reference internal" href="#basics-of-simulation-operation-mode" id="id219">Basics Of Simulation Operation Mode</a></li>
+<li><a class="reference internal" href="#main-choices-in-terms-of-actor-modelling" id="id220">Main Choices In Terms Of Actor Modelling</a></li>
+<li><a class="reference internal" href="#modelling-process" id="id221">Modelling Process</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#validating-the-resulting-simulators" id="id216">Validating The Resulting Simulators</a></li>
-<li><a class="reference internal" href="#sim-diasca-cheat-sheet" id="id217">Sim-Diasca Cheat Sheet</a><ul>
-<li><a class="reference internal" href="#which-sim-diasca-version-should-be-used" id="id218">Which Sim-Diasca Version Should Be Used?</a></li>
-<li><a class="reference internal" href="#how-can-we-run-a-simulation" id="id219">How Can We Run a Simulation?</a></li>
-<li><a class="reference internal" href="#how-can-i-select-whether-a-simulation-run-shall-be-purely-local-or-distributed" id="id220">How Can I Select Whether A Simulation Run Shall be Purely Local, or Distributed?</a></li>
-<li><a class="reference internal" href="#how-many-erlang-nodes-are-involved-in-a-simulation" id="id221">How Many Erlang Nodes Are Involved in a Simulation?</a></li>
-<li><a class="reference internal" href="#what-constraints-shall-be-observed-in-order-to-run-in-a-distributed-manner-ex-on-a-cluster" id="id222">What Constraints shall be Observed in order to run in a Distributed Manner (ex: on a cluster)?</a></li>
-<li><a class="reference internal" href="#what-are-the-most-common-gotchas-encountered-with-distributed-simulations" id="id223">What are the Most Common Gotchas encountered with Distributed Simulations?</a></li>
-<li><a class="reference internal" href="#what-is-the-first-tick-offset-of-a-simulation" id="id224">What is the First Tick Offset of a Simulation?</a></li>
-<li><a class="reference internal" href="#what-is-the-first-diasca-of-a-given-tick-t" id="id225">What is the First Diasca of a given Tick T?</a></li>
-<li><a class="reference internal" href="#how-a-simulation-starts" id="id226">How a Simulation Starts?</a></li>
-<li><a class="reference internal" href="#how-actors-are-to-be-created" id="id227">How Actors Are To Be Created?</a></li>
-<li><a class="reference internal" href="#how-constructors-of-actors-are-to-be-defined" id="id228">How Constructors of Actors Are To Be Defined?</a></li>
-<li><a class="reference internal" href="#how-actors-can-define-their-spontaneous-behaviour" id="id229">How Actors Can Define Their Spontaneous Behaviour?</a></li>
-<li><a class="reference internal" href="#how-actors-are-to-interact" id="id230">How Actors Are To Interact?</a></li>
-<li><a class="reference internal" href="#how-actor-oneways-shall-be-defined" id="id231">How Actor Oneways Shall be Defined?</a></li>
-<li><a class="reference internal" href="#how-to-handle-less-classical-communication-schemes" id="id232">How to Handle Less Classical Communication Schemes?</a></li>
-<li><a class="reference internal" href="#how-actors-are-to-be-deleted" id="id233">How Actors Are To Be Deleted?</a></li>
-<li><a class="reference internal" href="#how-requests-should-be-managed-from-a-simulation-case" id="id234">How Requests Should Be Managed From A Simulation Case?</a></li>
-<li><a class="reference internal" href="#how-should-i-run-larger-simulations" id="id235">How Should I run larger simulations?</a></li>
+<li><a class="reference internal" href="#validating-the-resulting-simulators" id="id222">Validating The Resulting Simulators</a></li>
+<li><a class="reference internal" href="#sim-diasca-cheat-sheet" id="id223">Sim-Diasca Cheat Sheet</a><ul>
+<li><a class="reference internal" href="#which-sim-diasca-version-should-be-used" id="id224">Which Sim-Diasca Version Should Be Used?</a></li>
+<li><a class="reference internal" href="#how-can-we-run-a-simulation" id="id225">How Can We Run a Simulation?</a></li>
+<li><a class="reference internal" href="#how-can-i-select-whether-a-simulation-run-shall-be-purely-local-or-distributed" id="id226">How Can I Select Whether A Simulation Run Shall be Purely Local, or Distributed?</a></li>
+<li><a class="reference internal" href="#how-many-erlang-nodes-are-involved-in-a-simulation" id="id227">How Many Erlang Nodes Are Involved in a Simulation?</a></li>
+<li><a class="reference internal" href="#what-constraints-shall-be-observed-in-order-to-run-in-a-distributed-manner-ex-on-a-cluster" id="id228">What Constraints shall be Observed in order to run in a Distributed Manner (ex: on a cluster)?</a></li>
+<li><a class="reference internal" href="#what-are-the-most-common-gotchas-encountered-with-distributed-simulations" id="id229">What are the Most Common Gotchas encountered with Distributed Simulations?</a></li>
+<li><a class="reference internal" href="#what-is-the-first-tick-offset-of-a-simulation" id="id230">What is the First Tick Offset of a Simulation?</a></li>
+<li><a class="reference internal" href="#what-is-the-first-diasca-of-a-given-tick-t" id="id231">What is the First Diasca of a given Tick T?</a></li>
+<li><a class="reference internal" href="#how-a-simulation-starts" id="id232">How a Simulation Starts?</a></li>
+<li><a class="reference internal" href="#how-actors-are-to-be-created" id="id233">How Actors Are To Be Created?</a></li>
+<li><a class="reference internal" href="#how-constructors-of-actors-are-to-be-defined" id="id234">How Constructors of Actors Are To Be Defined?</a></li>
+<li><a class="reference internal" href="#how-actors-can-define-their-spontaneous-behaviour" id="id235">How Actors Can Define Their Spontaneous Behaviour?</a></li>
+<li><a class="reference internal" href="#how-actors-are-to-interact" id="id236">How Actors Are To Interact?</a></li>
+<li><a class="reference internal" href="#how-actor-oneways-shall-be-defined" id="id237">How Actor Oneways Shall be Defined?</a></li>
+<li><a class="reference internal" href="#how-to-handle-less-classical-communication-schemes" id="id238">How to Handle Less Classical Communication Schemes?</a></li>
+<li><a class="reference internal" href="#how-actors-are-to-be-deleted" id="id239">How Actors Are To Be Deleted?</a></li>
+<li><a class="reference internal" href="#how-requests-should-be-managed-from-a-simulation-case" id="id240">How Requests Should Be Managed From A Simulation Case?</a></li>
+<li><a class="reference internal" href="#how-should-i-run-larger-simulations" id="id241">How Should I run larger simulations?</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#sim-diasca-troubleshooting" id="id236">Sim-Diasca Troubleshooting</a><ul>
-<li><a class="reference internal" href="#first-of-all-did-you-read-the-manuals" id="id237">First Of All: Did You Read The Manuals?</a></li>
-<li><a class="reference internal" href="#troubleshooting-principles" id="id238">Troubleshooting Principles</a></li>
-<li><a class="reference internal" href="#most-common-issues" id="id239">Most Common Issues</a></li>
-<li><a class="reference internal" href="#common-misconceptions" id="id240">Common Misconceptions</a></li>
+<li><a class="reference internal" href="#sim-diasca-troubleshooting" id="id242">Sim-Diasca Troubleshooting</a><ul>
+<li><a class="reference internal" href="#first-of-all-did-you-read-the-manuals" id="id243">First Of All: Did You Read The Manuals?</a></li>
+<li><a class="reference internal" href="#troubleshooting-principles" id="id244">Troubleshooting Principles</a></li>
+<li><a class="reference internal" href="#most-common-issues" id="id245">Most Common Issues</a></li>
+<li><a class="reference internal" href="#common-misconceptions" id="id246">Common Misconceptions</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#sim-diasca-support" id="id241">Sim-Diasca Support</a></li>
-<li><a class="reference internal" href="#sim-diasca-changes" id="id242">Sim-Diasca Changes</a></li>
-<li><a class="reference internal" href="#sim-diasca-future-enhancements" id="id243">Sim-Diasca Future Enhancements</a><ul>
-<li><a class="reference internal" href="#general-requirements" id="id244">General Requirements</a></li>
-<li><a class="reference internal" href="#id140" id="id245">Load Balancing</a></li>
-<li><a class="reference internal" href="#reproducible-actor-identifiers" id="id246">Reproducible Actor Identifiers</a></li>
-<li><a class="reference internal" href="#code-deployment" id="id247">Code Deployment</a></li>
-<li><a class="reference internal" href="#performance-tuning" id="id248">Performance Tuning</a></li>
-<li><a class="reference internal" href="#upstream-works" id="id249">Upstream Works</a></li>
-<li><a class="reference internal" href="#miscellaneous" id="id250">Miscellaneous</a></li>
+<li><a class="reference internal" href="#sim-diasca-support" id="id247">Sim-Diasca Support</a></li>
+<li><a class="reference internal" href="#sim-diasca-changes" id="id248">Sim-Diasca Changes</a></li>
+<li><a class="reference internal" href="#sim-diasca-future-enhancements" id="id249">Sim-Diasca Future Enhancements</a><ul>
+<li><a class="reference internal" href="#general-requirements" id="id250">General Requirements</a></li>
+<li><a class="reference internal" href="#id145" id="id251">Load Balancing</a></li>
+<li><a class="reference internal" href="#reproducible-actor-identifiers" id="id252">Reproducible Actor Identifiers</a></li>
+<li><a class="reference internal" href="#code-deployment" id="id253">Code Deployment</a></li>
+<li><a class="reference internal" href="#performance-tuning" id="id254">Performance Tuning</a></li>
+<li><a class="reference internal" href="#upstream-works" id="id255">Upstream Works</a></li>
+<li><a class="reference internal" href="#miscellaneous" id="id256">Miscellaneous</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#sim-diasca-hints" id="id251">Sim-Diasca Hints</a><ul>
-<li><a class="reference internal" href="#common-pitfalls" id="id252">Common Pitfalls</a></li>
-<li><a class="reference internal" href="#good-practices" id="id253">Good Practices</a></li>
-<li><a class="reference internal" href="#lesser-known-features" id="id254">Lesser-Known Features</a></li>
-<li><a class="reference internal" href="#other-useful-information" id="id255">Other Useful Information</a></li>
-<li><a class="reference internal" href="#tips-and-tricks" id="id256">Tips And Tricks</a></li>
+<li><a class="reference internal" href="#sim-diasca-hints" id="id257">Sim-Diasca Hints</a><ul>
+<li><a class="reference internal" href="#common-pitfalls" id="id258">Common Pitfalls</a></li>
+<li><a class="reference internal" href="#good-practices" id="id259">Good Practices</a></li>
+<li><a class="reference internal" href="#lesser-known-features" id="id260">Lesser-Known Features</a></li>
+<li><a class="reference internal" href="#other-useful-information" id="id261">Other Useful Information</a></li>
+<li><a class="reference internal" href="#tips-and-tricks" id="id262">Tips And Tricks</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#sim-diasca-bibliography" id="id257">Sim-Diasca Bibliography</a></li>
-<li><a class="reference internal" href="#sim-diasca-credits" id="id258">Sim-Diasca Credits</a></li>
-<li><a class="reference internal" href="#sim-diasca-license" id="id259">Sim-Diasca License</a></li>
-<li><a class="reference internal" href="#contributing-to-sim-diasca" id="id260">Contributing To Sim-Diasca</a></li>
-<li><a class="reference internal" href="#what-to-do-next" id="id261">What To Do Next?</a></li>
+<li><a class="reference internal" href="#sim-diasca-bibliography" id="id263">Sim-Diasca Bibliography</a></li>
+<li><a class="reference internal" href="#sim-diasca-credits" id="id264">Sim-Diasca Credits</a></li>
+<li><a class="reference internal" href="#sim-diasca-license" id="id265">Sim-Diasca License</a></li>
+<li><a class="reference internal" href="#contributing-to-sim-diasca" id="id266">Contributing To Sim-Diasca</a></li>
+<li><a class="reference internal" href="#what-to-do-next" id="id267">What To Do Next?</a></li>
 </ul>
 </div>
 <p></p>
@@ -207,9 +208,9 @@
 <p class="last">Before reading this document, we strongly advise to have a look first at the slides of the general-purpose presentation of Sim-Diasca.</p>
 </div>
 <div class="section" id="overview-context">
-<h1><a class="toc-backref" href="#id148">Overview &amp; Context</a></h1>
+<h1><a class="toc-backref" href="#id153">Overview &amp; Context</a></h1>
 <div class="section" id="sim-diasca">
-<h2><a class="toc-backref" href="#id149">Sim-Diasca</a></h2>
+<h2><a class="toc-backref" href="#id154">Sim-Diasca</a></h2>
 <p><strong>Sim-Diasca</strong> stands for <cite>Simulation of Discrete Systems of All Scales</cite>.</p>
 <p>Sim-Diasca is a lightweight simulation platform, released by EDF R&amp;D under the GNU <a class="reference internal" href="#lgpl">LGPL</a> licence, offering a set of simulation elements, including notably a simulation engine, to be applied to the simulation of discrete event-based systems made of potentially very numerous interacting parts.</p>
 <p>This class of simulation encompasses a wide range of target systems, from ecosystems to information systems, i.e. it could be used for most applications in the so-called <a class="reference external" href="http://en.wikipedia.org/wiki/Complex_systems">Complex systems</a> scientific field.</p>
@@ -224,7 +225,7 @@
 <p>Then, from these requirements, a relevant set of technical measures has been determined and then implemented.</p>
 </div>
 <div class="section" id="current-status">
-<h2><a class="toc-backref" href="#id150">Current Status</a></h2>
+<h2><a class="toc-backref" href="#id155">Current Status</a></h2>
 <p>Sim-Diasca and the first simulators making use of it are works in progress since the beginning of 2008, and the efforts dedicated to them remained light yet steady.</p>
 <p>The Sim-Diasca engine is already fully functional <a class="footnote-reference" href="#id2" id="id1">[1]</a> on GNU/Linux platforms, and provides all the needed basic underlying simulation mechanisms to model and run full simulations on various hardware solutions.</p>
 <p>A set of models, specifically tied to the first two business projects making use of Sim-Diasca, have been developed successfully on top of it, and the corresponding business results were delivered appropriately to stakeholders.</p>
@@ -237,7 +238,7 @@
 <p>Some further enhancements to the Sim-Diasca engine are to be implemented (see <a class="reference internal" href="#sim-diasca-future-enhancements">Sim-Diasca Future Enhancements</a>).</p>
 </div>
 <div class="section" id="minimal-quick-start-for-early-technical-testing">
-<h2><a class="toc-backref" href="#id151">Minimal Quick-Start For Early Technical Testing</a></h2>
+<h2><a class="toc-backref" href="#id156">Minimal Quick-Start For Early Technical Testing</a></h2>
 <p>For the fearless users wanting an early glance at Sim-Diasca in action, here is the shortest path to testing, provided you already have the prerequisites (including a well-compiled, recent, Erlang interpreter on a GNU/Linux box) installed.</p>
 <p>First, download the latest stable archive, for example: <tt class="docutils literal"><span class="pre">Sim-Diasca-x.y.z.tar.bz2</span></tt>.</p>
 <p>Extract it: <tt class="docutils literal">tar xvjf <span class="pre">Sim-Diasca-x.y.z.tar.bz2</span></tt>.</p>
@@ -256,25 +257,25 @@ make scheduling_multiple_coupled_erratic_actors_run <span class="nv">CMD_LINE_OP
 </div>
 </div>
 <div class="section" id="how-to-read-this-manual">
-<h1><a class="toc-backref" href="#id152">How to Read This Manual</a></h1>
+<h1><a class="toc-backref" href="#id157">How to Read This Manual</a></h1>
 <p><span class="raw-html"><center><center><img src="xkcd-manuals.png" id="responsive-image-medium"></img></center></span>
 </p>
 <p></p>
 </div>
 <div class="section" id="let-s-start-with-a-short-ontology">
-<h1><a class="toc-backref" href="#id153">Let's Start With A Short Ontology</a></h1>
+<h1><a class="toc-backref" href="#id158">Let's Start With A Short Ontology</a></h1>
 <div class="section" id="what-is-an-ontology">
-<h2><a class="toc-backref" href="#id154">What is an Ontology?</a></h2>
+<h2><a class="toc-backref" href="#id159">What is an Ontology?</a></h2>
 <p>As defined <a class="reference external" href="http://en.wikipedia.org/wiki/Ontology_%28information_science%29">here</a>, <em>an ontology formally represents knowledge as a set of concepts within a domain, and the relationships among those concepts. It can be used to reason about the entities within that domain and may be used to describe the domain.</em></p>
 <p>We aim here to express a Sim-Diasca ontology about (discrete-time) simulations of complex systems, so that we can define relevant terms and share them once for all.</p>
 </div>
 <div class="section" id="simulation-concepts-in-relation">
-<h2><a class="toc-backref" href="#id155">Simulation Concepts in Relation</a></h2>
+<h2><a class="toc-backref" href="#id160">Simulation Concepts in Relation</a></h2>
 <p>Many additional relations could be defined, we just concentrated on the most influencial ones. Each concept is defined in turn at the bottom of this diagram.</p>
 <p></p>
 </div>
 <div class="section" id="simulation-terms-defined">
-<h2><a class="toc-backref" href="#id156">Simulation Terms Defined</a></h2>
+<h2><a class="toc-backref" href="#id161">Simulation Terms Defined</a></h2>
 <p>The ontology is currently in a simpler form, the one of a glossary (terms, sorted alphabetically, and their definition).</p>
 <p>The examples illustrating the definitions are taken from a hypothetical simulation case involving preys and predators (a typical use-case in this simulation domain).</p>
 <dl class="docutils">
@@ -452,7 +453,7 @@ and relief).</em>&quot;</dd>
 </div>
 </div>
 <div class="section" id="sim-diasca-specifications">
-<h1><a class="toc-backref" href="#id157">Sim-Diasca Specifications</a></h1>
+<h1><a class="toc-backref" href="#id162">Sim-Diasca Specifications</a></h1>
 <p>Sim-Diasca has been originally designed in the context of two French and British projects aiming to perform a massive roll-out of communicating meters for millions of residential customers.</p>
 <p>This became a typical example of the complex systems whose simulation could be addressed by Sim-Diasca, showing the usual process involved by a project having to focus on business simulations: as the development of models and simulation cases is long and expensive, and as switching from an engine to another in the course of a project is almost never an option, an appropriate choice in the simulation tools is crucial for the success of such a project.</p>
 <p>To reduce this technical risk, a very basic, straightforward decision process is generally to be applied:</p>
@@ -464,7 +465,7 @@ and relief).</em>&quot;</dd>
 <li>elect the best candidate, possibly by benchmarking it on a representative use-case against a reference tool or the best other contenders</li>
 </ol>
 <div class="section" id="simulator-potential-role">
-<h2><a class="toc-backref" href="#id158">Simulator Potential Role</a></h2>
+<h2><a class="toc-backref" href="#id163">Simulator Potential Role</a></h2>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">In this document, we will often rely on examples taken from the smart metering field; however one must keep in mind that Sim-Diasca is a fully generic, business-free simulation engine, which has no connection at all with metering, and which can be applied to <em>any</em> kind of discrete complex systems.</p>
@@ -498,7 +499,7 @@ and relief).</em>&quot;</dd>
 <p>Of course any given simulator will rarely be requested to fulfil everything in such a wide range of expectations, but these are examples of questions that could be tackled thanks to a generic enough simulator and a set of appropriate models and metrics.</p>
 </div>
 <div class="section" id="simulator-potential-context-of-use">
-<h2><a class="toc-backref" href="#id159">Simulator Potential Context of Use</a></h2>
+<h2><a class="toc-backref" href="#id164">Simulator Potential Context of Use</a></h2>
 <p>Beyond the operational context of the aforementioned projects, such a simulator could be applied to:</p>
 <ul class="simple">
 <li>R&amp;D studies of alternative architectures for a metering system, for example:<ul>
@@ -514,7 +515,7 @@ and relief).</em>&quot;</dd>
 </ul>
 </div>
 <div class="section" id="functional-technical-requirements">
-<h2><a class="toc-backref" href="#id160">Functional &amp; Technical Requirements</a></h2>
+<h2><a class="toc-backref" href="#id165">Functional &amp; Technical Requirements</a></h2>
 <p>Here the simulation objective is to be able to rely on a <strong>simplified</strong> version of the target system, i.e. a <em>model</em> of it, on which various experiments can be conducted so that the overall system can be better understood, and questions about it can be answered.</p>
 <p>We will discuss here the main requirements that applied to our use-cases and thus played a main role in the design choices for Sim-Diasca.</p>
 <div class="section" id="a-key-point-scalability">
@@ -640,7 +641,7 @@ and relief).</em>&quot;</dd>
 </div>
 </div>
 <div class="section" id="sim-diasca-functional-coverage">
-<h1><a class="toc-backref" href="#id161">Sim-Diasca Functional Coverage</a></h1>
+<h1><a class="toc-backref" href="#id166">Sim-Diasca Functional Coverage</a></h1>
 <p>Based on the property list discussed in <a class="reference internal" href="#list-of-spotted-potential-properties-for-the-simulator">List of Spotted Potential Properties For the Simulator</a>, we tried to evaluate what are the features currently offered by Sim-Diasca in the following table.</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -841,11 +842,11 @@ arise (ex: faulty model).</td>
 <p></p>
 </div>
 <div class="section" id="modelling-approach">
-<h1><a class="toc-backref" href="#id162">Modelling Approach</a></h1>
+<h1><a class="toc-backref" href="#id167">Modelling Approach</a></h1>
 <p><span class="raw-html"><center><img src="xkcd-physicists.png" id="responsive-image-small"></img></center></span>
 </p>
 <div class="section" id="questions-metrics-models">
-<h2><a class="toc-backref" href="#id163">Questions, Metrics &amp; Models</a></h2>
+<h2><a class="toc-backref" href="#id168">Questions, Metrics &amp; Models</a></h2>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Only some basic, general considerations about modelling are given here. To focus on the actual modelling that shall be operated in practice with the engine, one should refer to the <em>Sim-Diasca Modeller Guide</em>.</p>
@@ -867,7 +868,7 @@ arise (ex: faulty model).</td>
 <p>Once specified, the pool of models can be reused at will in the context of different experiments: these models can be assembled together and projected in various execution environments, with different purposes and level of detail.</p>
 </div>
 <div class="section" id="implementation-of-models">
-<h2><a class="toc-backref" href="#id164">Implementation Of Models</a></h2>
+<h2><a class="toc-backref" href="#id169">Implementation Of Models</a></h2>
 <p>Uncoupling as much as possible models from implementations allows to reduce the dependency on a specific set of simulation tools, even though inevitably constraints remain.</p>
 <p>In the case of the AMM project, two completely different simulation environments were developed, based on a common view of the system:</p>
 <ul class="simple">
@@ -890,7 +891,7 @@ The simulator can therefore be seen as a set of technical components that allow 
 </div>
 </div>
 <div class="section" id="a-short-overview-of-simulation-services">
-<h1><a class="toc-backref" href="#id165">A Short Overview of Simulation Services</a></h1>
+<h1><a class="toc-backref" href="#id170">A Short Overview of Simulation Services</a></h1>
 <p>From the point of view of a model writer, the main <strong>functional</strong> simulation services offered by Sim-Diasca are:</p>
 <ul class="simple">
 <li>simulation case definition: see how to choose the simulation settings (<tt class="docutils literal">simulation_settings</tt> record), to specify how the deployment should be performed (<tt class="docutils literal">deployment_settings</tt> record), to define the initial state of the simulation (see the creation API of <tt class="docutils literal">class_Actor</tt>), to parametrise the load-balancing (<tt class="docutils literal">load_balancing_settings</tt> record), to control the simulation (starting time, ending criteria, console tracking, result browsing, etc.)</li>
@@ -915,14 +916,14 @@ The simulator can therefore be seen as a set of technical components that allow 
 <p></p>
 </div>
 <div class="section" id="sim-diasca-time-management-explained">
-<h1><a class="toc-backref" href="#id166">Sim-Diasca Time Management Explained</a></h1>
+<h1><a class="toc-backref" href="#id171">Sim-Diasca Time Management Explained</a></h1>
 <p><span class="raw-html"><center><img src="xkcd-time_management.png" id="responsive-image-medium"></img></center></span>
 </p>
 <p>As already mentioned, the approach to the management of simulation time is most probably the key point of the design of a parallel, distributed simulation engine like the one discussed here.</p>
 <p>There are several options to manage time, and, depending on the simulation properties that are needed, some methods are more appropriate than others.</p>
 <p>Their main role is to uncouple the <em>simulation</em> time (i.e. the virtual time the model instances live in) from the <em>wall-clock</em> time (i.e. the actual time that we, users, experience), knowing that the powerful computing resources available thanks to a parallel and distributed context may only be used at the expense of some added complexity at the engine level.</p>
 <div class="section" id="some-general-technical-considerations-first">
-<h2><a class="toc-backref" href="#id167">Some General Technical Considerations First</a></h2>
+<h2><a class="toc-backref" href="#id172">Some General Technical Considerations First</a></h2>
 <p>In the context of interest here, a scheduler is a software component of a simulation engine that is specifically in charge of the management of the simulation time.</p>
 <p>Its purpose is to preserve the simulation properties (ex: uncoupling of the virtual time from the wall-clock one, respect of causality, management of concurrent events, management of stochastic behaviours, guarantee of total reproducibility, providing of some form of &quot;ergodicity&quot; - more on that later) while performing a correct evaluation of the model instances involved in that simulation.</p>
 <p>It must induce as little constraint on the models as possible (ex: in terms of fan-in, fan-out, look-ahead, etc.) and, as a bonus, it can evaluate them efficiently.</p>
@@ -931,7 +932,7 @@ developed, from a simulation case to another, most probably in a very limited an
 <p>Moreover ad hoc scheduling often results in <em>static</em> scheduling, where the modeller unwinds by himself the logic of the interaction of the various models federated by the simulation, and hardcodes it. We believe that much of the added value of a simulation is then lost in this case, the modeller removing many degrees of freedom and independence by emulating manually the role of a scheduler: in the general case, semantically the behaviour of a target system is best described as the natural by-product of several autonomous interacting entities, rather than as a predetermined series of events.</p>
 </div>
 <div class="section" id="preservation-of-properties">
-<h2><a class="toc-backref" href="#id168">Preservation of Properties</a></h2>
+<h2><a class="toc-backref" href="#id173">Preservation of Properties</a></h2>
 <div class="section" id="maintaining-causality">
 <h3>Maintaining Causality</h3>
 <p>In the context of a distributed simulation, should no special mechanism be used, the propagation of simulated events would depend on the propagation of messages in the actual network of computing nodes, which offers no guarantee in terms of respective timing and therefore order of reception.</p>
@@ -995,7 +996,7 @@ developed, from a simulation case to another, most probably in a very limited an
 </div>
 </div>
 <div class="section" id="approaches-to-time-management">
-<h2><a class="toc-backref" href="#id169">Approaches to Time Management</a></h2>
+<h2><a class="toc-backref" href="#id174">Approaches to Time Management</a></h2>
 <p>As far as we know, there are mainly four ways of managing time correctly, in a distributed context, in the context of a simulation in discrete time.</p>
 <div class="section" id="approach-a-use-of-a-centralised-queue-of-events">
 <h3>Approach A: use of a centralised queue of events</h3>
@@ -1057,7 +1058,7 @@ developed, from a simulation case to another, most probably in a very limited an
 </div>
 </div>
 <div class="section" id="sim-diasca-time-management-algorithm">
-<h2><a class="toc-backref" href="#id170">Sim-Diasca Time Management Algorithm</a></h2>
+<h2><a class="toc-backref" href="#id175">Sim-Diasca Time Management Algorithm</a></h2>
 <div class="section" id="general-principles">
 <h3>General Principles</h3>
 <p><span class="raw-html"><center><img src="xkcd-debugger.png" id="responsive-image-medium"></img></center></span>
@@ -1421,7 +1422,7 @@ As a consequence, its constructor has to call the one of at least one mother cla
 </div>
 </div>
 <div class="section" id="how-virtual-time-is-managed">
-<h2><a class="toc-backref" href="#id171">How Virtual Time is Managed</a></h2>
+<h2><a class="toc-backref" href="#id176">How Virtual Time is Managed</a></h2>
 <div class="section" id="virtual-time-versus-real-time">
 <h3>Virtual Time Versus Real Time</h3>
 <p>In batch mode, the time of the simulation (a.k.a. virtual time) is fully decorrelated from the user, wall-clock time: the engine will run as fast as possible, but will take as long as needed to fully evaluate simulated events. As a consequence, depending on the computer resources that are used, the resulting simulation might be faster or slower than real-time.</p>
@@ -1459,7 +1460,7 @@ As a consequence, its constructor has to call the one of at least one mother cla
 </div>
 </div>
 <div class="section" id="in-depth-scheduling-implementation">
-<h2><a class="toc-backref" href="#id172">In-Depth: Scheduling Implementation</a></h2>
+<h2><a class="toc-backref" href="#id177">In-Depth: Scheduling Implementation</a></h2>
 <p>The simulations being distributed, the time management is itself distributed.</p>
 <p>For that, a hierarchy of time managers is defined. Any scheduling tree can be defined, knowing that by default there will be one time manager per computing host (thus federating all cores of all local processors), and that they will form a flat tree: the engine will select an appropriate host for the root time manager (which will the sole manager of virtual time), and all others will be direct children of it.</p>
 <p>Each time manager will schedule all the actors that are local to its node. This way, the large majority of scheduling messages will remain local to an Erlang node (i.e. potentially millions), and only the inter-manager ones (i.e. a few) will be exchanged over the network.</p>
@@ -1475,9 +1476,9 @@ As a consequence, its constructor has to call the one of at least one mother cla
 </div>
 </div>
 <div class="section" id="sim-diasca-management-of-probabilistic-laws">
-<h1><a class="toc-backref" href="#id173">Sim-Diasca Management of Probabilistic Laws</a></h1>
+<h1><a class="toc-backref" href="#id178">Sim-Diasca Management of Probabilistic Laws</a></h1>
 <div class="section" id="principles">
-<h2><a class="toc-backref" href="#id174">Principles</a></h2>
+<h2><a class="toc-backref" href="#id179">Principles</a></h2>
 <p>Quite often models rely on the use of stochastic variables.</p>
 <p>Such variables - respecting a given probabilistic law - are very useful to model the behaviours of simulation actors.</p>
 <p>For example, in terms of reliability, the approach is generally to define per-equipment average constants like the <em>Mean Time To Failure</em> (MTTF) and the <em>Mean Time To Repair</em> <a class="footnote-reference" href="#id29" id="id28">[14]</a> (MTTR), and to express reliability models thanks to stochastic laws parameterised by these constants (in that case: exponential and Gaussian laws, respectively).</p>
@@ -1498,7 +1499,7 @@ As a consequence, its constructor has to call the one of at least one mother cla
 </p>
 </div>
 <div class="section" id="built-in-random-distributions">
-<h2><a class="toc-backref" href="#id175">Built-in Random Distributions</a></h2>
+<h2><a class="toc-backref" href="#id180">Built-in Random Distributions</a></h2>
 <p>Although any probabilistic distribution (i.e. probability density) can be defined and added to the framework, Sim-Diasca provides some built-in distributions, listed below, that are among the most common.</p>
 <p>They are proposed by the <tt class="docutils literal">RandomManager</tt>, a specific technical component helping to manage stochastic variables in the context of a distributed simulation, notably so that causality and reproducibility are preserved.</p>
 <div class="section" id="uniform-law">
@@ -1532,8 +1533,13 @@ As a consequence, its constructor has to call the one of at least one mother cla
 <p>The Sim-Diasca white noise generator is used to generate this Gaussian law as well.</p>
 </div>
 </div>
+<div class="section" id="user-specified-random-distributions">
+<h2><a class="toc-backref" href="#id181">User-Specified Random Distributions</a></h2>
+<p>Non-uniform, arbitrarily-defined probability density functions are supported.</p>
+<p>For that, refer, in the <tt class="docutils literal">random_utils</tt> module, to the <tt class="docutils literal">generate_random_state_from/2</tt>, <tt class="docutils literal">get_sample_from/1</tt> and <tt class="docutils literal">get_sample_from/2</tt> functions, and to the corresponding <a class="reference external" href="http://myriad.esperide.org/#randomness">Myriad section</a>.</p>
+</div>
 <div class="section" id="actual-management-of-randomness">
-<h2><a class="toc-backref" href="#id176">Actual Management of Randomness</a></h2>
+<h2><a class="toc-backref" href="#id182">Actual Management of Randomness</a></h2>
 <div class="section" id="random-generators">
 <h3>Random Generators</h3>
 <p>At the core of most implementations, one relies on a random generator, which usually outputs floating-point values uniformly distributed between 0.0 and 1.0.</p>
@@ -1588,7 +1594,7 @@ As a consequence, its constructor has to call the one of at least one mother cla
 </div>
 </div>
 <div class="section" id="randomness-pitfalls">
-<h2><a class="toc-backref" href="#id177">Randomness Pitfalls</a></h2>
+<h2><a class="toc-backref" href="#id183">Randomness Pitfalls</a></h2>
 <p>All model instances are automatically correctly seeded, so all probabilistic laws can be readily used from them with no effort.</p>
 <p>However, in some cases (typically for initialisation purposes, in the simulation case) it may be useful to rely on basic processes, WOOPER or not (i.e. not actors), and some of them might have to be stochastic (ex: when generating a given road network following specific constraints). <strong>These helper processes should have their random source explicitly seeded</strong> (using <tt class="docutils literal"><span class="pre">random_utils:start_random_source/{1,3}</span></tt> for that), otherwise a non-constant seed will be assigned to each of them, and it will break reproducibility.</p>
 <p>Another potential cause of issue is the change of a random source: if not explicitly seeded, some of them will default on a constant seed (ex: <tt class="docutils literal">random</tt>) while others not (ex: <tt class="docutils literal">rand</tt>, the current default source).</p>
@@ -1600,9 +1606,9 @@ As a consequence, its constructor has to call the one of at least one mother cla
 </div>
 </div>
 <div class="section" id="sim-diasca-management-of-simulation-inputs">
-<h1><a class="toc-backref" href="#id178">Sim-Diasca Management of Simulation Inputs</a></h1>
+<h1><a class="toc-backref" href="#id184">Sim-Diasca Management of Simulation Inputs</a></h1>
 <div class="section" id="id32">
-<h2><a class="toc-backref" href="#id179">Principles</a></h2>
+<h2><a class="toc-backref" href="#id185">Principles</a></h2>
 <p>A simulation is defined primarily by its simulation case, which shall specify the simulation inputs.</p>
 <p>These inputs are mostly:</p>
 <ul class="simple">
@@ -1611,7 +1617,7 @@ As a consequence, its constructor has to call the one of at least one mother cla
 </ul>
 </div>
 <div class="section" id="requirements">
-<h2><a class="toc-backref" href="#id180">Requirements</a></h2>
+<h2><a class="toc-backref" href="#id186">Requirements</a></h2>
 <p>The initial state of the simulation is by far the most challenging input to manage. In simple cases, it can be seen as a series of (synchronous) creations of initial instances (actors or scenarios, no difference from the engine's point of view), which can be done:</p>
 <ul class="simple">
 <li>either <em>programmatically</em> - directly from the simulation case or from a scenario (in both cases typically thanks to a series of <tt class="docutils literal"><span class="pre">class_Actor:create_initial_actor/{2,3}</span></tt> calls, with the relevant parameters in terms of model construction)</li>
@@ -1638,7 +1644,7 @@ As a consequence, its constructor has to call the one of at least one mother cla
 </ul>
 </div>
 <div class="section" id="creation-of-the-initial-state-of-the-simulation">
-<h2><a class="toc-backref" href="#id181">Creation of the Initial State of the Simulation</a></h2>
+<h2><a class="toc-backref" href="#id187">Creation of the Initial State of the Simulation</a></h2>
 <div class="section" id="how-to-create-initial-instances-programmatically">
 <h3>How to Create Initial Instances Programmatically</h3>
 <p>This is the easiest, yet most limited, approach. No external identifier needs to be involved here.</p>
@@ -1822,9 +1828,9 @@ As a consequence, its constructor has to call the one of at least one mother cla
 </div>
 </div>
 <div class="section" id="sim-diasca-management-of-simulation-outputs">
-<h1><a class="toc-backref" href="#id182">Sim-Diasca Management of Simulation Outputs</a></h1>
+<h1><a class="toc-backref" href="#id188">Sim-Diasca Management of Simulation Outputs</a></h1>
 <div class="section" id="id41">
-<h2><a class="toc-backref" href="#id183">Principles</a></h2>
+<h2><a class="toc-backref" href="#id189">Principles</a></h2>
 <p>A simulator allows to run virtual experiments, involving input parameters and models, and producing corresponding outputs, a subset of it being tagged as the actual results awaited by the user. Some post-processing can then be later applied to these results, which are usually rather raw by-products.</p>
 <p>The overall goal is to obtain, from known facts and thanks the simulations, new knowledge that was not necessarily anticipated.</p>
 <p>Indeed, in the same way as one may rely on a (hopefully <a class="reference internal" href="#validated">validated</a>) oracle or a gyroscope, the outcome of a simulation cannot be really precisely foreseen (otherwise it would be plain useless):</p>
@@ -1832,7 +1838,7 @@ As a consequence, its constructor has to call the one of at least one mother cla
 </p>
 </div>
 <div class="section" id="managing-the-outputs">
-<h2><a class="toc-backref" href="#id184">Managing The Outputs</a></h2>
+<h2><a class="toc-backref" href="#id190">Managing The Outputs</a></h2>
 <p>In the general case, simulation outputs comprise results, traces, user interface data, etc. We focus below on the simulation <em>results</em>.</p>
 <div class="section" id="general-mode-of-operation">
 <h3>General Mode of Operation</h3>
@@ -1896,19 +1902,21 @@ Sim-Diasca_My_Case-on-2015-12-10-at-10h-05m-59s-by-boudevil-1f793a6ba507
 </div>
 </div>
 <div class="section" id="result-generation">
-<h2><a class="toc-backref" href="#id185">Result Generation</a></h2>
+<h2><a class="toc-backref" href="#id191">Result Generation</a></h2>
 <p>Often, many models are able to define various probes, and the corresponding number of instances is huge.</p>
 <p>A large number of result producers may therefore exist, even after having selected (thanks to the result specification) only a subset of them.</p>
 <p>The consequence is that the parallel, distributed result generation cannot be triggered as a whole, lest the most loaded computing nodes will simply crash (ex: RAM exhausted).</p>
 <p>The result manager therefore implements a flow control mechanism, ensuring that all possible computing nodes work at full speed, while not being too much overloaded. Basically, at any time, up to twice as many generations are requested as there are cores on a given computing host. Any generation completion yields the requesting of another pending one (if any).</p>
 </div>
 <div class="section" id="post-processing-the-results">
-<h2><a class="toc-backref" href="#id186">Post-Processing the Results</a></h2>
+<h2><a class="toc-backref" href="#id192">Post-Processing the Results</a></h2>
 <p>Some approaches and tools can be used to transform results into knowledge. This involves generally synthesising the vast amount of data into a few relevant statistics or indicators.</p>
+<p><span class="raw-html"><center><img src="xkcd-data_trap.png" id="responsive-image-small"></img></center></span>
+</p>
 <p>The post-processing to be done depends significantly on the specific problem being studied. Currently, except probe reports, Sim-Diasca outputs mainly time series, letting the user feed these raw data to the suitable tools, on a domain-specific way.</p>
 </div>
 <div class="section" id="interpreting-the-outcome">
-<h2><a class="toc-backref" href="#id187">Interpreting the Outcome</a></h2>
+<h2><a class="toc-backref" href="#id193">Interpreting the Outcome</a></h2>
 <p>Once the right questions have been properly formalised, this step is probably, with the <a class="reference internal" href="#validation">validation</a> part, the trickiest part of a simulation work: what are the lessons learned, and to which extent can we trust them?</p>
 <p>Providing detailed guidelines would be beyond the scope of this document. Here are nevertheless a few hints.</p>
 <div class="section" id="identifying-reasons-for-observed-phenomena">
@@ -1920,7 +1928,7 @@ Sim-Diasca_My_Case-on-2015-12-10-at-10h-05m-59s-by-boudevil-1f793a6ba507
 <div class="section" id="having-reasonable-expectations">
 <h3>Having Reasonable Expectations</h3>
 <p>A simulation is not the silver bullet that will ask the right questions on the user's behalf and answer them with infinite accuracy:</p>
-<p><span class="raw-html"><center><img src="xkcd-science_montage.png" id="responsive-image-medium"></img></center></span>
+<p><span class="raw-html"><center><img src="xkcd-science_montage.png" id="responsive-image-small"></img></center></span>
 </p>
 <p>Simulation being a rather expensive and time-consuming mode of evaluation, it should be used on carefully selected cases that cannot be solved satisfactorily thanks to other methods, like comparison with actual systems, expert assessments, coarse spreadsheet-based studies, etc.</p>
 <p>Even in that case, a few well-selected metrics must be defined, that must be both helpful to the user and solvable by the simulation.</p>
@@ -1955,9 +1963,9 @@ Sim-Diasca_My_Case-on-2015-12-10-at-10h-05m-59s-by-boudevil-1f793a6ba507
 </div>
 </div>
 <div class="section" id="sim-diasca-reliability">
-<h1><a class="toc-backref" href="#id188">Sim-Diasca Reliability</a></h1>
+<h1><a class="toc-backref" href="#id194">Sim-Diasca Reliability</a></h1>
 <div class="section" id="context">
-<h2><a class="toc-backref" href="#id189">Context</a></h2>
+<h2><a class="toc-backref" href="#id195">Context</a></h2>
 <p>The simulations of complex systems tend to be of a larger scale, and may last (at least in wall-clock time) very long.</p>
 <p>Numerous computing hosts will then be involved in such simulations and, even if each of the cores of these hosts boasts a high <a class="reference external" href="http://en.wikipedia.org/wiki/Mean_time_between_failures">MTBF</a>, their number will imply that, if waiting for long enough, any proportion of them <em>will</em> fail <a class="footnote-reference" href="#id47" id="id46">[22]</a>. Not to mention that there <em>will</em> be as well network issues, transient or not.</p>
 <table class="docutils footnote" frame="void" id="id47" rules="none">
@@ -1975,7 +1983,7 @@ Sim-Diasca_My_Case-on-2015-12-10-at-10h-05m-59s-by-boudevil-1f793a6ba507
 </div>
 </div>
 <div class="section" id="a-tunable-resilience-service">
-<h2><a class="toc-backref" href="#id190">A Tunable Resilience Service</a></h2>
+<h2><a class="toc-backref" href="#id196">A Tunable Resilience Service</a></h2>
 <p>Now, at start-up, the user of a simulation is able to specify, among the simulation settings (see, in <tt class="docutils literal">class_DeploymentManager.hrl</tt>, the <tt class="docutils literal">crash_resilience</tt> field of the <tt class="docutils literal">deployment_settings</tt> record),  what is the required level of resilience of the simulation with regard to the loss of computing hosts in its course:</p>
 <ul class="simple">
 <li>either <tt class="docutils literal">none</tt> is required (the default mode), in which case the simulation will crash as soon as a computing host is deemed lost (while, on the other hand, no resilience-induced overhead will exist in this case)</li>
@@ -2011,7 +2019,7 @@ Sim-Diasca_My_Case-on-2015-12-10-at-10h-05m-59s-by-boudevil-1f793a6ba507
 <p>Finally, we ensured that this serialisation activity does not introduce a non-negligible latency (whether activated or not) - but, of course, once the regular serialisation is triggered, the whole simulation is bound to be stalled for some time (even if it is done in an almost fully parallel, distributed way). As a consequence, the resilience feature is only compatible with the batch mode of operation (i.e. not with the interactive one).</p>
 </div>
 <div class="section" id="id54">
-<h2><a class="toc-backref" href="#id191">Mode of Operation</a></h2>
+<h2><a class="toc-backref" href="#id197">Mode of Operation</a></h2>
 <div class="section" id="preparing-for-any-later-recovery">
 <h3>Preparing for any later recovery</h3>
 <p>Let's suppose that N computing hosts are assigned to a simulation having to exhibit a k-crash resiliency.</p>
@@ -2099,7 +2107,7 @@ For a resilience level of 5, result is: k-map for 6 nodes:
 </div>
 </div>
 <div class="section" id="testing">
-<h2><a class="toc-backref" href="#id192">Testing</a></h2>
+<h2><a class="toc-backref" href="#id198">Testing</a></h2>
 <p>The initial testing was done by specifying more than one computing host, and emulating first the simultaneous crashes of all other hosts at various steps of the simulation. This is to be done either by unplugging the Ethernet cable of the user host or, from a terminal on that host, running as root a simple command-line script like <a class="footnote-reference" href="#id58" id="id57">[27]</a>:</p>
 <pre class="code bash literal-block">
 $ <span class="k">while</span> true<span class="p">;</span> <span class="k">do</span> <span class="nb">echo</span> <span class="s2">&quot;Disabling network&quot;</span><span class="p">;</span> ifconfig eth0 down<span class="p">;</span> <span class="se">\
@@ -2154,7 +2162,7 @@ $ <span class="k">for</span> m in <span class="nv">$HOSTS</span> <span class="p"
 <p>As sneaking into an HPC control room in order to perform selective sabotage on the relevant cables is not really an option, such a testing is better be done on a simple ad-hoc set of networked computers.</p>
 </div>
 <div class="section" id="future-improvements">
-<h2><a class="toc-backref" href="#id193">Future Improvements</a></h2>
+<h2><a class="toc-backref" href="#id199">Future Improvements</a></h2>
 <p>Many enhancements could be devised, including:</p>
 <ul class="simple">
 <li>Merging all agents in each node, except the time managers, so that reproducibility (i.e. distinct random series) can be preserved</li>
@@ -2168,15 +2176,15 @@ $ <span class="k">for</span> m in <span class="nv">$HOSTS</span> <span class="p"
 </div>
 </div>
 <div class="section" id="sim-diasca-technical-architecture">
-<h1><a class="toc-backref" href="#id194">Sim-Diasca Technical Architecture</a></h1>
+<h1><a class="toc-backref" href="#id200">Sim-Diasca Technical Architecture</a></h1>
 <div class="section" id="general-view">
-<h2><a class="toc-backref" href="#id195">General View</a></h2>
+<h2><a class="toc-backref" href="#id201">General View</a></h2>
 <p><span class="raw-html"><center><img src="technical-architecture-english.png" id="responsive-image-medium"></img></center></span>
 </p>
 <p></p>
 </div>
 <div class="section" id="supported-platforms">
-<h2><a class="toc-backref" href="#id196">Supported Platforms</a></h2>
+<h2><a class="toc-backref" href="#id202">Supported Platforms</a></h2>
 <p>The development and use of Sim-Diasca is mostly focused on the GNU/Linux platform.</p>
 <p>Sim-Diasca should be basically quite close to be able to run on most UNIX computers, yet some platform perks would have to be overcome beforehand.</p>
 <p>At least one build on Mac OS X has been reported, yet the operated changes have not been shared. Patches welcome!</p>
@@ -2191,7 +2199,7 @@ $ <span class="k">for</span> m in <span class="nv">$HOSTS</span> <span class="p"
 <p>We made significant use of <a class="reference external" href="http://en.wikipedia.org/wiki/Portable_Batch_System">PBS-based</a> clusters, then of ones relying on <a class="reference external" href="https://slurm.schedmd.com/">SLURM</a>. A lightweight abstraction layer has been built over both (see <tt class="docutils literal"><span class="pre">sim-diasca/conf/clusters/sim-diasca-launcher.sh</span></tt>). Other cluster scripts have been developed to respectively deploy, launch and collect results for <em>sets</em> of experiments (ex: automating the launching of 72 simulations, to perform some parametric studies).</p>
 </div>
 <div class="section" id="tools-for-the-sim-diasca-simulation-engine-itself">
-<h2><a class="toc-backref" href="#id197">Tools For the Sim-Diasca Simulation Engine Itself</a></h2>
+<h2><a class="toc-backref" href="#id203">Tools For the Sim-Diasca Simulation Engine Itself</a></h2>
 <div class="section" id="id61">
 <h3>Erlang</h3>
 <p>Basically, <a class="reference external" href="http://www.erlang.org">Erlang</a> provides a full environment particularly suitable for multi-agent applications.</p>
@@ -2248,7 +2256,7 @@ $ <span class="k">for</span> m in <span class="nv">$HOSTS</span> <span class="p"
 </div>
 </div>
 <div class="section" id="complementary-tools">
-<h2><a class="toc-backref" href="#id198">Complementary Tools</a></h2>
+<h2><a class="toc-backref" href="#id204">Complementary Tools</a></h2>
 <p>A few third-party tools are used in the context of Sim-Diasca. They are not direct parts of the simulation engine, but they are very useful to make a better use of the framework.</p>
 <p>As they are already wrapped by the appropriate Sim-Diasca code, they will be automatically triggered and used by the simulator, with no further action from the user.</p>
 <div class="section" id="logmx">
@@ -2286,7 +2294,7 @@ $ <span class="k">for</span> m in <span class="nv">$HOSTS</span> <span class="p"
 </div>
 </div>
 <div class="section" id="other-tools">
-<h2><a class="toc-backref" href="#id199">Other Tools</a></h2>
+<h2><a class="toc-backref" href="#id205">Other Tools</a></h2>
 <p>They are not used at execution-time (i.e. during a simulation), but they are nevertheless involved in our daily usage of Sim-Diasca.</p>
 <div class="section" id="gnu-make">
 <h3>GNU make</h3>
@@ -2306,9 +2314,9 @@ $ <span class="k">for</span> m in <span class="nv">$HOSTS</span> <span class="p"
 </div>
 </div>
 <div class="section" id="sim-diasca-building-blocks">
-<h1><a class="toc-backref" href="#id200">Sim-Diasca Building Blocks</a></h1>
+<h1><a class="toc-backref" href="#id206">Sim-Diasca Building Blocks</a></h1>
 <div class="section" id="id72">
-<span id="simulation-traces"></span><h2><a class="toc-backref" href="#id201">Simulation Traces</a></h2>
+<span id="simulation-traces"></span><h2><a class="toc-backref" href="#id207">Simulation Traces</a></h2>
 <div class="section" id="id73">
 <h3>Principles</h3>
 <p>Traces (a.k.a. simulation logs) are a way of recording for later use any event of interest, of any sort (technical or domain-specific), happening during a simulation. Traces allow to monitor selectively an execution, without recording each and every event that occurred.</p>
@@ -2424,7 +2432,7 @@ $ make foobar_run CMD_LINE_OPT=&quot;--trace-type text --batch&quot;
 </div>
 </div>
 <div class="section" id="id78">
-<span id="probes"></span><span id="probe"></span><h2><a class="toc-backref" href="#id202">Probes</a></h2>
+<span id="probes"></span><span id="probe"></span><h2><a class="toc-backref" href="#id208">Probes</a></h2>
 <p>The Sim-Diasca <strong>probes</strong> can collect all kinds of numerical data produced during simulation, and generate a graphical view of them.</p>
 <p>Probes are <em>result producers</em>, and as such are dealt with by the <em>result manager</em>.</p>
 <p>There are two main kinds of built-in probes:</p>
@@ -2519,7 +2527,7 @@ gnuplot Test_probe.dat
 </div>
 </div>
 <div class="section" id="id82">
-<span id="data-logger"></span><span id="datalogger"></span><h2><a class="toc-backref" href="#id203">Data-Logger</a></h2>
+<span id="data-logger"></span><span id="datalogger"></span><h2><a class="toc-backref" href="#id209">Data-Logger</a></h2>
 <p>The purpose of the data-logger is to store and manage simulation data in a more powerful and flexible way than with plain <a class="reference internal" href="#probes">probes</a>.</p>
 <p>The data-logger allows any number of <em>virtual probes</em> to be created, and stores them in a distributed database. This allows queries to be done on these data, and outputs to be generated in a very similar way as when using plain probes.</p>
 <p>This data service relies a lot on the <em>Mnesia</em> soft-realtime database, which is an Erlang built-in.</p>
@@ -2545,7 +2553,7 @@ gnuplot Test_probe.dat
 <p></p>
 </div>
 <div class="section" id="id85">
-<span id="console-tracker"></span><h2><a class="toc-backref" href="#id204">Console Tracker</a></h2>
+<span id="console-tracker"></span><h2><a class="toc-backref" href="#id210">Console Tracker</a></h2>
 <p>The <em>Console Tracker</em> is a lightweight Sim-Diasca built-in which displays live runtime information on a terminal, in order to allow the user to monitor concisely the progress of a running simulation.</p>
 <p>A typical output is:</p>
 <pre class="literal-block">
@@ -2677,7 +2685,7 @@ of x0.047.
 <p></p>
 </div>
 <div class="section" id="id88">
-<span id="data-exchanger"></span><h2><a class="toc-backref" href="#id205">Data Exchanger</a></h2>
+<span id="data-exchanger"></span><h2><a class="toc-backref" href="#id211">Data Exchanger</a></h2>
 <p>The <em>Data Exchanger</em> is a distributed simulation service that allows to share conveniently and efficiently data among all actors, even if the data sets are large and the actors numerous.</p>
 <div class="section" id="objectives">
 <h3>Objectives</h3>
@@ -2780,7 +2788,7 @@ of x0.047.
 </div>
 </div>
 <div class="section" id="spatialised-support">
-<h2><a class="toc-backref" href="#id206">Spatialised Support</a></h2>
+<h2><a class="toc-backref" href="#id212">Spatialised Support</a></h2>
 <div class="section" id="overview">
 <h3>Overview</h3>
 <p>Currently only a support for 2D environments is provided - of course the user might define any number of other environments if wanted.</p>
@@ -2811,13 +2819,13 @@ of x0.047.
 </div>
 </div>
 <div class="section" id="sim-diasca-helper-tools">
-<h1><a class="toc-backref" href="#id207">Sim-Diasca Helper Tools</a></h1>
+<h1><a class="toc-backref" href="#id213">Sim-Diasca Helper Tools</a></h1>
 <p id="helper-tools"><span id="tools"></span>These tools are not strictly necessary to the mode of operation of the engine, however they provide some features that are very useful in some contexts.</p>
 <p><span class="raw-html"><center><img src="xkcd-the_general_problem.png" id="responsive-image-medium"></img></center></span>
 </p>
 <p>As a consequence, on a vanilla Sim-Diasca version, they start disabled (so that they induce no resource overhead), but their sources are in the main codebase, they are always built and readily available - as soon as the user chooses to activate them.</p>
 <div class="section" id="performance-tracker">
-<h2><a class="toc-backref" href="#id208">Performance Tracker</a></h2>
+<h2><a class="toc-backref" href="#id214">Performance Tracker</a></h2>
 <p>The <em>Performance Tracker</em> is a fully optional mechanism that allows the user to monitor a simulation that was run, in order to profile it.</p>
 <p>It aims to monitor and then generate reports giving detailed information about all kinds of technical measurements dealing with performances, notably in terms of resource consumption (CPU, RAM, network, Erlang process count, etc.).</p>
 <div class="section" id="requirements-functional-coverage">
@@ -2917,7 +2925,7 @@ of x0.047.
 </div>
 </div>
 <div class="section" id="post-processing-services">
-<h2><a class="toc-backref" href="#id209">Post-Processing Services</a></h2>
+<h2><a class="toc-backref" href="#id215">Post-Processing Services</a></h2>
 <p>As hinted by their name, these services are not integrated to the engine, but are to be applied, if needed, to the results it produces.</p>
 <div class="section" id="time-series-analyzer">
 <h3>Time-Series Analyzer</h3>
@@ -2944,7 +2952,7 @@ of x0.047.
 </div>
 </div>
 <div class="section" id="plugin-infrastructure">
-<h2><a class="toc-backref" href="#id210">Plugin Infrastructure</a></h2>
+<h2><a class="toc-backref" href="#id216">Plugin Infrastructure</a></h2>
 <p>Sim-Diasca offers a full <em>Plugin Management System</em>, which allows third-party code to interface with the engine in various ways.</p>
 <div class="section" id="id98">
 <h3>General Principles</h3>
@@ -3006,13 +3014,13 @@ of x0.047.
 </div>
 </div>
 <div class="section" id="sim-diasca-modelling-guide">
-<h1><a class="toc-backref" href="#id211">Sim-Diasca Modelling Guide</a></h1>
+<h1><a class="toc-backref" href="#id217">Sim-Diasca Modelling Guide</a></h1>
 <div class="section" id="objective-context">
-<h2><a class="toc-backref" href="#id212">Objective &amp; Context</a></h2>
+<h2><a class="toc-backref" href="#id218">Objective &amp; Context</a></h2>
 <p>The goal here is to help bridging the gap between the modelling world and the simulation world: in this section we discuss what is the &quot;language&quot; that the simulation engine natively understands, so that a modelling team is able to prepare descriptions of models that can be almost readily implemented into actual (runnable) simulation models.</p>
 </div>
 <div class="section" id="basics-of-simulation-operation-mode">
-<h2><a class="toc-backref" href="#id213">Basics Of Simulation Operation Mode</a></h2>
+<h2><a class="toc-backref" href="#id219">Basics Of Simulation Operation Mode</a></h2>
 <div class="section" id="actors-models">
 <h3>Actors &amp; Models</h3>
 <div class="section" id="actor">
@@ -3174,7 +3182,7 @@ of x0.047.
 </div>
 </div>
 <div class="section" id="main-choices-in-terms-of-actor-modelling">
-<h2><a class="toc-backref" href="#id214">Main Choices In Terms Of Actor Modelling</a></h2>
+<h2><a class="toc-backref" href="#id220">Main Choices In Terms Of Actor Modelling</a></h2>
 <div class="section" id="fundamental-frequency">
 <h3>Fundamental Frequency</h3>
 <p>As discussed previously, the root time manager in charge of a simulation will maintain its virtual time based on the fundamental overall frequency the simulation user specified: this frequency (ex: 50 Hz) directly dictates the duration in virtual time between two successive engine ticks (ex: 20 ms).</p>
@@ -3207,7 +3215,7 @@ of x0.047.
 </div>
 </div>
 <div class="section" id="modelling-process">
-<h2><a class="toc-backref" href="#id215">Modelling Process</a></h2>
+<h2><a class="toc-backref" href="#id221">Modelling Process</a></h2>
 <p>Here are the questions that should be addressed simulation-wise, when writing a model.</p>
 <div class="section" id="nature-of-the-model">
 <h3>Nature Of The Model</h3>
@@ -3247,7 +3255,7 @@ of x0.047.
 </div>
 </div>
 <div class="section" id="validating-the-resulting-simulators">
-<span id="validated"></span><span id="validation"></span><h1><a class="toc-backref" href="#id216">Validating The Resulting Simulators</a></h1>
+<span id="validated"></span><span id="validation"></span><h1><a class="toc-backref" href="#id222">Validating The Resulting Simulators</a></h1>
 <p>Adding to Sim-Diasca (the simulation engine) a set of models and at least one simulation case results into building a new simulator.</p>
 <p>This simulator may or may not be accurate, and this must be established first.</p>
 <p>Indeed, drawing bad conclusions from false assumptions or improper reasoning is surprisingly easy:</p>
@@ -3265,14 +3273,14 @@ of x0.047.
 <p></p>
 </div>
 <div class="section" id="sim-diasca-cheat-sheet">
-<h1><a class="toc-backref" href="#id217">Sim-Diasca Cheat Sheet</a></h1>
+<h1><a class="toc-backref" href="#id223">Sim-Diasca Cheat Sheet</a></h1>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
 <p class="last">This section would deserve some update.</p>
 </div>
 <p>Note: unless specified otherwise, mentioned tests are to be found in the <tt class="docutils literal"><span class="pre">sim-diasca/src/core/src/scheduling/tests</span></tt> directory.</p>
 <div class="section" id="which-sim-diasca-version-should-be-used">
-<h2><a class="toc-backref" href="#id218">Which Sim-Diasca Version Should Be Used?</a></h2>
+<h2><a class="toc-backref" href="#id224">Which Sim-Diasca Version Should Be Used?</a></h2>
 <p>Previously there were two versions, one local, one distributed. Now that they have been merged into a single base, one should simply pick the latest stable version. That's it!</p>
 <p>To check which version you are using, simply run from the root directory:</p>
 <pre class="code bash literal-block">
@@ -3285,7 +3293,7 @@ This is Sim-Diasca version x.y.z.
 <p>Anyway, as a given version of Sim-Diasca is delivered with all its strictly mandatory prerequisites except Erlang, no particular checking of their version is necessary, as they collectively form a consistent bundle.</p>
 </div>
 <div class="section" id="how-can-we-run-a-simulation">
-<h2><a class="toc-backref" href="#id219">How Can We Run a Simulation?</a></h2>
+<h2><a class="toc-backref" href="#id225">How Can We Run a Simulation?</a></h2>
 <p>A simulation can be run either from a <em>test</em> file, whose name is suffixed with <tt class="docutils literal">_test.erl</tt> (ex: stored in a <tt class="docutils literal">my_foobar_test.erl</tt>) or from a <em>case</em> file, whose name is suffixed with <tt class="docutils literal">_case.erl</tt> (ex: stored in a <tt class="docutils literal">my_baz_case.erl</tt>).</p>
 <p>No runtime difference is made between these two (they are technically exactly handled the same), the purpose of this distinction being solely to help the user separating the more punctual testing from full-blown simulation cases.</p>
 <p>So, with both tests and cases:</p>
@@ -3322,50 +3330,62 @@ $ make soda_platform_integration_run <span class="nv">$BATCH</span>
 </pre>
 </div>
 <div class="section" id="how-can-i-select-whether-a-simulation-run-shall-be-purely-local-or-distributed">
-<h2><a class="toc-backref" href="#id220">How Can I Select Whether A Simulation Run Shall be Purely Local, or Distributed?</a></h2>
+<h2><a class="toc-backref" href="#id226">How Can I Select Whether A Simulation Run Shall be Purely Local, or Distributed?</a></h2>
 <p>Each simulation case is able to define how it is to be deployed or executed, simply by setting accordingly the <tt class="docutils literal">computing_hosts</tt> field in its <tt class="docutils literal">deployment_settings</tt> record (whose full definition and associated comments can be found in <tt class="docutils literal">class_DeploymentManager.hrl</tt>).</p>
 <p>Most test cases rely on default settings, which operate this way:</p>
 <ol class="arabic simple">
-<li>if a host file - named by default <tt class="docutils literal"><span class="pre">sim-diasca-host-candidates.txt</span></tt> - is found in the current directory (the one from which a test case <tt class="docutils literal">X</tt> is run, thanks to a <tt class="docutils literal">make X_run</tt> for example), then the engine will read it and try to use the hosts listed there; the syntax is simple and described in the <tt class="docutils literal"><span class="pre">sim-diasca-host-candidates-sample.txt</span></tt> example file, to be found in the <tt class="docutils literal"><span class="pre">sim-diasca/conf</span></tt> directory</li>
+<li>if a host file - named by default <tt class="docutils literal"><span class="pre">sim-diasca-host-candidates.txt</span></tt> - is found in the current directory (the one from which a test case <tt class="docutils literal">X</tt> is run, thanks to a <tt class="docutils literal">make X_run</tt> for example), then the engine will read it and try to use the hosts listed there; the (ETF) syntax is simple and described in the <tt class="docutils literal"><span class="pre">sim-diasca-host-candidates-sample.txt</span></tt> example file, to be found in the <tt class="docutils literal"><span class="pre">sim-diasca/conf</span></tt> directory (it is also described <a class="reference external" href="http://myriad.esperide.org/#etf">here</a>)</li>
 <li>if this host file is not found, the simulation will run only locally</li>
 </ol>
 <p>The <tt class="docutils literal">computing_hosts</tt> field can also directly list the hosts involved, but we do not recommend doing so, as in general a simulation case should not be specific to any deployment context (hence our defaults).</p>
 <p>The <tt class="docutils literal">deployment_settings</tt> record allows to specify more advanced options (ex: whether the simulation should stop on error if at least one of the listed hosts could not be used, up to which duration a deployment may last, whether the user host shall be used for computations, etc.), see its definition mentioned above for further information.</p>
 </div>
 <div class="section" id="how-many-erlang-nodes-are-involved-in-a-simulation">
-<h2><a class="toc-backref" href="#id221">How Many Erlang Nodes Are Involved in a Simulation?</a></h2>
+<h2><a class="toc-backref" href="#id227">How Many Erlang Nodes Are Involved in a Simulation?</a></h2>
 <p>By default (unless specified otherwise, see above), only the local host is involved, yet there are two VMs running then: the one of the user node, and the one of a (local) computing node.</p>
 <p>In the general case, distributed simulations running on <tt class="docutils literal">N</tt> hosts will involve by default <tt class="docutils literal">N+1</tt> nodes: one user node (on the user host) and <tt class="docutils literal">N</tt> computing nodes (including one on the user host).</p>
 <p>See the <tt class="docutils literal">computing_hosts</tt> field in the <tt class="docutils literal">deployment_settings</tt> record (defined in <tt class="docutils literal">class_DeploymentManager.hrl</tt>) for further options.</p>
 </div>
 <div class="section" id="what-constraints-shall-be-observed-in-order-to-run-in-a-distributed-manner-ex-on-a-cluster">
-<span id="distributed-cheat-sheet"></span><h2><a class="toc-backref" href="#id222">What Constraints shall be Observed in order to run in a Distributed Manner (ex: on a cluster)?</a></h2>
+<span id="distributed-cheat-sheet"></span><h2><a class="toc-backref" href="#id228">What Constraints shall be Observed in order to run in a Distributed Manner (ex: on a cluster)?</a></h2>
 <p>Let's suppose that you benefit from a set of hosts, either ad hoc or allocated on a cluster by a job manager such as <a class="reference external" href="https://en.wikipedia.org/wiki/Slurm_Workload_Manager">Slurm</a>.</p>
-<p>These hosts are expected to run GNU/Linux, to be rather homogeneous in terms of processing power and configuration, and to be interlinked thanks to a suitable IPv4 <a class="footnote-reference" href="#id114" id="id112">[43]</a> communication network providing at least DNS services, and possibly ping (ICMP) ones <a class="footnote-reference" href="#id115" id="id113">[44]</a>.</p>
-<table class="docutils footnote" frame="void" id="id114" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id112">[43]</a></td><td>If the network is by default using IPv6, generally a setting allows to present it as an IPv4 network to applications.</td></tr>
-</tbody>
-</table>
+<p>These hosts are expected to run GNU/Linux, to be rather homogeneous in terms of processing power and configuration, and to be interlinked thanks to a suitable IPv4 <a class="footnote-reference" href="#id115" id="id113">[43]</a> communication network providing at least DNS services, and possibly ping (ICMP) ones <a class="footnote-reference" href="#id116" id="id114">[44]</a>.</p>
 <table class="docutils footnote" frame="void" id="id115" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id113">[44]</a></td><td>If no ping service is available, then, in the <tt class="docutils literal">deployment_settings</tt> record of your simulation case, set <tt class="docutils literal">ping_available=false</tt>, and the simulation will try directly to SSH-connect to hosts (possibly inducing longer timeouts).</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id113">[43]</a></td><td>If the network is by default using IPv6, generally a setting allows to present it to applications as an IPv4 network.</td></tr>
 </tbody>
 </table>
-<p>When specifying these hosts (ex: in a host file of the <tt class="docutils literal">computing_hosts</tt> field of the deplyment record, or directly in the simulation case), their DNS name (more precisely, their FQDN) shall be retained (not, for example, their IP address).</p>
+<table class="docutils footnote" frame="void" id="id116" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id114">[44]</a></td><td>If no ping service is available, then, in the <tt class="docutils literal">deployment_settings</tt> record of your simulation case, set <tt class="docutils literal">ping_available=false</tt>, and the simulation will try directly to SSH-connect to hosts (possibly inducing longer timeouts).</td></tr>
+</tbody>
+</table>
+<p>When specifying these hosts (ex: in a host file of the <tt class="docutils literal">computing_hosts</tt> field of the deployment record, or directly in the simulation case), their DNS name (more precisely, their FQDN <a class="footnote-reference" href="#id118" id="id117">[45]</a>) shall be retained (not, for example, their IP address).</p>
+<table class="docutils footnote" frame="void" id="id118" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id117">[45]</a></td><td><em>Fully-Qualified Domain Name</em>, e.g. <tt class="docutils literal">hurricane.foobar.org</tt> rather than just <tt class="docutils literal">hurricane</tt>, knowing that from a FQDN a (domain-less) hostname can be derived, whereas this cannot be done the other way round. Sim-Diasca will start first with no distribution, then will attempt first to make use, in Erlang node parlance, of <em>short</em> names before, depending on the local DNS configuration, attempting to switch to <em>long</em> names instead.</td></tr>
+</tbody>
+</table>
 <p>Moreover, for the simulation user, a SSH password-less authentication must be possible at least from the user host to each of the computing hosts, so that the former can spawn an Erlang VM on the latter.</p>
 <p>Indeed, all hosts, be them the user one or a computing one, must be able to run their own Erlang virtual machine; as a result the Erlang environment must have been installed, typically thanks to our <tt class="docutils literal"><span class="pre">myriad/conf/install-erlang.sh</span></tt> script.</p>
 <p>Quite often HPC clusters implement a distributed filesystem (ex: mounted in <tt class="docutils literal">/scratch</tt>, thanks to NFS, Lustre or any similar solution), in which case a single Erlang installation can be done once for all, each computing node creating its own VM from it.</p>
 <p>If no such distributed filesystem exists, the Erlang environment must be deployed/installed on each computing host, by any relevant means.</p>
-<p>These target Erlang installations must be readily available from the default <tt class="docutils literal">PATH</tt> that is obtained from a SSH connection to a computing host: from the user host, <tt class="docutils literal">ssh A_COMPUTING_NODE erl</tt> should successfully run an Erlang VM.</p>
+<p>These target Erlang installations must be readily available from the default <tt class="docutils literal">PATH</tt> that is obtained from a SSH connection to a computing host: from the user host, <tt class="docutils literal">ssh A_COMPUTING_NODE erl</tt> should successfully run an Erlang VM <a class="footnote-reference" href="#id120" id="id119">[46]</a>.</p>
+<table class="docutils footnote" frame="void" id="id120" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id119">[46]</a></td><td>If in this case a custom, locally-installed Erlang version (ex: located in <tt class="docutils literal"><span class="pre">~/Software/Erlang/Erlang-current-install</span></tt>) is not found whereas it was added in the <tt class="docutils literal">PATH</tt> of the user's <tt class="docutils literal"><span class="pre">~/.bashrc</span></tt>, consider that many default batch configurations ignore this file for non-login shells (&quot;<em>If not running interactively, don't do anything</em>&quot;); a workaround is to update one's <tt class="docutils literal">PATH</tt> at the beginning of one's <tt class="docutils literal"><span class="pre">~/.bashrc</span></tt> rather than at its end, before it bails out with a <tt class="docutils literal">return</tt>.</td></tr>
+</tbody>
+</table>
 <p>As for Sim-Diasca, its own Ceylan prerequisites (namely <a class="reference external" href="http://myriad.esperide.org/">Myriad</a>, <a class="reference external" href="http://wooper.esperide.org/">WOOPER</a> and <a class="reference external" href="http://traces.esperide.org/">Traces</a>), the engine itself and the user-defined simulation elements (simulation case, models, data, etc.), the whole will be automatically deployed from the user host to the computing ones, according to the specified simulation settings.</p>
 <p>One should thus ensure that these settings are complete, and that any third-party software used (ex: in models, in probes, etc.; including any language binding) is available on all computing hosts.</p>
 <p>Finally, we advise having a look to the help scripts defined in <tt class="docutils literal"><span class="pre">sim-diasca/conf/clusters</span></tt>, which are meant to ease the management of Sim-Diasca jobs run on Slurm-based HPC clusters.</p>
 </div>
 <div class="section" id="what-are-the-most-common-gotchas-encountered-with-distributed-simulations">
-<h2><a class="toc-backref" href="#id223">What are the Most Common Gotchas encountered with Distributed Simulations?</a></h2>
+<h2><a class="toc-backref" href="#id229">What are the Most Common Gotchas encountered with Distributed Simulations?</a></h2>
 <p>As soon as an application is distributed, a rather wide range of additional problems may appear.</p>
 <p>Here are a list of checks that might be of help:</p>
 <ul class="simple">
@@ -3383,15 +3403,15 @@ $ make soda_platform_integration_run <span class="nv">$BATCH</span>
 <p>Should the problem remain, one may log interactively and perform operations manually to check whether the engine has a chance of succeeding when doing the same.</p>
 </div>
 <div class="section" id="what-is-the-first-tick-offset-of-a-simulation">
-<h2><a class="toc-backref" href="#id224">What is the First Tick Offset of a Simulation?</a></h2>
+<h2><a class="toc-backref" href="#id230">What is the First Tick Offset of a Simulation?</a></h2>
 <p>Tick offset #0.</p>
 </div>
 <div class="section" id="what-is-the-first-diasca-of-a-given-tick-t">
-<h2><a class="toc-backref" href="#id225">What is the First Diasca of a given Tick T?</a></h2>
+<h2><a class="toc-backref" href="#id231">What is the First Diasca of a given Tick T?</a></h2>
 <p>Diasca #0! Hence the corresponding simulation timestamp is <tt class="docutils literal">{T,0}</tt>.</p>
 </div>
 <div class="section" id="how-a-simulation-starts">
-<h2><a class="toc-backref" href="#id226">How a Simulation Starts?</a></h2>
+<h2><a class="toc-backref" href="#id232">How a Simulation Starts?</a></h2>
 <p>The root time manager is to be requested to start from the simulation case being run, typically by executing its <tt class="docutils literal"><span class="pre">start/{1,2,3}</span></tt> or <tt class="docutils literal"><span class="pre">startFor/{2,3}</span></tt> oneways.</p>
 <p>For that, the PID of the deployment manager shall be obtained first, thanks a call to one of the <tt class="docutils literal"><span class="pre">sim_diasca/{1,2,3}</span></tt> functions; for example:</p>
 <pre class="code erlang literal-block">
@@ -3423,7 +3443,7 @@ $ make soda_platform_integration_run <span class="nv">$BATCH</span>
 <p>For more information about simulation cases, one may look at a complete example thereof, such as <tt class="docutils literal">soda_deterministic_integration_test.erl</tt>, located in <tt class="docutils literal"><span class="pre">mock-simulators/soda-test/test</span></tt>.</p>
 </div>
 <div class="section" id="how-actors-are-to-be-created">
-<h2><a class="toc-backref" href="#id227">How Actors Are To Be Created?</a></h2>
+<h2><a class="toc-backref" href="#id233">How Actors Are To Be Created?</a></h2>
 <p>Actors are to be created either before the simulation starts (they are then called <em>initial actors</em>) or in the course of the simulation (they are then <em>simulation-time actors</em>, or <em>runtime</em> actors).</p>
 <p>In all cases, their creation must be managed through the simulation engine, not directly by the user (for example, making a direct use of <tt class="docutils literal">erlang:spawn*</tt> or any WOOPER <tt class="docutils literal">new</tt> variation is <em>not</em> allowed), as otherwise even essential simulation properties could not be preserved.</p>
 <p><strong>Initial</strong> actors are to be created:</p>
@@ -3432,11 +3452,11 @@ $ make soda_platform_integration_run <span class="nv">$BATCH</span>
 <li>or <em>from data</em>, i.e. from a stream of construction parameters; these information are typically read from an initialization file, see the <tt class="docutils literal">initialisation_files</tt> field of the <tt class="docutils literal">simulation_settings</tt> record</li>
 </ul>
 <p>In both cases, an initial actor is able to create directly from its constructor any number of other (initial) actors.</p>
-<p><strong>Simulation-time</strong> actors are solely to be created directly from other actors that are already running - not from their constructors <a class="footnote-reference" href="#id119" id="id118">[45]</a>; hence simulation-time actors shall be created no sooner than in the <tt class="docutils literal">onFirstDiasca/2</tt> oneway of the creating actor; creation tags may be specified in order to help the creating actor between simultaneous creations; please refer to the <tt class="docutils literal"><span class="pre">class_Actor:create_actor/{3,4}</span></tt> and <tt class="docutils literal"><span class="pre">class_Actor:create_placed_actor/{4,5}</span></tt> helper functions for that</p>
-<table class="docutils footnote" frame="void" id="id119" rules="none">
+<p><strong>Simulation-time</strong> actors are solely to be created directly from other actors that are already running - not from their constructors <a class="footnote-reference" href="#id124" id="id123">[47]</a>; hence simulation-time actors shall be created no sooner than in the <tt class="docutils literal">onFirstDiasca/2</tt> oneway of the creating actor; creation tags may be specified in order to help the creating actor between simultaneous creations; please refer to the <tt class="docutils literal"><span class="pre">class_Actor:create_actor/{3,4}</span></tt> and <tt class="docutils literal"><span class="pre">class_Actor:create_placed_actor/{4,5}</span></tt> helper functions for that</p>
+<table class="docutils footnote" frame="void" id="id124" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id118">[45]</a></td><td>As a just-created <em>and</em> creating actor is not yet synchronized to the simulation, hence unable to interact with the load balancer through actor messages for that.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id123">[47]</a></td><td>As a just-created <em>and</em> creating actor is not yet synchronized to the simulation, hence unable to interact with the load balancer through actor messages for that.</td></tr>
 </tbody>
 </table>
 <p>In all cases, an actor can be either automatically created by the engine on a computing node chosen according to its <em>default heuristic</em> (agnostic placement), or the target node can be selected according to a <em>placement hint</em>, specified at the actor creation.</p>
@@ -3517,7 +3537,7 @@ $ make soda_platform_integration_run <span class="nv">$BATCH</span>
 <p>These actors are created in the course of the simulation.</p>
 <p>Such actors can <em>only</em> be created by other (pre-existing) actors, otherwise the uncoupling of real time and simulated times would be jeopardised. Thus once the simulation is started it is the only way of introducing new actors.</p>
 <p>As before, actors can be created with or without placement hints.</p>
-<div class="section" id="id120">
+<div class="section" id="id125">
 <h4>With Agnostic Actor Placement</h4>
 <p>An actor A needing to create another one (B) should use the <tt class="docutils literal">class_Actor:create_actor/3</tt> helper function.</p>
 <p>For example:</p>
@@ -3540,7 +3560,7 @@ $ make soda_platform_integration_run <span class="nv">$BATCH</span>
 % interacting with it.</span>
 </pre>
 </div>
-<div class="section" id="id121">
+<div class="section" id="id126">
 <h4>Based On A Placement Hint</h4>
 <p>An actor A needing to create another one (B) while specifying a placement hint should simply use the <tt class="docutils literal">class_Actor:create_placed_actor/4</tt> helper function for that.</p>
 <p>Then the creation will transparently be done according to the placement hint, and the <tt class="docutils literal">onActorCreated/5</tt> actor oneway will be triggered back on the side of the actor which requested this creation, exactly as in the case with no placement hint.</p>
@@ -3548,7 +3568,7 @@ $ make soda_platform_integration_run <span class="nv">$BATCH</span>
 </div>
 </div>
 <div class="section" id="how-constructors-of-actors-are-to-be-defined">
-<h2><a class="toc-backref" href="#id228">How Constructors of Actors Are To Be Defined?</a></h2>
+<h2><a class="toc-backref" href="#id234">How Constructors of Actors Are To Be Defined?</a></h2>
 <p>Actor classes are to be defined like any WOOPER classes (of course they have to inherit, directly or not, from <tt class="docutils literal">class_Actor</tt>), except that their first construction parameter must be their actor settings.</p>
 <p>These settings (which include the actor's AAI, for <em>Abstract Actor Identifier</em>) will be specified automatically by the engine, and should be seen as opaque information just to be transmitted to the parent constructor(s).</p>
 <p>All other parameters (if any) are call <em>actual parameters</em>.</p>
@@ -3581,7 +3601,7 @@ $ make soda_platform_integration_run <span class="nv">$BATCH</span>
 </div>
 </div>
 <div class="section" id="how-actors-can-define-their-spontaneous-behaviour">
-<h2><a class="toc-backref" href="#id229">How Actors Can Define Their Spontaneous Behaviour?</a></h2>
+<h2><a class="toc-backref" href="#id235">How Actors Can Define Their Spontaneous Behaviour?</a></h2>
 <p>They just have to override the default implementation of the <tt class="docutils literal">class_Actor:actSpontaneous/1</tt> oneway.</p>
 <p>The simplest of all spontaneous behaviour is to do nothing at all:</p>
 <pre class="code erlang literal-block">
@@ -3591,7 +3611,7 @@ $ make soda_platform_integration_run <span class="nv">$BATCH</span>
 <p>For a complete example, see <tt class="docutils literal">class_TestActor.erl</tt>.</p>
 </div>
 <div class="section" id="how-actors-are-to-interact">
-<h2><a class="toc-backref" href="#id230">How Actors Are To Interact?</a></h2>
+<h2><a class="toc-backref" href="#id236">How Actors Are To Interact?</a></h2>
 <p>Actors must <em>only</em> interact based on <tt class="docutils literal">actor messages</tt> (ex: using directly Erlang messages or WOOPER ones is <em>not</em> allowed), as otherwise even essential simulation properties could not be preserved.</p>
 <p>Thus the <tt class="docutils literal">class_Actor:send_actor_message/3</tt> helper function should be used for each and every inter-actor communication (see the function header for a detailed usage information).</p>
 <p>As a consequence, only actor oneways are to be used, and if an actor A sends an actor message to an actor B at simulation timestamp <tt class="docutils literal">{T,D}</tt>, then B will process it at tick <tt class="docutils literal">{T,D+1}</tt>, i.e. at the next diasca (that will be automatically scheduled).</p>
@@ -3603,16 +3623,16 @@ $ make soda_platform_integration_run <span class="nv">$BATCH</span>
 <li>then at diasca D+2 actor A processes this answer: its <tt class="docutils literal">beNotifiedOfColor( State, Color, SenderPid )</tt> oneway is called, and it can react appropriately; here <tt class="docutils literal">Color</tt> could be <tt class="docutils literal">red</tt>, and <tt class="docutils literal">SenderPid</tt> corresponds to the PID of B</li>
 </ul>
 <p>Finally, the only licit case involving the direct use of a WOOPER request (instead of an exchange of actor messages) in Sim-Diasca occurs before the simulation is started.</p>
-<p>This is useful typically whenever the simulation case needs to interact with some initial actors <a class="footnote-reference" href="#id123" id="id122">[46]</a> or when two initial actors have to communicate, in both cases <em>before</em> the simulation is started.</p>
-<table class="docutils footnote" frame="void" id="id123" rules="none">
+<p>This is useful typically whenever the simulation case needs to interact with some initial actors <a class="footnote-reference" href="#id128" id="id127">[48]</a> or when two initial actors have to communicate, in both cases <em>before</em> the simulation is started.</p>
+<table class="docutils footnote" frame="void" id="id128" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id122">[46]</a></td><td>For example requests can be used to set up the connectivity between initial actors, i.e. to specify which actor shall be aware of which, i.e. shall know its PID.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id127">[48]</a></td><td>For example requests can be used to set up the connectivity between initial actors, i.e. to specify which actor shall be aware of which, i.e. shall know its PID.</td></tr>
 </tbody>
 </table>
 </div>
 <div class="section" id="how-actor-oneways-shall-be-defined">
-<h2><a class="toc-backref" href="#id231">How Actor Oneways Shall be Defined?</a></h2>
+<h2><a class="toc-backref" href="#id237">How Actor Oneways Shall be Defined?</a></h2>
 <p>An actor oneway being a special case of a WOOPER oneway, it behaves mostly the same (ex: it is to return a state, and no result shall be expected from it) but, for clarity, it is to rely on its own type specifications and method terminators.</p>
 <p>In terms of <em>type specification</em>, an actor oneway shall use:</p>
 <ul class="simple">
@@ -3642,14 +3662,14 @@ $ make soda_platform_integration_run <span class="nv">$BATCH</span>
 <p>Note that we also recommend to follow the conventions used above regarding the typing of the last parameter (<tt class="docutils literal">sending_actor_pid()</tt>) and the name of its (often muted) associated value (<tt class="docutils literal">SendingActorPid</tt>).</p>
 </div>
 <div class="section" id="how-to-handle-less-classical-communication-schemes">
-<h2><a class="toc-backref" href="#id232">How to Handle Less Classical Communication Schemes?</a></h2>
+<h2><a class="toc-backref" href="#id238">How to Handle Less Classical Communication Schemes?</a></h2>
 <p>While oneway messages constitute a universal paradigm in order to communicate inside the simulation (hence between actors), in a case where one-to-many communication is to occur, relying on a standard actor or even a set thereof (ex: as a pool to even the load, or as for example a 3D environment split into a binary space partitioning scheme, with one actor per cell) may be suboptimal.</p>
 <p>Should the same message have to be sent from one actor to many, one may have a look to <tt class="docutils literal">class_BroadcastingActor</tt>, a specialised actor designed for that use case.</p>
 <p>Also, using the data-exchanger service (see <tt class="docutils literal">class_DataExchanger</tt>) may be of help, keeping in mind that this is a data-management service (not a specific kind of actor) that is updated between diascas.</p>
 <p>As for communication that is “pure result” (produced by an actor, but not read by any of them), data may be sent immediately out of the simulation, either directly (as fire and forget), or with some flow control (should there be a risk that the simulation overwhelms the targeted data sink).</p>
 </div>
 <div class="section" id="how-actors-are-to-be-deleted">
-<h2><a class="toc-backref" href="#id233">How Actors Are To Be Deleted?</a></h2>
+<h2><a class="toc-backref" href="#id239">How Actors Are To Be Deleted?</a></h2>
 <p>Actors are to be deleted either in the course of the simulation or after the simulation is over.</p>
 <p>In all cases their deletion must be managed through the simulation engine, not directly by the user (ex: sending  WOOPER <tt class="docutils literal">delete</tt> messages is <em>not</em> allowed), as otherwise even essential simulation properties could not be preserved.</p>
 <p>The recommended way of deleting an actor is to have it trigger its own deletion process. Indeed this requires at least that actor to notify all other actors that may interact with it that this should not happen anymore.</p>
@@ -3663,7 +3683,7 @@ $ make soda_platform_integration_run <span class="nv">$BATCH</span>
 <p>See also the <tt class="docutils literal"><span class="pre">Sim-Diasca</span> Developer Guide</tt>.</p>
 </div>
 <div class="section" id="how-requests-should-be-managed-from-a-simulation-case">
-<h2><a class="toc-backref" href="#id234">How Requests Should Be Managed From A Simulation Case?</a></h2>
+<h2><a class="toc-backref" href="#id240">How Requests Should Be Managed From A Simulation Case?</a></h2>
 <p>As already explained, direct WOOPER calls should not be used to modify the state of the simulation once it has been started, as we have to let the simulation layer have full control over the exchanges, notably so that they can be reordered.</p>
 <p>However requests can be used <em>before</em> the simulation is started.</p>
 <p>For example we may want to know, from the simulation case, what the initial time will be, like in:</p>
@@ -3677,11 +3697,11 @@ $ make soda_platform_integration_run <span class="nv">$BATCH</span>
 <span class="k">end</span><span class="p">,</span>
 <span class="p">...</span>
 </pre>
-<p>The <tt class="docutils literal">is_list/1</tt> guard would be mandatory here, as other messages may spontaneously be sent to the simulation case <a class="footnote-reference" href="#id125" id="id124">[47]</a>.</p>
-<table class="docutils footnote" frame="void" id="id125" rules="none">
+<p>The <tt class="docutils literal">is_list/1</tt> guard would be mandatory here, as other messages may spontaneously be sent to the simulation case <a class="footnote-reference" href="#id130" id="id129">[49]</a>.</p>
+<table class="docutils footnote" frame="void" id="id130" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id124">[47]</a></td><td>Typically the trace supervisor will send <tt class="docutils literal">{wooper_result,monitor_ok}</tt> messages to the simulation case whenever the user closes the window of the trace supervision tool, which can happen at any time: without the guard, we could then have  <tt class="docutils literal">TimingString</tt> be unfortunately bound to <tt class="docutils literal">monitor_ok</tt>, instead of the expected timing string returned by the <tt class="docutils literal">getTextualTimings</tt> request.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id129">[49]</a></td><td>Typically the trace supervisor will send <tt class="docutils literal">{wooper_result,monitor_ok}</tt> messages to the simulation case whenever the user closes the window of the trace supervision tool, which can happen at any time: without the guard, we could then have  <tt class="docutils literal">TimingString</tt> be unfortunately bound to <tt class="docutils literal">monitor_ok</tt>, instead of the expected timing string returned by the <tt class="docutils literal">getTextualTimings</tt> request.</td></tr>
 </tbody>
 </table>
 <p>However, specifying, at each request call issued from the simulation case, a proper guard is tedious and error-prone, so a dedicated, safe function is provided for that by the engine, <tt class="docutils literal">test_receive/0</tt>; thus the previous example should be written that way instead:</p>
@@ -3694,7 +3714,7 @@ $ make soda_platform_integration_run <span class="nv">$BATCH</span>
 <p>This <tt class="docutils literal">test_receive/0</tt> function performs a (blocking) selective receive, retrieving any WOOPER result which is <em>not</em> emanating directly from the operation of the engine itself. That way, developers of simulation cases can reliably retrieve the values returned by the requests they send, with no fear of interference.</p>
 </div>
 <div class="section" id="how-should-i-run-larger-simulations">
-<h2><a class="toc-backref" href="#id235">How Should I run larger simulations?</a></h2>
+<h2><a class="toc-backref" href="#id241">How Should I run larger simulations?</a></h2>
 <p>If, for a given simulation, more than a few nodes are needed, then various preventive measures shall be taken in order to be ready to go to further scales (typically disabling most <a class="reference internal" href="#simulation-traces">simulation traces</a>, extending key time-outs, etc.).</p>
 <p>For that the <tt class="docutils literal">EXECUTION_TARGET</tt> compile-time overall flag has been defined. Its default value is <tt class="docutils literal">development</tt> (simulations will not be really scalable, but a good troubleshooting support will be provided), but if you set it to <tt class="docutils literal">production</tt>, then all settings for larger simulations will be applied.</p>
 <p>It is a compile-time option, hence it must be applied when building Sim-Diasca and the layers above; thus one may run, from the root:</p>
@@ -3707,15 +3727,15 @@ $ make clean all <span class="nv">EXECUTION_TARGET</span><span class="o">=</span
 </div>
 </div>
 <div class="section" id="sim-diasca-troubleshooting">
-<h1><a class="toc-backref" href="#id236">Sim-Diasca Troubleshooting</a></h1>
+<h1><a class="toc-backref" href="#id242">Sim-Diasca Troubleshooting</a></h1>
 <div class="section" id="first-of-all-did-you-read-the-manuals">
-<h2><a class="toc-backref" href="#id237">First Of All: Did You Read The Manuals?</a></h2>
+<h2><a class="toc-backref" href="#id243">First Of All: Did You Read The Manuals?</a></h2>
 <p><span class="raw-html"><center><img src="xkcd-rtfm.png" id="responsive-image-reduced"></img></center></span>
 </p>
 <p>Besides this document, a Sim-Diasca user should definitively read the <em>Sim-Diasca Developer Guide</em>, which is freely available as well. We are not providing <tt class="docutils literal">man</tt> pages yet.</p>
 </div>
 <div class="section" id="troubleshooting-principles">
-<h2><a class="toc-backref" href="#id238">Troubleshooting Principles</a></h2>
+<h2><a class="toc-backref" href="#id244">Troubleshooting Principles</a></h2>
 <p>First at all, everything is done so that:</p>
 <ul class="simple">
 <li>the simulation crashes as soon as a problem occurs (in the engine, in the models and/or in the simulation case), so that there is not silent error</li>
@@ -3730,7 +3750,7 @@ $ make clean all <span class="nv">EXECUTION_TARGET</span><span class="o">=</span
 <p>Of course, the fact that a model does not crash does not necessarily imply it respects its intended behaviour: it is of course part of the work of the model developer to check their implementation against their specification.</p>
 </div>
 <div class="section" id="most-common-issues">
-<h2><a class="toc-backref" href="#id239">Most Common Issues</a></h2>
+<h2><a class="toc-backref" href="#id245">Most Common Issues</a></h2>
 <p>The most common errors encountered that are not self-explanatory (please have a careful look at the console outputs and, should it be not sufficient, read thoroughly the simulation traces) while using Sim-Diasca are explained and solved here.</p>
 <p>They are roughly sorted by chronological order of potential appearance.</p>
 <p><span class="raw-html"><center><img src="xkcd-computer_problems.png" id="responsive-image-medium"></img></center></span>
@@ -3751,11 +3771,11 @@ error: </span><span class="si">~p~n</span><span class="s">&quot;</span><span cla
 <span class="p">{</span><span class="n">net_kernel</span><span class="p">,</span><span class="n">init</span><span class="p">,</span><span class="mi">1</span><span class="p">},{</span><span class="n">gen_server</span><span class="p">,</span><span class="n">init_it</span><span class="p">,</span><span class="mi">6</span><span class="p">},</span> <span class="p">{</span><span class="n">proc_lib</span><span class="p">,</span><span class="n">init_p</span><span class="p">,</span><span class="mi">5</span><span class="p">}]}]}</span>
 <span class="p">[...]</span>
 </pre>
-<p>then it is the symptom that a similarly-named Erlang virtual machine is already running on the same host. Either it is an idle forgotten simulation still opened on another terminal <a class="footnote-reference" href="#id127" id="id126">[48]</a> (in that case shutting down the corresponding virtual machine will correct the situation), or the user really wants to have two instances of the same simulation run simultaneously. In that case, the two virtual machines should be named differently, knowing that, with the default Sim-Diasca Make rules, the launched virtual machines are named according to the case that is run. For example, to run the simulation case defined in <tt class="docutils literal">simulationAndScenario_test.erl</tt> from the host <tt class="docutils literal">myhost.foobar.org</tt>, one may just issue <tt class="docutils literal">make simulationAndScenario_run</tt>. The corresponding Erlang virtual machine will be then named <tt class="docutils literal">simulationAndScenario_run&#64;myhost.foobar.org</tt>.</p>
-<table class="docutils footnote" frame="void" id="id127" rules="none">
+<p>then it is the symptom that a similarly-named Erlang virtual machine is already running on the same host. Either it is an idle forgotten simulation still opened on another terminal <a class="footnote-reference" href="#id132" id="id131">[50]</a> (in that case shutting down the corresponding virtual machine will correct the situation), or the user really wants to have two instances of the same simulation run simultaneously. In that case, the two virtual machines should be named differently, knowing that, with the default Sim-Diasca Make rules, the launched virtual machines are named according to the case that is run. For example, to run the simulation case defined in <tt class="docutils literal">simulationAndScenario_test.erl</tt> from the host <tt class="docutils literal">myhost.foobar.org</tt>, one may just issue <tt class="docutils literal">make simulationAndScenario_run</tt>. The corresponding Erlang virtual machine will be then named <tt class="docutils literal">simulationAndScenario_run&#64;myhost.foobar.org</tt>.</p>
+<table class="docutils footnote" frame="void" id="id132" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id126">[48]</a></td><td><p class="first">This can happen if for example you issued <tt class="docutils literal"><span class="pre">CTRL-Z</span></tt> then put that task in the background (<tt class="docutils literal">bg</tt>) and forgot that it was still running.</p>
+<tr><td class="label"><a class="fn-backref" href="#id131">[50]</a></td><td><p class="first">This can happen if for example you issued <tt class="docutils literal"><span class="pre">CTRL-Z</span></tt> then put that task in the background (<tt class="docutils literal">bg</tt>) and forgot that it was still running.</p>
 <p class="last">Note that Sim-Diasca includes various mechanisms to ensure that no two runs can silently interfere by mistake (ex: using UUID-based cookies, uniquely named directories according to case, user and a generated identifier, etc.).</p>
 </td></tr>
 </tbody>
@@ -3942,11 +3962,11 @@ node disconnected, performing an emergency shutdown.
 reason was: noconnection, terminating now.
 ----------------&gt;
 </pre>
-<p>The only case when such a behaviour was reported happened when a model developer created by mistake an infinite recursion <a class="footnote-reference" href="#id129" id="id128">[49]</a>; the induced RAM consumption resulted in instantly having the VM killed by the operating system.</p>
-<table class="docutils footnote" frame="void" id="id129" rules="none">
+<p>The only case when such a behaviour was reported happened when a model developer created by mistake an infinite recursion <a class="footnote-reference" href="#id134" id="id133">[51]</a>; the induced RAM consumption resulted in instantly having the VM killed by the operating system.</p>
+<table class="docutils footnote" frame="void" id="id134" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id128">[49]</a></td><td>Precisely: from a given actor oneway A, instead of calling the version of its mother class with <tt class="docutils literal">wooper:executeOnewayAs/4</tt>, <tt class="docutils literal">wooper:executeOneway/3</tt> was used, leading to A calling itself indefinitely and exploding the stack.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id133">[51]</a></td><td>Precisely: from a given actor oneway A, instead of calling the version of its mother class with <tt class="docutils literal">wooper:executeOnewayAs/4</tt>, <tt class="docutils literal">wooper:executeOneway/3</tt> was used, leading to A calling itself indefinitely and exploding the stack.</td></tr>
 </tbody>
 </table>
 <p>So chances are that this corresponds to a user implementation error.</p>
@@ -3978,7 +3998,7 @@ reason was: noconnection, terminating now.
 </div>
 </div>
 <div class="section" id="common-misconceptions">
-<h2><a class="toc-backref" href="#id240">Common Misconceptions</a></h2>
+<h2><a class="toc-backref" href="#id246">Common Misconceptions</a></h2>
 <p><span class="raw-html"><center><img src="xkcd-misconceptions.png" id="responsive-image-small"></img></center></span>
 </p>
 <p>Here is the list of most common misconceptions that we spotted:</p>
@@ -4008,7 +4028,7 @@ reason was: noconnection, terminating now.
 </div>
 </div>
 <div class="section" id="sim-diasca-support">
-<h1><a class="toc-backref" href="#id241">Sim-Diasca Support</a></h1>
+<h1><a class="toc-backref" href="#id247">Sim-Diasca Support</a></h1>
 <p>It is not required to apply any meaningless procedure or know any code word to get some support:</p>
 <p><span class="raw-html"><center><img src="xkcd-tech_support.png"></img></center></span>
 </p>
@@ -4031,26 +4051,26 @@ reason was: noconnection, terminating now.
 <p>Support will be done on a best-effort basis (no commercial support available).</p>
 </div>
 <div class="section" id="sim-diasca-changes">
-<h1><a class="toc-backref" href="#id242">Sim-Diasca Changes</a></h1>
+<h1><a class="toc-backref" href="#id248">Sim-Diasca Changes</a></h1>
 <p>The detailed changes over versions are not included in this manual anymore, as they used to spread over too many pages, for little interest.</p>
 <p>Please refer directly to the <tt class="docutils literal"><span class="pre">Sim-Diasca-changes-english.rst</span></tt> file instead.</p>
 <p></p>
 </div>
 <div class="section" id="sim-diasca-future-enhancements">
-<span id="enhancements"></span><h1><a class="toc-backref" href="#id243">Sim-Diasca Future Enhancements</a></h1>
+<span id="enhancements"></span><h1><a class="toc-backref" href="#id249">Sim-Diasca Future Enhancements</a></h1>
 <p><span class="raw-html"><center><img src="xkcd-researcher_translation.png"></img></center></span>
 </p>
 <div class="section" id="general-requirements">
-<h2><a class="toc-backref" href="#id244">General Requirements</a></h2>
+<h2><a class="toc-backref" href="#id250">General Requirements</a></h2>
 <p>These requirements are lacking or are only poorly supported with the Sim-Diasca 1.x version series, and are fulfilled with the Sim-Diasca 2.x version series.</p>
-<div class="section" id="id130">
+<div class="section" id="id135">
 <h3>Actor Creation</h3>
 <p>An actor can be created either from a simulation launcher (ex: a test case), most often before the simulation started, or by another actor, usually in the course of simulation.</p>
 <p>In both cases, these creations should lead to a totally reproducible simulation, moreover with no regard for the technical context (like the sets of computers being used).</p>
 <p>To do so, an intermediate agent is used, the load balancer, which is a simulation actor and therefore can rely on the mechanisms for reproducibility.</p>
 <p>Therefore the only simulation agent that will effectively create (spawn) a new simulation actor will be the load balancer.</p>
 </div>
-<div class="section" id="id131">
+<div class="section" id="id136">
 <h3>Load Balancing</h3>
 <p>The load balancer, which is a singleton, will create actors remotely, on one of the available nodes, based on its balancing policy.</p>
 <p>A priori the load balancer does not strictly need to create actors synchronously (as it will serialize their AAI assignment), but it needs anyway to return to the caller a notification that the created actors are ready, so that the caller can continue its operations without race conditions (ex: for a creating actor, it means finishing its own tick). Otherwise one could not be sure for example that the created actor managed to properly subscribe to its time manager during the same tick.</p>
@@ -4147,11 +4167,11 @@ reason was: noconnection, terminating now.
 <p>In reproducible mode, running twice the same simulation (same scenario, with possibly different computing contexts) should output exactly the same results.</p>
 <p>In ergodic mode, each simulation execution will follow a specific possible trajectory of the system, knowing that statistically, over a large number of executions, the exploration of the possible states should be fair, i.e. all possible situations allowed by the models should be able to show up, and moreover they should occur with respect to their theoretical probabilities, as dictated by the models.</p>
 <p>In practical, the reproducible mode without a user-specified random seed will just result in each actor reordering its messages according to their hash.</p>
-<p>Thus the actor will be seeded (for any need in terms of generation of stochastic values they could have) but will not perform any additional message permutations <a class="footnote-reference" href="#id133" id="id132">[50]</a>. A default seed will then be used.</p>
-<table class="docutils footnote" frame="void" id="id133" rules="none">
+<p>Thus the actor will be seeded (for any need in terms of generation of stochastic values they could have) but will not perform any additional message permutations <a class="footnote-reference" href="#id138" id="id137">[52]</a>. A default seed will then be used.</p>
+<table class="docutils footnote" frame="void" id="id138" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id132">[50]</a></td><td>Therefore this mode should be slightly faster than the others.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id137">[52]</a></td><td>Therefore this mode should be slightly faster than the others.</td></tr>
 </tbody>
 </table>
 <p>On the contrary, the other modes will rely on the actor-specific seed to perform an additional permutation of the messages.</p>
@@ -4166,11 +4186,11 @@ reason was: noconnection, terminating now.
 <div class="section" id="reordering-of-actor-messages">
 <h3>Reordering Of Actor Messages</h3>
 <p>Depending on the simulator settings, the reordering of the actor messages received for a given tick will be performed either so that reproductivity is ensured (i.e. messages are sorted according to a constant arbitrary order, the default one or one depending on a user-defined seed), or so that &quot;ergodicity&quot; is ensured, i.e. so that all possible reordering of events (messages) have a uniform probability of showing up.</p>
-<p>In all cases a basic constant arbitrary order is obtained, based on <tt class="docutils literal">keysort</tt>, which sorts the actor messages according to the natural order defined over Erlang terms <a class="footnote-reference" href="#id135" id="id134">[51]</a>.</p>
-<table class="docutils footnote" frame="void" id="id135" rules="none">
+<p>In all cases a basic constant arbitrary order is obtained, based on <tt class="docutils literal">keysort</tt>, which sorts the actor messages according to the natural order defined over Erlang terms <a class="footnote-reference" href="#id140" id="id139">[53]</a>.</p>
+<table class="docutils footnote" frame="void" id="id140" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id134">[51]</a></td><td>Therefore this reordering does not involve computing the hash value of terms.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id139">[53]</a></td><td>Therefore this reordering does not involve computing the hash value of terms.</td></tr>
 </tbody>
 </table>
 <p>Let's suppose for example that an actor has, for the current tick, the following message list, whose elements are triplets like <tt class="docutils literal">{SenderActorPid,SenderActorAai,ActorMessage}</tt>:</p>
@@ -4187,11 +4207,11 @@ reason was: noconnection, terminating now.
      <span class="p">{</span><span class="n">pa</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">8</span><span class="p">},</span>
      <span class="p">{</span><span class="n">pa</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">1</span><span class="p">}]</span>
 </pre>
-<p>The constant arbitrary order is obtained thanks to <tt class="docutils literal">lists:keysort(3,lists:keysort(2,L))</tt> <a class="footnote-reference" href="#id137" id="id136">[52]</a>.</p>
-<table class="docutils footnote" frame="void" id="id137" rules="none">
+<p>The constant arbitrary order is obtained thanks to <tt class="docutils literal">lists:keysort(3,lists:keysort(2,L))</tt> <a class="footnote-reference" href="#id142" id="id141">[54]</a>.</p>
+<table class="docutils footnote" frame="void" id="id142" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id136">[52]</a></td><td>One can see that this ordering does not depend on the PID of the sending actors (which is the first element of the triplet), as, for a given simulation,  these technical identifiers may vary depending on the computing hosts involved, whereas we want a stable reproducible order, independent from any technical context.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id141">[54]</a></td><td>One can see that this ordering does not depend on the PID of the sending actors (which is the first element of the triplet), as, for a given simulation,  these technical identifiers may vary depending on the computing hosts involved, whereas we want a stable reproducible order, independent from any technical context.</td></tr>
 </tbody>
 </table>
 <p>This means we sort first on the AAI (which is likely to be quite quick), like in:</p>
@@ -4209,7 +4229,7 @@ reason was: noconnection, terminating now.
  <span class="p">{</span><span class="n">ph</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">1</span><span class="p">},</span>
  <span class="p">{</span><span class="n">pe</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">5</span><span class="p">}]</span>
 </pre>
-<p>Once the entries are sorted in increasing AAI order (element #2), knowing that an actor may have sent multiple messages to that same actor, then we sort these entries based on their messages <a class="footnote-reference" href="#id139" id="id138">[53]</a> (element #3):</p>
+<p>Once the entries are sorted in increasing AAI order (element #2), knowing that an actor may have sent multiple messages to that same actor, then we sort these entries based on their messages <a class="footnote-reference" href="#id144" id="id143">[55]</a> (element #3):</p>
 <pre class="code erlang literal-block">
 <span class="nn">lists</span><span class="p">:</span><span class="nf">keysort</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="nn">lists</span><span class="p">:</span><span class="nf">keysort</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="nv">L</span><span class="p">)).</span>
 <span class="p">[{</span><span class="n">pa</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">1</span><span class="p">},</span>
@@ -4224,10 +4244,10 @@ reason was: noconnection, terminating now.
  <span class="p">{</span><span class="n">pd</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">7</span><span class="p">},</span>
  <span class="p">{</span><span class="n">pa</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">8</span><span class="p">}]</span>
 </pre>
-<table class="docutils footnote" frame="void" id="id139" rules="none">
+<table class="docutils footnote" frame="void" id="id144" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id138">[53]</a></td><td>Knowing that two different actors may send the same exact message to a given actor (ex: <tt class="docutils literal">{setColor,red}</tt>).</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id143">[55]</a></td><td>Knowing that two different actors may send the same exact message to a given actor (ex: <tt class="docutils literal">{setColor,red}</tt>).</td></tr>
 </tbody>
 </table>
 <p>So, at the end, the reordering ensured that messages are always sorted by increasing AAI and, when multiple messages share the same AAI (i.e. they were sent by the same actor), these messages are always sorted identically (i.e. according to an increasing message order).</p>
@@ -4255,8 +4275,8 @@ reason was: noconnection, terminating now.
 <p>However some less demanding simulations will still be run in a local (non-distributed) context. So another requirement is to ensure that the new distributed mode of operation does not result in a loss of performances in a local context.</p>
 </div>
 </div>
-<div class="section" id="id140">
-<h2><a class="toc-backref" href="#id245">Load Balancing</a></h2>
+<div class="section" id="id145">
+<h2><a class="toc-backref" href="#id251">Load Balancing</a></h2>
 <p>As discussed previously, in a distributed context, it is always possible for the user to specify on which machine each actor should be created and run.</p>
 <p>This rather tedious process can be managed automatically and more efficiently by a <tt class="docutils literal">load balancer</tt>, i.e. a module that determines by itself an appropriate location for each new actor, and creates this actor accordingly.</p>
 <div class="section" id="example-of-use">
@@ -4289,11 +4309,11 @@ reason was: noconnection, terminating now.
 <li>either a <tt class="docutils literal">static</tt> balancing, i.e. actors will be created regardless of the actual machine loads, with <em>a priori</em> rules (ex: round-robin)</li>
 <li>or a <tt class="docutils literal">dynamic</tt> one, i.e. thanks to heuristics the load balancer will try to dispatch the induced load as evenly as possible among the computing nodes, based on the measurement of their actual load over time</li>
 </ul>
-<p>In both cases, using a load balancer will lead in most cases to break the reproducibility of the association between a given actor instance and a Pid: a static balancing over a varying number of computing nodes or a dynamic balancing in all contexts will result in a given actor to bear different Pid from a simulation to another <a class="footnote-reference" href="#id142" id="id141">[54]</a>.</p>
-<table class="docutils footnote" frame="void" id="id142" rules="none">
+<p>In both cases, using a load balancer will lead in most cases to break the reproducibility of the association between a given actor instance and a Pid: a static balancing over a varying number of computing nodes or a dynamic balancing in all contexts will result in a given actor to bear different Pid from a simulation to another <a class="footnote-reference" href="#id147" id="id146">[56]</a>.</p>
+<table class="docutils footnote" frame="void" id="id147" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id141">[54]</a></td><td>Not to mention a future possibility of actor migration.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id146">[56]</a></td><td>Not to mention a future possibility of actor migration.</td></tr>
 </tbody>
 </table>
 <p>As explained below, this is not what we want, as we aim to uncouple totally the results of the simulations from the technical environments that support them.</p>
@@ -4302,13 +4322,13 @@ reason was: noconnection, terminating now.
 <p>Another interesting feature would be to have a load balancer which would take into account the tightness of the coupling between a set of actors. Then, the more actors would interact, the stronger the tendency to instantiate them on the same node would be.</p>
 <p>If such a guessing about coupling intensity seems difficult to achieve for a load balancer, the simulation user could hint it, for example by designating a group by an atom and specifying that atom at each creation of one of its member. Then the load balancer would just have to try to place all actors bearing that atom on the same node, whatever it is.</p>
 </div>
-<div class="section" id="id143">
+<div class="section" id="id148">
 <h3>Actor Creation</h3>
-<p>In the course of the simulation, an actor may need to create another actor <a class="footnote-reference" href="#id145" id="id144">[55]</a>. In this case it has to request the creation to the load balancer.</p>
-<table class="docutils footnote" frame="void" id="id145" rules="none">
+<p>In the course of the simulation, an actor may need to create another actor <a class="footnote-reference" href="#id150" id="id149">[57]</a>. In this case it has to request the creation to the load balancer.</p>
+<table class="docutils footnote" frame="void" id="id150" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id144">[55]</a></td><td>Otherwise an actor is <em>initial</em>, i.e. created by the simulation case before the simulation starts, see in this case the <tt class="docutils literal">class_LoadBalancer:createActor/3</tt> request.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id149">[57]</a></td><td>Otherwise an actor is <em>initial</em>, i.e. created by the simulation case before the simulation starts, see in this case the <tt class="docutils literal">class_LoadBalancer:createActor/3</tt> request.</td></tr>
 </tbody>
 </table>
 <p>In the future, we could imagine following enhancements:</p>
@@ -4319,7 +4339,7 @@ reason was: noconnection, terminating now.
 </div>
 </div>
 <div class="section" id="reproducible-actor-identifiers">
-<h2><a class="toc-backref" href="#id246">Reproducible Actor Identifiers</a></h2>
+<h2><a class="toc-backref" href="#id252">Reproducible Actor Identifiers</a></h2>
 <p>When running on reproducible mode, the arbitrary order enforced on concurrent messages received by a given actor at any given tick can be based on the actual message content, thanks to a hashing function, but in order to resolve the hash collisions we have to take into account the message sender as well.</p>
 <p>Otherwise, when an actor A would be interacting with two instances B1 and B2 of a same class, B1 and B2 could quite possibly send the same message to A at the same tick (ex: <tt class="docutils literal">{setColor,red}</tt>). Then the content of the messages would be identical, their hash too, and the simulator would not be able to decide on their ordering.</p>
 <p>Thus we need to rely on the sender information to perform a proper sorting of messages, but, unfortunately, if using a load balancer or if not using it but having to run on a changing computing infrastructure, Pid will not be suitable for that, short of being themselves reproducible.</p>
@@ -4331,16 +4351,16 @@ reason was: noconnection, terminating now.
 <li>or during the simulation itself, but in this case a new actor must be created by an actor already synchronised</li>
 </ul>
 <p>Otherwise the creation of new actors would not be synchronised with the simulation time (i.e. a given actor could be created, from a simulation to another, at different ticks) or if two actors were creating, each, another actor at the same tick, there would be a race condition.</p>
-<p>When needing to rely on (unique) reproducible identifiers <a class="footnote-reference" href="#id147" id="id146">[56]</a>, to the best of our knowledge the only solution is to delegate the setting of identifiers to a centralised actor: no distributed algorithm can find a consensus on the new identifier to generate more easily than a counter-based centralised one.</p>
-<table class="docutils footnote" frame="void" id="id147" rules="none">
+<p>When needing to rely on (unique) reproducible identifiers <a class="footnote-reference" href="#id152" id="id151">[58]</a>, to the best of our knowledge the only solution is to delegate the setting of identifiers to a centralised actor: no distributed algorithm can find a consensus on the new identifier to generate more easily than a counter-based centralised one.</p>
+<table class="docutils footnote" frame="void" id="id152" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id146">[56]</a></td><td>Actually we only need reproducible <em>orderings</em> of identifiers, but this weaker need could not be fulfilled with other solutions than actually reproducible identifiers (which is a stronger form).</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id151">[58]</a></td><td>Actually we only need reproducible <em>orderings</em> of identifiers, but this weaker need could not be fulfilled with other solutions than actually reproducible identifiers (which is a stronger form).</td></tr>
 </tbody>
 </table>
 </div>
 <div class="section" id="code-deployment">
-<h2><a class="toc-backref" href="#id247">Code Deployment</a></h2>
+<h2><a class="toc-backref" href="#id253">Code Deployment</a></h2>
 <p>When running a simulation on a set of computing nodes, on each of them the following software will be needed at runtime:</p>
 <ul class="simple">
 <li>an Erlang interpreter</li>
@@ -4360,21 +4380,21 @@ reason was: noconnection, terminating now.
 <p>Then the simulation could be created automatically on a user-defined set of nodes and run transparently on them.</p>
 </div>
 <div class="section" id="performance-tuning">
-<h2><a class="toc-backref" href="#id248">Performance Tuning</a></h2>
+<h2><a class="toc-backref" href="#id254">Performance Tuning</a></h2>
 <p>Many actions could - and will - be taken to further enhance the performances of Sim-Diasca, including:</p>
 <ul class="simple">
 <li>testing native compilation</li>
 <li>integrating the &quot;zero-overhead&quot; WOOPER 2.0 version, based on parse transforms</li>
 <li>using multiple 4GB VMs per host, to switch to a more compact 32-bit addressing; or making use of the &quot;half-word emulator&quot;</li>
 <li>testing for concurrency errors, and tuning the application protocol to reduce overall latency</li>
-<li>porting the simulation engine onto vastly concurrent resources (from IBM Bluegene/Q supercomputer to manycore cards like <a class="reference external" href="http://www.kalray.eu/">Kalray</a> or <a class="reference external" href="http://www.tilera.com/">Tilera</a>)</li>
+<li>porting the simulation engine onto vastly concurrent resources (from IBM Bluegene/Q supercomputer to manycore cards like <a class="reference external" href="http://www.kalray.eu/">Kalray</a> or late <a class="reference external" href="https://en.wikipedia.org/wiki/Tilera/">Tilera</a>)</li>
 </ul>
 <p>We will ensure first that developing each of these enhancements is worth the time:</p>
 <p><span class="raw-html"><center><img src="xkcd-is_it_worth_the_time.png"></img></center></span>
 </p>
 </div>
 <div class="section" id="upstream-works">
-<h2><a class="toc-backref" href="#id249">Upstream Works</a></h2>
+<h2><a class="toc-backref" href="#id255">Upstream Works</a></h2>
 <p>There is a number of more advanced topics that we hope to tackle in the next months and years.</p>
 <p><span class="raw-html"><center><img src="xkcd-einstein.png"></img></center></span>
 </p>
@@ -4386,7 +4406,7 @@ reason was: noconnection, terminating now.
 </ul>
 </div>
 <div class="section" id="miscellaneous">
-<h2><a class="toc-backref" href="#id250">Miscellaneous</a></h2>
+<h2><a class="toc-backref" href="#id256">Miscellaneous</a></h2>
 <ul class="simple">
 <li>improvement of random generator: use of the <tt class="docutils literal">crypto</tt> module or other good-quality random source (ex: Linux entropy pool) and a pseudo-random number generator (ex: a Fast Mersenne Twister)</li>
 <li>use an enhanced version of WOOPER tailored for speed and low memory footprint (based on parse transforms)</li>
@@ -4398,12 +4418,12 @@ reason was: noconnection, terminating now.
 </div>
 </div>
 <div class="section" id="sim-diasca-hints">
-<h1><a class="toc-backref" href="#id251">Sim-Diasca Hints</a></h1>
+<h1><a class="toc-backref" href="#id257">Sim-Diasca Hints</a></h1>
 <p>Some general hints are detailed here.</p>
 <p><span class="raw-html"><center><img src="xkcd-wisdom_of_the_ancients.png"></img></center></span>
 </p>
 <div class="section" id="common-pitfalls">
-<h2><a class="toc-backref" href="#id252">Common Pitfalls</a></h2>
+<h2><a class="toc-backref" href="#id258">Common Pitfalls</a></h2>
 <ul class="simple">
 <li>the <tt class="docutils literal">class_Actor:onFirstDiasca/2</tt> actor oneway of all initial actors is to be called when the simulation starts, so that they can finish their initialisation; this does not imply that all initial actors will process the corresponding actor message exactly at diasca 1 (knowing that the load balancer was the only actor to be scheduled spontaneously, at diasca 0, and is the sender of these messages): in order to smooth the load (should there be a large number of initial actors), these calls to <tt class="docutils literal">onFirstDiasca/2</tt> will be dispatched over the first few diascas; as always, models shall be written based on the causality induced by message exchanges - not based on diascas being counted</li>
 <li>when an actor instance is created from another one, it should be created <em>synchronously</em>, through the load balancer; the creator should wait for the creation to be notified, otherwise for example the created instance <em>could</em> subscribe on the next tick instead of on the current one</li>
@@ -4425,7 +4445,7 @@ reason was: noconnection, terminating now.
 </ul>
 </div>
 <div class="section" id="good-practices">
-<h2><a class="toc-backref" href="#id253">Good Practices</a></h2>
+<h2><a class="toc-backref" href="#id259">Good Practices</a></h2>
 <ul class="simple">
 <li>all Erlang good practises should be followed</li>
 <li>all WOOPER good practises should be followed</li>
@@ -4438,7 +4458,7 @@ reason was: noconnection, terminating now.
 </p>
 </div>
 <div class="section" id="lesser-known-features">
-<h2><a class="toc-backref" href="#id254">Lesser-Known Features</a></h2>
+<h2><a class="toc-backref" href="#id260">Lesser-Known Features</a></h2>
 <p><span class="raw-html"><center><img src="xkcd-nine.png"></img></center></span>
 </p>
 <p>One should be aware that:</p>
@@ -4451,14 +4471,14 @@ reason was: noconnection, terminating now.
 </ul>
 </div>
 <div class="section" id="other-useful-information">
-<h2><a class="toc-backref" href="#id255">Other Useful Information</a></h2>
+<h2><a class="toc-backref" href="#id261">Other Useful Information</a></h2>
 <ul class="simple">
 <li>a WOOPER-aware <tt class="docutils literal">Nedit</tt> Erlang configuration file is available (see <tt class="docutils literal">myriad/conf/nedit.rc</tt>)</li>
 <li>all Sim-Diasca Erlang source files (<tt class="docutils literal"><span class="pre">.hrl/.erl</span></tt>) should start with the appropriate LGPL header defined in <tt class="docutils literal"><span class="pre">sim-diasca/doc/licence/licence-header-erlang.txt</span></tt></li>
 <li>the used Erlang environment should better be built thanks to a shell script we provide, <tt class="docutils literal"><span class="pre">myriad/conf/install-erlang.sh</span></tt>, to streamline this process; use for example <tt class="docutils literal"><span class="pre">myriad/conf/install-erlang.sh</span> <span class="pre">--cutting-edge</span> <span class="pre">--doc-install</span></tt>; add the <tt class="docutils literal"><span class="pre">--generate-plt</span></tt> option if intending to make any actual development in the future</li>
 <li>in the cases where LogMX cannot be used to monitor the simulation traces, a fall-back system can be chosen instead: traces can be output as a human-readable text file which can be read by any text viewer; to do so, one just has to edit the <tt class="docutils literal"><span class="pre">sim-diasca/src/core/src/test_constructs.hrl</span></tt> file, in which <tt class="docutils literal"><span class="pre">-define(TraceType,log_mx_traces).</span></tt> should be replaced by <tt class="docutils literal"><span class="pre">-define(TraceType,text_traces).</span></tt></li>
 <li>Sim-Diasca is able to run on multiple computing hosts, possibly with different user names; these hosts, and per-host user names as well, can be specified thanks to the <tt class="docutils literal">computing_hosts</tt> field of the <tt class="docutils literal">deployment_settings</tt> record (see <tt class="docutils literal">class_DeploymentManager.hrl</tt>)</li>
-<li>where is the temporary data for the simulation stored? The default value of the <tt class="docutils literal">temporary_directory</tt> field of the <tt class="docutils literal">deployment_settings</tt> record is <tt class="docutils literal">/tmp</tt>; hence temporary data for a simulation case named <tt class="docutils literal">Foo</tt> run by a user <tt class="docutils literal">norris</tt> would be stored, on each host, in, for example, <tt class="docutils literal"><span class="pre">/tmp/sim-diasca-Foo-norris/2013-6-5-at-10h-38m-17s-1de19ec70ed5</span></tt> (the suffix is made of a wall-clock timestamp and a rather unique simulation ID); on simulation success, this directory will be automatically removed</li>
+<li>where is the temporary data for the simulation stored on computing hosts? The default value of the <tt class="docutils literal">temporary_directory</tt> field of the <tt class="docutils literal">deployment_settings</tt> record is <tt class="docutils literal">/tmp</tt>; hence temporary data for a simulation case named <tt class="docutils literal">Foo</tt> run by a user <tt class="docutils literal">norris</tt> would be stored, on each host, in, for example, <tt class="docutils literal"><span class="pre">/tmp/sim-diasca-Foo-norris/2013-6-5-at-10h-38m-17s-1de19ec70ed5</span></tt> (the suffix is made of a wall-clock timestamp and a rather unique simulation ID); on simulation success, this directory will be automatically removed</li>
 <li>how is this temporary data organised? In the general case, there are three top-level directories:</li>
 <li><tt class="docutils literal"><span class="pre">deployed-elements</span></tt>, which contains the simulation archive (typically <tt class="docutils literal"><span class="pre">Sim-Diasca-deployment-archive.sdar</span></tt>) and the extracted trees thereof (typically with the main simulator layers, like <tt class="docutils literal">myriad</tt>, <tt class="docutils literal">wooper</tt>, <tt class="docutils literal">traces</tt>, etc.)</li>
 <li><tt class="docutils literal">outputs</tt>, where simulation probes write their files (<tt class="docutils literal">*.dat</tt> for data, <tt class="docutils literal">*.p</tt> for the corresponding commands); as for technical probes (ex: for the performance tracker), they are directly written in the final result directory, as they must remain available in all cases (even if the simulation crashed)</li>
@@ -4467,7 +4487,7 @@ reason was: noconnection, terminating now.
 </ul>
 </div>
 <div class="section" id="tips-and-tricks">
-<h2><a class="toc-backref" href="#id256">Tips And Tricks</a></h2>
+<h2><a class="toc-backref" href="#id262">Tips And Tricks</a></h2>
 <ul class="simple">
 <li>when running a simulation across multiple hosts, different versions of the Erlang runtime may coexist; if these releases are too distant in time to be compatible, the problem will be detected by Sim-Diasca and the incompatible versions will be reported; in this case one generally needs to install, out of the system tree, a newer version of the runtime to replace the oldest versions (use for that our <tt class="docutils literal"><span class="pre">install-erlang.sh</span></tt> script; more generally speaking, all Erlang runtimes <em>should</em> stick to the latest stable version, to benefit from the latest improvements); however, for these environments overridden by the user to be found by Sim-Diasca, they must become the default ones for that user; adding a line like <tt class="docutils literal"><span class="pre">PATH=~/my-install/bin:$PATH</span></tt> in one's shell settings (ex: <tt class="docutils literal"><span class="pre">~/.bashrc</span></tt>) is necessary but not always sufficient, as remote SSH login may not lead to that file being sourced; one should just check that on the target hosts the expected version Erlang version is used (ex: <tt class="docutils literal">ssh USER&#64;HOST erl</tt> allows to check the version); typically, with the <tt class="docutils literal">bash</tt> shell, the <tt class="docutils literal">.bash_profile</tt> file should contain something like: <tt class="docutils literal">if [ <span class="pre">-f</span> <span class="pre">~/.bashrc</span> ]; then . <span class="pre">~/.bashrc;</span> fi</tt></li>
 <li>when adding a source file to the Sim-Diasca engine, use the <tt class="docutils literal"><span class="pre">add-header-to-files.sh</span></tt> script with an appropriate header, for example:</li>
@@ -4507,7 +4527,7 @@ $ add-header-to-files.sh ../licence-header-erlang.txt MyNewFile.erl
 </div>
 </div>
 <div class="section" id="sim-diasca-bibliography">
-<h1><a class="toc-backref" href="#id257">Sim-Diasca Bibliography</a></h1>
+<h1><a class="toc-backref" href="#id263">Sim-Diasca Bibliography</a></h1>
 <p>In terms of multi-agent systems and distributed simulations, we spotted the following publications:</p>
 <ul class="simple">
 <li><a class="reference external" href="http://research.microsoft.com/users/lamport/pubs/time-clocks.pdf">Time, Clocks, and the Ordering of Events in a Distributed System</a>, by Leslie Lamport</li>
@@ -4527,18 +4547,18 @@ $ add-header-to-files.sh ../licence-header-erlang.txt MyNewFile.erl
 <p></p>
 </div>
 <div class="section" id="sim-diasca-credits">
-<span id="credits"></span><h1><a class="toc-backref" href="#id258">Sim-Diasca Credits</a></h1>
+<span id="credits"></span><h1><a class="toc-backref" href="#id264">Sim-Diasca Credits</a></h1>
 <p>Special thanks to <strong>Randall Munroe</strong> who is the author of all the comic strips that enliven this documentation, and who kindly allowed their use in this material.</p>
 <p>See his <a class="reference external" href="http://xkcd.com/">XKCD</a> website for all information, including for all his delightful other strips.</p>
 <p></p>
 </div>
 <div class="section" id="sim-diasca-license">
-<span id="lgpl"></span><h1><a class="toc-backref" href="#id259">Sim-Diasca License</a></h1>
+<span id="lgpl"></span><h1><a class="toc-backref" href="#id265">Sim-Diasca License</a></h1>
 <p>Sim-Diasca is free software; it has been developed by <a class="reference external" href="https://www.edf.fr/en/the-edf-group/inventing-the-future-of-energy/r-d-global-expertise">EDF R&amp;D</a> and is released under the <a class="reference external" href="http://www.gnu.org/licenses/lgpl.html">GNU LGPL licence</a> (GNU LESSER GENERAL PUBLIC LICENSE, Version 3).</p>
 <p></p>
 </div>
 <div class="section" id="contributing-to-sim-diasca">
-<h1><a class="toc-backref" href="#id260">Contributing To Sim-Diasca</a></h1>
+<h1><a class="toc-backref" href="#id266">Contributing To Sim-Diasca</a></h1>
 <p>Of course contributions of all kinds (code, documentation, examples, etc.)  are welcome:</p>
 <p><span class="raw-html"><center><img src="xkcd-study.png"></img></center></span>
 </p>
@@ -4546,7 +4566,7 @@ $ add-header-to-files.sh ../licence-header-erlang.txt MyNewFile.erl
 <p></p>
 </div>
 <div class="section" id="what-to-do-next">
-<h1><a class="toc-backref" href="#id261">What To Do Next?</a></h1>
+<h1><a class="toc-backref" href="#id267">What To Do Next?</a></h1>
 <p>Congratulations, you reached the end of this technical guide!</p>
 <p><span class="raw-html"><center><img src="xkcd-anti_mind_virus.png"></img></center></span>
 </p>
@@ -4556,6 +4576,8 @@ $ add-header-to-files.sh ../licence-header-erlang.txt MyNewFile.erl
 <li>write your own test models, getting inspiration from the <em>Sim-Diasca Mock Simulators</em> examples (see the top-level <tt class="docutils literal"><span class="pre">mock-simulators</span></tt> directory in the source archive; looking at the <tt class="docutils literal"><span class="pre">soda-test</span></tt> should clarify a lot the use of the engine)</li>
 </ol>
 <p>We hope that you will enjoy using Sim-Diasca. As always, any (constructive!) feedback is welcome (use <a class="reference external" href="mailto:olivier&#46;boudeville&#37;&#52;&#48;edf&#46;fr">this email address</a> for that). Thanks!</p>
+<p><span class="raw-html"><center><img src="sim-diasca.png" id="responsive-image-small"></img></center></span>
+</p>
 <p><span class="raw-html"><a name="sim_diasca_bottom"></a></span></p>
 </div>
 </div>

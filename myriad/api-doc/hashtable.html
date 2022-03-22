@@ -113,16 +113,16 @@ only them)</p>
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add_diagnosed_entries-2">add_diagnosed_entries/2</a></td><td>Adds specified list of key/value pairs into the specified hashtable, and 
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add_diagnosed_entries-2">add_diagnosed_entries/2</a></td><td>Adds the specified list of key/value pairs into the specified hashtable, 
+and returns an updated diagnosis.</td></tr>
+<tr><td valign="top"><a href="#add_diagnosed_entry-3">add_diagnosed_entry/3</a></td><td>Adds the specified key/value pair into the specified hashtable, and 
 returns an update diagnosis.</td></tr>
-<tr><td valign="top"><a href="#add_diagnosed_entry-3">add_diagnosed_entry/3</a></td><td>Adds specified key/value pair into the specified hashtable, and returns 
-an update diagnosis.</td></tr>
-<tr><td valign="top"><a href="#add_entries-2">add_entries/2</a></td><td>Adds specified list of key/value pairs into the specified hashtable.</td></tr>
-<tr><td valign="top"><a href="#add_entry-3">add_entry/3</a></td><td>Adds specified key/value pair into the specified hashtable.</td></tr>
-<tr><td valign="top"><a href="#add_to_entry-3">add_to_entry/3</a></td><td>Adds specified value to the value, supposed to be numerical, associated 
-to specified key.</td></tr>
-<tr><td valign="top"><a href="#append_to_entry-3">append_to_entry/3</a></td><td>Appends specified element to the value, supposed to be a list, associated 
-to specified key.</td></tr>
+<tr><td valign="top"><a href="#add_entries-2">add_entries/2</a></td><td>Adds the specified list of key/value pairs into the specified hashtable.</td></tr>
+<tr><td valign="top"><a href="#add_entry-3">add_entry/3</a></td><td>Adds the specified key/value pair into the specified hashtable.</td></tr>
+<tr><td valign="top"><a href="#add_to_entry-3">add_to_entry/3</a></td><td>Adds the specified value to the value, supposed to be numerical, 
+associated to specified key.</td></tr>
+<tr><td valign="top"><a href="#append_to_entry-3">append_to_entry/3</a></td><td>Appends the specified element to the value, supposed to be a list, 
+associated to specified key.</td></tr>
 <tr><td valign="top"><a href="#delete_from_entry-3">delete_from_entry/3</a></td><td>Deletes the first match of the specified element in the value associated 
 to specified key, this value being assumed to be a list.</td></tr>
 <tr><td valign="top"><a href="#display-1">display/1</a></td><td>Displays the specified hashtable on the standard output.</td></tr>
@@ -130,27 +130,27 @@ to specified key, this value being assumed to be a list.</td></tr>
  specified title on top.</td></tr>
 <tr><td valign="top"><a href="#enumerate-1">enumerate/1</a></td><td>Returns a flat list whose elements are all the key/value pairs of the 
 hashtable, in no particular order.</td></tr>
-<tr><td valign="top"><a href="#extract_entry-2">extract_entry/2</a></td><td>Extracts specified entry from specified hashtable: returns the associated 
-value and removes that entry from the table.</td></tr>
-<tr><td valign="top"><a href="#fold_on_entries-3">fold_on_entries/3</a></td><td>Folds specified anonymous function on all entries of the specified 
+<tr><td valign="top"><a href="#extract_entry-2">extract_entry/2</a></td><td>Extracts the specified entry from specified hashtable: returns the 
+associated value and removes that entry from the table.</td></tr>
+<tr><td valign="top"><a href="#fold_on_entries-3">fold_on_entries/3</a></td><td>Folds the specified anonymous function on all entries of the specified 
 hashtable.</td></tr>
 <tr><td valign="top"><a href="#get_all_values-2">get_all_values/2</a></td><td>Returns the (ordered) list of values that correspond to the specified 
 (ordered) list of keys of this table, ensuring all entries have been read, 
 otherwise throwing an exception.</td></tr>
 <tr><td valign="top"><a href="#get_ideal_bucket_count-1">get_ideal_bucket_count/1</a></td><td>Returns the ideal number of buckets needed for specified number of
  entries.</td></tr>
-<tr><td valign="top"><a href="#get_value-2">get_value/2</a></td><td>etrieves the value corresponding to specified (existing) key and returns 
-it directly.</td></tr>
-<tr><td valign="top"><a href="#get_value_with_defaults-3">get_value_with_defaults/3</a></td><td>Looks for specified entry in specified table and, if found, returns the
- associated value; otherwise returns the specified default value.</td></tr>
+<tr><td valign="top"><a href="#get_value-2">get_value/2</a></td><td>Retrieves the value corresponding to specified (existing) key, and 
+returns it directly.</td></tr>
+<tr><td valign="top"><a href="#get_value_with_defaults-3">get_value_with_defaults/3</a></td><td>Looks for the specified entry in specified table and, if found, returns
+ the associated value; otherwise returns the specified default value.</td></tr>
 <tr><td valign="top"><a href="#get_values-2">get_values/2</a></td><td>Returns the (ordered) list of values that correspond to the specified 
 (ordered) list of keys of this table.</td></tr>
-<tr><td valign="top"><a href="#has_entry-2">has_entry/2</a></td><td>Tells whether the specified key exists in the table: returns true or
- false.</td></tr>
+<tr><td valign="top"><a href="#has_entry-2">has_entry/2</a></td><td>Tells whether the specified key exists in the table.</td></tr>
 <tr><td valign="top"><a href="#is_empty-1">is_empty/1</a></td><td>Returns whether the specified hashtable is empty (not storing any
  key/value pair).</td></tr>
 <tr><td valign="top"><a href="#keys-1">keys/1</a></td><td>Returns a list containing all the keys of this hashtable.</td></tr>
-<tr><td valign="top"><a href="#lookup_entry-2">lookup_entry/2</a></td><td>Looks-up specified entry (designated by its key) in specified hashtable.</td></tr>
+<tr><td valign="top"><a href="#lookup_entry-2">lookup_entry/2</a></td><td>Looks-up the specified entry (designated by its key) in specified 
+hashtable.</td></tr>
 <tr><td valign="top"><a href="#map_on_entries-2">map_on_entries/2</a></td><td>Applies (maps) the specified anonymous function to each of the key-value 
 entries contained in this hashtable.</td></tr>
 <tr><td valign="top"><a href="#map_on_values-2">map_on_values/2</a></td><td>Applies (maps) the specified anonymous function to each of the values 
@@ -171,18 +171,18 @@ contained in this hashtable.</td></tr>
 <tr><td valign="top"><a href="#pop_from_entry-2">pop_from_entry/2</a></td><td>Pops the head of the value (supposed to be a list) associated to
  specified key, and returns a pair made of the popped head and of the new
  hashtable.</td></tr>
-<tr><td valign="top"><a href="#remove_diagnosed_entry-2">remove_diagnosed_entry/2</a></td><td>Removes specified key/value pair, as designated by the key, from the 
+<tr><td valign="top"><a href="#remove_diagnosed_entry-2">remove_diagnosed_entry/2</a></td><td>Removes the specified key/value pair, as designated by the key, from the 
 specified hashtable.</td></tr>
-<tr><td valign="top"><a href="#remove_entry-2">remove_entry/2</a></td><td>Removes specified key/value pair, as designated by the key, from the 
+<tr><td valign="top"><a href="#remove_entry-2">remove_entry/2</a></td><td>Removes the specified key/value pair, as designated by the key, from the 
 specified hashtable.</td></tr>
 <tr><td valign="top"><a href="#select_entries-2">select_entries/2</a></td><td>Returns a list of key/value pairs corresponding to the list of specified
  keys, or throws a badmatch is at least one key is not found.</td></tr>
 <tr><td valign="top"><a href="#size-1">size/1</a></td><td>Returns the size (number of entries, namely of key/value pairs) of the
  specified table.</td></tr>
-<tr><td valign="top"><a href="#subtract_from_entry-3">subtract_from_entry/3</a></td><td>Subtracts specified value to the value, supposed to be numerical, 
+<tr><td valign="top"><a href="#subtract_from_entry-3">subtract_from_entry/3</a></td><td>Subtracts the specified value to the value, supposed to be numerical, 
 associated to specified key.</td></tr>
 <tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td>Returns a textual description of the specified hashtable.</td></tr>
-<tr><td valign="top"><a href="#to_string-2">to_string/2</a></td><td>Returns a textual description of the specified table.</td></tr>
+<tr><td valign="top"><a href="#to_string-2">to_string/2</a></td><td>Returns a textual description of the specified hashtable.</td></tr>
 <tr><td valign="top"><a href="#toggle_entry-2">toggle_entry/2</a></td><td>Toggles the boolean value associated with specified key: if true will be 
 false, if false will be true.</td></tr>
 <tr><td valign="top"><a href="#values-1">values/1</a></td><td>Returns a list containing all the values of this hashtable.</td></tr>
@@ -194,8 +194,8 @@ false, if false will be true.</td></tr>
 <div class="spec">
 <p><tt>add_diagnosed_entries(Entries::<a href="#type-entries">entries()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; {<a href="#type-hashtable">hashtable()</a>, added | updated}</tt><br></p>
 <p> </p>
-</div><p><p>Adds specified list of key/value pairs into the specified hashtable, and 
-returns an update diagnosis.</p>
+</div><p><p>Adds the specified list of key/value pairs into the specified hashtable, 
+and returns an updated diagnosis.</p>
 
  If there is already a pair with this key, then its previous value will be
  replaced by the specified one.
@@ -205,8 +205,8 @@ returns an update diagnosis.</p>
 <div class="spec">
 <p><tt>add_diagnosed_entry(Key::<a href="#type-key">key()</a>, Value::<a href="#type-value">value()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; {<a href="#type-hashtable">hashtable()</a>, added | updated}</tt><br></p>
 <p> </p>
-</div><p><p>Adds specified key/value pair into the specified hashtable, and returns 
-an update diagnosis.</p>
+</div><p><p>Adds the specified key/value pair into the specified hashtable, and 
+returns an update diagnosis.</p>
 
  If there is already a pair with this key, then its previous value will be
  replaced by the specified one.
@@ -216,7 +216,7 @@ an update diagnosis.</p>
 <div class="spec">
 <p><tt>add_entries(EntryList::<a href="#type-entries">entries()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-hashtable">hashtable()</a></tt><br></p>
 <p> </p>
-</div><p><p>Adds specified list of key/value pairs into the specified hashtable.</p>
+</div><p><p>Adds the specified list of key/value pairs into the specified hashtable.</p>
 
  If there is already a pair with this key, then its previous value will be
  replaced by the specified one.
@@ -226,7 +226,7 @@ an update diagnosis.</p>
 <div class="spec">
 <p><tt>add_entry(Key::<a href="#type-key">key()</a>, Value::<a href="#type-value">value()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-hashtable">hashtable()</a></tt><br></p>
 <p> </p>
-</div><p><p>Adds specified key/value pair into the specified hashtable.</p>
+</div><p><p>Adds the specified key/value pair into the specified hashtable.</p>
 
  If there is already a pair with this key, then its previous value will be
  replaced by the specified one.
@@ -236,8 +236,8 @@ an update diagnosis.</p>
 <div class="spec">
 <p><tt>add_to_entry(Key::<a href="#type-key">key()</a>, Value::number(), Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-hashtable">hashtable()</a></tt><br></p>
 <p> </p>
-</div><p><p>Adds specified value to the value, supposed to be numerical, associated 
-to specified key.</p>
+</div><p><p>Adds the specified value to the value, supposed to be numerical, 
+associated to specified key.</p>
 
  An exception is thrown if the key does not exist, a bad arithm is triggered if
  no addition can be performed on the associated value.
@@ -247,8 +247,8 @@ to specified key.</p>
 <div class="spec">
 <p><tt>append_to_entry(Key::<a href="#type-key">key()</a>, Element::term(), Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-hashtable">hashtable()</a></tt><br></p>
 <p> </p>
-</div><p><p>Appends specified element to the value, supposed to be a list, associated 
-to specified key.</p>
+</div><p><p>Appends the specified element to the value, supposed to be a list, 
+associated to specified key.</p>
 
  <p>An exception is thrown if the key does not exist.</p>
 
@@ -296,8 +296,8 @@ hashtable, in no particular order.</p>
 <div class="spec">
 <p><tt>extract_entry(Key::<a href="#type-key">key()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; {<a href="#type-value">value()</a>, <a href="#type-hashtable">hashtable()</a>}</tt><br></p>
 <p> </p>
-</div><p><p>Extracts specified entry from specified hashtable: returns the associated 
-value and removes that entry from the table.</p>
+</div><p><p>Extracts the specified entry from specified hashtable: returns the 
+associated value and removes that entry from the table.</p>
 
  The key/value pair is expected to exist already, otherwise an exception is
  raised.
@@ -307,7 +307,7 @@ value and removes that entry from the table.</p>
 <div class="spec">
 <p><tt>fold_on_entries(Fun::fun((<a href="#type-entry">entry()</a>, <a href="#type-accumulator">accumulator()</a>) -&gt; <a href="#type-accumulator">accumulator()</a>), InitialAcc::<a href="#type-accumulator">accumulator()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-accumulator">accumulator()</a></tt><br></p>
 <p> </p>
-</div><p><p>Folds specified anonymous function on all entries of the specified 
+</div><p><p>Folds the specified anonymous function on all entries of the specified 
 hashtable.</p>
 
  <p>The order of transformation for entries is not specified.</p>
@@ -342,8 +342,8 @@ raised.</p>
 <div class="spec">
 <p><tt>get_value(Key::<a href="#type-key">key()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-value">value()</a></tt><br></p>
 <p> </p>
-</div><p><p>etrieves the value corresponding to specified (existing) key and returns 
-it directly.</p>
+</div><p><p>Retrieves the value corresponding to specified (existing) key, and 
+returns it directly.</p>
 
  The key/value pair is expected to exist already, otherwise an exception is
  raised.
@@ -353,8 +353,8 @@ it directly.</p>
 <div class="spec">
 <p><tt>get_value_with_defaults(Key::<a href="#type-key">key()</a>, DefaultValue::<a href="#type-value">value()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-value">value()</a></tt><br></p>
 <p> </p>
-</div><p>Looks for specified entry in specified table and, if found, returns the
- associated value; otherwise returns the specified default value.
+</div><p>Looks for the specified entry in specified table and, if found, returns
+ the associated value; otherwise returns the specified default value.
 </p>
 
 <h3 class="function"><a name="get_values-2">get_values/2</a></h3>
@@ -368,16 +368,14 @@ it directly.</p>
 raised.</p>
 
  Ex: <code>[Color, Age, Mass] = hashtable:get_values([color, age, mass],
-   MyTable])</code>.
+           MyTable])</code>.
 </p>
 
 <h3 class="function"><a name="has_entry-2">has_entry/2</a></h3>
 <div class="spec">
 <p><tt>has_entry(Key::<a href="#type-key">key()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; boolean()</tt><br></p>
 <p> </p>
-</div><p>Tells whether the specified key exists in the table: returns true or
- false.
-</p>
+</div><p>Tells whether the specified key exists in the table.</p>
 
 <h3 class="function"><a name="is_empty-1">is_empty/1</a></h3>
 <div class="spec">
@@ -397,7 +395,8 @@ raised.</p>
 <div class="spec">
 <p><tt>lookup_entry(Key::<a href="#type-key">key()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; key_not_found | {value, <a href="#type-value">value()</a>}</tt><br></p>
 <p> </p>
-</div><p><p>Looks-up specified entry (designated by its key) in specified hashtable.</p>
+</div><p><p>Looks-up the specified entry (designated by its key) in specified 
+hashtable.</p>
 
  Returns either 'key_not_found' if no such key is registered in the
  table, or {value, Valu }, with Value being the value associated to the
@@ -512,7 +511,7 @@ to duplicate the whole content in memory).</p>
 <div class="spec">
 <p><tt>remove_diagnosed_entry(Key::<a href="#type-key">key()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; {deleted, <a href="#type-hashtable">hashtable()</a>} | unchanged</tt><br></p>
 <p> </p>
-</div><p><p>Removes specified key/value pair, as designated by the key, from the 
+</div><p><p>Removes the specified key/value pair, as designated by the key, from the 
 specified hashtable.</p>
 
  <p>Does nothing if the key is not found.</p>
@@ -524,7 +523,7 @@ specified hashtable.</p>
 <div class="spec">
 <p><tt>remove_entry(Key::<a href="#type-key">key()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-hashtable">hashtable()</a></tt><br></p>
 <p> </p>
-</div><p><p>Removes specified key/value pair, as designated by the key, from the 
+</div><p><p>Removes the specified key/value pair, as designated by the key, from the 
 specified hashtable.</p>
 
  <p>Does nothing if the key is not found.</p>
@@ -552,7 +551,7 @@ specified hashtable.</p>
 <div class="spec">
 <p><tt>subtract_from_entry(Key::<a href="#type-key">key()</a>, Value::number(), Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-hashtable">hashtable()</a></tt><br></p>
 <p> </p>
-</div><p><p>Subtracts specified value to the value, supposed to be numerical, 
+</div><p><p>Subtracts the specified value to the value, supposed to be numerical, 
 associated to specified key.</p>
 
  An exception is thrown if the key does not exist, a bad arithm is triggered if
@@ -569,7 +568,7 @@ associated to specified key.</p>
 <div class="spec">
 <p><tt>to_string(Hashtable::<a href="#type-hashtable">hashtable()</a>, DescriptionType::<a href="#type-description_type">description_type()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
 <p> </p>
-</div><p><p>Returns a textual description of the specified table.</p>
+</div><p><p>Returns a textual description of the specified hashtable.</p>
 
  Either a bullet is specified, or the returned string is ellipsed if needed (if
  using 'user_friendly'), or quite raw and non-ellipsed (if using 'full'), or

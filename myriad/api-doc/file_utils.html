@@ -25,6 +25,10 @@
 <p><tt>abs_directory_path() = <a href="#type-directory_path">directory_path()</a></tt></p>
 <p> Sometimes useful.</p>
 
+<h3 class="typedecl"><a name="type-any_app_info">any_app_info()</a></h3>
+<p><tt>any_app_info() = <a href="app_facilities.html#type-any_app_info">app_facilities:any_app_info()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-any_directory_name">any_directory_name()</a></h3>
 <p><tt>any_directory_name() = <a href="#type-directory_name">directory_name()</a> | <a href="#type-bin_directory_name">bin_directory_name()</a></tt></p>
 
@@ -247,12 +251,12 @@ already existing.</td></tr>
 <tr><td valign="top"><a href="#copy_file_in-2">copy_file_in/2</a></td><td>Copies a specified file in a given destination directory, overwriting any 
 previous file, and returning the full path of the copied file.</td></tr>
 <tr><td valign="top"><a href="#copy_tree-2">copy_tree/2</a></td><td>Copies specified source tree in specified target directory.</td></tr>
-<tr><td valign="top"><a href="#create_directory-1">create_directory/1</a></td><td>Creates specified directory ("mkdir"), without creating any intermediate 
-(parent) directory that would not exist.</td></tr>
+<tr><td valign="top"><a href="#create_directory-1">create_directory/1</a></td><td>Creates the specified directory ("mkdir"), without creating any 
+intermediate (parent) directory that would not exist.</td></tr>
 <tr><td valign="top"><a href="#create_directory-2">create_directory/2</a></td><td>Creates the specified directory.</td></tr>
-<tr><td valign="top"><a href="#create_directory_if_not_existing-1">create_directory_if_not_existing/1</a></td><td>Creates specified directory (but not any parent thereof), if not already 
-existing.</td></tr>
-<tr><td valign="top"><a href="#create_directory_if_not_existing-2">create_directory_if_not_existing/2</a></td><td>Creates specified directory (and, if specified, any needed parent as 
+<tr><td valign="top"><a href="#create_directory_if_not_existing-1">create_directory_if_not_existing/1</a></td><td>Creates the specified directory (but not any parent thereof), if not 
+already existing.</td></tr>
+<tr><td valign="top"><a href="#create_directory_if_not_existing-2">create_directory_if_not_existing/2</a></td><td>Creates the specified directory (and, if specified, any needed parent as 
 well), if not already existing.</td></tr>
 <tr><td valign="top"><a href="#create_empty_file-1">create_empty_file/1</a></td><td>Creates an empty file bearing the specified filename (other use of 
 touch).</td></tr>
@@ -325,7 +329,15 @@ from the root, in the whole subtree (that is recursively).</td></tr>
 <tr><td valign="top"><a href="#get_base_path-1">get_base_path/1</a></td><td>Returns the complete leading, "directory" part of specified path, 
 that is the one with all its element but the last one.</td></tr>
 <tr><td valign="top"><a href="#get_bin_current_directory-0">get_bin_current_directory/0</a></td><td>Returns the current directory, as a binary string.</td></tr>
+<tr><td valign="top"><a href="#get_cache_directory-1">get_cache_directory/1</a></td><td>Returns the path location intended for the storage of transient data
+ files that the specified application may perform on the local machine, that is
+ any cache that it may use.</td></tr>
+<tr><td valign="top"><a href="#get_configuration_directory-1">get_configuration_directory/1</a></td><td>Returns the path location intended for the storage of persistent
+ configuration files that the specified application may perform on the local
+ machine.</td></tr>
 <tr><td valign="top"><a href="#get_current_directory-0">get_current_directory/0</a></td><td>Returns the current directory, as a plain string.</td></tr>
+<tr><td valign="top"><a href="#get_data_directory-1">get_data_directory/1</a></td><td>Returns the path location intended for the storage of persistent data
+ files that the specified application may perform on the local machine.</td></tr>
 <tr><td valign="top"><a href="#get_default_encoding-0">get_default_encoding/0</a></td><td>Returns the default recommended encoding, for example when needing to 
 open a file for writing.</td></tr>
 <tr><td valign="top"><a href="#get_default_encoding_option-0">get_default_encoding_option/0</a></td><td>Returns the default recommended option encoding option, for example when 
@@ -334,6 +346,11 @@ needing to open a file for writing - should such an option be used.</td></tr>
 <tr><td valign="top"><a href="#get_extension_for-1">get_extension_for/1</a></td><td>Returns the file extension corresponding to filenames compressed with
  specified format.</td></tr>
 <tr><td valign="top"><a href="#get_extensions-1">get_extensions/1</a></td><td>Returns the (ordered) extension(s) of the specified file path.</td></tr>
+<tr><td valign="top"><a href="#get_extra_configuration_directories-1">get_extra_configuration_directories/1</a></td><td>Returns the extra path locations intended for the storage of persistent
+ configuration files that the specified application may perform on the local
+ machine.</td></tr>
+<tr><td valign="top"><a href="#get_extra_data_directories-1">get_extra_data_directories/1</a></td><td>Returns the extra path locations intended for the storage of persistent
+ data files that the specified application may perform on the local machine.</td></tr>
 <tr><td valign="top"><a href="#get_first_existing_directory_in-1">get_first_existing_directory_in/1</a></td><td>Returns the first (if any) existing directory found in specified list, or 
 throws an exception if none is found.</td></tr>
 <tr><td valign="top"><a href="#get_group_of-1">get_group_of/1</a></td><td>Returns the group identifier (gid) of the group of the specified file
@@ -346,11 +363,13 @@ modified (not counting attribute or permission changes), according to the
 filesystem.</td></tr>
 <tr><td valign="top"><a href="#get_last_path_element-1">get_last_path_element/1</a></td><td>Returns the final, "file" part of specified path, that is its last 
 element, as a one-element path, corresponding either to a file or a directory.</td></tr>
+<tr><td valign="top"><a href="#get_log_directory-1">get_log_directory/1</a></td><td>Returns the path location intended for the storage of transient log files
+ that the specified application may perform on the local machine.</td></tr>
 <tr><td valign="top"><a href="#get_longest_common_path-1">get_longest_common_path/1</a></td><td>Returns a pair made of the longest path common to all specified directory 
 paths, and the corresponding suffixes, that is an (unordered) list of the 
 input paths (as binaries) once the common prefix elements have been removed.</td></tr>
-<tr><td valign="top"><a href="#get_non_clashing_entry_name_from-1">get_non_clashing_entry_name_from/1</a></td><td>Returns a path deriving from specified one so that it is unique, meaning 
-that it does not clash with any pre-existing entry.</td></tr>
+<tr><td valign="top"><a href="#get_non_clashing_entry_name_from-1">get_non_clashing_entry_name_from/1</a></td><td>Returns a path deriving from the specified one so that it is unique, 
+meaning that it does not clash with any pre-existing entry.</td></tr>
 <tr><td valign="top"><a href="#get_owner_of-1">get_owner_of/1</a></td><td>Returns the user identifier (uid) of the owner of the specified file
  entry.</td></tr>
 <tr><td valign="top"><a href="#get_permissions_of-1">get_permissions_of/1</a></td><td>Returns the (UNIX) permissions associated to specified filesystem entry.</td></tr>
@@ -392,6 +411,8 @@ current user (can be either a regular file or a symbolic link).</td></tr>
 <tr><td valign="top"><a href="#join-1">join/1</a></td><td>Joins the specified list of path elements.</td></tr>
 <tr><td valign="top"><a href="#join-2">join/2</a></td><td>Joins the two specified path elements, returns a corresponding plain 
 string.</td></tr>
+<tr><td valign="top"><a href="#latin1_file_to_unicode-1">latin1_file_to_unicode/1</a></td><td>Converts in-place the specified file, whose current encoding is expected
+ to be Latin1, to Unicode.</td></tr>
 <tr><td valign="top"><a href="#list_dir_elements-1">list_dir_elements/1</a></td><td>Returns a tuple containing five lists corresponding to the per-type 
 dispatching of all filesystem elements local to specified directory (hence not 
 recursively traversed), namely: {RegularFiles, Symlinks, Directories, 
@@ -411,11 +432,11 @@ OtherFiles, Devices}.</td></tr>
 specified path.</td></tr>
 <tr><td valign="top"><a href="#normalise_path-1">normalise_path/1</a></td><td>Normalises specified path (canonicalises it), by translating it so that 
 no intermediate, superfluous '.' or '..' is present afterwards.</td></tr>
-<tr><td valign="top"><a href="#open-2">open/2</a></td><td>Opens the file corresponding to the specified filename, with specified
- list of options (as listed for file:open/2 in
- <a href="http://erlang.org/doc/man/file.html#open-2" target="_top"><tt>http://erlang.org/doc/man/file.html#open-2</tt></a>, that is read, write, append, 
+<tr><td valign="top"><a href="#open-2">open/2</a></td><td>Opens the file corresponding to the specified path, with specified list
+ of options (as listed for file:open/2 in
+ <a href="http://erlang.org/doc/man/file.html#open-2" target="_top"><tt>http://erlang.org/doc/man/file.html#open-2</tt></a>, that is: read, write, append, 
 exclusive, raw, etc).</td></tr>
-<tr><td valign="top"><a href="#open-3">open/3</a></td><td>Opens the file corresponding to specified filename (first parameter) with
+<tr><td valign="top"><a href="#open-3">open/3</a></td><td>Opens the file corresponding to specified path (first parameter) with
  specified list of options (second parameter; refer to file:open/2 for detailed
  documentation, see <a href="http://erlang.org/doc/man/file.html#open-2" target="_top"><tt>http://erlang.org/doc/man/file.html#open-2</tt></a>).</td></tr>
 <tr><td valign="top"><a href="#path_to_variable_name-1">path_to_variable_name/1</a></td><td>Converts specified path (full filename, like '/home/jack/test.txt' or 
@@ -466,6 +487,7 @@ extension of the resulting file name.</td></tr>
 <tr><td valign="top"><a href="#rename-2">rename/2</a></td><td>Renames specified file.</td></tr>
 <tr><td valign="top"><a href="#replace_extension-3">replace_extension/3</a></td><td>Returns a new file path whose extension has been updated.</td></tr>
 <tr><td valign="top"><a href="#set_current_directory-1">set_current_directory/1</a></td><td>Sets the specified directory as current directory.</td></tr>
+<tr><td valign="top"><a href="#split-1">split/1</a></td><td>Splits the specified path in elements, returned as a list.</td></tr>
 <tr><td valign="top"><a href="#to_permission_mask-1">to_permission_mask/1</a></td><td>Encodes the specified symbolic permission(s) into its/their low-level
  counterpart mask(s).</td></tr>
 <tr><td valign="top"><a href="#touch-1">touch/1</a></td><td>Updates the modification time (the last time at which its content was 
@@ -495,12 +517,12 @@ specific header or footer.</td></tr>
 specified header and footer.</td></tr>
 <tr><td valign="top"><a href="#write_ustring-2">write_ustring/2</a></td><td>Writes specified Unicode string in the specified file.</td></tr>
 <tr><td valign="top"><a href="#write_ustring-3">write_ustring/3</a></td><td>Writes specified formatted content in the specified file.</td></tr>
-<tr><td valign="top"><a href="#write_whole-2">write_whole/2</a></td><td>Writes the specified content in specified file, whose filename is 
-specified as any kind of string, using a default encoding if a plain string is 
+<tr><td valign="top"><a href="#write_whole-2">write_whole/2</a></td><td>Writes the specified content in specified file, whose path is specified 
+as any kind of string, using a default encoding if a plain string is 
 specified.</td></tr>
-<tr><td valign="top"><a href="#write_whole-3">write_whole/3</a></td><td>Writes the specified content in specified file, whose filename is 
-specified as any kind of string, using the specified modes options, and 
-applying before a default encoding if a plain string is specified.</td></tr>
+<tr><td valign="top"><a href="#write_whole-3">write_whole/3</a></td><td>Writes the specified content in specified file, whose path is specified 
+as any kind of string, using the specified modes options, and applying before 
+a default encoding if a plain string is specified.</td></tr>
 <tr><td valign="top"><a href="#zipped_term_to_unzipped_file-1">zipped_term_to_unzipped_file/1</a></td><td>Reads specified binary, extracts the zipped file in it and writes it on 
 disk, in current directory.</td></tr>
 <tr><td valign="top"><a href="#zipped_term_to_unzipped_file-2">zipped_term_to_unzipped_file/2</a></td><td>Reads specified binary, extracts the zipped file in it and writes it on 
@@ -529,7 +551,7 @@ string only when necessary.</p>
 
  <p>Plain and binary strings can be freely used as arguments.</p>
 
- See filename:split/1 for the reverse operation.
+ See split/1 for the reverse operation.
 </p>
 
 <h3 class="function"><a name="any_join-2">any_join/2</a></h3>
@@ -564,7 +586,7 @@ string.</p>
  <p>Plain and binary strings can be freely used as arguments, and a binary string 
 is returned in all cases.</p>
 
- See filename:split/1 for the reverse operation.
+ See split/1 for the reverse operation.
 </p>
 
 <h3 class="function"><a name="bin_join-2">bin_join/2</a></h3>
@@ -698,17 +720,17 @@ previous file, and returning the full path of the copied file.</p>
 
 <h3 class="function"><a name="create_directory-1">create_directory/1</a></h3>
 <div class="spec">
-<p><tt>create_directory(DirName::<a href="#type-directory_name">directory_name()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>create_directory(AnyDirPath::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p><p>Creates specified directory ("mkdir"), without creating any intermediate 
-(parent) directory that would not exist.</p>
+</div><p><p>Creates the specified directory ("mkdir"), without creating any 
+intermediate (parent) directory that would not exist.</p>
 
  Throws an exception if the operation failed.
 </p>
 
 <h3 class="function"><a name="create_directory-2">create_directory/2</a></h3>
 <div class="spec">
-<p><tt>create_directory(DirName::<a href="#type-directory_name">directory_name()</a>, X2::<a href="#type-parent_creation">parent_creation()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>create_directory(AnyDirPath::<a href="#type-any_directory_path">any_directory_path()</a>, X2::<a href="#type-parent_creation">parent_creation()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p><p>Creates the specified directory.</p>
 
@@ -724,19 +746,19 @@ directory will be created.</p>
 
 <h3 class="function"><a name="create_directory_if_not_existing-1">create_directory_if_not_existing/1</a></h3>
 <div class="spec">
-<p><tt>create_directory_if_not_existing(DirName::<a href="#type-directory_name">directory_name()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>create_directory_if_not_existing(AnyDirPath::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p><p>Creates specified directory (but not any parent thereof), if not already 
-existing.</p>
+</div><p><p>Creates the specified directory (but not any parent thereof), if not 
+already existing.</p>
 
  Throws an exception if the operation fails.
 </p>
 
 <h3 class="function"><a name="create_directory_if_not_existing-2">create_directory_if_not_existing/2</a></h3>
 <div class="spec">
-<p><tt>create_directory_if_not_existing(DirName::<a href="#type-directory_name">directory_name()</a>, ParentCreation::<a href="#type-parent_creation">parent_creation()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>create_directory_if_not_existing(AnyDirPath::<a href="#type-any_directory_path">any_directory_path()</a>, ParentCreation::<a href="#type-parent_creation">parent_creation()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p><p>Creates specified directory (and, if specified, any needed parent as 
+</div><p><p>Creates the specified directory (and, if specified, any needed parent as 
 well), if not already existing.</p>
 
  Throws an exception if the operation fails.
@@ -769,7 +791,7 @@ of use as well.</p>
 
 <h3 class="function"><a name="create_temporary_directory-0">create_temporary_directory/0</a></h3>
 <div class="spec">
-<p><tt>create_temporary_directory() -&gt; <a href="#type-directory_name">directory_name()</a></tt><br></p>
+<p><tt>create_temporary_directory() -&gt; <a href="#type-directory_path">directory_path()</a></tt><br></p>
 <p> </p>
 </div><p><p>Creates a non-previously existing temporary directory, and returns its 
 full path.</p>
@@ -1194,6 +1216,24 @@ binary string.</p>
  Throws an exception on failure.
 </p>
 
+<h3 class="function"><a name="get_cache_directory-1">get_cache_directory/1</a></h3>
+<div class="spec">
+<p><tt>get_cache_directory(AppInfo::<a href="#type-any_app_info">any_app_info()</a>) -&gt; <a href="#type-directory_path">directory_path()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the path location intended for the storage of transient data
+ files that the specified application may perform on the local machine, that is
+ any cache that it may use.
+</p>
+
+<h3 class="function"><a name="get_configuration_directory-1">get_configuration_directory/1</a></h3>
+<div class="spec">
+<p><tt>get_configuration_directory(AppInfo::<a href="#type-any_app_info">any_app_info()</a>) -&gt; <a href="#type-directory_path">directory_path()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the path location intended for the storage of persistent
+ configuration files that the specified application may perform on the local
+ machine.
+</p>
+
 <h3 class="function"><a name="get_current_directory-0">get_current_directory/0</a></h3>
 <div class="spec">
 <p><tt>get_current_directory() -&gt; <a href="#type-directory_path">directory_path()</a></tt><br></p>
@@ -1201,6 +1241,14 @@ binary string.</p>
 </div><p><p>Returns the current directory, as a plain string.</p>
 
  Throws an exception on failure.
+</p>
+
+<h3 class="function"><a name="get_data_directory-1">get_data_directory/1</a></h3>
+<div class="spec">
+<p><tt>get_data_directory(AppInfo::<a href="#type-any_app_info">any_app_info()</a>) -&gt; <a href="#type-directory_path">directory_path()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the path location intended for the storage of persistent data
+ files that the specified application may perform on the local machine.
 </p>
 
 <h3 class="function"><a name="get_default_encoding-0">get_default_encoding/0</a></h3>
@@ -1251,6 +1299,23 @@ needing to open a file for writing - should such an option be used.</p>
 </div><p><p>Returns the (ordered) extension(s) of the specified file path.</p>
 
  Ex: ["baz", "json"] = get_extensions("/home/joe/foobar.baz.json")
+</p>
+
+<h3 class="function"><a name="get_extra_configuration_directories-1">get_extra_configuration_directories/1</a></h3>
+<div class="spec">
+<p><tt>get_extra_configuration_directories(AppInfo::<a href="#type-any_app_info">any_app_info()</a>) -&gt; [<a href="#type-directory_path">directory_path()</a>]</tt><br></p>
+<p> </p>
+</div><p>Returns the extra path locations intended for the storage of persistent
+ configuration files that the specified application may perform on the local
+ machine.
+</p>
+
+<h3 class="function"><a name="get_extra_data_directories-1">get_extra_data_directories/1</a></h3>
+<div class="spec">
+<p><tt>get_extra_data_directories(AppInfo::<a href="#type-any_app_info">any_app_info()</a>) -&gt; [<a href="#type-directory_path">directory_path()</a>]</tt><br></p>
+<p> </p>
+</div><p>Returns the extra path locations intended for the storage of persistent
+ data files that the specified application may perform on the local machine.
 </p>
 
 <h3 class="function"><a name="get_first_existing_directory_in-1">get_first_existing_directory_in/1</a></h3>
@@ -1319,6 +1384,14 @@ binary string.</p>
  clearer).
 </p>
 
+<h3 class="function"><a name="get_log_directory-1">get_log_directory/1</a></h3>
+<div class="spec">
+<p><tt>get_log_directory(AppInfo::<a href="#type-any_app_info">any_app_info()</a>) -&gt; <a href="#type-directory_path">directory_path()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the path location intended for the storage of transient log files
+ that the specified application may perform on the local machine.
+</p>
+
 <h3 class="function"><a name="get_longest_common_path-1">get_longest_common_path/1</a></h3>
 <div class="spec">
 <p><tt>get_longest_common_path(DirPaths::[<a href="#type-any_path">any_path()</a>]) -&gt; {<a href="#type-any_path">any_path()</a>, [<a href="#type-any_path">any_path()</a>]}</tt><br></p>
@@ -1342,11 +1415,13 @@ returns:
 <div class="spec">
 <p><tt>get_non_clashing_entry_name_from(Path::<a href="#type-any_path">any_path()</a>) -&gt; <a href="#type-any_path">any_path()</a></tt><br></p>
 <p> </p>
-</div><p><p>Returns a path deriving from specified one so that it is unique, meaning 
-that it does not clash with any pre-existing entry.</p>
+</div><p><p>Returns a path deriving from the specified one so that it is unique, 
+meaning that it does not clash with any pre-existing entry.</p>
 
- Note: of course multiple, parallel calls to this function with the same base
- path will result in potential race conditions and risks of collisions.
+ <p>Note: of course multiple, parallel calls to this function with the same base 
+path will result in potential race conditions and risks of collisions.</p>
+
+ See also basic_utils:get_unix_process_specific_string/0.
 </p>
 
 <h3 class="function"><a name="get_owner_of-1">get_owner_of/1</a></h3>
@@ -1577,7 +1652,7 @@ astonishment).</p>
  <p>Plain and binary strings can be freely used as arguments, and a plain string 
 is returned in all cases.</p>
 
- See filename:split/1 for the reverse operation.
+ See split/1 for the reverse operation.
 </p>
 
 <h3 class="function"><a name="join-2">join/2</a></h3>
@@ -1600,9 +1675,17 @@ astonishment).</p>
  <p>Plain and binary strings can be freely used as arguments; a plain string is 
 returned in all cases.</p>
 
- <p>See filename:split/1 for the reverse operation.</p>
+ <p>See split/1 for the reverse operation.</p>
 
  Prefer bin_join/2 if having to possibly deal with so-called "raw filenames".
+</p>
+
+<h3 class="function"><a name="latin1_file_to_unicode-1">latin1_file_to_unicode/1</a></h3>
+<div class="spec">
+<p><tt>latin1_file_to_unicode(AnyFilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Converts in-place the specified file, whose current encoding is expected
+ to be Latin1, to Unicode.
 </p>
 
 <h3 class="function"><a name="list_dir_elements-1">list_dir_elements/1</a></h3>
@@ -1699,11 +1782,11 @@ no intermediate, superfluous '.' or '..' is present afterwards.</p>
 
 <h3 class="function"><a name="open-2">open/2</a></h3>
 <div class="spec">
-<p><tt>open(Filename::<a href="#type-any_file_name">any_file_name()</a>, Options::[<a href="#type-file_open_mode">file_open_mode()</a>]) -&gt; <a href="#type-file">file()</a></tt><br></p>
+<p><tt>open(AnyFilePath::<a href="#type-any_file_path">any_file_path()</a>, Options::[<a href="#type-file_open_mode">file_open_mode()</a>]) -&gt; <a href="#type-file">file()</a></tt><br></p>
 <p> </p>
-</div><p><p>Opens the file corresponding to the specified filename, with specified
- list of options (as listed for file:open/2 in
- <a href="http://erlang.org/doc/man/file.html#open-2" target="_top"><tt>http://erlang.org/doc/man/file.html#open-2</tt></a>, that is read, write, append, 
+</div><p><p>Opens the file corresponding to the specified path, with specified list
+ of options (as listed for file:open/2 in
+ <a href="http://erlang.org/doc/man/file.html#open-2" target="_top"><tt>http://erlang.org/doc/man/file.html#open-2</tt></a>, that is: read, write, append, 
 exclusive, raw, etc).</p>
 
  <p>See read_terms/1 if planning to read that content as terms later, notably with 
@@ -1739,9 +1822,9 @@ statement) system_utils:force_unicode_support/0.</p>
 
 <h3 class="function"><a name="open-3">open/3</a></h3>
 <div class="spec">
-<p><tt>open(Filename::<a href="#type-any_file_name">any_file_name()</a>, Options::[<a href="#type-file_open_mode">file_open_mode()</a>], AttemptMode::try_once | try_endlessly | try_endlessly_safer) -&gt; <a href="#type-file">file()</a></tt><br></p>
+<p><tt>open(AnyFilePath::<a href="#type-any_file_path">any_file_path()</a>, Options::[<a href="#type-file_open_mode">file_open_mode()</a>], AttemptMode::try_once | try_endlessly | try_endlessly_safer) -&gt; <a href="#type-file">file()</a></tt><br></p>
 <p> </p>
-</div><p><p>Opens the file corresponding to specified filename (first parameter) with
+</div><p><p>Opens the file corresponding to specified path (first parameter) with
  specified list of options (second parameter; refer to file:open/2 for detailed
  documentation, see <a href="http://erlang.org/doc/man/file.html#open-2" target="_top"><tt>http://erlang.org/doc/man/file.html#open-2</tt></a>).</p>
 
@@ -1823,7 +1906,7 @@ all could be read.</p>
 
 <h3 class="function"><a name="read_etf_file-1">read_etf_file/1</a></h3>
 <div class="spec">
-<p><tt>read_etf_file(Filename::<a href="#type-file_path">file_path()</a>) -&gt; [term()]</tt><br></p>
+<p><tt>read_etf_file(AnyFilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; [term()]</tt><br></p>
 <p> </p>
 </div><p><p>Reads specified file supposedly in ETF format (Erlang Term Format): tries 
 to parse a list of terms (one per line, terminating with a dot) from it 
@@ -1860,7 +1943,7 @@ failure.</p>
 
 <h3 class="function"><a name="read_terms-1">read_terms/1</a></h3>
 <div class="spec">
-<p><tt>read_terms(Filename::<a href="#type-file_path">file_path()</a>) -&gt; [term()]</tt><br></p>
+<p><tt>read_terms(AnyFilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; [term()]</tt><br></p>
 <p> </p>
 </div><p><p>Reads specified file supposedly in ETF format (Erlang Term Format): tries 
 to parse a list of terms (one per line, terminating with a dot) from it 
@@ -2029,6 +2112,12 @@ extension of the resulting file name.</p>
  Throws an exception on failure.
 </p>
 
+<h3 class="function"><a name="split-1">split/1</a></h3>
+<div class="spec">
+<p><tt>split(Path::<a href="#type-any_path">any_path()</a>) -&gt; [<a href="#type-any_path_element">any_path_element()</a>]</tt><br></p>
+<p> </p>
+</div><p>Splits the specified path in elements, returned as a list.</p>
+
 <h3 class="function"><a name="to_permission_mask-1">to_permission_mask/1</a></h3>
 <div class="spec">
 <p><tt>to_permission_mask(PermissionList::<a href="#type-permission">permission()</a> | [<a href="#type-permission">permission()</a>]) -&gt; <a href="#type-permission_mask">permission_mask()</a></tt><br></p>
@@ -2124,7 +2213,7 @@ the ETF format.</p>
 
 <h3 class="function"><a name="write_etf_file-2">write_etf_file/2</a></h3>
 <div class="spec">
-<p><tt>write_etf_file(Terms::[term()], Filename::<a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>write_etf_file(Terms::[term()], AnyFilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p><p>Writes specified terms into specified file, in the ETF format, with no 
 specific header or footer.</p>
@@ -2148,7 +2237,7 @@ specified header and footer.</p>
 
 <h3 class="function"><a name="write_terms-2">write_terms/2</a></h3>
 <div class="spec">
-<p><tt>write_terms(Terms::[term()], Filename::<a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>write_terms(Terms::[term()], AnyFilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p><p>Writes specified terms into specified file, in the ETF format, with no 
 specific header or footer.</p>
@@ -2160,7 +2249,7 @@ specific header or footer.</p>
 
 <h3 class="function"><a name="write_terms-4">write_terms/4</a></h3>
 <div class="spec">
-<p><tt>write_terms(Terms::[term()], Header::<a href="#type-maybe">maybe</a>(<a href="#type-ustring">ustring()</a>), Footer::<a href="#type-maybe">maybe</a>(<a href="#type-ustring">ustring()</a>), Filename::<a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>write_terms(Terms::[term()], Header::<a href="#type-maybe">maybe</a>(<a href="#type-ustring">ustring()</a>), Footer::<a href="#type-maybe">maybe</a>(<a href="#type-ustring">ustring()</a>), AnyFilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p><p>Writes specified terms into specified file, in the ETF format, with 
 specified header and footer.</p>
@@ -2191,10 +2280,10 @@ normal mode as well).</p>
 
 <h3 class="function"><a name="write_whole-2">write_whole/2</a></h3>
 <div class="spec">
-<p><tt>write_whole(Filename::<a href="#type-any_file_name">any_file_name()</a>, Content::<a href="#type-ustring">ustring()</a> | binary()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>write_whole(AnyFilePath::<a href="#type-any_file_path">any_file_path()</a>, Content::<a href="#type-ustring">ustring()</a> | binary()) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p><p>Writes the specified content in specified file, whose filename is 
-specified as any kind of string, using a default encoding if a plain string is 
+</div><p><p>Writes the specified content in specified file, whose path is specified 
+as any kind of string, using a default encoding if a plain string is 
 specified.</p>
 
  <p>Note that specifying a binary allows to avoid any potential unwanted encoding.</p>
@@ -2204,11 +2293,11 @@ specified.</p>
 
 <h3 class="function"><a name="write_whole-3">write_whole/3</a></h3>
 <div class="spec">
-<p><tt>write_whole(Filename::<a href="#type-any_file_name">any_file_name()</a>, StringContent::<a href="#type-ustring">ustring()</a> | binary(), Modes::[<a href="http://www.erlang.org/edoc/doc/kernel/doc/file.html#type-mode">file:mode()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>write_whole(AnyFilePath::<a href="#type-any_file_path">any_file_path()</a>, StringContent::<a href="#type-ustring">ustring()</a> | binary(), Modes::[<a href="http://www.erlang.org/edoc/doc/kernel/doc/file.html#type-mode">file:mode()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p><p>Writes the specified content in specified file, whose filename is 
-specified as any kind of string, using the specified modes options, and 
-applying before a default encoding if a plain string is specified.</p>
+</div><p><p>Writes the specified content in specified file, whose path is specified 
+as any kind of string, using the specified modes options, and applying before 
+a default encoding if a plain string is specified.</p>
 
  <p>Note that no transparent encoding-to-file is thus expected to be specified 
 through modes, as this function already performs (through 

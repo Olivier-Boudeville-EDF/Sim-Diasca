@@ -10,25 +10,27 @@
 <hr>
 
 <h1>Module trace_bridge</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>The trace bridge allows a software to depend only on the Ceylan-Myriad
- layer, yet to be able (optionally) to be using another piece of software
- (possibly the Ceylan-Traces layer, refer to <a href="http://traces.esperide.org/" target="_top"><tt>http://traces.esperide.org/</tt></a>) at
- runtime for <b>its logging</b>, so that in all cases exactly one (and the most 
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>The <b>trace bridge</b> allows modules to depend only on the
+ Ceylan-Myriad layer, yet to rely optionally on a non-Myriad code (possibly the
+ Ceylan-Traces layer, refer to <a href="http://traces.esperide.org/" target="_top"><tt>http://traces.esperide.org/</tt></a>) at runtime for
+ <b>its logging</b>, so that in all cases exactly one (and the most 
 appropriate) logging system is used, even when lower-level libraries are 
-involved, and with no change of source code to be operated on that software.
+involved (designed to operate with or without an advanced trace system), and 
+with no change of source code to be operated on these user modules.
 
 
-<h2><a name="description">Description</a></h2><p>The trace bridge allows a software to depend only on the Ceylan-Myriad
- layer, yet to be able (optionally) to be using another piece of software
- (possibly the Ceylan-Traces layer, refer to <a href="http://traces.esperide.org/" target="_top"><tt>http://traces.esperide.org/</tt></a>) at
- runtime for <b>its logging</b>, so that in all cases exactly one (and the most 
+<h2><a name="description">Description</a></h2><p>The <b>trace bridge</b> allows modules to depend only on the
+ Ceylan-Myriad layer, yet to rely optionally on a non-Myriad code (possibly the
+ Ceylan-Traces layer, refer to <a href="http://traces.esperide.org/" target="_top"><tt>http://traces.esperide.org/</tt></a>) at runtime for
+ <b>its logging</b>, so that in all cases exactly one (and the most 
 appropriate) logging system is used, even when lower-level libraries are 
-involved, and with no change of source code to be operated on that software.</p>
+involved (designed to operate with or without an advanced trace system), and 
+with no change of source code to be operated on these user modules.</p>
 
  <p>It is useful to provide native, integrated, higher-level logging to basic
- libraries (ex: LEEC, see <a href="https://github.com/Olivier-Boudeville/Ceylan-LEEC" target="_top"><tt>https://github.com/Olivier-Boudeville/Ceylan-LEEC</tt></a>), 
-should their user require it - while being able to remain lean and mean if 
-wanted (e.g while keeping the dependency to Ceylan-Traces optional).</p>
+ libraries (ex: Ceylan-LEEC, see <a href="http://leec.esperide.org" target="_top"><tt>http://leec.esperide.org</tt></a>), should their user 
+require it - while being able to remain lean and mean if wanted (e.g while 
+keeping the dependency to Ceylan-Traces optional).</p>
 
  <p>Switching to a more advanced trace system (typically Ceylan-Traces) is just a 
 matter of having the process of interest call the register/3 function below.</p>
@@ -38,8 +40,16 @@ matter of having the process of interest call the register/3 function below.</p>
   <p>- Ceylan-Myriad: trace_bridge_test.erl (directly tracing through basic  
 trace_utils)</p>
 
-  - Ceylan-Traces: trace_bridging_test.erl (using then our advanced trace
-  system)
+  <p>- Ceylan-Traces: trace_bridging_test.erl (using then our advanced trace  
+system) ; for example:</p>
+
+   <p>BridgeSpec = trace_bridge:get_bridge_spec( _MyEmitterName="MyBridgeTester",     
+_MyCateg="MyTraceCategory",     
+_BridgePid=class_TraceAggregator:get_aggregator() ),</p>
+
+   <p>trace_bridge:register( BridgeSpec ), [...]</p>
+
+  - Ceylan-LEEC: most modules, including leec.erl
 
 <h2><a name="types">Data Types</a></h2>
 
@@ -58,7 +68,7 @@ trace_utils)</p>
 <h3 class="typedecl"><a name="type-bridge_spec">bridge_spec()</a></h3>
 <p><b>abstract datatype</b>: <tt>bridge_spec()</tt></p>
 <p> Typically the information transmitted by a trace emitter when creating a
- lower-level process that may or may not use fancy tracing.</p>
+ lower-level process that may or may not use advanced logging.</p>
 
 <h3 class="typedecl"><a name="type-format_string">format_string()</a></h3>
 <p><tt>format_string() = <a href="text_utils.html#type-format_string">text_utils:format_string()</a></tt></p>

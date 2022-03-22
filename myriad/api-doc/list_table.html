@@ -114,8 +114,8 @@ associated values (in-order) and removes these entries from the returned
 table.</td></tr>
 <tr><td valign="top"><a href="#extract_entry-2">extract_entry/2</a></td><td>Extracts specified entry from specified table, that is returns the 
 associated value and removes that entry from the table.</td></tr>
-<tr><td valign="top"><a href="#extract_entry_if_existing-2">extract_entry_if_existing/2</a></td><td>Extracts specified entry (if any) from specified table, that is returns 
-its associated value and removes that entry from the returned table.</td></tr>
+<tr><td valign="top"><a href="#extract_entry_if_existing-2">extract_entry_if_existing/2</a></td><td>Extracts the specified entry (if any) from the specified table, that is 
+returns its associated value and removes that entry from the returned table.</td></tr>
 <tr><td valign="top"><a href="#extract_entry_with_defaults-3">extract_entry_with_defaults/3</a></td><td>Extracts specified entry from specified table, that is returns the 
 associated value and removes that entry from the table.</td></tr>
 <tr><td valign="top"><a href="#fold_on_entries-3">fold_on_entries/3</a></td><td>Folds specified anonymous function on all entries of the specified table.</td></tr>
@@ -156,14 +156,14 @@ reference key / aliases entries, but for a set thereof.</td></tr>
  table.</td></tr>
 <tr><td valign="top"><a href="#remove_entries-2">remove_entries/2</a></td><td>Removes the key/value pairs designated by the specified keys, from the 
 specified table.</td></tr>
-<tr><td valign="top"><a href="#remove_entry-2">remove_entry/2</a></td><td>Removes the key/value pair designated by the specified key, from the 
-specified table.</td></tr>
+<tr><td valign="top"><a href="#remove_entry-2">remove_entry/2</a></td><td>Removes the entry designated by the specified key, from the specified 
+table.</td></tr>
 <tr><td valign="top"><a href="#select_entries-2">select_entries/2</a></td><td>Returns a list of key/value pairs corresponding to the list of specified
  keys, or throws a badmatch is at least one key is not found.</td></tr>
 <tr><td valign="top"><a href="#size-1">size/1</a></td><td>Returns the size (number of entries, that is of key/value pairs) of the
  specified table.</td></tr>
-<tr><td valign="top"><a href="#subtract_from_entry-3">subtract_from_entry/3</a></td><td>Subtracts specified number from the value, supposed to be numerical, 
-associated to specified key.</td></tr>
+<tr><td valign="top"><a href="#subtract_from_entry-3">subtract_from_entry/3</a></td><td>Subtracts the specified number from the value, supposed to be numerical, 
+associated to the specified key.</td></tr>
 <tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td>Returns a textual description of the specified table.</td></tr>
 <tr><td valign="top"><a href="#to_string-2">to_string/2</a></td><td>Returns a textual description of the specified table.</td></tr>
 <tr><td valign="top"><a href="#toggle_entry-2">toggle_entry/2</a></td><td>Toggles the boolean value associated with specified key: if true will be 
@@ -335,8 +335,8 @@ associated value and removes that entry from the table.</p>
 <div class="spec">
 <p><tt>extract_entry_if_existing(Key::<a href="#type-key">key()</a>, Table::<a href="#type-list_table">list_table()</a>) -&gt; false | {<a href="#type-value">value()</a>, <a href="#type-list_table">list_table()</a>}</tt><br></p>
 <p> </p>
-</div><p><p>Extracts specified entry (if any) from specified table, that is returns 
-its associated value and removes that entry from the returned table.</p>
+</div><p><p>Extracts the specified entry (if any) from the specified table, that is 
+returns its associated value and removes that entry from the returned table.</p>
 
  Otherwise, that is if that entry does not exist, returns false.
 </p>
@@ -375,7 +375,7 @@ otherwise throwing an exception.</p>
 thrown.</p>
 
  Ex: [Color=red, Age=23, Mass=51] = list_table:get_all_values(
-    [color, age, mass], [{color, red}, {mass, 51}, {age, 23}])
+               [color, age, mass], [{color, red}, {mass, 51}, {age, 23}])
 </p>
 
 <h3 class="function"><a name="get_value-2">get_value/2</a></h3>
@@ -513,7 +513,7 @@ the 'l' and '-len' keys).</p>
 reference key / aliases entries, but for a set thereof.</p>
 
  Ex: MergedTable = merge_in_keys([{'-length', [ 'l', '-len' ]},
-       {'-help', [ 'h' ]} ], MyTable).
+                                  {'-help', [ 'h' ]} ], MyTable).
 </p>
 
 <h3 class="function"><a name="new-0">new/0</a></h3>
@@ -564,8 +564,8 @@ specified table.</p>
 <div class="spec">
 <p><tt>remove_entry(Key::<a href="#type-key">key()</a>, Table::<a href="#type-list_table">list_table()</a>) -&gt; <a href="#type-list_table">list_table()</a></tt><br></p>
 <p> </p>
-</div><p><p>Removes the key/value pair designated by the specified key, from the 
-specified table.</p>
+</div><p><p>Removes the entry designated by the specified key, from the specified 
+table.</p>
 
  <p>Does nothing if the key is not found.</p>
 
@@ -592,8 +592,8 @@ specified table.</p>
 <div class="spec">
 <p><tt>subtract_from_entry(Key::<a href="#type-key">key()</a>, Number::number(), Table::<a href="#type-list_table">list_table()</a>) -&gt; <a href="#type-list_table">list_table()</a></tt><br></p>
 <p> </p>
-</div><p><p>Subtracts specified number from the value, supposed to be numerical, 
-associated to specified key.</p>
+</div><p><p>Subtracts the specified number from the value, supposed to be numerical, 
+associated to the specified key.</p>
 
  An exception is thrown if the key does not exist, a bad arithm is triggered if
  no subtraction can be performed on the associated value.

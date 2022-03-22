@@ -27,6 +27,10 @@
 <p><tt>any_hertz() = <a href="unit_utils.html#type-any_hertz">unit_utils:any_hertz()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-birth_date">birth_date()</a></h3>
+<p><tt>birth_date() = <a href="#type-date">date()</a></tt></p>
+<p> A canonical date of birth.</p>
+
 <h3 class="typedecl"><a name="type-canonical_day">canonical_day()</a></h3>
 <p><tt>canonical_day() = <a href="unit_utils.html#type-canonical_day">unit_utils:canonical_day()</a></tt></p>
 
@@ -53,12 +57,16 @@
 
 <h3 class="typedecl"><a name="type-date">date()</a></h3>
 <p><tt>date() = {<a href="#type-year">year()</a>, <a href="#type-canonical_month">canonical_month()</a>, <a href="#type-canonical_day">canonical_day()</a>}</tt></p>
-<p> Canonical calendar date; used instead of the less precise calendar:date/0
+<p> A canonical calendar date; used instead of the less precise calendar:date/0
  type. See also: user_date/0.</p>
 
 <h3 class="typedecl"><a name="type-date_in_year">date_in_year()</a></h3>
 <p><tt>date_in_year() = {<a href="#type-canonical_month">canonical_month()</a>, <a href="#type-canonical_day">canonical_day()</a>}</tt></p>
-<p> Calendar date within a year.</p>
+<p> A calendar date within an (implicit) year.</p>
+
+<h3 class="typedecl"><a name="type-day_duration">day_duration()</a></h3>
+<p><tt>day_duration() = <a href="#type-days">days()</a></tt></p>
+<p> A duration expressed as a number of full days (ex: one way to express an age).</p>
 
 <h3 class="typedecl"><a name="type-day_index">day_index()</a></h3>
 <p><tt>day_index() = 1..7</tt></p>
@@ -145,7 +153,7 @@
 
 <h3 class="typedecl"><a name="type-time">time()</a></h3>
 <p><tt>time() = {<a href="#type-canonical_hour">canonical_hour()</a>, <a href="#type-canonical_minute">canonical_minute()</a>, <a href="#type-canonical_second">canonical_second()</a>}</tt></p>
-<p> Time in the day; used to be {hour(), minute(), second()} or calendar:time().</p>
+<p> A time in the day; used to be {hour(), minute(), second()} or calendar:time().</p>
 
 <h3 class="typedecl"><a name="type-time_out">time_out()</a></h3>
 <p><tt>time_out() = infinity | <a href="#type-milliseconds">milliseconds()</a></tt></p>
@@ -157,8 +165,7 @@
 
 <h3 class="typedecl"><a name="type-user_date">user_date()</a></h3>
 <p><tt>user_date() = {<a href="#type-canonical_day">canonical_day()</a>, <a href="#type-canonical_month">canonical_month()</a>, <a href="#type-year">year()</a>}</tt></p>
-<p> Date in a format that is considered common to most users.
- See also: date/0.</p>
+<p> A date in a format that is considered common to most users. See also: date/0.</p>
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
 <p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>

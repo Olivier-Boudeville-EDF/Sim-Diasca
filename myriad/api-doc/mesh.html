@@ -59,7 +59,7 @@ in a data container such as a list or a binary buffer.</p>
  such as glTF).</p>
 
 <h3 class="typedecl"><a name="type-mesh">mesh()</a></h3>
-<p><tt>mesh() = #mesh{vertices = [<a href="point3.html#type-any_vertex3">point3:any_vertex3()</a>], faces = [<a href="mesh.html#type-indexed_face">mesh:indexed_face()</a>], normal_type = <a href="mesh.html#type-normal_type">mesh:normal_type()</a>, normals = [<a href="vector3.html#type-unit_normal3">vector3:unit_normal3()</a>], rendering_info = <a href="mesh.html#type-rendering_info">mesh:rendering_info()</a>, bounding_box = <a href="#type-maybe">maybe</a>(<a href="bounding_box3.html#type-bounding_box3">bounding_box3:bounding_box3()</a>)}</tt></p>
+<p><tt>mesh() = #mesh{vertices = [<a href="point3.html#type-any_vertex3">point3:any_vertex3()</a>], faces = [<a href="mesh.html#type-indexed_face">mesh:indexed_face()</a>], normal_type = <a href="mesh.html#type-normal_type">mesh:normal_type()</a>, normals = [<a href="vector3.html#type-unit_normal3">vector3:unit_normal3()</a>], rendering_info = <a href="mesh.html#type-rendering_info">mesh:rendering_info()</a>, bounding_volume = <a href="#type-maybe">maybe</a>(<a href="bounding_volume.html#type-bounding_volume">bounding_volume:bounding_volume()</a>)}</tt></p>
 <p> Describes a mesh, convex or not.</p>
 
 <h3 class="typedecl"><a name="type-normal_count">normal_count()</a></h3>
@@ -106,7 +106,7 @@ in a data container such as a list or a binary buffer.</p>
 
 <h2><a name="index">Function Index</a></h2>
 <table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#create_mesh-5">create_mesh/5</a></td><td>Returns a new mesh whose vertices, faces, normals (of specified type),
- rendering information are the specified ones, with no specific bounding-box
+ rendering information are the specified ones, with no specific bounding volume
  set.</td></tr>
 <tr><td valign="top"><a href="#indexed_face_to_triangle-1">indexed_face_to_triangle/1</a></td><td>Returns the indexed triangle corresponding to the specified indexed face
  (thus expected to comprise 3 vertices).</td></tr>
@@ -123,7 +123,7 @@ in a data container such as a list or a binary buffer.</p>
 <p><tt>create_mesh(Vertices::[<a href="#type-vertex3">vertex3()</a>], Faces::[<a href="#type-indexed_face">indexed_face()</a>], NormalType::<a href="#type-normal_type">normal_type()</a>, Normals::[<a href="#type-unit_normal3">unit_normal3()</a>], RenderingInfo::<a href="#type-rendering_info">rendering_info()</a>) -&gt; <a href="#type-mesh">mesh()</a></tt><br></p>
 <p> </p>
 </div><p>Returns a new mesh whose vertices, faces, normals (of specified type),
- rendering information are the specified ones, with no specific bounding-box
+ rendering information are the specified ones, with no specific bounding volume
  set.
 </p>
 

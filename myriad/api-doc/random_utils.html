@@ -10,23 +10,89 @@
 <hr>
 
 <h1>Module random_utils</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various <b>random-related</b> facilities.
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various <b>random-related</b> facilities, based on uniform 
+probabilities or user-defined, arbitrary ones.
 
 
-<h2><a name="description">Description</a></h2><p>Gathering of various <b>random-related</b> facilities.</p>
+<h2><a name="description">Description</a></h2><p>Gathering of various <b>random-related</b> facilities, based on uniform 
+probabilities or user-defined, arbitrary ones.</p>
 
  See random_utils_test.erl for the corresponding test.
 
 <h2><a name="types">Data Types</a></h2>
 
+<h3 class="typedecl"><a name="type-alias_state">alias_state()</a></h3>
+<p><b>abstract datatype</b>: <tt>alias_state()</tt></p>
+<p> The state of a random generator in charge of producing samples according to
+ the specified discrete probability distribution, based on the alias method.</p>
+
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
 <p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-discrete_probability_distribution">discrete_probability_distribution()</a></h3>
+<p><tt>discrete_probability_distribution() = <a href="#type-discrete_probability_distribution">discrete_probability_distribution</a>(any())</tt></p>
+<p> The specification of a discrete probability distribution of unknown sample
+ type.</p>
+
+<h3 class="typedecl"><a name="type-discrete_probability_distribution">discrete_probability_distribution()</a></h3>
+<p><tt>discrete_probability_distribution(T) = [<a href="#type-sample_entry">sample_entry</a>(T)]</tt></p>
+<p><p> The specification of a discrete probability distribution (a.k.a. frequency 
+distribution) whose samples are of the specified type.</p>
+
+ <p>Ex: discrete_probability_distribution(integer()) or 
+discrete_probability_distribution(vector3:vector3()).</p>
+
+ <p>Samples of null probability are usually omitted, as such a probability is 
+implicit and results in the corresponding sample never to be drawn.</p>
+
+ <p>At least an entry with a non-null probability must be defined.</p>
+
+ <p>Preferably a given sample value is specified only once, i.e. is declared in a 
+single entry (otherwise the distribution will behave as if the probabilities 
+for that sample were summed - yet the distribution will be less compact).</p>
+
+ Such a distribution can be obtained either directly or by sampling a fun( T -&gt;
+ probability_like() function over a subset of its domain.</p>
+
+<h3 class="typedecl"><a name="type-pdf">pdf()</a></h3>
+<p><tt>pdf() = <a href="#type-pdf">pdf</a>(any())</tt></p>
+<p> A Probability Density Function for samples of unspecified type.</p>
+
+<h3 class="typedecl"><a name="type-pdf">pdf()</a></h3>
+<p><tt>pdf(S) = fun((S) -&gt; <a href="#type-probability_like">probability_like()</a>)</tt></p>
+<p><p> A Probability Density Function telling, for a given sample of type S, its 
+corresponding probability-like value.</p>
+
+ See also the math_utils:sample* functions and get_samples_from/2.</p>
+
+<h3 class="typedecl"><a name="type-probability_like">probability_like()</a></h3>
+<p><tt>probability_like() = <a href="math_utils.html#type-probability_like">math_utils:probability_like()</a></tt></p>
+<p> Any number that can be interpreted ultimately as a probability.</p>
+
 <h3 class="typedecl"><a name="type-random_state">random_state()</a></h3>
-<p><tt>random_state() = <a href="#type-seed">seed()</a> | <a href="http://www.erlang.org/edoc/doc/stdlib/doc/rand.html#type-state">rand:state()</a> | any()</tt></p>
-<p> For simpler generators, the state is just a seed, for all the others the state
- is much more complex.</p>
+<p><tt>random_state() = <a href="#type-seed">seed()</a> | <a href="http://www.erlang.org/edoc/doc/stdlib/doc/rand.html#type-state">rand:state()</a> | <a href="#type-alias_state">alias_state()</a> | any()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-sample">sample()</a></h3>
+<p><tt>sample() = <a href="#type-sample">sample</a>(any())</tt></p>
+<p> Designates a sample value of unknown type.</p>
+
+<h3 class="typedecl"><a name="type-sample">sample()</a></h3>
+<p><tt>sample(T) = T</tt></p>
+<p> The type of a sample that can be drawn from probability distribution; a
+ probability may be indeed associated to any kind of samples (integer ones,
+ strings, vectors, etc.).</p>
+
+<h3 class="typedecl"><a name="type-sample_entry">sample_entry()</a></h3>
+<p><tt>sample_entry() = <a href="#type-sample_entry">sample_entry</a>(any())</tt></p>
+<p> An entry corresponding to a sample of unspecified type in a probability
+ distribution.</p>
+
+<h3 class="typedecl"><a name="type-sample_entry">sample_entry()</a></h3>
+<p><tt>sample_entry(T) = {<a href="#type-sample">sample</a>(T), <a href="#type-probability_like">probability_like()</a>}</tt></p>
+<p> An entry corresponding to a sample of specified type in a probability
+ distribution.</p>
 
 <h3 class="typedecl"><a name="type-seed">seed()</a></h3>
 <p><tt>seed() = {<a href="#type-seed_element">seed_element()</a>, <a href="#type-seed_element">seed_element()</a>, <a href="#type-seed_element">seed_element()</a>}</tt></p>
@@ -40,6 +106,8 @@
 <h2><a name="index">Function Index</a></h2>
 <table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#can_be_seeded-0">can_be_seeded/0</a></td><td>Tells whether this random source can be seeded.</td></tr>
 <tr><td valign="top"><a href="#check_random_seed-1">check_random_seed/1</a></td><td>Checks that the specified seed is valid.</td></tr>
+<tr><td valign="top"><a href="#generate_random_state_from-1">generate_random_state_from/1</a></td><td>Returns the state of a random generator in charge of producing samples 
+according to the specified discrete probability distribution.</td></tr>
 <tr><td valign="top"><a href="#get_random_module_name-0">get_random_module_name/0</a></td><td>Returns the name of the module managing the random generation.</td></tr>
 <tr><td valign="top"><a href="#get_random_seed-0">get_random_seed/0</a></td><td>Returns a seed obtained from the random source in use.</td></tr>
 <tr><td valign="top"><a href="#get_random_state-0">get_random_state/0</a></td><td>Returns the random state of this process (it is useful for example for 
@@ -50,11 +118,18 @@ input list (so that there is no duplicate in the returned list).</td></tr>
 updating the random state in the process dictionary.</td></tr>
 <tr><td valign="top"><a href="#get_random_value-1">get_random_value/1</a></td><td>Returns an integer random value generated from an uniform distribution.</td></tr>
 <tr><td valign="top"><a href="#get_random_value-2">get_random_value/2</a></td><td>Returns an integer random value generated from an uniform distribution in 
-[Nmin;Nmax] (thus with both bounds included), updating the random state in the 
+[Nmin,Nmax] (thus with both bounds included), updating the random state in the 
 process dictionary.</td></tr>
 <tr><td valign="top"><a href="#get_random_values-2">get_random_values/2</a></td><td>Generates a list of Count elements uniformly drawn in [1,N].</td></tr>
-<tr><td valign="top"><a href="#get_random_values-3">get_random_values/3</a></td><td>Generates a list of Count elements uniformly drawn in [Nmin;Nmax].</td></tr>
-<tr><td valign="top"><a href="#get_uniform_floating_point_value-1">get_uniform_floating_point_value/1</a></td><td>Returns a floating-point random value in [0.0;N[ generated from an 
+<tr><td valign="top"><a href="#get_random_values-3">get_random_values/3</a></td><td>Generates a list of Count elements uniformly drawn in [Nmin,Nmax].</td></tr>
+<tr><td valign="top"><a href="#get_sample_from-1">get_sample_from/1</a></td><td>Returns a new sample drawn from the discrete probability distribution 
+specified through its (constant) state (which is thus not returned), this 
+state having been obtained initially (and once for all) from 
+generate_random_state_from/1.</td></tr>
+<tr><td valign="top"><a href="#get_samples_from-2">get_samples_from/2</a></td><td>Returns the specified number of samples drawn from the discrete 
+probability distribution specified through its (constant) state (which is thus 
+not returned), as obtained from generate_random_state_from/1.</td></tr>
+<tr><td valign="top"><a href="#get_uniform_floating_point_value-1">get_uniform_floating_point_value/1</a></td><td>Returns a floating-point random value in [0.0,N[ generated from an 
 uniform distribution.</td></tr>
 <tr><td valign="top"><a href="#get_uniform_floating_point_value-2">get_uniform_floating_point_value/2</a></td><td>Returns a floating-point random value in [Nmin, Nmax[ generated from an 
 uniform distribution.</td></tr>
@@ -85,6 +160,30 @@ process serialisations).</td></tr>
 
  Ex: at least with some algorithms, {0, 0, 0} does not yield a correct random
  series.
+</p>
+
+<h3 class="function"><a name="generate_random_state_from-1">generate_random_state_from/1</a></h3>
+<div class="spec">
+<p><tt>generate_random_state_from(DiscreteProbDist::<a href="#type-discrete_probability_distribution">discrete_probability_distribution()</a>) -&gt; <a href="#type-alias_state">alias_state()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the state of a random generator in charge of producing samples 
+according to the specified discrete probability distribution.</p>
+
+ <p>Ex: MyDistributionState = random_utils:generate_random_state_from(                              
+[{a,10}, {b,20}, {c,40}, {d,30}]).</p>
+
+ <p>or MyDistributionState = random_utils:generate_random_state_from(                              
+[{"hello",0.6}, {"goodbye",0.4}]).</p>
+
+ From this (const) state, computed once for all and whose construction does not
+ depend on any other random state (it is deterministic), any number of samples
+ respecting said distribution can be drawn, like in:
+  <pre>  S1 = random_utils:generate_random_state_from(MyDistributionState),
+  Samples = [ random_utils:get_sample_from(MyDistributionState)
+                        || _ &lt;- lists:seq(1, Count) ]</pre>
+
+ This preprocessing uses O(N) time, where N is the number of declared samples
+ of the corresponding distribution, in order to generate its returned state.
 </p>
 
 <h3 class="function"><a name="get_random_module_name-0">get_random_module_name/0</a></h3>
@@ -155,7 +254,7 @@ dictionary.</p>
 <p><tt>get_random_value(Nmin::integer(), Nmax::integer()) -&gt; integer()</tt><br></p>
 <p> </p>
 </div><p><p>Returns an integer random value generated from an uniform distribution in 
-[Nmin;Nmax] (thus with both bounds included), updating the random state in the 
+[Nmin,Nmax] (thus with both bounds included), updating the random state in the 
 process dictionary.</p>
 
  Spec already specified, for all random settings.
@@ -171,13 +270,46 @@ process dictionary.</p>
 <div class="spec">
 <p><tt>get_random_values(Nmin::integer(), Nmax::integer(), Count::<a href="#type-count">count()</a>) -&gt; [integer()]</tt><br></p>
 <p> </p>
-</div><p>Generates a list of Count elements uniformly drawn in [Nmin;Nmax].</p>
+</div><p>Generates a list of Count elements uniformly drawn in [Nmin,Nmax].</p>
+
+<h3 class="function"><a name="get_sample_from-1">get_sample_from/1</a></h3>
+<div class="spec">
+<p><tt>get_sample_from(Alias_state::<a href="#type-alias_state">alias_state()</a>) -&gt; <a href="#type-sample">sample()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns a new sample drawn from the discrete probability distribution 
+specified through its (constant) state (which is thus not returned), this 
+state having been obtained initially (and once for all) from 
+generate_random_state_from/1.</p>
+
+ <p>Each sample is generated in constant time O(1) time with regard to the number 
+of samples declared in the corresponding distribution.</p>
+
+ Such a generation depends (and modifies) the state of the underlying uniform
+ random generator (ex: see start_random_source/0); precisely each non-uniform
+ sampling results in two uniform samples to be drawn.
+</p>
+
+<h3 class="function"><a name="get_samples_from-2">get_samples_from/2</a></h3>
+<div class="spec">
+<p><tt>get_samples_from(Count::<a href="#type-count">count()</a>, AliasState::<a href="#type-alias_state">alias_state()</a>) -&gt; [<a href="#type-sample">sample()</a>]</tt><br></p>
+<p> </p>
+</div><p><p>Returns the specified number of samples drawn from the discrete 
+probability distribution specified through its (constant) state (which is thus 
+not returned), as obtained from generate_random_state_from/1.</p>
+
+ <p>Each sample is generated in constant time (O(1) time with regard to the number 
+of samples declared in the corresponding distribution.</p>
+
+ Such a generation depends (and modifies) the state of the underlying uniform
+ random generator (ex: see start_random_source/0); precisely each non-uniform
+ sampling results in two uniform samples to be drawn.
+</p>
 
 <h3 class="function"><a name="get_uniform_floating_point_value-1">get_uniform_floating_point_value/1</a></h3>
 <div class="spec">
 <p><tt>get_uniform_floating_point_value(N::number()) -&gt; float()</tt><br></p>
 <p> </p>
-</div><p><p>Returns a floating-point random value in [0.0;N[ generated from an 
+</div><p><p>Returns a floating-point random value in [0.0,N[ generated from an 
 uniform distribution.</p>
 
  <p>Given a number (integer or float) N (positive or not), returns a random 

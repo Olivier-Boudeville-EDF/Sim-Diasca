@@ -10,10 +10,10 @@
 <hr>
 
 <h1>Module csv_utils</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Management of <b>CSV</b> (Comma-Separated Values) data.
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Management of <b>CSV</b> (<em>Comma-Separated Values</em>) data.
 
 
-<h2><a name="description">Description</a></h2><p>Management of <b>CSV</b> (Comma-Separated Values) data.</p>
+<h2><a name="description">Description</a></h2><p>Management of <b>CSV</b> (<em>Comma-Separated Values</em>) data.</p>
 
  <p>Note that such a data format is not at the state of the art: it is very basic 
 if not rudimentary, not formalised and quite limited (no meta-data, escaping 
@@ -25,12 +25,20 @@ being required, etc.).</p>
 
 <h2><a name="types">Data Types</a></h2>
 
+<h3 class="typedecl"><a name="type-any_file_path">any_file_path()</a></h3>
+<p><tt>any_file_path() = <a href="file_utils.html#type-any_file_path">file_utils:any_file_path()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-content">content()</a></h3>
 <p><tt>content() = [<a href="#type-row">row()</a>]</tt></p>
 <p> A CSV content, as an (ordered) list of rows.</p>
 
+<h3 class="typedecl"><a name="type-count">count()</a></h3>
+<p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-field_count">field_count()</a></h3>
-<p><tt>field_count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+<p><tt>field_count() = <a href="#type-count">count()</a></tt></p>
 <p> Number of fields.</p>
 
 <h3 class="typedecl"><a name="type-mixed_content">mixed_content()</a></h3>
@@ -47,13 +55,17 @@ A row of a CSV content, as a tuple of values.</p>
  more compact in memory.</p>
 
 <h3 class="typedecl"><a name="type-row_count">row_count()</a></h3>
-<p><tt>row_count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+<p><tt>row_count() = <a href="#type-count">count()</a></tt></p>
 <p> Number of rows.</p>
 
 <h3 class="typedecl"><a name="type-separator">separator()</a></h3>
 <p><tt>separator() = char()</tt></p>
 <p> The field separator (delimiter) used between the values in a row (often
  comma, sometimes semicolon or alike).</p>
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
 
 <h3 class="typedecl"><a name="type-value">value()</a></h3>
 <p><tt>value() = any()</tt></p>
@@ -63,7 +75,7 @@ A row of a CSV content, as a tuple of values.</p>
 <table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#are_all_empty-1">are_all_empty/1</a></td><td>Returns whether the specified list of values contains only empty ones.</td></tr>
 <tr><td valign="top"><a href="#check_all_empty-1">check_all_empty/1</a></td><td>Checks that specified row or list of values (typically coming from a row
  of unspecified field count) contains only empty values (empty strings).</td></tr>
-<tr><td valign="top"><a href="#content_to_string-1">content_to_string/1</a></td><td>Returns a textual representation of specified content.</td></tr>
+<tr><td valign="top"><a href="#content_to_string-1">content_to_string/1</a></td><td>Returns a textual representation of the specified content.</td></tr>
 <tr><td valign="top"><a href="#get_usual_separators-0">get_usual_separators/0</a></td><td>Returns the most usual separators used in CSV files.</td></tr>
 <tr><td valign="top"><a href="#interpret_file-1">interpret_file/1</a></td><td>Interprets specified file, with no prior knowledge about the separator or 
 the number of fields per row.</td></tr>
@@ -77,10 +89,10 @@ otherwise an exception is raised), using the default separator.</td></tr>
 <tr><td valign="top"><a href="#read_file-2">read_file/2</a></td><td>Reads specified file, expected to be in CSV format and supposed to be 
 homogeneous (all non-dropped rows having the same number of fields - otherwise 
 an exception is raised), using the specified separator.</td></tr>
-<tr><td valign="top"><a href="#write_file-2">write_file/2</a></td><td>Writes specified content (ie a list of homogeneous row tuples) in
- specified CSV file, using the default separator for that.</td></tr>
-<tr><td valign="top"><a href="#write_file-3">write_file/3</a></td><td>Writes specified content (ie a list of homogeneous row tuples) in
- specified CSV file, using specified separator for that.</td></tr>
+<tr><td valign="top"><a href="#write_file-2">write_file/2</a></td><td>Writes the specified content (that is a list of homogeneous row tuples)
+ in the specified CSV file, using the default separator for that.</td></tr>
+<tr><td valign="top"><a href="#write_file-3">write_file/3</a></td><td>Writes the specified content (that is a list of homogeneous row tuples)
+ in the specified CSV file, using the specified separator for that.</td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
@@ -101,9 +113,9 @@ an exception is raised), using the specified separator.</td></tr>
 
 <h3 class="function"><a name="content_to_string-1">content_to_string/1</a></h3>
 <div class="spec">
-<p><tt>content_to_string(Content::<a href="#type-content">content()</a>) -&gt; <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt><br></p>
+<p><tt>content_to_string(Content::<a href="#type-content">content()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
 <p> </p>
-</div><p>Returns a textual representation of specified content.</p>
+</div><p>Returns a textual representation of the specified content.</p>
 
 <h3 class="function"><a name="get_usual_separators-0">get_usual_separators/0</a></h3>
 <div class="spec">
@@ -113,7 +125,7 @@ an exception is raised), using the specified separator.</td></tr>
 
 <h3 class="function"><a name="interpret_file-1">interpret_file/1</a></h3>
 <div class="spec">
-<p><tt>interpret_file(FilePath::<a href="file_utils.html#type-any_file_path">file_utils:any_file_path()</a>) -&gt; {<a href="#type-separator">separator()</a>, <a href="#type-field_count">field_count()</a>, <a href="#type-mixed_content">mixed_content()</a>, <a href="#type-row_count">row_count()</a>, <a href="#type-row_count">row_count()</a>, <a href="#type-row_count">row_count()</a>}</tt><br></p>
+<p><tt>interpret_file(FilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; {<a href="#type-separator">separator()</a>, <a href="#type-field_count">field_count()</a>, <a href="#type-mixed_content">mixed_content()</a>, <a href="#type-row_count">row_count()</a>, <a href="#type-row_count">row_count()</a>, <a href="#type-row_count">row_count()</a>}</tt><br></p>
 <p> </p>
 </div><p><p>Interprets specified file, with no prior knowledge about the separator or 
 the number of fields per row.</p>
@@ -142,7 +154,7 @@ fields), based on specified separator</p>
 
 <h3 class="function"><a name="interpret_file-2">interpret_file/2</a></h3>
 <div class="spec">
-<p><tt>interpret_file(FilePath::<a href="file_utils.html#type-any_file_path">file_utils:any_file_path()</a>, Separator::<a href="#type-separator">separator()</a>) -&gt; {<a href="#type-field_count">field_count()</a>, <a href="#type-mixed_content">mixed_content()</a>, <a href="#type-row_count">row_count()</a>, <a href="#type-row_count">row_count()</a>, <a href="#type-row_count">row_count()</a>}</tt><br></p>
+<p><tt>interpret_file(FilePath::<a href="#type-any_file_path">any_file_path()</a>, Separator::<a href="#type-separator">separator()</a>) -&gt; {<a href="#type-field_count">field_count()</a>, <a href="#type-mixed_content">mixed_content()</a>, <a href="#type-row_count">row_count()</a>, <a href="#type-row_count">row_count()</a>, <a href="#type-row_count">row_count()</a>}</tt><br></p>
 <p> </p>
 </div><p><p>Interprets specified file, based on specified separator, with no prior 
 knowledge about the number of fields per row.</p>
@@ -168,7 +180,7 @@ fields), based on specified separator</p>
 
 <h3 class="function"><a name="interpret_file-3">interpret_file/3</a></h3>
 <div class="spec">
-<p><tt>interpret_file(FilePath::<a href="file_utils.html#type-any_file_path">file_utils:any_file_path()</a>, Separator::<a href="#type-separator">separator()</a>, ExpectedFieldCount::<a href="#type-field_count">field_count()</a>) -&gt; {<a href="#type-mixed_content">mixed_content()</a>, <a href="#type-row_count">row_count()</a>, <a href="#type-row_count">row_count()</a>, <a href="#type-row_count">row_count()</a>}</tt><br></p>
+<p><tt>interpret_file(FilePath::<a href="#type-any_file_path">any_file_path()</a>, Separator::<a href="#type-separator">separator()</a>, ExpectedFieldCount::<a href="#type-field_count">field_count()</a>) -&gt; {<a href="#type-mixed_content">mixed_content()</a>, <a href="#type-row_count">row_count()</a>, <a href="#type-row_count">row_count()</a>, <a href="#type-row_count">row_count()</a>}</tt><br></p>
 <p> </p>
 </div><p><p>Interprets specified file, based on specified separator and number of 
 fields per row.</p>
@@ -192,7 +204,7 @@ fields), based on specified separator</p>
 
 <h3 class="function"><a name="read_file-1">read_file/1</a></h3>
 <div class="spec">
-<p><tt>read_file(Filename::<a href="file_utils.html#type-any_file_path">file_utils:any_file_path()</a>) -&gt; {<a href="#type-content">content()</a>, <a href="#type-row_count">row_count()</a>, <a href="#type-field_count">field_count()</a>}</tt><br></p>
+<p><tt>read_file(Filename::<a href="#type-any_file_path">any_file_path()</a>) -&gt; {<a href="#type-content">content()</a>, <a href="#type-row_count">row_count()</a>, <a href="#type-field_count">field_count()</a>}</tt><br></p>
 <p> </p>
 </div><p><p>Reads specified file, expected to be in CSV format and supposed to be 
 homogeneous (all non-dropping rows having the same number of fields - 
@@ -206,7 +218,7 @@ otherwise an exception is raised), using the default separator.</p>
 
 <h3 class="function"><a name="read_file-2">read_file/2</a></h3>
 <div class="spec">
-<p><tt>read_file(FilePath::<a href="file_utils.html#type-any_file_path">file_utils:any_file_path()</a>, Separator::<a href="#type-separator">separator()</a>) -&gt; {<a href="#type-content">content()</a>, <a href="#type-row_count">row_count()</a>, <a href="#type-field_count">field_count()</a>}</tt><br></p>
+<p><tt>read_file(FilePath::<a href="#type-any_file_path">any_file_path()</a>, Separator::<a href="#type-separator">separator()</a>) -&gt; {<a href="#type-content">content()</a>, <a href="#type-row_count">row_count()</a>, <a href="#type-field_count">field_count()</a>}</tt><br></p>
 <p> </p>
 </div><p><p>Reads specified file, expected to be in CSV format and supposed to be 
 homogeneous (all non-dropped rows having the same number of fields - otherwise 
@@ -220,18 +232,18 @@ an exception is raised), using the specified separator.</p>
 
 <h3 class="function"><a name="write_file-2">write_file/2</a></h3>
 <div class="spec">
-<p><tt>write_file(Content::<a href="#type-content">content()</a>, TargetFilePath::<a href="file_utils.html#type-any_file_path">file_utils:any_file_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>write_file(Content::<a href="#type-content">content()</a>, TargetFilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p>Writes specified content (ie a list of homogeneous row tuples) in
- specified CSV file, using the default separator for that.
+</div><p>Writes the specified content (that is a list of homogeneous row tuples)
+ in the specified CSV file, using the default separator for that.
 </p>
 
 <h3 class="function"><a name="write_file-3">write_file/3</a></h3>
 <div class="spec">
-<p><tt>write_file(Content::<a href="#type-content">content()</a>, TargetFilePath::<a href="file_utils.html#type-any_file_path">file_utils:any_file_path()</a>, Separator::<a href="#type-separator">separator()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>write_file(Content::<a href="#type-content">content()</a>, TargetFilePath::<a href="#type-any_file_path">any_file_path()</a>, Separator::<a href="#type-separator">separator()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p>Writes specified content (ie a list of homogeneous row tuples) in
- specified CSV file, using specified separator for that.
+</div><p>Writes the specified content (that is a list of homogeneous row tuples)
+ in the specified CSV file, using the specified separator for that.
 </p>
 <hr>
 

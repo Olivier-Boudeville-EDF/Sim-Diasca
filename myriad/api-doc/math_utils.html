@@ -15,7 +15,9 @@
 
 <h2><a name="description">Description</a></h2><p>Gathering of various <b>general-purpose basic math</b> facilities.</p>
 
- See <code>math_utils_test.erl</code> for the corresponding test.
+ <p>See <code>math_utils_test.erl</code> for the corresponding test.</p>
+
+ See <code>random_utils</code> for random-related operations.
 
 <h2><a name="types">Data Types</a></h2>
 
@@ -30,10 +32,31 @@
  an absolute or relative comparison, with a default epsilon threshold or a
  user-defined one.</p>
 
+<h3 class="typedecl"><a name="type-degrees">degrees()</a></h3>
+<p><tt>degrees() = <a href="unit_utils.html#type-degrees">unit_utils:degrees()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-dimensionless">dimensionless()</a></h3>
+<p><tt>dimensionless() = <a href="unit_utils.html#type-dimensionless">unit_utils:dimensionless()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-factor">factor()</a></h3>
-<p><tt>factor() = <a href="unit_utils.html#type-dimensionless">unit_utils:dimensionless()</a></tt></p>
+<p><tt>factor() = <a href="#type-dimensionless">dimensionless()</a></tt></p>
 <p> A floating-point factor, typically in [0.0,1.0], that is a multiplier involved
  in an equation.</p>
+
+<h3 class="typedecl"><a name="type-infinite_number">infinite_number()</a></h3>
+<p><tt>infinite_number() = '-infinity' | number() | infinity</tt></p>
+<p> An (unbounded) number that may be considered as equal to a (positive or
+ negative) infinite value.</p>
+
+<h3 class="typedecl"><a name="type-infinite_range">infinite_range()</a></h3>
+<p><tt>infinite_range() = {Min::<a href="#type-infinite_number">infinite_number()</a>, Max::<a href="#type-infinite_number">infinite_number()</a>}</tt></p>
+<p> A possibly infinite range.</p>
+
+<h3 class="typedecl"><a name="type-int_degrees">int_degrees()</a></h3>
+<p><tt>int_degrees() = <a href="unit_utils.html#type-int_degrees">unit_utils:int_degrees()</a></tt></p>
+
 
 <h3 class="typedecl"><a name="type-integer_factor">integer_factor()</a></h3>
 <p><tt>integer_factor() = integer()</tt></p>
@@ -62,12 +85,30 @@
 <p><tt>positive_factor() = <a href="#type-factor">factor()</a></tt></p>
 <p> A factor expected to be strictly positive.</p>
 
+<h3 class="typedecl"><a name="type-positive_index">positive_index()</a></h3>
+<p><tt>positive_index() = <a href="basic_utils.html#type-positive_index">basic_utils:positive_index()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-probability">probability()</a></h3>
 <p><tt>probability() = float()</tt></p>
-<p> For probabilities.</p>
+<p> For probabilities, typically ranging in [0.0,1.0].</p>
+
+<h3 class="typedecl"><a name="type-probability_like">probability_like()</a></h3>
+<p><tt>probability_like() = number()</tt></p>
+<p><p> A non-negative number (an integer or floating-point) that can be translated to 
+a normalized probability by scaling it.</p>
+
+ Ex: if considering two exclusive events whose
+ respective likeliness is quantified as 20 and 30, then these probability-like
+ elements can be translated to actual (normalized) probabilities of
+ 20/(20+30)=0.4 and 0.6.</p>
+
+<h3 class="typedecl"><a name="type-radians">radians()</a></h3>
+<p><tt>radians() = <a href="unit_utils.html#type-radians">unit_utils:radians()</a></tt></p>
+
 
 <h3 class="typedecl"><a name="type-ratio">ratio()</a></h3>
-<p><tt>ratio() = <a href="unit_utils.html#type-dimensionless">unit_utils:dimensionless()</a></tt></p>
+<p><tt>ratio() = <a href="#type-dimensionless">dimensionless()</a></tt></p>
 <p> A ration between two values.</p>
 
 <h3 class="typedecl"><a name="type-standard_deviation">standard_deviation()</a></h3>
@@ -79,8 +120,8 @@
 <p> Variance, the square of a standard deviation.</p>
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#are_close-2">are_close/2</a></td><td>Returns true iff the two specified floating-point numbers are deemed
- close enough to be equal, based on default epsilon threshold.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#are_close-2">are_close/2</a></td><td>Returns true iff the two specified floating-point numbers are deemed 
+close enough to be equal, based on default epsilon threshold.</td></tr>
 <tr><td valign="top"><a href="#are_close-3">are_close/3</a></td><td>Returns true iff the two specified floating-point numbers are deemed
  close enough to be equal, based on specified epsilon threshold.</td></tr>
 <tr><td valign="top"><a href="#are_equal-2">are_equal/2</a></td><td>Returns true iff the two specified floating-point numbers are deemed 
@@ -95,6 +136,8 @@ deemed close enough, relatively, to be equal.</td></tr>
  corresponds to the specified angle is in the [0;360[ interval.</td></tr>
 <tr><td valign="top"><a href="#ceiling-1">ceiling/1</a></td><td>Returns the smallest integer bigger than the specified floating-point 
 value.</td></tr>
+<tr><td valign="top"><a href="#clamp-2">clamp/2</a></td><td>Clamps the specified possibly-infinite number within the specified
+ possibly-infinite range.</td></tr>
 <tr><td valign="top"><a href="#clamp-3">clamp/3</a></td><td>Clamps specified value between specified bounds: the returned value V is 
 in [Min, Max].</td></tr>
 <tr><td valign="top"><a href="#float_to_integer-1">float_to_integer/1</a></td><td>Converts specified float to integer.</td></tr>
@@ -108,10 +151,20 @@ specified integer.</td></tr>
 <tr><td valign="top"><a href="#is_null-1">is_null/1</a></td><td>Returns true iff the specified number (floating-point or even integer) is
  deemed close enough to zero to be null.</td></tr>
 <tr><td valign="top"><a href="#modulo-2">modulo/2</a></td><td>Returns the positive remainder of the division of X by Y, in [0;Y[.</td></tr>
+<tr><td valign="top"><a href="#normalise-2">normalise/2</a></td><td>Normalises, in the specified list of tuples, the elements at the 
+specified index (expected to be floats), so that their sum is equal to 1.0.</td></tr>
 <tr><td valign="top"><a href="#radian_to_degree-1">radian_to_degree/1</a></td><td>Converts specified angle in radian into the same angle expressed in
  degrees.</td></tr>
 <tr><td valign="top"><a href="#round_after-2">round_after/2</a></td><td>Rounds the specified floating-point number at specified offset after the 
 decimal point.</td></tr>
+<tr><td valign="top"><a href="#sample-4">sample/4</a></td><td>Samples the specified function taking a single numerical argument, by
+ evaluating it on every point in turn from Start until up to Stop, with
+ specified increment: returns the ordered list of the corresponding values that
+ it took.</td></tr>
+<tr><td valign="top"><a href="#sample_as_pairs-4">sample_as_pairs/4</a></td><td>Samples the specified function taking a single numerical argument, by
+ evaluating it on every point in turn from Start until up to Stop, with
+ specified increment: returns the ordered list of the corresponding {X,f(X)}
+ pairs that it took.</td></tr>
 <tr><td valign="top"><a href="#squarify-1">squarify/1</a></td><td>Returns the square, augmented of a little margin, of the specified
  element.</td></tr>
 </table>
@@ -122,8 +175,11 @@ decimal point.</td></tr>
 <div class="spec">
 <p><tt>are_close(X::number(), Y::number()) -&gt; boolean()</tt><br></p>
 <p> </p>
-</div><p>Returns true iff the two specified floating-point numbers are deemed
- close enough to be equal, based on default epsilon threshold.
+</div><p><p>Returns true iff the two specified floating-point numbers are deemed 
+close enough to be equal, based on default epsilon threshold.</p>
+
+ Note that such absolute tolerance comparison fails when X and Y become large,
+ so generally are_relatively_close/2 shall be preferred.
 </p>
 
 <h3 class="function"><a name="are_close-3">are_close/3</a></h3>
@@ -178,12 +234,12 @@ relative error), must be smaller than the specified epsilon threshold,
 ie the maximum tolerance.</p>
 
  Ex: to know whether X and Y are equal with a 5% tolerance, use:
- math_utils:are_relatively_close( X, Y, _Tolerance=0.05 ).
+ math_utils:are_relatively_close(X, Y, _Tolerance=0.05).
 </p>
 
 <h3 class="function"><a name="canonify-1">canonify/1</a></h3>
 <div class="spec">
-<p><tt>canonify(AngleInDegrees::number()) -&gt; <a href="unit_utils.html#type-int_degrees">unit_utils:int_degrees()</a></tt><br></p>
+<p><tt>canonify(AngleInDegrees::number()) -&gt; <a href="#type-int_degrees">int_degrees()</a></tt><br></p>
 <p> </p>
 </div><p>Canonifies specified angle in degrees, ie ensures the returned value that
  corresponds to the specified angle is in the [0;360[ interval.
@@ -198,6 +254,14 @@ value.</p>
 
  Note: used to be deprecated in favor of math:ceil/1, yet we prefer the version
  here, which returns an integer rather than a float.
+</p>
+
+<h3 class="function"><a name="clamp-2">clamp/2</a></h3>
+<div class="spec">
+<p><tt>clamp(Number::<a href="#type-infinite_number">infinite_number()</a>, R::<a href="#type-infinite_range">infinite_range()</a>) -&gt; <a href="#type-infinite_number">infinite_number()</a></tt><br></p>
+<p> </p>
+</div><p>Clamps the specified possibly-infinite number within the specified
+ possibly-infinite range.
 </p>
 
 <h3 class="function"><a name="clamp-3">clamp/3</a></h3>
@@ -278,9 +342,20 @@ specified integer.</p>
  since -5 = -2 * 3 + 1.
 </p>
 
+<h3 class="function"><a name="normalise-2">normalise/2</a></h3>
+<div class="spec">
+<p><tt>normalise(DataTuples::[tuple()], Index::<a href="#type-positive_index">positive_index()</a>) -&gt; [tuple()]</tt><br></p>
+<p> </p>
+</div><p><p>Normalises, in the specified list of tuples, the elements at the 
+specified index (expected to be floats), so that their sum is equal to 1.0.</p>
+
+ Ex: normalise([{a,3}, {"hello",5}, {1,2}], _Index=2)
+                 = [{a,0.3}, {"hello",0.5}, {1,0.2}]
+</p>
+
 <h3 class="function"><a name="radian_to_degree-1">radian_to_degree/1</a></h3>
 <div class="spec">
-<p><tt>radian_to_degree(AngleInRadians::<a href="unit_utils.html#type-radians">unit_utils:radians()</a>) -&gt; <a href="unit_utils.html#type-degrees">unit_utils:degrees()</a></tt><br></p>
+<p><tt>radian_to_degree(AngleInRadians::<a href="#type-radians">radians()</a>) -&gt; <a href="#type-degrees">degrees()</a></tt><br></p>
 <p> </p>
 </div><p>Converts specified angle in radian into the same angle expressed in
  degrees.
@@ -294,6 +369,26 @@ specified integer.</p>
 decimal point.</p>
 
  Ex: round_after(12.3456, _DigitCount3) = 12.346.
+</p>
+
+<h3 class="function"><a name="sample-4">sample/4</a></h3>
+<div class="spec">
+<p><tt>sample(Fun::fun((number()) -&gt; T), Start::number(), Stop::number(), Increment::number()) -&gt; [T]</tt><br></p>
+<p> </p>
+</div><p>Samples the specified function taking a single numerical argument, by
+ evaluating it on every point in turn from Start until up to Stop, with
+ specified increment: returns the ordered list of the corresponding values that
+ it took.
+</p>
+
+<h3 class="function"><a name="sample_as_pairs-4">sample_as_pairs/4</a></h3>
+<div class="spec">
+<p><tt>sample_as_pairs(Fun::fun((number()) -&gt; T), Start::number(), Stop::number(), Increment::number()) -&gt; [{number(), T}]</tt><br></p>
+<p> </p>
+</div><p>Samples the specified function taking a single numerical argument, by
+ evaluating it on every point in turn from Start until up to Stop, with
+ specified increment: returns the ordered list of the corresponding {X,f(X)}
+ pairs that it took.
 </p>
 
 <h3 class="function"><a name="squarify-1">squarify/1</a></h3>

@@ -102,6 +102,7 @@ vectors.</td></tr>
 <tr><td valign="top"><a href="#identity-0">identity/0</a></td><td>Returns the identity (2x2) matrix.</td></tr>
 <tr><td valign="top"><a href="#inverse-1">inverse/1</a></td><td>Returns the inverse of the specified matrix, if it is inversible (that is 
 iff its determinant is non-null), otherwise returns undefined.</td></tr>
+<tr><td valign="top"><a href="#mult-1">mult/1</a></td><td>Multiplies (in-order) the specified matrices.</td></tr>
 <tr><td valign="top"><a href="#mult-2">mult/2</a></td><td>Multiplies the first matrix by the second one: returns Mc = Ma.Mb.</td></tr>
 <tr><td valign="top"><a href="#new-1">new/1</a></td><td>Returns a 2D (canonical) matrix corresponding to the user-specified
  matrix.</td></tr>
@@ -250,6 +251,15 @@ iff its determinant is non-null), otherwise returns undefined.</p>
  Note: often the inverse can be obtained differently (ex: by applying reverse
  operations starting from identity) or computed differently (ex: by Gaussian
  elimination), or can be replaced by a mere lower–upper (LU) decomposition.
+</p>
+
+<h3 class="function"><a name="mult-1">mult/1</a></h3>
+<div class="spec">
+<p><tt>mult(T::[<a href="#type-matrix2">matrix2()</a>]) -&gt; <a href="#type-matrix2">matrix2()</a></tt><br></p>
+<p> </p>
+</div><p><p>Multiplies (in-order) the specified matrices.</p>
+
+ Ex: mult([Ma, Mb, Mc]) = mult(mult(Ma,Mb),Mc) = Ma.Mb.Mc
 </p>
 
 <h3 class="function"><a name="mult-2">mult/2</a></h3>

@@ -121,7 +121,7 @@ terms of the newer standard logger).</td></tr>
 <tr><td valign="top"><a href="#info_categorized_timed-3">info_categorized_timed/3</a></td><td>Outputs specified info message, with specified message categorization and
  time information.</td></tr>
 <tr><td valign="top"><a href="#info_fmt-2">info_fmt/2</a></td><td>Outputs specified formatted info message.</td></tr>
-<tr><td valign="top"><a href="#is_error_like-1">is_error_like/1</a></td><td>Tells whether specified severity belongs to the error-like ones
+<tr><td valign="top"><a href="#is_error_like-1">is_error_like/1</a></td><td>Tells whether the specified severity belongs to the error-like ones
  (typically the ones that must never be missed).</td></tr>
 <tr><td valign="top"><a href="#log-2">log/2</a></td><td>Mandatory callback for log handlers.</td></tr>
 <tr><td valign="top"><a href="#notice-1">notice/1</a></td><td>Outputs specified notice message.</td></tr>
@@ -131,6 +131,7 @@ terms of the newer standard logger).</td></tr>
 <tr><td valign="top"><a href="#notice_fmt-2">notice_fmt/2</a></td><td>Outputs specified formatted notice message.</td></tr>
 <tr><td valign="top"><a href="#set_handler-0">set_handler/0</a></td><td>Replaces the current (probably default) logger handler with this Myriad
  one (registered as 'default').</td></tr>
+<tr><td valign="top"><a href="#set_logger_format_max_depth-1">set_logger_format_max_depth/1</a></td><td>Sets the logger maximum depth when formatting messages.</td></tr>
 <tr><td valign="top"><a href="#void-1">void/1</a></td><td>"Outputs" specified void message.</td></tr>
 <tr><td valign="top"><a href="#void_categorized-2">void_categorized/2</a></td><td>"Outputs" specified void message, with specified message categorization.</td></tr>
 <tr><td valign="top"><a href="#void_categorized_timed-3">void_categorized_timed/3</a></td><td>"Outputs" specified void message, with specified message categorization
@@ -379,7 +380,7 @@ terms of the newer standard logger).</p>
 <div class="spec">
 <p><tt>is_error_like(Severity::<a href="#type-trace_severity">trace_severity()</a>) -&gt; boolean()</tt><br></p>
 <p> </p>
-</div><p>Tells whether specified severity belongs to the error-like ones
+</div><p>Tells whether the specified severity belongs to the error-like ones
  (typically the ones that must never be missed).
 </p>
 
@@ -424,6 +425,15 @@ terms of the newer standard logger).</p>
 <p> </p>
 </div><p>Replaces the current (probably default) logger handler with this Myriad
  one (registered as 'default').
+</p>
+
+<h3 class="function"><a name="set_logger_format_max_depth-1">set_logger_format_max_depth/1</a></h3>
+<div class="spec">
+<p><tt>set_logger_format_max_depth(Depth::<a href="text_utils.html#type-depth">text_utils:depth()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Sets the logger maximum depth when formatting messages.</p>
+
+ This allows to limit the error logger output in crashes.
 </p>
 
 <h3 class="function"><a name="void-1">void/1</a></h3>

@@ -19,6 +19,10 @@
 
 <h2><a name="types">Data Types</a></h2>
 
+<h3 class="typedecl"><a name="type-any_millimeters">any_millimeters()</a></h3>
+<p><tt>any_millimeters() = <a href="unit_utils.html#type-any_millimeters">unit_utils:any_millimeters()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-any_string">any_string()</a></h3>
 <p><tt>any_string() = <a href="#type-ustring">ustring()</a> | <a href="#type-bin_string">bin_string()</a></tt></p>
 <p> Any kind of string (a.k.a chardata() :: charlist() | unicode_string()).</p>
@@ -343,6 +347,8 @@ one string into the other one.</td></tr>
 <tr><td valign="top"><a href="#get_longest_common_prefix-1">get_longest_common_prefix/1</a></td><td>Returns the longest prefix that is common to all of the specified 
 strings, and a list of the specified strings with this prefix removed, in the 
 same order.</td></tr>
+<tr><td valign="top"><a href="#get_unique_string-2">get_unique_string/2</a></td><td>Returns a string, based on the specified one and guaranteed to be 
+different from all the other specified ones.</td></tr>
 <tr><td valign="top"><a href="#hexabinstring_to_binary-1">hexabinstring_to_binary/1</a></td><td>Returns the binary corresponding to the specified binary string that 
 contains a series of hexadecimal values.</td></tr>
 <tr><td valign="top"><a href="#hexastring_to_binary-1">hexastring_to_binary/1</a></td><td>Returns the binary corresponding to the specified string that contains 
@@ -355,6 +361,8 @@ prefix.</td></tr>
 specified.</td></tr>
 <tr><td valign="top"><a href="#integer_ids_to_listed_string-1">integer_ids_to_listed_string/1</a></td><td>Returns a string that pretty-prints the specified list of integer 
 identifiers, listed directly in the returned text.</td></tr>
+<tr><td valign="top"><a href="#integer_to_bits-1">integer_to_bits/1</a></td><td>Returns a plain string corresponding to the specified integer once 
+translated to a series of bits, listed per groups of 4.</td></tr>
 <tr><td valign="top"><a href="#integer_to_hexastring-1">integer_to_hexastring/1</a></td><td>Returns a plain string corresponding to the specified integer, in 
 hexadecimal form, with a "0x" prefix.</td></tr>
 <tr><td valign="top"><a href="#integer_to_hexastring-2">integer_to_hexastring/2</a></td><td>Returns a plain string corresponding to the specified integer, in 
@@ -374,7 +382,7 @@ list of integers).</td></tr>
 <tr><td valign="top"><a href="#list_whitespaces-0">list_whitespaces/0</a></td><td>Returns a list of all known whitespaces.</td></tr>
 <tr><td valign="top"><a href="#match_types-3">match_types/3</a></td><td>Compares the types specified through control sequences (typically 
 emanating from a format string) to the types of specified, numbered values 
-(expected to correspond), and detect some mismatches.</td></tr>
+(expected to correspond), and detects some mismatches.</td></tr>
 <tr><td valign="top"><a href="#maybe_string_to_binary-1">maybe_string_to_binary/1</a></td><td>Converts a plain (list-based) maybe-string into a binary.</td></tr>
 <tr><td valign="top"><a href="#number_to_string-1">number_to_string/1</a></td><td>Returns a textual description of the specified (dot-based, not
  comma-based) number.</td></tr>
@@ -411,6 +419,8 @@ they were not escaped.</td></tr>
 <tr><td valign="top"><a href="#proplist_to_string-1">proplist_to_string/1</a></td><td>Returns a string that pretty-prints specified list of key (as binary, 
 string or atom) / value pairs, with bullets, after having been sorted.</td></tr>
 <tr><td valign="top"><a href="#record_to_string-1">record_to_string/1</a></td><td>Returns a string describing the specified record.</td></tr>
+<tr><td valign="top"><a href="#remove_empty_lines-1">remove_empty_lines/1</a></td><td>Returns in-order the specified list of strings once all empty ones have
+ been removed.</td></tr>
 <tr><td valign="top"><a href="#remove_ending_carriage_return-1">remove_ending_carriage_return/1</a></td><td>Removes any ending "\n" character(s) - zero or more thereof - from the
  specified string.</td></tr>
 <tr><td valign="top"><a href="#remove_last_characters-2">remove_last_characters/2</a></td><td>Removes the last Count characters from specified string, and returns the
@@ -442,6 +452,7 @@ leading part, otherwise returns that the suffix was not found.</td></tr>
 CamelCase, into a list of strings, based on the internal words (delimited by 
 uppercases, knowing a series of uppercase letters, except the last one, is 
 considered as an acronym, hence as a single word), in their original order.</td></tr>
+<tr><td valign="top"><a href="#split_every-2">split_every/2</a></td><td>Splits the specified string every Count characters.</td></tr>
 <tr><td valign="top"><a href="#split_parsed-2">split_parsed/2</a></td><td>Splits the specified parse string (typically returned by 
 parse_quoted/{1,3}) into a list of plain strings, based on the list of 
 specified characters to be interpreted as delimiters.</td></tr>
@@ -542,9 +553,9 @@ rely on the specified base.</td></tr>
 which where all the specified keywords (the keys of the translation table) 
 have been replaced with their associated value (the corresponding value in 
 table).</td></tr>
-<tr><td valign="top"><a href="#uppercase_initial_letter-1">uppercase_initial_letter/1</a></td><td>Returns the specified string, ensuring that its first letter is a
- majuscule, uppercasing it if necessary.</td></tr>
-<tr><td valign="top"><a href="#version_to_string-1">version_to_string/1</a></td><td>Returns a string describing the specified three-element version.</td></tr>
+<tr><td valign="top"><a href="#uppercase_initial_letter-1">uppercase_initial_letter/1</a></td><td>Capitalises the specified string, ensuring that its first letter is a
+ capital one, uppercasing it if necessary.</td></tr>
+<tr><td valign="top"><a href="#version_to_string-1">version_to_string/1</a></td><td>Returns a string describing the specified version.</td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
@@ -784,7 +795,7 @@ list into a single (plain) string.</p>
 
 <h3 class="function"><a name="distance_to_short_string-1">distance_to_short_string/1</a></h3>
 <div class="spec">
-<p><tt>distance_to_short_string(Millimeters::<a href="unit_utils.html#type-millimeters">unit_utils:millimeters()</a> | <a href="unit_utils.html#type-int_millimeters">unit_utils:int_millimeters()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><tt>distance_to_short_string(Millimeters::<a href="#type-any_millimeters">any_millimeters()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
 <p> </p>
 </div><p><p>Returns an approximate textual description of the specified distance, 
 expected to be expressed as a floating-point number of millimeters, which will 
@@ -798,7 +809,7 @@ after the comma.</p>
 
 <h3 class="function"><a name="distance_to_string-1">distance_to_string/1</a></h3>
 <div class="spec">
-<p><tt>distance_to_string(Millimeters::<a href="unit_utils.html#type-millimeters">unit_utils:millimeters()</a> | <a href="unit_utils.html#type-int_millimeters">unit_utils:int_millimeters()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><tt>distance_to_string(Millimeters::<a href="#type-any_millimeters">any_millimeters()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
 <p> </p>
 </div><p><p>Returns an exact rounded textual description of the specified distance, 
 expected to be expressed as a floating-point number of millimeters, which will 
@@ -828,7 +839,9 @@ be first rounded to nearest integer.</p>
 </div><p><p>Duplicates specified string as many times as specified; returns a plain 
 (flattened once) string, not an iolist.</p>
 
- Ex: duplicate(3, "abc") = "abcabcabc".
+ <p>Ex: duplicate(3, "abc") = "abcabcabc".</p>
+
+ Use directly lists:duplicate/2 if wanting for example ["abc", "abc", "abc"].
 </p>
 
 <h3 class="function"><a name="ellipse-1">ellipse/1</a></h3>
@@ -1237,6 +1250,18 @@ same order.</p>
  See also: file_utils:get_longest_common_path/1.
 </p>
 
+<h3 class="function"><a name="get_unique_string-2">get_unique_string/2</a></h3>
+<div class="spec">
+<p><tt>get_unique_string(BaseStr::<a href="#type-ustring">ustring()</a>, AllStrs::[<a href="#type-ustring">ustring()</a>]) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns a string, based on the specified one and guaranteed to be 
+different from all the other specified ones.</p>
+
+ Ex: useful to generate non-clashing names, like in:
+  "Hello" = text_utils:get_unique_string( "Hello", [] ),
+  "Hello2" = text_utils:get_unique_string( "Hello", ["Hello","Goodbye"] )
+</p>
+
 <h3 class="function"><a name="hexabinstring_to_binary-1">hexabinstring_to_binary/1</a></h3>
 <div class="spec">
 <p><tt>hexabinstring_to_binary(HexaBinStr::<a href="#type-hexabinstring">hexabinstring()</a>) -&gt; binary()</tt><br></p>
@@ -1289,6 +1314,16 @@ specified.</p>
 identifiers, listed directly in the returned text.</p>
 
  Ex: integer_ids_to_listed_string([1, 13, 8]) returns "#1, #13 and #8".
+</p>
+
+<h3 class="function"><a name="integer_to_bits-1">integer_to_bits/1</a></h3>
+<div class="spec">
+<p><tt>integer_to_bits(I::integer()) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns a plain string corresponding to the specified integer once 
+translated to a series of bits, listed per groups of 4.</p>
+
+ Ex: "0b100-0000-0011" = integer_to_bits(1024+2+1).
 </p>
 
 <h3 class="function"><a name="integer_to_hexastring-1">integer_to_hexastring/1</a></h3>
@@ -1403,11 +1438,11 @@ filename:join/{1,2} functions instead.</p>
 <p> </p>
 </div><p><p>Compares the types specified through control sequences (typically 
 emanating from a format string) to the types of specified, numbered values 
-(expected to correspond), and detect some mismatches.</p>
+(expected to correspond), and detects some mismatches.</p>
 
- <p>Fancy sequences not taken into account: X, x, ts, etc.</p>
+ <p>Fancy sequences not taken into account: X, x, etc.</p>
 
- Note: beware to the output error messages comprising ~XXX not be afterwards
+ Note: beware to the output error messages comprising ~XXX not being afterwards
  interpreted as control sequences; we finally gave up including a ~ character
  in the output sequence, as it has to be escaped a number of times that
  depended on how many io*:format/* it was to go through (fragile at best).
@@ -1615,6 +1650,14 @@ http://erlang.org/pipermail/erlang-questions/2006-September/023181.html</p>
  way of determining the name of their fields at runtime.
 </p>
 
+<h3 class="function"><a name="remove_empty_lines-1">remove_empty_lines/1</a></h3>
+<div class="spec">
+<p><tt>remove_empty_lines(Strs::[<a href="#type-ustring">ustring()</a>]) -&gt; [<a href="#type-ustring">ustring()</a>]</tt><br></p>
+<p> </p>
+</div><p>Returns in-order the specified list of strings once all empty ones have
+ been removed.
+</p>
+
 <h3 class="function"><a name="remove_ending_carriage_return-1">remove_ending_carriage_return/1</a></h3>
 <div class="spec">
 <p><tt>remove_ending_carriage_return(String::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
@@ -1765,9 +1808,20 @@ CamelCase, into a list of strings, based on the internal words (delimited by
 uppercases, knowing a series of uppercase letters, except the last one, is 
 considered as an acronym, hence as a single word), in their original order.</p>
 
- Ex: split_camel_case( "IndustrialWasteSource" ) shall return [ "Industrial",
- "Waste", "Source" ], while split_camel_case( "TheySaidNYCWasGreat" ) shall
- return [ "They", "Said", "NYC", "Was", "Great" ].
+ Ex: split_camel_case("IndustrialWasteSource") shall return ["Industrial",
+ "Waste", "Source"], while split_camel_case("TheySaidNYCWasGreat") shall return
+ ["They", "Said", "NYC", "Was", "Great"].
+</p>
+
+<h3 class="function"><a name="split_every-2">split_every/2</a></h3>
+<div class="spec">
+<p><tt>split_every(Count::<a href="#type-count">count()</a>, Str::<a href="#type-ustring">ustring()</a>) -&gt; [<a href="#type-ustring">ustring()</a>]</tt><br></p>
+<p> </p>
+</div><p><p>Splits the specified string every Count characters.</p>
+
+ <p>The last string may have less than Count characters.</p>
+
+ Ex: [ "AB", "CD", "E" } = split_every( "ABCDE", _Count=2 ).
 </p>
 
 <h3 class="function"><a name="split_parsed-2">split_parsed/2</a></h3>
@@ -2170,9 +2224,9 @@ separating characters provided in SeparatorsList, then turns these resulting
 strings in the Capitalized Case (all lower-case except for the first letter) 
 and finally joins them to get a long CamelCased string.</p>
 
- Ex: tokenizable_to_camel_case( "industrial_WASTE_sOuRCe", "_" ) shall return
- "IndustrialWasteSource", while tokenizable_to_camel_case( "ME HAZ READ J.R.R",
- ". " ) shall return "MeHazReadJRR".
+ Ex: tokenizable_to_camel_case("industrial_WASTE_sOuRCe", "_") shall return
+ "IndustrialWasteSource", while tokenizable_to_camel_case("ME HAZ READ J.R.R",
+ ". ") shall return "MeHazReadJRR".
 </p>
 
 <h3 class="function"><a name="trim_leading_whitespaces-1">trim_leading_whitespaces/1</a></h3>
@@ -2267,15 +2321,15 @@ table).</p>
 <div class="spec">
 <p><tt>uppercase_initial_letter(Letters::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
 <p> </p>
-</div><p>Returns the specified string, ensuring that its first letter is a
- majuscule, uppercasing it if necessary.
+</div><p>Capitalises the specified string, ensuring that its first letter is a
+ capital one, uppercasing it if necessary.
 </p>
 
 <h3 class="function"><a name="version_to_string-1">version_to_string/1</a></h3>
 <div class="spec">
-<p><tt>version_to_string(X1::<a href="basic_utils.html#type-version">basic_utils:version()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><tt>version_to_string(X1::<a href="basic_utils.html#type-any_version">basic_utils:any_version()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
 <p> </p>
-</div><p>Returns a string describing the specified three-element version.</p>
+</div><p>Returns a string describing the specified version.</p>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

@@ -24,7 +24,7 @@
 <h3 class="typedecl"><a name="type-actual_command_line_option">actual_command_line_option()</a></h3>
 <p><tt>actual_command_line_option() = atom()</tt></p>
 <p> The name of a command-line option; ex: '-color', for an actual option that is
- "--color". This is named a "flag", for the init standard module.</p>
+ "--color". For the init standard module, this is named a "flag".</p>
 
 <h3 class="typedecl"><a name="type-actual_value_count">actual_value_count()</a></h3>
 <p><tt>actual_value_count() = <a href="#type-count">count()</a></tt></p>
@@ -55,8 +55,7 @@ in such argument tables.</p>
     '-foo' -&gt; [ [] ]
     '-bar' -&gt; [ [ "a", "b" ], [ "c" ] ]
     '-width -&gt; [ [ "15" ] ]
-     ?no_option_key -&gt; [ "some_value" ]
-</p>
+     ?no_option_key -&gt; [ "some_value" ]</p>
 
 <h3 class="typedecl"><a name="type-command_line_argument">command_line_argument()</a></h3>
 <p><tt>command_line_argument() = {<a href="#type-command_line_option">command_line_option()</a>, [<a href="#type-command_line_values">command_line_values()</a>]}</tt></p>
@@ -127,13 +126,13 @@ a corresponding argument table would contain following entries:
 <tr><td valign="top"><a href="#extract_command_arguments_for_option-1">extract_command_arguments_for_option/1</a></td><td>Extracts, for specified command-line option (if any was specified; 
 otherwise returns 'undefined') its various in-order lists of associated 
 values, from the arguments specified to this executable.</td></tr>
-<tr><td valign="top"><a href="#extract_command_arguments_for_option-2">extract_command_arguments_for_option/2</a></td><td>Extracts, for specified command-line option (if any was specified; 
+<tr><td valign="top"><a href="#extract_command_arguments_for_option-2">extract_command_arguments_for_option/2</a></td><td>Extracts, for the specified command-line option (if any was specified; 
 otherwise returns 'undefined') its various in-order lists of associated 
 values, from the specified argument table.</td></tr>
 <tr><td valign="top"><a href="#extract_optionless_command_arguments-0">extract_optionless_command_arguments/0</a></td><td>Extracts the in-order list of the arguments that were directly (that is 
 not in the context of an option) specified on the command-line for this 
 executable.</td></tr>
-<tr><td valign="top"><a href="#extract_optionless_command_arguments-1">extract_optionless_command_arguments/1</a></td><td>Extracts, for specified command-line option (if any was specified; 
+<tr><td valign="top"><a href="#extract_optionless_command_arguments-1">extract_optionless_command_arguments/1</a></td><td>Extracts, for the specified command-line option (if any was specified; 
 otherwise returns 'undefined') its various in-order lists of associated 
 values, from the specified argument table.</td></tr>
 <tr><td valign="top"><a href="#generate_argument_table-1">generate_argument_table/1</a></td><td>Returns a canonical argument table, obtained from the specified single 
@@ -190,7 +189,7 @@ corresponding argument table.</p>
 <div class="spec">
 <p><tt>extract_command_arguments_for_option(Option::<a href="#type-command_line_option">command_line_option()</a>, ArgumentTable::<a href="#type-argument_table">argument_table()</a>) -&gt; {<a href="#type-maybe">maybe</a>([<a href="#type-command_line_values">command_line_values()</a>]), <a href="#type-argument_table">argument_table()</a>}</tt><br></p>
 <p> </p>
-</div><p><p>Extracts, for specified command-line option (if any was specified; 
+</div><p><p>Extracts, for the specified command-line option (if any was specified; 
 otherwise returns 'undefined') its various in-order lists of associated 
 values, from the specified argument table.</p>
 
@@ -218,7 +217,7 @@ executable.</p>
 <div class="spec">
 <p><tt>extract_optionless_command_arguments(ArgumentTable::<a href="#type-argument_table">argument_table()</a>) -&gt; {<a href="#type-maybe">maybe</a>([<a href="#type-command_line_values">command_line_values()</a>]), <a href="#type-argument_table">argument_table()</a>}</tt><br></p>
 <p> </p>
-</div><p><p>Extracts, for specified command-line option (if any was specified; 
+</div><p><p>Extracts, for the specified command-line option (if any was specified; 
 otherwise returns 'undefined') its various in-order lists of associated 
 values, from the specified argument table.</p>
 

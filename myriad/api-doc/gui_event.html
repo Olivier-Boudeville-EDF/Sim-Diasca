@@ -23,8 +23,14 @@
 <p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-event_context">event_context()</a></h3>
+<p><tt>event_context() = #event_context{id = <a href="gui.html#type-id">gui:id()</a>, user_data = <a href="gui.html#type-user_data">gui:user_data()</a>, backend_event = <a href="#type-maybe">maybe</a>(<a href="gui.html#type-backend_event">gui:backend_event()</a>)}</tt></p>
+<p><p> Context sent to corresponding subscribers together with an event.</p>
+
+ This context can be ignored in most cases.</p>
+
 <h3 class="typedecl"><a name="type-event_dispatch_table">event_dispatch_table()</a></h3>
-<p><tt>event_dispatch_table() = <a href="list_table.html#type-table">list_table:table</a>(<a href="#type-event_type">event_type()</a>, [<a href="#type-event_subscriber_pid">event_subscriber_pid()</a>])</tt></p>
+<p><tt>event_dispatch_table() = <a href="list_table.html#type-list_table">list_table:list_table</a>(<a href="#type-event_type">event_type()</a>, [<a href="#type-event_subscriber_pid">event_subscriber_pid()</a>])</tt></p>
 <p> Tells, for a given event type (e.g. in the context of a specific GUI object),
  to which event subscribers the corresponding GUI messages shall be sent.</p>
 
@@ -58,7 +64,7 @@ carrying event-specific information):</p>
 <h3 class="typedecl"><a name="type-event_subscription_spec">event_subscription_spec()</a></h3>
 <p><tt>event_subscription_spec() = <a href="#type-maybe_list">maybe_list</a>(<a href="#type-event_subscription">event_subscription()</a>)</tt></p>
 <p> Specifies, for an event subscriber (by default: the calling process), any
- combination of type of events and GUI objects that shall be listened to.</p>
+ combination of types of events and GUI objects that shall be listened to.</p>
 
 <h3 class="typedecl"><a name="type-event_table">event_table()</a></h3>
 <p><tt>event_table() = <a href="table.html#type-table">table:table</a>(<a href="#type-gui_object">gui_object()</a>, <a href="#type-event_dispatch_table">event_dispatch_table()</a>)</tt></p>
@@ -82,16 +88,18 @@ this (object,event) combination</p>
  type stored.</p>
 
 <h3 class="typedecl"><a name="type-event_type">event_type()</a></h3>
-<p><tt>event_type() = onRepaintNeeded | onButtonClicked | onResized | onWindowClosed | onShown</tt></p>
-<p><p> Our own event types, independent from any backend.</p>
+<p><tt>event_type() = onRepaintNeeded | onButtonClicked | onResized | onWindowClosed | onShown | onMouseLeftButtonPressed | onMouseLeftButtonReleased | onMouseLeftButtonDoubleClicked | onMouseMiddleButtonPressed | onMouseMiddleButtonReleased | onMouseMiddleButtonDoubleClicked | onMouseRightButtonPressed | onMouseRightButtonReleased | onMouseRightButtonDoubleClicked | onMouseFourthButtonPressed | onMouseFourthButtonReleased | onMouseFourthButtonDoubleClicked | onMouseFifthButtonPressed | onMouseFifthtButtonReleased | onMouseFifthButtonDoubleClicked | onMouseWheelScrolled | onMouseEnteredWindow | onMouseLeftWindow | onMouseMoved | onMouseEnteredWindow | onMouseLeftWindow | onMouseMoved | onCharEntered | onCharEnteredHook | onKeyPressed | onKeyReleased</tt></p>
 
- Note that resizing a widget (typically a canvas) implies receiving also a
- onRepaintNeeded; so a canvas may subscribe only to onRepaintNeeded (not
- necessarily to onResized).</p>
 
-<h3 class="typedecl"><a name="type-gui_event_context">gui_event_context()</a></h3>
-<p><tt>gui_event_context() = #gui_event_context{id = <a href="gui.html#type-id">gui:id()</a>, user_data = <a href="gui.html#type-user_data">gui:user_data()</a>, backend_event = <a href="#type-maybe">maybe</a>(<a href="gui.html#type-backend_event">gui:backend_event()</a>)}</tt></p>
+<h3 class="typedecl"><a name="type-event_unsubscription">event_unsubscription()</a></h3>
+<p><tt>event_unsubscription() = {<a href="#type-maybe_list">maybe_list</a>(<a href="#type-event_type">event_type()</a>), <a href="#type-maybe_list">maybe_list</a>(<a href="#type-gui_object">gui_object()</a>)}</tt></p>
+<p> So that user process(es) can unsubscribe from GUI events.</p>
 
+<h3 class="typedecl"><a name="type-event_unsubscription_spec">event_unsubscription_spec()</a></h3>
+<p><tt>event_unsubscription_spec() = <a href="#type-maybe_list">maybe_list</a>(<a href="#type-event_unsubscription">event_unsubscription()</a>)</tt></p>
+<p> Specifies, for an event subscriber (by default: the calling process), any
+ combination of types of events and GUI objects to which it was suvscribed yet
+ that shall not be listened to anymore.</p>
 
 <h3 class="typedecl"><a name="type-gui_object">gui_object()</a></h3>
 <p><tt>gui_object() = <a href="gui.html#type-gui_object">gui:gui_object()</a></tt></p>
@@ -209,12 +217,20 @@ other fields.</p>
  {wxCommand,command_button_clicked,CmdString,CmdInt,...}</p>
 
 <h3 class="typedecl"><a name="type-wx_event_type">wx_event_type()</a></h3>
-<p><tt>wx_event_type() = <a href="#type-wx_repaint_event_type">wx_repaint_event_type()</a> | <a href="#type-wx_click_event_type">wx_click_event_type()</a> | <a href="#type-wx_resize_event_type">wx_resize_event_type()</a> | <a href="#type-wx_close_event_type">wx_close_event_type()</a> | <a href="#type-wx_show_event_type">wx_show_event_type()</a></tt></p>
-<p> Using the wx-event type, leaked by wx.hrl (enrich this union whenever needed).</p>
+<p><tt>wx_event_type() = <a href="#type-wx_repaint_event_type">wx_repaint_event_type()</a> | <a href="#type-wx_click_event_type">wx_click_event_type()</a> | <a href="#type-wx_resize_event_type">wx_resize_event_type()</a> | <a href="#type-wx_close_event_type">wx_close_event_type()</a> | <a href="#type-wx_show_event_type">wx_show_event_type()</a> | <a href="#type-wx_mouse_event_type">wx_mouse_event_type()</a> | <a href="#type-wx_keyboard_event_type">wx_keyboard_event_type()</a></tt></p>
+
 
 <h3 class="typedecl"><a name="type-wx_id">wx_id()</a></h3>
 <p><tt>wx_id() = <a href="gui_wx_backend.html#type-wx_id">gui_wx_backend:wx_id()</a></tt></p>
 
+
+<h3 class="typedecl"><a name="type-wx_keyboard_event_type">wx_keyboard_event_type()</a></h3>
+<p><tt>wx_keyboard_event_type() = <a href="http://www.erlang.org/edoc/doc/wx/doc/wxKeyEvent.html#type-wxKeyEventType">wxKeyEvent:wxKeyEventType()</a></tt></p>
+<p> For char | char_hook | key_down | key_up.</p>
+
+<h3 class="typedecl"><a name="type-wx_mouse_event_type">wx_mouse_event_type()</a></h3>
+<p><tt>wx_mouse_event_type() = <a href="http://www.erlang.org/edoc/doc/wx/doc/wxMouseEvent.html#type-wxMouseEventType">wxMouseEvent:wxMouseEventType()</a></tt></p>
+<p> For left_down | left_up | middle_down, etc.</p>
 
 <h3 class="typedecl"><a name="type-wx_object">wx_object()</a></h3>
 <p><tt>wx_object() = <a href="http://www.erlang.org/edoc/doc/wx/doc/wx.html#type-wx_object">wx:wx_object()</a></tt></p>
@@ -298,7 +314,7 @@ been processed once for all, and thus shall not be propagated further).</td></tr
 
 <h3 class="function"><a name="propagate_event-1">propagate_event/1</a></h3>
 <div class="spec">
-<p><tt>propagate_event(Gui_event_context::<a href="#type-gui_event_context">gui_event_context()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>propagate_event(Event_context::<a href="#type-event_context">event_context()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p><p>Propagates the event designated by the specified context upward in the 
 widget hierarchy (instead of the default, which is considering that it has 

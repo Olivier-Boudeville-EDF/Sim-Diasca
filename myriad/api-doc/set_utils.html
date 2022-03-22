@@ -96,11 +96,11 @@ specified set.</td></tr>
 <tr><td valign="top"><a href="#member-2">member/2</a></td><td>Returns true iff the specified element is an element of the specified
  set.</td></tr>
 <tr><td valign="top"><a href="#new-0">new/0</a></td><td>Returns a new, empty, set.</td></tr>
-<tr><td valign="top"><a href="#new-1">new/1</a></td><td>Returns a set containing the elements of specified list (possibly 
+<tr><td valign="top"><a href="#new-1">new/1</a></td><td>Returns a set containing the elements of the specified list (possibly 
 unordered and containing duplicates).</td></tr>
 <tr><td valign="top"><a href="#next-1">next/1</a></td><td>Returns the next element and iterator, as obtained from the specified 
 iterator.</td></tr>
-<tr><td valign="top"><a href="#singleton-1">singleton/1</a></td><td>Returns a set comprising only specified element.</td></tr>
+<tr><td valign="top"><a href="#singleton-1">singleton/1</a></td><td>Returns a set comprising only the specified element.</td></tr>
 <tr><td valign="top"><a href="#size-1">size/1</a></td><td>Returns the number of elements in the specified set.</td></tr>
 <tr><td valign="top"><a href="#to_list-1">to_list/1</a></td><td>Returns a list created from the elements of the specified set.</td></tr>
 <tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td>Returns a textual representation of the specified set.</td></tr>
@@ -270,7 +270,7 @@ specified set.</p>
 <div class="spec">
 <p><tt>new(ElementList::[<a href="#type-element">element()</a>]) -&gt; <a href="#type-set">set()</a></tt><br></p>
 <p> </p>
-</div><p><p>Returns a set containing the elements of specified list (possibly 
+</div><p><p>Returns a set containing the elements of the specified list (possibly 
 unordered and containing duplicates).</p>
 
  See singleton/1 if wanting to create a set with one element.
@@ -290,7 +290,7 @@ iterator.</p>
 <div class="spec">
 <p><tt>singleton(Element::<a href="#type-element">element()</a>) -&gt; <a href="#type-set">set()</a></tt><br></p>
 <p> </p>
-</div><p><p>Returns a set comprising only specified element.</p>
+</div><p><p>Returns a set comprising only the specified element.</p>
 
  More elegant than set_utils:add(Foo, set_utils:new()).
 </p>

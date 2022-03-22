@@ -10,10 +10,12 @@
 <hr>
 
 <h1>Module type_utils</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Module helping to manage <b>datatypes</b>, notably in ASTs.
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Module helping to manage <b>datatypes</b> (and also values), notably in 
+ASTs.
 
 
-<h2><a name="description">Description</a></h2><p>Module helping to manage <b>datatypes</b>, notably in ASTs.</p>
+<h2><a name="description">Description</a></h2><p>Module helping to manage <b>datatypes</b> (and also values), notably in 
+ASTs.</p>
 
  <p>See <code>type_utils_test.erl</code> for the corresponding test.</p>
 
@@ -62,6 +64,10 @@
  number of the parentheses that have been opened and not closed yet) and B is
  the bracket depth (ie the same principle, for "[]" instead of for "()").</p>
 
+<h3 class="typedecl"><a name="type-pair">pair()</a></h3>
+<p><tt>pair() = <a href="pair.html#type-pair">pair:pair()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-primitive_type_description">primitive_type_description()</a></h3>
 <p><tt>primitive_type_description() = atom | binary | boolean | float | function | integer | list | pid | port | record | reference | tuple</tt></p>
 <p><p> The "most precise" description of a primitive, simple type (ex: 'boolean' and 
@@ -82,6 +88,10 @@ datatype.</p>
 <h3 class="typedecl"><a name="type-record">record()</a></h3>
 <p><tt>record() = tuple()</tt></p>
 <p> Designates a record instance, to discriminate from a mere tuple.</p>
+
+<h3 class="typedecl"><a name="type-triplet">triplet()</a></h3>
+<p><tt>triplet() = {any(), any(), any()}</tt></p>
+
 
 <h3 class="typedecl"><a name="type-tuple">tuple()</a></h3>
 <p><tt>tuple(_T) = tuple()</tt></p>
@@ -280,6 +290,13 @@ type.</td></tr>
 type.</td></tr>
 <tr><td valign="top"><a href="#is_of_type-2">is_of_type/2</a></td><td>Tells whether specified term is of specified type (predicate).</td></tr>
 <tr><td valign="top"><a href="#is_type-1">is_type/1</a></td><td>Tells whether specified term designates a type (ie a type() instance).</td></tr>
+<tr><td valign="top"><a href="#share-1">share/1</a></td><td>Improves the compactness of the specified term ("compresses it"): returns 
+it once the sharing of its sub-terms has been favored (equal term, but 
+possibly smaller in memory).</td></tr>
+<tr><td valign="top"><a href="#share-2">share/2</a></td><td>Returns the two specified terms as a pair favoring the in-memory sharing 
+of its elements, if they are equal.</td></tr>
+<tr><td valign="top"><a href="#share-3">share/3</a></td><td>Returns the three specified terms as a triplet favoring the in-memory 
+sharing of its elements, if they are equal.</td></tr>
 <tr><td valign="top"><a href="#tokenise_per_union-1">tokenise_per_union/1</a></td><td>Splits the specified type description according to union delimiters.</td></tr>
 <tr><td valign="top"><a href="#type_to_description-1">type_to_description/1</a></td><td>Returns the type description (in canonical form, notably without 
 whitespaces) corresponding to specified type.</td></tr>
@@ -601,6 +618,56 @@ type.</p>
 </div><p><p>Tells whether specified term designates a type (ie a type() instance).</p>
 
  (only the elementary types are currently recognised)
+</p>
+
+<h3 class="function"><a name="share-1">share/1</a></h3>
+<div class="spec">
+<p><tt>share(Other::term()) -&gt; term()</tt><br></p>
+<p> </p>
+</div><p><p>Improves the compactness of the specified term ("compresses it"): returns 
+it once the sharing of its sub-terms has been favored (equal term, but 
+possibly smaller in memory).</p>
+
+ <p>Presumably useful on platforms where the size of a pointer is lower than the 
+one of the subterms (ex: an Erlang float, i.e. a double), when some subterms 
+may be equal (by value), yet are duplicated (not defined once and pointed to 
+multiple times).</p>
+
+ <p>Such a deduplication may happen typically on homogeneous tuples (ex: vectors), 
+when received as messages for example, or when read from any external source 
+(ex: from file).</p>
+
+ Directly inspired from wings_utils:share/*.
+</p>
+
+<h3 class="function"><a name="share-2">share/2</a></h3>
+<div class="spec">
+<p><tt>share(X::term(), Y::term()) -&gt; <a href="#type-pair">pair()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the two specified terms as a pair favoring the in-memory sharing 
+of its elements, if they are equal.</p>
+
+ <p>Presumably useful on platforms where the size of a pointer is lower than the 
+one of the subterms (ex: an Erlang float, i.e. a double), when some subterms 
+may be equal (by value), yet are duplicated (not defined once and pointed to 
+multiple times).</p>
+
+ Directly inspired from wings_utils:share/*.
+</p>
+
+<h3 class="function"><a name="share-3">share/3</a></h3>
+<div class="spec">
+<p><tt>share(X::term(), Y::term(), Z::term()) -&gt; <a href="#type-triplet">triplet()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the three specified terms as a triplet favoring the in-memory 
+sharing of its elements, if they are equal.</p>
+
+ <p>Presumably useful on platforms where the size of a pointer is lower than the 
+one of the subterms (ex: an Erlang float, i.e. a double), when some subterms 
+may be equal (by value), yet are duplicated (not defined once and pointed to 
+multiple times).</p>
+
+ Directly inspired from wings_utils:share/*.
 </p>
 
 <h3 class="function"><a name="tokenise_per_union-1">tokenise_per_union/1</a></h3>
