@@ -1344,6 +1344,6 @@ Now is maybe a good time to run some examples found in the ``mock-simulators`` t
 
 
 :raw-html:`<center><img src="sim-diasca.png" id="responsive-image-small"></img></center>`
-:raw-latex:`\begin{figure}[h] \centering \includegraphics[scale=0.15]{sim-diasca.png} \end{figure}`
+:raw-latex:`\begin{figure}[h] \centering \includegraphics[scale=0.25]{sim-diasca.png} \end{figure}`
 
 :raw-html:`<a name="sim_diasca_bottom"></a>`

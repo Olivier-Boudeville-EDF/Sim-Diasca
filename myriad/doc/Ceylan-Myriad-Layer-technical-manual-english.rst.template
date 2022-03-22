@@ -26,7 +26,7 @@ Technical Manual of the ``Ceylan-Myriad`` Layer
 
 
 :raw-html:`<center><img src="myriad-title.png" id="responsive-image-small"></img>`
-:raw-latex:`\centering \includegraphics[scale=0.15]{myriad-title.png}`
+:raw-latex:`\begin{center} \includegraphics[scale=0.15]{myriad-title.png} \end{center}`
 
 
 

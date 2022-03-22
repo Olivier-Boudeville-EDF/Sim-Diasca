@@ -34,3 +34,6 @@ Writing such toy models is surely the shortest path to the understanding of Sim-
 
 
 We hope that you will enjoy using Sim-Diasca. As always, any (constructive!) feedback is welcome (use the email address at top of this document for that). Thanks!
+
+:raw-html:`<center><img src="sim-diasca.png" id="responsive-image-small"></img></center>`
+:raw-latex:`\begin{figure}[h] \centering \includegraphics[scale=0.25]{sim-diasca.png} \end{figure}`

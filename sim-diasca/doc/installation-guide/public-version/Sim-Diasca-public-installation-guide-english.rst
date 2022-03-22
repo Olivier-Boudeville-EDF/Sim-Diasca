@@ -7,7 +7,6 @@ Sim-Diasca Installation Guide
 Public Version
 --------------
 
-:raw-html:`<a name="sim_diasca_top"></a>`
 
 .. comment Defined here to allow for a version-specified banner:
 
@@ -17,7 +16,6 @@ Public Version
 
 .. role:: raw-latex(raw)
    :format: latex
-
 
 :raw-html:`<a name="sim_diasca_top"></a>`
 

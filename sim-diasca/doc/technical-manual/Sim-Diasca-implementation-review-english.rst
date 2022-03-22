@@ -109,7 +109,7 @@ The following graphical conventions are used here:
 
 Not specifying an event condition on a state transition means here that the state change is time-based, i.e. it will occur automatically once a specific duration (in simulation time) will be elapsed.
 
-The two models are interacting, thus the two FSM will interact as well, based on message exchanges:
+The two models are interacting, thus the two FSMs will interact as well, based on message exchanges:
 
 :raw-html:`<center><img src="soda-ordering-interacting-FSM.png"></img></center>`
 :raw-latex:`\includegraphics[scale=0.4]{soda-ordering-interacting-FSM.png}`

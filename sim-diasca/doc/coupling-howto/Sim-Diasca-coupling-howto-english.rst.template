@@ -744,5 +744,8 @@ In these latter cases, care must be taken about scalability. For example, depend
 Custom protocols over IPC (ex: files, pipes, UNIX sockets, Internet ones, etc.), based on the exchange of binary messages, can also always be devised. This would show a priori little advantage over any of the already available standard protocols, yet would allow to add support for virtually any language or exchange channel. Extending ``ErlPort`` could be another option.
 
 
+:raw-html:`<center><img src="sim-diasca.png" id="responsive-image-small"></img></center>`
+:raw-latex:`\begin{figure}[h] \centering \includegraphics[scale=0.25]{sim-diasca.png} \end{figure}`
+
 
 :raw-html:`<a name="sim_diasca_bottom"></a>`

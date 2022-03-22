@@ -978,7 +978,7 @@ The following graphical conventions are used here:
 
 Not specifying an event condition on a state transition means here that the state change is time-based, i.e. it will occur automatically once a specific duration (in simulation time) will be elapsed.
 
-The two models are interacting, thus the two FSM swill interact as well, based on message exchanges:
+The two models are interacting, thus the two FSMs will interact as well, based on message exchanges:
 
 :raw-html:`<center><img src="soda-ordering-interacting-FSM.png" id="responsive-image-medium"></img></center>`
 :raw-latex:`\includegraphics[scale=0.4]{soda-ordering-interacting-FSM.png}`
@@ -1266,5 +1266,8 @@ More advanced users are advised to have a look also to the *City-Example* case, 
 We hope that writing simulations will be easier thanks to the examples provided with the Sim-Diasca code base and thanks to this guide oriented towards modellers.
 
 As always, any (constructive!) feedback is welcome (for that use the email address at the top of this document). Should some point remain unclear, please feel free to contact us, as we try to provide support on a best-effort basis.
+
+:raw-html:`<center><img src="sim-diasca.png" id="responsive-image-small"></img></center>`
+:raw-latex:`\begin{figure}[h] \centering \includegraphics[scale=0.25]{sim-diasca.png} \end{figure}`
 
 :raw-html:`<a name="sim_diasca_bottom"></a>`

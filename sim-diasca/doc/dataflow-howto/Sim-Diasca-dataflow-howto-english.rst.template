@@ -2628,4 +2628,8 @@ Many thanks, among others, go to:
 - Karel Redon, for thoughts about the buses and their graphical representation, and for the Python workbench
 
 
+:raw-html:`<center><img src="sim-diasca.png" id="responsive-image-small"></img></center>`
+:raw-latex:`\begin{figure}[h] \centering \includegraphics[scale=0.25]{sim-diasca.png} \end{figure}`
+
+
 :raw-html:`<a name="sim_diasca_bottom"></a>`

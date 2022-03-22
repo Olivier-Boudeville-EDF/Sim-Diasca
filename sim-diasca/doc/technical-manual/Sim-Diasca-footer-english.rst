@@ -17,3 +17,7 @@ Recommended next actions would then be:
 
 
 We hope that you will enjoy using Sim-Diasca. As always, any (constructive!) feedback is welcome (use `this email address <mailto:olivier.boudeville@edf.fr>`_ for that). Thanks!
+
+
+:raw-html:`<center><img src="sim-diasca.png" id="responsive-image-small"></img></center>`
+:raw-latex:`\begin{figure}[h] \centering \includegraphics[scale=0.25]{sim-diasca.png} \end{figure}`

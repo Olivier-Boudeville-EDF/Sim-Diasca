@@ -4474,7 +4474,7 @@ open( AnyFilePath, Options, _AttemptMode=try_endlessly_safer ) ->
 open( AnyFilePath, Options, _AttemptMode=try_endlessly ) ->
 
 	%trace_utils:debug_fmt( "Opening '~ts' endlessly, with options ~w.",
-	%					   [ AnyFilePath, Options ] ),
+	%                       [ AnyFilePath, Options ] ),
 
 	case file:open( AnyFilePath, Options ) of
 
