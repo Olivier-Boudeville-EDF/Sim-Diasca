@@ -2,7 +2,15 @@
 
 suffix="-hidden-for-rebar3"
 
-usage="Usage: $(basename $0) [TARGET_DIR]: fixes any lingering renaming (with the '${suffix}) of files done for rebar3, which was typically done by fix-rebar-compile-pre-hook.sh and was to be undone by fix-rebar-compile-post-hook.sh"
+usage="Usage: $(basename $0) [TARGET_DIR]: fixes any lingering renaming (with the '${suffix}') of files done for rebar3, which was typically done by fix-rebar-compile-pre-hook.sh and was expected to be undone by fix-rebar-compile-post-hook.sh"
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+
+	echo "${usage}"
+
+	exit 0
+
+fi
 
 target_dir="$1"
 
@@ -27,6 +35,6 @@ for f in $(find "${target_dir}" -name '*-hidden-for-rebar3'); do
 	echo " - fixing $f"
 
 	# Not -f to avoid any accidental overwriting:
-	/bin/mv -f $f $(echo $f | sed "s|${suffix}$||1")
+	/bin/mv -f "$f" "$(echo $f | sed "s|${suffix}$||1")"
 
 done

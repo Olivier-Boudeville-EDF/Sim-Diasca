@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2022 Olivier Boudeville
+% Copyright (C) 2013-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -36,13 +36,15 @@
 -include("test_facilities.hrl").
 
 % For the circle record:
--include("bounding_box2.hrl").
+-include("bounding_surface.hrl").
 
 
 % For reuse by other tests:
 -export([ get_main_window_width/0, get_main_window_height/0,
 		  get_main_window_size/0 ]).
 
+% For unused silencing:
+-export([ test_state_to_string/1 ]).
 
 
 % Shorthands:
@@ -61,7 +63,7 @@
 -type render_mode() :: 'test_shape_rendering' | 'test_dynamic_mec'.
 
 
-% State of the test application, kept and updated by its main loop.
+% The state of the test application, kept and updated by its main loop.
 -record( my_test_state, {
 
 	main_frame :: gui:frame(),
@@ -72,9 +74,9 @@
 	add_point_button    :: button(),
 
 	% Convenient to detect canvas repaints (as disappears then):
-	paste_image_button  :: button(),
+	paste_image_button :: button(),
 
-	quit_button         :: button(),
+	quit_button :: button(),
 
 	canvas :: canvas(),
 
@@ -136,11 +138,21 @@ get_main_window_size() ->
 % Canvas dimensions automatically determined based on parent panel.
 
 
+% @doc Executes the actual test.
 -spec run_test_gui() -> void().
 run_test_gui() ->
 
 	test_facilities:display( "Starting the actual overall MyriadGUI test, "
 							 "from user process ~w.", [ self() ] ),
+
+	trace_utils:notice( "A frame with a stack of buttons shall appear; "
+		"one may increase the number of random points and repeatedly "
+		"request the corresponding MEC (Minimal Enclosing Circle) "
+		"to be displayed (in blue), together with the convex hull "
+		"(in green; often coinciding with "
+		"the MEC for lower numbers of points). "
+		"The test will end as soon as the frame is closed "
+		"or the Quit button is clicked." ),
 
 	gui:start(),
 
@@ -260,8 +272,9 @@ run_test_gui() ->
 									   point_count=InitialPointCount,
 									   render_mode=InitialRenderMode },
 
-	trace_utils:debug_fmt( "Initial ~ts",
-						   [ test_state_to_string( InitialTestState ) ] ),
+	cond_utils:if_defined( myriad_gui_test_verbose,
+		trace_utils:debug_fmt( "Initial ~ts",
+							   [ test_state_to_string( InitialTestState ) ] ) ),
 
 
 	% Renders the GUI:
@@ -271,7 +284,7 @@ run_test_gui() ->
 
 
 
-% The main loop of this test.
+% @doc The main loop of this test.
 -spec test_main_loop( my_test_state() ) -> no_return().
 test_main_loop( TestState=#my_test_state{ main_frame=MainFrame,
 										  render_shape_button=RenderShapeButton,
@@ -500,11 +513,11 @@ render_shapes( Canvas ) ->
 	gui:draw_circle( Canvas, _OtherCircleCenter={180,180}, _OtherRadius=180 ),
 
 	% Taken from polygon_test.erl:
-	MyTriangle = polygon:update_bounding_box( lazy_circle,
+	MyTriangle = polygon:update_bounding_surface( lazy_circle,
 		polygon:set_edge_color( fuchsia,
 			polygon:get_triangle( {110,110}, {550,155}, {420,335} ) ) ),
 
-	MyUprightSquare = polygon:update_bounding_box( lazy_circle,
+	MyUprightSquare = polygon:update_bounding_surface( lazy_circle,
 		polygon:set_edge_color( steelblue,
 			polygon:get_upright_square( _Center={250,250}, _EdgeLength=50 ) ) ),
 
@@ -569,7 +582,7 @@ render_mec( Canvas, PointCount ) ->
 	%                       [ length( HullPoints ), PointCount ] ),
 
 	#circle{ center=ExactCenter, square_radius=SquareRadius } =
-		bounding_box2:get_minimal_enclosing_circle_box( HullPoints ),
+		bounding_surface:get_minimal_enclosing_circle( HullPoints ),
 
 	Center = point2:roundify( ExactCenter ),
 
@@ -593,7 +606,6 @@ render_mec( Canvas, PointCount ) ->
 	gui:draw_numbered_points( Canvas, SortedPoints ),
 
 	gui:blit( Canvas ).
-
 
 
 

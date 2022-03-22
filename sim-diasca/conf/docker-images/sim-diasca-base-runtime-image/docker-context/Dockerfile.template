@@ -1,0 +1,168 @@
+# This is a recipe in order to create a Docker image that provides a
+# ready-to-use *base* runtime environment for Sim-Diasca, i.e. comprising the
+# tools for the build and execution of Sim-Diasca (notably Erlang), Sim-Diasca
+# itself (both as sources and prebuilt binaries), and nothing more (ex: no
+# LogMX, no ErlPort, etc.).
+
+
+# This IMAGE_DESCRIPTION_TAG image has for Docker tag 'IMAGE_NAME_TAG', and
+# its full tag will be 'FULL_IMAGE_NAME_TAG'.
+#
+# More complete/specialised images may be derived from it.
+
+
+# The Docker context of this image is supposed to pre-exist; refer to the
+# prepare-docker-image.sh script, in charge of creating a suitable context and
+# transforming this template into a final, standalone Dockerfile.
+#
+# Indeed this template shall be updated regarding notably the following tags in
+# order to become a proper Dockerfile (the '_TAG' suffix has been removed from
+# the next symbols so that they are not substituted):
+#  - PARENT_IMAGE (ex: "debian:buster")
+#  - ERLANG_VERSION (ex: "24.2")
+
+
+# Parent image, from which this image will derive.
+#
+# Ex: 'debian:bullseye' (Debian 11), possibly obtained from an
+# organisation-specific registry distributing adapted versions:
+#
+FROM PARENT_IMAGE_TAG
+
+
+# Defines:
+
+# The name of a regular Sim-Diasca user registered in the resulting Docker
+# container:
+#
+ENV SD_USER_NAME=dev
+ENV SD_USER_GROUP=dev
+
+
+ENV SD_USER_HOME="/home/${SD_USER_NAME}"
+
+ENV SOFTWARE_BASE="/opt/Software"
+
+ENV ERL_VERSION=ERLANG_VERSION_TAG
+ENV ERL_SRC_ARCHIVE="otp_src_${ERL_VERSION}.tar.gz"
+ENV ERL_BASE="${SOFTWARE_BASE}/Erlang"
+
+ENV SD_BASE="${SOFTWARE_BASE}/Sim-Diasca"
+
+
+# Settings shall not be specified in ~/.bashrc, as this file would not be
+# entirely sourced with non-interactive bash shells (note also that root uses
+# /bin/sh whereas the regular user will use /bin/bash)
+#
+# Non-executable file, meant only to be sourced:
+#
+ENV SD_ENV_FILE="${SD_USER_HOME}/sim-diasca-environment.sh"
+
+
+# Base install (with a final cleaning):
+#
+# (we gather all relevant Erlang prerequisites, so that its build can be used in
+#  various contexts)
+#
+RUN apt-get update && \
+	apt-get install --yes bzip2 coreutils build-essential g++ \
+	libncurses5-dev openssl libssl-dev libwxgtk3.0-dev \
+	libgl1-mesa-dev libglu1-mesa-dev libpng16-16 \
+	gcc make git sudo unzip wget uuid-runtime gnuplot-nox && \
+	/bin/rm -rf /var/lib/apt/lists/*
+
+
+# Secure Sim-Diasca first (needed for Erlang install script):
+
+RUN echo "Installing Sim-Diasca in base directory '${SD_BASE}'."
+
+RUN mkdir -p "${SD_BASE}"
+
+# Preferring importing from context rather than cloning, as various Git origins
+# (ex: internal or public, and any branch of interest) may be considered:
+
+#RUN cd ${SD_BASE} && git clone https://xxx/sim-diasca.git
+
+# Read from prepared context ('docker-context'):
+COPY Sim-Diasca "${SD_BASE}"
+
+RUN echo "Software base in ${SOFTWARE_BASE}: $(/bin/ls ${SOFTWARE_BASE})"
+
+RUN echo "Sim-Diasca base in ${SD_BASE}: $(/bin/ls ${SD_BASE})"
+
+
+# Installing Erlang now:
+
+RUN mkdir -p "${ERL_BASE}"
+
+# Expected from context:
+COPY "${ERL_SRC_ARCHIVE}" "${ERL_BASE}"
+
+
+# Add a (sudoer) user (his home may be preserved as a volume):
+RUN useradd -ms /bin/bash ${SD_USER_NAME};\
+	echo "${SD_USER_NAME} ALL=(ALL:ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+
+RUN chown -R ${SD_USER_NAME}:${SD_USER_GROUP} ${SOFTWARE_BASE}
+
+# A bit of documentation:
+COPY README-About-This-Docker-Image.txt ${SD_USER_HOME}/README-About-This-Docker-Image.txt
+RUN sed -i "s|OPERATION_SYSTEM_TAG|$(/bin/cat /etc/issue.net)|g" ${SD_USER_HOME}/README-About-This-Docker-Image.txt
+
+
+RUN /bin/cp -f ${SD_BASE}/sim-diasca/doc/common-elements/licence/LGPL-licence.txt ${SD_USER_HOME}/LICENSE
+
+# Now set-up the environment of the normal user:
+
+USER ${SD_USER_NAME}
+WORKDIR ${SD_USER_HOME}
+
+
+
+RUN cd "${ERL_BASE}" && \
+	sudo "${SD_BASE}/myriad/conf/install-erlang.sh" --no-download --no-cpu-limit "$(dirname ${ERL_BASE})"
+
+RUN /bin/rm -f "${ERL_BASE}/${ERL_SRC_ARCHIVE}"
+
+RUN echo ". ${SD_ENV_FILE}" >> ${SD_USER_HOME}/.bashrc
+
+RUN (echo ; echo "# This is the Sim-Diasca environment file."; \
+	 echo "# It is meant to be sourced, not executed." ; \
+	 echo "# ${SD_USER_HOME}/.bashrc has been modified in order to source"; \
+	 echo "# it automatically whenever a bash shell is run interactively."; \
+	 echo ; echo "export ERL_BASE=${ERL_BASE}"; \
+	 echo 'export PATH=${ERL_BASE}/Erlang-current-install/bin:${PATH}') >> ${SD_ENV_FILE}
+
+
+#RUN . ${SD_ENV_FILE} && echo "Erlang base in ${ERL_BASE}: $(/bin/ls ${ERL_BASE}), while PATH is: ${PATH} and erl is: $(type erl)"
+
+#RUN . ${SD_ENV_FILE} && erl -eval '{ok, V} = file:read_file( filename:join([code:root_dir(), "releases", erlang:system_info(otp_release), "OTP_VERSION"]) ), io:fwrite(V), halt().' -noshell
+
+# No LogMX here.
+
+# No ErlPort here.
+
+# Check:
+#RUN . ${SD_ENV_FILE} && cd ${SD_BASE}/sim-diasca && make info-tools
+
+# Building Sim-Diasca:
+RUN . ${SD_ENV_FILE} && cd ${SD_BASE} && make all
+
+RUN echo "export SIM_DIASCA_ROOT=${SD_BASE}" >> ${SD_ENV_FILE}
+
+# Optional integrated testing (convenient but slowing down the image creation):
+#RUN . ${SD_ENV_FILE} && cd ${SD_BASE} && make test
+
+# Not building Sim-Diasca documentation here.
+
+
+RUN echo "Sim-Diasca final environment file: " && cat ${SD_ENV_FILE}
+
+
+#VOLUME ${SD_USER_HOME}
+
+RUN echo "Sim-Diasca base runtime Docker image successfully created!"
+RUN echo " - user: ${SD_USER_NAME} (sudoer)"
+RUN echo " - content of his home ${SD_USER_HOME}: $(/bin/ls -d ${SD_USER_HOME}/* 2>/dev/null)"
+RUN echo " - content of the software base ${SOFTWARE_BASE}: $(/bin/ls -d ${SOFTWARE_BASE}/*)"

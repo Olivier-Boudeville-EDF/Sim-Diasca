@@ -227,15 +227,14 @@ manage_supervision() ->
 
 		false ->
 			trace_utils:debug(
-			  "In interactive mode, so launching trace supervisor." ),
+				"In interactive mode, so launching trace supervisor." ),
 
 			% Expected to be already created:
 			TraceAggregatorPid = class_TraceAggregator:get_aggregator(
 									_CreateIfNotAvailable=false ),
 
 			% Not blocking the calling process until the supervision is over:
-			TraceAggregatorPid !
-				{ launchTraceSupervisor, [], self() },
+			TraceAggregatorPid ! { launchTraceSupervisor, [], self() },
 
 			% test_receive/1 not appropriate here (would filter the atom that we
 			% expect):
@@ -243,8 +242,8 @@ manage_supervision() ->
 			receive
 
 				{ wooper_result,
-				  { trace_supervisor_launched, TraceSupervisorPid } } ->
-					TraceSupervisorPid
+					{ trace_supervisor_launched, TraceSupervisorPid } } ->
+					  TraceSupervisorPid
 
 			end
 
@@ -429,7 +428,7 @@ log( _LogEvent=#{ level := Level,
 	 _Config=#{ config := TraceAggregatorPid } ) ->
 
 	%io:format( "### Logging following event:~n ~p~n(with config: ~p).~n",
-	%		   [ LogEvent, Config ] ),
+	%           [ LogEvent, Config ] ),
 
 	 TraceMsg = case Msg of
 
@@ -452,8 +451,8 @@ log( _LogEvent=#{ level := Level,
 	Severity = Level,
 
 	%io:format( "### Logging following event:~n ~p~n(with config: ~p)~n "
-	%  "resulting in: '~ts' (severity: ~p).",
-	%  [ LogEvent, Config, TraceMsg, Severity ] ),
+	%   "resulting in: '~ts' (severity: ~p).",
+	%   [ LogEvent, Config, TraceMsg, Severity ] ),
 
 	BinEmitterCategorization = <<"Erlang logger">>,
 
@@ -465,10 +464,10 @@ log( _LogEvent=#{ level := Level,
 	%
 	%case Level =:= notice orelse Level =:= info orelse Level =:= debug of
 	%
-	%	% Lighter, quicker:
-	%	true ->
-	%		class_TraceEmitter:send_direct( Severity, TraceMsg,
-	%			BinEmitterCategorization, TraceAggregatorPid );
+	%   % Lighter, quicker:
+	%   true ->
+	%       class_TraceEmitter:send_direct( Severity, TraceMsg,
+	%           BinEmitterCategorization, TraceAggregatorPid );
 	%
 	%	_False ->
 			% Sent as soon as possible:

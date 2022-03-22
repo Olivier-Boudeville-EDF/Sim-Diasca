@@ -43,9 +43,18 @@
 % - the canonical one (4x4 coordinates)
 %
 % - the compact one (3x4) where the last row is (implicitly) [0.0, 0.0, 0.0,
-% 1.0], typical of transformations (translation+rotation) in 3D
+% 1.0], typical of 3D transformations (translation+rotation+scaling)
 %
 % - special ones, at least the identity matrix
+
+% Supposing a right-handed referential, row-major order and matrix
+% multiplication on the right (post-multiplication).
+%
+% As a result, matrices here are the transpose of GLM or e3d ones.
+
+% Potential sources of inspiration:
+% - glm: glm/ext/matrix_clip_space.inl
+% - Wings3D: e3d/e3d_transform.erl for project, unproject, lookat, pick
 
 
 % For printout_*, inline_size, etc.:
@@ -70,23 +79,29 @@
 -type matrix4() :: 'identity_4' | canonical_matrix4() | compact_matrix4().
 
 
-% Alias for 4x4 canonical matrices:
 -type canonical_matrix4() :: #matrix4{}.
+% Alias for 4x4 canonical matrices.
 
 
-% Aliases for 4x4 compact matrices:
 -type compact_matrix4() :: #compact_matrix4{}.
+% Aliases for 4x4 compact matrices.
 
 
 -type rot_matrix4() :: canonical_matrix4().
 % A matrix describing a 4D rotation.
 
 
+-type tuple_matrix4() :: gl:m12() | gl:m16().
+% A tuple of 12 or 16 floats.
+
+
 -export_type([ user_matrix4/0, matrix4/0, canonical_matrix4/0,
-			   compact_matrix4/0, rot_matrix4/0 ]).
+			   compact_matrix4/0, rot_matrix4/0, tuple_matrix4/0 ]).
 
 
--export([ new/1, new/3, null/0, identity/0, rotation/2,
+-export([ new/1, new/3, null/0, identity/0, translation/1, scaling/1,
+		  rotation/2,
+		  orthographic/6, perspective/4, frustum/6,
 		  from_columns/4, from_rows/4,
 		  from_coordinates/16, from_compact_coordinates/12,
 		  from_3D/2,
@@ -96,15 +111,19 @@
 		  get_element/3, set_element/4,
 		  transpose/1,
 		  scale/2,
-		  add/2, sub/2, mult/2,
+		  add/2, sub/2, mult/2, mult/1, apply/2,
 		  are_equal/2,
 		  determinant/1, comatrix/1, inverse/1,
 		  to_canonical/1, to_compact/1,
+		  from_tuple/1, to_tuple/1,
 		  check/1,
 		  to_string/1 ] ).
 
 
 -import( math_utils, [ is_null/1, are_close/2 ] ).
+
+% To avoid clash with BIF:
+-compile( { no_auto_import, [ apply/2 ] } ).
 
 -define( dim, 4 ).
 
@@ -114,18 +133,25 @@
 -type ustring() :: text_utils:ustring().
 
 -type factor() :: math_utils:factor().
+-type ratio() :: math_utils:ratio().
 
 -type radians() :: unit_utils:radians().
+-type any_degrees() :: unit_utils:any_degrees().
 
 -type coordinate() :: linear:coordinate().
 -type dimension() :: linear:dimension().
 -type scalar() :: linear:scalar().
+-type distance() :: linear:distance().
+-type signed_distance() :: linear:signed_distance().
 
--type vector3() :: vector3:vector3().
+-type point3() :: point3:point3().
 -type unit_vector3() :: vector3:unit_vector3().
+-type vector3() :: vector3:vector3().
+
 
 -type user_vector4() :: vector4:user_vector4().
 -type vector4() :: vector4:vector4().
+-type point4() :: point4:point4().
 
 -type dimensions() :: matrix:dimensions().
 
@@ -158,7 +184,7 @@ new( UserMatrix ) ->
 new( UserVecRow1, UserVecRow2, UserVecRow3 ) ->
 
 	Rows = [ vector4:new( UVR )
-			 || UVR <- [ UserVecRow1, UserVecRow2, UserVecRow3 ] ],
+				|| UVR <- [ UserVecRow1, UserVecRow2, UserVecRow3 ] ],
 
 	CoordList = list_utils:flatten_once( Rows ),
 
@@ -180,6 +206,38 @@ null() ->
 -spec identity() -> matrix4().
 identity() ->
 	identity_4.
+
+
+
+% @doc Returns the (4x4) homogeneous (thus compact) matrix corresponding to a
+% translation of the specified vector.
+%
+-spec translation( vector3() ) -> compact_matrix4().
+translation( _VT=[ Tx, Ty, Tz ] ) ->
+	Zero = 0.0,
+	One = 1.0,
+	#compact_matrix4{ m11=One,  m12=Zero, m13=Zero, tx=Tx,
+					  m21=Zero, m22=One,  m23=Zero, ty=Ty,
+					  m31=Zero, m32=Zero, m33=One,  tz=Tz }.
+
+
+
+% @doc Returns the (4x4) homogeneous (thus compact) matrix corresponding to the
+% scaling of the specified factors.
+%
+-spec scaling( { factor(), factor(), factor() } ) -> compact_matrix4();
+			 ( vector3() ) -> compact_matrix4().
+scaling( { Sx, Sy, Sz } ) ->
+	Zero = 0.0,
+	#compact_matrix4{ m11=Sx,   m12=Zero, m13=Zero, tx=Zero,
+					  m21=Zero, m22=Sy,   m23=Zero, ty=Zero,
+					  m31=Zero, m32=Zero, m33=Sz,   tz=Zero };
+
+scaling( [ Sx, Sy, Sz ] ) ->
+	Zero = 0.0,
+	#compact_matrix4{ m11=Sx,   m12=Zero, m13=Zero, tx=Zero,
+					  m21=Zero, m22=Sy,   m23=Zero, ty=Zero,
+					  m31=Zero, m32=Zero, m33=Sz,   tz=Zero }.
 
 
 
@@ -230,6 +288,151 @@ rotation( UnitAxis=[ Ux, Uy, Uz ], RadAngle ) ->
 	#compact_matrix4{ m11=M11, m12=M12, m13=M13, tx=Zero,
 					  m21=M21, m22=M22, m23=M23, ty=Zero,
 					  m31=M31, m32=M32, m33=M33, tz=Zero }.
+
+
+
+% @doc Returns a matrix for orthographic projection corresponding to the
+% specified settings.
+%
+% Parameters are:
+%  - Left and Right are the coordinates for the left and right vertical clipping
+% planes
+%  - Bottom and Top are the coordinates for the bottom and top horizontal
+% clipping planes
+%  - ZNear and ZFar are the signed distances to the nearer and farther depth
+%  clipping planes; these values are negative if the plane is to be behind the
+%  viewer
+%
+% Note that the context is a right-handed referential with a clip space in
+% [-1.0, 1.0].
+%
+-spec orthographic( coordinate(), coordinate(), coordinate(), coordinate(),
+					signed_distance(), signed_distance() ) -> compact_matrix4().
+orthographic( Left, Right, Bottom, Top, ZNear, ZFar ) ->
+
+	% References:
+	% https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glOrtho.xml
+	% and glm:orthoRH_NO.
+
+	Zero = 0.0,
+
+	VFactorInv = 1.0 / (Right - Left),
+	HFactorInv = 1.0 / (Top - Bottom),
+	MinusZFactorInv = 1.0 / (ZNear - ZFar),
+
+	M11 = 2 * VFactorInv,
+	M22 = 2 * HFactorInv,
+	M33 = 2 * MinusZFactorInv,
+
+	Tx = - (Right + Left) * VFactorInv,
+	Ty = - (Top + Bottom) * HFactorInv,
+	Tz = (ZNear + ZFar) * MinusZFactorInv,
+
+	#compact_matrix4{ m11=M11,  m12=Zero, m13=Zero, tx=Tx,
+					  m21=Zero, m22=M22,  m23=Zero, ty=Ty,
+					  m31=Zero, m32=Zero, m33=M33,  tz=Tz }.
+
+
+
+% @doc Returns a matrix for perspective projection corresponding to the
+% specified settings.
+%
+% Parameters are:
+%  - FoVYAngle is the field of view angle, in degrees, in the Y (vertical)
+%  direction
+%  - AspectRatio determines the field of view in the X (horizontal) direction:
+%  AspectRatio = Width/Height
+%  - ZNear specifies the distance from the viewer to the near clipping plane
+%  (always strictly positive)
+%  - ZFar specifies the distance from the viewer to the far clipping plane
+%  (always positive)
+%
+% Ex: Mp = matrix4:perspective( _FoVYAngle=60.0,
+%   _AspectRatio=WindowWidth/WindowHeight, _ZNear=1.0, _ZFar=100.0 )
+%
+% Note that the context is a right-handed referential with a clip space in
+% [-1.0, 1.0].
+%
+-spec perspective( any_degrees(), ratio(), distance(), distance() ) ->
+										matrix4().
+perspective( FoVYAngle, AspectRatio, ZNear, ZFar ) ->
+
+	% References:
+	% https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluPerspective.xml
+	% and glm:perspectiveRH_NO.
+
+	cond_utils:assert( myriad_check_linear,
+					   not math_utils:is_null( AspectRatio ) ),
+
+	% cotan(A) = 1/tan(A)
+
+	Zero = 0.0,
+
+	ZFactor = 1.0 / (ZNear - ZFar),
+
+	TanHalfFovyInv = 1 / math:tan( FoVYAngle / 2.0 ),
+
+	M11 = TanHalfFovyInv / AspectRatio,
+
+	M22 = TanHalfFovyInv,
+
+	M33 = ( ZNear + ZFar ) * ZFactor,
+
+	M34 = 2 * ZFar * ZNear * ZFactor,
+
+	% No possible compact form:
+	#matrix4{ m11=M11,  m12=Zero, m13=Zero, m14=Zero,
+			  m21=Zero, m22=M22,  m23=Zero, m24=Zero,
+			  m31=Zero, m32=Zero, m33=M33,  m34=M34,
+			  m41=Zero, m42=Zero, m43=-1.0, m44=Zero }.
+
+
+
+% @doc Returns a matrix for perspective projection corresponding to the
+% specified settings.
+%
+% Parameters are:
+%  - Left and Right are the coordinates for the left and right vertical clipping
+% planes
+%  - Bottom and Top are the coordinates for the bottom and top horizontal
+% clipping planes
+%  - ZNear specifies the distance from the viewer to the near clipping plane
+%  (always strictly positive)
+%  - ZFar specifies the distance from the viewer to the far clipping plane
+%  (always positive)
+%
+% Note that the context is a right-handed referential with a clip space in
+% [-1.0, 1.0].
+%
+-spec frustum( coordinate(), coordinate(), coordinate(), coordinate(),
+			   distance(), distance() ) -> matrix4().
+frustum( Left, Right, Bottom, Top, ZNear, ZFar ) ->
+
+	% References:
+	% https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glFrustum.xml
+	% and glm:frustumRH_NO.
+
+	Zero = 0.0,
+
+	VFactorInv = 1.0 / (Right - Left),
+	HFactorInv = 1.0 / (Top - Bottom),
+	MinusZFactorInv = 1.0 / (ZNear - ZFar),
+	TwoNear = 2.0 * ZNear,
+
+	M11 = TwoNear * VFactorInv,
+	M13 = (Right + Left) * VFactorInv,
+
+	M22 = TwoNear * HFactorInv,
+	M23 = (Top + Bottom) * HFactorInv,
+	M33 = (ZFar + ZNear) * MinusZFactorInv,
+
+	M34 = TwoNear * ZFar * MinusZFactorInv,
+
+	% No possible compact form:
+	#matrix4{ m11=M11,  m12=Zero, m13=M13,  m14=Zero,
+			  m21=Zero, m22=M22,  m23=M23,  m24=Zero,
+			  m31=Zero, m32=Zero, m33=M33,  m34=M34,
+			  m41=Zero, m42=Zero, m43=-1.0, m44=Zero }.
 
 
 
@@ -318,7 +521,7 @@ from_compact_coordinates( M11, M12, M13, Tx,
 %
 -spec from_arbitrary( matrix() ) -> matrix4().
 from_arbitrary( Matrix ) ->
-	apply( fun from_rows/?dim, Matrix ).
+	erlang:apply( fun from_rows/?dim, Matrix ).
 
 
 % @doc Returns the arbitrary-dimensioned matrix corresponding to the specified
@@ -833,6 +1036,163 @@ mult( _Ma=#compact_matrix4{ m11=A11, m12=A12, m13=A13, tx=Ax,
 
 
 
+% @doc Multiplies (in-order) the specified matrices.
+%
+% Ex: mult([Ma, Mb, Mc]) = mult(mult(Ma,Mb),Mc) = Ma.Mb.Mc
+%
+-spec mult( [ matrix4() ] ) -> matrix4().
+mult( [ Ma, Mb | T ] ) ->
+	mult( [ mult( Ma, Mb ) | T ] );
+
+mult( [ M ] ) ->
+	M.
+
+
+
+% @doc Applies (on the right) the specified 3D or 4D vector V or point P to the
+% specified matrix M: returns M.V or M.P.
+%
+% If the specified vector is a 3D one (i.e. not a 4D one), we assume that its
+% fourth (Vw) coordinate is 0.0, whereas if the specified point is a 3D one
+% (i.e. not a 4D one), we assume that its fourth (Pw) coordinate is 1.0, and
+% returns a 3D point whose coordinates have been normalised regarding the W
+% coordinate resulting from the application of that extended point.
+%
+% Not a clause of mult/2 for an increased clarity.
+%
+-spec apply( matrix4(), vector3() ) -> vector3();
+		   ( matrix4(), vector4() ) -> vector4();
+		   ( matrix4(), point3() ) -> point3();
+		   ( matrix4(), point4() ) -> point4().
+apply( _M=identity_4, VorP ) ->
+	VorP;
+
+% A nice feature is that the actual, lowest-level types of vectors and points
+% are different (list vs tuple) and thus can be discriminated.
+%
+% First with a vector3 (implicitly Vw is 0.0):
+apply( _M=#matrix4{ m11=M11,  m12=M12,  m13=M13,  m14=_M14,
+					m21=M21,  m22=M22,  m23=M23,  m24=_M24,
+					m31=M31,  m32=M32,  m33=M33,  m34=_M34,
+					m41=_M41, m42=_M42, m43=_M43, m44=_M44 },
+	   _V=[ Vx, Vy, Vz ] ) ->
+
+	%Vw = 0.0,
+	ResX = M11*Vx + M12*Vy + M13*Vz,
+	ResY = M21*Vx + M22*Vy + M23*Vz,
+	ResZ = M31*Vx + M32*Vy + M33*Vz,
+	%ResW = M41*Vx + M42*Vy + M43*Vz,
+
+	[ ResX, ResY, ResZ ];
+
+
+apply( _M=#compact_matrix4{ m11=M11, m12=M12, m13=M13, tx=_Tx,
+							m21=M21, m22=M22, m23=M23, ty=_Ty,
+							m31=M31, m32=M32, m33=M33, tz=_Tz },
+	   _V=[ Vx, Vy, Vz ] ) ->
+	%Vw = 0.0,
+	ResX = M11*Vx + M12*Vy + M13*Vz,
+	ResY = M21*Vx + M22*Vy + M23*Vz,
+	ResZ = M31*Vx + M32*Vy + M33*Vz,
+	% Here ResW = Vw = 0.0,
+
+	[ ResX, ResY, ResZ ];
+
+
+% Then with a point3 (implicitly Pw is 1.0):
+apply( _M=#matrix4{ m11=M11, m12=M12, m13=M13, m14=M14,
+					m21=M21, m22=M22, m23=M23, m24=M24,
+					m31=M31, m32=M32, m33=M33, m34=M34,
+					m41=M41, m42=M42, m43=M43, m44=M44 },
+	   _P={ Px, Py, Pz } ) ->
+
+	%Pw = 1.0,
+	ResX = M11*Px + M12*Py + M13*Pz + M14,
+	ResY = M21*Px + M22*Py + M23*Pz + M24,
+	ResZ = M31*Px + M32*Py + M33*Pz + M34,
+	ResW = M41*Px + M42*Py + M43*Pz + M44,
+
+	% A point shall be normalised:
+	case math_utils:is_null( ResW ) of
+
+		true ->
+			throw( null_w_coordinate );
+
+		false ->
+			{ ResX/ResW, ResY/ResW, ResZ/ResW }
+
+	end;
+
+
+apply( _M=#compact_matrix4{ m11=M11, m12=M12, m13=M13, tx=Tx,
+							m21=M21, m22=M22, m23=M23, ty=Ty,
+							m31=M31, m32=M32, m33=M33, tz=Tz },
+	   _P={ Px, Py, Pz } ) ->
+	%Pw = 1.0,
+	ResX = M11*Px + M12*Py + M13*Pz + Tx,
+	ResY = M21*Px + M22*Py + M23*Pz + Ty,
+	ResZ = M31*Px + M32*Py + M33*Pz + Tz,
+	% Here ResW = Pw = 1.0,
+
+	% Already normalised:
+	{ ResX, ResY, ResZ };
+
+
+% Then with a vector4:
+apply( _M=#matrix4{ m11=M11, m12=M12, m13=M13, m14=M14,
+					m21=M21, m22=M22, m23=M23, m24=M24,
+					m31=M31, m32=M32, m33=M33, m34=M34,
+					m41=M41, m42=M42, m43=M43, m44=M44 },
+	   _V=[ Vx, Vy, Vz, Vw ] ) ->
+
+	ResX = M11*Vx + M12*Vy + M13*Vz + M14*Vw,
+	ResY = M21*Vx + M22*Vy + M23*Vz + M24*Vw,
+	ResZ = M31*Vx + M32*Vy + M33*Vz + M34*Vw,
+	ResW = M41*Vx + M42*Vy + M43*Vz + M44*Vw,
+
+	[ ResX, ResY, ResZ, ResW ];
+
+
+apply( _M=#compact_matrix4{ m11=M11, m12=M12, m13=M13, tx=Tx,
+							m21=M21, m22=M22, m23=M23, ty=Ty,
+							m31=M31, m32=M32, m33=M33, tz=Tz },
+	   _V=[ Vx, Vy, Vz, Vw ] ) ->
+	ResX = M11*Vx + M12*Vy + M13*Vz + Tx*Vw,
+	ResY = M21*Vx + M22*Vy + M23*Vz + Ty*Vw,
+	ResZ = M31*Vx + M32*Vy + M33*Vz + Tz*Vw,
+	ResW = Vw,
+
+	[ ResX, ResY, ResZ, ResW ];
+
+
+% Finally with a point4 (mostly the same as for vector4):
+apply( _M=#matrix4{ m11=M11, m12=M12, m13=M13, m14=M14,
+					m21=M21, m22=M22, m23=M23, m24=M24,
+					m31=M31, m32=M32, m33=M33, m34=M34,
+					m41=M41, m42=M42, m43=M43, m44=M44 },
+	   _P={ Px, Py, Pz, Pw } ) ->
+
+	ResX = M11*Px + M12*Py + M13*Pz + M14*Pw,
+	ResY = M21*Px + M22*Py + M23*Pz + M24*Pw,
+	ResZ = M31*Px + M32*Py + M33*Pz + M34*Pw,
+	ResW = M41*Px + M42*Py + M43*Pz + M44*Pw,
+
+	{ ResX, ResY, ResZ, ResW };
+
+
+apply( _M=#compact_matrix4{ m11=M11, m12=M12, m13=M13, tx=Tx,
+							m21=M21, m22=M22, m23=M23, ty=Ty,
+							m31=M31, m32=M32, m33=M33, tz=Tz },
+	   _P={ Px, Py, Pz, Pw } ) ->
+	ResX = M11*Px + M12*Py + M13*Pz + Tx*Pw,
+	ResY = M21*Px + M22*Py + M23*Pz + Ty*Pw,
+	ResZ = M31*Px + M32*Py + M33*Pz + Tz*Pw,
+	ResW = Pw,
+
+	{ ResX, ResY, ResZ, ResW }.
+
+
+
 % @doc Tells whether the two specified (4x4) matrices are equal.
 -spec are_equal( matrix4(), matrix4() ) -> boolean().
 are_equal( _Ma=#matrix4{ m11=A11, m12=A12, m13=A13, m14=A14,
@@ -1122,7 +1482,7 @@ to_canonical( M ) when is_record( M, matrix4 ) ->
 
 
 
-% @doc Returns the compact form of specified (4x4) matrix.
+% @doc Returns the compact form of the specified (4x4) matrix.
 %
 % Throws an exception if the specified matrix cannot be expressed as a compact
 % one.
@@ -1158,6 +1518,30 @@ to_compact( identity_4 ) ->
 
 to_compact( CM ) when is_record( CM, compact_matrix4 ) ->
 	CM.
+
+
+
+% @doc Returns a matrix corresponding to the specified tuple-based one.
+%
+% The elements are expected to be already floats().
+%
+-spec from_tuple( tuple_matrix4() ) -> matrix4().
+from_tuple( Tuple ) when is_tuple( Tuple ) andalso size( Tuple ) =:= 12 ->
+	erlang:insert_element( _Index=1, Tuple, compact_matrix4 );
+
+from_tuple( Tuple ) when is_tuple( Tuple ) andalso size( Tuple ) =:= 16 ->
+	erlang:insert_element( _Index=1, Tuple, matrix4 ).
+
+
+% @doc Returns a tuple-based version of the specified matrix.
+-spec to_tuple( matrix4() ) -> tuple_matrix4().
+to_tuple( M=identity_4 ) ->
+	to_tuple( to_compact( M ) );
+
+% Here either a canonical_matrix4() | compact_matrix4() record:
+to_tuple( M ) ->
+	% Just chop the record tag, returning either m16() or m12():
+	erlang:delete_element( _Index=1, M ).
 
 
 

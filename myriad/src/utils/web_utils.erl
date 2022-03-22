@@ -447,9 +447,8 @@ url_info_to_string( #url_info{ protocol=Protocol, host_identifier=Host,
 % Note that other information (fragment, query, userinfo) will be ignored and
 % lost.
 %
-% Note: using string_to_uri_map/1  might be
-% a more complete option; this function remains mostly for backward
-% compatibility.
+% Note: using string_to_uri_map/1 might be a more complete option; this function
+% remains mostly for backward compatibility.
 %
 -spec string_to_url_info( ustring() ) -> url_info().
 string_to_url_info( String ) ->
@@ -551,6 +550,9 @@ escape_as_html_content( String ) ->
 % https://stackoverflow.com/questions/7248958/which-are-the-html-and-xml-special-characters
 % for further reference.
 %
+% Newly-introduced (R25) uri_string:quote/1 and uri_string:unquote might be
+% used.
+
 % (helper)
 escape_as_html_content( _String=[], Acc ) ->
 	lists:reverse( text_utils:to_unicode_list( Acc ) );

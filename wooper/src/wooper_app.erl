@@ -55,7 +55,7 @@
 		| { 'ok', pid(), State :: term() } | { 'error', Reason :: term() }.
 start( RestartType, StartArgs ) ->
 
-	trace_utils:debug_fmt( "Starting WOOPER application (restart type: ~w, "
+	trace_utils:debug_fmt( "Starting the WOOPER application (restart type: ~w, "
 		"start arguments: ~w).", [ RestartType, StartArgs ] ),
 
 	% Previously, no specific root supervisor was to launch, but:
@@ -79,7 +79,7 @@ start( RestartType, StartArgs ) ->
 -spec stop( State :: term() ) -> void().
 stop( State ) ->
 
-	trace_utils:debug_fmt( "Stopping WOOPER application (state: ~w).",
+	trace_utils:debug_fmt( "Stopping the WOOPER application (state: ~w).",
 						   [ State ] ),
 
 	% Previously (now managed by the root supervisor):

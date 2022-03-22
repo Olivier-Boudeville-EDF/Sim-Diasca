@@ -98,7 +98,7 @@ start( RestartType, StartArgs ) ->
 -spec stop( State :: term() ) -> void().
 stop( State ) ->
 
-	trace_utils:debug_fmt( "Stopping Traces application (state: ~w).",
+	trace_utils:debug_fmt( "Stopping the Traces application (state: ~w).",
 						   [ State ] ),
 
 	% Previously: (now managed by the root supervisor)

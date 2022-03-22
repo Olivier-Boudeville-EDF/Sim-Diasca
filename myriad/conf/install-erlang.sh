@@ -53,6 +53,7 @@ fi
 # Now we keep the MD5 sums of the sources of former Erlang/OTP versions, in
 # order to be able to switch back and forth more easily:
 
+erlang_md5_for_24_3="eb6dd8eaee8c97cf076eda0091abbc4c"
 erlang_md5_for_24_2="ebb6e865738255ae31ff680cc96d71a9"
 erlang_md5_for_24_1_5="39927334547d84ef0dc9e3a39b5c32ff"
 erlang_md5_for_24_1_4="392a5faf394304f7b8fb5cde0deca582"
@@ -73,15 +74,15 @@ erlang_md5_for_20_1="4c9eb112cd0e56f17c474218825060ee"
 
 
 # Current stable (an update of the next two lines is needed):
-erlang_version="24.2"
-erlang_md5="${erlang_md5_for_24_2}"
+erlang_version="24.3"
+erlang_md5="${erlang_md5_for_24_3}"
 
 
 # Candidate version (ex: either cutting-edge or, most probably, the previous
 # version that we deem stable enough, should the current introduce regressions):
 #
-erlang_version_candidate="24.1.5"
-erlang_md5_candidate="${erlang_md5_for_24_1_5}"
+erlang_version_candidate="24.2"
+erlang_md5_candidate="${erlang_md5_for_24_2}"
 
 base_install_dir="${HOME}/Software/Erlang"
 
@@ -117,7 +118,7 @@ patch_opt_short="-np"
 patch_opt_long="--no-patch"
 
 limit_opt_short="-ncl"
-limit_opt_long="-no-cpu-limit"
+limit_opt_long="--no-cpu-limit"
 
 previous_opt_short="-p"
 previous_opt_long="--previous"
@@ -159,7 +160,9 @@ Example:
   sudo install-erlang.sh
 	will install current official stable version of Erlang (${erlang_version}) in /usr/local/ (i.e. system-wide)
 
-For Debian-based distributions, you should preferably run beforehand, as root: 'apt-get update && apt-get build-dep erlang && apt-get install g++ make libncurses5-dev openssl libssl-dev libwxgtk2.8-dev libgl1-mesa-dev libglu1-mesa-dev libpng3', otherwise for example the crypto, wx or observer modules might not be available or usable.
+For Debian-based distributions (Debian 10, buster for example), you should preferably run beforehand, as root: 'apt-get update && apt-get build-dep erlang && apt-get install g++ make libncurses5-dev openssl libssl-dev libwxgtk2.8-dev libgl1-mesa-dev libglu1-mesa-dev libpng16-16', otherwise for example the crypto, wx or observer modules might not be available or usable.
+
+Note also that a recent-enough C++ compiler (typically gcc) must be available and must support C++17, which is needed for the JIT VM feature that we made mandatory.
 "
 
 
@@ -734,7 +737,11 @@ fi
 # Add below for example '--with-ssl=/usr/bin' to activate it.
 # crypto could be still disabled due to:
 # 'OpenSSL is configured for kerberos but no krb5.h found'.
-configure_opt="--enable-threads --enable-smp-support --enable-kernel-poll --enable-hipe"
+#
+# Now the JIT support is too important to allow not having it (a C++17 compiler
+# is thus required):
+#
+configure_opt="--enable-threads --enable-smp-support --enable-kernel-poll --enable-hipe --enable-jit"
 
 # Uncomment if building from a pre-Pentium4 computer:
 #configure_opt="${configure_opt} --enable-ethread-pre-pentium4-compatibility enable_ethread_pre_pentium4_compatibilit=yes"
@@ -942,7 +949,8 @@ if [ $do_generate_plt -eq 0 ]; then
 
 	# To include a PLT without knowing the current Erlang version:
 	# (reversed symlink better than a copy)
-	${ln} -s "${actual_plt_link}" "${actual_plt_file}"
+	#
+	${ln} -sf "${actual_plt_link}" "${actual_plt_file}"
 
 fi
 

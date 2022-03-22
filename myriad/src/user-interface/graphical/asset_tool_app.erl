@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2022 Olivier Boudeville
+% Copyright (C) 2010-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -23,35 +23,29 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2010.
 
 
 % @doc The very beginning of a tool to manage <b>assets</b>, especially for
 % rendering.
 %
-% @hidden Far from being ready.
+% @hidden Note: far from being ready.
 %
 -module(asset_tool_app).
 
 
-% For exec/0 export and al:
--include("app_facilities.hrl").
-
-
-
-% To remove:
--export([ gui_main_loop/1, get_canvas_width/0, get_canvas_height/0,
-		  render_main_view/1 ]).
+-export([ exec/0 ]).
 
 
 % State of the program, passed between event handlers.
 -record( app_state, {
 
-		  main_frame = undefined :: gui:frame(),
-		  load_image_button = undefined :: gui:button(),
-		  quit_button = undefined :: gui:button(),
-		  info_sizer = undefined :: gui:sizer(),
-		  left_panel = undefined :: gui:panel(),
-		  canvas = undefined :: gui:canvas() }).
+	main_frame :: gui:frame(),
+	load_image_button :: gui:button(),
+	quit_button :: gui:button(),
+	info_sizer :: gui:sizer(),
+	left_panel :: gui:panel(),
+	canvas :: gui:canvas() }).
 
 
 -type app_state() :: #app_state{}.
@@ -59,12 +53,14 @@
 
 
 % Shorthands:
+
 -type coordinate() :: linear:coordinate().
 -type canvas() :: gui_canvas:canvas().
 
-% FIXME:
+% Temporary:
 -export_type([ app_state/0 ]).
--export([ load_image/1 ]).
+-export([ gui_main_loop/1, get_canvas_width/0, get_canvas_height/0,
+		  render_main_view/1, load_image/1 ]).
 
 
 % @doc Returns the width of the main window.

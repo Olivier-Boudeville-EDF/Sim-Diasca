@@ -131,6 +131,11 @@ Post-Processing the Results
 
 Some approaches and tools can be used to transform results into knowledge. This involves generally synthesising the vast amount of data into a few relevant statistics or indicators.
 
+:raw-html:`<center><img src="xkcd-data_trap.png" id="responsive-image-small"></img></center>`
+:raw-latex:`\includegraphics[scale=0.8]{xkcd-data_trap.png}`
+
+
+
 The post-processing to be done depends significantly on the specific problem being studied. Currently, except probe reports, Sim-Diasca outputs mainly time series, letting the user feed these raw data to the suitable tools, on a domain-specific way.
 
 
@@ -158,7 +163,7 @@ Having Reasonable Expectations
 
 A simulation is not the silver bullet that will ask the right questions on the user's behalf and answer them with infinite accuracy:
 
-:raw-html:`<center><img src="xkcd-science_montage.png" id="responsive-image-medium"></img></center>`
+:raw-html:`<center><img src="xkcd-science_montage.png" id="responsive-image-small"></img></center>`
 :raw-latex:`\includegraphics[scale=0.6]{xkcd-science_montage.png}`
 
 Simulation being a rather expensive and time-consuming mode of evaluation, it should be used on carefully selected cases that cannot be solved satisfactorily thanks to other methods, like comparison with actual systems, expert assessments, coarse spreadsheet-based studies, etc.

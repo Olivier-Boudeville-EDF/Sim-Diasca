@@ -86,6 +86,16 @@ The Sim-Diasca white noise generator is used to generate this Gaussian law as we
 
 
 
+User-Specified Random Distributions
+===================================
+
+Non-uniform, arbitrarily-defined probability density functions are supported.
+
+For that, refer, in the ``random_utils`` module, to the ``generate_random_state_from/2``, ``get_sample_from/1`` and ``get_sample_from/2`` functions, and to the corresponding `Myriad section <http://myriad.esperide.org/#randomness>`_.
+
+
+
+
 Actual Management of Randomness
 ===============================
 

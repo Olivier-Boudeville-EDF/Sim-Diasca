@@ -42,7 +42,7 @@
 	rendering = [] :: option_list:option_list(),
 
 
-	% Bounding-box information:
+	% Bounding surface information:
 	% (can be for example a rectangle or a circle)
 	%
-	bounding_box = undefined :: maybe( bounding_box2:bounding_box2() ) } ).
+	bounding_surface :: maybe( bounding_surface:bounding_surface() ) } ).

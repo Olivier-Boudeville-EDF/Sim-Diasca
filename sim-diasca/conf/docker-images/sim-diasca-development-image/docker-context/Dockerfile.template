@@ -1,0 +1,154 @@
+# This is a recipe in order to create a Docker image that provides an
+# environment appropriate to the *development related to Sim-Diasca*, either on
+# an actual simulator based on the engine, or on the engine itself.
+
+# It contains thus:
+# - relevant OS-level prerequisites, including for the generation of
+#   documentation
+# - a full Erlang environment
+# - Sim-Diasca, as sources and precompiled binaries
+
+
+# This IMAGE_DESCRIPTION_TAG image has for Docker tag 'IMAGE_NAME_TAG', and
+# its full tag will be 'FULL_IMAGE_NAME_TAG'.
+#
+# More complete/specialised images may be derived from it.
+
+# Author: Omar Benhamid.
+# Adapted by: Olivier Boudeville.
+
+
+# The Docker context of this image is supposed to pre-exist; refer to the
+# prepare-docker-image.sh script (use its --for-dev option) in charge of
+# creating a suitable context and transforming this template into a final,
+# standalone Dockerfile.
+
+
+# Indeed this template shall be updated regarding notably the following tags in
+# order to become a proper Dockerfile (the '_TAG' suffix has been removed from
+# the next symbols so that they are not substituted):
+#  - PARENT_IMAGE (ex: "sim-diasca:documentation-generation", in its relevant
+#	 version)
+#  - ERLANG_VERSION (ex: "24.2")
+#  - EXTRA_PACKAGES: any organisation-specific packages of interest (ex: script
+#	 to enable a specific proxy)
+
+
+# Parent image, from which this image will derive.
+#
+# Ex: 'sim-diasca/documentation-generation:latest', possibly obtained from an
+# organisation-specific registry distributing adapted versions:
+#
+FROM PARENT_IMAGE_TAG
+
+# Defines:
+
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
+
+#ENV ERL_PORT_BASE=${SOFTWARE_BASE}/ErlPort
+#ENV ERL_PORT_GIT=https://github.com/hdima/erlport.git
+#ENV ERL_PORT_GIT_REV=246b7722d62b87b48be66d9a871509a537728962
+
+ENV LOGMX_BASE=/opt/Software/LogMX
+ENV LOGMX_INSTALL="${LOGMX_BASE}/LogMX-current-install"
+
+
+# As the parent image set a non-priviledged user:
+USER root
+
+
+# We bring here a lot more extra packages (compared to base run image and the
+# one adding the documentation support) in order to provided a more
+# user-friendly environment to the developer (at the expense of size):
+#
+RUN apt-get update && \
+	apt-get install --yes locales tree meld emacs eog evince gnuplot gnuplot-x11 bash-completion \
+	default-jre xfce4-terminal EXTRA_PACKAGES_TAG && \
+	/bin/rm -rf /var/lib/apt/lists/*
+
+# Vim support:
+#RUN sudo apt-get install -y vim vim-vimerl vim-vimerl-syntax vim-gtk vim-ctrlp vim-addon-manager ;\
+#		vim-addons install vimerl; \
+#		vim-addons install vimerl-syntax; \
+#		vim-addons install ctrlp
+
+
+RUN sed -i 's|^# en_US.UTF-8|en_US.UTF-8|1' /etc/locale.gen && locale-gen
+
+
+RUN /bin/mv -f ${SD_USER_HOME}/.bashrc ${SD_USER_HOME}/.bashrc.orig
+
+COPY --chown=${SD_USER_NAME}:${SD_USER_GROUP} .bashrc* ${SD_USER_HOME}/
+
+RUN echo ". ${SD_ENV_FILE}" >> ${SD_USER_HOME}/.bashrc
+
+COPY --chown=${SD_USER_NAME}:${SD_USER_GROUP} LogMX_v*.zip /tmp
+
+
+# Now switches to the normal user:
+USER ${SD_USER_NAME}
+
+WORKDIR ${SD_USER_HOME}
+
+# A bit of (overridden) documentation:
+COPY README-About-This-Docker-Image.txt ${SD_USER_HOME}/README-About-This-Docker-Image.txt
+
+
+
+# Install LogMX:
+
+RUN mkdir -p ${LOGMX_BASE}; cd ${LOGMX_BASE}; \
+	unzip /tmp/LogMX_v*.zip; \
+	ln -sf LogMX_v* LogMX-current-install; \
+	chmod +x LogMX-current-install/logmx.sh; \
+	/bin/rm -f /tmp/LogMX_*.zip; \
+	(echo "export LOGMX_BASE=${LOGMX_BASE}"; echo "export LOGMX_INSTALL=${LOGMX_INSTALL}"; echo "export PATH=${LOGMX_INSTALL}:\${PATH}") >> ${SD_ENV_FILE}
+
+
+RUN mkdir -p ${LOGMX_INSTALL}/parsers/classes/ceylan/parser
+
+# Includes license.LogMX.README.txt for sure, and any license.properties:
+#
+# (this is a way of having a conditional COPY)
+#
+COPY logging.properties logmx.properties managers.properties parsers.properties license.* ${LOGMX_INSTALL}/config/
+
+# Leave placeholder only if useful:
+RUN if [ -f "${LOGMX_INSTALL}/config/license.properties" ]; then /bin/rm -f "${LOGMX_INSTALL}/config/license.LogMX.README.txt"; fi
+
+COPY CeylanTraceParser.class ${LOGMX_INSTALL}/parsers/classes/ceylan/parser/
+
+# Install Erlport:
+#RUN mkdir -p ${ERL_PORT_BASE}; \
+#	cd ${ERL_PORT_BASE}; \
+#	git clone ${ERL_PORT_GIT}; \
+#	ln -s erlport ErlPort-current-install; \
+#	cd ${ERL_PORT_BASE}/erlport; \
+#	git checkout ${ERL_PORT_GIT_REV}; \
+#	. ${SD_ENV_FILE} && make
+
+
+
+# Install Python:
+# (note: beware to proxy)
+#RUN sudo apt-get update && sudo apt-get install -y curl; \
+#	curl -L https://raw.githubusercontent.com/yyuu/pyenv-installer/master/bin/pyenv-installer | bash; \
+#	echo 'export PATH="/home/dev/.pyenv/bin:${PATH}"' >> ${SD_ENV_FILE}; \
+#	echo 'eval "$(pyenv init -)"' >> ${SD_ENV_FILE}; \
+#	echo 'eval "$(pyenv virtualenv-init -)"' >> ${SD_ENV_FILE}
+
+#ENV PATH /home/dev/.pyenv/bin:${PATH}
+
+#RUN ${SD_ENV_FILE}; \
+#	pyenv install 3.5.2; \
+#	pyenv global 3.5.2 ;
+
+
+CMD xfce4-terminal
+
+RUN echo "Sim-Diasca Docker image for development successfully created!"
+RUN echo " - user: ${SD_USER_NAME} (sudoer)"
+RUN echo " - content of his home ${SD_USER_HOME}: $(/bin/ls -d ${SD_USER_HOME}/* 2>/dev/null)"
+RUN echo " - content of the software base ${SOFTWARE_BASE}: $(/bin/ls -d ${SOFTWARE_BASE}/*)"

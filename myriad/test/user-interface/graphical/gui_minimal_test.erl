@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2022 Olivier Boudeville
+% Copyright (C) 2013-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,7 +25,8 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 
 
-% <b>Minimal test for the MyriadGUI toolbox</b>: draws a few frames and exits.
+% @doc <b>Minimal test for the MyriadGUI toolbox</b>: draws a single frame and
+% exits.
 %
 % See the gui.erl tested module.
 %
@@ -37,10 +38,16 @@
 
 
 
+% @doc Actual execution of the test.
+-spec run_test_gui() -> void().
 run_test_gui() ->
 
 	test_facilities:display(
-	  "~nStarting the actual minimal test of MyriadGUI, from ~w.", [ self() ] ),
+		"~nStarting the actual minimal test of MyriadGUI, from ~w. ",
+		[ self() ] ),
+
+	trace_utils:notice( "An empty, resizable test frame shall appear; "
+						"the test will end as soon as it is closed." ),
 
 	gui:start(),
 
@@ -76,7 +83,7 @@ run_test_gui() ->
 
 
 
-% Runs the test.
+% @doc Runs the test.
 -spec run() -> no_return().
 run() ->
 

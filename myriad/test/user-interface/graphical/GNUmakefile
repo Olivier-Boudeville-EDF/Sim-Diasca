@@ -2,6 +2,8 @@ MYRIAD_TOP = ../../..
 
 .PHONY: all run test-all
 
+MODULES_DIRS = opengl
+
 
 all:
 

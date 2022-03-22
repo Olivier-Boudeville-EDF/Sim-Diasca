@@ -1,22 +1,22 @@
 % Copyright (C) 2012-2022 EDF R&D
-
+%
 % This file is part of Sim-Diasca.
-
-% Sim-Diasca is free software: you can redistribute it and/or modify
-% it under the terms of the GNU Lesser General Public License as
-% published by the Free Software Foundation, either version 3 of
-% the License, or (at your option) any later version.
-
-% Sim-Diasca is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-% GNU Lesser General Public License for more details.
-
-% You should have received a copy of the GNU Lesser General Public
-% License along with Sim-Diasca.
-% If not, see <http://www.gnu.org/licenses/>.
-
+%
+% Sim-Diasca is free software: you can redistribute it and/or modify it under
+% the terms of the GNU Lesser General Public License as published by the Free
+% Software Foundation, either version 3 of the License, or (at your option) any
+% later version.
+%
+% Sim-Diasca is distributed in the hope that it will be useful, but WITHOUT ANY
+% WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+% A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+% details.
+%
+% You should have received a copy of the GNU Lesser General Public License along
+% with Sim-Diasca.  If not, see <http://www.gnu.org/licenses/>.
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2012.
 
 
 % @doc This is the <b>root Sim-Diasca module</b>, to be called from most
@@ -79,7 +79,10 @@
 
 
 % Shorthand:
+
 -type ustring() :: text_utils:ustring().
+
+-type simulation_name() :: class_DeploymentManager:simulation_name().
 
 
 
@@ -199,21 +202,12 @@ init( SimulationSettings, DeploymentSettings, LoadBalancingSettings )
 
 		{ EPMDPort, _TcpRangeOption } ->
 			system_utils:set_environment_variable( "ERL_EPMD_PORT",
-							text_utils:integer_to_string( EPMDPort ) ),
+				text_utils:integer_to_string( EPMDPort ) ),
 			net_utils:launch_epmd( EPMDPort )
 
 	end,
 
-	NodePrefix = class_DeploymentManager:get_node_name_prefix_from(
-					SimulationName, SII ),
-
-	% We rename this user node accordingly:
-	UserNodeName = NodePrefix ++ "-user-node",
-
-	% Securing this might be difficult in a continuous integration context
-	% and/or from within a container facility such as Docker or Singularity:
-	%
-	net_utils:secure_distribution( UserNodeName ),
+	initialise_node_naming( SimulationName, SII ),
 
 	% Simulations will never step over others (previous ones):
 	Cookie = text_utils:string_to_atom( SimUUID ),
@@ -276,6 +270,52 @@ init( SimulationSettings, DeploymentSettings, LoadBalancingSettings )
 init( SimulationSettings, DeploymentSettings, LoadBalancingSettings ) ->
 	throw( { invalid_settings, SimulationSettings, DeploymentSettings,
 			 LoadBalancingSettings } ).
+
+
+
+% @doc Initialises a proper node naming mode, and a proper name for this user
+% node.
+%
+-spec initialise_node_naming( simulation_name(), sii() ) -> void().
+initialise_node_naming( SimulationName, SII ) ->
+
+	NodePrefix = class_DeploymentManager:get_node_name_prefix_from(
+					SimulationName, SII ),
+
+	% We rename this user node accordingly:
+	UserNodeName = NodePrefix ++ "-user-node",
+
+	InitialNodeNamingMode = net_utils:get_node_naming_mode(),
+
+	% Securing this might be difficult in a continuous integration context
+	% and/or from within a container facility such as Docker or Singularity
+	% and/or a cluster.
+	%
+	% The default order in terms of node naming modes of Myriad is first long
+	% names, then short ones. However the opposite order has been finally
+	% preferred for Sim-Diasca, being more in-line with HPC clusters whose job
+	% manager (typically Slurm) is to return only mere hostnames instead of
+	% FQDN:
+	%
+	OrderedNamingModes = [ short_name, long_name ],
+
+	SetNodeNamingMode = case net_utils:enable_preferred_distribution_mode(
+								UserNodeName, OrderedNamingModes ) of
+
+		{ ok, NamingMode } ->
+			NamingMode;
+
+		{ error, ErrorReason } ->
+			throw( { cannot_secure_distribution, UserNodeName, ErrorReason } )
+
+	end,
+
+	class_TraceEmitter:send_standalone( info, text_utils:format(
+		"In terms of node naming mode, "
+		"the initial one was ~ts, the secured one was reported as ~ts, and "
+		"determined as ~ts, corresponding to a user node name of '~ts'.",
+		[ InitialNodeNamingMode, SetNodeNamingMode,
+		  net_utils:get_node_naming_mode(), node() ] ), _EmitterCateg="Core" ).
 
 
 
@@ -441,6 +481,12 @@ run_simulation_and_browse_results( StopTick, DeploymentManagerPid ) ->
 shutdown() ->
 
 	% Stateless, hence resilience-friendly.
+
+	% Removes any simulation package archive lingering with the default, as
+	% expected not to be of interest:
+	%
+	file_utils:remove_file_if_existing(
+		class_DeploymentManager:get_default_deployment_package_name() ),
 
 	case naming_utils:is_registered( ?deployment_manager_name, global ) of
 

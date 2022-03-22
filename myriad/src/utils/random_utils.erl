@@ -26,7 +26,8 @@
 % Creation date: July 1, 2007.
 
 
-% @doc Gathering of various <b>random-related</b> facilities.
+% @doc Gathering of various <b>random-related</b> facilities, based on uniform
+% probabilities or user-defined, arbitrary ones.
 %
 % See random_utils_test.erl for the corresponding test.
 %
@@ -34,7 +35,7 @@
 
 
 
-% Random-related functions.
+% Functions related to uniform sampling:
 -export([ start_random_source/3, start_random_source/1, can_be_seeded/0,
 		  reset_random_source/1, stop_random_source/0,
 		  get_random_value/0, get_random_value/1, get_random_value/2,
@@ -47,6 +48,11 @@
 		  get_random_seed/0, check_random_seed/1 ]).
 
 
+% Functions related to non-uniform sampling:
+-export([ generate_random_state_from/1,
+		  get_sample_from/1, get_samples_from/2 ]).
+
+
 -type seed_element() :: integer().
 % Not future-proof enough (ex: not compliant with other solutions like
 % SIMD-oriented Fast Mersenne Twister).
@@ -55,13 +61,97 @@
 
 
 % random:ran/0 does not seem exported, replaced by seed/0:
--type random_state() :: seed() | rand:state() | any().
+-type random_state() :: seed()
+						| rand:state()
+						| alias_state() % for non-uniform random samples
+						| any().
 % For simpler generators, the state is just a seed, for all the others the state
-% is much more complex.
+% may be much larger/more complex.
+
+
+-type sample( T ) :: T.
+% The type of a sample that can be drawn from probability distribution; a
+% probability may be indeed associated to any kind of samples (integer ones,
+% strings, vectors, etc.).
+
+-type sample() :: sample( any() ).
+% Designates a sample value of unknown type.
+
+
+-type sample_entry( T ) :: { sample( T ), probability_like() }.
+% An entry corresponding to a sample of specified type in a probability
+% distribution.
+
+-type sample_entry() :: sample_entry( any() ).
+% An entry corresponding to a sample of unspecified type in a probability
+% distribution.
 
 
 
--export_type([ seed_element/0, seed/0, random_state/0 ]).
+-type discrete_probability_distribution( T ) :: [ sample_entry( T ) ].
+% The specification of a discrete probability distribution (a.k.a. frequency
+% distribution) whose samples are of the specified type.
+%
+% Ex: discrete_probability_distribution(integer()) or
+% discrete_probability_distribution(vector3:vector3()).
+%
+% Samples of null probability are usually omitted, as such a probability is
+% implicit and results in the corresponding sample never to be drawn.
+%
+% At least an entry with a non-null probability must be defined.
+%
+% Preferably a given sample value is specified only once, i.e. is declared in a
+% single entry (otherwise the distribution will behave as if the probabilities
+% for that sample were summed - yet the distribution will be less compact).
+%
+% Such a distribution can be obtained either directly or by sampling a fun( T ->
+% probability_like() function over a subset of its domain.
+
+
+-type discrete_probability_distribution() ::
+		discrete_probability_distribution( any() ).
+% The specification of a discrete probability distribution of unknown sample
+% type.
+
+
+-type pdf( S ) :: fun( ( S ) -> probability_like() ).
+% A Probability Density Function telling, for a given sample of type S, its
+% corresponding probability-like value.
+%
+% See also the math_utils:sample* functions and get_samples_from/2.
+
+
+-type pdf() :: pdf( any() ).
+% A Probability Density Function for samples of unspecified type.
+
+
+-record( alias_state, {
+
+	% Total number of sample entries:
+	entry_count :: count(),
+
+	% Array referencing all declared samples:
+	sample_values :: array( sample() ),
+
+	% Array keeping track of the sample corresponding to each category:
+	indexes :: array( positive_index() ),
+
+	% Array of probability-like for each category:
+	prob_likes :: array( probability_like() )
+
+} ).
+
+
+-opaque alias_state() :: #alias_state{}.
+% The state of a random generator in charge of producing samples according to
+% the specified discrete probability distribution, based on the alias method.
+
+
+-export_type([ seed_element/0, seed/0, random_state/0, alias_state/0,
+			   sample/0, sample/1, sample_entry/0, sample_entry/1,
+			   discrete_probability_distribution/0,
+			   discrete_probability_distribution/1,
+			   pdf/0, pdf/1 ]).
 
 
 % Uncomment to enable the logging of random operations:
@@ -86,8 +176,11 @@
 %  - floating point: then the lower bound is included and the uppoer one is
 %  excluded
 
-% If use_crypto_module is defined, the (now deprecated) crypto module will be
-% used, otherwise (which is the default now) the rand module will be used
+
+% About pseudorandom number generator (PRNG):
+%
+% If use_crypto_module is defined, the (now deprecated here) crypto module will
+% be used, otherwise (which is the default now) the rand module will be used
 % instead (the random module being now deprecated).
 %
 % Currently the crypto module is not used by default, as:
@@ -105,13 +198,19 @@
 %
 % Therefore crypto cannot be easily swapped with other random generators.
 %
-% The current module may support in the future the use of TinyMT and/or SFMT.
+% Finally, the requirements of a Cryptographically-secure PRNG (CSPRNG) exceed
+% the general PRNGs, and may be useless / of higher costs in other contexts.
+%
+% The current module considered using TinyMT and/or SFMT, yet now they have been
+% superseded by the xorshift, xoroshiro, and xoshiro algorithms by Sebastiano
+% Vigna, and the rand module offers variations of the xorshift and xoroshiro
+% algorithms, called exsss and exro928ss.
 %
 % Of course, switching random engines will generate different random series.
 %
 % They may also have different behaviours (ex: with regards to processes not
 % being explictly seeded, inheriting from a seed that is constant or not - the
-% shortest path to break reproducibility)
+% shortest path to break reproducibility).
 %
 %-define(use_crypto_module,).
 
@@ -119,6 +218,14 @@
 % Shorthands:
 
 -type count() :: basic_utils:count().
+-type positive_index() :: basic_utils:positive_index().
+
+-type array( T ) :: array:array( T ).
+
+
+-type probability_like() :: math_utils:probability_like().
+% Any number that can be interpreted ultimately as a probability.
+
 
 
 % Apparently, as soon as functions are defined within preprocessor guards, their
@@ -158,6 +265,7 @@
 -spec set_random_state( random_state() ) -> void().
 
 
+
 % @doc Generates a list of Count elements uniformly drawn in [1,N].
 -spec get_random_values( pos_integer(), count() ) -> [ pos_integer() ].
 get_random_values( N, Count ) ->
@@ -172,7 +280,7 @@ get_random_values_helper( N, Count, Acc ) ->
 
 
 
-% @doc Generates a list of Count elements uniformly drawn in [Nmin;Nmax].
+% @doc Generates a list of Count elements uniformly drawn in [Nmin,Nmax].
 -spec get_random_values( integer(), integer(), count() ) -> [ integer() ].
 get_random_values( Nmin, Nmax, Count ) ->
 	get_random_values_helper( Nmin, Nmax, Count, _Acc=[] ).
@@ -264,7 +372,7 @@ get_random_value( N ) ->
 
 
 % @doc Returns an integer random value generated from an uniform distribution in
-% [Nmin;Nmax] (thus with both bounds included), updating the random state in the
+% [Nmin,Nmax] (thus with both bounds included), updating the random state in the
 % process dictionary.
 %
 % Spec already specified, for all random settings.
@@ -273,7 +381,7 @@ get_random_value( Nmin, Nmax ) when Nmin =< Nmax ->
 	crypto:rand_uniform( Nmin, Nmax+1 ).
 
 
-% @doc Returns a floating-point random value in [0.0;N[ generated from an
+% @doc Returns a floating-point random value in [0.0,N[ generated from an
 % uniform distribution.
 %
 % Given a number (integer or float) N (positive or not), returns a random
@@ -515,7 +623,7 @@ get_random_value( N ) ->
 
 
 % doc: Returns an integer random value generated from an uniform distribution in
-% [Nmin;Nmax] (i.e. both bounds included), updating the random state in the
+% [Nmin,Nmax] (i.e. both bounds included), updating the random state in the
 % process dictionary.
 %
 % Spec already specified, for all random settings.
@@ -529,7 +637,7 @@ get_random_value( Nmin, Nmax ) when is_integer( Nmin )
 	%
 	N = Nmax - Nmin + 1,
 
-	% Drawn in [1;N]:
+	% Drawn in [1,N]:
 	get_random_value( N ) + Nmin - 1;
 
 get_random_value( Nmin, Nmax ) ->
@@ -537,7 +645,7 @@ get_random_value( Nmin, Nmax ) ->
 
 
 
-% doc: Returns a floating-point random value in [0.0;N[ generated from an
+% doc: Returns a floating-point random value in [0.0,N[ generated from an
 % uniform distribution.
 %
 % Given a number (integer or float) N (positive or not), returns a random
@@ -624,7 +732,9 @@ set_random_state( RandomState ) ->
 
 
 
-% Section which does not depend on defines.
+
+
+% Now sections that do not depend on defines.
 
 
 
@@ -669,3 +779,208 @@ check_random_seed( { A, B, C } ) when is_integer( A ) andalso is_integer( B )
 
 check_random_seed( S ) ->
 	throw( { invalid_random_seed, S } ).
+
+
+
+
+% Section for the generation of non-uniform random samples.
+%
+% Drawing from user-specified random laws (probability distributions / PDFs,
+% i.e. Probability Density Functions) corresponds to operating inverse transform
+% sampling (see https://en.wikipedia.org/wiki/Inverse_transform_sampling).
+
+% Here, such sampling is done on discrete (as opposed to continuous)
+% probabilities, which can be done efficiently thanks to the alias method (see
+% https://en.wikipedia.org/wiki/Alias_method), also known as the Walker method.
+%
+% The current implementation derives directly notably from the one kindly shared
+% (Apache License Version 2.0) by Sergey Prokhorov (email: me at seriyps dot
+% ru), refer to https://gist.github.com/seriyps/5593193, which itself derived
+% from a Python implementation.
+
+
+
+% @doc Returns the state of a random generator in charge of producing samples
+% according to the specified discrete probability distribution.
+%
+% Ex: MyDistributionState = random_utils:generate_random_state_from(
+%                              [{a,10}, {b,20}, {c,40}, {d,30}]).
+%
+% or MyDistributionState = random_utils:generate_random_state_from(
+%                              [{"hello",0.6}, {"goodbye",0.4}]).
+%
+% From this (const) state, computed once for all and whose construction does not
+% depend on any other random state (it is deterministic), any number of samples
+% respecting said distribution can be drawn, like in:
+%  ```
+%  S1 = random_utils:generate_random_state_from(MyDistributionState),
+%  Samples = [ random_utils:get_sample_from(MyDistributionState)
+%                        || _ <- lists:seq(1, Count) ]
+%  '''
+%
+% This preprocessing uses O(N) time, where N is the number of declared samples
+% of the corresponding distribution, in order to generate its returned state.
+%
+-spec generate_random_state_from( discrete_probability_distribution() ) ->
+											alias_state().
+generate_random_state_from( DiscreteProbDist ) ->
+	{ SampleValues, ProbLikes } = lists:unzip( DiscreteProbDist ),
+	generate_random_state_from( SampleValues, ProbLikes ).
+
+
+% (helper)
+-spec generate_random_state_from( [ sample() ], [ probability_like() ] ) ->
+										alias_state().
+generate_random_state_from( SampleValues, ProbLikes ) ->
+
+	EntryCount = length( ProbLikes ),
+
+	% Notations from https://en.wikipedia.org/wiki/Alias_method#Table_generation
+
+	% Ui = n.pi:
+
+	% Sum expected to be non-null (at least one non-null probability requested):
+	Factor = EntryCount / lists:sum( ProbLikes ),
+
+	ScaledProbs = [ Factor * PL || PL <- ProbLikes ],
+
+	{ UnderFulls, OverFulls } = split_by_index_fullness( ScaledProbs ),
+
+	%trace_utils:debug_fmt( "EntryCount = ~p, UnderFulls = ~p, OverFulls = ~p",
+	%                       [ EntryCount, UnderFulls, OverFulls ] ),
+
+	{ Indexes, UpdatedProbLikes } = fill_entries( UnderFulls, OverFulls,
+		array:new( EntryCount ), array:from_list( ScaledProbs ) ),
+
+	%trace_utils:debug_fmt( "Sample value array: ~p~nIndex array: ~p~n"
+	%   "Prob-like array: ~p",
+	%   [ SampleValues, array:to_list( Indexes ),
+	%     array:to_list( UpdatedProbLikes ) ] ),
+
+	SampleArray = array:from_list( SampleValues ),
+
+	#alias_state{ entry_count=EntryCount,
+				  sample_values=SampleArray,
+				  indexes=Indexes,
+				  prob_likes=UpdatedProbLikes }.
+
+
+
+% Returns two index lists, the second corresponding to the "overfull" group
+% (where Ui > 1), the first to the "underfull" group (where (Ui < 1 and Ki has
+% not been initialized) or (where Ui = 1 or Ki has been initialized) - that is,
+% respectively, the "strict underfull" subgroup and the "exactly full" one).
+%
+% (helper)
+%
+-spec split_by_index_fullness( [ probability_like() ] ) ->
+					{ UnderFulls:: [ positive_index() ],
+					  OverFulls :: [ positive_index() ]  }.
+split_by_index_fullness( ScaledProbLikes ) ->
+	split_by_index_fullness( ScaledProbLikes, _UnderFulls=[],
+							 _OverFulls=[], _Idx=0 ).
+
+
+% (helper)
+split_by_index_fullness( _ScaledProbLikes=[], UnderFulls, OverFulls, _Idx ) ->
+	{ UnderFulls, OverFulls };
+
+split_by_index_fullness( _ScaledProbLikes=[ PL | T ], UnderFulls, OverFulls,
+						 Idx ) when PL < 1 ->
+	split_by_index_fullness( T, [ Idx | UnderFulls ], OverFulls, Idx+1 );
+
+split_by_index_fullness( _ScaledProbLikes=[ _PL | T ], UnderFulls, OverFulls,
+						 Idx ) -> % Implicit: when PL >= 1 ->
+	split_by_index_fullness( T,  UnderFulls, [ Idx | OverFulls ], Idx+1 ).
+
+
+
+% Allocates the unused space in an underfull entry (U) to an overfull one (O),
+% so that U becomes exactly full.
+%
+% (helper)
+%
+fill_entries( _UnderFulls=[ UIdx | TU ], _OverFulls=[ OIdx | TO ], IdxArray,
+			  ProbLikeArray ) ->
+	% Allocate the unused space in entry O to outcome U:
+	NewIdxArray = array:set( _Idx=UIdx, _Value=OIdx, IdxArray ),
+	UPL = array:get( UIdx, ProbLikeArray ),
+	OPL = array:get( OIdx, ProbLikeArray ),
+
+	% Remove the allocated space from entry U:
+	NewOPL = OPL + UPL - 1,
+
+	NewProbLikeArray = array:set( OIdx, NewOPL, ProbLikeArray ),
+
+	% Place O in the right list:
+	{ NewUnderFulls, NewOverFulls } = case NewOPL < 1 of
+
+		true ->
+			{ [ OIdx | TU ], TO };
+
+		_ ->
+			{ TU, [ OIdx | TO ] }
+
+	end,
+
+	fill_entries( NewUnderFulls, NewOverFulls, NewIdxArray, NewProbLikeArray );
+
+
+% Implicitly UnderFulls and/or OverFulls is empty here:
+fill_entries( _UnderFulls, _OverFulls, IdxArray, ProbLikeArray ) ->
+	{ IdxArray, ProbLikeArray }.
+
+
+
+% @doc Returns a new sample drawn from the discrete probability distribution
+% specified through its (constant) state (which is thus not returned), this
+% state having been obtained initially (and once for all) from
+% generate_random_state_from/1.
+%
+% Each sample is generated in constant time O(1) time with regard to the number
+% of samples declared in the corresponding distribution.
+%
+% Such a generation depends (and modifies) the state of the underlying uniform
+% random generator (ex: see start_random_source/0); precisely each non-uniform
+% sampling results in two uniform samples to be drawn.
+%
+-spec get_sample_from( alias_state() ) -> sample().
+get_sample_from( #alias_state{ entry_count=EntryCount,
+							   sample_values=SampleValueArray,
+							   indexes=IndexArray,
+							   prob_likes=ProbLikeArray } ) ->
+
+	% Thus uniform in [0, EntryCount-1]:
+	PLIdx = get_random_value( EntryCount ) - 1,
+
+	% Thus uniform in [0.0, 1.0[:
+	P = get_random_value(),
+
+	SampleIdx = case P =< array:get( PLIdx, ProbLikeArray ) of
+
+		true ->
+			PLIdx;
+
+		_ ->
+			array:get( PLIdx, IndexArray )
+
+	end,
+
+	array:get( SampleIdx, SampleValueArray ).
+
+
+
+% @doc Returns the specified number of samples drawn from the discrete
+% probability distribution specified through its (constant) state (which is thus
+% not returned), as obtained from generate_random_state_from/1.
+%
+% Each sample is generated in constant time (O(1) time with regard to the number
+% of samples declared in the corresponding distribution.
+%
+% Such a generation depends (and modifies) the state of the underlying uniform
+% random generator (ex: see start_random_source/0); precisely each non-uniform
+% sampling results in two uniform samples to be drawn.
+%
+-spec get_samples_from( count(), alias_state() ) -> [ sample() ].
+get_samples_from( Count, AliasState ) ->
+	[ get_sample_from( AliasState ) || _ <- lists:seq( 1, Count ) ].

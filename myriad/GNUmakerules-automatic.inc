@@ -271,6 +271,11 @@ endif
 	@$(ERL_PARAMETERIZED_LAUNCHER) $(NODE_NAMING) $@-$$USER --eval $$(echo $@|sed 's|_run$$|_test:run()|1') $(ALL_CMD_LINE_OPTIONS)
 
 
+%_run_with_shell: %_test
+	@echo "		Running unitary test with shell from $^"
+	@$(ERL_PARAMETERIZED_LAUNCHER) $(NODE_NAMING) $@-$$USER --eval $$(echo $@|sed 's|_run_with_shell$$|_test:run()|1') $(ALL_CMD_LINE_OPTIONS_FOR_SHELL)
+
+
 
 # Not wanting here the options for standard executions (such as -noinput or
 # alike):

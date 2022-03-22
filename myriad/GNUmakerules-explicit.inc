@@ -45,6 +45,7 @@
 			clean-database clean-recurse clean-outputs clean-ast-debug       \
 			real-clean track                                                 \
 			info-platform info-hardware info-software info-source-layout     \
+			info-erlang-target-version                                       \
 			info info-files info-meta info-erlang info-python info-java      \
 			info-protobuf                                                    \
 			info-sync info-check info-rebar3 info-compile info-options       \
@@ -343,10 +344,22 @@ clean-include-links:
 # All of them should be available only from the root of the layer:
 ifeq ($(BASE_MAKEFILE),true)
 
-# For a better compliance to OTP conventions:
+# For a better compliance to OTP conventions, copies the BEAM files of this
+# layer (only) into its ebin directory:
+#
 copy-beams-to-ebin:
 	@echo "  Copying BEAM files to local ebin ($$(pwd)/ebin)"
 	@mkdir -p ebin; find src -name '*.beam' -exec /bin/cp -f '{}' ebin ';'
+
+
+# For a layer and its (potentially multiple) direct dependencies (for Myriad:
+# none), knowing that this may lead in case of diamond-shaped dependencies to
+# trigger this operation more than once for a given layer (not a problem as not
+# demanding and idempotent):
+#
+copy-all-beams-to-ebins: copy-beams-to-ebin
+	@if [ -n "$(PREDECESSOR_LAYER_TOPS)" ]; then for d in $(PREDECESSOR_LAYER_TOPS); do (cd $$d && $(MAKE) -s copy-all-beams-to-ebins); done; fi
+
 
 
 FAKE_OTP_ROOT := /tmp/ceylan-fake-otp-projects/$(PROJECT_NAME_FOR_REBAR)
@@ -742,7 +755,7 @@ rebar3-populate-build-tree:
 # We generate a .app file and place it both in the OTP build tree (by default:
 # _build/lib/...) and in an ebin directory directly at the GIT root, as it is
 # expected when having specified a GIT dependency with rebar, such as: {myriad,
-# {git, "git://github.com/Olivier-Boudeville/Ceylan-Myriad"} }
+# {git, "https://github.com/Olivier-Boudeville/Ceylan-Myriad.git"} }
 #
 # For the listed modules, this target removes paths, extension, replaces
 # newlines with commas, and removes the last one.
@@ -1154,11 +1167,21 @@ info-hardware:
 	@echo $$(free --total --human)
 
 
-# cat /etc/lsb-release would not work everywhere
+# cat /etc/lsb-release would not work everywhere:
 info-software:
-	@echo "OS: $$(lsb_release --all 2>/dev/null)"
-	@echo "Rebar: $$(rebar3 version)"
-	@echo "Erlang: $$(erl -eval '{ok, Version} = file:read_file(filename:join([code:root_dir(), "releases", erlang:system_info(otp_release), "OTP_VERSION"])), io:fwrite(Version), halt().' -noshell)"
+	@echo " - local operating system:\n\
+$$(lsb_release --all 2>/dev/null)"
+	@# Disabled as trigger a potentially blocking network access: echo " - rebar version: $$(rebar3 version)"
+	@echo " - expected Erlang version: $(ERLANG_TARGET_VERSION)"
+	@echo " - local Erlang version: $$(erl -eval '{ok, Version} = file:read_file(filename:join([code:root_dir(), "releases", erlang:system_info(otp_release), "OTP_VERSION"])), io:fwrite(Version), halt().' -noshell)"
+
+
+# Returns the Erlang version that is to be installed by Myriad, i.e. its
+# currently supported one (this is the only place where an Erlang version shall
+# be defined):
+#
+info-erlang-target-version:
+	@$(MYRIAD_TOP)/conf/install-erlang.sh --version
 
 
 info-source-layout:

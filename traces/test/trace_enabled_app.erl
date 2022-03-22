@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2022 Olivier Boudeville
+% Copyright (C) 2011-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -23,14 +23,16 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
-% Creation date: Tuesday, January 11, 2011
+% Creation date: Tuesday, January 11, 2011.
 
 
-% This is a very simple trace-enabled application, to ensure defines, build
-% targets and all other elements support them correctly.
+% @doc This is a <b>most simple trace-enabled application</b>, to ensure that
+% defines, build targets and all other elements support them correctly.
 %
 -module(trace_enabled_app).
 
+
+-export([ exec/0 ]).
 
 -include("traces_for_apps.hrl").
 

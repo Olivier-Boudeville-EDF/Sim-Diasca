@@ -66,7 +66,9 @@
 
 
 -type color_coordinate() :: float().
-% Color coordinate, in [0,1].
+% Color coordinate, in [0.0,1.0].
+% For example used and clamped by OpenGL.
+
 
 -type alpha_coordinate() :: color_coordinate().
 % An alpha-transparency color coordinate.
@@ -75,7 +77,7 @@
 
 -type render_rgb_color() :: { Red :: color_coordinate(),
 			Green :: color_coordinate(), Blue :: color_coordinate() }.
-% A floating-point RGB color (whose coordinates are typically in [0.0, 1.0]).
+% A floating-point RGB color (whose coordinates are typically in [0.0,1.0]).
 %
 % The three components shall be encoded with the sRGB transfer function.
 %

@@ -44,6 +44,7 @@
 
 % Shorthands:
 
+-type ustring() :: text_utils:ustring().
 -type class_info() :: wooper_info:class_info().
 
 
@@ -122,9 +123,9 @@ manage_attributes( ClassInfo=#class_info{ class={ Classname, _LocForm },
 
 		{ #function_info{
 
-			 clauses=[ { clause, _FileLoc, _Patterns=[], _Guards=[],
-						 _Body=[ AttrsForm ] } ],
-			 exported=ExportLcs }, ShrkFunTable } ->
+				 clauses=[ { clause, _FileLoc, _Patterns=[], _Guards=[],
+							 _Body=[ AttrsForm ] } ],
+				 exported=ExportLcs }, ShrkFunTable } ->
 			{ AttrsForm, ExportLcs, ShrkFunTable };
 
 		{ OtherFunInfo, _SomeTable } ->
@@ -139,8 +140,8 @@ manage_attributes( ClassInfo=#class_info{ class={ Classname, _LocForm },
 										ExportLocs, FunExportTable ),
 
 	% First, register the corresponding attributes:
-	NewAttributeTable =
-	  register_attributes_from_form( AttrListForm, AttributeTable, Classname ),
+	NewAttributeTable = register_attributes_from_form( AttrListForm,
+											AttributeTable, Classname ),
 
 	% Then fix the AST of the temporary function, for the final getter one:
 	NewAttrListForm = transform_attribute_getter_form( AttrListForm ),
@@ -200,7 +201,7 @@ manage_attributes( ClassInfo=#class_info{ class={ Classname, _LocForm },
 										  StaticTable ),
 
 	%trace_utils:debug_fmt( "As class-specific attributes, we have ~ts",
-	%					   [ attributes_to_string( NewAttributeTable ) ] ),
+	%                       [ attributes_to_string( NewAttributeTable ) ] ),
 
 	ClassInfo#class_info{ attributes=NewAttributeTable,
 						  function_exports=NewFunExportTable,
@@ -265,7 +266,7 @@ register_helper( _AttrFormList=[ _AttrForm={ tuple,_, [ AttrNameForm,
 				 Classname ) ->
 
 	NewAttributeTable = register_attribute( AttrNameForm, TypeForm,
-			  QualifiersForm, DescriptionForm, AttributeTable, Classname ),
+				QualifiersForm, DescriptionForm, AttributeTable, Classname ),
 
 	register_helper( T, NewAttributeTable, Classname );
 
@@ -329,7 +330,7 @@ register_attribute( AttrNameForm, TypeForm, QualifiersForm, DescriptionForm,
 
 		true ->
 			wooper_internals:raise_usage_error( "multiple declarations for "
-				   "class attribute '~ts'.", [ AttrName ], Classname );
+				"class attribute '~ts'.", [ AttrName ], Classname );
 
 		false ->
 			table:add_entry( AttrName, AttrInfo, AttributeTable )
@@ -395,7 +396,7 @@ filter_attribute_forms( _ListForm=[ Name={ atom, _FileLoc, _Name } | T ],
 
 % Attribute name and description specified:
 filter_attribute_forms( _ListForm=[ { tuple, _FileLoc,
-									  [ Name, Description ] } | T ], Acc ) ->
+										[ Name, Description ] } | T ], Acc ) ->
 
 	AttrName = filter_name( Name ),
 
@@ -411,7 +412,7 @@ filter_attribute_forms( _ListForm=[ { tuple, _FileLoc,
 
 % Attribute name, type and description specified:
 filter_attribute_forms( _ListForm=[
-		  { tuple, _FileLoc, [ Name, Type, Description ] } | T ], Acc ) ->
+			{ tuple, _FileLoc, [ Name, Type, Description ] } | T ], Acc ) ->
 
 	AttrName = filter_name( Name ),
 
@@ -445,7 +446,7 @@ filter_attribute_forms( _ListForm=[ { tuple, _FileLoc,
 
 filter_attribute_forms( [ OtherForm | _T ], _Acc ) ->
 	wooper_internals:raise_usage_error(
-	  "invalid class attribute: ~p", [ OtherForm ] ).
+		"invalid class attribute: ~p", [ OtherForm ] ).
 
 
 
@@ -456,7 +457,7 @@ filter_name( NameForm={ atom, _FileLoc, _AttrName } ) ->
 
 filter_name( OtherNameForm ) ->
 	wooper_internals:raise_usage_error(
-	  "invalid name for class attribute: ~p", [ OtherNameForm ] ).
+		"invalid name for class attribute: ~p", [ OtherNameForm ] ).
 
 
 
@@ -494,7 +495,7 @@ filter_qualifier( _Qualifier ) ->
 filter_description( AttrDescription={ string, FileLoc, _DescString } ) ->
 	% Returning a binary version thereof:
 	{ bin, FileLoc,
-	  [ { bin_element, FileLoc, AttrDescription, default, default } ] };
+		[ { bin_element, FileLoc, AttrDescription, default, default } ] };
 
 filter_description( UnexpectedAttrDescription ) ->
 	throw( { unexpected_attribute_description, UnexpectedAttrDescription } ).
@@ -564,7 +565,7 @@ handle_attribute_type( _TypeForm=undefined, _Classname, _AttrName ) ->
 	undefined;
 
 handle_attribute_type( TypeForm, _Classname, _AttrName )
-  when is_tuple( TypeForm ) ->
+								when is_tuple( TypeForm ) ->
 
 	%trace_utils:warning_fmt( "Storing attribute type as its raw form:~n  ~p",
 	%						 [ TypeForm ] ),
@@ -574,7 +575,7 @@ handle_attribute_type( TypeForm, _Classname, _AttrName )
 % Probably never triggered:
 handle_attribute_type( _TypeForm, Classname, AttrName ) ->
 	wooper_internals:raise_usage_error(
-	  "invalid type for class attribute '~ts'.", [ AttrName ], Classname ).
+		"invalid type for class attribute '~ts'.", [ AttrName ], Classname ).
 
 
 
@@ -593,7 +594,7 @@ handle_attribute_qualifiers( Qualifiers={cons,_,_H,_T}, Classname, AttrName ) ->
 
 	% It could be checked that no initial is specified if a const is.
 	[ handle_attribute_qualifier( Q, Classname, AttrName )
-	  || Q <- QualifierList ];
+						|| Q <- QualifierList ];
 
 % A single qualifier shall be promoted to a list:
 handle_attribute_qualifiers( Qualifier, Classname, AttrName ) ->
@@ -632,12 +633,14 @@ handle_attribute_qualifier( {atom,_,const}, _Classname, _AttrName ) ->
 
 handle_attribute_qualifier( {atom,_,Other}, Classname, AttrName ) ->
 	wooper_internals:raise_usage_error(
-	  "invalid qualifier '~ts' for class attribute '~ts'.", [ Other, AttrName ],
-	  Classname );
+		"invalid qualifier '~ts' for class attribute '~ts'.",
+		[ Other, AttrName ],
+		Classname );
 
 handle_attribute_qualifier( _UnexpectedForm, Classname, AttrName ) ->
 	wooper_internals:raise_usage_error(
-	  "invalid qualifier for class attribute '~ts'.", [ AttrName ], Classname ).
+		"invalid qualifier for class attribute '~ts'.", [ AttrName ],
+		Classname ).
 
 
 
@@ -652,19 +655,19 @@ handle_attribute_description( _DescriptionForm={string,_,Description},
 
 handle_attribute_description( _DescriptionForm, Classname, AttrName ) ->
 	wooper_internals:raise_usage_error(
-	  "invalid description (not a string) for class attribute '~p'.",
-	  [ AttrName ], Classname ).
+		"invalid description (not a string) for class attribute '~p'.",
+		[ AttrName ], Classname ).
 
 
 
 % @doc Returns a textual description of specified attribute table.
--spec attributes_to_string( attribute_table() ) -> text_utils:ustring().
+-spec attributes_to_string( attribute_table() ) -> ustring().
 attributes_to_string( AttributeTable ) ->
 
 	AttrInfos = table:values( AttributeTable ),
 
-	AttrStrings = [ attribute_to_string( AttrInfo )
-					|| AttrInfo <- AttrInfos ],
+	AttrStrings =
+		[ attribute_to_string( AttrInfo ) || AttrInfo <- AttrInfos ],
 
 	case length( AttrStrings ) of
 
@@ -680,8 +683,7 @@ attributes_to_string( AttributeTable ) ->
 
 
 % @doc Returns a textual description of specified attribute information.
--spec attribute_to_string( wooper_info:attribute_info() ) ->
-								 text_utils:ustring().
+-spec attribute_to_string( wooper_info:attribute_info() ) -> ustring().
 attribute_to_string( #attribute_info{ name=Name,
 									  type=TypeForm,
 									  qualifiers=Qualifiers,
@@ -708,5 +710,5 @@ attribute_to_string( #attribute_info{ name=Name,
 	end,
 
 	text_utils:format(
-	  "attribute named '~ts' of ~ts, with qualifiers ~w, and ~ts",
-	  [ Name, TypeString, Qualifiers, DescString ] ).
+		"attribute named '~ts' of ~ts, with qualifiers ~w, and ~ts",
+		[ Name, TypeString, Qualifiers, DescString ] ).

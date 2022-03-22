@@ -25,8 +25,7 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 
 
-
-% Unit tests for the list management utilities.
+% @doc Unit tests for the <b>list management</b> utilities.
 %
 % See the list_utils.erl tested module.
 %

@@ -17,6 +17,7 @@
 % If not, see <http://www.gnu.org/licenses/>.
 
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
+% Creation date: 2008.
 
 
 % @doc Unit tests for the <b>Describable</b> class implementation.
@@ -26,16 +27,16 @@
 -module(class_Describable_test).
 
 
-% For facilities common to all cases:
--include("sim_diasca_for_cases.hrl").
+% Not a simulation case per se, no Sim-Diasca include:
+-include("traces_for_tests.hrl").
 
 
 
-% @doc runs the tests.
+% @doc Runs the tests.
 -spec run() -> no_return().
 run() ->
 
-	?case_start,
+	?test_start,
 
 	?test_info( "Creating a test Describable." ),
 
@@ -60,4 +61,4 @@ run() ->
 
 	wooper:delete_synchronously_instance( MyDescribable ),
 
-	?case_stop.
+	?test_stop.

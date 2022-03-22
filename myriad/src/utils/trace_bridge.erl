@@ -26,18 +26,18 @@
 % Creation date: Sunday, October 18, 2020.
 
 
-
-% @doc The trace bridge allows a software to depend only on the Ceylan-Myriad
-% layer, yet to be able (optionally) to be using another piece of software
-% (possibly the Ceylan-Traces layer, refer to [http://traces.esperide.org/]) at
-% runtime for <b>its logging</b>, so that in all cases exactly one (and the most
+% @doc The <b>trace bridge</b> allows modules to depend only on the
+% Ceylan-Myriad layer, yet to rely optionally on a non-Myriad code (possibly the
+% Ceylan-Traces layer, refer to [http://traces.esperide.org/]) at runtime for
+% <b>its logging</b>, so that in all cases exactly one (and the most
 % appropriate) logging system is used, even when lower-level libraries are
-% involved, and with no change of source code to be operated on that software.
+% involved (designed to operate with or without an advanced trace system), and
+% with no change of source code to be operated on these user modules.
 %
 % It is useful to provide native, integrated, higher-level logging to basic
-% libraries (ex: LEEC, see [https://github.com/Olivier-Boudeville/Ceylan-LEEC]),
-% should their user require it - while being able to remain lean and mean if
-% wanted (e.g while keeping the dependency to Ceylan-Traces optional).
+% libraries (ex: Ceylan-LEEC, see [http://leec.esperide.org]), should their user
+% require it - while being able to remain lean and mean if wanted (e.g while
+% keeping the dependency to Ceylan-Traces optional).
 %
 % Switching to a more advanced trace system (typically Ceylan-Traces) is just a
 % matter of having the process of interest call the register/3 function below.
@@ -48,7 +48,15 @@
 %  trace_utils)
 %
 %  - Ceylan-Traces: trace_bridging_test.erl (using then our advanced trace
-%  system)
+%  system) ; for example:
+%
+%   BridgeSpec = trace_bridge:get_bridge_spec( _MyEmitterName="MyBridgeTester",
+%     _MyCateg="MyTraceCategory",
+%     _BridgePid=class_TraceAggregator:get_aggregator() ),
+%
+%   trace_bridge:register( BridgeSpec ), [...]
+%
+%  - Ceylan-LEEC: most modules, including leec.erl
 %
 -module(trace_bridge).
 
@@ -107,14 +115,14 @@
 % The process dictionary is used in order to avoid carrying along too many
 % parameters.
 %
-% No special-casing the 'void' severity, as not used frequently enough.
+% Not special-casing the 'void' severity, as not used frequently enough.
 
 
 -opaque bridge_spec() :: { TraceEmitterName :: bin_string(),
 						   TraceCategory :: bin_string(),
 						   BridgePid :: bridge_pid() }.
 % Typically the information transmitted by a trace emitter when creating a
-% lower-level process that may or may not use fancy tracing.
+% lower-level process that may or may not use advanced logging.
 
 
 -export_type([ bridge_spec/0 ]).
@@ -225,6 +233,10 @@ bridge_spec_to_info( _BridgeSpec={ BinTraceEmitterName, BinTraceCategory,
 	% BridgeInfo:
 	{ BinTraceEmitterName, BinTraceCategory, Location, BridgePid,
 	  DefaultApplicationTimestamp };
+
+bridge_spec_to_info( _BridgeSpec={ _BinTraceEmitterName, _BinTraceCategory,
+								   NotAPid } ) ->
+	throw( { invalid_bridge_spec, no_bridge_pid, NotAPid } );
 
 bridge_spec_to_info( OtherBridgeSpec ) ->
 	throw( { invalid_bridge_spec, OtherBridgeSpec } ).
@@ -456,7 +468,7 @@ send_bridge( SeverityType, Message,
 	AppTimestampString = text_utils:term_to_binary( AppTimestamp ),
 
 	TimestampText = text_utils:string_to_binary(
-					time_utils:get_textual_timestamp() ),
+						time_utils:get_textual_timestamp() ),
 
 	BridgePid ! { send,
 		[ _TraceEmitterPid=self(),

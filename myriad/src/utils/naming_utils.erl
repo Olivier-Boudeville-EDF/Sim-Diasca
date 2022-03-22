@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2022 Olivier Boudeville
+% Copyright (C) 2007-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -57,6 +57,11 @@
 -type registration_name() :: atom().
 % Necessarily an atom.
 
+-type local_designator() :: pid() | registration_name().
+% The two ways according to which a locally-registered process can be
+% designated: either directly thanks to its PID or to the name under which it is
+% locally registered.
+
 
 -type registration_scope() :: 'global_only'
 							| 'local_only'
@@ -73,7 +78,8 @@
 % Not to be mixed up with a registration scope.
 
 
--export_type([ registration_name/0, registration_scope/0, look_up_scope/0 ]).
+-export_type([ registration_name/0, local_designator/0,
+			   registration_scope/0, look_up_scope/0 ]).
 
 
 
@@ -91,6 +97,7 @@
 % Shorthands:
 
 -type atom_node_name() :: net_utils:atom_node_name().
+
 
 
 % @doc Registers the current process under specified name and scope.
@@ -132,7 +139,7 @@ register_as( Pid, Name, local_only ) when is_atom( Name ) ->
 
 		error:badarg ->
 
-			case is_registered( Name, local ) of
+			case is_registered( Name, _Scope=local ) of
 
 				% No more information obtained:
 				not_registered ->
@@ -270,7 +277,7 @@ unregister( Name, global_only ) ->
 
 		ExceptionType:Exception ->
 			throw( { global_unregistration_failed, Name,
-						{ ExceptionType, Exception } } )
+					 { ExceptionType, Exception } } )
 
 	end;
 

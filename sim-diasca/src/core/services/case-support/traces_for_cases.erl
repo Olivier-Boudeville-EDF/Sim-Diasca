@@ -23,7 +23,7 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
-% Creation date: July 1, 2007.
+% Creation date: July 1, 2012.
 
 
 % Directly obtained from traces_for_tests.erl.
@@ -222,7 +222,7 @@ case_start( ModuleName, _InitTraceSupervisor=false, TraceType ) ->
 
 % @doc To be called from the counterpart macro.
 -spec case_stop( module_name(), trace_aggregator_pid(), boolean() ) ->
-									no_return().
+													no_return().
 case_stop( ModuleName, TraceAggregatorPid, WaitForTraceSupervisor ) ->
 
 	%trace_utils:info_fmt( "Case stopping (aggregator: ~w, wait supervisor: "
@@ -247,7 +247,7 @@ case_stop( ModuleName, TraceAggregatorPid, WaitForTraceSupervisor ) ->
 
 % @doc To be called from the counterpart macro.
 -spec case_immediate_stop( module_name(), trace_aggregator_pid() ) ->
-								no_return().
+													no_return().
 case_immediate_stop( ModuleName, TraceAggregatorPid ) ->
 
 	case_stop_on_shell( ModuleName, TraceAggregatorPid ),
@@ -258,7 +258,7 @@ case_immediate_stop( ModuleName, TraceAggregatorPid ) ->
 
 % @doc To be called from the counterpart macro.
 -spec case_stop_on_shell( module_name(), trace_aggregator_pid() ) ->
-								no_return().
+													no_return().
 case_stop_on_shell( ModuleName, TraceAggregatorPid ) ->
 
 	?case_notice_fmt( "Stopping case ~ts.", [ ModuleName ] ),

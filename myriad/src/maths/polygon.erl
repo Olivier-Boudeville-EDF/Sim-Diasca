@@ -26,7 +26,6 @@
 % Creation date: Monday, February 15, 2010.
 
 
-
 % @doc Gathering of various facilities for <b>polygon</b> management.
 %
 % When used for rendering, coordinates are expected to be often integers.
@@ -46,7 +45,7 @@
 
 
 % For the circle record and al:
--include("bounding_box2.hrl").
+-include("bounding_surface.hrl").
 
 
 % Construction-related section.
@@ -64,8 +63,8 @@
 		  set_fill_color/2, get_fill_color/1 ]).
 
 
-% Bounding-box related section.
--export([ update_bounding_box/2 ]).
+% Bounding-surface related section.
+-export([ update_bounding_surface/2 ]).
 
 
 % Shorthands:
@@ -84,7 +83,7 @@
 -type square_distance() :: linear:square_distance().
 -type area() :: linear:area().
 
--type bounding_algorithm() :: bounding_box2:bounding_algorithm().
+-type bounding_algorithm() :: bounding_surface:bounding_algorithm().
 
 
 % Construction-related section.
@@ -156,7 +155,7 @@ get_diameter( Polygon ) ->
 % defines the rectangle from two opposite points.
 %
 -spec get_smallest_enclosing_rectangle( polygon() ) ->
-										    { any_point2(), any_point2() }.
+											{ any_point2(), any_point2() }.
 get_smallest_enclosing_rectangle( Polygon ) ->
 
 	case Polygon#polygon.vertices of
@@ -377,7 +376,7 @@ render( Polygon, Canvas ) ->
 
 			gui:draw_polygon( Canvas, Vertices ),
 
-			case Polygon#polygon.bounding_box of
+			case Polygon#polygon.bounding_surface of
 
 				#circle{ center=Center, square_radius=SquareRadius } ->
 					IntCenter = point2:roundify( Center ),
@@ -398,41 +397,42 @@ render( Polygon, Canvas ) ->
 -spec to_string( polygon() ) -> ustring().
 to_string( Polygon ) ->
 
-	BBText = case Polygon#polygon.bounding_box of
+	BSText = case Polygon#polygon.bounding_surface of
 
 		undefined ->
 			"none available";
 
-		BB ->
-			bounding_box2:to_string( BB )
+		BS ->
+			bounding_surface:to_string( BS )
 
 	end,
 
 	text_utils:format( "polygon defined by:~n"
 	  " - vertices: ~w~n - edge color: ~w~n - fill color: ~w~n"
-	  " - bounding-box: ~ts~n",
+	  " - bounding surface: ~ts~n",
 	  [ Polygon#polygon.vertices, get_edge_color( Polygon ),
-		get_fill_color( Polygon ), BBText ] ).
+		get_fill_color( Polygon ), BSText ] ).
 
 
 
-% Bounding-box related section.
+% Bounding-surface related section.
 
 
-% @doc Updates, for the specified polygon, its internal bounding-box, with
-% regard to the specified bounding-box algorithm.
+% @doc Updates, for the specified polygon, its internal bounding surface, with
+% regard to the specified bounding-surface algorithm.
 %
 % Returns a polygon with updated information.
 %
 % @end
 %
-% The lazy circle bounding box is fast to determine, but not optimal:
--spec update_bounding_box( bounding_algorithm(), polygon() ) -> polygon().
-update_bounding_box( lazy_circle, Polygon ) ->
+% The lazy bounding circle is fast to determine, but not optimal:
+-spec update_bounding_surface( bounding_algorithm(), polygon() ) -> polygon().
+update_bounding_surface( lazy_circle, Polygon ) ->
 
-	CircleBBox = bounding_box2:get_lazy_circle_box( Polygon#polygon.vertices ),
+	CircleBSurf =
+		bounding_surface:get_lazy_bounding_circle( Polygon#polygon.vertices ),
 
-	Polygon#polygon{ bounding_box=CircleBBox }.
+	Polygon#polygon{ bounding_surface=CircleBSurf }.
 
 
 

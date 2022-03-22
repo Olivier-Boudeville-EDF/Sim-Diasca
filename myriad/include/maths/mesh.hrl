@@ -52,7 +52,7 @@
 	rendering_info = none :: mesh:rendering_info(),
 
 
-	% Bounding-box information:
+	% Bounding volume information:
 	% (can be for example a right-cuboid or a sphere)
 	%
-	bounding_box = undefined :: maybe( bounding_box3:bounding_box3() ) } ).
+	bounding_volume :: maybe( bounding_volume:bounding_volume() ) } ).

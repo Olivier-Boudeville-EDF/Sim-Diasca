@@ -94,7 +94,7 @@ Each simulation case is able to define how it is to be deployed or executed, sim
 
 Most test cases rely on default settings, which operate this way:
 
-1. if a host file - named by default ``sim-diasca-host-candidates.txt`` - is found in the current directory (the one from which a test case ``X`` is run, thanks to a ``make X_run`` for example), then the engine will read it and try to use the hosts listed there; the syntax is simple and described in the ``sim-diasca-host-candidates-sample.txt`` example file, to be found in the ``sim-diasca/conf`` directory
+1. if a host file - named by default ``sim-diasca-host-candidates.txt`` - is found in the current directory (the one from which a test case ``X`` is run, thanks to a ``make X_run`` for example), then the engine will read it and try to use the hosts listed there; the (ETF) syntax is simple and described in the ``sim-diasca-host-candidates-sample.txt`` example file, to be found in the ``sim-diasca/conf`` directory (it is also described `here <http://myriad.esperide.org/#etf>`_)
 
 2. if this host file is not found, the simulation will run only locally
 
@@ -125,11 +125,14 @@ Let's suppose that you benefit from a set of hosts, either ad hoc or allocated o
 
 These hosts are expected to run GNU/Linux, to be rather homogeneous in terms of processing power and configuration, and to be interlinked thanks to a suitable IPv4 [#]_ communication network providing at least DNS services, and possibly ping (ICMP) ones [#]_.
 
-.. [#] If the network is by default using IPv6, generally a setting allows to present it as an IPv4 network to applications.
+.. [#] If the network is by default using IPv6, generally a setting allows to present it to applications as an IPv4 network.
 
 .. [#] If no ping service is available, then, in the ``deployment_settings`` record of your simulation case, set ``ping_available=false``, and the simulation will try directly to SSH-connect to hosts (possibly inducing longer timeouts).
 
-When specifying these hosts (ex: in a host file of the ``computing_hosts`` field of the deplyment record, or directly in the simulation case), their DNS name (more precisely, their FQDN) shall be retained (not, for example, their IP address).
+When specifying these hosts (ex: in a host file of the ``computing_hosts`` field of the deployment record, or directly in the simulation case), their DNS name (more precisely, their FQDN [#]_) shall be retained (not, for example, their IP address).
+
+.. [#] *Fully-Qualified Domain Name*, e.g. ``hurricane.foobar.org`` rather than just ``hurricane``, knowing that from a FQDN a (domain-less) hostname can be derived, whereas this cannot be done the other way round. Sim-Diasca will start first with no distribution, then will attempt first to make use, in Erlang node parlance, of *short* names before, depending on the local DNS configuration, attempting to switch to *long* names instead.
+
 
 Moreover, for the simulation user, a SSH password-less authentication must be possible at least from the user host to each of the computing hosts, so that the former can spawn an Erlang VM on the latter.
 
@@ -139,7 +142,10 @@ Quite often HPC clusters implement a distributed filesystem (ex: mounted in ``/s
 
 If no such distributed filesystem exists, the Erlang environment must be deployed/installed on each computing host, by any relevant means.
 
-These target Erlang installations must be readily available from the default ``PATH`` that is obtained from a SSH connection to a computing host: from the user host, ``ssh A_COMPUTING_NODE erl`` should successfully run an Erlang VM.
+These target Erlang installations must be readily available from the default ``PATH`` that is obtained from a SSH connection to a computing host: from the user host, ``ssh A_COMPUTING_NODE erl`` should successfully run an Erlang VM [#]_.
+
+.. [#] If in this case a custom, locally-installed Erlang version (ex: located in ``~/Software/Erlang/Erlang-current-install``) is not found whereas it was added in the ``PATH`` of the user's ``~/.bashrc``, consider that many default batch configurations ignore this file for non-login shells ("*If not running interactively, don't do anything*"); a workaround is to update one's ``PATH`` at the beginning of one's ``~/.bashrc`` rather than at its end, before it bails out with a ``return``.
+
 
 As for Sim-Diasca, its own Ceylan prerequisites (namely `Myriad <http://myriad.esperide.org/>`_, `WOOPER <http://wooper.esperide.org/>`_ and `Traces <http://traces.esperide.org/>`_), the engine itself and the user-defined simulation elements (simulation case, models, data, etc.), the whole will be automatically deployed from the user host to the computing ones, according to the specified simulation settings.
 

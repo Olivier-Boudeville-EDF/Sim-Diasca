@@ -133,11 +133,11 @@ doc-elements-public: $(DOC_ELEMENTS_PUBLIC)
 
 
 documentation-overview-internal:
-	@cd $(SD_DOC_OVERVIEW_INTERNAL_DIR) && $(MAKE) -s doc
+	@cd $(SD_DOC_OVERVIEW_INTERNAL_DIR) && $(MAKE) -s local-doc
 
 
 documentation-overview-public:
-	@cd $(SD_DOC_OVERVIEW_PUBLIC_DIR) && $(MAKE) -s doc
+	@cd $(SD_DOC_OVERVIEW_PUBLIC_DIR) && $(MAKE) -s local-doc
 
 
 

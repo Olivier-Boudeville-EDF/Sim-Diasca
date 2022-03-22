@@ -25,7 +25,7 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 
 
-% Unit tests for polygon management.
+% Unit tests for <b>polygon management</b>.
 %
 % Depends on the gui module.
 %
@@ -43,7 +43,7 @@ run() ->
 
 	test_facilities:start( ?MODULE ),
 
-	MyTriangle = polygon:update_bounding_box( lazy_circle,
+	MyTriangle = polygon:update_bounding_surface( lazy_circle,
 		polygon:set_edge_color( yellow,
 				polygon:get_triangle( {110,110}, {250,155}, {120,335} ) ) ),
 
@@ -51,7 +51,7 @@ run() ->
 							 [ polygon:to_string( MyTriangle ) ] ),
 
 
-	MyUprightSquare = polygon:update_bounding_box( lazy_circle,
+	MyUprightSquare = polygon:update_bounding_surface( lazy_circle,
 	  polygon:set_fill_color( red,
 			polygon:get_upright_square( _Center={250,250},
 										_EdgeLength=50 ) ) ),
@@ -82,8 +82,8 @@ run() ->
 		"  - for the upright square, we have: ~w~n"
 		"  - for the concave polygon, we have: ~w~n",
 		[ polygon:get_smallest_enclosing_rectangle( MyTriangle ),
-			 polygon:get_smallest_enclosing_rectangle( MyUprightSquare ),
-			 polygon:get_smallest_enclosing_rectangle( MyConcavePolygon ) ] ),
+			polygon:get_smallest_enclosing_rectangle( MyUprightSquare ),
+			polygon:get_smallest_enclosing_rectangle( MyConcavePolygon ) ] ),
 
 
 	test_facilities:display( "Areas:~n"

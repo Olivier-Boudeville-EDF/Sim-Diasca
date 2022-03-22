@@ -22,9 +22,8 @@
 % If not, see <http://www.gnu.org/licenses/> and
 % <http://www.mozilla.org/MPL/>.
 %
-% Creation date: Monday, December 22, 2014
+% Creation date: Monday, December 22, 2014.
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
-
 
 
 % @doc Implementation of an <b>associative table relying on a simple list of
@@ -213,8 +212,8 @@ add_new_entries( EntryList, Table ) ->
 
 
 
-% @doc Removes the key/value pair designated by the specified key, from the
-% specified table.
+% @doc Removes the entry designated by the specified key, from the specified
+% table.
 %
 % Does nothing if the key is not found.
 %
@@ -249,7 +248,7 @@ remove_entries( Keys, Table ) ->
 % {value, Value}, with Value being the value associated to the specified key.
 %
 -spec lookup_entry( key(), list_table() ) ->
-							'key_not_found' | { 'value', value() }.
+								'key_not_found' | { 'value', value() }.
 lookup_entry( Key, Table ) ->
 
 	case lists:keyfind( Key, _N=1, Table ) of
@@ -289,6 +288,8 @@ get_value( Key, Table ) ->
 
 		false ->
 			% Badmatches are not informative enough:
+			trace_utils:error_fmt( "No key '~p' found in following table "
+				"(process: ~w): ~ts", [ Key, self(), to_string( Table ) ] ),
 			throw( { key_not_found, Key } )
 
 	end.
@@ -339,8 +340,8 @@ extract_entry_with_defaults( Key, DefaultValue, Table ) ->
 
 
 
-% @doc Extracts specified entry (if any) from specified table, that is returns
-% its associated value and removes that entry from the returned table.
+% @doc Extracts the specified entry (if any) from the specified table, that is
+% returns its associated value and removes that entry from the returned table.
 %
 % Otherwise, that is if that entry does not exist, returns false.
 %
@@ -438,20 +439,20 @@ get_values( Keys, Table ) ->
 % thrown.
 %
 % Ex: [Color=red, Age=23, Mass=51] = list_table:get_all_values(
-%    [color, age, mass], [{color, red}, {mass, 51}, {age, 23}])
+%               [color, age, mass], [{color, red}, {mass, 51}, {age, 23}])
 %
 -spec get_all_values( [ key() ], list_table() ) -> [ value() ].
 get_all_values( Keys, Table ) ->
 
 	case lists:foldl(
-		   fun( _Elem=Key, _Acc={ Values, AccTable } ) ->
+			fun( _Elem=Key, _Acc={ Values, AccTable } ) ->
 
-				   { Value, ShrunkTable } = extract_entry( Key, AccTable ),
-				   { [ Value | Values ], ShrunkTable }
+				{ Value, ShrunkTable } = extract_entry( Key, AccTable ),
+				{ [ Value | Values ], ShrunkTable }
 
-		   end,
-		   _Acc0={ [], Table },
-		   _List=Keys ) of
+			end,
+			_Acc0={ [], Table },
+			_List=Keys ) of
 
 		{ RevValues, _FinalTable=[] } ->
 			lists:reverse( RevValues );
@@ -478,7 +479,7 @@ get_all_values( Keys, Table ) ->
 % One may request the returned table to be optimised after this call.
 %
 -spec map_on_entries( fun( ( entry() ) -> entry() ), list_table() ) ->
-							list_table().
+										list_table().
 map_on_entries( Fun, Table ) ->
 	[ Fun( E ) || E <- Table ].
 
@@ -496,7 +497,7 @@ map_on_entries( Fun, Table ) ->
 % change.
 %
 -spec map_on_values( fun( ( value() ) -> value() ), list_table() ) ->
-							list_table().
+												list_table().
 map_on_values( Fun, Table ) ->
 	lists:keymap( Fun, _N=2, Table ).
 
@@ -537,8 +538,8 @@ add_to_entry( Key, Number, Table ) ->
 
 
 
-% @doc Subtracts specified number from the value, supposed to be numerical,
-% associated to specified key.
+% @doc Subtracts the specified number from the value, supposed to be numerical,
+% associated to the specified key.
 %
 % An exception is thrown if the key does not exist, a bad arithm is triggered if
 % no subtraction can be performed on the associated value.
@@ -642,7 +643,7 @@ merge_in_key( ReferenceKey, _AlternateKeys=[ K | T ], Table ) ->
 % reference key / aliases entries, but for a set thereof.
 %
 % Ex: MergedTable = merge_in_keys([{'-length', [ 'l', '-len' ]},
-%       {'-help', [ 'h' ]} ], MyTable).
+%                                  {'-help', [ 'h' ]} ], MyTable).
 %
 -spec merge_in_keys( list_table(), list_table() ) -> list_table().
 merge_in_keys( _KeyAssoc=[], Table ) ->
@@ -925,7 +926,7 @@ to_string( Table, DescriptionType ) ->
 
 				user_friendly ->
 					Strs = [ text_utils:format_ellipsed( "~p: ~p", [ K, V ] )
-							 || { K, V } <- lists:sort( L ) ],
+								|| { K, V } <- lists:sort( L ) ],
 
 					lists:flatten( io_lib:format( "table with ~B entries: ~ts",
 						[ length( L ), text_utils:strings_to_string( Strs,
@@ -933,7 +934,7 @@ to_string( Table, DescriptionType ) ->
 
 				DescType when DescType =:= full orelse DescType =:= internal ->
 					Strs = [ text_utils:format( "~p: ~p", [ K, V ] )
-							 || { K, V } <- lists:sort( L ) ],
+								|| { K, V } <- lists:sort( L ) ],
 
 					lists:flatten( io_lib:format( "table with ~B entries: ~ts",
 						[ length( L ),
@@ -943,7 +944,7 @@ to_string( Table, DescriptionType ) ->
 				% Here, ellipsed and with specified bullet:
 				Bullet ->
 					Strs = [ text_utils:format_ellipsed( "~p: ~p", [ K, V ] )
-							 || { K, V } <- lists:sort( L ) ],
+								|| { K, V } <- lists:sort( L ) ],
 
 					lists:flatten( io_lib:format( "table with ~B entries: ~ts",
 						[ length( L ),

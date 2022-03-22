@@ -34,7 +34,7 @@ GITHUB_PAGES_BASE := $(shell basename "$(MYRIAD_WEB_MIRROR_BRANCH)")
 EXTRA_CONTENT := speech-test-fr-FR.ogg.opus speech-test-en-US.ogg.opus
 
 
-.PHONY: all doc html pdf create-links clone-mirror                     \
+.PHONY: all doc html pdf create-links clone-mirror force-update        \
 		export-doc export-doc-to-official export-doc-to-mirror         \
 		info info-web                                                  \
 		test uml-diagram-test
@@ -65,6 +65,15 @@ clone-mirror:
 	@echo "  Creating a separate repository for website in $(GITHUB_PAGES_BASE)"
 	@cd ../../ && git clone https://github.com/Olivier-Boudeville/Ceylan-Myriad.git $(GITHUB_PAGES_BASE) && cd $(GITHUB_PAGES_BASE) && git checkout -b gh-pages
 	@echo "Please remove all initial content in that selected 'gh-pages' branch."
+
+
+# Forces the update of the overall documentation structure (notably in order to
+# update its timestamp), knowing that, otherwise, modifying source RST files
+# that it references would not update it in turn):
+#
+# Removing the generated main .rst, not its .rst.template real source:
+force-update:
+	@/bin/rm -f $(OVERALL_DOCUMENT_SOURCE)
 
 
 export-doc: export-doc-to-official export-doc-to-mirror

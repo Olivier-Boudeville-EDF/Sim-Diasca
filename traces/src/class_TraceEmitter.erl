@@ -237,7 +237,7 @@ construct( State, EmitterName ) ->
 
 % Useless, as already checked:
 %construct( _State, InvalidEmitterName ) ->
-%	throw( { invalid_emitter_name, InvalidEmitterName } ).
+%   throw( { invalid_emitter_name, InvalidEmitterName } ).
 
 
 
@@ -319,11 +319,11 @@ check_string_name( Name ) ->
 
 	%case text_utils:split_at_first( _Marker=$., Name ) of
 	%
-	%	none_found ->
-	%		ok;
+	%   none_found ->
+	%       ok;
 	%
-	%	_ ->
-	%		throw( { no_dot_allowed_in_emitter_name, FlatName } )
+	%   _ ->
+	%       throw( { no_dot_allowed_in_emitter_name, FlatName } )
 	%
 	%end.
 
@@ -528,8 +528,8 @@ get_all_base_attribute_names() ->
 	AttrNames =
 		wooper_introspection:get_class_specific_attribute_names( ?MODULE )
 		++ list_utils:flatten_once(
-			 [ wooper_introspection:get_class_specific_attribute_names( C )
-				 || C <- ?superclasses ] ),
+			[ wooper_introspection:get_class_specific_attribute_names( C )
+				|| C <- ?superclasses ] ),
 
 	wooper:return_static( AttrNames ).
 
@@ -576,19 +576,19 @@ send_from_test( TraceSeverity, Message, EmitterCategorization ) ->
 								time_utils:get_textual_timestamp() ),
 
 			AggregatorPid ! { send, [
-				 _TraceEmitterPid=self(),
-				 _TraceEmitterName=
-						text_utils:string_to_binary( "test" ),
-				 _TraceEmitterCategorization=
-						text_utils:string_to_binary( EmitterCategorization ),
-				 _AppTimestamp=none,
-				 _Time=TimestampText,
-				 % No State available here
-				 _Location=net_utils:localnode_as_binary(),
-				 _MessageCategorization=
-						text_utils:string_to_binary( "Test" ),
-				 _Priority=trace_utils:get_priority_for( TraceSeverity ),
-				 _Message=text_utils:string_to_binary( Message ) ] }
+				_TraceEmitterPid=self(),
+				_TraceEmitterName=
+					text_utils:string_to_binary( "test" ),
+				_TraceEmitterCategorization=
+					text_utils:string_to_binary( EmitterCategorization ),
+				_AppTimestamp=none,
+				_Time=TimestampText,
+				% No State available here
+				_Location=net_utils:localnode_as_binary(),
+				_MessageCategorization=
+					text_utils:string_to_binary( "Test" ),
+				_Priority=trace_utils:get_priority_for( TraceSeverity ),
+				_Message=text_utils:string_to_binary( Message ) ] }
 
 	end,
 	wooper:return_static_void().
@@ -637,19 +637,19 @@ send_from_case( TraceSeverity, Message, EmitterCategorization ) ->
 								time_utils:get_textual_timestamp() ),
 
 			AggregatorPid ! { send, [
-				 _TraceEmitterPid=self(),
-				 _TraceEmitterName=
-						text_utils:string_to_binary( "case" ),
-				 _TraceEmitterCategorization=
-						text_utils:string_to_binary( EmitterCategorization ),
-				 _AppTimestamp=none,
-				 _Time=TimestampText,
-				 % No State available here:
-				 _Location=net_utils:localnode_as_binary(),
-				 _MessageCategorization=
-						text_utils:string_to_binary( "Case" ),
-				 _Priority=trace_utils:get_priority_for( TraceSeverity ),
-				 _Message=text_utils:string_to_binary( Message ) ] }
+				_TraceEmitterPid=self(),
+				_TraceEmitterName=
+					text_utils:string_to_binary( "case" ),
+				_TraceEmitterCategorization=
+					text_utils:string_to_binary( EmitterCategorization ),
+				_AppTimestamp=none,
+				_Time=TimestampText,
+				% No State available here:
+				_Location=net_utils:localnode_as_binary(),
+				_MessageCategorization=
+					text_utils:string_to_binary( "Case" ),
+				_Priority=trace_utils:get_priority_for( TraceSeverity ),
+				_Message=text_utils:string_to_binary( Message ) ] }
 
 	end,
 	wooper:return_static_void().
@@ -700,18 +700,18 @@ send_standalone( TraceSeverity, Message, EmitterCategorization ) ->
 				get_default_standalone_message_categorization(),
 
 			AggregatorPid ! { send, [
-				 _TraceEmitterPid=self(),
-				 _TraceEmitterName=text_utils:string_to_binary( PidName ),
-				 _TraceEmitterCategorization=
-						text_utils:string_to_binary( EmitterCategorization ),
-				 _AppTimestamp=none,
-				 _Time=TimestampText,
-				 % No State available here:
-				 _Location=net_utils:localnode_as_binary(),
-				 _MessageCategorization=
-						text_utils:string_to_binary( MessageCategorization ),
-				 _Priority=trace_utils:get_priority_for( TraceSeverity ),
-				 _Message=text_utils:string_to_binary( Message ) ] }
+				_TraceEmitterPid=self(),
+				_TraceEmitterName=text_utils:string_to_binary( PidName ),
+				_TraceEmitterCategorization=
+					text_utils:string_to_binary( EmitterCategorization ),
+				_AppTimestamp=none,
+				_Time=TimestampText,
+				% No State available here:
+				_Location=net_utils:localnode_as_binary(),
+				_MessageCategorization=
+					text_utils:string_to_binary( MessageCategorization ),
+				_Priority=trace_utils:get_priority_for( TraceSeverity ),
+				_Message=text_utils:string_to_binary( Message ) ] }
 
 	end,
 	wooper:return_static_void().
@@ -768,17 +768,17 @@ send_standalone( TraceSeverity, Message, EmitterName, EmitterCategorization,
 			end,
 
 			AggregatorPid ! { send, [
-				 _TraceEmitterPid=self(),
-				 _TraceEmitterName=text_utils:string_to_binary( EmitterName ),
-				 _TraceEmitterCategorization=
+				_TraceEmitterPid=self(),
+				_TraceEmitterName=text_utils:string_to_binary( EmitterName ),
+				_TraceEmitterCategorization=
 						text_utils:string_to_binary( EmitterCategorization ),
-				 _AppTimestamp=none,
-				 _Time=TimestampText,
-				 % No State available here:
-				 _Location=net_utils:localnode_as_binary(),
-				 _MessageCategorization=ActualMsgCateg,
-				 _Priority=trace_utils:get_priority_for( TraceSeverity ),
-				 _Message=text_utils:string_to_binary( Message ) ] }
+				_AppTimestamp=none,
+				_Time=TimestampText,
+				% No State available here:
+				_Location=net_utils:localnode_as_binary(),
+				_MessageCategorization=ActualMsgCateg,
+				_Priority=trace_utils:get_priority_for( TraceSeverity ),
+				_Message=text_utils:string_to_binary( Message ) ] }
 
 	end,
 	wooper:return_static_void().
@@ -898,8 +898,8 @@ send_standalone_safe( TraceSeverity, Message, EmitterName,
 
 		AggregatorPid ->
 
-			TimestampText = text_utils:string_to_binary(
-							  ApplicationTimestamp ),
+			TimestampText =
+				text_utils:string_to_binary( ApplicationTimestamp ),
 
 			ActualMsgCateg = case MessageCategorization of
 
@@ -918,17 +918,17 @@ send_standalone_safe( TraceSeverity, Message, EmitterName,
 			%                       [ BinMessage ] ),
 
 			AggregatorPid ! { sendSync, [
-				 _TraceEmitterPid=self(),
-				 _TraceEmitterName=text_utils:string_to_binary( EmitterName ),
-				 _TraceEmitterCategorization=
+				_TraceEmitterPid=self(),
+				_TraceEmitterName=text_utils:string_to_binary( EmitterName ),
+				_TraceEmitterCategorization=
 					text_utils:string_to_binary( EmitterCategorization ),
-				 _AppTimestamp=none,
-				 _Time=TimestampText,
-				 % No State available here:
-				 _Location=net_utils:localnode_as_binary(),
-				 _MessageCategorization=ActualMsgCateg,
-				 _Priority=trace_utils:get_priority_for( TraceSeverity ),
-				 BinMessage ], self() },
+				_AppTimestamp=none,
+				_Time=TimestampText,
+				% No State available here:
+				_Location=net_utils:localnode_as_binary(),
+				_MessageCategorization=ActualMsgCateg,
+				_Priority=trace_utils:get_priority_for( TraceSeverity ),
+				BinMessage ], self() },
 
 			case trace_utils:is_error_like( TraceSeverity ) of
 
@@ -967,16 +967,16 @@ send_direct( TraceSeverity, Message, BinEmitterCategorization,
 	MessageCategorization = get_default_standalone_message_categorization(),
 
 	AggregatorPid ! { send, [
-				 _TraceEmitterPid=self(),
-				 _TraceEmitterName=text_utils:string_to_binary( PidName ),
-				 _TraceEmitterCategorization=BinEmitterCategorization,
-				 _AppTimestamp=none,
-				 _Time=TimestampText,
-				 % No State available here:
-				 _Location=net_utils:localnode_as_binary(),
-				 _TraceMessageCategorization=text_utils:string_to_binary(
-											   MessageCategorization ),
-				 _Priority=trace_utils:get_priority_for( TraceSeverity ),
+				_TraceEmitterPid=self(),
+				_TraceEmitterName=text_utils:string_to_binary( PidName ),
+				_TraceEmitterCategorization=BinEmitterCategorization,
+				_AppTimestamp=none,
+				_Time=TimestampText,
+				% No State available here:
+				_Location=net_utils:localnode_as_binary(),
+				_TraceMessageCategorization=
+					text_utils:string_to_binary( MessageCategorization ),
+				_Priority=trace_utils:get_priority_for( TraceSeverity ),
 				_Message=text_utils:string_to_binary( Message ) ] },
 
 	wooper:return_static_void().
@@ -1011,16 +1011,16 @@ send_direct_synchronisable( TraceSeverity, Message,
 	% trace_aggregator_synchronised}:
 	%
 	AggregatorPid ! { sendSync, [
-				 _TraceEmitterPid=self(),
-				 _TraceEmitterName=text_utils:string_to_binary( PidName ),
-				 _TraceEmitterCategorization=BinEmitterCategorization,
-				 _AppTimestamp=none,
-				 _Time=TimestampText,
-				 % No State available here:
-				 _Location=net_utils:localnode_as_binary(),
-				 _TraceMessageCategorization=text_utils:string_to_binary(
-											   MessageCategorization ),
-				 _Priority=trace_utils:get_priority_for( TraceSeverity ),
+				_TraceEmitterPid=self(),
+				_TraceEmitterName=text_utils:string_to_binary( PidName ),
+				_TraceEmitterCategorization=BinEmitterCategorization,
+				_AppTimestamp=none,
+				_Time=TimestampText,
+				% No State available here:
+				_Location=net_utils:localnode_as_binary(),
+				_TraceMessageCategorization=
+					text_utils:string_to_binary( MessageCategorization ),
+				_Priority=trace_utils:get_priority_for( TraceSeverity ),
 				_Message=text_utils:string_to_binary( Message ) ],
 					  self() },
 
@@ -1267,20 +1267,19 @@ send( TraceSeverity, State, Message, MessageCategorization, AppTimestamp ) ->
 
 	% (this debug printout shall match the actual message sending)
 
-	%trace_utils:debug_fmt( "Sending trace: PID=~w, emitter name='~p', "
-	%		   "emitter categorization='~p', "
-	%		   "app timestamp='~p', user time='~p', location='~p', "
-	%		   "message categorization='~p', trace type='~w', message='~p'~n",
-	%	[
-	%	 _TraceEmitterPid=self(),
-	%	 TraceEmitterName,
-	%	 _TraceEmitterCategorization=?getAttr(trace_categorization),
-	%	 AppTimestampString,
-	%	 _Time=TimestampText,
-	%	 _Location=?getAttr(emitter_node),
-	%	 _MessageCategorization=MsgCateg,
-	%	 _Priority=trace_utils:get_priority_for( TraceSeverity ),
-	%	 _Message=text_utils:string_to_binary( Message ) ] ),
+   %trace_utils:debug_fmt( "Sending trace: PID=~w, emitter name='~p', "
+   %   "emitter categorization='~p', "
+   %   "app timestamp='~p', user time='~p', location='~p', "
+   %   "message categorization='~p', trace type='~w', message='~p'~n",
+   %   [ _TraceEmitterPid=self(),
+   %     TraceEmitterName,
+   %     _TraceEmitterCategorization=?getAttr(trace_categorization),
+   %     AppTimestampString,
+   %     _Time=TimestampText,
+   %     _Location=?getAttr(emitter_node),
+   %     _MessageCategorization=MsgCateg,
+   %     _Priority=trace_utils:get_priority_for( TraceSeverity ),
+   %     _Message=text_utils:string_to_binary( Message ) ] ),
 
 	% Just for extra debugging; typically usuful should a child class set again
 	% its 'name' attribute, moreover with a faulty value (typically with the
@@ -1310,7 +1309,7 @@ send( TraceSeverity, State, Message, MessageCategorization, AppTimestamp ) ->
 		_Location=?getAttr(emitter_node),
 		_MessageCategorization=MsgCateg,
 		_Priority=trace_utils:get_priority_for( TraceSeverity ),
-		 _Message=text_utils:string_to_binary( Message ) ] }.
+		_Message=text_utils:string_to_binary( Message ) ] }.
 
 
 
@@ -1349,9 +1348,9 @@ send_synchronisable( TraceSeverity, State, Message, MessageCategorization,
 	?getAttr(trace_aggregator_pid) ! { sendSync, [
 
 	%trace_utils:debug_fmt( "Sending trace: PID=~w, emitter name='~p', "
-	%		   "emitter categorization='~p', "
-	%		   "app timestamp='~p', user time='~p', location='~p', "
-	%		   "message categorization='~p', trace type='~w', message='~p'.",
+	%   "emitter categorization='~p', "
+	%   "app timestamp='~p', user time='~p', location='~p', "
+	%   "message categorization='~p', trace type='~w', message='~p'.",
 		_TraceEmitterPid=self(),
 		_TraceEmitterName=?getAttr(name),
 		_TraceEmitterCategorization=?getAttr(trace_categorization),

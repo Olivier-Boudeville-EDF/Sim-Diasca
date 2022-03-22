@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2022 Olivier Boudeville
+% Copyright (C) 2011-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -23,25 +23,24 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
-% Creation date: Tuesday, January 11, 2011
+% Creation date: Tuesday, January 11, 2011.
 
 
-% This is a very simple application, to ensure defines, build targets and al
-% support them correctly.
+% @doc This is a <b>most simple application</b>, to ensure that defines, build
+% targets and all support them correctly.
 %
 -module(most_basic_example_app).
 
 
--include("app_facilities.hrl").
+-export([ exec/0 ]).
 
-
-% No export needed for exec/0 here.
 
 -spec exec() -> no_return().
 exec() ->
 
 	app_facilities:start( ?MODULE ),
 
-	io:format( "This is one of the simplest applications possible!~n" ),
+	io:format( "This is certainly one of the simplest applications "
+			   "possible!~n" ),
 
 	app_facilities:stop().

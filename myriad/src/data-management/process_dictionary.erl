@@ -26,7 +26,6 @@
 % Creation date: Monday, April 30, 2018.
 
 
-
 % @doc Support for the <b>process dictionary</b>.
 %
 % While using the process dictionary is usually regarded with contempt for good
@@ -48,18 +47,6 @@
 -module(process_dictionary).
 
 
--type key() :: hashtable:key().
-% Actually any term.
-
--type value() :: hashtable:value().
-
--type entry() :: hashtable:entry().
-
--type entries() :: [ entry() ].
-
--type entry_count() :: basic_utils:count().
-
-
 -type process_dictionary() :: list_table:list_table().
 % Explicit form thereof, as a term.
 
@@ -75,8 +62,26 @@
 		  blank/0, to_string/0 ]).
 
 
-% @doc Puts specified entry in the process dictionary; returns any value that
-% was previously associated to that key.
+% Shorthands:
+
+-type entry_count() :: basic_utils:count().
+
+-type key() :: hashtable:key().
+% Actually any term, yet often an atom. All 'myriad_*' atoms shall be considered
+% as reserved.
+
+-type value() :: hashtable:value().
+
+-type entry() :: hashtable:entry().
+
+-type entries() :: hashtable:entries().
+
+-type ustring() :: text_utils:ustring().
+
+
+
+% @doc Puts the specified entry in the process dictionary; returns any value
+% that was previously associated to that key.
 %
 -spec put( key(), value() ) -> maybe( value() ).
 put( Key, Value ) ->
@@ -84,8 +89,8 @@ put( Key, Value ) ->
 
 
 
-% @doc Puts specified entry in the process dictionary; raises an exception if
-% ever the specified key was already registered in the process dictionary.
+% @doc Puts the specified entry in the process dictionary; raises an exception
+% if ever the specified key was already registered in the process dictionary.
 %
 -spec put_as_new( key(), value() ) -> void().
 put_as_new( Key, Value ) ->
@@ -130,8 +135,8 @@ get_existing( Key ) ->
 
 
 
-% @doc Removes any entry in the process dictionary corresponding to specified
-% key, returning any value that was associated to it.
+% @doc Removes any entry in the process dictionary corresponding to the
+% specified key, returning any value that was associated to it.
 %
 -spec remove( key() ) -> maybe( value() ).
 remove( Key ) ->
@@ -193,7 +198,7 @@ blank() ->
 % @doc Returns a textual description of the current state of the process
 % dictionary.
 %
--spec to_string() -> text_utils:ustring().
+-spec to_string() -> ustring().
 to_string() ->
 
 	case erlang:get() of
@@ -204,11 +209,11 @@ to_string() ->
 
 		Pairs ->
 			Strings = lists:sort( [ text_utils:format(
-									  "key '~ts' associated to value '~p'",
-									  [ K, V ] ) || { K, V } <- Pairs ] ),
+				"key '~ts' associated to value '~p'",
+				[ K, V ] ) || { K, V } <- Pairs ] ),
 
 			text_utils:format( "the process dictionary of ~p contains "
 				"~B pair(s): ~ts", [ self(), length( Pairs ),
-									text_utils:strings_to_string( Strings ) ] )
+									 text_utils:strings_to_string( Strings ) ] )
 
 	end.

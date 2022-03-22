@@ -17,17 +17,18 @@
 % If not, see <http://www.gnu.org/licenses/>.
 
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
+% Creation date: 2008.
 
 
-% Unit tests for the <b>Graphable</b> class implementation.
+% @doc Unit tests for the <b>Graphable</b> class implementation.
 %
 % See the class_Graphable module.
 %
 -module(class_Graphable_test).
 
 
-% For facilities common to all cases:
--include("sim_diasca_for_cases.hrl").
+% Not a simulation case per se, no Sim-Diasca include:
+-include("traces_for_tests.hrl").
 
 
 
@@ -35,7 +36,7 @@
 -spec run() -> no_return().
 run() ->
 
-	?case_start,
+	?test_start,
 
 	?test_info( "Creating a test Graphable." ),
 
@@ -62,4 +63,4 @@ run() ->
 
 	wooper:delete_synchronously_instance( MyGraphable ),
 
-	?case_stop.
+	?test_stop.

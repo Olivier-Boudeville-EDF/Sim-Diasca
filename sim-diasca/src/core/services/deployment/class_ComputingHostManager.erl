@@ -1,22 +1,22 @@
 % Copyright (C) 2008-2022 EDF R&D
-
+%
 % This file is part of Sim-Diasca.
-
-% Sim-Diasca is free software: you can redistribute it and/or modify
-% it under the terms of the GNU Lesser General Public License as
-% published by the Free Software Foundation, either version 3 of
-% the License, or (at your option) any later version.
-
-% Sim-Diasca is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-% GNU Lesser General Public License for more details.
-
-% You should have received a copy of the GNU Lesser General Public
-% License along with Sim-Diasca.
-% If not, see <http://www.gnu.org/licenses/>.
-
-% Author: Olivier Boudeville (olivier.boudeville@edf.fr)
+%
+% Sim-Diasca is free software: you can redistribute it and/or modify it under
+% the terms of the GNU Lesser General Public License as published by the Free
+% Software Foundation, either version 3 of the License, or (at your option) any
+% later version.
+%
+% Sim-Diasca is distributed in the hope that it will be useful, but WITHOUT ANY
+% WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+% A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+% details.
+%
+% You should have received a copy of the GNU Lesser General Public License along
+% with Sim-Diasca.  If not, see <http://www.gnu.org/licenses/>.
+%
+% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2008.
 
 
 % @doc <b>Manager of a computing host</b>, notably for deployment purpose.
@@ -175,6 +175,8 @@
 -type string_node_name() :: net_utils:string_node_name().
 -type string_host_name() :: net_utils:string_host_name().
 -type tcp_port() :: net_utils:tcp_port().
+
+-type command() :: system_utils:command().
 
 
 
@@ -397,7 +399,8 @@ construct( State,
 		%
 		{ node_name, NodeName },
 
-		% Fully-qualified node name (stored as an atom), ex: 'my_node@foo.org',
+		% Fully-qualified node name (stored as an atom), ex:
+		% 'Sim-Diasca-MyTest-MyUserName-MySII-computing-node@MyHost.foobar.org',
 		% to be used by other nodes, to target the corresponding node.
 		%
 		{ full_node_name, CompleteNodeName },
@@ -660,9 +663,9 @@ requestPackage( State, DeployedNode ) ->
 
 			% No reference kept on the package:
 			wooper:return_state_result( setAttributes( State, [
-					{ deployment_agent_pid, AgentPid },
-					{ deployment_agent_monitor_ref, AgentMonitorRef },
-					{ deployed_node, DeployedNode } ] ),
+				{ deployment_agent_pid, AgentPid },
+				{ deployment_agent_monitor_ref, AgentMonitorRef },
+				{ deployed_node, DeployedNode } ] ),
 										PackageFilenameBin );
 
 
@@ -1111,6 +1114,7 @@ manage_node_cleanup( State ) ->
 
 						% Our script is designed to output messages, and the
 						% sole guide is to rely on its return code:
+						%
 						{ _ReturnCode=0, CmdOutput } ->
 							?notice_fmt( "Local clean-up command succeeded and "
 								"resulted in following output: '~ts'.",
@@ -1118,8 +1122,8 @@ manage_node_cleanup( State ) ->
 
 						{ ReturnCode, CmdOutput } ->
 							?error_fmt( "Local clean-up command failed (error "
-							  "code: ~B) and returned following output: '~ts'.",
-							  [ ReturnCode, CmdOutput ] )
+								"code: ~B) and returned following output: "
+								"'~ts'.", [ ReturnCode, CmdOutput ] )
 
 					end;
 
@@ -1337,9 +1341,8 @@ launch_erlang_node( State ) ->
 					% long time, to the point that the simulation might already
 					% be finished)
 					%
-					IssueTimeout = max( 2000,
-										min( get_time_out_for(launch_error),
-											 MaxWaitingBudget ) ),
+					IssueTimeout = max( 2000, min(
+						get_time_out_for(launch_error), MaxWaitingBudget ) ),
 
 					{ IssueTimeout, "launched, despite " ++ ErrorCauseString }
 
@@ -1367,7 +1370,7 @@ launch_erlang_node( State ) ->
 
 		{ true, Duration } ->
 			%trace_utils:debug_fmt( "Ping success for '~ts'.",
-			%                      [ CompleteNodeName ] ),
+			%                       [ CompleteNodeName ] ),
 			?info_fmt( "Node ~ts on host ~ts (~ts) successfully launched and "
 				"checked (which took ~B ms on a time-out of ~B ms, i.e. ~ts).",
 				[ NodeName, Hostname, InfoString, Duration, ActualTimeOut,
@@ -1378,7 +1381,7 @@ launch_erlang_node( State ) ->
 		{ false, Duration } ->
 
 			%trace_utils:debug_fmt( "Ping failure for '~ts'.",
-			%					   [ CompleteNodeName ] ),
+			%                       [ CompleteNodeName ] ),
 
 			?error_fmt( "Node '~ts' on host '~ts' apparently failed to launch "
 				"properly (reported as ~ts) and is not responding "
@@ -1408,8 +1411,7 @@ launch_erlang_node( State ) ->
 % Sends a trace message and returns a reason atom.
 %
 -spec interpret_launch_failure( time_out(), milliseconds(), string_node_name(),
-		user_name(), string_host_name(),
-		system_utils:command(), wooper:state() ) -> atom().
+		user_name(), string_host_name(), command(), wooper:state() ) -> atom().
 interpret_launch_failure( ActualTimeOut, Duration, NodeName, UserName,
 						  Hostname, Command, State ) ->
 
@@ -1481,7 +1483,7 @@ interpret_launch_failure( ActualTimeOut, Duration, NodeName, UserName,
 			end;
 
 
-		 _Hostname ->
+		_Hostname ->
 
 			% Let's connect to that host to check whether a VM is running there:
 			SSHOption = executable_utils:get_ssh_mute_option(),
@@ -1496,11 +1498,11 @@ interpret_launch_failure( ActualTimeOut, Duration, NodeName, UserName,
 					?error_fmt(
 						"Node ~ts on host ~ts apparently successfully "
 						"launched, but not responding (to Erlang ping) "
-						"after ~B milliseconds (time-out duration: ~B), "
-						"and the counting of VM processes on that host failed "
+						"after ~B milliseconds (time-out duration: ~B), and "
+						"the counting of VM processes on that host failed "
 						"(no count could be obtained). "
-						"The VM may have crashed soon or may have not properly "
-						"been launched; launch command was: '~ts'.",
+						"The VM may have not properly been launched or "
+						"may have crashed soon; launch command was: '~ts'.",
 						[ NodeName, Hostname, Duration, ActualTimeOut,
 						  Command ] ),
 					vm_remote_detection_abnormal;
@@ -1509,11 +1511,11 @@ interpret_launch_failure( ActualTimeOut, Duration, NodeName, UserName,
 					?error_fmt(
 						"Node ~ts on host ~ts apparently successfully "
 						"launched, but not responding (to Erlang ping) "
-						"after ~B milliseconds (time-out duration: ~B), and"
+						"after ~B milliseconds (time-out duration: ~B), and "
 						"the counting of VM processes on that host reported "
 						"that none is running. "
-						"The VM may have crashed soon or may have not properly "
-						"been launched; launch command was: '~ts'.",
+						"The VM may have not properly been launched or "
+						"may have crashed soon; launch command was: '~ts'.",
 						[ NodeName, Hostname, Duration, ActualTimeOut,
 						  Command ] ),
 					remote_launched_vm_not_found;
@@ -1617,7 +1619,7 @@ onWOOPERDownNotified( State, MonitorReference, MonitoredType, MonitoredElement,
 %
 -spec get_erlang_launch_command( string_node_name(), user_name(),
 								 string_host_name(), wooper:state() ) ->
-	   { system_utils:command(), system_utils:environment(), boolean() }.
+		{ command(), system_utils:environment(), boolean() }.
 get_erlang_launch_command( NodeName, Username, Hostname, State ) ->
 
 	% We replicate the settings of the user node on all computer nodes:
@@ -1659,20 +1661,32 @@ get_erlang_launch_command( NodeName, Username, Hostname, State ) ->
 	%  - 'hostname -f' will return 'hurricane.foo.org'
 	%
 	%  - 'erl -name hello' will result in a prompt like:
-	% (hello@hurricane.localdomain)1>
+	% '(hello@hurricane.localdomain)1>'
 	%
-	% (culprit: /etc/resolv.conf having still a 'domain localdomain', whereas
-	% /etc/hosts has something like:
-	% 127.0.1.1  hurricane.foo.org hurricane
+	% The culprit is /etc/resolv.conf having still a 'domain localdomain',
+	% whereas /etc/hosts has something like:
+	% '127.0.1.1 hurricane.foo.org hurricane'
+	%
 	% (/etc/resolv.conf shall be fixed, but we have to overcome it anyway...)
 	%
 	% So, instead of specifying 'my_user_node_name' (at, implicitly, the local
-	% host), we have to specify 'my_user_node_name@ hurricane.foo.org':
+	% host), we have to specify 'my_user_node_name@hurricane.foo.org':
 
 	NamingMode = ?getAttr(node_naming_mode),
 
 	% Not wanting the 'localhost' atom:
-	CompleteNodeName = net_utils:get_complete_node_name( NodeName ),
+	RealHostname = case Hostname of
+
+		localhost ->
+			net_utils:localhost( fqdn );
+
+		_ ->
+			Hostname
+
+	end,
+
+	CompleteNodeName =
+		net_utils:get_complete_node_name( NodeName, RealHostname, NamingMode ),
 
 	% The next command propagates the cookie of the user node to this newly
 	% launched computing node (using -setcookie); however there seems to be a
@@ -1689,7 +1703,6 @@ get_erlang_launch_command( NodeName, Username, Hostname, State ) ->
 
 	case ?getAttr(managed_host) of
 
-
 		localhost ->
 
 			% We are on the current host, no need to perform a SSH login (it
@@ -1700,7 +1713,7 @@ get_erlang_launch_command( NodeName, Username, Hostname, State ) ->
 			%
 			Username = system_utils:get_user_name(),
 
-			{ BasicCommand ++ " & ", BasicEnv, _IsBackground=true };
+			{ BasicCommand ++ "2>/dev/null & ", BasicEnv, _IsBackground=true };
 
 
 		_ ->
@@ -1721,10 +1734,16 @@ get_erlang_launch_command( NodeName, Username, Hostname, State ) ->
 			%
 			% We suppose here we do not have anything to do, firewall-wise:
 			%
+			% (error output silenced, to avoid outputs such as "bash: erl:
+			% command not found")
+			%
 			Command = executable_utils:get_default_ssh_client_path() ++ " "
 				++ executable_utils:get_ssh_mute_option() ++ " -f "
 				++ Username ++ "@" ++ Hostname ++ " '" ++ EpmdPrefix
-				++ BasicCommand ++ "'",
+				++ BasicCommand ++ "' 2>/dev/null",
+
+			%trace_utils:debug_fmt( "Remote launch command: '~ts'.",
+			%                       [ Command ] ),
 
 			% Now in the background as well, as no output or exit status can be
 			% expected:
@@ -1757,18 +1776,19 @@ send_deployment_agent( State ) ->
 	% for that, and that's it!)
 
 	{ IsVersionObtained, VersionInfo } = case rpc:call( TargetNode,
-								_FirstModule=erlang,
-								_FirstFunction=system_info,
-								_FirstArgs=[ otp_release ] ) of
+			_FirstModule=erlang, _FirstFunction=system_info,
+			_FirstArgs=[ otp_release ] ) of
 
 		{ badrpc, FirstReason } ->
 
 			case rpc:call( TargetNode, init, script_id, [] ) of
 
 				{ badrpc, SecondReason } ->
+
 					Comment = text_utils:format( "the remote Erlang version "
 						"could not be determined (reasons: first ~p, then ~p)",
 						[ FirstReason, SecondReason ] ),
+
 					{ false, Comment };
 
 				{ _OTPInfos, V } ->
@@ -1892,8 +1912,7 @@ send_deployment_agent( State ) ->
 	% 'Oneway' call of the deployment_agent:deploy/5 on the target computing
 	% node, corresponding to the creating of that agent:
 	%
-	rpc:cast( TargetNode,
-			  _SecondModule=deployment_agent,
+	rpc:cast( TargetNode, _SecondModule=deployment_agent,
 			  _SecondFunction=deploy,
 			  _SecondArgs=[ self(), GroupLeaderPid, ?getAttr(tick_time_out),
 							?getAttr(deploy_base_dir),

@@ -39,9 +39,9 @@ Some simple maths-related operations are defined in the ``myriad/src/maths`` dir
 
   - **rendering** them: ``render/2``, ``set_edge_color/2``, ``get_edge_color/1``, ``set_fill_color/2``, ``get_fill_color/1``, etc.
 
-  - managing their **bounding boxes**: ``update_bounding_box/2``, etc.
+  - managing their **bounding surfaces**: ``update_bounding_surface/2``, etc.
 
-- **bounding-boxes in general** are supported in ``bounding_box{2,3}.erl``, including ``get_lazy_circle_box/1``, ``get_minimal_enclosing_circle_box/1``, etc.
+- **bounding spaces** (notably bounding boxes) are supported in ``bounding_{surface,volume}.erl``, including ``get_lazy_bounding_circle/1``, ``get_minimal_enclosing_circle/1``, etc.
 
 - a minimalist `Runge-Kutta solver <https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods#The_Runge.E2.80.93Kutta_method>`_ is defined in ``rk4_solver.erl`` (see also the corresponding `Lorenz test`_)
 

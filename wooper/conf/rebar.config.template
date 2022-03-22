@@ -22,8 +22,7 @@
 
 % Depends on the Ceylan-Myriad OTP library application (Erlang implied):
 
-% As a GIT-based dependency:
-{deps, [ {myriad, {git, "git://github.com/Olivier-Boudeville/Ceylan-Myriad",
+{deps, [ {myriad, {git, "https://github.com/Olivier-Boudeville/Ceylan-Myriad.git",
 					{branch, "master"}}} ] }.
 
 

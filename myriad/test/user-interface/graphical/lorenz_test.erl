@@ -25,8 +25,9 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 
 
-% Unit test mostly for the <b>canvas facility</b>, based on the Lorenz equations
-% to show its strange attractor (and also test the `rk4_solver' module).
+% @doc Unit test mostly for the <b>canvas facility</b>, based on the Lorenz
+% equations to show its strange attractor (and also test the `rk4_solver'
+% module).
 %
 -module(lorenz_test).
 
@@ -49,10 +50,10 @@
 % Description of a simple, local, screen coordinate system:
 -record( screen, {
 
-   center :: integer_point2(),
+	center :: integer_point2(),
 
-   zoom_x :: zoom_factor(),
-   zoom_y :: zoom_factor() } ).
+	zoom_x :: zoom_factor(),
+	zoom_y :: zoom_factor() } ).
 
 -type screen() :: #screen{}.
 
@@ -197,7 +198,6 @@ compute_next_estimates( F, Point, Time, Timestep, Screen, PointCount, Acc ) ->
 
 
 
-
 % @doc Function f(t,v) corresponding to the equations of the Lorenz system.
 %
 % See http://en.wikipedia.org/wiki/Lorenz_system
@@ -315,6 +315,10 @@ start() ->
 	gui:start(),
 
 	%observer:start(),
+
+	trace_utils:notice( "This test will evaluate and display the Lorenz "
+		"equations as soon as the 'Start resolution' button is clicked, "
+		"until being stopped and/or exited." ),
 
 	FrameSize = { get_main_window_width(), get_main_window_height() },
 
@@ -471,8 +475,8 @@ get_initial_base_point() ->
 	{ 0.1, 0.0, 0.0 }.
 
 
-% This table helps the rendering process keeping track of the solvers that feed
-% it with new points to plot.
+% @doc This table helps the rendering process keeping track of the solvers that
+% feed it with new points to plot.
 %
 create_solver_table( Derivative, Colors, InitialPoint, InitialTime,
 					 InitialTimestep, Screen ) ->

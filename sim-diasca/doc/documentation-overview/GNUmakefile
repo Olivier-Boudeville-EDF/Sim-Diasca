@@ -16,7 +16,7 @@ all:
 
 
 doc:
-	@for m in $(COND_MODULES_DIRS); do if [ -d $$m ]; (cd $$m && $(MAKE) -s doc); fi; done
+	@for m in $(COND_MODULES_DIRS); do if [ -d $$m ]; then (cd $$m && $(MAKE) -s doc); fi; done
 
 
 

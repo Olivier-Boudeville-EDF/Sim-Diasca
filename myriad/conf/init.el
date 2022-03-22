@@ -519,8 +519,13 @@ Exempt major modes are defined in `display-line-numbers-exempt-modes'."
   (indent-region (point-min) (point-max) nil)
 )
 
+;; The find-file-hooks variable lists the functions to be called after a file is
+;; visited (opened):
+;;
 ;;(add-hook 'find-file-hook 'indent-whole-buffer)
-(add-hook 'find-file-hook 'whitespace-cleanup)
+
+;; Disabled, as was modifying too many third-party files:
+;;(add-hook 'find-file-hook 'whitespace-cleanup)
 
 
 

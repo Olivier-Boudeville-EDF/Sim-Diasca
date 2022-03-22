@@ -57,11 +57,11 @@
 
 % Basic list operations:
 -export([ get_element_at/2, set_element_at/3, insert_element_at/3,
-		  extract_element_at/2,
+		  extract_element_at/2, extract_element_if_existing/2,
 		  remove_first_elements/2, remove_element_at/2, remove_last_element/1,
 		  heads/2,
 		  get_last_element/1, extract_last_element/1,
-		  get_index_of/2, get_maybe_index_of/2, split_at/2,
+		  get_index_of/2, get_maybe_index_of/2, split_at/2, group_by/2,
 		  uniquify/1, uniquify_ordered/1,
 		  ensure_is_once_in/2,
 		  has_duplicates/1, count_occurrences/1, get_duplicates/1,
@@ -70,7 +70,8 @@
 		  cartesian_product/1,
 		  subtract_all_duplicates/2,
 		  get_all_permutations/1,
-		  delete_existing/2, delete_if_existing/2,
+		  delete_existing/2, delete_existing_elements/2,
+		  delete_if_existing/2,
 		  remove_element_from/2, remove_elements_from/2,
 		  remove_first_occurrence/2, remove_first_occurrences/2,
 		  delete_all_in/2,
@@ -307,6 +308,27 @@ extract_element_at( List, Index ) ->
 
 
 
+% @doc Extracts the (first occurrence of the) specified element from the
+% specified list, if existing there, then returning the shrunk list (with that
+% element removed, and in its original order), otherwise returning false.
+%
+-spec extract_element_if_existing( element(), list() ) -> 'false' | list().
+extract_element_if_existing( Elem, List ) ->
+	extract_element_if_existing( Elem, List, _Acc=[] ).
+
+
+% (helper)
+extract_element_if_existing( _Elem, _List=[], _Acc ) ->
+	false;
+
+extract_element_if_existing( Elem, _List=[ Elem | T ], Acc ) ->
+	lists:reverse( Acc ) ++ T;
+
+extract_element_if_existing( Elem, _List=[ H | T ], Acc ) ->
+	extract_element_if_existing( Elem, T, [ H | Acc ] ).
+
+
+
 % @doc Removes the specified number first elements.
 %
 % Ex: [c, d, e] = list_utils:remove_first_elements([a, b, c, d, e], 2).
@@ -493,13 +515,17 @@ get_maybe_index_of( Element, _List=[ _H | T ], Count ) ->
 
 
 % @doc Splits the specified (plain) list in two parts (two plain lists, that are
-% returned): the first contains the first elements, up to MaxLen included (in
-% reverse order), and the second the others (if any).
+% returned):
+%
+% - the first contains the first elements, up to MaxLen included, and in
+%   reverse order
+% - the second contains the remaining elements (if any)
 %
 % Ex: split_at(3, [a, b, c, d, e]) = {[c, b, a], [d, e]}
 %
 -spec split_at( count(), list() ) -> { list(), list() }.
 split_at( MaxLen, List ) ->
+	%trace_utils:debug_fmt( "Splitting ~p at position #~B.", [ List, MaxLen ] ),
 	split_at( List, _Count=0, MaxLen, _Acc=[] ).
 
 
@@ -512,9 +538,30 @@ split_at( InputList=[], _Count, _MaxLen, AccList ) ->
 	% Input list exhausted:
 	{ AccList, InputList };
 
-split_at( _List=[ H | T ], Count, MaxLen, Acc ) ->
-	split_at( T, Count+1, MaxLen, [ H | Acc ] ).
+split_at( _List=[ E | T ], Count, MaxLen, Acc ) ->
+	split_at( T, Count+1, MaxLen, [ E | Acc ] ).
 
+
+
+% @doc Splits the specified list by groups of Count elements.
+%
+% The last group may have less than Count elements.
+%
+% Ex: [[a,b], [c,d], [e]] = group_by(_Count=2, [a,b,c,d,e])
+%
+-spec group_by( count(), list() ) -> [ list() ].
+group_by( Count, List ) ->
+	group_by( Count, List, _Acc=[] ).
+
+
+% (helper)
+group_by( _Count, _List=[], Acc ) ->
+	lists:reverse( Acc );
+
+group_by( Count, List, Acc ) ->
+	{ RevFirst, RemainingList } = split_at( Count, List ),
+	NewAcc = [ lists:reverse( RevFirst ) | Acc ],
+	group_by( Count, RemainingList, NewAcc ).
 
 
 
@@ -800,8 +847,8 @@ insert_at_all_places( E, _L=[ H | T ], RevL, Acc ) ->
 
 
 % @doc Returns a copy of the specified list where the first element matching
-% Elem is deleted, ensuring at least one of these elements exists (as opposed to
-% lists:delete/2). The order of the specified list is preserved.
+% Elem is deleted, ensuring that at least one of these elements exists (as
+% opposed to lists:delete/2). The order of the specified list is preserved.
 %
 -spec delete_existing( element(), list() ) -> list().
 delete_existing( Elem, List ) ->
@@ -825,6 +872,21 @@ delete_existing( Elem, _List=[ H | T ], OriginalList, Acc ) ->
 
 
 
+% @doc Returns a copy of the specified list where the first element matching
+% each of the specified elements is deleted, ensuring that at least one of these
+% elements exists (as opposed to lists:delete/2). The order of the specified
+% list is preserved.
+%
+-spec delete_existing_elements( [ element() ], list() ) -> list().
+delete_existing_elements( _Elems=[ E | T ], List ) ->
+	NewList = delete_existing( E, List ),
+	delete_existing_elements( T, NewList );
+
+delete_existing_elements( _Elems=[], List ) ->
+	List.
+
+
+
 % @doc Deletes up to one occurrence (the first found) of the specified element
 % in the specified list, whose order is preserved.
 %
@@ -836,7 +898,7 @@ remove_first_occurrence( Element, List ) ->
 % @doc Deletes up to one occurrence (the first found) of each of the specified
 % elements, from the specified list, whose order is preserved.
 %
--spec remove_first_occurrences( element(), list() ) -> list().
+-spec remove_first_occurrences( [ element() ], list() ) -> list().
 remove_first_occurrences( _ElementsToRemove=[], List ) ->
 	List;
 
@@ -946,7 +1008,7 @@ delete_all_in( Elem, List ) ->
 % expecting it to be managed as a list
 %
 %append_at_end( ElemList, L ) when is_list( ElemList ) andalso is_list( L ) ->
-%	L ++ ElemList;
+%   L ++ ElemList;
 %
 append_at_end( Elem, L ) when is_list( L ) ->
 	% Should be more efficient than:
@@ -1335,6 +1397,9 @@ draw_element( ElementList, Length ) ->
 %
 % Using [{first,1}, {second,0}, {third,1}] instead would mean that 'second'
 % would never be drawn.
+%
+% See also random_utils:generate_random_state_from/1 and
+% random_utils:get_sample[s]_from/1.
 %
 -spec draw_element_weighted( [ { element(), number() } ] ) -> element().
 draw_element_weighted( ElementList ) ->

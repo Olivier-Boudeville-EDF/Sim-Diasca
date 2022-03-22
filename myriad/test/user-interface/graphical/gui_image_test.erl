@@ -95,8 +95,6 @@ get_test_image_directory() ->
 % @doc Returns the path to the main test image.
 -spec get_test_main_image_path() -> directory_path().
 get_test_main_image_path() ->
-	%"image.jpg",
-	%"erlang.png",
 	file_utils:join( get_test_image_directory(), "myriad-title.png" ).
 
 
@@ -110,6 +108,9 @@ run_image_test() ->
 	test_facilities:display( "Starting the image test, "
 		"simply by displaying the '~ts' image in a resizable window.",
 		[ ImagePath ] ),
+
+	trace_utils:notice( "A resizable frame displaying the Myriad logo shall "
+		"appear. The test will end as soon as this frame is closed." ),
 
 	gui:start(),
 

@@ -24,9 +24,9 @@
 % (Erlang implied):
 
 % As GIT-based dependencies:
-{deps, [ {myriad, {git, "git://github.com/Olivier-Boudeville/Ceylan-Myriad",
+{deps, [ {myriad, {git, "https://github.com/Olivier-Boudeville/Ceylan-Myriad.git",
 					{branch, "master"}}},
-		 {wooper, {git, "git://github.com/Olivier-Boudeville/Ceylan-WOOPER",
+		 {wooper, {git, "https://github.com/Olivier-Boudeville/Ceylan-WOOPER.git",
 					{branch, "master"}}} ] }.
 
 

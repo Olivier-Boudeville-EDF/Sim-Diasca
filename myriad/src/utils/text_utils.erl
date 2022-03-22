@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2022 Olivier Boudeville
+% Copyright (C) 2007-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -38,8 +38,6 @@
 % modules.
 
 
-% Note that string:tokens/1 can be used to split strings.
-
 
 % String management functions.
 
@@ -54,6 +52,8 @@
 
 		  hexastring_to_integer/1, hexastring_to_integer/2,
 		  hexabinstring_to_binary/1, hexastring_to_binary/1,
+
+		  integer_to_bits/1,
 
 		  atom_to_string/1,
 
@@ -106,13 +106,16 @@
 
 % Other string operations:
 -export([ get_lexicographic_distance/2, get_longest_common_prefix/1,
+		  get_unique_string/2,
 		  safe_length/1,
 		  uppercase_initial_letter/1, to_lowercase/1, to_uppercase/1,
 		  flatten/1,
 		  join/2,
 		  split/2, split_per_element/2, split_parsed/2, split_at_whitespaces/1,
-		  split_at_first/2, split_camel_case/1, tokenizable_to_camel_case/2,
+		  split_at_first/2, split_camel_case/1, split_every/2,
+		  tokenizable_to_camel_case/2,
 		  duplicate/2, concatenate/1,
+		  remove_empty_lines/1,
 
 		  find_substring_index/2, find_substring_index/3,
 
@@ -357,16 +360,14 @@
 
 -type float_option() ::
 
-		% At most Decimals number of digits past the decimal point:
-		{ 'decimals', 0..253 }
+	% At most Decimals number of digits past the decimal point:
+	{ 'decimals', 0..253 }
 
-		% Scientific notation with Decimals digits of precision:
-	  | { 'scientific', 0..249 }
+	% Scientific notation with Decimals digits of precision:
+  | { 'scientific', 0..249 }
 
-		% Trailing zeros at the end of the list are truncated (if using
-		% 'decimals'):
-		%
-	  | 'compact'.
+	% Trailing zeros at the end of the list are truncated (if using 'decimals'):
+  | 'compact'.
 % See [https://erlang.org/doc/man/erlang.html#float_to_list-2] for more
 % information.
 
@@ -389,6 +390,8 @@
 -type count() :: basic_utils:count().
 
 -type integer_id() :: id_utils:integer_id().
+
+-type any_millimeters() :: unit_utils:any_millimeters().
 
 
 
@@ -635,6 +638,22 @@ hexastring_to_binary( _HexaStr=[ Hex1, Hex2 | T ], BinAcc ) ->
 	Int = list_to_integer( TwoCharStr, _Base=16 ),
 	NewBinAcc = <<BinAcc/binary,Int/integer>>,
 	hexastring_to_binary( T, NewBinAcc ).
+
+
+
+% @doc Returns a plain string corresponding to the specified integer once
+% translated to a series of bits, listed per groups of 4.
+%
+% Ex: "0b100-0000-0011" = integer_to_bits(1024+2+1).
+%
+-spec integer_to_bits( integer() ) -> ustring().
+integer_to_bits( I ) ->
+	AllBits = io_lib:format( "~.2B", [ I ] ),
+	% We want to group bits per four, but from right to left:
+	RevAllBits = lists:reverse( AllBits ),
+	RevPacketRevStrs = split_every( _Count=4, RevAllBits ),
+	RevPacketStrs = [ lists:reverse( S ) || S <- RevPacketRevStrs ],
+	"0b" ++ join( _Sep=$-, lists:reverse( RevPacketStrs ) ).
 
 
 
@@ -892,8 +911,8 @@ strings_to_string( Strings ) when is_list( Strings ) ->
 	%trace_utils:debug_fmt( "Stringifying ~p.", [ Strings ] ),
 
 	% Leading '~n' had been removed for some unknown reason:
-	io_lib:format( "~n~ts~n",
-	  [ strings_to_string_helper( Strings, _Acc=[], get_default_bullet() ) ] );
+	io_lib:format( "~n~ts~n", [ strings_to_string_helper( Strings,
+											_Acc=[], get_default_bullet() ) ] );
 
 strings_to_string( ErrorTerm ) ->
 	report_not_a_list( ErrorTerm ).
@@ -942,7 +961,7 @@ strings_to_string( Strings, Bullet )
 			when is_list( Strings ) andalso is_list( Bullet ) ->
 
 	%trace_utils:debug_fmt( "strings_to_string/2 for '~p' : bullet is '~ts'.",
-	%						[ Strings, Bullet ] ),
+	%                       [ Strings, Bullet ] ),
 
 	% Leading '~n' had been removed for some unknown reason:
 
@@ -1355,16 +1374,22 @@ proplist_to_string( Proplist ) ->
 
 	% In this context, key and value known to be strings or atoms:
 	Strings = [ io_lib:format( "~ts: ~ts", [ K, V ] )
-				|| { K, V } <- lists:sort( Proplist ) ],
+						|| { K, V } <- lists:sort( Proplist ) ],
 
 	strings_to_string( Strings ).
 
 
 
-% @doc Returns a string describing the specified three-element version.
--spec version_to_string( basic_utils:version() ) -> ustring().
+% @doc Returns a string describing the specified version.
+-spec version_to_string( basic_utils:any_version() ) -> ustring().
+version_to_string( { V1, V2 } ) ->
+	io_lib:format( "~B.~B", [ V1, V2 ] );
+
 version_to_string( { V1, V2, V3 } ) ->
-	io_lib:format( "~B.~B.~B", [ V1, V2, V3 ] ).
+	io_lib:format( "~B.~B.~B", [ V1, V2, V3 ] );
+
+version_to_string( { V1, V2, V3, V4 } ) ->
+	io_lib:format( "~B.~B.~B.~B", [ V1, V2, V3, V4 ] ).
 
 
 
@@ -1431,8 +1456,7 @@ number_to_string( Other ) ->
 %
 % Ex: for a distance of 1001.5 millimeters, returns "1m and 2mm".
 %
--spec distance_to_string( unit_utils:millimeters()
-						 | unit_utils:int_millimeters() ) -> ustring().
+-spec distance_to_string( any_millimeters() ) -> ustring().
 distance_to_string( Millimeters ) when is_float( Millimeters ) ->
 	distance_to_string( round( Millimeters ) );
 
@@ -1524,8 +1548,7 @@ distance_to_string( Millimeters ) ->
 %
 % Ex: for a distance of 1000.5 millimeters, returns "1.0m".
 %
--spec distance_to_short_string( unit_utils:millimeters()
-							   | unit_utils:int_millimeters() ) -> ustring().
+-spec distance_to_short_string( any_millimeters() ) -> ustring().
 distance_to_short_string( Millimeters ) when is_float( Millimeters ) ->
 	distance_to_short_string( round( Millimeters ) );
 
@@ -1604,8 +1627,8 @@ format( FormatString, Values ) ->
 			_:_ ->
 
 				Msg = io_lib:format( "[error: badly formatted string output] "
-						"Format string was '~p', values were '~ts'.~n",
-						[ FormatString, basic_utils:describe_term( Values ) ] ),
+					"Format string was '~p', values were '~ts'.~n",
+					[ FormatString, basic_utils:describe_term( Values ) ] ),
 
 				% Not wanting to be extra verbose in this mode:
 				%io:format( Msg ++ "~n", [] ),
@@ -1658,10 +1681,10 @@ format( FormatString, Values ) ->
 
 							false ->
 								io_lib:format(
-								  "values were not specified as a list "
-								  "(i.e. incorrectly as '~ts'; "
-								  "format was '~ts')",
-								  [ VString, FormatString ] )
+									"values were not specified as a list "
+									"(i.e. incorrectly as '~ts'; "
+									"format was '~ts')",
+									[ VString, FormatString ] )
 
 						end;
 
@@ -1853,11 +1876,11 @@ format_ellipsed( FormatString, Values, MaxLen ) ->
 
 % @doc Compares the types specified through control sequences (typically
 % emanating from a format string) to the types of specified, numbered values
-% (expected to correspond), and detect some mismatches.
+% (expected to correspond), and detects some mismatches.
 %
-% Fancy sequences not taken into account: X, x, ts, etc.
+% Fancy sequences not taken into account: X, x, etc.
 %
-% Note: beware to the output error messages comprising ~XXX not be afterwards
+% Note: beware to the output error messages comprising ~XXX not being afterwards
 % interpreted as control sequences; we finally gave up including a ~ character
 % in the output sequence, as it has to be escaped a number of times that
 % depended on how many io*:format/* it was to go through (fragile at best).
@@ -2442,6 +2465,67 @@ are_all_starting_with( _C, _Strings, _Acc ) ->
 
 
 
+% @doc Returns a string, based on the specified one and guaranteed to be
+% different from all the other specified ones.
+%
+% Ex: useful to generate non-clashing names, like in:
+%  "Hello" = text_utils:get_unique_string( "Hello", [] ),
+%  "Hello2" = text_utils:get_unique_string( "Hello", ["Hello","Goodbye"] )
+%
+-spec get_unique_string( ustring(), [ ustring() ] ) -> ustring().
+get_unique_string( BaseStr, AllStrs ) ->
+	case lists:member( BaseStr, AllStrs ) of
+
+		false ->
+			BaseStr;
+
+		true ->
+			get_uniq_helper( lists:reverse( BaseStr ), AllStrs )
+
+	end.
+
+
+% Skip first any already trailing final numbers of the original string,
+% provided a prefix remains:
+%
+get_uniq_helper( _RevBaseStr=[ C | T ], AllStrs )
+								when $0 =< C, C =< $9, T /= [] ->
+	get_uniq_helper( T, AllStrs );
+
+% Prefix is BaseStr without any number-based suffix:
+get_uniq_helper( RevPrefix, AllStrs ) ->
+	Prefix = [ FirstChar | _ ] = lists:reverse( RevPrefix ),
+	SameStartStrs = [ S || S <- AllStrs, hd( S ) =:= FirstChar ],
+	% Add a trailing space if inner spaces are already used:
+	SpacedPrefix =
+			case lists:member( $ , Prefix ) andalso hd( RevPrefix ) =/= $ of
+
+		true ->
+			Prefix ++ " ";
+
+		false ->
+			Prefix
+
+	end,
+	suffix_uniq_helper( SpacedPrefix, _Count=2,
+						set_utils:new( SameStartStrs ) ).
+
+
+% Find the first relevant number for uniqueness:
+suffix_uniq_helper( Prefix, Count, Strs ) ->
+	CandidateStr = Prefix ++ integer_to_string( Count ),
+	case set_utils:member( CandidateStr, Strs ) of
+
+		true ->
+			suffix_uniq_helper( Prefix, Count+1, Strs );
+
+		false ->
+			CandidateStr
+
+	end.
+
+
+
 % @doc Returns, if possible, the length of the specified string-like argument,
 % otherwise returns 'undefined'.
 %
@@ -2623,7 +2707,7 @@ try_string_to_integer( String ) ->
 % Returns the 'undefined' atom if the conversion failed.
 %
 -spec try_string_to_integer( ustring(), 2..36 ) ->
-								   basic_utils:maybe( integer() ).
+									basic_utils:maybe( integer() ).
 try_string_to_integer( String, Base ) when is_list( String ) ->
 	try list_to_integer( String, Base ) of
 
@@ -2685,6 +2769,8 @@ try_string_to_float( String ) when is_list( String ) ->
 	%
 	% So: if there is no dot on the left of a 'e' or a 'E', add ".0".
 	% Moreover, "1.E-4" is also rejected, it must be fixed as well.
+
+	% See also: wings_util:string_to_float/1.
 
 	% First, normalise the string, by transforming any 'E' into 'e', and by
 	% converting any comma-based decimal mark into a dot:
@@ -2823,14 +2909,15 @@ binary_to_float( BinString ) ->
 
 
 
-% @doc Returns the specified string, ensuring that its first letter is a
-% majuscule, uppercasing it if necessary.
+% @doc Capitalises the specified string, ensuring that its first letter is a
+% capital one, uppercasing it if necessary.
 %
 -spec uppercase_initial_letter( ustring() ) -> ustring().
 uppercase_initial_letter( _Letters=[] ) ->
 	[];
 
 uppercase_initial_letter( _Letters=[ First | Others ] ) ->
+	% More reliable to use First-$a+$A if $a =< First, First =< $z:
 	[ string:to_upper( First ) | Others ].
 
 
@@ -2923,7 +3010,8 @@ split( String, Delimiters ) ->
 
 	% Note: string:tokens/2 is now deprecated in favor of string:lexemes/2, and
 	% and anyway both treat two or more adjacent separator graphemes clusters as
-	% only one, which is generally not what we want; so we now use:
+	% only one, which is generally not what we want; so we now use our own
+	% function.
 
 	% Would be quite different, as Delimiters here would be understood as a
 	% search pattern (i.e. a "word" as a whole) instead of a list of delimiters:
@@ -2944,7 +3032,7 @@ split_helper( _Delimiters=[], Acc ) ->
 
 split_helper( _Delimiters=[ D | T ], Acc ) ->
 	SplitStrs = [ string:split( S, _SearchPattern=[ D ], _Where=all )
-				  || S <- Acc ],
+								|| S <- Acc ],
 	NewAcc = concatenate( SplitStrs ),
 	split_helper( T, NewAcc ).
 
@@ -3011,7 +3099,7 @@ split_parsed( ParseString, Delimiters ) ->
 %
 % (helper)
 %split_parsed( _ParseString=[], _Delimiters, _AccElem=[], AccStrs ) ->
-%	lists:reverse( AccStrs );
+%   lists:reverse( AccStrs );
 
 split_parsed( _ParseString=[], _Delimiters, AccElem, AccStrs ) ->
 	lists:reverse( [ lists:reverse( AccElem ) | AccStrs ] );
@@ -3086,9 +3174,9 @@ split_at_first( Marker, _ToRead=[ Other | T ], Read ) ->
 % uppercases, knowing a series of uppercase letters, except the last one, is
 % considered as an acronym, hence as a single word), in their original order.
 %
-% Ex: split_camel_case( "IndustrialWasteSource" ) shall return [ "Industrial",
-% "Waste", "Source" ], while split_camel_case( "TheySaidNYCWasGreat" ) shall
-% return [ "They", "Said", "NYC", "Was", "Great" ].
+% Ex: split_camel_case("IndustrialWasteSource") shall return ["Industrial",
+% "Waste", "Source"], while split_camel_case("TheySaidNYCWasGreat") shall return
+% ["They", "Said", "NYC", "Was", "Great"].
 %
 -spec split_camel_case( ustring() ) -> [ ustring() ].
 split_camel_case( String ) ->
@@ -3142,9 +3230,9 @@ split_camel_case( _String=[ HeadChar | MoreChars ], Acc ) ->
 % strings in the Capitalized Case (all lower-case except for the first letter)
 % and finally joins them to get a long CamelCased string.
 %
-% Ex: tokenizable_to_camel_case( "industrial_WASTE_sOuRCe", "_" ) shall return
-% "IndustrialWasteSource", while tokenizable_to_camel_case( "ME HAZ READ J.R.R",
-% ". " ) shall return "MeHazReadJRR".
+% Ex: tokenizable_to_camel_case("industrial_WASTE_sOuRCe", "_") shall return
+% "IndustrialWasteSource", while tokenizable_to_camel_case("ME HAZ READ J.R.R",
+% ". ") shall return "MeHazReadJRR".
 %
 -spec tokenizable_to_camel_case( ustring(), ustring() ) -> ustring().
 tokenizable_to_camel_case( String, SeparatorsList ) ->
@@ -3156,11 +3244,23 @@ tokenizable_to_camel_case( String, SeparatorsList ) ->
 	LowerCaseTokens = [ string:to_lower( Str ) || Str <- Tokens ],
 
 	% Capitalizes all lower-cased tokens:
-	CamelCaseTokens = [ uppercase_initial_letter( Str )
-						|| Str <- LowerCaseTokens ],
+	CamelCaseTokens =
+		[ uppercase_initial_letter( Str ) || Str <- LowerCaseTokens ],
 
 	% Concatenates the capitalized tokens:
 	lists:concat( CamelCaseTokens ).
+
+
+
+% @doc Splits the specified string every Count characters.
+%
+% The last string may have less than Count characters.
+%
+% Ex: [ "AB", "CD", "E" } = split_every( "ABCDE", _Count=2 ).
+%
+-spec split_every( count(), ustring() ) -> [ ustring() ].
+split_every( Count, Str ) ->
+	list_utils:group_by( Count, Str ).
 
 
 
@@ -3168,6 +3268,8 @@ tokenizable_to_camel_case( String, SeparatorsList ) ->
 % (flattened once) string, not an iolist.
 %
 % Ex: duplicate(3, "abc") = "abcabcabc".
+%
+% Use directly lists:duplicate/2 if wanting for example ["abc", "abc", "abc"].
 %
 -spec duplicate( count(), ustring() ) -> ustring().
 duplicate( Count, Str ) ->
@@ -3184,6 +3286,15 @@ duplicate( Count, Str ) ->
 -spec concatenate( [ string_like() | number() ] ) -> ustring().
 concatenate( Elements ) ->
 	lists:concat( Elements ).
+
+
+
+% @doc Returns in-order the specified list of strings once all empty ones have
+% been removed.
+%
+-spec remove_empty_lines( [ ustring() ] ) -> [ ustring() ].
+remove_empty_lines( Strs ) ->
+	[ S || S <- Strs, S =/= "" ].
 
 
 

@@ -33,7 +33,7 @@
 % Images shall be considered as just a generic, platform independent buffer of
 % RGB bytes with an optional buffer for the alpha bytes.
 %
-%  May be useful also for textures.
+% May be useful also for textures.
 %
 -module(gui_image).
 
@@ -217,6 +217,7 @@ load( Image, ImagePath ) ->
 			throw( { image_loading_failed, ImagePath } )
 
 	end.
+
 
 
 % @doc Loads the image stored in the specified file into the specified image

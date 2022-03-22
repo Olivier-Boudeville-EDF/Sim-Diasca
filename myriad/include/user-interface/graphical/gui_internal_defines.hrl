@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2022 Olivier Boudeville
+% Copyright (C) 2017-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -26,8 +26,8 @@
 % Creation date: Saturday, September 16, 2017.
 
 
-% Internal gui defines, hence to be included solely by the gui subsystem, not by
-% user code (as depends on wx).
+% @doc <b>GUI-Internal defines</b>, hence to be included solely by the gui
+% subsystem, not by user code (as depends on wx).
 
 
 % For wx records and all:
@@ -41,7 +41,9 @@
 -define( no_parent, wx:null() ).
 
 
-% The special color that means "transparent" (i.e. no filling):
+% The special color that means "transparent" (i.e. no filling / a null alpha
+% coordinate):
+%
 -define( transparent_color, ?wxTRANSPARENT_BRUSH ).
 
 
@@ -53,10 +55,10 @@
 %
 -record( myriad_object_ref, {
 
-		% The type of GUI object referred to (ex: 'canvas'):
-		object_type :: gui:myriad_object_type(),
+	% The type of GUI object referred to (ex: 'canvas'):
+	object_type :: gui:myriad_object_type(),
 
-		% The identifier of this referenced instance:
-		myriad_instance_id :: gui:myriad_instance_id() } ).
+	% The identifier of this referenced instance:
+	myriad_instance_id :: gui:myriad_instance_id() } ).
 
 -type myriad_object_ref() :: #myriad_object_ref{}.

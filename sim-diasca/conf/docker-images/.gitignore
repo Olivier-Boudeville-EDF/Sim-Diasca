@@ -1,0 +1,8 @@
+sim-diasca-*-image/docker-context/otp_src_*.tar.gz
+
+# As generated from template:
+sim-diasca-*-image/docker-context/Dockerfile
+sim-diasca-*-image/docker-context/README-About-This-Docker-Image.txt
+
+# Local copies:
+sim-diasca-*-image/docker-context/Sim-Diasca

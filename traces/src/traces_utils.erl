@@ -44,9 +44,14 @@
 
 % Shorthands:
 
--type registration_scope() :: naming_utils:registration_scope().
+-type module_name() :: basic_utils:module_name() .
 
+-type bin_file_name() :: file_utils:bin_file_name().
+
+-type registration_scope() :: naming_utils:registration_scope().
 -type look_up_scope() :: naming_utils:look_up_scope().
+
+-type aggregator_pid() :: class_TraceAggregator:aggregator_pid().
 
 
 
@@ -63,17 +68,17 @@ get_aggregator_registration_scope() ->
 	%AggRegName = case application:get_env(
 	%                   trace_aggregator_registration_name ) of
 	%
-	%	undefined ->
-	%		?trace_aggregator_name;
+	%   undefined ->
+	%       ?trace_aggregator_name;
 	%
-	%	{ ok, CfgRegName } when is_atom( RegName ) ->
-	%		CfgRegName;
+	%   { ok, CfgRegName } when is_atom( RegName ) ->
+	%       CfgRegName;
 	%
-	%	{ ok, InvalidRegName } ->
-	%		trace_utils:error_fmt( "Invalid registration name read for the "
-	%			"trace aggregator: '~p'.", [ InvalidRegName ] ),
-	%		throw( { invalid_trace_aggregator_registration_name,
-	%				 InvalidRegName } )
+	%   { ok, InvalidRegName } ->
+	%       trace_utils:error_fmt( "Invalid registration name read for the "
+	%           "trace aggregator: '~p'.", [ InvalidRegName ] ),
+	%       throw( { invalid_trace_aggregator_registration_name,
+	%                 InvalidRegName } )
 	%
 	%end,
 
@@ -131,7 +136,8 @@ get_aggregator_look_up_scope() ->
 
 
 % @doc Names the trace file currently managed by the trace aggregator according
-% to specified name.
+% to the specified module name. Returns, if useful, the new trace filename and
+% the PID of the trace aggregator.
 %
 % Note: the aggregator is supposed to have been launched with the 'later'
 % initial supervision setting, and will be looked-up according to our
@@ -140,7 +146,8 @@ get_aggregator_look_up_scope() ->
 % Typically useful from an OTP context, where the Traces application is started
 % without being able to defined programatically the resulting trace file.
 %
--spec name_trace_file_from( basic_utils:module_name() ) -> void().
+-spec name_trace_file_from( module_name() ) ->
+								{ bin_file_name(), aggregator_pid() }.
 name_trace_file_from( ModName ) ->
 	AggLookupScope = get_aggregator_look_up_scope(),
 	name_trace_file_from( ModName, AggLookupScope ).
@@ -148,7 +155,8 @@ name_trace_file_from( ModName ) ->
 
 
 % @doc Names the trace file currently managed by the trace aggregator according
-% to specified name and scope.
+% to the specified module name and scope. Returns, if useful, the new trace
+% filename and the PID of the trace aggregator.
 %
 % Note: the aggregator is supposed to have been launched with the 'later'
 % initial supervision setting.
@@ -156,8 +164,8 @@ name_trace_file_from( ModName ) ->
 % Typically useful from an OTP context, where the Traces application is started
 % without being able to defined programatically the resulting trace file.
 %
--spec name_trace_file_from( basic_utils:module_name(),
-							look_up_scope() ) -> void().
+-spec name_trace_file_from( module_name(), look_up_scope() ) ->
+									{ bin_file_name(), aggregator_pid() }.
 name_trace_file_from( ModName, AggLookupScope ) ->
 
 	NewTraceFilename = traces:get_trace_filename( ModName ),
@@ -165,10 +173,12 @@ name_trace_file_from( ModName, AggLookupScope ) ->
 	trace_utils:info_fmt( "Requesting the renaming of trace aggregator "
 		"file to '~ts'.", [ NewTraceFilename ] ),
 
-	BinNewTraceFilename = text_utils:string_to_binary( NewTraceFilename ),
+	NewTraceFilenameBin = text_utils:string_to_binary( NewTraceFilename ),
 
 	AggPid = naming_utils:get_registered_pid_for(
 		_Name=?trace_aggregator_name, AggLookupScope ),
 
 	% Oneway:
-	AggPid ! { renameTraceFile, BinNewTraceFilename }.
+	AggPid ! { renameTraceFile, NewTraceFilenameBin },
+
+	{ NewTraceFilenameBin, AggPid }.

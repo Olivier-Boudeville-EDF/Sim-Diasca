@@ -47,6 +47,7 @@ Code for user documents:
  - Computer Problems, xkcd-computer_problems.png, http://xkcd.com/722/, [T]
  - Conditional Risk, xkcd-conditional_risk.png, http://xkcd.com/795/, [T]
  - Correlation, xkcd-correlation.png, http://xkcd.com/552/, [T]
+ - Data Trap, xkcd-data_trap.png, http://xkcd.com/2582/, [T]
  - Debugger, xkcd-debugger.png, , [T]
  - Dependencies, xkcd-dependencies.png, http://xkcd.com/754/, [T]
  - Dimensional Analysis, xkcd-dimensional_analysis.png, http://xkcd.com/687/, [T]

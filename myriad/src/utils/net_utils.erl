@@ -423,11 +423,11 @@ get_local_ip_addresses() ->
 
 	IfList = case inet:getifaddrs() of
 
-				 { ok, List } ->
-					 List;
+		{ ok, List } ->
+			List;
 
-				 { error, Reason } ->
-					 throw( { local_ip_look_up_failed, Reason } )
+		{ error, Reason } ->
+			throw( { local_ip_look_up_failed, Reason } )
 
 	end,
 
@@ -557,7 +557,7 @@ get_reverse_lookup_info() ->
 						false ->
 							undefined;
 							%throw( { no_look_up_executable_found,
-							%		 [ "host", "drill", "dig" ] } );
+							%           [ "host", "drill", "dig" ] } );
 
 						DigPath ->
 							{ dig, DigPath }
@@ -603,8 +603,8 @@ reverse_lookup( IPAddress, _LookupInfo={ dig, DigExecPath } ) ->
 	% Following could let non-PTR answers with '900 IN SOA' slip through:
 	%
 	%Cmd = DigExecPath ++ " -x " ++ ipv4_to_string( IPAddress )
-	%	++ " | grep . | grep -v '^;;' | sed 's|.*PTR\t||1' | "
-	%	++ "sed 's|\.$||1' 2>/dev/null",
+	%   ++ " | grep . | grep -v '^;;' | sed 's|.*PTR\t||1' | "
+	%   ++ "sed 's|\.$||1' 2>/dev/null",
 
 	% Alternatively, could have along the lines of:
 	%
@@ -612,15 +612,15 @@ reverse_lookup( IPAddress, _LookupInfo={ dig, DigExecPath } ) ->
 	%
 	%           CleanedResult = text_utils:remove_whitespaces( Output ),
 	%
-	%			case string:tokens( CleanedResult, "PTR" ) of
+	%           case string:tokens( CleanedResult, "PTR" ) of
 	%
-	%			[ _Prefix, DomainPlusDot ] ->
-	%				% There is a trailing dot:
-	%				text_utils:remove_last_characters( DomainPlusDot,
-	%												   _Count=1 );
+	%           [ _Prefix, DomainPlusDot ] ->
+	%               % There is a trailing dot:
+	%               text_utils:remove_last_characters( DomainPlusDot,
+	%                                                  _Count=1 );
 	%
-	%			_Other  ->
-	%				unknown_dns
+	%           _Other  ->
+	%               unknown_dns
 	%
 	%		end;
 	%
@@ -649,7 +649,7 @@ reverse_lookup( IPAddress, _LookupInfo={ drill, DrillExecPath } ) ->
 reverse_lookup( IPAddress, _LookupInfo={ host, HostExecPath } ) ->
 
 	Cmd = HostExecPath ++ " -W 1 " ++ ipv4_to_string( IPAddress )
-		++ " 2>/dev/null",
+					++ " 2>/dev/null",
 
 	case system_utils:run_command( Cmd ) of
 
@@ -856,14 +856,14 @@ check_node_availability( NodeName, Duration )  ->
 		pong ->
 
 			%trace_utils:debug_fmt( " - node '~ts' found directly available.",
-			%						[ NodeName ] ),
+			%                       [ NodeName ] ),
 
 			{ true, 0 } ;
 
 		pang ->
 
 			%trace_utils:debug_fmt( " - node '~ts' not yet found available.",
-			%						[ NodeName ] ),
+			%                       [ NodeName ] ),
 
 			% Hopefully too early, let's retry later:
 			check_node_availability( NodeName,
@@ -877,7 +877,7 @@ check_node_availability( NodeName, Duration )  ->
 % Helper function for the actual waiting:
 check_node_availability( NodeName, CurrentDurationStep, ElapsedDuration,
 						 SpecifiedMaxDuration )
-  when ElapsedDuration < SpecifiedMaxDuration ->
+					when ElapsedDuration < SpecifiedMaxDuration ->
 
 	% Still on time here, apparently.
 
@@ -887,8 +887,8 @@ check_node_availability( NodeName, CurrentDurationStep, ElapsedDuration,
 	ActualDurationStep = erlang:min( CurrentDurationStep, RemainingDuration ),
 
 	%trace_utils:debug_fmt( "check_node_availability: actual step is ~B ms, "
-	%			"elapsed is ~B ms, for a specified duration of ~B ms.",
-	%			[ ActualDurationStep, ElapsedDuration, SpecifiedMaxDuration ] ),
+	%   "elapsed is ~B ms, for a specified duration of ~B ms.",
+	%   [ ActualDurationStep, ElapsedDuration, SpecifiedMaxDuration ] ),
 
 	% By design we are directly following a ping attempt:
 	timer:sleep( ActualDurationStep ),
@@ -1015,9 +1015,9 @@ generate_valid_node_name_from( Name ) when is_list( Name ) ->
 	%
 	% (see also: file_utils:convert_to_filename/1)
 	re:replace( lists:flatten( Name ),
-				"( |<|>|,|\\(|\\)|'|\"|/|\\\\|\&|~|"
-				"#|@|{|}|\\[|\\]|\\||\\$|\\*|\\?|!|\\+|;|\\.|:)+", "_",
-				[ global, { return, list } ] ).
+		"( |<|>|,|\\(|\\)|'|\"|/|\\\\|\&|~|"
+		"#|@|{|}|\\[|\\]|\\||\\$|\\*|\\?|!|\\+|;|\\.|:)+", "_",
+		[ global, { return, list } ] ).
 
 
 
@@ -1172,23 +1172,23 @@ enable_preferred_distribution_mode( _NodeName, _NamingModes=[] ) ->
 	{ error, no_node_naming_mode_specified };
 
 enable_preferred_distribution_mode( NodeName, NamingModes )
-					when is_list( NodeName ) ->
+				when is_list( NodeName ) ->
 	AtomNodeName = text_utils:string_to_atom( lists:flatten( NodeName ) ),
 	enable_preferred_distribution_mode( AtomNodeName, NamingModes );
 
 enable_preferred_distribution_mode( BinNodeName, NamingModes )
-					when is_binary( BinNodeName ) ->
+				when is_binary( BinNodeName ) ->
 	AtomNodeName = text_utils:binary_to_atom( BinNodeName ),
 	enable_preferred_distribution_mode( AtomNodeName, NamingModes );
 
 enable_preferred_distribution_mode( AtomNodeName, NamingModes )
-		when is_atom( AtomNodeName ) andalso is_list( NamingModes ) ->
+				when is_atom( AtomNodeName ) andalso is_list( NamingModes ) ->
 	enable_preferred_distribution_mode( AtomNodeName, NamingModes,
 		_LastError=no_suitable_node_naming_mode );
 
 % NamingModes not a list:
 enable_preferred_distribution_mode( AtomNodeName, NamingModes )
-		when is_atom( AtomNodeName ) ->
+				when is_atom( AtomNodeName ) ->
 	throw( { invalid_preferred_node_naming_modes, NamingModes } );
 
 % NodeName not legit:
@@ -1197,7 +1197,7 @@ enable_preferred_distribution_mode( NodeName, _NamingModes ) ->
 
 
 
-% We ensure we have an actual error to report in all cases.
+% We ensure that we have an actual error to report in all cases.
 %
 % (helper)
 %
@@ -1273,8 +1273,8 @@ try_start_distribution( NodeName, NamingMode, NameType ) ->
 try_start_distribution( NodeName, NamingMode, NameType, RemainingAttempts ) ->
 
 	%trace_utils:debug_fmt( "Starting distribution for node name '~ts', "
-	%	"as '~ts', i.e. '~ts' (while current is '~ts'); still ~B attempts.",
-	%	[ NodeName, NamingMode, NameType, node(), RemainingAttempts ] ),
+	%   "as '~ts', i.e. '~ts' (while current is '~ts'); still ~B attempts.",
+	%   [ NodeName, NamingMode, NameType, node(), RemainingAttempts ] ),
 
 	case net_kernel:start( [ NodeName, NameType ] ) of
 
@@ -1327,36 +1327,35 @@ try_start_distribution( NodeName, NamingMode, NameType, RemainingAttempts ) ->
 
 
 
-% @doc Tries to enable the distribution on the current node, trying first to use
-% long names, otherwise short names, doing its best to avoid that the operation
-% fails; in case of success returns the enabled naming mode, otherwise throws an
-% exception.
+% @doc Tries to enable the distribution on the current node with the specified
+% name, trying first to use long names, otherwise short names, doing its best to
+% avoid that the operation fails; in case of success, returns the enabled naming
+% mode, otherwise throws an exception.
 %
-% Especially useful in context of continuous integration and/or from within a
-% container facility such as Docker or Singularity, where enabling the
+% Especially useful in the context of continuous integration and/or from within
+% a container facility such as Docker or Singularity, where enabling the
 % distribution of nodes may fail for varied reasons.
 %
 % See enable_distribution_mode/2 for more details.
 %
 -spec secure_distribution( node_name() ) -> node_naming_mode().
-secure_distribution( UserNodeName ) ->
+secure_distribution( NodeName ) ->
 
-	% Our preferred order (the most tricky one):
+	% Our preferred order (the trickiest one):
 	OrderedNamingModes = [ long_name, short_name ],
 
 	% Just if wanting to test that way:
 	%OrderedNamingModes = [ short_name, long_name ],
 
-	case enable_preferred_distribution_mode( UserNodeName,
-											 OrderedNamingModes ) of
+	case enable_preferred_distribution_mode( NodeName, OrderedNamingModes ) of
 
 		{ ok, NamingMode } ->
 			NamingMode;
 
 		{ error, ErrorReason } ->
-			throw( { cannot_secure_distribution, UserNodeName, ErrorReason } )
+			throw( { cannot_secure_distribution, NodeName, ErrorReason } )
 
-end.
+	end.
 
 
 
@@ -1443,8 +1442,8 @@ shutdown_node( NodeName ) when is_atom( NodeName ) ->
 
 				_T:E ->
 					trace_utils:error_fmt(
-					  "Error while shutting down node '~ts': ~p.",
-					  [ NodeName, E ] )
+						"Error while shutting down node '~ts': ~p.",
+						[ NodeName, E ] )
 
 			end,
 
@@ -1465,7 +1464,7 @@ shutdown_node( NodeName ) when is_atom( NodeName ) ->
 %
 -spec wait_unavailable( atom_node_name(), count(), milliseconds() ) -> void().
 wait_unavailable( NodeName, _AttemptCount=0, _Duration )
-  when is_atom( NodeName ) ->
+											when is_atom( NodeName ) ->
 	throw( { node_not_terminating, NodeName } );
 
 wait_unavailable( NodeName, AttemptCount, Duration ) when is_atom( NodeName ) ->
@@ -1492,21 +1491,21 @@ wait_unavailable( NodeName, AttemptCount, Duration ) when is_atom( NodeName ) ->
 
 	%try net_adm:ping( NodeName ) of
 
-	%	pong ->
-	%		timer:sleep( Duration ),
-	%		wait_unavailable( NodeName, AttemptCount-1, 2*Duration );
+	%   pong ->
+	%       timer:sleep( Duration ),
+	%       wait_unavailable( NodeName, AttemptCount-1, 2*Duration );
 
-	%	pang ->
+	%   pang ->
 			% Safety delay to ensure the node had time to fully shut down and to
 			% unregister from everything:
-	%		timer:sleep( 200 ),
-	%		ok
+	%       timer:sleep( 200 ),
+	%       ok
 
 	%catch
 
-	%	_T:E ->
+	%   _T:E ->
 
-	%		trace_utils:debug_fmt( "Error while pinging node '~ts': "
+	%       trace_utils:debug_fmt( "Error while pinging node '~ts': "
 	%           "exception '~p'.", [ NodeName, E ] )
 
 	%end.
@@ -1514,7 +1513,7 @@ wait_unavailable( NodeName, AttemptCount, Duration ) when is_atom( NodeName ) ->
 
 
 
-% Net-related command line options.
+% Net-related command-line options.
 
 
 % @doc Returns the command-line option (a plain string) to be used to run a new
@@ -1554,8 +1553,7 @@ get_default_epmd_port() ->
 % convention (ex: see the FIREWALL_OPT make option in myriad/GNUmakevars.inc),
 % otherwise available nodes will not be found.
 %
--spec get_epmd_environment( maybe( tcp_port() ) ) ->
-								environment().
+-spec get_epmd_environment( maybe( tcp_port() ) ) -> environment().
 get_epmd_environment( undefined ) ->
 	[];
 
@@ -1573,7 +1571,7 @@ get_epmd_environment( EpmdPort ) when is_integer( EpmdPort ) ->
 % (short or long name, specified thanks to atoms).
 %
 -spec get_node_name_option( string_node_name(), node_naming_mode() ) ->
-								ustring().
+															ustring().
 get_node_name_option( NodeName, NodeNamingMode ) ->
 
 	NodeNameOption = case NodeNamingMode of
@@ -1607,7 +1605,7 @@ get_tcp_port_range_option( { MinTCPPort, MaxTCPPort } )
   when is_integer( MinTCPPort ) andalso is_integer( MaxTCPPort )
 	   andalso MinTCPPort < MaxTCPPort ->
 	%trace_utils:debug_fmt( "Enforcing following TCP range: [~B,~B].",
-	%						[ MinTCPPort, MaxTCPPort ] ),
+	%                       [ MinTCPPort, MaxTCPPort ] ),
 	text_utils:format( " -kernel inet_dist_listen_min ~B "
 					   "inet_dist_listen_max ~B ", [ MinTCPPort, MaxTCPPort ] ).
 
@@ -1646,11 +1644,9 @@ get_basic_node_launching_command( NodeName, NodeNamingMode, EpmdSettings,
 	% ERL_EPMD_PORT=754
 
 	Command = text_utils:join( _Separator=" ", [
-			executable_utils:get_default_erlang_interpreter_name(),
-			get_cookie_option(),
-			get_node_name_option( NodeName, NodeNamingMode ),
-			get_tcp_port_range_option( TCPSettings ),
-			AdditionalOptions ] ),
+		executable_utils:get_default_erlang_interpreter_name(),
+		get_cookie_option(), get_node_name_option( NodeName, NodeNamingMode ),
+		get_tcp_port_range_option( TCPSettings ), AdditionalOptions ] ),
 
 	% Note that specifying the environment that way would work locally only
 	% (i.e. of course SSH does not propagate environment) - hence the export in
@@ -1710,10 +1706,10 @@ send_file( FilePath, RecipientPid ) ->
 	Permissions = case file:read_file_info( FilePath ) of
 
 		{ ok, #file_info{ mode=Mode } } ->
-			  Mode;
+			Mode;
 
 		{ error, ReadInfoReason } ->
-			  throw( { read_file_info_failed, ReadInfoReason } )
+			throw( { read_file_info_failed, ReadInfoReason } )
 
 	end,
 
@@ -1736,7 +1732,7 @@ send_file( FilePath, RecipientPid ) ->
 			%   [ self(), ipv4_to_string( RemoteIP ), Port, FilePath ] ),
 
 			DataSocket = case gen_tcp:connect( RemoteIP, Port,
-						[ binary, { packet, 0 }, { active, false } ] ) of
+					[ binary, { packet, 0 }, { active, false } ] ) of
 
 				{ ok, Socket } ->
 					Socket;
@@ -1753,23 +1749,23 @@ send_file( FilePath, RecipientPid ) ->
 			% First, basic reading and sending:
 			% case file:read_file( FilePath ) of
 
-			%	{ ok, BinFileContent } ->
+			%   { ok, BinFileContent } ->
 
-			%		%trace_utils:debug_fmt( "Sending ~B elements.",
-			%		%						[ size( BinFileContent ) ] ),
+			%       %trace_utils:debug_fmt( "Sending ~B elements.",
+			%       %                       [ size( BinFileContent ) ] ),
 
-			%		case gen_tcp:send( DataSocket, BinFileContent ) of
+			%       case gen_tcp:send( DataSocket, BinFileContent ) of
 
-			%			ok ->
-			%				ok;
+			%           ok ->
+			%               ok;
 
-			%			{ error, SendReason } ->
-			%				throw( { sending_failed, SendReason } )
+			%           { error, SendReason } ->
+			%               throw( { sending_failed, SendReason } )
 
-			%		end;
+			%       end;
 
-			%	{ error, ReadReason } ->
-			%		throw( { reading_failed, ReadReason } )
+			%   { error, ReadReason } ->
+			%       throw( { reading_failed, ReadReason } )
 
 			% end,
 
@@ -1843,7 +1839,7 @@ receive_file( EmitterPid, TargetDir, TCPPort ) ->
 	LocalIP = get_local_ip_address(),
 
 	%trace_utils:debug_fmt( "~w (on ~w) determined its local IP: ~w.",
-	%						[ self(), node(), LocalIP ] ),
+	%                       [ self(), node(), LocalIP ] ),
 
 	receive
 
@@ -1878,7 +1874,7 @@ receive_file( EmitterPid, TargetDir, TCPPort ) ->
 -spec receive_file( pid(), directory_path(), tcp_port(), tcp_port() ) ->
 						file_path().
 receive_file( EmitterPid, TargetDir, MinTCPPort, MaxTCPPort )
-  when MinTCPPort < MaxTCPPort ->
+								when MinTCPPort < MaxTCPPort ->
 
 	% We prefer relying on IP addresses rather than hostnames, as a surprisingly
 	% high number of systems have no usable DNS service:
@@ -1887,20 +1883,20 @@ receive_file( EmitterPid, TargetDir, MinTCPPort, MaxTCPPort )
 	LocalIP = get_local_ip_address(),
 
 	%trace_utils:debug_fmt( "~w (on ~w) determined its local IP: ~w.",
-	%						[ self(), node(), LocalIP ] ),
+	%                       [ self(), node(), LocalIP ] ),
 
 	receive
 
 		{ sendFile, [ BinFilename, Permissions, EmitterPid ] } ->
 
 			{ ListenSock, ActualTCPPort } = listen_to_next_available_port(
-										MinTCPPort, MinTCPPort, MaxTCPPort ),
+										  MinTCPPort, MinTCPPort, MaxTCPPort ),
 
 			%trace_utils:debug_fmt( "File '~ts' will be received through "
 			%   "local TCP port ~p.", [ BinFilename, ActualTCPPort ] ),
 
 			accept_remote_content( ListenSock, ActualTCPPort, LocalIP,
-					TargetDir, BinFilename, Permissions, EmitterPid )
+				TargetDir, BinFilename, Permissions, EmitterPid )
 
 	end.
 
@@ -1920,12 +1916,12 @@ listen_to_next_available_port( CurrentTCPPort, MinTCPPort, MaxTCPPort ) ->
 
 		{ ok, ListenSock } ->
 			%trace_utils:debug_fmt( "Elected TCP listen port: ~p.",
-			%					   [ CurrentTCPPort ] ),
+			%                       [ CurrentTCPPort ] ),
 			{ ListenSock, CurrentTCPPort };
 
 		{ error, eaddrinuse } ->
 			%trace_utils:debug_fmt( "(TCP listen port ~p already in use)",
-			%					   [ CurrentTCPPort ] ),
+			%                       [ CurrentTCPPort ] ),
 			listen_to_next_available_port( CurrentTCPPort+1, MinTCPPort,
 										   MaxTCPPort );
 
@@ -1941,7 +1937,7 @@ accept_remote_content( ListenSock, ActualTCPPort, LocalIP, TargetDir,
 					   BinFilePath, Permissions, EmitterPid ) ->
 
 	EmitterPid ! { sendFileAcknowledged,
-				   [ BinFilePath, LocalIP, ActualTCPPort ] },
+					[ BinFilePath, LocalIP, ActualTCPPort ] },
 
 	FilePath = file_utils:join( TargetDir,
 								text_utils:binary_to_string( BinFilePath ) ),
@@ -1950,8 +1946,8 @@ accept_remote_content( ListenSock, ActualTCPPort, LocalIP, TargetDir,
 	%    [ FilePath ] ),
 
 	% Do not know the units for {delayed_write, Size, Delay}:
-	OutputFile = file_utils:open( FilePath,
-								  [ write, raw, binary, delayed_write ] ),
+	OutputFile =
+		file_utils:open( FilePath, [ write, raw, binary, delayed_write ] ),
 
 	% Mono-client, yet using a separate socket for actual sending:
 	case gen_tcp:accept( ListenSock ) of
@@ -2011,7 +2007,7 @@ receive_file_chunk( DataSocket, OutputFile ) ->
 is_service_running_at( TCPPort ) ->
 
 	%trace_utils:debug_fmt( "Testing local service availability at port #~B...",
-	%						[ TCPPort ] ),
+	%                       [ TCPPort ] ),
 
 	% Presumably a lot quicker than attempting to connect:
 	case gen_tcp:listen( TCPPort, _Opts=[] ) of

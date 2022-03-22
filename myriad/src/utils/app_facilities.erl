@@ -23,6 +23,7 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2011.
 
 
 % @doc This module defines a few basic facilities for <b>applications</b> (in
@@ -31,12 +32,32 @@
 -module(app_facilities).
 
 
--export([ start/1, stop/0, display/1, display/2, fail/1, fail/2, finished/0 ] ).
+-export([ start/1, stop/0,
+		  get_app_info/2, get_app_info/3, get_app_info_map/1,
+		  display/1, display/2, fail/1, fail/2, finished/0 ] ).
+
+
+-include("app_facilities.hrl").
+
+-type app_info() :: #app_info{}.
+
+-type app_info_map() :: filename:basedir_opts().
+% Needed by some standard functions in the filename module.
+
+-type any_app_info() :: app_info() | app_info_map().
+
+
+-export_type([ app_info/0, app_info_map/0, any_app_info/0 ]).
 
 
 % Shorthands:
 
+-type any_version() :: basic_utils:any_version().
+
 -type ustring() :: text_utils:ustring().
+-type any_string() :: text_utils:any_string().
+-type string_like() :: text_utils:string_like().
+
 -type format_string() :: text_utils:format_string().
 -type format_values() :: text_utils:format_values().
 
@@ -69,6 +90,95 @@ start( Modules ) when is_list( Modules ) ->
 stop() ->
 	basic_utils:display( "\n--> Successful termination of application.\n" ),
 	finished().
+
+
+
+% @doc Returns an application information corresponding to specified application
+% name and version.
+%
+-spec get_app_info( string_like(), any_version() ) -> app_info().
+get_app_info( AppName, AppVersion ) ->
+	get_app_info( AppName, AppVersion, _MaybeAuthorDesc=undefined ).
+
+
+% @doc Returns an application information corresponding to specified application
+% name, version and possibly author description.
+%
+-spec get_app_info( string_like(), any_version(),
+					maybe( any_string() ) ) -> app_info().
+get_app_info( AppName, AppVersion, MaybeAuthorDesc )
+								when is_tuple( AppVersion ) ->
+
+	MaybeBinAuthorDesc = case MaybeAuthorDesc of
+
+		undefined ->
+			undefined;
+
+		AuthorDesc ->
+			text_utils:ensure_binary( AuthorDesc )
+
+	end,
+
+	{ OSFamily, OSName } = system_utils:get_operating_system_type(),
+
+	BinAppName = case is_atom( AppName ) of
+
+		true ->
+			text_utils:atom_to_binary( AppName );
+
+		false ->
+			text_utils:ensure_binary( AppName )
+
+	end,
+
+	#app_info{ name=BinAppName,
+			   version=AppVersion,
+			   author=MaybeBinAuthorDesc,
+			   os_family=OSFamily,
+			   os_name=OSName }.
+
+
+
+% @doc Returns a map typically relevant for filename:basedir/3.
+-spec get_app_info_map( app_info() ) -> app_info_map().
+get_app_info_map( #app_info{ name=BinAppName,
+							 version=AppVersion,
+							 author=MaybeBinAuthorDesc,
+							 os_family=OSFamily,
+							 os_name=OSName } ) ->
+
+	OSType = case { OSFamily, OSName } of
+
+		{ _, linux } ->
+			linux;
+
+		{ unix, _ } ->
+			darwin;
+
+		{ win32, _ } ->
+			windows;
+
+		_Other ->
+			trace_utils:error_fmt( "Unable to categorise this operating "
+				"system, whose family is '~ts' and name is '~ts'.",
+				[ OSFamily, OSName ] ),
+			throw( { unexpected_os, OSFamily, OSName } )
+
+	end,
+
+	BaseMap = #{ name => BinAppName,
+				 version => text_utils:version_to_string( AppVersion ),
+				 os => OSType },
+
+	case MaybeBinAuthorDesc of
+
+		undefined ->
+			BaseMap;
+
+		BinAuthorDesc ->
+			BaseMap#{ author => BinAuthorDesc }
+
+	end.
 
 
 

@@ -31,7 +31,7 @@
 
 % @doc Constructs a mammal.
 -spec construct( wooper:state(), age(), gender(), fur_color() ) ->
-					    wooper:state().
+						wooper:state().
 construct( State, Age, Gender, FurColor ) ->
 
 	CreatureState = class_Creature:construct( State, Age, Gender ),

@@ -17,7 +17,7 @@
 % If not, see <http://www.gnu.org/licenses/>.
 
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
-
+% Creation date: 2022.
 
 
 % The name under which the deployment manager is to be registered (globally):
@@ -127,7 +127,7 @@
 	%
 	% If using 'use_host_file', a third element can be added to the tuple,
 	% 'include_localhost' or 'exclude_localhost', knowing that if none is
-	% specified (the tuple is just a pair), the local host will be included.
+	% specified (the tuple is just a pair), the local host will not be included.
 	%
 	% So examples for this field could be:
 	% - [ computer_a, computer_b ] (which implies include_localhost)
@@ -208,7 +208,8 @@
 	% It is:
 	%
 	% - either the 'generate_deployment_package' atom (in which case the package
-	% will be generated, saved as file and used)
+	% will be generated, saved as a file (overwriting any pre-existing one with
+	% that name), and used
 	%
 	% - or the {generate_and_save_deployment_package,TargetFilename} pair, where
 	% TargetFilename is the name of the file in which the deployment package

@@ -1,0 +1,4 @@
+You see this file because no LogMX license.properties file is embedded in this Docker image.
+
+EDF-internal users shall request a suitable licence file from Olivier Boudeville (olivier.boudeville@edf.fr).
+

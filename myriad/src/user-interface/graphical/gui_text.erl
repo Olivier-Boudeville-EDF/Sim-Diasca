@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2022 Olivier Boudeville
+% Copyright (C) 2010-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -39,7 +39,7 @@
 -type static_text() :: wxStaticText:wxStaticText().
 
 -type style_option() :: 'align_left' | 'center' | 'align_right'
-						| 'no_autoresize'.
+					  | 'no_autoresize'.
 
 
 -type text_option() ::   { 'pos', point() }

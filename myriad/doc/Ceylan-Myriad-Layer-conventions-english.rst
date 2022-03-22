@@ -55,13 +55,11 @@ For that one may use the either directly ``make stats`` from the root of the lay
 For example::
 
   In the Erlang source code found from XXX/ceylan/myriad, we have:
-  + 160 source files (*.erl), 54 header files (*.hrl)
-  + a grand total of 89151 lines:
-	- 27186 of which (30.4%) are blank lines
-	- 28751 of which (32.2%) are comments
-	- 33214 of which (37.2%) are code
-
-
+  + 208 source files (*.erl), 36 header files (*.hrl)
+  + a grand total of 118666 lines:
+	- 35959 of which (30.3%) are blank lines
+	- 37187 of which (31.3%) are comments
+	- 45520 of which (38.3%) are code
 
 The most obvious conventions are:
 
@@ -151,6 +149,8 @@ This function shall be compiled once per layer to be accurate, in one of its mod
  -include_lib("myriad/utils/basic_utils.hrl").
 
 
+See also the (different) `Wings3D coding guidelines <https://github.com/dgud/wings/blob/master/CodingGuidelines>`_, that are interesting in their own right.
+
 
 
 Tooling Conventions
@@ -195,21 +195,8 @@ Another option is to use ``ctags`` to generate Emacs' compliant `tags <https://w
 For Documentation Generation
 ----------------------------
 
-We rely on RST (*Restructured Text*, from Docutils) in order to generate both HTML targets (a set of static web pages) and PDF ones (for any of our layers), notably thanks to our ``generate-docutils.sh`` script.
+Refer now to our `dedicated HOW-TO <http://howtos.esperide.org/DocGeneration.html>`_.
 
-In the context of our HTML target, in order to output beautiful mathematical symbols (equations, matrices, etc.), we rely on MathJax. It shall thus be installed once for all first. For example, on Arch Linux, as ``root``, it is sufficient to execute:
-
-.. code:: bash
-
-   $ pacman -Sy mathjax
-
-Then, to enable the use of MathJax for a given website, run from its root (often a ``doc`` directory):
-
-.. code:: bash
-
-  make create-mathjax-symlink
-
-(this target is defined in ``myriad/doc/GNUmakerules-docutils.inc``).
 
 
 

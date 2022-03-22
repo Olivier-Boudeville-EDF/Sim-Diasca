@@ -123,16 +123,18 @@ endif
 # conditional compilation primitives (see cond_utils for their management):
 
 # Topics covered by flags:
-# - third_party_execution: the execution of third-party elements such as
+#
+#  - third_party_execution: the execution of third-party elements such as
 #    executables, commands, shell expressions
 #  - code_path: how the VM code path is managed
 #  - otp_integration: how OTP conventions (notably regarding applications) are
-#	 handled
+#    handled
 #  - web_exchanges: http/https exchanges
 #  - strings: notably for mismatches between plain and binary ones
 #  - registration: regarding naming registering
 #  - sql_support: the support of SQL (database) operations
 #  - protobuf_support: regarding how Protocol Buffer shall be managed
+#  - environments: about the sharing/caching of application information
 #
 #  - user_interface: all support regarding user interfaces of all sorts
 #  - repaint_logic: how MyriadGUI manages repaints
@@ -144,7 +146,7 @@ endif
 #
 #  - linear: for operations on vectors, matrices, etc.
 #  - mesh: for the management of (3D) meshes
-#  - bounding_boxes: for computations of bounding boxes
+#  - bounding_spaces: for computations of bounding spaces (surfaces, volumes)
 #  - opengl: outcome of OpenGL-related operations
 #  - gltf_support: for the support of the glTF 2.0 format
 #
@@ -159,6 +161,7 @@ ifeq ($(ENABLE_DEBUG),true)
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_registration
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_sql_support
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_protobuf_support
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_environments
 
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_user_interface
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_gui_repaint_logic
@@ -170,7 +173,7 @@ ifeq ($(ENABLE_DEBUG),true)
 
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_linear
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_mesh
-	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_bounding_boxes
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_bounding_spaces
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_opengl
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_gltf_support
 
@@ -213,10 +216,14 @@ endif
 #MYRIAD_DEBUG_FLAGS += -Dmyriad_add_stacktraces
 
 
+# Designates the only Erlang version to be used in all Myriad-based
+# developments:
+
+ERLANG_TARGET_VERSION = $$($(MAKE) -s info-erlang-target-version)
+
 ERLANG_COMPILER_OPT_BASE += $(MYRIAD_DEBUG_FLAGS)             \
 							$(MYRIAD_CHECK_FLAGS)             \
 							$(MYRIAD_UNELLIPSED_TRACES_OPT)
-
 
 
 
@@ -251,7 +258,7 @@ endif
 # The uniquely-defined version of this layer, for all uses (including rebar and
 # hex):
 #
-MYRIAD_VERSION := 1.0.22
+MYRIAD_VERSION := 1.0.23
 
 
 # PROJECT_VERSION should be defined on a per-project basis.
@@ -394,7 +401,7 @@ MYRIAD_BEAM := $(MYRIAD_TOP)/src
 
 # BEAM_DIRS are relative paths of BEAM files, ABS_BEAM_DIRS are the
 # corresponding absolute paths.
-#
+
 
 # As the 'include' structure mostly matches the one of 'src', we just replace
 # the first 'src' by 'include', knowing that any extra 'src' may be useful for
@@ -495,7 +502,7 @@ ifeq ($(USE_WXWINDOWS),true)
 
 	# myriad_gui_backend may also be either not defined, or set to 'none':
 	GUI_OPTS = -Dmyriad_gui_backend=wxwindows \
-			   -Dmyriad_gui_skip_extra_repaints
+			   # -Dmyriad_gui_skip_extra_repaints
 
 	ERLANG_COMPILER_GENERAL_OPT += $(GUI_OPTS)
 
@@ -540,7 +547,7 @@ endif
 
 ifeq ($(USE_JSON),true)
 
-	 # At least one parser backend shall then be selected:
+	# At least one parser backend shall then be selected:
 
 	# Default choice, should the JSON support be enabled:
 	USE_JSX = true
@@ -816,7 +823,6 @@ ifndef USE_POSTGRESQL
 endif
 
 
-
 # Deactivated by default, as requires specific prerequisites:
 # - Python (binding tested with v3.6+ only)
 # - the ErlPort library (cf https://github.com/hdima/erlport)
@@ -825,15 +831,17 @@ ifndef USE_PYTHON_BINDING
 	USE_PYTHON_BINDING = false
 endif
 
+
 ifeq ($(USE_PYTHON_BINDING),true)
 
-  ERLPORT_BASE := $$HOME/Software/ErlPort/ErlPort-current-install
+	ERLPORT_BASE := $$HOME/Software/ErlPort/ErlPort-current-install
 
-  INC += -I$(ERLPORT_BASE)/src
+	INC += $$(if [ -d "$(ERLPORT_BASE)" ]; then echo "-I$(ERLPORT_BASE)/src"; fi)
 
-  # ($(ERLPORT_BASE)/ebin/*.beam found at runtime)
+	# ($(ERLPORT_BASE)/ebin/*.beam found at runtime)
 
-  ABS_BEAM_DIRS += $(ERLPORT_BASE)/ebin
+	# To avoid a warning about a BEAM directory not being found:
+	ABS_BEAM_DIRS += $$(if [ -d "$(ERLPORT_BASE)" ]; then echo "$(ERLPORT_BASE)/ebin"; fi)
 
 endif
 
@@ -848,6 +856,7 @@ ifndef USE_JAVA_BINDING
 	USE_JAVA_BINDING = false
 endif
 
+
 ifeq ($(USE_JAVA_BINDING),true)
 
 	# The path pointing to the target JInterface JAR (OtpErlang.jar), only
@@ -858,7 +867,7 @@ ifeq ($(USE_JAVA_BINDING),true)
 	#
 	JINTERFACE_ROOT = $(ERLANG_ROOT)/lib/erlang/jinterface
 
-	CLASSPATH_DIRS += $(JINTERFACE_ROOT)/priv/OtpErlang.jar .
+	CLASSPATH_DIRS += $$(if [ -d "$(JINTERFACE_ROOT)" ]; then echo "$(JINTERFACE_ROOT)/priv/OtpErlang.jar"; fi) .
 
 	# We need to have all specified paths separated with ':':
 	CLASSPATH_OPT = -classpath $(subst $(space),:,$(strip $(CLASSPATH_DIRS)))
@@ -882,21 +891,21 @@ endif
 # parallel):
 #
 ifndef BASE_MAKEFILE
-  BASE_MAKEFILE = false
+	BASE_MAKEFILE = false
 endif
 
 
 # Overriding BASE_PLT is useful to take into account third-party prerequisites:
 ifndef BASE_PLT
-  BASE_PLT = $(PREDECESSOR_PLT)
+	BASE_PLT = $(PREDECESSOR_PLT)
 endif
 
 
 # For the user interface testing:
 ifndef UI_TEST_BACKEND
-  #UI_TEST_BACKEND = text_ui
-  UI_TEST_BACKEND = term_ui
-  #UI_TEST_BACKEND  = gui
+	#UI_TEST_BACKEND = text_ui
+	UI_TEST_BACKEND = term_ui
+	#UI_TEST_BACKEND  = gui
 endif
 
 
@@ -904,9 +913,9 @@ endif
 # interpreted by make as a target:
 #
 ifndef UI_TEST_OPT
-  ifdef UI_TEST_BACKEND
-	UI_TEST_OPT = "'--use-ui-backend $(UI_TEST_BACKEND)'"
-  endif
+	ifdef UI_TEST_BACKEND
+		UI_TEST_OPT = "'--use-ui-backend $(UI_TEST_BACKEND)'"
+	endif
 endif
 
 
@@ -1224,7 +1233,7 @@ ifndef BOOTSTRAP_MODULES
 	#    * ast_scan: to scan the AST
 	#    * type_utils: to handle types
 	# - [not bootstrapped anymore] list_table: useful for tables that shall
-	#	preserve the order of entries
+	#   preserve the order of entries
 	# - map_hashtable: to manage the module information
 	#
 	BOOTSTRAP_MODULES = $(MYRIAD_TOP)/src/utils/basic_utils.beam             \
@@ -1377,12 +1386,12 @@ ERLANG_COMPILER_WARNING_OPT += $(ERLANG_COMPILER_BASE_WARNING_OPT)
 # Instead 'export ERL_COMPILER_OPTIONS=bin_opt_info' shall be punctually used.
 #
 ERLANG_COMPILER_OPT_BASE +=                \
- $(ERLANG_COMPILER_GENERAL_OPT) $(INC)     \
- $(ERLANG_COMPILER_EXEC_TARGET_OPT)        \
- $(ERLANG_COMPILER_DEBUG_OPT)              \
- $(ERLANG_COMPILER_NATIVE_COMPILATION_OPT) \
- $(ERLANG_COMPILER_WARNING_OPT)            \
- $(ERLANG_COMPILER_OPT_DEBUG)
+    $(ERLANG_COMPILER_GENERAL_OPT) $(INC)     \
+    $(ERLANG_COMPILER_EXEC_TARGET_OPT)        \
+    $(ERLANG_COMPILER_DEBUG_OPT)              \
+    $(ERLANG_COMPILER_NATIVE_COMPILATION_OPT) \
+    $(ERLANG_COMPILER_WARNING_OPT)            \
+    $(ERLANG_COMPILER_OPT_DEBUG)
 
 
 # Base options to compile parse transforms themselves (and their helper
@@ -1493,13 +1502,18 @@ endif
 
 # 'BEAM_PATH_OPT = --beam-paths $(BEAM_DIRS)' would be shorter, but would
 # prevent adding other options to the launcher afterwards:
-# (now we use absolute directories - thanks to 'pwd' - instead of relative ones,
-# as, otherwise, as soon as a process changes the current working directory, any
-# further loading of a user-defined module, for example if used then for the
-# first time, would fail).
 #
-BEAM_PATH_OPT = $(foreach dir,$(BEAM_DIRS),--beam-dir $$(pwd)/$(dir)) \
-				$(foreach dir,$(ABS_BEAM_DIRS),--beam-dir $(dir))
+# (now we use absolute directories - thanks to 'realpath' - instead of relative
+# ones, as, otherwise, as soon as a process changes the current working
+# directory, any further loading of a user-defined module, for example if used
+# then for the first time, would fail)
+#
+# (previously, after issuing the warning, an 'exit' was done, yet it resulted in
+# the full BEAM_PATH_OPT variable being nullified, and thus executions were
+# failing with various random undef errors; just displaying a warning now;
+# re-add temporarily an exit if wanting to spot faulty paths through a test suite)
+#
+BEAM_PATH_OPT = $$(for d in $(BEAM_DIRS) $(ABS_BEAM_DIRS); do real_d=$$(realpath $$d 2>/dev/null); if [ -d "$${real_d}" ]; then echo "--beam-dir $${real_d}"; else echo "Warning: the '$${d}' BEAM directory does not exist, hence was not set in the code path." 1>&2 ; exit 5; fi; done)
 
 
 OVERALL_PZ_OPT = $(foreach dir,$(BEAM_DIRS),-pz $(dir))
@@ -1516,7 +1530,7 @@ SCALE_OPT := $(BUSY_LIMIT_OPT)
 
 # To tell run_erl where the VM log files shall be written;
 ifdef VM_LOG_DIR
-	  LOG_DIR_OPT := --log-dir $(VM_LOG_DIR)
+	LOG_DIR_OPT := --log-dir $(VM_LOG_DIR)
 endif
 
 
@@ -1656,6 +1670,12 @@ EXEC_INTERNAL_OPTIONS := $(INTERNAL_OPTIONS) -start-verbatim-options -noinput
 # Erlang one, yet to be managed transparently for the user):
 #
 ALL_CMD_LINE_OPTIONS := $(EXEC_INTERNAL_OPTIONS) -extra $(EXEC_EXTERNAL_OPTIONS) $(CMD_LINE_OPT)
+
+
+# Variation of ALL_CMD_LINE_OPTIONS allowing to remain on a shell (so: no
+# '-noinput'):
+#
+ALL_CMD_LINE_OPTIONS_FOR_SHELL := $(INTERNAL_OPTIONS) -start-verbatim-options -extra $(EXEC_EXTERNAL_OPTIONS) $(CMD_LINE_OPT) --provide-shell
 
 
 ## Documentation section.
@@ -1901,3 +1921,10 @@ MAKE_CODE_STATS := $(MYRIAD_TOP)/src/scripts/make-code-stats.sh
 
 
 # Not depending on any lower-level package.
+
+# Defining the top directory of the predecessor layer allows to write generic
+# rules (not depending on its actual name) able to automatically descend the
+# layer stack (ex: to copy their respective BEAM files in their respective ebin)
+# without defining specific make targets at each layer:
+
+#PREDECESSOR_LAYER_TOP :=

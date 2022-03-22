@@ -25,10 +25,8 @@
 -module(edit_time_series_app).
 
 
--include_lib("myriad/include/app_facilities.hrl").
+-export([ exec/0 ]).
 
-
-% No export needed for exec/0 here.
 
 -spec exec() -> no_return().
 exec() ->

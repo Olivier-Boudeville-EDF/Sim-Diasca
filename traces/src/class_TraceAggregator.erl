@@ -113,7 +113,7 @@
 
 
 -type aggregator_pid() :: instance_pid().
-% PID of a trace aggregator
+% PID of a trace aggregator.
 
 -export_type([ aggregator_pid/0 ]).
 
@@ -396,7 +396,7 @@ construct( State, TraceFilename, TraceSupervisionType, TraceTitle,
 			% now:
 			%
 			case RegScope =:= global_only
-				orelse RegScope =:= local_and_global of
+						orelse RegScope =:= local_and_global of
 
 				true ->
 					send_internal_deferred( info, "Self registering as default "
@@ -530,7 +530,7 @@ destruct( State ) ->
 				++ " '" ++ PdfTargetFilename ++ "' VIEW_PDF=no",
 
 			%trace_utils:info_fmt( "PDF generation command is '~ts'.",
-			%						 [ GenerationCommand ] ),
+			%                      [ GenerationCommand ] ),
 
 			case system_utils:run_command( GenerationCommand ) of
 
@@ -635,9 +635,8 @@ send( State, TraceEmitterPid, TraceEmitterName, TraceEmitterCategorization,
 
 	% Useful to check that all fields are of minimal sizes (ex: binaries):
 	%inspect_fields( [ TraceEmitterPid, TraceEmitterName,
-	%				  TraceEmitterCategorization,
-	%				  AppTimestamp, Time, Location, MessageCategorization,
-	%				  Priority, Message ] ),
+	%   TraceEmitterCategorization, AppTimestamp, Time, Location,
+	%   MessageCategorization, Priority, Message ] ),
 
 	Trace = format_trace_for( ?getAttr(trace_type),
 		{ TraceEmitterPid, TraceEmitterName,
@@ -650,7 +649,7 @@ send( State, TraceEmitterPid, TraceEmitterName, TraceEmitterCategorization,
 	%                 text_utils:format( "~ts", [ Trace ] ) ),
 
 	%trace_utils:debug_fmt( "Writing to ~p: ~p.",
-	%					   [ ?getAttr(trace_file), Trace ] ),
+	%                       [ ?getAttr(trace_file), Trace ] ),
 
 	file_utils:write_ustring( ?getAttr(trace_file), Trace ),
 
@@ -689,9 +688,8 @@ sendSync( State, TraceEmitterPid, TraceEmitterName, TraceEmitterCategorization,
 
 	% Useful to check that all fields are of minimal sizes (ex: binaries):
 	%inspect_fields( [ TraceEmitterPid, TraceEmitterName,
-	%				  TraceEmitterCategorization,
-	%				  AppTimestamp, Time, Location, MessageCategorization,
-	%				  Priority, Message ] ),
+	%   TraceEmitterCategorization, AppTimestamp, Time, Location,
+	%   MessageCategorization, Priority, Message ] ),
 
 	Trace = format_trace_for( ?getAttr(trace_type),
 		{ TraceEmitterPid, TraceEmitterName,
@@ -886,8 +884,8 @@ addTraceListener( State, ListenerPid ) ->
 			% Now we prefer using xz over sendFile, which must be a lot more
 			% efficient:
 			%
-			XZFilename = file_utils:compress( TraceFilename,
-											  _CompressionFormat=xz ),
+			XZFilename =
+				file_utils:compress( TraceFilename, _CompressionFormat=xz ),
 
 			% If compressing 'traceManagement_test.traces' for example, we do
 			% not want to specify as a filename, literally,
@@ -921,9 +919,10 @@ addTraceListener( State, ListenerPid ) ->
 
 				throw:Exception:Stacktrace ->
 					Message = text_utils:format( "Adding trace listener ~w "
-					   "failed, hence has been ignored: exception '~w' was "
-					   "raised.~nStacktrace was: ~ts", [ ListenerPid, Exception,
-							code_utils:interpret_stacktrace( Stacktrace ) ] ),
+						"failed, hence has been ignored: exception '~w' was "
+						"raised.~nStacktrace was: ~ts",
+						[ ListenerPid, Exception,
+						  code_utils:interpret_stacktrace( Stacktrace ) ] ),
 					% Will be duplicated on the console anyway:
 					%trace_utils:error( Message ),
 					send_internal_deferred( error, Message ),
@@ -958,14 +957,14 @@ addTraceListener( State, ListenerPid ) ->
 removeTraceListener( State, ListenerPid ) ->
 
 	trace_utils:info_fmt( "~ts Removing trace listener ~w.",
-							[ ?LogPrefix, ListenerPid ] ),
+						  [ ?LogPrefix, ListenerPid ] ),
 
 	SentState = send_internal_immediate( info,
 		"Trace aggregator removing trace listener ~w.~n",
 		[ ListenerPid ], State ),
 
-	UnregisterState = deleteFromAttribute( SentState, trace_listeners,
-										   ListenerPid ),
+	UnregisterState =
+		deleteFromAttribute( SentState, trace_listeners, ListenerPid ),
 
 	wooper:return_state( UnregisterState ).
 
@@ -1059,7 +1058,7 @@ rotateTraceFile( State ) ->
 %
 -spec rotateTraceFileSync( wooper:state() ) ->
 		request_return( fallible( { 'trace_file_rotated', bin_file_path() }
-								  | 'trace_file_below_min_size' ) ).
+								| 'trace_file_below_min_size' ) ).
 rotateTraceFileSync( State ) ->
 
 	{ Res, RotState } = case rotate_trace_file( State ) of
@@ -1539,8 +1538,8 @@ enable_watchdog( RegName, LookupScope, Period, State ) ->
 				  time_utils:duration_to_string( MsPeriod ) ] ),
 
 			WatchdogPid = ?myriad_spawn_link( fun() ->
-							 watchdog_main_loop( RegName, LookupScope,
-												 AggregatorPid, MsPeriod )
+							watchdog_main_loop( RegName, LookupScope,
+												AggregatorPid, MsPeriod )
 											  end ),
 
 			setAttribute( State, watchdog_pid, WatchdogPid );
@@ -1676,8 +1675,8 @@ manage_trace_header( State ) ->
 
 			% Builds a proper RST-compatible title layout:
 			TitleText = text_utils:format(
-				   "~ts~n.. _table:~n~n.. contents:: Table of Contents~n~n",
-				   [ text_utils:generate_title(Title,1) ] )
+					"~ts~n.. _table:~n~n.. contents:: Table of Contents~n~n",
+					[ text_utils:generate_title(Title,1) ] )
 				++ text_utils:format( "~ts", [ text_utils:generate_title(
 												 "Execution Context", 2 ) ] )
 				++ text_utils:format( "Report generated on ~ts, "
@@ -1977,8 +1976,8 @@ inspect_fields( FieldsReceived ) ->
 
 
 
-% @doc Tells whether this aggregator was build with the traces being activated
-% (presumably at least most BEAMs are expected to be build with that same
+% @doc Tells whether this aggregator was built with the traces being activated
+% (presumably at least most BEAMs are expected to be built with that same
 % setting).
 %
 % (helper)

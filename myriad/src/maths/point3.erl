@@ -89,6 +89,7 @@
 -export([ new/1, new/3, new_integer/3, null/0,
 		  from_vector/1, to_vector/1, to_any_vector/1,
 		  point3_to_yup/1, yup_to_point3/1, point3_to_yups/1, yup_to_point3s/1,
+		  to_buffer/1,
 
 		  roundify/1,
 		  get_center/2, get_integer_center/2,
@@ -222,6 +223,16 @@ yup_to_point3( _P={X,Y,Z} ) ->
 -spec yup_to_point3s( [ yup_point3() ] ) -> [ point3() ].
 yup_to_point3s( Points ) ->
 	[ yup_to_point3( P ) || P <- Points ].
+
+
+
+% @doc Returns a binary buffer of floats, corresponding to the specified points.
+%
+% Typically suitable for OpenGL.
+%
+-spec to_buffer( [ point3() ] ) -> binary().
+to_buffer( Points ) ->
+	<< <<X:?F32, Y:?F32, Z:?F32>> || { X, Y, Z } <- Points >>.
 
 
 

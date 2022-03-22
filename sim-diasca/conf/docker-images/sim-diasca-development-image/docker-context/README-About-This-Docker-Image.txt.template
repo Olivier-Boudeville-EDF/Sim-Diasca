@@ -1,0 +1,42 @@
+
+Welcome to this Sim-Diasca IMAGE_DESCRIPTION_TAG Docker image!
+
+Here are the main information about it:
+ - this image can be referenced as 'FULL_IMAGE_NAME_TAG'
+ - it derives from the 'PARENT_IMAGE_TAG' one
+ - user-oriented graphical packages are installed (ex: Gnuplot, Emacs)
+ - it includes a full Erlang environment, in version ERLANG_VERSION_TAG, located in /opt/Software/Erlang/Erlang-Erlang-current-install/
+ - it provides Sim-Diasca sources and prebuilt runtime, in version SIM_DIASCA_VERSION_TAG, located in /opt/Software/Sim-Diasca/
+ - it provides a suitable LogMX, in /opt/Software/LogMX/LogMX-current-install
+ - its definition as a Dockerfile was done on GENERATION_TIMESTAMP_TAG
+
+The main related settings have been registered in ~/sim-diasca-environment.sh, a
+file meant to be sourced - not executed - by one's shell; the local ~/.bashrc is
+already set up to source it, when run interactively.
+
+This Docker image for development is better used with an X server, to
+accommodate graphical tools such as editors. So the hosting system should
+preferably offer X support.
+
+On Windows, 'Xming', available at http://xming.sf.net, can probably be used,
+then with the unsecureXming.xlaunch file.
+
+If not done automatically (ex: thanks to the -X/-Y SSH option), the DISPLAY
+environment variable shall be properly set:
+	export DISPLAY=<IP_OF_YOUR_COMPUTER>:0.0
+
+Then you are ready to go: run 'docker-compose up'.
+
+Note that:
+ 1. The first run will take a lot of time (maybe 30 minutes or an hour), but afterwards it will start immediately
+ 2. If everything goes fine, a Terminal window pops up, in which you can start working with your favourite tools
+ 3. CAUTION:
+   - the 'dev' user is a sudoer, so you have all the rights
+   - only the content of /home/dev is guaranteed to be preserved between runs of 'docker-compose up' command
+
+See also the Sim-Diasca public site, at https://github.com/Olivier-Boudeville-EDF/Sim-Diasca.
+
+Enjoy!
+
+Author of this image: Omar Benhamid.
+Later adapted by Olivier Boudeville.

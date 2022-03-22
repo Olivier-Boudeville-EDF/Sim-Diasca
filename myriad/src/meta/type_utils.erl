@@ -26,7 +26,8 @@
 % Creation date: Friday, December 19, 2014.
 
 
-% @doc Module helping to manage <b>datatypes</b>, notably in ASTs.
+% @doc Module helping to manage <b>datatypes</b> (and also values), notably in
+% ASTs.
 %
 % See `type_utils_test.erl' for the corresponding test.
 %
@@ -477,6 +478,11 @@
 % Probably that such a tuple would contain at least an element of type T.
 
 
+-type pair() :: pair:pair().
+
+-type triplet() :: { any(), any(), any() }.
+
+
 -type tuple( _T ) :: tuple().
 % Designates an uniform tuple (of unspecified size), that is a tuple whose
 % elements are all of the specified type.
@@ -487,7 +493,7 @@
 			   type_description/0, nesting_depth/0, type/0, explicit_type/0,
 			   low_level_type/0, record/0,
 			   tuploid/0, tuploid/1,
-			   tuple/1 ]).
+			   pair/0, triplet/0, tuple/1 ]).
 
 
 % Note: currently, only a very basic, ad hoc type support ("hand-made look-up
@@ -514,6 +520,10 @@
 % Conversion:
 -export([ ensure_integer/1, ensure_float/1, ensure_number/1, ensure_boolean/1,
 		  ensure_string/1, ensure_binary/1 ]).
+
+
+% Sharing:
+-export([ share/1, share/2, share/3 ]).
 
 
 % Checking (see also: list_utils:are_*/1):
@@ -670,7 +680,7 @@ type_to_description( _Type={ union, TypeList } ) when is_list( TypeList ) ->
 
 type_to_description( _Type={ tuple, TypeList } ) when is_list( TypeList ) ->
 	TypeString = text_utils:join( _Separator=",",
-					  [ type_to_description( T ) || T <- TypeList ] ),
+								[ type_to_description( T ) || T <- TypeList ] ),
 	"{" ++ TypeString ++ "}";
 
 type_to_description( _Type={ table, [ Tk, Tv ] } ) ->
@@ -755,7 +765,7 @@ get_type_of( Term ) when is_port( Term ) ->
 	'port';
 
 %get_type_of( Term ) when is_record( Term ) ->
-%	'record';
+%   'record';
 
 get_type_of( Term ) when is_tuple( Term ) ->
 	'tuple';
@@ -868,7 +878,7 @@ interpret_type_helper( Term, CurrentNestingLevel, MaxNestingLevel )
 				_ ->
 					Elems = [ interpret_type_helper( E,
 								CurrentNestingLevel + 1, MaxNestingLevel )
-							  || E <- Term ],
+										|| E <- Term ],
 
 					text_utils:format( "list of ~B elements: ~ts",
 						[ length( Term ),
@@ -1223,6 +1233,143 @@ ensure_binary( S ) ->
 
 
 
+% Sub-term sharing section.
+
+
+% @doc Improves the compactness of the specified term ("compresses it"): returns
+% it once the sharing of its sub-terms has been favored (equal term, but
+% possibly smaller in memory).
+%
+% Presumably useful on platforms where the size of a pointer is lower than the
+% one of the subterms (ex: an Erlang float, i.e. a double), when some subterms
+% may be equal (by value), yet are duplicated (not defined once and pointed to
+% multiple times).
+%
+% Such a deduplication may happen typically on homogeneous tuples (ex: vectors),
+% when received as messages for example, or when read from any external source
+% (ex: from file).
+%
+% Directly inspired from wings_utils:share/*.
+%
+-spec share( term() ) -> term().
+% Pair:
+share( {X,X} ) ->
+	{X,X};
+
+% Triplet:
+share( {X,X,X} ) ->
+	{X,X,X};
+
+share( {X,X,Z} ) ->
+	{X,X,Z};
+
+share( {X,Y,Y} ) ->
+	{X,Y,Y};
+
+share( {X,Y,X} ) ->
+	{X,Y,X};
+
+% Quadruplet:
+share( {X,X,X,X} ) ->
+	{X,X,X,X};
+
+% (3 equal)
+share( {X,X,X,A} ) ->
+	{X,X,X,A};
+
+share( {X,X,Z,X} ) ->
+	{X,X,Z,X};
+
+share( {X,Y,X,X} ) ->
+	{X,Y,X,X};
+
+share( {X,Y,Y,Y} ) ->
+	{X,Y,Y,Y};
+
+
+% (2x2 equal)
+share( {X,X,Y,Y} ) ->
+	{X,X,Y,Y};
+
+share( {X,Y,X,Y} ) ->
+	{X,Y,X,Y};
+
+share( {X,Y,Y,X} ) ->
+	{X,Y,Y,X};
+
+% (3 equal)
+share( {X,X,Z,A} ) ->
+	{X,X,Z,A};
+
+share( {X,Y,X,A} ) ->
+	{X,Y,X,A};
+
+share( {X,Y,Z,X} ) ->
+	{X,Y,Z,X};
+
+share( {X,Y,Y,A} ) ->
+	{X,Y,Y,A};
+
+share( {X,Y,Z,Y} ) ->
+	{X,Y,Z,Y};
+
+share( {X,Y,Z,Z} ) ->
+	{X,Y,Z,Z};
+
+% Untouched:
+share( Other ) ->
+	Other.
+
+
+
+% @doc Returns the two specified terms as a pair favoring the in-memory sharing
+% of its elements, if they are equal.
+%
+% Presumably useful on platforms where the size of a pointer is lower than the
+% one of the subterms (ex: an Erlang float, i.e. a double), when some subterms
+% may be equal (by value), yet are duplicated (not defined once and pointed to
+% multiple times).
+%
+% Directly inspired from wings_utils:share/*.
+%
+-spec share( term(), term() ) -> pair().
+share( X, X ) ->
+	{X,X};
+
+share( X, Y ) ->
+	{X,Y}.
+
+
+
+% @doc Returns the three specified terms as a triplet favoring the in-memory
+% sharing of its elements, if they are equal.
+%
+% Presumably useful on platforms where the size of a pointer is lower than the
+% one of the subterms (ex: an Erlang float, i.e. a double), when some subterms
+% may be equal (by value), yet are duplicated (not defined once and pointed to
+% multiple times).
+%
+% Directly inspired from wings_utils:share/*.
+%
+-spec share( term(), term(), term() ) -> triplet().
+share( X, X, X ) ->
+	{X,X,X};
+
+share( X, X ,Z ) ->
+	{X,X,Z};
+
+share( X, Y, Y ) ->
+	{X,Y,Y};
+
+share( X, Y, X ) ->
+	{X,Y,X};
+
+share( X, Y, Z ) ->
+	{ X, Y, Z }.
+
+
+
+
 % @doc Checks that the specified term is an atom indeed, and returns it.
 -spec check_atom( term() ) -> atom().
 check_atom( Atom ) when is_atom( Atom ) ->
@@ -1373,7 +1520,6 @@ check_tuple( Tuple ) when is_tuple( Tuple ) ->
 
 check_tuple( Other ) ->
 	throw( { not_tuple, Other } ).
-
 
 
 

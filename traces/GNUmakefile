@@ -1,11 +1,11 @@
 TRACES_TOP = .
 
 
-.PHONY: help help-intro help-traces                                   \
-		all register-version-in-header register-traces list-beam-dirs \
-		add-prerequisite-plts link-plt                                \
-		stats                                                         \
-		info-context info-versions info-traces info-compile           \
+.PHONY: help help-intro help-traces                                    \
+		all register-version-in-header register-traces list-beam-dirs  \
+		add-prerequisite-plts link-plt                                 \
+		stats                                                          \
+		info-context info-versions info-traces info-compile            \
 		info-conditionals info-deps
 
 

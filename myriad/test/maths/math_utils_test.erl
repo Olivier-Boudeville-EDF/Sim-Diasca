@@ -25,7 +25,8 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 
 
-% Unit tests for the math basic toolbox facilities.
+% @doc Unit tests for the <b>math-related basic toolbox</b> facilities.
+%
 % See the math_utils tested module.
 %
 -module(math_utils_test).
@@ -54,13 +55,13 @@ run() ->
 
 	[
 	 [ test_facilities:display( "Rounding ~p after ~B digit(s) is ~p.", [ V, D,
-			math_utils:round_after( V, D ) ] ) || V <- TruncateTargets ]
-				 || D <- [ 0, 1, 2, 3 ] ],
+		math_utils:round_after( V, D ) ] ) || V <- TruncateTargets ]
+				|| D <- [ 0, 1, 2, 3 ] ],
 
 
 	Modulo = 3,
 	[ test_facilities:display( "~p modulo ~p is ~p.", [ X, Modulo,
-			math_utils:modulo( X, Modulo ) ] ) || X <- lists:seq(-7,7) ],
+		math_utils:modulo( X, Modulo ) ] ) || X <- lists:seq(-7,7) ],
 
 	2 = math_utils:clamp( 1, 3, 2 ),
 	1 = math_utils:clamp( 1, 3, 0 ),
@@ -77,7 +78,7 @@ run() ->
 	8 = math_utils:get_next_power_of_two( 5 ),
 	8 = math_utils:get_next_power_of_two( 8 ),
 
-	[ test_facilities:display( "Canonical form for ~p degrees is ~p degrees.",
+	[ test_facilities:display( "Canonical form for ~p° is ~p°.",
 							   [ A, math_utils:canonify(A) ] ) ||
 		A <- [ -721, -721.0, -720, -720.0, -719, -719.0, -100, -100.0,
 			   0, 0.0, 100, 100.0, 359, 359.0, 360, 360.0, 361, 361.0,
@@ -103,10 +104,37 @@ run() ->
 	true  = math_utils:are_relatively_close( X3, Y ),
 	true  = math_utils:are_relatively_close( X2, Y ),
 
-
-	% '°' does not output well on the console (ex: "90.000000 Â°."):
-	[ test_facilities:display( "Angle ~p rad is ~f degrees.", [ Angle,
+	[ test_facilities:display( "Angle ~p rad is ~f°.", [ Angle,
 			math_utils:radian_to_degree( Angle ) ] )
 		|| Angle <- [ 0, math:pi()/2, 1.0, math:pi(), 2*math:pi() ] ],
+
+	AffinFun = fun( X ) -> 2*X + 5 end,
+
+	Pairs = math_utils:sample_as_pairs( AffinFun, _Start=10.0, _Stop=16.0,
+										_Inc=3.0 ),
+
+	test_facilities:display( "Sampled pairs for affin test function: ~p",
+							 [ Pairs ] ),
+
+	DataFilePath = "test-affin.dat",
+
+	WriteDataFile = false,
+
+	case WriteDataFile of
+
+		true ->
+			file_utils:remove_file_if_existing( DataFilePath ),
+
+			csv_utils:write_file( Pairs, DataFilePath );
+
+		false ->
+			ok
+
+	end,
+
+	Samples = math_utils:sample( AffinFun, _From=1.0, _To=20.0, _Incr=2.0 ),
+
+	test_facilities:display( "Samples for affin test function: ~p",
+							 [ Samples ] ),
 
 	test_facilities:stop().

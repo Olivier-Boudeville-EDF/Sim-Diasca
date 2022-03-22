@@ -169,6 +169,11 @@
 %
 -spec lookup_executable( executable_name() ) -> executable_path() | 'false'.
 lookup_executable( ExecutableName ) ->
+
+	% The Windows platform could be special-cased to detect *.bat executable
+	% files and extract the actual executable from them; see
+	% wings_job:find_executable/1 as an example.
+
 	% Similar to a call to 'type' / 'which':
 	os:find_executable( ExecutableName ).
 
@@ -324,7 +329,10 @@ display_png_file( PNGFilePath ) ->
 -spec browse_images_in( directory_path() ) -> void().
 browse_images_in( DirectoryPath ) ->
 	system_utils:run_background_command(
-		get_default_image_browser_path() ++ " " ++ DirectoryPath ).
+		%get_default_image_browser_path() ++ " " ++ DirectoryPath ).
+		% To avoid log-like garbage outputs:
+		get_default_image_browser_path() ++ " " ++ DirectoryPath
+										 ++ " 2>/dev/null" ).
 
 
 % @doc Plays the specified audio file, in a non-blocking (in the background)
@@ -497,7 +505,7 @@ compute_sha1_sum( Filename ) ->
 %
 -spec compute_sha_sum( any_file_path(), basic_utils:count() ) -> sha_sum().
 compute_sha_sum( Filename, SizeOfSHAAlgorithm )
-  when is_integer( SizeOfSHAAlgorithm ) ->
+						when is_integer( SizeOfSHAAlgorithm ) ->
 
 	case file_utils:is_existing_file( Filename ) of
 
@@ -531,7 +539,7 @@ compute_sha_sum( Filename, SizeOfSHAAlgorithm )
 			 shell_utils:protect_from_shell( Filename ) ],
 
 	%trace_utils:debug_fmt( "SHA executable is: '~ts', arguments are ~p.",
-	%					   [ ExecPath, Args ] ),
+	%                       [ ExecPath, Args ] ),
 
 	case system_utils:run_executable( ExecPath, Args ) of
 
@@ -558,8 +566,8 @@ compute_sha_sum( Filename, SizeOfSHAAlgorithm )
 
 				undefined ->
 					trace_utils:error_fmt(
-					  "SHA interpretation failed for '~ts', based on:~n~ts.",
-					  [ Filename, SHAStr ] ),
+						"SHA interpretation failed for '~ts', based on:~n~ts.",
+						[ Filename, SHAStr ] ),
 					throw( { sha_computation_failed, invalid_result,
 							 Filename, SHAStr } );
 
@@ -625,7 +633,8 @@ get_default_image_browser_path() ->
 
 		% Workaround for some distributions:
 		Tool="geeqie" ->
-			find_executable( Tool ) ++ " --disable-clutter";
+			%find_executable( Tool ) ++ " --disable-clutter";
+			find_executable( Tool );
 
 		OtherTool ->
 			find_executable( OtherTool )
@@ -981,14 +990,14 @@ get_default_java_runtime() ->
 get_default_jinterface_path() ->
 
 	JInterfaceBase = file_utils:join(
-			[ get_default_erlang_root(), "lib", "erlang", "jinterface" ] ),
+		[ get_default_erlang_root(), "lib", "erlang", "jinterface" ] ),
 
 	% Can be directory or, more probably, symlink:
 	case file_utils:is_existing_directory_or_link( JInterfaceBase ) of
 
 		true ->
-			JInterfaceJar = file_utils:join(
-							[ JInterfaceBase, "priv", "OtpErlang.jar" ] ),
+			JInterfaceJar =
+				file_utils:join( [ JInterfaceBase, "priv", "OtpErlang.jar" ] ),
 
 			case file_utils:is_existing_file( JInterfaceJar ) of
 

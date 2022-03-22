@@ -26,7 +26,8 @@
 % Creation date: Wednesday, October 21, 2020.
 
 
-% Testing the actual use of a trace bridge, in the context of Ceylan-Traces.
+% Testing the <b>actual use of a trace bridge</b>, in the context of
+% Ceylan-Traces.
 %
 % See also, in Ceylan-Myriad, trace_bridge_test.erl for a similar test when no
 % specific bridge is registered.
@@ -38,7 +39,7 @@
 -include("traces_for_tests.hrl").
 
 
-% Runs the test.
+% @doc Runs the test.
 -spec run() -> no_return().
 run() ->
 

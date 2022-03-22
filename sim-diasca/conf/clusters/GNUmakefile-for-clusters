@@ -1,0 +1,41 @@
+.PHONY: all test-job-launcher test-sd-launcher links clean
+
+# This makefile is meant to be used directly on a cluster, typically at the root
+# of the user account, typically once renamed from GNUmakefile-for-clusters to
+# GNUmakefile.
+
+
+SIM_DIASCA_INSTALL_ROOT := "$(HOME)/Projects/Sim-Diasca"
+
+SIM_DIASCA_CLUSTER_CONF := "$(SIM_DIASCA_INSTALL_ROOT)/sim-diasca/conf/clusters"
+
+SIM_DIASCA_LAUNCHER := "$(SIM_DIASCA_CLUSTER_CONF)/sim-diasca-launcher.sh"
+
+JOB_LAUNCHER := "$(SIM_DIASCA_CLUSTER_CONF)/job-launcher.sh"
+
+SBATCH_SCRIPT := "$(SIM_DIASCA_CLUSTER_CONF)/my-sbatch-test.sh"
+
+
+all:
+
+
+# Simple, base test:
+test-job-launcher:
+	@$(JOB_LAUNCHER) --job-name foobar --debug my-sbatch-test.sh
+
+
+# Integrated test:
+test-sd-launcher:
+	@$(SIM_DIASCA_LAUNCHER) --debug --qos test --queue cn --node-count 2 --max-duration 4 --install-root $(SIM_DIASCA_INSTALL_ROOT) mock-simulators/soda-test/test/soda_stochastic_integration_test.erl
+
+
+# Convenient at the root of the account:
+links:
+	@ln -sf $(SIM_DIASCA_LAUNCHER)
+	@ln -sf $(JOB_LAUNCHER)
+	@ln -sf $(SBATCH_SCRIPT)
+	@ln -sf "$(SIM_DIASCA_CLUSTER_CONF)/GNUmakefile-for-clusters" GNUmakefile
+
+
+clean:
+	-@/bin/rm -f slurm-*.out slurm-*.error *-job-*.log *-job-*.error 1>&2

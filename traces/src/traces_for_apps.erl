@@ -222,7 +222,7 @@ app_stop( ModuleName, TraceAggregatorPid, WaitForTraceSupervisor ) ->
 
 	end,
 
-	%trace_utils:info( "Going for immediate stop." ),
+	%trace_utils:info( "Going for immediate stop of Traces." ),
 
 	% Stop trace sent there:
 	app_immediate_stop( ModuleName, TraceAggregatorPid ).
@@ -238,7 +238,7 @@ app_stop( ModuleName, TraceAggregatorPid, WaitForTraceSupervisor ) ->
 -spec app_immediate_stop( module_name(), aggregator_pid() ) -> no_return().
 app_immediate_stop( ModuleName, TraceAggregatorPid ) ->
 
-	%trace_utils:info( "Immediate stop." ),
+	%trace_utils:info( "Immediate stop of Traces." ),
 
 	% Stop trace sent there:
 	app_stop_on_shell( ModuleName, TraceAggregatorPid ),

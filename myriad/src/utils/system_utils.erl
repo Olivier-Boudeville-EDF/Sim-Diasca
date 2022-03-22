@@ -90,7 +90,9 @@
 		  add_path_for_library_lookup/1, add_paths_for_library_lookup/1,
 		  get_environment/0, environment_to_string/0, environment_to_string/1,
 
+		  get_operating_system_type/0,
 		  get_interpreter_version/0, get_application_version/1,
+
 
 		  get_size_of_vm_word/0, get_size_of_vm_word_string/0,
 		  get_size/1,
@@ -136,6 +138,26 @@
 % module may be a pioneer one, and thus as such should be as autonomous as
 % possible.
 
+
+-type os_family() :: 'unix' | 'win32'.
+% Coarse categorization of an operating system.
+
+
+-type os_name() :: 'linux'
+				 | 'sunos'
+				 | 'nt' % For Windows
+				 | atom().
+% More precise categorization of an operating system.
+%
+% Generally using portable facilities (ex: file_utils) shall be preferred to
+% matching any value of that type.
+%
+% Unix system are designated by the name returned by `uname -s', but in lower
+% case. For example, on Solaris 1 and 2, it is 'sunos'.
+
+
+-type os_type() :: { os_family(), os_name() }.
+% The general type of an operating system.
 
 
 % Prerequisite-related section.
@@ -224,7 +246,6 @@
 
 	% Number of available inodes:
 	available_inodes :: count() } ).
-
 
 -type fs_info() :: #fs_info{}.
 % Stores information about a filesystem.
@@ -366,9 +387,12 @@
 % Shorthands:
 
 -type count() :: basic_utils:count().
+-type any_version() :: basic_utils:any_version().
 
 -type ustring() :: text_utils:ustring().
 -type any_string() :: text_utils:any_string().
+
+-type milliseconds() :: unit_utils:milliseconds().
 
 -type directory_path() :: file_utils:directory_path().
 -type any_directory_path() :: file_utils:any_directory_path().
@@ -376,6 +400,8 @@
 -type bin_executable_path() :: file_utils:bin_executable_path().
 
 -type percent() :: math_utils:percent().
+
+-type application_name() :: otp_utils:application_name().
 
 
 % Unicode defines are in system_utils.hrl.
@@ -633,8 +659,7 @@ force_unicode_support() ->
 
 % Default time-out duration (0.3 second, for loaded computers):
 await_output_completion() ->
-	% Milliseconds:
-	await_output_completion( _TimeOut=300 ).
+	await_output_completion( _MsTimeOut=300 ).
 
 -else. % myriad_debug_mode
 
@@ -645,8 +670,7 @@ await_output_completion() ->
 % (warning: this may impact adversely the timing if intensive logging is used)
 %
 await_output_completion() ->
-	% Milliseconds:
-	await_output_completion( _TimeOut=2500 ).
+	await_output_completion( _MsTimeOut=2500 ).
 
 -endif. % myriad_debug_mode
 
@@ -659,8 +683,8 @@ await_output_completion() ->
 % then immediately halting the VM, in order to avoid a race condition between
 % the displaying and the halting.
 %
--spec await_output_completion( unit_utils:millisecond() ) -> void().
-await_output_completion( _TimeOut ) ->
+-spec await_output_completion( milliseconds() ) -> void().
+await_output_completion( _MsTimeOut ) ->
 
 	% Not sure it is really the proper way of waiting, however should be still
 	% better than timer:sleep( 500 ):
@@ -1854,30 +1878,37 @@ get_interpreter_version() ->
 
 
 
+% @doc Returns the type of the local operating system.
+-spec get_operating_system_type() -> os_type().
+get_operating_system_type() ->
+	os:type().
+
+
+
 % @doc Returns the version information (as a 2 or 3-part tuple) corresponding to
-% the specified Erlang application (ex: for 'kernel', could return {3,0} or
-% {2,16,3}).
+% the specified Erlang standard application (ex: for 'kernel', could return
+% {3,0} or {2,16,3}).
 %
 % Throws an exception if the information could not be retrieved.
 %
--spec get_application_version( atom() ) -> basic_utils:any_version().
-get_application_version( Application ) ->
+-spec get_application_version( application_name() ) -> any_version().
+get_application_version( ApplicationName ) ->
 
-	case application:get_key( Application, vsn ) of
+	case application:get_key( ApplicationName, vsn ) of
 
 		% Ex: "3.0" or "2.16.3":
 		{ ok, VsnString } ->
 			basic_utils:parse_version( VsnString );
 
 		undefined ->
-			throw( { application_version_not_found, Application } )
+			throw( { application_version_not_found, ApplicationName } )
 
 	end.
 
 
 
 % @doc Returns the size, in bytes, of a word of this Virtual Machine.
--spec get_size_of_vm_word() -> count().
+-spec get_size_of_vm_word() -> byte_size().
 get_size_of_vm_word() ->
 	erlang:system_info( wordsize ).
 

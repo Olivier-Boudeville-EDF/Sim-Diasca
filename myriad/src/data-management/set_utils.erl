@@ -115,7 +115,8 @@ new() ->
 	?set_impl:new().
 
 
-% @doc Returns a set comprising only specified element.
+
+% @doc Returns a set comprising only the specified element.
 %
 % More elegant than set_utils:add(Foo, set_utils:new()).
 %
@@ -126,7 +127,8 @@ singleton( Element ) ->
 	?set_impl:add_element( Element, ?set_impl:new() ).
 
 
-% @doc Returns a set containing the elements of specified list (possibly
+
+% @doc Returns a set containing the elements of the specified list (possibly
 % unordered and containing duplicates).
 %
 % See singleton/1 if wanting to create a set with one element.
@@ -408,9 +410,9 @@ to_string( Set ) ->
 
 		S ->
 			ElemStrings = [ text_utils:format( "~p", [ E ] )
-							|| E <- ?set_impl:to_list( Set ) ],
+									|| E <- ?set_impl:to_list( Set ) ],
 
 			text_utils:format( "set containing following ~B elements: ~ts",
-					[ S, text_utils:strings_to_string( ElemStrings ) ] )
+				[ S, text_utils:strings_to_string( ElemStrings ) ] )
 
 	end.

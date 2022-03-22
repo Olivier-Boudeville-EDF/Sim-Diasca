@@ -45,6 +45,11 @@ Such a default implementation may be overridden on a per-module basis, thanks to
 For example, specifying ``-table_type(list_table).`` will result in the current module to translate ``table`` to ``list_table``, instead of the default ``map_hashtable``.
 
 
+.. _`bijective table`:
+
+Another type of table is the ``bijective_table``, which allows efficient bidirectional conversions between two sets.
+
+
 .. _`const table`:
 
 Finally, a way of **generating read-only associative tables** whose key/value pairs can be read very efficiently from any number (potentially extremely large) of readers (processes) is provided with ``const_table.erl``.
@@ -92,6 +97,76 @@ Pseudo-Builtin Types
 ....................
 
 Such types, as ``void/0`` (for functions only useful for their side-effects - this happens!), ``maybe/1`` (``maybe(T)`` is either ``T`` or ``undefined``), and ``fallible/{1,2}`` (an operation either is successful and returns a result, or returns an error) are supported, thanks to the Myriad parse-transform.
+
+
+
+Environments & Preferences
+..........................
+
+
+Principle
+*********
+
+An (application) **environment** is a server-like process that stores static or dynamic information (possibly initialised from an ETF_ file), as key/value entries (not unlike an ETS table), on behalf of an application or of a subset of its components, and makes it available to client processes.
+
+
+
+Sharing of Data
+***************
+
+An environment stores a set of entries. An entry is designated by a key (an atom), associated to a value (that can be any term) in a pair.
+
+Environments hold application-specific or component-specific data, obtained from any source (ETF_ file included); they may also start blank and be exclusively fed at runtime by the application or the components. Environments are used afterwards to maintain these pieces of data (read/write), before possibly storing them on file at application exit or component stop.
+
+As a whole, an environment server can be seen as a process holding state information meant to be potentially common to various processes of a given application or component.
+
+
+File Storage
+************
+
+Environment data can optionally be read from or written to file(s) in the ETF_ format.
+
+Example of content of an environment file:
+
+.. code:: erlang
+
+ {my_first_color, red}.
+ {myHeight, 1.80}.
+ {'My name', "Sylvester the cat"}.
+
+
+
+Addressing Environment Servers
+******************************
+
+The server process corresponding to an environment is locally registered; as a consequence it can be designated either directly through its PID or through its conventional (atom) registration name, like in:
+
+.. code:: erlang
+
+ environment:get(my_first_color, my_foobar_env_server).
+
+
+No specific global registration of servers is made.
+
+A (single) explicit start (with one of the ``start*`` functions) shall be preferred to implicit ones (typically triggered thanks to the ``get*`` functions) to avoid any risk of race conditions (should multiple processes attempt concurrently to create the same environment server), and also to be able to request that the server is also linked to the calling process.
+
+An environment is best designated as a PID, otherwise as a registered name, otherwise from any filename that it uses.
+
+
+
+About the Caching of Environment Entries
+****************************************
+
+For faster accesses (not involving any inter-process messaging), and if considering that their changes are rather infrequent (or never happening), at least some entries managed by an environment server may be cached directly in client processes.
+
+In this case, the process dictionary of these clients is used to store the cached entries, and when updating a cached key from a client process the corresponding environment server is updated in turn. However any other client process caching that key will not be aware of this change until it requests an update to this environment server.
+
+So a client process should cache a key mainly if no other is expected to update that key, i.e. typically if the associated value is const, or if this process is considered as the owner (sole controller) of that key (or if some other organisation ensures, possibly thanks to ``sync/1``, that its cache is kept consistent with the corresponding environment server.
+
+As soon as a key is declared to be cached, its value is set in the cache; there is thus always a value associated to a cached key (not a maybe-value), and thus cached values may be ``undefined``.
+
+Multiple environments may be used concurrently. A specific case of environment corresponds to the user preferences. See our ``preferences`` module for that, whose default settings file is ``~/.ceylan-settings.etf``.
+
 
 
 

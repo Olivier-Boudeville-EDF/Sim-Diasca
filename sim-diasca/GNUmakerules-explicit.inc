@@ -10,10 +10,14 @@
 .PHONY: .PHONY-local
 
 
-.PHONY-local: default-sim-diasca-rule make-config-links                \
-			  make-config-links-recurse create-doc-links               \
-			  clean clean-probe clean-test                             \
-			  clean-test-logs clean-test-images clean-source-archives  \
+.PHONY-local: default-sim-diasca-rule make-config-links                       \
+			  make-config-links-recurse create-doc-links                      \
+			  docker-image prepare-docker-context clean-docker-context        \
+			  prepare-docker-image                                            \
+			  create-docker-image run-docker-image push-docker-image          \
+			  info-docker-image                                               \
+			  clean clean-probe clean-test                                    \
+			  clean-test-logs clean-test-images clean-source-archives         \
 			  clean-results clean-outputs
 
 
@@ -31,14 +35,14 @@ default-sim-diasca-rule: all
 #
 make-config-links:
 	@if [ ! -e "$(SIM_DIASCA_HOST_FILE)" ] ; then \
-	if /bin/ls *_test.erl 1>/dev/null 2>&1 ; then \
-	echo "  Adding link to centralised host file in $$(pwd)" ; \
-	/bin/ln -sf $(SIM_DIASCA_TOP)/conf/$(SIM_DIASCA_HOST_FILE) ; fi ; fi
+	if /bin/ls *_test.erl 1>/dev/null 2>&1; then \
+	echo "  Adding link to centralised host file in $$(pwd)"; \
+	/bin/ln -sf $(SIM_DIASCA_TOP)/conf/$(SIM_DIASCA_HOST_FILE); fi; fi
 
 
 make-config-links-recurse:
-	@for m in $(MODULES_DIRS) ; do \
-	( cd $$m && $(MAKE) -s make-config-links make-config-links-recurse ) ; \
+	@for m in $(MODULES_DIRS); do \
+	(cd $$m && $(MAKE) -s make-config-links make-config-links-recurse); \
 	done
 
 
@@ -49,7 +53,63 @@ make-config-links-recurse:
 #
 create-doc-links:
 	@echo "  Creating doc-related symlinks"
-	@base_dir="$(SIM_DIASCA_TOP)/doc/common-elements"; for f in css/pygments-default.css css/sim-diasca.css edf-related/sim-diasca.png edf-related/logo-EDF-english.png edf-related/sim-diasca-icon.png licence/lgpl-v3-logo-bordered.png; do ln -sf $${base_dir}/$$f ; done
+	@base_dir="$(SIM_DIASCA_TOP)/doc/common-elements"; for f in css/pygments-default.css css/sim-diasca.css edf-related/sim-diasca.png edf-related/logo-EDF-english.png edf-related/sim-diasca-icon.png licence/lgpl-v3-logo-bordered.png; do ln -sf $${base_dir}/$$f; done
+
+
+prepare-docker-context:
+	@echo "  Preparing a base Docker context, suitable for the creation of Sim-Diasca images"
+
+
+clean-docker-context:
+	@echo "  Cleaning Docker context"
+	-@/bin/rm -f docker-context/Dockerfile docker-context/README-About-This-Docker-Image.txt 2>/dev/null
+
+
+docker-image: prepare-docker-context prepare-docker-image create-docker-image
+	@echo "If satisfied with this image, it can be pushed to registry thanks to: 'make push-docker-image'."
+
+
+prepare-docker-image:
+	@echo "  Preparing a Sim-Diasca $(IMAGE_BASE_NAME) Docker image"
+	@$(DOCKER_PREPARATION_SCRIPT) $(DOCKER_USAGE_OPT) --erlang-version "$(ERLANG_TARGET_VERSION)"
+
+
+create-docker-image: $(DOCKER_CONTEXT_NAME)/$(DOCKERFILE)
+	@echo "  Tagging image for base registry, as $(IMAGE_BASE_REF_NAME) and $(IMAGE_BASE_LATEST_NAME)."
+	@sudo docker build --tag $(IMAGE_BASE_REF_NAME) --tag $(IMAGE_BASE_LATEST_NAME) $(DOCKER_CONTEXT_NAME)
+	@if [ -n "$(SIM_DIASCA_ALT_DOCKER_REGISTRY)" ]; then \
+	echo "  Tagging image for alternate registry, as $(IMAGE_ALT_REF_NAME) and $(IMAGE_ALT_LATEST_NAME)."; \
+	sudo docker build --tag $(IMAGE_ALT_REF_NAME) --tag $(IMAGE_ALT_LATEST_NAME) $(DOCKER_CONTEXT_NAME); fi
+	@echo "This image can be checked interactively thanks to: 'sudo docker run -it $(IMAGE_BASE_REF_NAME) /bin/bash'."
+
+
+run-docker-image:
+	@echo "  Running image $(IMAGE_BASE_REF_NAME)"
+	@sudo docker run -it "$(IMAGE_BASE_REF_NAME)"
+
+
+push-docker-image:
+	@echo "  Pushing all tags for image $(IMAGE_BASE_PUSH_TARGET) in base registry"
+	@sudo docker image push --all-tags $(IMAGE_BASE_PUSH_TARGET)
+	@if [ -n "$(SIM_DIASCA_ALT_DOCKER_REGISTRY)" ]; then \
+	@echo "  Pushing all tags for image $(IMAGE_ALT_PUSH_TARGET) in alternate registry"; \
+	sudo docker image push --all-tags $(IMAGE_ALT_PUSH_TARGET); fi
+
+
+info-docker-image:
+	@echo "DOCKER_REGISTRY = $(DOCKER_REGISTRY)"
+	@echo "DOCKER_IMAGE_BASE_NAME = $(DOCKER_IMAGE_BASE_NAME)"
+	@echo "IMAGE_BASE_NAME = $(IMAGE_BASE_NAME)"
+	@echo "IMAGE_SUFFIX = $(IMAGE_SUFFIX)"
+	@echo "IMAGE_BASE_TAGLESS = $(IMAGE_BASE_TAGLESS)"
+	@echo "IMAGE_ALT_TAGLESS = $(IMAGE_ALT_TAGLESS)"
+	@echo "IMAGE_BASE_REF_NAME = $(IMAGE_BASE_REF_NAME)"
+	@echo "IMAGE_ALT_REF_NAME = $(IMAGE_ALT_REF_NAME)"
+	@echo "IMAGE_BASE_LATEST_NAME = $(IMAGE_BASE_LATEST_NAME)"
+	@echo "IMAGE_ALT_LATEST_NAME = $(IMAGE_ALT_LATEST_NAME)"
+	@echo "IMAGE_BASE_PUSH_TARGET = $(IMAGE_BASE_PUSH_TARGET) "
+	@echo "IMAGE_ALT_PUSH_TARGET = $(IMAGE_ALT_PUSH_TARGET) "
+
 
 
 
@@ -84,12 +144,12 @@ clean-source-archives:
 #
 clean-results:
 	@echo "    Cleaning all results for user $$USER in $$(pwd)"
-	@for d in *-on-*-at-*-by-$$USER-* ; do /bin/rm -rf $$d ; done
+	@for d in *-on-*-at-*-by-$$USER-*; do /bin/rm -rf $$d; done
 
 
 clean-outputs: clean-results clean-traces
-	@for m in $(MODULES_DIRS) ; do \
-	( cd $$m && $(MAKE) -s clean-outputs ) ; \
+	@for m in $(MODULES_DIRS); do \
+	(cd $$m && $(MAKE) -s clean-outputs); \
 	done
 
 
@@ -142,5 +202,5 @@ BOOTSTRAP_OFFSET_PATHS_OPT_INCS := $(foreach dir,$(BOOTSTRAP_INC_DIRS),-I$(GENER
 #
 $(GENERIC_SRC)/actor_info.beam: $(GENERIC_SRC)/actor_info.erl
 	@echo "     Compiling bootstrap module $<"
-	@#beam_file=$$(basename $@) ; cd $$(dirname $@) && pwd && echo $(ERLANG_COMPILER) $(BOOTSTRAP_OFFSET_PATHS_OPT_BEAMS) $(BOOTSTRAP_OFFSET_PATHS_OPT_INCS) $(ERLANG_COMPILER_OPT_FOR_STANDARD_MODULES) -o $$beam_file $$( echo $$beam_file | sed 's|.beam$$|.erl|1' )
-	@beam_file=$$(basename $@) ; cd $$(dirname $@) && $(ERLANG_COMPILER) $(BOOTSTRAP_OFFSET_PATHS_OPT_BEAMS) $(BOOTSTRAP_OFFSET_PATHS_OPT_INCS) $(ERLANG_COMPILER_OPT_FOR_STANDARD_MODULES) -o $$beam_file $$( echo $$beam_file | sed 's|.beam$$|.erl|1' )
+	@#beam_file=$$(basename $@); cd $$(dirname $@) && pwd && echo $(ERLANG_COMPILER) $(BOOTSTRAP_OFFSET_PATHS_OPT_BEAMS) $(BOOTSTRAP_OFFSET_PATHS_OPT_INCS) $(ERLANG_COMPILER_OPT_FOR_STANDARD_MODULES) -o $$beam_file $$(echo $$beam_file | sed 's|.beam$$|.erl|1')
+	@beam_file=$$(basename $@); cd $$(dirname $@) && $(ERLANG_COMPILER) $(BOOTSTRAP_OFFSET_PATHS_OPT_BEAMS) $(BOOTSTRAP_OFFSET_PATHS_OPT_INCS) $(ERLANG_COMPILER_OPT_FOR_STANDARD_MODULES) -o $$beam_file $$(echo $$beam_file | sed 's|.beam$$|.erl|1')

@@ -2,7 +2,29 @@
 
 tool="LogMX"
 
-usage="Usage: $(basename $0): kills all instances, run by the current user on the local host, of the tool that is used to perform trace (log) supervision (namely ${tool})."
+help_short_opt="-h"
+help_long_opt="--help"
+
+usage="Usage: $(basename $0) [${help_short_opt}|${help_long_opt}]: kills all instances, run by the current user on the local host, of the tool that is used to perform trace (log) supervision (namely ${tool})."
+
+
+if [ "$1" = "${help_short_opt}" ] || [ "$1" = "${help_long_opt}" ]; then
+
+	echo "${usage}"
+
+	exit 0
+
+fi
+
+
+if [ ! $# -eq 0 ]; then
+
+	echo "  Error, extra argument specified.
+${usage}" 1>&2
+
+	exit 10
+
+fi
 
 
 pids=$(ps -u ${USER} -eo pid,cmd | grep logmx.jar | grep -v grep | awk '{print $1}')

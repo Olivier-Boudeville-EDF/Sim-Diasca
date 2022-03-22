@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2022 Olivier Boudeville
+% Copyright (C) 2013-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -23,43 +23,40 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
-% Creation date: Tuesday, January 29, 2013
+% Creation date: Tuesday, January 29, 2013.
 
 
-
-% Header to export MyriadGUI-related defines, both for user code and for
+% Header to export <b>MyriadGUI-related defines</b>, both for user code and for
 % internal one.
 %
 % See gui.erl for the corresponding implementation.
+
+
+% Registration name of the MyriadGUI environment process:
+-define( gui_env_reg_name, 'myriad_gui_env' ).
 
 
 % Context sent to corresponding subscribers together with an event.
 %
 % This context can be ignored in most cases.
 %
--record( gui_event_context, {
+-record( event_context, {
+
+	% The identifier of the event source (generally not useful, as the
+	% gui_object shall be enough):
+	%
+	id :: gui:id(),
 
 
-		   % The identifier of the event source (generally not useful, as the
-		   % gui_object shall be enough):
-		   %
-		   id :: gui:id(),
+	% Usually of no use, as such user data is a means of preserving a state,
+	% whereas the user event loop is better to do so:
+	%
+	user_data = [] :: gui:user_data(),
 
 
-		   % Usually of no use, as such user data is a means of preserving a
-		   % state, whereas the user event loop is better to do so:
-		   %
-		   user_data = [] :: gui:user_data(),
-
-
-		   % The full, lower-level event (if any) resulting in our event:
-		   %
-		   % (useful for example when deciding to propagate it upward in the
-		   % widget hierarchy)
-		   %
-		   backend_event = undefined :: maybe( gui:backend_event() )
-
-
-}).
-
--type gui_event_context() :: #gui_event_context{}.
+	% The full, lower-level event (if any) resulting in our event:
+	%
+	% (useful for example when deciding to propagate it upward in the widget
+	% hierarchy)
+	%
+	backend_event = undefined :: maybe( gui:backend_event() ) } ).

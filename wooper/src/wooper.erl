@@ -23,6 +23,8 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2012.
+
 
 % Nope: @headerfile "wooper_state_functions.hrl"
 
@@ -380,9 +382,12 @@
 -type stack_info() :: code_utils:stack_info().
 -type stack_item() :: code_utils:stack_item().
 
+-type atom_node_name() :: net_utils:atom_node_name().
 
 -type time_out() :: time_utils:time_out().
 % In milliseconds, if finite.
+
+-type monitor_node_info() :: monitor_utils:monitor_node_info().
 
 
 % Note that the {attribute, request, oneway, static, class}_info/0 types are
@@ -468,7 +473,7 @@
 					 ( passive_instance(), request_name() ) ->
 							{ passive_instance(), method_internal_result() }.
 execute_request( TargetInstancePID, RequestName )
-  when is_pid( TargetInstancePID ) andalso is_atom( RequestName ) ->
+		when is_pid( TargetInstancePID ) andalso is_atom( RequestName ) ->
 
 	RequestArgs = [],
 
@@ -507,8 +512,8 @@ execute_request( TargetInstancePID, RequestName, RequestArgs )
 	execute_request_waiter( TargetInstancePID, RequestName, RequestArgs );
 
 execute_request( PassiveInstance, RequestName, RequestArgs )
-  when is_record( PassiveInstance, ?passive_record )
-	   andalso is_atom( RequestName ) ->
+					when is_record( PassiveInstance, ?passive_record )
+						 andalso is_atom( RequestName ) ->
 
 	{ NewPassiveInstance, { wooper_result, R } } =
 		wooper_execute_method( RequestName, RequestArgs, PassiveInstance ),
@@ -605,8 +610,8 @@ execute_const_request( PassiveInstance, RequestName )
 -else. % wooper_debug_mode
 
 execute_const_request( PassiveInstance, RequestName )
-  when is_record( PassiveInstance, ?passive_record )
-	   andalso is_atom( RequestName ) ->
+				when is_record( PassiveInstance, ?passive_record )
+					 andalso is_atom( RequestName ) ->
 
 	{ _ExpectedSamePassiveInstance, { wooper_result, Res } } =
 		wooper_execute_method( RequestName, _RequestArgs=[], PassiveInstance ),
@@ -630,8 +635,8 @@ execute_const_request( PassiveInstance, RequestName )
 -ifdef(wooper_debug_mode).
 
 execute_const_request( PassiveInstance, RequestName, RequestArgs )
-  when is_record( PassiveInstance, ?passive_record )
-	   andalso is_atom( RequestName ) ->
+				when is_record( PassiveInstance, ?passive_record )
+					 andalso is_atom( RequestName ) ->
 
 	% Matching PassiveInstance:
 	{ PassiveInstance, { wooper_result, Res } } =
@@ -642,8 +647,8 @@ execute_const_request( PassiveInstance, RequestName, RequestArgs )
 -else. % wooper_debug_mode
 
 execute_const_request( PassiveInstance, RequestName, RequestArgs )
-  when is_record( PassiveInstance, ?passive_record )
-	   andalso is_atom( RequestName ) ->
+				when is_record( PassiveInstance, ?passive_record )
+					 andalso is_atom( RequestName ) ->
 
 	{ _ExpectedSamePassiveInstance, { wooper_result, Res } } =
 		wooper_execute_method( RequestName, RequestArgs, PassiveInstance ),
@@ -667,8 +672,8 @@ execute_const_request( PassiveInstance, RequestName, RequestArgs )
 -ifdef(wooper_debug_mode).
 
 execute_const_oneway( PassiveInstance, OnewayName )
-  when is_record( PassiveInstance, ?passive_record )
-	   andalso is_atom( OnewayName ) ->
+				when is_record( PassiveInstance, ?passive_record )
+					 andalso is_atom( OnewayName ) ->
 
 	% Matching PassiveInstance:
 	{ PassiveInstance, wooper_method_returns_void } =
@@ -702,8 +707,8 @@ execute_const_oneway( PassiveInstance, OnewayName )
 -ifdef(wooper_debug_mode).
 
 execute_const_oneway( PassiveInstance, OnewayName, OnewayArgs )
-  when is_record( PassiveInstance, ?passive_record )
-	   andalso is_atom( OnewayName ) ->
+				when is_record( PassiveInstance, ?passive_record )
+					 andalso is_atom( OnewayName ) ->
 
 	% Matching PassiveInstance:
 	{ PassiveInstance, wooper_method_returns_void } =
@@ -712,8 +717,8 @@ execute_const_oneway( PassiveInstance, OnewayName, OnewayArgs )
 -else. % wooper_debug_mode
 
 execute_const_oneway( PassiveInstance, OnewayName, OnewayArgs )
-  when is_record( PassiveInstance, ?passive_record )
-	   andalso is_atom( OnewayName ) ->
+				when is_record( PassiveInstance, ?passive_record )
+					 andalso is_atom( OnewayName ) ->
 
 	% Reckless:
 	%{ _ExpectedSamePassiveInstance, wooper_method_returns_void } =
@@ -773,12 +778,12 @@ send_request_in_turn( _RequestName, _RequestArgs, _TargetInstancePIDs=[],
 	lists:reverse( AccRes );
 
 send_request_in_turn( RequestName, RequestArgs,
-			  _TargetInstancePIDs=[ InstancePid | H ], AccRes, Timeout ) ->
+			_TargetInstancePIDs=[ InstancePid | H ], AccRes, Timeout ) ->
 
 	InstancePid ! { RequestName, RequestArgs, self() },
 
 	%trace_bridge:debug_fmt( "Sent request '~ts' to ~w, waiting for result.",
-	%                       [ RequestName, InstancePid ] ),
+	%                        [ RequestName, InstancePid ] ),
 
 	receive
 
@@ -923,7 +928,6 @@ send_acked_oneway_in_turn_helper( OnewayCall,
 
 
 
-
 % @doc Waits for an acknowledgement answer, based on specified term and on the
 % PID of each of the specified requested instances, indefinitively (no
 % time-out).
@@ -978,8 +982,8 @@ wait_indefinitively_for_request_answers( RequestedPids, AckTerm ) ->
 
 		{ wooper_result, { AckTerm, SenderPid } } ->
 
-			NewPids = list_utils:delete_existing( SenderPid,
-													 RequestedPids ),
+			NewPids =
+				list_utils:delete_existing( SenderPid, RequestedPids ),
 
 			wait_indefinitively_for_request_answers( NewPids, AckTerm )
 
@@ -1009,25 +1013,25 @@ wait_for_request_answers( RequestedPids, InitialTimestamp, Timeout,
 
 		{ wooper_result, { AckTerm, SenderPid } } ->
 
-			NewPids = list_utils:delete_existing( SenderPid,
-												  RequestedPids ),
+			NewPids =
+				list_utils:delete_existing( SenderPid, RequestedPids ),
 
 			wait_for_request_answers( NewPids, InitialTimestamp, Timeout,
 									  PollDuration, AckTerm )
 
 	after PollDuration ->
 
-			NewDuration = time_utils:get_duration_since( InitialTimestamp ),
+		NewDuration = time_utils:get_duration_since( InitialTimestamp ),
 
-			case NewDuration > Timeout of
+		case NewDuration > Timeout of
 
-				true ->
-					{ failure, RequestedPids };
+			true ->
+				{ failure, RequestedPids };
 
-				false ->
-					% Still waiting then:
-					wait_for_request_answers( RequestedPids,
-						   InitialTimestamp, Timeout, PollDuration, AckTerm )
+			false ->
+				% Still waiting then:
+				wait_for_request_answers( RequestedPids,
+					InitialTimestamp, Timeout, PollDuration, AckTerm )
 
 			end
 
@@ -1209,7 +1213,7 @@ wait_request_series( WaitCount, Acc ) ->
 % links it to the caller and to the specified process.
 %
 -spec create_hosting_process( net_utils:node_name(), pid() ) ->
-											  instance_pid().
+												instance_pid().
 create_hosting_process( Node, ToLinkWithPid ) ->
 
 	WaitFun = fun() ->
@@ -1341,7 +1345,7 @@ check_classname_and_arity( Classname, ConstructionParameters ) ->
 % (helper)
 %
 -spec construct_and_run( classname(), construction_parameters() ) ->
-								no_return().
+													no_return().
 
 
 -ifdef(wooper_debug_mode).
@@ -1349,8 +1353,8 @@ check_classname_and_arity( Classname, ConstructionParameters ) ->
 construct_and_run( Classname, ConstructionParameters ) ->
 
 	%trace_bridge:debug_fmt( "wooper:construct_and_run for class ~p "
-	%	"and following parameters:~n ~p (in debug mode)",
-	%	[ Classname, ConstructionParameters ] ),
+	%   "and following parameters:~n ~p (in debug mode)",
+	%   [ Classname, ConstructionParameters ] ),
 
 	%check_classname_and_arity( Classname, ConstructionParameters ),
 
@@ -1406,8 +1410,8 @@ construct_and_run( Classname, ConstructionParameters ) ->
 construct_and_run( Classname, ConstructionParameters ) ->
 
 	%trace_bridge:debug_fmt( "wooper:construct_and_run for class ~p "
-	%	"and following parameters:~n ~p (in non-debug mode)",
-	%	[ Classname, ConstructionParameters ] ),
+	%   "and following parameters:~n ~p (in non-debug mode)",
+	%   [ Classname, ConstructionParameters ] ),
 
 	BlankState = get_blank_state( Classname ),
 
@@ -1427,7 +1431,7 @@ construct_and_run( Classname, ConstructionParameters ) ->
 	% convention no attribute should be introduced outside of the constructor:
 	%
 	%TunedTable = ?wooper_table_type:optimise(
-	%						ConstructState#state_holder.attribute_table ),
+	%                   ConstructState#state_holder.attribute_table ),
 
 
 	%ReadyState = ConstructState#state_holder{ attribute_table=TunedTable },
@@ -1483,8 +1487,8 @@ construct_and_run_synchronous( Classname, ConstructionParameters,
 			% TunedTable = ?wooper_table_type:optimise(
 			AttrTable = ConstructState#state_holder.attribute_table,
 
-			ReadyState = ConstructState#state_holder{
-							attribute_table=AttrTable },
+			ReadyState =
+				ConstructState#state_holder{ attribute_table=AttrTable },
 
 			% Otherwise, in wooper_destruct/1 and all, ?MODULE will be 'wooper'
 			% instead of the right class:
@@ -1529,8 +1533,8 @@ construct_and_run_synchronous( Classname, ConstructionParameters,
 	% Faulty returns (non-state) not detected here:
 	ConstructState = try
 
-			 apply( Classname, construct,
-					[ BlankState | ConstructionParameters ] )
+			apply( Classname, construct,
+				   [ BlankState | ConstructionParameters ] )
 
 	catch
 
@@ -1569,14 +1573,14 @@ construct_and_run_synchronous( Classname, ConstructionParameters,
 
 % @doc Constructs a passive instance: returns the initial state thereof.
 -spec construct_passive( classname(), construction_parameters() ) ->
-							passive_instance().
+										passive_instance().
 construct_passive( Classname, ConstructionParameters ) ->
 
 	%trace_bridge:debug_fmt( "wooper:construct_passive for class ~ts "
 	%   "and parameters ~p.", [ Classname, ConstructionParameters ] ),
 
 	cond_utils:if_defined( wooper_debug_mode,
-			check_classname_and_arity( Classname, ConstructionParameters ) ),
+		check_classname_and_arity( Classname, ConstructionParameters ) ),
 
 	BlankState = get_blank_state( Classname ),
 
@@ -1615,8 +1619,7 @@ construct_passive( Classname, ConstructionParameters ) ->
 % instance.
 %
 -spec execute_oneway( instance_pid(), oneway_name() ) -> void();
-					( passive_instance(), oneway_name() ) ->
-							passive_instance().
+					( passive_instance(), oneway_name() ) -> passive_instance().
 execute_oneway( TargetInstancePID, OnewayName )
    when is_pid( TargetInstancePID ) andalso is_atom( OnewayName ) ->
 
@@ -1638,8 +1641,8 @@ execute_oneway( PassiveInstance, OnewayName )
 % Executes the specified oneway on the specified passive instance, with
 % specified arguments
 %.
--spec execute_oneway( instance_pid(), oneway_name(),
-					  method_arguments() ) -> void();
+-spec execute_oneway( instance_pid(), oneway_name(), method_arguments() ) ->
+							void();
 					( passive_instance(), oneway_name(), method_arguments() ) ->
 							passive_instance().
 execute_oneway( TargetInstancePID, OnewayName, OnewayArgs )
@@ -1654,7 +1657,7 @@ execute_oneway( PassiveInstance, OnewayName, OnewayArgs )
 		andalso is_atom( OnewayName ) andalso is_list( OnewayArgs ) ->
 
 	%trace_bridge:info_fmt( "Executing oneway ~ts/~B on passive instance",
-	%						[ OnewayName, length( OnewayArgs ) ] ),
+	%                       [ OnewayName, length( OnewayArgs ) ] ),
 
 	{ NewPassiveInstance, wooper_method_returns_void } =
 		wooper_execute_method( OnewayName, OnewayArgs, PassiveInstance ),
@@ -1663,11 +1666,11 @@ execute_oneway( PassiveInstance, OnewayName, OnewayArgs )
 
 % Promote non-list argument to list:
 execute_oneway( PassiveInstance, OnewayName, OnewayArg )
-   when is_record( PassiveInstance, ?passive_record )
-		andalso is_atom( OnewayName ) ->
+				when is_record( PassiveInstance, ?passive_record )
+					 andalso is_atom( OnewayName ) ->
 
 	%trace_bridge:info_fmt( "Executing oneway ~ts on passive instance",
-	%						[ OnewayName ] ),
+	%                       [ OnewayName ] ),
 
 	{ NewPassiveInstance, wooper_method_returns_void } =
 		wooper_execute_method( OnewayName, [ OnewayArg ], PassiveInstance ),
@@ -1767,9 +1770,8 @@ default_down_handler( MonitorReference, MonitoredType, MonitoredElement,
 %
 % (helper)
 %
--spec default_node_up_handler( net_utils:atom_node_name(),
-			monitor_utils:monitor_node_info(), wooper:state() ) ->
-										wooper:state().
+-spec default_node_up_handler( atom_node_name(), monitor_node_info(),
+							   wooper:state() ) -> wooper:state().
 default_node_up_handler( Node, MonitorNodeInfo, State ) ->
 
 	log_warning( "WOOPER default node up handler of the ~w "
@@ -1791,8 +1793,8 @@ default_node_up_handler( Node, MonitorNodeInfo, State ) ->
 % Note: not to be mixed up with the default_down_handler/5 /
 % onWOOPERDownNotified/5 pair (which is process-related).
 %
--spec default_node_down_handler( net_utils:atom_node_name(),
-		monitor_utils:monitor_node_info(), wooper:state() ) -> wooper:state().
+-spec default_node_down_handler( atom_node_name(), monitor_node_info(),
+								 wooper:state() ) -> wooper:state().
 default_node_down_handler( Node, MonitorNodeInfo, State ) ->
 
 	log_warning( "WOOPER default node down handler of the ~w "
@@ -1900,7 +1902,7 @@ trigger_error( ExceptionClass, ExceptionTerm, Classname, ConstructionParameters,
 	Arity = length( ConstructionParameters ) + 1,
 
 	%trace_bridge:info_fmt( "Construction failed for ~ts:construct/~B.",
-	%					   [ Classname, Arity ] ),
+	%                       [ Classname, Arity ] ),
 
 	%trace_bridge:debug_fmt( "ExceptionClass: ~p, ExceptionTerm: ~p, "
 	%   "Stacktrace:~n ~p.",
@@ -2076,16 +2078,16 @@ virtual_table_to_string( State ) ->
 
 	lists:foldl(
 
-	  fun( { { Name, Arity }, Module }, String ) ->
-			  String ++ text_utils:format( "     * ~ts/~B -> ~ts~n",
-										   [ Name, Arity, Module ] )
-	  end,
+		fun( { { Name, Arity }, Module }, String ) ->
+			String ++ text_utils:format( "     * ~ts/~B -> ~ts~n",
+										 [ Name, Arity, Module ] )
+		end,
 
-	  _Acc=text_utils:format( "Virtual table of ~w:~n(method name/arity -> "
-							  "module defining that method)~n", [ self() ] ),
+		_Acc=text_utils:format( "Virtual table of ~w:~n(method name/arity -> "
+								"module defining that method)~n", [ self() ] ),
 
-	  _List=?wooper_table_type:enumerate(
-			 %persistent_term:get( State#state_holder.virtual_table_key ) ) ).
+		_List=?wooper_table_type:enumerate(
+			%persistent_term:get( State#state_holder.virtual_table_key ) ) ).
 			State#state_holder.virtual_table ) ).
 
 
@@ -2321,8 +2323,7 @@ on_failed_request( RequestName, ArgumentList, CallerPid, ExceptionClass,
 	log_error( "request ~ts~ts/~B failed due to an 'undef' "
 		"call to ~ts:~ts/~B.~nDiagnosis: ~ts~ts",
 		[ ModulePrefix, RequestName, Arity, ModuleName, FunctionName,
-		  UndefArity, Diagnosis, LocString ],
-		State ),
+		  UndefArity, Diagnosis, LocString ], State ),
 
 	% ArgumentList and actual method module not propagated back to the caller:
 	ErrorReason = { request_failed, State#state_holder.actual_class,
@@ -2715,7 +2716,7 @@ delete_pid_from( [ Attr | T ], DeleteMessage, PreTestLiveliness, State,
 					%                        "(PID: ~w).", [ Attr, Pid ] ),
 					Pid ! DeleteMessage,
 					delete_pid_from( T, DeleteMessage, PreTestLiveliness,
-							 State, [ Attr | AccAttr ], [ Pid | AccPid ] )
+							State, [ Attr | AccAttr ], [ Pid | AccPid ] )
 
 			end
 
@@ -2730,7 +2731,7 @@ delete_pid_from( [ Attr | T ], DeleteMessage, PreTestLiveliness, State,
 -spec delete_synchronously_instance( instance_pid() ) -> void().
 delete_synchronously_instance( InstancePid ) ->
 
-	%trace_bridge:debug_fmt( "delete_synchronously_instance for ~w.",
+	%trace_bridge:debug_fmt( "Deleting synchronously WOOPER instance ~w.",
 	%                        [ InstancePid ] ),
 
 	InstancePid ! { synchronous_delete, self() },
@@ -2739,7 +2740,7 @@ delete_synchronously_instance( InstancePid ) ->
 
 		{ deleted, InstancePid } ->
 			%trace_bridge:debug_fmt( "Synchronous deletion of ~w confirmed.",
-			%						 [ Pid ] ),
+			%                        [ InstancePid ] ),
 			ok
 
 	end.
@@ -2853,9 +2854,9 @@ examine_waited_deletions( _WaitedPids=[ Pid | T ], Acc ) ->
 safe_delete_synchronously_instances( InstanceList ) ->
 
 	% Testing for liveliness allows to avoid synchronous time-outs:
-	FilteredInstanceList = [ InstancePid
-					 || InstancePid <- list_utils:uniquify( InstanceList ),
-						basic_utils:is_alive( InstancePid ) ],
+	FilteredInstanceList =
+		[ InstancePid || InstancePid <- list_utils:uniquify( InstanceList ),
+						 basic_utils:is_alive( InstancePid ) ],
 
 	delete_synchronously_instances( FilteredInstanceList ).
 
@@ -2933,7 +2934,7 @@ check_undefined( AttributeName, State ) ->
 
 			% Attribute value was not equal to 'undefined':
 			throw( { attribute_was_not_undefined,
-					 { AttributeName, UnexpectedValue }, Stack } );
+						{ AttributeName, UnexpectedValue }, Stack } );
 
 		exit:Error ->
 			% Other error (ex: unknown attribute):

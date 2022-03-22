@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2022 Olivier Boudeville
+% Copyright (C) 2007-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -214,7 +214,7 @@ new_with_buckets( NumberOfBuckets ) ->
 
 
 
-% @doc Adds specified key/value pair into the specified hashtable.
+% @doc Adds the specified key/value pair into the specified hashtable.
 %
 % If there is already a pair with this key, then its previous value will be
 % replaced by the specified one.
@@ -233,8 +233,8 @@ add_entry( Key, Value, Hashtable ) ->
 
 
 
-% @doc Adds specified key/value pair into the specified hashtable, and returns
-% an update diagnosis.
+% @doc Adds the specified key/value pair into the specified hashtable, and
+% returns an update diagnosis.
 %
 % If there is already a pair with this key, then its previous value will be
 % replaced by the specified one.
@@ -257,7 +257,7 @@ add_diagnosed_entry( Key, Value, Hashtable ) ->
 
 
 
-% @doc Adds specified list of key/value pairs into the specified hashtable.
+% @doc Adds the specified list of key/value pairs into the specified hashtable.
 %
 % If there is already a pair with this key, then its previous value will be
 % replaced by the specified one.
@@ -271,8 +271,8 @@ add_entries( [ { EntryName, EntryValue } | Rest ], Hashtable ) ->
 
 
 
-% @doc Adds specified list of key/value pairs into the specified hashtable, and
-% returns an update diagnosis.
+% @doc Adds the specified list of key/value pairs into the specified hashtable,
+% and returns an updated diagnosis.
 %
 % If there is already a pair with this key, then its previous value will be
 % replaced by the specified one.
@@ -286,8 +286,8 @@ add_diagnosed_entries( Entries, Hashtable ) ->
 
 					% Implicitly, Diag is 'updated' here:
 					( _Entry={K,V}, _Acc={ Table, _Diag } ) ->
-						 % Returns directly {NewTable, NewDiagnosis}:
-						 add_diagnosed_entry( K, V, Table )
+						% Returns directly {NewTable, NewDiagnosis}:
+						add_diagnosed_entry( K, V, Table )
 
 				 end,
 				 _InitialAcc={ Hashtable, _InitialDiag=updated },
@@ -295,7 +295,7 @@ add_diagnosed_entries( Entries, Hashtable ) ->
 
 
 
-% @doc Removes specified key/value pair, as designated by the key, from the
+% @doc Removes the specified key/value pair, as designated by the key, from the
 % specified hashtable.
 %
 % Does nothing if the key is not found.
@@ -315,7 +315,7 @@ remove_entry( Key, Hashtable ) ->
 
 
 
-% @doc Removes specified key/value pair, as designated by the key, from the
+% @doc Removes the specified key/value pair, as designated by the key, from the
 % specified hashtable.
 %
 % Does nothing if the key is not found.
@@ -344,7 +344,8 @@ remove_diagnosed_entry( Key, Hashtable ) ->
 
 
 
-% @doc Looks-up specified entry (designated by its key) in specified hashtable.
+% @doc Looks-up the specified entry (designated by its key) in specified
+% hashtable.
 %
 % Returns either 'key_not_found' if no such key is registered in the
 % table, or {value, Valu }, with Value being the value associated to the
@@ -358,9 +359,7 @@ lookup_entry( Key, Hashtable ) ->
 
 
 
-% @doc Tells whether the specified key exists in the table: returns true or
-% false.
-%
+% @doc Tells whether the specified key exists in the table.
 -spec has_entry( key(), hashtable() ) -> boolean().
 has_entry( Key, Hashtable ) ->
 
@@ -378,8 +377,8 @@ has_entry( Key, Hashtable ) ->
 
 
 
-% @doc etrieves the value corresponding to specified (existing) key and returns
-% it directly.
+% @doc Retrieves the value corresponding to specified (existing) key, and
+% returns it directly.
 %
 % The key/value pair is expected to exist already, otherwise an exception is
 % raised.
@@ -403,8 +402,8 @@ get_value( Key, Hashtable ) ->
 
 
 
-% @doc Extracts specified entry from specified hashtable: returns the associated
-% value and removes that entry from the table.
+% @doc Extracts the specified entry from specified hashtable: returns the
+% associated value and removes that entry from the table.
 %
 % The key/value pair is expected to exist already, otherwise an exception is
 % raised.
@@ -417,7 +416,6 @@ extract_entry( Key, Hashtable ) ->
 	case extract_from_list( Key, element( BucketIndex, Hashtable ) ) of
 
 		key_not_found ->
-
 			% Badmatches are not informative enough:
 			throw( { key_not_found, Key } );
 
@@ -433,14 +431,14 @@ extract_entry( Key, Hashtable ) ->
 
 
 
-% @doc Looks for specified entry in specified table and, if found, returns the
-% associated value; otherwise returns the specified default value.
+% @doc Looks for the specified entry in specified table and, if found, returns
+% the associated value; otherwise returns the specified default value.
 %
 -spec get_value_with_defaults( key(), value(), hashtable() ) -> value().
 get_value_with_defaults( Key, DefaultValue, Hashtable ) ->
 
 	case lookup_in_list( Key, element( get_bucket_index( Key, Hashtable ),
-									 Hashtable ) ) of
+									   Hashtable ) ) of
 
 		% Most likely case first:
 		{ value, Value } ->
@@ -461,21 +459,21 @@ get_value_with_defaults( Key, DefaultValue, Hashtable ) ->
 % raised.
 %
 % Ex: `[Color, Age, Mass] = hashtable:get_values([color, age, mass],
-%   MyTable])'.
+%           MyTable])'.
 %
 -spec get_values( [ key() ], hashtable() ) -> [ value() ].
 get_values( Keys, Hashtable ) ->
 
 	{ RevValues, _FinalTable } = lists:foldl(
 
-				fun( _Elem=Key, _Acc={ Values, Table } ) ->
+		fun( _Elem=Key, _Acc={ Values, Table } ) ->
 
-					   { Value, ShrunkTable } = extract_entry( Key, Table ),
-					   { [ Value | Values ], ShrunkTable }
+			{ Value, ShrunkTable } = extract_entry( Key, Table ),
+			{ [ Value | Values ], ShrunkTable }
 
-				end,
-				_Acc0={ [], Hashtable },
-				_List=Keys ),
+		end,
+		_Acc0={ [], Hashtable },
+		_List=Keys ),
 
 	lists:reverse( RevValues ).
 
@@ -495,14 +493,14 @@ get_values( Keys, Hashtable ) ->
 get_all_values( Keys, Hashtable ) ->
 
 	{ RevValues, FinalTable } = lists:foldl(
-		   fun( _Elem=Key, _Acc={ Values, Table } ) ->
+		fun( _Elem=Key, _Acc={ Values, Table } ) ->
 
-				{ Value, ShrunkTable } = extract_entry( Key, Table ),
-				{ [ Value | Values ], ShrunkTable }
+			{ Value, ShrunkTable } = extract_entry( Key, Table ),
+			{ [ Value | Values ], ShrunkTable }
 
-		   end,
-		   _Acc0={ [], Hashtable },
-		   _List=Keys ),
+		end,
+		_Acc0={ [], Hashtable },
+		_List=Keys ),
 
 	case is_empty( FinalTable ) of
 
@@ -581,19 +579,19 @@ map_on_entries( Fun, _BucketList=[ Bucket | T ], Hashtable ) ->
 % change.
 %
 -spec map_on_values( fun( ( value() ) -> value() ), hashtable() ) ->
-							hashtable().
+												hashtable().
 map_on_values( Fun, Hashtable ) ->
 
 	BucketList = tuple_to_list( Hashtable ),
 
 	NewBucketList = [ map_bucket_for_values( Fun, Bucket )
-					  || Bucket <- BucketList ],
+								|| Bucket <- BucketList ],
 
 	list_to_tuple( NewBucketList ).
 
 
 
-% Maps specified function to all values of specified bucket.
+% Maps the specified function to all values of the specified bucket.
 %
 % (helper)
 %
@@ -602,7 +600,7 @@ map_bucket_for_values( Fun, Bucket ) ->
 
 
 
-% @doc Folds specified anonymous function on all entries of the specified
+% @doc Folds the specified anonymous function on all entries of the specified
 % hashtable.
 %
 % The order of transformation for entries is not specified.
@@ -610,7 +608,7 @@ map_bucket_for_values( Fun, Bucket ) ->
 % Returns the final accumulator.
 %
 -spec fold_on_entries( fun( ( entry(), accumulator() ) ->
-								  accumulator() ),
+									accumulator() ),
 					   accumulator(), hashtable() ) -> accumulator().
 fold_on_entries( Fun, InitialAcc, Hashtable ) ->
 	BucketList = tuple_to_list( Hashtable ),
@@ -634,8 +632,8 @@ fold_on_entries_helper( Fun, _BucketList=[ Bucket | T ], Acc ) ->
 
 
 
-% @doc Adds specified value to the value, supposed to be numerical, associated
-% to specified key.
+% @doc Adds the specified value to the value, supposed to be numerical,
+% associated to specified key.
 %
 % An exception is thrown if the key does not exist, a bad arithm is triggered if
 % no addition can be performed on the associated value.
@@ -644,7 +642,7 @@ fold_on_entries_helper( Fun, _BucketList=[ Bucket | T ], Acc ) ->
 add_to_entry( Key, Value, Hashtable ) ->
 
 	case lookup_in_list( Key,
-		element( get_bucket_index( Key, Hashtable ), Hashtable ) ) of
+			element( get_bucket_index( Key, Hashtable ), Hashtable ) ) of
 
 		{ value, Number } ->
 			add_entry( Key, Number + Value, Hashtable );
@@ -658,7 +656,7 @@ add_to_entry( Key, Value, Hashtable ) ->
 
 
 
-% @doc Subtracts specified value to the value, supposed to be numerical,
+% @doc Subtracts the specified value to the value, supposed to be numerical,
 % associated to specified key.
 %
 % An exception is thrown if the key does not exist, a bad arithm is triggered if
@@ -730,8 +728,8 @@ merge( HashtableBase, HashtableAdd ) ->
 
 
 
-% @doc Appends specified element to the value, supposed to be a list, associated
-% to specified key.
+% @doc Appends the specified element to the value, supposed to be a list,
+% associated to specified key.
 %
 % An exception is thrown if the key does not exist.
 %
@@ -766,7 +764,7 @@ append_to_entry( Key, Element, Hashtable ) ->
 delete_from_entry( Key, Element, Hashtable ) ->
 
 	case lookup_in_list( Key,
-		element( get_bucket_index( Key, Hashtable ), Hashtable ) ) of
+			element( get_bucket_index( Key, Hashtable ), Hashtable ) ) of
 
 		{ value, List } ->
 			add_entry( Key, lists:delete( Element, List ), Hashtable );
@@ -971,7 +969,7 @@ to_string( Hashtable ) ->
 
 
 
-% @doc Returns a textual description of the specified table.
+% @doc Returns a textual description of the specified hashtable.
 %
 % Either a bullet is specified, or the returned string is ellipsed if needed (if
 % using 'user_friendly'), or quite raw and non-ellipsed (if using 'full'), or
@@ -1012,11 +1010,11 @@ to_string( Hashtable, DescriptionType ) ->
 
 					lists:flatten( io_lib:format( "table with ~B entries: ~ts",
 						[ length( L ), text_utils:strings_to_string( Strs,
-												   ?default_bullet ) ] ) );
+													?default_bullet ) ] ) );
 
 				full ->
 					Strs = [ text_utils:format( "~p: ~p", [ K, V ] )
-							 || { K, V } <- lists:sort( L ) ],
+								|| { K, V } <- lists:sort( L ) ],
 
 					lists:flatten( io_lib:format( "table with ~B entries: ~ts",
 						[ length( L ),
@@ -1026,14 +1024,14 @@ to_string( Hashtable, DescriptionType ) ->
 				internal ->
 					lists:foldl(
 
-					  fun( Bucket, Acc ) ->
+						fun( Bucket, Acc ) ->
 							Acc ++ io_lib:format( "  + ~ts~n",
 								[ bucket_to_string( Bucket ) ] )
-					  end,
+						end,
 
-					  _Acc0=io_lib:format( "table with ~B bucket(s) and ~B "
-						  "entry(ies): ~n",
-						  [ tuple_size( Hashtable ), size( Hashtable ) ] ),
+						_Acc0=io_lib:format( "table with ~B bucket(s) and ~B "
+							"entry(ies): ~n",
+							[ tuple_size( Hashtable ), size( Hashtable ) ] ),
 
 					  _List=tuple_to_list( Hashtable ) );
 
@@ -1041,7 +1039,7 @@ to_string( Hashtable, DescriptionType ) ->
 				% Here, ellipsed and with specified bullet:
 				Bullet ->
 					Strs = [ text_utils:format_ellipsed( "~p: ~p", [ K, V ] )
-							 || { K, V } <- lists:sort( L ) ],
+								|| { K, V } <- lists:sort( L ) ],
 
 					lists:flatten( io_lib:format( "table with ~B entries: ~ts",
 						[ length( L ),
@@ -1090,6 +1088,8 @@ get_ideal_bucket_count( EntryCount ) ->
 % Returns a new tuple, whose size is the specified length and whose elements are
 % all set to specified default value.
 %
+% (helper)
+%
 create_tuple( _Length=0, _DefaultValue ) ->
 	throw( at_least_one_bucket_per_hashtable );
 
@@ -1128,9 +1128,9 @@ delete_bucket( _Key, [], Acc ) ->
 
 
 
-% Returns, if an entry with the specified key was found, {'deleted', NewBucket
-%}, ie a pair made of an atom telling whether a deletion was done, and a list
-%whose first entry having a matching key is removed, otherwise 'unchanged'.
+% Returns, if an entry with the specified key was found, {'deleted',NewBucket},
+% that is a pair made of an atom telling whether a deletion was done, and a list
+% whose first entry having a matching key is removed, otherwise 'unchanged'.
 %
 % (like delete_bucket/3, but gives more information, used for example by
 % tracked_hashtable)
@@ -1153,12 +1153,14 @@ delete_bucket_verbose( _Key, _Entries=[], _Acc ) ->
 
 
 
-% Replaces, in specified list, a key/value pair by another.
+% Replaces, in the specified list, a key/value pair by another.
 %
 % Updates the pair if this key was already declared, otherwise add the new
 % entry.
 %
 % Note: order does not matter.
+%
+% (helper)
 %
 % @private
 %
@@ -1177,8 +1179,8 @@ replace_bucket( Key, Value, _Entries=[ H | T ], Acc ) ->
 
 
 
-% Replaces in specified list a key/value pair by another, and tells whether it
-% is an addition or an update.
+% Replaces in the specified list a key/value pair by another, and tells whether
+% it is an addition or an update.
 %
 % Updates the pair if this key was already declared, otherwise add the new
 % entry.
@@ -1188,7 +1190,11 @@ replace_bucket( Key, Value, _Entries=[ H | T ], Acc ) ->
 %
 % Note: order does not matter.
 %
-% Returns { Diagnosis, NewBucket }.
+% Returns {Diagnosis, NewBucket}.
+%
+% (helper)
+%
+% @private
 %
 replace_bucket_diagnose( Key, Value, _RestOfBucket=[], Acc ) ->
 	% Key was not there previously, just adding it:
@@ -1219,6 +1225,9 @@ get_bucket_count( Hashtable ) ->
 
 
 % Returns a string describing a hashtable bucket (list of key/value pairs):
+%
+% (helper)
+%
 bucket_to_string( _EmptyBucket=[] ) ->
 	"empty bucket";
 

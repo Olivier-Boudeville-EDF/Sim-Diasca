@@ -84,7 +84,7 @@ ifndef PROJECT_NAME
 endif
 
 
-SIM_DIASCA_BASE_VERSION := 2.4.2
+SIM_DIASCA_BASE_VERSION := 2.4.3
 
 #SIM_DIASCA_VERSION := $(SIM_DIASCA_BASE_VERSION)-beta-$(date '+%Y%m%d-%Hh%M')
 #SIM_DIASCA_VERSION := $(SIM_DIASCA_BASE_VERSION)-for-foobar
@@ -100,7 +100,7 @@ endif
 ifndef PROJECT_RELEASE_DATE
 	# To be set only at release time:
 	#PROJECT_RELEASE_DATE := "(not set yet)"
-	PROJECT_RELEASE_DATE := "Friday, January 7, 2022"
+	PROJECT_RELEASE_DATE := "Monday, March 21, 2022"
 endif
 
 
@@ -193,8 +193,6 @@ DATAFLOW_BINDINGS_BASE_DIR := $(DATAFLOW_BASE_DIR)/bindings
 DATAFLOW_JAVA_BINDING_BASE_DIR   := $(DATAFLOW_BINDINGS_BASE_DIR)/java
 DATAFLOW_PYTHON_BINDING_BASE_DIR := $(DATAFLOW_BINDINGS_BASE_DIR)/python
 
-MOCKUP_TEST_BASE_DIR := $(MOCKUP_BASE_DIR)/tests
-
 PERFORMANCE_BASE_DIR := $(MONITORING_BASE_DIR)/performance
 BASIC_PROBE_BASE_DIR := $(MONITORING_BASE_DIR)/basic-probe
 WEB_PROBE_BASE_DIR   := $(MONITORING_BASE_DIR)/web-probe
@@ -252,8 +250,7 @@ DATAFLOW_BINDINGS_SRC := $(DATAFLOW_BINDINGS_BASE_DIR)
 DATAFLOW_JAVA_BINDING_SRC   := $(DATAFLOW_JAVA_BINDING_BASE_DIR)
 DATAFLOW_PYTHON_BINDING_SRC := $(DATAFLOW_PYTHON_BINDING_BASE_DIR)
 
-MOCKUP_SRC      := $(MOCKUP_BASE_DIR)
-MOCKUP_TEST_SRC := $(MOCKUP_TEST_BASE_DIR)
+MOCKUP_SRC := $(MOCKUP_BASE_DIR)
 
 
 GENERIC_SRC := $(GENERIC_BASE_DIR)
@@ -320,8 +317,7 @@ DATAFLOW_BINDINGS_BEAM := $(DATAFLOW_BINDINGS_BASE_DIR)
 DATAFLOW_JAVA_BINDING_BEAM   := $(DATAFLOW_JAVA_BINDING_SRC)
 DATAFLOW_PYTHON_BINDING_BEAM := $(DATAFLOW_PYTHON_BINDING_SRC)
 
-MOCKUP_BEAM      := $(MOCKUP_BASE_DIR)
-MOCKUP_TEST_BEAM := $(MOCKUP_TEST_BASE_DIR)
+MOCKUP_BEAM := $(MOCKUP_BASE_DIR)
 
 
 GENERIC_BEAM := $(GENERIC_BASE_DIR)
@@ -349,7 +345,7 @@ BEAM_DIRS += $(CORE_BEAM) $(SERVICES_BEAM)                                    \
 	$(SCHEDULING_BEAM)                                                        \
 	$(BINDINGS_BEAM) $(JAVA_BINDING_BEAM) $(PYTHON_BINDING_BEAM)              \
 	$(DATAFLOW_BINDINGS_BEAM) $(DATAFLOW_JAVA_BINDING_BEAM)                   \
-	$(DATAFLOW_PYTHON_BINDING_BEAM) $(MOCKUP_BEAM) $(MOCKUP_TEST_BEAM)        \
+	$(DATAFLOW_PYTHON_BINDING_BEAM) $(MOCKUP_BEAM)                            \
 	$(GENERIC_BEAM) $(MESH_BEAM) $(SPACE_BEAM) $(EQUIPMENT_BEAM)              \
 	$(FAILURE_BEAM) $(REPARATION_BEAM) $(POST_PROCESSING_BEAM)                \
 	$(SPATIAL_BEAM)
@@ -596,6 +592,46 @@ SD_DATAFLOW_HOWTO_PDF := $(SD_DATAFLOW_HOWTO_BASE).pdf
 
 
 
+# Virtualisation section (Docker, Singularity, etc.)
+
+# Generated from Dockerfile.template:
+DOCKERFILE := Dockerfile
+
+DOCKER_PREPARATION_SCRIPT := $(SIM_DIASCA_TOP)/conf/docker-images/prepare-docker-image.sh
+
+DOCKER_IMAGE_BASE_NAME := sim-diasca
+
+# Better than '.' (the current directory):
+DOCKER_CONTEXT_NAME := docker-context
+
+# Note that any registry specified must end with a slash:
+
+# Possibly set from the user's environment: SIM_DIASCA_BASE_DOCKER_REGISTRY and
+# SIM_DIASCA_ALT_DOCKER_REGISTRY.
+
+# IMAGE_BASE_NAME to be set in each image-specific GNUmakefile.
+
+IMAGE_SUFFIX = "$(DOCKER_IMAGE_BASE_NAME)/$(IMAGE_BASE_NAME)"
+
+
+# SIM_DIASCA_{BASE,ALT}_DOCKER_REGISTRY possibly read from the environment,
+# typically if using various internal registries:
+#
+IMAGE_BASE_TAGLESS = "$(SIM_DIASCA_BASE_DOCKER_REGISTRY)$(IMAGE_SUFFIX)"
+IMAGE_ALT_TAGLESS = "$(SIM_DIASCA_ALT_DOCKER_REGISTRY)$(IMAGE_SUFFIX)"
+
+IMAGE_BASE_REF_NAME = "$(IMAGE_BASE_TAGLESS):$(SIM_DIASCA_VERSION)"
+IMAGE_BASE_LATEST_NAME = "$(IMAGE_BASE_TAGLESS):latest"
+
+IMAGE_ALT_REF_NAME = "$(IMAGE_ALT_TAGLESS):$(SIM_DIASCA_VERSION)"
+IMAGE_ALT_LATEST_NAME = "$(IMAGE_ALT_TAGLESS):latest"
+
+# No tag to specify here:
+IMAGE_BASE_PUSH_TARGET = "$(IMAGE_BASE_TAGLESS)"
+IMAGE_ALT_PUSH_TARGET = "$(IMAGE_ALT_TAGLESS)"
+
+
+
 # As we prefer having a Sim-Diasca specific message, denoting the use of its
 # specific parse transform:
 #
@@ -632,8 +668,12 @@ else
 	# Otherwise a sibling one is searched for:
 	ifneq ($(wildcard $(SIM_DIASCA_TOP)/../traces/.),)
 		TRACES_TOP = $(SIM_DIASCA_TOP)/../traces
-   else
+	else
 		FORCE_EVAL := $(error Unable to find the build root of Ceylan-Traces)
 	endif
 
+endif
+
+ifndef PREDECESSOR_LAYER_TOPS
+	PREDECESSOR_LAYER_TOPS := $(TRACES_TOP)
 endif

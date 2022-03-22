@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2022 Olivier Boudeville
+% Copyright (C) 2017-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -143,6 +143,9 @@
 % Function export section.
 
 
+-export([ get_wx_version/0 ]).
+
+
 % Conversions from MyriadGUI to wx:
 -export([ to_wx_object_type/1,
 		  to_wx_event_type/1, from_wx_event_type/1,
@@ -159,7 +162,7 @@
 
 		  to_wx_device_context_attributes/1,
 
-		  connect/2, connect/3, disconnect/1 ]).
+		  connect/2, connect/3, disconnect/1, disconnect/2 ]).
 
 
 % Conversions from wx to MyriadGUI:
@@ -417,12 +420,25 @@ from_wx_object_type( Other ) ->
 
 
 
+% @doc Returns the build-time version of wx (wxWidgets).
+-spec get_wx_version() -> basic_utils:four_digit_version().
+get_wx_version() ->
+	{ ?wxMAJOR_VERSION, ?wxMINOR_VERSION, ?wxRELEASE_NUMBER,
+	  ?wxSUBRELEASE_NUMBER }.
+
+
+
 
 % Event type section.
 
 
+% For the MyriadGUI/wx conversions, using bijective tables could have been an
+% option.
+
+
 % @doc Converts a MyriadGUI type of event into a wx one.
 -spec to_wx_event_type( event_type() ) -> wx_event_type().
+% Window section:
 to_wx_event_type( onRepaintNeeded ) ->
 	paint;
 
@@ -438,14 +454,94 @@ to_wx_event_type( onWindowClosed ) ->
 to_wx_event_type( onShown ) ->
 	show;
 
+
+% Mouse section:
+to_wx_event_type( onMouseLeftButtonPressed ) ->
+	left_down;
+
+to_wx_event_type( onMouseLeftButtonReleased ) ->
+	left_up;
+
+to_wx_event_type( onMouseLeftButtonDoubleClicked ) ->
+	left_dclick;
+
+
+to_wx_event_type( onMouseMiddleButtonPressed ) ->
+	middle_down;
+
+to_wx_event_type( onMouseMiddleButtonReleased ) ->
+	middle_up;
+
+to_wx_event_type( onMouseMiddleButtonDoubleClicked ) ->
+	middle_dclick;
+
+
+to_wx_event_type( onMouseRightButtonPressed ) ->
+	right_down;
+
+to_wx_event_type( onMouseRightButtonReleased ) ->
+	right_up;
+
+to_wx_event_type( onMouseRightButtonDoubleClicked ) ->
+	right_dclick;
+
+
+to_wx_event_type( onMouseFourthButtonPressed ) ->
+	aux1_down;
+
+to_wx_event_type( onMouseFourthButtonReleased ) ->
+	aux1_up;
+
+to_wx_event_type( onMouseFourthButtonDoubleClicked ) ->
+	aux1_dclick;
+
+
+to_wx_event_type( onMouseFifthButtonPressed ) ->
+	aux2_down;
+
+to_wx_event_type( onMouseFifthButtonReleased ) ->
+	aux2_up;
+
+to_wx_event_type( onMouseFifthButtonDoubleClicked ) ->
+	aux2_dclick;
+
+to_wx_event_type( onMouseWheelScrolled ) ->
+	mousewheel;
+
+
+to_wx_event_type( onMouseEnteredWindow ) ->
+	enter_window;
+
+to_wx_event_type( onMouseLeftWindow ) ->
+	leave_window;
+
+to_wx_event_type( onMouseMoved ) ->
+	motion;
+
+
+% Keyboard section:
+to_wx_event_type( onCharEntered ) ->
+	char;
+
+to_wx_event_type( onCharEnteredHook ) ->
+	char_hook;
+
+to_wx_event_type( onKeyPressed ) ->
+	key_down;
+
+to_wx_event_type( onKeyReleased ) ->
+	key_up;
+
+
 to_wx_event_type( Other ) ->
 	throw( { unsupported_gui_event_type, Other } ).
 
 
 
 
-% @doc onverts a wx type of event into a MyriadGUI one.
+% @doc Converts a wx type of event into a MyriadGUI one.
 -spec from_wx_event_type( wx_event_type() ) -> event_type().
+% Window section:
 from_wx_event_type( paint ) ->
 	onRepaintNeeded;
 
@@ -460,6 +556,85 @@ from_wx_event_type( close_window ) ->
 
 from_wx_event_type( show ) ->
 	onShown;
+
+
+% Mouse section:
+from_wx_event_type( left_down ) ->
+	onMouseLeftButtonPressed;
+
+from_wx_event_type( left_up ) ->
+	onMouseLeftButtonReleased;
+
+from_wx_event_type( left_dclick ) ->
+	onMouseLeftButtonDoubleClicked;
+
+
+from_wx_event_type( middle_down ) ->
+	onMouseMiddleButtonPressed;
+
+from_wx_event_type( middle_up ) ->
+	onMouseMiddleButtonReleased;
+
+from_wx_event_type( middle_dclick ) ->
+	onMouseMiddleButtonDoubleClicked;
+
+
+from_wx_event_type( right_down ) ->
+	onMouseRightButtonPressed;
+
+from_wx_event_type( right_up ) ->
+	onMouseRightButtonReleased;
+
+from_wx_event_type( right_dclick ) ->
+	onMouseRightButtonDoubleClicked;
+
+
+from_wx_event_type( aux1_down ) ->
+	onMouseFourthButtonPressed;
+
+from_wx_event_type( aux1_up ) ->
+	onMouseFourthButtonReleased;
+
+from_wx_event_type( aux1_dclick ) ->
+	onMouseFourthButtonDoubleClicked;
+
+
+from_wx_event_type( aux2_down ) ->
+	onMouseFifthButtonPressed;
+
+from_wx_event_type( aux2_up ) ->
+	onMouseFifthButtonReleased;
+
+from_wx_event_type( aux2_dclick ) ->
+	onMouseFifthButtonDoubleClicked;
+
+
+from_wx_event_type( mousewheel ) ->
+	onMouseWheelScrolled;
+
+from_wx_event_type( enter_window ) ->
+	onMouseEnteredWindow;
+
+from_wx_event_type( leave_window ) ->
+	onMouseLeftWindow;
+
+from_wx_event_type( motion ) ->
+	onMouseMoved;
+
+
+% Keyboard section:
+from_wx_event_type( char ) ->
+	onCharEntered;
+
+from_wx_event_type( char_hook ) ->
+	onCharEnteredHook;
+
+from_wx_event_type( key_down ) ->
+	onKeyPressed;
+
+from_wx_event_type( key_up ) ->
+	onKeyReleased;
+
 
 from_wx_event_type( Other ) ->
 	throw( { unsupported_wx_event_type, Other } ).
@@ -884,6 +1059,14 @@ to_wx_device_context_attributes( _Attrs=[ { depth_buffer_size, S } | T ],
 								 Acc ) ->
 	to_wx_device_context_attributes( T, [ S, ?WX_GL_DEPTH_SIZE | Acc ] );
 
+to_wx_device_context_attributes( _Attrs=[ use_core_profile | T ], Acc ) ->
+
+	% Currently ignored, as leading to a Segmentation fault (and working
+	% without):
+	%
+	%to_wx_device_context_attributes( T, [ ?WX_GL_CORE_PROFILE | Acc ] );
+	to_wx_device_context_attributes( T, Acc );
+
 to_wx_device_context_attributes( _Attrs=[ Other | _T ], _Acc ) ->
 	throw( { unsupported_device_context_attribute, Other } ).
 
@@ -965,7 +1148,7 @@ connect( EventSource, EventTypeOrTypes ) ->
 			   connect_options() ) -> void().
 % Was not used apparently:
 %connect( #canvas_state{ panel=Panel }, EventTypeOrTypes, Options ) ->
-%	connect( Panel, EventTypeOrTypes, Options );
+%   connect( Panel, EventTypeOrTypes, Options );
 
 connect( SourceObject, EventTypes, Options ) when is_list( EventTypes ) ->
 
@@ -980,7 +1163,7 @@ connect( SourceObject, EventType, Options ) ->
 	WxEventType = to_wx_event_type( EventType ),
 
 	cond_utils:if_defined( myriad_debug_gui_events,
-	   trace_utils:debug_fmt( " - connecting event source '~ts' to ~w "
+		trace_utils:debug_fmt( " - connecting event source '~ts' to ~w "
 			"for ~p (i.e. ~p), with options ~p.",
 			[ gui:object_to_string( SourceObject ), self(), EventType,
 			  WxEventType, Options ] ) ),
@@ -989,10 +1172,42 @@ connect( SourceObject, EventType, Options ) ->
 
 
 
-% @doc Unsubscribes the event source, for all event types.
+% @doc Unsubscribes the current process from the specified object, for all event
+% types.
+%
+% The meaning of the returned boolean is not specified, presumably whether the
+% operation went well.
+%
 -spec disconnect( event_source() ) -> boolean().
-disconnect( #canvas_state{ panel=Panel } ) ->
+disconnect( _SourceObject=#canvas_state{ panel=Panel } ) ->
 	disconnect( Panel );
 
-disconnect( EventSource ) ->
-	wxEvtHandler:disconnect( EventSource ).
+disconnect( SourceObject ) ->
+	wxEvtHandler:disconnect( SourceObject ).
+
+
+% @doc Unsubscribes the current process from the specified object, for the
+% specified event type(s).
+%
+% The meaning of the returned boolean is not specified, presumably whether the
+% operation went well.
+%
+-spec disconnect( event_source(), maybe_list( event_type() ) ) -> boolean().
+disconnect( SourceObject, EventTypes ) when is_list( EventTypes ) ->
+	[ disconnect( SourceObject, ET ) || ET <- EventTypes ];
+
+% Single event type now:
+disconnect( #canvas_state{ panel=Panel }, EventType ) ->
+	disconnect( Panel, EventType );
+
+disconnect( SourceObject, EventType ) ->
+
+	WxEventType = to_wx_event_type( EventType ),
+
+	cond_utils:if_defined( myriad_debug_gui_events,
+		trace_utils:debug_fmt( " - disconnecting event source '~ts' from ~w "
+			"for ~p (i.e. ~p).",
+			[ gui:object_to_string( SourceObject ), self(), EventType,
+			  WxEventType ] ) ),
+
+	wxEvtHandler:disconnect( SourceObject, WxEventType ).

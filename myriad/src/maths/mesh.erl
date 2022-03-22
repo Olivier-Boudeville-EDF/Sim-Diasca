@@ -104,7 +104,7 @@
 
 
 % For the right_cuboid, sphere records and al:
--include("bounding_box3.hrl").
+-include("bounding_volume.hrl").
 
 
 % Construction-related section.
@@ -112,10 +112,7 @@
 
 
 % Operations on meshes.
--export([ %get_diameter/1, get_smallest_enclosing_rectangle/1, get_area/1,
-		  %is_in_clockwise_order/1, is_convex/1,
-		  %render/2,
-		  indexed_face_to_triangle/1,
+-export([ indexed_face_to_triangle/1,
 		  indexed_faces_to_triangles/1,
 		  to_string/1, to_compact_string/1 ]).
 
@@ -125,8 +122,8 @@
 %          set_fill_color/2, get_fill_color/1 ]).
 
 
-% Bounding-box related section.
-%-export([ update_bounding_box/2 ]).
+% Bounding volume related section.
+%-export([ update_bounding_volume/2 ]).
 
 
 % Shorthands:
@@ -152,7 +149,7 @@
 
 
 % @doc Returns a new mesh whose vertices, faces, normals (of specified type),
-% rendering information are the specified ones, with no specific bounding-box
+% rendering information are the specified ones, with no specific bounding volume
 % set.
 %
 -spec create_mesh( [ vertex3() ], [ indexed_face() ], normal_type(),
@@ -206,15 +203,15 @@ to_string( #mesh{ vertices=Vertices,
 				  normal_type=NormalType,
 				  normals=Normals,
 				  rendering_info=RenderingInfo,
-				  bounding_box=MaybeBoundingBox } ) ->
+				  bounding_volume=MaybeBoundingVolume } ) ->
 
-	BBStr = case MaybeBoundingBox of
+	BVStr = case MaybeBoundingVolume of
 
 		undefined ->
 			"none available";
 
-		BB ->
-			bounding_box3:to_string( BB )
+		BV ->
+			bounding_volume:to_string( BV )
 
 	end,
 
@@ -223,10 +220,10 @@ to_string( #mesh{ vertices=Vertices,
 	  " - ~B faces: ~w~n"
 	  " - ~B ~ts normals: ~w~n"
 	  " - ~ts"
-	  " - bounding-box: ~ts~n",
+	  " - bounding volume: ~ts~n",
 	  [ length( Vertices ), Vertices, length( Faces ), Faces,
 		length( Normals ), normal_type_to_string( NormalType ), Normals,
-		rendering_info_to_string( RenderingInfo ), BBStr ] ).
+		rendering_info_to_string( RenderingInfo ), BVStr ] ).
 
 
 
@@ -237,15 +234,15 @@ to_compact_string( #mesh{ vertices=Vertices,
 						  normal_type=NormalType,
 						  normals=Normals,
 						  rendering_info=RenderingInfo,
-						  bounding_box=MaybeBoundingBox } ) ->
+						  bounding_volume=MaybeBoundingVolume } ) ->
 
-	BBStr = case MaybeBoundingBox of
+	BVStr = case MaybeBoundingVolume of
 
 		undefined ->
 			"none available";
 
-		BB ->
-			bounding_box3:to_string( BB )
+		BV ->
+			bounding_volume:to_string( BV )
 
 	end,
 
@@ -253,7 +250,7 @@ to_compact_string( #mesh{ vertices=Vertices,
 		"~B ~ts normals, with ~ts and ~ts~n",
 	  [ length( Vertices ), length( Faces ), length( Normals ),
 		normal_type_to_string( NormalType ),
-		rendering_info_to_compact_string( RenderingInfo ), BBStr ] ).
+		rendering_info_to_compact_string( RenderingInfo ), BVStr ] ).
 
 
 
@@ -312,23 +309,23 @@ normal_type_to_string( per_face ) ->
 
 
 
-% Bounding-box related section.
+% Bounding-volume related section.
 
 
-% at-doc Updates, for the specified mesh, its internal bounding-box, with
-% regard to the specified bounding-box algorithm.
+% at-doc Updates, for the specified mesh, its internal bounding volume, with
+% regard to the specified bounding-volume algorithm.
 %
 % Returns a mesh with updated information.
 %
 % at-end
 %
-% The lazy circle bounding box is fast to determine, but not optimal:
-%-spec update_bounding_box( bounding_algorithm(), mesh() ) -> mesh().
-%update_bounding_box( lazy_circle, Mesh ) ->
+% The lazy bounding sphere is fast to determine, but not optimal:
+%-spec update_bounding_volume( bounding_algorithm(), mesh() ) -> mesh().
+%update_bounding_volume( lazy_sphere, Mesh ) ->
 
-%	CircleBBox = bounding_box2:get_lazy_circle_box( Mesh#mesh.vertices ),
+%	SphereBVolume = bounding_volume:get_lazy_sphere( Mesh#mesh.vertices ),
 
-%	Mesh#mesh{ bounding_box=CircleBBox }.
+%	Mesh#mesh{ bounding_volume=SphereBVolume }.
 
 
 

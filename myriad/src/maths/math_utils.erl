@@ -30,13 +30,15 @@
 %
 % See `math_utils_test.erl' for the corresponding test.
 %
+% See `random_utils' for random-related operations.
+%
 -module(math_utils).
 
 
 % General operations:
 -export([ floor/1, ceiling/1, round_after/2,
 		  float_to_integer/1, float_to_integer/2,
-		  modulo/2, clamp/3, squarify/1,
+		  modulo/2, clamp/2, clamp/3, squarify/1,
 		  get_next_power_of_two/1 ]).
 
 -compile({ inline, [ floor/1, ceiling/1, round_after/2,
@@ -60,6 +62,10 @@
 -compile({ inline, [ radian_to_degree/1, canonify/1 ] }).
 
 
+% Operations related to functions:
+-export([ sample/4, sample_as_pairs/4, normalise/2 ]).
+
+
 % For epsilon define:
 -include("math_utils.hrl").
 
@@ -70,7 +76,17 @@
 -type non_zero_integer() :: pos_integer() | neg_integer().
 
 
--type factor() :: unit_utils:dimensionless().
+-type infinite_number() :: '-infinity' | number() | 'infinity'.
+% An (unbounded) number that may be considered as equal to a (positive or
+% negative) infinite value.
+
+
+-type infinite_range() ::
+		{ Min :: infinite_number(), Max :: infinite_number() }.
+% A possibly infinite range.
+
+
+-type factor() :: dimensionless().
 % A floating-point factor, typically in [0.0,1.0], that is a multiplier involved
 % in an equation.
 
@@ -101,7 +117,7 @@
 % Variance, the square of a standard deviation.
 
 
--type ratio() :: unit_utils:dimensionless().
+-type ratio() :: dimensionless().
 % A ration between two values.
 
 
@@ -116,7 +132,17 @@
 
 
 -type probability() :: float().
-% For probabilities.
+% For probabilities, typically ranging in [0.0,1.0].
+
+
+-type probability_like() :: number().
+% A non-negative number (an integer or floating-point) that can be translated to
+% a normalized probability by scaling it.
+%
+% Ex: if considering two exclusive events whose
+% respective likeliness is quantified as 20 and 30, then these probability-like
+% elements can be translated to actual (normalized) probabilities of
+% 20/(20+30)=0.4 and 0.6.
 
 
 -type conversion_type() :: 'exact' | 'absolute' | { 'absolute', float() }
@@ -126,12 +152,25 @@
 % user-defined one.
 
 
+
+
 -export_type([ factor/0, integer_factor/0, any_factor/0,
 			   positive_factor/0, non_negative_factor/0,
-			   non_zero_integer/0, standard_deviation/0, variance/0,
-			   ratio/0, percent/0, integer_percent/0, probability/0 ]).
+			   non_zero_integer/0,
+			   infinite_number/0, infinite_range/0,
+			   standard_deviation/0, variance/0,
+			   ratio/0, percent/0, integer_percent/0,
+			   probability/0, probability_like/0 ]).
 
 
+% Shorthands:
+
+-type positive_index() :: basic_utils:positive_index().
+
+-type dimensionless() :: unit_utils:dimensionless().
+-type degrees() :: unit_utils:degrees().
+-type int_degrees() :: unit_utils:int_degrees().
+-type radians() :: unit_utils:radians().
 
 
 % General section.
@@ -319,6 +358,31 @@ clamp( _Min, _Max, Value ) ->
 
 
 
+% @doc Clamps the specified possibly-infinite number within the specified
+% possibly-infinite range.
+%
+-spec clamp( infinite_number(), infinite_range() ) -> infinite_number().
+clamp( Number, _R={ '-infinity', 'infinity' } ) ->
+	Number;
+
+clamp( Number, _R={ Min, 'infinity' } ) when Number < Min ->
+	Min;
+
+clamp( Number, _R={ '-infinity', Max } ) when Number > Max ->
+	Max;
+
+% Check as well:
+clamp( Number, _R={ Min, Max } ) when  Min < Max, Number < Min ->
+	Min;
+
+clamp( Number, _R={ Min, Max } ) when  Min < Max, Number > Max ->
+	Max;
+
+clamp( Number, _R={ Min, Max } ) when  Min < Max ->
+	Number.
+
+
+
 % @doc Returns the square, augmented of a little margin, of the specified
 % element.
 %
@@ -353,6 +417,9 @@ get_next_power_of_two( I, Candidate ) ->
 
 % @doc Returns true iff the two specified floating-point numbers are deemed
 % close enough to be equal, based on default epsilon threshold.
+%
+% Note that such absolute tolerance comparison fails when X and Y become large,
+% so generally are_relatively_close/2 shall be preferred.
 %
 -spec are_close( number(), number() ) -> boolean().
 are_close( X, Y ) ->
@@ -398,7 +465,7 @@ are_equal( X, Y, Epsilon ) ->
 %
 -spec are_relatively_close( number(), number() ) -> boolean().
 are_relatively_close( X, Y ) ->
-	are_relatively_close(  X, Y, ?epsilon ).
+	are_relatively_close( X, Y, ?epsilon ).
 
 
 
@@ -410,12 +477,25 @@ are_relatively_close( X, Y ) ->
 % ie the maximum tolerance.
 %
 % Ex: to know whether X and Y are equal with a 5% tolerance, use:
-% math_utils:are_relatively_close( X, Y, _Tolerance=0.05 ).
+% math_utils:are_relatively_close(X, Y, _Tolerance=0.05).
 %
 -spec are_relatively_close( number(), number(), number() ) -> boolean().
 are_relatively_close( X, Y, Epsilon ) ->
 
-	% We will divide by X+Y ... provided this is not null:
+	% are_close/2 is not satisfactory when X and Y are small:
+
+	% As for: 'abs( X - Y ) < ?epsilon * max( abs(X), abs(Y) )' it would fail
+	% when X and Y are small.
+
+	% Another approach than the one currently used below is to perform a
+	% comparison with a relative tolerance for large values, and an absolute
+	% tolerance for small values, as described by Christer Ericson in
+	% http://realtimecollisiondetection.net/blog/?p=89 and in his book
+	% "Real-Time Collision Detection", yielding to:
+	%
+	% abs( X - Y ) =< ?epsilon * max( 1.0, max( abs(X), abs(Y) ) ).
+
+	% Here, we will divide by X+Y ... provided this is not null:
 	case X+Y of
 
 		0.0 ->
@@ -500,7 +580,7 @@ is_null( X ) ->
 % @doc Converts specified angle in radian into the same angle expressed in
 % degrees.
 %
--spec radian_to_degree( unit_utils:radians() ) -> unit_utils:degrees().
+-spec radian_to_degree( radians() ) -> degrees().
 radian_to_degree( AngleInRadians ) ->
 	AngleInRadians * 180 / math:pi().
 
@@ -508,10 +588,83 @@ radian_to_degree( AngleInRadians ) ->
 % @doc Canonifies specified angle in degrees, ie ensures the returned value that
 % corresponds to the specified angle is in the [0;360[ interval.
 %
--spec canonify( number() ) -> unit_utils:int_degrees().
+-spec canonify( number() ) -> int_degrees().
 canonify( AngleInDegrees ) when is_integer( AngleInDegrees ) ->
 	modulo( AngleInDegrees, 360 );
 
 % Here we assume it is a floating-point value, positive or not.
 canonify( AngleInDegrees ) ->
 	AngleInDegrees - 360 * math:floor( AngleInDegrees / 360 ).
+
+
+
+% @doc Samples the specified function taking a single numerical argument, by
+% evaluating it on every point in turn from Start until up to Stop, with
+% specified increment: returns the ordered list of the corresponding values that
+% it took.
+%
+-spec sample( fun( ( number() ) -> T ), number(), number(), number() ) -> [ T ].
+sample( Fun, Start, Stop, Increment ) ->
+	sample( Fun, _Current=Start, Stop, Increment, _Acc=[] ).
+
+
+% (helper)
+sample( _Fun, Current, Stop, _Increment, Acc ) when Current > Stop ->
+	lists:reverse( Acc );
+
+sample( Fun, Current, Stop, Increment, Acc ) ->
+	NewValue = Fun( Current ),
+	sample( Fun, Current+Increment, Stop, Increment, [ NewValue | Acc ] ).
+
+
+
+% @doc Samples the specified function taking a single numerical argument, by
+% evaluating it on every point in turn from Start until up to Stop, with
+% specified increment: returns the ordered list of the corresponding {X,f(X)}
+% pairs that it took.
+%
+-spec sample_as_pairs( fun( ( number() ) -> T ), number(), number(),
+					   number() ) -> [ { number(), T } ].
+sample_as_pairs( Fun, Start, Stop, Increment ) ->
+	sample_as_pairs( Fun, _Current=Start, Stop, Increment, _Acc=[] ).
+
+
+% (helper)
+sample_as_pairs( _Fun, Current, Stop, _Increment, Acc ) when Current > Stop ->
+	lists:reverse( Acc );
+
+sample_as_pairs( Fun, Current, Stop, Increment, Acc ) ->
+	NewValue = Fun( Current ),
+	sample_as_pairs( Fun, Current+Increment, Stop, Increment,
+					 [ { Current, NewValue }| Acc ] ).
+
+
+
+% @doc Normalises, in the specified list of tuples, the elements at the
+% specified index (expected to be floats), so that their sum is equal to 1.0.
+%
+% Ex: normalise([{a,3}, {"hello",5}, {1,2}], _Index=2)
+%                 = [{a,0.3}, {"hello",0.5}, {1,0.2}]
+%
+-spec normalise( [ tuple() ], positive_index() ) -> [ tuple() ].
+normalise( _DataTuples=[], _Index ) ->
+	throw( no_data_tuple );
+
+normalise( DataTuples, Index ) ->
+	Sum = get_sum( DataTuples, Index, _Sum=0 ),
+	[ scale( Tuple, Index, Sum ) || Tuple <- DataTuples ].
+
+
+% (helper)
+get_sum( _DataTuples=[], _Index, Sum ) ->
+	Sum;
+
+get_sum( _DataTuples=[ Tuple | T ], Index, Sum ) ->
+	Elem = element( Index, Tuple ),
+	get_sum( T, Index, Sum + Elem ).
+
+
+% (helper)
+scale( Tuple, Index, Sum ) ->
+	NewElem = element( Index, Tuple ) / Sum,
+	setelement( Index, Tuple, NewElem ).

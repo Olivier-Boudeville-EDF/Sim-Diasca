@@ -42,10 +42,10 @@
 % Implementation notes:
 %
 % It does not seem possible with sh to properly pass arguments that contain at
-% least a space (ex: my-script.sh "has a space"), regardless the use of $@ and
-% IFS; for bash, refer to
+% least a space (ex: my-script.sh "has a space"), regardless of the use of $@
+% and IFS; for bash, refer to
 % https://unix.stackexchange.com/questions/472589/pass-to-command-preserving-quotes
-% for more information; this is not a limitation induced by Erlang or thus
+% for more information; this is not a limitation induced by Erlang or this
 % module.
 
 
@@ -58,7 +58,7 @@
 
 -type actual_command_line_option() :: atom().
 % The name of a command-line option; ex: '-color', for an actual option that is
-% "--color". This is named a "flag", for the init standard module.
+% "--color". For the init standard module, this is named a "flag".
 
 
 % To designate command-line arguments that are specified directly as such, not
@@ -68,6 +68,8 @@
 % command-line, otherwise they would be included in the list associated to the
 % last processed option (unless, in the context of a unique argument table, that
 % an option-spec allows to gather them separately).
+%
+% This is therefore a reserved option name.
 %
 -define( no_option_key, '(none)' ).
 
@@ -87,8 +89,8 @@
 
 
 -type command_line_argument() ::
-		% Yes, a *list* of command-line valueS:
-		{ command_line_option(), [ command_line_values() ] }.
+	% Yes, a *list* of command-line valueS:
+	{ command_line_option(), [ command_line_values() ] }.
 % The association between a command-line option and the various values
 % associated to its various occurrences, in a (non-unique) argument table.
 %
@@ -125,7 +127,7 @@
 %    '-bar' -> [ [ "a", "b" ], [ "c" ] ]
 %    '-width -> [ [ "15" ] ]
 %     ?no_option_key -> [ "some_value" ]
-%
+
 
 
 -type unique_argument_table() ::
@@ -223,8 +225,8 @@ protect_from_shell( ArgString ) when is_list( ArgString ) ->
 protect_from_shell( ArgBinString ) when is_binary( ArgBinString ) ->
 
 	% text_utils:binary_to_string/1 may fail:
-	%text_utils:string_to_binary( protect_from_shell(
-	%			   text_utils:binary_to_string( ArgBinString ) ) ).
+	%text_utils:string_to_binary(
+	%   protect_from_shell( text_utils:binary_to_string( ArgBinString ) ) ).
 
 	ArgBinString.
 
@@ -328,7 +330,7 @@ get_arguments_from_strings( Args, OptionTable ) ->
 
 	% Used to be dropped:
 	%trace_utils:warning_fmt( "Dropping non-option initial argument '~ts'.",
-	%						 [ Dropped ] ),
+	%                         [ Dropped ] ),
 
 	%code_utils:display_stacktrace(),
 	%throw( { dropped, Dropped } ),
@@ -343,7 +345,7 @@ get_arguments_from_strings( Args, OptionTable ) ->
 % (no_option_key being already an atom)
 %
 manage_option( OptionAtom, RemainingArgs, OptionTable )
-  when is_atom( OptionAtom ) ->
+								when is_atom( OptionAtom ) ->
 
 	{ OptValues, NextOptionInfo } =
 		collect_values_for_option( RemainingArgs, _AccValues=[] ),
@@ -354,11 +356,12 @@ manage_option( OptionAtom, RemainingArgs, OptionTable )
 	% thus in-order, rather than at the head)
 	%
 	Key = OptionAtom,
+
 	NewOptionTable = case lists:keytake( Key, _N=1, OptionTable ) of
 
 		{ value, { _Key, ListValue }, ShrunkTable } ->
 			[ { Key, list_utils:append_at_end( OptValues, ListValue ) }
-			  | ShrunkTable ];
+				| ShrunkTable ];
 
 		false ->
 			[ { Key, [ OptValues ] } | OptionTable ]
@@ -445,7 +448,7 @@ get_optionless_command_arguments() ->
 
 	% Not wanting here a list of lists of strings:
 	[ Args ] = ?arg_table:get_value_with_defaults( _K=?no_option_key,
-			_DefaultValue=[ [] ], ArgumentTable ),
+						_DefaultValue=[ [] ], ArgumentTable ),
 
 	Args.
 
@@ -463,7 +466,7 @@ get_optionless_command_arguments() ->
 % the table, yet that no parameter has been specified for it.
 %
 -spec extract_command_arguments_for_option( command_line_option() ) ->
-		  { maybe( [ command_line_values() ] ), argument_table() }.
+			{ maybe( [ command_line_values() ] ), argument_table() }.
 extract_command_arguments_for_option( Option ) ->
 
 	ArgumentTable = get_argument_table(),
@@ -472,7 +475,7 @@ extract_command_arguments_for_option( Option ) ->
 
 
 
-% @doc Extracts, for specified command-line option (if any was specified;
+% @doc Extracts, for the specified command-line option (if any was specified;
 % otherwise returns 'undefined') its various in-order lists of associated
 % values, from the specified argument table.
 %
@@ -500,7 +503,7 @@ extract_command_arguments_for_option( Option, ArgumentTable ) ->
 % argument table.
 %
 -spec extract_optionless_command_arguments() ->
-		  { maybe( [ command_line_values() ] ), argument_table() }.
+			{ maybe( [ command_line_values() ] ), argument_table() }.
 extract_optionless_command_arguments() ->
 
 	ArgumentTable = get_argument_table(),
@@ -509,7 +512,7 @@ extract_optionless_command_arguments() ->
 
 
 
-% @doc Extracts, for specified command-line option (if any was specified;
+% @doc Extracts, for the specified command-line option (if any was specified;
 % otherwise returns 'undefined') its various in-order lists of associated
 % values, from the specified argument table.
 %
@@ -625,7 +628,7 @@ sort_arguments( OptionlessSpec, _OptionSpecs=[], UniqArgTable, AccTable ) ->
 												UniqArgTable ),
 
 	%trace_utils:debug_fmt( "OptionLessValues = ~p, ShrunkArgTable = ~p.",
-	%					   [ OptionLessValues, ShrunkArgTable ] ),
+	%                       [ OptionLessValues, ShrunkArgTable ] ),
 
 	% Checking option-less count:
 	case OptionlessSpec of
@@ -736,7 +739,8 @@ sort_arguments( OptionlessSpec,
 								[ Opt, MinCount, VCount, ValueList ] ),
 
 							throw( { not_enough_values_for_option, Opt,
-							  { min, MinCount }, { got, VCount, ValueList } } )
+								{ min, MinCount },
+								{ got, VCount, ValueList } } )
 
 					end;
 
@@ -748,12 +752,12 @@ sort_arguments( OptionlessSpec,
 					% ones) are actually unrelated, option-less ones:
 
 					%trace_utils:error_fmt( "For command-line option '-~ts', "
-					%	"at most ~B values were expected, whereas ~B "
-					%	"(i.e. ~p) were specified.",
-					%	[ Opt, MaxCount, VCount, ValueList ] ),
+					%   "at most ~B values were expected, whereas ~B "
+					%   "(i.e. ~p) were specified.",
+					%   [ Opt, MaxCount, VCount, ValueList ] ),
 					%throw( { too_many_values_for_option, Opt,
-					%			{ max, MaxCount },
-					%			{ got, VCount, ValueList } } )
+					%           { max, MaxCount },
+					%           { got, VCount, ValueList } } )
 					{ RevOptValues, OptionlessValues } =
 						list_utils:split_at( MaxCount, ValueList ),
 
@@ -762,7 +766,7 @@ sort_arguments( OptionlessSpec,
 					% No need to extract, will just be overwritten:
 					NewOptionlessArgs = ?arg_table:get_value_with_defaults(
 						_K=?no_option_key, _Default=[], AccTable )
-									  ++ OptionlessValues,
+											++ OptionlessValues,
 
 					?arg_table:add_entries( [ { Opt, NewValueList },
 						{ ?no_option_key, NewOptionlessArgs } ], AccTable )
@@ -814,8 +818,8 @@ sort_arguments( OptionlessSpec, _OptionSpecs=[ { Opt, ExactCount } | T ],
 					%   "(i.e. ~p) were specified.",
 					%   [ Opt, ExactCount, OtherCount, ValueList ] ),
 					%throw( { mismatching_value_count_for_option, Opt,
-					%		 { expected, ExactCount },
-					%		 { got, OtherCount, ValueList } } )
+					%        { expected, ExactCount },
+					%        { got, OtherCount, ValueList } } )
 
 					% Too many arguments, considering the extra ones as
 					% option-less ones:
@@ -828,7 +832,7 @@ sort_arguments( OptionlessSpec, _OptionSpecs=[ { Opt, ExactCount } | T ],
 					% No need to extract, will just be overwritten:
 					NewOptionlessArgs = ?arg_table:get_value_with_defaults(
 						_Key=?no_option_key, _Default=[], AccTable )
-									  ++ OptionlessValues,
+											++ OptionlessValues,
 
 					?arg_table:add_entries( [ { Opt, NewValueList },
 						{ ?no_option_key, NewOptionlessArgs } ], AccTable ) ;
@@ -859,7 +863,7 @@ sort_arguments( OptionlessSpec, _OptionSpecs=[ { Opt, ExactCount } | T ],
 						"exactly ~B values were expected, whereas none was "
 						"specified.", [ Opt, ExactCount ] ),
 					throw( { no_value_for_option, Opt,
-							 { expected, ExactCount } } )
+								{ expected, ExactCount } } )
 
 			end
 
@@ -886,11 +890,11 @@ argument_table_to_string( ArgTable ) ->
 
 		ArgPairs ->
 			ArgStrings = [ option_pair_to_string( Option, ArgumentLists )
-						   || { Option, ArgumentLists } <- ArgPairs ],
+							|| { Option, ArgumentLists } <- ArgPairs ],
 
 			text_utils:format( "~B command-line element(s) specified "
 				"(ordered alphabetically): ~ts", [ length( ArgPairs ),
-						 text_utils:strings_to_sorted_string( ArgStrings ) ] )
+						text_utils:strings_to_sorted_string( ArgStrings ) ] )
 
 	end.
 

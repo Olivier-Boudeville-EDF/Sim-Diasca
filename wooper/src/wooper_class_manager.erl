@@ -26,7 +26,6 @@
 % Creation date: Friday, July 12, 2007.
 
 
-
 % @doc Module corresponding to the WOOPER <b>class manager singleton</b>.
 %
 % The purpose of this process is, on a per-node basis, to create and notably to
@@ -176,7 +175,7 @@
 
 -spec display_msg( ustring() ) -> void().
 -spec display_msg( text_utils:format_string(), text_utils:format_values() ) ->
-						 void().
+						void().
 
 
 -ifdef(wooper_debug_class_manager).
@@ -422,6 +421,8 @@ display() ->
 % @doc Stops (the OTP-way) the class manager.
 -spec stop() -> void().
 stop() ->
+	trace_utils:debug_fmt( "Stopping (OTP) the WOOPER class manager ~p.",
+						   [ self() ] ),
 	gen_server:cast( ?wooper_class_manager_name, stop ).
 
 
@@ -663,7 +664,7 @@ get_initial_state() ->
 %
 -spec stop_common() -> void().
 stop_common() ->
-	display_msg( "Stopping WOOPER class manager." ).
+	display_msg( "Stopping the WOOPER class manager." ).
 
 
 
@@ -736,13 +737,13 @@ get_virtual_table_key_for( Module, Tables ) ->
 			ModuleTable = create_method_table_for( Module ),
 
 			%trace_utils:debug_fmt( "Persistent registry before addition "
-			%	"of ~ts: ~p", [ Module, persistent_term:info() ] ),
+			%   "of ~ts: ~p", [ Module, persistent_term:info() ] ),
 
 			% Apparently sufficient to handle from now on a reference:
 			persistent_term:put( ModuleKey, ModuleTable ),
 
 			%trace_utils:debug_fmt( "Persistent registry after addition "
-			%	"of ~ts: ~p", [ Module, persistent_term:info() ] ),
+			%   "of ~ts: ~p", [ Module, persistent_term:info() ] ),
 
 			% Not using ModuleTable anymore, switching to following reference
 			% instead:
@@ -753,9 +754,9 @@ get_virtual_table_key_for( Module, Tables ) ->
 			%TableSize = system_utils:get_size( ModuleTableRef ),
 
 			%trace_utils:debug_fmt( "For class '~ts', returning a table whose "
-			%	"size is ~ts (~B bytes): ~ts",
-			%	[ Module, system_utils:interpret_byte_size( TableSize ),
-			%	  TableSize, table:to_string( ModuleTableRef ) ] ),
+			%   "size is ~ts (~B bytes): ~ts",
+			%   [ Module, system_utils:interpret_byte_size( TableSize ),
+			%     TableSize, table:to_string( ModuleTableRef ) ] ),
 
 			%trace_utils:debug_fmt( "Virtual table for ~ts: ~ts",
 			%     [ Module, ?wooper_table_type:to_string( ModuleTableRef ) ] ),
@@ -922,17 +923,17 @@ create_local_method_table_for( Module ) ->
 
 	% Typically if Module is misspelled:
 	Exports = try
-				  Module:module_info( exports )
+				Module:module_info( exports )
 			  catch
 
-				  error:undef ->
-					  trace_utils:error_fmt( "Unable to find a module "
+				error:undef ->
+					trace_utils:error_fmt( "Unable to find a module "
 						"corresponding to '~ts', knowing that ~ts~n"
 						"Hint: check the BEAM_DIRS make variable and any "
 						"application-level setting that specifies code that "
 						"shall be deployed.",
 						[ Module, code_utils:get_code_path_as_string() ] ),
-					  throw( { class_not_found, Module } )
+					throw( { class_not_found, Module } )
 
 			  end,
 
@@ -966,7 +967,7 @@ create_local_method_table_for( Module ) ->
 % Returns pong if it could be successfully ping'ed, otherwise returns pang.
 %
 -spec ping( naming_utils:registration_name() | wooper:instance_pid() ) ->
-					'pong' | 'pang'.
+												 'pong' | 'pang'.
 ping( Target ) when is_pid( Target ) ->
 
 	Target ! { ping, self() },

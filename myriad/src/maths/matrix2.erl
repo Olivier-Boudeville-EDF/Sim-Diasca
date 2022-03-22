@@ -85,7 +85,7 @@
 		  get_element/3, set_element/4,
 		  transpose/1,
 		  scale/2,
-		  add/2, sub/2, mult/2, apply/2,
+		  add/2, sub/2, mult/2, mult/1, apply/2,
 		  are_equal/2,
 		  determinant/1, comatrix/1, inverse/1,
 		  to_canonical/1,
@@ -221,7 +221,7 @@ from_coordinates( M11, M12,
 %
 -spec from_arbitrary( matrix() ) -> matrix2().
 from_arbitrary( Matrix ) ->
-	apply( fun from_rows/?dim, Matrix ).
+	erlang:apply( fun from_rows/?dim, Matrix ).
 
 
 % @doc Returns the arbitrary-dimensioned matrix corresponding to the specified
@@ -399,6 +399,19 @@ mult( _Ma=#matrix2{ m11=A11, m12=A12,
 
 	#matrix2{ m11=C11, m12=C12,
 			  m21=C21, m22=C22 }.
+
+
+
+% @doc Multiplies (in-order) the specified matrices.
+%
+% Ex: mult([Ma, Mb, Mc]) = mult(mult(Ma,Mb),Mc) = Ma.Mb.Mc
+%
+-spec mult( [ matrix2() ] ) -> matrix2().
+mult( [ Ma, Mb | T ] ) ->
+	mult( [ mult( Ma, Mb ) | T ] );
+
+mult( [ M ] ) ->
+	M.
 
 
 

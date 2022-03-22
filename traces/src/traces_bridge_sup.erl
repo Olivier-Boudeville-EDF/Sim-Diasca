@@ -148,14 +148,19 @@ init( { TraceSupervisorWanted, AggRegScope } ) ->
 % @doc Callback to terminate this supervisor bridge.
 -spec terminate( Reason :: 'shutdown' | term(), State :: term() ) -> void().
 terminate( Reason, _BridgeState=TraceAggregatorPid )
-  when is_pid( TraceAggregatorPid ) ->
+								when is_pid( TraceAggregatorPid ) ->
 
 	trace_utils:info_fmt( "Terminating the Traces supervisor bridge "
 		"(reason: ~w, trace aggregator: ~w).", [ Reason, TraceAggregatorPid ] ),
 
-	% Works whether or not a trace supervisor is used:
-	traces_for_apps:app_stop( _ModuleName=?otp_application_module_name,
-		TraceAggregatorPid, _WaitForTraceSupervisor=false );
+	% Synchronicity needed, otherwise a potential race condition exists, leading
+	% this process to be killed by its OTP supervisor instead of being normally
+	% stopped:
+	%
+	wooper:delete_synchronously_instance( TraceAggregatorPid ),
+
+	trace_utils:debug_fmt( "Trace aggregator ~w terminated.",
+						   [ TraceAggregatorPid ] );
 
 terminate( Reason, State ) ->
 	trace_utils:info_fmt( "Terminating the Traces supervisor bridge "

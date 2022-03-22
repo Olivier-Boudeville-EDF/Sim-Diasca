@@ -85,6 +85,10 @@
 % Distance between two points (ex: to express lengths).
 
 
+-type signed_distance() :: float().
+% Signed distance (positive or negative).
+
+
 
 % Mostly for clarity:
 
@@ -170,7 +174,10 @@
 -export_type([ dimension/0,
 			   coordinate/0, integer_coordinate/0, any_coordinate/0,
 			   user_coordinate/0,
+
 			   distance/0, integer_distance/0, any_distance/0,
+			   signed_distance/0,
+
 			   radius/0, integer_radius/0, any_radius/0,
 			   square_distance/0, integer_square_distance/0,
 			   any_square_distance/0,

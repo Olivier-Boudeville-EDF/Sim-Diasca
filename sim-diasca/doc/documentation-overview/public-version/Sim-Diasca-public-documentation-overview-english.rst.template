@@ -84,6 +84,8 @@ The following public documentation for **Sim-Diasca** version PROJECT_VERSION_TA
 
 Seasoned Sim-Diasca users may just bookmark the `Sim-Diasca Cheat Sheet <technical-manual/Sim-Diasca-technical-manual-english.html#sim-diasca-cheat-sheet>`_.
 
+As an example, this `IFL2021 article <ACME-application-IFL2021-article.pdf>`_ discusses an application case (the ACME simulator) and, starting from its section 5, offers a walk-through of the full corresponding software stack. See also this `overview of the metaprogramming <metaprogramming-with-sim-diasca.png>`_ taking place with Sim-Diasca.
+
 .. We are already in this: its `documentation counterpart <https://olivier-boudeville-edf.github.io/Sim-Diasca/>`_
 
 One may also be interested in the interface of the `public main project <https://github.com/Olivier-Boudeville-EDF/Sim-Diasca>`_ and in its `wiki <https://github.com/Olivier-Boudeville-EDF/Sim-Diasca/wiki>`_.

@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2022 Olivier Boudeville
+% Copyright (C) 2018-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -98,6 +98,7 @@
 
 % Describes the interactivity mode of a user interface:
 -type interactivity_mode() :: 'batch' | 'interactive'.
+
 
 -export_type([ interactivity_mode/0 ]).
 
@@ -954,6 +955,6 @@ settings_to_string( SettingTable ) ->
 										[ K, V ] ) || { K, V } <- SetPairs ],
 
 			text_utils:format( "with ~B settings recorded: ~ts",
-					[ Count, text_utils:strings_to_string( SetStrings ) ] )
+				[ Count, text_utils:strings_to_string( SetStrings ) ] )
 
 	end.

@@ -80,21 +80,23 @@
 
 
 -type date() :: { year(), canonical_month(), canonical_day() }.
-% Canonical calendar date; used instead of the less precise calendar:date/0
+% A canonical calendar date; used instead of the less precise calendar:date/0
 % type. See also: user_date/0.
+
+-type birth_date() :: date().
+% A canonical date of birth.
 
 
 -type user_date() :: { canonical_day(), canonical_month(), year() }.
-% Date in a format that is considered common to most users.
-% See also: date/0.
+% A date in a format that is considered common to most users. See also: date/0.
 
 
 -type date_in_year() :: { canonical_month(), canonical_day() }.
-% Calendar date within a year.
+% A calendar date within an (implicit) year.
 
 
 -type time() :: { canonical_hour(), canonical_minute(), canonical_second() }.
-% Time in the day; used to be {hour(), minute(), second()} or calendar:time().
+% A time in the day; used to be {hour(), minute(), second()} or calendar:time().
 
 
 -type ms_since_year_0() :: milliseconds().
@@ -122,9 +124,14 @@
 % specified).
 
 
--export_type([ day_index/0, week_day/0, date/0, user_date/0, date_in_year/0,
+-type day_duration() :: days().
+% A duration expressed as a number of full days (ex: one way to express an age).
+
+
+-export_type([ day_index/0, week_day/0, date/0, birth_date/0, user_date/0,
+			   date_in_year/0,
 			   time/0, ms_since_year_0/0, ms_since_epoch/0, ms_monotonic/0,
-			   ms_duration/0, ms_period/0, dhms_duration/0 ]).
+			   ms_duration/0, ms_period/0, dhms_duration/0, day_duration/0 ]).
 
 
 % Basics:
@@ -873,7 +880,7 @@ get_intertime_duration( { H1, M1, S1 }, { H2, M2, S2 } ) ->
 %
 -spec frequency_to_period( any_hertz() ) -> ms_period().
 frequency_to_period( Freq ) ->
-	math_utils:ceiling( 1 / Freq ).
+	math_utils:ceiling( _Ms=1000 / Freq ).
 
 
 
@@ -888,15 +895,17 @@ frequency_to_period( Freq ) ->
 wait_period_ending( StartTime, Period ) ->
 
 	Now = get_monotonic_time(),
-	case _ToWait=StartTime + Period - Now of
+
+	case _StillToWait=StartTime + Period - Now of
 
 		Duration when Duration > 0 ->
 			timer:sleep( Duration ),
 			true;
 
 		_ ->
-			trace_utils:warning( "Unable to wait for the end of the "
-								 "specified period." ),
+			% Too verbose for little benefit:
+			%trace_utils:warning( "Unable to wait for the end of the "
+			%                     "specified period." ),
 			false
 
 	end.

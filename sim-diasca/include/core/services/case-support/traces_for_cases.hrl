@@ -23,7 +23,7 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
-% Creation date: July 1, 2007.
+% Creation date: July 1, 2012.
 
 
 % Defines some macros and functions useful for trace-using cases.
@@ -123,7 +123,9 @@
 	% However no trace supervisor is triggered here.
 	%
 	% (not binding even a mute variable, would have been:
-	% _InitTraceSupervisor=false)
+	% _InitTraceSupervisor=false; )
+	%
+	% The case_stop macro shall be consistent with it.
 	%
 	TraceAggregatorPid = traces_for_cases:case_start( ?MODULE, false )
 ).
@@ -136,8 +138,10 @@
 	%
 	% However no trace supervisor is triggered here.
 	%
-	% false is for InitTraceSupervisor (not even binding a mute variable
-	% for that); test_stop/2 to be consistent with it.
+	% (not binding even a mute variable, would have been:
+	% _InitTraceSupervisor=false; )
+	%
+	% The case_stop macro shall be consistent with it.
 	%
 	TraceAggregatorPid = traces_for_cases:case_start( ?MODULE, false,
 													  TraceType )

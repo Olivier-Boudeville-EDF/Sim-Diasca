@@ -1,0 +1,19 @@
+
+Welcome to this Sim-Diasca IMAGE_DESCRIPTION_TAG Docker image!
+
+Here are the main information about it:
+ - this image can be referenced as 'FULL_IMAGE_NAME_TAG'
+ - it derives from the 'PARENT_IMAGE_TAG' one
+ - it runs on the OPERATION_SYSTEM_TAG distribution
+ - it includes a full Erlang environment, in version ERLANG_VERSION_TAG, located in /opt/Software/Erlang/Erlang-Erlang-current-install/
+ - it provides Sim-Diasca sources and prebuilt runtime, in version SIM_DIASCA_VERSION_TAG, located in /opt/Software/Sim-Diasca/
+ - its definition as a Dockerfile was done on GENERATION_TIMESTAMP_TAG
+
+The main related settings have been registered in ~/sim-diasca-environment.sh,
+a file meant to be sourced - not executed - by one's shell; the local ~/.bashrc
+is already set up to source it, when run interactively.
+
+See also the Sim-Diasca public site, at https://github.com/Olivier-Boudeville-EDF/Sim-Diasca.
+
+Enjoy!
+

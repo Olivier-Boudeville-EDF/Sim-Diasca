@@ -204,7 +204,7 @@ These shell scripts are actually user-facing shell interfaces that plug directly
 
 
 `merge.sh <https://github.com/Olivier-Boudeville/Ceylan-Myriad/blob/master/src/apps/merge-tool/merge.sh>`_
-  Helps merging efficiently and reliably file trees; it is actually a rather involved text-based application that allows scanning/comparing/merging trees, typically in order to deduplicate file hierarchies that were cloned once yet may have since then diverged.
+  Helps merging efficiently and reliably file trees; it is actually a rather involved text-based application that allows scanning/comparing/merging trees, typically in order to deduplicate file hierarchies that were exact copies once, yet may have since then diverged.
 
   | Usage: following operations can be triggered:
   |  - 'merge.sh --input INPUT_TREE --reference REFERENCE_TREE'

@@ -27,8 +27,7 @@
 % Creation date: Thursday, February 22, 2018.
 
 
-
-% @doc Management of <b>CSV</b> (Comma-Separated Values) data.
+% @doc Management of <b>CSV</b> (<em>Comma-Separated Values</em>) data.
 %
 % Note that such a data format is not at the state of the art: it is very basic
 % if not rudimentary, not formalised and quite limited (no meta-data, escaping
@@ -66,7 +65,7 @@
 
 
 % The line number of a row in a file.
-%-type row_number() :: basic_utils:count().
+%-type row_number() :: count().
 
 
 -type content() :: [ row() ].
@@ -78,11 +77,11 @@
 % expected number of fields) or not (then represented as a mere list of values).
 
 
--type row_count() :: basic_utils:count().
+-type row_count() :: count().
 % Number of rows.
 
 
--type field_count() :: basic_utils:count().
+-type field_count() :: count().
 % Number of fields.
 
 
@@ -104,9 +103,9 @@
 % (additionally, even when forcing UTF8 encoding when exporting as CSV an Excel
 % spreadsheet, the same ISO-8859 content will be obtained)
 %
-%-define( read_options, [ read, { read_ahead, ?ahead_size },
-%						 { encoding, utf8 } ] ).
-
+%-define( read_options,
+%   [ read, { read_ahead, ?ahead_size }, { encoding, utf8 } ] ).
+%
 % This work-around is still necessary (still true with Erlang 23.0):
 -define( read_options, [ read, { read_ahead, ?ahead_size } ] ).
 
@@ -146,7 +145,15 @@
 
 % Shorthands:
 
--type line() :: text_utils:ustring().
+-type count() :: basic_utils:count().
+
+-type ustring() :: text_utils:ustring().
+
+-type line() :: ustring().
+
+-type any_file_path() :: file_utils:any_file_path().
+-type file() :: file_utils:file().
+
 
 
 % Implementation notes:
@@ -205,7 +212,6 @@
 
 		   check_all_empty/1, are_all_empty/1,
 
-		   %write_file/2, write_file/3
 		   content_to_string/1 ]).
 
 
@@ -219,8 +225,8 @@
 % - the number of rows found
 % - the number of fields they all have
 %
--spec read_file( file_utils:any_file_path() ) ->
-					   { content(), row_count(), field_count() }.
+-spec read_file( any_file_path() ) ->
+						{ content(), row_count(), field_count() }.
 read_file( Filename ) ->
 	read_file( Filename, ?default_separator ).
 
@@ -235,8 +241,8 @@ read_file( Filename ) ->
 % - the number of rows found
 % - the number of fields they all have
 %
--spec read_file( file_utils:any_file_path(), separator() ) ->
-					   { content(), row_count(), field_count() }.
+-spec read_file( any_file_path(), separator() ) ->
+						{ content(), row_count(), field_count() }.
 read_file( FilePath, Separator ) when is_integer( Separator ) ->
 
 	File = get_file_for_reading( FilePath ),
@@ -244,7 +250,7 @@ read_file( FilePath, Separator ) when is_integer( Separator ) ->
 	Res = { _Content, _RowCount, _FieldCount } = read_rows( File, Separator ),
 
 	%trace_utils:debug_fmt( "Read content (~B rows, each having ~p fields): "
-	%           "~n ~p", [ RowCount, FieldCount, Content ] ),
+	%   "~n ~p", [ RowCount, FieldCount, Content ] ),
 
 	file_utils:close( File ),
 
@@ -271,8 +277,7 @@ read_file( FilePath, Separator ) when is_integer( Separator ) ->
 % - the number of rows that were dropped (typically because they were either
 % empty or containing a comment)
 %
--spec interpret_file( file_utils:any_file_path(), separator(),
-					  field_count() ) ->
+-spec interpret_file( any_file_path(), separator(), field_count() ) ->
 		{ mixed_content(), row_count(), row_count(), row_count() }.
 interpret_file( FilePath, Separator, ExpectedFieldCount )
   when is_integer( Separator ) ->
@@ -283,8 +288,8 @@ interpret_file( FilePath, Separator, ExpectedFieldCount )
 	Res = interpret_rows( File, Separator, ExpectedFieldCount ),
 
 	%trace_utils:debug_fmt( "Read mixed content (matching count: ~B, "
-	%        "unmatching count: ~B, drop count: ~B):~n ~p",
-	%        [ MatchCount, UnmatchingCount, DropCount, MixedContent ] ),
+	%   "unmatching count: ~B, drop count: ~B):~n ~p",
+	%   [ MatchCount, UnmatchingCount, DropCount, MixedContent ] ),
 
 	file_utils:close( File ),
 
@@ -313,7 +318,7 @@ interpret_file( FilePath, Separator, ExpectedFieldCount )
 % - the number of rows that were dropped (typically because they were either
 % empty or containing a comment)
 %
--spec interpret_file( file_utils:any_file_path(), separator() ) ->
+-spec interpret_file( any_file_path(), separator() ) ->
 		{ field_count(), mixed_content(), row_count(), row_count(),
 		  row_count() }.
 interpret_file( FilePath, Separator ) when is_integer( Separator ) ->
@@ -329,8 +334,8 @@ interpret_file( FilePath, Separator ) when is_integer( Separator ) ->
 		GuessDropCount, _Acc=[ FirstRow ] ),
 
 	%trace_utils:debug_fmt( "Read mixed content with detected field count ~B "
-	%	"(matching count: ~B, unmatching count: ~B, drop count: ~B):~n ~p",
-	%	[ FieldCount, MatchCount, UnmatchingCount, DropCount, MixedContent ] ),
+	%   "(matching count: ~B, unmatching count: ~B, drop count: ~B):~n ~p",
+	%   [ FieldCount, MatchCount, UnmatchingCount, DropCount, MixedContent ] ),
 
 	file_utils:close( File ),
 
@@ -362,7 +367,7 @@ interpret_file( FilePath, Separator ) when is_integer( Separator ) ->
 % - the number of rows that were dropped (typically because they were either
 % empty or containing a comment)
 %
--spec interpret_file( file_utils:any_file_path() ) ->
+-spec interpret_file( any_file_path() ) ->
 		{ separator(), field_count(), mixed_content(), row_count(),
 		  row_count(), row_count() }.
 interpret_file( FilePath ) ->
@@ -372,9 +377,9 @@ interpret_file( FilePath ) ->
 	{ FirstRow, Separator, FieldCount, FirstDropCount } =
 		guess_separator_and_field_count( File, _InitialDropCount=0 ),
 
-	trace_utils:debug_fmt( "First row: '~p', separator: '~ts', "
-		"field count: ~B, first drop count: ~B.",
-		[ FirstRow, [Separator], FieldCount, FirstDropCount ] ),
+	%trace_utils:debug_fmt( "First row: '~p', separator: '~ts', "
+	%   "field count: ~B, first drop count: ~B.",
+	%   [ FirstRow, [Separator], FieldCount, FirstDropCount ] ),
 
 	% Branch to the helper with a correct initial state:
 	{ MixedContent, MatchCount, UnmatchingCount, DropCount } = interpret_rows(
@@ -384,9 +389,9 @@ interpret_file( FilePath ) ->
 	% Full version with content:
 	%trace_utils:debug_fmt( "Read mixed content with detected separator '~ts' "
 	%   "and field count ~B "
-	%	"(matching count: ~B, unmatching count: ~B, drop count: ~B):~n ~p",
-	%	[ [Separator], FieldCount, MatchCount, UnmatchingCount, DropCount,
-	%	  MixedContent ] ),
+	%   "(matching count: ~B, unmatching count: ~B, drop count: ~B):~n ~p",
+	%   [ [Separator], FieldCount, MatchCount, UnmatchingCount, DropCount,
+	%     MixedContent ] ),
 
 	% Summary:
 	trace_utils:debug_fmt( "Read mixed content with detected separator '~ts' "
@@ -405,8 +410,8 @@ interpret_file( FilePath ) ->
 
 
 % @doc Returns the context read from specified device/file.
--spec read_rows( file_utils:file(), separator() ) ->
-					   { content(), row_count(), field_count() }.
+-spec read_rows( file(), separator() ) ->
+						{ content(), row_count(), field_count() }.
 read_rows( File, Separator ) ->
 	read_rows( _Device=File, Separator, _RowCount=0, _FieldCount=undefined,
 			   _Acc=[] ).
@@ -473,8 +478,8 @@ read_rows( Device, Separator, RowCount, FieldCount, Acc ) ->
 %
 % (helper)
 %
--spec guess_field_count( file_utils:file(), separator(), row_count() ) ->
-							   { row(), field_count(), row_count() }.
+-spec guess_field_count( file(), separator(), row_count() ) ->
+								{ row(), field_count(), row_count() }.
 guess_field_count( Device, Separator, DropCount ) ->
 
 	case io:get_line( Device, _Prompt="" ) of
@@ -506,8 +511,8 @@ guess_field_count( Device, Separator, DropCount ) ->
 %
 % (helper)
 %
--spec guess_separator_and_field_count( file_utils:file(), row_count() ) ->
-					   { row(), separator(), field_count(), row_count() }.
+-spec guess_separator_and_field_count( file(), row_count() ) ->
+						{ row(), separator(), field_count(), row_count() }.
 guess_separator_and_field_count( Device, DropCount ) ->
 
 	case io:get_line( Device, _Prompt="" ) of
@@ -535,7 +540,7 @@ guess_separator_and_field_count( Device, DropCount ) ->
 
 
 % @doc Returns the context read from specified device/file.
--spec interpret_rows( file_utils:file(), separator(), field_count() ) ->
+-spec interpret_rows( file(), separator(), field_count() ) ->
 				{ mixed_content(), row_count(), row_count(), row_count() }.
 interpret_rows( File, Separator, ExpectedFieldCount ) ->
 	interpret_rows( _Device=File, Separator, ExpectedFieldCount, _MatchCount=0,
@@ -755,20 +760,19 @@ select_most_likely_separator( SepPairs ) ->
 
 
 
-% @doc Writes specified content (ie a list of homogeneous row tuples) in
-% specified CSV file, using the default separator for that.
+% @doc Writes the specified content (that is a list of homogeneous row tuples)
+% in the specified CSV file, using the default separator for that.
 %
--spec write_file( content(), file_utils:any_file_path() ) -> void().
+-spec write_file( content(), any_file_path() ) -> void().
 write_file( Content, TargetFilePath ) ->
 	write_file( Content, TargetFilePath, ?default_separator ).
 
 
 
-% @doc Writes specified content (ie a list of homogeneous row tuples) in
-% specified CSV file, using specified separator for that.
+% @doc Writes the specified content (that is a list of homogeneous row tuples)
+% in the specified CSV file, using the specified separator for that.
 %
--spec write_file( content(), file_utils:any_file_path(), separator() ) ->
-						void().
+-spec write_file( content(), any_file_path(), separator() ) -> void().
 write_file( Content, TargetFilePath, Separator ) ->
 
 	case file_utils:exists( TargetFilePath ) of
@@ -785,7 +789,10 @@ write_file( Content, TargetFilePath, Separator ) ->
 
 	File = file_utils:open( TargetFilePath, WriteOpts ),
 
-	write_rows( Content, Separator, File ),
+	% Add a space for readability:
+	FullSeparator = [ Separator, $ ],
+
+	write_rows( Content, FullSeparator, File ),
 
 	file_utils:close( File ).
 
@@ -799,7 +806,11 @@ write_rows( _Content=[ Row | T ], Separator, File ) ->
 
 	Elems = tuple_to_list( Row ),
 
-	Line = text_utils:join( Separator, Elems ),
+	CtrlSeqs = lists:duplicate( length( Elems ), "~w" ),
+
+	FormatString = text_utils:join( Separator, CtrlSeqs ),
+
+	Line = text_utils:format( FormatString, Elems ),
 
 	file_utils:write_ustring( File, "~ts~n", [ Line ] ),
 
@@ -808,11 +819,11 @@ write_rows( _Content=[ Row | T ], Separator, File ) ->
 
 
 % @doc Returns a file handle to read specified file.
--spec get_file_for_reading( file_utils:any_file_path() ) -> file_utils:file().
+-spec get_file_for_reading( any_file_path() ) -> file().
 get_file_for_reading( FilePath ) ->
 
 	%trace_utils:debug_fmt( "Opening '~ts' with options ~w.",
-	%					   [ FilePath, ?read_options ] ),
+	%                       [ FilePath, ?read_options ] ),
 
 	case file_utils:is_existing_file_or_link( FilePath ) of
 
@@ -836,8 +847,8 @@ get_file_for_reading( FilePath ) ->
 
 
 
-% @doc Returns a textual representation of specified content.
--spec content_to_string( content() ) -> text_utils:ustring().
+% @doc Returns a textual representation of the specified content.
+-spec content_to_string( content() ) -> ustring().
 content_to_string( Content ) ->
 	text_utils:format( "content of ~B rows: ~ts", [ length( Content ),
 					   text_utils:terms_to_enumerated_string( Content ) ] ).

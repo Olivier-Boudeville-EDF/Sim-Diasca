@@ -26,7 +26,6 @@
 % Creation date: Saturday, October 9, 2021.
 
 
-
 % @doc Module implementing the support for <b>3D vectors</b>.
 %
 % See also:
@@ -103,7 +102,7 @@
 
 -export([ new/1, new/3, new_integer/3, null/0,
 		  from_point/1, to_point/1,
-		  vector3_to_yup/1, yup_to_vector3/1, 
+		  vector3_to_yup/1, yup_to_vector3/1,
 		  vector3_to_yups/1, yup_to_vector3s/1,
 		  add/2, add/1, cross_product/2,
 		  are_close/2, are_equal/2,
@@ -138,7 +137,7 @@
 % @doc Returns a 3D vector corresponding to the user-specified one.
 -spec new( user_vector3() ) -> vector3().
 %new( UserVector ) when is_tuple( UserVector ) ->
-%	new( tuple_to_list( UserVector ) );
+%   new( tuple_to_list( UserVector ) );
 % Throws bad_generator anyway if a tuple:
 new( UserVector ) -> %when is_list( UserVector ) ->
 	[ type_utils:ensure_float( UC ) || UC <- UserVector ].

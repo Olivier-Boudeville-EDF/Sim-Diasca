@@ -118,7 +118,7 @@ endif
 # The uniquely-defined version of this layer, for all uses (including rebar and
 # hex):
 #
-TRACES_VERSION := 1.0.9
+TRACES_VERSION := 1.0.10
 
 
 # PROJECT_VERSION should be defined on a per-project basis.
@@ -304,4 +304,8 @@ else
 			FORCE_EVAL := $(error Unable to find the build root of Ceylan-WOOPER from '$(realpath .)'.)
 		endif
 	endif
+endif
+
+ifndef PREDECESSOR_LAYER_TOPS
+	PREDECESSOR_LAYER_TOPS := $(WOOPER_TOP)
 endif

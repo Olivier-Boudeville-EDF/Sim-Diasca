@@ -1,22 +1,22 @@
 % Copyright (C) 2008-2022 EDF R&D
-
+%
 % This file is part of Sim-Diasca.
-
-% Sim-Diasca is free software: you can redistribute it and/or modify
-% it under the terms of the GNU Lesser General Public License as
-% published by the Free Software Foundation, either version 3 of
-% the License, or (at your option) any later version.
-
-% Sim-Diasca is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-% GNU Lesser General Public License for more details.
-
-% You should have received a copy of the GNU Lesser General Public
-% License along with Sim-Diasca.
-% If not, see <http://www.gnu.org/licenses/>.
-
-% Author: Olivier Boudeville (olivier.boudeville@edf.fr)
+%
+% Sim-Diasca is free software: you can redistribute it and/or modify it under
+% the terms of the GNU Lesser General Public License as published by the Free
+% Software Foundation, either version 3 of the License, or (at your option) any
+% later version.
+%
+% Sim-Diasca is distributed in the hope that it will be useful, but WITHOUT ANY
+% WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+% A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+% details.
+%
+% You should have received a copy of the GNU Lesser General Public License along
+% with Sim-Diasca.  If not, see <http://www.gnu.org/licenses/>.
+%
+% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2008.
 
 
 % @doc Class implementing the <b>deployment manager</b> of the simulation.
@@ -80,10 +80,10 @@
 	{ compute_scheduler_count, maybe( count() ), "tells if a "
 	  "specific number of sequencers shall be created on each computing node" },
 
-	{ epmd_port, maybe( net_utils:tcp_port() ), "stores any non-default TCP "
+	{ epmd_port, maybe( tcp_port() ), "stores any non-default TCP "
 	  "port to be used for the EPMD daemon" },
 
-	{ tcp_port_range, net_utils:tcp_port_restriction(), "records any "
+	{ tcp_port_range, tcp_port_restriction(), "records any "
 	  "restriction to apply regarding the range of used TCP ports" },
 
 	{ ping_allowed, boolean(), "tells whether ping (ICMP) messages may be used "
@@ -102,7 +102,7 @@
 	  "nodes whose loss should be recoverable in the course of the "
 	  "simulation" },
 
-	{ node_naming_mode, net_utils:node_naming_mode(), "is either 'short_name' "
+	{ node_naming_mode, node_naming_mode(), "is either 'short_name' "
 	  "or 'long_name', depending on how the user node was launched (the "
 	  "naming mode of the user node can be set by overriding the NODE_NAMING "
 	  "make variable, in the GNUmakevars.inc file of Myriad)" },
@@ -170,8 +170,7 @@
 
 % Local types:
 
--type host_user_list() :: [ { net_utils:string_host_name(),
-							  basic_utils:user_name() } ].
+-type host_user_list() :: [ { string_host_name(), basic_utils:user_name() } ].
 
 -type simulation_name() :: ustring().
 
@@ -300,14 +299,10 @@
 
 % Shorthands:
 
-%-type count() :: basic_utils:count().
-
 -type ustring() :: text_utils:ustring().
 -type bin_string() :: text_utils:bin_string().
 
--type atom_node_name() :: net_utils:atom_node_name().
-
-%-type milliseconds() :: unit_utils:milliseconds().
+-type seconds() :: unit_utils:seconds().
 
 -type file_path() :: file_utils:file_path().
 -type file_name() :: file_utils:file_name().
@@ -316,8 +311,14 @@
 -type directory_name() :: file_utils:directory_name().
 -type bin_directory_name() :: file_utils:bin_directory_name().
 
+-type string_host_name() :: net_utils:string_host_name().
+-type atom_host_name() :: net_utils:atom_host_name().
 -type string_node_name() :: net_utils:string_node_name().
+-type atom_node_name() :: net_utils:atom_node_name().
+
+-type node_naming_mode() :: net_utils:node_naming_mode().
 -type tcp_port() :: net_utils:tcp_port().
+-type tcp_port_restriction() :: net_utils:tcp_port_restriction().
 
 -type host_manager_pid() :: class_ComputingHostManager:host_manager_pid().
 
@@ -423,8 +424,8 @@ construct( State,
 	InitialState = class_EngineBaseObject:construct( State,
 													 ?trace_categorize(Name) ),
 
-	TraceState = setAttribute( InitialState, compute_scheduler_count,
-							   undefined ),
+	TraceState =
+		setAttribute( InitialState, compute_scheduler_count, undefined ),
 
 	% Plugins may have requested configuration changes:
 	ChangedState = apply_configuration_changes( PluginConfChanges, TraceState ),
@@ -496,7 +497,8 @@ construct( State,
 
 	% Use ~ts to protect from Unicode strings:
 	?send_info_fmt( StartingState,
-		"Creating a deployment manager with simulation settings:~ts "
+		"Creating a deployment manager with simulation settings "
+		"(prior to determining the host configuration):~ts "
 		"~ncompleted with deployment settings:~ts "
 		"~nand with load balancing settings:~ts"
 		"~nVersions are:~n"
@@ -510,6 +512,7 @@ construct( State,
 		"Deployment time-out is set to ~ts.\n"
 		"Simulation instance identifier (SII) is '~ts'.\n"
 		"Simulation UUID is '~ts' (and so cookie is '~ts').\n"
+		"Node naming mode is '~ts'.\n"
 		"Current tick change policy is: ~p.",
 		[ class_TimeManager:settings_to_string( SimulationSettings ),
 		  settings_to_string( DeploymentSettings ),
@@ -525,13 +528,27 @@ construct( State,
 		  SII,
 		  SimUUID,
 		  Cookie,
+		  NodeNamingMode,
 		  TickChange ] ),
 
 	% Ensures also it is a singleton indeed:
 	naming_utils:register_as( ?deployment_manager_name, global_only ),
 
 	% HostUserList is a list of {Hostname, Username} string pairs:
-	HostUserList = get_host_user_list( DeploymentSettings, StartingState ),
+	HostUserList =
+			case get_host_user_list( DeploymentSettings, StartingState ) of
+
+		% Early checking:
+		[] ->
+			?send_error( StartingState, "No simulation can be run, "
+				"as the deployment settings result in no computing host "
+				"candidate being to consider." ),
+			throw( no_host_candidate );
+
+		HList ->
+			HList
+
+	end,
 
 	BaseNodeName = get_computing_node_prefix_from( SimulationName, SII ),
 
@@ -710,6 +727,8 @@ construct( State, SimulationSettings, DeploymentSettings, LoadBalancingSettings,
 
 	PathOfMake = executable_utils:find_executable( "make" ),
 
+	NodeNamingMode = net_utils:get_node_naming_mode(),
+
 	SetState = setAttributes( TraceState, [
 		{ simulation_settings, SimulationSettings },
 		{ deployment_settings, DeploymentSettings },
@@ -718,7 +737,7 @@ construct( State, SimulationSettings, DeploymentSettings, LoadBalancingSettings,
 		{ simulation_instance_id, SII },
 		{ engine_root_dir, RootDir },
 		{ make_path, PathOfMake },
-		{ node_naming_mode, net_utils:get_node_naming_mode() },
+		{ node_naming_mode, NodeNamingMode },
 		{ node_cleanup, CleanUpSettings },
 		{ deployment_base_dir, DeploymentBaseDir },
 
@@ -735,8 +754,7 @@ construct( State, SimulationSettings, DeploymentSettings, LoadBalancingSettings,
 	naming_utils:register_as( ?deployment_manager_name, global_only ),
 
 	% No host set-up, deployment of a simulation package, etc., just:
-	ServicePlacement =
-		dispatch_agents( Nodes, net_utils:get_node_naming_mode() ),
+	ServicePlacement = dispatch_agents( Nodes, NodeNamingMode ),
 
 	?send_info_fmt( SetState, "Redeployed service placement: ~ts~n",
 					[ service_placement_to_string( ServicePlacement ) ] ),
@@ -780,10 +798,11 @@ get_network_description() ->
 
 	HostnameCmd = executable_utils:find_executable( "hostname" ),
 
-	OptPairs = [ { "alias names are", "aliases" },
+	% Apparently the option names changed quite frequently:
+	OptPairs = [ { "alias names are", "alias" },
 				 { "DNS domain name is", "domain" },
 				 { "DNS host name or FQDN is", "fqdn" },
-				 { "IP addresses for the host name are", "ip-addresses" },
+				 { "IP addresses for the host name are", "all-ip-addresses" },
 				 { "short host name is", "short" },
 				 { "NIS/YP domain name is", "nis" } ],
 
@@ -857,7 +876,10 @@ get_additional_beam_dirs( #deployment_settings{
 
 % @doc Checks asynchronously that, in the specified list of file paths, no two
 % of them designate the same filename, and that no filename is the sign of a
-% problem (typically that Erlang/OTP modules might be erroneously selected)
+% problem (typically due to standard Erlang/OTP local modules being erroneously
+% selected for deployment, because the Erlang installation was done and left in
+% the Sim-Diasca tree, whereas each computing host must already have its Erlang
+% environment installed)
 %
 -spec inspect_archive_content( [ file_path() ] ) -> void().
 inspect_archive_content( ArchiveSelectedFiles ) ->
@@ -1289,9 +1311,9 @@ process_setup_outcome( SimulationPackageFilename, State ) ->
 
 
 
-% @doc We maintain lists of the PID of computing host managers that are
-% initially waited, then over time migrate to available or failed, explicitly or
-% implicitly (on time-out).
+% @doc We maintain lists of the PID of the computing host managers that are
+% initially waited, then over time their status is migrated to available or
+% failed, explicitly or implicitly (on time-out).
 %
 wait_setup_outcome( _Waited=[], Available, Failed, _CollectTimeOut,
 					_BinPackageFilename, State ) ->
@@ -1378,7 +1400,7 @@ wait_setup_outcome( Waited, Available, Failed, CollectTimeOut,
 		% Here all pending managers are rejected:
 		FailedHostInfos = [ begin
 
-			 #computing_host_info{
+			#computing_host_info{
 				host_name=Host,
 				user_name=User,
 				node_name=Node } = get_host_info( W, State ),
@@ -1854,8 +1876,10 @@ get_user_node_name_from( SimulationName, SII ) ->
 -spec get_computing_node_prefix_from( simulation_name(), sii() ) ->
 								static_return( string_node_name() ).
 get_computing_node_prefix_from( SimulationName, SII ) ->
+
 	Name = get_node_name_prefix_from( SimulationName, SII )
 		++ "-computing-node",
+
 	wooper:return_static( Name ).
 
 
@@ -2055,9 +2079,8 @@ settings_to_string( _DeploymentSettings=#deployment_settings{
 				[ TargetFilename ] ) ++ RebuildString ;
 
 		{ use_deployment_package, Filename } ->
-			text_utils:format(
-				"the simulation deployment package in file '~ts' will be used.",
-				[ Filename ] )
+			text_utils:format( "the simulation deployment package "
+				"in already-existing file '~ts' will be used.", [ Filename ] )
 
 	end,
 
@@ -2213,7 +2236,7 @@ settings_to_string( _DeploymentSettings=#deployment_settings{
 
 	wooper:return_static( text_utils:strings_to_string( [
 		HostString, ToleranceString, PingString, DepDurationString,
-		RebuildString, PackageString, AdditionalElementsString, PluginString,
+		PackageString, AdditionalElementsString, PluginString,
 		AddBeamString, CleanupString, FirewallString, TmpDirString,
 		DataloggerString, DataExchangerString, PerfTrackerString, BindingString,
 		ResilienceString ] ) ).
@@ -2263,7 +2286,7 @@ determine_root_directory() ->
 -spec get_basic_blacklisted_suffixes() -> static_return( [ ustring() ] ).
 get_basic_blacklisted_suffixes() ->
 
-	% Thus now accepted: ".py", ".class", since:
+	% Thus now accepted: ".py", ".class", because of the bindings:
 	Suffixes = [ ".erl", ".hrl", ".sdar", "_test.beam", ".java", ".sh",
 		".escript", "GNUmakefile", "top-GNUmakefile-for-releases", ".inc",
 		".properties", ".png", ".rst", ".odg", ".dia", ".graph", ".txt",
@@ -2789,19 +2812,19 @@ get_deploy_time_out( DeploymentSettings, State ) ->
 
 	% In milliseconds:
 	DeployTimeOut = case
-	 DeploymentSettings#deployment_settings.maximum_allowed_deployment_duration
+	  DeploymentSettings#deployment_settings.maximum_allowed_deployment_duration
 						of
 
 		undefined ->
-		 class_ComputingHostManager:get_host_deployment_duration_upper_bound();
+		  class_ComputingHostManager:get_host_deployment_duration_upper_bound();
 
 		S when is_integer( S ) ->
-		 % Was specified in seconds:
-		 1000 * S;
+			% Was specified in seconds:
+			1000 * S;
 
 		FaultyDuration ->
-		 throw( { invalid_maximum_allowed_deployment_duration,
-				  FaultyDuration } )
+			throw( { invalid_maximum_allowed_deployment_duration,
+					 FaultyDuration } )
 
 	end,
 
@@ -3005,7 +3028,7 @@ get_context_information( EpmdPort ) ->
 		_ ->
 			[ get_epmd_diagnosis( EpmdPort ),
 			  % For an increased safety, we also collect any names that would be
-			  % known of a default, potentially unexpected EPMD:
+			  % known of a default, potentially interfering EPMD:
 			  %
 			  get_epmd_diagnosis( DefaultEpmdPort ) ]
 
@@ -3015,8 +3038,9 @@ get_context_information( EpmdPort ) ->
 	DiagStrings = EpmdStrings
 		++ [ get_epmd_local_diagnosis(), get_beam_local_diagnosis() ],
 
-	text_utils:format( "Additional context follows: ~ts",
-					   [ text_utils:strings_to_string( DiagStrings ) ] ).
+	text_utils:format( "Additional context follows, regarding the user host "
+		"(~ts): ~ts", [ net_utils:localhost(),
+						text_utils:strings_to_string( DiagStrings ) ] ).
 
 
 
@@ -3124,7 +3148,7 @@ determine_host_list_from( { use_host_file, HostFile, include_localhost },
 							   UserName  );
 
 determine_host_list_from( { use_host_file, HostFile, exclude_localhost },
-						  UserName, _State ) ->
+						  UserName, State ) ->
 
 	case file_utils:is_existing_file( HostFile ) of
 
@@ -3132,6 +3156,9 @@ determine_host_list_from( { use_host_file, HostFile, exclude_localhost },
 			get_hosts_from_file( HostFile, UserName );
 
 		false ->
+			?error_fmt( "The Sim-Diasca host file '~ts' could not be found "
+				"(from directory '~ts').",
+				[ HostFile, file_utils:get_current_directory() ] ),
 			throw( { host_file_not_found, HostFile } )
 
 	end;
@@ -3145,7 +3172,7 @@ determine_host_list_from( { use_host_file_otherwise_local, HostFile,
 							include_localhost }, UserName, State ) ->
 
 	ensure_localhost_included( determine_host_list_from(
-		  { use_host_file_otherwise_local, HostFile, exclude_localhost },
+		{ use_host_file_otherwise_local, HostFile, exclude_localhost },
 							   UserName, State ), UserName );
 
 determine_host_list_from( { use_host_file_otherwise_local, HostFile,
@@ -3235,12 +3262,43 @@ ensure_username_specified( [ H | _T ], _DefaultUserName, _Acc ) ->
 %
 get_hosts_from_file( HostFile, DefaultUsername ) ->
 
+	% As we may need to adapt hostnames:
+	NodeNamingMode = net_utils:get_node_naming_mode(),
+
+	% More control than file_utils:read_etf_file/1:
 	case file:consult( HostFile ) of
 
 		{ ok, LineElements } ->
-			filter_line_elements( LineElements, DefaultUsername, _Acc=[] );
+			filter_line_elements( LineElements, DefaultUsername,
+								  NodeNamingMode, _Acc=[] );
+
+		{ error, _Reason={ Line, erl_parse,
+							[ "syntax error before: ", _Elem="" ] } } ->
+			trace_utils:error_fmt( "The content of the host candidate file "
+				"'~ts' is invalid at line ~B: unable to parse the ETF syntax. "
+				"Maybe the line does not terminate with a dot?",
+				[ file_utils:ensure_path_is_absolute( HostFile ), Line ] ),
+			throw( { invalid_host_file_content, HostFile, { line, Line } } );
+
+		% Often the element is not clear (ex: ''.''):
+		{ error, _Reason={ Line, erl_parse,
+							[ "syntax error before: ", Elem ] } } ->
+			trace_utils:error_fmt( "The content of the host candidate file "
+				"'~ts' is invalid at line ~B: unable to parse this ETF file, "
+				"syntax error (before '~ts'). "
+				"Maybe the line does not terminate with a dot?",
+				[ file_utils:ensure_path_is_absolute( HostFile ), Line,
+				  Elem ] ),
+			throw( { invalid_host_file_content, HostFile, { line, Line },
+						{ before, Elem } } );
+
 
 		{ error, Reason } ->
+			trace_utils:error_fmt( "The content of the host candidate file "
+				"'~ts' is invalid: unable to parse the ETF syntax.~n"
+				"Reason: ~p~n"
+				"Maybe at least one line does not terminate with a dot?",
+				[ file_utils:ensure_path_is_absolute( HostFile ), Reason ] ),
 			throw( { invalid_host_file_content, HostFile, Reason } )
 
 	end.
@@ -3251,31 +3309,55 @@ get_hosts_from_file( HostFile, DefaultUsername ) ->
 %
 % (helper)
 %
-filter_line_elements( [], _DefaultUsername, Acc ) ->
+filter_line_elements( [], _DefaultUsername, _NodeNamingMode, Acc ) ->
 	Acc;
 
 filter_line_elements( [ { Hostname, Login, Comment } | T ], DefaultUsername,
-		 Acc ) when is_atom( Hostname ) andalso is_atom( Login )
-					andalso is_list( Comment ) ->
+		NodeNamingMode, Acc ) when is_atom( Hostname ) andalso is_atom( Login )
+								   andalso is_list( Comment ) ->
 
 	% Comments are just dropped:
-	HostPair = { atom_to_list( Hostname ), atom_to_list( Login ) },
-	filter_line_elements( T, DefaultUsername, [ HostPair | Acc ] );
+	HostPair = { get_legit_hostname( Hostname, NodeNamingMode ),
+				 text_utils:atom_to_string( Login ) },
 
-filter_line_elements( [ { Hostname, Comment } | T ], DefaultUsername, Acc )
-  when is_atom( Hostname ) andalso is_list( Comment ) ->
+	filter_line_elements( T, DefaultUsername, NodeNamingMode,
+						  [ HostPair | Acc ] );
+
+filter_line_elements( [ { Hostname, Comment } | T ], DefaultUsername,
+					  NodeNamingMode, Acc )
+			when is_atom( Hostname ) andalso is_list( Comment ) ->
+
 	% Comments are just dropped; using default username:
-	HostPair = { atom_to_list( Hostname ), DefaultUsername },
-	filter_line_elements( T, DefaultUsername, [ HostPair | Acc ] );
+	HostPair = { get_legit_hostname( Hostname, NodeNamingMode ),
+				 DefaultUsername },
 
-filter_line_elements( [ Hostname | T ], DefaultUsername, Acc )
-  when is_atom( Hostname ) ->
+	filter_line_elements( T, DefaultUsername, NodeNamingMode,
+						  [ HostPair | Acc ] );
 
-	HostPair = { atom_to_list( Hostname ), DefaultUsername },
-	filter_line_elements( T, DefaultUsername, [ HostPair | Acc ] );
+filter_line_elements( [ Hostname | T ], DefaultUsername, NodeNamingMode, Acc )
+												when is_atom( Hostname ) ->
 
-filter_line_elements( [ H |_T ], _DefaultUsername, _Acc ) ->
+	HostPair = { get_legit_hostname( Hostname, NodeNamingMode ),
+				 DefaultUsername },
+
+	filter_line_elements( T, DefaultUsername, NodeNamingMode,
+						  [ HostPair | Acc ] );
+
+filter_line_elements( [ H |_T ], _DefaultUsername, _NodeNamingMode, _Acc ) ->
+	trace_bridge:error_fmt( "Unexpected candidate host entry: '~p'.", [ H ] ),
 	throw( { unexpected_host_entry, H } ).
+
+
+
+% Returns an hostname that corresponds to the specified node naming mode.
+%
+% (helper)
+%
+-spec get_legit_hostname( atom_host_name(), node_naming_mode() ) ->
+								string_host_name().
+get_legit_hostname( AtomHostName, NodeNamingMode ) ->
+	net_utils:get_naming_compliant_hostname(
+		text_utils:atom_to_string( AtomHostName ), NodeNamingMode ).
 
 
 
@@ -3296,8 +3378,7 @@ filter_line_elements( [ H |_T ], _DefaultUsername, _Acc ) ->
 % (helper)
 %
 -spec set_up_computing_nodes( string_node_name(), host_user_list(),
-					unit_utils:seconds(), [ bin_directory_name() ],
-					wooper:state() ) -> wooper:state().
+		seconds(), [ bin_directory_name() ], wooper:state() ) -> wooper:state().
 set_up_computing_nodes( BaseNodeName, HostUserList, InterNodeSeconds,
 						AdditionalBEAMBinDirs, State ) ->
 
@@ -3358,6 +3439,7 @@ set_up_computing_nodes( BaseNodeName, HostUserList, InterNodeSeconds,
 
 		host_infos=undefined } || { Host, User } <- HostUserList ],
 
+	%trace_utils:debug_fmt( "HostInfos: ~p", [ HostInfos ] ),
 
 	% Host managers are now being launched asynchronously and be working in the
 	% background, we can in the meantime prepare all possible next steps before
@@ -3491,8 +3573,8 @@ dispatch_agents( NodeList, NodeNamingMode ) ->
 
 	UserNode = node(),
 
-	AllComputingNodes = [ N || { N, _H } <- SecondReorderedList,
-							   N =/= UserNode ],
+	AllComputingNodes =
+		[ N || { N, _H } <- SecondReorderedList, N =/= UserNode ],
 
 	% For the moment, the performance tracker must be running from the user node
 	% (later, as it is in some way coupled to the load balancer, they should be
@@ -4011,21 +4093,30 @@ check_stochastic_resilience() ->
 get_host_user_list( #deployment_settings{ computing_hosts=ComputingHosts },
 					State ) ->
 
+	HostOpt = '-sim-diasca-host-file',
+
 	% Initial host list, as determined from the user-specified configuration, if
 	% not overridden on the command-line:
 	%
-	HostInformation = case shell_utils:get_command_arguments_for_option(
-								'-sim-diasca-host-file' ) of
+	HostInformation =
+			case shell_utils:get_command_arguments_for_option( HostOpt ) of
 
 		undefined ->
 			% Just read the settings defined in the simulation case:
 			ComputingHosts;
+
+		[ "" ] ->
+			trace_utils:error_fmt( "The '-~ts' option was specified, yet no "
+				"host candidate file was given afterwards.", [ HostOpt ] ),
+			throw( no_host_file_specified );
 
 		[ [ HostFilename ] ] when is_list( HostFilename ) ->
 			% Overridden on the command-line, thus has priority:
 			{ use_host_file, HostFilename, exclude_localhost };
 
 		OtherHostArg ->
+			trace_utils:error_fmt( "Invalid host candidate file specified "
+				"after the '-~ts' option: ~p.", [ HostOpt, OtherHostArg ] ),
 			throw( { invalid_host_file_specification, OtherHostArg } )
 
 	end,
@@ -4623,8 +4714,8 @@ interpret_user_interface_interactivity_mode() ->
 % @doc Returns the firewall-related options, as determined from the deployment
 % settings.
 %
--spec interpret_firewall_options( deployment_settings() ) -> static_return(
-		{ maybe( tcp_port() ), net_utils:tcp_port_restriction() } ).
+-spec interpret_firewall_options( deployment_settings() ) ->
+		  static_return( { maybe( tcp_port() ), tcp_port_restriction() } ).
 interpret_firewall_options( DeploymentSettings ) ->
 
 	Options = DeploymentSettings#deployment_settings.firewall_restrictions,
@@ -4770,12 +4861,12 @@ interpret_host_failure( vm_remote_detection_failed ) ->
 
 
 
-% @doc Takes care of the simulation package: ensures it is available as a file,
-% to be sent to all computing nodes that are to take part to the simulation.
+% @doc Takes care of the simulation package: ensures that it is available as a
+% file, which is to be sent to all computing nodes that are to take part to the
+% simulation.
 %
 % Returns the corresponding filename, as a string, and a list of the
-% corresponding selected files for the archive, in order that they can be
-% checked.
+% corresponding selected files for the archive, so that they can be checked.
 %
 % (helper)
 %
@@ -4819,11 +4910,23 @@ manage_simulation_package( State ) ->
 
 
 
-% @doc Saves the specified (binary) simulation package, in specified file.
+% @doc Saves the specified (binary) simulation package, in the specified file.
 %
 % (helper)
 %
 save_simulation_package( BinaryPackage, TargetFilename, State ) ->
+
+	case file_utils:is_existing_file_or_link( TargetFilename ) of
+
+		true ->
+			?warning_fmt( "Overwriting an already-existing '~ts' "
+				"simulation package.",
+				[ file_utils:ensure_path_is_absolute( TargetFilename ) ] );
+
+		false ->
+			ok
+
+	end,
 
 	% delayed_write would not be terribly useful here, if not
 	% counter-productive:
@@ -4847,7 +4950,7 @@ save_simulation_package( BinaryPackage, TargetFilename, State ) ->
 build_simulation_package( State ) ->
 
 	% We have to ensure first that all filesystem entries that are relative (not
-	% absolute) are from now on defined relatively to the root of the engine.
+	% absolute) are, from now on, defined relatively to the root of the engine.
 
 	DeploySettings = ?getAttr(deployment_settings),
 
@@ -4948,12 +5051,12 @@ build_simulation_package( State ) ->
 	end,
 
 
-	% We use to include initialisation files in the archives but, even if these
+	% We used to include initialisation files in the archives but, even if these
 	% files were compressed beforehand, their size was leading to too long
-	% sending and uncompressing phases. Now we ensure the load balancer is
+	% sending and uncompressing phases. Now we ensure that the load balancer is
 	% created on the user node and that it reads directly the initialisation
-	% files, so initialisation shall not be included anymore in the simulation
-	% archive:
+	% files, so initialisation files shall not be included anymore in the
+	% simulation archive:
 
 	%SimulationSettings = ?getAttr(simulation_settings),
 
@@ -5080,7 +5183,7 @@ check_elem_type( Other ) ->
 
 
 % @doc Translates specified full path so that it becomes relative to the root
-% directory, rather than the current directory.
+% directory, rather than to the current directory.
 %
 translate_path( Path, RootDir, CurrentDir ) ->
 	translate_path( Path, RootDir, length( RootDir ), CurrentDir ).
@@ -5152,7 +5255,12 @@ get_engine_deployment_settings( MustRebuild ) ->
 	% anyway we will keep only the remaining .beam files):
 	%
 	DeployOptions = [ { exclude_suffixes, ["_test.beam"] },
-					  %{ exclude_directories, [ ".svn" ] },
+
+					  % As we do not want to include elements defined for
+					  % containers, like Docker images for instance:
+					  %
+					  { exclude_directories, [ "conf" ] },
+
 					  { keep_only_suffixes, [ ".beam", ".class" ] },
 					  RebuildOpt ],
 
@@ -5178,7 +5286,8 @@ get_engine_deployment_settings( MustRebuild ) ->
 	TracesOptions = [ { exclude_directories, [ "ebin" ] } | DeployOptions ],
 
 	% Commented-out, as would make the corresponding model tests fail:
-	%SimDiascaOptions = [ {exclude_directories,["src/models"]} |DeployOptions],
+	%SimDiascaOptions =
+	%    [ {exclude_directories,["src/models"]} | DeployOptions ],
 
 	SimDiascaOptions = DeployOptions,
 
@@ -5735,7 +5844,7 @@ reorder_nodes( _NodeList=[ E | T ], LastHost, Acc ) ->
 % number of seconds for the Erlang kernel tick time, so that Erlang nodes can
 % monitor others.
 %
--spec get_inter_node_tick_time_out() -> static_return( unit_utils:seconds() ).
+-spec get_inter_node_tick_time_out() -> static_return( seconds() ).
 
 
 -ifdef(exec_target_is_production).
@@ -5786,11 +5895,9 @@ get_inter_node_tick_time_out() ->
 
 
 % @doc Returns the default filename of the deployment package archive.
-%
-% (helper)
-%
+-spec get_default_deployment_package_name() -> static_return( file_name() ).
 get_default_deployment_package_name() ->
-	"Sim-Diasca-deployment-archive.sdar".
+	wooper:return_static( "Sim-Diasca-deployment-archive.sdar" ).
 
 
 

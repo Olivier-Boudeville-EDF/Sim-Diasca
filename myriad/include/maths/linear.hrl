@@ -60,3 +60,13 @@
 
 % Relatively aggressive inlining for basic operations:
 -define( inline_size, 48 ).
+
+
+% Shorthand, typically useful for OpenGL-related encoding of coordinates:
+-define( F32, 32/float-native ).
+
+% Shorthand, typically useful for OpenGL-related encoding:
+-define( I32, 32/signed-native ).
+
+% Shorthand, typically useful for OpenGL-related encoding:
+-define( UI32, 32/native ).

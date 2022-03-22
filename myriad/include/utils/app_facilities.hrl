@@ -23,7 +23,27 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2011.
 
 
-% All applications should export such a function:
--export([ exec/0 ]).
+% See also the map used by filename:basedir/3.
+-record( app_info, {
+
+	% The official name of the corresponding application:
+	name :: text_utils:bin_string(),
+
+	% The version of the corresponding application:
+	version :: basic_utils:any_version(),
+
+	% The author description of the corresponding application:
+	author :: maybe( text_utils:bin_string() ),
+
+	% The current operating system information (see
+	% system_utils:get_operating_system_type(/0) on which is this application
+	% runs:
+
+	% Coarse categorization of the current operating system:
+	os_family :: system_utils:os_family(),
+
+	% More precise categorization of the current operating system:
+	os_name :: system_utils:os_name() } ).

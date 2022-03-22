@@ -1488,7 +1488,7 @@ So an example of attribute declaration could be::
   "stores the current age of this creature"}
 
 
-.. Note:: Currently, these information are only of use for the developer (i.e. for documentation purpose). No check is made about whether they are used, whether no other attributes are used, whether the type is meaningful and indeed enforced, the default initial value is not set, etc. Some of these information might be handled by future WOOPER versions.
+.. Note:: Currently, these information are only of use for the developer (i.e. for documentation purpose). No check is made about whether they are used, whether no other attributes are used, whether the type is meaningful and indeed enforced, the default initial value is not set, etc; yet some of these information might be handled by future WOOPER versions.
 
 
 Shorter attribute declarations can also used, then with less than the 4 aforementioned pieces of information mentioned:
@@ -1505,8 +1505,7 @@ Finally, a full example of the declaration of class attributes can be:
 
   -define(class_attributes,[
 			name,
-			{age,integer(),{initial,18},
-				 "stores the current age of this creature"},
+			{age,integer(),"stores the current age of this creature"},
 			birth_date,
 			{weight,"total weight measured"}]).
 

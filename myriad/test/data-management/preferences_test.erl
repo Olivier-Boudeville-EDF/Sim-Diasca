@@ -43,13 +43,15 @@ run() ->
 	test_facilities:start( ?MODULE ),
 
 	test_facilities:display( "Preferences while the service is not running: "
-							 "~ts", [ preferences:to_string() ] ),
+							 "~ts", [ preferences:to_bin_string() ] ),
 
-	% May not be called (automatic launching of the service whenever needed):
-	preferences:start(),
+	% May not be called explicitly (automatic launching of the service whenever
+	% needed):
+	%
+	preferences:start_link(),
 
 	test_facilities:display( "Preferences after the service is just started: "
-							 "~ts", [ preferences:to_string() ] ),
+							 "~ts", [ preferences:to_bin_string() ] ),
 
 	FirstTargetKey = first_test_key,
 

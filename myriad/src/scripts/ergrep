@@ -9,7 +9,10 @@ usage="Usage: $(basename $0) [-v|--verbose] [-q|--quiet] [-hd|--headers-only] [-
    -f or --filenames-only: display only filenames, not also the matched patterns, and if there are multiple matches in the same file, its filename will be output only once (implies quiet); useful for scripts
    -i or --insensitive: perform case-insensitive searches in the content of files, and also in the searched Erlang filenames
 
-  Example: $(basename $0) -i 'list_to_form(' /tmp"
+  Example: $(basename $0) -i 'list_to_form(' /tmp
+
+  Note that rebar-related inner workings are explicitly not searched (ex: the '_build' tree is pruned.
+"
 
 
 if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
@@ -83,7 +86,7 @@ while [ ${token_eaten} -eq 0 ]; do
 
 	token_eaten=1
 
-	if [ "${read_parameter}" = "--verbose" -o "${read_parameter}" = "-v" ]; then
+	if [ "${read_parameter}" = "--verbose" ] || [ "${read_parameter}" = "-v" ]; then
 		verbose=0
 		quiet=1
 		echo "Verbose mode activated."
@@ -91,21 +94,21 @@ while [ ${token_eaten} -eq 0 ]; do
 	fi
 
 
-	if [ "${read_parameter}" = "--quiet" -o "${read_parameter}" = "-q" ]; then
+	if [ "${read_parameter}" = "--quiet" ] || [ "${read_parameter}" = "-q" ]; then
 		verbose=1
 		quiet=0
 		#echo "Quiet mode activated."
 		token_eaten=0
 	fi
 
-	if [ "${read_parameter}" = "--headers-only" -o "${read_parameter}" = "-hd" ]; then
+	if [ "${read_parameter}" = "--headers-only" ] || [ "${read_parameter}" = "-hd" ]; then
 		headers_only=0
 		[ ${quiet} -eq 0 ] || echo "Only headers will be displayed."
 		token_eaten=0
 
 	fi
 
-	if [ "${read_parameter}" = "--filenames-only" -o "${read_parameter}" = "-f" ]; then
+	if [ "${read_parameter}" = "--filenames-only" ] || [ "${read_parameter}" = "-f" ]; then
 
 		verbose=1
 		quiet=0
@@ -116,7 +119,7 @@ while [ ${token_eaten} -eq 0 ]; do
 	fi
 
 
-	if [ "${read_parameter}" = "--insensitive" -o "${read_parameter}" = "-i" ];	then
+	if [ "${read_parameter}" = "--insensitive" ] || [ "${read_parameter}" = "-i" ];	then
 
 		insensitive_opt="-i"
 		name_opt="-iname"
@@ -187,15 +190,20 @@ base_grep_opt="--color"
 
 if [ $headers_only -eq 0 ]; then
 	filter_erl='*.hrl'
-	filter_msg="all Erlang header files"
+	filter_msg="Erlang header files"
 else
 	# NEVER surround these single quotes by double ones:
 	filter_erl='*.?rl'
-	filter_msg="all Erlang files"
+	filter_msg="Erlang files"
 fi
 
 # Unable to properly define a correctly-protected variable:
 #filter_expr="${name_opt} ${filter_erl}"
+
+
+# Not wanting to enter rebar3-originating irrelevant extra elements:
+# Unable to properly define a correctly-protected variable:
+#prune_opt="-name '_build' -prune -o -name '_checkouts'"
 
 if [ ${verbose} -eq 0 ]; then
 
@@ -214,11 +222,11 @@ fi
 if [ ${filenames_only} -eq 1 ]; then
 
 	# Most usual case:
-	${find} "${target_base_dir}" ${name_opt} "${filter_erl}" -exec ${grep} ${base_grep_opt} ${insensitive_opt} "${searched_expr}" '{}' ${force_multi_files} ';' 2>/dev/null
+	${find} "${target_base_dir}" } -name '_build' -prune -o -name '_checkouts' -o ${name_opt} "${filter_erl}" -exec ${grep} ${base_grep_opt} ${insensitive_opt} "${searched_expr}" '{}' ${force_multi_files} ';' 2>/dev/null
 
 else
 
-	${find} "${target_base_dir}" ${name_opt} "${filter_erl}" -exec ${grep} ${base_grep_opt} ${insensitive_opt} "${searched_expr}" '{}' ${force_multi_files} ';' 2>/dev/null | sed 's|:.*$||1' | uniq
+	${find} "${target_base_dir}" -name '_build' -prune -o -name '_checkouts' -o ${name_opt} "${filter_erl}" -exec ${grep} ${base_grep_opt} ${insensitive_opt} "${searched_expr}" '{}' ${force_multi_files} ';' 2>/dev/null | sed 's|:.*$||1' | uniq
 
 fi
 

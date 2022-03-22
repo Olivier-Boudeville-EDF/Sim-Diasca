@@ -48,14 +48,19 @@
 
 
 % Miscellaneous functions.
--export([ size/1, get_process_info/1, get_process_info/2,
+-export([ size/1,
+		  get_process_info/1, get_process_info/2,
 		  display_process_info/1,
 		  checkpoint/1,
 		  display/1, display/2, display_timed/2, display_timed/3,
 		  display_error/1, display_error/2,
 		  throw_diagnosed/1, throw_diagnosed/2,
 		  debug/1, debug/2,
+
+		  % See also text_utils:version_to_string/1:
 		  parse_version/1, check_version/1, compare_versions/2,
+
+		  get_unix_process_specific_string/0,
 		  get_process_specific_value/0, get_process_specific_value/1,
 		  get_process_specific_value/2,
 		  get_process_size/1,
@@ -257,13 +262,29 @@
 -type version_number() :: non_neg_integer().
 
 
--type version() :: { version_number(), version_number(), version_number() }.
-% By default we consider that a version is a triplet of integer numbers.
+-type version() :: three_digit_version().
+% By default we consider that a version is a triplet of integers.
 
 
 -type two_digit_version() :: { version_number(), version_number() }.
+% Version as a pair of integerss, typically {MajorVersion, MinorVersion}.
 
--type any_version() :: version() | two_digit_version().
+
+-type three_digit_version() :: { version_number(), version_number(),
+								 version_number() }.
+% Version as a triplet of integers, typically {MajorVersion, MinorVersion,
+% ReleaseVersion}.
+
+
+
+-type four_digit_version() :: { version_number(), version_number(),
+								version_number(), version_number() }.
+% Version as a quadruplet of integers, typically {MajorVersion, MinorVersion,
+% ReleaseVersion, SubreleaseVersion}.
+
+
+-type any_version() :: two_digit_version() | three_digit_version()
+					 | four_digit_version().
 
 
 -type positive_index() :: pos_integer().
@@ -365,6 +386,7 @@
 			   external_data/0, unchecked_data/0, user_data/0,
 			   accumulator/0,
 			   version_number/0, version/0, two_digit_version/0, any_version/0,
+			   three_digit_version/0, four_digit_version/0,
 			   positive_index/0, zero_index/0,
 			   module_name/0, function_name/0, argument/0, arguments/0,
 			   command_spec/0, layer_name/0, record_name/0, field_name/0,
@@ -395,6 +417,7 @@
 
 -type atom_node_name() :: net_utils:atom_node_name().
 
+-type byte_size() :: system_utils:byte_size().
 
 % Even if not exported:
 -type process_info_result_item() :: erlang:process_info_result_item().
@@ -733,7 +756,7 @@ notify_pending_messages() ->
 
 
 
-% @doc Ensures that no message is pending in the mailbox of this process
+% @doc Ensures that no message is pending in the mailbox of this process.
 %
 % Does not block.
 %
@@ -766,7 +789,7 @@ wait_for( _Message, _Count=0 ) ->
 wait_for( Message, Count ) ->
 
 	%trace_utils:debug_fmt( "Waiting for ~B messages '~p'.",
-	%                      [ Count, Message ] ),
+	%                       [ Count, Message ] ),
 	receive
 
 		Message ->
@@ -1107,9 +1130,10 @@ send_to_pid_set( Message, { Pid, NewIterator }, Count ) ->
 
 
 % @doc Returns the number of bytes used by specified term.
--spec size( term() ) -> system_utils:byte_size().
+-spec size( term() ) -> byte_size().
 size( Term ) ->
 	system_utils:get_size( Term ).
+
 
 
 
@@ -1481,47 +1505,23 @@ check_version( T ) ->
 
 
 
-% @doc Compares the two pairs or triplets, which describe two version numbers
-% (ex: {0,1,0} or {4,2}) and returns either first_bigger, second_bigger, or
-% equal.
+% @doc Compares the two pairs, triplets or quadruplets (expected to be of the
+% same size), which describe two version numbers (ex: {0,1,0} and {0,1,7}) and
+% returns either first_bigger, second_bigger, or equal.
 %
 % The two compared versions must have the same number of digits.
 %
-% Note: the default term order is already what we needed.
-%
 -spec compare_versions( any_version(), any_version() ) ->
 								'equal' | 'first_bigger' | 'second_bigger'.
-compare_versions( {A1,A2,A3}, {B1,B2,B3} ) ->
-
-	case {A1,A2,A3} > {B1,B2,B3} of
-
-		true ->
-			first_bigger;
-
-		false ->
-
-			case {A1,A2,A3} =:= {B1,B2,B3} of
-
-				true ->
-					equal;
-
-				false ->
-					second_bigger
-
-			end
-
-	end;
-
-compare_versions( {A1,A2}, {B1,B2} ) ->
-
-	case {A1,A2} > {B1,B2} of
+compare_versions( A, B ) when tuple_size( A ) =:= tuple_size( B ) ->
+	% As the default term order is already what we need:
+	case A > B of
 
 		true ->
 			first_bigger;
 
 		false ->
-
-			case {A1,A2} =:= {B1,B2} of
+			case A =:= B of
 
 				true ->
 					equal;
@@ -1535,8 +1535,23 @@ compare_versions( {A1,A2}, {B1,B2} ) ->
 
 
 
+% @doc Returns a string that should be unique for the current UNIX process (of
+% the VM), based on its operating system PID and on millisecond-precise time.
+%
+% Reasonably unique (add the PID of the Erlang process if concurrent creations
+% may happen), and suitable for file creation.
+%
+% Ex: "myriad-596330--576460741437" (negative monotonic time).
+%
+-spec get_unix_process_specific_string() -> ustring().
+get_unix_process_specific_string() ->
+	text_utils:format( "myriad-~ts-~B",
+					   [ os:getpid(), time_utils:get_monotonic_time() ] ).
+
+
+
 % @doc Returns a value (a strictly positive integer) expected to be as much as
-% possible specific to the current process.
+% possible specific to the current (Erlang) process.
 %
 % Mostly based on its PID.
 %
@@ -1555,7 +1570,7 @@ get_process_specific_value() ->
 
 
 % @doc Returns a value (a strictly positive integer) expected to be as much as
-% possible specific to the specified PID.
+% possible specific to the specified (Erlang) PID.
 %
 % Useful for example when a large number of similar processes try to access to
 % the same resource (ex: a set of file descriptors) at the same time: they can
@@ -1596,7 +1611,7 @@ get_process_specific_value( Pid ) ->
 
 
 
-% @doc Returns a process-specific value in [Min,Max[.
+% @doc Returns a (Erlang) process-specific value in [Min,Max[.
 -spec get_process_specific_value( integer(), integer() ) -> integer().
 get_process_specific_value( Min, Max ) ->
 
@@ -1614,7 +1629,7 @@ get_process_specific_value( Min, Max ) ->
 % See https://erlang.org/doc/man/erlang.html#process_info-1 for more
 % information.
 %
--spec get_process_size( pid() ) -> system_utils:byte_size().
+-spec get_process_size( pid() ) -> byte_size().
 get_process_size( Pid ) ->
 
 	% 4 bytes is returned on a 32-bit architecture, and 8 is returned on a pure

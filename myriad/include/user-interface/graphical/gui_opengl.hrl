@@ -71,6 +71,12 @@
 %-endif.
 
 
+% The name of the ETS table in charge of storing OpenGL-related versions and
+% extensions.
+%
+-define( gl_info_ets_name, myriad_opengl_info ).
+
+
 % Corresponds to an OpenGL texture.
 -record( texture, {
 

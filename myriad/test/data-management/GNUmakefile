@@ -40,4 +40,4 @@ clean: clean-local
 
 clean-local:
 	-@/bin/rm -f raw_hdf5_test-fixture-*.hdf5 hdf5_support_test.hdf5 \
-				 sql_support_test.sqlite3
+				 sql_support_test.sqlite3 test-environment.etf

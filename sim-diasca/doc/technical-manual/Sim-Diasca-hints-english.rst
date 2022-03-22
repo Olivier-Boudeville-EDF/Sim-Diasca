@@ -98,7 +98,7 @@ Other Useful Information
 
 - Sim-Diasca is able to run on multiple computing hosts, possibly with different user names; these hosts, and per-host user names as well, can be specified thanks to the ``computing_hosts`` field of the ``deployment_settings`` record (see ``class_DeploymentManager.hrl``)
 
-- where is the temporary data for the simulation stored? The default value of the ``temporary_directory`` field of the ``deployment_settings`` record is ``/tmp``; hence temporary data for a simulation case named ``Foo`` run by a user ``norris`` would be stored, on each host, in, for example, ``/tmp/sim-diasca-Foo-norris/2013-6-5-at-10h-38m-17s-1de19ec70ed5`` (the suffix is made of a wall-clock timestamp and a rather unique simulation ID); on simulation success, this directory will be automatically removed
+- where is the temporary data for the simulation stored on computing hosts? The default value of the ``temporary_directory`` field of the ``deployment_settings`` record is ``/tmp``; hence temporary data for a simulation case named ``Foo`` run by a user ``norris`` would be stored, on each host, in, for example, ``/tmp/sim-diasca-Foo-norris/2013-6-5-at-10h-38m-17s-1de19ec70ed5`` (the suffix is made of a wall-clock timestamp and a rather unique simulation ID); on simulation success, this directory will be automatically removed
 
 - how is this temporary data organised? In the general case, there are three top-level directories:
 

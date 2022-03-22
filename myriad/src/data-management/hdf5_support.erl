@@ -21,9 +21,9 @@
 % along with this library.
 % If not, see <http://www.gnu.org/licenses/> and
 % <http://www.mozilla.org/MPL/>.
-
-% Creation date: Friday, July 31, 2015
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: Friday, July 31, 2015.
 
 
 % @doc This module centralises the support for <b>HDF5</b> (<em>Hierarchical
@@ -76,43 +76,40 @@
 		  convert_byte_order/1, deconvert_byte_order/1 ]).
 
 
-% Handle managed by the HDF5 library:
 -type handle() :: integer().
+% Handle managed by the HDF5 library.
 
 
+-type hdf5_file() :: handle().
 % Designates an actual HDF5 file:
 %
 % (HDF5 handle, not a file_utils:file())
-%
--type hdf5_file() :: handle().
 
 
-
-% By default HDF5 files are opened as read-only and will not be overwritten:
 -type open_option() ::
 		check_non_existing % 'H5F_ACC_EXCL'   (fail if file already exists)
-	  | read_write           % 'H5F_ACC_RDWR'   (otherwise read-only)
+	  | read_write         % 'H5F_ACC_RDWR'   (otherwise read-only)
 	  | overwrite          % 'H5F_ACC_TRUNC'  (overwrite existing files)
 	  | debug              % 'H5F_ACC_DEBUG'  (print debug info)
 	  | create             % 'H5F_ACC_CREAT'  (create non-existing files)
 	  | read_only.         % 'H5F_ACC_RDONLY' (read-only)
-
+% By default HDF5 files are opened as read-only and will not be overwritten.
 
 
 -type dataspace() :: handle().
-% An HDF5 dataspace, ie metadata.
+% An HDF5 dataspace, that is metadata.
 
 
--type rank() :: basic_utils:count().
+-type rank() :: count().
 % Rank of a dataspace, namely its number of dimensions (dimensionality): (up to
 % 32 in the general case; usually 1, 2 or 3).
 
 
--type dimension() :: basic_utils:count().
+-type dimension() :: count().
 % Index of a dimension.
 
 
--type dimension_size() :: basic_utils:count() | 'unlimited'.
+-type dimension_size() :: count() | 'unlimited'.
 % Number of elements of a dimension.
 
 
@@ -174,11 +171,11 @@
 % Specified to obtain datatypes.
 
 
-% Class identifier of a datatype:
 -type datatype_class_identifier() :: 'no_class' | 'integer'   | 'float' | 'time'
 								   | 'string'   | 'bitfield'  | 'opaque'
 								   | 'compound' | 'reference' | 'enumeration'
 								   | 'variable_length' | 'array'.
+% Class identifier of a datatype.
 
 
 -type byte_order() :: 'little_endian' | 'big_endian' | 'vax_mixed' | 'mixed'
@@ -186,7 +183,7 @@
 % Byte order of an atomic datatype.
 
 
--type dataset_name() :: ustring().
+-type dataset_name() :: string().
 % The name of a HDF5 dataset.
 
 
@@ -299,6 +296,13 @@
 % [https://github.com/Olivier-Boudeville-EDF/erlhdf5].
 
 
+% Shorthands:
+
+-type count() :: basic_utils:count().
+
+-type ustring() :: text_utils:ustring().
+
+
 
 % @doc Returns a list of the datatypes that this binding is expected to support.
 -spec get_supported_datatypes() -> [ supported_datatypes() ].
@@ -409,8 +413,8 @@ check_data_helper( _Data=[ Tuple | T ], TupleSize, BindingElemType,
 
 		% Doubles are float() | 'nan' | 'inf':
 		{ _EitherTrueOrFalse, Types } when MetaElemType =:= float
-						   andalso ( Types =:= { float, atom } orelse
-									 Types =:= { atom, float } ) ->
+						andalso ( Types =:= { float, atom } orelse
+								  Types =:= { atom, float } ) ->
 
 			case is_tuple_of_doubles( Tuple ) of
 
@@ -419,17 +423,17 @@ check_data_helper( _Data=[ Tuple | T ], TupleSize, BindingElemType,
 
 				false ->
 					throw( { invalid_data, non_double_tuple,
-							 { Tuple, Types }, { expected, MetaElemType } } )
+								{ Tuple, Types }, { expected, MetaElemType } } )
 
 			end;
 
 		{ true, AnotherType } ->
 			throw( { invalid_data, heterogeneous_tuple_types,
-					 { Tuple, AnotherType }, { expected, MetaElemType } } );
+						{ Tuple, AnotherType }, { expected, MetaElemType } } );
 
 		{ false, Types } ->
 			throw( { invalid_data, heterogeneous_tuple,
-					 { Tuple, Types }, { expected, MetaElemType } } )
+						{ Tuple, Types }, { expected, MetaElemType } } )
 
 	end,
 
@@ -460,13 +464,13 @@ check_data_helper( _Data=[ H | T ], TupleSize, BindingElemType,
 
 		OtherType ->
 				throw( { invalid_data, heterogeneous_element_types,
-						 { H, OtherType }, { expected, MetaElemType } } )
+							{ H, OtherType }, { expected, MetaElemType } } )
 
 	end.
 
 
 
-% Returns {BindingElemType, MetaElemType}.
+% @doc Returns {BindingElemType, MetaElemType}.
 %
 % We keep meta_utils conventions to avoid plenty of conversions.
 %
@@ -493,44 +497,41 @@ get_types_of( Element ) ->
 	end.
 
 
-% Tells whether specified tuple is made of doubles, ie either Erlang floats
+% @doc Tells whether specified tuple is made of doubles, ie either Erlang floats
 % and/or special values ('nan' and 'inf').
 %
 is_tuple_of_doubles( Tuple ) ->
 
-	lists:foldl( fun
+	lists:foldl(
+		fun
 
-					 ( Elem, _Acc=true ) ->
-						 case get_types_of( Elem ) of
+			( Elem, _Acc=true ) ->
+				case get_types_of( Elem ) of
 
-							 { native_long_float, float } ->
-								 true;
+					{ native_long_float, float } ->
+						true;
 
-							 _ ->
-								 false
+					_ ->
+						false
 
-						 end;
+				end;
 
-					 ( _Elem, _Acc=false ) ->
-						 false
+			( _Elem, _Acc=false ) ->
+				false
 
-				 end,
-				 _Acc0=true,
-				 tuple_to_list( Tuple ) ).
+		end,
+		_Acc0=true,
+		tuple_to_list( Tuple ) ).
 
 
 
 % @doc Returns the number of elements corresponding to specified dimensions.
--spec get_element_count( dimensions() ) -> basic_utils:count().
+-spec get_element_count( dimensions() ) -> count().
 get_element_count( Dimensions ) when is_tuple( Dimensions ) ->
-
 	lists:foldl(
-
-	  fun( E, Acc ) -> E * Acc end,
-	  _InitialAcc=1,
-	  _DimsAsList=tuple_to_list( Dimensions )
-
-	 );
+		fun( E, Acc ) -> E * Acc end,
+		_InitialAcc=1,
+		_DimsAsList=tuple_to_list( Dimensions ) );
 
 get_element_count( Dimension ) when is_integer( Dimension ) ->
 	Dimension.
@@ -584,8 +585,8 @@ start() ->
 
 	end,
 
-	HDF5Lib = file_utils:join( [ ExpectedBindingRoot, "priv",
-								 "erlhdf5.so" ] ),
+	HDF5Lib = file_utils:join(
+				[ ExpectedBindingRoot, "priv", "erlhdf5.so" ] ),
 
 	case file_utils:is_existing_file( HDF5Lib ) of
 
@@ -797,7 +798,7 @@ get_dimension_extensions( Dataspace ) ->
 % {5,5}, {9,9} ].
 %
 -spec get_dimension_extensions( rank(), dataspace() ) ->
-									  [ dimension_extension() ].
+										[ dimension_extension() ].
 get_dimension_extensions( Rank, Dataspace ) ->
 
 	{ ok, CurrentDimensions, MaxDimensions } =
@@ -936,7 +937,7 @@ create_dataset( DatasetName, Datatype, Dataspace, PropertyList, File ) ->
 -spec open_dataset( dataset_name(), hdf5_file() ) -> dataset().
 open_dataset( DatasetName, File ) ->
 
-	%trace_utils:debug_fmt( "Opening dataset '~ts' from file ~p.",
+	%trace_utils( "Opening dataset '~ts' from file ~p.",
 	%   [ DatasetName, File ] ),
 
 	case erlhdf5:h5dopen( File, DatasetName ) of
@@ -1023,7 +1024,7 @@ write( Data, Dataset, CheckData ) ->
 % @doc Updates the specified dataset at specified index (starting at #0) with
 % specified data.
 %
--spec update( data(), basic_utils:count(), dataset() ) -> void().
+-spec update( data(), count(), dataset() ) -> void().
 update( Data, Index, Dataset ) ->
 
 	% Gets a copy of the dataspace of this dataset:
@@ -1080,8 +1081,7 @@ update( Data, Index, Dataset ) ->
 % @doc Reads the specified named dataset of specified type and tuple size from
 % specified file, returning it as a list of tuples of specified size.
 %
--spec read( ustring(), supported_datatypes(), basic_utils:count(),
-			hdf5_file() ) -> data().
+-spec read( ustring(), supported_datatypes(), count(), hdf5_file() ) -> data().
 read( DatasetName, DataType, TupleSize, File ) ->
 
 	% Reads dataset:
@@ -1102,6 +1102,7 @@ read( DatasetName, DataType, TupleSize, File ) ->
 % @doc Reads the specified named dataset expected to contain strings, and
 % returns an (ordered) list of these strings.
 %
+-spec read_strings( ustring(), hdf5_file() ) -> [ ustring() ].
 read_strings( DatasetName, File ) ->
 
 	case erlhdf5:h5lt_read_dataset_string( File, DatasetName ) of

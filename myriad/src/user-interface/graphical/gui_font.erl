@@ -93,8 +93,6 @@
 
 % Shorthands:
 
-%-type count() :: basic_utils:count().
-
 -type ustring() :: text_utils:ustring().
 
 -type any_string() :: text_utils:any_string().

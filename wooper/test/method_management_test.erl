@@ -26,13 +26,11 @@
 % Creation date: Wednesday, October 31, 2018.
 
 
-
-% This module allows to test the management of the methods of a class.
+% @doc Testing the <b>management of the methods of a class</b>.
 -module(method_management_test).
 
 
 -export([ run/0 ]).
-
 
 
 -spec run() -> no_return().

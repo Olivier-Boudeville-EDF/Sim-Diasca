@@ -86,7 +86,8 @@
 			   compact_matrix3/0, rot_matrix3/0 ]).
 
 
--export([ new/1, new/2, null/0, identity/0, rotation/2,
+-export([ new/1, new/2, null/0, identity/0, translation/1, scaling/1,
+		  rotation/2,
 		  from_columns/3, from_rows/3,
 		  from_coordinates/9, from_compact_coordinates/6,
 		  from_2D/2,
@@ -96,7 +97,7 @@
 		  get_element/3, set_element/4,
 		  transpose/1,
 		  scale/2,
-		  add/2, sub/2, mult/2, apply/2,
+		  add/2, sub/2, mult/2, mult/1, apply/2,
 		  are_equal/2,
 		  determinant/1, comatrix/1, inverse/1,
 		  to_canonical/1, to_compact/1,
@@ -126,10 +127,12 @@
 -type scalar() :: linear:scalar().
 
 -type vector2() :: vector2:vector2().
+-type point2() :: point2:point2().
 
 -type user_vector3() :: vector3:user_vector3().
 -type vector3() :: vector3:vector3().
 -type unit_vector3() :: vector3:unit_vector3().
+-type point3() :: point3:point3().
 
 -type dimensions() :: matrix:dimensions().
 
@@ -182,6 +185,29 @@ null() ->
 -spec identity() -> matrix3().
 identity() ->
 	identity_3.
+
+
+
+% @doc Returns the (3x3) homogeneous (thus compact) matrix corresponding to a
+% translation of the specified vector.
+%
+-spec translation( vector2() ) -> compact_matrix3().
+translation( _VT=[ Tx, Ty ] ) ->
+	Zero = 0.0,
+	One = 1.0,
+	#compact_matrix3{ m11=One, m12=Zero, tx=Tx,
+					  m21=Zero, m22=One, ty=Ty }.
+
+
+
+% @doc Returns the (3x3) homogeneous (thus compact) matrix corresponding to the
+% scaling of the specified factors.
+%
+-spec scaling( { factor(), factor() } ) -> compact_matrix3().
+scaling( { Sx, Sy } ) ->
+	Zero = 0.0,
+	#compact_matrix3{ m11=Sx,   m12=Zero, tx=Zero,
+					  m21=Zero, m22=Sy,   ty=Zero }.
 
 
 
@@ -702,15 +728,102 @@ mult( _Ma=#compact_matrix3{ m11=A11, m12=A12, tx=Ax,
 
 
 
-% @doc Applies (on the right) the specified vector V to the specified matrix M:
-% returns M.V.
+% @doc Multiplies (in-order) the specified matrices.
+%
+% Ex: mult([Ma, Mb, Mc]) = mult(mult(Ma,Mb),Mc) = Ma.Mb.Mc
+%
+-spec mult( [ matrix3() ] ) -> matrix3().
+mult( [ Ma, Mb | T ] ) ->
+	mult( [ mult( Ma, Mb ) | T ] );
+
+mult( [ M ] ) ->
+	M.
+
+
+
+% @doc Applies (on the right) the specified 2D or 3D vector V or point P to the
+% specified matrix M: returns M.V.
+%
+% If the specified vector is a 2D one (i.e. not a 3D one), we assume that its
+% third (Vz) coordinate is 0.0, whereas if the specified point is a 2D one
+% (i.e. not a 3D one), we assume that its third (Pz) coordinate is 1.0, and
+% returns a 2D point whose coordinates have been normalised regarding the Z
+% coordinate resulting from the application of that extended point.
 %
 % Not a clause of mult/2 for an increased clarity.
 %
--spec apply( matrix3(), vector3() ) -> vector3().
-apply( _M=identity_3, V ) ->
-	V;
+-spec apply( matrix3(), vector2() ) -> vector2();
+		   ( matrix3(), vector3() ) -> vector3();
+		   ( matrix3(), point2() ) -> point2();
+		   ( matrix3(), point3() ) -> point3().
+apply( _M=identity_3, VorP ) ->
+	VorP;
 
+% A nice feature is that the actual, lowest-level types of vectors and points
+% are different (list vs tuple) and thus can be discriminated.
+%
+% First with a vector2 (implicitly Vz is 0.0):
+apply( _M=#matrix3{ m11=M11,  m12=M12,  m13=_M13,
+					m21=M21,  m22=M22,  m23=_M23,
+					m31=_M31, m32=_M32, m33=_M33 },
+	   _V=[ Vx, Vy ] ) ->
+
+	%Vz = 0.0,
+	ResX = M11*Vx + M12*Vy,
+	ResY = M21*Vx + M22*Vy,
+	%ResZ = M31*Vx + M32*Vy,
+
+	[ ResX, ResY ];
+
+
+apply( _M=#compact_matrix3{ m11=M11, m12=M12, tx=_Tx,
+							m21=M21, m22=M22, ty=_Ty },
+	   _V=[ Vx, Vy ] ) ->
+	%Vz = 0.0,
+	ResX = M11*Vx + M12*Vy,
+	ResY = M21*Vx + M22*Vy,
+	% Here ResZ = Vz = 0.0,
+
+	[ ResX, ResY ];
+
+
+% Then with a point2 (implicitly Pz is 1.0):
+apply( _M=#matrix3{ m11=M11, m12=M12, m13=M13,
+					m21=M21, m22=M22, m23=M23,
+					m31=M31, m32=M32, m33=M33 },
+	   _P={ Px, Py } ) ->
+
+	%Pz = 1.0,
+	ResX = M11*Px + M12*Py + M13,
+	ResY = M21*Px + M22*Py + M23,
+	ResZ = M31*Px + M32*Py + M33,
+
+	% A point shall be normalised:
+	case math_utils:is_null( ResZ ) of
+
+		true ->
+			throw( null_z_coordinate );
+
+		false ->
+			{ ResX/ResZ, ResY/ResZ }
+
+	end;
+
+
+apply( _M=#compact_matrix3{ m11=M11, m12=M12, tx=Tx,
+							m21=M21, m22=M22, ty=Ty },
+	   _P={ Px, Py } ) ->
+
+	%Pz = 1.0,
+	ResX = M11*Px + M12*Py + Tx,
+	ResY = M21*Px + M22*Py + Ty,
+	% Here ResZ = Pz = 1.0,
+
+	% Already normalised:
+	{ ResX, ResY };
+
+
+% Then with a vector3:
 apply( _M=#matrix3{ m11=M11, m12=M12, m13=M13,
 					m21=M21, m22=M22, m23=M23,
 					m31=M31, m32=M32, m33=M33 },
@@ -730,7 +843,30 @@ apply( _M=#compact_matrix3{ m11=M11, m12=M12, tx=Tx,
 	ResY = M21*Vx + M22*Vy + Ty*Vz,
 	ResZ = Vz,
 
-	[ ResX, ResY, ResZ ].
+	[ ResX, ResY, ResZ ];
+
+
+% Finally with a point3 (mostly the same as for vector3):
+apply( _M=#matrix3{ m11=M11, m12=M12, m13=M13,
+					m21=M21, m22=M22, m23=M23,
+					m31=M31, m32=M32, m33=M33 },
+	   _P={ Px, Py, Pz } ) ->
+
+	ResX = M11*Px + M12*Py + M13*Pz,
+	ResY = M21*Px + M22*Py + M23*Pz,
+	ResZ = M31*Px + M32*Py + M33*Pz,
+
+	{ ResX, ResY, ResZ };
+
+
+apply( _M=#compact_matrix3{ m11=M11, m12=M12, tx=Tx,
+							m21=M21, m22=M22, ty=Ty },
+	   _P={ Px, Py, Pz } ) ->
+	ResX = M11*Px + M12*Py + Tx*Pz,
+	ResY = M21*Px + M22*Py + Ty*Pz,
+	ResZ = Pz,
+
+	{ ResX, ResY, ResZ }.
 
 
 

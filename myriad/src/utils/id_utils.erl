@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2022 Olivier Boudeville
+% Copyright (C) 2017-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -26,12 +26,14 @@
 % Creation date: Sunday, December 24, 2017.
 
 
-
 % @doc Management of various <b>identifiers</b>, such as UUIDs or ones not only
 % sortable but also for which any number of identifiers may be inserted between
 % any two of them.
 %
 % See id_utils_test.erl for the corresponding test.
+%
+% See also, in the basic_utils module, get_unix_process_specific_string/0 and
+% get_process_specific_value/0.
 %
 -module(id_utils).
 
@@ -204,22 +206,22 @@ uuidgen_internal() ->
 			{ TrimmedOutput, _Rest } = lists:split( _N=32, Output ),
 
 			%trace_utils:debug_fmt( "UUID output length: ~B, for '~p'.",
-			%	[ length( TrimmedOutput ), TrimmedOutput ] ),
+			%   [ length( TrimmedOutput ), TrimmedOutput ] ),
 
 			% We translate these bytes into hexadecimal values:
 			V = [ string:to_lower(
 					[ hd( io_lib:format( "~.16B", [ B rem 16 ] ) ) ] )
-				  || B <- TrimmedOutput ],
+						|| B <- TrimmedOutput ],
 
 			%trace_utils:debug_fmt( "UUID hexa length: ~B, for '~ts'.",
-			%					   [ length( V ), V ] ),
+			%                       [ length( V ), V ] ),
 
 			%32 = length( V ),
 
 			lists:flatten( io_lib:format(
-			  % Pioneer module: text_utils:format(
-			  "~ts~ts~ts~ts~ts~ts~ts~ts-~ts~ts~ts~ts-~ts~ts~ts~ts-~ts~ts"
-			  "~ts~ts-~ts~ts~ts~ts~ts~ts~ts~ts~ts~ts~ts~ts", V ) );
+				% Pioneer module: text_utils:format(
+				"~ts~ts~ts~ts~ts~ts~ts~ts-~ts~ts~ts~ts-~ts~ts~ts~ts-~ts~ts"
+				"~ts~ts-~ts~ts~ts~ts~ts~ts~ts~ts~ts~ts~ts~ts", V ) );
 
 		{ ErrorCode, ErrorOutput } ->
 			throw( { uuidgen_internal_failed, ErrorCode, ErrorOutput } )
@@ -649,8 +651,7 @@ assign_in_turn_ids( LowerId, HigherId, _ElemsToIdentify=[ E | T ],
 	trace_utils:debug_fmt( "- assigning to element ~p, "
 		"between ~ts and ~ts: ~ts",
 		[ E, sortable_id_to_string( LowerId ),
-		  sortable_id_to_string( HigherId ),
-		  sortable_id_to_string( NewId ) ] ),
+		  sortable_id_to_string( HigherId ), sortable_id_to_string( NewId ) ] ),
 
 	NewIdtable = ?table:add_new_entry( E, NewId, IdentifierTable ),
 
@@ -679,7 +680,7 @@ sortable_ids_to_string( _Ids=[] ) ->
 
 sortable_ids_to_string( Ids ) ->
 	text_utils:strings_to_listed_string(
-	  [ sortable_id_to_string( Id ) || Id <- Ids ] ).
+		[ sortable_id_to_string( Id ) || Id <- Ids ] ).
 
 
 
@@ -698,7 +699,7 @@ identifier_table_to_string( IdentifierTable ) ->
 
 			Strings = [ text_utils:format( "element '~p' associated to "
 				"identifier ~ts", [ E, sortable_id_to_string( Id ) ] )
-						|| { E, Id } <- ElemIdPairs ],
+										|| { E, Id } <- ElemIdPairs ],
 
 			text_utils:format( "identifier table having ~B entries: ~ts",
 				[ length( ElemIdPairs ),

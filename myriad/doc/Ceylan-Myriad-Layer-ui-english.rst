@@ -105,6 +105,9 @@ It is located in ``{src,test}/user-interface/textual``; see ``term_ui.erl`` for 
 Graphical User Interface: ``gui``
 ---------------------------------
 
+The ``gui`` modules provide features like 2D/3D rendering, event handling, input management (keyboard/mouse), canvas services (basic or OpenGL), and the various related staples (management of images, texts and fonts, colors, window manager, etc.); refer to `the gui sources <https://github.com/Olivier-Boudeville/Ceylan-Myriad/tree/master/src/user-interface/graphical>`_ for more complete information.
+
+
 
 For Classical 2D Applications
 .............................
@@ -113,15 +116,19 @@ For Classical 2D Applications
 GUI Backend
 ***********
 
-This interface relied initially on ``gs`` (now deprecated), now on `wx <http://erlang.org/doc/man/wx.html>`_ (a port of `wxWidgets <https://www.wxwidgets.org/>`_), maybe later in HTML 5 [#]_. For the base dialogs, `Zenity <https://en.wikipedia.org/wiki/Zenity>`_ could have been an option.
+This interface used to rely on (now deprecated) ``gs``, and now relies on `wx <http://erlang.org/doc/man/wx.html>`_ (a port of `wxWidgets <https://www.wxwidgets.org/>`_, which belongs to the same category as GTK or Qt). For the base dialogs, `Zenity <https://en.wikipedia.org/wiki/Zenity>`_ could have been an option.
+
+
+.. [#] Maybe later it will be based on HTML 5 (although we are not big fans of light clients and of using browsers for everything), possibly relying some day for that on the `Nitrogen web framework <http://nitrogenproject.com/>`_, on `N2O <https://ws.n2o.dev/>`_ or on any other relevant HTML5 framework.
+
+
+We also borrowed elements from the truly impressive `Wings3D <http://www.wings3d.com/>`_ (see also `our section about it <https://howtos.esperide.org/ThreeDimensional.html#wings3d>`_) modeller, and also on the remarkable `libSDL <https://libsdl.org/>`_ (2.0) library together with its `esdl2 <https://github.com/ninenines/esdl2>`_ Erlang binding.
 
 If having very demanding 2D needs, one may refer to the `3D services`_ section (as it is meant to be hardware-accelerated, and the 2D services are a special cases thereof).
 
 
-.. [#] Possibly relying some day for that on the `Nitrogen web framework <http://nitrogenproject.com/>`_, on `N2O <https://ws.n2o.dev/>`_ or on any relevant HTML5 framework.
 
-
-.. Note:: ``gui`` does not adhere yet to the ``ui`` conventions, but it will ultimately will. Currently it offers a graphical API on top of ``wx``.
+.. Note:: Our ``gui`` module does not adhere yet to the ``ui`` conventions, but it will ultimately will. Currently it offers a graphical API (currently on top of ``wx``).
 
 
 .. _`wx availability`:
@@ -130,8 +137,6 @@ As a consequence, `wxWidgets <https://www.wxwidgets.org/>`_ must be available on
 
 ``wxWidgets`` must be installed *prior* to building Erlang, so that it is detected by its configuration script and a proper ``wx`` module can be used afterwards. Running then ``wx:demo()`` is a good test of the actual support.
 
-
-.. Note GUI services are currently being reworked, to provide a ``gs``-like concurrent API while relying underneath on ``wx``, with some additions (such as canvases).
 
 
 Purpose of ``gui``
@@ -152,7 +157,7 @@ The usual mode of operation is the following:
 
 .. code:: erlang
 
- gui:subscribe_to_events({onWindowClosed, MainFrame}))
+ gui:subscribe_to_events({onWindowClosed, MainFrame})
 
 3. The user process also triggers any relevant operation (ex: clearing widgets, setting various parameters), generally shows at least a main frame and records the GUI state that it needs for future use (typically containing at least the MyriadGUI references of the widgets that it created)
 4. Then the user process enters its own (GUI-specific) main loop, from which it will receive the events that it subscribed to, and to which it will react by performing application-specific operations and/or GUI-related operations (creating, modifying, deleting widgets). Generally at least one condition is defined in order to leave that main loop and stop the GUI (``gui:stop/0``)
@@ -178,11 +183,13 @@ These services are located in ``{src,test}/user-interface/graphical`` (see ``gui
 
 This last ``lorenz_test.erl`` offers another complete example:
 
-:raw-html:`<center><img src="myriad-lorenz-test.png" id="responsive-image-full"></img></center>`
+:raw-html:`<center><img src="myriad-lorenz-test.png" id="responsive-image-large"></img></center>`
 :raw-latex:`\begin{figure}[h] \centering \includegraphics[scale=0.2]{myriad-lorenz-test} \end{figure}`
 
 
-Related information of interest:
+
+
+Finally, here are some very general wx-related information that may be of help when programming GUIs with this backend:
 
 - if receiving errors about ``{badarg,"This"}``, like in:
 
@@ -190,11 +197,16 @@ Related information of interest:
 
  {'_wxe_error_',710,{wxDC,setPen,2},{badarg,"This"}}
 
-it is probably the sign that an attempt was done to perform an operation on an already-deallocated wx object
+it is probably the sign that the user code attempted to perform an operation on an already-deallocated wx object; the corresponding life-cycle management might be error-prone, as some deallocations are implicit, others are explicit, and in a concurrent context race conditions easily happen
 
-- wxErlang: `Getting started <https://arifishaq.files.wordpress.com/2017/12/wxerlang-getting-started.pdf>`_ and `Speeding up <https://arifishaq.files.wordpress.com/2018/04/wxerlang-speeding-up.pdf>`_, by Arif Ishaq
 
-- Doug Edmunds' `wxerlang workups <http://wxerlang.dougedmunds.com/>`_
+- extra information resources about ``wx`` (besides the documentation of its modules):
+
+  - wxErlang: `Getting started <https://arifishaq.files.wordpress.com/2017/12/wxerlang-getting-started.pdf>`_ and `Speeding up <https://arifishaq.files.wordpress.com/2018/04/wxerlang-speeding-up.pdf>`_, by Arif Ishaq
+
+  - Doug Edmunds' `wxerlang workups <http://wxerlang.dougedmunds.com/>`_
+
+  - `wxWidgets itself <https://www.wxwidgets.org/>`_
 
 .. comment 404: - http://www.idiom.com/~turner/wxtut/wxwidgets.html
 
@@ -211,16 +223,18 @@ In order to render 3D content, Myriad relies on `OpenGL <https://en.wikipedia.or
 
 Sophisticated 3D rendering is not necessarily an area where Erlang shines (perhaps, on the context of a client/server multimedia application, the client could rely on an engine like `Godot <https://en.wikipedia.org/wiki/Godot_(game_engine)>`_ instead), yet at least some level of rendering capabilities is convenient whenever performing 3D computations, implementing a server-side 3D logic, processing meshes, etc.
 
+One may refer to our `3D mini-HOWTO <https://howtos.esperide.org/ThreeDimensional.html>`_ for general information regarding these topics.
+
 
 
 Prerequisites
 *************
 
-So a prerequisite is that the local host enjoys at least some kind of **OpenGL support**, either in software or, preferably, with an hardware acceleration.
+So a prerequisite is that the local host enjoys at least some kind of **OpenGL support**, either in software or, most preferably, with an hardware acceleration.
 
 .. _`OpenGL troubleshooting`:
 
-Just run our ``gui_opengl_test.erl`` test to have the detected local configuration examined. One should refer to our HOWTO section `about 3D operating system support <http://howtos.esperide.org/ThreeDimensional.html#os-support>`_ for detailed information and troubleshooting guidelines.
+Just run our ``gui_opengl_integration_test.erl`` test to have the detected local configuration examined. One should refer to our HOWTO section `about 3D operating system support <http://howtos.esperide.org/ThreeDimensional.html#os-support>`_ for detailed information and troubleshooting guidelines.
 
 As for the **Erlang side** of this OpenGL support, one may refer to `this section <https://www.erlang.org/doc/man/wxglcanvas#description>`_ to ensure that the Erlang build at hand has indeed its OpenGL support enabled.
 
@@ -234,15 +248,34 @@ User API
 ________
 
 
-The Myriad OpenGL utilities are defined in the ``gui_opengl`` module; the many OpenGL defines are available when having included ``gui_opengl.hrl`` (ex: as ``?GL_QUAD_STRIP``).
+The Myriad OpenGL utilities are defined in the ``gui_opengl`` module.
+
+Shaders can be defined, in GLSL (see `this page <https://www.khronos.org/opengl/wiki/Core_Language_(GLSL)>`_ for more information).
+
+Myriad recommends using the ``vertex.glsl`` extension for vertex shaders, the ``.tess-ctrl.glsl`` one for tessellation control shaders and ``.tess-eval.glsl`` for tessellation evaluation ones, ``.geometry.glsl`` for geometry shaders, ``fragment.glsl`` for fragment shaders and finally ``.compute.glsl`` for compute shaders.
+
+The many OpenGL defines are available when having included ``gui_opengl.hrl`` (ex: as ``?GL_QUAD_STRIP``).
 
 These utilities directly relate to Myriad's `spatial services and conventions`_ and to its support of the `glTF file format`_.
 
-The ``gui_opengl_test.erl`` offers a complete usage example.
+Various tests offer usage examples of the MyriadGUI API for 3D rendering:
+
+- ``gui_opengl_minimal_test.erl`` runs a minimal test showcasing the proper local OpenGL support, based on normalised coordinates (in ``[0.0,1.0]``)
+- ``gui_opengl_2D_test.erl`` is a 2D test operating with absolute (non-normalised) coordinates
+- ``gui_opengl_integration_test.erl`` demonstrates more features (quadrics, textures, etc.)
+- ``gui_opengl_mvc_test.erl`` proposes a MVC architecture (`Model-View-Controller <https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller>`_) where these three elements are uncoupled in separate processes yet are properly interlinked, the view relying on the MyriadGUI OpenGL support
+- ``gui_opengl_minimal_shader_test.erl`` showcases the use of more recent OpenGL APIs (3.3 core [#]_), with GLSL shaders defined in ``gui_opengl_minimal_shader.{vertex,fragment}.glsl``
+
+.. [#] Not compatible with all GPUs; notably Intel ones may only support older versions (ex: 2.1).
 
 .. Note:: Almost all OpenGL operations require that an OpenGL context already exists. When it is done, all GL/GLU operations can be done as usual.
 
-		 So the point of MyriadGUI here is mostly to create a suitable OpenGL context, offer a few additional, higher-level, stricter constructs to ease the integration and use, and to connect this rendering capability to the rest of the GUI (ex: regarding event management).
+		 So the point of MyriadGUI here is mostly to create a suitable OpenGL context, to offer a few additional, higher-level, stricter constructs to ease the integration and use (ex: for the compilation of the various types of shaders and the linking of GLSL programs), and to connect this rendering capability to the rest of the GUI (ex: regarding event management).
+
+		 Modern OpenGL is supported (ex: version 4.6), even though the compatibility context allows to use the API of OpenGL version 1.1.
+
+		 See the `HOWTO section about OpenGL <https://howtos.esperide.org/ThreeDimensional.html#opengl-corner>`_ for more explanations.
+
 
 
 Configuration
@@ -258,7 +291,7 @@ Setting the ``myriad_debug_opengl_support`` flag will result in more runtime inf
 Internal Implementation
 _______________________
 
-The MyriadGUI 2D/3D services rely on the related Erlang-native modules, namely `gl <https://www.erlang.org/doc/man/gl.html>`_ and `glu <https://www.erlang.org/doc/man/glu.html>`_.
+The MyriadGUI 2D/3D services rely on the related Erlang-native modules, namely `gl <https://www.erlang.org/doc/man/gl.html>`_ and `glu <https://www.erlang.org/doc/man/glu.html>`_, which are NIF-based bindings to the local OpenGL library.
 
 As for the ``wx`` module (see the `wx availability`_ section), it provides a convenient solution in order to create a suitable OpenGL context.
 

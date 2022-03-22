@@ -332,7 +332,7 @@ sort_by_angle( Pivot, Points ) ->
 				maybe( any_point2() ), [ angle_pair() ] ) ->  [ any_point2() ].
 sort_by_angle( _Pivot, _Points=[], LeftPairs, _MaybeP=undefined, RightPairs ) ->
 
-	cond_utils:if_defined( bounding_boxes, trace_utils:debug(
+	cond_utils:if_defined( bounding_spaces, trace_utils:debug(
 								"sort_by_angle: no middle point found." ) ),
 
 	% Not having a middle point to integrate here:
@@ -340,7 +340,7 @@ sort_by_angle( _Pivot, _Points=[], LeftPairs, _MaybeP=undefined, RightPairs ) ->
 	SortedPairs = lists:keysort( Index, LeftPairs )
 										++ lists:keysort( Index, RightPairs ),
 
-	cond_utils:if_defined( bounding_boxes,
+	cond_utils:if_defined( bounding_spaces,
 		trace_utils:debug_fmt( "Full sorted list: ~w.", [ L ] ) ),
 
 	reverse_and_drop_angle( SortedPairs, _Acc=[] );
@@ -348,7 +348,7 @@ sort_by_angle( _Pivot, _Points=[], LeftPairs, _MaybeP=undefined, RightPairs ) ->
 
 sort_by_angle( _Pivot, _Points=[], LeftPairs, MiddlePoint, RightPairs ) ->
 
-	cond_utils:if_defined( bounding_boxes, trace_utils:debug(
+	cond_utils:if_defined( bounding_spaces, trace_utils:debug(
 		"sort_by_angle: at least one middle point found." ) ),
 
 	Index = 1,

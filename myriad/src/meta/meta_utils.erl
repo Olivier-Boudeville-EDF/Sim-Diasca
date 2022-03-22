@@ -26,7 +26,6 @@
 % Creation date: Friday, December 19, 2014.
 
 
-
 % @doc Gathering of various higher-level, convenient <b>meta-related
 % facilities</b>, notably regarding metaprogramming, types and parse transforms.
 %
@@ -146,15 +145,12 @@
 
 
 
-
-
 -type parse_transform_options() :: proplists:proplist().
 % Options specified to a parse transform at runtime, like: report_warnings,
 % beam,report_errors, {cwd,"X"}, {outdir,"Y"}, {i,"Z"}, {parse_transform,P},
 % debug_info, warnings_as_errors, etc.
 %
 % (hence not a list_table, anyway not available here)
-
 
 
 
@@ -295,7 +291,7 @@ add_function( FunctionName, FunctionArity, Clauses,
 	% table, as would be done automatically when recomposing the AST:
 	%
 	%NewExportTable = ast_info:ensure_function_exported( FunId, [ ExportLoc ],
-	%										  ModuleInfo, ExportTable ),
+	%                                   ModuleInfo, ExportTable ),
 
 	ModuleInfo#module_info{ %function_exports=NewExportTable,
 							functions=NewFunTable }.
@@ -462,6 +458,9 @@ list_exported_functions( ModuleName ) ->
 
 	end,
 
+	% Supposedly relevant:
+	{ module, ModuleName } = code:ensure_loaded( ModuleName ),
+
 	try
 
 		ModuleName:module_info( exports )
@@ -497,6 +496,10 @@ get_arities_for( ModuleName, FunctionName ) ->
 -spec is_function_exported( module_name(), function_name(), arity() ) ->
 									boolean().
 is_function_exported( ModuleName, FunctionName, Arity ) ->
+
+	% Could have relied on erlang:function_exported/3 after a
+	% code:ensure_loaded/1:
+	%
 	lists:member( { FunctionName, Arity },
 				  list_exported_functions( ModuleName ) ).
 
