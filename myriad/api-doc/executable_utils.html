@@ -24,10 +24,6 @@ for the management of the shells and command lines.</p>
 
 <h2><a name="types">Data Types</a></h2>
 
-<h3 class="typedecl"><a name="type-any_file_path">any_file_path()</a></h3>
-<p><tt>any_file_path() = <a href="file_utils.html#type-any_file_path">file_utils:any_file_path()</a></tt></p>
-
-
 <h3 class="typedecl"><a name="type-command_line_argument">command_line_argument()</a></h3>
 <p><tt>command_line_argument() = <a href="system_utils.html#type-command_line_argument">system_utils:command_line_argument()</a></tt></p>
 
@@ -52,18 +48,6 @@ for the management of the shells and command lines.</p>
 <p><tt>file_path() = <a href="file_utils.html#type-file_path">file_utils:file_path()</a></tt></p>
 
 
-<h3 class="typedecl"><a name="type-md5_sum">md5_sum()</a></h3>
-<p><tt>md5_sum() = non_neg_integer()</tt></p>
-<p> MD5 sum, a 128-bit hash value.</p>
-
-<h3 class="typedecl"><a name="type-sha1_sum">sha1_sum()</a></h3>
-<p><tt>sha1_sum() = non_neg_integer()</tt></p>
-<p> SHA1 sum, a 160-bit hash value.</p>
-
-<h3 class="typedecl"><a name="type-sha_sum">sha_sum()</a></h3>
-<p><tt>sha_sum() = non_neg_integer()</tt></p>
-<p> SHA sum, a hash value of unspecified size.</p>
-
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
 <p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
 
@@ -77,17 +61,6 @@ for the management of the shells and command lines.</p>
 directory (specified as a plain string).</td></tr>
 <tr><td valign="top"><a href="#can_generate_png_from_graph-0">can_generate_png_from_graph/0</a></td><td>Returns whether a PNG file can be generated from a graph file: either
  confirms it, or returns an hint why not.</td></tr>
-<tr><td valign="top"><a href="#compute_md5_sum-1">compute_md5_sum/1</a></td><td>Returns the MD5 sum computed from the content of the specified file, as
- an unsigned integer, actually of 128 bits (ex:
- 96950473382892364268626543336313804804, corresponding to hexadecimal string
- "48effb631c66e93c7054c10f798f5804").</td></tr>
-<tr><td valign="top"><a href="#compute_sha1_sum-1">compute_sha1_sum/1</a></td><td>Returns the SHA1 sum computed from the content of the specified file, as
- an unsigned integer, actually of 160 bits (ex:
- 189271338729529876450691804503218393830331783574, corresponding to hexadecimal
- string "212738699f721d8d8c3e58dac2b113bb8d0c1996").</td></tr>
-<tr><td valign="top"><a href="#compute_sha_sum-2">compute_sha_sum/2</a></td><td>Returns the SHA sum computed from the content of the specified file, as
- an unsigned integer, whose size depends on the specified algorithm: 1, 224,
- 256, 384, 512, 512224, 512256 (see 'man shasum' for more details).</td></tr>
 <tr><td valign="top"><a href="#display_pdf_file-1">display_pdf_file/1</a></td><td>Displays (without blocking) to the user the specified PNG, using an 
 external viewer.</td></tr>
 <tr><td valign="top"><a href="#display_png_file-1">display_png_file/1</a></td><td>Displays (without blocking) to the user the specified PNG, using an 
@@ -114,6 +87,10 @@ the dot (graphviz) syntax.</td></tr>
 <tr><td valign="top"><a href="#get_default_erlang_interpreter_path-0">get_default_erlang_interpreter_path/0</a></td><td>Returns an absolute path to the default Erlang interpreter.</td></tr>
 <tr><td valign="top"><a href="#get_default_erlang_root-0">get_default_erlang_root/0</a></td><td>Returns an absolute path to the root directory of the current Erlang 
 installation.</td></tr>
+<tr><td valign="top"><a href="#get_default_graph_stream_tool_name-0">get_default_graph_stream_tool_name/0</a></td><td>Returns the name of the default tool used to process streamed graphs.</td></tr>
+<tr><td valign="top"><a href="#get_default_graph_stream_tool_path-0">get_default_graph_stream_tool_path/0</a></td><td>Returns an absolute path to the default tool used to process streamed
+ graphs.</td></tr>
+<tr><td valign="top"><a href="#get_default_hashing_tool-0">get_default_hashing_tool/0</a></td><td>Returns the default tool to compute any kind of hash.</td></tr>
 <tr><td valign="top"><a href="#get_default_image_browser_name-0">get_default_image_browser_name/0</a></td><td>Returns the name of the default image browser tool.</td></tr>
 <tr><td valign="top"><a href="#get_default_image_browser_path-0">get_default_image_browser_path/0</a></td><td>Returns an absolute path to the default image browser tool.</td></tr>
 <tr><td valign="top"><a href="#get_default_image_viewer_name-0">get_default_image_viewer_name/0</a></td><td>Returns the name of the default image viewer tool.</td></tr>
@@ -121,14 +98,12 @@ installation.</td></tr>
 <tr><td valign="top"><a href="#get_default_java_runtime-0">get_default_java_runtime/0</a></td><td>Returns the default tool to execute Java programs.</td></tr>
 <tr><td valign="top"><a href="#get_default_jinterface_path-0">get_default_jinterface_path/0</a></td><td>Returns the default path to the .jar file implementing JInterface, 
 namely 'OtpErlang.jar'.</td></tr>
-<tr><td valign="top"><a href="#get_default_md5_tool-0">get_default_md5_tool/0</a></td><td>Returns the default tool to compute MD5 sums.</td></tr>
 <tr><td valign="top"><a href="#get_default_openssl_executable_name-0">get_default_openssl_executable_name/0</a></td><td>Returns the name default openssl-based executable.</td></tr>
 <tr><td valign="top"><a href="#get_default_openssl_executable_path-0">get_default_openssl_executable_path/0</a></td><td>Returns an absolute path to the default openssl-based executable.</td></tr>
 <tr><td valign="top"><a href="#get_default_pdf_viewer_name-0">get_default_pdf_viewer_name/0</a></td><td>Returns the name of the default PDF viewer tool.</td></tr>
 <tr><td valign="top"><a href="#get_default_pdf_viewer_path-0">get_default_pdf_viewer_path/0</a></td><td>Returns an absolute path to the default PDF viewer tool.</td></tr>
 <tr><td valign="top"><a href="#get_default_scp_executable_name-0">get_default_scp_executable_name/0</a></td><td>Returns the name default SSH-based scp executable.</td></tr>
 <tr><td valign="top"><a href="#get_default_scp_executable_path-0">get_default_scp_executable_path/0</a></td><td>Returns an absolute path to the default SSH-based scp executable.</td></tr>
-<tr><td valign="top"><a href="#get_default_sha_tool-0">get_default_sha_tool/0</a></td><td>Returns the default tool to compute SHA sums.</td></tr>
 <tr><td valign="top"><a href="#get_default_sql_client-0">get_default_sql_client/0</a></td><td>Returns the default client to interact with a SQL database.</td></tr>
 <tr><td valign="top"><a href="#get_default_ssh_client_name-0">get_default_ssh_client_name/0</a></td><td>Returns the name of the default SSH client.</td></tr>
 <tr><td valign="top"><a href="#get_default_ssh_client_path-0">get_default_ssh_client_path/0</a></td><td>Returns an absolute path to the default SSH client.</td></tr>
@@ -140,11 +115,13 @@ namely 'OtpErlang.jar'.</td></tr>
 <tr><td valign="top"><a href="#get_default_web_browser_path-0">get_default_web_browser_path/0</a></td><td>Returns an absolute path to the default web browser tool.</td></tr>
 <tr><td valign="top"><a href="#get_default_wide_text_viewer_name-1">get_default_wide_text_viewer_name/1</a></td><td>Returns the name of the default viewer tool for wider texts.</td></tr>
 <tr><td valign="top"><a href="#get_default_wide_text_viewer_path-1">get_default_wide_text_viewer_path/1</a></td><td>Returns an absolute path to the default viewer tool for wider texts.</td></tr>
+<tr><td valign="top"><a href="#get_default_xml_prettyprinter-0">get_default_xml_prettyprinter/0</a></td><td>Returns the default client to pretty-print XML content.</td></tr>
 <tr><td valign="top"><a href="#get_default_xz_compress_tool-0">get_default_xz_compress_tool/0</a></td><td>Returns the default tool to use to compress in the XZ format.</td></tr>
 <tr><td valign="top"><a href="#get_default_xz_decompress_tool-0">get_default_xz_decompress_tool/0</a></td><td>Returns the default tool to use to decompress in the XZ format.</td></tr>
 <tr><td valign="top"><a href="#get_default_zip_compress_tool-0">get_default_zip_compress_tool/0</a></td><td>Returns the default tool to use to compress in the ZIP format.</td></tr>
 <tr><td valign="top"><a href="#get_default_zip_decompress_tool-0">get_default_zip_decompress_tool/0</a></td><td>Returns the default tool to use to decompress in the ZIP format.</td></tr>
 <tr><td valign="top"><a href="#get_gnuplot_path-0">get_gnuplot_path/0</a></td><td>Returns an absolute path to a gnuplot executable.</td></tr>
+<tr><td valign="top"><a href="#get_make_path-0">get_make_path/0</a></td><td>Returns an absolute path to the default (GNU) make executable.</td></tr>
 <tr><td valign="top"><a href="#get_secondary_default_audio_player_name-0">get_secondary_default_audio_player_name/0</a></td><td>Returns the name of the secondary default audio player.</td></tr>
 <tr><td valign="top"><a href="#get_ssh_mute_option-0">get_ssh_mute_option/0</a></td><td>Returns a string to be inserted into a command-line call to ssh/scp so 
 that it can run as much as possible non-interactively.</td></tr>
@@ -178,35 +155,6 @@ directory (specified as a plain string)</p>
 <p> </p>
 </div><p>Returns whether a PNG file can be generated from a graph file: either
  confirms it, or returns an hint why not.
-</p>
-
-<h3 class="function"><a name="compute_md5_sum-1">compute_md5_sum/1</a></h3>
-<div class="spec">
-<p><tt>compute_md5_sum(Filename::<a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-md5_sum">md5_sum()</a></tt><br></p>
-<p> </p>
-</div><p>Returns the MD5 sum computed from the content of the specified file, as
- an unsigned integer, actually of 128 bits (ex:
- 96950473382892364268626543336313804804, corresponding to hexadecimal string
- "48effb631c66e93c7054c10f798f5804").
-</p>
-
-<h3 class="function"><a name="compute_sha1_sum-1">compute_sha1_sum/1</a></h3>
-<div class="spec">
-<p><tt>compute_sha1_sum(Filename::<a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-sha1_sum">sha1_sum()</a></tt><br></p>
-<p> </p>
-</div><p>Returns the SHA1 sum computed from the content of the specified file, as
- an unsigned integer, actually of 160 bits (ex:
- 189271338729529876450691804503218393830331783574, corresponding to hexadecimal
- string "212738699f721d8d8c3e58dac2b113bb8d0c1996").
-</p>
-
-<h3 class="function"><a name="compute_sha_sum-2">compute_sha_sum/2</a></h3>
-<div class="spec">
-<p><tt>compute_sha_sum(Filename::<a href="#type-any_file_path">any_file_path()</a>, SizeOfSHAAlgorithm::<a href="basic_utils.html#type-count">basic_utils:count()</a>) -&gt; <a href="#type-sha_sum">sha_sum()</a></tt><br></p>
-<p> </p>
-</div><p>Returns the SHA sum computed from the content of the specified file, as
- an unsigned integer, whose size depends on the specified algorithm: 1, 224,
- 256, 384, 512, 512224, 512256 (see 'man shasum' for more details).
 </p>
 
 <h3 class="function"><a name="display_pdf_file-1">display_pdf_file/1</a></h3>
@@ -368,6 +316,26 @@ installation.</p>
  ~/Software/Erlang/Erlang-current-install.
 </p>
 
+<h3 class="function"><a name="get_default_graph_stream_tool_name-0">get_default_graph_stream_tool_name/0</a></h3>
+<div class="spec">
+<p><tt>get_default_graph_stream_tool_name() -&gt; <a href="#type-executable_name">executable_name()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the name of the default tool used to process streamed graphs.</p>
+
+<h3 class="function"><a name="get_default_graph_stream_tool_path-0">get_default_graph_stream_tool_path/0</a></h3>
+<div class="spec">
+<p><tt>get_default_graph_stream_tool_path() -&gt; <a href="#type-executable_path">executable_path()</a></tt><br></p>
+<p> </p>
+</div><p>Returns an absolute path to the default tool used to process streamed
+ graphs.
+</p>
+
+<h3 class="function"><a name="get_default_hashing_tool-0">get_default_hashing_tool/0</a></h3>
+<div class="spec">
+<p><tt>get_default_hashing_tool() -&gt; <a href="#type-executable_path">executable_path()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the default tool to compute any kind of hash.</p>
+
 <h3 class="function"><a name="get_default_image_browser_name-0">get_default_image_browser_name/0</a></h3>
 <div class="spec">
 <p><tt>get_default_image_browser_name() -&gt; <a href="#type-executable_name">executable_name()</a></tt><br></p>
@@ -424,12 +392,6 @@ with ERLANG_ROOT being typically ~/Software/Erlang/Erlang-current-install.</p>
  install-erlang.sh script automatically enforces that convention.
 </p>
 
-<h3 class="function"><a name="get_default_md5_tool-0">get_default_md5_tool/0</a></h3>
-<div class="spec">
-<p><tt>get_default_md5_tool() -&gt; <a href="#type-executable_path">executable_path()</a></tt><br></p>
-<p> </p>
-</div><p>Returns the default tool to compute MD5 sums.</p>
-
 <h3 class="function"><a name="get_default_openssl_executable_name-0">get_default_openssl_executable_name/0</a></h3>
 <div class="spec">
 <p><tt>get_default_openssl_executable_name() -&gt; <a href="#type-executable_name">executable_name()</a></tt><br></p>
@@ -468,12 +430,6 @@ with ERLANG_ROOT being typically ~/Software/Erlang/Erlang-current-install.</p>
 <p><tt>get_default_scp_executable_path() -&gt; <a href="#type-executable_path">executable_path()</a></tt><br></p>
 <p> </p>
 </div><p>Returns an absolute path to the default SSH-based scp executable.</p>
-
-<h3 class="function"><a name="get_default_sha_tool-0">get_default_sha_tool/0</a></h3>
-<div class="spec">
-<p><tt>get_default_sha_tool() -&gt; <a href="#type-executable_path">executable_path()</a></tt><br></p>
-<p> </p>
-</div><p>Returns the default tool to compute SHA sums.</p>
 
 <h3 class="function"><a name="get_default_sql_client-0">get_default_sql_client/0</a></h3>
 <div class="spec">
@@ -550,6 +506,12 @@ with ERLANG_ROOT being typically ~/Software/Erlang/Erlang-current-install.</p>
 <p> </p>
 </div><p>Returns an absolute path to the default viewer tool for wider texts.</p>
 
+<h3 class="function"><a name="get_default_xml_prettyprinter-0">get_default_xml_prettyprinter/0</a></h3>
+<div class="spec">
+<p><tt>get_default_xml_prettyprinter() -&gt; <a href="#type-executable_path">executable_path()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the default client to pretty-print XML content.</p>
+
 <h3 class="function"><a name="get_default_xz_compress_tool-0">get_default_xz_compress_tool/0</a></h3>
 <div class="spec">
 <p><tt>get_default_xz_compress_tool() -&gt; <a href="#type-executable_path">executable_path()</a></tt><br></p>
@@ -579,6 +541,12 @@ with ERLANG_ROOT being typically ~/Software/Erlang/Erlang-current-install.</p>
 <p><tt>get_gnuplot_path() -&gt; <a href="#type-executable_path">executable_path()</a></tt><br></p>
 <p> </p>
 </div><p>Returns an absolute path to a gnuplot executable.</p>
+
+<h3 class="function"><a name="get_make_path-0">get_make_path/0</a></h3>
+<div class="spec">
+<p><tt>get_make_path() -&gt; <a href="#type-executable_path">executable_path()</a></tt><br></p>
+<p> </p>
+</div><p>Returns an absolute path to the default (GNU) make executable.</p>
 
 <h3 class="function"><a name="get_secondary_default_audio_player_name-0">get_secondary_default_audio_player_name/0</a></h3>
 <div class="spec">

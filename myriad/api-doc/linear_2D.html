@@ -132,7 +132,8 @@ points.</td></tr>
 
 <h3 class="function"><a name="abs_angle_deg-3">abs_angle_deg/3</a></h3>
 <div class="spec">
-<p><tt>abs_angle_deg(A::<a href="#type-any_point2">any_point2()</a>, B::<a href="#type-any_point2">any_point2()</a>, C::<a href="#type-any_point2">any_point2()</a>) -&gt; <a href="#type-int_degrees">int_degrees()</a></tt><br></p>
+<p><tt>abs_angle_deg(A::<a href="#type-point2">point2()</a>, B::<a href="#type-point2">point2()</a>, C::<a href="#type-point2">point2()</a>) -&gt; <a href="#type-int_degrees">int_degrees()</a></tt><br></p><p><tt>abs_angle_deg(A::<a href="#type-integer_point2">integer_point2()</a>, B::<a href="#type-integer_point2">integer_point2()</a>, C::<a href="#type-integer_point2">integer_point2()</a>) -&gt; <a href="#type-int_degrees">int_degrees()</a></tt><br></p>
+<p> </p>
 <p> </p>
 </div><p><p>Returns the angle, in canonical degrees, between the vector AB and AC.</p>
 
@@ -143,7 +144,8 @@ points.</td></tr>
 
 <h3 class="function"><a name="abs_angle_rad-3">abs_angle_rad/3</a></h3>
 <div class="spec">
-<p><tt>abs_angle_rad(A::<a href="#type-any_point2">any_point2()</a>, B::<a href="#type-any_point2">any_point2()</a>, C::<a href="#type-any_point2">any_point2()</a>) -&gt; <a href="#type-radians">radians()</a></tt><br></p>
+<p><tt>abs_angle_rad(A::<a href="#type-point2">point2()</a>, B::<a href="#type-point2">point2()</a>, C::<a href="#type-point2">point2()</a>) -&gt; <a href="#type-radians">radians()</a></tt><br></p><p><tt>abs_angle_rad(A::<a href="#type-integer_point2">integer_point2()</a>, B::<a href="#type-integer_point2">integer_point2()</a>, C::<a href="#type-integer_point2">integer_point2()</a>) -&gt; <a href="#type-radians">radians()</a></tt><br></p>
+<p> </p>
 <p> </p>
 </div><p><p>Returns the angle, in radians, between the vector AB and AC.</p>
 
@@ -165,7 +167,8 @@ vector AB and AC.</p>
 
 <h3 class="function"><a name="angle_rad-3">angle_rad/3</a></h3>
 <div class="spec">
-<p><tt>angle_rad(A::<a href="#type-any_point2">any_point2()</a>, B::<a href="#type-any_point2">any_point2()</a>, C::<a href="#type-any_point2">any_point2()</a>) -&gt; <a href="#type-radians">radians()</a></tt><br></p>
+<p><tt>angle_rad(A::<a href="#type-point2">point2()</a>, B::<a href="#type-point2">point2()</a>, C::<a href="#type-point2">point2()</a>) -&gt; <a href="#type-radians">radians()</a></tt><br></p><p><tt>angle_rad(A::<a href="#type-integer_point2">integer_point2()</a>, B::<a href="#type-integer_point2">integer_point2()</a>, C::<a href="#type-integer_point2">integer_point2()</a>) -&gt; <a href="#type-radians">radians()</a></tt><br></p>
+<p> </p>
 <p> </p>
 </div><p><p>Returns the signed (oriented) angle, in radians, between the vector AB 
 and AC.</p>
@@ -274,7 +277,8 @@ parallel but different, or a full line, if they are the same line).</p>
 
 <h3 class="function"><a name="is_strictly_on_the_right-3">is_strictly_on_the_right/3</a></h3>
 <div class="spec">
-<p><tt>is_strictly_on_the_right(P::<a href="#type-any_point2">any_point2()</a>, P1::<a href="#type-any_point2">any_point2()</a>, P2::<a href="#type-any_point2">any_point2()</a>) -&gt; boolean()</tt><br></p>
+<p><tt>is_strictly_on_the_right(P::<a href="#type-point2">point2()</a>, P1::<a href="#type-point2">point2()</a>, P2::<a href="#type-point2">point2()</a>) -&gt; boolean()</tt><br></p><p><tt>is_strictly_on_the_right(P::<a href="#type-integer_point2">integer_point2()</a>, P1::<a href="#type-integer_point2">integer_point2()</a>, P2::<a href="#type-integer_point2">integer_point2()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
 <p> </p>
 </div><p>Returns true iff P is strictly on the right of the oriented segment going
  from P1 to P2.

@@ -10,12 +10,14 @@
 <hr>
 
 <h1>Module random_utils</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various <b>random-related</b> facilities, based on uniform 
-probabilities or user-defined, arbitrary ones.
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various <b>random-related</b> facilities, based on 
+probability distributions, either built-in (uniform, exponential or gaussian) 
+or user-defined, arbitrary ones.
 
 
-<h2><a name="description">Description</a></h2><p>Gathering of various <b>random-related</b> facilities, based on uniform 
-probabilities or user-defined, arbitrary ones.</p>
+<h2><a name="description">Description</a></h2><p>Gathering of various <b>random-related</b> facilities, based on 
+probability distributions, either built-in (uniform, exponential or gaussian) 
+or user-defined, arbitrary ones.</p>
 
  See random_utils_test.erl for the corresponding test.
 
@@ -55,6 +57,40 @@ for that sample were summed - yet the distribution will be less compact).</p>
  Such a distribution can be obtained either directly or by sampling a fun( T -&gt;
  probability_like() function over a subset of its domain.</p>
 
+<h3 class="typedecl"><a name="type-exponential_law">exponential_law()</a></h3>
+<p><tt>exponential_law() = {exponential, Lambda::<a href="#type-rate">rate()</a>}</tt></p>
+<p><p> An exponential law is fully determined when its single, "rate" parameter 
+(Lambda) is given.</p>
+
+ <p>The probability density function is p(x) = Lambda.exp(-Lambda.x), whose 
+integral is 1.</p>
+
+ <p>Mean value of drawn samples is 1/Lambda.</p>
+
+ Refer to https://en.wikipedia.org/wiki/Exponential_distribution.</p>
+
+<h3 class="typedecl"><a name="type-gaussian_law">gaussian_law()</a></h3>
+<p><tt>gaussian_law() = {gaussian, Mu::<a href="#type-mean">mean()</a>, Sigma::<a href="#type-standard_deviation">standard_deviation()</a>}</tt></p>
+<p><p> A Gaussian (a.k.a. normal, bell curve) law is fully determined when its two 
+parameters are given:</p>
+
+ <p>- its mean (Mu), the average value of the samples</p>
+
+ <p>- its standard deviation (Sigma), being expressed in the same unit as the 
+samples (its square being the variance)</p>
+
+ <p>About 68% of the samples are in [Mu-Sigma;Mu+Sigma]. 
+About 95.4% of the samples (i.e. almost all) are in [Mu-2.Sigma;Mu+2.Sigma].</p>
+
+ See also: http://en.wikipedia.org/wiki/Standard_deviation</p>
+
+<h3 class="typedecl"><a name="type-mean">mean()</a></h3>
+<p><tt>mean() = number()</tt></p>
+<p><p> An arithmetic mean of a list of numbers, that is the sum of all of the numbers 
+divided by the number of numbers.</p>
+
+ See https://en.wikipedia.org/wiki/Mean#Arithmetic_mean_(AM)</p>
+
 <h3 class="typedecl"><a name="type-pdf">pdf()</a></h3>
 <p><tt>pdf() = <a href="#type-pdf">pdf</a>(any())</tt></p>
 <p> A Probability Density Function for samples of unspecified type.</p>
@@ -66,13 +102,34 @@ corresponding probability-like value.</p>
 
  See also the math_utils:sample* functions and get_samples_from/2.</p>
 
+<h3 class="typedecl"><a name="type-positive_integer_exponential_law">positive_integer_exponential_law()</a></h3>
+<p><tt>positive_integer_exponential_law() = {positive_integer_exponential, Lambda::<a href="#type-rate">rate()</a>}</tt></p>
+<p><p> An exponential law yielding only positive integer samples.</p>
+
+ Refer to exponential_law/0 for further details.</p>
+
+<h3 class="typedecl"><a name="type-positive_integer_gaussian_law">positive_integer_gaussian_law()</a></h3>
+<p><tt>positive_integer_gaussian_law() = {positive_integer_gaussian, Mu::<a href="#type-mean">mean()</a>, Sigma::<a href="#type-standard_deviation">standard_deviation()</a>}</tt></p>
+<p><p> A Gaussian (a.k.a. normal, bell curve) law yielding only positive integer 
+samples.</p>
+
+ Refer to gaussian_law/0 for further details.</p>
+
 <h3 class="typedecl"><a name="type-probability_like">probability_like()</a></h3>
 <p><tt>probability_like() = <a href="math_utils.html#type-probability_like">math_utils:probability_like()</a></tt></p>
 <p> Any number that can be interpreted ultimately as a probability.</p>
 
+<h3 class="typedecl"><a name="type-random_law">random_law()</a></h3>
+<p><tt>random_law() = <a href="#type-uniform_law">uniform_law()</a> | <a href="#type-exponential_law">exponential_law()</a> | <a href="#type-positive_integer_exponential_law">positive_integer_exponential_law()</a> | <a href="#type-gaussian_law">gaussian_law()</a> | <a href="#type-positive_integer_gaussian_law">positive_integer_gaussian_law()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-random_state">random_state()</a></h3>
 <p><tt>random_state() = <a href="#type-seed">seed()</a> | <a href="http://www.erlang.org/edoc/doc/stdlib/doc/rand.html#type-state">rand:state()</a> | <a href="#type-alias_state">alias_state()</a> | any()</tt></p>
 
+
+<h3 class="typedecl"><a name="type-rate">rate()</a></h3>
+<p><tt>rate() = number()</tt></p>
+<p> A rate parameter, typically for the Lambda parameter of the exponential law.</p>
 
 <h3 class="typedecl"><a name="type-sample">sample()</a></h3>
 <p><tt>sample() = <a href="#type-sample">sample</a>(any())</tt></p>
@@ -80,7 +137,7 @@ corresponding probability-like value.</p>
 
 <h3 class="typedecl"><a name="type-sample">sample()</a></h3>
 <p><tt>sample(T) = T</tt></p>
-<p> The type of a sample that can be drawn from probability distribution; a
+<p> The type of a sample that can be drawn from a probability distribution; a
  probability may be indeed associated to any kind of samples (integer ones,
  strings, vectors, etc.).</p>
 
@@ -103,25 +160,45 @@ corresponding probability-like value.</p>
 <p> Not future-proof enough (ex: not compliant with other solutions like
  SIMD-oriented Fast Mersenne Twister).</p>
 
+<h3 class="typedecl"><a name="type-standard_deviation">standard_deviation()</a></h3>
+<p><tt>standard_deviation() = <a href="math_utils.html#type-standard_deviation">math_utils:standard_deviation()</a></tt></p>
+<p><p> A measure of the amount of dispersion of a set of values.</p>
+
+ <p>It is the square root of its variance.</p>
+
+ See https://en.wikipedia.org/wiki/Standard_deviation</p>
+
+<h3 class="typedecl"><a name="type-uniform_law">uniform_law()</a></h3>
+<p><tt>uniform_law() = {uniform, non_neg_integer()}</tt></p>
+<p> A probability distribution with which all declared samples have the same
+ probability of being drawn.</p>
+
 <h2><a name="index">Function Index</a></h2>
 <table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#can_be_seeded-0">can_be_seeded/0</a></td><td>Tells whether this random source can be seeded.</td></tr>
 <tr><td valign="top"><a href="#check_random_seed-1">check_random_seed/1</a></td><td>Checks that the specified seed is valid.</td></tr>
 <tr><td valign="top"><a href="#generate_random_state_from-1">generate_random_state_from/1</a></td><td>Returns the state of a random generator in charge of producing samples 
 according to the specified discrete probability distribution.</td></tr>
+<tr><td valign="top"><a href="#get_boolean-0">get_boolean/0</a></td><td>Returns a boolean random value generated from an uniform distribution.</td></tr>
+<tr><td valign="top"><a href="#get_exponential_value-1">get_exponential_value/1</a></td><td>Returns an exponential floating-point random value, with Lambda being the 
+rate parameter.</td></tr>
+<tr><td valign="top"><a href="#get_exponential_values-2">get_exponential_values/2</a></td><td>Returns a list of Count exponential values according to the specified 
+Lambda setting.</td></tr>
+<tr><td valign="top"><a href="#get_gaussian_value-2">get_gaussian_value/2</a></td><td>Returns a random value generated from the normal (Gaussian) distribution 
+with specified settings.</td></tr>
+<tr><td valign="top"><a href="#get_gaussian_values-3">get_gaussian_values/3</a></td><td>Returns a list of Count Gaussian values.</td></tr>
+<tr><td valign="top"><a href="#get_positive_integer_exponential_value-1">get_positive_integer_exponential_value/1</a></td><td>Returns an exponential (positive) integer random value, with Lambda being 
+the rate parameter.</td></tr>
+<tr><td valign="top"><a href="#get_positive_integer_exponential_values-2">get_positive_integer_exponential_values/2</a></td><td>Returns a list of Count positive integer exponential values according to 
+the specified Lambda setting.</td></tr>
+<tr><td valign="top"><a href="#get_positive_integer_gaussian_value-2">get_positive_integer_gaussian_value/2</a></td><td>Returns a non-negative integer random value generated from the 
+normal (Gaussian) distribution with specified settings.</td></tr>
+<tr><td valign="top"><a href="#get_positive_integer_gaussian_values-3">get_positive_integer_gaussian_values/3</a></td><td>Returns a list of Count positive integer Gaussian values.</td></tr>
 <tr><td valign="top"><a href="#get_random_module_name-0">get_random_module_name/0</a></td><td>Returns the name of the module managing the random generation.</td></tr>
 <tr><td valign="top"><a href="#get_random_seed-0">get_random_seed/0</a></td><td>Returns a seed obtained from the random source in use.</td></tr>
 <tr><td valign="top"><a href="#get_random_state-0">get_random_state/0</a></td><td>Returns the random state of this process (it is useful for example for 
 process serialisations).</td></tr>
-<tr><td valign="top"><a href="#get_random_subset-2">get_random_subset/2</a></td><td>Returns a list of the specified number of unique elements drawn from 
-input list (so that there is no duplicate in the returned list).</td></tr>
-<tr><td valign="top"><a href="#get_random_value-0">get_random_value/0</a></td><td>Returns a random float uniformly distributed between 0.0 and 1.0, 
-updating the random state in the process dictionary.</td></tr>
-<tr><td valign="top"><a href="#get_random_value-1">get_random_value/1</a></td><td>Returns an integer random value generated from an uniform distribution.</td></tr>
-<tr><td valign="top"><a href="#get_random_value-2">get_random_value/2</a></td><td>Returns an integer random value generated from an uniform distribution in 
-[Nmin,Nmax] (thus with both bounds included), updating the random state in the 
-process dictionary.</td></tr>
-<tr><td valign="top"><a href="#get_random_values-2">get_random_values/2</a></td><td>Generates a list of Count elements uniformly drawn in [1,N].</td></tr>
-<tr><td valign="top"><a href="#get_random_values-3">get_random_values/3</a></td><td>Generates a list of Count elements uniformly drawn in [Nmin,Nmax].</td></tr>
+<tr><td valign="top"><a href="#get_random_subset-2">get_random_subset/2</a></td><td>Returns a list of the specified number of unique elements drawn from the 
+specified input list (so that there is no duplicate in the returned list).</td></tr>
 <tr><td valign="top"><a href="#get_sample_from-1">get_sample_from/1</a></td><td>Returns a new sample drawn from the discrete probability distribution 
 specified through its (constant) state (which is thus not returned), this 
 state having been obtained initially (and once for all) from 
@@ -133,6 +210,16 @@ not returned), as obtained from generate_random_state_from/1.</td></tr>
 uniform distribution.</td></tr>
 <tr><td valign="top"><a href="#get_uniform_floating_point_value-2">get_uniform_floating_point_value/2</a></td><td>Returns a floating-point random value in [Nmin, Nmax[ generated from an 
 uniform distribution.</td></tr>
+<tr><td valign="top"><a href="#get_uniform_value-0">get_uniform_value/0</a></td><td>Returns a random float uniformly distributed between 0.0 (included) and 
+1.0 (excluded), updating the random state in the process dictionary.</td></tr>
+<tr><td valign="top"><a href="#get_uniform_value-1">get_uniform_value/1</a></td><td>Returns an integer random value generated from an uniform distribution.</td></tr>
+<tr><td valign="top"><a href="#get_uniform_value-2">get_uniform_value/2</a></td><td>Returns an integer random value generated from an uniform distribution in 
+[Nmin,Nmax] (thus with both bounds included), updating the random state in the 
+process dictionary.</td></tr>
+<tr><td valign="top"><a href="#get_uniform_values-2">get_uniform_values/2</a></td><td>Generates a list of Count elements uniformly drawn in [1,N].</td></tr>
+<tr><td valign="top"><a href="#get_uniform_values-3">get_uniform_values/3</a></td><td>Generates a list of Count elements uniformly drawn in [Nmin,Nmax].</td></tr>
+<tr><td valign="top"><a href="#one_of-1">one_of/1</a></td><td>Returns a random element of the specified list, selected according to a
+ uniform distribution.</td></tr>
 <tr><td valign="top"><a href="#reset_random_source-1">reset_random_source/1</a></td><td>Resets the random source with a new seed.</td></tr>
 <tr><td valign="top"><a href="#set_random_state-1">set_random_state/1</a></td><td>Sets the random state of this process (it is useful for example for 
 process serialisations).</td></tr>
@@ -179,11 +266,114 @@ according to the specified discrete probability distribution.</p>
  depend on any other random state (it is deterministic), any number of samples
  respecting said distribution can be drawn, like in:
   <pre>  S1 = random_utils:generate_random_state_from(MyDistributionState),
-  Samples = [ random_utils:get_sample_from(MyDistributionState)
-                        || _ &lt;- lists:seq(1, Count) ]</pre>
+  Samples = [random_utils:get_sample_from(MyDistributionState)
+                        || _ &lt;- lists:seq(1, Count)]</pre>
 
  This preprocessing uses O(N) time, where N is the number of declared samples
  of the corresponding distribution, in order to generate its returned state.
+</p>
+
+<h3 class="function"><a name="get_boolean-0">get_boolean/0</a></h3>
+<div class="spec">
+<p><tt>get_boolean() -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p><p>Returns a boolean random value generated from an uniform distribution.</p>
+
+ Therefore true and false are equally likely to be returned.
+</p>
+
+<h3 class="function"><a name="get_exponential_value-1">get_exponential_value/1</a></h3>
+<div class="spec">
+<p><tt>get_exponential_value(Lambda::<a href="#type-rate">rate()</a>) -&gt; float()</tt><br></p>
+<p> </p>
+</div><p><p>Returns an exponential floating-point random value, with Lambda being the 
+rate parameter.</p>
+
+ <p>As get_uniform_value/1 never returns 1.0, a strictly positive value is always 
+returned.</p>
+
+ <p>See exponential_law() for further details.</p>
+
+ Using ad-hoc inverse transform sampling here.
+</p>
+
+<h3 class="function"><a name="get_exponential_values-2">get_exponential_values/2</a></h3>
+<div class="spec">
+<p><tt>get_exponential_values(Lambda::<a href="#type-rate">rate()</a>, Count::<a href="#type-count">count()</a>) -&gt; [float()]</tt><br></p>
+<p> </p>
+</div><p><p>Returns a list of Count exponential values according to the specified 
+Lambda setting.</p>
+
+ See get_exponential_value/1 for further details.
+</p>
+
+<h3 class="function"><a name="get_gaussian_value-2">get_gaussian_value/2</a></h3>
+<div class="spec">
+<p><tt>get_gaussian_value(Mu::<a href="#type-mean">mean()</a>, Sigma::<a href="#type-standard_deviation">standard_deviation()</a>) -&gt; float()</tt><br></p>
+<p> </p>
+</div><p><p>Returns a random value generated from the normal (Gaussian) distribution 
+with specified settings.</p>
+
+ Given a mean Mu and a standard deviation Sigma, returns a random
+ floating-point value drawn according to the corresponding Gaussian law,
+ updating the state in the process dictionary.
+</p>
+
+<h3 class="function"><a name="get_gaussian_values-3">get_gaussian_values/3</a></h3>
+<div class="spec">
+<p><tt>get_gaussian_values(Mu::<a href="#type-mean">mean()</a>, Sigma::<a href="#type-standard_deviation">standard_deviation()</a>, Count::<a href="#type-count">count()</a>) -&gt; [float()]</tt><br></p>
+<p> </p>
+</div><p><p>Returns a list of Count Gaussian values.</p>
+
+ Given a mean Mu and a standard deviation Sigma, returns random floating-point
+ values drawn according the corresponding Gaussian law, updating the state in
+ the process dictionary.
+</p>
+
+<h3 class="function"><a name="get_positive_integer_exponential_value-1">get_positive_integer_exponential_value/1</a></h3>
+<div class="spec">
+<p><tt>get_positive_integer_exponential_value(Lambda::<a href="#type-rate">rate()</a>) -&gt; non_neg_integer()</tt><br></p>
+<p> </p>
+</div><p><p>Returns an exponential (positive) integer random value, with Lambda being 
+the rate parameter.</p>
+
+ See get_exponential_value/1 for further details.
+</p>
+
+<h3 class="function"><a name="get_positive_integer_exponential_values-2">get_positive_integer_exponential_values/2</a></h3>
+<div class="spec">
+<p><tt>get_positive_integer_exponential_values(Lambda::<a href="#type-rate">rate()</a>, Count::<a href="#type-count">count()</a>) -&gt; [non_neg_integer()]</tt><br></p>
+<p> </p>
+</div><p><p>Returns a list of Count positive integer exponential values according to 
+the specified Lambda setting.</p>
+
+ See get_exponential_value/1 for further details.
+</p>
+
+<h3 class="function"><a name="get_positive_integer_gaussian_value-2">get_positive_integer_gaussian_value/2</a></h3>
+<div class="spec">
+<p><tt>get_positive_integer_gaussian_value(Mu::<a href="#type-mean">mean()</a>, Sigma::<a href="#type-standard_deviation">standard_deviation()</a>) -&gt; non_neg_integer()</tt><br></p>
+<p> </p>
+</div><p><p>Returns a non-negative integer random value generated from the 
+normal (Gaussian) distribution with specified settings.</p>
+
+ <p>Given a mean Mu and a standard deviation Sigma, returns random integers drawn 
+according the corresponding Gaussian law, updating the state in the process 
+dictionary.</p>
+
+ The result is a non-negative integer (not a float). Values will be drawn until
+ they are non-negative.
+</p>
+
+<h3 class="function"><a name="get_positive_integer_gaussian_values-3">get_positive_integer_gaussian_values/3</a></h3>
+<div class="spec">
+<p><tt>get_positive_integer_gaussian_values(Mu::<a href="#type-mean">mean()</a>, Sigma::<a href="#type-standard_deviation">standard_deviation()</a>, Count::<a href="#type-count">count()</a>) -&gt; [non_neg_integer()]</tt><br></p>
+<p> </p>
+</div><p><p>Returns a list of Count positive integer Gaussian values.</p>
+
+ Given a mean Mu and a standard deviation Sigma, returns random integers drawn
+ according the corresponding Gaussian law, updating the state in the process
+ dictionary.
 </p>
 
 <h3 class="function"><a name="get_random_module_name-0">get_random_module_name/0</a></h3>
@@ -219,58 +409,12 @@ process serialisations).</p>
 <div class="spec">
 <p><tt>get_random_subset(ValueCount::<a href="#type-count">count()</a>, InputList::list()) -&gt; list()</tt><br></p>
 <p> </p>
-</div><p><p>Returns a list of the specified number of unique elements drawn from 
-input list (so that there is no duplicate in the returned list).</p>
+</div><p><p>Returns a list of the specified number of unique elements drawn from the 
+specified input list (so that there is no duplicate in the returned list).</p>
 
  Note: defined to ease interface look-up, use directly
  list_utils:draw_elements_from/2 instead.
 </p>
-
-<h3 class="function"><a name="get_random_value-0">get_random_value/0</a></h3>
-<div class="spec">
-<p><tt>get_random_value() -&gt; float()</tt><br></p>
-<p> </p>
-</div><p><p>Returns a random float uniformly distributed between 0.0 and 1.0, 
-updating the random state in the process dictionary.</p>
-
- Spec already specified, for all random settings.
-</p>
-
-<h3 class="function"><a name="get_random_value-1">get_random_value/1</a></h3>
-<div class="spec">
-<p><tt>get_random_value(N::pos_integer()) -&gt; pos_integer()</tt><br></p>
-<p> </p>
-</div><p><p>Returns an integer random value generated from an uniform distribution.</p>
-
- <p>Given an integer N &gt;= 1, returns a random integer uniformly distributed 
-between 1 and N (both included), updating the random state in the process 
-dictionary.</p>
-
- Spec already specified, for all random settings.
-</p>
-
-<h3 class="function"><a name="get_random_value-2">get_random_value/2</a></h3>
-<div class="spec">
-<p><tt>get_random_value(Nmin::integer(), Nmax::integer()) -&gt; integer()</tt><br></p>
-<p> </p>
-</div><p><p>Returns an integer random value generated from an uniform distribution in 
-[Nmin,Nmax] (thus with both bounds included), updating the random state in the 
-process dictionary.</p>
-
- Spec already specified, for all random settings.
-</p>
-
-<h3 class="function"><a name="get_random_values-2">get_random_values/2</a></h3>
-<div class="spec">
-<p><tt>get_random_values(N::pos_integer(), Count::<a href="#type-count">count()</a>) -&gt; [pos_integer()]</tt><br></p>
-<p> </p>
-</div><p>Generates a list of Count elements uniformly drawn in [1,N].</p>
-
-<h3 class="function"><a name="get_random_values-3">get_random_values/3</a></h3>
-<div class="spec">
-<p><tt>get_random_values(Nmin::integer(), Nmax::integer(), Count::<a href="#type-count">count()</a>) -&gt; [integer()]</tt><br></p>
-<p> </p>
-</div><p>Generates a list of Count elements uniformly drawn in [Nmin,Nmax].</p>
 
 <h3 class="function"><a name="get_sample_from-1">get_sample_from/1</a></h3>
 <div class="spec">
@@ -297,8 +441,8 @@ of samples declared in the corresponding distribution.</p>
 probability distribution specified through its (constant) state (which is thus 
 not returned), as obtained from generate_random_state_from/1.</p>
 
- <p>Each sample is generated in constant time (O(1) time with regard to the number 
-of samples declared in the corresponding distribution.</p>
+ <p>Each sample is generated in constant time, that is O(1) time with regard to 
+the number of samples declared in the corresponding distribution.</p>
 
  Such a generation depends (and modifies) the state of the underlying uniform
  random generator (ex: see start_random_source/0); precisely each non-uniform
@@ -332,6 +476,60 @@ not), returns a random floating-point value uniformly distributed between Nmin
 dictionary.</p>
 
  Spec already specified, for all random settings.
+</p>
+
+<h3 class="function"><a name="get_uniform_value-0">get_uniform_value/0</a></h3>
+<div class="spec">
+<p><tt>get_uniform_value() -&gt; float()</tt><br></p>
+<p> </p>
+</div><p><p>Returns a random float uniformly distributed between 0.0 (included) and 
+1.0 (excluded), updating the random state in the process dictionary.</p>
+
+ Spec already specified, for all random settings.
+</p>
+
+<h3 class="function"><a name="get_uniform_value-1">get_uniform_value/1</a></h3>
+<div class="spec">
+<p><tt>get_uniform_value(N::pos_integer()) -&gt; pos_integer()</tt><br></p>
+<p> </p>
+</div><p><p>Returns an integer random value generated from an uniform distribution.</p>
+
+ <p>Given an integer N &gt;= 1, returns a random integer uniformly distributed 
+between 1 and N (both included), updating the random state in the process 
+dictionary.</p>
+
+ Spec already specified, for all random settings.
+</p>
+
+<h3 class="function"><a name="get_uniform_value-2">get_uniform_value/2</a></h3>
+<div class="spec">
+<p><tt>get_uniform_value(Nmin::integer(), Nmax::integer()) -&gt; integer()</tt><br></p>
+<p> </p>
+</div><p><p>Returns an integer random value generated from an uniform distribution in 
+[Nmin,Nmax] (thus with both bounds included), updating the random state in the 
+process dictionary.</p>
+
+ Spec already specified, for all random settings.
+</p>
+
+<h3 class="function"><a name="get_uniform_values-2">get_uniform_values/2</a></h3>
+<div class="spec">
+<p><tt>get_uniform_values(N::pos_integer(), Count::<a href="#type-count">count()</a>) -&gt; [pos_integer()]</tt><br></p>
+<p> </p>
+</div><p>Generates a list of Count elements uniformly drawn in [1,N].</p>
+
+<h3 class="function"><a name="get_uniform_values-3">get_uniform_values/3</a></h3>
+<div class="spec">
+<p><tt>get_uniform_values(Nmin::integer(), Nmax::integer(), Count::<a href="#type-count">count()</a>) -&gt; [integer()]</tt><br></p>
+<p> </p>
+</div><p>Generates a list of Count elements uniformly drawn in [Nmin,Nmax].</p>
+
+<h3 class="function"><a name="one_of-1">one_of/1</a></h3>
+<div class="spec">
+<p><tt>one_of(ListOfThings::[any()]) -&gt; any()</tt><br></p>
+<p> </p>
+</div><p>Returns a random element of the specified list, selected according to a
+ uniform distribution.
 </p>
 
 <h3 class="function"><a name="reset_random_source-1">reset_random_source/1</a></h3>

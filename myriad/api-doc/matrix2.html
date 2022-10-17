@@ -100,7 +100,7 @@ vectors.</td></tr>
 vectors.</td></tr>
 <tr><td valign="top"><a href="#get_element-3">get_element/3</a></td><td>Returns the element at specified row and column of the specified matrix.</td></tr>
 <tr><td valign="top"><a href="#identity-0">identity/0</a></td><td>Returns the identity (2x2) matrix.</td></tr>
-<tr><td valign="top"><a href="#inverse-1">inverse/1</a></td><td>Returns the inverse of the specified matrix, if it is inversible (that is 
+<tr><td valign="top"><a href="#inverse-1">inverse/1</a></td><td>Returns the inverse of the specified matrix, if it is invertible (that is 
 iff its determinant is non-null), otherwise returns undefined.</td></tr>
 <tr><td valign="top"><a href="#mult-1">mult/1</a></td><td>Multiplies (in-order) the specified matrices.</td></tr>
 <tr><td valign="top"><a href="#mult-2">mult/2</a></td><td>Multiplies the first matrix by the second one: returns Mc = Ma.Mb.</td></tr>
@@ -245,7 +245,7 @@ vectors.</p>
 <div class="spec">
 <p><tt>inverse(M::<a href="#type-matrix2">matrix2()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-matrix2">matrix2()</a>)</tt><br></p>
 <p> </p>
-</div><p><p>Returns the inverse of the specified matrix, if it is inversible (that is 
+</div><p><p>Returns the inverse of the specified matrix, if it is invertible (that is 
 iff its determinant is non-null), otherwise returns undefined.</p>
 
  Note: often the inverse can be obtained differently (ex: by applying reverse

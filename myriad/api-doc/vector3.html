@@ -153,10 +153,16 @@ vector; full float precision is shown.</td></tr>
  opposed to the Myriad Z-UP one, see the design notes in linear_3D).</td></tr>
 <tr><td valign="top"><a href="#vector3_to_yups-1">vector3_to_yups/1</a></td><td>Converts usual 3D vectors into ones that follow the Y-UP convention (as
  opposed to the Myriad Z-UP one, see the design notes in linear_3D).</td></tr>
+<tr><td valign="top"><a href="#x_axis-0">x_axis/0</a></td><td>Returns a 3D vector corresponding to the X axis of the current
+ referential.</td></tr>
+<tr><td valign="top"><a href="#y_axis-0">y_axis/0</a></td><td>Returns a 3D vector corresponding to the Y axis of the current
+ referential.</td></tr>
 <tr><td valign="top"><a href="#yup_to_vector3-1">yup_to_vector3/1</a></td><td>Converts a 3D following the Y-UP convention (as opposed to the Myriad
  Z-UP one, see the design notes in linear_3D) into a usual one.</td></tr>
 <tr><td valign="top"><a href="#yup_to_vector3s-1">yup_to_vector3s/1</a></td><td>Converts a 3D following the Y-UP convention (as opposed to the Myriad
  Z-UP one, see the design notes in linear_3D) into a usual one.</td></tr>
+<tr><td valign="top"><a href="#z_axis-0">z_axis/0</a></td><td>Returns a 3D vector corresponding to the Z axis of the current
+ referential.</td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
@@ -213,7 +219,7 @@ vector; full float precision is shown.</td></tr>
 
 <h3 class="function"><a name="check_unit_vectors-1">check_unit_vectors/1</a></h3>
 <div class="spec">
-<p><tt>check_unit_vectors(Vs::<a href="#type-vector3">vector3()</a>) -&gt; <a href="#type-unit_vector3">unit_vector3()</a></tt><br></p>
+<p><tt>check_unit_vectors(Vs::[<a href="#type-vector3">vector3()</a>]) -&gt; [<a href="#type-unit_vector3">unit_vector3()</a>]</tt><br></p>
 <p> </p>
 </div><p>Checks that the specified 3D vectors are normalised, and returns them.</p>
 
@@ -370,6 +376,22 @@ vector; full float precision is shown.</p>
  opposed to the Myriad Z-UP one, see the design notes in linear_3D).
 </p>
 
+<h3 class="function"><a name="x_axis-0">x_axis/0</a></h3>
+<div class="spec">
+<p><tt>x_axis() -&gt; <a href="#type-vector3">vector3()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a 3D vector corresponding to the X axis of the current
+ referential.
+</p>
+
+<h3 class="function"><a name="y_axis-0">y_axis/0</a></h3>
+<div class="spec">
+<p><tt>y_axis() -&gt; <a href="#type-vector3">vector3()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a 3D vector corresponding to the Y axis of the current
+ referential.
+</p>
+
 <h3 class="function"><a name="yup_to_vector3-1">yup_to_vector3/1</a></h3>
 <div class="spec">
 <p><tt>yup_to_vector3(V::<a href="#type-yup_vector3">yup_vector3()</a>) -&gt; <a href="#type-vector3">vector3()</a></tt><br></p>
@@ -384,6 +406,14 @@ vector; full float precision is shown.</p>
 <p> </p>
 </div><p>Converts a 3D following the Y-UP convention (as opposed to the Myriad
  Z-UP one, see the design notes in linear_3D) into a usual one.
+</p>
+
+<h3 class="function"><a name="z_axis-0">z_axis/0</a></h3>
+<div class="spec">
+<p><tt>z_axis() -&gt; <a href="#type-vector3">vector3()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a 3D vector corresponding to the Z axis of the current
+ referential.
 </p>
 <hr>
 

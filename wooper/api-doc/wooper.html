@@ -214,8 +214,8 @@
 
 
 <h3 class="typedecl"><a name="type-state">state()</a></h3>
-<p><b>abstract datatype</b>: <tt>state()</tt></p>
-<p>-type state() :: #state_holder{}.</p>
+<p><tt>state() = #state_holder{virtual_table = <a href="table.html#type-table">table:table()</a>, attribute_table = <a href="#type-maybe">maybe</a>(<a href="table.html#type-table">table:table()</a>), actual_class = <a href="basic_utils.html#type-module_name">basic_utils:module_name()</a>, request_sender = <a href="#type-maybe">maybe</a>(pid())}</tt></p>
+
 
 <h3 class="typedecl"><a name="type-static_arity">static_arity()</a></h3>
 <p><tt>static_arity() = <a href="#type-method_arity">method_arity()</a></tt></p>
@@ -328,8 +328,11 @@ indefinitively for its specified, expected returned value (supposing none is
 already waiting among the received messages) that is usually an atom.</td></tr>
 <tr><td valign="top"><a href="#getAttribute-2">getAttribute/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#getAttributes-2">getAttributes/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#getMaybeAttribute-2">getMaybeAttribute/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_all_attributes-1">get_all_attributes/1</a></td><td>Returns all the attributes of this instance, as a list of {AttributeName,
  AttributeValue} pairs.</td></tr>
+<tr><td valign="top"><a href="#get_all_superclasses-1">get_all_superclasses/1</a></td><td>Returns all the mother classes (direct or not) of the instance whose 
+state is specified, or of the specified classname.</td></tr>
 <tr><td valign="top"><a href="#get_attribute_pairs-1">get_attribute_pairs/1</a></td><td>Returns the (user-level) attributes known of WOOPER for the specified 
 state (that is all attributes except the ones used internally by WOOPER).</td></tr>
 <tr><td valign="top"><a href="#get_class_filename-1">get_class_filename/1</a></td><td>Returns the source filename associated to the specified class.</td></tr>
@@ -895,12 +898,39 @@ already waiting among the received messages) that is usually an atom.</p>
 <p> </p>
 </div>
 
+<h3 class="function"><a name="getMaybeAttribute-2">getMaybeAttribute/2</a></h3>
+<div class="spec">
+<p><tt>getMaybeAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-attribute_value">attribute_value()</a>)</tt><br></p>
+<p> </p>
+</div>
+
 <h3 class="function"><a name="get_all_attributes-1">get_all_attributes/1</a></h3>
 <div class="spec">
 <p><tt>get_all_attributes(State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; [<a href="#type-attribute_entry">attribute_entry()</a>]</tt><br></p>
 <p> </p>
 </div><p>Returns all the attributes of this instance, as a list of {AttributeName,
  AttributeValue} pairs.
+</p>
+
+<h3 class="function"><a name="get_all_superclasses-1">get_all_superclasses/1</a></h3>
+<div class="spec">
+<p><tt>get_all_superclasses(State::<a href="wooper.html#type-state">wooper:state()</a> | <a href="#type-classname">classname()</a>) -&gt; [<a href="#type-classname">classname()</a>]</tt><br></p>
+<p> </p>
+</div><p><p>Returns all the mother classes (direct or not) of the instance whose 
+state is specified, or of the specified classname.</p>
+
+ <p>Note that: 
+- superclasses will be returned bredth-first in the inheritance tree 
+- in case of diamond-shaped inheritance, a given superclass may be listed more 
+than once (list_utils:uniquify/1 may then be used)</p>
+
+ <p>Ex: wooper:get_all_superclasses(class_Platypus) =       
+[class_Mammal,class_OvoviviparousBeing,class_Creature, class_Creature].</p>
+
+ <p>Not static to avoid making class modules heavier.</p>
+
+ See the get_superclasses/0 static method to list only the direct superclasses
+ of the corresponding class.
 </p>
 
 <h3 class="function"><a name="get_attribute_pairs-1">get_attribute_pairs/1</a></h3>

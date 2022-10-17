@@ -132,16 +132,13 @@
 <tr><td valign="top"><a href="#executeRequestAs-4">executeRequestAs/4</a></td><td></td></tr>
 <tr><td valign="top"><a href="#getAttribute-2">getAttribute/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#getAttributes-2">getAttributes/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#getMaybeAttribute-2">getMaybeAttribute/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#hasAttribute-2">hasAttribute/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#incrementAttribute-2">incrementAttribute/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#inspect_fields-1">inspect_fields/1</a></td><td>Allows inspecting the trace messages, which are often copied and/or sent 
 over the network, hence must be of minimal size.</td></tr>
 <tr><td valign="top"><a href="#is_wooper_debug-0">is_wooper_debug/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#popFromAttribute-2">popFromAttribute/2</a></td><td></td></tr>
-<tr><td valign="top"><a href="#post_deserialise_hook-1">post_deserialise_hook/1</a></td><td></td></tr>
-<tr><td valign="top"><a href="#post_serialise_hook-3">post_serialise_hook/3</a></td><td></td></tr>
-<tr><td valign="top"><a href="#pre_deserialise_hook-2">pre_deserialise_hook/2</a></td><td></td></tr>
-<tr><td valign="top"><a href="#pre_serialise_hook-1">pre_serialise_hook/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#removeAttribute-2">removeAttribute/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#send_internal_immediate-3">send_internal_immediate/3</a></td><td>Sends specified trace immediately from the aggregator itself (hence to 
 itself); this is done directly, in order to write it before any trace message 
@@ -310,6 +307,12 @@ that would be waiting in the mailbox.</td></tr>
 <p> </p>
 </div>
 
+<h3 class="function"><a name="getMaybeAttribute-2">getMaybeAttribute/2</a></h3>
+<div class="spec">
+<p><tt>getMaybeAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-attribute_value">attribute_value()</a>)</tt><br></p>
+<p> </p>
+</div>
+
 <h3 class="function"><a name="hasAttribute-2">hasAttribute/2</a></h3>
 <div class="spec">
 <p><tt>hasAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; boolean()</tt><br></p>
@@ -344,30 +347,6 @@ binaries are used whenever possible, instead of strings.</p>
 <h3 class="function"><a name="popFromAttribute-2">popFromAttribute/2</a></h3>
 <div class="spec">
 <p><tt>popFromAttribute(State::<a href="wooper.html#type-state">wooper:state()</a>, AttributeName::<a href="#type-attribute_name">attribute_name()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-attribute_value">attribute_value()</a>}</tt><br></p>
-<p> </p>
-</div>
-
-<h3 class="function"><a name="post_deserialise_hook-1">post_deserialise_hook/1</a></h3>
-<div class="spec">
-<p><tt>post_deserialise_hook(State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
-<p> </p>
-</div>
-
-<h3 class="function"><a name="post_serialise_hook-3">post_serialise_hook/3</a></h3>
-<div class="spec">
-<p><tt>post_serialise_hook(Classname::<a href="#type-classname">classname()</a>, Entries::<a href="wooper_serialisation.html#type-term_serialisation">wooper_serialisation:term_serialisation()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; term()</tt><br></p>
-<p> </p>
-</div>
-
-<h3 class="function"><a name="pre_deserialise_hook-2">pre_deserialise_hook/2</a></h3>
-<div class="spec">
-<p><tt>pre_deserialise_hook(SerialisationTerm::term(), UserData::<a href="basic_utils.html#type-user_data">basic_utils:user_data()</a>) -&gt; <a href="wooper_serialisation.html#type-term_serialisation">wooper_serialisation:term_serialisation()</a></tt><br></p>
-<p> </p>
-</div>
-
-<h3 class="function"><a name="pre_serialise_hook-1">pre_serialise_hook/1</a></h3>
-<div class="spec">
-<p><tt>pre_serialise_hook(State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
 <p> </p>
 </div>
 

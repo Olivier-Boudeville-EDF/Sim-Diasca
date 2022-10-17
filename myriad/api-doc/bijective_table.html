@@ -17,9 +17,18 @@
 <h2><a name="description">Description</a></h2><p>Datastructure allowing to perform <b>bidirectional conversions between
  two sets</b>.</p>
 
- One can see it as a <code>[{first_type(), second_type()}]</code> associative table
- allowing to transform any element of a set into a corresponding element of the
- other one.
+ <p>One can see it as a <code>[{first_type(), second_type()}]</code> associative table 
+allowing to transform any element of a set into its (unique) corresponding 
+element in the other one.</p>
+
+ <p>See also const_bijective_table.erl for constant bijective tables that can be 
+requested from any number (potentially extremely large) of callers very 
+efficiently thanks to the generation (only in memory, or in file) of a 
+corresponding module.</p>
+
+ Refer to:
+ - bijective_table_test.erl for an usage example and testing thereof
+ - const_bijective_table.erl for a constant, compile-time bijective table
 
 <h2><a name="types">Data Types</a></h2>
 
@@ -33,7 +42,7 @@
 
 <h3 class="typedecl"><a name="type-entries">entries()</a></h3>
 <p><tt>entries() = [<a href="#type-entry">entry()</a>]</tt></p>
-
+<p> Entries that can be fed to a bijective table.</p>
 
 <h3 class="typedecl"><a name="type-entry">entry()</a></h3>
 <p><tt>entry() = {<a href="#type-first_type">first_type()</a>, <a href="#type-second_type">second_type()</a>}</tt></p>
@@ -52,16 +61,107 @@
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#get_first_for-2">get_first_for/2</a></td><td>Returns the element of the first type that corresponds to the specified
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add_entries-2">add_entries/2</a></td><td>Adds the specified entries in the specified bijective table, possibly
+ overwriting any already-existing entries, and returns this enriched table.</td></tr>
+<tr><td valign="top"><a href="#add_entry-2">add_entry/2</a></td><td>Adds the specified entry in the specified bijective table, possibly
+ overwriting any already-existing entry, and returns this enriched table.</td></tr>
+<tr><td valign="top"><a href="#add_entry-3">add_entry/3</a></td><td>Adds the specified (pair of) corresponding elements in the specified
+ bijective table, possibly overwriting any already-existing entry, and returns
+ this enriched table.</td></tr>
+<tr><td valign="top"><a href="#add_new_entries-2">add_new_entries/2</a></td><td>Adds the specified entries in the specified bijective table, none of the
+ element of the pairs expected to be already registered, and returns this
+ enriched table.</td></tr>
+<tr><td valign="top"><a href="#add_new_entry-2">add_new_entry/2</a></td><td>Adds the specified entry in the specified bijective table, none of the
+ pair element expected to be already registered, and returns this enriched
+ table.</td></tr>
+<tr><td valign="top"><a href="#add_new_entry-3">add_new_entry/3</a></td><td>Adds the specified (pair of) corresponding elements in the specified 
+bijective table, none expected to be already registered, and returns this 
+enriched table.</td></tr>
+<tr><td valign="top"><a href="#get_first_elements_for-2">get_first_elements_for/2</a></td><td>Returns the elements of the first type that correspond to the specified
+ elements of the second type.</td></tr>
+<tr><td valign="top"><a href="#get_first_for-2">get_first_for/2</a></td><td>Returns the element of the first type that corresponds to the specified
  element of the second type.</td></tr>
+<tr><td valign="top"><a href="#get_maybe_first_for-2">get_maybe_first_for/2</a></td><td>Returns the element of the first type (if any) that corresponds to the
+ specified element of the second type.</td></tr>
+<tr><td valign="top"><a href="#get_maybe_second_for-2">get_maybe_second_for/2</a></td><td>Returns the element of the second type (if any) that corresponds to the
+ specified element of the first type.</td></tr>
+<tr><td valign="top"><a href="#get_second_elements_for-2">get_second_elements_for/2</a></td><td>Returns the elements of the first type that correspond to the specified
+ elements of the first type.</td></tr>
 <tr><td valign="top"><a href="#get_second_for-2">get_second_for/2</a></td><td>Returns the element of the second type that corresponds to the specified
  element of the first type.</td></tr>
+<tr><td valign="top"><a href="#new-0">new/0</a></td><td>Returns a new, empty bijective table.</td></tr>
 <tr><td valign="top"><a href="#new-1">new/1</a></td><td>Returns a new bijective table allowing a two-way conversion between
- specified (initial) entries.</td></tr>
+ the specified (initial) entries.</td></tr>
+<tr><td valign="top"><a href="#remove_entry_by_first-2">remove_entry_by_first/2</a></td><td>Removes the specified entry, as designated by its first element, from the 
+specified bijective table.</td></tr>
+<tr><td valign="top"><a href="#remove_entry_by_second-2">remove_entry_by_second/2</a></td><td>Removes the specified entry, as designated by its second element, from 
+the specified bijective table.</td></tr>
 <tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td>Returns a textual description of the specified bijective table.</td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="add_entries-2">add_entries/2</a></h3>
+<div class="spec">
+<p><tt>add_entries(Entries::<a href="#type-entries">entries()</a>, BijTable::<a href="#type-bijective_table">bijective_table()</a>) -&gt; <a href="#type-bijective_table">bijective_table()</a></tt><br></p>
+<p> </p>
+</div><p>Adds the specified entries in the specified bijective table, possibly
+ overwriting any already-existing entries, and returns this enriched table.
+</p>
+
+<h3 class="function"><a name="add_entry-2">add_entry/2</a></h3>
+<div class="spec">
+<p><tt>add_entry(Entry::<a href="#type-entry">entry()</a>, BijTable::<a href="#type-bijective_table">bijective_table()</a>) -&gt; <a href="#type-bijective_table">bijective_table()</a></tt><br></p>
+<p> </p>
+</div><p>Adds the specified entry in the specified bijective table, possibly
+ overwriting any already-existing entry, and returns this enriched table.
+</p>
+
+<h3 class="function"><a name="add_entry-3">add_entry/3</a></h3>
+<div class="spec">
+<p><tt>add_entry(First::<a href="#type-first_type">first_type()</a>, Second::<a href="#type-second_type">second_type()</a>, BijTable::<a href="#type-bijective_table">bijective_table()</a>) -&gt; <a href="#type-bijective_table">bijective_table()</a></tt><br></p>
+<p> </p>
+</div><p>Adds the specified (pair of) corresponding elements in the specified
+ bijective table, possibly overwriting any already-existing entry, and returns
+ this enriched table.
+</p>
+
+<h3 class="function"><a name="add_new_entries-2">add_new_entries/2</a></h3>
+<div class="spec">
+<p><tt>add_new_entries(Entries::<a href="#type-entries">entries()</a>, BijTable::<a href="#type-bijective_table">bijective_table()</a>) -&gt; <a href="#type-bijective_table">bijective_table()</a></tt><br></p>
+<p> </p>
+</div><p>Adds the specified entries in the specified bijective table, none of the
+ element of the pairs expected to be already registered, and returns this
+ enriched table.
+</p>
+
+<h3 class="function"><a name="add_new_entry-2">add_new_entry/2</a></h3>
+<div class="spec">
+<p><tt>add_new_entry(Entry::<a href="#type-entry">entry()</a>, BijTable::<a href="#type-bijective_table">bijective_table()</a>) -&gt; <a href="#type-bijective_table">bijective_table()</a></tt><br></p>
+<p> </p>
+</div><p>Adds the specified entry in the specified bijective table, none of the
+ pair element expected to be already registered, and returns this enriched
+ table.
+</p>
+
+<h3 class="function"><a name="add_new_entry-3">add_new_entry/3</a></h3>
+<div class="spec">
+<p><tt>add_new_entry(First::<a href="#type-first_type">first_type()</a>, Second::<a href="#type-second_type">second_type()</a>, BijTable::<a href="#type-bijective_table">bijective_table()</a>) -&gt; <a href="#type-bijective_table">bijective_table()</a></tt><br></p>
+<p> </p>
+</div><p><p>Adds the specified (pair of) corresponding elements in the specified 
+bijective table, none expected to be already registered, and returns this 
+enriched table.</p>
+
+ Throws an exception should an element happened to be already registered.
+</p>
+
+<h3 class="function"><a name="get_first_elements_for-2">get_first_elements_for/2</a></h3>
+<div class="spec">
+<p><tt>get_first_elements_for(SecondElems::[<a href="#type-second_type">second_type()</a>], BijTable::<a href="#type-bijective_table">bijective_table()</a>) -&gt; [<a href="#type-first_type">first_type()</a>]</tt><br></p>
+<p> </p>
+</div><p>Returns the elements of the first type that correspond to the specified
+ elements of the second type.
+</p>
 
 <h3 class="function"><a name="get_first_for-2">get_first_for/2</a></h3>
 <div class="spec">
@@ -69,6 +169,30 @@
 <p> </p>
 </div><p>Returns the element of the first type that corresponds to the specified
  element of the second type.
+</p>
+
+<h3 class="function"><a name="get_maybe_first_for-2">get_maybe_first_for/2</a></h3>
+<div class="spec">
+<p><tt>get_maybe_first_for(Second::<a href="#type-second_type">second_type()</a>, BijTable::<a href="#type-bijective_table">bijective_table()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-first_type">first_type()</a>)</tt><br></p>
+<p> </p>
+</div><p>Returns the element of the first type (if any) that corresponds to the
+ specified element of the second type.
+</p>
+
+<h3 class="function"><a name="get_maybe_second_for-2">get_maybe_second_for/2</a></h3>
+<div class="spec">
+<p><tt>get_maybe_second_for(First::<a href="#type-first_type">first_type()</a>, BijTable::<a href="#type-bijective_table">bijective_table()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-second_type">second_type()</a>)</tt><br></p>
+<p> </p>
+</div><p>Returns the element of the second type (if any) that corresponds to the
+ specified element of the first type.
+</p>
+
+<h3 class="function"><a name="get_second_elements_for-2">get_second_elements_for/2</a></h3>
+<div class="spec">
+<p><tt>get_second_elements_for(FirstElems::[<a href="#type-first_type">first_type()</a>], BijTable::<a href="#type-bijective_table">bijective_table()</a>) -&gt; [<a href="#type-second_type">second_type()</a>]</tt><br></p>
+<p> </p>
+</div><p>Returns the elements of the first type that correspond to the specified
+ elements of the first type.
 </p>
 
 <h3 class="function"><a name="get_second_for-2">get_second_for/2</a></h3>
@@ -79,12 +203,42 @@
  element of the first type.
 </p>
 
+<h3 class="function"><a name="new-0">new/0</a></h3>
+<div class="spec">
+<p><tt>new() -&gt; <a href="#type-bijective_table">bijective_table()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a new, empty bijective table.</p>
+
 <h3 class="function"><a name="new-1">new/1</a></h3>
 <div class="spec">
 <p><tt>new(InitialEntries::<a href="#type-entries">entries()</a>) -&gt; <a href="#type-bijective_table">bijective_table()</a></tt><br></p>
 <p> </p>
 </div><p>Returns a new bijective table allowing a two-way conversion between
- specified (initial) entries.
+ the specified (initial) entries.
+</p>
+
+<h3 class="function"><a name="remove_entry_by_first-2">remove_entry_by_first/2</a></h3>
+<div class="spec">
+<p><tt>remove_entry_by_first(First::<a href="#type-first_type">first_type()</a>, BijTable::<a href="#type-bijective_table">bijective_table()</a>) -&gt; <a href="#type-bijective_table">bijective_table()</a></tt><br></p>
+<p> </p>
+</div><p><p>Removes the specified entry, as designated by its first element, from the 
+specified bijective table.</p>
+
+ <p>Throws an exception if the corresponding entry is not found.</p>
+
+ Returns an updated table.
+</p>
+
+<h3 class="function"><a name="remove_entry_by_second-2">remove_entry_by_second/2</a></h3>
+<div class="spec">
+<p><tt>remove_entry_by_second(Second::<a href="#type-second_type">second_type()</a>, BijTable::<a href="#type-bijective_table">bijective_table()</a>) -&gt; <a href="#type-bijective_table">bijective_table()</a></tt><br></p>
+<p> </p>
+</div><p><p>Removes the specified entry, as designated by its second element, from 
+the specified bijective table.</p>
+
+ <p>Throws an exception if the corresponding entry is not found.</p>
+
+ Returns an updated table.
 </p>
 
 <h3 class="function"><a name="to_string-1">to_string/1</a></h3>

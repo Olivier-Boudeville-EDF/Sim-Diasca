@@ -13,36 +13,52 @@
 <ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Module to create <b>WOOPER instance proxies</b>.
 
 
-<h2><a name="description">Description</a></h2>Module to create <b>WOOPER instance proxies</b>.
+<h2><a name="description">Description</a></h2><p>Module to create <b>WOOPER instance proxies</b>.</p>
+
+ <p>The purpose of a proxy P is to be a process that acts as a man-in-the-middle 
+for a WOOPER target instance T: all processes interacting with P will actually 
+interact transparently with T.</p>
+
+ <p>This can be useful when, for example, a local process (P) is needed (ex: must 
+be locally registered), whereas the actual service is implemented by a remote 
+instance (T).</p>
+
+ Note that this proxy is only as transparent as reasonably achievable and,
+ that, anyway, proxies are seldom satisfactory solutions.
+
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-instance_pid">instance_pid()</a></h3>
 <p><tt>instance_pid() = <a href="wooper.html#type-instance_pid">wooper:instance_pid()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-proxy_pid">proxy_pid()</a></h3>
+<p><tt>proxy_pid() = pid()</tt></p>
+
+
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#start-1">start/1</a></td><td>Starts a proxy for the specified WOOPER instance, designated by specified
- PID.</td></tr>
-<tr><td valign="top"><a href="#start_link-1">start_link/1</a></td><td>Starts and links a proxy for the specified WOOPER instance, designated by
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#start-1">start/1</a></td><td>Starts a proxy for the specified WOOPER instance, designated by the
  specified PID.</td></tr>
+<tr><td valign="top"><a href="#start_link-1">start_link/1</a></td><td>Starts and links a proxy for the specified WOOPER instance, designated by
+ the specified PID.</td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
 <h3 class="function"><a name="start-1">start/1</a></h3>
 <div class="spec">
-<p><tt>start(TargetInstancePid::<a href="#type-instance_pid">instance_pid()</a>) -&gt; <a href="#type-instance_pid">instance_pid()</a></tt><br></p>
+<p><tt>start(TargetInstancePid::<a href="#type-instance_pid">instance_pid()</a>) -&gt; <a href="#type-proxy_pid">proxy_pid()</a></tt><br></p>
 <p> </p>
-</div><p>Starts a proxy for the specified WOOPER instance, designated by specified
- PID.
+</div><p>Starts a proxy for the specified WOOPER instance, designated by the
+ specified PID.
 </p>
 
 <h3 class="function"><a name="start_link-1">start_link/1</a></h3>
 <div class="spec">
-<p><tt>start_link(TargetInstancePid::pid()) -&gt; pid()</tt><br></p>
+<p><tt>start_link(TargetInstancePid::<a href="#type-instance_pid">instance_pid()</a>) -&gt; <a href="#type-proxy_pid">proxy_pid()</a></tt><br></p>
 <p> </p>
 </div><p>Starts and links a proxy for the specified WOOPER instance, designated by
- specified PID.
+ the specified PID.
 </p>
 <hr>
 

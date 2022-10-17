@@ -22,10 +22,6 @@
 
 <h2><a name="types">Data Types</a></h2>
 
-<h3 class="typedecl"><a name="type-any_coordinate">any_coordinate()</a></h3>
-<p><tt>any_coordinate() = <a href="linear.html#type-any_coordinate">linear:any_coordinate()</a></tt></p>
-
-
 <h3 class="typedecl"><a name="type-any_point2">any_point2()</a></h3>
 <p><tt>any_point2() = <a href="#type-point2">point2()</a> | <a href="#type-integer_point2">integer_point2()</a></tt></p>
 <p> A point in a 2D space, with any numerical coordinates (2 of them).</p>
@@ -62,6 +58,10 @@
 <p><tt>integer_point2() = {X::<a href="#type-integer_coordinate">integer_coordinate()</a>, Y::<a href="#type-integer_coordinate">integer_coordinate()</a>}</tt></p>
 <p> A point in a 2D space, with (exactly) 2 integer coordinates.</p>
 
+<h3 class="typedecl"><a name="type-integer_vector2">integer_vector2()</a></h3>
+<p><tt>integer_vector2() = <a href="vector2.html#type-integer_vector2">vector2:integer_vector2()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-integer_vertex2">integer_vertex2()</a></h3>
 <p><tt>integer_vertex2() = <a href="#type-point2">point2()</a></tt></p>
 <p> A 2D integer vertex of a polygon.</p>
@@ -79,9 +79,9 @@
 
 
 <h3 class="typedecl"><a name="type-user_point2">user_point2()</a></h3>
-<p><tt>user_point2() = <a href="#type-any_point2">any_point2()</a> | [<a href="#type-any_coordinate">any_coordinate()</a>]</tt></p>
+<p><tt>user_point2() = <a href="#type-any_point2">any_point2()</a> | [<a href="#type-coordinate">coordinate()</a>] | [<a href="#type-integer_coordinate">integer_coordinate()</a>]</tt></p>
 <p> A user-specified point, preferably as a tuple, otherwise as a list (hence as a
- vector), with 2 integer or floating-point coordinates.</p>
+ vector), with two integer or floating-point coordinates.</p>
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
 <p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
@@ -145,7 +145,7 @@ tuple rather than a list).</td></tr>
  the specified 2D point.</td></tr>
 <tr><td valign="top"><a href="#translate-2">translate/2</a></td><td>Returns a point corresponding to the specified point translated of the
  specified vector.</td></tr>
-<tr><td valign="top"><a href="#vectorize-2">vectorize/2</a></td><td>Returns a vector V made from the specified two points: V=P2-P1.</td></tr>
+<tr><td valign="top"><a href="#vectorize-2">vectorize/2</a></td><td>Returns a vector V made from the specified two points P1 and P2: V=P2-P1.</td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
@@ -364,9 +364,10 @@ tuple rather than a list).</p>
 
 <h3 class="function"><a name="vectorize-2">vectorize/2</a></h3>
 <div class="spec">
-<p><tt>vectorize(P1::<a href="#type-point2">point2()</a>, P2::<a href="#type-point2">point2()</a>) -&gt; <a href="#type-vector2">vector2()</a></tt><br></p>
+<p><tt>vectorize(P1::<a href="#type-point2">point2()</a>, P2::<a href="#type-point2">point2()</a>) -&gt; <a href="#type-vector2">vector2()</a></tt><br></p><p><tt>vectorize(P1::<a href="#type-integer_point2">integer_point2()</a>, P2::<a href="#type-integer_point2">integer_point2()</a>) -&gt; <a href="#type-integer_vector2">integer_vector2()</a></tt><br></p>
 <p> </p>
-</div><p>Returns a vector V made from the specified two points: V=P2-P1.</p>
+<p> </p>
+</div><p>Returns a vector V made from the specified two points P1 and P2: V=P2-P1.</p>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

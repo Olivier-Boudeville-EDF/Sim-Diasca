@@ -1,0 +1,279 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module resource</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module resource</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of facilities for the management of any kind of <b>data
+ resources</b>, typically a content (ex: image, sound) read from file, or
+ generated as a term, and to be stored in a suitable <b>resource
+ referential</b>, possibly made available thanks to a <b>resource server</b>.
+
+
+<h2><a name="description">Description</a></h2><p>Gathering of facilities for the management of any kind of <b>data
+ resources</b>, typically a content (ex: image, sound) read from file, or
+ generated as a term, and to be stored in a suitable <b>resource
+ referential</b>, possibly made available thanks to a <b>resource server</b>.</p>
+
+ See also the environment module for the caching of application environments.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-any_directory_path">any_directory_path()</a></h3>
+<p><tt>any_directory_path() = <a href="file_utils.html#type-any_directory_path">file_utils:any_directory_path()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-any_file_path">any_file_path()</a></h3>
+<p><tt>any_file_path() = <a href="file_utils.html#type-any_file_path">file_utils:any_file_path()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-any_resource_file_id">any_resource_file_id()</a></h3>
+<p><tt>any_resource_file_id() = <a href="#type-resource_file_id">resource_file_id()</a> | <a href="#type-resource_file_id_string">resource_file_id_string()</a></tt></p>
+<p> Any kind of file resource identifier.</p>
+
+<h3 class="typedecl"><a name="type-bin_file_path">bin_file_path()</a></h3>
+<p><tt>bin_file_path() = <a href="file_utils.html#type-bin_file_path">file_utils:bin_file_path()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-file_path">file_path()</a></h3>
+<p><tt>file_path() = <a href="file_utils.html#type-file_path">file_utils:file_path()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-maybe_list">maybe_list()</a></h3>
+<p><tt>maybe_list(T) = <a href="list_utils.html#type-maybe_list">list_utils:maybe_list</a>(T)</tt></p>
+
+
+<h3 class="typedecl"><a name="type-resource">resource()</a></h3>
+<p><tt>resource() = term()</tt></p>
+<p> Any resource, often as a binary term (e.g. if loaded from file).</p>
+
+<h3 class="typedecl"><a name="type-resource_file_id">resource_file_id()</a></h3>
+<p><tt>resource_file_id() = <a href="#type-bin_file_path">bin_file_path()</a></tt></p>
+<p> An identifier of a file resource, that is a resource that can be read directly
+ from a filesystem, as a path either absolute or relative to an (implicit)
+ resource root directory. Ex: <code>&lt;&lt;"images/hello.png"&gt;&gt;</code>.</p>
+
+<h3 class="typedecl"><a name="type-resource_file_id_string">resource_file_id_string()</a></h3>
+<p><tt>resource_file_id_string() = <a href="#type-file_path">file_path()</a></tt></p>
+<p> A (plain) string version of a file resource identifier, possibly more
+ convenient for the user.</p>
+
+<h3 class="typedecl"><a name="type-resource_holder">resource_holder()</a></h3>
+<p><tt>resource_holder() = <a href="#type-resource_referential">resource_referential()</a> | <a href="#type-resource_server_pid">resource_server_pid()</a></tt></p>
+<p> Any container of resources.</p>
+
+<h3 class="typedecl"><a name="type-resource_id">resource_id()</a></h3>
+<p><tt>resource_id() = <a href="#type-any_resource_file_id">any_resource_file_id()</a> | <a href="#type-resource_logical_id">resource_logical_id()</a></tt></p>
+<p> Any type of resource identifier.</p>
+
+<h3 class="typedecl"><a name="type-resource_logical_id">resource_logical_id()</a></h3>
+<p><tt>resource_logical_id() = atom()</tt></p>
+<p><p> A logical, user-introduced resource identifier (e.g. 'my_splash_content'), 
+which does not correspond (at least directly) to a resource that can be read 
+directly from a filesystem; it is thus opaque, explicitly registered by the 
+user, and refer to any term (ex: a generated bitmap).</p>
+
+ Using a symbol (an atom) so that it cannot be mixed up with an actual path.</p>
+
+<h3 class="typedecl"><a name="type-resource_referential">resource_referential()</a></h3>
+<p><tt>resource_referential() = #resource_referential{root_directory = <a href="#type-maybe">maybe</a>(<a href="file_utils.html#type-bin_directory_path">file_utils:bin_directory_path()</a>), table = <a href="resource.html#type-resource_table">resource:resource_table()</a>}</tt></p>
+<p> A resource referential, storing resources based on their identifier.
+ It is a term in the current process.</p>
+
+<h3 class="typedecl"><a name="type-resource_server_pid">resource_server_pid()</a></h3>
+<p><tt>resource_server_pid() = pid()</tt></p>
+<p> The PID of a resource server.</p>
+
+<h3 class="typedecl"><a name="type-resource_table">resource_table()</a></h3>
+<p><tt>resource_table() = <a href="#type-resource_table">resource_table</a>(<a href="#type-resource_id">resource_id()</a>)</tt></p>
+
+
+<h3 class="typedecl"><a name="type-resource_table">resource_table()</a></h3>
+<p><tt>resource_table(I) = <a href="#type-table">table</a>(I, <a href="#type-resource">resource()</a>)</tt></p>
+<p> A table referencing resources, based on keys of the specified type.</p>
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#create_linked_server-0">create_linked_server/0</a></td><td>Creates a linked resource server, and returns its PID.</td></tr>
+<tr><td valign="top"><a href="#create_linked_server-1">create_linked_server/1</a></td><td>Creates a linked resource server anchored at the specified root
+ directory, and returns its PID.</td></tr>
+<tr><td valign="top"><a href="#create_referential-0">create_referential/0</a></td><td>Returns an empty referential, not anchored to a specific root directory.</td></tr>
+<tr><td valign="top"><a href="#create_referential-1">create_referential/1</a></td><td>Returns an empty referential that is to operate from the specified root
+ directory.</td></tr>
+<tr><td valign="top"><a href="#create_server-0">create_server/0</a></td><td>Creates a resource server, and returns its PID.</td></tr>
+<tr><td valign="top"><a href="#create_server-1">create_server/1</a></td><td>Creates a resource server anchored at the specified root directory, and
+ returns its PID.</td></tr>
+<tr><td valign="top"><a href="#get-2">get/2</a></td><td>Returns the resource content corresponding to the specified (file or
+ logical) identifier, based on the specified resource holder.</td></tr>
+<tr><td valign="top"><a href="#get_path-2">get_path/2</a></td><td>Returns the full, absolute path to the file-based, already-registered
+ resource specified through its identifier in the specified resource holder.</td></tr>
+<tr><td valign="top"><a href="#has-2">has/2</a></td><td>Returns whether the resource content corresponding to the specified
+ identifier is registered in the specified resource holder.</td></tr>
+<tr><td valign="top"><a href="#locate_data-2">locate_data/2</a></td><td>Returns the full, absolute path to the file-based specified data (not a 
+resource per se) whose relative path to the resource directory is specified; 
+ensures that the returned file exists indeed (as a regular file or a symbolic 
+link).</td></tr>
+<tr><td valign="top"><a href="#referential_to_string-1">referential_to_string/1</a></td><td>Returns a textual description of the specified referential.</td></tr>
+<tr><td valign="top"><a href="#register-2">register/2</a></td><td>Registers explicitly the specified logical resource(s) in the specified 
+resource holder, based on either a pair made of a logical (atom-based) 
+identifier and the resource itself, or a list of such pairs.</td></tr>
+<tr><td valign="top"><a href="#register-3">register/3</a></td><td>Registers explicitly the specified (single, logical) resource, based on 
+the specified logical (atom-based) identifier, in the specified resource 
+holder.</td></tr>
+<tr><td valign="top"><a href="#remove-2">remove/2</a></td><td>Removes the specified resource from the specified resource holder..</td></tr>
+<tr><td valign="top"><a href="#resource_type_to_string-1">resource_type_to_string/1</a></td><td>Returns a textual description of the type of the specified resource.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="create_linked_server-0">create_linked_server/0</a></h3>
+<div class="spec">
+<p><tt>create_linked_server() -&gt; <a href="#type-resource_server_pid">resource_server_pid()</a></tt><br></p>
+<p> </p>
+</div><p>Creates a linked resource server, and returns its PID.</p>
+
+<h3 class="function"><a name="create_linked_server-1">create_linked_server/1</a></h3>
+<div class="spec">
+<p><tt>create_linked_server(AnyRootDir::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; <a href="#type-resource_server_pid">resource_server_pid()</a></tt><br></p>
+<p> </p>
+</div><p>Creates a linked resource server anchored at the specified root
+ directory, and returns its PID.
+</p>
+
+<h3 class="function"><a name="create_referential-0">create_referential/0</a></h3>
+<div class="spec">
+<p><tt>create_referential() -&gt; <a href="#type-resource_referential">resource_referential()</a></tt><br></p>
+<p> </p>
+</div><p>Returns an empty referential, not anchored to a specific root directory.</p>
+
+<h3 class="function"><a name="create_referential-1">create_referential/1</a></h3>
+<div class="spec">
+<p><tt>create_referential(AnyRootDir::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; <a href="#type-resource_referential">resource_referential()</a></tt><br></p>
+<p> </p>
+</div><p>Returns an empty referential that is to operate from the specified root
+ directory. File-based resources can then be declared implicitly relatively to
+ this directory.
+</p>
+
+<h3 class="function"><a name="create_server-0">create_server/0</a></h3>
+<div class="spec">
+<p><tt>create_server() -&gt; <a href="#type-resource_server_pid">resource_server_pid()</a></tt><br></p>
+<p> </p>
+</div><p>Creates a resource server, and returns its PID.</p>
+
+<h3 class="function"><a name="create_server-1">create_server/1</a></h3>
+<div class="spec">
+<p><tt>create_server(AnyRootDir::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; <a href="#type-resource_server_pid">resource_server_pid()</a></tt><br></p>
+<p> </p>
+</div><p>Creates a resource server anchored at the specified root directory, and
+ returns its PID.
+</p>
+
+<h3 class="function"><a name="get-2">get/2</a></h3>
+<div class="spec">
+<p><tt>get(RscIdStr::<a href="#type-resource_id">resource_id()</a>, RscHolder::<a href="#type-resource_referential">resource_referential()</a>) -&gt; {<a href="#type-resource">resource()</a>, <a href="#type-resource_referential">resource_referential()</a>}</tt><br></p><p><tt>get(RscIdStr::<a href="#type-resource_id">resource_id()</a>, RscHolder::<a href="#type-resource_server_pid">resource_server_pid()</a>) -&gt; <a href="#type-resource">resource()</a></tt><br></p>
+<p> </p>
+<p> </p>
+</div><p>Returns the resource content corresponding to the specified (file or
+ logical) identifier, based on the specified resource holder.
+</p>
+
+<h3 class="function"><a name="get_path-2">get_path/2</a></h3>
+<div class="spec">
+<p><tt>get_path(RscFileIdStr::<a href="#type-any_resource_file_id">any_resource_file_id()</a>, RscRef::<a href="#type-resource_holder">resource_holder()</a>) -&gt; <a href="#type-bin_file_path">bin_file_path()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the full, absolute path to the file-based, already-registered
+ resource specified through its identifier in the specified resource holder.
+</p>
+
+<h3 class="function"><a name="has-2">has/2</a></h3>
+<div class="spec">
+<p><tt>has(RscIdStr::<a href="#type-resource_id">resource_id()</a>, RscHolder::<a href="#type-resource_holder">resource_holder()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Returns whether the resource content corresponding to the specified
+ identifier is registered in the specified resource holder.
+</p>
+
+<h3 class="function"><a name="locate_data-2">locate_data/2</a></h3>
+<div class="spec">
+<p><tt>locate_data(DataRelPathStr::<a href="#type-any_file_path">any_file_path()</a>, AnyRscHolder::<a href="#type-resource_holder">resource_holder()</a>) -&gt; <a href="#type-bin_file_path">bin_file_path()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the full, absolute path to the file-based specified data (not a 
+resource per se) whose relative path to the resource directory is specified; 
+ensures that the returned file exists indeed (as a regular file or a symbolic 
+link).</p>
+
+ Especially useful with register/3, in order to locate data files through the
+ resource root directory, so that a logical resource is first obtained from
+ them, and then registered as such.
+</p>
+
+<h3 class="function"><a name="referential_to_string-1">referential_to_string/1</a></h3>
+<div class="spec">
+<p><tt>referential_to_string(Resource_referential::<a href="#type-resource_referential">resource_referential()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of the specified referential.</p>
+
+<h3 class="function"><a name="register-2">register/2</a></h3>
+<div class="spec">
+<p><tt>register(RscPairs::<a href="#type-maybe_list">maybe_list</a>({<a href="#type-resource_logical_id">resource_logical_id()</a>, <a href="#type-resource">resource()</a>}), RscRef::<a href="#type-resource_referential">resource_referential()</a>) -&gt; <a href="#type-resource_referential">resource_referential()</a></tt><br></p><p><tt>register(RscPairs::<a href="#type-maybe_list">maybe_list</a>({<a href="#type-resource_logical_id">resource_logical_id()</a>, <a href="#type-resource">resource()</a>}), RscRef::<a href="#type-resource_server_pid">resource_server_pid()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+<p> </p>
+</div><p><p>Registers explicitly the specified logical resource(s) in the specified 
+resource holder, based on either a pair made of a logical (atom-based) 
+identifier and the resource itself, or a list of such pairs.</p>
+
+ <p>Useful for resources that cannot be loaded directly from a filesystem 
+(e.g. because they have to be processed first, or are obtained through other 
+means - for example through a network or if being generated as a whole).</p>
+
+ Any resource previously registered under the same identifier will be replaced.
+</p>
+
+<h3 class="function"><a name="register-3">register/3</a></h3>
+<div class="spec">
+<p><tt>register(RscLogId::<a href="#type-resource_logical_id">resource_logical_id()</a>, Rsc::<a href="#type-resource">resource()</a>, RscRef::<a href="#type-resource_referential">resource_referential()</a>) -&gt; <a href="#type-resource_referential">resource_referential()</a></tt><br></p><p><tt>register(RscLogId::<a href="#type-resource_logical_id">resource_logical_id()</a>, Rsc::<a href="#type-resource">resource()</a>, RscRef::<a href="#type-resource_server_pid">resource_server_pid()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+<p> </p>
+</div><p><p>Registers explicitly the specified (single, logical) resource, based on 
+the specified logical (atom-based) identifier, in the specified resource 
+holder.</p>
+
+ <p>Useful for resources that cannot be loaded directly from a filesystem 
+(e.g. because they have to be processed first, or are obtained through other 
+means - for example through a network or if being generated as a whole).</p>
+
+ Any resource previously registered under the same identifier will be replaced.
+</p>
+
+<h3 class="function"><a name="remove-2">remove/2</a></h3>
+<div class="spec">
+<p><tt>remove(RscIdStr::<a href="#type-any_resource_file_id">any_resource_file_id()</a>, RscHolder::<a href="#type-resource_referential">resource_referential()</a>) -&gt; <a href="#type-resource_referential">resource_referential()</a></tt><br></p><p><tt>remove(RscIdStr::<a href="#type-any_resource_file_id">any_resource_file_id()</a>, RscHolder::<a href="#type-resource_server_pid">resource_server_pid()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+<p> </p>
+</div><p><p>Removes the specified resource from the specified resource holder..</p>
+
+ This resource is just unregistered; for example file-based ones are not
+ deleted from the filesystem.
+</p>
+
+<h3 class="function"><a name="resource_type_to_string-1">resource_type_to_string/1</a></h3>
+<div class="spec">
+<p><tt>resource_type_to_string(RscId::<a href="#type-resource_id">resource_id()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of the type of the specified resource.</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

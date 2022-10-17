@@ -26,7 +26,9 @@ generally (hence: not necessarily) atoms, values being any Erlang term.</p>
  <p>In an option list, usually no duplicate keys are expected to exist. 
 Operations on option list tend to preserve the order of their entries.</p>
 
- See also the <code>proplists</code> standard module.
+ See also the <code>proplists</code> standard module, and our very similar, richer,
+ list_table module that is bound to fully supersede the current module in the
+ future.
 
 <h2><a name="types">Data Types</a></h2>
 
@@ -66,8 +68,8 @@ Operations on option list tend to preserve the order of their entries.</p>
  preserved).</td></tr>
 <tr><td valign="top"><a href="#get-2">get/2</a></td><td>Returns the value associated to the specified key in specified option 
 list.</td></tr>
-<tr><td valign="top"><a href="#lookup-2">lookup/2</a></td><td>Returns the value associated to the specified key in specified option
- list, if found, otherwise (key not found), returns 'undefined'.</td></tr>
+<tr><td valign="top"><a href="#lookup-2">lookup/2</a></td><td>Returns the value associated to the specified key in specified option 
+list, if found, otherwise (key not found), returns 'undefined'.</td></tr>
 <tr><td valign="top"><a href="#new-0">new/0</a></td><td>Returns an empty option list.</td></tr>
 <tr><td valign="top"><a href="#new-1">new/1</a></td><td>Creates an option list from specified list containing {Key,Value} pairs.</td></tr>
 <tr><td valign="top"><a href="#set-2">set/2</a></td><td>Sets, in the specified option list, the specified entry.</td></tr>
@@ -111,8 +113,12 @@ list.</p>
 <div class="spec">
 <p><tt>lookup(Key::<a href="#type-key">key()</a>, OptionList::<a href="#type-option_list">option_list()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-value">value()</a>)</tt><br></p>
 <p> </p>
-</div><p>Returns the value associated to the specified key in specified option
- list, if found, otherwise (key not found), returns 'undefined'.
+</div><p><p>Returns the value associated to the specified key in specified option 
+list, if found, otherwise (key not found), returns 'undefined'.</p>
+
+ As a result, this function is not able to discriminate between no entry
+ defined, or one whose value is 'undefined'. See list_table:lookup_entry/2 for
+ a better management.
 </p>
 
 <h3 class="function"><a name="new-0">new/0</a></h3>

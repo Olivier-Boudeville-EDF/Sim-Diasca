@@ -86,6 +86,10 @@
 <p><tt>parser_state() = {<a href="#type-parser_backend_name">parser_backend_name()</a>, InternalBackendState::<a href="#type-maybe">maybe</a>(term())}</tt></p>
 <p> Often no internal state is really needed.</p>
 
+<h3 class="typedecl"><a name="type-resolvable_path">resolvable_path()</a></h3>
+<p><tt>resolvable_path() = <a href="file_utils.html#type-resolvable_path">file_utils:resolvable_path()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-string_json">string_json()</a></h3>
 <p><tt>string_json() = <a href="#type-ustring">ustring()</a></tt></p>
 <p> A (plain) string containing JSON content.</p>
@@ -124,6 +128,13 @@ would currently be used, if any (returns 'undefined' if none was found
 available).</td></tr>
 <tr><td valign="top"><a href="#get_parser_backend_name-1">get_parser_backend_name/1</a></td><td>Returns (as an atom) the JSON parser (as an OTP application name) that
  corresponds to specified parser state.</td></tr>
+<tr><td valign="top"><a href="#get_parser_name_paths-0">get_parser_name_paths/0</a></td><td>Returns information regarding any JSON parser found, as a triplet made of
+ its name, a resolvable path to its ebin directory (for example useful to any
+ upcoming deployment of a vanilla node) and a directly resolved one; otherwise
+ throws an exception.</td></tr>
+<tr><td valign="top"><a href="#get_paths_for-1">get_paths_for/1</a></td><td>Returns an existing path (if any, and according to the Myriad
+ conventions), as both a resolvable one and a directly resolved one, to the
+ ebin directory of the specified JSON parser.</td></tr>
 <tr><td valign="top"><a href="#is_parser_available-0">is_parser_available/0</a></td><td>Tells whether a suitable JSON parser is available.</td></tr>
 <tr><td valign="top"><a href="#is_parser_available-1">is_parser_available/1</a></td><td>Tells whether a suitable JSON parser is available, based on the specified
  (maybe) parser state.</td></tr>
@@ -252,6 +263,25 @@ available).</p>
 <p> </p>
 </div><p>Returns (as an atom) the JSON parser (as an OTP application name) that
  corresponds to specified parser state.
+</p>
+
+<h3 class="function"><a name="get_parser_name_paths-0">get_parser_name_paths/0</a></h3>
+<div class="spec">
+<p><tt>get_parser_name_paths() -&gt; {<a href="#type-parser_backend_name">parser_backend_name()</a>, <a href="#type-resolvable_path">resolvable_path()</a>, <a href="#type-directory_path">directory_path()</a>}</tt><br></p>
+<p> </p>
+</div><p>Returns information regarding any JSON parser found, as a triplet made of
+ its name, a resolvable path to its ebin directory (for example useful to any
+ upcoming deployment of a vanilla node) and a directly resolved one; otherwise
+ throws an exception.
+</p>
+
+<h3 class="function"><a name="get_paths_for-1">get_paths_for/1</a></h3>
+<div class="spec">
+<p><tt>get_paths_for(ParserName::<a href="#type-parser_backend_name">parser_backend_name()</a>) -&gt; <a href="#type-maybe">maybe</a>({<a href="#type-resolvable_path">resolvable_path()</a>, <a href="#type-directory_path">directory_path()</a>})</tt><br></p>
+<p> </p>
+</div><p>Returns an existing path (if any, and according to the Myriad
+ conventions), as both a resolvable one and a directly resolved one, to the
+ ebin directory of the specified JSON parser.
 </p>
 
 <h3 class="function"><a name="is_parser_available-0">is_parser_available/0</a></h3>

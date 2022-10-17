@@ -141,7 +141,7 @@ otherwise throwing an exception.</td></tr>
  entries.</td></tr>
 <tr><td valign="top"><a href="#get_value-2">get_value/2</a></td><td>Retrieves the value corresponding to specified (existing) key, and 
 returns it directly.</td></tr>
-<tr><td valign="top"><a href="#get_value_with_defaults-3">get_value_with_defaults/3</a></td><td>Looks for the specified entry in specified table and, if found, returns
+<tr><td valign="top"><a href="#get_value_with_default-3">get_value_with_default/3</a></td><td>Looks for the specified entry in specified table and, if found, returns
  the associated value; otherwise returns the specified default value.</td></tr>
 <tr><td valign="top"><a href="#get_values-2">get_values/2</a></td><td>Returns the (ordered) list of values that correspond to the specified 
 (ordered) list of keys of this table.</td></tr>
@@ -349,9 +349,9 @@ returns it directly.</p>
  raised.
 </p>
 
-<h3 class="function"><a name="get_value_with_defaults-3">get_value_with_defaults/3</a></h3>
+<h3 class="function"><a name="get_value_with_default-3">get_value_with_default/3</a></h3>
 <div class="spec">
-<p><tt>get_value_with_defaults(Key::<a href="#type-key">key()</a>, DefaultValue::<a href="#type-value">value()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-value">value()</a></tt><br></p>
+<p><tt>get_value_with_default(Key::<a href="#type-key">key()</a>, DefaultValue::<a href="#type-value">value()</a>, Hashtable::<a href="#type-hashtable">hashtable()</a>) -&gt; <a href="#type-value">value()</a></tt><br></p>
 <p> </p>
 </div><p>Looks for the specified entry in specified table and, if found, returns
  the associated value; otherwise returns the specified default value.

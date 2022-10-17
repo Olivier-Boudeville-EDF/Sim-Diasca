@@ -78,7 +78,7 @@
 
 
 <h3 class="typedecl"><a name="type-bin_url">bin_url()</a></h3>
-<p><tt>bin_url() = <a href="#type-bin_string">bin_string()</a></tt></p>
+<p><tt>bin_url() = <a href="#type-bin_uri">bin_uri()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-body">body()</a></h3>
@@ -172,7 +172,7 @@
 
 
 <h3 class="typedecl"><a name="type-new_style_options">new_style_options()</a></h3>
-<p><tt>new_style_options() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/maps.html#type-maps">maps:maps</a>(<a href="#type-bin_string">bin_string()</a>, <a href="#type-bin_string">bin_string()</a>)</tt></p>
+<p><tt>new_style_options() = <a href="type_utils.html#type-map">type_utils:map</a>(<a href="#type-bin_string">bin_string()</a>, <a href="#type-bin_string">bin_string()</a>)</tt></p>
 
 
 <h3 class="typedecl"><a name="type-nonce">nonce()</a></h3>
@@ -228,7 +228,7 @@
 
 
 <h3 class="typedecl"><a name="type-url">url()</a></h3>
-<p><tt>url() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><tt>url() = <a href="#type-uri">uri()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-url_info">url_info()</a></h3>
@@ -241,7 +241,7 @@
 
 <h2><a name="index">Function Index</a></h2>
 <table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#cloud_instance_info_to_string-1">cloud_instance_info_to_string/1</a></td><td>Returns a textual description of the specified cloud instance.</td></tr>
-<tr><td valign="top"><a href="#download_file-2">download_file/2</a></td><td>Downloads the file designated by specified URL, in the specified 
+<tr><td valign="top"><a href="#download_file-2">download_file/2</a></td><td>Downloads the file designated by the specified URL, in the specified 
 directory (under its name in URL), with no specific HTTP options, and returns 
 the corresponding full path of that file.</td></tr>
 <tr><td valign="top"><a href="#encode_as_url-1">encode_as_url/1</a></td><td>Encodes specified list of {Key, Value} pairs so that it can used into an 
@@ -254,7 +254,7 @@ URL.</td></tr>
 <tr><td valign="top"><a href="#escape_term_as_html_content-1">escape_term_as_html_content/1</a></td><td>Escapes specified term (most probably non-string), so that it can be
  included safely as an HTML content.</td></tr>
 <tr><td valign="top"><a href="#get-3">get/3</a></td><td>Sends a (synchronous) HTTP/1.1 client GET request.</td></tr>
-<tr><td valign="top"><a href="#get_azure_instance_information-2">get_azure_instance_information/2</a></td><td>Returns a Microsoft Azure instance information based on specified
+<tr><td valign="top"><a href="#get_azure_instance_information-2">get_azure_instance_information/2</a></td><td>Returns a Microsoft Azure instance information based on the specified
  settings.</td></tr>
 <tr><td valign="top"><a href="#get_http_status_class-1">get_http_status_class/1</a></td><td>Returns the status class (if any) corresponding to the specified HTTP
  status code.</td></tr>
@@ -269,7 +269,7 @@ connections:.</td></tr>
 <tr><td valign="top"><a href="#get_unordered_list-1">get_unordered_list/1</a></td><td>Returns the HTML code of an unordered list corresponding to specified
  list of elements.</td></tr>
 <tr><td valign="top"><a href="#http_status_class_to_string-1">http_status_class_to_string/1</a></td><td>Returns a textual description of specified HTTP status class.</td></tr>
-<tr><td valign="top"><a href="#interpret_http_status_code-1">interpret_http_status_code/1</a></td><td>Returns a textual description of specified HTTP code.</td></tr>
+<tr><td valign="top"><a href="#interpret_http_status_code-1">interpret_http_status_code/1</a></td><td>Returns a textual description of the specified HTTP code.</td></tr>
 <tr><td valign="top"><a href="#post-3">post/3</a></td><td>Sends a (synchronous, body-less) HTTP/1.1 client POST request.</td></tr>
 <tr><td valign="top"><a href="#post-4">post/4</a></td><td>Sends a (synchronous) HTTP/1.1 client POST request.</td></tr>
 <tr><td valign="top"><a href="#post-5">post/5</a></td><td>Sends a (synchronous) HTTP/1.1 client POST request.</td></tr>
@@ -297,7 +297,7 @@ fragment.</td></tr>
 <div class="spec">
 <p><tt>download_file(Url::<a href="#type-url">url()</a>, TargetDir::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; <a href="#type-file_path">file_path()</a></tt><br></p>
 <p> </p>
-</div><p><p>Downloads the file designated by specified URL, in the specified 
+</div><p><p>Downloads the file designated by the specified URL, in the specified 
 directory (under its name in URL), with no specific HTTP options, and returns 
 the corresponding full path of that file.</p>
 
@@ -381,7 +381,7 @@ web_utils:get_ssl_verify_options()} pair.</p>
 <div class="spec">
 <p><tt>get_azure_instance_information(InstKey::<a href="#type-azure_instance_key">azure_instance_key()</a>, InstLoc::<a href="#type-azure_instance_location">azure_instance_location()</a>) -&gt; <a href="#type-azure_instance_info">azure_instance_info()</a></tt><br></p>
 <p> </p>
-</div><p>Returns a Microsoft Azure instance information based on specified
+</div><p>Returns a Microsoft Azure instance information based on the specified
  settings.
 </p>
 
@@ -457,7 +457,7 @@ connections:</p>
 <div class="spec">
 <p><tt>interpret_http_status_code(StatusCode::<a href="#type-http_status_code">http_status_code()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
 <p> </p>
-</div><p><p>Returns a textual description of specified HTTP code.</p>
+</div><p><p>Returns a textual description of the specified HTTP code.</p>
 
  Source: <a href="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes" target="_top"><tt>https://en.wikipedia.org/wiki/List_of_HTTP_status_codes</tt></a>.
 </p>
@@ -577,8 +577,8 @@ fragment.</p>
  <p>Note that other information (fragment, query, userinfo) will be ignored and 
 lost.</p>
 
- Note: using string_to_uri_map/1 might be a more complete option; this function
- remains mostly for backward compatibility.
+ Note: using string_to_uri_map/1 might be a more complete option; the current
+ function remains mostly for backward compatibility.
 </p>
 
 <h3 class="function"><a name="url_info_to_string-1">url_info_to_string/1</a></h3>

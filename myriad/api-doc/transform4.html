@@ -23,6 +23,10 @@
 <p><tt>matrix4() = <a href="matrix4.html#type-matrix4">matrix4:matrix4()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-point3">point3()</a></h3>
+<p><tt>point3() = <a href="point3.html#type-point3">point3:point3()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-radians">radians()</a></h3>
 <p><tt>radians() = <a href="unit_utils.html#type-radians">unit_utils:radians()</a></tt></p>
 
@@ -45,7 +49,11 @@
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#get_inverse-1">get_inverse/1</a></td><td>Returns the inverse of  the matrix corresponding to the specified
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#basis_change-3">basis_change/3</a></td><td>Returns a transition transformation whose reference matrix is a 
+change-of-basis matrix from the current referential (R1) to one (R2) whose 
+origin, forward and up directions are the specified ones (still in the current 
+referential R1).</td></tr>
+<tr><td valign="top"><a href="#get_inverse-1">get_inverse/1</a></td><td>Returns the inverse of the matrix corresponding to the specified
  transformation.</td></tr>
 <tr><td valign="top"><a href="#get_reference-1">get_reference/1</a></td><td>Returns the reference matrix corresponding to the specified
  transformation.</td></tr>
@@ -70,11 +78,27 @@
 
 <h2><a name="functions">Function Details</a></h2>
 
+<h3 class="function"><a name="basis_change-3">basis_change/3</a></h3>
+<div class="spec">
+<p><tt>basis_change(O2InR1::<a href="#type-point3">point3()</a>, FwdDir2InR1::<a href="#type-vector3">vector3()</a>, UpDir2InR1::<a href="#type-vector3">vector3()</a>) -&gt; <a href="#type-transform4">transform4()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns a transition transformation whose reference matrix is a 
+change-of-basis matrix from the current referential (R1) to one (R2) whose 
+origin, forward and up directions are the specified ones (still in the current 
+referential R1).</p>
+
+ <p>So returns P1-&gt;2, allowing, for an (homogeneous) point P, to convert P1, its 
+representation in current referential R1, into P2, its counterpart in R2: 
+P2 = P1-&gt;2.P1.</p>
+
+ The inverse matrix in this transformation is thus P2-&gt;1.
+</p>
+
 <h3 class="function"><a name="get_inverse-1">get_inverse/1</a></h3>
 <div class="spec">
 <p><tt>get_inverse(Transform4::<a href="#type-transform4">transform4()</a>) -&gt; <a href="#type-matrix4">matrix4()</a></tt><br></p>
 <p> </p>
-</div><p>Returns the inverse of  the matrix corresponding to the specified
+</div><p>Returns the inverse of the matrix corresponding to the specified
  transformation.
 </p>
 
@@ -148,7 +172,7 @@
 
 <h3 class="function"><a name="to_string-1">to_string/1</a></h3>
 <div class="spec">
-<p><tt>to_string(Transform::<a href="#type-transform4">transform4()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><tt>to_string(Transform4::<a href="#type-transform4">transform4()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
 <p> </p>
 </div><p>Returns a textual representation of the specified (4x4) transformation.</p>
 

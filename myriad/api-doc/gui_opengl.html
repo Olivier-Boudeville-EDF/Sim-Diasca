@@ -326,9 +326,10 @@ source file (whose extension is typically .tess-eval.glsl), and returns its
 identifier.</td></tr>
 <tr><td valign="top"><a href="#compile_vertex_shader-1">compile_vertex_shader/1</a></td><td>Loads and compiles a vertex shader from the specified source file (whose 
 extension is typically .vertex.glsl), and returns its identifier.</td></tr>
-<tr><td valign="top"><a href="#create_canvas-1">create_canvas/1</a></td><td>Creates and returns an OpenGL canvas with default settings: RGBA and 
-double-buffering.</td></tr>
-<tr><td valign="top"><a href="#create_canvas-2">create_canvas/2</a></td><td>Creates and returns an OpenGL canvas with specified settings.</td></tr>
+<tr><td valign="top"><a href="#create_canvas-1">create_canvas/1</a></td><td>Creates and returns an OpenGL canvas with specified parent widget and 
+default settings: RGBA and double-buffering.</td></tr>
+<tr><td valign="top"><a href="#create_canvas-2">create_canvas/2</a></td><td>Creates and returns an OpenGL canvas with specified parent widget and 
+options.</td></tr>
 <tr><td valign="top"><a href="#create_context-1">create_context/1</a></td><td>Returns the OpenGL context obtained from the specified OpenGL canvas; it
  is created but not bound yet (not set as current, hence not usable yet, no
  OpenGL command can be issued yet).</td></tr>
@@ -390,7 +391,7 @@ a string (if any) returned by the driver.</td></tr>
 <tr><td valign="top"><a href="#is_hardware_accelerated-0">is_hardware_accelerated/0</a></td><td>Tells whether OpenGL hardware acceleration is available on this host,
  based on the glxinfo executable.</td></tr>
 <tr><td valign="top"><a href="#is_hardware_accelerated-1">is_hardware_accelerated/1</a></td><td>Tells whether OpenGL hardware acceleration is available on this host,
- based on specified glxinfo report.</td></tr>
+ based on the specified glxinfo report.</td></tr>
 <tr><td valign="top"><a href="#is_profile_supported-1">is_profile_supported/1</a></td><td>Returns whether the specified OpenGL profile is supported.</td></tr>
 <tr><td valign="top"><a href="#is_version_compatible_with-1">is_version_compatible_with/1</a></td><td>Tells whether the current OpenGL version is compatible with the specified
  one, that is whether the current one matches, or is more recent than, the
@@ -551,22 +552,25 @@ extension is typically .vertex.glsl), and returns its identifier.</p>
 <div class="spec">
 <p><tt>create_canvas(Parent::<a href="#type-window">window()</a>) -&gt; <a href="#type-gl_canvas">gl_canvas()</a></tt><br></p>
 <p> </p>
-</div><p><p>Creates and returns an OpenGL canvas with default settings: RGBA and 
-double-buffering.</p>
+</div><p><p>Creates and returns an OpenGL canvas with specified parent widget and 
+default settings: RGBA and double-buffering.</p>
 
- Note: not to be mixed up with gui:create_canvas/1.
+ Note: not to be mixed up with gui:create_canvas/1, which creates a basic
+ (non-OpenGL) canvas.
 </p>
 
 <h3 class="function"><a name="create_canvas-2">create_canvas/2</a></h3>
 <div class="spec">
 <p><tt>create_canvas(Parent::<a href="#type-window">window()</a>, Opts::[<a href="#type-gl_canvas_option">gl_canvas_option()</a>]) -&gt; <a href="#type-gl_canvas">gl_canvas()</a></tt><br></p>
 <p> </p>
-</div><p><p>Creates and returns an OpenGL canvas with specified settings.</p>
+</div><p><p>Creates and returns an OpenGL canvas with specified parent widget and 
+options.</p>
 
  <p>If the device context attributes are not set, following default apply: RGBA 
 and double-buffering.</p>
 
- Note: not to be mixed up with gui:create_canvas/1.
+ Note: not to be mixed up with gui:create_canvas/1, which creates a basic
+ (non-OpenGL) canvas.
 </p>
 
 <h3 class="function"><a name="create_context-1">create_context/1</a></h3>
@@ -867,7 +871,7 @@ a string (if any) returned by the driver.</p>
 <p><tt>is_hardware_accelerated(GlxinfoStrs::<a href="#type-glxinfo_report">glxinfo_report()</a>) -&gt; boolean()</tt><br></p>
 <p> </p>
 </div><p>Tells whether OpenGL hardware acceleration is available on this host,
- based on specified glxinfo report.
+ based on the specified glxinfo report.
 </p>
 
 <h3 class="function"><a name="is_profile_supported-1">is_profile_supported/1</a></h3>

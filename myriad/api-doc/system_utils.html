@@ -66,14 +66,6 @@ facilities.</p>
 <p> Describes a command to be run (i.e. a path to an executable, with possibly
  command-line arguments).</p>
 
-<h3 class="typedecl"><a name="type-command_line_argument">command_line_argument()</a></h3>
-<p><tt>command_line_argument() = <a href="#type-any_string">any_string()</a></tt></p>
-<p><p> Describes a (single) command-line argument.</p>
-
- Note that each argument shall be unitary, "atomic"; for example "--color red"
- is not an argument (the called executable would receive it as a whole), but
- two: "--color" and "red".</p>
-
 <h3 class="typedecl"><a name="type-command_output">command_output()</a></h3>
 <p><tt>command_output() = <a href="#type-ustring">ustring()</a></tt></p>
 <p> Output of the run of an executable.</p>
@@ -119,6 +111,23 @@ facilities.</p>
 <p><tt>environment() = [{<a href="#type-env_variable_name">env_variable_name()</a>, <a href="#type-env_variable_value">env_variable_value()</a>}]</tt></p>
 <p> Represents a shell environment (a set of variables).</p>
 
+<h3 class="typedecl"><a name="type-executable_argument">executable_argument()</a></h3>
+<p><tt>executable_argument() = <a href="#type-any_string">any_string()</a></tt></p>
+<p><p> Describes a (single) executable argument.</p>
+
+ <p>Specifying arguments that way is very convenient in so far as they do not need 
+to be escaped as when they are transmitted in the context of a shell command: 
+the corresponding string is passed directly as it is (like a const char* 
+pointer) to the executable, with no further transformation need.</p>
+
+ <p>Note that each argument shall be unitary, "atomic"; for example "--color red" 
+is not an argument (the called executable would receive it as a whole), but 
+two: "--color" and "red".</p>
+
+ Similarly, an empty argument (that is: "") is not the same as no argument, as
+ this empty argument will be transmitted to the executable, and is bound to
+ confuse it.</p>
+
 <h3 class="typedecl"><a name="type-executable_path">executable_path()</a></h3>
 <p><tt>executable_path() = <a href="file_utils.html#type-executable_path">file_utils:executable_path()</a></tt></p>
 
@@ -128,7 +137,7 @@ facilities.</p>
 <p> All information returned by a shell command.</p>
 
 <h3 class="typedecl"><a name="type-execution_pair">execution_pair()</a></h3>
-<p><tt>execution_pair() = {<a href="#type-bin_executable_path">bin_executable_path()</a>, [<a href="#type-command_line_argument">command_line_argument()</a>]}</tt></p>
+<p><tt>execution_pair() = {<a href="#type-bin_executable_path">bin_executable_path()</a>, [<a href="#type-executable_argument">executable_argument()</a>]}</tt></p>
 <p> A pair specifying a complete command-line ready to be executed by
  run_executable/n (convenient to store once for all if needing to launch it
  repeatedly). Generally more secure than command/1 as well.</p>
@@ -333,7 +342,9 @@ needing to open a file for writing - should such an option be used.</td></tr>
  pseudo-filesystems).</td></tr>
 <tr><td valign="top"><a href="#get_operating_system_description-0">get_operating_system_description/0</a></td><td>Returns a string describing the current operating system.</td></tr>
 <tr><td valign="top"><a href="#get_operating_system_description_string-0">get_operating_system_description_string/0</a></td><td>Returns a textual description of the operating system being used.</td></tr>
-<tr><td valign="top"><a href="#get_operating_system_type-0">get_operating_system_type/0</a></td><td>Returns the type of the local operating system.</td></tr>
+<tr><td valign="top"><a href="#get_operating_system_family-0">get_operating_system_family/0</a></td><td>Returns the family of the local operating system.</td></tr>
+<tr><td valign="top"><a href="#get_operating_system_name-0">get_operating_system_name/0</a></td><td>Returns the name of the local operating system.</td></tr>
+<tr><td valign="top"><a href="#get_operating_system_type-0">get_operating_system_type/0</a></td><td>Returns the type (family and type) of the local operating system.</td></tr>
 <tr><td valign="top"><a href="#get_process_count-0">get_process_count/0</a></td><td>Returns the number of live Erlang processes on the current node.</td></tr>
 <tr><td valign="top"><a href="#get_process_count_string-0">get_process_count_string/0</a></td><td>Returns a textual description of the number of live Erlang processes on 
 the current node.</td></tr>
@@ -983,11 +994,23 @@ needing to open a file for writing - should such an option be used.</p>
  Cannot crash.
 </p>
 
+<h3 class="function"><a name="get_operating_system_family-0">get_operating_system_family/0</a></h3>
+<div class="spec">
+<p><tt>get_operating_system_family() -&gt; <a href="#type-os_family">os_family()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the family of the local operating system.</p>
+
+<h3 class="function"><a name="get_operating_system_name-0">get_operating_system_name/0</a></h3>
+<div class="spec">
+<p><tt>get_operating_system_name() -&gt; <a href="#type-os_name">os_name()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the name of the local operating system.</p>
+
 <h3 class="function"><a name="get_operating_system_type-0">get_operating_system_type/0</a></h3>
 <div class="spec">
 <p><tt>get_operating_system_type() -&gt; <a href="#type-os_type">os_type()</a></tt><br></p>
 <p> </p>
-</div><p>Returns the type of the local operating system.</p>
+</div><p>Returns the type (family and type) of the local operating system.</p>
 
 <h3 class="function"><a name="get_process_count-0">get_process_count/0</a></h3>
 <div class="spec">
@@ -1312,7 +1335,7 @@ is spawned (and most probably lost).</p>
 
 <h3 class="function"><a name="run_background_executable-2">run_background_executable/2</a></h3>
 <div class="spec">
-<p><tt>run_background_executable(ExecPath::<a href="#type-executable_path">executable_path()</a>, Arguments::[<a href="#type-command_line_argument">command_line_argument()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>run_background_executable(ExecPath::<a href="#type-executable_path">executable_path()</a>, Arguments::[<a href="#type-executable_argument">executable_argument()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p><p>Executes asynchronously, in the background, the specified executable, 
 whose path is exactly the specified one (that is: taken verbatim, not 
@@ -1333,7 +1356,7 @@ is spawned (and most probably lost).</p>
 
 <h3 class="function"><a name="run_background_executable-3">run_background_executable/3</a></h3>
 <div class="spec">
-<p><tt>run_background_executable(ExecPath::<a href="#type-executable_path">executable_path()</a>, Arguments::[<a href="#type-command_line_argument">command_line_argument()</a>], Environment::<a href="#type-environment">environment()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>run_background_executable(ExecPath::<a href="#type-executable_path">executable_path()</a>, Arguments::[<a href="#type-executable_argument">executable_argument()</a>], Environment::<a href="#type-environment">environment()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p><p>Executes asynchronously, in the background, the specified executable, 
 whose path is exactly the specified one (that is: taken verbatim, not 
@@ -1354,7 +1377,7 @@ is spawned (and most probably lost).</p>
 
 <h3 class="function"><a name="run_background_executable-4">run_background_executable/4</a></h3>
 <div class="spec">
-<p><tt>run_background_executable(ExecPath::<a href="#type-executable_path">executable_path()</a>, Arguments::[<a href="#type-command_line_argument">command_line_argument()</a>], Environment::<a href="#type-environment">environment()</a>, MaybeWorkingDir::<a href="#type-maybe">maybe</a>(<a href="#type-working_dir">working_dir()</a>)) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>run_background_executable(ExecPath::<a href="#type-executable_path">executable_path()</a>, Arguments::[<a href="#type-executable_argument">executable_argument()</a>], Environment::<a href="#type-environment">environment()</a>, MaybeWorkingDir::<a href="#type-maybe">maybe</a>(<a href="#type-working_dir">working_dir()</a>)) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p><p>Executes asynchronously, in the background, the specified executable, 
 whose path is exactly the specified one (that is: taken verbatim, not 
@@ -1374,7 +1397,7 @@ is spawned (and most probably lost).</p>
 
 <h3 class="function"><a name="run_background_executable-5">run_background_executable/5</a></h3>
 <div class="spec">
-<p><tt>run_background_executable(ExecPath::<a href="#type-executable_path">executable_path()</a>, Arguments::[<a href="#type-command_line_argument">command_line_argument()</a>], Environment::<a href="#type-environment">environment()</a>, MaybeWorkingDir::<a href="#type-maybe">maybe</a>(<a href="#type-working_dir">working_dir()</a>), PortOptions::[<a href="#type-port_option">port_option()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>run_background_executable(ExecPath::<a href="#type-executable_path">executable_path()</a>, Arguments::[<a href="#type-executable_argument">executable_argument()</a>], Environment::<a href="#type-environment">environment()</a>, MaybeWorkingDir::<a href="#type-maybe">maybe</a>(<a href="#type-working_dir">working_dir()</a>), PortOptions::[<a href="#type-port_option">port_option()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p><p>Executes asynchronously, in the background, the specified executable,
  whose path is exactly the specified one (that is: taken verbatim, not
@@ -1507,7 +1530,7 @@ port options.</p>
 
 <h3 class="function"><a name="run_executable-2">run_executable/2</a></h3>
 <div class="spec">
-<p><tt>run_executable(ExecPath::<a href="#type-executable_path">executable_path()</a>, Arguments::[<a href="#type-command_line_argument">command_line_argument()</a>]) -&gt; <a href="#type-execution_outcome">execution_outcome()</a></tt><br></p>
+<p><tt>run_executable(ExecPath::<a href="#type-executable_path">executable_path()</a>, Arguments::[<a href="#type-executable_argument">executable_argument()</a>]) -&gt; <a href="#type-execution_outcome">execution_outcome()</a></tt><br></p>
 <p> </p>
 </div><p><p>Executes (synchronously) the specified executable, whose path is exactly 
 the specified one (that is: taken verbatim, not looked-up through any PATH 
@@ -1523,7 +1546,7 @@ port options.</p>
 
 <h3 class="function"><a name="run_executable-3">run_executable/3</a></h3>
 <div class="spec">
-<p><tt>run_executable(ExecPath::<a href="#type-executable_path">executable_path()</a>, Arguments::[<a href="#type-command_line_argument">command_line_argument()</a>], Environment::<a href="#type-environment">environment()</a>) -&gt; <a href="#type-execution_outcome">execution_outcome()</a></tt><br></p>
+<p><tt>run_executable(ExecPath::<a href="#type-executable_path">executable_path()</a>, Arguments::[<a href="#type-executable_argument">executable_argument()</a>], Environment::<a href="#type-environment">environment()</a>) -&gt; <a href="#type-execution_outcome">execution_outcome()</a></tt><br></p>
 <p> </p>
 </div><p><p>Executes (synchronously) the specified executable, whose path is exactly 
 the specified one (that is: taken verbatim, not looked-up through any PATH 
@@ -1539,7 +1562,7 @@ port options.</p>
 
 <h3 class="function"><a name="run_executable-4">run_executable/4</a></h3>
 <div class="spec">
-<p><tt>run_executable(ExecPath::<a href="#type-executable_path">executable_path()</a>, Arguments::[<a href="#type-command_line_argument">command_line_argument()</a>], Environment::<a href="#type-environment">environment()</a>, MaybeWorkingDir::<a href="#type-maybe">maybe</a>(<a href="#type-working_dir">working_dir()</a>)) -&gt; <a href="#type-execution_outcome">execution_outcome()</a></tt><br></p>
+<p><tt>run_executable(ExecPath::<a href="#type-executable_path">executable_path()</a>, Arguments::[<a href="#type-executable_argument">executable_argument()</a>], Environment::<a href="#type-environment">environment()</a>, MaybeWorkingDir::<a href="#type-maybe">maybe</a>(<a href="#type-working_dir">working_dir()</a>)) -&gt; <a href="#type-execution_outcome">execution_outcome()</a></tt><br></p>
 <p> </p>
 </div><p><p>Executes (synchronously) the specified executable, whose path is exactly 
 the specified one (that is: taken verbatim, not looked-up through any PATH 
@@ -1555,7 +1578,7 @@ port options.</p>
 
 <h3 class="function"><a name="run_executable-5">run_executable/5</a></h3>
 <div class="spec">
-<p><tt>run_executable(ExecPath::<a href="#type-executable_path">executable_path()</a>, Arguments::[<a href="#type-command_line_argument">command_line_argument()</a>], Environment::<a href="#type-environment">environment()</a>, MaybeWorkingDir::<a href="#type-maybe">maybe</a>(<a href="#type-working_dir">working_dir()</a>), PortOptions::[<a href="#type-port_option">port_option()</a>]) -&gt; <a href="#type-execution_outcome">execution_outcome()</a></tt><br></p>
+<p><tt>run_executable(ExecPath::<a href="#type-executable_path">executable_path()</a>, Arguments::[<a href="#type-executable_argument">executable_argument()</a>], Environment::<a href="#type-environment">environment()</a>, MaybeWorkingDir::<a href="#type-maybe">maybe</a>(<a href="#type-working_dir">working_dir()</a>), PortOptions::[<a href="#type-port_option">port_option()</a>]) -&gt; <a href="#type-execution_outcome">execution_outcome()</a></tt><br></p>
 <p> </p>
 </div><p><p>Executes (synchronously) the specified executable, whose path is exactly 
 the specified one (that is: taken verbatim, not looked-up through any PATH 

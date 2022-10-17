@@ -21,10 +21,6 @@
 
 <h2><a name="types">Data Types</a></h2>
 
-<h3 class="typedecl"><a name="type-directory_path">directory_path()</a></h3>
-<p><tt>directory_path() = <a href="file_utils.html#type-directory_path">file_utils:directory_path()</a></tt></p>
-
-
 <h3 class="typedecl"><a name="type-human_language">human_language()</a></h3>
 <p><tt>human_language() = english | french | spanish | german | italian | russian | chinese | japanese</tt></p>
 <p> Type to designate all supported human languages.</p>
@@ -37,6 +33,10 @@
 <h3 class="typedecl"><a name="type-language">language()</a></h3>
 <p><tt>language() = erlang | python | java</tt></p>
 <p> Type to designate all known programming languages.</p>
+
+<h3 class="typedecl"><a name="type-possibly_resolvable_path">possibly_resolvable_path()</a></h3>
+<p><tt>possibly_resolvable_path() = <a href="file_utils.html#type-possibly_resolvable_path">file_utils:possibly_resolvable_path()</a></tt></p>
+
 
 <h3 class="typedecl"><a name="type-python_interpreter_container_pid">python_interpreter_container_pid()</a></h3>
 <p><tt>python_interpreter_container_pid() = <a href="python_utils.html#type-interpreter_pid">python_utils:interpreter_pid()</a></tt></p>
@@ -66,7 +66,7 @@
 
 <h3 class="function"><a name="get_additional_beam_directories_for-1">get_additional_beam_directories_for/1</a></h3>
 <div class="spec">
-<p><tt>get_additional_beam_directories_for(Languages::[<a href="#type-language">language()</a>]) -&gt; [<a href="#type-directory_path">directory_path()</a>]</tt><br></p>
+<p><tt>get_additional_beam_directories_for(Languages::[<a href="#type-language">language()</a>]) -&gt; [<a href="#type-possibly_resolvable_path">possibly_resolvable_path()</a>]</tt><br></p>
 <p> </p>
 </div><p>Returns the BEAM locations of all the dependencies related to the
  specified language bindings.

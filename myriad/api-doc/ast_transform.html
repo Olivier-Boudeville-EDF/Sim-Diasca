@@ -163,14 +163,6 @@ function name of the call is not to change.</p>
 <p><tt>remote_type_transform_table() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(<a href="#type-remote_type_id_match">remote_type_id_match()</a>, <a href="#type-remote_type_replacement">remote_type_replacement()</a>)</tt></p>
 <p> Table defining replacements of remote types.</p>
 
-<h3 class="typedecl"><a name="type-term_transformer">term_transformer()</a></h3>
-<p><tt>term_transformer() = fun((term(), <a href="#type-user_data">user_data()</a>) -&gt; {term(), <a href="#type-user_data">user_data()</a>})</tt></p>
-<p><p> Type of functions to transform terms during a recursive traversal (see 
-transform_term/4).</p>
-
- Note: apparently we cannot use the 'when' notation here (InputTerm ... when
- InputTerm :: term()).</p>
-
 <h3 class="typedecl"><a name="type-transform_formatter">transform_formatter()</a></h3>
 <p><tt>transform_formatter() = fun((<a href="#type-format_string">format_string()</a>, <a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-ustring">ustring()</a>)</tt></p>
 <p> Designates a function able to properly format typically the output of
@@ -226,26 +218,17 @@ type name is not to change.</p>
  Note that this implies that a (local or remote) type can only be replaced by a
  remote type (a priori not a problematic limitation).</p>
 
-<h3 class="typedecl"><a name="type-user_data">user_data()</a></h3>
-<p><tt>user_data() = <a href="basic_utils.html#type-user_data">basic_utils:user_data()</a></tt></p>
-
-
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
 <p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#ast_transforms_to_string-1">ast_transforms_to_string/1</a></td><td>Returns a textual description of specified AST transforms.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#ast_transforms_to_string-1">ast_transforms_to_string/1</a></td><td>Returns a textual description of the specified AST transforms.</td></tr>
 <tr><td valign="top"><a href="#default_formatter-2">default_formatter/2</a></td><td>The default transform_formatter() to be used.</td></tr>
 <tr><td valign="top"><a href="#get_local_call_transform_table-1">get_local_call_transform_table/1</a></td><td>Returns a table describing local call replacements.</td></tr>
 <tr><td valign="top"><a href="#get_local_type_transform_table-1">get_local_type_transform_table/1</a></td><td>Returns a table describing local type replacements.</td></tr>
 <tr><td valign="top"><a href="#get_remote_call_transform_table-1">get_remote_call_transform_table/1</a></td><td>Returns a table describing remote call replacements.</td></tr>
 <tr><td valign="top"><a href="#get_remote_type_transform_table-1">get_remote_type_transform_table/1</a></td><td>Returns a table describing remote type replacements.</td></tr>
-<tr><td valign="top"><a href="#transform_term-4">transform_term/4</a></td><td>Transforms "blindly" (that is with no a-priori knowledge about its 
-structure) the specified arbitrary term (possibly with nested subterms, as the 
-function recurses in lists and tuples), calling specified transformer function 
-on each instance of the specified type, in order to replace that instance by 
-the result of that function.</td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
@@ -254,7 +237,7 @@ the result of that function.</td></tr>
 <div class="spec">
 <p><tt>ast_transforms_to_string(Ast_transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
 <p> </p>
-</div><p>Returns a textual description of specified AST transforms.</p>
+</div><p>Returns a textual description of the specified AST transforms.</p>
 
 <h3 class="function"><a name="default_formatter-2">default_formatter/2</a></h3>
 <div class="spec">
@@ -368,32 +351,6 @@ end }
   - M:other_void() into M:other_utils()
   - any type of any module depending on three other types by
   foo_utils:some_type/3
-</p>
-
-<h3 class="function"><a name="transform_term-4">transform_term/4</a></h3>
-<div class="spec">
-<p><tt>transform_term(TargetTerm::term(), TypeDescription::<a href="type_utils.html#type-primitive_type_description">type_utils:primitive_type_description()</a>, TermTransformer::<a href="#type-term_transformer">term_transformer()</a>, UserData::<a href="#type-user_data">user_data()</a>) -&gt; {term(), <a href="#type-user_data">user_data()</a>}</tt><br></p>
-<p> </p>
-</div><p><p>Transforms "blindly" (that is with no a-priori knowledge about its 
-structure) the specified arbitrary term (possibly with nested subterms, as the 
-function recurses in lists and tuples), calling specified transformer function 
-on each instance of the specified type, in order to replace that instance by 
-the result of that function.</p>
-
- <p>Returns an updated term, with these replacements made.</p>
-
- <p>Ex: the input term could be <code>T={a, ["foo", {c, [2.0, 45]}]}</code> and the function
- might replace, for example, floats by <code>&lt;&lt;bar&gt;&gt;</code>; then <code>{a, ["foo", {c,
- [&lt;&lt;bar&gt;&gt;, 45]}]}</code> would be returned.</p>
-
- <p>Note: the transformed terms are themselves recursively transformed, to ensure 
-nesting is managed. Of course this implies that the term transform should not 
-result in iterating the transformation infinitely.</p>
-
- As a result it may appear that a term of the targeted type is transformed
- almost systematically twice: it is first transformed as such, and the result
- is transformed in turn. If the transformed term is the same as the original
- one, then that content will be shown as analysed twice.
 </p>
 <hr>
 

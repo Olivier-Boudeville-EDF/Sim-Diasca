@@ -27,6 +27,10 @@ one, row per row.</p>
 <p><tt>alpha_coordinate() = <a href="#type-color_coordinate">color_coordinate()</a></tt></p>
 <p> An alpha-transparency color coordinate.</p>
 
+<h3 class="typedecl"><a name="type-any_color_by_decimal">any_color_by_decimal()</a></h3>
+<p><tt>any_color_by_decimal() = <a href="#type-color_by_decimal">color_by_decimal()</a> | <a href="#type-color_by_decimal_with_alpha">color_by_decimal_with_alpha()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-color">color()</a></h3>
 <p><tt>color() = <a href="#type-color_by_name">color_by_name()</a> | <a href="#type-color_by_decimal">color_by_decimal()</a></tt></p>
 <p> Any kind of RGB (integer) color.</p>
@@ -49,7 +53,7 @@ bottom-right one, row per row.</p>
 
 <h3 class="typedecl"><a name="type-color_by_name">color_by_name()</a></h3>
 <p><tt>color_by_name() = atom()</tt></p>
-
+<p> A color, as designated by an atom (ex: 'aliceblue'); possibly a logical color.</p>
 
 <h3 class="typedecl"><a name="type-color_coordinate">color_coordinate()</a></h3>
 <p><tt>color_coordinate() = float()</tt></p>
@@ -59,6 +63,10 @@ bottom-right one, row per row.</p>
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
 <p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
 
+
+<h3 class="typedecl"><a name="type-logical_color">logical_color()</a></h3>
+<p><tt>logical_color() = <a href="#type-color_by_name">color_by_name()</a></tt></p>
+<p> A logicial color, like 'window_frame_color'.</p>
 
 <h3 class="typedecl"><a name="type-render_color">render_color()</a></h3>
 <p><tt>render_color() = <a href="#type-render_rgb_color">render_rgb_color()</a> | <a href="#type-render_rgba_color">render_rgba_color()</a></tt></p>
@@ -109,6 +117,8 @@ function.</p>
 directly as a triplet of color components.</td></tr>
 <tr><td valign="top"><a href="#get_color_for_gnuplot-1">get_color_for_gnuplot/1</a></td><td>Returns a stringified representation for gnuplot of the specified color.</td></tr>
 <tr><td valign="top"><a href="#get_colors-0">get_colors/0</a></td><td>Returns a list of known {color_name, ColorDefinition} associations.</td></tr>
+<tr><td valign="top"><a href="#get_logical_color-1">get_logical_color/1</a></td><td>Returns the RGB definition of the specified logical color.</td></tr>
+<tr><td valign="top"><a href="#get_logical_colors-0">get_logical_colors/0</a></td><td>Returns the known logical colors.</td></tr>
 <tr><td valign="top"><a href="#get_random_colors-1">get_random_colors/1</a></td><td>Returns a list of the specified number of different colors.</td></tr>
 </table>
 
@@ -132,9 +142,25 @@ directly as a triplet of color components.</p>
 
 <h3 class="function"><a name="get_colors-0">get_colors/0</a></h3>
 <div class="spec">
-<p><tt>get_colors() -&gt; [{<a href="#type-color_by_name">color_by_name()</a>, <a href="#type-color_by_decimal">color_by_decimal()</a>}]</tt><br></p>
+<p><tt>get_colors() -&gt; [{<a href="#type-color_by_name">color_by_name()</a>, <a href="#type-any_color_by_decimal">any_color_by_decimal()</a>}]</tt><br></p>
 <p> </p>
 </div><p>Returns a list of known {color_name, ColorDefinition} associations.</p>
+
+<h3 class="function"><a name="get_logical_color-1">get_logical_color/1</a></h3>
+<div class="spec">
+<p><tt>get_logical_color(LogicalColor::<a href="#type-logical_color">logical_color()</a>) -&gt; <a href="#type-color_by_decimal_with_alpha">color_by_decimal_with_alpha()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the RGB definition of the specified logical color.</p>
+
+ Note that the underlying GUI backend must be initialised and usable by this
+ process first.
+</p>
+
+<h3 class="function"><a name="get_logical_colors-0">get_logical_colors/0</a></h3>
+<div class="spec">
+<p><tt>get_logical_colors() -&gt; [<a href="#type-logical_color">logical_color()</a>]</tt><br></p>
+<p> </p>
+</div><p>Returns the known logical colors.</p>
 
 <h3 class="function"><a name="get_random_colors-1">get_random_colors/1</a></h3>
 <div class="spec">

@@ -27,7 +27,7 @@
 
 
 <h3 class="typedecl"><a name="type-any_point2">any_point2()</a></h3>
-<p><tt>any_point2() = <a href="#type-any_point2">any_point2()</a></tt></p>
+<p><tt>any_point2() = <a href="point2.html#type-any_point2">point2:any_point2()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-any_vector2">any_vector2()</a></h3>
@@ -147,6 +147,10 @@
  precision is shown.</td></tr>
 <tr><td valign="top"><a href="#to_user_string-1">to_user_string/1</a></td><td>Returns a textual, more user-friendly representation of the specified 2D 
 vector; full float precision is shown.</td></tr>
+<tr><td valign="top"><a href="#x_axis-0">x_axis/0</a></td><td>Returns a 2D vector corresponding to the X axis of the current
+ referential.</td></tr>
+<tr><td valign="top"><a href="#y_axis-0">y_axis/0</a></td><td>Returns a 2D vector corresponding to the Y axis of the current
+ referential.</td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
@@ -203,7 +207,7 @@ vector; full float precision is shown.</td></tr>
 
 <h3 class="function"><a name="check_unit_vectors-1">check_unit_vectors/1</a></h3>
 <div class="spec">
-<p><tt>check_unit_vectors(Vs::<a href="#type-vector2">vector2()</a>) -&gt; <a href="#type-unit_vector2">unit_vector2()</a></tt><br></p>
+<p><tt>check_unit_vectors(Vs::[<a href="#type-vector2">vector2()</a>]) -&gt; [<a href="#type-unit_vector2">unit_vector2()</a>]</tt><br></p>
 <p> </p>
 </div><p>Checks that the specified 2D vectors are normalised, and returns them.</p>
 
@@ -218,7 +222,8 @@ vector; full float precision is shown.</td></tr>
 
 <h3 class="function"><a name="dot_product-2">dot_product/2</a></h3>
 <div class="spec">
-<p><tt>dot_product(V1::<a href="#type-vector2">vector2()</a>, V2::<a href="#type-vector2">vector2()</a>) -&gt; float()</tt><br></p>
+<p><tt>dot_product(V1::<a href="#type-vector2">vector2()</a>, V2::<a href="#type-vector2">vector2()</a>) -&gt; float()</tt><br></p><p><tt>dot_product(V1::<a href="#type-integer_vector2">integer_vector2()</a>, V2::<a href="#type-integer_vector2">integer_vector2()</a>) -&gt; integer()</tt><br></p>
+<p> </p>
 <p> </p>
 </div><p>Returns the dot-product of the two specified 2D vectors: D = V1.V2.</p>
 
@@ -238,7 +243,7 @@ vector; full float precision is shown.</td></tr>
 
 <h3 class="function"><a name="magnitude-1">magnitude/1</a></h3>
 <div class="spec">
-<p><tt>magnitude(V::<a href="#type-vector2">vector2()</a>) -&gt; <a href="#type-distance">distance()</a></tt><br></p>
+<p><tt>magnitude(V::<a href="#type-any_vector2">any_vector2()</a>) -&gt; <a href="#type-distance">distance()</a></tt><br></p>
 <p> </p>
 </div><p>Returns the magnitude of the specified 2D vector.</p>
 
@@ -270,7 +275,8 @@ vector; full float precision is shown.</td></tr>
 
 <h3 class="function"><a name="normal_left-1">normal_left/1</a></h3>
 <div class="spec">
-<p><tt>normal_left(V::<a href="#type-vector2">vector2()</a>) -&gt; <a href="#type-vector2">vector2()</a></tt><br></p>
+<p><tt>normal_left(V::<a href="#type-vector2">vector2()</a>) -&gt; <a href="#type-vector2">vector2()</a></tt><br></p><p><tt>normal_left(V::<a href="#type-integer_vector2">integer_vector2()</a>) -&gt; <a href="#type-integer_vector2">integer_vector2()</a></tt><br></p>
+<p> </p>
 <p> </p>
 </div><p>Returns a (non-unit) vector that is normal to the specified vector V, and
  is on the left of V in the standard basis.
@@ -278,7 +284,8 @@ vector; full float precision is shown.</td></tr>
 
 <h3 class="function"><a name="normal_right-1">normal_right/1</a></h3>
 <div class="spec">
-<p><tt>normal_right(V::<a href="#type-vector2">vector2()</a>) -&gt; <a href="#type-vector2">vector2()</a></tt><br></p>
+<p><tt>normal_right(V::<a href="#type-vector2">vector2()</a>) -&gt; <a href="#type-vector2">vector2()</a></tt><br></p><p><tt>normal_right(V::<a href="#type-integer_vector2">integer_vector2()</a>) -&gt; <a href="#type-integer_vector2">integer_vector2()</a></tt><br></p>
+<p> </p>
 <p> </p>
 </div><p>Returns a (non-unit) vector that is normal to the specified vector V, and
  is on the right of V in the standard basis.
@@ -308,7 +315,7 @@ vector; full float precision is shown.</td></tr>
 
 <h3 class="function"><a name="square_magnitude-1">square_magnitude/1</a></h3>
 <div class="spec">
-<p><tt>square_magnitude(V::<a href="#type-vector2">vector2()</a>) -&gt; <a href="#type-square_distance">square_distance()</a></tt><br></p>
+<p><tt>square_magnitude(V::<a href="#type-any_vector2">any_vector2()</a>) -&gt; <a href="#type-square_distance">square_distance()</a></tt><br></p>
 <p> </p>
 </div><p>Returns the square of the magnitude of the 2D specified vector.</p>
 
@@ -351,6 +358,22 @@ vector; full float precision is shown.</td></tr>
 vector; full float precision is shown.</p>
 
  This is the recommended representation.
+</p>
+
+<h3 class="function"><a name="x_axis-0">x_axis/0</a></h3>
+<div class="spec">
+<p><tt>x_axis() -&gt; <a href="#type-vector2">vector2()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a 2D vector corresponding to the X axis of the current
+ referential.
+</p>
+
+<h3 class="function"><a name="y_axis-0">y_axis/0</a></h3>
+<div class="spec">
+<p><tt>y_axis() -&gt; <a href="#type-vector2">vector2()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a 2D vector corresponding to the Y axis of the current
+ referential.
 </p>
 <hr>
 

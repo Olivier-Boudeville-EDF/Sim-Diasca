@@ -55,9 +55,12 @@ foobar_preferences).</p>
 
  <p>As a consequence, a preferences server can be designated either directly
  through its PID or through its conventional (atom) registration name (ex:
- implicitly with <code>preferences:get(hello)</code> for the default one, or explicitly
- with <code>preferences:get(hello, foobar_preferences)</code>. No specific global 
-registration of that server is made here.</p>
+ implicitly with <code>preferences:get(hello)</code> for the default one, or explicitly,
+ via its name with <code>preferences:get(hello, foobar_preferences)</code>. The former 
+approach is a bit more effective, but the later one is more robust (the server 
+can be transparently restarted/upgraded).</p>
+
+ <p>No specific global registration of that server is made here.</p>
 
  <p>A (single) explicit start (with one of the start* functions) shall be 
 preferred to implicit ones (typically directly thanks to the get* functions) 
@@ -91,6 +94,10 @@ preferences server.</p>
 <p><tt>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-cache_spec">cache_spec()</a></h3>
+<p><tt>cache_spec() = <a href="environment.html#type-cache_spec">environment:cache_spec()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-entries">entries()</a></h3>
 <p><tt>entries() = <a href="table.html#type-entries">table:entries()</a></tt></p>
 
@@ -115,11 +122,22 @@ preferences server.</p>
 <p><tt>pref_reg_name() = <a href="environment.html#type-env_reg_name">environment:env_reg_name()</a></tt></p>
 <p> The name under which a preferences server can be (locally) registered.</p>
 
+<h3 class="typedecl"><a name="type-preferences_data">preferences_data()</a></h3>
+<p><tt>preferences_data() = <a href="#type-preferences_info">preferences_info()</a> | <a href="#type-preferences_designator">preferences_designator()</a></tt></p>
+<p> Any element designating a preferences server (most general handle).</p>
+
 <h3 class="typedecl"><a name="type-preferences_designator">preferences_designator()</a></h3>
-<p><tt>preferences_designator() = <a href="environment.html#type-env_designator">environment:env_designator()</a></tt></p>
+<p><tt>preferences_designator() = <a href="#type-preferences_pid">preferences_pid()</a> | <a href="#type-pref_reg_name">pref_reg_name()</a></tt></p>
 <p> The two standard ways according to which a preferences server can be
  designated: either directly thanks to its PID or to the name under which it is
  locally registered.</p>
+
+<h3 class="typedecl"><a name="type-preferences_info">preferences_info()</a></h3>
+<p><tt>preferences_info() = {<a href="#type-pref_reg_name">pref_reg_name()</a>, <a href="#type-preferences_pid">preferences_pid()</a>}</tt></p>
+<p><p> The full reference to a preferences server.</p>
+
+ The registration name is needed as a key of any local cache, and the PID
+ allows to spare extra naming look-ups.</p>
 
 <h3 class="typedecl"><a name="type-preferences_pid">preferences_pid()</a></h3>
 <p><tt>preferences_pid() = <a href="environment.html#type-env_pid">environment:env_pid()</a></tt></p>
@@ -135,8 +153,21 @@ preferences server.</p>
  associated to 'undefined').</p>
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#check_preferences_default_file-0">check_preferences_default_file/0</a></td><td>Checks that the default preferences file exists; throws an exception
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#cache-1">cache/1</a></td><td>Requests the calling process to cache the entries corresponding to the 
+specified key(s), which will thus be appropriately synchronised with the 
+default preferences server from now on, in addition to any already cached 
+keys.</td></tr>
+<tr><td valign="top"><a href="#cache-2">cache/2</a></td><td>Requests the calling process to cache the entries corresponding to the 
+specified key(s), which will thus be appropriately synchronised with the 
+preferences server from now on, in addition to any already cached keys.</td></tr>
+<tr><td valign="top"><a href="#cache_return-1">cache_return/1</a></td><td>Caches in the calling process the specified keys, and returns their 
+associated value.</td></tr>
+<tr><td valign="top"><a href="#cache_return-2">cache_return/2</a></td><td>Caches in the calling process the specified keys, and returns their 
+associated value.</td></tr>
+<tr><td valign="top"><a href="#check_preferences_default_file-0">check_preferences_default_file/0</a></td><td>Checks that the default preferences file exists; throws an exception
  otherwise.</td></tr>
+<tr><td valign="top"><a href="#ensure_binary-2">ensure_binary/2</a></td><td>Ensures that the specified key(s), expected to be some kind of strings, 
+are binary strings.</td></tr>
 <tr><td valign="top"><a href="#get-1">get/1</a></td><td>Returns the value associated to each of the specified key(s) in the 
 preferences (if any), otherwise 'undefined', based on the default preferences 
 file, and possibly launching a corresponding (non-linked) preferences server 
@@ -147,9 +178,9 @@ preferences file (and possibly launching a corresponding (non-linked)
 preferences server if needed) or on the specified PID of an already-running 
 preferences server.</td></tr>
 <tr><td valign="top"><a href="#get_default_preferences_path-0">get_default_preferences_path/0</a></td><td>Returns the full, absolute path to the default preferences filename.</td></tr>
-<tr><td valign="top"><a href="#get_default_preferences_registration_name-0">get_default_preferences_registration_name/0</a></td><td>Returns the default registration name for the preferences.</td></tr>
-<tr><td valign="top"><a href="#is_preferences_default_file_available-0">is_preferences_default_file_available/0</a></td><td>Returns whether the default preferences file is available and its full
- path.</td></tr>
+<tr><td valign="top"><a href="#get_default_preferences_registration_name-0">get_default_preferences_registration_name/0</a></td><td>Returns the default (local) registration name for the preferences.</td></tr>
+<tr><td valign="top"><a href="#is_preferences_default_file_available-0">is_preferences_default_file_available/0</a></td><td>Returns whether the default preferences file is available, together with
+ its full path.</td></tr>
 <tr><td valign="top"><a href="#set-2">set/2</a></td><td>Associates, if the first argument is a key, in default preferences, the 
 specified value to the specified key (possibly overwriting any previous 
 value); otherwise the first argument is expected to be a list of key/value 
@@ -177,18 +208,96 @@ is started and linked.</td></tr>
 <tr><td valign="top"><a href="#start_link-2">start_link/2</a></td><td>Ensures explicitly that, if not running already, the preferences service 
 is started with the specified registration name and based on the specified 
 file, and linked.</td></tr>
+<tr><td valign="top"><a href="#start_link_with_defaults-1">start_link_with_defaults/1</a></td><td>Starts, links and initialises the preferences service based first on the 
+specified defaults, and then also on the default preferences file path, 
+registering it with a deriving name.</td></tr>
+<tr><td valign="top"><a href="#start_with_defaults-1">start_with_defaults/1</a></td><td>Starts and initialises the preferences service based first on the 
+specified defaults, and then also on the default preferences file path, 
+registering it with a deriving name.</td></tr>
 <tr><td valign="top"><a href="#stop-0">stop/0</a></td><td>Stops (asynchronously) the default preferences server, if it is running.</td></tr>
 <tr><td valign="top"><a href="#to_bin_string-0">to_bin_string/0</a></td><td>Returns a textual description of the preferences server (if any), for
  the default preferences file.</td></tr>
+<tr><td valign="top"><a href="#to_bin_string-1">to_bin_string/1</a></td><td>Returns a textual description of the specified preferences server.</td></tr>
 <tr><td valign="top"><a href="#to_string-0">to_string/0</a></td><td>Returns a textual description of the preferences server (if any), for
  the default preferences file.</td></tr>
 <tr><td valign="top"><a href="#update_from_etf-1">update_from_etf/1</a></td><td>Updates the default preferences with the entries found in the specified 
 ETF file.</td></tr>
 <tr><td valign="top"><a href="#update_from_etf-2">update_from_etf/2</a></td><td>Updates the specified preferences with the entries found in the specified 
 ETF file.</td></tr>
+<tr><td valign="top"><a href="#wait_available-0">wait_available/0</a></td><td>Waits (up to 5 seconds, otherwise throws an exception) until the default 
+preferences server becomes available, then returns its PID.</td></tr>
+<tr><td valign="top"><a href="#wait_available-1">wait_available/1</a></td><td>Waits (up to 5 seconds, otherwise throws an exception) until the default 
+preferences server becomes available, then returns its PID.</td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="cache-1">cache/1</a></h3>
+<div class="spec">
+<p><tt>cache(CacheSpec::<a href="#type-cache_spec">cache_spec()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Requests the calling process to cache the entries corresponding to the 
+specified key(s), which will thus be appropriately synchronised with the 
+default preferences server from now on, in addition to any already cached 
+keys.</p>
+
+ <p>Either single keys or full entries can be specified there. Both will lead the 
+corresponding keys to be cached, yet a single key, if it is not already cached 
+(otherwise, its updated will be ignored), will trigger its value to be fetched 
+from the preferences server whereas the value of a full entry will be cached 
+and also sent to the preferences server (therefore being equivalent to set/2).</p>
+
+ Any next setting by this process of one of these cached keys will update its
+ local cache as well as the specified preferences server; as a consequence,
+ here the cache is expected to start consistent with its server; afterwards by
+ default only the entries not already in cache will be requested from the
+ server.
+</p>
+
+<h3 class="function"><a name="cache-2">cache/2</a></h3>
+<div class="spec">
+<p><tt>cache(CacheSpec::<a href="#type-cache_spec">cache_spec()</a>, PrefData::<a href="#type-preferences_data">preferences_data()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Requests the calling process to cache the entries corresponding to the 
+specified key(s), which will thus be appropriately synchronised with the 
+preferences server from now on, in addition to any already cached keys.</p>
+
+ <p>Either single keys or full entries can be specified there. Both will lead the 
+corresponding keys to be cached, yet a single key, if it is not already cached 
+(otherwise, its updated will be ignored), will trigger its value to be fetched 
+from the preferences server whereas the value of a full entry will be cached 
+and also sent to the preferences server (therefore being equivalent to set/2).</p>
+
+ <p>Any next setting by this process of one of these cached keys will update its 
+local cache as well as the specified preferences server; as a consequence, 
+here the cache is expected to start consistent with its server; afterwards by 
+default only the entries not already in cache will be requested from the 
+server.</p>
+
+ The preferences server can be specified through its information, or from its
+ registration name, otherwise directly through its PID. Use cache/1 if leaving
+ it implicit (in which case the default preferences server will be used).
+</p>
+
+<h3 class="function"><a name="cache_return-1">cache_return/1</a></h3>
+<div class="spec">
+<p><tt>cache_return(KeyMaybeList::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-key">key()</a>)) -&gt; <a href="#type-maybe_list">maybe_list</a>(<a href="#type-maybe">maybe</a>(<a href="#type-value">value()</a>))</tt><br></p>
+<p> </p>
+</div><p><p>Caches in the calling process the specified keys, and returns their 
+associated value.</p>
+
+ Equivalent to a call to cache/1 followed by one to get/1 with the same keys.
+</p>
+
+<h3 class="function"><a name="cache_return-2">cache_return/2</a></h3>
+<div class="spec">
+<p><tt>cache_return(KeyMaybeList::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-key">key()</a>), PrefData::<a href="#type-preferences_data">preferences_data()</a>) -&gt; <a href="#type-maybe_list">maybe_list</a>(<a href="#type-maybe">maybe</a>(<a href="#type-value">value()</a>))</tt><br></p>
+<p> </p>
+</div><p><p>Caches in the calling process the specified keys, and returns their 
+associated value.</p>
+
+ Equivalent to a call to cache/2 followed by one to get/2 with the same keys.
+</p>
 
 <h3 class="function"><a name="check_preferences_default_file-0">check_preferences_default_file/0</a></h3>
 <div class="spec">
@@ -196,6 +305,17 @@ ETF file.</td></tr>
 <p> </p>
 </div><p>Checks that the default preferences file exists; throws an exception
  otherwise.
+</p>
+
+<h3 class="function"><a name="ensure_binary-2">ensure_binary/2</a></h3>
+<div class="spec">
+<p><tt>ensure_binary(KeyMaybeList::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-key">key()</a>), PrefData::<a href="#type-preferences_data">preferences_data()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Ensures that the specified key(s), expected to be some kind of strings, 
+are binary strings.</p>
+
+ Typically useful so that in ETF files plain strings may be specified, even if
+ internally they should be binary ones.
 </p>
 
 <h3 class="function"><a name="get-1">get/1</a></h3>
@@ -212,9 +332,9 @@ preferences server.</p>
 
  <p>Examples:</p>
 
-  <p>"Hello!" = preferences:get(hello)</p>
+ <p>"Hello!" = preferences:get(hello)</p>
 
-  ["Hello!", 42, undefined] = preferences:get([hello, my_number, some_maybe])
+ ["Hello!", 42, undefined] = preferences:get([hello, my_number, some_maybe])
 </p>
 
 <h3 class="function"><a name="get-2">get/2</a></h3>
@@ -251,14 +371,14 @@ preferences:get([hello, my_number, some_maybe], my_foobar_preferences)</p>
 <div class="spec">
 <p><tt>get_default_preferences_registration_name() -&gt; <a href="#type-pref_reg_name">pref_reg_name()</a></tt><br></p>
 <p> </p>
-</div><p>Returns the default registration name for the preferences.</p>
+</div><p>Returns the default (local) registration name for the preferences.</p>
 
 <h3 class="function"><a name="is_preferences_default_file_available-0">is_preferences_default_file_available/0</a></h3>
 <div class="spec">
 <p><tt>is_preferences_default_file_available() -&gt; {boolean(), <a href="#type-file_path">file_path()</a>}</tt><br></p>
 <p> </p>
-</div><p>Returns whether the default preferences file is available and its full
- path.
+</div><p>Returns whether the default preferences file is available, together with
+ its full path.
 </p>
 
 <h3 class="function"><a name="set-2">set/2</a></h3>
@@ -303,7 +423,7 @@ than one implied by the first operation onto it.</p>
 
 <h3 class="function"><a name="start-1">start/1</a></h3>
 <div class="spec">
-<p><tt>start(AnyParam::<a href="#type-pref_reg_name">pref_reg_name()</a> | <a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-preferences_pid">preferences_pid()</a></tt><br></p>
+<p><tt>start(AnyPrefName::<a href="#type-pref_reg_name">pref_reg_name()</a> | <a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-preferences_pid">preferences_pid()</a></tt><br></p>
 <p> </p>
 </div><p><p>Ensures explicitly that, if not running already, the preferences service 
 is started.</p>
@@ -323,7 +443,7 @@ corresponding file content.</p>
 
 <h3 class="function"><a name="start-2">start/2</a></h3>
 <div class="spec">
-<p><tt>start(ServerName::<a href="#type-pref_reg_name">pref_reg_name()</a>, FilePath::<a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-preferences_pid">preferences_pid()</a></tt><br></p>
+<p><tt>start(ServerRegName::<a href="#type-pref_reg_name">pref_reg_name()</a>, FilePath::<a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-preferences_pid">preferences_pid()</a></tt><br></p>
 <p> </p>
 </div><p><p>Ensures explicitly that, if not running already, the preferences service 
 is started with the specified registration name, and based on the specified 
@@ -354,7 +474,7 @@ explicit start rather than one implied by the first operation onto it.</p>
 
 <h3 class="function"><a name="start_link-1">start_link/1</a></h3>
 <div class="spec">
-<p><tt>start_link(Param::<a href="#type-pref_reg_name">pref_reg_name()</a> | <a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-preferences_pid">preferences_pid()</a></tt><br></p>
+<p><tt>start_link(AnyPrefName::<a href="#type-pref_reg_name">pref_reg_name()</a> | <a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-preferences_pid">preferences_pid()</a></tt><br></p>
 <p> </p>
 </div><p><p>Ensures explicitly that, if not running already, the preferences service 
 is started and linked.</p>
@@ -372,7 +492,7 @@ process and initialises it with the file content.</p>
 
 <h3 class="function"><a name="start_link-2">start_link/2</a></h3>
 <div class="spec">
-<p><tt>start_link(ServerName::<a href="#type-pref_reg_name">pref_reg_name()</a>, FilePath::<a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-preferences_pid">preferences_pid()</a></tt><br></p>
+<p><tt>start_link(ServerRegName::<a href="#type-pref_reg_name">pref_reg_name()</a>, FilePath::<a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-preferences_pid">preferences_pid()</a></tt><br></p>
 <p> </p>
 </div><p><p>Ensures explicitly that, if not running already, the preferences service 
 is started with the specified registration name and based on the specified 
@@ -384,6 +504,36 @@ the content of the specified file.</p>
 
  Returns in any case the PID of the corresponding preferences server, already
  existing or not.
+</p>
+
+<h3 class="function"><a name="start_link_with_defaults-1">start_link_with_defaults/1</a></h3>
+<div class="spec">
+<p><tt>start_link_with_defaults(DefaultEntries::<a href="#type-entries">entries()</a>) -&gt; <a href="#type-preferences_pid">preferences_pid()</a></tt><br></p>
+<p> </p>
+</div><p><p>Starts, links and initialises the preferences service based first on the 
+specified defaults, and then also on the default preferences file path, 
+registering it with a deriving name.</p>
+
+ <p>Ensures that no prior preferences service already exists, as the specified 
+defaults could not then be properly taken into account.</p>
+
+ Returns the PID of the corresponding, just created, preferences server.
+</p>
+
+<h3 class="function"><a name="start_with_defaults-1">start_with_defaults/1</a></h3>
+<div class="spec">
+<p><tt>start_with_defaults(DefaultEntries::<a href="#type-entries">entries()</a>) -&gt; <a href="#type-preferences_pid">preferences_pid()</a></tt><br></p>
+<p> </p>
+</div><p><p>Starts and initialises the preferences service based first on the 
+specified defaults, and then also on the default preferences file path, 
+registering it with a deriving name.</p>
+
+ <p>Ensures that no prior preferences service already exists, as the specified 
+defaults could not then be properly taken into account.</p>
+
+ <p>Does not link the started preferences server to the calling process.</p>
+
+ Returns the PID of the corresponding, just created, preferences server.
 </p>
 
 <h3 class="function"><a name="stop-0">stop/0</a></h3>
@@ -402,6 +552,12 @@ the content of the specified file.</p>
 </div><p>Returns a textual description of the preferences server (if any), for
  the default preferences file.
 </p>
+
+<h3 class="function"><a name="to_bin_string-1">to_bin_string/1</a></h3>
+<div class="spec">
+<p><tt>to_bin_string(EnvData::<a href="#type-preferences_data">preferences_data()</a>) -&gt; <a href="#type-bin_string">bin_string()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of the specified preferences server.</p>
 
 <h3 class="function"><a name="to_string-0">to_string/0</a></h3>
 <div class="spec">
@@ -429,6 +585,28 @@ ETF file.</p>
 ETF file.</p>
 
  Loaded entries supersede any pre-existing ones.
+</p>
+
+<h3 class="function"><a name="wait_available-0">wait_available/0</a></h3>
+<div class="spec">
+<p><tt>wait_available() -&gt; <a href="#type-preferences_pid">preferences_pid()</a></tt><br></p>
+<p> </p>
+</div><p><p>Waits (up to 5 seconds, otherwise throws an exception) until the default 
+preferences server becomes available, then returns its PID.</p>
+
+ Allows to synchronise to a preferences server typically launched concurrently,
+ before being able to look-up preferences.
+</p>
+
+<h3 class="function"><a name="wait_available-1">wait_available/1</a></h3>
+<div class="spec">
+<p><tt>wait_available(ServerRegName::<a href="#type-pref_reg_name">pref_reg_name()</a>) -&gt; <a href="#type-preferences_pid">preferences_pid()</a></tt><br></p>
+<p> </p>
+</div><p><p>Waits (up to 5 seconds, otherwise throws an exception) until the default 
+preferences server becomes available, then returns its PID.</p>
+
+ Allows to synchronise to a preferences server typically launched concurrently,
+ before being able to look-up preferences.
 </p>
 <hr>
 

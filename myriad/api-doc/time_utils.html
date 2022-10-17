@@ -27,6 +27,10 @@
 <p><tt>any_hertz() = <a href="unit_utils.html#type-any_hertz">unit_utils:any_hertz()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-bin_string">bin_string()</a></h3>
+<p><tt>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-birth_date">birth_date()</a></h3>
 <p><tt>birth_date() = <a href="#type-date">date()</a></tt></p>
 <p> A canonical date of birth.</p>
@@ -58,7 +62,7 @@
 <h3 class="typedecl"><a name="type-date">date()</a></h3>
 <p><tt>date() = {<a href="#type-year">year()</a>, <a href="#type-canonical_month">canonical_month()</a>, <a href="#type-canonical_day">canonical_day()</a>}</tt></p>
 <p> A canonical calendar date; used instead of the less precise calendar:date/0
- type. See also: user_date/0.</p>
+ type (yet with similar types and order thereof). See also: user_date/0.</p>
 
 <h3 class="typedecl"><a name="type-date_in_year">date_in_year()</a></h3>
 <p><tt>date_in_year() = {<a href="#type-canonical_month">canonical_month()</a>, <a href="#type-canonical_day">canonical_day()</a>}</tt></p>
@@ -81,7 +85,7 @@
 
 
 <h3 class="typedecl"><a name="type-dhms_duration">dhms_duration()</a></h3>
-<p><tt>dhms_duration() = {<a href="#type-days">days()</a>, <a href="#type-hours">hours()</a>, <a href="#type-minutes">minutes()</a>, <a href="#type-seconds">seconds()</a>}</tt></p>
+<p><tt>dhms_duration() = {D::<a href="#type-days">days()</a>, H::<a href="#type-hours">hours()</a>, M::<a href="#type-minutes">minutes()</a>, S::<a href="#type-seconds">seconds()</a>}</tt></p>
 <p> Day/Hour/Minute/Second duration, for example used with MTTF (not necessarily
  in a canonical form, for example more than 24 hours or 60 minutes can be
  specified).</p>
@@ -93,6 +97,22 @@
 <h3 class="typedecl"><a name="type-hours">hours()</a></h3>
 <p><tt>hours() = <a href="unit_utils.html#type-hours">unit_utils:hours()</a></tt></p>
 
+
+<h3 class="typedecl"><a name="type-iso8601_bin_string">iso8601_bin_string()</a></h3>
+<p><tt>iso8601_bin_string() = <a href="#type-bin_string">bin_string()</a></tt></p>
+<p><p> A binary string representing a timestamp according to ISO 8601.</p>
+
+ <p>Ex: "2022-07-04T14:23:18Z".</p>
+
+ Refer to https://en.wikipedia.org/wiki/ISO_8601 for further information.</p>
+
+<h3 class="typedecl"><a name="type-iso8601_string">iso8601_string()</a></h3>
+<p><tt>iso8601_string() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><p> A (plain) string representing a timestamp according to ISO 8601.</p>
+
+ <p>Ex: "2022-07-04T14:23:18Z".</p>
+
+ Refer to https://en.wikipedia.org/wiki/ISO_8601 for further information.</p>
 
 <h3 class="typedecl"><a name="type-megaseconds">megaseconds()</a></h3>
 <p><tt>megaseconds() = <a href="unit_utils.html#type-megaseconds">unit_utils:megaseconds()</a></tt></p>
@@ -155,17 +175,31 @@
 <p><tt>time() = {<a href="#type-canonical_hour">canonical_hour()</a>, <a href="#type-canonical_minute">canonical_minute()</a>, <a href="#type-canonical_second">canonical_second()</a>}</tt></p>
 <p> A time in the day; used to be {hour(), minute(), second()} or calendar:time().</p>
 
+<h3 class="typedecl"><a name="type-time_frame">time_frame()</a></h3>
+<p><tt>time_frame() = {Start::<a href="#type-timestamp">timestamp()</a>, End::<a href="#type-timestamp">timestamp()</a>}</tt></p>
+<p> A time frame.</p>
+
 <h3 class="typedecl"><a name="type-time_out">time_out()</a></h3>
 <p><tt>time_out() = infinity | <a href="#type-milliseconds">milliseconds()</a></tt></p>
 <p> Cannot find the definition of the built-in timeout() type.</p>
 
 <h3 class="typedecl"><a name="type-timestamp">timestamp()</a></h3>
 <p><tt>timestamp() = {<a href="#type-date">date()</a>, <a href="#type-time">time()</a>}</tt></p>
-<p> Used to be calendar:datetime(), now uses our types.</p>
+<p><p> Used to be calendar:datetime(), now uses our types.</p>
+
+ <p>A timestamp shall preferably be canonical (e.g. with a canonical month).</p>
+
+ For example: {{2022,11,7}, {13,14,53}}.</p>
 
 <h3 class="typedecl"><a name="type-user_date">user_date()</a></h3>
 <p><tt>user_date() = {<a href="#type-canonical_day">canonical_day()</a>, <a href="#type-canonical_month">canonical_month()</a>, <a href="#type-year">year()</a>}</tt></p>
-<p> A date in a format that is considered common to most users. See also: date/0.</p>
+<p> A date in a format (reversed compared to a canonical date()) that is
+ considered common to most users. See also: date/0.</p>
+
+<h3 class="typedecl"><a name="type-user_time_frame">user_time_frame()</a></h3>
+<p><tt>user_time_frame() = {Start::<a href="#type-timestamp">timestamp()</a> | <a href="#type-date">date()</a>, End::<a href="#type-timestamp">timestamp()</a> | <a href="#type-date">date()</a>}</tt></p>
+<p> Typically a user-defined time frame, to be transformed into a legit
+ time_frame/0.</p>
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
 <p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
@@ -190,15 +224,19 @@
 <h2><a name="index">Function Index</a></h2>
 <table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#canonical_to_user_date-1">canonical_to_user_date/1</a></td><td>Converts specified canonical date into a user one.</td></tr>
 <tr><td valign="top"><a href="#canonicalise_month-1">canonicalise_month/1</a></td><td>Canonicalises specified month.</td></tr>
-<tr><td valign="top"><a href="#check_canonical_date-1">check_canonical_date/1</a></td><td>Checks that the specified date is a canonical one.</td></tr>
+<tr><td valign="top"><a href="#canonicalise_time_frame-1">canonicalise_time_frame/1</a></td><td>Returns a legit, checked time-frame from the user specified one.</td></tr>
+<tr><td valign="top"><a href="#check_canonical_date-1">check_canonical_date/1</a></td><td>Checks that the specified date is a canonical one, and returns it.</td></tr>
 <tr><td valign="top"><a href="#check_date_order-2">check_date_order/2</a></td><td>Ensures that the starting canonical date is strictly before the stopping 
 one.</td></tr>
 <tr><td valign="top"><a href="#check_maybe_timestamp-1">check_maybe_timestamp/1</a></td><td>Checks that specified term is a maybe-timestamp indeed.</td></tr>
-<tr><td valign="top"><a href="#check_month_canonical-1">check_month_canonical/1</a></td><td>Checks that specified month is a canonical one.</td></tr>
+<tr><td valign="top"><a href="#check_month_canonical-1">check_month_canonical/1</a></td><td>Checks that the specified month is a canonical one.</td></tr>
 <tr><td valign="top"><a href="#check_month_order-2">check_month_order/2</a></td><td>Ensures that the starting canonical month is strictly before the stopping
  one.</td></tr>
-<tr><td valign="top"><a href="#check_timestamp-1">check_timestamp/1</a></td><td>Checks that specified term is a timestamp indeed, and returns it.</td></tr>
-<tr><td valign="top"><a href="#check_user_date-1">check_user_date/1</a></td><td>Checks that the specified date is a user one.</td></tr>
+<tr><td valign="top"><a href="#check_time_frame-1">check_time_frame/1</a></td><td>Checks that the specified term is a time-frame of strictly positive
+ duration indeed, and returns it.</td></tr>
+<tr><td valign="top"><a href="#check_timestamp-1">check_timestamp/1</a></td><td>Checks that the specified term is a (possibly non-canonical) timestamp
+ indeed, and returns it.</td></tr>
+<tr><td valign="top"><a href="#check_user_date-1">check_user_date/1</a></td><td>Checks that the specified date is a user one, and returns it.</td></tr>
 <tr><td valign="top"><a href="#compare_dates-2">compare_dates/2</a></td><td>Compares the specified two dates: tells whether the first date is 
 strictly before, after or the same as the second one.</td></tr>
 <tr><td valign="top"><a href="#date_to_weekday-1">date_to_weekday/1</a></td><td>Returns the week day (ex: 'Tuesday') corresponding to specified date.</td></tr>
@@ -227,6 +265,8 @@ the specified duration, expected to be expressed as a number of milliseconds
  standard timestamp.</td></tr>
 <tr><td valign="top"><a href="#get_bank_holidays_for-2">get_bank_holidays_for/2</a></td><td>Returns a (non chronologically-ordered) list of the dates of the bank 
 holidays, for specified year and country.</td></tr>
+<tr><td valign="top"><a href="#get_bin_textual_timestamp-0">get_bin_textual_timestamp/0</a></td><td>Returns a binary string corresponding to the current timestamp, like:
+ <code>&lt;&lt;"2009/9/1 11:46:53"&gt;&gt;</code>.</td></tr>
 <tr><td valign="top"><a href="#get_date_after-2">get_date_after/2</a></td><td>Returns the date corresponding to the specified one augmented of the
  specified number of days (possibly a negative number).</td></tr>
 <tr><td valign="top"><a href="#get_date_difference-2">get_date_difference/2</a></td><td>Returns the signed duration, in days, between the two specified dates.</td></tr>
@@ -294,8 +334,10 @@ time zone and Daylight Saving Time correction depending on the underlying OS.</t
 <tr><td valign="top"><a href="#is_bank_holiday-2">is_bank_holiday/2</a></td><td>Tells whether, for specified country, the specified date is a bank
  holiday.</td></tr>
 <tr><td valign="top"><a href="#is_canonical_date-1">is_canonical_date/1</a></td><td>Tells whether the specified term is a canonical date.</td></tr>
+<tr><td valign="top"><a href="#is_date-1">is_date/1</a></td><td>Returns whether the specified term is a legit (canonical) date.</td></tr>
 <tr><td valign="top"><a href="#is_dhms_duration-1">is_dhms_duration/1</a></td><td>Tells whether specified term is a DHMS duration.</td></tr>
-<tr><td valign="top"><a href="#is_timestamp-1">is_timestamp/1</a></td><td>Returns whether specified term is a legit timestamp.</td></tr>
+<tr><td valign="top"><a href="#is_time-1">is_time/1</a></td><td>Returns whether the specified term is a legit (canonical) time.</td></tr>
+<tr><td valign="top"><a href="#is_timestamp-1">is_timestamp/1</a></td><td>Returns whether the specified term is a legit (canonical) timestamp.</td></tr>
 <tr><td valign="top"><a href="#is_user_date-1">is_user_date/1</a></td><td>Tells whether the specified term is a user date.</td></tr>
 <tr><td valign="top"><a href="#local_to_universal_time-1">local_to_universal_time/1</a></td><td>Converts specified timestamp expressed in local time (thus with time zone 
 and Daylight Saving Time) into a timestamp expressed in universal time (UTC).</td></tr>
@@ -316,6 +358,7 @@ and Daylight Saving Time) into a timestamp expressed in universal time (UTC).</t
  "1d12h0m0s" for an English one) to a DHMS duration.</td></tr>
 <tr><td valign="top"><a href="#string_to_timestamp-1">string_to_timestamp/1</a></td><td>Parses back a timestamp in the form of "14/4/2011 18:48:51" into a
  timestamp(), that is {_Date={Year,Month,Day}, _Time={Hour,Minute,Second}}.</td></tr>
+<tr><td valign="top"><a href="#time_frame_to_string-1">time_frame_to_string/1</a></td><td>Returns a textual description of the specified time frame.</td></tr>
 <tr><td valign="top"><a href="#time_of_day_to_string-1">time_of_day_to_string/1</a></td><td>Returns a textual, user-friendly description of the specified time of
  day.</td></tr>
 <tr><td valign="top"><a href="#time_out_to_string-1">time_out_to_string/1</a></td><td>Returns an approximate textual (English) description of the specified 
@@ -330,6 +373,8 @@ the specified language, expected to be expressed as a number of milliseconds
  seconds.</td></tr>
 <tr><td valign="top"><a href="#time_to_string-1">time_to_string/1</a></td><td>Returns a textual description of the specified time of day, like:
  "09:14:57".</td></tr>
+<tr><td valign="top"><a href="#timestamp_to_iso8601_bin_string-1">timestamp_to_iso8601_bin_string/1</a></td><td>Returns a textual ISO8601 description of the specified timestamp.</td></tr>
+<tr><td valign="top"><a href="#timestamp_to_iso8601_string-1">timestamp_to_iso8601_string/1</a></td><td>Returns a textual ISO8601 description of the specified timestamp.</td></tr>
 <tr><td valign="top"><a href="#timestamp_to_seconds-0">timestamp_to_seconds/0</a></td><td>Returns the number of seconds elapsed since year 0 and now.</td></tr>
 <tr><td valign="top"><a href="#timestamp_to_seconds-1">timestamp_to_seconds/1</a></td><td>Returns the number of seconds elapsed since year 0 and specified 
 timestamp.</td></tr>
@@ -365,11 +410,21 @@ have been obtained thanks to get_monotonic_time/0.</td></tr>
 <p> </p>
 </div><p>Canonicalises specified month.</p>
 
+<h3 class="function"><a name="canonicalise_time_frame-1">canonicalise_time_frame/1</a></h3>
+<div class="spec">
+<p><tt>canonicalise_time_frame(Other::<a href="#type-user_time_frame">user_time_frame()</a>) -&gt; <a href="#type-time_frame">time_frame()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns a legit, checked time-frame from the user specified one.</p>
+
+ If a date is specified with no corresponding time, we consider time is
+ 00:00:00.
+</p>
+
 <h3 class="function"><a name="check_canonical_date-1">check_canonical_date/1</a></h3>
 <div class="spec">
-<p><tt>check_canonical_date(Date::<a href="#type-date">date()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>check_canonical_date(Date::term()) -&gt; <a href="#type-date">date()</a></tt><br></p>
 <p> </p>
-</div><p>Checks that the specified date is a canonical one.</p>
+</div><p>Checks that the specified date is a canonical one, and returns it.</p>
 
 <h3 class="function"><a name="check_date_order-2">check_date_order/2</a></h3>
 <div class="spec">
@@ -384,15 +439,15 @@ one.</p>
 
 <h3 class="function"><a name="check_maybe_timestamp-1">check_maybe_timestamp/1</a></h3>
 <div class="spec">
-<p><tt>check_maybe_timestamp(Term::<a href="#type-maybe">maybe</a>(<a href="#type-timestamp">timestamp()</a>)) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-timestamp">timestamp()</a>)</tt><br></p>
+<p><tt>check_maybe_timestamp(Term::term()) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-timestamp">timestamp()</a>)</tt><br></p>
 <p> </p>
 </div><p>Checks that specified term is a maybe-timestamp indeed.</p>
 
 <h3 class="function"><a name="check_month_canonical-1">check_month_canonical/1</a></h3>
 <div class="spec">
-<p><tt>check_month_canonical(Month::<a href="#type-month">month()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>check_month_canonical(Month::term()) -&gt; <a href="#type-month">month()</a></tt><br></p>
 <p> </p>
-</div><p>Checks that specified month is a canonical one.</p>
+</div><p>Checks that the specified month is a canonical one.</p>
 
 <h3 class="function"><a name="check_month_order-2">check_month_order/2</a></h3>
 <div class="spec">
@@ -402,17 +457,27 @@ one.</p>
  one.
 </p>
 
+<h3 class="function"><a name="check_time_frame-1">check_time_frame/1</a></h3>
+<div class="spec">
+<p><tt>check_time_frame(TF::term()) -&gt; <a href="#type-time_frame">time_frame()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that the specified term is a time-frame of strictly positive
+ duration indeed, and returns it.
+</p>
+
 <h3 class="function"><a name="check_timestamp-1">check_timestamp/1</a></h3>
 <div class="spec">
-<p><tt>check_timestamp(Term::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-timestamp">timestamp()</a></tt><br></p>
+<p><tt>check_timestamp(Term::term()) -&gt; <a href="#type-timestamp">timestamp()</a></tt><br></p>
 <p> </p>
-</div><p>Checks that specified term is a timestamp indeed, and returns it.</p>
+</div><p>Checks that the specified term is a (possibly non-canonical) timestamp
+ indeed, and returns it.
+</p>
 
 <h3 class="function"><a name="check_user_date-1">check_user_date/1</a></h3>
 <div class="spec">
-<p><tt>check_user_date(Date::<a href="#type-user_date">user_date()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>check_user_date(Date::term()) -&gt; <a href="#type-user_date">user_date()</a></tt><br></p>
 <p> </p>
-</div><p>Checks that the specified date is a user one.</p>
+</div><p>Checks that the specified date is a user one, and returns it.</p>
 
 <h3 class="function"><a name="compare_dates-2">compare_dates/2</a></h3>
 <div class="spec">
@@ -534,6 +599,17 @@ holidays, for specified year and country.</p>
  ("fixed" days have then been factored).
 </p>
 
+<h3 class="function"><a name="get_bin_textual_timestamp-0">get_bin_textual_timestamp/0</a></h3>
+<div class="spec">
+<p><tt>get_bin_textual_timestamp() -&gt; <a href="#type-bin_string">bin_string()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns a binary string corresponding to the current timestamp, like:
+ <code>&lt;&lt;"2009/9/1 11:46:53"&gt;&gt;</code>.</p>
+
+ Note that the display order here is YY-MM-DD (same as when specifying the
+ timestamp), as opposed to DD-MM-YY, which is maybe more usual.
+</p>
+
 <h3 class="function"><a name="get_date_after-2">get_date_after/2</a></h3>
 <div class="spec">
 <p><tt>get_date_after(BaseDate::<a href="#type-date">date()</a>, Days::<a href="#type-days">days()</a>) -&gt; <a href="#type-date">date()</a></tt><br></p>
@@ -598,7 +674,7 @@ holidays, for specified year and country.</p>
 
 <h3 class="function"><a name="get_french_textual_timestamp-1">get_french_textual_timestamp/1</a></h3>
 <div class="spec">
-<p><tt>get_french_textual_timestamp(X1::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><tt>get_french_textual_timestamp(Timestamp::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
 <p> </p>
 </div><p>Returns a string corresponding to the specified timestamp expressed in
  French, like: "le 1/9/2009, à 11h46m53".
@@ -719,7 +795,7 @@ Secs, MicroSecs}.</p>
 
 <h3 class="function"><a name="get_textual_timestamp-1">get_textual_timestamp/1</a></h3>
 <div class="spec">
-<p><tt>get_textual_timestamp(X1::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><tt>get_textual_timestamp(Timestamp::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
 <p> </p>
 </div><p>Returns a (clear, non-ambiguous) string corresponding to the specified
  timestamp, like: "2009/9/1 11:46:53".
@@ -735,7 +811,7 @@ Secs, MicroSecs}.</p>
 
 <h3 class="function"><a name="get_textual_timestamp_for_path-1">get_textual_timestamp_for_path/1</a></h3>
 <div class="spec">
-<p><tt>get_textual_timestamp_for_path(X1::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><tt>get_textual_timestamp_for_path(Timestamp::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
 <p> </p>
 </div><p>Returns a string corresponding to the specified timestamp and able to be
  a part of a path, like: "2010-11-18-at-13h-30m-35s".
@@ -743,7 +819,7 @@ Secs, MicroSecs}.</p>
 
 <h3 class="function"><a name="get_textual_timestamp_with_dashes-1">get_textual_timestamp_with_dashes/1</a></h3>
 <div class="spec">
-<p><tt>get_textual_timestamp_with_dashes(X1::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><tt>get_textual_timestamp_with_dashes(Timestamp::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
 <p> </p>
 </div><p>Returns a string corresponding to the specified timestamp, with "dash"
  conventions (ex: used by jsgantt), like: "2017-05-20 12:00:17".
@@ -764,7 +840,7 @@ Secs, MicroSecs}.</p>
 
 <h3 class="function"><a name="get_time2_textual_timestamp-1">get_time2_textual_timestamp/1</a></h3>
 <div class="spec">
-<p><tt>get_time2_textual_timestamp(X1::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><tt>get_time2_textual_timestamp(Timestamp::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
 <p> </p>
 </div><p><p>Returns a string corresponding to the specified timestamp expressed as 
 the "%time2" Date and time format, that is "yyyy-mm-dd hh-mm-ss"; for example: 
@@ -788,7 +864,7 @@ time zone and Daylight Saving Time correction depending on the underlying OS.</p
 
 <h3 class="function"><a name="get_user_friendly_textual_timestamp-1">get_user_friendly_textual_timestamp/1</a></h3>
 <div class="spec">
-<p><tt>get_user_friendly_textual_timestamp(X1) -&gt; any()</tt></p>
+<p><tt>get_user_friendly_textual_timestamp(Timestamp) -&gt; any()</tt></p>
 <p> </p>
 </div><p>Returns a string corresponding to the specified timestamp in a
  user-friendly manner, like: "Wednesday, January 6, 2021 at 11:46:53".
@@ -828,6 +904,15 @@ time zone and Daylight Saving Time correction depending on the underlying OS.</p
 <p> </p>
 </div><p>Tells whether the specified term is a canonical date.</p>
 
+<h3 class="function"><a name="is_date-1">is_date/1</a></h3>
+<div class="spec">
+<p><tt>is_date(Term::term()) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p><p>Returns whether the specified term is a legit (canonical) date.</p>
+
+ Useful to vet user-specified dates.
+</p>
+
 <h3 class="function"><a name="is_dhms_duration-1">is_dhms_duration/1</a></h3>
 <div class="spec">
 <p><tt>is_dhms_duration(Other::term()) -&gt; boolean()</tt><br></p>
@@ -838,11 +923,20 @@ time zone and Daylight Saving Time correction depending on the underlying OS.</p
  in [0,23]).
 </p>
 
+<h3 class="function"><a name="is_time-1">is_time/1</a></h3>
+<div class="spec">
+<p><tt>is_time(Time::term()) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p><p>Returns whether the specified term is a legit (canonical) time.</p>
+
+ Useful to vet user-specified times.
+</p>
+
 <h3 class="function"><a name="is_timestamp-1">is_timestamp/1</a></h3>
 <div class="spec">
 <p><tt>is_timestamp(Other::term()) -&gt; boolean()</tt><br></p>
 <p> </p>
-</div><p><p>Returns whether specified term is a legit timestamp.</p>
+</div><p><p>Returns whether the specified term is a legit (canonical) timestamp.</p>
 
  Useful to vet user-specified timestamps.
 </p>
@@ -935,6 +1029,12 @@ and Daylight Saving Time) into a timestamp expressed in universal time (UTC).</p
  timestamp(), that is {_Date={Year,Month,Day}, _Time={Hour,Minute,Second}}.
 </p>
 
+<h3 class="function"><a name="time_frame_to_string-1">time_frame_to_string/1</a></h3>
+<div class="spec">
+<p><tt>time_frame_to_string(TimeFrame::<a href="#type-time_frame">time_frame()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of the specified time frame.</p>
+
 <h3 class="function"><a name="time_of_day_to_string-1">time_of_day_to_string/1</a></h3>
 <div class="spec">
 <p><tt>time_of_day_to_string(Time::<a href="#type-time">time()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
@@ -986,6 +1086,18 @@ the specified language, expected to be expressed as a number of milliseconds
 </div><p>Returns a textual description of the specified time of day, like:
  "09:14:57".
 </p>
+
+<h3 class="function"><a name="timestamp_to_iso8601_bin_string-1">timestamp_to_iso8601_bin_string/1</a></h3>
+<div class="spec">
+<p><tt>timestamp_to_iso8601_bin_string(Timestamp::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-iso8601_bin_string">iso8601_bin_string()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual ISO8601 description of the specified timestamp.</p>
+
+<h3 class="function"><a name="timestamp_to_iso8601_string-1">timestamp_to_iso8601_string/1</a></h3>
+<div class="spec">
+<p><tt>timestamp_to_iso8601_string(Timestamp::<a href="#type-timestamp">timestamp()</a>) -&gt; <a href="#type-iso8601_string">iso8601_string()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual ISO8601 description of the specified timestamp.</p>
 
 <h3 class="function"><a name="timestamp_to_seconds-0">timestamp_to_seconds/0</a></h3>
 <div class="spec">

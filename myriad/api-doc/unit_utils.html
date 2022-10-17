@@ -55,6 +55,10 @@ canonical form transparently, for automated checking and exact conversion.</p>
 <p><tt>any_hertz() = <a href="#type-hertz">hertz()</a> | <a href="#type-integer_hertz">integer_hertz()</a></tt></p>
 <p> Frequency in Hz.</p>
 
+<h3 class="typedecl"><a name="type-any_meters">any_meters()</a></h3>
+<p><tt>any_meters() = float()</tt></p>
+
+
 <h3 class="typedecl"><a name="type-any_millimeters">any_millimeters()</a></h3>
 <p><tt>any_millimeters() = <a href="#type-millimeters">millimeters()</a> | <a href="#type-int_millimeters">int_millimeters()</a></tt></p>
 
@@ -88,7 +92,7 @@ here</p>
 
 <h3 class="typedecl"><a name="type-canonical_day">canonical_day()</a></h3>
 <p><tt>canonical_day() = 1..31</tt></p>
-<p> Day in the month.</p>
+<p> Day in the month; semantically equivalent to calendar:day().</p>
 
 <h3 class="typedecl"><a name="type-canonical_hour">canonical_hour()</a></h3>
 <p><tt>canonical_hour() = 0..23</tt></p>
@@ -108,7 +112,7 @@ here</p>
 
 <h3 class="typedecl"><a name="type-canonical_month">canonical_month()</a></h3>
 <p><tt>canonical_month() = 1..12</tt></p>
-<p> Month in the year; could be calendar:month().</p>
+<p> Month in the year; semantically equivalent to calendar:month().</p>
 
 <h3 class="typedecl"><a name="type-canonical_second">canonical_second()</a></h3>
 <p><tt>canonical_second() = 0..59</tt></p>
@@ -233,6 +237,10 @@ here</p>
 
  Strictly expected to be in [0,360[.</p>
 
+<h3 class="typedecl"><a name="type-int_meters">int_meters()</a></h3>
+<p><tt>int_meters() = float()</tt></p>
+
+
 <h3 class="typedecl"><a name="type-int_millimeters">int_millimeters()</a></h3>
 <p><tt>int_millimeters() = integer()</tt></p>
 
@@ -263,6 +271,17 @@ here</p>
 
 <h3 class="typedecl"><a name="type-length_units">length_units()</a></h3>
 <p><tt>length_units() = <a href="#type-length_reference_unit">length_reference_unit()</a> | millimeters | int_millimeters</tt></p>
+
+
+<h3 class="typedecl"><a name="type-light_year">light_year()</a></h3>
+<p><tt>light_year() = float()</tt></p>
+<p><p> A light-year express astronomical distances, and is equivalent to about 
+9.46.10^12 km.</p>
+
+ Also abbreviated as "ly".</p>
+
+<h3 class="typedecl"><a name="type-light_years">light_years()</a></h3>
+<p><tt>light_years() = <a href="#type-light_year">light_year()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-litre">litre()</a></h3>
@@ -345,9 +364,17 @@ here</p>
 <p><tt>months() = integer()</tt></p>
 
 
+<h3 class="typedecl"><a name="type-mtbf">mtbf()</a></h3>
+<p><tt>mtbf() = <a href="time_utils.html#type-dhms_duration">time_utils:dhms_duration()</a></tt></p>
+<p> Mean Time Between (recoverable) Failures.</p>
+
 <h3 class="typedecl"><a name="type-mttf">mttf()</a></h3>
 <p><tt>mttf() = <a href="time_utils.html#type-dhms_duration">time_utils:dhms_duration()</a></tt></p>
-<p> Mean Time To Failure.</p>
+<p> Mean Time To (unrecoverable) Failure.</p>
+
+<h3 class="typedecl"><a name="type-mttr">mttr()</a></h3>
+<p><tt>mttr() = <a href="time_utils.html#type-dhms_duration">time_utils:dhms_duration()</a></tt></p>
+<p> Mean Time To Repair.</p>
 
 <h3 class="typedecl"><a name="type-multiplying_factor">multiplying_factor()</a></h3>
 <p><tt>multiplying_factor() = float()</tt></p>
@@ -508,6 +535,8 @@ integer number of milliseconds.</td></tr>
 <tr><td valign="top"><a href="#maybe_temperature_to_string-1">maybe_temperature_to_string/1</a></td><td>Returns a textual, possibly rounded, description of the specified
  temperature (if any).</td></tr>
 <tr><td valign="top"><a href="#meters_per_second_to_km_per_hour-1">meters_per_second_to_km_per_hour/1</a></td><td>Converts m/s to km/h.</td></tr>
+<tr><td valign="top"><a href="#meters_to_string-1">meters_to_string/1</a></td><td>Returns a textual, user-friendly, short (possibly rounded) description of 
+the specified distance.</td></tr>
 <tr><td valign="top"><a href="#parse_unit-1">parse_unit/1</a></td><td>Parses specified string, expected to contain a unit (ex: "kW.m/h^2"), and
  returns a canonical unit.</td></tr>
 <tr><td valign="top"><a href="#parse_value_with_unit-1">parse_value_with_unit/1</a></td><td>Parses specified string (expected to be a unit_string()) containing a 
@@ -623,6 +652,16 @@ integer number of milliseconds.</p>
 <p><tt>meters_per_second_to_km_per_hour(M::<a href="#type-meters_per_second">meters_per_second()</a>) -&gt; <a href="#type-km_per_hour">km_per_hour()</a></tt><br></p>
 <p> </p>
 </div><p>Converts m/s to km/h.</p>
+
+<h3 class="function"><a name="meters_to_string-1">meters_to_string/1</a></h3>
+<div class="spec">
+<p><tt>meters_to_string(Meters::<a href="#type-meters">meters()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns a textual, user-friendly, short (possibly rounded) description of 
+the specified distance.</p>
+
+ See also: text_utils:distance_to_string/1.
+</p>
 
 <h3 class="function"><a name="parse_unit-1">parse_unit/1</a></h3>
 <div class="spec">

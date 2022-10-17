@@ -13,8 +13,15 @@
 <ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various facilities for <b>keyboard management</b>.
 
 
-<h2><a name="description">Description</a></h2>Gathering of various facilities for <b>keyboard management</b>.
+<h2><a name="description">Description</a></h2><p>Gathering of various facilities for <b>keyboard management</b>.</p>
+
+ See also the gui_keyboard_test module.
+
 <h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-event_translation_table">event_translation_table()</a></h3>
+<p><tt>event_translation_table() = <a href="gui_event.html#type-event_translation_table">gui_event:event_translation_table()</a></tt></p>
+
 
 <h3 class="typedecl"><a name="type-key_status">key_status()</a></h3>
 <p><tt>key_status() = pressed | released</tt></p>
@@ -28,13 +35,17 @@
  in a pressed state, many key down events will be generated, but only one key
  up will be reported at the end, when the key is released).</p>
 
+<h3 class="typedecl"><a name="type-keyboard_event_type">keyboard_event_type()</a></h3>
+<p><tt>keyboard_event_type() = onCharEntered | onCharEnteredHook | onKeyPressed | onKeyReleased</tt></p>
+
+
 <h3 class="typedecl"><a name="type-keycode">keycode()</a></h3>
 <p><tt>keycode() = <a href="#type-uint32">uint32()</a></tt></p>
-<p><p> Designates a layout-dependent (Unicode) character code, i.e. the key 
+<p><p> Designates a layout-dependent (Unicode) character code, that is the key 
 corresponding to a given character, wherever that key may be on the user's 
 actual keyboard (which notably depends on its layout of choice).</p>
 
- <p>A modifier does not generate a keycode just be itself.</p>
+ <p>A modifier does not generate a keycode just by itself.</p>
 
  Refer to the corresponding MYR_K_* defines.</p>
 
@@ -45,19 +56,29 @@ actual keyboard (which notably depends on its layout of choice).</p>
 <h3 class="typedecl"><a name="type-scancode">scancode()</a></h3>
 <p><tt>scancode() = <a href="#type-uint32">uint32()</a></tt></p>
 <p><p> Designates a button at a given location of the keyboard when it is considered 
-as a 104-button joystick.</p>
+as a ~104-button joystick.</p>
 
  <p>A scancode is a "button code", it designates a location of a button on any 
-keyboard, regardless of the character displayed on the user's actual keyboard.</p>
+keyboard, regardless of the character labelled on the user's actual keyboard.</p>
 
  <p>These locations are designated according to the characters that would be 
 printed on a virtual, canonical US QWERTY keyboard, taken as a reference, or 
 to non-printable special keys (ex: the Home key, the Insert one).</p>
 
+ <p>A modifier generates a scancode just by itself.</p>
+
  Refer to the corresponding MYR_SCANCODE_* defines.</p>
 
 <h3 class="typedecl"><a name="type-uint32">uint32()</a></h3>
 <p><tt>uint32() = <a href="type_utils.html#type-uint32">type_utils:uint32()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-wxKey">wxKey()</a></h3>
+<p><tt>wxKey() = #wxKey{type = <a href="http://www.erlang.org/edoc/doc/wx/doc/wxKeyEvent.html#type-wxKeyEventType">wxKeyEvent:wxKeyEventType()</a>, x = integer(), y = integer(), keyCode = integer(), controlDown = boolean(), shiftDown = boolean(), altDown = boolean(), metaDown = boolean(), uniChar = integer(), rawCode = integer(), rawFlags = integer()}</tt></p>
 
 
 <h3 class="typedecl"><a name="type-wx_keycode">wx_keycode()</a></h3>
@@ -68,6 +89,9 @@ to non-printable special keys (ex: the Home key, the Insert one).</p>
 <table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#is_key_pressed-1">is_key_pressed/1</a></td><td>Tells whether the specified key, designated as a scancode, is pressed.</td></tr>
 <tr><td valign="top"><a href="#is_modkey_pressed-1">is_modkey_pressed/1</a></td><td>Tells whether the specified key, designated as a scancode comprising a
  modifier, is pressed.</td></tr>
+<tr><td valign="top"><a href="#key_event_to_string-1">key_event_to_string/1</a></td><td>Returns a textual description of the specified key event, of type
+ gui_wx_event_info().</td></tr>
+<tr><td valign="top"><a href="#key_event_to_string-2">key_event_to_string/2</a></td><td>Returns a textual description of the specified key event.</td></tr>
 <tr><td valign="top"><a href="#myr_keycode_to_wx-1">myr_keycode_to_wx/1</a></td><td>Returns the wx keycode corresponding to the specified MyriadGUI one.</td></tr>
 <tr><td valign="top"><a href="#to_lower-2">to_lower/2</a></td><td>Returns the specified key, once the specified pressed modifier has been
  taken into account.</td></tr>
@@ -89,6 +113,20 @@ to non-printable special keys (ex: the Home key, the Insert one).</p>
 </div><p>Tells whether the specified key, designated as a scancode comprising a
  modifier, is pressed.
 </p>
+
+<h3 class="function"><a name="key_event_to_string-1">key_event_to_string/1</a></h3>
+<div class="spec">
+<p><tt>key_event_to_string(WxKeyEvent::<a href="#type-wxKey">wxKey()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of the specified key event, of type
+ gui_wx_event_info().
+</p>
+
+<h3 class="function"><a name="key_event_to_string-2">key_event_to_string/2</a></h3>
+<div class="spec">
+<p><tt>key_event_to_string(WxKey::<a href="#type-wxKey">wxKey()</a>, EventTranslationTable::<a href="#type-event_translation_table">event_translation_table()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of the specified key event.</p>
 
 <h3 class="function"><a name="myr_keycode_to_wx-1">myr_keycode_to_wx/1</a></h3>
 <div class="spec">

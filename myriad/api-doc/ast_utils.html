@@ -35,6 +35,10 @@ a different set of conventions).</p>
 <p><tt>ast_transforms() = <a href="ast_transform.html#type-ast_transforms">ast_transform:ast_transforms()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-directory_name">directory_name()</a></h3>
+<p><tt>directory_name() = <a href="file_utils.html#type-directory_name">file_utils:directory_name()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-file_loc">file_loc()</a></h3>
 <p><tt>file_loc() = <a href="ast_base.html#type-file_loc">ast_base:file_loc()</a></tt></p>
 
@@ -59,8 +63,12 @@ a different set of conventions).</p>
 <p><tt>format_values() = <a href="text_utils.html#type-format_values">text_utils:format_values()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-function_id">function_id()</a></h3>
+<p><tt>function_id() = <a href="meta_utils.html#type-function_id">meta_utils:function_id()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-include_path">include_path()</a></h3>
-<p><tt>include_path() = [<a href="file_utils.html#type-directory_name">file_utils:directory_name()</a>]</tt></p>
+<p><tt>include_path() = [<a href="#type-directory_name">directory_name()</a>]</tt></p>
 
 
 <h3 class="typedecl"><a name="type-issue_description">issue_description()</a></h3>
@@ -113,15 +121,15 @@ a different set of conventions).</p>
 <h2><a name="index">Function Index</a></h2>
 <table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#beam_to_ast-1">beam_to_ast/1</a></td><td>Reads the specified BEAM file (expected to be compiled with debug 
 information) and returns the corresponding AST.</td></tr>
-<tr><td valign="top"><a href="#check_arity-1">check_arity/1</a></td><td>Checks that specified (function or type) arity is legit.</td></tr>
-<tr><td valign="top"><a href="#check_arity-2">check_arity/2</a></td><td>Checks that specified (function or type) arity is legit.</td></tr>
+<tr><td valign="top"><a href="#check_arity-1">check_arity/1</a></td><td>Checks that the specified (function or type) arity is legit.</td></tr>
+<tr><td valign="top"><a href="#check_arity-2">check_arity/2</a></td><td>Checks that the specified (function or type) arity is legit.</td></tr>
 <tr><td valign="top"><a href="#check_ast-1">check_ast/1</a></td><td>Checks whether specified AST is legit: lints it.</td></tr>
-<tr><td valign="top"><a href="#check_file_loc-1">check_file_loc/1</a></td><td>Checks that specified source, in-file location is legit.</td></tr>
-<tr><td valign="top"><a href="#check_file_loc-2">check_file_loc/2</a></td><td>Checks that specified source, in-file location is legit.</td></tr>
-<tr><td valign="top"><a href="#check_inline_options-1">check_inline_options/1</a></td><td>Checks that specified inline options are legit.</td></tr>
-<tr><td valign="top"><a href="#check_inline_options-2">check_inline_options/2</a></td><td>Checks that specified inline options are legit.</td></tr>
-<tr><td valign="top"><a href="#check_module_name-1">check_module_name/1</a></td><td>Checks that specified module name is legit.</td></tr>
-<tr><td valign="top"><a href="#check_module_name-2">check_module_name/2</a></td><td>Checks that specified module name is legit.</td></tr>
+<tr><td valign="top"><a href="#check_file_loc-1">check_file_loc/1</a></td><td>Checks that the specified source, in-file location is legit.</td></tr>
+<tr><td valign="top"><a href="#check_file_loc-2">check_file_loc/2</a></td><td>Checks that the specified source, in-file location is legit.</td></tr>
+<tr><td valign="top"><a href="#check_inline_options-1">check_inline_options/1</a></td><td>Checks that the specified inline options are legit.</td></tr>
+<tr><td valign="top"><a href="#check_inline_options-2">check_inline_options/2</a></td><td>Checks that the specified inline options are legit.</td></tr>
+<tr><td valign="top"><a href="#check_module_name-1">check_module_name/1</a></td><td>Checks that the specified module name is legit, and returns it.</td></tr>
+<tr><td valign="top"><a href="#check_module_name-2">check_module_name/2</a></td><td>Checks that the specified module name is legit, and returns it.</td></tr>
 <tr><td valign="top"><a href="#display_alert-1">display_alert/1</a></td><td>Displays specified text as alert.</td></tr>
 <tr><td valign="top"><a href="#display_alert-2">display_alert/2</a></td><td>Displays specified formatted text as alert.</td></tr>
 <tr><td valign="top"><a href="#display_critical-1">display_critical/1</a></td><td>Displays specified text as critical.</td></tr>
@@ -213,13 +221,13 @@ information) and returns the corresponding AST.</p>
 <div class="spec">
 <p><tt>check_arity(Arity::term()) -&gt; arity()</tt><br></p>
 <p> </p>
-</div><p>Checks that specified (function or type) arity is legit.</p>
+</div><p>Checks that the specified (function or type) arity is legit.</p>
 
 <h3 class="function"><a name="check_arity-2">check_arity/2</a></h3>
 <div class="spec">
 <p><tt>check_arity(Arity::term(), Context::<a href="#type-form_context">form_context()</a>) -&gt; arity()</tt><br></p>
 <p> </p>
-</div><p>Checks that specified (function or type) arity is legit.</p>
+</div><p>Checks that the specified (function or type) arity is legit.</p>
 
 <h3 class="function"><a name="check_ast-1">check_ast/1</a></h3>
 <div class="spec">
@@ -231,37 +239,37 @@ information) and returns the corresponding AST.</p>
 <div class="spec">
 <p><tt>check_file_loc(Line::term()) -&gt; <a href="#type-file_loc">file_loc()</a></tt><br></p>
 <p> </p>
-</div><p>Checks that specified source, in-file location is legit.</p>
+</div><p>Checks that the specified source, in-file location is legit.</p>
 
 <h3 class="function"><a name="check_file_loc-2">check_file_loc/2</a></h3>
 <div class="spec">
 <p><tt>check_file_loc(Line::term(), Context::<a href="#type-maybe">maybe</a>(<a href="#type-form_context">form_context()</a>)) -&gt; <a href="#type-file_loc">file_loc()</a></tt><br></p>
 <p> </p>
-</div><p>Checks that specified source, in-file location is legit.</p>
+</div><p>Checks that the specified source, in-file location is legit.</p>
 
 <h3 class="function"><a name="check_inline_options-1">check_inline_options/1</a></h3>
 <div class="spec">
-<p><tt>check_inline_options(FunIds::term()) -&gt; [<a href="meta_utils.html#type-function_id">meta_utils:function_id()</a>]</tt><br></p>
+<p><tt>check_inline_options(FunIds::term()) -&gt; [<a href="#type-function_id">function_id()</a>]</tt><br></p>
 <p> </p>
-</div><p>Checks that specified inline options are legit.</p>
+</div><p>Checks that the specified inline options are legit.</p>
 
 <h3 class="function"><a name="check_inline_options-2">check_inline_options/2</a></h3>
 <div class="spec">
-<p><tt>check_inline_options(FunIds::term(), Context::<a href="#type-form_context">form_context()</a>) -&gt; [<a href="meta_utils.html#type-function_id">meta_utils:function_id()</a>]</tt><br></p>
+<p><tt>check_inline_options(FunIds::term(), Context::<a href="#type-form_context">form_context()</a>) -&gt; [<a href="#type-function_id">function_id()</a>]</tt><br></p>
 <p> </p>
-</div><p>Checks that specified inline options are legit.</p>
+</div><p>Checks that the specified inline options are legit.</p>
 
 <h3 class="function"><a name="check_module_name-1">check_module_name/1</a></h3>
 <div class="spec">
 <p><tt>check_module_name(Name::term()) -&gt; <a href="#type-module_name">module_name()</a></tt><br></p>
 <p> </p>
-</div><p>Checks that specified module name is legit.</p>
+</div><p>Checks that the specified module name is legit, and returns it.</p>
 
 <h3 class="function"><a name="check_module_name-2">check_module_name/2</a></h3>
 <div class="spec">
 <p><tt>check_module_name(Name::term(), Context::<a href="#type-form_context">form_context()</a>) -&gt; <a href="#type-module_name">module_name()</a></tt><br></p>
 <p> </p>
-</div><p>Checks that specified module name is legit.</p>
+</div><p>Checks that the specified module name is legit, and returns it.</p>
 
 <h3 class="function"><a name="display_alert-1">display_alert/1</a></h3>
 <div class="spec">
@@ -585,8 +593,8 @@ corresponding abstract form (using the default in-file location applying to
 generated code).</p>
 
  Ex: string_to_form("f() -&gt; hello_world.") may return
-   {function,  {0,1}, f, 0, [{clause,  {0,1}, [], [],
-       [ {atom,  {0,1}, hello_world} ] } ] }
+   {function, {0,1}, f, 0, [{clause, {0,1}, [], [],
+       [ {atom, {0,1}, hello_world} ] } ] }
 </p>
 
 <h3 class="function"><a name="string_to_form-2">string_to_form/2</a></h3>

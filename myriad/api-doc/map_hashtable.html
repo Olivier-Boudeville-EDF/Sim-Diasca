@@ -69,11 +69,11 @@ only them)</p>
 
 
 <h3 class="typedecl"><a name="type-map_hashtable">map_hashtable()</a></h3>
-<p><b>abstract datatype</b>: <tt>map_hashtable(_K, _V)</tt></p>
+<p><tt>map_hashtable(K, V) = <a href="type_utils.html#type-map">type_utils:map</a>(K, V)</tt></p>
 
 
 <h3 class="typedecl"><a name="type-map_hashtable">map_hashtable()</a></h3>
-<p><b>abstract datatype</b>: <tt>map_hashtable()</tt></p>
+<p><tt>map_hashtable() = map()</tt></p>
 
 
 <h3 class="typedecl"><a name="type-maybe">maybe()</a></h3>
@@ -143,7 +143,7 @@ table.</td></tr>
 returns its associated value and removes that entry from the returned table.</td></tr>
 <tr><td valign="top"><a href="#extract_entry_if_existing-2">extract_entry_if_existing/2</a></td><td>Extracts the specified entry (if any) from the specified table, that is 
 returns its associated value and removes that entry from the returned table.</td></tr>
-<tr><td valign="top"><a href="#extract_entry_with_defaults-3">extract_entry_with_defaults/3</a></td><td>Extracts the specified entry from the specified table, that is returns 
+<tr><td valign="top"><a href="#extract_entry_with_default-3">extract_entry_with_default/3</a></td><td>Extracts the specified entry from the specified table, that is returns 
 the associated value and removes that entry from the table.</td></tr>
 <tr><td valign="top"><a href="#fold-3">fold/3</a></td><td>Folds specified anonymous function on all key/value pairs of the 
 specified map hashtable, based on specified initial accumulator.</td></tr>
@@ -154,8 +154,8 @@ hashtable.</td></tr>
 specified table have been read, otherwise throwing an exception.</td></tr>
 <tr><td valign="top"><a href="#get_value-2">get_value/2</a></td><td>Retrieves the value corresponding to the specified (existing) key, and 
 returns it directly.</td></tr>
-<tr><td valign="top"><a href="#get_value_with_defaults-3">get_value_with_defaults/3</a></td><td>Looks for specified entry in specified table and, if found, returns the
- associated value; otherwise returns the specified default value.</td></tr>
+<tr><td valign="top"><a href="#get_value_with_default-3">get_value_with_default/3</a></td><td>Looks for the specified entry in the specified table and, if found, 
+returns the associated value; otherwise returns the specified default value.</td></tr>
 <tr><td valign="top"><a href="#get_values-2">get_values/2</a></td><td>Returns the (ordered) list of values that correspond to the specified 
 (ordered) list of keys of this table.</td></tr>
 <tr><td valign="top"><a href="#has_entry-2">has_entry/2</a></td><td>Tells whether the specified key exists in the table: returns true or
@@ -172,6 +172,9 @@ arguments.</td></tr>
 entries contained in this hashtable.</td></tr>
 <tr><td valign="top"><a href="#map_on_values-2">map_on_values/2</a></td><td>Applies (maps) the specified anonymous function to each of the values 
 contained in this hashtable.</td></tr>
+<tr><td valign="top"><a href="#merge-1">merge/1</a></td><td>Returns a new map hashtable, which merged the specified map hashtables in 
+their listed order (enriching the current entries with the ones of the next 
+table, provided that they are not already present).</td></tr>
 <tr><td valign="top"><a href="#merge-2">merge/2</a></td><td>Returns a new map hashtable, which started from MapHashtableRef and was 
 enriched with the entries from MapHashtableOnlyForAdditions whose keys were 
 *not* already in MapHashtableRef (if a key is in both tables, the one from 
@@ -454,9 +457,9 @@ returns its associated value and removes that entry from the returned table.</p>
  in turn, then to check that the resulting final table is empty as expected.
 </p>
 
-<h3 class="function"><a name="extract_entry_with_defaults-3">extract_entry_with_defaults/3</a></h3>
+<h3 class="function"><a name="extract_entry_with_default-3">extract_entry_with_default/3</a></h3>
 <div class="spec">
-<p><tt>extract_entry_with_defaults(Key::<a href="#type-key">key()</a>, DefaultValue::<a href="#type-value">value()</a>, Table::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; {<a href="#type-value">value()</a>, <a href="#type-map_hashtable">map_hashtable()</a>}</tt><br></p>
+<p><tt>extract_entry_with_default(Key::<a href="#type-key">key()</a>, DefaultValue::<a href="#type-value">value()</a>, Table::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; {<a href="#type-value">value()</a>, <a href="#type-map_hashtable">map_hashtable()</a>}</tt><br></p>
 <p> </p>
 </div><p><p>Extracts the specified entry from the specified table, that is returns 
 the associated value and removes that entry from the table.</p>
@@ -517,12 +520,14 @@ returns it directly.</p>
  exception ({bad_key, Key}) is raised.
 </p>
 
-<h3 class="function"><a name="get_value_with_defaults-3">get_value_with_defaults/3</a></h3>
+<h3 class="function"><a name="get_value_with_default-3">get_value_with_default/3</a></h3>
 <div class="spec">
-<p><tt>get_value_with_defaults(Key::<a href="#type-key">key()</a>, DefaultValue::<a href="#type-value">value()</a>, MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; <a href="#type-value">value()</a></tt><br></p>
+<p><tt>get_value_with_default(Key::<a href="#type-key">key()</a>, DefaultValue::<a href="#type-value">value()</a>, MapHashtable::<a href="#type-map_hashtable">map_hashtable()</a>) -&gt; <a href="#type-value">value()</a></tt><br></p>
 <p> </p>
-</div><p>Looks for specified entry in specified table and, if found, returns the
- associated value; otherwise returns the specified default value.
+</div><p><p>Looks for the specified entry in the specified table and, if found, 
+returns the associated value; otherwise returns the specified default value.</p>
+
+ Allows to perform in a single operation a look-up followed by a fetch.
 </p>
 
 <h3 class="function"><a name="get_values-2">get_values/2</a></h3>
@@ -620,6 +625,17 @@ change.</p>
 
  Note: same as map/2 above, except that the lambda does not know about the
  keys.
+</p>
+
+<h3 class="function"><a name="merge-1">merge/1</a></h3>
+<div class="spec">
+<p><tt>merge(MapHashtables::[<a href="#type-map_hashtable">map_hashtable()</a>]) -&gt; <a href="#type-map_hashtable">map_hashtable()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns a new map hashtable, which merged the specified map hashtables in 
+their listed order (enriching the current entries with the ones of the next 
+table, provided that they are not already present)</p>
+
+ Note: not the standard merge that one would expect, should values be lists.
 </p>
 
 <h3 class="function"><a name="merge-2">merge/2</a></h3>

@@ -29,6 +29,10 @@
 <p><tt>atom_node_name() = <a href="net_utils.html#type-atom_node_name">net_utils:atom_node_name()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-base_status">base_status()</a></h3>
+<p><tt>base_status() = <a href="basic_utils.html#type-base_status">basic_utils:base_status()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-code_path">code_path()</a></h3>
 <p><tt>code_path() = [<a href="#type-directory_path">directory_path()</a>]</tt></p>
 <p> The code path used by a language, i.e. a list of directories (as plain
@@ -42,6 +46,18 @@
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
 <p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
 
+
+<h3 class="typedecl"><a name="type-define">define()</a></h3>
+<p><tt>define() = <a href="#type-define_name">define_name()</a> | {<a href="#type-define_name">define_name()</a>, <a href="#type-define_value">define_value()</a>}</tt></p>
+<p> Describes a preprocessor define.</p>
+
+<h3 class="typedecl"><a name="type-define_name">define_name()</a></h3>
+<p><tt>define_name() = <a href="#type-ustring">ustring()</a></tt></p>
+<p> Name of a preprocessor define.</p>
+
+<h3 class="typedecl"><a name="type-define_value">define_value()</a></h3>
+<p><tt>define_value() = <a href="#type-ustring">ustring()</a></tt></p>
+<p> Value of a preprocessor define.</p>
 
 <h3 class="typedecl"><a name="type-directory_path">directory_path()</a></h3>
 <p><tt>directory_path() = <a href="file_utils.html#type-directory_path">file_utils:directory_path()</a></tt></p>
@@ -83,11 +99,19 @@
 <p><tt>module_name() = <a href="basic_utils.html#type-module_name">basic_utils:module_name()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-possibly_resolvable_path">possibly_resolvable_path()</a></h3>
+<p><tt>possibly_resolvable_path() = <a href="file_utils.html#type-possibly_resolvable_path">file_utils:possibly_resolvable_path()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-resolvable_code_path">resolvable_code_path()</a></h3>
+<p><tt>resolvable_code_path() = [<a href="#type-possibly_resolvable_path">possibly_resolvable_path()</a>]</tt></p>
+<p> A code path that may comprise plain or resolvable paths.</p>
+
 <h3 class="typedecl"><a name="type-stack_info">stack_info()</a></h3>
 <p><tt>stack_info() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(atom(), term()) | <a href="list_table.html#type-list_table">list_table:list_table</a>(atom(), term())</tt></p>
 <p><p> The last element of a stack item.</p>
 
- Ex: [ { file, file_path() }, { line, meta_utils:line() } ].</p>
+ Ex: [{file,file_path()}, {line, meta_utils:line()}].</p>
 
 <h3 class="typedecl"><a name="type-stack_item">stack_item()</a></h3>
 <p><tt>stack_item() = {<a href="#type-module_name">module_name()</a>, <a href="#type-function_name">function_name()</a>, arity(), <a href="#type-stack_info">stack_info()</a>}</tt></p>
@@ -131,6 +155,14 @@ so that they are ready for future use, using a default time-out.</td></tr>
 (specified as atoms): sends them these modules (as a binary), and loads them 
 so that they are ready for future use.</td></tr>
 <tr><td valign="top"><a href="#display_stacktrace-0">display_stacktrace/0</a></td><td>Displays the current stacktrace (not stopping the execution).</td></tr>
+<tr><td valign="top"><a href="#ensure_compiled-1">ensure_compiled/1</a></td><td>Compiles the specified module, by searching its sources through the code 
+path and requiring Myriad's build system to ensure its BEAM exists.</td></tr>
+<tr><td valign="top"><a href="#ensure_compiled-2">ensure_compiled/2</a></td><td>Ensures that the BEAM file corresponding to the specified module 
+exists in the specified directory.</td></tr>
+<tr><td valign="top"><a href="#ensure_compiled-3">ensure_compiled/3</a></td><td>Ensures that the BEAM file corresponding to the specified module 
+exists in the specified directory.</td></tr>
+<tr><td valign="top"><a href="#find_module_source-1">find_module_source/1</a></td><td>Tries to find the source file of the specified module in the current code 
+path.</td></tr>
 <tr><td valign="top"><a href="#get_beam_dirs_for-1">get_beam_dirs_for/1</a></td><td>Returns the (ordered) list of (absolute) runtime BEAM directories 
 obtained from the build system located in the directory designated as the 
 value associated to the specified environment variable name.</td></tr>
@@ -150,6 +182,8 @@ alphabetical order.</td></tr>
 module.</td></tr>
 <tr><td valign="top"><a href="#get_md5_for_stored_module-1">get_md5_for_stored_module/1</a></td><td>Returns the MD5 for the specified stored (on filesystem, found through
  the code path) module.</td></tr>
+<tr><td valign="top"><a href="#get_source_filename-1">get_source_filename/1</a></td><td>Returns the filename of the (Erlang) source file corresponding to the
+ specified module.</td></tr>
 <tr><td valign="top"><a href="#get_stacktrace-0">get_stacktrace/0</a></td><td>Returns (without crashing the program) the current stack trace.</td></tr>
 <tr><td valign="top"><a href="#get_stacktrace-1">get_stacktrace/1</a></td><td>Returns (without crashing the program) the current stack trace, whose
  SkipLastElemCount first elements have been dropped (to output a cleaner, more
@@ -169,11 +203,23 @@ path.</td></tr>
  one found through the code path.</td></tr>
 <tr><td valign="top"><a href="#list_beams_in_path-0">list_beams_in_path/0</a></td><td>Lists (in alphabetical order) all modules that exist in the current 
 code path, based on the BEAM files found.</td></tr>
+<tr><td valign="top"><a href="#recompile-1">recompile/1</a></td><td>Recompiles forcibly the specified module (even if the build system does 
+not detect a source change; this is typically useful if changing compilation 
+settings), with no specific define.</td></tr>
+<tr><td valign="top"><a href="#recompile-2">recompile/2</a></td><td>Recompiles forcibly the specified module (even if the build system does 
+not detect a source change; this is typically useful if changing compilation 
+settings).</td></tr>
+<tr><td valign="top"><a href="#recompile-3">recompile/3</a></td><td>Recompiles the specified module, forcibly or not, with the specified 
+preprocessor defines.</td></tr>
+<tr><td valign="top"><a href="#recompile-4">recompile/4</a></td><td>Recompiles the specified module, forcibly or not, with the specified 
+preprocessor defines, in the specified directory.</td></tr>
 <tr><td valign="top"><a href="#remove_beam_directory-1">remove_beam_directory/1</a></td><td>Removes specified directory (either specified verbatim or designated as 
 the ebin directory of a specified application) from the current code path.</td></tr>
 <tr><td valign="top"><a href="#remove_beam_directory_if_set-1">remove_beam_directory_if_set/1</a></td><td>Removes specified directory (either specified verbatim or designated as 
 the ebin directory of a specified application) from the current code path, if 
 it was already set (otherwise does nothing).</td></tr>
+<tr><td valign="top"><a href="#resolve_code_path-1">resolve_code_path/1</a></td><td>Resolves the specified resolvable code path: returns a plain, immediately
+ usable code path (of course preserving path order).</td></tr>
 <tr><td valign="top"><a href="#stack_info_to_string-1">stack_info_to_string/1</a></td><td>Returns a textual description of specified stack information.</td></tr>
 </table>
 
@@ -208,7 +254,7 @@ will be looked up by the VM, adding them at first position in the code path.</p>
 
 <h3 class="function"><a name="declare_beam_directories-2">declare_beam_directories/2</a></h3>
 <div class="spec">
-<p><tt>declare_beam_directories(Dirs::<a href="#type-code_path">code_path()</a>, X2::<a href="#type-code_path_position">code_path_position()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>declare_beam_directories(Dirs::<a href="#type-code_path">code_path()</a>, Pos::<a href="#type-code_path_position">code_path_position()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p><p>Declares specified directories as additional code paths where BEAM files 
 will be looked up by the VM, adding them either at first or last position in 
@@ -312,6 +358,49 @@ the 'infinity' atom.</p>
 <p> </p>
 </div><p>Displays the current stacktrace (not stopping the execution).</p>
 
+<h3 class="function"><a name="ensure_compiled-1">ensure_compiled/1</a></h3>
+<div class="spec">
+<p><tt>ensure_compiled(ModuleName::<a href="#type-module_name">module_name()</a>) -&gt; <a href="#type-base_status">base_status()</a></tt><br></p>
+<p> </p>
+</div><p><p>Compiles the specified module, by searching its sources through the code 
+path and requiring Myriad's build system to ensure its BEAM exists.</p>
+
+ If a corresponding BEAM file exists, it will be rebuilt iff the build system
+ considers it should.
+</p>
+
+<h3 class="function"><a name="ensure_compiled-2">ensure_compiled/2</a></h3>
+<div class="spec">
+<p><tt>ensure_compiled(ModuleName::<a href="#type-module_name">module_name()</a>, BaseDir::<a href="#type-directory_path">directory_path()</a>) -&gt; <a href="#type-base_status">base_status()</a></tt><br></p>
+<p> </p>
+</div><p><p>Ensures that the BEAM file corresponding to the specified module 
+exists in the specified directory.</p>
+
+ Will compile the specified module in that directory (with no specific defines)
+ iff the build system considers it should.
+</p>
+
+<h3 class="function"><a name="ensure_compiled-3">ensure_compiled/3</a></h3>
+<div class="spec">
+<p><tt>ensure_compiled(ModuleName::<a href="#type-module_name">module_name()</a>, BaseDir::<a href="#type-directory_path">directory_path()</a>, Defines::[<a href="#type-define">define()</a>]) -&gt; <a href="#type-base_status">base_status()</a></tt><br></p>
+<p> </p>
+</div><p><p>Ensures that the BEAM file corresponding to the specified module 
+exists in the specified directory.</p>
+
+ Will compile the specified module in that directory, with the specified
+ defines, iff the build system considers it should.
+</p>
+
+<h3 class="function"><a name="find_module_source-1">find_module_source/1</a></h3>
+<div class="spec">
+<p><tt>find_module_source(ModuleName::<a href="#type-module_name">module_name()</a>) -&gt; <a href="#type-fallible">fallible</a>(<a href="#type-file_path">file_path()</a>)</tt><br></p>
+<p> </p>
+</div><p><p>Tries to find the source file of the specified module in the current code 
+path.</p>
+
+ Useful to be able to compile it.
+</p>
+
 <h3 class="function"><a name="get_beam_dirs_for-1">get_beam_dirs_for/1</a></h3>
 <div class="spec">
 <p><tt>get_beam_dirs_for(VariableName::<a href="#type-env_variable_name">env_variable_name()</a>) -&gt; <a href="#type-code_path">code_path()</a></tt><br></p>
@@ -387,8 +476,9 @@ alphabetical order (without duplicates).</p>
 </div><p><p>Returns a textual representation of the current code path, sorted in 
 alphabetical order.</p>
 
- Note that the sorting is more convenient for inspection yet implies that the
- actual lookup order through these directories is most probably different.
+ Note that the sorting is more convenient for inspection, yet implies that the
+ actual lookup order used by the VM through this code path is most probably
+ different.
 </p>
 
 <h3 class="function"><a name="get_erlang_root_path-0">get_erlang_root_path/0</a></h3>
@@ -417,6 +507,14 @@ module.</p>
 <p> </p>
 </div><p>Returns the MD5 for the specified stored (on filesystem, found through
  the code path) module.
+</p>
+
+<h3 class="function"><a name="get_source_filename-1">get_source_filename/1</a></h3>
+<div class="spec">
+<p><tt>get_source_filename(ModuleName::<a href="#type-module_name">module_name()</a>) -&gt; <a href="#type-file_name">file_name()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the filename of the (Erlang) source file corresponding to the
+ specified module.
 </p>
 
 <h3 class="function"><a name="get_stacktrace-0">get_stacktrace/0</a></h3>
@@ -483,21 +581,19 @@ specified extra depth has been skipped (not counting this call).</p>
 
 <h3 class="function"><a name="is_beam_in_path-1">is_beam_in_path/1</a></h3>
 <div class="spec">
-<p><tt>is_beam_in_path(ModuleName::<a href="#type-module_name">module_name()</a>) -&gt; not_found | [<a href="#type-directory_path">directory_path()</a>]</tt><br></p>
+<p><tt>is_beam_in_path(ModuleName::<a href="#type-module_name">module_name()</a>) -&gt; not_found | [<a href="#type-file_path">file_path()</a>]</tt><br></p>
 <p> </p>
 </div><p><p>Tells whether specified module has its BEAM file in the current code 
 path.</p>
 
- <p>Returns either a list of its absolute, canonicalised, unordered paths (if 
-being available at least once), or 'not_found'.</p>
+ <p>Returns either a list of its absolute, canonicalised, unordered paths that 
+include this BEAM file (if being available at least once), or 'not_found'.</p>
 
- <p>Note:</p>
-
-  <p>- hence this function does not return a boolean</p>
-
+ Note:
+  - hence this function does not return a boolean
   - the returned list (if any) of paths respects the order in the code path; as
-  a result, its first element corresponds to the path containing the BEAM file
-  that would be loaded for the specified module
+  a result, its first element corresponds to the path of the BEAM file that
+  would be loaded for the specified module
 </p>
 
 <h3 class="function"><a name="is_loaded_module_same_on_filesystem-1">is_loaded_module_same_on_filesystem/1</a></h3>
@@ -521,6 +617,72 @@ code path, based on the BEAM files found.</p>
  determined. See is_beam_in_path/1 for that.
 </p>
 
+<h3 class="function"><a name="recompile-1">recompile/1</a></h3>
+<div class="spec">
+<p><tt>recompile(ModuleName::<a href="#type-module_name">module_name()</a>) -&gt; <a href="#type-base_status">base_status()</a></tt><br></p>
+<p> </p>
+</div><p><p>Recompiles forcibly the specified module (even if the build system does 
+not detect a source change; this is typically useful if changing compilation 
+settings), with no specific define.</p>
+
+ <p>A (single) corresponding (possibly obsolete) BEAM file is expected to already 
+exist.</p>
+
+ Relies on Myriad's build system, rules and parametrisation, that we deem is
+ the most flexible and robust option.
+</p>
+
+<h3 class="function"><a name="recompile-2">recompile/2</a></h3>
+<div class="spec">
+<p><tt>recompile(ModuleName::<a href="#type-module_name">module_name()</a>, ForceRecompilation::boolean()) -&gt; <a href="#type-base_status">base_status()</a></tt><br></p>
+<p> </p>
+</div><p><p>Recompiles forcibly the specified module (even if the build system does 
+not detect a source change; this is typically useful if changing compilation 
+settings).</p>
+
+ <p>A (single) corresponding (possibly obsolete) BEAM file is expected to already 
+exist.</p>
+
+ Relies on Myriad's build system, rules and parametrisation, that we deem is
+ the most flexible and robust option.
+</p>
+
+<h3 class="function"><a name="recompile-3">recompile/3</a></h3>
+<div class="spec">
+<p><tt>recompile(ModuleName::<a href="#type-module_name">module_name()</a>, ForceRecompilation::boolean(), Defines::[<a href="#type-define">define()</a>]) -&gt; <a href="#type-base_status">base_status()</a></tt><br></p>
+<p> </p>
+</div><p><p>Recompiles the specified module, forcibly or not, with the specified 
+preprocessor defines.</p>
+
+ <p>If ForceRecompilation is true, the specified module will be recompiled even if 
+the build system does not detect a source change; this is typically useful if 
+changing compilation settings.</p>
+
+ <p>A (single) corresponding (possibly obsolete) BEAM file is expected to already 
+exist.</p>
+
+ Relies on Myriad's build system, rules and parametrisation, that we deem is
+ the most flexible and robust option.
+</p>
+
+<h3 class="function"><a name="recompile-4">recompile/4</a></h3>
+<div class="spec">
+<p><tt>recompile(ModuleName::<a href="#type-module_name">module_name()</a>, BaseDir::<a href="#type-directory_path">directory_path()</a>, ForceRecompilation::boolean(), Defines::[<a href="#type-define">define()</a>]) -&gt; <a href="#type-base_status">base_status()</a></tt><br></p>
+<p> </p>
+</div><p><p>Recompiles the specified module, forcibly or not, with the specified 
+preprocessor defines, in the specified directory.</p>
+
+ <p>If ForceRecompilation is true, the specified module will be recompiled even if 
+the build system does not detect a source change; this is typically useful if 
+changing compilation settings.</p>
+
+ <p>A (single) corresponding (possibly obsolete) BEAM file is expected to already 
+exist.</p>
+
+ Relies on Myriad's build system, rules and parametrisation, that we deem is
+ the most flexible and robust option.
+</p>
+
 <h3 class="function"><a name="remove_beam_directory-1">remove_beam_directory/1</a></h3>
 <div class="spec">
 <p><tt>remove_beam_directory(NameOrDir::<a href="#type-directory_path">directory_path()</a> | <a href="otp_utils.html#type-application_name">otp_utils:application_name()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
@@ -541,6 +703,14 @@ the ebin directory of a specified application) from the current code path, if
 it was already set (otherwise does nothing).</p>
 
  Throws an exception if the operation failed otherwise.
+</p>
+
+<h3 class="function"><a name="resolve_code_path-1">resolve_code_path/1</a></h3>
+<div class="spec">
+<p><tt>resolve_code_path(AnyCodePaths::<a href="#type-resolvable_code_path">resolvable_code_path()</a>) -&gt; <a href="#type-code_path">code_path()</a></tt><br></p>
+<p> </p>
+</div><p>Resolves the specified resolvable code path: returns a plain, immediately
+ usable code path (of course preserving path order).
 </p>
 
 <h3 class="function"><a name="stack_info_to_string-1">stack_info_to_string/1</a></h3>

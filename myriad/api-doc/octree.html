@@ -1,0 +1,113 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module octree</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module octree</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of facilities to manage <b>octrees</b>, a tree datastructure in 
+which each internal node has exactly 8 children (octants, i.e.
+
+
+<h2><a name="description">Description</a></h2><p>Gathering of facilities to manage <b>octrees</b>, a tree datastructure in 
+which each internal node has exactly 8 children (octants, i.e. sub-octrees or 
+"cells" - a naming that is probably clearer) that partition the parent space.</p>
+
+ <p>We consider here that the octree acts as a server in charge of resolving 
+spatial queries emitted by many clients having to interact in a shared space.</p>
+
+ <p>A global axis-aligned right cuboid is recursively split in 8 smaller, 
+same-sized octants, (which are its direct child right cuboids), dividing the 
+space thanks to a tree until some criterion is met (volume/number of elements 
+in the resulting leaves below some threshold, maximum tree depth reached, 
+etc.).</p>
+
+ See https://en.wikipedia.org/wiki/Octree.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-accumulator">accumulator()</a></h3>
+<p><tt>accumulator() = <a href="basic_utils.html#type-accumulator">basic_utils:accumulator()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-content_fold_fun">content_fold_fun()</a></h3>
+<p><tt>content_fold_fun() = fun((<a href="#type-node_content">node_content()</a>, <a href="#type-accumulator">accumulator()</a>) -&gt; <a href="#type-accumulator">accumulator()</a>)</tt></p>
+<p> Describes a function that can be folded onto the content of an octree.</p>
+
+<h3 class="typedecl"><a name="type-count">count()</a></h3>
+<p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-height">height()</a></h3>
+<p><tt>height() = <a href="#type-count">count()</a></tt></p>
+<p> The height of an octree, as the maximum number of edges between the root and a
+ leaf.</p>
+
+<h3 class="typedecl"><a name="type-node_content">node_content()</a></h3>
+<p><tt>node_content() = <a href="#type-maybe">maybe</a>(any())</tt></p>
+<p> The content of a node of an octree ('undefined' meaning empty content).</p>
+
+<h3 class="typedecl"><a name="type-octant_id">octant_id()</a></h3>
+<p><tt>octant_id() = {H::<a href="#type-height">height()</a>, Xi::<a href="#type-x_index">x_index()</a>, Yi::<a href="#type-y_index">y_index()</a>, Zi::<a href="#type-z_index">z_index()</a>}</tt></p>
+<p><p> The identifier of an octant, expressed in terms of octant coordinates.</p>
+
+ <p>Ex: { H=2, Xi=-1, Yi=2, Zi=1 }.</p>
+
+ For H=0, Xi=Yi=Zi=1.
+ For H=1, Xi, Yi, Zi each are either -1 or +1.
+ For H=2, Xi, Yi, Zi each are in -2, -1, +1, +2.
+ For H=n, Xi, Yi, Zi each are in -n, -n+1, [...], -2, -1, +1; +2, [...], n-1,
+ n.</p>
+
+<h3 class="typedecl"><a name="type-octant_index">octant_index()</a></h3>
+<p><tt>octant_index() = integer()</tt></p>
+<p> The index of an octant is a non-null integer.</p>
+
+<h3 class="typedecl"><a name="type-octant_short_id">octant_short_id()</a></h3>
+<p><tt>octant_short_id() = {Xi::<a href="#type-x_index">x_index()</a>, Yi::<a href="#type-y_index">y_index()</a>, Zi::<a href="#type-z_index">z_index()</a>}</tt></p>
+<p><p> The identifier of an octant at a given height in the octree, expressed in 
+terms of octant coordinates.</p>
+
+ Ex: { Xi=-1, Yi=2, Zi=1 }, for H=2.</p>
+
+<h3 class="typedecl"><a name="type-x_index">x_index()</a></h3>
+<p><tt>x_index() = <a href="#type-octant_index">octant_index()</a></tt></p>
+<p> The index of an octant along the X axis.</p>
+
+<h3 class="typedecl"><a name="type-y_index">y_index()</a></h3>
+<p><tt>y_index() = <a href="#type-octant_index">octant_index()</a></tt></p>
+<p> The index of an octant along the Y axis.</p>
+
+<h3 class="typedecl"><a name="type-z_index">z_index()</a></h3>
+<p><tt>z_index() = <a href="#type-octant_index">octant_index()</a></tt></p>
+<p> The index of an octant along the Z axis.</p>
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#new-0">new/0</a></td><td>Creates an empty (regarding content and octants), sequential, octree.</td></tr>
+<tr><td valign="top"><a href="#new-1">new/1</a></td><td>Creates a sequential, octree having specified content, and no octants.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="new-0">new/0</a></h3>
+<div class="spec">
+<p><tt>new() -&gt; any()</tt><br></p>
+<p> </p>
+</div><p>Creates an empty (regarding content and octants), sequential, octree.</p>
+
+<h3 class="function"><a name="new-1">new/1</a></h3>
+<div class="spec">
+<p><tt>new(NodeContent::<a href="#type-node_content">node_content()</a>) -&gt; any()</tt><br></p>
+<p> </p>
+</div><p>Creates a sequential, octree having specified content, and no octants.</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

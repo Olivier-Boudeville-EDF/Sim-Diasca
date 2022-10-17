@@ -35,10 +35,10 @@
 <tr class="field"><th class="field-name">Creation Date:</th><td class="field-body"><p class="first">March 2015</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Lastly updated:</th><td class="field-body"><p class="first">Tuesday, March 22, 2022</p>
+<tr class="field"><th class="field-name">Lastly updated:</th><td class="field-body"><p class="first">Monday, October 17, 2022</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Version:</th><td class="field-body"><p class="first">2.4.3</p>
+<tr class="field"><th class="field-name">Version:</th><td class="field-body"><p class="first">2.4.4</p>
 </td>
 </tr>
 <tr class="field"><th class="field-name">Status:</th><td class="field-body"><p class="first">Stable</p>
@@ -824,7 +824,7 @@ For example, if a cat instance is defined by his name and fur color, a cat state
 </p>
 <p>Not specifying an event condition on a state transition means here that the state change is time-based, i.e. it will occur automatically once a specific duration (in simulation time) will be elapsed.</p>
 <p>The two models are interacting, thus the two FSMs will interact as well, based on message exchanges:</p>
-<p><span class="raw-html"><center><img src="soda-ordering-interacting-FSM.png" id="responsive-image-medium"></img></center></span>
+<p><span class="raw-html"><center><img src="soda-ordering-interacting-FSM-committed.png" id="responsive-image-medium"></img></center></span>
 </p>
 <p>No inter-customer exchange is shown here: as an exercise, we could imagine that an impoverished customer may try to borrow money from another he knows.</p>
 <p>So, from each of these FSMs, we can derive the behaviour of the corresponding model, from its initial logical state to all others. Transitions are clearly related to internal changes (ex: the thirst of a customer builds over time - a.k.a. spontaneous behaviour) and external changes (denoted as the receiving of an actor message, like when a customer is notified of the price of a can of the vending machine.</p>

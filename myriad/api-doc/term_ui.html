@@ -550,7 +550,7 @@ operation_cancelled if the user preferred the cancel button.</p>
 
 <h3 class="function"><a name="get_text_as_integer-1">get_text_as_integer/1</a></h3>
 <div class="spec">
-<p><tt>get_text_as_integer(Prompt::<a href="#type-prompt">prompt()</a>) -&gt; <a href="#type-text">text()</a></tt><br></p>
+<p><tt>get_text_as_integer(Prompt::<a href="#type-prompt">prompt()</a>) -&gt; integer()</tt><br></p>
 <p> </p>
 </div><p><p>Returns the user-entered text, once translated to an integer, based on an 
 implicit state.</p>
@@ -560,7 +560,7 @@ implicit state.</p>
 
 <h3 class="function"><a name="get_text_as_integer-2">get_text_as_integer/2</a></h3>
 <div class="spec">
-<p><tt>get_text_as_integer(Prompt::<a href="#type-prompt">prompt()</a>, UIState::<a href="#type-ui_state">ui_state()</a>) -&gt; <a href="#type-text">text()</a></tt><br></p>
+<p><tt>get_text_as_integer(Prompt::<a href="#type-prompt">prompt()</a>, UIState::<a href="#type-ui_state">ui_state()</a>) -&gt; integer()</tt><br></p>
 <p> </p>
 </div><p><p>Returns the user-entered text, once translated to an integer, based on an 
 explicit state.</p>
@@ -570,7 +570,7 @@ explicit state.</p>
 
 <h3 class="function"><a name="get_text_as_maybe_integer-1">get_text_as_maybe_integer/1</a></h3>
 <div class="spec">
-<p><tt>get_text_as_maybe_integer(Prompt::<a href="#type-prompt">prompt()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-text">text()</a>)</tt><br></p>
+<p><tt>get_text_as_maybe_integer(Prompt::<a href="#type-prompt">prompt()</a>) -&gt; <a href="#type-maybe">maybe</a>(integer())</tt><br></p>
 <p> </p>
 </div><p><p>Returns the user-entered text (if any) after specified prompt, once 
 translated to (possibly) an integer, based on an implicit state.</p>
@@ -580,7 +580,7 @@ translated to (possibly) an integer, based on an implicit state.</p>
 
 <h3 class="function"><a name="get_text_as_maybe_integer-2">get_text_as_maybe_integer/2</a></h3>
 <div class="spec">
-<p><tt>get_text_as_maybe_integer(Prompt::<a href="#type-prompt">prompt()</a>, UIState::<a href="#type-ui_state">ui_state()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-text">text()</a>)</tt><br></p>
+<p><tt>get_text_as_maybe_integer(Prompt::<a href="#type-prompt">prompt()</a>, UIState::<a href="#type-ui_state">ui_state()</a>) -&gt; <a href="#type-maybe">maybe</a>(integer())</tt><br></p>
 <p> </p>
 </div><p><p>Returns the user-entered text (if any) after specified prompt, once 
 translated to (possibly) an integer, based on an explicit state.</p>
@@ -596,7 +596,7 @@ translated to (possibly) an integer, based on an explicit state.</p>
 
 <h3 class="function"><a name="read_text_as_integer-1">read_text_as_integer/1</a></h3>
 <div class="spec">
-<p><tt>read_text_as_integer(Prompt::<a href="#type-prompt">prompt()</a>) -&gt; <a href="#type-text">text()</a></tt><br></p>
+<p><tt>read_text_as_integer(Prompt::<a href="#type-prompt">prompt()</a>) -&gt; integer()</tt><br></p>
 <p> </p>
 </div><p><p>Returns the user-entered text, once translated to an integer, based on an 
 implicit state, prompting the user until a valid input is obtained.</p>
@@ -606,7 +606,7 @@ implicit state, prompting the user until a valid input is obtained.</p>
 
 <h3 class="function"><a name="read_text_as_integer-2">read_text_as_integer/2</a></h3>
 <div class="spec">
-<p><tt>read_text_as_integer(Prompt::<a href="#type-prompt">prompt()</a>, UIState::<a href="#type-ui_state">ui_state()</a>) -&gt; <a href="#type-text">text()</a></tt><br></p>
+<p><tt>read_text_as_integer(Prompt::<a href="#type-prompt">prompt()</a>, UIState::<a href="#type-ui_state">ui_state()</a>) -&gt; integer()</tt><br></p>
 <p> </p>
 </div><p><p>Returns the user-entered text, once translated to an integer, based on an 
 explicit state, prompting the user until a valid input is obtained.</p>
@@ -616,7 +616,7 @@ explicit state, prompting the user until a valid input is obtained.</p>
 
 <h3 class="function"><a name="read_text_as_maybe_integer-1">read_text_as_maybe_integer/1</a></h3>
 <div class="spec">
-<p><tt>read_text_as_maybe_integer(Prompt::<a href="#type-prompt">prompt()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-text">text()</a>)</tt><br></p>
+<p><tt>read_text_as_maybe_integer(Prompt::<a href="#type-prompt">prompt()</a>) -&gt; <a href="#type-maybe">maybe</a>(integer())</tt><br></p>
 <p> </p>
 </div><p><p>Returns the user-entered text after specified prompt, once translated to 
 an integer, prompting the user until a valid input is obtained: either a 
@@ -628,7 +628,7 @@ returning 'undefined'), based on an implicit state.</p>
 
 <h3 class="function"><a name="read_text_as_maybe_integer-2">read_text_as_maybe_integer/2</a></h3>
 <div class="spec">
-<p><tt>read_text_as_maybe_integer(Prompt::<a href="#type-prompt">prompt()</a>, UIState::<a href="#type-ui_state">ui_state()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-text">text()</a>)</tt><br></p>
+<p><tt>read_text_as_maybe_integer(Prompt::<a href="#type-prompt">prompt()</a>, UIState::<a href="#type-ui_state">ui_state()</a>) -&gt; <a href="#type-maybe">maybe</a>(integer())</tt><br></p>
 <p> </p>
 </div><p><p>Returns the user-entered text after specified prompt, once translated to 
 an integer, prompting the user until a valid input is obtained: either a 

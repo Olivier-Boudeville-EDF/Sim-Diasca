@@ -16,6 +16,10 @@
 <h2><a name="description">Description</a></h2>Centralisation of <b>class-level information</b>.
 <h2><a name="types">Data Types</a></h2>
 
+<h3 class="typedecl"><a name="type-ast_location">ast_location()</a></h3>
+<p><tt>ast_location() = <a href="ast_info.html#type-ast_location">ast_info:ast_location()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-attribute_description">attribute_description()</a></h3>
 <p><tt>attribute_description() = <a href="#type-ustring">ustring()</a></tt></p>
 
@@ -57,10 +61,18 @@
 <p><tt>class_info() = #class_info{class = <a href="#type-class_entry">class_entry()</a>, superclasses = [<a href="wooper.html#type-classname">wooper:classname()</a>], attributes = <a href="wooper_info.html#type-attribute_table">wooper_info:attribute_table()</a>, inherited_attributes = <a href="wooper_info.html#type-attribute_table">wooper_info:attribute_table()</a>, compilation_options = <a href="ast_info.html#type-compile_option_table">ast_info:compile_option_table()</a>, compilation_option_defs = [<a href="ast_info.html#type-located_form">ast_info:located_form()</a>], parse_attributes = <a href="ast_info.html#type-attribute_table">ast_info:attribute_table()</a>, remote_spec_defs = [<a href="ast_info.html#type-located_form">ast_info:located_form()</a>], includes = [<a href="file_utils.html#type-file_name">file_utils:file_name()</a>], include_defs = [<a href="ast_info.html#type-located_form">ast_info:located_form()</a>], type_exports = <a href="ast_info.html#type-type_export_table">ast_info:type_export_table()</a>, types = <a href="ast_info.html#type-type_table">ast_info:type_table()</a>, records = <a href="ast_info.html#type-record_table">ast_info:record_table()</a>, function_imports = <a href="ast_info.html#type-function_import_table">ast_info:function_import_table()</a>, function_imports_defs = [<a href="ast_info.html#type-located_form">ast_info:located_form()</a>], function_exports = <a href="ast_info.html#type-function_export_table">ast_info:function_export_table()</a>, functions = <a href="ast_info.html#type-function_table">ast_info:function_table()</a>, constructors = <a href="wooper_info.html#type-constructor_table">wooper_info:constructor_table()</a>, new_operators = <a href="ast_info.html#type-function_table">ast_info:function_table()</a>, destructor = <a href="#type-maybe">maybe</a>(<a href="ast_info.html#type-function_info">ast_info:function_info()</a>), request_exports = <a href="wooper_info.html#type-request_export_table">wooper_info:request_export_table()</a>, requests = <a href="wooper_info.html#type-request_table">wooper_info:request_table()</a>, oneway_exports = <a href="wooper_info.html#type-oneway_export_table">wooper_info:oneway_export_table()</a>, oneways = <a href="wooper_info.html#type-oneway_table">wooper_info:oneway_table()</a>, static_exports = <a href="wooper_info.html#type-static_export_table">wooper_info:static_export_table()</a>, statics = <a href="wooper_info.html#type-static_table">wooper_info:static_table()</a>, optional_callbacks_defs = [<a href="ast_info.html#type-located_form">ast_info:located_form()</a>], debug_mode = boolean(), last_file_location = <a href="ast_info.html#type-located_form">ast_info:located_form()</a>, markers = <a href="ast_info.html#type-section_marker_table">ast_info:section_marker_table()</a>, errors = [<a href="ast_info.html#type-error">ast_info:error()</a>], unhandled_forms = [<a href="ast_info.html#type-located_form">ast_info:located_form()</a>]}</tt></p>
 
 
+<h3 class="typedecl"><a name="type-clause_def">clause_def()</a></h3>
+<p><tt>clause_def() = <a href="meta_utils.html#type-clause_def">meta_utils:clause_def()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-constructor_table">constructor_table()</a></h3>
 <p><tt>constructor_table() = <a href="#type-table">table</a>(arity(), <a href="ast_info.html#type-function_info">ast_info:function_info()</a>)</tt></p>
 <p> A table storing information about the constructors involved, regarding a
  class.</p>
+
+<h3 class="typedecl"><a name="type-file_loc">file_loc()</a></h3>
+<p><tt>file_loc() = <a href="ast_base.html#type-file_loc">ast_base:file_loc()</a></tt></p>
+
 
 <h3 class="typedecl"><a name="type-function_id">function_id()</a></h3>
 <p><tt>function_id() = <a href="meta_utils.html#type-function_id">meta_utils:function_id()</a></tt></p>
@@ -70,8 +82,12 @@
 <p><tt>indentation_level() = <a href="text_utils.html#type-indentation_level">text_utils:indentation_level()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-line">line()</a></h3>
+<p><tt>line() = <a href="ast_base.html#type-line">ast_base:line()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-located_method_spec">located_method_spec()</a></h3>
-<p><tt>located_method_spec() = {<a href="ast_info.html#type-location">ast_info:location()</a>, <a href="#type-method_spec">method_spec()</a>}</tt></p>
+<p><tt>located_method_spec() = {<a href="#type-ast_location">ast_location()</a>, <a href="#type-method_spec">method_spec()</a>}</tt></p>
 <p> The type specification of a method.</p>
 
 <h3 class="typedecl"><a name="type-method_spec">method_spec()</a></h3>
@@ -79,13 +95,13 @@
 <p> The form corresponding to a method specification.</p>
 
 <h3 class="typedecl"><a name="type-oneway_export_table">oneway_export_table()</a></h3>
-<p><tt>oneway_export_table() = <a href="#type-table">table</a>(<a href="ast_info.html#type-location">ast_info:location()</a>, {<a href="ast_base.html#type-line">ast_base:line()</a>, [<a href="wooper.html#type-oneway_id">wooper:oneway_id()</a>]})</tt></p>
+<p><tt>oneway_export_table() = <a href="#type-table">table</a>(<a href="#type-ast_location">ast_location()</a>, {<a href="#type-line">line()</a>, [<a href="wooper.html#type-oneway_id">wooper:oneway_id()</a>]})</tt></p>
 <p><p> Table storing the export declarations for oneway methods.</p>
 
  Quite similar to ast_info:function_export_table().</p>
 
 <h3 class="typedecl"><a name="type-oneway_info">oneway_info()</a></h3>
-<p><tt>oneway_info() = #oneway_info{name = <a href="wooper.html#type-oneway_name">wooper:oneway_name()</a>, arity = <a href="wooper.html#type-method_arity">wooper:method_arity()</a>, qualifiers = <a href="wooper.html#type-method_qualifiers">wooper:method_qualifiers()</a>, ast_location = <a href="#type-maybe">maybe</a>(<a href="ast_info.html#type-location">ast_info:location()</a>), file_location = <a href="#type-maybe">maybe</a>(<a href="ast_base.html#type-file_loc">ast_base:file_loc()</a>), clauses = [<a href="meta_utils.html#type-clause_def">meta_utils:clause_def()</a>], spec = <a href="#type-maybe">maybe</a>(<a href="wooper_info.html#type-located_method_spec">wooper_info:located_method_spec()</a>)}</tt></p>
+<p><tt>oneway_info() = #oneway_info{name = <a href="wooper.html#type-oneway_name">wooper:oneway_name()</a>, arity = <a href="wooper.html#type-method_arity">wooper:method_arity()</a>, qualifiers = <a href="wooper.html#type-method_qualifiers">wooper:method_qualifiers()</a>, ast_location = <a href="#type-maybe">maybe</a>(<a href="ast_info.html#type-ast_location">ast_info:ast_location()</a>), file_location = <a href="#type-maybe">maybe</a>(<a href="ast_base.html#type-file_loc">ast_base:file_loc()</a>), clauses = [<a href="meta_utils.html#type-clause_def">meta_utils:clause_def()</a>], spec = <a href="#type-maybe">maybe</a>(<a href="wooper_info.html#type-located_method_spec">wooper_info:located_method_spec()</a>)}</tt></p>
 
 
 <h3 class="typedecl"><a name="type-oneway_table">oneway_table()</a></h3>
@@ -95,13 +111,13 @@
  Quite similar to ast_info:function_table().</p>
 
 <h3 class="typedecl"><a name="type-request_export_table">request_export_table()</a></h3>
-<p><tt>request_export_table() = <a href="#type-table">table</a>(<a href="ast_info.html#type-location">ast_info:location()</a>, {<a href="ast_base.html#type-line">ast_base:line()</a>, [<a href="wooper.html#type-request_id">wooper:request_id()</a>]})</tt></p>
+<p><tt>request_export_table() = <a href="#type-table">table</a>(<a href="#type-ast_location">ast_location()</a>, {<a href="#type-line">line()</a>, [<a href="wooper.html#type-request_id">wooper:request_id()</a>]})</tt></p>
 <p><p> Table storing the export declarations for request methods.</p>
 
  Quite similar to ast_info:function_export_table().</p>
 
 <h3 class="typedecl"><a name="type-request_info">request_info()</a></h3>
-<p><tt>request_info() = #request_info{name = <a href="wooper.html#type-request_name">wooper:request_name()</a>, arity = <a href="wooper.html#type-method_arity">wooper:method_arity()</a>, qualifiers = <a href="wooper.html#type-method_qualifiers">wooper:method_qualifiers()</a>, ast_location = <a href="#type-maybe">maybe</a>(<a href="ast_info.html#type-location">ast_info:location()</a>), file_location = <a href="#type-maybe">maybe</a>(<a href="ast_base.html#type-file_loc">ast_base:file_loc()</a>), clauses = [<a href="meta_utils.html#type-clause_def">meta_utils:clause_def()</a>], spec = <a href="#type-maybe">maybe</a>(<a href="wooper_info.html#type-located_method_spec">wooper_info:located_method_spec()</a>)}</tt></p>
+<p><tt>request_info() = #request_info{name = <a href="wooper.html#type-request_name">wooper:request_name()</a>, arity = <a href="wooper.html#type-method_arity">wooper:method_arity()</a>, qualifiers = <a href="wooper.html#type-method_qualifiers">wooper:method_qualifiers()</a>, ast_location = <a href="#type-maybe">maybe</a>(<a href="ast_info.html#type-ast_location">ast_info:ast_location()</a>), file_location = <a href="#type-maybe">maybe</a>(<a href="ast_base.html#type-file_loc">ast_base:file_loc()</a>), clauses = [<a href="meta_utils.html#type-clause_def">meta_utils:clause_def()</a>], spec = <a href="#type-maybe">maybe</a>(<a href="wooper_info.html#type-located_method_spec">wooper_info:located_method_spec()</a>)}</tt></p>
 
 
 <h3 class="typedecl"><a name="type-request_table">request_table()</a></h3>
@@ -111,13 +127,13 @@
  Quite similar to ast_info:function_table().</p>
 
 <h3 class="typedecl"><a name="type-static_export_table">static_export_table()</a></h3>
-<p><tt>static_export_table() = <a href="#type-table">table</a>(<a href="ast_info.html#type-location">ast_info:location()</a>, {<a href="ast_base.html#type-line">ast_base:line()</a>, [<a href="wooper.html#type-static_id">wooper:static_id()</a>]})</tt></p>
+<p><tt>static_export_table() = <a href="#type-table">table</a>(<a href="#type-ast_location">ast_location()</a>, {<a href="#type-line">line()</a>, [<a href="wooper.html#type-static_id">wooper:static_id()</a>]})</tt></p>
 <p><p> Table storing the export declarations for static methods.</p>
 
  Quite similar to ast_info:function_export_table().</p>
 
 <h3 class="typedecl"><a name="type-static_info">static_info()</a></h3>
-<p><tt>static_info() = #static_info{name = <a href="wooper.html#type-static_name">wooper:static_name()</a>, arity = <a href="wooper.html#type-method_arity">wooper:method_arity()</a>, qualifiers = <a href="wooper.html#type-method_qualifiers">wooper:method_qualifiers()</a>, ast_location = <a href="#type-maybe">maybe</a>(<a href="ast_info.html#type-location">ast_info:location()</a>), file_location = <a href="#type-maybe">maybe</a>(<a href="ast_base.html#type-file_loc">ast_base:file_loc()</a>), clauses = [<a href="meta_utils.html#type-clause_def">meta_utils:clause_def()</a>], spec = <a href="#type-maybe">maybe</a>(<a href="wooper_info.html#type-located_method_spec">wooper_info:located_method_spec()</a>)}</tt></p>
+<p><tt>static_info() = #static_info{name = <a href="wooper.html#type-static_name">wooper:static_name()</a>, arity = <a href="wooper.html#type-method_arity">wooper:method_arity()</a>, qualifiers = <a href="wooper.html#type-method_qualifiers">wooper:method_qualifiers()</a>, ast_location = <a href="#type-maybe">maybe</a>(<a href="ast_info.html#type-ast_location">ast_info:ast_location()</a>), file_location = <a href="#type-maybe">maybe</a>(<a href="ast_base.html#type-file_loc">ast_base:file_loc()</a>), clauses = [<a href="meta_utils.html#type-clause_def">meta_utils:clause_def()</a>], spec = <a href="#type-maybe">maybe</a>(<a href="wooper_info.html#type-located_method_spec">wooper_info:located_method_spec()</a>)}</tt></p>
 
 
 <h3 class="typedecl"><a name="type-static_table">static_table()</a></h3>
@@ -148,6 +164,7 @@ forms if requested, and with specified indentation level.</td></tr>
  attributes.</td></tr>
 <tr><td valign="top"><a href="#constructors_to_string-3">constructors_to_string/3</a></td><td>Returns a textual representation of the specified constructor
  information.</td></tr>
+<tr><td valign="top"><a href="#definition_to_string-2">definition_to_string/2</a></td><td>Returns a textual description of the specified method definition.</td></tr>
 <tr><td valign="top"><a href="#destructor_to_string-3">destructor_to_string/3</a></td><td>Returns a textual representation of the specified destructor information.</td></tr>
 <tr><td valign="top"><a href="#get_execution_builtins-0">get_execution_builtins/0</a></td><td>Returns the function identifiers of the WOOPER builtins regarding
  behaviour (execution).</td></tr>
@@ -163,9 +180,11 @@ forms if requested, and with specified indentation level.</td></tr>
  attributes.</td></tr>
 <tr><td valign="top"><a href="#init_class_info-0">init_class_info/0</a></td><td>Returns a new, blank instance of the class_info record, typically to be
  fed with an input AST afterwards.</td></tr>
+<tr><td valign="top"><a href="#located_spec_to_string-1">located_spec_to_string/1</a></td><td>Returns a textual description of the specified located method spec.</td></tr>
 <tr><td valign="top"><a href="#oneway_info_to_string-3">oneway_info_to_string/3</a></td><td>Returns a textual representation of the specified oneway information.</td></tr>
 <tr><td valign="top"><a href="#oneways_to_string-3">oneways_to_string/3</a></td><td>Returns a textual representation of the specified information about
  oneways.</td></tr>
+<tr><td valign="top"><a href="#qualifiers_to_string-1">qualifiers_to_string/1</a></td><td>Returns a textual description of the specified qualifiers.</td></tr>
 <tr><td valign="top"><a href="#request_info_to_string-3">request_info_to_string/3</a></td><td>Returns a textual representation of the specified request information.</td></tr>
 <tr><td valign="top"><a href="#requests_to_string-3">requests_to_string/3</a></td><td>Returns a textual representation of the specified information about
  requests.</td></tr>
@@ -238,6 +257,12 @@ forms if requested, and with specified indentation level.</p>
  information.
 </p>
 
+<h3 class="function"><a name="definition_to_string-2">definition_to_string/2</a></h3>
+<div class="spec">
+<p><tt>definition_to_string(Clauses::[<a href="#type-clause_def">clause_def()</a>], FileLoc::<a href="#type-maybe">maybe</a>(<a href="#type-file_loc">file_loc()</a>)) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of the specified method definition.</p>
+
 <h3 class="function"><a name="destructor_to_string-3">destructor_to_string/3</a></h3>
 <div class="spec">
 <p><tt>destructor_to_string(DestructorInfo::<a href="#type-maybe">maybe</a>(<a href="ast_info.html#type-function_info">ast_info:function_info()</a>), DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
@@ -308,6 +333,12 @@ forms if requested, and with specified indentation level.</p>
  fed with an input AST afterwards.
 </p>
 
+<h3 class="function"><a name="located_spec_to_string-1">located_spec_to_string/1</a></h3>
+<div class="spec">
+<p><tt>located_spec_to_string(LocatedSpec::<a href="#type-maybe">maybe</a>(<a href="#type-located_method_spec">located_method_spec()</a>)) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of the specified located method spec.</p>
+
 <h3 class="function"><a name="oneway_info_to_string-3">oneway_info_to_string/3</a></h3>
 <div class="spec">
 <p><tt>oneway_info_to_string(Oneway_info::<a href="#type-oneway_info">oneway_info()</a>, DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
@@ -321,6 +352,12 @@ forms if requested, and with specified indentation level.</p>
 </div><p>Returns a textual representation of the specified information about
  oneways.
 </p>
+
+<h3 class="function"><a name="qualifiers_to_string-1">qualifiers_to_string/1</a></h3>
+<div class="spec">
+<p><tt>qualifiers_to_string(Qualifiers::[<a href="#type-attribute_qualifier">attribute_qualifier()</a>]) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of the specified qualifiers.</p>
 
 <h3 class="function"><a name="request_info_to_string-3">request_info_to_string/3</a></h3>
 <div class="spec">

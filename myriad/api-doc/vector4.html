@@ -93,8 +93,9 @@
 
 <h3 class="typedecl"><a name="type-vector4">vector4()</a></h3>
 <p><tt>vector4() = [<a href="#type-coordinate">coordinate()</a>]</tt></p>
-<p> An (internal) 4D vector, with (exactly) 4 floating-point coordinates.
- They are typically referenced as [X, Y, Z, W].</p>
+<p> An (internal) 4D vector, with (exactly) 4 floating-point coordinates.  They
+ are typically referenced as [X, Y, Z, W]. This last axis can also be
+ designated as the T axis.</p>
 
 <h2><a name="index">Function Index</a></h2>
 <table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add-1">add/1</a></td><td>Returns the sum of all 4D vectors in the specified (supposedly non-empty)
@@ -136,6 +137,14 @@
  precision is shown.</td></tr>
 <tr><td valign="top"><a href="#to_user_string-1">to_user_string/1</a></td><td>Returns a textual, more user-friendly representation of the specified 4D 
 vector; full float precision is shown.</td></tr>
+<tr><td valign="top"><a href="#w_axis-0">w_axis/0</a></td><td>Returns a 4D vector corresponding to the W axis of the current
+ referential.</td></tr>
+<tr><td valign="top"><a href="#x_axis-0">x_axis/0</a></td><td>Returns a 4D vector corresponding to the X axis of the current
+ referential.</td></tr>
+<tr><td valign="top"><a href="#y_axis-0">y_axis/0</a></td><td>Returns a 4D vector corresponding to the Y axis of the current
+ referential.</td></tr>
+<tr><td valign="top"><a href="#z_axis-0">z_axis/0</a></td><td>Returns a 4D vector corresponding to the Z axis of the current
+ referential.</td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
@@ -192,7 +201,7 @@ vector; full float precision is shown.</td></tr>
 
 <h3 class="function"><a name="check_unit_vectors-1">check_unit_vectors/1</a></h3>
 <div class="spec">
-<p><tt>check_unit_vectors(Vs::<a href="#type-vector4">vector4()</a>) -&gt; <a href="#type-unit_vector4">unit_vector4()</a></tt><br></p>
+<p><tt>check_unit_vectors(Vs::[<a href="#type-vector4">vector4()</a>]) -&gt; [<a href="#type-unit_vector4">unit_vector4()</a>]</tt><br></p>
 <p> </p>
 </div><p>Checks that the specified 4D vectors are normalised, and returns them.</p>
 
@@ -315,6 +324,38 @@ vector; full float precision is shown.</td></tr>
 vector; full float precision is shown.</p>
 
  This is the recommended representation.
+</p>
+
+<h3 class="function"><a name="w_axis-0">w_axis/0</a></h3>
+<div class="spec">
+<p><tt>w_axis() -&gt; <a href="#type-vector4">vector4()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a 4D vector corresponding to the W axis of the current
+ referential.
+</p>
+
+<h3 class="function"><a name="x_axis-0">x_axis/0</a></h3>
+<div class="spec">
+<p><tt>x_axis() -&gt; <a href="#type-vector4">vector4()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a 4D vector corresponding to the X axis of the current
+ referential.
+</p>
+
+<h3 class="function"><a name="y_axis-0">y_axis/0</a></h3>
+<div class="spec">
+<p><tt>y_axis() -&gt; <a href="#type-vector4">vector4()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a 4D vector corresponding to the Y axis of the current
+ referential.
+</p>
+
+<h3 class="function"><a name="z_axis-0">z_axis/0</a></h3>
+<div class="spec">
+<p><tt>z_axis() -&gt; <a href="#type-vector4">vector4()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a 4D vector corresponding to the Z axis of the current
+ referential.
 </p>
 <hr>
 

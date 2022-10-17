@@ -56,6 +56,10 @@ dedicated OTP release for that.</p>
 <p><tt>bin_directory_path() = <a href="file_utils.html#type-bin_directory_path">file_utils:bin_directory_path()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-continue_data">continue_data()</a></h3>
+<p><tt>continue_data() = term()</tt></p>
+<p> Data specified to be used in a continue callback.</p>
+
 <h3 class="typedecl"><a name="type-directory_path">directory_path()</a></h3>
 <p><tt>directory_path() = <a href="file_utils.html#type-directory_path">file_utils:directory_path()</a></tt></p>
 
@@ -64,6 +68,11 @@ dedicated OTP release for that.</p>
 <p><tt>execution_target() = <a href="basic_utils.html#type-execution_target">basic_utils:execution_target()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-handle_return">handle_return()</a></h3>
+<p><tt>handle_return() = {noreply, <a href="#type-otp_state">otp_state()</a>} | {noreply, <a href="#type-otp_state">otp_state()</a>, <a href="#type-time_out">time_out()</a>} | {noreply, <a href="#type-otp_state">otp_state()</a>, hibernate} | {noreply, <a href="#type-otp_state">otp_state()</a>, {continue, <a href="#type-continue_data">continue_data()</a>}} | {stop, <a href="#type-termination_reason">termination_reason()</a>, <a href="#type-otp_state">otp_state()</a>}</tt></p>
+<p> The type corresponding to the values to be returned by
+ gen_server:handle_{cast,continue,info}/2.</p>
+
 <h3 class="typedecl"><a name="type-milliseconds">milliseconds()</a></h3>
 <p><tt>milliseconds() = <a href="unit_utils.html#type-milliseconds">unit_utils:milliseconds()</a></tt></p>
 
@@ -71,6 +80,11 @@ dedicated OTP release for that.</p>
 <h3 class="typedecl"><a name="type-module_name">module_name()</a></h3>
 <p><tt>module_name() = <a href="basic_utils.html#type-module_name">basic_utils:module_name()</a></tt></p>
 
+
+<h3 class="typedecl"><a name="type-otp_state">otp_state()</a></h3>
+<p><tt>otp_state() = term()</tt></p>
+<p> The state of a process implementing an OTP behaviour, typically the gen_server
+ one.</p>
 
 <h3 class="typedecl"><a name="type-restart_type">restart_type()</a></h3>
 <p><tt>restart_type() = permanent | transient | temporary</tt></p>
@@ -83,6 +97,18 @@ dedicated OTP release for that.</p>
 <h3 class="typedecl"><a name="type-supervisor_pid">supervisor_pid()</a></h3>
 <p><tt>supervisor_pid() = pid()</tt></p>
 <p> The PID of an OTP supervisor.</p>
+
+<h3 class="typedecl"><a name="type-supervisor_settings">supervisor_settings()</a></h3>
+<p><tt>supervisor_settings() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/supervisor.html#type-sup_flags">supervisor:sup_flags()</a></tt></p>
+<p> Settings of an OTP supervisor.</p>
+
+<h3 class="typedecl"><a name="type-termination_reason">termination_reason()</a></h3>
+<p><tt>termination_reason() = normal | shutdown | {shutdown, term()} | term()</tt></p>
+<p> Denotes the reason for stopping.</p>
+
+<h3 class="typedecl"><a name="type-time_out">time_out()</a></h3>
+<p><tt>time_out() = <a href="time_utils.html#type-time_out">time_utils:time_out()</a></tt></p>
+
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
 <p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
@@ -97,6 +123,8 @@ dedicated OTP release for that.</p>
 <tr><td valign="top"><a href="#application_run_context_to_string-1">application_run_context_to_string/1</a></td><td>Returns a textual representation of specified application run context.</td></tr>
 <tr><td valign="top"><a href="#check_application_run_context-1">check_application_run_context/1</a></td><td>Checks that the specified application run context is legit.</td></tr>
 <tr><td valign="top"><a href="#get_application_root-1">get_application_root/1</a></td><td>Returns the path to the root of the specified OTP application (i.e.</td></tr>
+<tr><td valign="top"><a href="#get_child_supervisor_settings-1">get_child_supervisor_settings/1</a></td><td>Returns supervisor-level settings for a supervisor that would be 
+supervised by a supervisor relying on the specified settings.</td></tr>
 <tr><td valign="top"><a href="#get_maximum_shutdown_duration-1">get_maximum_shutdown_duration/1</a></td><td>Returns a default, reasonable shutdown maximum duration to be used by a
  supervisor for its basic OTP workers, depending on the specified execution
  target.</td></tr>
@@ -177,6 +205,16 @@ otp_utils:get_application_root( mnesia ).</p>
  "foobar.beam").
 </p>
 
+<h3 class="function"><a name="get_child_supervisor_settings-1">get_child_supervisor_settings/1</a></h3>
+<div class="spec">
+<p><tt>get_child_supervisor_settings(ParentSupSettings::<a href="#type-supervisor_settings">supervisor_settings()</a>) -&gt; <a href="#type-supervisor_settings">supervisor_settings()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns supervisor-level settings for a supervisor that would be 
+supervised by a supervisor relying on the specified settings.</p>
+
+ Not tremendously useful.
+</p>
+
 <h3 class="function"><a name="get_maximum_shutdown_duration-1">get_maximum_shutdown_duration/1</a></h3>
 <div class="spec">
 <p><tt>get_maximum_shutdown_duration(ExecutionTarget::<a href="#type-execution_target">execution_target()</a>) -&gt; <a href="#type-milliseconds">milliseconds()</a></tt><br></p>
@@ -220,10 +258,10 @@ silent (no trace) if requested.</p>
 </div><p><p>Returns default, base restart settings depending on the specified 
 execution target.</p>
 
- Note that the execution context must be explicitly specified (typically by
- calling a get_execution_target/0 function defined in a key module of that
- layer, based on Myriad's basic_utils.hrl), otherwise the one that would apply
- is the one of Myriad - not the one of the calling layer.
+ Note that the execution context must be explicitly specified here (typically
+ by calling a get_execution_target/0 function defined in a key module of that
+ layer, based on Myriad's basic_utils.hrl), as otherwise the one that would
+ apply is the one of Myriad - not the one of the calling layer.
 </p>
 
 <h3 class="function"><a name="get_string_application_name-1">get_string_application_name/1</a></h3>
@@ -234,15 +272,15 @@ execution target.</p>
 
 <h3 class="function"><a name="get_supervisor_settings-2">get_supervisor_settings/2</a></h3>
 <div class="spec">
-<p><tt>get_supervisor_settings(RestartStrategy::<a href="http://www.erlang.org/edoc/doc/stdlib/doc/supervisor.html#type-strategy">supervisor:strategy()</a>, ExecutionTarget::<a href="#type-execution_target">execution_target()</a>) -&gt; <a href="http://www.erlang.org/edoc/doc/stdlib/doc/supervisor.html#type-sup_flags">supervisor:sup_flags()</a></tt><br></p>
+<p><tt>get_supervisor_settings(RestartStrategy::<a href="http://www.erlang.org/edoc/doc/stdlib/doc/supervisor.html#type-strategy">supervisor:strategy()</a>, ExecutionTarget::<a href="#type-execution_target">execution_target()</a>) -&gt; <a href="#type-supervisor_settings">supervisor_settings()</a></tt><br></p>
 <p> </p>
 </div><p><p>Returns the supervisor-level settings corresponding to the specified 
 restart strategy and execution context.</p>
 
- <p>Note that the execution context must be explicitly specified (typically by 
-calling a get_execution_target/0 function defined in a key module of that 
-layer, based on Myriad's basic_utils.hrl), otherwise the one that would apply 
-is the one of Myriad - not the one of the calling layer.</p>
+ <p>Note that the execution context must be explicitly specified here (typically 
+by calling a get_execution_target/0 function defined in a key module of that 
+layer, based on Myriad's basic_utils.hrl), as otherwise the one that would 
+apply is the one of Myriad - not the one of the calling layer.</p>
 
  See <a href="https://erlang.org/doc/design_principles/sup_princ.html#supervisor-flags" target="_top"><tt>https://erlang.org/doc/design_principles/sup_princ.html#supervisor-flags</tt></a>
  for further information.

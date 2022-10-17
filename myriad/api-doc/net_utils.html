@@ -95,6 +95,10 @@
 <p><tt>environment() = <a href="system_utils.html#type-environment">system_utils:environment()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-ephemeral_port">ephemeral_port()</a></h3>
+<p><tt>ephemeral_port() = <a href="#type-net_port">net_port()</a></tt></p>
+<p> The RFC 6056 says that the range for ephemeral ports should be 1024-65535.</p>
+
 <h3 class="typedecl"><a name="type-erlang_naming_type">erlang_naming_type()</a></h3>
 <p><tt>erlang_naming_type() = shortnames | longnames</tt></p>
 <p> No standard definition of NameType found in net_kernel or elsewhere.</p>
@@ -127,6 +131,10 @@
 <p><tt>ip_v6_address() = {byte(), byte(), byte(), byte(), byte(), byte()}</tt></p>
 
 
+<h3 class="typedecl"><a name="type-listening_socket">listening_socket()</a></h3>
+<p><tt>listening_socket() = <a href="http://www.erlang.org/edoc/doc/kernel/doc/socket.html#type-socket">socket:socket()</a></tt></p>
+<p> A (low-level, NIF-based) TCP/IP socket used to listen to incoming connections.</p>
+
 <h3 class="typedecl"><a name="type-lookup_info">lookup_info()</a></h3>
 <p><tt>lookup_info() = {<a href="#type-lookup_tool">lookup_tool()</a>, <a href="file_utils.html#type-executable_path">file_utils:executable_path()</a>}</tt></p>
 
@@ -145,7 +153,9 @@
 
 <h3 class="typedecl"><a name="type-net_port">net_port()</a></h3>
 <p><tt>net_port() = non_neg_integer()</tt></p>
-
+<p> A port number is a 16-bit unsigned integer, thus ranging from 0 to 65535. For
+ TCP, port number 0 is reserved and cannot be used, while for UDP, the source
+ port is optional and a value of zero means no port.</p>
 
 <h3 class="typedecl"><a name="type-node_name">node_name()</a></h3>
 <p><tt>node_name() = <a href="#type-atom_node_name">atom_node_name()</a> | <a href="#type-string_node_name">string_node_name()</a> | <a href="#type-bin_node_name">bin_node_name()</a></tt></p>
@@ -159,6 +169,14 @@
 <h3 class="typedecl"><a name="type-node_type">node_type()</a></h3>
 <p><tt>node_type() = visible | hidden | all</tt></p>
 <p> See net_kernel:monitor_nodes/2 for more information.</p>
+
+<h3 class="typedecl"><a name="type-possibly_local_bin_hostname">possibly_local_bin_hostname()</a></h3>
+<p><tt>possibly_local_bin_hostname() = localhost | <a href="#type-bin_host_name">bin_host_name()</a></tt></p>
+<p> For situations where the local host shall be discriminated from all others.</p>
+
+<h3 class="typedecl"><a name="type-possibly_local_hostname">possibly_local_hostname()</a></h3>
+<p><tt>possibly_local_hostname() = localhost | <a href="#type-string_host_name">string_host_name()</a></tt></p>
+<p> For situations where the local host shall be discriminated from all others.</p>
 
 <h3 class="typedecl"><a name="type-string_fqdn">string_fqdn()</a></h3>
 <p><tt>string_fqdn() = nonempty_string()</tt></p>
@@ -206,10 +224,14 @@ or throws an exception.</td></tr>
 <tr><td valign="top"><a href="#bin_localhost-1">bin_localhost/1</a></td><td>Returns an appropriate DNS name (either a FQDN - Fully Qualified Domain
  Name - or a short host name) for the local host (as a binary string), or
  throws an exception.</td></tr>
+<tr><td valign="top"><a href="#check_ephemeral_port-1">check_ephemeral_port/1</a></td><td>Checks that the specified port is a valid ephemeral port (typically UDP
+ or TCP), and returns it.</td></tr>
 <tr><td valign="top"><a href="#check_node_availability-1">check_node_availability/1</a></td><td>Returns immediately whether the specified Erlang node is found available.</td></tr>
 <tr><td valign="top"><a href="#check_node_availability-2">check_node_availability/2</a></td><td>Tells whether the specified Erlang node is available: returns 
 {IsAvailable,Duration} where IsAvailable is a boolean and Duration is the 
 number of milliseconds that was used to determine it.</td></tr>
+<tr><td valign="top"><a href="#check_port-1">check_port/1</a></td><td>Checks that the specified port is a valid port (typically UDP or TCP),
+ and returns it.</td></tr>
 <tr><td valign="top"><a href="#enable_distribution_mode-2">enable_distribution_mode/2</a></td><td>Enables the distribution on the current node, supposedly not already 
 distributed (otherwise the operation will fail).</td></tr>
 <tr><td valign="top"><a href="#enable_preferred_distribution_mode-2">enable_preferred_distribution_mode/2</a></td><td>Returns the distribution naming mode that could be enabled (if any) on 
@@ -284,7 +306,7 @@ node name (in compliance with the current short/long name setting), assuming
 the current node is a distributed one.</td></tr>
 <tr><td valign="top"><a href="#localnode-0">localnode/0</a></td><td>Returns the name of the local node, as an atom.</td></tr>
 <tr><td valign="top"><a href="#localnode_as_binary-0">localnode_as_binary/0</a></td><td>Returns the name of the local node, as a binary string.</td></tr>
-<tr><td valign="top"><a href="#ping-1">ping/1</a></td><td>Pings specified hostname, and returns true iff it could be ping'd.</td></tr>
+<tr><td valign="top"><a href="#ping-1">ping/1</a></td><td>Pings the specified hostname, and returns true iff it could be ping'd.</td></tr>
 <tr><td valign="top"><a href="#receive_file-1">receive_file/1</a></td><td>Receives specified file out of band (through a dedicated TCP socket, not 
 thanks to Erlang messages), the emitter being supposed to use send_file/2.</td></tr>
 <tr><td valign="top"><a href="#receive_file-2">receive_file/2</a></td><td>Receives specified file out of band (through a dedicated TCP socket, not 
@@ -344,6 +366,14 @@ or throws an exception.</p>
  throws an exception.
 </p>
 
+<h3 class="function"><a name="check_ephemeral_port-1">check_ephemeral_port/1</a></h3>
+<div class="spec">
+<p><tt>check_ephemeral_port(I::term()) -&gt; <a href="#type-ephemeral_port">ephemeral_port()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that the specified port is a valid ephemeral port (typically UDP
+ or TCP), and returns it.
+</p>
+
 <h3 class="function"><a name="check_node_availability-1">check_node_availability/1</a></h3>
 <div class="spec">
 <p><tt>check_node_availability(NodeName::<a href="#type-node_name">node_name()</a>) -&gt; boolean()</tt><br></p>
@@ -381,6 +411,14 @@ should last no less than the specified duration, and not much more</p>
 
  This is useful so that, if the node is being launched in the background, it is
  waited for while returning as soon as possible.
+</p>
+
+<h3 class="function"><a name="check_port-1">check_port/1</a></h3>
+<div class="spec">
+<p><tt>check_port(I::term()) -&gt; <a href="#type-net_port">net_port()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that the specified port is a valid port (typically UDP or TCP),
+ and returns it.
 </p>
 
 <h3 class="function"><a name="enable_distribution_mode-2">enable_distribution_mode/2</a></h3>
@@ -740,11 +778,11 @@ the current node is a distributed one.</p>
 
 <h3 class="function"><a name="ping-1">ping/1</a></h3>
 <div class="spec">
-<p><tt>ping(Hostname::<a href="#type-string_host_name">string_host_name()</a>) -&gt; boolean()</tt><br></p>
+<p><tt>ping(Hostname::<a href="#type-any_host_name">any_host_name()</a>) -&gt; boolean()</tt><br></p>
 <p> </p>
-</div><p><p>Pings specified hostname, and returns true iff it could be ping'd.</p>
+</div><p><p>Pings the specified hostname, and returns true iff it could be ping'd.</p>
 
- <p>Note: command-line based call, used that way as there is no ICMP stack.</p>
+ <p>Note: command-line based call, used that way as there is no Erlang ICMP stack.</p>
 
  A port could be used also.
 </p>

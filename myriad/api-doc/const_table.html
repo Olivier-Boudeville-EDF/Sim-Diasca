@@ -10,25 +10,34 @@
 <hr>
 
 <h1>Module const_table</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>This module allows to generate a <b>read-only associative table whose
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>This module allows to generate <b>read-only associative tables whose
  key/value pairs can be read from any number (potentially extremely large) of
  readers very efficiently</b> (possibly the most efficient way in Erlang).
 
 
-<h2><a name="description">Description</a></h2><p>This module allows to generate a <b>read-only associative table whose
+<h2><a name="description">Description</a></h2><p>This module allows to generate <b>read-only associative tables whose
  key/value pairs can be read from any number (potentially extremely large) of
  readers very efficiently</b> (possibly the most efficient way in Erlang).</p>
 
+ <p>These key/value pairs can be decided at runtime, from any source; keys must be 
+atoms while values can be of any permanent (non-transient) type (and two 
+values in a table do not have to be of the same type). Using a transient type 
+is bound to result in a badarg.</p>
+
+ <p>These tables may be kept in-memory only (hence with the corresponding modules 
+being generated and used at runtime) and/or be generated and stored in an 
+actual BEAM file, for a later direct (re)loading thereof.</p>
+
  <p>No ETS table, replication (ex: per-user table copy) or message sending is 
 involved: thanks to meta-programming, a module is generated on-the-fly, 
-exporting as many functions as there are different keys in the table of 
+exporting as many functions as there are different keys in the entries of 
 interest; calling a function corresponding to a key returns the associated 
 value.</p>
 
- More precisely, a module name (ex: 'foobar') and a <code>table:table(atom(),
- any())</code> are provided to <code>const_table:generate/2</code>; for each key/value pair in
- the specified table (ex: <code>{</code>baz', 42.0}'), a 0-arity function is generated and
- exported in that module, as if we had:<pre> -module(foobar).
+ More precisely, a module name (ex: 'foobar') and a list of <code>{atom(), any()}</code>
+ entries are provided to the <code>const_table:generate*/*</code> functions; for each
+ key/value pair in the specified entries (ex: <code>{</code>baz', 42.0}'), a 0-arity
+ function is generated and exported in that module, as if we had:<pre> -module(foobar).
 
  [...]
 
@@ -42,33 +51,112 @@ value.</p>
 returned. This is presumably the most efficient way of sharing constants in 
 Erlang.</p>
 
- <p>Keys must be atoms, and the table of interest shall be immutable (const), even 
-if, thanks to hot code upgrade, one may imagine updating the table at 
-will, having any number of successive versions of it.</p>
+ <p>Keys must be atoms (as they will correspond to function names), and the 
+resulting table is immutable (const), even if, thanks to hot code upgrade, one 
+may imagine updating the table at will, having any number of successive 
+versions of it.</p>
 
- However generating a table of the same name more than once should be done with
- care, as if a given table is generated three times, the initial table would
- become 'current', then 'old', and then be removed. Any process that would
- linger in it would then be terminated (see
- <a href="http://www.erlang.org/doc/reference_manual/code_loading.html" target="_top"><tt>http://www.erlang.org/doc/reference_manual/code_loading.html</tt></a>). However, due
- to the nature of these tables (just one-shot fully-qualified calls, no
- recursion or message-waiting construct), this is not expected to happen.
+ <p>However generating a table of the same name more than once should be done with
+ care, as if a given table is generated three times (hence updated twice), the
+ initial table would become 'current', then 'old', and then be removed. Any
+ process that would linger in it would then be terminated (see
+ <a href="http://www.erlang.org/doc/reference_manual/code_loading.html" target="_top"><tt>http://www.erlang.org/doc/reference_manual/code_loading.html</tt></a>). However, due 
+to the nature of these tables (just one-shot fully-qualified calls, no 
+recursion or message-waiting construct), this is not expected to happen.</p>
+
+ Refer to:
+ - const_table_test.erl for an usage example and testing thereof
+ - map_hashtable.erl for a runtime, mutable, term-based table
+ - const_bijective_table.erl for a constant, two-way (bijective) table
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-any_directory_path">any_directory_path()</a></h3>
+<p><tt>any_directory_path() = <a href="file_utils.html#type-any_directory_path">file_utils:any_directory_path()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-entries">entries()</a></h3>
+<p><tt>entries() = [<a href="#type-entry">entry()</a>]</tt></p>
+<p> Entries to be fed to a const-table.</p>
+
+<h3 class="typedecl"><a name="type-entry">entry()</a></h3>
+<p><tt>entry() = {<a href="#type-key">key()</a>, <a href="#type-value">value()</a>}</tt></p>
+<p> An entry to be fed to a const-table.</p>
+
+<h3 class="typedecl"><a name="type-file_name">file_name()</a></h3>
+<p><tt>file_name() = <a href="file_utils.html#type-file_name">file_utils:file_name()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-key">key()</a></h3>
+<p><tt>key() = <a href="#type-permanent_term">permanent_term()</a></tt></p>
+<p> Designates the keys of the table.
+ A module-based storage cannot hold transient terms.</p>
+
+<h3 class="typedecl"><a name="type-module_name">module_name()</a></h3>
+<p><tt>module_name() = <a href="basic_utils.html#type-module_name">basic_utils:module_name()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-permanent_term">permanent_term()</a></h3>
+<p><tt>permanent_term() = <a href="type_utils.html#type-permanent_term">type_utils:permanent_term()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-value">value()</a></h3>
+<p><tt>value() = <a href="#type-permanent_term">permanent_term()</a></tt></p>
+<p> Designates the values of the table.
+ A module-based storage cannot hold transient terms.</p>
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#generate-2">generate/2</a></td><td>Generates and loads a pseudo-module sharing the entries of specified 
-table by exporting as many functions named according to the keys and returning 
-the value corresponding to the selected key.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#generate_in_file-2">generate_in_file/2</a></td><td>Generates in-file (a BEAM file created in the current directory) and 
+loads a module sharing the specified entries by exporting as many functions 
+named according to the keys, and returning the value corresponding to the 
+selected key.</td></tr>
+<tr><td valign="top"><a href="#generate_in_file-3">generate_in_file/3</a></td><td>Generates in-file (a BEAM file created in the specified directory) a 
+module sharing the specified entries by exporting as many functions named 
+according to the keys, and returning the value corresponding to the selected 
+key.</td></tr>
+<tr><td valign="top"><a href="#generate_in_memory-2">generate_in_memory/2</a></td><td>Generates in memory (only) and loads a module sharing the specified 
+entries by exporting as many functions named according to the keys, and 
+returning the value corresponding to the selected key.</td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
-<h3 class="function"><a name="generate-2">generate/2</a></h3>
+<h3 class="function"><a name="generate_in_file-2">generate_in_file/2</a></h3>
 <div class="spec">
-<p><tt>generate(ModuleName::<a href="basic_utils.html#type-module_name">basic_utils:module_name()</a>, Table::<a href="table.html#type-table">table:table()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>generate_in_file(ModuleName::<a href="#type-module_name">module_name()</a>, Entries::<a href="#type-entries">entries()</a>) -&gt; <a href="#type-file_name">file_name()</a></tt><br></p>
 <p> </p>
-</div><p><p>Generates and loads a pseudo-module sharing the entries of specified 
-table by exporting as many functions named according to the keys and returning 
-the value corresponding to the selected key.</p>
+</div><p><p>Generates in-file (a BEAM file created in the current directory) and 
+loads a module sharing the specified entries by exporting as many functions 
+named according to the keys, and returning the value corresponding to the 
+selected key.</p>
+
+ Returns the generated filename (not path), for any further reference.
+</p>
+
+<h3 class="function"><a name="generate_in_file-3">generate_in_file/3</a></h3>
+<div class="spec">
+<p><tt>generate_in_file(ModuleName::<a href="#type-module_name">module_name()</a>, Entries::<a href="#type-entries">entries()</a>, TargetDir::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; <a href="#type-file_name">file_name()</a></tt><br></p>
+<p> </p>
+</div><p><p>Generates in-file (a BEAM file created in the specified directory) a 
+module sharing the specified entries by exporting as many functions named 
+according to the keys, and returning the value corresponding to the selected 
+key.</p>
+
+ <p>For a clearer setting, generated modules may be named as such 
+(e.g. 'foobar_generated').</p>
+
+ <p>The resulting module is not loaded by this function.</p>
+
+ Returns the generated filename (not path), for any further reference.
+</p>
+
+<h3 class="function"><a name="generate_in_memory-2">generate_in_memory/2</a></h3>
+<div class="spec">
+<p><tt>generate_in_memory(ModuleName::<a href="#type-module_name">module_name()</a>, Entries::<a href="#type-entries">entries()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Generates in memory (only) and loads a module sharing the specified 
+entries by exporting as many functions named according to the keys, and 
+returning the value corresponding to the selected key.</p>
 
  Note that no actual module file is generated (ex: no 'foobar.beam'), the
  operation remains fully in-memory.

@@ -170,6 +170,13 @@ of an XML document.</p>
  <code>&lt;?xml version="1.0" encoding="utf-8" ?&gt;.</code>.</td></tr>
 <tr><td valign="top"><a href="#parse_xml_file-1">parse_xml_file/1</a></td><td>Returns an XML content structure resulting from the scan of the specified 
 file expected to contain an XML document.</td></tr>
+<tr><td valign="top"><a href="#pretty_print_from_file-1">pretty_print_from_file/1</a></td><td>Pretty-prints the specified XML file: returns a user-friendly string
+ corresponding to its content, once its XML has been tidied and clarified for
+ display/human consumption.</td></tr>
+<tr><td valign="top"><a href="#pretty_print_from_string-1">pretty_print_from_string/1</a></td><td>Pretty-prints the specified XML string (that is a string containing an
+ XML document): returns a user-friendly string corresponding to the specified
+ one, once its XML content has been tidied and clarified for display/human
+ consumption.</td></tr>
 <tr><td valign="top"><a href="#string_to_xml-1">string_to_xml/1</a></td><td>Returns an XML content structure resulting from the scan of the specified 
 string expected to contain an XML document.</td></tr>
 <tr><td valign="top"><a href="#to_xml_text-1">to_xml_text/1</a></td><td>Escapes specified text (not expected to contain markup), so that it can
@@ -200,6 +207,25 @@ file expected to contain an XML document.</p>
 
  The returned XML content is a simple one, i.e. it is exclusively made of
  simple tags (no XML records).
+</p>
+
+<h3 class="function"><a name="pretty_print_from_file-1">pretty_print_from_file/1</a></h3>
+<div class="spec">
+<p><tt>pretty_print_from_file(XMLFilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-xml_text">xml_text()</a></tt><br></p>
+<p> </p>
+</div><p>Pretty-prints the specified XML file: returns a user-friendly string
+ corresponding to its content, once its XML has been tidied and clarified for
+ display/human consumption.
+</p>
+
+<h3 class="function"><a name="pretty_print_from_string-1">pretty_print_from_string/1</a></h3>
+<div class="spec">
+<p><tt>pretty_print_from_string(XMLText::<a href="#type-xml_text">xml_text()</a>) -&gt; <a href="#type-xml_text">xml_text()</a></tt><br></p>
+<p> </p>
+</div><p>Pretty-prints the specified XML string (that is a string containing an
+ XML document): returns a user-friendly string corresponding to the specified
+ one, once its XML content has been tidied and clarified for display/human
+ consumption.
 </p>
 
 <h3 class="function"><a name="string_to_xml-1">string_to_xml/1</a></h3>

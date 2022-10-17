@@ -36,6 +36,10 @@
 <p><tt>gui_env_pid() = <a href="gui.html#type-gui_env_pid">gui:gui_env_pid()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-mouse_event_type">mouse_event_type()</a></h3>
+<p><tt>mouse_event_type() = onMouseLeftButtonPressed | onMouseLeftButtonReleased | onMouseLeftButtonDoubleClicked | onMouseMiddleButtonPressed | onMouseMiddleButtonReleased | onMouseMiddleButtonDoubleClicked | onMouseRightButtonPressed | onMouseRightButtonReleased | onMouseRightButtonDoubleClicked | onMouseFourthButtonPressed | onMouseFourthButtonReleased | onMouseFourthButtonDoubleClicked | onMouseFifthButtonPressed | onMouseFifthtButtonReleased | onMouseFifthButtonDoubleClicked | onMouseWheelScrolled | onMouseEnteredWindow | onMouseLeftWindow | onMouseMoved</tt></p>
+
+
 <h3 class="typedecl"><a name="type-window">window()</a></h3>
 <p><tt>window() = <a href="gui.html#type-window">gui:window()</a></tt></p>
 
@@ -46,6 +50,9 @@
 
 <h2><a name="index">Function Index</a></h2>
 <table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#cursor_type_to_wx-1">cursor_type_to_wx/1</a></td><td>Returns the wx cursor type corresponding to the MyriadGUI specified one.</td></tr>
+<tr><td valign="top"><a href="#get_all_mouse_event_types-0">get_all_mouse_event_types/0</a></td><td>Returns a list of all types of mouse-related events.</td></tr>
+<tr><td valign="top"><a href="#get_event_types_to_trap-0">get_event_types_to_trap/0</a></td><td>Returns a list of the types of mouse-related events that shall be trapped
+ by default.</td></tr>
 <tr><td valign="top"><a href="#grab-1">grab/1</a></td><td>Have the specified window grab the mouse cursor.</td></tr>
 <tr><td valign="top"><a href="#is_grabbed-0">is_grabbed/0</a></td><td>Tells whether the mouse cursor is grabbed.</td></tr>
 <tr><td valign="top"><a href="#list_cursor_types-0">list_cursor_types/0</a></td><td>Returns a list of all the standard mouse cursor types.</td></tr>
@@ -68,6 +75,20 @@ cursors.</td></tr>
 <p><tt>cursor_type_to_wx(X1::<a href="#type-cursor_type">cursor_type()</a>) -&gt; <a href="#type-wx_cursor_type">wx_cursor_type()</a></tt><br></p>
 <p> </p>
 </div><p>Returns the wx cursor type corresponding to the MyriadGUI specified one.</p>
+
+<h3 class="function"><a name="get_all_mouse_event_types-0">get_all_mouse_event_types/0</a></h3>
+<div class="spec">
+<p><tt>get_all_mouse_event_types() -&gt; [<a href="#type-mouse_event_type">mouse_event_type()</a>]</tt><br></p>
+<p> </p>
+</div><p>Returns a list of all types of mouse-related events.</p>
+
+<h3 class="function"><a name="get_event_types_to_trap-0">get_event_types_to_trap/0</a></h3>
+<div class="spec">
+<p><tt>get_event_types_to_trap() -&gt; [<a href="#type-mouse_event_type">mouse_event_type()</a>]</tt><br></p>
+<p> </p>
+</div><p>Returns a list of the types of mouse-related events that shall be trapped
+ by default.
+</p>
 
 <h3 class="function"><a name="grab-1">grab/1</a></h3>
 <div class="spec">

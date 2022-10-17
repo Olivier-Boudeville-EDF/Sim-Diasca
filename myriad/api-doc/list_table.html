@@ -36,7 +36,8 @@ smaller table (and only them)</p>
 
  <p>They are to provide the same API (signatures and contracts).</p>
 
- See also: <code>list_utils.erl</code>.
+ See also: <code>list_utils.erl</code> and our quite similar yet less useful
+ <code>option_list.erl</code>.
 
 <h2><a name="types">Data Types</a></h2>
 
@@ -61,19 +62,19 @@ smaller table (and only them)</p>
 
 
 <h3 class="typedecl"><a name="type-list_table">list_table()</a></h3>
-<p><b>abstract datatype</b>: <tt>list_table(K, V)</tt></p>
+<p><tt>list_table(K, V) = [{K, V}]</tt></p>
 
 
 <h3 class="typedecl"><a name="type-list_table">list_table()</a></h3>
-<p><b>abstract datatype</b>: <tt>list_table()</tt></p>
+<p><tt>list_table() = [{<a href="#type-key">key()</a>, <a href="#type-value">value()</a>}]</tt></p>
 <p> Not exactly as proplist:proplist/0 (pairs only, and any() as key).</p>
 
 <h3 class="typedecl"><a name="type-table">table()</a></h3>
-<p><b>abstract datatype</b>: <tt>table(K, V)</tt></p>
+<p><tt>table(K, V) = <a href="#type-list_table">list_table</a>(K, V)</tt></p>
 
 
 <h3 class="typedecl"><a name="type-table">table()</a></h3>
-<p><b>abstract datatype</b>: <tt>table()</tt></p>
+<p><tt>table() = <a href="#type-list_table">list_table()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
@@ -112,19 +113,19 @@ table, in no particular order.</td></tr>
 <tr><td valign="top"><a href="#extract_entries-2">extract_entries/2</a></td><td>Extracts specified entries from specified table, that is returns their 
 associated values (in-order) and removes these entries from the returned 
 table.</td></tr>
-<tr><td valign="top"><a href="#extract_entry-2">extract_entry/2</a></td><td>Extracts specified entry from specified table, that is returns the 
-associated value and removes that entry from the table.</td></tr>
+<tr><td valign="top"><a href="#extract_entry-2">extract_entry/2</a></td><td>Extracts the specified entry from the specified table, that is returns 
+the associated value and removes that entry from the table.</td></tr>
 <tr><td valign="top"><a href="#extract_entry_if_existing-2">extract_entry_if_existing/2</a></td><td>Extracts the specified entry (if any) from the specified table, that is 
 returns its associated value and removes that entry from the returned table.</td></tr>
-<tr><td valign="top"><a href="#extract_entry_with_defaults-3">extract_entry_with_defaults/3</a></td><td>Extracts specified entry from specified table, that is returns the 
-associated value and removes that entry from the table.</td></tr>
+<tr><td valign="top"><a href="#extract_entry_with_default-3">extract_entry_with_default/3</a></td><td>Extracts the specified entry from the specified table, that is returns 
+the associated value and removes that entry from the table.</td></tr>
 <tr><td valign="top"><a href="#fold_on_entries-3">fold_on_entries/3</a></td><td>Folds specified anonymous function on all entries of the specified table.</td></tr>
 <tr><td valign="top"><a href="#get_all_values-2">get_all_values/2</a></td><td>Returns the (ordered) list of values that correspond to the specified 
 (ordered) list of keys of this table, ensuring all entries have been read, 
 otherwise throwing an exception.</td></tr>
 <tr><td valign="top"><a href="#get_value-2">get_value/2</a></td><td>Retrieves the value corresponding to specified (existing) key and returns 
 it directly.</td></tr>
-<tr><td valign="top"><a href="#get_value_with_defaults-3">get_value_with_defaults/3</a></td><td>Looks for specified entry in specified table and, if found, returns the
+<tr><td valign="top"><a href="#get_value_with_default-3">get_value_with_default/3</a></td><td>Looks for specified entry in specified table and, if found, returns the
  associated value; otherwise returns the specified default value.</td></tr>
 <tr><td valign="top"><a href="#get_values-2">get_values/2</a></td><td>Returns the (ordered) list of values that correspond to the specified 
 (ordered) list of keys of this table.</td></tr>
@@ -324,8 +325,8 @@ raised (typically {badkey, KeyNotFound}).</p>
 <div class="spec">
 <p><tt>extract_entry(Key::<a href="#type-key">key()</a>, Table::<a href="#type-list_table">list_table()</a>) -&gt; {<a href="#type-value">value()</a>, <a href="#type-list_table">list_table()</a>}</tt><br></p>
 <p> </p>
-</div><p><p>Extracts specified entry from specified table, that is returns the 
-associated value and removes that entry from the table.</p>
+</div><p><p>Extracts the specified entry from the specified table, that is returns 
+the associated value and removes that entry from the table.</p>
 
  The key/value pair is expected to exist already in the specified table,
  otherwise an exception is thrown.
@@ -341,12 +342,12 @@ returns its associated value and removes that entry from the returned table.</p>
  Otherwise, that is if that entry does not exist, returns false.
 </p>
 
-<h3 class="function"><a name="extract_entry_with_defaults-3">extract_entry_with_defaults/3</a></h3>
+<h3 class="function"><a name="extract_entry_with_default-3">extract_entry_with_default/3</a></h3>
 <div class="spec">
-<p><tt>extract_entry_with_defaults(Key::<a href="#type-key">key()</a>, DefaultValue::<a href="#type-value">value()</a>, Table::<a href="#type-list_table">list_table()</a>) -&gt; {<a href="#type-value">value()</a>, <a href="#type-list_table">list_table()</a>}</tt><br></p>
+<p><tt>extract_entry_with_default(Key::<a href="#type-key">key()</a>, DefaultValue::<a href="#type-value">value()</a>, Table::<a href="#type-list_table">list_table()</a>) -&gt; {<a href="#type-value">value()</a>, <a href="#type-list_table">list_table()</a>}</tt><br></p>
 <p> </p>
-</div><p><p>Extracts specified entry from specified table, that is returns the 
-associated value and removes that entry from the table.</p>
+</div><p><p>Extracts the specified entry from the specified table, that is returns 
+the associated value and removes that entry from the table.</p>
 
  If no such key is available, returns the specified default value and the
  original table.
@@ -389,9 +390,9 @@ it directly.</p>
  thrown.
 </p>
 
-<h3 class="function"><a name="get_value_with_defaults-3">get_value_with_defaults/3</a></h3>
+<h3 class="function"><a name="get_value_with_default-3">get_value_with_default/3</a></h3>
 <div class="spec">
-<p><tt>get_value_with_defaults(Key::<a href="#type-key">key()</a>, DefaultValue::<a href="#type-value">value()</a>, Table::<a href="#type-list_table">list_table()</a>) -&gt; <a href="#type-value">value()</a></tt><br></p>
+<p><tt>get_value_with_default(Key::<a href="#type-key">key()</a>, DefaultValue::<a href="#type-value">value()</a>, Table::<a href="#type-list_table">list_table()</a>) -&gt; <a href="#type-value">value()</a></tt><br></p>
 <p> </p>
 </div><p>Looks for specified entry in specified table and, if found, returns the
  associated value; otherwise returns the specified default value.

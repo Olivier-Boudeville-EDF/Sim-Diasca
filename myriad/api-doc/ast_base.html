@@ -49,8 +49,10 @@ format.</p>
 
 <h3 class="typedecl"><a name="type-file_loc">file_loc()</a></h3>
 <p><tt>file_loc() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/erl_anno.html#type-location">erl_anno:location()</a></tt></p>
-<p> Line-related location in a source file (either <code>line()</code> or <code>{line(),
+<p><p> Line-related location in a source file (either <code>line()</code> or <code>{line(),
  column()}</code>).</p>
+
+ The (newer) pair form shall now be preferred.</p>
 
 <h3 class="typedecl"><a name="type-file_reference">file_reference()</a></h3>
 <p><tt>file_reference() = <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>(<a href="file_utils.html#type-file_path">file_utils:file_path()</a>)</tt></p>
@@ -63,7 +65,7 @@ format.</p>
 
 <h3 class="typedecl"><a name="type-form_context">form_context()</a></h3>
 <p><tt>form_context() = <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>(<a href="#type-file_loc">file_loc()</a>)</tt></p>
-<p> Context of a form.</p>
+<p> Context (if any) of a form.</p>
 
 <h3 class="typedecl"><a name="type-form_element">form_element()</a></h3>
 <p><tt>form_element() = any()</tt></p>
@@ -71,8 +73,10 @@ format.</p>
 
 <h3 class="typedecl"><a name="type-form_location">form_location()</a></h3>
 <p><tt>form_location() = <a href="id_utils.html#type-sortable_id">id_utils:sortable_id()</a></tt></p>
-<p> So that forms can be independently managed while being able to be reordered
- later, according to their original position in a source AST.</p>
+<p><p> So that forms can be independently managed while being able to be reordered 
+later, according to their original position in a source AST.</p>
+
+ Higher-level location, not to be mixed up with file_loc/0.</p>
 
 <h3 class="typedecl"><a name="type-line">line()</a></h3>
 <p><tt>line() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/erl_anno.html#type-line">erl_anno:line()</a></tt></p>

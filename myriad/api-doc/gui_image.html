@@ -11,16 +11,19 @@
 
 <h1>Module gui_image</h1>
 <ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathers all elements relative to the management of <b>images</b> 
-(loading, modifying, saving, scaling, resizing, clipping, etc.), in link to 
-MyriadGUI, and in a platform-independent way.
+(including bitmaps, icons, etc.), for loadaing, modifying, saving, scaling, 
+resizing, clipping, etc., in link to MyriadGUI, and in a platform-independent 
+way.
 
 
 <h2><a name="description">Description</a></h2><p>Gathers all elements relative to the management of <b>images</b> 
-(loading, modifying, saving, scaling, resizing, clipping, etc.), in link to 
-MyriadGUI, and in a platform-independent way.</p>
+(including bitmaps, icons, etc.), for loadaing, modifying, saving, scaling, 
+resizing, clipping, etc., in link to MyriadGUI, and in a platform-independent 
+way.</p>
 
- <p>Images shall be considered as just a generic, platform independent buffer of 
-RGB bytes with an optional buffer for the alpha bytes.</p>
+ <p>Images shall be considered as just a generic, platform-independent buffer of 
+RGB bytes with an optional buffer for the alpha bytes, whereas bitmaps are 
+platform-specific, readily-usable graphical content.</p>
 
  May be useful also for textures.
 
@@ -35,12 +38,17 @@ RGB bytes with an optional buffer for the alpha bytes.</p>
 
 
 <h3 class="typedecl"><a name="type-bitmap">bitmap()</a></h3>
-<p><b>abstract datatype</b>: <tt>bitmap()</tt></p>
+<p><tt>bitmap() = <a href="http://www.erlang.org/edoc/doc/wx/doc/wxBitmap.html#type-wxBitmap">wxBitmap:wxBitmap()</a></tt></p>
 <p><p> Platform-dependent bitmap, either monochrome or colour (with or without alpha 
 channel).</p>
 
  Intended to be a wrapper of whatever is the native image format, which is
  quickest/easiest to draw to a display context.</p>
+
+<h3 class="typedecl"><a name="type-bitmap_display">bitmap_display()</a></h3>
+<p><b>abstract datatype</b>: <tt>bitmap_display()</tt></p>
+<p> A widget displaying a bitmap; a bitmap display behaves like a panel dedicated
+ to the rendering of a bitmap.</p>
 
 <h3 class="typedecl"><a name="type-color_by_decimal">color_by_decimal()</a></h3>
 <p><tt>color_by_decimal() = <a href="gui_color.html#type-color_by_decimal">gui_color:color_by_decimal()</a></tt></p>
@@ -57,6 +65,10 @@ channel).</p>
 <h3 class="typedecl"><a name="type-height">height()</a></h3>
 <p><tt>height() = <a href="gui.html#type-height">gui:height()</a></tt></p>
 
+
+<h3 class="typedecl"><a name="type-icon">icon()</a></h3>
+<p><b>abstract datatype</b>: <tt>icon()</tt></p>
+<p> A small rectangular bitmap usually used for denoting a minimised application.</p>
 
 <h3 class="typedecl"><a name="type-image">image()</a></h3>
 <p><tt>image() = <a href="http://www.erlang.org/edoc/doc/wx/doc/wxImage.html#type-wxImage">wxImage:wxImage()</a></tt></p>
@@ -80,12 +92,49 @@ extension of a filename, as it is clearer and more reliable.</p>
 <p><tt>image_quality() = normal | high</tt></p>
 <p> The requested quality for an image operation (ex: for a scaling).</p>
 
+<h3 class="typedecl"><a name="type-label">label()</a></h3>
+<p><tt>label() = <a href="gui.html#type-label">gui:label()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-point">point()</a></h3>
 <p><tt>point() = <a href="gui.html#type-point">gui:point()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-raw_bitmap">raw_bitmap()</a></h3>
+<p><tt>raw_bitmap() = #raw_bitmap{dimensions = <a href="gui.html#type-dimensions">gui:dimensions()</a>, pixels = binary()}</tt></p>
+<p><p> A record describing a raw, ready-to-use, bitmap, as a term, possibly loaded 
+from file, or generated, etc., as opposed to an image (which respects a format 
+like PNG or JPEG, has metadata, etc.).</p>
+
+ Note: currently not used, as a bitmap() offers all services needed.</p>
+
 <h3 class="typedecl"><a name="type-rgba_color_buffer">rgba_color_buffer()</a></h3>
 <p><tt>rgba_color_buffer() = <a href="gui_color.html#type-rgba_color_buffer">gui_color:rgba_color_buffer()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-size">size()</a></h3>
+<p><tt>size() = <a href="gui.html#type-size">gui:size()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-standard_bitmap_name_id">standard_bitmap_name_id()</a></h3>
+<p><tt>standard_bitmap_name_id() = <a href="gui.html#type-standard_bitmap_name_id">gui:standard_bitmap_name_id()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-standard_icon_name_id">standard_icon_name_id()</a></h3>
+<p><tt>standard_icon_name_id() = <a href="gui.html#type-standard_icon_name_id">gui:standard_icon_name_id()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-text_display">text_display()</a></h3>
+<p><b>abstract datatype</b>: <tt>text_display()</tt></p>
+<p> A widget displaying a text; a text display behaves like a panel dedicated
+ to the rendering of a text.</p>
+
+<h3 class="typedecl"><a name="type-text_display_option">text_display_option()</a></h3>
+<p><tt>text_display_option() = {pos, <a href="#type-point">point()</a>} | {size, <a href="#type-size">size()</a>} | {style, [<a href="#type-text_display_style_opt">text_display_style_opt()</a>]}</tt></p>
+<p> Text display specific options.</p>
+
+<h3 class="typedecl"><a name="type-text_display_style_opt">text_display_style_opt()</a></h3>
+<p><tt>text_display_style_opt() = align_left | align_right | center | fixed_size | ellipsize_beginning | ellipsize_middle | ellipsize_end</tt></p>
 
 
 <h3 class="typedecl"><a name="type-width">width()</a></h3>
@@ -94,6 +143,10 @@ extension of a filename, as it is clearer and more reliable.</p>
 
 <h3 class="typedecl"><a name="type-window">window()</a></h3>
 <p><tt>window() = <a href="gui.html#type-window">gui:window()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-window_option">window_option()</a></h3>
+<p><tt>window_option() = <a href="gui.html#type-window_option">gui:window_option()</a></tt></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -105,6 +158,9 @@ specified position in the target device context.</td></tr>
 <tr><td valign="top"><a href="#colorize-2">colorize/2</a></td><td>Returns a colourized image, that is an image of the specified color,
  modulated by the specified alpha coordinates.</td></tr>
 <tr><td valign="top"><a href="#create_bitmap-1">create_bitmap/1</a></td><td>Returns a bitmap created from the specified image path.</td></tr>
+<tr><td valign="top"><a href="#create_bitmap_display-2">create_bitmap_display/2</a></td><td>Creates a bitmap display from the specified bitmap.</td></tr>
+<tr><td valign="top"><a href="#create_bitmap_display-3">create_bitmap_display/3</a></td><td>Creates a bitmap display from the specified bitmap and with the specified
+ options.</td></tr>
 <tr><td valign="top"><a href="#create_blank_bitmap-1">create_blank_bitmap/1</a></td><td>Returns a blank bitmap of the specified size.</td></tr>
 <tr><td valign="top"><a href="#create_blank_bitmap-2">create_blank_bitmap/2</a></td><td>Returns a blank bitmap of the specified size.</td></tr>
 <tr><td valign="top"><a href="#create_blank_bitmap_for-1">create_blank_bitmap_for/1</a></td><td>Returns a blank bitmap whose size is the client one of the specified
@@ -113,11 +169,18 @@ specified position in the target device context.</td></tr>
  trying to auto-detect the image format of that file.</td></tr>
 <tr><td valign="top"><a href="#create_from_file-2">create_from_file/2</a></td><td>Creates an image instance whose content is read from the specified file,
  expecting the image format of the file to be specified one.</td></tr>
+<tr><td valign="top"><a href="#create_text_display-2">create_text_display/2</a></td><td>Creates a text display from the specified label.</td></tr>
+<tr><td valign="top"><a href="#create_text_display-3">create_text_display/3</a></td><td>Creates a text display from the specified label and with the specified
+ options.</td></tr>
 <tr><td valign="top"><a href="#destruct-1">destruct/1</a></td><td>Declares that the specified instance can be destructed.</td></tr>
 <tr><td valign="top"><a href="#destruct_bitmap-1">destruct_bitmap/1</a></td><td>Destructs the specified bitmap (which must not be locked).</td></tr>
+<tr><td valign="top"><a href="#destruct_bitmap_display-1">destruct_bitmap_display/1</a></td><td>Destructs the specified bitmap display.</td></tr>
+<tr><td valign="top"><a href="#destruct_text_display-1">destruct_text_display/1</a></td><td>Destructs the specified text display.</td></tr>
 <tr><td valign="top"><a href="#draw_bitmap-3">draw_bitmap/3</a></td><td>Draws the specified bitmap in the specified device context, at the
  specified position.</td></tr>
 <tr><td valign="top"><a href="#getSize-1">getSize/1</a></td><td>Returns the size of this image.</td></tr>
+<tr><td valign="top"><a href="#get_standard_bitmap-1">get_standard_bitmap/1</a></td><td>Returns the standard bitmap corresponding to the specified identifier.</td></tr>
+<tr><td valign="top"><a href="#get_standard_icon-1">get_standard_icon/1</a></td><td>Returns the standard icon corresponding to the specified identifier.</td></tr>
 <tr><td valign="top"><a href="#load-2">load/2</a></td><td>Loads the image stored in the specified file in the specified image
  instance, trying to auto-detect the image format of that file.</td></tr>
 <tr><td valign="top"><a href="#load-3">load/3</a></td><td>Loads the image stored in the specified file into the specified image
@@ -180,6 +243,20 @@ specified position in the target device context.</p>
 <p> </p>
 </div><p>Returns a bitmap created from the specified image path.</p>
 
+<h3 class="function"><a name="create_bitmap_display-2">create_bitmap_display/2</a></h3>
+<div class="spec">
+<p><tt>create_bitmap_display(Parent::<a href="#type-window">window()</a>, Bitmap::<a href="#type-bitmap">bitmap()</a>) -&gt; <a href="#type-bitmap_display">bitmap_display()</a></tt><br></p>
+<p> </p>
+</div><p>Creates a bitmap display from the specified bitmap.</p>
+
+<h3 class="function"><a name="create_bitmap_display-3">create_bitmap_display/3</a></h3>
+<div class="spec">
+<p><tt>create_bitmap_display(Parent::<a href="#type-window">window()</a>, Bitmap::<a href="#type-bitmap">bitmap()</a>, Options::[<a href="#type-window_option">window_option()</a>]) -&gt; <a href="#type-bitmap_display">bitmap_display()</a></tt><br></p>
+<p> </p>
+</div><p>Creates a bitmap display from the specified bitmap and with the specified
+ options.
+</p>
+
 <h3 class="function"><a name="create_blank_bitmap-1">create_blank_bitmap/1</a></h3>
 <div class="spec">
 <p><tt>create_blank_bitmap(Dimensions::<a href="#type-dimensions">dimensions()</a>) -&gt; <a href="#type-bitmap">bitmap()</a></tt><br></p>
@@ -216,6 +293,20 @@ specified position in the target device context.</p>
  expecting the image format of the file to be specified one.
 </p>
 
+<h3 class="function"><a name="create_text_display-2">create_text_display/2</a></h3>
+<div class="spec">
+<p><tt>create_text_display(Parent::<a href="#type-window">window()</a>, Label::<a href="#type-label">label()</a>) -&gt; <a href="#type-text_display">text_display()</a></tt><br></p>
+<p> </p>
+</div><p>Creates a text display from the specified label.</p>
+
+<h3 class="function"><a name="create_text_display-3">create_text_display/3</a></h3>
+<div class="spec">
+<p><tt>create_text_display(Parent::<a href="#type-window">window()</a>, Label::<a href="#type-label">label()</a>, Options::[<a href="#type-window_option">window_option()</a>]) -&gt; <a href="#type-text_display">text_display()</a></tt><br></p>
+<p> </p>
+</div><p>Creates a text display from the specified label and with the specified
+ options.
+</p>
+
 <h3 class="function"><a name="destruct-1">destruct/1</a></h3>
 <div class="spec">
 <p><tt>destruct(Image::<a href="#type-image">image()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
@@ -232,6 +323,18 @@ specified position in the target device context.</p>
 <p> </p>
 </div><p>Destructs the specified bitmap (which must not be locked).</p>
 
+<h3 class="function"><a name="destruct_bitmap_display-1">destruct_bitmap_display/1</a></h3>
+<div class="spec">
+<p><tt>destruct_bitmap_display(BitmapDisplay::<a href="#type-bitmap_display">bitmap_display()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Destructs the specified bitmap display.</p>
+
+<h3 class="function"><a name="destruct_text_display-1">destruct_text_display/1</a></h3>
+<div class="spec">
+<p><tt>destruct_text_display(TextDisplay::<a href="#type-text_display">text_display()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Destructs the specified text display.</p>
+
 <h3 class="function"><a name="draw_bitmap-3">draw_bitmap/3</a></h3>
 <div class="spec">
 <p><tt>draw_bitmap(SourceBitmap::<a href="#type-bitmap">bitmap()</a>, TargetDC::<a href="#type-device_context">device_context()</a>, PosInTarget::<a href="#type-point">point()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
@@ -245,6 +348,18 @@ specified position in the target device context.</p>
 <p><tt>getSize(Image::<a href="#type-image">image()</a>) -&gt; <a href="#type-dimensions">dimensions()</a></tt><br></p>
 <p> </p>
 </div><p>Returns the size of this image.</p>
+
+<h3 class="function"><a name="get_standard_bitmap-1">get_standard_bitmap/1</a></h3>
+<div class="spec">
+<p><tt>get_standard_bitmap(StdBitmapId::<a href="#type-standard_bitmap_name_id">standard_bitmap_name_id()</a>) -&gt; <a href="#type-bitmap">bitmap()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the standard bitmap corresponding to the specified identifier.</p>
+
+<h3 class="function"><a name="get_standard_icon-1">get_standard_icon/1</a></h3>
+<div class="spec">
+<p><tt>get_standard_icon(StdIconId::<a href="#type-standard_icon_name_id">standard_icon_name_id()</a>) -&gt; <a href="#type-icon">icon()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the standard icon corresponding to the specified identifier.</p>
 
 <h3 class="function"><a name="load-2">load/2</a></h3>
 <div class="spec">

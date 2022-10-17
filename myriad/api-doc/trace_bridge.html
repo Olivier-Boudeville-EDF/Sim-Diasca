@@ -11,21 +11,23 @@
 
 <h1>Module trace_bridge</h1>
 <ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>The <b>trace bridge</b> allows modules to depend only on the
- Ceylan-Myriad layer, yet to rely optionally on a non-Myriad code (possibly the
- Ceylan-Traces layer, refer to <a href="http://traces.esperide.org/" target="_top"><tt>http://traces.esperide.org/</tt></a>) at runtime for
- <b>its logging</b>, so that in all cases exactly one (and the most 
-appropriate) logging system is used, even when lower-level libraries are 
-involved (designed to operate with or without an advanced trace system), and 
-with no change of source code to be operated on these user modules.
+ Ceylan-Myriad layer, yet to rely optionally on a non-Myriad code for
+ traces/logs (possibly the Ceylan-Traces layer, refer to
+ <a href="http://traces.esperide.org/" target="_top"><tt>http://traces.esperide.org/</tt></a>) at runtime for <b>its logging</b>, so that in 
+all cases exactly one (and the most appropriate) logging system is used, even 
+when lower-level libraries are involved (designed to operate with or without 
+an advanced trace system), and with no change in the source code of these user 
+modules to be operated.
 
 
 <h2><a name="description">Description</a></h2><p>The <b>trace bridge</b> allows modules to depend only on the
- Ceylan-Myriad layer, yet to rely optionally on a non-Myriad code (possibly the
- Ceylan-Traces layer, refer to <a href="http://traces.esperide.org/" target="_top"><tt>http://traces.esperide.org/</tt></a>) at runtime for
- <b>its logging</b>, so that in all cases exactly one (and the most 
-appropriate) logging system is used, even when lower-level libraries are 
-involved (designed to operate with or without an advanced trace system), and 
-with no change of source code to be operated on these user modules.</p>
+ Ceylan-Myriad layer, yet to rely optionally on a non-Myriad code for
+ traces/logs (possibly the Ceylan-Traces layer, refer to
+ <a href="http://traces.esperide.org/" target="_top"><tt>http://traces.esperide.org/</tt></a>) at runtime for <b>its logging</b>, so that in 
+all cases exactly one (and the most appropriate) logging system is used, even 
+when lower-level libraries are involved (designed to operate with or without 
+an advanced trace system), and with no change in the source code of these user 
+modules to be operated.</p>
 
  <p>It is useful to provide native, integrated, higher-level logging to basic
  libraries (ex: Ceylan-LEEC, see <a href="http://leec.esperide.org" target="_top"><tt>http://leec.esperide.org</tt></a>), should their user 
@@ -41,7 +43,7 @@ matter of having the process of interest call the register/3 function below.</p>
 trace_utils)</p>
 
   <p>- Ceylan-Traces: trace_bridging_test.erl (using then our advanced trace  
-system) ; for example:</p>
+system); for example:</p>
 
    <p>BridgeSpec = trace_bridge:get_bridge_spec( _MyEmitterName="MyBridgeTester",     
 _MyCateg="MyTraceCategory",     
@@ -82,9 +84,17 @@ _BridgePid=class_TraceAggregator:get_aggregator() ),</p>
 <p><tt>trace_message() = <a href="#type-ustring">ustring()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-trace_severity">trace_severity()</a></h3>
+<p><tt>trace_severity() = <a href="trace_utils.html#type-trace_severity">trace_utils:trace_severity()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-trace_timestamp">trace_timestamp()</a></h3>
 <p><tt>trace_timestamp() = <a href="trace_utils.html#type-trace_timestamp">trace_utils:trace_timestamp()</a></tt></p>
 
+
+<h3 class="typedecl"><a name="type-user_bridge_info">user_bridge_info()</a></h3>
+<p><tt>user_bridge_info() = {TraceCategory::<a href="#type-any_string">any_string()</a>, BridgePid::<a href="#type-bridge_pid">bridge_pid()</a>}</tt></p>
+<p> Bridging information typically specified by the user.</p>
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
 <p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
@@ -102,6 +112,8 @@ _BridgePid=class_TraceAggregator:get_aggregator() ),</p>
 <tr><td valign="top"><a href="#error-1">error/1</a></td><td>Outputs specified error message.</td></tr>
 <tr><td valign="top"><a href="#error_fmt-2">error_fmt/2</a></td><td>Outputs specified error message to format.</td></tr>
 <tr><td valign="top"><a href="#get_bridge_info-0">get_bridge_info/0</a></td><td>Returns the bridge information of the current process.</td></tr>
+<tr><td valign="top"><a href="#get_bridge_spec-2">get_bridge_spec/2</a></td><td>Returns the information to pass to a process so that it can register to
+ the corresponding trace bridge and use it automatically from then.</td></tr>
 <tr><td valign="top"><a href="#get_bridge_spec-3">get_bridge_spec/3</a></td><td>Returns the information to pass to a process so that it can register to
  the corresponding trace bridge and use it automatically from then.</td></tr>
 <tr><td valign="top"><a href="#info-1">info/1</a></td><td>Outputs specified info message.</td></tr>
@@ -112,12 +124,16 @@ _BridgePid=class_TraceAggregator:get_aggregator() ),</p>
 <tr><td valign="top"><a href="#register_if_not_already-1">register_if_not_already/1</a></td><td>Registers the current process to the specified trace bridge (if any), and 
 provided that no bridge was already registered (otherwise maintains the 
 previous bridge and ignores silently that extraneous call).</td></tr>
+<tr><td valign="top"><a href="#send-2">send/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#send-3">send/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#set_application_timestamp-1">set_application_timestamp/1</a></td><td>Sets the current application timestamp.</td></tr>
 <tr><td valign="top"><a href="#set_bridge_info-1">set_bridge_info/1</a></td><td>Sets the specified bridge information for the current process.</td></tr>
 <tr><td valign="top"><a href="#unregister-0">unregister/0</a></td><td>Unregisters the current process, which acted as a trace bridge; never
  fails.</td></tr>
 <tr><td valign="top"><a href="#void-1">void/1</a></td><td>"Outputs" specified void message.</td></tr>
 <tr><td valign="top"><a href="#void_fmt-2">void_fmt/2</a></td><td>"Outputs" specified void message to format.</td></tr>
+<tr><td valign="top"><a href="#wait_bridge_sync-0">wait_bridge_sync/0</a></td><td>Waits for the bridge to report that a trace synchronisation has been 
+completed.</td></tr>
 <tr><td valign="top"><a href="#warning-1">warning/1</a></td><td>Outputs specified warning message.</td></tr>
 <tr><td valign="top"><a href="#warning_fmt-2">warning_fmt/2</a></td><td>Outputs specified warning message to format.</td></tr>
 </table>
@@ -194,6 +210,14 @@ previous bridge and ignores silently that extraneous call).</td></tr>
  same bridge.
 </p>
 
+<h3 class="function"><a name="get_bridge_spec-2">get_bridge_spec/2</a></h3>
+<div class="spec">
+<p><tt>get_bridge_spec(TraceEmitterName::<a href="#type-any_string">any_string()</a>, UserBridgeInfo::<a href="#type-user_bridge_info">user_bridge_info()</a>) -&gt; <a href="#type-bridge_spec">bridge_spec()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the information to pass to a process so that it can register to
+ the corresponding trace bridge and use it automatically from then.
+</p>
+
 <h3 class="function"><a name="get_bridge_spec-3">get_bridge_spec/3</a></h3>
 <div class="spec">
 <p><tt>get_bridge_spec(TraceEmitterName::<a href="#type-any_string">any_string()</a>, TraceCategory::<a href="#type-any_string">any_string()</a>, BridgePid::<a href="#type-bridge_pid">bridge_pid()</a>) -&gt; <a href="#type-bridge_spec">bridge_spec()</a></tt><br></p>
@@ -253,6 +277,18 @@ previous bridge and ignores silently that extraneous call).</p>
  bridge.
 </p>
 
+<h3 class="function"><a name="send-2">send/2</a></h3>
+<div class="spec">
+<p><tt>send(SeverityType::<a href="#type-trace_severity">trace_severity()</a>, Message::<a href="#type-trace_message">trace_message()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="send-3">send/3</a></h3>
+<div class="spec">
+<p><tt>send(SeverityType::<a href="#type-trace_severity">trace_severity()</a>, MessageFormat::<a href="#type-format_string">format_string()</a>, MessageValues::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div>
+
 <h3 class="function"><a name="set_application_timestamp-1">set_application_timestamp/1</a></h3>
 <div class="spec">
 <p><tt>set_application_timestamp(NewAppTimestamp::<a href="#type-trace_timestamp">trace_timestamp()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
@@ -293,6 +329,16 @@ the one of its caller (obtained thanks to get_bridge_info/0).</p>
 <p><tt>void_fmt(MessageFormat::<a href="#type-format_string">format_string()</a>, MessageValues::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p>"Outputs" specified void message to format.</p>
+
+<h3 class="function"><a name="wait_bridge_sync-0">wait_bridge_sync/0</a></h3>
+<div class="spec">
+<p><tt>wait_bridge_sync() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Waits for the bridge to report that a trace synchronisation has been 
+completed.</p>
+
+ (helper)
+</p>
 
 <h3 class="function"><a name="warning-1">warning/1</a></h3>
 <div class="spec">

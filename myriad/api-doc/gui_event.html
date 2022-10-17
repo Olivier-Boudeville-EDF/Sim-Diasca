@@ -19,77 +19,113 @@
 
 <h2><a name="types">Data Types</a></h2>
 
+<h3 class="typedecl"><a name="type-backend_id">backend_id()</a></h3>
+<p><tt>backend_id() = <a href="gui_id.html#type-backend_id">gui_id:backend_id()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-command_event_type">command_event_type()</a></h3>
+<p><tt>command_event_type() = onToolbarEntered | onItemSelected | onToolRightClicked</tt></p>
+
+
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
 <p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-event_callback">event_callback()</a></h3>
+<p><tt>event_callback() = fun((<a href="#type-gui_event">gui_event()</a>, <a href="#type-gui_event_object">gui_event_object()</a>) -&gt; <a href="#type-void">void()</a>)</tt></p>
+<p><p> A user-defined function to be called whenever an event occurred that 
+corresponds to an already-registered GUI callback.</p>
+
+ It takes two parameters, an event tuple (whose content is typically used by
+ the callback in order to process this event and act accordingly), and (the
+ reference onto) an actual MyriadGUI object that corresponds to this event
+ (that will typically be propagated upward in the widget hierarchy; see
+ trap_event/1) to prevent this).</p>
+
 <h3 class="typedecl"><a name="type-event_context">event_context()</a></h3>
-<p><tt>event_context() = #event_context{id = <a href="gui.html#type-id">gui:id()</a>, user_data = <a href="gui.html#type-user_data">gui:user_data()</a>, backend_event = <a href="#type-maybe">maybe</a>(<a href="gui.html#type-backend_event">gui:backend_event()</a>)}</tt></p>
+<p><tt>event_context() = #event_context{id = <a href="gui_id.html#type-backend_id">gui_id:backend_id()</a>, user_data = <a href="gui.html#type-user_data">gui:user_data()</a>, backend_event = <a href="#type-maybe">maybe</a>(<a href="gui.html#type-backend_event">gui:backend_event()</a>)}</tt></p>
 <p><p> Context sent to corresponding subscribers together with an event.</p>
 
  This context can be ignored in most cases.</p>
 
 <h3 class="typedecl"><a name="type-event_dispatch_table">event_dispatch_table()</a></h3>
-<p><tt>event_dispatch_table() = <a href="list_table.html#type-list_table">list_table:list_table</a>(<a href="#type-event_type">event_type()</a>, [<a href="#type-event_subscriber_pid">event_subscriber_pid()</a>])</tt></p>
+<p><tt>event_dispatch_table() = <a href="list_table.html#type-list_table">list_table:list_table</a>(<a href="#type-event_type">event_type()</a>, [<a href="#type-event_subscriber">event_subscriber()</a>])</tt></p>
 <p> Tells, for a given event type (e.g. in the context of a specific GUI object),
  to which event subscribers the corresponding GUI messages shall be sent.</p>
-
-<h3 class="typedecl"><a name="type-event_message">event_message()</a></h3>
-<p><tt>event_message() = {<a href="#type-event_type">event_type()</a>, [any()]}</tt></p>
-<p><p> A (MyriadGUI) event message is a pair whose first element is the event type, 
-as an atom (ex: 'onWindowClosed'), and whose second element is a list, whose 
-first element is the GUI object that generated that event (the closed window, 
-here), and whose last element is the event context (intermediary elements 
-carrying event-specific information):</p>
-
- <p>{event_type(), [gui_object(), ..., event_context()]}</p>
-
- <p>Ex: {onWindowClosed, [Window, CloseContext]}.</p>
-
- Note: these messages respect the WOOPER conventions, and this is done on
- purpose, to facilitate any integration with upper layers.</p>
 
 <h3 class="typedecl"><a name="type-event_source">event_source()</a></h3>
 <p><tt>event_source() = <a href="#type-wx_event_handler">wx_event_handler()</a> | <a href="#type-myriad_event_handler">myriad_event_handler()</a></tt></p>
 
 
-<h3 class="typedecl"><a name="type-event_subscriber_pid">event_subscriber_pid()</a></h3>
-<p><tt>event_subscriber_pid() = pid()</tt></p>
-<p> The PID of an event subscriber.</p>
+<h3 class="typedecl"><a name="type-event_subscriber">event_subscriber()</a></h3>
+<p><tt>event_subscriber() = <a href="naming_utils.html#type-local_designator">naming_utils:local_designator()</a></tt></p>
+<p> The PID or locally-registered name of an event subscriber.</p>
 
 <h3 class="typedecl"><a name="type-event_subscription">event_subscription()</a></h3>
-<p><tt>event_subscription() = {<a href="#type-maybe_list">maybe_list</a>(<a href="#type-event_type">event_type()</a>), <a href="#type-maybe_list">maybe_list</a>(<a href="#type-gui_object">gui_object()</a>)}</tt></p>
-<p> So that user process(es) can subscribe to GUI events.</p>
+<p><tt>event_subscription() = {<a href="#type-maybe_list">maybe_list</a>(<a href="#type-event_type">event_type()</a>), <a href="#type-maybe_list">maybe_list</a>(<a href="#type-gui_object">gui_object()</a>)} | {<a href="#type-maybe_list">maybe_list</a>(<a href="#type-event_type">event_type()</a>), <a href="#type-maybe_list">maybe_list</a>(<a href="#type-gui_object">gui_object()</a>), <a href="#type-maybe_list">maybe_list</a>(<a href="#type-event_subscription_opt">event_subscription_opt()</a>)} | {<a href="#type-maybe_list">maybe_list</a>(<a href="#type-event_type">event_type()</a>), <a href="#type-maybe_list">maybe_list</a>(<a href="#type-gui_object">gui_object()</a>), <a href="#type-maybe_list">maybe_list</a>(<a href="#type-event_subscription_opt">event_subscription_opt()</a>), <a href="#type-maybe_list">maybe_list</a>(<a href="#type-event_subscriber">event_subscriber()</a>)}</tt></p>
+
+
+<h3 class="typedecl"><a name="type-event_subscription_opt">event_subscription_opt()</a></h3>
+<p><tt>event_subscription_opt() = <a href="gui.html#type-event_subscription_opt">gui:event_subscription_opt()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-event_subscription_option">event_subscription_option()</a></h3>
+<p><tt>event_subscription_option() = trap_event | propagate_event</tt></p>
+
 
 <h3 class="typedecl"><a name="type-event_subscription_spec">event_subscription_spec()</a></h3>
 <p><tt>event_subscription_spec() = <a href="#type-maybe_list">maybe_list</a>(<a href="#type-event_subscription">event_subscription()</a>)</tt></p>
-<p> Specifies, for an event subscriber (by default: the calling process), any
+<p> Specifies, for event subscribers (by default: the calling process), any
  combination of types of events and GUI objects that shall be listened to.</p>
 
 <h3 class="typedecl"><a name="type-event_table">event_table()</a></h3>
-<p><tt>event_table() = <a href="table.html#type-table">table:table</a>(<a href="#type-gui_object">gui_object()</a>, <a href="#type-event_dispatch_table">event_dispatch_table()</a>)</tt></p>
+<p><tt>event_table() = <a href="table.html#type-table">table:table</a>(<a href="#type-gui_object_key">gui_object_key()</a>, <a href="#type-event_dispatch_table">event_dispatch_table()</a>)</tt></p>
 <p><p> An indirection table dispatching events according to subscription 
 specifications.</p>
 
  <p>For an incoming event, we see this type (virtually, logically) as: 
-table({gui_object(), event_type()}, set_utils:set( event_subscriber_pid())):</p>
+table({gui_object(), event_type()}, set_utils:set(event_subscriber())):</p>
 
- <p>- the first key is the GUI object (e.g. widget) from which the event emanates 
-(ex: a frame)</p>
+ <p>- the first key is the key corresponding to the GUI object (e.g. widget) from 
+which the event emanates (ex: a frame)</p>
 
  <p>- the second key is its corresponding (internal) event type (ex: 
 'onWindowClosed')</p>
 
- <p>- the associated value is a list/set of the PID of the subscribers regarding 
-this (object,event) combination</p>
+ <p>- the associated value is a list/set of the PID/name of the subscribers 
+regarding this (object,event) combination</p>
 
  Note: two nested tables (one table(), one list_table()) are used also in
  order to ensure that there is up to one entry per GUI object and per event
  type stored.</p>
 
-<h3 class="typedecl"><a name="type-event_type">event_type()</a></h3>
-<p><tt>event_type() = onRepaintNeeded | onButtonClicked | onResized | onWindowClosed | onShown | onMouseLeftButtonPressed | onMouseLeftButtonReleased | onMouseLeftButtonDoubleClicked | onMouseMiddleButtonPressed | onMouseMiddleButtonReleased | onMouseMiddleButtonDoubleClicked | onMouseRightButtonPressed | onMouseRightButtonReleased | onMouseRightButtonDoubleClicked | onMouseFourthButtonPressed | onMouseFourthButtonReleased | onMouseFourthButtonDoubleClicked | onMouseFifthButtonPressed | onMouseFifthtButtonReleased | onMouseFifthButtonDoubleClicked | onMouseWheelScrolled | onMouseEnteredWindow | onMouseLeftWindow | onMouseMoved | onMouseEnteredWindow | onMouseLeftWindow | onMouseMoved | onCharEntered | onCharEnteredHook | onKeyPressed | onKeyReleased</tt></p>
+<h3 class="typedecl"><a name="type-event_translation_table">event_translation_table()</a></h3>
+<p><tt>event_translation_table() = <a href="bijective_table.html#type-bijective_table">bijective_table:bijective_table</a>(<a href="#type-wx_event_type">wx_event_type()</a>, <a href="#type-event_type">event_type()</a>)</tt></p>
+<p> A table to implement an effecient two-way translation between the event types
+ of wx and of MyriadGUI.</p>
 
+<h3 class="typedecl"><a name="type-event_type">event_type()</a></h3>
+<p><tt>event_type() = <a href="#type-window_event_type">window_event_type()</a> | <a href="#type-command_event_type">command_event_type()</a> | <a href="#type-mouse_event_type">mouse_event_type()</a> | <a href="#type-keyboard_event_type">keyboard_event_type()</a></tt></p>
+<p><p> A type of MyriadGUI event, independent from any backend.</p>
+
+ <p>Unless specified otherwise, by default the events of a given type will 
+propagate: subscribing to them does not preclude them from being sent also to 
+the parent event handlers in the widget hierarchy.</p>
+
+ <p>For some other, less numerous event types (ex: onWindowClosed), they will be 
+by default trapped (their events will not be propagated, so they will be 
+processed only by the user event handler).</p>
+
+ <p>For the event types that propagate by default, specifying the 'trap_event' 
+subscription option, or calling the trap_event/1 function in one's event 
+handler, will disable that propagation.</p>
+
+ <p>Conversely, for the event types that are trapped by default, specifying the 
+'propagate_event' subscription option or calling the propagate_event/1 
+function in one's event handler will enable that propagation.</p>
+
+ Note: if adding event types, consider updating gui:get_event_types_to_trap/0
+ as well.</p>
 
 <h3 class="typedecl"><a name="type-event_unsubscription">event_unsubscription()</a></h3>
 <p><tt>event_unsubscription() = {<a href="#type-maybe_list">maybe_list</a>(<a href="#type-event_type">event_type()</a>), <a href="#type-maybe_list">maybe_list</a>(<a href="#type-gui_object">gui_object()</a>)}</tt></p>
@@ -98,11 +134,65 @@ this (object,event) combination</p>
 <h3 class="typedecl"><a name="type-event_unsubscription_spec">event_unsubscription_spec()</a></h3>
 <p><tt>event_unsubscription_spec() = <a href="#type-maybe_list">maybe_list</a>(<a href="#type-event_unsubscription">event_unsubscription()</a>)</tt></p>
 <p> Specifies, for an event subscriber (by default: the calling process), any
- combination of types of events and GUI objects to which it was suvscribed yet
+ combination of types of events and GUI objects to which it was subscribed yet
  that shall not be listened to anymore.</p>
+
+<h3 class="typedecl"><a name="type-gui_event">gui_event()</a></h3>
+<p><tt>gui_event() = {<a href="#type-event_type">event_type()</a>, Elements::[any()]}</tt></p>
+<p><p> A (MyriadGUI) event is a pair whose first element is the event type, as an 
+atom (ex: 'onWindowClosed'), and whose second element is a list, whose first 
+element is the GUI object that generated that event (the closed window, here), 
+and whose last element is the event context (intermediary elements carrying 
+event-specific information):</p>
+
+ <p>{event_type(), [gui_object(), ..., event_context()]}</p>
+
+ <p>Ex: {onWindowClosed, [Window, CloseContext]}.</p>
+
+ <p>So the event context can be fetched with: 
+EventContext = list_utils:get_last_element( Elements ),</p>
+
+ <p>These values are sent as messages to the processes having subscribed to this 
+type of event.</p>
+
+ Note: these messages respect the WOOPER conventions, and this is done on
+ purpose, to facilitate any integration with upper layers.</p>
+
+<h3 class="typedecl"><a name="type-gui_event_object">gui_event_object()</a></h3>
+<p><tt>gui_event_object() = <a href="http://www.erlang.org/edoc/doc/wx/doc/wxEvent.html#type-wxEvent">wxEvent:wxEvent()</a></tt></p>
+<p><p> A Myriad GUI object (therefore the reference to a full-blown backend process - 
+not a mere datastructure like an event record received as a message) holding 
+information about an event passed to a callback or member function.</p>
+
+ Unless explicitly trapped by such a function (see the 'trap_event'
+ subscription option, or the gui:trap_event/1 function), most event types are
+ propagated upward in the widget hierarchy.</p>
 
 <h3 class="typedecl"><a name="type-gui_object">gui_object()</a></h3>
 <p><tt>gui_object() = <a href="gui.html#type-gui_object">gui:gui_object()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-gui_object_key">gui_object_key()</a></h3>
+<p><tt>gui_object_key() = <a href="#type-gui_wx_object_key">gui_wx_object_key()</a> | <a href="#type-myriad_object_key">myriad_object_key()</a></tt></p>
+<p><p> Stable reference to a widget instance.</p>
+
+ This type has been introduced in order to benefit from more relevant keys for
+ event tables: previously these keys were gui_object(), until more complex GUI
+ uses shown that, after using wx_object:set_pid/2, a frame now known as
+ <code>{wx_ref,63,wxFrame,&lt;0.119.0&gt;}</code> still generated events as
+ <code>{wx_ref,63,wxFrame,[]}</code>, so a better, stable identifier thereof is
+ <code>{wxFrame,63}</code>.</p>
+
+<h3 class="typedecl"><a name="type-gui_wx_object_key">gui_wx_object_key()</a></h3>
+<p><tt>gui_wx_object_key() = {<a href="gui_wx_backend.html#type-wx_widget_type">gui_wx_backend:wx_widget_type()</a>, <a href="gui_wx_backend.html#type-wx_id">gui_wx_backend:wx_id()</a>}</tt></p>
+<p><p> A suitable stable key corresponding to a gui_object() (notably ignoring the 
+last, 'state' element of this quadruplet).</p>
+
+ Ex: the gui_object() {wx_ref,63,wxFrame,AnyState} results in the {wxFrame,63}
+ key.</p>
+
+<h3 class="typedecl"><a name="type-id_name_alloc_table">id_name_alloc_table()</a></h3>
+<p><tt>id_name_alloc_table() = <a href="gui_id.html#type-id_name_alloc_table">gui_id:id_name_alloc_table()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-instance_count">instance_count()</a></h3>
@@ -110,7 +200,7 @@ this (object,event) combination</p>
 <p> A count of instances of a given object type.</p>
 
 <h3 class="typedecl"><a name="type-instance_referential">instance_referential()</a></h3>
-<p><tt>instance_referential() = #instance_referential{instance_count = <a href="#type-instance_count">instance_count()</a>, instance_table = <a href="table.html#type-table">table:table</a>(<a href="#type-myriad_instance_id">myriad_instance_id()</a>, <a href="#type-myriad_object_state">myriad_object_state()</a>)}</tt></p>
+<p><tt>instance_referential() = #instance_referential{instance_count = <a href="#type-instance_count">instance_count()</a>, instance_table = <a href="#type-table">table</a>(<a href="#type-myriad_instance_id">myriad_instance_id()</a>, <a href="#type-myriad_object_state">myriad_object_state()</a>)}</tt></p>
 <p><p> To store, for a given MyriadGUI type (ex: 'canvas'), all information about all 
 instances.</p>
 
@@ -122,12 +212,20 @@ whose values are the actual state of these instances.</p>
  Note: the total count is not the same as the size of the table, as instances
  may be deleted.</p>
 
+<h3 class="typedecl"><a name="type-keyboard_event_type">keyboard_event_type()</a></h3>
+<p><tt>keyboard_event_type() = <a href="gui_keyboard.html#type-keyboard_event_type">gui_keyboard:keyboard_event_type()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-loop_state">loop_state()</a></h3>
-<p><tt>loop_state() = #loop_state{wx_server = <a href="#type-wx_server">wx_server()</a>, event_table = <a href="#type-event_table">event_table()</a>, reassign_table = <a href="#type-reassign_table">reassign_table()</a>, type_table = <a href="#type-myriad_type_table">myriad_type_table()</a>}</tt></p>
+<p><tt>loop_state() = #loop_state{wx_server = <a href="#type-wx_server">wx_server()</a>, event_table = <a href="#type-event_table">event_table()</a>, reassign_table = <a href="#type-reassign_table">reassign_table()</a>, type_table = <a href="#type-myriad_type_table">myriad_type_table()</a>, trap_set = <a href="#type-trap_set">trap_set()</a>, event_translation_table = <a href="#type-event_translation_table">event_translation_table()</a>, id_next = <a href="#type-backend_id">backend_id()</a>, id_name_alloc_table = <a href="#type-id_name_alloc_table">id_name_alloc_table()</a>}</tt></p>
 
 
 <h3 class="typedecl"><a name="type-maybe_list">maybe_list()</a></h3>
 <p><tt>maybe_list(T) = <a href="list_utils.html#type-maybe_list">list_utils:maybe_list</a>(T)</tt></p>
+
+
+<h3 class="typedecl"><a name="type-mouse_event_type">mouse_event_type()</a></h3>
+<p><tt>mouse_event_type() = <a href="gui_mouse.html#type-mouse_event_type">gui_mouse:mouse_event_type()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-myriad_event_handler">myriad_event_handler()</a></h3>
@@ -135,11 +233,18 @@ whose values are the actual state of these instances.</p>
 <p> Only one currently.</p>
 
 <h3 class="typedecl"><a name="type-myriad_instance_id">myriad_instance_id()</a></h3>
-<p><tt>myriad_instance_id() = <a href="gui.html#type-myriad_instance_id">gui:myriad_instance_id()</a></tt></p>
+<p><tt>myriad_instance_id() = <a href="gui_id.html#type-myriad_instance_id">gui_id:myriad_instance_id()</a></tt></p>
 
+
+<h3 class="typedecl"><a name="type-myriad_object_key">myriad_object_key()</a></h3>
+<p><tt>myriad_object_key() = {<a href="#type-myriad_object_type">myriad_object_type()</a>, <a href="#type-myriad_instance_id">myriad_instance_id()</a>}</tt></p>
+<p><p> The MyriadGUI type corresponding to gui_wx_object_key/0.</p>
+
+ Ex: the myriad_object_ref() {myriad_object_ref,myr_canvas,12} results in the
+ {myr_canvas,12} key.</p>
 
 <h3 class="typedecl"><a name="type-myriad_object_ref">myriad_object_ref()</a></h3>
-<p><tt>myriad_object_ref() = #myriad_object_ref{object_type = <a href="gui.html#type-myriad_object_type">gui:myriad_object_type()</a>, myriad_instance_id = <a href="gui.html#type-myriad_instance_id">gui:myriad_instance_id()</a>}</tt></p>
+<p><tt>myriad_object_ref() = #myriad_object_ref{object_type = <a href="gui.html#type-myriad_object_type">gui:myriad_object_type()</a>, myriad_instance_id = <a href="gui_id.html#type-myriad_instance_id">gui_id:myriad_instance_id()</a>}</tt></p>
 
 
 <h3 class="typedecl"><a name="type-myriad_object_state">myriad_object_state()</a></h3>
@@ -162,12 +267,28 @@ native objects.</p>
 <p> To replace source events objects (ex: a panel) by others (ex: its associated
  canvas, if any).</p>
 
+<h3 class="typedecl"><a name="type-service">service()</a></h3>
+<p><tt>service() = <a href="gui.html#type-service">gui:service()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-set">set()</a></h3>
+<p><tt>set(T) = <a href="set_utils.html#type-set">set_utils:set</a>(T)</tt></p>
+
+
+<h3 class="typedecl"><a name="type-trap_set">trap_set()</a></h3>
+<p><tt>trap_set() = <a href="#type-set">set</a>([<a href="#type-event_type">event_type()</a>])</tt></p>
+<p> A set of the event types that shall be trapped by default.</p>
+
 <h3 class="typedecl"><a name="type-user_pid">user_pid()</a></h3>
 <p><tt>user_pid() = pid()</tt></p>
 <p> The PID of a user calling process.</p>
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
 <p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-window_event_type">window_event_type()</a></h3>
+<p><tt>window_event_type() = onRepaintNeeded | onButtonClicked | onResized | onWindowClosed | onShown</tt></p>
 
 
 <h3 class="typedecl"><a name="type-wx_click_event_type">wx_click_event_type()</a></h3>
@@ -200,7 +321,9 @@ connect/n call (typically [], as not very useful)</p>
 
  <p>- event :: wx_event_info() is the description of the event itself</p>
 
- As always, same as: -record( wx,...</p>
+ <p>As always, same as: -record( wx,...</p>
+
+ Note: not to be mixed up with wx:wxEvent(), which is a full-blown wx_object().</p>
 
 <h3 class="typedecl"><a name="type-wx_event_handler">wx_event_handler()</a></h3>
 <p><tt>wx_event_handler() = <a href="http://www.erlang.org/edoc/doc/wx/doc/wxEvtHandler.html#type-wxEvtHandler">wxEvtHandler:wxEvtHandler()</a></tt></p>
@@ -221,7 +344,7 @@ other fields.</p>
 
 
 <h3 class="typedecl"><a name="type-wx_id">wx_id()</a></h3>
-<p><tt>wx_id() = <a href="gui_wx_backend.html#type-wx_id">gui_wx_backend:wx_id()</a></tt></p>
+<p><tt>wx_id() = <a href="gui_id.html#type-wx_id">gui_id:wx_id()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-wx_keyboard_event_type">wx_keyboard_event_type()</a></h3>
@@ -253,28 +376,37 @@ other fields.</p>
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#adjust_objects-3">adjust_objects/3</a></td><td>Adjusts the specified MyriadGUI instances.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#adjust_objects-4">adjust_objects/4</a></td><td>Adjusts the specified MyriadGUI instances.</td></tr>
 <tr><td valign="top"><a href="#event_table_to_string-1">event_table_to_string/1</a></td><td>Returns a textual representation of specified event table.</td></tr>
+<tr><td valign="top"><a href="#get_event_translation_table-0">get_event_translation_table/0</a></td><td>Returns a bijective table to translate wx and MyriadGUI event types back
+ and forth.</td></tr>
 <tr><td valign="top"><a href="#get_instance_state-2">get_instance_state/2</a></td><td>Returns the internal state of the specified MyriadGUI instance.</td></tr>
 <tr><td valign="top"><a href="#get_subscribers_for-3">get_subscribers_for/3</a></td><td>Returns the subscribers (if any) to the specified GUI object, for the
  specified event type.</td></tr>
+<tr><td valign="top"><a href="#get_trapped_event_types-1">get_trapped_event_types/1</a></td><td>Returns the set of event types that shall be trapped by default.</td></tr>
 <tr><td valign="top"><a href="#instance_referential_to_string-1">instance_referential_to_string/1</a></td><td>Returns a textual representation of the specified type table.</td></tr>
+<tr><td valign="top"><a href="#match-2">match/2</a></td><td>Tells whether the two specified GUI objects match (equality operator).</td></tr>
 <tr><td valign="top"><a href="#process_only_latest_repaint_event-4">process_only_latest_repaint_event/4</a></td><td>Drops all intermediate repaint events, and processes the last one, and
  then the next non-repaint event.</td></tr>
-<tr><td valign="top"><a href="#propagate_event-1">propagate_event/1</a></td><td>Propagates the event designated by the specified context upward in the 
-widget hierarchy (instead of the default, which is considering that it has 
-been processed once for all, and thus shall not be propagated further).</td></tr>
+<tr><td valign="top"><a href="#propagate_event-1">propagate_event/1</a></td><td>Propagates the specified event upward in the widget hierarchy, so that it 
+can be processed by parent handlers knowing that, for some event types, by 
+default no event propagation is enabled.</td></tr>
 <tr><td valign="top"><a href="#reassign_table_to_string-1">reassign_table_to_string/1</a></td><td>Returns a textual representation of the specified reassign table.</td></tr>
+<tr><td valign="top"><a href="#set_canvas_instance_state-3">set_canvas_instance_state/3</a></td><td>Sets the internal state of the specified canvas instance.</td></tr>
 <tr><td valign="top"><a href="#set_instance_state-3">set_instance_state/3</a></td><td>Returns the internal state of the specified MyriadGUI instance.</td></tr>
-<tr><td valign="top"><a href="#start_main_event_loop-2">start_main_event_loop/2</a></td><td>Starts the internal, main event loop of MyriadGUI.</td></tr>
+<tr><td valign="top"><a href="#start_main_event_loop-4">start_main_event_loop/4</a></td><td>Starts the internal, main event loop of MyriadGUI.</td></tr>
+<tr><td valign="top"><a href="#trap_event-1">trap_event/1</a></td><td>Traps the specified event: does not propagate it upward in the widget 
+hierarchy, thus considering that it has been processed once for all by the 
+current handler.</td></tr>
 <tr><td valign="top"><a href="#type_table_to_string-1">type_table_to_string/1</a></td><td>Returns a textual representation of the specified type table.</td></tr>
+<tr><td valign="top"><a href="#wx_to_myriad_event-2">wx_to_myriad_event/2</a></td><td>Converts the specified wx event into a MyriadGUI one.</td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
-<h3 class="function"><a name="adjust_objects-3">adjust_objects/3</a></h3>
+<h3 class="function"><a name="adjust_objects-4">adjust_objects/4</a></h3>
 <div class="spec">
-<p><tt>adjust_objects(ObjectsToAdjust::[<a href="#type-myriad_object_ref">myriad_object_ref()</a>], EventTable::<a href="#type-event_table">event_table()</a>, TypeTable::<a href="#type-myriad_type_table">myriad_type_table()</a>) -&gt; <a href="#type-myriad_type_table">myriad_type_table()</a></tt><br></p>
+<p><tt>adjust_objects(ObjectsToAdjust::[<a href="#type-myriad_object_ref">myriad_object_ref()</a>], EventTable::<a href="#type-event_table">event_table()</a>, TypeTable::<a href="#type-myriad_type_table">myriad_type_table()</a>, NameTable::<a href="#type-id_name_alloc_table">id_name_alloc_table()</a>) -&gt; <a href="#type-myriad_type_table">myriad_type_table()</a></tt><br></p>
 <p> </p>
 </div><p>Adjusts the specified MyriadGUI instances.</p>
 
@@ -284,6 +416,14 @@ been processed once for all, and thus shall not be propagated further).</td></tr
 <p> </p>
 </div><p>Returns a textual representation of specified event table.</p>
 
+<h3 class="function"><a name="get_event_translation_table-0">get_event_translation_table/0</a></h3>
+<div class="spec">
+<p><tt>get_event_translation_table() -&gt; <a href="#type-event_translation_table">event_translation_table()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a bijective table to translate wx and MyriadGUI event types back
+ and forth.
+</p>
+
 <h3 class="function"><a name="get_instance_state-2">get_instance_state/2</a></h3>
 <div class="spec">
 <p><tt>get_instance_state(X1::<a href="#type-myriad_object_ref">myriad_object_ref()</a>, TypeTable::<a href="#type-myriad_type_table">myriad_type_table()</a>) -&gt; <a href="#type-myriad_object_state">myriad_object_state()</a></tt><br></p>
@@ -292,17 +432,29 @@ been processed once for all, and thus shall not be propagated further).</td></tr
 
 <h3 class="function"><a name="get_subscribers_for-3">get_subscribers_for/3</a></h3>
 <div class="spec">
-<p><tt>get_subscribers_for(GUIObject::<a href="#type-gui_object">gui_object()</a>, EventType::<a href="#type-event_type">event_type()</a>, EventTable::<a href="#type-event_table">event_table()</a>) -&gt; [<a href="#type-event_subscriber_pid">event_subscriber_pid()</a>]</tt><br></p>
+<p><tt>get_subscribers_for(GUIObject::<a href="#type-gui_object">gui_object()</a>, EventType::<a href="#type-event_type">event_type()</a>, EventTable::<a href="#type-event_table">event_table()</a>) -&gt; [<a href="#type-event_subscriber">event_subscriber()</a>]</tt><br></p>
 <p> </p>
 </div><p>Returns the subscribers (if any) to the specified GUI object, for the
  specified event type.
 </p>
+
+<h3 class="function"><a name="get_trapped_event_types-1">get_trapped_event_types/1</a></h3>
+<div class="spec">
+<p><tt>get_trapped_event_types(Services::[<a href="#type-service">service()</a>]) -&gt; <a href="#type-trap_set">trap_set()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the set of event types that shall be trapped by default.</p>
 
 <h3 class="function"><a name="instance_referential_to_string-1">instance_referential_to_string/1</a></h3>
 <div class="spec">
 <p><tt>instance_referential_to_string(Instance_referential::<a href="#type-instance_referential">instance_referential()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
 <p> </p>
 </div><p>Returns a textual representation of the specified type table.</p>
+
+<h3 class="function"><a name="match-2">match/2</a></h3>
+<div class="spec">
+<p><tt>match(FirstWxObject::<a href="#type-gui_object">gui_object()</a>, SecondWxObject::<a href="#type-gui_object">gui_object()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Tells whether the two specified GUI objects match (equality operator).</p>
 
 <h3 class="function"><a name="process_only_latest_repaint_event-4">process_only_latest_repaint_event/4</a></h3>
 <div class="spec">
@@ -314,26 +466,13 @@ been processed once for all, and thus shall not be propagated further).</td></tr
 
 <h3 class="function"><a name="propagate_event-1">propagate_event/1</a></h3>
 <div class="spec">
-<p><tt>propagate_event(Event_context::<a href="#type-event_context">event_context()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>propagate_event(GUIEventObject::<a href="#type-gui_event_object">gui_event_object()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p><p>Propagates the event designated by the specified context upward in the 
-widget hierarchy (instead of the default, which is considering that it has 
-been processed once for all, and thus shall not be propagated further).</p>
+</div><p><p>Propagates the specified event upward in the widget hierarchy, so that it 
+can be processed by parent handlers knowing that, for some event types, by 
+default no event propagation is enabled.</p>
 
- <p>Events are handled in order, from bottom to top in the widgets hierarchy, by 
-the last subscribed handler first. Most of the events have default event 
-handler(s) set.</p>
-
- <p>As a result, calling this function results in having the corresponding event 
-handled by the other handler(s) afterwards.</p>
-
- <p>In general, it is recommended to propagate all non-command events to allow the 
-default handling to take place. The command events are, however, normally not 
-propagated as usually a single command such as a button click or menu item 
-selection must only be processed by one handler.</p>
-
- Note: to be called from an event handler, i.e. at least from a process which
- set the wx environment.
+ Refer to gui:propagate_event/1 for all details.
 </p>
 
 <h3 class="function"><a name="reassign_table_to_string-1">reassign_table_to_string/1</a></h3>
@@ -342,15 +481,21 @@ selection must only be processed by one handler.</p>
 <p> </p>
 </div><p>Returns a textual representation of the specified reassign table.</p>
 
+<h3 class="function"><a name="set_canvas_instance_state-3">set_canvas_instance_state/3</a></h3>
+<div class="spec">
+<p><tt>set_canvas_instance_state(CanvasId::<a href="#type-myriad_instance_id">myriad_instance_id()</a>, CanvasState::<a href="#type-myriad_object_state">myriad_object_state()</a>, TypeTable::<a href="#type-myriad_type_table">myriad_type_table()</a>) -&gt; <a href="#type-myriad_type_table">myriad_type_table()</a></tt><br></p>
+<p> </p>
+</div><p>Sets the internal state of the specified canvas instance.</p>
+
 <h3 class="function"><a name="set_instance_state-3">set_instance_state/3</a></h3>
 <div class="spec">
 <p><tt>set_instance_state(X1::<a href="#type-myriad_object_ref">myriad_object_ref()</a>, InstanceState::<a href="#type-myriad_object_state">myriad_object_state()</a>, TypeTable::<a href="#type-myriad_type_table">myriad_type_table()</a>) -&gt; <a href="#type-myriad_type_table">myriad_type_table()</a></tt><br></p>
 <p> </p>
 </div><p>Returns the internal state of the specified MyriadGUI instance.</p>
 
-<h3 class="function"><a name="start_main_event_loop-2">start_main_event_loop/2</a></h3>
+<h3 class="function"><a name="start_main_event_loop-4">start_main_event_loop/4</a></h3>
 <div class="spec">
-<p><tt>start_main_event_loop(WxServer::<a href="#type-wx_server">wx_server()</a>, WxEnv::<a href="#type-wx_env">wx_env()</a>) -&gt; no_return()</tt><br></p>
+<p><tt>start_main_event_loop(WxServer::<a href="#type-wx_server">wx_server()</a>, WxEnv::<a href="#type-wx_env">wx_env()</a>, TrapSet::<a href="#type-trap_set">trap_set()</a>, EventTranslationTable::<a href="#type-event_translation_table">event_translation_table()</a>) -&gt; no_return()</tt><br></p>
 <p> </p>
 </div><p><p>Starts the internal, main event loop of MyriadGUI.</p>
 
@@ -361,11 +506,28 @@ respective subscribers.</p>
  notified of all relevant information (and only them).
 </p>
 
+<h3 class="function"><a name="trap_event-1">trap_event/1</a></h3>
+<div class="spec">
+<p><tt>trap_event(GUIEventObject::<a href="#type-gui_event_object">gui_event_object()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Traps the specified event: does not propagate it upward in the widget 
+hierarchy, thus considering that it has been processed once for all by the 
+current handler.</p>
+
+ Refer to gui:trap_event/1 for all details.
+</p>
+
 <h3 class="function"><a name="type_table_to_string-1">type_table_to_string/1</a></h3>
 <div class="spec">
 <p><tt>type_table_to_string(Table::<a href="#type-myriad_type_table">myriad_type_table()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
 <p> </p>
 </div><p>Returns a textual representation of the specified type table.</p>
+
+<h3 class="function"><a name="wx_to_myriad_event-2">wx_to_myriad_event/2</a></h3>
+<div class="spec">
+<p><tt>wx_to_myriad_event(WxEvent::<a href="#type-wx_event">wx_event()</a>, EventTranslationTable::<a href="#type-event_translation_table">event_translation_table()</a>) -&gt; <a href="#type-gui_event">gui_event()</a></tt><br></p>
+<p> </p>
+</div><p>Converts the specified wx event into a MyriadGUI one.</p>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

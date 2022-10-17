@@ -27,41 +27,66 @@
 <p><tt>app_timestamp() = <a href="trace_utils.html#type-trace_timestamp">trace_utils:trace_timestamp()</a></tt></p>
 
 
-<h3 class="typedecl"><a name="type-emitter_categorization">emitter_categorization()</a></h3>
-<p><tt>emitter_categorization() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<h3 class="typedecl"><a name="type-bin_string">bin_string()</a></h3>
+<p><tt>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></tt></p>
 
+
+<h3 class="typedecl"><a name="type-emitter_any_categorization">emitter_any_categorization()</a></h3>
+<p><tt>emitter_any_categorization() = <a href="#type-emitter_categorization">emitter_categorization()</a> | <a href="#type-emitter_bin_categorization">emitter_bin_categorization()</a></tt></p>
+<p> Any kind of categorization of a trace emitter.</p>
+
+<h3 class="typedecl"><a name="type-emitter_bin_categorization">emitter_bin_categorization()</a></h3>
+<p><tt>emitter_bin_categorization() = <a href="#type-bin_string">bin_string()</a></tt></p>
+<p> Ex: <code>&lt;&lt;"topics.sports.basketball"&gt;&gt;</code>.</p>
+
+<h3 class="typedecl"><a name="type-emitter_categorization">emitter_categorization()</a></h3>
+<p><tt>emitter_categorization() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><p> The categorization of a trace emitter.</p>
+
+ <p>It is a plain string listing increasingly detailed trace sub-categories, 
+separated by dots.</p>
+
+ Ex: "topics.sports.basketball"</p>
 
 <h3 class="typedecl"><a name="type-emitter_info">emitter_info()</a></h3>
 <p><tt>emitter_info() = {<a href="#type-emitter_name">emitter_name()</a>, <a href="#type-emitter_categorization">emitter_categorization()</a>}</tt></p>
 
 
 <h3 class="typedecl"><a name="type-emitter_name">emitter_name()</a></h3>
-<p><tt>emitter_name() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><tt>emitter_name() = <a href="#type-ustring">ustring()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-file_name">file_name()</a></h3>
+<p><tt>file_name() = <a href="file_utils.html#type-file_name">file_utils:file_name()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-handler_config">handler_config()</a></h3>
+<p><tt>handler_config() = <a href="http://www.erlang.org/edoc/doc/kernel/doc/logger.html#type-handler_config">logger:handler_config()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-location">location()</a></h3>
-<p><tt>location() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><tt>location() = <a href="#type-ustring">ustring()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-message">message()</a></h3>
-<p><tt>message() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
-
+<p><tt>message() = <a href="#type-ustring">ustring()</a></tt></p>
+<p> A trace message.</p>
 
 <h3 class="typedecl"><a name="type-message_categorization">message_categorization()</a></h3>
-<p><tt>message_categorization() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a> | uncategorized</tt></p>
+<p><tt>message_categorization() = <a href="#type-ustring">ustring()</a> | uncategorized</tt></p>
 <p> A message may or may not (which is the default) by categorized.</p>
 
 <h3 class="typedecl"><a name="type-priority">priority()</a></h3>
 <p><tt>priority() = <a href="trace_utils.html#type-trace_priority">trace_utils:trace_priority()</a></tt></p>
-<p> Numerical version.</p>
+<p> Numerical version of the severity of a message.</p>
 
 <h3 class="typedecl"><a name="type-time">time()</a></h3>
-<p><tt>time() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><tt>time() = <a href="#type-ustring">ustring()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-trace_severity">trace_severity()</a></h3>
 <p><tt>trace_severity() = <a href="trace_utils.html#type-trace_severity">trace_utils:trace_severity()</a></tt></p>
-<p> Textual version: 'emergency', 'alert', and all.</p>
+<p> Textual version of the severity of a message: 'emergency', 'alert', and all.</p>
 
 <h3 class="typedecl"><a name="type-trace_supervision_type">trace_supervision_type()</a></h3>
 <p><tt>trace_supervision_type() = advanced_traces | {text_traces, <a href="#type-trace_text_type">trace_text_type()</a>}</tt></p>
@@ -80,6 +105,10 @@ LogMX tool (relying then on our parser); see http://logmx.com/</p>
 <h3 class="typedecl"><a name="type-trace_text_type">trace_text_type()</a></h3>
 <p><tt>trace_text_type() = text_only | pdf</tt></p>
 <p> Text traces are either in pure, raw text, or in PDF.</p>
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
 
 <h2><a name="index">Function Index</a></h2>
 <table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add_handler-0">add_handler/0</a></td><td>Registers this Traces logger handler as an additional one (not replacing
@@ -159,13 +188,13 @@ must be defined and must point to the respective root directories</p>
 
 <h3 class="function"><a name="get_trace_filename-1">get_trace_filename/1</a></h3>
 <div class="spec">
-<p><tt>get_trace_filename(ModuleName::<a href="basic_utils.html#type-module_name">basic_utils:module_name()</a>) -&gt; <a href="file_utils.html#type-file_name">file_utils:file_name()</a></tt><br></p>
+<p><tt>get_trace_filename(ModuleName::<a href="basic_utils.html#type-module_name">basic_utils:module_name()</a>) -&gt; <a href="#type-file_name">file_name()</a></tt><br></p>
 <p> </p>
 </div><p>Returns the name of the file in which traces will be written.</p>
 
 <h3 class="function"><a name="log-2">log/2</a></h3>
 <div class="spec">
-<p><tt>log(LogEvent::<a href="http://www.erlang.org/edoc/doc/kernel/doc/logger.html#type-log_event">logger:log_event()</a>, Config::<a href="http://www.erlang.org/edoc/doc/kernel/doc/logger.html#type-handler_config">logger:handler_config()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>log(LogEvent::<a href="http://www.erlang.org/edoc/doc/kernel/doc/logger.html#type-log_event">logger:log_event()</a>, Config::<a href="#type-handler_config">handler_config()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p><p>Mandatory callback for log handlers.</p>
 

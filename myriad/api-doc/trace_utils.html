@@ -51,7 +51,7 @@ resource consumption at all) thanks to the cond_utils:if_defined* primitives.</p
 <p> An actual trace message.</p>
 
 <h3 class="typedecl"><a name="type-trace_message_categorization">trace_message_categorization()</a></h3>
-<p><tt>trace_message_categorization() = <a href="#type-ustring">ustring()</a></tt></p>
+<p><tt>trace_message_categorization() = atom()</tt></p>
 <p> Categorization of a trace message.</p>
 
 <h3 class="typedecl"><a name="type-trace_priority">trace_priority()</a></h3>
@@ -122,7 +122,8 @@ terms of the newer standard logger).</td></tr>
  time information.</td></tr>
 <tr><td valign="top"><a href="#info_fmt-2">info_fmt/2</a></td><td>Outputs specified formatted info message.</td></tr>
 <tr><td valign="top"><a href="#is_error_like-1">is_error_like/1</a></td><td>Tells whether the specified severity belongs to the error-like ones
- (typically the ones that must never be missed).</td></tr>
+ (typically the ones that must never be missed by the user, hence are echoed on
+ the console as well).</td></tr>
 <tr><td valign="top"><a href="#log-2">log/2</a></td><td>Mandatory callback for log handlers.</td></tr>
 <tr><td valign="top"><a href="#notice-1">notice/1</a></td><td>Outputs specified notice message.</td></tr>
 <tr><td valign="top"><a href="#notice_categorized-2">notice_categorized/2</a></td><td>Outputs specified notice message, with specified message categorization.</td></tr>
@@ -381,7 +382,8 @@ terms of the newer standard logger).</p>
 <p><tt>is_error_like(Severity::<a href="#type-trace_severity">trace_severity()</a>) -&gt; boolean()</tt><br></p>
 <p> </p>
 </div><p>Tells whether the specified severity belongs to the error-like ones
- (typically the ones that must never be missed).
+ (typically the ones that must never be missed by the user, hence are echoed on
+ the console as well).
 </p>
 
 <h3 class="function"><a name="log-2">log/2</a></h3>

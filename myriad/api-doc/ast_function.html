@@ -81,14 +81,14 @@
 <tr><td valign="top"><a href="#check_function_types-2">check_function_types/2</a></td><td>Checks that the specified function types are legit.</td></tr>
 <tr><td valign="top"><a href="#check_function_types-3">check_function_types/3</a></td><td>Checks that the specified function types are legit.</td></tr>
 <tr><td valign="top"><a href="#clauses_to_string-2">clauses_to_string/2</a></td><td>Returns a textual description of the specified function clauses, using
- specified indentation level.</td></tr>
+ the specified indentation level.</td></tr>
 <tr><td valign="top"><a href="#get_located_forms_for-2">get_located_forms_for/2</a></td><td>Returns a pair made of (two) lists of located forms regarding exports.</td></tr>
-<tr><td valign="top"><a href="#transform_function-2">transform_function/2</a></td><td>Transforms specified function.</td></tr>
-<tr><td valign="top"><a href="#transform_function_constraint-2">transform_function_constraint/2</a></td><td>Transforms specified function constraint.</td></tr>
-<tr><td valign="top"><a href="#transform_function_constraints-2">transform_function_constraints/2</a></td><td>Transforms specified function constraints.</td></tr>
+<tr><td valign="top"><a href="#transform_function-2">transform_function/2</a></td><td>Transforms the specified function.</td></tr>
+<tr><td valign="top"><a href="#transform_function_constraint-2">transform_function_constraint/2</a></td><td>Transforms the specified function constraint.</td></tr>
+<tr><td valign="top"><a href="#transform_function_constraints-2">transform_function_constraints/2</a></td><td>Transforms the specified function constraints.</td></tr>
 <tr><td valign="top"><a href="#transform_function_spec-2">transform_function_spec/2</a></td><td>Transforms the specified function specification.</td></tr>
-<tr><td valign="top"><a href="#transform_function_type-2">transform_function_type/2</a></td><td>Transforms specified function type.</td></tr>
-<tr><td valign="top"><a href="#transform_functions-2">transform_functions/2</a></td><td>Transforms the functions in specified table, based on specified
+<tr><td valign="top"><a href="#transform_function_type-2">transform_function_type/2</a></td><td>Transforms the specified function type.</td></tr>
+<tr><td valign="top"><a href="#transform_functions-2">transform_functions/2</a></td><td>Transforms the functions in the specified table, based on the specified
  transforms.</td></tr>
 <tr><td valign="top"><a href="#transform_spec-2">transform_spec/2</a></td><td>Transforms the specified function specification.</td></tr>
 </table>
@@ -160,7 +160,7 @@
 <p><tt>clauses_to_string(Clauses::<a href="meta_utils.html#type-clause_def">meta_utils:clause_def()</a>, IndentationLevel::<a href="text_utils.html#type-indentation_level">text_utils:indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
 <p> </p>
 </div><p>Returns a textual description of the specified function clauses, using
- specified indentation level.
+ the specified indentation level.
 </p>
 
 <h3 class="function"><a name="get_located_forms_for-2">get_located_forms_for/2</a></h3>
@@ -182,13 +182,13 @@ are described in the specified function export table</p>
 <div class="spec">
 <p><tt>transform_function(FunctionInfo::<a href="#type-function_info">function_info()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="#type-function_info">function_info()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
 <p> </p>
-</div><p>Transforms specified function.</p>
+</div><p>Transforms the specified function.</p>
 
 <h3 class="function"><a name="transform_function_constraint-2">transform_function_constraint/2</a></h3>
 <div class="spec">
 <p><tt>transform_function_constraint(X1, Transforms) -&gt; any()</tt></p>
 <p> </p>
-</div><p><p>Transforms specified function constraint.</p>
+</div><p><p>Transforms the specified function constraint.</p>
 
  "If C is a constraint V :: T, where V is a type variable and T is a type, then
  Rep(C) = {type, FILE_LOC, constraint,[{atom, FILE_LOC, is_subtype},[Rep(V),
@@ -199,7 +199,7 @@ are described in the specified function export table</p>
 <div class="spec">
 <p><tt>transform_function_constraints(FunctionConstraints, Transforms) -&gt; any()</tt></p>
 <p> </p>
-</div><p><p>Transforms specified function constraints.</p>
+</div><p><p>Transforms the specified function constraints.</p>
 
  <p>(Helper, corresponding to function_constraint/1 in erl_id_trans)</p>
 
@@ -224,7 +224,7 @@ are described in the specified function export table</p>
 <div class="spec">
 <p><tt>transform_function_type(UnexpectedFunType, Transforms) -&gt; any()</tt></p>
 <p> </p>
-</div><p><p>Transforms specified function type.</p>
+</div><p><p>Transforms the specified function type.</p>
 
  <p>(helper, corresponding to function_type/1 in erl_id_trans)</p>
 
@@ -237,7 +237,7 @@ are described in the specified function export table</p>
 <div class="spec">
 <p><tt>transform_functions(FunctionTable::<a href="#type-function_table">function_table()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="#type-function_table">function_table()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
 <p> </p>
-</div><p>Transforms the functions in specified table, based on specified
+</div><p>Transforms the functions in the specified table, based on the specified
  transforms.
 </p>
 

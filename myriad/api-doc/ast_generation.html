@@ -36,8 +36,8 @@ corresponding to the specified number of such variables.</td></tr>
 <tr><td valign="top"><a href="#get_header_params-1">get_header_params/1</a></td><td>Returns, as form elements, conventional call parameter names, as form 
 elements, corresponding to a function of specified arity.</td></tr>
 <tr><td valign="top"><a href="#get_iterated_param_name-1">get_iterated_param_name/1</a></td><td>Returns, in AST form, a reference to an iterated variable.</td></tr>
-<tr><td valign="top"><a href="#list_to_form-1">list_to_form/1</a></td><td>Transforms specified list (whose elements are typically themselves form 
-elements already) into the AST version of a list.</td></tr>
+<tr><td valign="top"><a href="#list_to_form-1">list_to_form/1</a></td><td>Transforms the specified list (whose elements are typically themselves 
+form elements already) into the AST version of a list.</td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
@@ -98,8 +98,8 @@ elements, corresponding to a function of specified arity.</p>
  <p>This is typically useful when generating a function form, to define its 
 header, like in 'f(A,B)-&gt;...'.</p>
 
- <p>Ex: [{var,FileLoc,'Myriad_Param_1'}, {var,FileLoc,'Myriad_Param_2'}] = 
-get_header_params( 2 ).</p>
+ <p>Ex: [{var,FileLoc,'Myriad_Param_1'}, {var,FileLoc,'Myriad_Param_2'}] =           
+get_header_params(2).</p>
 
  See also: enumerated_variables_to_form/1.
 </p>
@@ -110,15 +110,15 @@ get_header_params( 2 ).</p>
 <p> </p>
 </div><p><p>Returns, in AST form, a reference to an iterated variable.</p>
 
- Ex: 'Myriad_Param_4' = get_iterated_param_name( 4 ).
+ Ex: 'Myriad_Param_4' = get_iterated_param_name(4).
 </p>
 
 <h3 class="function"><a name="list_to_form-1">list_to_form/1</a></h3>
 <div class="spec">
 <p><tt>list_to_form(List::list()) -&gt; <a href="#type-form_element">form_element()</a></tt><br></p>
 <p> </p>
-</div><p><p>Transforms specified list (whose elements are typically themselves form 
-elements already) into the AST version of a list.</p>
+</div><p><p>Transforms the specified list (whose elements are typically themselves 
+form elements already) into the AST version of a list.</p>
 
  <p>Ex: list_to_form( [{atom,FileLoc,a}, {atom,FileLoc,b}]) = {cons, FileLoc, 
 {atom,FileLoc,a}, {cons, FileLoc, {atom,FileLoc,b}, {nil,FileLoc}}}.</p>

@@ -39,6 +39,10 @@
 <p><tt>positive_index() = <a href="basic_utils.html#type-positive_index">basic_utils:positive_index()</a></tt></p>
 <p> These indexes start at 1.</p>
 
+<h3 class="typedecl"><a name="type-proplist">proplist()</a></h3>
+<p><tt>proplist() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/proplists.html#type-proplist">proplists:proplist()</a></tt></p>
+
+
 <h2><a name="index">Function Index</a></h2>
 <table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add_as_heads-2">add_as_heads/2</a></td><td>Adds the specified elements as heads of the specified lists.</td></tr>
 <tr><td valign="top"><a href="#append_at_end-2">append_at_end/2</a></td><td>Appends specified element at the end of specified list, without changing 
@@ -93,19 +97,25 @@ knowing that they all have the same probability of being drawn initially, but
 when an element is drawn, it is removed from the candidate list so that the 
 next drawing operates on the resulting shortened list, so that any element is 
 drawn up to once.</td></tr>
+<tr><td valign="top"><a href="#duplicate-2">duplicate/2</a></td><td>Returns a list made of the specified number of occurrences of the
+ specified element.</td></tr>
 <tr><td valign="top"><a href="#ensure_atoms-1">ensure_atoms/1</a></td><td>Ensures that the specified argument is a list of atoms: encloses any atom
  in a list of its own if not already a list, or check that this list is only
- populated of atoms.</td></tr>
+ populated of atoms; respects any original order.</td></tr>
 <tr><td valign="top"><a href="#ensure_is_once_in-2">ensure_is_once_in/2</a></td><td>Ensures that specified element is included once in specified unordered 
 list (supposed to contain it already up to once).</td></tr>
 <tr><td valign="top"><a href="#ensure_list-1">ensure_list/1</a></td><td>Ensures that the specified argument is a list: encloses it in a list of 
-its own if not already a list.</td></tr>
+its own if not already a list; respects any original order.</td></tr>
 <tr><td valign="top"><a href="#ensure_pids-1">ensure_pids/1</a></td><td>Ensures that the specified argument is a list of PIDs: encloses any PID
  in a list of its own if not already a list, or check that this list is only
- populated of PIDs.</td></tr>
+ populated of PIDs; respects any original order.</td></tr>
+<tr><td valign="top"><a href="#ensure_proplist-1">ensure_proplist/1</a></td><td>Ensures that the specified argument is a proplist, that is a list of
+ atoms or of pairs whose first argument is an atom: encloses any of such
+ element in a list of its own if not already a list, or checks that this list
+ is only populated as expected; respects any original order.</td></tr>
 <tr><td valign="top"><a href="#ensure_tuples-1">ensure_tuples/1</a></td><td>Ensures that the specified argument is a list of tuples: encloses any
  tuple in a list of its own if not already a list, or check that this list is
- only populated of tuples.</td></tr>
+ only populated of tuples; respects any original order.</td></tr>
 <tr><td valign="top"><a href="#extract_element_at-2">extract_element_at/2</a></td><td>Extracts element from the specified list, at the specified index.</td></tr>
 <tr><td valign="top"><a href="#extract_element_if_existing-2">extract_element_if_existing/2</a></td><td>Extracts the (first occurrence of the) specified element from the
  specified list, if existing there, then returning the shrunk list (with that
@@ -146,6 +156,8 @@ list, and of its remainder (tail).</td></tr>
 the specified element at each possible place in L (including before and 
 after).</td></tr>
 <tr><td valign="top"><a href="#insert_element_at-3">insert_element_at/3</a></td><td>Inserts specified element at specified position in the specified list.</td></tr>
+<tr><td valign="top"><a href="#intercalate-2">intercalate/2</a></td><td>Intercalates the specified term between all elements of the specified 
+list.</td></tr>
 <tr><td valign="top"><a href="#intersection-2">intersection/2</a></td><td>Returns the intersection of the two specified lists, that is the list of 
 all elements that are in both lists.</td></tr>
 <tr><td valign="top"><a href="#random_permute-1">random_permute/1</a></td><td>Returns a random uniform permutation of the specified list.</td></tr>
@@ -176,7 +188,7 @@ removed, even if in L1 they were duplicated.</td></tr>
 <tr><td valign="top"><a href="#union-2">union/2</a></td><td>Returns the union of the two specified lists, that is the list of all
  elements that are in either list.</td></tr>
 <tr><td valign="top"><a href="#uniquify-1">uniquify/1</a></td><td>Returns a list whose elements are the ones of the specified list, except 
-that they are unique (all their duplicates have been removed).</td></tr>
+that they are unique (all their next duplicates have been removed).</td></tr>
 <tr><td valign="top"><a href="#uniquify_ordered-1">uniquify_ordered/1</a></td><td>Returns a list whose elements are the ones of the specified list, except 
 that they are unique (all their duplicates have been removed), while the order 
 in the kept elements is preserved.</td></tr>
@@ -421,13 +433,21 @@ drawn up to once.</p>
  elements.
 </p>
 
+<h3 class="function"><a name="duplicate-2">duplicate/2</a></h3>
+<div class="spec">
+<p><tt>duplicate(Elem::<a href="#type-element">element()</a>, Count::<a href="#type-count">count()</a>) -&gt; [<a href="#type-element">element()</a>]</tt><br></p>
+<p> </p>
+</div><p>Returns a list made of the specified number of occurrences of the
+ specified element.
+</p>
+
 <h3 class="function"><a name="ensure_atoms-1">ensure_atoms/1</a></h3>
 <div class="spec">
 <p><tt>ensure_atoms(Atom) -&gt; any()</tt></p>
 <p> </p>
 </div><p>Ensures that the specified argument is a list of atoms: encloses any atom
  in a list of its own if not already a list, or check that this list is only
- populated of atoms.
+ populated of atoms; respects any original order.
 </p>
 
 <h3 class="function"><a name="ensure_is_once_in-2">ensure_is_once_in/2</a></h3>
@@ -445,7 +465,7 @@ list (supposed to contain it already up to once).</p>
 <p><tt>ensure_list(List::<a href="#type-maybe_list">maybe_list</a>(T)) -&gt; [T]</tt><br></p>
 <p> </p>
 </div><p><p>Ensures that the specified argument is a list: encloses it in a list of 
-its own if not already a list.</p>
+its own if not already a list; respects any original order.</p>
 
  Note: not to be applied on strings for example.
 </p>
@@ -456,7 +476,17 @@ its own if not already a list.</p>
 <p> </p>
 </div><p>Ensures that the specified argument is a list of PIDs: encloses any PID
  in a list of its own if not already a list, or check that this list is only
- populated of PIDs.
+ populated of PIDs; respects any original order.
+</p>
+
+<h3 class="function"><a name="ensure_proplist-1">ensure_proplist/1</a></h3>
+<div class="spec">
+<p><tt>ensure_proplist(Atom::<a href="#type-maybe_list">maybe_list</a>(atom() | {atom(), any()})) -&gt; <a href="#type-proplist">proplist()</a></tt><br></p>
+<p> </p>
+</div><p>Ensures that the specified argument is a proplist, that is a list of
+ atoms or of pairs whose first argument is an atom: encloses any of such
+ element in a list of its own if not already a list, or checks that this list
+ is only populated as expected; respects any original order.
 </p>
 
 <h3 class="function"><a name="ensure_tuples-1">ensure_tuples/1</a></h3>
@@ -465,7 +495,7 @@ its own if not already a list.</p>
 <p> </p>
 </div><p>Ensures that the specified argument is a list of tuples: encloses any
  tuple in a list of its own if not already a list, or check that this list is
- only populated of tuples.
+ only populated of tuples; respects any original order.
 </p>
 
 <h3 class="function"><a name="extract_element_at-2">extract_element_at/2</a></h3>
@@ -573,7 +603,11 @@ present there only once, will not be referenced in the returned list; use
 count_occurrences/1 if wanting to include the terms that are listed only once 
 each.</p>
 
- Ex: list_utils:get_duplicates([a,a,b,b,b,c,d,d]) = [{b,3},{d,2},{a,2}]
+ <p>Ex: L = [a,a,b,b,b,c,d,d],     
+[{b,3},{d,2},{a,2}] = list_utils:get_duplicates(L)</p>
+
+ Use lists:keysort(2, list_utils:get_duplicates(L)) to sort duplicates by
+ increasing number of occurrences (e.g. [{d,2},{a,2},{b,3}] here).
 </p>
 
 <h3 class="function"><a name="get_element_at-2">get_element_at/2</a></h3>
@@ -685,6 +719,20 @@ after).</p>
 
  For example, insert_element_at(foo, [a, b, c, d], 3) will return
  [a, b, foo, c, d].
+</p>
+
+<h3 class="function"><a name="intercalate-2">intercalate/2</a></h3>
+<div class="spec">
+<p><tt>intercalate(Elem::<a href="#type-element">element()</a>, TargetList::list()) -&gt; list()</tt><br></p>
+<p> </p>
+</div><p><p>Intercalates the specified term between all elements of the specified 
+list.</p>
+
+ For example:
+  [] = list_utils:intercalate('a', []),
+  [1] = list_utils:intercalate('a', [1]),
+  [1,a,2] = list_utils:intercalate('a', [1,2]),
+  [1,a,2,a,3] = list_utils:intercalate('a', [1,2,3]).
 </p>
 
 <h3 class="function"><a name="intersection-2">intersection/2</a></h3>
@@ -866,12 +914,12 @@ only the first one) are removed. See also: the '--' operator.</p>
 <p><tt>uniquify(List::list()) -&gt; list()</tt><br></p>
 <p> </p>
 </div><p><p>Returns a list whose elements are the ones of the specified list, except 
-that they are unique (all their duplicates have been removed).</p>
+that they are unique (all their next duplicates have been removed).</p>
 
  <p>No specific order is respected in the returned list.</p>
 
  Ex: if L = [1,2,3,2,2,4,5,5,4,6,6,5], then uniquify(L) is:
- [3,6,2,5,1,4].
+ [1,2,3,4,5,6].
 </p>
 
 <h3 class="function"><a name="uniquify_ordered-1">uniquify_ordered/1</a></h3>

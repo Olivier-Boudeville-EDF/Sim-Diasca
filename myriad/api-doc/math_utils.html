@@ -96,11 +96,11 @@
 <h3 class="typedecl"><a name="type-probability_like">probability_like()</a></h3>
 <p><tt>probability_like() = number()</tt></p>
 <p><p> A non-negative number (an integer or floating-point) that can be translated to 
-a normalized probability by scaling it.</p>
+a normalised probability by scaling it to [0.0,1.0].</p>
 
  Ex: if considering two exclusive events whose
  respective likeliness is quantified as 20 and 30, then these probability-like
- elements can be translated to actual (normalized) probabilities of
+ elements can be translated to actual (normalised) probabilities of
  20/(20+30)=0.4 and 0.6.</p>
 
 <h3 class="typedecl"><a name="type-radians">radians()</a></h3>
@@ -114,6 +114,10 @@ a normalized probability by scaling it.</p>
 <h3 class="typedecl"><a name="type-standard_deviation">standard_deviation()</a></h3>
 <p><tt>standard_deviation() = float()</tt></p>
 <p> Standard deviation, as used to describe a Gaussian curve.</p>
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
 
 <h3 class="typedecl"><a name="type-variance">variance()</a></h3>
 <p><tt>variance() = float()</tt></p>
@@ -136,6 +140,7 @@ deemed close enough, relatively, to be equal.</td></tr>
  corresponds to the specified angle is in the [0;360[ interval.</td></tr>
 <tr><td valign="top"><a href="#ceiling-1">ceiling/1</a></td><td>Returns the smallest integer bigger than the specified floating-point 
 value.</td></tr>
+<tr><td valign="top"><a href="#check_percent_basic_range-1">check_percent_basic_range/1</a></td><td>Checks that the specified percentage is in the usual [0.0, 1.0] range.</td></tr>
 <tr><td valign="top"><a href="#clamp-2">clamp/2</a></td><td>Clamps the specified possibly-infinite number within the specified
  possibly-infinite range.</td></tr>
 <tr><td valign="top"><a href="#clamp-3">clamp/3</a></td><td>Clamps specified value between specified bounds: the returned value V is 
@@ -150,9 +155,14 @@ specified integer.</td></tr>
 <tr><td valign="top"><a href="#get_relative_difference-2">get_relative_difference/2</a></td><td>Returns the relative difference between the two specified numbers.</td></tr>
 <tr><td valign="top"><a href="#is_null-1">is_null/1</a></td><td>Returns true iff the specified number (floating-point or even integer) is
  deemed close enough to zero to be null.</td></tr>
+<tr><td valign="top"><a href="#is_null_number-1">is_null_number/1</a></td><td>Returns true iff the specified number is deemed close enough to zero to
+ be null.</td></tr>
 <tr><td valign="top"><a href="#modulo-2">modulo/2</a></td><td>Returns the positive remainder of the division of X by Y, in [0;Y[.</td></tr>
 <tr><td valign="top"><a href="#normalise-2">normalise/2</a></td><td>Normalises, in the specified list of tuples, the elements at the 
-specified index (expected to be floats), so that their sum is equal to 1.0.</td></tr>
+specified index (expected to be numbers, whose sum is non-null), so that their 
+sum is equal to 1.0.</td></tr>
+<tr><td valign="top"><a href="#probability_like_to_string-1">probability_like_to_string/1</a></td><td>Returns a textual description of the specified probability.</td></tr>
+<tr><td valign="top"><a href="#probability_to_string-1">probability_to_string/1</a></td><td>Returns a textual description of the specified probability.</td></tr>
 <tr><td valign="top"><a href="#radian_to_degree-1">radian_to_degree/1</a></td><td>Converts specified angle in radian into the same angle expressed in
  degrees.</td></tr>
 <tr><td valign="top"><a href="#round_after-2">round_after/2</a></td><td>Rounds the specified floating-point number at specified offset after the 
@@ -256,6 +266,15 @@ value.</p>
  here, which returns an integer rather than a float.
 </p>
 
+<h3 class="function"><a name="check_percent_basic_range-1">check_percent_basic_range/1</a></h3>
+<div class="spec">
+<p><tt>check_percent_basic_range(P::<a href="#type-percent">percent()</a>) -&gt; <a href="#type-percent">percent()</a></tt><br></p>
+<p> </p>
+</div><p><p>Checks that the specified percentage is in the usual [0.0, 1.0] range.</p>
+
+ Returns that percentage.
+</p>
+
 <h3 class="function"><a name="clamp-2">clamp/2</a></h3>
 <div class="spec">
 <p><tt>clamp(Number::<a href="#type-infinite_number">infinite_number()</a>, R::<a href="#type-infinite_range">infinite_range()</a>) -&gt; <a href="#type-infinite_number">infinite_number()</a></tt><br></p>
@@ -332,6 +351,14 @@ specified integer.</p>
  deemed close enough to zero to be null.
 </p>
 
+<h3 class="function"><a name="is_null_number-1">is_null_number/1</a></h3>
+<div class="spec">
+<p><tt>is_null_number(I::number()) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Returns true iff the specified number is deemed close enough to zero to
+ be null.
+</p>
+
 <h3 class="function"><a name="modulo-2">modulo/2</a></h3>
 <div class="spec">
 <p><tt>modulo(X::integer(), Y::<a href="#type-non_zero_integer">non_zero_integer()</a>) -&gt; non_neg_integer()</tt><br></p>
@@ -347,11 +374,24 @@ specified integer.</p>
 <p><tt>normalise(DataTuples::[tuple()], Index::<a href="#type-positive_index">positive_index()</a>) -&gt; [tuple()]</tt><br></p>
 <p> </p>
 </div><p><p>Normalises, in the specified list of tuples, the elements at the 
-specified index (expected to be floats), so that their sum is equal to 1.0.</p>
+specified index (expected to be numbers, whose sum is non-null), so that their 
+sum is equal to 1.0.</p>
 
  Ex: normalise([{a,3}, {"hello",5}, {1,2}], _Index=2)
                  = [{a,0.3}, {"hello",0.5}, {1,0.2}]
 </p>
+
+<h3 class="function"><a name="probability_like_to_string-1">probability_like_to_string/1</a></h3>
+<div class="spec">
+<p><tt>probability_like_to_string(ProbLike::<a href="#type-probability_like">probability_like()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of the specified probability.</p>
+
+<h3 class="function"><a name="probability_to_string-1">probability_to_string/1</a></h3>
+<div class="spec">
+<p><tt>probability_to_string(Probability::<a href="#type-probability">probability()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of the specified probability.</p>
 
 <h3 class="function"><a name="radian_to_degree-1">radian_to_degree/1</a></h3>
 <div class="spec">

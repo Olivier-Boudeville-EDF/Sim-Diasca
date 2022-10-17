@@ -29,7 +29,7 @@
 <p> Designates a font object.</p>
 
 <h3 class="typedecl"><a name="type-font_family">font_family()</a></h3>
-<p><tt>font_family() = default_font_family</tt></p>
+<p><tt>font_family() = default_font_family | decorative | roman | script | swiss | modern | teletype</tt></p>
 <p> A font family.</p>
 
 <h3 class="typedecl"><a name="type-font_option">font_option()</a></h3>
@@ -41,12 +41,12 @@
 <p> The dimensions, in pixels, of characters drawn from a font.</p>
 
 <h3 class="typedecl"><a name="type-font_style">font_style()</a></h3>
-<p><tt>font_style() = normal</tt></p>
+<p><tt>font_style() = normal | italic | slant</tt></p>
 <p> A font style.</p>
 
 <h3 class="typedecl"><a name="type-font_weight">font_weight()</a></h3>
-<p><tt>font_weight() = bold</tt></p>
-<p> A font style.</p>
+<p><tt>font_weight() = thin | extra_light | light | normal | medium | semi_bold | bold | extra_bold | heavy | extra_heavy</tt></p>
+<p> A font weight.</p>
 
 <h3 class="typedecl"><a name="type-point_size">point_size()</a></h3>
 <p><tt>point_size() = <a href="gui.html#type-length">gui:length()</a></tt></p>
@@ -81,10 +81,17 @@
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#create-4">create/4</a></td><td>Creates a font object from specified requirements, to determine the
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#create-1">create/1</a></td><td>Creates a font object from specified requirements, to determine the
+ appearance of rendered text.</td></tr>
+<tr><td valign="top"><a href="#create-2">create/2</a></td><td>Creates a font object from specified requirements, to determine the
+ appearance of rendered text.</td></tr>
+<tr><td valign="top"><a href="#create-3">create/3</a></td><td>Creates a font object from specified requirements, to determine the
+ appearance of rendered text.</td></tr>
+<tr><td valign="top"><a href="#create-4">create/4</a></td><td>Creates a font object from specified requirements, to determine the
  appearance of rendered text.</td></tr>
 <tr><td valign="top"><a href="#create-5">create/5</a></td><td>Creates a font object from specified requirements, to determine the
  appearance of rendered text.</td></tr>
+<tr><td valign="top"><a href="#destruct-1">destruct/1</a></td><td>Destructs the specified font.</td></tr>
 <tr><td valign="top"><a href="#get_text_extent-2">get_text_extent/2</a></td><td>Returns the extent used by the rendering of the specified single-line
  text with the specified font.</td></tr>
 <tr><td valign="top"><a href="#to_wx_font_family-1">to_wx_font_family/1</a></td><td>Converts the specified font family into a wx one.</td></tr>
@@ -93,6 +100,30 @@
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="create-1">create/1</a></h3>
+<div class="spec">
+<p><tt>create(FontSize::<a href="#type-font_size">font_size()</a> | <a href="#type-point_size">point_size()</a>) -&gt; <a href="#type-font">font()</a></tt><br></p>
+<p> </p>
+</div><p>Creates a font object from specified requirements, to determine the
+ appearance of rendered text.
+</p>
+
+<h3 class="function"><a name="create-2">create/2</a></h3>
+<div class="spec">
+<p><tt>create(FontSize::<a href="#type-font_size">font_size()</a> | <a href="#type-point_size">point_size()</a>, FontFamily::<a href="#type-font_family">font_family()</a>) -&gt; <a href="#type-font">font()</a></tt><br></p>
+<p> </p>
+</div><p>Creates a font object from specified requirements, to determine the
+ appearance of rendered text.
+</p>
+
+<h3 class="function"><a name="create-3">create/3</a></h3>
+<div class="spec">
+<p><tt>create(FontSize::<a href="#type-font_size">font_size()</a> | <a href="#type-point_size">point_size()</a>, FontFamily::<a href="#type-font_family">font_family()</a>, FontStyle::<a href="#type-font_style">font_style()</a>) -&gt; <a href="#type-font">font()</a></tt><br></p>
+<p> </p>
+</div><p>Creates a font object from specified requirements, to determine the
+ appearance of rendered text.
+</p>
 
 <h3 class="function"><a name="create-4">create/4</a></h3>
 <div class="spec">
@@ -109,6 +140,12 @@
 </div><p>Creates a font object from specified requirements, to determine the
  appearance of rendered text.
 </p>
+
+<h3 class="function"><a name="destruct-1">destruct/1</a></h3>
+<div class="spec">
+<p><tt>destruct(Font::<a href="#type-font">font()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Destructs the specified font.</p>
 
 <h3 class="function"><a name="get_text_extent-2">get_text_extent/2</a></h3>
 <div class="spec">

@@ -26,6 +26,20 @@ any two of them.</p>
 
 <h2><a name="types">Data Types</a></h2>
 
+<h3 class="typedecl"><a name="type-bin_string">bin_string()</a></h3>
+<p><tt>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-id">id()</a></h3>
+<p><tt>id() = <a href="#type-uuid">uuid()</a> | <a href="#type-integer_id">integer_id()</a> | <a href="#type-sortable_id">sortable_id()</a> | pid() | reference() | term()</tt></p>
+<p><p> Any type of identifier.</p>
+
+ <p>Identifiers may be transient (ex: PIDs are unique during the life of a VM) or 
+permanent (ex: UUID), local to a node or global.</p>
+
+ Besides being each unique, all of them are expected to be directly comparable
+ thanks to the base, Erlang term order.</p>
+
 <h3 class="typedecl"><a name="type-identifiable_element">identifiable_element()</a></h3>
 <p><tt>identifiable_element() = any()</tt></p>
 <p> Any type of element to which an identifier could be associated.</p>
@@ -36,10 +50,10 @@ any two of them.</p>
 
 <h3 class="typedecl"><a name="type-integer_id">integer_id()</a></h3>
 <p><tt>integer_id() = non_neg_integer()</tt></p>
-<p> Integer identifiers start at 1.</p>
+<p> Integer identifiers (e.g. mere counters) start at 1.</p>
 
 <h3 class="typedecl"><a name="type-sortable_id">sortable_id()</a></h3>
-<p><tt>sortable_id() = [integer()] | <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></tt></p>
+<p><tt>sortable_id() = [non_neg_integer()] | <a href="#type-bin_string">bin_string()</a></tt></p>
 <p><p> Corresponds to smart (sortable, insertion-friendly) identifiers, typically 
 represented (externally) as {1}, {2}, {2,1}, {4}, etc.</p>
 
@@ -89,7 +103,7 @@ human-readable as possible.</p>
 
 
 <h3 class="typedecl"><a name="type-uuid">uuid()</a></h3>
-<p><tt>uuid() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><tt>uuid() = <a href="#type-ustring">ustring()</a></tt></p>
 <p> A string UUID (ex: "ed64ffd4-74ee-43dc-adba-be37ed8735aa").</p>
 
 <h2><a name="index">Function Index</a></h2>
@@ -111,7 +125,7 @@ specified one, yet not finer (that is at the same depth).</td></tr>
 <tr><td valign="top"><a href="#get_next_sortable_id-1">get_next_sortable_id/1</a></td><td>Returns a relevant sortable identifier that is superior to the specified
  one.</td></tr>
 <tr><td valign="top"><a href="#get_sortable_id_between-2">get_sortable_id_between/2</a></td><td>Returns a sortable identifier that can be inserted between the two 
-specified ones, which are presumably ordered.</td></tr>
+specified ones, which are presumably ordered (first being lower than second).</td></tr>
 <tr><td valign="top"><a href="#get_sortable_id_lower_bound-0">get_sortable_id_lower_bound/0</a></td><td>Returns the maximum lower bound of sortable identifiers - knowing that
  this value does not pertain to sortable identifiers.</td></tr>
 <tr><td valign="top"><a href="#get_sortable_id_upper_bound-0">get_sortable_id_upper_bound/0</a></td><td>Returns the minimum upper bound of sortable identifiers - knowing that
@@ -209,7 +223,7 @@ specified one, yet not finer (that is at the same depth).</p>
 <p><tt>get_sortable_id_between(Id::<a href="#type-sortable_id">sortable_id()</a>, HigherId::<a href="#type-sortable_id">sortable_id()</a>) -&gt; <a href="#type-sortable_id">sortable_id()</a></tt><br></p>
 <p> </p>
 </div><p><p>Returns a sortable identifier that can be inserted between the two 
-specified ones, which are presumably ordered.</p>
+specified ones, which are presumably ordered (first being lower than second).</p>
 
  <p>Note: most probably the most useful function in order to create new sortable 
 identifiers.</p>

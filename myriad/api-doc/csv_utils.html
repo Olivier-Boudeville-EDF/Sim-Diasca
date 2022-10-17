@@ -39,12 +39,19 @@ being required, etc.).</p>
 
 <h3 class="typedecl"><a name="type-field_count">field_count()</a></h3>
 <p><tt>field_count() = <a href="#type-count">count()</a></tt></p>
-<p> Number of fields.</p>
+<p> Number of fields in a row.</p>
 
 <h3 class="typedecl"><a name="type-mixed_content">mixed_content()</a></h3>
 <p><tt>mixed_content() = [<a href="#type-row">row()</a> | [<a href="#type-value">value()</a>]]</tt></p>
 <p> A CSV content, as an (ordered) list of rows that match a row spec (ex:
  expected number of fields) or not (then represented as a mere list of values).</p>
+
+<h3 class="typedecl"><a name="type-reading_outcome">reading_outcome()</a></h3>
+<p><tt>reading_outcome() = {Rows::<a href="#type-content">content()</a>, <a href="#type-row_count">row_count()</a>, <a href="#type-field_count">field_count()</a>}</tt></p>
+<p> The result of the parsing of a CSV file, comprised of:
+ - the corresponding content, as an ordered list of rows
+ - the number of rows found
+ - the number of fields they all have</p>
 
 <h3 class="typedecl"><a name="type-row">row()</a></h3>
 <p><tt>row() = tuple()</tt></p>
@@ -77,22 +84,24 @@ A row of a CSV content, as a tuple of values.</p>
  of unspecified field count) contains only empty values (empty strings).</td></tr>
 <tr><td valign="top"><a href="#content_to_string-1">content_to_string/1</a></td><td>Returns a textual representation of the specified content.</td></tr>
 <tr><td valign="top"><a href="#get_usual_separators-0">get_usual_separators/0</a></td><td>Returns the most usual separators used in CSV files.</td></tr>
-<tr><td valign="top"><a href="#interpret_file-1">interpret_file/1</a></td><td>Interprets specified file, with no prior knowledge about the separator or 
-the number of fields per row.</td></tr>
-<tr><td valign="top"><a href="#interpret_file-2">interpret_file/2</a></td><td>Interprets specified file, based on specified separator, with no prior 
-knowledge about the number of fields per row.</td></tr>
-<tr><td valign="top"><a href="#interpret_file-3">interpret_file/3</a></td><td>Interprets specified file, based on specified separator and number of 
-fields per row.</td></tr>
-<tr><td valign="top"><a href="#read_file-1">read_file/1</a></td><td>Reads specified file, expected to be in CSV format and supposed to be 
-homogeneous (all non-dropping rows having the same number of fields - 
+<tr><td valign="top"><a href="#interpret_file-1">interpret_file/1</a></td><td>Interprets the specified file, with no prior knowledge about the 
+separator or the number of fields per row.</td></tr>
+<tr><td valign="top"><a href="#interpret_file-2">interpret_file/2</a></td><td>Interprets the specified file, based on the specified separator, with no 
+prior knowledge about the number of fields per row.</td></tr>
+<tr><td valign="top"><a href="#interpret_file-3">interpret_file/3</a></td><td>Interprets the specified file, based on the specified separator and 
+number of fields per row.</td></tr>
+<tr><td valign="top"><a href="#read_file-1">read_file/1</a></td><td>Reads the specified file, expected to be in the CSV format and supposed 
+to be homogeneous (all non-dropping rows having the same number of fields - 
 otherwise an exception is raised), using the default separator.</td></tr>
-<tr><td valign="top"><a href="#read_file-2">read_file/2</a></td><td>Reads specified file, expected to be in CSV format and supposed to be 
-homogeneous (all non-dropped rows having the same number of fields - otherwise 
-an exception is raised), using the specified separator.</td></tr>
-<tr><td valign="top"><a href="#write_file-2">write_file/2</a></td><td>Writes the specified content (that is a list of homogeneous row tuples)
- in the specified CSV file, using the default separator for that.</td></tr>
-<tr><td valign="top"><a href="#write_file-3">write_file/3</a></td><td>Writes the specified content (that is a list of homogeneous row tuples)
- in the specified CSV file, using the specified separator for that.</td></tr>
+<tr><td valign="top"><a href="#read_file-2">read_file/2</a></td><td>Reads the specified file, expected to be in the CSV format and supposed 
+to be homogeneous (all non-dropped rows having the same number of fields - 
+otherwise an exception is raised), using the specified separator.</td></tr>
+<tr><td valign="top"><a href="#write_file-2">write_file/2</a></td><td>Writes the specified content, a list of row tuples whose elements are 
+serialised according to the standard Erlang syntax (as ~w), in the specified 
+CSV file, using the default separator for that.</td></tr>
+<tr><td valign="top"><a href="#write_file-3">write_file/3</a></td><td>Writes the specified content, a list of row tuples whose elements are 
+serialised according to the standard Erlang syntax (as ~w), in the specified 
+CSV file, using the specified separator for that.</td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
@@ -127,123 +136,134 @@ an exception is raised), using the specified separator.</td></tr>
 <div class="spec">
 <p><tt>interpret_file(FilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; {<a href="#type-separator">separator()</a>, <a href="#type-field_count">field_count()</a>, <a href="#type-mixed_content">mixed_content()</a>, <a href="#type-row_count">row_count()</a>, <a href="#type-row_count">row_count()</a>, <a href="#type-row_count">row_count()</a>}</tt><br></p>
 <p> </p>
-</div><p><p>Interprets specified file, with no prior knowledge about the separator or 
-the number of fields per row.</p>
+</div><p><p>Interprets the specified file, with no prior knowledge about the 
+separator or the number of fields per row.</p>
 
- <p>Returns {Separator, FieldCount, MixedContent, MatchCount, UnmatchCount, 
-DropCount}, i.e.:</p>
+ <p>Returns {Separator, FieldCount, MixedContent, MatchingCount, UnmatchCount, 
+DropCount}, i.e. the same as interpret_file/4, except that the detected 
+separator is prepended):</p>
 
- <p>- the most likely separator in use</p>
+ <p>- Separator is the most likely separator in use</p>
 
- <p>- the number of fields in each row, based on the first one</p>
+ <p>- FieldCount is the number of fields in each row, as determined thanks to the 
+first non-dropped row</p>
 
- <p>- a list (respecting the in-file order) whose elements are either a list of 
-the specified number of fields, or a pair whose first element is the 
-'non_matching' atom, and whose second element is a list whose elements were 
-obtained based on the same separator - yet in a different number than the 
+ <p>- MixedContent is a list (respecting the in-file order) whose elements are 
+either a list of the specified number of fields, or a pair whose first element 
+is the 'non_matching' atom, and whose second element is a list whose elements 
+were obtained based on the same separator - yet in a different number than the 
 expected one</p>
 
- <p>- the number of rows that match the row spec (i.e. the specified number of 
-fields), based on specified separator</p>
+ <p>- MatchingCount is the number of rows that match the row spec (i.e. the 
+specified number of fields), based on the detected separator</p>
 
- <p>- the number of rows that do not match said constraints</p>
+ <p>- UnmatchingCount is the number of rows that do not match said constraints</p>
 
- - the number of rows that were dropped (typically because they were either
- empty or containing a comment)
+ - DropCount is the number of rows that were dropped (typically because they
+ were either empty or containing a comment)
 </p>
 
 <h3 class="function"><a name="interpret_file-2">interpret_file/2</a></h3>
 <div class="spec">
-<p><tt>interpret_file(FilePath::<a href="#type-any_file_path">any_file_path()</a>, Separator::<a href="#type-separator">separator()</a>) -&gt; {<a href="#type-field_count">field_count()</a>, <a href="#type-mixed_content">mixed_content()</a>, <a href="#type-row_count">row_count()</a>, <a href="#type-row_count">row_count()</a>, <a href="#type-row_count">row_count()</a>}</tt><br></p>
+<p><tt>interpret_file(FilePath::<a href="#type-any_file_path">any_file_path()</a>, Separator::<a href="#type-separator">separator()</a>) -&gt; {FieldCount::<a href="#type-field_count">field_count()</a>, MixedContent::<a href="#type-mixed_content">mixed_content()</a>, MatchingCount::<a href="#type-row_count">row_count()</a>, UnmatchingCount::<a href="#type-row_count">row_count()</a>, DropCount::<a href="#type-row_count">row_count()</a>}</tt><br></p>
 <p> </p>
-</div><p><p>Interprets specified file, based on specified separator, with no prior 
-knowledge about the number of fields per row.</p>
+</div><p><p>Interprets the specified file, based on the specified separator, with no 
+prior knowledge about the number of fields per row.</p>
 
- <p>Returns {FieldCount, MixedContent, MatchCount, UnmatchCount, DropCount}, i.e.:</p>
+ <p>Returns {FieldCount, MixedContent, MatchingCount, UnmatchCount, DropCount} 
+(i.e. the same as interpret_file/3, except that the detected field count is 
+prepended):</p>
 
- <p>- the number of fields in each row, based on the first one</p>
+ <p>- FieldCount is the number of fields in each row, as determined thanks to the 
+first non-dropped row</p>
 
- <p>- a list (respecting the in-file order) whose elements are either a list of 
-the specified number of fields, or a pair whose first element is the 
-'non_matching' atom, and whose second element is a list whose elements were 
-obtained based on the same separator - yet in a different number than the 
+ <p>- MixedContent is a list (respecting the in-file order) whose elements are 
+either a list of the specified number of fields, or a pair whose first element 
+is the 'non_matching' atom, and whose second element is a list whose elements 
+were obtained based on the same separator - yet in a different number than the 
 expected one</p>
 
- <p>- the number of rows that match the row spec (i.e. the specified number of 
-fields), based on specified separator</p>
+ <p>- MatchingCount is the number of rows that match the row spec (i.e. the 
+specified number of fields), based on the specified separator</p>
 
- <p>- the number of rows that do not match said constraints</p>
+ <p>- UnmatchingCount is the number of rows that do not match said constraints</p>
 
- - the number of rows that were dropped (typically because they were either
- empty or containing a comment)
+ - DropCount is the number of rows that were dropped (typically because they
+ were either empty or containing a comment)
 </p>
 
 <h3 class="function"><a name="interpret_file-3">interpret_file/3</a></h3>
 <div class="spec">
-<p><tt>interpret_file(FilePath::<a href="#type-any_file_path">any_file_path()</a>, Separator::<a href="#type-separator">separator()</a>, ExpectedFieldCount::<a href="#type-field_count">field_count()</a>) -&gt; {<a href="#type-mixed_content">mixed_content()</a>, <a href="#type-row_count">row_count()</a>, <a href="#type-row_count">row_count()</a>, <a href="#type-row_count">row_count()</a>}</tt><br></p>
+<p><tt>interpret_file(FilePath::<a href="#type-any_file_path">any_file_path()</a>, Separator::<a href="#type-separator">separator()</a>, ExpectedFieldCount::<a href="#type-field_count">field_count()</a>) -&gt; {MixedContent::<a href="#type-mixed_content">mixed_content()</a>, MatchingCount::<a href="#type-row_count">row_count()</a>, UnmatchingCount::<a href="#type-row_count">row_count()</a>, DropCount::<a href="#type-row_count">row_count()</a>}</tt><br></p>
 <p> </p>
-</div><p><p>Interprets specified file, based on specified separator and number of 
-fields per row.</p>
+</div><p><p>Interprets the specified file, based on the specified separator and 
+number of fields per row.</p>
 
- <p>Returns {MixedContent, MatchCount, UnmatchCount, DropCount}, i.e.:</p>
+ <p>Returns {MixedContent, MatchingCount, UnmatchCount, DropCount}, where:</p>
 
- <p>- a list (respecting the in-file order) whose elements are either a list of 
-the specified number of fields, or a pair whose first element is the 
-'non_matching' atom, and whose second element is a list whose elements were 
-obtained based on the same separator - yet in a different number than the 
+ <p>- MixedContent is a list (respecting the in-file order) whose elements are 
+either a list of the specified number of fields, or a pair whose first element 
+is the 'non_matching' atom, and whose second element is a list whose elements 
+were obtained based on the same separator - yet in a different number than the 
 expected one</p>
 
- <p>- the number of rows that match the row spec (i.e. the specified number of 
-fields), based on specified separator</p>
+ <p>- MatchingCount is the number of rows that match the row spec (i.e. the 
+specified number of fields), based on the specified separator</p>
 
- <p>- the number of rows that do not match said constraints</p>
+ <p>- UnmatchingCount is the number of rows that do not match said constraints</p>
 
- - the number of rows that were dropped (typically because they were either
- empty or containing a comment)
+ - DropCount is the number of rows that were dropped (typically because they
+ were either empty or containing a comment)
 </p>
 
 <h3 class="function"><a name="read_file-1">read_file/1</a></h3>
 <div class="spec">
-<p><tt>read_file(Filename::<a href="#type-any_file_path">any_file_path()</a>) -&gt; {<a href="#type-content">content()</a>, <a href="#type-row_count">row_count()</a>, <a href="#type-field_count">field_count()</a>}</tt><br></p>
+<p><tt>read_file(FilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-reading_outcome">reading_outcome()</a></tt><br></p>
 <p> </p>
-</div><p><p>Reads specified file, expected to be in CSV format and supposed to be 
-homogeneous (all non-dropping rows having the same number of fields - 
+</div><p><p>Reads the specified file, expected to be in the CSV format and supposed 
+to be homogeneous (all non-dropping rows having the same number of fields - 
 otherwise an exception is raised), using the default separator.</p>
 
- Returns:
- - the corresponding content, as an ordered list of rows
- - the number of rows found
- - the number of fields they all have
+ Returns {Rows, RowCount, FieldCount}, see reading_outcome().
 </p>
 
 <h3 class="function"><a name="read_file-2">read_file/2</a></h3>
 <div class="spec">
-<p><tt>read_file(FilePath::<a href="#type-any_file_path">any_file_path()</a>, Separator::<a href="#type-separator">separator()</a>) -&gt; {<a href="#type-content">content()</a>, <a href="#type-row_count">row_count()</a>, <a href="#type-field_count">field_count()</a>}</tt><br></p>
+<p><tt>read_file(FilePath::<a href="#type-any_file_path">any_file_path()</a>, Separator::<a href="#type-separator">separator()</a>) -&gt; <a href="#type-reading_outcome">reading_outcome()</a></tt><br></p>
 <p> </p>
-</div><p><p>Reads specified file, expected to be in CSV format and supposed to be 
-homogeneous (all non-dropped rows having the same number of fields - otherwise 
-an exception is raised), using the specified separator.</p>
+</div><p><p>Reads the specified file, expected to be in the CSV format and supposed 
+to be homogeneous (all non-dropped rows having the same number of fields - 
+otherwise an exception is raised), using the specified separator.</p>
 
- Returns:
- - the corresponding content, as an ordered list of rows
- - the number of rows found
- - the number of fields they all have
+ Returns {Rows, RowCount, FieldCount}, see reading_outcome().
 </p>
 
 <h3 class="function"><a name="write_file-2">write_file/2</a></h3>
 <div class="spec">
 <p><tt>write_file(Content::<a href="#type-content">content()</a>, TargetFilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p>Writes the specified content (that is a list of homogeneous row tuples)
- in the specified CSV file, using the default separator for that.
+</div><p><p>Writes the specified content, a list of row tuples whose elements are 
+serialised according to the standard Erlang syntax (as ~w), in the specified 
+CSV file, using the default separator for that.</p>
+
+ <p>Rows may have a different number of elements.</p>
+
+ In terms of file extension, we recommend the one specified through our
+ csv_extension define.
 </p>
 
 <h3 class="function"><a name="write_file-3">write_file/3</a></h3>
 <div class="spec">
 <p><tt>write_file(Content::<a href="#type-content">content()</a>, TargetFilePath::<a href="#type-any_file_path">any_file_path()</a>, Separator::<a href="#type-separator">separator()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p>Writes the specified content (that is a list of homogeneous row tuples)
- in the specified CSV file, using the specified separator for that.
+</div><p><p>Writes the specified content, a list of row tuples whose elements are 
+serialised according to the standard Erlang syntax (as ~w), in the specified 
+CSV file, using the specified separator for that.</p>
+
+ <p>Rows may have a different number of elements.</p>
+
+ In terms of file extension, we recommend the one specified through our
+ csv_extension define.
 </p>
 <hr>
 

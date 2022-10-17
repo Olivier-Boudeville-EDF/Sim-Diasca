@@ -54,6 +54,10 @@ operations.</p>
 <p><tt>atom_user_name() = atom()</tt></p>
 <p> To store (UNIX-like) user names.</p>
 
+<h3 class="typedecl"><a name="type-base_outcome">base_outcome()</a></h3>
+<p><tt>base_outcome() = ok | <a href="#type-error_term">error_term()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-base_status">base_status()</a></h3>
 <p><tt>base_status() = ok | <a href="#type-error_term">error_term()</a></tt></p>
 <p> Tells whether an operation succeeded; if not, an error reason is specified (as
@@ -124,7 +128,7 @@ operations.</p>
 
 
 <h3 class="typedecl"><a name="type-error_term">error_term()</a></h3>
-<p><tt>error_term() = {error, <a href="#type-error_reason">error_reason()</a>} | <a href="#type-error_reason">error_reason()</a></tt></p>
+<p><tt>error_term() = <a href="#type-tagged_error">tagged_error()</a> | <a href="#type-error_reason">error_reason()</a></tt></p>
 <p> A (possibly tagged) error term. Ex: 'badarg'.</p>
 
 <h3 class="typedecl"><a name="type-error_tuploid">error_tuploid()</a></h3>
@@ -222,8 +226,14 @@ be of the expected type (as long as it has not been checked).</p>
 
 <h3 class="typedecl"><a name="type-maybe">maybe()</a></h3>
 <p><tt>maybe(T) = T | undefined</tt></p>
-<p> Quite often, variables (ex: record fields) are set to 'undefined'
- (i.e. "Nothing") before being set later.</p>
+<p><p> Denotes a value that may be set to one in T, or that may not be set at all.</p>
+
+ <p>Note that the type T should not include the 'undefined' atom, otherwise one 
+cannot discriminate between a value that happens to be set to 'undefined' 
+versus a value not defined at all.</p>
+
+ Quite often, variables (ex: record fields) are set to 'undefined' before being
+ set later.</p>
 
 <h3 class="typedecl"><a name="type-message">message()</a></h3>
 <p><tt>message() = any()</tt></p>
@@ -264,6 +274,15 @@ be of the expected type (as long as it has not been checked).</p>
 <p><tt>record_name() = atom()</tt></p>
 <p> The name of a record.</p>
 
+<h3 class="typedecl"><a name="type-safe_maybe">safe_maybe()</a></h3>
+<p><tt>safe_maybe(T) = {just, T} | nothing</tt></p>
+<p><p> Denotes a value that may be set to one of type T (with no restriction on T), 
+or that may not be set at all.</p>
+
+ <p>A bit more expensive than maybe/1.</p>
+
+ Obviously a nod to Haskell.</p>
+
 <h3 class="typedecl"><a name="type-set">set()</a></h3>
 <p><tt>set(T) = <a href="set_utils.html#type-set">set_utils:set</a>(T)</tt></p>
 
@@ -272,10 +291,15 @@ be of the expected type (as long as it has not been checked).</p>
 <p><tt>status_code() = 0..255</tt></p>
 <p> The status code returned by a shell command.</p>
 
+<h3 class="typedecl"><a name="type-tagged_error">tagged_error()</a></h3>
+<p><tt>tagged_error() = {error, <a href="#type-error_reason">error_reason()</a>}</tt></p>
+<p> The most classical way of reporting an error.</p>
+
 <h3 class="typedecl"><a name="type-three_digit_version">three_digit_version()</a></h3>
 <p><tt>three_digit_version() = {<a href="#type-version_number">version_number()</a>, <a href="#type-version_number">version_number()</a>, <a href="#type-version_number">version_number()</a>}</tt></p>
 <p> Version as a triplet of integers, typically {MajorVersion, MinorVersion,
- ReleaseVersion}.</p>
+ ReleaseVersion}, or {MajorVersion, Enhancements, BugFixes}, or {MajorVersion,
+ MinorVersion, Path} (see semantic versioning, https://semver.org/).</p>
 
 <h3 class="typedecl"><a name="type-time_out">time_out()</a></h3>
 <p><tt>time_out() = <a href="time_utils.html#type-time_out">time_utils:time_out()</a></tt></p>
@@ -339,17 +363,19 @@ toolchain:</p>
  'undefined'); returns that list.</td></tr>
 <tr><td valign="top"><a href="#check_all_undefined-1">check_all_undefined/1</a></td><td>Checks that all elements of the specified list are equal to 'undefined';
  returns that list.</td></tr>
-<tr><td valign="top"><a href="#check_defined-1">check_defined/1</a></td><td>Checks that specified term is "defined" (not 'undefined'); returns that
- term.</td></tr>
+<tr><td valign="top"><a href="#check_any_version-1">check_any_version/1</a></td><td>Checks that the specified term is a any-version, and returns it.</td></tr>
+<tr><td valign="top"><a href="#check_defined-1">check_defined/1</a></td><td>Checks that specified term is "defined" (not equal to 'undefined');
+ returns that term.</td></tr>
 <tr><td valign="top"><a href="#check_no_pending_message-0">check_no_pending_message/0</a></td><td>Ensures that no message is pending in the mailbox of this process.</td></tr>
 <tr><td valign="top"><a href="#check_not_undefined-1">check_not_undefined/1</a></td><td>Checks that specified term is not 'undefined'; returns that term.</td></tr>
-<tr><td valign="top"><a href="#check_undefined-1">check_undefined/1</a></td><td>Checks that specified term is 'undefined'.</td></tr>
-<tr><td valign="top"><a href="#check_version-1">check_version/1</a></td><td>Checks that specified term is a triplet-based version.</td></tr>
+<tr><td valign="top"><a href="#check_three_digit_version-1">check_three_digit_version/1</a></td><td>Checks that specified term is a three-digit version, and returns it.</td></tr>
+<tr><td valign="top"><a href="#check_undefined-1">check_undefined/1</a></td><td>Checks that specified term is 'undefined', and returns it.</td></tr>
 <tr><td valign="top"><a href="#checkpoint-1">checkpoint/1</a></td><td>Displays a numbered checkpoint.</td></tr>
-<tr><td valign="top"><a href="#compare_versions-2">compare_versions/2</a></td><td>Compares the two pairs, triplets or quadruplets (expected to be of the 
-same size), which describe two version numbers (ex: {0,1,0} and {0,1,7}) and 
+<tr><td valign="top"><a href="#compare_versions-2">compare_versions/2</a></td><td>Compares the two specified any-versions (expected to be of the same 
+size), which describe two version numbers (ex: {0,1,0} and {0,1,7}) and 
 returns either first_bigger, second_bigger, or equal.</td></tr>
 <tr><td valign="top"><a href="#crash-0">crash/0</a></td><td>Crashes the current process immediately.</td></tr>
+<tr><td valign="top"><a href="#crash-1">crash/1</a></td><td>Crashes the current process immediately, displaying the specified term.</td></tr>
 <tr><td valign="top"><a href="#create_uniform_tuple-2">create_uniform_tuple/2</a></td><td>Creates a tuple of specified size, all elements having the same,
  specified, value.</td></tr>
 <tr><td valign="top"><a href="#debug-1">debug/1</a></td><td>Displays, for debugging purposes, specified string, ensuring as much as
@@ -481,18 +507,24 @@ ToAdd, WaitedSenderPid}.</td></tr>
 
 <h3 class="function"><a name="check_all_undefined-1">check_all_undefined/1</a></h3>
 <div class="spec">
-<p><tt>check_all_undefined(List::term()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>check_all_undefined(List::term()) -&gt; [term()]</tt><br></p>
 <p> </p>
 </div><p>Checks that all elements of the specified list are equal to 'undefined';
  returns that list.
 </p>
 
+<h3 class="function"><a name="check_any_version-1">check_any_version/1</a></h3>
+<div class="spec">
+<p><tt>check_any_version(T::term()) -&gt; <a href="#type-any_version">any_version()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that the specified term is a any-version, and returns it.</p>
+
 <h3 class="function"><a name="check_defined-1">check_defined/1</a></h3>
 <div class="spec">
 <p><tt>check_defined(Term::term()) -&gt; term()</tt><br></p>
 <p> </p>
-</div><p>Checks that specified term is "defined" (not 'undefined'); returns that
- term.
+</div><p>Checks that specified term is "defined" (not equal to 'undefined');
+ returns that term.
 </p>
 
 <h3 class="function"><a name="check_no_pending_message-0">check_no_pending_message/0</a></h3>
@@ -512,17 +544,17 @@ ToAdd, WaitedSenderPid}.</td></tr>
 <p> </p>
 </div><p>Checks that specified term is not 'undefined'; returns that term.</p>
 
+<h3 class="function"><a name="check_three_digit_version-1">check_three_digit_version/1</a></h3>
+<div class="spec">
+<p><tt>check_three_digit_version(T::term()) -&gt; <a href="#type-three_digit_version">three_digit_version()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that specified term is a three-digit version, and returns it.</p>
+
 <h3 class="function"><a name="check_undefined-1">check_undefined/1</a></h3>
 <div class="spec">
-<p><tt>check_undefined(Term::term()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>check_undefined(Term::term()) -&gt; undefined</tt><br></p>
 <p> </p>
-</div><p>Checks that specified term is 'undefined'.</p>
-
-<h3 class="function"><a name="check_version-1">check_version/1</a></h3>
-<div class="spec">
-<p><tt>check_version(T::term()) -&gt; <a href="#type-void">void()</a></tt><br></p>
-<p> </p>
-</div><p>Checks that specified term is a triplet-based version.</p>
+</div><p>Checks that specified term is 'undefined', and returns it.</p>
 
 <h3 class="function"><a name="checkpoint-1">checkpoint/1</a></h3>
 <div class="spec">
@@ -537,8 +569,8 @@ ToAdd, WaitedSenderPid}.</td></tr>
 <div class="spec">
 <p><tt>compare_versions(A::<a href="#type-any_version">any_version()</a>, B::<a href="#type-any_version">any_version()</a>) -&gt; equal | first_bigger | second_bigger</tt><br></p>
 <p> </p>
-</div><p><p>Compares the two pairs, triplets or quadruplets (expected to be of the 
-same size), which describe two version numbers (ex: {0,1,0} and {0,1,7}) and 
+</div><p><p>Compares the two specified any-versions (expected to be of the same 
+size), which describe two version numbers (ex: {0,1,0} and {0,1,7}) and 
 returns either first_bigger, second_bigger, or equal.</p>
 
  The two compared versions must have the same number of digits.
@@ -546,9 +578,18 @@ returns either first_bigger, second_bigger, or equal.</p>
 
 <h3 class="function"><a name="crash-0">crash/0</a></h3>
 <div class="spec">
-<p><tt>crash() -&gt; any()</tt><br></p>
+<p><tt>crash() -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p><p>Crashes the current process immediately.</p>
+
+ Useful for testing reliability, for example.
+</p>
+
+<h3 class="function"><a name="crash-1">crash/1</a></h3>
+<div class="spec">
+<p><tt>crash(Term::term()) -&gt; any()</tt><br></p>
+<p> </p>
+</div><p><p>Crashes the current process immediately, displaying the specified term.</p>
 
  Useful for testing reliability, for example.
 </p>
@@ -683,8 +724,8 @@ returns either first_bigger, second_bigger, or equal.</p>
 <p> </p>
 </div><p><p>Freezes the current process immediately.</p>
 
- <p>Useful to block the process while for example an ongoing termination 
-occurs.</p>
+ <p>Useful to block the process while for example an ongoing, asynchronous 
+termination occurs.</p>
 
  See also: enter_infinite_loop/0.
 </p>
@@ -807,10 +848,8 @@ unused without blocking the compilation.</p>
 otherwise global) like 'foobar_service' is still existing at the moment of 
 this call.</p>
 
- <p>Note:</p>
-
- <p>- the process may run on the local node or not</p>
-
+ Note:
+ - the process may run on the local node or not
  - generally not to be used, when relying on a good design
 </p>
 
