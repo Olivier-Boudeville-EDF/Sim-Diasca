@@ -631,7 +631,7 @@ integer_to_hexastring( IntegerValue, _AddPrefix=false ) ->
 % @doc Returns a binary string corresponding to the specified integer, in
 % hexadecimal form, with a "0x" prefix.
 %
-% Ex: integer_to_hexabinstring(3432) = <<"d68">>.
+% Ex: integer_to_hexabinstring(3432) = `<<"d68">>'.
 %
 % Refer to the 'Hexadecimal notes' section above, regarding zero-padding and
 % "0x" prefixing.
@@ -644,7 +644,7 @@ integer_to_hexasbintring( IntegerValue ) ->
 % @doc Returns a binary string corresponding to the specified integer, in
 % hexadecimal form, with a "0x" prefix if requested.
 %
-% Ex: integer_to_hexabinstring(3432, _AddPrefix=true) = <<"0xd68">>.
+% Ex: integer_to_hexabinstring(3432, _AddPrefix=true) = `<<"0xd68">>'.
 %
 % Refer to the 'Hexadecimal notes' section above, regarding zero-padding and
 % "0x" prefixing.

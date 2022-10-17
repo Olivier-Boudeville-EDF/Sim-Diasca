@@ -808,19 +808,6 @@ get_default_xz_decompress_tool() ->
 	find_executable( "unxz" ).
 
 
-% @doc Returns the default tool to compute MD5 sums.
-%-spec get_default_md5_tool() -> executable_path().
-%get_default_md5_tool() ->
-%   %find_executable( "md5sum" ).
-%   get_default_hashing_tool().
-
-% @doc Returns the default tool to compute SHA sums.
-%-spec get_default_sha_tool() -> executable_path().
-%get_default_sha_tool() ->
-%   %find_executable( "shasum" ).
-%   get_default_hashing_tool().
-
-
 % @doc Returns the default tool to compute any kind of hash.
 -spec get_default_hashing_tool() -> executable_path().
 get_default_hashing_tool() ->

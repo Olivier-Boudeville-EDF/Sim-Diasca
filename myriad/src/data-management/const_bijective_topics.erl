@@ -61,9 +61,9 @@
 % together with their respective list of `{any(), any()}' entries must be
 % provided to the `const_bijective_topics:generate*/*' functions; for any given
 % topic (e.g. 'packet_type'), any element E of any pair in the resulting table
-% (e.g. 'discover_packet') in `{'discover_packet', <<42,11>>}') can then be
+% (e.g. 'discover_packet') in `{'discover_packet', `<<42,11>>'}') can then be
 % accessed thanks to foobar:get_{first|second}_for_TOPIC/1 (e.g. discover_packet
-% = foobar:get_first_for_packet_type(<<42,11>>)).
+% = foobar:get_first_for_packet_type(`<<42,11>>')).
 %
 % For that, for each topic, two corresponding 1-arity functions are generated
 % and exported in that module, as if we were using a bijective_table()
