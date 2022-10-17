@@ -17,9 +17,10 @@
 % If not, see <http://www.gnu.org/licenses/>.
 
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
+% Creation date: 2012.
 
 
-% @doc Various facilities about waste management.
+% @doc Various facilities about <b>waste management</b>.
 -module(waste_utils).
 
 
@@ -57,12 +58,6 @@
 
 % Textual descriptions:
 -export([ waste_capacity_to_string/1, waste_tank_to_string/1 ]).
-
-
-
-% Shorthand:
-
--type actor_pid() :: class_Actor:actor_pid().
 
 
 % For waste_tank() and al:
@@ -477,7 +472,7 @@ is_tank_full( Tank ) ->
 % Textual section.
 
 
-% Returns a textual representation of specified waste capacity.
+% @doc Returns a textual representation of specified waste capacity.
 -spec waste_capacity_to_string( waste_capacity() ) -> ustring().
 waste_capacity_to_string( Tanks ) ->
 

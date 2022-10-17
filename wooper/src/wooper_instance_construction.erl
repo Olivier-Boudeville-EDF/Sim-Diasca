@@ -1314,8 +1314,8 @@ get_receive( FileGenLoc ) ->
 % end
 % '''
 %
--spec get_local_receive_with_after( basic_utils:module_name(),
-						time_utils:time_out(), file_loc() ) -> form_element().
+-spec get_local_receive_with_after( basic_utils:module_name(), boolean(),
+									file_loc() ) -> form_element().
 get_local_receive_with_after( ModuleName, IsDebugMode, FileGenLoc ) ->
 
 	TimeOut = wooper:get_synchronous_time_out( IsDebugMode ),
@@ -1350,8 +1350,8 @@ get_local_receive_with_after( ModuleName, IsDebugMode, FileGenLoc ) ->
 % end
 % '''
 %
--spec get_remote_receive_with_after( basic_utils:module_name(),
-		time_utils:time_out(), file_loc() ) -> form_element().
+-spec get_remote_receive_with_after( basic_utils:module_name(), boolean(),
+									 file_loc() ) -> form_element().
 get_remote_receive_with_after( ModuleName, IsDebugMode, FileGenLoc ) ->
 
 	TimeOut = wooper:get_synchronous_time_out( IsDebugMode ),

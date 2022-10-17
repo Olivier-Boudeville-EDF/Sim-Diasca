@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2022 Olivier Boudeville
+% Copyright (C) 2010-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -39,13 +39,15 @@
 % In an option list, usually no duplicate keys are expected to exist.
 % Operations on option list tend to preserve the order of their entries.
 %
-% See also the `proplists' standard module.
+% See also the `proplists' standard module, and our very similar, richer,
+% list_table module that is bound to fully supersede the current module in the
+% future.
 %
 -module(option_list).
 
 
--export([ new/0, new/1, set/2, get/2, lookup/2, update_with/2, extract/2,
-		  enumerate/1, to_string/1 ]).
+-export([ new/0, new/1, set/2, get/2, lookup/2, update_with/2,
+		  extract/2, enumerate/1, to_string/1 ]).
 
 
 -type key() :: hashtable:key().
@@ -135,6 +137,10 @@ get( Key, OptionList ) ->
 % @doc Returns the value associated to the specified key in specified option
 % list, if found, otherwise (key not found), returns 'undefined'.
 %
+% As a result, this function is not able to discriminate between no entry
+% defined, or one whose value is 'undefined'. See list_table:lookup_entry/2 for
+% a better management.
+%
 -spec lookup( key(), option_list() ) -> maybe( value() ).
 lookup( Key, OptionList ) ->
 	proplists:get_value( Key, OptionList ).
@@ -178,8 +184,6 @@ extract( Key, _OptionList=[ E | T ], Acc ) ->
 	extract( Key, T, [ E | Acc ] ).
 
 
-
-
 % @doc Enumerates specified option list: returns an (ordered) list of {Key,
 % Value} pairs, possibly with duplicates.
 %
@@ -192,6 +196,8 @@ enumerate( OptionList ) ->
 % @doc Returns a string describing the specified option list.
 -spec to_string( option_list() ) -> text_utils:ustring().
 to_string( OptionList ) ->
+
 	Strings = [ text_utils:format( "~p: ~p", [ K, V ] )
 				|| { K, V } <- OptionList ],
+
 	text_utils:strings_to_string( Strings ).

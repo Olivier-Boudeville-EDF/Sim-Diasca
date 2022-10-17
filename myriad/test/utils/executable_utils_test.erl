@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2022 Olivier Boudeville
+% Copyright (C) 2008-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -23,9 +23,10 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: Saturday, July 12, 2008.
 
 
-% Unit tests for the executable_utils toolbox.
+% @doc Unit tests for the <b>executable-related services</b>.
 %
 % See the executable_utils.erl tested module.
 %
@@ -44,5 +45,11 @@ run() ->
 
 	test_facilities:display( "SSH mute option: '~ts'.",
 							 [ executable_utils:get_ssh_mute_option() ] ),
+
+	true = lists:member( _Elem=executable_utils:find_executable( "rm" ),
+						 _PossiblePaths=[ "/bin/rm", "/usr/bin/rm" ] ),
+
+	% Not testing the get_default_*_tool_path() functions, as their result
+	% depends on system settings and the availability of tools.
 
 	test_facilities:stop().

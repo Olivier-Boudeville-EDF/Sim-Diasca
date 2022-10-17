@@ -17,6 +17,7 @@
 % If not, see <http://www.gnu.org/licenses/>.
 
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
+% Creation date: 2008.
 
 
 % @doc Unit tests for the RandomManager class implementation, regarding the
@@ -27,8 +28,8 @@
 -module(class_RandomManager_Uniform_test).
 
 
-% For facilities common to all cases:
--include("sim_diasca_for_cases.hrl").
+% For facilities common to all tests (this is not a simulation case):
+-include("traces_for_tests.hrl").
 
 
 % For random_manager_name:
@@ -141,6 +142,9 @@ test_uniform_random( RandomManagerPid, MaxValue ) ->
 	?test_info( "Computing and displaying the full actual "
 				"uniform distribution." ),
 
+	?test_warning( "As a large number of samples will be computed, the "
+				   "operation may take some time." ),
+
 	Values = make_table( ?table_span ),
 
 	FirstUniformTable = draw_uniform_values( 500, Values, MaxValue,
@@ -196,7 +200,7 @@ test_uniform_random( RandomManagerPid, MaxValue ) ->
 -spec run() -> no_return().
 run() ->
 
-	?case_start,
+	?test_start,
 
 	class_ResultManager:create_mockup_environment(),
 
@@ -212,4 +216,4 @@ run() ->
 	?test_info( "Removing random manager." ),
 	wooper:delete_synchronously_instance( RandomManagerPid ),
 
-	?case_stop.
+	?test_stop.

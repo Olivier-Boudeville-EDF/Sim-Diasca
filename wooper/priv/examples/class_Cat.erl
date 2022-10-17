@@ -19,12 +19,15 @@
 
 
 % Determines what are the direct mother classes of this class (if any):
--define( superclasses, [ class_Mammal, class_ViviparousBeing ] ).
+-define( superclasses, [ class_Mammal, class_ViviparousBeing,
+						 class_Serialisable ] ).
 
 
 -define( class_attributes, [
-	{ whisker_color, whisker_color(), none,
-	  "50 shades of whiskers" } ] ).
+
+	{ whisker_color, whisker_color(), none, "50 shades of whiskers" }
+
+] ).
 
 
 % Allows to define WOOPER base variables and methods for that class:
@@ -48,9 +51,10 @@ construct( State, Age, Gender, FurColor, WhiskerColor ) ->
 	% First the direct mother classes:
 	MammalState = class_Mammal:construct( State, Age, Gender, FurColor ),
 	ViviparousMammalState = class_ViviparousBeing:construct( MammalState ),
+	SerialState = class_Serialisable:construct( ViviparousMammalState ),
 
 	% Then the class-specific attributes:
-	setAttribute( ViviparousMammalState, whisker_color, WhiskerColor ).
+	setAttribute( SerialState, whisker_color, WhiskerColor ).
 
 
 

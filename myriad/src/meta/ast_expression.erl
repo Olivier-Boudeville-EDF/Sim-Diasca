@@ -1305,14 +1305,16 @@ transform_call( FileLoc, FunctionRef, Params, Transforms ) ?rec_guard ->
 	{ [ TransformedFunctionRef ], FuncTransforms } =
 		transform_expression( FunctionRef, Transforms ),
 
-	%?log_enter( "Transforming call parameters ~p",
-	%			[ Params ] ),
+	%?log_enter( "Transforming call parameters ~p", [ Params ] ),
 
 	% First recurses, knowing that function parameters are expressions:
 	{ [ NewParams ], ParamsTransforms } =
 		transform_expressions( Params, FuncTransforms ),
 
+	% Dubious: NewParams is a tuple?
+	throw( { debug, new_params, NewParams } ),
 	NewArity = length( NewParams ),
+	NewArity = length( tuple_to_list( NewParams ) ),
 
 	{ [ FinalFunctionRef ], FinalTransforms } = transform_call_expression(
 						TransformedFunctionRef, NewArity, ParamsTransforms ),
@@ -1491,7 +1493,7 @@ transform_catch( FileLoc, Expression, Transforms ) ?rec_guard ->
 
 
 
-% @doc Transforms specified list of expressions.
+% @doc Transforms the specified list of expressions.
 %
 % Defined for convenience.
 %
@@ -1503,7 +1505,7 @@ transform_expressions( Expressions, Transforms ) ?rec_guard ->
 	% lists:mapfoldl/3 should be replaced by ad-hoc code, to ease debugging)
 	%
 	{ ExprLists, NewTransforms } = lists:mapfoldl(
-			fun transform_expression/2, _Acc0=Transforms, _List=Expressions ),
+		fun transform_expression/2, _Acc0=Transforms, _List=Expressions ),
 
 	% We do not want expressions to remain nested over two levels:
 	OneLevelExprList = merge_expression_lists( ExprLists ),

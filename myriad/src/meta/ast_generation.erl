@@ -26,7 +26,6 @@
 % Creation date: Sunday, February 4, 2018.
 
 
-
 % @doc Module in charge of <b>generating parts of an AST</b> (ex: elements of
 % forms).
 %
@@ -50,8 +49,8 @@
 
 
 
-% @doc Transforms specified list (whose elements are typically themselves form
-% elements already) into the AST version of a list.
+% @doc Transforms the specified list (whose elements are typically themselves
+% form elements already) into the AST version of a list.
 %
 % Ex: list_to_form( [{atom,FileLoc,a}, {atom,FileLoc,b}]) = {cons, FileLoc,
 % {atom,FileLoc,a}, {cons, FileLoc, {atom,FileLoc,b}, {nil,FileLoc}}}.
@@ -138,7 +137,7 @@ enumerated_variables_to_form( Count, Index ) ->
 
 % @doc Returns, in AST form, a reference to an iterated variable.
 %
-% Ex: 'Myriad_Param_4' = get_iterated_param_name( 4 ).
+% Ex: 'Myriad_Param_4' = get_iterated_param_name(4).
 %
 -spec get_iterated_param_name( count() ) -> atom().
 get_iterated_param_name( Count ) ->
@@ -155,7 +154,7 @@ get_iterated_param_name( Count ) ->
 % header, like in 'f(A,B)->...'.
 %
 % Ex: [{var,FileLoc,'Myriad_Param_1'}, {var,FileLoc,'Myriad_Param_2'}] =
-% get_header_params( 2 ).
+%           get_header_params(2).
 %
 % See also: enumerated_variables_to_form/1.
 %

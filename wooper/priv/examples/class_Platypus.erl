@@ -1,10 +1,11 @@
-% Copyright (C) 2003-2022 Olivier Boudeville
+% Copyright (C) 2007-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER examples.
 %
 % It has been placed in the public domain.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2007.
 
 
 % @doc Class modelling any kind of <b>platypus</b>.
@@ -36,7 +37,6 @@
 
 
 
-
 % @doc Constructs a platypus.
 -spec construct( wooper:state(), age(), gender(), fur_color(),
 				 nozzle_color() ) -> wooper:state().
@@ -48,8 +48,9 @@ construct( State, Age, Gender, FurColor, NozzleColor ) ->
 	% To test onWOOPERExitReceived/3 (comment to check that the test fails):
 	process_flag( trap_exit, true ),
 
+	% Note that age and gender here will thus be initialised twice:
 	OvoviviparousMammalState =
-		class_OvoviviparousBeing:construct( MammalState ),
+		class_OvoviviparousBeing:construct( MammalState, Age, Gender ),
 
 	io:format( "Synchronous time-out is ~ts.~n",
 			   [ time_utils:duration_to_string( ?synchronous_time_out ) ] ),
@@ -146,7 +147,7 @@ testCreationDeletion( State ) ->
 	% Comment in order to test normal exits (should not trigger the default or
 	% user-defined EXIT handler):
 	%
-	CatPid ! { terminate, intentional_crash },
+	CatPid ! { terminate, this_is_an_intentional_crash },
 
 	io:format( "Deleting cat ~p created from platypus.~n", [ CatPid ] ),
 
@@ -160,6 +161,10 @@ testCreationDeletion( State ) ->
 
 	undefined = getAttribute( DeleteState, cat_pid ),
 
+	trace_utils:warning( "Reminder: these deletion time-out and crash are "
+		"triggered on purpose (see above); note though that the 5-second "
+		"time-out in debug mode is a 30-minute one in normal mode)." ),
+
 	wooper:return_state( DeleteState ).
 
 
@@ -172,13 +177,18 @@ testCreationDeletion( State ) ->
 onWOOPERExitReceived( State, Pid, ExitType ) ->
 
 	% Typically: "Received exit message '{{nocatch,
-	%						{wooper_oneway_failed,<0.44.0>,class_Cat,
-	%							terminate,2,
-	%							[crash],
-	%							badarith}},
+	%   {wooper_oneway_failed,<0.44.0>,class_Cat,
+	%      terminate,2,
+	%      [crash],
+	%      badarith}},
 	% [...]"
 
 	trace_utils:debug_fmt( "Received exit message '~p' from ~w.",
 						   [ ExitType, Pid ] ),
 
 	wooper:const_return().
+
+
+-spec test_static() -> static_return( text_utils:ustring() ).
+test_static() ->
+	wooper:return_static( "Hello!" ).

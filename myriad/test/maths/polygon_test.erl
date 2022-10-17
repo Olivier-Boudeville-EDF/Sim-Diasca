@@ -23,9 +23,10 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2003.
 
 
-% Unit tests for <b>polygon management</b>.
+% @doc Unit tests for <b>polygon management</b>.
 %
 % Depends on the gui module.
 %

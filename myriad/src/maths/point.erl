@@ -289,7 +289,7 @@ check( P ) ->
 			vector:check_integers( T );
 
 		false ->
-			vector:check_integers( T )
+			vector:check( T )
 
 	end,
 	CoordList.

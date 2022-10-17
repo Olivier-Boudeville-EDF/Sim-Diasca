@@ -17,45 +17,8 @@
 % If not, see <http://www.gnu.org/licenses/>.
 
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
+% Creation date: 2008.
 
-
--type probe_name() :: class_ResultProducer:producer_name().
-% The name of a probe (ex: to be checked against a result specification).
-
-
--type bin_probe_name() :: class_ResultProducer:bin_producer_name().
-
-
--type probe_tick() :: class_TimeManager:tick().
-% The tick, for a probe, corresponds to an (absolute) tick (not a tick offset).
-%
-% Note that if no tick duration is specified to a given probe (thus using
-% internally ticks rather than higher-level timestamps), then setting a tick
-% offset for it (see class_Probe:setTickOffset/2) allows to subtract that offset
-% to all recorded ticks, and thus to display tick offsets rather than absolute
-% ticks.
-
-
--type label_location() :: gui:point().
-% Corresponds to the 2D integer coordinates of the label on the plot.
-
-
--type label_text() :: text_utils:bin_string().
-% Actual text of the label.
-
-
--type label_color() :: gui_color:color().
-% Color of the text (default: "blue").
-
-
--type label_position() :: 'left' | 'center' | 'right'.
-% Describes the position of the text based on to the specified location for the
-% label.
-
-
--type label_orientation() :: 'upright' | unit_utils:int_degrees().
-% Describes whether the text of the label should be rendered with an angle from
-% the abscissa axis.
 
 
 % Defaults:
@@ -69,23 +32,19 @@
 -record( probe_label, {
 
 	% 2D coordinates of the label on the plot:
-	location :: label_location(),
+	location :: class_Probe:label_location(),
 
 	% Actual text of the label:
-	text :: label_text(),
+	text :: class_Probe:label_text(),
 
 	% Color of the text:
-	color :: label_color(),
+	color :: class_Probe:label_color(),
 
 	% Position of the text based on to the location for the label:
-	position :: label_position(),
+	position :: class_Probe:label_position(),
 
 	% The label may be rendered with an angle from the abscissa axis:
-	orientation :: label_orientation() } ).
-
-
--type probe_label() :: #probe_label{}.
-% Fully defines a label on a probe rendering.
+	orientation :: class_Probe:label_orientation() } ).
 
 
 
@@ -173,18 +132,12 @@
 	image_format = <<"png">> :: text_utils:bin_string(),
 
 	% Lists the arbitrary labels that may be defined over the probe rendering:
-	labels = [] :: [ probe_label() ],
+	labels = [] :: [ class_Probe:probe_label() ],
 
 	% Lists extra defines that shall be added verbatim to the command file (near
 	% its top):
 	%
 	extra_defines = [] :: [ text_utils:bin_string() ] } ).
-
-
--type probe_settings() :: #probe_settings{}.
-% Records the (rendering) settings of a probe.
-%
-% Used by plain probes and by the datalogger.
 
 
 
@@ -224,21 +177,3 @@
 	% many probes be created)
 	%
 	rendering_enabled = true :: boolean() } ).
-
-
--type probe_options() :: #probe_options{}.
-% Describes management (not rendering) options that apply to (basic) probes.
-
-
-
--type string_curve_name() :: text_utils:ustring().
-% The external name for a curve.
-
-
--type curve_name() :: text_utils:bin_string().
-% The internal name for a curve:
-
-
--type sample_data() :: tuple().
-% A tuple of data (numbers) to be sent as sample to a probe-like result
-% producer.

@@ -1,10 +1,11 @@
-% Copyright (C) 2003-2022 Olivier Boudeville
+% Copyright (C) 2007-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER examples.
 %
 % It has been placed in the public domain.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2007.
 
 
 % @doc Class modelling any kind of <b>ovoviviparous being</b>.
@@ -16,7 +17,7 @@
 
 
 % Determines what are the direct mother classes of this class (if any):
--define( superclasses, [] ).
+-define( superclasses, [ class_Creature ] ).
 
 
 -define( class_attributes, [ { eggs_count, "A number of eggs" } ] ).
@@ -32,14 +33,16 @@
 
 
 
-% @doc Constructs an ovoviviparous being (parameter-less constructor).
--spec construct( wooper:state() ) -> wooper:state() .
-construct( State ) ->
+% @doc Constructs an ovoviviparous being.
+-spec construct( wooper:state(), age(), gender() ) -> wooper:state() .
+construct( State, Age, Gender ) ->
 
 	% In order to test the crash of a constructor:
 	%non_existing:crash(),
 
-	setAttribute( State, eggs_count, 0 ).
+	CreatureState = class_Creature:construct( State, Age, Gender ),
+
+	setAttribute( CreatureState, eggs_count, 0 ).
 
 
 
@@ -65,16 +68,13 @@ getMeanEggsCount( State ) ->
 	wooper:const_return_result( 1000 ).
 
 
-% @doc Returns the number of eggs this ovoviviparous laid:
+% @doc Returns the number of eggs that this ovoviviparous being laid.
 -spec getEggsLaidCount( wooper:state() ) -> const_request_return( egg_count() ).
 getEggsLaidCount( State ) ->
 	wooper:const_return_result( ?getAttr(eggs_count) ).
 
 
-% @doc Increases the number of eggs that this ovoviviparous being already laid:
+% @doc Increases the number of eggs that this ovoviviparous being already laid.
 -spec layEggs( wooper:state(), egg_count() ) -> oneway_return().
 layEggs( State, NumberOfNewEggs ) ->
-
-	NewEggCount = ?getAttr(eggs_count) + NumberOfNewEggs,
-
-	wooper:return_state( setAttribute( State, eggs_count, NewEggCount ) ).
+	wooper:return_state( addToAttribute( State, eggs_count, NumberOfNewEggs ) ).

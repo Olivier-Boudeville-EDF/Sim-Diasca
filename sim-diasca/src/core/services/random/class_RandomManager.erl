@@ -18,6 +18,7 @@
 
 % Authors: Olivier Boudeville  (olivier.boudeville@edf.fr)
 %          Samuel Thiriot      (samuel.thiriot@edf.fr)
+% Creation date: 2008.
 
 
 % @doc Class offering services in terms of <b>random number generation</b>.
@@ -51,46 +52,9 @@
 
 
 
-% Section for the description of random laws.
-
--type uniform_law() :: { 'uniform', pos_integer() }.
-
-
--type exponential_law() :: { 'exponential', number() }.
-% Parameter is Lambda:
-%
-% (refer to https://en.wikipedia.org/wiki/Exponential_distribution)
-
-
--type positive_integer_exponential_law() ::
-						{ 'positive_integer_exponential', number() }.
-
-
--type mean() :: number().
-
--type standard_deviation() :: math_utils:standard_deviation().
-
-
--type gaussian_law() ::
-		{ 'gaussian', Mu :: mean(), Sigma :: standard_deviation() }.
-% The parameters of a gaussian/normal law are respectively Mu and Sigma, the
-% mean and the standard deviation.
-
-
--type positive_integer_gaussian_law() ::
-		{ 'positive_integer_gaussian', float(), float() }.
-
-
--type random_law() :: uniform_law()
-					| exponential_law()
-					| positive_integer_exponential_law()
-					| gaussian_law()
-					| positive_integer_gaussian_law().
-
 -type manager_pid() :: sim_diasca:agent_pid().
 
--export_type([ random_law/0, manager_pid/0 ]).
-
+-export_type([ manager_pid/0 ]).
 
 
 
@@ -109,14 +73,15 @@
 -include("class_RandomManager.hrl").
 
 
+% Note: for an increased genericity, all general-purpose lower-level elements
+% are defined in / have been moved to Myriad's random_utils module. As the
+% management of an explicit state and the offering of a centralised random
+% service for actors is not necessary anymore, the usefullness of this module
+% considerably decreased.
+
+
 
 % Implementation notes:
-%
-% There are three basic classes of built-in random distributions:
-% - uniform (a.k.a. white noise)
-% - exponential
-% - Gaussian (a.k.a. normal)
-%
 %
 % For each distribution law, following variations are available:
 %
@@ -138,31 +103,13 @@
 % on the crypto module (crypto:rand_uniform/2). The two forms yield different
 % but quite similar results. See use_crypto_module below.
 %
-% We rely on random_utils:get_random_value which allows to swap implementations.
+% We rely on random_utils:get_uniform_value/1, which allows to swap
+% implementations.
 %
 % Exponential and Gaussian laws generate by default floating-point numbers.
 %
 % For convenience, counterparts returning positive integer values have been
 % defined (ex: getGaussianValue/getPositiveIntegerGaussianValue).
-
-
-% Regarding inverse transform sampling, refer to
-% https://en.wikipedia.org/wiki/Inverse_transform_sampling.
-
-
-% A Gaussian (a.k.a. normal, bell curve) law is fully determined when two
-% parameters are given:
-%
-% - its mean (Mu), the average value of the samples
-%
-% - its standard deviation (Sigma), being expressed in the same unit as the
-% samples (its square being the variance)
-%
-% About 68% of the samples are in [Mu-Sigma;Mu+Sigma].
-% About 95.4% of the samples (i.e. almost all) are in [Mu-2.Sigma;Mu+2.Sigma].
-%
-% See also: http://en.wikipedia.org/wiki/Standard_deviation
-
 
 
 % Where a random manager should be registered.
@@ -177,8 +124,13 @@
 				   | 'time_based_seed'.
 
 
-% Shorthand:
+% Shorthands:
+
 -type count() :: basic_utils:count().
+
+-type rate() :: random_utils:rate().
+-type mean() :: random_utils:mean().
+-type standard_deviation() :: random_utils:standard_deviation().
 
 
 
@@ -261,15 +213,8 @@ destruct( State ) ->
 	% Private random managers not owned.
 	random_utils:stop_random_source(),
 
-	case ?getAttr(is_private) of
-
-		true ->
-			ok;
-
-		false ->
-			naming_utils:unregister( ?random_manager_name, ?registration_scope )
-
-	end,
+	?getAttr(is_private) orelse
+		naming_utils:unregister( ?random_manager_name, ?registration_scope ),
 
 	class_InstanceTracker:unregister_agent(),
 
@@ -308,17 +253,14 @@ destruct( State ) ->
 %
 -spec get_boolean() -> static_return( boolean() ).
 get_boolean() ->
-	wooper:return_static( random_utils:get_random_value( 0, 100 ) >= 49 ).
+	wooper:return_static( random_utils:get_boolean() ).
 
 
 
-% @doc Returns a randomly-selected element of specified list.
+% @doc Returns a randomly-selected element of the specified list.
 -spec one_of( [ any() ] ) -> static_return( any() ).
 one_of( ListOfThings ) ->
-
-	Index = random_utils:get_random_value( length( ListOfThings ) ),
-
-	wooper:return_static( lists:nth( Index, ListOfThings ) ).
+	wooper:return_static( random_utils:one_of( ListOfThings ) ).
 
 
 
@@ -330,10 +272,10 @@ one_of( ListOfThings ) ->
 % state in the process dictionary.
 %
 -spec getUniformValue( wooper:state(), integer(), integer() ) ->
-				const_request_return( { 'uniform_value', integer() } ).
+					const_request_return( { 'uniform_value', integer() } ).
 getUniformValue( State, Nmin, Nmax ) ->
 
-	Value = random_utils:get_random_value( Nmin, Nmax ),
+	Value = random_utils:get_uniform_value( Nmin, Nmax ),
 
 	%?debug_fmt( "Returning uniform value ~w.", [ Value ] ),
 
@@ -351,7 +293,7 @@ getUniformValue( State, Nmin, Nmax ) ->
 				const_request_return( { 'uniform_value', pos_integer() } ).
 getUniformValue( State, N ) ->
 
-	Value = random_utils:get_random_value( N ),
+	Value = random_utils:get_uniform_value( N ),
 
 	%?debug_fmt( "Returning uniform value ~w.", [ Value ] ),
 
@@ -367,7 +309,7 @@ getUniformValue( State, N ) ->
 %
 -spec get_uniform_value( pos_integer() ) -> static_return( pos_integer() ).
 get_uniform_value( N ) ->
-	wooper:return_static( random_utils:get_random_value( N ) ).
+	wooper:return_static( random_utils:get_uniform_value( N ) ).
 
 
 
@@ -380,7 +322,7 @@ get_uniform_value( N ) ->
 %
 -spec get_uniform_value( integer(), integer() ) -> static_return( integer() ).
 get_uniform_value( Nmin, Nmax ) ->
-	wooper:return_static( random_utils:get_random_value( Nmin, Nmax ) ).
+	wooper:return_static( random_utils:get_uniform_value( Nmin, Nmax ) ).
 
 
 
@@ -392,7 +334,7 @@ get_uniform_value( Nmin, Nmax ) ->
 -spec get_uniform_values( pos_integer(), count() ) ->
 								static_return( [ pos_integer() ] ).
 get_uniform_values( N, Count ) ->
-	wooper:return_static( random_utils:get_random_values( N, Count ) ).
+	wooper:return_static( random_utils:get_uniform_values( N, Count ) ).
 
 
 
@@ -402,7 +344,8 @@ get_uniform_values( N, Count ) ->
 -spec get_uniform_values( integer(), integer(), count() ) ->
 								static_return( [ integer() ] ).
 get_uniform_values( Nmin, Nmax, Count ) ->
-	wooper:return_static( random_utils:get_random_values( Nmin, Nmax, Count ) ).
+	wooper:return_static(
+		random_utils:get_uniform_values( Nmin, Nmax, Count ) ).
 
 
 
@@ -447,20 +390,13 @@ get_uniform_floating_point_value( Nmin, Nmax ) ->
 % @doc Returns an exponential floating-point random value with Lambda being the
 % rate parameter.
 %
-% The probability density function is p(x) = Lambda.exp(-Lambda.x), whose
-% integral is 1.
+% See the random_utils module for further details.
 %
-% Mean value of drawn samples is 1/Lambda.
-%
-% See http://en.wikipedia.org/wiki/Exponential_distribution
-%
-% Using inverse transform sampling.
-%
--spec getExponentialValue( wooper:state(), number() ) ->
+-spec getExponentialValue( wooper:state(), rate() ) ->
 				const_request_return( { 'exponential_value', float() } ).
 getExponentialValue( State, Lambda ) ->
 
-	Value = get_exponential_value( Lambda ),
+	Value = random_utils:get_exponential_value( Lambda ),
 
 	%?debug_fmt( "Returning exponential value ~w.", [ Value ] ),
 
@@ -468,48 +404,30 @@ getExponentialValue( State, Lambda ) ->
 
 
 
-% @doc Returns an exponential floating-point random value with Lambda being the
+% @doc Returns an exponential random value according to the specified Lambda
 % rate parameter.
 %
-% The probability density function is p(x) = Lambda.exp(-Lambda.x), whose
-% integral is 1.
+% See the random_utils module for further details.
 %
-% Mean value of drawn samples is 1/Lambda.
-%
-% See http://en.wikipedia.org/wiki/Exponential_distribution
-%
-% Using inverse transform sampling.
-%
--spec get_exponential_value( number() ) -> static_return( float() ).
+-spec get_exponential_value( rate() ) ->
+									static_return( non_neg_integer() ).
 get_exponential_value( Lambda ) ->
-
-	%trace_utils:debug_fmt( "Lambda=~p", [ Lambda ] ),
-
-	% Note: with Erlang, math:log(x) is ln(x):
-	V = - math:log( random_utils:get_random_value() ) / Lambda,
-
-	wooper:return_static( V ).
-
+	Value = random_utils:get_exponential_value( Lambda ),
+	wooper:return_static( Value ).
 
 
 
 % @doc Returns an exponential (positive) integer random value with Lambda being
 % the rate parameter.
 %
-% The probability density function is p(x) = Lambda.exp(-Lambda.x), whose
-% integral is 1.
+% See the random_utils module for further details.
 %
-% Mean value of drawn samples is 1/Lambda.
-%
-% See http://en.wikipedia.org/wiki/Exponential_distribution
-%
-% Using inverse transform sampling.
-%
--spec getPositiveIntegerExponentialValue( wooper:state(), number() ) ->
-	const_request_return( { 'positive_integer_exponential_value', integer() } ).
+-spec getPositiveIntegerExponentialValue( wooper:state(), rate() ) ->
+	const_request_return( { 'positive_integer_exponential_value',
+							non_neg_integer() } ).
 getPositiveIntegerExponentialValue( State, Lambda ) ->
 
-	Value = round( get_exponential_value( Lambda ) ),
+	Value = random_utils:get_positive_integer_exponential_value( Lambda ),
 
 	%?debug_fmt( "Returning positive integer exponential value ~w.",
 	%            [ Value ] ),
@@ -522,58 +440,37 @@ getPositiveIntegerExponentialValue( State, Lambda ) ->
 % @doc Returns an exponential (positive) integer random value with Lambda being
 % the rate parameter.
 %
-% The probability density function is p(x) = Lambda.exp(-Lambda.x), whose
-% integral is 1.
+% See the random_utils module for further details.
 %
-% Mean value of drawn samples is 1/Lambda.
-%
-% See http://en.wikipedia.org/wiki/Exponential_distribution
-%
-% Using inverse transform sampling.
-%
--spec get_positive_integer_exponential_value( number() ) ->
-													static_return( integer() ).
+-spec get_positive_integer_exponential_value( rate() ) ->
+									static_return( non_neg_integer() ).
 get_positive_integer_exponential_value( Lambda ) ->
-	wooper:return_static( round( get_exponential_value( Lambda ) ) ).
+	Value = random_utils:get_positive_integer_exponential_value( Lambda ),
+	wooper:return_static( Value ).
 
 
 
 % @doc Returns a list of Count exponential values according to the specified
-% Lambda setting.
+% Lambda rate parameter.
 %
-% Lambda is the rate parameter: the probability density function is
-% p(x) = Lambda.exp(-Lambda.x), whose integral is 1.
+% See the random_utils module for further details.
 %
-% Mean value of drawn samples is 1/Lambda.
-%
-% See http://en.wikipedia.org/wiki/Exponential_distribution
-%
-% Using inverse transform sampling.
-%
--spec get_exponential_values( number(), count() ) ->
+-spec get_exponential_values( rate(), count() ) ->
 											static_return( [ float() ] ).
 get_exponential_values( Lambda, Count ) ->
-	V = generate_exponential_list( Lambda, Count ),
+	V = random_utils:get_exponential_values( Lambda, Count ),
 	wooper:return_static( V ).
 
 
 
 % @doc Returns a list of Count (positive) integer exponential values according
-% to the specified Lambda setting.
+% to the specified Lambda rate parameter.
 %
-% Lambda is the rate parameter: the probability density function is
-% p(x) = Lambda.exp(-Lambda.x), whose integral is 1.
-%
-% Mean value of drawn samples is 1/Lambda.
-%
-% See http://en.wikipedia.org/wiki/Exponential_distribution
-%
-% Using inverse transform sampling.
-%
--spec get_positive_integer_exponential_values( number(), count() ) ->
+-spec get_positive_integer_exponential_values( rate(), count() ) ->
 										static_return( [ pos_integer() ] ).
 get_positive_integer_exponential_values( Lambda, Count ) ->
-	V = generate_positive_integer_exponential_list( Lambda, Count ),
+	V = random_utils:generate_positive_integer_exponential_list( Lambda,
+																 Count ),
 	wooper:return_static( V ).
 
 
@@ -601,11 +498,11 @@ get_positive_integer_exponential_values( Lambda, Count ) ->
 % floating-point value drawn according to the corresponding Gaussian law,
 % updating the state in the process dictionary.
 %
--spec getGaussianValue( wooper:state(), number(), number() ) ->
+-spec getGaussianValue( wooper:state(), mean(), standard_deviation() ) ->
 							const_request_return( { gaussian_value, float() } ).
 getGaussianValue( State, Mu, Sigma ) ->
 
-	Value = sigma_loop( Mu, Sigma ),
+	Value = random_utils:get_gaussian_value( Mu, Sigma ),
 
 	%?debug_fmt( "Returning Gaussian value ~w.", [ Value ] ),
 
@@ -620,9 +517,11 @@ getGaussianValue( State, Mu, Sigma ) ->
 % floating-point value drawn according to the corresponding Gaussian law,
 % updating the state in the process dictionary.
 %
--spec get_gaussian_value( number(), number() ) -> static_return( float() ).
+-spec get_gaussian_value( mean(), standard_deviation() ) ->
+									static_return( float() ).
 get_gaussian_value( Mu, Sigma ) ->
-	wooper:return_static( sigma_loop( Mu, Sigma ) ).
+	Value = random_utils:get_gaussian_value( Mu, Sigma ),
+	wooper:return_static( Value ).
 
 
 
@@ -637,11 +536,13 @@ get_gaussian_value( Mu, Sigma ) ->
 % The result is a non-negative integer (not a float). Values will be drawn until
 % they are non-negative.
 %
--spec getPositiveIntegerGaussianValue( wooper:state(), number(), number() ) ->
-	const_request_return( { positive_integer_gaussian_value, pos_integer() } ).
+-spec getPositiveIntegerGaussianValue( wooper:state(), mean(),
+									   standard_deviation() ) ->
+	const_request_return( { positive_integer_gaussian_value,
+							non_neg_integer() } ).
 getPositiveIntegerGaussianValue( State, Mu, Sigma ) ->
 
-	Value = sigma_loop_positive_integer( Mu, Sigma ),
+	Value = random_utils:get_positive_integer_gaussian_value( Mu, Sigma ),
 
 	%?debug_fmt( "Returning positive integer Gaussian value ~w.", [ Value ] ),
 
@@ -660,10 +561,10 @@ getPositiveIntegerGaussianValue( State, Mu, Sigma ) ->
 % The result is a non-negative integer (not a float). Values will be drawn until
 % they are non-negative.
 %
--spec get_positive_integer_gaussian_value( number(), number() ) ->
+-spec get_positive_integer_gaussian_value( mean(), standard_deviation() ) ->
 												static_return( pos_integer() ).
 get_positive_integer_gaussian_value( Mu, Sigma ) ->
-	V = sigma_loop_positive_integer( Mu, Sigma ),
+	V = random_utils:get_positive_integer_gaussian_value( Mu, Sigma ),
 	wooper:return_static( V ).
 
 
@@ -674,10 +575,10 @@ get_positive_integer_gaussian_value( Mu, Sigma ) ->
 % values drawn according the corresponding Gaussian law, updating the state in
 % the process dictionary.
 %
--spec get_gaussian_values( number(), number(), count() ) ->
+-spec get_gaussian_values( mean(), standard_deviation(), count() ) ->
 									static_return( [ float() ] ).
 get_gaussian_values( Mu, Sigma, Count ) ->
-	Values = generate_gaussian_list( Mu, Sigma, Count ),
+	Values = random_utils:get_gaussian_values( Mu, Sigma, Count ),
 	wooper:return_static( Values ).
 
 
@@ -688,10 +589,13 @@ get_gaussian_values( Mu, Sigma, Count ) ->
 % according the corresponding Gaussian law, updating the state in the process
 % dictionary.
 %
--spec get_positive_integer_gaussian_values( number(), number(), count() ) ->
-										static_return( [ pos_integer() ] ).
+-spec get_positive_integer_gaussian_values( mean(), standard_deviation(),
+						count() ) -> static_return( [ non_neg_integer() ] ).
 get_positive_integer_gaussian_values( Mu, Sigma, Count ) ->
-	Values = generate_positive_integer_gaussian_list( Mu, Sigma, Count ),
+
+	Values = random_utils:get_positive_integer_gaussian_values( Mu, Sigma,
+																Count ),
+
 	wooper:return_static( Values ).
 
 
@@ -746,156 +650,5 @@ remove() ->
 			RandomManagerPid ! delete,
 			% It will unregister itself.
 			wooper:return_static( ok )
-
-	end.
-
-
-
-
-% Section for helper functions (not methods).
-
-
-% generate_*_list could use higher-order functions.
-
-
-% @doc Generates a list of Count exponential random values.
--spec generate_exponential_list( number(), count() ) -> [ float() ].
-generate_exponential_list( Lambda, Count ) ->
-	generate_exponential_list( Lambda, Count, [] ).
-
-
-% (helper)
-generate_exponential_list( _Lambda, _Count=0, Acc ) ->
-	Acc;
-
-generate_exponential_list( Lambda, Count, Acc ) ->
-	generate_exponential_list( Lambda, Count-1,
-							   [ get_exponential_value( Lambda )  | Acc ] ).
-
-
-
-% @doc Generates a list of Count positive integer exponential random values.
--spec generate_positive_integer_exponential_list( number(),
-							count() ) -> [ pos_integer() ].
-generate_positive_integer_exponential_list( Lambda, Count ) ->
-	generate_positive_integer_exponential_list( Lambda, Count, [] ).
-
-
-% (helper)
-generate_positive_integer_exponential_list( _Lambda, _Count=0, Acc ) ->
-	Acc;
-
-generate_positive_integer_exponential_list( Lambda, Count, Acc ) ->
-	generate_positive_integer_exponential_list( Lambda, Count-1,
-		[ erlang:round( get_exponential_value( Lambda ) ) | Acc ] ).
-
-
-
-% @doc Generates a list of Count Gaussian random values.
--spec generate_gaussian_list( number(), number(), count() ) -> [ float() ].
-generate_gaussian_list( Mu, Sigma, Count ) ->
-	generate_gaussian_list( Mu, Sigma, Count, [] ).
-
-
-% (helper)
-generate_gaussian_list( _Mu, _Sigma, _Count=0, Acc ) ->
-	Acc;
-
-generate_gaussian_list( Mu, Sigma, Count, Acc ) ->
-	generate_gaussian_list( Mu, Sigma, Count-1,
-							[ sigma_loop( Mu, Sigma )  | Acc ] ).
-
-
-
-% @doc Generates a list of Count positive integer Gaussian random values.
--spec generate_positive_integer_gaussian_list( number(), number(), count() ) ->
-														[ pos_integer() ].
-generate_positive_integer_gaussian_list( Mu, Sigma, Count ) ->
-	generate_positive_integer_gaussian_list( Mu, Sigma, Count, [] ).
-
-
-% (helper)
-generate_positive_integer_gaussian_list( _Mu, _Sigma, _Count=0, Acc ) ->
-	Acc;
-
-generate_positive_integer_gaussian_list( Mu, Sigma, Count, Acc ) ->
-	generate_positive_integer_gaussian_list( Mu, Sigma, Count-1,
-		[ erlang:round( sigma_loop_positive_integer( Mu, Sigma ) ) | Acc ] ).
-
-
-
-% @doc Generates a new normal value and updates the state.
-%
-% Mu is the mean, Sigma is the standard deviation (variance being its square).
-%
-% Returns the computed value.
-%
-% See also
-% https://en.wikipedia.org/wiki/Normal_distribution#Computational_methods
-%
--spec sigma_loop( number(), number() ) -> float().
-sigma_loop( Mu, Sigma ) ->
-
-	% Best (most efficient) implementation that could be used in the future:
-	% https://en.wikipedia.org/wiki/Ziggurat_algorithm
-
-	% Note: at least for Mu=0, Sigma=1, rand:normal/0 could be used.
-
-	% Using here the second best approach, the Marsaglia polar method (see
-	% https://en.wikipedia.org/wiki/Marsaglia_polar_method); used for example by
-	% C++11 GNU GCC libstdc++.
-
-	% random_utils:get_random_value/0 returns a random float uniformly
-	% distributed between 0.0 (included) and 1.0 (excluded), updating the random
-	% state in the process dictionary.
-
-	% So V1 and V2 are in [-1.0;1.0[:
-	V1 = 2.0 * random_utils:get_random_value() - 1.0,
-
-	% Supposedly independent from V1:
-	V2 = 2.0 * random_utils:get_random_value() - 1.0,
-
-	S  = (V1 * V1) + (V2 * V2),
-
-	% Loop until S in ]0,1[:
-	case S >= 1.0 orelse S =:= 0.0 of
-
-		% Rejected:
-		true ->
-			sigma_loop( Mu, Sigma );
-
-		_False ->
-
-			% Here S in ]0;1.0[ (note that 1.0 should be included, possibly by
-			% transforming any 0.0 in a 1.0):
-			%
-			%trace_utils:debug_fmt( "Mu = ~p, Sigma = ~p, S = ~p.",
-			%						[ Mu, Sigma, S ] ),
-
-			% math:log/1 is the Natural Log (base e log):
-			Scale = math:sqrt( ( -2.0 * math:log( S ) ) / S ),
-
-			% Adjust for standard deviation and mean:
-			Mu + ( Sigma * Scale * V1)
-
-	end.
-
-
-
-% @doc Generates a new integer non-negative normal value and updates the state.
-%
-% Returns the computed value.
-%
--spec sigma_loop_positive_integer( number(), number() ) -> pos_integer().
-sigma_loop_positive_integer( Mu, Sigma ) ->
-
-	% Loops until a positive integer is found:
-	case round( sigma_loop( Mu, Sigma ) ) of
-
-		TriedValue when TriedValue < 0 ->
-			sigma_loop_positive_integer( Mu, Sigma );
-
-		NonNegativeValue ->
-			NonNegativeValue
 
 	end.

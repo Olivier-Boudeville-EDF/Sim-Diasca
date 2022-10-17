@@ -263,8 +263,11 @@ manage_rst_to_html()
 	# So finally it had to be specified literally:
 	#
 
-	# It supposes that MathJax is installed (ex: 'pacman -Sy mathjax') and that
-	# typically a local symlink points to it: 'ln -s /usr/share/mathjax';
+	# It supposes that MathJax is installed (ex: 'pacman -Sy mathjax' or,
+	# typically: 'cd ~/Software && git clone
+	# https://github.com/mathjax/MathJax.git MathJax) and that typically a local
+	# symlink points to it (see the 'create-mathjax-symlink' make target): 'ln
+	# -s /usr/share/mathjax' or 'ln -s $HOME/Software/MathJax mathjax';
 	# otherwise we default to a basic, non-MathJax output and the '* Unknown
 	# equation environment bmatrix' error is likely:
 	#

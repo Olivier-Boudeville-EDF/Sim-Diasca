@@ -17,6 +17,7 @@
 % If not, see <http://www.gnu.org/licenses/>.
 
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
+% Creation date: 2008.
 
 
 % @doc Basic <b>probe class</b>, in charge of generating results.
@@ -117,6 +118,52 @@
 % it will not contain data, but it will provide at least metadata.
 
 
+-type probe_name() :: class_ResultProducer:producer_name().
+% The name of a probe (ex: to be checked against a result specification).
+
+-type bin_probe_name() :: class_ResultProducer:bin_producer_name().
+% The (binary) name of a probe.
+
+
+-type probe_tick() :: class_TimeManager:tick().
+% The tick, for a probe, corresponds to an (absolute) tick (not a tick offset).
+%
+% Note that if no tick duration is specified to a given probe (thus using
+% internally ticks rather than higher-level timestamps), then setting a tick
+% offset for it (see class_Probe:setTickOffset/2) allows to subtract that offset
+% to all recorded ticks, and thus to display tick offsets rather than absolute
+% ticks.
+
+
+% For the probe records:
+-include("class_Probe.hrl").
+
+-type probe_label() :: #probe_label{}.
+% Fully defines a label on a probe rendering.
+
+
+-type label_location() :: gui:point().
+% Corresponds to the 2D integer coordinates of the label on the plot.
+
+
+-type label_text() :: bin_string().
+% Actual text of the label.
+
+
+-type label_color() :: gui_color:color().
+% Color of the text (default: "blue").
+
+
+-type label_position() :: 'left' | 'center' | 'right'.
+% Describes the position of the text based on to the specified location for the
+% label.
+
+
+-type label_orientation() :: 'upright' | unit_utils:int_degrees().
+% Describes whether the text of the label should be rendered with an angle, from
+% the abscissa axis.
+
+
 -type curve_count() :: count().
 
 
@@ -126,6 +173,7 @@
 % Shorthands:
 
 -type count() :: basic_utils:count().
+-type user_data() :: basic_utils:user_data().
 
 -type ustring() :: text_utils:ustring().
 -type bin_string() :: text_utils:bin_string().
@@ -145,7 +193,11 @@
 -type length() :: gui:length().
 -type coordinate() :: gui:coordinate().
 
+-type extra_data() :: class_Serialisable:extra_data().
+
 -type virtual_seconds() :: class_TimeManager:virtual_seconds().
+
+-type meta_data() :: class_ResultManager:meta_data().
 
 
 
@@ -179,90 +231,92 @@
 % Attributes that are specific to a (basic) probe instance are:
 -define( class_attributes, [
 
-  { settings, probe_settings(), "settings applying to that probe" },
+	{ settings, probe_settings(), "settings applying to that probe" },
 
-  { command_file_up_to_date, boolean(), "tells whether the command file is "
-	"considered as 'clean', i.e. as existing and up-to-date" },
+	{ command_file_up_to_date, boolean(), "tells whether the command file is "
+	  "considered as 'clean', i.e. as existing and up-to-date" },
 
-  { deferred_data_writes, boolean(), "tells whether the data should be stored "
-	"in memory and written just before generating the report (if true; thus "
-	"increasing the memory footprint and not surviving a crash) or written "
-	"over time as sample data is sent (if false; thus involving slower I/O "
-	"and many writings)" },
+	{ deferred_data_writes, boolean(), "tells whether the data should be "
+	  "stored in memory and written just before generating the report "
+	  "(if true; thus increasing the memory footprint and not surviving "
+	  "a crash) or written over time as sample data is sent (if false; "
+	  "thus involving slower I/O and many writings)" },
 
-  { is_tracked_producer, boolean(), "tells whether this probe is a tracked "
-	"result producer, i.e. a producer which will be requested by the result "
-	"manager to return actual simulation results" },
+	{ is_tracked_producer, boolean(), "tells whether this probe is a tracked "
+	  "result producer, i.e. a producer which will be requested by the result "
+	  "manager to return actual simulation results" },
 
-  { probe_dir, bin_directory_path(), "corresponds to the directory "
-	"where the relevant probe files will be written; by default, it is the "
-	"current working directory" },
+	{ probe_dir, bin_directory_path(), "corresponds to the directory "
+	  "where the relevant probe files will be written; by default, it is the "
+	  "current working directory" },
 
-  { curve_count, curve_count(), "the number of curves carrying the "
-	"data of the probe, corresponding to the number of sample data this probe "
-	"is to be fed with (cached, precomputed value)" },
+	{ curve_count, curve_count(), "the number of curves carrying the "
+	  "data of the probe, corresponding to the number of sample data this "
+	  "probe is to be fed with (cached, precomputed value)" },
 
-  { curve_entries, [ curve_entry() ],
-	"an ordered list of {CurveIndex, BinCurveName, BinPlotSuffix} triplets, "
-	"with CurveIndex keeping track of the order according to which the curves "
-	"were declared and fed (so that, prior to generating a report, curves can "
-	"be reordered while being still associated to their values), and with "
-	"curve names being binaries; the order in this list dictates the actual "
-	"rendering order of curves that will be performed" },
+	{ curve_entries, [ curve_entry() ],
+	  "an ordered list of {CurveIndex, BinCurveName, BinPlotSuffix} triplets, "
+	  "with CurveIndex keeping track of the order according to which the "
+	  "curves were declared and fed (so that, prior to generating a report, "
+	  "curves can be reordered while being still associated to their values), "
+	  "and with curve names being binaries; the order in this list dictates "
+	  "the actual rendering order of curves that will be performed" },
 
-  { zone_entries, [ zone_definition() ], "a list of {BinZoneName, "
-	"{ExtendedCurveName1, ExtendedCurveName2}} entries" },
+	{ zone_entries, [ zone_definition() ], "a list of {BinZoneName, "
+	  "{ExtendedCurveName1, ExtendedCurveName2}} entries" },
 
-  { tick_offset, probe_tick(), "a value, by default set to zero, that will "
-	"be subtracted to all the ticks sent with sample data; for example, if "
-	"tick_offset is set to 1000 and samples are received for (supposedly "
-	"absolute) ticks 1005 and 1007, then the corresponding samples will be "
-	"associated to abscissas 5 and 7; this allows for example to be able to "
-	"rely on tick offsets rather than simulation absolute ticks, which would "
-	"be generally a lot larger - thus more difficult to interpret; note: we "
-	"could have defined a system which would, when the first sample is "
-	"received, store this tick and subtract it from all the next sample "
-	"ticks; however this is not what is generally wanted, as the origin of "
-	"time would then be probe-specific, whereas we want generally to use the "
-	"a common origin (typically the simulation start tick); as the probe "
-	"cannot guess it, a call to setTickOffset/2 seems necessary" },
+	{ tick_offset, probe_tick(), "a value, by default set to zero, that will "
+	  "be subtracted to all the ticks sent with sample data; for example, if "
+	  "tick_offset is set to 1000 and samples are received for (supposedly "
+	  "absolute) ticks 1005 and 1007, then the corresponding samples will be "
+	  "associated to abscissas 5 and 7; this allows for example to be able to "
+	  "rely on tick offsets rather than simulation absolute ticks, which would "
+	  "be generally a lot larger - thus more difficult to interpret; note: we "
+	  "could have defined a system which would, when the first sample is "
+	  "received, store this tick and subtract it from all the next sample "
+	  "ticks; however this is not what is generally wanted, as the origin of "
+	  "time would then be probe-specific, whereas we want generally to use the "
+	  "a common origin (typically the simulation start tick); as the probe "
+	  "cannot guess it, a call to setTickOffset/2 seems necessary" },
 
-  { maybe_tick_duration, maybe( virtual_seconds() ),
-	"the actual duration, in floating-point seconds (in virtual time), "
-	"between two simulation ticks (allows to better label the abscissa "
-	"axis with actual timestamps rather than mere ticks)" },
+	{ maybe_tick_duration, maybe( virtual_seconds() ),
+	  "the actual duration, in floating-point seconds (in virtual time), "
+	  "between two simulation ticks (allows to better label the abscissa "
+	  "axis with actual timestamps rather than mere ticks)" },
 
-  { sample_count, count(), "keeps track of the number of samples "
-	"received (ex: useful not to attempt to generate a rendering if none was "
-	"received)" },
+	{ sample_count, count(), "keeps track of the number of samples "
+	  "received (ex: useful not to attempt to generate a rendering if none was "
+	  "received)" },
 
-  { data_table, [ { timestamp_bin_string(), sample_data() } ],
-	"records the sample data this probe was fed with; "
-	"it is not a table because gnuplot may prefer "
-	"that the rows are ordered, and immediate writing might be requested. "
-	"It is an ordered list (in reverse chronological order, as new samples "
-	"are added at the head) that contains {TickOffset, Samples} entries, "
-	"with Samples being a tuple whose size can increase over time, if "
-	"updateCurveInformation/2 is called before the report generation (using "
-	"default settings for graph rendering)" },
+	{ data_table, [ { timestamp_bin_string(), sample_data() } ],
+	  "records the sample data this probe was fed with; "
+	  "it is not a table because gnuplot may prefer "
+	  "that the rows are ordered, and immediate writing might be requested. "
+	  "It is an ordered list (in reverse chronological order, as new samples "
+	  "are added at the head) that contains {TickOffset, Samples} entries, "
+	  "with Samples being a tuple whose size can increase over time, if "
+	  "updateCurveInformation/2 is called before the report generation (using "
+	  "default settings for graph rendering)" },
 
-  { data_filename, text_utils:binary(), "path of the probe data file; it is "
-	"a complete path (including the probe directory), stored as a binary" },
+	{ data_filename, file_utils:bin_file_path(),
+	  "path of the probe data file; it is a complete path (including the probe "
+	  "directory)" },
 
-  { data_file, maybe( file() ),
-	"the file object (if any) in which sample data is written" },
+	{ data_file, maybe( file() ),
+	  "the file object (if any) in which sample data is written" },
 
-  { row_format_string, maybe( ustring() ),
-	"a precomputed format string (if any) used to write new samples" },
+	{ row_format_string, maybe( ustring() ),
+	  "a precomputed format string (if any) used to write new samples" },
 
-  { gnuplot_version, maybe( gnuplot_version() ), "version of gnuplot "
-	"(if any) that will be used on this computer during this simulation" },
+	{ gnuplot_version, maybe( gnuplot_version() ), "version of gnuplot "
+	  "(if any) that will be used on this computer during this simulation" },
 
-  { gnuplot_path, maybe( file_utils:executable_path() ),
-	"the path to the gnuplot executable (if any)" },
+	{ gnuplot_path, maybe( file_utils:executable_path() ),
+	  "the path to the gnuplot executable (if any)" },
 
-  { meta_data, class_ResultManager:meta_data(), "corresponds to the meta-data "
-	"to be added in probe-generated data files" } ] ).
+	{ meta_data, meta_data(),
+	  "corresponds to the meta-data to be added in probe-generated data "
+	  "files" } ] ).
 
 
 
@@ -318,7 +372,7 @@
 
 
 -type probe_name_init() :: probe_name()
-							| { probe_name(), traces:emitter_categorization() }.
+						 | { probe_name(), traces:emitter_categorization() }.
 % Name information about a probe.
 
 
@@ -337,8 +391,11 @@
 		{ declared_extended_curve_name(), declared_extended_curve_name() } }.
 
 
--type plot_style() :: 'linespoints'
+-type plot_style() :: 'linespoints' % (default)
+					| 'lines'
+					| 'points'
 					| 'boxes'
+					| 'histograms'
 					| atom(). % As many others exist.
 % Plot style (default being 'linespoints'):
 %
@@ -367,6 +424,19 @@
 
 -type probe_ref() :: 'non_wanted_probe' | probe_pid().
 % A probe may not be a wanted result producer.
+
+
+-type string_curve_name() :: text_utils:ustring().
+% The external name for a curve.
+
+
+-type curve_name() :: text_utils:bin_string().
+% The internal name for a curve:
+
+
+-type sample_data() :: tuple().
+% A tuple of data (numbers) to be sent as sample to a probe-like result
+% producer.
 
 
 -type curve_index() :: curve_count().
@@ -412,11 +482,11 @@
 
 -type timestamp_time_format() ::
 
-		% Time then date, on a single line:
-		'single_line'
+	% Time then date, on a single line:
+	'single_line'
 
-		% Time, newline, date, hence on two lines:
-	  | 'double_line'.
+	% Time, newline, date, hence on two lines:
+  | 'double_line'.
 % The display time format to use for timestamped axes.
 
 
@@ -441,6 +511,15 @@
 
 
 
+-type probe_settings() :: #probe_settings{}.
+% Records the (rendering) settings of a probe.
+%
+% Used notably by plain probes and by the datalogger.
+
+
+-type probe_options() :: #probe_options{}.
+% Describes management (not rendering) options that apply to (basic) probes.
+
 -type setting_id() :: 'global_plot_style' | atom().
 
 -type setting_value() :: plot_style() | term().
@@ -452,17 +531,32 @@
 %
 % Possible setting pairs (setting_id() -> setting_value()):
 %  - global_plot_style -> plot_style()
+%  - curve_colors -> [ ustring() ]
+%
+% Example:
+%
+% ExtraSettingsTable = table:new([
+%		{global_plot_style, boxes},
+%		{curve_colors, [ _RunColorGreen="00BB00", _FailColor="BB0000",
+%						 _DisabledColor="777777"]}]),
 
 
 
 % Exported so that for example class_Actor can reference them:
--export_type([ probe_name_init/0, name_options/0,
+-export_type([ probe_name_init/0, probe_name/0, bin_probe_name/0,
+			   probe_tick/0, probe_label/0,
+			   label_location/0, label_text/0, label_color/0, label_position/0,
+			   label_orientation/0,
+			   curve_count/0, gnuplot_version/0,
+			   name_options/0,
 			   declared_curve_name/0, declared_zone_name/0,
 			   declared_zone/0, probe_pid/0, probe_ref/0,
+			   string_curve_name/0, curve_name/0,
 			   curve_index/0, curve_plot_suffix/0,
 			   curve_entry/0, curve_entries/0, curve_offset/0, zone_entries/0,
 			   sample_data/0,
 			   timestamp_string/0, timestamp_bin_string/0,
+			   probe_settings/0, probe_options/0,
 			   settings_table/0, setting_id/0, setting_value/0 ]).
 
 
@@ -479,18 +573,6 @@
 -define( rotate_ccw_tick_label_option, "rotate by 45 right" ).
 
 
-
-% Probes require specific (de)serialisations:
--define( wooper_serialisation_hooks,).
-
-
-% Preliminary support:
--export([ deserialise/4 ]).
-
-
-% For the probe settings:
--include("class_Probe.hrl").
-
 % Must be included before class_TraceEmitter header:
 -define( trace_emitter_categorization, "Core.ResultManagement.Probe.Basic" ).
 
@@ -502,9 +584,53 @@
 
 
 
-% @doc Constructs a (basic) probe, from following parameters: NameOptions,
-% CurveNames, Title, Zones, MaybeXLabel, YLabel (no tick duration nor extra
-% settings specified here).
+% @doc Constructs a basic probe, from following parameters: NameOptions,
+% CurveNames, Title, Zones, MaybeXLabel, YLabel (no metadata, tick duration or
+% extra settings to be specified here).
+%
+% Construction parameters:
+%
+% - NameOptions is either NameInit or {NameInit, ProbeOptions}, where NameInit
+% :: probe_name_init() and ProbeOptions :: probe_options(), i.e. is a
+% probe_options record
+%
+% - CurveNames :: [ ustring() ] is an (ordered) list containing the names (as
+% plain strings) of each curve to be drawn (hence the probe will expect
+% receiving data in the form of {Tick, {V1,V2,..}} afterwards). For example,
+% CurveNames=["First curve", "Second curve"] will lead to expect receiving
+% samples like: {MyTick, {ValueForFirstCurve, ValueForSecondCurve}}
+%
+% - Zones, which correspond to specific areas between two curves being defined,
+% are specified as a (potentially empty) list of {ZoneName,
+% {ExtendedCurveNameOne,ExtendedCurveNameTwo}} entries, where ZoneName is the
+% name of this zone (as a plain string), and ExtendedCurveNameOne and
+% ExtendedCurveNameTwo are each either a plain string designating a curve (ex:
+% "Second curve") already defined in CurveNames, or a special atom designating
+% the plot boundaries, i.e. either 'abscissa_bottom' or 'abscissa_top'. For
+% example {"My Zone", {"First curve",'abscissa_bottom'}} defines a zone named
+% "My Zone" and delimited by the curve named "First curve" and the abscissa axis
+% (note: the order between the two elements defining a zone does not matter)
+%
+% - Title will be the graph (plot) title
+%
+% - MaybeXLabel (if any) will be the non-default label of the abscissa axis
+%
+% - YLabel will be the label of the ordinate axis
+%
+-spec construct( wooper:state(),
+		probe_name_init() | { probe_name_init(), probe_options() },
+		[ declared_curve_name() ], [ declared_zone() ], title(),
+		label(), label() ) -> wooper:state().
+construct( State, NameTerm, CurveNames, Zones, Title,
+		   MaybeXLabel, YLabel ) ->
+	construct( State, NameTerm, CurveNames, Zones, Title,
+			   MaybeXLabel, YLabel, _MetaData=undefined ).
+
+
+
+% @doc Constructs a basic probe, from following parameters: NameOptions,
+% CurveNames, Title, Zones, MaybeXLabel, YLabel (neither tick duration nor extra
+% settings to be specified here).
 %
 % Construction parameters:
 %
@@ -541,7 +667,7 @@
 -spec construct( wooper:state(),
 		probe_name_init() | { probe_name_init(), probe_options() },
 		[ declared_curve_name() ], [ declared_zone() ], title(),
-		label(), label(), class_ResultManager:meta_data() ) -> wooper:state().
+		label(), label(), meta_data() ) -> wooper:state().
 construct( State, NameTerm, CurveNames, Zones, Title,
 		   MaybeXLabel, YLabel, MetaData ) ->
 	construct( State, NameTerm, CurveNames, Zones, Title,
@@ -550,7 +676,7 @@ construct( State, NameTerm, CurveNames, Zones, Title,
 
 
 
-% @doc Constructs a (basic) probe, from following parameters: NameOptions,
+% @doc Constructs a basic probe, from following parameters: NameOptions,
 % CurveNames, Title, Zones, MaybeXLabel, YLabel, ExtraSettingsTable, where:
 %
 % - NameOptions is either NameInit or {NameInit, ProbeOptions}, where NameInit
@@ -594,9 +720,8 @@ construct( State, NameTerm, CurveNames, Zones, Title,
 -spec construct( wooper:state(),
 		probe_name_init() | { probe_name_init(), probe_options() },
 		[ declared_curve_name() ], [ declared_zone() ], title(),
-		label(), label(), class_ResultManager:meta_data(),
-		maybe( settings_table() ), maybe( virtual_seconds() ) ) ->
-						wooper:state().
+		label(), label(), meta_data(), maybe( settings_table() ),
+		maybe( virtual_seconds() ) ) -> wooper:state().
 construct( State, { NameInit, ProbeOptions }, CurveNames, Zones, Title,
 		   MaybeXLabel, YLabel, MetaData, MaybeExtraSettingsTable,
 		   MaybeTickDuration ) when is_record( ProbeOptions, probe_options ) ->
@@ -623,8 +748,13 @@ construct( State, { NameInit, ProbeOptions }, CurveNames, Zones, Title,
 	%trace_utils:debug_fmt( "Initial zone entries: ~p.", [ ZoneEntries ] ),
 
 	{ CreateCommandFileInitially, DeferredDataWrites, IsTrackedProducer,
-	  ProbeDir, MaybeBinProbeDir, MaybeGnuplotPath, MaybeGnuplotVersion} =
+	  ProbeDir, MaybeBinProbeDir, MaybeGnuplotPath, MaybeGnuplotVersion } =
 		interpret_options( ProbeOptions ),
+
+	% For an increased interleaving:
+	getAttribute( ProducerState, result_manager_pid ) ! { declareProbe,
+		[ text_utils:string_to_binary( ProbeName ), IsTrackedProducer,
+		  MaybeBinProbeDir ], self() },
 
 	ProbeBaseSettings =
 		get_probe_settings( Title, MaybeXLabel, YLabel, MaybeGnuplotVersion ),
@@ -635,11 +765,6 @@ construct( State, { NameInit, ProbeOptions }, CurveNames, Zones, Title,
 	UpdatedCurveEntries =
 		update_curve_entries( CurveEntries, ExtraCurveSettings ),
 
-
-	% For an increased interleaving:
-	getAttribute( ProducerState, result_manager_pid ) ! { declareProbe,
-		[ text_utils:string_to_binary( ProbeName ), IsTrackedProducer,
-		  MaybeBinProbeDir ], self() },
 
 	CurveCount = length( CurveNames ),
 
@@ -699,8 +824,8 @@ construct( State, { NameInit, ProbeOptions }, CurveNames, Zones, Title,
 			% parallel (resulting in a race condition).
 			%
 			DataFile = file_utils:open( DataFilename,
-			  [ { delayed_write, _Size=4*1024, _Delay=2000 }
-				| ?base_open_flags ] ),
+				[ { delayed_write, _Size=4*1024, _Delay=2000 }
+						| ?base_open_flags ] ),
 
 
 			% Format used merely for a portable '\n':
@@ -729,8 +854,8 @@ construct( State, NameInit, CurveNames, Zones, Title, MaybeXLabel, YLabel,
 		   MetaData, MaybeExtraSettingsTable, MaybeTickDuration ) ->
 	% Will be using default settings here:
 	construct( State, { NameInit, _DefaultProbeOptions=#probe_options{} },
-			   CurveNames, Zones, Title, MaybeXLabel, YLabel, MetaData,
-			   MaybeExtraSettingsTable, MaybeTickDuration ).
+		CurveNames, Zones, Title, MaybeXLabel, YLabel, MetaData,
+		MaybeExtraSettingsTable, MaybeTickDuration ).
 
 
 
@@ -784,7 +909,8 @@ destruct( State ) ->
 	%?debug( "Probe deleted." ),
 
 	% Then call the direct mother class counterparts and allow chaining:
-	setAttribute( State, data_file, undefined ).
+	% Useless: setAttribute( State, data_file, undefined ).
+	State.
 
 
 
@@ -1185,7 +1311,7 @@ setCanvasSize( State, NewWidth, NewHeight ) ->
 	wooper:return_state( setAttributes( State, [
 
 		{ settings, Settings#probe_settings{ canvas_width=NewWidth,
-											canvas_height=NewHeight } },
+											 canvas_height=NewHeight } },
 
 		% Forcing a later re-creation:
 		{ command_file_up_to_date, false } ] ) ).
@@ -1374,7 +1500,7 @@ setRotatedTickLabels( State ) ->
 	wooper:return_state( setAttributes( State, [
 
 		{ settings, Settings#probe_settings{
-		  x_tick=text_utils:string_to_binary(
+			x_tick=text_utils:string_to_binary(
 					?rotate_cw_tick_label_option ) } },
 
 		{ command_file_up_to_date, false } ] ) ).
@@ -1428,7 +1554,7 @@ addLabel( State, Text, Location ) ->
 % "#4B00820").
 %
 -spec addLabel( wooper:state(), ustring(), point(), color() ) ->
-			oneway_return().
+														oneway_return().
 addLabel( State, Text, Location, Color ) ->
 
 	Settings = ?getAttr(settings),
@@ -2033,10 +2159,10 @@ declare_result_probe( NameOptions, CurveEntries, ZoneEntries, Title,
 
 	ActualName = case NameOptions of
 
-		 { Name, _ProbeOptions } ->
+		{ Name, _ProbeOptions } ->
 			Name;
 
-		 Name when is_list( Name ) ->
+		Name when is_list( Name ) ->
 			Name
 
 	end,
@@ -2479,6 +2605,7 @@ get_actual_probe_name( { EmitterName, _EmitterCategorization } ) ->
 	wooper:return_static( get_actual_probe_name( EmitterName ) );
 
 
+% (helper)
 get_actual_probe_name( EmitterName ) ->
 
 	% Dots are not allowed in probe names (whereas, for example, FQDN usually
@@ -2724,6 +2851,28 @@ interpret_options( _ProbeOptions=#probe_options{
 
 
 
+% @doc Switches the current plot style of this probe to "boxes", with relevant
+% other settings.
+%
+-spec switchToBoxes( wooper:state() ) -> oneway_return().
+switchToBoxes( State ) ->
+
+	ProbeSettings = ?getAttr(settings),
+
+	NewExtraDefs = [
+					text_utils:string_to_binary( "set style fill solid 0.5" )
+				   | ProbeSettings#probe_settings.extra_defines ],
+
+	NewProbeSettings = ProbeSettings#probe_settings{
+		plot_style= <<"boxes">>,
+		extra_defines=NewExtraDefs },
+
+	NewState = setAttribute( State, settings, NewProbeSettings ),
+
+	wooper:return_state( NewState ).
+
+
+
 % @doc Updates specified probe settings with any extra settings specified.
 -spec apply_extra_settings( maybe( settings_table() ), probe_settings(),
 							wooper:state() ) ->
@@ -2736,7 +2885,7 @@ apply_extra_settings( ExtraSettingsTable, ProbeSettings, State ) ->
 
 	% For plot style:
 	{ GlobalPlotStyle, StyleShrunkTable } =
-		table:extract_entry_with_defaults( _Key=global_plot_style,
+		table:extract_entry_with_default( _Key=global_plot_style,
 							_DefaultValue=linespoints, ExtraSettingsTable ),
 
 	StyleProbeSettings = case GlobalPlotStyle of
@@ -2760,7 +2909,7 @@ apply_extra_settings( ExtraSettingsTable, ProbeSettings, State ) ->
 	DefaultCanvasSize = { ?default_canvas_width, ?default_canvas_height },
 
 	{ CanvasSize, CanvasSizeShrunkTable } =
-		table:extract_entry_with_defaults( canvas_size,
+		table:extract_entry_with_default( canvas_size,
 						DefaultCanvasSize, StyleShrunkTable ),
 
 	CanvasSizeProbeSettings = case CanvasSize of
@@ -2778,7 +2927,7 @@ apply_extra_settings( ExtraSettingsTable, ProbeSettings, State ) ->
 
 	% For curve colors:
 	{ MaybeCurveColors, CurveColorShrunkTable } =
-		table:extract_entry_with_defaults( curve_colors,
+		table:extract_entry_with_default( curve_colors,
 			_DefaultCurveColors=undefined, CanvasSizeShrunkTable ),
 
 	% May be extended beyond colors in the future:
@@ -2789,7 +2938,7 @@ apply_extra_settings( ExtraSettingsTable, ProbeSettings, State ) ->
 	DefaultTickOptions = { undefined, undefined },
 
 	{ TickOptions, TickOptShrunkTable } =
-		table:extract_entry_with_defaults( tick_options,
+		table:extract_entry_with_default( tick_options,
 						DefaultTickOptions, CurveColorShrunkTable ),
 
 	TickOptProbeSettings =
@@ -2800,7 +2949,7 @@ apply_extra_settings( ExtraSettingsTable, ProbeSettings, State ) ->
 	DefaultTicksOptions = { undefined, undefined },
 
 	{ TicksOptions, TicksOptShrunkTable } =
-		table:extract_entry_with_defaults( ticks_options,
+		table:extract_entry_with_default( ticks_options,
 						DefaultTicksOptions, TickOptShrunkTable ),
 
 	TicksOptProbeSettings =
@@ -2809,7 +2958,7 @@ apply_extra_settings( ExtraSettingsTable, ProbeSettings, State ) ->
 
 	% For timestamp time format:
 	{ TimeFormatOpt, TimeFmtShrunkTable } =
-		table:extract_entry_with_defaults( timestamp_time_format,
+		table:extract_entry_with_default( timestamp_time_format,
 				_DefaultTimeFmt=undefined, TicksOptShrunkTable ),
 
 	% Precise checking done later:
@@ -2817,7 +2966,7 @@ apply_extra_settings( ExtraSettingsTable, ProbeSettings, State ) ->
 
 		true ->
 			TicksOptProbeSettings#probe_settings{
-			  x_ticks_timestamp_time_format=TimeFormatOpt };
+				x_ticks_timestamp_time_format=TimeFormatOpt };
 
 		false ->
 			throw( { invalid_timestamp_time_format, TimeFormatOpt } )
@@ -2948,7 +3097,7 @@ update_curve_entry( CurveE, _MaybeExtraSet=undefined ) ->
 % color of the corresponding curve (as RGB coordinates):
 %
 update_curve_entry( _CurveE={ CIndex, CName, CPlotSuffix }, ExtraSetStr )
-  when is_list( ExtraSetStr ) ->
+										when is_list( ExtraSetStr ) ->
 
 	NewCPlotSuffix = text_utils:bin_format( "~ts lt rgb \"#~ts\"",
 											[ CPlotSuffix, ExtraSetStr ] ),
@@ -3206,8 +3355,7 @@ generate_data_file( State ) ->
 
 % @doc Writes the probe header to the data file.
 -spec write_header( file(), curve_entries(), zone_entries(),
-					probe_settings(), probe_name(),
-					class_ResultManager:meta_data() ) -> void().
+					probe_settings(), probe_name(), meta_data() ) -> void().
 write_header( File, CurveEntries, ZoneEntries, Settings, Name, Metadata ) ->
 
 	{ { Year, Month, Day }, { Hour, Minute, Second } } =
@@ -3907,8 +4055,7 @@ generate_report( Name, State ) ->
 	% absolute path for the PNG is not an option either, as we are to move the
 	% files to the result directory afterwards.
 	%
-	Command = GnuplotPath ++ " '" ++ CommandFilename
-		++ "'",
+	Command = GnuplotPath ++ " '" ++ CommandFilename ++ "'",
 
 	OutputMessage = case system_utils:run_command( Command,
 								_Environment=[], _WorkingDir=ProbeDir ) of
@@ -4028,18 +4175,23 @@ get_gnuplot_reference_version() ->
 
 % Serialisation section.
 %
-% Hooks are defined so that the WOOPER-provided serialise/3 request is
+% Hooks are defined so that the WOOPER-provided serialisation mechasnisms are
 % customised for probes.
 
 
 
 % @doc Triggered just before serialisation.
 %
+% The state explicitly returned here is dedicated to serialisation (generally
+% the actual instance state is not impacted by serialisation and thus this
+% request is often const).
+%
 % We are to fix file handles here. The PIDs (none is internal to a probe) will
 % be converted later by the entry transformer.
 %
--spec pre_serialise_hook( wooper:state() ) -> wooper:state().
-pre_serialise_hook( State ) ->
+-spec onPreSerialisation( wooper:state(), user_data() ) ->
+		const_request_return( { wooper:state(), user_data(), extra_data() } ).
+onPreSerialisation( State, UserData ) ->
 
 	NewDataFileValue = case ?getAttr(data_file) of
 
@@ -4051,24 +4203,14 @@ pre_serialise_hook( State ) ->
 
 	end,
 
-	setAttributes( State, [ { data_filename, undefined },
-							{ data_file, NewDataFileValue },
-							{ probe_dir, undefined },
-							{ gnuplot_version, undefined } ] ).
+	NoTransientState = setAttributes( State, [
+		{ data_filename, undefined },
+		{ data_file, NewDataFileValue },
+		{ probe_dir, undefined },
+		{ gnuplot_version, undefined } ] ),
 
-
-
-% @doc Triggered just after serialisation, based on the selected entries.
-%
-% The value returned by this hook will be converted "as is" into a binary, that
-% will be written.
-%
-% Instead of returning a mere {Classname, Entries} tuple for binarisation, a
-% probe returns a more complete {Classname, Entries, BinCommand, BinData} tuple.
-%
--spec post_serialise_hook( classname(),
-		wooper_serialisation:term_serialisation(), wooper:state() ) -> term().
-post_serialise_hook( Classname, Entries, State ) ->
+	% The simplest approach regarding the probe files is to persist them as
+	% well (as extra data), since recreating them might be error-prone.
 
 	% Content of the command file (if any):
 
@@ -4077,7 +4219,7 @@ post_serialise_hook( Classname, Entries, State ) ->
 
 	CommandFileName = get_command_filename( Name, ProbeDir ),
 
-	BinCommand = case file_utils:is_existing_file( CommandFileName ) of
+	MaybeBinCommand = case file_utils:is_existing_file( CommandFileName ) of
 
 		true ->
 			file_utils:read_whole( CommandFileName );
@@ -4087,11 +4229,12 @@ post_serialise_hook( Classname, Entries, State ) ->
 
 	end,
 
+
 	% Content of the data file (if any):
 
 	DataFilename = file_utils:join( ProbeDir, get_data_filename( Name ) ),
 
-	BinData = case file_utils:is_existing_file( DataFilename ) of
+	MaybeBinData = case file_utils:is_existing_file( DataFilename ) of
 
 		true ->
 			file_utils:read_whole( DataFilename );
@@ -4101,54 +4244,22 @@ post_serialise_hook( Classname, Entries, State ) ->
 
 	end,
 
-	{ Classname, Entries, BinCommand, BinData }.
+	ExtraData = { MaybeBinCommand, MaybeBinData },
+
+	wooper:const_return_result( { NoTransientState, UserData, ExtraData } ).
 
 
 
-% @doc Triggered just before deserialisation.
+% @doc Triggered at the end of the deserialisation step.
 %
 % Here we mostly perform the reverse operations done in post_serialise_hook/3.
 %
--spec pre_deserialise_hook( term(), basic_utils:user_data() ) ->
-									wooper_serialisation:term_serialisation().
-pre_deserialise_hook( _SerialisationTerm={ _Classname, _Entries, _BinCommand,
-										   _BinData }, _UserData ) ->
-	%Entries.
-	throw( fixme_not_implemented_yet ).
-
-
-% @doc Triggered just after deserialisation.
--spec post_deserialise_hook( wooper:state() ) -> wooper:state().
-post_deserialise_hook( State ) ->
-	State.
-
-
-
-% @doc Deserialises a probe from specified binaries.
-%
-% Never returns: the probe takes ownership of the process.
-%
--spec deserialise( binary(), binary(), binary(), pid() ) -> no_return().
-deserialise( BinContent, BinCommand, _BinData, ReaderPid ) ->
-
-	% Let's start with the files:
-	{ _CommandFilename, _CommandBinContent } = binary_to_term( BinCommand ),
-
-	{ Classname, RawEntries } = binary_to_term( BinContent ),
-
-	% Too early to transform serialisation markers, as we need up-to-date
-	% instance trackers beforehand:
-	%
-	% (we just update the local tracker with information about that actor)
-	%
-	% Will never return:
-	%
-	Classname:wooper_deserialise( RawEntries,
-		_EntryTransformer=undefined, _UserData=undefined,
-		_ListenerPid=ReaderPid ),
+-spec onPostDeserialisation( wooper:state(), user_data() ) ->
+			request_return( user_data() ).
+onPostDeserialisation( _State, _UserData ) ->
+	% Reuse extra_data to restore probe files.
 
 	throw( fixme_not_implemented_yet ).
-
 
 
 

@@ -26,15 +26,13 @@
 % Creation date: Wednesday, October 31, 2018.
 
 
-
-% This module allows to test with as few dependencies as possible the creation
-% of class instances, using for that the various new operators.
+%@doc This module allows to test with as few dependencies as possible the
+% <b>creation of class instances</b>, using for that the various new operators.
 %
 -module(instance_creation_test).
 
 
 -export([ run/0 ]).
-
 
 
 -spec run() -> no_return().
@@ -88,7 +86,7 @@ run() ->
 
 	V4LinkName = "created with remote_new_link",
 	V4LinkPid = TestedClass:remote_new_link( TargetNode, V4LinkName,
-													 male ),
+											 male ),
 	test_instance( V4LinkPid, V4LinkName ),
 
 
@@ -111,8 +109,8 @@ run() ->
 
 		{ spawn_successful, V6Pid } ->
 			test_facilities:display(
-			  "   (and '~ts' (~w) synchronised adequately)",
-			  [ V6Name, V6Pid ] )
+				"   (and '~ts' (~w) synchronised adequately)",
+				[ V6Name, V6Pid ] )
 
 	end,
 
@@ -126,8 +124,8 @@ run() ->
 
 		{ spawn_successful, V6LinkPid } ->
 			test_facilities:display(
-			  "   (and '~ts' (~w) synchronised adequately)",
-			  [ V6LinkName, V6LinkPid ] )
+				"   (and '~ts' (~w) synchronised adequately)",
+				[ V6LinkName, V6LinkPid ] )
 
 	end,
 
@@ -140,7 +138,7 @@ run() ->
 
 	V7LinkName = "created with remote_synchronous_timed_new_link",
 	V7LinkPid = TestedClass:remote_synchronous_timed_new_link( TargetNode,
-														   V7LinkName, male ),
+														V7LinkName, male ),
 	test_instance( V7LinkPid, V7LinkName ),
 
 	V8Name = "created with new_passive",
@@ -164,6 +162,6 @@ test_instance( Pid, Name ) ->
 
 		{ wooper_result, Name } ->
 			test_facilities:display(
-			  " - '~ts' (~w) alive and answering adequately", [ Name, Pid ] )
+				" - '~ts' (~w) alive and answering adequately", [ Name, Pid ] )
 
 	end.

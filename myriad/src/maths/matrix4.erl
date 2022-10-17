@@ -103,6 +103,7 @@
 		  rotation/2,
 		  orthographic/6, perspective/4, frustum/6,
 		  from_columns/4, from_rows/4,
+		  compact_from_columns/4,
 		  from_coordinates/16, from_compact_coordinates/12,
 		  from_3D/2,
 		  from_arbitrary/1, to_arbitrary/1,
@@ -180,7 +181,7 @@ new( UserMatrix ) ->
 % row vectors.
 %
 -spec new( user_vector4(), user_vector4(), user_vector4() ) ->
-			compact_matrix4().
+											compact_matrix4().
 new( UserVecRow1, UserVecRow2, UserVecRow3 ) ->
 
 	Rows = [ vector4:new( UVR )
@@ -448,13 +449,34 @@ frustum( Left, Right, Bottom, Top, ZNear, ZFar ) ->
 %  '''
 %
 -spec from_columns( vector4(), vector4(), vector4(), vector4() ) ->
-							canonical_matrix4().
+														canonical_matrix4().
 from_columns( _Va=[Xa,Ya,Za,Wa], _Vb=[Xb,Yb,Zb,Wb],
 			  _Vc=[Xc,Yc,Zc,Wc], _Vd=[Xd,Yd,Zd,Wd] ) ->
 	#matrix4{ m11=Xa, m12=Xb, m13=Xc, m14=Xd,
 			  m21=Ya, m22=Yb, m23=Yc, m24=Yd,
 			  m31=Za, m32=Zb, m33=Zc, m34=Zd,
 			  m41=Wa, m42=Wb, m43=Wc, m44=Wd }.
+
+
+
+% @doc Returns the 4x4 compact matrix whose columns correspond to the specified
+% 3 vectors and 1 point (all expressed as 3D ones).
+%
+% Returns thus:
+%  ```
+%  [ Va Vb Vc P ]
+%  [ |  |  |  | ]
+%  [ |  |  |  | ]
+%  [ 0  0  0  1 ]
+%  '''
+%
+-spec compact_from_columns( vector3(), vector3(), vector3(), point3() ) ->
+														compact_matrix4().
+compact_from_columns( _Va=[Xa,Ya,Za], _Vb=[Xb,Yb,Zb],
+					  _Vc=[Xc,Yc,Zc], _P=[Xp,Yp,Zp] ) ->
+	#compact_matrix4{ m11=Xa, m12=Xb, m13=Xc, tx=Xp,
+					  m21=Ya, m22=Yb, m23=Yc, ty=Yp,
+					  m31=Za, m32=Zb, m33=Zc, tz=Zp }.
 
 
 
@@ -1412,7 +1434,7 @@ comatrix( _M=#compact_matrix4{ m11=M11, m12=M12, m13=M13, tx=Tx,
 
 
 
-% @doc Returns the inverse of the specified matrix, if it is inversible (that is
+% @doc Returns the inverse of the specified matrix, if it is invertible (that is
 % iff its determinant is non-null), otherwise returns undefined.
 %
 -spec inverse( matrix4() ) -> maybe( matrix4() ).

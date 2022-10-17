@@ -27,6 +27,9 @@
 
 
 % @doc Gathering of various facilities for <b>keyboard management</b>.
+%
+% See also the gui_keyboard_test module.
+%
 -module(gui_keyboard).
 
 
@@ -42,7 +45,7 @@
 
 
 % There are two ways to consider a keyboard:
-%  - a 104-button joystick, for which only the button's locations and
+%  - a ~104-button joystick, for which only the buttons locations and
 %  press/release statuses matter
 %  - a device that produces text (Unicode) inputs
 %
@@ -50,23 +53,41 @@
 % the second one we are dealing with keycodes ("character codes"). Both are
 % 32-bit values, yet have different semantics.
 
-% Scancodes relate only to actual button locations, hence are meant not to
-% depend on any current specific keyboard layout; think of this as "the user
-% pressed the Q key as it would be on a US QWERTY keyboard" regardless of
-% whether this is actually a European keyboard or a Dvorak keyboard or
-% whatever. Even if they return the character code for Latin-1 keys
-% corresponding to an hypothetical, canonical US keyboard for compatibility,
-% they should be used to handle special/location-based characters (such as
+% Scancodes relate only to actual button locations (not on any label on top of
+% the keys), hence are meant not to depend on any current specific keyboard
+% layout; think of this as "the user pressed the Q key as it would be on a US
+% QWERTY keyboard", regardless of whether this is actually an European keyboard,
+% a Dvorak one, or any other. Even if they return the character code for Latin-1
+% keys corresponding to an hypothetical, canonical US keyboard for compatibility
+% (so testing the returned value with a different keyboard layout may be of
+% use), they should be used to handle special/location-based characters (such as
 % cursor arrows keys, the Home or Insert keys, etc.). They correspond to the
 % gui_keyboard:scancode/0 type.
 %
 % So the scancode is always the same key position, it basically designates a
 % button at a given location of the aforementioned 104-button joystick.
+%
 % As for keycodes, they are meant to be layout-dependent (and
 % location-independent). Think of this as "the user pressed the key that is
 % labelled 'Q' on a specific keyboard, wherever it is."; keycodes include
 % non-Latin-1 characters that can be entered when using national keyboard
 % layouts. They correspond to the gui_keyboard:keycode/0 type.
+
+
+% Keyboard-related events
+%
+% Key events are only sent to the widget that has the focus (see
+% gui:set_focus/1, gui:get_focused/0), provided that this type of widget *can*
+% have the focus at all (e.g. frame() cannot); by default, only the last
+% rendered widget has the focus.
+%
+% Moreover key events are not command events, so they are *not* propagated
+% automatically to the parent widgets.
+%
+% Key events record a position in client coordinates, corresponding to the
+% unclipped position of the mouse cursor: should the focus be kept by the widget
+% whereas the mouse cursor is outside of its client area, coordinates beyond its
+% range - i.e. negative or larger than its dimensions - will be reported.
 
 
 % For the key defines:
@@ -82,25 +103,27 @@
 
 -type scancode() :: uint32().
 % Designates a button at a given location of the keyboard when it is considered
-% as a 104-button joystick.
+% as a ~104-button joystick.
 %
 % A scancode is a "button code", it designates a location of a button on any
-% keyboard, regardless of the character displayed on the user's actual keyboard.
+% keyboard, regardless of the character labelled on the user's actual keyboard.
 %
 % These locations are designated according to the characters that would be
 % printed on a virtual, canonical US QWERTY keyboard, taken as a reference, or
 % to non-printable special keys (ex: the Home key, the Insert one).
+%
+% A modifier generates a scancode just by itself.
 %
 % Refer to the corresponding MYR_SCANCODE_* defines.
 
 
 
 -type keycode() :: uint32().
-% Designates a layout-dependent (Unicode) character code, i.e. the key
+% Designates a layout-dependent (Unicode) character code, that is the key
 % corresponding to a given character, wherever that key may be on the user's
 % actual keyboard (which notably depends on its layout of choice).
 %
-% A modifier does not generate a keycode just be itself.
+% A modifier does not generate a keycode just by itself.
 %
 % Refer to the corresponding MYR_K_* defines.
 
@@ -117,16 +140,39 @@
 % in a pressed state, many key down events will be generated, but only one key
 % up will be reported at the end, when the key is released).
 
+
 -type key_status() :: 'pressed'
 					| 'released'.
 % Corresponds to the (potentially durable) status of a key.
 
 
+-type keyboard_event_type() ::
+
+	% Event taking into account any modifier (ex: Control, Shift, Caps Lock) for
+	% the returned logical haracter (ex: returning 'A' instead of 'a'):
+	%
+	'onCharEntered'
+
+	% So that parent windows can intercept keys received by focused (child)
+	% windows:
+	%
+	| 'onCharEnteredHook'
+
+	% Event just about the physical key of interest (regardless of any
+	% modifier):
+	%
+	| 'onKeyPressed'
+	| 'onKeyReleased'.
+
+
+
 -export_type([ scancode/0, keycode/0, modifier/0,
-			   key_transition/0, key_status/0 ]).
+			   key_transition/0, key_status/0,
+			   keyboard_event_type/0 ]).
 
 
--export([ is_modkey_pressed/1, is_key_pressed/1, to_lower/2 ]).
+-export([ is_modkey_pressed/1, is_key_pressed/1, to_lower/2,
+		  key_event_to_string/1, key_event_to_string/2 ]).
 
 % Internals:
 
@@ -135,10 +181,12 @@
 
 % Shorthands:
 
+-type ustring() :: text_utils:ustring().
 -type uint32() :: type_utils:uint32().
 
 -type wx_keycode() :: integer().
 
+-type event_translation_table() :: gui_event:event_translation_table().
 
 
 % @doc Tells whether the specified key, designated as a scancode comprising a
@@ -321,3 +369,67 @@ myr_keycode_to_wx( MyrKeycode ) ->
 	trace_utils:warning_fmt( "MyriadGUI keycode '~ts' (i.e. ~B) passed "
 		"verbatim to wx.", [ [ MyrKeycode ], MyrKeycode ] ),
 	MyrKeycode.
+
+
+
+% @doc Returns a textual description of the specified key event, of type
+% gui_wx_event_info().
+%
+-spec key_event_to_string( wxKey() ) -> ustring().
+key_event_to_string( WxKeyEvent ) ->
+
+	GUIEnvPid = gui:get_environment_server(),
+
+	EventTranslationTable =
+		environment:get( event_translation_table, GUIEnvPid ),
+
+	key_event_to_string( WxKeyEvent, EventTranslationTable ).
+
+
+
+% @doc Returns a textual description of the specified key event.
+-spec key_event_to_string( wxKey(), event_translation_table() ) -> ustring().
+key_event_to_string( #wxKey{ type=WxKeyEventType, x=X, y=Y, keyCode=KeyCode,
+		controlDown=CtrlDown, shiftDown=ShiftDown, altDown=AltDown,
+		metaDown=MetaDown,
+		uniChar=Unichar, rawCode=RawCode, rawFlags=RawFlags },
+					 EventTranslationTable ) ->
+
+	KeyEventType = bijective_table:get_second_for( WxKeyEventType,
+												   EventTranslationTable ),
+
+	Mods = case CtrlDown of
+				true -> [ "control" ];
+				false -> []
+		   end
+		++ case ShiftDown of
+				true -> [ "shift" ];
+				false -> []
+		   end
+		++ case AltDown of
+				true -> [ "alt" ];
+				false -> []
+		   end
+		++ case MetaDown of
+				true -> [ "meta" ];
+				false -> []
+		   end,
+
+	ModStr = case Mods of
+
+		[] ->
+			"no modifier";
+
+		[ Mod ] ->
+			text_utils:format( "the ~ts modifier", [ Mod ] );
+
+		_ ->
+			text_utils:format( "the ~ts modifiers",
+				[ text_utils:strings_to_listed_string( Mods ) ] )
+
+	end,
+
+	text_utils:format( "~ts event at client-coordinate position {~B,~B}, "
+		"whose key code is '~w' with ~ts, Unicode char is '~w', "
+		"raw code being '~w' and raw flags being ~w",
+		[ KeyEventType, X, Y, KeyCode, ModStr, Unichar, RawCode, RawFlags ] ).

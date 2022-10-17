@@ -90,7 +90,9 @@
 		  add_path_for_library_lookup/1, add_paths_for_library_lookup/1,
 		  get_environment/0, environment_to_string/0, environment_to_string/1,
 
+		  get_operating_system_family/0, get_operating_system_name/0,
 		  get_operating_system_type/0,
+
 		  get_interpreter_version/0, get_application_version/1,
 
 
@@ -166,7 +168,7 @@
 % Name of a (third-party) prerequisite package (ex: "ErlPort", "jsx", etc.).
 
 
--export_type([ package_name/0 ]).
+-export_type([ package_name/0, os_family/0, os_name/0, os_type/0 ]).
 
 
 -export([ get_dependency_base_directory/1, get_dependency_code_directory/1,
@@ -257,16 +259,25 @@
 % command-line arguments).
 
 
--type command_line_argument() :: any_string().
-% Describes a (single) command-line argument.
+-type executable_argument() :: any_string().
+% Describes a (single) executable argument.
+%
+% Specifying arguments that way is very convenient in so far as they do not need
+% to be escaped as when they are transmitted in the context of a shell command:
+% the corresponding string is passed directly as it is (like a const char*
+% pointer) to the executable, with no further transformation need.
 %
 % Note that each argument shall be unitary, "atomic"; for example "--color red"
 % is not an argument (the called executable would receive it as a whole), but
 % two: "--color" and "red".
+%
+% Similarly, an empty argument (that is: "") is not the same as no argument, as
+% this empty argument will be transmitted to the executable, and is bound to
+% confuse it.
 
 
 -type execution_pair() ::
-		{ bin_executable_path(), [ command_line_argument() ] }.
+		{ bin_executable_path(), [ executable_argument() ] }.
 % A pair specifying a complete command-line ready to be executed by
 % run_executable/n (convenient to store once for all if needing to launch it
 % repeatedly). Generally more secure than command/1 as well.
@@ -365,7 +376,7 @@
 			   actual_filesystem_type/0, pseudo_filesystem_type/0,
 			   filesystem_type/0, fs_info/0,
 
-			   command/0, command_line_argument/0, execution_pair/0,
+			   command/0, executable_argument/0, execution_pair/0,
 			   port_option/0,
 			   return_code/0, command_output/0, execution_outcome/0,
 
@@ -908,7 +919,7 @@ run_executable( ExecPath ) ->
 % Returns its return code (exit status) and its outputs (both the standard and
 % the error ones): {ReturnCode, CmdOutput}.
 %
--spec run_executable( executable_path(), [ command_line_argument() ] ) ->
+-spec run_executable( executable_path(), [ executable_argument() ] ) ->
 							execution_outcome().
 run_executable( ExecPath, Arguments ) ->
 	run_executable( ExecPath, Arguments, get_standard_environment(),
@@ -927,7 +938,7 @@ run_executable( ExecPath, Arguments ) ->
 % Returns its return code (exit status) and its outputs (both the standard and
 % the error ones): {ReturnCode, CmdOutput}.
 %
--spec run_executable( executable_path(), [ command_line_argument() ],
+-spec run_executable( executable_path(), [ executable_argument() ],
 					  environment() ) -> execution_outcome().
 run_executable( ExecPath, Arguments, Environment ) ->
 	run_executable( ExecPath, Arguments, Environment,
@@ -946,12 +957,11 @@ run_executable( ExecPath, Arguments, Environment ) ->
 % Returns its return code (exit status) and its outputs (both the standard and
 % the error ones): {ReturnCode, CmdOutput}.
 %
--spec run_executable( executable_path(), [ command_line_argument() ],
+-spec run_executable( executable_path(), [ executable_argument() ],
 		environment(), maybe( working_dir() ) ) -> execution_outcome().
 run_executable( ExecPath, Arguments, Environment, MaybeWorkingDir ) ->
 	run_executable( ExecPath, Arguments, Environment, MaybeWorkingDir,
 					get_default_port_options() ).
-
 
 
 % @doc Executes (synchronously) the specified executable, whose path is exactly
@@ -967,7 +977,7 @@ run_executable( ExecPath, Arguments, Environment, MaybeWorkingDir ) ->
 %
 % This is the recommended, most complete way of running an executable.
 %
--spec run_executable( executable_path(), [ command_line_argument() ],
+-spec run_executable( executable_path(), [ executable_argument() ],
 		environment(), maybe( working_dir() ), [ port_option() ] ) ->
 							execution_outcome().
 run_executable( ExecPath, Arguments, Environment, MaybeWorkingDir,
@@ -1447,7 +1457,7 @@ run_background_executable( ExecPath ) ->
 % leak, one may consider using evaluate_background_shell_expression/2 instead.
 %
 -spec run_background_executable( executable_path(),
-								 [ command_line_argument() ] ) -> void().
+								 [ executable_argument() ] ) -> void().
 run_background_executable( ExecPath, Arguments ) ->
 	run_background_executable( ExecPath, Arguments, get_standard_environment(),
 		_MaybeWorkingDir=undefined, get_default_port_options() ).
@@ -1470,7 +1480,7 @@ run_background_executable( ExecPath, Arguments ) ->
 % If this function is expected to be called many times, to avoid the process
 % leak, one may consider using evaluate_background_shell_expression/2 instead.
 %
--spec run_background_executable( executable_path(), [ command_line_argument() ],
+-spec run_background_executable( executable_path(), [ executable_argument() ],
 								 environment() ) -> void().
 run_background_executable( ExecPath, Arguments, Environment ) ->
 	run_background_executable( ExecPath, Arguments, Environment,
@@ -1493,7 +1503,7 @@ run_background_executable( ExecPath, Arguments, Environment ) ->
 % If this function is expected to be called many times, to avoid the process
 % leak, one may consider using evaluate_background_shell_expression/2 instead.
 %
--spec run_background_executable( executable_path(), [ command_line_argument() ],
+-spec run_background_executable( executable_path(), [ executable_argument() ],
 				environment(), maybe( working_dir() ) ) -> void().
 run_background_executable( ExecPath, Arguments, Environment,
 						   MaybeWorkingDir ) ->
@@ -1521,7 +1531,7 @@ run_background_executable( ExecPath, Arguments, Environment,
 % This is the recommended, most complete way of running an executable in the
 % background.
 %
--spec run_background_executable( executable_path(), [ command_line_argument() ],
+-spec run_background_executable( executable_path(), [ executable_argument() ],
 		environment(), maybe( working_dir() ), [ port_option() ] ) -> void().
 run_background_executable( ExecPath, Arguments, Environment, MaybeWorkingDir,
 						   PortOptions ) ->
@@ -1878,7 +1888,19 @@ get_interpreter_version() ->
 
 
 
-% @doc Returns the type of the local operating system.
+% @doc Returns the family of the local operating system.
+-spec get_operating_system_family() -> os_family().
+get_operating_system_family() ->
+	pair:first( os:type() ).
+
+
+% @doc Returns the name of the local operating system.
+-spec get_operating_system_name() -> os_name().
+get_operating_system_name() ->
+	pair:second( os:type() ).
+
+
+% @doc Returns the type (family and type) of the local operating system.
 -spec get_operating_system_type() -> os_type().
 get_operating_system_type() ->
 	os:type().

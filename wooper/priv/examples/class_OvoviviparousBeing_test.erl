@@ -1,13 +1,15 @@
-% Copyright (C) 2003-2022 Olivier Boudeville
+% Copyright (C) 2007-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER examples.
 %
 % It has been placed in the public domain.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2007.
 
 
-% Unit tests for the OvoviviparousBeing class implementation.
+% @doc Unit tests for the <b>OvoviviparousBeing class implementation</b>.
+%
 % See the class_OvoviviparousBeing.erl tested module.
 %
 -module(class_OvoviviparousBeing_test).
@@ -35,7 +37,8 @@ run( IsDebug ) ->
 	test_facilities:display( "Debug mode: ~ts.",
 							 [ class_OvoviviparousBeing:is_wooper_debug() ] ),
 
-	MyV = class_OvoviviparousBeing:synchronous_new_link(),
+	MyV = class_OvoviviparousBeing:synchronous_new_link( _Age=11, 
+														 _Gender=male ),
 
 	MyV ! { getClassname, [], self() },
 	receive
@@ -53,10 +56,9 @@ run( IsDebug ) ->
 	MyV ! { getSuperclasses, [], self() },
 	receive
 
-		{ wooper_result, [] } ->
+		{ wooper_result, [ class_Creature ] } ->
 			test_facilities:display(
-				"After constructor, getSuperclasses/1 returned [] "
-				"as expected." );
+				"After constructor, correct superclass returned." );
 
 		{ wooper_result, UnexpectedSuperclasses } ->
 			test_facilities:fail( "wrong superclasses: ~p",
@@ -109,21 +111,18 @@ run( IsDebug ) ->
 
 	end,
 
-	case IsDebug of
+	IsDebug andalso
+		begin
 
-		true ->
 			MyV ! { wooper_get_instance_description, [], self() },
 			receive
 
 				{ wooper_result, InspectString } ->
 					test_facilities:display( "Instance description: ~ts",
 											 [ InspectString ] )
-			end;
+			end
 
-		false ->
-			ok
-
-	end,
+		end,
 
 	wooper:delete_synchronously_instance( MyV ),
 

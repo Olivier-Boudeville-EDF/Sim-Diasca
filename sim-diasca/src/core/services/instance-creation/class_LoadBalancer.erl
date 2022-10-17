@@ -17,6 +17,7 @@
 % If not, see <http://www.gnu.org/licenses/>.
 
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
+% Creation date: 2008.
 
 
 % @doc Agent in charge of managing all <b>creation requests</b> of simulation
@@ -118,7 +119,7 @@
 	  "(allowing thus to determine the overall number of existing instances "
 	  "for each class)" },
 
-	{ initial_actors, [ actor_pid() ], "is a list of the PIDs of all initial "
+	{ initial_actors, [ actor_pid() ], "a list of the PIDs of all initial "
 	  "actors; it is used so that, on simulation start, this load balancer "
 	  "can notify all of them that their first diasca is happening (thanks to "
 	  "their onFirstDiasca/2 actor oneway)" },
@@ -191,6 +192,8 @@
 % Allows to use macros for trace sending:
 -include_lib("traces/include/class_TraceEmitter.hrl").
 
+% For process_restoration_marker:
+-include("wooper/include/class_Serialisable.hrl").
 
 % For load_balancer_name:
 -include("class_LoadBalancer.hrl").
@@ -403,7 +406,7 @@
 
 % Shorthands:
 
-%-type count() :: basic_utils:count().
+-type user_data() :: basic_utils:user_data().
 
 -type ustring() :: text_utils:ustring().
 
@@ -803,7 +806,8 @@ createInitialActor( State, ActorClassname, ActorConstructionParameters,
 	{ SelectedState, SelectedNode } = select_node_by_heuristic( State ),
 
 	{ UpdatedState, ActorPid } = create_initial_actor( ActorClassname,
-	   ActorConstructionParameters, SelectedNode, InitiatorPid, SelectedState ),
+		ActorConstructionParameters, SelectedNode, InitiatorPid,
+		SelectedState ),
 
 	% To be able to send 'onFirstDiasca' actor messages at simulation start:
 	RecordedState = appendToAttribute( UpdatedState, initial_actors, ActorPid ),
@@ -917,30 +921,29 @@ createInitialActors( State, InstanceCreationSpecs, InitiatorPid ) ->
 
 	  begin
 
-		  %trace_utils:debug_fmt(
-		  %   " - constructing a (now placed) instance of ~ts"
-		  %   " with ~p, its PID is ~w",
-		  %   [ Classname, PlacedConstructionParams, CreatedPid ] ),
+		%trace_utils:debug_fmt(
+		%   " - constructing a (now placed) instance of ~ts"
+		%   " with ~p, its PID is ~w",
+		%   [ Classname, PlacedConstructionParams, CreatedPid ] ),
 
-		  try
+		try
 
-				apply( ActorClassname, remote_synchronisable_new_link,
-					   PlacedConstructionParams )
+			apply( ActorClassname, remote_synchronisable_new_link,
+				   PlacedConstructionParams )
 
 
-		  catch
+		catch
 
-				error:undef ->
-					[ Node, ActorSettings | ActorConstructionParameters ] =
-					  PlacedConstructionParams,
+			error:undef ->
+				[ Node, ActorSettings | ActorConstructionParameters ] =
+					PlacedConstructionParams,
 
-					handle_undef_creation( ActorClassname, Node, ActorSettings,
-						ActorConstructionParameters, NewState )
+				handle_undef_creation( ActorClassname, Node, ActorSettings,
+									   ActorConstructionParameters, NewState )
 
-		  end
+		end
 
-	  end
-	  || { ActorClassname, PlacedConstructionParams } <- CreationInfos ],
+	  end || { ActorClassname, PlacedConstructionParams } <- CreationInfos ],
 
 	% To be able to send 'onFirstDiasca' actor messages at simulation start:
 	NewInitialActors = ?getAttr(initial_actors) ++ NewActorPids,
@@ -1070,7 +1073,7 @@ prepare_creations( Classname, ConstructionParameters, SelectedNode,
 
 	CreationInfo = { Classname, CreationParams },
 
-	place_and_prepare_creations( InstanceCreationSpecs, AAI + 1,
+	place_and_prepare_creations( InstanceCreationSpecs, AAI+1,
 		NewInstancesPerClass, NewInstancesPerNode,
 		[ CreationInfo | CreationInfos ], State ).
 
@@ -1115,7 +1118,7 @@ createRuntimeActor( State, ActorClassname, ActorConstructionParameters,
 	DefaultTag = { ActorClassname, ActorConstructionParameters },
 
 	CreateState = createRuntimeActor( State, ActorClassname,
-			ActorConstructionParameters, DefaultTag, SendingActorPid ),
+		ActorConstructionParameters, DefaultTag, SendingActorPid ),
 
 	actor:return_state( CreateState ).
 
@@ -1158,8 +1161,8 @@ createRuntimeActor( State, ActorClassname, ActorConstructionParameters,
 	{ SelectedState, SelectedNode } = select_node_by_heuristic( State ),
 
 	UpdatedState = create_runtime_actor( ActorClassname,
-			ActorConstructionParameters, ActorTag, SelectedNode,
-			SendingActorPid, SelectedState ),
+		ActorConstructionParameters, ActorTag, SelectedNode,
+		SendingActorPid, SelectedState ),
 
 	% We could send back directly to the initiator that the corresponding actor
 	% is created (and its PID), yet the actual creation may spread over multiple
@@ -1340,7 +1343,7 @@ spawn_successful_helper( CreatedActorPid, State ) ->
 	% to be found either as a single PID, or as a PID in the pair of lists:
 	%
 	{ NewSpawnRequests, NewState } =
-		case search_for_spawn( CreatedActorPid, SpawnRequests, _Acc=[] ) of
+			case search_for_spawn( CreatedActorPid, SpawnRequests, _Acc=[] ) of
 
 		{ single_initial, NewReqList } ->
 
@@ -1592,15 +1595,8 @@ registerInitialActors( State, AdditionalInitialActors ) ->
 register_created_instance( TargetNode, LineNumber, Classname, State ) ->
 
 	% Check would have no effect: undefined =/= ?getAttr(base_actor_identifier),
-	case ?getAttr(base_actor_identifier) of
-
-		undefined ->
-			throw( invalid_loading_condition );
-
-		_ ->
-			ok
-
-	end,
+	?getAttr(base_actor_identifier) =/= undefined orelse
+		throw( invalid_loading_condition ),
 
 	% LineNumber > 0, base derived from next AAI:
 	ActorAai = ?getAttr(base_actor_identifier) + LineNumber,
@@ -1631,10 +1627,10 @@ register_created_instance( TargetNode, LineNumber, Classname, State ) ->
 	% We have not the PID here, hence we cannot updated initial_actors.
 
 	FinalState = setAttributes( LoadState, [
-					{ next_actor_identifier, NewNextAAI },
-					{ current_actor_count, NewActorCount },
-					{ instances_per_class, NewClassTable },
-					{ instances_per_node, NewNodeTable } ] ),
+		{ next_actor_identifier, NewNextAAI },
+		{ current_actor_count, NewActorCount },
+		{ instances_per_class, NewClassTable },
+		{ instances_per_node, NewNodeTable } ] ),
 
 	{ FinalState, ActorSettings }.
 
@@ -1706,9 +1702,9 @@ notifyDeletion( State, _ActorPid, ActorClassname, Node ) ->
 										?getAttr(instances_per_node) ),
 
 	wooper:return_state( setAttributes( State, [
-				{ current_actor_count, NewActorCount },
-				{ instances_per_class, NewClassTable },
-				{ instances_per_node, NewNodeTable } ] ) ).
+		{ current_actor_count, NewActorCount },
+		{ instances_per_class, NewClassTable },
+		{ instances_per_node, NewNodeTable } ] ) ).
 
 
 
@@ -1992,15 +1988,8 @@ add_seed_for( AAI, SeedTable ) ->
 	Key = AAI,
 
 	% Check:
-	case table:has_entry( Key, SeedTable ) of
-
-		true ->
-			throw( { not_overriding_aai, AAI } );
-
-		false ->
-			ok
-
-	end,
+	table:has_entry( Key, SeedTable ) andalso
+		throw( { not_overriding_aai, AAI } ),
 
 	ActorSeed = random_utils:get_random_seed(),
 
@@ -2153,8 +2142,8 @@ get_node_list_from( ComputingNodeRecords ) ->
 get_node_list_from( _ComputingNodeRecords=[], Acc ) ->
 	Acc;
 
-get_node_list_from( _ComputingNodeRecords=[ #compute_node{ name=Nodename } | T],
-					Acc ) ->
+get_node_list_from(
+		_ComputingNodeRecords=[ #compute_node{ name=Nodename } | T ], Acc ) ->
 	get_node_list_from( T, [ Nodename | Acc ] ).
 
 
@@ -2218,7 +2207,7 @@ create_initial_actor( ActorClassname, ActorConstructionParameters, Node,
 	%     Node, ActorAai ] ),
 
 	%trace_utils:debug_fmt( "## Creation of initial actor ~p (~p) on node ~ts.",
-	%					   [ ActorPid, ActorClassname, Node ] ),
+	%                       [ ActorPid, ActorClassname, Node ] ),
 
 	NewClassTable = record_creation_in_class_table( ActorClassname,
 									?getAttr(instances_per_class) ),
@@ -2250,12 +2239,12 @@ create_initial_actor( ActorClassname, ActorConstructionParameters, Node,
 	end,
 
 	NewState = setAttributes( State, [
-				{ spawn_table, NewSpawnTable },
-				{ initiator_requests, NewInitiatorTable },
-				{ next_actor_identifier, ActorAai+1 },
-				{ current_actor_count, NewActorCount },
-				{ instances_per_class, NewClassTable },
-				{ instances_per_node, NewNodeTable } ] ),
+		{ spawn_table, NewSpawnTable },
+		{ initiator_requests, NewInitiatorTable },
+		{ next_actor_identifier, ActorAai+1 },
+		{ current_actor_count, NewActorCount },
+		{ instances_per_class, NewClassTable },
+		{ instances_per_node, NewNodeTable } ] ),
 
 	{ NewState, ActorPid }.
 
@@ -2655,40 +2644,26 @@ record_deletion_in_node_table( ActorNode, NodeTable ) ->
 
 % @doc Triggered just before serialisation.
 %
-% The state used here is dedicated to serialisation (i.e. it is not the actual,
-% resulting state).
+% The state explicitly returned here is dedicated to serialisation (generally
+% the actual instance state is not impacted by serialisation and thus this
+% request is often const).
 %
--spec pre_serialise_hook( wooper:state() ) -> wooper:state().
-pre_serialise_hook( State ) ->
+-spec onPreSerialisation( wooper:state(), user_data() ) ->
+				const_request_return( { wooper:state(), user_data() } ).
+onPreSerialisation( State, UserData ) ->
 
 	% Some terms are impacted by serialisation:
-	setAttribute( State, compute_nodes, ?term_restoration_marker ).
+	NoTransientState =
+		setAttribute( State, compute_nodes, ?term_restoration_marker ),
 
-
-
-% @doc Triggered just after serialisation, based on the selected entries.
-%
-% The value returned by this hook will be converted "as is" into a binary, which
-% will be written.
-%
--spec post_serialise_hook( classname(),
-		wooper_serialisation:term_serialisation(), wooper:state() ) -> term().
-post_serialise_hook( Classname, Entries, _State ) ->
-	{ Classname, Entries }.
-
-
-
-% @doc Triggered just before deserialisation.
--spec pre_deserialise_hook( term(), basic_utils:user_data() ) ->
-								wooper_serialisation: term_serialisation().
-pre_deserialise_hook( _SerialisedEntries={ _Classname, Entries }, _UserData ) ->
-	Entries.
+	wooper:const_return_result( { NoTransientState, UserData } ).
 
 
 
 % @doc Triggered just after deserialisation.
--spec post_deserialise_hook( wooper:state() ) -> wooper:state().
-post_deserialise_hook( State ) ->
+-spec onPostDeserialisation( wooper:state(), user_data() ) ->
+										request_return( user_data() ).
+onPostDeserialisation( State, UserData ) ->
 
 	% We need to update the computing nodes this balancer knows:
 	%
@@ -2699,7 +2674,9 @@ post_deserialise_hook( State ) ->
 	NodeRecords = [ create_compute_node_record_for( NodeName )
 					|| NodeName <- NewComputingNodes ],
 
-	setAttribute( State, compute_nodes, NodeRecords ).
+	ReadyState = setAttribute( State, compute_nodes, NodeRecords ),
+
+	wooper:return_state_result( ReadyState, UserData ).
 
 
 
@@ -2724,16 +2701,16 @@ trace_state( Label, State ) ->
 
 	Instances = table:enumerate( ?getAttr(instances_per_class) ),
 
-	InstanceString = case [ text_utils:format(
-						  "instances for class ~ts: ~B created, ~B destructed",
-						  [ Class, Created, Destructed ] )
+	InstanceString = case
+			[ text_utils:format( "instances for class ~ts: ~B created, "
+				"~B destructed", [ Class, Created, Destructed ] )
 						|| { Class, { Created, Destructed } } <- Instances ] of
 
-						  [] ->
-							  "(none)";
+		[] ->
+			"(none)";
 
-						  I ->
-							  text_utils:strings_to_string( I, SubBullet )
+		I ->
+			text_utils:strings_to_string( I, SubBullet )
 
 	end,
 
@@ -2798,18 +2775,11 @@ trace_state( Label, State ) ->
 
 display_synthetic_reporting( ActorAai, ActorClassname, Node ) ->
 
-	case ActorAai rem 500 of
-
-		0 ->
-			trace_utils:debug_fmt( " + creating actor #~B, of class ~p, on "
-				"node ~ts, at ~ts",
-				[ ActorAai, ActorClassname, Node,
-				  time_utils:get_textual_timestamp() ] );
-
-		_ ->
-			ok
-
-	end.
+	ActorAai rem 500 =:= 0 andalso
+		trace_utils:debug_fmt( " + creating actor #~B, of class ~p, "
+			"on node ~ts, at ~ts",
+			[ ActorAai, ActorClassname, Node,
+			  time_utils:get_textual_timestamp() ] ).
 
 
 
@@ -2822,18 +2792,11 @@ display_synthetic_reporting( ActorAai, ActorClassname, Node ) ->
 
 display_synthetic_reporting( ActorAai, ActorClassname, Node ) ->
 
-	case ActorAai rem 500 of
-
-		0 ->
-			trace_utils:debug_fmt( " + creating actor #~B, of class ~p, "
-				"on node ~ts, at ~ts", [ ActorAai, ActorClassname, Node,
-									   time_utils:get_textual_timestamp() ] );
-
-		_ ->
-			ok
-
-	end.
-	%ok.
+	ActorAai rem 1000 =:= 0 andalso
+		trace_utils:debug_fmt( " + creating actor #~B, of class ~p, "
+			"on node ~ts, at ~ts",
+			[ ActorAai, ActorClassname, Node,
+			  time_utils:get_textual_timestamp() ] ).
 
 
 -endif. % exec_target_is_production

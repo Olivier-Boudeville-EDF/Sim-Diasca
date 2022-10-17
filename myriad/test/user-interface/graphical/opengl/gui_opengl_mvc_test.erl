@@ -153,7 +153,6 @@
 
 % Shorthands:
 
-%-type dimensions() :: gui:dimensions().
 -type window() :: gui:window().
 
 -type any_hertz() :: unit_utils:any_hertz().
@@ -222,17 +221,15 @@ run_actual_test() ->
 	% A controller may (in general) have to send notifications to the model, and
 	% is to notify the test of its end as well:
 	%
-	ControllerPid = spawn_link( fun() ->
-									run_controller( ModelPid, TestPid )
-								end ),
+	ControllerPid = spawn_link(
+		fun() -> run_controller( ModelPid, TestPid ) end ),
 
 	% A view depends on the model; it also knows the controller, so that it can
 	% send it a reference to the main frame (as the controller has to subscribe
 	% to it in order to monitor any closing thereof):
 	%
-	_ViewPid = spawn_link( fun() ->
-							run_view( ViewEvalFreq, ModelPid, ControllerPid )
-						   end ),
+	_ViewPid = spawn_link(
+		fun() -> run_view( ViewEvalFreq, ModelPid, ControllerPid ) end ),
 
 	% Just block from now:
 	trace_utils:debug_fmt( "[~w] Test process waiting for the controller "
@@ -249,6 +246,7 @@ run_actual_test() ->
 			% of the model and of the view by itself.
 
 			trace_utils:debug_fmt( "[~w] Test finished.", [ TestPid ] ),
+
 			test_facilities:stop()
 
 	end.
@@ -308,7 +306,8 @@ model_main_loop( ModelState=#model_state{ spin_angle=Angle,
 
 		model_terminated ->
 			% Not recursing anymore, hence terminating:
-			trace_utils:debug_fmt( "[~w] Model terminated.", [ self() ] );
+			trace_utils:debug_fmt( "[~w] Model terminated.", [ self() ] ),
+			model_terminated;
 
 		ReqModelState ->
 			% Enforce model frequency:
@@ -335,14 +334,15 @@ handle_pending_model_requests( ModelState ) ->
 			% As in the general case multiple requests might be pending:
 			handle_pending_model_requests( ModelState );
 
+
 		% Typically sent by the controller:
-		onModelTermination ->
+		{ onModelTermination, SenderPid } ->
 
 			trace_utils:debug_fmt( "[~w] Model notified of termination.",
 								   [ self()] ),
 
-			% No specific termination:
-			model_terminated
+			% No specific termination for models:
+			SenderPid ! model_terminated
 
 	after 0 ->
 
@@ -366,8 +366,8 @@ run_view( EvalFrequency, ModelPid, ControllerPid ) ->
 
 	MainFrame = GUIViewState#view_state.parent,
 
-	ControllerPid !
-		{ notifyViewInformation, [ self(), MainFrame, gui:get_gui_env() ] },
+	ControllerPid ! { notifyViewInformation,
+						[ self(), MainFrame, gui:get_backend_environment() ] },
 
 	Period = time_utils:frequency_to_period( EvalFrequency ),
 
@@ -394,7 +394,8 @@ run_view( EvalFrequency, ModelPid, ControllerPid ) ->
 % @doc Creates the initial test GUI: a main frame containing an OpenGL canvas is
 % associated, in which an OpenGL context is created.
 %
-% Once the rendering is done, the buffer are swapped and it is displayed.
+% Once the rendering is done, the buffers are swapped and the current one is
+% displayed.
 %
 -spec init_test_gui() -> view_state().
 init_test_gui() ->
@@ -465,7 +466,7 @@ handle_pending_view_events( ViewState=#view_state{ parent=ParentWindow } ) ->
 		% Not strictly necessary, as anyway a regular redraw is to happen soon
 		% afterwards:
 		%
-		{ onRepaintNeeded, [ GLCanvas, _EventContext ] } ->
+		{ onRepaintNeeded, [ GLCanvas, _GLCanvasId, _EventContext ] } ->
 
 			%trace_utils:debug_fmt( "Repaint needed for OpenGL canvas ~w.",
 			%                       [ GLCanvas ] ),
@@ -474,8 +475,8 @@ handle_pending_view_events( ViewState=#view_state{ parent=ParentWindow } ) ->
 
 				% Not ready yet:
 				undefined ->
-					trace_utils:debug( "To be repainted, "
-									   "yet no OpenGL state yet." ),
+					trace_utils:debug(
+						"To be repainted, yet no OpenGL state yet." ),
 					ViewState;
 
 				_GLState ->
@@ -491,7 +492,8 @@ handle_pending_view_events( ViewState=#view_state{ parent=ParentWindow } ) ->
 		% For a window, the first resizing event happens (just) before its
 		% onShown one:
 		%
-		{ onResized, [ ParentWindow, NewParentSize, _EventContext ] } ->
+		{ onResized, [ ParentWindow, _ParentWindowId, NewParentSize,
+					   _EventContext ] } ->
 
 			trace_utils:debug_fmt( "Resizing of the parent window to ~w "
 				"detected.", [ NewParentSize ] ),
@@ -514,7 +516,7 @@ handle_pending_view_events( ViewState=#view_state{ parent=ParentWindow } ) ->
 		% The most suitable first location to initialise OpenGL, as making a GL
 		% context current requires a shown window:
 		%
-		{ onShown, [ ParentWindow, _EventContext ] } ->
+		{ onShown, [ ParentWindow, _ParentWindowId, _EventContext ] } ->
 
 			trace_utils:debug_fmt( "Parent window just shown "
 				"(initial size of ~w).", [ gui:get_size( ParentWindow ) ] ),
@@ -530,17 +532,17 @@ handle_pending_view_events( ViewState=#view_state{ parent=ParentWindow } ) ->
 
 
 		% Sent by the controller:
-		onViewTermination ->
+		{ onViewTermination, SenderPid } ->
 			trace_utils:info_fmt( "[~w] View notified of termination.",
 								  [ self() ] ),
 			gui:destruct_window( ViewState#view_state.parent ),
 			gui:stop(),
-			view_terminated;
+			SenderPid ! view_terminated;
 
 
 		OtherEvent ->
 			trace_utils:warning_fmt( "[~w] View ignored the following "
-				"event:~n ~p", [ self(), OtherEvent ] ),
+				"event:~n ~w", [ self(), OtherEvent ] ),
 
 			handle_pending_view_events( ViewState )
 
@@ -560,8 +562,9 @@ initialise_opengl( ViewState=#view_state{ canvas=GLCanvas,
 										  opengl_state=undefined } ) ->
 
 	% Initial size of canvas is typically 20x20 pixels:
-	trace_utils:debug_fmt( "Initialising OpenGL (whereas canvas is of initial "
-						   "size ~w).", [ gui:get_size( GLCanvas ) ] ),
+	trace_utils:debug_fmt(
+		"[~w] Initialising OpenGL (whereas canvas is of initial size ~w).",
+		[ self(), gui:get_size( GLCanvas ) ] ),
 
 	gui_opengl:set_context_on_shown( GLCanvas, GLContext ),
 
@@ -725,16 +728,21 @@ run_controller( ModelPid, TestPid ) ->
 	receive
 
 		% Expected to be triggered by the view:
-		{ notifyViewInformation, [ ViewPid, MainFrame, GUIEnv ] } ->
+		{ notifyViewInformation, [ ViewPid, MainFrame, BackendEnv ] } ->
 
 			trace_utils:debug_fmt( "[~w] Controller received view-related "
 				"information.", [ self() ] ),
 
-			% So that this controller can interact with MyriadGUI:
-			gui:set_gui_env( GUIEnv ),
+			% So that this controller can interact with the backend used by a
+			% MyriadGUI:
+			%
+			gui:set_backend_environment( BackendEnv ),
 
 			% We consider here that the following event is controller-specific,
 			% rather than view-specific:
+			%
+			% (this event type does not propagate, thus the controller will be
+			% able to solely control a proper termination)
 			%
 			gui:subscribe_to_events( { onWindowClosed, MainFrame } ),
 
@@ -759,13 +767,30 @@ controller_main_loop( ControllerState ) ->
 
 	receive
 
-		{ onWindowClosed, [ _ParentWindow, _EventContext ] } ->
+		{ onWindowClosed, [ _ParentWindow, _ParentWindowId, _EventContext ] } ->
 			trace_utils:info_fmt( "[~w] Controller notified of the "
 				"closing of the main frame, test success.", [ self() ] ),
 
-			% Could be made synchronous:
-			ControllerState#controller_state.model_pid ! onModelTermination,
-			ControllerState#controller_state.view_pid ! onViewTermination,
+			ControllerState#controller_state.model_pid
+				! { onModelTermination, self() },
+
+			receive
+
+				model_terminated ->
+					ok
+
+			end,
+
+			ControllerState#controller_state.view_pid
+				 ! { onViewTermination, self() },
+
+
+			receive
+
+				view_terminated ->
+					ok
+
+			end,
 
 			% No more recursing:
 			ControllerState#controller_state.test_pid ! onTestSuccess,
@@ -775,7 +800,7 @@ controller_main_loop( ControllerState ) ->
 
 		OtherEvent ->
 			trace_utils:warning_fmt( "[~w] Controller ignored the following "
-				"event:~n ~p", [ self(), OtherEvent ] ),
+				"event:~n ~w", [ self(), OtherEvent ] ),
 			controller_main_loop( ControllerState )
 
 	end.
@@ -792,7 +817,7 @@ run() ->
 
 		true ->
 			test_facilities:display(
-				"(not running the OpenGL test, being in batch mode)" );
+				"(not running the OpenGL MVC test, being in batch mode)" );
 
 		false ->
 			run_opengl_mvc_test()

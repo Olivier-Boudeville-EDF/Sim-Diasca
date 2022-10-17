@@ -17,6 +17,7 @@
 % If not, see <http://www.gnu.org/licenses/>.
 
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
+% Creation date: 2008.
 
 
 % This header centralizes some simulation-wide settings.
@@ -32,8 +33,7 @@
 -define( notify_mute( Message ), ?info( Message ) ).
 
 
--define( notify_mute_fmt( Message, Values ),
-	?info_fmt( Message, Values ) ).
+-define( notify_mute_fmt( Message, Values ), ?info_fmt( Message, Values ) ).
 
 
 % Tells whether the simulation system should be talkative.

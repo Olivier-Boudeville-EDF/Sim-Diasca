@@ -26,7 +26,6 @@
 % Creation date: Sunday, February 4, 2018.
 
 
-
 % @doc Module in charge of <b>transforming AST elements</b>, typically by
 % operating on a `module_info' record obtained after the transforming of an AST.
 %
@@ -149,7 +148,7 @@
 
 
 -type local_call_replacement() :: call_replacement()
-			 | fun( ( function_name(), arity(), transformation_state() ) ->
+			| fun( ( function_name(), arity(), transformation_state() ) ->
 							{ call_replacement(), transformation_state() } ) .
 % Either we directly set the target module and function names (using same
 % arity), or we apply an anonymous function to determine the corresponding
@@ -167,8 +166,8 @@
 							   function_arity_match() }.
 
 -type remote_call_replacement() :: call_replacement()
-			 | fun( ( module_name(), function_name(), arity(),
-					  transformation_state() ) ->
+			| fun( ( module_name(), function_name(), arity(),
+					 transformation_state() ) ->
 							{ call_replacement(), transformation_state() } ).
 % Either we directly set the target module and function names (using same
 % arity), or we apply an anonymous function to determine the corresponding
@@ -288,15 +287,6 @@
 
 
 
--type term_transformer() :: fun( ( term(), user_data() ) ->
-										{ term(), user_data() } ).
-% Type of functions to transform terms during a recursive traversal (see
-% transform_term/4).
-%
-% Note: apparently we cannot use the 'when' notation here (InputTerm ... when
-% InputTerm :: term()).
-
-
 -type transform_fun() :: transform_fun( ast_base:ast_element() ).
 % Designates the transformation functions that are used to transform differently
 % a kind of form (ex: the one of a bistring, a record, etc.) depending on the
@@ -310,17 +300,16 @@
 % context (ex: in a guard, in an expression, etc.).
 
 
--export_type([ term_transformer/0, transform_fun/0, transform_fun/1 ]).
+-export_type([ transform_fun/0, transform_fun/1 ]).
 
 
 -export([ get_local_type_transform_table/1, get_remote_type_transform_table/1,
 		  get_local_call_transform_table/1, get_remote_call_transform_table/1,
-		  transform_term/4, ast_transforms_to_string/1, default_formatter/2 ]).
+		  ast_transforms_to_string/1, default_formatter/2 ]).
+
 
 
 % Shorthands:
-
--type user_data() :: basic_utils:user_data().
 
 -type ustring() :: text_utils:ustring().
 -type format_string() :: text_utils:format_string().
@@ -337,6 +326,11 @@
 -type ast_body() :: ast_clause:ast_body().
 -type ast_clause() :: ast_clause:ast_clause().
 
+
+% Implementation notes:
+%
+% We denote here all polymorphic types (list, tuple, map, etc.) as container
+% types.
 
 
 %% Type replacement section.
@@ -390,7 +384,7 @@ get_local_type_repl_helper( _Replacements=[
 % Same target type here:
 get_local_type_repl_helper( _Replacements=[
 		{ Src={ SourceTypeMatch, _ArityMatch }, TargetModule } | T ], Table )
-  when is_atom( TargetModule ) ->
+								when is_atom( TargetModule ) ->
 
 	Replacement = { TargetModule, SourceTypeMatch },
 
@@ -401,7 +395,7 @@ get_local_type_repl_helper( _Replacements=[
 
 get_local_type_repl_helper(_Replacements=[
 		{ Src={ _SourceTypeMatch, _ArityMatch }, ReplaceFun } | T ], Table )
-  when is_function( ReplaceFun ) ->
+						when is_function( ReplaceFun ) ->
 
 	% Up to one transformation per source type:
 	NewTable = ?table:add_new_entry( Src, ReplaceFun, Table ),
@@ -455,8 +449,7 @@ get_remote_type_repl_helper( _Replacements=[
 % Same target type here:
 get_remote_type_repl_helper( _Replacements=[
 	{ Src={ _ModuleMatch, SourceTypeMatch, _ArityMatch }, TargetModule } | T ],
-							 Table )
-  when is_atom( TargetModule ) ->
+							 Table ) when is_atom( TargetModule ) ->
 
 	Replacement = { TargetModule, SourceTypeMatch },
 
@@ -467,8 +460,7 @@ get_remote_type_repl_helper( _Replacements=[
 
 get_remote_type_repl_helper( _Replacements=[
 	{ Src={ _ModuleMatch, _SourceTypeMatch, _ArityMatch }, ReplaceFun } | T ],
-							Table )
-  when is_function( ReplaceFun ) ->
+							Table ) when is_function( ReplaceFun ) ->
 
 	% Up to one transformation per source type:
 	NewTable = ?table:add_new_entry( Src, ReplaceFun, Table ),
@@ -540,9 +532,9 @@ get_local_call_repl_helper( _Replacements=[
 	get_local_call_repl_helper( T, NewTable );
 
 
-get_local_call_repl_helper(_Replacements=[
+get_local_call_repl_helper( _Replacements=[
 		{ Src={ _SourceFunctionNameMatch, _ArityMatch }, ReplaceFun } | T ],
-						   Table ) when is_function( ReplaceFun ) ->
+							Table ) when is_function( ReplaceFun ) ->
 
 	% Up to one transformation per source function:
 	NewTable = ?table:add_new_entry( Src, ReplaceFun, Table ),
@@ -625,154 +617,19 @@ get_remote_call_repl_helper( _Replacements=[
 % transform.
 
 
-% @doc Transforms "blindly" (that is with no a-priori knowledge about its
-% structure) the specified arbitrary term (possibly with nested subterms, as the
-% function recurses in lists and tuples), calling specified transformer function
-% on each instance of the specified type, in order to replace that instance by
-% the result of that function.
-%
-% Returns an updated term, with these replacements made.
-%
-% Ex: the input term could be `T={a, ["foo", {c, [2.0, 45]}]}' and the function
-% might replace, for example, floats by `<<bar>>'; then `{a, ["foo", {c,
-% [<<bar>>, 45]}]}' would be returned.
-%
-% Note: the transformed terms are themselves recursively transformed, to ensure
-% nesting is managed. Of course this implies that the term transform should not
-% result in iterating the transformation infinitely.
-%
-% As a result it may appear that a term of the targeted type is transformed
-% almost systematically twice: it is first transformed as such, and the result
-% is transformed in turn. If the transformed term is the same as the original
-% one, then that content will be shown as analysed twice.
-%
--spec transform_term( term(), type_utils:primitive_type_description(),
-				term_transformer(), user_data() ) -> { term(), user_data() }.
-
-% Here the term is a list and this is the type we want to intercept:
-transform_term( TargetTerm, TypeDescription=list, TermTransformer, UserData )
-  when is_list( TargetTerm ) ->
-
-	{ TransformedTerm, NewUserData } = TermTransformer( TargetTerm, UserData ),
-
-	transform_transformed_term( TransformedTerm, TypeDescription,
-								TermTransformer, NewUserData );
 
 
-% Here the term is a list and we are not interested in them:
-transform_term( TargetTerm, TypeDescription, TermTransformer, UserData )
-  when is_list( TargetTerm ) ->
-
-	transform_list( TargetTerm, TypeDescription, TermTransformer, UserData );
-
-
-% Here the term is a tuple (or a record...), and we want to intercept them:
-transform_term( TargetTerm, TypeDescription, TermTransformer, UserData )
-  when is_tuple( TargetTerm )
-	andalso ( TypeDescription =:= tuple orelse TypeDescription =:= record ) ->
-
-	{ TransformedTerm, NewUserData } = TermTransformer( TargetTerm, UserData ),
-
-	transform_transformed_term( TransformedTerm, TypeDescription,
-								TermTransformer, NewUserData );
-
-
-% Here the term is a tuple (or a record...), and we are not interested in them:
-transform_term( TargetTerm, TypeDescription, TermTransformer, UserData )
-  when is_tuple( TargetTerm ) ->
-	transform_tuple( TargetTerm, TypeDescription, TermTransformer, UserData );
-
-
-% Base case (current term is not a binding structure, it is a leaf of the
-% underlying syntax tree):
-%
-transform_term( TargetTerm, TypeDescription, TermTransformer, UserData ) ->
-
-	case type_utils:get_type_of( TargetTerm ) of
-
-		TypeDescription ->
-			TermTransformer( TargetTerm, UserData );
-
-		_ ->
-			% Unchanged:
-			{ TargetTerm, UserData }
-
-	end.
-
-
-
-% @doc Transforms the elements of a list (helper).
-transform_list( TargetList, TypeDescription, TermTransformer, UserData ) ->
-
-	{ NewList, NewUserData } = lists:foldl(
-									fun( Elem, { AccList, AccData } ) ->
-
-			{ TransformedElem, UpdatedData } = transform_term( Elem,
-							TypeDescription, TermTransformer, AccData ),
-
-			% New accumulator, produces a reversed element list:
-			{ [ TransformedElem | AccList ], UpdatedData }
-
-								 end,
-
-								 _Acc0={ _Elems=[], UserData },
-
-								 TargetList ),
-
-	{ lists:reverse( NewList ), NewUserData }.
-
-
-
-% @doc Transforms the elements of a tuple (helper).
-transform_tuple( TargetTuple, TypeDescription, TermTransformer, UserData ) ->
-
-	% We do exactly as with lists:
-	TermAsList = tuple_to_list( TargetTuple ),
-
-	{ NewList, NewUserData } = transform_list( TermAsList, TypeDescription,
-											   TermTransformer, UserData ),
-
-	{ list_to_tuple( NewList ), NewUserData }.
-
-
-
-% @doc Transforms any term by traversing it (helper).
-%
-% Helper to traverse a transformed term (ex: if looking for a {user_id, String}
-% pair, we must recurse in nested tuples like: {3, {user_id, "Hello"}, 1}.
-%
-transform_transformed_term( TargetTerm, TypeDescription, TermTransformer,
-							UserData ) ->
-
-	case TermTransformer( TargetTerm, UserData ) of
-
-		{ TransformedTerm, NewUserData } when is_list( TransformedTerm ) ->
-			transform_list( TransformedTerm, TypeDescription, TermTransformer,
-							NewUserData );
-
-		{ TransformedTerm, NewUserData } when is_tuple( TransformedTerm ) ->
-			transform_tuple( TransformedTerm, TypeDescription, TermTransformer,
-							 NewUserData );
-
-		% { ImmediateTerm, NewUserData } ->
-		Other ->
-			Other
-
-	end.
-
-
-
-% @doc Returns a textual description of specified AST transforms.
+% @doc Returns a textual description of the specified AST transforms.
 -spec ast_transforms_to_string( ast_transforms() ) -> ustring().
 ast_transforms_to_string( #ast_transforms{
-							 local_types=MaybeLocalTypeTable,
-							 remote_types=MaybeRemoteTypeTable,
-							 local_calls=MaybeLocalCallTable,
-							 remote_calls=MaybeRemoteCallTable,
-							 transformed_module_name=ModuleName,
-							 transformed_function_identifier=MaybeFunId,
-							 transform_table=MaybeTransformTable,
-							 transformation_state=TransfoState } ) ->
+		local_types=MaybeLocalTypeTable,
+		remote_types=MaybeRemoteTypeTable,
+		local_calls=MaybeLocalCallTable,
+		remote_calls=MaybeRemoteCallTable,
+		transformed_module_name=ModuleName,
+		transformed_function_identifier=MaybeFunId,
+		transform_table=MaybeTransformTable,
+		transformation_state=TransfoState } ) ->
 
 	Bullet = "  - ",
 
@@ -783,7 +640,7 @@ ast_transforms_to_string( #ast_transforms{
 
 		_ ->
 			text_utils:format( "local types transformed based on ~ts",
-					[ ?table:to_string( MaybeLocalTypeTable, Bullet ) ] )
+				[ ?table:to_string( MaybeLocalTypeTable, Bullet ) ] )
 
 	end,
 
@@ -794,7 +651,7 @@ ast_transforms_to_string( #ast_transforms{
 
 		_ ->
 			text_utils:format( "remote types transformed based on ~ts",
-				   [ ?table:to_string( MaybeRemoteTypeTable, Bullet ) ] )
+				[ ?table:to_string( MaybeRemoteTypeTable, Bullet ) ] )
 
 	end,
 
@@ -805,7 +662,7 @@ ast_transforms_to_string( #ast_transforms{
 
 		_ ->
 			text_utils:format( "local calls transformed based on ~ts",
-					[ ?table:to_string( MaybeLocalCallTable, Bullet ) ] )
+				[ ?table:to_string( MaybeLocalCallTable, Bullet ) ] )
 
 	end,
 
@@ -816,7 +673,7 @@ ast_transforms_to_string( #ast_transforms{
 
 		_ ->
 			text_utils:format( "remote calls transformed based on ~ts",
-					[ ?table:to_string( MaybeRemoteCallTable, Bullet ) ] )
+				[ ?table:to_string( MaybeRemoteCallTable, Bullet ) ] )
 
 	end,
 
@@ -826,8 +683,7 @@ ast_transforms_to_string( #ast_transforms{
 			"no target module specified";
 
 		_ ->
-			text_utils:format( "being applied to module '~ts'",
-							   [ ModuleName ] )
+			text_utils:format( "being applied to module '~ts'", [ ModuleName ] )
 
 	end,
 
@@ -856,11 +712,10 @@ ast_transforms_to_string( #ast_transforms{
 	end,
 
 	TableString = text_utils:strings_to_string( [ LocalTypeStr, RemoteTypeStr,
-			LocalCallStr, RemoteCallStr, ModuleString, FunIdString,
-			TransfoTableStr ] ),
+		LocalCallStr, RemoteCallStr, ModuleString, FunIdString,
+		TransfoTableStr ] ),
 
 	text_utils:format( "AST transformations: ~ts", [ TableString ] ).
-
 
 
 % @doc The default transform_formatter() to be used.

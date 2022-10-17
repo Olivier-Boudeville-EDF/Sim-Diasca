@@ -56,8 +56,14 @@
 -define( failed_color, "#ec0505" ).
 
 
+% Shorthands:
 
-% @doc Constructs a reliability probe:
+-type probe_settings() :: class_Probe:probe_settings().
+
+
+% @doc Constructs a reliability probe.
+%
+% Parameters are:
 %
 % - Name is the name of this probe, and will be used for the generated data and
 % command files

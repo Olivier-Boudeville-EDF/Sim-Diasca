@@ -191,7 +191,7 @@ check_function_types( Other, _FunctionArity, Context ) ->
 
 
 
-% @doc Transforms the functions in specified table, based on specified
+% @doc Transforms the functions in the specified table, based on the specified
 % transforms.
 %
 -spec transform_functions( function_table(), ast_transforms() ) ->
@@ -203,8 +203,8 @@ transform_functions( FunctionTable, Transforms ) ?rec_guard ->
 	FunIdInfoPairs = ?table:enumerate( FunctionTable ),
 
 	{ NewFunIdInfoPairs, NewTransforms } = lists:mapfoldl(
-			fun transform_function_pair/2, _Acc0=Transforms,
-			_List=FunIdInfoPairs ),
+		fun transform_function_pair/2, _Acc0=Transforms,
+		_List=FunIdInfoPairs ),
 
 	NewFunctionTable = ?table:new( NewFunIdInfoPairs ),
 
@@ -212,7 +212,7 @@ transform_functions( FunctionTable, Transforms ) ?rec_guard ->
 
 
 
-% @doc Transforms specified function pair: {FunId, FunInfo}.
+% @doc Transforms the specified function pair: {FunId, FunInfo}.
 %
 % Allows to keep around the function identifier, to recreate the function table
 % more easily.
@@ -230,7 +230,7 @@ transform_function_pair( { FunId, FunctionInfo }, Transforms ) ?rec_guard ->
 
 
 
-% @doc Transforms specified function.
+% @doc Transforms the specified function.
 -spec transform_function( function_info(), ast_transforms() ) ->
 								{ function_info(), ast_transforms() }.
 transform_function( FunctionInfo=#function_info{ clauses=ClauseDefs,
@@ -242,8 +242,8 @@ transform_function( FunctionInfo=#function_info{ clauses=ClauseDefs,
 	?display_trace( "Transforming clauses." ),
 
 	{ NewClauseDefs, ClauseTransforms } = lists:mapfoldl(
-			fun ast_clause:transform_function_clause/2, _Acc0=Transforms,
-			_List=ClauseDefs ),
+		fun ast_clause:transform_function_clause/2, _Acc0=Transforms,
+		_List=ClauseDefs ),
 
 
 	{ NewLocFunSpec, FunSpecTransforms } = case MaybeLocFunSpec of
@@ -254,7 +254,7 @@ transform_function( FunctionInfo=#function_info{ clauses=ClauseDefs,
 		{ Loc, FunSpec } ->
 			?display_trace( "Transforming function spec." ),
 			{ NewFunSpec, NewTransforms } =
-							transform_function_spec( FunSpec, Transforms ),
+				transform_function_spec( FunSpec, Transforms ),
 			{ { Loc, NewFunSpec }, NewTransforms }
 
 	end,
@@ -288,8 +288,8 @@ transform_function_spec( { 'attribute', FileLoc, SpecType,
 	%?display_trace( "SpecList = ~p", [ SpecList ] ),
 
 	{ NewSpecList, NewTransforms } =
-			lists:mapfoldl( fun transform_spec/2, _Acc0=Transforms,
-			_List=SpecList ),
+		lists:mapfoldl( fun transform_spec/2, _Acc0=Transforms,
+		_List=SpecList ),
 
 	NewFunSpec = { 'attribute', FileLoc, SpecType, { FunId, NewSpecList } },
 
@@ -326,7 +326,7 @@ transform_spec( OtherSpec, Transforms ) ?rec_guard ->
 
 
 
-% @doc Transforms specified function type.
+% @doc Transforms the specified function type.
 %
 % (helper, corresponding to function_type/1 in erl_id_trans)
 %
@@ -352,7 +352,7 @@ transform_function_type( UnexpectedFunType, _Transforms ) ->
 
 
 
-% @doc Transforms specified function constraints.
+% @doc Transforms the specified function constraints.
 %
 % (Helper, corresponding to function_constraint/1 in erl_id_trans)
 %
@@ -365,7 +365,7 @@ transform_function_constraints( FunctionConstraints, Transforms ) ?rec_guard ->
 
 
 
-% @doc Transforms specified function constraint.
+% @doc Transforms the specified function constraint.
 %
 % "If C is a constraint V :: T, where V is a type variable and T is a type, then
 % Rep(C) = {type, FILE_LOC, constraint,[{atom, FILE_LOC, is_subtype},[Rep(V),
@@ -448,27 +448,13 @@ get_located_forms_for( FunctionExportTable, FunctionTable ) ->
 							  exported=ExportLocs },
 			  { AccLocDefs, AccExportTable } ) ->
 
-				case ASTLoc of
+				ASTLoc =:= undefined andalso
+					throw( { ast_location_not_defined_for, { Name, Arity } } ),
 
-					undefined ->
-						throw( { ast_location_not_defined_for,
-								 { Name, Arity } } );
+				FileLoc =:= undefined andalso
+					throw( { file_location_not_defined_for, { Name, Arity } } ),
 
-					_ ->
-						ok
-
-				end,
-
-				case FileLoc of
-
-					undefined ->
-						throw( { file_location_not_defined_for,
-								 { Name, Arity } } );
-
-					_ ->
-						ast_utils:check_file_loc( FileLoc )
-
-				end,
+				ast_utils:check_file_loc( FileLoc ),
 
 				LocFunForm = { ASTLoc,
 							   { function, FileLoc, Name, Arity, Clauses } },
@@ -509,7 +495,7 @@ get_located_forms_for( FunctionExportTable, FunctionTable ) ->
 %
 -spec update_export_table( function_name(), arity(),
 		[ ast_info:ast_location() ], function_export_table() ) ->
-									function_export_table().
+													function_export_table().
 update_export_table( _FunctionName, _Arity, _ExportLocs=[], ExportTable ) ->
 	ExportTable;
 
@@ -547,8 +533,8 @@ update_export_table( FunctionName, Arity, _ExportLocs=[ ASTLoc | H ],
 
 
 
-% @doc Returns located forms corresponding to known function exports, generated
-% from specified table.
+% @doc Returns located forms corresponding to the known function exports,
+% generated from the specified table.
 %
 -spec get_function_export_forms( function_export_table() ) ->
 										[ located_form() ].
@@ -560,12 +546,12 @@ get_function_export_forms( FunctionExportTable ) ->
 	%  [ FunExportInfos ] ),
 
 	[ { ASTLoc, { attribute, FileLoc, export, FunIds } }
-	  || { ASTLoc, { FileLoc, FunIds } } <- FunExportInfos ].
+			|| { ASTLoc, { FileLoc, FunIds } } <- FunExportInfos ].
 
 
 
 % @doc Returns a textual description of the specified function clauses, using
-% specified indentation level.
+% the specified indentation level.
 %
 -spec clauses_to_string( meta_utils:clause_def(),
 						 text_utils:indentation_level() ) -> ustring().

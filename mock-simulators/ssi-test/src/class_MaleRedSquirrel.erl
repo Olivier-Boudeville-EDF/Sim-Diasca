@@ -19,6 +19,8 @@
 % Author: Jingxuan Ma (jingxuan.ma@edf.fr)
 
 % This file is part of forest ecosystem integration test case.
+% Creation date: 2008.
+
 
 
 % @doc The objective of this module is to show the main features of an actor in
@@ -251,7 +253,7 @@ eat_nuts( State ) ->
 % This function is called only one time when a male is created.
 %
 get_initial_tail_length()->
-	3 + random_utils:get_random_value( 3 ).
+	3 + random_utils:get_uniform_value( 3 ).
 
 
 

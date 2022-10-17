@@ -302,7 +302,8 @@
 			   ssml_text/0, user_speech_info/0,
 			   speech_id/0, speech_base_name/0, any_speech_base_name/0,
 			   logical_speech/0, actual_speech_info/0, locale_table/0,
-			   speech_table/0, speech_referential/0, speech_state/0 ]).
+			   speech_table/0, speech_referential/0, speech_state/0,
+			   role_played/0 ]).
 
 
 -export([ check_availability/0,

@@ -95,18 +95,53 @@
 	  | 'sizing'.
 % A cursor is a small bitmap usually used for denoting where the mouse pointer
 % is, with a picture that might indicate the interpretation of a mouse click.
+%
+% Refer to the 'cursor' example of wx:demo/0 that showcases them all.
+
 
 -type cursor_table() :: table( cursor_type(), wx_cursor_type() ).
 % A table storing the correspondance between MyriadGUI and backend cursor types.
 
--type grab_status() :: 'no_grab'
-					 | 'still_grabbed'.
+-type grab_status() :: 'no_grab' | 'still_grabbed'.
 
--export_type([ cursor_type/0, cursor_table/0, grab_status/0 ]).
+
+% To be kept in line with get_{all_mouse_event_types,event_types_to_trap}/0.
+-type mouse_event_type() ::
+
+	% Button 1:
+	  'onMouseLeftButtonPressed' | 'onMouseLeftButtonReleased'
+	| 'onMouseLeftButtonDoubleClicked'
+
+	% Button 2:
+	| 'onMouseMiddleButtonPressed' | 'onMouseMiddleButtonReleased'
+	| 'onMouseMiddleButtonDoubleClicked'
+
+	% Button 3:
+	| 'onMouseRightButtonPressed' | 'onMouseRightButtonReleased'
+	| 'onMouseRightButtonDoubleClicked'
+
+	% Button 4:
+	| 'onMouseFourthButtonPressed' | 'onMouseFourthButtonReleased'
+	| 'onMouseFourthButtonDoubleClicked'
+
+	% Button 5:
+	| 'onMouseFifthButtonPressed' | 'onMouseFifthtButtonReleased'
+	| 'onMouseFifthButtonDoubleClicked'
+
+	% Wheel:
+	| 'onMouseWheelScrolled'
+
+	| 'onMouseEnteredWindow' | 'onMouseLeftWindow'
+	| 'onMouseMoved'.
+% A type of event possibly emitted by a mouse.
+
+-export_type([ cursor_type/0, cursor_table/0, grab_status/0,
+			   mouse_event_type/0 ]).
 
 
 -export([ register_in_environment/1, set_cursor_types/2,
 		  unregister_from_environment/1,
+		  get_all_mouse_event_types/0, get_event_types_to_trap/0,
 		  list_cursor_types/0, set_cursor/1,
 
 		  reset_grab/0, grab/1, ungrab/2, is_grabbed/0 ,warp/3 ]).
@@ -129,7 +164,6 @@
 
 -type gui_env_designator() :: gui:gui_env_designator().
 
-
 -type wxCursor() :: wxCursor:wxCursor().
 
 
@@ -144,7 +178,6 @@ register_in_environment( GUIEnvPid ) ->
 	set_cursor_types( AllCursorTypes, GUIEnvPid ),
 	set_cursor( _Default=arrow, GUIEnvPid ),
 	environment:cache( { grab_stack, [] }, GUIEnvPid ).
-
 
 
 % @doc Sets in the MyriadGUI environment server the specified standard mouse
@@ -200,6 +233,50 @@ unregister_from_environment( GUIEnvPid ) ->
 
 
 
+% @doc Returns a list of all types of mouse-related events.
+-spec get_all_mouse_event_types() -> [ mouse_event_type() ].
+get_all_mouse_event_types() ->
+
+	% To be kept in line with mouse_event_type().
+
+	[ % Button 1:
+	  onMouseLeftButtonPressed,
+	  onMouseLeftButtonReleased, onMouseLeftButtonDoubleClicked,
+
+
+	  % Button 2:
+	  onMouseMiddleButtonPressed, onMouseMiddleButtonReleased,
+	  onMouseMiddleButtonDoubleClicked,
+
+	  % Button 3:
+	  onMouseRightButtonPressed, onMouseRightButtonReleased,
+	  onMouseRightButtonDoubleClicked,
+
+	  % Button 4:
+	  onMouseFourthButtonPressed, onMouseFourthButtonReleased,
+	  onMouseFourthButtonDoubleClicked,
+
+	  % Button 5:
+	  onMouseFifthButtonPressed, onMouseFifthtButtonReleased,
+	  onMouseFifthButtonDoubleClicked,
+
+	  % Wheel:
+	  onMouseWheelScrolled,
+
+	  onMouseEnteredWindow, onMouseLeftWindow,
+	  onMouseMoved ].
+
+
+
+% @doc Returns a list of the types of mouse-related events that shall be trapped
+% by default.
+%
+-spec get_event_types_to_trap() -> [ mouse_event_type() ].
+get_event_types_to_trap() ->
+	get_all_mouse_event_types().
+
+
+
 % @doc Returns a list of all the standard mouse cursor types.
 -spec list_cursor_types() -> [ cursor_type() ].
 list_cursor_types() ->
@@ -229,13 +306,10 @@ set_cursor( CursorType, GUIEnvDesignator ) ->
 		environment:get( [ cursor_table, current_cursor_type, os_family,
 						   top_level_window ], GUIEnvDesignator ),
 
-	case MaybeCurrentCursorType of
-
-		CursorType ->
-			ok;
-
+	MaybeCurrentCursorType =:= CursorType orelse
 		% Includes undefined:
-		_ ->
+		begin
+
 			WxCursorType = table:get_value( CursorType, CursorTable ),
 
 			case OSFamily of
@@ -260,7 +334,7 @@ set_cursor( CursorType, GUIEnvDesignator ) ->
 			environment:cache( { _K=current_cursor_type, _Value=CursorType },
 							   GUIEnvDesignator )
 
-	end.
+		end.
 
 
 

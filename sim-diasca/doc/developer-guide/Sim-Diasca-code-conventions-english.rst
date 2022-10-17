@@ -112,7 +112,7 @@ The most obvious conventions are:
 
 - **no warning should be tolerated**; anyway now our build chain treats warnings as (blocking) errors
 
-- **test cases** should be developed alongside most if not all modules; ex: if developing ``class_X.erl``, then probably the ``class_X_test.erl`` testing code should be developed, after or, preferably, before the implementation of the tested code; test success should be evaluated automatically, by the code (ex: thanks to pattern matching), not by the person running the test (ex: who would have to compare visually the actual results with the expected ones); in some cases, only **integrated tests** can be devised in practice; tests should be gathered in **test suites**, that should be runnable automatically (``make test``) and fail loudly (and in a blocking manner) at the first error met
+- **test cases** should be developed alongside most if not all modules [#]_; ex: if developing ``class_X.erl``, then probably the ``class_X_test.erl`` testing code should be developed, after or, preferably, before the implementation of the tested code; test success should be evaluated automatically, by the code (ex: thanks to pattern matching), not by the person running the test (ex: who would have to compare visually the actual results with the expected ones); in some cases, only **integrated tests** can be devised in practice; tests should be gathered in **test suites**, that should be runnable automatically (``make test``) and fail loudly (and in a blocking manner) at the first error met
 
 - **multiple levels of quality documentation** should be made available to the code user, and probably be written in parallel to the code; there are at least three documentation levels:
 
@@ -163,6 +163,9 @@ The most obvious conventions are:
 - when defining a non-trivial datastructure, a **record** shall be used (rather than, say, a mere ad-hoc tuple), a corresponding **type** should be then defined (ex: a ``foobar`` record leading to a ``foobar()`` type), and a **function to describe it** as text shall be provided (ex: ``-spec foobar_to_string(foobar()) -> string()``)
 
   - **mute variables** should be used as well to document actual parameters; for example ``f(3,7,10)`` could preferably be written as a clearer ``f(_Min=3,_Max=7,_Deviation=10)``
+
+.. [#] In terms of directories, the source of modules (``*.erl``) shall be in ``src``, the includes (``*.hrl``) in ``include``, the tests (``*_test.erl``) in ``test`` - in each case, either directly in the specified directory, or at any depth in nested subdirectories.
+
 
 
 .. Note:: Mute variables are however actually bound, thus if for example there is in the same scope ``_Min=3`` and later ``_Min=4``, then a badmatch will be triggered at runtime; therefore names of mute variables should be generally kept unique in a given scope.

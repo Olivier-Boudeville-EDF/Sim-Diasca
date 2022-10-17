@@ -118,11 +118,11 @@ create-public-package: create-public-referential
 
 
 create-internal-referential: clean-doc-dir-internal populate-doc-dir-internal
-	@$(MAKE) -s populate-doc-dir-common DOC_TARGET_DIR=$(DOC_TARGET_INTERNAL_DIR) && echo "Internal documentation referential created in $(DOC_TARGET_INTERNAL_DIR)"
+	@$(MAKE) -s populate-doc-dir-common DOC_TARGET_DIR=$(DOC_TARGET_INTERNAL_DIR) && echo "Internal documentation referential created in $(DOC_TARGET_INTERNAL_DIR); see file://$(DOC_TARGET_INTERNAL_DIR)/index.html"
 
 
 create-public-referential: clean-doc-dir-public populate-doc-dir-public
-	@$(MAKE) -s populate-doc-dir-common DOC_TARGET_DIR=$(DOC_TARGET_PUBLIC_DIR) && echo "Public documentation referential created in $(DOC_TARGET_PUBLIC_DIR)"
+	@$(MAKE) -s populate-doc-dir-common DOC_TARGET_DIR=$(DOC_TARGET_PUBLIC_DIR) && echo "Public documentation referential created in $(DOC_TARGET_PUBLIC_DIR); see file://$(DOC_TARGET_PUBLIC_DIR)/index.html"
 
 
 

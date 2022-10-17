@@ -23,8 +23,10 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2007.
 
 
 % Exports only, to sort out include issues.
 
+% The main loop *must* be exported, to allow for code changes:
 -export([ wooper_main_loop/1 ]).

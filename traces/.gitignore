@@ -10,6 +10,7 @@ erl_crash.dump
 overview.edoc
 doc/index.html
 doc/api-doc/
+doc/mathjax
 
 # For Emacs temporary files:
 *.#*

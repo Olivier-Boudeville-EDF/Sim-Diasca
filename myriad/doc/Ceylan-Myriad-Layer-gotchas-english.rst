@@ -115,7 +115,8 @@ In order to maximise the chances that nodes are able to ``net_adm:ping/1`` succe
 
 - at least for testing, run VMs spawned with preferably the same **version** of Erlang
 - ensure that they rely on the same **EPMD** (TCP) port (default Erlang one is ``4369``, while Myriad default one is ``4506``); check for example that all launched nodes of interest can be seen with: ``epmd -port 4506 -names``
-- check that they use the same **cookie**, either from the start (use the ``-setcookie MY_COOKIE`` command-line option) or after having changed it after the VM was launched
+- ensure that both nodes use either short names (start a new node with ``-sname``) or long names (start a new node with ``-name``)
+- check that they use the same **cookie**, either from the start (use the ``-setcookie MY_COOKIE`` command-line option) or after having changed it after the VM was launched (use ``erlang:set_cookie/1`` for that / check with ``erlang:get_cookie/0``)
 - ensure that no **firewall** gets in the way; one may take inspiration for example from our `iptables.rules-FullDisabling.sh <https://github.com/Olivier-Boudeville/Ceylan-Hull/blob/master/iptables.rules-FullDisabling.sh>`_ script
 - finally check that the local **DNS resolution** complies with the surprisingly picky constraints demanded by the Erlang VM
 
@@ -175,6 +176,8 @@ In the second terminal, try to find the previous node:
 
 
 If you see ``pang`` here, run to the nearest altar and make a sacrifice to any Distribution God you may believe in (Norse ones being presumably the most effective here), and apply the hints listed in the `Enabling the Interconnection of Erlang nodes`_ section.
+
+To better troubleshoot, one may also spawn two test nodes and see whether they are able to ping each other.
 
 
 

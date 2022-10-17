@@ -40,8 +40,6 @@
 -include("gui.hrl").
 
 
--export([ get_name/1, draw_lines/3 ]).
-
 
 
 % Rendering section.
@@ -57,8 +55,6 @@
 
 -type screen() :: #screen{}.
 
-
--type widget_name() :: atom().
 
 
 -type solver_table() :: table( solver_pid(), { color(), point3() } ).
@@ -134,7 +130,7 @@ solver_main_loop( F, CurrentPoint, CurrentTime, Timestep, Screen,
 
 		stop ->
 			solver_main_loop( F, CurrentPoint, CurrentTime, Timestep, Screen,
-							  ListenerPid, _TimeOut=infinity)
+							  ListenerPid, _TimeOut=infinity )
 
 
 	after TimeOut ->
@@ -266,48 +262,6 @@ get_main_window_height() ->
 %   480.
 
 
-
-% @doc Lists all the declared names of widget identifiers.
-get_all_id_names() ->
-	[ 'MainFrame', 'StartButton', 'IncButton', 'DecButton',
-	  'StopButton', 'ClearButton', 'ResetButton', 'QuitButton' ].
-
-
-
-% @doc Returns the numerical ID corresponding to the specified name.
-%
-% (a good target for a parse transform, to do it at build-time)
-%
--spec get_id( atom() ) -> gui:id().
-get_id( Name ) ->
-	list_utils:get_index_of( Name, get_all_id_names() ).
-
-
-
-% @doc Returns the name (as an atom) of the specified widget (expected to be
-% named).
-%
-% Defines could have been appropriate as well.
-%
--spec get_name( gui:id() ) -> widget_name().
-get_name( Id ) ->
-
-	Names = get_all_id_names(),
-
-	Len = length( Names ),
-
-	case Id of
-
-		Id when Id < 1 orelse Id > Len ->
-			throw( { unregisted_widget_id, Id } );
-
-		_ ->
-			lists:nth( Id, Names )
-
-	end.
-
-
-
 % @doc Initialises the GUI and associated parts (solver).
 -spec start() -> no_return().
 start() ->
@@ -323,7 +277,7 @@ start() ->
 	FrameSize = { get_main_window_width(), get_main_window_height() },
 
 	MainFrame = gui:create_frame( _Title="Lorenz Test", _FramePos=auto,
-		FrameSize, _FrameStyle=default, _Id=get_id( 'MainFrame' ),
+		FrameSize, _FrameStyle=default, _Id=main_frame_id,
 		_MaybeParent=undefined ),
 
 	gui:subscribe_to_events( { onWindowClosed, MainFrame } ),
@@ -352,14 +306,14 @@ start() ->
 
 	% Constant width:
 	gui:add_to_sizer( MainSizer, LeftPanel,
-					  [ { proportion, 0 }, { flag, [ expand_fully ] } ] ),
+					  [ { proportion, 0 }, expand_fully ] ),
 
 	% Grows with the window:
 	gui:add_to_sizer( MainSizer, RightPanel,
-					  [ { proportion, 2 }, { flag, [ expand_fully ] } ] ),
+					  [ { proportion, 2 }, expand_fully ] ),
 
-	ControlBoxSizer = gui:create_sizer_with_labelled_box( vertical, LeftPanel,
-														  "Controls" ),
+	ControlBoxSizer =
+		gui:create_sizer_with_labelled_box( vertical, LeftPanel, "Controls" ),
 
 	% Adding the buttons to the control panel:
 
@@ -371,25 +325,25 @@ start() ->
 	ParentButton = LeftPanel,
 
 	StartButton = gui:create_button( "Start resolution", Position, ButtonSize,
-		ButtonStyle, get_id( 'StartButton' ), ParentButton ),
+		ButtonStyle, start_button_id, ParentButton ),
 
 	IncButton = gui:create_button( "Increase timestep", Position, ButtonSize,
-		ButtonStyle, get_id( 'IncButton' ), ParentButton ),
+		ButtonStyle, inc_button_id, ParentButton ),
 
 	DecButton = gui:create_button( "Decrease timestep", Position, ButtonSize,
-		ButtonStyle, get_id( 'DecButton' ), ParentButton ),
+		ButtonStyle, dec_button_id, ParentButton ),
 
 	StopButton = gui:create_button( "Stop resolution", Position, ButtonSize,
-		ButtonStyle, get_id( 'StopButton' ), ParentButton ),
+		ButtonStyle, stop_button_id, ParentButton ),
 
 	ClearButton = gui:create_button( "Clear phase space", Position, ButtonSize,
-		ButtonStyle, get_id( 'ClearButton' ), ParentButton ),
+		ButtonStyle, clear_button_id, ParentButton ),
 
 	ResetButton = gui:create_button( "Reset initial conditions", Position,
-		ButtonSize, ButtonStyle, get_id( 'ResetButton' ), ParentButton ),
+		ButtonSize, ButtonStyle, reset_button_id, ParentButton ),
 
 	QuitButton = gui:create_button( "Quit", Position, ButtonSize, ButtonStyle,
-									get_id( 'QuitButton' ), ParentButton ),
+									quit_button_id, ParentButton ),
 
 	Buttons = [ StartButton, IncButton, DecButton, StopButton, ClearButton,
 				ResetButton, QuitButton ],
@@ -399,9 +353,7 @@ start() ->
 
 	gui:set_tooltip( LeftPanel, "Controls for the Lorenz test" ),
 
-	ButtonOpt = [ { flag, [ expand_fully ] } ],
-
-	[ gui:add_to_sizer( ControlBoxSizer, B, ButtonOpt ) || B <- Buttons ],
+	[ gui:add_to_sizer( ControlBoxSizer, B, expand_fully ) || B <- Buttons ],
 
 	gui:set_sizer( LeftPanel, ControlBoxSizer ),
 
@@ -417,7 +369,7 @@ start() ->
 	gui:subscribe_to_events( { [ onRepaintNeeded, onResized ], Canvas } ),
 
 	gui:add_to_sizer( PolyBoxSizer, Canvas,
-					  [ { proportion, 1 }, { flag, [ expand_fully ] } ] ),
+					  [ { proportion, 1 }, expand_fully ] ),
 
 	gui:set_tooltip( Canvas, "Lorenz Attractor." ),
 
@@ -530,26 +482,26 @@ reset_solvers( _Solvers=[ SolverPid | T ], CurrentP, TransVec ) ->
 % @doc The main loop of this test, driven by the receiving of MyriadGUI
 % messages.
 %
-gui_main_loop( State=#gui_state{ main_frame=MainFrame,
-								 start_button=StartButton,
-								 increase_step_button=IncButton,
-								 decrease_step_button=DecButton,
-								 stop_button=StopButton,
-								 clear_button=ClearButton,
-								 reset_button=ResetButton,
-								 quit_button=QuitButton,
-								 canvas=Canvas,
-								 screen=Screen } ) ->
+gui_main_loop( GUIState=#gui_state{ main_frame=MainFrame,
+									start_button=StartButton,
+									increase_step_button=IncButton,
+									decrease_step_button=DecButton,
+									stop_button=StopButton,
+									clear_button=ClearButton,
+									reset_button=ResetButton,
+									%quit_button=QuitButton,
+									canvas=Canvas,
+									screen=Screen } ) ->
 
 	%test_facilities:display( "Entering main loop." ),
 
 	% 'undefined' if having to quit:
-	MaybeNewState = receive
+	MaybeNewGUIState = receive
 
 		% Routine messages sent by solvers shall be listed last, otherwise they
 		% will eclipse other messages (ex: GUI ones):
 
-		{ onWindowClosed, [ MainFrame, Context ] } ->
+		{ onWindowClosed, [ MainFrame, _MainFrameId, Context ] } ->
 			trace_utils:notice_fmt( "Test main frame ~ts has been closed "
 				"(~ts), quitting Lorenz test, test success.",
 				[ gui:object_to_string( MainFrame ),
@@ -557,111 +509,113 @@ gui_main_loop( State=#gui_state{ main_frame=MainFrame,
 			undefined;
 
 
-		{ onButtonClicked, [ StartButton, _Context ] } ->
+		{ onButtonClicked, [ StartButton, _StartButtonId, _Context ] } ->
 			%test_facilities:display( "Start button clicked." ),
 
-			SolverTable = State#gui_state.solver_table,
+			SolverTable = GUIState#gui_state.solver_table,
 
 			gui:push_status_text( "Starting ~B solvers (timestep of ~f).",
-				[ table:size( SolverTable ), State#gui_state.timestep ],
-				State#gui_state.status_bar ),
+				[ table:size( SolverTable ), GUIState#gui_state.timestep ],
+				GUIState#gui_state.status_bar ),
 
 			send_to_solvers( _Msg=start, SolverTable ),
 
-			State;
+			GUIState;
 
 
-		{ onButtonClicked, [ IncButton, _Context ] } ->
+		{ onButtonClicked, [ IncButton, _IncButtonId, _Context ] } ->
 			%test_facilities:display( "Increase timestep button clicked." ),
 
-			NewTimestep = 1.05 * State#gui_state.timestep,
+			NewTimestep = 1.05 * GUIState#gui_state.timestep,
 
 			send_to_solvers( _Msg={ set_time_step, NewTimestep },
-							 State#gui_state.solver_table ),
+							 GUIState#gui_state.solver_table ),
 
 			gui:push_status_text( "Timestep increased to ~f.",
-								  [ NewTimestep ], State#gui_state.status_bar ),
+				[ NewTimestep ], GUIState#gui_state.status_bar ),
 
-			State#gui_state{ timestep=NewTimestep };
+			GUIState#gui_state{ timestep=NewTimestep };
 
 
-		{ onButtonClicked, [ DecButton, _Context ] } ->
+		{ onButtonClicked, [ DecButton, _DecButtonId, _Context ] } ->
 			%test_facilities:display( "Decrease timestep button clicked." ),
 
-			NewTimestep = 0.95 * State#gui_state.timestep,
+			NewTimestep = 0.95 * GUIState#gui_state.timestep,
 
 			send_to_solvers( _Msg={ set_time_step, NewTimestep },
-							 State#gui_state.solver_table ),
+							 GUIState#gui_state.solver_table ),
 
 			gui:push_status_text( "Timestep decreased to ~f.",
-								  [ NewTimestep ], State#gui_state.status_bar ),
+				[ NewTimestep ], GUIState#gui_state.status_bar ),
 
-			State#gui_state{ timestep=NewTimestep };
+			GUIState#gui_state{ timestep=NewTimestep };
 
 
-		{ onButtonClicked, [ ClearButton, _Context ] } ->
+		{ onButtonClicked, [ ClearButton, _ClearButtonId, _Context ] } ->
 			%test_facilities:display( "Clear button clicked." ),
 
 			gui:push_status_text( "Phase space cleared.",
-								  State#gui_state.status_bar ),
+								  GUIState#gui_state.status_bar ),
 
 			gui:clear( Canvas ),
 			gui:blit( Canvas ),
-			State;
+			GUIState;
 
 
-		{ onButtonClicked, [ StopButton, _Context ] } ->
+		{ onButtonClicked, [ StopButton, _StopButtonId, _Context ] } ->
 			%test_facilities:display( "Stop button clicked." ),
 
-			SolverTable = State#gui_state.solver_table,
+			SolverTable = GUIState#gui_state.solver_table,
 
 			gui:push_status_text( "Stopping ~B solvers (timestep was ~f).",
-				[ table:size( SolverTable ), State#gui_state.timestep ],
-				State#gui_state.status_bar ),
+				[ table:size( SolverTable ), GUIState#gui_state.timestep ],
+				GUIState#gui_state.status_bar ),
 
 			send_to_solvers( _Msg=stop, SolverTable ),
 
-			State;
+			GUIState;
 
-		{ onButtonClicked, [ ResetButton, _Context ] } ->
+
+		{ onButtonClicked, [ ResetButton, _ResetButtonId, _Context ] } ->
 			%test_facilities:display( "Reset button clicked." ),
 
-			reset_solvers( State#gui_state.solver_table,
+			reset_solvers( GUIState#gui_state.solver_table,
 						   get_initial_base_point() ),
 
 			gui:push_status_text( "Initial conditions of solvers reset.",
-								  State#gui_state.status_bar ),
-			State;
+								  GUIState#gui_state.status_bar ),
+			GUIState;
 
-		{ onButtonClicked, [ QuitButton, _Context ] } ->
+		% To showcase the use of name identifiers:
+		{ onButtonClicked, [ _QuitButton, quit_button_id, _Context ] } ->
 			%test_facilities:display( "Quit button clicked." ),
 			undefined;
 
 
-		{ onButtonClicked, [ AnyOtherButton, _Context ] } ->
+		{ onButtonClicked, [ AnyOtherButton, _AnyOtherButtonId, _Context ] } ->
 			test_facilities:display( "Following unexpected button clicked: ~w.",
 									 [ AnyOtherButton ] ),
-			State;
+			GUIState;
 
 
-		{ onRepaintNeeded, [ Canvas, _Context ] } ->
+		{ onRepaintNeeded, [ Canvas, _CanvasId, _Context ] } ->
 
 			%trace_utils:notice_fmt( "Test canvas '~ts' needing repaint (~ts).",
 			%   [ gui:object_to_string( Canvas ),
 			%     gui:context_to_string( Context ) ] ),
 
 			gui:blit( Canvas ),
-			State;
+			GUIState;
 
 
-		{ onResized, [ Canvas, _NewSize, _Context ] } ->
+		{ onResized, [ Canvas, _CanvasId, _NewSize, _Context ] } ->
 
 			%trace_utils:notice_fmt( "Test canvas '~ts' resized to ~p (~ts).",
 			%   [ gui:object_to_string( Canvas ), NewSize,
 			%     gui:context_to_string( Context ) ] ),
 
 			gui:clear( Canvas ),
-			State;
+			GUIState;
 
 
 		{ draw_points, NewPoints, SendingSolverPid } ->
@@ -669,7 +623,7 @@ gui_main_loop( State=#gui_state{ main_frame=MainFrame,
 			%trace_utils:debug_fmt( "Drawing ~B points from ~w.",
 			%   [ length( NewPoints ), SendingSolverPid ] ),
 
-			SolverTable = State#gui_state.solver_table,
+			SolverTable = GUIState#gui_state.solver_table,
 
 			{ Color, LastPoint } =
 						table:get_value( SendingSolverPid, SolverTable ),
@@ -679,12 +633,12 @@ gui_main_loop( State=#gui_state{ main_frame=MainFrame,
 
 			gui:blit( Canvas ),
 
-			SolverTable = State#gui_state.solver_table,
+			SolverTable = GUIState#gui_state.solver_table,
 
 			NewSolverTable = table:add_entry( _K=SendingSolverPid,
 								_V={ Color, NewLastPoint }, SolverTable ),
 
-			State#gui_state{ solver_table=NewSolverTable };
+			GUIState#gui_state{ solver_table=NewSolverTable };
 
 
 		{ draw_point, NewPoint, SendingSolverPid } ->
@@ -692,7 +646,7 @@ gui_main_loop( State=#gui_state{ main_frame=MainFrame,
 			trace_utils:debug_fmt( " - drawing ~p (from ~p)~n",
 								   [ NewPoint, SendingSolverPid ] ),
 
-			SolverTable = State#gui_state.solver_table,
+			SolverTable = GUIState#gui_state.solver_table,
 
 			{ Color, LastPoint } =
 						table:get_value( SendingSolverPid, SolverTable ),
@@ -709,28 +663,28 @@ gui_main_loop( State=#gui_state{ main_frame=MainFrame,
 			NewSolverTable = table:add_entry( _K=SendingSolverPid,
 									_V={ Color, NewPoint }, SolverTable ),
 
-			State#gui_state{ solver_table=NewSolverTable };
+			GUIState#gui_state{ solver_table=NewSolverTable };
 
 
 		Any ->
 			trace_utils:warning_fmt( "The main loop of the Lorenz test "
 				"ignored following message:~n ~p.~n", [ Any ] ),
-			State
+			GUIState
 
 	end,
 
-	case MaybeNewState of
+	case MaybeNewGUIState of
 
 		undefined ->
-			send_to_solvers( _StopMsg=stop, State#gui_state.solver_table ),
+			send_to_solvers( _StopMsg=stop, GUIState#gui_state.solver_table ),
 
 			% Simply stop recursing:
 			gui:destruct_window( MainFrame ),
 
 			gui:stop();
 
-		NewState ->
-			gui_main_loop( NewState )
+		NewGUIState ->
+			gui_main_loop( NewGUIState )
 
 	end.
 

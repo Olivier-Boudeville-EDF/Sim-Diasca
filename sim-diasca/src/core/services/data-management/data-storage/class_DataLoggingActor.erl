@@ -236,10 +236,10 @@ send_probe_data( CurrentOffset, State ) ->
 	% sample will be sent to it:
 
 	class_DataLogger:send_data( ?getAttr(first_probe_ref), CurrentOffset,
-		_FirstSample={ random_utils:get_random_value( 50 ),
-					   random_utils:get_random_value( 30 ) } ),
+		_FirstSample={ random_utils:get_uniform_value( 50 ),
+					   random_utils:get_uniform_value( 30 ) } ),
 
 	class_DataLogger:send_data( ?getAttr(second_probe_ref), CurrentOffset,
-		_SecondSample={ random_utils:get_random_value( 100 ),
-						random_utils:get_random_value( 30 ),
-						random_utils:get_random_value( 150 ) } ).
+		_SecondSample={ random_utils:get_uniform_value( 100 ),
+						random_utils:get_uniform_value( 30 ),
+						random_utils:get_uniform_value( 150 ) } ).

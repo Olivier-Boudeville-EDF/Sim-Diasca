@@ -26,8 +26,9 @@
 % Creation date: July 1, 2007.
 
 
-% @doc Gathering of various <b>random-related</b> facilities, based on uniform
-% probabilities or user-defined, arbitrary ones.
+% @doc Gathering of various <b>random-related</b> facilities, based on
+% probability distributions, either built-in (uniform, exponential or gaussian)
+% or user-defined, arbitrary ones.
 %
 % See random_utils_test.erl for the corresponding test.
 %
@@ -35,22 +36,82 @@
 
 
 
-% Functions related to uniform sampling:
+% Usage notes.
+
+% There are three basic classes of built-in random distributions:
+% - uniform (a.k.a. white noise)
+% - exponential
+% - Gaussian (a.k.a. normal)
+%
+% Often distributions are generalised with parameters that allow to specialise
+% them into well-known distributions (which are thus special cases thereof).
+%
+% Upcoming additions could be:
+%
+% - the Gamma distribution (see
+% https://en.wikipedia.org/wiki/Gamma_distribution), which includes the
+% exponential distribution, the (unrelated) Erlang distribution, and the
+% chi-square distribution
+%
+% - the Dirac delta distribution (a.k.a the unit impulse)
+%
+% - some instantaneous distribution (to be determined)
+%
+% - the Weibull_distribution (see
+% https://en.wikipedia.org/wiki/Weibull_distribution); being quite flexible, its
+% proper parametrisation can cover many laws, including the exponential law
+% (k=1) and the Rayleigh law (k=2)
+
+
+
+% Functions for random management.
+
+% As a general rule of thumb, if generating random values in an interval that
+% are:
+%  - integer: then both bounds are included
+%  - floating point: then the lower bound is included and the uppoer one is
+%  excluded
+
+% In this module, "positive integer" must be understood as comprising zero.
+
+
+% Service usage, state and seeding:
 -export([ start_random_source/3, start_random_source/1, can_be_seeded/0,
 		  reset_random_source/1, stop_random_source/0,
-		  get_random_value/0, get_random_value/1, get_random_value/2,
-		  get_random_values/2, get_random_values/3,
-		  get_uniform_floating_point_value/1,
-		  get_uniform_floating_point_value/2,
-		  get_random_subset/2,
+
 		  get_random_module_name/0,
 		  get_random_state/0, set_random_state/1,
+
 		  get_random_seed/0, check_random_seed/1 ]).
 
 
-% Functions related to non-uniform sampling:
+% Functions related to uniform sampling:
+-export([ get_uniform_value/0, get_uniform_value/1, get_uniform_value/2,
+		  get_uniform_values/2, get_uniform_values/3,
+
+		  get_uniform_floating_point_value/1,
+		  get_uniform_floating_point_value/2,
+
+		  get_boolean/0, one_of/1, get_random_subset/2 ]).
+
+
+% Functions related to exponential sampling:
+-export([ get_exponential_value/1, get_positive_integer_exponential_value/1,
+		  get_exponential_values/2, get_positive_integer_exponential_values/2
+		]).
+
+
+% Functions related to gaussian sampling:
+-export([ get_gaussian_value/2, get_positive_integer_gaussian_value/2,
+		  get_gaussian_values/3, get_positive_integer_gaussian_values/3 ]).
+
+
+% Functions related to arbitrary, non-uniform sampling:
 -export([ generate_random_state_from/1,
 		  get_sample_from/1, get_samples_from/2 ]).
+
+
+
 
 
 -type seed_element() :: integer().
@@ -62,15 +123,36 @@
 
 % random:ran/0 does not seem exported, replaced by seed/0:
 -type random_state() :: seed()
-						| rand:state()
-						| alias_state() % for non-uniform random samples
-						| any().
+					  | rand:state()
+					  | alias_state() % for non-uniform random samples
+					  | any().
 % For simpler generators, the state is just a seed, for all the others the state
 % may be much larger/more complex.
 
 
+-record( alias_state, {
+
+	% Total number of sample entries:
+	entry_count :: count(),
+
+	% Array referencing all declared samples:
+	sample_values :: array( sample() ),
+
+	% Array keeping track of the sample corresponding to each category:
+	indexes :: array( positive_index() ),
+
+	% Array of probability-like for each category:
+	prob_likes :: array( probability_like() ) } ).
+
+
+-opaque alias_state() :: #alias_state{}.
+% The state of a random generator in charge of producing samples according to
+% the specified discrete probability distribution, based on the alias method.
+
+
+
 -type sample( T ) :: T.
-% The type of a sample that can be drawn from probability distribution; a
+% The type of a sample that can be drawn from a probability distribution; a
 % probability may be indeed associated to any kind of samples (integer ones,
 % strings, vectors, etc.).
 
@@ -86,6 +168,90 @@
 % An entry corresponding to a sample of unspecified type in a probability
 % distribution.
 
+
+-type rate() :: number().
+% A rate parameter, typically for the Lambda parameter of the exponential law.
+
+
+-type mean() :: number().
+% An arithmetic mean of a list of numbers, that is the sum of all of the numbers
+% divided by the number of numbers.
+%
+% See https://en.wikipedia.org/wiki/Mean#Arithmetic_mean_(AM)
+
+
+-type standard_deviation() :: math_utils:standard_deviation().
+% A measure of the amount of dispersion of a set of values.
+%
+% It is the square root of its variance.
+%
+% See https://en.wikipedia.org/wiki/Standard_deviation
+
+
+
+
+% Section for the description of random laws (probability distributions).
+
+
+-type uniform_law() :: { 'uniform', non_neg_integer() }.
+% A probability distribution with which all declared samples have the same
+% probability of being drawn.
+
+
+
+-type exponential_law() :: { 'exponential', Lambda :: rate() }.
+% An exponential law is fully determined when its single, "rate" parameter
+% (Lambda) is given.
+%
+% The probability density function is p(x) = Lambda.exp(-Lambda.x), whose
+% integral is 1.
+%
+% Mean value of drawn samples is 1/Lambda.
+%
+% Refer to https://en.wikipedia.org/wiki/Exponential_distribution.
+
+
+-type positive_integer_exponential_law() ::
+						{ 'positive_integer_exponential', Lambda :: rate() }.
+% An exponential law yielding only positive integer samples.
+%
+% Refer to exponential_law/0 for further details.
+
+
+
+-type gaussian_law() ::
+		{ 'gaussian', Mu :: mean(), Sigma :: standard_deviation() }.
+% A Gaussian (a.k.a. normal, bell curve) law is fully determined when its two
+% parameters are given:
+%
+% - its mean (Mu), the average value of the samples
+%
+% - its standard deviation (Sigma), being expressed in the same unit as the
+% samples (its square being the variance)
+%
+% About 68% of the samples are in [Mu-Sigma;Mu+Sigma].
+% About 95.4% of the samples (i.e. almost all) are in [Mu-2.Sigma;Mu+2.Sigma].
+%
+% See also: http://en.wikipedia.org/wiki/Standard_deviation
+
+
+-type positive_integer_gaussian_law() ::
+		{ 'positive_integer_gaussian', Mu :: mean(),
+		  Sigma :: standard_deviation() }.
+% A Gaussian (a.k.a. normal, bell curve) law yielding only positive integer
+% samples.
+%
+% Refer to gaussian_law/0 for further details.
+
+
+
+-type random_law() :: uniform_law()
+
+					| exponential_law()
+					| positive_integer_exponential_law()
+
+					| gaussian_law()
+					| positive_integer_gaussian_law().
 
 
 -type discrete_probability_distribution( T ) :: [ sample_entry( T ) ].
@@ -125,32 +291,18 @@
 % A Probability Density Function for samples of unspecified type.
 
 
--record( alias_state, {
-
-	% Total number of sample entries:
-	entry_count :: count(),
-
-	% Array referencing all declared samples:
-	sample_values :: array( sample() ),
-
-	% Array keeping track of the sample corresponding to each category:
-	indexes :: array( positive_index() ),
-
-	% Array of probability-like for each category:
-	prob_likes :: array( probability_like() )
-
-} ).
-
-
--opaque alias_state() :: #alias_state{}.
-% The state of a random generator in charge of producing samples according to
-% the specified discrete probability distribution, based on the alias method.
-
-
 -export_type([ seed_element/0, seed/0, random_state/0, alias_state/0,
 			   sample/0, sample/1, sample_entry/0, sample_entry/1,
+			   rate/0, mean/0, standard_deviation/0,
+
+			   uniform_law/0,
+			   exponential_law/0, positive_integer_exponential_law/0,
+			   gaussian_law/0, positive_integer_gaussian_law/0,
+			   random_law/0,
+
 			   discrete_probability_distribution/0,
 			   discrete_probability_distribution/1,
+
 			   pdf/0, pdf/1 ]).
 
 
@@ -169,19 +321,14 @@
 
 
 
-% Functions for random management.
 
-% General rule of thumb: if generating random values in an interval that are:
-%  - integer: then both bounds are included
-%  - floating point: then the lower bound is included and the uppoer one is
-%  excluded
-
+% Implementation notes.
 
 % About pseudorandom number generator (PRNG):
 %
-% If use_crypto_module is defined, the (now deprecated here) crypto module will
-% be used, otherwise (which is the default now) the rand module will be used
-% instead (the random module being now deprecated).
+% If use_crypto_module is defined, the (now deprecated here, for this use)
+% crypto module will be used, otherwise (which is the default now) the rand
+% module will be used instead (the random module being now deprecated).
 %
 % Currently the crypto module is not used by default, as:
 %
@@ -199,7 +346,8 @@
 % Therefore crypto cannot be easily swapped with other random generators.
 %
 % Finally, the requirements of a Cryptographically-secure PRNG (CSPRNG) exceed
-% the general PRNGs, and may be useless / of higher costs in other contexts.
+% the general PRNGs, and may be useless / of higher costs in other
+% contexts. Refer to our hash_utils module for more information on that topic.
 %
 % The current module considered using TinyMT and/or SFMT, yet now they have been
 % superseded by the xorshift, xoroshiro, and xoshiro algorithms by Sebastiano
@@ -209,18 +357,21 @@
 % Of course, switching random engines will generate different random series.
 %
 % They may also have different behaviours (ex: with regards to processes not
-% being explictly seeded, inheriting from a seed that is constant or not - the
+% being explicitly seeded, inheriting from a seed that is constant or not - the
 % shortest path to break reproducibility).
 %
+% Note that modules relying on an implicit state (e.g. for seeding) generally
+% use the process dictionary to store it (e.g. 'rand').
+
 %-define(use_crypto_module,).
 
 
 % Shorthands:
 
+-type array( T ) :: array:array( T ).
+
 -type count() :: basic_utils:count().
 -type positive_index() :: basic_utils:positive_index().
-
--type array( T ) :: array:array( T ).
 
 
 -type probability_like() :: math_utils:probability_like().
@@ -252,11 +403,11 @@
 -spec stop_random_source() -> void().
 
 
--spec get_random_value() -> float().
+-spec get_uniform_value() -> float().
 
--spec get_random_value( pos_integer() ) -> pos_integer().
+-spec get_uniform_value( pos_integer() ) -> pos_integer().
 
--spec get_random_value( integer(), integer() ) -> integer().
+-spec get_uniform_value( integer(), integer() ) -> integer().
 
 -spec get_uniform_floating_point_value( number() ) -> float().
 -spec get_uniform_floating_point_value( number(), number() ) -> float().
@@ -267,32 +418,32 @@
 
 
 % @doc Generates a list of Count elements uniformly drawn in [1,N].
--spec get_random_values( pos_integer(), count() ) -> [ pos_integer() ].
-get_random_values( N, Count ) ->
-	get_random_values_helper( N, Count, _Acc=[] ).
+-spec get_uniform_values( pos_integer(), count() ) -> [ pos_integer() ].
+get_uniform_values( N, Count ) ->
+	get_uniform_values_helper( N, Count, _Acc=[] ).
 
 
-get_random_values_helper( _N, _Count=0, Acc ) ->
+get_uniform_values_helper( _N, _Count=0, Acc ) ->
 	Acc;
 
-get_random_values_helper( N, Count, Acc ) ->
-	get_random_values_helper( N, Count-1, [ get_random_value( N ) | Acc ] ).
+get_uniform_values_helper( N, Count, Acc ) ->
+	get_uniform_values_helper( N, Count-1, [ get_uniform_value( N ) | Acc ] ).
 
 
 
 % @doc Generates a list of Count elements uniformly drawn in [Nmin,Nmax].
--spec get_random_values( integer(), integer(), count() ) -> [ integer() ].
-get_random_values( Nmin, Nmax, Count ) ->
-	get_random_values_helper( Nmin, Nmax, Count, _Acc=[] ).
+-spec get_uniform_values( integer(), integer(), count() ) -> [ integer() ].
+get_uniform_values( Nmin, Nmax, Count ) ->
+	get_uniform_values_helper( Nmin, Nmax, Count, _Acc=[] ).
 
 
 % (helper)
-get_random_values_helper( _Nmin, _Nmax, _Count=0, Acc ) ->
+get_uniform_values_helper( _Nmin, _Nmax, _Count=0, Acc ) ->
 	Acc;
 
-get_random_values_helper( Nmin, Nmax, Count, Acc ) ->
-	get_random_values_helper( Nmin, Nmax, Count - 1,
-							  [ get_random_value( Nmin, Nmax ) | Acc ] ).
+get_uniform_values_helper( Nmin, Nmax, Count, Acc ) ->
+	get_uniform_values_helper( Nmin, Nmax, Count - 1,
+							  [ get_uniform_value( Nmin, Nmax ) | Acc ] ).
 
 
 % To test compilation:
@@ -319,9 +470,7 @@ start_random_source( _A, _B, _C ) ->
 
 % @doc Starts the random source with specified seeding.
 start_random_source( default_seed ) ->
-
 	?trace_random( "~w starting random source with crypto.", [ self() ] ),
-
 	ok = crypto:start();
 
 start_random_source( time_based_seed ) ->
@@ -347,12 +496,12 @@ stop_random_source() ->
 
 
 
-% @doc Returns a random float uniformly distributed between 0.0 and 1.0,
-% updating the random state in the process dictionary.
+% @doc Returns a random float uniformly distributed between 0.0 (included) and
+% 1.0 (excluded), updating the random state in the process dictionary.
 %
 % Spec already specified, for all random settings.
 %
-get_random_value() ->
+get_uniform_value() ->
 	% Not available: crypto:rand_uniform( 0.0, 1.0 ).
 	throw( not_available ).
 
@@ -366,7 +515,7 @@ get_random_value() ->
 %
 % Spec already specified, for all random settings.
 %
-get_random_value( N ) ->
+get_uniform_value( N ) ->
 	crypto:rand_uniform( 1, N+1 ).
 
 
@@ -377,7 +526,7 @@ get_random_value( N ) ->
 %
 % Spec already specified, for all random settings.
 %
-get_random_value( Nmin, Nmax ) when Nmin =< Nmax ->
+get_uniform_value( Nmin, Nmax ) when Nmin =< Nmax ->
 	crypto:rand_uniform( Nmin, Nmax+1 ).
 
 
@@ -583,7 +732,9 @@ can_be_seeded() ->
 
 % doc: Resets the random source with a new seed.
 reset_random_source( Seed ) ->
-	% New seeding, as opposed to the setting of a previously defined state:
+	% New seeding (stored in the process dictionary), as opposed to the setting
+	% of a previously defined state:
+	%
 	rand:seed( ?rand_algorithm, Seed ).
 
 
@@ -599,7 +750,7 @@ stop_random_source() ->
 %
 % Spec already specified, for all random settings.
 %
-get_random_value() ->
+get_uniform_value() ->
 	%random:uniform().
 	rand:uniform().
 
@@ -613,11 +764,11 @@ get_random_value() ->
 %
 % Spec already specified, for all random settings.
 %
-get_random_value( N ) when is_integer( N ) ->
+get_uniform_value( N ) when is_integer( N ) ->
 	%random:uniform( N ).
 	rand:uniform( N );
 
-get_random_value( N ) ->
+get_uniform_value( N ) ->
 	throw( { not_integer, N } ).
 
 
@@ -628,7 +779,7 @@ get_random_value( N ) ->
 %
 % Spec already specified, for all random settings.
 %
-get_random_value( Nmin, Nmax ) when is_integer( Nmin )
+get_uniform_value( Nmin, Nmax ) when is_integer( Nmin )
 					andalso is_integer( Nmax ) andalso Nmin =< Nmax ->
 
 	% Ex: if Nmin = 3, Nmax = 5, we can draw value in [3, 4, 5], hence:
@@ -638,9 +789,9 @@ get_random_value( Nmin, Nmax ) when is_integer( Nmin )
 	N = Nmax - Nmin + 1,
 
 	% Drawn in [1,N]:
-	get_random_value( N ) + Nmin - 1;
+	get_uniform_value( N ) + Nmin - 1;
 
-get_random_value( Nmin, Nmax ) ->
+get_uniform_value( Nmin, Nmax ) ->
 	throw( { not_integer_bounds, { Nmin, Nmax } } ).
 
 
@@ -697,12 +848,12 @@ get_random_state() ->
 	% Actually, no state should not be considered as an error:
 	%case erlang:get( random_seed ) of
 	%
-	%		undefined ->
-	%		% Probably that there has been not prior seeding:
-	%		throw( random_state_not_available );
+	%   undefined ->
+	%       % Probably that there has been not prior seeding:
+	%       throw( random_state_not_available );
 	%
-	%	S ->
-	%		S
+	%   S ->
+	%       S
 	%
 	%end.
 
@@ -721,7 +872,7 @@ get_random_state() ->
 %
 set_random_state( RandomState ) ->
 
-	% Process dictionary:
+	% All are in the process dictionary (beware!):
 	%erlang:put( random_seed, NewState ).
 	%erlang:put( rand_seed, NewState ).
 	rand:seed( RandomState ).
@@ -737,17 +888,7 @@ set_random_state( RandomState ) ->
 % Now sections that do not depend on defines.
 
 
-
-% @doc Returns a list of the specified number of unique elements drawn from
-% input list (so that there is no duplicate in the returned list).
-%
-% Note: defined to ease interface look-up, use directly
-% list_utils:draw_elements_from/2 instead.
-%
--spec get_random_subset( count(), list() ) -> list().
-get_random_subset( ValueCount, InputList ) ->
-	list_utils:draw_elements_from( InputList, ValueCount ).
-
+% Seeding section.
 
 
 % The upper bound for a seed element.
@@ -761,9 +902,9 @@ get_random_subset( ValueCount, InputList ) ->
 %
 -spec get_random_seed() -> seed().
 get_random_seed() ->
-	{ get_random_value( ?seed_upper_bound ),
-	  get_random_value( ?seed_upper_bound ),
-	  get_random_value( ?seed_upper_bound ) }.
+	{ get_uniform_value( ?seed_upper_bound ),
+	  get_uniform_value( ?seed_upper_bound ),
+	  get_uniform_value( ?seed_upper_bound ) }.
 
 
 
@@ -774,7 +915,7 @@ get_random_seed() ->
 %
 -spec check_random_seed( seed() ) -> void().
 check_random_seed( { A, B, C } ) when is_integer( A ) andalso is_integer( B )
-			andalso is_integer( C ) andalso A > 0 andalso B > 0 andalso C > 0 ->
+		andalso is_integer( C ) andalso A > 0 andalso B > 0 andalso C > 0 ->
 	ok;
 
 check_random_seed( S ) ->
@@ -783,7 +924,303 @@ check_random_seed( S ) ->
 
 
 
-% Section for the generation of non-uniform random samples.
+
+% Section for the generation of random samples according to a uniform law.
+
+
+% @doc Returns a boolean random value generated from an uniform distribution.
+%
+% Therefore true and false are equally likely to be returned.
+%
+-spec get_boolean() -> boolean().
+get_boolean() ->
+	get_uniform_value( 0, 100 ) >= 49.
+
+
+
+% @doc Returns a random element of the specified list, selected according to a
+% uniform distribution.
+%
+-spec one_of( [ any() ] ) -> any().
+one_of( ListOfThings ) ->
+	Index = get_uniform_value( length( ListOfThings ) ),
+	lists:nth( Index, ListOfThings ).
+
+
+
+% @doc Returns a list of the specified number of unique elements drawn from the
+% specified input list (so that there is no duplicate in the returned list).
+%
+% Note: defined to ease interface look-up, use directly
+% list_utils:draw_elements_from/2 instead.
+%
+-spec get_random_subset( count(), list() ) -> list().
+get_random_subset( ValueCount, InputList ) ->
+	list_utils:draw_elements_from( InputList, ValueCount ).
+
+
+
+
+
+% Section for the generation of random samples according to an exponential law.
+%
+% Note: each of the three forms comes in two versions, with floating-point or
+% (positive) integer values being returned.
+
+
+
+% @doc Returns an exponential floating-point random value, with Lambda being the
+% rate parameter.
+%
+% As get_uniform_value/1 never returns 1.0, a strictly positive value is always
+% returned.
+%
+% See exponential_law() for further details.
+%
+% Using ad-hoc inverse transform sampling here.
+%
+-spec get_exponential_value( rate() ) -> float().
+get_exponential_value( Lambda ) ->
+
+	%trace_utils:debug_fmt( "Lambda=~p", [ Lambda ] ),
+
+	% Note: with Erlang, math:log(x) is ln(x):
+	- math:log( get_uniform_value() ) / Lambda.
+
+
+
+% @doc Returns an exponential (positive) integer random value, with Lambda being
+% the rate parameter.
+%
+% See get_exponential_value/1 for further details.
+%
+-spec get_positive_integer_exponential_value( rate() ) -> non_neg_integer().
+get_positive_integer_exponential_value( Lambda ) ->
+	round( get_exponential_value( Lambda ) ).
+
+
+
+% @doc Returns a list of Count exponential values according to the specified
+% Lambda setting.
+%
+% See get_exponential_value/1 for further details.
+%
+-spec get_exponential_values( rate(), count() ) -> [ float() ].
+get_exponential_values( Lambda, Count ) ->
+	generate_exponential_list( Lambda, Count, _Acc=[] ).
+
+
+
+% The generate_*_list could rely on higher-order functions.
+
+
+% @doc Generates a list of Count exponential random values.
+%
+% (helper)
+-spec generate_exponential_list( rate(), count(), [ float() ] ) ->
+												[ float() ].
+generate_exponential_list( _Lambda, _Count=0, Acc ) ->
+	Acc;
+
+generate_exponential_list( Lambda, Count, Acc ) ->
+	generate_exponential_list( Lambda, Count-1,
+							   [ get_exponential_value( Lambda ) | Acc ] ).
+
+
+
+% @doc Returns a list of Count positive integer exponential values according to
+% the specified Lambda setting.
+%
+% See get_exponential_value/1 for further details.
+%
+-spec get_positive_integer_exponential_values( rate(), count() ) ->
+											[ non_neg_integer() ].
+get_positive_integer_exponential_values( Lambda, Count ) ->
+	generate_positive_integer_exponential_list( Lambda, Count, _Acc=[] ).
+
+
+% (helper)
+generate_positive_integer_exponential_list( _Lambda, _Count=0, Acc ) ->
+	Acc;
+
+generate_positive_integer_exponential_list( Lambda, Count, Acc ) ->
+	generate_positive_integer_exponential_list( Lambda, Count-1,
+		[ get_positive_integer_exponential_value( Lambda ) | Acc ] ).
+
+
+
+
+
+
+% Section for the generation of random samples according to a gaussian law.
+
+
+
+% @doc Returns a random value generated from the normal (Gaussian) distribution
+% with specified settings.
+%
+% Given a mean Mu and a standard deviation Sigma, returns a random
+% floating-point value drawn according to the corresponding Gaussian law,
+% updating the state in the process dictionary.
+%
+-spec get_gaussian_value( mean(), standard_deviation() ) -> float().
+get_gaussian_value( Mu, Sigma ) ->
+	sigma_loop( Mu, Sigma ).
+
+
+
+% @doc Returns a non-negative integer random value generated from the
+% normal (Gaussian) distribution with specified settings.
+%
+% Given a mean Mu and a standard deviation Sigma, returns random integers drawn
+% according the corresponding Gaussian law, updating the state in the process
+% dictionary.
+%
+% The result is a non-negative integer (not a float). Values will be drawn until
+% they are non-negative.
+%
+-spec get_positive_integer_gaussian_value( mean(), standard_deviation() ) ->
+											non_neg_integer().
+get_positive_integer_gaussian_value( Mu, Sigma ) ->
+	sigma_loop_positive_integer( Mu, Sigma ).
+
+
+
+
+% @doc Generates a new gaussian value and updates the state.
+%
+% Mu is the mean, Sigma is the standard deviation (variance being its square).
+%
+% Returns the computed value.
+%
+% See also
+% https://en.wikipedia.org/wiki/Normal_distribution#Computational_methods
+%
+-spec sigma_loop( mean(), standard_deviation() ) -> float().
+sigma_loop( Mu, Sigma ) ->
+
+	% Best (most efficient) implementation that could be used in the future:
+	% https://en.wikipedia.org/wiki/Ziggurat_algorithm
+
+	% Note: at least for (Mu=0, Sigma=1), rand:normal/0 could be used.
+
+	% Using here the second best approach, the Marsaglia polar method (see
+	% https://en.wikipedia.org/wiki/Marsaglia_polar_method); used for example by
+	% C++11 GNU GCC libstdc++.
+
+	% So V1 and V2 are in [-1.0;1.0[:
+	V1 = 2.0 * get_uniform_value() - 1.0,
+
+	% Supposedly independent from V1:
+	V2 = 2.0 * get_uniform_value() - 1.0,
+
+	S  = (V1 * V1) + (V2 * V2),
+
+	% Loop until S in ]0,1[:
+	case S >= 1.0 orelse S =:= 0.0 of
+
+		% Rejected:
+		true ->
+			sigma_loop( Mu, Sigma );
+
+		_False ->
+
+			% Here S in ]0;1.0[ (note that 1.0 should be included, possibly by
+			% transforming any 0.0 in a 1.0):
+			%
+			%trace_utils:debug_fmt( "Mu = ~p, Sigma = ~p, S = ~p.",
+			%                       [ Mu, Sigma, S ] ),
+
+			% math:log/1 is the Natural Log (base e log):
+			Scale = math:sqrt( ( -2.0 * math:log( S ) ) / S ),
+
+			% Adjust for standard deviation and mean:
+			Mu + Sigma * Scale * V1
+
+	end.
+
+
+
+% @doc Generates a new integer non-negative gaussian value and updates the
+% state.
+%
+% Returns the computed value.
+%
+-spec sigma_loop_positive_integer( mean(), standard_deviation() ) ->
+												non_neg_integer().
+sigma_loop_positive_integer( Mu, Sigma ) ->
+
+	% Loops until a positive integer is found:
+	case round( sigma_loop( Mu, Sigma ) ) of
+
+		TriedValue when TriedValue < 0 ->
+			sigma_loop_positive_integer( Mu, Sigma );
+
+		NonNegativeValue ->
+			NonNegativeValue
+
+	end.
+
+
+
+% @doc Returns a list of Count Gaussian values.
+%
+% Given a mean Mu and a standard deviation Sigma, returns random floating-point
+% values drawn according the corresponding Gaussian law, updating the state in
+% the process dictionary.
+%
+-spec get_gaussian_values( mean(), standard_deviation(), count() ) ->
+													[ float() ].
+get_gaussian_values( Mu, Sigma, Count ) ->
+	generate_gaussian_list( Mu, Sigma, Count, _Acc=[] ).
+
+
+
+% @doc Generates a list of Count Gaussian random values.
+%
+% (helper)
+generate_gaussian_list( _Mu, _Sigma, _Count=0, Acc ) ->
+	Acc;
+
+generate_gaussian_list( Mu, Sigma, Count, Acc ) ->
+	generate_gaussian_list( Mu, Sigma, Count-1,
+							[ sigma_loop( Mu, Sigma ) | Acc ] ).
+
+
+
+% @doc Returns a list of Count positive integer Gaussian values.
+%
+% Given a mean Mu and a standard deviation Sigma, returns random integers drawn
+% according the corresponding Gaussian law, updating the state in the process
+% dictionary.
+%
+-spec get_positive_integer_gaussian_values( mean(), standard_deviation(),
+											count() ) -> [ non_neg_integer() ].
+get_positive_integer_gaussian_values( Mu, Sigma, Count ) ->
+	generate_positive_integer_gaussian_list( Mu, Sigma, Count ).
+
+
+
+% @doc Generates a list of Count positive integer Gaussian random values.
+-spec generate_positive_integer_gaussian_list( mean(), standard_deviation(),
+									count() ) -> [ non_neg_integer() ].
+generate_positive_integer_gaussian_list( Mu, Sigma, Count ) ->
+	generate_positive_integer_gaussian_list( Mu, Sigma, Count, [] ).
+
+
+% (helper)
+generate_positive_integer_gaussian_list( _Mu, _Sigma, _Count=0, Acc ) ->
+	Acc;
+
+generate_positive_integer_gaussian_list( Mu, Sigma, Count, Acc ) ->
+	generate_positive_integer_gaussian_list( Mu, Sigma, Count-1,
+		[ erlang:round( sigma_loop_positive_integer( Mu, Sigma ) ) | Acc ] ).
+
+
+
+
+
+% Section for the generation of arbitrary, non-uniform random samples.
 %
 % Drawing from user-specified random laws (probability distributions / PDFs,
 % i.e. Probability Density Functions) corresponds to operating inverse transform
@@ -814,8 +1251,8 @@ check_random_seed( S ) ->
 % respecting said distribution can be drawn, like in:
 %  ```
 %  S1 = random_utils:generate_random_state_from(MyDistributionState),
-%  Samples = [ random_utils:get_sample_from(MyDistributionState)
-%                        || _ <- lists:seq(1, Count) ]
+%  Samples = [random_utils:get_sample_from(MyDistributionState)
+%                        || _ <- lists:seq(1, Count)]
 %  '''
 %
 % This preprocessing uses O(N) time, where N is the number of declared samples
@@ -874,8 +1311,8 @@ generate_random_state_from( SampleValues, ProbLikes ) ->
 % (helper)
 %
 -spec split_by_index_fullness( [ probability_like() ] ) ->
-					{ UnderFulls:: [ positive_index() ],
-					  OverFulls :: [ positive_index() ]  }.
+					{ UnderFulls :: [ positive_index() ],
+					  OverFulls  :: [ positive_index() ]  }.
 split_by_index_fullness( ScaledProbLikes ) ->
 	split_by_index_fullness( ScaledProbLikes, _UnderFulls=[],
 							 _OverFulls=[], _Idx=0 ).
@@ -951,10 +1388,10 @@ get_sample_from( #alias_state{ entry_count=EntryCount,
 							   prob_likes=ProbLikeArray } ) ->
 
 	% Thus uniform in [0, EntryCount-1]:
-	PLIdx = get_random_value( EntryCount ) - 1,
+	PLIdx = get_uniform_value( EntryCount ) - 1,
 
 	% Thus uniform in [0.0, 1.0[:
-	P = get_random_value(),
+	P = get_uniform_value(),
 
 	SampleIdx = case P =< array:get( PLIdx, ProbLikeArray ) of
 
@@ -974,8 +1411,8 @@ get_sample_from( #alias_state{ entry_count=EntryCount,
 % probability distribution specified through its (constant) state (which is thus
 % not returned), as obtained from generate_random_state_from/1.
 %
-% Each sample is generated in constant time (O(1) time with regard to the number
-% of samples declared in the corresponding distribution.
+% Each sample is generated in constant time, that is O(1) time with regard to
+% the number of samples declared in the corresponding distribution.
 %
 % Such a generation depends (and modifies) the state of the underlying uniform
 % random generator (ex: see start_random_source/0); precisely each non-uniform

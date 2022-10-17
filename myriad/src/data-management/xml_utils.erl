@@ -260,7 +260,8 @@
 -export([ to_xml_text/1,
 		  get_default_prolog/0,
 		  xml_to_string/1, xml_to_string/2, string_to_xml/1,
-		  parse_xml_file/1 ]).
+		  parse_xml_file/1,
+		  pretty_print_from_string/1, pretty_print_from_file/1 ]).
 
 
 % Shorthands:
@@ -364,3 +365,41 @@ parse_xml_file( FilePath ) ->
 	[ CleanedContent ] = xmerl_lib:remove_whitespace( [ Document ] ),
 
 	xmerl_lib:simplify_element( CleanedContent ).
+
+
+
+% @doc Pretty-prints the specified XML string (that is a string containing an
+% XML document): returns a user-friendly string corresponding to the specified
+% one, once its XML content has been tidied and clarified for display/human
+% consumption.
+%
+-spec pretty_print_from_string( xml_text() ) -> xml_text().
+pretty_print_from_string( XMLText ) ->
+	TmpFilePath = file_utils:write_whole_in_non_clashing( XMLText ),
+	XMLText = pretty_print_from_file( TmpFilePath ),
+	file_utils:remove_file( TmpFilePath ),
+	XMLText.
+
+
+
+% @doc Pretty-prints the specified XML file: returns a user-friendly string
+% corresponding to its content, once its XML has been tidied and clarified for
+% display/human consumption.
+%
+-spec pretty_print_from_file( any_file_path() ) -> xml_text().
+pretty_print_from_file( XMLFilePath ) ->
+
+	PrinterExecPath = executable_utils:get_default_xml_prettyprinter(),
+
+	% Maybe the output content shall be stored in a temporary file as well:
+	Args = [ "--format", XMLFilePath ],
+
+	case system_utils:run_executable( PrinterExecPath, Args ) of
+
+		{ _ReturnCode=0, CmdOutput } ->
+			CmdOutput;
+
+		{ ErrorCode, Output } ->
+			throw( { pretty_print_failed, XMLFilePath, Output, ErrorCode } )
+
+	end.

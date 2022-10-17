@@ -26,7 +26,6 @@
 % Creation date: Friday, December 19, 2014.
 
 
-
 % @doc Overall <b>parse transform for the `Ceylan-Myriad' layer</b>.
 %
 % See `meta_utils.erl' and `meta_utils_test.erl'.
@@ -355,8 +354,8 @@ get_myriad_ast_transforms_for(
 	%                          {atom,FileLoc,void}, [] ] }'
 
 	% We also manage maybe/1 here: if used as 'maybe(T)', translated as
-	% 'basic_utils:maybe(T)'; the same applies to fallible/{1,2} and
-	% diagnosed_fallible/{1,2}.
+	% 'basic_utils:maybe(T)'; the same applies to safe_maybe/1, fallible/{1,2}
+	% and diagnosed_fallible/{1,2}.
 
 	% Determines the target table type that we want to rely on ultimately:
 	DesiredTableType = get_actual_table_type( ParseAttributes ),
@@ -440,6 +439,8 @@ get_actual_table_type( ParseAttributeTable ) ->
 %
 % - maybe(T) with basic_utils:maybe(T)
 %
+% - safe_maybe(T) with basic_utils:safe_maybe(T)
+%
 % - fallible(T) with basic_utils:fallible(T)
 %
 % - fallible(TSuccess, TFailure) with basic_utils:fallible(TSuccess, TFailure)
@@ -458,7 +459,9 @@ get_local_type_transforms( DesiredTableType ) ->
 	% Replacements to be done only for specified arities, here to be found in
 	% the basic_utils module:
 	%
-	BasicUtilsTypes = [ { void, 0 }, { maybe, 1 },
+	BasicUtilsTypes = [ { void, 0 },
+						{ maybe, 1 },
+						{ safe_maybe, 1 },
 						{ fallible, 1 }, { fallible, 2 },
 						{ diagnosed_fallible, 1 }, { diagnosed_fallible, 2 } ],
 
@@ -682,10 +685,10 @@ get_ast_global_transforms( DesiredTableType ) ->
 		  _Params=[ { var,FileLoc,VarName}, _ExprFormIfDef, _ExprFormIfNotDef ],
 		  _Transforms ) ->
 			ast_utils:display_error(
-			  "A token used with cond_utils:if_defined/3 must be an immediate "
-			  "value (precisely an atom), not a (runtime) variable like '~ts' "
-			  "(at ~ts).",
-			  [ VarName, ast_utils:file_loc_to_string( FileLoc ) ] ),
+				"A token used with cond_utils:if_defined/3 must be an "
+				"immediate value (precisely an atom), not a (runtime) variable "
+				"like '~ts' (at ~ts).",
+				[ VarName, ast_utils:file_loc_to_string( FileLoc ) ] ),
 			ast_utils:raise_error( { non_immediate_token, VarName,
 				ast_utils:file_loc_to_explicative_term( FileLoc ) } );
 
@@ -696,9 +699,10 @@ get_ast_global_transforms( DesiredTableType ) ->
 		  _Params=[ _Other, _ExprFormIfDef, _ExprFormIfNotDef ],
 		  _Transforms ) ->
 			ast_utils:display_error(
-			  "A token used with cond_utils:if_defined/3 must be an immediate "
-			  "value (precisely an atom), not a runtime construct like the one "
-			  "at ~ts.", [ ast_utils:file_loc_to_string( FileLoc ) ] ),
+				"A token used with cond_utils:if_defined/3 must be an "
+				"immediate value (precisely an atom), not a runtime construct "
+				"like the one at ~ts.",
+				[ ast_utils:file_loc_to_string( FileLoc ) ] ),
 			ast_utils:raise_error( { non_immediate_token,
 				ast_utils:file_loc_to_explicative_term( FileLoc ) } );
 
@@ -757,10 +761,10 @@ get_ast_global_transforms( DesiredTableType ) ->
 		  _Params=[ { var,FileLoc,VarName}, _ValueForm, _Expr ],
 		  _Transforms ) ->
 			ast_utils:display_error(
-			  "A token used with cond_utils:if_set_to/3 must be an immediate "
-			  "value (precisely an atom), not a (runtime) variable like '~ts' "
-			  "(at ~ts).",
-			  [ VarName, ast_utils:file_loc_to_string( FileLoc ) ] ),
+				"A token used with cond_utils:if_set_to/3 must be an immediate "
+				"value (precisely an atom), not a (runtime) variable like "
+				"'~ts' (at ~ts).",
+				[ VarName, ast_utils:file_loc_to_string( FileLoc ) ] ),
 			ast_utils:raise_error( { non_immediate_token, VarName,
 				ast_utils:file_loc_to_explicative_term( FileLoc ) } );
 
@@ -771,9 +775,9 @@ get_ast_global_transforms( DesiredTableType ) ->
 		  _Params=[ _Other, _ValueForm, _Expr ],
 		  _Transforms ) ->
 			ast_utils:display_error(
-			  "A token used with cond_utils:if_set_to/3 must be an immediate "
-			  "value (precisely an atom), not a runtime construct like the one "
-			  "at ~ts.", [ ast_utils:file_loc_to_string( FileLoc ) ] ),
+				"A token used with cond_utils:if_set_to/3 must be an immediate "
+				"value (precisely an atom), not a runtime construct like the "
+				"one at ~ts.", [ ast_utils:file_loc_to_string( FileLoc ) ] ),
 			ast_utils:raise_error( { non_immediate_token,
 				ast_utils:file_loc_to_explicative_term( FileLoc ) } );
 
@@ -838,10 +842,10 @@ get_ast_global_transforms( DesiredTableType ) ->
 		  _Params=[ { var,FileLoc,VarName}, _ValueForm,_ExprFormIfMatching,
 					_ExprFormIfNotMatching ], _Transforms ) ->
 			ast_utils:display_error(
-			  "A token used with cond_utils:if_set_to/4 must be an immediate "
-			  "value (precisely an atom), not a (runtime) variable like '~ts' "
-			  "(at ~ts).",
-			  [ VarName, ast_utils:file_loc_to_string( FileLoc ) ] ),
+				"A token used with cond_utils:if_set_to/4 must be an immediate "
+				"value (precisely an atom), not a (runtime) variable like "
+				"'~ts' (at ~ts).",
+				[ VarName, ast_utils:file_loc_to_string( FileLoc ) ] ),
 			ast_utils:raise_error( { non_immediate_token, VarName,
 				ast_utils:file_loc_to_explicative_term( FileLoc ) } );
 
@@ -852,9 +856,9 @@ get_ast_global_transforms( DesiredTableType ) ->
 		  _Params=[ _Other, _ValueForm, _ExprFormIfMatching,
 					_ExprFormIfNotMatching ], _Transforms ) ->
 			ast_utils:display_error(
-			  "A token used with cond_utils:if_set_to/4 must be an immediate "
-			  "value (precisely an atom), not a runtime construct like the one "
-			  "at ~ts.", [ ast_utils:file_loc_to_string( FileLoc ) ] ),
+				"A token used with cond_utils:if_set_to/4 must be an immediate "
+				"value (precisely an atom), not a runtime construct like the "
+				"one at ~ts.", [ ast_utils:file_loc_to_string( FileLoc ) ] ),
 			ast_utils:raise_error( { non_immediate_token,
 				ast_utils:file_loc_to_explicative_term( FileLoc ) } );
 
@@ -942,7 +946,7 @@ get_ast_global_transforms( DesiredTableType ) ->
 
 			% Obtaining a list of {ValueForm, ExprForm} pairs:
 			TokenExprTableAsList =
-						ast_generation:form_to_list( TokenExprTableAsForm ),
+				ast_generation:form_to_list( TokenExprTableAsForm ),
 
 			%ast_utils:display_debug( "Token table as list: ~p.",
 			%                         [ TokenExprTableAsList ] ),
@@ -1123,26 +1127,26 @@ get_ast_global_transforms( DesiredTableType ) ->
 		  _FunctionRef={ remote, FileLoc1, {atom,FileLoc2,table}, FunNameForm },
 		  Params,
 		  Transforms ) ->
-			  %ast_utils:display_debug( "replacing call to 'table' by a call "
-			  %  "to '~p' at ~ts for parameters ~p",
-			  %  [ DesiredTableType,
-			  %    ast_utils:file_loc_to_string( FileLoc1 ), Params ] ),
+			%ast_utils:display_debug( "replacing call to 'table' by a call "
+			%  "to '~p' at ~ts for parameters ~p",
+			%  [ DesiredTableType,
+			%    ast_utils:file_loc_to_string( FileLoc1 ), Params ] ),
 
-			  % Just swap the 'table' module with the desired one:
-			  NewFunctionRef = { remote, FileLoc1,
+			% Just swap the 'table' module with the desired one:
+			NewFunctionRef = { remote, FileLoc1,
 					{atom,FileLoc2,DesiredTableType}, FunNameForm },
 
-			  % We have to recurse as well in parameters, as they may themselves
-			  % contain calls to 'table' as well, like in:
-			  %
-			  % TargetTable = table:add_entry( a, 1, table:new() ),
+			% We have to recurse as well in parameters, as they may themselves
+			% contain calls to 'table' as well, like in:
+			%
+			% TargetTable = table:add_entry( a, 1, table:new() ),
 
-			  { NewParams, NewTransforms } =
-					ast_expression:transform_expressions( Params, Transforms ),
+			{ NewParams, NewTransforms } =
+				ast_expression:transform_expressions( Params, Transforms ),
 
-			  NewExpr = { call, FileLocCall, NewFunctionRef, NewParams },
+			NewExpr = { call, FileLocCall, NewFunctionRef, NewParams },
 
-			 { [ NewExpr ], NewTransforms };
+			{ [ NewExpr ], NewTransforms };
 
 
 		% Other calls shall go through:
@@ -1152,7 +1156,7 @@ get_ast_global_transforms( DesiredTableType ) ->
 			%   "whose parameters are ~p)", [ FunctionRef, Params ] ),
 
 			{ NewParams, NewTransforms } =
-					ast_expression:transform_expressions( Params, Transforms ),
+				ast_expression:transform_expressions( Params, Transforms ),
 
 			RecursedExpr = { call, FileLocCall, FunctionRef, NewParams },
 			{ [ RecursedExpr ], NewTransforms }
@@ -1210,7 +1214,7 @@ inject_expression( ExprForm, Transforms, _FileLoc ) ->
 	%   ast_utils:file_loc_to_string( FileLoc ), OtherExprForm ] ),
 
 	% ast_utils:raise_error( { unsupported_expression_for_conditional_injection,
-	%			ast_utils:file_loc_to_explicative_term( FileLoc ) } ).
+	%   ast_utils:file_loc_to_explicative_term( FileLoc ) } ).
 
 	ast_expression:transform_expression( ExprForm, Transforms ).
 
@@ -1284,7 +1288,7 @@ find_expression_for( TokenValue, _Token, _FileLocToken,
 
 % Another value:
 find_expression_for( TokenValue, Token, FileLocToken,
-	  _TokenExprTableAsList=[ { tuple, _TupleLoc,
+		_TokenExprTableAsList=[ { tuple, _TupleLoc,
 			[ {_ValueType,_L,_OtherTokenValue}, _Expr ] } | T ] ) ->
 	find_expression_for( TokenValue, Token, FileLocToken, T );
 
@@ -1351,19 +1355,19 @@ find_expression_for( TokenValue, _DefaultValue, _Token, _FileLocToken,
 
 % Storing the expressions for this default value:
 find_expression_for( TokenValue, DefaultValue, Token, FileLocToken,
-	  _TokenExprTableAsList=[ { tuple, _LTuple,
+		_TokenExprTableAsList=[ { tuple, _LTuple,
 			[ {_ValueType,_L,DefaultValue}, Expr ] } | T ],
-					  _MaybeDefExpr=undefined ) ->
+					 _MaybeDefExpr=undefined ) ->
 	find_expression_for( TokenValue, DefaultValue, Token, FileLocToken, T,
 						 Expr );
 
 % Another value (ie not the token or default one):
 find_expression_for( TokenValue, DefaultValue, Token, FileLocToken,
-	  _TokenExprTableAsList=[ { tuple, _LTuple,
+		_TokenExprTableAsList=[ { tuple, _LTuple,
 			[ {_ValueType,_L,_OtherTokenValue}, _Expr ] } | T ],
-	  MaybeDefExpr ) ->
+		MaybeDefExpr ) ->
 	find_expression_for( TokenValue, DefaultValue, Token, FileLocToken, T,
-						  MaybeDefExpr );
+						 MaybeDefExpr );
 
 find_expression_for( _TokenValue, _DefaultValue, Token, _FileLocToken,
 		_TokenExprTableAsList=[ { tuple, TupleLoc,

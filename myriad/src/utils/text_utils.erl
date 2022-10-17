@@ -48,10 +48,15 @@
 		  term_to_binary/1,
 
 		  integer_to_string/1,
+
 		  integer_to_hexastring/1, integer_to_hexastring/2,
+		  integer_to_hexasbintring/1, integer_to_hexabinstring/2,
+
 
 		  hexastring_to_integer/1, hexastring_to_integer/2,
+
 		  hexabinstring_to_binary/1, hexastring_to_binary/1,
+		  binary_to_hexastring/1, binary_to_hexastring/2,
 
 		  integer_to_bits/1,
 
@@ -65,8 +70,14 @@
 		  strings_to_string/1, strings_to_string/2,
 		  strings_to_spaced_string/1, strings_to_spaced_string/2,
 		  strings_to_sorted_string/1, strings_to_sorted_string/2,
+
 		  strings_to_enumerated_string/1, strings_to_enumerated_string/2,
+		  strings_to_enumerated_string/3,
+
+		  strings_to_enumerated_comment/1, strings_to_enumerated_comment/2,
+
 		  strings_to_listed_string/1, strings_to_listed_string/2,
+		  maybe_strings_to_listed_string/1,
 
 		  binaries_to_string/1, binaries_to_string/2,
 		  binaries_to_sorted_string/1, binaries_to_listed_string/1,
@@ -91,7 +102,7 @@
 		  percent_to_string/1, percent_to_string/2,
 		  distance_to_string/1, distance_to_short_string/1,
 
-		  format/2, bin_format/2, atom_format/2, format/3,
+		  format/2, format_failsafe/1, bin_format/2, atom_format/2, format/3,
 		  format_ellipsed/2, format_ellipsed/3,
 		  format_as_comment/1, format_as_comment/2, format_as_comment/3,
 		  format_as_comment/4,
@@ -99,7 +110,7 @@
 		  ensure_string/1, ensure_string/2,
 		  ensure_strings/1, ensure_strings/2,
 
-		  ensure_binary/1, ensure_binary/2,
+		  ensure_binary/1, ensure_binary/2, ensure_maybe_binary/1,
 		  ensure_binaries/1, ensure_binaries/2 ]).
 
 
@@ -107,14 +118,15 @@
 % Other string operations:
 -export([ get_lexicographic_distance/2, get_longest_common_prefix/1,
 		  get_unique_string/2,
-		  safe_length/1,
+		  safe_length/1, length/1,
 		  uppercase_initial_letter/1, to_lowercase/1, to_uppercase/1,
 		  flatten/1,
-		  join/2,
+		  join/2, bin_join/2,
 		  split/2, split_per_element/2, split_parsed/2, split_at_whitespaces/1,
 		  split_at_first/2, split_camel_case/1, split_every/2,
 		  tokenizable_to_camel_case/2,
-		  duplicate/2, concatenate/1,
+		  duplicate/2,
+		  concatenate/1, bin_concatenate/1, bin_concatenate/2,
 		  remove_empty_lines/1,
 
 		  find_substring_index/2, find_substring_index/3,
@@ -152,6 +164,7 @@
 
 		  is_string/1, is_non_empty_string/1, are_strings/1,
 		  is_bin_string/1, are_binaries/1,
+		  is_any_string/1,
 		  are_of_same_string_type/2,
 		  try_convert_to_unicode_list/1, to_unicode_list/1, to_unicode_list/2,
 		  try_convert_to_unicode_binary/1, to_unicode_binary/1,
@@ -275,7 +288,7 @@
 -type ustring() :: unicode_string().
 % Now is our default type of (plain) string.
 %
-% (unfortunately we cannot define a text_utils:string/0 type, as "type ustring()
+% (unfortunately we cannot define a text_utils:string/0 type, as "type string()
 % is a builtin type; it cannot be redefined").
 
 
@@ -378,8 +391,8 @@
 			   bin_string/0, any_string/0, unicode_string/0, unicode_data/0,
 			   uchar/0, plain_string/0, ustring/0, string_like/0,
 			   parse_string/0, io_list/0, io_data/0,
-			   translation_table/0, length/0, width/0, indentation_level/0,
-			   distance/0 ]).
+			   translation_table/0, length/0, width/0, depth/0,
+			   indentation_level/0, distance/0 ]).
 
 
 % Shorthands:
@@ -388,6 +401,9 @@
 % A user-perceived character, consisting of one or more (Unicode) codepoints.
 
 -type count() :: basic_utils:count().
+
+% As this pioneer module is not parse-transformed:
+-type maybe( T ) :: basic_utils:maybe( T ).
 
 -type integer_id() :: id_utils:integer_id().
 
@@ -401,6 +417,9 @@
 % safer code.
 %
 -compile( { inline, [ format/2 ] } ).
+
+% Defining here length/1, so having to prefix the otherwise auto-imported
+% length/1 with its 'erlang' module.
 
 
 
@@ -440,7 +459,7 @@ term_to_bounded_string( Term ) ->
 
 
 
-% @doc Returns a human-readable string describing specified term, within the
+% @doc Returns a human-readable string describing the specified term, within the
 % specified length.
 %
 % See also term_to_string/3.
@@ -457,7 +476,16 @@ term_to_bounded_string( Term, MaxLen ) ->
 			format( "[as set] ~p", [ set_utils:to_list( Term ) ] );
 
 		false ->
-			format( "~p", [ Term ] )
+			% Might not respect Unicode encoding:
+			case is_any_string( Term ) of
+
+				true ->
+					format( "~ts", [ Term ] );
+
+				false ->
+					format( "~p", [ Term ] )
+
+			end
 
 	end,
 
@@ -524,7 +552,7 @@ term_to_string( Term, MaxDepthCount, MaxLength ) when MaxLength >= 3 ->
 	end,
 
 	% Then limit the length:
-	case length( FullString ) of
+	case erlang:length( FullString ) of
 
 		L when L > MaxLength ->
 			% We have to truncate here, length( "..." ) = 3
@@ -550,21 +578,46 @@ integer_to_string( IntegerValue ) ->
 
 
 
-% @doc Returns a plain string corresponding to the specified integer, in
-% hexadecimal form, with a "0x" prefix.
+
+% Hexadecimal notes:
+
+% Regarding zero-padding:
 %
-% Ex: integer_to_hexastring(3432) = "0xd68".
+% None is done (no zeros added on the left of the resulting hexastring), as the
+% expected size of the corresponding value type cannot be determined; for
+% example integer_to_hexastring(16#f) returns "f" - but "0f", "00f", etc. would
+% be equally true. It is up to the caller, if appropriate, to pad the returned
+% hexastring with zeros, possibly with: pad_string_right(HexaStr,_Width=3, $0)
+% in order to obtain, once flattened, "00f" instead of "f".
+
+% Regarding the "0x" prefix:
+%
+% We consider the "0x" hexadecimal prefix as fully optional: now, by default,
+% none is expected, none is added.
+
+
+
+% @doc Returns a plain string corresponding to the specified integer, in
+% hexadecimal form (with no "0x" prefix).
+%
+% Ex: integer_to_hexastring(3432) = "d68".
+%
+% Refer to the 'Hexadecimal notes' section above, regarding zero-padding and
+% "0x" prefixing.
 %
 -spec integer_to_hexastring( integer() ) -> hexastring().
 integer_to_hexastring( IntegerValue ) ->
-	integer_to_hexastring( IntegerValue, _AddPrefix=true ).
+	integer_to_hexastring( IntegerValue, _AddPrefix=false ).
 
 
 
 % @doc Returns a plain string corresponding to the specified integer, in
 % hexadecimal form, with a "0x" prefix if requested.
 %
-% Ex: integer_to_hexastring(3432) = "0xd68".
+% Ex: integer_to_hexastring(3432, _AddPrefix=true) = "0xd68".
+%
+% Refer to the 'Hexadecimal notes' section above, regarding zero-padding and
+% "0x" prefixing.
 %
 -spec integer_to_hexastring( integer(), boolean() ) -> hexastring().
 integer_to_hexastring( IntegerValue, _AddPrefix=true ) ->
@@ -575,17 +628,44 @@ integer_to_hexastring( IntegerValue, _AddPrefix=false ) ->
 
 
 
+% @doc Returns a binary string corresponding to the specified integer, in
+% hexadecimal form, with a "0x" prefix.
+%
+% Ex: integer_to_hexabinstring(3432) = <<"d68">>.
+%
+% Refer to the 'Hexadecimal notes' section above, regarding zero-padding and
+% "0x" prefixing.
+%
+-spec integer_to_hexasbintring( integer() ) -> hexastring().
+integer_to_hexasbintring( IntegerValue ) ->
+	string_to_binary( integer_to_hexastring( IntegerValue ) ).
+
+
+% @doc Returns a binary string corresponding to the specified integer, in
+% hexadecimal form, with a "0x" prefix if requested.
+%
+% Ex: integer_to_hexabinstring(3432, _AddPrefix=true) = <<"0xd68">>.
+%
+% Refer to the 'Hexadecimal notes' section above, regarding zero-padding and
+% "0x" prefixing.
+%
+-spec integer_to_hexabinstring( integer(), boolean() ) -> hexastring().
+integer_to_hexabinstring( IntegerValue, AddPrefix ) ->
+	string_to_binary( integer_to_hexastring( IntegerValue, AddPrefix ) ).
+
+
+
 % @doc Returns an integer corresponding to the specified string containing a
 % (single) hexadecimal number as a text, and expected to start with a "0x"
 % prefix.
 %
 % Note: both uppercase and lowercase letters are supported.
 %
-% Ex: hexastring_to_integer("0xd68") = 3432.
+% Ex: hexastring_to_integer("d68") = 3432.
 %
 -spec hexastring_to_integer( hexastring() ) -> integer().
 hexastring_to_integer( HexaString ) ->
-	hexastring_to_integer( HexaString, _ExpectPrefix=true ).
+	hexastring_to_integer( HexaString, _ExpectPrefix=false ).
 
 
 % @doc Returns an integer corresponding to the specified string containing a
@@ -600,16 +680,59 @@ hexastring_to_integer( HexaString ) ->
 hexastring_to_integer( ?hexa_prefix ++ HexaString, _ExpectPrefix=true ) ->
 	hexastring_to_integer( HexaString, _HasPrefix=false );
 
+hexastring_to_integer( Other, _ExpectPrefix=true ) ->
+	throw( { invalid_hexastring, Other, { lacking_prefix, ?hexa_prefix } } );
+
 hexastring_to_integer( HexaString, _ExpectPrefix=false ) ->
 	list_to_integer( HexaString, _Base=16 ).
+
+
+
+
+% @doc Returns a plain string corresponding to the specified binary, in
+% hexadecimal form, with a "0x" prefix.
+%
+% Ex: `binary_to_hexastring(<<"hello">>) = "68656c6c6f"'.
+%
+-spec binary_to_hexastring( binary() ) -> hexastring().
+binary_to_hexastring( Bin ) ->
+	binary_to_hexastring( Bin, _AddPrefix=false ).
+
+
+
+% @doc Returns a plain string corresponding to the specified binary, in
+% hexadecimal form, with a "0x" prefix if requested.
+%
+% Ex: `binary_to_hexastring(<<"hello">>, _AddPrefix=true) = "0x68656c6c6f"'.
+%
+-spec binary_to_hexastring( binary(), boolean() ) -> hexastring().
+binary_to_hexastring( Bin, _AddPrefix=true ) ->
+	?hexa_prefix ++ binary_to_hexastring( Bin, _Prefix=false );
+
+binary_to_hexastring( Bin, _AddPrefix=false ) ->
+	% Binary comprehension; left-padding with a zero, as
+	% erlang:integer_to_list(I) for I in [0,10] results in "I", not "0I":
+	%
+	to_lowercase( flatten( [
+		case erlang:integer_to_list( Int, _Base=16 ) of
+
+			[ SingleChar ] ->
+				[ $0, SingleChar ];
+
+			TwoChars ->
+				TwoChars
+
+		end || <<Int>> <= Bin ] ) ).
 
 
 
 % @doc Returns the binary corresponding to the specified binary string that
 % contains a series of hexadecimal values.
 %
+% No "0x" prefix is expected.
+%
 % Ex: `hexabinstring_to_binary(<<"ffac01">>) = <<255,172,1>>'.
-
+%
 -spec hexabinstring_to_binary( hexabinstring() ) -> binary().
 hexabinstring_to_binary( HexaBinStr ) ->
 	hexastring_to_binary( binary_to_string( HexaBinStr ) ).
@@ -619,8 +742,10 @@ hexabinstring_to_binary( HexaBinStr ) ->
 % @doc Returns the binary corresponding to the specified string that contains
 % a series of hexadecimal values.
 %
+% No "0x" prefix is expected.
+%
 % Ex: `hexastring_to_binary("ffac01") = <<255,172,1>>'.
-
+%
 -spec hexastring_to_binary( hexastring() ) -> binary().
 hexastring_to_binary( HexaStr ) ->
 	hexastring_to_binary( HexaStr, _BinAcc= <<>> ).
@@ -637,7 +762,13 @@ hexastring_to_binary( _HexaStr=[ Hex1, Hex2 | T ], BinAcc ) ->
 	TwoCharStr = [ Hex1, Hex2 ],
 	Int = list_to_integer( TwoCharStr, _Base=16 ),
 	NewBinAcc = <<BinAcc/binary,Int/integer>>,
-	hexastring_to_binary( T, NewBinAcc ).
+	hexastring_to_binary( T, NewBinAcc );
+
+% Odd number of hexadecimal characters, at least currently not knowing the
+% corresponding byte to insert:
+%
+hexastring_to_binary( _HexaStr=[ SingleHex ], BinAcc ) ->
+	throw( { single_hex_remaining, SingleHex, BinAcc } ).
 
 
 
@@ -694,7 +825,7 @@ pid_to_short_string( Pid ) ->
 
 % @doc Returns a short, plain string corresponding to the specified PIDs.
 %
-% For example, `[<0.33.0>,<0.35.0>]' returned as `"|33,35|"' (7 characters
+% For example, `[<0.33.0>,<0.35.0>]' is returned as `"|33,35|"' (7 characters
 % instead of 19, almost one-third).
 %
 -spec pids_to_short_string( [ pid() ] ) -> ustring().
@@ -827,7 +958,7 @@ strings_to_string_helper( _Strings=[], Acc, _Bullet ) ->
 
 % We do not want an extra newline at the end:
 strings_to_string_helper( _Strings=[ LastString ], Acc, Bullet )
-  when is_list( LastString ) orelse is_binary( LastString ) ->
+		when is_list( LastString ) orelse is_binary( LastString ) ->
 	%Pattern = "~ts~n",
 	% Added back, as makes sense?
 	% Nope:
@@ -836,7 +967,7 @@ strings_to_string_helper( _Strings=[ LastString ], Acc, Bullet )
 
 % We allow also for bin_string():
 strings_to_string_helper( _Strings=[ H | T ], Acc, Bullet )
-  when is_list( H ) orelse is_binary( H ) ->
+		when is_list( H ) orelse is_binary( H ) ->
 	% Byproduct of the trailing newline: an empty line at the end if nested.
 	strings_to_string_helper( T,
 		Acc ++ Bullet ++ io_lib:format( "~ts~n", [ H ] ), Bullet );
@@ -847,41 +978,74 @@ strings_to_string_helper( _Strings=[ H | _T ], _Acc, _Bullet ) ->
 
 
 
-% @doc Returns a string that pretty-prints specified list of strings, with
-% enumerated (that is 1, 2, 3) bullets.
+% @doc Returns a string that pretty-prints the specified list of strings, with
+% enumerated (that is 1, 2, 3) bullets, not specifically indented.
 %
 -spec strings_to_enumerated_string( [ ustring() ] ) -> ustring().
 strings_to_enumerated_string( Strings ) ->
 	strings_to_enumerated_string( Strings, _DefaultIndentationLevel=0 ).
 
 
-% @doc Returns a string that pretty-prints specified list of strings, with
-% enumerated (that is 1, 2, 3) bullets, for specified indentation.
+
+% @doc Returns a string that pretty-prints the specified list of strings, with
+% enumerated (that is 1, 2, 3) bullets, for specified indentation and not
+% prefixed.
 %
 -spec strings_to_enumerated_string( [ ustring() ], indentation_level() ) ->
 											ustring().
-strings_to_enumerated_string( _Strings=[ Str ], _IndentationLevel ) ->
+strings_to_enumerated_string( Strings, IndentationLevel ) ->
+	strings_to_enumerated_string( Strings, IndentationLevel, _Prefix="" ).
+
+
+
+% @doc Returns a string that pretty-prints the specified list of strings, with
+% enumerated (that is 1, 2, 3) bullets, indented after specified prefix.
+%
+-spec strings_to_enumerated_string( [ ustring() ], indentation_level(),
+									ustring() ) -> ustring().
+strings_to_enumerated_string( _Strings=[ Str ], _IndentationLevel, _Prefix ) ->
 	Str;
 
-strings_to_enumerated_string( Strings, IndentationLevel ) ->
+strings_to_enumerated_string( Strings, IndentationLevel, Prefix ) ->
 
-	Prefix = get_indentation_offset_for_level( IndentationLevel ),
+	IndentStr = get_indentation_offset_for_level( IndentationLevel ),
 
 	{ _FinalCount, ReversedStrings } = lists:foldl(
 		fun( String, _Acc={ Count, Strs } ) ->
 
-			NewStrs =
-				[ format( "~n~ts~B. ~ts", [ Prefix, Count, String ] ) | Strs ],
+			NewStrs = [ format( "~n~ts~ts~B. ~ts",
+								[ Prefix, IndentStr, Count, String ] ) | Strs ],
 
 			{ Count+1, NewStrs }
 
 		end,
-		_Acc0={ 1, "" },
+		_Acc0={ 1, [] },
 		_List=Strings ),
 
 	OrderedStrings = lists:reverse( ReversedStrings ),
 
 	format( "~ts", [ lists:flatten( OrderedStrings ) ] ).
+
+
+
+% @doc Returns a (Erlang) comment string (a series of lines starting with '%')
+% that pretty-prints the specified list of strings, with enumerated (that is 1,
+% 2, 3) bullets, not specifically indented.
+%
+-spec strings_to_enumerated_comment( [ ustring() ] ) -> ustring().
+strings_to_enumerated_comment( Strings ) ->
+	strings_to_enumerated_comment( Strings, _IndentationLevel=0 ).
+
+
+
+% @doc Returns a (Erlang) comment string (a series of lines starting with '%')
+% that pretty-prints the specified list of strings, with enumerated (that is 1,
+% 2, 3) bullets, with specified indentation at each beginning of comment line.
+%
+-spec strings_to_enumerated_comment( [ ustring() ], indentation_level() ) ->
+															ustring().
+strings_to_enumerated_comment( Strings, IndentationLevel ) ->
+	strings_to_enumerated_string( Strings, IndentationLevel, _Prefix="% " ).
 
 
 
@@ -893,7 +1057,7 @@ strings_to_string( _Strings=[] ) ->
 	"(empty list)";
 
 strings_to_string( Strings=[ SingleString ] )
-  when is_list( SingleString ) orelse is_binary( SingleString ) ->
+			when is_list( SingleString ) orelse is_binary( SingleString ) ->
 
 	% Not retained, as the single string may itself correspond to a full, nested
 	% list and no dangling final quote is desirable:
@@ -996,7 +1160,7 @@ strings_to_spaced_string( _Strings=[] ) ->
 	"(empty list)";
 
 strings_to_spaced_string( Strings=[ SingleString ] )
-  when is_list( SingleString ) orelse is_binary( SingleString ) ->
+		when is_list( SingleString ) orelse is_binary( SingleString ) ->
 
 	% Not retained, as the single string may itself correspond to a full, nested
 	% list and no dangling final quote is desirable:
@@ -1081,7 +1245,7 @@ strings_to_spaced_string( _Strings, IncorrectBullet ) ->
 -spec strings_to_sorted_string( [ ustring() ],
 								indentation_level_or_bullet() ) -> ustring().
 strings_to_sorted_string( Strings, IndentationOrBullet )
-  when is_list( Strings ) ->
+											when is_list( Strings ) ->
 	strings_to_string( lists:sort( Strings ), IndentationOrBullet );
 
 strings_to_sorted_string( ErrorTerm, _IndentationOrBullet ) ->
@@ -1219,8 +1383,8 @@ atoms_to_string( [], Acc ) ->
 	 Acc;
 
 atoms_to_string( [ H | T ], Acc ) when is_atom( H )  ->
-	atoms_to_string( T, Acc ++ get_default_bullet()
-						 ++ io_lib:format(  "~ts~n", [ H ] ) ).
+	atoms_to_string( T,
+		Acc ++ get_default_bullet() ++ io_lib:format(  "~ts~n", [ H ] ) ).
 
 
 
@@ -1287,8 +1451,8 @@ integer_ids_to_listed_string( IntegerIds ) ->
 % @doc Returns a string that pretty-prints the specified list of strings, listed
 % directly along the text (not one item per line).
 %
-% Ex: strings_to_listed_string( [ "red", "blue", "green" ] ) returns "red, blue
-% and green".
+% Ex: strings_to_listed_string([ "red", "blue", "green"]) returns "red, blue and
+% green".
 %
 %strings_to_listed_string( _Strings=[] ) ->
 %   throw( empty_list_of_strings_to_list );
@@ -1307,7 +1471,7 @@ strings_to_listed_string( Strings ) ->
 % green".
 %
 %strings_to_listed_string( _Strings=[] ) ->
-%	throw( empty_list_of_strings_to_list );
+%   throw( empty_list_of_strings_to_list );
 % Probably more relevant:
 -spec strings_to_listed_string( [ ustring() ],
 								language_utils:human_language() ) -> ustring().
@@ -1326,8 +1490,8 @@ strings_to_listed_string( Strings, Lang ) ->
 	% bootstrapped, as this current function might be called from the Myriad
 	% parse transform.
 
-	%{ LastString, OtherStrings } = list_utils:extract_last_element(
-	%								 Strings ),
+	%{ LastString, OtherStrings } =
+	%   list_utils:extract_last_element( Strings ),
 
 	% A somewhat inlined version of it:
 	[ LastString | RevOtherStrings ] = lists:reverse( Strings ),
@@ -1345,6 +1509,20 @@ strings_to_listed_string( Strings, Lang ) ->
 			format( "~ts and ~ts", [ OtherStringsString, LastString ] )
 
 	end.
+
+
+
+% @doc Returns a string that pretty-prints the specified list of maybe-strings
+% (ignoring undefined ones), listed directly along the text (not one item per
+% line).
+%
+% Ex: maybe_strings_to_listed_string([ "red", "blue", undefined, "green",
+% undefined]) returns "red, blue and green".
+%
+
+-spec maybe_strings_to_listed_string( [ maybe( ustring() ) ] ) -> ustring().
+maybe_strings_to_listed_string( Strings ) ->
+	strings_to_listed_string( [ S || S <- Strings, S =/= undefined ] ).
 
 
 
@@ -1382,14 +1560,12 @@ proplist_to_string( Proplist ) ->
 
 % @doc Returns a string describing the specified version.
 -spec version_to_string( basic_utils:any_version() ) -> ustring().
-version_to_string( { V1, V2 } ) ->
-	io_lib:format( "~B.~B", [ V1, V2 ] );
-
-version_to_string( { V1, V2, V3 } ) ->
-	io_lib:format( "~B.~B.~B", [ V1, V2, V3 ] );
-
-version_to_string( { V1, V2, V3, V4 } ) ->
-	io_lib:format( "~B.~B.~B.~B", [ V1, V2, V3, V4 ] ).
+version_to_string( VersionTuple ) ->
+	Elems = tuple_to_list( VersionTuple ),
+	ElemCount = erlang:length( Elems ),
+	ControlSeq = list_utils:duplicate( "~B", ElemCount ),
+	FormatStr = flatten( list_utils:intercalate( $., ControlSeq ) ),
+	io_lib:format( FormatStr, Elems ).
 
 
 
@@ -1452,9 +1628,12 @@ number_to_string( Other ) ->
 
 % @doc Returns an exact rounded textual description of the specified distance,
 % expected to be expressed as a floating-point number of millimeters, which will
-% be first rounded to nearest integer.
+% be first rounded to the nearest integer.
 %
-% Ex: for a distance of 1001.5 millimeters, returns "1m and 2mm".
+% Ex: for a distance of 1001.5 millimeters, returns "1m and 2mm"; for 1 000 001
+% millimeters, returns "1km and 1mm".
+%
+% See also unit_utils:meters_to_string/1.
 %
 -spec distance_to_string( any_millimeters() ) -> ustring().
 distance_to_string( Millimeters ) when is_float( Millimeters ) ->
@@ -1517,7 +1696,7 @@ distance_to_string( Millimeters ) ->
 
 		AtLeastOneMillimeter ->
 			 [ io_lib:format( "~Bmm", [ AtLeastOneMillimeter ] )
-			   | ListWithCentimeters ]
+							| ListWithCentimeters ]
 
 	end,
 
@@ -1656,6 +1835,9 @@ format( FormatString, Values ) ->
 % In development mode here:
 format( FormatString, Values ) ->
 
+	%io:format( "FormatString='~ts', Values='~p'.~n",
+	%           [ FormatString, Values ] ),
+
 	String =
 		try
 
@@ -1731,10 +1913,10 @@ interpret_faulty_format( FormatString, Values ) ->
 	%trace_utils:debug_fmt( "FormatString: ~p;~nValues: ~p.",
 	%                       [ FormatString, Values ] ),
 
-	ValueCount = length( Values ),
+	ValueCount = erlang:length( Values ),
 
 	% The always-existing prefix before the first ~ is of no interest:
-	SplitSeqs = tl( split( FormatString, _Delimiters=[ $~ ] ) ),
+	SplitSeqs = tl( split( FormatString, _Separators=[ $~ ] ) ),
 
 	%trace_utils:debug_fmt( "SplitSeqs = ~p.", [ SplitSeqs ] ),
 
@@ -1758,7 +1940,7 @@ interpret_faulty_format( FormatString, Values ) ->
 			%
 			VSeqs = [ S || S <- Seqs, requires_value( S ) ],
 
-			SeqCount = length( VSeqs ),
+			SeqCount = erlang:length( VSeqs ),
 
 			% Counting value-based control sequences:
 			case ValueCount - SeqCount of
@@ -1841,6 +2023,37 @@ requires_value( _ ) ->
 
 
 
+% @doc Formats specified values in a fail-safe manner; returns a string meant to
+% correspond as much as possible to these values (rather than diagnosing any
+% problem detected as format/2); cannot fail (so that for example a badly
+% formatted log cannot crash anymore its emitter process).
+%
+% Typically useful as a failsafe solution, should a previous format string be
+% detected as faulty (ex: containing '~s' where '~ts' should have been used).
+%
+-spec format_failsafe( format_values() ) -> ustring().
+format_failsafe( Values ) ->
+	format_failsafe( Values, Values, _AccFmtStr=[] ).
+
+
+% (helper)
+format_failsafe( _Vs=[], Values, AccFmtStr ) ->
+	FmtStr = lists:flatten( lists:reverse( AccFmtStr ) ),
+	io_lib:format( FmtStr, Values );
+
+format_failsafe( _Vs=[ V | T ], Values, AccFmtStr ) ->
+	VFmt = case is_string( V ) of
+
+		true ->
+			"~ts";
+
+		false ->
+			"~p"
+
+	end,
+	format_failsafe( T, Values, [ VFmt | AccFmtStr ] ).
+
+
 
 % @doc Formats specified string as io_lib:format/2 would do, except it returns a
 % flattened, ellipsed version of it and cannot fail (so that for example a badly
@@ -1912,11 +2125,11 @@ match_types( _Seqs=[ _Seq="s" | Ts ], _Values=[ V | Tv ], Count ) ->
 
 		false ->
 			io_lib:format( "type mismatch for value #~B (i.e. '~ts'); got ~ts, "
-					"whereas expecting string-like, as the control "
-					% Correct, but commented-out for homogeneity with the other
-					% clauses:
-					% "sequence is ~~~~ts)", [ Count, VString, VType ] )
-					"sequence is 's'", [ Count, VString, VType ] )
+				"whereas expecting string-like, as the control "
+				% Correct, but commented-out for homogeneity with the other
+				% clauses:
+				% "sequence is ~~~~ts)", [ Count, VString, VType ] )
+				"sequence is 's'", [ Count, VString, VType ] )
 
 	end;
 
@@ -1997,9 +2210,9 @@ match_types( _Seqs=[ Seq="c" | Ts ], _Values=[ V | Tv ], Count ) ->
 
 		false ->
 			io_lib:format( "type mismatch for value #~B (i.e. '~ts'): got ~ts, "
-					"whereas expecting char, as the control "
-					%"sequence is ~~~c)", [ Count, VString, VType, Seq ] )
-					"sequence is '~ts'", [ Count, VString, VType, Seq ] )
+				"whereas expecting char, as the control "
+				%"sequence is ~~~c)", [ Count, VString, VType, Seq ] )
+				"sequence is '~ts'", [ Count, VString, VType, Seq ] )
 
 	end;
 
@@ -2025,34 +2238,34 @@ match_types( _Seqs=[ Seq | Ts ], _Values=[ V | Tv ], Count ) ->
 
 
 
-% @doc Formats specified text as a comment, based on the default character
-% denoting comments (namely "%"), for a line width of 80 characters.
+% @doc Formats the specified text as a comment, based on the default character
+% denoting comments (namely "%"), and for a line width of 80 characters.
 %
 -spec format_as_comment( ustring() ) -> ustring().
 format_as_comment( Text ) ->
 	format_as_comment( Text, _CommentChar=$% ).
 
 
-% @doc Formats specified format string with values as a comment, based on the
-% default character denoting comments (namely "%"), for a line width of 80
-% characters.
+% @doc Formats the specified format string with values as a comment, based on
+% the default character denoting comments (namely "%"), and for a line width of
+% 80 characters.
 %
--spec format_as_comment( format_string(), [ term() ] ) -> ustring();
+-spec format_as_comment( format_string(), format_values() ) -> ustring();
 					   ( ustring(), char() ) -> ustring().
 format_as_comment( FormatString, Values ) when is_list( Values ) ->
 	Text = format( FormatString, Values ),
 	format_as_comment( Text );
 
-% Formats specified text as a comment, based on specified character denoting
-% comments, for a line width of 80 characters.
+% Formats the specified text as a comment, based on the specified character
+% denoting comments, and for a line width of 80 characters.
 %
 format_as_comment( Text, CommentChar ) ->
 	format_as_comment( Text, CommentChar, _LineWidth=80 ).
 
 
 
-% @doc Formats specified text as a comment, based on specified character
-% denoting comments, for specified line width.
+% @doc Formats specified text as a comment, based on the specified character
+% denoting comments, and for the specified line width (in characters).
 %
 -spec format_as_comment( any_string(), char(), width() ) -> ustring().
 format_as_comment( Text, CommentChar, LineWidth ) when is_binary( Text ) ->
@@ -2070,11 +2283,12 @@ format_as_comment( Text, CommentChar, LineWidth ) when is_list( Text ) ->
 
 
 
-% @doc Formats specified format string with values as a comment, based on
-% specified character denoting comments, for specified line width.
+% @doc Formats the specified format string with values as a comment, based on
+% the specified character denoting comments, and for the specified line width
+% (in characters).
 %
--spec format_as_comment( format_string(), [ term() ] , char(), width() ) ->
-							   ustring().
+-spec format_as_comment( format_string(), format_values(), char(), width() ) ->
+															ustring().
 format_as_comment( FormatString, Values, CommentChar, LineWidth ) ->
 	Text = format( FormatString, Values ),
 	format_as_comment( Text, CommentChar, LineWidth ).
@@ -2090,7 +2304,7 @@ format_as_comment_helper( _Text=[], CommentChar, _LineWidth, AccLines, AccLine,
 format_as_comment_helper( _Text=[ Word | T ], CommentChar, LineWidth, AccLines,
 						  AccLine, RemainWidth ) ->
 
-	WordWidth = length( Word ),
+	WordWidth = erlang:length( Word ),
 
 	case WordWidth >= RemainWidth of
 
@@ -2120,14 +2334,14 @@ get_formatted_line( CommentChar, Line ) ->
 
 
 
-% @doc Formats specified string as a (flattened) binary, as io_lib:format/2
+% @doc Formats the specified string as a (flattened) binary, as io_lib:format/2
 % would do, except it cannot fail (so that for example a badly formatted log
 % cannot crash anymore its emitter process).
 %
 % Note: rely preferably on '~ts' rather than on '~s', to avoid unexpected
 % Unicode inputs resulting on crashes afterwards.
 %
--spec bin_format( format_string(), [ term() ] ) -> bin_string().
+-spec bin_format( format_string(), format_values() ) -> bin_string().
 bin_format( FormatString, Values ) ->
 
 	String = format( FormatString, Values ),
@@ -2138,15 +2352,15 @@ bin_format( FormatString, Values ) ->
 
 
 
-% @doc Formats specified string as an atom; cannot fail (so that for example a
-% badly formatted log cannot crash anymore its emitter process).
+% @doc Formats the specified string as an atom; cannot fail (so that for example
+% a badly formatted log cannot crash anymore its emitter process).
 %
 % Note: rely preferably on '~ts' rather than on '~s', to avoid unexpected
 % Unicode inputs resulting on crashes afterwards.
 %
--spec atom_format( format_string(), [ term() ] ) -> atom().
-atom_format( FormatSt, FormatValues ) ->
-	string_to_atom( format( FormatSt, FormatValues ) ).
+-spec atom_format( format_string(), format_values() ) -> atom().
+atom_format( FormatStr, FormatValues ) ->
+	string_to_atom( format( FormatStr, FormatValues ) ).
 
 
 
@@ -2159,7 +2373,7 @@ format( A, B, C ) ->
 	trace_utils:error_fmt( "Call to non-existing function text_utils:format/3; "
 		"extra comma in format string? Parameters were: ~ts",
 		[ strings_to_enumerated_string( [
-				basic_utils:describe_term( T ) || T <- [ A, B, C ] ] ) ] ),
+			basic_utils:describe_term( T ) || T <- [ A, B, C ] ] ) ] ),
 
 	throw( { faulty_format_call, { A, B, C } } ).
 
@@ -2201,7 +2415,7 @@ ensure_string( String, _CanFailDueToTranscoding ) when is_list( String ) ->
 	String;
 
 ensure_string( BinString, CanFailDueToTranscoding )
-  when is_binary( BinString ) ->
+											when is_binary( BinString ) ->
 	binary_to_string( BinString, CanFailDueToTranscoding );
 
 %ensure_string( Int, _CanFailDueToTranscodin ) when is_integer( Int ) ->
@@ -2286,7 +2500,7 @@ ensure_binary( AnyString ) ->
 %
 -spec ensure_binary( any_string(), boolean() ) -> bin_string().
 ensure_binary( BinString, _CanFailDueToTranscoding )
-  when is_binary( BinString ) ->
+										when is_binary( BinString ) ->
 	BinString;
 
 ensure_binary( String, CanFailDueToTranscoding ) when is_list( String ) ->
@@ -2294,6 +2508,18 @@ ensure_binary( String, CanFailDueToTranscoding ) when is_list( String ) ->
 
 ensure_binary( String, _CanFailDueToTranscoding ) ->
 	throw( { invalid_value, String } ).
+
+
+
+% @doc Returns a binary string version of the specified text-like parameter
+% (binary or plain string), if any.
+%
+-spec ensure_maybe_binary( maybe( any_string() ) ) -> maybe( bin_string() ).
+ensure_maybe_binary( undefined ) ->
+	undefined;
+
+ensure_maybe_binary( AnyString ) ->
+	ensure_binary( AnyString ).
 
 
 
@@ -2347,10 +2573,10 @@ ensure_binaries( Elems, CanFailDueToTranscoding ) ->
 
 % This basic implementation is correct, yet way too inefficient:
 %get_lexicographic_distance_variant( FirstString, _SecondString=[] ) ->
-%	length( FirstString );
+%	erlang:length( FirstString );
 
 %get_lexicographic_distance_variant( _FirstString=[], SecondString ) ->
-%	length( SecondString );
+%	erlang:length( SecondString );
 
 %get_lexicographic_distance_variant( _FirstString=[ H | T1 ],
 %									_SecondString=[ H | T2 ] ) ->
@@ -2373,12 +2599,12 @@ get_lexicographic_distance( FirstString, SecondString ) ->
 
 % Actual helper:
 get_lexicographic_distance( _FirstString=[], SecondString, AccTable ) ->
-	Len = length( SecondString ),
+	Len = erlang:length( SecondString ),
 	NewTable = ?table:add_entry( _K={ [], SecondString }, _V=Len, AccTable ),
 	{ Len, NewTable };
 
 get_lexicographic_distance( FirstString, _SecondString=[], AccTable ) ->
-	Len = length( FirstString ),
+	Len = erlang:length( FirstString ),
 	NewTable = ?table:add_entry( _K={ FirstString, [] }, _V=Len, AccTable ),
 	{ Len, NewTable };
 
@@ -2525,6 +2751,8 @@ suffix_uniq_helper( Prefix, Count, Strs ) ->
 	end.
 
 
+% For plain string, just use the length/1 built-in function.
+
 
 % @doc Returns, if possible, the length of the specified string-like argument,
 % otherwise returns 'undefined'.
@@ -2533,7 +2761,7 @@ suffix_uniq_helper( Prefix, Count, Strs ) ->
 % string:length/1 would have thrown a badarg exception, typically because of an
 % inconsistent encoding).
 %
--spec safe_length( unicode_data() ) -> basic_utils:maybe( length() ).
+-spec safe_length( unicode_data() ) -> maybe( length() ).
 safe_length( PseudoStr ) ->
 	try string:length( PseudoStr ) of
 
@@ -2545,6 +2773,13 @@ safe_length( PseudoStr ) ->
 
 	end.
 
+
+% @doc Returns the length (precisely, the number of grapheme clusters) of the
+% specified any-string.
+%
+-spec length( any_string() ) -> length().
+length( AnyString ) ->
+	string:length( AnyString ).
 
 
 % @doc Converts a plain (list-based) string into a binary.
@@ -2597,8 +2832,7 @@ string_to_binary( Other, _CanFailDueToTranscoding ) ->
 % CanFailDueToTranscoding tells whether, should a transcoding fail, this
 % function is allowed to fail in turn.
 %
--spec maybe_string_to_binary( basic_utils:maybe( ustring() ) ) ->
-									basic_utils:maybe( bin_string() ).
+-spec maybe_string_to_binary( maybe( ustring() ) ) -> maybe( bin_string() ).
 maybe_string_to_binary( _MaybeString=undefined ) ->
 	undefined;
 
@@ -2607,7 +2841,9 @@ maybe_string_to_binary( MaybeString ) ->
 
 
 
-% @doc Converts a binary into a plain (list-based) string.
+% @doc Converts a Unicode binary into a plain (list-based) string.
+%
+% Use binary_to_list/1 for other encodings like ISO-8859.
 %
 % Never fails because of any transcoding involved.
 %
@@ -2617,7 +2853,9 @@ binary_to_string( Binary ) when is_binary( Binary ) ->
 
 
 
-% @doc Converts a binary into a plain (list-based) string.
+% @doc Converts a Unicode binary into a plain (list-based) string.
+%
+% Use binary_to_list/1 for other encodings like ISO-8859.
 %
 % CanFailDueToTranscoding tells whether, should a transcoding fail, this
 % function is allowed to fail in turn.
@@ -2695,7 +2933,7 @@ string_to_integer( String ) ->
 %
 % Returns the 'undefined' atom if the conversion failed.
 %
--spec try_string_to_integer( ustring() ) -> basic_utils:maybe( integer() ).
+-spec try_string_to_integer( ustring() ) -> maybe( integer() ).
 try_string_to_integer( String ) ->
 	try_string_to_integer( String, _Base=10 ).
 
@@ -2706,8 +2944,7 @@ try_string_to_integer( String ) ->
 %
 % Returns the 'undefined' atom if the conversion failed.
 %
--spec try_string_to_integer( ustring(), 2..36 ) ->
-									basic_utils:maybe( integer() ).
+-spec try_string_to_integer( ustring(), 2..36 ) -> maybe( integer() ).
 try_string_to_integer( String, Base ) when is_list( String ) ->
 	try list_to_integer( String, Base ) of
 
@@ -2751,7 +2988,7 @@ string_to_float( String ) ->
 %
 % Returns the 'undefined' atom if the conversion failed.
 %
--spec try_string_to_float( ustring() ) -> basic_utils:maybe( float() ).
+-spec try_string_to_float( ustring() ) -> maybe( float() ).
 try_string_to_float( String ) when is_list( String ) ->
 
 	% Erlang is very picky (too much?) when interpreting floats-as-a-string: if
@@ -2923,15 +3160,28 @@ uppercase_initial_letter( _Letters=[ First | Others ] ) ->
 
 
 % @doc Sets the specified string to lowercase, that is downcase it (as a whole).
--spec to_lowercase( ustring() ) -> ustring().
-to_lowercase( String ) ->
-	string:to_lower( String ).
+-spec to_lowercase( ustring() ) -> ustring();
+				  ( bin_string() ) -> bin_string().
+to_lowercase( String ) when is_list( String ) ->
+	string:to_lower( String );
+
+to_lowercase( BinString ) when is_binary( BinString ) ->
+	Str = binary_to_string( BinString ),
+	LowStr = string:to_lower( Str ),
+	string_to_binary( LowStr ).
+
 
 
 % @doc Sets the specified string to uppercase.
--spec to_uppercase( ustring() ) -> ustring().
-to_uppercase( String ) ->
-	string:to_upper( String ).
+-spec to_uppercase( ustring() ) -> ustring();
+				  ( bin_string() ) -> bin_string().
+to_uppercase( String ) when is_list( String ) ->
+	string:to_upper( String );
+
+to_uppercase( BinString ) when is_binary( BinString ) ->
+	Str = binary_to_string( BinString ),
+	UpStr = string:to_upper( Str ),
+	string_to_binary( UpStr ).
 
 
 
@@ -2947,7 +3197,8 @@ flatten( IOList ) ->
 
 
 
-% @doc Joins, with specified separator, the strings in specified list.
+% @doc Joins, with the specified separator, the specified (plain) strings, and
+% returns another plain string.
 %
 % join(Separator, StringsToJoin), to be used like in:
 %      join($-, ["Barbara", "Ann"]) = "Barbara-Ann".
@@ -2959,8 +3210,8 @@ flatten( IOList ) ->
 %
 % Inspired from http://www.trapexit.org/String_join_with.
 %
-% For file-related paths, you are expected to use portable standard
-% filename:join/{1,2} functions instead.
+% For file-related paths, you are expected to use the file_utils:join/{1,2}
+% functions instead.
 %
 % Note: conversely, use split/2 to split the string.
 %
@@ -2969,30 +3220,49 @@ join( _Separator, _ListToJoin=[] ) ->
 	"";
 
 join( Separator, ListToJoin ) ->
+
 	%io:format( "ListToJoin = ~p~n", [ ListToJoin ] ),
-	lists:flatten( lists:reverse( join( Separator, ListToJoin, _Acc=[] ) ) ).
+
+	IntercalList =
+		list_utils:intercalate( _Elem=Separator, _TargetList=ListToJoin ),
+
+	lists:flatten( IntercalList ).
 
 
-% Helper:
-join( _Separator, _ListToJoin=[], Acc) ->
-	Acc;
 
-join( _Separator, _ListToJoin=[ H | [] ], Acc ) ->
-	[ H | Acc ];
+% @doc Joins, with the specified separator, the specified strings (of any type),
+% and returns a corresponding binary string.
+%
+% bin_join(Separator, BinStringsToJoin), to be used like in:
+%      join($-, [`<<"Barbara">>', `<<"Ann">>']) = `<<"Barbara-Ann">>'.
+%
+% Separator can be a character, like $a, or any string, like ", " or
+% `<<"hello">>'.
+%
+% For file-related paths, you are expected to use the file_utils:bin_join/{1,2}
+% functions instead.
+%
+% Note: conversely, use split/2 to split the string.
+%
+% See also bin_concatenate/2.
+%
+-spec bin_join( any_string() | uchar(), [ any_string() ] ) -> bin_string().
+bin_join( Separator, ListToJoin ) ->
 
-join( Separator, _ListToJoin=[ H | T ], Acc ) ->
-	join( Separator, T, [ Separator, H | Acc ] ).
+	IntercalList =
+		list_utils:intercalate( _Elem=Separator, _TargetList=ListToJoin ),
 
+	erlang:iolist_to_binary( IntercalList ).
 
 
 
 % @doc Splits the specified string into a list of strings, based on the list of
-% specified characters to be interpreted as delimiters.
+% specified characters to be interpreted as separators.
 %
 % To split a string according to the newlines (~n) that it contains, one may
 % use: text_utils:split(MyString, "\n").
 %
-% Note that a series of contiguous delimiters (ex: two spaces in a row) will
+% Note that a series of contiguous separators (ex: two spaces in a row) will
 % result in inserting empty strings (i.e. []) in the returned list. Use
 % split_per_element/2 if wanting to handle series of delimeters as if there was
 % only one of them (i.e. if not wanting the returned list to include empty
@@ -3003,67 +3273,69 @@ join( Separator, _ListToJoin=[ H | T ], Acc ) ->
 % See also: split_at_whitespaces/0.
 %
 -spec split( ustring(), [ uchar() ] ) -> [ ustring() ].
-split( String, Delimiters ) ->
+split( String, Separators ) ->
 
 	%trace_utils:debug_fmt( "Splitting '~ts' with '~ts'.",
-	%                       [ String, Delimiters ] ),
+	%                       [ String, Separators ] ),
 
 	% Note: string:tokens/2 is now deprecated in favor of string:lexemes/2, and
 	% and anyway both treat two or more adjacent separator graphemes clusters as
 	% only one, which is generally not what we want; so we now use our own
 	% function.
 
-	% Would be quite different, as Delimiters here would be understood as a
-	% search pattern (i.e. a "word" as a whole) instead of a list of delimiters:
+	% Would be quite different, as Separators here would be understood as a
+	% search pattern (i.e. a "word" as a whole) instead of a list of separators:
 	%
-	%string:split( String, _SearchPattern=Delimiters, _Where=all ).
+	%string:split( String, _SearchPattern=Separators, _Where=all ).
 
 	% Would lead to a breach of contract (no empty string ever inserted):
-	%string:lexemes( String, Delimiters ).
+	%string:lexemes( String, Separators ).
 
-	% So we go for a multi-pass splitting (one pass per delimiter):
-	split_helper( Delimiters, _Acc=[ String ] ).
+	% So we go for a multi-pass splitting (one pass per separator):
+	split_helper( Separators, _Acc=[ String ] ).
 
 
 
 % (helper)
-split_helper( _Delimiters=[], Acc ) ->
+split_helper( _Separators=[], Acc ) ->
 	Acc;
 
-split_helper( _Delimiters=[ D | T ], Acc ) ->
+split_helper( _Separators=[ D | T ], Acc ) ->
+
 	SplitStrs = [ string:split( S, _SearchPattern=[ D ], _Where=all )
-								|| S <- Acc ],
+											|| S <- Acc ],
+
 	NewAcc = concatenate( SplitStrs ),
 	split_helper( T, NewAcc ).
 
 
 
 % @doc Splits the specified string into a list of strings, based on the list of
-% specified characters to be interpreted as delimiters.
+% specified characters to be interpreted as separators.
 %
-% Note that a series of contiguous delimiters (ex: two spaces in a row) will be
+% Note that a series of contiguous separators (ex: two spaces in a row) will be
 % handled as if there was only one of them (i.e. if the returned list should not
 % include empty strings).
 %
 % See also: split/2.
 %
 -spec split_per_element( ustring(), [ uchar() ] ) -> [ ustring() ].
-split_per_element( String, Delimiters ) ->
-	%[ Elem || Elem <- split( String, Delimiters ), Elem =/= [] ].
-	string:lexemes( String, Delimiters ).
+split_per_element( String, Separators ) ->
+	%[ Elem || Elem <- split( String, Separators ), Elem =/= [] ].
+	string:lexemes( String, Separators ).
 
 
 
 % @doc Splits the specified parse string (typically returned by
 % parse_quoted/{1,3}) into a list of plain strings, based on the list of
-% specified characters to be interpreted as delimiters.
+% specified characters to be interpreted as separators.
 %
 % Note: implemented in an ad hoc way, so that any plain string found in the
 % input character stream is properly handled (i.e. not searched for any
-% delimiter).
+% separator).
 %
 % In this example, parsing is needed so that the comma just after the first
-% "Bond" is not considered as a delimiter (since it is in a quoted context):
+% "Bond" is not considered as a separator (since it is in a quoted context):
 %
 % ParsedString = text_utils:parse_quoted( "Hello,'Mr Bond,James Bond',MI6",
 %                   _QuotingChars=[ $' ], _EscapingChars=[] ),
@@ -3079,16 +3351,17 @@ split_per_element( String, Delimiters ) ->
 % See also: split/2, split_per_element/2.
 %
 -spec split_parsed( parse_string(), [ uchar() ] ) -> [ ustring() ].
-split_parsed( ParseString, Delimiters ) ->
+split_parsed( ParseString, Separators ) ->
 
-	%trace_utils:debug_fmt( "Splitting '~p' with delimiters '~p'...",
-	%                       [ ParseString, Delimiters ] ),
+	%trace_utils:debug_fmt( "Splitting '~p' with separators '~p'...",
+	%                       [ ParseString, Separators ] ),
 
-	Res = split_parsed( ParseString, Delimiters, _AccElem=[], _AccStrs=[] ),
+	Res = split_parsed( ParseString, Separators, _AccElem=[], _AccStrs=[] ),
 
 	%trace_utils:debug_fmt( "... returned: ~p.", [ Res ] ),
 
 	Res.
+
 
 
 % @doc Collecting chars in elements (AccElem), then elements in the overall
@@ -3098,44 +3371,49 @@ split_parsed( ParseString, Delimiters ) ->
 % CSV files), hence re-enabled (previous version left commented).
 %
 % (helper)
-%split_parsed( _ParseString=[], _Delimiters, _AccElem=[], AccStrs ) ->
+
+%split_parsed( _ParseString=[], _Separators, _AccElem=[], AccStrs ) ->
 %   lists:reverse( AccStrs );
 
-split_parsed( _ParseString=[], _Delimiters, AccElem, AccStrs ) ->
+split_parsed( _ParseString=[], _Separators, AccElem, AccStrs ) ->
 	lists:reverse( [ lists:reverse( AccElem ) | AccStrs ] );
 
-split_parsed( _ParseString=[ C | T ], Delimiters, AccElem, AccStrs )
-	   when is_integer( C ) ->
-	case lists:member( C, Delimiters ) of
+split_parsed( _ParseString=[ C | T ], Separators, AccElem, AccStrs )
+												when is_integer( C ) ->
+	case lists:member( C, Separators ) of
 
 		true ->
-			split_parsed( T, Delimiters, _AccElem=[],
+			split_parsed( T, Separators, _AccElem=[],
 						  [ lists:reverse( AccElem ) | AccStrs ] );
 
 			%case AccElem of
 			%
 			%	[] ->
-			%		split_parsed( T, Delimiters, _AccElem=[], AccStrs );
+			%		split_parsed( T, Separators, _AccElem=[], AccStrs );
 			%
 			%	_ ->
-			%		split_parsed( T, Delimiters, _AccElem=[],
+			%		split_parsed( T, Separators, _AccElem=[],
 			%					  [ lists:reverse( AccElem ) | AccStrs ] )
 			%
 			%end;
 
 		false ->
-			split_parsed( T, Delimiters, [ C | AccElem ], AccStrs )
+			split_parsed( T, Separators, [ C | AccElem ], AccStrs )
 
 	end;
 
-split_parsed( _ParseString=[ Str | T ], Delimiters, AccElem, AccStrs )
-	   when is_list( Str ) ->
-	split_parsed( T, Delimiters, lists:reverse( Str ) ++ AccElem, AccStrs ).
+split_parsed( _ParseString=[ Str | T ], Separators, AccElem, AccStrs )
+														when is_list( Str ) ->
+	split_parsed( T, Separators, lists:reverse( Str ) ++ AccElem, AccStrs );
+
+split_parsed( _ParseString=[ Other | _T ], _Separators, _AccElem, _AccStrs ) ->
+	throw( { unexpected_parsed_element, Other } ).
+
 
 
 
 % @doc Splits the specified string into a list of strings, using whitespaces as
-% delimiters.
+% separators.
 %
 -spec split_at_whitespaces( ustring() ) -> [ ustring() ].
 split_at_whitespaces( String ) ->
@@ -3148,7 +3426,7 @@ split_at_whitespaces( String ) ->
 % all characters strictly before and strictly after the first occurrence of the
 % marker (which thus is not kept).
 %
-% Ex: split_at_first( $x, "  aaaxbbbxccc" ) shall return { "  aaa", "bbbxccc" }.
+% Ex: split_at_first($x, "  aaaxbbbxccc") shall return {"  aaa", "bbbxccc"}.
 %
 -spec split_at_first( uchar(), ustring() ) ->
 							'none_found' | { ustring(), ustring() }.
@@ -3277,6 +3555,9 @@ duplicate( Count, Str ) ->
 
 
 
+% concatenate/2 on plain strings is just '++'.
+
+
 % @doc Concatenates all elements (string-like ones or numbers) in the specified
 % list into a single (plain) string.
 %
@@ -3286,6 +3567,22 @@ duplicate( Count, Str ) ->
 -spec concatenate( [ string_like() | number() ] ) -> ustring().
 concatenate( Elements ) ->
 	lists:concat( Elements ).
+
+
+
+% @doc Concatenates the two specified binary strings into the returned one.
+-spec bin_concatenate( bin_string(), bin_string() ) -> bin_string().
+bin_concatenate( FirstBinStr, SecondBinStr ) ->
+	% Presumably better than bin_format("~ts~ts", [FirstBinStr, SecondBinStr]),
+	% mostly the same as erlang:iolist_to_binary([FirstBinStr, SecondBinStr]):
+	%
+	<<FirstBinStr/binary, SecondBinStr/binary>>.
+
+
+% @doc Concatenates the specified binary strings into the returned one.
+-spec bin_concatenate( [ bin_string() ] ) -> bin_string().
+bin_concatenate( BinStrs ) ->
+	erlang:iolist_to_binary( BinStrs ).
 
 
 
@@ -3445,10 +3742,8 @@ update_with_keywords( Content, TranslationTable ) ->
 
 	% As many passes as keyword pairs:
 	lists:foldl(
-
 		fun( { SearchP, Replacement }, ContentAcc ) ->
 			string:replace( ContentAcc, SearchP, Replacement, _Where=all )
-
 		end,
 		_Acc0=Content,
 		_List=TransPairs ).
@@ -3491,9 +3786,9 @@ double_quote_strings( AnyStrs ) ->
 
 
 
-% @doc Returns specified text, in which single quotes have been escaped
-% (that is "'" has been replaced with "\'" - ignore the double quotes in this
-% example).
+% @doc Returns the specified text, in which single quotes have been escaped
+% (that is: all "'" characters have been replaced with "\'" ones - ignore the
+% double quotes in this example).
 %
 -spec escape_single_quotes( ustring() ) -> ustring().
 escape_single_quotes( Text ) ->
@@ -3512,9 +3807,9 @@ escape_single_quotes_helper( _Text=[ C | T ], Acc ) ->
 
 
 
-% @doc Returns specified text, in which double quotes have been escaped
-% (that is '"' has been replaced with '\"' - ignore the single quotes in this
-% example).
+% @doc Returns the specified text, in which double quotes have been escaped
+% (that is: all '"' characters have been replaced with '\"' ones - ignore the
+% single quotes in this example).
 %
 -spec escape_double_quotes( ustring() ) -> ustring().
 escape_double_quotes( Text ) ->
@@ -3596,13 +3891,13 @@ remove_newlines( String ) ->
 
 
 
-% @doc Parses specified plain (non-iolist) string (that is a mere list of
+% @doc Parses the specified plain (non-iolist) string (that is a mere list of
 % characters), based on two quoting characters (single and double quotes) and
 % one escaping character (backslash), returning a specific kind of iolist
 % containing either characters or plain strings, the latter corresponding to the
-% found quoted texts, provided they were not escaped.
+% found quoted texts, provided that they were not escaped.
 %
-% For example, let's consider an input string such as (using from now § to
+% For example, let's consider an input string such as (using, from now, '§' to
 % delimit strings):
 %
 % §This is an "example \" 'convoluted" string' with various 'quoting elements'.§
@@ -3628,12 +3923,11 @@ parse_quoted( InputStr ) ->
 
 
 
-% @doc Parses specified plain (non-iolist) string (ie a mere list of
-% characters), returning a specific kind of iolist containing either characters
-% or plain strings, the latter corresponding to the found quoted texts, provided
-% they were not escaped.
-%
-% Supports user-specified quoting characters and escaping ones.
+% @doc Parses the specified plain (non-iolist) string (that is a mere list of
+% characters), based on the specified quoting characters and escaping
+% characters, returning a specific kind of iolist containing either individual
+% characters or plain strings, the latter corresponding to the found quoted
+% texts, provided that they were not escaped.
 %
 % See parse_quoted/1 regarding parsing/escaping rules, and text_utils_test.erl
 % for a full example with additional explanations.
@@ -3641,15 +3935,20 @@ parse_quoted( InputStr ) ->
 % @see parse_quoted/1
 %
 -spec parse_quoted( plain_string(), [ uchar() ], [ uchar() ] ) ->
-								parse_string().
+														parse_string().
 parse_quoted( InputStr, QuotingChars, EscapingChars ) ->
 
 	%trace_utils:debug_fmt( "Parsing §~ts§, with quoting §~ts§ and "
-	%    "escaping §~ts§:", [ InputStr, QuotingChars, EscapingChars ] ),
+	%   "escaping §~ts§:", [ InputStr, QuotingChars, EscapingChars ] ),
 
-	parse_helper( InputStr, QuotingChars, EscapingChars,
+	Res = parse_helper( InputStr, QuotingChars, EscapingChars,
 		_CurrentQuoteChar=undefined, _CurrentQuotedText=undefined,
-		_PreviousChar=undefined, _Acc=[] ).
+		_PreviousChar=undefined, _Acc=[] ),
+
+	%trace_utils:debug_fmt( "Parsed string is:~n ~p", [ Res ] ),
+
+	Res.
+
 
 
 % In examples below, double quotes are a quoting character, and backslash an
@@ -3659,6 +3958,12 @@ parse_quoted( InputStr, QuotingChars, EscapingChars ) ->
 % just before it iff relevant.
 
 % Normal endings:
+
+% Not in quoted:
+parse_helper( _InputStr=[], _QuotingChars, _EscapingChars, CurrentQuoteChar,
+		_CurrentQuotedText=undefined, _PreviousChar=CurrentQuoteChar, Acc ) ->
+	% Closing for good then:
+	lists:reverse( Acc );
 
 % Ending while a quoting sequence is still open, but here the last (previous)
 % character was a closing quoting one:
@@ -3676,6 +3981,8 @@ parse_helper( _InputStr=[], _QuotingChars, _EscapingChars,
 	lists:reverse( Acc );
 
 % Most usual (normal) ending (not in a quoted context):
+% (this clause just has PreviousChar =/= undefined)
+%
 parse_helper( _InputStr=[], _QuotingChars, _EscapingChars,
 			  _CurrentQuoteChar=undefined, _CurrentQuotedText=undefined,
 			  PreviousChar, Acc ) ->
@@ -3712,7 +4019,7 @@ parse_helper( _InputStr=[ C | T ], QuotingChars, EscapingChars,
 
 	%trace_utils:debug_fmt( "Out of quoted context, read §~ts§ "
 	%    "(previous: §~p§), while current, reversed accumulator is:~n  §~p§.",
-	%	[ [C], [PrevC], lists:reverse( Acc ) ] ),
+	%    [ [ C ], [ PrevC ], lists:reverse( Acc ) ] ),
 
 	% lists:member/2 not a valid guard, so:
 	%
@@ -3749,7 +4056,15 @@ parse_helper( _InputStr=[ C | T ], QuotingChars, EscapingChars,
 				% (PrevC possibly equal to 'undefined' here)
 				%
 				false ->
-					NewAcc = [ PrevC | Acc ],
+					NewAcc = case PrevC of
+
+						undefined ->
+							Acc;
+
+						_ ->
+							[ PrevC | Acc ]
+
+					end,
 
 					%trace_utils:debug_fmt( "Entering a quoting section with "
 					%   "§~ts§, while current, reversed accumulator is:~n  "
@@ -3830,8 +4145,8 @@ parse_helper( _InputStr=[ C | T ], QuotingChars, EscapingChars,
 					end,
 
 					%trace_utils:debug_fmt( "Closing a quoting section "
-					%	"(result:'~ts') with '~ts', while reversed accumulator "
-					%	"is:~n~p", [ Quoted, [C], lists:reverse( Acc ) ] ),
+					%   "(result:'~ts') with '~ts', while reversed accumulator "
+					%   "is:~n~p", [ Quoted, [C], lists:reverse( Acc ) ] ),
 
 					parse_helper( T, QuotingChars, EscapingChars,
 						_CurrentQuoteChar=undefined,
@@ -3865,17 +4180,17 @@ parse_helper( _InputStr=[ C | T ], QuotingChars, EscapingChars,
 		CurrentQuoteChar, CurrentQuotedText, _PreviousChar=undefined, Acc ) ->
 
 	%trace_utils:debug_fmt( "Just recording, in quoted context, "
-	%   "current char: §~ts§", [ [C] ] ),
+	%   "current char: §~ts§", [ [ C ] ] ),
 
 	parse_helper( T, QuotingChars, EscapingChars, CurrentQuoteChar,
 				  CurrentQuotedText, _PrevChar=C, Acc );
 
-% Same but with a previous char:
+% Same but with a previous (non-undefined) char:
 parse_helper( _InputStr=[ C | T ], QuotingChars, EscapingChars,
 			  CurrentQuoteChar, CurrentQuotedText, PreviousChar, Acc ) ->
 
 	%trace_utils:debug_fmt( "Recording, in quoted context, "
-	%   "current char: §~ts§", [ [C] ] ),
+	%   "current char: §~ts§", [ [ C ] ] ),
 
 	parse_helper( T, QuotingChars, EscapingChars, CurrentQuoteChar,
 				  [ PreviousChar | CurrentQuotedText ], _PrevChar=C, Acc ).
@@ -3935,7 +4250,7 @@ remove_last_characters( String, Count ) ->
 	% Not necessarily the most efficient, but at least it is not an illegal
 	% pattern:
 	%
-	case length( String ) of
+	case erlang:length( String ) of
 
 		C when C >= Count ->
 			string:substr( String, 1, C - Count );
@@ -4017,7 +4332,7 @@ ellipse( String, MaxLen ) ->
 	% To avoid countless computations of a constant:
 	SuffixLen = 6,
 
-	case length( String ) of
+	case erlang:length( String ) of
 
 		L when L > MaxLen ->
 			TargetLen = MaxLen - SuffixLen,
@@ -4072,7 +4387,7 @@ tail( String, MaxLen ) ->
 	% To avoid countless computations of a constant:
 	PrefixLen = 6,
 
-	Len = length( String ),
+	Len = erlang:length( String ),
 
 	ExtraCount = Len - MaxLen,
 
@@ -4125,8 +4440,8 @@ join_words( [ Word | RemainingWords ], Width, AccLines, CurrentLine,
 			CurrentLineLen ) ->
 
 	%io:format( "Managing word '~ts' (len=~B), current line is '~ts' (len=~B), "
-	%   "width = ~B.~n", [ Word, length( Word ), CurrentLine, CurrentLineLen,
-	% Width ] ),
+	%   "width = ~B.~n", [ Word, erlang:length( Word ), CurrentLine,
+	%   CurrentLineLen, Width ] ),
 
 	% Length should be incremented, as a space must be inserted before that
 	% word, however we want to accept words whose width would be exactly equal
@@ -4135,12 +4450,12 @@ join_words( [ Word | RemainingWords ], Width, AccLines, CurrentLine,
 	ActualLength = case CurrentLine of
 
 		"" ->
-			length( Word );
+			erlang:length( Word );
 
 		_NonEmpty ->
 			% Already at least a letter, we therefore must add a space before
 			% the new word:
-			length( Word ) + 1
+			erlang:length( Word ) + 1
 
 	end,
 
@@ -4173,11 +4488,15 @@ join_words( [ Word | RemainingWords ], Width, AccLines, CurrentLine,
 								NewLineLen );
 
 				_ExceedingLen ->
+
 					% No, with this word the current line would be too wide,
 					% inserting it on new line instead:
+					%
 					PaddedCurrentLine = pad_string( CurrentLine, Width ),
+
 					%io:format( "Inserting line '~ts'.~n",
 					%           [ PaddedCurrentLine ] ),
+
 					join_words( RemainingWords, Width,
 						[ PaddedCurrentLine | AccLines ], Word,
 						CompatibleWidth )
@@ -4189,7 +4508,7 @@ join_words( [ Word | RemainingWords ], Width, AccLines, CurrentLine,
 
 			% Will break words as many times as needed:
 			%io:format( "Word '~ts' is too large (len=~B), breaking it.~n",
-			%           [ Word, length( Word ) ] ),
+			%           [ Word, erlang:length( Word ) ] ),
 			Subwords = break_word( Word, Width ),
 
 			PaddedCurrentLine = pad_string( CurrentLine, Width ),
@@ -4228,7 +4547,8 @@ pad_string_left( String, Width ) ->
 % Ex: pad_string_left("hello", 8, $*) = ["hello",42,42,42]
 %
 -spec pad_string_left( ustring(), width(), grapheme_cluster() ) -> any_string().
-pad_string_left( String, Width, PadChar ) when length( String ) =< Width ->
+pad_string_left( String, Width, PadChar )
+								when erlang:length( String ) =< Width ->
 
 	% Note that the settings listed in
 	% http://erlang.org/doc/apps/stdlib/unicode_usage.html shall be enforced so
@@ -4242,20 +4562,21 @@ pad_string_left( String, Width, PadChar ) when length( String ) =< Width ->
 
 pad_string_left( String, Width, PadChar ) ->
 
-	Len = length( String ),
+	Len = erlang:length( String ),
 
 	trace_utils:error_fmt( "String '~ts' already too long (~B characters) "
 		"to be padded (left) to width ~B (with '~ts').",
-		[ String, Len, Width, PadChar ] ),
+		[ String, Len, Width, case is_integer( PadChar ) of
+			true -> [ PadChar ]; false -> PadChar end ] ),
 
-	throw( { string_to_pad_left_too_long, String, Len, Width } ).
+	throw( { string_too_long_to_pad_left, String, Len, Width } ).
 
 
 
 % @doc Returns the specified string, padded with spaces to specified width,
 % right-justified (that is with spaces added to the left).
 %
-% Ex: pad_string_right("hello", 8) = ["   ","hello"]
+% Ex: pad_string_right("hello", 8) = ["   ", "hello"]
 %
 -spec pad_string_right( ustring(), width() ) -> any_string().
 pad_string_right( String, Width ) ->
@@ -4266,24 +4587,26 @@ pad_string_right( String, Width ) ->
 % right-justified (that is with spaces added to the left), with specified
 % padding character.
 %
-% Ex: pad_string_right("hello", 8, $*) = ["***","hello"]
+% Ex: pad_string_right("hello", 8, $*) = ["***", "hello"]
 %
 -spec pad_string_right( ustring(), width(), grapheme_cluster() ) ->
 														any_string().
-pad_string_right( String, Width, PadChar ) when length( String ) =< Width ->
+pad_string_right( String, Width, PadChar )
+									when erlang:length( String ) =< Width ->
 	%lists:flatten( io_lib:format( "~*.ts", [ Width, String ] ) );
 
 	string:pad( String, Width, _Dir=leading, PadChar );
 
 pad_string_right( String, Width, PadChar ) ->
 
-	Len = length( String ),
+	Len = erlang:length( String ),
 
 	trace_utils:error_fmt( "String '~ts' already too long (~B characters) "
 		"to be padded (right) to width ~B (with '~ts').",
-		[ String, Len, Width, PadChar ] ),
+		[ String, Len, Width, case is_integer( PadChar ) of
+			true -> [ PadChar ]; false -> PadChar end ] ),
 
-	throw( { string_to_pad_right_too_long, String, Len, Width } ).
+	throw( { string_too_long_to_pad_right, String, Len, Width } ).
 
 
 
@@ -4307,7 +4630,7 @@ center_string( String, Width ) ->
 -spec center_string( ustring(), width(), grapheme_cluster() ) -> any_string().
 center_string( String, Width, PaddingChar ) ->
 
-	%case Width - length( String ) of
+	%case Width - erlang:length( String ) of
 
 	%	Offset when Offset < 0 ->
 	%		throw( { string_to_center_too_long, String, -Offset } );
@@ -4342,7 +4665,7 @@ center_string( String, Width, PaddingChar ) ->
 % Taken from http://lethain.com
 % (see distinguishing-strings-from-lists-in-erlang)
 %
-% Note: something like [ $e, 1, 2, $r ] is deemed to be a string.
+% Note: something like [$e, 1, 2, $r] is deemed to be a string.
 %
 -spec is_string( term() ) -> boolean().
 is_string( [] ) ->
@@ -4359,9 +4682,24 @@ is_string( _Other ) ->
 
 % Alternate, less efficient version:
 %is_string( Term ) when is_list( Term ) ->
-%			lists:all( fun erlang:is_integer/1, Term );
+%   lists:all( fun erlang:is_integer/1, Term );
 %
 %is_string( _Term ) -> false.
+
+
+
+% @doc Returns true iff the parameter is any kind (plain or binary) of
+% (non-nested) string.
+%
+% Note: something like [$e, 1, 2, $r] is deemed to be a string.
+%
+-spec is_any_string( term() ) -> boolean().
+is_any_string( Bin ) when is_binary( Bin ) ->
+	is_bin_string( Bin );
+
+is_any_string( Term ) ->
+	is_string( Term ).
+
 
 
 % @doc Returns true iif the parameter is a (non-nested) non-empty string
@@ -4415,8 +4753,8 @@ are_strings( _Other ) ->
 % @doc Returns true iff the specified parameter is a binary string.
 -spec is_bin_string( term() ) -> boolean().
 is_bin_string( Term ) when is_binary( Term ) ->
-	%is_string( binary_to_list( Term ) );
-	true;
+	is_string( binary_to_list( Term ) );
+	%true;
 
 is_bin_string( _Term ) ->
 	false.
@@ -4440,8 +4778,8 @@ are_binaries( _NotList ) ->
 are_of_same_string_type( S1, S2 ) when is_list( S1 ) andalso is_list( S2 ) ->
 	true;
 
-are_of_same_string_type( S1, S2 ) when is_binary( S1 )
-									   andalso is_binary( S2 ) ->
+are_of_same_string_type( S1, S2 )
+				when is_binary( S1 ) andalso is_binary( S2 ) ->
 	true;
 
 are_of_same_string_type( _S1, _S2 ) ->
@@ -4464,7 +4802,7 @@ break_word( Word, Width ) ->
 	%
 	% Used to cut into halves, then preferring truncating a first full-length
 	% chunk, finally directly cutting the word into appropriate pieces:
-	% CutIndex = length(Word) div 2,
+	% CutIndex = erlang:length(Word) div 2,
 	% CutIndex = Width-1,
 	cut_into_chunks( Word, Width, _Acc=[] ).
 
@@ -4478,7 +4816,8 @@ cut_into_chunks( _String=[], _ChunkSize, Acc ) ->
 	lists:reverse( Acc );
 
 % Last word may take the full width (no dash to add):
-cut_into_chunks( String, ChunkSize, Acc ) when length( String ) =< ChunkSize ->
+cut_into_chunks( String, ChunkSize, Acc )
+								when erlang:length( String ) =< ChunkSize ->
 	cut_into_chunks( [], ChunkSize, [ String | Acc ] );
 
 % Here we have to cut the string anyway:
@@ -4491,7 +4830,7 @@ cut_into_chunks( String, ChunkSize, Acc ) ->
 
 	% Each underscore will result into another character (\) being added:
 	%io:format( "FirstPart = '~ts' (~B), Remaining = '~ts'.~n",
-	%   [ FirstPart, length( FirstPart ), Remaining ] ),
+	%   [ FirstPart, erlang:length( FirstPart ), Remaining ] ),
 	cut_into_chunks( Remaining, ChunkSize, [ FirstPart ++ "-" | Acc ] ).
 
 
@@ -4523,7 +4862,7 @@ aggregate_word( [ H | T ], Count, Acc ) ->
 % (exported helper, for re-use)
 %
 -spec try_convert_to_unicode_list( unicode:unicode_data() ) ->
-											basic_utils:maybe( ustring() ).
+											maybe( ustring() ).
 try_convert_to_unicode_list( Data ) ->
 
 	% A binary_to_list/1 would not be sufficient here.
@@ -4562,15 +4901,16 @@ to_unicode_list( Data ) ->
 % If enabled, fails if the conversion cannot be properly done, otherwise can
 % return a bogus string.
 %
+% Note that at least some ISO-8859 contents (thus non-Unicode) may not properly
+% be converted by this function; use binary_to_list(Data) (or
+% io_lib:format("~ts", [Data])) instead.
+%
 % (exported helper, for re-use)
 %
 -spec to_unicode_list( unicode_data(), boolean() ) -> ustring().
 to_unicode_list( Data, CanFail ) ->
 
 	% A binary_to_list/1 would not be sufficient here.
-
-	% It seems that using io_lib:format( "~ts", [ Data ] ) could still be an
-	% option.
 
 	% Possibly a deep list:
 	case unicode:characters_to_list( Data ) of
@@ -4579,11 +4919,13 @@ to_unicode_list( Data, CanFail ) ->
 			Str;
 
 		{ error, Prefix, Remaining } ->
+
 			trace_bridge:error_fmt( "Cannot transform data '~p' into "
 				"a proper Unicode string:~nafter prefix '~ts', "
 				"cannot convert '~w'.~nStacktrace was: ~ts",
 				[ Data, Prefix, Remaining,
 				  code_utils:interpret_shortened_stacktrace( 1 ) ] ),
+
 			case CanFail of
 
 				true ->
@@ -4598,9 +4940,11 @@ to_unicode_list( Data, CanFail ) ->
 			end;
 
 		{ incomplete, Prefix, Bin } ->
+
 			trace_bridge:error_fmt( "Cannot transform data '~p' into "
 				"a proper Unicode string:~nafter prefix '~ts', "
 				"'~p' is incomplete.", [ Data, Prefix, Bin ] ),
+
 			case CanFail of
 
 				true ->
@@ -4621,8 +4965,7 @@ to_unicode_list( Data, CanFail ) ->
 %
 % (exported helper, for re-use)
 %
--spec try_convert_to_unicode_binary( unicode_data() ) ->
-											basic_utils:maybe( bin_string() ).
+-spec try_convert_to_unicode_binary( unicode_data() ) -> maybe( bin_string() ).
 try_convert_to_unicode_binary( Data ) ->
 
 	% A list_to_binary/1 would not be sufficient here.
@@ -4673,9 +5016,11 @@ to_unicode_binary( Data, CanFail ) ->
 			Bin;
 
 		{ error, Prefix, Remaining } ->
+
 			trace_bridge:error_fmt( "Cannot transform data '~p' into "
 				"a proper Unicode binary:~nafter prefix '~ts', "
 				"cannot convert '~p'.", [ Data, Prefix, Remaining ] ),
+
 			case CanFail of
 
 				true ->
@@ -4720,7 +5065,7 @@ generate_title( Title, Level ) ->
 
 	{ Char, Layout } = get_title_rendering_for( Level ),
 
-	TitleLine = get_line_of( Char, length( Title ) ) ++ "\n",
+	TitleLine = get_line_of( Char, erlang:length( Title ) ) ++ "\n",
 
 	case Layout of
 

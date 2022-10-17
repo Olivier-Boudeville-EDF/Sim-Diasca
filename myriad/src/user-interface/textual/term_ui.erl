@@ -293,16 +293,16 @@
 
 -record( term_ui_state, {
 
-		   %state_filename = ?default_state_path :: file_path(),
-		   dialog_tool :: dialog_tool(),
-		   dialog_tool_path :: file_path(),
-		   locale = default :: dialog_locale(),
+	%state_filename = ?default_state_path :: file_path(),
+	dialog_tool :: dialog_tool(),
+	dialog_tool_path :: file_path(),
+	locale = default :: dialog_locale(),
 
-		   % Generally little use of console outputs for this backend:
-		   log_console = false :: boolean(),
+	% Generally little use of console outputs for this backend:
+	log_console = false :: boolean(),
 
-		   log_file = undefined :: maybe( file_utils:file() ),
-		   settings :: setting_table() } ).
+	log_file = undefined :: maybe( file_utils:file() ),
+	settings :: setting_table() } ).
 
 
 -type ui_state() :: #term_ui_state{}.
@@ -402,15 +402,8 @@ start_helper( _Options=[], UIState ) ->
 	%                       [ to_string( UIState ) ] ),
 
 	% No prior state expected:
-	case process_dictionary:put( ?ui_state_key, UIState ) of
-
-		undefined ->
-			ok;
-
-		_ ->
-			throw( term_ui_already_started )
-
-	end,
+	process_dictionary:put( ?ui_state_key, UIState ) =:= undefined
+		orelse throw( term_ui_already_started ),
 
 	UIState;
 
@@ -621,7 +614,7 @@ display_instant( Text ) ->
 									  [ EscapedText, SuffixString ] ),
 
 	Cmd = text_utils:join( _Sep=" ",
-							[ ToolPath, SettingString, DialogString ] ),
+						   [ ToolPath, SettingString, DialogString ] ),
 
 	%trace_utils:debug_fmt( "term_ui display command: '~ts'.", [ Cmd ] ),
 
@@ -880,7 +873,7 @@ get_text( Prompt,
 %
 % (const)
 %
--spec get_text_as_integer( prompt() ) -> text().
+-spec get_text_as_integer( prompt() ) -> integer().
 get_text_as_integer( Prompt ) ->
 	get_text_as_integer( Prompt, _UIState=get_state() ).
 
@@ -890,11 +883,9 @@ get_text_as_integer( Prompt ) ->
 %
 % (const)
 %
--spec get_text_as_integer( prompt(), ui_state() ) -> text().
+-spec get_text_as_integer( prompt(), ui_state() ) -> integer().
 get_text_as_integer( Prompt, UIState ) ->
-
 	Text = get_text( Prompt, UIState ),
-
 	text_utils:string_to_integer( Text ).
 
 
@@ -904,7 +895,7 @@ get_text_as_integer( Prompt, UIState ) ->
 %
 % (const)
 %
--spec read_text_as_integer( prompt() ) -> text().
+-spec read_text_as_integer( prompt() ) -> integer().
 read_text_as_integer( Prompt ) ->
 	read_text_as_integer( Prompt, _UIState=get_state() ).
 
@@ -914,7 +905,7 @@ read_text_as_integer( Prompt ) ->
 %
 % (const)
 %
--spec read_text_as_integer( prompt(), ui_state() ) -> text().
+-spec read_text_as_integer( prompt(), ui_state() ) -> integer().
 read_text_as_integer( Prompt, UIState ) ->
 
 	Text = get_text( Prompt, UIState ),
@@ -938,7 +929,7 @@ read_text_as_integer( Prompt, UIState ) ->
 %
 % (const)
 %
--spec get_text_as_maybe_integer( prompt() ) -> maybe( text() ).
+-spec get_text_as_maybe_integer( prompt() ) -> maybe( integer() ).
 get_text_as_maybe_integer( Prompt ) ->
 	get_text_as_maybe_integer( Prompt, _UIState=get_state() ).
 
@@ -948,7 +939,7 @@ get_text_as_maybe_integer( Prompt ) ->
 %
 % (const)
 %
--spec get_text_as_maybe_integer( prompt(), ui_state() ) -> maybe( text() ).
+-spec get_text_as_maybe_integer( prompt(), ui_state() ) -> maybe( integer() ).
 get_text_as_maybe_integer( Prompt, UIState ) ->
 
 	case get_text( Prompt, UIState ) of
@@ -970,7 +961,7 @@ get_text_as_maybe_integer( Prompt, UIState ) ->
 %
 % (const)
 %
--spec read_text_as_maybe_integer( prompt() ) -> maybe( text() ).
+-spec read_text_as_maybe_integer( prompt() ) -> maybe( integer() ).
 read_text_as_maybe_integer( Prompt ) ->
 	read_text_as_maybe_integer( Prompt, _UIState=get_state() ).
 
@@ -982,7 +973,7 @@ read_text_as_maybe_integer( Prompt ) ->
 %
 % (const)
 %
--spec read_text_as_maybe_integer( prompt(), ui_state() ) -> maybe( text() ).
+-spec read_text_as_maybe_integer( prompt(), ui_state() ) -> maybe( integer() ).
 read_text_as_maybe_integer( Prompt, UIState ) ->
 
 	case get_text( Prompt, UIState ) of
@@ -1126,15 +1117,8 @@ choose_designated_item( Prompt, Choices,
 
 	{ Designators, Texts } = lists:unzip( Choices ),
 
-	case lists:member( ui_cancel, Designators ) of
-
-		true ->
-			throw( { disallowed_choice_designator, ui_cancel } );
-
-		false ->
-			ok
-
-	end,
+	lists:member( ui_cancel, Designators ) andalso
+		throw( { disallowed_choice_designator, ui_cancel } ),
 
 	ChoiceCount = length( Choices ),
 
@@ -1143,12 +1127,12 @@ choose_designated_item( Prompt, Choices,
 	%
 	NumChoices = lists:zip( lists:seq( 1, ChoiceCount ), Texts ),
 
-	NumStrings = lists:foldl( fun( { Num, Text }, AccStrings ) ->
-								  [ text_utils:format( " ~B \"~ts\"",
-									  [ Num, Text ] ) | AccStrings ]
-							  end,
-							  _Acc0=[],
-							  _List=NumChoices ),
+	NumStrings = lists:foldl(
+		fun( { Num, Text }, AccStrings ) ->
+			[ text_utils:format( " ~B \"~ts\"", [ Num, Text ] ) | AccStrings ]
+		end,
+		_Acc0=[],
+		_List=NumChoices ),
 
 	{ SettingString, _SuffixString } =
 		get_dialog_settings_for_return_code( SettingTable ),
@@ -1156,7 +1140,7 @@ choose_designated_item( Prompt, Choices,
 	AutoSizeString = "0 0",
 
 	DialogStrings = [ "--menu", "\"" ++ Prompt ++ "\"", AutoSizeString,
-	  _MenuHeight=text_utils:integer_to_string( ChoiceCount )
+		_MenuHeight=text_utils:integer_to_string( ChoiceCount )
 		| lists:reverse( [ get_redirect_string_for_code() | NumStrings ] ) ],
 
 	CmdStrings = [ ToolPath, SettingString | DialogStrings ],
@@ -1206,7 +1190,7 @@ choose_designated_item_with_default( Choices, DefaultChoiceDesignator ) ->
 								[ length( Choices ) + 1 ] ),
 
 	choose_designated_item_with_default( Prompt, Choices,
-						DefaultChoiceDesignator, get_state() ).
+		DefaultChoiceDesignator, get_state() ).
 
 
 
@@ -1232,7 +1216,7 @@ choose_designated_item_with_default( Choices, DefaultChoiceDesignator ) ->
 choose_designated_item_with_default( Prompt, Choices,
 									 DefaultChoiceDesignator ) ->
 	choose_designated_item_with_default( Prompt, Choices,
-						DefaultChoiceDesignator, get_state() ).
+		DefaultChoiceDesignator, get_state() ).
 
 
 
@@ -1256,8 +1240,8 @@ choose_designated_item_with_default( Prompt, Choices,
 -spec choose_designated_item_with_default( prompt(), [ choice_element() ],
 				choice_designator(), ui_state() ) -> choice_designator().
 choose_designated_item_with_default( Prompt, Choices, DefaultChoiceDesignator,
-								#term_ui_state{ dialog_tool_path=ToolPath,
-												settings=SettingTable } ) ->
+		#term_ui_state{ dialog_tool_path=ToolPath,
+						settings=SettingTable } ) ->
 
 	% Using 'radio list' rather than 'menu', for the selectable initial, default
 	% choice.
@@ -1272,15 +1256,8 @@ choose_designated_item_with_default( Prompt, Choices, DefaultChoiceDesignator,
 
 	{ Designators, Texts } = lists:unzip( Choices ),
 
-	case lists:member( ui_cancel, Designators ) of
-
-		true ->
-			throw( { disallowed_choice_designator, ui_cancel } );
-
-		false ->
-			ok
-
-	end,
+	lists:member( ui_cancel, Designators ) andalso
+		throw( { disallowed_choice_designator, ui_cancel } ),
 
 	DefaultChoiceIndex = case list_utils:get_maybe_index_of(
 								DefaultChoiceDesignator, Designators ) of
@@ -1305,18 +1282,18 @@ choose_designated_item_with_default( Prompt, Choices, DefaultChoiceDesignator,
 	% understood by the compiler):
 	%
 	NumStrings = lists:foldl(
-		   fun( { Num, Text }, AccStrings ) ->
-				case Num of
+		fun( { Num, Text }, AccStrings ) ->
+			case Num of
 
-					DefaultChoiceIndex ->
-						[ text_utils:format( " ~B \"~ts\" on",
-							[ DefaultChoiceIndex, Text ] ) | AccStrings ];
+				DefaultChoiceIndex ->
+					[ text_utils:format( " ~B \"~ts\" on",
+						[ DefaultChoiceIndex, Text ] ) | AccStrings ];
 
-					_ ->
-						[ text_utils:format( " ~B \"~ts\" off",
-							[ Num, Text ] ) | AccStrings ]
+				_ ->
+					[ text_utils:format( " ~B \"~ts\" off",
+										 [ Num, Text ] ) | AccStrings ]
 
-				end
+			end
 		end,
 		_Acc0=[],
 		_List=NumChoices ),
@@ -1327,7 +1304,7 @@ choose_designated_item_with_default( Prompt, Choices, DefaultChoiceDesignator,
 	AutoSizeString = "0 0",
 
 	DialogStrings = [ "--radiolist", "\"" ++ Prompt ++ "\"", AutoSizeString,
-	  _MenuHeight=text_utils:integer_to_string( ChoiceCount )
+		_MenuHeight=text_utils:integer_to_string( ChoiceCount )
 		| lists:reverse( [ get_redirect_string_for_code() | NumStrings ] ) ],
 
 	CmdStrings = [ ToolPath, SettingString | DialogStrings ],
@@ -1381,7 +1358,7 @@ choose_numbered_item( Choices ) ->
 									choice_index();
 						  ( prompt(), [ choice_element() ] ) -> choice_index().
 choose_numbered_item( Choices, UIState )
-  when is_record( UIState, term_ui_state ) ->
+				when is_record( UIState, term_ui_state ) ->
 
 	Prompt = text_utils:format( "Select among these ~B choices:",
 								[ length( Choices ) ] ),
@@ -1457,7 +1434,7 @@ choose_numbered_item_with_default( Choices, DefaultChoiceText ) ->
 									   ( prompt(), [ choice_text() ],
 											choice_index() ) -> choice_index().
 choose_numbered_item_with_default( Choices, DefaultChoiceText, UIState )
-  when is_record( UIState, term_ui_state ) ->
+				when is_record( UIState, term_ui_state ) ->
 
 	Prompt = text_utils:format( "Select among these ~B choices:",
 								[ length( Choices ) ] ),
@@ -1539,15 +1516,7 @@ trace( Message, UIState ) when is_record( UIState, term_ui_state ) ->
 
 	TraceMessage = "[trace] " ++ Message ++ "\n",
 
-	case UIState#term_ui_state.log_console of
-
-		true ->
-			trace_utils:info( TraceMessage );
-
-		false ->
-			ok
-
-	end,
+	UIState#term_ui_state.log_console andalso trace_utils:info( TraceMessage ),
 
 	case UIState#term_ui_state.log_file of
 
@@ -1672,7 +1641,7 @@ lookup_dialog_tool() ->
 set_state( UIState ) ->
 
 	%trace_utils:debug_fmt( "Setting as '~ts': ~ts.",
-	%					   [ ?ui_state_key, to_string( UIState ) ] ),
+	%                       [ ?ui_state_key, to_string( UIState ) ] ),
 
 	process_dictionary:put( ?ui_state_key, UIState ).
 
@@ -1717,7 +1686,7 @@ get_dialog_settings_for_return_code( SettingTable ) ->
 % output returned as a temporary file).
 %
 -spec get_dialog_settings_for_file_return( setting_table() ) ->
-										    { ustring(), ustring() }.
+											{ ustring(), ustring() }.
 get_dialog_settings_for_file_return( SettingTable ) ->
 
 	{ SettingsString, SuffixString } = get_dialog_base_settings( SettingTable ),
@@ -1730,7 +1699,7 @@ get_dialog_settings_for_file_return( SettingTable ) ->
 % @doc Returns the base settings for dialog, expected redirection.
 get_dialog_base_settings( SettingTable ) ->
 
-	TitleOpt = case ?ui_table:get_value_with_defaults( 'title',
+	TitleOpt = case ?ui_table:get_value_with_default( 'title',
 								_Default=undefined, SettingTable ) of
 
 		undefined ->
@@ -1742,7 +1711,7 @@ get_dialog_base_settings( SettingTable ) ->
 
 	end,
 
-	BacktitleOpt = case ?ui_table:get_value_with_defaults( 'backtitle',
+	BacktitleOpt = case ?ui_table:get_value_with_default( 'backtitle',
 									_BackDefault=undefined, SettingTable ) of
 
 		undefined ->
@@ -1906,8 +1875,8 @@ get_setting( SettingKey ) ->
 -spec get_setting( ui_setting_key(), ui_state() ) ->
 							maybe( ui_setting_value() ).
 get_setting( SettingKey, #term_ui_state{ settings=SettingTable } ) ->
-	?ui_table:get_value_with_defaults( SettingKey, _Default=undefined,
-									   SettingTable ).
+	?ui_table:get_value_with_default( SettingKey, _Default=undefined,
+									  SettingTable ).
 
 
 

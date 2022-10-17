@@ -58,7 +58,9 @@
 		  debug/1, debug/2,
 
 		  % See also text_utils:version_to_string/1:
-		  parse_version/1, check_version/1, compare_versions/2,
+		  parse_version/1,
+		  check_three_digit_version/1, check_any_version/1,
+		  compare_versions/2,
 
 		  get_unix_process_specific_string/0,
 		  get_process_specific_value/0, get_process_specific_value/1,
@@ -74,7 +76,7 @@
 		  check_undefined/1, check_all_undefined/1, are_all_defined/1,
 		  check_defined/1, check_not_undefined/1, check_all_defined/1,
 		  ignore_unused/1,
-		  freeze/0, crash/0, enter_infinite_loop/0,
+		  freeze/0, crash/0, crash/1, enter_infinite_loop/0,
 		  trigger_oom/0 ]).
 
 
@@ -187,8 +189,10 @@
 -type diagnosed_error_reason( T ) :: { error_tuploid( T ), error_message() }.
 % An error with its textual diagnosis.
 
+-type tagged_error() :: { 'error', error_reason() }.
+% The most classical way of reporting an error.
 
--type error_term() :: { 'error', error_reason() } | error_reason().
+-type error_term() :: tagged_error() | error_reason().
 % A (possibly tagged) error term. Ex: 'badarg'.
 
 
@@ -205,9 +209,30 @@
 % a term).
 
 
+% Tells whether an operation succeeded; if not, an error reason is specified (as
+% a pair).
+%
+-type base_outcome() :: 'ok' | error_term().
+
+
 -type maybe( T ) :: T | 'undefined'.
-% Quite often, variables (ex: record fields) are set to 'undefined'
-% (i.e. "Nothing") before being set later.
+% Denotes a value that may be set to one in T, or that may not be set at all.
+%
+% Note that the type T should not include the 'undefined' atom, otherwise one
+% cannot discriminate between a value that happens to be set to 'undefined'
+% versus a value not defined at all.
+%
+% Quite often, variables (ex: record fields) are set to 'undefined' before being
+% set later.
+
+
+-type safe_maybe( T ) :: { 'just', T } | 'nothing'.
+% Denotes a value that may be set to one of type T (with no restriction on T),
+% or that may not be set at all.
+%
+% A bit more expensive than maybe/1.
+%
+% Obviously a nod to Haskell.
 
 
 -type wildcardable( T ) :: T | 'any'.
@@ -270,10 +295,11 @@
 % Version as a pair of integerss, typically {MajorVersion, MinorVersion}.
 
 
--type three_digit_version() :: { version_number(), version_number(),
-								 version_number() }.
+-type three_digit_version() ::
+		{ version_number(), version_number(), version_number() }.
 % Version as a triplet of integers, typically {MajorVersion, MinorVersion,
-% ReleaseVersion}.
+% ReleaseVersion}, or {MajorVersion, Enhancements, BugFixes}, or {MajorVersion,
+% MinorVersion, Path} (see semantic versioning, https://semver.org/).
 
 
 
@@ -379,8 +405,11 @@
 			   reason/0, exit_reason/0, error_reason/0,
 			   error_diagnosis/0, error_bin_diagnosis/0,
 			   error_type/0, error_tuploid/0, error_message/0,
-			   diagnosed_error_reason/0, error_term/0, diagnosed_error_term/0,
-			   base_status/0, maybe/1, wildcardable/1,
+			   diagnosed_error_reason/0, tagged_error/0,
+			   error_term/0, diagnosed_error_term/0,
+			   base_status/0, base_outcome/0,
+			   maybe/1, safe_maybe/1,
+			   wildcardable/1,
 			   fallible/1, fallible/2,
 			   diagnosed_fallible/1, diagnosed_fallible/2,
 			   external_data/0, unchecked_data/0, user_data/0,
@@ -429,9 +458,7 @@
 %
 -spec create_uniform_tuple( Size :: count(), Value :: any() ) -> tuple().
 create_uniform_tuple( Size, Value ) ->
-
 	List = lists:duplicate( Size, Value ),
-
 	list_to_tuple( List ).
 
 
@@ -506,10 +533,10 @@ identity( Term ) ->
 
 
 
-% @doc Checks that specified term is 'undefined'.
--spec check_undefined( term() ) -> void().
+% @doc Checks that specified term is 'undefined', and returns it.
+-spec check_undefined( term() ) -> 'undefined'.
 check_undefined( undefined ) ->
-	ok;
+	undefined;
 
 check_undefined( Term ) ->
 	throw( { not_undefined, Term } ).
@@ -519,7 +546,7 @@ check_undefined( Term ) ->
 % @doc Checks that all elements of the specified list are equal to 'undefined';
 % returns that list.
 %
--spec check_all_undefined( term() ) -> void().
+-spec check_all_undefined( term() ) -> [ term() ].
 check_all_undefined( List ) ->
 	[ check_undefined( Term ) || Term <- List ].
 
@@ -534,8 +561,8 @@ check_not_undefined( Term ) ->
 
 
 
-% @doc Checks that specified term is "defined" (not 'undefined'); returns that
-% term.
+% @doc Checks that specified term is "defined" (not equal to 'undefined');
+% returns that term.
 %
 -spec check_defined( term() ) -> term().
 check_defined( Term ) ->
@@ -584,8 +611,8 @@ ignore_unused( _Term ) ->
 
 % @doc Freezes the current process immediately.
 %
-% Useful to block the process while for example an ongoing termination
-% occurs.
+% Useful to block the process while for example an ongoing, asynchronous
+% termination occurs.
 %
 % See also: enter_infinite_loop/0.
 %
@@ -597,6 +624,7 @@ freeze() ->
 	receive
 
 		not_expected_to_be_received ->
+			trace_utils:error( "Process has been unexpectedly unfrozen." ),
 			freeze()
 
 	end.
@@ -607,11 +635,30 @@ freeze() ->
 %
 % Useful for testing reliability, for example.
 %
--spec crash() -> any().
+-spec crash() -> void().
 crash() ->
 
 	trace_bridge:warning_fmt( "*** Crashing on purpose process ~w ***",
 							  [ self() ] ),
+
+	% Must outsmart the compiler; there should be simpler solutions:
+	A = system_utils:get_core_count(),
+	B = system_utils:get_core_count(),
+
+	% Dividing thus by zero:
+	1 / ( A - B ).
+
+
+
+% @doc Crashes the current process immediately, displaying the specified term.
+%
+% Useful for testing reliability, for example.
+%
+-spec crash( term() ) -> any().
+crash( Term ) ->
+
+	trace_bridge:warning_fmt( "*** Crashing on purpose process ~w: ~p ***",
+							  [ self(), Term ] ),
 
 	% Must outsmart the compiler; there should be simpler solutions:
 	A = system_utils:get_core_count(),
@@ -750,6 +797,7 @@ notify_pending_messages() ->
 			notify_pending_messages()
 
 	after 0 ->
+
 		ok
 
 	end.
@@ -866,10 +914,10 @@ wait_for_acks( WaitedSenders, MaxDurationInSeconds, Period,
 			   AckReceiveAtom, ThrowAtom ) ->
 
 	%trace_bridge:debug_fmt( "Waiting for ~p (period: ~ts, max duration: ~ts, "
-	%	"ack atom: '~ts', throw atom: '~ts').",
-	%	[ WaitedSenders, time_utils:duration_to_string( Period ),
-	%	  time_utils:duration_to_string( MaxDurationInSeconds ),
-	%	  AckReceiveAtom, ThrowAtom ] ),
+	%   "ack atom: '~ts', throw atom: '~ts').",
+	%   [ WaitedSenders, time_utils:duration_to_string( Period ),
+	%     time_utils:duration_to_string( MaxDurationInSeconds ),
+	%     AckReceiveAtom, ThrowAtom ] ),
 
 	InitialTimestamp = time_utils:get_timestamp(),
 
@@ -880,7 +928,7 @@ wait_for_acks( WaitedSenders, MaxDurationInSeconds, Period,
 
 % (helper)
 wait_for_acks_helper( _WaitedSenders=[], _InitialTimestamp,
-			_MaxDurationInSeconds, _Period, _AckReceiveAtom, _ThrowAtom ) ->
+		_MaxDurationInSeconds, _Period, _AckReceiveAtom, _ThrowAtom ) ->
 	ok;
 
 wait_for_acks_helper( WaitedSenders, InitialTimestamp, MaxDurationInSeconds,
@@ -893,7 +941,7 @@ wait_for_acks_helper( WaitedSenders, InitialTimestamp, MaxDurationInSeconds,
 			NewWaited = list_utils:delete_existing( WaitedPid, WaitedSenders ),
 
 			%trace_bridge:debug_fmt( "(received ~p, still waiting for "
-			%						"instances ~p)", [ WaitedPid, NewWaited ] ),
+			%   "instances ~p)", [ WaitedPid, NewWaited ] ),
 
 			wait_for_acks_helper( NewWaited, InitialTimestamp,
 				  MaxDurationInSeconds, Period, AckReceiveAtom, ThrowAtom )
@@ -911,7 +959,7 @@ wait_for_acks_helper( WaitedSenders, InitialTimestamp, MaxDurationInSeconds,
 				false ->
 					% Still waiting then:
 					%trace_bridge:debug_fmt( "(still waiting for instances ~p)",
-					%						[ WaitedSenders ] ),
+					%                        [ WaitedSenders ] ),
 
 					wait_for_acks_helper( WaitedSenders, InitialTimestamp,
 						MaxDurationInSeconds, Period, AckReceiveAtom,
@@ -980,7 +1028,7 @@ wait_for_summable_acks_helper( WaitedSenders, CurrentValue, InitialTimestamp,
 			NewWaited = list_utils:delete_existing( WaitedPid, WaitedSenders ),
 
 			%io:format( "(received ~p, still waiting for instances ~p)~n",
-			%		   [ WaitedPid, NewWaited ] ),
+			%           [ WaitedPid, NewWaited ] ),
 
 			wait_for_summable_acks_helper( NewWaited, CurrentValue + ToAdd,
 				  InitialTimestamp, MaxDurationInSeconds, Period,
@@ -1052,13 +1100,7 @@ wait_for_many_acks( WaitedSenders, MaxDurationInSeconds, Period,
 wait_for_many_acks_helper( WaitedSenders, InitialTimestamp,
 		MaxDurationInSeconds, Period, AckReceiveAtom, ThrowAtom ) ->
 
-	case set_utils:is_empty( WaitedSenders ) of
-
-		true ->
-			ok;
-
-		false ->
-
+	set_utils:is_empty( WaitedSenders ) orelse
 			receive
 
 				{ AckReceiveAtom, WaitedPid } ->
@@ -1067,7 +1109,8 @@ wait_for_many_acks_helper( WaitedSenders, InitialTimestamp,
 														   WaitedSenders ),
 
 					wait_for_many_acks_helper( NewWaited, InitialTimestamp,
-					   MaxDurationInSeconds, Period, AckReceiveAtom, ThrowAtom )
+						MaxDurationInSeconds, Period, AckReceiveAtom,
+						ThrowAtom )
 
 			after Period ->
 
@@ -1087,9 +1130,7 @@ wait_for_many_acks_helper( WaitedSenders, InitialTimestamp,
 
 					end
 
-			end
-
-	end.
+			end.
 
 
 
@@ -1263,7 +1304,7 @@ display_process_info( Pid ) when is_pid( Pid ) ->
 				PropList ->
 
 					Strings = [ io_lib:format( "~ts: ~p", [ K, V ] )
-								|| { K, V } <- PropList ],
+											|| { K, V } <- PropList ],
 
 					io:format( "PID ~w refers to a live process on "
 						"remote node ~ts, whose information are: ~ts",
@@ -1323,7 +1364,7 @@ display( Message ) ->
 display( Format, Values ) ->
 
 	%io:format( "Displaying format '~p' and values '~p'.~n",
-	%		   [ Format, Values ] ),
+	%           [ Format, Values ] ),
 
 	Message = text_utils:format( Format, Values ),
 
@@ -1361,7 +1402,7 @@ display_timed( Message, TimeOut ) ->
 display_timed( Format, Values, TimeOut ) ->
 
 	%trace_utils:debug_fmt( "Displaying format '~p' and values '~p'.",
-	%						[ Format, Values ] ),
+	%                       [ Format, Values ] ),
 
 	Message = text_utils:format( Format, Values ),
 
@@ -1494,19 +1535,38 @@ parse_version( VersionString ) ->
 
 
 
-% @doc Checks that specified term is a triplet-based version.
--spec check_version( term() ) -> void().
-check_version( { A, B, C } ) when is_integer( A ) andalso is_integer( B )
-								  andalso is_integer( C )->
-	ok;
+% @doc Checks that specified term is a three-digit version, and returns it.
+-spec check_three_digit_version( term() ) -> three_digit_version().
+check_three_digit_version( T={ A, B, C } ) when is_integer( A )
+				andalso is_integer( B ) andalso is_integer( C ) ->
+	T;
 
-check_version( T ) ->
-	throw( { invalid_triplet_version, T } ).
+check_three_digit_version( T ) ->
+	throw( { invalid_three_digit_version, T } ).
 
 
 
-% @doc Compares the two pairs, triplets or quadruplets (expected to be of the
-% same size), which describe two version numbers (ex: {0,1,0} and {0,1,7}) and
+% @doc Checks that the specified term is a any-version, and returns it.
+-spec check_any_version( term() ) -> any_version().
+check_any_version( T ) when is_tuple( T ) ->
+	case lists:all( fun( E ) -> is_integer( E ) andalso E >= 0 end,
+					tuple_to_list( T ) ) of
+
+		true ->
+			T;
+
+		false ->
+			throw( { invalid_any_version, T } )
+
+	end;
+
+check_any_version( V ) ->
+	throw( { invalid_any_version, V } ).
+
+
+
+% @doc Compares the two specified any-versions (expected to be of the same
+% size), which describe two version numbers (ex: {0,1,0} and {0,1,7}) and
 % returns either first_bigger, second_bigger, or equal.
 %
 % The two compared versions must have the same number of digits.
@@ -1614,11 +1674,8 @@ get_process_specific_value( Pid ) ->
 % @doc Returns a (Erlang) process-specific value in [Min,Max[.
 -spec get_process_specific_value( integer(), integer() ) -> integer().
 get_process_specific_value( Min, Max ) ->
-
 	Value = get_process_specific_value(),
-
 	{ H, M, S } = erlang:time(),
-
 	( ( ( H + M + S + 1 ) * Value ) rem ( Max - Min ) ) + Min.
 
 
@@ -1658,13 +1715,11 @@ get_process_size( Pid ) ->
 % this call.
 %
 % Note:
-%
 % - the process may run on the local node or not
-%
 % - generally not to be used, when relying on a good design
 %
 -spec is_alive( pid() | ustring() | naming_utils:registration_name() ) ->
-			boolean().
+											boolean().
 is_alive( TargetPid ) when is_pid( TargetPid ) ->
 	is_alive( TargetPid, node( TargetPid ) );
 
@@ -1714,24 +1769,16 @@ is_alive( TargetPid, Node, Verbose ) when is_pid( TargetPid ) ->
 			%trace_utils:debug_fmt( "Testing liveliness of process ~p "
 			%  "on node ~p.", [ TargetPid, Node ] ),
 			case rpc:call( Node, _Mod=erlang, _Fun=is_process_alive,
-					  _Args=[ TargetPid ] ) of
+						   _Args=[ TargetPid ] ) of
 
 				Res when is_boolean( Res ) ->
 					Res;
 
 				{ badrpc, nodedown } ->
-					case Verbose of
-
-						true ->
-							trace_utils:warning_fmt( "Reporting that process "
-								"of PID ~w is not alive as its node ('~ts') "
-								"is reported as down.", [ TargetPid, Node ] );
-
-						false ->
-							ok
-
-					end,
-					false;
+					Verbose andalso
+						trace_utils:warning_fmt( "Reporting that process "
+							"of PID ~w is not alive as its node ('~ts') "
+							"is reported as down.", [ TargetPid, Node ] );
 
 				Other ->
 					throw( { unexpected_liveliness_report, Other } )

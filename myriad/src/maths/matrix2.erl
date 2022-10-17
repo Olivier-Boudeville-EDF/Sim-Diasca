@@ -477,7 +477,7 @@ comatrix( _M=#matrix2{ m11=M11, m12=M12,
 
 
 
-% @doc Returns the inverse of the specified matrix, if it is inversible (that is
+% @doc Returns the inverse of the specified matrix, if it is invertible (that is
 % iff its determinant is non-null), otherwise returns undefined.
 %
 % Note: often the inverse can be obtained differently (ex: by applying reverse

@@ -23,7 +23,7 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
-% Creation date: Saturday, July 12, 2008.
+% Creation date: Saturday, July 12, 2017.
 
 
 % @doc Gathering of various convenient facilities regarding the <b>support of
@@ -71,8 +71,11 @@
 
 
 % Shorthands:
+
 -type ustring() :: text_utils:ustring().
--type directory_path() :: file_utils:directory_path().
+
+-type possibly_resolvable_path() :: file_utils:possibly_resolvable_path().
+
 
 
 % @doc Returns a list of the supported foreign (non-native, meaning non-Erlang)
@@ -113,7 +116,7 @@ language_to_string( Language, _IndentationLevel ) when is_atom( Language ) ->
 	throw( { unknown_language, Language } );
 
 language_to_string( { Language, CodePath }, IndentationLevel )
-  when is_atom( Language ) andalso is_list( CodePath ) ->
+						when is_atom( Language ) andalso is_list( CodePath ) ->
 	text_utils:format( "~ts, with following code path: ~ts",
 		[ language_to_string( Language ),
 		  text_utils:strings_to_string( CodePath, IndentationLevel+1 ) ] );
@@ -127,7 +130,7 @@ language_to_string( LanguageInvalidArg, _IndentationLevel ) ->
 % specified language bindings.
 %
 -spec get_additional_beam_directories_for( [ language() ] ) ->
-												[ directory_path() ].
+												[ possibly_resolvable_path() ].
 get_additional_beam_directories_for( Languages ) ->
 	get_additional_beam_directories_for( Languages, _Acc=[] ).
 

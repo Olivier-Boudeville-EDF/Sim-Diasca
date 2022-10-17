@@ -250,7 +250,7 @@ run() ->
 
 	true = matrix3:are_equal( MultCanCptMatrix, SecondMult ),
 
-	% Knowing that CoordMatrix is not inversible (its determinant is epsilon):
+	% Knowing that CoordMatrix is not invertible (its determinant is epsilon):
 	-25.0 = matrix3:determinant( ColMatrix ),
 
 	InvColMatrix = matrix3:inverse( ColMatrix ),

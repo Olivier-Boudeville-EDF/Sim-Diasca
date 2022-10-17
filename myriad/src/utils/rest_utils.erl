@@ -23,7 +23,7 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Authors: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
-%		   Samuel Thiriot [samuel (dot) thiriot (at) edf (dot) fr]
+%          Samuel Thiriot [samuel (dot) thiriot (at) edf (dot) fr]
 %
 % Creation date: Tuesday, December 1, 2015.
 
@@ -356,8 +356,8 @@ http_request( Method, Request, HTTPOptions, Options, Retries ) ->
 			% We will retry the same query one more time, after a random delay
 			% in specified bounds:
 
-			Delay = random_utils:get_random_value( ?retry_delay_min,
-												   ?retry_delay_max ),
+			Delay = random_utils:get_uniform_value( ?retry_delay_min,
+													?retry_delay_max ),
 
 			trace_utils:warning_fmt( "HTTP ~p request ~p failed (cause: ~p), "
 				"retrying after a delay of ~w milliseconds.",

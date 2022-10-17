@@ -21,9 +21,9 @@
 % along with this library.
 % If not, see <http://www.gnu.org/licenses/> and
 % <http://www.mozilla.org/MPL/>.
-
-% Creation date: Friday, October 8, 2021.
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: Friday, October 8, 2021.
 
 
 % The glTF version supported:

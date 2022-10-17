@@ -46,7 +46,7 @@
 	% for the definition (first clause) of this actor oneway (not of its spec,
 	% which has its specific field below):
 	%
-	ast_location = undefined :: maybe( ast_info:location() ),
+	ast_location = undefined :: maybe( ast_info:ast_location() ),
 
 
 	% Corresponds to the in-file location of the first defined clause (in its

@@ -63,6 +63,7 @@ prepare-docker-context:
 clean-docker-context:
 	@echo "  Cleaning Docker context"
 	-@/bin/rm -f docker-context/Dockerfile docker-context/README-About-This-Docker-Image.txt 2>/dev/null
+	-@/bin/rm -rf docker-context/Sim-Diasca/ 2>/dev/null
 
 
 docker-image: prepare-docker-context prepare-docker-image create-docker-image

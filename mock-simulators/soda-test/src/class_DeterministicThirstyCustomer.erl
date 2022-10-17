@@ -155,7 +155,7 @@ destruct( State ) ->
 % Management section of the actor.
 
 
-% @doc imply schedules this just created actor at the next tick (diasca 0).
+% @doc Schedules this just created actor at the next tick (diasca 0).
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
 							actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->

@@ -26,10 +26,10 @@
 % Creation date: Friday, May 8, 2020.
 
 
-% This is just a simple example to showcase the use of Traces at the level of a
-% test case: 'make trace_use_simple_example_run' shall display the (graphical)
-% trace supervisor, as opposed to:
-% 'make trace_use_simple_example_run CMD_LINE_OPT="--batch"'.
+% @doc This is just a simple example to showcase the use of Traces at the level
+% of a test case: 'make trace_use_simple_example_run' shall display the
+% (graphical) trace supervisor, as opposed to: 'make
+% trace_use_simple_example_run CMD_LINE_OPT="--batch"'.
 %
 -module(trace_use_simple_example_test).
 
@@ -61,6 +61,21 @@ run() ->
 
 	?test_debug( "Testing a message with non-Latin1 characters: "
 				 "àâäéèêëîïôöùûü" ),
+
+	?test_info_fmt(
+		"Testing a longer, multi-line message~nThis is a line.~n"
+		"This is another, long line. The role of the Traces layer "
+		"(part of the Ceylan project) is to provide Erlang "
+		"applications with advanced trace services, so that the user "
+		"can efficiently log, browse and search through detailed "
+		"runtime messages that may be emitted concurrently "
+		"(i.e. in a parallel, distributed way) by all kinds of "
+		"processes.~n"
+		"We present here a short overview of these services, to "
+		"introduce them to newcomers. The next level of information "
+		"is either to browse the Traces API documentation or simply "
+		"to read the corresponding source files, which are intensely "
+		"commented and generally straightforward. àâäéèêëîïôöùûü", [] ),
 
 	?test_debug_fmt( "End of test for ~ts.", [ ?MODULE ] ),
 

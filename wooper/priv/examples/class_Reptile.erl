@@ -1,15 +1,16 @@
-% Copyright (C) 2003-2022 Olivier Boudeville
+% Copyright (C) 2007-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER examples.
 %
 % It has been placed in the public domain.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2007.
 
 
 % @doc Class modelling any kind of <b>reptile</b>.
 %
-% This class allows to test an exploratory resilience support.
+% This class allows to test serialisation for an exploratory resilience support.
 %
 -module(class_Reptile).
 
@@ -18,13 +19,15 @@
 
 
 % Determines what are the direct mother classes of this class (if any):
--define( superclasses, [ class_Creature ] ).
+-define( superclasses, [ class_OvoviviparousBeing, class_Serialisable,
+						 class_StaticDescribable ] ).
 
 
--define( class_attributes, [] ).
+-define( class_attributes, [
 
-% With this class, we will test serialisation hooks:
--define( wooper_serialisation_hooks, ).
+	reptile_family
+
+						   ] ).
 
 
 % Allows to define WOOPER base variables and methods for that class:
@@ -35,56 +38,54 @@
 -include("ecosystem_types.hrl").
 
 
-% @doc Triggered just before serialisation.
--spec pre_serialise_hook( wooper:state() ) -> wooper:state().
-pre_serialise_hook( State ) ->
-	trace_utils:info( "Pre-serialising a reptile!" ),
-	State.
 
+% Shorthands:
 
-
-% @doc Triggered just after serialisation.
-%
-% (using WOOPER default hook implementation augmented of an trace_utils:info)
-%
--spec post_serialise_hook( classname(),
-						   wooper_serialisation:term_serialisation(),
-						   wooper:state() ) -> term().
-post_serialise_hook( Classname, Entries, _State ) ->
-	trace_utils:info( "Post-serialising a reptile!" ),
-	{ Classname, Entries }.
-
-
-
-% @doc Triggered just before deserialisation.
--spec pre_deserialise_hook( term(), basic_utils:user_data() ) ->
-							wooper_serialisation:term_serialisation().
-pre_deserialise_hook( _SerialisedEntries={ _Classname, Entries }, _UserData ) ->
-	trace_utils:info( "Pre-deserialising a reptile!" ),
-	Entries.
-
-
-
-% @doc Triggered just after deserialisation.
--spec post_deserialise_hook( wooper:state() ) -> wooper:state().
-post_deserialise_hook( State ) ->
-	trace_utils:info( "Post-deserialising a reptile!" ),
-	State.
+-type user_data() :: class_Serialisable:user_data().
+-type serialisation() :: class_Serialisable:serialisation().
 
 
 
 % @doc Constructs a reptile.
 -spec construct( wooper:state(), age(), gender() ) -> wooper:state().
 construct( State, Age, Gender ) ->
-	class_Creature:construct( State, Age, Gender ).
+
+	OvivipState = class_ViviparousBeing:construct( State ),
+	SerialState = class_Serialisable:construct( OvivipState ),
+
+	Family = cobra,
+
+	Description = text_utils:format( "a ~ts ~ts of age ~B",
+									 [ Gender, Family, Age ] ),
+
+	DescState = class_StaticDescribable:construct( SerialState, Description ),
+
 	% To test constructor checking:
 	%an_unexpected_initial_state.
 
+	setAttributes( DescState, [
+		{ age, Age },
+		{ gender, Gender },
+		{ reptile_family, Family }
 
-% @doc Overridden destructor
+		% To test whether direct or compounded transient terms will be detected
+		% at serialisation time as expected:
+		%
+		%{ test_pid, { hello, self() } }
+		%{ test_ref, [ foo, erlang:make_ref() ] }
+		%{ test_port, erlang:open_port( { spawn, "echo Hello!" }, _Opts=[] ) }
+
+								] ).
+
+
+
+% @doc Overridden destructor.
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
-	trace_utils:info( "Deleting a Reptile." ),
+
+	trace_utils:info_fmt( "Deleting ~ts, of PID ~w.",
+		[ class_Describable:get_maybe_description( State ), self() ] ),
+
 	State.
 	% To test destructor checking use instead:
 	%an_unexpected_final_state.
@@ -123,3 +124,47 @@ isHotBlooded( State ) ->
 -spec canMoult( wooper:state() ) -> const_request_return( boolean() ).
 canMoult( State ) ->
 	wooper:const_return_result( true ).
+
+
+
+% Serialisable interface.
+
+
+% @doc Triggered just before serialisation.
+-spec onPreSerialisation( wooper:state(), user_data() ) ->
+					const_request_return( { wooper:state(), user_data() } ).
+onPreSerialisation( State, UserData ) ->
+
+	trace_utils:info_fmt( "Pre-serialising a reptile! (user data: ~p);~n ~ts",
+						  [ UserData, wooper:state_to_string( State ) ] ),
+
+	wooper:const_return_result( { State, UserData } ).
+
+
+
+% @doc Triggered just after serialisation.
+-spec onPreSerialisation( wooper:state(), serialisation(), user_data() ) ->
+			const_request_return( { serialisation(), user_data() } ).
+onPreSerialisation( State, SerialisationTerm, UserData ) ->
+
+	trace_utils:info_fmt( "Post-serialising a reptile! "
+		"(serialisation term: ~p, user data: ~p);~n ~ts",
+		[ SerialisationTerm, UserData, wooper:state_to_string( State ) ] ),
+
+	wooper:const_return_result( { SerialisationTerm, UserData } ).
+
+
+
+% No relevant onPreDeserialisation/2 request can exist, as no instance is
+% available at this point.
+
+
+% @doc Triggered just after serialisation.
+-spec onPostDeserialisation( wooper:state(), user_data() ) ->
+			const_request_return( user_data() ).
+onPostDeserialisation( State, UserData ) ->
+
+	trace_utils:info_fmt( "Post-deserialising a reptile! (user data: ~p);"
+		"~n ~ts", [ UserData, wooper:state_to_string( State ) ] ),
+
+	wooper:const_return_result( UserData ).

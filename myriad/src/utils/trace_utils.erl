@@ -107,7 +107,7 @@
 % Values corresponding to format quantifiers.
 
 
--type trace_message_categorization() :: ustring().
+-type trace_message_categorization() :: atom().
 % Categorization of a trace message.
 
 
@@ -742,7 +742,8 @@ get_severity_for( Other ) ->
 
 
 % @doc Tells whether the specified severity belongs to the error-like ones
-% (typically the ones that must never be missed).
+% (typically the ones that must never be missed by the user, hence are echoed on
+% the console as well).
 %
 -spec is_error_like( trace_severity() ) -> boolean().
 is_error_like( Severity ) ->
@@ -783,7 +784,7 @@ set_handler() ->
 		ok ->
 			ok;
 
-		{ error, AddErrReason, TargetHandler } ->
+		{ error, AddErrReason } ->
 			throw( { unable_to_set_myriad_log_handler, AddErrReason,
 					 TargetHandler } )
 
@@ -864,7 +865,7 @@ log( _LogEvent=#{ level := Level,
 	%   [ LogEvent, Config, TraceMsg, Severity ] ),
 
 	% No the standard level corresponds directly to our severity:
-	echo( TraceMsg, _Severity=Level, "erlang_logger" );
+	echo( TraceMsg, _Severity=Level, 'erlang_logger' );
 
 log( LogEvent, _Config ) ->
 	throw( { unexpected_log_event, LogEvent } ).

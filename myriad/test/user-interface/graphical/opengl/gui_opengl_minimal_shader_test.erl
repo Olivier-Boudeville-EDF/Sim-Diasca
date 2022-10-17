@@ -26,16 +26,16 @@
 % Creation date: Sunday, January 9, 2022.
 
 
-% @doc Minimal testing of the <b>OpenGL GLSL support</b>; displays, based on
-% shaders, a read triangle on a black background.
+% @doc Minimal testing of the <b>OpenGL GLSL support</b>: displays, based on
+% shaders, a Myriad-blue triangle on a white background.
 %
 % It is therefore a non-interactive, passive test (no spontaneous/scheduled
 % behaviour) whose main interest is to show a simple yet generic, appropriate
 % structure in order to properly initialise the GUI and OpenGL, handle
 % rendering, resizing and closing.
 %
-% This test relies on shaders and thus modern versions of OpenGL (ex: 3.3), as
-% opposed to the compatibility mode for OpenGL 1.x.
+% This test relies on shaders and thus on modern versions of OpenGL (ex: 3.3),
+% as opposed to the compatibility mode for OpenGL 1.x.
 %
 % See the gui_opengl.erl tested module.
 %
@@ -76,9 +76,7 @@
 	% The OpenGL context being used:
 	context :: gl_context(),
 
-	% Here just a boolean; in more complex cases, would be a maybe OpenGL state
-	% (ex: to store the loaded textures):
-	%
+	% In more complex cases, would store the loaded textures, etc.
 	opengl_state :: maybe( my_opengl_state() ) } ).
 
 -type my_gui_state() :: #my_gui_state{}.
@@ -91,10 +89,10 @@
 	% The identifier of our GLSL program:
 	program_id :: program_id(),
 
-	% The identifier of the Vertex Array Object used in this test:
+	% The identifier of the VAO (Vertex Array Object) used in this test:
 	vao_id :: vao_id(),
 
-	% The identifier of the Vertex Buffer Object for the triangle:
+	% The identifier of the VBO (Vertex Buffer Object) for the triangle:
 	vbo_id :: vbo_id() } ).
 
 -type my_opengl_state() :: #my_opengl_state{}.
@@ -105,7 +103,6 @@
 
 % Shorthands:
 
-%-type dimensions() :: gui:dimensions().
 -type frame() :: gui:frame().
 
 -type width() :: gui:width().
@@ -208,8 +205,7 @@ gui_main_loop( GUIState ) ->
 	% Matching the least-often received messages last:
 	receive
 
-
-		{ onRepaintNeeded, [ GLCanvas, _EventContext ] } ->
+		{ onRepaintNeeded, [ GLCanvas, _GLCanvasId, _EventContext ] } ->
 
 			%trace_utils:debug_fmt( "Repaint needed for OpenGL canvas ~w.",
 			%                       [ GLCanvas ] ),
@@ -238,7 +234,8 @@ gui_main_loop( GUIState ) ->
 		% For a window, the first resizing event happens (just) before its
 		% onShown one:
 		%
-		{ onResized, [ _ParentFrame, _NewParentSize, _EventContext ] } ->
+		{ onResized, [ _ParentFrame, _ParentFrameId, _NewParentSize,
+					   _EventContext ] } ->
 
 			%trace_utils:debug_fmt( "Resizing of the parent window "
 			%   "(main frame) to ~w detected.", [ NewParentSize ] ),
@@ -258,11 +255,12 @@ gui_main_loop( GUIState ) ->
 			gui_main_loop( ResizedGUIState );
 
 
+		% Less frequent messages looked up last:
 
 		% The most suitable first location to initialise OpenGL, as making a GL
 		% context current requires a shown window:
 		%
-		{ onShown, [ ParentFrame, _EventContext ] } ->
+		{ onShown, [ ParentFrame, _ParentFrameId, _EventContext ] } ->
 
 			trace_utils:debug_fmt( "Parent window (main frame) just shown "
 				"(initial size of ~w).", [ gui:get_size( ParentFrame ) ] ),
@@ -273,10 +271,12 @@ gui_main_loop( GUIState ) ->
 			% Done once for all:
 			InitGUIState = initialise_opengl( GUIState ),
 
+			% A onRepaintNeeded event message expected just afterwards.
+
 			gui_main_loop( InitGUIState );
 
 
-		{ onWindowClosed, [ ParentFrame, _EventContext ] } ->
+		{ onWindowClosed, [ ParentFrame, _ParentFrameId, _EventContext ] } ->
 			cleanup_opengl( GUIState ),
 			trace_utils:info( "Main frame closed, test success." ),
 
@@ -309,7 +309,7 @@ initialise_opengl( GUIState=#my_gui_state{ canvas=GLCanvas,
 	trace_utils:debug_fmt( "Initialising OpenGL (whereas canvas is of initial "
 						   "size ~w).", [ gui:get_size( GLCanvas ) ] ),
 
-	% So done only once:
+	% So done only once, with appropriate measures for a first setting:
 	gui_opengl:set_context_on_shown( GLCanvas, GLContext ),
 
 	% First possible moment:
@@ -332,10 +332,10 @@ initialise_opengl( GUIState=#my_gui_state{ canvas=GLCanvas,
 								   RequiredExts ),
 
 
-	% These settings will not change afterwards here (set once for all):
+	% These settings will not change afterwards here (hence set once for all):
 
-	% Clears in white:
-	gl:clearColor( 1.0, 1.0, 1.0, 0.0 ),
+	% Clears in white (necessary, otherwise black background):
+	gl:clearColor( _R=1.0, _G=1.0, _B=1.0, ?alpha_fully_opaque ),
 
 
 	% Creates and compiles our GLSL program from the two specified shaders:
@@ -344,6 +344,9 @@ initialise_opengl( GUIState=#my_gui_state{ canvas=GLCanvas,
 		"gui_opengl_minimal_shader.fragment.glsl" ),
 
 	% One (integer) identifier of vertex array wanted:
+	%
+	% (see http://howtos.esperide.org/ThreeDimensional.html#gl-bindings)
+	%
 	[ VertexArrayId ] = gl:genVertexArrays( _Count=1 ),
 
 	gl:bindVertexArray( VertexArrayId ),
@@ -351,13 +354,13 @@ initialise_opengl( GUIState=#my_gui_state{ canvas=GLCanvas,
 	% Rely on our shader:
 	gl:useProgram( ProgramId ),
 
-	% Triangle defined by a [ point3:vertex3() ]:
+	% Triangle defined as [vertex3()]:
 	Vertices = [ { -1.0, -1.0, 0.0 }, { 1.0, -1.0, 0.0 }, { 0.0, 1.0, 0.0 } ],
 
 
-	% Targeting vertex attributes:
-	VertexBufferId = gui_opengl:bind_vertex_buffer_object( Vertices,
-												_UsageHint=?GL_STATIC_DRAW ),
+	% Targeting vertex attributes in a VBO:
+	VertexBufferId =
+		gui_opengl:bind_vertex_buffer_object( Vertices, _UsageHint=read_only ),
 
 	% Could be done once for all here:
 	%gl:bindBuffer( ?GL_ARRAY_BUFFER, VertexBufferId ),
@@ -465,7 +468,7 @@ render( _Width, _Height, #my_opengl_state{ vbo_id=VBufferId } ) ->
 	% First and only attribute in buffer: the vertices.
 	VertIndex = 0,
 
-	% Uses the currently bound vertex array object;
+	% Uses the currently bound vertex array object:
 	gl:enableVertexAttribArray( VertIndex ),
 
 	% Attribute 0; no particular reason for this index, but must match the
@@ -501,6 +504,7 @@ run() ->
 	test_facilities:start( ?MODULE ),
 
 	case executable_utils:is_batch() of
+
 
 		true ->
 			test_facilities:display(

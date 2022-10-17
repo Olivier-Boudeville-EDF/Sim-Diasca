@@ -338,7 +338,7 @@ rotate( _Q={ A, B, C, D }, V ) ->
 
 	V3 = vector3:scale( vector3:cross_product( Vq, V ), 2.0*A ),
 
-	vector3:add( V1, V2, V3 ).
+	vector3:add( [ V1, V2, V3 ] ).
 
 
 

@@ -131,7 +131,7 @@
 
 
 % Exported helpers:
--export([ declare_content_file/2, to_string/1 ]).
+-export([ declare_content_file/2, to_string/1, interpret_options/1 ]).
 
 
 % Must be included before class_TraceEmitter header:

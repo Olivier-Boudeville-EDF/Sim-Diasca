@@ -49,15 +49,15 @@ run() ->
 
 	{ MinBound, MaxBound } = { 1, 15 },
 
-	FirstList = [ random_utils:get_random_value( X )
+	FirstList = [ random_utils:get_uniform_value( X )
 					|| X <- lists:seq( MinBound, MaxBound ) ],
 
 	test_facilities:display( "First random, uniform reproducible list: ~w",
 							 [ FirstList ] ),
 
-	SecondList = [ random_utils:get_random_value( X, Y )
-					 || X <- lists:seq( MinBound, 5 ),
-						Y <- lists:seq( X, MaxBound )  ],
+	SecondList = [ random_utils:get_uniform_value( X, Y )
+					|| X <- lists:seq( MinBound, 5 ),
+					   Y <- lists:seq( X, MaxBound ) ],
 
 	test_facilities:display( "Second random, uniform reproducible list: ~w",
 							 [ SecondList ] ),
@@ -67,7 +67,7 @@ run() ->
 	Max = 12,
 	Count = 500,
 
-	AnotherList = random_utils:get_random_values( Min, Max, Count ),
+	AnotherList = random_utils:get_uniform_values( Min, Max, Count ),
 
 	case length( AnotherList ) of
 
@@ -95,7 +95,7 @@ run() ->
 
 	random_utils:start_random_source( time_based_seed ),
 
-	ThirdList = random_utils:get_random_values( MaxBound, _Count=35 ),
+	ThirdList = random_utils:get_uniform_values( MaxBound, _Count=35 ),
 
 	test_facilities:display( "Random, uniform, non-reproducible list "
 		"between 1 and ~B (both included): ~w", [ MaxBound, ThirdList ] ),
@@ -188,16 +188,9 @@ run() ->
 			case system_utils:run_executable( MaybeGnuplotPath, Args ) of
 
 				{ _ReturnCode=0, Output } ->
-					case Output of
-
-						"" ->
-							ok;
-
-						_ ->
-							trace_utils:warning_fmt( "Following output was "
-								"returned by gnuplot: ~ts", [ Output ] )
-
-					end,
+					Output =:= "" orelse
+						trace_utils:warning_fmt( "Following output was "
+							"returned by gnuplot: ~ts", [ Output ] ),
 
 					executable_utils:display_png_file(
 						"test_pdf_sampled_function.png" );

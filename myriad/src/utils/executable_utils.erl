@@ -50,91 +50,85 @@
 		  browse_images_in/1,
 		  playback_audio_file/1, playback_audio_file/2,
 		  display_pdf_file/1, display_text_file/1,
-		  display_wide_text_file/2, get_ssh_mute_option/0,
-		  compute_md5_sum/1, compute_sha1_sum/1, compute_sha_sum/2 ]).
+		  display_wide_text_file/2, get_ssh_mute_option/0 ]).
 
 
 % Section about default tools:
 -export([
 
-		 get_default_image_viewer_name/0,
-		 get_default_image_viewer_path/0,
+	get_default_image_viewer_name/0,
+	get_default_image_viewer_path/0,
 
-		 get_default_image_browser_name/0,
-		 get_default_image_browser_path/0,
+	get_default_image_browser_name/0,
+	get_default_image_browser_path/0,
 
-		 get_default_web_browser_name/0,
-		 get_default_web_browser_path/0,
+	get_default_web_browser_name/0,
+	get_default_web_browser_path/0,
 
-		 get_default_pdf_viewer_name/0,
-		 get_default_pdf_viewer_path/0,
+	get_default_pdf_viewer_name/0,
+	get_default_pdf_viewer_path/0,
 
-		 get_default_text_viewer_name/0,
-		 get_default_text_viewer_path/0,
+	get_default_text_viewer_name/0,
+	get_default_text_viewer_path/0,
 
-		 get_default_wide_text_viewer_name/1,
-		 get_default_wide_text_viewer_path/1,
+	get_default_wide_text_viewer_name/1,
+	get_default_wide_text_viewer_path/1,
 
-		 get_default_audio_player_name/0,
-		 get_secondary_default_audio_player_name/0,
-		 get_default_audio_player_info/0,
-		 get_default_audio_player_options/1,
+	get_default_audio_player_name/0,
+	get_secondary_default_audio_player_name/0,
+	get_default_audio_player_info/0,
+	get_default_audio_player_options/1,
 
-		 get_default_trace_viewer_name/0,
-		 get_default_trace_viewer_path/0,
+	get_default_trace_viewer_name/0,
+	get_default_trace_viewer_path/0,
 
-		 get_default_erlang_root/0,
-		 get_default_erlang_interpreter_name/0,
-		 get_default_erlang_interpreter_path/0,
+	get_default_erlang_root/0,
+	get_default_erlang_interpreter_name/0,
+	get_default_erlang_interpreter_path/0,
 
-		 get_default_ssh_client_name/0,
-		 get_default_ssh_client_path/0,
+	get_default_ssh_client_name/0,
+	get_default_ssh_client_path/0,
 
-		 get_default_scp_executable_name/0,
-		 get_default_scp_executable_path/0,
+	get_default_scp_executable_name/0,
+	get_default_scp_executable_path/0,
 
-		 get_default_openssl_executable_name/0,
-		 get_default_openssl_executable_path/0,
+	get_default_openssl_executable_name/0,
+	get_default_openssl_executable_path/0,
 
-		 get_gnuplot_path/0,
-		 get_current_gnuplot_version/0,
-		 get_current_gnuplot_version/1,
+	get_make_path/0,
 
-		 get_default_zip_compress_tool/0,
-		 get_default_zip_decompress_tool/0,
+	get_gnuplot_path/0,
+	get_current_gnuplot_version/0,
+	get_current_gnuplot_version/1,
 
-		 get_default_bzip2_compress_tool/0,
-		 get_default_bzip2_decompress_tool/0,
+	get_default_zip_compress_tool/0,
+	get_default_zip_decompress_tool/0,
 
-		 get_default_xz_compress_tool/0,
-		 get_default_xz_decompress_tool/0,
+	get_default_bzip2_compress_tool/0,
+	get_default_bzip2_decompress_tool/0,
 
-		 get_default_md5_tool/0,
-		 get_default_sha_tool/0,
+	get_default_xz_compress_tool/0,
+	get_default_xz_decompress_tool/0,
 
-		 get_default_sql_client/0,
+	get_default_hashing_tool/0,
 
-		 get_default_java_runtime/0,
-		 get_default_jinterface_path/0 ]).
+	get_default_sql_client/0,
+
+	get_default_xml_prettyprinter/0,
+
+	get_default_java_runtime/0,
+	get_default_jinterface_path/0,
+
+	get_default_graph_stream_tool_name/0,
+	get_default_graph_stream_tool_path/0 ]).
 
 
 -type executable_name() :: ustring().
 % A name, not a path.
 
 
--type md5_sum() :: non_neg_integer().
-% MD5 sum, a 128-bit hash value.
 
-
--type sha1_sum() :: non_neg_integer().
-% SHA1 sum, a 160-bit hash value.
-
-
--type sha_sum() :: non_neg_integer().
-% SHA sum, a hash value of unspecified size.
-
-
--export_type([ executable_name/0, md5_sum/0, sha1_sum/0, sha_sum/0 ]).
+-export_type([ executable_name/0 ]).
 
 
 
@@ -152,7 +146,6 @@
 
 -type file_name() :: file_utils:file_name().
 -type file_path() :: file_utils:file_path().
--type any_file_path() :: file_utils:any_file_path().
 -type executable_path() :: file_utils:executable_path().
 -type directory_path() :: file_utils:directory_path().
 
@@ -415,8 +408,8 @@ display_text_file( TextFilename ) ->
 display_wide_text_file( TextFilename, CharacterWidth ) ->
 
 	case system_utils:run_command(
-		   get_default_wide_text_viewer_path( CharacterWidth )
-		   ++ " " ++ TextFilename ) of
+			get_default_wide_text_viewer_path( CharacterWidth )
+				++ " " ++ TextFilename ) of
 
 		{ _ExitCode=0, Output } ->
 			Output;
@@ -445,143 +438,6 @@ display_wide_text_file( TextFilename, CharacterWidth ) ->
 -spec get_ssh_mute_option() -> ustring().
 get_ssh_mute_option() ->
 	" -o \"StrictHostKeyChecking no\" ".
-
-
-
-% @doc Returns the MD5 sum computed from the content of the specified file, as
-% an unsigned integer, actually of 128 bits (ex:
-% 96950473382892364268626543336313804804, corresponding to hexadecimal string
-% "48effb631c66e93c7054c10f798f5804").
-%
--spec compute_md5_sum( file_path() ) -> md5_sum().
-compute_md5_sum( Filename ) ->
-
-	case file_utils:is_existing_file( Filename ) of
-
-		true ->
-			ok;
-
-		false ->
-			throw( { file_for_md5_not_found, Filename } )
-
-	end,
-
-	% erlang:md5/1 not used here, would be probably slower:
-
-	% Removes the filename after the MD5 code:
-	Cmd = system_utils:run_command( get_default_md5_tool() ++ " '"
-	  ++ shell_utils:protect_from_shell( Filename ) ++ "' | sed 's|  .*$||1'" ),
-
-	case Cmd of
-
-		{ _ExitCode=0, OutputString } ->
-			text_utils:hexastring_to_integer( OutputString,
-											  _ExpectPrefix=false );
-
-		{ ExitCode, ErrorOutput } ->
-			throw( { md5_computation_failed, ExitCode, ErrorOutput, Filename } )
-
-	end.
-
-
-
-% @doc Returns the SHA1 sum computed from the content of the specified file, as
-% an unsigned integer, actually of 160 bits (ex:
-% 189271338729529876450691804503218393830331783574, corresponding to hexadecimal
-% string "212738699f721d8d8c3e58dac2b113bb8d0c1996").
-%
--spec compute_sha1_sum( file_path() ) -> sha1_sum().
-compute_sha1_sum( Filename ) ->
-
-	%trace_utils:info_fmt( "Computing SHA1 sum of '~ts'.", [ Filename ] ),
-
-	compute_sha_sum( Filename, _SizeOfSHAAlgorithm=1 ).
-
-
-
-% @doc Returns the SHA sum computed from the content of the specified file, as
-% an unsigned integer, whose size depends on the specified algorithm: 1, 224,
-% 256, 384, 512, 512224, 512256 (see 'man shasum' for more details).
-%
--spec compute_sha_sum( any_file_path(), basic_utils:count() ) -> sha_sum().
-compute_sha_sum( Filename, SizeOfSHAAlgorithm )
-						when is_integer( SizeOfSHAAlgorithm ) ->
-
-	case file_utils:is_existing_file( Filename ) of
-
-		true ->
-			ok;
-
-		false ->
-			throw( { file_for_sha_not_found, Filename } )
-
-	end,
-
-	%trace_utils:debug_fmt( "Computing SHA~B sum of '~ts'.",
-	%                       [ SizeOfSHAAlgorithm, Filename ] ),
-
-	% 'utf8' expected as terminal default:
-	%trace_utils:debug_fmt( "Filename encoding mode: ~ts",
-	%                       [ file:native_name_encoding() ] ),
-
-	% We used to rely on run_command/n, yet correct Unicode arguments ("raw
-	% filenames") could not then be properly passed to the executable. So now we
-	% rely on run_executable/n.
-
-	% Already a full, resolved executable path:
-	ExecPath = get_default_sha_tool(),
-
-	% (not using '++' anymore, as (raw) filenames might have to be binaries;
-	% using bin_format/2 to follow Unicode hint in open_port/2:
-	%
-	Args = [ "--algorithm", text_utils:integer_to_string( SizeOfSHAAlgorithm ),
-			 % No need for quoting here:
-			 shell_utils:protect_from_shell( Filename ) ],
-
-	%trace_utils:debug_fmt( "SHA executable is: '~ts', arguments are ~p.",
-	%                       [ ExecPath, Args ] ),
-
-	case system_utils:run_executable( ExecPath, Args ) of
-
-		{ _ExitCode=0, OutputString } ->
-			% Removes the filename after the SHA code:
-			{ SHAFullStr, _Rest } =
-				text_utils:split_at_first( $ , OutputString ),
-
-			% Workaround for the *sum tools that for some reason (most probably
-			% a bug) add a \ before the sum of a file named for example
-			% foobar\\.text:
-			%
-			SHAStr = case SHAFullStr of
-
-				[ $\\ | T ] ->
-					T;
-
-				_ ->
-					SHAFullStr
-
-			end,
-
-			case text_utils:try_string_to_integer( SHAStr, _Base=16 ) of
-
-				undefined ->
-					trace_utils:error_fmt(
-						"SHA interpretation failed for '~ts', based on:~n~ts.",
-						[ Filename, SHAStr ] ),
-					throw( { sha_computation_failed, invalid_result,
-							 Filename, SHAStr } );
-
-				Sum ->
-					Sum
-
-			end;
-
-		{ ExitCode, ErrorOutput } ->
-			trace_utils:error_fmt( "SHA computation failed for '~ts': ~ts.",
-								   [ Filename, ErrorOutput ] ),
-			throw( { sha_computation_failed, ExitCode, ErrorOutput, Filename } )
-
-	end.
 
 
 
@@ -859,6 +715,11 @@ get_default_openssl_executable_path() ->
 	find_executable( get_default_openssl_executable_name() ).
 
 
+% @doc Returns an absolute path to the default (GNU) make executable.
+-spec get_make_path() -> executable_path().
+get_make_path() ->
+	find_executable( "make" ).
+
 
 % @doc Returns an absolute path to a gnuplot executable.
 -spec get_gnuplot_path() -> executable_path().
@@ -948,21 +809,35 @@ get_default_xz_decompress_tool() ->
 
 
 % @doc Returns the default tool to compute MD5 sums.
--spec get_default_md5_tool() -> executable_path().
-get_default_md5_tool() ->
-	find_executable( "md5sum" ).
-
+%-spec get_default_md5_tool() -> executable_path().
+%get_default_md5_tool() ->
+%   %find_executable( "md5sum" ).
+%   get_default_hashing_tool().
 
 % @doc Returns the default tool to compute SHA sums.
--spec get_default_sha_tool() -> executable_path().
-get_default_sha_tool() ->
-	find_executable( "shasum" ).
+%-spec get_default_sha_tool() -> executable_path().
+%get_default_sha_tool() ->
+%   %find_executable( "shasum" ).
+%   get_default_hashing_tool().
+
+
+% @doc Returns the default tool to compute any kind of hash.
+-spec get_default_hashing_tool() -> executable_path().
+get_default_hashing_tool() ->
+	% Typically obtained thanks to an 'openssl' package:
+	find_executable( "openssl" ).
 
 
 % @doc Returns the default client to interact with a SQL database.
 -spec get_default_sql_client() -> executable_path().
 get_default_sql_client() ->
 	find_executable( "psql" ).
+
+
+% @doc Returns the default client to pretty-print XML content.
+-spec get_default_xml_prettyprinter() -> executable_path().
+get_default_xml_prettyprinter() ->
+	find_executable( "xmllint" ).
 
 
 % @doc Returns the default tool to execute Java programs.
@@ -1016,6 +891,26 @@ get_default_jinterface_path() ->
 			throw( { jinterface_base_path_not_found, JInterfaceBase } )
 
 	end.
+
+
+
+
+% @doc Returns the name of the default tool used to process streamed graphs.
+-spec get_default_graph_stream_tool_name() -> executable_name().
+get_default_graph_stream_tool_name() ->
+	% See https://gephi.org/:
+	"gephi".
+
+
+
+% @doc Returns an absolute path to the default tool used to process streamed
+% graphs.
+%
+-spec get_default_graph_stream_tool_path() -> executable_path().
+get_default_graph_stream_tool_path() ->
+	% Note: expected to be on the PATH:
+	find_executable( get_default_graph_stream_tool_name() ).
+
 
 
 % Miscellaneous section:

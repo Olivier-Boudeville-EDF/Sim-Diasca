@@ -77,10 +77,42 @@
 % Designates how an (OTP) application is run.
 
 
+% Naming deemed clearer:
+-type supervisor_settings() :: supervisor:sup_flags().
+% Settings of an OTP supervisor.
+
+
+
+-type otp_state() :: term().
+% The state of a process implementing an OTP behaviour, typically the gen_server
+% one.
+
+
+-type continue_data() :: term().
+% Data specified to be used in a continue callback.
+
+
+-type termination_reason() :: 'normal' | 'shutdown' | { 'shutdown', term() }
+							| term().
+% Denotes the reason for stopping.
+
+
+-type handle_return() ::
+	{ 'noreply', otp_state() }
+  | { 'noreply', otp_state(), time_out() }
+  | { 'noreply', otp_state(), 'hibernate' }
+  | { 'noreply', otp_state(), { 'continue', continue_data() } }
+  | { 'stop', termination_reason(), otp_state() }.
+% The type corresponding to the values to be returned by
+% gen_server:handle_{cast,continue,info}/2.
+
+
 -export_type([ application_name/0, string_application_name/0,
 			   any_application_name/0, restart_type/0,
 			   supervisor_pid/0, worker_pid/0,
-			   application_run_context/0 ]).
+			   application_run_context/0, supervisor_settings/0,
+			   otp_state/0, continue_data/0, termination_reason/0,
+			   handle_return/0 ]).
 
 
 -export([ get_string_application_name/1,
@@ -92,8 +124,8 @@
 
 		  stop_application/1, stop_applications/1, stop_user_applications/1,
 
-		  get_supervisor_settings/2, get_restart_setting/1,
-		  get_maximum_shutdown_duration/1,
+		  get_supervisor_settings/2, get_child_supervisor_settings/1,
+		  get_restart_setting/1, get_maximum_shutdown_duration/1,
 
 		  check_application_run_context/1, application_run_context_to_string/1,
 
@@ -125,6 +157,8 @@
 -type app_spec() :: list_table:list_table().
 % Entries corresponding to the application specifications (see
 % [https://erlang.org/doc/man/app.html]) read from a .app file.
+
+-type time_out() :: time_utils:time_out().
 
 
 -record( app_info, {
@@ -376,7 +410,7 @@ prepare_for_exec( [ AppName | T ], AbsBaseDir, BlacklistedApps, AccDeps,
 					% that the corresponding .app file and also the BEAM files
 					% of that application can be found by OTP when starting it).
 					%
-					DepAppNames = list_table:get_value_with_defaults(
+					DepAppNames = list_table:get_value_with_default(
 						applications, _DefNoDep=[], AppEntries ),
 
 					?debug_fmt( "Preparing for the execution of application "
@@ -838,7 +872,7 @@ interpret_app_file( AppFilePath, AppName, EBinPath, BaseDir ) ->
 
 		[ { application, AppName, Entries } ] ->
 
-			ActiveInfo = list_table:get_value_with_defaults( mod,
+			ActiveInfo = list_table:get_value_with_default( mod,
 												_Def=undefined, Entries ),
 
 			% To check whether this application is compiled, we cannot rely on
@@ -968,8 +1002,9 @@ start_application( AppName, RestartType, BlacklistedApps ) ->
 					ok;
 
 				{ error, Reason } ->
-					trace_bridge:error_fmt( "Application '~ts' failed to "
-											"start: ~p", [ AppName, Reason ] ),
+					trace_bridge:error_fmt(
+						"Application '~ts' failed to start: ~p",
+						[ AppName, Reason ] ),
 
 					throw( { app_start_failed, AppName, RestartType, Reason } )
 
@@ -1135,16 +1170,16 @@ stop_user_applications( AppNames ) ->
 % @doc Returns the supervisor-level settings corresponding to the specified
 % restart strategy and execution context.
 %
-% Note that the execution context must be explicitly specified (typically by
-% calling a get_execution_target/0 function defined in a key module of that
-% layer, based on Myriad's basic_utils.hrl), otherwise the one that would apply
-% is the one of Myriad - not the one of the calling layer.
+% Note that the execution context must be explicitly specified here (typically
+% by calling a get_execution_target/0 function defined in a key module of that
+% layer, based on Myriad's basic_utils.hrl), as otherwise the one that would
+% apply is the one of Myriad - not the one of the calling layer.
 %
 % See [https://erlang.org/doc/design_principles/sup_princ.html#supervisor-flags]
 % for further information.
 %
 -spec get_supervisor_settings( supervisor:strategy(), execution_target() ) ->
-												supervisor:sup_flags().
+												supervisor_settings().
 get_supervisor_settings( RestartStrategy, _ExecutionTarget=development ) ->
 
 	% No restart wanted in development mode; we do not want the supervisor to
@@ -1168,13 +1203,29 @@ get_supervisor_settings( RestartStrategy, _ExecutionTarget=production ) ->
 
 
 
+% @doc Returns supervisor-level settings for a supervisor that would be
+% supervised by a supervisor relying on the specified settings.
+%
+% Not tremendously useful.
+%
+-spec get_child_supervisor_settings( supervisor_settings() ) ->
+												supervisor_settings().
+get_child_supervisor_settings(
+				ParentSupSettings=#{ intensity := ParentIntensity } ) ->
+
+	ChildIntensity = max( ParentIntensity div 2, 1 ),
+
+	ParentSupSettings#{ intensity := ChildIntensity }.
+
+
+
 % @doc Returns default, base restart settings depending on the specified
 % execution target.
 %
-% Note that the execution context must be explicitly specified (typically by
-% calling a get_execution_target/0 function defined in a key module of that
-% layer, based on Myriad's basic_utils.hrl), otherwise the one that would apply
-% is the one of Myriad - not the one of the calling layer.
+% Note that the execution context must be explicitly specified here (typically
+% by calling a get_execution_target/0 function defined in a key module of that
+% layer, based on Myriad's basic_utils.hrl), as otherwise the one that would
+% apply is the one of Myriad - not the one of the calling layer.
 %
 -spec get_restart_setting( execution_target() ) -> supervisor:restart().
 get_restart_setting( _ExecutionTarget=development ) ->

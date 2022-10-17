@@ -170,7 +170,7 @@ test_main_loop( TestState=#my_test_state{ main_frame=MainFrame,
 		%   test_main_loop( TestState );
 
 
-		{ onResized, [ Panel, NewSize, Context ] } ->
+		{ onResized, [ Panel, _PanelId, NewSize, Context ] } ->
 
 			%trace_utils:debug( "Resizing test panel." ),
 
@@ -194,7 +194,7 @@ test_main_loop( TestState=#my_test_state{ main_frame=MainFrame,
 				TestState#my_test_state{ backbuffer=NewBackbufferBitmap } );
 
 
-		{ onWindowClosed, [ MainFrame, Context ] } ->
+		{ onWindowClosed, [ MainFrame, _MainFrameId, Context ] } ->
 
 			cond_utils:if_defined( myriad_gui_test_verbose,
 				trace_utils:notice_fmt( "Test main frame ~ts has been closed "

@@ -26,7 +26,6 @@
 % Creation date: Saturday, October 9, 2021.
 
 
-
 % @doc Module implementing the support for <b>2D vectors</b>.
 %
 % See also:
@@ -95,6 +94,7 @@
 
 
 -export([ new/1, new/2, new_integer/2, null/0,
+		  x_axis/0, y_axis/0,
 		  from_point/1, to_point/1,
 		  add/2, add/1, cross_product/2,
 		  are_close/2, are_equal/2,
@@ -122,8 +122,7 @@
 -type distance() :: linear:distance().
 -type square_distance() :: linear:square_distance().
 
--type point2() :: point2().
--type any_point2() :: any_point2().
+-type any_point2() :: point2:any_point2().
 
 
 
@@ -159,6 +158,24 @@ new_integer( X, Y ) when is_integer( X ) andalso is_integer( Y ) ->
 null() ->
 	Zero = 0.0,
 	[ Zero, Zero ].
+
+
+
+
+% @doc Returns a 2D vector corresponding to the X axis of the current
+% referential.
+%
+-spec x_axis() -> vector2().
+x_axis() ->
+	[ 1.0, 0.0 ].
+
+
+% @doc Returns a 2D vector corresponding to the Y axis of the current
+% referential.
+%
+-spec y_axis() -> vector2().
+y_axis() ->
+	[  0.0, 1.0 ].
 
 
 
@@ -224,13 +241,13 @@ are_equal( _V1=[X1,Y1], _V2=[X2,Y2] ) ->
 
 
 % @doc Returns the square of the magnitude of the 2D specified vector.
--spec square_magnitude( vector2() ) -> square_distance().
+-spec square_magnitude( any_vector2() ) -> square_distance().
 square_magnitude( _V=[X,Y] ) ->
 	X*X + Y*Y.
 
 
 % @doc Returns the magnitude of the specified 2D vector.
--spec magnitude( vector2() ) -> distance().
+-spec magnitude( any_vector2() ) -> distance().
 magnitude( V ) ->
 	math:sqrt( square_magnitude( V ) ).
 
@@ -272,7 +289,8 @@ normalise( V ) ->
 % @doc Returns a (non-unit) vector that is normal to the specified vector V, and
 % is on the left of V in the standard basis.
 %
--spec normal_left( vector2() ) -> vector2().
+-spec normal_left( vector2() ) -> vector2();
+				 ( integer_vector2() ) -> integer_vector2().
 normal_left( _V=[X,Y] ) ->
 	[ -Y, X ].
 
@@ -280,15 +298,17 @@ normal_left( _V=[X,Y] ) ->
 % @doc Returns a (non-unit) vector that is normal to the specified vector V, and
 % is on the right of V in the standard basis.
 %
--spec normal_right( vector2() ) -> vector2().
+-spec normal_right( vector2() ) -> vector2();
+				  ( integer_vector2() ) -> integer_vector2().
 normal_right( _V=[X,Y] ) ->
 	[ Y, -X ].
 
 
 
 % @doc Returns the dot-product of the two specified 2D vectors: D = V1.V2.
--spec dot_product( vector2(), vector2() ) -> float().
-dot_product( _V1=[ X1, Y1 ], _V2=[ X2, Y2 ] ) ->
+-spec dot_product( vector2(), vector2() ) -> float();
+				 ( integer_vector2(), integer_vector2() ) -> integer().
+ dot_product( _V1=[ X1, Y1 ], _V2=[ X2, Y2 ] ) ->
 	X1*X2 + Y1*Y2.
 
 
@@ -324,7 +344,7 @@ check_unit_vector( V ) ->
 
 
 % @doc Checks that the specified 2D vectors are normalised, and returns them.
--spec check_unit_vectors( vector2() ) -> unit_vector2().
+-spec check_unit_vectors( [ vector2() ] ) -> [ unit_vector2() ].
 check_unit_vectors( Vs ) ->
 	[ true = is_unitary( V ) || V <- Vs ],
 	Vs.

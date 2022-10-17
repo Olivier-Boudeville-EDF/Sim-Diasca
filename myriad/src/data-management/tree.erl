@@ -22,7 +22,7 @@
 % If not, see <http://www.gnu.org/licenses/> and
 % <http://www.mozilla.org/MPL/>.
 %
-% Creation date: Monday, May 25, 2015
+% Creation date: Monday, May 25, 2015.
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 
 
@@ -42,8 +42,8 @@
 % Any tree is made of the content of its root and of any number of (ordered)
 % subtrees (children trees).
 
--opaque tree( T ) :: { T, [ tree(T) ] }.
-% A typed tree is polymorphic according to its node content?
+-opaque tree( T ) :: { T, [ tree( T ) ] }.
+% A typed tree is polymorphic according to its node content.
 
 
 -type content_fold_fun() ::
@@ -140,7 +140,7 @@ fold_breadth_first( ContentFun, InitialAcc, _Tree={ Content, Subtrees } ) ->
 	NodeAcc = ContentFun( Content, InitialAcc ),
 
 	lists:foldl( fun( ChildTree, Acc ) ->
-					 fold_breadth_first( ContentFun, Acc, ChildTree )
+					fold_breadth_first( ContentFun, Acc, ChildTree )
 				 end,
 				 NodeAcc, Subtrees ).
 
@@ -153,7 +153,7 @@ fold_breadth_first( ContentFun, InitialAcc, _Tree={ Content, Subtrees } ) ->
 % examined first, as the first branch examined may not be the deepest.
 %
 -spec fold_depth_first( content_fold_fun(), accumulator(), tree() ) ->
-								accumulator().
+														accumulator().
 fold_depth_first( ContentFun, InitialAcc, _Tree={ Content, Subtrees } ) ->
 
 	ChildAcc = lists:foldl( fun( ChildTree, Acc ) ->
@@ -175,13 +175,13 @@ height( _Tree={ _Content, Subtrees } ) ->
 	1 + lists:max( [ height( S ) || S <- Subtrees ] ).
 
 %height( Tree ) ->
-%	height( Tree, _CurrentHeight=0 ).
+%   height( Tree, _CurrentHeight=0 ).
 %
 %height( _Tree={ _Content, _Subtrees=[] }, CurrentHeight ) ->
-%	CurrentHeight;
+%   CurrentHeight;
 %
 %height( _Tree={ _Content, Subtrees }, CurrentHeight ) ->
-%	CurrentHeight + 1 + lists:max( [ height( S ) || S <- Subtrees ] ).
+%   CurrentHeight + 1 + lists:max( [ height( S ) || S <- Subtrees ] ).
 
 
 
@@ -189,10 +189,10 @@ height( _Tree={ _Content, Subtrees } ) ->
 %
 -spec size( tree() ) -> count().
 %size( _Tree={ _Content, _Subtrees=[] } ) ->
-%	1;
+%   1;
 %
 %size( _Tree={ _Content, Subtrees } ) ->
-%	1 + lists:sum( [ size( S ) || S <- Subtrees ] ).
+%   1 + lists:sum( [ size( S ) || S <- Subtrees ] ).
 
 size( Tree ) ->
 	size( Tree, _Acc=1 ).
@@ -220,8 +220,8 @@ to_string( _Tree={ Content, _SubTrees=[] }, Prefix ) ->
 to_string( _Tree={ Content, SubTrees }, Prefix ) ->
 
 	ContentString = Prefix ++ text_utils:format(
-								"+ node '~p' with ~B child node(s):~n",
-								[ Content, length( SubTrees ) ] ),
+		"+ node '~p' with ~B child node(s):~n",
+		[ Content, length( SubTrees ) ] ),
 
 	ChildPrefix = [ "  " | Prefix ],
 

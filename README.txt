@@ -2,7 +2,7 @@ This is Sim-Diasca, a parallel and distributed discrete-time simulation engine f
 
 The name stands for 'Simulation of Discrete Systems of All Scales'.
 
-This is the 2.4.0 version of Sim-Diasca.
+This is the 2.4.4 version of Sim-Diasca.
 
 Sim-Diasca is released under the LGPL licence (GNU Lesser General Public License, version 3).
 
@@ -15,7 +15,7 @@ Official Sim-Diasca website: http://sim-diasca.com.
 
 A good start to understand how the engine should be used is to have a look in the mock-simulators/soda-test/src directory.
 
-If you want to make some testing, once you ensured that you are relying on a GNU/Linux distribution offering a recent stable version of Erlang (typically 18.1 or newer, with the crypto and wx modules available - please refer to the associated 'Sim-Diasca Technical Manual' for more information) and that the Sim-Diasca codebase is compiled (ensure documented prerequisites are installed, then issue 'make all' from the root directory), just run, from the previous directory (mock-simulators/soda-test/src):
+If you want to make some testing, once you ensured that you are relying on a GNU/Linux distribution offering a recent stable version of Erlang (typically 25 or newer, with the crypto and wx modules available - please refer to the associated 'Sim-Diasca Technical Manual' for more information) and that the Sim-Diasca codebase is compiled (ensure documented prerequisites are installed, then issue 'make all' from the root directory), just run, from the previous directory (mock-simulators/soda-test/src):
 
   make soda_deterministic_integration_run CMD_LINE_OPT="--batch"
 

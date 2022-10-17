@@ -2,6 +2,9 @@ WOOPER_TOP = ..
 
 .PHONY: all real-clean
 
+MODULES_DIRS = interfaces
+
+
 # As shall be the default rule:
 all:
 

@@ -3,7 +3,8 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 %
 % Released as LGPL software.
-%
+% Creation date: 2018.
+
 
 % @doc Actual module in charge of the Myriad <b>password generation</b>.
 %
@@ -74,7 +75,7 @@ get_usage() ->
 main( ArgTable ) ->
 
 	%trace_utils:debug_fmt( "Original script-specific arguments: ~ts",
-	%	[ shell_utils:argument_table_to_string( ArgTable ) ] ),
+	%   [ shell_utils:argument_table_to_string( ArgTable ) ] ),
 
 	[ %InteractiveRefKey,
 	  LengthRefKey, AlphaRefKey, HelpRefKey ] =
@@ -83,44 +84,36 @@ main( ArgTable ) ->
 
 	% Standardises command-line options:
 	MergedTable = list_table:merge_in_keys( [
-			%{ InteractiveRefKey, [ 'i' ] },
-			{ LengthRefKey, [ 'l' ] },
-			{ AlphaRefKey, [ 'a' ] },
-			{ HelpRefKey, [ 'h' ] } ], ArgTable ),
+		%{ InteractiveRefKey, [ 'i' ] },
+		{ LengthRefKey, [ 'l' ] },
+		{ AlphaRefKey, [ 'a' ] },
+		{ HelpRefKey, [ 'h' ] } ], ArgTable ),
 
 	%trace_utils:debug_fmt( "Canonicalized script-specific arguments: ~ts",
-	%	   [ shell_utils:argument_table_to_string( MergedTable ) ] ),
+	%   [ shell_utils:argument_table_to_string( MergedTable ) ] ),
 
-	case list_table:has_entry( HelpRefKey, MergedTable ) of
-
-		true ->
-			display_usage();
-
-		false ->
-			ok
-
-	end,
+	list_table:has_entry( HelpRefKey, MergedTable ) andalso display_usage(),
 
 	%{ IsInteractive, InterTable } =
-	%  case list_table:extract_entry_with_defaults( InteractiveRefKey,
+	%  case list_table:extract_entry_with_default( InteractiveRefKey,
 	%    _DefaultInter=false, MergedTable ) of
 	%
-	%	{ [], ShrunkTable } ->
-	%		{ true, ShrunkTable };
+	%   { [], ShrunkTable } ->
+	%       { true, ShrunkTable };
 	%
-	%	P={ false, _ShrunkTable } ->
-	%		P
+	%   P={ false, _ShrunkTable } ->
+	%        P
 	%
 	%end,
 
 	%trace_utils:debug_fmt( "Interactive: ~ts", [ IsInteractive ] ),
 
 	{ [ LengthStrings ], LenTable } =
-		list_table:extract_entry_with_defaults(
-		  LengthRefKey,
-		  _LenDefault=[ [ ?default_min_length, ?default_max_length ] ],
-		  %InterTable ),
-		  MergedTable ),
+		list_table:extract_entry_with_default(
+			LengthRefKey,
+			_LenDefault=[ [ ?default_min_length, ?default_max_length ] ],
+			%InterTable ),
+			MergedTable ),
 
 	{ MinLengthString, MaxLengthString } = case LengthStrings of
 
@@ -128,8 +121,8 @@ main( ArgTable ) ->
 			{ Min, Max };
 
 		Other ->
-			trace_utils:error( "Error, a minimum and maximum lengths must "
-							   "be specified." ),
+			trace_utils:error(
+				"Error, a minimum and maximum lengths must be specified." ),
 			throw( { invalid_length_specification, Other } )
 
 	end,
@@ -137,31 +130,16 @@ main( ArgTable ) ->
 	MinLength = text_utils:string_to_integer( MinLengthString ),
 	MaxLength = text_utils:string_to_integer( MaxLengthString ),
 
-	case MinLength > MaxLength of
+	MinLength < MaxLength orelse
+		throw( { invalid_length_order, MinLength, MaxLength } ),
 
-		true ->
-			throw( { invalid_length_order, MinLength, MaxLength } );
-
-		false ->
-			ok
-
-	end,
-
-	case MinLength > 0 of
-
-		true ->
-			ok;
-
-		false ->
-			throw( { invalid_minimum_length, MinLength } )
-
-	end,
+	MinLength > 0 orelse throw( { invalid_minimum_length, MinLength } ),
 
 	%trace_utils:debug_fmt( "Min length: ~B", [ MinLength ] ),
 	%trace_utils:debug_fmt( "Max length: ~B", [ MaxLength ] ),
 
 	{ [ [ AlphabetStringSpec ] ], AlphaTable } =
-		list_table:extract_entry_with_defaults( AlphaRefKey,
+		list_table:extract_entry_with_default( AlphaRefKey,
 						_AlphaDefault=[ [ ?default_alphabet ] ], LenTable ),
 
 	AlphabetSpec = text_utils:string_to_atom( AlphabetStringSpec ),
@@ -169,7 +147,7 @@ main( ArgTable ) ->
 	%trace_utils:debug_fmt( "Alphabet spec: ~ts", [ AlphabetSpec ] ),
 
 	[ Length ] =
-		random_utils:get_random_values( MinLength, MaxLength, _Count=1 ),
+		random_utils:get_uniform_values( MinLength, MaxLength, _Count=1 ),
 
 	case list_table:keys( AlphaTable ) of
 
@@ -178,8 +156,8 @@ main( ArgTable ) ->
 
 		UnexpectedOpts ->
 			trace_utils:error_fmt( "Unexpected user input: ~ts~n~ts",
-			  [ shell_utils:argument_table_to_string( AlphaTable ),
-				get_usage() ] ),
+				[ shell_utils:argument_table_to_string( AlphaTable ),
+				  get_usage() ] ),
 			throw( { unexpected_command_line_options, UnexpectedOpts } )
 
 	end,
@@ -187,7 +165,7 @@ main( ArgTable ) ->
 	Alphabet = get_alphabet( AlphabetSpec ),
 
 	%trace_utils:debug_fmt( "Input alphabet corresponding to spec ~p: "
-	%	"'~w' (i.e. '~ts').", [ AlphabetSpec, Alphabet, Alphabet ] ),
+	%   "'~w' (i.e. '~ts').", [ AlphabetSpec, Alphabet, Alphabet ] ),
 
 	Password = generate_password( Alphabet, Length ),
 
@@ -260,10 +238,10 @@ generate_helper( _CharCount=0, _Alphabet, _AlphaSize, Acc ) ->
 
 generate_helper( CharCount, Alphabet, AlphaSize, Acc ) ->
 
-	NewCharIndex = random_utils:get_random_value( AlphaSize ),
+	NewCharIndex = random_utils:get_uniform_value( AlphaSize ),
 	NewChar = list_utils:get_element_at( Alphabet, NewCharIndex ),
 
 	%trace_utils:debug_fmt( "Drawn '~B' (~ts), at index #~B",
-	%					   [ NewChar, [ NewChar ], NewCharIndex ] ),
+	%                       [ NewChar, [ NewChar ], NewCharIndex ] ),
 
 	generate_helper( CharCount-1, Alphabet, AlphaSize, [ NewChar | Acc ] ).

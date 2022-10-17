@@ -430,8 +430,8 @@ get_command_arguments_for_option( Option ) ->
 
 	ArgumentTable = get_argument_table(),
 
-	?arg_table:get_value_with_defaults( _K=Option, _DefaultValue=undefined,
-										ArgumentTable ).
+	?arg_table:get_value_with_default( _K=Option, _DefaultValue=undefined,
+									   ArgumentTable ).
 
 
 
@@ -447,7 +447,7 @@ get_optionless_command_arguments() ->
 	ArgumentTable = get_argument_table(),
 
 	% Not wanting here a list of lists of strings:
-	[ Args ] = ?arg_table:get_value_with_defaults( _K=?no_option_key,
+	[ Args ] = ?arg_table:get_value_with_default( _K=?no_option_key,
 						_DefaultValue=[ [] ], ArgumentTable ),
 
 	Args.
@@ -490,8 +490,8 @@ extract_command_arguments_for_option( Option ) ->
 											argument_table() ) ->
 				{ maybe( [ command_line_values() ] ), argument_table() }.
 extract_command_arguments_for_option( Option, ArgumentTable ) ->
-	?arg_table:extract_entry_with_defaults( _K=Option, _DefaultValue=undefined,
-											ArgumentTable ).
+	?arg_table:extract_entry_with_default( _K=Option, _DefaultValue=undefined,
+										   ArgumentTable ).
 
 
 
@@ -530,7 +530,7 @@ extract_optionless_command_arguments( ArgumentTable ) ->
 	%trace_utils:debug_fmt( "ArgumentTable: ~p.", [ ArgumentTable ] ),
 
 	% Not wanting here a list of lists of strings:
-	case ?arg_table:extract_entry_with_defaults( _K=?no_option_key,
+	case ?arg_table:extract_entry_with_default( _K=?no_option_key,
 							_DefaultValue=undefined, ArgumentTable ) of
 
 		P={ undefined, _ArgTable } ->
@@ -624,8 +624,8 @@ sort_arguments( OptionlessSpec, _OptionSpecs=[], UniqArgTable, AccTable ) ->
 	% of option specs, we can check optionless only now, at the end:
 
 	{ OptionLessValues, ShrunkArgTable } =
-		?arg_table:extract_entry_with_defaults( ?no_option_key, _Default=[],
-												UniqArgTable ),
+		?arg_table:extract_entry_with_default( ?no_option_key, _Default=[],
+											   UniqArgTable ),
 
 	%trace_utils:debug_fmt( "OptionLessValues = ~p, ShrunkArgTable = ~p.",
 	%                       [ OptionLessValues, ShrunkArgTable ] ),
@@ -764,7 +764,7 @@ sort_arguments( OptionlessSpec,
 					NewValueList = lists:reverse( RevOptValues ),
 
 					% No need to extract, will just be overwritten:
-					NewOptionlessArgs = ?arg_table:get_value_with_defaults(
+					NewOptionlessArgs = ?arg_table:get_value_with_default(
 						_K=?no_option_key, _Default=[], AccTable )
 											++ OptionlessValues,
 
@@ -830,7 +830,7 @@ sort_arguments( OptionlessSpec, _OptionSpecs=[ { Opt, ExactCount } | T ],
 					NewValueList = lists:reverse( RevOptValues ),
 
 					% No need to extract, will just be overwritten:
-					NewOptionlessArgs = ?arg_table:get_value_with_defaults(
+					NewOptionlessArgs = ?arg_table:get_value_with_default(
 						_Key=?no_option_key, _Default=[], AccTable )
 											++ OptionlessValues,
 

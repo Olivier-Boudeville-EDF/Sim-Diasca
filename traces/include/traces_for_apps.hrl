@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2022 Olivier Boudeville
+% Copyright (C) 2011-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -26,7 +26,9 @@
 % Creation date: Tuesday, January 11, 2011.
 
 
-% Defines some macros and functions useful for trace-using applications.
+% Defines some macros and functions that are useful for trace-using
+% applications.
+%
 % This is thus the main/only header file such applications should include.
 
 
@@ -75,16 +77,16 @@
 
 -define( app_start,
 
-		 % true is for InitTraceSupervisor (not even binding a mute variable for
-		 % that); app_stop/2 to be consistent with it.
-		 %
-		 TraceAggregatorPid = traces_for_apps:app_start( ?MODULE, true )
+	% true is for InitTraceSupervisor (not even binding a mute variable for
+	% that); app_stop/2 to be consistent with it.
+	%
+	TraceAggregatorPid = traces_for_apps:app_start( ?MODULE, true )
 ).
 
 
 -define( app_stop,
-		 % true is for WaitForTraceSupervisor, in accordance with app_start/2.
-		 traces_for_apps:app_stop( ?MODULE, TraceAggregatorPid, true )
+	% true is for WaitForTraceSupervisor, in accordance with app_start/2.
+	traces_for_apps:app_stop( ?MODULE, TraceAggregatorPid, true )
 ).
 
 
@@ -99,17 +101,16 @@
 %
 -define( app_start,
 
-		 % false is for InitTraceSupervisor (not even binding a mute variable
-		 % for that); app_stop/2 to be consistent with it.
-		 %
-		 TraceAggregatorPid = traces_for_apps:app_start( ?MODULE, false ) ).
+	% false is for InitTraceSupervisor (not even binding a mute variable for
+	% that); app_stop/2 to be consistent with it.
+	%
+	TraceAggregatorPid = traces_for_apps:app_start( ?MODULE, false ) ).
 
 
 
 -define( app_stop,
-		 % false is for WaitForTraceSupervisor, in accordance with app_start/2.
-		 traces_for_apps:app_immediate_stop( ?MODULE, TraceAggregatorPid,
-											 false )
+	% false is for WaitForTraceSupervisor, in accordance with app_start/2.
+	traces_for_apps:app_immediate_stop( ?MODULE, TraceAggregatorPid, false )
 ).
 
 
@@ -141,21 +142,21 @@
 
 
 
-% Helper function to write receive clauses in applications which cannot
+% @doc Helper function to write receive clauses in applications which cannot
 % interfere with trace supervision, as an application may also receive trace
 % control message the application code should remain unware of.
 %
 % Returns the received value.
 %
-% Ex: Pid ! { getBaz, [], self() }, MyBaz = app_receive(), ...
+% Ex: Pid ! {getBaz, [], self()}, MyBaz = app_receive(), ...
 %
 % to be used instead of:
 %
-% Pid ! { getBaz, [], self() },
+% Pid ! {getBaz, [], self()},
 % receive
 %
-%   { wooper_result, V } ->
-%			V
+%   {wooper_result, V} ->
+%		V
 %
 % end,
 % ...

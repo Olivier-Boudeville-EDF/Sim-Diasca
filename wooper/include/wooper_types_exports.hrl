@@ -23,6 +23,7 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2007.
 
 
 % Modular WOOPER header gathering the main types of interest.
@@ -98,10 +99,13 @@
 
 -type static_return( T ) :: wooper:static_return( T ).
 % To specify the type of the actual value of interest returned by a static
-% request.
+% method.
 
 -type static_void_return() :: static_return( 'wooper_void_return' ).
-% To specify that a static request does not return any value of use.
+% To specify that a static method does not return any value of use.
+
+-type static_no_return() :: no_return().
+% To specify that a static method does not return any value of use.
 
 
 

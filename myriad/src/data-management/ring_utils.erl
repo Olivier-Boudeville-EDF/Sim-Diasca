@@ -34,8 +34,8 @@
 -module(ring_utils).
 
 
-
--opaque ring() :: { list(), list() }.
+% Opaqueness difficult to preserve:
+-type ring() :: { list(), list() }.
 % A ring behaves as an (infinite) list whose next element after its last is its
 % first again.
 %
@@ -43,7 +43,8 @@
 % extracted), while the second is a copy of the full reference one.
 
 
--opaque ring( T ) :: { [ T ], [ T ] }.
+% Opaqueness difficult to preserve:
+-type ring( T ) :: { [ T ], [ T ] }.
 
 
 % Ring-related operations:

@@ -26,6 +26,10 @@
 % Creation date: July 1, 2007.
 
 
+% If modifying this header, the class_Traceable one may have to be updated in
+% turn, as they are counterparts and obey the same logic.
+
+
 % Note: this header file must be included *after* the WOOPER one, as, in
 % production mode, this file has to define functions (namely
 % trace_disabled/{1,2,3,4,5}).
@@ -40,7 +44,6 @@
 
 -ifndef(class_TraceEmitter_hrl_guard).
 -define(class_TraceEmitter_hrl_guard,).
-
 
 
 
@@ -74,30 +77,29 @@
 %                                   emitter_info().
 -define( trace_categorize( TracesInitialisationTermInternal ),
 
-		 % As few variables bound as possible, and longer variable names chosen
-		 % (prefixed with 'Traces'), to avoid clashes with user-defined
-		 % variables:
-		 %
-		 case TracesInitialisationTermInternal of
+	% As few variables bound as possible, and longer variable names chosen
+	% (prefixed with 'Traces'), to avoid clashes with user-defined variables:
+	%
+	case TracesInitialisationTermInternal of
 
-			 % Emitter categorization already set, just propagate as is to next
-			 % mother class:
-			 %
-			 %{ _TraceName, _TraceCategorization } ->
-			 { _, _ } ->
-				 TracesInitialisationTermInternal;
+		% Emitter categorization already set, just propagate as is to next
+		% mother class:
+		%
+		%{ _TraceName, _TraceCategorization } ->
+		{ _, _ } ->
+			TracesInitialisationTermInternal;
 
-			 % Expecting here only a string (we are at the level of the actual,
-			 % effective class), it is the place where the emitter
-			 % categorisation shall be introduced:
-			 %
-			 %TracesStandaloneEmitterName ->
-			 _ ->
-				 { TracesInitialisationTermInternal,
-				   ?trace_emitter_categorization }
+		% Expecting here only a string (we are at the level of the actual,
+		% effective class), it is the place where the emitter categorisation
+		% shall be introduced:
+		%
+		%TracesStandaloneEmitterName ->
+		_ ->
+			{ TracesInitialisationTermInternal,
+			  ?trace_emitter_categorization }
 
-		 end
-).
+	end ).
+
 
 
 % To obtain a proper string-like name, whether a trace categorization has been
@@ -109,21 +111,19 @@
 %                                   emitter_name().
 -define( trace_name( TracesInitialisationTermForNameInternal ),
 
-		 % As few variables bound as possible, and longer variable names chosen
-		 % (prefixed with 'Traces'), to avoid clashes with user-defined
-		 % variables:
-		 %
-		 case TracesInitialisationTermForNameInternal of
+	% As few variables bound as possible, and longer variable names chosen
+	% (prefixed with 'Traces'), to avoid clashes with user-defined variables:
+	%
+	case TracesInitialisationTermForNameInternal of
 
-			 %{ TraceName, _TraceCategorization } ->
-			 { TraceNameForNameInternal, _ } ->
-				 TraceNameForNameInternal;
+		%{ TraceName, _TraceCategorization } ->
+		{ TraceNameForNameInternal, _ } ->
+			TraceNameForNameInternal;
 
-			 TraceNameForNameInternal ->
-				 TraceNameForNameInternal
+		TraceNameForNameInternal ->
+			TraceNameForNameInternal
 
-		 end
-).
+	end ).
 
 
 
@@ -310,7 +310,7 @@
 -define( send_emergency_full( State, Message, MessageCategorization,
 						  ApplicationTimestamp ),
 		 class_TraceEmitter:send_safe( emergency, State, Message,
-								  MessageCategorization, ApplicationTimestamp )
+			MessageCategorization, ApplicationTimestamp )
 ).
 
 
@@ -320,7 +320,7 @@
 %
 -define( emergency_full( Message, MessageCategorization, ApplicationTimestamp ),
 		 class_TraceEmitter:send_safe( emergency, State, Message,
-								  MessageCategorization, ApplicationTimestamp )
+			MessageCategorization, ApplicationTimestamp )
 ).
 
 
@@ -337,7 +337,7 @@
 %
 -define( send_emergency_fmt( State, Message, FormatValues ),
 		 class_TraceEmitter:send_safe( emergency, State,
-								text_utils:format( Message, FormatValues ) )
+			text_utils:format( Message, FormatValues ) )
 
 ).
 
@@ -347,7 +347,7 @@
 %
 -define( send_emergency_no_echo_fmt( State, Message, FormatValues ),
 		 class_TraceEmitter:send_synchronised( emergency, State,
-						  text_utils:format( Message, FormatValues ) )
+			text_utils:format( Message, FormatValues ) )
 ).
 
 
@@ -357,7 +357,7 @@
 %
 -define( emergency_fmt( Message, FormatValues ),
 		 class_TraceEmitter:send_safe( emergency, State,
-								text_utils:format( Message, FormatValues ) )
+			text_utils:format( Message, FormatValues ) )
 ).
 
 
@@ -367,7 +367,7 @@
 %
 -define( emergency_no_echo_fmt( Message, FormatValues ),
 		 class_TraceEmitter:send_synchronised( emergency, State,
-							text_utils:format( Message, FormatValues ) )
+			text_utils:format( Message, FormatValues ) )
 ).
 
 
@@ -382,7 +382,7 @@
 -define( send_emergency_fmt_cat( State, Message, FormatValues,
 							 MessageCategorization ),
 		 class_TraceEmitter:send_safe( emergency, State,
-		   text_utils:format( Message, FormatValues ), MessageCategorization )
+			text_utils:format( Message, FormatValues ), MessageCategorization )
 ).
 
 
@@ -392,7 +392,7 @@
 %
 -define( emergency_fmt_cat( Message, FormatValues, MessageCategorization ),
 		 class_TraceEmitter:send_safe( emergency, State,
-		   text_utils:format( Message, FormatValues ), MessageCategorization )
+			text_utils:format( Message, FormatValues ), MessageCategorization )
 ).
 
 
@@ -408,8 +408,8 @@
 -define( send_emergency_fmt_full( State, Message, FormatValues,
 							  MessageCategorization, ApplicationTimestamp ),
 		 class_TraceEmitter:send_safe( emergency, State,
-				text_utils:format( Message, FormatValues ),
-				MessageCategorization, ApplicationTimestamp )
+			text_utils:format( Message, FormatValues ),
+			MessageCategorization, ApplicationTimestamp )
 ).
 
 
@@ -420,8 +420,8 @@
 -define( emergency_fmt_full( Message, FormatValues, MessageCategorization,
 						 ApplicationTimestamp ),
 		 class_TraceEmitter:send_safe( emergency, State,
-				text_utils:format( Message, FormatValues ),
-				MessageCategorization, ApplicationTimestamp )
+			text_utils:format( Message, FormatValues ),
+			MessageCategorization, ApplicationTimestamp )
 ).
 
 
@@ -488,7 +488,7 @@
 -define( send_alert_full( State, Message, MessageCategorization,
 						  ApplicationTimestamp ),
 		 class_TraceEmitter:send_safe( alert, State, Message,
-								  MessageCategorization, ApplicationTimestamp )
+			MessageCategorization, ApplicationTimestamp )
 ).
 
 
@@ -498,7 +498,7 @@
 %
 -define( alert_full( Message, MessageCategorization, ApplicationTimestamp ),
 		 class_TraceEmitter:send_safe( alert, State, Message,
-								  MessageCategorization, ApplicationTimestamp )
+			MessageCategorization, ApplicationTimestamp )
 ).
 
 
@@ -515,7 +515,7 @@
 %
 -define( send_alert_fmt( State, Message, FormatValues ),
 		 class_TraceEmitter:send_safe( alert, State,
-								text_utils:format( Message, FormatValues ) )
+			text_utils:format( Message, FormatValues ) )
 
 ).
 
@@ -525,7 +525,7 @@
 %
 -define( send_alert_no_echo_fmt( State, Message, FormatValues ),
 		 class_TraceEmitter:send_synchronised( alert, State,
-						  text_utils:format( Message, FormatValues ) )
+			text_utils:format( Message, FormatValues ) )
 ).
 
 
@@ -535,7 +535,7 @@
 %
 -define( alert_fmt( Message, FormatValues ),
 		 class_TraceEmitter:send_safe( alert, State,
-								text_utils:format( Message, FormatValues ) )
+			text_utils:format( Message, FormatValues ) )
 ).
 
 
@@ -545,7 +545,7 @@
 %
 -define( alert_no_echo_fmt( Message, FormatValues ),
 		 class_TraceEmitter:send_synchronised( alert, State,
-							text_utils:format( Message, FormatValues ) )
+			text_utils:format( Message, FormatValues ) )
 ).
 
 
@@ -558,7 +558,7 @@
 -define( send_alert_fmt_cat( State, Message, FormatValues,
 							 MessageCategorization ),
 		 class_TraceEmitter:send_safe( alert, State,
-		   text_utils:format( Message, FormatValues ), MessageCategorization )
+			text_utils:format( Message, FormatValues ), MessageCategorization )
 ).
 
 
@@ -568,7 +568,7 @@
 %
 -define( alert_fmt_cat( Message, FormatValues, MessageCategorization ),
 		 class_TraceEmitter:send_safe( alert, State,
-		   text_utils:format( Message, FormatValues ), MessageCategorization )
+			text_utils:format( Message, FormatValues ), MessageCategorization )
 ).
 
 
@@ -582,8 +582,8 @@
 -define( send_alert_fmt_full( State, Message, FormatValues,
 							  MessageCategorization, ApplicationTimestamp ),
 		 class_TraceEmitter:send_safe( alert, State,
-				text_utils:format( Message, FormatValues ),
-				MessageCategorization, ApplicationTimestamp )
+			text_utils:format( Message, FormatValues ),
+			MessageCategorization, ApplicationTimestamp )
 ).
 
 
@@ -594,8 +594,8 @@
 -define( alert_fmt_full( Message, FormatValues, MessageCategorization,
 						 ApplicationTimestamp ),
 		 class_TraceEmitter:send_safe( alert, State,
-				text_utils:format( Message, FormatValues ),
-				MessageCategorization, ApplicationTimestamp )
+			text_utils:format( Message, FormatValues ),
+			MessageCategorization, ApplicationTimestamp )
 ).
 
 
@@ -667,7 +667,7 @@
 -define( send_critical_full( State, Message, MessageCategorization,
 							 ApplicationTimestamp ),
 		 class_TraceEmitter:send_safe( critical, State, Message,
-								  MessageCategorization, ApplicationTimestamp )
+			MessageCategorization, ApplicationTimestamp )
 ).
 
 
@@ -677,7 +677,7 @@
 %
 -define( critical_full( Message, MessageCategorization, ApplicationTimestamp ),
 		 class_TraceEmitter:send_safe( critical, State, Message,
-								  MessageCategorization, ApplicationTimestamp )
+			MessageCategorization, ApplicationTimestamp )
 ).
 
 
@@ -694,8 +694,7 @@
 %
 -define( send_critical_fmt( State, Message, FormatValues ),
 		 class_TraceEmitter:send_safe( critical, State,
-								text_utils:format( Message, FormatValues ) )
-
+			text_utils:format( Message, FormatValues ) )
 ).
 
 
@@ -704,7 +703,7 @@
 %
 -define( send_critical_no_echo_fmt( State, Message, FormatValues ),
 		 class_TraceEmitter:send_synchronised( critical, State,
-						text_utils:format( Message, FormatValues ) )
+			text_utils:format( Message, FormatValues ) )
 ).
 
 
@@ -714,7 +713,7 @@
 %
 -define( critical_fmt( Message, FormatValues ),
 		 class_TraceEmitter:send_safe( critical, State,
-								text_utils:format( Message, FormatValues ) )
+			text_utils:format( Message, FormatValues ) )
 ).
 
 
@@ -724,7 +723,7 @@
 %
 -define( critical_no_echo_fmt( Message, FormatValues ),
 		 class_TraceEmitter:send_synchronised( critical, State,
-							text_utils:format( Message, FormatValues ) )
+			text_utils:format( Message, FormatValues ) )
 ).
 
 
@@ -739,7 +738,7 @@
 -define( send_critical_fmt_cat( State, Message, FormatValues,
 							 MessageCategorization ),
 		 class_TraceEmitter:send_safe( critical, State,
-		   text_utils:format( Message, FormatValues ), MessageCategorization )
+			text_utils:format( Message, FormatValues ), MessageCategorization )
 ).
 
 
@@ -749,7 +748,7 @@
 %
 -define( critical_fmt_cat( Message, FormatValues, MessageCategorization ),
 		 class_TraceEmitter:send_safe( critical, State,
-		   text_utils:format( Message, FormatValues ), MessageCategorization )
+			text_utils:format( Message, FormatValues ), MessageCategorization )
 ).
 
 
@@ -765,8 +764,8 @@
 -define( send_critical_fmt_full( State, Message, FormatValues,
 							  MessageCategorization, ApplicationTimestamp ),
 		 class_TraceEmitter:send_safe( critical, State,
-				text_utils:format( Message, FormatValues ),
-				MessageCategorization, ApplicationTimestamp )
+			text_utils:format( Message, FormatValues ),
+			MessageCategorization, ApplicationTimestamp )
 ).
 
 
@@ -777,8 +776,8 @@
 -define( critical_fmt_full( Message, FormatValues, MessageCategorization,
 						 ApplicationTimestamp ),
 		 class_TraceEmitter:send_safe( critical, State,
-				text_utils:format( Message, FormatValues ),
-				MessageCategorization, ApplicationTimestamp )
+			text_utils:format( Message, FormatValues ),
+			MessageCategorization, ApplicationTimestamp )
 ).
 
 
@@ -826,7 +825,7 @@
 % Sends a trace of 'error' type with specified parameters and an explicit state.
 -define( send_error_cat( State, Message, MessageCategorization ),
 		 class_TraceEmitter:send_safe( error, State,
-		   text_utils:format( Message, FormatValues ), MessageCategorization )
+			text_utils:format( Message, FormatValues ), MessageCategorization )
 ).
 
 
@@ -850,7 +849,7 @@
 -define( send_error_full( State, Message, MessageCategorization,
 						  ApplicationTimestamp ),
 		 class_TraceEmitter:send_safe( error, State, Message,
-								MessageCategorization, ApplicationTimestamp )
+			MessageCategorization, ApplicationTimestamp )
 ).
 
 
@@ -860,7 +859,7 @@
 %
 -define( error_full( Message, MessageCategorization, ApplicationTimestamp ),
 		 class_TraceEmitter:send_safe( error, State, Message,
-								MessageCategorization, ApplicationTimestamp )
+			MessageCategorization, ApplicationTimestamp )
 ).
 
 
@@ -877,7 +876,7 @@
 %
 -define( send_error_fmt( State, Message, FormatValues ),
 		 class_TraceEmitter:send_safe( error, State,
-				   text_utils:format( Message, FormatValues ) )
+			text_utils:format( Message, FormatValues ) )
 ).
 
 
@@ -887,7 +886,7 @@
 %
 -define( send_error_no_echo_fmt( State, Message, FormatValues ),
 		 class_TraceEmitter:send_synchronised( error, State,
-						  text_utils:format( Message, FormatValues ) )
+			text_utils:format( Message, FormatValues ) )
 ).
 
 
@@ -897,7 +896,7 @@
 %
 -define( error_fmt( Message, FormatValues ),
 		 class_TraceEmitter:send_safe( error, State,
-							text_utils:format( Message, FormatValues ) )
+			text_utils:format( Message, FormatValues ) )
 ).
 
 
@@ -907,7 +906,7 @@
 %
 -define( error_no_echo_fmt( Message, FormatValues ),
 		 class_TraceEmitter:send_synchronised( error, State,
-							text_utils:format( Message, FormatValues ) )
+			text_utils:format( Message, FormatValues ) )
 ).
 
 
@@ -920,8 +919,8 @@
 -define( send_error_fmt_cat( State, Message, FormatValues,
 							 MessageCategorization ),
 		 class_TraceEmitter:send_safe( error, State,
-						  text_utils:format( Message, FormatValues ),
-						  MessageCategorization )
+			text_utils:format( Message, FormatValues ),
+			MessageCategorization )
 ).
 
 
@@ -931,8 +930,8 @@
 %
 -define( error_fmt_cat( Message, FormatValues, MessageCategorization ),
 		 class_TraceEmitter:send_safe( error, State,
-					text_utils:format( Message, FormatValues ),
-					MessageCategorization )
+			text_utils:format( Message, FormatValues ),
+			MessageCategorization )
 ).
 
 
@@ -948,8 +947,8 @@
 -define( send_error_fmt_full( State, Message, FormatValues,
 							  MessageCategorization, ApplicationTimestamp ),
 		 class_TraceEmitter:send_safe( error, State,
-					text_utils:format( Message, FormatValues ),
-					MessageCategorization, ApplicationTimestamp )
+			text_utils:format( Message, FormatValues ),
+			MessageCategorization, ApplicationTimestamp )
 ).
 
 
@@ -960,8 +959,8 @@
 -define( error_fmt_full( Message, FormatValues, MessageCategorization,
 						 ApplicationTimestamp ),
 		 class_TraceEmitter:send_safe( error, State,
-					text_utils:format( Message, FormatValues ),
-					MessageCategorization, ApplicationTimestamp )
+			text_utils:format( Message, FormatValues ),
+			MessageCategorization, ApplicationTimestamp )
 ).
 
 
@@ -1100,9 +1099,8 @@
 %
 -define( warning_full( Message, MessageCategorization, ApplicationTimestamp ),
 		 class_TraceEmitter:send_safe( warning, State, Message,
-								  MessageCategorization, ApplicationTimestamp )
+			MessageCategorization, ApplicationTimestamp )
 ).
-
 
 
 
@@ -1123,7 +1121,7 @@
 %
 -define( send_warning_fmt( State, Message, FormatValues ),
 		 class_TraceEmitter:send_safe( warning, State,
-						  text_utils:format( Message, FormatValues ) )
+			text_utils:format( Message, FormatValues ) )
 ).
 
 
@@ -1132,7 +1130,7 @@
 %
 -define( send_warning_no_echo_fmt( State, Message, FormatValues ),
 		 class_TraceEmitter:send_synchronised( warning, State,
-						  text_utils:format( Message, FormatValues ) )
+			text_utils:format( Message, FormatValues ) )
 ).
 
 
@@ -1142,7 +1140,7 @@
 %
 -define( warning_fmt( Message, FormatValues ),
 		 class_TraceEmitter:send_safe( warning, State,
-						   text_utils:format( Message, FormatValues ) )
+			text_utils:format( Message, FormatValues ) )
 ).
 
 
@@ -1152,7 +1150,7 @@
 %
 -define( warning_no_echo_fmt( Message, FormatValues ),
 		 class_TraceEmitter:send_synchronised( warning, State,
-							text_utils:format( Message, FormatValues ) )
+			text_utils:format( Message, FormatValues ) )
 ).
 
 
@@ -1176,8 +1174,8 @@
 %
 -define( warning_fmt_cat( Message, FormatValues, MessageCategorization ),
 		 class_TraceEmitter:send_safe( warning, State,
-				text_utils:format( Message, FormatValues ),
-				MessageCategorization )
+			text_utils:format( Message, FormatValues ),
+			MessageCategorization )
 ).
 
 
@@ -1194,8 +1192,8 @@
 -define( send_warning_fmt_full( State, Message, FormatValues,
 								MessageCategorization, ApplicationTimestamp ),
 		 class_TraceEmitter:send_safe( warning, State,
-					text_utils:format( Message, FormatValues ),
-					MessageCategorization, ApplicationTimestamp )
+			text_utils:format( Message, FormatValues ),
+			MessageCategorization, ApplicationTimestamp )
 ).
 
 
@@ -1206,10 +1204,9 @@
 -define( warning_fmt_full( Message, FormatValues, MessageCategorization,
 						   ApplicationTimestamp ),
 		 class_TraceEmitter:send_safe( warning, State,
-					text_utils:format( Message, FormatValues ),
-					MessageCategorization, ApplicationTimestamp )
+			text_utils:format( Message, FormatValues ),
+			MessageCategorization, ApplicationTimestamp )
 ).
-
 
 
 
@@ -1412,8 +1409,8 @@
 -define( send_notice_fmt_cat( State, Message, FormatValues,
 							MessageCategorization ),
 		 class_TraceEmitter:send( notice, State,
-								  text_utils:format( Message, FormatValues ),
-								  MessageCategorization )
+			text_utils:format( Message, FormatValues ),
+			MessageCategorization )
 ).
 
 
@@ -1422,8 +1419,8 @@
 %
 -define( notice_fmt_cat( Message, FormatValues, MessageCategorization ),
 		 class_TraceEmitter:send( notice, State,
-								  text_utils:format( Message, FormatValues ),
-								  MessageCategorization )
+			text_utils:format( Message, FormatValues ),
+			MessageCategorization )
 ).
 
 
@@ -1441,8 +1438,8 @@
 -define( send_notice_fmt_full( State, Message, FormatValues,
 							   MessageCategorization, ApplicationTimestamp ),
 		 class_TraceEmitter:send( notice, State,
-								  text_utils:format( Message, FormatValues ),
-								  MessageCategorization, ApplicationTimestamp )
+			text_utils:format( Message, FormatValues ),
+			MessageCategorization, ApplicationTimestamp )
 ).
 
 
@@ -1453,8 +1450,8 @@
 -define( notice_fmt_full( Message, FormatValues, MessageCategorization,
 						  ApplicationTimestamp ),
 		 class_TraceEmitter:send( notice, State,
-								  text_utils:format( Message, FormatValues ),
-								  MessageCategorization, ApplicationTimestamp )
+			text_utils:format( Message, FormatValues ),
+			MessageCategorization, ApplicationTimestamp )
  ).
 
 
@@ -1580,8 +1577,8 @@
 -define( send_info_fmt_cat( State, Message, FormatValues,
 							MessageCategorization ),
 		 class_TraceEmitter:send( info, State,
-								  text_utils:format( Message, FormatValues ),
-								  MessageCategorization )
+			text_utils:format( Message, FormatValues ),
+			MessageCategorization )
 ).
 
 
@@ -1590,8 +1587,8 @@
 %
 -define( info_fmt_cat( Message, FormatValues, MessageCategorization ),
 		 class_TraceEmitter:send( info, State,
-								  text_utils:format( Message, FormatValues ),
-								  MessageCategorization )
+			text_utils:format( Message, FormatValues ),
+			MessageCategorization )
 ).
 
 
@@ -1608,8 +1605,8 @@
 -define( send_info_fmt_full( State, Message, FormatValues,
 							 MessageCategorization, ApplicationTimestamp ),
 		 class_TraceEmitter:send( info, State,
-								  text_utils:format( Message, FormatValues ),
-								  MessageCategorization, ApplicationTimestamp )
+			text_utils:format( Message, FormatValues ),
+			MessageCategorization, ApplicationTimestamp )
 ).
 
 
@@ -1620,8 +1617,8 @@
 -define( info_fmt_full( Message, FormatValues, MessageCategorization,
 						ApplicationTimestamp ),
 		 class_TraceEmitter:send( info, State,
-								  text_utils:format( Message, FormatValues ),
-								  MessageCategorization, ApplicationTimestamp )
+			text_utils:format( Message, FormatValues ),
+			MessageCategorization, ApplicationTimestamp )
  ).
 
 
@@ -1748,8 +1745,8 @@
 -define( send_debug_fmt_cat( State, Message, FormatValues,
 							 MessageCategorization ),
 		 class_TraceEmitter:send( debug, State,
-								  text_utils:format( Message, FormatValues ),
-								  MessageCategorization )
+			text_utils:format( Message, FormatValues ),
+			MessageCategorization )
 ).
 
 
@@ -1758,8 +1755,8 @@
 %
 -define( debug_fmt_cat( Message, FormatValues, MessageCategorization ),
 		 class_TraceEmitter:send( debug, State,
-								  text_utils:format( Message, FormatValues ),
-								  MessageCategorization )
+			text_utils:format( Message, FormatValues ),
+			MessageCategorization )
 ).
 
 
@@ -1776,8 +1773,8 @@
 -define( send_debug_fmt_full( State, Message, FormatValues,
 							  MessageCategorization, ApplicationTimestamp ),
 		 class_TraceEmitter:send( debug, State,
-								  text_utils:format( Message, FormatValues ),
-								  MessageCategorization, ApplicationTimestamp )
+			text_utils:format( Message, FormatValues ),
+			MessageCategorization, ApplicationTimestamp )
 ).
 
 
@@ -1788,8 +1785,8 @@
 -define( debug_fmt_full( Message, FormatValues, MessageCategorization,
 						 ApplicationTimestamp ),
 		 class_TraceEmitter:send( debug, State,
-								  text_utils:format( Message, FormatValues ),
-								  MessageCategorization, ApplicationTimestamp )
+			text_utils:format( Message, FormatValues ),
+			MessageCategorization, ApplicationTimestamp )
  ).
 
 
@@ -1866,7 +1863,7 @@
 % We believe that nonetheless these local do-nothing functions will be optimized
 % out by the compiler.
 %-compile( {inline,[ trace_disabled/1, trace_disabled/2, trace_disabled/3,
-%					 trace_disabled/4, trace_disabled/5 ] } ).
+%                    trace_disabled/4, trace_disabled/5 ] } ).
 
 % Final solution: replacing calls to trace_disabled/[1..5] by tuples containing
 % these variables (ex: 'trace_disabled( State, Message )' -> { State, Message })
@@ -2302,7 +2299,7 @@ trace_disabled( _, _, _, _, _ ) ->
 %
 -define( report_fmt( Message, FormatValues ),
 		 class_TraceEmitter:send_safe( info, State,
-						text_utils:format( Message, FormatValues ) )
+			text_utils:format( Message, FormatValues ) )
 ).
 
 
@@ -2343,7 +2340,7 @@ trace_disabled( _, _, _, _, _ ) ->
 -define( report_full( State, Message, MessageCategorization,
 					  ApplicationTimestamp ),
 		 class_TraceEmitter:send_safe( info, State, Message,
-								  MessageCategorization, ApplicationTimestamp )
+			MessageCategorization, ApplicationTimestamp )
 ).
 
 
@@ -2354,8 +2351,8 @@ trace_disabled( _, _, _, _, _ ) ->
 -define( report_full_fmt( State, Message, FormatValues, MessageCategorization,
 						  ApplicationTimestamp ),
 		 class_TraceEmitter:send_safe( info, State,
-				text_utils:format( Message, FormatValues ),
-				MessageCategorization, ApplicationTimestamp )
+			text_utils:format( Message, FormatValues ),
+			MessageCategorization, ApplicationTimestamp )
 ).
 
 

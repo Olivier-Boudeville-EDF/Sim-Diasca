@@ -97,8 +97,8 @@ run() ->
 	TermToTraverse = { pseudo_record, [], { a, 1.0 },
 					   [ { b, 42 }, "hello", [ <<"foo">> ] ], self() },
 
-	{ TraversedTerm, InspectData } = ast_transform:transform_term(
-		   TermToTraverse, _Type=atom, IdTermTransformer, _UserData=[] ),
+	{ TraversedTerm, InspectData } = meta_utils:transform_term(
+		TermToTraverse, _Type=atom, IdTermTransformer, _UserData=[] ),
 
 	test_facilities:display( "Traversal of term:~n'~p' with "
 		"id term transformer yielded:~n'~p', producing user data '~ts'",
@@ -109,11 +109,11 @@ run() ->
 	% does not do anything with user data:
 	%
 	TextTermTransformer = fun( Term, UserData ) ->
-							  { io_lib:format( "~w", [ Term ] ), UserData }
+								{ io_lib:format( "~w", [ Term ] ), UserData }
 						  end,
 
 	% Requested to operate only on PIDs:
-	{ NewTraversedTerm, _UselessData } = ast_transform:transform_term(
+	{ NewTraversedTerm, _UselessData } = meta_utils:transform_term(
 		TermToTraverse, _OtherType=pid, TextTermTransformer,
 		_OtherUserData=undefined ),
 

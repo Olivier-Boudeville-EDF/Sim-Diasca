@@ -25,12 +25,12 @@
 
 
 # Note: long lines in rules should not be word-wrapped (with \), as their
-# displaying on the console would print them, leading to poorly dense outputs,
-# that are not pleasing to the eye.
+# displaying on the console would print such characters, leading to poorly dense
+# outputs, that are not pleasing to the eye.
 
 
 # We must first go into the directory in which the source of the parse transform
-# lies, otherwise the BEAM file will be created on the current (ex: root)
+# lies, otherwise the BEAM file will be created in the current (e.g. root)
 # directory:
 #
 # (note that we want that parse transforms are themselves parse-transformed by
@@ -40,6 +40,29 @@
 	@echo "		Compiling parse transform $<"
 	@#echo $(ERLANG_COMPILER) $(ERLANG_COMPILER_OPT_FOR_PT) -o $@ $<
 	@"$(ERLANG_COMPILER)" $(ERLANG_COMPILER_OPT_FOR_PT) -o $@ $<
+
+
+
+# A given project (e.g. Foobar) may rely on generated "support modules",
+# typically to share constants based on the const_{table, bijective_table,
+# bijective_topics} facilities.
+#
+# For that we generally rely on the convention that the main module of that
+# project (e.g. foobar) is then to define and export a
+# generate_support_modules/0 function (whose spec is: generate_support_modules()
+# -> no_return()) in charge of the generation of such support modules (as BEAM
+# files), including at least a 'foobar_generated' module.
+#
+# The role of the present make target is to call that function: 'make
+# foobar_generate_support_modules' will run foobar:generate_support_modules/0,
+# which is expected to generate in turn said modules that will be needed (only)
+# at runtime; this target is generally set as a local dependency of the 'all'
+# target. Refer to Ceylan-Oceanic for an example thereof.
+#
+%_generated.beam: %.erl %.beam
+	@echo "		Generating support modules based on $<"
+	@#echo $(ERL_PARAMETERIZED_LAUNCHER) $(NODE_NAMING) $$(echo $< | sed 's|\.erl$$||1')-generator-for-$$USER --eval $$(echo $@ | sed 's|_generated\.beam$$|:generate_support_modules()|1') $(ALL_CMD_LINE_OPTIONS)
+	@$(ERL_PARAMETERIZED_LAUNCHER) $(NODE_NAMING) $$(echo $< | sed 's|\.erl$$||1')-generator-for-$$USER --eval $$(echo $@ | sed 's|_generated\.beam$$|:generate_support_modules()|1') $(ALL_CMD_LINE_OPTIONS)
 
 
 
@@ -288,4 +311,4 @@ endif
 
 %.plt: %.beam
 	@echo "    Checking module '$<' against relevant PLT ($(PLT_FILE))"
-	@"$(DIALYZER)" $(DIALYZER_OPT) --plt $(PLT_FILE) $<
+	@"$(DIALYZER)" $(DIALYZER_OPTS) --plt $(PLT_FILE) $<

@@ -23,12 +23,15 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
-%
+% Creation date: 2007.
+
+
+% @doc Test of the <b>support of methods</b>.
 -module(class_MethodTester).
 
 
--define( class_description, "Class introduced notably to test the support "
-							"of methods.").
+-define( class_description,
+		 "Class introduced notably to test the support of methods.").
 
 
 % Determines what are the direct mother classes of this class (if any):
@@ -49,7 +52,7 @@
 -spec construct( wooper:state() ) -> wooper:state().
 construct( State ) ->
 
-	trace_utils:info( "construction" ),
+	trace_utils:info( "Construction." ),
 
 	% No mother class.
 	setAttribute( State, name, "Terry" ).
@@ -59,7 +62,7 @@ construct( State ) ->
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
-	trace_utils:info( "destruction" ),
+	trace_utils:info( "Destruction." ),
 
 	io:format( "  I am ~ts, and I am just destructed.~n", [ ?getAttr(name) ] ),
 	State.
@@ -69,29 +72,29 @@ destruct( State ) ->
 % Method implementations.
 
 
-% Returns the name of this instance.
+% @doc Returns the name of this instance.
 -spec getName( wooper:state() ) -> const_request_return( name() ).
 getName( State ) ->
-	trace_utils:info( "getName/1" ),
+	trace_utils:info( "getName/1 called." ),
 	wooper:const_return_result( ?getAttr(name) ).
 
 
-% Sets the name of this instance.
+% @doc Sets the name of this instance.
 -spec setName( wooper:state(), name() ) -> oneway_return().
 setName( State, Name ) ->
-	trace_utils:info( "setName/2" ),
+	trace_utils:info( "setName/2 called." ),
 	NewState = setAttribute( State, name, Name ),
 	wooper:return_state( NewState ).
 
 
-% Returns a value established in a static context.
+% @doc Returns a value established in a static context.
 -spec get_static_info( integer(), integer() ) -> static_return( integer() ).
 get_static_info( A, B ) ->
 	trace_utils:info( "get_static_info/2 called" ),
 	wooper:return_static( A + B + 10 ).
 
 
-% Test of a static method returning nothing (void return):
+% @doc Test of a static method returning nothing (void return):
 -spec test_static_void() -> static_void_return().
 test_static_void() ->
 	%trace_utils:debug( "test_static_void/0 called!" ),

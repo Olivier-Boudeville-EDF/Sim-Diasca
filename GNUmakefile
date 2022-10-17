@@ -16,7 +16,7 @@
 
 # Root of the Sim-Diasca based software stack (absolute paths are preferred):
 ROOT_TOP := .
-#ROOT_TOP := $(PWD)
+#ROOT_TOP := "$(PWD)"
 
 
 # Allows to strictly build a layer before the above one (hence it is a bottom-up
@@ -29,74 +29,23 @@ ROOT_MAKEFILE := true
 BASE_MAKEFILE := false
 
 
-# As layers form a chain, we only have to specify where the one just below the
-# current one is:
-#
-#MYRIAD_TOP            := $(ROOT_TOP)/myriad
-#WOOPER_TOP            := $(ROOT_TOP)/wooper
-#TRACES_TOP            := $(ROOT_TOP)/traces
-#SIM_DIASCA_TOP        := $(ROOT_TOP)/sim-diasca
-MOCK_SIMULATORS_TOP    := $(ROOT_TOP)/mock-simulators
-SUSTAINABLE_CITIES_TOP := $(ROOT_TOP)/sustainable-cities
-DIST_SYS_SIM_TOP       := $(ROOT_TOP)/distributed-system-simulations
-ACME_TOP               := $(ROOT_TOP)/acme-model
-PLANNING_SIM_TOP       := $(ROOT_TOP)/planning-simulations
-
-
 PREREQUISITES_DIRS = $(MYRIAD_TOP) $(WOOPER_TOP) $(TRACES_TOP)
 
 
 # Allow for conditional rules:
 
-# Disabled, as currently not updated yet with regard to the newer WOOPER
-# conventions:
-#
-#HAS_SUSTAINABLE_CITIES := $(shell if [ -d $(SUSTAINABLE_CITIES_TOP) ]; \
-#	then echo "true"; else echo "false"; fi)
-
-HAS_SUSTAINABLE_CITIES := false
-
-
-HAS_DIST_SYS_SIM := $(shell if [ -d $(DIST_SYS_SIM_TOP) ]; \
-	then echo "true"; else echo "false"; fi)
-
-#HAS_DIST_SYS_SIM := true
-
-
-HAS_ACME := $(shell if [ -d $(ACME_TOP) ]; \
-	then echo "true"; else echo "false"; fi)
-
-#HAS_ACME := true
-
-
-HAS_PLANNING_SIM := $(shell if [ -d $(PLANNING_SIM_TOP) ]; \
-	then echo "true"; else echo "false"; fi)
-
-#HAS_PLANNING_SIM := true
+#HAS_FOOBAR := $(shell if [ -d $(FOOBAR_TOP) ]; \
+#   then echo "true"; else echo "false"; fi)
 
 
 # Modules which will be built iff they are available on this distribution:
 
-ifeq ($(HAS_SUSTAINABLE_CITIES),true)
-	OPTIONAL_MODULES_DIRS += $(SUSTAINABLE_CITIES_TOP)
-endif
+#ifeq ($(HAS_FOOBAR,true)
+#   OPTIONAL_MODULES_DIRS += $(FOOBAR_TOP)
+#endif
 
 
-ifeq ($(HAS_DIST_SYS_SIM),true)
-	OPTIONAL_MODULES_DIRS += $(DIST_SYS_SIM_TOP)
-endif
-
-
-ifeq ($(HAS_ACME),true)
-	OPTIONAL_MODULES_DIRS += $(ACME_TOP)
-endif
-
-
-ifeq ($(HAS_PLANNING_SIM),true)
-	OPTIONAL_MODULES_DIRS += $(PLANNING_SIM_TOP)
-endif
-
-
+MOCK_SIMULATORS_TOP    := $(ROOT_TOP)/mock-simulators
 
 
 # 'Myriad', 'WOOPER', 'Traces' not listed anymore here, as deemed to be external
@@ -192,13 +141,13 @@ rebuild: clean all generate-list-of-all-types
 generate-all-plt: all
 	@echo "   Generating now PLTs for the full Sim-Diasca based stack:"
 	@for m in $(PLT_TARGETS); do \
-	(cd $$m && $(MAKE) -s generate-local-plt); done
+	(cd $$m && $(MAKE) -s generate-local-plt || exit 5); done
 
 
 generate-list-of-all-types:
 	@echo "   Listing now all types defined in the full Sim-Diasca based stack:"
 	@for m in $(PLT_TARGETS); do \
-	(cd $$m && $(MAKE) -s generate-list-of-local-types); done
+	(cd $$m && $(MAKE) -s generate-list-of-local-types || exit 6); done
 
 
 # Creates all relevant links in the source tree to the central, single, host
@@ -208,7 +157,7 @@ link-host-candidates:
 	@echo "   Creating symbolic links to $(SIM_DIASCA_HOST_FILE) \
 	in the full source tree"
 	@for f in $(SIM_DIASCA_TOP) $(MOCK_SIMULATORS_TOP); do \
-	(cd $$f && $(MAKE) -s make-config-links-recurse); done
+	(cd $$f && $(MAKE) -s make-config-links-recurse || exit 7); done
 
 
 
@@ -233,25 +182,20 @@ check-hook-local:
 
 
 # 'check' would not suffice as we want to rebuild also prerequisites:
-full-check: rebuild
+full-check: #rebuild
 	@echo "   Performing now a full check (tests + static analyses) of \
 	the Sim-Diasca based stack:"
-	@for m in $(PLT_TARGETS); do \
-	( cd $$m; $(MAKE) -s test generate-local-plt self-check-against-plt ); \
-	done
+	@for m in $(PLT_TARGETS); do cd $(ROOT_TOP)/$$m && $(MAKE) -s test generate-local-plt self-check-against-plt; done
 
 
 plt-check: all
 	@echo "   Performing now a static analysis for each layer of \
 	the Sim-Diasca based stack (with no forced rebuild):"
-	@for m in $(PLT_TARGETS); do \
-	( cd $$m; $(MAKE) -s generate-local-plt self-check-against-plt ); \
-	done
+	@for m in $(PLT_TARGETS); do cd $(ROOT_TOP)/$$m && $(MAKE) -s generate-local-plt self-check-against-plt; done
 
 
 doc:
-	@for m in $(SIM_DIASCA_TOP) $(MOCK_DIRS); do \
-	( cd $$m; $(MAKE) -s doc ); done
+	@for m in $(SIM_DIASCA_TOP) $(MOCK_DIRS); do cd $(ROOT_TOP)/$$m && $(MAKE) -s doc; done
 
 
 
@@ -319,7 +263,7 @@ release-doc:
 
 
 # Also possible:
-#   @for p in $(PREREQUISITES_DIRS); do ( cd $$p/doc && $(MAKE) -s full-doc VIEW_PDF=no ); done
+#   @for p in $(PREREQUISITES_DIRS); do (cd $$p/doc && $(MAKE) -s full-doc VIEW_PDF=no); done
 
 
 HOST_SAMPLE_PATH := sim-diasca/conf
@@ -370,10 +314,10 @@ clean-checkouts:
 
 clean-prerequisites:
 	@echo "   Cleaning all prerequisites first"
-	@for m in $(PREREQUISITES_DIRS); do if ! ( if [ -d $$m ]; then cd $$m && \
-	echo "   Cleaning prerequisite '$$(basename $$m)'";                       \
-	$(MAKE) -s clean && cd ..;                                               \
-	else echo "     (non-existing directory $$m skipped)"; fi );            \
+	@for m in $(PREREQUISITES_DIRS); do if ! (if [ -d $$m ]; then cd $$m && \
+	echo "   Cleaning prerequisite '$$(basename $$m)'";                     \
+	$(MAKE) -s clean && cd ..;                                              \
+	else echo "     (non-existing directory $$m skipped)"; fi);             \
 	then exit 1; fi; done
 
 
@@ -383,7 +327,7 @@ clean-generated-files:
 	/bin/rm -f $$top/*.plt $$top/declared-types-in-*.txt; done
 	-@cd sim-diasca/doc; /bin/rm -f Sim-Diasca-*-doc.tar.bz2 \
 	Sim-Diasca-*-doc.zip
-	-@/bin/rm -f $(VERSION_FILE)
+	-@/bin/rm -f "$(VERSION_FILE)"
 	-@find $(ROOT_TOP) -type d -a -name 'tmp-rst' -exec /bin/rm -rf '{}' ';' \
 	 2>/dev/null || true
 
@@ -408,9 +352,9 @@ real-clean-local:
 #
 install:
 	@echo "   Installing all in $(INSTALLATION_PREFIX), from $$(basename $(PWD))"
-	@for m in $(INSTALLED_DIRS); do if ! ( if [ -d $$m ]; then cd $$m && \
+	@for m in $(INSTALLED_DIRS); do if ! (if [ -d $$m ]; then cd $$m && \
 	$(MAKE) -s install-package INSTALLATION_PREFIX="$(INSTALLATION_PREFIX)" &&  \
-	cd ..; else echo "     (directory $$m skipped)"; fi );           \
+	cd ..; else echo "     (directory $$m skipped)"; fi);           \
 	then exit 1; fi; done && \
 	echo " The full Sim-Diasca code base has been successfully installed in '$(INSTALLATION_PREFIX)'."
 
@@ -525,20 +469,14 @@ info-paths:
 	@echo "TRACES_TOP             = $(TRACES_TOP)"
 	@echo "SIM_DIASCA_TOP         = $(SIM_DIASCA_TOP)"
 	@echo "MOCK_SIMULATORS_TOP    = $(MOCK_SIMULATORS_TOP)"
-	@echo "SUSTAINABLE_CITIES_TOP = $(SUSTAINABLE_CITIES_TOP)"
-	@echo "DIST_SYS_SIM_TOP       = $(DIST_SYS_SIM_TOP)"
-	@echo "ACME_TOP               = $(ACME_TOP)"
-	@echo "PLANNING_SIM_TOP       = $(PLANNING_SIM_TOP)"
+	@#echo "FOOBAR_TOP            = $(FOOBAR_TOP)"
 	@echo "PLT_TARGETS            = $(PLT_TARGETS)"
 
 
 info-build:
 	@echo "MODULES_DIRS = $(MODULES_DIRS)"
 	@echo "OPTIONAL_MODULES_DIRS = $(OPTIONAL_MODULES_DIRS)"
-	@echo "HAS_SUSTAINABLE_CITIES = $(HAS_SUSTAINABLE_CITIES)"
-	@echo "HAS_DIST_SYS_SIM = $(HAS_DIST_SYS_SIM)"
-	@echo "HAS_ACME = $(HAS_ACME)"
-	@echo "HAS_PLANNING_SIM = $(HAS_PLANNING_SIM)"
+	@#echo "HAS_FOOBAR = $(HAS_FOOBAR)"
 	@echo "USE_HDF5 = $(USE_HDF5)"
 	@echo "USE_REST = $(USE_REST)"
 	@echo "USE_PYTHON_BINDING = $(USE_PYTHON_BINDING)"

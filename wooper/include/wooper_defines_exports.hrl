@@ -23,17 +23,16 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2007.
 
 
-% Modular WOOPER header gathering all general-purposes defines.
+% Modular WOOPER header gathering all general-purpose defines.
 
-
-% Note: types are defined here but exported in wooper.erl.
-
+% Note: types are defined here, but exported in wooper.erl.
 
 
 % Note: the hashtable type used by WOOPER (not the one exposed as a potential
-% attribute) should be a preprocessor define
+% attribute) should better be a preprocessor define.
 %
 -define( wooper_table_type, table ).
 
@@ -41,6 +40,8 @@
 % Approximate average attribute count for a given class instance, including
 % inherited ones (ideally should be slightly above the maximum number of actual
 % attributes for a given class)
+%
+% (now useless)
 %
 -define( wooper_attribute_count_upper_bound, 16 ).
 
@@ -103,28 +104,26 @@
 %
 -record( state_holder, {
 
-		   %virtual_table :: maybe( ?wooper_table_type:?wooper_table_type() ),
+	%virtual_table :: maybe( ?wooper_table_type:?wooper_table_type() ),
 
-		   % Just a key in the persistent_term registry:
-		   %virtual_table_key :: wooper:class_key(),
+	% Just a key in the persistent_term registry:
+	%virtual_table_key :: wooper:class_key(),
 
-		   % Now directly a reference within the persistent_term registry:
-		   virtual_table :: ?wooper_table_type:?wooper_table_type(),
+	% Now directly a reference within the persistent_term registry:
+	virtual_table :: ?wooper_table_type:?wooper_table_type(),
 
-		   attribute_table :: maybe( ?wooper_table_type:?wooper_table_type() ),
+	attribute_table :: maybe( ?wooper_table_type:?wooper_table_type() ),
 
-		   % Only means that we know to access the actual class name:
-		   %
-		   % (otherwise we could not, for example, report in an intermediate
-		   % child class the actual class name of a deleted instance)
-		   %
-		   % To be used, instead of ?MODULE or alike.
-		   %
-		   actual_class :: basic_utils:module_name(),
+	% Only means that we know to access the actual class name:
+	%
+	% (otherwise we could not, for example, report in an intermediate
+	% child class the actual class name of a deleted instance)
+	%
+	% To be used, instead of ?MODULE or alike.
+	%
+	actual_class :: basic_utils:module_name(),
 
-		   request_sender :: maybe( pid() )
-
-}).
+	request_sender :: maybe( pid() ) } ).
 
 
 
@@ -142,14 +141,13 @@
 % disabled)
 %
 %-define( wooper_return_state_result( S, R ),
-%		 wooper:return_state_result( (S), (R) ) ).
+%         wooper:return_state_result( (S), (R) ) ).
 
 %-define( wooper_return_state( S ), wooper:return_state( (S) ) ).
 
 
 
 -ifdef(wooper_debug_mode).
-
 
 	% Uncomment to have all WOOPER recompiled classes output verbosely their
 	% information:
@@ -172,10 +170,8 @@
 
 -else. % wooper_debug_mode
 
-
 	-define( wooper_log( Msg ), no_wooper_log ).
 	-define( wooper_log_format( Msg, Format ), no_wooper_log ).
-
 
 -endif. % wooper_debug_mode
 
@@ -197,17 +193,17 @@
 
 
 % Suitable for most applications (5 seconds):
--define(synchronous_time_out,5000).
+-define( synchronous_time_out, 5000 ).
 
 
 -else. % wooper_debug_mode
 
 
 % Better for applications in production (30 minutes):
--define(synchronous_time_out, (30*60*1000) ).
+-define( synchronous_time_out, (30*60*1000) ).
 
 % Also possible:
-%-define(synchronous_time_out,infinity).
+%-define( synchronous_time_out, infinity ).
 
 -endif. % wooper_debug_mode
 

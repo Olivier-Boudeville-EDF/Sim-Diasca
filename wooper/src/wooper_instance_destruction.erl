@@ -85,8 +85,8 @@ manage_destructor( { FunctionTable, ClassInfo } ) ->
 						MarkerTable = ClassInfo#class_info.markers,
 
 						ExportLocation =
-								ast_info:get_default_export_function_location(
-									MarkerTable ),
+							ast_info:get_default_export_function_location(
+								MarkerTable ),
 
 						DestrFunInfo#function_info{
 							exported=[ ExportLocation ] };
@@ -106,8 +106,8 @@ manage_destructor( { FunctionTable, ClassInfo } ) ->
 	NewClassInfo = ClassInfo#class_info{ destructor=DestructFunInfo },
 
 	%trace_utils:debug_fmt( "Destructor info: ~ts",
-	%	[ wooper_info:destructor_to_string( DestructFunInfo,
-	%				_DoIncludeForms=true, _IndentationLevel=1 ) ] ),
+	%   [ wooper_info:destructor_to_string( DestructFunInfo,
+	%     _DoIncludeForms=true, _IndentationLevel=1 ) ] ),
 
 	{ ShrunkFunctionTable, NewClassInfo }.
 
@@ -151,7 +151,7 @@ scan_for_destructors( _FunIdInfos=[ { { destruct, 1 }, DestFunInfo } | T ],
 scan_for_destructors( _FunIdInfos=[ { { destruct, N }, _DestFunInfo } | _T ],
 					  _Acc ) ->
 	wooper_internals:raise_usage_error(
-	  "wrong arity for destructor (destruct/1): expected 1, got ~B.", [ N ] );
+		"wrong arity for destructor (destruct/1): expected 1, got ~B.", [ N ] );
 
 
 scan_for_destructors( _FunIdInfos=[ Other | T ],

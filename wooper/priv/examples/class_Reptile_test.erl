@@ -1,13 +1,14 @@
-% Copyright (C) 2003-2022 Olivier Boudeville
+% Copyright (C) 2007-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER examples.
 %
 % It has been placed in the public domain.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2007.
 
 
-% Unit tests for the Reptile class implementation.
+% @doc Unit tests for the <b>Reptile class implementation</b>.
 %
 % See the class_Reptile.erl tested module.
 %
@@ -55,10 +56,10 @@ run( IsDebug ) ->
 	MyR ! { getSuperclasses, [], self() },
 	receive
 
-		{ wooper_result, [ class_Creature ] } ->
+		{ wooper_result, [ class_OvoviviparousBeing, class_Serialisable,
+						   class_StaticDescribable ] } ->
 			test_facilities:display(
-				"After constructor, getSuperclasses/1 returned class_Creature "
-				"as expected." );
+				"After constructor, correct superclasses returned." );
 
 		{ wooper_result, UnexpectedSuperclasses } ->
 			test_facilities:fail( "wrong superclasses: ~p",
@@ -145,22 +146,19 @@ run( IsDebug ) ->
 
 	end,
 
-	case IsDebug of
-
-		true ->
+	IsDebug andalso
+		begin
 
 			MyR ! { wooper_get_instance_description, [], self() },
+
 			receive
 
 				{ wooper_result, InspectString } ->
 					test_facilities:display( "Instance description: ~ts",
 											 [ InspectString ] )
-			end;
+			end
 
-		false ->
-			ok
-
-	end,
+		end,
 
 	% To check the result when using a faulty destructor:
 	test_facilities:display( "synchronous deletion of the instance." ),

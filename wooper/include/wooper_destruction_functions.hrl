@@ -23,6 +23,7 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2007.
 
 
 % Modular WOOPER header gathering the facilities for instance destruction.
@@ -82,8 +83,8 @@ wooper_destruct( State ) ->
 				Other ->
 
 					wooper:log_error( "~nWOOPER error for PID ~w of class ~ts: "
-					  "user-defined destructor did not return a state, but "
-					  "returned '~p' instead.", [ self(), ?MODULE, Other ] ),
+						"user-defined destructor did not return a state, but "
+						"returned '~p' instead.", [ self(), ?MODULE, Other ] ),
 
 					throw( { invalid_destructor, ?MODULE } )
 
@@ -224,14 +225,11 @@ chain_parent_destructors( State ) ->
 	% for the sake of symmetry.
 	%
 	lists:foldr(
-
 		fun( Class, NewState ) ->
 
 				% More efficient than using apply/3:
 				Class:wooper_destruct( NewState )
 
 		end,
-
 		_InitialAcc=State,
-
 		_List=Superclasses ).

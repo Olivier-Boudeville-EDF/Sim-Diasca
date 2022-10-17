@@ -56,11 +56,9 @@
 % Instance state is maintained thanks to a per-instance attribute table, storing
 % all its attributes, including all the inherited ones.
 %
-% The hashtable type, defined in hashtable.erl, is used at all levels:
+% The table pseudo-type, defined in map_hashtable.erl, is used at all levels:
 % per-instance (for the attribute table), per-class (for the so-called virtual
 % table), per-node (for the class manager).
-%
-% The proplist module could be used instead.
 
 % When an exported function is called as a method (i.e. it is listed in the
 % wooper_method_export variable, see below) the list of parameters being
@@ -159,7 +157,6 @@
 -include("wooper_destruction_exports.hrl").
 -include("wooper_execute_exports.hrl").
 -include("wooper_execute_internal_exports.hrl").
--include("wooper_serialisation_exports.hrl").
 -include("wooper_state_exports.hrl").
 -include("wooper_types_exports.hrl").
 -include("wooper_main_loop_exports.hrl").
@@ -173,7 +170,6 @@
 -include("wooper_execute_functions.hrl").
 -include("wooper_execute_internal_functions.hrl").
 -include("wooper_main_loop_functions.hrl").
--include("wooper_serialisation_functions.hrl").
 -include("wooper_state_functions.hrl").
 
 % Nothing needed for static methods.

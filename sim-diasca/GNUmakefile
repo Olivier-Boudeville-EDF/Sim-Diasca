@@ -10,7 +10,7 @@ SIM_DIASCA_TOP = .
 		info-conditionals info-deps
 
 
-MODULES_DIRS = src test doc
+MODULES_DIRS = src test doc conf
 
 
 # To override the 'all' default target with a parallel version:
@@ -42,9 +42,9 @@ help-sim-diasca:
 
 
 register-version-in-header:
-	@if [ -z "$(VERSION_FILE)" ] ; then \
-	echo "Error, no version file defined." 1>&2 ; exit 53 ; else \
-	$(MAKE) register-sim-diasca ; fi
+	@if [ -z "$(VERSION_FILE)" ]; then \
+	echo "  Error, no version file defined." 1>&2; exit 53; else \
+	$(MAKE) -s register-sim-diasca; fi
 
 
 register-sim-diasca:

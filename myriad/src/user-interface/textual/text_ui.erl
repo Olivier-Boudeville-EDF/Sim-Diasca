@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2022 Olivier Boudeville
+% Copyright (C) 2018-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -379,9 +379,7 @@ get_text_as_integer( Prompt ) ->
 %
 -spec get_text_as_integer( prompt(), ui_state() ) -> text().
 get_text_as_integer( Prompt, UIState ) ->
-
 	Text = get_text( Prompt, UIState ),
-
 	text_utils:string_to_integer( Text ).
 
 
@@ -556,9 +554,7 @@ choose_designated_item( Label, Choices, UIState ) ->
 		fun( Text, { Count, AccText } ) ->
 
 			NewText = text_utils:format( "[~B] ~ts", [ Count, Text ] ),
-
 				NewAccText = [ NewText | AccText ],
-
 				{ Count+1, NewAccText }
 
 		end,
@@ -586,8 +582,8 @@ choose_designated_item( Label, Choices, UIState ) ->
 
 		N when N > ChoiceCount ->
 			display_error(
-			  "Specified choice shall not be greater than ~B (not ~B).",
-			  [ ChoiceCount, N ] ),
+				"Specified choice shall not be greater than ~B (not ~B).",
+				[ ChoiceCount, N ] ),
 			%throw( { invalid_choice, too_high, N } );
 			choose_designated_item( Label, Choices, UIState );
 
@@ -759,18 +755,13 @@ choose_numbered_item_with_default( Label, Choices, DefaultChoiceIndex,
 	end,
 
 	{ _FinalCount, NumberedText } = lists:foldl(
-					fun( Text, { Count, AccText } ) ->
-
-						NewText = text_utils:format( "[~B] ~ts",
-													 [ Count, Text ] ),
-
-						NewAccText = [ NewText | AccText ],
-
-						{ Count+1, NewAccText }
-
-					 end,
-					 _Acc0= { _Count=1, [] },
-					 _List=Choices ),
+		fun( Text, { Count, AccText } ) ->
+			NewText = text_utils:format( "[~B] ~ts", [ Count, Text ] ),
+			NewAccText = [ NewText | AccText ],
+			{ Count+1, NewAccText }
+		end,
+		_Acc0= { _Count=1, [] },
+		_List=Choices ),
 
 	Text = text_utils:strings_to_string(
 			 lists:reverse( NumberedText ), _Bullet=" " ),
@@ -823,15 +814,7 @@ trace( Message, UIState ) when is_record( UIState, text_ui_state ) ->
 
 	TraceMessage = "[trace] " ++ Message ++ "\n",
 
-	case UIState#text_ui_state.log_console of
-
-		true ->
-			display( TraceMessage );
-
-		false ->
-			ok
-
-	end,
+	UIState#text_ui_state.log_console andalso display( TraceMessage ),
 
 	case UIState#text_ui_state.log_file of
 
@@ -841,7 +824,7 @@ trace( Message, UIState ) when is_record( UIState, text_ui_state ) ->
 		LogFile ->
 			display( LogFile, TraceMessage )
 
-end;
+	end;
 
 trace( FormatString, Values ) ->
 	trace( text_utils:format( FormatString, Values ) ).
@@ -967,8 +950,8 @@ set_setting( SettingKey, SettingValue ) ->
 set_setting( SettingKey, SettingValue,
 			 UIState=#text_ui_state{ settings=SettingTable } ) ->
 
-	NewSettingTable = ?ui_table:add_entry( SettingKey, SettingValue,
-										   SettingTable ),
+	NewSettingTable =
+		?ui_table:add_entry( SettingKey, SettingValue, SettingTable ),
 
 	UIState#text_ui_state{ settings=NewSettingTable }.
 
@@ -1052,8 +1035,8 @@ get_setting( SettingKey ) ->
 -spec get_setting( ui_setting_key(), ui_state() ) ->
 							maybe( ui_setting_value() ).
 get_setting( SettingKey, #text_ui_state{ settings=SettingTable } ) ->
-	?ui_table:get_value_with_defaults( SettingKey, _Default=undefined,
-									SettingTable ).
+	?ui_table:get_value_with_default( SettingKey, _Default=undefined,
+									  SettingTable ).
 
 
 

@@ -6,6 +6,7 @@
 .. comment stylesheet specified through GNUmakefile
 
 
+
 ===================================================
 *Wrapper for Object-Oriented Programming in Erlang*
 ===================================================
@@ -25,7 +26,7 @@
 
 
 :raw-html:`<center><img src="wooper-title.png" id="responsive-image-small"></img>`
-:raw-latex:`\centering \includegraphics[scale=0.28]{wooper-title.png}`
+:raw-latex:`\begin{center} \includegraphics[scale=0.28]{wooper-title.png} \end{center}`
 
 .. comment Note: this is the latest, current version of the WOOPER 2.x documentation, directly obtained from the one of WOOPER 1.x.
 
@@ -595,9 +596,9 @@ If only a single, non-list, parameter is needed, the list can be omitted, and th
 .. Note::
   This cannot apply if the unique parameter is a list, as this would be ambiguous.
 
-  For example: ``Foods=[meat,soup,croquette], MyCat ! {setFavoriteFoods,Foods}`` would result in a call to ``setFavoriteFoods/4``, i.e. a call to ``setFavoriteFoods(State,meat,soup,croquette)``, whereas the intent of the programmer is probably to call a ``setFavoriteFoods/2`` method like ``setFavoriteFoods(State,Foods) when is_list(Foods) -> [..]`` instead.
+  For example: ``Foods=[meat,soup,croquette], MyCat ! {setFavouriteFoods,Foods}`` would result in a call to ``setFavouriteFoods/4``, i.e. a call to ``setFavouriteFoods(State,meat,soup,croquette)``, whereas the intent of the programmer is probably to call a ``setFavouriteFoods/2`` method like ``setFavouriteFoods(State,Foods) when is_list(Foods) -> [..]`` instead.
 
-  The proper call would then be ``MyCat ! {setFavoriteFoods,[Foods]}``, i.e. the parameter list should be used, and it would then contain only one element, the food list, whose content would therefore be doubly enclosed.
+  The proper call would then be ``MyCat ! {setFavouriteFoods,[Foods]}``, i.e. the parameter list should be used, and it would then contain only one element, the food list, whose content would therefore be doubly enclosed.
 
   Note also that, of course, strings *are* lists. So ``Joe ! {setName,"Armstrong"}.`` is likely not the call you are looking for. Most probably you should prefer: ``Joe ! {setName,["Armstrong"]}.``.
 
@@ -959,7 +960,7 @@ Requests can access to one more information than oneways: the PID of the caller 
 
 However WOOPER keeps track of this information, which remains available to requests, and may be useful for some of them.
 
-From a request body, the caller PID can indeed be retrieved by using the ``getSender`` macro, which is automatically managed by WOOPER:
+From a request body, the caller PID can indeed be retrieved by using the ``getSender/0`` macro, which is automatically managed by WOOPER:
 
 .. code:: erlang
 
@@ -982,12 +983,12 @@ one can rely on only:
  MyCat ! {giveBirth,[2,3],self()}
 
 
-while still letting the possibility for the called request (here ``giveBirth/3``, for a state and two parameters) to access the caller PID thanks to the ``getSender`` macro, and maybe store it for a later use or do anything appropriate with it.
+while still letting the possibility for the called request (here ``giveBirth/3``, for a state and two parameters) to access the caller PID thanks to the ``getSender/0`` macro, and maybe store it for a later use or do anything appropriate with it.
 
 Note that:
 
 - having to handle explicitly the caller PID is rather uncommon, as WOOPER takes care automatically of the sending of the result back to the caller
-- the ``getSender`` macro should only be used for requests, as of course the sender PID has no meaning in the case of oneways; if that macro is called nevertheless from a oneway, then it returns the atom ``undefined``.
+- the ``getSender/0`` macro should only be used for requests, as of course the sender PID has no meaning in the case of oneways; if that macro is called nevertheless from a oneway, then it returns the atom ``undefined``.
 
 
 Request Type Specifications
@@ -1032,7 +1033,7 @@ After relevant adaptations, most of the conventions for requests apply to oneway
 Oneways in general
 __________________
 
-Oneways will use ``wooper:return_state(NewState)`` to terminate their clauses: the new state will be kept by the instance, and no result will be returned to the caller (which is not even known - hence no ``?getSender`` macro applies to oneways either).
+Oneways will use ``wooper:return_state(NewState)`` to terminate their clauses: the new state will be kept by the instance, and no result will be returned to the caller (which is not even known - hence no ``getSender/0`` macro applies to oneways either).
 
 
 For example:
@@ -1321,7 +1322,7 @@ They thus do not operate on a specified process or PID, they are just to be call
 
 .. comment  % Determines what are the static methods of this class (if any):
 .. comment  get_static_methods() ->
-.. comment	[ {get_default_whisker_color,0}, {compute_mew_frequency,2} ].
+.. comment   [ {get_default_whisker_color,0}, {compute_mew_frequency,2} ].
 
 
 .. Static methods are to be listed by the class developer thanks to the ``wooper_static_method_export`` define, like in:
@@ -1382,7 +1383,7 @@ Its state is only directly accessible from inside the instance, i.e. from the bo
 
 The state of an instance (corresponding to the one that is given by WOOPER as first parameter of all its methods, thanks to a variable conventionally named ``State``) is simply defined as a **set of attributes**.
 
-Each attribute is designated by a name, defined as an atom (we recommend using ``camel_case`` for them), and is associated to a mutable value, which can be any Erlang term.
+Each attribute is designated by a **name**, defined as an atom (we recommend using ``snake_case`` for them; all names starting with ``wooper_`` are reserved), and is associated to a mutable **value**, which can be any Erlang term; therefore ``attribute_name() :: atom()`` and ``attribute_value() :: any()``.
 
 The current state of an instance can be thought as a list of ``{attribute_name,attribute_value}`` pairs, like in:
 
@@ -1433,7 +1434,7 @@ These declarations are to relate only to the **class-specific** attributes, i.e.
 
 The most general form of an **attribute declaration** includes the following four information::
 
- {Name,Type,QualifierInfo,Description}
+ {Name, Type, QualifierInfo, Description}
 
 where:
 
@@ -1456,16 +1457,20 @@ A **qualifier** can be:
 
 - a *scope* qualifier: ``public``, ``protected`` or ``private``; in future versions, a public attribute will correspond to the union of ``settable`` and ``gettable`` and will result in accessor methods being automatically generated; for example, should the ``fur_color`` attribute be declared public, then:
 
-  - the ``getFurColor/1`` const request would be added (with its spec)::
+  - the ``getFurColor/1`` const request would be added (with its spec):
+
+	.. code:: erlang
 
 	  getFurColor(State) ->
 		   wooper:const_return_result(?getAttr(fur_color)).
 
-  - the ``setFurColor/2`` oneway would be added (with its spec)::
+  - the ``setFurColor/2`` oneway would be added (with its spec):
+
+	.. code:: erlang
 
 	  setFurColor(State,FurColor) ->
-		   wooper:return_state(setAttribute(State,fur_color,
-											FurColor)).
+		   wooper:return_state(
+			   setAttribute(State, fur_color, FurColor)).
 
 - an *initialisation* qualifier: ``{initial,18}`` would denote that the initial value of the corresponding attribute is ``18`` (this value would then be set even before entering any constructor)
 
@@ -1482,19 +1487,21 @@ The defaults are:
 
 
 
-So an example of attribute declaration could be::
+So an example of attribute declaration could be:
 
- {age,integer(),{initial,18},
+.. code:: erlang
+
+ {age, integer(), {initial,18},
   "stores the current age of this creature"}
 
 
-.. Note:: Currently, these information are only of use for the developer (i.e. for documentation purpose). No check is made about whether they are used, whether no other attributes are used, whether the type is meaningful and indeed enforced, the default initial value is not set, etc; yet some of these information might be handled by future WOOPER versions.
+.. Note:: Currently, these information are only of use for the developer (i.e. for documentation purpose). No check is made about whether they are used, whether no other attributes are used, whether the type is meaningful and indeed enforced, the default initial value is not set, etc.; yet at least some of these information might be handled by future WOOPER versions.
 
 
 Shorter attribute declarations can also used, then with less than the 4 aforementioned pieces of information mentioned:
 
-- only 3 of them: ``{Name,Type,Description}`` (implying: qualifier is ``none``)
-- only 2 of them: ``{Name,Description}`` (implying: type is ``any()``, qualifier is ``none``)
+- only 3 of them: ``{Name, Type, Description}`` (implying: qualifier is ``none``)
+- only 2 of them: ``{Name, Description}`` (implying: type is ``any()``, qualifier is ``none``)
 - only 1 of them: ``Name`` (implying: type is ``any()``, qualifier is ``none``, no description)
 
 (and, of course, any number of attributes may not be specified at all)
@@ -1503,11 +1510,11 @@ Finally, a full example of the declaration of class attributes can be:
 
 .. code:: erlang
 
-  -define(class_attributes,[
-			name,
-			{age,integer(),"stores the current age of this creature"},
-			birth_date,
-			{weight,"total weight measured"}]).
+	-define(class_attributes,[
+		name,
+		{age, integer(), "stores the current age of this creature"},
+		birth_date,
+		{weight, "total weight measured"}]).
 
 
 
@@ -1559,7 +1566,7 @@ This is a dynamic datastructure, allowing attributes to be added, removed or mod
 
 This table, among other elements, is itself stored in the overall instance state, i.e. in the variable designated by ``State`` specified at the beginning of each member method (and constructors, and destructor), on which the process corresponding to active instances is looping, and whose type is ``wooper:state()``.
 
-We strongly advise to suffix the name of the various state variables used with ``State`` (ex: ``RegisteredState``, ``FinalState``, etc.).
+For clarity, we strongly advise to suffix the name of the various state variables used with ``State`` (ex: ``RegisteredState``, ``FinalState``, etc.).
 
 
 .. comment In experimental, post-1.x versions of WOOPER, the attributes that defined (among other information) the state of an instance used to be transformed into a class-specific, inheritance-aware, predetermined **record**.
@@ -1624,13 +1631,20 @@ Setting an attribute (creating [#]_ and/or modifying it) should be done with the
 
 .. code:: erlang
 
- NewState = setAttribute(AState,AttributeName,NewAttributeValue)
+ NewState = setAttribute(AState, AttributeName, NewAttributeValue)
 
 
 .. [#] Attribute creation should (by convention) only be done in constructors (not in methods).
 
+Its type specification is:
 
-For example, ``AgeState = setAttribute(State,age,3)`` will return a new state, bound to ``AgeState``, exact copy of ``State`` (notably with all the attribute pairs equal) but for the ``age`` attribute, whose value will be set to 3.
+.. code:: erlang
+
+ -spec setAttribute(wooper:state(), attribute_name(), attribute_value()) ->
+								wooper:state().
+
+
+For example, ``AgeState = setAttribute(State, age, 3)`` will return a new state, bound to ``AgeState``, exact copy of ``State`` (notably with all the attribute pairs equal) but for the ``age`` attribute, whose value will be set to 3.
 
 .. comment (whether or not this attribute was already defined in ``State``).
 
@@ -1641,6 +1655,14 @@ Note that the corresponding state duplication remains efficient both in terms of
 In various cases, notably in constructors, one needs to define a series of attributes in a row, but chaining ``setAttribute/3`` calls with intermediate states that have each to be named is not really convenient.
 
 A better solution is to use the ``setAttributes/2`` function (note the plural) to set a list of attribute name/attribute value pairs in a row.
+
+Its type specification is:
+
+.. code:: erlang
+
+ -spec setAttributes(wooper:state(), [{attribute_name(), attribute_value()}]) ->
+								wooper:state().
+
 
 For example:
 
@@ -1656,7 +1678,17 @@ will return a new state, exact copy of ``MyState`` but for the listed attributes
 The ``swapInAttribute/3`` function
 **********************************
 
-This function allows to swap, in the specified state, the current value of the specified attribute with the specified value; for example:
+This function allows to swap, in the specified state, the current value of the specified attribute with the specified value.
+
+Its type specification is:
+
+.. code:: erlang
+
+ -spec swapInAttribute(wooper:state(), attribute_name(),
+					   NewValue :: attribute_value()) ->
+			{wooper:state(), PastValue:: attribute_value()}.
+
+For example:
 
 .. code:: erlang
 
@@ -1670,14 +1702,23 @@ The ``removeAttribute/2`` function
 
 .. Note::
 
- The ``removeAttribute/2`` function is now deprecated and should not be used anymore.
+ The ``removeAttribute/2`` function is now deprecated and should not be used anymore - unless, maybe, if wanting to `favour composition over inheritance`_, or surely if performing hot code update (for example when a version upgrade results in a given attribute not being defined anymore once relying on the newer class definition).
 
 
-This function was used in order to fully remove an attribute entry (i.e. the whole key/value pair).
+This function may be used in order to fully remove an attribute entry (i.e. the whole key/value pair).
 
-This function is deprecated now, as we prefer defining all attributes once for all, at construction time, and never adding or removing them dynamically: the good practice is just to operate on their value, which can by example be set to ``undefined``, without having to deal with the fact that, depending on the context, a given attribute may or may not be defined (kids: don't do that).
+Its type specification is:
 
-For example ``NewState = removeAttribute(State,an_attribute)`` could be used, for a resulting state having no key corresponding to ``an_attribute``.
+.. code:: erlang
+
+ -spec removeAttribute(wooper:state(), attribute_name()) ->
+								wooper:state().
+
+For example ``NewState = removeAttribute(State, an_attribute)`` could be used, for a resulting state having no key corresponding to ``an_attribute``.
+
+.. This function is deprecated now, as we
+
+Except in the aforementioned very specific cases, this function is not used, as we prefer defining all attributes once for all, at construction time, and never adding or removing them dynamically: the good practice is just to operate on their value, which can by example be set to ``undefined``, without having to deal with the fact that, depending on the context, a given attribute may or may not be defined (kids: don't do that).
 
 
 Neither the ``setAttribute*`` variants nor ``removeAttribute/2`` can fail, regardless of the attribute being already existing or not.
@@ -1691,14 +1732,33 @@ _____________
 The ``hasAttribute/2`` function
 *******************************
 
+This function tells whether, in the specified state, the specified attribute exists.
+
+Its type specification is:
+
+.. code:: erlang
+
+ -spec hasAttribute(wooper:state(), attribute_name()) ->
+								boolean().
+
+For example:
+
+.. code:: erlang
+
+ case hasAttribute(AState, fur_color) of
+
+   true ->
+	 [...]
+
+
 .. Note::
 
- The ``hasAttribute/2`` function is now deprecated and should not be used anymore, as no attribute is expected to be removed anymore either.
+ Using the ``hasAttribute/2`` function is generally not recommended, as, once an instance is constructed, a given attribute shall always exist or never - unless wanting to `favour composition over inheritance`_.
 
 
-To test whether an attribute is defined, one could use the ``hasAttribute/2`` function: ``hasAttribute(AState,AttributeName)``, which returns either ``true`` or ``false``, and cannot fail.
+To test whether an attribute is defined, one could use the ``hasAttribute/2`` function: ``hasAttribute(AState, AttributeName)``, which returns either ``true`` or ``false``, and cannot fail.
 
-For example, ``true = hasAttribute(State,whisker_color)`` matches if and only if the attribute ``whisker_color`` is defined in state ``State``.
+For example, ``true = hasAttribute(State, whisker_color)`` matches if and only if the attribute ``whisker_color`` is defined in state ``State``.
 
 Note that generally, as already mentioned, it is a bad practice to define attributes outside of the constructor of an instance, as the availability of an attribute could then depend on the actual state, which is an eventuality generally difficult to manage reliably.
 
@@ -1709,14 +1769,22 @@ A better approach is instead to define all possible attributes directly from the
 The ``getAttribute/2`` function
 *******************************
 
-Getting the value of an attribute is to be done with the ``getAttribute/2`` function:
+Getting the value of an attribute from an explicitly-designated state is to be done with the ``getAttribute/2`` function:
 
 .. code:: erlang
 
- AttributeValue = getAttribute(AState,AttributeName)
+ AttributeValue = getAttribute(AState, AttributeName)
 
 
-For example, ``MyColor = getAttribute(State,whisker_color)`` returns the value of the attribute ``whisker_color`` from state ``State``.
+Its type specification is:
+
+.. code:: erlang
+
+ -spec getAttribute(wooper:state(), attribute_name()) ->
+								attribute_value().
+
+
+For example, ``MyColor = getAttribute(State, whisker_color)`` returns the value of the attribute ``whisker_color`` from state ``State``.
 
 .. comment The requested attribute may not exist in the specified state. In this case, a compile-time error is issued.
 
@@ -1728,18 +1796,18 @@ Requesting a non-existing attribute triggers a bad match. In the previous exampl
 
 .. code:: erlang
 
- {key_not_found,whisker_color}
+ {key_not_found, whisker_color}
 
 
 
-The ``getAttr/2`` macro
+The ``getAttr/1`` macro
 ***********************
 
 Quite often, when having to retrieve the value of an attribute from a state variable, that variable will be named ``State``, notably when using directly the original state specified in the method declaration.
 
 Indeed, when a method needs a specific value, generally either this value was already available in the state it began with (then we can read it from ``State``), or is computed in the course of the method, in which case that value is most often already bound to a variable, which can then be re-used directly rather than be fetched from a state.
 
-In this case, the ``getAttr/2`` macro can be used: ``?getAttr(whisker_color)`` expands (literally) as ``getAttribute(State,whisker_color)``, and is a tad shorter.
+In this case, the ``getAttr/1`` *macro* can be used: ``?getAttr(whisker_color)`` expands (literally) as ``getAttribute(State, whisker_color)``, and is a tad shorter.
 
 This is implemented as a macro so that the user remains aware that an implicit variable named ``State`` is then used.
 
@@ -1747,36 +1815,92 @@ The less usual cases where a value must be read from a state variable that is *n
 
 
 
+The ``getMaybeAttribute/2`` function
+************************************
+
+Getting the value of an attribute that may or may not be defined is to be done with the ``getMaybeAttribute/2`` function.
+
+Its type specification is:
+
+.. code:: erlang
+
+ -spec getMaybeAttribute(wooper:state(), attribute_name()) ->
+		  maybe({'value', attribute_value()}).
+
+
+Note that:
+
+- thanks to Myriad, ``maybe(T) :: T | 'undefined'``
+- the ``value`` atom tag is used to discriminate a non-existing attribute from one whose value is ``undefined``
+
+For example:
+
+.. code:: erlang
+
+ case getMaybeAttribute(AState, AttributeName) of
+
+	undefined ->
+	  [...];
+
+	{value, AttrValue} ->
+	  [...]
+
+ end.
+
+
+.. Note::
+
+ Using the ``getMaybeAttribute/2`` function is generally not recommended, as, once an instance is constructed, a given attribute shall always exist or never - unless wanting to `favour composition over inheritance`_.
+
+
+
+The ``getMaybeAttr/1`` macro
+****************************
+
+Like the ``getAttribute/2`` function has the ``getAttr/1`` macro, to the ``getMaybeAttribute/2`` function  is associated a convenience macro, ``getMaybeAttr/1``.
+
+This macro should be used *only* if the attribute of interest cannot have the ``undefined`` value, as this macro returns directly the value ``V`` obtained (if any), instead of its ``{value,V}`` tagged version [#]_.
+
+.. [#] Indeed, for convenience, this macro returns values of type ``maybe(attribute_value())`` (not of the ``maybe({'value', attribute_value()})`` type, thus an attribute set to the ``undefined`` value could not be discriminated from a non-defined attribute).
+
+
+For example, to return the value of a possibly-defined attribute named ``my_description``, whose value is known to never be equal to ``undefined`` (for example because it is a string in all cases):
+
+.. code:: erlang
+
+ get_maybe_description(State) ->
+   ?getMaybeAttr(my_description).
+
 
 
 Read-Modify-Write Operations
 ____________________________
 
-Some additional helper functions are provided for the most common operations, to keep the syntax as lightweight as possible.
+Some additional helper functions are provided for the most common operations, to keep the syntax as lightweight as possible (and possibly increase a bit the performances due to fewer inter-module calls).
 
 
 
 The ``addToAttribute/3`` function
 *********************************
 
-When having a numerical attribute, ``addToAttribute/3`` adds the specified number to the attribute.
+When having a numerical attribute, ``addToAttribute/3`` adds the specified number (i.e. integer or float) to the attribute.
 
-To be used like in:
+Its type specification is:
 
 .. code:: erlang
 
-  NewState = addToAttribute(State,AttributeName,Value)
-
+ -spec addToAttribute(wooper:state(), attribute_name(), number()) ->
+								wooper:state().
 
 For example:
 
 .. code:: erlang
 
- MyState = addToAttribute(FirstState,a_numerical_attribute,6)
+ MyState = addToAttribute(FirstState, a_numerical_attribute, 6)
 
 In ``MyState``, the value of attribute ``a_numerical_attribute`` is increased of 6, compared to the one in ``FirstState``.
 
-Calling ``addToAttribute/3`` on a non-existing attribute will trigger a runtime error (``{key_not_found,AttributeName}``).
+Calling ``addToAttribute/3`` on a non-existing attribute will trigger a runtime error (``{key_not_found, AttributeName}``).
 
 
 If the attribute exists, but no addition can be performed on it (i.e. if it is meaningless for the type of the current value), a ``badarith`` runtime error will be issued.
@@ -1793,26 +1917,26 @@ If the attribute exists, but no addition can be performed on it (i.e. if it is m
 The ``subtractFromAttribute/3`` function
 ****************************************
 
-When having a numerical attribute, ``subtractFromAttribute/3`` subtracts the specified number from the attribute.
+When having a numerical attribute, ``subtractFromAttribute/3`` subtracts the specified number (i.e. integer or float) from the attribute.
 
-To be used like in:
+Its type specification is:
 
 .. code:: erlang
 
- NewState = subtractFromAttribute(State,AttributeName,Value)
-
+ -spec subtractFromAttribute(wooper:state(), attribute_name(), number()) ->
+								wooper:state().
 
 For example:
 
 .. code:: erlang
 
- MyState = subtractFromAttribute(FirstState,a_numerical_attribute,7)
+ MyState = subtractFromAttribute(FirstState, a_numerical_attribute, 7)
 
 
 In ``MyState``, the value of attribute ``a_numerical_attribute`` is decreased of 7, compared to the one in ``FirstState``.
 
 
-Calling ``subtractFromAttribute/3`` on a non-existing attribute will trigger a runtime error (``{key_not_found,AttributeName}``).
+Calling ``subtractFromAttribute/3`` on a non-existing attribute will trigger a runtime error (``{key_not_found, AttributeName}``).
 If the attribute exists, but no subtraction can be performed on it (meaningless for the type of the current value), a ``badarith`` runtime error will be issued.
 
 
@@ -1830,21 +1954,22 @@ The ``toggleAttribute/2`` function
 
 Flips the value of the specified (supposedly boolean) attribute: when having a boolean attribute, whose value is either ``true`` or ``false``, sets the opposite logical value to the current one.
 
-To be used like in:
+Its type specification is:
 
 .. code:: erlang
 
- NewState = toggleAttribute(State,BooleanAttributeName)
+ -spec toggleAttribute(wooper:state(), attribute_name()) ->
+								wooper:state().
 
 
 For example:
 
 .. code:: erlang
 
- NewState = toggleAttribute(State,a_boolean_attribute)
+ NewState = toggleAttribute(State, my_boolean_attribute)
 
 
-Calling ``toggleAttribute/2`` on a non-existing attribute will trigger a runtime error (``{key_not_found,AttributeName}``). If the attribute exists, but has not a boolean value, a ``badarith`` runtime error will be issued.
+Calling ``toggleAttribute/2`` on a non-existing attribute will trigger a runtime error (``{key_not_found, AttributeName}``). If the attribute exists, but has not a boolean value, a ``badarith`` runtime error will be issued.
 
 
 .. comment With the hashtable-based version of WOOPER:
@@ -1858,13 +1983,17 @@ Calling ``toggleAttribute/2`` on a non-existing attribute will trigger a runtime
 The ``appendToAttribute/3`` function
 ************************************
 
-The corresponding signature is::
+When having an attribute whose value is a list, appends the specified element to this list, at first position.
 
-  NewState = appendToAttribute(State,AttributeName,Element)
+Its type specification is:
 
-When having a list attribute, appends specified element to the attribute list, in first position.
+.. code:: erlang
 
-For example, if ``a_list_attribute`` was already set to ``[see_you,goodbye]`` in ``State``, then after ``NewState = appendToAttribute(State,a_list_attribute,hello)``, the ``a_list_attribute`` attribute defined in ``NewState`` will be equal to ``[hello,see_you,goodbye]``.
+ -spec appendToAttribute(wooper:state(), attribute_name(), term()) ->
+								wooper:state().
+
+
+For example, if the ``my_list_attribute`` attribute was already set to ``[see_you, goodbye]`` in ``State``, then after ``NewState = appendToAttribute(State, my_list_attribute, hello)``, the ``my_list_attribute`` attribute defined in ``NewState`` will be equal to ``[hello, see_you, goodbye]``, all other attributes being unchanged.
 
 Calling ``appendToAttribute/3`` on a non-existing attribute will trigger a a ``badmatch`` runtime error. If the attribute exists, but is not a list, an ill-formed list will be created (ex: ``[8|false]`` when appending 8 to ``false``, which is not a list).
 
@@ -1880,14 +2009,18 @@ Calling ``appendToAttribute/3`` on a non-existing attribute will trigger a a ``b
 The ``deleteFromAttribute/3`` function
 **************************************
 
-The corresponding signature is::
+When having an attribute whose value is a list, deletes the first match of the specified element from the attribute list.
 
-  NewState = deleteFromAttribute(State,AttributeName,
-								 Element)
 
-When having a list attribute, deletes first match of specified element from the attribute list.
+Its type specification is:
 
-For example: ``NewState = deleteFromAttribute(State,a_list_attribute,hello)``, with the value corresponding to the ``a_list_attribute`` attribute in ``State`` variable being ``[goodbye,hello,cheers,hello,see_you]`` should return a state whose ``a_list_attribute`` attribute would be equal to ``[goodbye,cheers,hello,see_you]``, all other attributes being unchanged.
+.. code:: erlang
+
+ -spec deleteFromAttribute(wooper:state(), attribute_name(), term()) ->
+								wooper:state().
+
+
+For example: ``NewState = deleteFromAttribute(State, my_list_attribute, hello)``, with the value corresponding to the ``my_list_attribute`` attribute in ``State`` variable being ``[goodbye, hello, cheers, hello, see_you]`` should return a state whose ``my_list_attribute`` attribute would be equal to ``[goodbye, cheers, hello, see_you]`` (firs ``hello`` is removed), all other attributes being unchanged.
 
 If no element in the list matches the specified one, no error will be triggered and the list will be kept as is.
 
@@ -1902,23 +2035,45 @@ Calling ``deleteFromAttribute/3`` on a non-existing attribute will trigger a ``b
 
 
 
-
 The ``popFromAttribute/2`` function
 ***********************************
 
-The corresponding signature is ``{NewState,Head} = popFromAttribute(State,AttributeName)``: when having an attribute of type list, this function removes the head from the list and returns a pair made of the updated state (same state except that the corresponding list attribute has lost its head, it is equal to the list tail now) and of that head.
+When having an attribute whose value is a list, removes the head from the list and returns a pair made of the updated state (same state except that the corresponding list attribute has lost its head, it is equal to the list tail now) and of that head.
 
-For example: ``{NewState,Head} = popFromAttribute(State,a_list_attribute)``. If the value of the attribute ``a_list_attribute`` was ``[5,8,3]``, its new value (in ``NewState``) will be ``[8,3]`` and ``Head`` will be bound to ``5``.
+Its type specification is:
+
+.. code:: erlang
+
+ -spec popFromAttribute(wooper:state(), attribute_name()) ->
+								{wooper:state(), term()}.
+
+
+For example: ``{NewState, Head} = popFromAttribute(State, my_list_attribute)``. If the value of the attribute ``my_list_attribute`` was ``[5,8,3]``, its new value (in ``NewState``) will be ``[8,3]`` and ``Head`` will be bound to ``5``.
 
 
 
 The ``addKeyValueToAttribute/4`` function
 *****************************************
 
-The corresponding signature is ``NewState = addKeyValueToAttribute(State,AttributeName,Key,Value)``: when having an attribute whose value is a table (a Myriad ``table:table()`` pseudo-type), adds specified key/value pair to that table attribute.
+When having an attribute whose value is a table (that is a Myriad ``table:table()`` pseudo-type), adds specified key/value entry to that table attribute.
 
 
-For example: ``TableState = setAttribute(State,my_table,table:new()), NewState = addKeyValueToAttribute(TableState,my_table,my_key,my_value)`` will result in having the attribute ``my_table`` in state variable ``TableState`` being a table with only one entry, whose key is ``my_key`` and whose value is ``my_value``.
+Its type specification is:
+
+.. code:: erlang
+
+ -spec addKeyValueToAttribute(wooper:state(), attribute_name(),
+						table:key(), table:value()) -> wooper:state().
+
+For example:
+
+.. code:: erlang
+
+  TableState = setAttribute(State, my_table, table:new()),
+  NewState = addKeyValueToAttribute(TableState, my_table, my_key, my_value)
+
+
+will result in having the attribute ``my_table`` in state variable ``NewState`` being a table with only one entry, whose key is ``my_key`` and whose value is ``my_value``.
 
 
 
@@ -1970,10 +2125,41 @@ Running this code should output something like::
 The point here is that the implementer does not have to know what are the actual classes of the instances that are interacted with, provided that they share a common ancestor; polymorphism allows to handle them transparently.
 
 
+
 The Special Case of Diamond-Shaped Inheritance
 ..............................................
 
-In the case of a `diamond-shaped inheritance <http://en.wikipedia.org/wiki/Diamond_problem>`_, as the method table is constructed in the order specified in the declaration of the superclasses, like in:
+
+Principle
+_________
+
+
+A `diamond-shaped inheritance <http://en.wikipedia.org/wiki/Diamond_problem>`_ occurs, in a multiple inheritance context, whenever a class inherits more than once (usually indirectly) of a given class.
+
+.. Note:: More generally speaking, diamond-shaped inheritance is seldom necessary. More often than not, it is the consequence of a less-than-ideal OOP design, and should, if applicable, be avoided anyway.
+
+This may happen when, like in `the WOOPER example <#wooper-example>`_ presented later in this document:
+
+- a very general "root" class (ex: ``class_Creature``) sits at the top of at least a part of the hierarchy [#]_
+- various child classes derive from it (ex: ``class_Mammal`` and a ``class_OvoviviparousBeing`` may derive from ``class_Creature`` for obvious reasons)
+- a more concrete class (ex: ``class_Platypus``) has to derive from at least two of these child classes (since a platypus happens to be both a mammal and an ovoviviparous being)
+
+.. [#] For example, it might be the case with `class_TraceEmitter <https://github.com/Olivier-Boudeville/Ceylan-Traces/blob/master/src/class_TraceEmitter.erl>`_ if relying on `Ceylan-Traces <https://traces.esperide.org/>`_, or `class_Actor <https://github.com/Olivier-Boudeville-EDF/Sim-Diasca/blob/main/sim-diasca/src/core/services/scheduling/class_Actor.erl>`_ if using `Sim-Diasca <https://github.com/Olivier-Boudeville-EDF/Sim-Diasca>`_, as such base classes are rather ubiquitous in their respective contexts.
+
+Then the concrete class will end up deriving more than once from the same root class (here: ``class_Platypus`` will derive indirectly from ``class_Creature`` twice).
+
+Diamond-shaped inheritance may lead to issues in terms of state management (ex: attributes having possibly in turn to be defined more than once), behaviour (multiple implementations having to be selected for some methods) and initialisation (extraneous constructor and destructor calls being made).
+
+
+
+Modelling & Implementation Choices
+__________________________________
+
+The root of such issue is to determine what is the meaning of the multiple ``is-a`` relationships involved in this diamond-shaped inheritance.
+
+If one design solution is to favour `composition over inheritance`_ to sort out these cases, by default we tend with WOOPER to consider that a single is-a relationship should apply in that case, i.e. that for example a platypus "is a" creature in a single way (having to inherit the attributes from creature only once, and its member methods as they are defined at the creature level); it is a case of `virtual inheritance <https://en.wikipedia.org/wiki/Virtual_inheritance>`_.
+
+More precisely, with WOOPER, as the method table is constructed in the order specified in the declaration of the superclasses, like in:
 
 .. code:: erlang
 
@@ -1982,18 +2168,173 @@ In the case of a `diamond-shaped inheritance <http://en.wikipedia.org/wiki/Diamo
 
 and as child classes override mother ones, when an incoming WOOPER message arrives the selected **method** should be the one defined in the last inheritance branch of the last child (if any), otherwise the one defined in the next to last branch of the last child, etc.
 
-Generally speaking, overriding in that case the relevant methods that were initially defined in the child class at the base of the diamond, in order that they perform explicitly a direct call to the wanted module, is by far the most reasonable solution, in terms of clarity and maintainability, compared to trying to guess which version of the method in the inheritance graph should be called.
+Generally speaking, overriding in that case the relevant methods that were initially defined in the child class at the base of the diamond, in order that they perform explicitly a direct call to the wanted module, is by far the most reasonable solution, in terms of clarity and maintainability, compared to trying to guess which version of the method in the inheritance graph would be called implicitly.
 
 Regarding the instance state, the **attributes** are set by the constructors, and the developer can select in which order the direct mother classes should be constructed.
 
-However, in such a diamond-shaped inheritance scheme, the constructor of the class that sits at the top of a given diamond will be called more than once.
+However, in such a diamond-shaped inheritance scheme, the constructor of the class that sits at the top of a given diamond will be called more than once, and any side-effect that it would induce would then occur as many times as this class is a common ancestor of the actual class; it may be advisable to create `idempotent <https://en.wikipedia.org/wiki/Idempotence>`_ constructors in that case.
 
-Any side-effect that it would induce would then occur as many times as this class is a common ancestor of the actual class; it may be advisable to create idempotent constructors in that case.
+This can be the case naturally, or can be ensured simply whenever a given root class introduces at least one attribute (which is the general case): by testing whether the initial state given to its constructor already includes this attribute, the constructor can determine whether it has already been applied, in which case it may return the state that it received as it is; otherwise (it has not been applied already), it shall then be fully executed, by setting its attributes [#]_, triggering any relevant processing and side effects, and so on.
 
-.. Note:: More generally speaking, diamond-shaped inheritance is seldom necessary. More often than not, it is the consequence of a less-than-ideal OOP design, and should be avoided anyway.
+.. [#] A single set of them exists thus, as opposed to as many sets as the number of times the class of interest inherits from the root class (no state duplication can exist in WOOPER in so far as, for a given instance, attribute names are unique).
+
+When introducing such trait-specific attributes, care must be taken to name them so that they should never clash with other attribute names.
+
+For example, should the ``class_Creature`` consider that each creature has a date of birth, its constructor may be like:
+
+.. code:: erlang
+
+ construct(State, DateOfBirth) ->
+   case hasAttribute(State, birth_date) of
+
+		% Already initialised, nothing more to do, shortcut:
+		true ->
+			State;
+
+		% Full, actual initialisation, to happen exactly once per instance:
+		false ->
+			% Trigger side-effects, change state, etc.:
+			InitState = init(State),
+			% At least this attribute is defined:
+			setAttribute(InitState, birth_date, DateOfBirth)
+
+	end.
 
 
+The next section will show that these idempotent constructors lead naturally to the concepts of composition and interfaces.
 
+
+.. _`composition over inheritance`:
+
+.. _`favour composition over inheritance`:
+
+Interfaces: to be able to favour Composition over Inheritance
+.............................................................
+
+A few specific features for traits, interfaces and composition had been introduced; yet, short of a specific extra support providing enough interest, they have been disabled since WOOPER offers already, natively, everything needed to `perform composition over inheritance <https://en.wikipedia.org/wiki/Composition_over_inheritance>`_. Relying on such composition can be as simple as replacing the inheritance from some mother classes by the definition of passive instances in attributes with corresponding accessor methods.
+
+WOOPER also provides a few `general-purpose interfaces <https://github.com/Olivier-Boudeville/Ceylan-WOOPER/tree/master/src/interfaces>`_, such as ``Identifiable``, ``Describable`` and ``StaticDescribable``, ``Serialisable`` (refer to the serialisation_ section), ``Upgradable`` (refer to the `hot code update`_ section). They can serve as a source of inspiration for any other interface to be introduced.
+
+
+  ..
+  .. Of course WOOPER-using code remains fully free not to use this kind of composition and conditional attribute definition.
+.. Nope, does not work: even if the constructor of an optional interface is called, as it is not listed among the superclasses, the virtual table of the class at hand will not be updated and thus will not integrate any method that should have been inherited.
+   As a result, "composition" only integrates the attributes (not the methods) and is not really useful. It has thus been com
+
+
+  .. Interfaces: to be able to favour Composition over Inheritance
+  .. .............................................................
+  ..
+  ..
+  .. Principle
+  .. _________
+  ..
+  .. As an extension of the previous section where whether an attribute already existed was tested in constructors to avoid multiple calls thereof, more generally the aforementioned pattern favouring `composition over inheritance <https://en.wikipedia.org/wiki/Composition_over_inheritance>`_ may, if deemed useful, be applied in WOOPER-based code.
+  ..
+  .. This consists on typically being able to define *traits* that can be inherited or included (composed as delegates) by classes.
+  ..
+  .. A given trait is to be implemented by an interface, which is just a basic class.
+  ..
+  .. Any trait-specific attributes are then directly encapsulated in the classes that integrate that trait (among the other attributes of these classes).
+  ..
+  .. With the approach presented here, whether an interface is inherited or composed:
+  ..
+  .. - all its methods are directly supported by the instances having integrated that trait
+  .. - all trait-introduced attributes are available directly in the state of such instances
+  ..
+  .. Traits may also define helper functions able to be applied on any WOOPER instance (precisely: on their state), typically that are to operate only if the instance of interest actually supports that trait.
+  ..
+  .. Finally, traits can be optional if obtained through composition (as opposed to inheritance), in the sense that, for a given class, each of its instances may decide individually whether or not it supports that trait.
+  ..
+  ..
+  ..
+  .. Various Composition Approaches
+  .. ______________________________
+  ..
+  .. In most OOP languages (ex: C++), such a composition that is used to convey, say, a ``Describable`` trait, would translate to having classes (e.g. ``Foobar``) declare a member variable (for example named ``my_description``) of type pointer to, say, a ``Description`` object.
+  ..
+  .. An instance of the Foobar class would then be deemed Describable iff its ``my_description``  member variable would be set to a non-null pointer. Doing so may be considered more flexible than for example having Foobar be a child class of a Describable interface (as (1) this eliminates a use of multiple inheritance, and (2) allows some instances of Foobar to be Describable, whereas others not).
+  ..
+  .. In WOOPER this *could* translate to defining an attribute named ``my_description`` whose value would be of type ``maybe(description())`` [#]_.
+  ..
+  .. .. [#] Whatever the ``description()`` type may be - provided, for disambiguation, that it does not include the ``undefined`` atom.
+  ..
+  .. However this would imply that either ``class_Foobar`` would inherit that attribute (but then deriving from a ``class_Describable`` class would most probably introduce multiple inheritance), or an ad hoc ``my_description`` attribute would have to be directly introduced by ``class_Foobar``.
+  ..
+  .. The problem is that, for such an optional trait to be used in practice, this would require all classes to define a ``my_description`` attribute (even just to set it to ``undefined``) and, worse, to be aware of this trait - and all other traits that *could* apply. As the number of potential traits increases, this may become quickly impossible to manage.
+  ..
+  .. So, rather than forcing classes to support explicitly a given optional trait by introducing at least a corresponding attribute (even when not using that trait), a convention that we prefer is to *allow that a given class does not define at all the attributes corresponding to a given trait*. In that case obviously the class does not support that trait, and it is up to the code of that trait to detect whether it shall apply and to proceed accordingly.
+  ..
+  .. .. Note:: Doing so allows classes to support or not any number of traits. If desired, this form of composition may be further extended to be instance-level rather than class-level, so that *instance-optional* traits can be supported. This means that an instance of a given class may, depending on its construction parameters, enable or not specific extra traits.
+  ..
+  ..
+  .. Said differently, we depart here from standard composition by adding any trait-specific attribute(s) directly in the state of the instance having to implement that trait (among its other attributes), instead of having always-defined attributes that may or may not enable that trait. So, for a trait (whether instance-optional or not) to be implemented, the usual WOOPER convention that the attributes of a class shall be unconditionally defined must be relaxed: from the point of view of the trait implementation (e.g. in ``class_Describable``), trait-related attributes (ex: ``my_description``) *may or may not be defined at all* (depending on whether or not a given instance supports that trait).
+  ..
+  .. Such a scheme allows all classes to support any number of optional traits at no cost (no code dependency, no potentially useless attribute introduced, no entangled multiple inheritance); this is the sole purpose of the WOOPER built-in ``hasAttribute/2`` and ``getMaybeAttribute/2`` functions.
+  ..
+  ..
+  .. Defining and Using WOOPER Traits In Practice
+  .. ____________________________________________
+  ..
+  .. The approach that we recommend in order to implement a trait (e.g. a ``Describable`` one) is to introduce a corresponding *interface*, which is a lightweight class (here to be defined in ``class_Describable``) that may be either supported at the class-level (then declared as a superclass, and available for all instances of that class) or only at the instance-level (then, if enabled for a given instance, ``class_Describable`` shall be explicitly constructed by this instance, and later destructed symmetrically).
+  ..
+  .. If an interface is implemented by all instances of a given class, it makes more sense to declare this interface directly as a superclass, as in a WOOPER setting the main interest of composition lies in the fact that it may be optional; this kind of composition can be seen as well as optional inheritance.
+  ..
+  .. So, in the optional case, when a given instance of a ``Foobar`` class is created, its construction parameters may indicate whether the ``Describable`` trait shall be supported. If yes, the ``class_Describable`` constructor shall be called with appropriate parameters, and from then on this ``Foobar`` instance will be ``Describable``. Reciprocally, when terminating, this instance shall from its destructor call in turn the one of ``class_Describable``. Other ``Foobar`` instances may not be ``Describable`` at all.
+  ..
+  .. Finally, whenever a class (possibly another interface) uses interfaces *by composition* we recommend to declare them thanks to an ``composed_interfaces`` define (such interfaces shall thus be considered by default as optional).
+  ..
+  .. So if ``class_Foobar`` integrates systematically a ``class_Locatable`` trait and optionally a ``class_Describable`` trait, we would expect:
+  ..
+  .. .. code:: erlang
+  ..
+  ..  -define(superclasses, [class_Locatable] ).
+  ..  -define(composed_interfaces, [class_Describable]).
+  ..
+  ..
+  ..
+  .. As an example of use of conditionally-defined attributes, a ``class_Describable`` interface could define general helpers that way (see also `its actual definition <https://github.com/Olivier-Boudeville/Ceylan-WOOPER/blob/master/src/interfaces/class_Describable.erl>`_):
+  ..
+  .. .. code:: erlang
+  ..
+  ..  % @doc Tells whether the corresponding instance implements the
+  ..  % Describable trait.
+  ..  %
+  ..  % (exported helper)
+  ..  %
+  ..  -spec is_describable(wooper:state()) -> boolean().
+  ..  is_describable(State) ->
+  ..	hasAttribute(State, my_description).
+  ..
+  ..
+  ..  % @doc Returns the description of the corresponding instance,
+  ..  % should it implement the Describable trait.
+  ..  %
+  ..  % (exported helper)
+  ..  %
+  ..  -spec get_maybe_description(wooper:state()) -> maybe(description()).
+  ..  get_maybe_description(State) ->
+  ..    % As here the description() type does not include the 'undefined' atom:
+  ..    ?getMaybeAttr(my_description).
+  ..
+  ..
+  .. Note that not having a fixed set of per-class attributes may cause difficulties, for example when performing serialisation: short of being able to rely on a constant set of attribute names, these names may have to be stored as well (implying not only storing extra atoms but also extra aggregation constructs like pairs or lists), whereas an optimal situation would be to store for that only an (ordered) list of values.
+  ..
+  .. This may be alleviated a bit by determining,for a given class, its unconditionally-defined attributes, and to allow extra name/value pairs to be separately declared for serialisation as well.
+  ..
+  .. As another example, regarding a trait about the ability to fly: for any creature, a ``flyable`` *attribute* may be introduced, and either be set to ``undefined`` (if such a creature is not able to fly), or to any term necessary for that trait. The value of this attribute could be simply a mere value specifying, say, the maximum flight speed of this creature, or a more complex term, like a (passive) instance deriving from a ``class_Flyable`` interface class, whose concrete child classes could be ``class_FlyableAsAnEagle`` or ``class_FlyableAsAnOwl`` (if that makes sense in terms of volatile, if they were only two ways of flying). That way, the ``class_Flyable`` interface, implementing this ``Flyable`` trait, may be constructed iff only an instance is meant to fly.
+  ..
+  .. So traits can be then managed with flexibility, at the class or even instance level, without involving any specific inheritance for the overall class itself.
+  ..
+  ..
+  ..
+  .. WOOPER Built-in Interfaces
+  .. __________________________
+  ..
+  .. WOOPER provides additionally a few very general-purpose interfaces - like the ones discussed above - as built-in ones, like ``class_Describable``, ``class_Identifiable``, ``class_Serialisable`` (refer to the serialisation_ section).
+  ..
+  .. Of course WOOPER-using code remains fully free not to use this kind of composition and conditional attribute definition.
+  ..
 
 
 
@@ -2109,7 +2450,7 @@ This is why the ``synchronous_timed_new*`` operators have been introduced: if th
 - either ``{synchronous_time_out,Classname}`` if it was a node-local creation (where ``Classname`` is the name of the class corresponding to the instance to create; ex: ``class_Cat``)
 - or ``{remote_synchronous_time_out,Node,Classname}``, where ``Node`` is the name of the node (as an atom) on which the instance was to be created
 
-.. [#] Depending on whether or not the class to instantiate was compiled in debug mode, the time-out is to last by default for, respectively, 5 seconds (shorter, to ease debugging) or for 30 minutes (longer, to favor robustness).
+.. [#] Depending on whether or not the class to instantiate was compiled in debug mode, the time-out is to last by default for, respectively, 5 seconds (shorter, to ease debugging) or for 30 minutes (longer, to favour robustness).
 
 Then the caller may or may not catch this exception.
 
@@ -2379,6 +2720,57 @@ See the ``passive_instance_test`` module for more details about passive instance
 
 
 
+.. _`serialisations`:
+
+
+Serialisation
+-------------
+
+WOOPER offers a rather complete support for **serialisation and deserialisation**, so that instances can be written to and read from a series of bytes (this can be a WSF file, standing for ``WOOPER Serialisation File``, a network stream, etc.).
+
+For that the ``class_Serialisable`` interface provides all default yet overridable primitives, including:
+
+- "serialisation hooks" (ex: the ``onPreSerialisation/2`` request), meant to accommodate any class-specific transformation that shall happen prior to each operation
+
+- entry transformers, that are generally specific to a project but transverse to most if not all its classes, so that values of attributes can be recursively scanned for transient terms (like a PID, a reference), which are generally replaced with restoration markers at serialisation time, and recreated appropriately at deserialisation time
+
+The usual variations (e.g. deserialisations may be synchronous or not, linked or not) of operations are supported.
+
+
+Care as been taken so that these operations are done:
+
+- generically: only the class-specific transformations are left to implement, in well-defined hooks, with relevant helpers already available (e.g. with examples of entry transformers)
+- safely: optional checking that no transient term is still present in attribute values that are ready for serialisation, and that no restoration marker remains once a deserialised instance is ready
+- efficiently: operations are intensely concurrent (each instance takes care of itself as much as possible), and by default storage is done in a compact, binary form
+
+
+
+In practice, the ``Serialisable`` interface is defined in ``class_Serialisable.{hrl,erl}``, and the extended features are implemented in the ``wooper_serialisation`` module. The ``serialisable_test`` test module showcases various examples, which involve the (serialisable) ``class_Reptile`` module.
+
+
+
+.. _`runtime code upgrade`:
+
+
+Hot Code Update
+---------------
+
+The objective here is to be able to **update classes at runtime** whereas the program is still running, and to have their instances adapt in terms of state and behaviour to the corresponding new versions. Hot code reloading is typically useful in the case of always-available applications (never-stopping services), where bug fixes and additional features have to be deployed in spite of the continuous operation.
+
+WOOPER offers such features, based on the ``Upgradable`` trait, implemented by the `class_Upgradable <https://github.com/Olivier-Boudeville/Ceylan-WOOPER/blob/master/src/interfaces/class_Upgradable.erl>`_ interface.
+
+An update protocol is proposed, with all support defined so that, for a given class that shall be updated (i.e. whose version must be either upgraded or downgraded):
+
+#. all its instances are synchronously frozen first, to avoid that ongoing method calls experience code discrepancies
+#. then the module corresponding to that class is reloaded (possibly after having been recompiled), being soft-purged (and possibly hard-purged if needed)
+#. then all its instances perform (concurrently) any state update that they need in order to support the new version
+
+In practice, for a given class (e.g. ``class_TestUpgradable``), various versions thereof may be introduced over time (ex: ``1.2.3``, then ``1.2.4``). Each version of a given class is free to override the default implementations of the ``upgradeVersion/4`` and ``downgradeVersion/4`` methods, as inherited from the ``class_Upgradable`` interface, in order to account for all changes introduced between two versions (e.g. attributes being added or removed, changing types, having their value transformed).
+
+Refer to `class_Upgradable_test <https://github.com/Olivier-Boudeville/Ceylan-WOOPER/tree/master/test/interfaces/class_Upgradable_test.erl>`_ for a full test thereof.
+
+
+
 :raw-latex:`\pagebreak`
 
 
@@ -2554,6 +2946,15 @@ Introducing specific method terminators to convey that meaning would have been p
 However, as, fairly frequently, static methods have nothing meaningful to return, the ``wooper:return_static_void/0`` method terminator and its spec-level counterpart ``static_void_return()`` type have been introduced [#]_.
 
 .. [#] This method terminator is replaced at compilation-time by a no-op, thus the static method returns actually the previous expression - unless there is none, in which case the ``wooper_void_return`` atom is returned (the caller is not expected to match a void result anyway).
+
+
+
+Methods Not Returning
+---------------------
+
+Some static methods may not return (see ``class_Serialisable:deserialise/4`` for an example thereof).
+
+Then their type specification shall use ``static_no_return()`` and each of their clause shall end with ``wooper:no_return_static()``.
 
 
 
@@ -2944,6 +3345,8 @@ As always, there is certainly room for improvement, to grind a bit more runtime 
 
 
 :raw-latex:`\pagebreak`
+
+
 
 
 WOOPER Example
@@ -3411,14 +3814,14 @@ Version History & Changes
 Version 2.0 [current stable]
 ----------------------------
 
-Released officially on Sunday, February 3, 2019.
+Released officially on Sunday, February 3, 2019 initially, and consistently improved since then.
 
 It has been a large rewriting of this layer, with much improvements notably:
 
 - multiple different-arity constructors per class are supported now
 - no more ``wooper_construct_parameters``, longer ``wooper_construct_export`` or ``wooper_construct_export`` defines
 - automatic detection and export of constructors, any destructor and methods
-- WOOPER method terminators introduced (ex: ``wooper:return_state_result/2``, instead of the ``?wooper_return_state_result`` macro)
+- WOOPER method terminators introduced (ex: ``wooper:return_state_result/2``, instead of the ``wooper_return_state_result`` macro)
 - the ``class_attributes`` optional parse attribute define introduced (``-define(class_attributes,[...]).``
 - ``execute*With`` renamed as ``execute*As`` (clearer)
 - convenience method wrappers such as ``wooper:execute_request/3`` have their parameters reordered (target - either a PID or a passive instance - comes first now)
@@ -3520,7 +3923,7 @@ Released on Friday, December 21, 2007. Still fully functional!
 
 Main changes are:
 
-- the sender PID is made available to requests in the instance state variable (see ``request_sender`` member, used automatically by the ``getSender`` macro)
+- the sender PID is made available to requests in the instance state variable (see ``request_sender`` member, used automatically by the ``getSender/0`` macro)
 
 - runtime errors better identified and notified
 

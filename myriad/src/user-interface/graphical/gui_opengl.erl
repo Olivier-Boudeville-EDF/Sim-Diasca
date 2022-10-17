@@ -75,7 +75,8 @@
 % pure OpenGL ones (ex: ?GL_DOUBLEBUFFER). Of course we prefer the latter ones.
 %
 % Note that almost all OpenGL operations require that an OpenGL context already
-% exists, otherwise an no_gl_context error report is expected to be triggered.
+% exists, otherwise an no_gl_context error report is expected to be triggered
+% (ex: {'_egl_error_',5086,no_gl_context}).
 
 % Note: with OpenGL, angles are in degrees.
 
@@ -1033,8 +1034,8 @@ is_hardware_accelerated() ->
 	case get_glxinfo_strings() of
 
 		undefined ->
-			trace_utils:warning( "No glxinfo status obtained, supposing no "
-								 "OpenGL hardware acceleration available." ),
+			trace_utils:warning( "No glxinfo status obtained, supposing that "
+				"no OpenGL hardware acceleration is available." ),
 			false;
 
 		GlxinfoStrs ->
@@ -1075,7 +1076,7 @@ get_size( Count, _GLType=?GL_DOUBLE ) ->
 
 
 % @doc Tells whether OpenGL hardware acceleration is available on this host,
-% based on specified glxinfo report.
+% based on the specified glxinfo report.
 %
 -spec is_hardware_accelerated( glxinfo_report() ) -> boolean().
 is_hardware_accelerated( GlxinfoStrs ) ->
@@ -1096,8 +1097,8 @@ is_hardware_accelerated( GlxinfoStrs ) ->
 
 		OtherAnswer ->
 			trace_utils:warning_fmt( "Unexpected status ('~ts') for "
-				"direct rendering, supposing no OpenGL hardware "
-				"acceleration available.", [ OtherAnswer ] ),
+				"direct rendering, supposing that no OpenGL hardware "
+				"acceleration is available.", [ OtherAnswer ] ),
 			false
 
 	end.
@@ -1120,7 +1121,7 @@ get_glxinfo_strings() ->
 
 		false ->
 			trace_utils:warning_fmt( "No '~ts' tool found, "
-									 "no status reported.", [ Tool ] ),
+									 "no OpenGL status reported.", [ Tool ] ),
 			undefined;
 
 		ExecPath ->
@@ -1143,10 +1144,11 @@ get_glxinfo_strings() ->
 
 
 
-% @doc Creates and returns an OpenGL canvas with default settings: RGBA and
-% double-buffering.
+% @doc Creates and returns an OpenGL canvas with specified parent widget and
+% default settings: RGBA and double-buffering.
 %
-% Note: not to be mixed up with gui:create_canvas/1.
+% Note: not to be mixed up with gui:create_canvas/1, which creates a basic
+% (non-OpenGL) canvas.
 %
 -spec create_canvas( window() ) -> gl_canvas().
 create_canvas( Parent ) ->
@@ -1155,17 +1157,19 @@ create_canvas( Parent ) ->
 
 
 
-% @doc Creates and returns an OpenGL canvas with specified settings.
+% @doc Creates and returns an OpenGL canvas with specified parent widget and
+% options.
 %
 % If the device context attributes are not set, following default apply: RGBA
 % and double-buffering.
 %
-% Note: not to be mixed up with gui:create_canvas/1.
+% Note: not to be mixed up with gui:create_canvas/1, which creates a basic
+% (non-OpenGL) canvas.
 %
 -spec create_canvas( window(), [ gl_canvas_option() ] ) -> gl_canvas().
 create_canvas( Parent, Opts ) ->
 
-	{ Attrs, OtherOpts } = list_table:extract_entry_with_defaults(
+	{ Attrs, OtherOpts } = list_table:extract_entry_with_default(
 		_K=gl_attributes, _Def=[ rgba, double_buffer ], Opts ),
 
 	%trace_utils:debug_fmt( "Creating a GL canvas with Attrs = ~p~n
@@ -1182,7 +1186,9 @@ create_canvas( Parent, Opts ) ->
 	% Using newer wxGL API (of arity 2, not 3):
 	Res = wxGLCanvas:new( Parent, WxOpts ),
 
-	% Commented-out, as not relevant (an OpenGL context may not already exist):
+	% Commented-out, as not relevant (an OpenGL context probably does not
+	% already exist at this point):
+	%
 	%cond_utils:if_defined( myriad_check_opengl, check_error() ),
 
 	Res.
@@ -1225,10 +1231,10 @@ create_context( Canvas ) ->
 set_context_on_shown( Canvas, Context ) ->
 
 	% According to Wings3D (wings_gl.erl), wxGLCanvas:setCurrent/2 may fail (on
-	% GTK) as the show event may be received before the window is actually
+	% GTK) as the 'show' event may be received before the window is actually
 	% displayed; so:
 	%
-	timer:sleep(200),
+	timer:sleep( 250 ),
 
 	set_context( Canvas, Context ).
 
@@ -1241,15 +1247,9 @@ set_context_on_shown( Canvas, Context ) ->
 set_context( Canvas, Context ) ->
 
 	% Using wx API 3.0 (not supporting older ones such as 2.8):
-	case wxGLCanvas:setCurrent( Canvas, Context ) of
+	wxGLCanvas:setCurrent( Canvas, Context )
+		orelse throw( failed_to_set_opengl_context ),
 
-		true ->
-			ok;
-
-		false ->
-			throw( failed_to_set_opengl_context )
-
-	end,
 	cond_utils:if_defined( myriad_check_opengl, check_error() ).
 
 

@@ -17,6 +17,7 @@
 % If not, see <http://www.gnu.org/licenses/>.
 
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
+% Creation date: 2008.
 
 
 % @doc Class modelling a <b>stochastic thirsty customer</b>.
@@ -228,8 +229,8 @@ getCan( State, _SendingMachinePid ) ->
 
 	?notice( "Received a can, drank it, no more thirsty for a while." ),
 
-	MoneyState = subtractFromAttribute( State, current_money,
-										?getAttr(can_cost) ),
+	MoneyState =
+		subtractFromAttribute( State, current_money, ?getAttr(can_cost) ),
 
 	FinishState = setAttribute( MoneyState, transaction_in_progress, false ),
 

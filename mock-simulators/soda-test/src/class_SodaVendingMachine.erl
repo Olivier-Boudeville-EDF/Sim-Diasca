@@ -17,6 +17,7 @@
 % If not, see <http://www.gnu.org/licenses/>.
 
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
+% Creation date: 2008.
 
 
 % @doc Class modelling a <b>soda vending machine</b>.
@@ -68,7 +69,7 @@
 -spec construct( wooper:state(), class_Actor:actor_settings(),
 				 class_Actor:name(), can_count(), amount() ) -> wooper:state().
 construct( State, ActorSettings, MachineName, InitialCanCount, CanCost )
-  when InitialCanCount >= 0 ->
+									when InitialCanCount >= 0 ->
 
 	ActorState = class_Actor:construct( State, ActorSettings,
 										?trace_categorize(MachineName) ),
@@ -108,6 +109,8 @@ destruct( State ) ->
 	?notice_fmt( "Deleting soda vending machine named '~ts', whose final can "
 				 "stock was ~B.", [ ?getAttr(name), ?getAttr(can_count) ] ),
 
+	% Any internal probe to be deleted by the result manager.
+
 	% Then allow chaining:
 	State.
 
@@ -145,7 +148,7 @@ onFirstDiasca( State, _SendingActorPid ) ->
 
 % @doc Called by a customer wanting to know the cost of a can for this machine.
 -spec getCanCost( wooper:state(), sending_actor_pid() ) ->
-						actor_oneway_return().
+												actor_oneway_return().
 getCanCost( State, CustomerPid ) ->
 
 	?notice_fmt( "Telling to customer ~w the cost of a can.", [ CustomerPid ] ),
@@ -159,7 +162,7 @@ getCanCost( State, CustomerPid ) ->
 
 % @doc Called by a customer wanting to purchase a can.
 -spec orderSoda( wooper:state(), amount(), sending_actor_pid() ) ->
-						actor_oneway_return().
+												actor_oneway_return().
 orderSoda( State, CustomerBudget, CustomerPid ) ->
 
 	% To test simulation stalls due to actors (here, thirsty customers) blocking

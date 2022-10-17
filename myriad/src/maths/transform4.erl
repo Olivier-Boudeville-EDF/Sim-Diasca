@@ -72,6 +72,7 @@
 -export([ identity/0, new/1,
 		  get_reference/1, get_inverse/1,
 		  translate/2, rotate/2, rotate/3, scale/2, mult/2, mult/1,
+		  basis_change/3,
 		  inverse/1,
 		  to_string/1 ] ).
 
@@ -85,6 +86,8 @@
 -type ustring() :: text_utils:ustring().
 
 -type radians() :: unit_utils:radians().
+
+-type point3() :: point3:point3().
 
 -type vector3() :: vector3:vector3().
 -type unit_vector3() :: vector3:unit_vector3().
@@ -108,7 +111,7 @@ new( M ) ->
 	case matrix4:inverse( M ) of
 
 		undefined ->
-			throw( { non_inversible_matrix, M } );
+			throw( { non_invertible_matrix, M } );
 
 		InvM ->
 			#transform4{ matrix=M, inverse=InvM }
@@ -126,12 +129,13 @@ get_reference( #transform4{ matrix=M } ) ->
 
 
 
-% @doc Returns the inverse of  the matrix corresponding to the specified
+% @doc Returns the inverse of the matrix corresponding to the specified
 % transformation.
 %
 -spec get_inverse( transform4() ) -> matrix4().
 get_inverse( #transform4{ inverse=InvM } ) ->
 	InvM.
+
 
 
 % @doc Returns the specified transformation once composed with an additional
@@ -216,6 +220,61 @@ mult( _Transforms=[ T ] ) ->
 	T.
 
 
+
+% @doc Returns a transition transformation whose reference matrix is a
+% change-of-basis matrix from the current referential (R1) to one (R2) whose
+% origin, forward and up directions are the specified ones (still in the current
+% referential R1).
+%
+% So returns P1->2, allowing, for an (homogeneous) point P, to convert P1, its
+% representation in current referential R1, into P2, its counterpart in R2:
+% P2 = P1->2.P1.
+%
+% The inverse matrix in this transformation is thus P2->1.
+%
+-spec basis_change( point3(), vector3(), vector3() ) -> transform4().
+basis_change( _O2InR1={ XO2, YO2, ZO2 }, FwdDir2InR1, UpDir2InR1 ) ->
+
+	% A point whose coordinates are to convert from R1 to R2 shall first be
+	% rotated, then translated; we determine here the axis vectors of R2, as
+	% expressed in R1; refer to
+	% https://howtos.esperide.org/ThreeDimensional.html#summary for more
+	% information.
+
+	% We now inline the definition of both matrices:
+
+	_X2InR1 = [ XI2, YI2, ZI2 ] = FwdDir2InR1,
+
+	_Z2InR1 = [ XK2, YK2, ZK2 ] = UpDir2InR1,
+
+	% Y = Z^X:
+	%_Y2InR1 = [ XJ2, YJ2, ZJ2 ] = vector3:cross_product( Z2InR1, X2InR1 ),
+
+	XJ2 = YK2*ZI2 - ZK2*YI2,
+	YJ2 = ZK2*XI2 - XK2*ZI2,
+	ZJ2 = XK2*YI2 - YK2*XI2,
+
+	%M = matrix4:compact_from_columns( X2InR1, Y2InR1, Z2InR1, O2InR1 ),
+	M = #compact_matrix4{ m11=XI2, m12=XJ2, m13=XK2, tx=XO2,
+						  m21=YI2, m22=YJ2, m23=YK2, ty=YO2,
+						  m31=ZI2, m32=ZJ2, m33=ZK2, tz=ZO2 },
+
+	% Reversed, reciprocal operations; we compute the inverse of M by applying
+	% https://howtos.esperide.org/ThreeDimensional.html#summary:
+
+	% Negation of the scalar product of new rows with new origin:
+	InvTx = - ( XI2*XO2 + YI2*YO2 + ZI2*ZO2 ),
+	InvTy = - ( XJ2*XO2 + YJ2*YO2 + ZJ2*ZO2 ),
+	InvTz = - ( XK2*XO2 + YK2*YO2 + ZK2*ZO2 ),
+
+	InvM = #compact_matrix4{ m11=XI2, m12=YI2, m13=ZI2, tx=InvTx,
+							 m21=XJ2, m22=YJ2, m23=ZJ2, ty=InvTy,
+							 m31=XK2, m32=YK2, m33=ZK2, tz=InvTz },
+
+	#transform4{ matrix=M, inverse=InvM }.
+
+
+
 % @doc Returns the inverse transformation of the specified one.
 -spec inverse( transform4() ) -> transform4().
 inverse( #transform4{ matrix=M, inverse=InvM } ) ->
@@ -223,9 +282,9 @@ inverse( #transform4{ matrix=M, inverse=InvM } ) ->
 
 
 
-
 % @doc Returns a textual representation of the specified (4x4) transformation.
 -spec to_string( transform4() ) -> ustring().
-to_string( _Transform={ M, I } ) ->
+to_string( #transform4{ matrix=M, inverse=InvM } ) ->
 	text_utils:format( "4x4 transformation recording reference matrix ~ts and "
-		"its inverse ~ts", [ matrix4:to_string( M ), matrix4:to_string( I ) ] ).
+		"its inverse ~ts",
+		[ matrix4:to_string( M ), matrix4:to_string( InvM ) ] ).

@@ -70,9 +70,9 @@
 		  remove_entry/2, remove_existing_entry/2,
 		  remove_entries/2, remove_existing_entries/2,
 		  lookup_entry/2, has_entry/2,
-		  extract_entry/2, extract_entry_with_defaults/3,
+		  extract_entry/2, extract_entry_with_default/3,
 		  extract_entry_if_existing/2, extract_entries/2,
-		  get_value/2, get_values/2, get_value_with_defaults/3,
+		  get_value/2, get_values/2, get_value_with_default/3,
 		  get_all_values/2,
 		  add_to_entry/3, subtract_from_entry/3, toggle_entry/2,
 		  append_to_existing_entry/3, append_list_to_existing_entry/3,
@@ -84,7 +84,7 @@
 		  is_empty/1, size/1,
 		  map/2, map_on_entries/2, map_on_values/2,
 		  fold/3, fold_on_entries/3,
-		  merge/2, merge_unique/2, merge_unique/1,
+		  merge/1, merge/2, merge_unique/2, merge_unique/1,
 		  optimise/1, to_string/1, to_string/2, display/1, display/2 ]).
 
 
@@ -105,11 +105,10 @@
 -type entry_count() :: basic_utils:count().
 
 
--opaque map_hashtable() :: map().
+-type map_hashtable() :: map().
 
-% Since 18.0, map/2 does not seem to exist anymore:
-%-opaque map_hashtable( K, V ) :: map( K, V ).
--opaque map_hashtable( _K, _V ) :: map().
+% Opaqueness difficult to preserve:
+-type map_hashtable( K, V ) :: type_utils:map( K, V ).
 
 
 -export_type([ key/0, value/0, entry/0, entries/0,
@@ -501,7 +500,7 @@ remove_existing_entries( Keys, MapHashtable ) ->
 						'key_not_found' | { 'value', value() }.
 % Not supported in 17.3:
 % lookup_entry( Key, #{ Key := Value } ) ->
-%   { value, Key };
+%   { value, Value };
 
 % lookup_entry( _Key, _MapHashtable ) ->
 %   key_not_found.
@@ -530,7 +529,7 @@ has_entry( Key, MapHashtable ) ->
 %   true;
 
 % has_entry( _Key, _MapHashtable ) ->
-%	false.
+%   false.
 
 
 
@@ -542,7 +541,7 @@ has_entry( Key, MapHashtable ) ->
 %
 -spec get_value( key(), map_hashtable() ) -> value().
 %get_value( Key, #{ Key := Value } ) ->
-%	Value.
+%   Value.
 get_value( Key, MapHashtable ) ->
 	try
 
@@ -587,11 +586,13 @@ get_values( Keys, Hashtable ) ->
 
 
 
-% @doc Looks for specified entry in specified table and, if found, returns the
-% associated value; otherwise returns the specified default value.
+% @doc Looks for the specified entry in the specified table and, if found,
+% returns the associated value; otherwise returns the specified default value.
 %
--spec get_value_with_defaults( key(), value(), map_hashtable() ) -> value().
-get_value_with_defaults( Key, DefaultValue, MapHashtable ) ->
+% Allows to perform in a single operation a look-up followed by a fetch.
+%
+-spec get_value_with_default( key(), value(), map_hashtable() ) -> value().
+get_value_with_default( Key, DefaultValue, MapHashtable ) ->
 
 	case maps:find( Key, MapHashtable ) of
 
@@ -662,9 +663,9 @@ extract_entry( Key, MapHashtable ) ->
 % If no such key is available, returns the specified default value and the
 % original table.
 %
--spec extract_entry_with_defaults( key(), value(), map_hashtable() ) ->
+-spec extract_entry_with_default( key(), value(), map_hashtable() ) ->
 										{ value(), map_hashtable() }.
-extract_entry_with_defaults( Key, DefaultValue, Table ) ->
+extract_entry_with_default( Key, DefaultValue, Table ) ->
 
 	case has_entry( Key, Table ) of
 
@@ -938,6 +939,23 @@ merge( MapHashtableRef, MapHashtableOnlyForAdditions ) ->
 
 
 
+% @doc Returns a new map hashtable, which merged the specified map hashtables in
+% their listed order (enriching the current entries with the ones of the next
+% table, provided that they are not already present)
+%
+% Note: not the standard merge that one would expect, should values be lists.
+%
+-spec merge( [ map_hashtable() ] ) -> map_hashtable().
+merge( MapHashtables ) ->
+	lists:foldl( fun( Table, AccTable ) ->
+					% Order matters:
+					maps:merge( Table, AccTable )
+				 end,
+				 _Acc0=#{},
+				 _List=MapHashtables ).
+
+
+
 % @doc Merges the two specified tables into one, expecting that their keys are
 % unique (that is that they do not intersect), otherwise throws an exception.
 %
@@ -993,10 +1011,10 @@ optimise( Hashtable ) ->
 -spec append_to_existing_entry( key(), term(), map_hashtable() ) ->
 									map_hashtable().
 %append_to_existing_entry( Key, Element, MapHashtable=#{ Key => ListValue } ) ->
-%	MapHashtable#{ Key => [Element | ListValue] };
+%   MapHashtable#{ Key => [Element | ListValue] };
 %
 %append_to_existing_entry( Key, _Element, _MapHashtable ) ->
-%	throw( { key_not_found, Key } ).
+%   throw( { key_not_found, Key } ).
 %
 append_to_existing_entry( Key, Element, MapHashtable ) ->
 

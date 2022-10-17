@@ -23,6 +23,7 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2003.
 
 
 % @doc Unit tests for the <b>list management</b> utilities.
@@ -95,7 +96,8 @@ run() ->
 		throw( { test_failed, get_index_of, 42 } )
 
 	catch { non_existing_element, 42 } ->
-			ok
+
+		ok
 
 	end,
 
@@ -103,8 +105,8 @@ run() ->
 	%OutOfBoundsIndex = 100,
 	%test_facilities:display( "   List obtained after having removed item #~B
 	% of list ~w: "
-	%	" ~w.", [ OutOfBoundsIndex, L,
-	%	list_utils:remove_element_at( L, OutOfBoundsIndex ) ] ),
+	%   " ~w.", [ OutOfBoundsIndex, L,
+	%   list_utils:remove_element_at( L, OutOfBoundsIndex ) ] ),
 
 	L1 = [ 1, 2, 3, 4, 2 ],
 
@@ -160,8 +162,8 @@ run() ->
 	false = list_utils:unordered_compare( [a,b], [a] ),
 
 
-	[ a, b, [ c, d ], e ] = list_utils:flatten_once(
-								[ [ a ], [ b, [ c, d ] ], [ e ] ] ),
+	[ a, b, [ c, d ], e ] =
+		list_utils:flatten_once( [ [ a ], [ b, [ c, d ] ], [ e ] ] ),
 
 	[ a, b, c ] = list_utils:filter_out_undefined(
 					[ undefined, a, b, undefined, c, undefined ] ),
@@ -183,10 +185,8 @@ run() ->
 	test_facilities:display( "Displaying a uniquified version of ~w: ~w.",
 							 [ L1, Uniquified ] ),
 
-	% Supposedly the (meaningless) order will be consistent, although this is
-	% not requested:
-	%
-	[ 3, 2, 1, 4 ] = Uniquified,
+	% Now original element order is respected:
+	[ 1, 2, 3, 4 ] = Uniquified,
 
 	false = list_utils:has_duplicates( [] ),
 	false = list_utils:has_duplicates( [ 1, 2 ] ),
@@ -256,7 +256,7 @@ run() ->
 	DrawCount = 3,
 
 	test_facilities:display( "Drawing ~B elements from ~w: ~w.",
-		  [ DrawCount, L, list_utils:draw_elements_from( List1, DrawCount ) ] ),
+		[ DrawCount, L, list_utils:draw_elements_from( List1, DrawCount ) ] ),
 
 
 	ASeed = { 113, 798, 8914 },

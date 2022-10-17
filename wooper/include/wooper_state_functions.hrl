@@ -69,7 +69,7 @@ is_wooper_debug() ->
 %
 -compile( { inline, [ setAttribute/3, setAttributes/2,
 					  swapInAttribute/3,
-					  getAttribute/2, getAttributes/2,
+					  getAttribute/2, getAttributes/2, getMaybeAttribute/2,
 					  addToAttribute/3, subtractFromAttribute/3,
 					  incrementAttribute/2, decrementAttribute/2,
 					  toggleAttribute/2,
@@ -153,13 +153,14 @@ swapInAttribute( State=#state_holder{ attribute_table=AttrTable },
 
 % @doc Tells whether specified attribute exists, returns true or false.
 %
-% Note: usually the best practise is to set all possible attributes from the
+% Note: the best practise is certainly to set all possible attributes from the
 % constructor, either to an appropriate value or to 'undefined', instead of
 % having instances with or without a given attribute.
 %
-% Note: not expected to be ever used, as all attributes should be defined
-% directly in the constructor, hence no attribute could appear later, if this
-% good practise is respected.
+% Note: not expected to be ever used by user code, as, except when relying on
+% composition over inheritance (where an attribute may not be even defined), all
+% attributes should be defined directly in the constructor (hence no attribute
+% could appear later).
 %
 -spec hasAttribute( wooper:state(), attribute_name() ) -> boolean().
 hasAttribute( State, AttributeName ) ->
@@ -168,8 +169,8 @@ hasAttribute( State, AttributeName ) ->
 
 
 
-% @doc Returns the value associated to specified named-designated attribute, if
-% found, otherwise triggers a case clause error.
+% @doc Returns the value associated to the specified named-designated attribute,
+% if found, otherwise triggers a case clause error.
 %
 % Note: not used very frequently verbatim, as either the attribute value can be
 % obtained with the getAttr/1 macro, using the original state, named as 'State'
@@ -207,6 +208,33 @@ getAttributes( State, AttributeNameList ) ->
 
 
 
+% @doc Returns the value, if any, associated to the specified named-designated
+% attribute, if found, otherwise returns 'undefined'.
+%
+% Note that an ambiguity exists if the attribute value belongs to a type that
+% comprises the 'undefined' atom, in the sense that an attribute set to a value
+% equal to 'undefined' cannot be then discriminated from an attribute not set at
+% all. For example, instead of a maybe-type, use then a safe_maybe-type.
+%
+% Useful only in specific contexts, like when preferring composition over
+% inheritance, where an attribute may not be even defined.
+%
+-spec getMaybeAttribute( wooper:state(), attribute_name() ) ->
+								maybe( attribute_value() ).
+getMaybeAttribute( State, AttributeName ) ->
+	case ?wooper_table_type:lookup_entry( AttributeName,
+			State#state_holder.attribute_table ) of
+
+		key_not_found ->
+			undefined;
+
+		{ value, V } ->
+			V
+
+	end.
+
+
+
 % @doc Returns an updated state not having anymore specified attribute.
 %
 % No error is triggered if the specified attribute was not existing.
@@ -216,7 +244,6 @@ getAttributes( State, AttributeNameList ) ->
 %
 -spec removeAttribute( wooper:state(), attribute_name() ) -> wooper:state().
 removeAttribute( State, AttributeName ) ->
-
 	State#state_holder{
 		attribute_table=?wooper_table_type:remove_entry( AttributeName,
 			State#state_holder.attribute_table ) }.

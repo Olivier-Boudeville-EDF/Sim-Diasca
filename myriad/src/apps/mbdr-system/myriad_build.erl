@@ -69,25 +69,17 @@ main( ArgTable ) ->
 	%trace_utils:debug_fmt( "Canonicalized script-specific arguments: ~ts",
 	%	   [ shell_utils:argument_table_to_string( MergedTable ) ] ),
 
-	case list_table:has_entry( HelpRefKey, MergedTable ) of
-
-		true ->
-			display_usage();
-
-		false ->
-			ok
-
-	end,
+	list_table:has_entry( HelpRefKey, MergedTable ) andalso display_usage(),
 
 	%{ IsInteractive, InterTable } = case
-	% list_table:extract_entry_with_defaults( InteractiveRefKey,
+	% list_table:extract_entry_with_default( InteractiveRefKey,
 	% _DefaultInter=false, MergedTable ) of
 	%
-	%	{ [], ShrunkTable } ->
-	%		{ true, ShrunkTable };
+	%   { [], ShrunkTable } ->
+	%       { true, ShrunkTable };
 	%
-	%	P={ false, _ShrunkTable } ->
-	%		P
+	%   P={ false, _ShrunkTable } ->
+	%       P
 	%
 	%end,
 
@@ -104,8 +96,8 @@ main( ArgTable ) ->
 
 		UnexpectedOpts ->
 			trace_utils:error_fmt( "Unexpected user input: ~ts~n~ts",
-			  [ shell_utils:argument_table_to_string( ResultingTable ),
-				get_usage() ] ),
+				[ shell_utils:argument_table_to_string( ResultingTable ),
+				  get_usage() ] ),
 			throw( { unexpected_command_line_options, UnexpectedOpts } )
 
 	end,

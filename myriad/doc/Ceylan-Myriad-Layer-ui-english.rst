@@ -113,22 +113,22 @@ For Classical 2D Applications
 .............................
 
 
-GUI Backend
-***********
+Base GUI Backend
+****************
 
-This interface used to rely on (now deprecated) ``gs``, and now relies on `wx <http://erlang.org/doc/man/wx.html>`_ (a port of `wxWidgets <https://www.wxwidgets.org/>`_, which belongs to the same category as GTK or Qt). For the base dialogs, `Zenity <https://en.wikipedia.org/wiki/Zenity>`_ could have been an option.
+This interface used to rely on (now deprecated) ``gs``, and now relies on `wx <http://erlang.org/doc/man/wx.html>`_ [#]_ [#]_ (a port of `wxWidgets <https://www.wxwidgets.org/>`_, which belongs to the same category as GTK or Qt). For the base dialogs, `Zenity <https://en.wikipedia.org/wiki/Zenity>`_ could have been an option.
 
+.. [#] What are the main differences between MyriadGUI and wx? The MyriadGUI API is backend-agnostic (no trace of wx when using it), a bit higher-level (ex: user-defined widget identifiers being atoms rather than integer constants; relying on more flexible options; integrating a few workarounds), and based on fewer modules. However, as a strict subset of wx, it is by design less complete - yet it is quite easy to extend on a per-need basis.
 
 .. [#] Maybe later it will be based on HTML 5 (although we are not big fans of light clients and of using browsers for everything), possibly relying some day for that on the `Nitrogen web framework <http://nitrogenproject.com/>`_, on `N2O <https://ws.n2o.dev/>`_ or on any other relevant HTML5 framework.
 
 
-We also borrowed elements from the truly impressive `Wings3D <http://www.wings3d.com/>`_ (see also `our section about it <https://howtos.esperide.org/ThreeDimensional.html#wings3d>`_) modeller, and also on the remarkable `libSDL <https://libsdl.org/>`_ (2.0) library together with its `esdl2 <https://github.com/ninenines/esdl2>`_ Erlang binding.
+We also borrowed elements from the truly impressive `Wings3D <http://www.wings3d.com/>`_ (see also `our HOWTO section about it <https://howtos.esperide.org/ThreeDimensional.html#wings3d>`_) modeller, and also on the remarkable `libSDL <https://libsdl.org/>`_ (2.0) library together with its `esdl2 <https://github.com/ninenines/esdl2>`_ Erlang binding.
 
 If having very demanding 2D needs, one may refer to the `3D services`_ section (as it is meant to be hardware-accelerated, and the 2D services are a special cases thereof).
 
 
-
-.. Note:: Our ``gui`` module does not adhere yet to the ``ui`` conventions, but it will ultimately will. Currently it offers a graphical API (currently on top of ``wx``).
+.. Note:: Currently MyriadGUI does not adhere yet to the ``ui`` conventions, but it will ultimately. MyriadGUI already provides many lower-level services and offers a graphical API (currently on top of ``wx``; see `our HOWTO <http://howtos.esperide.org/Erlang.html#using-wx>`_ for some information regarding that backend) that can be used in order to  develop one's GUI application hopefully in a future-proof way.
 
 
 .. _`wx availability`:
@@ -189,28 +189,6 @@ This last ``lorenz_test.erl`` offers another complete example:
 
 
 
-Finally, here are some very general wx-related information that may be of help when programming GUIs with this backend:
-
-- if receiving errors about ``{badarg,"This"}``, like in:
-
-.. code:: erlang
-
- {'_wxe_error_',710,{wxDC,setPen,2},{badarg,"This"}}
-
-it is probably the sign that the user code attempted to perform an operation on an already-deallocated wx object; the corresponding life-cycle management might be error-prone, as some deallocations are implicit, others are explicit, and in a concurrent context race conditions easily happen
-
-
-- extra information resources about ``wx`` (besides the documentation of its modules):
-
-  - wxErlang: `Getting started <https://arifishaq.files.wordpress.com/2017/12/wxerlang-getting-started.pdf>`_ and `Speeding up <https://arifishaq.files.wordpress.com/2018/04/wxerlang-speeding-up.pdf>`_, by Arif Ishaq
-
-  - Doug Edmunds' `wxerlang workups <http://wxerlang.dougedmunds.com/>`_
-
-  - `wxWidgets itself <https://www.wxwidgets.org/>`_
-
-.. comment 404: - http://www.idiom.com/~turner/wxtut/wxwidgets.html
-
-
 
 For 3D Applications
 ...................
@@ -258,6 +236,14 @@ The many OpenGL defines are available when having included ``gui_opengl.hrl`` (e
 
 These utilities directly relate to Myriad's `spatial services and conventions`_ and to its support of the `glTF file format`_.
 
+.. _octrees:
+
+To manage larger 3D scenes, a basic support of `octrees <https://en.wikipedia.org/wiki/Octree>`_ is also available (see  `octree.erl <https://github.com/Olivier-Boudeville/Ceylan-Myriad/blob/master/sr/data-management/octree.erl>`_); following conventions apply:
+
+:raw-html:`<center><img src="myriad-octrees.png" id="responsive-image-reduced"></img></center>`
+:raw-latex:`\begin{figure}[h] \centering \includegraphics[scale=0.2]{myriad-octrees} \end{figure}`
+
+
 Various tests offer usage examples of the MyriadGUI API for 3D rendering:
 
 - ``gui_opengl_minimal_test.erl`` runs a minimal test showcasing the proper local OpenGL support, based on normalised coordinates (in ``[0.0,1.0]``)
@@ -291,7 +277,16 @@ Setting the ``myriad_debug_opengl_support`` flag will result in more runtime inf
 Internal Implementation
 _______________________
 
-The MyriadGUI 2D/3D services rely on the related Erlang-native modules, namely `gl <https://www.erlang.org/doc/man/gl.html>`_ and `glu <https://www.erlang.org/doc/man/glu.html>`_, which are NIF-based bindings to the local OpenGL library.
+MyriadGUI is a wrapper on top of wx. What are the main differences between MyriadGUI and wx?
+
+- preferred namings introduced (ex: ``onWindowClosed`` events found clearer than ``close_window`` ones)
+- widget identifiers are user-defined atoms in MyriadGUI (ex: ``my_widget_id``) rather than numerical constants (ex: ``-define(MY_WIDGET_ID, 2051)``) that have, with wx, to be defined, shared, uniquified accross user modules
+- by default, events will propagate or be trapped by user-defined handlers depending on the type of these events (most of them being propagated by default; of course the user is able to override these defaults, either at subscription-time - using the ``propagate_event`` or ``trap_event`` option, or in one's handler - using the ``gui:propagate_event/1`` or ``gui:trap_event/1`` function); this contrasts with wx, in which by default all subscribed events are trapped, regardless of their type (then forgetting to propagate them explicitly may result in built-in mechanisms of wx to be disabled, like when resizing)
+- code using MyriadGUI will not depend on wx, opening the possibility that, should the main Erlang GUI backend change, user code is nevertheless preserved
+
+See also our little `Using wx <https://howtos.esperide.org/Erlang.html#using-wx>`_ HOWTO.
+
+Regarding hardware acceleration, the MyriadGUI 2D/3D services rely on the related Erlang-native modules, namely `gl <https://www.erlang.org/doc/man/gl.html>`_ and `glu <https://www.erlang.org/doc/man/glu.html>`_, which are NIF-based bindings to the local OpenGL library.
 
 As for the ``wx`` module (see the `wx availability`_ section), it provides a convenient solution in order to create a suitable OpenGL context.
 

@@ -22,8 +22,8 @@
 % If not, see <http://www.gnu.org/licenses/> and
 % <http://www.mozilla.org/MPL/>.
 %
-% Creation date: July 2, 2007.
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: July 2, 2007.
 
 
 % Generic hash table implementation.
@@ -95,7 +95,7 @@
 		  add_entries/2, add_diagnosed_entries/2,
 		  remove_entry/2, remove_diagnosed_entry/2,
 		  lookup_entry/2, has_entry/2, get_value/2, extract_entry/2,
-		  get_value_with_defaults/3, get_values/2, get_all_values/2,
+		  get_value_with_default/3, get_values/2, get_all_values/2,
 		  add_to_entry/3, subtract_from_entry/3, toggle_entry/2,
 		  append_to_entry/3, delete_from_entry/3, pop_from_entry/2,
 		  enumerate/1, select_entries/2, keys/1, values/1,
@@ -434,8 +434,8 @@ extract_entry( Key, Hashtable ) ->
 % @doc Looks for the specified entry in specified table and, if found, returns
 % the associated value; otherwise returns the specified default value.
 %
--spec get_value_with_defaults( key(), value(), hashtable() ) -> value().
-get_value_with_defaults( Key, DefaultValue, Hashtable ) ->
+-spec get_value_with_default( key(), value(), hashtable() ) -> value().
+get_value_with_default( Key, DefaultValue, Hashtable ) ->
 
 	case lookup_in_list( Key, element( get_bucket_index( Key, Hashtable ),
 									   Hashtable ) ) of

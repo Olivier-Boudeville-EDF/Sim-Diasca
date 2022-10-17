@@ -45,7 +45,7 @@
 	quit_button :: gui:button(),
 	info_sizer :: gui:sizer(),
 	left_panel :: gui:panel(),
-	canvas :: gui:canvas() }).
+	canvas :: gui:canvas() } ).
 
 
 -type app_state() :: #app_state{}.
@@ -54,7 +54,7 @@
 
 % Shorthands:
 
--type coordinate() :: linear:coordinate().
+-type integer_coordinate() :: linear:integer_coordinate().
 -type canvas() :: gui_canvas:canvas().
 
 % Temporary:
@@ -64,25 +64,25 @@
 
 
 % @doc Returns the width of the main window.
--spec get_main_window_width() -> coordinate().
+-spec get_main_window_width() -> integer_coordinate().
 get_main_window_width() ->
 	800.
 
 
 % @doc Returns the height of the main window.
--spec get_main_window_height() -> coordinate().
+-spec get_main_window_height() -> integer_coordinate().
 get_main_window_height() ->
 	600.
 
 
 % @doc Returns the width of the displayed canvas.
--spec get_canvas_width() -> coordinate().
+-spec get_canvas_width() -> integer_coordinate().
 get_canvas_width() ->
 	640.
 
 
 % @doc Returns the height of the displayed canvas.
--spec get_canvas_height() -> coordinate().
+-spec get_canvas_height() -> integer_coordinate().
 get_canvas_height() ->
 	480.
 
@@ -98,7 +98,7 @@ init_app_gui() ->
 
 	MainFrame = gui:create_frame( _Title="Asset tool", FrameSize ),
 
-	gui:connect( MainFrame, close_window ),
+	gui:subscribe_to_events( { close_window, MainFrame } ),
 
 	%gui:set_background_color( MainFrame, red ),
 	%gui:set_background_color( LeftPanel, blue ),
@@ -116,11 +116,11 @@ init_app_gui() ->
 
 	% Constant width:
 	gui:add_to_sizer( MainSizer, LeftPanel,
-					  [ { proportion, 0 }, { flag,[ expand_fully ] } ] ),
+					  [ { proportion, 0 }, expand_fully ] ),
 
 	% Grows with the window:
 	gui:add_to_sizer( MainSizer, RightPanel,
-					  [ { proportion, 2 }, { flag, [ expand_fully ] } ] ),
+					  [ { proportion, 2 }, expand_fully ] ),
 
 	LeftSizer = gui:create_sizer( vertical ),
 
@@ -149,10 +149,8 @@ init_app_gui() ->
 	% Not working apparently:
 	gui:set_tooltip( LoadImageButton, "Load image" ),
 
-	ButtonOpt = [ { flag, [ expand_fully ] } ],
-
 	gui:add_to_sizer( ControlBoxSizer, [ LoadImageButton, QuitButton ],
-					  ButtonOpt ),
+					  expand_fully ),
 
 
 	gui:set_sizer( LeftPanel, LeftSizer ),
@@ -160,12 +158,12 @@ init_app_gui() ->
 	AssetBoxSizer = gui:create_sizer_with_labelled_box( vertical, RightPanel,
 														"Asset View" ),
 
-	Canvas = gui_canvas:create( RightPanel ),
+	Canvas = gui_canvas:create_instance( RightPanel ),
 
 	gui_canvas:set_background_color( Canvas, pink ),
 
 	gui:add_to_sizer( AssetBoxSizer, Canvas,
-					  [ { proportion, 1 }, { flag, [ expand_fully ] } ] ),
+					  [ { proportion, 1 }, expand_fully ] ),
 
 	gui:set_tooltip( Canvas, "Asset view." ),
 
@@ -295,7 +293,7 @@ update_information_sizer( InfoSizer, Panel, Texts ) ->
 
 	%gui:clear_sizer( InfoSizer ),
 
-	TextOpts = [ { flag, [ expand_fully ] }, { border, 10 } ],
+	TextOpts = [ { border, 10 }, expand_fully ],
 
    [ gui:add_to_sizer( InfoSizer, gui_text:create_static( Panel, T ),
 					   TextOpts ) || T <- Texts ].

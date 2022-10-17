@@ -670,6 +670,9 @@ check_type( _TypeId={ Name, Arity },
 			_TypeInfo=#type_info{ file_location=FileLoc, name=Name,
 								  variables=undefined },
 			Filename ) ->
+	% Unfortunately FileLoc is at least often 'undefined', resulting in an error
+	% message pointing to like "foobar.erl:0:1":
+	%
 	ast_utils:raise_usage_error( "type ~ts/~B is exported yet not defined.",
 								 [ Name, Arity ], Filename, FileLoc );
 
@@ -834,7 +837,7 @@ recompose_ast_from_module_info( #module_info{
 	% does not really matter once we have only explicit locations.
 	%
 	UnorderedLocatedAST = [ ModuleLocDef
-							| ParseAttributeLocDefs
+						  | ParseAttributeLocDefs
 							++ RemoteSpecLocDefs
 							++ FunExportLocDefs
 							++ IncludeLocDefs
@@ -1664,7 +1667,7 @@ type_exports_to_string( TypeExportTable, _DoIncludeForms, IndentationLevel ) ->
 					  text_utils:strings_to_string(
 						[ type_id_to_string( TypeId ) || TypeId <- TypeIds ],
 						IndentationLevel + 2 ) ] )
-				  || { _ASTLoc, { FileLoc, TypeIds } } <- TypeExportEntries ],
+					|| { _ASTLoc, { FileLoc, TypeIds } } <- TypeExportEntries ],
 				IndentationLevel + 1 ),
 
 			% No form to represent, as none stored:

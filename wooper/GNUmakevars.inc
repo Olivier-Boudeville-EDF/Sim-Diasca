@@ -57,12 +57,16 @@ endif
 
 # Defining debug flags (at least the most verbose are by default commented-out):
 ifeq ($(ENABLE_DEBUG),true)
-	#WOOPER_DEBUG_FLAGS += -Dwooper_debug_xx
+	#WOOPER_DEBUG_FLAGS += -Dwooper_debug_serialisation
+	#WOOPER_DEBUG_FLAGS += -Dwooper_debug_deserialisation
+	WOOPER_DEBUG_FLAGS += -Dwooper_debug_hot_update
 endif
 
 # Defining check flags:
 ifeq ($(EXECUTION_TARGET),development)
-	# Does not exist: WOOPER_CHECK_FLAGS += -Dwooper_check_xx
+	WOOPER_CHECK_FLAGS += -Dwooper_check_serialisation
+	WOOPER_CHECK_FLAGS += -Dwooper_check_deserialisation
+	WOOPER_CHECK_FLAGS += -Dwooper_check_hot_update
 endif
 
 
@@ -120,7 +124,7 @@ endif
 # The uniquely-defined version of this layer, for all uses (including rebar and
 # hex):
 #
-WOOPER_VERSION := 2.0.16
+WOOPER_VERSION := 2.0.21
 
 
 # PROJECT_VERSION should be defined on a per-project basis.
@@ -159,11 +163,16 @@ WOOPER_RELEASE_ARCHIVE_XZ  := $(WOOPER_RELEASE_BASE).tar.xz
 WOOPER_SRC := $(WOOPER_TOP)/src
 
 # BEAM path section.
-WOOPER_BEAM_DIR := $(WOOPER_TOP)/src
+WOOPER_BEAM_DIR := $(WOOPER_SRC)
+
+WOOPER_INTERFACES_DIR := $(WOOPER_SRC)/interfaces
 
 
 # See Myriad counterpart variable (MYRIAD_BEAM_DIRS) for explanations:
-WOOPER_BEAM_DIRS := $(WOOPER_BEAM_DIR) $(WOOPER_TOP)/..
+WOOPER_BEAM_DIRS := $(WOOPER_BEAM_DIR) $(WOOPER_INTERFACES_DIR) $(WOOPER_TOP)/..
+
+
+INC += -I$(WOOPER_SRC)/interfaces
 
 
 # For OTP releases and all:
@@ -245,10 +254,11 @@ endif
 
 ifndef COMPILER_OPT_FOR_WOOPER_CLASSES
 
+	# ENABLE_WOOPER_DEBUG_OPT managed transversely:
 	COMPILER_OPT_FOR_WOOPER_CLASSES =                     \
 		$(ERLANG_COMPILER_OPT_BASE)                       \
-		$(ENABLE_WOOPER_DEBUG_OPT)                        \
-		$(ERLANG_COMPILER_PARSE_TRANSFORM_OPT_FOR_WOOPER)
+		$(ERLANG_COMPILER_PARSE_TRANSFORM_OPT_FOR_WOOPER) \
+		$(ERLANG_COMPILER_EXTRA_OPTS)
 
 endif
 
@@ -298,7 +308,7 @@ ERLANG_COMPILER_OPT_FOR_PT = $(ERLANG_COMPILER_PARSE_TRANSFORM_OPT_FOR_MYRIAD) \
 # rebar3-based one)
 #
 ERLANG_COMPILER_PARSE_TRANSFORM_OPT_FOR_WOOPER = \
-	$(OVERALL_PZ_OPT)                            \
+	$(OVERALL_PA_OPTS)                           \
 	-pz $(WOOPER_TOP)/ebin                       \
 	-pz $(WOOPER_TOP)/src                        \
 	$(MYRIAD_PARSE_TRANSFORMS_PZ_OPT)            \
@@ -338,7 +348,7 @@ endif
 
 
 ifndef EDOC_OPTS
-	EDOC_OPTS = '[{dir,"$(API_DOC_ROOT)"}, {def,{vsn,"$(PROJECT_VERSION)"}}, {preprocess,true}, {includes,["$(LAYER_TOP)/include", "$(MYRIAD_TOP)/.."]}, {overview, "$(LAYER_TOP)/overview.edoc"}]'
+	EDOC_OPTS = '[{dir,"$(API_DOC_ROOT)"}, {def,{vsn,"$(PROJECT_VERSION)"}}, {preprocess,true}, {includes,["$(LAYER_TOP)/include", "$(LAYER_TOP)/include/interfaces", "$(MYRIAD_TOP)/.."]}, {overview, "$(LAYER_TOP)/overview.edoc"}]'
 endif
 
 

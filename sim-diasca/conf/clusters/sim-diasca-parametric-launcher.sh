@@ -1,32 +1,117 @@
 #!/bin/sh
 
-# Currently it is not a parametric launcher, but a script to prepare series of
-# runs.
+
+# Copyright (C) 2008-2022 EDF R&D
+#
+# This file is part of Sim-Diasca.
+#
+# Author: Olivier Boudeville (olivier.boudeville@edf.fr)
 
 
-initial_dir=$(pwd)
+# Currently it is not a parametric launcher, but a script to prepare a series of
+# runs on a cluster.
 
-date_prefix=$(date +%Y%m%d)
+
+# Defaults section.
+
+# Set to 0 to have detailed debug information or, preferably, use the --debug
+# command line-option:
+#
+do_debug=1
+
+be_quiet=1
+
+# Number of hours before the simulation is killed by the job manager:
+max_duration="0"
 
 
-USAGE="Usage: "$(basename $0)" [ -h | --help ] [ -d | --debug ] ( --base-archive ARCHIVE_FILE | --base-install INSTALL_DIR ) --base-name EXPERIMENT_PREFIX --experiment-start X Y Z --experiment-stop [ --node-count NODE_COUNT ] [ {--cores-per-node,--cpn} CORE_COUNT ] [ --queue QUEUE_NAME ] [ --qos QOS ] [ --key KEY ] [ --max-duration M ] [ --mail MAIL_ADDRESS EVENT_SPËCIFICATION ] CASE_PATH [CASE_OPTIONS]
- Launches specified set of Sim-Diasca simulation cases on a cluster (running either a PBS or a SLURM job manager) with specified resource requirements and options. Ensures first that the Sim-Diasca installation is fully built.
+# Default path (used if no install could be inferred), often a symbolic link to
+# the selected version available in the same directory:
+#
+default_install_root="/scratch/${USER}/Software/Sim-Diasca/Sim-Diasca-current-install"
 
-Note that either --base-archive or --base-install must be specified.
+install_root=""
+
+case_path=""
+case_options=""
+
+node_count=1
+core_count=""
+qos=""
+key=""
+email=""
+email_notifications=""
+queue_name=""
+
+
+initial_dir="$(pwd)"
+
+date_prefix="$(date +%Y%m%d)"
+
+help_short_opt="-h"
+help_long_opt="--help"
+
+quiet_short_opt="-q"
+quiet_long_opt="--quiet"
+
+debug_short_opt="-d"
+debug_long_opt="--debug"
+
+base_archive_opt="--base-archive"
+base_install_opt="--base-install"
+
+base_name_opt="--base-name"
+
+xp_start_opt="--experiment-start"
+xp_stop_opt="--experiment-stop"
+
+node_count_opt="--node-count"
+
+core_per_node_short_opt="--cpn"
+core_per_node_long_opt="--cores-per-node"
+
+queue_opt="--queue"
+qos_opt="--qos"
+
+key_opt="--key"
+
+max_dur_opt="--max-duration"
+
+email_opt="--email"
+
+
+# For any rebuild needed:
+execution_target=production
+#execution_target=development
+
+
+usage="Usage: $(basename $0) [${help_short_opt}|${help_long_opt}] [${debug_short_opt}|${debug_long_opt}] [${base_archive_opt} ARCHIVE_FILE|${base_install_opt} INSTALL_DIR] ${base_name_opt} EXPERIMENT_PREFIX ${xp_start_opt} X Y Z ${xp_stop_opt} [${node_count_opt} NODE_COUNT] [${core_per_node_short_opt}|${core_per_node_long_opt} CORE_COUNT] [${queue_opt} QUEUE_NAME] [${qos_opt} QOS] [${key_opt} KEY] [${max_dur_opt} M] [${email_opt} EMAIL_ADDRESS EVENT_SPEC] CASE_PATH [CASE_OPTIONS]
+
+ Launches the specified set of Sim-Diasca simulation cases on a cluster (running either a PBS or a Slurm job manager) with specified resource requirements and options. Ensures first that the Sim-Diasca installation is fully built (otherwise rebuilds lacking elements based on the '${execution_target}' execution target).
+
+Note that either ${base_archive_opt} or ${base_install_opt} must be specified.
+
+ CASE_PATH is either an absolute path to the case to run, or a path relative to the Sim-Diasca install root.
+
+ CASE_OPTIONS are the command-line options (if any) that will be passed verbatim to the simulation case itself.
 
  Options are:
+   ${help_long_opt} or ${help_short_opt}: displays this message
+   ${quiet_long_opt} or ${quiet_short_opt}: activates the quiet mode
+   ${debug_long_opt} or ${debug_short_opt}: activates the debug mode
+   ${base_archive_opt} ARCHIVE_FILE where ARCHIVE_FILE is a path to the tar.xz base archive expected to contain Sim-Diasca and possibly the case to run, in a single directory at its root
+   ${base_install_opt} INSTALL_DIR where INSTALL_DIR is a path to a pre-established directory where the full sources lie
+   ${base_name_opt} EXPERIMENT_PREFIX is a prefix for all the installations that will be created
+   ${xp_start_opt} A B C D ${xp_stop_opt} is an enumeration of all simulations to be run
+   ${node_count_opt}: specifies the number of requested computing nodes (per experiment)
+   ${core_per_node_long_opt} or ${core_per_node_short_opt}: specifies a minimal number of cores to be requested on each CPU socket
+   ${queue_opt}: specifies which job queue (named partition in Slurm) is to be used (cluster-specific; ex: 'parall_128')
+   ${qos_opt}: specifies the quality of service to be used for that job (cluster-specific; ex: 'cn_all_short')
+   ${key_opt}: specifies a resource accounting key that may be necessary in order to enable job launching (cluster-specific)
+   ${max_dur_opt}: specifies the maximal duration of the launched simulation, in wall-clock time, as DD-HH:MM, i.e. number of days, hours and minutes (not depending on the number of nodes) for this simulation, or as MM, i.e. number of minutes; if no duration, or a null (0) one, is specified, the corresponding job may never be scheduled (with Slurm, squeue may report then QOSMaxWallDurationPerJobLimit) [default: ${max_duration}]
+   ${email_opt}: specifies the email address to which run notifications should be sent; an event specification must be added afterwards, it may be set either to: 'none', 'begin', 'end', 'fail' or 'all', depending on the events that shall trigger the sending of an email
 
- --base-archive ARCHIVE_FILE where ARCHIVE_FILE is a path to the tar.xz base archive expected to contain Sim-Diasca and possibly the case to run, in a single directory at its root
-
- --base-install INSTALL_DIR where INSTALL_DIR is a path to a pre-established directory where the full sources lie
-
-  --base-name EXPERIMENT_PREFIX is a prefix for all the installations that will be created
-
-  --experiment-start A B C D --experiment-stop is an enumeration of all simulations to be run
-
- See 'sim-diasca-launcher.sh --help' for the description of all following options.
-
- Ex: "$(basename $0)" --base-archive /home/foo/my-sim-diasca-base-archive.tar.xz --base-name my-experiment --experiment-start 1 2 4 --experiment-stop [...] would create in the current directory from specified archive following ready-to-run builds: $date_prefix-my-experiment-1, $date_prefix-my-experiment-2 and $date_prefix-my-experiment-4".
+ Ex: "$(basename $0)" ${base_archive_opt} /home/foo/my-sim-diasca-base-archive.tar.xz ${base_name_opt} my-experiment ${xp_start_opt} 1 2 4 ${xp_stop_opt} [...] would create, in the current directory and from the specified archive, following ready-to-run builds: $date_prefix-my-experiment-1, $date_prefix-my-experiment-2 and $date_prefix-my-experiment-4".
 
 
 # No debug by default:
@@ -64,7 +149,7 @@ set_as_absolute_path()
 start_date=$(LC_ALL= LANG= date '+%A, %B %-e, %Y, at %k:%M:%S')
 
 
-#echo "Usage: $USAGE"
+#echo "Usage: ${usage}"
 
 
 base_archive=""
@@ -83,7 +168,7 @@ while [ -n "$*" ] ; do
 
 	if [ "$1" = "-h" ] || [ "$1" = "--help" ] ; then
 
-		echo "$USAGE"
+		echo "${usage}"
 		exit
 
 	fi
@@ -96,7 +181,7 @@ while [ -n "$*" ] ; do
 
 	fi
 
-	if [ "$1" = "--base-archive" ] ; then
+	if [ "$1" = "${base_archive_opt}" ] ; then
 
 		shift
 		base_archive="$1"
@@ -105,7 +190,7 @@ while [ -n "$*" ] ; do
 
 	fi
 
-	if [ "$1" = "--base-install" ] ; then
+	if [ "$1" = "${base_install_opt}" ] ; then
 
 		shift
 		base_dir="$1"
@@ -114,7 +199,7 @@ while [ -n "$*" ] ; do
 
 	fi
 
-	if [ "$1" = "--base-name" ] ; then
+	if [ "$1" = "${base_name_opt}" ] ; then
 
 		shift
 		base_name="$1"
@@ -123,16 +208,16 @@ while [ -n "$*" ] ; do
 
 	fi
 
-	if [ "$1" = "--experiment-start" ] ; then
+	if [ "$1" = "${xp_start_opt}" ] ; then
 
 		shift
 
-		while [ "$1" != "--experiment-stop" ] ; do
+		while [ "$1" != "${xp_stop_opt}" ] ; do
 			experiments="$experiments $1"
 			shift
 		done
 
-		# For --experiment-stop:
+		# For ${xp_stop_opt}:
 		shift
 
 		token_eaten=0
@@ -151,7 +236,7 @@ while [ -n "$*" ] ; do
 
 		#	echo "  Error, unexpected parameters ($*) after case path ($case_path).
 		#
-		#$USAGE" 1>&2
+		#${usage}" 1>&2
 
 		#	exit 5
 
@@ -184,7 +269,7 @@ if [ -z "$base_archive" ] ; then
 
 		echo "  Error, no base archive or base install specified.
 
-$USAGE" 1>&2
+${usage}" 1>&2
 		exit 10
 
 	else
@@ -195,7 +280,7 @@ $USAGE" 1>&2
 		if [ ! -d "$base_dir" ]; then
 			echo "  Error, specified base install ($base_dir) does not exist.
 
-$USAGE" 1>&2
+${usage}" 1>&2
 			exit 11
 
 		fi
@@ -208,7 +293,7 @@ else
 
 			echo "  Error, base archive and base install cannot be both specified.
 
-$USAGE" 1>&2
+${usage}" 1>&2
 			exit 12
 
 	fi
@@ -220,7 +305,7 @@ $USAGE" 1>&2
 
 		echo "  Error, specified base archive ($base_archive) not found.
 
-$USAGE" 1>&2
+${usage}" 1>&2
 		exit 15
 
 	fi
@@ -232,7 +317,7 @@ if [ -z "$base_name" ] ; then
 
 	echo "  Error, no base name specified.
 
-$USAGE" 1>&2
+${usage}" 1>&2
 	exit 20
 
 fi
@@ -241,7 +326,7 @@ if [ -z "$experiments" ] ; then
 
 	echo "  Error, no experiment specified.
 
-$USAGE" 1>&2
+${usage}" 1>&2
 	exit 25
 
 fi

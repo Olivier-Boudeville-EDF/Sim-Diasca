@@ -30,4 +30,3 @@
 % corresponding records like xmlElement:
 %
 -include_lib("xmerl/include/xmerl.hrl").
-

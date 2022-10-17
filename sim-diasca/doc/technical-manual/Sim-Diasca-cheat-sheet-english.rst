@@ -154,6 +154,7 @@ One should thus ensure that these settings are complete, and that any third-part
 Finally, we advise having a look to the help scripts defined in ``sim-diasca/conf/clusters``, which are meant to ease the management of Sim-Diasca jobs run on Slurm-based HPC clusters.
 
 
+.. _`distributed gotchas`:
 
 What are the Most Common Gotchas encountered with Distributed Simulations?
 ==========================================================================
@@ -542,6 +543,21 @@ Note that we also recommend to follow the conventions used above regarding the t
 
 
 
+How to Handle Actors Needing to Exchange a Larger Volume of Data?
+=================================================================
+
+First of all, such Erlang terms shall be made as compact as possible: data duplication shall be avoided, identifiers (such as atoms or integers) shall be used to designate elements rather than copying them, plain strings shall be replaced with binary ones, more compact compounding types (e.g. tuples instead of maps) shall be preferred, etc.
+
+Is the data static and can be defined either at build-time or at runtime, when starting the simulator? Then Myriad's "const" facilities (e.g. ``const_table``, ``const_bijective_table``, ``const_bijective_topics``) may be of help; also, static or infrequently-changing data may be handled thanks to the Erlang ``persistent_term`` module.
+
+If the data is dynamic, yet is identical for many actors, ``class_DataExchanger`` may then be of help.
+
+Finally, having larger, dynamic, specific (per-actor) data to be exchanged is not necessarily a problem in a distributed context: they should just be co-allocated (that is: instantiated on the same Erlang node, and thus host) by specifying the same placement hint when creating them.
+
+See also the next section for more specific communication solutions.
+
+
+
 How to Handle Less Classical Communication Schemes?
 ===================================================
 
@@ -623,6 +639,22 @@ This ``test_receive/0`` function performs a (blocking) selective receive, retrie
 How Should I run larger simulations?
 ====================================
 
+
+Larger simulations are more difficult to run, notably because they are generally distributed and because they tend to exhaust various resources.
+
+
+Testing in a Simple Case
+------------------------
+
+A good first step is to ensure that, in the target hardware and software setting, the intended simulation is already able to run in a small scale from begin to end, first on a single host then, if targeted, on an increasing number of hosts (see the `distributed gotchas`_ for that).
+
+Ensure that only the safest choices are made (e.g. have a properly-configured DNS, fix permissions, rely on a normal user - not root, etc.). Investigate any network-related issue with `such checkings <https://olivier-boudeville.github.io/Ceylan-Myriad/#testing-troubleshooting>`_.
+
+
+
+Enabling the ``production`` Execution Target
+--------------------------------------------
+
 If, for a given simulation, more than a few nodes are needed, then various preventive measures shall be taken in order to be ready to go to further scales (typically disabling most `simulation traces`_, extending key time-outs, etc.).
 
 For that the ``EXECUTION_TARGET`` compile-time overall flag has been defined. Its default value is ``development`` (simulations will not be really scalable, but a good troubleshooting support will be provided), but if you set it to ``production``, then all settings for larger simulations will be applied.
@@ -631,8 +663,49 @@ It is a compile-time option, hence it must be applied when building Sim-Diasca a
 
 .. code:: bash
 
-  $ make clean all EXECUTION_TARGET=production
+ $ make clean all EXECUTION_TARGET=production
 
 to prepare for any demanding run.
 
 One may instead set ``EXECUTION_TARGET=production`` once for all, typically in ``myriad/GNUmakevars.inc``, however most users prefer to go back and forth between the execution target settings (as traces, shorter time-outs etc. are very useful for developing and troubleshooting), using the command-line to switch.
+
+It is even possible to compile everything in production mode, touch the source files that one wants to be still talkative (``touch some_module.erl``) and run just ``make all`` for the root: all touched module (and only them) will be then recompiled with the default execution target, by default the ``development`` one.
+
+
+Circumventing any System Limit
+------------------------------
+
+Many GNU/Linux operating systems enforce various limits onto the resources that one application may use (RAM, file descriptors, cores, etc.).
+
+Notably, UNIX processes that are considered using "too much" RAM might be killed by the operating system far before exhausting this memory.
+
+The ``ulimit`` command and the configuration of the Linux kernel capabilities may be of interest then.
+
+Containerization / OS-level virtualization (e.g. Docker, Singularity) may also have an impact.
+
+
+
+Increasing the Maximum Number of Erlang Processes
+-------------------------------------------------
+
+The Erlang default limit is only 32768 processes, but Sim-Diasca relies on the ``myriad/src/scripts/launch-erl.sh`` script to launch its user VM, and this script enforces a larger limit (of a few thousands; refer to its ``max_process_count`` variable).
+
+One may set the ``MAX_PROCESS_COUNT`` make variable (defined in ``myriad/GNUmakevars.inc``) to set that process limit to any value of interest.
+
+
+
+Monitoring Resources
+--------------------
+
+Any tool to track resource usage (at least CPU, RAM, swap) on the target host(s), at the level of the operating system will certainly be of use.
+
+Regarding Erlang itself (notably its VM), the ``observer`` application provides also invaluable runtime information.
+
+
+
+Monitoring Traces and Logs
+--------------------------
+
+The Sim-Diasca traces are an invaluable means of tracking the course of a given simulation; error-like severities will always be enabled (even in production mode).
+
+In case of a runtime problem, one should investigate also the main log files of the operating system (typically thanks to ``journalctl``), as many events can happen (OOM - *Out of Memory*, the Sim-Diasca main process being killed process due to some limit being reached, a container enforcing some constraint, etc.).

@@ -92,7 +92,7 @@
 % The form corresponding to a method specification.
 
 
--type located_method_spec() :: { ast_info:location(), method_spec() }.
+-type located_method_spec() :: { ast_location(), method_spec() }.
 % The type specification of a method.
 
 
@@ -106,24 +106,24 @@
 % Method export tables.
 
 
--type oneway_export_table() :: table( ast_info:location(),
-								{ ast_base:line(), [ wooper:oneway_id() ] } ).
+-type oneway_export_table() ::
+		table( ast_location(), { line(), [ wooper:oneway_id() ] } ).
 % Table storing the export declarations for oneway methods.
 %
 % Quite similar to ast_info:function_export_table().
 
 
 
--type request_export_table() :: table( ast_info:location(),
-							{ ast_base:line(), [ wooper:request_id() ] } ).
+-type request_export_table() ::
+		table( ast_location(), { line(), [ wooper:request_id() ] } ).
 % Table storing the export declarations for request methods.
 %
 % Quite similar to ast_info:function_export_table().
 
 
 
--type static_export_table() :: table( ast_info:location(),
-							{ ast_base:line(), [ wooper:static_id() ] } ).
+-type static_export_table() ::
+		table( ast_location(), { line(), [ wooper:static_id() ] } ).
 % Table storing the export declarations for static methods.
 %
 % Quite similar to ast_info:function_export_table().
@@ -168,15 +168,6 @@
 			   oneway_info/0, request_info/0, static_info/0 ]).
 
 
-% Shorthands:
-
--type ustring() :: text_utils:ustring().
--type indentation_level() :: text_utils:indentation_level().
-
--type attribute_name() :: wooper:attribute_name().
--type function_id() :: meta_utils:function_id().
-
-
 -export([ init_class_info/0,
 
 		  class_info_to_string/1, class_info_to_string/2,
@@ -187,6 +178,9 @@
 
 		  inherited_attributes_to_string/3,
 		  attribute_info_to_string/2,
+		  qualifiers_to_string/1,
+		  definition_to_string/2,
+		  located_spec_to_string/1,
 
 		  constructors_to_string/3, destructor_to_string/3,
 
@@ -197,6 +191,20 @@
 		  get_wooper_builtins/0, get_metadata_builtins/0, get_state_builtins/0,
 		  get_execution_builtins/0, get_inner_builtins/0, get_helper_builtins/0,
 		  get_serialisation_builtins/0 ]).
+
+
+
+% Shorthands:
+
+-type ustring() :: text_utils:ustring().
+-type indentation_level() :: text_utils:indentation_level().
+
+-type ast_location() :: ast_info:ast_location().
+-type line() :: ast_base:line().
+
+-type function_id() :: meta_utils:function_id().
+
+-type attribute_name() :: wooper:attribute_name().
 
 
 

@@ -38,7 +38,7 @@ help-wooper:
 register-version-in-header:
 	@if [ -z "$(VERSION_FILE)" ]; then \
 	echo "Error, no version file defined." 1>&2; exit 51; else \
-	$(MAKE) register-wooper; fi
+	$(MAKE) -s register-wooper; fi
 
 
 register-wooper:
@@ -70,19 +70,19 @@ release: release-zip release-bz2 release-xz
 release-zip: prepare-release
 	@echo "     Creating WOOPER release archive $(WOOPER_RELEASE_ARCHIVE_ZIP)"
 	@cd .. && zip -r $(WOOPER_RELEASE_ARCHIVE_ZIP) $(WOOPER_RELEASE_BASE) \
-	&& echo "     Archive $(WOOPER_RELEASE_ARCHIVE_ZIP) ready in "`pwd`
+	&& echo "     Archive $(WOOPER_RELEASE_ARCHIVE_ZIP) ready in $$(pwd)"
 
 
 release-bz2: prepare-release
 	@echo "     Creating WOOPER release archive $(WOOPER_RELEASE_ARCHIVE_BZ2)"
 	@cd .. && tar chvjf $(WOOPER_RELEASE_ARCHIVE_BZ2) $(WOOPER_RELEASE_BASE) \
-	&& echo "     Archive $(WOOPER_RELEASE_ARCHIVE_BZ2) ready in "`pwd`
+	&& echo "     Archive $(WOOPER_RELEASE_ARCHIVE_BZ2) ready in $$(pwd)"
 
 
 release-xz: prepare-release
 	@echo "     Creating WOOPER release archive $(WOOPER_RELEASE_ARCHIVE_XZ)"
 	@cd .. && tar chvjf $(WOOPER_RELEASE_ARCHIVE_XZ) $(WOOPER_RELEASE_BASE) \
-	&& echo "     Archive $(WOOPER_RELEASE_ARCHIVE_XZ) ready in "`pwd`
+	&& echo "     Archive $(WOOPER_RELEASE_ARCHIVE_XZ) ready in $$(pwd)"
 
 
 # The '-L' option with cp is used so that symbolic links are replaced by their

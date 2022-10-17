@@ -17,7 +17,7 @@
 % If not, see <http://www.gnu.org/licenses/>.
 
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
-
+% Creation date: 2008.
 
 
 % The name under which a time manager is to be registered:
@@ -53,6 +53,11 @@
 -define( default_tick_duration, 0.02 ).
 
 
+% The default maximum relative error when computing durations; less than 1.5% of
+% relative error is tolerated by default:
+%
+-define( default_max_relative_time_error, 0.015 ).
+
 
 % We can be in interactive mode without having to make the real and virtual
 % units correspond one-to-one: virtual time can be scaled up or down compared to
@@ -79,7 +84,7 @@
 
 
 
-% Allows to store most general simulation settings.
+% Allows to store most of the general simulation settings.
 -record( simulation_settings, {
 
 	% The name of that simulation, as a plain string (otherwise as a module
@@ -109,10 +114,10 @@
 	% Note: dictates whether the simulation tries to remain on par with real,
 	% user time, or to run as fast as possible.
 	%
-	% Not to be mixed up with the --batch command-line option, which relates to
-	% the interactivity of the user-interface, and allows to select whether the
-	% simulator is to run in a console, with neither user input nor graphical
-	% outputs (if --batch is used) or interactively.
+	% Not to be mixed up with the '--batch' command-line option, which relates
+	% to the interactivity of the user-interface, and allows to select whether
+	% the simulator is to run in a console, with neither user input nor
+	% graphical outputs (if --batch is used), or interactively.
 	%
 	simulation_interactivity_mode = batch ::
 		class_TimeManager:simulation_interactivity_mode(),

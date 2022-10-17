@@ -1,11 +1,22 @@
-;; This is an initialization script written in elisp.
-;; Refer to https://www.gnu.org/software/emacs/manual/html_node/elisp/
+;; This is the Ceylan-Myriad default Emacs configuration file, typically to
+;; exist as ~/.emacs/init.el; check that none of the many other Emacs
+;; configuration file gets in the way.
 
+
+;;; package --- This is an initialization script written in elisp.
+
+;;; Commentary: refer to
+;;; https://www.gnu.org/software/emacs/manual/html_node/elisp/
+
+;;; Code: (below)"
 
 ;; Section for package management with straight.el
 
-; straight.el is a replacement for package.el (not use-package).
+;; straight.el is a replacement for package.el (not use-package).
 ;; use-package can be used with either package.el or straight.el.
+
+;; Must be kept, in order to prevent package.el loading packages prior to their
+;; init-file loading:
 
 (setq package-enable-at-startup nil)
 
@@ -361,6 +372,39 @@
 ;; Not working apparently with emacs 22.2.1:
 ;;(auto-raise-mode t)
 
+
+;; Taken from https://anirudhsasikumar.net/blog/2005.01.21.html to protect
+;; credentials (see our open-credentials.sh script):
+
+(define-minor-mode sensitive-mode
+  "For sensitive files like password lists.
+It disables backup creation and auto saving.
+
+With no argument, this command toggles the mode.
+Non-null prefix argument turns on the mode.
+Null prefix argument turns off the mode."
+  ;; The initial value.
+  nil
+  ;; The indicator for the mode line.
+  " Sensitive"
+  ;; The minor mode bindings.
+  nil
+  (if (symbol-value sensitive-mode)
+	  (progn
+	;; disable backups
+	(set (make-local-variable 'backup-inhibited) t)
+	;; disable auto-save
+	(if auto-save-default
+		(auto-save-mode -1)))
+	;resort to default value of backup-inhibited
+	(kill-local-variable 'backup-inhibited)
+	;resort to default auto save setting
+	(if auto-save-default
+	(auto-save-mode 1))))
+
+(setq auto-mode-alist
+ (append '(("\\.swap.dat$" . sensitive-mode))
+			   auto-mode-alist))
 
 
 ;; LSP-related section
@@ -962,11 +1006,27 @@ Exempt major modes are defined in `display-line-numbers-exempt-modes'."
 			(expand-file-name
 			 (concat "#%" (buffer-name) "#")))))
 
-;; Put backup files (ie foo~) in one place too. (The backup-directory-alist
-;; list contains regexp=>directory mappings; filenames matching a regexp are
-;; backed up in the corresponding directory. Emacs will mkdir it if necessary.)
+;; Put backup files (i.e. foo~) in one place too.
+
+;; (The backup-directory-alist list contains regexp=>directory mappings;
+;; filenames matching a regexp are backed up in the corresponding
+;; directory. Emacs will mkdir it if necessary.)
+
 (defvar backup-dir (concat "/tmp/emacs_backups/" (user-login-name) "/"))
+
 (setq backup-directory-alist (list (cons "." backup-dir)))
+
+(setq make-backup-files t               ; backup of a file the first time it is saved.
+	  backup-by-copying t               ; don't clobber symlinks
+	  version-control t                 ; version numbers for backup files
+	  delete-old-versions t             ; delete excess backup files silently
+	  delete-by-moving-to-trash t
+	  kept-old-versions 6               ; oldest versions to keep when a new numbered backup is made (default: 2)
+	  kept-new-versions 9               ; newest versions to keep when a new numbered backup is made (default: 2)
+	  auto-save-default t               ; auto-save every buffer that visits a file
+	  auto-save-timeout 20              ; number of seconds idle time before auto-save (default: 30)
+	  auto-save-interval 200            ; number of keystrokes between auto-saves (default: 300)
+	  )
 
 (message "<<<<<<######### init.el version 1.2 #########>>>>>>")
 

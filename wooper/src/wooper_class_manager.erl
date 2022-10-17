@@ -268,15 +268,8 @@ start( MaybeClientPid ) ->
 						   ?MODULE, _Args=[], _Opts=[] ) of
 
 		{ ok, ManagerPid } ->
-			case MaybeClientPid of
-
-				undefined ->
-					ok;
-
-				ClientPid ->
-					ClientPid ! { wooper_class_manager_pid, ManagerPid }
-
-			end,
+			MaybeClientPid =:= undefined orelse
+				( MaybeClientPid ! { wooper_class_manager_pid, ManagerPid } ),
 			ManagerPid;
 
 		% Typically {error,Reason} or ignore:
@@ -305,15 +298,10 @@ start_link( MaybeClientPid ) ->
 		Success={ ok, ManagerPid } ->
 			%trace_utils:debug_fmt( "WOOPER class manager created, as ~w.",
 			%                       [ ManagerPid ] ),
-			case MaybeClientPid of
 
-				undefined ->
-					ok;
+			MaybeClientPid =:= undefined orelse
+				( MaybeClientPid ! { wooper_class_manager_pid, ManagerPid } ),
 
-				ClientPid ->
-					ClientPid ! { wooper_class_manager_pid, ManagerPid }
-
-			end,
 			Success;
 
 		% Typically {error,Reason} or ignore:
@@ -515,9 +503,7 @@ handle_info( Info, State ) ->
 terminate( Reason, _State ) ->
 
 	trace_utils:info_fmt( "WOOPER class manager terminated (reason: ~w).",
-						  [ Reason ] ),
-
-	ok.
+						  [ Reason ] ).
 
 
 
@@ -633,13 +619,11 @@ stop_automatic() ->
 	case naming_utils:is_registered( ?wooper_class_manager_name, local ) of
 
 		not_registered ->
-			trace_utils:warning( "No WOOPER class manager to stop." ),
-			ok;
+			trace_utils:warning( "No WOOPER class manager to stop." );
 
 		ManagerPid ->
 			display_msg( "Stopping WOOPER class manager." ),
-			ManagerPid ! stop,
-			ok
+			ManagerPid ! stop
 
 	end.
 
@@ -794,15 +778,11 @@ get_virtual_table_key_for( Module, Tables ) ->
 -spec create_method_table_for( module_name() ) ->
 						?wooper_table_type:?wooper_table_type().
 create_method_table_for( TargetModule ) ->
-
 	lists:foldl(
-
 		fun( Module, Hashtable ) ->
 			update_method_table_with( Module, Hashtable )
 		end,
-
 		create_local_method_table_for( TargetModule ),
-
 		TargetModule:get_superclasses() ).
 
 
@@ -931,7 +911,7 @@ create_local_method_table_for( Module ) ->
 						"corresponding to '~ts', knowing that ~ts~n"
 						"Hint: check the BEAM_DIRS make variable and any "
 						"application-level setting that specifies code that "
-						"shall be deployed.",
+						"shall be used or deployed.",
 						[ Module, code_utils:get_code_path_as_string() ] ),
 					throw( { class_not_found, Module } )
 
@@ -967,7 +947,7 @@ create_local_method_table_for( Module ) ->
 % Returns pong if it could be successfully ping'ed, otherwise returns pang.
 %
 -spec ping( naming_utils:registration_name() | wooper:instance_pid() ) ->
-												 'pong' | 'pang'.
+													'pong' | 'pang'.
 ping( Target ) when is_pid( Target ) ->
 
 	Target ! { ping, self() },

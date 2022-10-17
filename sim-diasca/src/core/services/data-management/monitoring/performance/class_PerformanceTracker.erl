@@ -19,6 +19,7 @@
 % Authors:
 %   Jingxuan Ma (jingxuan.ma@edf.fr)
 %   Olivier Boudeville (olivier.boudeville@edf.fr)
+% Create date: 2008.
 
 
 % @doc Agent in charge of <b>tracking the overall runtime resource
@@ -94,8 +95,8 @@
 %
 % (probes track resources respectively over ticks and wallclock time)
 %
--type node_entry() :: { atom_node_name(), node_static_info(),
-						probe_pid(), probe_pid() }.
+-type node_entry() ::
+		{ atom_node_name(), node_static_info(),	probe_pid(), probe_pid() }.
 
 
 -type tracker_pid() :: agent_pid().
@@ -175,11 +176,6 @@
 	  "new data sample to its probes" } ] ).
 
 
-
-% We need serialisation hooks to take care of internal helper processes:
--define( wooper_serialisation_hooks,).
-
-
 % For the probe_option record:
 -include("class_Probe.hrl").
 
@@ -188,6 +184,10 @@
 % settings:
 %
 -include("class_PerformanceTracker.hrl").
+
+
+% For process_restoration_marker:
+-include("wooper/include/class_Serialisable.hrl").
 
 
 % For host_{static,dynamic}_info:
@@ -217,7 +217,7 @@
 
 -type host_dynamic_info() :: system_utils:host_dynamic_info().
 
--type term_serialisation() :: wooper_serialisation:term_serialisation().
+-type user_data() :: basic_utils:user_data().
 
 -type tick_offset() :: class_TimeManager:tick_offset().
 -type diasca() :: class_TimeManager:diasca().
@@ -284,6 +284,7 @@ construct( State, PerformanceTrackerName, RegistrationScope, ResultDirInfo ) ->
 			file_utils:create_directory( TrackerResultDir )
 
 	end,
+
 
 	% The probes to monitor the resources per node cannot be created here, as we
 	% do not know yet the nodes of interest.
@@ -405,8 +406,8 @@ start( State, RootTimeManagerPid, Nodes=[ UserNode | ComputingNodes ],
 	% Declares a curve corresponding to each computing node on all relevant
 	% probes:
 	%
-	MultiNodesProbes =  [ ?getAttr(nodes_in_tick_probe),
-						  ?getAttr(nodes_in_time_probe) ],
+	MultiNodesProbes =
+		[ ?getAttr(nodes_in_tick_probe), ?getAttr(nodes_in_time_probe) ],
 
 	[ [ begin
 
@@ -463,7 +464,7 @@ wait_static_node_info( ResourcesPerNodeEntries, InstanceTrackers, UserNode,
 
 			% We update in-place a blanck entry:
 			UpdatedResourcesPerNodeEntries = lists:keyreplace( _Key=NodeName,
-					   _Index=1, ResourcesPerNodeEntries, UpdatedEntry ),
+				_Index=1, ResourcesPerNodeEntries, UpdatedEntry ),
 
 			RemainingInstanceTrackers = list_utils:delete_existing(
 										InstanceTrackerPid, InstanceTrackers ),
@@ -568,7 +569,7 @@ setTickerPeriod( State, TickerPeriod ) ->
 -spec onNewTick( wooper:state(), tick_offset() ) -> oneway_return().
 onNewTick( State, NewTickOffset ) ->
 	wooper:return_state(
-				setAttribute( State, current_tick_offset, NewTickOffset ) ).
+		setAttribute( State, current_tick_offset, NewTickOffset ) ).
 
 
 
@@ -611,15 +612,8 @@ generateMonitoringReports( State ) ->
 
 	?notice( "Performance report correctly generated." ),
 
-	case executable_utils:is_batch() of
-
-		true ->
-			ok;
-
-		false ->
-			executable_utils:browse_images_in( ?getAttr(tracker_result_dir) )
-
-	end,
+	executable_utils:is_batch() orelse
+		executable_utils:browse_images_in( ?getAttr(tracker_result_dir) ),
 
 	%trace_utils:debug( "Performance monitoring reports generated." ),
 
@@ -672,11 +666,11 @@ create_node_resource_probes( NodeName, NodeStaticInfo, UserNode,
 	CPUUtilization = "Percentage of CPU Used (Non-idle)",
 
 	ProcessCount = text_utils:format(
-						"Erlang Process Count (spread over ~B cores)",
-						[ NodeStaticInfo#host_static_info.core_count ] ),
+		"Erlang Process Count (spread over ~B cores)",
+		[ NodeStaticInfo#host_static_info.core_count ] ),
 
-	CurveNames = [ TotalUsed, ErlangUsed, SwapUsed, CPUUtilization,
-				   ProcessCount ],
+	CurveNames =
+		[ TotalUsed, ErlangUsed, SwapUsed, CPUUtilization, ProcessCount ],
 
 	Zones = [ { "Total available memory (free+buffers+cache)",
 				{ 'abscissa_top', TotalUsed } },
@@ -1361,11 +1355,13 @@ get_all_probes( State ) ->
 
 % @doc Triggered just before serialisation.
 %
-% The state used here is dedicated to serialisation (i.e. it is not the actual
-% state).
+% The state explicitly returned here is dedicated to serialisation (generally
+% the actual instance state is not impacted by serialisation and thus this
+% request is often const).
 %
--spec pre_serialise_hook( wooper:state() ) -> wooper:state().
-pre_serialise_hook( State ) ->
+-spec onPreSerialisation( wooper:state(), user_data() ) ->
+				const_request_return( { wooper:state(), user_data() } ).
+onPreSerialisation( State, UserData ) ->
 
 	% Just one here, the ticker:
 	PrivateProcesses = [ ticker_pid ],
@@ -1373,38 +1369,22 @@ pre_serialise_hook( State ) ->
 	% In this state, private processes have been replaced by restoration
 	% markers:
 	%
-	wooper_serialisation:handle_private_processes( PrivateProcesses, State ).
+	NoTransientState = wooper_serialisation:handle_private_processes(
+							PrivateProcesses, State ),
 
-
-
-% @doc Triggered just after serialisation, based on the selected entries.
-%
-% The value returned by this hook will be converted "as is" into a binary, that
-% will be written.
-%
--spec post_serialise_hook( classname(), term_serialisation(),
-						   wooper:state() ) -> term().
-post_serialise_hook( Classname, Entries, _State ) ->
-	{ Classname, Entries }.
-
-
-
-% @doc Triggered just before deserialisation.
--spec pre_deserialise_hook( term(), basic_utils:user_data() ) ->
-									term_serialisation().
-pre_deserialise_hook( _SerialisationTerm={ _Classname, Entries }, _UserData ) ->
-	Entries.
+	wooper:const_return_result( { NoTransientState, UserData } ).
 
 
 
 % @doc Triggered just after deserialisation.
--spec post_deserialise_hook( wooper:state() ) -> wooper:state().
-post_deserialise_hook( State ) ->
+-spec onPostDeserialisation( wooper:state(), user_data() ) ->
+										request_return( user_data() ).
+onPostDeserialisation( State, UserData ) ->
 
 	% We have to recreate all private helper processes that were running,
 	% i.e. just the ticker one:
 	%
-	case ?getAttr(ticker_pid) of
+	ReadyState = case ?getAttr(ticker_pid) of
 
 		undefined ->
 			State;
@@ -1415,4 +1395,6 @@ post_deserialise_hook( State ) ->
 			%
 			launch_ticker( ?getAttr(ticker_period), State )
 
-	end.
+	end,
+
+	wooper:return_state_result( ReadyState, UserData ).

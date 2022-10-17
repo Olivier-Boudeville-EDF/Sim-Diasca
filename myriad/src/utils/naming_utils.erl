@@ -83,7 +83,7 @@
 
 
 
-% Registration functions.
+% Registration information.
 %
 % Note that:
 % - only local processes can be registered locally
@@ -92,6 +92,18 @@
 % automatically unregistered (see
 % http://erlang.org/doc/reference_manual/processes.html and
 % http://erlang.org/doc/man/global.html)
+
+% - designating a process by its PID is certainly the most effective approach;
+% designating it by a name certainly involves a round-trip communication to
+% a process in charge of the naming service (two messages), yet provides
+% interesting features:
+%
+%   * such designated process becomes a singleton by design (either on the local
+%   node or globally)
+%
+%   * if the designated process offers a service, this additional level of
+%   indirection allows this process to be transparently restarted / upgraded
+
 
 
 % Shorthands:
@@ -653,6 +665,13 @@ wait_for_global_registration_of( Name ) ->
 % Name} exception.
 %
 wait_for_global_registration_of( Name, _Seconds=0 ) ->
+
+	cond_utils:if_defined( myriad_debug_registration,
+		trace_utils:error_fmt( "Global registration of '~ts' timed-out; "
+			"globally registered processes: ~w",
+			[ Name, lists:sort(
+						get_registered_names( _LookUpScope=global ) ) ] ) ),
+
 	throw( { registration_waiting_timeout, Name, global } );
 
 wait_for_global_registration_of( Name, SecondsToWait ) ->
@@ -686,6 +705,13 @@ wait_for_local_registration_of( Name ) ->
 % Name}.
 %
 wait_for_local_registration_of( Name, _Seconds=0 ) ->
+
+	cond_utils:if_defined( myriad_debug_registration,
+		trace_utils:error_fmt( "Local registration of '~ts' timed-out; "
+			"locally registered processes: ~w",
+			[ Name, lists:sort(
+						get_registered_names( _LookUpScope=local ) ) ] ) ),
+
 	throw( { registration_waiting_timeout, Name, local } );
 
 wait_for_local_registration_of( Name, SecondsToWait ) ->

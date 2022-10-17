@@ -50,14 +50,17 @@
 -export([ join/1, join/2, bin_join/1, bin_join/2, any_join/1, any_join/2,
 		  split/1,
 
-		  get_base_path/1, get_last_path_element/1,
+		  get_base_path/1, get_last_path_element/1, split_path/1,
+
+		  resolve_path/1, resolve_any_path/1,
 
 		  convert_to_filename/1, escape_path/1,
 
-		  get_extensions/1, get_extension/1, remove_extension/1,
-		  replace_extension/3,
+		  get_extensions/1, get_extension/1, get_dotted_extension_for/1,
+		  remove_extension/1, remove_extension/2, replace_extension/3,
 
-		  exists/1, get_type_of/1, get_owner_of/1, get_group_of/1,
+		  exists/1, get_type_of/1, resolve_type_of/1,
+		  get_owner_of/1, get_group_of/1,
 		  is_file/1,
 		  is_existing_file/1, is_existing_link/1,
 		  is_existing_file_or_link/1,
@@ -69,7 +72,7 @@
 		  list_dir_elements/1, list_dir_elements/2,
 
 		  get_size/1, get_last_modification_time/1, touch/1,
-		  create_empty_file/1,
+		  create_empty_file/1, create_non_clashing_file/0,
 
 		  get_current_directory/0, get_bin_current_directory/0,
 		  set_current_directory/1,
@@ -148,6 +151,7 @@
 		  open/2, open/3, close/1, close/2,
 		  read/2, write/2, write_ustring/2, write_ustring/3,
 		  read_whole/1, write_whole/2, write_whole/3,
+		  write_whole_in_non_clashing/1,
 		  read_lines/1,
 		  read_etf_file/1, read_terms/1,
 		  write_etf_file/2, write_etf_file/4,
@@ -192,8 +196,54 @@
 % We do not believe that atoms shall be legit paths.
 
 
+
+-type resolvable_path() :: [ resolvable_path_element() ].
+% A path that is resolved at runtime, all its elements being joined accordingly.
+%
+% Ex: `[home, "Project", lang, <<"simulation">>', user] being translated to the
+% "/home/bond/Project/en_GB.utf8/simulation/bond" path.
+%
+% See resolve_path/1.
+
+
+-type resolvable_path_element() :: any_path() | resolvable_token_path().
+% An element of a resolvable path.
+
+
+-type resolvable_token_path() ::
+
+	  'user_name' % Will be translated to the name of the current OS-level
+				  % user; ex: "bond".
+
+	| 'user_id' % Will be translated to the OS-level (typically UNIX uid)
+				% identifier of the current user; ex: "61917".
+
+	| 'group_name' % Will be translated to the name of the current OS-level
+				   % group; ex: "wheel".
+
+	| 'group_id' % Will be translated to the OS-level (typically UNIX gid)
+				 % identifier of the current group; ex: "61000".
+
+	| 'home' % Will be translated to the path to the home directory of the
+			 % current user; ex: "/home/bond".
+
+	| 'locale_charset' % Will be translated to the current locale with the
+					   % associated character set; ex: "en_GB.utf8".
+
+	| 'fqdn' % Will be translated to the current FQDN of the local host;
+			 % ex: "hurricane.foobar.org".
+
+	| 'short_hostname'. % Will be translated to the current short name of
+						% the local host; ex: "hurricane".
+% A token translated at runtime as a path element.
+
+
+-type possibly_resolvable_path() :: resolvable_path() | any_path().
+% Any kind of path, resolvable or not.
+
+
 -type file_name() :: path().
-% Designates a filename, generally without a path (ex: "foobar.txt").
+% Designates a filename, generally without a path (e.g. "foobar.txt").
 
 
 -type filename() :: file_name().
@@ -201,8 +251,13 @@
 
 
 -type file_path() :: path().
-% Designates a path to a file (including its filename); ex:
-% "../my_dir/other/foobar.txt".
+% Designates a path to a file (including its filename),
+% e.g. "../my_dir/other/foobar.txt".
+
+
+-type device_path() :: path().
+% Designates a path to a device (including its device name), e.g.
+% "/dev/ttyUSB0".
 
 
 -type bin_file_name() :: bin_string().
@@ -265,9 +320,17 @@
 %
 % Ex: the filepath radix of "/home/bond/hello.tar.gz" is "/home/bond/hello".
 
+
 -type extension() :: ustring().
 % An extension in a filename, either unitary (ex: "baz", in "foobar.baz.json")
 % or composed (ex: "tar.gz" in "hello.tar.gz").
+%
+% An extension by itself does not include the leading dot (ex: "gz", not ".gz").
+
+
+-type dotted_extension() :: ustring().
+% A dot followed by the extension of a filename, either unitary (ex: ".baz", in
+% "foobar.baz.json") or composed (ex: ".tar.gz" in "hello.tar.gz").
 
 
 -type any_suffix() :: any_string().
@@ -305,7 +368,7 @@
 
 %-type file_open_mode() :: file:mode() | 'ram'.
 -type file_open_mode() :: tuple() | atom() | 'ram'.
-% Relevant flags when opening a file (ex: read, write, append, exclusive, raw,
+% Relevant flags when opening a file (e.g. read, write, append, exclusive, raw,
 % etc.).
 %
 % See [http://erlang.org/doc/man/file.html#open-2] for their detailed
@@ -371,15 +434,23 @@
 
 
 -export_type([ path/0, bin_path/0, any_path/0,
+
+			   resolvable_path/0, resolvable_path_element/0,
+			   resolvable_token_path/0, possibly_resolvable_path/0,
+
 			   file_name/0, filename/0, file_path/0,
 			   bin_file_name/0, bin_file_path/0,
 			   any_file_name/0, any_file_path/0,
+
+			   device_path/0,
+
 			   any_directory_name/0, any_directory_path/0, abs_directory_path/0,
 			   executable_name/0, executable_path/0, bin_executable_path/0,
 			   script_path/0, bin_script_path/0,
 			   directory_name/0, bin_directory_name/0,
 			   directory_path/0, bin_directory_path/0,
-			   filename_radix/0, filepath_radix/0, extension/0, any_suffix/0,
+			   filename_radix/0, filepath_radix/0,
+			   extension/0, dotted_extension/0, any_suffix/0,
 			   path_element/0, bin_path_element/0, any_path_element/0,
 			   leaf_name/0,
 			   entry_type/0, parent_creation/0,
@@ -395,6 +466,7 @@
 -type any_string() :: text_utils:any_string().
 
 -type format_string() :: text_utils:format_string().
+-type format_values() :: format_values().
 
 -type any_app_info() :: app_facilities:any_app_info().
 
@@ -541,12 +613,12 @@
 
 % @doc Joins the specified list of path elements.
 %
-% This function has been added back to this module; filename:join( Components )
-% could be used instead (at least to some extent), however filename:join( [ "",
-% "my_dir"] ) results in "/my_dir", whereas often we would want "my_dir"
-% instead - which is returned by our function; moreover, if one of the
-% components includes an absolute path (such as "/xxx" with Unix conventions),
-% the preceding components, if any, were removed from the result (which does not
+% This function has been added back to this module; filename:join(Components)
+% could be used instead (at least to some extent), however filename:join(["",
+% "my_dir"]) results in "/my_dir", whereas often we would want "my_dir" instead
+% - which is returned by our function; moreover, if one of the components
+% includes an absolute path (such as "/xxx" with Unix conventions), the
+% preceding components, if any, were removed from the result (which does not
 % seem desirable); here we throw an exception instead.
 %
 % So we deem our version simpler and less prone to surprise (least
@@ -767,6 +839,8 @@ get_last_element( _List=[ _H | T ] ) ->
 % Alias name for filename:dirname/1 (better in file_utils, and hopefully
 % clearer).
 %
+% See get_last_path_element/1 for the counterpart function.
+%
 -spec get_base_path( any_path() ) -> any_path().
 get_base_path( AnyPath ) ->
 	filename:dirname( AnyPath ).
@@ -782,19 +856,110 @@ get_base_path( AnyPath ) ->
 % Note that the return type is the same of the input path, i.e. plain string or
 % binary string.
 %
-% Replacement name for filename:basename/1 (in file_utils, and hopefully
-% clearer).
+% Replacement name for filename:basename/1 (more convenient if in file_utils,
+% and hopefully clearer).
 %
--spec get_last_path_element( any_path() ) -> any_path().
+% See get_base_path/1 for the counterpart function.
+%
+-spec get_last_path_element( any_path() ) ->  any_path_element().
 get_last_path_element( AnyPath ) ->
 	filename:basename( AnyPath ).
 
 
 
+% @doc Splits the specified path into a full base directory path and a final
+% entry (filename or directory name).
+%
+% Ex: {"/aaa/bbb/ccc", "foobar.txt"} =
+%       file_utils:split_path("/aaa/bbb/ccc/foobar.txt")
+%
+-spec split_path( any_path() ) -> { any_path(), any_path_element() }.
+split_path( AnyPath ) ->
+	{ get_base_path( AnyPath ), get_last_path_element( AnyPath ) }.
+
+
+
+% @doc Resolves the specified resolvable path as a standard path.
+-spec resolve_path( resolvable_path() ) -> path().
+resolve_path( ResolvablePath ) when is_list( ResolvablePath ) ->
+	resolve_path( ResolvablePath, _Acc=[] ).
+
+
+% (helper)
+resolve_path( _ResolvablePath=[], Acc ) ->
+	join( lists:reverse( Acc ) );
+
+resolve_path( _ResolvablePath=[ user_name | T ], Acc ) ->
+	NewAcc = [ system_utils:get_user_name() | Acc ],
+	resolve_path( T, NewAcc );
+
+resolve_path( _ResolvablePath=[ user_id | T ], Acc ) ->
+	NewAcc = [ system_utils:get_user_id() | Acc ],
+	resolve_path( T, NewAcc );
+
+resolve_path( _ResolvablePath=[ group_name | T ], Acc ) ->
+	NewAcc = [ system_utils:get_group_name() | Acc ],
+	resolve_path( T, NewAcc );
+
+resolve_path( _ResolvablePath=[ group_id | T ], Acc ) ->
+	NewAcc = [ system_utils:get_group_id() | Acc ],
+	resolve_path( T, NewAcc );
+
+resolve_path( _ResolvablePath=[ home | T ], Acc ) ->
+	NewAcc = [ system_utils:get_user_home_directory() | Acc ],
+	resolve_path( T, NewAcc );
+
+resolve_path( _ResolvablePath=[ locale_charset | T ], Acc ) ->
+	NewAcc = [ locale_utils:get_locale_charset() | Acc ],
+	resolve_path( T, NewAcc );
+
+resolve_path( _ResolvablePath=[ fqdn | T ], Acc ) ->
+	NewAcc = [ net_utils:localhost( fqdn ) | Acc ],
+	resolve_path( T, NewAcc );
+
+resolve_path( _ResolvablePath=[ short_hostname | T ], Acc ) ->
+	NewAcc = [ net_utils:localhost( short ) | Acc ],
+	resolve_path( T, NewAcc );
+
+resolve_path( _ResolvablePath=[ UnexpectedToken | _T ], _Acc )
+						when is_atom( UnexpectedToken ) ->
+	throw( { unexpected_resolvable_token_path, UnexpectedToken } );
+
+resolve_path( _ResolvablePath=[ S | T ], Acc )
+						when is_list( S ) orelse is_binary( S ) ->
+	resolve_path( T, [ S| Acc ] );
+resolve_path( _ResolvablePath=[ UnexpectedTerm | _T ], _Acc ) ->
+	throw( { invalid_resolvable_token_path, UnexpectedTerm } ).
+
+
+
+% @doc Resolves the specified path - either a standard one or a resolvable one -
+% in all cases as a plain, standard path.
+%
+-spec resolve_any_path( possibly_resolvable_path() ) -> path().
+resolve_any_path( BinPath ) when is_binary( BinPath ) ->
+	text_utils:binary_to_string( BinPath );
+
+resolve_any_path( AnyPath ) when is_list( AnyPath ) ->
+	% Either already a plain string or a resolvable path:
+	case text_utils:is_string( AnyPath ) of
+
+		true ->
+			AnyPath;
+
+		false ->
+			resolve_path( AnyPath )
+
+	end;
+
+resolve_any_path( Other ) ->
+	throw( { invalid_path, Other } ).
+
+
 
 % @doc Converts the specified name into an acceptable filename, filesystem-wise.
 %
-% Returns the same string type as the parameter.
+% Returns the same type of string as the provided one.
 %
 -spec convert_to_filename( any_string() ) -> any_file_name().
 convert_to_filename( BinName ) when is_binary( BinName ) ->
@@ -895,9 +1060,10 @@ get_extension( Filename ) ->
 
 
 
-% @doc Removes the (last) extension of the specified file path.
+% @doc Removes the (last) extension (regardless of its actual value) of the
+% specified file path.
 %
-% Ex: "/home/jack/rosie.tmp" = remove_extension( "/home/jack/rosie.tmp.ttf" )
+% Ex: "/home/jack/rosie.tmp" = remove_extension("/home/jack/rosie.tmp.ttf")
 %
 -spec remove_extension( file_path() ) -> file_path().
 remove_extension( FilePath ) ->
@@ -919,10 +1085,47 @@ remove_extension( FilePath ) ->
 
 
 
+% @doc Checks that the (last) extension of the specified file path is the
+% specified one, and returns that path once this extension has been removed.
+%
+% Ex: "/home/jack/rosie" = remove_extension("/home/jack/rosie.tmp.ttf", "ttf")
+%
+-spec remove_extension( file_path(), extension() ) -> file_path().
+remove_extension( FilePath, ExpectedExtension ) ->
+
+	Separator = $.,
+
+	case text_utils:split( FilePath, _Delimiters=[ Separator ] ) of
+
+		[] ->
+			throw( empty_path );
+
+		[ _SingleElem ] ->
+			throw( { no_extension_in_path, FilePath } );
+
+		BasenamePlusExtensions ->
+			case list_utils:extract_last_element( BasenamePlusExtensions ) of
+
+				{ ExpectedExtension, BasenamePlusFirstExtensions } ->
+					text_utils:join( Separator, BasenamePlusFirstExtensions );
+
+				{ OtherExtension, _ } ->
+					throw( { unmatching_extension, OtherExtension,
+							 ExpectedExtension, FilePath } )
+
+			end
+
+	end.
+
+
+
 % @doc Returns a new file path whose extension has been updated.
 %
-% Ex: replace_extension("/home/jack/rosie.ttf", ".ttf", ".wav") should return
+% Ex: replace_extension("/home/jack/rosie.ttf", "ttf", "wav") should return
 % "/home/jack/rosie.wav".
+%
+% Use remove_extension/2 to remove extension, as replacing an extension by an
+% empty one would leave the leading dot.
 %
 -spec replace_extension( file_path(), extension(), extension() ) -> file_path().
 replace_extension( FilePath, SourceExtension, TargetExtension ) ->
@@ -933,7 +1136,7 @@ replace_extension( FilePath, SourceExtension, TargetExtension ) ->
 			throw( { extension_not_found, SourceExtension, FilePath } );
 
 		Index ->
-			string:substr( FilePath, 1, Index-1 ) ++ TargetExtension
+			string:substr( FilePath, _From=1, Index-1 ) ++ TargetExtension
 
 	end.
 
@@ -957,7 +1160,12 @@ exists( EntryName ) ->
 
 
 
-% @doc Returns the type of the specified file entry.
+% @doc Returns the (direct) type of the specified file entry (hence may return
+% 'symlink' if the path of a symbolic link is specified).
+%
+% See resolve_type_of/1 to go through symbolic links, and return the actual,
+% ultimate entry type resolved.
+%
 -spec get_type_of( any_path() ) -> entry_type().
 get_type_of( Path ) ->
 
@@ -969,6 +1177,31 @@ get_type_of( Path ) ->
 	% create dead symlinks on purpose, to store information.
 
 	case file:read_link_info( Path ) of
+
+		{ ok, #file_info{ type=FileType } } ->
+			FileType;
+
+		{ error, eloop } ->
+			% Probably a recursive symlink:
+			throw( { too_many_symlink_levels, Path } );
+
+		{ error, enoent } ->
+			throw( { non_existing_entry, Path } )
+
+	end.
+
+
+
+% @doc Returns the actual, ultimate type of the specified file entry (hence may
+% not return 'symlink').
+%
+% Refer to get_type_of/1 to return the type into which the specified entry
+% resolves first (thus possibly resolving in a symbolic link).
+%
+-spec resolve_type_of( any_path() ) -> entry_type().
+resolve_type_of( Path ) ->
+
+	case file:read_file_info( Path ) of
 
 		{ ok, #file_info{ type=FileType } } ->
 			FileType;
@@ -1028,16 +1261,7 @@ get_group_of( Path ) ->
 %
 -spec is_file( any_path() ) -> boolean().
 is_file( Path ) ->
-
-	case get_type_of( Path ) of
-
-		regular ->
-			true ;
-
-		_ ->
-			false
-
-	end.
+	get_type_of( Path ) =:= regular.
 
 
 
@@ -1047,16 +1271,7 @@ is_file( Path ) ->
 %
 -spec is_existing_file( any_path() ) -> boolean().
 is_existing_file( Path ) ->
-
-	case exists( Path ) andalso get_type_of( Path ) of
-
-		regular ->
-			true ;
-
-		_ ->
-			false
-
-	end.
+	exists( Path ) andalso get_type_of( Path ) =:= regular.
 
 
 
@@ -1066,16 +1281,7 @@ is_existing_file( Path ) ->
 %
 -spec is_existing_link( any_path() ) -> boolean().
 is_existing_link( Path ) ->
-
-	case exists( Path ) andalso get_type_of( Path ) of
-
-		symlink ->
-			true ;
-
-		_ ->
-			false
-
-	end.
+	exists( Path ) andalso get_type_of( Path ) =:= symlink.
 
 
 
@@ -1314,16 +1520,7 @@ is_user_executable( Path ) ->
 %
 -spec is_directory( any_path() ) -> boolean().
 is_directory( Path ) ->
-
-	case get_type_of( Path ) of
-
-		directory ->
-			true ;
-
-		_ ->
-			false
-
-	end.
+	get_type_of( Path ) =:= directory.
 
 
 
@@ -1333,16 +1530,7 @@ is_directory( Path ) ->
 %
 -spec is_existing_directory( any_path() ) -> boolean().
 is_existing_directory( Path ) ->
-
-	case exists( Path ) andalso get_type_of( Path ) of
-
-		directory ->
-			true ;
-
-		_ ->
-			false
-
-	end.
+	exists( Path ) andalso get_type_of( Path ) =:= directory.
 
 
 
@@ -1546,6 +1734,32 @@ create_empty_file( FilePath ) ->
 
 		{ ErrorCode, Output } ->
 			throw( { empty_file_creation_failed, Output, ErrorCode, FilePath } )
+
+	end.
+
+
+
+% @doc Creates on the filesystem a file whose path is guaranteed not to clash
+% with any other.
+%
+% Typically useful to create a temporary file.
+%
+% An empty file is created for that name, whose path is returned.
+%
+% May for example return "/tmp/tmp.QgHRjzI2TZ".
+%
+-spec create_non_clashing_file() -> file_path().
+create_non_clashing_file() ->
+	% Typically in /bin/mktemp:
+	MkTempExecPath = executable_utils:find_executable( "mktemp" ),
+
+	case system_utils:run_executable( MkTempExecPath ) of
+
+		{ _ReturnCode=0, CmdOutput } ->
+			CmdOutput;
+
+		{ ErrorCode, Output } ->
+			throw( { non_clashing_file_creation_failed, Output, ErrorCode } )
 
 	end.
 
@@ -2698,8 +2912,7 @@ list_directories_in_subdirs( _Dirs=[ H | T ], RootDir, CurrentRelativeDir,
 							 Acc ) ->
 	list_directories_in_subdirs( T, RootDir, CurrentRelativeDir,
 		find_directories_from( RootDir, any_join( CurrentRelativeDir, H ),
-							   _Acc=[] )
-		++ Acc ).
+							   _Acc=[] ) ++ Acc ).
 
 
 
@@ -2752,15 +2965,8 @@ create_dir_elem( _Elems=[ H | T ], Prefix ) ->
 
 	NewPrefix = join( Prefix, H ),
 
-	case exists( NewPrefix ) of
+	exists( NewPrefix ) orelse create_directory( NewPrefix, create_no_parent ),
 
-		true ->
-			ok ;
-
-		false ->
-			create_directory( NewPrefix, create_no_parent )
-
-	end,
 	create_dir_elem( T, NewPrefix ).
 
 
@@ -2784,16 +2990,8 @@ create_directory_if_not_existing( AnyDirPath ) ->
 -spec create_directory_if_not_existing( any_directory_path(),
 										parent_creation() ) -> void().
 create_directory_if_not_existing( AnyDirPath, ParentCreation ) ->
-
-	case is_existing_directory( AnyDirPath ) of
-
-		true ->
-			ok;
-
-		false ->
-			create_directory( AnyDirPath, ParentCreation )
-
-	end.
+	is_existing_directory( AnyDirPath ) orelse
+		create_directory( AnyDirPath, ParentCreation ).
 
 
 
@@ -2822,9 +3020,11 @@ create_temporary_directory() ->
 
 
 
-% @doc Removes (deletes) specified file, specified as any kind of string.
+% @doc Removes (deletes) the specified file (regular, or symbolic link),
+% specified as any kind of string.
 %
-% Throws an exception if any problem occurs.
+% Throws an exception if any problem occurs (e.g. the file does not exist, or
+% could not be removed for any reason).
 %
 -spec remove_file( any_file_path() ) -> void().
 remove_file( FilePath ) ->
@@ -2846,6 +3046,9 @@ remove_file( FilePath ) ->
 
 % @doc Removes (deletes) specified files, specified as a list of any kind of
 % strings.
+%
+% Throws an exception if any problem occurs (e.g. a file does not exist, or
+% could not be removed for any reason).
 %
 -spec remove_files( [ any_file_path() ] ) -> void().
 remove_files( FilePaths ) ->
@@ -2990,58 +3193,23 @@ remove_empty_tree( DirectoryPath ) ->
 	%						 [ DirectoryPath ] ),
 
 	% For clarity:
-	case is_existing_directory( DirectoryPath ) of
-
-		true ->
-			ok;
-
-		false ->
-			throw( { directory_not_found, DirectoryPath } )
-
-	end,
+	is_existing_directory( DirectoryPath ) orelse
+		throw( { directory_not_found, DirectoryPath } ),
 
 	{ RegularFiles, Symlinks, Directories, OtherFiles, Devices } =
 		list_dir_elements( DirectoryPath, _ImproperEncodingAction=include ),
 
-	case RegularFiles of
+	RegularFiles =:= [] orelse
+		throw( { regular_files_found, RegularFiles, DirectoryPath } ),
 
-		[] ->
-			ok;
+	Symlinks =:= [] orelse
+		throw( { symbolic_links_found, Symlinks, DirectoryPath } ),
 
-		_ ->
-			throw( { regular_files_found, RegularFiles, DirectoryPath } )
+	OtherFiles =:= [] orelse
+		throw( { other_files_found, OtherFiles, DirectoryPath } ),
 
-	end,
-
-	case Symlinks of
-
-		[] ->
-			ok;
-
-		_ ->
-			throw( { symbolic_links_found, Symlinks, DirectoryPath } )
-
-	end,
-
-	case OtherFiles of
-
-		[] ->
-			ok;
-
-		_ ->
-			throw( { other_files_found, OtherFiles, DirectoryPath } )
-
-	end,
-
-	case Devices of
-
-		[] ->
-			ok;
-
-		_ ->
-			throw( { devices_found, Devices, DirectoryPath } )
-
-	end,
+	Devices =:= [] orelse
+		throw( { devices_found, Devices, DirectoryPath } ),
 
 	[ remove_empty_tree( any_join( DirectoryPath, D ) ) || D <- Directories ],
 
@@ -3071,25 +3239,17 @@ remove_directory( DirectoryName ) ->
 	{ RegularFiles, Symlinks, Directories, OtherFiles, Devices } =
 		list_dir_elements( DirectoryName, _ImproperEncodingAction=include ),
 
-	case Devices of
-
-		[] ->
-			ok;
-
-		_ ->
+	Devices =:= [] orelse
+		begin
 			trace_utils:error_fmt( "Interrupting removal of directory '~ts', "
 				"as device entries have been found: ~p.", [ Devices ] ),
 
 			throw( { device_entries_found, Devices } )
 
-	end,
+		end,
 
-	case OtherFiles of
-
-		[] ->
-			ok;
-
-		_ ->
+	OtherFiles =:= [] orelse
+		begin
 			trace_utils:error_fmt( "Interrupting removal of directory '~ts', "
 				"as unexpected filesystem entries have been found: ~p.",
 				[ OtherFiles ] ),
@@ -3100,11 +3260,11 @@ remove_directory( DirectoryName ) ->
 
 	% Depth-first of course:
 	[ remove_directory( any_join( DirectoryName, SubDir ) )
-	  || SubDir <- Directories ],
+						|| SubDir <- Directories ],
 
 	% Then removing all local regular files and symlinks:
 	[ remove_file( any_join( DirectoryName, F ) )
-	  || F <- Symlinks ++ RegularFiles ],
+						|| F <- Symlinks ++ RegularFiles ],
 
 	% Finally removing this (now empty) directory as well:
 	remove_empty_directory( DirectoryName ).
@@ -3198,15 +3358,7 @@ try_copy_file( SourceFilePath, DestinationFilePath ) ->
 
 				{ ok, _ByteCount } ->
 					% Now sets the permissions of the copy:
-					case file:change_mode( DestinationFilePath, Mode ) of
-
-						ok ->
-							ok;
-
-						ChgModeError ->
-							ChgModeError
-
-					end;
+					file:change_mode( DestinationFilePath, Mode );
 
 				CopyError ->
 					CopyError
@@ -3249,16 +3401,8 @@ copy_file_in( SourcePath, DestinationDirectory ) ->
 %
 -spec copy_file_if_existing( any_file_path(), any_file_path() ) -> void().
 copy_file_if_existing( SourceFilePath, DestinationFilePath ) ->
-
-	case is_existing_file( SourceFilePath ) of
-
-		true ->
-			copy_file( SourceFilePath, DestinationFilePath );
-
-		false ->
-			ok
-
-	end.
+	is_existing_file( SourceFilePath )
+		andalso copy_file( SourceFilePath, DestinationFilePath ).
 
 
 
@@ -3266,25 +3410,11 @@ copy_file_if_existing( SourceFilePath, DestinationFilePath ) ->
 -spec copy_tree( any_directory_path(), any_directory_path() ) -> void().
 copy_tree( SourceTreePath, TargetDirectory ) ->
 
-	case is_existing_directory_or_link( SourceTreePath ) of
+	is_existing_directory_or_link( SourceTreePath )
+		orelse throw( { non_existing_source_tree, SourceTreePath } ),
 
-		true ->
-			ok;
-
-		false ->
-			throw( { non_existing_source_tree, SourceTreePath } )
-
-	end,
-
-	case is_existing_directory_or_link( TargetDirectory ) of
-
-		true ->
-			ok;
-
-		false ->
-			throw( { non_existing_target_directory, TargetDirectory } )
-
-	end,
+	 is_existing_directory_or_link( TargetDirectory )
+		orelse throw( { non_existing_target_directory, TargetDirectory } ),
 
 	Cmd = text_utils:format( "/bin/cp -r '~ts' '~ts'",
 							 [ SourceTreePath, TargetDirectory ] ),
@@ -3325,7 +3455,7 @@ rename( SourceFilePath, DestinationFilePath ) ->
 move_file( SourceFilePath, DestinationFilePath ) ->
 
 	%trace_utils:warning_fmt( "## Moving file '~ts' to '~ts'.",
-	%						  [ SourceFilePath, DestinationFilePath ] ),
+	%                         [ SourceFilePath, DestinationFilePath ] ),
 
 	%copy_file( SourceFilePath, DestinationFilePath ),
 	%remove_file( SourceFilePath ).
@@ -3338,7 +3468,7 @@ move_file( SourceFilePath, DestinationFilePath ) ->
 
 		{ error, exdev } ->
 			%trace_utils:info_fmt( "Moving across filesystems '~ts' to '~ts'.",
-			%					   [ SourceFilePath, DestinationFilePath ] ),
+			%                      [ SourceFilePath, DestinationFilePath ] ),
 			copy_file( SourceFilePath, DestinationFilePath ),
 			remove_file( SourceFilePath );
 
@@ -3357,7 +3487,7 @@ move_file( SourceFilePath, DestinationFilePath ) ->
 create_link( TargetPath, LinkName ) ->
 
 	%trace_utils:debug_fmt( "Creating a link '~ts' to '~ts', while in '~ts'.",
-	%					   [ LinkName, TargetPath, get_current_directory() ] ),
+	%                       [ LinkName, TargetPath, get_current_directory() ] ),
 
 	case file:make_symlink( TargetPath, LinkName ) of
 
@@ -3372,8 +3502,8 @@ create_link( TargetPath, LinkName ) ->
 
 
 
-% @doc Returns a path deriving from the specified one so that it is unique,
-% meaning that it does not clash with any pre-existing entry.
+% @doc Returns a path deriving from the specified one (and of the same type) so
+% that it is unique, meaning that it does not clash with any pre-existing entry.
 %
 % Note: of course multiple, parallel calls to this function with the same base
 % path will result in potential race conditions and risks of collisions.
@@ -3389,7 +3519,7 @@ get_non_clashing_entry_name_from( Path ) ->
 
 	% More reliable than looping over random names forged from for example:
 	%Uniq = basic_utils:get_process_specific_value()
-	%   + random_utils:get_random_value( _Min=0, _Max=10000 ),
+	%   + random_utils:get_uniform_value( _Min=0, _Max=10000 ),
 	% until no collision occurs.
 
 	%trace_utils:debug_fmt( "Testing whether path '~ts' already exists...",
@@ -3398,8 +3528,9 @@ get_non_clashing_entry_name_from( Path ) ->
 	case exists( Path ) of
 
 		true ->
-			PathToTest = case string:split( Path, _SearchPattern="-",
-											_Where=trailing ) of
+			PathStr = text_utils:ensure_string( Path ),
+			PathToTestStr = case string:split( PathStr, _SearchPattern="-",
+											   _Where=trailing ) of
 
 				[ _Path ] ->
 					text_utils:format( "~ts-1", [ Path ] );
@@ -3415,6 +3546,16 @@ get_non_clashing_entry_name_from( Path ) ->
 							text_utils:format( "~ts-~B", [ BasePath, Count+1 ] )
 
 					end
+
+			end,
+
+			PathToTest = case is_binary( Path ) of
+
+				true ->
+					text_utils:string_to_binary( PathToTestStr );
+
+				false ->
+					PathToTestStr
 
 			end,
 
@@ -3711,7 +3852,7 @@ normalise_path( Path ) when is_list( Path ) ->
 	ResPath = join( filter_elems_plain( ElemList, _Acc=[] ) ),
 
 	%trace_utils:debug_fmt( "Normalising path '~ts' as '~ts'.",
-	%					   [ Path, ResPath ] ),
+	%                       [ Path, ResPath ] ),
 
 	ResPath;
 
@@ -3725,7 +3866,7 @@ normalise_path( BinPath ) when is_binary( BinPath ) ->
 	ResPath = bin_join( filter_elems_bin( ElemList, _Acc=[] ) ),
 
 	%trace_utils:debug_fmt( "Normalising path '~ts' as '~ts'.",
-	%					   [ BinPath, ResPath ] ),
+	%                       [ BinPath, ResPath ] ),
 
 	ResPath.
 
@@ -3738,9 +3879,13 @@ filter_elems_plain( _ElemList=[], Acc ) ->
 filter_elems_plain( _ElemList=[ "." | T ], Acc ) ->
 	filter_elems_plain( T, Acc );
 
-% We can remove one level iff there is at least one:
-filter_elems_plain( _ElemList=[ ".." | T ], _Acc=[ _ | AccT ] ) ->
+% We can remove one level iff there is at least one accumulated *and* this one
+% is not already ".." (otherwise the ".." will cancel out):
+%
+filter_elems_plain( _ElemList=[ ".." | T ], _Acc=[ PrevElem | AccT ] )
+						when PrevElem =/= ".." ->
 	filter_elems_plain( T, AccT );
+
 
 % No level left, so this ".." should not be filtered out:
 %
@@ -3866,7 +4011,7 @@ make_relative_plain( [ E | TPathElems ], [ E | TRefPathElems ] ) ->
 make_relative_plain( PathElems, RefPathElems ) ->
 
 	%trace_utils:debug_fmt( "Paths split at: ~p vs ~p.",
-	%					   [ PathElems, RefPathElems ] ),
+	%						[ PathElems, RefPathElems ] ),
 
 	FromRef = [ ".." || _ <- lists:seq( 1, length( RefPathElems ) ) ],
 
@@ -3916,7 +4061,7 @@ make_relative_binary( PathElems, RefPathElems ) ->
 get_longest_common_path( DirPaths ) ->
 
 	%trace_utils:debug_fmt( "Getting longest common path for:~n~p",
-	%					   [ DirPaths ] ),
+	%                       [ DirPaths ] ),
 
 	DirElems = [ filename:split( D ) || D <- DirPaths ],
 
@@ -3927,7 +4072,7 @@ get_longest_common_path( DirPaths ) ->
 get_longest_common_path_helper( DirElems, AccCommon ) ->
 
 	%trace_utils:debug_fmt( "get_longest_common_path_helper from ~p "
-	%						"(acc being ~p).", [ DirElems, AccCommon ] ),
+	%                       "(acc being ~p).", [ DirElems, AccCommon ] ),
 
 	case get_common_head_of( DirElems ) of
 
@@ -4111,10 +4256,10 @@ update_with_keywords( OriginalFilePath, TargetFilePath, TranslationTable ) ->
 % original file into a target, updated one (supposedly non-already existing; and
 % with the specified encoding), in which all the specified keywords (the keys of
 % the translation table) have been replaced with their associated value
-% (i.e. the value in table corresponding to that key).
+% (that is the value in table corresponding to that key).
 %
-% Ex: file_utils:update_with_keywords( "original.txt", "updated.txt", table:new(
-%  [{"hello", "goodbye" }, {"Blue", "Red"}]).
+% Ex: file_utils:update_with_keywords("original.txt", "updated.txt",
+%   table:new([{"hello", "goodbye"}, {"Blue", "Red"}])).
 %
 -spec update_with_keywords( any_file_path(), any_file_path(),
 		text_utils:translation_table(), system_utils:encoding_options() ) ->
@@ -4122,15 +4267,8 @@ update_with_keywords( OriginalFilePath, TargetFilePath, TranslationTable ) ->
 update_with_keywords( OriginalFilePath, TargetFilePath, TranslationTable,
 					  EncodingOpts ) ->
 
-	case exists( TargetFilePath ) of
-
-		true ->
-			throw( { already_existing, TargetFilePath } );
-
-		false ->
-			ok
-
-	end,
+	exists( TargetFilePath )
+		andalso throw( { already_existing, TargetFilePath } ),
 
 	BinOrigContent = read_whole( OriginalFilePath ),
 
@@ -4138,8 +4276,8 @@ update_with_keywords( OriginalFilePath, TargetFilePath, TranslationTable,
 														 TranslationTable ),
 
 	%trace_utils:debug_fmt( "Original content: ~ts;~n Translation table: ~p;~n"
-	%		" Updated content: ~ts.",
-	%		[ BinOrigContent, TranslationTable, BinUpdatedContent ] ),
+	%   " Updated content: ~ts.",
+	%   [ BinOrigContent, TranslationTable, BinUpdatedContent ] ),
 
 	write_whole( TargetFilePath, BinUpdatedContent, EncodingOpts ).
 
@@ -4228,14 +4366,14 @@ get_image_extensions() ->
 % @doc Returns the image path corresponding to the specified file.
 -spec get_image_file_png( file_name() ) -> path().
 get_image_file_png( Image ) ->
-  filename:join( [ ?ResourceDir, "images", Image ++ ".png"] ).
+	filename:join( [ ?ResourceDir, "images", Image ++ ".png"] ).
 
 
 
 % @doc Returns the image path corresponding to the specified file.
 -spec get_image_file_gif( file_name() ) -> path().
 get_image_file_gif( Image ) ->
-  filename:join( [ ?ResourceDir, "images", Image ++ ".gif"] ).
+	filename:join( [ ?ResourceDir, "images", Image ++ ".gif"] ).
 
 
 
@@ -4314,7 +4452,6 @@ get_extra_data_directories( AppInfoMap=#{ name := BinAppName } ) ->
 
 
 
-
 % @doc Returns the path location intended for the storage of transient log files
 % that the specified application may perform on the local machine.
 %
@@ -4325,6 +4462,7 @@ get_log_directory( AppInfo=#app_info{} ) ->
 
 get_log_directory( AppInfoMap=#{ name := BinAppName } ) ->
 	filename:basedir( _PathType=user_log, BinAppName, _Opts=AppInfoMap ).
+
 
 
 % I/O section.
@@ -4479,7 +4617,7 @@ open( AnyFilePath, Options, _AttemptMode=try_endlessly ) ->
 	case file:open( AnyFilePath, Options ) of
 
 		{ ok, File } ->
-			 File;
+			File;
 
 		{ error, FileError } when FileError == emfile
 				orelse FileError == system_limit ->
@@ -4681,6 +4819,10 @@ write( File, Content ) ->
 % Operates on files opened in raw mode (only way to do so), or not (works for
 % normal mode as well).
 %
+% Note that no control character (even no "~n", for newlines) must exist in the
+% specified string, otherwise they will be written literally. To convert them,
+% use: 'write_ustring( File, Str, _FormatValues=[] )'.
+%
 % Throws an exception on failure.
 %
 -spec write_ustring( file(), ustring() ) -> void().
@@ -4700,8 +4842,8 @@ write_ustring( File, Str ) ->
 		ok ->
 			ok;
 
-		% If Reason is badarg, possibly an encoding issue (ex: having used '~ts'
-		% instead of '~ts'):
+		% If Reason is badarg, possibly an encoding issue (for example if having
+		% used '~s' instead of '~ts'):
 		%
 		{ error, Reason } ->
 			throw( { write_ustring_failed, Reason, Str, File } )
@@ -4714,9 +4856,9 @@ write_ustring( File, Str ) ->
 %
 % Throws an exception on failure.
 %
--spec write_ustring( file(), format_string(), [ term() ] ) -> void().
-write_ustring( File, FormatString, Values ) ->
-	Text = text_utils:format( FormatString, Values ),
+-spec write_ustring( file(), format_string(), format_values() ) -> void().
+write_ustring( File, FormatString, FormatValues ) ->
+	Text = text_utils:format( FormatString, FormatValues ),
 	write_ustring( File, Text ).
 
 
@@ -4810,6 +4952,8 @@ read_lines( File, FilePath, Acc ) ->
 %
 % Note that specifying a binary allows to avoid any potential unwanted encoding.
 %
+% Any already-existing file at that path will be silently overwritten.
+%
 % Throws an exception on failure.
 %
 -spec write_whole( any_file_path(), ustring() | binary() ) -> void().
@@ -4818,15 +4962,17 @@ write_whole( AnyFilePath, Content ) ->
 
 
 
-% @doc Writes the specified content in specified file, whose path is specified
-% as any kind of string, using the specified modes options, and applying before
-% a default encoding if a plain string is specified.
+% @doc Writes the specified content in the file whose path is specified as any
+% kind of string, using the specified modes options, and applying before a
+% default encoding if a plain string is specified.
 %
 % Note that no transparent encoding-to-file is thus expected to be specified
 % through modes, as this function already performs (through
-% text_utils:string_to_binary/1) such encoding on plain strings (this would
-% result in a double encoding); specifying a binary allows to avoid any
+% text_utils:string_to_binary/1) such encoding on plain strings (otherwise this
+% would result in a double encoding); specifying a binary allows to avoid any
 % potential unwanted encoding.
+%
+% Any already-existing file at that path will be silently overwritten.
 %
 % Throws an exception on failure.
 %
@@ -4881,8 +5027,21 @@ write_whole( AnyFilePath, BinaryContent, Modes ) ->
 
 
 
-% @doc Reads specified file supposedly in ETF format (Erlang Term Format): tries
-% to parse a list of terms (one per line, terminating with a dot) from it
+% @doc Writes the specified content in a new file, whose path is chosen not to
+% clash with any other (typically a temporary file), and returns that path.
+%
+% Throws an exception on failure.
+%
+-spec write_whole_in_non_clashing( ustring() | binary() ) -> file_path().
+write_whole_in_non_clashing( Content ) ->
+	FilePath = create_non_clashing_file(),
+	write_whole( FilePath, Content ),
+	FilePath.
+
+
+
+% @doc Reads the specified file, supposedly in ETF format (Erlang Term Format):
+% tries to parse a list of terms (one per line, terminating with a dot) from it
 % (as file:consult/1 does), and returns it. Lines starting with '%' are ignored
 % (just considered as comments).
 %
@@ -5003,27 +5162,11 @@ write_terms( Terms, Header, Footer, AnyFilePath ) ->
 
 	F = open( AnyFilePath, _Opts=[ write, raw, delayed_write ] ),
 
-	case Header of
-
-		undefined ->
-			ok;
-
-		_ ->
-			write_ustring( F, "% ~ts~n~n~n", [ Header ] )
-
-	end,
+	Header =:= undefined orelse write_ustring( F, "% ~ts~n~n~n", [ Header ] ),
 
 	write_direct_terms( F, Terms ),
 
-	case Footer of
-
-		undefined ->
-			ok;
-
-		_ ->
-			write_ustring( F, "~n~n% ~ts~n", [ Footer ] )
-
-	end,
+	Footer =:= undefined orelse write_ustring( F, "~n~n% ~ts~n", [ Footer ] ),
 
 	close( F ).
 
@@ -5051,13 +5194,21 @@ write_direct_terms( File, Terms ) ->
 %
 -spec get_extension_for( compression_format() ) -> extension().
 get_extension_for( _CompressionFormat=zip ) ->
-	".zip";
+	"zip";
 
 get_extension_for( _CompressionFormat=bzip2 ) ->
-	".bz2";
+	"bz2";
 
 get_extension_for( _CompressionFormat=xz ) ->
-	".xz".
+	"xz".
+
+
+% @doc Returns the dotted file extension (ex: ".xz", not just "xz")
+% corresponding to filenames compressed with specified format.
+%
+-spec get_dotted_extension_for( compression_format() ) -> dotted_extension().
+get_dotted_extension_for( CompressionFormat ) ->
+	[ $. | get_extension_for( CompressionFormat ) ].
 
 
 
@@ -5099,7 +5250,7 @@ compress( Filename, _CompressionFormat=zip ) ->
 
 	%ZipExec = executable_utils:get_default_zip_compress_tool(),
 
-	ZipFilename = Filename ++ get_extension_for( zip ),
+	ZipFilename = Filename ++ get_dotted_extension_for( zip ),
 
 	% Exactly this one file in the archive:
 	%Command = ZipExec ++ " --quiet " ++ ZipFilename ++ " " ++ Filename,
@@ -5124,7 +5275,7 @@ compress( Filename, _CompressionFormat=bzip2 ) ->
 
 		{ _ExitCode=0, _Output=[] } ->
 			% Check:
-			Bzip2Filename = Filename ++ get_extension_for( bzip2 ),
+			Bzip2Filename = Filename ++ get_dotted_extension_for( bzip2 ),
 			true = is_existing_file( Bzip2Filename ),
 			Bzip2Filename;
 
@@ -5147,7 +5298,7 @@ compress( Filename, _CompressionFormat=xz ) ->
 
 		{ _ExitCode=0, _Output=[] } ->
 			% Check:
-			XZFilename = Filename ++ get_extension_for( xz ),
+			XZFilename = Filename ++ get_dotted_extension_for( xz ),
 			true = is_existing_file( XZFilename ),
 			XZFilename;
 
@@ -5221,7 +5372,7 @@ decompress( ZipFilename, _CompressionFormat=zip ) ->
 	%UnzipExec = executable_utils:get_default_zip_decompress_tool(),
 
 	% Checks and removes extension:
-	%Filename = replace_extension( ZipFilename, get_extension_for( zip ), "" ),
+	%Filename = remove_extension( ZipFilename, get_extension_for( zip ) ),
 
 	% Quiet, overwrite:
 	%Command = UnzipExec ++ " -q -o " ++ ZipFilename,
@@ -5244,8 +5395,7 @@ decompress( Bzip2Filename, _CompressionFormat=bzip2 ) ->
 	Bzip2Exec = executable_utils:get_default_bzip2_decompress_tool(),
 
 	% Checks and removes extension:
-	Filename = replace_extension( Bzip2Filename, get_extension_for( bzip2 ),
-								  "" ),
+	Filename = remove_extension( Bzip2Filename, get_extension_for( bzip2 ) ),
 
 	% The result will be named Filename by bunzip2:
 
@@ -5254,7 +5404,7 @@ decompress( Bzip2Filename, _CompressionFormat=bzip2 ) ->
 
 		{ _ExitCode=0, _Output=[] } ->
 			% Check:
-			Bzip2Filename = Filename ++ get_extension_for( bzip2 ),
+			Bzip2Filename = Filename ++ get_dotted_extension_for( bzip2 ),
 			true = is_existing_file( Filename ),
 			Filename;
 
@@ -5272,7 +5422,7 @@ decompress( XzFilename, _CompressionFormat=xz ) ->
 	XZExec = executable_utils:get_default_xz_decompress_tool(),
 
 	% Checks and removes extension:
-	Filename = replace_extension( XzFilename, get_extension_for( xz ), "" ),
+	Filename = remove_extension( XzFilename, get_extension_for( xz ) ),
 
 	case system_utils:run_command(
 			XZExec ++ " --keep --force --quiet " ++ XzFilename ) of

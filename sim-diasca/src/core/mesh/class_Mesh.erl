@@ -17,6 +17,7 @@
 % If not, see <http://www.gnu.org/licenses/>.
 
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
+% Creation date: 2008.
 
 
 % @doc Mesh class, to manage all kinds of <b>graph-based systems</b> (such as
@@ -25,16 +26,16 @@
 -module(class_Mesh).
 
 
--define( class_description, "Mesh class, to manage kinds of graph-based "
+-define( class_description, "Mesh class, to manage all kinds of graph-based "
 		 "systems (such as networks)." ).
 
 
 
 % A mesh is composed of nodes and links.
 %
-% Each node and each link can have an associated content (an term).
+% Each node and each link can have an associated content (any term).
 %
-% If generateTopologicalView is used, then each node and each link are expected
+% If generateTopologicalView is used, then each node and each link is expected
 % to be the PID of a process that respects the class_Graphable API (see
 % class_Graphable.erl), and each associated content will be a cached value of
 % that rendering information, i.e. a list of options:
@@ -51,8 +52,8 @@
 % associated content will never be updated.
 %
 % The up_to_date mesh attribute corresponds to the fact that the content
-% associated to all nodes and links, cached in the mesh, correspond to the exact
-% content that would be given by these processes themselves.
+% associated to all nodes and links, cached in the mesh, corresponds to the
+% exact content that would be notified by these processes themselves.
 %
 % Note that some operations lead to the mesh being tagged as non up-to-date,
 % thus they might result in having the mesh send update requests to any
@@ -72,10 +73,10 @@
 % The class-specific attributes:
 -define( class_attributes, [
 
-	{ graph_filename, file_utils:filename(),
+	{ graph_filename, file_name(),
 	  "name of the file in which the graph information will be written" },
 
-	{ graph_directory, file_utils:directory_path(),
+	{ graph_directory, directory_path(),
 	  "directory in which graph files will be output" },
 
 	{ graph_directory_created, bool(),
@@ -252,6 +253,8 @@
 % Shorthands:
 
 -type ustring() :: text_utils:ustring().
+
+-type file_name() :: file_utils:file_name().
 -type directory_path() :: file_utils:directory_path().
 
 
@@ -280,8 +283,8 @@
 construct( State, { Name, OutputDirectory }, MeshOptions ) ->
 
 	% First the direct mother classes, then this class-specific actions:
-	TraceState = class_EngineBaseObject:construct( State,
-									?trace_categorize(Name) ),
+	TraceState =
+		class_EngineBaseObject:construct( State, ?trace_categorize(Name) ),
 
 	%trace_utils:debug_fmt( "## Mesh dir: ~ts", [ OutputDirectory ] ),
 
@@ -299,8 +302,8 @@ construct( State, { Name, OutputDirectory }, MeshOptions ) ->
 construct( State, Name, MeshOptions ) ->
 
 	% First the direct mother classes, then this class-specific actions:
-	TraceState = class_EngineBaseObject:construct( State,
-									?trace_categorize(Name) ),
+	TraceState =
+		class_EngineBaseObject:construct( State, ?trace_categorize(Name) ),
 
 	init_common( MeshOptions, setAttributes( TraceState, [
 		{ graph_filename, file_utils:convert_to_filename( Name ) },
@@ -714,8 +717,7 @@ pruneFrom( State, Node ) ->
 	%    [ length( NodesToKeep ), length( NodesToRemove ) ] ),
 
 	% Appropriate links will be removed as well:
-	lists:foreach( fun( N ) -> digraph:del_vertex( Digraph, N ) end,
-				   NodesToRemove ),
+	[ digraph:del_vertex( Digraph, N ) || N <- NodesToRemove ],
 
 	% Not more out-of-date than before because of this operation:
 	wooper:const_return().
@@ -829,7 +831,7 @@ getMeshInformation( State ) ->
 
 % @doc Sets the directory in which this mesh will be rendered.
 -spec setRenderingDirectory( wooper:state(), directory_path() ) ->
-									oneway_return().
+													oneway_return().
 setRenderingDirectory( State, NewOutputDirectory ) ->
 
 	SetState = setAttributes( State, [
@@ -895,18 +897,11 @@ displayRenderingIn( State, TargetDirectoryPath ) ->
 
 	RenderingFilename = file_utils:convert_to_filename( Basename ) ++ ".png",
 
-	case file_utils:is_existing_file( RenderingFilename ) of
+	file_utils:is_existing_file( RenderingFilename )
+		orelse throw( { no_rendering_found, RenderingFilename } ),
 
-		true ->
-			ok;
-
-		false ->
-			throw( { no_rendering_found, RenderingFilename } )
-
-	end,
-
-	CopiedFilename = file_utils:copy_file_in( RenderingFilename,
-											  TargetDirectoryPath ),
+	CopiedFilename =
+		file_utils:copy_file_in( RenderingFilename, TargetDirectoryPath ),
 
 	executable_utils:display_png_file( CopiedFilename ),
 
@@ -974,8 +969,8 @@ add_link( FromNode, ToNode, Link, Content, State ) ->
 
 
 % @doc Generates a topological view for this mesh.
--spec generate_topological_view( boolean(), file_utils:file_name(),
-								 wooper:state() ) -> wooper:state().
+-spec generate_topological_view( boolean(), file_name(), wooper:state() ) ->
+													wooper:state().
 generate_topological_view( DisplayWanted, BaseFileName, State ) ->
 
 	UpdatedState = case ?getAttr(update_status) of
@@ -1083,7 +1078,9 @@ generate_topological_view( DisplayWanted, BaseFileName, State ) ->
 
 
 
-% @doc Writes the graph header for the topology of this mesh in specified file.
+% @doc Writes the graph header for the topology of this mesh in the specified
+% file.
+%
 write_graph_header( DigraphFile, State ) ->
 
 	file_utils:write_ustring( DigraphFile,
@@ -1103,7 +1100,9 @@ write_graph_header( DigraphFile, State ) ->
 
 
 
-% @doc Writes the description of graph nodes of this mesh in specified file.
+% @doc Writes the description of the graph nodes of this mesh in the specified
+% file.
+%
 write_graph_nodes( DigraphFile, State ) ->
 
 	file_utils:write_ustring( DigraphFile, "~n/* Node definitions */~n~n", [] ),
@@ -1122,7 +1121,7 @@ write_graph_nodes( DigraphFile, _NodeList=[ Node | T ], State ) ->
 	case get_content_for_node( ?getAttr(digraph), Node ) of
 
 		undefined ->
-			throw( { content_less_node, Node } );
+			throw( { contentless_node, Node } );
 
 		NodeOptions ->
 
@@ -1337,7 +1336,7 @@ find_link_targeting( TargetNode, _Links=[ L | T ], Digraph ) ->
 
 
 
-% @doc Returns the list of links between the specified list of nodes.
+% @doc Returns the list of links between the specified nodes.
 get_links_from( NodeList, Digraph ) ->
 	get_links_from( NodeList, Digraph, _Acc=[] ).
 
@@ -1369,7 +1368,7 @@ determine_links_from_endpoints( _EndpointList=[ { Source, Target } | H ],
 
 
 
-% @doc Returns the content associated to specified node.
+% @doc Returns the content associated to the specified node.
 get_content_for_node( Digraph, Node ) ->
 
 	case digraph:vertex( Digraph, Node ) of
@@ -1384,7 +1383,7 @@ get_content_for_node( Digraph, Node ) ->
 
 
 
-% @doc Returns the content associated to specified link.
+% @doc Returns the content associated to the specified link.
 get_content_for_link( Digraph, Link ) ->
 
 	 case digraph:edge( Digraph, Link ) of
@@ -1456,7 +1455,7 @@ init_common( Options, State ) ->
 		{ can_be_cyclic, false } ->
 			{ acyclic, "acyclic" };
 
-		% Includes{can_be_cyclic, true} and false (i.e. not found):
+		% Includes {can_be_cyclic, true} and false (i.e. not found):
 		_ ->
 			{ cyclic, "possibly cyclic" }
 
@@ -1506,7 +1505,7 @@ init_common( Options, State ) ->
 
 
 
-% @doc Generates a string, suitable to be used with addRenderingRawElement, to
+% @doc Generates a string, suitable to be used with addRenderingRawElement/2, to
 % represent a text panel whose title and internal content are the specified
 % ones.
 %

@@ -17,6 +17,7 @@
 % If not, see <http://www.gnu.org/licenses/>.
 
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
+% Creation date: 2008.
 
 
 % @doc This child class offers basic services in order to easily <b>obtain
@@ -25,8 +26,9 @@
 % Basic actors may also directly generate their random values (see
 % class_RandomManager.erl for that).
 %
-% Important note: this way of managing random values is deprecated, as a full
-% stochastic support is now available in all instances of class_Actor.
+% Important note: this way of managing random values is deprecated, since a full
+% stochastic support is now available to all instances of class_Actor. As a
+% consequence, this class is itself scheduled for deprecation and removal.
 %
 -module(class_StochasticActor).
 
@@ -51,6 +53,7 @@
 
 % Helper functions:
 -export([ get_random_value_from/2, add_law/3, remove_law/2 ]).
+
 
 
 
@@ -253,9 +256,7 @@ remove_law( LawIdentifier, State ) ->
 	case lists:keymember( Key, Index, CurrentLaws ) of
 
 		true ->
-
 			NewLaws = lists:keydelete( Key, Index, CurrentLaws ),
-
 			setAttribute( State, random_laws, NewLaws );
 
 		false ->
@@ -303,7 +304,7 @@ check_law_definition( { gaussian, Mu, Sigma } )
 	ok;
 
 check_law_definition( { positive_integer_gaussian, Mu, Sigma } )
-  when is_number( Mu ) andalso is_number( Sigma ) andalso Sigma >= 0 ->
+		when is_number( Mu ) andalso is_number( Sigma ) andalso Sigma >= 0 ->
 	ok;
 
 check_law_definition( UnexpectedLaw ) ->

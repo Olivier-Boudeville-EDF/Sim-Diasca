@@ -3,6 +3,7 @@ SIM_DIASCA_TOP = ..
 
 .PHONY: all link-host-candidates
 
+MODULES_DIRS = docker-images
 
 all:
 

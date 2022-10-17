@@ -27,12 +27,13 @@
 
 
 % @doc Gathering of various convenient facilities regarding the support of
-% various <b>locales</b> (ex: for the management of per-country bank holidays).
+% various <b>locales</b> (ex: for the management of per-country bank holidays)
+% and related character sets.
 %
 -module(locale_utils).
 
 
--type country() :: 'france' | 'united_kingdom'.
+-type country() :: 'france' | 'united_kingdom' | atom().
 % Type to designate all known countries.
 
 
@@ -69,9 +70,17 @@
 % A description of a locale (ex: `<<"Afrikaans (South Africa)">>').
 
 
+-type locale_charset() :: ustring().
+% A locale with a character set, like "fr_FR.UTF-8".
+
+
 -export_type([ country/0,
 			   string_locale/0, bin_locale/0, any_locale/0,
-			   locale_description/0, bin_locale_description/0 ]).
+			   locale_description/0, bin_locale_description/0,
+			   locale_charset/0 ]).
+
+
+-export([ get_locale_charset/0 ]).
 
 
 % Shorthands:
@@ -79,3 +88,29 @@
 -type ustring() :: text_utils:ustring().
 -type bin_string() :: text_utils:bin_string().
 -type any_string() :: text_utils:any_string().
+
+
+
+% @doc Returns the current locale with a character set, like "fr_FR.UTF-8".
+-spec get_locale_charset() -> ustring().
+get_locale_charset() ->
+	case system_utils:get_environment_variable( "LC_ALL" ) of
+
+		R when R =:= false orelse R =:="" ->
+			case system_utils:get_environment_variable( "LANG" ) of
+
+				R when R =:= false orelse R =:="" ->
+					BaseLocale = "en_US.UTF-8",
+					trace_utils:warning_fmt( "Unable to determine the current "
+						"locale, assuming '~ts'.", [ BaseLocale ] ),
+					BaseLocale;
+
+				R ->
+					R
+
+			end;
+
+		R ->
+			R
+
+	end.

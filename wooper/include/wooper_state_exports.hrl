@@ -23,6 +23,7 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2007.
 
 
 % Modular WOOPER header gathering the primitives (exports) to manage the state
@@ -31,7 +32,7 @@
 
 -export([ setAttribute/3, setAttributes/2,
 		  swapInAttribute/3,
-		  getAttribute/2, getAttributes/2,
+		  getAttribute/2, getAttributes/2, getMaybeAttribute/2,
 		  is_wooper_debug/0,
 		  hasAttribute/2,
 		  removeAttribute/2,
@@ -103,7 +104,7 @@
 
 
 
-% Returns the value associated to specified named-designated attribute, if
+% Returns the value associated to the specified named-designated attribute, if
 % found, otherwise triggers a case clause error.
 %
 % Ex: MyCount = ?getAttr(count)
@@ -122,8 +123,29 @@
 %
 % Definitively not a legacy macro.
 %
+% Pseudo spec: getAttr(attribute_name()) -> attribute_value().
+%
 -define( getAttr(AttributeName),
 	getAttribute( State, (AttributeName) )
+).
+
+
+% Returns the value associated to the specified name-designated attribute, if
+% any, otherwise returned 'undefined'.
+%
+% Note that the value associated to this attribute must never be possibly equal
+% to the 'undefined' atom, as otherwise the result of that macro cannot tell
+% whether the attribute is associated to the 'undefined' value or not defined at
+% all. For example, instead of a maybe-type, use then a safe_maybe-type.
+%
+% Ex: MyMaybeCount = ?getAttrMaybe(count)
+%
+% Definitively not a legacy macro.
+%
+% Pseudo spec: getMaybeAttr(attribute_name()) -> maybe(attribute_value()).
+%
+-define( getMaybeAttr(AttributeName),
+	getMaybeAttribute( State, (AttributeName) )
 ).
 
 

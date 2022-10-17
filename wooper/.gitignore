@@ -1,5 +1,6 @@
 # Listing path patterns that shall be ignored by git:
 *.beam
+include/*.hrl
 *.traces
 *.log
 *.plt
@@ -10,6 +11,7 @@ erl_crash.dump
 overview.edoc
 doc/index.html
 doc/api-doc/
+doc/mathjax
 
 # For Emacs temporary files:
 *.#*
@@ -27,3 +29,5 @@ src/wooper.app.src
 
 # Generated:
 conf/rebar.config
+doc/Ceylan-WOOPER-Layer-technical-manual-english.html
+doc/Ceylan-WOOPER-Layer-technical-manual-english.rst

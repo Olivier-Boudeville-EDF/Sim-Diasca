@@ -355,8 +355,8 @@ sort_out_functions( _FunEntries=[ { FunId, FunInfo=#function_info{
 			OnewayInfo =
 				function_to_oneway_info( ExportedFunInfo, FinalQualifiers ),
 
-			NewOnewayTable = table:add_new_entry( FunId, OnewayInfo,
-												  OnewayTable ),
+			NewOnewayTable =
+				table:add_new_entry( FunId, OnewayInfo, OnewayTable ),
 
 			sort_out_functions( T, FunctionTable, RequestTable, NewOnewayTable,
 				StaticTable, Classname, ExportLoc, WOOPERExportSet );
@@ -424,7 +424,7 @@ raise_no_implementation_error( Classname, FName, FArity, MaybeFileLoc,
 
 		Arities ->
 			ArStrs = [ text_utils:integer_to_string( A )
-					   || A <- lists:sort( Arities ) ],
+						|| A <- lists:sort( Arities ) ],
 			text_utils:format( ". Maybe this spec should correspond to the "
 				"function ~ts for one of its implemented arities, "
 				"which are ~ts? ",
@@ -475,11 +475,11 @@ take_spec_into_account( _LocSpec=undefined, FunId, _FunNature=throw,
 	end,
 
 	wooper_internals:raise_usage_error(
-	  "all clauses of ~ts/~B throw an exception; as a result, this "
-	  "function can be of any nature. Please define a type specification for "
-	  "that function in order to remove this ambiguity "
-	  "(ex: use request_return/1 to mark it as a request).",
-	  pair:to_list( FunId ), Classname, FileLoc );
+		"all clauses of ~ts/~B throw an exception; as a result, this "
+		"function can be of any nature. Please define a type specification for "
+		"that function in order to remove this ambiguity "
+		"(ex: use request_return/1 to mark it as a request).",
+		pair:to_list( FunId ), Classname, FileLoc );
 
 
 % Special case for a function nature detected as 'throw': any information
@@ -509,10 +509,10 @@ take_spec_into_account( _LocSpec={ _ASTLoc,
 	end,
 
 	wooper_internals:raise_usage_error(
-	  "all clauses of the function ~ts/~B throw an exception; as a result, "
-	  "this function can be of any nature. Its type specification shall "
-	  "however comprise a single clause to remove this ambiguity.",
-	  pair:to_list( FunId ), Classname, FileLoc );
+		"all clauses of the function ~ts/~B throw an exception; as a result, "
+		"this function can be of any nature. Its type specification shall "
+		"however comprise a single clause to remove this ambiguity.",
+		pair:to_list( FunId ), Classname, FileLoc );
 
 
 % No spec defined, non-throw, so input elements are accepted as such:
@@ -526,7 +526,7 @@ take_spec_into_account( _LocSpec={ _ASTLoc,
 					   { attribute, _, spec, { FunId, ClauseSpecs } } },
 			_FunId, FunNature, Qualifiers, Classname, _FunInfo ) ->
 	[ check_clause_spec( C, FunNature, Qualifiers, FunId, Classname )
-	  || C <- ClauseSpecs ],
+		|| C <- ClauseSpecs ],
 	% If check not failed, approved, so:
 	{ FunNature, Qualifiers }.
 
@@ -547,9 +547,9 @@ get_info_from_clause_spec( _ClauseSpec={ type, _, 'fun',
 			_ResultType={ user_type, FileLoc, request_return, RTypes } ] },
 						   FunId, Classname ) ->
 	wooper_internals:raise_usage_error(
-	  "wrong arity of the specified WOOPER return type for the spec of ~ts/~B: "
-	  "it should be request_return/1 (not request_return/~B).",
-	  pair:to_list( FunId ) ++ [ length( RTypes ) ], Classname, FileLoc );
+		"wrong arity of the specified WOOPER return type for the spec of "
+		"~ts/~B: it should be request_return/1 (not request_return/~B).",
+		pair:to_list( FunId ) ++ [ length( RTypes ) ], Classname, FileLoc );
 
 
 get_info_from_clause_spec( _ClauseSpec={ type, _, 'fun',
@@ -564,9 +564,10 @@ get_info_from_clause_spec( _ClauseSpec={ type, _, 'fun',
 		_ResultType={ user_type, FileLoc, const_request_return, RTypes } ] },
 						   FunId, Classname ) ->
 	wooper_internals:raise_usage_error(
-	  "wrong arity of the specified WOOPER return type for the spec of ~ts/~B: "
-	  "it should be const_request_return/1 (not const_request_return/~B).",
-	  pair:to_list( FunId ) ++ [ length( RTypes ) ], Classname, FileLoc );
+		"wrong arity of the specified WOOPER return type for the spec of "
+		"~ts/~B: it should be const_request_return/1 "
+		"(not const_request_return/~B).",
+		pair:to_list( FunId ) ++ [ length( RTypes ) ], Classname, FileLoc );
 
 
 get_info_from_clause_spec( _ClauseSpec={ type, _, 'fun',
@@ -581,9 +582,9 @@ get_info_from_clause_spec( _ClauseSpec={ type, _, 'fun',
 			_ResultType={ user_type, FileLoc, oneway_return, RTypes } ] },
 						   FunId, Classname ) ->
 	wooper_internals:raise_usage_error(
-	  "wrong arity of the specified WOOPER return type for the spec of ~ts/~B: "
-	  "it should be oneway_return/0 (not oneway_return/~B).",
-	  pair:to_list( FunId ) ++ [ length( RTypes ) ], Classname, FileLoc );
+		"wrong arity of the specified WOOPER return type for the spec of "
+		"~ts/~B: it should be oneway_return/0 (not oneway_return/~B).",
+		pair:to_list( FunId ) ++ [ length( RTypes ) ], Classname, FileLoc );
 
 
 get_info_from_clause_spec( _ClauseSpec={ type, _, 'fun',
@@ -598,9 +599,10 @@ get_info_from_clause_spec( _ClauseSpec={ type, _, 'fun',
 			_ResultType={ user_type, FileLoc, const_oneway_return, RTypes } ] },
 						   FunId, Classname ) ->
 	wooper_internals:raise_usage_error(
-	  "wrong arity of the specified WOOPER return type for the spec of ~ts/~B: "
-	  "it should be const_oneway_return/0 (not const_oneway_return/~B).",
-	  pair:to_list( FunId ) ++ [ length( RTypes ) ], Classname, FileLoc );
+		"wrong arity of the specified WOOPER return type for the spec of "
+		"~ts/~B: it should be const_oneway_return/0 (not "
+		"const_oneway_return/~B).",
+		pair:to_list( FunId ) ++ [ length( RTypes ) ], Classname, FileLoc );
 
 
 get_info_from_clause_spec( _ClauseSpec={ type, _, 'fun',
@@ -617,12 +619,18 @@ get_info_from_clause_spec( _ClauseSpec={ type, _, 'fun',
 
 get_info_from_clause_spec( _ClauseSpec={ type, _, 'fun',
 	_Seqs=[ _TypeProductForArgs,
+			_ResultType={ user_type, _, static_no_return, [] } ] },
+						   _FunId, _Classname ) ->
+	{ static, [] };
+
+get_info_from_clause_spec( _ClauseSpec={ type, _, 'fun',
+	_Seqs=[ _TypeProductForArgs,
 			_ResultType={ user_type, FileLoc, static_return, RTypes } ] },
 						   FunId, Classname ) ->
 	wooper_internals:raise_usage_error(
-	  "wrong arity of the specified WOOPER return type for the spec of ~ts/~B: "
-	  "it should be static_return/1 (not static_return/~B).",
-	  pair:to_list( FunId ) ++ [ length( RTypes ) ], Classname, FileLoc );
+		"wrong arity of the specified WOOPER return type for the spec of "
+		"~ts/~B: it should be static_return/1 (not static_return/~B).",
+		pair:to_list( FunId ) ++ [ length( RTypes ) ], Classname, FileLoc );
 
 % For the rest, we assume it designates plain function:
 %
@@ -643,8 +651,8 @@ get_info_from_clause_spec( _ClauseSpec, _FunId, _Classname ) ->
 
 % Spec implies non-const request:
 check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
-	 _ResultType={ user_type, FileLoc, request_return, [ _RType ] } ] },
-	 _FunNature=request, Qualifiers, FunId, Classname ) ->
+		_ResultType={ user_type, FileLoc, request_return, [ _RType ] } ] },
+		_FunNature=request, Qualifiers, FunId, Classname ) ->
 
 	case lists:member( const, Qualifiers ) of
 
@@ -662,8 +670,9 @@ check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
 
 % Spec implies const request:
 check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
-	 _ResultType={ user_type, FileLoc, const_request_return, [ _RType ] } ] },
-	 _FunNature=request, Qualifiers, FunId, Classname ) ->
+		_ResultType={ user_type, FileLoc, const_request_return,
+					  [ _RType ] } ] },
+		_FunNature=request, Qualifiers, FunId, Classname ) ->
 	case lists:member( const, Qualifiers ) of
 
 		true ->
@@ -680,8 +689,8 @@ check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
 
 % Spec implies (non-const) request whereas is not:
 check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
-	 _ResultType={ user_type, FileLoc, request_return, [ _RType ] } ] },
-	 NonReqFunNature, _Qualifiers, FunId, Classname ) ->
+		_ResultType={ user_type, FileLoc, request_return, [ _RType ] } ] },
+		NonReqFunNature, _Qualifiers, FunId, Classname ) ->
 	wooper_internals:raise_usage_error( "~ts/~B has been detected as a ~ts, "
 		"not as a (non-const) request, however its spec uses request_return/1.",
 		pair:to_list( FunId )
@@ -691,8 +700,9 @@ check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
 
 % Spec implies (const) request whereas is not:
 check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
-	 _ResultType={ user_type, FileLoc, const_request_return, [ _RType ] } ] },
-	 NonReqFunNature, _Qualifiers, FunId, Classname ) ->
+		_ResultType={ user_type, FileLoc, const_request_return,
+					  [ _RType ] } ] },
+		NonReqFunNature, _Qualifiers, FunId, Classname ) ->
 	wooper_internals:raise_usage_error( "~ts/~B has been detected as a ~ts, "
 		"not as a (const) request, however its spec uses "
 		"const_request_return/1.",
@@ -703,8 +713,8 @@ check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
 
 % Wrong arity for request_return/1:
 check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
-	 _ResultType={ user_type, FileLoc, request_return, Types } ] },
-	 _AnyFunNature, _Qualifiers, FunId, Classname ) ->
+		_ResultType={ user_type, FileLoc, request_return, Types } ] },
+		_AnyFunNature, _Qualifiers, FunId, Classname ) ->
 	wooper_internals:raise_usage_error( "~ts/~B uses request_return/~B, "
 		"which does not exist; its correct arity is 1.",
 		pair:to_list( FunId ) ++ [ length( Types ) ], Classname, FileLoc );
@@ -712,8 +722,8 @@ check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
 
 % Wrong arity for const_request_return/1:
 check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
-	 _ResultType={ user_type, FileLoc, const_request_return, Types } ] },
-	 _AnyFunNature, _Qualifiers, FunId, Classname ) ->
+		_ResultType={ user_type, FileLoc, const_request_return, Types } ] },
+		_AnyFunNature, _Qualifiers, FunId, Classname ) ->
 	wooper_internals:raise_usage_error( "~ts/~B uses const_request_return/~B, "
 		"which does not exist; its correct arity is 1.",
 		pair:to_list( FunId ) ++ [ length( Types ) ], Classname, FileLoc );
@@ -743,8 +753,8 @@ check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
 
 % Spec implies non-const oneway:
 check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
-	 _ResultType={ user_type, FileLoc, oneway_return, [] } ] },
-	 _FunNature=oneway, Qualifiers, FunId, Classname ) ->
+		_ResultType={ user_type, FileLoc, oneway_return, [] } ] },
+		_FunNature=oneway, Qualifiers, FunId, Classname ) ->
 	case lists:member( const, Qualifiers ) of
 
 		true ->
@@ -761,26 +771,19 @@ check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
 
 % Spec implies const oneway:
 check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
-	 _ResultType={ user_type, FileLoc, const_oneway_return, [] } ] },
-	 _FunNature=oneway, Qualifiers, FunId, Classname ) ->
-	case lists:member( const, Qualifiers ) of
-
-		true ->
-			ok;
-
-		false ->
-			wooper_internals:raise_usage_error( "the ~ts/~B oneway has been "
-				"detected as non-const, however its spec uses "
-				"const_oneway_return/0 instead of oneway_return/0.",
-				pair:to_list( FunId ), Classname, FileLoc )
-
-	end;
+		_ResultType={ user_type, FileLoc, const_oneway_return, [] } ] },
+		_FunNature=oneway, Qualifiers, FunId, Classname ) ->
+	lists:member( const, Qualifiers ) orelse
+		wooper_internals:raise_usage_error( "the ~ts/~B oneway has been "
+			"detected as non-const, however its spec uses "
+			"const_oneway_return/0 instead of oneway_return/0.",
+			pair:to_list( FunId ), Classname, FileLoc );
 
 
 % Spec implies (non-const) oneway whereas is not:
 check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
-	 _ResultType={ user_type, FileLoc, oneway_return, [] } ] },
-	 NonOnwFunNature, _Qualifiers, FunId, Classname ) ->
+		_ResultType={ user_type, FileLoc, oneway_return, [] } ] },
+		NonOnwFunNature, _Qualifiers, FunId, Classname ) ->
 	wooper_internals:raise_usage_error( "~ts/~B has been detected as a ~ts, "
 		"not as a (non-const) oneway, however its spec uses oneway_return/0.",
 		pair:to_list( FunId )
@@ -790,8 +793,8 @@ check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
 
 % Spec implies (const) oneway whereas is not:
 check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
-	 _ResultType={ user_type, FileLoc, const_oneway_return, [] } ] },
-	 NonOnwFunNature, _Qualifiers, FunId, Classname ) ->
+		_ResultType={ user_type, FileLoc, const_oneway_return, [] } ] },
+		NonOnwFunNature, _Qualifiers, FunId, Classname ) ->
 	wooper_internals:raise_usage_error( "~ts/~B has been detected as a ~ts, "
 		"not as a (const) oneway, however its spec uses const_oneway_return/0.",
 		pair:to_list( FunId )
@@ -801,8 +804,8 @@ check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
 
 % Wrong arity for oneway_return/0:
 check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
-	 _ResultType={ user_type, FileLoc, oneway_return, Types } ] },
-	 _AnyFunNature, _Qualifiers, FunId, Classname ) ->
+		_ResultType={ user_type, FileLoc, oneway_return, Types } ] },
+		_AnyFunNature, _Qualifiers, FunId, Classname ) ->
 	wooper_internals:raise_usage_error( "~ts/~B uses oneway_return/~B, "
 		"which does not exist; its correct arity is 0.",
 		pair:to_list( FunId ) ++ [ length( Types ) ], Classname, FileLoc );
@@ -819,8 +822,8 @@ check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
 
 % *_result used instead of *_return:
 check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
-	 _ResultType={ user_type, FileLoc, const_oneway_result, _Types } ] },
-	 _AnyFunNature, _Qualifiers, FunId, Classname ) ->
+		_ResultType={ user_type, FileLoc, const_oneway_result, _Types } ] },
+		_AnyFunNature, _Qualifiers, FunId, Classname ) ->
 	wooper_internals:raise_usage_error( "~ts/~B uses the (unknown) "
 		"'const_oneway_result' type: probably that "
 		"const_oneway_return/0 was meant instead.",
@@ -828,8 +831,8 @@ check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
 
 
 check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
-	 _ResultType={ user_type, FileLoc, oneway_result, _Types } ] },
-	 _AnyFunNature, _Qualifiers, FunId, Classname ) ->
+		_ResultType={ user_type, FileLoc, oneway_result, _Types } ] },
+		_AnyFunNature, _Qualifiers, FunId, Classname ) ->
 	wooper_internals:raise_usage_error( "~ts/~B uses the (unknown) "
 		"'oneway_result' type: probably that "
 		"oneway_return/0 was meant instead.",
@@ -842,8 +845,8 @@ check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
 
 % Spec implies static method:
 check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
-	 _ResultType={ user_type, _, static_return, [ _RType ] } ] },
-	 _FunNature=static, _Qualifiers, _FunId, _Classname ) ->
+		_ResultType={ user_type, _, static_return, [ _RType ] } ] },
+		_FunNature=static, _Qualifiers, _FunId, _Classname ) ->
 	ok;
 
 
@@ -851,15 +854,23 @@ check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
 % indeed:
 %
 check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
-	 _ResultType={ user_type, _, static_void_return, _Types=[] } ] },
-	 _FunNature=static, _Qualifiers, _FunId, _Classname ) ->
+		_ResultType={ user_type, _, static_void_return, _Types=[] } ] },
+		_FunNature=static, _Qualifiers, _FunId, _Classname ) ->
+	ok;
+
+% No return; correct arity for static_no_return/0, and it is a static method
+% indeed:
+%
+check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
+		_ResultType={ user_type, _, static_no_return, _Types=[] } ] },
+		_FunNature=static, _Qualifiers, _FunId, _Classname ) ->
 	ok;
 
 
 % Spec implies static method whereas is not:
 check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
-	 _ResultType={ user_type, FileLoc, static_return, [ _RType ] } ] },
-	 NonStatFunNature, _Qualifiers, FunId, Classname ) ->
+		_ResultType={ user_type, FileLoc, static_return, [ _RType ] } ] },
+		NonStatFunNature, _Qualifiers, FunId, Classname ) ->
 	wooper_internals:raise_usage_error( "~ts/~B has been detected as a ~ts, "
 		"not as a static method, however its spec uses static_return/1.",
 		pair:to_list( FunId )
@@ -869,8 +880,8 @@ check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
 
 % Wrong arity for static_return/1:
 check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
-	 _ResultType={ user_type, FileLoc, static_return, Types } ] },
-	 _AnyFunNature, _Qualifiers, FunId, Classname ) ->
+		_ResultType={ user_type, FileLoc, static_return, Types } ] },
+		_AnyFunNature, _Qualifiers, FunId, Classname ) ->
 	wooper_internals:raise_usage_error( "~ts/~B uses static_return/~B, "
 		"which does not exist; its correct arity is 1.",
 		[ length( Types ) | pair:to_list( FunId ) ], Classname, FileLoc );
@@ -880,8 +891,8 @@ check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
 % here:
 %
 check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
-	 _ResultType={ user_type, FileLoc, static_void_return, _Types=[] } ] },
-	 FunNature, _Qualifiers, FunId, Classname ) ->
+		_ResultType={ user_type, FileLoc, static_void_return, _Types=[] } ] },
+		FunNature, _Qualifiers, FunId, Classname ) ->
 	wooper_internals:raise_usage_error( "~ts/~B uses static_void_return/0, "
 		"whereas it is not detected as a static method (detected as ~ts). "
 		"Maybe a call to the wooper:return_static_void() method terminator "
@@ -889,19 +900,41 @@ check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
 		pair:to_list( FunId ) ++ [ FunNature ], Classname, FileLoc );
 
 
+% Correct arity for static_no_return/0 - however it is not a static method
+% here:
+%
+check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
+		_ResultType={ user_type, FileLoc, static_no_return, _Types=[] } ] },
+		FunNature, _Qualifiers, FunId, Classname ) ->
+	wooper_internals:raise_usage_error( "~ts/~B uses static_no_return/0, "
+		"whereas it is not detected as a static method (detected as ~ts). "
+		"Maybe a call to the wooper:no_return_static() method terminator "
+		"is lacking?",
+		pair:to_list( FunId ) ++ [ FunNature ], Classname, FileLoc );
+
+
 % Wrong arity for static_void_return:
 check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
-	 _ResultType={ user_type, FileLoc, static_void_return, Types } ] },
-	 _AnyFunNature, _Qualifiers, FunId, Classname ) ->
+		_ResultType={ user_type, FileLoc, static_void_return, Types } ] },
+		_AnyFunNature, _Qualifiers, FunId, Classname ) ->
 	wooper_internals:raise_usage_error( "~ts/~B uses static_void_return/~B, "
+		"which does not exist; its correct arity is 0.",
+		pair:to_list( FunId ) ++ [ length( Types ) ], Classname, FileLoc );
+
+
+% Wrong arity for static_no_return:
+check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
+		_ResultType={ user_type, FileLoc, static_no_return, Types } ] },
+		_AnyFunNature, _Qualifiers, FunId, Classname ) ->
+	wooper_internals:raise_usage_error( "~ts/~B uses static_no_return/~B, "
 		"which does not exist; its correct arity is 0.",
 		pair:to_list( FunId ) ++ [ length( Types ) ], Classname, FileLoc );
 
 
 % *_result used instead of *_return:
 check_clause_spec( { type, _, 'fun', _Seqs=[ _TypeProductForArgs,
-	 _ResultType={ user_type, FileLoc, static_result, _Types } ] },
-	 _AnyFunNature, _Qualifiers, FunId, Classname ) ->
+		_ResultType={ user_type, FileLoc, static_result, _Types } ] },
+		_AnyFunNature, _Qualifiers, FunId, Classname ) ->
 	wooper_internals:raise_usage_error( "~ts/~B uses the (unknown) "
 		"'static_result' type: probably that "
 		"static_return/1 was meant instead.",
@@ -936,7 +969,7 @@ check_clause_spec( { type, _FileLoc, 'fun',
 %
 check_clause_spec( { type, FileLoc, 'fun',
 		_Seqs=[ _TypeProductForArgs,
-				 _ResultType={remote_type,_,[ {atom,_,wooper}, _, _ ] } ] },
+				_ResultType={remote_type,_,[ {atom,_,wooper}, _, _ ] } ] },
 				   _FunNature=function, _Qualifiers, FunId, Classname ) ->
 	wooper_internals:raise_usage_error( "the type specification of ~ts/~B "
 		"is not expected to rely on a terminator type prefixed with the wooper "
@@ -1074,19 +1107,30 @@ check_state_argument( Clauses, FunId, Classname ) ->
 
 % (helper)
 check_clause_for_state(
-  _Clause={ clause, _, _Params=[ {var,_,'State'} | _ ], _Guards, _Body },
-  _FunId, _Classname ) ->
+		_Clause={ clause, _, _Params=[ {var,_,'State'} | _ ], _Guards, _Body },
+		_FunId, _Classname ) ->
 	ok;
 
 % Tolerated iff throwing afterwards:
 check_clause_for_state(
-  _Clause={ clause, _, _Params=[ {var,_,'_State'} | _ ], _Guards, _Body },
-  _FunId, _Classname ) ->
+		_Clause={ clause, _, _Params=[ {var,_,'_State'} | _ ], _Guards, _Body },
+		_FunId, _Classname ) ->
+	ok;
+
+% As we want also to support also method heads such as:
+%  'getDescription( State=#state_holder{ actual_class=Classname } ) ->'
+%
+check_clause_for_state(
+		_Clause={ clause, _, _Params=[ {match,_, {var,_,'State'},
+										{record,_,state_holder,_} } | _ ],
+				  _Guards, _Body },
+		_FunId, _Classname ) ->
 	ok;
 
 check_clause_for_state(
-  _Clause={ clause, _, _Params=[ {var,FileLoc,NonState} | _ ], _Guards, _Body },
-  FunId, Classname ) ->
+		_Clause={ clause, _, _Params=[ {var,FileLoc,NonState} | _ ], _Guards,
+				  _Body },
+		FunId, Classname ) ->
 	wooper_internals:raise_usage_error( "the first parameter of this clause of "
 		"method ~ts/~B shall be named 'State', not '~ts'.",
 		pair:to_list( FunId ) ++ [ NonState ], Classname, FileLoc );
@@ -1096,6 +1140,7 @@ check_clause_for_state(
 % would then report "variable 'State' is unbound", which is less clear than:
 %
 check_clause_for_state( _Clause, FunId, Classname ) ->
+	%trace_utils:debug_fmt( "Clause: ~p.", [ Clause ] ),
 	wooper_internals:raise_usage_error( "the first parameter of this clause of "
 		"method ~ts/~B shall be named 'State'.", pair:to_list( FunId ),
 		Classname ).
@@ -1122,9 +1167,8 @@ manage_method_terminators( _Clauses=[], FunId, Classname, _WOOPERExportSet ) ->
 	% No easy way to search for other arities or to determine the line of the
 	% corresponding export attribute:
 	%
-	wooper_internals:raise_usage_error(
-	  "the function ~ts/~B is exported yet not defined.", pair:to_list( FunId ),
-	  Classname );
+	wooper_internals:raise_usage_error( "the function ~ts/~B is exported "
+		"yet not defined.", pair:to_list( FunId ), Classname );
 
 manage_method_terminators( Clauses, FunId, Classname, WOOPERExportSet ) ->
 
@@ -1133,10 +1177,11 @@ manage_method_terminators( Clauses, FunId, Classname, WOOPERExportSet ) ->
 	TransformTable = get_wooper_transform_table(),
 
 	Transforms = #ast_transforms{
-	  transformed_module_name=Classname,
-	  transform_table=TransformTable,
-	  transformed_function_identifier=FunId,
-	  transformation_state=get_blank_transformation_state( WOOPERExportSet ) },
+		transformed_module_name=Classname,
+		transform_table=TransformTable,
+		transformed_function_identifier=FunId,
+		transformation_state=
+						get_blank_transformation_state( WOOPERExportSet ) },
 
 	%?debug_fmt( "transforming now ~p.", [ FunId ] ),
 
@@ -1145,11 +1190,11 @@ manage_method_terminators( Clauses, FunId, Classname, WOOPERExportSet ) ->
 
 	% Unless found different, a function is a (plain) function:
 	{ FunNature, Qualifiers } =
-			  case NewTransforms#ast_transforms.transformation_state of
+			case NewTransforms#ast_transforms.transformation_state of
 
 		{ undefined, _, _WOOPERExportSet } ->
 			%?debug_fmt( "~ts/~B detected as a plain function.",
-			%			 pair:to_list( FunId ) ),
+			%            pair:to_list( FunId ) ),
 
 			{ function, _Qualifiers=[] };
 
@@ -1231,25 +1276,25 @@ get_wooper_transform_table() ->
 	%
 	table:new( [
 
-			{ 'clause', fun clause_transformer/2 },
+		{ 'clause', fun clause_transformer/2 },
 
-			% Finally the traversal is not driven by the overall Myriad logic:
-			% we drive it explicitly here, so the standard body_transformer/2 is
-			% expected never to be triggered: instead we explicitly trigger,
-			% from the WOOPER transformers, our body_transformer/3 variation; we
-			% nevertheless define the standard version to detect if ever it was
-			% called, and in this case report a blocking error:
-			%
-			{ 'body', fun body_transformer/2 },
+		% Finally the traversal is not driven by the overall Myriad logic: we
+		% drive it explicitly here, so the standard body_transformer/2 is
+		% expected never to be triggered: instead we explicitly trigger, from
+		% the WOOPER transformers, our body_transformer/3 variation; we
+		% nevertheless define the standard version to detect if ever it was
+		% called, and in this case report a blocking error:
+		%
+		{ 'body', fun body_transformer/2 },
 
-			% Expression-level triggers:
-			{ 'call', fun call_transformer/4 },
-			{ 'if', fun if_transformer/3 },
-			{ 'case', fun case_transformer/4 },
-			{ 'simple_receive', fun simple_receive_transformer/3 },
-			{ 'receive_with_after', fun receive_with_after_transformer/5 },
-			{ 'try', fun try_transformer/6 },
-			{ 'catch', fun catch_transformer/3 } ] ).
+		% Expression-level triggers:
+		{ 'call', fun call_transformer/4 },
+		{ 'if', fun if_transformer/3 },
+		{ 'case', fun case_transformer/4 },
+		{ 'simple_receive', fun simple_receive_transformer/3 },
+		{ 'receive_with_after', fun receive_with_after_transformer/5 },
+		{ 'try', fun try_transformer/6 },
+		{ 'catch', fun catch_transformer/3 } ] ).
 
 
 
@@ -1272,7 +1317,7 @@ clause_transformer(
   %Transforms=#ast_transforms{
 		%transformed_function_identifier=FunId,
 		%transformation_state={ InitialNature, InitialQualifiers,
-		%					   WOOPERExportSet } } ) ->
+		%                       WOOPERExportSet } } ) ->
 
 	?debug_fmt( "Transforming for WOOPER clause ~p", [ Clause ] ),
 
@@ -1504,7 +1549,7 @@ call_transformer( FileLocCall, _FunctionRef={ remote, _, {atom,_,wooper},
 				  Params,
 				  Transforms=#ast_transforms{
 								transformed_function_identifier=FunId } )
-  when length( Params ) =/= 2 ->
+											when length( Params ) =/= 2 ->
 	wooper_internals:raise_usage_error( "wrong arity (~B) specified "
 		"for wooper:return_state_result/2, for request ~ts/~B.",
 		[ length( Params ) | pair:to_list( FunId ) ], Transforms, FileLocCall );
@@ -1526,14 +1571,14 @@ call_transformer( FileLocCall, _FunctionRef={ remote, _, {atom,_,wooper},
 
 % First (correct, a priori const) request detection:
 call_transformer( FileLocCall,
-	  _FunctionRef={ remote, _, {atom,_,wooper}, {atom,_,const_return_result} },
-	  Params=[ _ResExpr ],
-	  Transforms=#ast_transforms{
+		_FunctionRef={ remote, _, {atom,_,wooper},
+					   {atom,_,const_return_result} },
+		Params=[ _ResExpr ],
+		Transforms=#ast_transforms{
 			transformed_function_identifier=FunId,
 			transformation_state={ undefined, [], WOOPERExportSet } } ) ->
 
-	?debug_fmt( "~ts/~B detected as a const request.",
-				pair:to_list( FunId ) ),
+	?debug_fmt( "~ts/~B detected as a const request.", pair:to_list( FunId ) ),
 
 	% So that wooper:const_return_result( R ) becomes simply { S, R }:
 	NewExpr = { tuple, FileLocCall,
@@ -1563,11 +1608,11 @@ call_transformer( FileLocCall, _FunctionRef={ remote, _, {atom,_,wooper},
 
 % Faulty const_return_result/1 arity:
 call_transformer( FileLocCall, _FunctionRef={ remote, _, {atom,_,wooper},
-										   {atom,_,const_return_result} },
+											  {atom,_,const_return_result} },
 				  Params,
 				  Transforms=#ast_transforms{
 					transformed_function_identifier=FunId } )
-  when length( Params ) =/= 1 ->
+									when length( Params ) =/= 1 ->
 	wooper_internals:raise_usage_error( "wrong arity (~B) specified "
 		"for wooper:const_return_result/1, for request ~ts/~B.",
 		[ length( Params ) | pair:to_list( FunId ) ], Transforms, FileLocCall );
@@ -1625,7 +1670,7 @@ call_transformer( _FileLocCall, _FunctionRef={ remote, _, {atom,_,wooper},
 
 % Already detected as a oneway, checking qualifiers:
 call_transformer( _FileLocCall, _FunctionRef={ remote, _, {atom,_,wooper},
-											{atom,_,return_state} },
+											   {atom,_,return_state} },
 				  _Params=[ StateExpr ],
 				  Transforms=#ast_transforms{
 						transformation_state={ oneway, Qualifiers,
@@ -1649,7 +1694,7 @@ call_transformer( FileLocCall, _FunctionRef={ remote, _, {atom,_,wooper},
 				  Params,
 				  Transforms=#ast_transforms{
 					transformed_function_identifier=FunId } )
-  when length( Params ) =/= 1 ->
+									when length( Params ) =/= 1 ->
 	wooper_internals:raise_usage_error( "wrong arity (~B) specified "
 		"for wooper:return_state/1, for oneway ~ts/~B.",
 		[ length( Params ) | pair:to_list( FunId ) ], Transforms, FileLocCall );
@@ -1684,7 +1729,7 @@ call_transformer( FileLocCall, _FunctionRef={ remote, _, {atom,_,wooper},
 	NewExpr = { var, FileLocCall, 'State' },
 
 	NewTransforms = Transforms#ast_transforms{
-		  transformation_state={ oneway, [ const ], WOOPERExportSet } },
+		transformation_state={ oneway, [ const ], WOOPERExportSet } },
 
 	{ [ NewExpr ], NewTransforms };
 
@@ -1710,7 +1755,7 @@ call_transformer( FileLocCall, _FunctionRef={ remote, _, {atom,_,wooper},
 				  Params,
 				  Transforms=#ast_transforms{
 								transformed_function_identifier=FunId } )
-  when Params =/= [] ->
+											when Params =/= [] ->
 	wooper_internals:raise_usage_error( "wrong arity (~B) specified "
 		"for wooper:const_return/0, for oneway ~ts/~B. Note: if it is actually "
 		"a request, use wooper:const_return_result/1 instead.",
@@ -1736,15 +1781,33 @@ call_transformer( FileLocCall, _FunctionRef={ remote, _, {atom,_,wooper},
 % First (correct) static method detection of void return:
 call_transformer( _FileLocCall, _FunctionRef={ remote, _, {atom,_,wooper},
 												{atom,_,return_static_void} },
-		  _Params=[],
-		  Transforms=#ast_transforms{
-				transformed_function_identifier=FunId,
-				transformation_state={ undefined, _, WOOPERExportSet } } ) ->
+				  _Params=[],
+				  Transforms=#ast_transforms{
+			transformed_function_identifier=FunId,
+			transformation_state={ undefined, _, WOOPERExportSet } } ) ->
 
 	?debug_fmt( "~ts/~B detected as a static method (void return).",
 				pair:to_list( FunId ) ),
 
-	% So that wooper:return_static( void ) becomes a no-op:
+	% So that wooper:return_static_void() becomes a no-op:
+	NewTransforms = Transforms#ast_transforms{
+					transformation_state={ static, [], WOOPERExportSet } },
+
+	{ [], NewTransforms };
+
+
+% First (correct) static method detection of no return:
+call_transformer( _FileLocCall, _FunctionRef={ remote, _, {atom,_,wooper},
+												{atom,_,no_return_static} },
+				  _Params=[],
+				  Transforms=#ast_transforms{
+			transformed_function_identifier=FunId,
+			transformation_state={ undefined, _, WOOPERExportSet } } ) ->
+
+	?debug_fmt( "~ts/~B detected as a static method (no return).",
+				pair:to_list( FunId ) ),
+
+	% So that wooper:no_return_static() becomes a no-op:
 	NewTransforms = Transforms#ast_transforms{
 					transformation_state={ static, [], WOOPERExportSet } },
 
@@ -1752,11 +1815,11 @@ call_transformer( _FileLocCall, _FunctionRef={ remote, _, {atom,_,wooper},
 
 
 call_transformer( _FileLocCall,
-		  _FunctionRef={ remote, _, {atom,_,wooper}, {atom,_,return_static} },
-		  _Params=[ ResultExpr ],
-		  Transforms=#ast_transforms{
-				transformed_function_identifier=FunId,
-				transformation_state={ undefined, _, WOOPERExportSet } } ) ->
+		_FunctionRef={ remote, _, {atom,_,wooper}, {atom,_,return_static} },
+		_Params=[ ResultExpr ],
+		Transforms=#ast_transforms{
+			transformed_function_identifier=FunId,
+			transformation_state={ undefined, _, WOOPERExportSet } } ) ->
 
 	?debug_fmt( "~ts/~B detected as a static method.", pair:to_list( FunId ) ),
 
@@ -1774,9 +1837,9 @@ call_transformer( _FileLocCall,
 % (mostly the same clause as above, as qualifiers do not matter for static):
 %
 call_transformer( _FileLocCall,
-		  _FunctionRef={ remote, _, {atom,_,wooper}, {atom,_,return_static} },
-		  _Params=[ ResultExpr ],
-		  Transforms=#ast_transforms{
+		_FunctionRef={ remote, _, {atom,_,wooper}, {atom,_,return_static} },
+		_Params=[ ResultExpr ],
+		Transforms=#ast_transforms{
 				transformed_function_identifier=FunId,
 				transformation_state={ static, _Qualifiers,
 									   _WOOPERExportSet } } ) ->
@@ -1791,10 +1854,10 @@ call_transformer( _FileLocCall,
 
 % Faulty static arity:
 call_transformer( FileLocCall,
-		  _FunctionRef={ remote, _, {atom,_,wooper}, {atom,_,return_static} },
-		  Params,
-		  Transforms=#ast_transforms{ transformed_function_identifier=FunId } )
-  when length( Params ) =/= 1 ->
+		_FunctionRef={ remote, _, {atom,_,wooper}, {atom,_,return_static} },
+		Params,
+		Transforms=#ast_transforms{ transformed_function_identifier=FunId } )
+											when length( Params ) =/= 1 ->
 	wooper_internals:raise_usage_error( "wrong arity (~B) specified "
 		"for wooper:return_static/1, for static method ~ts/~B.",
 		[ length( Params ) | pair:to_list( FunId ) ], Transforms, FileLocCall );
@@ -1821,9 +1884,9 @@ call_transformer( FileLocCall,
 
 % First (correct) throwing helper detection:
 call_transformer( _FileLocCall,
-		  _FunctionRef={ remote, _, {atom,_,wooper}, {atom,_,throwing} },
-		  _Params=[ ResultExpr ],
-		  Transforms=#ast_transforms{
+		_FunctionRef={ remote, _, {atom,_,wooper}, {atom,_,throwing} },
+		_Params=[ ResultExpr ],
+		Transforms=#ast_transforms{
 				transformed_function_identifier=FunId,
 				transformation_state={ undefined, _, WOOPERExportSet } } ) ->
 
@@ -1846,9 +1909,9 @@ call_transformer( _FileLocCall,
 % (mostly the same clause as above, as qualifiers do not matter for throwing):
 %
 call_transformer( _FileLocCall,
-		  _FunctionRef={ remote, _, {atom,_,wooper}, {atom,_,throwing} },
-		  _Params=[ ResultExpr ],
-		  Transforms=#ast_transforms{
+		_FunctionRef={ remote, _, {atom,_,wooper}, {atom,_,throwing} },
+		_Params=[ ResultExpr ],
+		Transforms=#ast_transforms{
 			transformed_function_identifier=FunId,
 			transformation_state={ throw, _Qualifiers, _WOOPERExportSet } } ) ->
 
@@ -1862,10 +1925,10 @@ call_transformer( _FileLocCall,
 
 % Faulty throwing arity:
 call_transformer( FileLocCall,
-		  _FunctionRef={ remote, _, {atom,_,wooper}, {atom,_,throwing} },
-		  Params,
-		  Transforms=#ast_transforms{ transformed_function_identifier=FunId } )
-  when length( Params ) =/= 1 ->
+		_FunctionRef={ remote, _, {atom,_,wooper}, {atom,_,throwing} },
+		Params,
+		Transforms=#ast_transforms{ transformed_function_identifier=FunId } )
+										when length( Params ) =/= 1 ->
 	wooper_internals:raise_usage_error( "wrong arity (~B) specified "
 		"for wooper:throwing/1, for method ~ts/~B.",
 		[ length( Params ) | pair:to_list( FunId ) ], Transforms, FileLocCall );
@@ -1873,9 +1936,9 @@ call_transformer( FileLocCall,
 
 % Nature mismatch:
 call_transformer( FileLocCall,
-		  _FunctionRef={ remote, _, {atom,_,wooper}, {atom,_,throwing} },
-		  _Params,
-		  Transforms=#ast_transforms{
+		_FunctionRef={ remote, _, {atom,_,wooper}, {atom,_,throwing} },
+		_Params,
+		Transforms=#ast_transforms{
 			transformed_function_identifier=FunId,
 			transformation_state={ OtherNature, _Qualifiers,
 								   _WOOPERExporSet } } ) ->
@@ -1939,12 +2002,12 @@ call_transformer( FileLocCall, FunctionRef={ remote, _, {atom,_,wooper},
 		false ->
 
 			%?debug_fmt( "Known functions exported by the wooper "
-			%					   "module: ~ts",
-			%					   [ set_utils:to_string( WOOPERExportSet ) ] ),
+			%   "module: ~ts",
+			%   [ set_utils:to_string( WOOPERExportSet ) ] ),
 
 			%?debug_fmt( "Known functions exported by the wooper "
-			%					   "module:~n  ~ts",
-			%					   [ table:to_string( WOOPERExportSet ) ] ),
+			%   "module:~n  ~ts",
+			%   [ table:to_string( WOOPERExportSet ) ] ),
 
 			% To convert end of lines:
 			ExtraHint = text_utils:format( case Nature of
@@ -1968,16 +2031,17 @@ call_transformer( FileLocCall, FunctionRef={ remote, _, {atom,_,wooper},
 					"  - for requests: return_state_result/2 and "
 					"const_return_result/1~n"
 					"  - for oneways: return_state/1 and const_return/0~n"
-					"  - for static methods: return_static/1~n"
+					"  - for static methods: return_static/1, "
+					"return_static_void/0 and no_return_static/0~n"
 
 			end, [] ),
 
 			wooper_internals:raise_usage_error( "invalid method terminator "
-			  "specified for ~ts/~B: wooper:~ts/~B is neither a known "
-			  "terminator nor a WOOPER-exported function.~ts",
-			  pair:to_list( FunId ) ++ pair:to_list( CallFunId )
-									++ [ ExtraHint ],
-			  Transforms, FileLocCall )
+				"specified for ~ts/~B: wooper:~ts/~B is neither a known "
+				"terminator nor a WOOPER-exported function.~ts",
+				pair:to_list( FunId ) ++ pair:to_list( CallFunId )
+									  ++ [ ExtraHint ],
+				Transforms, FileLocCall )
 
 	end;
 
@@ -1995,13 +2059,13 @@ call_transformer( FileLocCall, FunctionRef, Params,
  %when Nature =:= undefined orelse Nature =:= function ->
 
 	?debug_fmt( "Deducing that ~ts/~B is a plain function "
-				"(nature: ~p, qualifiers: ~p)",
-				pair:to_list( FunId ) ++ [ Nature, Qualifiers ] ),
+		"(nature: ~p, qualifiers: ~p)",
+		pair:to_list( FunId ) ++ [ Nature, Qualifiers ] ),
 
 	SameExpr = { call, FileLocCall, FunctionRef, Params },
 
 	%?debug_fmt( "Letting call remaining as ~p, while nature is ~p",
-	%			[ SameExpr, Nature ] ),
+	%            [ SameExpr, Nature ] ),
 
 	{ [ SameExpr ], Transforms }.
 
@@ -2010,8 +2074,8 @@ call_transformer( FileLocCall, FunctionRef, Params,
 % call_transformer( _FileLocCall, FunctionRef, _Params, Transforms ) ->
 %
 %	trace_utils:error_fmt( "Unexpected transforms for call ~p:~n  ~ts",
-%				   [ FunctionRef,
-%					 ast_transform:ast_transforms_to_string( Transforms ) ] ),
+%		[ FunctionRef,
+%		  ast_transform:ast_transforms_to_string( Transforms ) ] ),
 %
 %	throw( { unexpected_transforms, Transforms } ).
 
@@ -2153,7 +2217,7 @@ try_transformer( FileLoc, TryBody, TryClauses=[], CatchClauses, AfterBody=[],
 
 	% After body not transformed, as actually never returned:
 	%{ NewAfterBody, AfterTransforms } =
-	%	body_transformer( AfterBody, CatchTransforms, FileLoc ),
+	%   body_transformer( AfterBody, CatchTransforms, FileLoc ),
 
 	NewExpr = { 'try', FileLoc, NewTryBody, TryClauses, NewCatchClauses,
 				AfterBody },
@@ -2205,7 +2269,7 @@ catch_transformer( FileLoc, Expression, Transforms ) ?rec_guard ->
 		ast_expression:transform_expression( Expression, ResetTransforms ),
 
 	UpdatedTransforms =
-			update_transformation_state( Transforms, NewTransforms, FileLoc ),
+		update_transformation_state( Transforms, NewTransforms, FileLoc ),
 
 	NewExpr = { 'catch', FileLoc, NewExpression },
 
@@ -2284,9 +2348,9 @@ case_clause_transformer( _Clause={ 'clause', FileLoc, CaseHead=[ _Pattern ],
 % (corresponds to ast_clause:transform_catch_clause/2)
 %
 catch_clause_transformer(
-  _Clause={ 'clause', FileLoc, Throw=[ { throw, _Pattern, _Any } ],
-			GuardSequence, BodyExprs },
-  Transforms ) ?rec_guard ->
+			_Clause={ 'clause', FileLoc, Throw=[ { throw, _Pattern, _Any } ],
+					  GuardSequence, BodyExprs },
+			Transforms ) ?rec_guard ->
 
 	%ast_utils:display_debug( "Intercepting catch clause ~p...", [ Clause ] ),
 
@@ -2308,12 +2372,12 @@ catch_clause_transformer(
 
 
 catch_clause_transformer(
-  _Clause={ 'clause', FileLoc, Head=[ _HeadPattern={ _X, _P, _Any } ],
-			GuardSequence, BodyExprs },
-  Transforms ) ?rec_guard ->
+			_Clause={ 'clause', FileLoc, Head=[ _HeadPattern={ _X, _P, _Any } ],
+					  GuardSequence, BodyExprs },
+			Transforms ) ?rec_guard ->
 
 	%ast_utils:display_debug( "Intercepting catch clause with variable ~p...",
-	%						 [ Clause ] ),
+	%                         [ Clause ] ),
 
 	% We believe that only the body is to be traversed here:
 
@@ -2441,9 +2505,9 @@ update_transformation_state(
 
 				_ ->
 					wooper_internals:raise_usage_error(
-					  "the ~ts/~B function was "
-					  "detected as a ~ts, yet the clause at ~ts indicates "
-					  "it is a ~ts.", pair:to_list( FunId ) ++ [
+						"the ~ts/~B function was "
+						"detected as a ~ts, yet the clause at ~ts indicates "
+						"it is a ~ts.", pair:to_list( FunId ) ++ [
 							function_nature_to_string( InitialNature ),
 							ast_utils:file_loc_to_line_string( FileLoc ),
 							function_nature_to_string( NewActualNature ) ],
@@ -2454,8 +2518,8 @@ update_transformation_state(
 	end,
 
 	%debug_fmt( "Nature of ~ts/~B: initial=~p, new raw=~p, "
-	%	"new actual=~p, final=~p.", pair:to_list( FunId ) ++
-	%	[ InitialNature, NewRawNature, NewActualNature, ResultingNature ] ),
+	%   "new actual=~p, final=~p.", pair:to_list( FunId ) ++
+	%   [ InitialNature, NewRawNature, NewActualNature, ResultingNature ] ),
 
 	NewTransforms#ast_transforms{ transformation_state={ ResultingNature,
 								ResultingQualifiers, WOOPERExportSet } }.
@@ -2473,7 +2537,7 @@ update_transformation_state(
 ensure_exported( FunInfo=#function_info{ exported=[] }, MarkerTable ) ->
 
 	%?debug_fmt( "- auto-exporting ~ts",
-	%					 [ ast_info:function_info_to_string( FunInfo ) ] ),
+	%            [ ast_info:function_info_to_string( FunInfo ) ] ),
 
 	% Not exported yet, hence to export:
 	ExportLoc = ast_info:get_default_export_function_location( MarkerTable ),
@@ -2762,7 +2826,7 @@ methods_to_functions( RequestTable, OnewayTable, StaticTable,
 	OnewayPairs = table:enumerate( OnewayTable ),
 
 	OnewayAsFunPairs = [
-		 { OnwId, oneway_to_function_info( OnwInfo, ExportLoc ) }
+		{ OnwId, oneway_to_function_info( OnwInfo, ExportLoc ) }
 						|| { OnwId, OnwInfo } <- OnewayPairs ],
 
 	WithOnewaysFunTable = table:add_new_entries( OnewayAsFunPairs,
@@ -2772,7 +2836,7 @@ methods_to_functions( RequestTable, OnewayTable, StaticTable,
 	StaticPairs = table:enumerate( StaticTable ),
 
 	StaticAsFunPairs = [
-		 { StId, static_to_function_info( StInfo, ExportLoc ) }
+		{ StId, static_to_function_info( StInfo, ExportLoc ) }
 						|| { StId, StInfo } <- StaticPairs ],
 
 	table:add_new_entries( StaticAsFunPairs, WithOnewaysFunTable ).
@@ -2783,8 +2847,8 @@ methods_to_functions( RequestTable, OnewayTable, StaticTable,
 format_log( FormatString, [ { Exprs, #ast_transforms{
 		transformation_state={Nature,_Qualifiers,_WOOPERExportSet} } } ] ) ->
 
-	Message = text_utils:format( "whose nature is '~ts'; "
-				"expressions are:~n  ~p", [ Nature, Exprs ] ),
+	Message = text_utils:format(
+		"whose nature is '~ts'; expressions are:~n  ~p", [ Nature, Exprs ] ),
 
 	text_utils:format( FormatString, [ Message ] );
 

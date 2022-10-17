@@ -123,6 +123,11 @@ run() ->
 							 [ text_utils:pids_to_short_string( PidList ) ] ),
 
 
+	Version = { 1, 2, 3, 4 },
+	VersionStr = "1.2.3.4",
+
+	VersionStr = text_utils:version_to_string( Version ),
+
 	%MyTestRecord = #my_test_record{},
 
 	%test_facilities:display( "Converting a record instance to a string: "

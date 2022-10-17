@@ -57,7 +57,7 @@
 % Describes the face of a mesh, based on a list of vertices (for example 3 of
 % them, to define a triangle).
 %
-% Note usually the vertex order matters (regarding culling).
+% Note that usually the vertex order matters (regarding culling).
 
 
 -type indexed_triangle() ::

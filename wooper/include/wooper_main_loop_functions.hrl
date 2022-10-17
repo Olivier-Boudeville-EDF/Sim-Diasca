@@ -23,6 +23,7 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2007.
 
 
 % Modular WOOPER header gathering the main loop of instances
@@ -38,20 +39,33 @@
 
 
 
-% No closure nor export needed for wooper_main_loop/1, as the various spawns are
-% done based on the wooper_construct_and_run* functions, which are not exported,
-% and are executed thanks to a closure.
+% In theory, no closure nor export needed for wooper_main_loop/1, as the various
+% spawns are done based on the wooper_construct_and_run* functions, which are
+% not exported, and are executed thanks to a closure.
+%
+% Yet the export of the main loop is needed so that it can be hot-updated and
+% branched to (thanks to a module-qualified code).
 %
 % Note that, in the definition of this closure, self() should not be used,
 % otherwise this will correspond to the PID of the spawned process, and not to
 % the one of the creating one (hence CreatorPid = self() which is defined
 % outside of these closures).
 
+% As code defined in this main loop will be duplicated in all class modules, it
+% is preferable to offset most code in separate modules, so that the
+% corresponding bytecode sits at most once in cache (knowing that some features
+% like serialisation or hot-update may not be used in all cases, so their
+% modules may not have to be loaded).
+
 
 
 % @doc Waits for the incoming method calls, and serves them.
 -spec wooper_main_loop( wooper:state() ) -> 'deleted'. % no_return().
 wooper_main_loop( State ) ->
+
+	% For all instances (Upgradable or not):
+	%trace_utils:debug_fmt( "~w in main loop in ~p with state:~n ~p",
+	%   [ self(), class_Upgradable:get_maybe_version( State ), State ] ),
 
 	%?wooper_log( "wooper_main_loop start.~n" ),
 
@@ -67,7 +81,7 @@ wooper_main_loop( State ) ->
 		% interleaving requests).
 
 		{ MethodAtom, ArgumentList, CallerPid }
-				when is_pid( CallerPid ) and is_list( ArgumentList ) ->
+				when is_pid( CallerPid ) andalso is_list( ArgumentList ) ->
 
 			?wooper_log_format( "Main loop (case A) for ~w: "
 				"request '~ts' with argument list ~w for ~w.~n",
@@ -182,8 +196,8 @@ wooper_main_loop( State ) ->
 		MethodAtom when is_atom( MethodAtom ) ->
 
 			?wooper_log_format(
-			   "Main loop (case F) for ~w: oneway from atom ~ts.~n",
-			   [ self(), MethodAtom ] ),
+				"Main loop (case F) for ~w: oneway from atom ~ts.~n",
+				[ self(), MethodAtom ] ),
 
 			% Any result should be ignored, only the updated state is kept:
 			NewState = wooper_handle_remote_oneway_execution( MethodAtom, State,
@@ -204,9 +218,10 @@ wooper_main_loop( State ) ->
 								[ self(), { PidOrPort, ExitType } ] ),
 
 			case ?wooper_table_type:lookup_entry(
-				  { _Name=onWOOPERExitReceived, _Arity=3 },
-				  %persistent_term:get( State#state_holder.virtual_table_key ) )
-				  State#state_holder.virtual_table ) of
+					{ _Name=onWOOPERExitReceived, _Arity=3 },
+					%persistent_term:get(
+					%    State#state_holder.virtual_table_key ) )
+					State#state_holder.virtual_table ) of
 
 				{ value, _Key } ->
 
@@ -241,9 +256,10 @@ wooper_main_loop( State ) ->
 				{ MonitorRef, MonitoredType, MonitoredElement, ExitReason } ] ),
 
 			case ?wooper_table_type:lookup_entry(
-				  { _Name=onWOOPERDownNotified, _Arity=5 },
-				  %persistent_term:get( State#state_holder.virtual_table_key ) )
-				  State#state_holder.virtual_table ) of
+					{ _Name=onWOOPERDownNotified, _Arity=5 },
+					%persistent_term:get(
+					%   State#state_holder.virtual_table_key ) )
+					State#state_holder.virtual_table ) of
 
 				{ value, _Key } ->
 
@@ -280,9 +296,10 @@ wooper_main_loop( State ) ->
 				"for '~ts' with ~p.~n", [ self(), Node, MonitorNodeInfo ] ),
 
 			case ?wooper_table_type:lookup_entry(
-				  { _Name=onWOOPERNodeConnection, _Arity=3 },
-				  %persistent_term:get( State#state_holder.virtual_table_key ) )
-				  State#state_holder.virtual_table ) of
+					{ _Name=onWOOPERNodeConnection, _Arity=3 },
+					%persistent_term:get(
+					%   State#state_holder.virtual_table_key ) )
+					State#state_holder.virtual_table ) of
 
 				{ value, _Key } ->
 
@@ -318,9 +335,10 @@ wooper_main_loop( State ) ->
 				"for '~ts' with ~p.~n", [ self(), Node, MonitorNodeInfo ] ),
 
 			case ?wooper_table_type:lookup_entry(
-				  { _Name=onWOOPERNodeDisconnection, _Arity=3 },
-				  %persistent_term:get( State#state_holder.virtual_table_key ) )
-				  State#state_holder.virtual_table ) of
+					{ _Name=onWOOPERNodeDisconnection, _Arity=3 },
+					%persistent_term:get(
+					%   State#state_holder.virtual_table_key ) )
+					State#state_holder.virtual_table ) of
 
 				{ value, _Key } ->
 
@@ -348,6 +366,36 @@ wooper_main_loop( State ) ->
 					wooper_main_loop( NewState )
 
 			end;
+
+
+
+		% We intentionally deviate here from the standard form for requests, as
+		% a version change must be treated specifically (differently from other
+		% calls): it should not loop module-locally, but based on an explicit
+		% module call so that the latest loaded version of the corresponding
+		% module is used from then on.
+		%
+		% A standard call could have been supported instead of this one based on
+		% an intentional quadruplet, but this would have induced the overhead of
+		% a systematic (top-level) extra pattern-match to all incoming calls,
+		% which is not felt desirable.
+		%
+		% Should the version change of a class require specific instance-side
+		% update operations (this is the general case), the safest way
+		% (implemented here) to proceed is first to "suspend" all existing
+		% instances of that class (so that they stop listening to and processing
+		% normal calls), then to update (globally) the corresponding, single
+		% class module, then to tell each instance to update itself accordingly
+		% and individually, and finally let it live its life afterwards.
+		%
+		{ freezeUntilVersionChange, TargetVersion, MaybeExtraData,
+		  CallerPid } ->
+
+			% Concentrated in a separate, dedicated module; never returning, as
+			% switching to the main loop of the target module:
+			%
+			class_Upgradable:manage_version_change( TargetVersion,
+				MaybeExtraData, CallerPid, State );
 
 
 		Other ->

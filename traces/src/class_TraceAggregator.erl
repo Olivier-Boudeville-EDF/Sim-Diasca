@@ -1563,9 +1563,6 @@ enable_watchdog( RegName, LookupScope, Period, State ) ->
 							   wooper:state() ) -> wooper:state().
 send_internal_immediate( TraceSeverity, Message, State ) ->
 
-	TimestampText = text_utils:string_to_binary(
-						time_utils:get_textual_timestamp() ),
-
 	MessageCategorization = text_utils:string_to_binary( "Trace Management" ),
 
 	SelfSentState = executeOneway( State, send, [
@@ -1574,7 +1571,7 @@ send_internal_immediate( TraceSeverity, Message, State ) ->
 		_TraceEmitterCategorization=text_utils:string_to_binary(
 										?trace_emitter_categorization ),
 		_AppTimestamp=none,
-		_Time=TimestampText,
+		_Time=time_utils:get_bin_textual_timestamp(),
 		_Location=net_utils:localnode_as_binary(),
 		MessageCategorization,
 		_Priority=trace_utils:get_priority_for( TraceSeverity ),
@@ -1615,9 +1612,6 @@ send_internal_immediate( TraceSeverity, MessageFormat, MessageValues, State ) ->
 -spec send_internal_deferred( trace_severity(), message() ) -> void().
 send_internal_deferred( TraceSeverity, Message ) ->
 
-	TimestampText = text_utils:string_to_binary(
-						time_utils:get_textual_timestamp() ),
-
 	MessageCategorization = <<"Trace Management">>,
 
 	self() ! { send, [
@@ -1626,7 +1620,7 @@ send_internal_deferred( TraceSeverity, Message ) ->
 		_TraceEmitterCategorization=text_utils:string_to_binary(
 										?trace_emitter_categorization ),
 		_AppTimestamp=none,
-		_Time=TimestampText,
+		_Time=time_utils:get_bin_textual_timestamp(),
 		_Location=net_utils:localnode_as_binary(),
 		MessageCategorization,
 		_Priority=trace_utils:get_priority_for( TraceSeverity ),
@@ -1693,7 +1687,7 @@ manage_trace_header( State ) ->
 									"Emitter Name", ?EmitterNameWidth ),
 
 			AppTimestampLines = text_utils:format_text_for_width(
-						  "Application Timestamp", ?AppTimestampWidth ),
+							"Application Timestamp", ?AppTimestampWidth ),
 
 			TimeLines = text_utils:format_text_for_width( "User Time",
 														  ?TimeWidth ),
@@ -1708,8 +1702,8 @@ manage_trace_header( State ) ->
 				AppTimestampLines, TimeLines, PriorityLines, MessageLines ) ,
 
 			file_utils:write_ustring( ?getAttr(trace_file), TitleText
-									++ get_row_separator() ++ HeaderLine
-									++ get_row_separator( $= ) ),
+				++ get_row_separator() ++ HeaderLine
+				++ get_row_separator( $= ) ),
 
 			State
 

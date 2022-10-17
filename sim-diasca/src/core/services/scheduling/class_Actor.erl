@@ -17,6 +17,7 @@
 % If not, see <http://www.gnu.org/licenses/>.
 
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
+% Creation date: 2008.
 
 
 % @doc This is the mother class of <b>all (simulation) actors</b>.
@@ -51,6 +52,8 @@
 -type label() :: text_utils:label().
 
 -type timestamp() :: time_utils:timestamp().
+
+-type percent() :: math_utils:percent().
 
 -type any_seconds() :: unit_utils:any_seconds().
 -type milliseconds() :: unit_utils:milliseconds().
@@ -306,7 +309,7 @@
 
 
 -type name() :: class_TraceEmitter:emitter_init().
-% Name of an actor, as supplied by the user:
+% Name of an actor, as supplied by the user.
 %
 % This is either a (plain or binary) string, or a pair made of two (plain or
 % binary) strings, respectively the emitter name and categorization.
@@ -457,11 +460,14 @@
 % About stochastic management.
 
 % The initial implementation for stochastic actors was complex and added some
-% constraints; a fairly complex system where actors could wait for other actors
-% and be waited by others had to be added then.
+% constraints; a fairly convoluted system where actors could wait for other
+% actors and be waited by others had to be added then.
 %
 % The newer implementation for stochastic actors is better in all aspects, and
-% does not need the waiting mechanism any more.
+% does not need the waiting mechanism any more. Its unique known downside,
+% versus the former centralised random service, is that simulations will be
+% totally reproducible iff they are evaluated by the same number of computing
+% nodes; this is acceptable.
 %
 % Therefore the mechanism to manage wait graphs is not used anymore, and
 % class_Actor is sufficient in all cases (no real reason to rely on
@@ -788,8 +794,8 @@ construct( State,
 		   ActorInit ) ->
 
 	% First the direct mother classes:
-	TraceState = class_EngineBaseObject:construct( State,
-										?trace_categorize(ActorInit) ),
+	TraceState =
+		class_EngineBaseObject:construct( State, ?trace_categorize(ActorInit) ),
 
 	ActorName = case ActorInit of
 
@@ -878,8 +884,8 @@ construct( State,
 
 	%?send_debug( StartingState, "Time manager found, subscribing." ),
 
-	TimeAwareState = setAttribute( StartingState, time_manager_pid,
-								   TimeManagerPid ),
+	TimeAwareState =
+		setAttribute( StartingState, time_manager_pid, TimeManagerPid ),
 
 	BinActorName = text_utils:ensure_binary( ActorName ),
 
@@ -904,7 +910,7 @@ construct( State,
 	{ TickDuration, StartInformation } = receive
 
 		{ wooper_result, { time_subscribed, TickDur, StartInfo } } ->
-				{ TickDur, StartInfo };
+			{ TickDur, StartInfo };
 
 		{ wooper_result, already_time_subscribed } ->
 			?send_error( TimeAwareState, "Actor constructor failed: "
@@ -1007,7 +1013,7 @@ destruct( State ) ->
 -spec simulationStarted( wooper:state(), tick(), logical_timestamp() ) ->
 							request_return( { 'actor_started', actor_pid() } ).
 simulationStarted( State, SimulationInitialTick,
-			 _CurrentTimestamp={ CurrentTickOffset, CurrentDiasca } ) ->
+				   _CurrentTimestamp={ CurrentTickOffset, CurrentDiasca } ) ->
 
 	%?info_fmt( "This initial actor is notified of simulation start, "
 	%   "with a simulation initial tick of ~B, "
@@ -1079,13 +1085,13 @@ simulationEnded( State ) ->
 %
 % or even, if wanting this actor to remain passive:
 %
-%-spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
-%							const_actor_oneway_return().
+%-spec onFirstDiasca( wooper:state(), load_balancer_pid() ) ->
+%                                          const_actor_oneway_return().
 %onFirstDiasca( State, _SendingActorPid ) ->
 %   actor:const_return().
 %
--spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
-										actor_oneway_return().
+-spec onFirstDiasca( wooper:state(), load_balancer_pid() ) ->
+											actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 
 	{ _IgnoredState, ActualClassname } = executeRequest( State, getClassname ),
@@ -1206,51 +1212,21 @@ validate_scheduling_outcome( State ) ->
 
 		{ terminating, _Delay, _DiascaMaybe } ->
 
-			case AddedTicks of
+			AddedTicks =:= []
+				orelse throw( { added_ticks_while_terminating, AddedTicks } ),
 
-				[] ->
-					ok;
-
-				_ ->
-					throw( { added_ticks_while_terminating, AddedTicks } )
-
-			end,
-
-			case WithdrawnTicks of
-
-				[] ->
-					ok;
-
-				_ ->
-					% Might be acceptable, though.
-					throw( { withdrawn_ticks_while_terminating,
-							 WithdrawnTicks } )
-
-			end;
+			% Might be acceptable, though:
+			WithdrawnTicks =:= [] orelse
+				throw( { withdrawn_ticks_while_terminating, WithdrawnTicks } );
 
 
 		{ terminated, _DiascaMaybe } ->
 
-			case AddedTicks of
+			AddedTicks =:= []
+				orelse throw( { added_ticks_while_terminated, AddedTicks } ),
 
-				[] ->
-					ok;
-
-				_ ->
-					throw( { added_ticks_while_terminated, AddedTicks } )
-
-			end,
-
-			case WithdrawnTicks of
-
-				[] ->
-					ok;
-
-				_ ->
-					throw( { withdrawn_ticks_while_terminated,
-							 WithdrawnTicks } )
-
-			end
+			WithdrawnTicks =:= [] orelse
+				throw( { withdrawn_ticks_while_terminated, WithdrawnTicks } )
 
 	end.
 
@@ -1267,18 +1243,13 @@ validate_new_ticks( AddedTicks, WithdrawnTicks, CurrentTickOffset ) ->
 			ok;
 
 		_ ->
-			case lists:min( AddedTicks ) > CurrentTickOffset of
-
-				true ->
-					ok;
-
-				false ->
+			lists:min( AddedTicks ) > CurrentTickOffset orelse
+				begin
 					FaultyAddedTicks =
 						[ T || T <- AddedTicks, T =< CurrentTickOffset ],
 					throw( { added_spontaneous_ticks_must_be_in_future,
 							 FaultyAddedTicks, CurrentTickOffset } )
-
-			end
+				end
 
 	end,
 
@@ -1288,18 +1259,13 @@ validate_new_ticks( AddedTicks, WithdrawnTicks, CurrentTickOffset ) ->
 			ok;
 
 		_ ->
-			case lists:min( WithdrawnTicks ) > CurrentTickOffset of
-
-				true ->
-					ok;
-
-				false ->
+			lists:min( WithdrawnTicks ) > CurrentTickOffset  orelse
+				begin
 					FaultyWithdrawnTicks =
 						[ T || T <- WithdrawnTicks, T =< CurrentTickOffset ],
 					throw( { withdrawn_spontaneous_ticks_must_be_in_future,
 							 FaultyWithdrawnTicks, CurrentTickOffset } )
-
-			end
+				end
 
 	end,
 
@@ -1546,8 +1512,8 @@ beginTerminationDiasca( State, TickOffset, NewDiasca ) ->
 			% (not counting terminating tick)
 			LifespanInTicks = TickOffset - ?getAttr(actor_creation_tick_offset),
 
-			LifespanInSeconds = convert_ticks_to_seconds( LifespanInTicks,
-														  State ),
+			LifespanInSeconds =
+				convert_ticks_to_seconds( LifespanInTicks, State ),
 
 			?info_fmt( "Actual termination of actor (AAI: ~B) occurred at "
 				"tick offset #~B diasca ~B, i.e. after an actual lifespan "
@@ -1864,7 +1830,7 @@ addSpontaneousTicks( State, SpontaneousTicksToAdd ) ->
 %
 -spec add_spontaneous_tick( tick_offset(), wooper:state() ) -> wooper:state().
 add_spontaneous_tick( SpontaneousTickToAdd, State )
-  when is_integer( SpontaneousTickToAdd ) ->
+									when is_integer( SpontaneousTickToAdd ) ->
 
 	% Uniquification done later, on sending:
 	appendToAttribute( State, added_spontaneous_ticks, SpontaneousTickToAdd );
@@ -1885,7 +1851,7 @@ add_spontaneous_tick( Other, _State ) ->
 add_spontaneous_ticks( SpontaneousTicksToAdd, State ) ->
 
 	cond_utils:if_defined( simdiasca_check_user_api_calls,
-	  list_utils:check_integers( SpontaneousTicksToAdd ) ),
+		list_utils:check_integers( SpontaneousTicksToAdd ) ),
 
 	PreviousTicks = ?getAttr(added_spontaneous_ticks),
 
@@ -1969,8 +1935,7 @@ withdrawSpontaneousTicks( State, SpontaneousTicksToWithdraw ) ->
 -spec withdraw_spontaneous_tick( tick_offset(), wooper:state() ) ->
 										wooper:state().
 withdraw_spontaneous_tick( SpontaneousTickToWithdraw, State )
-  when is_integer( SpontaneousTickToWithdraw )->
-
+								when is_integer( SpontaneousTickToWithdraw )->
 	appendToAttribute( State, withdrawn_spontaneous_ticks,
 					   SpontaneousTickToWithdraw );
 
@@ -2508,11 +2473,11 @@ notify_diasca_ended( State ) ->
 
 	% Prepare for next diasca, reset relevant attributes:
 	setAttributes( State, [
-				{ previous_schedule, { CurrentTickOffset, CurrentDiasca } },
-				{ added_spontaneous_ticks, [] },
-				{ withdrawn_spontaneous_ticks, [] },
-				{ next_action, NextRecordedAction },
-				{ current_agenda, NewAgenda } ] ).
+		{ previous_schedule, { CurrentTickOffset, CurrentDiasca } },
+		{ added_spontaneous_ticks, [] },
+		{ withdrawn_spontaneous_ticks, [] },
+		{ next_action, NextRecordedAction },
+		{ current_agenda, NewAgenda } ] ).
 
 
 
@@ -2740,7 +2705,8 @@ get_deployed_root_directory( _State ) ->
 
 
 % This section for time conversion is directly inspired from the one offered by
-% the time manager.
+% the time manager; we recommend using these class_Actor versions, at least from
+% within an actor.
 
 
 % @doc Converts the specified duration in virtual seconds (expressed as an
@@ -2761,8 +2727,8 @@ get_deployed_root_directory( _State ) ->
 -spec convert_seconds_to_ticks( any_seconds(), wooper:state() ) ->
 													tick_duration().
 convert_seconds_to_ticks( Seconds, State ) ->
-	% Less than 1.5% of relative error tolerated by default:
-	convert_seconds_to_ticks( Seconds, _DefaultMaxRelativeError=0.015, State ).
+	convert_seconds_to_ticks( Seconds, ?default_max_relative_time_error,
+							  State ).
 
 
 
@@ -2785,8 +2751,8 @@ convert_seconds_to_ticks( Seconds, State ) ->
 -spec convert_seconds_to_ticks_explicit( any_seconds(), virtual_seconds() ) ->
 												tick_duration().
 convert_seconds_to_ticks_explicit( Seconds, TickDuration )  ->
-	convert_seconds_to_ticks_explicit( Seconds, _DefaultMaxRelativeError=0.015,
-									   TickDuration ).
+	convert_seconds_to_ticks_explicit( Seconds,
+		?default_max_relative_time_error, TickDuration ).
 
 
 
@@ -2798,7 +2764,7 @@ convert_seconds_to_ticks_explicit( Seconds, TickDuration )  ->
 %
 % (helper function)
 %
--spec convert_seconds_to_ticks( any_seconds(), math_utils:percent(),
+-spec convert_seconds_to_ticks( any_seconds(), percent(),
 								wooper:state() ) -> tick_duration().
 convert_seconds_to_ticks( Seconds, MaxRelativeError, State ) ->
 	convert_seconds_to_ticks_explicit( Seconds, MaxRelativeError,
@@ -2815,10 +2781,10 @@ convert_seconds_to_ticks( Seconds, MaxRelativeError, State ) ->
 % Helper introduced to be exported, so that it may be used by non-actors as well
 % (ex: WOOPER helper instances).
 %
--spec convert_seconds_to_ticks_explicit( any_seconds(), math_utils:percent(),
+-spec convert_seconds_to_ticks_explicit( any_seconds(), percent(),
 										 virtual_seconds() ) -> tick_duration().
 convert_seconds_to_ticks_explicit( Seconds, MaxRelativeError, TickDuration )
-  when is_float( Seconds ) andalso Seconds >= 0 ->
+						when is_float( Seconds ) andalso Seconds >= 0 ->
 
 	TickCount = erlang:round( Seconds / TickDuration ),
 
@@ -2835,6 +2801,12 @@ convert_seconds_to_ticks_explicit( Seconds, MaxRelativeError, TickDuration )
 
 			ActualError = math_utils:get_relative_difference( Seconds,
 														CorrespondingSeconds ),
+
+			trace_bridge:error_fmt( "Requested to convert ~w seconds in ticks "
+				"(whose duration is ~ts), yet the corresponding relative "
+				"difference (~w) is too large (maximum one being ~w)",
+				[ Seconds, time_utils:duration_to_string( TickDuration ),
+				  ActualError, MaxRelativeError ] ),
 
 			throw( { too_inaccurate_duration_conversion, TickCount,
 						{ Seconds, CorrespondingSeconds }, TickDuration,
@@ -2857,7 +2829,7 @@ convert_seconds_to_ticks_explicit( Seconds, _MaxRelativeError,
 % floating point value) into an integer (strictly positive, rounded) number of
 % simulation ticks, which is at least equal to one tick.
 %
-% Ex: TickCount = convert_seconds_to_non_null_ticks( 0.001, State )
+% Ex: TickCount = convert_seconds_to_non_null_ticks(_Secs=0.001, State)
 %
 % (helper function)
 %
@@ -2886,11 +2858,12 @@ convert_seconds_to_non_null_ticks( Seconds, State ) ->
 % maximum relative error and then ensuring the returned duration is at least
 % equal to one tick.
 %
-% Ex: TickCount = convert_seconds_to_non_null_ticks(0.001, 0.01, State)
+% Ex: TickCount = convert_seconds_to_non_null_ticks(_Secs=0.001,
+%                   _MaxRelativeError=0.01, State)
 %
 % (helper function)
 %
--spec convert_seconds_to_non_null_ticks( any_seconds(), math_utils:percent(),
+-spec convert_seconds_to_non_null_ticks( any_seconds(), percent(),
 										 wooper:state() ) -> tick_offset().
 convert_seconds_to_non_null_ticks( Seconds, MaxRelativeError, State ) ->
 
@@ -3015,7 +2988,9 @@ get_current_logical_timestamp( State ) ->
 get_current_timestamp( State ) ->
 	CurrentTick = get_current_tick( State ),
 	CurrentSecond = convert_ticks_to_seconds( CurrentTick, State ),
-	calendar:gregorian_seconds_to_datetime( round( CurrentSecond ) ).
+	T = calendar:gregorian_seconds_to_datetime( round( CurrentSecond ) ),
+	%trace_utils:debug_fmt( "Returning current timestamp: ~p.", [ T ] ),
+	T.
 
 
 
@@ -3596,7 +3571,7 @@ check_future_messages( _FutureMessages=[ M=#actor_message{
 % these are all future messages):
 %
 check_future_messages( _FutureMessages=[ #actor_message{
-   tick_offset=CurrentTickOffset, diasca=MessageDiasca } | T ],
+	tick_offset=CurrentTickOffset, diasca=MessageDiasca } | T ],
 					   CurrentTickOffset, CurrentDiasca )
   when MessageDiasca =:= CurrentDiasca + 1 ->
 
@@ -3788,19 +3763,19 @@ execute_reordered_oneways( _Messages=[
 						% needed:
 						%
 						text_utils:format( BaseString ++
-						  "Full stack trace is: ~ts~n~nThe ~ts~n~n"
-						  "Consequently, following ~B BEAM files are "
-						  "available (listed in alphabetical order): ~ts~n",
-						  [ FullStackTraceString,
-							code_utils:get_code_path_as_string(),
-							length( Beams ), KnownBeamString ] );
+							"Full stack trace is: ~ts~n~nThe ~ts~n~n"
+							"Consequently, following ~B BEAM files are "
+							"available (listed in alphabetical order): ~ts~n",
+							[ FullStackTraceString,
+							  code_utils:get_code_path_as_string(),
+							  length( Beams ), KnownBeamString ] );
 
 					_ ->
 						text_utils:format( BaseString ++
-						  "Full stack trace is: ~ts~n~n~ts~n"
-						  "Process dictionary here shown as a ~ts",
-						  [ FullStackTraceString,
-							wooper:state_to_string( State ), DictString ] )
+							"Full stack trace is: ~ts~n~n~ts~n"
+							"Process dictionary here shown as a ~ts",
+							[ FullStackTraceString,
+							  wooper:state_to_string( State ), DictString ] )
 
 				end,
 
@@ -3838,18 +3813,18 @@ execute_reordered_oneways( _Messages=[
 	% Parameter put in a list:
 	Oneway = { OnewayName, [ OnewaySingleNonListArg ] },
 
-	execute_reordered_oneways( [ { SenderPid, SenderAAI, Oneway }
-									| MessageTuples ], State );
+	execute_reordered_oneways(
+	  [ { SenderPid, SenderAAI, Oneway } | MessageTuples ], State );
 
 % No parameter here:
 execute_reordered_oneways( _Messages=[
-	   { SenderPid, SenderAAI, OnewayName } | MessageTuples ], State ) ->
+		{ SenderPid, SenderAAI, OnewayName } | MessageTuples ], State ) ->
 
 	% Parameter is an empty list:
 	Oneway = { OnewayName, [] },
 
-	execute_reordered_oneways( [ { SenderPid, SenderAAI, Oneway }
-									| MessageTuples ], State ).
+	execute_reordered_oneways(
+		[ { SenderPid, SenderAAI, Oneway } | MessageTuples ], State ).
 
 
 
@@ -3948,7 +3923,7 @@ filter_stacktrace( _Trace=[], Acc ) ->
 filter_stacktrace( _Trace=[ { _Module=class_Actor,
 							  _Function=wooper_effective_method_execution,
 							  _Arity=4, _Infos } | T ], Acc )
-	  when length( T ) =:= 6 ->
+											when length( T ) =:= 6 ->
 	% From that point (k), we drop all lower calls:
 	lists:reverse( Acc );
 
@@ -3973,16 +3948,17 @@ update_agenda_with( AddedTicks, WithdrawnTicks, Agenda ) ->
 	% We withdraw before adding, hence if a never-specified tick is to be added
 	% and withdrawn at the same diasca, the operation will fail:
 	%
-	WithdrawAgenda = lists:foldl( fun( Tick, AccAgenda ) ->
-							list_utils:delete_existing( Tick, AccAgenda )
-								  end,
+	WithdrawAgenda = lists:foldl(
+					fun( Tick, AccAgenda ) ->
+						list_utils:delete_existing( Tick, AccAgenda )
+					end,
 					_WithdrawAcc0=Agenda,
 					_WithdrawList=WithdrawnTicks ),
 
 	%lists:sort( list_utils:uniquify( WithdrawAgenda ++ AddedTicks ) ),
 
 	lists:foldl( fun( Tick, AccAgenda ) ->
-						insert_in_agenda( Tick, AccAgenda )
+					insert_in_agenda( Tick, AccAgenda )
 				 end,
 				 _AddAcc0=WithdrawAgenda,
 				 _AddList=AddedTicks ).
@@ -4207,10 +4183,9 @@ create_initial_actor( ActorClassname, ActorConstructionParameters ) ->
 -spec create_initial_actor( classname(), [ method_argument() ],
 						load_balancer_pid() ) -> static_return( actor_pid() ).
 create_initial_actor( ActorClassname, ActorConstructionParameters,
-					  LoadBalancerPid )
-  when is_atom( ActorClassname )
-	   andalso is_list( ActorConstructionParameters )
-	   andalso is_pid( LoadBalancerPid ) ->
+		LoadBalancerPid ) when is_atom( ActorClassname )
+							   andalso is_list( ActorConstructionParameters )
+							   andalso is_pid( LoadBalancerPid ) ->
 
 	% No checking that the simulation is not started yet is needed, as it will
 	% be done load-balancer-side.

@@ -75,7 +75,6 @@
 
 % Shorthands:
 
-%-type dimensions() :: gui:dimensions().
 -type window() :: gui:window().
 
 -type gl_canvas() :: gui:opengl_canvas().
@@ -173,7 +172,7 @@ gui_main_loop( GUIState ) ->
 		% The most suitable first location to initialise OpenGL, as making a GL
 		% context current requires a shown window:
 		%
-		{ onShown, [ ParentWindow, _EventContext ] } ->
+		{ onShown, [ ParentWindow, _ParentWindowId, _EventContext ] } ->
 
 			trace_utils:debug_fmt( "Parent window (main frame) just shown "
 				"(initial size of ~w).", [ gui:get_size( ParentWindow ) ] ),
@@ -186,7 +185,7 @@ gui_main_loop( GUIState ) ->
 			gui_main_loop( InitGUIState );
 
 
-		{ onWindowClosed, [ ParentWindow, _EventContext ] } ->
+		{ onWindowClosed, [ ParentWindow, _ParentWindowId, _EventContext ] } ->
 			trace_utils:info( "Main frame closed, test success." ),
 			% No more recursing:
 			gui:destruct_window( ParentWindow );

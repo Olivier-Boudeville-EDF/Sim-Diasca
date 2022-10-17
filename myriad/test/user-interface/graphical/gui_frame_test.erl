@@ -64,7 +64,8 @@ run_gui_test() ->
 
 	%gui:set_debug_level( [ calls, life_cycle ] ),
 
-	FirstFrame = gui:create_frame( "This is the first frame" ),
+	FirstFrame = gui:create_frame( "This is the first frame",
+								   _Id=my_test_first_frame, _Parent=undefined ),
 
 	SecondFrame = gui:create_frame( "This is the second frame" ),
 
@@ -99,7 +100,7 @@ test_main_loop( CloseFrame ) ->
 
 	receive
 
-		{ onWindowClosed, [ CloseFrame, Context ] } ->
+		{ onWindowClosed, [ CloseFrame, _FrameId, Context ] } ->
 
 			trace_utils:info_fmt( "Closing frame ~ts has been, well, closed "
 				"(~ts); test success.",
@@ -111,9 +112,9 @@ test_main_loop( CloseFrame ) ->
 			gui:stop();
 
 
-		{ onWindowClosed, [ AnyFrame, Context ] } ->
-			trace_utils:info_fmt( "Frame ~ts closed (~ts).",
-				[ gui:object_to_string( AnyFrame ),
+		{ onWindowClosed, [ AnyFrame, AnyFrameId, Context ] } ->
+			trace_utils:info_fmt( "Frame ~ts (id: ~w) closed (~ts).",
+				[ gui:object_to_string( AnyFrame ), AnyFrameId,
 				  gui:context_to_string( Context ) ] ),
 
 			gui:destruct_window( AnyFrame ),

@@ -246,29 +246,29 @@ run() ->
 	true = matrix4:are_equal( MultCanCptMatrix, SecondMult ),
 
 	% As FirstCompactMatrix, ColMatrix, TransposedCoordMatrix and
-	% MultCanCptMatrix are not inversible either (!):
+	% MultCanCptMatrix are not invertible either (!):
 	%
-	% InversibleCanMatrix4 = [4,3,7,4;1,9,7,3;17,5,19,77;16,6,19,83]
-	InversibleCanMatrix4 = matrix4:from_coordinates( 4.0,  3.0,  7.0,  4.0,
+	% InvertibleCanMatrix4 = [4,3,7,4;1,9,7,3;17,5,19,77;16,6,19,83]
+	InvertibleCanMatrix4 = matrix4:from_coordinates( 4.0,  3.0,  7.0,  4.0,
 													 1.0,  9.0,  7.0,  3.0,
 													 17.0, 5.0, 19.0, 77.0,
 													 16.0, 6.0, 19.0, 83.0 ),
 
-	-2562.0 = matrix4:determinant( InversibleCanMatrix4 ),
+	-2562.0 = matrix4:determinant( InvertibleCanMatrix4 ),
 
-	InversedCanMatrix4 = matrix4:inverse( InversibleCanMatrix4 ),
+	InversedCanMatrix4 = matrix4:inverse( InvertibleCanMatrix4 ),
 
 	test_facilities:display( "The inverse of canonical matrix ~ts is: ~ts",
-		[ matrix4:to_string( InversibleCanMatrix4 ),
+		[ matrix4:to_string( InvertibleCanMatrix4 ),
 		  matrix4:to_string( InversedCanMatrix4 ) ] ),
 
 	true = matrix4:are_equal( Id,
-		matrix4:mult( InversibleCanMatrix4, InversedCanMatrix4 ) ),
+		matrix4:mult( InvertibleCanMatrix4, InversedCanMatrix4 ) ),
 
 	true = matrix4:are_equal( Id,
-		matrix4:mult( InversedCanMatrix4, InversibleCanMatrix4 ) ),
+		matrix4:mult( InversedCanMatrix4, InvertibleCanMatrix4 ) ),
 
-	% From octave: inv(InversibleCanMatrix4)
+	% From octave: inv(InvertibleCanMatrix4)
 	InversedCanMatrix4Octave = matrix4:new( [
 						   [ -0.5066354410616709, 0.2322404371584700,
 							 1.176814988290398,  -1.075722092115535 ],
@@ -283,28 +283,28 @@ run() ->
 
 
 
-	% InversibleCptMatrix4 = [ 7, 11, 13, 17; 25, 2, 0, 27;
+	% InvertibleCptMatrix4 = [ 7, 11, 13, 17; 25, 2, 0, 27;
 	%                         -7, 4, 0, -3; 0, 0, 0, 1 ]
-	InversibleCptMatrix4 = matrix4:from_compact_coordinates(
+	InvertibleCptMatrix4 = matrix4:from_compact_coordinates(
 								 7.0, 11.0, 13.0, 17.0,
 								25.0,  2.0,  0.0, 27.0,
 								-7.0,  4.0,  0.0, -3.0 ),
 
-	1482.0 = matrix4:determinant( InversibleCptMatrix4 ),
+	1482.0 = matrix4:determinant( InvertibleCptMatrix4 ),
 
-	InversedCptMatrix4 = matrix4:inverse( InversibleCptMatrix4 ),
+	InversedCptMatrix4 = matrix4:inverse( InvertibleCptMatrix4 ),
 
 	test_facilities:display( "The inverse of compact matrix ~ts is: ~ts",
-		[ matrix4:to_string( InversibleCptMatrix4 ),
+		[ matrix4:to_string( InvertibleCptMatrix4 ),
 		  matrix4:to_string( InversedCptMatrix4 ) ] ),
 
 	true = matrix4:are_equal( Id,
-		matrix4:mult( InversibleCptMatrix4, InversedCptMatrix4 ) ),
+		matrix4:mult( InvertibleCptMatrix4, InversedCptMatrix4 ) ),
 
 	true = matrix4:are_equal( Id,
-		matrix4:mult( InversedCptMatrix4, InversibleCptMatrix4 ) ),
+		matrix4:mult( InversedCptMatrix4, InvertibleCptMatrix4 ) ),
 
-	% From octave: inv(InversibleCptMatrix4)
+	% From octave: inv(InvertibleCptMatrix4)
 	InversedCptMatrix4Octave = matrix4:from_compact_coordinates(
 		0.0, 0.035087719298246, -0.017543859649123, -1.0,
 		0.0, 0.061403508771930,  0.219298245614035, -1.0,

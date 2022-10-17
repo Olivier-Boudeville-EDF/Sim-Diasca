@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2022 Olivier Boudeville
+% Copyright (C) 2018-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -26,7 +26,6 @@
 % Creation date: Monday, January 1, 2018.
 
 
-
 % @doc Gathering of various convenient <b>facilities to manage ASTs</b>
 % (Abstract Syntax Trees): direct bridge towards plain Erlang AST.
 %
@@ -48,7 +47,7 @@
 
 % Directly obtained from the epp module:
 
--type include_path() :: [ file_utils:directory_name() ].
+-type include_path() :: [ directory_name() ].
 -type macro() :: atom() | { atom(), term() }.
 -type source_encoding() :: 'latin1' | 'utf8'.
 
@@ -145,6 +144,7 @@
 -type format_values() :: text_utils:format_values().
 
 -type file_name() :: file_utils:file_name().
+-type directory_name() :: file_utils:directory_name().
 
 -type ast() :: ast_base:ast().
 -type form() :: ast_base:form().
@@ -153,6 +153,7 @@
 -type source_context() :: ast_base:source_context().
 -type ast_transforms() :: ast_transform:ast_transforms().
 
+-type function_id() :: meta_utils:function_id().
 
 
 % Checking section.
@@ -179,28 +180,24 @@ check_ast( AST ) ->
 	case erl_lint:module( AST ) of
 
 		{ ok, _Warnings=[] } ->
-			%display_trace(
-			% "(no warning or error emitted)~n" ),
+			%display_trace( "(no warning or error emitted)~n" ),
 			ok;
 
 		{ ok, Warnings } ->
-			%display_error(
-			%  "Warnings, reported as errors: ~p~n",
+			%display_error( "Warnings, reported as errors: ~p~n",
 			%  [ Warnings ] ),
 			interpret_issue_reports( Warnings ),
 			%exit( warning_reported );
 			warning_reported;
 
 		{ error, Errors, _Warnings=[] } ->
-			%display_error( "Errors reported: ~p~n",
-			%  [ Errors ] ),
+			%display_error( "Errors reported: ~p~n", [ Errors ] ),
 			interpret_issue_reports( Errors ),
 			%exit( error_reported );
 			error_reported;
 
 		{ error, Errors, Warnings } ->
-			%display_error( "Errors reported: ~p~n",
-			%  [ Errors ] ),
+			%display_error( "Errors reported: ~p~n", [ Errors ] ),
 			interpret_issue_reports( Errors ),
 
 			%display_error(
@@ -213,7 +210,7 @@ check_ast( AST ) ->
 
 
 
-% @doc Interprets specified list of issue reports.
+% @doc Interprets the specified list of issue reports.
 -spec interpret_issue_reports( [ issue_report() ] ) -> void().
 interpret_issue_reports( _IssueReports=[] ) ->
 	% Should never happen:
@@ -223,18 +220,18 @@ interpret_issue_reports( _IssueReports=[] ) ->
 % meaningful (one may include an arbitrary long list):
 
 %interpret_issue_reports( _IssueReports=[ OneIssueReport ] ) ->
-%	interpret_issue_report( OneIssueReport );
+%   interpret_issue_report( OneIssueReport );
 
 interpret_issue_reports( IssueReports ) ->
 
 	[ interpret_issue_report( R ) || R <- IssueReports ].
 
 	%text_utils:format( "~B remarks: ~ts", [ length( IssueReports ),
-	%					text_utils:strings_to_string( ReportStrings ) ] ).
+	%   text_utils:strings_to_string( ReportStrings ) ] ).
 
 
 
-% @doc Interprets specific issue report.
+% @doc Interprets the specified issue report.
 -spec interpret_issue_report( issue_report() ) -> void().
 interpret_issue_report( _IssueReport={ Filename, IssueInfos } ) ->
 
@@ -244,11 +241,11 @@ interpret_issue_report( _IssueReport={ Filename, IssueInfos } ) ->
 	[ interpret_issue_info( CanonicFilename, E ) || E <- IssueInfos ].
 
 	%text_utils:format( "in file '~ts': ~ts", [ CanonicFilename,
-	%		   text_utils:strings_to_string( IssueStrings ) ] ).
+	%   text_utils:strings_to_string( IssueStrings ) ] ).
 
 
 
-% @doc Interprets specific error description.
+% @doc Interprets the specified error description.
 -spec interpret_issue_info( file_name(), issue_info() ) -> void().
 interpret_issue_info( Filename,
 					  _IssueInfo={ FileLoc, DetectorModule, IssueDesc } ) ->
@@ -266,7 +263,8 @@ interpret_issue_info( Filename,
 
 
 
-% @doc Interprets specific issue description, detected by specified module.
+% @doc Interprets the specified issue description, detected by the specified
+% module.
 %
 % Note: full control is offered here to enrich this function at will, if wanted.
 %
@@ -278,22 +276,22 @@ interpret_issue_description( IssueDescription, DectectorModule ) ->
 
 
 
-% @doc Checks that specified source, in-file location is legit.
+% @doc Checks that the specified source, in-file location is legit.
 -spec check_file_loc( term() ) -> file_loc().
 check_file_loc( Line ) ->
 	check_file_loc( Line, _Context=undefined ).
 
 
-% @doc Checks that specified source, in-file location is legit.
+% @doc Checks that the specified source, in-file location is legit.
 -spec check_file_loc( term(), maybe( form_context() ) ) -> file_loc().
 check_file_loc( Line, _Context )
-  when is_integer( Line ) andalso Line >= 0 ->
+						when is_integer( Line ) andalso Line >= 0 ->
 	Line;
 
 % Since OTP 24.0:
 check_file_loc( FileLoc={ Line, Column }, _Context )
-  when is_integer( Line ) andalso Line >= 0
-	   andalso is_integer( Column) andalso Column >=0 ->
+		when is_integer( Line ) andalso Line >= 0
+			 andalso is_integer( Column ) andalso Column >=0 ->
 	FileLoc;
 
 check_file_loc( Other, Context ) ->
@@ -302,15 +300,14 @@ check_file_loc( Other, Context ) ->
 
 
 
-% @doc Checks that specified module name is legit.
+% @doc Checks that the specified module name is legit, and returns it.
 -spec check_module_name( term() ) -> module_name().
 check_module_name( Name ) ->
 	check_module_name( Name, _Context=undefined ).
 
 
 
-
-% @doc Checks that specified module name is legit.
+% @doc Checks that the specified module name is legit, and returns it.
 -spec check_module_name( term(), form_context() ) -> module_name().
 check_module_name( Name, _Context ) when is_atom( Name ) ->
 	Name;
@@ -320,15 +317,14 @@ check_module_name( Other, Context ) ->
 
 
 
-% @doc Checks that specified inline options are legit.
--spec check_inline_options( term() ) -> [ meta_utils:function_id() ].
+% @doc Checks that the specified inline options are legit.
+-spec check_inline_options( term() ) -> [ function_id() ].
 check_inline_options( FunIds ) ->
 	check_inline_options( FunIds, _Context=undefined ).
 
 
-% @doc Checks that specified inline options are legit.
--spec check_inline_options( term(), form_context() ) ->
-									[ meta_utils:function_id() ].
+% @doc Checks that the specified inline options are legit.
+-spec check_inline_options( term(), form_context() ) -> [ function_id() ].
 check_inline_options( FunIds, Context ) when is_list( FunIds ) ->
 	ast_function:check_function_ids( FunIds, Context );
 
@@ -338,13 +334,13 @@ check_inline_options( Other, Context ) ->
 
 
 
-% @doc Checks that specified (function or type) arity is legit.
+% @doc Checks that the specified (function or type) arity is legit.
 -spec check_arity( term() ) -> arity().
 check_arity( Arity ) ->
 	check_arity( Arity, _Context=undefined ).
 
 
-% @doc Checks that specified (function or type) arity is legit.
+% @doc Checks that the specified (function or type) arity is legit.
 -spec check_arity( term(), form_context() ) -> arity().
 check_arity( Arity, _Context ) when is_integer( Arity ) andalso Arity >= 0 ->
 	Arity;
@@ -427,32 +423,33 @@ beam_to_ast( BeamFilename ) ->
 
 	% Everything:
 	%Chunks = [ abstract_code, attributes, compile_info, exports,
-	%			labeled_exports, imports, indexed_imports, locals,
-	%			labeled_locals, atoms ],
+	%           labeled_exports, imports, indexed_imports, locals,
+	%           labeled_locals, atoms ],
 
 	% Just the code AST:
 	Chunks = [ abstract_code ],
 
 	% Everything but the code AST:
 	% OtherChunks = [ attributes, compile_info, exports,
-	%				  labeled_exports, imports, indexed_imports, locals,
-	%				  labeled_locals, atoms ],
+	%                 labeled_exports, imports, indexed_imports, locals,
+	%                 labeled_locals, atoms ],
 
 	%Options = [ allow_missing_chunks ],
 
 	Options=[],
 
-	MyriadCryptoKeyFun = fun( init ) ->
-								 ok;
+	MyriadCryptoKeyFun =
+		fun( init ) ->
+			ok;
 
-							( { debug_info, _Mode, _Module, _Filename } ) ->
-								 % Refer to GNUmakevars.inc:
-								 _Key="Ceylan-Myriad";
+		   ( { debug_info, _Mode, _Module, _Filename } ) ->
+				% Refer to GNUmakevars.inc:
+				_Key="Ceylan-Myriad";
 
-							( clear ) ->
-								 ok
+		   ( clear ) ->
+				ok
 
-						 end,
+	end,
 
 	ok = beam_lib:crypto_key_fun( MyriadCryptoKeyFun ),
 
@@ -522,8 +519,8 @@ variable_names_to_ast( VariableNames, FileLoc ) ->
 % generated code).
 %
 % Ex: string_to_form("f() -> hello_world.") may return
-%   {function,  {0,1}, f, 0, [{clause,  {0,1}, [], [],
-%       [ {atom,  {0,1}, hello_world} ] } ] }
+%   {function, {0,1}, f, 0, [{clause, {0,1}, [], [],
+%       [ {atom, {0,1}, hello_world} ] } ] }
 %
 -spec string_to_form( ustring() ) -> form().
 string_to_form( FormString ) ->

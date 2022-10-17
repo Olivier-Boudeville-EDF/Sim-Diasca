@@ -26,7 +26,7 @@
 % Creation date: Monday, February 15, 2010.
 
 
-% @doc Gathering of various facilities for <b>linear</b> operations.
+% @doc Gathering of various facilities for <b>linear-related</b> operations.
 -module(linear).
 
 
@@ -171,6 +171,11 @@
 % vertex container (ex: a list).
 
 
+-type bounding_space() :: bounding_surface:bounding_surface()
+						| bounding_volume:ounding_volume().
+% A bounding space, for a given dimensionality.
+
+
 -export_type([ dimension/0,
 			   coordinate/0, integer_coordinate/0, any_coordinate/0,
 			   user_coordinate/0,
@@ -186,7 +191,8 @@
 			   specialised_matrix/0, specialised_type/0,
 			   specialised_vertex/0, specialised_normal/0,
 			   specialised_texture_coordinates/0,
-			   indice/0, indexed_triangle/0 ]).
+			   indice/0, indexed_triangle/0,
+			   bounding_space/0 ]).
 
 
 -export([ get_element_count/1,

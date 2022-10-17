@@ -26,7 +26,6 @@
 % Creation date: Sunday, February 4, 2018.
 
 
-
 % @doc Module in charge of handling <b>types, but also variables and values</b>
 % defined with an AST.
 %
@@ -76,7 +75,7 @@
 % Reference to a built-in type, in an AST.
 %
 % Ex:
-% - {type,45,atom,[]}                       -- for atom()
+% - {type,45,atom,[]}                           -- for atom()
 % - {type,44,list,[{type,{44,5},boolean,[]}]}   -- for [ boolean() ]
 
 
@@ -86,14 +85,14 @@
 %
 -record( user_type, {
 
-		   % Location of this form in the current source file:
-		   file_location = ?default_generation_location :: file_loc(),
+	% Location of this form in the current source file:
+	file_location = ?default_generation_location :: file_loc(),
 
-		   % Name of the target type:
-		   name :: type_name(),
+	% Name of the target type:
+	name :: type_name(),
 
-		   % Type variables, i.e. types on which this type depends:
-		   variables = [] :: [ ast_type() ] }).
+	% Type variables, i.e. types on which this type depends:
+	variables = [] :: [ ast_type() ] } ).
 
 
 -type ast_user_type() :: #user_type{}.
@@ -108,16 +107,14 @@
 %
 -record( remote_type, {
 
-		   % Location of this form in the current source file:
-		   file_location = ?default_generation_location :: file_loc(),
+	% Location of this form in the current source file:
+	file_location = ?default_generation_location :: file_loc(),
 
-		   % More precisely, a list of three elements, two atoms and a list of
-		   % type variables, like in:
-		   % [ {atom,43,basic_utils}, {atom,43,maybe}, [{type,43,float,[]}] ]
-		   %
-		   spec :: [ ast_builtin_type() | [ ast_type() ] ]
-
-}).
+	% More precisely, a list of three elements, two atoms and a list of
+	% type variables, like in:
+	% [ {atom,43,basic_utils}, {atom,43,maybe}, [{type,43,float,[]}] ]
+	%
+	spec :: [ ast_builtin_type() | [ ast_type() ] ] } ).
 
 
 -type ast_remote_type() :: #remote_type{}.
@@ -289,7 +286,7 @@ transform_type_info_pair( { TypeId,
 												  definition=undefined,
 												  exported=Export } },
 							Transforms )
-  when Export =/= [] ?andalso_rec_guard ->
+						when Export =/= [] ?andalso_rec_guard ->
 
 	% We cannot let this error go through, as it would remain silent.
 
@@ -367,13 +364,13 @@ transform_types_in_record_table( RecordTable, Transforms ) ?rec_guard ->
 transform_record_pair( { RecordName, RecordDef }, Transforms ) ?rec_guard ->
 
 	%ast_utils:display_trace( "transforming definition of record '~ts'.",
-	%						 [ RecordName ] ),
+	%                         [ RecordName ] ),
 
 	{ NewRecordDef, NewTransforms } =
 		transform_record_definition( RecordDef, Transforms ),
 
 	%ast_utils:display_trace( "transformed definition of record '~ts' to:~n~p.",
-	%						 [ RecordName, NewRecordDef ] ),
+	%                         [ RecordName, NewRecordDef ] ),
 
 	{ { RecordName, NewRecordDef }, NewTransforms }.
 
@@ -425,7 +422,7 @@ transform_field_definition( FieldDef={ _AstType=undefined, _AstValue=undefined,
 							Transforms ) ->
 
 	%ast_utils:display_debug( "Field definition (clause #1):~n  ~p",
-	%						  [ FieldDef ] ),
+	%                         [ FieldDef ] ),
 
 	{ FieldDef, Transforms };
 
@@ -435,7 +432,7 @@ transform_field_definition( _FieldDef={ _AstType=undefined, AstValue,
 							Transforms ) ->
 
 	%ast_utils:display_debug( "Field definition (clause #2):~n  ~p",
-	%						  [ FieldDef ] ),
+	%                         [ FieldDef ] ),
 
 	{ [ NewAstValue ], NewTransforms } =
 		ast_expression:transform_expression( AstValue, Transforms ),
@@ -449,7 +446,7 @@ transform_field_definition( _FieldDef={ AstType, _AstValue=undefined,
 								FirstFileLoc, SecondFileLoc }, Transforms ) ->
 
 	%ast_utils:display_debug( "Field definition (clause #3):~n  ~p",
-	%						  [ FieldDef ] ),
+	%                         [ FieldDef ] ),
 
 	{ NewAstType, NewTransforms } = transform_type( AstType, Transforms ),
 
@@ -462,7 +459,7 @@ transform_field_definition(
   _FieldDef={ AstType, AstValue, FirstFileLoc, SecondFileLoc }, Transforms ) ->
 
 	%ast_utils:display_debug( "Field definition (clause #4):~n  ~p",
-	%						  [ FieldDef ] ),
+	%                         [ FieldDef ] ),
 
 	{ NewAstType, TypeTransforms } = transform_type( AstType, Transforms ),
 
@@ -632,7 +629,7 @@ transform_type( _TypeDef={ 'type', FileLoc, 'range', [ L, H ] }, Transforms ) ->
 
 	% To be removed once ever seen displayed:
 	%ast_utils:display_warning( "Not transforming range bound ~p and ~p.",
-	%							[ L, H ] ),
+	%                           [ L, H ] ),
 
 	% Finally transformed, as managed in erl_id_trans:
 
@@ -656,14 +653,14 @@ transform_type( TypeDef={ 'type', _FileLoc, 'map', 'any' }, Transforms ) ->
 % "If T is a map type #{A_1, ..., A_k}, where each A_i is an association type,
 % then Rep(T) = {type, FILE_LOC, map, [Rep(A_1), ..., Rep(A_k)]}."
 %
-transform_type( _TypeDef={ 'type', FileLoc, 'map', AssocTypes },
+transform_type( _TypeDef={ 'type', FileLoc, TargetType='map', AssocTypes },
 				Transforms ) ->
 
 	% Is already a list directly (no key/value pairs to preserve here):
 	{ NewAssocTypes, NewTransforms } = lists:mapfoldl(
 		fun transform_association_type/2, _Acc0=Transforms, _List=AssocTypes ),
 
-	NewTypeDef = { 'type', FileLoc, 'map', NewAssocTypes },
+	NewTypeDef = { 'type', FileLoc, TargetType, NewAssocTypes },
 
 	{ NewTypeDef, NewTransforms };
 
@@ -673,20 +670,21 @@ transform_type( _TypeDef={ 'type', FileLoc, 'map', AssocTypes },
 
 
 % "If T is a fun type fun(), then Rep(T) = {type, FILE_LOC, 'fun', []}."
-transform_type( TypeDef={ 'type', _FileLoc, 'fun', [] }, Transforms ) ->
+transform_type( TypeDef={ 'type', _FileLoc, _TargetType='fun', [] },
+				Transforms ) ->
 	{ TypeDef, Transforms };
 
 
 % "If T is a fun type fun((...) -> T_0), then Rep(T) =
 % {type, FILE_LOC, 'fun', [{type, FILE_LOC, any}, Rep(T_0)]}."
 %
-transform_type( _TypeDef={ 'type', FileLoc1, 'fun',
+transform_type( _TypeDef={ 'type', FileLoc1, TargetType='fun',
 							[ Any={ 'type', _FileLoc2, 'any' } ], ResultType },
 				Transforms ) ->
 
 	{ NewResultType, NewTransforms } = transform_type( ResultType, Transforms ),
 
-	NewTypeDef = { 'type', FileLoc1, 'fun', [ Any, NewResultType ] },
+	NewTypeDef = { 'type', FileLoc1, TargetType, [ Any, NewResultType ] },
 
 	{ NewTypeDef, NewTransforms };
 
@@ -706,14 +704,14 @@ transform_type( TypeDef={ 'type', _FileLoc, 'fun', _ParamsResult },
 % "If T is a type union T_1 | ... | T_k, then Rep(T) =
 % {type, FILE_LOC, union, [Rep(T_1), ..., Rep(T_k)]}."
 %
-transform_type( _TypeDef={ 'type', FileLoc, 'union', UnifiedTypes },
+transform_type( _TypeDef={ 'type', FileLoc, TargetType='union', UnifiedTypes },
 				Transforms ) ->
 
 	% Is already a list directly (no key/value pairs to preserve here):
 	{ NewUnifiedTypes, NewTransforms } = lists:mapfoldl(
 		fun transform_type/2, _Acc0=Transforms, _List=UnifiedTypes ),
 
-	NewTypeDef = { 'type', FileLoc, 'union', NewUnifiedTypes },
+	NewTypeDef = { 'type', FileLoc, TargetType, NewUnifiedTypes },
 
 	{ NewTypeDef, NewTransforms };
 
@@ -756,7 +754,7 @@ transform_type( TypeDef={ 'type', FileLoc, BuiltinType, _TypeVars=[] },
 % Like '-type my_record() :: #my_record{}.', translating in {type, 89, record,
 % [{atom, 89, my_record }]}:
 %
-transform_type( _TypeDef={ 'type', FileLoc, 'record',
+transform_type( _TypeDef={ 'type', FileLoc, TargetType='record',
 			_TypeVars=[ N={ atom, _FileLocT, _RecordName } | FieldTypes ] },
 				Transforms ) ->
 
@@ -765,7 +763,20 @@ transform_type( _TypeDef={ 'type', FileLoc, 'record',
 		fun transform_field_type/2, _Acc0=Transforms,
 		_List=FieldTypes ),
 
-	NewTypeDef = { 'type', FileLoc, 'record', [ N | NewFieldTypes ] },
+	NewTypeDef = { 'type', FileLoc, TargetType, [ N | NewFieldTypes ] },
+
+	{ NewTypeDef, NewTransforms };
+
+
+transform_type( _TypeDef={ 'type', FileLoc, TargetType='maybe_improper_list',
+						   UnifiedTypes },
+				Transforms ) ->
+
+	% Is already a list directly (no key/value pairs to preserve here):
+	{ NewUnifiedTypes, NewTransforms } = lists:mapfoldl(
+		fun transform_type/2, _Acc0=Transforms, _List=UnifiedTypes ),
+
+	NewTypeDef = { 'type', FileLoc, TargetType, NewUnifiedTypes },
 
 	{ NewTypeDef, NewTransforms };
 
@@ -936,9 +947,10 @@ transform_type( _TypeDef={ 'remote_type', FileLoc,
 						 %    { NewModuleName, TypeName };
 
 						{ value, TransformFun }
-						  when is_function( TransformFun ) ->
+								when is_function( TransformFun ) ->
 							transform_remote_type_with_fun( TransformFun,
-							  ModuleName, TypeName, TypeArity, NewTransforms );
+								ModuleName, TypeName, TypeArity,
+								NewTransforms );
 
 						key_not_found ->
 
@@ -952,12 +964,12 @@ transform_type( _TypeDef={ 'remote_type', FileLoc,
 
 								% Same type, only module overridden:
 								{ value, NewModuleName }
-								  when is_atom( NewModuleName ) ->
+										when is_atom( NewModuleName ) ->
 									{ { NewModuleName, TypeName },
 									  NewTransforms };
 
 								{ value, TransformFun }
-								  when is_function( TransformFun ) ->
+										when is_function( TransformFun ) ->
 									transform_remote_type_with_fun(
 										TransformFun, ModuleName, TypeName,
 										TypeArity, NewTransforms );
@@ -1212,7 +1224,7 @@ transform_field_type( { 'type', FileLoc, 'field_type',
 -spec transform_type_variable( variable_name(), file_loc(),
 					ast_transforms() ) -> { ast_element(), ast_transforms() }.
 transform_type_variable( VariableName, _FileLoc, Transforms )
-  when is_atom( VariableName ) ->
+								when is_atom( VariableName ) ->
 	{ VariableName, Transforms }.
 
 
@@ -1633,35 +1645,36 @@ get_located_forms_for( TypeExportTable, TypeTable ) ->
 	%
 	TypeInfos = ?table:values( TypeTable ),
 
-	TypeLocDefs = lists:foldl( fun( #type_info{ name=TypeName,
-												variables=TypeVariables,
-												opaque=IsOpaque,
-												ast_location=ASTLoc,
-												file_location=FileLoc,
-												definition=TypeDef
-												%exported
-											  }, Acc ) ->
+	TypeLocDefs = lists:foldl(
 
-									   TypeDesignator = case IsOpaque of
+		fun( #type_info{ name=TypeName,
+						 variables=TypeVariables,
+						 opaque=IsOpaque,
+						 ast_location=ASTLoc,
+						 file_location=FileLoc,
+						 definition=TypeDef
+						 %exported
+						}, Acc ) ->
 
-										   true ->
-											   opaque;
+			TypeDesignator = case IsOpaque of
 
-										   false ->
-											   type
+				true ->
+					opaque;
 
-									   end,
+				false ->
+					type
 
-									   Form = { attribute, FileLoc,
-										 TypeDesignator,
-										 { TypeName, TypeDef, TypeVariables } },
+			end,
 
-									   LocTypeForm = { ASTLoc, Form },
+			Form = { attribute, FileLoc, TypeDesignator,
+					 { TypeName, TypeDef, TypeVariables } },
 
-									   [ LocTypeForm | Acc ]
+			LocTypeForm = { ASTLoc, Form },
 
-							   end,
-							   _Acc0=[],
-							   _List=TypeInfos ),
+			[ LocTypeForm | Acc ]
+
+		end,
+		_Acc0=[],
+		_List=TypeInfos ),
 
 	{ TypeExportLocDefs, TypeLocDefs }.

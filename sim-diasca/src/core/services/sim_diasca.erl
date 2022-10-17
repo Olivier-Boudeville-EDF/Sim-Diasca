@@ -78,11 +78,13 @@
 -define( registration_scope, global_only ).
 
 
-% Shorthand:
+
+% Shorthands:
 
 -type ustring() :: text_utils:ustring().
 
 -type simulation_name() :: class_DeploymentManager:simulation_name().
+-type deployment_settings() :: class_DeploymentManager:deployment_settings().
 
 
 
@@ -116,9 +118,9 @@ init( SimulationSettings, DeploymentSettings ) ->
 -spec init( simulation_settings(), deployment_settings(),
 			load_balancing_settings() ) -> deployment_manager_pid().
 init( SimulationSettings, DeploymentSettings, LoadBalancingSettings )
-  when is_record( SimulationSettings, simulation_settings ) andalso
-	   is_record( DeploymentSettings, deployment_settings ) andalso
-	   is_record( LoadBalancingSettings, load_balancing_settings ) ->
+	when is_record( SimulationSettings, simulation_settings )
+		 andalso is_record( DeploymentSettings, deployment_settings )
+		 andalso is_record( LoadBalancingSettings, load_balancing_settings ) ->
 
 	% We explicitly force the use of the Unicode encoding, as apparently a
 	% side-effect of running the VM with the -noinput option (which is usually
@@ -252,18 +254,18 @@ init( SimulationSettings, DeploymentSettings, LoadBalancingSettings )
 
 % One set of settings is invalid:
 init( SimulationSettings, DeploymentSettings, LoadBalancingSettings )
-  when is_record( DeploymentSettings, deployment_settings ) andalso
-	   is_record( LoadBalancingSettings, load_balancing_settings ) ->
+		when is_record( DeploymentSettings, deployment_settings ) andalso
+			 is_record( LoadBalancingSettings, load_balancing_settings ) ->
 	throw( { invalid_simulation_settings, SimulationSettings } );
 
 init( SimulationSettings, DeploymentSettings, LoadBalancingSettings )
-  when is_record( SimulationSettings, simulation_settings ) andalso
-	   is_record( LoadBalancingSettings, load_balancing_settings ) ->
+		when is_record( SimulationSettings, simulation_settings ) andalso
+			 is_record( LoadBalancingSettings, load_balancing_settings ) ->
 	throw( { invalid_deployment_settings, DeploymentSettings } );
 
 init( SimulationSettings, DeploymentSettings, LoadBalancingSettings )
-  when is_record( SimulationSettings, simulation_settings ) andalso
-	   is_record( DeploymentSettings, deployment_settings ) ->
+		when is_record( SimulationSettings, simulation_settings ) andalso
+			 is_record( DeploymentSettings, deployment_settings ) ->
 	throw( { invalid_load_balancing_settings, LoadBalancingSettings } );
 
 % Even worse, at least two are invalid:
@@ -528,7 +530,6 @@ check_exit_messages() ->
 			check_exit_messages()
 
 	after 0 ->
-
 		% Stop recursing:
 		ok
 
@@ -597,11 +598,11 @@ get_simulation_identifiers() ->
 %
 -spec get_simulation_name( simulation_settings() ) -> ustring().
 get_simulation_name( #simulation_settings{ simulation_name=AtomName } )
-  when is_atom( AtomName ) ->
+								when is_atom( AtomName ) ->
 	text_utils:atom_to_string( AtomName );
 
 get_simulation_name( #simulation_settings{ simulation_name=StringName } )
-  when is_list( StringName ) ->
+								when is_list( StringName ) ->
 	StringName;
 
 get_simulation_name( #simulation_settings{ simulation_name=UnexpectedName } ) ->

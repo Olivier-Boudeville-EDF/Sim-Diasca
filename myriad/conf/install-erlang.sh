@@ -50,9 +50,12 @@ fi
 # Note: if one wants to download src or doc base (i.e. not patch ones) archives
 # by oneself, one may also point directly to http://erlang.org/download/.
 
-# Now we keep the MD5 sums of the sources of former Erlang/OTP versions, in
-# order to be able to switch back and forth more easily:
+# Now we keep the SHA512 (previously: MD5) sums of the sources of former
+# Erlang/OTP versions, in order to reduce any risk of downloading an altered
+# source archive, and to be able to switch back and forth more easily:
 
+erlang_sha512_for_25_1="26f597d3637445fa3f602e75b7854d6386f4a6e5702715f4339c5107b02a571b9ff15e6f48a81ff82d994a10d396e6154609d0d8d74076afa305c9fe87efbefa"
+erlang_md5_for_25_0="3c4c9da083f2a6b89aa1766415339d0c"
 erlang_md5_for_24_3="eb6dd8eaee8c97cf076eda0091abbc4c"
 erlang_md5_for_24_2="ebb6e865738255ae31ff680cc96d71a9"
 erlang_md5_for_24_1_5="39927334547d84ef0dc9e3a39b5c32ff"
@@ -74,15 +77,15 @@ erlang_md5_for_20_1="4c9eb112cd0e56f17c474218825060ee"
 
 
 # Current stable (an update of the next two lines is needed):
-erlang_version="24.3"
-erlang_md5="${erlang_md5_for_24_3}"
+erlang_version="25.1"
+erlang_sum="${erlang_sha512_for_25_1}"
 
 
 # Candidate version (ex: either cutting-edge or, most probably, the previous
 # version that we deem stable enough, should the current introduce regressions):
 #
-erlang_version_candidate="24.2"
-erlang_md5_candidate="${erlang_md5_for_24_2}"
+erlang_version_candidate="25.0"
+erlang_sum_candidate="${erlang_sha512_for_25_0}"
 
 base_install_dir="${HOME}/Software/Erlang"
 
@@ -271,7 +274,7 @@ while [ $token_eaten -eq 0 ]; do
 	if [ "$1" = "${previous_opt_short}" ] || [ "$1" = "${previous_opt_long}" ]; then
 
 		erlang_version="${erlang_version_candidate}"
-		erlang_md5="${erlang_md5_candidate}"
+		erlang_sum="${erlang_sum_candidate}"
 		plt_file="Erlang-${erlang_version}_candidate"
 
 		echo "Warning: not installing the default version of Erlang currently supported, using candidate one, i.e. version ${erlang_version}." 1>&2
@@ -498,30 +501,42 @@ if [ -n "${cpu_limit_expr}" ]; then
 fi
 
 
-md5sum="$(which md5sum)"
+#md5sum="$(which md5sum 2>/dev/null)"
+
+# Typically as /usr/bin/sha512sum ('coreutils' Arch package); 'shasum
+# --algorithm 512' ('perl' Arch package) or 'openssl dgst -sha512' ('openssl'
+# Arch package) could be used as well:
+#
+sha512sum="$(which sha512sum 2>/dev/null)"
+
+if [ ! -x "${sha512sum}" ]; then
+
+	echo "  Error: no checksum tool ('sha512sum') found available." 1>&2
+
+	exit 17
+
+fi
 
 # Archives are not available by default:
 src_available=1
 doc_available=1
 
+src_checked=1
 
 if [ $do_download -eq 0 ]; then
 
 	# However we check it is not already available in the current directory:
 	if [ -f "${erlang_src_archive}" ]; then
 
-		if [ -x "${md5sum}" ]; then
+		sum_res=$(${sha512sum} "${erlang_src_archive}")
 
-			md5_res=$( ${md5sum} "${erlang_src_archive}" )
+		computed_sum=$(echo "${sum_res}" | awk '{printf $1}')
 
-			computed_md5=$( echo ${md5_res}| awk '{printf $1}' )
+		if [ "${computed_sum}" = "${erlang_sum}" ]; then
 
-			if [ "${computed_md5}" = "${erlang_md5}" ]; then
-
-				echo "MD5 sum for the Erlang source archive already locally available validated, not downloading the archive, using that version."
-				src_available=0
-
-			fi
+			echo "SHA512 sum for the Erlang source archive already locally available validated, not downloading the archive, using that version."
+			src_available=0
+			src_checked=0
 
 		fi
 
@@ -529,7 +544,7 @@ if [ $do_download -eq 0 ]; then
 
 	if [ -f "${erlang_doc_archive}" ]; then
 
-		# MD5 checking fo doc not deemed useful:
+		# Checksum for doc not deemed useful enough:
 		doc_available=0
 
 	fi
@@ -587,24 +602,25 @@ else
 fi
 
 
-
-if [ ! -x "${md5sum}" ]; then
-
-	echo "  Warning: no md5sum tool found, therefore MD5 code will not be checked."
-
-else
+if [ ! ${src_checked} -eq 0 ]; then
 
 	echo "Checksum for ${erlang_src_archive}"
 
-	md5_res=$( ${md5sum} "${erlang_src_archive}" )
+	sum_res=$(${sha512sum} "${erlang_src_archive}")
 
-	computed_md5=$( echo "${md5_res}"| awk '{printf $1}' )
+	computed_sum=$(echo "${sum_res}" | awk '{printf $1}')
 
-	if [ "${computed_md5}" = "${erlang_md5}" ]; then
-		echo "MD5 sum for Erlang source archive matches."
+	if [ "${computed_sum}" = "${erlang_sum}" ]; then
+
+		echo "SHA512 sum for Erlang source archive matches."
+		src_checked=0
+
 	else
-		echo "Error, MD5 sums not matching for Erlang source archive '${erlang_src_archive}': expected '${erlang_md5}', computed '${computed_md5}'." 1>&2
+
+		echo "Error, SHA512 sums not matching for Erlang source archive '${erlang_src_archive}': expected '${erlang_sum}', computed '${computed_sum}'." 1>&2
+
 		exit 25
+
 	fi
 
 fi

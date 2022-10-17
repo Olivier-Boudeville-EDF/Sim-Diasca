@@ -562,7 +562,7 @@ compute_row_cofactors( M, _Row=[ _C | T ], CurrentRowIndex, CurrentColumnIndex,
 
 
 % @doc Returns the inverse of the specified (square) matrix, iff it is
-% inversible (that is iff its determinant is non-null), otherwise returns
+% invertible (that is iff its determinant is non-null), otherwise returns
 % undefined.
 %
 % Note: often the inverse can be obtained differently (ex: by applying reverse

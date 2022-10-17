@@ -1569,8 +1569,8 @@ onWOOPERExitReceived( State, _Pid, _ExitReason=normal ) ->
 
 onWOOPERExitReceived( State, Pid, ExitReason ) ->
 
-	?emergency_fmt( "EXIT message received for ~w, whose exit reason was: ~p, "
-					"terminating now.", [ Pid, ExitReason ] ),
+	?emergency_fmt( "EXIT message received for ~w, whose exit reason was:"
+					"~n ~p, terminating now.", [ Pid, ExitReason ] ),
 
 	% Shall be avoided, as would attempt to interact with the now defunct
 	% deployment agent:

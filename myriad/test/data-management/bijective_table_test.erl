@@ -23,10 +23,10 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
-% Creation date: Saturday, May 4, 2019
+% Creation date: Saturday, May 4, 2019.
 
 
-% Test of the bijective table implementation.
+% @doc Test of the <b>bijective table</b> implementation.
 %
 % See the bijective_table.erl tested module.
 %

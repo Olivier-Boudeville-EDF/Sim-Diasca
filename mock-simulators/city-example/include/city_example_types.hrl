@@ -156,37 +156,37 @@
 -type geolocalized_pid() :: pid().
 % PID of a Geolocalized instance.
 
--type incinerator_pid() :: actor_pid().
+-type incinerator_pid() :: class_Actor:actor_pid().
 % PID of an Incinerator.
 
--type residential_ws_pid() :: actor_pid().
+-type residential_ws_pid() :: class_Actor:actor_pid().
 % PID of an ResidentialWasteSource.
 
--type industry_ws_pid() :: actor_pid().
+-type industry_ws_pid() :: class_Actor:actor_pid().
 % PID of an IndustrialWasteSource.
 
--type landfill_pid() :: actor_pid().
+-type landfill_pid() :: class_Actor:actor_pid().
 % PID of a Landfill.
 
--type road_pid() :: actor_pid().
+-type road_pid() :: class_Actor:actor_pid().
 % PID of a Road.
 
--type junction_pid() :: actor_pid().
+-type junction_pid() :: class_Actor:actor_pid().
 % PID of a RoadJunction.
 
--type loading_point_pid() :: actor_pid().
+-type loading_point_pid() :: class_Actor:actor_pid().
 % PID of a WasteLoadingPoint.
 
--type unloading_point_pid() :: actor_pid().
+-type unloading_point_pid() :: class_Actor:actor_pid().
 % PID of WasteUnloadingPoint.
 
--type transport_pid() :: actor_pid().
+-type transport_pid() :: class_Actor:actor_pid().
 % PID of a WasteTransport.
 
--type vehicle_pid() :: actor_pid().
+-type vehicle_pid() :: class_Actor:actor_pid().
 % PID of a Vehicle.
 
--type truck_pid() :: actor_pid().
+-type truck_pid() :: class_Actor:actor_pid().
 % PID of a WasteTruck.
 
 

@@ -23,6 +23,7 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2021.
 
 
 % @doc Testing the <b>OpenGL support</b>, as an integration test.
@@ -244,15 +245,15 @@ get_test_tetra_triangles() ->
 % @doc Returns the (4) per-face unit normals of the test tetrahedron.
 -spec get_test_tetra_normals() -> [ unit_normal3() ].
 get_test_tetra_normals() ->
-	[ _NF1=[ 0.0,  0.0, -1.0 ], % normal of ACB
-	  _NF2=[ 0.0, -1.0,  0.0 ], % normal of ABD
-	  _NF3=[ -1.0, 0.0,  0.0 ], % normal of ADC
+	[ _NF1=[  0.0,  0.0, -1.0 ], % normal of ACB
+	  _NF2=[  0.0, -1.0,  0.0 ], % normal of ABD
+	  _NF3=[ -1.0,  0.0,  0.0 ], % normal of ADC
 
 	  % NF4, the normal of face BCD, can be obtained with:
 	  %  BC = point3:vectorize(B, C).
 	  %  BD = point3:vectorize(B, D).
 	  %  V = vector3:cross_product(BC, BD).
-	  %  N = vector3:normalise(V).
+	  %  NF4 = vector3:normalise(V).
 	  %
 	  _NF4=[ 0.8571428571428571,0.42857142857142855,0.2857142857142857 ] ].
 
@@ -296,6 +297,9 @@ get_test_colored_cube_mesh() ->
 
 
 % @doc Returns the (8) vertices of the test colored cube.
+%
+% See also gui_opengl_cube_referential_test:get_cube_vertices_as_triangles/0.
+%
 -spec get_test_colored_cube_vertices() -> [ vertex3() ].
 get_test_colored_cube_vertices() ->
 	[ _V1={ -0.5, -0.5, -0.5 },
@@ -312,6 +316,7 @@ get_test_colored_cube_vertices() ->
 % @doc Returns the (6) faces of the test colored cube (vertex order matters).
 -spec get_test_colored_cube_faces() -> [ indexed_face() ].
 get_test_colored_cube_faces() ->
+	% Our indices start at 1:
 	[ _F1=[ 1, 2, 3, 4 ],
 	  _F2=[ 8, 1, 4, 5 ],
 	  _F3=[ 2, 7, 6, 3 ],
@@ -351,7 +356,8 @@ get_test_colored_cube_colors() ->
 
 % Test textured cube.
 %
-% In theory 8 vertices, 6 faces, 12 triangles.
+% In theory 8 vertices, 6 faces, each face split into 2 triangles, hence 12
+% triangles.
 %
 % The following content data has been decoded in our higher-level form from the
 % Blender default scene.
@@ -380,8 +386,8 @@ get_test_textured_cube_mesh() ->
 
 
 
-% @doc Returns the (8 in theory, 24 in practice) vertices of the test textured
-% cube.
+% @doc Returns the (8 in theory, 24 in practice - each vertex belonging to
+% multiple faces/triangles) vertices of the test textured cube.
 %
 -spec get_test_textured_cube_vertices() -> [ vertex3() ].
 get_test_textured_cube_vertices() ->
@@ -405,7 +411,9 @@ get_test_textured_cube_vertices() ->
 -spec get_test_textured_cube_faces() -> [ indexed_triangle() ].
 get_test_textured_cube_faces() ->
 
-	% 36 indices (each in [0..23], listed once or twice):
+	% 36 indices (each in [0..23] - glTF indices start at zero - listed once or
+	% twice):
+	%
 	Indices = [ 1, 14, 20, 1, 20, 7, 10, 6, 19, 10, 19, 23,
 				21, 18, 12, 21, 12, 15, 16, 3, 9, 16, 9, 22,
 				5, 2, 8, 5, 8, 11, 17, 13, 0, 17, 0, 4 ],
@@ -482,8 +490,8 @@ get_logo_image_path() ->
 -spec run_opengl_integration_test() -> void().
 run_opengl_integration_test() ->
 
-	test_facilities:display( "~nStarting the integration test of "
-							 "OpenGL support." ),
+	test_facilities:display(
+		"~nStarting the integration test of OpenGL support." ),
 
 	case gui_opengl:get_glxinfo_strings() of
 
@@ -597,7 +605,7 @@ gui_main_loop( GUIState ) ->
 		% Not strictly necessary, as anyway a regular redraw is to happen soon
 		% afterwards:
 		%
-		{ onRepaintNeeded, [ GLCanvas, _EventContext ] } ->
+		{ onRepaintNeeded, [ GLCanvas, _GLCanvasId, _EventContext ] } ->
 
 			%trace_utils:debug_fmt( "Repaint needed for OpenGL canvas ~w.",
 			%                       [ GLCanvas ] ),
@@ -606,8 +614,8 @@ gui_main_loop( GUIState ) ->
 
 				% Not ready yet:
 				undefined ->
-					trace_utils:debug( "To be repainted, "
-									   "yet no OpenGL state yet." ),
+					trace_utils:debug(
+						"To be repainted, yet no OpenGL state yet." ),
 					GUIState;
 
 				GLState ->
@@ -623,7 +631,8 @@ gui_main_loop( GUIState ) ->
 		% For a window, the first resizing event happens (just) before its
 		% onShown one:
 		%
-		{ onResized, [ _ParentWindow, _NewParentSize, _EventContext ] } ->
+		{ onResized, [ _ParentWindow, _ParentWindowId, _NewParentSize,
+					   _EventContext ] } ->
 
 			%trace_utils:debug_fmt( "Resizing of the parent window "
 			%   (main frame) "to ~w detected.", [ NewParentSize ] ),
@@ -646,7 +655,7 @@ gui_main_loop( GUIState ) ->
 		% The most suitable first location to initialise OpenGL, as making a GL
 		% context current requires a shown window:
 		%
-		{ onShown, [ ParentWindow, _EventContext ] } ->
+		{ onShown, [ ParentWindow, _ParentWindowId, _EventContext ] } ->
 
 			trace_utils:debug_fmt( "Parent window (main frame) just shown "
 				"(initial size of ~w).", [ gui:get_size( ParentWindow ) ] ),
@@ -658,17 +667,16 @@ gui_main_loop( GUIState ) ->
 			InitGUIState = initialise_opengl( GUIState ),
 
 			test_facilities:display( "Reported OpenGL settings: "
-				"vendor is '~ts', renderer is '~ts'; "
-				"OpenGL version is '~ts', and the one of the "
-				"shading language is '~ts'.",
+				"vendor is '~ts', renderer is '~ts'; OpenGL version is '~ts', "
+				"and the one of the shading language is '~ts'.",
 				[ gui_opengl:get_vendor_name(), gui_opengl:get_renderer_name(),
-				  gui_opengl:get_version(),
+				  text_utils:version_to_string( gui_opengl:get_version() ),
 				  gui_opengl:get_shading_language_version() ] ),
 
 			gui_main_loop( InitGUIState );
 
 
-		{ onWindowClosed, [ ParentWindow, _EventContext ] } ->
+		{ onWindowClosed, [ ParentWindow, _ParentWindowId, _EventContext ] } ->
 			trace_utils:info( "Main frame closed, test success." ),
 			gui:destruct_window( ParentWindow );
 
@@ -711,8 +719,8 @@ initialise_opengl( GUIState=#my_gui_state{ canvas=GLCanvas,
 	% Initial size of canvas is typically 20x20 pixels:
 	Size = gui:get_client_size( GLCanvas ),
 
-	trace_utils:debug_fmt( "Initialising OpenGL (whereas canvas is of initial "
-						   "size ~w).", [ Size ] ),
+	trace_utils:debug_fmt(
+	  "Initialising OpenGL (whereas canvas is of initial size ~w).", [ Size ] ),
 
 	% So done only once:
 	gui_opengl:set_context_on_shown( GLCanvas, GLContext ),
@@ -861,8 +869,7 @@ update_rendering( GUIState=#my_gui_state{ opengl_state=GLState,
 	% Then call OpenGL accordingly:
 	render( NewGLState ),
 
-	GUIState#my_gui_state{ opengl_state=NewGLState,
-						   time=NewTime }.
+	GUIState#my_gui_state{ opengl_state=NewGLState, time=NewTime }.
 
 
 

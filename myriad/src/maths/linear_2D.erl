@@ -328,8 +328,8 @@ sort_by_angle( Pivot, Points ) ->
 
 % (helper)
 %
--spec sort_by_angle( any_point2(), [ any_point2() ], [ angle_pair() ],
-				maybe( any_point2() ), [ angle_pair() ] ) ->  [ any_point2() ].
+-spec sort_by_angle( integer_point2(), [ integer_point2() ], [ angle_pair() ],
+		maybe( integer_point2() ), [ angle_pair() ] ) ->  [ integer_point2() ].
 sort_by_angle( _Pivot, _Points=[], LeftPairs, _MaybeP=undefined, RightPairs ) ->
 
 	cond_utils:if_defined( bounding_spaces, trace_utils:debug(
@@ -475,12 +475,12 @@ intersect( _L1={A,B,C}, _L2={U,V,W} ) ->
 
 				_ANotNull ->
 					X = -C/A,
-					case V of
+					case math_utils:is_null( V ) of
 
-						0 ->
+						true ->
 							no_point;
 
-						_ ->
+						_VNotNull ->
 							Y= -(W+U*X) / V,
 							{X,Y}
 
@@ -552,8 +552,9 @@ get_abscissa_for_ordinate( _L={A,B,C}, Y ) ->
 % @doc Returns true iff P is strictly on the right of the oriented segment going
 % from P1 to P2.
 %
--spec is_strictly_on_the_right( any_point2(), any_point2(), any_point2() ) ->
-												   boolean().
+-spec is_strictly_on_the_right( point2(), point2(), point2() ) -> boolean();
+							  ( integer_point2(), integer_point2(),
+								integer_point2() ) -> boolean().
 is_strictly_on_the_right( P, P1, P2 ) ->
 
 	Vec_P1P2 = point2:vectorize( P1, P2 ),
@@ -581,7 +582,9 @@ is_obtuse( AngleInDegrees ) ->
 % other, ie if we should use the returned angle or its opposite to go from AB
 % to AC.
 %
--spec abs_angle_rad( any_point2(), any_point2(), any_point2() ) -> radians().
+-spec abs_angle_rad( point2(), point2(), point2() ) -> radians();
+				   ( integer_point2(), integer_point2(), integer_point2() ) ->
+										radians().
 abs_angle_rad( A, B, C ) ->
 
 	AB = point2:vectorize( A, B ),
@@ -624,7 +627,9 @@ abs_angle_rad( A, B, C ) ->
 % Note: with this function we can tell that we must rotate counter-clockwise of
 % the returned angle to go from AB to AC.
 %
--spec angle_rad( any_point2(), any_point2(), any_point2() ) -> radians().
+-spec angle_rad( point2(), point2(), point2() ) -> radians();
+			   ( integer_point2(), integer_point2(), integer_point2() ) ->
+										radians().
 angle_rad( A, B, C ) ->
 
 	[ X1, Y1 ] = point2:vectorize( A, B ),
@@ -641,8 +646,9 @@ angle_rad( A, B, C ) ->
 % other, that is if we should use the returned angle or its opposite to go from
 % AB to AC.
 %
--spec abs_angle_deg( any_point2(), any_point2(), any_point2() ) ->
-												int_degrees().
+-spec abs_angle_deg( point2(), point2(), point2() ) -> int_degrees();
+				   ( integer_point2(), integer_point2(), integer_point2() ) ->
+										int_degrees().
 abs_angle_deg( A, B, C ) ->
 	math_utils:canonify(
 		math_utils:radian_to_degree( abs_angle_rad( A, B, C ) ) ).
@@ -788,7 +794,7 @@ compute_graham_scan_hull( L, NewPoint, [ Next | OtherNext ] ) ->
 %
 -spec get_roots_of_unit( count() ) -> [ point2() ].
 get_roots_of_unit( N ) ->
-	get_roots_of_unit( N, _StartingAngle=0 ).
+	get_roots_of_unit( N, _StartingAngle=0.0 ).
 
 
 % @doc Returns a list of points forming the nth roots of unity, in the unit

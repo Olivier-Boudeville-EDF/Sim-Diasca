@@ -18,6 +18,7 @@
 
 % Authors: Olivier Boudeville (olivier.boudeville@edf.fr)
 %          Samuel Thiriot (samuel.thiriot@edf.fr)
+% Creation date: 2016.
 
 
 % @doc Class defining a <b>Dataflow Object</b>, corresponding to the
@@ -301,9 +302,9 @@ pre_init( TraceEmitterName, State ) ->
 
 	% Default settings:
 	setAttributes( TraceState, [
-			{ accept_multiple_valued_attrs, false },
-			{ accept_non_valued_attrs, true },
-			{ accept_extra_attr_values, true } ] ).
+		{ accept_multiple_valued_attrs, false },
+		{ accept_non_valued_attrs, true },
+		{ accept_extra_attr_values, true } ] ).
 
 
 
@@ -551,39 +552,39 @@ create_attribute_specs_for_peer( PeerName ) ->
 create_attribute_specs_for_peer( PeerName, _Typename=string,
 								 _PeerMultiplicity=unique ) ->
 	#dataflow_attribute_spec{
-	    attribute_name=PeerName,
-	    semantics=[],
-	    unit="dimensionless",
-	    type_description="string",
-	    % Add 'non_empty', once available:
-	    constraints=[] };
+		attribute_name=PeerName,
+		semantics=[],
+		unit="dimensionless",
+		type_description="string",
+		% Add 'non_empty', once available:
+		constraints=[] };
 
 create_attribute_specs_for_peer( PeerName, _Typename=pid,
 								 _PeerMultiplicity=unique ) ->
 	#dataflow_attribute_spec{
-	    attribute_name=PeerName,
-	    semantics=[],
-	    unit="dimensionless",
-	    type_description="pid",
-	    constraints=[] };
+		attribute_name=PeerName,
+		semantics=[],
+		unit="dimensionless",
+		type_description="pid",
+		constraints=[] };
 
 create_attribute_specs_for_peer( PeerName, _Typename=string,
 								 _PeerMultiplicity=multiple ) ->
 	#dataflow_attribute_spec{
-	    attribute_name=PeerName,
-	    semantics=[],
-	    unit="dimensionless",
-	    type_description="[string]",
-	    constraints=[] };
+		attribute_name=PeerName,
+		semantics=[],
+		unit="dimensionless",
+		type_description="[string]",
+		constraints=[] };
 
 create_attribute_specs_for_peer( PeerName, _Typename=pid,
 								 _PeerMultiplicity=multiple ) ->
 	#dataflow_attribute_spec{
-	    attribute_name=PeerName,
-	    semantics=[],
-	    unit="dimensionless",
-	    type_description="[pid]",
-	    constraints=[] }.
+		attribute_name=PeerName,
+		semantics=[],
+		unit="dimensionless",
+		type_description="[pid]",
+		constraints=[] }.
 
 
 
@@ -799,7 +800,7 @@ set_attributes( _DataflowAttributeSpecs=[ _AttributeSpec | TS ],
 % attribute and assign the right value to use when the object is resumed:
 %
 set_attributes( _DataflowAttributeSpecs=[ AttrSpec=#dataflow_attribute_spec{
-							   attribute_name=AttrName } | TS ],
+								attribute_name=AttrName } | TS ],
 				_AttributeValues=[ RawValue | TV ], InputPortTable,
 				OutputPortTable, State ) ->
 
@@ -886,7 +887,7 @@ assign_channel_value_to_attribute( ChannelValue, BinAttrName, State ) ->
 -spec assign_channel_value_to_attribute( channel_value(),
 			dataflow_attribute_bin_name(), input_port_table(),
 			output_port_table(), wooper:state() ) ->
-				    { input_port_table(), output_port_table(), wooper:state() }.
+					{ input_port_table(), output_port_table(), wooper:state() }.
 assign_channel_value_to_attribute( ChannelValue, BinAttrName, InputPortTable,
 								   OutputPortTable, State ) ->
 
@@ -1199,7 +1200,7 @@ unregisterPeer( State, PeerPid, PeerType, _SendingActorPid ) ->
 unregister_peer( PeerPid, PeerType, State ) when is_pid( PeerPid ) ->
 
 	%?info_fmt( "Request to unregister a peer of type '~ts': ~w.",
-	%			[ PeerType, PeerPid ] ),
+	%           [ PeerType, PeerPid ] ),
 
 	% Searching first in the multiple peer table, as it is the most common type
 	% of peers:
@@ -1434,7 +1435,7 @@ get_multiple_peers_for( PeerType, State ) ->
 -spec getAttributeStatus( wooper:state(), dataflow_attribute_bin_name() ) ->
 								const_request_return( value_status() ).
 getAttributeStatus( State, BinAttributeName )
-  when is_binary( BinAttributeName ) ->
+								when is_binary( BinAttributeName ) ->
 
 	% We rely on the output port associated to specified attribute for that
 	% status:
@@ -1466,7 +1467,7 @@ updateAttributes( State, AttributeUpdates, EventId, SendingActorPid ) ->
 	?debug_fmt( "Updating following ~B attributes: ~ts",
 		[ length( AttributeUpdates ),
 		  text_utils:strings_to_string( [ attribute_update_to_string( N, V )
-			  ||	{ N, V } <- AttributeUpdates ] ) ] ),
+				|| { N, V } <- AttributeUpdates ] ) ] ),
 
 	SuspendedState = setAttribute( State, run_status, suspended ),
 
@@ -1480,7 +1481,7 @@ updateAttributes( State, AttributeUpdates, EventId, SendingActorPid ) ->
 	{ AttrNames, AttrRawValues } = lists:unzip( AttributeUpdates ),
 
 	AttrSpecs = [ get_attribute_spec_from_name( Name, SuspendedState )
-				  || Name <- AttrNames ],
+						|| Name <- AttrNames ],
 
 	% Maybe some validity checks shall be added:
 	UpdatedState = set_attributes( AttrSpecs, AttrRawValues, SuspendedState ),
@@ -1524,9 +1525,9 @@ triggerDestruction( State, EventId, SendingActorPid ) ->
 	EmptyPortTable = table:new(),
 
 	FinalState = setAttributes( DeclaredState, [
-					{ input_ports, EmptyPortTable },
-					{ output_ports, EmptyPortTable },
-					{ run_status, terminating } ] ),
+		{ input_ports, EmptyPortTable },
+		{ output_ports, EmptyPortTable },
+		{ run_status, terminating } ] ),
 
 	actor:return_state( FinalState ).
 
@@ -1577,7 +1578,7 @@ notifyNewInput( _State, InputPortName, _ChannelValue, _UpstreamBlockPid ) ->
 -spec get_attribute_spec_from_name( dataflow_attribute_name(),
 								wooper:state() ) -> dataflow_attribute_spec().
 get_attribute_spec_from_name( BinAttributeName, State )
-  when is_binary( BinAttributeName ) ->
+										when is_binary( BinAttributeName ) ->
 
 	StringAttrName = text_utils:binary_to_string( BinAttributeName ),
 
@@ -1626,12 +1627,12 @@ attribute_spec_to_string( DataflowAttributeSpec ) ->
 -spec attribute_spec_to_string( dataflow_attribute_spec(),
 								text_utils:indentation_level() ) -> ustring().
 attribute_spec_to_string( #dataflow_attribute_spec{
-							 attribute_name=Name,
-							 comment=Comment,
-							 semantics=Semantics,
-							 unit=Unit,
-							 type_description=TypeDescription,
-							 constraints=Constraints },
+							attribute_name=Name,
+							comment=Comment,
+							semantics=Semantics,
+							unit=Unit,
+							type_description=TypeDescription,
+							constraints=Constraints },
 						  IndentationLevel ) ->
 
 	text_utils:format( "dataflow attribute named '~ts', ~ts, ~ts, ~ts, ~ts "
@@ -1720,7 +1721,7 @@ multiple_peer_table_to_string( Table ) ->
 		Entries ->
 
 			Strings = [ multiple_peer_type_to_string( Peer, PidList )
-						|| { Peer, PidList } <- Entries ],
+							|| { Peer, PidList } <- Entries ],
 
 			text_utils:format( "~B multiple peers defined: ~ts",
 				[ length( Entries ), text_utils:strings_to_string( Strings ) ] )
@@ -1753,7 +1754,7 @@ peer_to_name_table_to_string( PeerToNameTable ) ->
 		Entries ->
 
 			Strings = [ peer_attribute_name_to_string( PeerType, AttrName )
-						|| { PeerType, AttrName } <- Entries ],
+							|| { PeerType, AttrName } <- Entries ],
 
 			text_utils:format( "~B (unique) peers defined an attribute: ~ts",
 				[ length( Entries ), text_utils:strings_to_string( Strings ) ] )
@@ -1804,10 +1805,10 @@ attributes_to_string( State ) ->
 	InputPortPairs = table:enumerate( ?getAttr(input_ports) ),
 
 	AttrStrings = [ attribute_to_string( Name, InputPort )
-					|| { Name, InputPort } <- InputPortPairs ],
+						|| { Name, InputPort } <- InputPortPairs ],
 
 	text_utils:format( "~B attributes: ~ts", [ length( AttrStrings ),
-				text_utils:strings_to_string( AttrStrings ) ] ).
+		text_utils:strings_to_string( AttrStrings ) ] ).
 
 
 
@@ -1817,10 +1818,10 @@ attributes_to_string( State ) ->
 trace_initial_state( DataflowAttributeSpecs, InitialAttributeValues, State ) ->
 
 	AttrStrings = [ attribute_spec_to_string( Attr, _IndentationLevel=1 )
-					|| Attr <- DataflowAttributeSpecs ],
+								|| Attr <- DataflowAttributeSpecs ],
 
 	ValueStrings = [ text_utils:format( "'~p'", [ V ] )
-					 || V <- InitialAttributeValues ],
+								|| V <- InitialAttributeValues ],
 
 	?notice_fmt( "Registering following dataflow attributes: ~ts~n"
 		"with following respective initial values: ~ts",
@@ -1846,12 +1847,12 @@ create_attribute_specs_with_dimension( AttributeName, Semantics, Unit,
 	% Comment field ignored here.
 
 	[ #dataflow_attribute_spec{
-			attribute_name=
-			 text_utils:format( "~ts[~ts]", [ AttributeName, D ] ),
-			semantics=Semantics,
-			unit=Unit,
-			type_description=TypeDescription,
-			constraints=Constraints } || D <- Dimension ].
+		attribute_name=
+			text_utils:format( "~ts[~ts]", [ AttributeName, D ] ),
+		semantics=Semantics,
+		unit=Unit,
+		type_description=TypeDescription,
+		constraints=Constraints } || D <- Dimension ].
 
 
 
@@ -1873,8 +1874,9 @@ create_attribute_specs_with_dimensions( AttributeName, Semantics, Unit,
 	%
 	create_attribute_specs_with_dimension( AttributeName, Semantics, Unit,
 		TypeDescription, Constraints,
-		  [ text_utils:join( _Separator=$,, DimComponents )
-			|| DimComponents <- list_utils:cartesian_product( Dimensions ) ] ).
+			[ text_utils:join( _Separator=$,, DimComponents )
+				|| DimComponents <-
+						list_utils:cartesian_product( Dimensions ) ] ).
 
 
 
@@ -1983,9 +1985,9 @@ decode_initial_attribute_values( AttributeSpecs, NameValueAttrPairs, State ) ->
 	% order of the specified attributes, knowing some attributes may not have
 	% values to assign:
 
-	InitialValues = [ list_table:get_value_with_defaults( _K=AttrName,
+	InitialValues = [ list_table:get_value_with_default( _K=AttrName,
 						_DefaultValue=undefined, _Table=NameValueAttrPairs )
-					  || AttrName <- ExpectedAttrNames ],
+								|| AttrName <- ExpectedAttrNames ],
 
 	?debug_fmt( "Initial value setting: ~ts", [ text_utils:strings_to_string(
 		[ text_utils:format( "attribute '~ts' set to ~p", [ N, V ] )

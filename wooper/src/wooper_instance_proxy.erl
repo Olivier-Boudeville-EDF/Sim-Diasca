@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2022 Olivier Boudeville
+% Copyright (C) 2010-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -23,12 +23,11 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2010.
 
 
 % @doc Module to create <b>WOOPER instance proxies</b>.
--module(wooper_instance_proxy).
-
-
+%
 % The purpose of a proxy P is to be a process that acts as a man-in-the-middle
 % for a WOOPER target instance T: all processes interacting with P will actually
 % interact transparently with T.
@@ -40,6 +39,14 @@
 % Note that this proxy is only as transparent as reasonably achievable and,
 % that, anyway, proxies are seldom satisfactory solutions.
 %
+-module(wooper_instance_proxy).
+
+
+-type proxy_pid() :: pid().
+
+-export_type([ proxy_pid/0 ]).
+
+
 -export([ start/1, start_link/1 ]).
 
 
@@ -51,60 +58,61 @@
 -include_lib("myriad/include/spawn_utils.hrl").
 
 
-% @doc Starts a proxy for the specified WOOPER instance, designated by specified
-% PID.
+% @doc Starts a proxy for the specified WOOPER instance, designated by the
+% specified PID.
 %
--spec start( instance_pid() ) -> instance_pid().
+-spec start( instance_pid() ) -> proxy_pid().
 start( TargetInstancePid ) ->
 
-	trace_utils:notice_fmt( "Starting proxy for WOOPER instance ~w.",
+	trace_utils:notice_fmt( "Creating a proxy for WOOPER instance ~w.",
 							[ TargetInstancePid ] ),
 
 	?myriad_spawn( fun() ->
-						   proxy_main_loop( TargetInstancePid )
+					proxy_main_loop( TargetInstancePid )
 				   end ).
 
 
 
 % @doc Starts and links a proxy for the specified WOOPER instance, designated by
-% specified PID.
+% the specified PID.
 %
--spec start_link( pid() ) -> pid().
+-spec start_link( instance_pid() ) -> proxy_pid().
 start_link( TargetInstancePid ) ->
 
-	trace_utils:notice_fmt( "Starting linked proxy for WOOPER instance ~w.",
+	trace_utils:notice_fmt( "Creating a linked proxy for WOOPER instance ~w.",
 							[ TargetInstancePid ] ),
 
 	?myriad_spawn_link( fun() ->
-								proxy_main_loop( TargetInstancePid )
+							proxy_main_loop( TargetInstancePid )
 						end ).
 
 
 
 % @doc Main loop of the proxy.
+-spec proxy_main_loop( instance_pid() ) -> no_return().
 proxy_main_loop( TargetInstancePid ) ->
 
 	trace_utils:debug_fmt(
-	  "Proxy ~w waiting for a call to WOOPER target instance ~w.",
-	  [ self(), TargetInstancePid ] ),
+		"Proxy ~w waiting for a call to WOOPER target instance ~w.",
+		[ self(), TargetInstancePid ] ),
 
 
-	% This proxy is expected to receive either requests or oneways:
+	% This proxy is expected to receive (only) either requests or oneways:
 	receive
 
 		{ RequestName, Args, SenderPid } ->
 
 			trace_utils:debug_fmt( "Proxy ~w processing request ~p.",
-						   [ self(), { RequestName, Args, SenderPid } ] ),
+				[ self(), { RequestName, Args, SenderPid } ] ),
 
 			TargetInstancePid ! { RequestName, Args, self() },
 			receive
 
+				% Expecting a {wooper_result, Res} pair:
 				R ->
-
 					trace_utils:debug_fmt(
-					  "Proxy ~w returning ~p to caller ~w.",
-					  [ self(), R, SenderPid ] ),
+						"Proxy ~w returning ~p to caller ~w.",
+						[ self(), R, SenderPid ] ),
 
 					SenderPid ! R
 
@@ -125,8 +133,8 @@ proxy_main_loop( TargetInstancePid ) ->
 		delete ->
 
 			trace_utils:debug_fmt(
-			  "Deleting proxy ~w for WOOPER target instance ~w.",
-			  [ self(), TargetInstancePid ] ),
+				"Deleting proxy ~w for WOOPER target instance ~w.",
+				[ self(), TargetInstancePid ] ),
 
 			% No looping here:
 			TargetInstancePid ! delete;
@@ -144,8 +152,9 @@ proxy_main_loop( TargetInstancePid ) ->
 		Other ->
 
 			trace_utils:debug_fmt(
-			  "Warning: WOOPER instance proxy (~w) for ~w ignored "
-			  "following message: ~p.", [ self(), TargetInstancePid, Other ] ),
+				"Warning: WOOPER instance proxy (~w) for ~w ignored "
+				"following message: ~p.",
+			  [ self(), TargetInstancePid, Other ] ),
 
 			proxy_main_loop( TargetInstancePid )
 

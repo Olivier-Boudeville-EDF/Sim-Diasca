@@ -23,6 +23,7 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2013.
 
 
 % @doc <b>Minimal test for the MyriadGUI toolbox</b>: draws a single frame and
@@ -66,7 +67,7 @@ run_test_gui() ->
 	% Not even a real main loop here, just a one-shot event waited:
 	receive
 
-		{ onWindowClosed, [ TestFrame, Context ] } ->
+		{ onWindowClosed, [ TestFrame, _TestFrameId, Context ] } ->
 
 			trace_utils:info_fmt( "Test frame '~ts' closed (~ts).",
 				[ gui:object_to_string( TestFrame ),

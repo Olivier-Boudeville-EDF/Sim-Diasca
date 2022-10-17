@@ -67,7 +67,7 @@ The most obvious conventions are:
 
 - **no warning should be tolerated**; anyway our build chain treats warnings as (blocking) errors
 
-- **test cases** should be developed alongside most if not all modules; ex: if developing ``src/class_X.erl``, then probably the ``test/class_X_test.erl`` testing code should be developed, after or, even preferably, before the implementation of the tested code; test success should be evaluated automatically, by the code (ex: thanks to pattern matching), not by the person running the test (ex: who would have to compare visually the actual results with the expected ones); in some cases, only **integrated tests** can be devised in practice; tests should be gathered in **test suites**, that should be runnable automatically (``make test``, recursively through child directories) and fail loudly (and in a blocking manner) at the first error met
+- **test cases** should be developed alongside most if not all modules; ex: if developing ``src/foobar.erl``, then probably the ``test/foobar_test.erl`` testing code should be developed, after or, even preferably, before the implementation of the tested code; test success should be evaluated automatically, by the code (ex: thanks to pattern matching), not by the person running the test (ex: who would have to compare visually the actual results with the expected ones); in some cases, only **integrated tests** can be devised in practice; tests should be gathered in **test suites**, that should be runnable automatically (``make test``, recursively through child directories) and fail loudly (and in a blocking manner) at the first error met
 
 - **multiple levels of quality documentation** should be made available to the code user, and probably be written in parallel to the code; there are at least three documentation levels:
 
@@ -87,7 +87,7 @@ The most obvious conventions are:
 
 - the **latest stable version of Erlang** should be used, preferably built thanks to our ``myriad/conf/install-erlang.sh`` script
 
-- the official *Programming Rules and Conventions* should be enforced, as defined `here <http://www.erlang.se/doc/programming_rules.shtml>`_
+- the official *Programming Rules and Conventions* should be enforced, as defined `here <http://www.erlang.se/doc/programming_rules.shtml>`_ (possibly a dead link now; one may try `this mirror <https://docs.jj1bdx.tokyo/Erlang_Programming_Rules.html>`_ instead)
 
 - the function definitions shall follow **the same order** as the one of their exports
 
@@ -123,7 +123,9 @@ The most obvious conventions are:
 
 .. Note:: Mute variables are however actually bound, thus if for example there is in the same scope ``_Min=3`` and later ``_Min=4``, then a badmatch will be triggered at runtime; therefore names of mute variables should be generally kept unique in a given scope.
 
- - type shorthands may be defined; for example, if using repeatedly within a module ``text_utils:ustring()``, a local, non-exported type shorthand (``-type ustring() :: text_utils:ustring()``) may be defined so that all other uses of this type become simply ``ustring()``
+- as opposed to records, types shall never defined in header files (``*.hrl``): a given type shall be defined once, as a reference, and exported by its module; other modules may then just refer to it
+
+- type shorthands may be defined; for example, if using repeatedly within a module ``text_utils:ustring()``, a local, non-exported type shorthand (``-type ustring() :: text_utils:ustring()``) may be defined so that all other uses of this type become simply ``ustring()`` in this module
 
 As not all typos may be detected at compilation-time (ex: wrong spelling for a module), we recommend, for source code, the use of additional static checkers, as discussed in the `type-checking`_ section.
 

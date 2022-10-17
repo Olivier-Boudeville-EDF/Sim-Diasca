@@ -1,14 +1,15 @@
-% Copyright (C) 2003-2022 Olivier Boudeville
+% Copyright (C) 2007-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER examples.
 %
 % It has been placed in the public domain.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2007.
 
 
-
-% Unit tests for the Platypus class implementation.
+% @doc Unit tests for the <b>Platypus class implementation</b>, remarkable for
+% its diamond-shaped inheritance.
 %
 % See the class_Platypus.erl tested module.
 %
@@ -24,6 +25,7 @@
 -spec run() -> no_return().
 run() ->
 	run( class_Platypus:is_wooper_debug() ).
+
 
 
 -spec run( boolean() ) -> no_return().

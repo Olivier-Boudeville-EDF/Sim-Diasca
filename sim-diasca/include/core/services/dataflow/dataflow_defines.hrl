@@ -552,7 +552,7 @@
 % comply with the rules listed for port_name/0.
 
 
--type dataflow_attribute_string_name() :: text_utils:string().
+-type dataflow_attribute_string_name() :: text_utils:ustring().
 % Name of a dataflow attribute (as a plain string).
 
 -type dataflow_attribute_bin_name() :: port_name().

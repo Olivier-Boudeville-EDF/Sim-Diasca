@@ -725,8 +725,8 @@ add_camera_to_content( CameraType, CameraNode,
 	CameraNodeIndex = length( Nodes ),
 
 	UpdatedCameraNode = CameraNode#gltf_node{
-							name=BaseName,
-							camera=CameraTypeIndex },
+		name=BaseName,
+		camera=CameraTypeIndex },
 
 	NewNodes = list_utils:append_at_end( UpdatedCameraNode, Nodes ),
 
@@ -1177,16 +1177,12 @@ read_gltf_content( InputFilePath, ParserState ) ->
 	cond_utils:if_defined( myriad_debug_gltf_support, trace_utils:debug_fmt(
 		"Reading glTF content from '~ts'.", [ InputFilePath ] ) ),
 
-	case file_utils:is_existing_file_or_link( InputFilePath ) of
-
-		true ->
-			ok;
-
-		false ->
+	file_utils:is_existing_file_or_link( InputFilePath ) orelse
+		begin
 			trace_utils:error_fmt( "Error, input glTF file '~ts' not found.",
-								   [ InputFilePath ] )
-
-	end,
+								   [ InputFilePath ] ),
+			throw( { gltf_file_not_found, InputFilePath } )
+		end,
 
 	BinJsonFContent = file_utils:read_whole( InputFilePath ),
 
@@ -1430,11 +1426,11 @@ gltf_camera_type_to_json( #gltf_orthographic_camera{ name=MaybeName,
 							 BaseTable );
 
 gltf_camera_type_to_json( #gltf_perspective_camera{
-								name=MaybeName,
-								aspect_ratio=MaybeAspectRatio,
-								y_field_of_view=YFoV,
-								z_near_distance=ZNear,
-								z_far_distance=MaybeZFar } ) ->
+		name=MaybeName,
+		aspect_ratio=MaybeAspectRatio,
+		y_field_of_view=YFoV,
+		z_near_distance=ZNear,
+		z_far_distance=MaybeZFar } ) ->
 
 	BasePerspTable = table:new( [ { <<"yfov">>, YFoV },
 								  { <<"znear">>, ZNear } ] ),
@@ -1641,7 +1637,7 @@ json_to_gltf_buffer( JsonTerm ) ->
 											JsonTerm ),
 
 	MaybeBinName =
-		table:get_value_with_defaults( <<"name">>, undefined, JsonTerm ),
+		table:get_value_with_default( <<"name">>, undefined, JsonTerm ),
 
 	#gltf_buffer{ name=MaybeBinName,
 				  uri=text_utils:binary_to_string( BinUri ),
@@ -1925,12 +1921,12 @@ decode_vertices( AccessorIndex, Accessors, Buffers, BufferViews,
 				 BufferTable ) ->
 
 	_PositionAccessor = #gltf_accessor{
-							buffer_view=BufferViewIndex,
-							element_type=AccessorElemType,
-							component_type=AccessorComponentType,
-							count=PointCount,
-							max=PMax,
-							min=PMin } =
+			buffer_view=BufferViewIndex,
+			element_type=AccessorElemType,
+			component_type=AccessorComponentType,
+			count=PointCount,
+			max=PMax,
+			min=PMin } =
 		list_utils:get_element_at( Accessors, AccessorIndex+1 ),
 
 	trace_utils:debug_fmt( "To decode vertices, expecting ~B ~ts elements "
@@ -1958,12 +1954,12 @@ decode_normals( AccessorIndex, Accessors, Buffers, BufferViews,
 				BufferTable ) ->
 
 	_NormalAccessor = #gltf_accessor{
-							buffer_view=BufferViewIndex,
-							element_type=AccessorElemType,
-							component_type=AccessorComponentType,
-							count=VectorCount,
-							max=NMax,
-							min=NMin } =
+			buffer_view=BufferViewIndex,
+			element_type=AccessorElemType,
+			component_type=AccessorComponentType,
+			count=VectorCount,
+			max=NMax,
+			min=NMin } =
 		list_utils:get_element_at( Accessors, AccessorIndex+1 ),
 
 	trace_utils:debug_fmt( "To decode normals, expecting ~B ~ts elements "
@@ -1990,12 +1986,12 @@ decode_texture_coordinates( AccessorIndex, Accessors, Buffers, BufferViews,
 							BufferTable ) ->
 
 	_TexCoordAccessor = #gltf_accessor{
-							buffer_view=BufferViewIndex,
-							element_type=AccessorElemType,
-							component_type=AccessorComponentType,
-							count=CoordCount,
-							max=TCMax,
-							min=TCMin } =
+			buffer_view=BufferViewIndex,
+			element_type=AccessorElemType,
+			component_type=AccessorComponentType,
+			count=CoordCount,
+			max=TCMax,
+			min=TCMin } =
 		list_utils:get_element_at( Accessors, AccessorIndex+1 ),
 
 	trace_utils:debug_fmt( "To decode texture coordinates, expecting ~B ~ts "
@@ -2023,12 +2019,12 @@ decode_indexes( AccessorIndex, Accessors, Buffers, BufferViews,
 				BufferTable ) ->
 
 	_PositionAccessor = #gltf_accessor{
-							buffer_view=BufferViewIndex,
-							element_type=AccessorElemType,
-							component_type=AccessorComponentType,
-							count=PointCount,
-							max=IMax,
-							min=IMin } =
+			buffer_view=BufferViewIndex,
+			element_type=AccessorElemType,
+			component_type=AccessorComponentType,
+			count=PointCount,
+			max=IMax,
+			min=IMin } =
 		list_utils:get_element_at( Accessors, AccessorIndex+1 ),
 
 	trace_utils:debug_fmt( "To decode indexes, expecting ~B ~ts elements "

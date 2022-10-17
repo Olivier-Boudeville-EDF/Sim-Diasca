@@ -101,6 +101,7 @@
 
 
 -export([ new/1, new/3, new_integer/3, null/0,
+		  x_axis/0, y_axis/0, z_axis/0,
 		  from_point/1, to_point/1,
 		  vector3_to_yup/1, yup_to_vector3/1,
 		  vector3_to_yups/1, yup_to_vector3s/1,
@@ -129,7 +130,6 @@
 -type distance() :: linear:distance().
 -type square_distance() :: linear:square_distance().
 
--type point3() :: point3().
 -type any_point3() :: any_point3().
 
 
@@ -169,6 +169,36 @@ new_integer( X, Y, Z ) when is_integer( X ) andalso is_integer( Y )
 null() ->
 	Zero = 0.0,
 	[ Zero, Zero, Zero ].
+
+
+
+% @doc Returns a 3D vector corresponding to the X axis of the current
+% referential.
+%
+-spec x_axis() -> vector3().
+x_axis() ->
+	Zero = 0.0,
+	[ 1.0, Zero, Zero ].
+
+
+
+% @doc Returns a 3D vector corresponding to the Y axis of the current
+% referential.
+%
+-spec y_axis() -> vector3().
+y_axis() ->
+	Zero = 0.0,
+	[ Zero, 1.0, Zero ].
+
+
+
+% @doc Returns a 3D vector corresponding to the Z axis of the current
+% referential.
+%
+-spec z_axis() -> vector3().
+z_axis() ->
+	Zero = 0.0,
+	[ Zero, Zero, 1.0 ].
 
 
 
@@ -353,7 +383,7 @@ check_unit_vector( V ) ->
 
 
 % @doc Checks that the specified 3D vectors are normalised, and returns them.
--spec check_unit_vectors( vector3() ) -> unit_vector3().
+-spec check_unit_vectors( [ vector3() ] ) -> [ unit_vector3() ].
 check_unit_vectors( Vs ) ->
 	[ true = is_unitary( V ) || V <- Vs ],
 	Vs.

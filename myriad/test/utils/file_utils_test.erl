@@ -23,9 +23,10 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2003.
 
 
-% Unit tests for the file_utils toolbox.
+% Unit tests for the <b>file_utils toolbox</b>.
 %
 % See the file_utils.erl tested module.
 %
@@ -142,6 +143,14 @@ run() ->
 	TestPaths = [ "test", "/test/foobar", LeafPath, "another_element" ],
 
 	LeafPath = file_utils:is_leaf_among( LeafName, TestPaths ),
+
+
+
+	ToResolve = [ home, "hello", user_name, "hi", locale_charset, "goodbye",
+				  fqdn, "finished" ],
+
+	% Checks at least it does not fail:
+	_ResolvedPath = file_utils:resolve_path( ToResolve ),
 
 
 

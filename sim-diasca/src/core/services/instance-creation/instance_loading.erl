@@ -17,6 +17,7 @@
 % If not, see <http://www.gnu.org/licenses/>.
 
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
+% Creation date: 2014.
 
 
 % @doc Module dedicated to the <b>loading of instances</b>.
@@ -80,22 +81,46 @@
 % Full information to create an instance.
 
 
--type line_context() :: { file_utils:bin_file_name(), line_number(), line() }.
+-type line_context() :: { bin_file_name(), line_number(), line() }.
 % Full context of a parsed creation line (file origin, etc.).
 
 
+
 -type user_identifier() :: bin_string().
+% A user-specified identifier of an initially-created actor instance.
 
 
--type id_ref() :: { 'user_id', user_identifier() }.
+-type plain_user_identifier() :: ustring().
+% A user-specified identifier of an initially-created actor instance, as a plain
+% string.
+
+
+-type any_user_identifier() :: user_identifier() | plain_user_identifier().
+% A user-specified identifier, as any type of string, of an initially-created
+% actor instance.
+
+
+
+-type id_ref() :: { 'user_id', any_user_identifier() }.
+% Used in a creation specification, as a construction parameter referring to
+% another initial actor instance.
 
 
 -type identifier_info() :: user_identifier() | 'none'.
 % Either the user identifier itself (as a binary) or 'none'.
 
 
--export_type([ line_number/0, creation_spec/0, user_identifier/0, id_ref/0,
+-export_type([ line_number/0, creation_spec/0,
+
+			   user_identifier/0, plain_user_identifier/0,
+			   any_user_identifier/0,
+
+			   id_ref/0,
 			   identifier_info/0 ]).
+
+
+% User-level API:
+-export([ get_user_id_reference_for/1, get_maybe_user_id_reference_for/1 ]).
 
 
 -export([ manage_initialisation/3, get_instance_initialisation_line/3 ]).
@@ -113,6 +138,7 @@
 -type count() :: basic_utils:count().
 
 -type file_name() :: file_utils:file_name().
+-type bin_file_name() :: file_utils:bin_file_name().
 -type file_path() :: file_utils:file_path().
 -type file() :: file_utils:file().
 
@@ -181,6 +207,34 @@
 
 
 
+% @doc Returns a suitable user_id reference, as a string, from the specified
+% user identifier.
+%
+% Ex: get_user_id_reference_for("John") = "{user_id, \"John\"}".
+%
+-spec get_user_id_reference_for( any_user_identifier() ) -> ustring().
+get_user_id_reference_for( AnyUserId ) ->
+	text_utils:format( "{user_id,\"~ts\"}",
+					   [ text_utils:ensure_string( AnyUserId ) ] ).
+
+
+% @doc Returns a suitable user_id reference, as a string, from the specified
+% user identifier (if any).
+%
+% Ex: get_user_id_reference_for("John") = "{user_id, \"John\"}".
+%
+-spec get_maybe_user_id_reference_for( maybe( any_user_identifier() ) ) ->
+													maybe( ustring() ).
+get_maybe_user_id_reference_for( _MaybeAnyUserId=undefined ) ->
+	undefined;
+
+get_maybe_user_id_reference_for( AnyUserId ) ->
+	text_utils:format( "{user_id,\"~ts\"}",
+					   [ text_utils:ensure_string( AnyUserId ) ] ).
+
+
+
+
 % Takes care of creating the initial instances from specified files (if any).
 %
 % Expected to be spawned from the load balancer, letting it able to answer
@@ -198,7 +252,7 @@ manage_initialisation( InitialisationFiles, NodeCount, LoadBalancerPid ) ->
 		[ filename:basename( F ) ] ) || F <- InitialisationFiles ],
 
 	trace_utils:info_fmt( "Loading initial instances from: ~ts",
-			   [ text_utils:strings_to_string( ShortenInitFiles ) ] ),
+		[ text_utils:strings_to_string( ShortenInitFiles ) ] ),
 
 	CompressionFormat = xz,
 
@@ -209,7 +263,7 @@ manage_initialisation( InitialisationFiles, NodeCount, LoadBalancerPid ) ->
 
 		fun( Filename, AccFilenames ) ->
 
-			case filename:extension( Filename ) of
+			case file_utils:get_extension( Filename ) of
 
 				CompressExt ->
 
@@ -224,7 +278,6 @@ manage_initialisation( InitialisationFiles, NodeCount, LoadBalancerPid ) ->
 
 				_ ->
 					[ Filename | AccFilenames ]
-
 
 			end
 
@@ -248,9 +301,9 @@ manage_initialisation( InitialisationFiles, NodeCount, LoadBalancerPid ) ->
 	% by the creators:
 	%
 	UserIdResolverPid = ?myriad_spawn_link(
-			fun() ->
-				user_identifier_resolver_loop( InstanceLoaderPid )
-			end ),
+		fun() ->
+			user_identifier_resolver_loop( InstanceLoaderPid )
+		end ),
 
 	% Let's then spawn the creator processes first; as many of them as there are
 	% available cores on this user node:
@@ -271,7 +324,7 @@ manage_initialisation( InitialisationFiles, NodeCount, LoadBalancerPid ) ->
 			instance_creator_loop( NodeCount, UserIdResolverPid,
 								   LoadBalancerPid, InstanceLoaderPid )
 		end )
-				 || _CoreCount <- lists:seq( 1, CreatorsCount ) ],
+					|| _CoreCount <- lists:seq( 1, CreatorsCount ) ],
 
 	case ReadyInitFiles of
 
@@ -298,10 +351,10 @@ manage_initialisation( InitialisationFiles, NodeCount, LoadBalancerPid ) ->
 	%                      [ text_utils:strings_to_string( ReadyInitFiles ) ] ),
 
 	Readers = [ ?myriad_spawn_link(
-				fun() ->
-					read_init_file( InitFile, Creators, InstanceLoaderPid )
-				end )
-				|| InitFile <- ReadyInitFiles ],
+					fun() ->
+						read_init_file( InitFile, Creators, InstanceLoaderPid )
+					end )
+								|| InitFile <- ReadyInitFiles ],
 
 	% We chose, for this data-based initialisation, to rely on a dedicated
 	% process and handle the corresponding applicative protocol from this
@@ -311,7 +364,7 @@ manage_initialisation( InitialisationFiles, NodeCount, LoadBalancerPid ) ->
 	% to be sent in the course of the loading to the load balancer):
 	%
 	initialisation_waiting_loop( UserIdResolverPid, _CreationCount=0,
-				Creators, Readers, LoadStartTimestamp, LoadBalancerPid ).
+		Creators, Readers, LoadStartTimestamp, LoadBalancerPid ).
 
 
 
@@ -432,17 +485,15 @@ read_init_file( Filename, Creators, InstanceLoaderPid ) ->
 		[ Filename, self(), Creators ], ?loader_cat ),
 
 	% Each filename is by design an absolute path here:
-	case file_utils:is_existing_file_or_link( Filename ) of
+	file_utils:is_existing_file_or_link( Filename ) orelse
+		begin
 
-		true ->
-			ok;
-
-		false ->
 			trace_utils:error_fmt( "Initialisation file '~ts' could "
 				"not be found from node '~ts'.", [ Filename, node() ] ),
+
 			throw( { init_file_not_found, Filename, node() } )
 
-	end,
+		end,
 
 	% We prefer reading the (potentially huge) file line by line (with some
 	% read-ahead for performances), rather than reading it as a whole as a
@@ -471,8 +522,8 @@ read_init_file( Filename, Creators, InstanceLoaderPid ) ->
 	InstanceCreationCount =
 		read_all_lines( InitFile, CreationChunkCount, Creators, Filename ),
 
-	InstanceLoaderPid ! { initialisation_file_read, InstanceCreationCount,
-						  self() } ,
+	InstanceLoaderPid !
+		{ initialisation_file_read, InstanceCreationCount, self() } ,
 
 	% Terminates just afterwards:
 	file_utils:close( InitFile ).
@@ -670,16 +721,9 @@ instance_creator_loop( NodeCount, IdResolverPid, LoadBalancerPid,
 			% Filter-out 'no_creation', keep only PIDs:
 			FilteredWaited = [ P || P <- WaitedEmbodiements, is_pid( P ) ],
 
-			case FilteredWaited of
-
-				[] ->
-					ok;
-
-				_ ->
-					LoadBalancerPid !
-						{ registerInitialActors, [ FilteredWaited ], self() }
-
-			end,
+			FilteredWaited =:= [] orelse
+				( LoadBalancerPid !
+					{ registerInitialActors, [ FilteredWaited ], self() } ),
 
 			%trace_utils:debug_fmt(
 			%   "Waiting for embodiement of ~w actors: ~w...",
@@ -703,20 +747,13 @@ instance_creator_loop( NodeCount, IdResolverPid, LoadBalancerPid,
 								   [ ReaderPid ], ?reader_cat ),
 
 			% From registerInitialActors:
-			case FilteredWaited of
+			FilteredWaited =:= [] orelse
+				receive
 
-				[] ->
-					ok;
+					{ wooper_result, initial_actors_registered } ->
+						ok
 
-				_ ->
-					receive
-
-						{ wooper_result, initial_actors_registered } ->
-							ok
-
-					end
-
-			end,
+				end,
 
 			instance_creator_loop( NodeCount, IdResolverPid, LoadBalancerPid,
 								   InstanceLoaderPid );
@@ -740,26 +777,23 @@ instance_creator_loop( NodeCount, IdResolverPid, LoadBalancerPid,
 %
 % Synchronicity enforced here, for a better control.
 %
--spec parse_creation_line( line_info(), file_utils:bin_file_name(),
-			id_resolver_pid(), load_balancer_pid() ) -> instance_pid().
+-spec parse_creation_line( line_info(), bin_file_name(), id_resolver_pid(),
+						   load_balancer_pid() ) -> instance_pid().
 parse_creation_line( _LineInfo={ LineNumber, BinLine }, BinFilename,
 					 IdResolverPid, LoadBalancerPid ) ->
 
-	case LineNumber rem 500 of
+	LineNumber rem 500 =:= 0 andalso
+		begin
 
-		0 ->
 			ShortenFilename = filename:basename(
 							text_utils:binary_to_string( BinFilename ) ),
 
 			trace_utils:info_fmt(
 				" - processing creation line #~B from ~ts at ~ts",
 				[ LineNumber, ShortenFilename,
-				  time_utils:get_textual_timestamp() ] );
+				  time_utils:get_textual_timestamp() ] )
 
-		_ ->
-			ok
-
-	end,
+		end,
 
 	% Removes the ending newline for readability:
 	%trace_utils:debug_fmt( "Parsing line #~B: '~ts'.", [ LineNumber,
@@ -892,15 +926,9 @@ extract_id( String, LineContext ) ->
 				% Must be akin to {"  <-   ", "class_Beatle,...."}:
 				{ SomeKindOfArrow, AfterArrowWithoutBrace } ->
 
-					case text_utils:trim_whitespaces( SomeKindOfArrow ) of
-
-						"<-" ->
-							ok;
-
-						_Other ->
-							report_parse_error( arrow_not_found, LineContext )
-
-					end,
+					text_utils:trim_whitespaces( SomeKindOfArrow ) =:= "<-"
+						orelse
+							report_parse_error( arrow_not_found, LineContext ),
 
 					BinUserId = text_utils:string_to_binary( UserId ),
 
@@ -949,17 +977,9 @@ create_instance_from( CreationClause, IdInfo,
 					LoadBalancerPid ! { getActorCreationInformationFromHint,
 								[ PlacementHint, LineNumber, Class ], self() },
 
-					case IdInfo of
-
-						none ->
-							ok;
-
-						_ ->
-							report_parse_error(
-							  both_placement_hint_and_id_defined, LineContext )
-
-					end,
-
+					IdInfo =:= none orelse
+						report_parse_error( both_placement_hint_and_id_defined,
+											LineContext ),
 
 					{ ActualConstructionParameters, _FirstUserId } =
 						replace_identifiers_by_pid( Args, IdResolverPid,
@@ -1003,7 +1023,7 @@ create_instance_from( CreationClause, IdInfo,
 
 
 				{ ok, { Class, _Args, _PlacementHint } }
-				  when is_atom( Class ) ->
+								 when is_atom( Class ) ->
 					report_parse_error( non_list_arguments, LineContext );
 
 				{ ok, { _Class, _Args, _PlacementHint } } ->
@@ -1012,7 +1032,7 @@ create_instance_from( CreationClause, IdInfo,
 
 				% Without placement hints:
 				{ ok, { Class, Args } }
-				  when is_atom( Class ) andalso is_list( Args ) ->
+								when is_atom( Class ) andalso is_list( Args ) ->
 
 					%trace_utils:debug( "Parse OK, without placement hint." ),
 
@@ -1220,8 +1240,8 @@ transform_argument( Arg, IdResolverPid, LoadBalancerPid, FirstUserId,
 
 	end,
 
-	ast_transform:transform_term( _TargetTerm=Arg, _TypeDescription=tuple,
-								  IdTransformer, _UserData=FirstUserId ).
+	meta_utils:transform_term( _TargetTerm=Arg, _TypeDescription=tuple,
+							   IdTransformer, _UserData=FirstUserId ).
 
 
 % @doc Reports specified error while parsing specified creation line.
@@ -1266,9 +1286,8 @@ user_identifier_resolver_loop( InstanceLoaderPid ) ->
 %
 % Parameters:
 %
-% - IdTable :: table( user_identifier(), {blank_pid, pid()} | pid() ) is
-% a table whose keys are user identifiers (as binary strings), and whose values
-% are:
+% - IdTable :: table(user_identifier(), {blank_pid, pid()} | pid()) is a table
+% whose keys are user identifiers (as binary strings), and whose values are:
 %
 %   - either {blank_pid, P} where P is a blank PID that will host the
 %   corresponding instance once it will be constructed
@@ -1298,8 +1317,8 @@ user_identifier_resolver_loop( IdTable, InstanceLoaderPid ) ->
 		% New reference to a user id:
 		{ resolve_id, BinId, LoadBalancerPid, CallerPid } ->
 
-			NewIdTable = resolve_id( BinId, IdTable, LoadBalancerPid,
-									 CallerPid ),
+			NewIdTable =
+				resolve_id( BinId, IdTable, LoadBalancerPid, CallerPid ),
 
 			user_identifier_resolver_loop( NewIdTable, InstanceLoaderPid );
 
@@ -1434,12 +1453,12 @@ wrap_up_and_terminate( IdTable ) ->
 
 	CheckFun = fun
 
-					( { BinId, { blank_pid, _BlankPid } }, IdAcc ) ->
-						[ BinId | IdAcc ];
+		( { BinId, { blank_pid, _BlankPid } }, IdAcc ) ->
+			[ BinId | IdAcc ];
 
 
-				   ( { _BinId, _Pid }, IdAcc ) ->
-						IdAcc
+		( { _BinId, _Pid }, IdAcc ) ->
+			IdAcc
 
 			   end,
 

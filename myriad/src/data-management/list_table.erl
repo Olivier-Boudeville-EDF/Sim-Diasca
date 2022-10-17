@@ -22,8 +22,8 @@
 % If not, see <http://www.gnu.org/licenses/> and
 % <http://www.mozilla.org/MPL/>.
 %
-% Creation date: Monday, December 22, 2014.
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: Monday, December 22, 2014.
 
 
 % @doc Implementation of an <b>associative table relying on a simple list of
@@ -48,7 +48,8 @@
 %
 % They are to provide the same API (signatures and contracts).
 %
-% See also: `list_utils.erl'.
+% See also: `list_utils.erl' and our quite similar yet less useful
+% `option_list.erl'.
 %
 -module(list_table).
 
@@ -59,9 +60,9 @@
 		  add_entry/3, add_entries/2, add_new_entry/3, add_new_entries/2,
 		  remove_entry/2, remove_entries/2,
 		  lookup_entry/2, has_entry/2,
-		  extract_entry/2, extract_entry_with_defaults/3,
+		  extract_entry/2, extract_entry_with_default/3,
 		  extract_entry_if_existing/2, extract_entries/2,
-		  get_value/2, get_value_with_defaults/3,
+		  get_value/2, get_value_with_default/3,
 		  get_values/2, get_all_values/2,
 		  add_to_entry/3, subtract_from_entry/3, toggle_entry/2,
 		  append_to_existing_entry/3, append_list_to_existing_entry/3,
@@ -88,15 +89,18 @@
 -type entry_count() :: basic_utils:count().
 
 
--opaque list_table() :: [ { key(), value() } ].
+% Cannot be kept opaque:
+-type list_table() :: [ { key(), value() } ].
 % Not exactly as proplist:proplist/0 (pairs only, and any() as key).
 
--opaque list_table( K, V ) :: [ { K, V } ].
+% Cannot be kept opaque:
+-type list_table( K, V ) :: [ { K, V } ].
 
-% Preferred naming:
--opaque table() :: list_table().
 
--opaque table( K, V ) :: list_table( K, V ).
+% Possible alternate naming:
+-type table() :: list_table().
+
+-type table( K, V ) :: list_table( K, V ).
 
 
 -export_type([ key/0, value/0, entry/0, entries/0, entry_count/0,
@@ -296,8 +300,8 @@ get_value( Key, Table ) ->
 
 
 
-% @doc Extracts specified entry from specified table, that is returns the
-% associated value and removes that entry from the table.
+% @doc Extracts the specified entry from the specified table, that is returns
+% the associated value and removes that entry from the table.
 %
 % The key/value pair is expected to exist already in the specified table,
 % otherwise an exception is thrown.
@@ -318,15 +322,15 @@ extract_entry( Key, Table ) ->
 
 
 
-% @doc Extracts specified entry from specified table, that is returns the
-% associated value and removes that entry from the table.
+% @doc Extracts the specified entry from the specified table, that is returns
+% the associated value and removes that entry from the table.
 %
 % If no such key is available, returns the specified default value and the
 % original table.
 %
--spec extract_entry_with_defaults( key(), value(), list_table() ) ->
+-spec extract_entry_with_default( key(), value(), list_table() ) ->
 										{ value(), list_table() }.
-extract_entry_with_defaults( Key, DefaultValue, Table ) ->
+extract_entry_with_default( Key, DefaultValue, Table ) ->
 
 	case has_entry( Key, Table ) of
 
@@ -389,8 +393,8 @@ extract_entries( Keys, ListHashtable ) ->
 % @doc Looks for specified entry in specified table and, if found, returns the
 % associated value; otherwise returns the specified default value.
 %
--spec get_value_with_defaults( key(), value(), list_table() ) -> value().
-get_value_with_defaults( Key, DefaultValue, Table ) ->
+-spec get_value_with_default( key(), value(), list_table() ) -> value().
+get_value_with_default( Key, DefaultValue, Table ) ->
 
 	case lists:keyfind( Key, _N=1, Table ) of
 
@@ -530,7 +534,6 @@ add_to_entry( Key, Number, Table ) ->
 		{ value, { _Key, Value }, ShrunkTable } ->
 			[ { Key, Value + Number } | ShrunkTable ];
 
-
 		false ->
 			throw( { key_not_found, Key } )
 
@@ -551,7 +554,6 @@ subtract_from_entry( Key, Number, Table ) ->
 
 		{ value, { _Key, Value }, ShrunkTable } ->
 			[ { Key, Value - Number } | ShrunkTable ];
-
 
 		false ->
 			throw( { key_not_found, Key } )

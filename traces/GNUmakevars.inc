@@ -118,7 +118,7 @@ endif
 # The uniquely-defined version of this layer, for all uses (including rebar and
 # hex):
 #
-TRACES_VERSION := 1.0.10
+TRACES_VERSION := 1.0.15
 
 
 # PROJECT_VERSION should be defined on a per-project basis.
@@ -223,6 +223,11 @@ endif
 ifndef BOOTSTRAP_MODULES
 	BOOTSTRAP_MODULES = $(empty)
 endif
+
+
+# To be available from a Makefile despite not being in the user's PATH:
+KILL_TRACE_SUPERVISION_TOOL = $(TRACES_TOP)/priv/bin/kill-trace-supervision-tool.sh
+
 
 ifndef EDOC_OPTS
 	EDOC_OPTS = '[{dir,"$(API_DOC_ROOT)"}, {def,{vsn,"$(PROJECT_VERSION)"}}, {preprocess,true}, {includes,["$(LAYER_TOP)/include", "$(MYRIAD_TOP)/.."]}, {overview, "$(LAYER_TOP)/overview.edoc"}]'

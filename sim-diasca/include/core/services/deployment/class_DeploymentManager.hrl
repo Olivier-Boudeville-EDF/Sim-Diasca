@@ -17,7 +17,7 @@
 % If not, see <http://www.gnu.org/licenses/>.
 
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
-% Creation date: 2022.
+% Creation date: 2008.
 
 
 % The name under which the deployment manager is to be registered (globally):
@@ -27,62 +27,14 @@
 
 
 
-% Section of shorthands for next record specifications.
-
-
--type host_list() :: net_utils:atom_host_name() |
-			[ { net_utils:atom_host_name(), basic_utils:atom_user_name() } ].
-% A list of hostnames, possibly with their associated user name.
-
-
--type element_path() :: file_utils:path().
-
-
--type element_type() :: 'data' | 'code'.
-% Designates the type of elements to deploy, either data used by models, or code
-% (native, or used through bindings - hence typically Erlang, or Python, Java,
-% etc.)
-
-
-
--type element_option() :: { 'exclude_directories', [ file_utils:path() ] }
-						| { 'exclude_suffixes', [ text_utils:ustring() ] }
-						| { 'keep_only_suffixes', [ text_utils:ustring() ] }
-						| 'rebuild'
-						| 'no_rebuild'.
-
-
--type element_spec() :: { element_path(), element_type(), [ element_option() ] }
-					  | { element_path(), element_type(), element_option() }
-					  | { element_path(), element_type() }.
-% Describes filesystem elements of interest.
-
-
--type elements_to_deploy() :: [ element_spec() ].
-% Specifies elements in the filesystem that shall be deployed.
-
-
--type firewall_options() :: { 'tcp_restricted_range',
-							  net_utils:tcp_port_range() }
-						  | { 'epmd_port', net_utils:tcp_port() }.
-% The firewall-related network options to account for.
-
-
--type language_binding_information() :: language_utils:language()
-					| { language_utils:language(), code_utils:code_path() }.
-% The information regarding the configuration of a language binding.
-
-
--type web_probe_classnames() :: [ wooper:classname() ].
-% A list of the classnames of web probes.
-
-
 % Describes how the simulator deployment should be performed.
 -record( deployment_settings, {
 
 
 	% This field describes the eligible computing hosts that may take part to
-	% the simulation. This field is either:
+	% the simulation.
+	%
+	% This field is either:
 	%
 	% - a list whose elements are either {Hostname,Username} pairs (both being
 	% specified as atoms) or just Hostname, designating a set of computers and
@@ -152,8 +104,9 @@
 	%
 	computing_hosts = { use_host_file_otherwise_local,
 						"sim-diasca-host-candidates.txt" } ::
-		  host_list()
-		| { host_list(), 'include_localhost' | 'exclude_localhost' }
+		  class_DeploymentManager:host_list()
+		| { class_DeploymentManager:host_list(),
+			'include_localhost' | 'exclude_localhost' }
 		| 'localhost_only'
 		| { 'use_host_file' | 'use_host_file_otherwise_local',
 			file_utils:file_name() }
@@ -170,7 +123,7 @@
 	% Otherwise leave it to 'allow_unavailable_nodes'.
 	%
 	node_availability_tolerance = allow_unavailable_nodes ::
-					'allow_unavailable_nodes' | 'fail_on_unavailable_node',
+		'allow_unavailable_nodes' | 'fail_on_unavailable_node',
 
 
 	% Tells whether ping (ICMP) messages can be used in order to determine
@@ -346,7 +299,8 @@
 	% no_rebuild}, {"/var/Sim/ebin", code, [rebuild, {exclude_suffixes,
 	% ["_test.beam"]}, {keep_only_suffixes, [".beam", ".dat"]}]}].
 	%
-	additional_elements_to_deploy = [] :: elements_to_deploy(),
+	additional_elements_to_deploy = [] ::
+		class_DeploymentManager:elements_to_deploy(),
 
 
 	% Allows to specify a list of plugin directories that will be scanned for
@@ -358,13 +312,13 @@
 	%
 	% These modules will be available on the user node only.
 	%
-	plugin_directories = [] :: [ file_utils:directory_name() ],
+	plugin_directories = [] :: [ file_utils:directory_path() ],
 
 
-	% Some prerequisites (ex: erlhdf5, used only by some internal simulations)
-	% may not have to be deployed as they would by convention already be readily
-	% available (installed) on the target platform (ex: on the user node, or on
-	% computing nodes).
+	% Some prerequisites (ex: erlhdf5 or gephi), used only by some internal
+	% simulations) may not have to be deployed as they would by convention
+	% already be readily available (installed) on the target platform (ex: on
+	% the user node, or on computing nodes).
 	%
 	% So they will not be deployed, yet the engine must add their (absolute)
 	% directories to its code path so that these prerequisites can be used.
@@ -374,16 +328,18 @@
 	%
 	% Note that:
 	%
-	% - the directories are taken as are, so any directory that would be
-	% relative to a given home directory (ex:
-	% "/home/smith/Software/Foobar-current-install") implies that the current
-	% login and home directory are expected to be uniform across all specified
-	% hosts
+	% - the directories may be specified here as normal or resolvable paths,
+	% allowing them to be defined according to runtime-evaluated settings - such
+	% as user name, host name, etc.; for example, specifying [home,
+	% "my-simulation", "project-113", fqdn, "result"] might result in an actual
+	% a path that would adapt to each host and user, like:
+	% "/home/bond/my-simulation/project-113/hurricane.foobar.org/result"; see
+	% file_utils:resolvable_path/0 for more information
 	%
 	% - one may uncomment a debug trace in the constructor of the time managers
 	% in order to inspect the actual code path used on each computing node
 	%
-	additional_beam_directories = [] :: [ file_utils:directory_name() ],
+	additional_beam_directories = [] :: [ file_utils:resolvable_path() ],
 
 
 	% Tells whether, prior to the launching of any Erlang node, a previous
@@ -452,7 +408,7 @@
 							  % (default Erlang EPMD port is 4369)
 							  { epmd_port, 4506 },
 							  { tcp_restricted_range, { 50000, 55000 } } ]
-									:: 'none' | [ firewall_options() ],
+					:: 'none' | [ class_DeploymentManager:firewall_options() ],
 
 
 	% Tells which directory shall be used, on each computing node, to store
@@ -480,12 +436,12 @@
 	% Two file format are supported: Erlang terms, as read by file:consult/1, or
 	% JSON file (if the JSON is available).
 	%
-	% For files containing Erlang terms, their recommended extension is
-	% ".cfg". Their content must be a list of lines, each terminated by a dot,
-	% and containing either a {Key, Value, Qualifier} triplet or a {Key, Value}
-	% pair (which implies Qualifier=const), knowing that Key is an atom, Value
-	% is any Erlang term, and Qualifier is either 'const' or 'mutable' (lines
-	% starting with with '%' are treated as comments, i.e. are ignored).
+	% For files containing Erlang terms, their recommended extension is ".cfg"
+	% or ".etf". Their content must be a list of lines, each terminated by a
+	% dot, and containing either a {Key, Value, Qualifier} triplet or a {Key,
+	% Value} pair (which implies Qualifier=const), knowing that Key is an atom,
+	% Value is any Erlang term, and Qualifier is either 'const' or 'mutable'
+	% (lines starting with with '%' are treated as comments, i.e. are ignored).
 	%
 	% See the soda_parameters.cfg file and associated test cases of Soda Test
 	% for a complete example.
@@ -503,8 +459,9 @@
 
 	% Tells which of the supported foreign (non-Erlang) programming languages
 	% shall be enabled (ex: Python, Java, etc.) on the computing nodes, possibly
-	% with a language-specific code path specified in order that they can find
-	% the additional runtime files (ex: *.py, *.class) they may need.
+	% with a language-specific (possibly with resolvable paths) code path
+	% specified in order that they can find the additional runtime files (ex:
+	% *.py, *.class) that they may need.
 	%
 	% Note:
 	%
@@ -518,12 +475,15 @@
 	% - for Erlang, to specify an additional code path, use the
 	% 'additional_beam_directories' field
 	%
-	enable_language_bindings = [] :: [ language_binding_information() ],
+	enable_language_bindings = [] ::
+		[ class_DeploymentManager:language_binding_information() ],
 
 
-	% Tells whether the webmanager, in charge of a third-party, local webserver,
-	% shall be enabled (by default: no), notably in order to display web-based
-	% results or possibly control the simulation.
+	% Tells whether the webmanager, in charge of a third-party, local webserver
+	% (note that, at least currently, no server is actually used; local HTML
+	% content is generated and directly browsed) shall be enabled (by default:
+	% no), notably in order to display web-based results (or possibly, in some
+	% future, control the simulation).
 	%
 	% If the use of the webmanager is enabled, then:
 	%
@@ -542,11 +502,41 @@
 	% will default to '~/Software/sim_diasca_webserver_install_root', which is
 	% possibly a symlink pointing to a specific local install
 	%
+	% (the last two paramets are currently ignored)
+	%
 	enable_webmanager = false :: boolean()
-			   | { 'true', web_probe_classnames() }
-			   | { 'true', web_probe_classnames(), net_utils:tcp_port() }
-			   | { 'true', web_probe_classnames(), net_utils:tcp_port(),
-				   file_utils:directory_path() },
+
+			| { 'true', class_DeploymentManager:web_probe_classnames() }
+
+			| { 'true', class_DeploymentManager:web_probe_classnames(),
+				net_utils:tcp_port() }
+
+			| { 'true', class_DeploymentManager:web_probe_classnames(),
+				net_utils:tcp_port(), file_utils:directory_path() },
+
+
+	% Tells whether graph streaming shall be enabled, with which a dedicated
+	% tool can be used and fed by the simulation thanks to relevant probes (see
+	% class_GraphStreamProbe).
+	%
+	% If the use of graph streaming is enabled:
+	%
+	%  - if no host is specified, then a suitable graph tool (Gephi) will be
+	%  launched on the local host (any previously running instance of Gephi
+	%  being then gracefully reused)
+	%
+	%  - otherwise (if an host is specified), then a corresponding server will
+	%  be expected to be already launched and running there
+	%
+	% A corresponding project file to be loaded can be specified, possibly with
+	% the host and TCP port that this graph tool shall use.
+	%
+	enable_graph_streaming = false :: boolean()
+		| { 'true', maybe( class_GraphStreamProbe:project_path() ) }
+		| { 'true', maybe( class_GraphStreamProbe:project_path() ),
+			net_utils:tcp_port() }
+		| { 'true', maybe( class_GraphStreamProbe:project_path() ),
+			net_utils:string_host_name(), net_utils:tcp_port() },
 
 
 	% Tells what is the required resilience of the simulation with regard to the
@@ -614,10 +604,6 @@
 	serialisation_period = 2 * 60 * 60 :: unit_utils:seconds() } ).
 
 
-% For convenience:
--type deployment_settings() :: #deployment_settings{}.
-
-
 
 % Records the known information about a computing host:
 -record( computing_host_info, {
@@ -640,7 +626,3 @@
 
 	% The static information about an host:
 	host_infos :: system_utils:host_static_info() } ).
-
-
--type computing_host_info() :: #computing_host_info{}.
-% Records the known information about a computing host.

@@ -16,6 +16,7 @@
 % If not, see <http://www.gnu.org/licenses/>.
 
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
+% Creation date: 2012.
 
 
 % @doc Class in charge of organising the mechanisms in order to enhance the
@@ -243,6 +244,9 @@
 
 -type atom_node_name() :: net_utils:atom_node_name().
 
+-type computing_host_info() :: class_DeploymentManager:computing_host_info().
+
+-type deployment_settings() :: class_DeploymentManager:deployment_settings().
 
 
 
@@ -357,16 +361,9 @@ construct( State, _FullSettings={ SimulationSettings,
 	CommonState = construct_common( State ),
 
 	% Some basic checkings (no duplicates expected):
-	case length( AllComputingNodes )
-			- length( list_utils:uniquify( AllComputingNodes ) ) of
-
-		0 ->
-			ok;
-
-		_ ->
-			throw( { duplicate_in_node_list, AllComputingNodes } )
-
-	end,
+	length( AllComputingNodes ) =:=
+			length( list_utils:uniquify( AllComputingNodes ) )
+		orelse throw( { duplicate_in_node_list, AllComputingNodes } ),
 
 	SerialisationPeriod =
 		DeploymentSettings#deployment_settings.serialisation_period,
@@ -561,8 +558,8 @@ simulation_started( State ) ->
 					ResilienceManagerPid, LastTimestampWatchdog, Period ) end ),
 
 	EnabledState = setAttributes( State, [
-						{ serialisation_enabled, true },
-						{ time_tracker_pid, TimeTrackerPid } ] ),
+		{ serialisation_enabled, true },
+		{ time_tracker_pid, TimeTrackerPid } ] ),
 
 	NewState = case IsTimeForSnapshot of
 
@@ -646,18 +643,14 @@ simulation_stopped( State ) ->
 -spec serialisationRequested( wooper:state() ) -> const_oneway_return().
 serialisationRequested( State ) ->
 
-	case ?getAttr(serialisation_enabled) of
-
-		true ->
+	?getAttr(serialisation_enabled) andalso
+		begin
 			?debug( "Serialisation requested to the root time manager." ),
 
 			% We will thus be notified as soon as the current diasca is over:
-			?getAttr(root_time_manager_pid) ! serialisationRequested;
+			?getAttr(root_time_manager_pid) ! serialisationRequested
 
-		false ->
-			ok
-
-	end,
+		end,
 
 	% We cannot proceed instantly, as the serialisation must be done during an
 	% inter-diasca (the next to happen, thus) to rely on a stable, unchanging
@@ -821,16 +814,16 @@ perform_rollback( Tick, Diasca, CrashedNodes, State ) ->
 
 	SurvivorAgentPidList = [
 
-			begin
+		begin
 
-				SurvivorAgentPid = table:get_value( _K=Node, NodeTable ),
+			SurvivorAgentPid = table:get_value( _K=Node, NodeTable ),
 
-				SurvivorAgentPid ! { recoverNodes,
-										[ SecuredList, Tick, Diasca ], self() },
+			SurvivorAgentPid ! { recoverNodes,
+									[ SecuredList, Tick, Diasca ], self() },
 
-				SurvivorAgentPid
+			SurvivorAgentPid
 
-			end || { Node, SecuredList } <- DispatchedNodes ],
+		end || { Node, SecuredList } <- DispatchedNodes ],
 
 	% Now that the deserialisation work is triggered, performing in parallel
 	% other tasks, like rebuilding the k-map (for any next crash):
@@ -947,11 +940,11 @@ prepare_next_crash( ResilienceLevel, SurvivingNodes, NodeTable, State ) ->
 						[ NodeCount, ResilienceLevel ] ),
 
 					setAttributes( State, [
-							{ resilience_level, 0 },
-							{ protected_nodes, [] },
-							{ k_map, undefined },
-							{ node_table, undefined },
-							{ serialisation_enabled, false } ] );
+						{ resilience_level, 0 },
+						{ protected_nodes, [] },
+						{ k_map, undefined },
+						{ node_table, undefined },
+						{ serialisation_enabled, false } ] );
 
 				NewResilienceLevel ->
 					?warning_fmt( "Not enough remaining nodes (~B) after the "
@@ -1046,10 +1039,10 @@ dispatch_serialisations( _CrashedNodes=[ N | T ], WeightedNodes, KMap ) ->
 
 	% Subset of the weighted nodes that can take care of N, others:
 	{ CandidatesWeightedNodes, OtherWeightedNodes } = lists:partition(
-			fun( { Node, _List } ) ->
-				lists:member( Node, Candidates )
-			end,
-			WeightedNodes ),
+		fun( { Node, _List } ) ->
+			lists:member( Node, Candidates )
+		end,
+		WeightedNodes ),
 
 	UpdatedWeightedNodes = select_least_loaded( CandidatesWeightedNodes, N ),
 
@@ -1318,8 +1311,8 @@ k_map_to_string( KMap ) ->
 	KPairs = lists:keysort( _Index=1, table:enumerate( KMap ) ),
 
 	KString = text_utils:strings_to_string( [
-		text_utils:format( "for node ~ts: ~ts", [ N, k_record_to_string( R ) ] )
-												|| { N, R } <- KPairs ] ),
+		text_utils:format( "for node ~ts: ~ts",
+			[ N, k_record_to_string( R ) ] ) || { N, R } <- KPairs ] ),
 
 	text_utils:format( "k-map for ~B nodes: ~ts",
 					   [ length( KPairs ), KString ] ).
@@ -1340,7 +1333,7 @@ build_k_map( _ResilienceLevel, _ProtectedNodes=[] ) ->
 	table:new();
 
 build_k_map( ResilienceLevel, _ProtectedNodes )
-  when ResilienceLevel =:= 0 orelse ResilienceLevel =:= none ->
+				when ResilienceLevel =:= 0 orelse ResilienceLevel =:= none ->
 	% Empty by design as well:
 	table:new();
 
@@ -1353,7 +1346,6 @@ build_k_map( ResilienceLevel, ProtectedNodes ) ->
 	case ResilienceLevel > MaxResilienceLevel of
 
 		true ->
-
 			throw( { too_few_nodes_for_requested_resilience, NodeCount,
 					 ResilienceLevel } );
 
@@ -1402,8 +1394,8 @@ register_nodes( _ProtectedNodes=[], _RingNodes, _ResilienceLevel, KMap ) ->
 register_nodes( _ProtectedNodes=[ N | T ], RingNodes, ResilienceLevel, KMap ) ->
 
 	% The ResilienceLevel nodes that will be secured by node N:
-	{ SecuredNodes, _UselessRing } = ring_utils:get_next(
-										 _Count=ResilienceLevel, RingNodes ),
+	{ SecuredNodes, _UselessRing } =
+		ring_utils:get_next( _Count=ResilienceLevel, RingNodes ),
 
 	KRecord = obtain_k_record_for( N, KMap ),
 	NewKRecord = KRecord#k_record{ securing=SecuredNodes },
@@ -1475,7 +1467,7 @@ create_node_table( AllComputingNodes, KMap, ResilienceDirBin ) ->
 
 		% No process-link wanted: we want to resist to node losses!
 		AgentPid = class_ResilienceAgent:remote_synchronous_new( Node,
-			   self(), Securing, SecuredBy, ResilienceDirBin ),
+				self(), Securing, SecuredBy, ResilienceDirBin ),
 
 		table:add_entry( _Key=Node, _Value=AgentPid, AccTable )
 
@@ -1528,15 +1520,8 @@ update_node_table( SurvivingNodes, PreviousNodeTable, KMap ) ->
 			class_TimeManager:diasca(), wooper:state() ) -> wooper:state().
 trigger_serialisation( Tick, Diasca, State ) ->
 
-	case ?getAttr(serialisation_enabled) of
-
-		false ->
-			throw( { serialisation_triggered_whereas_disabled } );
-
-		true ->
-			ok
-
-	end,
+	?getAttr(serialisation_enabled)
+		orelse throw( { serialisation_triggered_whereas_disabled } ),
 
 	SerialisationCount = length( ?getAttr(serialisation_history) ) + 1,
 
@@ -1581,8 +1566,8 @@ trigger_serialisation( Tick, Diasca, State ) ->
 	% Node losses during a serialisation are to be detected thanks to its then
 	% too long duration (i.e. at least 2 hours):
 	%
-	MaxDurationInMilliseconds = max( 5 * ?getAttr(net_tick_time),
-									 2 * 3600 * 1000 ),
+	MaxDurationInMilliseconds =
+		max( 5 * ?getAttr(net_tick_time), 2 * 3600 * 1000 ),
 
 	% In answer to notifyResilienceAgentsOfProbes:
 	receive
@@ -1652,7 +1637,6 @@ collect_crash_reports( CrashedNodes ) ->
 			collect_crash_reports( [ NewCrashedNode | CrashedNodes ] )
 
 	after 2000 ->
-
 			% No other 'node down' message expected anymore:
 			CrashedNodes
 

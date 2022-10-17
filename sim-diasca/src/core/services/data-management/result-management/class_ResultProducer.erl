@@ -17,6 +17,7 @@
 % If not, see <http://www.gnu.org/licenses/>.
 
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
+% Creation date: 2010.
 
 
 % @doc Base class for all <b>result producers</b>.
@@ -74,7 +75,8 @@
 
 
 -type producer_nature() ::
-		maybe( 'basic_probe' | 'virtual_probe' | 'web_probe' ).
+		maybe( 'basic_probe' | 'virtual_probe' | 'web_probe'
+			 | 'graph_stream_probe' ).
 % Describes the precise nature of a result producer.
 
 
@@ -120,6 +122,7 @@
 
 
 % Shorthands:
+
 -type ustring() :: text_utils:ustring().
 
 %-type result_manager_pid() :: class_ResultManager:manager_pid().
@@ -194,16 +197,8 @@ destruct( State ) ->
 	case ?getAttr(result_produced) of
 
 		true ->
-
-			case ?getAttr(result_collected) of
-
-				true ->
-					ok;
-
-				false ->
-					throw( result_produced_yet_not_collected )
-
-			end;
+			?getAttr(result_collected) orelse
+				throw( result_produced_yet_not_collected );
 
 		false ->
 			throw( { result_not_produced,

@@ -23,6 +23,7 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2013.
 
 
 % @doc More <b>global testing</b> of the MyriadGUI toolbox.
@@ -180,11 +181,11 @@ run_test_gui() ->
 
 	% Constant width:
 	gui:add_to_sizer( MainSizer, LeftPanel,
-					  [ { proportion, 0 }, { flag, [ expand_fully ] } ] ),
+					  [ { proportion, 0 }, expand_fully ] ),
 
 	% Grows with the window:
 	gui:add_to_sizer( MainSizer, RightPanel,
-					  [ { proportion, 2 }, { flag, [ expand_fully ] } ] ),
+					  [ { proportion, 2 }, expand_fully ] ),
 
 
 	ControlBoxSizer = gui:create_sizer_with_labelled_box( vertical, LeftPanel,
@@ -210,9 +211,7 @@ run_test_gui() ->
 	gui:set_tooltip( ClearCanvasButton, "Clear canvas" ),
 	gui:set_tooltip( QuitButton, "Quit" ),
 
-	ButtonOpt = [ { flag, [ expand_fully ] } ],
-
-	gui:add_to_sizer( ControlBoxSizer, ControlButtons, ButtonOpt ),
+	gui:add_to_sizer( ControlBoxSizer, ControlButtons, expand_fully ),
 
 	gui:set_sizer( LeftPanel, ControlBoxSizer ),
 
@@ -235,7 +234,7 @@ run_test_gui() ->
 	CanvasEvents = { [ onRepaintNeeded, onResized ], Canvas },
 
 	gui:add_to_sizer( PolyBoxSizer, Canvas,
-					  [ { proportion, 1 }, { flag, [ expand_fully ] } ] ),
+					  [ { proportion, 1 }, expand_fully ] ),
 
 	gui:set_tooltip( Canvas, "Random polygons and their MEC\n"
 							 "(Minimum Enclosing Circle Box) are drawn here." ),
@@ -308,19 +307,8 @@ test_main_loop( TestState=#my_test_state{ main_frame=MainFrame,
 
 	receive
 
-		{ onWindowClosed, [ MainFrame, Context ] } ->
-
-			trace_utils:notice_fmt( "Test main frame ~ts has been closed "
-				"(~ts), test success.",
-				[ gui:object_to_string( MainFrame ),
-				  gui:context_to_string( Context ) ] ),
-
-			gui:destruct_window( MainFrame ),
-
-			gui:stop();
-
-
-		{ onButtonClicked, [ RenderShapeButton, Context ] } ->
+		{ onButtonClicked,
+				[ RenderShapeButton, _RenderShapeButtonId, Context ] } ->
 
 			cond_utils:if_defined( myriad_gui_test_verbose,
 				trace_utils:notice_fmt(
@@ -337,7 +325,7 @@ test_main_loop( TestState=#my_test_state{ main_frame=MainFrame,
 			test_main_loop( NewTestState );
 
 
-		{ onButtonClicked, [ RenderMECButton, Context ] } ->
+		{ onButtonClicked, [ RenderMECButton, _RenderMECButtonId, Context ] } ->
 
 			cond_utils:if_defined( myriad_gui_test_verbose,
 				trace_utils:notice_fmt(
@@ -354,7 +342,7 @@ test_main_loop( TestState=#my_test_state{ main_frame=MainFrame,
 			test_main_loop( NewTestState );
 
 
-		{ onButtonClicked, [ AddButton, Context ] } ->
+		{ onButtonClicked, [ AddButton, _AddButtonId, Context ] } ->
 
 			cond_utils:if_defined( myriad_gui_test_verbose,
 				trace_utils:notice_fmt(
@@ -370,7 +358,8 @@ test_main_loop( TestState=#my_test_state{ main_frame=MainFrame,
 			test_main_loop( NewTestState );
 
 
-		{ onButtonClicked, [ PasteImageButton, Context ] } ->
+		{ onButtonClicked,
+					[ PasteImageButton, _PasteImageButtonId, Context ] } ->
 
 			cond_utils:if_defined( myriad_gui_test_verbose,
 				trace_utils:notice_fmt(
@@ -387,7 +376,8 @@ test_main_loop( TestState=#my_test_state{ main_frame=MainFrame,
 			test_main_loop( TestState );
 
 
-		{ onButtonClicked, [ ClearCanvasButton, Context ] } ->
+		{ onButtonClicked,
+				[ ClearCanvasButton, _ClearCanvasButtonId, Context ] } ->
 
 			cond_utils:if_defined( myriad_gui_test_verbose,
 				trace_utils:notice_fmt(
@@ -402,7 +392,7 @@ test_main_loop( TestState=#my_test_state{ main_frame=MainFrame,
 			test_main_loop( TestState );
 
 
-		{ onButtonClicked, [ QuitButton, Context ] } ->
+		{ onButtonClicked, [ QuitButton, _QuitButtonId, Context ] } ->
 
 			cond_utils:if_defined( myriad_gui_test_verbose,
 				trace_utils:notice_fmt( "Quit test button ~ts has been clicked "
@@ -416,7 +406,7 @@ test_main_loop( TestState=#my_test_state{ main_frame=MainFrame,
 			gui:stop();
 
 
-		{ onRepaintNeeded, [ Canvas, Context ] } ->
+		{ onRepaintNeeded, [ Canvas, _CanvasId, Context ] } ->
 
 			cond_utils:if_defined( myriad_gui_test_verbose,
 				trace_utils:notice_fmt(
@@ -431,7 +421,7 @@ test_main_loop( TestState=#my_test_state{ main_frame=MainFrame,
 								render_count=RenderCount+1 } );
 
 
-		{ onResized, [ Canvas, NewSize, Context ] } ->
+		{ onResized, [ Canvas, _CanvasId, NewSize, Context ] } ->
 
 			cond_utils:if_defined( myriad_gui_test_verbose,
 				trace_utils:notice_fmt(
@@ -444,6 +434,19 @@ test_main_loop( TestState=#my_test_state{ main_frame=MainFrame,
 
 			test_main_loop( TestState#my_test_state{
 								render_count=RenderCount+1 } );
+
+
+		{ onWindowClosed, [ MainFrame, _MainFrameId, Context ] } ->
+
+			trace_utils:notice_fmt( "Test main frame ~ts has been closed "
+				"(~ts), test success.",
+				[ gui:object_to_string( MainFrame ),
+				  gui:context_to_string( Context ) ] ),
+
+			gui:destruct_window( MainFrame ),
+
+			gui:stop();
+
 
 		Other ->
 			% Extra newline for better separation:
@@ -525,7 +528,7 @@ render_shapes( Canvas ) ->
 	polygon:render( MyUprightSquare, Canvas ),
 
 
-	UnitRoots = linear_2D:get_roots_of_unit( _N=7, _StartingAngle=math:pi()/4),
+	UnitRoots = linear_2D:get_roots_of_unit( _N=7, _StartingAngle=math:pi()/4 ),
 
 	ScaledRoundRoots = [ point2:roundify( point2:scale( P, _Factor=50 ) )
 									|| P <- UnitRoots ],
@@ -557,8 +560,8 @@ render_mec( Canvas, PointCount ) ->
 
 	gui:set_draw_color( Canvas, white ),
 
-	RandomPoints = [ { random_utils:get_random_value( 200 ) + 300,
-					   random_utils:get_random_value( 300 ) + 100 }
+	RandomPoints = [ { random_utils:get_uniform_value( 200 ) + 300,
+					   random_utils:get_uniform_value( 300 ) + 100 }
 							|| _Count <- lists:seq( 1, PointCount ) ],
 
 	%trace_utils:debug_fmt( "Random points: ~w.", [ RandomPoints ] ),

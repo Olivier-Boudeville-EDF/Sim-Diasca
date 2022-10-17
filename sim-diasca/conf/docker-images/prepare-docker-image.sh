@@ -335,8 +335,9 @@ fi
 
 full_image_name="${image_name}:${sd_version}"
 
+# Tag substitution matters, as some tag names are subsets of others.
 # OPERATION_SYSTEM_TAG replaced directly from the image:
-cat "${dockerfile_template}" | sed "s|IMAGE_NAME_TAG|${image_name}|g" | sed "s|FULL_IMAGE_NAME_TAG|${full_image_name}|g" | sed "s|IMAGE_DESCRIPTION_TAG|${image_description}|g" | sed "s|PARENT_IMAGE_TAG|${parent_image}|g" | sed "s|ERLANG_VERSION_TAG|${erl_version}|g" | sed "s|SIM_DIASCA_VERSION_TAG|${sd_version}|g" | sed "s|GENERATION_TIMESTAMP_TAG|$(LC_ALL= date '+%A, %B %-e, %Y, at %H:%M:%S')|g" > "${dockerfile}"
+cat "${dockerfile_template}" | sed "s|FULL_IMAGE_NAME_TAG|${full_image_name}|g" | sed "s|IMAGE_NAME_TAG|${image_name}|g" | sed "s|IMAGE_DESCRIPTION_TAG|${image_description}|g" | sed "s|PARENT_IMAGE_TAG|${parent_image}|g" | sed "s|ERLANG_VERSION_TAG|${erl_version}|g" | sed "s|SIM_DIASCA_VERSION_TAG|${sd_version}|g" | sed "s|GENERATION_TIMESTAMP_TAG|$(LC_ALL= date '+%A, %B %-e, %Y, at %H:%M:%S')|g" > "${dockerfile}"
 
 
 if [ $prepare_logmx -eq 0 ]; then
@@ -398,7 +399,7 @@ if [ $prepare_extra_env -eq 0 ]; then
 fi
 
 
-cat "${image_readme_template}" | sed "s|IMAGE_NAME_TAG|${image_name}|g" | sed "s|FULL_IMAGE_NAME_TAG|${full_image_name}|g" | sed "s|IMAGE_DESCRIPTION_TAG|${image_description}|g" | sed "s|PARENT_IMAGE_TAG|${parent_image}|g" | sed "s|ERLANG_VERSION_TAG|${erl_version}|g" | sed "s|SIM_DIASCA_VERSION_TAG|${sd_version}|g" | sed "s|GENERATION_TIMESTAMP_TAG|$(LC_ALL= date '+%A, %B %-e, %Y, at %H:%M:%S')|g" > "${image_readme}"
+cat "${image_readme_template}" | sed "s|FULL_IMAGE_NAME_TAG|${full_image_name}|g" | sed "s|IMAGE_NAME_TAG|${image_name}|g" | sed "s|IMAGE_DESCRIPTION_TAG|${image_description}|g" | sed "s|PARENT_IMAGE_TAG|${parent_image}|g" | sed "s|ERLANG_VERSION_TAG|${erl_version}|g" | sed "s|SIM_DIASCA_VERSION_TAG|${sd_version}|g" | sed "s|GENERATION_TIMESTAMP_TAG|$(LC_ALL= date '+%A, %B %-e, %Y, at %H:%M:%S')|g" > "${image_readme}"
 
 
 echo

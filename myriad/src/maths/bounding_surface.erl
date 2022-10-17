@@ -87,18 +87,20 @@
 %
 % An implicit 2D referential applies here, where:
 % - abscissas (often denoted as X) increase from left to right
-% - ordinates (often denoted as Y) increase from bottom to top
+% - ordinates (often denoted as Y) increase from top to bottom
 %
-% See http://myriad.esperide.org/#gui for more information.
-
+% See https://myriad.esperide.org/#conventions
 
 % Implementation notes:
 %
 % Bounding surfaces, at least here, rely on floating-point coordinates and
 % distances (rather than on integer ones).
 %
-% Ofter square distances are as useful as mere distances for algorithms, and
-% require less computations (x -> x² is an increasing function).
+% Often square distances are as useful as mere distances for algorithms, and
+% they require less computations (x -> x² is an increasing function).
+
+
+% About Minimal Enclosing Circles
 
 % One may believe that a solution in order to compute the Minimal Enclosing
 % Circle of a set of points is simply to determine the diameter of this set
@@ -111,7 +113,7 @@
 % and l the AC=CB distance. If a circle bounding surface was centered on C and
 % had l for radius, then, any point simultaneously distant of up to 2.l from A
 % and up to 2.l from B could be in that set; in the general case there are
-% points in the intersection of these two discs that are not in the
+% points in the intersection of these two larger discs that are not in the
 % aforementioned disc of radius l centered in C.
 
 

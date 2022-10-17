@@ -42,16 +42,19 @@
 % A font size, in pixels.
 
 
--type font_family() :: 'default_font_family'.
+-type font_family() :: 'default_font_family' | 'decorative' | 'roman'
+					 | 'script' | 'swiss' | 'modern' | 'teletype'.
 % A font family.
 
 
--type font_style() :: 'normal'.
+-type font_style() :: 'normal' | 'italic' | 'slant'.
 % A font style.
 
 
--type font_weight() :: 'bold'.
-% A font style.
+-type font_weight() :: 'thin' | 'extra_light' | 'light' | 'normal' | 'medium'
+					 | 'semi_bold' | 'bold' | 'extra_bold' | 'heavy'
+					 | 'extra_heavy'.
+% A font weight.
 
 -type text_encoding() :: wx_text_encoding().
 % Currently the same as wx.
@@ -68,7 +71,8 @@
 
 
 % Font-related operations.
--export([ create/4, create/5, get_text_extent/2 ]).
+-export([ create/1, create/2, create/3, create/4, create/5, destruct/1,
+		  get_text_extent/2 ]).
 
 
 % Exported helpers (and silencing):
@@ -102,6 +106,29 @@
 -type wx_enum() :: gui_wx_backend:wx_enum().
 
 
+% @doc Creates a font object from specified requirements, to determine the
+% appearance of rendered text.
+%
+-spec create( font_size() | point_size() ) -> font().
+create( FontSize ) ->
+	create( FontSize, _FontFamily=default_font_family ).
+
+
+% @doc Creates a font object from specified requirements, to determine the
+% appearance of rendered text.
+%
+-spec create( font_size() | point_size(), font_family() ) -> font().
+create( FontSize, FontFamily ) ->
+	create( FontSize, FontFamily, _FontStyle=normal ).
+
+% @doc Creates a font object from specified requirements, to determine the
+% appearance of rendered text.
+%
+-spec create( font_size() | point_size(), font_family(), font_style() ) ->
+											font().
+create( FontSize, FontFamily, FontStyle ) ->
+	create( FontSize, FontFamily, FontStyle, _FontWeight=normal ).
+
 
 % @doc Creates a font object from specified requirements, to determine the
 % appearance of rendered text.
@@ -110,7 +137,6 @@
 			  font_weight() ) -> font().
 create( FontSize, FontFamily, FontStyle, FontWeight ) ->
 	create( FontSize, FontFamily, FontStyle, FontWeight, _FontOpts=[] ).
-
 
 
 % @doc Creates a font object from specified requirements, to determine the
@@ -140,6 +166,12 @@ create( FontSize, FontFamily, FontStyle, FontWeight, FontOpts ) ->
 						   true = wxFont:isOk( Font ) ),
 
 	Font.
+
+
+% @doc Destructs the specified font.
+-spec destruct( font() ) -> void().
+destruct( Font ) ->
+	wxFont:destroy( Font ).
 
 
 
@@ -175,10 +207,29 @@ get_text_extent( Text, Font ) ->
 	Dims.
 
 
+
 % @doc Converts the specified font family into a wx one.
 -spec to_wx_font_family( font_family() ) -> wx_font_family().
 to_wx_font_family( default_font_family ) ->
 	?wxFONTFAMILY_DEFAULT;
+
+to_wx_font_family( decorative ) ->
+	?wxFONTFAMILY_DECORATIVE;
+
+to_wx_font_family( roman ) ->
+	?wxFONTFAMILY_ROMAN;
+
+to_wx_font_family( script ) ->
+	?wxFONTFAMILY_SCRIPT;
+
+to_wx_font_family( swiss ) ->
+	?wxFONTFAMILY_SWISS;
+
+to_wx_font_family( modern ) ->
+	?wxFONTFAMILY_MODERN;
+
+to_wx_font_family( teletype ) ->
+	?wxFONTFAMILY_TELETYPE;
 
 to_wx_font_family( Other ) ->
 	throw( { unknown_font_family, Other } ).
@@ -190,6 +241,12 @@ to_wx_font_family( Other ) ->
 to_wx_font_style( normal ) ->
 	?wxFONTSTYLE_NORMAL;
 
+to_wx_font_style( italic ) ->
+	?wxFONTSTYLE_ITALIC;
+
+to_wx_font_style( slant ) ->
+	?wxFONTSTYLE_SLANT;
+
 to_wx_font_style( Other ) ->
 	throw( { unknown_font_style, Other } ).
 
@@ -197,8 +254,35 @@ to_wx_font_style( Other ) ->
 
 % @doc Converts the specified font weight into a wx one.
 -spec to_wx_font_weight( font_weight() ) -> wx_font_weight().
+to_wx_font_weight( thin ) ->
+	?wxFONTWEIGHT_THIN;
+
+to_wx_font_weight( extra_light ) ->
+	?wxFONTWEIGHT_EXTRALIGHT;
+
+to_wx_font_weight( light ) ->
+	?wxFONTWEIGHT_LIGHT;
+
+to_wx_font_weight( normal ) ->
+	?wxFONTWEIGHT_NORMAL;
+
+to_wx_font_weight( medium ) ->
+	?wxFONTWEIGHT_MEDIUM;
+
+to_wx_font_weight( semi_bold ) ->
+	?wxFONTWEIGHT_SEMIBOLD;
+
 to_wx_font_weight( bold ) ->
 	?wxFONTWEIGHT_BOLD;
+
+to_wx_font_weight( extra_bold ) ->
+	?wxFONTWEIGHT_EXTRABOLD;
+
+to_wx_font_weight( heavy ) ->
+	?wxFONTWEIGHT_HEAVY;
+
+to_wx_font_weight( extra_heavy ) ->
+	?wxFONTWEIGHT_EXTRAHEAVY;
 
 to_wx_font_weight( Other ) ->
 	throw( { unknown_font_weight, Other } ).

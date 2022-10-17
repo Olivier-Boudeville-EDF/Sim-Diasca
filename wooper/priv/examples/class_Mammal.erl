@@ -1,10 +1,11 @@
-% Copyright (C) 2003-2022 Olivier Boudeville
+% Copyright (C) 2007-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER examples.
 %
 % It has been placed in the public domain.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2007.
 
 
 % @doc Class modelling any kind of <b>mammal</b>.
@@ -59,6 +60,7 @@ destruct( State ) ->
 
 	% Even when constructing a cat, we should see the right class (class_Cat)
 	% and not the current class (class_Mammal):
+	%
 	io:format( "Actual class from destructor: ~ts.~n", [ ActualClass ] ),
 
 	io:format( "Deleting mammal ~w! (overridden destructor)~n", [ self() ] ),

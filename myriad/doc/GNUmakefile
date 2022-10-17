@@ -91,7 +91,9 @@ export-doc-to-official: check-mathjax clean-doc create-links doc
 	@/bin/scp $(SP) -r $(WEB_CONTENT) $(EXTRA_CONTENT) $(WEB_SRV):$(WEB_ROOT)/Myriad/
 
 
-# H option for cp so that a local MathJax is copied in target branch:
+# H option for 'cp', so that a local MathJax is copied (not symlinked to a local
+# directory) in target branch:
+#
 export-doc-to-mirror: check-mathjax clean-doc create-links doc
 	@echo "   Exporting Myriad documentation to mirror website in $(MYRIAD_WEB_MIRROR_BRANCH)"
 	@/bin/cp -rfH $(WEB_CONTENT) $(EXTRA_CONTENT) $(MYRIAD_WEB_MIRROR_BRANCH) && cd $(MYRIAD_WEB_MIRROR_BRANCH) && git add . && git merge -s ours && git commit -m "Myriad doc updated." && git push && git pull --ff-only

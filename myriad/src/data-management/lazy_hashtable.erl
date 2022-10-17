@@ -21,9 +21,9 @@
 % along with this library.
 % If not, see <http://www.gnu.org/licenses/> and
 % <http://www.mozilla.org/MPL/>.
-
-% Creation date: November 10, 2011.
+%
 % Author: Jingxuan Ma (jingxuan.ma@edf.fr)
+% Creation date: November 10, 2011.
 
 
 % @doc Implementation of an <b>hashtable that optimises itself lazily</b>: the
@@ -72,7 +72,7 @@
 -export([ new/0, new/1, add_entry/3, add_entries/2,
 		  remove_entry/2, lookup_entry/2, has_entry/2, get_value/2,
 		  extract_entry/2,
-		  get_value_with_defaults/3, get_values/2, get_all_values/2,
+		  get_value_with_default/3, get_values/2, get_all_values/2,
 		  add_to_entry/3, subtract_from_entry/3, toggle_entry/2,
 		  append_to_entry/3, delete_from_entry/3, pop_from_entry/2,
 		  enumerate/1, select_entries/2, keys/1, values/1,
@@ -287,10 +287,10 @@ extract_entry( Key, _LazyHashtable={ Hashtable, OpCount } ) ->
 % @doc Looks for specified entry in specified table and, if found, returns the
 % associated value; otherwise returns the specified default value.
 %
--spec get_value_with_defaults( key(), value(), lazy_hashtable() ) -> value().
-get_value_with_defaults( Key, DefaultValue,
-						 _LazyHashtable={ Hashtable, _OpCount } ) ->
-	hashtable:get_value_with_defaults( Key, DefaultValue, Hashtable ).
+-spec get_value_with_default( key(), value(), lazy_hashtable() ) -> value().
+get_value_with_default( Key, DefaultValue,
+						_LazyHashtable={ Hashtable, _OpCount } ) ->
+	hashtable:get_value_with_default( Key, DefaultValue, Hashtable ).
 
 
 
@@ -308,14 +308,14 @@ get_values( Keys, Hashtable ) ->
 
 	{ RevValues, _FinalTable } = lists:foldl(
 
-				fun( _Elem=Key, _Acc={ Values, Table } ) ->
+		fun( _Elem=Key, _Acc={ Values, Table } ) ->
 
-					{ Value, ShrunkTable } = extract_entry( Key, Table ),
-					{ [ Value | Values ], ShrunkTable }
+			{ Value, ShrunkTable } = extract_entry( Key, Table ),
+			{ [ Value | Values ], ShrunkTable }
 
-				end,
-				_Acc0={ [], Hashtable },
-				_List=Keys ),
+		end,
+		_Acc0={ [], Hashtable },
+		_List=Keys ),
 
 	lists:reverse( RevValues ).
 
@@ -335,14 +335,14 @@ get_values( Keys, Hashtable ) ->
 get_all_values( Keys, Hashtable ) ->
 
 	{ RevValues, FinalTable } = lists:foldl(
-		   fun( _Elem=Key, _Acc={ Values, Table } ) ->
+		fun( _Elem=Key, _Acc={ Values, Table } ) ->
 
 				{ Value, ShrunkTable } = extract_entry( Key, Table ),
 				{ [ Value | Values ], ShrunkTable }
 
-		   end,
-		   _Acc0={ [], Hashtable },
-		   _List=Keys ),
+		end,
+		_Acc0={ [], Hashtable },
+		_List=Keys ),
 
 	case is_empty( FinalTable ) of
 

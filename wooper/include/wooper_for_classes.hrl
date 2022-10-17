@@ -23,6 +23,8 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2007.
+
 
 % Modular WOOPER header gathering elements used to define a class.
 
@@ -96,7 +98,7 @@ get_superclasses() ->
 % that will be thus available to the user.
 %
 -spec wooper_get_class_specific_attributes() ->
-						   [ wooper_info:attribute_spec() ].
+							[ wooper_info:attribute_spec() ].
 
 
 -ifdef(class_attributes).
@@ -169,7 +171,7 @@ get_class_description() ->
 
 % Nothing specified:
 get_class_description() ->
-   wooper:return_static( undefined ).
+	wooper:return_static( undefined ).
 
 
 -endif. % class_attributes

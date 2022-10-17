@@ -26,7 +26,6 @@
 % Creation date: Sunday, October 10, 2021.
 
 
-
 % @doc Module implementing the support for <b>4D vectors</b>.
 %
 % See also:
@@ -54,8 +53,9 @@
 
 
 -type vector4() :: [ coordinate() ].
-% An (internal) 4D vector, with (exactly) 4 floating-point coordinates.
-% They are typically referenced as [X, Y, Z, W].
+% An (internal) 4D vector, with (exactly) 4 floating-point coordinates.  They
+% are typically referenced as [X, Y, Z, W]. This last axis can also be
+% designated as the T axis.
 
 
 -type integer_vector4() :: [ integer_coordinate() ].
@@ -91,6 +91,7 @@
 
 
 -export([ new/1, new/4, new_integer/4, null/0,
+		  x_axis/0, y_axis/0, z_axis/0, w_axis/0,
 		  from_point/1, to_point/1,
 		  add/2, add/1,
 		  are_close/2, are_equal/2,
@@ -117,7 +118,6 @@
 -type distance() :: linear:distance().
 -type square_distance() :: linear:square_distance().
 
--type point4() :: point4().
 -type any_point4() :: any_point4().
 
 
@@ -157,6 +157,46 @@ new_integer( X, Y, Z, W ) when is_integer( X ) andalso is_integer( Y )
 null() ->
 	Zero = 0.0,
 	[ Zero, Zero, Zero, Zero ].
+
+
+
+% @doc Returns a 4D vector corresponding to the X axis of the current
+% referential.
+%
+-spec x_axis() -> vector4().
+x_axis() ->
+	Zero = 0.0,
+	[ 1.0, Zero, Zero, Zero ].
+
+
+
+% @doc Returns a 4D vector corresponding to the Y axis of the current
+% referential.
+%
+-spec y_axis() -> vector4().
+y_axis() ->
+	Zero = 0.0,
+	[ Zero, 1.0, Zero, Zero ].
+
+
+
+% @doc Returns a 4D vector corresponding to the Z axis of the current
+% referential.
+%
+-spec z_axis() -> vector4().
+z_axis() ->
+	Zero = 0.0,
+	[ Zero, Zero, 1.0, Zero ].
+
+
+
+% @doc Returns a 4D vector corresponding to the W axis of the current
+% referential.
+%
+-spec w_axis() -> vector4().
+w_axis() ->
+	Zero = 0.0,
+	[ Zero, Zero, Zero, 1.0 ].
 
 
 
@@ -302,7 +342,7 @@ check_unit_vector( V ) ->
 
 
 % @doc Checks that the specified 4D vectors are normalised, and returns them.
--spec check_unit_vectors( vector4() ) -> unit_vector4().
+-spec check_unit_vectors( [ vector4() ] ) -> [ unit_vector4() ].
 check_unit_vectors( Vs ) ->
 	[ true = is_unitary( V ) || V <- Vs ],
 	Vs.

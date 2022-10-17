@@ -3,7 +3,11 @@
 .PHONY: all clean clean-java info
 
 
-JAVAC := $(shell which javac)
+#JAVAC := $(shell which javac)
+
+# To force a system, possibly older, Java:
+#JAVAC := /usr/bin/javac
+
 
 JAVAC_OPT := -classpath $$HOME/Software/LogMX/LogMX-current-install/jar/logmx.jar
 

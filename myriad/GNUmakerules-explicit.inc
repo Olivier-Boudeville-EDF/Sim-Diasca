@@ -53,7 +53,7 @@
 
 
 #dummy:
-#	@echo "You are executing the default, do-nothing make rule. You may want specify an actual target instead (ex: 'make foo')."
+#	@echo "You are executing the default, do-nothing make rule. You may want to specify an actual target instead (e.g. 'make foo')."
 
 
 
@@ -72,8 +72,7 @@ ifeq ($(BASE_MAKEFILE),true)
 #
 all: all-pre-hook all-parse-transforms create-include-links
 	@echo "  Building all, in parallel over $(CORE_COUNT) core(s), from $(PWD)"
-	@for m in $(MODULES_DIRS); do if ! (if [ -d $$m ]; then cd $$m && \
-		$(MAKE) -s all-recurse -j $(CORE_COUNT) && cd ..; else echo "     (directory $$m skipped)"; \
+	@for m in $(MODULES_DIRS); do if ! (if [ -d $$m ]; then cd $$m && $(MAKE) -s all-recurse -j $(CORE_COUNT) && cd ..; else echo "     (directory $$m skipped)"; \
 	fi); then exit 1; fi; done
 
 
@@ -141,8 +140,9 @@ all-recurse-pre-hook:
 
 # This rule is not used by default, as we use the -j option from the root
 # makefile, letting then 'make' use its job server for that task:
+#
 all-parallel-recurse:
-	@echo "  Building all on parallel over $(CORE_COUNT) cores (in "$(PWD) #$$(basename $(PWD))
+	@echo "  Building all in parallel over $(CORE_COUNT) cores (in "$(PWD) #$$(basename $(PWD))
 	@for m in $(MODULES_DIRS); do if ! (if [ -d $$m ]; then cd $$m && $(MAKE) -s all -j $(CORE_COUNT) CMD_LINE_OPT="${CMD_LINE_OPT}" && cd ..; else echo "    (directory $$m skipped)"; fi); then exit 1; fi; done
 
 
@@ -155,7 +155,7 @@ all-parallel-recurse:
 # command is conditional.
 #
 all-recurse: $(BEAM_FILES)
-	@echo "  Building all in "$(PWD) #$$(basename $(PWD))
+	@echo "  Building all in $(PWD)" #$$(basename $(PWD))
 	@for m in $(MODULES_DIRS); do if ! (if [ -d $$m ]; then cd $$m && $(MAKE) -s all CMD_LINE_OPT="${CMD_LINE_OPT}" USE_HDF5=$(USE_HDF5) USE_JSON=$(USE_JSON) USE_REST=$(USE_REST) USE_SQLITE=$(USE_SQLITE) && cd ..; else echo "  (directory $$m skipped)"; fi); then exit 1; fi; done
 
 
@@ -288,12 +288,17 @@ launch: Emakefile
 	@$(ERL_PARAMETERIZED_LAUNCHER) $(NODE_NAMING) test_shell-$$USER $(EXEC_INTERNAL_OPTIONS) ${CMD_LINE_OPT}
 
 
-# To have an Erlang shell with the right configuration to rely on Myriad (ex:
-# with regard to code path):
+# To obtain an Erlang shell with the right configuration in order to be able to
+# use the current project (e.g. with regard to its full, standard, base code
+# path, including the one of all lower layers).
+#
+# The node name of that shell includes the project name, user and current
+# directory, so that multiple, non-colliding shell instances can be created more
+# easily from the same code base:
 #
 shell:
 	@echo "		Launching an Erlang shell enabled for $(PROJECT_NAME)"
-	@${ERL_PARAMETERIZED_LAUNCHER} $(NODE_NAMING) shell-for-$$USER $(INTERNAL_OPTIONS)
+	@${ERL_PARAMETERIZED_LAUNCHER} $(NODE_NAMING) $(PROJECT_SHORT_NAME)-shell-for-$$USER-at-$$(basename $$(pwd)) $(INTERNAL_OPTIONS)
 
 
 
@@ -1008,7 +1013,7 @@ $(PLT_FILE): generate-local-plt
 #
 generate-local-plt: add-prerequisite-plts
 	@echo "    Generating PLT for $(PACKAGE_NAME) ($(PLT_FILE)), based on $(BASE_PLT)"
-	@$(DIALYZER) --add_to_plt --output_plt $(PLT_FILE) -r $(PACKAGE_TOP)/src $(PACKAGE_TOP)/test --plt $(BASE_PLT); if [ $$? -eq 1 ]; then exit 1; else exit 0; fi
+	@$(DIALYZER) --add_to_plt --output_plt $(PLT_FILE) -r $(PACKAGE_TOP)/src $(PACKAGE_TOP)/test --plt $(BASE_PLT); if [ $$? -eq 1 ]; then exit 5; else exit 0; fi
 
 
 # Made to be enriched (with child targets) on a per-layer basis:
@@ -1028,8 +1033,8 @@ add-prerequisite-plts:
 # See also the write-debug-key-file target.
 #
 self-check-against-plt: all $(PLT_FILE)
-	@echo " Checking $(PACKAGE_NAME) against its PLT ($(PLT_FILE))"
-	@$(DIALYZER) $(DIALYZER_OPT) --plt $(PLT_FILE) -r .
+	@echo "    Checking $(PACKAGE_NAME) against its PLT ($(PLT_FILE))"
+	@$(DIALYZER) $(DIALYZER_OPTS) --plt $(PLT_FILE) -r .
 
 
 # Stores on disk the current debug key for BEAMs, so that tools like Dialyzer
@@ -1262,7 +1267,10 @@ info-sync:
 
 info-check:
 	@echo "DIALYZER = $(DIALYZER)"
-	@echo "DIALYZER_OPT = $(DIALYZER_OPT)"
+	@echo "DIALYZER_OPTS = $(DIALYZER_OPTS)"
+	@echo "GRADUALIZER = $(GRADUALIZER)"
+	@echo "GRADUALIZER_OPTS = $(GRADUALIZER_OPTS)"
+
 
 
 # Useful to extract information to be specified in a parallel rebar.config:
@@ -1285,7 +1293,7 @@ info-compile:
 	@echo "ERLANG_COMPILER_NATIVE_COMPILATION_OPT = $(ERLANG_COMPILER_NATIVE_COMPILATION_OPT)"
 	@echo "ERLANG_COMPILER_WARNING_OPT = $(ERLANG_COMPILER_WARNING_OPT)"
 	@echo "ERLANG_COMPILER_OPT_BASE = $(ERLANG_COMPILER_OPT_BASE)"
-	@echo "OVERALL_PZ_OPT = $(OVERALL_PZ_OPT)"
+	@echo "OVERALL_PA_OPTS = $(OVERALL_PA_OPTS)"
 	@echo "ERLANG_COMPILER_OPT_FOR_STANDARD_MODULES = $(ERLANG_COMPILER_OPT_FOR_STANDARD_MODULES)"
 	@echo "EXECUTION_TARGET = $(EXECUTION_TARGET)"
 	@echo "ENABLE_DEBUG = $(ENABLE_DEBUG)"

@@ -17,7 +17,7 @@
 % If not, see <http://www.gnu.org/licenses/>.
 
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
-
+% Creation date: 2008.
 
 % @doc The purpose of an instance tracker is mainly <b>to track some information
 % about all kinds of simulation-related instances</b>, typically of models
@@ -298,6 +298,10 @@ destruct( State ) ->
 			?info( "Deleting instance tracker, whereas it is not tracking "
 					"any actor." );
 
+		[ ActorPid ] ->
+			?warning_fmt( "Deleting instance tracker, whereas still tracking "
+						  "a single actor, ~w.", [ ActorPid ] );
+
 		ActorPids ->
 			?warning_fmt( "Deleting instance tracker, whereas still tracking "
 						  "~w actors: ~w.", [ length( ActorPids ), ActorPids ] )
@@ -495,7 +499,7 @@ unregisterActor( State, ActorPid, ActorClassname ) ->
 				true ->
 					% Does nothing if the key (AAI) is not found:
 					ReverseTable =
-							table:remove_entry( AAI, ?getAttr(aai_to_pid) ),
+						table:remove_entry( AAI, ?getAttr(aai_to_pid) ),
 					setAttribute( State, aai_to_pid, ReverseTable );
 
 				false ->
@@ -601,13 +605,13 @@ registerResultProducer( State, ProducerRef ) ->
 
 	ReverseState = case ?getAttr(pid_resolution_enabled) of
 
-			true ->
-				NewReverseTable = table:add_entry( ProducerRef, ProducerPid,
-											?getAttr(producer_ref_to_pid) ),
-				setAttribute( State, producer_ref_to_pid, NewReverseTable );
+		true ->
+			NewReverseTable = table:add_entry( ProducerRef, ProducerPid,
+											   ?getAttr(producer_ref_to_pid) ),
+			setAttribute( State, producer_ref_to_pid, NewReverseTable );
 
-			false ->
-				State
+		false ->
+			State
 
 	end,
 
@@ -830,10 +834,10 @@ getStaticResourceInformation( State ) ->
 	{ _UsedSwap, TotalSwap } = system_utils:get_swap_status(),
 
 	Res = #host_static_info{
-			 total_ram=TotalRAM,
-			 total_swap=TotalSwap,
-			 core_count=system_utils:get_core_count(),
-			 erlang_version=system_utils:get_interpreter_version() },
+			total_ram=TotalRAM,
+			total_swap=TotalSwap,
+			core_count=system_utils:get_core_count(),
+			erlang_version=system_utils:get_interpreter_version() },
 
 	% PID specified, so that requests can be done in parallel:
 	wooper:const_return_result( { node(), Res, self() } ).
@@ -1118,31 +1122,31 @@ create_mockup_environment() ->
 	%
 	MockFun = fun() ->
 
-			% Does as the real one:
-			naming_utils:register_as( get_registration_name(), local_only ),
+		% Does as the real one:
+		naming_utils:register_as( get_registration_name(), local_only ),
 
-			% Fakes a local instance tracker:
-			receive
+		% Fakes a local instance tracker:
+		receive
 
-				{ registerResultProducer, _BinName, ProducerPid } ->
-					ProducerPid ! { wooper_result, result_producer_registered };
+			{ registerResultProducer, _BinName, ProducerPid } ->
+				ProducerPid ! { wooper_result, result_producer_registered };
 
-				{ registerAgent, _AgentRef, AgentPid } ->
-					AgentPid ! { wooper_result, agent_registered }
+			{ registerAgent, _AgentRef, AgentPid } ->
+				AgentPid ! { wooper_result, agent_registered }
 
-			end,
+		end,
 
-			% Forces this process to linger (will wait until end of time), as
-			% some destructors expect to find the instance tracker as a
-			% registered process:
-			%
-			receive
+		% Forces this process to linger (will wait until end of time), as some
+		% destructors expect to find the instance tracker as a registered
+		% process:
+		%
+		receive
 
-				% Such a message will by design never be received:
-				never_sent ->
-					ok
+			% Such a message will by design never be received:
+			never_sent ->
+				ok
 
-			end
+		end
 
 	end,
 
@@ -1164,12 +1168,12 @@ actor_table_to_string( Table ) ->
 	% We want to describe it according to an increasing AAI order:
 	%
 	AAIStringPairs = lists:foldl(
-				fun( { _K=Pid, _V=Info }, Acc ) ->
-					ActorString = actor_info_to_string( Info, Pid ),
-					[ { Info#actor_info.aai, ActorString } | Acc ]
-				end,
-				_InitialAcc=[],
-				InstancePairs ),
+		fun( { _K=Pid, _V=Info }, Acc ) ->
+			ActorString = actor_info_to_string( Info, Pid ),
+			[ { Info#actor_info.aai, ActorString } | Acc ]
+		end,
+		_InitialAcc=[],
+		InstancePairs ),
 
 	%trace_utils:debug_fmt( "AAIStringPairs = ~p", [ AAIStringPairs ] ),
 
@@ -1253,12 +1257,12 @@ producer_table_to_string( Table ) ->
 
 	% No specific sorting requested:
 	ProducerStrings = lists:foldl(
-				fun( { _K=Pid, _V=ProducerRef }, Acc ) ->
-					[ text_utils:format( "producer reference ~p associated "
-									"to PID ~p", [ ProducerRef, Pid ] ) | Acc ]
-				end,
-				_InitialAcc=[],
-				ProducerPairs ),
+		fun( { _K=Pid, _V=ProducerRef }, Acc ) ->
+			[ text_utils:format( "producer reference ~p associated "
+								 "to PID ~p", [ ProducerRef, Pid ] ) | Acc ]
+		end,
+		_InitialAcc=[],
+		ProducerPairs ),
 
 	%trace_utils:debug_fmt( "ProducerStrings = ~p", [ ProducerStrings ] ),
 
@@ -1296,7 +1300,6 @@ get_local_actor_info( ActorPid, State ) ->
 					% We should have an up-to-date zombi table:
 					ActorEntry = table:get_value( _K=ActorPid,
 												  ?getAttr(zombi_table) ),
-
 					zombify( ActorEntry );
 
 				false ->
@@ -1406,8 +1409,8 @@ register_agent_helper( AgentClassname, AgentPid, State ) ->
 
 	end,
 
-	NewAgentTable = table:add_entry( _K=AgentPid, _V=AgentRef,
-									 ?getAttr(agent_table) ),
+	NewAgentTable =
+		table:add_entry( _K=AgentPid, _V=AgentRef, ?getAttr(agent_table) ),
 
 	setAttribute( ReverseState, agent_table, NewAgentTable ).
 

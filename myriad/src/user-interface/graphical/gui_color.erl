@@ -40,8 +40,8 @@
 
 
 % Color-related operations.
--export([ get_colors/0, get_color/1, get_color_for_gnuplot/1,
-		  get_random_colors/1 ]).
+-export([ get_colors/0, get_color/1, get_logical_colors/0, get_logical_color/1,
+		  get_color_for_gnuplot/1, get_random_colors/1 ]).
 
 
 -include("gui_color.hrl").
@@ -51,7 +51,17 @@
 -include("gui.hrl").
 
 
+% For wx color defines:
+-include_lib("wx/include/wx.hrl").
+
+
+
 -type color_by_name() :: atom().
+% A color, as designated by an atom (ex: 'aliceblue'); possibly a logical color.
+
+-type logical_color() :: color_by_name().
+% A logicial color, like 'window_frame_color'.
+
 
 -type color_by_decimal() :: { Red :: byte(), Green :: byte(), Blue :: byte() }.
 % RGB (integer, in [0;255]) color; no alpha coordinate here.
@@ -60,6 +70,8 @@
 		{ Red :: byte(), Green :: byte(), Blue :: byte(), Alpha :: byte() }.
 % RGBA (integer, in [0;255]) color.
 
+-type any_color_by_decimal() ::
+		color_by_decimal() | color_by_decimal_with_alpha().
 
 -type color() :: color_by_name() | color_by_decimal().
 % Any kind of RGB (integer) color.
@@ -134,9 +146,10 @@
 % Useful for direct image manipulation.
 
 
--export_type([ color_by_name/0,
+-export_type([ color_by_name/0, logical_color/0,
 
 			   color_by_decimal/0, color_by_decimal_with_alpha/0,
+			   any_color_by_decimal/0,
 			   color/0,
 
 			   color_coordinate/0, alpha_coordinate/0,
@@ -164,13 +177,23 @@
 
 
 % @doc Returns a list of known {color_name, ColorDefinition} associations.
--spec get_colors() -> [ { color_by_name(), color_by_decimal() } ].
+-spec get_colors() -> [ { color_by_name(), any_color_by_decimal() } ].
 get_colors() ->
+	[
 
-	% No less than 141 color definitions follow, based on:
-	% www.uni-hamburg.de/Wiss/FB/15/Sustainability/schneider/gnuplot/colors.htm
+	  % Initially, first, "functional" (RGBA) colors were listed (from wx.hrl),
+	  % yet it must be avoided as the next call would require wx to be
+	  % initialised and its environment to be available, which is not the case
+	  % generally:
+	  %
+	  %{ window_frame_color,
+	  %  wxSystemSettings:getColour( ?wxSYS_COLOUR_WINDOWFRAME ) },
+	  % See now get_logical_color/1.
 
-	[ { aliceblue,            { 240, 248, 255 } },
+	  % No less than 141 RGB color definitions follow, based on
+	  %www.uni-hamburg.de/Wiss/FB/15/Sustainability/schneider/gnuplot/colors.htm
+
+	  { aliceblue,            { 240, 248, 255 } },
 	  { antiquewhite,         { 250, 235, 215 } },
 	  { aqua,                 {   0, 255, 255 } },
 	  { aquamarine,           { 127, 255, 212 } },
@@ -314,6 +337,7 @@ get_colors() ->
 
 
 
+
 % @doc Returns the RGB definition of the color specified by name (atom) or
 % directly as a triplet of color components.
 %
@@ -324,16 +348,50 @@ get_color( Color={ _R, _G, _B } ) ->
 	% Optimised for this most frequent form (first pattern):
 	Color;
 
+% Covers the logical colors as well:
+get_color( _LogicalColor=window_frame_color ) ->
+	wxSystemSettings:getColour( ?wxSYS_COLOUR_WINDOWFRAME );
+
 get_color( ColorName ) when is_atom( ColorName ) ->
-	case proplists:get_value( ColorName, get_colors() ) of
+	case lists:member( ColorName, get_logical_colors() ) of
 
-		undefined ->
-			throw( { unknown_color, ColorName } );
+		true ->
+			get_logical_color( ColorName );
 
-		Color ->
-			Color
+		false ->
+			case proplists:get_value( ColorName, get_colors() ) of
+
+				undefined ->
+					throw( { unknown_color, ColorName } );
+
+				Color ->
+					Color
+
+			end
 
 	end.
+
+
+
+% @doc Returns the known logical colors.
+-spec get_logical_colors() -> [ logical_color() ].
+get_logical_colors() ->
+	[ window_frame_color ].
+
+
+
+% @doc Returns the RGB definition of the specified logical color.
+%
+% Note that the underlying GUI backend must be initialised and usable by this
+% process first.
+%
+-spec get_logical_color( logical_color() ) -> color_by_decimal_with_alpha().
+% Requires a process-level wx environment:
+get_logical_color( _LogicalColor=window_frame_color ) ->
+	wxSystemSettings:getColour( ?wxSYS_COLOUR_WINDOWFRAME );
+
+get_logical_color( Other ) ->
+	throw( { unknown_logical_color, Other } ).
 
 
 

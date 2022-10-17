@@ -135,7 +135,7 @@ Miscellaneous
 
   | If neither '--sn' nor '--ln' is specified, then the node will not be a distributed one.
 
-  | Example: launch-erl.sh -v --ln ceylan --eval 'class_TimeManager_test:run()'
+  | Example: launch-erl.sh -v --ln ceylan --eval 'foobar_test:run()'
 
 
 `show-xml-file.escript <https://github.com/Olivier-Boudeville/Ceylan-Myriad/blob/master/src/scripts/show-xml-file.escript>`_

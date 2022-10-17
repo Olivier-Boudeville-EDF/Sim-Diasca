@@ -35,6 +35,8 @@
 %
 % - has no intrinsic order (yet can be iterated over)
 %
+% - can efficiently look-up elements, even if containing a large number of them
+%
 % Notes:
 %
 % - we provide here a basic, general-purpose set support, and do not rely on any
@@ -348,16 +350,8 @@ next( Iterator ) ->
 %
 -spec extract_if_existing( element(), set() ) -> 'false' | set().
 extract_if_existing( Element, Set ) ->
-
-	case ?set_impl:is_member( Element, Set ) of
-
-		true ->
-			?set_impl:del_element( Element, Set );
-
-		false ->
-			false
-
-	end.
+	?set_impl:is_member( Element, Set ) andalso
+		?set_impl:del_element( Element, Set ).
 
 
 

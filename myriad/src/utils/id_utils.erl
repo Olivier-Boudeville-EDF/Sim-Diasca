@@ -44,7 +44,7 @@
 
 % UUID section.
 
--type uuid() :: text_utils:ustring().
+-type uuid() :: ustring().
 % A string UUID (ex: "ed64ffd4-74ee-43dc-adba-be37ed8735aa").
 
 -export_type([ uuid/0 ]).
@@ -57,12 +57,18 @@
 % Most basic integer identifiers.
 
 -type integer_id() :: non_neg_integer().
-% Integer identifiers start at 1.
+% Integer identifiers (e.g. mere counters) start at 1.
 
 -export_type([ integer_id/0 ]).
 
 
+
 % Sortable identifier section.
+%
+% These are reasonably compact identifiers that (1) can be compared directly
+% based on the (efficient) standard Erlang order, (2) can be totally ordered
+% (and thus can be sorted, in an unambiguous, reproducible order), and (3) for
+% which any number of identifiers can be created between any two of them.
 
 
 % No legit sortable identifier can be smaller than that one:
@@ -76,8 +82,8 @@
 
 
 % Would have been precisely, if allowed:
-% -type sortable_id() :: [ integer() ] | ?upper_bound_id.
--type sortable_id() :: [ integer() ] | text_utils:bin_string().
+% -type sortable_id() :: [ non_neg_integer() ] | ?upper_bound_id.
+-type sortable_id() :: [ non_neg_integer() ] | bin_string().
 % Corresponds to smart (sortable, insertion-friendly) identifiers, typically
 % represented (externally) as {1}, {2}, {2,1}, {4}, etc.
 %
@@ -135,6 +141,23 @@
 -export_type([ sortable_id/0, identifiable_element/0, identifier_table/0 ]).
 
 
+% The type identifier() is a builtin type; it cannot be redefined:
+-type id() :: uuid() | integer_id() | sortable_id() | pid() | reference()
+			| term().
+% Any type of identifier.
+%
+% Identifiers may be transient (ex: PIDs are unique during the life of a VM) or
+% permanent (ex: UUID), local to a node or global.
+%
+% Besides being each unique, all of them are expected to be directly comparable
+% thanks to the base, Erlang term order.
+
+
+
+-export_type([ id/0 ]).
+
+
+
 -export([ get_initial_sortable_id/0, get_next_sortable_id/1,
 		  get_sortable_id_between/2,
 		  get_sortable_id_lower_bound/0, get_sortable_id_upper_bound/0,
@@ -146,8 +169,17 @@
 		  identifier_table_to_string/1 ]).
 
 
-% Shorthand:
+% Implementation notes:
+%
+% This is a boostrap module, thus no Myriad metaprogramming is to happen here.
+
+
+
+% Shorthands:
+
 -type ustring() :: text_utils:ustring().
+-type bin_string() :: text_utils:bin_string().
+
 
 
 % UUID section.
@@ -253,7 +285,7 @@ get_next_sortable_id( Id ) ->
 
 
 % @doc Returns a sortable identifier that can be inserted between the two
-% specified ones, which are presumably ordered.
+% specified ones, which are presumably ordered (first being lower than second).
 %
 % Note: most probably the most useful function in order to create new sortable
 % identifiers.
@@ -395,7 +427,7 @@ check_only_non_neg_integers( [], _Id ) ->
 	ok;
 
 check_only_non_neg_integers( [ H | T ], Id )
-  when is_integer( H ) andalso H >= 0 ->
+						when is_integer( H ) andalso H >= 0 ->
 	check_only_non_neg_integers( T, Id );
 
 check_only_non_neg_integers( _, Id ) ->
@@ -546,7 +578,7 @@ assign_sorted_identifiers( _ElementsToIdentify=[ E | T ], IdentifierTable ) ->
 % (helper)
 %
 -spec find_lowest_identifier_in( [ identifiable_element() ],
-				 identifier_table() ) -> basic_utils:maybe( sortable_id() ).
+				identifier_table() ) -> basic_utils:maybe( sortable_id() ).
 find_lowest_identifier_in( Elements, IdentifierTable ) ->
 	LowestId = find_lowest_identifier_in( Elements, IdentifierTable,
 										  _LowestId=undefined ),
@@ -638,7 +670,7 @@ assign_ranged_identifiers( _RemainingElems=[ E | T ], ToIdentifyRev, LowerId,
 % (helper)
 %
 -spec assign_in_turn_ids( sortable_id(), sortable_id(),
-	  [ identifiable_element() ], identifier_table() ) -> identifier_table().
+		[ identifiable_element() ], identifier_table() ) -> identifier_table().
 assign_in_turn_ids( _LowerId, _HigherId, _ElemsToIdentify=[],
 					IdentifierTable ) ->
 	IdentifierTable;
@@ -697,9 +729,10 @@ identifier_table_to_string( IdentifierTable ) ->
 
 		ElemIdPairs ->
 
-			Strings = [ text_utils:format( "element '~p' associated to "
-				"identifier ~ts", [ E, sortable_id_to_string( Id ) ] )
-										|| { E, Id } <- ElemIdPairs ],
+			Strings = [ text_utils:format(
+				"element '~p' associated to identifier ~ts",
+				[ E, sortable_id_to_string( Id ) ] )
+						|| { E, Id } <- ElemIdPairs ],
 
 			text_utils:format( "identifier table having ~B entries: ~ts",
 				[ length( ElemIdPairs ),

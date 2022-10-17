@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2008-2021 Olivier Boudeville
+# Copyright (C) 2008-2022 Olivier Boudeville
 #
 # Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 #
@@ -159,7 +159,7 @@ warning_prefix="[launch-erl.sh] Warning:"
 do_stop=1
 
 
-while [ $# -gt 0 ] && [ $do_stop -eq 1 ]; do
+while [ $# -gt 0 ] && [ ${do_stop} -eq 1 ]; do
 
 	token_eaten=1
 
@@ -177,7 +177,7 @@ while [ $# -gt 0 ] && [ $do_stop -eq 1 ]; do
 			echo "  Error, no cookie specified after -c." 1>&2
 			exit 12
 		fi
-		#echo "  + specified cookie: $cookie"
+		#echo "  + specified cookie: ${cookie}"
 		cookie="$1"
 		token_eaten=0
 	fi
@@ -223,7 +223,7 @@ while [ $# -gt 0 ] && [ $do_stop -eq 1 ]; do
 		higher_tcp_port="$2"
 		shift
 		# Already done at the end of the loop: shift
-		#echo "  + TCP range: from $lower_tcp_port to $higher_tcp_port"
+		#echo "  + TCP range: from ${lower_tcp_port} to ${higher_tcp_port}"
 		token_eaten=0
 	fi
 
@@ -238,8 +238,8 @@ while [ $# -gt 0 ] && [ $do_stop -eq 1 ]; do
 		# This is apparently the way to notify a VM of the EPMD port, and
 		# appending the epmd_port_opt before the command apparently will not
 		# work ('ERL_EPMD_PORT=4269: not found'), thus exporting it instead:
-		#epmd_port_opt="ERL_EPMD_PORT=$epmd_port"
-		#echo "Setting EPMD port to $epmd_port"
+		#epmd_port_opt="ERL_EPMD_PORT=${epmd_port}"
+		#echo "Setting EPMD port to ${epmd_port}"
 		export ERL_EPMD_PORT="${epmd_port}"
 
 		# This works both ways (to tell EPMD where to be launched, to tell erl
@@ -341,8 +341,7 @@ while [ $# -gt 0 ] && [ $do_stop -eq 1 ]; do
 		if [ ! -d "${log_dir}" ]; then
 			echo "Creating specified yet non-existing log directory '${log_dir}'."
 			# No parent created:
-			mkdir "${log_dir}"
-			if [ ! $? -eq 0 ]; then
+			if ! mkdir "${log_dir}"; then
 
 				echo " Error, creating of specified log directory '${log_dir}' failed." 1>&2
 				exit 15
@@ -409,8 +408,8 @@ while [ $# -gt 0 ] && [ $do_stop -eq 1 ]; do
 
 	# So this form is not recommended:
 	#if [ "$1" = "-XXX" ]; then
-	#	verbatim_opt="${verbatim_opt} $1"
-	#	token_eaten=0
+	#   verbatim_opt="${verbatim_opt} $1"
+	#   token_eaten=0
 	#fi
 
 
@@ -436,7 +435,7 @@ it 'as is' to command-line." 1>&2
 	fi
 
 	# Prevents an unwanted shift to be done if no verbatim option was specified:
-	if [ $do_stop -eq 1 ]; then
+	if [ ${do_stop} -eq 1 ]; then
 		shift
 	fi
 
@@ -608,7 +607,7 @@ if [ ${autostart} -eq 1 ]; then
 fi
 
 
-if [ $use_tcp_range -eq 0 ]; then
+if [ ${use_tcp_range} -eq 0 ]; then
 
 	tcp_port_opt="-kernel inet_dist_listen_min ${lower_tcp_port} inet_dist_listen_max ${higher_tcp_port}"
 
@@ -671,7 +670,7 @@ if [ -n "${short_name}" ]; then
 
 	# Distributed, with short names here:
 
-	if [ $be_verbose -eq 0 ]; then
+	if [ ${be_verbose} -eq 0 ]; then
 
 		# Displayed later: echo "Launching: ${command}"
 		:
@@ -691,7 +690,7 @@ else
 
 		# Non-distributed node here:
 
-		if [ $be_verbose -eq 0 ]; then
+		if [ ${be_verbose} -eq 0 ]; then
 
 			# Displayed later: echo "Launching: ${command}"
 			:
@@ -733,7 +732,7 @@ else
 	fi
 
 	# Useless (would be a duplicate)
-	#if [ $be_verbose -eq 0 ]; then
+	#if [ ${be_verbose} -eq 0 ]; then
 	#
 	#   echo "Launching: ${command}"
 	#
@@ -835,7 +834,7 @@ if [ $use_run_erl -eq 0 ]; then
 
 	#echo "run_erl command: ${final_command}"
 
-	if [ $be_verbose -eq 0 ]; then
+	if [ ${be_verbose} -eq 0 ]; then
 
 		echo "Launching with run_erl: ${final_command}"
 
@@ -874,7 +873,7 @@ else
 
 	#echo "direct command: ${command}"
 
-	if [ $be_verbose -eq 0 ]; then
+	if [ ${be_verbose} -eq 0 ]; then
 
 		echo "Launching (directly): ${final_command}"
 
@@ -893,12 +892,14 @@ res=$?
 if [ ! ${res} -eq 0 ]; then
 
 	reset_keyboard
-	echo "(command failed, with error result ${res})" 1>&2
+	echo "(launch command failed, with error result ${res})" 1>&2
 	exit ${res}
 
-elif [ $use_run_erl -eq 1 ]; then
+elif [ ${use_run_erl} -eq 1 ]; then
 
-	echo "(command success reported)"
+	# Dispensable:
+	#echo "(launch command success reported)"
+	:
 
 fi
 
@@ -906,11 +907,11 @@ fi
 
 # Commented out, as pid never set:
 #if [ $in_background -eq 0 ]; then
-#	echo "(PID of launched interpreter is $pid)"
+#   echo "(PID of launched interpreter is $pid)"
 #fi
 
 
-if [ $use_run_erl -eq 0 ] && [ $autostart -eq 0 ]; then
+if [ ${use_run_erl} -eq 0 ] && [ ${autostart} -eq 0 ]; then
 
 	#echo "Waiting for the creation of write pipe '${write_pipe}'."
 
@@ -923,9 +924,9 @@ if [ $use_run_erl -eq 0 ] && [ $autostart -eq 0 ]; then
 
 	while [ ! -e "${write_pipe}" ]; do
 
-		wait_remain=$(($wait_max - $wait_count))
+		wait_remain=$((${wait_max} - ${wait_count}))
 
-		if [ $wait_remain -eq 0 ]; then
+		if [ ${wait_remain} -eq 0 ]; then
 
 			echo  "Error, time-out while waiting for the creation of write pipe (${write_pipe})." 1>&2
 			echo "Please check that there is no identically-named Erlang VM running in the background that would block this launch." 1>&2
@@ -943,13 +944,13 @@ if [ $use_run_erl -eq 0 ] && [ $autostart -eq 0 ]; then
 		# Do not start displaying the count-down before 5 seconds, then only
 		# every 5 seconds:
 		#
-		if [ $wait_count -gt 4 ] && [ $(expr $wait_count % 5) -eq 0 ]; then
-			echo " (launch time-out in $wait_remain seconds)"
+		if [ ${wait_count} -gt 4 ] && [ $(expr ${wait_count} % 5) -eq 0 ]; then
+			echo " (launch time-out in ${wait_remain} seconds)"
 		fi
 
 		sleep 1
 
-		wait_count=$(($wait_count+1))
+		wait_count=$((${wait_count}+1))
 
 	done
 
@@ -959,9 +960,9 @@ if [ $use_run_erl -eq 0 ] && [ $autostart -eq 0 ]; then
 	# If a node with the same name already exists, the write pipe will exist for
 	# a brief time then will be removed:
 
-	echo "Write pipe '${write_pipe}' found, waiting $wait_max seconds to ensure start-up is successful indeed."
+	echo "Write pipe '${write_pipe}' found, waiting ${wait_max} seconds to ensure start-up is successful indeed."
 
-	while [ $wait_count -lt $wait_max ]; do
+	while [ ${wait_count} -lt ${wait_max} ]; do
 
 		sleep 1
 
@@ -973,7 +974,7 @@ if [ $use_run_erl -eq 0 ] && [ $autostart -eq 0 ]; then
 
 		fi
 
-		wait_count=$(($wait_count+1))
+		wait_count=$((${wait_count}+1))
 
 	done
 
@@ -998,9 +999,9 @@ if [ $use_run_erl -eq 0 ] && [ $autostart -eq 0 ]; then
 
 	#if [ ! -x "${to_erl}" ]; then
 	#
-	#	echo "  Error, the 'to_erl' tool is not available." 1>&2
+	#   echo "  Error, the 'to_erl' tool is not available." 1>&2
 	#
-	#	exit 56
+	#   exit 56
 	#
 	#fi
 
@@ -1022,14 +1023,14 @@ if [ $use_run_erl -eq 0 ] && [ $autostart -eq 0 ]; then
 
 	#if [ -e "${write_pipe}" ]; then
 
-	#	/bin/rm -f "${write_pipe}"
+	#   /bin/rm -f "${write_pipe}"
 
 	#fi
 
 
 	#if [ -e "${read_pipe}" ]; then
 
-	#	/bin/rm -f "${read_pipe}"
+	#   /bin/rm -f "${read_pipe}"
 
 	#fi
 

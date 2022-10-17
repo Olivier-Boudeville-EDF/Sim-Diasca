@@ -17,6 +17,7 @@
 % If not, see <http://www.gnu.org/licenses/>.
 
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
+% Creation date: 2008.
 
 
 % @doc <b>Integration test</b> for the soda stochastic example case.
@@ -203,9 +204,10 @@ run( TestType ) ->
 
 	% Pattern-matches:
 	ExpectedNames =
-		[ begin TC ! { sayName, [], self() }, Name = test_receive(),
-				%io:format( "Name of ~w is ~ts.~n", [ TC, Name ] ),
-				Name
+		[ begin
+			TC ! { sayName, [], self() }, Name = test_receive(),
+			%io:format( "Name of ~w is ~ts.~n", [ TC, Name ] ),
+			Name
 		  end || TC <- ActorPids ],
 
 

@@ -738,12 +738,12 @@ decompress_cipher( CipheredFilePath, TargetFilePath, CompressFormat ) ->
 
 	%NewCipheredFilePath = CipheredFilePath
 	NewCipheredFilePath = generate_filename()
-		++ file_utils:get_extension_for( CompressFormat ),
+		++ file_utils:get_dotted_extension_for( CompressFormat ),
 
 	file_utils:rename( CipheredFilePath, NewCipheredFilePath ),
 
-	DecompressedFilePath = file_utils:decompress( NewCipheredFilePath,
-												  CompressFormat ),
+	DecompressedFilePath =
+		file_utils:decompress( NewCipheredFilePath, CompressFormat ),
 
 	file_utils:rename( NewCipheredFilePath, CipheredFilePath ),
 
@@ -753,7 +753,7 @@ decompress_cipher( CipheredFilePath, TargetFilePath, CompressFormat ) ->
 
 
 insert_random_cipher( SourceFilePath, CipheredFilePath, Range )
-  when Range > 1 ->
+							when Range > 1 ->
 
 	SourceFile = file_utils:open( SourceFilePath, ?bin_read_opts ),
 
@@ -762,13 +762,13 @@ insert_random_cipher( SourceFilePath, CipheredFilePath, Range )
 	_InsertedCount = insert_helper( SourceFile, TargetFile, Range, _Count=0 ).
 
 	%trace_utils:debug_fmt( "insert_random_cipher: inserted ~B bytes.",
-	%						[ InsertedCount ] ).
+	%                       [ InsertedCount ] ).
 
 
 % We insert at random places random values in the content:
 insert_helper( SourceFile, TargetFile, Range, Count ) ->
 
-	NextInsertionOffset = random_utils:get_random_value( Range ),
+	NextInsertionOffset = random_utils:get_uniform_value( Range ),
 
 	case file_utils:read( SourceFile, NextInsertionOffset ) of
 
@@ -779,7 +779,7 @@ insert_helper( SourceFile, TargetFile, Range, Count ) ->
 
 		{ ok, DataBin } when size( DataBin ) =:= NextInsertionOffset ->
 
-			RandomByte = random_utils:get_random_value( 255 ),
+			RandomByte = random_utils:get_uniform_value( 255 ),
 
 			NewDataBin = << DataBin/binary, RandomByte:8 >>,
 
@@ -817,7 +817,7 @@ extract_random_cipher( CipheredFilePath, TargetFilePath, Range )
 % We extract at random places the bytes found in the content:
 extract_helper( CipheredFile, TargetFile, Range, Count ) ->
 
-	NextExtractionOffset = random_utils:get_random_value( Range ),
+	NextExtractionOffset = random_utils:get_uniform_value( Range ),
 
 	case file_utils:read( CipheredFile, NextExtractionOffset ) of
 
@@ -840,7 +840,7 @@ extract_helper( CipheredFile, TargetFile, Range, Count ) ->
 
 					% Dummy operation, needed to reproduce the insertion random
 					% state:
-					_RandomByte = random_utils:get_random_value( 255 ),
+					_RandomByte = random_utils:get_uniform_value( 255 ),
 
 					file_utils:write( TargetFile, DataBin ),
 
@@ -1096,7 +1096,7 @@ fill_inner_array( Array, _Index=FinalIndex, FinalIndex, _Letters=[],
 fill_inner_array( Array, Index, FinalIndex, _Letters=[ L | T ], StateCount ) ->
 
 	% Returns a value in [1,StateCount]:
-	NextState = random_utils:get_random_value( StateCount ),
+	NextState = random_utils:get_uniform_value( StateCount ),
 
 	Cell = { NextState, L },
 

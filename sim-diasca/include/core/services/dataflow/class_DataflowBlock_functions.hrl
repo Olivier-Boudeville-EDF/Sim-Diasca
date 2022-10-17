@@ -17,6 +17,7 @@
 % If not, see <http://www.gnu.org/licenses/>.
 
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
+% Creation date: 2016.
 
 
 % This header file is private to the class_DataflowBlock module, and defined to
@@ -463,7 +464,7 @@ connect_to_input_port( InputPortBinName, InputPortTable,
 		key_not_found ->
 			?error_fmt( "Request to connect a non-existing input port '~ts', "
 				"whereas ~ts",
-				[ InputPortBinName,	list_input_ports( InputPortTable ) ] ),
+				[ InputPortBinName, list_input_ports( InputPortTable ) ] ),
 
 			throw( { input_port_not_found,
 					 text_utils:binary_to_string( InputPortBinName ) } )
@@ -570,8 +571,8 @@ connect_to_input_port( InputPortBinName, InputPortTable,
 
 		{ direct, { set, Value } } ->
 
-			ChannelValue = create_channel_value_for_input_port( Value,
-																InputPort ),
+			ChannelValue =
+				create_channel_value_for_input_port( Value,	InputPort ),
 
 			EnablePortReemission = true,
 
@@ -669,11 +670,11 @@ can_be_connected( OutputPortDescription=#port_description{
 										  },
 				  OutputPortBinName,
 				  InputPort=#input_port{
-							   value_semantics=InputPortSemantics,
-							   value_unit={ InputPortBinUnit,
-											InputPortCanonicalUnit },
-							   value_type=InputPortType,
-							   value_constraints=_InputPortConstraints },
+							value_semantics=InputPortSemantics,
+							value_unit={ InputPortBinUnit,
+										 InputPortCanonicalUnit },
+							value_type=InputPortType,
+							value_constraints=_InputPortConstraints },
 				  InputPortBinName ) ->
 
 	% Currently, for a channel connection to be acknowledged, only the units and
@@ -733,7 +734,7 @@ check_semantics( OutputPortSemantics, InputPortSemantics, OutputPortDescription,
 				 OutputPortBinName, InputPort, InputPortBinName ) ->
 
 	case class_SemanticServer:are_semantics_compliant(
-		   _Emitter=OutputPortSemantics, _Receiver=InputPortSemantics ) of
+			_Emitter=OutputPortSemantics, _Receiver=InputPortSemantics ) of
 
 		true ->
 			true;
@@ -939,21 +940,21 @@ satisfies_constraints( Value, _Constraints=[ C | T ] ) ->
 % than true).
 %
 satisfies_constraint( Value, _Constraint={ greater_than, N } )
-  when is_number( Value ) andalso Value >= N ->
+				when is_number( Value ) andalso Value >= N ->
 	true;
 
 satisfies_constraint( _Value, Constraint={ greater_than, _N } ) ->
 	{ false, Constraint };
 
 satisfies_constraint( Value, _Constraint={ lower_than, N } )
-  when is_number( Value ) andalso Value =< N ->
+				when is_number( Value ) andalso Value =< N ->
 	true;
 
 satisfies_constraint( _Value, Constraint={ lower_than, _N } ) ->
 	{ false, Constraint };
 
 satisfies_constraint( Value, _Constraint={ between, A, B } )
-  when is_number( Value ) andalso Value >= A andalso Value =< B ->
+				when is_number( Value ) andalso Value >= A andalso Value =< B ->
 	true ;
 
 satisfies_constraint( _Value, Constraint={ between, _A, _B } ) ->
@@ -971,35 +972,35 @@ satisfies_constraint( Value, Constraint={ in, List } ) ->
 	end;
 
 satisfies_constraint( Value, _Constraint=positive )
-  when is_number( Value ) andalso Value >= 0 ->
+				when is_number( Value ) andalso Value >= 0 ->
 	true;
 
 satisfies_constraint( _Value, Constraint=positive ) ->
 	{ false, Constraint };
 
 satisfies_constraint( Value, _Constraint=strictly_positive )
-  when is_number( Value ) andalso Value > 0 ->
+				when is_number( Value ) andalso Value > 0 ->
 	true;
 
 satisfies_constraint( _Value, Constraint=strictly_positive ) ->
 	{ false, Constraint };
 
 satisfies_constraint( Value, _Constraint=negative )
-  when is_number( Value ) andalso Value =< 0 ->
+				when is_number( Value ) andalso Value =< 0 ->
 	true;
 
 satisfies_constraint( _Value, Constraint=negative ) ->
 	{ false, Constraint };
 
 satisfies_constraint( Value, _Constraint=strictly_negative )
-  when is_number( Value ) andalso Value < 0 ->
+				when is_number( Value ) andalso Value < 0 ->
 	true;
 
 satisfies_constraint( _Value, Constraint=strictly_negative ) ->
 	{ false, Constraint };
 
 satisfies_constraint( Value, _Constraint=non_null )
-  when is_number( Value ) andalso Value =/= 0 ->
+				when is_number( Value ) andalso Value =/= 0 ->
 	true;
 
 satisfies_constraint( undefined, Constraint=non_null ) ->
@@ -1094,8 +1095,8 @@ parse_raw_output_port_spec( RawOutputPortSpec ) ->
 		name=list_table:get_value( output_port_name, OPSTable ),
 		comment=list_table:get_value( comment, OPSTable ),
 		is_iteration=list_table:get_value( is_iteration, OPSTable ),
-		produces_result=list_table:get_value_with_defaults( produces_result,
-															false, OPSTable ),
+		produces_result=list_table:get_value_with_default( produces_result,
+														   false, OPSTable ),
 		value_semantics=list_table:get_value( value_semantics, OPSTable ),
 		value_unit=list_table:get_value( value_unit, OPSTable ),
 		value_type_description=list_table:get_value( value_type_description,

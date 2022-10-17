@@ -55,7 +55,9 @@ A simple use of it is:
  $ ./install-erlang.sh --doc-install --generate-plt
 
 
-One may execute ``./install-erlang.sh --help`` for more guidance about how to configure it, notably in order to enable all modules of interest (``crypto``, ``wx``, etc.). See also the `GUI Backend`_ section to secure any related prerequisite.
+As using a Just-In-Time compiler increases the performances significantly, we chose to force its use. As a result, a C++ 17 compiler, like a recent enough ``g++`` one,  is required by our script.
+
+One may execute ``./install-erlang.sh --help`` for more guidance about how to configure it, notably in order to enable all modules of interest (``crypto``, ``wx``, etc.). See also the `Base GUI Backend`_ section to secure any related prerequisite.
 
 
 

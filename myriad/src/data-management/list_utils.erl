@@ -51,6 +51,7 @@
 % (see also basic_utils:{check,are}_all_{,un}defined/1).
 %
 -export([ ensure_list/1, ensure_atoms/1, ensure_tuples/1, ensure_pids/1,
+		  ensure_proplist/1,
 		  are_integers/1, check_integers/1, are_pids/1, are_atoms/1,
 		  check_strictly_ascending/1 ]).
 
@@ -64,7 +65,7 @@
 		  get_index_of/2, get_maybe_index_of/2, split_at/2, group_by/2,
 		  uniquify/1, uniquify_ordered/1,
 		  ensure_is_once_in/2,
-		  has_duplicates/1, count_occurrences/1, get_duplicates/1,
+		  duplicate/2, has_duplicates/1, count_occurrences/1, get_duplicates/1,
 		  union/2, intersection/2,
 		  difference/2, differences/2,
 		  cartesian_product/1,
@@ -75,7 +76,7 @@
 		  remove_element_from/2, remove_elements_from/2,
 		  remove_first_occurrence/2, remove_first_occurrences/2,
 		  delete_all_in/2,
-		  append_at_end/2,
+		  intercalate/2, append_at_end/2,
 		  unordered_compare/2, flatten_once/1, filter_out_undefined/1 ]).
 
 
@@ -109,7 +110,10 @@
 -export_type([ maybe_list/1 ]).
 
 
+
 % Shorthands:
+
+-type proplist() :: proplists:proplist().
 
 -type count() :: basic_utils:count().
 
@@ -122,7 +126,7 @@
 
 
 % @doc Ensures that the specified argument is a list: encloses it in a list of
-% its own if not already a list.
+% its own if not already a list; respects any original order.
 %
 % Note: not to be applied on strings for example.
 %
@@ -137,7 +141,7 @@ ensure_list( Term ) ->
 
 % @doc Ensures that the specified argument is a list of atoms: encloses any atom
 % in a list of its own if not already a list, or check that this list is only
-% populated of atoms.
+% populated of atoms; respects any original order.
 %
 ensure_atoms( Atom ) when is_atom( Atom ) ->
 	[ Atom ];
@@ -160,7 +164,7 @@ ensure_atoms( Other ) ->
 
 % @doc Ensures that the specified argument is a list of tuples: encloses any
 % tuple in a list of its own if not already a list, or check that this list is
-% only populated of tuples.
+% only populated of tuples; respects any original order.
 %
 ensure_tuples( Tuple ) when is_tuple( Tuple ) ->
 	[ Tuple ];
@@ -183,7 +187,7 @@ ensure_tuples( Other ) ->
 
 % @doc Ensures that the specified argument is a list of PIDs: encloses any PID
 % in a list of its own if not already a list, or check that this list is only
-% populated of PIDs.
+% populated of PIDs; respects any original order.
 %
 ensure_pids( Pid ) when is_pid( Pid ) ->
 	[ Pid ];
@@ -201,6 +205,41 @@ ensure_pids( List ) when is_list( List ) ->
 
 ensure_pids( Other ) ->
 	throw( { neither_list_nor_pid, Other } ).
+
+
+
+% @doc Ensures that the specified argument is a proplist, that is a list of
+% atoms or of pairs whose first argument is an atom: encloses any of such
+% element in a list of its own if not already a list, or checks that this list
+% is only populated as expected; respects any original order.
+%
+-spec ensure_proplist( maybe_list( atom() | { atom(), any() } ) ) -> proplist().
+ensure_proplist( Atom ) when is_atom( Atom ) ->
+	[ Atom ];
+
+ensure_proplist( P={ Atom, _Any } ) when is_atom( Atom ) ->
+	[ P ];
+
+ensure_proplist( L ) when is_list( L ) ->
+	ensure_proplist_helper( L, _Acc=[] );
+
+ensure_proplist( Other ) ->
+	throw( { not_proplistable, Other } ).
+
+
+% Not using here ensure_proplist/1, as nested lists are not permitted:
+ensure_proplist_helper( _L=[], Acc ) ->
+	lists:reverse( Acc );
+
+ensure_proplist_helper( _L=[ Atom | T ], Acc ) when is_atom( Atom ) ->
+	ensure_proplist_helper( T, [ Atom | Acc ] );
+
+ensure_proplist_helper( _L=[ P={ Atom, _Any } | T ], Acc )
+										when is_atom( Atom ) ->
+	ensure_proplist_helper( T, [ P | Acc ] );
+
+ensure_proplist_helper( [ Other | _T ], _Acc ) ->
+	throw( { invalid_proplist_element, Other } ).
 
 
 
@@ -566,17 +605,22 @@ group_by( Count, List, Acc ) ->
 
 
 % @doc Returns a list whose elements are the ones of the specified list, except
-% that they are unique (all their duplicates have been removed).
+% that they are unique (all their next duplicates have been removed).
 %
 % No specific order is respected in the returned list.
 %
 % Ex: if L = [1,2,3,2,2,4,5,5,4,6,6,5], then uniquify(L) is:
-% [3,6,2,5,1,4].
+% [1,2,3,4,5,6].
 %
 -spec uniquify( list() ) -> list().
 uniquify( List ) ->
 	% There is probably a more efficient way of doing the same:
-	sets:to_list( sets:from_list( List ) ).
+	% (previously order was not respected in the returned list)
+	%sets:to_list( sets:from_list( List ) ).
+
+	% Now the following is readily available, and preserves order:
+	lists:uniq( List ).
+
 
 
 % @doc Returns a list whose elements are the ones of the specified list, except
@@ -630,6 +674,15 @@ ensure_is_once_in( Elem, List ) ->
 
 
 
+% @doc Returns a list made of the specified number of occurrences of the
+% specified element.
+%
+-spec duplicate( element(), count() ) -> [ element() ].
+duplicate( Elem, Count ) ->
+	%[ Elem || _ <- lists:seq( 1, Count ) ].
+	lists:duplicate( Count, Elem ).
+
+
 % @doc Tells whether there are in the specified list elements that are present
 % more than once.
 %
@@ -680,7 +733,11 @@ count_occurrences( _List=[ Term | T ], Acc ) ->
 % count_occurrences/1 if wanting to include the terms that are listed only once
 % each.
 %
-% Ex: list_utils:get_duplicates([a,a,b,b,b,c,d,d]) = [{b,3},{d,2},{a,2}]
+% Ex: L = [a,a,b,b,b,c,d,d],
+%     [{b,3},{d,2},{a,2}] = list_utils:get_duplicates(L)
+%
+% Use lists:keysort(2, list_utils:get_duplicates(L)) to sort duplicates by
+% increasing number of occurrences (e.g. [{d,2},{a,2},{b,3}] here).
 %
 -spec get_duplicates( list() ) -> [ { element(), count() } ].
 get_duplicates( List ) ->
@@ -994,6 +1051,32 @@ delete_all_in( Elem, List ) ->
 
 
 
+% @doc Intercalates the specified term between all elements of the specified
+% list.
+%
+% For example:
+%  [] = list_utils:intercalate('a', []),
+%  [1] = list_utils:intercalate('a', [1]),
+%  [1,a,2] = list_utils:intercalate('a', [1,2]),
+%  [1,a,2,a,3] = list_utils:intercalate('a', [1,2,3]).
+%
+-spec intercalate( element(), list() ) -> list().
+intercalate( _Elem, _TargetList=[] ) ->
+	[];
+
+intercalate( Elem, TargetList ) ->
+	intercalate( Elem, TargetList, _Acc=[] ).
+
+
+% (helper)
+intercalate( _Elem, _TargetList=[ H | [] ], Acc ) ->
+	lists:reverse( [ H | Acc ] );
+
+intercalate( Elem, _TargetList=[ H | T ], Acc ) ->
+	intercalate( Elem, T, [ Elem, H | Acc ] ).
+
+
+
 % @doc Appends specified element at the end of specified list, without changing
 % the order of the list.
 %
@@ -1208,7 +1291,7 @@ determine_tuple_info( _TupleList=[] ) ->
 	throw( empty_list );
 
 determine_tuple_info( _TupleList=[ FirstTuple | T ] )
-  when is_tuple( FirstTuple ) ->
+								when is_tuple( FirstTuple ) ->
 	TupleSize = size( FirstTuple ),
 	Count = check_tuple_length( T, TupleSize, _AccCount=1 ),
 	{ Count, TupleSize }.
@@ -1304,7 +1387,7 @@ random_permute( List, RemainingLen ) ->
 	% (using remove_element_at/2 should be quicker than using
 	% proplists:delete/2, as we stop at the first matching element found)
 	%
-	Index = random_utils:get_random_value( RemainingLen ),
+	Index = random_utils:get_uniform_value( RemainingLen ),
 
 	%io:format( "Index=~p, ", [ Index ] ),
 
@@ -1330,7 +1413,7 @@ random_permute_reciprocal( List ) ->
 	% value. So we draw them all first, and start by the end of that list,
 	% taking into account that the range is decremented at each draw:
 	%
-	ReciprocalIndex = lists:reverse( [ random_utils:get_random_value( L )
+	ReciprocalIndex = lists:reverse( [ random_utils:get_uniform_value( L )
 			|| L <- lists:reverse( lists:seq( 1, length( List ) ) ) ] ),
 
 	%io:format( "Reciprocal index = ~p~n", [ ReciprocalIndex ] ),
@@ -1372,7 +1455,7 @@ draw_element( ElementList ) ->
 -spec draw_element( list(), count() ) -> element().
 draw_element( ElementList, Length ) ->
 
-	DrawnIndex = random_utils:get_random_value( Length ),
+	DrawnIndex = random_utils:get_uniform_value( Length ),
 
 	get_element_at( ElementList, DrawnIndex ).
 
@@ -1424,7 +1507,7 @@ draw_element_weighted( _ElementList, 0 ) ->
 	throw( null_total_probability );
 
 draw_element_weighted( ElementList, Sum ) ->
-	DrawnValue = random_utils:get_random_value( Sum ),
+	DrawnValue = random_utils:get_uniform_value( Sum ),
 	%io:format( "draw_element: drawn ~B.~n", [ DrawnValue ] ),
 	select_element( ElementList, DrawnValue, _CurrentSum=0 ).
 

@@ -111,8 +111,8 @@ Not specifying an event condition on a state transition means here that the stat
 
 The two models are interacting, thus the two FSMs will interact as well, based on message exchanges:
 
-:raw-html:`<center><img src="soda-ordering-interacting-FSM.png"></img></center>`
-:raw-latex:`\includegraphics[scale=0.4]{soda-ordering-interacting-FSM.png}`
+:raw-html:`<center><img src="soda-ordering-interacting-FSM-committed.png"></img></center>`
+:raw-latex:`\includegraphics[scale=0.4]{soda-ordering-interacting-FSM-committed.png}`
 
 
 (the inter-customer exchanges are not shown here)

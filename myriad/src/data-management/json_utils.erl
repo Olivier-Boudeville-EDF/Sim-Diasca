@@ -42,7 +42,11 @@
 % (https://github.com/talentdeficit/jsx/), version 3.0.0 at the time of this
 % writing; we expect the BEAM files from JSX to be available on the code path
 % (out of a rebar3 context, we typically expect to find them in
-% ~/Software/jsx/jsx-current-install).
+% ~/Software/jsx/jsx-current-install/ebin).
+%
+% Refer to the 'JSX Installation' section in GNUmakevars.inc in order to perform
+% an installation thereof according to our standards - which is strongly
+% recommended.
 %
 % Jiffy (https://github.com/davisp/jiffy) is the second supported backend
 % option (with no specific action needed to be able to use it).
@@ -67,9 +71,9 @@
 % - the actual JSON encoding of a given Erlang term depends on the parser
 % backend (ex: the order of JSON keys might differ - note that the JSON RFC (RFC
 % 4627) indicates that order of object members should not matter)
-
+%
 % - for each parser, we expect that from_json . to_json = Id, i.e. for each
-% valid Erlang term T, from_json( to_json( T ) ) = T
+% valid Erlang term T, from_json(to_json(T)) = T
 
 
 % Curently no extra (transverse) user-specified encoding/decoding options are
@@ -88,7 +92,10 @@
 
 
 
--export([ % Stateless versions:
+-export([ get_parser_name_paths/0, get_paths_for/1,
+
+
+		  % Stateless versions:
 
 		  start_parser/0, stop_parser/0,
 
@@ -162,9 +169,9 @@
 -type decoded_json() :: json_term().
 
 
--type json_term() :: map_hashtable:map_hashtable( decoded_json_key(),
-												  decoded_json_value() )
-						| integer() | float() | binary() | atom() | term().
+-type json_term() ::
+		map_hashtable:map_hashtable( decoded_json_key(), decoded_json_value() )
+	  | integer() | float() | binary() | atom() | term().
 % An (Erlang) term corresponding to a JSON document (ex: a decoded one, or one
 % not encoded yet), at least often a map whose keys are binary strings and whose
 % values are json_term() or basic types such as integers, floats, strings,
@@ -201,6 +208,80 @@
 -type any_file_path() :: file_utils:any_file_path().
 
 -type directory_path() :: file_utils:directory_path().
+-type resolvable_path() :: file_utils:resolvable_path().
+
+
+
+% @doc Returns information regarding any JSON parser found, as a triplet made of
+% its name, a resolvable path to its ebin directory (for example useful to any
+% upcoming deployment of a vanilla node) and a directly resolved one; otherwise
+% throws an exception.
+%
+-spec get_parser_name_paths() ->
+		  { parser_backend_name(), resolvable_path(), directory_path() }.
+get_parser_name_paths() ->
+	case get_paths_for( jsx ) of
+
+		undefined ->
+			case get_paths_for( jiffy ) of
+
+				undefined ->
+					throw( unresolvable_json_parser );
+
+				{ JiffyRes, JiffyPlain } ->
+					{ jiffy, JiffyRes, JiffyPlain }
+
+			end;
+
+		{ JsxRes, JsxPlain } ->
+			{ jsx, JsxRes, JsxPlain }
+
+	end.
+
+
+
+% @doc Returns an existing path (if any, and according to the Myriad
+% conventions), as both a resolvable one and a directly resolved one, to the
+% ebin directory of the specified JSON parser.
+%
+-spec get_paths_for( parser_backend_name() ) ->
+						maybe( { resolvable_path(), directory_path() } ).
+get_paths_for( _ParserName=jsx ) ->
+
+	ResolvablePath = [ home, "Software", "jsx", "jsx-current-install", "_build",
+					   "default", "lib", "jsx", "ebin" ],
+
+	ResolvedPath = file_utils:resolve_path( ResolvablePath ),
+
+	case file_utils:is_existing_directory_or_link( ResolvedPath ) of
+
+		true ->
+			{ ResolvablePath, ResolvedPath };
+
+
+		false ->
+			undefined
+
+	end;
+
+
+get_paths_for( _ParserName=jiffy ) ->
+
+	% Maybe to be updated:
+	ResolvablePath =
+		[ home, "Software", "jiffy", "jiffy-current-install", "ebin" ],
+
+	ResolvedPath = file_utils:resolve_path( ResolvablePath ),
+
+	case file_utils:is_existing_directory_or_link( ResolvedPath ) of
+
+		true ->
+			{ ResolvablePath, ResolvedPath };
+
+		false ->
+			undefined
+
+	end.
 
 
 
@@ -224,7 +305,7 @@ start_parser() ->
 %
 -spec start_parser( parser_backend_name() ) -> parser_state().
 start_parser( BackendName )
-  when BackendName =:= jsx orelse BackendName =:= jiffy ->
+				when BackendName =:= jsx orelse BackendName =:= jiffy ->
 
 	% Appropriate for both JSX and Jiffy:
 
@@ -288,16 +369,7 @@ get_parser_backend_name() ->
 % @doc Tells whether a suitable JSON parser is available.
 -spec is_parser_available() -> boolean().
 is_parser_available() ->
-
-	case get_parser_backend_name() of
-
-		undefined ->
-			false;
-
-		_ ->
-			true
-
-	end.
+	get_parser_backend_name() =/= undefined.
 
 
 
@@ -339,7 +411,7 @@ is_parser_backend_available( BackendName ) ->
 %
 -spec get_parser_backend_name( parser_state() ) -> parser_backend_name().
 get_parser_backend_name(
-					_ParserState={ BackendName, _InternalBackendState } ) ->
+		_ParserState={ BackendName, _InternalBackendState } ) ->
 	BackendName.
 
 
@@ -361,7 +433,7 @@ get_available_parser_backend_name() ->
 
 		ParserName ->
 			%trace_utils:info_fmt( "Selected JSON parser: ~ts.",
-			%                      ParserName ] ),
+			%                      [ ParserName ] ),
 			ParserName
 
 	end.
@@ -397,14 +469,14 @@ check_parser_operational( ParserState={ jsx, _InternalBackendState } ) ->
 
 		error:undef ->
 			trace_utils:error_fmt(
-			  "The JSX JSON parser is not operational.~n~ts",
-			  [ system_utils:get_json_unavailability_hint( jsx ) ] ),
+				"The JSX JSON parser is not operational.~n~ts",
+				[ system_utils:get_json_unavailability_hint( jsx ) ] ),
 			throw( { json_parser_not_operational, jsx } );
 
 		OtherError ->
 			trace_utils:error_fmt(
-			  "The JSX JSON parser does not work properly: ~p.",
-			  [ OtherError ] ),
+				"The JSX JSON parser does not work properly: ~p.",
+				[ OtherError ] ),
 			throw( { json_parser_dysfunctional, jsx, OtherError } )
 
 	end;
@@ -422,14 +494,14 @@ check_parser_operational( ParserState={ jiffy, _InternalBackendState } ) ->
 
 		error:undef ->
 			trace_utils:error_fmt(
-			  "The Jiffy JSON parser is not operational.~n~ts",
-			  [ system_utils:get_json_unavailability_hint( jiffy ) ] ),
+				"The Jiffy JSON parser is not operational.~n~ts",
+				[ system_utils:get_json_unavailability_hint( jiffy ) ] ),
 			throw( { json_parser_not_operational, jiffy } );
 
 		OtherError ->
 			trace_utils:error_fmt(
-			  "The Jiffy JSON parser does not work properly: ~p.",
-			  [ OtherError ] ),
+				"The Jiffy JSON parser does not work properly: ~p.",
+				[ OtherError ] ),
 			throw( { json_parser_dysfunctional, jiffy, OtherError } )
 
 	end.
@@ -471,7 +543,7 @@ to_json( Term, _ParserState={ jsx, _UndefinedInternalBackendState } ) ->
 	Opts = get_base_json_encoding_options( jsx ),
 
 	%trace_utils:debug_fmt( "JSX is to encode, with options ~p:~n ~p",
-	%					   [ Opts, Term ] ),
+	%                       [ Opts, Term ] ),
 
 	R = jsx:encode( Term, Opts ),
 
@@ -484,7 +556,7 @@ to_json( Term, _ParserState={ jiffy, _UndefinedInternalBackendState } ) ->
 	Opts = get_base_json_encoding_options( jiffy ),
 
 	%trace_utils:debug_fmt( "Jiffy is to encode, with options ~p:~n ~p",
-	%					   [ Opts, Term ] ),
+	%                       [ Opts, Term ] ),
 
 	jiffy:encode( Term, Opts ).
 
@@ -553,9 +625,7 @@ get_base_json_encoding_options( _BackendName=jiffy ) ->
 %
 -spec from_json( json() ) -> json_term().
 from_json( Json ) ->
-
 	ParserState = get_parser_backend_state(),
-
 	from_json( Json, ParserState ).
 
 

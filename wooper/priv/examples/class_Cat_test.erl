@@ -57,7 +57,8 @@ run( IsDebug ) ->
 	MyC ! { getSuperclasses, [], self() },
 	receive
 
-		{ wooper_result, Classes=[ class_Mammal, class_ViviparousBeing ] } ->
+		{ wooper_result, Classes=[ class_Mammal, class_ViviparousBeing,
+								   class_Serialisable ] } ->
 			test_facilities:display( "After constructor, getSuperclasses/1 "
 									 "returned ~p as expected.", [ Classes ] );
 

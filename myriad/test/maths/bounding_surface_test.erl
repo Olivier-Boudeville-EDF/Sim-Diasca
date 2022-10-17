@@ -23,6 +23,7 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2010.
 
 
 % @doc Unit tests for the (2D) <b>bounding surface facilities</b>.
@@ -79,6 +80,7 @@ test_mec() ->
 % To boost special cases:
 %-define( max_coord, 50 ).
 -define( max_coord, 1000 ).
+
 
 
 % Will progressively slow down as the number of points increases:

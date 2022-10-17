@@ -17,6 +17,7 @@
 % If not, see <http://www.gnu.org/licenses/>.
 
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
+% Creation date: 2010.
 
 
 % @doc The result manager allows to declare, keep track of, retrieve, make
@@ -59,7 +60,7 @@
 	  "information, as known of this manager" },
 
 	{ basic_probe_default_options, [ probe_options() ],
-	  "a list of default options for basic probes" },
+	  "a list of the default options for basic probes" },
 
 	{ virtual_probe_table,
 	  table( bin_probe_name(), virtual_probe_entry() ),
@@ -74,7 +75,11 @@
 	  "information, as known of this manager" },
 
 	{ web_probe_default_options, [ probe_options() ],
-	  "a list of default options for web probes" },
+	  "a list of the default options for web probes" },
+
+	{ graph_probe_table, table( bin_probe_name(), graph_probe_entry() ),
+	  "table associating, to a graph stream probe name, its related record "
+	  "information, as known of this manager" },
 
 	{ pid_to_queue, table( producer_pid(), result_queue() ),
 	  "table allowing to convert the PID of a tracked producer into the "
@@ -140,7 +145,9 @@
 % Allows to whitelist specific results.
 
 
--type blacklisted_elements() :: [ base_result_pattern() ].
+-type blacklist_pattern() :: base_result_pattern().
+
+-type blacklisted_elements() :: [ blacklist_pattern() ].
 % Allows to blacklist specific results.
 
 
@@ -155,12 +162,20 @@
 							  | 'all_basic_probes_only'
 							  | 'all_virtual_probes_only'
 							  | 'all_web_probes_only'
+							  | 'all_graph_stream_probes_only'
 							  | [ selection_pattern() ].
 % User-specified result spec.
 
 
 -type meta_data() :: option_list:option_list( atom(), bin_string() ).
-% Additional information to be passed to result producers.
+% Information to be passed to result producers.
+%
+% This includes basic engine-level information, such as layer versions,
+% simulation name, tick duration, etc.
+
+
+-type declaration_outcome() :: 'output_not_requested' | 'output_requested'.
+% Tells whether a declared probe has its output wanted.
 
 
 % Records the result queue corresponding to a computing node, in order to
@@ -249,14 +264,30 @@
 
 
 -type web_probe_entry() :: #web_probe_entry{}.
-% Describes a web probe, as seen by the result manager.
+
+
+
+
+% Describes a graph stream probe, as seen by the result manager.
 %
-% Such an entry is the value associated to the (binary) probe name, in the web
-% probe table.
+% Such an entry is the value associated to the (binary) probe name, in the graph
+% stream probe table.
+%
+-record( graph_probe_entry, {
+
+	% The PID of the corresponding graph stream probe:
+	probe_pid :: class_GraphStreamProbe:probe_pid(),
+
+	% Tells whether this probe is to be tracked as a result:
+	is_tracked :: boolean() } ).
+
+-type graph_probe_entry() :: #graph_probe_entry{}.
 
 
 -export_type([ manager_pid/0, result_specification/0, meta_data/0,
-			   result_queue/0, basic_probe_entry/0, web_probe_entry/0,
+			   declaration_outcome/0,
+			   result_queue/0,
+			   basic_probe_entry/0, web_probe_entry/0, graph_probe_entry/0,
 			   probe_info/0 ]).
 
 
@@ -314,7 +345,7 @@
 % Implementation notes.
 
 
-% The process to handle results is the following:
+% The procedure to handle results is the following:
 %
 % 1. perform basic checks of the result specification given by the user,
 % possibly precomputing match specifications (compiled regular expressions)
@@ -330,8 +361,8 @@
 % Once patterns are changed, resulting lists could be uniquified.
 
 
-% The name of an output is ambiguous: for example, it can be either the one of a
-% basic probe result, or of a virtual probe result, or of a web probe result.
+% The name of an output is ambiguous: for example, it can be the result of a
+% basic, virtual, web or graph stream probe.
 %
 % As a consequence we have to look-up these names in tables maintained for
 % different producer types, and ensure that no ambiguity remains.
@@ -365,15 +396,15 @@
 % the result queue that is in charge of it.
 
 
-% The basic or web probes that are tracked will be deleted by the result
-% manager. The ones that are not tracked are to be specifically managed by their
-% creator.
+% All autonomouns (instance-based) probes that are tracked will be deleted by
+% the result manager. The ones that are not tracked are to be specifically
+% managed by their creator.
 
 
 
 
 
-% @doc Constructs a  result manager, from following parameters:
+% @doc Constructs a result manager, from following parameters:
 %
 % - ResultSpecification allows to specify coarsely what are the outputs to be
 % promoted to results
@@ -443,6 +474,8 @@ construct( State, ResultSpecification, DataLoggerEnabled,
 		{ web_probe_table, EmptyTable },
 		{ web_probe_default_options, [] },
 
+		{ graph_probe_table, EmptyTable },
+
 		{ pid_to_queue, EmptyTable },
 		{ result_queues, undefined },
 		{ user_node_info, undefined },
@@ -469,43 +502,62 @@ destruct( State ) ->
 	% Class-specific actions:
 	?info( "Deleting result manager." ),
 
-	% Deleting all basic and web probes that are tracked (others are to be
-	% managed explicitly by their user):
+	% Deleting all probes that are tracked (others are to be managed explicitly
+	% by their user):
 
-	BasicProbePidList = [ Pid || #basic_probe_entry{ probe_pid=Pid,
-													 is_tracked=true }
+	BasicProbePids = [ Pid || #basic_probe_entry{ probe_pid=Pid,
+												  is_tracked=true }
 							<- table:values( ?getAttr(basic_probe_table) ) ],
 
-	case BasicProbePidList of
+	case BasicProbePids of
 
 		[] ->
 			?debug( "No tracked basic probe to delete." );
 
 		_ ->
 			?debug_fmt( "Deleting ~B tracked basic probe(s): ~w.",
-						[ length( BasicProbePidList ), BasicProbePidList ] ),
+						[ length( BasicProbePids ), BasicProbePids ] ),
 
-			wooper:delete_synchronously_instances( BasicProbePidList )
+			wooper:delete_synchronously_instances( BasicProbePids )
 
 	end,
 
 
-	WebProbePidList = [ Pid || #web_probe_entry{ probe_pid=Pid,
-												 is_tracked=true }
-							  <- table:values( ?getAttr(web_probe_table) ) ],
+	WebProbePids = [ Pid || #web_probe_entry{ probe_pid=Pid,
+											  is_tracked=true }
+								<- table:values( ?getAttr(web_probe_table) ) ],
 
-	case WebProbePidList of
+	case WebProbePids of
 
 		[] ->
 			?debug( "No tracked web probe to delete." );
 
 		_ ->
 			?debug_fmt( "Deleting ~B tracked web probes: ~w.",
-						[ length( WebProbePidList ), WebProbePidList ] ),
+						[ length( WebProbePids ), WebProbePids ] ),
 
-			wooper:delete_synchronously_instances( WebProbePidList )
+			wooper:delete_synchronously_instances( WebProbePids )
 
 	end,
+
+
+	GraphProbePids = [ Pid || #graph_probe_entry{ probe_pid=Pid,
+												  is_tracked=true }
+						<- table:values( ?getAttr(graph_probe_table) ) ],
+
+	case GraphProbePids of
+
+		[] ->
+			?debug( "No tracked graph stream probe to delete." );
+
+		_ ->
+			?debug_fmt( "Deleting ~B tracked graph stream probes: ~w.",
+						[ length( GraphProbePids ), GraphProbePids ] ),
+
+			wooper:delete_synchronously_instances( GraphProbePids )
+
+	end,
+
 
 	?getAttr(root_time_manager_pid) ! { removeSimulationListener, self() },
 
@@ -541,8 +593,8 @@ setResourceMapping( State, HostCoreList, UserNodeInfos ) ->
 	InitialResultQueues = create_initial_queues( HostCoreList ),
 
 	wooper:return_state( setAttributes( State, [
-			{ result_queues, InitialResultQueues },
-			{ user_node_info, UserNodeInfos } ] ) ).
+		{ result_queues, InitialResultQueues },
+		{ user_node_info, UserNodeInfos } ] ) ).
 
 
 
@@ -561,28 +613,26 @@ create_initial_queues( _HostCoreList=[], _Count, Acc ) ->
 create_initial_queues( _HostCoreList=[ { HostName, NodeName, CoreCount } | T ],
 					   Count, Acc ) ->
 
-	 NewQueue = #result_queue{ id=Count,
-							   host_name=HostName,
-							   node_name=NodeName,
+	 NewQueue = #result_queue{
+		id=Count,
+		host_name=HostName,
+		node_name=NodeName,
 
-							   % We ensure that each core will be busy enough,
-							   % yet not too overloaded:
-							   %
-							   max_worker_count=2*CoreCount,
+		% We ensure that each core will be busy enough, yet not too overloaded:
+		max_worker_count=2*CoreCount,
 
-							   % No generation triggered yet:
-							   waited_producers=[],
+		% No generation triggered yet:
+		waited_producers=[],
 
-							   % No result known yet:
-							   pending_results=[] },
+		% No result known yet:
+		pending_results=[] },
 
 	create_initial_queues( T, Count+1, [ NewQueue | Acc ] ).
 
 
 
-% @doc Processes the declaration of the specified (basic) probe, whose name is a
-% binary here, and whose elements shall be written in specified directory (if
-% any).
+% @doc Processes the declaration of the specified (basic) probe, whose elements
+% shall be written in the specified directory (if any).
 %
 % IsToBeTracked tells whether this manager is to track this probe as the
 % producer of actual simulation results (if true) or just as a producer of
@@ -593,8 +643,7 @@ create_initial_queues( _HostCoreList=[ { HostName, NodeName, CoreCount } | T ],
 % should targeted/blacklisted patterns be used and changed.
 %
 -spec declareProbe( wooper:state(), bin_probe_name(), boolean(),
-					maybe( bin_directory_path() ) ) ->
-		request_return( 'output_not_requested' | 'output_requested' ).
+	maybe( bin_directory_path() ) ) -> request_return( declaration_outcome() ).
 declareProbe( State, BinProbeName, IsToBeTracked, MaybeProbeBinDir ) ->
 
 	ProbeName = text_utils:binary_to_string( BinProbeName ),
@@ -613,17 +662,25 @@ declareProbe( State, BinProbeName, IsToBeTracked, MaybeProbeBinDir ) ->
 		{ true, ProbeOptions } ->
 
 			% First, check that the same probe will not be registered twice:
-			ProbeTable = ?getAttr(web_probe_table),
 
-			case table:has_entry( _Key=BinProbeName, ProbeTable ) of
+			BasicProbeTable = ?getAttr(basic_probe_table),
 
-				true ->
-					throw( { basic_probe_declared_more_than_once, ProbeName } );
+			table:has_entry( _Key=BinProbeName, BasicProbeTable ) andalso
+				throw( { basic_probe_already_declared, ProbeName } ),
 
-				false ->
-					ok
 
-			end,
+			WebProbeTable = ?getAttr(web_probe_table),
+
+			table:has_entry( BinProbeName, WebProbeTable ) andalso
+				throw( { basic_probe_already_declared_as_web_one, ProbeName } ),
+
+
+			GraphProbeTable = ?getAttr(graph_probe_table),
+
+			table:has_entry( BinProbeName, GraphProbeTable ) andalso
+				throw( { basic_probe_already_declared_as_graph_one,
+						 ProbeName } ),
+
 
 			ActualProbeOptions = case ProbeOptions of
 
@@ -637,7 +694,7 @@ declareProbe( State, BinProbeName, IsToBeTracked, MaybeProbeBinDir ) ->
 
 			RegisteredState = register_basic_probe( BinProbeName,
 				ActualProbeOptions, IsToBeTracked, MaybeProbeBinDir,
-			   _ProbePid=?getSender(), State ),
+				_ProbePid=?getSender(), State ),
 
 			wooper:return_state_result( RegisteredState, output_requested )
 
@@ -645,8 +702,7 @@ declareProbe( State, BinProbeName, IsToBeTracked, MaybeProbeBinDir ) ->
 
 
 
-% @doc Processes the declaration of the specified web probe, whose name is a
-% binary here.
+% @doc Processes the declaration of the specified web probe.
 %
 % IsToBeTracked tells whether this manager is to track this (web) probe as the
 % producer of actual simulation results (if true) or just as a producer of
@@ -658,7 +714,7 @@ declareProbe( State, BinProbeName, IsToBeTracked, MaybeProbeBinDir ) ->
 % should targeted/blacklisted patterns be used and changed.
 %
 -spec declareWebProbe( wooper:state(), bin_probe_name(), boolean() ) ->
-		request_return( 'output_not_requested' | 'output_requested' ).
+						request_return( declaration_outcome() ).
 declareWebProbe( State, BinProbeName, IsToBeTracked ) ->
 
 	ProbeName = text_utils:binary_to_string( BinProbeName ),
@@ -676,17 +732,25 @@ declareWebProbe( State, BinProbeName, IsToBeTracked ) ->
 		{ true, ProbeOptions } ->
 
 			% First, check that the same probe will not be registered twice:
-			ProbeTable = ?getAttr(web_probe_table),
 
-			case table:has_entry( _Key=BinProbeName, ProbeTable ) of
+			BasicProbeTable = ?getAttr(basic_probe_table),
 
-				true ->
-					throw( { web_probe_declared_more_than_once, ProbeName } );
+			table:has_entry( _Key=BinProbeName, BasicProbeTable ) andalso
+				throw( { web_probe_already_declared_as_basic_one, ProbeName } ),
 
-				false ->
-					ok
 
-			end,
+			WebProbeTable = ?getAttr(web_probe_table),
+
+			table:has_entry( BinProbeName, WebProbeTable ) andalso
+				throw( { web_probe_already_declared, ProbeName } ),
+
+
+			GraphProbeTable = ?getAttr(graph_probe_table),
+
+			table:has_entry( BinProbeName, GraphProbeTable ) andalso
+				throw( { web_probe_already_declared_as_graph_one,
+						 ProbeName } ),
+
 
 			ActualProbeOptions = case ProbeOptions of
 
@@ -708,7 +772,67 @@ declareWebProbe( State, BinProbeName, IsToBeTracked ) ->
 
 
 
-% @doc Registers specified (basic) probe, returns an updated state.
+% @doc Processes the declaration of the specified graph stream probe.
+%
+% IsToBeTracked tells whether this manager is to track this (web) probe as the
+% producer of actual simulation results (if true) or just as a producer of
+% results that are not simulation results, like facility (web) probes (if
+% false).
+%
+% Returns, depending on the current state of this manager, either
+% output_requested or output_not_requested. Note that this may change over time,
+% should targeted/blacklisted patterns be used and changed.
+%
+-spec declareGraphStreamProbe( wooper:state(), bin_probe_name(), boolean() ) ->
+										request_return( declaration_outcome() ).
+declareGraphStreamProbe( State, BinProbeName, IsToBeTracked ) ->
+
+	ProbeName = text_utils:binary_to_string( BinProbeName ),
+
+	?info_fmt( "Declaration of grap stream probe '~ts' (tracked: ~ts).",
+			   [ ProbeName, IsToBeTracked ] ),
+
+	case is_result_wanted( BinProbeName, web_probe, State ) of
+
+		false ->
+			% Can thus be fully ignored:
+			wooper:const_return_result( output_not_requested );
+
+
+		{ true, _ProbeOptions } ->
+
+			% First, check that the same probe will not be registered twice:
+
+			BasicProbeTable = ?getAttr(basic_probe_table),
+
+			table:has_entry( _Key=BinProbeName, BasicProbeTable ) andalso
+				throw( { graph_stream_probe_already_declared_as_basic_one,
+						 ProbeName } ),
+
+
+			WebProbeTable = ?getAttr(web_probe_table),
+
+			table:has_entry( BinProbeName, WebProbeTable ) andalso
+				throw( { graph_stream_probe_already_declared_as_web_one,
+						 ProbeName } ),
+
+
+			GraphProbeTable = ?getAttr(graph_probe_table),
+
+			table:has_entry( BinProbeName, GraphProbeTable ) andalso
+				throw( { graph_stream_probe_already_declared, ProbeName } ),
+
+
+			RegisteredState = register_graph_probe( BinProbeName, IsToBeTracked,
+				_ProbePid=?getSender(), State ),
+
+			wooper:return_state_result( RegisteredState, output_requested )
+
+	end.
+
+
+
+% @doc Registers specified basic probe, returns an updated state.
 %
 % (helper)
 %
@@ -749,7 +873,6 @@ register_basic_probe( BinProbeName, ProbeOptions, IsToBeTracked,
 										   ?getAttr(result_queues) );
 
 				AComputingNode ->
-
 					extract_queue_by_node( AComputingNode,
 										   ?getAttr(result_queues) )
 
@@ -758,23 +881,23 @@ register_basic_probe( BinProbeName, ProbeOptions, IsToBeTracked,
 			% Adds this probe to the pending ones:
 			NewResultQueue = ResultQueue#result_queue{
 
-				 pending_results= [ BinProbeName
-						  | ResultQueue#result_queue.pending_results ] },
+				pending_results= [ BinProbeName
+							| ResultQueue#result_queue.pending_results ] },
 
 			% Updates also the PID-to-queue table:
 			NewPidToQueueTable = table:add_entry( _Key=ProbePid,
 				_Value=NewResultQueue#result_queue.id, ?getAttr(pid_to_queue) ),
 
 			setAttributes( State, [
-						{ basic_probe_table, NewProbeTable },
-						{ result_queues, [ NewResultQueue | OtherQueues ] },
-						{ pid_to_queue, NewPidToQueueTable } ] )
+				{ basic_probe_table, NewProbeTable },
+				{ result_queues, [ NewResultQueue | OtherQueues ] },
+				{ pid_to_queue, NewPidToQueueTable } ] )
 
 	end.
 
 
 
-% Registers specified (web) probe, returns an updated state.
+% Registers specified web probe, returns an updated state.
 %
 % (helper)
 %
@@ -807,7 +930,6 @@ register_web_probe( BinProbeName, ProbeOptions, IsToBeTracked, ProbePid,
 			{ ResultQueue, OtherQueues } = case node( ProbePid ) of
 
 			   UserNodeName ->
-
 					% This probe runs on the user node, hence we must register
 					% it in the right result queue (based on the appropriate
 					% computing host):
@@ -816,7 +938,6 @@ register_web_probe( BinProbeName, ProbeOptions, IsToBeTracked, ProbePid,
 										   ?getAttr(result_queues) );
 
 				AComputingNode ->
-
 					extract_queue_by_node( AComputingNode,
 										   ?getAttr(result_queues) )
 
@@ -825,8 +946,8 @@ register_web_probe( BinProbeName, ProbeOptions, IsToBeTracked, ProbePid,
 			% Adds this probe to the pending ones:
 			NewResultQueue = ResultQueue#result_queue{
 
-				 pending_results= [ BinProbeName
-						  | ResultQueue#result_queue.pending_results ] },
+				pending_results= [ BinProbeName
+							| ResultQueue#result_queue.pending_results ] },
 
 			% Updates also the PID-to-queue table:
 			NewPidToQueueTable = table:add_entry( _Key=ProbePid,
@@ -841,25 +962,88 @@ register_web_probe( BinProbeName, ProbeOptions, IsToBeTracked, ProbePid,
 
 
 
+% Registers specified graph stream probe, returns an updated state.
+%
+% (helper)
+%
+register_graph_probe( BinProbeName, IsToBeTracked, ProbePid, State ) ->
+
+	% Mostly the same as register_basic_probe/5:
+
+	%trace_utils:debug_fmt( "Adding graph stream probe '~ts' (~w); "
+	%    "is to be tracked: ~ts.", [ BinProbeName, ProbePid, IsToBeTracked ] ),
+
+	ProbeEntry = #graph_probe_entry{ probe_pid=ProbePid,
+									 is_tracked=IsToBeTracked },
+
+	NewProbeTable = table:add_entry( _K=BinProbeName, _V=ProbeEntry,
+									 ?getAttr(graph_probe_table) ),
+
+	% Now, takes care of the update of the result queues, if this probe is
+	% tracked:
+	%
+	case IsToBeTracked of
+
+		false ->
+			setAttribute( State, graph_probe_table, NewProbeTable );
+
+		true ->
+			{ UserNodeName, UserHostAtom } = ?getAttr(user_node_info),
+
+			{ ResultQueue, OtherQueues } = case node( ProbePid ) of
+
+			   UserNodeName ->
+					% This probe runs on the user node, hence we must register
+					% it in the right result queue (based on the appropriate
+					% computing host):
+					%
+					extract_queue_by_host( UserHostAtom,
+										   ?getAttr(result_queues) );
+
+				AComputingNode ->
+					extract_queue_by_node( AComputingNode,
+										   ?getAttr(result_queues) )
+
+			end,
+
+			% Adds this probe to the pending ones:
+			NewResultQueue = ResultQueue#result_queue{
+
+				 pending_results= [ BinProbeName
+							| ResultQueue#result_queue.pending_results ] },
+
+			% Updates also the PID-to-queue table:
+			NewPidToQueueTable = table:add_entry( _Key=ProbePid,
+				_Value=NewResultQueue#result_queue.id, ?getAttr(pid_to_queue) ),
+
+			setAttributes( State, [
+				{ graph_probe_table, NewProbeTable },
+				{ result_queues, [ NewResultQueue | OtherQueues ] },
+				{ pid_to_queue, NewPidToQueueTable } ] )
+
+	end.
+
 
 
 
 % Section for targeted patterns.
 
 
-% @doc Tells whether the results of the specified producer, specified as a
-% binary string, are wanted, that is whether they match the result
-% specification.
+% @doc Tells whether the results of the specified producer are wanted, that is
+% whether they match the result specification.
 %
 % If not, then they will not be retrieved, thus there is no point in producing
 % them anyway, and the corresponding producer should preferably not even be
 % created.
 %
+% If this result is wanted, any key/value metadata (comprising the default ones)
+% will be transmitted.
+%
 -spec isResultProducerWanted( wooper:state(), bin_producer_name() ) ->
 			const_request_return( 'false' | { 'true', meta_data() } ).
 isResultProducerWanted( State, ProducerName ) ->
 
-	% When we do not know the nature (ex: basic, virtual or web probe) of a
+	% When we do not know the nature (basic, virtual or web probe, etc.) of a
 	% producer, we consider it is wanted, knowing its results will be correctly
 	% managed on simulation success (only drawback: we may allow some producers
 	% to unnecessarily exist).
@@ -878,7 +1062,8 @@ isResultProducerWanted( State, ProducerName ) ->
 % producing them anyway, and the corresponding producer should preferably not
 % even be created.
 %
-% (nature is either 'basic_probe', 'virtual_probe', 'web_probe' or 'undefined')
+% If this result is wanted, any additional key/value metadata will be
+% transmitted.
 %
 -spec isResultProducerWanted( wooper:state(), bin_producer_name(),
 							  producer_nature() ) ->
@@ -910,9 +1095,8 @@ isResultProducerWanted( State, ProducerName, Nature ) ->
 % them anyway, and the corresponding producer should preferably not even be
 % created.
 %
-% (nature is either 'basic_probe', 'virtual_probe', 'web_probe' or 'undefined').
-%
-% Returns either false or {true, Metadata, Opts}.
+% If this result is wanted, any additional key/value metadata will be
+% transmitted.
 %
 -spec isResultProducerWantedWithOptions( wooper:state(), bin_producer_name(),
 										 producer_nature() ) ->
@@ -948,7 +1132,7 @@ addTargetedPattern( State, Pattern ) ->
 				{ Targets, BlackLists } ->
 					BinTarget = text_utils:string_to_binary( Pattern ),
 					setAttribute( State, result_spec,
-								 { [ BinTarget | Targets ], BlackLists } );
+								  { [ BinTarget | Targets ], BlackLists } );
 
 				Other ->
 					?error_fmt( "Error, no targeted pattern can be added "
@@ -987,7 +1171,7 @@ addTargetedPatterns( State, Patterns ) ->
 				{ Targets, BlackLists } ->
 					BinTargets = text_utils:strings_to_binaries( Patterns ),
 					setAttribute( State, result_spec,
-								 { BinTargets ++ Targets, BlackLists } );
+								  { BinTargets ++ Targets, BlackLists } );
 
 				Other ->
 					?error_fmt( "Error, no targeted pattern can be added "
@@ -1102,7 +1286,6 @@ setTargetedPatterns( State, NewPatterns ) ->
 	NewState = case text_utils:are_strings( NewPatterns ) of
 
 		true ->
-
 			case ?getAttr(result_spec) of
 
 				{ _Targets, BlackLists } ->
@@ -1370,7 +1553,7 @@ notifyResilienceAgentsOfProbes( State, NodeAgents ) ->
 			_Value=#basic_probe_entry{ probe_pid=ProbePid } }
 					<- table:enumerate( ?getAttr(basic_probe_table) ) ],
 
-	% Note: virtual and web probes to be managed.
+	% Note: virtual, web and graph probes to be managed.
 
 	% Creating then an empty table where the keys are the node names, and the
 	% associated values are a pair made of the PID of the resilience agent
@@ -1378,26 +1561,26 @@ notifyResilienceAgentsOfProbes( State, NodeAgents ) ->
 	% corresponding (local) probes (initially an empty list):
 	%
 	EmptyNodeTable = lists:foldl(
-			fun( AgentPid, TableAcc ) ->
-					table:add_entry( _K=node( AgentPid ),
-									 _V={ AgentPid, _Probes=[] }, TableAcc )
-			end,
-			_EmptyInitialAcc=table:new(),
-			_EmptyList=NodeAgents ),
+		fun( AgentPid, TableAcc ) ->
+				table:add_entry( _K=node( AgentPid ),
+								 _V={ AgentPid, _Probes=[] }, TableAcc )
+		end,
+		_EmptyInitialAcc=table:new(),
+		_EmptyList=NodeAgents ),
 
 	% Now let's map the probes onto the agents, using nodes as intermediary:
 	FilledNodeTable = lists:foldl(
 
-			fun( ProbePid, TableAcc ) ->
-				% Simply adds this probe to the list for the right node:
-				NodeKey = node( ProbePid ),
-				{ AgentPid, ProbeList } = table:get_value( NodeKey, TableAcc ),
-					table:add_entry( NodeKey,
-						{ AgentPid, [ ProbePid | ProbeList ] }, TableAcc )
+		fun( ProbePid, TableAcc ) ->
+			% Simply adds this probe to the list for the right node:
+			NodeKey = node( ProbePid ),
+			{ AgentPid, ProbeList } = table:get_value( NodeKey, TableAcc ),
+				table:add_entry( NodeKey,
+					{ AgentPid, [ ProbePid | ProbeList ] }, TableAcc )
 
-			end,
-			_FilledInitialAcc=EmptyNodeTable,
-			_FilledList=ProbePids ),
+		end,
+		_FilledInitialAcc=EmptyNodeTable,
+		_FilledList=ProbePids ),
 
 	% Now we can notify each resilience agent of its probes:
 	[ AgentPid ! { notifyOfLocalProbes, [ AgentProbeList ], self() }
@@ -1431,7 +1614,7 @@ getBaseProbeInfos( State ) ->
 % @doc Returns the information regarding all basic probes.
 get_basic_probe_infos( State ) ->
 	[ get_basic_probe_info( Name, Entry )
-	  || { Name, Entry } <- table:enumerate( ?getAttr(basic_probe_table) ) ].
+		|| { Name, Entry } <- table:enumerate( ?getAttr(basic_probe_table) ) ].
 
 
 
@@ -1486,8 +1669,19 @@ simulation_started( State ) ->
 
 	WebProbeCount = length( WebProbeBinNames ),
 
+	GraphProbeTable = ?getAttr(graph_probe_table),
+	OptimisedGraphProbeTable = table:optimise( GraphProbeTable ),
+	%table:display( "Graph stream probe table", OptimisedGraphProbeTable ),
 
-	ResultCount = BasicProbeCount + VirtualProbeCount + WebProbeCount,
+	GraphProbeBinNames = table:keys( OptimisedGraphProbeTable ),
+
+	GraphProbeString = text_utils:binaries_to_string( GraphProbeBinNames ),
+
+	GraphProbeCount = length( GraphProbeBinNames ),
+
+
+	ResultCount = BasicProbeCount + VirtualProbeCount + WebProbeCount
+						+ GraphProbeCount,
 
 	case ResultCount of
 
@@ -1496,7 +1690,6 @@ simulation_started( State ) ->
 			?notice( "At simulation start, no expected result is identified." );
 
 		_ ->
-
 			BasicString = case BasicProbeCount of
 
 				0 ->
@@ -1531,15 +1724,27 @@ simulation_started( State ) ->
 
 			end,
 
-			?notice_fmt( "At simulation start, ~ts, ~ts and ~ts",
-						 [ BasicString, VirtualString, WebString ] )
+			GraphString = case GraphProbeCount of
+
+				0 ->
+					"no graph stream probe declared";
+
+				_ ->
+					text_utils:format( "~B graph stream probe(s) declared: ~ts",
+									   [ GraphProbeCount, GraphProbeString ] )
+
+			end,
+
+			?notice_fmt( "At simulation start, ~ts, ~ts, ~ts and ~ts",
+				[ BasicString, VirtualString, WebString, GraphString ] )
 
 	end,
 
 	wooper:return_state( setAttributes( State, [
-			{ basic_probe_table, OptimisedBasicProbeTable },
-			{ virtual_probe_table, OptimisedVirtualProbeTable },
-			{ web_probe_table, OptimisedWebProbeTable } ] ) ).
+		{ basic_probe_table, OptimisedBasicProbeTable },
+		{ virtual_probe_table, OptimisedVirtualProbeTable },
+		{ web_probe_table, OptimisedWebProbeTable },
+		{ graph_probe_table, OptimisedGraphProbeTable } ] ) ).
 
 
 
@@ -1639,8 +1844,17 @@ simulation_succeeded( State ) ->
 
 	Listeners = ?getAttr(listeners),
 
-	?info_fmt( "All results successfully gathered, "
-			   "notifying all listeners (~p).", [ Listeners ] ),
+	case Listeners of
+
+		[] ->
+			?info( "All results successfully gathered, "
+				   "no listener to notify." );
+
+		_ ->
+			?info_fmt( "All results successfully gathered, "
+			   "notifying all listeners (~p).", [ Listeners ] )
+
+	end,
 
 	ResultOneway= { results_collected,
 					text_utils:string_to_binary( ResultBaseDirName ) },
@@ -1730,9 +1944,9 @@ manage_all_producers( State ) ->
 		no_output ->
 			State;
 
-
-		% Includes: all_outputs, all_virtual_probes_only, all_basic_probes_only;
-		% basically, we wait and trigger producers until all of them are over:
+		% Includes: all_outputs, all_virtual_probes_only, all_basic_probes_only,
+		% all_graph_stream_probes_only; basically, we wait and trigger producers
+		% until all of them are over:
 		%
 		_Other ->
 			Queues = ?getAttr(result_queues),
@@ -1747,12 +1961,9 @@ manage_all_producers( State ) ->
 
 			ResultFound = ( TotalProducerCount > 0 ),
 
-			BasicProbeTable = ?getAttr(basic_probe_table),
-
-			WebTable = ?getAttr(web_probe_table),
-
 			% All concrete (non-virtual) probes (unclashing merges expected):
-			MergedTable = table:merge( BasicProbeTable, WebTable ),
+			MergedTable = table:merge( [ ?getAttr(basic_probe_table),
+				?getAttr(web_probe_table), ?getAttr(graph_probe_table) ] ),
 
 			% Triggers a first set of result production:
 			{ TriggeredQueues, UpdatedPidToQueueTable } =
@@ -1802,12 +2013,12 @@ load_result_queues( _Queues=[], PidToQueueTable, _ProbeTable, AccQueues ) ->
 load_result_queues( _Queues=[ Q | T ], PidToQueueTable, ProbeTable,
 					AccQueues ) ->
 
-	{ UpdatedQueue, ProducerPidList } = load_result_queue( Q, ProbeTable ),
+	{ UpdatedQueue, ProducerPids } = load_result_queue( Q, ProbeTable ),
 
 	QueueId = UpdatedQueue#result_queue.id,
 
 	% Adds these key/value pairs:
-	NewPidEntries = [ { Pid, QueueId } || Pid <- ProducerPidList ],
+	NewPidEntries = [ { Pid, QueueId } || Pid <- ProducerPids ],
 
 	UpdatedPidToQueueTable =
 		table:add_entries( NewPidEntries, PidToQueueTable ),
@@ -1819,12 +2030,12 @@ load_result_queues( _Queues=[ Q | T ], PidToQueueTable, ProbeTable,
 
 % @doc Loads as much as possible specified queue.
 %
-% Returns {UpdatedQueue, ProducerPidList}.
+% Returns {UpdatedQueue, ProducerPids}.
 %
 load_result_queue( Queue=#result_queue{ pending_results=[] }, _ProbeTable ) ->
 
 	% Here, no pending result, nothing to do, thus nothing to change:
-	{ Queue, _ProducerPidList=[] };
+	{ Queue, _ProducerPids=[] };
 
 
 load_result_queue( Queue=#result_queue{ max_worker_count=MaxCount,
@@ -1837,12 +2048,12 @@ load_result_queue( Queue=#result_queue{ max_worker_count=MaxCount,
 	{ FirstProducers, OtherProducers } =
 		list_utils:split_at( SpareSlotCount, Pending ),
 
-	ProducerPidList = trigger_producers( FirstProducers, ProbeTable ),
+	ProducerPids = trigger_producers( FirstProducers, ProbeTable ),
 
-	NewQueue = Queue#result_queue{ waited_producers= ProducerPidList ++ Waited,
+	NewQueue = Queue#result_queue{ waited_producers= ProducerPids ++ Waited,
 								   pending_results=OtherProducers },
 
-	{ NewQueue, ProducerPidList }.
+	{ NewQueue, ProducerPids }.
 
 
 
@@ -1878,7 +2089,10 @@ trigger_producer( ProducerName, ProbeTable ) ->
 				{ Pid, Opts };
 
 			#web_probe_entry{ probe_pid=Pid, probe_options=Opts } ->
-				{ Pid, Opts }
+				{ Pid, Opts };
+
+			#graph_probe_entry{ probe_pid=Pid } ->
+				{ Pid, _Opts=[] }
 
 	end,
 
@@ -2052,7 +2266,6 @@ browseResultReports( State ) ->
 	case ?getAttr(result_found) of
 
 		true ->
-
 			ResultDir = ?getAttr(result_dir),
 
 			% As all results may be non-graphical (ex: only *.dat):
@@ -2100,16 +2313,11 @@ browseResultReports( State ) ->
 addResultListener( State, ListenerPid ) ->
 
 	% If results were already collected, send past notification:
-	case ?getAttr(result_collected) of
-
-		true ->
+	?getAttr(result_collected) andalso
+		begin
 			ResultBinDir = text_utils:string_to_binary( ?getAttr(result_dir) ),
-			ListenerPid ! { results_collected, ResultBinDir };
-
-		false ->
-			ok
-
-	end,
+			ListenerPid ! { results_collected, ResultBinDir }
+		end,
 
 	wooper:return_state( appendToAttribute( State, listeners, ListenerPid ) ).
 
@@ -2147,8 +2355,8 @@ get_registration_name() ->
 -spec get_result_manager() -> static_return( manager_pid() ).
 get_result_manager() ->
 
-	ManagerPid = naming_utils:wait_for_global_registration_of(
-					get_registration_name() ),
+	ManagerPid =
+		naming_utils:wait_for_global_registration_of( get_registration_name() ),
 
 	wooper:return_static( ManagerPid ).
 
@@ -2214,7 +2422,6 @@ browse_reports( TriggerBasicDisplay ) ->
 		not_registered ->
 			%trace_utils:debug( "No performance tracker was enabled." ),
 			false;
-
 
 		TrackerPid ->
 			?notify_debug_fmt_cat( "Requesting reports from the "
@@ -2323,10 +2530,8 @@ browse_reports( TriggerBasicDisplay ) ->
 
 	end,
 
-	case WaitForPerformanceTracker of
-
-		true ->
-
+	WaitForPerformanceTracker andalso
+		begin
 			%trace_utils:debug( "Waiting for the performance tracker." ),
 
 			receive
@@ -2340,12 +2545,9 @@ browse_reports( TriggerBasicDisplay ) ->
 					trace_utils:notice( "Monitoring reports have been "
 										"successfully generated." )
 
-			end;
+			end
 
-		false ->
-			ok
-
-	end,
+		end,
 
 	wooper:return_static_void().
 
@@ -2373,14 +2575,15 @@ get_metadata_string( Metadata ) ->
 -spec create_mockup_environment() -> static_return( pid() ).
 create_mockup_environment() ->
 
-	Pid = ?myriad_spawn_link( fun() ->
+	Pid = ?myriad_spawn_link(
+		fun() ->
 
-		naming_utils:register_as( ?instance_tracker_name, local_only ),
-		naming_utils:register_as( ?result_manager_name, global_only ),
+			naming_utils:register_as( ?instance_tracker_name, local_only ),
+			naming_utils:register_as( ?result_manager_name, global_only ),
 
-		create_mockup_environment_loop()
+		   create_mockup_environment_loop()
 
-							  end ),
+		end ),
 
 	wooper:return_static( Pid ).
 
@@ -2450,7 +2653,10 @@ check_and_transform_result_specification( all_virtual_probes_only ) ->
 check_and_transform_result_specification( all_web_probes_only ) ->
 	all_web_probes_only;
 
-% Returns { Targets, Blacklists }:
+check_and_transform_result_specification( all_graph_probes_only ) ->
+	all_graph_probes_only;
+
+% Returns {Targets, Blacklists}:
 check_and_transform_result_specification( Specs ) when is_list( Specs ) ->
 	manage_patterns( Specs, _Targets=[], _Blacklists=[] );
 
@@ -2463,14 +2669,14 @@ manage_patterns( _Specs=[], Targets, Blacklists ) ->
 	{ Targets, Blacklists };
 
 manage_patterns( [ { targeted_patterns, L } | T ], Targets, Blacklists )
-  when is_list( L ) ->
+											when is_list( L ) ->
    manage_patterns( T, manage_targets( L ) ++ Targets, Blacklists );
 
 manage_patterns( [ { targeted_patterns, L } | _T ], _Targets, _Blacklists ) ->
 	throw( { invalid_result_target_pattern, L } );
 
 manage_patterns( [ { blacklisted_patterns, L } | T ], Targets, Blacklists )
-  when is_list( L ) ->
+											when is_list( L ) ->
 	manage_patterns( T, Targets, manage_blacklists( L ) ++ Blacklists );
 
 manage_patterns( [ { blacklisted_patterns, L } | _T ], _Targets,
@@ -2585,11 +2791,11 @@ compile( Pattern ) ->
 
 
 
-% @doc Returns either 'false' or a {'true', Options} pair, where Options is a
-% list.
+% Returns either false, or true with the corresponding producer options (if
+% any).
 %
-% ProducerName must be a binary string.
-%
+-spec is_result_wanted( bin_producer_name(), producer_nature(),
+		wooper:state() ) -> 'false' | { 'true', maybe( producer_options() ) }.
 is_result_wanted( ProducerName, Nature, State ) ->
 
 	WantedInfos = case ?getAttr(result_spec) of
@@ -2614,6 +2820,9 @@ is_result_wanted( ProducerName, Nature, State ) ->
 					false;
 
 				web_probe ->
+					false;
+
+				graph_probe ->
 					false
 
 			end;
@@ -2631,6 +2840,9 @@ is_result_wanted( ProducerName, Nature, State ) ->
 					{ true, undefined };
 
 				web_probe ->
+					false;
+
+				graph_probe ->
 					false
 
 			end;
@@ -2648,6 +2860,29 @@ is_result_wanted( ProducerName, Nature, State ) ->
 					false;
 
 				web_probe ->
+					{ true, undefined };
+
+				graph_probe ->
+					false
+
+			end;
+
+		all_graph_probes_only ->
+			case Nature of
+
+				undefined ->
+					{ true, undefined };
+
+				basic_probe ->
+					false;
+
+				virtual_probe ->
+					false;
+
+				web_probe ->
+					false;
+
+				graph_probe ->
 					{ true, undefined }
 
 			end;
@@ -2669,11 +2904,13 @@ is_result_wanted( ProducerName, Nature, State ) ->
 
 
 
-% Tells whether the specified producer name (a binary string) is targeted and
-% non-blacklisted. If yes, returns also its associated options (if any).
+% Tells whether the specified producer name is targeted and non-blacklisted. If
+% yes, returns also its associated options (if any).
 %
-% Return false or {true,Options}
-%
+-spec is_selected_with_options( bin_producer_name(), [ target_pattern() ],
+								[ blacklist_pattern() ] ) ->
+						'false' | { 'true', maybe( producer_options() ) }.
+
 is_selected_with_options( BinProducerName, TargetPatterns,
 						  BlacklistPatterns ) ->
 

@@ -27,11 +27,13 @@
 
 
 % @doc Gathers all elements relative to the management of <b>images</b>
-% (loading, modifying, saving, scaling, resizing, clipping, etc.), in link to
-% MyriadGUI, and in a platform-independent way.
+% (including bitmaps, icons, etc.), for loadaing, modifying, saving, scaling,
+% resizing, clipping, etc., in link to MyriadGUI, and in a platform-independent
+% way.
 %
-% Images shall be considered as just a generic, platform independent buffer of
-% RGB bytes with an optional buffer for the alpha bytes.
+% Images shall be considered as just a generic, platform-independent buffer of
+% RGB bytes with an optional buffer for the alpha bytes, whereas bitmaps are
+% platform-specific, readily-usable graphical content.
 %
 % May be useful also for textures.
 %
@@ -46,6 +48,8 @@
 %
 % Note that apparently, according to our test, some images can be loaded fine
 % (ex: "erlang.png") whereas some others not (ex: ""myriad-title.png").
+%
+% Here also, the opaqueness of types is difficult to preserve.
 
 
 % Relies on the wxWidgets backend.
@@ -56,16 +60,31 @@
 		  load/2, load/3, scale/3, scale/4,
 		  colorize/2,
 
+		  get_standard_icon/1,
+
 		  % from_bitmap/1,
 		  create_bitmap/1,
 		  create_blank_bitmap/1, create_blank_bitmap/2,
-		  create_blank_bitmap_for/1, destruct_bitmap/1,
+		  create_blank_bitmap_for/1,
+		  get_standard_bitmap/1,
+		  destruct_bitmap/1,
 
 		  lock_bitmap/1, draw_bitmap/3, unlock_bitmap/1,
+
+		  create_bitmap_display/2, create_bitmap_display/3,
+		  destruct_bitmap_display/1,
+
+		  create_text_display/2, create_text_display/3,
+		  destruct_text_display/1,
+
 		  lock_window/1, unlock_window/1,
 		  clear_device_context/1, blit/5, blit/6,
 
 		  destruct/1 ]).
+
+
+% For the raw_bitmap record:
+-include("gui_image.hrl").
 
 
 -type image() :: wxImage:wxImage().
@@ -90,7 +109,7 @@
  % The requested quality for an image operation (ex: for a scaling).
 
 
--opaque bitmap() :: wxBitmap:wxBitmap().
+-type bitmap() :: wxBitmap:wxBitmap().
 % Platform-dependent bitmap, either monochrome or colour (with or without alpha
 % channel).
 %
@@ -98,7 +117,49 @@
 % quickest/easiest to draw to a display context.
 
 
--export_type([ image/0, image_format/0, image_quality/0, bitmap/0 ]).
+-opaque bitmap_display() :: wxStaticBitmap:wxStaticBitmap().
+% A widget displaying a bitmap; a bitmap display behaves like a panel dedicated
+% to the rendering of a bitmap.
+
+
+-opaque icon() :: wxIcon:wxIcon().
+% A small rectangular bitmap usually used for denoting a minimised application.
+
+
+-opaque text_display() :: wxStaticText:wxStaticText().
+% A widget displaying a text; a text display behaves like a panel dedicated
+% to the rendering of a text.
+
+
+-type raw_bitmap() :: #raw_bitmap{}.
+% A record describing a raw, ready-to-use, bitmap, as a term, possibly loaded
+% from file, or generated, etc., as opposed to an image (which respects a format
+% like PNG or JPEG, has metadata, etc.).
+%
+% Note: currently not used, as a bitmap() offers all services needed.
+
+
+-type text_display_option() :: { 'pos', point() }
+							 | { 'size', size() }
+							 | { 'style', [ text_display_style_opt() ] }.
+% Text display specific options.
+
+
+-type text_display_style_opt() ::
+		'align_left'   % Align the text to the left.
+	  | 'align_right'  % Align the text to the right.
+	  | 'center'       % Center the text (horizontally).
+	  | 'fixed_size'   % No auto-resize.
+	  | 'ellipsize_beginning' % Any shrinking done from the start of the text.
+	  | 'ellipsize_middle'    % Any shrinking done at the middle of the text.
+	  | 'ellipsize_end'.      % Any shrinking done at the middle of the text.
+% Options for text displays. See also
+% [http://docs.wxwidgets.org/stable/classwx_static_text.html]
+
+
+-export_type([ image/0, image_format/0, image_quality/0,
+			   bitmap/0, bitmap_display/0, icon/0, text_display/0,
+			   raw_bitmap/0, text_display_option/0  ]).
 
 
 % For the wx defines:
@@ -108,10 +169,6 @@
 
 % Shorthands:
 
-%-type count() :: basic_utils:count().
-
-%-type ustring() :: text_utils:ustring().
-
 -type any_file_path() :: file_utils:any_file_path().
 
 -type media_type() :: web_utils:media_type().
@@ -119,14 +176,17 @@
 -type width() :: gui:width().
 -type height() :: gui:height().
 -type point() :: gui:point().
+-type size() :: gui:size().
 -type dimensions() :: gui:dimensions().
 -type window() :: gui:window().
+-type label() :: gui:label().
 -type device_context() :: gui:device_context().
+-type window_option() :: gui:window_option().
+-type standard_icon_name_id() :: gui:standard_icon_name_id().
+-type standard_bitmap_name_id() :: gui:standard_bitmap_name_id().
 
 -type color_by_decimal() :: gui_color:color_by_decimal().
-
 -type rgba_color_buffer() :: gui_color:rgba_color_buffer().
-
 -type alpha_buffer() :: gui_color:alpha_buffer().
 
 -type wx_enum() :: gui_wx_backend:wx_enum().
@@ -250,6 +310,26 @@ colorize( AlphaBuffer, _Color={ R, G, B } ) ->
 	<< <<R:8,G:8,B:8,A:8>> || <<A:8,_:8,_:8>> <= AlphaBuffer >>.
 
 
+% @doc Returns the standard icon corresponding to the specified identifier.
+-spec get_standard_icon( standard_icon_name_id() ) -> icon().
+get_standard_icon( StdIconId ) ->
+
+	WxArtId = gui_wx_backend:to_wx_icon_id( StdIconId ),
+
+	% Computed (not a literal constant):
+	NullIcon = ?wxNullIcon,
+
+	case wxArtProvider:getIcon( WxArtId ) of
+
+		NullIcon ->
+			throw( { standard_icon_not_available, StdIconId, WxArtId } );
+
+		Icon ->
+			Icon
+
+	end.
+
+
 
 % @doc Returns a bitmap created from the specified image path.
 -spec create_bitmap( any_file_path() ) -> bitmap().
@@ -265,9 +345,7 @@ create_bitmap( ImagePath ) ->
 		false ->
 			throw( { bitmap_creation_failed, ImgBitmap } )
 
-	end,
-
-	ImgBitmap.
+	end.
 
 
 
@@ -301,6 +379,25 @@ create_blank_bitmap_for( Window ) ->
 	ClientSize = wxWindow:getClientSize( Window ),
 	create_blank_bitmap( ClientSize ).
 
+
+% @doc Returns the standard bitmap corresponding to the specified identifier.
+-spec get_standard_bitmap( standard_bitmap_name_id() ) -> bitmap().
+get_standard_bitmap( StdBitmapId ) ->
+
+	WxArtId = gui_wx_backend:to_wx_bitmap_id( StdBitmapId ),
+
+	% Computed (not a literal constant):
+	NullBitmap = ?wxNullBitmap,
+
+	case wxArtProvider:getBitmap( WxArtId ) of
+
+		NullBitmap ->
+			throw( { standard_bitmap_not_available, StdBitmapId, WxArtId } );
+
+		Bitmap ->
+			Bitmap
+
+	end.
 
 
 % @doc Destructs the specified bitmap (which must not be locked).
@@ -345,6 +442,51 @@ draw_bitmap( SourceBitmap, TargetDC, PosInTarget ) ->
 -spec unlock_bitmap( device_context() ) -> void().
 unlock_bitmap( DC ) ->
 	wxMemoryDC:destroy( DC ).
+
+
+
+% @doc Creates a bitmap display from the specified bitmap.
+-spec create_bitmap_display( window(), bitmap() ) -> bitmap_display().
+create_bitmap_display( Parent, Bitmap ) ->
+	create_bitmap_display( Parent, Bitmap, _Opts=[] ).
+
+
+% @doc Creates a bitmap display from the specified bitmap and with the specified
+% options.
+%
+-spec create_bitmap_display( window(), bitmap(), [ window_option() ] ) ->
+												bitmap_display().
+create_bitmap_display( Parent, Bitmap, Options ) ->
+	wxStaticBitmap:new( Parent, _Id=?wxID_ANY, Bitmap, Options ).
+
+
+% @doc Destructs the specified bitmap display.
+-spec destruct_bitmap_display( bitmap_display() ) -> void().
+destruct_bitmap_display( BitmapDisplay ) ->
+	wxStaticBitmap:destroy( BitmapDisplay ).
+
+
+
+% @doc Creates a text display from the specified label.
+-spec create_text_display( window(), label() ) -> text_display().
+create_text_display( Parent, Label ) ->
+	create_text_display( Parent, Label, _Opts=[] ).
+
+
+% @doc Creates a text display from the specified label and with the specified
+% options.
+%
+-spec create_text_display( window(), label(), [ window_option() ] ) ->
+												text_display().
+create_text_display( Parent, Label, Options ) ->
+	wxStaticText:new( Parent, _Id=?wxID_ANY, Label,
+					  to_wx_static_text_options( Options ) ).
+
+
+% @doc Destructs the specified text display.
+-spec destruct_text_display( text_display() ) -> void().
+destruct_text_display( TextDisplay ) ->
+	wxStaticText:destroy( TextDisplay ).
 
 
 
@@ -435,6 +577,54 @@ to_wx_image_quality( high ) ->
 to_wx_image_quality( Other ) ->
 	throw( { unknown_image_quality, Other } ).
 
+
+
+% @doc Converts specified MyriadGUI text display options into wx static text
+% ones.
+%
+-spec to_wx_static_text_options( [ text_display_option() ] ) -> list().
+to_wx_static_text_options( Options ) ->
+	[ to_wx_static_text_option( Opt ) || Opt <- Options ].
+
+
+
+% @doc Converts specified MyriadGUI text display option into a wx static text
+% one.
+%
+-spec to_wx_static_text_option( text_display_option() ) -> pair:pair().
+to_wx_static_text_option( { style, TextDisplayStyle }  ) ->
+	{ style, to_wx_static_text_style( TextDisplayStyle ) };
+
+% pos, size are to go through:
+to_wx_static_text_option( Opt ) ->
+	Opt.
+
+
+
+% @doc Converts specified MyriadGUI text display style into a wx static text
+% one.
+%
+-spec to_wx_static_text_style( text_display_style_opt() ) -> wx:wx_enum().
+to_wx_static_text_style( _TextDisplayStyle=align_left ) ->
+	?wxALIGN_LEFT;
+
+to_wx_static_text_style( _TextDisplayStyle=align_right ) ->
+	?wxALIGN_RIGHT;
+
+to_wx_static_text_style( _TextDisplayStyle=center ) ->
+	?wxALIGN_CENTRE_HORIZONTAL;
+
+to_wx_static_text_style( _TextDisplayStyle=fixed_size ) ->
+	?wxST_NO_AUTORESIZE;
+
+to_wx_static_text_style( _TextDisplayStyle=ellipsize_beginning ) ->
+	?wxST_ELLIPSIZE_START;
+
+to_wx_static_text_style( _TextDisplayStyle=ellipsize_middle ) ->
+	?wxST_ELLIPSIZE_MIDDLE;
+
+to_wx_static_text_style( _TextDisplayStyle=ellipsize_end ) ->
+	?wxST_ELLIPSIZE_END.
 
 
 % @doc Declares that the specified instance can be destructed.

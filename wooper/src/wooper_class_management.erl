@@ -97,7 +97,7 @@ check_classname( Name ) when is_atom( Name ) ->
 
 check_classname( Other ) ->
 	wooper_internals:raise_usage_error(
-	  "specified classname ('~p') is not an atom.", [ Other ] ).
+		"specified classname ('~p') is not an atom.", [ Other ] ).
 
 
 
@@ -126,8 +126,8 @@ manage_superclasses( ClassInfo=#class_info{ class={ Classname, _ClassLocForm },
 	% B ]):
 
 	%{ Superclasses, RegisteredClassInfo } =
-	%		% Looking first for any '-superclasses(...).' parse attribute:
-	%		case table:lookup_entry( superclasses, ParseAttrTable ) of
+	%   % Looking first for any '-superclasses(...).' parse attribute:
+	%   case table:lookup_entry( superclasses, ParseAttrTable ) of
 
 	% The define itself is visible only from the preprocessor (not from the
 	% compiler), so its definition is obtained thanks to an ad hoc, always
@@ -145,8 +145,8 @@ manage_superclasses( ClassInfo=#class_info{ class={ Classname, _ClassLocForm },
 
 			key_not_found ->
 				wooper_internals:raise_usage_error( "no get_superclasses/0 "
-				  "defined: has wooper.hrl been included?",
-				  Classname, _NoSpecificLine=0 )
+					"defined: has wooper.hrl been included?",
+					Classname, _NoSpecificLine=0 )
 
 		end,
 

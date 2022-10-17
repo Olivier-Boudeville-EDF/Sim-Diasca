@@ -17,6 +17,7 @@
 % If not, see <http://www.gnu.org/licenses/>.
 
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
+% Creation date: 2008.
 
 
 % @doc Provides a <b>probe infrastructure relying on a database</b>.
@@ -384,11 +385,16 @@
 
 -type length() :: gui:length().
 
--type declared_curve_name() :: class_Probe:declared_curve_name().
--type curve_index() :: class_Probe:curve_index().
-
+-type probe_name() :: class_Probe:probe_name().
+-type probe_settings() :: class_Probe:probe_settings().
+-type probe_options() :: class_Probe:probe_options().
 -type meta_data() :: class_ResultManager:meta_data().
-
+-type declared_curve_name() :: class_Probe:declared_curve_name().
+-type curve_name() :: class_Probe:curve_name().
+-type string_curve_name() :: class_Probe:string_curve_name().
+-type curve_index() :: class_Probe:curve_index().
+-type probe_tick() :: class_Probe:probe_tick().
+-type sample_data() :: class_Probe:sample_data().
 
 
 % @doc Constructs a datalogger.

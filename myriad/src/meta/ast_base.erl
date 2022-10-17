@@ -26,7 +26,6 @@
 % Creation date: Sunday, February 4, 2018.
 
 
-
 % @doc Module in charge of providing <b>base, transverse constructs to manage
 % ASTs</b>, notably in order to transform them (meta-programming).
 %
@@ -40,6 +39,8 @@
 -type form_location() :: id_utils:sortable_id().
 % So that forms can be independently managed while being able to be reordered
 % later, according to their original position in a source AST.
+%
+% Higher-level location, not to be mixed up with file_loc/0.
 
 
 -type file_reference() :: basic_utils:maybe( file_utils:file_path() ).
@@ -60,10 +61,12 @@
 -type file_loc() :: erl_anno:location().
 % Line-related location in a source file (either `line()' or `{line(),
 % column()}').
+%
+% The (newer) pair form shall now be preferred.
 
 
 -type form_context() :: basic_utils:maybe( file_loc() ).
-% Context of a form.
+% Context (if any) of a form.
 
 
 -type source_context() ::
