@@ -265,6 +265,15 @@ here</p>
 <p><tt>km_per_hour() = float()</tt></p>
 
 
+<h3 class="typedecl"><a name="type-latitude">latitude()</a></h3>
+<p><tt>latitude() = <a href="#type-degrees">degrees()</a></tt></p>
+<p><p> A geographic coordinate that specifies the north-south position of a point on 
+the surface of the Earth or another celestial body.</p>
+
+ It is an angular measurement, usually expressed in degrees: latitude is given
+ as an angle that ranges from -90° at the south pole to 90° at the north pole,
+ with 0° at the Equator.</p>
+
 <h3 class="typedecl"><a name="type-length_reference_unit">length_reference_unit()</a></h3>
 <p><tt>length_reference_unit() = meters</tt></p>
 
@@ -287,6 +296,15 @@ here</p>
 <h3 class="typedecl"><a name="type-litre">litre()</a></h3>
 <p><tt>litre() = float()</tt></p>
 
+
+<h3 class="typedecl"><a name="type-longitude">longitude()</a></h3>
+<p><tt>longitude() = <a href="#type-degrees">degrees()</a></tt></p>
+<p><p> A geographic coordinate that specifies the east-west position of a point on 
+the surface of the Earth, or another celestial body.</p>
+
+ It is an angular measurement, usually expressed in degrees: longitude is given
+ as an angle that ranges from 0° at the Prime Meridian to +180° eastward and
+ -180° westward.</p>
 
 <h3 class="typedecl"><a name="type-magnitude_order">magnitude_order()</a></h3>
 <p><tt>magnitude_order() = integer()</tt></p>
@@ -388,6 +406,11 @@ here</p>
 <h3 class="typedecl"><a name="type-numerical_value">numerical_value()</a></h3>
 <p><tt>numerical_value() = float()</tt></p>
 <p> The actual value whose unit may be associated to.</p>
+
+<h3 class="typedecl"><a name="type-position">position()</a></h3>
+<p><tt>position() = {<a href="#type-latitude">latitude()</a>, <a href="#type-longitude">longitude()</a>}</tt></p>
+<p> A position on a round celestial body, typically the Earth.
+ No altitude/elevation.</p>
 
 <h3 class="typedecl"><a name="type-prefix_symbol">prefix_symbol()</a></h3>
 <p><tt>prefix_symbol() = <a href="#type-ustring">ustring()</a></tt></p>
@@ -543,6 +566,7 @@ the specified distance.</td></tr>
 value and its unit (ex: "-8.15 kW.m/h^2"), and returns them in a 
 program-tractable form, that is a pair made of the value (as a float) and the 
 corresponding unit, in canonical form.</td></tr>
+<tr><td valign="top"><a href="#position_to_string-1">position_to_string/1</a></td><td>Returns a textual description of the specified position.</td></tr>
 <tr><td valign="top"><a href="#pure_unit_to_string-1">pure_unit_to_string/1</a></td><td>Returns a textual representation of the raw unit only (factor and order 
 ignored) for the specified canonical unit.</td></tr>
 <tr><td valign="top"><a href="#rpm_to_string-1">rpm_to_string/1</a></td><td>Returns a textual, possibly rounded, description of the specified
@@ -702,6 +726,12 @@ minus, ex: "-8.15")</p>
  unit operator intercalated between two successive components (no whitespace
  allowed).
 </p>
+
+<h3 class="function"><a name="position_to_string-1">position_to_string/1</a></h3>
+<div class="spec">
+<p><tt>position_to_string(Pos::<a href="#type-position">position()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of the specified position.</p>
 
 <h3 class="function"><a name="pure_unit_to_string-1">pure_unit_to_string/1</a></h3>
 <div class="spec">

@@ -131,7 +131,7 @@ terms of the newer standard logger).</td></tr>
  and time information.</td></tr>
 <tr><td valign="top"><a href="#notice_fmt-2">notice_fmt/2</a></td><td>Outputs specified formatted notice message.</td></tr>
 <tr><td valign="top"><a href="#set_handler-0">set_handler/0</a></td><td>Replaces the current (probably default) logger handler with this Myriad
- one (registered as 'default').</td></tr>
+ one (registered as the 'default' handler).</td></tr>
 <tr><td valign="top"><a href="#set_logger_format_max_depth-1">set_logger_format_max_depth/1</a></td><td>Sets the logger maximum depth when formatting messages.</td></tr>
 <tr><td valign="top"><a href="#void-1">void/1</a></td><td>"Outputs" specified void message.</td></tr>
 <tr><td valign="top"><a href="#void_categorized-2">void_categorized/2</a></td><td>"Outputs" specified void message, with specified message categorization.</td></tr>
@@ -426,7 +426,7 @@ terms of the newer standard logger).</p>
 <p><tt>set_handler() -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p>Replaces the current (probably default) logger handler with this Myriad
- one (registered as 'default').
+ one (registered as the 'default' handler).
 </p>
 
 <h3 class="function"><a name="set_logger_format_max_depth-1">set_logger_format_max_depth/1</a></h3>
@@ -435,7 +435,7 @@ terms of the newer standard logger).</p>
 <p> </p>
 </div><p><p>Sets the logger maximum depth when formatting messages.</p>
 
- This allows to limit the error logger output in crashes.
+ This allows limiting the length of the error logger output in crashes.
 </p>
 
 <h3 class="function"><a name="void-1">void/1</a></h3>

@@ -23,7 +23,7 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Organisation:</th><td class="field-body">Copyright (C) 2008-2022 EDF R&amp;D</td>
+<tr class="field"><th class="field-name">Organisation:</th><td class="field-body">Copyright (C) 2008-2023 EDF R&amp;D</td>
 </tr>
 <tr class="field"><th class="field-name">Author:</th><td class="field-body">Olivier Boudeville</td>
 </tr>
@@ -31,9 +31,9 @@
 </tr>
 <tr class="field"><th class="field-name">Creation date:</th><td class="field-body">Monday, February 8, 2010</td>
 </tr>
-<tr class="field"><th class="field-name">Lastly updated:</th><td class="field-body">Monday, October 17, 2022</td>
+<tr class="field"><th class="field-name">Lastly updated:</th><td class="field-body">Thursday, January 5, 2023</td>
 </tr>
-<tr class="field"><th class="field-name">Version:</th><td class="field-body">2.4.4</td>
+<tr class="field"><th class="field-name">Version:</th><td class="field-body">2.4.5</td>
 </tr>
 <tr class="field"><th class="field-name">Status:</th><td class="field-body">Stable</td>
 </tr>
@@ -3396,10 +3396,10 @@ $ make soda_platform_integration_run <span class="nv">$BATCH</span>
 <li>are ping (ICMP) messages supported by the hosts and network at hand? If no, set the <tt class="docutils literal">ping_available</tt> field of the <tt class="docutils literal">deployment_settings</tt> record to <tt class="docutils literal">false</tt></li>
 <li>does spawning a Erlang VM on a computing host non-interactively through SSH from the user host succeed? Ex: from the user host, <tt class="docutils literal">ssh A_COMPUTING_HOST erl</tt></li>
 <li>does it spawn a VM with the same, expected Erlang version? (ex: <tt class="docutils literal">Eshell V10.2</tt>)</li>
-<li>can this VM be run with long names, and does it report the expected FQDN in its prompt? Ex: <tt class="docutils literal">ssh COMPUTING_HOST_FQDN erl <span class="pre">-name</span> foo</tt> reporting <tt class="docutils literal">(foo&#64;COMPUTING_HOST_FQDN)1&gt;</tt></li>
+<li>can this VM be run with either short or long names, and does it report the expected FQDN in its prompt? Ex: <tt class="docutils literal">ssh COMPUTING_HOST_FQDN erl <span class="pre">-name</span> foo</tt> reporting <tt class="docutils literal">(foo&#64;COMPUTING_HOST_FQDN)1&gt;</tt></li>
 <li>are all hosts specified indeed by their FQDN? (rather than by a riskier mere hostname or, worse, by their IP address - which is not permitted)</li>
 <li>on any host or network device, have fancier firewall rules been defined? (ex: <tt class="docutils literal">iptables <span class="pre">-L</span></tt> might give clues)</li>
-<li>on a cluster, have the right hosts been allocated by the job manager, and is the user host one of them? (rather than for example being a front-end host, which surely should not be attempted)</li>
+<li>on a cluster, have the right hosts been allocated by the job manager, and is the user host one of them? (rather than for example being a front-end host - which surely should not be attempted)</li>
 </ul>
 <p>Should the problem remain, one may log interactively and perform operations manually to check whether the engine has a chance of succeeding when doing the same.</p>
 </div>
@@ -3571,12 +3571,12 @@ $ make soda_platform_integration_run <span class="nv">$BATCH</span>
 <div class="section" id="how-constructors-of-actors-are-to-be-defined">
 <h2><a class="toc-backref" href="#id234">How Constructors of Actors Are To Be Defined?</a></h2>
 <p>Actor classes are to be defined like any WOOPER classes (of course they have to inherit, directly or not, from <tt class="docutils literal">class_Actor</tt>), except that their first construction parameter must be their actor settings.</p>
-<p>These settings (which include the actor's AAI, for <em>Abstract Actor Identifier</em>) will be specified automatically by the engine, and should be seen as opaque information just to be transmitted to the parent constructor(s).</p>
+<p>These settings (which include the actor's AAI, for <em>Abstract Actor Identifier</em>) will be specified automatically by the engine, and should be seen as opaque information just to be transmitted as it is to the parent constructor(s).</p>
 <p>All other parameters (if any) are call <em>actual parameters</em>.</p>
 <p>For example, a <tt class="docutils literal">Foo</tt> class may define a constructor as:</p>
 <pre class="code erlang literal-block">
 <span class="p">-</span><span class="ni">spec</span> <span class="n">construct</span><span class="p">(</span><span class="nn">wooper</span><span class="p">:</span><span class="nf">state</span><span class="p">(),</span><span class="n">actor_settings</span><span class="p">(),</span><span class="nv">T1</span><span class="p">(),</span> <span class="nv">T2</span><span class="p">())</span> <span class="o">-&gt;</span>
-         <span class="nn">wooper</span><span class="p">:</span><span class="nf">state</span><span class="p">().</span>
+           <span class="nn">wooper</span><span class="p">:</span><span class="nf">state</span><span class="p">().</span>
 <span class="nf">construct</span><span class="p">(</span><span class="nv">State</span><span class="p">,</span><span class="nv">ActorSettings</span><span class="p">,</span><span class="nv">FirstParameter</span><span class="p">,</span><span class="nv">SecondParameter</span><span class="p">)</span> <span class="o">-&gt;</span>
    <span class="p">[...]</span>
 </pre>
@@ -3753,6 +3753,12 @@ $ make clean all <span class="nv">EXECUTION_TARGET</span><span class="o">=</span
 <h3>Increasing the Maximum Number of Erlang Processes</h3>
 <p>The Erlang default limit is only 32768 processes, but Sim-Diasca relies on the <tt class="docutils literal"><span class="pre">myriad/src/scripts/launch-erl.sh</span></tt> script to launch its user VM, and this script enforces a larger limit (of a few thousands; refer to its <tt class="docutils literal">max_process_count</tt> variable).</p>
 <p>One may set the <tt class="docutils literal">MAX_PROCESS_COUNT</tt> make variable (defined in <tt class="docutils literal">myriad/GNUmakevars.inc</tt>) to set that process limit to any value of interest.</p>
+</div>
+<div class="section" id="selecting-whether-any-file-based-creation-of-initial-actors-shall-be-concurrent">
+<h3>Selecting Whether any File-based Creation of Initial Actors shall be Concurrent</h3>
+<p>Currently, by default the <tt class="docutils literal">simdiasca_allow_reproducible_nested_initial_creations</tt> token is defined (see the <tt class="docutils literal">SIM_DIASCA_SETTINGS_FLAGS</tt> make variable in <tt class="docutils literal"><span class="pre">sim-diasca/GNUmakevars.inc</span></tt>), and thus the creation of the initial actors from an initialisation file is done by a single process.</p>
+<p>This allows the nested creations (creating an initial actor from the constructor of another one) to be fully reproducible, including regarding the allocation of the AAI of these actors.</p>
+<p>However, if not relying on such nested creations, or if totally-reproducible initial AAIs are not necessary, then it may useful to <em>not</em> define that token in one's settings; a pool of actor creators will then be spawned (one per core of the user host), resulting in a considerable speed-up of the initialisation of larger file-based simulations.</p>
 </div>
 <div class="section" id="monitoring-resources">
 <h3>Monitoring Resources</h3>

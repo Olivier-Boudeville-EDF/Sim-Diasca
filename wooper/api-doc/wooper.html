@@ -139,7 +139,7 @@
 
 <h3 class="typedecl"><a name="type-method_name">method_name()</a></h3>
 <p><tt>method_name() = <a href="meta_utils.html#type-function_name">meta_utils:function_name()</a></tt></p>
-<p> A method name (ex: 'setColor').</p>
+<p> A method name (e.g. 'setColor').</p>
 
 <h3 class="typedecl"><a name="type-method_qualifier">method_qualifier()</a></h3>
 <p><tt>method_qualifier() = <a href="#type-access_qualifier">access_qualifier()</a> | final | const</tt></p>
@@ -267,9 +267,9 @@ specified construction parameters, and enters its main loop.</td></tr>
 <tr><td valign="top"><a href="#construct_and_run_synchronous-3">construct_and_run_synchronous/3</a></td><td>Constructs synchronously the initial state of an instance of specified 
 class, using specified construction parameters, and enters its main loop.</td></tr>
 <tr><td valign="top"><a href="#construct_passive-2">construct_passive/2</a></td><td>Constructs a passive instance: returns the initial state thereof.</td></tr>
-<tr><td valign="top"><a href="#create_hosting_process-2">create_hosting_process/2</a></td><td>Creates (asynchronously) a blank process, waiting to embody a WOOPER
- instance once it will have received its class and construction parameters, and
- links it to the caller and to the specified process.</td></tr>
+<tr><td valign="top"><a href="#create_hosting_process-2">create_hosting_process/2</a></td><td>Creates (synchronously or not) a blank process, waiting to embody a
+ WOOPER instance once it will have received its class and construction
+ parameters, and links it to the caller and to any specified process.</td></tr>
 <tr><td valign="top"><a href="#declare_beam_dirs_for_wooper-0">declare_beam_dirs_for_wooper/0</a></td><td>Declares automatically the relevant BEAM directories in the code path, so 
 that Ceylan-WOOPER can be fully usable from then on.</td></tr>
 <tr><td valign="top"><a href="#decrementAttribute-2">decrementAttribute/2</a></td><td></td></tr>
@@ -347,17 +347,17 @@ but have different arities).</td></tr>
 <tr><td valign="top"><a href="#hasAttribute-2">hasAttribute/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#incrementAttribute-2">incrementAttribute/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#is_wooper_debug-0">is_wooper_debug/0</a></td><td></td></tr>
-<tr><td valign="top"><a href="#log_error-1">log_error/1</a></td><td>Reports (as synchronously as possible, in order to avoid loosing this
+<tr><td valign="top"><a href="#log_error-1">log_error/1</a></td><td>Reports (as synchronously as possible, in order to avoid losing this
  notification) the specified error to the user, typically by displaying an
- error report on the console (non-halting function, ex: no exception thrown).</td></tr>
-<tr><td valign="top"><a href="#log_error-2">log_error/2</a></td><td>Reports (as synchronously as possible, in order to avoid loosing this
+ error report on the console (non-halting function, e.g.</td></tr>
+<tr><td valign="top"><a href="#log_error-2">log_error/2</a></td><td>Reports (as synchronously as possible, in order to avoid losing this
  notification) the specified error to the user, typically by displaying an
- error report on the console (non-halting function, ex: no exception thrown).</td></tr>
-<tr><td valign="top"><a href="#log_error-3">log_error/3</a></td><td>Reports (as synchronously as possible, in order to avoid loosing this
+ error report on the console (non-halting function, e.g.</td></tr>
+<tr><td valign="top"><a href="#log_error-3">log_error/3</a></td><td>Reports (as synchronously as possible, in order to avoid losing this
  notification) the specified error about the current WOOPER instance
  (preferably thanks to its state, otherwise with the current executed module,
  so with fewer information) to the user, typically by displaying an error
- report on the console (non-halting function, ex: no exception thrown).</td></tr>
+ report on the console (non-halting function, e.g.</td></tr>
 <tr><td valign="top"><a href="#log_info-1">log_info/1</a></td><td>Reports (on a best-effort basis) the specified information to the user,
  typically by displaying an information report on the console.</td></tr>
 <tr><td valign="top"><a href="#log_info-2">log_info/2</a></td><td>Reports (on a best-effort basis) the specified information to the user,
@@ -534,9 +534,9 @@ class, using specified construction parameters, and enters its main loop.</p>
 <div class="spec">
 <p><tt>create_hosting_process(Node::<a href="net_utils.html#type-node_name">net_utils:node_name()</a>, ToLinkWithPid::pid()) -&gt; <a href="#type-instance_pid">instance_pid()</a></tt><br></p>
 <p> </p>
-</div><p>Creates (asynchronously) a blank process, waiting to embody a WOOPER
- instance once it will have received its class and construction parameters, and
- links it to the caller and to the specified process.
+</div><p>Creates (synchronously or not) a blank process, waiting to embody a
+ WOOPER instance once it will have received its class and construction
+ parameters, and links it to the caller and to any specified process.
 </p>
 
 <h3 class="function"><a name="declare_beam_dirs_for_wooper-0">declare_beam_dirs_for_wooper/0</a></h3>
@@ -637,7 +637,7 @@ potentially stored in the specified attribute list.</p>
 
  <p>Sets the corresponding attribute(s) to 'undefined', returns an updated state.</p>
 
- <p>Ex: in a destructor: DeleteState = delete_any_instance_referenced_in([ 
+ <p>For example in a destructor: DeleteState = delete_any_instance_referenced_in([ 
 first_pid_attr, second_pid_attr], State) or 
 delete_any_instance_referenced_in(my_pid_attr, State).</p>
 
@@ -660,7 +660,7 @@ attribute may be specified as well).</p>
 
  <p>Sets the corresponding attribute(s) to 'undefined', returns an updated state.</p>
 
- Ex: in a destructor: NewState =
+ For example in a destructor: NewState =
  delete_synchronously_any_instance_referenced_in([first_pid_attr,
  second_pid_attr], State) or
  delete_synchronously_any_instance_referenced_in(my_pid_attr, State).
@@ -924,7 +924,7 @@ state is specified, or of the specified classname.</p>
 - in case of diamond-shaped inheritance, a given superclass may be listed more 
 than once (list_utils:uniquify/1 may then be used)</p>
 
- <p>Ex: wooper:get_all_superclasses(class_Platypus) =       
+ <p>For example wooper:get_all_superclasses(class_Platypus) =       
 [class_Mammal,class_OvoviviparousBeing,class_Creature, class_Creature].</p>
 
  <p>Not static to avoid making class modules heavier.</p>
@@ -949,7 +949,7 @@ state (that is all attributes except the ones used internally by WOOPER).</p>
 <p> </p>
 </div><p><p>Returns the source filename associated to the specified class.</p>
 
- Ex: get_class_filename('class_Foo') returns simply "class_Foo.erl".
+ For example get_class_filename('class_Foo') returns simply "class_Foo.erl".
 </p>
 
 <h3 class="function"><a name="get_classname-1">get_classname/1</a></h3>
@@ -1011,29 +1011,29 @@ but have different arities).</p>
 <div class="spec">
 <p><tt>log_error(Message::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p>Reports (as synchronously as possible, in order to avoid loosing this
+</div><p>Reports (as synchronously as possible, in order to avoid losing this
  notification) the specified error to the user, typically by displaying an
- error report on the console (non-halting function, ex: no exception thrown).
+ error report on the console (non-halting function, e.g. no exception thrown).
 </p>
 
 <h3 class="function"><a name="log_error-2">log_error/2</a></h3>
 <div class="spec">
 <p><tt>log_error(FormatString::<a href="#type-format_string">format_string()</a>, ValueList::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p>Reports (as synchronously as possible, in order to avoid loosing this
+</div><p>Reports (as synchronously as possible, in order to avoid losing this
  notification) the specified error to the user, typically by displaying an
- error report on the console (non-halting function, ex: no exception thrown).
+ error report on the console (non-halting function, e.g. no exception thrown).
 </p>
 
 <h3 class="function"><a name="log_error-3">log_error/3</a></h3>
 <div class="spec">
 <p><tt>log_error(FormatString::<a href="#type-format_string">format_string()</a>, ValueList::<a href="#type-format_values">format_values()</a>, State::<a href="wooper.html#type-state">wooper:state()</a> | <a href="basic_utils.html#type-module_name">basic_utils:module_name()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p>Reports (as synchronously as possible, in order to avoid loosing this
+</div><p>Reports (as synchronously as possible, in order to avoid losing this
  notification) the specified error about the current WOOPER instance
  (preferably thanks to its state, otherwise with the current executed module,
  so with fewer information) to the user, typically by displaying an error
- report on the console (non-halting function, ex: no exception thrown).
+ report on the console (non-halting function, e.g. no exception thrown).
 </p>
 
 <h3 class="function"><a name="log_info-1">log_info/1</a></h3>
@@ -1178,7 +1178,7 @@ standalone attribute may be specified as well instead).</p>
 
  <p>Sets the corresponding attribute(s) to 'undefined', returns an updated state.</p>
 
- Ex: in a destructor: NewState =
+ For example in a destructor: NewState =
  delete_synchronously_any_instance_referenced_in([first_pid_attr,
  second_pid_attr], SomeState) or
  safe_delete_synchronously_any_instance_referenced_in(my_pid_attr, State).

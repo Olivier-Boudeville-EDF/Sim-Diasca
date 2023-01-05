@@ -74,7 +74,7 @@ the class_TraceEmitter constructor.</p>
  <p>Note: dots are not allowed in an emitter name (they are used as naming 
 separator).</p>
 
- Ex: "MyObject 16", or <code>&lt;&lt;"First Talker"&gt;&gt;</code>.</p>
+ For example  "MyObject 16", or <code>&lt;&lt;"First Talker"&gt;&gt;</code>.</p>
 
 <h3 class="typedecl"><a name="type-emitter_pid">emitter_pid()</a></h3>
 <p><tt>emitter_pid() = <a href="wooper.html#type-instance_pid">wooper:instance_pid()</a></tt></p>
@@ -136,14 +136,6 @@ separator).</p>
 <p><tt>requests_outcome() = <a href="wooper.html#type-requests_outcome">wooper:requests_outcome()</a></tt></p>
 
 
-<h3 class="typedecl"><a name="type-static_return">static_return()</a></h3>
-<p><tt>static_return(T) = <a href="wooper.html#type-static_return">wooper:static_return</a>(T)</tt></p>
-
-
-<h3 class="typedecl"><a name="type-static_void_return">static_void_return()</a></h3>
-<p><tt>static_void_return() = <a href="#type-static_return">static_return</a>(wooper_void_return)</tt></p>
-
-
 <h3 class="typedecl"><a name="type-trace_severity">trace_severity()</a></h3>
 <p><tt>trace_severity() = <a href="traces.html#type-trace_severity">traces:trace_severity()</a></tt></p>
 
@@ -183,8 +175,8 @@ separator).</p>
 <tr><td valign="top"><a href="#get_plain_name-1">get_plain_name/1</a></td><td>Returns the name of this trace emitter, as a plain string (not as a 
 binary).</td></tr>
 <tr><td valign="top"><a href="#get_short_description-1">get_short_description/1</a></td><td>Returns a short description of this trace emitter.</td></tr>
-<tr><td valign="top"><a href="#get_trace_timestamp-1">get_trace_timestamp/1</a></td><td>Returns the current trace-level timestamp (ex: possibly an execution tick 
-offset), or the atom 'none' if the emitter time is not known.</td></tr>
+<tr><td valign="top"><a href="#get_trace_timestamp-1">get_trace_timestamp/1</a></td><td>Returns the current trace-level timestamp (that is possibly an execution 
+tick offset), or the atom 'none' if the emitter time is not known.</td></tr>
 <tr><td valign="top"><a href="#get_trace_timestamp_as_binary-1">get_trace_timestamp_as_binary/1</a></td><td>Returns the current trace-level timestamp, as a binary string.</td></tr>
 <tr><td valign="top"><a href="#hasAttribute-2">hasAttribute/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#incrementAttribute-2">incrementAttribute/2</a></td><td></td></tr>
@@ -201,7 +193,6 @@ instance.</td></tr>
 <tr><td valign="top"><a href="#send_safe-4">send_safe/4</a></td><td>Sends specified trace message.</td></tr>
 <tr><td valign="top"><a href="#send_safe-5">send_safe/5</a></td><td>Sends specified synchronised trace message (the synchronisation answer is 
 requested and waited) that is furthermore echoed.</td></tr>
-<tr><td valign="top"><a href="#send_standalone-2">send_standalone/2</a></td><td>Sends all types of traces without requiring a class_TraceEmitter state.</td></tr>
 <tr><td valign="top"><a href="#send_synchronised-3">send_synchronised/3</a></td><td>Sends a synchronised trace message (the synchronisation answer is 
 requested and waited).</td></tr>
 <tr><td valign="top"><a href="#send_synchronised-4">send_synchronised/4</a></td><td></td></tr>
@@ -420,8 +411,8 @@ binary).</p>
 <div class="spec">
 <p><tt>get_trace_timestamp(State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="#type-app_timestamp">app_timestamp()</a></tt><br></p>
 <p> </p>
-</div><p><p>Returns the current trace-level timestamp (ex: possibly an execution tick 
-offset), or the atom 'none' if the emitter time is not known.</p>
+</div><p><p>Returns the current trace-level timestamp (that is possibly an execution 
+tick offset), or the atom 'none' if the emitter time is not known.</p>
 
  (helper)
 </p>
@@ -564,16 +555,6 @@ requested and waited) that is furthermore echoed.</p>
 requested and waited).</p>
 
  (helper)
-</p>
-
-<h3 class="function"><a name="send_standalone-2">send_standalone/2</a></h3>
-<div class="spec">
-<p><tt>send_standalone(TraceSeverity::<a href="#type-trace_severity">trace_severity()</a>, Message::<a href="#type-message">message()</a>) -&gt; <a href="#type-static_void_return">static_void_return()</a></tt><br></p>
-<p> </p>
-</div><p><p>Sends all types of traces without requiring a class_TraceEmitter state.</p>
-
- Uses the default trace aggregator, supposed to be already available and
- registered.
 </p>
 
 <h3 class="function"><a name="send_synchronised-3">send_synchronised/3</a></h3>

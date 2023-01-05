@@ -61,6 +61,10 @@ facilities.</p>
 <p><tt>byte_size() = non_neg_integer()</tt></p>
 <p> Size, as a positive number of bytes.</p>
 
+<h3 class="typedecl"><a name="type-bytes_per_second">bytes_per_second()</a></h3>
+<p><tt>bytes_per_second() = integer()</tt></p>
+<p> Number of bytes per second.</p>
+
 <h3 class="typedecl"><a name="type-command">command()</a></h3>
 <p><tt>command() = <a href="#type-any_string">any_string()</a></tt></p>
 <p> Describes a command to be run (i.e. a path to an executable, with possibly
@@ -302,7 +306,7 @@ needing to open a file for writing - should such an option be used.</td></tr>
 <tr><td valign="top"><a href="#get_default_port_options-0">get_default_port_options/0</a></td><td>Returns the default options to be used for open_port/2.</td></tr>
 <tr><td valign="top"><a href="#get_default_temporary_directory-0">get_default_temporary_directory/0</a></td><td>Returns a (probably system-dependent) base temporary directory.</td></tr>
 <tr><td valign="top"><a href="#get_dependency_base_directory-1">get_dependency_base_directory/1</a></td><td>Returns the (expected, conventional) base installation directory of the
- specified third-party, prerequisite package (ex: "Foobar").</td></tr>
+ specified third-party, prerequisite package (e.g.</td></tr>
 <tr><td valign="top"><a href="#get_dependency_code_directory-1">get_dependency_code_directory/1</a></td><td>Returns the (expected, conventional) code installation directory of the
  specified third-party, prerequisite, Erlang package (ex: "Foobar").</td></tr>
 <tr><td valign="top"><a href="#get_disk_usage-0">get_disk_usage/0</a></td><td>Returns the current usage of disks, as a human-readable string.</td></tr>
@@ -355,6 +359,8 @@ local system resources.</td></tr>
 <tr><td valign="top"><a href="#get_size-1">get_size/1</a></td><td>Returns the size of the specified term, in bytes.</td></tr>
 <tr><td valign="top"><a href="#get_size_of_vm_word-0">get_size_of_vm_word/0</a></td><td>Returns the size, in bytes, of a word of this Virtual Machine.</td></tr>
 <tr><td valign="top"><a href="#get_size_of_vm_word_string-0">get_size_of_vm_word_string/0</a></td><td>Returns a textual description of the size of a VM word.</td></tr>
+<tr><td valign="top"><a href="#get_software_base_directory-0">get_software_base_directory/0</a></td><td>Returns the (expected, conventional) base installation directory for
+ third-party software.</td></tr>
 <tr><td valign="top"><a href="#get_standard_environment-0">get_standard_environment/0</a></td><td>Returns a default, standard, safe/secure environment for "porcelain"-like 
 executions, that is executions that are, as much as possible, reproducible in 
 various runtime contexts (typically: with locale-independent outputs).</td></tr>
@@ -815,7 +821,7 @@ needing to open a file for writing - should such an option be used.</p>
 <p><tt>get_dependency_base_directory(PackageName::<a href="#type-package_name">package_name()</a>) -&gt; <a href="#type-directory_path">directory_path()</a></tt><br></p>
 <p> </p>
 </div><p>Returns the (expected, conventional) base installation directory of the
- specified third-party, prerequisite package (ex: "Foobar").
+ specified third-party, prerequisite package (e.g. "Foobar").
 </p>
 
 <h3 class="function"><a name="get_dependency_code_directory-1">get_dependency_code_directory/1</a></h3>
@@ -1075,6 +1081,14 @@ word (which is kept in a register or on the stack).</p>
 </div><p><p>Returns a textual description of the size of a VM word.</p>
 
  Cannot crash.
+</p>
+
+<h3 class="function"><a name="get_software_base_directory-0">get_software_base_directory/0</a></h3>
+<div class="spec">
+<p><tt>get_software_base_directory() -&gt; <a href="#type-directory_path">directory_path()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the (expected, conventional) base installation directory for
+ third-party software.
 </p>
 
 <h3 class="function"><a name="get_standard_environment-0">get_standard_environment/0</a></h3>

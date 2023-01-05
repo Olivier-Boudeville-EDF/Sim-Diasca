@@ -208,6 +208,10 @@ description.</p>
 <p><tt>link_name() = <a href="#type-ustring">ustring()</a></tt></p>
 <p> The name of a (symbolic) link.</p>
 
+<h3 class="typedecl"><a name="type-link_path">link_path()</a></h3>
+<p><tt>link_path() = <a href="#type-file_path">file_path()</a></tt></p>
+<p> The path of a (symbolic) link.</p>
+
 <h3 class="typedecl"><a name="type-parent_creation">parent_creation()</a></h3>
 <p><tt>parent_creation() = create_no_parent | create_parents</tt></p>
 <p> Tells whether parent directories shall be created.</p>
@@ -281,12 +285,16 @@ filename, established based on usual conventions, is returned.</td></tr>
 <tr><td valign="top"><a href="#compress-2">compress/2</a></td><td>Compresses specified file: creates a compressed version thereof, whose 
 filename, established based on usual conventions, is returned.</td></tr>
 <tr><td valign="top"><a href="#convert_to_filename-1">convert_to_filename/1</a></td><td>Converts the specified name into an acceptable filename, filesystem-wise.</td></tr>
+<tr><td valign="top"><a href="#copy_as_regular_file_in-2">copy_as_regular_file_in/2</a></td><td>Copies the actual regular file specified - either directly a regular 
+file, or a regular file ultimately pointed to by any specified symbolic link - 
+in the specified destination directory, overwriting any previous file, and 
+returning the full path of the copied file.</td></tr>
 <tr><td valign="top"><a href="#copy_file-2">copy_file/2</a></td><td>Copies a specified file to a given destination filename (not a directory 
 name, see copy_file_in/2 for that), overwriting any previous file.</td></tr>
 <tr><td valign="top"><a href="#copy_file_if_existing-2">copy_file_if_existing/2</a></td><td>Copies a specified file to a given destination iff this source file is 
 already existing.</td></tr>
-<tr><td valign="top"><a href="#copy_file_in-2">copy_file_in/2</a></td><td>Copies a specified file in a given destination directory, overwriting any 
-previous file, and returning the full path of the copied file.</td></tr>
+<tr><td valign="top"><a href="#copy_file_in-2">copy_file_in/2</a></td><td>Copies a specified file in the specified destination directory, 
+overwriting any previous file, and returning the full path of the copied file.</td></tr>
 <tr><td valign="top"><a href="#copy_tree-2">copy_tree/2</a></td><td>Copies specified source tree in specified target directory.</td></tr>
 <tr><td valign="top"><a href="#create_directory-1">create_directory/1</a></td><td>Creates the specified directory ("mkdir"), without creating any 
 intermediate (parent) directory that would not exist.</td></tr>
@@ -392,8 +400,8 @@ needing to open a file for writing - should such an option be used.</td></tr>
  machine.</td></tr>
 <tr><td valign="top"><a href="#get_extra_data_directories-1">get_extra_data_directories/1</a></td><td>Returns the extra path locations intended for the storage of persistent
  data files that the specified application may perform on the local machine.</td></tr>
-<tr><td valign="top"><a href="#get_first_existing_directory_in-1">get_first_existing_directory_in/1</a></td><td>Returns the first (if any) existing directory found in specified list, or 
-throws an exception if none is found.</td></tr>
+<tr><td valign="top"><a href="#get_first_existing_directory_in-1">get_first_existing_directory_in/1</a></td><td>Returns the first (if any) existing directory found in the specified 
+list, or throws an exception if none is found.</td></tr>
 <tr><td valign="top"><a href="#get_group_of-1">get_group_of/1</a></td><td>Returns the group identifier (gid) of the group of the specified file
  entry.</td></tr>
 <tr><td valign="top"><a href="#get_image_extensions-0">get_image_extensions/0</a></td><td>Returns a list of the known file extensions that refer to image files.</td></tr>
@@ -422,33 +430,37 @@ type).</td></tr>
 'symlink' if the path of a symbolic link is specified).</td></tr>
 <tr><td valign="top"><a href="#has_matching_suffix-2">has_matching_suffix/2</a></td><td>Tells whether specified path matches one of the specified suffixes.</td></tr>
 <tr><td valign="top"><a href="#is_absolute_path-1">is_absolute_path/1</a></td><td>Tells whether the specified path is an absolute one.</td></tr>
-<tr><td valign="top"><a href="#is_directory-1">is_directory/1</a></td><td>Returns whether the specified entry, supposedly existing, is a directory.</td></tr>
-<tr><td valign="top"><a href="#is_existing_directory-1">is_existing_directory/1</a></td><td>Returns whether the specified entry exists and is a directory.</td></tr>
-<tr><td valign="top"><a href="#is_existing_directory_or_link-1">is_existing_directory_or_link/1</a></td><td>Returns whether the specified entry exists and is a directory or a 
+<tr><td valign="top"><a href="#is_directory-1">is_directory/1</a></td><td>Returns whether the specified path entry, supposedly existing, is a 
+directory.</td></tr>
+<tr><td valign="top"><a href="#is_existing_directory-1">is_existing_directory/1</a></td><td>Returns whether the specified path entry exists and is a directory.</td></tr>
+<tr><td valign="top"><a href="#is_existing_directory_or_link-1">is_existing_directory_or_link/1</a></td><td>Returns whether the specified path entry exists and is a directory or a 
 symbolic link.</td></tr>
-<tr><td valign="top"><a href="#is_existing_file-1">is_existing_file/1</a></td><td>Returns whether the specified entry exists and is a regular file.</td></tr>
-<tr><td valign="top"><a href="#is_existing_file_or_link-1">is_existing_file_or_link/1</a></td><td>Returns whether the specified entry exists and is either a regular file 
-or a symbolic link.</td></tr>
-<tr><td valign="top"><a href="#is_existing_link-1">is_existing_link/1</a></td><td>Returns whether the specified entry exists and is a symbolic file.</td></tr>
-<tr><td valign="top"><a href="#is_file-1">is_file/1</a></td><td>Returns whether the specified entry, supposedly existing, is a regular 
-file.</td></tr>
+<tr><td valign="top"><a href="#is_existing_file-1">is_existing_file/1</a></td><td>Returns whether the specified path entry exists and is a regular file.</td></tr>
+<tr><td valign="top"><a href="#is_existing_file_or_link-1">is_existing_file_or_link/1</a></td><td>Returns whether the specified path entry exists and is either a regular 
+file or a symbolic link.</td></tr>
+<tr><td valign="top"><a href="#is_existing_link-1">is_existing_link/1</a></td><td>Returns whether the specified path entry exists and is a symbolic file.</td></tr>
+<tr><td valign="top"><a href="#is_file-1">is_file/1</a></td><td>Returns whether the specified path entry, supposedly existing, is a 
+regular file.</td></tr>
+<tr><td valign="top"><a href="#is_file_reference-1">is_file_reference/1</a></td><td>Tells whether the specified term is a file reference (pseudo-guard).</td></tr>
 <tr><td valign="top"><a href="#is_leaf_among-2">is_leaf_among/2</a></td><td>Tells whether specified basename (ex: a pathless filename) is among the 
 specified list of full paths; returns either false or the first full path 
 found corresponding to that leaf element.</td></tr>
-<tr><td valign="top"><a href="#is_owner_executable-1">is_owner_executable/1</a></td><td>Returns whether the specified entry exists and is executable for its 
+<tr><td valign="top"><a href="#is_link-1">is_link/1</a></td><td>Returns whether the specified path entry, supposedly existing, is a 
+symbolic file.</td></tr>
+<tr><td valign="top"><a href="#is_owner_executable-1">is_owner_executable/1</a></td><td>Returns whether the specified path entry exists and is executable for its 
 current owner (can be either a regular file or a symbolic link) - not telling 
 anything about whether the current user can execute it.</td></tr>
-<tr><td valign="top"><a href="#is_owner_readable-1">is_owner_readable/1</a></td><td>Returns whether the specified entry exists and is readable for its 
+<tr><td valign="top"><a href="#is_owner_readable-1">is_owner_readable/1</a></td><td>Returns whether the specified path entry exists and is readable for its 
 current owner (can be either a regular file or a symbolic link) - not telling 
 anything about whether the current user can read it.</td></tr>
-<tr><td valign="top"><a href="#is_owner_writable-1">is_owner_writable/1</a></td><td>Returns whether the specified entry exists and is writable for its 
+<tr><td valign="top"><a href="#is_owner_writable-1">is_owner_writable/1</a></td><td>Returns whether the specified path entry exists and is writable for its 
 current owner (can be either a regular file or a symbolic link) - not telling 
 anything about whether the current user can write it.</td></tr>
-<tr><td valign="top"><a href="#is_user_executable-1">is_user_executable/1</a></td><td>Returns whether the specified entry exists and is executable for the 
+<tr><td valign="top"><a href="#is_user_executable-1">is_user_executable/1</a></td><td>Returns whether the specified path entry exists and is executable for the 
 current user (can be either a regular file or a symbolic link).</td></tr>
-<tr><td valign="top"><a href="#is_user_readable-1">is_user_readable/1</a></td><td>Returns whether the specified entry exists and is readable for the 
+<tr><td valign="top"><a href="#is_user_readable-1">is_user_readable/1</a></td><td>Returns whether the specified path entry exists and is readable for the 
 current user (can be either a regular file or a symbolic link).</td></tr>
-<tr><td valign="top"><a href="#is_user_writable-1">is_user_writable/1</a></td><td>Returns whether the specified entry exists and is writable for the 
+<tr><td valign="top"><a href="#is_user_writable-1">is_user_writable/1</a></td><td>Returns whether the specified path entry exists and is writable for the 
 current user (can be either a regular file or a symbolic link).</td></tr>
 <tr><td valign="top"><a href="#join-1">join/1</a></td><td>Joins the specified list of path elements.</td></tr>
 <tr><td valign="top"><a href="#join-2">join/2</a></td><td>Joins the two specified path elements, returns a corresponding plain 
@@ -535,6 +547,13 @@ extension of the resulting file name.</td></tr>
 <tr><td valign="top"><a href="#resolve_any_path-1">resolve_any_path/1</a></td><td>Resolves the specified path - either a standard one or a resolvable one -
  in all cases as a plain, standard path.</td></tr>
 <tr><td valign="top"><a href="#resolve_path-1">resolve_path/1</a></td><td>Resolves the specified resolvable path as a standard path.</td></tr>
+<tr><td valign="top"><a href="#resolve_symlink_fully-1">resolve_symlink_fully/1</a></td><td>Resolves fully the specified symbolic link: returns the entry it points
+ ultimately to (therefore this entry cannot be a symbolic link), or throws an
+ exception (including if exceeding a larger link depth, which happens most
+ probably because these links form a cycle; throwing arbitrarily an exception
+ is better than looping for ever).</td></tr>
+<tr><td valign="top"><a href="#resolve_symlink_once-1">resolve_symlink_once/1</a></td><td>Resolves the specified symbolic link once: returns the entry (potentially
+ another symbolic link) it points to.</td></tr>
 <tr><td valign="top"><a href="#resolve_type_of-1">resolve_type_of/1</a></td><td>Returns the actual, ultimate type of the specified file entry (hence may 
 not return 'symlink').</td></tr>
 <tr><td valign="top"><a href="#set_current_directory-1">set_current_directory/1</a></td><td>Sets the specified directory as current directory.</td></tr>
@@ -731,6 +750,20 @@ that name already exists, it will be overwritten.</p>
  Returns the same type of string as the provided one.
 </p>
 
+<h3 class="function"><a name="copy_as_regular_file_in-2">copy_as_regular_file_in/2</a></h3>
+<div class="spec">
+<p><tt>copy_as_regular_file_in(SourcePath::<a href="#type-any_file_path">any_file_path()</a>, DestinationDirectory::<a href="#type-any_directory_name">any_directory_name()</a>) -&gt; <a href="#type-any_file_path">any_file_path()</a></tt><br></p>
+<p> </p>
+</div><p><p>Copies the actual regular file specified - either directly a regular 
+file, or a regular file ultimately pointed to by any specified symbolic link - 
+in the specified destination directory, overwriting any previous file, and 
+returning the full path of the copied file.</p>
+
+ Note: content is copied and permissions are preserved (ex: the copy of an
+ executable file will be itself executable, like for the other permissions -
+ and unlike /bin/cp, which relies on umask).
+</p>
+
 <h3 class="function"><a name="copy_file-2">copy_file/2</a></h3>
 <div class="spec">
 <p><tt>copy_file(SourceFilePath::<a href="#type-any_file_path">any_file_path()</a>, DestinationFilePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
@@ -759,11 +792,11 @@ already existing.</p>
 <div class="spec">
 <p><tt>copy_file_in(SourcePath::<a href="#type-any_file_path">any_file_path()</a>, DestinationDirectory::<a href="#type-any_directory_name">any_directory_name()</a>) -&gt; <a href="#type-any_file_path">any_file_path()</a></tt><br></p>
 <p> </p>
-</div><p><p>Copies a specified file in a given destination directory, overwriting any 
-previous file, and returning the full path of the copied file.</p>
+</div><p><p>Copies a specified file in the specified destination directory, 
+overwriting any previous file, and returning the full path of the copied file.</p>
 
  Note: content is copied and permissions are preserved (ex: the copy of an
- executable file will be itself executable, likz for the other permissions -
+ executable file will be itself executable, like for the other permissions -
  and unlike /bin/cp, which relies on umask).
 </p>
 
@@ -1360,7 +1393,7 @@ needing to open a file for writing - should such an option be used.</p>
 <p> </p>
 </div><p><p>Returns the (last) extension of the specified file path.</p>
 
- Ex: "json" = get_extension( "/home/joe/foobar.baz.json" )
+ Ex: "json" = get_extension("/home/joe/foobar.baz.json")
 </p>
 
 <h3 class="function"><a name="get_extension_for-1">get_extension_for/1</a></h3>
@@ -1401,11 +1434,14 @@ needing to open a file for writing - should such an option be used.</p>
 <div class="spec">
 <p><tt>get_first_existing_directory_in(DirPaths::[<a href="#type-any_directory_path">any_directory_path()</a>]) -&gt; <a href="#type-any_directory_path">any_directory_path()</a></tt><br></p>
 <p> </p>
-</div><p><p>Returns the first (if any) existing directory found in specified list, or 
-throws an exception if none is found.</p>
+</div><p><p>Returns the first (if any) existing directory found in the specified 
+list, or throws an exception if none is found.</p>
+
+ <p>Each of the directory components involved may be an actual directory or a 
+symbolic link.</p>
 
  Typically useful when having multiple possible paths depending on settings,
- one of them being relevant.
+ only one of them being relevant.
 </p>
 
 <h3 class="function"><a name="get_group_of-1">get_group_of/1</a></h3>
@@ -1527,8 +1563,8 @@ path will result in potential race conditions and risks of collisions.</p>
 discriminate between the specified paths (expected to be of the same string 
 type).</p>
 
- Ex: get_shortest_unique_ending_paths( "/aa/bb/foo/bar/hello.txt",
-                                       "/tmp/buzz/frob/aa/foo/bar/hello.txt")
+ Ex: get_shortest_unique_ending_paths("/aa/bb/foo/bar/hello.txt",
+                                      "/tmp/buzz/frob/aa/foo/bar/hello.txt")
       returns: {"bb/foo/bar/hello.txt", "aa/foo/bar/hello.txt"}
 </p>
 
@@ -1570,7 +1606,8 @@ type).</p>
 <div class="spec">
 <p><tt>is_directory(Path::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</tt><br></p>
 <p> </p>
-</div><p><p>Returns whether the specified entry, supposedly existing, is a directory.</p>
+</div><p><p>Returns whether the specified path entry, supposedly existing, is a 
+directory.</p>
 
  If the specified entry happens not to exist, a {non_existing_entry, Path}
  exception will be thrown.
@@ -1580,7 +1617,7 @@ type).</p>
 <div class="spec">
 <p><tt>is_existing_directory(Path::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</tt><br></p>
 <p> </p>
-</div><p><p>Returns whether the specified entry exists and is a directory.</p>
+</div><p><p>Returns whether the specified path entry exists and is a directory.</p>
 
  Returns true or false, and cannot trigger an exception.
 </p>
@@ -1589,7 +1626,7 @@ type).</p>
 <div class="spec">
 <p><tt>is_existing_directory_or_link(Path::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</tt><br></p>
 <p> </p>
-</div><p><p>Returns whether the specified entry exists and is a directory or a 
+</div><p><p>Returns whether the specified path entry exists and is a directory or a 
 symbolic link.</p>
 
  Returns true or false, and cannot trigger an exception.
@@ -1599,7 +1636,7 @@ symbolic link.</p>
 <div class="spec">
 <p><tt>is_existing_file(Path::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</tt><br></p>
 <p> </p>
-</div><p><p>Returns whether the specified entry exists and is a regular file.</p>
+</div><p><p>Returns whether the specified path entry exists and is a regular file.</p>
 
  Returns true or false, and cannot trigger an exception.
 </p>
@@ -1608,8 +1645,8 @@ symbolic link.</p>
 <div class="spec">
 <p><tt>is_existing_file_or_link(Path::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</tt><br></p>
 <p> </p>
-</div><p><p>Returns whether the specified entry exists and is either a regular file 
-or a symbolic link.</p>
+</div><p><p>Returns whether the specified path entry exists and is either a regular 
+file or a symbolic link.</p>
 
  Returns true or false, and cannot trigger an exception.
 </p>
@@ -1618,7 +1655,7 @@ or a symbolic link.</p>
 <div class="spec">
 <p><tt>is_existing_link(Path::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</tt><br></p>
 <p> </p>
-</div><p><p>Returns whether the specified entry exists and is a symbolic file.</p>
+</div><p><p>Returns whether the specified path entry exists and is a symbolic file.</p>
 
  Returns true or false, and cannot trigger an exception.
 </p>
@@ -1627,11 +1664,23 @@ or a symbolic link.</p>
 <div class="spec">
 <p><tt>is_file(Path::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</tt><br></p>
 <p> </p>
-</div><p><p>Returns whether the specified entry, supposedly existing, is a regular 
-file.</p>
+</div><p><p>Returns whether the specified path entry, supposedly existing, is a 
+regular file.</p>
 
- If the specified entry happens not to exist, a {non_existing_entry, EntryName}
- exception will be thrown.
+ <p>If the specified entry happens not to exist, a {non_existing_entry, EntryName} 
+exception will be thrown.</p>
+
+ Not to be confused with is_file_reference/1, which deals with opened file IO
+ devices.
+</p>
+
+<h3 class="function"><a name="is_file_reference-1">is_file_reference/1</a></h3>
+<div class="spec">
+<p><tt>is_file_reference(FilePid::term()) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p><p>Tells whether the specified term is a file reference (pseudo-guard).</p>
+
+ Not to be confused with is_file/1, which is about file paths.
 </p>
 
 <h3 class="function"><a name="is_leaf_among-2">is_leaf_among/2</a></h3>
@@ -1647,11 +1696,21 @@ found corresponding to that leaf element.</p>
   "a/b/c/xx"  = file_utils:is_leaf_among( "xx", [ "a/b/c/xx", "d/e/zz"] )
 </p>
 
+<h3 class="function"><a name="is_link-1">is_link/1</a></h3>
+<div class="spec">
+<p><tt>is_link(Path::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p><p>Returns whether the specified path entry, supposedly existing, is a 
+symbolic file.</p>
+
+ Returns true or false, and cannot trigger an exception.
+</p>
+
 <h3 class="function"><a name="is_owner_executable-1">is_owner_executable/1</a></h3>
 <div class="spec">
 <p><tt>is_owner_executable(Path::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</tt><br></p>
 <p> </p>
-</div><p><p>Returns whether the specified entry exists and is executable for its 
+</div><p><p>Returns whether the specified path entry exists and is executable for its 
 current owner (can be either a regular file or a symbolic link) - not telling 
 anything about whether the current user can execute it.</p>
 
@@ -1664,7 +1723,7 @@ anything about whether the current user can execute it.</p>
 <div class="spec">
 <p><tt>is_owner_readable(Path::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</tt><br></p>
 <p> </p>
-</div><p><p>Returns whether the specified entry exists and is readable for its 
+</div><p><p>Returns whether the specified path entry exists and is readable for its 
 current owner (can be either a regular file or a symbolic link) - not telling 
 anything about whether the current user can read it.</p>
 
@@ -1677,7 +1736,7 @@ anything about whether the current user can read it.</p>
 <div class="spec">
 <p><tt>is_owner_writable(Path::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</tt><br></p>
 <p> </p>
-</div><p><p>Returns whether the specified entry exists and is writable for its 
+</div><p><p>Returns whether the specified path entry exists and is writable for its 
 current owner (can be either a regular file or a symbolic link) - not telling 
 anything about whether the current user can write it.</p>
 
@@ -1690,7 +1749,7 @@ anything about whether the current user can write it.</p>
 <div class="spec">
 <p><tt>is_user_executable(Path::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</tt><br></p>
 <p> </p>
-</div><p><p>Returns whether the specified entry exists and is executable for the 
+</div><p><p>Returns whether the specified path entry exists and is executable for the 
 current user (can be either a regular file or a symbolic link).</p>
 
  <p>Returns true or false, and cannot trigger an exception.</p>
@@ -1702,7 +1761,7 @@ current user (can be either a regular file or a symbolic link).</p>
 <div class="spec">
 <p><tt>is_user_readable(Path::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</tt><br></p>
 <p> </p>
-</div><p><p>Returns whether the specified entry exists and is readable for the 
+</div><p><p>Returns whether the specified path entry exists and is readable for the 
 current user (can be either a regular file or a symbolic link).</p>
 
  Returns true or false, and cannot trigger an exception.
@@ -1712,7 +1771,7 @@ current user (can be either a regular file or a symbolic link).</p>
 <div class="spec">
 <p><tt>is_user_writable(Path::<a href="#type-any_path">any_path()</a>) -&gt; boolean()</tt><br></p>
 <p> </p>
-</div><p><p>Returns whether the specified entry exists and is writable for the 
+</div><p><p>Returns whether the specified path entry exists and is writable for the 
 current user (can be either a regular file or a symbolic link).</p>
 
  Returns true or false, and cannot trigger an exception.
@@ -2222,6 +2281,25 @@ extension of the resulting file name.</p>
 <p> </p>
 </div><p>Resolves the specified resolvable path as a standard path.</p>
 
+<h3 class="function"><a name="resolve_symlink_fully-1">resolve_symlink_fully/1</a></h3>
+<div class="spec">
+<p><tt>resolve_symlink_fully(SymlinkPath::<a href="#type-any_path">any_path()</a>) -&gt; <a href="#type-any_path">any_path()</a></tt><br></p>
+<p> </p>
+</div><p>Resolves fully the specified symbolic link: returns the entry it points
+ ultimately to (therefore this entry cannot be a symbolic link), or throws an
+ exception (including if exceeding a larger link depth, which happens most
+ probably because these links form a cycle; throwing arbitrarily an exception
+ is better than looping for ever).
+</p>
+
+<h3 class="function"><a name="resolve_symlink_once-1">resolve_symlink_once/1</a></h3>
+<div class="spec">
+<p><tt>resolve_symlink_once(SymlinkPath::<a href="#type-any_path">any_path()</a>) -&gt; <a href="#type-any_path">any_path()</a></tt><br></p>
+<p> </p>
+</div><p>Resolves the specified symbolic link once: returns the entry (potentially
+ another symbolic link) it points to.
+</p>
+
 <h3 class="function"><a name="resolve_type_of-1">resolve_type_of/1</a></h3>
 <div class="spec">
 <p><tt>resolve_type_of(Path::<a href="#type-any_path">any_path()</a>) -&gt; <a href="#type-entry_type">entry_type()</a></tt><br></p>
@@ -2306,8 +2384,8 @@ which all the specified keywords (the keys of the translation table) have been
 replaced with their associated value (i.e. the value in table corresponding to 
 that key).</p>
 
- <p>Ex: file_utils:update_with_keywords( "original.txt", "updated.txt", table:new(  
-[{"hello", "goodbye"}, {"Blue", "Red"}]).</p>
+ <p>For example file_utils:update_with_keywords( "original.txt", "updated.txt",           
+table:new([{"hello", "goodbye"}, {"Blue", "Red"}])).</p>
 
  Note that the resulting file will be written with no additional encoding.
 </p>
@@ -2322,7 +2400,7 @@ with the specified encoding), in which all the specified keywords (the keys of
 the translation table) have been replaced with their associated value 
 (that is the value in table corresponding to that key).</p>
 
- Ex: file_utils:update_with_keywords("original.txt", "updated.txt",
+ For example file_utils:update_with_keywords("original.txt", "updated.txt",
    table:new([{"hello", "goodbye"}, {"Blue", "Red"}])).
 </p>
 

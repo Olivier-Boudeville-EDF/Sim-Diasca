@@ -89,9 +89,21 @@ corresponding argument entry is {'-color', [["blue", "red"], ["yellow"]]}
 <p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-format_string">format_string()</a></h3>
+<p><tt>format_string() = <a href="text_utils.html#type-format_string">text_utils:format_string()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-format_values">format_values()</a></h3>
+<p><tt>format_values() = <a href="text_utils.html#type-format_values">text_utils:format_values()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-option_spec">option_spec()</a></h3>
 <p><tt>option_spec() = {<a href="#type-actual_command_line_option">actual_command_line_option()</a>, <a href="#type-value_spec">value_spec()</a>}</tt></p>
 <p> A specification of how many values are expected after specified option.</p>
+
+<h3 class="typedecl"><a name="type-return_code">return_code()</a></h3>
+<p><tt>return_code() = <a href="system_utils.html#type-return_code">system_utils:return_code()</a></tt></p>
+
 
 <h3 class="typedecl"><a name="type-unique_argument_table">unique_argument_table()</a></h3>
 <p><tt>unique_argument_table() = <a href="list_table.html#type-list_table">list_table:list_table</a>(<a href="#type-command_line_option">command_line_option()</a>, <a href="#type-command_line_values">command_line_values()</a>)</tt></p>
@@ -123,6 +135,10 @@ a corresponding argument table would contain following entries:
 
 <h2><a name="index">Function Index</a></h2>
 <table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#argument_table_to_string-1">argument_table_to_string/1</a></td><td>Returns a textual representation of the specified argument table.</td></tr>
+<tr><td valign="top"><a href="#error-2">error/2</a></td><td>Reports a fatal error, typically in an script/escript context, with the 
+specified error return code (expected to be non-null).</td></tr>
+<tr><td valign="top"><a href="#error_fmt-3">error_fmt/3</a></td><td>Reports a formatted, fatal error, typically in an script/escript context, 
+with the specified error return code (expected to be non-null).</td></tr>
 <tr><td valign="top"><a href="#extract_command_arguments_for_option-1">extract_command_arguments_for_option/1</a></td><td>Extracts, for specified command-line option (if any was specified; 
 otherwise returns 'undefined') its various in-order lists of associated 
 values, from the arguments specified to this executable.</td></tr>
@@ -168,6 +184,30 @@ option).</td></tr>
 <p><tt>argument_table_to_string(ArgTable::<a href="#type-argument_table">argument_table()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
 <p> </p>
 </div><p>Returns a textual representation of the specified argument table.</p>
+
+<h3 class="function"><a name="error-2">error/2</a></h3>
+<div class="spec">
+<p><tt>error(ErrorCode::<a href="#type-return_code">return_code()</a>, Message::<a href="#type-ustring">ustring()</a>) -&gt; no_return()</tt><br></p>
+<p> </p>
+</div><p><p>Reports a fatal error, typically in an script/escript context, with the 
+specified error return code (expected to be non-null).</p>
+
+ <p>The message shall preferably not begin with an uppercase letter.</p>
+
+ Halts on error the current program.
+</p>
+
+<h3 class="function"><a name="error_fmt-3">error_fmt/3</a></h3>
+<div class="spec">
+<p><tt>error_fmt(ErrorCode::<a href="#type-return_code">return_code()</a>, Format::<a href="#type-format_string">format_string()</a>, Values::<a href="#type-format_values">format_values()</a>) -&gt; no_return()</tt><br></p>
+<p> </p>
+</div><p><p>Reports a formatted, fatal error, typically in an script/escript context, 
+with the specified error return code (expected to be non-null).</p>
+
+ <p>The message shall preferably not begin with an uppercase letter.</p>
+
+ Halts on error the current program.
+</p>
 
 <h3 class="function"><a name="extract_command_arguments_for_option-1">extract_command_arguments_for_option/1</a></h3>
 <div class="spec">
@@ -324,7 +364,7 @@ found, an error is raised.</p>
 </div><p><p>Returns the in-order list of the arguments that were directly (that is 
 not in the context of an option) specified on the command-line.</p>
 
- Note: generally the extract_non_option_command_argument/{0,1} functions are
+ Note: generally the extract_optionless_command_arguments/{0,1} functions are
  more relevant to use.
 </p>
 

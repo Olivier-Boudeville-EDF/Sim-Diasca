@@ -194,6 +194,10 @@ be of the expected type (as long as it has not been checked).</p>
 <p><tt>field_name() = atom()</tt></p>
 <p> The name of a field of a record.</p>
 
+<h3 class="typedecl"><a name="type-finite_second_time_out">finite_second_time_out()</a></h3>
+<p><tt>finite_second_time_out() = <a href="time_utils.html#type-finite_second_time_out">time_utils:finite_second_time_out()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-fixme">fixme()</a></h3>
 <p><tt>fixme() = any()</tt></p>
 <p> Useful as a temporary type placeholder, during development (easy to grep and
@@ -210,7 +214,7 @@ be of the expected type (as long as it has not been checked).</p>
 <h3 class="typedecl"><a name="type-four_digit_version">four_digit_version()</a></h3>
 <p><tt>four_digit_version() = {<a href="#type-version_number">version_number()</a>, <a href="#type-version_number">version_number()</a>, <a href="#type-version_number">version_number()</a>, <a href="#type-version_number">version_number()</a>}</tt></p>
 <p> Version as a quadruplet of integers, typically {MajorVersion, MinorVersion,
- ReleaseVersion, SubreleaseVersion}.</p>
+ ReleaseVersion, BuildVersion}.</p>
 
 <h3 class="typedecl"><a name="type-function_name">function_name()</a></h3>
 <p><tt>function_name() = atom()</tt></p>
@@ -246,6 +250,10 @@ versus a value not defined at all.</p>
 <h3 class="typedecl"><a name="type-module_name">module_name()</a></h3>
 <p><tt>module_name() = atom()</tt></p>
 <p> To distinguish with the built-in type, which can be a parameterised module.</p>
+
+<h3 class="typedecl"><a name="type-ms_period">ms_period()</a></h3>
+<p><tt>ms_period() = <a href="time_utils.html#type-ms_period">time_utils:ms_period()</a></tt></p>
+
 
 <h3 class="typedecl"><a name="type-non_null_count">non_null_count()</a></h3>
 <p><tt>non_null_count() = pos_integer()</tt></p>
@@ -311,7 +319,7 @@ or that may not be set at all.</p>
 
 <h3 class="typedecl"><a name="type-unchecked_data">unchecked_data()</a></h3>
 <p><tt>unchecked_data() = term()</tt></p>
-
+<p> Designates data whose type and value have not been checked yet.</p>
 
 <h3 class="typedecl"><a name="type-user_data">user_data()</a></h3>
 <p><tt>user_data() = <a href="#type-external_data">external_data()</a></tt></p>
@@ -331,7 +339,7 @@ or that may not be set at all.</p>
 
 <h3 class="typedecl"><a name="type-version_number">version_number()</a></h3>
 <p><tt>version_number() = non_neg_integer()</tt></p>
-
+<p> A component of a version.</p>
 
 <h3 class="typedecl"><a name="type-void">void()</a></h3>
 <p><tt>void() = any() | void</tt></p>
@@ -389,10 +397,10 @@ returns either first_bigger, second_bigger, or equal.</td></tr>
 <tr><td valign="top"><a href="#display-1">display/1</a></td><td>Displays specified string on the standard output of the console, ensuring
  as much as possible this message is output synchronously, so that it can be
  output on the console even if the virtual machine is to crash just after.</td></tr>
-<tr><td valign="top"><a href="#display-2">display/2</a></td><td>Displays specified format string filled according to specified values on
- the standard output of the console, ensuring as much as possible this message
- is output synchronously, so that it can be output on the console even if the
- virtual machine is to crash just after.</td></tr>
+<tr><td valign="top"><a href="#display-2">display/2</a></td><td>Displays the specified format string filled according to the specified
+ values on the standard output of the console, ensuring as much as possible
+ that this message is output synchronously, so that it can be output on the
+ console even if the virtual machine is to crash just after.</td></tr>
 <tr><td valign="top"><a href="#display_error-1">display_error/1</a></td><td>Displays specified string on the standard error output of the console,
  ensuring as much as possible this message is output synchronously, so that it
  can be output on the console even if the virtual machine is to crash just
@@ -403,9 +411,10 @@ returns either first_bigger, second_bigger, or equal.</td></tr>
  if the virtual machine is to crash just after.</td></tr>
 <tr><td valign="top"><a href="#display_process_info-1">display_process_info/1</a></td><td>Displays information about the process(es) identified by specified
  PID(s).</td></tr>
-<tr><td valign="top"><a href="#display_timed-2">display_timed/2</a></td><td>Displays specified string on the standard output of the console, ensuring
- as much as possible this message is output synchronously, so that it can be
- output on the console even if the virtual machine is to crash just after.</td></tr>
+<tr><td valign="top"><a href="#display_timed-2">display_timed/2</a></td><td>Displays the specified string on the standard output of the console,
+ ensuring as much as possible that this message is output synchronously, so
+ that it can be output on the console even if the virtual machine is to crash
+ just after.</td></tr>
 <tr><td valign="top"><a href="#display_timed-3">display_timed/3</a></td><td>Displays specified format string filled according to specified values on
  the standard output of the console, ensuring as much as possible this message
  is output synchronously, so that it can be output on the console even if the
@@ -422,11 +431,12 @@ returns either first_bigger, second_bigger, or equal.</td></tr>
  local or not), provided it is still alive (otherwise returns undefined).</td></tr>
 <tr><td valign="top"><a href="#get_process_size-1">get_process_size/1</a></td><td>Returns the total size in (RAM) memory used by specified (local, alive) 
 process, in bytes: this includes call stack, heap, and internal structures.</td></tr>
-<tr><td valign="top"><a href="#get_process_specific_value-0">get_process_specific_value/0</a></td><td>Returns a value (a strictly positive integer) expected to be as much as 
-possible specific to the current (Erlang) process.</td></tr>
-<tr><td valign="top"><a href="#get_process_specific_value-1">get_process_specific_value/1</a></td><td>Returns a value (a strictly positive integer) expected to be as much as 
-possible specific to the specified (Erlang) PID.</td></tr>
-<tr><td valign="top"><a href="#get_process_specific_value-2">get_process_specific_value/2</a></td><td>Returns a (Erlang) process-specific value in [Min,Max[.</td></tr>
+<tr><td valign="top"><a href="#get_process_specific_value-0">get_process_specific_value/0</a></td><td>Returns a stable, reproducible value (a strictly positive integer) 
+expected to be as much as possible specific to the current (Erlang) process.</td></tr>
+<tr><td valign="top"><a href="#get_process_specific_value-1">get_process_specific_value/1</a></td><td>Returns a stable, reproducible value (a strictly positive integer) 
+expected to be as much as possible specific to the specified (Erlang) PID.</td></tr>
+<tr><td valign="top"><a href="#get_process_specific_value-2">get_process_specific_value/2</a></td><td>Returns an (Erlang), non-reproducible, process-specific value in 
+[Min,Max[.</td></tr>
 <tr><td valign="top"><a href="#get_unix_process_specific_string-0">get_unix_process_specific_string/0</a></td><td>Returns a string that should be unique for the current UNIX process (of 
 the VM), based on its operating system PID and on millisecond-precise time.</td></tr>
 <tr><td valign="top"><a href="#identity-1">identity/1</a></td><td>Identity function: returns its argument as it is.</td></tr>
@@ -478,6 +488,12 @@ WaitedSenderPid}.</td></tr>
 <tr><td valign="top"><a href="#wait_for_acks-5">wait_for_acks/5</a></td><td>Waits until receiving from all expected senders the specified 
 acknowledgement message, expected to be in the form of {AckReceiveAtom, 
 WaitedSenderPid}, ensuring a check is performed at least at specified period.</td></tr>
+<tr><td valign="top"><a href="#wait_for_acks_nothrow-3">wait_for_acks_nothrow/3</a></td><td>Waits until receiving from all the expected senders the specified 
+acknowledgement message, expected to be in the form of {AckReceiveAtom, 
+WaitedSenderPid}.</td></tr>
+<tr><td valign="top"><a href="#wait_for_acks_nothrow-4">wait_for_acks_nothrow/4</a></td><td>Waits until receiving from all the expected senders the specified 
+acknowledgement message, expected to be in the form of {AckReceiveAtom, 
+WaitedSenderPid}, ensuring a check is performed at least at specified period..</td></tr>
 <tr><td valign="top"><a href="#wait_for_many_acks-4">wait_for_many_acks/4</a></td><td>Waits until receiving from all expected (numerous) senders the specified 
 acknowledgement message.</td></tr>
 <tr><td valign="top"><a href="#wait_for_many_acks-5">wait_for_many_acks/5</a></td><td>Waits until receiving from all expected (numerous) senders the specified 
@@ -640,10 +656,10 @@ returns either first_bigger, second_bigger, or equal.</p>
 <div class="spec">
 <p><tt>display(Format::<a href="#type-format_string">format_string()</a>, Values::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p>Displays specified format string filled according to specified values on
- the standard output of the console, ensuring as much as possible this message
- is output synchronously, so that it can be output on the console even if the
- virtual machine is to crash just after.
+</div><p>Displays the specified format string filled according to the specified
+ values on the standard output of the console, ensuring as much as possible
+ that this message is output synchronously, so that it can be output on the
+ console even if the virtual machine is to crash just after.
 </p>
 
 <h3 class="function"><a name="display_error-1">display_error/1</a></h3>
@@ -678,9 +694,10 @@ returns either first_bigger, second_bigger, or equal.</p>
 <div class="spec">
 <p><tt>display_timed(Message::<a href="#type-ustring">ustring()</a>, TimeOut::<a href="#type-time_out">time_out()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p>Displays specified string on the standard output of the console, ensuring
- as much as possible this message is output synchronously, so that it can be
- output on the console even if the virtual machine is to crash just after.
+</div><p>Displays the specified string on the standard output of the console,
+ ensuring as much as possible that this message is output synchronously, so
+ that it can be output on the console even if the virtual machine is to crash
+ just after.
 </p>
 
 <h3 class="function"><a name="display_timed-3">display_timed/3</a></h3>
@@ -768,31 +785,23 @@ process, in bytes: this includes call stack, heap, and internal structures.</p>
 <div class="spec">
 <p><tt>get_process_specific_value() -&gt; pos_integer()</tt><br></p>
 <p> </p>
-</div><p><p>Returns a value (a strictly positive integer) expected to be as much as 
-possible specific to the current (Erlang) process.</p>
+</div><p><p>Returns a stable, reproducible value (a strictly positive integer) 
+expected to be as much as possible specific to the current (Erlang) process.</p>
 
- <p>Mostly based on its PID.</p>
-
- <p>Useful for example when a large number of similar processes try to access to 
-the same resource (ex: a set of file descriptors) at the same time: they can 
-rely on some random waiting based on that process-specific value in order to 
-smooth the accesses over time.</p>
-
- We could imagine taking into account as well the current time, the process
- reductions, etc. or generating a reference.
+ Refer to get_process_specific_value/1 for further details, and to
+ get_process_specific_value/1 to generate a value in a given range.
 </p>
 
 <h3 class="function"><a name="get_process_specific_value-1">get_process_specific_value/1</a></h3>
 <div class="spec">
 <p><tt>get_process_specific_value(Pid::pid()) -&gt; pos_integer()</tt><br></p>
 <p> </p>
-</div><p><p>Returns a value (a strictly positive integer) expected to be as much as 
-possible specific to the specified (Erlang) PID.</p>
+</div><p><p>Returns a stable, reproducible value (a strictly positive integer) 
+expected to be as much as possible specific to the specified (Erlang) PID.</p>
 
- <p>Useful for example when a large number of similar processes try to access to 
-the same resource (ex: a set of file descriptors) at the same time: they can 
-rely on some random waiting based on that process-specific value in order to 
-smooth the accesses over time.</p>
+ <p>This value is meant to be process-specific *and* reproducible, that is 
+returning always the same value for the same PID. This may be useful when 
+having to generate an integer identifier corresponding to a given process.</p>
 
  We could imagine taking into account as well the current time, the process
  reductions, etc. or generating a reference.
@@ -802,7 +811,14 @@ smooth the accesses over time.</p>
 <div class="spec">
 <p><tt>get_process_specific_value(Min::integer(), Max::integer()) -&gt; integer()</tt><br></p>
 <p> </p>
-</div><p>Returns a (Erlang) process-specific value in [Min,Max[.</p>
+</div><p><p>Returns an (Erlang), non-reproducible, process-specific value in 
+[Min,Max[.</p>
+
+ Useful for example when a large number of similar processes try to access to
+ the same resource (ex: a set of file descriptors) at the same time: they can
+ rely on some random waiting based on that process-specific value in order to
+ smooth the accesses over time. Reproducibility does not matter here.
+</p>
 
 <h3 class="function"><a name="get_unix_process_specific_string-0">get_unix_process_specific_string/0</a></h3>
 <div class="spec">
@@ -1079,7 +1095,7 @@ time-out can be disabled if set to 'infinity').</p>
 
 <h3 class="function"><a name="wait_for_acks-5">wait_for_acks/5</a></h3>
 <div class="spec">
-<p><tt>wait_for_acks(WaitedSenders::[pid()], MaxDurationInSeconds::<a href="#type-time_out">time_out()</a>, Period::<a href="#type-milliseconds">milliseconds()</a>, AckReceiveAtom::atom(), ThrowAtom::atom()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>wait_for_acks(WaitedSenders::[pid()], MaxDurationInSeconds::<a href="#type-time_out">time_out()</a>, Period::<a href="#type-ms_period">ms_period()</a>, AckReceiveAtom::atom(), ThrowAtom::atom()) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p><p>Waits until receiving from all expected senders the specified 
 acknowledgement message, expected to be in the form of {AckReceiveAtom, 
@@ -1090,9 +1106,39 @@ WaitedSenderPid}, ensuring a check is performed at least at specified period.</p
  See wait_for_many_acks/{4,5} if having a large number of senders waited for.
 </p>
 
+<h3 class="function"><a name="wait_for_acks_nothrow-3">wait_for_acks_nothrow/3</a></h3>
+<div class="spec">
+<p><tt>wait_for_acks_nothrow(WaitedSenders::[pid()], MaxDurationInSeconds::<a href="#type-finite_second_time_out">finite_second_time_out()</a>, AckReceiveAtom::atom()) -&gt; [pid()]</tt><br></p>
+<p> </p>
+</div><p><p>Waits until receiving from all the expected senders the specified 
+acknowledgement message, expected to be in the form of {AckReceiveAtom, 
+WaitedSenderPid}.</p>
+
+ <p>Returns a (possibly empty) list of the PIDs of the senders that failed to 
+answer within the specified time-out.</p>
+
+ See wait_for_many_acks/{4,5} if having a large number of senders that are
+ waited for.
+</p>
+
+<h3 class="function"><a name="wait_for_acks_nothrow-4">wait_for_acks_nothrow/4</a></h3>
+<div class="spec">
+<p><tt>wait_for_acks_nothrow(WaitedSenders::[pid()], MaxDurationInSeconds::<a href="#type-finite_second_time_out">finite_second_time_out()</a>, Period::<a href="#type-ms_period">ms_period()</a>, AckReceiveAtom::atom()) -&gt; [pid()]</tt><br></p>
+<p> </p>
+</div><p><p>Waits until receiving from all the expected senders the specified 
+acknowledgement message, expected to be in the form of {AckReceiveAtom, 
+WaitedSenderPid}, ensuring a check is performed at least at specified period..</p>
+
+ <p>Returns a (possibly empty) list of the PIDs of the senders that failed to 
+answer within the specified time-out.</p>
+
+ See wait_for_many_acks/{4,5} if having a large number of senders that are
+ waited for.
+</p>
+
 <h3 class="function"><a name="wait_for_many_acks-4">wait_for_many_acks/4</a></h3>
 <div class="spec">
-<p><tt>wait_for_many_acks(WaitedSenders::<a href="#type-set">set</a>(pid()), MaxDurationInSeconds::<a href="#type-milliseconds">milliseconds()</a>, AckReceiveAtom::atom(), ThrowAtom::atom()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>wait_for_many_acks(WaitedSenders::<a href="#type-set">set</a>(pid()), MaxDurationInSeconds::<a href="#type-finite_second_time_out">finite_second_time_out()</a>, AckReceiveAtom::atom(), ThrowAtom::atom()) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p><p>Waits until receiving from all expected (numerous) senders the specified 
 acknowledgement message.</p>
@@ -1105,7 +1151,7 @@ acknowledgement message.</p>
 
 <h3 class="function"><a name="wait_for_many_acks-5">wait_for_many_acks/5</a></h3>
 <div class="spec">
-<p><tt>wait_for_many_acks(WaitedSenders::<a href="#type-set">set</a>(pid()), MaxDurationInSeconds::<a href="#type-milliseconds">milliseconds()</a>, Period::<a href="#type-milliseconds">milliseconds()</a>, AckReceiveAtom::atom(), ThrowAtom::atom()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>wait_for_many_acks(WaitedSenders::<a href="#type-set">set</a>(pid()), MaxDurationInSeconds::<a href="#type-finite_second_time_out">finite_second_time_out()</a>, Period::<a href="#type-ms_period">ms_period()</a>, AckReceiveAtom::atom(), ThrowAtom::atom()) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p><p>Waits until receiving from all expected (numerous) senders the specified 
 acknowledgement message.</p>

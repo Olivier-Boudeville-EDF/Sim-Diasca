@@ -102,8 +102,8 @@ drawn up to once.</td></tr>
 <tr><td valign="top"><a href="#ensure_atoms-1">ensure_atoms/1</a></td><td>Ensures that the specified argument is a list of atoms: encloses any atom
  in a list of its own if not already a list, or check that this list is only
  populated of atoms; respects any original order.</td></tr>
-<tr><td valign="top"><a href="#ensure_is_once_in-2">ensure_is_once_in/2</a></td><td>Ensures that specified element is included once in specified unordered 
-list (supposed to contain it already up to once).</td></tr>
+<tr><td valign="top"><a href="#ensure_is_once_in-2">ensure_is_once_in/2</a></td><td>Ensures that the specified element is included once in the specified 
+unordered list (supposed to contain it already up to once).</td></tr>
 <tr><td valign="top"><a href="#ensure_list-1">ensure_list/1</a></td><td>Ensures that the specified argument is a list: encloses it in a list of 
 its own if not already a list; respects any original order.</td></tr>
 <tr><td valign="top"><a href="#ensure_pids-1">ensure_pids/1</a></td><td>Ensures that the specified argument is a list of PIDs: encloses any PID
@@ -205,7 +205,7 @@ in the kept elements is preserved.</td></tr>
 <p> </p>
 </div><p><p>Adds the specified elements as heads of the specified lists.</p>
 
- <p>Ex: add_as_heads([a,b,c], [[u,v], [], [w]]) = [[a,u,v], [b], [c,w]].</p>
+ <p>For example: add_as_heads([a,b,c], [[u,v], [], [w]]) = [[a,u,v], [b], [c,w]].</p>
 
  Of course the two lists shall have the same length.
 </p>
@@ -217,7 +217,7 @@ in the kept elements is preserved.</td></tr>
 </div><p><p>Appends specified element at the end of specified list, without changing 
 the order of the list.</p>
 
- <p>Ex: append_at_end(d, [a,b,c]) returns [a,b,c,d].</p>
+ <p>For example: append_at_end(d, [a,b,c]) returns [a,b,c,d].</p>
 
  Note: usually adding elements at the end of a list should be avoided, as it is
  costlier than adding them at head.
@@ -257,7 +257,7 @@ the order of the list.</p>
 </div><p><p>Returns the cartesian product of the specified lists (collected in a 
 top-level list).</p>
 
- Ex: cartesian_product([[a,b,c], [d,e], [f]]) =
+ For example: cartesian_product([[a,b,c], [d,e], [f]]) =
      [[a,d,f], [a,e,f], [b,d,f], [b,e,f], [c,d,f], [c,e,f]]
 </p>
 
@@ -376,7 +376,7 @@ specified number of sublists (hence all sublists will have the same length).</p>
 
  <p>The order in each sublist is preserved.</p>
 
- Ex: dispatch_in(3, [a, b, c, d, e, f]) = [[a,d], [b,e], [c,f]].
+ For example: dispatch_in(3, [a, b, c, d, e, f]) = [[a,d], [b,e], [c,f]].
 </p>
 
 <h3 class="function"><a name="draw_element-1">draw_element/1</a></h3>
@@ -409,8 +409,8 @@ be chosen according to the probability associated to each element.</p>
 floating-point values) defined relatively to each other (they do not have to 
 sum up to 1.0).</p>
 
- <p>Ex: ElementList = [{first,1}, {second,2}, {third,1}] is excepted to return on 
-average 'second' twice as frequently as 'first' or 'third'.</p>
+ <p>For example: ElementList = [{first,1}, {second,2}, {third,1}] is expected to 
+return on average 'second' twice as frequently as 'first' or 'third'.</p>
 
  <p>Using [{first,1}, {second,0}, {third,1}] instead would mean that 'second' 
 would never be drawn.</p>
@@ -454,10 +454,10 @@ drawn up to once.</p>
 <div class="spec">
 <p><tt>ensure_is_once_in(Elem::term(), List::list()) -&gt; list()</tt><br></p>
 <p> </p>
-</div><p><p>Ensures that specified element is included once in specified unordered 
-list (supposed to contain it already up to once).</p>
+</div><p><p>Ensures that the specified element is included once in the specified 
+unordered list (supposed to contain it already up to once).</p>
 
- Note: refer to set_utils for a more proper implementation of set.
+ Note: refer to set_utils for a more proper implementation of sets.
 </p>
 
 <h3 class="function"><a name="ensure_list-1">ensure_list/1</a></h3>
@@ -506,7 +506,7 @@ its own if not already a list; respects any original order.</p>
 
  <p>Returns that element and the resulting, shrunk list.</p>
 
- Ex: {b, [a, c]} = extract_element_at([ a, b, c], 2).
+ For example: {b, [a, c]} = extract_element_at([ a, b, c], 2).
 </p>
 
 <h3 class="function"><a name="extract_element_if_existing-2">extract_element_if_existing/2</a></h3>
@@ -563,7 +563,7 @@ provides more control than a recursive counterpart.</p>
 
  <p>Element order is preserved.</p>
 
- <p>Ex: if L=[ [1], [2,[3,4]] ], lists:flatten(L) yields [1,2,3,4] whereas 
+ <p>For example: if L=[[1], [2,[3,4]]], lists:flatten(L) yields [1,2,3,4] whereas 
 list_utils:flatten_once(L) should yield [1,2,[3,4]].</p>
 
  See text_utils:concatenate/1 for string-related operations.
@@ -576,7 +576,7 @@ list_utils:flatten_once(L) should yield [1,2,[3,4]].</p>
 </div><p><p>Flattens a list of tuples into a simple list of their elements, without 
 tuples and in the same order.</p>
 
- Ex: flatten_tuples([{1, 2, 3}, {4, 5, 6}]) = [1, 2, 3, 4, 5, 6])
+ For example: flatten_tuples([{1, 2, 3}, {4, 5, 6}]) = [1, 2, 3, 4, 5, 6])
 </p>
 
 <h3 class="function"><a name="get_all_permutations-1">get_all_permutations/1</a></h3>
@@ -585,8 +585,8 @@ tuples and in the same order.</p>
 <p> </p>
 </div><p><p>Returns a list of all the permutations of the specified list.</p>
 
- Ex: get_all_permutations([a,b,c]) = [ [c,b,a], [c,a,b], [a,c,b], [b,c,a],
-                                       [b,a,c], [a,b,c] ]
+ For example: get_all_permutations([a,b,c]) =
+    [ [c,b,a], [c,a,b], [a,c,b], [b,c,a], [b,a,c], [a,b,c] ]
 </p>
 
 <h3 class="function"><a name="get_duplicates-1">get_duplicates/1</a></h3>
@@ -603,7 +603,7 @@ present there only once, will not be referenced in the returned list; use
 count_occurrences/1 if wanting to include the terms that are listed only once 
 each.</p>
 
- <p>Ex: L = [a,a,b,b,b,c,d,d],     
+ <p>For example: L = [a,a,b,b,b,c,d,d],              
 [{b,3},{d,2},{a,2}] = list_utils:get_duplicates(L)</p>
 
  Use lists:keysort(2, list_utils:get_duplicates(L)) to sort duplicates by
@@ -640,7 +640,7 @@ the) specified element in the specified list.</p>
 
  <p>Throws an exception if the element is not found.</p>
 
- Ex: 3 = get_index_of( bar, [ foo, ugh, bar, baz ] )
+ For example: 3 = get_index_of(bar, [foo, ugh, bar, baz])
 </p>
 
 <h3 class="function"><a name="get_last_element-1">get_last_element/1</a></h3>
@@ -663,7 +663,7 @@ element suggests a bad code design.</p>
 the) specified element in the specified list, or 'undefined' if the element is 
 not found.</p>
 
- Ex:
+ For example:
    3 = get_maybe_index_of(bar, [foo, ugh, bar, baz])
    undefined = get_maybe_index_of(xxx, [foo, ugh, bar, baz])
 </p>
@@ -676,7 +676,7 @@ not found.</p>
 
  <p>The last group may have less than Count elements.</p>
 
- Ex: [[a,b], [c,d], [e]] = group_by(_Count=2, [a,b,c,d,e])
+ For example: [[a,b], [c,d], [e]] = group_by(_Count=2, [a,b,c,d,e])
 </p>
 
 <h3 class="function"><a name="has_duplicates-1">has_duplicates/1</a></h3>
@@ -694,7 +694,7 @@ not found.</p>
 </div><p><p>Returns a pair made of the N first elements ("heads") of the specified 
 list, and of its remainder (tail).</p>
 
- <p>Ex: heads([a,b,c,d,e], _N=3) = {[a,b,c],[d,e]}.</p>
+ <p>For example: heads([a,b,c,d,e], _N=3) = {[a,b,c],[d,e]}.</p>
 
  Like list:sublist/1 yet returning the tail (list:nthtail/1) as well.
 </p>
@@ -707,7 +707,7 @@ list, and of its remainder (tail).</p>
 the specified element at each possible place in L (including before and 
 after).</p>
 
- Ex: insert_at_all_places(a, [b,c,d]) =
+ For example: insert_at_all_places(a, [b,c,d]) =
                   [ [b,c,d,a], [b,c,a,d], [b,a,c,d], [a,b,c,d] ]
 </p>
 
@@ -717,7 +717,7 @@ after).</p>
 <p> </p>
 </div><p><p>Inserts specified element at specified position in the specified list.</p>
 
- For example, insert_element_at(foo, [a, b, c, d], 3) will return
+ For example: insert_element_at(foo, [a, b, c, d], 3) will return
  [a, b, foo, c, d].
 </p>
 
@@ -779,7 +779,8 @@ compared to random_permute/1.</p>
 </div><p><p>Reconstructs a list of tuples of specified size from the specified flat 
 list.</p>
 
- Ex: reconstruct_tuples([ 1, 2, 3, 4, 5, 6 ], 3) = [{1, 2, 3}, {4, 5, 6}]
+ For example: reconstruct_tuples([1, 2, 3, 4, 5, 6], 3) =
+                            [{1, 2, 3}, {4, 5, 6}]
 </p>
 
 <h3 class="function"><a name="remove_element_at-2">remove_element_at/2</a></h3>
@@ -832,7 +833,7 @@ T;</p>
 <p> </p>
 </div><p><p>Removes the specified number first elements.</p>
 
- Ex: [c, d, e] = list_utils:remove_first_elements([a, b, c, d, e], 2).
+ For example: [c, d, e] = list_utils:remove_first_elements([a, b, c, d, e], 2).
 </p>
 
 <h3 class="function"><a name="remove_first_occurrence-2">remove_first_occurrence/2</a></h3>
@@ -882,7 +883,7 @@ returned):</p>
 reverse order 
 - the second contains the remaining elements (if any)</p>
 
- Ex: split_at(3, [a, b, c, d, e]) = {[c, b, a], [d, e]}
+ For example: split_at(3, [a, b, c, d, e]) = {[c, b, a], [d, e]}
 </p>
 
 <h3 class="function"><a name="subtract_all_duplicates-2">subtract_all_duplicates/2</a></h3>
@@ -918,7 +919,7 @@ that they are unique (all their next duplicates have been removed).</p>
 
  <p>No specific order is respected in the returned list.</p>
 
- Ex: if L = [1,2,3,2,2,4,5,5,4,6,6,5], then uniquify(L) is:
+ For example: if L = [1,2,3,2,2,4,5,5,4,6,6,5], then uniquify(L) is:
  [1,2,3,4,5,6].
 </p>
 
@@ -932,7 +933,7 @@ in the kept elements is preserved.</p>
 
  <p>Expected to be a bit slower than uniquify/1.</p>
 
- Ex: if L = [1,3,2,3,2,2,4,5,5,4,6,6,5], then uniquify_ordered(L) is:
+ For example: if L = [1,3,2,3,2,2,4,5,5,4,6,6,5], then uniquify_ordered(L) is:
  [1,3,2,4,5,6].
 </p>
 

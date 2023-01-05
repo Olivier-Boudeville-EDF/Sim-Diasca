@@ -68,6 +68,10 @@
 <p><tt>date_in_year() = {<a href="#type-canonical_month">canonical_month()</a>, <a href="#type-canonical_day">canonical_day()</a>}</tt></p>
 <p> A calendar date within an (implicit) year.</p>
 
+<h3 class="typedecl"><a name="type-day">day()</a></h3>
+<p><tt>day() = <a href="unit_utils.html#type-day">unit_utils:day()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-day_duration">day_duration()</a></h3>
 <p><tt>day_duration() = <a href="#type-days">days()</a></tt></p>
 <p> A duration expressed as a number of full days (ex: one way to express an age).</p>
@@ -89,6 +93,14 @@
 <p> Day/Hour/Minute/Second duration, for example used with MTTF (not necessarily
  in a canonical form, for example more than 24 hours or 60 minutes can be
  specified).</p>
+
+<h3 class="typedecl"><a name="type-finite_second_time_out">finite_second_time_out()</a></h3>
+<p><tt>finite_second_time_out() = <a href="#type-seconds">seconds()</a></tt></p>
+<p> An actual, finite time-out.</p>
+
+<h3 class="typedecl"><a name="type-finite_time_out">finite_time_out()</a></h3>
+<p><tt>finite_time_out() = <a href="#type-milliseconds">milliseconds()</a></tt></p>
+<p> An actual, finite time-out.</p>
 
 <h3 class="typedecl"><a name="type-float_seconds">float_seconds()</a></h3>
 <p><tt>float_seconds() = <a href="unit_utils.html#type-float_seconds">unit_utils:float_seconds()</a></tt></p>
@@ -167,6 +179,12 @@
 <p><tt>precise_timestamp() = {<a href="#type-megaseconds">megaseconds()</a>, <a href="#type-seconds">seconds()</a>, <a href="#type-microseconds">microseconds()</a>}</tt></p>
 
 
+<h3 class="typedecl"><a name="type-second_time_out">second_time_out()</a></h3>
+<p><tt>second_time_out() = infinity | <a href="#type-finite_second_time_out">finite_second_time_out()</a></tt></p>
+<p><p> Any kind of time-out, finite or not.</p>
+
+ Cannot find the definition of the built-in timeout() type.</p>
+
 <h3 class="typedecl"><a name="type-seconds">seconds()</a></h3>
 <p><tt>seconds() = <a href="unit_utils.html#type-seconds">unit_utils:seconds()</a></tt></p>
 
@@ -176,12 +194,14 @@
 <p> A time in the day; used to be {hour(), minute(), second()} or calendar:time().</p>
 
 <h3 class="typedecl"><a name="type-time_frame">time_frame()</a></h3>
-<p><tt>time_frame() = {Start::<a href="#type-timestamp">timestamp()</a>, End::<a href="#type-timestamp">timestamp()</a>}</tt></p>
+<p><tt>time_frame() = {Begin::<a href="#type-timestamp">timestamp()</a>, End::<a href="#type-timestamp">timestamp()</a>}</tt></p>
 <p> A time frame.</p>
 
 <h3 class="typedecl"><a name="type-time_out">time_out()</a></h3>
-<p><tt>time_out() = infinity | <a href="#type-milliseconds">milliseconds()</a></tt></p>
-<p> Cannot find the definition of the built-in timeout() type.</p>
+<p><tt>time_out() = infinity | <a href="#type-finite_time_out">finite_time_out()</a></tt></p>
+<p><p> Any kind of time-out, finite or not.</p>
+
+ Cannot find the definition of the built-in timeout() type.</p>
 
 <h3 class="typedecl"><a name="type-timestamp">timestamp()</a></h3>
 <p><tt>timestamp() = {<a href="#type-date">date()</a>, <a href="#type-time">time()</a>}</tt></p>
@@ -197,7 +217,7 @@
  considered common to most users. See also: date/0.</p>
 
 <h3 class="typedecl"><a name="type-user_time_frame">user_time_frame()</a></h3>
-<p><tt>user_time_frame() = {Start::<a href="#type-timestamp">timestamp()</a> | <a href="#type-date">date()</a>, End::<a href="#type-timestamp">timestamp()</a> | <a href="#type-date">date()</a>}</tt></p>
+<p><tt>user_time_frame() = {Begin::<a href="#type-timestamp">timestamp()</a> | <a href="#type-date">date()</a>, End::<a href="#type-timestamp">timestamp()</a> | <a href="#type-date">date()</a>}</tt></p>
 <p> Typically a user-defined time frame, to be transformed into a legit
  time_frame/0.</p>
 
@@ -207,7 +227,7 @@
 
 <h3 class="typedecl"><a name="type-week_day">week_day()</a></h3>
 <p><tt>week_day() = monday | tuesday | wednesday | thursday | friday | saturday | sunday</tt></p>
-<p> User-friendly atom-based version of day_index/0.</p>
+
 
 <h3 class="typedecl"><a name="type-weeks">weeks()</a></h3>
 <p><tt>weeks() = <a href="unit_utils.html#type-weeks">unit_utils:weeks()</a></tt></p>
@@ -228,14 +248,15 @@
 <tr><td valign="top"><a href="#check_canonical_date-1">check_canonical_date/1</a></td><td>Checks that the specified date is a canonical one, and returns it.</td></tr>
 <tr><td valign="top"><a href="#check_date_order-2">check_date_order/2</a></td><td>Ensures that the starting canonical date is strictly before the stopping 
 one.</td></tr>
-<tr><td valign="top"><a href="#check_maybe_timestamp-1">check_maybe_timestamp/1</a></td><td>Checks that specified term is a maybe-timestamp indeed.</td></tr>
+<tr><td valign="top"><a href="#check_maybe_timestamp-1">check_maybe_timestamp/1</a></td><td>Checks that specified term is a maybe-timestamp (then a valid one)
+ indeed.</td></tr>
 <tr><td valign="top"><a href="#check_month_canonical-1">check_month_canonical/1</a></td><td>Checks that the specified month is a canonical one.</td></tr>
 <tr><td valign="top"><a href="#check_month_order-2">check_month_order/2</a></td><td>Ensures that the starting canonical month is strictly before the stopping
  one.</td></tr>
 <tr><td valign="top"><a href="#check_time_frame-1">check_time_frame/1</a></td><td>Checks that the specified term is a time-frame of strictly positive
  duration indeed, and returns it.</td></tr>
-<tr><td valign="top"><a href="#check_timestamp-1">check_timestamp/1</a></td><td>Checks that the specified term is a (possibly non-canonical) timestamp
- indeed, and returns it.</td></tr>
+<tr><td valign="top"><a href="#check_timestamp-1">check_timestamp/1</a></td><td>Checks that the specified term is a (possibly non-canonical) valid
+ timestamp indeed, and returns it.</td></tr>
 <tr><td valign="top"><a href="#check_user_date-1">check_user_date/1</a></td><td>Checks that the specified date is a user one, and returns it.</td></tr>
 <tr><td valign="top"><a href="#compare_dates-2">compare_dates/2</a></td><td>Compares the specified two dates: tells whether the first date is 
 strictly before, after or the same as the second one.</td></tr>
@@ -270,6 +291,10 @@ holidays, for specified year and country.</td></tr>
 <tr><td valign="top"><a href="#get_date_after-2">get_date_after/2</a></td><td>Returns the date corresponding to the specified one augmented of the
  specified number of days (possibly a negative number).</td></tr>
 <tr><td valign="top"><a href="#get_date_difference-2">get_date_difference/2</a></td><td>Returns the signed duration, in days, between the two specified dates.</td></tr>
+<tr><td valign="top"><a href="#get_day_rank-1">get_day_rank/1</a></td><td>Returns the rank in year of the specified day, in [1,365].</td></tr>
+<tr><td valign="top"><a href="#get_daylight_saving_time-1">get_daylight_saving_time/1</a></td><td>Returns the (signed) number of hours to offset the UTC in order to obtain 
+the local time (typically the Central European Summer Time, UTC+1/UTC+2), for 
+the corresponding date.</td></tr>
 <tr><td valign="top"><a href="#get_duration-1">get_duration/1</a></td><td>Returns the (signed) duration in seconds corresponding to the specified
  time.</td></tr>
 <tr><td valign="top"><a href="#get_duration-2">get_duration/2</a></td><td>Returns the (signed) duration in seconds between the two specified
@@ -293,6 +318,8 @@ specified times.</td></tr>
  operating system.</td></tr>
 <tr><td valign="top"><a href="#get_monotonic_time-0">get_monotonic_time/0</a></td><td>Returns the current time, expressed in (absolute) internal time 
 (logically equivalent to a millisecond-based timestamp).</td></tr>
+<tr><td valign="top"><a href="#get_month_duration-1">get_month_duration/1</a></td><td>Returns the duration of the specified month.</td></tr>
+<tr><td valign="top"><a href="#get_month_durations-0">get_month_durations/0</a></td><td>Returns the list of the usual duration of months.</td></tr>
 <tr><td valign="top"><a href="#get_precise_duration-2">get_precise_duration/2</a></td><td>Returns the (signed) duration in milliseconds between the two specified
  precise timestamps (as obtained thanks to get_precise_duration/0), using the
  first one as starting time and the second one as stopping time.</td></tr>
@@ -337,7 +364,8 @@ time zone and Daylight Saving Time correction depending on the underlying OS.</t
 <tr><td valign="top"><a href="#is_date-1">is_date/1</a></td><td>Returns whether the specified term is a legit (canonical) date.</td></tr>
 <tr><td valign="top"><a href="#is_dhms_duration-1">is_dhms_duration/1</a></td><td>Tells whether specified term is a DHMS duration.</td></tr>
 <tr><td valign="top"><a href="#is_time-1">is_time/1</a></td><td>Returns whether the specified term is a legit (canonical) time.</td></tr>
-<tr><td valign="top"><a href="#is_timestamp-1">is_timestamp/1</a></td><td>Returns whether the specified term is a legit (canonical) timestamp.</td></tr>
+<tr><td valign="top"><a href="#is_timestamp-1">is_timestamp/1</a></td><td>Returns whether the specified term is a legit, valid (canonical) 
+timestamp.</td></tr>
 <tr><td valign="top"><a href="#is_user_date-1">is_user_date/1</a></td><td>Tells whether the specified term is a user date.</td></tr>
 <tr><td valign="top"><a href="#local_to_universal_time-1">local_to_universal_time/1</a></td><td>Converts specified timestamp expressed in local time (thus with time zone 
 and Daylight Saving Time) into a timestamp expressed in universal time (UTC).</td></tr>
@@ -441,7 +469,9 @@ one.</p>
 <div class="spec">
 <p><tt>check_maybe_timestamp(Term::term()) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-timestamp">timestamp()</a>)</tt><br></p>
 <p> </p>
-</div><p>Checks that specified term is a maybe-timestamp indeed.</p>
+</div><p>Checks that specified term is a maybe-timestamp (then a valid one)
+ indeed.
+</p>
 
 <h3 class="function"><a name="check_month_canonical-1">check_month_canonical/1</a></h3>
 <div class="spec">
@@ -469,8 +499,8 @@ one.</p>
 <div class="spec">
 <p><tt>check_timestamp(Term::term()) -&gt; <a href="#type-timestamp">timestamp()</a></tt><br></p>
 <p> </p>
-</div><p>Checks that the specified term is a (possibly non-canonical) timestamp
- indeed, and returns it.
+</div><p>Checks that the specified term is a (possibly non-canonical) valid
+ timestamp indeed, and returns it.
 </p>
 
 <h3 class="function"><a name="check_user_date-1">check_user_date/1</a></h3>
@@ -612,7 +642,7 @@ holidays, for specified year and country.</p>
 
 <h3 class="function"><a name="get_date_after-2">get_date_after/2</a></h3>
 <div class="spec">
-<p><tt>get_date_after(BaseDate::<a href="#type-date">date()</a>, Days::<a href="#type-days">days()</a>) -&gt; <a href="#type-date">date()</a></tt><br></p>
+<p><tt>get_date_after(BaseDate::<a href="#type-date">date()</a>, DaysOffset::<a href="#type-days">days()</a>) -&gt; <a href="#type-date">date()</a></tt><br></p>
 <p> </p>
 </div><p>Returns the date corresponding to the specified one augmented of the
  specified number of days (possibly a negative number).
@@ -623,6 +653,33 @@ holidays, for specified year and country.</p>
 <p><tt>get_date_difference(FirstDate::<a href="#type-date">date()</a>, SecondDate::<a href="#type-date">date()</a>) -&gt; <a href="#type-days">days()</a></tt><br></p>
 <p> </p>
 </div><p>Returns the signed duration, in days, between the two specified dates.</p>
+
+<h3 class="function"><a name="get_day_rank-1">get_day_rank/1</a></h3>
+<div class="spec">
+<p><tt>get_day_rank(X1::<a href="#type-date_in_year">date_in_year()</a>) -&gt; <a href="#type-day">day()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the rank in year of the specified day, in [1,365].</p>
+
+ For example, for the tenth of February:
+ get_day_rank({2, 10}) = 41.
+</p>
+
+<h3 class="function"><a name="get_daylight_saving_time-1">get_daylight_saving_time/1</a></h3>
+<div class="spec">
+<p><tt>get_daylight_saving_time(Date::<a href="#type-date">date()</a>) -&gt; <a href="#type-hours">hours()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the (signed) number of hours to offset the UTC in order to obtain 
+the local time (typically the Central European Summer Time, UTC+1/UTC+2), for 
+the corresponding date.</p>
+
+ <p>Since 1996, European Summer Time has been observed between 01:00 UTC (02:00 
+CET and 03:00 CEST) on the last Sunday of March, and 01:00 UTC on the last 
+Sunday of October.</p>
+
+ For most of the dates, this function is rather cheap. It is an approximation,
+ in the sense that the parameter should be a full timestamp (hence with a
+ time), not simply a date.
+</p>
 
 <h3 class="function"><a name="get_duration-1">get_duration/1</a></h3>
 <div class="spec">
@@ -723,6 +780,24 @@ internally, mostly useful to determine durations.</p>
 
  Note: due to the VM time offset, this is probably a (large) negative number
  (of milliseconds), and this is not a problem.
+</p>
+
+<h3 class="function"><a name="get_month_duration-1">get_month_duration/1</a></h3>
+<div class="spec">
+<p><tt>get_month_duration(MonthIndex::<a href="#type-canonical_month">canonical_month()</a>) -&gt; <a href="#type-days">days()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the duration of the specified month.</p>
+
+ Here February lasts always 28 days.
+</p>
+
+<h3 class="function"><a name="get_month_durations-0">get_month_durations/0</a></h3>
+<div class="spec">
+<p><tt>get_month_durations() -&gt; <a href="#type-days">days()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the list of the usual duration of months.</p>
+
+ Here February lasts always 28 days.
 </p>
 
 <h3 class="function"><a name="get_precise_duration-2">get_precise_duration/2</a></h3>
@@ -936,10 +1011,12 @@ time zone and Daylight Saving Time correction depending on the underlying OS.</p
 <div class="spec">
 <p><tt>is_timestamp(Other::term()) -&gt; boolean()</tt><br></p>
 <p> </p>
-</div><p><p>Returns whether the specified term is a legit (canonical) timestamp.</p>
+</div><p><p>Returns whether the specified term is a legit, valid (canonical) 
+timestamp.</p>
 
- Useful to vet user-specified timestamps.
-</p>
+ A timestamp must be valid in terms of type (a pair of triplet of integers) and
+ also of semantics (e.g. {{2022,9,31}, {18,0,0}} is not valid, at not 31st
+ exists in September).</p>
 
 <h3 class="function"><a name="is_user_date-1">is_user_date/1</a></h3>
 <div class="spec">
