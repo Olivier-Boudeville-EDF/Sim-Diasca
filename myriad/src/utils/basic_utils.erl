@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2022 Olivier Boudeville
+% Copyright (C) 2007-2023 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -41,7 +41,13 @@
 % Message-related functions.
 -export([ flush_pending_messages/0, flush_pending_messages/1,
 		  notify_pending_messages/0, check_no_pending_message/0,
-		  wait_for/2, wait_for/4, wait_for_acks/4, wait_for_acks/5,
+
+		  wait_for/2, wait_for/4,
+
+		  wait_for_acks_nothrow/3, wait_for_acks_nothrow/4,
+
+		  wait_for_acks/4, wait_for_acks/5,
+
 		  wait_for_summable_acks/5,
 		  wait_for_many_acks/4, wait_for_many_acks/5,
 		  send_to_pid_set/2 ]).
@@ -93,6 +99,13 @@
 %
 % erlang:element(2, erlang:element(2,
 %   erlang:process_info(self(), current_function)))).
+
+
+
+% The default period (elementary time-slice; in milliseconds) according to which
+% a duration (typically of a time-out) is divided.
+%
+-define( default_period_ms, 1000 ).
 
 
 
@@ -269,8 +282,8 @@
 % compilation warning telling it is "underspecified and therefore meaningless").
 
 
-% Designates data whose type and value have not been checked yet.
 -type unchecked_data() :: term().
+% Designates data whose type and value have not been checked yet.
 
 
 -type user_data() :: external_data().
@@ -285,6 +298,7 @@
 
 
 -type version_number() :: non_neg_integer().
+% A component of a version.
 
 
 -type version() :: three_digit_version().
@@ -306,7 +320,7 @@
 -type four_digit_version() :: { version_number(), version_number(),
 								version_number(), version_number() }.
 % Version as a quadruplet of integers, typically {MajorVersion, MinorVersion,
-% ReleaseVersion, SubreleaseVersion}.
+% ReleaseVersion, BuildVersion}.
 
 
 -type any_version() :: two_digit_version() | three_digit_version()
@@ -430,11 +444,15 @@
 -include("basic_utils.hrl").
 
 
+
+
+% Implementation notes:
+%
+% The 'cond_utils' facilities shall not be used in this module, as it is a
+% pioneer one (they are thus not bootstrapped yet).
+
+
 % Shorthands:
-
--type time_out() :: time_utils:time_out().
-
--type milliseconds() :: unit_utils:milliseconds().
 
 -type set( T ) :: set_utils:set( T ).
 
@@ -447,6 +465,13 @@
 -type atom_node_name() :: net_utils:atom_node_name().
 
 -type byte_size() :: system_utils:byte_size().
+
+-type time_out() :: time_utils:time_out().
+-type finite_second_time_out() :: time_utils:finite_second_time_out().
+-type ms_period() :: time_utils:ms_period().
+
+-type milliseconds() :: unit_utils:milliseconds().
+
 
 % Even if not exported:
 -type process_info_result_item() :: erlang:process_info_result_item().
@@ -605,7 +630,7 @@ ignore_unused( _Term ) ->
 	% Preferred silent:
 	ok.
 	%trace_utils:warning_fmt( "unused term (~p) ignored "
-	%               "(thanks to basic_utils:ignore_unused/1).", [ _Term ] ).
+	%   "(thanks to basic_utils:ignore_unused/1).", [ _Term ] ).
 
 
 
@@ -836,8 +861,11 @@ wait_for( _Message, _Count=0 ) ->
 
 wait_for( Message, Count ) ->
 
+	% Not available here: cond_utils:if_defined( myriad_debug_waited_operations,
+
 	%trace_utils:debug_fmt( "Waiting for ~B messages '~p'.",
-	%                       [ Count, Message ] ),
+	%                       [ Count, Message ] )
+
 	receive
 
 		Message ->
@@ -866,7 +894,9 @@ wait_for( Message, Count, TimeOutDuration, TimeOutFormatString ) ->
 	receive
 
 		Message ->
-			%io:format( "Received message '~p'.~n", [ Message ] ),
+			%trace_utils:debug_fmt( "Received message '~p'",
+			%                       [ Message ] ),
+
 			wait_for( Message, Count-1 )
 
 	after TimeOutDuration ->
@@ -882,6 +912,99 @@ wait_for( Message, Count, TimeOutDuration, TimeOutFormatString ) ->
 % Wait patterns, safer and better defined once for all.
 
 
+% @doc Waits until receiving from all the expected senders the specified
+% acknowledgement message, expected to be in the form of {AckReceiveAtom,
+% WaitedSenderPid}.
+%
+% Returns a (possibly empty) list of the PIDs of the senders that failed to
+% answer within the specified time-out.
+%
+% See wait_for_many_acks/{4,5} if having a large number of senders that are
+% waited for.
+%
+-spec wait_for_acks_nothrow( [ pid() ], finite_second_time_out(), atom() ) ->
+												[ pid() ].
+wait_for_acks_nothrow( WaitedSenders, MaxDurationInSeconds, AckReceiveAtom ) ->
+	wait_for_acks_nothrow( WaitedSenders, MaxDurationInSeconds,
+						   ?default_period_ms, AckReceiveAtom ).
+
+
+
+% @doc Waits until receiving from all the expected senders the specified
+% acknowledgement message, expected to be in the form of {AckReceiveAtom,
+% WaitedSenderPid}, ensuring a check is performed at least at specified period..
+%
+% Returns a (possibly empty) list of the PIDs of the senders that failed to
+% answer within the specified time-out.
+%
+% See wait_for_many_acks/{4,5} if having a large number of senders that are
+% waited for.
+%
+-spec wait_for_acks_nothrow( [ pid() ], finite_second_time_out(), ms_period(),
+							 atom() ) -> [ pid() ].
+wait_for_acks_nothrow( WaitedSenders, MaxDurationInSeconds, Period,
+					   AckReceiveAtom ) ->
+
+	%trace_utils:debug_fmt( "Waiting (no-throw) for ~p (period: ~ts, "
+	%   "max duration: ~ts, ack atom: '~ts').",
+	%   [ WaitedSenders, time_utils:duration_to_string( Period ),
+	%     time_utils:duration_to_string( MaxDurationInSeconds ),
+	%     AckReceiveAtom ] ),
+
+	InitialTimestamp = time_utils:get_timestamp(),
+
+	wait_for_acks_nothrow_helper( WaitedSenders, InitialTimestamp,
+		MaxDurationInSeconds, Period, AckReceiveAtom ).
+
+
+
+% (helper)
+wait_for_acks_nothrow_helper( _WaitedSenders=[], _InitialTimestamp,
+		_MaxDurationInSeconds, _Period, _AckReceiveAtom ) ->
+	[];
+
+wait_for_acks_nothrow_helper( WaitedSenders, InitialTimestamp,
+		MaxDurationInSeconds, Period, AckReceiveAtom ) ->
+
+	receive
+
+		{ AckReceiveAtom, WaitedPid } ->
+
+			NewWaited = list_utils:delete_existing( WaitedPid, WaitedSenders ),
+
+			%trace_utils:debug_fmt( "(received ~p, still waiting for "
+			%   "instances ~p)", [ WaitedPid, NewWaited ] ),
+
+			wait_for_acks_nothrow_helper( NewWaited, InitialTimestamp,
+				MaxDurationInSeconds, Period, AckReceiveAtom )
+
+	after Period ->
+
+			NewDuration = time_utils:get_duration_since( InitialTimestamp ),
+
+			case ( MaxDurationInSeconds =/= infinity ) andalso
+						( NewDuration > MaxDurationInSeconds ) of
+
+				true ->
+					WaitedSenders;
+
+				false ->
+					% Still waiting then:
+
+					%trace_utils:debug_fmt(
+					%   "(still waiting for instances ~p)",
+					%   [ WaitedSenders ] ),
+
+					wait_for_acks_nothrow_helper( WaitedSenders,
+						InitialTimestamp, MaxDurationInSeconds, Period,
+						AckReceiveAtom )
+
+			end
+
+	end.
+
+
+
 % @doc Waits until receiving from all expected senders the specified
 % acknowledgement message, expected to be in the form of {AckReceiveAtom,
 % WaitedSenderPid}.
@@ -895,7 +1018,7 @@ wait_for( Message, Count, TimeOutDuration, TimeOutFormatString ) ->
 -spec wait_for_acks( [ pid() ], time_out(), atom(), atom() ) -> void().
 wait_for_acks( WaitedSenders, MaxDurationInSeconds, AckReceiveAtom,
 			   ThrowAtom ) ->
-	wait_for_acks( WaitedSenders, MaxDurationInSeconds, _DefaultPeriodMs=1000,
+	wait_for_acks( WaitedSenders, MaxDurationInSeconds, ?default_period_ms,
 				   AckReceiveAtom, ThrowAtom ).
 
 
@@ -908,64 +1031,27 @@ wait_for_acks( WaitedSenders, MaxDurationInSeconds, AckReceiveAtom,
 %
 % See wait_for_many_acks/{4,5} if having a large number of senders waited for.
 %
--spec wait_for_acks( [ pid() ], time_out(), milliseconds(), atom(), atom() ) ->
-			void().
+-spec wait_for_acks( [ pid() ], time_out(), ms_period(), atom(), atom() ) ->
+															void().
 wait_for_acks( WaitedSenders, MaxDurationInSeconds, Period,
 			   AckReceiveAtom, ThrowAtom ) ->
 
-	%trace_bridge:debug_fmt( "Waiting for ~p (period: ~ts, max duration: ~ts, "
-	%   "ack atom: '~ts', throw atom: '~ts').",
+	%trace_utils:debug_fmt( "Waiting for ~p (period: ~ts, "
+	%   "max duration: ~ts, ack atom: '~ts', throw atom: '~ts').",
 	%   [ WaitedSenders, time_utils:duration_to_string( Period ),
 	%     time_utils:duration_to_string( MaxDurationInSeconds ),
 	%     AckReceiveAtom, ThrowAtom ] ),
 
 	InitialTimestamp = time_utils:get_timestamp(),
 
-	wait_for_acks_helper( WaitedSenders, InitialTimestamp,
-		MaxDurationInSeconds, Period, AckReceiveAtom, ThrowAtom ).
+	case wait_for_acks_nothrow_helper( WaitedSenders, InitialTimestamp,
+			MaxDurationInSeconds, Period, AckReceiveAtom ) of
 
+		[] ->
+			ok;
 
-
-% (helper)
-wait_for_acks_helper( _WaitedSenders=[], _InitialTimestamp,
-		_MaxDurationInSeconds, _Period, _AckReceiveAtom, _ThrowAtom ) ->
-	ok;
-
-wait_for_acks_helper( WaitedSenders, InitialTimestamp, MaxDurationInSeconds,
-					  Period, AckReceiveAtom, ThrowAtom ) ->
-
-	receive
-
-		{ AckReceiveAtom, WaitedPid } ->
-
-			NewWaited = list_utils:delete_existing( WaitedPid, WaitedSenders ),
-
-			%trace_bridge:debug_fmt( "(received ~p, still waiting for "
-			%   "instances ~p)", [ WaitedPid, NewWaited ] ),
-
-			wait_for_acks_helper( NewWaited, InitialTimestamp,
-				  MaxDurationInSeconds, Period, AckReceiveAtom, ThrowAtom )
-
-	after Period ->
-
-			NewDuration = time_utils:get_duration_since( InitialTimestamp ),
-
-			case ( MaxDurationInSeconds =/= infinity ) andalso
-					  ( NewDuration > MaxDurationInSeconds ) of
-
-				true ->
-					throw( { ThrowAtom, WaitedSenders } );
-
-				false ->
-					% Still waiting then:
-					%trace_bridge:debug_fmt( "(still waiting for instances ~p)",
-					%                        [ WaitedSenders ] ),
-
-					wait_for_acks_helper( WaitedSenders, InitialTimestamp,
-						MaxDurationInSeconds, Period, AckReceiveAtom,
-						ThrowAtom )
-
-			end
+		StillWaitedSenders ->
+			throw( { ThrowAtom, StillWaitedSenders } )
 
 	end.
 
@@ -987,7 +1073,7 @@ wait_for_summable_acks( WaitedSenders, InitialValue, MaxDurationInSeconds,
 						AckReceiveAtom, ThrowAtom ) ->
 
 	wait_for_summable_acks( WaitedSenders, InitialValue, MaxDurationInSeconds,
-							_DefaultPeriod=1000, AckReceiveAtom, ThrowAtom ).
+							?default_period_ms, AckReceiveAtom, ThrowAtom ).
 
 
 
@@ -1027,19 +1113,19 @@ wait_for_summable_acks_helper( WaitedSenders, CurrentValue, InitialTimestamp,
 
 			NewWaited = list_utils:delete_existing( WaitedPid, WaitedSenders ),
 
-			%io:format( "(received ~p, still waiting for instances ~p)~n",
-			%           [ WaitedPid, NewWaited ] ),
+			%trace_utils:debug_fmt( "(received ~p, still waiting for "
+			%   "instances ~p).", [ WaitedPid, NewWaited ] ),
 
 			wait_for_summable_acks_helper( NewWaited, CurrentValue + ToAdd,
-				  InitialTimestamp, MaxDurationInSeconds, Period,
-				  AckReceiveAtom, ThrowAtom )
+				InitialTimestamp, MaxDurationInSeconds, Period,
+				AckReceiveAtom, ThrowAtom )
 
 	after Period ->
 
 			NewDuration = time_utils:get_duration_since( InitialTimestamp ),
 
 			case ( MaxDurationInSeconds =/= infinity ) andalso
-					  ( NewDuration > MaxDurationInSeconds ) of
+						( NewDuration > MaxDurationInSeconds ) of
 
 				true ->
 					throw( { ThrowAtom, WaitedSenders } );
@@ -1047,7 +1133,8 @@ wait_for_summable_acks_helper( WaitedSenders, CurrentValue, InitialTimestamp,
 				false ->
 					% Still waiting then:
 
-					%io:format( "(still waiting for instances ~p)~n",
+					%trace_utils:debug_fmt(
+					%   "(still waiting for instances ~p)",
 					%   [ WaitedSenders ] ),
 
 					wait_for_summable_acks_helper( WaitedSenders, CurrentValue,
@@ -1060,7 +1147,7 @@ wait_for_summable_acks_helper( WaitedSenders, CurrentValue, InitialTimestamp,
 
 
 
-%  @doc Waits until receiving from all expected (numerous) senders the specified
+% @doc Waits until receiving from all expected (numerous) senders the specified
 % acknowledgement message.
 %
 % Throws specified exception on time-out.
@@ -1068,12 +1155,12 @@ wait_for_summable_acks_helper( WaitedSenders, CurrentValue, InitialTimestamp,
 % Note: each sender shall be unique (as they will be gathered in a set, that
 % does not keep duplicates)
 %
--spec wait_for_many_acks( set( pid() ), milliseconds(), atom(), atom() ) ->
-											void().
+-spec wait_for_many_acks( set( pid() ), finite_second_time_out(), atom(),
+						  atom() ) -> void().
 wait_for_many_acks( WaitedSenders, MaxDurationInSeconds, AckReceiveAtom,
 					ThrowAtom ) ->
 	wait_for_many_acks( WaitedSenders, MaxDurationInSeconds,
-						_DefaultPeriod=1000, AckReceiveAtom, ThrowAtom ).
+						?default_period_ms, AckReceiveAtom, ThrowAtom ).
 
 
 
@@ -1082,8 +1169,8 @@ wait_for_many_acks( WaitedSenders, MaxDurationInSeconds, AckReceiveAtom,
 %
 % Throws specified exception on time-out, checking at the specified period.
 %
--spec wait_for_many_acks( set( pid() ), milliseconds(), milliseconds(), atom(),
-						  atom() ) -> void().
+-spec wait_for_many_acks( set( pid() ), finite_second_time_out(), ms_period(),
+						  atom(), atom() ) -> void().
 wait_for_many_acks( WaitedSenders, MaxDurationInSeconds, Period,
 					AckReceiveAtom, ThrowAtom ) ->
 
@@ -1114,8 +1201,8 @@ wait_for_many_acks_helper( WaitedSenders, InitialTimestamp,
 
 			after Period ->
 
-					NewDuration = time_utils:get_duration_since(
-									InitialTimestamp ),
+					NewDuration =
+						time_utils:get_duration_since( InitialTimestamp ),
 
 					case NewDuration > MaxDurationInSeconds of
 
@@ -1355,10 +1442,10 @@ display( Message ) ->
 
 
 
-% @doc Displays specified format string filled according to specified values on
-% the standard output of the console, ensuring as much as possible this message
-% is output synchronously, so that it can be output on the console even if the
-% virtual machine is to crash just after.
+% @doc Displays the specified format string filled according to the specified
+% values on the standard output of the console, ensuring as much as possible
+% that this message is output synchronously, so that it can be output on the
+% console even if the virtual machine is to crash just after.
 %
 -spec display( format_string(), format_values() ) -> void().
 display( Format, Values ) ->
@@ -1372,9 +1459,10 @@ display( Format, Values ) ->
 
 
 
-% @doc Displays specified string on the standard output of the console, ensuring
-% as much as possible this message is output synchronously, so that it can be
-% output on the console even if the virtual machine is to crash just after.
+% @doc Displays the specified string on the standard output of the console,
+% ensuring as much as possible that this message is output synchronously, so
+% that it can be output on the console even if the virtual machine is to crash
+% just after.
 %
 -spec display_timed( ustring(), time_out() ) -> void().
 display_timed( Message, TimeOut ) ->
@@ -1610,32 +1698,24 @@ get_unix_process_specific_string() ->
 
 
 
-% @doc Returns a value (a strictly positive integer) expected to be as much as
-% possible specific to the current (Erlang) process.
+% @doc Returns a stable, reproducible value (a strictly positive integer)
+% expected to be as much as possible specific to the current (Erlang) process.
 %
-% Mostly based on its PID.
-%
-% Useful for example when a large number of similar processes try to access to
-% the same resource (ex: a set of file descriptors) at the same time: they can
-% rely on some random waiting based on that process-specific value in order to
-% smooth the accesses over time.
-%
-% We could imagine taking into account as well the current time, the process
-% reductions, etc. or generating a reference.
+% Refer to get_process_specific_value/1 for further details, and to
+% get_process_specific_value/1 to generate a value in a given range.
 %
 -spec get_process_specific_value() -> pos_integer().
 get_process_specific_value() ->
-	get_process_specific_value( self() ).
+	get_process_specific_value( _Pid=self() ).
 
 
 
-% @doc Returns a value (a strictly positive integer) expected to be as much as
-% possible specific to the specified (Erlang) PID.
+% @doc Returns a stable, reproducible value (a strictly positive integer)
+% expected to be as much as possible specific to the specified (Erlang) PID.
 %
-% Useful for example when a large number of similar processes try to access to
-% the same resource (ex: a set of file descriptors) at the same time: they can
-% rely on some random waiting based on that process-specific value in order to
-% smooth the accesses over time.
+% This value is meant to be process-specific *and* reproducible, that is
+% returning always the same value for the same PID. This may be useful when
+% having to generate an integer identifier corresponding to a given process.
 %
 % We could imagine taking into account as well the current time, the process
 % reductions, etc. or generating a reference.
@@ -1660,18 +1740,32 @@ get_process_specific_value( Pid ) ->
 	{ T, [] } = string:to_integer( ExtractedThird ),
 
 	X = F+1,
+
+	% Key part of PID, never null:
 	Y = S,
+
 	Z = T+1,
 
-	% Hash part probably a bit overkill:
-	Res = X*Y*Z + erlang:phash2( erlang:make_ref(), _MaxRange=1 bsl 32 ),
+	% Hash part probably a bit overkill and, a lot more importantly, including a
+	% reference would break reproducibility - much undesirable here:
+	%
+	%Res = X*Y*Z + erlang:phash2( erlang:make_ref(), _MaxRange=1 bsl 32 ),
+
+	Res = X*Y*Z,
 
 	%trace_utils:debug_fmt( "Process-specific value: ~B.", [ Res ] ),
 	Res.
 
 
 
-% @doc Returns a (Erlang) process-specific value in [Min,Max[.
+% @doc Returns an (Erlang), non-reproducible, process-specific value in
+% [Min,Max[.
+%
+% Useful for example when a large number of similar processes try to access to
+% the same resource (ex: a set of file descriptors) at the same time: they can
+% rely on some random waiting based on that process-specific value in order to
+% smooth the accesses over time. Reproducibility does not matter here.
+%
 -spec get_process_specific_value( integer(), integer() ) -> integer().
 get_process_specific_value( Min, Max ) ->
 	Value = get_process_specific_value(),
@@ -1767,7 +1861,7 @@ is_alive( TargetPid, Node, Verbose ) when is_pid( TargetPid ) ->
 
 		_OtherNode ->
 			%trace_utils:debug_fmt( "Testing liveliness of process ~p "
-			%  "on node ~p.", [ TargetPid, Node ] ),
+			%   "on node ~p.", [ TargetPid, Node ] ),
 			case rpc:call( Node, _Mod=erlang, _Fun=is_process_alive,
 						   _Args=[ TargetPid ] ) of
 

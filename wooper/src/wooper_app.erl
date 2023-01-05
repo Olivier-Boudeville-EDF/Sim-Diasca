@@ -1,4 +1,4 @@
-% Copyright (C) 2019-2022 Olivier Boudeville
+% Copyright (C) 2019-2023 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %

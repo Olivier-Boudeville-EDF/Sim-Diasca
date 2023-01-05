@@ -37,7 +37,7 @@
 
 
 % We try to stick close to the latest stable OTP version:
-{minimum_otp_vsn, "24.0"}.
+{minimum_otp_vsn, "25.0"}.
 
 
 % Settings for the 'default' profile follow.

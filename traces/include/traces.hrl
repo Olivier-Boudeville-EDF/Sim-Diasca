@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2022 Olivier Boudeville
+% Copyright (C) 2007-2023 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -68,6 +68,7 @@
 % defined
 %
 -ifndef(TraceType).
+
 	-define( TraceType, advanced_traces ).
 	%-define( TraceType, { text_traces, pdf } ).
 	%-define( TraceType, { text_traces, text_only } ).

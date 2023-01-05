@@ -7,8 +7,11 @@
 declared-types-in-*.txt
 .eunit
 erl_crash.dump
+
 overview.edoc
-doc/index.html
+
+doc/Ceylan-Traces-Layer-technical-manual-english.html
+doc/Ceylan-Traces-Layer-technical-manual-english.rst
 doc/api-doc/
 doc/mathjax
 

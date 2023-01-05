@@ -57,7 +57,8 @@
 # foobar_generate_support_modules' will run foobar:generate_support_modules/0,
 # which is expected to generate in turn said modules that will be needed (only)
 # at runtime; this target is generally set as a local dependency of the 'all'
-# target. Refer to Ceylan-Oceanic for an example thereof.
+# target, or even preferably, is listed in the EXTRA_BEAM_FILES make
+# variable. Refer to Ceylan-Oceanic for an example thereof.
 #
 %_generated.beam: %.erl %.beam
 	@echo "		Generating support modules based on $<"

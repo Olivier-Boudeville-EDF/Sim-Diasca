@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2022 Olivier Boudeville
+% Copyright (C) 2007-2023 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -27,7 +27,8 @@
 
 
 % @doc Module gathering all code, common to tests and applications, that allows
-% to <b>lighten the trace macros or to share defines and types</b>.
+% to <b>lighten the trace macros, share defines and types, or manage log
+% handlers</b>.
 %
 -module(traces).
 
@@ -85,7 +86,7 @@
 
 
 -type trace_supervision_type() :: 'advanced_traces'
-								| { 'text_traces', trace_text_type() }.
+							  | { 'text_traces', trace_text_type() }.
 % A trace type must be selected so that, when the traces are aggregated, the
 % corresponding output is compliant with the tools to be used for supervision.
 %
@@ -407,7 +408,7 @@ get_handler_config() ->
 
 		% Most probably trace_aggregator_not_found:
 		Error ->
-			throw( Error )
+			throw( { no_handler_config_obtained, Error } )
 
 	end,
 

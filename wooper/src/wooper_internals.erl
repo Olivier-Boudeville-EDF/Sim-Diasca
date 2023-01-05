@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2022 Olivier Boudeville
+% Copyright (C) 2018-2023 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -133,9 +133,10 @@ raise_usage_error( ErrorString,
 	% a stacktrace:
 	%
 	%ast_utils:raise_error( ErrorString, _Context={ ExpectedModFile, FileLoc },
-	%						?origin_layer ).
+	%                       ?origin_layer ).
+
 	io:format( "~ts:~ts: ~ts~n", [ ExpectedSrcFile,
-						ast_utils:format_file_loc( FileLoc ), ErrorString ] ),
+		ast_utils:format_file_loc( FileLoc ), ErrorString ] ),
 
 	% Almost the only way to stop the processing of the AST:
 	halt( 6 );
@@ -147,7 +148,7 @@ raise_usage_error( ErrorString, Classname, FileLoc )
 	ExpectedSrcFile = wooper:get_class_filename( Classname ),
 
 	io:format( "~ts:~ts: ~ts~n", [ ExpectedSrcFile,
-						ast_utils:format_file_loc( FileLoc ), ErrorString ] ),
+		ast_utils:format_file_loc( FileLoc ), ErrorString ] ),
 
 	% Almost the only way to stop the processing of the AST:
 	halt( 6 );

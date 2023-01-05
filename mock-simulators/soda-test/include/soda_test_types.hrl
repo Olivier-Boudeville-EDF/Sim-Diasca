@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2022 EDF R&D
+% Copyright (C) 2008-2023 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -16,7 +16,7 @@
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
 
-% Author: Olivier Boudeville (olivier.boudeville@edf.fr)
+% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 
 
 % List of common types defined for Soda-Test.

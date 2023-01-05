@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2022 Olivier Boudeville
+% Copyright (C) 2010-2023 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -171,7 +171,8 @@
 -export_type([ package_name/0, os_family/0, os_name/0, os_type/0 ]).
 
 
--export([ get_dependency_base_directory/1, get_dependency_code_directory/1,
+-export([ get_software_base_directory/0,
+		  get_dependency_base_directory/1, get_dependency_code_directory/1,
 
 		  is_json_support_available/0,
 		  get_json_unavailability_hint/0, get_json_unavailability_hint/1,
@@ -182,6 +183,9 @@
 
 -type byte_size() :: non_neg_integer().
 % Size, as a positive number of bytes.
+
+-type bytes_per_second() :: integer().
+% Number of bytes per second.
 
 
 -type byte_offset() :: integer().
@@ -369,7 +373,7 @@
 % identifier).
 
 
--export_type([ byte_size/0, byte_offset/0, bit_size/0,
+-export_type([ byte_size/0, bytes_per_second/0, byte_offset/0, bit_size/0,
 			   cpu_usage_info/0, cpu_usage_percentages/0,
 			   host_static_info/0, host_dynamic_info/0,
 
@@ -3200,8 +3204,16 @@ has_graphical_output() ->
 % successive versions thereof over time).
 
 
+% @doc Returns the (expected, conventional) base installation directory for
+% third-party software.
+%
+-spec get_software_base_directory() -> directory_path().
+get_software_base_directory() ->
+	file_utils:join( get_user_home_directory(), "Software" ).
+
+
 % @doc Returns the (expected, conventional) base installation directory of the
-% specified third-party, prerequisite package (ex: "Foobar").
+% specified third-party, prerequisite package (e.g. "Foobar").
 %
 -spec get_dependency_base_directory( package_name() ) -> directory_path().
 get_dependency_base_directory( PackageName="ErlPort" ) ->
@@ -3223,9 +3235,8 @@ get_dependency_base_directory( PackageName="ErlPort" ) ->
 		false ->
 
 			% Then trying default path:
-
-			PathComponents = [ get_user_home_directory(), "Software",
-							   PackageName, "erlport" ],
+			PathComponents =
+				[ get_software_base_directory(), PackageName, "erlport" ],
 
 			DefaultDir = file_utils:normalise_path(
 							file_utils:join( PathComponents ) ),
@@ -3282,14 +3293,13 @@ get_dependency_base_directory( PackageName="ErlPort" ) ->
 
 	end;
 
-
 get_dependency_base_directory( PackageName ) ->
 
 	% Expected to return a fully resolved version of the
 	% "$HOME/Software/Foobar/Foobar-current-install" path, such as
 	% "/home/stallone/Software/Foobar/Foobar-current-install":
 	%
-	PathComponents = [ get_user_home_directory(), "Software", PackageName,
+	PathComponents = [ get_software_base_directory(), PackageName,
 					   PackageName ++ "-current-install" ],
 
 	file_utils:normalise_path( file_utils:join( PathComponents ) ).

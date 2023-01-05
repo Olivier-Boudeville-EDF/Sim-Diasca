@@ -1,4 +1,4 @@
-% Copyright (C) 2019-2022 Olivier Boudeville
+% Copyright (C) 2019-2023 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -58,14 +58,13 @@
 -type init_args() :: { boolean() | registration_scope() }.
 
 -type init_arg_list() :: [ boolean() | registration_scope() ].
-% Actually exactly [ TraceSupervisorWanted, AggRegScope ].
+% Actually exactly [TraceSupervisorWanted, AggRegScope].
 
 -export_type([ init_args/0, init_arg_list/0 ]).
 
 
 % Shorthands:
 
-%-type registration_name() :: naming_utils:registration_name().
 -type registration_scope() :: naming_utils:registration_scope().
 
 

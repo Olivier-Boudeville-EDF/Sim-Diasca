@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2022 Olivier Boudeville
+% Copyright (C) 2018-2023 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -549,7 +549,7 @@ extract_module_info_from_ast( AST ) ->
 	% modules (like {meta,text}_utils) - this should be the case here:
 	%
 	%ast_utils:display_debug( "Resulting module information:~n~ts",
-	%						  [ module_info_to_string( ModuleInfo ) ] ),
+	%                         [ module_info_to_string( ModuleInfo ) ] ),
 
 	case ModuleInfo#module_info.unhandled_forms of
 
@@ -713,7 +713,7 @@ check_module_functions( #module_info{ functions=Functions }, ModuleName ) ->
 	FunInfos = ?table:enumerate( Functions ),
 
 	[ check_function( FunId, FunInfo, ModuleName )
-		 || { FunId, FunInfo } <- FunInfos ].
+			|| { FunId, FunInfo } <- FunInfos ].
 
 
 
@@ -767,9 +767,9 @@ check_function( FunId, _FunInfo=#function_info{ name=SecondName,
 												arity=SecondArity },
 				ModuleName ) ->
 	ast_utils:raise_usage_error(
-	  "function definition mismatch for ~ts/~B vs ~ts/~B",
-	  pair:to_list( FunId ) ++ [ { SecondName, SecondArity } ],
-	  ModuleName ).
+		"function definition mismatch for ~ts/~B vs ~ts/~B",
+		pair:to_list( FunId ) ++ [ { SecondName, SecondArity } ],
+		ModuleName ).
 
 
 
@@ -873,7 +873,6 @@ recompose_ast_from_module_info( #module_info{ errors=Errors } ) ->
 
 
 recompose_ast_from_module_info( Unexpected ) ->
-
 	throw( { unexpected_term_as_module_info, Unexpected } ).
 
 
@@ -973,8 +972,10 @@ reorder_forms_in( _LocatedForms=[ E | T ], MarkerTable, AccLoc, AccLocAfter ) ->
 -spec insert_after_located_forms( located_ast(), located_ast() ) ->
 										located_ast().
 insert_after_located_forms( LocAfterForms, LocForms ) ->
+
 	%trace_utils:debug_fmt( "Merging located-after forms: ~n~p~n  in:~n~p.",
-	%						[ LocAfterForms, LocForms ] ),
+	%                       [ LocAfterForms, LocForms ] ),
+
 	insert_after_located_forms( LocAfterForms, LocForms,
 								_CurrentLocInfo=undefined, _AccForms=[] ).
 
@@ -1023,7 +1024,7 @@ insert_after_located_forms( _LocAfter=[ { TargetASTLoc, TargetForm } | T ],
 % _AnotherLoc, _TargetForm } | _T] or [].
 %
 insert_after_located_forms( LocAfter, LocForms,
-			_CurrentLocInfo={ TargetLoc, CurrentForms }, AccForms ) ->
+		_CurrentLocInfo={ TargetLoc, CurrentForms }, AccForms ) ->
 
 	% We remove the location information; once reversed, we will have, by
 	% increasing locations, for a given location, the base form followed by all
@@ -1317,25 +1318,25 @@ module_info_to_string( ModuleInfo, DoIncludeForms ) ->
 -spec module_info_to_string( module_info(), boolean(), indentation_level() ) ->
 									ustring().
 module_info_to_string( #module_info{
-						 module=ModuleEntry,
-						 compilation_options=CompileTable,
-						 compilation_option_defs=CompileOptDefs,
-						 parse_attributes=ParseAttributeTable,
-						 remote_spec_defs=RemoteSpecDefs,
-						 includes=Includes,
-						 include_defs=IncludeDefs,
-						 type_exports=TypeExportTable,
-						 types=TypeTable,
-						 records=RecordTable,
-						 function_imports=FunctionImportTable,
-						 function_imports_defs=FunctionImportDefs,
-						 function_exports=_FunctionExports,
-						 functions=FunctionTable,
-						 optional_callbacks_defs=OptCallbacksDefs,
-						 last_file_location=LastFileLocLocDef,
-						 markers=MarkerTable,
-						 errors=Errors,
-						 unhandled_forms=UnhandledForms },
+							module=ModuleEntry,
+							compilation_options=CompileTable,
+							compilation_option_defs=CompileOptDefs,
+							parse_attributes=ParseAttributeTable,
+							remote_spec_defs=RemoteSpecDefs,
+							includes=Includes,
+							include_defs=IncludeDefs,
+							type_exports=TypeExportTable,
+							types=TypeTable,
+							records=RecordTable,
+							function_imports=FunctionImportTable,
+							function_imports_defs=FunctionImportDefs,
+							function_exports=_FunctionExports,
+							functions=FunctionTable,
+							optional_callbacks_defs=OptCallbacksDefs,
+							last_file_location=LastFileLocLocDef,
+							markers=MarkerTable,
+							errors=Errors,
+							unhandled_forms=UnhandledForms },
 					   DoIncludeForms,
 					   IndentationLevel ) ->
 
@@ -1389,7 +1390,7 @@ module_info_to_string( #module_info{
 										 NextIndentationLevel ) ],
 
 	text_utils:format( "Information about module ~ts: ~ts", [ ModuleString,
-			text_utils:strings_to_string( Infos, IndentationLevel ) ] ).
+		text_utils:strings_to_string( Infos, IndentationLevel ) ] ).
 
 
 
@@ -1887,8 +1888,8 @@ errors_to_string( Errors, IndentationLevel ) ->
 		[ length( Errors ), text_utils:strings_to_string(
 			[ text_utils:format( "in ~ts, line ~B: ~p",
 								 [ Filename, FileLoc, Reason ] )
-			  || { Filename, FileLoc, Reason } <- Errors ],
-							IndentationLevel ) ] ).
+				|| { Filename, FileLoc, Reason } <- Errors ],
+			IndentationLevel ) ] ).
 
 
 
@@ -1909,8 +1910,9 @@ unhandled_forms_to_string( UnhandledForms, _DoIncludeForms=true,
 		unhandled_forms_to_string( UnhandledForms, _IncludeForms=false,
 								   IndentationLevel ),
 		text_utils:strings_to_string(
-		  [ text_utils:format( "~p", [ F ] ) || { _Loc, F } <- UnhandledForms ],
-		  IndentationLevel+1 ) ] ).
+			[ text_utils:format( "~p", [ F ] )
+				|| { _Loc, F } <- UnhandledForms ],
+			IndentationLevel+1 ) ] ).
 
 
 
@@ -2008,8 +2010,8 @@ function_info_to_string( #function_info{ name=Name,
 			Strings = [ location_to_string( L ) || L <- ExportLocs ],
 
 			text_utils:format( "exported in following ~B location(s): ~ts",
-				  [ length( ExportLocs ),
-					text_utils:strings_to_string( Strings ) ] )
+				[ length( ExportLocs ),
+				  text_utils:strings_to_string( Strings ) ] )
 
 	end,
 
@@ -2209,7 +2211,7 @@ type_info_to_string( TypeInfo ) ->
 
 % @doc Returns a textual description of the specified type information.
 -spec type_info_to_string( type_info(), boolean(), indentation_level() ) ->
-								 ustring().
+									ustring().
 type_info_to_string( #type_info{ name=TypeName,
 								 variables=TypeVariables,
 								 opaque=IsOpaque,
@@ -2227,7 +2229,7 @@ type_info_to_string( #type_info{ name=TypeName,
 
 		ExportLocs ->
 			text_utils:format( "exported in ~ts",
-					   [ id_utils:sortable_ids_to_string( ExportLocs ) ] )
+				[ id_utils:sortable_ids_to_string( ExportLocs ) ] )
 
 	end,
 
@@ -2247,7 +2249,7 @@ type_info_to_string( #type_info{ name=TypeName,
 	Arity = length( TypeVariables ),
 
 	TypeIdString = text_utils:format( "for type ~ts: ",
-						[ type_id_to_string( { TypeName, Arity } ) ] ),
+		[ type_id_to_string( { TypeName, Arity } ) ] ),
 
 	BaseStrings = [ OpaqueString, ExportString ],
 
@@ -2273,12 +2275,12 @@ type_info_to_string( #type_info{ name=TypeName,
 								module_info().
 interpret_options( OptionList,
 				   ModuleInfo=#module_info{
-								 compilation_options=OptionTable } ) ->
+								compilation_options=OptionTable } ) ->
 
 	NewOptionTable = scan_options( OptionList, OptionTable ),
 
 	%ast_utils:display_debug( "Scanned compilation options:~n~ts",
-	%						  [ ?table:to_string( NewOptionTable ) ] ),
+	%                         [ ?table:to_string( NewOptionTable ) ] ),
 
 	ModuleInfo#module_info{ compilation_options=NewOptionTable }.
 
@@ -2302,7 +2304,7 @@ scan_options( _OptionList=[ { Name, Value } | T ], OptionTable ) ->
 scan_options( _OptionList=[ { Name, BaseValue, OtherValue } | T ],
 			  OptionTable ) ->
 	NewOptionTable = ?table:append_to_entry( _K=Name, { BaseValue, OtherValue },
-										   OptionTable ),
+											 OptionTable ),
 	scan_options( T, NewOptionTable );
 
 % Ex: report_errors
@@ -2311,7 +2313,32 @@ scan_options( _OptionList=[ Name | T ], OptionTable ) when is_atom( Name ) ->
 	% No clash wanted, throws an exception is the same key appears more than
 	% once:
 	%
-	NewOptionTable = ?table:add_new_entry( _K=Name, _V=undefined, OptionTable ),
+	NewOptionTable = ?table:add_new_entry( _K=Name, undefined, OptionTable ),
+
+	% Alternatively we may just warn if a key already exists, should the Myriad
+	% parse transform have to compile, notably through includes (such as
+	% "wf.hrl" in nitrogen_core), code including compilation options that are
+	% already defined (e.g. '-compile(debug_info)'):
+	%
+	%NewOptionTable = case ?table:lookup_entry( _K=Name, OptionTable ) of
+	%
+	%   % Perfect case:
+	%   key_not_found ->
+	%       ?table:add_entry( Name, undefined, OptionTable );
+	%
+	%   % Now acceptable (multiple, identical definitions):
+	%   { value, undefined } ->
+	%       OptionTable;
+	%
+	%   { value, OptValue } ->
+	%
+	%       Msg = io_lib:format( "The compilation option '~ts' was already "
+	%           "defined, with following value set: ~p.",
+	%           [ Name, OptValue ] ),
+	%
+	%       ast_utils:raise_error( Msg )
+	%
+	%end,
 
 	scan_options( T, NewOptionTable );
 

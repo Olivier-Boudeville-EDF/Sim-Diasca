@@ -123,12 +123,14 @@ Trace Severity        Mapped Priority
 
 :raw-html:`</center>`
 
-Starting from ``warning`` onward (thus included), these severities are considered as error-like, and as such will never be disabled and will be echoed on the console as well.
+Starting from ``notice`` [#]_ onward (thus included), these severities are considered as significant enough to never be disabled (thus their messages will be created and sent to the trace aggregator in all cases).
+
+.. [#] A good practice is to only send few ``notice`` messages (a fixed/bounded number of them). For example, one of such messages may be sent once a singleton instance is fully constructed (avoiding one notice message per call of a given request, or one per instance - should there may be many of them).
 
 
-There is also an addition trace severity, ``void``, that designates traces that shall be muted in all cases.
+Moreover the severities that are "error-like" (starting from ``warning`` onward) will be synchronously sent to the trace aggregator, and echoed on the console as well, to ensure none is lost. Doing so is certainly a bit more resource-demanding, yet such traces shall denote exceptional conditions anyway.
 
-Its purpose is to provide another means of muting/unmuting some traces, instead of commenting out/uncommenting said traces.
+There is also an additional trace severity, ``void``, that designates traces that shall be muted in all cases. Its purpose is to provide another means of muting/unmuting some traces, instead of commenting out/uncommenting said traces, or relying, thanks to ``cond_utils``, on conditionally-compiled code.
 
 
 

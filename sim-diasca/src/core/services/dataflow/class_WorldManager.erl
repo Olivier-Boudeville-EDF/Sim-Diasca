@@ -1,32 +1,33 @@
-% Copyright (C) 2016-2022 EDF R&D
-
+% Copyright (C) 2016-2023 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
-% Authors: Olivier Boudeville (olivier.boudeville@edf.fr)
-%		   Samuel Thiriot (samuel.thiriot@edf.fr)
-
-
--module(class_WorldManager).
+%
+% Authors: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+%          Samuel Thiriot     [samuel (dot) thiriot (at) edf (dot) fr]
+% Creation date: 2016.
 
 
 % @doc The World Manager is a singleton instance in charge of <b>federating all
 % the object managers</b> that collectively account, in a dataflow context, for
 % the simulated world.
 %
+-module(class_WorldManager).
+
+
 -define( class_description,
 		 "The World Manager (WM) is a singleton instance in charge of "
 		 "federating all the object managers that account, in a dataflow "

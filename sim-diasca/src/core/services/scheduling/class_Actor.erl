@@ -1,22 +1,22 @@
-% Copyright (C) 2008-2022 EDF R&D
-
+% Copyright (C) 2008-2023 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
-% Author: Olivier Boudeville (olivier.boudeville@edf.fr)
+%
+% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2008.
 
 
@@ -312,7 +312,7 @@
 % Name of an actor, as supplied by the user.
 %
 % This is either a (plain or binary) string, or a pair made of two (plain or
-% binary) strings, respectively the emitter name and categorization.
+% binary) strings, respectively the emitter name and its categorization.
 %
 % Once fully constructed, both the name and categorization are binary strings.
 
@@ -381,24 +381,24 @@
 
 -record( actor_message, {
 
-		% The tick offset at which this actor message has been sent and is to be
-		% processed:
-		%
-		tick_offset :: tick_offset(),
+	% The tick offset at which this actor message has been sent and is to be
+	% processed:
+	%
+	tick_offset :: tick_offset(),
 
-		% The target diasca at which this actor message is to be processed (the
-		% next diasca after the one of the sending):
-		%
-		diasca :: diasca(),
+	% The target diasca at which this actor message is to be processed (the next
+	% diasca after the one of the sending):
+	%
+	diasca :: diasca(),
 
-		% The PID of the sending actor:
-		sender_pid :: actor_pid(),
+	% The PID of the sending actor:
+	sender_pid :: actor_pid(),
 
-		% The AAI of the sending actor:
-		sender_aai :: aai(),
+	% The AAI of the sending actor:
+	sender_aai :: aai(),
 
-		% The actual actor message, which is a oneway call:
-		actual_message :: oneway_call() } ).
+	% The actual actor message, which is a oneway call:
+	actual_message :: oneway_call() } ).
 
 
 -type actor_message() :: #actor_message{}.
@@ -1237,12 +1237,9 @@ validate_scheduling_outcome( State ) ->
 %
 validate_new_ticks( AddedTicks, WithdrawnTicks, CurrentTickOffset ) ->
 
-	case AddedTicks of
+	AddedTicks =:= [] orelse
+		begin
 
-		[] ->
-			ok;
-
-		_ ->
 			lists:min( AddedTicks ) > CurrentTickOffset orelse
 				begin
 					FaultyAddedTicks =
@@ -1251,14 +1248,11 @@ validate_new_ticks( AddedTicks, WithdrawnTicks, CurrentTickOffset ) ->
 							 FaultyAddedTicks, CurrentTickOffset } )
 				end
 
-	end,
+		end,
 
-	case WithdrawnTicks of
+	WithdrawnTicks =:= [] orelse
+		begin
 
-		[] ->
-			ok;
-
-		_ ->
 			lists:min( WithdrawnTicks ) > CurrentTickOffset  orelse
 				begin
 					FaultyWithdrawnTicks =
@@ -1267,7 +1261,7 @@ validate_new_ticks( AddedTicks, WithdrawnTicks, CurrentTickOffset ) ->
 							 FaultyWithdrawnTicks, CurrentTickOffset } )
 				end
 
-	end,
+		end,
 
 	case list_utils:intersection( AddedTicks, WithdrawnTicks ) of
 
@@ -1662,7 +1656,7 @@ check_messages_at_new_diasca_helper(
 
 check_messages_at_new_diasca_helper(
   [ #actor_message{ tick_offset=CurrentTickOffset, diasca=NextDiasca } | T ],
-  CurrentTickOffset, CurrentDiasca ) when NextDiasca == CurrentDiasca + 1 ->
+  CurrentTickOffset, CurrentDiasca ) when NextDiasca =:= CurrentDiasca + 1 ->
 
 	% Next diasca, message must have been sent by an early actor:
 	check_messages_at_new_diasca_helper( T, CurrentTickOffset, CurrentDiasca );
@@ -1724,29 +1718,22 @@ check_triggered_indeed( TickOffset, NewDiasca, State ) ->
 
 	PendingMessages = ?getAttr(pending_messages),
 
-	case find_message_for_timestamp( TickOffset, NewDiasca, PendingMessages ) of
+	find_message_for_timestamp( TickOffset, NewDiasca, PendingMessages ) orelse
 
-		true ->
-			ok;
+		% No message, hence only other reason to be triggered: active
+		% termination in progress.
+		%
+		case ?getAttr(next_action) of
 
-		false ->
-
-			% No message, hence only other reason to be triggered: active
-			% termination in progress.
-			%
-			case ?getAttr(next_action) of
-
-				{ terminating, DiascaCount, no_diasca_requested }
+			{ terminating, DiascaCount, no_diasca_requested }
 						when is_integer( DiascaCount ) ->
-					ok;
+				ok;
 
-				Unexpected ->
-					throw( { triggered_unexpectedly, TickOffset, NewDiasca,
-							 Unexpected, PendingMessages } )
+			Unexpected ->
+				throw( { triggered_unexpectedly, TickOffset, NewDiasca,
+						 Unexpected, PendingMessages } )
 
-			end
-
-	end.
+		end.
 
 
 
@@ -1758,14 +1745,15 @@ check_triggered_indeed( TickOffset, NewDiasca, State ) ->
 find_message_for_timestamp( _TickOffset, _Diasca, _Acc=[] ) ->
 	false;
 
-find_message_for_timestamp( TickOffset, Diasca,
-	  _Acc=[ #actor_message{ tick_offset=TickOffset, diasca=Diasca } | _T ] ) ->
+find_message_for_timestamp( TickOffset, Diasca, _Acc=[ #actor_message{
+													tick_offset=TickOffset,
+													diasca=Diasca } | _T ] ) ->
 	true;
 
 find_message_for_timestamp( TickOffset, Diasca,
-	  [ M = #actor_message{ tick_offset=ATickOffset, diasca=ADiasca } | _T ] )
-		 when ATickOffset =/= TickOffset orelse ADiasca < Diasca
-			  orelse ADiasca > Diasca + 1 ->
+		[ M = #actor_message{ tick_offset=ATickOffset, diasca=ADiasca } | _T ] )
+			when ATickOffset =/= TickOffset orelse ADiasca < Diasca
+				 orelse ADiasca > Diasca + 1 ->
 	throw( { found_message_in_the_past, M, { TickOffset, Diasca } } );
 
 find_message_for_timestamp( TickOffset, Diasca, [ _H | T ] ) ->
@@ -1873,7 +1861,7 @@ add_spontaneous_ticks( SpontaneousTicksToAdd, State ) ->
 -spec add_spontaneous_tick_in( tick_offset(), wooper:state() ) ->
 										wooper:state().
 add_spontaneous_tick_in( InSpontaneousDurationOffset, State )
-  when is_integer( InSpontaneousDurationOffset )->
+								when is_integer( InSpontaneousDurationOffset )->
 
 	SpontaneousTickToAdd = ?getAttr(current_tick_offset)
 		+ InSpontaneousDurationOffset,
@@ -2798,24 +2786,28 @@ convert_seconds_to_ticks_explicit( Seconds, MaxRelativeError, TickDuration )
 			TickCount;
 
 		false ->
-
 			ActualError = math_utils:get_relative_difference( Seconds,
-														CorrespondingSeconds ),
+												CorrespondingSeconds ),
 
 			trace_bridge:error_fmt( "Requested to convert ~w seconds in ticks "
 				"(whose duration is ~ts), yet the corresponding relative "
-				"difference (~w) is too large (maximum one being ~w)",
-				[ Seconds, time_utils:duration_to_string( TickDuration ),
-				  ActualError, MaxRelativeError ] ),
+				"difference (~w) is too large (maximum one being ~w; "
+				"approximated duration was ~w virtual seconds, i.e. ~B ticks). "
+				"One may increase either the simulation frequency (i.e opt for "
+				"a finer tick period) or the maximum relative error that is "
+				"to be tolerated for this time conversion.",
+				[ Seconds, time_utils:duration_to_string( 1000 * TickDuration ),
+				  ActualError, MaxRelativeError, CorrespondingSeconds,
+				  TickCount ] ),
 
 			throw( { too_inaccurate_duration_conversion, TickCount,
-						{ Seconds, CorrespondingSeconds }, TickDuration,
-						{ MaxRelativeError, ActualError } } )
+				{ Seconds, CorrespondingSeconds }, TickDuration,
+				{ MaxRelativeError, ActualError } } )
 
 	end;
 
 convert_seconds_to_ticks_explicit( Seconds, MaxRelativeError, TickDuration )
-  when is_integer( Seconds ) ->
+												when is_integer( Seconds ) ->
 	convert_seconds_to_ticks_explicit( erlang:float( Seconds ),
 									   MaxRelativeError, TickDuration );
 
@@ -2836,7 +2828,7 @@ convert_seconds_to_ticks_explicit( Seconds, _MaxRelativeError,
 -spec convert_seconds_to_non_null_ticks( any_seconds(), wooper:state() ) ->
 												tick_offset().
 convert_seconds_to_non_null_ticks( Seconds, State )
-  when is_integer( Seconds ) ->
+												when is_integer( Seconds ) ->
 	convert_seconds_to_non_null_ticks( erlang:float( Seconds ), State );
 
 convert_seconds_to_non_null_ticks( Seconds, State ) ->
@@ -3030,10 +3022,10 @@ convert_absolute_tick_to_tick_offset( AbsoluteTick, State ) ->
 -spec convert_timestamp_to_tick_offset( timestamp(), wooper:state() ) ->
 												tick_offset().
 convert_timestamp_to_tick_offset( Timestamp, State )
-  when is_tuple( Timestamp ) ->
+												when is_tuple( Timestamp ) ->
 
 	%trace_utils:debug_fmt( "Converting to tick offset timestamp '~p'.",
-	%						[ Timestamp ] ),
+	%                       [ Timestamp ] ),
 
 	Seconds = calendar:datetime_to_gregorian_seconds( Timestamp ),
 
@@ -3266,10 +3258,10 @@ send_actor_message( Unexpected, _ActorOneway, _State ) ->
 
 
 
-% @doc Sends specified (actor) message to the specified listed actors, records
-% these sendings to wait for the corresponding acknowledgements, and returns an
-% updated state. These inter-actor messages exchanged during simulation are the
-% only allowed way of communicating between actors.
+% @doc Sends the (same) specified (actor) message to the specified actors,
+% records these sendings to wait for the corresponding acknowledgements, and
+% returns an updated state. These inter-actor messages exchanged during
+% simulation are the only allowed way of communicating between actors.
 %
 % An actor message parameter describes the behaviour (actor oneway, translating
 % to an Erlang function) to trigger when this message will be taken into account
@@ -3325,16 +3317,16 @@ send_actor_message( Unexpected, _ActorOneway, _State ) ->
 %
 -spec send_actor_messages( [ actor_pid() ], oneway_call(), wooper:state() ) ->
 									wooper:state().
-send_actor_messages( _ActorPidList=[], _ActorOneway, State ) ->
+send_actor_messages( _ActorPids=[], _ActorOneway, State ) ->
 	% No target, no state change wanted:
 	State;
 
-send_actor_messages( ActorPidList, ActorOneway, State ) ->
+send_actor_messages( ActorPids, ActorOneway, State ) ->
 
 	cond_utils:if_defined( simdiasca_debug_model_behaviours,
 		trace_utils:debug_fmt( "  ~w sending an actor message to ~w "
 			"at {~p,~p}: ~p",
-			[ self(), ActorPidList, ?getAttr(current_tick_offset),
+			[ self(), ActorPids, ?getAttr(current_tick_offset),
 			  ?getAttr(current_diasca), ActorOneway ] ) ),
 
 	% The simulation shall be already started:
@@ -3345,7 +3337,7 @@ send_actor_messages( ActorPidList, ActorOneway, State ) ->
 				[ ?getAttr(current_tick_offset), ?getAttr(current_diasca)+1,
 				  ActorOneway, self(), ?getAttr(actor_abstract_id) ] },
 
-	[ ActorPid ! ActorMessage || ActorPid <- ActorPidList ],
+	[ ActorPid ! ActorMessage || ActorPid <- ActorPids ],
 
 	NewAction = case ?getAttr(next_action) of
 
@@ -3363,7 +3355,7 @@ send_actor_messages( ActorPidList, ActorOneway, State ) ->
 		% scheduled in this case.
 		%
 		{ terminated, _DiascaRequest } ->
-			throw( { no_message_sending_when_terminated, ActorPidList,
+			throw( { no_message_sending_when_terminated, ActorPids,
 					 ActorOneway } )
 
 	end,
@@ -3386,7 +3378,7 @@ send_actor_messages( ActorPidList, ActorOneway, State ) ->
 	% of what they are to schedule.
 	%
 	setAttributes( State, [
-		{ waited_acks, ActorPidList ++ ?getAttr(waited_acks) },
+		{ waited_acks, ActorPids ++ ?getAttr(waited_acks) },
 		{ next_action, NewAction } ] ).
 
 
@@ -3444,7 +3436,7 @@ execute_actor_oneway_as( Classname, Onewayname, MethodArgs, State ) ->
 % actor oneway will be auto-sent at {T,D+DiascaOffset-1}).
 %
 % Note: relying on diasca counts is generally prohibited, as it is hackish and
-% error prone (execution order to come from the causality reflected by actor
+% error-prone (execution order to come from the causality reflected by actor
 % messages); it is only useful when wanting to address very specific corner
 % cases, for example when needing, at a given physical time, to act depending to
 % actor messages being received *or not* in the prior diascas (no causality
@@ -3461,15 +3453,15 @@ self_trigger_actor_message_in( _DiascaOffset=1, ActorOneway, State ) ->
 
 
 self_trigger_actor_message_in( DiascaOffset, ActorOneway, State )
-  when DiascaOffset > 1 ->
+									when DiascaOffset > 1 ->
 
 	cond_utils:if_defined( simdiasca_debug_model_behaviours,
 		?debug_fmt( "Will trigger in ~B diascas following actor oneway: ~p.",
 					[ DiascaOffset, ActorOneway ] ) ),
 
 	% Reserved to avoid name clashes:
-	SelfActorOneway={ 'sd_reserved_selfTrigger',
-						[ DiascaOffset-1, ActorOneway ] },
+	SelfActorOneway=
+		{ 'sd_reserved_selfTrigger', [ DiascaOffset-1, ActorOneway ] },
 
 	send_actor_message( self(), SelfActorOneway, State );
 
@@ -3520,24 +3512,19 @@ process_last_diasca_messages( CurrentTickOffset, CurrentDiasca, State ) ->
 	% executed quick enough to have this actor message received before.
 
 	cond_utils:if_defined( simdiasca_check_time_management,
-
 		begin
 
 			check_future_messages( NextMessages, CurrentTickOffset,
 								   CurrentDiasca ),
 
-			% They come from the past (abnormal):
-			case PastMessages of
-
-				[] ->
-					ok;
-
-				_ ->
+			PastMessages =:= [] orelse
+				% They come from the past (abnormal):
+				begin
 					?error_fmt( "There is at least one actor message in "
 						"the past: ~p.", [ PastMessages ] ),
 					throw( { actor_message_in_the_past, PastMessages } )
 
-			end
+				end
 
 		end ),
 
@@ -3559,10 +3546,10 @@ check_future_messages( _FutureMessages=[], _CurrentTickOffset,
 
 % Abnormal cases:
 check_future_messages( _FutureMessages=[ M=#actor_message{
-   tick_offset=MessageOffset, diasca=MessageDiasca } | _T ],
+		tick_offset=MessageOffset, diasca=MessageDiasca } | _T ],
 					   CurrentTickOffset, CurrentDiasca )
-  when MessageOffset > CurrentTickOffset
-	   orelse MessageDiasca > CurrentDiasca + 1->
+							when MessageOffset > CurrentTickOffset
+								 orelse MessageDiasca > CurrentDiasca+1 ->
 
 	throw( { message_from_unexpected_future, { MessageOffset, MessageDiasca },
 				{ CurrentTickOffset, CurrentDiasca }, M } );
@@ -3571,9 +3558,9 @@ check_future_messages( _FutureMessages=[ M=#actor_message{
 % these are all future messages):
 %
 check_future_messages( _FutureMessages=[ #actor_message{
-	tick_offset=CurrentTickOffset, diasca=MessageDiasca } | T ],
+		tick_offset=CurrentTickOffset, diasca=MessageDiasca } | T ],
 					   CurrentTickOffset, CurrentDiasca )
-  when MessageDiasca =:= CurrentDiasca + 1 ->
+							when MessageDiasca =:= CurrentDiasca+1 ->
 
 	check_future_messages( T, CurrentTickOffset, CurrentDiasca ).
 
@@ -3595,15 +3582,15 @@ execute_reordered_oneways( _Messages=[], State ) ->
 
 % List parameter here:
 execute_reordered_oneways( _Messages=[
-	   { SenderPid, SenderAAI, { OnewayName, OnewayArgList } }
-										| MessageTuples ],
-		State ) when is_list( OnewayArgList ) ->
+		{ SenderPid, SenderAAI, { OnewayName, OnewayArgList } }
+									 | MessageTuples ], State )
+										when is_list( OnewayArgList ) ->
 
 	FullArgs = list_utils:append_at_end( SenderPid, OnewayArgList ),
 
 	NewState = try
 
-					executeOneway( State, OnewayName, FullArgs )
+			executeOneway( State, OnewayName, FullArgs )
 
 		catch ExceptionClass:Exception:FullStackTrace ->
 
@@ -3623,7 +3610,6 @@ execute_reordered_oneways( _Messages=[
 			ExceptionString = case Exception of
 
 				undef ->
-
 					{ M, F, Args, _Loc } = hd( FullStackTrace ),
 
 					Arity = length( Args ),
@@ -3652,13 +3638,13 @@ execute_reordered_oneways( _Messages=[
 			ActorClassname = wooper:get_classname( State ),
 
 			LocString = locate_error( hd( FullStackTrace ),
-							ActorClassname, OnewayName, OnewayArity ),
+				ActorClassname, OnewayName, OnewayArity ),
 
 			SimLogicalTimestamp = { CurrentTickOffset, _CurrentDiasca }
-							= get_current_logical_timestamp( State ),
+				= get_current_logical_timestamp( State ),
 
-			SimUserTimestamp = convert_tick_offset_to_timestamp(
-									CurrentTickOffset, State ),
+			SimUserTimestamp =
+				convert_tick_offset_to_timestamp( CurrentTickOffset, State ),
 
 			SimUserTimestampString =
 				time_utils:get_textual_timestamp( SimUserTimestamp ),
@@ -3836,7 +3822,7 @@ execute_reordered_oneways( _Messages=[
 locate_error( _StackTraceItem={ AnyActorClassname, AnyOnewayName, OnewayArgs,
 								LocInfos },
 			  ActorClassname, OnewayName, OnewayArity )
-  when is_list( OnewayArgs ) ->
+							when is_list( OnewayArgs ) ->
 	locate_error( { AnyActorClassname, AnyOnewayName, length( OnewayArgs ),
 					LocInfos },
 				  ActorClassname, OnewayName, OnewayArity );
@@ -3949,11 +3935,11 @@ update_agenda_with( AddedTicks, WithdrawnTicks, Agenda ) ->
 	% and withdrawn at the same diasca, the operation will fail:
 	%
 	WithdrawAgenda = lists:foldl(
-					fun( Tick, AccAgenda ) ->
-						list_utils:delete_existing( Tick, AccAgenda )
-					end,
-					_WithdrawAcc0=Agenda,
-					_WithdrawList=WithdrawnTicks ),
+		fun( Tick, AccAgenda ) ->
+			list_utils:delete_existing( Tick, AccAgenda )
+		end,
+		_WithdrawAcc0=Agenda,
+		_WithdrawList=WithdrawnTicks ),
 
 	%lists:sort( list_utils:uniquify( WithdrawAgenda ++ AddedTicks ) ),
 
@@ -3992,7 +3978,7 @@ insert_in_agenda( TickOffset, [ TickOffset | _T ]=Agenda,
 	lists:reverse( FirstAgendaEntries ) ++ Agenda;
 
 insert_in_agenda( TickOffset, [ H | _T ]=Agenda, FirstAgendaEntries )
-		when H > TickOffset ->
+											when H > TickOffset ->
 	% We went past the point where this offset should be specified:
 	lists:reverse( FirstAgendaEntries ) ++ [ TickOffset | Agenda ];
 
@@ -4044,14 +4030,14 @@ split_messages_over_time(
 split_messages_over_time(
 		[ H=#actor_message{ diasca=MessageDiasca } | T ],
 		CurrentTickOffset, CurrentDiasca, CurrentOnes, FutureOnes, PastOnes )
-  when MessageDiasca < CurrentDiasca ->
+								when MessageDiasca < CurrentDiasca ->
 	split_messages_over_time( T, CurrentTickOffset, CurrentDiasca,
 							  CurrentOnes, FutureOnes, [ H | PastOnes ] );
 
 split_messages_over_time(
 		[ H=#actor_message{ diasca=MessageDiasca } | T ],
 		CurrentTickOffset, CurrentDiasca, CurrentOnes, FutureOnes, PastOnes )
-  when MessageDiasca > CurrentDiasca ->
+								when MessageDiasca > CurrentDiasca ->
 	split_messages_over_time( T, CurrentTickOffset, CurrentDiasca,
 							  CurrentOnes, [ H | FutureOnes ], PastOnes );
 
@@ -4064,10 +4050,10 @@ split_messages_over_time(
 %
 split_messages_over_time( [ #actor_message{ sender_pid=Pid, sender_aai=Aai,
 			actual_message=Message} | T ], CurrentTickOffset, CurrentDiasca,
-						 CurrentOnes, FutureOnes, PastOnes ) ->
+						  CurrentOnes, FutureOnes, PastOnes ) ->
 	% No timestamp kept in the 'current list':
 	split_messages_over_time( T, CurrentTickOffset, CurrentDiasca,
-			[ { Pid, Aai, Message } | CurrentOnes ], FutureOnes, PastOnes ).
+		[ { Pid, Aai, Message } | CurrentOnes ], FutureOnes, PastOnes ).
 
 
 
@@ -4156,7 +4142,7 @@ create_initial_actor( ActorClassname, ActorConstructionParameters ) ->
 	LoadBalancerPid = class_LoadBalancer:get_balancer(),
 
 	ActorPid = create_initial_actor( ActorClassname,
-					ActorConstructionParameters, LoadBalancerPid ),
+		ActorConstructionParameters, LoadBalancerPid ),
 
 	wooper:return_static( ActorPid ).
 
@@ -4265,7 +4251,7 @@ create_initial_placed_actor( ActorClassname, ActorConstructionParameters,
 	LoadBalancerPid = class_LoadBalancer:get_balancer(),
 
 	ActorPid = create_initial_placed_actor( ActorClassname,
-				ActorConstructionParameters, LoadBalancerPid, PlacementHint ),
+		ActorConstructionParameters, LoadBalancerPid, PlacementHint ),
 
 	wooper:return_static( ActorPid ).
 
@@ -4291,8 +4277,9 @@ create_initial_placed_actor( ActorClassname, ActorConstructionParameters,
 											static_return( actor_pid() ).
 create_initial_placed_actor( ActorClassname, ActorConstructionParameters,
 							 LoadBalancerPid, PlacementHint )
-  when is_atom( ActorClassname ) andalso is_list( ActorConstructionParameters )
-	   andalso is_pid( LoadBalancerPid ) ->
+		when is_atom( ActorClassname )
+			 andalso is_list( ActorConstructionParameters )
+			 andalso is_pid( LoadBalancerPid ) ->
 
 	% No checking that the simulation is not started yet is needed, as it will
 	% be done load-balancer-side.
@@ -4371,7 +4358,8 @@ create_initial_actors( ActorConstructionList ) ->
 -spec create_initial_actors( [ instance_creation_spec() ],
 				load_balancer_pid() ) -> static_return( [ actor_pid() ] ).
 create_initial_actors( ActorConstructionList, LoadBalancerPid )
-  when is_list( ActorConstructionList ) andalso is_pid( LoadBalancerPid ) ->
+		when is_list( ActorConstructionList )
+			 andalso is_pid( LoadBalancerPid ) ->
 
 	% No checking that the simulation is not started yet is needed, as it will
 	% be done load-balancer-side.
@@ -4439,17 +4427,8 @@ get_name( State ) ->
 %
 -spec is_running( wooper:state() ) -> boolean().
 is_running( State ) ->
-
 	% simulationStarted/3 is the only one to set it:
-	case ?getAttr(initial_tick) of
-
-		undefined ->
-			false;
-
-		_Other ->
-			true
-
-	end.
+	?getAttr(initial_tick) =/= undefined.
 
 
 
@@ -4493,8 +4472,8 @@ is_running( State ) ->
 -spec create_actor( classname(), [ method_argument() ], wooper:state() ) ->
 						wooper:state().
 create_actor( ActorClassname, ActorConstructionParameters, State )
-  when is_atom( ActorClassname )
-	   andalso is_list( ActorConstructionParameters ) ->
+					when is_atom( ActorClassname )
+						 andalso is_list( ActorConstructionParameters ) ->
 
 	% The checking that the simulation is already running is done in
 	% send_actor_message/3.
@@ -4695,8 +4674,8 @@ create_actors( ActorConstructionList, State )
 	  class_LoadBalancer:placement_hint(), wooper:state() ) -> wooper:state().
 create_placed_actor( ActorClassname, ActorConstructionParameters,
 					 PlacementHint, State )
-  when is_atom( ActorClassname )
-	   andalso is_list( ActorConstructionParameters ) ->
+						when is_atom( ActorClassname )
+							 andalso is_list( ActorConstructionParameters ) ->
 
 	% The checking that the simulation is already running is done in
 	% send_actor_message/3.
@@ -4704,7 +4683,7 @@ create_placed_actor( ActorClassname, ActorConstructionParameters,
 	% Will trigger back, on this actor, onActorCreated/4 in two diascas:
 	send_actor_message( ?getAttr(load_balancer_pid),
 		{ createRuntimePlacedActor, [ ActorClassname,
-					ActorConstructionParameters, PlacementHint ] }, State ).
+			ActorConstructionParameters, PlacementHint ] }, State ).
 
 
 
@@ -4753,8 +4732,8 @@ create_placed_actor( ActorClassname, ActorConstructionParameters,
 								wooper:state().
 create_placed_actor( ActorClassname, ActorConstructionParameters, ActorTag,
 					 PlacementHint, State )
-  when is_atom( ActorClassname )
-	   andalso is_list( ActorConstructionParameters ) ->
+		when is_atom( ActorClassname )
+			 andalso is_list( ActorConstructionParameters ) ->
 
 	% The checking that the simulation is already running is done in
 	% send_actor_message/3.
@@ -5224,7 +5203,7 @@ get_all_base_attribute_names() ->
 
 	AttrNames =
 		wooper_introspection:get_class_specific_attribute_names( ?MODULE )
-		++ list_utils:flatten_once(
+			++ list_utils:flatten_once(
 				[ wooper_introspection:get_class_specific_attribute_names( C )
 					|| C <- ?superclasses ] ),
 

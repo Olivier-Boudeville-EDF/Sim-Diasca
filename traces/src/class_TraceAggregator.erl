@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2022 Olivier Boudeville
+% Copyright (C) 2007-2023 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -222,8 +222,9 @@
 % The aggregator can be (optionally) plugged to an OTP supervision tree, thanks
 % to the Traces supervisor bridge (see the traces_sup module).
 %
-% The most usual registration scope for a trace aggregator is global_only; as
-% such this is the convention that was first prioritised and tuned for.
+% The most usual registration scope for a trace aggregator used to be
+% global_only, as such this is the convention that was first prioritised and
+% tuned for, yet it is now increasingly local, to uncouple applications.
 
 
 
@@ -366,6 +367,8 @@ construct( State, TraceFilename, TraceSupervisionType, TraceTitle,
 		% overload_monitor_pid set later
 		{ watchdog_pid, undefined } ] ),
 
+	Localhost = net_utils:localhost(),
+
 	% We do not display these information on the console now, as the application
 	% may have to change the trace filename (the best moment to display that
 	% file information on the console is when the filename is final, typically
@@ -376,8 +379,9 @@ construct( State, TraceFilename, TraceSupervisionType, TraceTitle,
 	case MaybeRegistrationScope of
 
 		undefined ->
-			trace_utils:info_fmt( "~ts Creating a private trace aggregator, "
-				"whose PID is ~w.", [ ?LogPrefix, self() ] );
+			trace_utils:info_fmt( "~ts Creating a private trace aggregator "
+				"whose PID is ~w, on host '~ts'.",
+				[ ?LogPrefix, self(), Localhost ] );
 
 		RegScope ->
 
@@ -387,26 +391,24 @@ construct( State, TraceFilename, TraceSupervisionType, TraceTitle,
 			naming_utils:register_as( RegName, RegScope ),
 
 			trace_utils:info_fmt( "~ts Creating a trace aggregator, "
-				"whose PID is ~w, with name '~ts' and registration scope ~ts.",
-				[ ?LogPrefix, self(), RegName, RegScope ] ),
+				"whose PID is ~w, with name '~ts' and registration scope ~ts, "
+				"on host '~ts'.",
+				[ ?LogPrefix, self(), RegName, RegScope, Localhost ] ),
 
 			% As soon as possible (i.e. now that it is registered, provided that
 			% get_aggregator/1 can find it, i.e. that it is registered
 			% globally), we plug ourselves as the (single) logger handler from
 			% now:
 			%
-			case RegScope =:= global_only
-						orelse RegScope =:= local_and_global of
+			override_standard_logger_handler( RegScope ) andalso
+				begin
 
-				true ->
-					send_internal_deferred( info, "Self registering as default "
-						"standard logger handler." ),
-					traces:set_handler( self() );
+					send_internal_deferred( info, "Self-registering as "
+						"the default standard logger handler." ),
 
-				false ->
-					ok
+					traces:set_handler( self() )
 
-			end
+				end
 
 	end,
 
@@ -423,7 +425,7 @@ construct( State, TraceFilename, TraceSupervisionType, TraceTitle,
 	HeaderState = manage_trace_header( OverloadState ),
 
 	% Writes the very first trace after this header, returns an updated state:
-	TraceState = send_internal_immediate( info, "Trace aggregator created, "
+	TraceState = send_internal_immediate( notice, "Trace aggregator created, "
 		"trace filename is '~ts', trace type is '~w', "
 		"and trace title is '~ts'.",
 		[ AbsBinTraceFilename, TraceSupervisionType, TraceTitle ],
@@ -461,6 +463,18 @@ destruct( State ) ->
 
 	%trace_utils:debug_fmt( "~ts Deleting trace aggregator.", [ ?LogPrefix ] ),
 
+	% Otherwise would block the proper termination of the OTP Traces application
+	% (see traces_otp_application_test.erl):
+	%
+	% (reset now rather than later, as no trace will be written anymore; we want
+	% to minimise the risk that any standard log is lost because of this
+	% termination)
+
+	RegScope = ?getAttr(registration_scope),
+
+	override_standard_logger_handler( RegScope ) andalso
+		traces:reset_handler(),
+
 	?getAttr(overload_monitor_pid) ! delete,
 
 	case ?getAttr(watchdog_pid) of
@@ -473,21 +487,8 @@ destruct( State ) ->
 
 	end,
 
-
-	% Class-specific actions:
-
-	RegScope = ?getAttr(registration_scope),
-
-	case RegScope of
-
-		undefined ->
-			ok;
-
-		RegScope ->
-			% (handler reset in this function, below)
-			naming_utils:unregister( ?trace_aggregator_name, RegScope )
-
-	end,
+	RegScope =:= undefined orelse
+		naming_utils:unregister( ?trace_aggregator_name, RegScope ),
 
 	FooterState = manage_trace_footer( State ),
 
@@ -536,12 +537,8 @@ destruct( State ) ->
 
 				{ _ExitCode=0, _Output } ->
 
-					case ?getAttr(is_batch) of
-
-						true ->
-							ok;
-
-						false ->
+					?getAttr(is_batch) orelse
+						begin
 							trace_utils:info_fmt( "~ts Displaying PDF trace "
 								"report.", [ ?LogPrefix ] ),
 
@@ -557,16 +554,6 @@ destruct( State ) ->
 						  ExitCode, ErrorOutput ] )
 
 			end
-
-	end,
-
-	case RegScope =:= global_only orelse RegScope =:= local_and_global of
-
-		true ->
-			traces:reset_handler();
-
-		false ->
-			ok
 
 	end,
 
@@ -655,18 +642,11 @@ send( State, TraceEmitterPid, TraceEmitterName, TraceEmitterCategorization,
 
 	Listeners = ?getAttr(trace_listeners),
 
-	case Listeners of
-
-		[] ->
-			ok;
-
-		_AtLeastOne ->
-
+	Listeners =:= [] orelse
+		begin
 			BinTrace = text_utils:string_to_binary( Trace ),
-
 			[ L ! { addTrace, BinTrace } || L <- Listeners ]
-
-	end,
+		end,
 
 	wooper:const_return().
 
@@ -709,18 +689,11 @@ sendSync( State, TraceEmitterPid, TraceEmitterName, TraceEmitterCategorization,
 
 	Listeners = ?getAttr(trace_listeners),
 
-	case Listeners of
-
-		[] ->
-			ok;
-
-		_AtLeastOne ->
-
+	Listeners =:= [] orelse
+		begin
 			BinTrace = text_utils:string_to_binary( Trace ),
-
 			[ L ! { addTrace, BinTrace } || L <- Listeners ]
-
-	end,
+		end,
 
 	%trace_utils:debug_fmt( "Sync trace '~ts' written.", [ Trace ] ),
 
@@ -1016,7 +989,7 @@ sync( State ) ->
 -spec setMinimumTraceFileSizeForRotation( wooper:state(), byte_size() ) ->
 												oneway_return().
 setMinimumTraceFileSizeForRotation( State, MinFileSize )
-  when is_integer( MinFileSize ) ->
+										when is_integer( MinFileSize ) ->
 
 	send_internal_deferred( info, "Setting minimum size for trace file to ~ts.",
 		[ system_utils:interpret_byte_size_with_unit( MinFileSize ) ] ),
@@ -1519,6 +1492,32 @@ initialize_supervision( State ) ->
 
 
 
+
+% @doc Tells whether this aggregator shall be used as the default standard
+% logger handler.
+%
+% Centralised to avoid unmatched setting/unsetting of the standard handler.
+%
+-spec override_standard_logger_handler( registration_scope() ) -> boolean().
+
+% We relaxed the "global" constraint, as we do not see anymore its necessity;
+% moreover we tend to increasingly use local scopes in order to have multiple
+% instances coexist independently, and we surely do not want to miss any
+% (standard) log message that would be only in erlang.log.* files; so:
+
+%override_standard_logger_handler( _RegScope=global_only ) ->
+%	true;
+
+%override_standard_logger_handler( _RegScope=local_and_global ) ->
+%	true;
+
+%override_standard_logger_handler( _RegScope ) ->
+%	false;
+override_standard_logger_handler( _RegScope ) ->
+	true.
+
+
+
 % Enables the aggregator watchdog.
 -spec enable_watchdog( registration_name(), look_up_scope(), seconds(),
 					   wooper:state() ) -> wooper:state().
@@ -1577,15 +1576,8 @@ send_internal_immediate( TraceSeverity, Message, State ) ->
 		_Priority=trace_utils:get_priority_for( TraceSeverity ),
 		Message ] ),
 
-	case trace_utils:is_error_like( TraceSeverity ) of
-
-		true ->
-			trace_utils:echo( Message, TraceSeverity );
-
-		false ->
-			ok
-
-	end,
+	trace_utils:is_error_like( TraceSeverity ) andalso
+		trace_utils:echo( Message, TraceSeverity ),
 
 	SelfSentState.
 
@@ -1626,15 +1618,8 @@ send_internal_deferred( TraceSeverity, Message ) ->
 		_Priority=trace_utils:get_priority_for( TraceSeverity ),
 		Message ] },
 
-	case trace_utils:is_error_like( TraceSeverity ) of
-
-		true ->
-			trace_utils:echo( Message, TraceSeverity );
-
-		false ->
-			ok
-
-	end.
+	trace_utils:is_error_like( TraceSeverity ) andalso
+		trace_utils:echo( Message, TraceSeverity ).
 
 
 
@@ -1764,15 +1749,15 @@ format_trace_for( advanced_traces, { TraceEmitterPid,
 		Location, MessageCategorization, Priority, Message } ) ->
    lists:flatten(
 
-	 % For debugging, use io_lib:format/2 if wanting to crash on abnormal
-	 % input:
-	 %
-	 %io_lib:format(
-	 text_utils:format(
-		"~w|~ts|~ts|~ts|~ts|~ts|~ts|~B|~ts~n",
-		[ TraceEmitterPid, TraceEmitterName, TraceEmitterCategorization,
-		  AppTimestamp, Time, Location, MessageCategorization, Priority,
-		  Message ] ) );
+		% For debugging, use io_lib:format/2 if wanting to crash on abnormal
+		% input:
+		%
+		%io_lib:format(
+		text_utils:format(
+			"~w|~ts|~ts|~ts|~ts|~ts|~ts|~B|~ts~n",
+			[ TraceEmitterPid, TraceEmitterName, TraceEmitterCategorization,
+			  AppTimestamp, Time, Location, MessageCategorization, Priority,
+			  Message ] ) );
 
 format_trace_for( { text_traces, _TargetFormat }, { TraceEmitterPid,
 		TraceEmitterName, _TraceEmitterCategorization, AppTimestamp, Time,

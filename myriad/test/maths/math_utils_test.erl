@@ -79,10 +79,10 @@ run() ->
 	8 = math_utils:get_next_power_of_two( 8 ),
 
 	[ test_facilities:display( "Canonical form for ~p° is ~p°.",
-							   [ A, math_utils:canonify(A) ] ) ||
-		A <- [ -721, -721.0, -720, -720.0, -719, -719.0, -100, -100.0,
-			   0, 0.0, 100, 100.0, 359, 359.0, 360, 360.0, 361, 361.0,
-			   400, 400.0 ] ],
+							   [ A, math_utils:canonify(A) ] )
+		|| A <- [ -721, -721.0, -720, -720.0, -719, -719.0, -100, -100.0,
+				  0, 0.0, 100, 100.0, 359, 359.0, 360, 360.0, 361, 361.0,
+				  400, 400.0 ] ],
 
 
 	X1 = 300000.0,
@@ -120,17 +120,11 @@ run() ->
 
 	WriteDataFile = false,
 
-	case WriteDataFile of
-
-		true ->
+	WriteDataFile andalso
+		begin
 			file_utils:remove_file_if_existing( DataFilePath ),
-
-			csv_utils:write_file( Pairs, DataFilePath );
-
-		false ->
-			ok
-
-	end,
+			csv_utils:write_file( Pairs, DataFilePath )
+		end,
 
 	Samples = math_utils:sample( AffinFun, _From=1.0, _To=20.0, _Incr=2.0 ),
 

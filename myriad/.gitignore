@@ -29,6 +29,7 @@ src/myriad.app.src
 
 # Generated:
 conf/rebar.config
+test/maths/test-affin.dat
 
 doc/mathjax
 doc/Ceylan-Myriad-Layer-technical-manual-english.rst

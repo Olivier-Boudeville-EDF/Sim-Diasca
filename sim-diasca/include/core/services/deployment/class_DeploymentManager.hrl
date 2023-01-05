@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2022 EDF R&D
+% Copyright (C) 2008-2023 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -16,7 +16,7 @@
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
 
-% Author: Olivier Boudeville (olivier.boudeville@edf.fr)
+% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2008.
 
 
@@ -489,9 +489,10 @@
 	%
 	% - the classname of web probes may be specified, so that their
 	% prerequisites can be automatically deployed as well; note that each of
-	% these classes shall have defined a static method for that, namely:
+	% these classes shall have defined a static method (hence stateless; no
+	% corresponding instance thereof exists at that point) for that, namely:
 	% -spec get_elements_to_deploy() ->
-	%    static_return( class_DeploymentManager:elements_to_deploy() )
+	% static_return(class_DeploymentManager:elements_to_deploy())
 	%
 	% - the TCP port at which the webserver shall run can be specified
 	% (otherwise the default will apply, see default_webserver_tcp_port, as

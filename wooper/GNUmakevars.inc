@@ -53,17 +53,28 @@ endif
 # conditional compilation primitives (see cond_utils for their management):
 
 # Topics covered by flags:
-#  - xx (none yet)
-
+#  - construction: for the creation of instances
+#  - destruction: for the deletion of instances
+#  - embodiment: to delegate the hosting of an instance to an existing process
+#  - serialisation: for the serialisation of instances
+#  - deserialisation: for the deserialisation of instances
+#  - hot_update: for the hot-code update of classes
+#
 # Defining debug flags (at least the most verbose are by default commented-out):
 ifeq ($(ENABLE_DEBUG),true)
+	#WOOPER_DEBUG_FLAGS += -Dwooper_debug_construction
+	#WOOPER_DEBUG_FLAGS += -Dwooper_debug_destruction
+	#WOOPER_DEBUG_FLAGS += -Dwooper_debug_embodiment
 	#WOOPER_DEBUG_FLAGS += -Dwooper_debug_serialisation
 	#WOOPER_DEBUG_FLAGS += -Dwooper_debug_deserialisation
-	WOOPER_DEBUG_FLAGS += -Dwooper_debug_hot_update
+	#WOOPER_DEBUG_FLAGS += -Dwooper_debug_hot_update
 endif
 
 # Defining check flags:
 ifeq ($(EXECUTION_TARGET),development)
+	WOOPER_CHECK_FLAGS += -Dwooper_check_construction
+	WOOPER_CHECK_FLAGS += -Dwooper_check_destruction
+	WOOPER_CHECK_FLAGS += -Dwooper_check_embodiment
 	WOOPER_CHECK_FLAGS += -Dwooper_check_serialisation
 	WOOPER_CHECK_FLAGS += -Dwooper_check_deserialisation
 	WOOPER_CHECK_FLAGS += -Dwooper_check_hot_update

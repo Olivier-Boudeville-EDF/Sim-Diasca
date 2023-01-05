@@ -41,8 +41,12 @@ use_run_erl=1
 # Some defaults:
 
 # By default up to 1.2 million processes could be created on one node:
-# (reduced, as even without having spawned these processes, the memory footprint
-# can increase quite a lot; default value is 32768 processes)
+#
+# (it has been reduced, as even without having spawned these processes, the
+# memory footprint can increase quite a lot; the Erlang default value is given
+# by erlang:system_info(process_limit); it used to be 32768 processes, then 262
+# 144)
+#
 # max_process_count=120000
 max_process_count=400000
 #max_process_count=120000000

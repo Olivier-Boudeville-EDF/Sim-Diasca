@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2022 Olivier Boudeville
+% Copyright (C) 2014-2023 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -42,7 +42,7 @@
 % To determine the other bootstrapped modules (i.e. the subset of our modules
 % that this module can use), see the BOOTSTRAP_MODULES variable in
 % GNUmakevars.inc.
-
+%
 % See also: the type_utils module, about the management of datatypes themselves,
 % and the ast* modules for lower-level operations.
 %
@@ -130,7 +130,6 @@
 
 
 % Third-party libraries of interest:
-%
 % - https://github.com/uwiger/parse_trans
 % - https://github.com/uwiger/toker
 
@@ -239,6 +238,7 @@
 -type function_info() :: ast_info:function_info().
 
 -type ast_transforms() :: ast_transform:ast_transforms().
+
 
 
 % Parse-transform related functions:
@@ -772,7 +772,7 @@ transform_transformed_term( TargetTerm, TypeDescription, TermTransformer,
 			transform_tuple( TransformedTerm, TypeDescription, TermTransformer,
 							 NewUserData );
 
-		% { ImmediateTerm, NewUserData } ->
+		% {ImmediateTerm, NewUserData} ->
 		Other ->
 			Other
 

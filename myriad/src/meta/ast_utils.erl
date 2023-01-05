@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2022 Olivier Boudeville
+% Copyright (C) 2018-2023 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -751,11 +751,15 @@ display_emergency( FormatString, Values ) ->
 -spec notify_warning( [ term() ], form_context() ) -> void().
 notify_warning( Elements, Context ) ->
 
+	% The specified elements may then be prefixed by a context string:
 	case get_elements_with_context( Elements, Context ) of
 
-		% Supposedly a string:
+		% Supposedly a string (and no context):
 		[ SingleElement ] when is_list( SingleElement ) ->
 			display_warning( "~ts", [ SingleElement ] );
+
+		[ FirstElem | OtherElems ] when is_list( FirstElem ) ->
+			display_warning( "~ts ~p", [ FirstElem, OtherElems ] );
 
 		AllElements ->
 			display_warning( "~p", [ AllElements ] )
@@ -852,12 +856,12 @@ raise_error( Message, #ast_transforms{ transformed_module_name=ModName },
 	halt( 5 );
 
 
-raise_error( Message, SourceContext, OriginLayer ) ->
+raise_error( Message, MaybeSourceContext, OriginLayer ) ->
 
-	%trace_utils:debug_fmt( "Message: ~p, SourceContext: ~p, Layer: ~p",
-	%						[ Message, SourceContext, OriginLayer ] ),
+	%trace_utils:debug_fmt( "Message: ~p, MaybeSourceContext: ~p, Layer: ~p",
+	%   [ Message, MaybeSourceContext, OriginLayer ] ),
 
-	Prefix = case SourceContext of
+	Prefix = case MaybeSourceContext of
 
 		undefined ->
 			"Error";
@@ -892,7 +896,7 @@ raise_error( Message, SourceContext, OriginLayer ) ->
 
 		false ->
 			io:format( "~ts raised while performing ~ts-level transformations:"
-					   "~n  ~p~n", [ Prefix, OriginLayer, Message ] )
+				"~n  ~p~n", [ Prefix, OriginLayer, Message ] )
 
 	end,
 
@@ -901,16 +905,9 @@ raise_error( Message, SourceContext, OriginLayer ) ->
 
 	try
 
-		case DisplayStacktrace of
-
-			true ->
-				% To get a stack trace:
-				throw( { ast_transformation_failed_in, OriginLayer } );
-
-			false ->
-				ok
-
-		end
+		DisplayStacktrace andalso
+			% To get a stack trace:
+			throw( { ast_transformation_failed_in, OriginLayer } )
 
 	catch
 
@@ -919,8 +916,8 @@ raise_error( Message, SourceContext, OriginLayer ) ->
 		% Pre-21.0 code:
 		%_C:_R ->
 		%
-		%	% Removing useless {ast_utils,raise_error,2,...:
-		%	ActualStackTrace = tl( erlang:get_stacktrace() ),
+		%   % Removing useless {ast_utils,raise_error,2,...:
+		%   ActualStackTrace = tl( erlang:get_stacktrace() ),
 
 		% Post-21.0 code:
 		_C:_R:StackTrace ->
@@ -1005,7 +1002,7 @@ raise_usage_error( ErrorFormatString, ErrorValues, Filename,
 					   _ActualFileLoc=?default_generation_location );
 
 raise_usage_error( ErrorFormatString, ErrorValues, ModuleName, FileLoc )
-  when is_atom( ModuleName ) ->
+								when is_atom( ModuleName ) ->
 	Filename = io_lib:format( "~ts.erl", [ ModuleName ] ),
 	raise_usage_error( ErrorFormatString, ErrorValues, Filename, FileLoc );
 
@@ -1063,7 +1060,7 @@ format_error( ErrorTerm ) ->
 
 
 
-% @doc Returns error/warning elements including specified context.
+% @doc Returns error/warning elements including the specified context.
 %
 % (helper)
 %
@@ -1085,7 +1082,7 @@ get_elements_with_context( Elements, _Context=FileLoc={ L, C } )
 % FilePath is a string, plain or binary:
 get_elements_with_context( Elements, _Context={ FilePath, FileLoc } ) ->
 	% Was: Elements ++ [ { file, text_utils:binary_to_string( FilePath ) },
-	%					 { line, Line } ];
+	%                    { line, Line } ];
 
 	% We mimic the default error formatting so that tools (like IDE) have a
 	% chance to automatically point to the right location in the sources:
@@ -1095,12 +1092,11 @@ get_elements_with_context( Elements, _Context={ FilePath, FileLoc } ) ->
 
 	[ Prefix | Elements ];
 
-
 get_elements_with_context( Elements, _Context=Line ) when is_integer( Line ) ->
 	Elements ++ [ file_loc_to_explicative_term( Line ) ];
 
 get_elements_with_context( Elements, _Context=FilePath )
-  when is_binary( FilePath ) ->
+								when is_binary( FilePath ) ->
 	Prefix = io_lib:format( "~ts:0: ",
 							[ text_utils:binary_to_string( FilePath ) ] ),
 	[ Prefix | Elements ];

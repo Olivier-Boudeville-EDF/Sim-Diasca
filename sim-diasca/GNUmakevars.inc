@@ -35,6 +35,18 @@ else
 endif
 
 
+# Define the simdiasca_allow_reproducible_nested_initial_creations token if
+# wanting to enable fully-reproducible initial nested creations, i.e. initial
+# actors that create other actors from their constructors (the consequence is
+# then to use a single creator process, instead of multiple, parallel ones -
+# thus resulting in longer initialisations):
+#
+# (refer to the design notes in instance_loading.erl for more details)
+#
+ifndef SIM_DIASCA_SETTINGS_FLAGS
+	SIM_DIASCA_SETTINGS_FLAGS += -Dsimdiasca_allow_reproducible_nested_initial_creations
+endif
+
 
 # Defining (optional) engine-specific flags, typically used by in-code
 # conditional compilation primitives (see cond_utils for their management; a
@@ -46,6 +58,8 @@ endif
 #  - user_api_calls: the calls by the user code of the engine-provided services
 #  - time_management: the time management, as implemented by the engine itself
 #  - initial_creations: the creation of initial actors, from the case
+#  - instance_loading: the creation of initial actors from initialisation streams
+#	 (typically files)
 #  - runtime_creations: the creation of actors in the course of the simulation
 #  - life_cycles: the life cycles, typically of actors
 
@@ -55,6 +69,7 @@ ifeq ($(ENABLE_DEBUG),true)
 	#SIM_DIASCA_DEBUG_FLAGS += -Dsimdiasca_debug_user_api_calls
 	#SIM_DIASCA_DEBUG_FLAGS += -Dsimdiasca_debug_time_management
 	#SIM_DIASCA_DEBUG_FLAGS += -Dsimdiasca_debug_initial_creations
+	#SIM_DIASCA_DEBUG_FLAGS += -Dsimdiasca_debug_instance_loading
 	#SIM_DIASCA_DEBUG_FLAGS += -Dsimdiasca_debug_runtime_creations
 	#SIM_DIASCA_DEBUG_FLAGS += -Dsimdiasca_debug_life_cycles
 endif
@@ -66,13 +81,16 @@ ifeq ($(EXECUTION_TARGET),development)
 	SIM_DIASCA_CHECK_FLAGS += -Dsimdiasca_check_user_api_calls
 	SIM_DIASCA_CHECK_FLAGS += -Dsimdiasca_check_time_management
 	SIM_DIASCA_CHECK_FLAGS += -Dsimdiasca_check_initial_creations
+	SIM_DIASCA_CHECK_FLAGS += -Dsimdiasca_check_instance_loading
 	SIM_DIASCA_CHECK_FLAGS += -Dsimdiasca_check_runtime_creations
 	SIM_DIASCA_CHECK_FLAGS += -Dsimdiasca_check_life_cycles
 endif
 
 
-ERLANG_COMPILER_OPT_BASE += $(SIM_DIASCA_DEBUG_FLAGS) \
+ERLANG_COMPILER_OPT_BASE += $(SIM_DIASCA_SETTINGS_FLAGS) \
+							$(SIM_DIASCA_DEBUG_FLAGS)    \
 							$(SIM_DIASCA_CHECK_FLAGS)
+
 
 
 
@@ -84,7 +102,7 @@ ifndef PROJECT_NAME
 endif
 
 
-SIM_DIASCA_BASE_VERSION := 2.4.4
+SIM_DIASCA_BASE_VERSION := 2.4.5
 
 #SIM_DIASCA_VERSION := $(SIM_DIASCA_BASE_VERSION)-beta-$(date '+%Y%m%d-%Hh%M')
 #SIM_DIASCA_VERSION := $(SIM_DIASCA_BASE_VERSION)-for-foobar
@@ -100,7 +118,7 @@ endif
 ifndef PROJECT_RELEASE_DATE
 	# To be set only at release time:
 	#PROJECT_RELEASE_DATE := "(not set yet)"
-	PROJECT_RELEASE_DATE := "Monday, October 17, 2022"
+	PROJECT_RELEASE_DATE := "Thursday, January 5, 2023"
 endif
 
 

@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2022 Olivier Boudeville
+% Copyright (C) 2007-2023 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -227,7 +227,6 @@
 
 
 % When no emitter is specified:
-%
 -define( default_test_emitter_categorization, "Test" ).
 
 -define( default_case_emitter_categorization, "Case" ).
@@ -736,7 +735,7 @@
 % state.
 %
 -define( send_critical_fmt_cat( State, Message, FormatValues,
-							 MessageCategorization ),
+							MessageCategorization ),
 		 class_TraceEmitter:send_safe( critical, State,
 			text_utils:format( Message, FormatValues ), MessageCategorization )
 ).
@@ -762,7 +761,7 @@
 % state.
 %
 -define( send_critical_fmt_full( State, Message, FormatValues,
-							  MessageCategorization, ApplicationTimestamp ),
+							MessageCategorization, ApplicationTimestamp ),
 		 class_TraceEmitter:send_safe( critical, State,
 			text_utils:format( Message, FormatValues ),
 			MessageCategorization, ApplicationTimestamp )
@@ -774,7 +773,7 @@
 % a variable named 'State'.
 %
 -define( critical_fmt_full( Message, FormatValues, MessageCategorization,
-						 ApplicationTimestamp ),
+						ApplicationTimestamp ),
 		 class_TraceEmitter:send_safe( critical, State,
 			text_utils:format( Message, FormatValues ),
 			MessageCategorization, ApplicationTimestamp )
@@ -1004,12 +1003,12 @@
 % Unused now:
 %-define( display_warning_fmt( Message, FormatValues ),
 %
-%		 trace_utils:warning_fmt( Message, FormatValues ),
+%		trace_utils:warning_fmt( Message, FormatValues ),
 %
-%		 % To ensure the asynchronous sending of the trace has a chance to
-%		 % complete, possibly before the interpreter is crashed:
-%		 %
-%		 class_TraceEmitter:await_output_completion()
+%		% To ensure the asynchronous sending of the trace has a chance to
+%		% complete, possibly before the interpreter is crashed:
+%		%
+%		class_TraceEmitter:await_output_completion()
 %
 %).
 
@@ -1018,12 +1017,12 @@
 % Alternate (default) implementation:
 
 %% -define( display_warning( Message ),
-%%	ok
+%%  ok
 %% ).
 
 
 %% -define( display_warning_fmt( Message, FormatValues ),
-%%	ok
+%%  ok
 %% ).
 
 
@@ -1212,82 +1211,6 @@
 
 
 
-
-
-
-% See the ENABLE_TRACES make variable to enable/disable tracing:
--ifdef(tracing_activated).
-
-
-% The type of trace output (ex: LogMX, PDF, etc.) is defined in the traces.hrl
-% file.
-
-
-% The first version of macros uses an explicit state.
-%
-% The second version of macros uses an implicit state, named 'State', as, except
-% in constructors, WOOPER conventions imply such a state exists and, provided
-% informations stored in state have not changed (notably emitter name and
-% categorization), the initial state declared in a method can be used instead of
-% any newer one.
-
-
-
-% Selecting a macro implies selecting a level of severity.
-
-% An issue is that the definition of Erlang macros does not take into account
-% arities, thus LOG(X) and LOG(X,Y) cannot be defined without a name clash.
-%
-% This explains why the trace informations have to be specified between brakets:
-% using LOG([X,Y]) instead of LOG(X,Y).
-%
-% Anonymous functions could be used as well.
-%
-% See http://www.nabble.com/question%3A-macro-definition-tt14840873.html
-
-% For each severity of trace (emergency, alert, critical, error, warning, etc.),
-% a few variations of the set of specified trace informations are supported.
-
-
-
-
-% Taking 'notice' as an example:
-% - '?notice( "Hello" )'
-% - '?notice_cat( "Hello", "My Category" )' ('cat' stands for 'categorized')
-% - '?notice_full( "Hello", "My Category", 125 )'
-%
-% The use of text_utils:format/2 involved too much typing, so we defined shorter
-% forms instead. Taking 'notice' again as an example:
-% - '?notice_fmt( "Hello ~w.", [V] )' (most frequently used form; 'fmt' stands
-% for 'format')
-% - '?notice_fmt_cat( "Hello ~w.", [V], "My Category" )'
-% - '?notice_fmt_full( "Hello ~w.", [V], "My Category", 125 )'
-%
-% (knowing we cannot define macros with a same name but a different arity)
-
-
-
-% Some delay were added when error-like traces are sent, so that they can be
-% stored before the virtual machine is stopped, should it happen (ex: if an
-% exception is thrown); they have been since then replaced by synchronous
-% operations.
-
-
-% If traces are enabled, only error-like ones will be echoed in the terminal,
-% whereas, if the traces are disabled, warning ones will be echoed too.
-
-
-% No variable is to be bound in these macros, otherwise sending more than one
-% trace from the same scope would lead to 'badmatch' errors.
-
-
-% For the most severe traces, we still use class_TraceEmitter:sync/1 rather than
-% the once used by trace_utils, as the former is surely strictly synchronous,
-% whereas the latter probably not.
-
-
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Notice section.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1453,6 +1376,82 @@
 			text_utils:format( Message, FormatValues ),
 			MessageCategorization, ApplicationTimestamp )
  ).
+
+
+
+
+
+
+
+% See the ENABLE_TRACES make variable to enable/disable tracing:
+-ifdef(tracing_activated).
+
+
+% The type of trace output (ex: LogMX, PDF, etc.) is defined in the traces.hrl
+% file.
+
+
+% The first version of macros uses an explicit state.
+%
+% The second version of macros uses an implicit state, named 'State', as, except
+% in constructors, WOOPER conventions imply such a state exists and, provided
+% informations stored in state have not changed (notably emitter name and
+% categorization), the initial state declared in a method can be used instead of
+% any newer one.
+
+
+
+% Selecting a macro implies selecting a level of severity.
+
+% An issue is that the definition of Erlang macros does not take into account
+% arities, thus LOG(X) and LOG(X,Y) cannot be defined without a name clash.
+%
+% This explains why the trace informations have to be specified between brakets:
+% using LOG([X,Y]) instead of LOG(X,Y).
+%
+% Anonymous functions could be used as well.
+%
+% See http://www.nabble.com/question%3A-macro-definition-tt14840873.html
+
+% For each severity of trace (emergency, alert, critical, error, warning, etc.),
+% a few variations of the set of specified trace informations are supported.
+
+
+
+
+% Taking 'notice' as an example:
+% - '?notice( "Hello" )'
+% - '?notice_cat( "Hello", "My Category" )' ('cat' stands for 'categorized')
+% - '?notice_full( "Hello", "My Category", 125 )'
+%
+% The use of text_utils:format/2 involved too much typing, so we defined shorter
+% forms instead. Taking 'notice' again as an example:
+% - '?notice_fmt( "Hello ~w.", [V] )' (most frequently used form; 'fmt' stands
+% for 'format')
+% - '?notice_fmt_cat( "Hello ~w.", [V], "My Category" )'
+% - '?notice_fmt_full( "Hello ~w.", [V], "My Category", 125 )'
+%
+% (knowing we cannot define macros with a same name but a different arity)
+
+
+
+% Some delay was added when error-like traces are sent, so that they can be
+% stored before the virtual machine is stopped, should it happen (ex: if an
+% exception is thrown); they have been since then replaced by synchronous
+% operations.
+
+
+% If traces are enabled, only error-like ones will be echoed in the terminal,
+% whereas, if the traces are disabled, warning ones will be echoed too.
+
+
+% No variable is to be bound in these macros, otherwise sending more than one
+% trace from the same scope would lead to 'badmatch' errors.
+
+
+% For the most severe traces, we still use class_TraceEmitter:sync/1 rather than
+% the once used by trace_utils, as the former is surely strictly synchronous,
+% whereas the latter probably not.
 
 
 
@@ -1876,104 +1875,6 @@
 % We do the same also whenever the 'State' variable is to be implicitly used
 % (ex: with '?error("Hello")'), otherwise user code would also have it
 % reported as unused.
-
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Notice section.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-% Subsection for Notice, without formatting.
-
-
-% Most important trace categories cannot be disabled:
-
--define( send_notice( State, Message ),
-		 trace_disabled( State, Message )
-).
-
-
--define( notice( Message ),
-		 trace_disabled( State, Message )
-).
-
-
-
-
-
--define( send_notice_cat( State, Message, MessageCategorization ),
-		 trace_disabled( State, Message, MessageCategorization )
-).
-
-
--define( notice_cat( Message, MessageCategorization ),
-		 trace_disabled( State, Message, MessageCategorization )
-).
-
-
-
--define( send_notice_full( State, Message, MessageCategorization,
-						   ApplicationTimestamp ),
-		 trace_disabled( State, Message, MessageCategorization,
-						 ApplicationTimestamp )
-).
-
-
--define( notice_full( Message, MessageCategorization, ApplicationTimestamp ),
-		 trace_disabled( State, Message, MessageCategorization,
-						 ApplicationTimestamp )
-).
-
-
-
-
-% Subsection for Notice, with formatting.
-
-
--define( send_notice_fmt( State, Message, FormatValues ),
-		 trace_disabled( State, Message, FormatValues )
-).
-
-
--define( notice_fmt( Message, FormatValues ),
-		 trace_disabled( State, Message, FormatValues )
-).
-
-
-
-
-
--define( send_notice_fmt_cat( State, Message, FormatValues,
-							  MessageCategorization ),
-		 trace_disabled( State, Message, FormatValues,
-						 MessageCategorization )
-).
-
-
--define( notice_fmt_cat( Message, FormatValues, MessageCategorization ),
-		 trace_disabled( State, Message, FormatValues, MessageCategorization )
-).
-
-
-
-
-
-
--define( send_notice_fmt_full( State, Message, FormatValues,
-							   MessageCategorization, ApplicationTimestamp ),
-		 trace_disabled( State, Message, FormatValues,
-						 MessageCategorization, ApplicationTimestamp )
-).
-
-
--define( notice_fmt_full( Message, FormatValues, MessageCategorization,
-						  ApplicationTimestamp ),
-		 trace_disabled( State, Message, FormatValues, MessageCategorization,
-						 ApplicationTimestamp )
-).
 
 
 

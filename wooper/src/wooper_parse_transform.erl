@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2022 Olivier Boudeville
+% Copyright (C) 2014-2023 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -335,7 +335,7 @@ apply_wooper_transform( InputAST, Options ) ->
 	%  [ ast_info:module_info_to_string( TransformedModuleInfo ) ] ),
 
 	OutputAST = ast_info:recompose_ast_from_module_info(
-				  TransformedModuleInfo ),
+				    TransformedModuleInfo ),
 
 	?display_trace( "Recomposing corresponding AST." ),
 
@@ -343,12 +343,12 @@ apply_wooper_transform( InputAST, Options ) ->
 
 	%OutputASTFilename = text_utils:format(
 	%   "WOOPER-output-AST-for-module-~ts.txt",
-	%	[ element( 1, TransformedModuleInfo#module_info.module ) ] ),
+	%   [ element( 1, TransformedModuleInfo#module_info.module ) ] ),
 
 	%ast_utils:write_ast_to_file( OutputAST, OutputASTFilename ),
 
 	%ast_utils:write_ast_to_file( lists:sort( OutputAST ),
-	%							 "WOOPER-output-AST-sorted.txt" ),
+	%                             "WOOPER-output-AST-sorted.txt" ),
 
 	case MaybeClassInfo of
 
@@ -747,17 +747,9 @@ add_static_method( Name, Arity, Form, StaticTable ) ->
 check_class_info( #class_info{ class={ Classname, _LocForm },
 							   constructors=Constructors } ) ->
 
-	case table:is_empty( Constructors ) of
-
-		true ->
-			wooper_internals:raise_usage_error( "no constructor defined "
-				"(expecting at least one construct/N defined).", [],
-				Classname );
-
-		false ->
-			ok
-
-	end.
+	table:is_empty( Constructors ) andalso
+		wooper_internals:raise_usage_error( "no constructor defined "
+			"(expecting at least one construct/N defined).", [], Classname ).
 
 	% For each clause of each constructor, we should check that the constructors
 	% of direct superclasses have all a fair chance of being called.
@@ -900,7 +892,7 @@ generate_module_info_from( #class_info{
 	AllFunctionTable = WithMthdFunTable,
 
 	%trace_utils:debug_fmt( "Complete function table: ~ts",
-	%						[ table:to_string( AllFunctionTable ) ] ),
+	%                       [ table:to_string( AllFunctionTable ) ] ),
 
 	% Directly returned (many fields can be copied verbatim):
 	#module_info{

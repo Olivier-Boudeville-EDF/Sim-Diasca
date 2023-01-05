@@ -78,6 +78,9 @@ list-beam-dirs:
 	@for d in $(MYRIAD_BEAM_DIRS); do echo $$(readlink -f $$d); done
 
 
+list-beam-relative-paths:
+	@cd src && echo $(MYRIAD_BEAM_DIRS)
+
 
 add-prerequisite-plts: prepare-base-plt \
 					   add-erlhdf5-plt add-jsx-plt add-sqlite3-plt link-plt

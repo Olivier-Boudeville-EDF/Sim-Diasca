@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2022 Olivier Boudeville
+% Copyright (C) 2007-2023 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -58,7 +58,7 @@
 		  hexabinstring_to_binary/1, hexastring_to_binary/1,
 		  binary_to_hexastring/1, binary_to_hexastring/2,
 
-		  integer_to_bits/1,
+		  integer_to_bits/1, integer_to_bits/2,
 
 		  atom_to_string/1,
 
@@ -82,6 +82,8 @@
 		  binaries_to_string/1, binaries_to_string/2,
 		  binaries_to_sorted_string/1, binaries_to_listed_string/1,
 		  binaries_to_binary/1, binaries_to_binary/2,
+
+		  buffer_to_string/1, buffer_to_binstring/1,
 
 		  atoms_to_string/1, atoms_to_sorted_string/1, atoms_to_listed_string/1,
 		  atoms_to_quoted_listed_string/1,
@@ -255,11 +257,11 @@
 
 
 -type unicode_string() :: unicode:chardata().
-% A Unicode string.
+% A Unicode (plain) string.
 %
 % This is our new default.
 %
-% We mean [char()] where char() must be 0..16#10ffff.
+% We mean [char()] where char() must be in 0..16#10ffff.
 
 
 -type unicode_data() :: unicode:latin1_chardata()
@@ -629,7 +631,7 @@ integer_to_hexastring( IntegerValue, _AddPrefix=false ) ->
 
 
 % @doc Returns a binary string corresponding to the specified integer, in
-% hexadecimal form, with a "0x" prefix.
+% hexadecimal form (with no "0x" prefix).
 %
 % Ex: integer_to_hexabinstring(3432) = `<<"d68">>'.
 %
@@ -656,8 +658,8 @@ integer_to_hexabinstring( IntegerValue, AddPrefix ) ->
 
 
 % @doc Returns an integer corresponding to the specified string containing a
-% (single) hexadecimal number as a text, and expected to start with a "0x"
-% prefix.
+% (single) hexadecimal number as a text (not expected to start with a "0x"
+% prefix).
 %
 % Note: both uppercase and lowercase letters are supported.
 %
@@ -690,7 +692,7 @@ hexastring_to_integer( HexaString, _ExpectPrefix=false ) ->
 
 
 % @doc Returns a plain string corresponding to the specified binary, in
-% hexadecimal form, with a "0x" prefix.
+% hexadecimal form (with no "0x" prefix).
 %
 % Ex: `binary_to_hexastring(<<"hello">>) = "68656c6c6f"'.
 %
@@ -773,19 +775,38 @@ hexastring_to_binary( _HexaStr=[ SingleHex ], BinAcc ) ->
 
 
 % @doc Returns a plain string corresponding to the specified integer once
-% translated to a series of bits, listed per groups of 4.
+% translated to a series of bits, listed per groups of 4, not padded.
 %
-% Ex: "0b100-0000-0011" = integer_to_bits(1024+2+1).
+% Example: "0b100-0000-0011" = integer_to_bits(1024+2+1).
 %
 -spec integer_to_bits( integer() ) -> ustring().
 integer_to_bits( I ) ->
 	AllBits = io_lib:format( "~.2B", [ I ] ),
-	% We want to group bits per four, but from right to left:
+
+	% We want to group bits, but from right to left:
 	RevAllBits = lists:reverse( AllBits ),
-	RevPacketRevStrs = split_every( _Count=4, RevAllBits ),
+	RevPacketRevStrs = split_every( _GroupCount=4, RevAllBits ),
 	RevPacketStrs = [ lists:reverse( S ) || S <- RevPacketRevStrs ],
 	"0b" ++ join( _Sep=$-, lists:reverse( RevPacketStrs ) ).
 
+
+% @doc Returns a plain string corresponding to the specified integer once
+% translated to a series of bits, listed per groups of 4, possibly padded with
+% zeros on the left to reach the specified number of bits.
+%
+% Example: "0b0000-0100-0000-0011" = integer_to_bits(1024+2+1, 16).
+%
+-spec integer_to_bits( integer(), width() ) -> ustring().
+integer_to_bits( I, PadWidth ) ->
+	AllBits = io_lib:format( "~.2B", [ I ] ),
+	AllBitsPadded = list_utils:flatten_once(
+		pad_string_right( AllBits, PadWidth, _PadChar=$0 ) ),
+
+	% We want to group bits, but from right to left:
+	RevAllBits = lists:reverse( AllBitsPadded ),
+	RevPacketRevStrs = split_every( _GroupCount=4, RevAllBits ),
+	RevPacketStrs = [ lists:reverse( S ) || S <- RevPacketRevStrs ],
+	"0b" ++ join( _Sep=$-, lists:reverse( RevPacketStrs ) ).
 
 
 % @doc Returns a plain string corresponding to the specified atom.
@@ -1368,6 +1389,47 @@ binaries_to_binary( Binaries, Bullet ) when is_list( Bullet ) ->
 
 binaries_to_binary( _Binaries, IncorrectBullet ) ->
 	throw( { bullet_not_a_string, IncorrectBullet } ).
+
+
+
+% @doc Returns a (plain) string corresponding to the specified (byte) buffer,
+% expected to contain a 8 bit ASCII null-terminated string.
+%
+-spec buffer_to_string( binary() ) -> ustring().
+buffer_to_string( Bin ) ->
+	buffer_to_string( Bin, _Acc=[], Bin ).
+
+
+% (helper)
+buffer_to_string( _Bin= <<>>, _Acc, OriginalBin ) ->
+	throw( { not_null_terminated, OriginalBin } );
+
+% End of string found:
+buffer_to_string( _Bin= <<0,_T/binary>>, Acc, _OriginalBin ) ->
+	lists:reverse( Acc );
+
+buffer_to_string( _Bin= <<H,T/binary>>, Acc, OriginalBin ) ->
+	buffer_to_string( T, [ H | Acc ], OriginalBin ).
+
+
+
+% @doc Returns a binary string corresponding to the specified (byte) buffer,
+% expected to contain a 8 bit ASCII null-terminated string.
+%
+-spec buffer_to_binstring( binary() ) -> bin_string().
+buffer_to_binstring( Bin ) ->
+	%string_to_binary( buffer_to_string( Bin ) ).
+	% Possibly more efficient:
+	case binary:split( Bin, _Null= <<0>> ) of
+
+		[ _SingleElem ] ->
+			throw( { not_null_terminated, Bin } );
+
+		% Never empty by design:
+		[ FirstElemBin | _T ] ->
+			FirstElemBin
+
+	end.
 
 
 
@@ -2922,7 +2984,7 @@ string_to_integer( String ) ->
 	catch
 
 		error:badarg ->
-			throw( { integer_conversion_failed , String } )
+			throw( { integer_conversion_failed, String } )
 
 	end.
 
@@ -3534,7 +3596,7 @@ tokenizable_to_camel_case( String, SeparatorsList ) ->
 %
 % The last string may have less than Count characters.
 %
-% Ex: [ "AB", "CD", "E" } = split_every( "ABCDE", _Count=2 ).
+% Ex: ["AB", "CD", "E"] = split_every( "ABCDE", _Count=2 ).
 %
 -spec split_every( count(), ustring() ) -> [ ustring() ].
 split_every( Count, Str ) ->
@@ -3542,8 +3604,8 @@ split_every( Count, Str ) ->
 
 
 
-% @doc Duplicates specified string as many times as specified; returns a plain
-% (flattened once) string, not an iolist.
+% @doc Duplicates the specified string as many times as specified; returns a
+% plain (flattened-once) string, not an iolist.
 %
 % Ex: duplicate(3, "abc") = "abcabcabc".
 %
@@ -4241,8 +4303,8 @@ remove_ending_carriage_return( String ) when is_list( String ) ->
 
 
 
-% @doc Removes the last Count characters from specified string, and returns the
-% result.
+% @doc Removes the last Count characters from the specified string, and returns
+% the result.
 %
 -spec remove_last_characters( ustring(), count() ) -> ustring().
 remove_last_characters( String, Count ) ->
@@ -4262,15 +4324,17 @@ remove_last_characters( String, Count ) ->
 
 
 
-% @doc Removes all whitespaces from specified string, and returns the result.
+% @doc Removes all whitespaces from the specified string, and returns the
+% result.
+%
 -spec remove_whitespaces( ustring() ) -> ustring().
 remove_whitespaces( String ) ->
 	re:replace( String, "\s", "", [ global, unicode, { return, list } ] ).
 
 
 
-% @doc Removes all leading and trailing whitespaces from specified string, and
-% returns the result.
+% @doc Removes all leading and trailing whitespaces from the specified string,
+% and returns the result.
 %
 -spec trim_whitespaces( ustring() ) -> ustring().
 trim_whitespaces( String ) ->
@@ -4280,8 +4344,9 @@ trim_whitespaces( String ) ->
 
 
 
-% @doc Removes all leading whitespaces from specified string, and returns the
-% result.
+% @doc Removes all leading whitespaces from the specified string, and returns
+% the result.
+%
 -spec trim_leading_whitespaces( ustring() ) -> ustring().
 trim_leading_whitespaces( String ) ->
 
@@ -4290,8 +4355,8 @@ trim_leading_whitespaces( String ) ->
 
 
 
-% @doc Removes all trailing whitespaces from specified string, and returns the
-% result.
+% @doc Removes all trailing whitespaces from the specified string, and returns
+% the result.
 %
 -spec trim_trailing_whitespaces( ustring() ) -> ustring().
 trim_trailing_whitespaces( String ) ->
@@ -4482,8 +4547,8 @@ join_words( [ Word | RemainingWords ], Width, AccLines, CurrentLine,
 
 					end,
 
-					%io:format("Current line is now '~ts'.~n",
-					%   [NewCurrentLine]),
+					%trace_utils::format( "Current line is now '~ts'.",
+					%                     [ NewCurrentLine ] ),
 					join_words( RemainingWords, Width, AccLines, NewCurrentLine,
 								NewLineLen );
 
@@ -4520,33 +4585,40 @@ join_words( [ Word | RemainingWords ], Width, AccLines, CurrentLine,
 
 
 
-% @doc Returns the specified string, padded with spaces to specified width,
+% @doc Returns the specified string, once padded with spaces to specified width,
 % left-justified (that is with spaces added to the right).
 %
 % Ex: pad_string("hello", 8) = ["hello",32,32,32]
 %
--spec pad_string( ustring(), width() ) -> ustring().
+% Note that the returned string is not flattened.
+%
+-spec pad_string( ustring(), width() ) -> parse_string().
 pad_string( String, Width ) ->
 	pad_string_left( String, Width ).
 
 
-% @doc Returns the specified string, padded with spaces to specified width,
+% @doc Returns the specified string, once padded with spaces to specified width,
 % left-justified (that is with spaces added to the right).
 %
 % Ex: pad_string_left("hello", 8) = ["hello",32,32,32]
 %
--spec pad_string_left( ustring(), width() ) -> any_string().
+% Note that the returned string is not flattened.
+%
+-spec pad_string_left( ustring(), width() ) -> parse_string().
 pad_string_left( String, Width ) ->
 	pad_string_left( String, Width, _PadChar=$\s ).
 
 
-% @doc Returns the specified string, padded with spaces to specified width,
+% @doc Returns the specified string, once padded with spaces to specified width,
 % left-justified (that is with spaces added to the right), with specified
 % padding character.
 %
 % Ex: pad_string_left("hello", 8, $*) = ["hello",42,42,42]
 %
--spec pad_string_left( ustring(), width(), grapheme_cluster() ) -> any_string().
+% Note that the returned string is not flattened.
+%
+-spec pad_string_left( ustring(), width(), grapheme_cluster() ) ->
+												parse_string().
 pad_string_left( String, Width, PadChar )
 								when erlang:length( String ) =< Width ->
 
@@ -4573,24 +4645,28 @@ pad_string_left( String, Width, PadChar ) ->
 
 
 
-% @doc Returns the specified string, padded with spaces to specified width,
+% @doc Returns the specified string, once padded with spaces to specified width,
 % right-justified (that is with spaces added to the left).
 %
 % Ex: pad_string_right("hello", 8) = ["   ", "hello"]
 %
--spec pad_string_right( ustring(), width() ) -> any_string().
+% Note that the returned string is not flattened.
+%
+-spec pad_string_right( ustring(), width() ) -> parse_string().
 pad_string_right( String, Width ) ->
 	pad_string_right( String, Width, _PadChar=$\s ).
 
 
-% @doc Returns the specified string, padded with spaces to specified width,
+% @doc Returns the specified string, once padded with spaces to specified width,
 % right-justified (that is with spaces added to the left), with specified
 % padding character.
 %
 % Ex: pad_string_right("hello", 8, $*) = ["***", "hello"]
 %
+% Note that the returned string is not flattened.
+%
 -spec pad_string_right( ustring(), width(), grapheme_cluster() ) ->
-														any_string().
+														parse_string().
 pad_string_right( String, Width, PadChar )
 									when erlang:length( String ) =< Width ->
 	%lists:flatten( io_lib:format( "~*.ts", [ Width, String ] ) );

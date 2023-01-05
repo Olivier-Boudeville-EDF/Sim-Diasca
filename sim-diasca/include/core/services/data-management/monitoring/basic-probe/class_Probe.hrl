@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2022 EDF R&D
+% Copyright (C) 2008-2023 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -16,7 +16,7 @@
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
 
-% Author: Olivier Boudeville (olivier.boudeville@edf.fr)
+% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2008.
 
 
@@ -75,11 +75,19 @@
 	y_tick :: text_utils:bin_string(),
 
 
-	% Abscissa range (pair of {MinX,MaxX} integers, or 'undefined'):
-	x_range :: maybe( { gui:coordinate(), gui:coordinate() } ),
+	% Abscissa range (pair of {MaybeMinX,MaybeMaxX} integers, or 'undefined'),
+	% knowing that such a range can be open, if either of the bounds is not
+	% specified (e.g. resulting in a "[5:]" range):
+	%
+	x_range :: maybe(
+		{ maybe( gui:coordinate() ), maybe( gui:coordinate() ) } ),
 
-	% Ordinate range (pair of {MinY,MaxY} integers, or 'undefined'):
-	y_range :: maybe( { gui:coordinate(), gui:coordinate() } ),
+	% Ordinate range (pair of {MaybeMinY,MaybeMaxY} integers, or 'undefined'),
+	% knowing that such a range can be open, if either of the bounds is not
+	% specified (e.g. resulting in a "[5:]" range):
+	%
+	y_range :: maybe(
+		{ maybe( gui:coordinate() ), maybe( gui:coordinate() ) } ),
 
 
 	% Fine control of the major (labeled) ticks on the abscissa axis (as a

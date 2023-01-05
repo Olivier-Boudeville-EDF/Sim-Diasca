@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2022 EDF R&D
+% Copyright (C) 2012-2023 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -235,11 +235,6 @@ init( SimulationSettings, DeploymentSettings, LoadBalancingSettings )
 
 	end,
 
-	% We register this process (the one of the simulation case), so that I can
-	% be found by others, like the resilience manager:
-	%
-	naming_utils:register_as( ?case_main_process_name, ?registration_scope ),
-
 	% Simply returns this PID, for later use:
 	%
 	% (we kept the link with the user process corresponding to the simulation
@@ -247,12 +242,27 @@ init( SimulationSettings, DeploymentSettings, LoadBalancingSettings )
 	% node crashed, and with resilience enabled we trap exits, and are thus able
 	% to detect crashes nevertheless)
 	%
-	class_DeploymentManager:synchronous_new_link( SimulationSettings,
+	DeployManPid = class_DeploymentManager:new_link( SimulationSettings,
 		DeploymentSettings, LoadBalancingSettings, SimIdentifiers,
-		deploy_from_scratch );
+		deploy_from_scratch, _CasePid=self() ),
+
+	% We register this process (the one of the simulation case), so that it can
+	% be found by others, like the resilience manager:
+	%
+	naming_utils:register_as( ?case_main_process_name, ?registration_scope ),
+
+	% Nothing more to do, thus blocks until the deployment manager reports it is
+	% ready (see its onInitialInstancesCreatedFromFiles/1 oneway):
+	%
+	receive
+
+		deployment_done ->
+			DeployManPid
+
+	end;
 
 
-% One set of settings is invalid:
+% One set of settings is invalid here:
 init( SimulationSettings, DeploymentSettings, LoadBalancingSettings )
 		when is_record( DeploymentSettings, deployment_settings ) andalso
 			 is_record( LoadBalancingSettings, load_balancing_settings ) ->

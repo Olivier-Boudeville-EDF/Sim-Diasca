@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2022 Olivier Boudeville
+% Copyright (C) 2018-2023 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -439,11 +439,27 @@ transform_expression( ?e={ 'op', FileLoc, Operator, LeftOperand, RightOperand },
 
 	% TO-DO: add a 'binary_op' transform trigger.
 
-	{ [ NewLeftOperand ], LeftTransforms } =
-		transform_expression( LeftOperand, Transforms ),
+	{ NewLeftOperand, LeftTransforms } =
+			case transform_expression( LeftOperand, Transforms ) of
 
-	{ [ NewRightOperand ], RightTransforms } =
-		transform_expression( RightOperand, LeftTransforms ),
+				{ [ NewLeftOp ], LeftTransfs } ->
+					{ NewLeftOp, LeftTransfs };
+
+				{ [], _LeftTransfs } ->
+					throw( { no_left_operand, LeftOperand, FileLoc } )
+
+	end,
+
+	{ NewRightOperand, RightTransforms } =
+			case transform_expression( RightOperand, LeftTransforms ) of
+
+				{ [ NewRightOp ], RightTransfs } ->
+					{ NewRightOp, RightTransfs };
+
+				{ [], _RightTransfs } ->
+					throw( { no_right_operand, RightOperand, FileLoc } )
+
+	end,
 
 	NewExpr = { 'op', FileLoc, Operator, NewLeftOperand, NewRightOperand },
 

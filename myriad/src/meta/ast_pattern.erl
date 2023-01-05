@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2022 Olivier Boudeville
+% Copyright (C) 2018-2023 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -24,7 +24,6 @@
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Sunday, February 4, 2018.
-
 
 
 % @doc Module in charge of handling <b>patterns defined with an AST</b>.
@@ -507,7 +506,6 @@ transform_pattern( Clause={ 'op', _FileLoc, _UnaryOperator, _Operand },
 % "If P is an operator pattern Op P_0, where Op is a unary operator (this is an
 % occurrence of an expression that can be evaluated to a number at compile
 % time), then Rep(P) = {op, FILE_LOC, Op, Rep(P_0)}."
-%
 
 
 % "If P is a parenthesized pattern ( P_0 ), then Rep(P) = Rep(P_0), that is,
@@ -515,7 +513,13 @@ transform_pattern( Clause={ 'op', _FileLoc, _UnaryOperator, _Operand },
 % do then)
 
 transform_pattern( E, Transforms )
-  when is_record( Transforms, ast_transforms ) ->
+						when is_record( Transforms, ast_transforms ) ->
+
+	% No context available here to point specifically to the current source
+	% file.
+
+	% Relevant in all clauses:
+	FileLocStr = ast_utils:file_loc_to_string( element( 2, E ) ),
 
 	% Record classical misuse?
 	case is_tuple( E ) andalso element( 1, E ) =:= 'record'
@@ -527,8 +531,8 @@ transform_pattern( E, Transforms )
 			%
 			true ->
 				ast_utils:display_error( "Invalid record pattern "
-					"at line #~p; maybe using MyVar#my_record where "
-					"MyVar=#my_record was meant?~n", [ element( 2, E ) ] ),
+					"at ~ts; maybe using MyVar#my_record where "
+					"MyVar=#my_record was meant?~n", [ FileLocStr ] ),
 				ast_utils:raise_error( [ invalid_record_use, E ] );
 
 			% Was possibly a pattern like 'P = f(X) = g(T)':
@@ -536,7 +540,6 @@ transform_pattern( E, Transforms )
 				%ast_utils:display_warning( "Letting unhandled pattern ~p as "
 				%  "is.", [ E ] ),
 				% E.
-				FileLocStr = ast_utils:file_loc_to_string( element( 2, E ) ),
 
 				ast_utils:display_error( "Illegal pattern found at ~ts "
 					"(not supported by the current version of the "

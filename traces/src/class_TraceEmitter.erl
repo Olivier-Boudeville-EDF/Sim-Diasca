@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2022 Olivier Boudeville
+% Copyright (C) 2007-2023 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -77,7 +77,7 @@
 		  send_synchronised/3, send_synchronised/4, send_synchronised/5,
 		  get_trace_timestamp/1, get_trace_timestamp_as_binary/1,
 		  get_plain_name/1, get_short_description/1,
-		  sync/1, await_output_completion/0, send_standalone/2 ]).
+		  sync/1, await_output_completion/0 ]).
 
 
 % The class-specific trace_emitter_categorization define will be set in the
@@ -94,7 +94,7 @@
 % Note: dots are not allowed in an emitter name (they are used as naming
 % separator).
 %
-% Ex: "MyObject 16", or `<<"First Talker">>'.
+% For example  "MyObject 16", or `<<"First Talker">>'.
 
 
 -type emitter_init() :: emitter_name()
@@ -168,7 +168,7 @@
 % Regarding the look-up scope of the trace aggregator:
 %
 % Its most common registration scope is global, yet in some (less common) cases,
-% we prefer having one aggregator per node (ex: multiple applications able to
+% we prefer having one aggregator per node (e.g. multiple applications able to
 % interact, yet each with its own autonomy and node); for scalability reasons,
 % we do not want all trace emitters to have to specify an extra parameter at
 % construction or to read each the configuration information in order to select
@@ -204,7 +204,7 @@
 % @doc Constructs a trace emitter, from EmitterInit, which must be here a pair
 % made of this name and another plain string, its emitter categorization,
 % listing increasingly detailed sub-categories about this trace emitter,
-% separated by dots (ex: "topics.sports.basketball.coach").
+% separated by dots (e.g. "topics.sports.basketball.coach").
 %
 % Note: this constructor should be idempotent, as a given instance might very
 % well inherit (directly or not) from that class more than once.
@@ -259,7 +259,7 @@ construct( State, EmitterName ) ->
 % @doc Constructs a trace emitter, from EmitterInit, which must be here a pair
 % made of this name and another plain string, its emitter categorization,
 % listing increasingly detailed sub-categories about this trace emitter,
-% separated by dots (ex: "topics.sports.basketball.coach"), and from the
+% separated by dots (e.g. "topics.sports.basketball.coach"), and from the
 % specified trace aggregator.
 %
 % Notes:
@@ -526,11 +526,16 @@ register_as_bridge( TraceEmitterName, TraceCategory, TraceAggregatorPid ) ->
 
 
 
-% @doc Subcategorizes a given emitter name, to introduce an additional grouping
-% for trace supervisors grouping emitter names based on dots.
+% @doc Subcategorizes a given emitter name, by introducing an additional
+% grouping level.
 %
-% Ex: if the specified emitter name is "foobar", returns "f.foobar", resulting
-% in this name to be sorted among all entries whose name starts with "f".
+% This is typically useful to avoid that too many emitters are listed at a given
+% categorization level, if using a trace supervisor that groups the emitter
+% names based on the dots that they include.
+%
+% For example if the specified emitter name is "foobar", returns "f.foobar",
+% resulting in this name to be sorted among all entries whose name starts with
+% "f".
 %
 -spec subcategorize( emitter_name() ) -> static_return( emitter_name() );
 				   ( emitter_info() ) -> static_return( emitter_info() ).
@@ -565,7 +570,7 @@ subcategorize( EmmiterName ) ->
 get_all_base_attribute_names() ->
 
 	AttrNames =
-		wooper_introspection:get_class_specific_attribute_names( ?MODULE )
+			wooper_introspection:get_class_specific_attribute_names( ?MODULE )
 		++ list_utils:flatten_once(
 			[ wooper_introspection:get_class_specific_attribute_names( C )
 				|| C <- ?superclasses ] ),
@@ -1443,8 +1448,8 @@ wait_aggregator_sync() ->
 
 
 
-% @doc Returns the current trace-level timestamp (ex: possibly an execution tick
-% offset), or the atom 'none' if the emitter time is not known.
+% @doc Returns the current trace-level timestamp (that is possibly an execution
+% tick offset), or the atom 'none' if the emitter time is not known.
 %
 % (helper)
 %
@@ -1453,7 +1458,7 @@ get_trace_timestamp( State ) ->
 
 	% Note: if an exception "No key 'trace_timestamp' found in following table:
 	% empty hashtable" is triggered, probably that State is not (yet?) a
-	% TraceEmitter one (ex: if using the blank state of a constructor in
+	% TraceEmitter one (e.g. if using the blank state of a constructor in
 	% ?debug(...) instead of using ?send_debug(ATraceState,...)).
 	%
 	?getAttr(trace_timestamp).

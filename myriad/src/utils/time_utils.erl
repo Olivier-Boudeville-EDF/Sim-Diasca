@@ -1,4 +1,4 @@
-% Copyright (C) 2015-2022 Olivier Boudeville
+% Copyright (C) 2015-2023 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -46,7 +46,8 @@
 
 % Day management support:
 -export([ is_bank_holiday/2, get_bank_holidays_for/2,
-		  find_common_bank_holidays/3 ]).
+		  find_common_bank_holidays/3,
+		  get_daylight_saving_time/1 ]).
 
 
 % Week management support:
@@ -55,7 +56,8 @@
 
 % Month management support:
 -export([ canonicalise_month/1, check_month_canonical/1, check_month_order/2,
-		  month_to_string/1 ]).
+		  month_to_string/1,
+		  get_month_duration/1, get_month_durations/0, get_day_rank/1 ]).
 
 
 % Date support:
@@ -74,8 +76,13 @@
 % Such numerical values are useful to operate based on ranges.
 
 
--type week_day() :: 'monday' | 'tuesday' | 'wednesday' | 'thursday'
-				  | 'friday' | 'saturday' | 'sunday'.
+-type week_day() :: 'monday'     % 1
+				  | 'tuesday'    % 2
+				  | 'wednesday'  % 3
+				  | 'thursday'   % 4
+				  | 'friday'     % 5
+				  | 'saturday'   % 6
+				  | 'sunday'.    % 7
 % User-friendly atom-based version of day_index/0.
 
 
@@ -231,18 +238,34 @@
 -type precise_timestamp() :: { megaseconds(), seconds(), microseconds() }.
 
 
--type time_frame() :: { Start :: timestamp(), End :: timestamp() }.
+-type time_frame() :: { Begin :: timestamp(), End :: timestamp() }.
 % A time frame.
 
 
--type user_time_frame() :: { Start :: timestamp() | date(),
+-type user_time_frame() :: { Begin :: timestamp() | date(),
 							 End :: timestamp() | date() }.
 % Typically a user-defined time frame, to be transformed into a legit
 % time_frame/0.
 
 
+-type finite_time_out() :: milliseconds().
+% An actual, finite time-out.
 
--type time_out() :: 'infinity' | milliseconds().
+
+-type time_out() :: 'infinity' | finite_time_out().
+% Any kind of time-out, finite or not.
+%
+% Cannot find the definition of the built-in timeout() type.
+
+
+
+-type finite_second_time_out() :: seconds().
+% An actual, finite time-out.
+
+
+-type second_time_out() :: 'infinity' | finite_second_time_out().
+% Any kind of time-out, finite or not.
+%
 % Cannot find the definition of the built-in timeout() type.
 
 
@@ -253,7 +276,11 @@
 
 -export_type([ timestamp/0, precise_timestamp/0,
 			   time_frame/0, user_time_frame/0,
-			   time_out/0, posix_seconds/0 ]).
+
+			   finite_time_out/0, time_out/0,
+			   finite_second_time_out/0, second_time_out/0,
+
+			   posix_seconds/0 ]).
 
 
 % Shorthands:
@@ -270,6 +297,7 @@
 
 -type minutes() :: unit_utils:minutes().
 -type hours() :: unit_utils:hours().
+-type day() :: unit_utils:day().
 -type days() :: unit_utils:days().
 -type weeks() :: unit_utils:weeks().
 
@@ -433,6 +461,45 @@ month_to_string( MonthIndex ) ->
 
 
 
+% @doc Returns the duration of the specified month.
+%
+% Here February lasts always 28 days.
+%
+-spec get_month_duration( canonical_month() ) -> days().
+get_month_duration( MonthIndex ) ->
+	lists:nth( MonthIndex, get_month_durations() ).
+
+
+% @doc Returns the list of the usual duration of months.
+%
+% Here February lasts always 28 days.
+%
+-spec get_month_durations() -> days().
+get_month_durations() ->
+	[ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 ].
+
+
+
+% @doc Returns the rank in year of the specified day, in [1,365].
+%
+% For example, for the tenth of February:
+% get_day_rank({2, 10}) = 41.
+%
+-spec get_day_rank( date_in_year() ) -> day().
+get_day_rank( { Month, Day } ) ->
+	MonthDurs = get_month_durations(),
+	sum_over_months( Month, MonthDurs, _Acc=Day ).
+
+
+% (helper)
+sum_over_months( _Month=1, _MonthDurs, Acc ) ->
+	Acc;
+
+sum_over_months( Month, _MonthDurs=[ M | T ], Acc ) ->
+	sum_over_months( Month-1, T, Acc+M ).
+
+
+
 % @doc Tells whether, for specified country, the specified date is a bank
 % holiday.
 %
@@ -511,6 +578,103 @@ find_common_bank_holidays_helper( CurrentYear, StopYear, Country, AccSet ) ->
 
 	find_common_bank_holidays_helper( CurrentYear+1, StopYear, Country,
 									  NewAccSet ).
+
+
+
+% @doc Returns the (signed) number of hours to offset the UTC in order to obtain
+% the local time (typically the Central European Summer Time, UTC+1/UTC+2), for
+% the corresponding date.
+%
+% Since 1996, European Summer Time has been observed between 01:00 UTC (02:00
+% CET and 03:00 CEST) on the last Sunday of March, and 01:00 UTC on the last
+% Sunday of October.
+%
+% For most of the dates, this function is rather cheap. It is an approximation,
+% in the sense that the parameter should be a full timestamp (hence with a
+% time), not simply a date.
+%
+-spec get_daylight_saving_time( date() ) -> hours().
+get_daylight_saving_time( _Date={ _Y, M, _D } ) when M < 3 ->
+	1;
+
+get_daylight_saving_time( _Date={ _Y, M, _D } ) when M > 10 ->
+	1;
+
+get_daylight_saving_time( _Date={ _Y, M, _D } ) when M > 3 andalso M < 10 ->
+	2;
+
+% In March or October thus, both with 31 days; maybe in the safe beginning of
+% them:
+%
+% (at worst, 31 is a Saturday, 30 is Friday, 29 Thursday, 28 Wed, 27 Tues, 26
+% Mon, 25 Sun)
+%
+get_daylight_saving_time( _Date={ _Y, _M=3, D } ) when D < 25 ->
+	1;
+
+get_daylight_saving_time( _Date={ _Y, _M=10, D } ) when D < 25 ->
+	2;
+
+% Finest cases needed here, first for March:
+get_daylight_saving_time( _Date={ Y, _M=3, D } ) ->
+
+	% Determining the last weekday, in [Monday=1, ..., Sunday=7]:
+	LastSunday = case calendar:day_of_the_week( Y, 3, 31 ) of
+
+		_Sunday=7 ->
+			31;
+
+		% E.g. if the 31st of March is a Saturday (6), then 31-6=31-7+1 is a
+		% Sunday:
+		%
+		OtherWeekday ->
+			31 - OtherWeekday
+
+	end,
+
+	% Not having the hour here, yet as the DST limit is very early this Sunday,
+	% we consider that on average we must be already past it:
+	%
+	case D <  LastSunday of
+
+		true ->
+			1;
+
+		false ->
+			2
+
+	end;
+
+% Same for October:
+get_daylight_saving_time( _Date={ Y, _M=10, D } ) ->
+
+	% Determining the last weekday, in [Monday=1, ..., Sunday=7]:
+	LastSunday = case calendar:day_of_the_week( Y, 10, 31 ) of
+
+		_Sunday=7 ->
+			31;
+
+		% E.g. if the 31st of October is a Saturday (6), then 31-6=31-7+1 is a
+		% Sunday:
+		%
+		OtherWeekday ->
+			31 - OtherWeekday
+
+	end,
+
+	% Not having the hour here, yet as the DST limit is very early this Sunday,
+	% we consider that on average we must be already past it:
+	%
+	case D <  LastSunday of
+
+		true ->
+			2;
+
+		false ->
+			1
+
+	end.
+
 
 
 % @doc Returns the symbol (atom) corresponding to specified week day index.
@@ -1024,8 +1188,13 @@ get_epoch_milliseconds_since_year_0() ->
 
 
 
-% @doc Returns whether the specified term is a legit (canonical) timestamp.
+% @doc Returns whether the specified term is a legit, valid (canonical)
+% timestamp.
 %
+% A timestamp must be valid in terms of type (a pair of triplet of integers) and
+% also of semantics (e.g. {{2022,9,31}, {18,0,0}} is not valid, at not 31st
+% exists in September).
+
 % Useful to vet user-specified timestamps.
 %
 -spec is_timestamp( term() ) -> boolean().
@@ -1043,7 +1212,7 @@ is_timestamp( _Other ) ->
 %
 -spec is_date( term() ) -> boolean().
 %is_date( _Date={ Y, M, D } ) when is_integer( Y ) andalso is_integer( M )
-%								  andalso is_integer( D ) ->
+%                                  andalso is_integer( D ) ->
 %	true;
 %
 %is_date( _Other ) ->
@@ -1070,8 +1239,8 @@ is_time( _Other ) ->
 
 
 
-% @doc Checks that the specified term is a (possibly non-canonical) timestamp
-% indeed, and returns it.
+% @doc Checks that the specified term is a (possibly non-canonical) valid
+% timestamp indeed, and returns it.
 %
 -spec check_timestamp( term() ) -> timestamp().
 check_timestamp( Term ) ->
@@ -1082,13 +1251,15 @@ check_timestamp( Term ) ->
 			Term;
 
 		false ->
-			throw( { not_a_timestamp, Term } )
+			throw( { not_a_valid_timestamp, Term } )
 
 	end.
 
 
 
-% @doc Checks that specified term is a maybe-timestamp indeed.
+% @doc Checks that specified term is a maybe-timestamp (then a valid one)
+% indeed.
+%
 -spec check_maybe_timestamp( term() ) -> maybe( timestamp() ).
 check_maybe_timestamp( Term=undefined ) ->
 	Term;
@@ -1101,7 +1272,7 @@ check_maybe_timestamp( Term ) ->
 			Term;
 
 		false ->
-			throw( { not_a_maybe_timestamp, Term } )
+			throw( { not_a_valid_maybe_timestamp, Term } )
 
 	end.
 
@@ -1922,9 +2093,9 @@ get_precise_duration_since( StartTimestamp ) ->
 % specified number of days (possibly a negative number).
 %
 -spec get_date_after( date(), days() ) -> date().
-get_date_after( BaseDate, Days ) ->
+get_date_after( BaseDate, DaysOffset ) ->
 
-	DayCount = calendar:date_to_gregorian_days( BaseDate ) + Days,
+	DayCount = calendar:date_to_gregorian_days( BaseDate ) + DaysOffset,
 
 	calendar:gregorian_days_to_date( DayCount ).
 
@@ -1934,16 +2105,16 @@ get_date_after( BaseDate, Days ) ->
 % duration indeed, and returns it.
 %
 -spec check_time_frame( term() ) -> time_frame().
-check_time_frame( TF={ StartTimestamp, EndTimestamp } ) ->
-	check_timestamp( StartTimestamp ),
+check_time_frame( TF={ BeginTimestamp, EndTimestamp } ) ->
+	check_timestamp( BeginTimestamp ),
 	check_timestamp( EndTimestamp ),
-	case get_duration( StartTimestamp, EndTimestamp ) of
+	case get_duration( BeginTimestamp, EndTimestamp ) of
 
 		DSecs when DSecs > 0 ->
 			TF;
 
 		OtherDSecs ->
-			throw( { invalid_time_frame, StartTimestamp, EndTimestamp,
+			throw( { invalid_time_frame, BeginTimestamp, EndTimestamp,
 					 OtherDSecs } )
 
 	end;
@@ -1955,9 +2126,9 @@ check_time_frame( Other ) ->
 
 % @doc Returns a textual description of the specified time frame.
 -spec time_frame_to_string( time_frame() ) -> ustring().
-time_frame_to_string( _TimeFrame={ Start, End } ) ->
+time_frame_to_string( _TimeFrame={ Begin, End } ) ->
 	text_utils:format( "timeframe from ~ts to ~ts",
-		[ get_textual_timestamp( Start ), get_textual_timestamp( End ) ] ).
+		[ get_textual_timestamp( Begin ), get_textual_timestamp( End ) ] ).
 
 
 
@@ -1967,20 +2138,20 @@ time_frame_to_string( _TimeFrame={ Start, End } ) ->
 % 00:00:00.
 %
 -spec canonicalise_time_frame( user_time_frame() ) -> time_frame().
-canonicalise_time_frame( { Start, End } ) ->
-	CanonicalStart = case is_timestamp( Start ) of
+canonicalise_time_frame( { Begin, End } ) ->
+	CanonicalBegin = case is_timestamp( Begin ) of
 
 		true ->
-			Start;
+			Begin;
 
 		false ->
-			case is_date( Start ) of
+			case is_date( Begin ) of
 
 				true ->
-					{ Start, _StartTime={ 0, 0, 0 } };
+					{ Begin, _BeginTime={ 0, 0, 0 } };
 
 				false ->
-					throw( { not_a_date, Start } )
+					throw( { not_a_date, Begin } )
 
 			end
 
@@ -2004,7 +2175,7 @@ canonicalise_time_frame( { Start, End } ) ->
 
 	end,
 
-	check_time_frame( { CanonicalStart, CanonicalEnd } );
+	check_time_frame( { CanonicalBegin, CanonicalEnd } );
 
 canonicalise_time_frame( Other ) ->
 	throw( { invalid_user_time_frame, Other } ).

@@ -23,7 +23,7 @@
 % <http://www.mozilla.org/MPL/>.
 
 % Creation date: January 4, 2012.
-% Author: Jingxuan Ma (jingxuan.ma@edf.fr)
+% Author: Jingxuan Ma [jingxuan (dot) ma (at) edf (dot) fr]
 
 
 % Unit tests for the lazy hashtable implementation.

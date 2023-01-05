@@ -1,5 +1,5 @@
-% Copyright (C) 2007-2022 Olivier Boudeville
-%
+% Copyright (C) 2016-2023 Olivier Boudeville
+
 % This file is part of the Ceylan-Myriad library.
 %
 % This library is free software: you can redistribute it and/or modify
@@ -24,8 +24,8 @@
 %
 % Adapted from code kindly contributed by EDF R&D.
 %
-% Authors: Robin Huart (robin-externe.huart@edf.fr)
-%		   Olivier Boudeville (olivier.boudeville@edf.fr)
+% Authors: Robin Huart        [robin (dot) huart (at) edf (dot) fr]
+%          Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 
 
 % @doc Gathering of some convenient facilities for the <b>binding to the Java
@@ -168,7 +168,7 @@ get_beam_directories_for_binding() ->
 -spec send_oneway( java_mbox_pid(), oneway_name(), oneway_parameters() ) ->
 							void().
 send_oneway( MailboxPid, OnewayName, OnewayParameters )
-  when is_atom( OnewayName ) andalso is_list( OnewayParameters ) ->
+		when is_atom( OnewayName ) andalso is_list( OnewayParameters ) ->
 
 	Message = { OnewayName, OnewayParameters },
 
@@ -183,7 +183,7 @@ send_oneway( MailboxPid, OnewayName, OnewayParameters )
 -spec send_request( java_mbox_pid(), request_name(), request_parameters() ) ->
 							void().
 send_request( MailboxPid, RequestName, RequestParameters )
-  when is_atom( RequestName ) andalso is_list( RequestParameters ) ->
+		when is_atom( RequestName ) andalso is_list( RequestParameters ) ->
 	% PID sent, as a reply is wanted:
 	MailboxPid ! { RequestName, RequestParameters, self() }.
 
@@ -213,7 +213,7 @@ execute_request( MailboxPid, RequestName, RequestParameters ) ->
 %
 -spec wait_for_request_result( java_mbox_pid(), method_name() ) -> any().
 wait_for_request_result( MailboxPid, MethodName )
-  when is_atom( MethodName ) ->
+		when is_atom( MethodName ) ->
 
 	% Waits for the response:
 	Message = receive
@@ -271,7 +271,7 @@ classname_to_bytecode_filename( Classname ) when is_atom( Classname ) ->
 	classname_to_bytecode_filename( text_utils:atom_to_string( Classname ) );
 
 classname_to_bytecode_filename( ClassnameString )
-  when is_list( ClassnameString ) ->
+		when is_list( ClassnameString ) ->
 
 	case text_utils:is_uppercase( ClassnameString ) of
 

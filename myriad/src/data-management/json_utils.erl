@@ -1,4 +1,4 @@
-% Copyright (C) 2020-2022 Olivier Boudeville
+% Copyright (C) 2020-2023 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -258,7 +258,6 @@ get_paths_for( _ParserName=jsx ) ->
 		true ->
 			{ ResolvablePath, ResolvedPath };
 
-
 		false ->
 			undefined
 
@@ -515,9 +514,10 @@ check_parser_operational( ParserState={ jiffy, _InternalBackendState } ) ->
 % @doc Converts (encodes) specified JSON-compliant Erlang term into a JSON
 % counterpart element, using the looked-up default JSON backend for that.
 %
-% Ex: `json_utils:to_json( #{<<"protected">> => Protected,
-%                            <<"payload">> => Payload,
-%                            <<"signature">> => EncSigned} )'.
+% Ex: `json_utils:to_json( #{
+%   <<"protected">> => Protected,
+%   <<"payload">> => Payload,
+%   <<"signature">> => EncSigned} )'.
 %
 -spec to_json( json_term() ) -> json().
 to_json( Term ) ->
@@ -533,9 +533,9 @@ to_json( Term ) ->
 % using directly the JSON backend designated by the specified parser state.
 %
 % Ex: `json_utils:to_json(#{
-%     <<"protected">> => Protected,
-%     <<"payload">> => Payload,
-%     <<"signature">> => EncSigned }, _ParserName=jsx )'.
+%   <<"protected">> => Protected,
+%   <<"payload">> => Payload,
+%   <<"signature">> => EncSigned }, _ParserName=jsx )'.
 %
 -spec to_json( json_term(), parser_state() ) -> json().
 to_json( Term, _ParserState={ jsx, _UndefinedInternalBackendState } ) ->
@@ -566,9 +566,9 @@ to_json( Term, _ParserState={ jiffy, _UndefinedInternalBackendState } ) ->
 % using the looked-up default JSON backend for that.
 %
 % Ex: `json_utils:to_json_file(#{
-%                   <<"protected">> => Protected,
-%                   <<"payload">> => Payload,
-%                   <<"signature">> => EncSigned}, TargetJsonFilePath )'.
+%   <<"protected">> => Protected,
+%   <<"payload">> => Payload,
+%   <<"signature">> => EncSigned}, TargetJsonFilePath )'.
 %
 -spec to_json_file( json_term(), file_path() ) -> void().
 to_json_file( Term, TargetJsonFilePath ) ->
@@ -581,9 +581,9 @@ to_json_file( Term, TargetJsonFilePath ) ->
 % using the specified JSON backend for that.
 %
 % Ex: `json_utils:to_json_file(#{
-%          <<"protected">> => Protected,
-%          <<"payload">> => Payload,
-%          <<"signature">> => EncSigned}, TargetJsonFilePath, ParserState )'.
+%   <<"protected">> => Protected,
+%   <<"payload">> => Payload,
+%   <<"signature">> => EncSigned}, TargetJsonFilePath, ParserState )'.
 %
 -spec to_json_file( json_term(), file_path(), parser_state() ) -> void().
 to_json_file( Term, TargetJsonFilePath, ParserState ) ->

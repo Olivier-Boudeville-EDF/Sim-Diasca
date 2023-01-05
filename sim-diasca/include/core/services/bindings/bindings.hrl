@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2022 EDF R&D
+% Copyright (C) 2016-2023 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -16,7 +16,7 @@
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
 
-% Author: Robin Huart (robin-externe.huart@edf.fr)
+% Author: Robin Huart [robin-externe (dot) huart (at) edf (dot) fr]
 
 
 % A few type shorthands:

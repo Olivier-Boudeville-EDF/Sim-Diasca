@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2022 Olivier Boudeville
+% Copyright (C) 2016-2023 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -24,8 +24,9 @@
 %
 % Adapted from code kindly contributed by EDF R&D.
 %
-% Authors: Robin Huart (robin-externe.huart@edf.fr)
-%          Samuel Thiriot (samuel.thiriot@edf.fr)
+% Authors: Robin Huart        [robin (dot) huart (at) edf (dot) fr]
+%          Samuel Thiriot     [samuel (dot) thiriot (at) edf (dot) fr]
+% Creation date: 2016.
 
 
 % @doc Gathering of some convenient facilities for the <b>binding to the Python

@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2022 Olivier Boudeville
+% Copyright (C) 2014-2023 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -28,6 +28,10 @@
 
 % @doc Implementation of an <b>associative table relying on a simple list of
 % key/value pairs</b>.
+%
+% Beware of multiple entries having the same key in such a list_table, as the
+% first one will eclipse all others; this may happen if not building explicitly,
+% with this API, one's list_table instance.
 %
 % See `list_table_test.erl' for the corresponding test.
 %

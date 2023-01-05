@@ -1,22 +1,31 @@
 #!/usr/bin/env escript
 %% -*- erlang -*-
+%%! -smp enable +A 16
+
+-module(password_generation_mod).
+
+-mode(compile).
+
 
 % @doc Prefer using directly the `generate-password.sh' script.
 
-%% Not used: ! -pz ../../../src/utils
+% Not used: -pz ../../../src/utils
 
 % Additionally: this escript will only work when run from its current
 % directory...
 
 
-% Copyright (C) 2018-2021 Olivier Boudeville
+% Copyright (C) 2018-2022 Olivier Boudeville
 % [olivier (dot) boudeville (at) esperide (dot) com]
 
 
 % Released as LGPL software.
 
-% Directly using the module-based version now, for an easier debugging (ex: with
-% proper stack traces, comprising line numbers).
+% Directly using the module-based version now, in password_generation.erl, for
+% an easier debugging (e.g. with proper stack traces, comprising line numbers);
+% note though that the first lines (with module and mode) shall already help
+% significantly.
+
 
 % This script depends on the 'Myriad' layer, and only on that code (that shall
 % be recompiled beforehand).
@@ -34,7 +43,7 @@
 main( ArgList ) ->
 
 	% First, enable all possible helper code (hence to be done first of all):
-	update_code_path_for_myriad(),
+	_MyriadRootDir = update_code_path_for_myriad(),
 
 	ArgTable = script_utils:get_arguments( ArgList ),
 

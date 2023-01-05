@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2022 EDF R&D
+% Copyright (C) 2010-2023 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -16,7 +16,7 @@
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
 
-% Author: Jingxuan Ma (jingxuan.ma@edf.fr)
+% Author: Jingxuan Ma [jingxuan (dot) ma (at) edf (dot) fr]
 
 % SSI-test stands for 'Sim-Diasca Scalability Integration Test', a business-free
 % test dedicated to scalability assessment.

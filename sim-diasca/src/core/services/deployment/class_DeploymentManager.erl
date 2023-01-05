@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2022 EDF R&D
+% Copyright (C) 2008-2023 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -144,7 +144,9 @@
 	  "PID of the resilience manager" },
 
 	{ resilience_manager_ref, maybe( reference() ),
-	  "a monitor reference onto the resilience manager (if any)" } ] ).
+	  "a monitor reference onto the resilience manager (if any)" },
+
+	{ case_pid, pid(), "the PID of the simulation case process" } ] ).
 
 
 % Exported as called from a fun:
@@ -167,8 +169,9 @@
 -type manager_pid() :: sim_diasca:agent_pid().
 
 
-% The various types of nodes involved:
--type node_type() :: 'computing_node' | 'user_node'.
+-type node_type() :: 'computing_node'    % [0..N] of them.
+				   | 'user_node'.        % Always exactly one.
+% The various types of nodes involved.
 
 
 % Specification of the context of a simulation:
@@ -182,10 +185,12 @@
 
 -type host_list() :: atom_host_name()
 				   | [ { atom_host_name(), atom_user_name() } ].
-% A list of hostnames, possibly with their associated user name.
+% A list of hostnames, possibly with their associated local user name.
 
 
 -type element_path() :: path().
+% All element paths shall be defined either absolutely or relatively to the
+% engine root directory.
 
 
 -type element_type() :: 'data' | 'code'.
@@ -200,6 +205,7 @@
 						| { 'keep_only_suffixes', [ ustring() ] }
 						| 'rebuild'
 						| 'no_rebuild'.
+% Options regarding elements to deploy.
 
 
 -type element_spec() :: { element_path(), element_type(), [ element_option() ] }
@@ -457,17 +463,21 @@
 % deployment), or a redeployment (with a pre-existing context, that must be
 % specified)
 %
+% - CallerPid: the PID of the caller (typically sim_diasca:init/3) to notify it
+% that the deployment has been done
+%
 % See class_TimeManager and class_LoadBalancer for further details.
 %
 -spec construct( wooper:state(), simulation_settings(), deployment_settings(),
 		load_balancing_settings(), sim_diasca:simulation_identifiers(),
-		simulation_context() ) -> wooper:state().
+		simulation_context(), pid() ) -> wooper:state().
 construct( State,
 		   SimulationSettings=#simulation_settings{},
 		   DeploymentSettings=#deployment_settings{},
 		   LoadBalancingSettings=#load_balancing_settings{},
 		   _SimIdentifiers={ SimUUID, SII },
-		   Context=deploy_from_scratch ) ->
+		   Context=deploy_from_scratch,
+		   CasePid ) ->
 
 	% Corresponds to an initial deployment.
 
@@ -574,7 +584,9 @@ construct( State,
 		{ deploy_time_out, DeployTimeOut },
 		{ shutdown_initiated, false },
 		{ troubleshooting_mode, TroubleShootingMode },
-		{ resilience_level, ResilienceLevel } ] ),
+		{ resilience_level, ResilienceLevel },
+		{ case_pid, CasePid } ] ),
+
 
 	% Read from the generated package-versions.hrl file:
 	VersionStrings = { MyriadVersionString, WOOPERVersionString,
@@ -738,12 +750,22 @@ construct( State,
 	LoadBalancerPid !
 		{ createInitialInstancesFromFiles, [ self(), EngineRootDir ] },
 
-	receive
-
-		instances_created_from_files ->
-			ok
-
-	end,
+	% We used to wait synchronously here for a notification from the
+	% load-balancer to report that it had loaded all instances, yet this was not
+	% a good design as this manager was thus blocked and unresponsive, whereas
+	% other components (e.g. graph stream probes) may have settings to obtain
+	% from it (knowing that their creation could be triggered by loaded actor
+	% instances; this would lead to a deadlock); so now the construction of this
+	% manager terminates directly, and it will notify sim_diasca:init/3 when its
+	% own onInitialInstancesCreatedFromFiles oneway will be triggered (by the
+	% load balancer:
+	%
+	%receive
+	%
+	%	instances_created_from_files ->
+	%		ok
+	%
+	%end,
 
 	setAttribute( ServiceState, host_infos, AvailableHosts );
 
@@ -753,11 +775,12 @@ construct( State,
 % probably after node crash(es). In that case, the nodes specified in the
 % context are the ones that survived.
 %
-% Note: deserves an update, not currently functional.
+% Note: deserves an update, currently *not* functional.
 %
 construct( State, SimulationSettings, DeploymentSettings, LoadBalancingSettings,
 		   _SimIdentifiers={ SimUUID, SII },
-		   Context={ Nodes, StartTimestamp, RootDir, AvailableHosts } ) ->
+		   Context={ Nodes, StartTimestamp, RootDir, AvailableHosts },
+		   CasePid ) ->
 
 	% Note: this clause (and, more generally, the whole resilience system),
 	% shall be updated w.r.t. to many new features. Consider it as being
@@ -835,7 +858,8 @@ construct( State, SimulationSettings, DeploymentSettings, LoadBalancingSettings,
 		{ deploy_time_out, DeployTimeOut },
 		{ troubleshooting_mode, TroubleShootingMode },
 		{ resilience_level, ResilienceLevel },
-		{ host_infos, AvailableHosts } ] ),
+		{ host_infos, AvailableHosts },
+		{ case_pid, CasePid } ] ),
 
 	% Ensures also it is a singleton indeed, despite re-launching:
 	naming_utils:register_as( ?deployment_manager_name, global_only ),
@@ -1518,6 +1542,20 @@ wait_setup_outcome( Waited, Available, Failed, CollectTimeOut,
 % Member methods section.
 
 
+% @doc Called by the load-balancer when it has finished creating the initial
+% instances (e.g. loaded from files).
+%
+-spec onInitialInstancesCreatedFromFiles( wooper:state() ) ->
+											const_oneway_return().
+onInitialInstancesCreatedFromFiles( State ) ->
+
+	% Unblocks sim_diasca:init/3:
+	?getAttr(case_pid) ! deployment_done,
+
+	wooper:const_return().
+
+
+
 % @doc A computing host manager that has been removed because of a time-out may
 % send a onHostDeploymentFailure message too late to be intercepted by the loop
 % above, which will trigger a method call (thus this void body has to defined).
@@ -1580,8 +1618,11 @@ getWebManager( State ) ->
 -spec getGraphStreamInformation( wooper:state() ) ->
 					const_request_return( maybe( graph_infos() ) ).
 getGraphStreamInformation( State ) ->
+
 	% Already in a relevant form:
-	wooper:const_return_result( ?getAttr(graph_infos) ).
+	GraphInfos = ?getAttr(graph_infos),
+
+	wooper:const_return_result( GraphInfos ).
 
 
 
@@ -5225,11 +5266,13 @@ build_simulation_package( State ) ->
 			case DeploySettings#deployment_settings.enable_webmanager of
 
 		false ->
-			 DeploySettings;
+			DeploySettings;
 
 		{ true, WebProbeClassnames, _TCPPort, _WebserverInstallRoot } ->
 
-			CurrentDir = file_utils:get_current_directory(),
+			% Note that these are necessarily static methods (no instance
+			% created yet), hence they are stateless:
+			%
 			AddedElems = lists:foldl(
 				fun( Classname, Elems ) ->
 					Classname:get_elements_to_deploy( BinRootDir ) ++ Elems
@@ -5237,9 +5280,11 @@ build_simulation_package( State ) ->
 				_Acc0=[],
 				_List=WebProbeClassnames ),
 
+			CurrentDir = file_utils:get_current_directory(),
+
 			% As these elements are added on a per-service, general basis, their
-			% path could not be relative to the current run directory (which
-			% depends on the simulation case being run), so:
+			% path could not be directly relative to the current run directory
+			% (which depends on the simulation case being run), so:
 			%
 			RelativeAddedElems = [ case Elem of
 
@@ -5325,7 +5370,7 @@ build_simulation_package( State ) ->
 	%   || F <- SimulationSettings#simulation_settings.initialisation_files ],
 
 	% We start from the engine - which has obviously to be deployed - and we add
-	% any user-supplied content:
+	% any user-supplied content (relatively to the engine root directory):
 	%
 	MustRebuild = ComplementedDeploySettings#deployment_settings.rebuild_on_deployment_package_generation,
 
@@ -5442,8 +5487,8 @@ check_elem_type( Other ) ->
 
 
 
-% @doc Translates specified full path so that it becomes relative to the root
-% directory, rather than to the current directory.
+% @doc Translates specified full path so that it becomes relative to the engine
+% root directory, rather than to the current directory.
 %
 translate_path( Path, RootDir, CurrentDir ) ->
 	translate_path( Path, RootDir, length( RootDir ), CurrentDir ).
@@ -5785,8 +5830,9 @@ check_element_path_exists( ElementPath, State ) ->
 	file_utils:exists( ElementPath ) orelse
 		begin
 			?error_fmt( "The element path '~ts' was requested to be deployed, "
-				"but it could not be found in the filesystem.",
-				[ ElementPath ] ),
+				"but it could not be found in the filesystem "
+				"(current directory being the engine root one, '~ts').",
+				[ ElementPath, file_utils:get_current_directory() ] ),
 
 			throw( { deployment_failed, element_path_not_found, ElementPath } )
 

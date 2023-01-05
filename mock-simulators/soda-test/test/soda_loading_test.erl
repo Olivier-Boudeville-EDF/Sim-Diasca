@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2022 EDF R&D
+% Copyright (C) 2014-2023 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -16,7 +16,7 @@
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
 
-% Author: Olivier Boudeville (olivier.boudeville@edf.fr)
+% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 
 
 % @doc Test for the <b>loading of the initial state</b> of a soda simulation
@@ -47,7 +47,12 @@ run() ->
 
 		% To load from file a part of the initial state of the simulation:
 		%initialisation_files = []
+
+		% 9 initial actor instances:
 		initialisation_files=[ "soda-instances.init" ] },
+
+		% 265 initial actor instances:
+		%initialisation_files=[ "soda-instances-larger.init" ] },
 
 
 	DeploymentSettings = #deployment_settings{

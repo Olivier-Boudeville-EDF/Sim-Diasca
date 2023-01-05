@@ -1,22 +1,22 @@
-% Copyright (C) 2008-2022 EDF R&D
-
+% Copyright (C) 2008-2023 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
-% Author: Olivier Boudeville (olivier.boudeville@edf.fr)
+%
+% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2008.
 
 
@@ -748,7 +748,7 @@ onInstancesLoaded( State ) ->
 	?debug( "All instances loaded from files (if any)." ),
 
 	% Unblocks in turn the deployment manager:
-	?getAttr(deployment_manager_pid) ! instances_created_from_files,
+	?getAttr(deployment_manager_pid) ! onInitialInstancesCreatedFromFiles,
 
 	% Switch back to normal AAI mode if necessary:
 	%
@@ -798,7 +798,9 @@ createInitialActor( State, ActorClassname, ActorConstructionParameters,
 	%   "class ~ts.", [ ActorClassname ] ),
 
 	% Checks that the simulation is not started yet:
-	false = class_Actor:is_running( State ),
+	class_Actor:is_running( State ) andalso
+		throw( { initial_creation_whereas_simulation_started, ActorClassname,
+				 ActorConstructionParameters, InitiatorPid } ),
 
 	% Checks that we are not involved in the reading of an initialisation file:
 	undefined = ?getAttr(base_actor_identifier),
@@ -855,7 +857,9 @@ createInitialPlacedActor( State, ActorClassname, ActorConstructionParameters,
 	% Same structure as createInitialActor/4 above:
 
 	% Checks that the simulation is not started yet:
-	false = class_Actor:is_running( State ),
+	class_Actor:is_running( State ) andalso
+		throw( { initial_creation_whereas_simulation_started, ActorClassname,
+				 ActorConstructionParameters, InitiatorPid } ),
 
 	% Checks that we are not involved in the reading of an initialisation file:
 	undefined = ?getAttr(base_actor_identifier),
@@ -899,7 +903,9 @@ createInitialPlacedActor( State, ActorClassname, ActorConstructionParameters,
 createInitialActors( State, InstanceCreationSpecs, InitiatorPid ) ->
 
 	% Checks that the simulation is not started yet:
-	false = class_Actor:is_running( State ),
+	class_Actor:is_running( State ) andalso
+		throw( { initial_creations_whereas_simulation_started,
+				 InstanceCreationSpecs, InitiatorPid } ),
 
 	% Checks that we are not involved in the reading of an initialisation file:
 	undefined = ?getAttr(base_actor_identifier),

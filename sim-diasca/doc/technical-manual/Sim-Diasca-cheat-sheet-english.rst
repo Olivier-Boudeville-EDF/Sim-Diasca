@@ -154,6 +154,7 @@ One should thus ensure that these settings are complete, and that any third-part
 Finally, we advise having a look to the help scripts defined in ``sim-diasca/conf/clusters``, which are meant to ease the management of Sim-Diasca jobs run on Slurm-based HPC clusters.
 
 
+
 .. _`distributed gotchas`:
 
 What are the Most Common Gotchas encountered with Distributed Simulations?
@@ -169,12 +170,13 @@ Here are a list of checks that might be of help:
 - are ping (ICMP) messages supported by the hosts and network at hand? If no, set the ``ping_available`` field of the ``deployment_settings`` record to ``false``
 - does spawning a Erlang VM on a computing host non-interactively through SSH from the user host succeed? Ex: from the user host, ``ssh A_COMPUTING_HOST erl``
 - does it spawn a VM with the same, expected Erlang version? (ex: ``Eshell V10.2``)
-- can this VM be run with long names, and does it report the expected FQDN in its prompt? Ex: ``ssh COMPUTING_HOST_FQDN erl -name foo`` reporting ``(foo@COMPUTING_HOST_FQDN)1>``
+- can this VM be run with either short or long names, and does it report the expected FQDN in its prompt? Ex: ``ssh COMPUTING_HOST_FQDN erl -name foo`` reporting ``(foo@COMPUTING_HOST_FQDN)1>``
 - are all hosts specified indeed by their FQDN? (rather than by a riskier mere hostname or, worse, by their IP address - which is not permitted)
 - on any host or network device, have fancier firewall rules been defined? (ex: ``iptables -L`` might give clues)
-- on a cluster, have the right hosts been allocated by the job manager, and is the user host one of them? (rather than for example being a front-end host, which surely should not be attempted)
+- on a cluster, have the right hosts been allocated by the job manager, and is the user host one of them? (rather than for example being a front-end host - which surely should not be attempted)
 
 Should the problem remain, one may log interactively and perform operations manually to check whether the engine has a chance of succeeding when doing the same.
+
 
 
 What is the First Tick Offset of a Simulation?
@@ -417,7 +419,7 @@ How Constructors of Actors Are To Be Defined?
 
 Actor classes are to be defined like any WOOPER classes (of course they have to inherit, directly or not, from ``class_Actor``), except that their first construction parameter must be their actor settings.
 
-These settings (which include the actor's AAI, for *Abstract Actor Identifier*) will be specified automatically by the engine, and should be seen as opaque information just to be transmitted to the parent constructor(s).
+These settings (which include the actor's AAI, for *Abstract Actor Identifier*) will be specified automatically by the engine, and should be seen as opaque information just to be transmitted as it is to the parent constructor(s).
 
 All other parameters (if any) are call *actual parameters*.
 
@@ -426,7 +428,7 @@ For example, a ``Foo`` class may define a constructor as:
 .. code:: erlang
 
  -spec construct(wooper:state(),actor_settings(),T1(), T2()) ->
-		  wooper:state().
+		    wooper:state().
  construct(State,ActorSettings,FirstParameter,SecondParameter) ->
 	[...]
 
@@ -691,6 +693,17 @@ Increasing the Maximum Number of Erlang Processes
 The Erlang default limit is only 32768 processes, but Sim-Diasca relies on the ``myriad/src/scripts/launch-erl.sh`` script to launch its user VM, and this script enforces a larger limit (of a few thousands; refer to its ``max_process_count`` variable).
 
 One may set the ``MAX_PROCESS_COUNT`` make variable (defined in ``myriad/GNUmakevars.inc``) to set that process limit to any value of interest.
+
+
+
+Selecting Whether any File-based Creation of Initial Actors shall be Concurrent
+-------------------------------------------------------------------------------
+
+Currently, by default the ``simdiasca_allow_reproducible_nested_initial_creations`` token is defined (see the ``SIM_DIASCA_SETTINGS_FLAGS`` make variable in ``sim-diasca/GNUmakevars.inc``), and thus the creation of the initial actors from an initialisation file is done by a single process.
+
+This allows the nested creations (creating an initial actor from the constructor of another one) to be fully reproducible, including regarding the allocation of the AAI of these actors.
+
+However, if not relying on such nested creations, or if totally-reproducible initial AAIs are not necessary, then it may useful to *not* define that token in one's settings; a pool of actor creators will then be spawned (one per core of the user host), resulting in a considerable speed-up of the initialisation of larger file-based simulations.
 
 
 

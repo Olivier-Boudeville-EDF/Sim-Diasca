@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2022 EDF R&D
+% Copyright (C) 2016-2023 EDF R&D
 
 % This file is part of Sim-Diasca.
 
@@ -16,13 +16,13 @@
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
 
-% Author: Olivier Boudeville (olivier.boudeville@edf.fr)
+% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 
 % This file is part of Sim-Diasca, on behalf of the EDF City Simulation
 % project. It does not pertain to the free software release of Sim-Diasca.
 
 % Creation date: Thursday, March 16, 2017
-% Author: Olivier Boudeville (olivier.boudeville@edf.fr)
+% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 
 
 % @doc The purpose of this module is to test the support provided by the

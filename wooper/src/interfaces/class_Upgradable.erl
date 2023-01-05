@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2022 Olivier Boudeville
+% Copyright (C) 2022-2023 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -320,8 +320,8 @@ upgradeVersion( State, OriginalVersion, TargetVersion, MaybeExtraData ) ->
 			"~ts, using extra data '~p'.",
 			[ self(), text_utils:version_to_string( OriginalVersion ),
 			  text_utils:version_to_string( TargetVersion ),
-			  MaybeExtraData ] ) ),
-
+			  MaybeExtraData ] ),
+		basic_utils:ignore_unused( MaybeExtraData ) ),
 
 	cond_utils:if_defined( wooper_check_hot_update,
 		case get_version( State ) of
@@ -337,7 +337,6 @@ upgradeVersion( State, OriginalVersion, TargetVersion, MaybeExtraData ) ->
 						 State#state_holder.actual_class, self() } )
 
 		end ),
-
 
 	% In this default implementation, the state remains const:
 	UpgradedState = State,
@@ -374,7 +373,8 @@ downgradeVersion( State, OriginalVersion, TargetVersion, MaybeExtraData ) ->
 			"using extra data '~p'.",
 			[ text_utils:version_to_string( OriginalVersion ),
 			  text_utils:version_to_string( TargetVersion ),
-			  MaybeExtraData ] ) ),
+			  MaybeExtraData ] ),
+		basic_utils:ignore_unused( MaybeExtraData ) ),
 
 
 	cond_utils:if_defined( wooper_check_hot_update,

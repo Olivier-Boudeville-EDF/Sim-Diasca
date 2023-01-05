@@ -2,7 +2,7 @@ This is Sim-Diasca, a parallel and distributed discrete-time simulation engine f
 
 The name stands for 'Simulation of Discrete Systems of All Scales'.
 
-This is the 2.4.4 version of Sim-Diasca.
+This is the 2.4.5 version of Sim-Diasca.
 
 Sim-Diasca is released under the LGPL licence (GNU Lesser General Public License, version 3).
 

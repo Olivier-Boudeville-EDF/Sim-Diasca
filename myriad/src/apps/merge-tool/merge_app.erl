@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2022 Olivier Boudeville
+% Copyright (C) 2016-2023 Olivier Boudeville
 %
 % Module defined in order to be able to test the merge services outside of an
 % escript context.
@@ -38,5 +38,8 @@ exec() ->
 	%ArgTable = shell_utils:generate_argument_table( "--help" ),
 
 	ArgTable = shell_utils:get_argument_table(),
+
+	%trace_utils:debug_fmt( "Run as application: ~ts",
+	%   [ shell_utils:argument_table_to_string( ArgTable ) ] ),
 
 	merge_utils:main( ArgTable ).

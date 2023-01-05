@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2022 Olivier Boudeville
+% Copyright (C) 2012-2023 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -194,7 +194,7 @@
 
 
 -type method_name() :: meta_utils:function_name().
-% A method name (ex: 'setColor').
+% A method name (e.g. 'setColor').
 
 
 -type request_name() :: method_name().
@@ -1208,9 +1208,9 @@ wait_request_series( WaitCount, Acc ) ->
 % Section for creation helpers.
 
 
-% @doc Creates (asynchronously) a blank process, waiting to embody a WOOPER
-% instance once it will have received its class and construction parameters, and
-% links it to the caller and to the specified process.
+% @doc Creates (synchronously or not) a blank process, waiting to embody a
+% WOOPER instance once it will have received its class and construction
+% parameters, and links it to the caller and to any specified process.
 %
 -spec create_hosting_process( net_utils:node_name(), pid() ) ->
 												instance_pid().
@@ -1223,26 +1223,32 @@ create_hosting_process( Node, ToLinkWithPid ) ->
 
 		receive
 
-			  { embody, [ Class, ConstructionParameters ] } ->
+			% Asynchronous version:
+			{ embody, [ Class, ConstructionParameters ] } ->
 
-				%trace_bridge:debug_fmt(
-				%   "Process ~w becoming asynchronously an instance "
-				%   "of class '~ts', constructed from following "
-				%   "parameters:~n~p.",
-				%   [ self(), Class, ConstructionParameters ] ),
+				cond_utils:if_defined( wooper_debug_embodiment,
+					trace_bridge:debug_fmt(
+						"Process ~w becoming asynchronously an instance "
+						"of class '~ts', constructed from the following "
+						"parameters:~n~p.",
+						[ self(), Class, ConstructionParameters ] ) ),
 
 				% Never returns:
 				construct_and_run( Class, ConstructionParameters );
 
 
-				% We might need to notify another process than the caller:
-				{ embody, [ Class, ConstructionParameters ], ToNotifyPid } ->
+			% Synchronous version; we might need to notify a process different
+			% from the caller:
+			%
+			{ embody, [ Class, ConstructionParameters ], ToNotifyPid } ->
 
-				%trace_bridge:debug_fmt(
-				%   "Process ~w becoming synchronously an instance "
-				%   "of class '~ts', constructed from following "
-				%   "parameters:~n~p.",
-				%   [ self(), Class, ConstructionParameters ] ),
+				cond_utils:if_defined( wooper_debug_embodiment,
+					trace_bridge:debug_fmt(
+						"Process ~w becoming synchronously an instance "
+						"of class '~ts' (notifying ~w), constructed from "
+						"the following parameters:~n~p.",
+						[ self(), Class, ToNotifyPid,
+						  ConstructionParameters ] ) ),
 
 				% Never returns:
 				construct_and_run_synchronous( Class, ConstructionParameters,
@@ -1342,9 +1348,10 @@ check_classname_and_arity( Classname, ConstructionParameters ) ->
 
 construct_and_run( Classname, ConstructionParameters ) ->
 
-	%trace_bridge:debug_fmt( "wooper:construct_and_run for class ~p "
-	%   "and following parameters:~n ~p (in debug mode)",
-	%   [ Classname, ConstructionParameters ] ),
+	cond_utils:if_defined( wooper_debug_construction,
+		trace_bridge:debug_fmt( "wooper:construct_and_run for class ~p "
+			"and the following parameters:~n ~p (in debug mode)",
+			[ Classname, ConstructionParameters ] ) ),
 
 	%check_classname_and_arity( Classname, ConstructionParameters ),
 
@@ -1399,9 +1406,10 @@ construct_and_run( Classname, ConstructionParameters ) ->
 
 construct_and_run( Classname, ConstructionParameters ) ->
 
-	%trace_bridge:debug_fmt( "wooper:construct_and_run for class ~p "
-	%   "and following parameters:~n ~p (in non-debug mode)",
-	%   [ Classname, ConstructionParameters ] ),
+	cond_utils:if_defined( wooper_debug_construction,
+		trace_bridge:debug_fmt( "wooper:construct_and_run for class ~p "
+			"and following parameters:~n ~p (in non-debug mode)",
+			[ Classname, ConstructionParameters ] ) ),
 
 	BlankState = get_blank_state( Classname ),
 
@@ -1452,9 +1460,10 @@ construct_and_run( Classname, ConstructionParameters ) ->
 construct_and_run_synchronous( Classname, ConstructionParameters,
 							   SpawnerPid ) ->
 
-	%trace_bridge:debug_fmt( "wooper:construct_and_run_synchronous "
-	%   "for class ~p and following parameters:~n ~p (in debug mode)",
-	%   [ Classname, ConstructionParameters ] ),
+	cond_utils:if_defined( wooper_debug_construction,
+	  trace_bridge:debug_fmt( "wooper:construct_and_run_synchronous "
+		"for class ~p and following parameters:~n ~p (in debug mode)",
+		[ Classname, ConstructionParameters ] ) ),
 
 	%check_classname_and_arity( Classname, ConstructionParameters ),
 
@@ -1514,9 +1523,10 @@ construct_and_run_synchronous( Classname, ConstructionParameters,
 construct_and_run_synchronous( Classname, ConstructionParameters,
 							   SpawnerPid ) ->
 
-	%trace_bridge:debug_fmt( "wooper:construct_and_run_synchronous "
-	%   "for class ~p and following parameters:~n ~p (in non-debug mode)",
-	%   [ Classname, ConstructionParameters ] ),
+	cond_utils:if_defined( wooper_debug_construction,
+		trace_bridge:debug_fmt( "wooper:construct_and_run_synchronous "
+			"for class ~p and following parameters:~n ~p (in non-debug mode)",
+			[ Classname, ConstructionParameters ] ) ),
 
 	BlankState = get_blank_state( Classname ),
 
@@ -1566,8 +1576,9 @@ construct_and_run_synchronous( Classname, ConstructionParameters,
 										passive_instance().
 construct_passive( Classname, ConstructionParameters ) ->
 
-	%trace_bridge:debug_fmt( "wooper:construct_passive for class ~ts "
-	%   "and parameters ~p.", [ Classname, ConstructionParameters ] ),
+	cond_utils:if_defined( wooper_debug_construction,
+		trace_bridge:debug_fmt( "wooper:construct_passive for class ~ts "
+			"and parameters ~p.", [ Classname, ConstructionParameters ] ) ),
 
 	cond_utils:if_defined( wooper_debug_mode,
 		check_classname_and_arity( Classname, ConstructionParameters ) ),
@@ -1611,7 +1622,7 @@ construct_passive( Classname, ConstructionParameters ) ->
 -spec execute_oneway( instance_pid(), oneway_name() ) -> void();
 					( passive_instance(), oneway_name() ) -> passive_instance().
 execute_oneway( TargetInstancePID, OnewayName )
-   when is_pid( TargetInstancePID ) andalso is_atom( OnewayName ) ->
+		when is_pid( TargetInstancePID ) andalso is_atom( OnewayName ) ->
 
 	% Hardly useful:
 	TargetInstancePID ! OnewayName;
@@ -1955,7 +1966,7 @@ get_classname( _State=#state_holder{ actual_class=Classname } ) ->
 % - in case of diamond-shaped inheritance, a given superclass may be listed more
 % than once (list_utils:uniquify/1 may then be used)
 %
-% Ex: wooper:get_all_superclasses(class_Platypus) =
+% For example wooper:get_all_superclasses(class_Platypus) =
 %       [class_Mammal,class_OvoviviparousBeing,class_Creature, class_Creature].
 %
 % Not static to avoid making class modules heavier.
@@ -2058,7 +2069,7 @@ state_to_string( State ) ->
 
 % @doc Returns the source filename associated to the specified class.
 %
-% Ex: get_class_filename('class_Foo') returns simply "class_Foo.erl".
+% For example get_class_filename('class_Foo') returns simply "class_Foo.erl".
 %
 -spec get_class_filename( classname() ) -> file_utils:filename().
 get_class_filename( Classname ) ->
@@ -2241,12 +2252,16 @@ log_warning( FormatString, ValueList ) ->
 
 
 
-% @doc Reports (as synchronously as possible, in order to avoid loosing this
+% @doc Reports (as synchronously as possible, in order to avoid losing this
 % notification) the specified error to the user, typically by displaying an
-% error report on the console (non-halting function, ex: no exception thrown).
+% error report on the console (non-halting function, e.g. no exception thrown).
 %
 -spec log_error( ustring() ) -> void().
 log_error( Message ) ->
+
+	% To ensure that the message goes through even in production mode:
+	% (this is the case, so commented-out)
+	%trace_bridge:warning( "Echoing WOOPER error message: " ++ Message ),
 
 	% Never ellipsing for errors now:
 	%logger:error( text_utils:ellipse( Message, ?ellipse_length ) ++ "\n" ),
@@ -2257,9 +2272,9 @@ log_error( Message ) ->
 
 
 
-% @doc Reports (as synchronously as possible, in order to avoid loosing this
+% @doc Reports (as synchronously as possible, in order to avoid losing this
 % notification) the specified error to the user, typically by displaying an
-% error report on the console (non-halting function, ex: no exception thrown).
+% error report on the console (non-halting function, e.g. no exception thrown).
 %
 -spec log_error( format_string(), format_values() ) -> void().
 log_error( FormatString, ValueList ) ->
@@ -2268,7 +2283,9 @@ log_error( FormatString, ValueList ) ->
 		++ "~n= END OF WOOPER ERROR REPORT FOR ~w ===",
 		ValueList ++ [ self() ] ),
 
-	%trace_bridge:debug( Str ),
+	% To ensure that the message goes through even in production mode:
+	% (this is the case, so commented-out)
+	%trace_bridge:warning( "Echoing WOOPER error: " ++ Str ),
 
 	% Never ellipsing for errors now:
 	%logger:error( text_utils:ellipse( Str, ?ellipse_length ) ),
@@ -2279,11 +2296,11 @@ log_error( FormatString, ValueList ) ->
 
 
 
-% @doc Reports (as synchronously as possible, in order to avoid loosing this
+% @doc Reports (as synchronously as possible, in order to avoid losing this
 % notification) the specified error about the current WOOPER instance
 % (preferably thanks to its state, otherwise with the current executed module,
 % so with fewer information) to the user, typically by displaying an error
-% report on the console (non-halting function, ex: no exception thrown).
+% report on the console (non-halting function, e.g. no exception thrown).
 %
 -spec log_error( format_string(), format_values(),
 				 wooper:state() | basic_utils:module_name() ) -> void().
@@ -2553,7 +2570,7 @@ receive_result() ->
 %
 % Sets the corresponding attribute(s) to 'undefined', returns an updated state.
 %
-% Ex: in a destructor: DeleteState = delete_any_instance_referenced_in([
+% For example in a destructor: DeleteState = delete_any_instance_referenced_in([
 % first_pid_attr, second_pid_attr], State) or
 % delete_any_instance_referenced_in(my_pid_attr, State).
 %
@@ -2601,7 +2618,7 @@ delete_any_instance_referenced_in( PidAttribute, State ) ->
 %
 % Sets the corresponding attribute(s) to 'undefined', returns an updated state.
 %
-% Ex: in a destructor: NewState =
+% For example in a destructor: NewState =
 % delete_synchronously_any_instance_referenced_in([first_pid_attr,
 % second_pid_attr], State) or
 % delete_synchronously_any_instance_referenced_in(my_pid_attr, State).
@@ -2621,7 +2638,7 @@ delete_synchronously_any_instance_referenced_in( Attributes, State ) ->
 %
 % Sets the corresponding attribute(s) to 'undefined', returns an updated state.
 %
-% Ex: in a destructor: NewState =
+% For example in a destructor: NewState =
 % delete_synchronously_any_instance_referenced_in([first_pid_attr,
 % second_pid_attr], SomeState) or
 % safe_delete_synchronously_any_instance_referenced_in(my_pid_attr, State).
@@ -2642,7 +2659,7 @@ safe_delete_synchronously_any_instance_referenced_in( Attributes, State ) ->
 %
 % Sets the corresponding attribute(s) to 'undefined', returns an updated state.
 %
-% Ex: in a destructor: NewState =
+% For example in a destructor: NewState =
 % delete_synchronously_any_instance_referenced_in([first_pid_attr,
 % second_pid_attr], SomeState) or
 % delete_synchronously_any_instance_referenced_in(my_pid_attr, State).
@@ -2956,7 +2973,7 @@ check_undefined( AttributeName, State ) ->
 						{ AttributeName, UnexpectedValue }, Stack } );
 
 		exit:Error ->
-			% Other error (ex: unknown attribute):
+			% Other error (e.g. unknown attribute):
 			throw( { attribute_error, AttributeName, Error } );
 
 		OtherError ->

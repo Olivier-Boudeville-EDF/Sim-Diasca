@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2022 Olivier Boudeville
+% Copyright (C) 2016-2023 Olivier Boudeville
 %
 % Transferred from merge-tree.escript to benefit from a more user-friendly
 % debugging.
@@ -315,11 +315,18 @@ get_usage() ->
 % Remove these safety measures at your own risk!
 
 
-
 % @doc Typically for testing.
+%
+% Note that, when run from a shell script, main/1 is called instead (through
+% merge_app:exec/0).
+%
 -spec run() -> void().
 run() ->
 	ArgTable = shell_utils:get_argument_table(),
+
+	%trace_utils:debug_fmt( "Run directly: ~ts",
+	%   [ shell_utils:argument_table_to_string( ArgTable ) ] ),
+
 	main( ArgTable ).
 
 
@@ -824,6 +831,8 @@ display_usage() ->
 -spec stop_on_option_error( command_line_option(), count(),
 					[ command_line_value() ], status_code() ) -> no_return().
 stop_on_option_error( Option, ExpectedParamCount, Params, ErrorCode ) ->
+
+	%trace_utils:debug_fmt( "Parameters: ~p.", [ Params ] ),
 
 	% Parameters are lists of strings:
 	Message = case list_utils:flatten_once( Params ) of

@@ -1,28 +1,29 @@
-% Copyright (C) 2008-2022 EDF R&D
-
+% Copyright (C) 2008-2023 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
-% Author: Olivier Boudeville (olivier.boudeville@edf.fr)
+%
+% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2008.
 
 
 % @doc Unit tests for the <b>rendering of (basic, generic) probes</b>.
 %
 % This is not an integration test like class_Probe_test, we just focus on the
-% probe own behaviour.
+% probe own behaviour, mostly in terms of rendering.
 %
 % See the class_Probe.erl module.
 %
@@ -33,12 +34,16 @@
 -export([ run/1 ]).
 
 
+% Silencing:
+-export([ test_basic_rendering/1, test_zone_rendering/1 ]).
+
 % For facilities common to all cases:
 -include_lib("traces/include/traces_for_tests.hrl").
 
 
 % For result_manager_name:
 -include("class_ResultManager.hrl").
+
 
 
 
@@ -49,30 +54,21 @@ run() ->
 
 
 
-% @doc UseTickOffsets tells whether we should display full ticks or tick offsets
-% (note: their origin can be freely defined, there are not necessarily
-% simulation tick offsets):
-%
-run( UseTickOffsets ) ->
+test_basic_rendering( UseTickOffsets ) ->
 
-	?test_start,
+	?test_info( "Creating a basic probe, for basic rendering." ),
 
-	?test_info( "This test allows to test the rendering of basic probes." ),
+	ExtraSettingsTable = table:new( [
+		{ curve_colors, [ "ff0000", "00ff00", "0000ff" ] } ] ),
 
-	% Here we will emulate from this test the result manager:
-	?test_info( "Creating first a mock result manager, "
-				"as it is needed by the probe." ),
-
-	_MockResultManager = class_ResultManager:create_mockup_environment(),
-
-	?test_info( "Creating a probe." ),
+	ProbeDirectory = file_utils:get_current_directory(),
 
 	% Must not be synchronous (otherwise deadlock):
-	MyProbe = class_Probe:create_facility_probe( "Test probe",
+	MyProbe = class_Probe:create_facility_probe( _Name="Basic Test probe",
 		_Curves=[ "First curve", "Second curve", "Last curve" ],
-		_Zones=[],
-		"This is a test of the generic probe class",
-		"Simulation tick (20 ms)", "Number of events" ),
+		_Zones=[], _Title="This is a basic test of the generic probe class",
+		_MaybeXLabel="Simulation tick (20 ms)", _YLabel="Number of events",
+		ProbeDirectory, _MetaData=[], ExtraSettingsTable ),
 
 	?test_info( "Sending data to the probe." ),
 
@@ -150,6 +146,106 @@ run( UseTickOffsets ) ->
 	% Manages batch mode and al:
 	class_Probe:generate_report_for( MyProbe ),
 
-	class_Probe:delete_facility_probe( MyProbe ),
+	class_Probe:delete_facility_probe( MyProbe ).
+
+
+
+test_zone_rendering( UseTickOffsets ) ->
+
+	?test_info( "Creating a basic probe, for zone rendering." ),
+
+	ProbeDirectory = file_utils:get_current_directory(),
+
+	ExtraSettingsTable = table:new( [
+		% Implies various relevant defaults to be applied:
+		{ global_plot_style, fillsteps },
+		{ zone_colors, [ _Red="ff0000", _Green="00ff00", _Blue="0000ff",
+						 _Black="000000" ] },
+		{ extra_defines, [
+			"set key title \"This is the {/:Italic title} of this test key\""
+						 ] } ] ),
+
+	% Must not be synchronous (otherwise deadlock):
+	MyProbe = class_Probe:create_facility_probe( _Name="Zone Test probe",
+		_Curves=[ "First curve", "Second curve", "Third curve",
+				  "Fourth curve" ],
+		% So A will be filled in red, B in green, etc.:
+		_Zones=[ { "A", { abscissa_bottom, "First curve"  } },
+				 { "B with some {/:Bold important} text",
+				   { "First curve", "Second curve" } },
+				 { "C", { "Second curve", "Third curve"  } },
+				 { "D", { "Third curve", "Fourth curve" } } ],
+				 % Not relevant here, there is no roof:
+				 %{ "E", { "Fourth curve", abscissa_top  } } ],
+		_Title="This is a zone test of the generic probe class",
+		_MaybeXLabel="Simulation tick (20 ms)", _YLabel="Number of events",
+		ProbeDirectory, _MetaData=[], ExtraSettingsTable ),
+
+	?test_info( "Sending data to the probe." ),
+
+	% Corresponds to the first second of Y2K (with default settings):
+	InitialTick = 3155695200000,
+
+	case UseTickOffsets of
+
+		true ->
+			MyProbe ! { setTickOffset, InitialTick };
+
+		false ->
+			% Longer, exact, rotated and a probably less useful abscissa labels:
+			% Useful otherwise they may overlap:
+			MyProbe ! setRotatedTickLabels
+
+	end,
+
+	% We expect zones making stripes, with a bump of the third zone (C) within
+	% the fourth one (D), while the last zone (E) has an oscillating bottom
+	% fronteer.
+
+	% When data is already spaced according to zones (hence already with
+	% accumulated offsets):
+	%
+	class_Probe:send_data( MyProbe, InitialTick+1, {1,2,3,6} ),
+	class_Probe:send_data( MyProbe, InitialTick+2, {1,2,3,7} ),
+	class_Probe:send_data( MyProbe, InitialTick+3, {1,2,4,6} ),
+	class_Probe:send_data( MyProbe, InitialTick+4, {1,2,4,7} ),
+	class_Probe:send_data( MyProbe, InitialTick+5, {1,2,3,6} ),
+
+	% When only unitary, per-column data is available (columns are not already
+	% stacked to account for zones):
+	%
+	class_Probe:send_data_to_accumulate( MyProbe, InitialTick+11, {1,1,1,3} ),
+	class_Probe:send_data_to_accumulate( MyProbe, InitialTick+12, {1,1,1,4} ),
+	class_Probe:send_data_to_accumulate( MyProbe, InitialTick+13, {1,1,2,2} ),
+	class_Probe:send_data_to_accumulate( MyProbe, InitialTick+14, {1,1,2,3} ),
+	class_Probe:send_data_to_accumulate( MyProbe, InitialTick+15, {1,1,1,3} ),
+
+	% Manages batch mode and al:
+	class_Probe:generate_report_for( MyProbe ),
+
+	class_Probe:delete_facility_probe( MyProbe ).
+
+
+
+
+% @doc UseTickOffsets tells whether we should display full ticks or tick offsets
+% (note: their origin can be freely defined, there are not necessarily
+% simulation tick offsets):
+%
+run( UseTickOffsets ) ->
+
+	?test_start,
+
+	?test_info( "This test allows to test the rendering of basic probes." ),
+
+	% Here we will emulate from this test the result manager:
+	?test_info( "Creating first a mock result manager, "
+				"as it is needed by the probe." ),
+
+	_MockResultManager = class_ResultManager:create_mockup_environment(),
+
+	test_basic_rendering( UseTickOffsets ),
+
+	test_zone_rendering( UseTickOffsets ),
 
 	?test_stop.

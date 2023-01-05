@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2022 Olivier Boudeville
+% Copyright (C) 2007-2023 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -291,7 +291,7 @@ set_element_at( Element, _List=[ H | T ], Index, Acc ) ->
 
 % @doc Inserts specified element at specified position in the specified list.
 %
-% For example, insert_element_at(foo, [a, b, c, d], 3) will return
+% For example: insert_element_at(foo, [a, b, c, d], 3) will return
 % [a, b, foo, c, d].
 %
 -spec insert_element_at( element(), list(), positive_index() ) -> list().
@@ -322,7 +322,7 @@ insert_element_at( Element, _List=[ H | T ], Index, Acc ) ->
 %
 % Returns that element and the resulting, shrunk list.
 %
-% Ex: {b, [a, c]} = extract_element_at([ a, b, c], 2).
+% For example: {b, [a, c]} = extract_element_at([ a, b, c], 2).
 %
 -spec extract_element_at( list(), positive_index() ) -> { element(), list() }.
 extract_element_at( List, Index ) ->
@@ -370,7 +370,7 @@ extract_element_if_existing( Elem, _List=[ H | T ], Acc ) ->
 
 % @doc Removes the specified number first elements.
 %
-% Ex: [c, d, e] = list_utils:remove_first_elements([a, b, c, d, e], 2).
+% For example: [c, d, e] = list_utils:remove_first_elements([a, b, c, d, e], 2).
 %
 -spec remove_first_elements( list(), count() ) -> list().
 remove_first_elements( List, _Count=0 ) ->
@@ -439,7 +439,7 @@ remove_last_element( List ) ->
 % @doc Returns a pair made of the N first elements ("heads") of the specified
 % list, and of its remainder (tail).
 %
-% Ex: heads([a,b,c,d,e], _N=3) = {[a,b,c],[d,e]}.
+% For example: heads([a,b,c,d,e], _N=3) = {[a,b,c],[d,e]}.
 %
 % Like list:sublist/1 yet returning the tail (list:nthtail/1) as well.
 %
@@ -513,7 +513,7 @@ extract_last_element( List ) ->
 %
 % Throws an exception if the element is not found.
 %
-% Ex: 3 = get_index_of( bar, [ foo, ugh, bar, baz ] )
+% For example: 3 = get_index_of(bar, [foo, ugh, bar, baz])
 %
 -spec get_index_of( element(), list() ) -> count().
 get_index_of( Element, List ) ->
@@ -533,7 +533,7 @@ get_index_of( Element, List ) ->
 % the) specified element in the specified list, or 'undefined' if the element is
 % not found.
 %
-% Ex:
+% For example:
 %   3 = get_maybe_index_of(bar, [foo, ugh, bar, baz])
 %   undefined = get_maybe_index_of(xxx, [foo, ugh, bar, baz])
 %
@@ -560,7 +560,7 @@ get_maybe_index_of( Element, _List=[ _H | T ], Count ) ->
 %   reverse order
 % - the second contains the remaining elements (if any)
 %
-% Ex: split_at(3, [a, b, c, d, e]) = {[c, b, a], [d, e]}
+% For example: split_at(3, [a, b, c, d, e]) = {[c, b, a], [d, e]}
 %
 -spec split_at( count(), list() ) -> { list(), list() }.
 split_at( MaxLen, List ) ->
@@ -586,7 +586,7 @@ split_at( _List=[ E | T ], Count, MaxLen, Acc ) ->
 %
 % The last group may have less than Count elements.
 %
-% Ex: [[a,b], [c,d], [e]] = group_by(_Count=2, [a,b,c,d,e])
+% For example: [[a,b], [c,d], [e]] = group_by(_Count=2, [a,b,c,d,e])
 %
 -spec group_by( count(), list() ) -> [ list() ].
 group_by( Count, List ) ->
@@ -609,7 +609,7 @@ group_by( Count, List, Acc ) ->
 %
 % No specific order is respected in the returned list.
 %
-% Ex: if L = [1,2,3,2,2,4,5,5,4,6,6,5], then uniquify(L) is:
+% For example: if L = [1,2,3,2,2,4,5,5,4,6,6,5], then uniquify(L) is:
 % [1,2,3,4,5,6].
 %
 -spec uniquify( list() ) -> list().
@@ -629,7 +629,7 @@ uniquify( List ) ->
 %
 % Expected to be a bit slower than uniquify/1.
 %
-% Ex: if L = [1,3,2,3,2,2,4,5,5,4,6,6,5], then uniquify_ordered(L) is:
+% For example: if L = [1,3,2,3,2,2,4,5,5,4,6,6,5], then uniquify_ordered(L) is:
 % [1,3,2,4,5,6].
 %
 -spec uniquify_ordered( list() ) -> list().
@@ -654,10 +654,10 @@ uniquify_ordered( [ H | T ], Acc, KnownSet ) ->
 
 
 
-% @doc Ensures that specified element is included once in specified unordered
-% list (supposed to contain it already up to once).
+% @doc Ensures that the specified element is included once in the specified
+% unordered list (supposed to contain it already up to once).
 %
-% Note: refer to set_utils for a more proper implementation of set.
+% Note: refer to set_utils for a more proper implementation of sets.
 %
 -spec ensure_is_once_in( term(), list() ) -> list().
 ensure_is_once_in( Elem, List ) ->
@@ -706,7 +706,7 @@ count_occurrences( _List=[], Acc ) ->
 count_occurrences( _List=[ Term | T ], Acc ) ->
 
 	% trace_utils:debug_fmt( "Inquiring about term '~p' into ~p.",
-	% [ Term, T ] ),
+	%                        [ Term, T ] ),
 
 	case count_and_filter_term( Term, _InitialList=T, _FilteredList=[],
 								_InitialCount=0 ) of
@@ -733,8 +733,8 @@ count_occurrences( _List=[ Term | T ], Acc ) ->
 % count_occurrences/1 if wanting to include the terms that are listed only once
 % each.
 %
-% Ex: L = [a,a,b,b,b,c,d,d],
-%     [{b,3},{d,2},{a,2}] = list_utils:get_duplicates(L)
+% For example: L = [a,a,b,b,b,c,d,d],
+%              [{b,3},{d,2},{a,2}] = list_utils:get_duplicates(L)
 %
 % Use lists:keysort(2, list_utils:get_duplicates(L)) to sort duplicates by
 % increasing number of occurrences (e.g. [{d,2},{a,2},{b,3}] here).
@@ -749,7 +749,7 @@ get_duplicates( _List=[], Acc ) ->
 get_duplicates( _List=[ Term | T ], Acc ) ->
 
 	% trace_utils:debug_fmt( "Inquiring about term '~p' into ~p.",
-	% [ Term, T ] ),
+	%                        [ Term, T ] ),
 
 	case count_and_filter_term( Term, _InitialList=T, _FilteredList=[],
 								_InitialCount=0 ) of
@@ -834,7 +834,7 @@ differences( L1, L2 ) ->
 % @doc Returns the cartesian product of the specified lists (collected in a
 % top-level list).
 %
-% Ex: cartesian_product([[a,b,c], [d,e], [f]]) =
+% For example: cartesian_product([[a,b,c], [d,e], [f]]) =
 %     [[a,d,f], [a,e,f], [b,d,f], [b,e,f], [c,d,f], [c,e,f]]
 %
 -spec cartesian_product( [ [ T ] ] ) -> [ [ T ] ].
@@ -843,7 +843,7 @@ cartesian_product( [ SingleList ] ) ->
 
 cartesian_product( [ List | OtherLists ] ) ->
 	[ [ E | SubList ]
-	  || E <- List, SubList <- cartesian_product( OtherLists ) ].
+		|| E <- List, SubList <- cartesian_product( OtherLists ) ].
 
 
 
@@ -866,8 +866,8 @@ subtract_all_duplicates( L1, L2 ) ->
 
 % @doc Returns a list of all the permutations of the specified list.
 %
-% Ex: get_all_permutations([a,b,c]) = [ [c,b,a], [c,a,b], [a,c,b], [b,c,a],
-%                                       [b,a,c], [a,b,c] ]
+% For example: get_all_permutations([a,b,c]) =
+%    [ [c,b,a], [c,a,b], [a,c,b], [b,c,a], [b,a,c], [a,b,c] ]
 %
 -spec get_all_permutations( list() ) -> [ list() ].
 get_all_permutations( L=[ _E ] ) ->
@@ -884,7 +884,7 @@ get_all_permutations( _L=[ H | T ] ) ->
 % the specified element at each possible place in L (including before and
 % after).
 %
-% Ex: insert_at_all_places(a, [b,c,d]) =
+% For example: insert_at_all_places(a, [b,c,d]) =
 %                  [ [b,c,d,a], [b,c,a,d], [b,a,c,d], [a,b,c,d] ]
 %
 -spec insert_at_all_places( element(), list() ) -> [ list() ].
@@ -1080,7 +1080,7 @@ intercalate( Elem, _TargetList=[ H | T ], Acc ) ->
 % @doc Appends specified element at the end of specified list, without changing
 % the order of the list.
 %
-% Ex: append_at_end(d, [a,b,c]) returns [a,b,c,d].
+% For example: append_at_end(d, [a,b,c]) returns [a,b,c,d].
 %
 % Note: usually adding elements at the end of a list should be avoided, as it is
 % costlier than adding them at head.
@@ -1155,6 +1155,7 @@ are_atoms( _ ) ->
 	false.
 
 
+
 % @doc Checks that the terms in the specified list are in strict (no duplicates)
 % ascending (Erlang) term order.
 %
@@ -1198,7 +1199,7 @@ unordered_compare( L1, L2 ) ->
 %
 % Element order is preserved.
 %
-% Ex: if L=[ [1], [2,[3,4]] ], lists:flatten(L) yields [1,2,3,4] whereas
+% For example: if L=[[1], [2,[3,4]]], lists:flatten(L) yields [1,2,3,4] whereas
 % list_utils:flatten_once(L) should yield [1,2,[3,4]].
 %
 % See text_utils:concatenate/1 for string-related operations.
@@ -1241,7 +1242,7 @@ filter_out_undefined( L ) ->
 %
 % The order in each sublist is preserved.
 %
-% Ex: dispatch_in(3, [a, b, c, d, e, f]) = [[a,d], [b,e], [c,f]].
+% For example: dispatch_in(3, [a, b, c, d, e, f]) = [[a,d], [b,e], [c,f]].
 %
 -spec dispatch_in( count(), list() ) -> [ list() ].
 dispatch_in( SublistCount, List ) ->
@@ -1263,7 +1264,7 @@ dispatch_in( SublistCount, List, AccSubLists ) ->
 
 % @doc Adds the specified elements as heads of the specified lists.
 %
-% Ex: add_as_heads([a,b,c], [[u,v], [], [w]]) = [[a,u,v], [b], [c,w]].
+% For example: add_as_heads([a,b,c], [[u,v], [], [w]]) = [[a,u,v], [b], [c,w]].
 %
 % Of course the two lists shall have the same length.
 %
@@ -1319,7 +1320,7 @@ check_tuple_length( _TupleList=[ Tuple | T ], TupleSize, AccCount ) ->
 % @doc Flattens a list of tuples into a simple list of their elements, without
 % tuples and in the same order.
 %
-% Ex: flatten_tuples([{1, 2, 3}, {4, 5, 6}]) = [1, 2, 3, 4, 5, 6])
+% For example: flatten_tuples([{1, 2, 3}, {4, 5, 6}]) = [1, 2, 3, 4, 5, 6])
 %
 -spec flatten_tuples( [ tuple() ] ) -> list().
 flatten_tuples( List ) ->
@@ -1338,7 +1339,8 @@ flatten_tuples( [ H | T ], Acc ) ->
 % @doc Reconstructs a list of tuples of specified size from the specified flat
 % list.
 %
-% Ex: reconstruct_tuples([ 1, 2, 3, 4, 5, 6 ], 3) = [{1, 2, 3}, {4, 5, 6}]
+% For example: reconstruct_tuples([1, 2, 3, 4, 5, 6], 3) =
+%                            [{1, 2, 3}, {4, 5, 6}]
 %
 -spec reconstruct_tuples( list(), count() ) -> [ tuple() ].
 reconstruct_tuples( List, _TupleSize=1 ) ->
@@ -1475,8 +1477,8 @@ draw_element( ElementList, Length ) ->
 % floating-point values) defined relatively to each other (they do not have to
 % sum up to 1.0).
 %
-% Ex: ElementList = [{first,1}, {second,2}, {third,1}] is excepted to return on
-% average 'second' twice as frequently as 'first' or 'third'.
+% For example: ElementList = [{first,1}, {second,2}, {third,1}] is expected to
+% return on average 'second' twice as frequently as 'first' or 'third'.
 %
 % Using [{first,1}, {second,0}, {third,1}] instead would mean that 'second'
 % would never be drawn.

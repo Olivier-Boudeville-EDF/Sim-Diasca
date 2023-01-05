@@ -6,7 +6,7 @@
 % Note: this source file was beforehand in DOS encoding, presumably for no good
 % reason.
 
-% Copyright (C) 2013-2022 Olivier Boudeville
+% Copyright (C) 2013-2023 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -33,7 +33,7 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 
 
-% Unit tests for the sms_utils toolbox.
+% @doc Unit tests for the sms_utils toolbox.
 %
 % See the sms_utils.erl tested module.
 %
@@ -56,7 +56,6 @@ run() ->
 
 -spec run( boolean() ) -> no_return().
 run( EnableSMSSending ) ->
-
 
 	test_facilities:start( ?MODULE ),
 
@@ -105,7 +104,7 @@ run( EnableSMSSending ) ->
 	ServiceClass = pro,
 
 	FirstSMS = sms_utils:create_sms( Message, Recipient,
-					 _SenderDescription="33616833333", ServiceClass ),
+					_SenderDescription="33616833333", ServiceClass ),
 
 	% Not wanting using all credits because of testings:
 	SendRes = case EnableSMSSending of

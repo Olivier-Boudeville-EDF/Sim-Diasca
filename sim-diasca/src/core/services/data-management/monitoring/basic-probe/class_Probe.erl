@@ -1,22 +1,22 @@
-% Copyright (C) 2008-2022 EDF R&D
-
+% Copyright (C) 2008-2023 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
-% Author: Olivier Boudeville (olivier.boudeville@edf.fr)
+%
+% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2008.
 
 
@@ -32,7 +32,8 @@
 -define( superclasses, [ class_ResultProducer ] ).
 
 
-% See class_Probe_test.erl
+% For an easier debugging/testing, see probe_rendering_test.erl and
+% class_Probe_test.erl.
 %
 % See http://www.gnuplot.info/docs/gnuplot.html for graph generation.
 %
@@ -61,6 +62,62 @@
 % useful. So we stick to a gnuplot host-local check at each probe creation -
 % even if no rendering may finally happen.
 
+
+% Regarding zones:
+%
+% Zones are different from "stacked histograms" (see 'rowstacked') insofar as a
+% zone corresponds just to the filling of the area between two curves, whereas a
+% stacked histogram should stack (add) values read from columns; for example,
+% if, for a given abscissa, V1 can be read for column C1 and V2 for column C2,
+% then a zone would spread in [C1,C2] whereas a stacked histogram would
+% represent a first "zone" between the abscissa axis and C1, and a second zone
+% between C1 and C1+C2 (*not* C2).
+%
+% The simplest way (other options, such as using 'rowstacked' gnuplot histograms
+% or filledcurves, are considerably less convenient/more problematic) to display
+% with gnuplot such "stacked histograms" is to use our zone feature, and thus to
+% preprocess entries so that they stack additively; e.g. instead of having raw
+% samples like {Timestamp, C1, C2, C3}, the probe should be fed with {Timestamp,
+% C1, C1+C2, C1+C2+C3} samples, and curves shall be rendered from the topmost to
+% the bottom one (i.e. C1+C2+C3, C1+C2 and C1 here), so that the C1+C2 is drawn
+% over C1+C2+C3, and so on; refer to send_stacked_data/3 to have it done for
+% you.
+%
+% We however used filledcurves, an approach supposed to be more robust, yet it
+% does not (and probably cannot) render as the desired histograms: with
+% filledcurves two data points are linked by a line segment (which of course
+% gets filled), leading to unwanted filled triangles (picture a curve equal to
+% zero until being equal to 1 at timestamp T: the area delimited by the previous
+% timestamp and T will be an upright triangle raising from 0 to 1, whereas we
+% would want a step from 0 to 1 at T. So we now use normal curves drawn as
+% "boxes" (actually 'fillsteps').
+%
+% When rendering them, generally a fill style is needed (generally solid),
+% specific zone colors are specified, ordinates shall start at zero (no
+% autoscaling: y_range = {0,undefined}) and no zone based on abscissa_top is
+% requested. Corresponding defaults are applied with fillsteps (see
+% apply_extra_settings/3).
+%
+% Once a probe with zones has been defined, it can be fed:
+%
+% - either with data that has already been adequately summed by the user, so
+% that curves naturally stack (then use send_data/3)
+%
+% - or with non-preprocessed data that thus shall be accumulated (see
+% send_data_to_accumulate/3)
+%
+% For example, the two next calls result in the same plot:
+%   class_Probe:send_data(MyProbe, T, {1,2,3,6})
+%   class_Probe:send_data_to_accumulate(MyProbe, T, {1,1,1,3})
+%
+% Note that accumulating data implies that the order of the zones to be rendered
+% (the stripes in the final graph) is already reflected in the order of the
+% sample data fed to the probe: as these values will be accumulated left to
+% right, one cannot afterwards permute the order of the zones. So the zones
+% shall preferably be initially specified from the lowest one to the highest
+% one, and they must be fed with data in the same order.
+
+% See also probe_rendering_test.erl for a full, minimal example thereof.
 
 
 % A (basic, plain) probe aggregates a series of values for a series of ticks and
@@ -148,9 +205,11 @@
 
 -type label_text() :: bin_string().
 % Actual text of the label.
+%
+% Note that texts can be "enhanced" (e.g. "for some {/:Bold important} text").
 
 
--type label_color() :: gui_color:color().
+-type label_color() :: color().
 % Color of the text (default: "blue").
 
 
@@ -159,7 +218,7 @@
 % label.
 
 
--type label_orientation() :: 'upright' | unit_utils:int_degrees().
+-type label_orientation() :: 'upright' | int_degrees().
 % Describes whether the text of the label should be rendered with an angle, from
 % the abscissa axis.
 
@@ -187,6 +246,7 @@
 -type executable_path() :: file_utils:executable_path().
 -type file() :: file_utils:file().
 
+-type int_degrees() :: unit_utils:int_degrees().
 
 -type point() :: gui:point().
 -type color() :: gui_color:color().
@@ -198,6 +258,10 @@
 -type virtual_seconds() :: class_TimeManager:virtual_seconds().
 
 -type meta_data() :: class_ResultManager:meta_data().
+% Information to be passed to result producers.
+%
+% This includes basic engine-level information, such as layer versions,
+% simulation name, tick duration, etc.
 
 
 
@@ -262,8 +326,8 @@
 	  "and with curve names being binaries; the order in this list dictates "
 	  "the actual rendering order of curves that will be performed" },
 
-	{ zone_entries, [ zone_definition() ], "a list of {BinZoneName, "
-	  "{ExtendedCurveName1, ExtendedCurveName2}} entries" },
+	{ zone_entries, [ zone_entry() ],
+	  "a list of definitions of zones, between two curves in a 2D plot" },
 
 	{ tick_offset, probe_tick(), "a value, by default set to zero, that will "
 	  "be subtracted to all the ticks sent with sample data; for example, if "
@@ -372,23 +436,30 @@
 
 
 -type probe_name_init() :: probe_name()
-						 | { probe_name(), traces:emitter_categorization() }.
+					   | { probe_name(), traces:emitter_categorization() }.
 % Name information about a probe.
 
 
 
 % Type section of external interactions with a probe:
-% (we use plain strings here, as opposed to the internal representation)
 
 -type special_curve_names() :: 'abscissa_top' | 'abscissa_bottom'.
+% Identifiers of pseudo-curves (Ordinate = constant), corresponding respectively
+% to the highest ordinate value and lowest one.
+
+
+% (we use plain strings here, as opposed to the internal representation)
+
 
 -type declared_curve_name() :: ustring().
 -type declared_extended_curve_name() :: ustring() | special_curve_names().
 
 -type declared_zone_name() :: ustring().
+% The name of a user-specified zone.
 
 -type declared_zone() :: { declared_zone_name(),
 		{ declared_extended_curve_name(), declared_extended_curve_name() } }.
+% The definition of a user-specified zone.
 
 
 -type plot_style() :: 'linespoints' % (default)
@@ -396,6 +467,8 @@
 					| 'points'
 					| 'boxes'
 					| 'histograms'
+					| 'filledcurves'
+					| 'fillsteps'
 					| atom(). % As many others exist.
 % Plot style (default being 'linespoints'):
 %
@@ -431,12 +504,7 @@
 
 
 -type curve_name() :: text_utils:bin_string().
-% The internal name for a curve:
-
-
--type sample_data() :: tuple().
-% A tuple of data (numbers) to be sent as sample to a probe-like result
-% producer.
+% The internal name for a curve.
 
 
 -type curve_index() :: curve_count().
@@ -450,13 +518,6 @@
 % of the corresponding curve.
 
 
--type zone_name() :: bin_string().
-
-
--type zone_definition() ::
-		{ zone_name(), { extended_curve_name(), extended_curve_name() } }.
-
-
 -type curve_entry() :: { curve_index(), curve_name(), curve_plot_suffix() }.
 % Information specific to the rendering of a curve.
 
@@ -464,10 +525,37 @@
 -type curve_entries() :: [ curve_entry() ].
 
 
+
+-type zone_name() :: bin_string().
+% Tne name of a zone.
+
+
+-type zone_plot_suffix() :: bin_string().
+% A (binary string) suffix (e.g. <<"fillcolor red">>) to be added to the plot
+% command of the corresponding zone.
+
+
+-type zone_entry() ::
+		{ zone_name(), { extended_curve_name(), extended_curve_name() },
+		  zone_plot_suffix() }.
+% Information specific to the rendering of a zone.
+
+
+
+
 -type rgb_color_spec() :: ustring().
 % Ex: "3ab001" for lightgreen.
 
 -type extra_curve_settings() :: rgb_color_spec().
+% The color of a given curve.
+
+-type extra_zone_settings() :: rgb_color_spec().
+% The color of a given zone.
+
+
+-type sample_data() :: tuple().
+% A tuple of data (numbers) to be sent as sample to a probe-like result
+% producer.
 
 
 -type tick_option() :: maybe( 'rotate' ).
@@ -475,9 +563,10 @@
 
 
 -type ticks_option() :: maybe( ustring() ).
-% Option applying to ticks:
+% Option applying to ticks (e.g. axis, border, start, font, textcolor, etc.) for
+% a fine control of the major (labelled) tics on an axis.
 %
-% (ex: see Xtics, in http://gensoft.pasteur.fr/docs/gnuplot/5.0.4/node360.html)
+% (ex: see Xtics, in http://www.gnuplot.info/docs_4.2/node295.html)
 
 
 -type timestamp_time_format() ::
@@ -495,7 +584,7 @@
 % data.
 
 
--type zone_entries()  :: [ zone_definition() ].
+-type zone_entries()  :: [ zone_entry() ].
 
 
 -type command_element() :: ustring().
@@ -530,14 +619,35 @@
 % relevant for probes.
 %
 % Possible setting pairs (setting_id() -> setting_value()):
-%  - global_plot_style -> plot_style()
-%  - curve_colors -> [ ustring() ]
+%
+%  - global_plot_style -> plot_style(); note that generally each curve specified
+%  explicitly its plot style, so defining a global plot style is less useful;
+%  nevertheless this global option may allow setting automatically relevant
+%  options (see apply_extra_settings/3)
+%
+%  - canvas_size -> {W :: length(), H :: length()} (e.g. {1600, 1200})
+
+%  - curve_colors -> [color()] (e.g. colors like 'red' or "ff0000")
+%
+%  - zone_colors -> [color()] (e.g. colors like 'red' or "ff0000")
+%
+%  - tick_options -> {XOpt :: tick_option(), YOpt :: tick_option()}
+%  (e.g. {rotate_ccw, undefined})
+%
+%  - ticks_options -> ticks_option()
+% (e.g. "axis in scale default textcolor red")
+%
+%  - timestamp_time_format -> timestamp_time_format() (e.g. 'double_line')
+%
+%  - extra_defines ->  [any_string()]
+% (e.g. ["set key title \"This is a key title\""])
+%
 %
 % Example:
 %
-% ExtraSettingsTable = table:new([
+%   ExtraSettingsTable = table:new([
 %		{global_plot_style, boxes},
-%		{curve_colors, [ _RunColorGreen="00BB00", _FailColor="BB0000",
+%		{curve_colors, [ _RunColorGreen="00bb00", _FailColor="bb0000",
 %						 _DisabledColor="777777"]}]),
 
 
@@ -604,12 +714,15 @@
 % are specified as a (potentially empty) list of {ZoneName,
 % {ExtendedCurveNameOne,ExtendedCurveNameTwo}} entries, where ZoneName is the
 % name of this zone (as a plain string), and ExtendedCurveNameOne and
-% ExtendedCurveNameTwo are each either a plain string designating a curve (ex:
-% "Second curve") already defined in CurveNames, or a special atom designating
-% the plot boundaries, i.e. either 'abscissa_bottom' or 'abscissa_top'. For
-% example {"My Zone", {"First curve",'abscissa_bottom'}} defines a zone named
-% "My Zone" and delimited by the curve named "First curve" and the abscissa axis
-% (note: the order between the two elements defining a zone does not matter)
+% ExtendedCurveNameTwo are each either a plain string designating a curve
+% (e.g. "Second curve") already defined in CurveNames, or a special atom
+% designating the plot boundaries, i.e. either 'abscissa_bottom' or
+% 'abscissa_top'. For example {"My Zone", {"First curve",'abscissa_bottom'}}
+% defines a zone named "My Zone" and delimited by the curve named "First curve"
+% and the abscissa axis (note: the order between the two elements defining a
+% zone does not matter; note also that zones do not behave exactly as stacked
+% histograms, but may be used to represent them; refer to the "Regarding zones"
+% section for further information)
 %
 % - Title will be the graph (plot) title
 %
@@ -644,17 +757,9 @@ construct( State, NameTerm, CurveNames, Zones, Title,
 % CurveNames=["First curve", "Second curve"] will lead to expect receiving
 % samples like: {MyTick, {ValueForFirstCurve, ValueForSecondCurve}}
 %
-% - Zones, which correspond to specific areas between two curves being defined,
-% are specified as a (potentially empty) list of {ZoneName,
-% {ExtendedCurveNameOne,ExtendedCurveNameTwo}} entries, where ZoneName is the
-% name of this zone (as a plain string), and ExtendedCurveNameOne and
-% ExtendedCurveNameTwo are each either a plain string designating a curve (ex:
-% "Second curve") already defined in CurveNames, or a special atom designating
-% the plot boundaries, i.e. either 'abscissa_bottom' or 'abscissa_top'. For
-% example {"My Zone", {"First curve",'abscissa_bottom'}} defines a zone named
-% "My Zone" and delimited by the curve named "First curve" and the abscissa axis
-% (note: the order between the two elements defining a zone does not matter)
-%
+% - Zones, which correspond to specific areas between two curves being defined;
+% refer to construct/7 for more information about them
+
 % - Title will be the graph (plot) title
 %
 % - MaybeXLabel (if any) will be the non-default label of the abscissa axis
@@ -689,16 +794,8 @@ construct( State, NameTerm, CurveNames, Zones, Title,
 % CurveNames=["First curve", "Second curve"] will lead to expect receiving
 % samples like: {MyTick, {ValueForFirstCurve, ValueForSecondCurve}}
 %
-% - Zones, which correspond to specific areas between two curves being defined,
-% are specified as a (potentially empty) list of {ZoneName,
-% {ExtendedCurveNameOne,ExtendedCurveNameTwo}} entries, where ZoneName is the
-% name of this zone (as a plain string), and ExtendedCurveNameOne and
-% ExtendedCurveNameTwo are each either a plain string designating a curve (ex:
-% "Second curve") already defined in CurveNames, or a special atom designating
-% the plot boundaries, i.e. either 'abscissa_bottom' or 'abscissa_top'. For
-% example {"My Zone", {"First curve",'abscissa_bottom'}} defines a zone named
-% "My Zone" and delimited by the curve named "First curve" and the abscissa axis
-% (note: the order between the two elements defining a zone does not matter)
+% - Zones, which correspond to specific areas between two curves being defined;
+% refer to construct/7 for more information about them
 %
 % - Title will be the graph (plot) title
 %
@@ -742,7 +839,7 @@ construct( State, { NameInit, ProbeOptions }, CurveNames, Zones, Title,
 
 	%trace_utils:debug_fmt( "Initial curve entries: ~p.", [ CurveEntries ] ),
 
-	% Results in [zone_definition()]:
+	% Results in [zone_entry()]:
 	ZoneEntries = transform_declared_zones( Zones, CurveEntries ),
 
 	%trace_utils:debug_fmt( "Initial zone entries: ~p.", [ ZoneEntries ] ),
@@ -759,12 +856,21 @@ construct( State, { NameInit, ProbeOptions }, CurveNames, Zones, Title,
 	ProbeBaseSettings =
 		get_probe_settings( Title, MaybeXLabel, YLabel, MaybeGnuplotVersion ),
 
-	{ ProbeSettings, ExtraCurveSettings } = apply_extra_settings(
-		MaybeExtraSettingsTable, ProbeBaseSettings, ProducerState ),
+	{ ProbeSettings, ExtraCurveSettings, ExtraZoneSettings } =
+		apply_extra_settings( MaybeExtraSettingsTable, ProbeBaseSettings,
+							  ProducerState ),
 
 	UpdatedCurveEntries =
 		update_curve_entries( CurveEntries, ExtraCurveSettings ),
 
+	%trace_utils:debug_fmt( "ExtraCurveSettings=~p~nUpdatedCurveEntries=~p",
+	%   [ ExtraCurveSettings, UpdatedCurveEntries ] ),
+
+	UpdatedZoneEntries =
+		update_zone_entries( ZoneEntries, ExtraZoneSettings ),
+
+	%trace_utils:debug_fmt( "ExtraZoneSettings=~p~nUpdatedZoneEntries=~p",
+	%   [ ExtraZoneSettings, UpdatedZoneEntries ] ),
 
 	CurveCount = length( CurveNames ),
 
@@ -778,7 +884,7 @@ construct( State, { NameInit, ProbeOptions }, CurveNames, Zones, Title,
 		{ probe_dir, text_utils:string_to_binary( ProbeDir ) },
 		{ curve_count, CurveCount },
 		{ curve_entries, UpdatedCurveEntries },
-		{ zone_entries, ZoneEntries },
+		{ zone_entries, UpdatedZoneEntries },
 		{ tick_offset, 0 },
 		{ maybe_tick_duration, MaybeTickDuration },
 		{ sample_count, 0 },
@@ -954,15 +1060,8 @@ setData( State, Tick, Samples ) ->
 
 	ExpectedCount = ?getAttr(curve_count),
 
-	case size( Samples ) of
-
-		ExpectedCount ->
-			ok;
-
-		_Other ->
-			throw( { invalid_sample_size, Samples, ExpectedCount } )
-
-	end,
+	size( Samples ) =:= ExpectedCount orelse
+		throw( { invalid_sample_size, Samples, ExpectedCount } ),
 
 	TimestampStr = case ?getAttr(maybe_tick_duration) of
 
@@ -970,13 +1069,16 @@ setData( State, Tick, Samples ) ->
 			RecordedTick = Tick - ?getAttr(tick_offset),
 			text_utils:integer_to_string( RecordedTick );
 
+		% Implied: using a proper "set timefmt", using two levels of quoting
 		TickDuration ->
 			Secs = class_Actor:convert_ticks_to_seconds_explicit( Tick,
 															TickDuration ),
 			IntegerSecs = round( Secs ),
 			Timestamp = calendar:gregorian_seconds_to_datetime( IntegerSecs ),
 
-			time_utils:timestamp_to_string( Timestamp )
+			% Otherwise 2000/1/1 00:00:00 is interpreted as two values:
+			text_utils:format( "\"~ts\"",
+							   [ time_utils:timestamp_to_string( Timestamp ) ] )
 
 	end,
 
@@ -1060,11 +1162,11 @@ addCurves( State, CurveNames ) ->
 	%                       [ CurveNames, ?getAttr(name) ] ),
 
 	{ NewCurveCount, NewCurveEntries } = lists:foldl(
-			fun( CurveName, _Acc={ CurveCount, CurveEntries } ) ->
-				add_curve( CurveName, CurveCount, CurveEntries )
-			end,
-			_Acc0={ ?getAttr(curve_count), ?getAttr(curve_entries) },
-			_List=CurveNames ),
+		fun( CurveName, _Acc={ CurveCount, CurveEntries } ) ->
+			add_curve( CurveName, CurveCount, CurveEntries )
+		end,
+		_Acc0={ ?getAttr(curve_count), ?getAttr(curve_entries) },
+		_List=CurveNames ),
 
 	wooper:return_state( setAttributes( State, [
 		{ curve_count, NewCurveCount },
@@ -1084,7 +1186,7 @@ add_curve( CurveName, CurveCount, CurveEntries ) ->
 	NewCurveCount = CurveCount + 1,
 
 	NewCurveEntry = { NewCurveCount, text_utils:string_to_binary( CurveName ),
-					  get_default_plot_suffix() },
+					  get_default_curve_plot_suffix() },
 
 	NewCurveEntries = list_utils:append_at_end( NewCurveEntry, CurveEntries ),
 
@@ -1193,7 +1295,7 @@ getCurveRenderOrder( State ) ->
 % order.
 %
 % Names is a list of plain strings that must correspond to a permutation of the
-% list which would be returned by getCurveEntries/1.
+% list that would be returned by getCurveEntries/1.
 %
 -spec setCurveRenderOrder( wooper:state(), [ string_curve_name() ] ) ->
 									oneway_return().
@@ -1390,7 +1492,7 @@ setKeyOptions( State, NewOptions ) ->
 
 	wooper:return_state( setAttribute( State, settings,
 		Settings#probe_settings{
-				key_options=text_utils:string_to_binary( NewOptions ) } ) ).
+			key_options=text_utils:string_to_binary( NewOptions ) } ) ).
 
 
 
@@ -1405,7 +1507,7 @@ setKeyOptions( State, NewOptions, GenerateFile ) ->
 
 	UpdatedState = setAttribute( State, settings,
 		Settings#probe_settings{
-				key_options=text_utils:string_to_binary( NewOptions ) } ),
+			key_options=text_utils:string_to_binary( NewOptions ) } ),
 
 	% Forces the regeneration of the command file if requested:
 	CommandState = trigger_command_file_update( GenerateFile, UpdatedState ),
@@ -1545,7 +1647,7 @@ addLabel( State, Text, Location ) ->
 	Labels = [ NewLabel | Settings#probe_settings.labels ],
 
 	wooper:return_state( setAttribute( State, settings,
-			Settings#probe_settings{ labels=Labels } ) ).
+		Settings#probe_settings{ labels=Labels } ) ).
 
 
 
@@ -1594,7 +1696,7 @@ addLabel( State, Text, Location, Color, Orientation ) ->
 	Labels = [ NewLabel | Settings#probe_settings.labels ],
 
 	wooper:return_state( setAttribute( State, settings,
-			Settings#probe_settings{ labels=Labels } ) ).
+		Settings#probe_settings{ labels=Labels } ) ).
 
 
 
@@ -1620,7 +1722,7 @@ addLabel( State, Text, Location, Color, Orientation, Position ) ->
 	Labels = [ NewLabel | Settings#probe_settings.labels ],
 
 	wooper:return_state( setAttribute( State, settings,
-			Settings#probe_settings{ labels=Labels } ) ).
+		Settings#probe_settings{ labels=Labels } ) ).
 
 
 
@@ -1695,17 +1797,12 @@ generateReport( State, DisplayWanted ) ->
 
 	ReportState = generate_report( Name, State ),
 
-	case DisplayWanted of
-
-		true ->
+	DisplayWanted andalso
+		begin
 			ReportName = get_report_filename( Name ),
 			executable_utils:display_png_file(
-				file_utils:join( ?getAttr(probe_dir), ReportName ) );
-
-		false ->
-			ok
-
-	end,
+				file_utils:join( ?getAttr(probe_dir), ReportName ) )
+		end,
 
 	wooper:return_state_result( ReportState, probe_report_generated ).
 
@@ -1720,21 +1817,14 @@ setDirectory( State, NewProbeDirectory ) ->
 	BinProbeDir = text_utils:ensure_binary( NewProbeDirectory ),
 
 	% Expected to already exist:
-	case file_utils:is_existing_directory( BinProbeDir ) of
-
-		true ->
-			ok;
-
-		false ->
-			throw( { non_existing_probe_directory, NewProbeDirectory } )
-
-	end,
+	file_utils:is_existing_directory( BinProbeDir ) orelse
+		throw( { non_existing_probe_directory, NewProbeDirectory } ),
 
 	% data_filename is the only precomputed path (thus the only one to be
 	% updated):
 	%
 	DataFilename = file_utils:join( BinProbeDir,
-			get_data_filename( class_TraceEmitter:get_plain_name( State ) ) ),
+		get_data_filename( class_TraceEmitter:get_plain_name( State ) ) ),
 
 	wooper:return_state( setAttributes( State, [
 		{ probe_dir, BinProbeDir },
@@ -1763,16 +1853,9 @@ sendResults( State, [ data_only ] ) ->
 
 	Name = class_TraceEmitter:get_plain_name( CommandState ),
 
-	case ?getAttr(sample_count) of
-
-		0 ->
-			?notice_fmt( "The probe '~ts' did not receive any data sample.",
-						 [ Name ] );
-
-		_ ->
-			ok
-
-	end,
+	?getAttr(sample_count) =:= 0 andalso
+		?notice_fmt( "The probe '~ts' did not receive any data sample.",
+					 [ Name ] ),
 
 	DataFilename = text_utils:binary_to_string( ?getAttr(data_filename) ),
 
@@ -1956,8 +2039,8 @@ toString( State ) ->
 	end,
 
 	Text = text_utils:format( "Probe '~ts', whose command file is ~ts cleaned, "
-			"and ~tsperforming deferred data writes",
-			[ ?getAttr(name), CleanCommandWord, DeferredWord ] ),
+		"and ~tsperforming deferred data writes",
+		[ ?getAttr(name), CleanCommandWord, DeferredWord ] ),
 
 	wooper:const_return_result( Text ).
 
@@ -2439,7 +2522,7 @@ create_facility_probe( NameOptions, CurveEntries, ZoneEntries, Title,
 
 
 % @doc Creates a facility probe in the specified directory, that is a lingering
-% probe, to be created (unilaterally) from a test case, and that will not to
+% probe, to be created (unilaterally) from a test case, and that will not be
 % considered as a result.
 %
 % - NameOptions is either:
@@ -2459,14 +2542,14 @@ create_facility_probe( NameOptions, CurveEntries, ZoneEntries, Title,
 %   as the memory footprint might become significant) where Bool is true or
 %   false
 %
-% - CurveNames :: [ustring()] is an (ordered) list containing the names (as
+% - CurveEntries :: [ustring()] is an (ordered) list containing the names (as
 % plain strings) of each curve to be drawn (hence the probe will expect
 % receiving data in the form of {Tick, {V1,V2,..}} afterwards). For example,
 % CurveNames=["First curve", "Second curve"] will lead to expect receiving
 % samples like: {MyTick, {ValueForFirstCurve, ValueForSecondCurve}}
 %
-% - Zones, which correspond to specific areas between two curves being defined,
-% are specified as a (potentially empty) list of {ZoneName,
+% - ZoneEntries, which correspond to specific areas between two curves being
+% defined, are specified as a (potentially empty) list of {ZoneName,
 % {ExtendedCurveNameOne,ExtendedCurveNameTwo}} entries, where ZoneName is the
 % name of this zone (as a plain string), and ExtendedCurveNameOne and
 % ExtendedCurveNameTwo are each either a plain string designating a curve (ex:
@@ -2497,7 +2580,7 @@ create_facility_probe( { Name, Options }, CurveEntries, ZoneEntries, Title,
 	NewOptions = Options#probe_options{ register_as_tracked_producer=false,
 										probe_directory=ProbeDirectory },
 
-	Pid = synchronous_new_link( { Name, NewOptions }, CurveEntries,	ZoneEntries,
+	Pid = synchronous_new_link( { Name, NewOptions }, CurveEntries, ZoneEntries,
 								Title, MaybeXLabel, YLabel, _MetaData=[] ),
 
 	wooper:return_static( Pid );
@@ -2513,6 +2596,95 @@ create_facility_probe( Name, CurveEntries, ZoneEntries, Title,
 								Title, MaybeXLabel, YLabel, _MetaData=[] ),
 
 	wooper:return_static( Pid ).
+
+
+
+% @doc Creates a facility probe in the specified directory, that is a lingering
+% probe, to be created (unilaterally) from a test case, and that will not be
+% considered as a result.
+%
+% - NameOptions is either:
+%
+%  - Name :: ustring(), i.e. directly the name of this probe (specified as a
+%  plain string), which will be used for the generated data and command files
+%
+%  - or {Name :: ustring(), ProbeOptions} where ProbeOptions is a list of
+%  pairs, in:
+%
+%   - {create_command_file_initially, boolean()}: if true, the gnuplot command
+%   file will be written at probe start-up, thus preventing the taking into
+%   account of any subsequent change in the rendering parameter (default: false)
+%
+%   - {deferred_data_writes, boolean()}: if true, received sample data will
+%   stored in memory instead of being directly written to disk (default: false,
+%   as the memory footprint might become significant) where Bool is true or
+%   false
+%
+% - CurveEntries :: [ustring()] is an (ordered) list containing the names (as
+% plain strings) of each curve to be drawn (hence the probe will expect
+% receiving data in the form of {Tick, {V1,V2,..}} afterwards). For example,
+% CurveNames=["First curve", "Second curve"] will lead to expect receiving
+% samples like: {MyTick, {ValueForFirstCurve, ValueForSecondCurve}}
+%
+% - ZoneEntries, which correspond to specific areas between two curves being
+% defined, are specified as a (potentially empty) list of {ZoneName,
+% {ExtendedCurveNameOne,ExtendedCurveNameTwo}} entries, where ZoneName is the
+% name of this zone (as a plain string), and ExtendedCurveNameOne and
+% ExtendedCurveNameTwo are each either a plain string designating a curve (ex:
+% "Second curve") already defined in CurveNames, or a special atom designating
+% the plot boundaries, i.e. either 'abscissa_bottom' or 'abscissa_top'. For
+% example {"My Zone", {"First curve", 'abscissa_bottom'}} defines a zone named
+% "My Zone" and delimited by the curve named "First curve" and the abscissa axis
+% (note: the order between the two elements defining a zone does not matter)
+%
+% - Title will be the graph (plot) title
+%
+% - MaybeXLabel (if any) will be the non-default label of the abscissa axis
+%
+% - YLabel will be the label of the ordinate axis
+%
+% - ProbeDirectory is the directory where the files for that probe will be
+% written
+%
+% - MetaData is an option list that corresponds to extra, contextual information
+% that can be taken into account in the probe-generated data files
+%
+% - MaybeExtraSettingsTable is, if defined, a table holding extra probe settings
+% of all sorts (allows to parameter one's probe from its creation, rather than
+% sending a series of method calls to do the same once it has already been
+% created)
+%
+-spec create_facility_probe( name_options(), [ declared_curve_name() ],
+		[ declared_zone() ], title(), label(), label(), directory_path(),
+		meta_data(), maybe( settings_table() ) ) ->
+									static_return( probe_pid() ).
+create_facility_probe( { Name, Options }, CurveEntries, ZoneEntries, Title,
+		MaybeXLabel, YLabel, ProbeDirectory, MetaData,
+		MaybeExtraSettingsTable ) ->
+
+	% Overrides any previous probe directory definition:
+	NewOptions = Options#probe_options{ register_as_tracked_producer=false,
+										probe_directory=ProbeDirectory },
+
+	ProbePid = synchronous_new_link( { Name, NewOptions }, CurveEntries,
+		ZoneEntries, Title, MaybeXLabel, YLabel, MetaData,
+		MaybeExtraSettingsTable, _MaybeTickDuration=undefined ),
+
+	wooper:return_static( ProbePid );
+
+
+create_facility_probe( Name, CurveEntries, ZoneEntries, Title,
+		MaybeXLabel, YLabel, ProbeDirectory, MetaData,
+		MaybeExtraSettingsTable ) ->
+
+	Options = #probe_options{ register_as_tracked_producer=false,
+							  probe_directory=ProbeDirectory },
+
+	ProbePid = synchronous_new_link( { Name, Options }, CurveEntries,
+		ZoneEntries, Title, MaybeXLabel, YLabel, MetaData,
+		MaybeExtraSettingsTable, _MaybeTickDuration=undefined ),
+
+	wooper:return_static( ProbePid ).
 
 
 
@@ -2559,6 +2731,53 @@ send_data( ProbePid, Tick, Samples ) when is_pid( ProbePid ) ->
 
 
 
+% @doc Sends the specified sample data once preprocessed to be stacked - that
+% is: additively compounded - typically to render stacked histograms (refer to
+% the "Regarding zones" section for further information) for the specified tick
+% (not tick offset) to the targeted probe, based on the specified probe
+% reference (first parameter), which is the value returned by the result manager
+% in answer to the initial creation request for that probe.
+%
+% This parameter is either an actual PID (then data will be sent by this method)
+% or the 'non_wanted_probe' atom (as potentially sent back by the result
+% manager), in which case nothing will be done.
+%
+% Note: this static method is to be used for basic probes, not virtual ones.
+%
+-spec send_data_to_accumulate( probe_ref(), probe_tick(), sample_data() ) ->
+												static_void_return().
+% Not reusing directly send_data/3 to avoid unnecessary accumulations:
+send_data_to_accumulate( _ProbeRef=non_wanted_probe, _Tick, _Samples )  ->
+	wooper:return_static_void();
+
+
+% The guard should be useless here:
+send_data_to_accumulate( ProbePid, Tick, Samples ) when is_pid( ProbePid ) ->
+
+	AccumSamples = accumulate( Samples ),
+
+	%trace_utils:debug_fmt( "Accumulating samples ~p into ~p.",
+	%                       [ Samples, AccumSamples ] ),
+
+	ProbePid ! { setData, [ Tick, AccumSamples ] },
+	wooper:return_static_void().
+
+
+% (helper)
+-spec accumulate( sample_data() ) -> sample_data().
+accumulate( Samples ) ->
+	accumulate( tuple_to_list( Samples ), _Sum=0, _Acc=[] ).
+
+
+accumulate( _Samples=[], _Sum, Acc ) ->
+	list_to_tuple( lists:reverse( Acc ) );
+
+accumulate( _Samples=[ S | T ], Sum, Acc ) ->
+	SumS = S + Sum,
+	accumulate( T, SumS, [ SumS | Acc ] ).
+
+
+
 % @doc Allows to define whether the probe report should be displayed to the
 % user, after generation.
 %
@@ -2567,15 +2786,8 @@ send_data( ProbePid, Tick, Samples ) when is_pid( ProbePid ) ->
 -spec generate_report_for( probe_pid() ) -> static_void_return().
 generate_report_for( ProbePid ) ->
 
-	case executable_utils:is_batch() of
-
-		true ->
-			ProbePid ! { generateReport, _DisplayWanted=false, self() };
-
-		false ->
-			ProbePid ! { generateReport, _DisplayWanted=true, self() }
-
-	end,
+	DisplayWanted = not executable_utils:is_batch(),
+	ProbePid ! { generateReport, DisplayWanted, self() },
 
 	receive
 
@@ -2689,8 +2901,8 @@ get_probe_settings( Title, MaybeXLabel, YLabel, MaybeGnuplotVersion ) ->
 		y_label=text_utils:string_to_binary( YLabel ),
 		x_range=undefined,
 		y_range=undefined,
-		plot_style = <<"linespoints">>,
-		fill_style = <<"empty">> }.
+		plot_style= <<"linespoints">>,
+		fill_style= <<"empty">> }.
 
 
 
@@ -2815,7 +3027,7 @@ interpret_options( _ProbeOptions=#probe_options{
 
 	check_is_boolean( IsTrackedProducer, register_as_tracked_producer ),
 
-	{ ProbeDir, MaybeBinProbeDir }  = case ProbeDirectory of
+	{ ProbeDir, MaybeBinProbeDir } = case ProbeDirectory of
 
 		undefined ->
 			% On a side note, results by default in having basic probes write
@@ -2873,30 +3085,54 @@ switchToBoxes( State ) ->
 
 
 
-% @doc Updates specified probe settings with any extra settings specified.
+% @doc Updates the specified probe settings with any extra settings specified.
 -spec apply_extra_settings( maybe( settings_table() ), probe_settings(),
 							wooper:state() ) ->
-					{ probe_settings(), maybe( [ extra_curve_settings() ] ) }.
+			{ probe_settings(), maybe( [ extra_curve_settings() ] ),
+			  maybe( [ extra_zone_settings() ] ) }.
 apply_extra_settings( _MaybeExtraSettingsTable=undefined, ProbeSettings,
 					  _State ) ->
-	{ ProbeSettings, _ExtraCurveSettings=undefined };
+	% Not even defaults are set:
+	{ ProbeSettings, _ExtraCurveSettings=undefined,
+	  _ExtraZoneSettings=undefined };
 
 apply_extra_settings( ExtraSettingsTable, ProbeSettings, State ) ->
 
 	% For plot style:
 	{ GlobalPlotStyle, StyleShrunkTable } =
 		table:extract_entry_with_default( _Key=global_plot_style,
-							_DefaultValue=linespoints, ExtraSettingsTable ),
+			_DefaultValue=linespoints, ExtraSettingsTable ),
 
 	StyleProbeSettings = case GlobalPlotStyle of
 
 		boxes ->
-			NewExtraDefs = [
-				text_utils:string_to_binary( "set style fill solid 0.5" )
-								| ProbeSettings#probe_settings.extra_defines ],
+
+			NewExtraDefs = [ <<"set style fill solid 0.5">>
+					| ProbeSettings#probe_settings.extra_defines ],
+
 			ProbeSettings#probe_settings{
-				plot_style=text_utils:atom_to_binary( boxes ),
+				plot_style= <<"boxes">>,
 				extra_defines=NewExtraDefs };
+
+
+		fillsteps ->
+
+			NewExtraDefs = [ <<"set style fill solid 1.0">>,
+							 % Otherwise the bottom zone would disappear:
+							 <<"set yrange [0:]">>,
+							 % Histogram-like:
+							 %<<"set key vertical invert">>
+							 <<"set key vertical">>
+							 % To render sample then key text (rather than the
+							 % opposite):
+							 %
+							 %<<"set key reverse">>
+					| ProbeSettings#probe_settings.extra_defines ],
+
+			ProbeSettings#probe_settings{
+				plot_style= <<"fillsteps">>,
+				extra_defines=NewExtraDefs };
+
 
 		OtherPlotStyle ->
 			ProbeSettings#probe_settings{
@@ -2910,7 +3146,7 @@ apply_extra_settings( ExtraSettingsTable, ProbeSettings, State ) ->
 
 	{ CanvasSize, CanvasSizeShrunkTable } =
 		table:extract_entry_with_default( canvas_size,
-						DefaultCanvasSize, StyleShrunkTable ),
+			DefaultCanvasSize, StyleShrunkTable ),
 
 	CanvasSizeProbeSettings = case CanvasSize of
 
@@ -2934,12 +3170,22 @@ apply_extra_settings( ExtraSettingsTable, ProbeSettings, State ) ->
 	MaybeExtraCurveSettings = MaybeCurveColors,
 
 
+	% For zone colors:
+	{ MaybeZoneColors, ZoneColorShrunkTable } =
+		table:extract_entry_with_default( zone_colors,
+			_DefaultZoneColors=undefined, CurveColorShrunkTable ),
+
+	% May be extended beyond colors in the future:
+	MaybeExtraZoneSettings = MaybeZoneColors,
+
+
+
 	% For tick (note the singular) options:
 	DefaultTickOptions = { undefined, undefined },
 
 	{ TickOptions, TickOptShrunkTable } =
 		table:extract_entry_with_default( tick_options,
-						DefaultTickOptions, CurveColorShrunkTable ),
+			DefaultTickOptions, ZoneColorShrunkTable ),
 
 	TickOptProbeSettings =
 		update_tick_options( TickOptions, CanvasSizeProbeSettings ),
@@ -2950,7 +3196,7 @@ apply_extra_settings( ExtraSettingsTable, ProbeSettings, State ) ->
 
 	{ TicksOptions, TicksOptShrunkTable } =
 		table:extract_entry_with_default( ticks_options,
-						DefaultTicksOptions, TickOptShrunkTable ),
+			DefaultTicksOptions, TickOptShrunkTable ),
 
 	TicksOptProbeSettings =
 		update_ticks_options( TicksOptions, TickOptProbeSettings ),
@@ -2959,7 +3205,7 @@ apply_extra_settings( ExtraSettingsTable, ProbeSettings, State ) ->
 	% For timestamp time format:
 	{ TimeFormatOpt, TimeFmtShrunkTable } =
 		table:extract_entry_with_default( timestamp_time_format,
-				_DefaultTimeFmt=undefined, TicksOptShrunkTable ),
+			_DefaultTimeFmt=undefined, TicksOptShrunkTable ),
 
 	% Precise checking done later:
 	TimeFmtProbeSettings = case is_atom( TimeFormatOpt ) of
@@ -2974,17 +3220,28 @@ apply_extra_settings( ExtraSettingsTable, ProbeSettings, State ) ->
 	end,
 
 
+	{ ExtraDefines, ExtraDefShrunkTable } =
+		table:extract_entry_with_default( extra_defines,
+			_DefaultExtraDefs=[], TimeFmtShrunkTable ),
+
+	NewExtraDefines = text_utils:ensure_binaries( ExtraDefines ) ++
+		TimeFmtProbeSettings#probe_settings.extra_defines,
+
+	ExtraDefProbeSettings = TimeFmtProbeSettings#probe_settings{
+		extra_defines=NewExtraDefines },
+
 	% Add any extra setting you want to support here.
 
 	% Finally:
-	FinalSettingsTable = TimeFmtShrunkTable,
-	FinalProbeSettings = TimeFmtProbeSettings,
+	FinalSettingsTable = ExtraDefShrunkTable,
+	FinalProbeSettings = ExtraDefProbeSettings,
 
 	% Checking that all settings were taken into account:
 	case table:is_empty( FinalSettingsTable ) of
 
 		true ->
-			{ FinalProbeSettings, MaybeExtraCurveSettings };
+			{ FinalProbeSettings, MaybeExtraCurveSettings,
+			  MaybeExtraZoneSettings };
 
 		false ->
 			?error_fmt( "Unexpected extra settings were specified: ~ts",
@@ -3109,6 +3366,65 @@ update_curve_entry( _CurveE, ExtraSet ) ->
 
 
 
+
+% @doc Updates the zone entries with any specified extra settings, to be
+% specified according to the current order of zones.
+%
+-spec update_zone_entries( [ zone_entry() ],
+			maybe( [ extra_zone_settings() ] ) ) -> [ zone_entry() ].
+update_zone_entries( ZoneEntries, _MaybeExtraZoneSettings=undefined ) ->
+	ZoneEntries;
+
+update_zone_entries( ZoneEntries, ExtraZoneSettings ) ->
+
+	ZoneCount = length( ZoneEntries ),
+
+	case length( ExtraZoneSettings ) of
+
+		ZoneCount ->
+			ok;
+
+		ExtraSetCount ->
+			throw( { invalid_extra_zone_setting_count, ExtraZoneSettings,
+					 ZoneEntries, { ExtraSetCount, ZoneCount } } )
+	end,
+
+	[ update_zone_entry( ZoneE, MaybeExtraSet ) || { ZoneE, MaybeExtraSet }
+							<- lists:zip( ZoneEntries, ExtraZoneSettings ) ].
+
+
+% (helper)
+update_zone_entry( ZoneE, _MaybeExtraSet=undefined ) ->
+	ZoneE;
+
+
+% Currently one a single extra information is supported, a string describing the
+% color of the corresponding zone (as RGB coordinates):
+%
+% To avoid an extra space:
+update_zone_entry( _ZoneE={ ZName, ZCurvePair, _ZPlotSuffix= <<"">> },
+				   ExtraSetStr ) when is_list( ExtraSetStr ) ->
+
+	NewZPlotSuffix = text_utils:bin_format( "fillcolor \"#~ts\"",
+											[ ExtraSetStr ] ),
+
+	{ ZName, ZCurvePair, NewZPlotSuffix };
+
+update_zone_entry( _ZoneE={ ZName, ZCurvePair, ZPlotSuffix }, ExtraSetStr )
+										when is_list( ExtraSetStr ) ->
+
+	NewZPlotSuffix = text_utils:bin_format( "~ts fillcolor \"#~ts\"",
+											[ ZPlotSuffix, ExtraSetStr ] ),
+
+	{ ZName, ZCurvePair, NewZPlotSuffix };
+
+update_zone_entry( _ZoneE, ExtraSet ) ->
+	throw( { invalid_extra_zone_setting, ExtraSet } ).
+
+
+
+
+
 % @doc Checks that the specified variable is a boolean.
 check_is_boolean( Var, _VarName ) when is_boolean( Var ) ->
 	ok;
@@ -3147,15 +3463,7 @@ generate_command_file( State ) ->
 
 			ZoneEntries = ?getAttr(zone_entries),
 
-			IsTimestamped = case ?getAttr(maybe_tick_duration) of
-
-				undefined ->
-					false;
-
-				_ ->
-					true
-
-			end,
+			IsTimestamped = ?getAttr(maybe_tick_duration) =/= undefined,
 
 			% Returned path ignored:
 			generate_command_file( Name, Settings, CurveEntries, ZoneEntries,
@@ -3178,8 +3486,8 @@ generate_command_file( State ) ->
 generate_command_file( Name, Settings, CurveEntries, ZoneEntries,
 					   IsTimestamped, ProbeDir ) ->
 
-	%trace_utils:debug_fmt( "generate_command_file for probe '~ts'.",
-	%                       [ Name ] ),
+	%trace_utils:debug_fmt( "generate_command_file for probe '~ts'; "
+	%   "zone entries:~n  ~p.", [ Name, ZoneEntries ] ),
 
 	LabelDefs = get_label_definitions( Settings#probe_settings.labels ),
 
@@ -3308,16 +3616,9 @@ generate_data_file( State ) ->
 
 	DataTable = ?getAttr(data_table),
 
-	case DataTable of
-
-		[] ->
-			throw( { no_available_data_sample,
-					 class_TraceEmitter:get_plain_name( State ) } );
-
-		_NonEmpty ->
-			ok
-
-	end,
+	DataTable =:= [] andalso
+		throw( { no_available_data_sample,
+				 class_TraceEmitter:get_plain_name( State ) } ),
 
 	CurveCount = ?getAttr(curve_count),
 
@@ -3426,9 +3727,12 @@ format_zone_info( ZoneInfoList ) ->
 format_zone_info( _ZoneInfoList=[], Acc ) ->
 	lists:reverse( Acc );
 
-format_zone_info( [ { BinName, {FirstBound, SecondBound} } | T ], Acc ) ->
+format_zone_info(
+		[ { BinName, {FirstBound, SecondBound}, _ZPlotSuffix } | T ], Acc ) ->
+
 	Entry = text_utils:format( "# - zone '~ts', extending from ~p to ~p~n",
 							   [ BinName, FirstBound, SecondBound ] ),
+
 	format_zone_info( T, [ Entry | Acc ] ).
 
 
@@ -3620,7 +3924,8 @@ get_label_definitions( _Labels=[], Acc ) ->
 	Acc;
 
 get_label_definitions( [ #probe_label{ location={ X, Y }, text=BinText,
-	  color=Color, position=Position, orientation=Orientation } | T ], Acc ) ->
+		color=Color, position=Position, orientation=Orientation } | T ],
+					   Acc ) ->
 
 	% For a list of supported colors, see:
 	% www.uni-hamburg.de/Wiss/FB/15/Sustainability/schneider/gnuplot/colors.htm
@@ -3644,7 +3949,7 @@ get_xticks_option( #probe_settings{ x_ticks=undefined } ) ->
 	"# No x_ticks set.";
 
 get_xticks_option( #probe_settings{ x_ticks=XticksBinSpec } )
-  when is_binary( XticksBinSpec ) ->
+										when is_binary( XticksBinSpec ) ->
 	text_utils:format( "set xtics ~ts~n", [ XticksBinSpec ] );
 
 get_xticks_option( #probe_settings{ x_ticks=Other } ) ->
@@ -3675,7 +3980,17 @@ get_x_range_option( Settings ) ->
 	case Settings#probe_settings.x_range of
 
 		undefined ->
-			"# No x_range set.";
+			"# No xrange set.";
+
+		{ _MaybeMinX=undefined, _MaybeMaxX=undefined } ->
+			"# No xrange set.";
+
+		{ _MaybeMinX=undefined, MaxX } when is_number( MaxX )->
+			text_utils:format( "set xrange [:~w]", [ MaxX ] );
+
+		{ MinX, _MaybeMaxX=undefined } when is_number( MinX ) ->
+			text_utils:format( "set xrange [~w:]", [ MinX ] );
+
 
 		{ MinX, MaxX } when is_number( MinX ) andalso is_number( MaxX ) ->
 			text_utils:format( "set xrange [~w:~w]", [ MinX, MaxX ] )
@@ -3691,7 +4006,17 @@ get_y_range_option( Settings ) ->
 	case Settings#probe_settings.y_range of
 
 		undefined ->
-			"# No y_range set.";
+			"# No yrange set.";
+
+		{ _MaybeMinY=undefined, _MaybeMaxY=undefined } ->
+			"# No yrange set.";
+
+		{ _MaybeMinY=undefined, MaxY } when is_number( MaxY )->
+			text_utils:format( "set yrange [:~w]", [ MaxY ] );
+
+		{ MinY, _MaybeMaxY=undefined } when is_number( MinY ) ->
+			text_utils:format( "set yrange [~w:]", [ MinY ] );
+
 
 		{ MinY, MayY } when is_number( MinY ) andalso is_number( MayY ) ->
 			text_utils:format( "set yrange [~w:~w]", [ MinY, MayY ] )
@@ -3739,6 +4064,9 @@ get_y_ticks_option( Settings ) ->
 % @doc Returns the appropriate settings, depending on whether the abscissa axis
 % gathers timestamps or not.
 %
+% Note: now curve offset is always zero as a timestamp occupies only one column
+% (thanks to quoting).
+%
 -spec get_timestamp_settings( probe_settings(), boolean() ) ->
 									{ command_element(), curve_offset() }.
 get_timestamp_settings(
@@ -3776,12 +4104,27 @@ get_timestamp_settings(
 		"set xdata time~n"
 
 		% As read from the data (our standard format):
-		"set timefmt \"%Y/%m/%d %H:%M:%S\"~n"
+		% (we have to add single quotes, so that gnuplot sees:
+		%   set timefmt '"%Y/%m/%d %H:%M:%S"'
+		% so that we can specify our timestamps as:
+		%   "2000/1/1 00:00:00"
+		% Indeed, should they be written as:
+		%   2000/1/1 00:00:00
+		% gnuplot would see two columns
+		% (another option is to set another separator than space)
+		%
+		"set timefmt '\"%Y/%m/%d %H:%M:%S\"'~n"
 
-		 % As shall be displayed:
+		 % As shall be rendered across axes:
 		"set format x ~ts~n", [ TimeFormatStr ] ),
 
-	{ PreambleStr, _CurveOffset=1 };
+	% No more curve offset, as now in all cases, thanks to quoting, time
+	% translates to exactly to the first column (not the first two columns, as
+	% when an unquoted timestamp would be read as a time and a date, not as a
+	% single value):
+	%
+	%{ PreambleStr, _CurveOffset=1 };
+	{ PreambleStr, _CurveOffset=0 };
 
 
 get_timestamp_settings( _Probe_settings, _IsTimestamped=false ) ->
@@ -3798,7 +4141,7 @@ get_timestamp_settings( _Probe_settings, _IsTimestamped=false ) ->
 						zone_entries(), file_name() ) -> command_element().
 get_plot_command( _Settings, _CurveEntries=[], _CurveOffset, _ZoneEntries=[],
 				  _DataFilename ) ->
-		throw( no_curve_nor_zone_defined );
+	throw( no_curve_nor_zone_defined );
 
 get_plot_command( Settings, CurveEntries, CurveOffset, ZoneEntries,
 				  DataFilename ) ->
@@ -3854,18 +4197,24 @@ remove_zone_specific_curves( CurveEntries, ZoneEntries ) ->
 
 
 
-% @doc Selects all curve indexes that are mentioned (possibly with duplicates).
+% @doc Selects all curve indexes that are mentioned in zones (possibly with
+% duplicates).
+%
 select_curves( _ZoneEntries=[], Acc ) ->
 	Acc;
 
-select_curves( _ZoneEntries=[ { _ZoneName, { abscissa_top, C } } | T ], Acc ) ->
+select_curves(
+		_ZoneEntries=[ { _ZoneName, { abscissa_top, C }, _ZPlotSuffix } | T ],
+		Acc ) ->
 	select_curves( T, [ C | Acc ] );
 
-select_curves( _ZoneEntries=[ { _ZoneName, { abscissa_bottom, C } } | T ],
+select_curves( _ZoneEntries=[
+				{ _ZoneName, { abscissa_bottom, C }, _ZPlotSuffix } | T ],
 			   Acc ) ->
 	select_curves( T, [ C | Acc ] );
 
-select_curves( _ZoneEntries=[ { _ZoneName, { C1, C2 } } | T ], Acc ) ->
+select_curves( _ZoneEntries=[ { _ZoneName, { C1, C2 }, _ZPlotSuffix } | T ],
+			   Acc ) ->
 	select_curves( T, [ C1, C2 | Acc ] ).
 
 
@@ -3875,6 +4224,9 @@ select_curves( _ZoneEntries=[ { _ZoneName, { C1, C2 } } | T ], Acc ) ->
 									probe_settings() ) -> [ command_element() ].
 get_plot_commands_for_curves( CurveEntries, CurveOffset, Settings ) ->
 
+	% Curve entries are a list of:
+	%  { CurveIndex, BinCurveName, BinPlotSuffix }
+	%
 	% After some potential reordering, curve entries might be:
 	% [{3,<<"c">>}, {1,<<"a">>}, {2,<<"b">>}]
 	%
@@ -3911,16 +4263,32 @@ get_curve_command( { CurveIndex, BinCurveName, BinPlotSuffix }, CurveOffset,
 %
 -spec get_plot_commands_for_zones( zone_entries(), curve_offset(),
 								   probe_settings() ) -> [ command_element() ].
-get_plot_commands_for_zones( ZoneEntries, CurveOffset, Settings ) ->
+get_plot_commands_for_zones( ZoneEntries, CurveOffset,
+		Settings=#probe_settings{ plot_style=BinPlotStyle } ) ->
 
 	% Zone entries are a list of:
 	% {BinZoneName, {ExtendedCurveName1, ExtendedCurveName2}}
 	%
 	% We expect returned values to be either "3:5 with filledcurves" (for a zone
 	% between curves 2 and 4) or "3 with filledcurves x1" (for a zone between
-	% curve 2 and the abscissa axis):
+	% curve 2 and the abscissa axis).
 	%
-	[ get_zone_command( Z, CurveOffset, Settings ) || Z <- ZoneEntries ].
+	% Apparently, in terms of order, for a proper rendering, filledcurves shall
+	% be rendered from top to bottom, whereas at least for fillsteps the
+	% opposite order shall be used (bottom to top); so:
+	%
+	OrderedZoneEntries = case BinPlotStyle of
+
+		<<"filledcurves">> ->
+			ZoneEntries;
+
+		% For example for fillsteps (side-effects: reverses key order):
+		_ ->
+			lists:reverse( ZoneEntries )
+
+	end,
+
+	[ get_zone_command( Z, CurveOffset, Settings ) || Z <- OrderedZoneEntries ].
 
 
 
@@ -3928,35 +4296,72 @@ get_plot_commands_for_zones( ZoneEntries, CurveOffset, Settings ) ->
 %
 % (helper)
 %
--spec get_zone_command( zone_definition(), curve_offset(), probe_settings() ) ->
+-spec get_zone_command( zone_entry(), curve_offset(), probe_settings() ) ->
 								command_element().
-get_zone_command( _ZoneEntry={ BinZoneName,
-								{ FirstExtendedCurve, SecondExtendedCurve } },
-				  CurveOffset, _Settings ) ->
+get_zone_command(
+		_ZoneEntry={ BinZoneName, { FirstExtendedCurve, SecondExtendedCurve },
+					 ZonePlotSuffix },
+		CurveOffset,
+		_Settings=#probe_settings{ plot_style=BinPlotStyle } ) ->
+
+	%trace_utils:debug_fmt( "Zone command for entry ~p.", [ ZoneEntry ] ),
 
 	FirstPart = case FirstExtendedCurve of
 
 		'abscissa_top' ->
-			% The other is necessarily an index (+1, as the first column is the
-			% tick):
+			% The other curve is necessarily an index (+1, as the first column
+			% is the tick/timestamp):
 			%
 			ActualCurveIndex = SecondExtendedCurve + CurveOffset + 1,
-			text_utils:format( "~B with filledcurves x2",
-							   [ ActualCurveIndex ] );
+			case BinPlotStyle of
+
+				<<"filledcurves">> ->
+					text_utils:format( "~B with ~ts ~ts below x2",
+						[ ActualCurveIndex, BinPlotStyle, ZonePlotSuffix ] );
+
+
+				_ ->
+					text_utils:format( "~B with ~ts ~ts",
+						[ ActualCurveIndex, BinPlotStyle, ZonePlotSuffix ] )
+
+			end;
+
 
 		'abscissa_bottom' ->
-			% The other is necessarily an index (+1, as the first column is the
-			% tick):
+
+			% The other curve is necessarily an index (+1, as the first column
+			% is the tick/timestamp):
 			%
 			ActualCurveIndex = SecondExtendedCurve + CurveOffset + 1,
-			text_utils:format( "~B with filledcurves x1",
-							   [ ActualCurveIndex ] );
+
+			case BinPlotStyle of
+
+				<<"filledcurves">> ->
+					text_utils:format( "~B with ~ts ~ts above x1",
+						[ ActualCurveIndex, BinPlotStyle, ZonePlotSuffix ] );
+
+				_ ->
+					text_utils:format( "~B with ~ts ~ts",
+						[ ActualCurveIndex, BinPlotStyle, ZonePlotSuffix ] )
+
+			end;
 
 		_BinCurveName ->
 			ActualFirstCurveIndex = FirstExtendedCurve + 1,
 			ActualSecondCurveIndex = SecondExtendedCurve + 1,
-			text_utils:format( "~B:~B with filledcurves",
-				[ ActualFirstCurveIndex, ActualSecondCurveIndex ] )
+			case BinPlotStyle of
+
+				<<"filledcurves">> ->
+					text_utils:format( "~B:~B with ~ts ~ts",
+						[ ActualFirstCurveIndex, ActualSecondCurveIndex,
+						  BinPlotStyle, ZonePlotSuffix ] );
+
+				_ ->
+					text_utils:format( "~B with ~ts ~ts",
+						[ ActualSecondCurveIndex, BinPlotStyle,
+						  ZonePlotSuffix ] )
+
+			end
 
 	end,
 
@@ -3989,16 +4394,9 @@ generate_report( Name, State ) ->
 	false = ?getAttr(result_collected),
 
 	% Generating an updated report should not be very common:
-	case ?getAttr(result_produced) of
-
-		true ->
-			?warning_fmt( "Report '~ts' has already been generated "
-						  "at least once.", [ Name ] );
-
-		false ->
-			ok
-
-	end,
+	?getAttr(result_produced) andalso
+		?warning_fmt( "Report '~ts' has already been generated "
+					  "at least once.", [ Name ] ),
 
 	% Searched up to once then:
 	GnuplotPath = case ?getAttr(gnuplot_path) of
@@ -4016,17 +4414,12 @@ generate_report( Name, State ) ->
 
 	TargetFilename = get_report_filename( Name ),
 
-	case file_utils:is_existing_file( TargetFilename ) of
-
-		true ->
+	file_utils:is_existing_file( TargetFilename ) andalso
+		begin
 			?warning_fmt( "The file '~ts' was already existing, "
 						  "it has been removed.", [ TargetFilename ] ),
-			file_utils:remove_file( TargetFilename );
-
-		false ->
-			ok
-
-	end,
+			file_utils:remove_file( TargetFilename )
+		end,
 
 	%file_utils:remove_file_if_existing( TargetFilename ),
 
@@ -4085,12 +4478,8 @@ generate_report( Name, State ) ->
 
 	ResultPath = file_utils:join( ProbeDir, TargetFilename ),
 
-	case file_utils:is_existing_file( ResultPath ) of
-
-		true ->
-			ok;
-
-		false->
+	file_utils:is_existing_file( ResultPath ) orelse
+		begin
 			case OutputMessage of
 
 				[] ->
@@ -4111,7 +4500,7 @@ generate_report( Name, State ) ->
 							 OutputMessage } )
 			end
 
-	end,
+		end,
 
 	CommandState.
 
@@ -4258,7 +4647,6 @@ onPreSerialisation( State, UserData ) ->
 			request_return( user_data() ).
 onPostDeserialisation( _State, _UserData ) ->
 	% Reuse extra_data to restore probe files.
-
 	throw( fixme_not_implemented_yet ).
 
 
@@ -4267,13 +4655,20 @@ onPostDeserialisation( _State, _UserData ) ->
 
 
 % @doc Returns the default per-curve plot suffix, as a binary.
--spec get_default_plot_suffix() -> static_return( curve_plot_suffix() ).
-get_default_plot_suffix() ->
+-spec get_default_curve_plot_suffix() -> static_return( curve_plot_suffix() ).
+get_default_curve_plot_suffix() ->
 
 	% "noenhanced" to avoid that a name like 'foo_bar' gets displayed as foo
 	% with bar put as subscript.
 	%
 	wooper:return_static( <<"noenhanced">> ).
+
+
+
+% @doc Returns the default per-zone plot suffix, as a binary.
+-spec get_default_zone_plot_suffix() -> static_return( curve_plot_suffix() ).
+get_default_zone_plot_suffix() ->
+	wooper:return_static( <<"">> ).
 
 
 
@@ -4290,7 +4685,7 @@ get_default_plot_suffix() ->
 %
 -spec transform_curve_names( [ declared_curve_name() ] ) -> curve_entries().
 transform_curve_names( NameList ) ->
-	transform_curve_names( NameList, get_default_plot_suffix(), _Acc=[],
+	transform_curve_names( NameList, get_default_curve_plot_suffix(), _Acc=[],
 						   _Count=1 ).
 
 
@@ -4312,7 +4707,7 @@ transform_curve_names( _NameList=[ CurveName | T ], BinPlotSuffix, Acc,
 % checking them against the curve names.
 %
 -spec transform_declared_zones( [ declared_zone() ], curve_entries() ) ->
-										[ zone_definition() ].
+										[ zone_entry() ].
 transform_declared_zones( DeclaredZones, CurveEntries ) ->
 	transform_declared_zones( DeclaredZones, CurveEntries, _Acc=[] ).
 
@@ -4330,13 +4725,16 @@ transform_declared_zones( [ Z={ ZoneName,
 	First = get_curve_index_for( FirstCurveName, CurveEntries ),
 	Second = get_curve_index_for( SecondCurveName, CurveEntries ),
 
-	% We want to ensure:
+	% We want to ensure that:
 	%
-	%  1. that at least one actual curve is referenced (not two 'abscissa_*'
-	%  atoms)
+	%  1. at least one actual curve is referenced (not two 'abscissa_*' atoms)
 	%
-	%  2. that if there is one 'abscissa_*' atom, it ends up in first position
-	%  of the returned pair
+	%  2. if there is one 'abscissa_*' atom, it ends up in first position of the
+	%  returned pair
+	%
+	%  3. we preserve the input curve order (useful for plot styles requiring a
+	%  single value column, like fillsteps, rather than two, like linecurves:
+	%  they can always select the second curve of the pair):
 	%
 	NewBounds = case First of
 
@@ -4357,14 +4755,30 @@ transform_declared_zones( [ Z={ ZoneName,
 			% So that we are sure that any abscissa_* atom would end up in first
 			% position:
 			%
-			{ Second, First }
+			%{ Second, First }
+
+			% Now preserving input order of normal curves:
+			case Second == 'abscissa_top'
+					orelse Second == 'abscissa_bottom' of
+
+				true ->
+					{ Second, First };
+
+				false ->
+					{ First, Second }
+
+			end
 
 	end,
 
 	ZoneBinName = text_utils:string_to_binary( ZoneName ),
 
 	transform_declared_zones( T, CurveEntries,
-							  [ { ZoneBinName, NewBounds } | Acc ] ).
+		[ { ZoneBinName, NewBounds, get_default_zone_plot_suffix() } | Acc ] );
+
+
+transform_declared_zones( [ Other | _T ], _CurveEntries, _Acc ) ->
+	throw( { invalid_zone_declaration, Other } ).
 
 
 
@@ -4396,6 +4810,7 @@ get_curve_index_for( CurveName, CurveEntries ) ->
 % @doc Checks that the (specified) probe directory is indeed existing.
 check_probe_directory( ProbeDir ) ->
 
+	% No orelse, otherwise confuses our parse transform:
 	case file_utils:is_existing_directory( ProbeDir ) of
 
 		true ->

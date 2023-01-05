@@ -1,4 +1,4 @@
-% Copyright (C) 2013-2022 Olivier Boudeville
+% Copyright (C) 2013-2023 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -40,14 +40,17 @@
 % Implementation notes.
 %
 % Note that, in any module not beginning with the UTF line below, with pre-R17
-% Erlang versions, sent text might be garbled due to a wrong encoding.
-%
+% Erlang versions, sent text might be garbled due to a wrong encoding:
+
 %% -*- coding: utf-8 -*-
-%
+
+
+% This module should use the web_utils one and adapt to newer SMS gateways.
+
 
 % Currently supported SMS providers (HTTP gateways):
 %
-% - VerySMS (http://www.verysms.fr)
+% - VerySMS (http://www.verysms.fr); not operating anymore
 
 
 
@@ -139,21 +142,22 @@
 
 
 
+% Describes a SMS account at a provider:
 -record( sms_account, {
 
-		provider :: provider(),
+	provider :: provider(),
 
-		user_name :: system_utils:user_name(),
+	user_name :: system_utils:user_name(),
 
-		password :: system_utils:password(),
+	password :: system_utils:password(),
 
-		default_class :: service_class(),
+	default_class :: service_class(),
 
-		credits :: credits(),
+	credits :: credits(),
 
-		sent_count :: count(),
+	sent_count :: count(),
 
-		sent_success_count :: count() } ).
+	sent_success_count :: count() } ).
 
 
 -type sms_account() :: #sms_account{}.
@@ -164,17 +168,18 @@
 % Describes a SMS.
 -record( sms, {
 
-		message :: message(),
+	message :: message(),
 
-		recipient :: recipient(),
+	recipient :: recipient(),
 
-		sender_description :: sender_description(),
+	sender_description :: sender_description(),
 
-		% Default account service class to be used, if not specified here:
-		service_class :: maybe( service_class() ) }).
+	% Default account service class to be used, if not specified here:
+	service_class :: maybe( service_class() ) } ).
 
 
 -type sms() :: #sms{}.
+% Describes a SMS account.
 
 
 
@@ -184,7 +189,9 @@
 
 
 % Shorthands:
+
 -type count() :: basic_utils:count().
+
 -type ustring() :: text_utils:ustring().
 
 
@@ -195,7 +202,7 @@
 %
 -spec create_sms( message(), recipient(), sender_description() ) -> sms().
 create_sms( Message, Recipient, SenderDescription ) when is_list( Message )
-			andalso is_list(Recipient) andalso is_list(SenderDescription) ->
+			andalso is_list( Recipient ) andalso is_list( SenderDescription ) ->
 	create_sms( Message, Recipient, SenderDescription,
 				_ServiceClass=undefined ).
 
@@ -205,8 +212,9 @@ create_sms( Message, Recipient, SenderDescription ) when is_list( Message )
 -spec create_sms( message(), recipient(), sender_description(),
 				  maybe( service_class() ) ) -> sms().
 create_sms( Message, Recipient, SenderDescription, ServiceClass )
-  when is_list( Message ) andalso is_list( Recipient )
-	   andalso is_list( SenderDescription ) andalso is_atom( ServiceClass )->
+		when is_list( Message ) andalso is_list( Recipient )
+			 andalso is_list( SenderDescription )
+			 andalso is_atom( ServiceClass ) ->
 
 	%trace_utils:debug_fmt( "created '~ts' ~B.",
 	%                       [ Message, length( Message ) ] ),
@@ -219,12 +227,12 @@ create_sms( Message, Recipient, SenderDescription, ServiceClass )
 
 	% case length( web_utils:encode_element_as_url( Message ) ) of
 
-	%%	L when L > 160 ->
-	%%		% In bytes, not characters:
-	%%		throw( { message_too_long, L, Message } );
+	%%  L when L > 160 ->
+	%%      % In bytes, not characters:
+	%%      throw( { message_too_long, L, Message } );
 
-	%%	_ ->
-	%%		ok
+	%%  _ ->
+	%%      ok
 
 	%% end,
 
@@ -323,10 +331,10 @@ send( _Provider=verysms, _ServiceClass=eco, Username, Password, Message,
 
 
 %% send( Provider=verysms, ServiceClass=eco, Username, Password, Message,
-%%	  Recipient, SenderDescription ) ->
+%%   Recipient, SenderDescription ) ->
 
-%%	% Not allowed in eco mode:
-%%	throw( { no_sender_description_supported, { Provider, ServiceClass } } );
+%%  % Not allowed in eco mode:
+%%  throw( { no_sender_description_supported, { Provider, ServiceClass } } );
 
 send( _Provider=verysms, _ServiceClass=pro, Username, Password, Message,
 	  Recipient, SenderDescription ) ->

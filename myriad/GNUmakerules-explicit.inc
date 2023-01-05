@@ -169,7 +169,6 @@ rebuild: clean all
 
 
 
-
 # Bootstrap section.
 
 
@@ -550,9 +549,15 @@ create-myriad-checkout:
 # 'rebar3-application' and 'rebar3-release':
 
 
-# Apparently, a pre-existing rebar.lock file might cause version dependencies
-# not to be respected (ex: sticking to an older hex version of a dependency,
-# whereas a newer one was specified), so we remove it when appropriate.
+# A pre-existing rebar.lock file may cause version dependencies to be frozen
+# (e.g. sticking to an older hex version of a dependency, whereas a newer one
+# was specified), so we remove it when appropriate; to properly recreate it,
+# executing 'rebar3 deps' or 'rebar3 lock' is not sufficient by itself;
+# beforehand one has to update or remove at least any _build tree and any
+# rebar.lock.
+# Prior to committing a new rebar.lock, check that the 'ref' values that it
+# mentions do match indeed the actual (probably latest) intended Git commit of
+# the corresponding dependencies.
 #
 # (creating a ebin/*.app file is necessary at this point, otherwise no module
 # will be compiled, leading to an empty application; the same applies - silently
@@ -560,9 +565,9 @@ create-myriad-checkout:
 # be parsed)
 #
 # ('remove-rebar-conf' target not kept, as rebar.config shall not be deleted in
-# GIT)
+# Git)
 #
-rebar3-application: rebar3-real-clean clean rebar3-update set-rebar-conf      \
+rebar3-application: rebar3-real-clean clean rebar3-update set-rebar-conf \
 					create-include-links rebar3-hide-unsupported-sources \
 					rebar3-create-app-file
 	@echo "  Triggering the overall creation by rebar3 of an OTP application corresponding to $(PROJECT_NAME)"
@@ -581,7 +586,7 @@ rebar3-application: rebar3-real-clean clean rebar3-update set-rebar-conf      \
 set-rebar-conf:
 	@echo "  Setting rebar configuration"
 	@/bin/rm -f rebar.config 2>/dev/null
-	@cd conf && $(MAKE) -s rebar.config && /bin/cp -f rebar.config ../
+	@cd conf && $(MAKE) -s rebar.config && /bin/cp -f rebar.config ../ && echo "  (rebar.config copied to root directory)"
 
 
 set-rebar-conf-for-hex:
@@ -886,8 +891,7 @@ rebar3-info:
 # recompilation (hex does not take into account the .app.src file, hence does
 # not rely on explicitly-specified modules to build)
 #
-# - remove rebar.lock, otherwise a past myriad dep (ex: GIT-based) will be
-# reused
+# - remove rebar.lock, otherwise a past Myriad dep (ex: Git-based) may be reused
 #
 # - afterwards we restore the ebin/*.app and rebar.config files for standard
 # releases, in order to avoid having them considered as deleted by GIT
@@ -927,12 +931,12 @@ generate-protobuf: $(PROTOBUF_GENERATED_ERL_FILES)
 
 # Synchronises the sources of the current layer to the specified server
 # location.
-
+#
 # A rebuild is triggered just before, as the BEAM files are transferred as well:
-# at arrival timestamps may not be respected and we want the right BEAMs to be
+# at arrival timestamps may not be respected, and we want the right BEAMs to be
 # executed.
 #
-# Note that only the source files are synchronised (ex: not the makefiles, not
+# Note that only the source files are synchronised (e.g. not the makefiles, not
 # the configuration files, etc.).
 #
 sync-to-server: all
@@ -1312,6 +1316,7 @@ info-options:
 	@echo "UI_TEST_OPT = $(UI_TEST_OPT)"
 	@echo "CMD_LINE_OPT = $(CMD_LINE_OPT)"
 	@echo "MAKEFLAGS = $(MAKEFLAGS)"
+	@echo "ALL_CMD_LINE_OPTIONS = $(ALL_CMD_LINE_OPTIONS)"
 
 
 info-parse-transform:

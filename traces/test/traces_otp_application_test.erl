@@ -1,4 +1,4 @@
-% Copyright (C) 2019-2022 Olivier Boudeville
+% Copyright (C) 2019-2023 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -26,9 +26,9 @@
 % Creation date: Tuesday, August 6, 2019.
 
 
-% Testing of Traces as an <b>OTP active application</b>, directly from within
-% its code base (hence without needing to create a separate, mock-up test OTP
-% release for that).
+% @doc Testing of Traces as an <b>OTP active application</b>, directly from
+% within its code base (hence without needing to create a separate, mock-up test
+% OTP release for that).
 %
 -module(traces_otp_application_test).
 
@@ -41,7 +41,7 @@
 -include("traces.hrl").
 
 
-% Actual test:
+% @doc Actual test.
 test_traces_application( OrderedAppNames ) ->
 
 	test_facilities:display( "Starting the Traces OTP active application." ),
@@ -108,8 +108,12 @@ test_traces_application( OrderedAppNames ) ->
 
 	receive
 
-		{'EXIT', AggPid, normal } ->
-			ok
+		{ 'EXIT', AggPid, normal } ->
+			ok;
+
+		Other ->
+			trace_utils:error_fmt( "Received ~p.", [ Other ] ),
+			throw( { unexpected_receiving, Other } )
 
 	end,
 

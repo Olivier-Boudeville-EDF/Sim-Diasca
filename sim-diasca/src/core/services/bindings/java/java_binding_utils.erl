@@ -1,23 +1,23 @@
-% Copyright (C) 2016-2022 EDF R&D
-
+% Copyright (C) 2016-2023 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
-% Authors: Robin Huart (robin-externe.huart@edf.fr)
-%          Olivier Boudeville (olivier.boudeville@edf.fr)
+%
+% Authors: Robin Huart        [robin (dot) huart (at) edf (dot) fr]
+%          Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 
 
 % @doc Module storing all the helper functions facilitating the support of the
@@ -67,7 +67,7 @@
 		emitter_categorization() | wooper:state() ) -> result().
 % Here we have just a trace categorization:
 execute_request( MailboxPid, RequestName, RequestParams, TraceCat )
-  when is_list( TraceCat ) ->
+										when is_list( TraceCat ) ->
 
 	trace_utils:debug_fmt( "Executing request '~ts' with parameters ~p "
 		"(categorization: ~ts).",
@@ -151,7 +151,7 @@ execute_request_locally( RequestName, RequestParams, JavaBindingManagerPid,
 -spec handle_request_results( java_mbox_pid(), request_name(),
 				emitter_categorization() | wooper:state() ) -> result().
 handle_request_results( MailboxPid, RequestName, TraceEmitterCategorization )
-  when is_list( TraceEmitterCategorization ) ->
+			when is_list( TraceEmitterCategorization ) ->
 
 	%trace_utils:debug_fmt( "Waiting for the result of request '~ts', from ~w.",
 	%                       [ RequestName, MailboxPid ] ),

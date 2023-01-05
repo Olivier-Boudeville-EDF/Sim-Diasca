@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2022 Olivier Boudeville
+% Copyright (C) 2018-2023 Olivier Boudeville
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 %
@@ -27,6 +27,11 @@
 -export([ generate_password/2 ]).
 
 
+% Shorthands:
+
+-type count() :: basic_utils:count().
+
+
 
 % @doc Typically for testing.
 -spec run() -> void().
@@ -38,8 +43,8 @@ run() ->
 
 % Defaults:
 
--define( default_min_length, "15" ).
--define( default_max_length, "20" ).
+-define( default_min_length, "18" ).
+-define( default_max_length, "24" ).
 
 -define( default_alphabet, "extended" ).
 
@@ -140,7 +145,7 @@ main( ArgTable ) ->
 
 	{ [ [ AlphabetStringSpec ] ], AlphaTable } =
 		list_table:extract_entry_with_default( AlphaRefKey,
-						_AlphaDefault=[ [ ?default_alphabet ] ], LenTable ),
+			_AlphaDefault=[ [ ?default_alphabet ] ], LenTable ),
 
 	AlphabetSpec = text_utils:string_to_atom( AlphabetStringSpec ),
 
@@ -217,7 +222,7 @@ get_alphabet( _AlphabetSpec=extra_punctuation ) ->
 
 
 % @doc Generates a password of specified exact length, from specified alphabet.
--spec generate_password( alphabet(), basic_utils:count() ) -> password().
+-spec generate_password( alphabet(), count() ) -> password().
 generate_password( Alphabet, CharCount ) ->
 
 	% Of course we do not want a reproducible seeding:

@@ -6,9 +6,17 @@
 
 "My third machine" <- { class_SodaVendingMachine, [ "My machine #3 read from data", 4, 1.4 ] }.
 
-{ class_SodaVendingMachine, [ "My machine #4 read from data", 7, 1.0 ] }.
+
+% Showing that the (logical) creation lines may spread over multiple physical ones:
+{ class_SodaVendingMachine,
+
+   [ "My machine #4 read from data", 7,
+
+
+		 1.0 ] }.
 
 { class_SodaVendingMachine, [ "My machine #5 read from data", 400, 1.4 ], "my hint" }.
+
 
 
 % The construction parameters of a deterministic thirsty customer are:

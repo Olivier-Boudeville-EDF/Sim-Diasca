@@ -22,7 +22,7 @@
 % If not, see <http://www.gnu.org/licenses/> and
 % <http://www.mozilla.org/MPL/>.
 %
-% Author: Jingxuan Ma (jingxuan.ma@edf.fr)
+% Author: Jingxuan Ma [jingxuan (dot) ma (at) edf (dot) fr]
 
 
 % Unit tests for the tracked hashtable implementation.

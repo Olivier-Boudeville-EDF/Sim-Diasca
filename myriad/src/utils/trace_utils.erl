@@ -1,4 +1,4 @@
-% Copyright (C) 2013-2022 Olivier Boudeville
+% Copyright (C) 2013-2023 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -758,7 +758,7 @@ is_error_like( Severity ) ->
 
 
 % @doc Replaces the current (probably default) logger handler with this Myriad
-% one (registered as 'default').
+% one (registered as the 'default' handler).
 %
 -spec set_handler() -> void().
 set_handler() ->
@@ -859,12 +859,11 @@ log( _LogEvent=#{ level := Level,
 
 	 end,
 
-
 	%io:format( "### Logging following event:~n ~p~n(with config: ~p)~n "
 	%   "resulting in: '~ts' (severity: ~p).",
 	%   [ LogEvent, Config, TraceMsg, Severity ] ),
 
-	% No the standard level corresponds directly to our severity:
+	% Now the standard level corresponds directly to our severity:
 	echo( TraceMsg, _Severity=Level, 'erlang_logger' );
 
 log( LogEvent, _Config ) ->
@@ -874,14 +873,14 @@ log( LogEvent, _Config ) ->
 
 % @doc Sets the logger maximum depth when formatting messages.
 %
-% This allows to limit the error logger output in crashes.
+% This allows limiting the length of the error logger output in crashes.
 %
 -spec set_logger_format_max_depth( text_utils:depth() ) -> void().
 set_logger_format_max_depth( Depth ) ->
 
 	application:set_env( kernel, error_logger_format_depth, Depth ),
 
-	% Force a reset so that the previous depth applies:
+	% Force a reset, so that the previous depth applies:
 	error_logger:tty( false ),
 	error_logger:tty( true ).
 
@@ -930,8 +929,10 @@ severe_display( Format, Values ) ->
 -spec actual_display( trace_message() ) -> void().
 actual_display( Message ) ->
 
-	% Default-timeout may not be sufficient (30 seconds, in milliseconds)
-	%basic_utils:display_timed( Message, _TimeOut=30000 ).
+	% This default timeout (30 seconds, in milliseconds) may not be sufficient
+	% in all cases:
+	%
+	%basic_utils:display_timed( Message, _MsTimeOut=30000 ).
 
 	% If wanting a faster, less safe version:
 	io:format( "~ts~n", [ Message ] ).

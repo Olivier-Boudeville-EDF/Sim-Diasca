@@ -1,22 +1,22 @@
-% Copyright (C) 2019-2022 EDF R&D
-
+% Copyright (C) 2019-2023 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
-% Author: Olivier Boudeville (olivier.boudeville@edf.fr)
+%
+% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: Friday, June 14, 2019.
 
 
@@ -81,19 +81,22 @@
 	  "result sending" },
 
 	{ meta_data, class_ResultManager:meta_data(),
-	  "corresponds to the meta-data to be added in probe-generated data files" }
+	  "corresponds to the meta-data to be added in probe-generated data "
+	  "files" },
 
 	% Commented-out and not used anymore as misleading: both the webserver
 	% installation and the engine tree are on the user host, whereas a probe may
 	% be on any other host:
 
-	%{ webserver_install_root, file_utils:bin_directory_path(),
+	%{ webserver_install_root, bin_directory_path(),
 	% "the root directory of the webserver runtime install" },
 
-	%{ engine_root_dir, file_utils:bin_directory_path(),
-	% "the root directory of the engine" }
+	%{ engine_root_dir, bin_directory_path(),
+	%  "the root directory of the engine" }
 
-						   ] ).
+	{ resource_dir, maybe( bin_directory_path() ),
+	  "the (preferably absolute) path to the root directory of the static "
+	  "resources to be used by that probe" } ] ).
 
 
 
@@ -163,10 +166,10 @@
 % that can be taken into account in the probe-generated data files
 %
 -spec construct( wooper:state(),
-				 probe_name_init() | { probe_name_init(), web_probe_options() },
-				 meta_data() ) -> wooper:state().
+		probe_name_init() | { probe_name_init(), web_probe_options() },
+		meta_data() ) -> wooper:state().
 construct( State, { NameInit, ProbeOptions }, Metadata )
-  when is_record( ProbeOptions, web_probe_options ) ->
+							when is_record( ProbeOptions, web_probe_options ) ->
 
 	%trace_utils:debug_fmt( "Creating a web probe '~ts' from ~p.",
 	%                       [ NameInit, ProbeOptions ] ),
@@ -207,8 +210,8 @@ construct( State, { NameInit, ProbeOptions }, Metadata )
 
 	ResultManagerPid = getAttribute( ProducerState, result_manager_pid ),
 
-	ResultManagerPid ! { declareWebProbe, [ BinProbeName, IsTrackedProducer ],
-						 self() },
+	ResultManagerPid !
+		{ declareWebProbe, [ BinProbeName, IsTrackedProducer ], self() },
 
 	BinFilename = get_filename_for( ProbeName ),
 
@@ -233,9 +236,8 @@ construct( State, { NameInit, ProbeOptions }, Metadata )
 
 			BinProbeFilePath = file_utils:join( ActualBinRootDir, BinFilename ),
 
-			case file_utils:is_existing_file_or_link( BinProbeFilePath ) of
-
-				true ->
+			file_utils:is_existing_file_or_link( BinProbeFilePath ) andalso
+				begin
 
 					?send_error_fmt( ProducerState,
 						"Already existing probe filename (~ts). "
@@ -243,19 +245,17 @@ construct( State, { NameInit, ProbeOptions }, Metadata )
 						[ BinProbeFilePath, ProbeName ] ),
 
 					throw( { already_existing_web_probe_filename,
-							 BinProbeFilePath } );
+							 BinProbeFilePath } )
 
-				false ->
-					ok
-
-			end,
+				end,
 
 			ContentState = setAttributes( ProducerState, [
 				{ web_dir, ActualBinRootDir },
 				{ web_filename, BinFilename },
 				{ web_manager_pid, WebManagerPid },
 				{ available_content_files, [] },
-				{ meta_data, Metadata } ] ),
+				{ meta_data, Metadata },
+				{ resource_dir, undefined } ] ),
 
 			?send_notice_fmt( ContentState, "Created ~ts.",
 							  [ to_string( ContentState ) ] ),
@@ -360,7 +360,7 @@ sendResults( State, _ProducerOptions ) ->
 	% An actual (specialised through inheritance) web probe is expected to
 	% generate a content (through overridden methods) in all cases:
 	%
-	Result = case getAttribute( FinalizedState, available_content_files) of
+	Result = case getAttribute( FinalizedState, available_content_files ) of
 
 		[] ->
 			?debug( "No available content for sending." ),
@@ -388,12 +388,12 @@ sendResults( State, _ProducerOptions ) ->
 
 			WebDir = text_utils:binary_to_string( ?getAttr(web_dir) ),
 
-			Filenames = [ text_utils:binary_to_string( F )
-							|| F <- BinFilenames ],
+			Filenames =
+				[ text_utils:binary_to_string( F ) || F <- BinFilenames ],
 
 			?debug_fmt( "Sending, from ~ts, ~B content file(s): ~ts",
-						[ WebDir, length( Filenames ),
-						  text_utils:strings_to_string( Filenames ) ] ),
+				[ WebDir, length( Filenames ),
+				  text_utils:strings_to_string( Filenames ) ] ),
 
 			BinArchive = file_utils:files_to_zipped_term( Filenames, WebDir ),
 
@@ -598,7 +598,7 @@ get_filename_for( WebProbeName ) ->
 % Implies that this web probe will be considered as having produced a result.
 %
 % Note that only a filename is to be specified (relative to web_dir), not a
-% full, absolute path).
+% full, absolute path.
 %
 -spec declare_content_file( bin_file_name(), wooper:state() ) -> wooper:state().
 declare_content_file( BinFilename, State ) ->
@@ -625,7 +625,18 @@ declare_content_file( BinFilename, State ) ->
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
-	ContentString = case ?getAttr(available_content_files) of
+	RscStr = case ?getAttr(resource_dir) of
+
+		undefined ->
+			"no resource directory";
+
+		RscDir ->
+			text_utils:format( "resource directory '~ts'",
+							   [ RscDir ] )
+
+	end,
+
+	ContentStr = case ?getAttr(available_content_files) of
 
 		[] ->
 			"no content currently available";
@@ -639,7 +650,9 @@ to_string( State ) ->
 	% meta_data not taken into account here.
 
 	text_utils:format( "web probe using content web directory '~ts', "
+		"with ~ts defined, "
 		"producing main web file '~ts', linked to "
 		"web manager ~w and to result manager ~w, having ~ts" ,
-		[ ?getAttr(web_dir), ?getAttr(web_filename), ?getAttr(web_manager_pid),
-		  ?getAttr(result_manager_pid), ContentString ] ).
+		[ ?getAttr(web_dir), RscStr, ?getAttr(web_filename),
+		  ?getAttr(web_manager_pid), ?getAttr(result_manager_pid),
+		  ContentStr ] ).

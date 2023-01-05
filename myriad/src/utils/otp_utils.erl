@@ -1,4 +1,4 @@
-% Copyright (C) 2019-2022 Olivier Boudeville
+% Copyright (C) 2019-2023 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -363,7 +363,7 @@ prepare_for_execution( AppNames, BaseDir, BlacklistedApps )
 % or not), if any: checks that their .app specification can be found, that they
 % are built, updates the code path accordingly and lists the active ones.
 %
-% Called recursively (through parse_app_spec/3).
+% Called recursively (through prepare_for_execution/3).
 %
 % (helper)
 %
@@ -527,8 +527,8 @@ generate_app_info( AppName, AbsBaseDir, AppTable ) ->
 
 				true ->
 					?info_fmt( "Using, for the application '~ts', "
-							   "the local checkout '~ts' file.",
-							   [ AppName, CheckLocalAppPath ] ),
+						"the local checkout '~ts' file.",
+						[ AppName, CheckLocalAppPath ] ),
 					{ CheckLocalAppPath, CheckLocalEBinDir, CheckBaseDir };
 
 				% Then trying #2.2, i.e. as a _build checkout:
@@ -686,7 +686,7 @@ try_next_locations( AppName, AppNameStr, AppFilename, DepEBinDir, DepAppPath,
 											{ StdAppPath, StdEbinDir,
 											  AbsStdPath };
 
-												% Abnormal:
+										% Abnormal:
 										false ->
 											throw( { otp_app_file_not_found,
 													 StdAppPath } )
@@ -743,29 +743,20 @@ look_up_beam( ModuleName, EBinPath, BaseDir, AppFilePath, AppName ) ->
 
 	ExpectedModPath = file_utils:join( EBinPath, TestedBeamFilename ),
 
-	case file_utils:is_existing_file( ExpectedModPath ) of
+	file_utils:is_existing_file( ExpectedModPath ) orelse
+		% Block for clarity:
+		begin
 
-		true ->
-			ok;
-
-		false ->
 			% This might be normal in the case of a Ceylan application, as they
 			% do not gather their BEAM files in a single (ebin) directory.
 			% However then their build system shall have ensured that the right
 			% directories are already in the code path. Checking that:
 			%
-			case code_utils:is_beam_in_path( ModuleName ) of
+			code_utils:is_beam_in_path( ModuleName ) =:= not_found andalso
+				look_up_beam_last_chance( EBinPath, BaseDir, AppFilePath,
+					AppName, TestedBeamFilename, ExpectedModPath )
 
-				not_found ->
-					look_up_beam_last_chance( EBinPath, BaseDir, AppFilePath,
-						AppName, TestedBeamFilename, ExpectedModPath );
-
-				_DirPaths ->
-					ok
-
-			end
-
-	end.
+		end.
 
 
 % Last chance to find a right BEAM path.
@@ -998,8 +989,7 @@ start_application( AppName, RestartType, BlacklistedApps ) ->
 
 				ok ->
 					?info_fmt( "Application '~ts' successfully started.",
-							   [ AppName ] ),
-					ok;
+							   [ AppName ] );
 
 				{ error, Reason } ->
 					trace_bridge:error_fmt(
@@ -1118,9 +1108,9 @@ stop_application( AppName ) ->
 		{ error, { not_started, AppName } } ->
 
 			% This is not even a warning, as a given prerequisite application
-			% (ex: 'ssl') may be used by multiple applications that, when they
+			% (e.g. 'ssl') may be used by multiple applications that, when they
 			% will stop, cannot each succeed in stopping that single
-			% prerequisitea application.
+			% prerequisite application.
 
 			?info_fmt( "The OTP application '~ts' was already stopped.",
 					   [ AppName ] );
@@ -1154,7 +1144,7 @@ stop_applications( AppNames ) ->
 % list of prerequisite applications can be used both for starting and stopping).
 %
 % Not stopping the base Erlang applications allows to remain with a functional
-% VM (ex: able to finish a test, to perform console outputs, etc.).
+% VM (e.g. able to finish a test, to perform console outputs, etc.).
 %
 % Note: not relying on OTP here, hence dependencies shall be explicitly stopped,
 % in the reverse order of the starting of these applications.
@@ -1355,17 +1345,10 @@ get_priv_root( ModuleName, BeSilent ) ->
 		{ error, PError } ->
 
 			% PError=bad_name, not that useful:
-			case BeSilent of
-
-				true ->
-					ok;
-
-				false ->
-					trace_bridge:warning_fmt( "Unable to determine the 'priv' "
-						"directory from module '~ts': ~w.",
-						[ ModuleName, PError ] )
-
-			end,
+			BeSilent orelse
+				trace_bridge:warning_fmt( "Unable to determine the 'priv' "
+					"directory from module '~ts': ~w.",
+					[ ModuleName, PError ] ),
 
 			case code:which( ModuleName ) of
 

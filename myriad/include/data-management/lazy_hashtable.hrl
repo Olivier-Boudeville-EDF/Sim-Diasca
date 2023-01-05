@@ -23,7 +23,7 @@
 % <http://www.mozilla.org/MPL/>.
 
 % Creation date: November 10, 2011.
-% Author: Jingxuan Ma (jingxuan.ma@edf.fr)
+% Author: Jingxuan Ma [jingxuan (dot) ma (at) edf (dot) fr]
 
 
 % Corresponds to the threshold in operation count that is to necessary to reach

@@ -1,25 +1,25 @@
-% Copyright (C) 2008-2022 EDF R&D
-
+% Copyright (C) 2008-2023 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
-% Authors:
-%   Jingxuan Ma (jingxuan.ma@edf.fr)
-%   Olivier Boudeville (olivier.boudeville@edf.fr)
-% Create date: 2008.
+%
+% Authors: Jingxuan Ma [jingxuan (dot) ma (at) edf (dot) fr]
+%          Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+%
+% Creation date: 2008.
 
 
 % @doc Agent in charge of <b>tracking the overall runtime resource
@@ -81,9 +81,13 @@
 % results.
 %
 % The command file for each of these probes is created as soon as possible, so
-% that, should this tracker crash (ex: should the simulation as a whole crash),
+% that, should this tracker crash (e.g. should the simulation as a whole crash),
 % they remain nevertheless available.
-
+%
+% For histogram-like probe outputs (e.g. memory used by X, by Y, total one),
+% zones are used, and samples are sent by decreasing level in the resulting
+% graph (e.g. first one being said total). Refer to the "Regarding zones"
+% section of class_Probe.erl.
 
 
 % Determines what are the direct mother classes of this class (if any):
@@ -458,7 +462,7 @@ wait_static_node_info( ResourcesPerNodeEntries, InstanceTrackers, UserNode,
 		{ wooper_result, { NodeName, NodeStaticInfo, InstanceTrackerPid } } ->
 
 			{ TickProbe, TimeProbe } = create_node_resource_probes( NodeName,
-								NodeStaticInfo, UserNode, TrackerDir ),
+				NodeStaticInfo, UserNode, TrackerDir ),
 
 			UpdatedEntry = { NodeName, NodeStaticInfo, TickProbe, TimeProbe },
 
@@ -467,7 +471,7 @@ wait_static_node_info( ResourcesPerNodeEntries, InstanceTrackers, UserNode,
 				_Index=1, ResourcesPerNodeEntries, UpdatedEntry ),
 
 			RemainingInstanceTrackers = list_utils:delete_existing(
-										InstanceTrackerPid, InstanceTrackers ),
+				InstanceTrackerPid, InstanceTrackers ),
 
 			wait_static_node_info( UpdatedResourcesPerNodeEntries,
 				RemainingInstanceTrackers, UserNode, TrackerDir )
@@ -530,7 +534,7 @@ stop_ticker( State ) ->
 
 			after ?general_timeout_duration ->
 
-					throw( { time_out, ticker, TickerPid } )
+				throw( { time_out, ticker, TickerPid } )
 
 			end,
 
@@ -646,10 +650,10 @@ create_node_resource_probes( NodeName, NodeStaticInfo, UserNode,
 							 TrackerResultDir ) ->
 
 	TotalRam = system_utils:interpret_byte_size_with_unit(
-					NodeStaticInfo#host_static_info.total_ram ),
+		NodeStaticInfo#host_static_info.total_ram ),
 
 	TotalSwap = system_utils:interpret_byte_size_with_unit(
-					NodeStaticInfo#host_static_info.total_swap ),
+		NodeStaticInfo#host_static_info.total_swap ),
 
 	TotalUsed = text_utils:format( "Total Memory Used (over a total of ~ts)",
 								   [ TotalRam ] ),
@@ -927,7 +931,7 @@ record_new_sample( State ) ->
 
 			% Unsorted list:
 			NodeDynInfos = wait_dynamic_info_from_trackers( InstanceTrackers,
-										NodeState, _Acc=[] ),
+				NodeState, _Acc=[] ),
 
 			LocalState = manage_node_dynamic_info( CurrentTickOffset,
 				CurrentWallclockTime, NodeDynInfos, NodeState ),
@@ -1046,7 +1050,7 @@ sort_classes( InstancesPerClass, OrderedClasses ) ->
 
 	% Now re-order and split:
 	{ SortedExistingClasses, NewClasses } = reorder_classes(
-					NewInstancesPerClass, OrderedClasses, _ExistingAcc=[] ),
+		NewInstancesPerClass, OrderedClasses, _ExistingAcc=[] ),
 
 	{ OverallCount, SortedExistingClasses, NewClasses }.
 
@@ -1213,8 +1217,8 @@ manage_dyn_nodes( NodeEntries,
 			cpu_usage=CPUPercentages,
 			ram_use={ PercentRamUsedBySimulation, PercentRamUsedByOthers },
 			process_count=ProcessCount } | T ],
-				  CurrentTickOffset,
-				  CurrentWallclockTime ) ->
+				CurrentTickOffset,
+				CurrentWallclockTime ) ->
 
 	TotalUsed = PercentRamUsedBySimulation + PercentRamUsedByOthers,
 

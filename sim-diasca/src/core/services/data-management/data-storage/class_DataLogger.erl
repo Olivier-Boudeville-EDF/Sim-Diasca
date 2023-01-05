@@ -1,22 +1,22 @@
-% Copyright (C) 2008-2022 EDF R&D
-
+% Copyright (C) 2008-2023 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
-% Author: Olivier Boudeville (olivier.boudeville@edf.fr)
+%
+% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2008.
 
 
@@ -824,7 +824,7 @@ addCurve( State, ProbeID, CurveName ) ->
 	NewCount = ProbeRecord#virtual_probe.curve_count + 1,
 
 	NewCurveEntry = { NewCount, text_utils:string_to_binary( CurveName ),
-					  class_Probe:get_default_plot_suffix() },
+					  class_Probe:get_default_curve_plot_suffix() },
 
 	NewCurveEntries = list_utils:append_at_end( NewCurveEntry,
 		ProbeRecord#virtual_probe.curve_entries ),

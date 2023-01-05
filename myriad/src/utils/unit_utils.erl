@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2022 Olivier Boudeville
+% Copyright (C) 2012-2023 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -336,7 +336,6 @@
 % Expected to be in [0,360[.
 
 
-
 -type angle_reference_unit() :: 'radians'.
 
 -type angle_units() :: angle_reference_unit() | 'degrees' | 'int_degrees'.
@@ -344,6 +343,32 @@
 
 -export_type([ radians/0, degrees/0, int_degrees/0, any_degrees/0,
 			   angle_reference_unit/0, angle_units/0 ]).
+
+
+
+-type latitude() :: degrees().
+% A geographic coordinate that specifies the north-south position of a point on
+% the surface of the Earth or another celestial body.
+%
+% It is an angular measurement, usually expressed in degrees: latitude is given
+% as an angle that ranges from -90° at the south pole to 90° at the north pole,
+% with 0° at the Equator.
+
+
+-type longitude() :: degrees().
+% A geographic coordinate that specifies the east-west position of a point on
+% the surface of the Earth, or another celestial body.
+%
+% It is an angular measurement, usually expressed in degrees: longitude is given
+% as an angle that ranges from 0° at the Prime Meridian to +180° eastward and
+% -180° westward.
+
+
+-type position() :: { latitude(), longitude() }.
+% A position on a round celestial body, typically the Earth.
+% No altitude/elevation.
+
+-export_type([ latitude/0, longitude/0, position/0 ]).
 
 
 
@@ -673,7 +698,7 @@
 
 -export([ temperature_to_string/1, maybe_temperature_to_string/1,
 		  rpm_to_string/1, maybe_rpm_to_string/1,
-		  meters_to_string/1 ]).
+		  meters_to_string/1, position_to_string/1 ]).
 
 
 
@@ -821,6 +846,14 @@ meters_to_string( Meters ) ->
 	text_utils:format( "~." ++ ?digits_after_decimal ++ "gcm",
 					   [ Centimeters ] ).
 
+
+
+% @doc Returns a textual description of the specified position.
+-spec position_to_string( position() ) -> ustring().
+position_to_string( _Pos={ Lat, Long } ) ->
+	% Maybe some day returns degrees, minutes, etc.:
+	text_utils:format( "latitude of ~w, longitude of ~w",
+					   [ Lat, Long ] ).
 
 
 % Implementations for the more elaborate form of units:

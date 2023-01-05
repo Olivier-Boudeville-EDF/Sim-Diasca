@@ -1,4 +1,4 @@
-% Copyright (C) 2020-2022 Olivier Boudeville
+% Copyright (C) 2020-2023 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -157,11 +157,11 @@
 
 -type value_spec() ::
 
-			% Exact count requested:
-			value_count()
+	% Exact count requested:
+	value_count()
 
-			% A (possibly unlimited) range of counts accepted (bounds included):
-			| { actual_value_count(), value_count() }.
+	% A (possibly unlimited) range of counts accepted (bounds included):
+	| { actual_value_count(), value_count() }.
 % Describes the expected number of values associated to a given option.
 
 
@@ -197,11 +197,22 @@
 		  argument_table_to_string/1 ]).
 
 
+% Factoring error reports:
+-export([ error/2, error_fmt/3 ]).
+
+-compile( { no_auto_import, [ error/2 ] } ).
+
+
 % Shorthands:
+
 -type count() :: basic_utils:count().
 
 -type ustring() :: text_utils:ustring().
 -type any_string() :: text_utils:any_string().
+-type format_string() :: text_utils:format_string().
+-type format_values() :: text_utils:format_values().
+
+-type return_code() :: system_utils:return_code().
 
 
 
@@ -438,7 +449,7 @@ get_command_arguments_for_option( Option ) ->
 % @doc Returns the in-order list of the arguments that were directly (that is
 % not in the context of an option) specified on the command-line.
 %
-% Note: generally the extract_non_option_command_argument/{0,1} functions are
+% Note: generally the extract_optionless_command_arguments/{0,1} functions are
 % more relevant to use.
 %
 -spec get_optionless_command_arguments() -> command_line_values().
@@ -649,6 +660,7 @@ sort_arguments( OptionlessSpec, _OptionSpecs=[], UniqArgTable, AccTable ) ->
 					ok;
 
 				{ MinCount, _MaxCount } when OptionLessCount < MinCount ->
+
 					trace_utils:error_fmt( "Not enough option-less arguments "
 						"specified: at least ~B were expected, "
 						"got ~B (i.e. ~p).",
@@ -657,12 +669,15 @@ sort_arguments( OptionlessSpec, _OptionSpecs=[], UniqArgTable, AccTable ) ->
 					throw( { not_enough_optionless_arguments, { min, MinCount },
 						{ got, OptionLessCount, OptionLessValues } } );
 
+
 				% Just as an extra (normally useless) check:
 				{ _MinCount, MaxCount } when OptionLessCount > MaxCount ->
+
 					trace_utils:error_fmt( "Too many option-less arguments "
 						"specified: at most ~B were expected, "
 						"got ~B (i.e. ~p).",
 						[ MaxCount, OptionLessCount, OptionLessValues ] ),
+
 					throw( { too_many_optionless_arguments, { max, MaxCount },
 						{ got, OptionLessCount, OptionLessValues } } )
 
@@ -844,8 +859,8 @@ sort_arguments( OptionlessSpec, _OptionSpecs=[ { Opt, ExactCount } | T ],
 						"(i.e. ~p) were specified.",
 						[ Opt, ExactCount, OtherCount, ValueList ] ),
 					throw( { lacking_values_for_option, Opt,
-							 { expected, ExactCount },
-							 { got, OtherCount, ValueList } } )
+								{ expected, ExactCount },
+								{ got, OtherCount, ValueList } } )
 
 			end,
 
@@ -892,9 +907,9 @@ argument_table_to_string( ArgTable ) ->
 			ArgStrings = [ option_pair_to_string( Option, ArgumentLists )
 							|| { Option, ArgumentLists } <- ArgPairs ],
 
-			text_utils:format( "~B command-line element(s) specified "
+			text_utils:format( "~B type(s) of command-line element specified "
 				"(ordered alphabetically): ~ts", [ length( ArgPairs ),
-						text_utils:strings_to_sorted_string( ArgStrings ) ] )
+					text_utils:strings_to_sorted_string( ArgStrings ) ] )
 
 	end.
 
@@ -910,3 +925,39 @@ option_pair_to_string( Option, _ArgumentLists=[ [] ] ) ->
 option_pair_to_string( Option, ArgumentLists ) ->
 	text_utils:format( "option '-~ts', with argument lists: ~p",
 					   [ Option, ArgumentLists ] ).
+
+
+
+
+% @doc Reports a fatal error, typically in an script/escript context, with the
+% specified error return code (expected to be non-null).
+%
+% The message shall preferably not begin with an uppercase letter.
+%
+% Halts on error the current program.
+%
+-spec error( return_code(), ustring() ) -> no_return().
+error( ErrorCode, Message ) ->
+
+	FullMsg = text_utils:format( "Error: ~ts", [ Message ] ),
+
+	% Probably useless, as halt expected to properly flush:
+	% (newline added by next call)
+	%
+	basic_utils:display_timed( FullMsg, _TimeOut=30000 ),
+
+	erlang:halt( ErrorCode ).
+
+
+
+% @doc Reports a formatted, fatal error, typically in an script/escript context,
+% with the specified error return code (expected to be non-null).
+%
+% The message shall preferably not begin with an uppercase letter.
+%
+% Halts on error the current program.
+%
+-spec error_fmt( return_code(), format_string(), format_values() ) ->
+											no_return().
+error_fmt( ErrorCode, Format, Values ) ->
+	error( ErrorCode, text_utils:format( Format, Values ) ).

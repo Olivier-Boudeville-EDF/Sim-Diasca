@@ -34,7 +34,10 @@ cpulimit="$(which cpulimit 2>/dev/null)"
 if [ -x "${cpulimit}" ]; then
 
 	# Only 50% of one "CPU" (presumably one core - hence not a lot at all):
-	cpu_limit_percentage=50
+	#cpu_limit_percentage=50
+
+	# Better:
+	cpu_limit_percentage=100
 
 	# For testing:
 	#cpu_limit_percentage=1
@@ -54,7 +57,10 @@ fi
 # Erlang/OTP versions, in order to reduce any risk of downloading an altered
 # source archive, and to be able to switch back and forth more easily:
 
+# To be obtained with: 'sha512sum otp_src_x.y.tar.gz':
+erlang_sha512_for_25_2="2bfa14a75f91caa6e8e11a2de871539ead8b0c44c07412a000df04f6b2ed2fc3f75ca0f345bf2c01c322afa9122dc96e5241ba1d39abb400bdadcd93446ad478"
 erlang_sha512_for_25_1="26f597d3637445fa3f602e75b7854d6386f4a6e5702715f4339c5107b02a571b9ff15e6f48a81ff82d994a10d396e6154609d0d8d74076afa305c9fe87efbefa"
+
 erlang_md5_for_25_0="3c4c9da083f2a6b89aa1766415339d0c"
 erlang_md5_for_24_3="eb6dd8eaee8c97cf076eda0091abbc4c"
 erlang_md5_for_24_2="ebb6e865738255ae31ff680cc96d71a9"
@@ -77,15 +83,15 @@ erlang_md5_for_20_1="4c9eb112cd0e56f17c474218825060ee"
 
 
 # Current stable (an update of the next two lines is needed):
-erlang_version="25.1"
-erlang_sum="${erlang_sha512_for_25_1}"
+erlang_version="25.2"
+erlang_sum="${erlang_sha512_for_25_2}"
 
 
-# Candidate version (ex: either cutting-edge or, most probably, the previous
+# Candidate version (e.g. either cutting-edge or, most probably, the previous
 # version that we deem stable enough, should the current introduce regressions):
 #
-erlang_version_candidate="25.0"
-erlang_sum_candidate="${erlang_sha512_for_25_0}"
+erlang_version_candidate="25.1"
+erlang_sum_candidate="${erlang_sha512_for_25_1}"
 
 base_install_dir="${HOME}/Software/Erlang"
 
@@ -151,7 +157,7 @@ Options:
 	${plt_opt_short} or ${plt_opt_long}: generate the PLT file (${plt_file}) for Dialyzer corresponding to this Erlang/OTP install
 	${download_opt_short} or ${download_opt_long}: do not attempt to download anything; expect that needed files are already available (useful if not having a direct access to the Internet)
 	${limit_opt_short} or ${limit_opt_long}: do not slow down the build
-	${previous_opt_short} or ${previous_opt_long}: use, instead of the current Erlang version registered for installation (i.e. ${erlang_version}), the previous one (ex: latest supported release candidate version otherwise the lastly supported stable version), namely, currently, ${erlang_version_candidate}
+	${previous_opt_short} or ${previous_opt_long}: use, instead of the current Erlang version registered for installation (i.e. ${erlang_version}), the previous one (e.g. latest supported release candidate version otherwise the lastly supported stable version), namely, currently, ${erlang_version_candidate}
 
 Example:
   install-erlang.sh ${doc_opt_long} ${download_opt_long} ${plt_opt_long}
@@ -171,7 +177,7 @@ Note also that a recent-enough C++ compiler (typically gcc) must be available an
 
 # Additional notes:
 
-# On some distributions (ex: Arch Linux), the wx module is not available, as
+# On some distributions (e.g. Arch Linux), the wx module is not available, as
 # wxWidgets is not detected.
 #
 # The root of the problem is that no /bin/wx-config executable is found.
@@ -424,8 +430,8 @@ erlang_src_prefix="otp_src_${erlang_version}"
 
 erlang_src_archive="${erlang_src_prefix}.tar.gz"
 
-# As documentation archives were not generated for patch versions (ex: 24.1.4),
-# only for "base" versions" (ex: 24.1):
+# As documentation archives were not generated for patch versions (e.g. 24.1.4),
+# only for "base" versions" (e.g. 24.1):
 #
 #erlang_doc_prefix="$(echo "otp_doc_html_${erlang_version}" | awk -F. '{print otp_doc_html_$1"."$2""}')"
 
@@ -479,7 +485,7 @@ if [ $do_patch -eq 0 ]; then
 
 	if [ ! -x "${patch_tool}" ]; then
 
-		echo "  Error, the patching of the Erlang sources was requested, but the 'patch' utility cannot be found on this system. Either install it (ex: 'apt-get install patch') or use the ${patch_opt_long} option." 1>&2
+		echo "  Error, the patching of the Erlang sources was requested, but the 'patch' utility cannot be found on this system. Either install it (e.g. 'apt-get install patch') or use the ${patch_opt_long} option." 1>&2
 
 		exit 6
 
@@ -625,7 +631,7 @@ if [ ! ${src_checked} -eq 0 ]; then
 
 fi
 
-# Sometimes, we have versions for urgent bugfixing (ex: R15B03-1 instead of
+# Sometimes, we have versions for urgent bugfixing (e.g. R15B03-1 instead of
 # R15B03). In this case the archive is named 'otp_src_R15B03-1.tar.gz' but it
 # contains a root directory named only 'otp_src_R15B03'.  So if
 # erlang_src_prefix="otp_src_R15B03-1" then
@@ -806,7 +812,7 @@ if [ -n "${prefix}" ]; then
 	#
 	cd "${prefix}/lib/erlang"
 
-	# Exactly one match expected for the wildcard (ex: tools-2.8.2), useful to
+	# Exactly one match expected for the wildcard (e.g. tools-2.8.2), useful to
 	# avoid having to update our ~/.emacs.d/init.el file whenever the 'tools'
 	# version changes:
 	#
@@ -823,7 +829,7 @@ if [ -n "${prefix}" ]; then
 	# Then go again in the install (not source) tree to create the base link:
 	cd "${prefix}/.."
 
-	# Ex: we are in ${base_install_dir} now.
+	# So we are in ${base_install_dir} now.
 
 	# Sets as current:
 	if [ -e "Erlang-current-install" ]; then
@@ -938,10 +944,10 @@ if [ $do_generate_plt -eq 0 ]; then
 
 	echo
 
-	#echo "Generating now a PLT file for that Erlang install (from ${erlang_beam_root}), in ${actual_plt_file} (using ${dialyzer_exec}). Note that this operation is generally quite long (ex: about one hour and a half)."
+	#echo "Generating now a PLT file for that Erlang install (from ${erlang_beam_root}), in ${actual_plt_file} (using ${dialyzer_exec}). Note that this operation may be quite long (possibly one hour)."
 
 	# Less detailed:
-	echo "Generating now a PLT file for that Erlang install in ${actual_plt_file}. Note that this operation is generally quite long (ex: about one hour and a half)."
+	echo "Generating now a PLT file for that Erlang install in ${actual_plt_file}. Note that this operation may be quite long (possibly one hour)."
 
 	# In R17.1, dialyzer is not able to dereference symlinks, so instead of
 	# generating with '--output_plt ${actual_plt_file}' and doing '${ln} -s

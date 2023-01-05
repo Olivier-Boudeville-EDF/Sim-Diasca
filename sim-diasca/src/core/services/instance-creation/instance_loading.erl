@@ -1,26 +1,27 @@
-% Copyright (C) 2014-2022 EDF R&D
-
+% Copyright (C) 2014-2023 EDF R&D
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
-% Author: Olivier Boudeville (olivier.boudeville@edf.fr)
+%
+% Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2014.
 
 
-% @doc Module dedicated to the <b>loading of instances</b>.
+% @doc Module dedicated to the <b>loading of instances</b> from an information
+% stream.
 %
 % The typical use case is to load from a set of files a description of the
 % initial state of the simulation, i.e. the construction parameters of initial
@@ -47,7 +48,7 @@
 % AAI and seeding) at their creation.
 %
 % Currently only one initialisation stream (typically: file) can be managed at
-% once (N could be simulaneously managed by having the successive AAIs of each
+% once (N could be simultaneously managed by having the successive AAIs of each
 % stream progress by increment of N, so that each stream remains unrestricted).
 %
 % For a given stream, one reader process can assign creations to a pool of
@@ -58,14 +59,14 @@
 % create themselves (from their constructor) other (initial) actors.
 %
 % If nested creations are to be done, reproducibility can be preserved by
-% limiting the number of creator processes to 1, which is the current default.
+% limiting the number of creator processes to 1. Refer to the use of the
+% simdiasca_allow_reproducible_nested_initial_creations token below.
 
 
-% Types related to creation lines.
-
+% Types related to creation lines:
 
 -type line_number() :: count().
-% To identify a construction line in a file.
+% To identify a construction line in a file; therefore a physical line.
 
 
 -type line() :: bin_string().
@@ -81,7 +82,8 @@
 % Full information to create an instance.
 
 
--type line_context() :: { bin_file_name(), line_number(), line() }.
+-type line_context() ::
+	{ bin_file_name(), StartLineNumber :: line_number(), line() }.
 % Full context of a parsed creation line (file origin, etc.).
 
 
@@ -133,6 +135,7 @@
 -include("engine_common_defines.hrl").
 
 
+
 % Shorthands:
 
 -type count() :: basic_utils:count().
@@ -166,8 +169,8 @@
 %
 % The difficulty is that, despite the parallelism and thus the changes in the
 % receiving order of the corresponding messages by the (centralised) load
-% balancer, each creation should be handled each time identically (ex: same
-% AAI).
+% balancer, each creation should be handled each time identically (e.g. having
+% the same AAI allocated).
 %
 % For that, multiple steps must be taken:
 %
@@ -188,29 +191,50 @@
 % create the actual instance
 
 
+% Previously, this loader relied only on *physical* lines: it was not possibly
+% to define a creation over multiple lines in the initialisation file. Now the
+% loader does its best to rely on *logical* lines, possibly spreading over
+% multiple physical ones; for that a minimalistic parser is used; it is
+% lightweight notably because it must run on the sequential section of the
+% loading (hence as fast as possible).
+
 
 % Debugging hints:
 %
 % To the best of our knowledge, these creation mechanisms work correctly and
-% report at least more user-level errors, though creation failures.
-%
+% report at least more user-level errors, should for example some creations
+% fail.
+
 % A remaining corner case could happen if, for any reason, an instance creation
-% was not to fail but never to return (ex: blocked because of interacting with
-% other actors from its constructor - which should never be done, use
-% onFirstDiasca/2 for that instead).
+% was not to fail but never to return instead (e.g. blocked due to some
+% interaction with other actors from its constructor - which should never be
+% done, use onFirstDiasca/2 for that instead; a constructed instance may still
+% interact with non-actors, though).
+
+-ifdef(exec_target_is_production).
+
+% For normal operations:
+-define( spawn_embodiment_time_out, infinity ).
+
+% To detect more easily any case of blocking creation, switch to a small, finite
+% time-out (expressed in seconds):
 %
-% To detect more easily such cases, switch to a small, finite time-out:
-%
--define( spawn_embodiement_time_out, infinity ).
-% In seconds:
-%-define( spawn_embodiement_time_out, 2 ).
+%define( spawn_embodiment_time_out, 5*60 ).
+
+-else. % exec_target_is_production
+
+% For any quick troubleshooting:
+-define( spawn_embodiment_time_out, 2 ).
+
+-endif. % exec_target_is_production
+
 
 
 
 % @doc Returns a suitable user_id reference, as a string, from the specified
 % user identifier.
 %
-% Ex: get_user_id_reference_for("John") = "{user_id, \"John\"}".
+% For example, get_user_id_reference_for("John") = "{user_id, \"John\"}".
 %
 -spec get_user_id_reference_for( any_user_identifier() ) -> ustring().
 get_user_id_reference_for( AnyUserId ) ->
@@ -221,7 +245,7 @@ get_user_id_reference_for( AnyUserId ) ->
 % @doc Returns a suitable user_id reference, as a string, from the specified
 % user identifier (if any).
 %
-% Ex: get_user_id_reference_for("John") = "{user_id, \"John\"}".
+% For example, get_user_id_reference_for("John") = "{user_id, \"John\"}".
 %
 -spec get_maybe_user_id_reference_for( maybe( any_user_identifier() ) ) ->
 													maybe( ustring() ).
@@ -234,11 +258,11 @@ get_maybe_user_id_reference_for( AnyUserId ) ->
 
 
 
-
-% Takes care of creating the initial instances from specified files (if any).
+% @doc Entry point of the logic for instance loading, when having to create the
+% initial instances from specified file(s).
 %
-% Expected to be spawned from the load balancer, letting it able to answer
-% placement requests and al afterwards.
+% Typically spawned-linked from the load balancer (see class_LoadBalancer),
+% letting it able to answer placement requests and al afterwards.
 %
 % (helper)
 %
@@ -251,7 +275,7 @@ manage_initialisation( InitialisationFiles, NodeCount, LoadBalancerPid ) ->
 	ShortenInitFiles = [ text_utils:format( "file '~ts'",
 		[ filename:basename( F ) ] ) || F <- InitialisationFiles ],
 
-	trace_utils:info_fmt( "Loading initial instances from: ~ts",
+	trace_utils:info_fmt( "Loading initial instances from ~ts",
 		[ text_utils:strings_to_string( ShortenInitFiles ) ] ),
 
 	CompressionFormat = xz,
@@ -267,8 +291,9 @@ manage_initialisation( InitialisationFiles, NodeCount, LoadBalancerPid ) ->
 
 				CompressExt ->
 
-					%trace_utils:info_fmt( "Decompressing '~ts'.",
-					%                      [ Filename ] ),
+					cond_utils:if_defined( simdiasca_debug_instance_loading,
+						trace_utils:info_fmt( "Decompressing '~ts'.",
+											  [ Filename ] ) ),
 
 					DecompressedFilename =
 						file_utils:decompress( Filename, CompressionFormat ),
@@ -294,8 +319,9 @@ manage_initialisation( InitialisationFiles, NodeCount, LoadBalancerPid ) ->
 	% Needed for synchronisation (beware, closure):
 	InstanceLoaderPid = self(),
 
-	%trace_utils:info_fmt( "Creating user_id resolver from ~w.",
-	%                      [ InstanceLoaderPid ] ),
+	cond_utils:if_defined( simdiasca_debug_instance_loading,
+		trace_utils:info_fmt( "Creating user_id resolver from ~w.",
+							  [ InstanceLoaderPid ] ) ),
 
 	% Let's first create the resolver of user identifiers first, as it is needed
 	% by the creators:
@@ -305,19 +331,32 @@ manage_initialisation( InitialisationFiles, NodeCount, LoadBalancerPid ) ->
 			user_identifier_resolver_loop( InstanceLoaderPid )
 		end ),
 
-	% Let's then spawn the creator processes first; as many of them as there are
-	% available cores on this user node:
+	% Let's then spawn the creator processes first.
 	%
-	%CreatorsCount = system_utils:get_core_count(),
+	% See design notes and the SIM_DIASCA_SETTINGS_FLAGS make variable.
+	%
+	CreatorsCount = cond_utils:if_defined(
 
-	% For an easier sequential debugging:
-	%
-	% (now enabled to support nested initial actor creations)
-	%
-	CreatorsCount = 1,
+		simdiasca_allow_reproducible_nested_initial_creations,
 
-	%trace_utils:info_fmt( "Creating ~B instance creator(s).",
-	%                      [ CreatorsCount ] ),
+		% Setting here a single creator process, in order to support
+		% fully-reproducible nested initial actor creations, and also for an
+		% easier sequential debugging:
+		%
+		1,
+
+		% Setting here as many creator processes as there are available cores on
+		% this user node:
+		%
+		% (as a result, with this setting, any nested actor creation is not
+		% strictly reproducible in terms of AAI)
+		%
+		system_utils:get_core_count() ),
+
+	CreatorsCount =:= 1 orelse
+		?notify_warning_fmt( "Relying on multiple (~B) instance creator(s), "
+			"so AAI allocations will not be fully reproducible "
+			"in case of nested actor creations.", [ CreatorsCount ] ),
 
 	Creators = [ ?myriad_spawn_link(
 		fun() ->
@@ -331,7 +370,7 @@ manage_initialisation( InitialisationFiles, NodeCount, LoadBalancerPid ) ->
 		[] ->
 			?notify_warning( "No initialisation file specified." );
 
-		[ _ ] ->
+		[ _SingleFile ] ->
 			% Usual case:
 			ok;
 
@@ -343,12 +382,14 @@ manage_initialisation( InitialisationFiles, NodeCount, LoadBalancerPid ) ->
 			%
 			?notify_warning_cat( "Multiple initialisation files have been "
 				"specified. Total reproducibility currently cannot be "
-				"guaranteed with this setting.", ?loader_cat )
+				"guaranteed with this setting. If needed, consider aggregating "
+				"them in a single file.", ?loader_cat )
 
 	end,
 
-	%trace_utils:info_fmt( "Reading following initialisation file(s): ~ts",
-	%                      [ text_utils:strings_to_string( ReadyInitFiles ) ] ),
+	cond_utils:if_defined( simdiasca_debug_instance_loading,
+		trace_utils:info_fmt( "Reading following initialisation file(s): ~ts",
+			[ text_utils:strings_to_string( ReadyInitFiles ) ] ) ),
 
 	Readers = [ ?myriad_spawn_link(
 					fun() ->
@@ -399,11 +440,11 @@ initialisation_waiting_loop( UserIdResolverPid, CreationCount, Creators,
 	LoadDurationString = time_utils:duration_to_string( LoadDuration ),
 
 	Message = text_utils:format( "All ~B initial instances have been "
-		"successfully loaded from the initialisation sources, in ~ts.~n~n",
+		"successfully loaded from the initialisation sources, in ~ts.",
 		[ CreationCount, LoadDurationString ] ),
 
 	?notify_debug_cat( Message, ?loader_cat ),
-	trace_utils:info( Message ),
+	trace_utils:info( text_utils:format( "~ts~n~n", [ Message ] ) ),
 
 	% Calling a real oneway, as the load balancer is not blocked:
 	LoadBalancerPid ! onInstancesLoaded;
@@ -413,9 +454,10 @@ initialisation_waiting_loop( UserIdResolverPid, CreationCount, Creators,
 initialisation_waiting_loop( UserIdResolverPid, CreationCount, Creators,
 							 Readers, LoadStartTimestamp, LoadBalancerPid ) ->
 
-	%trace_utils:info_fmt( "Waiting for following reader(s), whereas "
-	%   "~B creations have already been done: ~w.",
-	%   [ CreationCount, Readers ] ),
+	cond_utils:if_defined( simdiasca_debug_instance_loading,
+		trace_utils:info_fmt( "Waiting for following reader(s), whereas "
+			"~B creations have already been done: ~w.",
+			[ CreationCount, Readers ] ) ),
 
 	receive
 
@@ -424,9 +466,10 @@ initialisation_waiting_loop( UserIdResolverPid, CreationCount, Creators,
 		%
 		{ initialisation_file_read, InstanceCreationCount, ReaderPid } ->
 
-			%trace_utils:info_fmt( "Instance reader ~w finished "
-			%   "(~B new instances created).",
-			%   [ ReaderPid, InstanceCreationCount ] ),
+			cond_utils:if_defined( simdiasca_debug_instance_loading,
+				trace_utils:info_fmt( "Instance reader ~w finished "
+					"(~B new instances created).",
+					[ ReaderPid, InstanceCreationCount ] ) ),
 
 			?notify_debug_fmt_cat( "Instance reader ~w finished.",
 								   [ ReaderPid ], ?loader_cat ),
@@ -475,23 +518,39 @@ initialisation_waiting_loop( UserIdResolverPid, CreationCount, Creators,
 
 
 % @doc Code entry point for a reader of a given initialisation file.
--spec read_init_file( file_name(), [ creator_pid() ], loader_pid() ) ->
+%
+% Typically spawned-linked by the main, overall process in charge of instance
+% loading.
+%
+% Quite often a single reader process is created.
+%
+-spec read_init_file( file_path(), [ creator_pid() ], loader_pid() ) ->
 							no_return().
-read_init_file( Filename, Creators, InstanceLoaderPid ) ->
+read_init_file( FilePath, Creators, InstanceLoaderPid ) ->
+
+	% A reader process is in charge of reading from its file creation lines as
+	% fast as possible to feed the pool of instance creators.
+	%
+	% As readers have to perform (as lightweight as possible) anticipated
+	% parsing (typically to prune early all blank and comment lines, and to
+	% support logical lines spreading over multiple physical lines), they may
+	% become a bottleneck (e.g. a single reader vs 128 creator processes); so:
+	%
+	erlang:process_flag( priority, _Level=high ),
 
 	% Traces useful, yet not in an actor anymore:
 	?notify_debug_fmt_cat( "Reading initialisation file '~ts' from ~w, "
-		"using instance creator processes ~p.",
-		[ Filename, self(), Creators ], ?loader_cat ),
+		"using ~B instance creator processes: ~w.",
+		[ FilePath, self(), length( Creators ), Creators ], ?loader_cat ),
 
 	% Each filename is by design an absolute path here:
-	file_utils:is_existing_file_or_link( Filename ) orelse
+	file_utils:is_existing_file_or_link( FilePath ) orelse
 		begin
 
 			trace_utils:error_fmt( "Initialisation file '~ts' could "
-				"not be found from node '~ts'.", [ Filename, node() ] ),
+				"not be found from node '~ts'.", [ FilePath, node() ] ),
 
-			throw( { init_file_not_found, Filename, node() } )
+			throw( { init_file_not_found, FilePath, node() } )
 
 		end,
 
@@ -500,15 +559,23 @@ read_init_file( Filename, Creators, InstanceLoaderPid ) ->
 	% binary: we do not want to saturate the RAM, and anyway we will process it
 	% on a per-line basis (and lower-level caching is to happen anyway).
 	%
-	InitFile = file_utils:open( Filename,
+	InitFile = file_utils:open( FilePath,
 		_Options=[ read, raw, binary, { read_ahead, _Size=1024*256 } ] ),
 
-	% The target number of construction lines to be gathered in a creation chunk
-	% (allows to perform more parallel creations; actual chunk size is often
-	% smaller, because of lines that are blank or correspond to comments;
-	% notably in the header of initialisation files):
+	% The target, maximum number of (logical) creation lines to be gathered in a
+	% chunk (allows to perform more parallel creations; initially the chunk size
+	% was 64, because lines that were blank or corresponding to comments -
+	% notably in the header of initialisation files - were also sent to the
+	% creators):
 	%
-	CreationChunkCount = 64,
+	% (must be a power of 2)
+	%
+	MaxCreationChunkSize = 32,
+
+	% Not to wait too much time until all creators start being busy (the
+	% creation count doubles at each round, until reaching its maximum one):
+	%
+	InitialCreationChunkSize = 1,
 
 	% Rather that using a ring to send blindly (i.e. asynchronously) creation
 	% chunks to creators on a round-robin basis, we prefer enforcing some flow
@@ -519,8 +586,8 @@ read_init_file( Filename, Creators, InstanceLoaderPid ) ->
 	% message box as many chunks to process as there are file readers. No
 	% problem here.
 	%
-	InstanceCreationCount =
-		read_all_lines( InitFile, CreationChunkCount, Creators, Filename ),
+	InstanceCreationCount = read_all_lines( InitFile, InitialCreationChunkSize,
+		MaxCreationChunkSize, Creators, FilePath ),
 
 	InstanceLoaderPid !
 		{ initialisation_file_read, InstanceCreationCount, self() } ,
@@ -534,61 +601,95 @@ read_init_file( Filename, Creators, InstanceLoaderPid ) ->
 % @doc Reads all lines of specified file, by chunks of specified size, and feeds
 % them to creators as early as possible.
 %
--spec read_all_lines( file(), count(), [ creator_pid() ], file_name() ) ->
-													count().
-read_all_lines( File, ChunkCount, Creators, Filename ) ->
+-spec read_all_lines( file(), count(), count(), [ creator_pid() ],
+					  file_name() ) -> count().
+read_all_lines( File, CurrentChunkSize, MaxChunkSize, Creators, Filename ) ->
 
-	?notify_debug_fmt_cat( "Reading all lines from '~ts'.", [ Filename ],
-						   ?loader_cat ),
+	CreatorsCount = length( Creators ),
+
+	?notify_debug_fmt_cat( "Reading all lines from '~ts' "
+		"(number of creator processes: ~B; initial chunk size of ~B, "
+		"for a maximum one of ~B).",
+		[ Filename, CreatorsCount, CurrentChunkSize, MaxChunkSize ],
+		?loader_cat ),
 
 	BinFilename = text_utils:string_to_binary( Filename ),
 
 	% Creators are considered as free only from the point of view of that reader
-	% (they can be kept busy by other readers in the meantime):
+	% (they can be kept busy by other readers in the meantime).
 	%
 	% We maintain a count of initialisation lines to assign AAIs, and also to be
 	% able to return informative error messages.
 	%
-	read_all_lines( File, ChunkCount, _CreationCount=0,
+	read_all_lines( File, CurrentChunkSize, MaxChunkSize, _CreationCount=0,
+		CreatorsCount, _CreatedSinceChunkDoubled=0,
 		_RemainingFreeCreators=Creators, _WaitedCreators=[], BinFilename,
-		_LineCount=1 ).
+		_CurrentLineNumber=1 ).
 
 
 
 % (helper)
-read_all_lines( File, ChunkCount, CreationCount, RemainingFreeCreators,
-				WaitedCreators, BinFilename, LineCount ) ->
+read_all_lines( File, CurrentChunkSize, MaxChunkSize, CreationCount,
+		CreatorsCount, CreatedSinceChunkDoubled, RemainingFreeCreators,
+		WaitedCreators, BinFilename, CurrentLineNumber ) ->
 
-	case read_chunk( File, ChunkCount, LineCount ) of
+	% To report progress:
+	ShortenFilename = filename:basename( BinFilename ),
 
-		{ _Chunk=[], LineCount } ->
+	case read_chunk( File, CurrentChunkSize, CurrentLineNumber, CreationCount,
+					 ShortenFilename ) of
 
-			?notify_debug_fmt_cat( "Read all lines, waiting for instance "
-				   "creators ~p.", [ WaitedCreators ], ?loader_cat ),
+		% We just hit the end of file, let's wait for all busy creators and
+		% terminate:
+		%
+		{ _Chunk=[], NewCurrentLineNumber, _ChunkCreationCount } ->
 
-			% We hit the end of file, let's wait for all busy creators and
-			% terminate:
-			%
+			?notify_debug_fmt_cat( "Read all lines, a total of ~B actors were "
+				"created by this reader; "
+				"still waiting for instance creators ~p.",
+				[ CreationCount, WaitedCreators ], ?loader_cat ),
+
 			FinalCreationCount = basic_utils:wait_for_summable_acks(
 				_WaitedSenders=WaitedCreators, CreationCount,
 				_Timeout=infinity, _AckReceiveAtom=chunk_processed,
 				% Never triggered anyway:
 				_ThrowAtom=chunk_timeout ),
 
-			?notify_debug_fmt_cat( "Read all ~B lines from '~ts', "
+			% Decremented as we start with line 1:
+			?notify_debug_fmt_cat( "Read all ~B (physical) lines from '~ts', "
 				"resulting in ~B instance creations.",
-				[ LineCount, text_utils:binary_to_string( BinFilename ),
+				[ NewCurrentLineNumber-1,
+				  text_utils:binary_to_string( BinFilename ),
 				  FinalCreationCount ], ?loader_cat ),
 
 			FinalCreationCount;
 
 
-		{ Chunk, NewLineCount } ->
+		% Reading still in progress:
+		{ Chunk, NewCurrentLineNumber, ChunkCreationCount } ->
 
 			ChunkMessage = { process_chunk, { Chunk, BinFilename }, self() },
 
+			% If relevant, double the number of chunks sent per creator:
+			{ NewCurrentChunkSize, NewCreatedSinceChunkDoubled } =
+					case CreatedSinceChunkDoubled > CreatorsCount
+						 andalso CurrentChunkSize < MaxChunkSize of
+
+				% Threshold for doubling exceeded, whereas max not reached:
+				true ->
+					{ 2*CurrentChunkSize, 0 };
+
+				false ->
+					{ CurrentChunkSize,
+					  CreatedSinceChunkDoubled+ChunkCreationCount }
+
+			end,
+
 			?notify_debug_fmt_cat( "Instance reader has a new chunk of "
-				"~B lines to process.", [ length( Chunk ) ], ?loader_cat ),
+				"~B lines to process (chunk count per creator: ~B/~B; "
+				"actors already created: ~B).",
+				[ length( Chunk ), NewCurrentChunkSize, MaxChunkSize,
+				  CreationCount ], ?loader_cat ),
 
 			% We have a chunk, but do we have a creator?
 			case RemainingFreeCreators of
@@ -607,12 +708,14 @@ read_all_lines( File, ChunkCount, CreationCount, RemainingFreeCreators,
 								"Chunk assigned to instance creator ~p.",
 								[ CreatorPid ], ?loader_cat ),
 
-							read_all_lines( File, ChunkCount,
+							read_all_lines( File, NewCurrentChunkSize,
+								MaxChunkSize,
 								CreationCount + AdditionalCreationCount,
+								CreatorsCount, NewCreatedSinceChunkDoubled,
 								_RemainingFreeCreators=[],
 								% CreatorPid already there by design:
 								_NewWaited=WaitedCreators, BinFilename,
-								NewLineCount )
+								NewCurrentLineNumber )
 
 					end;
 
@@ -626,10 +729,11 @@ read_all_lines( File, ChunkCount, CreationCount, RemainingFreeCreators,
 						"Chunk assigned to instance creator ~p.",
 						[ FreeCreatorPid ], ?loader_cat ),
 
-					read_all_lines( File, ChunkCount, CreationCount,
-						_RemainingFreeCreators=T,
+					read_all_lines( File, NewCurrentChunkSize, MaxChunkSize,
+						CreationCount, CreatorsCount,
+						NewCreatedSinceChunkDoubled, _RemainingFreeCreators=T,
 						_NewWaited=[ FreeCreatorPid | WaitedCreators ],
-						BinFilename, NewLineCount )
+						BinFilename, NewCurrentLineNumber )
 
 			end
 
@@ -637,45 +741,180 @@ read_all_lines( File, ChunkCount, CreationCount, RemainingFreeCreators,
 
 
 
-% @doc Returns {InfoLines,LineCount}, where:
+% @doc Returns {InfoLines,CurrentLineNumber,ChunkCreationCount}, where:
 %
 % - InfoLines is a list of up to ChunkCount pairs, made of a line number and of
-% a line (as a binary), read from specified file
+% a logical creation line (as a binary), read from the specified file
 %
-% - LineCount is the new current line count
+% - CurrentLineNumber is the new current line number
+%
+% - ChunkCreationCount is the number of creations done through this chunk
+%
+% We read physical lines, yet we want to consider logical ones (possibly
+% spreading over multiple physical ones), so we have to perform a pre-parsing.
+%
+% We record also the (physical) line number of the start of a logical line, so
+% that error messages, in case of a parsing reporting an internal error line
+% within a logical line, can point to the correct absolute physical line.
 %
 % Note: line order is not preserved (each chunk is in reverse order compared to
 % the one of the read file), but, as we record the line number anyway, and will
 % rely on it to preserve reproducibility, this is not a problem.
 %
--spec read_chunk( file(), count(), line_number() ) ->
-						{ [ line_info() ], line_number() }.
-read_chunk( File, ChunkCount, LineCount ) ->
-	read_chunk( File, ChunkCount, LineCount, _AccLines=[] ).
+% Creation count is passed just so that we can emit a progress trace, as
+% instances are being created.
+%
+-spec read_chunk( file(), count(), line_number(), count(), file_name() ) ->
+						{ [ line_info() ], line_number(), count() }.
+read_chunk( File, ChunkSize, CurrentLineNumber, CreationCount,
+			ShortenFilename ) ->
+	read_chunk( File, ChunkSize, CurrentLineNumber, CreationCount,
+		ShortenFilename, _ChunkCreationCount=0, _MaybeCurrentLine=undefined,
+		_StartLineNumber=CurrentLineNumber, _AccLines=[] ).
 
 
+% Principle: we always prepare the start line number for the next logical line
+% to be read.
+%
 % Whole chunk read:
-read_chunk( _File, _ChunkCount=0, LineCount, AccLines ) ->
-	{ AccLines, LineCount };
+read_chunk( _File, _ChunkCount=0, CurrentLineNumber, _CreationCount,
+			_ShortenFilename, ChunkCreationCount,
+			_MaybeCurrentLogLine=undefined, _StartLineNumber, AccLines ) ->
+	{ AccLines, CurrentLineNumber, ChunkCreationCount };
 
+% (not expecting a new chunk whereas a current logical line is being processed)
+%
 % Still reading:
-read_chunk( File, ChunkCount, LineCount, AccLines ) ->
+read_chunk( File, ChunkCount, CurrentLineNumber, CreationCount, ShortenFilename,
+			ChunkCreationCount, MaybeCurrentLogLine, StartLineNumber,
+			AccLines ) ->
 
 	case file:read_line( File ) of
 
-		{ ok, Line } ->
+		{ ok, PhysLine } ->
+			NewLogLine = case MaybeCurrentLogLine of
 
-			% We will let creators filter out comments and all later:
-			read_chunk( File, ChunkCount - 1, LineCount + 1,
-						[ { LineCount, Line } | AccLines ] );
+				undefined ->
+					PhysLine;
+
+				CurrentLogLine ->
+					text_utils:bin_concatenate( CurrentLogLine, PhysLine )
+
+			end,
+
+			% Corresponds to physical lines, hence must be incremented here in
+			% all cases:
+			%
+			NextCurrentLineNumber = CurrentLineNumber+1,
+
+			case is_complete_logical_line( NewLogLine ) of
+
+				% Typically a comment or a blank line:
+				ignore ->
+
+					%cond_utils:if_defined( simdiasca_debug_instance_loading,
+					%   trace_bridge:debug_fmt( "Ignoring line '~ts'.",
+					%       [ NewLogLine ] ) ),
+
+					read_chunk( File, ChunkCount, NextCurrentLineNumber,
+						CreationCount, ShortenFilename, ChunkCreationCount,
+						_NextLogLine=undefined,
+						_NextStartLN=NextCurrentLineNumber, AccLines );
+
+				true ->
+					cond_utils:if_defined( simdiasca_debug_instance_loading,
+						trace_bridge:debug_fmt( "Accepting line '~ts'.",
+												[ NewLogLine ] ) ),
+
+					NewCreationCount = CreationCount+1,
+
+					NewCreationCount rem 500 =:= 0 andalso
+						begin
+
+							trace_utils:info_fmt( " - processing creation "
+								"line #~B from ~ts at ~ts",
+								[ CurrentLineNumber, ShortenFilename,
+								  time_utils:get_textual_timestamp() ] )
+
+						end,
+
+					NewChunkCreationCount = ChunkCreationCount+1,
+
+					read_chunk( File, ChunkCount-1, NextCurrentLineNumber,
+						NewCreationCount, ShortenFilename,
+						NewChunkCreationCount, _NextLogLine=undefined,
+						_NextStartLN=NextCurrentLineNumber,
+						[ { StartLineNumber, NewLogLine } | AccLines ] );
+
+				% A physical line, whereas the logical one is still not
+				% complete:
+				%
+				false ->
+					cond_utils:if_defined( simdiasca_debug_instance_loading,
+						trace_bridge:debug_fmt( "Expanding line '~ts'.",
+												[ NewLogLine ] ) ),
+
+					% We keep the same start line number:
+					read_chunk( File, ChunkCount, NextCurrentLineNumber,
+						CreationCount, ShortenFilename, ChunkCreationCount,
+						NewLogLine, StartLineNumber, AccLines )
+
+			end;
 
 		eof ->
 			% Returning the list (a partial chunk) as it is:
-			{ AccLines, LineCount }
+			{ AccLines, CurrentLineNumber, ChunkCreationCount }
 
 	end.
 
 
+
+% @doc Tells whether the specified logical line is autonomous, that is whether
+% it should be interpreted as a full (non-truncated) creation line, or it shall
+% be ignored.
+%
+% We are still in the sequential section, we want to perform only the most
+% lightweight pre-parsing here, so that the actual parsing is done at the next
+% step, in the parallel pool.
+%
+-spec is_complete_logical_line( line() ) -> boolean() | 'ignore'.
+is_complete_logical_line( Line ) ->
+
+	%trace_bridge:debug_fmt( "Parsing logical line '~ts' to determine "
+	%   "whether it is complete.", [ LogLine ] ),
+
+	case _BaseLine=text_utils:trim_whitespaces(
+			text_utils:binary_to_string( Line ) ) of
+
+		% Blank line:
+		"" ->
+			ignore;
+
+		% Comment:
+		[ $% | _T ] ->
+			ignore;
+
+		% Thus defining a user identifier:
+		%[ $" | T ] ->
+
+		% We do not want to enter here in any full parsing, so:
+		BaseLine ->
+			% Quick and dirty, yet checking whether this non-comment candidate
+			% creation line finishes with a dot is already a good (presumably
+			% perfect) criterion:
+			%
+			case lists:reverse( BaseLine ) of
+
+				% No partial line is expected to finish with a dot:
+				[ $. | _ ] ->
+					true;
+
+				_ ->
+					false
+
+			end
+
+	end.
 
 
 
@@ -697,9 +936,10 @@ instance_creator_loop( NodeCount, IdResolverPid, LoadBalancerPid,
 
 		{ process_chunk, _Chunk={ LineInfos, BinFilename }, ReaderPid } ->
 
-			%trace_utils:debug_fmt( "Creator ~w processing chunk of ~B "
-			%   "elements:~ts", [ self(), length( LineInfos ),
-			%       text_utils:terms_to_string( LineInfos ) ] ),
+			cond_utils:if_defined( simdiasca_debug_instance_loading,
+				trace_utils:debug_fmt( "Creator ~w processing chunk of ~B "
+					"elements: ~ts", [ self(), length( LineInfos ),
+					text_utils:terms_to_string( LineInfos ) ] ) ),
 
 			?notify_debug_fmt_cat(
 				"Instance creator ~w processing chunk of ~B elements.",
@@ -715,30 +955,57 @@ instance_creator_loop( NodeCount, IdResolverPid, LoadBalancerPid,
 			% processes that will host the referenced instances); so we create
 			% instances on the fly:
 			%
-			WaitedEmbodiements = [ parse_creation_line( LineInf, BinFilename,
+			WaitedEmbodiments = [ parse_creation_line( LineInf, BinFilename,
 				IdResolverPid, LoadBalancerPid ) || LineInf <- LineInfos ],
 
 			% Filter-out 'no_creation', keep only PIDs:
-			FilteredWaited = [ P || P <- WaitedEmbodiements, is_pid( P ) ],
+			FilteredWaited = [ P || P <- WaitedEmbodiments, is_pid( P ) ],
 
 			FilteredWaited =:= [] orelse
 				( LoadBalancerPid !
 					{ registerInitialActors, [ FilteredWaited ], self() } ),
 
-			%trace_utils:debug_fmt(
-			%   "Waiting for embodiement of ~w actors: ~w...",
-			%   [ length( FilteredWaited ), FilteredWaited ] ),
+			cond_utils:if_defined( simdiasca_debug_instance_loading,
+				trace_utils:debug_fmt(
+					"Waiting for embodiment of ~w actors: ~w...",
+					[ length( FilteredWaited ), FilteredWaited ] ) ),
 
 			% Anticipated processing:
 			NewCreationCount = length( FilteredWaited ),
 
-			basic_utils:wait_for_acks( FilteredWaited,
-				?spawn_embodiement_time_out,
-				_AckReceiveAtom=spawn_successful,
-				_ThrowAtom=embodiement_time_out ),
+			case basic_utils:wait_for_acks_nothrow( FilteredWaited,
+					?spawn_embodiment_time_out,
+					_AckReceiveAtom=spawn_successful ) of
 
-			%trace_utils:debug_fmt( "...embodiement of ~w finished.",
-			%                       [ FilteredWaited ] ),
+				[] ->
+					ok;
+
+				TimedOutPids ->
+					% Fetching the indexes of these non-terminating PIDs:
+					WaitedIndexes = [
+						list_utils:get_index_of( TP, WaitedEmbodiments )
+										|| TP <- TimedOutPids ],
+
+					WaitedLineInfos = [ list_utils:get_element_at( LineInfos,
+								Idx ) || Idx <- WaitedIndexes ],
+
+					trace_bridge:error_fmt( "Time-out (after ~ts) "
+						"while waiting for the creation of the following "
+						"instances, whose construction may not terminate: ~ts",
+						[ time_utils:duration_to_string(
+							1000 * ?spawn_embodiment_time_out ),
+						  text_utils:strings_to_string( [
+							text_utils:format( "instance defined at creation "
+								"line #~B, which is: ~ts", [ LCount, L ] )
+								|| { LCount, L } <- WaitedLineInfos ] ) ] ),
+
+					throw( { embodiment_time_out, TimedOutPids } )
+
+			end,
+
+			cond_utils:if_defined( simdiasca_debug_instance_loading,
+				trace_utils:debug_fmt( "...embodiment of ~w finished.",
+									   [ FilteredWaited ] ) ),
 
 			% Synchronous:
 			ReaderPid ! { chunk_processed, NewCreationCount, self() },
@@ -778,27 +1045,15 @@ instance_creator_loop( NodeCount, IdResolverPid, LoadBalancerPid,
 % Synchronicity enforced here, for a better control.
 %
 -spec parse_creation_line( line_info(), bin_file_name(), id_resolver_pid(),
-						   load_balancer_pid() ) -> instance_pid().
+				load_balancer_pid() ) -> instance_pid() | 'no_creation'.
 parse_creation_line( _LineInfo={ LineNumber, BinLine }, BinFilename,
 					 IdResolverPid, LoadBalancerPid ) ->
 
-	LineNumber rem 500 =:= 0 andalso
-		begin
-
-			ShortenFilename = filename:basename(
-							text_utils:binary_to_string( BinFilename ) ),
-
-			trace_utils:info_fmt(
-				" - processing creation line #~B from ~ts at ~ts",
-				[ LineNumber, ShortenFilename,
-				  time_utils:get_textual_timestamp() ] )
-
-		end,
-
 	% Removes the ending newline for readability:
-	%trace_utils:debug_fmt( "Parsing line #~B: '~ts'.", [ LineNumber,
-	%   list_utils:remove_last_element(
-	%     text_utils:binary_to_string( BinLine ) ) ] ),
+	cond_utils:if_defined( simdiasca_debug_instance_loading,
+		trace_utils:debug_fmt( "Parsing line #~B: '~ts'.", [ LineNumber,
+			list_utils:remove_last_element(
+				text_utils:binary_to_string( BinLine ) ) ] ) ),
 
 	% Note: for multi-file reading, the filename as well shall be associated to
 	% the line number.
@@ -827,16 +1082,22 @@ parse_creation_line( _LineInfo={ LineNumber, BinLine }, BinFilename,
 
 	case text_utils:trim_whitespaces( Line ) of
 
-		% Blank line:
+		% Blank line (should never happen - shall have been filtered by the
+		% pre-parsing):
+		%
 		[] ->
+			trace_bridge:error( "Unexpected blank line in instance loading." ),
 			% Empty lines are ignored:
 			%trace_utils:debug_fmt( "Empty line at line #~B ignored.",
-			%                      [ LineNumber ] ),
+			%                       [ LineNumber ] ),
 			no_creation;
 
 
-		% Comment:
+		% Comment (should never happen - shall have been filtered by the
+		% pre-parsing):
+		%
 		[ $% | _T ] ->
+			trace_bridge:error( "Unexpected comment in instance loading." ),
 			% Starting by '%' means comments, that are ignored:
 			%trace_utils:debug_fmt( "Comment '~ts' at line #~B ignored.",
 			%                       [ Line, LineNumber ] ),
@@ -875,7 +1136,7 @@ parse_creation_line( _LineInfo={ LineNumber, BinLine }, BinFilename,
 			LineContext = { BinFilename, LineNumber, BinLine },
 
 			InstancePid = create_instance_from( _CreationClause=L, _IdInfo=none,
-								LineContext, IdResolverPid, LoadBalancerPid ),
+				LineContext, IdResolverPid, LoadBalancerPid ),
 
 			%trace_utils:debug_fmt( "Instance corresponding to line #~B will "
 			%   "have for PID ~w.", [ LineNumber, InstancePid ] ),
@@ -889,7 +1150,6 @@ parse_creation_line( _LineInfo={ LineNumber, BinLine }, BinFilename,
 			LineContext = { BinFilename, LineNumber, BinLine },
 
 			report_parse_error( invalid_start, LineContext )
-
 
 	end.
 
@@ -913,7 +1173,7 @@ extract_id( String, LineContext ) ->
 			report_parse_error( invalid_user_identifier, LineContext );
 
 
-		% Ex: {"John", "   <-    {class_Beatle,...."}
+		% For example, {"John", "   <-    {class_Beatle,...."}
 		{ UserId, Rest } ->
 
 			% We can now jump to the first '{':
@@ -941,8 +1201,8 @@ extract_id( String, LineContext ) ->
 
 
 
-% @doc Creates corresponding instance, from the specified actual creation
-% clause, like: {class_Foo, [ "Hello world!", {user_id,"Charles"}, 154.06 ],
+% @doc Creates a corresponding instance from the specified actual creation
+% clause, like: {class_Foo, ["Hello world!", {user_id,"Charles"}, 154.06],
 % _PlacementHint="greetings"} and user_id information for this instance to
 % create.
 %
@@ -952,8 +1212,9 @@ create_instance_from( CreationClause, IdInfo,
 		LineContext={ _BinFilename, LineNumber, _BinLine }, IdResolverPid,
 		LoadBalancerPid ) ->
 
-	%trace_utils:debug_fmt( "~p creating instance from '~ts', with id=~p.",
-	%                       [ self(), CreationClause, IdInfo ] ),
+	cond_utils:if_defined( simdiasca_debug_instance_loading,
+		trace_utils:debug_fmt( "[~p] creating an instance from '~ts', "
+			"with id=~p.", [ self(), CreationClause, IdInfo ] ) ),
 
 	case erl_scan:string( CreationClause, _StartLocation=1 ) of
 
@@ -969,13 +1230,13 @@ create_instance_from( CreationClause, IdInfo,
 
 				% With placement hints:
 				{ ok, _CreationInfo={ Class, Args, PlacementHint } }
-				  when is_atom( Class ) andalso is_list( Args ) ->
+						when is_atom( Class ) andalso is_list( Args ) ->
 
 					%trace_utils:debug( "Parse OK, with placement hint." ),
 
 					% A bit of interleaving will not hurt:
 					LoadBalancerPid ! { getActorCreationInformationFromHint,
-								[ PlacementHint, LineNumber, Class ], self() },
+						[ PlacementHint, LineNumber, Class ], self() },
 
 					IdInfo =:= none orelse
 						report_parse_error( both_placement_hint_and_id_defined,
@@ -1004,16 +1265,17 @@ create_instance_from( CreationClause, IdInfo,
 						[ ActorSettings | ActualConstructionParameters ],
 
 					%trace_utils:debug_fmt(
-					%   " - embodiement of an instance of class ~ts",
+					%   " - embodiment of an instance of class ~ts",
 					%   [ Class ] ),
 
-					%trace_utils:debug_fmt( " - embodiement of an instance "
+					%trace_utils:debug_fmt( " - embodiment of an instance "
 					%   "of class ~ts with parameters ~p.",
 					%   [ Class, FullParams ] ),
 
+					% WOOPER feature (
 					BlankPid ! { embody, [ Class, FullParams ], self() },
 
-					% No real need to wait for the completion of embodiement,
+					% No real need to wait for the completion of embodiment,
 					% except for example if the simulation case wants to
 					% interact with a loaded instance and, as a consequence,
 					% needs to look-up its registered name. Moreover keeping
@@ -1023,7 +1285,7 @@ create_instance_from( CreationClause, IdInfo,
 
 
 				{ ok, { Class, _Args, _PlacementHint } }
-								 when is_atom( Class ) ->
+								when is_atom( Class ) ->
 					report_parse_error( non_list_arguments, LineContext );
 
 				{ ok, { _Class, _Args, _PlacementHint } } ->
@@ -1112,12 +1374,13 @@ create_instance_from( CreationClause, IdInfo,
 					FullParams =
 						[ ActorSettings | ActualConstructionParameters ],
 
-					%trace_utils:debug_fmt(
-					%    " - embodiement of an instance of class ~ts",
-					%    [ Class ] ),
+					cond_utils:if_defined( simdiasca_debug_instance_loading,
+						trace_utils:debug_fmt(
+							" - embodiment of an instance of ~ts",
+							[ Class ] ) ),
 
 					%trace_utils:debug_fmt(
-					%   " - embodiement of an instance of class ~ts "
+					%   " - embodiment of an instance of ~ts "
 					%   " with parameters ~p.",  [ Class, FullParams ] ),
 
 					BlankPid ! { embody, [ Class, FullParams ], self() },
@@ -1244,15 +1507,24 @@ transform_argument( Arg, IdResolverPid, LoadBalancerPid, FirstUserId,
 							   IdTransformer, _UserData=FirstUserId ).
 
 
+
+
 % @doc Reports specified error while parsing specified creation line.
 -spec report_parse_error( atom() | { atom(), any() }, line_context() ) ->
 								no_return().
-report_parse_error( Reason,
-					_LineContext={ BinFilename, LineNumber, BinLine } ) ->
 
-	Message = text_utils:format( "In file '~ts', the parsing of creation line "
-		"#~B (which is: '~ts') failed, reason: ~p. Aborting.",
-		[ BinFilename, LineNumber, BinLine, Reason ] ),
+report_parse_error( Reason={ term_parsing,
+		_ErrorInfo={ InternalLineNumber, erl_parse, Messages } },
+					_LineContext={ BinFilename, StartLineNumber, BinLine } ) ->
+
+	% Internal lines start at 1:
+	ActualLineNumber = StartLineNumber + InternalLineNumber - 1,
+
+	Message = text_utils:format( "In file '~ts', the parsing of a "
+		"specified creation failed at line #~B: ~ts~nAborting initialisation. "
+		"The corresponding full logical line was:~n  ~ts",
+		[ BinFilename, ActualLineNumber,
+		  list_utils:flatten_once( Messages ), BinLine ] ),
 
 	?notify_error_cat( Message, ?loader_cat ),
 
@@ -1263,7 +1535,30 @@ report_parse_error( Reason,
 
 	Line = text_utils:binary_to_string( BinLine ),
 
-	throw( { invalid_creation_line, { Filename, LineNumber }, Line, Reason } ).
+	throw( { invalid_creation_line, { Filename, StartLineNumber }, Line,
+			 Reason } );
+
+
+report_parse_error( Reason,
+					_LineContext={ BinFilename, StartLineNumber, BinLine } ) ->
+
+	Message = text_utils:format( "In file '~ts', the parsing of the "
+		"creation line at line #~B failed, "
+		"with the following reason:~n  ~p~nAborting initialisation. "
+		"The corresponding full logical line was:~n  ~ts",
+		[ BinFilename, StartLineNumber, Reason, BinLine ] ),
+
+	?notify_error_cat( Message, ?loader_cat ),
+
+	% Useless (implied by macro):
+	%trace_utils:error( Message ),
+
+	Filename = text_utils:binary_to_string( BinFilename ),
+
+	Line = text_utils:binary_to_string( BinLine ),
+
+	throw( { invalid_creation_line, { Filename, StartLineNumber }, Line,
+			 Reason } ).
 
 
 

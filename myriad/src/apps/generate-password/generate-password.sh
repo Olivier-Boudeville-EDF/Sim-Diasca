@@ -7,9 +7,14 @@
 # extra one:
 
 # To debug:
-#make -s generate_password_exec CMD_LINE_OPT="-extra $*"
+# Not relevant: make -s generate_password_exec CMD_LINE_OPT="-extra $*"
+#make -s generate_password_exec CMD_LINE_OPT="$*"
 
 #cd ${CEYLAN_MYRIAD} && make -s all 1>/dev/null && cd src/apps/generate-password && generate-password.escript $*
 
-# Now not triggering a prior recompilation check:
+#cd ${CEYLAN_MYRIAD} && make -s all && cd src/apps/generate-password && generate-password.escript $*
+
+# Now not triggering a prior recompilation check, expecting generally to be
+# already built:
+#
 cd ${CEYLAN_MYRIAD} && cd src/apps/generate-password && generate-password.escript $*

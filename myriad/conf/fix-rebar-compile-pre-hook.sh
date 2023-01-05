@@ -14,7 +14,6 @@ usage="Usage: $(basename $0) PROJECT_NAME [--hiding-for-rebar|--no-hiding-for-re
 # to two other prerequisites), and when rebar does that it does pass the
 # relevant options, leading to a failing build. So the goal is to prevent rebar
 # from rebuilding anything.
-#
 
 # Hiding elements, i.e. erl/hrl files (most probably that hiding BEAM files is a
 # bad idea in all cases), could be a solution, as it fixes some builds (some
