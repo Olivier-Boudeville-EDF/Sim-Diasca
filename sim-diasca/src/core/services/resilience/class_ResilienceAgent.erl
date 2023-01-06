@@ -1,22 +1,23 @@
 % Copyright (C) 2012-2023 EDF R&D
-
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2012.
 
 
 % @doc Class in charge of managing the <b>resilience operations on a specific
@@ -383,15 +384,15 @@ recoverNodes( State, NodesToRecover, Tick, Diasca ) ->
 						|| { _Node, SerialisationFilename } <- NodeFilenames ],
 
 
-	% As deserialisations may fail (ex: outage in their course), we have to
-	% define a time-out (in seconds):
+	% As deserialisations may fail (e.g. outage in their course), we have to
+	% define a time-out:
 	%
 	% (2 hours)
 	%
-	MaxDurationInSeconds = 2 * 60 * 60,
+	MaxMsDuration = 2 * 60 * 60 * 1000,
 
-	basic_utils:wait_for_acks( _WaitedSenders=FileReaderPidList,
-		MaxDurationInSeconds, _AckReceiveAtom=serialisation_read,
+	basic_utils:wait_for_acks( _WaitedSenders=FileReaderPidList, MaxMsDuration,
+		_AckReceiveAtom=serialisation_read,
 		_ThrowAtom=serialisation_reading_time_out ),
 
 	trace_bridge:notice_fmt( "Node ~ts successfully read ~B serialisation "

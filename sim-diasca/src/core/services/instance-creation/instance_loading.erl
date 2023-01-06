@@ -36,8 +36,8 @@
 -define( reader_cat, ?trace_emitter_categorization ++ "Creating" ).
 
 
-% In milliseconds:
-
+% Of type time_utils:time_out(), hence milliseconds if numerical:
+%
 %-define( initialisation_file_timeout, 5000 ).
 -define( initialisation_file_timeout, infinity ).
 
@@ -162,6 +162,7 @@
 -include_lib("myriad/include/spawn_utils.hrl").
 
 
+
 % Implementation notes.
 
 % The reading of files is meant to be parallel, and the instance creations
@@ -211,20 +212,22 @@
 % done, use onFirstDiasca/2 for that instead; a constructed instance may still
 % interact with non-actors, though).
 
+% spawn_embodiment_time_out is of type time_utils:time_out():
+
 -ifdef(exec_target_is_production).
 
 % For normal operations:
 -define( spawn_embodiment_time_out, infinity ).
 
 % To detect more easily any case of blocking creation, switch to a small, finite
-% time-out (expressed in seconds):
+% time-out (expressed in milliseconds, hence 5 minutes here):
 %
-%define( spawn_embodiment_time_out, 5*60 ).
+%define( spawn_embodiment_time_out, 5*60*1000 ).
 
 -else. % exec_target_is_production
 
-% For any quick troubleshooting:
--define( spawn_embodiment_time_out, 2 ).
+% Two seconds, for any quick troubleshooting:
+-define( spawn_embodiment_time_out, 2*1000 ).
 
 -endif. % exec_target_is_production
 
@@ -974,7 +977,7 @@ instance_creator_loop( NodeCount, IdResolverPid, LoadBalancerPid,
 			NewCreationCount = length( FilteredWaited ),
 
 			case basic_utils:wait_for_acks_nothrow( FilteredWaited,
-					?spawn_embodiment_time_out,
+					_MsOrInfinity=?spawn_embodiment_time_out,
 					_AckReceiveAtom=spawn_successful ) of
 
 				[] ->
@@ -993,7 +996,7 @@ instance_creator_loop( NodeCount, IdResolverPid, LoadBalancerPid,
 						"while waiting for the creation of the following "
 						"instances, whose construction may not terminate: ~ts",
 						[ time_utils:duration_to_string(
-							1000 * ?spawn_embodiment_time_out ),
+							?spawn_embodiment_time_out ),
 						  text_utils:strings_to_string( [
 							text_utils:format( "instance defined at creation "
 								"line #~B, which is: ~ts", [ LCount, L ] )

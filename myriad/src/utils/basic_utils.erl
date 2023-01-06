@@ -467,7 +467,7 @@
 -type byte_size() :: system_utils:byte_size().
 
 -type time_out() :: time_utils:time_out().
--type finite_second_time_out() :: time_utils:finite_second_time_out().
+-type finite_time_out() :: time_utils:finite_time_out().
 -type ms_period() :: time_utils:ms_period().
 
 -type milliseconds() :: unit_utils:milliseconds().
@@ -922,11 +922,11 @@ wait_for( Message, Count, TimeOutDuration, TimeOutFormatString ) ->
 % See wait_for_many_acks/{4,5} if having a large number of senders that are
 % waited for.
 %
--spec wait_for_acks_nothrow( [ pid() ], finite_second_time_out(), atom() ) ->
-												[ pid() ].
-wait_for_acks_nothrow( WaitedSenders, MaxDurationInSeconds, AckReceiveAtom ) ->
-	wait_for_acks_nothrow( WaitedSenders, MaxDurationInSeconds,
-						   ?default_period_ms, AckReceiveAtom ).
+-spec wait_for_acks_nothrow( [ pid() ], finite_time_out(), atom() ) ->
+											[ pid() ].
+wait_for_acks_nothrow( WaitedSenders, MaxMsDuration, AckReceiveAtom ) ->
+	wait_for_acks_nothrow( WaitedSenders, MaxMsDuration, ?default_period_ms,
+						   AckReceiveAtom ).
 
 
 
@@ -940,31 +940,31 @@ wait_for_acks_nothrow( WaitedSenders, MaxDurationInSeconds, AckReceiveAtom ) ->
 % See wait_for_many_acks/{4,5} if having a large number of senders that are
 % waited for.
 %
--spec wait_for_acks_nothrow( [ pid() ], finite_second_time_out(), ms_period(),
+-spec wait_for_acks_nothrow( [ pid() ], finite_time_out(), ms_period(),
 							 atom() ) -> [ pid() ].
-wait_for_acks_nothrow( WaitedSenders, MaxDurationInSeconds, Period,
+wait_for_acks_nothrow( WaitedSenders, MaxMsDuration, Period,
 					   AckReceiveAtom ) ->
 
 	%trace_utils:debug_fmt( "Waiting (no-throw) for ~p (period: ~ts, "
 	%   "max duration: ~ts, ack atom: '~ts').",
 	%   [ WaitedSenders, time_utils:duration_to_string( Period ),
-	%     time_utils:duration_to_string( MaxDurationInSeconds ),
+	%     time_utils:duration_to_string( MaxMsDuration ),
 	%     AckReceiveAtom ] ),
 
 	InitialTimestamp = time_utils:get_timestamp(),
 
 	wait_for_acks_nothrow_helper( WaitedSenders, InitialTimestamp,
-		MaxDurationInSeconds, Period, AckReceiveAtom ).
+		MaxMsDuration, Period, AckReceiveAtom ).
 
 
 
 % (helper)
 wait_for_acks_nothrow_helper( _WaitedSenders=[], _InitialTimestamp,
-		_MaxDurationInSeconds, _Period, _AckReceiveAtom ) ->
+		_MaxMsDuration, _Period, _AckReceiveAtom ) ->
 	[];
 
 wait_for_acks_nothrow_helper( WaitedSenders, InitialTimestamp,
-		MaxDurationInSeconds, Period, AckReceiveAtom ) ->
+							  MaxMsDuration, Period, AckReceiveAtom ) ->
 
 	receive
 
@@ -976,14 +976,15 @@ wait_for_acks_nothrow_helper( WaitedSenders, InitialTimestamp,
 			%   "instances ~p)", [ WaitedPid, NewWaited ] ),
 
 			wait_for_acks_nothrow_helper( NewWaited, InitialTimestamp,
-				MaxDurationInSeconds, Period, AckReceiveAtom )
+				MaxMsDuration, Period, AckReceiveAtom )
 
 	after Period ->
 
-			NewDuration = time_utils:get_duration_since( InitialTimestamp ),
+			NewMsDuration =
+				1000 *time_utils:get_duration_since( InitialTimestamp ),
 
-			case ( MaxDurationInSeconds =/= infinity ) andalso
-						( NewDuration > MaxDurationInSeconds ) of
+			case ( MaxMsDuration =/= infinity ) andalso
+						( NewMsDuration > MaxMsDuration ) of
 
 				true ->
 					WaitedSenders;
@@ -996,7 +997,7 @@ wait_for_acks_nothrow_helper( WaitedSenders, InitialTimestamp,
 					%   [ WaitedSenders ] ),
 
 					wait_for_acks_nothrow_helper( WaitedSenders,
-						InitialTimestamp, MaxDurationInSeconds, Period,
+						InitialTimestamp, MaxMsDuration, Period,
 						AckReceiveAtom )
 
 			end
@@ -1016,16 +1017,16 @@ wait_for_acks_nothrow_helper( WaitedSenders, InitialTimestamp,
 % waited for.
 %
 -spec wait_for_acks( [ pid() ], time_out(), atom(), atom() ) -> void().
-wait_for_acks( WaitedSenders, MaxDurationInSeconds, AckReceiveAtom,
-			   ThrowAtom ) ->
-	wait_for_acks( WaitedSenders, MaxDurationInSeconds, ?default_period_ms,
+wait_for_acks( WaitedSenders, MaxMsDuration, AckReceiveAtom, ThrowAtom ) ->
+	wait_for_acks( WaitedSenders, MaxMsDuration, ?default_period_ms,
 				   AckReceiveAtom, ThrowAtom ).
 
 
 
 % @doc Waits until receiving from all expected senders the specified
 % acknowledgement message, expected to be in the form of {AckReceiveAtom,
-% WaitedSenderPid}, ensuring a check is performed at least at specified period.
+% WaitedSenderPid}, ensuring that a check is performed at least at specified
+% period.
 %
 % Throws a {ThrowAtom, StillWaitedSenders} exception on time-out.
 %
@@ -1033,19 +1034,19 @@ wait_for_acks( WaitedSenders, MaxDurationInSeconds, AckReceiveAtom,
 %
 -spec wait_for_acks( [ pid() ], time_out(), ms_period(), atom(), atom() ) ->
 															void().
-wait_for_acks( WaitedSenders, MaxDurationInSeconds, Period,
-			   AckReceiveAtom, ThrowAtom ) ->
+wait_for_acks( WaitedSenders, MaxMsDuration, Period, AckReceiveAtom,
+			   ThrowAtom ) ->
 
 	%trace_utils:debug_fmt( "Waiting for ~p (period: ~ts, "
 	%   "max duration: ~ts, ack atom: '~ts', throw atom: '~ts').",
 	%   [ WaitedSenders, time_utils:duration_to_string( Period ),
-	%     time_utils:duration_to_string( MaxDurationInSeconds ),
-	%     AckReceiveAtom, ThrowAtom ] ),
+	%     time_utils:duration_to_string( MaxMsDuration ), AckReceiveAtom,
+	%     ThrowAtom ] ),
 
 	InitialTimestamp = time_utils:get_timestamp(),
 
 	case wait_for_acks_nothrow_helper( WaitedSenders, InitialTimestamp,
-			MaxDurationInSeconds, Period, AckReceiveAtom ) of
+			MaxMsDuration, Period, AckReceiveAtom ) of
 
 		[] ->
 			ok;
@@ -1155,12 +1156,11 @@ wait_for_summable_acks_helper( WaitedSenders, CurrentValue, InitialTimestamp,
 % Note: each sender shall be unique (as they will be gathered in a set, that
 % does not keep duplicates)
 %
--spec wait_for_many_acks( set( pid() ), finite_second_time_out(), atom(),
-						  atom() ) -> void().
-wait_for_many_acks( WaitedSenders, MaxDurationInSeconds, AckReceiveAtom,
-					ThrowAtom ) ->
-	wait_for_many_acks( WaitedSenders, MaxDurationInSeconds,
-						?default_period_ms, AckReceiveAtom, ThrowAtom ).
+-spec wait_for_many_acks( set( pid() ), finite_time_out(), atom(), atom() ) ->
+											void().
+wait_for_many_acks( WaitedSenders, MaxMsDuration, AckReceiveAtom, ThrowAtom ) ->
+	wait_for_many_acks( WaitedSenders, MaxMsDuration, ?default_period_ms,
+						AckReceiveAtom, ThrowAtom ).
 
 
 
@@ -1169,55 +1169,54 @@ wait_for_many_acks( WaitedSenders, MaxDurationInSeconds, AckReceiveAtom,
 %
 % Throws specified exception on time-out, checking at the specified period.
 %
--spec wait_for_many_acks( set( pid() ), finite_second_time_out(), ms_period(),
+-spec wait_for_many_acks( set( pid() ), finite_time_out(), ms_period(),
 						  atom(), atom() ) -> void().
-wait_for_many_acks( WaitedSenders, MaxDurationInSeconds, Period,
-					AckReceiveAtom, ThrowAtom ) ->
+wait_for_many_acks( WaitedSenders, MaxMsDuration, Period, AckReceiveAtom,
+					ThrowAtom ) ->
 
 	InitialTimestamp = time_utils:get_timestamp(),
 
 	wait_for_many_acks_helper( WaitedSenders, InitialTimestamp,
-		MaxDurationInSeconds, Period, AckReceiveAtom, ThrowAtom ).
+		MaxMsDuration, Period, AckReceiveAtom, ThrowAtom ).
 
 
 % For this version we prefer a look-up optimised list to a plain one.
 %
 % (helper)
 %
-wait_for_many_acks_helper( WaitedSenders, InitialTimestamp,
-		MaxDurationInSeconds, Period, AckReceiveAtom, ThrowAtom ) ->
+wait_for_many_acks_helper( WaitedSenders, InitialTimestamp, MaxMsDuration,
+						   Period, AckReceiveAtom, ThrowAtom ) ->
 
 	set_utils:is_empty( WaitedSenders ) orelse
-			receive
+		receive
 
-				{ AckReceiveAtom, WaitedPid } ->
+			{ AckReceiveAtom, WaitedPid } ->
 
-					NewWaited = set_utils:delete_existing( WaitedPid,
-														   WaitedSenders ),
+				NewWaited = set_utils:delete_existing( WaitedPid,
+													   WaitedSenders ),
 
-					wait_for_many_acks_helper( NewWaited, InitialTimestamp,
-						MaxDurationInSeconds, Period, AckReceiveAtom,
-						ThrowAtom )
+				wait_for_many_acks_helper( NewWaited, InitialTimestamp,
+					MaxMsDuration, Period, AckReceiveAtom, ThrowAtom )
 
-			after Period ->
+		after Period ->
 
-					NewDuration =
-						time_utils:get_duration_since( InitialTimestamp ),
+				NewMsDuration =
+					1000 * time_utils:get_duration_since( InitialTimestamp ),
 
-					case NewDuration > MaxDurationInSeconds of
+				case NewMsDuration > MaxMsDuration of
 
-						true ->
-							throw( { ThrowAtom, WaitedSenders } );
+					true ->
+						throw( { ThrowAtom, WaitedSenders } );
 
-						false ->
-							% Still waiting then:
-							wait_for_many_acks_helper( WaitedSenders,
-								InitialTimestamp, MaxDurationInSeconds, Period,
-								AckReceiveAtom, ThrowAtom )
+					false ->
+						% Still waiting then:
+						wait_for_many_acks_helper( WaitedSenders,
+							InitialTimestamp, MaxMsDuration, Period,
+							AckReceiveAtom, ThrowAtom )
 
-					end
+				end
 
-			end.
+		end.
 
 
 

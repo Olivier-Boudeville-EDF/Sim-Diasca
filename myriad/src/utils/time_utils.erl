@@ -260,13 +260,24 @@
 
 
 -type finite_second_time_out() :: seconds().
-% An actual, finite time-out.
+% An actual, finite time-out, in seconds.
+%
+% The finite_time_out/0 type should be preferred to this one, as conversions to
+% milliseconds (for actual use in primitives) may raise compilation issues
+% (e.g. operations like 'MySecondTimeout * 1000' or 'MyMillisecondTimeout div
+% 1000', supposedly to fail with a 'badarith' exception): the compiler may not
+% able to determine that, in a clause, a given variable is necessarily an
+% integer and not 'infinity' (and thus may complain that, for example,
+% "evaluation of operator '*'/2 will fail with a 'badarith' exception").
+%
+% Moreover all other time-outs are in milliseconds, so this current type may be
+% error-prone.
 
 
 -type second_time_out() :: 'infinity' | finite_second_time_out().
-% Any kind of time-out, finite or not.
+% Any kind of time-out, finite or not, in seconds if finite.
 %
-% Cannot find the definition of the built-in timeout() type.
+% The millisecond version thereof, time_out/0, shall be preferred.
 
 
 -type posix_seconds() :: integer().
@@ -1789,7 +1800,7 @@ duration_to_string( Milliseconds ) when is_float( Milliseconds )->
 	duration_to_string( erlang:round( Milliseconds ) );
 
 duration_to_string( Milliseconds )
-  when is_integer( Milliseconds ) andalso Milliseconds < 0 ->
+				when is_integer( Milliseconds ) andalso Milliseconds < 0 ->
 	"minus " ++ duration_to_string( -Milliseconds );
 
 duration_to_string( Milliseconds ) when is_integer( Milliseconds )->
@@ -1829,13 +1840,13 @@ duration_to_string( Milliseconds ) when is_integer( Milliseconds )->
 	ListWithMinutes = case Minutes of
 
 		0 ->
-		  ListWithHours;
+			ListWithHours;
 
 		1 ->
-		  [ "1 minute" | ListWithHours ];
+			[ "1 minute" | ListWithHours ];
 
 		_ ->
-		  [ text_utils:format( "~B minutes", [ Minutes ] ) | ListWithHours ]
+			[ text_utils:format( "~B minutes", [ Minutes ] ) | ListWithHours ]
 
 	end,
 
@@ -1935,21 +1946,20 @@ duration_to_french_string( Milliseconds ) when is_integer( Milliseconds )->
 			[ "1 heure" | ListWithDays ];
 
 		_ ->
-			[ text_utils:format( "~B heures", [ Hours ] )
-			  | ListWithDays ]
+			[ text_utils:format( "~B heures", [ Hours ] ) | ListWithDays ]
 
 	end,
 
 	ListWithMinutes = case Minutes of
 
 		0 ->
-		  ListWithHours;
+			ListWithHours;
 
 		1 ->
-		  [ "1 minute" | ListWithHours ];
+			[ "1 minute" | ListWithHours ];
 
 		_ ->
-		  [ text_utils:format( "~B minutes", [ Minutes ] ) | ListWithHours ]
+			[ text_utils:format( "~B minutes", [ Minutes ] ) | ListWithHours ]
 
 	end,
 
@@ -2008,7 +2018,7 @@ duration_to_french_string( infinity ) ->
 % (integer; otherwise, if being floating-point, it will be rounded), or as the
 % 'infinity' atom.
 %
-% Ex: for a time-out of 150 012 ms, returns for English:
+% E.g. for a time-out of 150 012 ms, returns for English:
 % "time-out of 2 minutes, 30 seconds and 12 milliseconds".
 %
 -spec time_out_to_string( time_out(),
