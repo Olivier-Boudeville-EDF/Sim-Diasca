@@ -41,7 +41,7 @@
 -include("test_facilities.hrl").
 
 
--type my_test_state() :: gui:frame().
+-type my_test_state() :: gui_frame:frame().
 % Here the main loop just has to remember the frame whose closing is awaited
 % for.
 
@@ -64,20 +64,20 @@ run_gui_test() ->
 
 	%gui:set_debug_level( [ calls, life_cycle ] ),
 
-	FirstFrame = gui:create_frame( "This is the first frame",
+	FirstFrame = gui_frame:create( "This is the first frame",
 								   _Id=my_test_first_frame, _Parent=undefined ),
 
-	SecondFrame = gui:create_frame( "This is the second frame" ),
+	SecondFrame = gui_frame:create( "This is the second frame" ),
 
-	ThirdFrame = gui:create_frame( "This is the third frame",
+	ThirdFrame = gui_frame:create( "This is the third frame",
 		_Position={ 50, 10 }, _Size={ 150, 200 }, _Style=[ default ] ),
 
-	FourthFrame = gui:create_frame( "This is the fourth frame" ),
+	FourthFrame = gui_frame:create( "This is the fourth frame" ),
 
 
 	Frames = [ FirstFrame, SecondFrame, ThirdFrame, FourthFrame ],
 
-	gui:show( Frames ),
+	gui_frame:show( Frames ),
 
 	% As a result, closing the third frame will not be known from here:
 	TrackedFrames = [ FirstFrame, SecondFrame, FourthFrame ],
@@ -101,13 +101,12 @@ test_main_loop( CloseFrame ) ->
 	receive
 
 		{ onWindowClosed, [ CloseFrame, _FrameId, Context ] } ->
-
-			trace_utils:info_fmt( "Closing frame ~ts has been, well, closed "
-				"(~ts); test success.",
+			trace_utils:info_fmt( "The closing frame ~ts has been, well, "
+				"closed (~ts); test success.",
 				[ gui:object_to_string( CloseFrame ),
-				  gui:context_to_string( Context ) ] ),
+				  gui_event:context_to_string( Context ) ] ),
 
-			gui:destruct_window( CloseFrame ),
+			gui_frame:destruct( CloseFrame ),
 
 			gui:stop();
 
@@ -115,9 +114,9 @@ test_main_loop( CloseFrame ) ->
 		{ onWindowClosed, [ AnyFrame, AnyFrameId, Context ] } ->
 			trace_utils:info_fmt( "Frame ~ts (id: ~w) closed (~ts).",
 				[ gui:object_to_string( AnyFrame ), AnyFrameId,
-				  gui:context_to_string( Context ) ] ),
+				  gui_event:context_to_string( Context ) ] ),
 
-			gui:destruct_window( AnyFrame ),
+			gui_frame:destruct( AnyFrame ),
 			test_main_loop( CloseFrame );
 
 
@@ -148,3 +147,5 @@ run() ->
 	end,
 
 	test_facilities:stop().
+
+

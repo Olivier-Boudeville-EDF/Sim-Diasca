@@ -59,7 +59,7 @@ test_normal() ->
 	true  = linear_2D:is_strictly_on_the_right( PVe, POrigin, PNL ),
 	false = linear_2D:is_strictly_on_the_right( PVe, POrigin, PNR ),
 
-	NonVe = vector2:scale( Ve, -1 ),
+	NonVe = vector2:scale( Ve, -1.0 ),
 	PNonVe = point2:from_vector( NonVe ),
 
 	true  = linear_2D:is_strictly_on_the_right( PNL, POrigin, PNonVe ),

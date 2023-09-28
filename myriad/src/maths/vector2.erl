@@ -120,7 +120,7 @@
 -type user_coordinate() :: linear:user_coordinate().
 
 -type distance() :: linear:distance().
--type square_distance() :: linear:square_distance().
+-type any_square_distance() :: linear:any_square_distance().
 
 -type any_point2() :: point2:any_point2().
 
@@ -215,7 +215,7 @@ add( _Vectors=[ VFirst | VOthers ]  ) ->
 % square magnitude of the vector that would result from a regular 3D cross
 % product of the input vectors, taking their Z values implicitly as 0.
 %
--spec cross_product( vector2(), vector2() ) -> square_distance().
+-spec cross_product( vector2(), vector2() ) -> any_square_distance().
 cross_product( [X1,Y1], [X2,Y2] ) ->
 	abs( X1*Y2 - Y1*X2 ).
 
@@ -241,7 +241,7 @@ are_equal( _V1=[X1,Y1], _V2=[X2,Y2] ) ->
 
 
 % @doc Returns the square of the magnitude of the 2D specified vector.
--spec square_magnitude( any_vector2() ) -> square_distance().
+-spec square_magnitude( any_vector2() ) -> any_square_distance().
 square_magnitude( _V=[X,Y] ) ->
 	X*X + Y*Y.
 
@@ -263,7 +263,7 @@ negate( _V=[X,Y] ) ->
 
 
 % @doc Scales the specified 2D vector of the specified scalar factor.
--spec scale( vector2(), factor() ) -> vector2().
+-spec scale( any_vector2(), factor() ) -> vector2().
 scale( _V=[X,Y], Factor ) ->
 	[ Factor*X, Factor*Y ].
 

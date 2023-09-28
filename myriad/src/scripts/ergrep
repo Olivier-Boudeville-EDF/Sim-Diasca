@@ -11,7 +11,7 @@ usage="Usage: $(basename $0) [-v|--verbose] [-q|--quiet] [-hd|--headers-only] [-
 
   Example: $(basename $0) -i 'list_to_form(' /tmp
 
-  Note that rebar-related inner workings are explicitly not searched (ex: the '_build' tree is pruned.
+  Note that rebar-related inner workings are explicitly not searched (e.g. the '_build' tree is pruned).
 "
 
 
@@ -31,13 +31,13 @@ grep="$(which grep 2>/dev/null)"
 
 
 if [ ! -x "${grep}" ]; then
-	echo "Error, no executable grep found." 1>&2
+	echo "  Error, no executable grep found." 1>&2
 	exit 5
 fi
 
 
 if [ ! -x "${find}" ]; then
-	echo "Error, no executable find found." 1>&2
+	echo "  Error, no executable find found." 1>&2
 	exit 6
 fi
 
@@ -53,10 +53,10 @@ filenames_only=1
 
 
 # A useless file to ensure grep always has multiple files to scan.
-# Done to force grep to display the filename (otherwise it will not)
+# Done to force grep to display the filename (otherwise it will not).
 # No need to create it, however.
 #
-force_multi_files="$HOME/.$(basename $0).to-delete.tmp"
+force_multi_files="${HOME}/.$(basename $0).to-delete.tmp"
 
 name_opt="-name"
 
@@ -155,7 +155,7 @@ if [ -z "${target_base_dir}" ]; then
 	#[ ${verbose} -eq 0 ] || echo "Proceeding from current directory ('${full_base_dir}')."
 else
 	full_base_dir=$(realpath "${target_base_dir}")
-	#[ ${verbose} -eq 0 ] || echo "Proceeding from specified directory ('${full_base_dir}')."
+	#[ ${verbose} -eq 0 ] || echo "Proceeding from the specified directory ('${full_base_dir}')."
 	shift
 
 fi

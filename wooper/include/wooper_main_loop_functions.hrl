@@ -88,7 +88,7 @@ wooper_main_loop( State ) ->
 				[ self(), MethodAtom, ArgumentList, CallerPid ] ),
 
 			NewState = wooper_handle_remote_request_execution( MethodAtom,
-										State, ArgumentList, CallerPid ),
+				State, ArgumentList, CallerPid ),
 
 			%?wooper_log( "Main loop (case A) ended.~n" ),
 
@@ -106,7 +106,7 @@ wooper_main_loop( State ) ->
 				[ self(), MethodAtom, Argument, CallerPid ] ),
 
 			NewState = wooper_handle_remote_request_execution( MethodAtom,
-										State, [ Argument ], CallerPid ),
+				State, [ Argument ], CallerPid ),
 
 			%?wooper_log( "Main loop (case B) ended.~n" ),
 
@@ -145,7 +145,8 @@ wooper_main_loop( State ) ->
 			% Triggers the recursive call of destructors in the inheritance
 			% graph (bottom-up):
 			%
-			wooper_destruct( State ),
+			_IntentionallyUnmatched=wooper_destruct( State ),
+
 			CallerPid ! { deleted, self() },
 			deleted;
 			% (do nothing, loop ends here).
@@ -187,7 +188,9 @@ wooper_main_loop( State ) ->
 
 			% Triggers the recursive call of destructors in the inheritance
 			% graph (bottom-up):
-			wooper_destruct( State ),
+			%
+			_IntentionallyUnmatched=wooper_destruct( State ),
+
 			deleted;
 			% (do nothing, loop ends here).
 
@@ -201,7 +204,7 @@ wooper_main_loop( State ) ->
 
 			% Any result should be ignored, only the updated state is kept:
 			NewState = wooper_handle_remote_oneway_execution( MethodAtom, State,
-													_ArgumentList=[] ),
+				_ArgumentList=[] ),
 
 			%?wooper_log( "Main loop (case F) ended.~n" ),
 			wooper_main_loop( NewState );
@@ -211,7 +214,7 @@ wooper_main_loop( State ) ->
 		% to WOOPER conventions.
 
 
-		% Not necessarily a PID per se (ex: can be #Port<0.2194>):
+		% Not necessarily a PID per se (e.g. can be #Port<0.2194>):
 		{ 'EXIT', PidOrPort, ExitType } -> %when is_pid( Pid ) ->
 
 			?wooper_log_format( "Main loop (case G) for ~w: exit with ~w.~n",
@@ -270,9 +273,9 @@ wooper_main_loop( State ) ->
 					% MonitoredType, MonitoredElement, ExitReason )':
 
 					{ NewState, _ } = wooper_execute_method(
-						onWOOPERDownNotified, State,
+						onWOOPERDownNotified,
 						[ MonitorRef, MonitoredType, MonitoredElement,
-						  ExitReason ] ),
+						  ExitReason ], State ),
 
 					%?wooper_log( "Main loop (case H) ended.~n" ),
 					wooper_main_loop( NewState );
@@ -310,8 +313,8 @@ wooper_main_loop( State ) ->
 					% MonitorNodeInfo )':
 
 					{ NewState, _ } = wooper_execute_method(
-						onWOOPERNodeConnection, State,
-						[ Node, MonitorNodeInfo ] ),
+						onWOOPERNodeConnection, [ Node, MonitorNodeInfo ],
+						State ),
 
 					%?wooper_log( "Main loop (case I) ended.~n" ),
 					wooper_main_loop( NewState );
@@ -323,7 +326,7 @@ wooper_main_loop( State ) ->
 					% nodeup handler not overridden, using default one:
 					%?wooper_log( "Main loop (case I) ended.~n" ),
 					NewState = wooper:default_node_up_handler( Node,
-											MonitorNodeInfo, State ),
+						MonitorNodeInfo, State ),
 					wooper_main_loop( NewState )
 
 			end;
@@ -349,8 +352,8 @@ wooper_main_loop( State ) ->
 					% NodeName, MonitorNodeInfo )':
 
 					{ NewState, _ } = wooper_execute_method(
-						onWOOPERNodeDisconnection, State,
-						[ Node, MonitorNodeInfo ] ),
+						onWOOPERNodeDisconnection, [ Node, MonitorNodeInfo ],
+						State ),
 
 					%?wooper_log( "Main loop (case J) ended.~n" ),
 					wooper_main_loop( NewState );

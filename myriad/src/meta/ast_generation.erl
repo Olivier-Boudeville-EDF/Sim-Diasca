@@ -26,8 +26,8 @@
 % Creation date: Sunday, February 4, 2018.
 
 
-% @doc Module in charge of <b>generating parts of an AST</b> (ex: elements of
-% forms).
+% @doc Module in charge of <b>generating parts of an AST</b> (for example
+% elements of forms).
 %
 -module(ast_generation).
 
@@ -52,8 +52,8 @@
 % @doc Transforms the specified list (whose elements are typically themselves
 % form elements already) into the AST version of a list.
 %
-% Ex: list_to_form( [{atom,FileLoc,a}, {atom,FileLoc,b}]) = {cons, FileLoc,
-% {atom,FileLoc,a}, {cons, FileLoc, {atom,FileLoc,b}, {nil,FileLoc}}}.
+% For example: list_to_form( [{atom,FileLoc,a}, {atom,FileLoc,b}]) = {cons,
+% FileLoc, {atom,FileLoc,a}, {cons, FileLoc, {atom,FileLoc,b}, {nil,FileLoc}}}.
 %
 % See form_to_list/1 for the reciprocal function.
 %
@@ -66,9 +66,9 @@ list_to_form( _List=[ E | T ] ) ->
 
 
 
-% @doc Transforms specified AST list into the corresponding plain list.
+% @doc Transforms the specified AST list into the corresponding plain list.
 %
-% Ex: form_to_list( {cons, FileLoc, {atom,FileLoc,a}, {cons, FileLoc,
+% For example: form_to_list( {cons, FileLoc, {atom,FileLoc,a}, {cons, FileLoc,
 % {atom,FileLoc,b}, {nil,FileLoc} }}) = [{atom,FileLoc,a}, {atom,FileLoc,b}].
 %
 % See list_to_form/1 for the reciprocal function.
@@ -84,8 +84,8 @@ form_to_list( { cons, _FileLoc, E, NestedForm } ) ->
 
 % @doc Returns the form element corresponding to the specified list of atoms.
 %
-% Ex: {cons, FileLoc, {atom,FileLoc,a}, {cons, FileLoc, {atom,FileLoc,b}, {nil,
-% FileLoc} }} = atoms_to_form(['a', 'b']).
+% For example: {cons, FileLoc, {atom,FileLoc,a}, {cons, FileLoc,
+% {atom,FileLoc,b}, {nil, FileLoc} }} = atoms_to_form(['a', 'b']).
 %
 -spec atoms_to_form( [ atom() ] ) -> form_element().
 atoms_to_form( _AtomList=[] ) ->
@@ -99,8 +99,8 @@ atoms_to_form( _AtomList=[ Atom | H ] ) ->
 
 % @doc Returns the list of atoms corresponding to the specified form element.
 %
-% Ex: ['a', 'b'] = atoms_to_form( {cons, FileLoc, {atom,FileLoc,a}, {cons,
-% FileLoc, {atom,FileLoc,b}, {nil,FileLoc}}}).
+% For example ['a', 'b'] = atoms_to_form( {cons, FileLoc, {atom,FileLoc,a},
+% {cons, FileLoc, {atom,FileLoc,b}, {nil,FileLoc}}}).
 %
 -spec form_to_atoms( form_element() ) -> [ atom() ].
 form_to_atoms( { nil, _FileLoc } ) ->
@@ -114,9 +114,9 @@ form_to_atoms( { cons, _FileLoc, {atom,_,Atom}, NestedForm } ) ->
 % @doc Returns the form element corresponding to the list of variables
 % corresponding to the specified number of such variables.
 %
-% Ex: {cons, FileLoc, {var,FileLoc,'Myriad_Param_1'}, { cons, FileLoc,
+% For example: {cons, FileLoc, {var,FileLoc,'Myriad_Param_1'}, {cons, FileLoc,
 % {var,FileLoc,'Myriad_Param_2'}, {nil,FileLoc}}} =
-% enumerated_variables_to_form( 2 ).
+% enumerated_variables_to_form(2).
 %
 % See also: get_header_params/1.
 %
@@ -135,9 +135,9 @@ enumerated_variables_to_form( Count, Index ) ->
 
 
 
-% @doc Returns, in AST form, a reference to an iterated variable.
+% @doc Returns, in AST form, a reference to the specified iterated variable.
 %
-% Ex: 'Myriad_Param_4' = get_iterated_param_name(4).
+% For example: 'Myriad_Param_4' = get_iterated_param_name(4).
 %
 -spec get_iterated_param_name( count() ) -> atom().
 get_iterated_param_name( Count ) ->
@@ -148,13 +148,13 @@ get_iterated_param_name( Count ) ->
 
 
 % @doc Returns, as form elements, conventional call parameter names, as form
-% elements, corresponding to a function of specified arity.
+% elements, corresponding to a function of the specified arity.
 %
 % This is typically useful when generating a function form, to define its
 % header, like in 'f(A,B)->...'.
 %
-% Ex: [{var,FileLoc,'Myriad_Param_1'}, {var,FileLoc,'Myriad_Param_2'}] =
-%           get_header_params(2).
+% For example: [{var,FileLoc,'Myriad_Param_1'}, {var,FileLoc,'Myriad_Param_2'}]
+% = get_header_params(2).
 %
 % See also: enumerated_variables_to_form/1.
 %

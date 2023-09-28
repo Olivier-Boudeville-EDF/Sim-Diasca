@@ -1,22 +1,23 @@
 % Copyright (C) 2018-2023 EDF R&D
-
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2018.
 
 
 % @doc Module centralising most <b>actor-level</b> information, in the context
@@ -35,8 +36,8 @@
 
 
 
--type actor_oneway_export_table() :: table( ast_info:location(),
-							{ ast_base:line(), [ actor_oneway_id() ] } ).
+-type actor_oneway_export_table() :: table( ast_info:ast_location(), 
+								{ ast_base:line(), [ actor_oneway_id() ] } ).
 % Table storing the export declarations for actor oneways.
 %
 % Quite similar to wooper_info:oneway_export_table().
@@ -145,40 +146,40 @@ actor_class_info_to_string( ActorInfo, DoIncludeForms ) ->
 -spec actor_class_info_to_string( actor_class_info(), boolean(),
 								  indentation_level() ) -> ustring().
 actor_class_info_to_string( #actor_class_info{
-								class=ClassEntry,
-								superclasses=SuperclassesEntry,
-								attributes=AttributeTable,
-								inherited_attributes=InheritedAttributes,
-								compilation_options=CompileOpts,
-								compilation_option_defs=CompileOptDefs,
-								parse_attributes=ParseAttributeTable,
-								remote_spec_defs=RemoteSpecDefs,
-								includes=Includes,
-								include_defs=IncludeDefs,
-								type_exports=TypeExportTable,
-								types=TypeTable,
-								records=RecordTable,
-								function_imports=FunctionImportTable,
-								function_imports_defs=FunctionImportDefs,
-								function_exports=_FunctionExportTable,
-								functions=FunctionTable,
-								constructors=ConstructorTable,
-								new_operators=NewOperatorTable,
-								destructor=DestructorInfo,
-								request_exports=_RequestExports,
-								requests=RequestTable,
-								oneway_exports=_OnewayExports,
-								oneways=OnewayTable,
-								actor_oneway_exports=_ActorOnewayExports,
-								actor_oneways=ActorOnewayTable,
-								static_exports=_StaticExports,
-								statics=StaticTable,
-								optional_callbacks_defs=OptCallbacksDefs,
-								debug_mode=IsDebugMode,
-								last_file_location=LastLineLocDef,
-								markers=MarkerTable,
-								errors=Errors,
-								unhandled_forms=UnhandledForms },
+		class=ClassEntry,
+		superclasses=SuperclassesEntry,
+		attributes=AttributeTable,
+		inherited_attributes=InheritedAttributes,
+		compilation_options=CompileOpts,
+		compilation_option_defs=CompileOptDefs,
+		parse_attributes=ParseAttributeTable,
+		remote_spec_defs=RemoteSpecDefs,
+		includes=Includes,
+		include_defs=IncludeDefs,
+		type_exports=TypeExportTable,
+		types=TypeTable,
+		records=RecordTable,
+		function_imports=FunctionImportTable,
+		function_imports_defs=FunctionImportDefs,
+		function_exports=_FunctionExportTable,
+		functions=FunctionTable,
+		constructors=ConstructorTable,
+		new_operators=NewOperatorTable,
+		destructor=DestructorInfo,
+		request_exports=_RequestExports,
+		requests=RequestTable,
+		oneway_exports=_OnewayExports,
+		oneways=OnewayTable,
+		actor_oneway_exports=_ActorOnewayExports,
+		actor_oneways=ActorOnewayTable,
+		static_exports=_StaticExports,
+		statics=StaticTable,
+		optional_callbacks_defs=OptCallbacksDefs,
+		debug_mode=IsDebugMode,
+		last_file_location=LastLineLocDef,
+		markers=MarkerTable,
+		errors=Errors,
+		unhandled_forms=UnhandledForms },
 							DoIncludeForms,
 							IndentationLevel ) ->
 
@@ -205,30 +206,30 @@ actor_class_info_to_string( #actor_class_info{
 	end,
 
 	Infos = [ wooper_info:superclasses_to_string( SuperclassesEntry,
-						DoIncludeForms, NextIndentationLevel ),
+				DoIncludeForms, NextIndentationLevel ),
 
 			  wooper_info:class_specific_attributes_to_string( AttributeTable,
-									DoIncludeForms, NextIndentationLevel ),
+				DoIncludeForms, NextIndentationLevel ),
 
 			  wooper_info:inherited_attributes_to_string( InheritedAttributes,
-									DoIncludeForms, NextIndentationLevel ),
+				DoIncludeForms, NextIndentationLevel ),
 
 			  ast_info:compilation_options_to_string( CompileOpts,
-						CompileOptDefs, DoIncludeForms, NextIndentationLevel ),
+				CompileOptDefs, DoIncludeForms, NextIndentationLevel ),
 
 			  ast_info:optional_callbacks_to_string( OptCallbacksDefs,
-								DoIncludeForms, NextIndentationLevel ),
+				DoIncludeForms, NextIndentationLevel ),
 
 			  DebugString,
 
 			  ast_info:parse_attribute_table_to_string( ParseAttributeTable,
-										DoIncludeForms, NextIndentationLevel ),
+				DoIncludeForms, NextIndentationLevel ),
 
 			  ast_info:remote_spec_definitions_to_string( RemoteSpecDefs,
-										DoIncludeForms, NextIndentationLevel ),
+				DoIncludeForms, NextIndentationLevel ),
 
 			  ast_info:includes_to_string( Includes, IncludeDefs,
-									DoIncludeForms, NextIndentationLevel ),
+				DoIncludeForms, NextIndentationLevel ),
 
 			  % No form to manage:
 			  ast_info:type_exports_to_string( TypeExportTable,
@@ -240,25 +241,25 @@ actor_class_info_to_string( #actor_class_info{
 			  ast_info:records_to_string( RecordTable, NextIndentationLevel ),
 
 			  ast_info:function_imports_to_string( FunctionImportTable,
-					FunctionImportDefs, DoIncludeForms, NextIndentationLevel ),
+				FunctionImportDefs, DoIncludeForms, NextIndentationLevel ),
 
 			  ast_info:functions_to_string( FunctionTable, DoIncludeForms,
 											NextIndentationLevel ),
 
 			  wooper_info:constructors_to_string( ConstructorTable,
-								DoIncludeForms, NextIndentationLevel ),
+				DoIncludeForms, NextIndentationLevel ),
 
 			  "regarding new operators, " ++ ast_info:functions_to_string(
-					NewOperatorTable, DoIncludeForms, NextIndentationLevel ),
+				NewOperatorTable, DoIncludeForms, NextIndentationLevel ),
 
 			  wooper_info:destructor_to_string( DestructorInfo, DoIncludeForms,
-									NextIndentationLevel ),
+												NextIndentationLevel ),
 
 			  wooper_info:requests_to_string( RequestTable, DoIncludeForms,
-									NextIndentationLevel ),
+											  NextIndentationLevel ),
 
 			  wooper_info:oneways_to_string( OnewayTable, DoIncludeForms,
-									NextIndentationLevel ),
+											 NextIndentationLevel ),
 
 			  actor_oneways_to_string( ActorOnewayTable, DoIncludeForms,
 									   NextIndentationLevel ),
@@ -266,14 +267,14 @@ actor_class_info_to_string( #actor_class_info{
 			  wooper_info:static_methods_to_string( StaticTable, DoIncludeForms,
 													NextIndentationLevel ),
 
-			  ast_info:last_file_location_to_string( LastLineLocDef ),
+			  ast_info:last_file_loc_to_string( LastLineLocDef ),
 
 			  ast_info:markers_to_string( MarkerTable, NextIndentationLevel ),
 
 			  ast_info:errors_to_string( Errors, NextIndentationLevel ),
 
 			  ast_info:unhandled_forms_to_string( UnhandledForms,
-								DoIncludeForms, NextIndentationLevel ) ],
+				DoIncludeForms, NextIndentationLevel ) ],
 
 		text_utils:format( "Information about actor ~ts: ~ts",
 			[ ClassnameString,
@@ -296,7 +297,7 @@ actor_oneways_to_string( ActorOnewayTable, DoIncludeForms, IndentationLevel ) ->
 		ActInfos ->
 			ActString = text_utils:strings_to_string( [
 				actor_oneway_info_to_string( ActInfo, DoIncludeForms,
-						IndentationLevel ) || ActInfo <- ActInfos ],
+					IndentationLevel ) || ActInfo <- ActInfos ],
 													  IndentationLevel ),
 
 			text_utils:format( "~B actor oneway(s) defined: ~ts",

@@ -11,11 +11,11 @@ Some simple maths-related operations are defined in the ``myriad/src/maths`` dir
 
 - the most basic services are centralised in ``math_utils.erl`` and provide:
 
-  - **general operations** apparently lacking to Erlang (for example for conversions or rounding (``floor/1``, ``ceiling/1``), or not exactly implemented as we would have liked (ex: ``modulo/2``)
+  - **general operations** apparently lacking to Erlang (for example for conversions or rounding (``floor/1``, ``ceiling/1``), or not exactly implemented as we would have liked (e.g. ``modulo/2``)
 
-  - operations tailored to operate on **floating-point values** (ex: ``are_close/{2,3}``, ``are_relatively_close/{2,3}``, ``get_relative_difference/2``, ``is_null/1``)
+  - operations tailored to operate on **floating-point values** (e.g. ``are_close/{2,3}``, ``are_relatively_close/{2,3}``, ``get_relative_difference/2``, ``is_null/1``)
 
-  - operations on **angles** (ex: ``radian_to_degree/1``, ``canonify/1``)
+  - operations on **angles** (e.g. ``radian_to_degree/1``, ``canonify/1``)
 
   - the associated **typing** information
 

@@ -45,7 +45,7 @@
 %
 -spec get_state_type() -> form_element().
 get_state_type() ->
-	Line=0,
+	Line = 0,
 	{ remote_type, Line, [ {atom,Line,wooper}, {atom,Line,state}, [] ] }.
 
 
@@ -56,5 +56,5 @@ get_state_type() ->
 %
 -spec get_state_var() -> form_element().
 get_state_var() ->
-	Line=0,
+	Line = 0,
 	{ var, Line, 'State' }.

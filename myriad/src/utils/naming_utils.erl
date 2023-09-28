@@ -354,7 +354,7 @@ get_registered_pid_for( Name ) ->
 % No specific waiting for registration will be performed, see
 % wait_for_*_registration_of instead.
 %
--spec get_registered_pid_for( registration_name(), look_up_scope() ) ->  pid().
+-spec get_registered_pid_for( registration_name(), look_up_scope() ) -> pid().
 get_registered_pid_for( Name, _RegistrationScope=local_otherwise_global ) ->
 
 	try

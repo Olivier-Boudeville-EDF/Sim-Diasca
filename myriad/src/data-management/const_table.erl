@@ -23,7 +23,7 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
-% Creation date: Tuesday, May 12, 2015
+% Creation date: Tuesday, May 12, 2015.
 
 
 % @doc This module allows to generate <b>read-only associative tables whose
@@ -39,15 +39,15 @@
 % being generated and used at runtime) and/or be generated and stored in an
 % actual BEAM file, for a later direct (re)loading thereof.
 %
-% No ETS table, replication (ex: per-user table copy) or message sending is
+% No ETS table, replication (e.g. per-user table copy) or message sending is
 % involved: thanks to meta-programming, a module is generated on-the-fly,
 % exporting as many functions as there are different keys in the entries of
 % interest; calling a function corresponding to a key returns the associated
 % value.
 %
-% More precisely, a module name (ex: 'foobar') and a list of `{atom(), any()}'
+% More precisely, a module name (e.g. 'foobar') and a list of `{atom(), any()}'
 % entries are provided to the `const_table:generate*/*' functions; for each
-% key/value pair in the specified entries (ex: `{'baz', 42.0}'), a 0-arity
+% key/value pair in the specified entries (e.g. `{'baz', 42.0}'), a 0-arity
 % function is generated and exported in that module, as if we had:```
 %
 % -module(foobar).
@@ -130,7 +130,7 @@
 % entries by exporting as many functions named according to the keys, and
 % returning the value corresponding to the selected key.
 %
-% Note that no actual module file is generated (ex: no 'foobar.beam'), the
+% Note that no actual module file is generated (e.g. no 'foobar.beam'), the
 % operation remains fully in-memory.
 %
 -spec generate_in_memory( module_name(), entries() ) -> void().
@@ -286,10 +286,10 @@ generate_fun_forms( _Entries=[], _Line, AccForms ) ->
 generate_fun_forms( _Entries=[ { K, V } | T ], Line, AccForms )
 												when is_atom( K ) ->
 
-	% We have here to generate a function K/0 returning a constant V (ex:
+	% We have here to generate a function K/0 returning a constant V (e.g.
 	% V=42.0):
 
-	% Ex: returns '{float,0,42.0}' (as a term):
+	% For example returns '{float,0,42.0}' (as a term):
 	ASTForV = ast_utils:term_to_form( V ),
 
 	FunForm = { function, Line, K, _Arity=0,

@@ -291,13 +291,17 @@ inverse( Q ) ->
 %
 % Another option, if multiple vectors have to be rotated, is to go through the
 % corresponding 3x3 matrix, computed once for all:
-%    matrix3:apply( quaternion:to_rot_matrix3( Q ), V )
+%    matrix3:apply(quaternion:to_rot_matrix3(Q), V)
+%
+% A quaternion-based approach allows to avoid the problem of gimbal lock (see
+% https://en.wikipedia.org/wiki/Gimbal_lock).
 %
 -spec rotate( unit_quaternion(), vector3() ) -> vector3().
-rotate( _Q={ A, B, C, D }, V ) ->
+rotate( Q={ A, B, C, D }, V ) ->
 
 	cond_utils:if_defined( myriad_check_linear,
-						   true = is_unitary( Q ) ),
+						   true = is_unitary( Q ),
+						   basic_utils:ignore_unused( Q ) ),
 
 	% Basic implementation:
 
@@ -312,7 +316,6 @@ rotate( _Q={ A, B, C, D }, V ) ->
 	%QRotv = mult( Q, mult( Qv, InvQ ) ),
 
 	%to_vector3( QRotv ).
-
 
 	% Optimised implementation (1) derived from
 	% https://gamedev.stackexchange.com/questions/28395/rotating-vector3-by-a-quaternion
@@ -344,6 +347,7 @@ rotate( _Q={ A, B, C, D }, V ) ->
 
 % @doc Returns the quaternion obtained from the specified 3D vector, that is the
 % vector (a.k.a. imaginary) quaternion whose vector part is this one.
+%
 -spec from_vector3( vector3() ) -> vector_quaternion().
 from_vector3( _V=[ Vx, Vy, Vz ] ) ->
 	{ 0.0, Vx, Vy, Vz }.

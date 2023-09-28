@@ -62,6 +62,9 @@
 -type trace_message() :: ustring().
 % An actual trace message.
 
+-type trace_bin_message() :: bin_string().
+% An actual (binary)  trace message.
+
 
 -type trace_severity() ::
 
@@ -107,22 +110,44 @@
 % Values corresponding to format quantifiers.
 
 
--type trace_message_categorization() :: atom().
+-type trace_message_categorization() :: ustring() | atom().
 % Categorization of a trace message.
+%
+% A message may or may not (which is the default and general case - resulting in
+% the use of the 'uncategorized' atom) be categorized.
+%
+% Atoms are supported as well, as a limited number of message categorization
+% generally applies.
+
+
+-type trace_bin_message_categorization() :: bin_string() | atom().
+% A message may or may not (which is the default and general case - resulting in
+% the use of the 'uncategorized' atom) be categorized.
+%
+% Note that the 'bin_' prefix may be a bit misleading here, as an atom can still
+% be used.
+%
+% Atoms are supported as well, as a limited number of message categorization
+% generally applies.
 
 
 -type trace_timestamp() :: any().
-% An applicative timestamp for a trace; it can be anything (ex: integer() |
+% An applicative timestamp for a trace; it can be anything (e.g. integer() |
 % 'none'), no constraint applies on purpose, so that any kind of
 % application-specific timestamps can be elected.
+%
+% Textual timestamps shall better be binaries or atoms rather than plain
+% strings.
 
 
 -type trace_priority() :: 0..7.
 % Not including the 'void' severity here.
 
 
--export_type([ trace_message/0, trace_severity/0,
-			   trace_format/0, trace_values/0, trace_message_categorization/0,
+-export_type([ trace_message/0, trace_bin_message/0, trace_severity/0,
+			   trace_format/0, trace_values/0,
+			   trace_message_categorization/0,
+			   trace_bin_message_categorization/0,
 			   trace_timestamp/0, trace_priority/0 ]).
 
 
@@ -148,6 +173,8 @@
 		  emergency_categorized_timed/3,
 
 		  void/1, void_fmt/2, void_categorized/2, void_categorized_timed/3,
+
+		  safer_display/1, safer_display/2,
 
 		  echo/2, echo/3, echo/4,
 
@@ -184,15 +211,16 @@
 % Shorthand:
 
 -type ustring() :: text_utils:ustring().
+-type bin_string() :: text_utils:bin_string().
 
 
 
 % Implementation notes:
 %
 % Compared to mere io:format/{1,2} calls, these trace primitives add
-% automatically the trace type (ex: "[debug] ") at the beginning of the message,
-% finish it with a carriage-return/line-feed, and for the most important trace
-% types, try to ensure that they are synchronous (blocking).
+% automatically the trace type (e.g. "[debug] ") at the beginning of the
+% message, finish it with a carriage-return/line-feed, and for the most
+% important trace types, try to ensure that they are synchronous (blocking).
 %
 % Traces of lesser importance are ellipsed, as the console output does not allow
 % to browse them conveniently.
@@ -544,7 +572,7 @@ void_categorized_timed( _Message, _MessageCategorization, _Timestamp ) ->
 %
 % Defined notably to perform integrated operations (a trace being sent through
 % both a basic system and a more advanced one), in order that the trace macros
-% of upper layers (ex: send_alert_fmt/3, in the Traces layer) do not need to
+% of upper layers (e.g. send_alert_fmt/3, in the Traces layer) do not need to
 % bind variables in their body (which may trigger bad matches as soon as more
 % than once trace is sent in the same scope).
 %
@@ -583,7 +611,7 @@ echo( _TraceMessage, _TraceSeverity=void ) ->
 %
 % Defined notably to perform integrated operations (a trace being sent through
 % both a basic system and a more advanced one), in order that the trace macros
-% of upper layers (ex: send_alert_fmt/3, in the Traces layer) do not need to
+% of upper layers (e.g. send_alert_fmt/3, in the Traces layer) do not need to
 % bind variables in their body (which may trigger bad matches as soon as more
 % than once trace is sent in the same scope).
 %
@@ -623,7 +651,7 @@ echo( _TraceMessage, _TraceSeverity=void, _MessageCategorization ) ->
 %
 % Defined notably to perform integrated operations (a trace being sent through
 % both a basic system and a more advanced one), in order that the trace macros
-% of upper layers (ex: send_alert_fmt/3, in the Traces layer) do not need to
+% of upper layers (e.g. send_alert_fmt/3, in the Traces layer) do not need to
 % bind variables in their body (which may trigger bad matches as soon as more
 % than once trace is sent in the same scope).
 %
@@ -696,7 +724,7 @@ get_priority_for( emergency ) ->
 	0;
 
 get_priority_for( Other ) ->
-	throw( { unexpected_trace_priority, Other } ).
+	throw( { unexpected_trace_severity, Other } ).
 
 % 'void' not expected here.
 
@@ -955,3 +983,29 @@ actual_display( Format, Values ) ->
 
 	% Safest of all, recommended:
 	actual_display( text_utils:format( Format, Values ) ).
+
+
+
+% @doc Displays the specified message.
+%
+% Note: adds a carriage-return/line-feed at the end of the message.
+%
+-spec safer_display( trace_message() ) -> void().
+safer_display( Message ) ->
+
+	% This default timeout (30 seconds, in milliseconds) may not be sufficient
+	% in all cases:
+	%
+	basic_utils:display_timed( Message, _MsTimeOut=30000 ).
+
+
+
+% @doc Displays the specified format-based message, in a safer way.
+%
+% Useful when debugging.
+%
+% Note: adds a carriage-return/line-feed at the end of the message.
+%
+-spec safer_display( trace_format(), trace_values() ) -> void().
+safer_display( Format, Values ) ->
+	safer_display( text_utils:format( Format, Values ) ).

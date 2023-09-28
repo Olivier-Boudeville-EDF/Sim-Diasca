@@ -239,7 +239,7 @@ Some hints about each tool are specified below the table. Afterwards, all instal
 | Emacs        | ``emacs``           | Optional        | To edit Sim-Diasca sources, preferably using |
 |              |                     |                 | the Erlang mode for that.                    |
 +--------------+---------------------+-----------------+----------------------------------------------+
-| Nedit        | ``nedit``           | Optional        | To edit Sim-Diasca sources with a dedicated  |
+| Nedit        | ``nedit``           | Very optional   | To edit Sim-Diasca sources with a dedicated  |
 |              |                     |                 | WOOPER-aware syntax highlighting             |
 +--------------+---------------------+-----------------+----------------------------------------------+
 | GIT          | ``git``             | Optional        | To be able to read and modify Sim-Diasca     |
@@ -309,11 +309,14 @@ Finally, users of Debian-based distributions (Jeesie, Wheezy) could just start w
 
 .. code:: bash
 
+ # Depending on version, libwxgtk3.0-dev could/should be replaced
+ # with libwxgtk-webview3.0-gtk3-dev:
+ #
  $ sudo apt-get install bzip2 coreutils build-essential g++       \
    libncurses5-dev openssl libssl-dev libwxgtk3.0-dev             \
    libgl1-mesa-dev libglu1-mesa-dev libpng3                       \
-   python-docutils eog evince gcc gnuplot  gnuplot-x11            \
-   geeqie graphviz uuid-runtime make mplayer nedit subversion ant \
+   python-docutils eog evince gcc gnuplot gnuplot-x11             \
+   geeqie graphviz uuid-runtime make mplayer ant                  \
    openjdk-8-jdk texlive python3
 
 

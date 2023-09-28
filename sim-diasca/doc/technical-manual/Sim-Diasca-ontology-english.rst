@@ -64,7 +64,7 @@ Experiment settings
 	that determine the efficiency of the technical elements making up a
 	kind of photovoltaic panel. All instances of the corresponding
 	``Modlet`` will share these ``Experiment settings``, but these
-	settings may differ from one simulation to another (ex: a given
+	settings may differ from one simulation to another (e.g. a given
 	technology could be made more cost-effective in another simulation
 	relying on a different context).
 
@@ -73,7 +73,7 @@ Model
 	``Model`` designates primarily an overall system (often the
 	``Target system`` as a whole), like a city - even if in the
 	simulation there is no specific instance corresponding directly to
-	that name (ex: not even a ``City`` ``Modlet`` defined; for example a
+	that name (e.g. not even a ``City`` ``Modlet`` defined; for example a
 	city could be then represented in such a simulation just as a set of
 	building instances instead).
 	By extension a ``Model`` may also be used as a synonym of ``Modlet``
@@ -160,7 +160,7 @@ Simulation case
 	A ``Simulation case`` is the specification of a ``Simulation``. This
 	encompasses:
 	- Technical settings, like the properties to be enforced for this
-	simulation (ex: reproducibility), the time-step to be used or the
+	simulation (e.g. reproducibility), the time-step to be used or the
 	list of the eligible computing hosts
 	- Domain-specific settings, like the description of the initial
 	state of the simulation or its various termination criteria
@@ -216,7 +216,7 @@ Simulation traces
 	The ``Simulation traces`` correspond to the time-stamped (in
 	wall-clock or simulation time) information emitted by the actors,
 	scenario instances and the technical agents of the simulation,
-	during its course (ex: probes, service providers). These are not
+	during its course (e.g. probes, service providers). These are not
 	simulation results, they are a technical means of following the
 	events that happen in the course of a simulation, for example in
 	order to troubleshoot the behaviour of models.

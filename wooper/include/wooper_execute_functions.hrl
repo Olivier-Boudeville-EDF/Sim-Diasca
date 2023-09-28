@@ -23,6 +23,7 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2007.
 
 
 % Modular WOOPER header gathering all execute{Request,Oneway}* primitives that
@@ -71,13 +72,13 @@ executeRequest( State, RequestAtom ) when is_record( State, state_holder )
 										  andalso is_atom( RequestAtom ) ->
 
 	%trace_utils:debug_fmt( "executeRequest/2: executing ~ts() from ~ts.",
-	%	[ RequestAtom, State#state_holder.actual_class ] ),
+	%   [ RequestAtom, State#state_holder.actual_class ] ),
 
 	wooper_handle_local_request_execution( RequestAtom, State,
 										   _ArgumentList=[] );
 
 executeRequest( State, RequestAtomError )
-  when is_record( State, state_holder ) ->
+						when is_record( State, state_holder ) ->
 
 	wooper:log_error( "when executing local request: '~p' is not an atom.",
 					  [ RequestAtomError ], State ),
@@ -140,31 +141,31 @@ executeConstRequest( State, RequestAtom ) ->
 -spec executeRequest( wooper:state(), request_name(), method_arguments() ) ->
 							{ wooper:state(), method_internal_result() }.
 executeRequest( State, RequestAtom, ArgumentList ) when
-	  is_record( State, state_holder ) andalso is_atom( RequestAtom )
-	  andalso is_list( ArgumentList ) ->
+		is_record( State, state_holder ) andalso is_atom( RequestAtom )
+		andalso is_list( ArgumentList ) ->
 
 	%trace_utils:debug_fmt( "executeRequest/3 with list: executing ~ts(~w) "
 	%   "from ~ts.",
-	%	[ RequestAtom, ArgumentList, State#state_holder.actual_class ] ),
+	%   [ RequestAtom, ArgumentList, State#state_holder.actual_class ] ),
 
 	wooper_handle_local_request_execution( RequestAtom, State, ArgumentList );
 
 
 % Here the third parameter is not a list:
 executeRequest( State, RequestAtom, StandaloneArgument ) when
-	  is_record( State, state_holder ) andalso is_atom( RequestAtom )->
+		is_record( State, state_holder ) andalso is_atom( RequestAtom )->
 
 	%trace_utils:debug_fmt( "executeRequest/3 with standalone argument: "
-	%	"executing ~ts(~w) from ~ts.",
-	%	[ RequestAtom, StandaloneArgument, State#state_holder.actual_class ] ),
+	%   "executing ~ts(~w) from ~ts.",
+	%   [ RequestAtom, StandaloneArgument, State#state_holder.actual_class ] ),
 
 	wooper_handle_local_request_execution( RequestAtom, State,
-								_ArgumentList=[ StandaloneArgument ] );
+		_ArgumentList=[ StandaloneArgument ] );
 
 
 % Catches all errors:
 executeRequest( StateError, RequestAtom, _LastArg )
-  when is_atom( RequestAtom ) ->
+							when is_atom( RequestAtom ) ->
 
 	wooper:log_error( "when executing request ~p: "
 		"first parameter should be a state, not '~p'.",
@@ -174,7 +175,7 @@ executeRequest( StateError, RequestAtom, _LastArg )
 
 
 executeRequest( State, RequestAtomError, _LastArg )
-  when is_record( State, state_holder ) ->
+							when is_record( State, state_holder ) ->
 
 	wooper:log_error( "when executing request: '~p' is not an atom.",
 					  [ RequestAtomError ], State ),
@@ -228,15 +229,15 @@ executeConstRequest( State, RequestAtom, ArgumentList ) ->
 -spec executeRequestAs( wooper:state(), classname(), request_name() ) ->
 								{ wooper:state(), method_internal_result() }.
 executeRequestAs( State, ParentClassname, RequestAtom )
-  when is_record( State, state_holder ) andalso is_atom( ParentClassname )
-	   andalso is_atom( RequestAtom ) ->
+		when is_record( State, state_holder ) andalso is_atom( ParentClassname )
+			 andalso is_atom( RequestAtom ) ->
 
 	%trace_utils:debug_fmt( "executeRequestAs/3: executing ~ts() from ~ts "
 	%   "as parent class ~ts.",
-	%	[ RequestAtom, State#state_holder.actual_class, ParentClassname ]),
+	%   [ RequestAtom, State#state_holder.actual_class, ParentClassname ]),
 
 	wooper_handle_local_request_execution_as( RequestAtom, State,
-							_ArgumentList=[], ParentClassname );
+		_ArgumentList=[], ParentClassname );
 
 
 executeRequestAs( StateError, ParentClassname, RequestAtom )
@@ -296,8 +297,8 @@ executeConstRequestAs( State, ParentClassname, RequestAtom ) ->
 -spec executeRequestAs( wooper:state(), classname(), request_name(),
 		method_arguments() ) -> { wooper:state(), method_internal_result() }.
 executeRequestAs( State, Classname, RequestAtom, ArgumentList ) when
-	  is_record( State, state_holder ) andalso is_atom( Classname )
-	  andalso is_atom( RequestAtom ) andalso is_list( ArgumentList ) ->
+		is_record( State, state_holder ) andalso is_atom( Classname )
+		andalso is_atom( RequestAtom ) andalso is_list( ArgumentList ) ->
 
 	%trace_utils:debug_fmt( "executeRequestAs/4 with list: executing ~ts(~w) "
 	%  "from ~ts with ~ts.", [ RequestAtom, ArgumentList,
@@ -309,21 +310,21 @@ executeRequestAs( State, Classname, RequestAtom, ArgumentList ) when
 
 % Here the third parameter is not a list:
 executeRequestAs( State, Classname, RequestAtom, StandaloneArgument ) when
-	  is_record( State, state_holder ) andalso is_atom( Classname )
-	  andalso is_atom( RequestAtom ) ->
+		is_record( State, state_holder ) andalso is_atom( Classname )
+		andalso is_atom( RequestAtom ) ->
 
 	%trace_utils:debug_fmt( "executeRequestAs/3 with standalone argument: "
-	%	"executing ~ts(~w) from ~ts with ~ts.",
-	%	[ RequestAtom, StandaloneArgument, State#state_holder.actual_class,
+	%   "executing ~ts(~w) from ~ts with ~ts.",
+	%   [ RequestAtom, StandaloneArgument, State#state_holder.actual_class,
 	% Classname ] ),
 
 	wooper_handle_local_request_execution_as( RequestAtom, State,
-					_ArgumentList=[ StandaloneArgument ], Classname );
+		_ArgumentList=[ StandaloneArgument ], Classname );
 
 
 % Error cases below:
 executeRequestAs( StateError, Classname, RequestAtom, _LastArg )
-  when is_atom( Classname ) andalso is_atom( RequestAtom ) ->
+		when is_atom( Classname ) andalso is_atom( RequestAtom ) ->
 
 	wooper:log_error( "when executing request ~p: "
 		"first parameter should be a state, not '~p'.",
@@ -457,12 +458,12 @@ executeConstOneway( State, OnewayAtom ) ->
 -spec executeOneway( wooper:state(), oneway_name(), method_arguments() ) ->
 								wooper:state().
 executeOneway( State, OnewayAtom, ArgumentList ) when
-	  is_record( State, state_holder ) andalso is_atom( OnewayAtom )
-	  andalso is_list( ArgumentList ) ->
+		is_record( State, state_holder ) andalso is_atom( OnewayAtom )
+		andalso is_list( ArgumentList ) ->
 
 	%trace_utils:debug_fmt( "executeOneway/3 with list: executing ~ts(~w) "
 	%   "from ~ts.",
-	%	[ OnewayAtom, ArgumentList, State#state_holder.actual_class ] ),
+	%   [ OnewayAtom, ArgumentList, State#state_holder.actual_class ] ),
 
 	wooper_handle_local_oneway_execution( OnewayAtom, State, ArgumentList );
 
@@ -472,8 +473,8 @@ executeOneway( State, OnewayAtom, StandaloneArgument ) when
 		is_record( State, state_holder ) andalso is_atom( OnewayAtom ) ->
 
 	%trace_utils:debug_fmt( "executeOneway/3 with standalone argument: "
-	%	"executing ~ts(~w) from ~ts.",
-	%	[ OnewayAtom, StandaloneArgument, State#state_holder.actual_class ] ),
+	%   "executing ~ts(~w) from ~ts.",
+	%   [ OnewayAtom, StandaloneArgument, State#state_holder.actual_class ] ),
 
 	wooper_handle_local_oneway_execution( OnewayAtom, State,
 										  [ StandaloneArgument ] );
@@ -490,7 +491,7 @@ executeOneway( StateError, OnewayAtom, _LastArg ) when is_atom( OnewayAtom ) ->
 
 
 executeOneway( State, OnewayAtomError, _LastArg )
-  when is_record( State, state_holder ) ->
+						when is_record( State, state_holder ) ->
 
 	wooper:log_error( "when executing oneway: '~p' is not an atom.",
 					  [ OnewayAtomError ], State ),
@@ -542,19 +543,19 @@ executeConstOneway( State, OnewayAtom, ArgumentList ) ->
 -spec executeOnewayAs( wooper:state(), classname(), oneway_name() ) ->
 								wooper:state().
 executeOnewayAs( State, ParentClassname, OnewayAtom )
-  when is_record( State, state_holder ) andalso is_atom( ParentClassname )
-	   andalso is_atom( OnewayAtom ) ->
+		when is_record( State, state_holder ) andalso is_atom( ParentClassname )
+			 andalso is_atom( OnewayAtom ) ->
 
 	%trace_utils:debug_fmt( "executeOnewayAs/3: executing ~ts() from ~ts "
 	%   "as parent class ~ts.",
-	%	[ OnewayAtom, State#state_holder.actual_class, ParentClassname ] ),
+	%   [ OnewayAtom, State#state_holder.actual_class, ParentClassname ] ),
 
 	wooper_handle_local_oneway_execution_as( OnewayAtom, State,
-									_ArgumentList=[], ParentClassname );
+		_ArgumentList=[], ParentClassname );
 
 
 executeOnewayAs( StateError, ParentClassname, OnewayAtom )
-  when is_record( StateError, state_holder ) ->
+								when is_record( StateError, state_holder ) ->
 
 	wooper:log_error( "when executing oneway ~p as parent "
 		"class ~ts: first parameter should be a state, not '~p'.",
@@ -608,12 +609,12 @@ executeConstOnewayAs( State, Classname, OnewayAtom ) ->
 -spec executeOnewayAs( wooper:state(), classname(), oneway_name(),
 					   method_arguments() ) -> wooper:state().
 executeOnewayAs( State, Classname, OnewayAtom, ArgumentList ) when
-	  is_record( State, state_holder ) andalso is_atom( Classname )
-	  andalso is_atom( OnewayAtom ) andalso is_list( ArgumentList ) ->
+		is_record( State, state_holder ) andalso is_atom( Classname )
+		andalso is_atom( OnewayAtom ) andalso is_list( ArgumentList ) ->
 
 	%trace_utils:debug_fmt( "executeOneway/4 with list: executing ~ts(~w) "
 	%   "from ~ts with ~ts.",
-	%	[ OnewayAtom, ArgumentList, State#state_holder.actual_class,
+	%   [ OnewayAtom, ArgumentList, State#state_holder.actual_class,
 	%     Classname ] ),
 
 	wooper_handle_local_oneway_execution_as( OnewayAtom, State,
@@ -623,20 +624,20 @@ executeOnewayAs( State, Classname, OnewayAtom, ArgumentList ) when
 
 % Here third parameter is not a list:
 executeOnewayAs( State, Classname, OnewayAtom, StandaloneArgument ) when
-	  is_record( State, state_holder ) andalso is_atom( Classname )
-	  andalso is_atom( OnewayAtom ) ->
+		is_record( State, state_holder ) andalso is_atom( Classname )
+		andalso is_atom( OnewayAtom ) ->
 
 	%trace_utils:debug_fmt( "executeOnewayAs/4 with standalone argument: "
-	%	"executing ~ts(~w) from ~ts with ~ts.",
-	%	[ OnewayAtom, StandaloneArgument, State#state_holder.actual_class,
+	%   "executing ~ts(~w) from ~ts with ~ts.",
+	%   [ OnewayAtom, StandaloneArgument, State#state_holder.actual_class,
 	%     Classname ] ),
 
 	wooper_handle_local_oneway_execution_as( OnewayAtom, State,
-			_ArgumentList=[ StandaloneArgument ], Classname );
+		_ArgumentList=[ StandaloneArgument ], Classname );
 
 
 executeOnewayAs( StateError, Classname, OnewayAtom, _LastArg )
-  when is_atom( Classname ) andalso is_atom( OnewayAtom ) ->
+			when is_atom( Classname ) andalso is_atom( OnewayAtom ) ->
 
 	wooper:log_error( "when executing oneway ~p with ~ts: "
 		"first parameter should be a state, not '~p'.",

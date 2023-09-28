@@ -59,7 +59,7 @@ test_wooper_application( OrderedAppNames ) ->
 	otp_utils:start_applications( OrderedAppNames ),
 
 	test_facilities:display( "WOOPER version: ~p.",
-				 [ system_utils:get_application_version( wooper ) ] ),
+		[ system_utils:get_application_version( wooper ) ] ),
 
 	% The top-level user process may not be aware that an OTP application fails
 	% (ex: because its main process crashed), which is a problem for a test. So
@@ -99,7 +99,7 @@ test_wooper_application( OrderedAppNames ) ->
 	basic_utils:check_no_pending_message(),
 
 	test_facilities:display(
-	  "Successful end of test of the WOOPER OTP application." ).
+		"Successful end of test of the WOOPER OTP application." ).
 
 
 

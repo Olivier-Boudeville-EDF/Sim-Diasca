@@ -57,7 +57,9 @@ run() ->
 
 	Null3x2 = matrix:null( _RowCount=3, _ColumnCount=2 ),
 
-	[ [ 1.0, 0.0 ], [ 0.0, 1.0 ] ] = matrix:identity( 2 ),
+	% Not going for direct matching now that +0.0 and -0.0 do not match:
+	true = matrix:are_equal( [ [ 1.0, 0.0 ], [ 0.0, 1.0 ] ],
+							 matrix:identity( 2 ) ),
 
 	{ 3, 2 } = matrix:dimensions( Null3x2 ),
 

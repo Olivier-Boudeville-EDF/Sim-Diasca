@@ -1,7 +1,7 @@
 TRACES_TOP = .
 
 
-.PHONY: help help-intro help-traces                                    \
+.PHONY: help help-traces                                               \
 		all register-version-in-header register-traces list-beam-dirs  \
 		add-prerequisite-plts link-plt                                 \
 		stats                                                          \
@@ -11,28 +11,22 @@ TRACES_TOP = .
 
 MODULES_DIRS = src doc conf test examples
 
+
 # To override the 'all' default target with a parallel version:
 BASE_MAKEFILE = true
-
 
 
 # Default target:
 help: help-intro help-traces
 
-
-help-intro:
-	@echo " Following main make targets are available for package $(PACKAGE_NAME):"
-
-
 help-traces:
 	@cd $(WOOPER_TOP) && $(MAKE) -s help-wooper
 
 
-
 register-version-in-header:
 	@if [ -z "$(VERSION_FILE)" ]; then \
-	echo "Error, no version file defined." 1>&2; exit 52; else \
-	$(MAKE) register-traces; fi
+	echo "  Error, no version file defined." 1>&2; exit 52; else \
+	$(MAKE) -s register-traces; fi
 
 
 register-traces:

@@ -23,9 +23,12 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2017.
 
 
-% Module containing some <b>extra facilities</b> for WOOPER users.
+% @doc Module containing some <b>extra facilities</b> for WOOPER users and
+% internal use.
+%
 -module(wooper_utils).
 
 
@@ -61,7 +64,7 @@
 
 
 -type camelcase_type() :: atom().
-% Ex: 'apple' or 'travelling_salesman'.
+% For example 'apple' or 'travelling_salesman'.
 
 -export_type([ camelcase_type/0 ]).
 
@@ -70,7 +73,9 @@
 % For wooper_enable_otp_integration:
 -include("wooper_defines_exports.hrl").
 
+
 % Shorthands:
+
 -type ustring() :: text_utils:ustring().
 
 
@@ -79,7 +84,7 @@
 % of a class that is actually implemented in Python and whose name follows the
 % PEP8 convention.
 %
-% Ex: 'MyFoobarExample' resulting in 'class_MyFoobarExample'.
+% For example 'MyFoobarExample' resulting in 'class_MyFoobarExample'.
 %
 -spec pep8_class_to_wooper_class(
 		python_utils:pep8_classname() | ustring() ) -> wooper:classname().
@@ -94,7 +99,7 @@ pep8_class_to_wooper_class( ClassnameStr ) ->
 % @doc Deduces the Python equivalent name, according to the PEP8 convention, of
 % an Erlang class whose name follows the WOOPER conventions.
 %
-% Ex: "class_MyFoobarExample" resulting in "MyFoobarExample".
+% For example "class_MyFoobarExample" resulting in "MyFoobarExample".
 %
 -spec wooper_class_to_pep8_class( wooper:classname() | ustring() ) ->
 										python_utils:pep8_classname().
@@ -118,7 +123,7 @@ wooper_class_to_pep8_class( ClassnameString ) ->
 % @doc Deduces the Erlang equivalent name, according to the WOOPER conventions,
 % of a class that is actually implemented in Java.
 %
-% Ex: 'MyFoobarExample' resulting in 'class_MyFoobarExample'.
+% For example 'MyFoobarExample' resulting in 'class_MyFoobarExample'.
 %
 -spec java_class_to_wooper_class(
 		java_utils:java_classname() | ustring() ) -> wooper:classname().
@@ -133,7 +138,7 @@ java_class_to_wooper_class( ClassnameStr ) ->
 % @doc Deduces the Java equivalent name of an Erlang class whose name follows
 % the WOOPER conventions.
 %
-% Ex: "class_MyFoobarExample" resulting in "MyFoobarExample".
+% For example "class_MyFoobarExample" resulting in "MyFoobarExample".
 %
 -spec wooper_class_to_java_class( wooper:classname() ) ->
 										java_utils:java_string_classname().
@@ -187,7 +192,7 @@ get_java_package_and_class_for( WOOPERClassname ) ->
 	% 'bigpackage.mypackage':
 	%
 	JavaPackageString = text_utils:join( _Sep=".",
-				[ text_utils:to_lowercase( E ) || E <- JavaPackageElems ] ),
+		[ text_utils:to_lowercase( E ) || E <- JavaPackageElems ] ),
 
 	case JavaPackageString of
 
@@ -202,8 +207,8 @@ get_java_package_and_class_for( WOOPERClassname ) ->
 
 
 
-% @doc Converts a simple type specified in CamelCase (ex: 'apple' or
-% 'travelling_salesman') into its corresponding WOOPER classname (ex:
+% @doc Converts a simple type specified in CamelCase (e.g. 'apple' or
+% 'travelling_salesman') into its corresponding WOOPER classname (e.g.
 % 'class_Apple' of 'class_TravellingSalesman').
 %
 -spec camelcase_type_to_wooper_class( camelcase_type() ) -> wooper:classname().
@@ -222,7 +227,7 @@ camelcase_type_to_wooper_class( CamelcaseType ) ->
 
 	% Underscores removed:
 	CamelCapElems = [ text_utils:uppercase_initial_letter( E )
-			   || E <- text_utils:split( TypeString, _Delimiters=[ $_ ] ) ],
+				|| E <- text_utils:split( TypeString, _Delimiters=[ $_ ] ) ],
 
 	ClassString = "class_" ++ lists:flatten( CamelCapElems ),
 
@@ -230,8 +235,8 @@ camelcase_type_to_wooper_class( CamelcaseType ) ->
 
 
 
-% @doc Converts a WOOPER classname (ex: 'class_Apple') into its corresponding
-% simple type in CamelCase (ex: 'apple').
+% @doc Converts a WOOPER classname (e.g. 'class_Apple') into its corresponding
+% simple type in CamelCase (e.g. 'apple').
 %
 -spec wooper_class_to_camelcase_type( wooper:classname() ) -> camelcase_type().
 wooper_class_to_camelcase_type( WOOPERClassname ) ->
@@ -241,7 +246,7 @@ wooper_class_to_camelcase_type( WOOPERClassname ) ->
 
 		"class_" ++ Suffix ->
 			Elems = [ text_utils:to_lowercase( E )
-					  || E <- text_utils:split_camel_case( Suffix ) ],
+						|| E <- text_utils:split_camel_case( Suffix ) ],
 			text_utils:string_to_atom( text_utils:join( _Sep="_", Elems ) );
 
 		Invalid ->

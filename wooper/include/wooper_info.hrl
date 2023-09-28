@@ -31,13 +31,13 @@
 %
 -record( attribute_info, {
 
-	% The name of this attribute (ex: 'total_surface'):
+	% The name of this attribute (e.g. 'total_surface'):
 	name :: wooper:attribute_name(),
 
 	% The type of this attribute, currently as an atom (later: as
 	% type_utils:type()).
 	%
-	% Ex: '{atom(), [float()]}'.
+	% For example '{atom(), [float()]}'.
 	%
 	type = undefined :: maybe( type_utils:type_description() ),
 
@@ -52,7 +52,7 @@
 
 
 % Note: method information does not have an 'exported' field like functions, as
-% methods must be exported in all cases anyway (ex: to be callable for child
+% methods must be exported in all cases anyway (e.g. to be callable for child
 % classes).
 
 
@@ -245,9 +245,9 @@
 	inherited_attributes :: wooper_info:attribute_table(),
 
 
-	% A table, whose keys are compilation options (ex: no_auto_import, inline,
+	% A table, whose keys are compilation options (e.g. no_auto_import, inline,
 	% etc.) and whose values are aggregated lists of their associated values
-	% (ex: [{size,1}] and [{get_bucket_index,2},{f/1}]).
+	% (e.g. [{size,1}] and [{get_bucket_index,2},{f/1}]).
 	%
 	% Note: for the 'inline' key, if full inlining is enabled
 	% ('-compile(inline).'), then its associated key is not a list of function
@@ -256,14 +256,14 @@
 	compilation_options :: ast_info:compile_option_table(),
 
 
-	% We merely touch compilation options (ex: '{compile, {inline, [{FunName,
+	% We merely touch compilation options (e.g. '{compile, {inline, [{FunName,
 	% Arity}]}}'):
 	%
 	compilation_option_defs = [] :: [ ast_info:located_form() ],
 
 
 	% Other (unrecognised, not corresponding to other fields of interest)
-	% parse-level attributes (ex: '-my_attribute(my_value).'), as a table
+	% parse-level attributes (e.g. '-my_attribute(my_value).'), as a table
 	% associating, to an attribute name (an atom key), a list of pairs
 	% comprising each a value and an AST form.
 	%
@@ -292,8 +292,8 @@
 	include_defs = [] :: [ ast_info:located_form() ],
 
 
-	% Whether a type (possibly any kind of it; ex: opaque or not) is exported is
-	% recorded primarily in its own type_info record through a list of
+	% Whether a type (possibly any kind of it; e.g. opaque or not) is exported
+	% is recorded primarily in its own type_info record through a list of
 	% locations, while the information sufficient to reconstruct the actual
 	% forms for the exports of all types are recorded here.
 	%
@@ -351,7 +351,7 @@
 	constructors :: wooper_info:constructor_table(),
 
 
-	% All information about the new operators (ex: remote_new_link/N) of that
+	% All information about the new operators (e.g. remote_new_link/N) of that
 	% class:
 	%
 	new_operators :: ast_info:function_table(),
@@ -448,7 +448,7 @@
 	% (we keep it as a located form rather than as a simple ast_utils:file_loc()
 	% to avoid a costly addition in last position)
 	%
-	last_file_location :: ast_info:located_form(),
+	last_file_location :: maybe( ast_info:located_form() ),
 
 
 	% Section markers, offering reference locations to AST transformations.

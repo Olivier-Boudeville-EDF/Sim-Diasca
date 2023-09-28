@@ -23,9 +23,10 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2015.
 
 
-% Unit tests for the time utils toolbox.
+% @doc Unit tests for the time utils toolbox.
 %
 % See the time_utils.erl tested module.
 %
@@ -88,5 +89,7 @@ run() ->
 	"Tuesday" = time_utils:week_day_to_string( SecondDate ),
 
 	DayDifference = time_utils:get_date_difference( FirstDate, SecondDate ),
+
+	{ 2, 0, 0 } = time_utils:offset_time( { 1, 59, 58 }, 2 ),
 
 	test_facilities:stop().

@@ -47,10 +47,10 @@
 
 	{ trace_filename, file_utils:bin_file_path(),
 	  "the name of the file in which traces are to be read "
-	  "(ex: <<\"foobar.traces\">>" },
+	  "(e.g. <<\"foobar.traces\">>" },
 
 	{ trace_type, trace_type(),
-	  "the type of traces to be written (ex: advanced_traces)" },
+	  "the type of traces to be written (e.g. advanced_traces)" },
 
 	% Needed if wanting to wait for the trace file to exist before launching the
 	% supervision tool:
@@ -78,7 +78,7 @@
 -include("class_TraceAggregator.hrl").
 
 
--define( LogPrefix, "[Trace Supervisor]" ).
+-define( log_prefix, "[Trace Supervisor]" ).
 
 
 % Use global:registered_names() to check supervisor presence.
@@ -94,7 +94,7 @@
 % Total width (expressed as a number of characters) of a line of log, in text
 % mode (text_traces).
 %
--define( TextWidth, 110 ).
+-define( text_width, 110 ).
 
 
 % Shorthands:
@@ -117,7 +117,7 @@
 %
 %   - TraceFilename is the name of the file whence traces should be read
 %
-%   - TraceType the type of traces to expect (ex: advanced_traces, text_traces)
+%   - TraceType the type of traces to expect (e.g. advanced_traces, text_traces)
 %
 %   - MaybeTraceAggregatorPid is the PID of the trace aggregator to wait for (if
 %   any)
@@ -139,7 +139,7 @@ construct( State, { TraceFilename, TraceType, MaybeTraceAggregatorPid },
 	trace_utils:debug_fmt( "~ts Creating a trace supervisor, whose PID is ~w "
 		"(trace filename: '~ts', trace type: '~ts', monitor now: ~w, "
 		"blocking: ~w).",
-		[ ?LogPrefix, self(), TraceFilename, TraceType, MonitorNow,
+		[ ?log_prefix, self(), TraceFilename, TraceType, MonitorNow,
 		  MaybeWaitingPid ] ),
 
 	NewState = setAttributes( State, [
@@ -152,7 +152,7 @@ construct( State, { TraceFilename, TraceType, MaybeTraceAggregatorPid },
 		AggPid when is_pid( AggPid ) ->
 
 			% We have a PID; avoid the race condition that could happen if the
-			% trace viewer (ex: LogMX) was launched before a first trace was
+			% trace viewer (e.g. LogMX) was launched before a first trace was
 			% written by the aggregator in the trace file:
 
 			%trace_utils:debug(
@@ -236,7 +236,7 @@ construct( State, { TraceFilename, TraceType, MaybeTraceAggregatorPid },
 
 	end,
 
-	%trace_utils:debug_fmt( "~ts Supervisor created.", [ ?LogPrefix ] ),
+	%trace_utils:debug_fmt( "~ts Supervisor created.", [ ?log_prefix ] ),
 
 	EndState.
 
@@ -258,7 +258,7 @@ monitor( State ) ->
 		{ text_traces, pdf } ->
 			trace_utils:notice_fmt( "~ts Supervisor has nothing to monitor, "
 				"as the PDF trace report will be generated only on "
-				"execution termination.", [ ?LogPrefix ] ),
+				"execution termination.", [ ?log_prefix ] ),
 			wooper:const_return();
 
 
@@ -266,22 +266,20 @@ monitor( State ) ->
 
 			{ Command, ActualFilename } = get_viewer_settings( State ),
 
-			case file_utils:is_existing_file( ActualFilename ) of
+			file_utils:is_existing_file( ActualFilename ) orelse
+				begin
 
-				true ->
-					ok;
-
-				false ->
 					trace_utils:error_fmt( "class_TraceSupervisor:monitor "
 						"unable to find trace file '~ts'.",
 						[ ActualFilename ] ),
+
 					throw( { trace_file_not_found, ActualFilename } )
 
-			end,
+				end,
 
 			trace_utils:notice_fmt(
 				"~ts Supervisor will monitor file '~ts' now, "
-				"with '~ts'.", [ ?LogPrefix, ActualFilename, Command ] ),
+				"with '~ts'.", [ ?log_prefix, ActualFilename, Command ] ),
 
 			Cmd = Command ++ " '" ++ ActualFilename ++ "'",
 
@@ -307,7 +305,7 @@ blocking_monitor( State ) ->
 		{ text_traces, pdf } ->
 			trace_utils:notice_fmt( "~ts Supervisor has nothing to monitor, "
 				"as the PDF trace report will be generated only on "
-				"execution termination.", [ ?LogPrefix ] ),
+				"execution termination.", [ ?log_prefix ] ),
 			wooper:const_return_result( monitor_ok );
 
 		_Other ->
@@ -335,7 +333,7 @@ blocking_monitor( State ) ->
 
 			trace_utils:notice_fmt( "~ts Supervisor will monitor file '~ts' "
 				"now with '~ts', blocking until the user closes the viewer "
-				"window.", [ ?LogPrefix, ActualFilename, Command ] ),
+				"window.", [ ?log_prefix, ActualFilename, Command ] ),
 
 			% Blocking:
 			case system_utils:run_command(
@@ -346,7 +344,7 @@ blocking_monitor( State ) ->
 				{ _ExitStatus=0, _Output } ->
 					trace_utils:notice_fmt(
 						"~ts Supervisor ended monitoring of '~ts'.",
-						[ ?LogPrefix, ActualFilename ] ),
+						[ ?log_prefix, ActualFilename ] ),
 					wooper:const_return_result( monitor_ok );
 
 				{ ExitStatus, _ErrorOutput="" } ->
@@ -387,9 +385,7 @@ blocking_monitor( State ) ->
 %
 -spec create() -> static_return( supervisor_pid() ).
 create() ->
-
 	SupervisorPid = create( _MaybeWaitingPid=undefined ),
-
 	wooper:return_static( SupervisorPid ).
 
 
@@ -404,9 +400,7 @@ create() ->
 %
 -spec create( maybe( pid() ) ) -> static_return( supervisor_pid() ).
 create( MaybeWaitingPid ) ->
-
 	SupervisorPid = create( MaybeWaitingPid, ?trace_aggregator_filename ),
-
 	wooper:return_static( SupervisorPid ).
 
 
@@ -460,7 +454,8 @@ create( MaybeWaitingPid, TraceFilename, TraceType, TraceAggregatorPid ) ->
 %
 % - TraceFilename the trace file to monitor
 %
-% - TraceType the expected type of the traces (ex: advanced_traces, text_traces)
+% - TraceType the expected type of the traces (e.g. advanced_traces,
+% text_traces)
 %
 % - MaybeTraceAggregatorPid is either the PID of the trace aggregator, or the
 % 'undefined' atom
@@ -496,10 +491,10 @@ create( MaybeWaitingPid, MonitorNow, TraceFilename, TraceType,
 
 
 % @doc Inits a trace supervisor; especially useful when the trace supervisor
-% cannot be created at the same time as the trace aggregator (ex: if the trace
+% cannot be created at the same time as the trace aggregator (e.g. if the trace
 % filename is to change at runtime).
 %
-% Use the --batch option (ex: erl --batch, or, with our make system, 'make
+% Use the --batch option (e.g. erl --batch, or, with our make system, 'make
 % MY_TARGET CMD_LINE_OPT="--batch") to disable the use of the trace supervisor.
 %
 -spec init( file_name(), aggregator_pid() ) ->
@@ -514,10 +509,10 @@ init( TraceFilename, TraceAggregatorPid ) ->
 
 
 % @doc Inits a trace supervisor; especially useful when the trace supervisor
-% cannot be created at the same time as the trace aggregator (ex: if the trace
+% cannot be created at the same time as the trace aggregator (e.g. if the trace
 % filename is to change at runtime).
 %
-% Use the --batch option (ex: erl --batch, or, with our make system, 'make
+% Use the --batch option (e.g. erl --batch, or, with our make system, 'make
 % MY_TARGET CMD_LINE_OPT="--batch") to disable the use of the trace supervisor.
 %
 -spec init( file_name(), trace_supervision_type(), aggregator_pid() ) ->
@@ -533,9 +528,9 @@ init( TraceFilename, TraceType, TraceAggregatorPid ) ->
 
 % @doc Inits a trace supervisor and records a waiting process; especially useful
 % when the trace supervisor cannot be created at the same time as the trace
-% aggregator (ex: if the trace filename is to change at runtime).
+% aggregator (e.g. if the trace filename is to change at runtime).
 %
-% Use the --batch option (ex: erl --batch, or, with our make system, 'make
+% Use the --batch option (e.g. erl --batch, or, with our make system, 'make
 % MY_TARGET CMD_LINE_OPT="--batch") to disable the use of the trace supervisor.
 %
 -spec init( file_name(), trace_supervision_type(), aggregator_pid(),
@@ -582,6 +577,7 @@ wait_for() ->
 		true ->
 			% No supervisor was launched.
 			% Let live the system for some time instead:
+			%
 			system_utils:await_output_completion();
 
 		false ->
@@ -636,13 +632,13 @@ get_viewer_settings( State ) ->
 			{ executable_utils:get_default_trace_viewer_path(), Filename };
 
 		{ text_traces, text_only } ->
-			{ executable_utils:get_default_wide_text_viewer_path( ?TextWidth ),
+			{ executable_utils:get_default_wide_text_viewer_path( ?text_width ),
 			  Filename };
 
 		{ text_traces, pdf } ->
 
 			PdfTargetFilename = file_utils:replace_extension( Filename,
-													?TraceExtension, ".pdf" ),
+				?TraceExtension, ".pdf" ),
 
 			{ executable_utils:get_default_pdf_viewer_path(),
 			  PdfTargetFilename }

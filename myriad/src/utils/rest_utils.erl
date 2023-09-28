@@ -28,7 +28,6 @@
 % Creation date: Tuesday, December 1, 2015.
 
 
-
 % @doc Gathering of management facilities for <b>REST architectures</b>
 % (<em>Representational State Transfer</em>).
 %
@@ -74,7 +73,7 @@
 
 
 -type content_type() :: ustring().
-% Content type (ex: "text/html;charset=utf-8", "application/json").
+% Content type (e.g. "text/html;charset=utf-8", "application/json").
 
 
 -type field() :: ustring().
@@ -92,8 +91,8 @@
 -type status_line() :: { ustring(), status_code(), ustring() }.
 
 
--type request() :: { web_utils:url(), headers(), content_type(), body() }
-				 | { web_utils:url(), headers() }.
+-type request() :: { url(), headers(), content_type(), body() }
+				 | { url(), headers() }.
 % Type of a request for httpc:request, see
 % [http://erlang.org/doc/man/httpc.html].
 
@@ -105,10 +104,12 @@
 -type options() :: [ option() ].
 
 
--type result() :: { status_line(), headers(), body() }
-				| { status_code(), body() }
-				| reference().
-% Type of a result from httpc:request, see
+-type result() ::
+	{ status_line(), headers(), body() }
+  | { status_code(), body() }
+  | { status_code(), { 'reason_phrased_body', ustring(), body() } }
+  | reference().
+% Type of a result extended from httpc:request, see
 % [http://erlang.org/doc/man/httpc.html].
 
 
@@ -128,6 +129,7 @@
 -type ustring() :: text_utils:ustring().
 -type ssl_opt() :: web_utils:ssl_opt().
 
+-type url() :: web_utils:url().
 
 
 % @doc Starts the REST service, with default settings.
@@ -275,7 +277,7 @@ http_delete( Request, HTTPOptions, Options, Retries ) ->
 % @doc Sends a HTTP GET requests, as an alternate solution as suggested by the
 % standard 'httpc' module of Erlang.
 %
--spec http_request( web_utils:url() ) -> { status_code(), term() }.
+-spec http_request( url() ) -> { status_code(), term() }.
 http_request( URL ) ->
 	http_request( get, { URL, [] }, _HTTPOpts=[], _Opts=[], _Retries=0 ).
 
@@ -397,17 +399,18 @@ format_body_error( ContentBody ) ->
 -spec return_checked_result( result() ) -> { status_code(), term() }.
 return_checked_result( _Result={ StatusLine, _Headers, Body } ) ->
 
-	{ "HTTP/1.1", StatusCode, ReasonPhrase } = StatusLine,
+	{ "HTTP/1.1", StatusCode, ReasonPhraseStr } = StatusLine,
 
+	% Calling next clause:
 	return_checked_result( { StatusCode,
-							 { reason_phrased_body, ReasonPhrase, Body } } );
+							 { reason_phrased_body, ReasonPhraseStr, Body } } );
 
 return_checked_result( _Result={ StatusCode, Body } ) ->
 
-	{ ReasonPhrase, RealBody } = case Body of
+	{ ReasonPhraseStr, RealBody } = case Body of
 
-		{ reason_phrased_body, Reason, OriginalBody } ->
-			{ Reason, OriginalBody };
+		{ reason_phrased_body, ReasonStr, OriginalBody } ->
+			{ ReasonStr, OriginalBody };
 
 		_AnyBody ->
 			{ "", Body }
@@ -425,15 +428,15 @@ return_checked_result( _Result={ StatusCode, Body } ) ->
 		RedirectionErrorCode when RedirectionErrorCode >= 300 andalso
 								  RedirectionErrorCode < 400 ->
 			throw( { http_redirection_error, RedirectionErrorCode,
-					 ReasonPhrase, RealBody } );
+					 ReasonPhraseStr, RealBody } );
 
 		ClientErrorCode when ClientErrorCode >= 400
 							 andalso ClientErrorCode < 500 ->
-			throw( { http_client_error, ClientErrorCode, ReasonPhrase,
+			throw( { http_client_error, ClientErrorCode, ReasonPhraseStr,
 					 RealBody } );
 
 		ServerErrorCode when ServerErrorCode >= 500 ->
-			throw( { http_server_error, ServerErrorCode, ReasonPhrase,
+			throw( { http_server_error, ServerErrorCode, ReasonPhraseStr,
 					 format_body_error( RealBody ) } )
 
 	end;
@@ -449,73 +452,31 @@ return_checked_result( Result ) ->
 % @doc Checks the basic structure of an HTTP request, as needed by httpc.
 -spec check_http_request( method(), request() ) -> void().
 check_http_request( Method, _Request={ URL, Headers } )
-  when is_list( Headers ) ->
+								when is_list( Headers ) ->
 
-	case lists:member( Method, get_no_body_http_methods() ) of
+	lists:member( Method, get_no_body_http_methods() ) orelse
+		throw( { http_method_requires_body_in_request, Method } ),
 
-		true ->
-			ok;
-
-		false ->
-			throw( { http_method_requires_body_in_request, Method } )
-
-	end,
-
-	case text_utils:is_string( URL ) of
-
-		true ->
-			ok;
-
-		false ->
-			throw( { invalid_url_for_http_request, URL } )
-
-	end;
+	text_utils:is_string( URL ) orelse
+		throw( { invalid_url_for_http_request, URL } );
 
 check_http_request( _Method, Request={ _URL, _Headers } ) ->
 	throw( { invalid_headers_for_http_request, Request } );
 
 check_http_request( Method, _Request={ URL, Headers, ContentType, Body } )
-  when is_list( Headers ) ->
+								when is_list( Headers ) ->
 
-	case lists:member( Method, get_body_allowing_http_methods() ) of
+	lists:member( Method, get_body_allowing_http_methods() ) orelse
+		throw( { http_method_forbids_body_in_request, Method } ),
 
-		true ->
-			ok;
+	text_utils:is_string( URL ) orelse
+		throw( { invalid_url_for_http_request, URL } ),
 
-		false ->
-			throw( { http_method_forbids_body_in_request, Method } )
+	text_utils:is_string( ContentType ) orelse
+		throw( { invalid_content_type_for_http_request, ContentType } ),
 
-	end,
-
-	case text_utils:is_string( URL ) of
-
-		true ->
-			ok;
-
-		false ->
-			throw( { invalid_url_for_http_request, URL } )
-
-	end,
-
-	case text_utils:is_string( ContentType ) of
-
-		true ->
-			ok;
-
-		false ->
-			throw( { invalid_content_type_for_http_request, ContentType } )
-
-	end,
-
-	case text_utils:is_string( Body ) orelse is_binary( Body ) of
-
-		true ->
-			ok;
-
-		false ->
-			throw( { invalid_body_for_http_request, Body } )
-
-	end;
+	text_utils:is_string( Body ) orelse is_binary( Body ) orelse
+		throw( { invalid_body_for_http_request, Body } );
 
 check_http_request( _Method, Request={ _URL, _Headers, _CType, _Body } ) ->
 	throw( { invalid_headers_for_http_request, Request } );

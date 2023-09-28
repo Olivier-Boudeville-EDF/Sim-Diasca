@@ -82,8 +82,8 @@
 	%
 	case TracesInitialisationTermInternal of
 
-		% Emitter categorization already set, just propagate as is to next
-		% mother class:
+		% Emitter categorization already set, just propagate as it is to the
+		% next mother class:
 		%
 		%{ _TraceName, _TraceCategorization } ->
 		{ _, _ } ->
@@ -152,6 +152,9 @@
 % emitter. It could be deduced from superclasses as well, although it would be
 % generally uselessly long and would cause issues in case of multiple
 % inheritance.
+%
+% Call class_TraceEmitter:send_categorized_emitter/* if needing to override the
+% trace_emitter_categorization attribute.
 
 
 % User timestamp will be the current date, as determined by the trace emitter.
@@ -201,29 +204,11 @@
 
 
 
+
 % Section dedicated to trace emitters that are not WOOPER-based and are
 % dedicated to tests.
 %
 % See also: test_constructs.hrl.
-%
--define( default_test_message_categorization, "Test" ).
-
-
-% Section dedicated to trace emitters that are not WOOPER-based and are
-% dedicated to cases.
-%
-% See also: case_constructs.hrl.
-%
--define( default_case_message_categorization, "Case" ).
-
-
-% Section dedicated to trace emitters that are not WOOPER-based and dedicated to
-% classical functions (as opposed to methods from class_TraceEmitter).
-%
-% See also: traces.hrl.
-%
--define( default_standalone_message_categorization, "Standalone" ).
-
 
 
 % When no emitter is specified:
@@ -234,6 +219,30 @@
 -define( default_standalone_emitter_categorization, "Standalone" ).
 
 -define( default_trace_emitter_categorization, "uncategorized" ).
+
+
+% For messages, we may use either strings or atoms (that is the most compact
+% repeated form):
+%
+-define( default_test_message_categorization, 'test' ).
+
+
+% Section dedicated to trace emitters that are not WOOPER-based and are
+% dedicated to cases.
+%
+% See also: case_constructs.hrl.
+%
+-define( default_case_message_categorization, 'case' ).
+
+
+% Section dedicated to trace emitters that are not WOOPER-based and dedicated to
+% classical functions (as opposed to methods from class_TraceEmitter).
+%
+% See also: traces.hrl.
+
+
+-define( default_standalone_message_categorization, 'standalone' ).
+
 
 
 % We moved away from the tracing_activated conditional sections the most severe
@@ -379,7 +388,7 @@
 % state.
 %
 -define( send_emergency_fmt_cat( State, Message, FormatValues,
-							 MessageCategorization ),
+								 MessageCategorization ),
 		 class_TraceEmitter:send_safe( emergency, State,
 			text_utils:format( Message, FormatValues ), MessageCategorization )
 ).
@@ -405,7 +414,7 @@
 % state.
 %
 -define( send_emergency_fmt_full( State, Message, FormatValues,
-							  MessageCategorization, ApplicationTimestamp ),
+								  MessageCategorization, ApplicationTimestamp ),
 		 class_TraceEmitter:send_safe( emergency, State,
 			text_utils:format( Message, FormatValues ),
 			MessageCategorization, ApplicationTimestamp )
@@ -417,7 +426,7 @@
 % of a variable named 'State'.
 %
 -define( emergency_fmt_full( Message, FormatValues, MessageCategorization,
-						 ApplicationTimestamp ),
+							 ApplicationTimestamp ),
 		 class_TraceEmitter:send_safe( emergency, State,
 			text_utils:format( Message, FormatValues ),
 			MessageCategorization, ApplicationTimestamp )
@@ -2143,7 +2152,7 @@
 
 
 % Defined here once for all (warning about their being unused suppressed),
-% regardless of the tracing_activated flag as always needed for void_* traces:
+% regardless of the tracing_activated flag, as always needed for void_* traces:
 
 -spec trace_disabled( any() ) -> void().
 trace_disabled( _ ) ->

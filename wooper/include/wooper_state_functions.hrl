@@ -23,6 +23,7 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2007.
 
 
 % Modular WOOPER header gathering the primitives (functions) to manage the state
@@ -36,13 +37,14 @@
 % places of wooper.erl with no luck (doc tags were always ignored).
 
 
+% To avoid overspecialisation of its result:
+-dialyzer( { nowarn_function, is_wooper_debug/0 } ).
 
 % @doc Tells whether the debug mode of WOOPER is enabled.
 %
 % Voluntary underspecification, to be able to toggle.
 %
 -spec is_wooper_debug() -> boolean().
-
 
 % On debug mode, various additional checkings are enabled:
 %
@@ -86,7 +88,7 @@ is_wooper_debug() ->
 
 
 % @doc Sets the specified attribute of the instance to the specified value,
-% based from specified state.
+% based on the specified state.
 %
 % Returns an updated state.
 %
@@ -97,11 +99,11 @@ is_wooper_debug() ->
 -spec setAttribute( wooper:state(), attribute_name(), attribute_value() ) ->
 						wooper:state().
 setAttribute( State, AttributeName, AttributeValue ) ->
-   State#state_holder{
-	   attribute_table=?wooper_table_type:add_entry(
-		   AttributeName,
-		   AttributeValue,
-		   State#state_holder.attribute_table ) }.
+	State#state_holder{
+		attribute_table=?wooper_table_type:add_entry(
+			AttributeName,
+			AttributeValue,
+			State#state_holder.attribute_table ) }.
 
 
 
@@ -120,14 +122,14 @@ setAttribute( State, AttributeName, AttributeValue ) ->
 -spec setAttributes( wooper:state(), [ attribute_entry() ] ) ->
 						wooper:state().
 setAttributes( State, ListOfAttributePairs ) ->
-   State#state_holder{
-	   attribute_table=?wooper_table_type:add_entries(
-		   ListOfAttributePairs,
-		   State#state_holder.attribute_table ) }.
+	State#state_holder{
+		attribute_table=?wooper_table_type:add_entries(
+			ListOfAttributePairs,
+			State#state_holder.attribute_table ) }.
 
 
 
-% @doc Swaps in specified state the current value of the specified attribute
+% @doc Swaps in the specified state the current value of the specified attribute
 % with the specified value.
 %
 % Returns an updated state and the previous value of that attribute.
@@ -145,13 +147,13 @@ swapInAttribute( State=#state_holder{ attribute_table=AttrTable },
 				 AttributeName, NewAttributeValue ) ->
 
 	{ PreviousValue, NewAttrTable } = ?wooper_table_type:swap_value(
-								AttributeName, NewAttributeValue, AttrTable ),
+		AttributeName, NewAttributeValue, AttrTable ),
 
    { State#state_holder{ attribute_table=NewAttrTable }, PreviousValue }.
 
 
 
-% @doc Tells whether specified attribute exists, returns true or false.
+% @doc Tells whether the specified attribute exists.
 %
 % Note: the best practise is certainly to set all possible attributes from the
 % constructor, either to an appropriate value or to 'undefined', instead of
@@ -190,8 +192,8 @@ getAttribute( State, AttributeName ) ->
 % attributes (if found, otherwise triggers a case clause error), in the order of
 % their specification.
 %
-% Ex: [MyCount, MyAge, MyIdeas] =
-%            getAttribute( SomeState,[count, age, ideas] )
+% For example [MyCount, MyAge, MyIdeas] =
+%                 getAttribute( SomeState,[count, age, ideas] )
 %
 % Note: not used very frequently verbatim, as either the attributes can be
 % obtained with the getAttr/1 macro, using the original state, named as 'State'
@@ -235,7 +237,7 @@ getMaybeAttribute( State, AttributeName ) ->
 
 
 
-% @doc Returns an updated state not having anymore specified attribute.
+% @doc Returns an updated state not having anymore the specified attribute.
 %
 % No error is triggered if the specified attribute was not existing.
 %
@@ -250,7 +252,8 @@ removeAttribute( State, AttributeName ) ->
 
 
 
-% @doc Adds specified value to the specified attribute, supposed to be a number.
+% @doc Adds the specified value to the specified attribute, supposed to be a
+% number.
 %
 % Returns an updated state.
 %
@@ -260,7 +263,6 @@ removeAttribute( State, AttributeName ) ->
 -spec addToAttribute( wooper:state(), attribute_name(), attribute_value() ) ->
 							wooper:state().
 addToAttribute( State, AttributeName, Value ) ->
-
 	State#state_holder{
 		attribute_table=?wooper_table_type:add_to_entry(
 			AttributeName,
@@ -269,8 +271,8 @@ addToAttribute( State, AttributeName, Value ) ->
 
 
 
-% @doc Subtracts specified value from specified attribute, supposed to be a
-% number.
+% @doc Subtracts the specified value from the specified attribute, supposed to
+% be a number.
 %
 % Returns an updated state.
 %
@@ -280,7 +282,6 @@ addToAttribute( State, AttributeName, Value ) ->
 -spec subtractFromAttribute( wooper:state(), attribute_name(),
 							 attribute_value() ) -> wooper:state().
 subtractFromAttribute( State, AttributeName, Value ) ->
-
 	State#state_holder{
 		attribute_table=?wooper_table_type:subtract_from_entry(
 			AttributeName,
@@ -289,17 +290,15 @@ subtractFromAttribute( State, AttributeName, Value ) ->
 
 
 
-% @doc Increments specified attribute, supposed to be a number.
+% @doc Increments the specified attribute, supposed to be a number.
 %
 % Returns an updated state.
 %
 % A case clause is triggered if the attribute did not exist, a bad arithm is
 % triggered if no addition can be performed on the attribute value.
 %
--spec incrementAttribute( wooper:state(), attribute_name() ) ->
-		wooper:state().
+-spec incrementAttribute( wooper:state(), attribute_name() ) -> wooper:state().
 incrementAttribute( State, AttributeName ) ->
-
 	State#state_holder{
 		attribute_table=?wooper_table_type:add_to_entry(
 			AttributeName,
@@ -308,17 +307,15 @@ incrementAttribute( State, AttributeName ) ->
 
 
 
-% @doc Decrements specified attribute, supposed to be a number.
+% @doc Decrements the specified attribute, supposed to be a number.
 %
 % Returns an updated state.
 %
 % A case clause is triggered if the attribute did not exist, a bad arithm is
 % triggered if no addition can be performed on the attribute value.
 %
--spec decrementAttribute( wooper:state(), attribute_name() ) ->
-		wooper:state().
+-spec decrementAttribute( wooper:state(), attribute_name() ) -> wooper:state().
 decrementAttribute( State, AttributeName ) ->
-
 	State#state_holder{
 		attribute_table=?wooper_table_type:add_to_entry(
 			AttributeName,
@@ -333,9 +330,8 @@ decrementAttribute( State, AttributeName ) ->
 % A case clause is triggered if the attribute does not exist or it is not a
 % boolean value.
 %
--spec toggleAttribute( wooper:state(), attribute_name() ) ->  wooper:state().
+-spec toggleAttribute( wooper:state(), attribute_name() ) -> wooper:state().
 toggleAttribute( State, BooleanAttributeName ) ->
-
 	State#state_holder{
 		attribute_table=?wooper_table_type:toggle_entry(
 			BooleanAttributeName,
@@ -343,8 +339,8 @@ toggleAttribute( State, BooleanAttributeName ) ->
 
 
 
-% @doc Appends specified element to specified attribute, supposed to be a list.
-% A case clause is triggered if the attribute did not exist.
+% @doc Appends the specified element to specified attribute, supposed to be a
+% list. A case clause is triggered if the attribute did not exist.
 %
 % Returns an updated state.
 %
@@ -354,7 +350,6 @@ toggleAttribute( State, BooleanAttributeName ) ->
 -spec appendToAttribute( wooper:state(), attribute_name(),
 						 attribute_value() ) -> wooper:state().
 appendToAttribute( State, AttributeName, Element ) ->
-
 	State#state_holder{
 		attribute_table=?wooper_table_type:append_to_entry(
 			AttributeName,
@@ -363,11 +358,11 @@ appendToAttribute( State, AttributeName, Element ) ->
 
 
 
-% @doc Concatenes (on the left) specified prefix list to specified attribute,
-% supposed to be a list as well. A case clause is triggered if the attribute did
-% not exist.
+% @doc Concatenes (on the left) the specified prefix list to specified
+% attribute, supposed to be a list as well. A case clause is triggered if the
+% attribute did not exist.
 %
-% If that attirbute is not already defined, it will be created and associated to
+% If that attribute is not already defined, it will be created and associated to
 % the specified list (as if beforehand it was associated to an empty list).
 %
 % Returns an updated state.
@@ -378,7 +373,6 @@ appendToAttribute( State, AttributeName, Element ) ->
 -spec concatToAttribute( wooper:state(), attribute_name(),
 						 attribute_value() ) -> wooper:state().
 concatToAttribute( State, AttributeName, List ) ->
-
 	State#state_holder{
 		attribute_table=?wooper_table_type:concat_to_entry(
 			AttributeName,
@@ -387,8 +381,8 @@ concatToAttribute( State, AttributeName, List ) ->
 
 
 
-% @doc Deletes the first match of specified element from specified attribute,
-% supposed to be a list.
+% @doc Deletes the first match of the specified element from the specified
+% attribute, supposed to be a list.
 %
 % A case clause is triggered if the attribute did not exist.
 % If the element is not in the specified list, the list will not be modified.
@@ -398,7 +392,6 @@ concatToAttribute( State, AttributeName, List ) ->
 -spec deleteFromAttribute( wooper:state(), attribute_name(),
 						   attribute_value() ) -> wooper:state().
 deleteFromAttribute( State, AttributeName, Element ) ->
-
 	State#state_holder{
 		attribute_table=?wooper_table_type:delete_from_entry(
 			AttributeName,
@@ -407,8 +400,8 @@ deleteFromAttribute( State, AttributeName, Element ) ->
 
 
 
-% @doc Assumes the specified attribute is an hashtable and adds the specified
-% key/value pair to it.
+% @doc Assumes the specified attribute is an hashtable, and adds the specified
+% entry (key/value pair) to it.
 %
 % Returns an updated state.
 %
@@ -422,7 +415,6 @@ deleteFromAttribute( State, AttributeName, Element ) ->
 			?wooper_table_type:key(), ?wooper_table_type:value() ) ->
 									wooper:state().
 addKeyValueToAttribute( State, AttributeName, Key, Value ) ->
-
 	State#state_holder{
 		attribute_table=?wooper_table_type:add_entry(
 
@@ -436,8 +428,8 @@ addKeyValueToAttribute( State, AttributeName, Key, Value ) ->
 
 
 
-% @doc Removes the head from specified attribute, supposed to be a list, and
-% returns a tuple {NewState, PoppedHead}.
+% @doc Removes the head from the specified attribute, supposed to be a list, and
+% returns a {NewState, PoppedHead} pair.
 %
 % For example, if the attribute 'my_list' contains [5,8,3], executing:
 % '{PoppedState, Head} = ?popFromAttribute(State, my_list)' returns a state

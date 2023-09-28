@@ -37,11 +37,14 @@
 -compile( { inline_size, ?inline_size } ).
 
 
+% General notes: linear operations (matrices, vectors, etc.) could be done based
+% on Blas (see https://github.com/erlef/blas).
+
 
 % These type names are too general to be defined in the hrl file (i.e. in the
 % root namespace).
 
-% By default (unless specified), most values (ex: coordinates, distances) are
+% By default (unless specified), most values (e.g. coordinates, distances) are
 % floating-point ones.
 %
 % Integer counterparts are usually defined (integer_*), as well as values that
@@ -53,7 +56,7 @@
 
 
 -type dimension() :: count().
-% The dimension of a space (ex: number of rows or columns for a matrix).
+% The dimension of a space (e.g. number of rows or columns for a matrix).
 
 
 -type coordinate() :: float().
@@ -73,16 +76,16 @@
 % User-specified coordinates in a referential.
 
 
-% Distance (as floating-point) between two points (ex: to express lengths):
 -type distance() :: float().
+% Distance (as floating-point) between two points (e.g. to express lengths).
 
 
 -type integer_distance() :: integer().
-% Integer distance between two points (ex: to express lengths).
+% Integer distance between two points (e.g. to express lengths).
 
 
 -type any_distance() :: number().
-% Distance between two points (ex: to express lengths).
+% Distance between two points (e.g. to express lengths).
 
 
 -type signed_distance() :: float().
@@ -104,12 +107,10 @@
 % Radius.
 
 
-
+-type square_distance() :: float().
 % Square of a distance between two points, as a floating-point value (cheaper to
 % compute, when applying the square root operator is not needed, like when
 % comparing distances).
-%
--type square_distance() :: float().
 
 
 -type integer_square_distance() :: integer().
@@ -122,6 +123,7 @@
 -type any_square_distance() :: number().
 % Square of a distance between two points (cheaper to compute, when applying the
 % square root operator is not needed, like when comparing distances).
+
 
 
 -type area() :: float().
@@ -163,16 +165,16 @@
 
 
 -type indice() :: basic_utils:positive_index().
-% The indice/index of an element (ex: of a vertex in an array thereof).
+% The indice/index of an element (e.g. of a vertex in an array thereof).
 
 
 -type indexed_triangle() :: { indice(), indice(), indice() }.
 % A definition of a triangle, based on the indices of its three vertices, in a
-% vertex container (ex: a list).
+% vertex container (e.g. a list).
 
 
 -type bounding_space() :: bounding_surface:bounding_surface()
-						| bounding_volume:ounding_volume().
+						| bounding_volume:bounding_volume().
 % A bounding space, for a given dimensionality.
 
 

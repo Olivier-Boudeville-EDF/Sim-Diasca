@@ -335,7 +335,9 @@ run( IsDebug ) ->
 	end,
 
 
-	test_facilities:display( "Testing now synchronous operations." ),
+	test_facilities:display( "Testing now synchronous operations. "
+		"Note that with the 'production' execution target this test "
+		"will trigger a longer time-out (e.g. 30 minutes)." ),
 
 	MySyncP = class_Platypus:synchronous_new_link( 3, female, violet, grey ),
 

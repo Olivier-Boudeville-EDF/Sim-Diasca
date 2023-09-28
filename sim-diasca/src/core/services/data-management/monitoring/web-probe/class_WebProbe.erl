@@ -138,7 +138,7 @@
 
 
 % Must be included before class_TraceEmitter header:
--define( trace_emitter_categorization, "Core.ResultManagement.Probe.Web" ).
+-define( trace_emitter_categorization, "Core.Result management.Probe.Web" ).
 
 
 % For the web probe settings:
@@ -189,7 +189,7 @@ construct( State, { NameInit, ProbeOptions }, Metadata )
 		naming_utils:get_registered_pid_for( ?web_manager_name, global ),
 
 	ProducerState = class_ResultProducer:construct( State,
-										?trace_categorize(NameInit) ),
+		?trace_categorize(NameInit) ),
 
 	% Such an instance is both a probe and a web element, so:
 
@@ -198,7 +198,7 @@ construct( State, { NameInit, ProbeOptions }, Metadata )
 	{ IsTrackedProducer, MaybeBinProbeDir } = interpret_options( ProbeOptions ),
 
 	% Thanks to WOOPER, even if we are here in the mother class of the actual,
-	% non-already constructed class (ex: could be class_TestWebProbe), we
+	% non-already constructed class (e.g. could be class_TestWebProbe), we
 	% already know the actual, most precise classname that we will be using in
 	% order to trigger, on the web manager side, any relevant code that is
 	% specific to this class:
@@ -206,7 +206,7 @@ construct( State, { NameInit, ProbeOptions }, Metadata )
 	ActualClassname = wooper:get_classname( ProducerState ),
 
 	WebManagerPid ! { declareWebProbe,
-				[ BinProbeName, ActualClassname, MaybeBinProbeDir ], self() },
+		[ BinProbeName, ActualClassname, MaybeBinProbeDir ], self() },
 
 	ResultManagerPid = getAttribute( ProducerState, result_manager_pid ),
 
@@ -352,7 +352,7 @@ sendResults( State, _ProducerOptions ) ->
 	false = ?getAttr(result_collected),
 
 	% Call to a (possibly overridden) empty callback method, so that any
-	% finalization of a web content (ex: the addition of a web footer) can be
+	% finalization of a web content (e.g. the addition of a web footer) can be
 	% done when needed:
 	%
 	FinalizedState = executeOneway( State, onFinalizationTime ),
@@ -373,7 +373,7 @@ sendResults( State, _ProducerOptions ) ->
 						[ BinFilename ] ),
 
 			BinContentFilename =
-						file_utils:join( ?getAttr(web_dir), BinFilename ),
+				file_utils:join( ?getAttr(web_dir), BinFilename ),
 
 			BinContent = file_utils:read_whole( BinContentFilename ),
 
@@ -581,7 +581,7 @@ delete_facility_probe( ProbePid ) when is_pid( ProbePid ) ->
 get_filename_for( WebProbeName ) ->
 
 	BinFilename = text_utils:string_to_binary( file_utils:convert_to_filename(
-			text_utils:format( "web-probe-~ts.html", [ WebProbeName ] ) ) ),
+		text_utils:format( "web-probe-~ts.html", [ WebProbeName ] ) ) ),
 
 	%trace_utils:debug_fmt( "The filename corresponding to the web probe "
 	%    "named '~ts' is: '~ts'.", [ WebProbeName, BinFilename ] ),
@@ -631,8 +631,7 @@ to_string( State ) ->
 			"no resource directory";
 
 		RscDir ->
-			text_utils:format( "resource directory '~ts'",
-							   [ RscDir ] )
+			text_utils:format( "resource directory '~ts'", [ RscDir ] )
 
 	end,
 

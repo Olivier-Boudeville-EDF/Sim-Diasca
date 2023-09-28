@@ -24,13 +24,13 @@ Let's suppose we have an application named ``Foo`` that relies on Myriad.
 ``Foo`` may define additional dependencies, which may be:
 
 - either mandatory or optional
-- needed starting from build-time (ex: if relying on their headers and/or modules - including parse-transforms), or only at runtime
+- needed starting from build-time (e.g. if relying on their headers and/or modules - including parse-transforms), or only at runtime
 
-For a given **optional** dependency (ex: regarding JSON), a USE make variable is to be defined in the layer that introduced this dependency (ex: ``USE_JSON``, introduced by Myriad, therefore to be listed in its ``GNUmakevars.inc``). This variable allows to have our native build system register the associated additional include and ebin directories.
+For a given **optional** dependency (e.g. regarding JSON), a USE make variable is to be defined in the layer that introduced this dependency (e.g. ``USE_JSON``, introduced by Myriad, therefore to be listed in its ``GNUmakevars.inc``). This variable allows to have our native build system register the associated additional include and ebin directories.
 
-The first step to enable such a dependency (ex: the JSON support) is to set its USE variable to ``true`` (ex: ``USE_JSON = true``), as it is expected to be disabled by default. Depending on the service at hand, a specific backend may have also to be selected (ex: either ``USE_JSX = true`` or ``USE_JIFFY = true`` to select a suitable JSON parser).
+The first step to enable such a dependency (e.g. the JSON support) is to set its USE variable to ``true`` (e.g. ``USE_JSON = true``), as it is expected to be disabled by default. Depending on the service at hand, a specific backend may have also to be selected (e.g. either ``USE_JSX = true`` or ``USE_JIFFY = true`` to select a suitable JSON parser).
 
-Finally, some supports may depend on others (ex: enabling ``USE_REST`` will enable ``USE_JSON`` in turn).
+Finally, some supports may depend on others (e.g. enabling ``USE_REST`` will enable ``USE_JSON`` in turn).
 
 
 
@@ -49,9 +49,9 @@ Build-time Third-Party Dependencies
 
 Myriad does not have such dependencies, but layers above in the software stack (like a layer that would be named ``Foo``) may.
 
-To have such dependencies (ex: let's suppose that the ``jsx`` JSON parser defined header files that one wants to include) *installed* as well when building one's project (ex: ``Foo``), one may rely on rebar, and list them in the project's ``foo/conf/rebar.config.template`` file (ex: ``{deps, [bar, jsx]}.``) from which the actual ``rebar.config`` is to be generated (use the ``make set-rebar-conf`` target for that).
+To have such dependencies (e.g. let's suppose that the ``jsx`` JSON parser defined header files that one wants to include) *installed* as well when building one's project (e.g. ``Foo``), one may rely on rebar, and list them in the project's ``foo/conf/rebar.config.template`` file (e.g. ``{deps, [bar, jsx]}.``) from which the actual ``rebar.config`` is to be generated (use the ``make set-rebar-conf`` target for that).
 
-The actual compilation will be done by our native build system in all cases, either directly (when running ``make all``) or when using ``rebar compile`` (rebar hooks will then ensure that in practice the application is compiled with our native rules anyway). Therefore appropriate make variables (ex: ``JSX_REBAR_BASE``, in ``myriad/GNUmakevars.inc``) shall be defined so that the corresponding BEAM files installed through rebar can be found in this native context as well (through the ``BEAM_DIRS`` make variable).
+The actual compilation will be done by our native build system in all cases, either directly (when running ``make all``) or when using ``rebar compile`` (rebar hooks will then ensure that in practice the application is compiled with our native rules anyway). Therefore appropriate make variables (e.g. ``JSX_REBAR_BASE``, in ``myriad/GNUmakevars.inc``) shall be defined so that the corresponding BEAM files installed through rebar can be found in this native context as well (through the ``BEAM_DIRS`` make variable).
 
 Finally, such dependencies may or may not be listed in the ``deps`` entry of the  ``conf/foo.app.src`` file [#]_, depending on whether they are optional or not.
 

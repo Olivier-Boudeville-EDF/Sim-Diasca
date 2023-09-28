@@ -26,7 +26,7 @@
 % Creation date: Thursday, December 23, 2021.
 
 
-% @doc Testing the <b>support from images</b>.
+% @doc Testing the <b>support for the management of images</b>.
 %
 % Useful for example to check whether a given format is correctly supported.
 %
@@ -37,7 +37,7 @@
 
 % Implementation notes:
 %
-% We favor mostly PNG and JPEG images.
+% We favor mostly the PNG and JPEG formats.
 %
 % Here, rather than using our canvas, we directly paint of the panel defined
 % within the main frame.
@@ -95,7 +95,15 @@ get_test_image_directory() ->
 % @doc Returns the path to the main test image.
 -spec get_test_main_image_path() -> directory_path().
 get_test_main_image_path() ->
-	file_utils:join( get_test_image_directory(), "myriad-title.png" ).
+	ImageFilename = "myriad-title.png",
+	%ImageFilename = "myriad-minimal-enclosing-circle-test.png",
+
+	% If having there a local symlink pointing to
+	% Erlang-x.y/lib/erlang/lib/wx-z/examples/demo/image.jpg:
+	%
+	%ImageFilename = "image.jpg",
+
+	file_utils:join( get_test_image_directory(), ImageFilename ).
 
 
 
@@ -114,31 +122,30 @@ run_image_test() ->
 
 	gui:start(),
 
-	MainFrame = gui:create_frame( _Title="MyriadGUI Image Test",
+	MainFrame = gui_frame:create( _Title="MyriadGUI Image Test",
 								  gui_overall_test:get_main_window_size() ),
 
-	% No need to add _Opts=[ { style, full_repaint_on_resize } ]:
-	Panel = gui:create_panel( MainFrame ),
+	% No need to add _Opts=[{style, full_repaint_on_resize}]:
+	Panel = gui_panel:create( MainFrame ),
 
 	% The backbuffer on which panel content will be drawn:
-	BackbufferBitmap = gui:create_blank_bitmap_for( Panel ),
+	BackbufferBitmap = gui_bitmap:create_empty_for( Panel ),
 
 	% The image bitmap, kept to regenerate the backbuffer as needed:
-	ImgBitmap = gui:create_bitmap( ImagePath ),
+	ImgBitmap = gui_bitmap:create_from( ImagePath ),
 
 	% Initialisation:
 	render_scene( Panel, BackbufferBitmap, ImgBitmap ),
+	StatusBar = gui_statusbar:create( MainFrame ),
 
-	StatusBar = gui:create_status_bar( MainFrame ),
-
-	gui:push_status_text( "Displaying image.", StatusBar ),
+	gui_statusbar:push_text( StatusBar, "Displaying image." ),
 
 	% No need to subscribe to 'onRepaintNeeded' for the panel:
 	gui:subscribe_to_events( [ { onWindowClosed, MainFrame },
 							   { onResized, Panel } ] ),
 
 	% Renders the GUI:
-	gui:show( MainFrame ),
+	gui_frame:show( MainFrame ),
 
 	test_main_loop( #my_test_state{ main_frame=MainFrame,
 									panel=Panel,
@@ -158,7 +165,7 @@ test_main_loop( TestState=#my_test_state{ main_frame=MainFrame,
 
 	receive
 
-		% Not subscribed to onRepaintNeeded so not never activated:
+		% Not subscribed to onRepaintNeeded, so never activated:
 		%{ onRepaintNeeded, [ Panel, _Context ] } ->
 		%   trace_utils:debug( "Repainting test panel." ),
 		%
@@ -178,20 +185,20 @@ test_main_loop( TestState=#my_test_state{ main_frame=MainFrame,
 				trace_utils:notice_fmt(
 					"Test panel '~ts' resized to ~p (~ts).",
 					[ gui:object_to_string( Panel ), NewSize,
-					  gui:context_to_string( Context ) ] ),
+					  gui_event:context_to_string( Context ) ] ),
 				basic_utils:ignore_unused( [ NewSize, Context ] ) ),
 
 			% We have to resize the framebuffer first:
-			NewBackbufferBitmap = gui:create_blank_bitmap( NewSize ),
+			NewBackbufferBitmap = gui_bitmap:create_empty( NewSize ),
 
 			render_scene( Panel, NewBackbufferBitmap, ImgBitmap ),
 
-			gui:destruct_bitmap( BackbufferBitmap ),
+			gui_bitmap:destruct( BackbufferBitmap ),
 
 			%trace_utils:debug( "Test panel resized (render)." ),
 
-			test_main_loop(
-				TestState#my_test_state{ backbuffer=NewBackbufferBitmap } );
+			test_main_loop( TestState#my_test_state{
+				backbuffer=NewBackbufferBitmap } );
 
 
 		{ onWindowClosed, [ MainFrame, _MainFrameId, Context ] } ->
@@ -200,10 +207,10 @@ test_main_loop( TestState=#my_test_state{ main_frame=MainFrame,
 				trace_utils:notice_fmt( "Test main frame ~ts has been closed "
 					"(~ts), test success.",
 					[ gui:object_to_string( MainFrame ),
-					  gui:context_to_string( Context ) ] ),
+					  gui_event:context_to_string( Context ) ] ),
 				basic_utils:ignore_unused( Context ) ),
 
-			gui:destruct_window( MainFrame );
+			gui_frame:destruct( MainFrame );
 
 
 		Other ->
@@ -224,25 +231,24 @@ render_scene( TargetPanel, BackbufferBitmap, ImageBitmap ) ->
 	% Updates the backbuffer with the stored image:
 
 	% Locks the target surface (device context):
-	BackbufferDC = gui:lock_bitmap( BackbufferBitmap ),
+	BackbufferDC = gui_bitmap:lock( BackbufferBitmap ),
 
-	gui:clear_device_context( BackbufferDC ),
+	gui_render:clear_device_context( BackbufferDC ),
 
-	gui:draw_bitmap( _Source=ImageBitmap, BackbufferDC, _PosInTarget={15,130} ),
-
+	gui_bitmap:draw( _Source=ImageBitmap, BackbufferDC, _PosInTarget={15,130} ),
 
 	% Then blits this updated backbuffer to the panel:
 	TopLeftPos = {0,0},
 
-	TargetPanelDC = gui:lock_window( TargetPanel ),
+	TargetPanelDC = gui_widget:lock( TargetPanel ),
 
-	gui:blit( _From=BackbufferDC, _FromPos=TopLeftPos,
-			  _BlitArea=gui:get_size( BackbufferBitmap ),
-			  _To=TargetPanelDC, _ToPos=TopLeftPos ),
+	gui_render:blit( _From=BackbufferDC, _FromPos=TopLeftPos,
+		_BlitArea=gui_bitmap:get_size( BackbufferBitmap ),
+		_To=TargetPanelDC, _ToPos=TopLeftPos ),
 
-	gui:unlock_window( TargetPanelDC ),
+	gui_widget:unlock( TargetPanelDC ),
 
-	gui:unlock_bitmap( BackbufferDC ).
+	gui_bitmap:unlock( BackbufferDC ).
 
 
 
@@ -252,18 +258,18 @@ update_panel( TargetPanel, BackbufferBitmap ) ->
 	% No need to update the update the framebuffer.
 
 	% Locks the target surface (device context):
-	BackbufferDC = gui:lock_bitmap( BackbufferBitmap ),
+	BackbufferDC = gui_bitmap:lock( BackbufferBitmap ),
 
 	% Then blits this updated backbuffer to the panel:
 	TopLeftPos = {0,0},
 
-	TargetPanelDC = gui:lock_window( TargetPanel ),
+	TargetPanelDC = gui_widget:lock( TargetPanel ),
 
-	gui:blit( BackbufferDC, TopLeftPos, gui:get_size( BackbufferBitmap ),
-			  TargetPanelDC, TopLeftPos ),
+	gui_render:blit( BackbufferDC, TopLeftPos,
+		gui_bitmap:get_size( BackbufferBitmap ), TargetPanelDC, TopLeftPos ),
 
-	gui:unlock_window( TargetPanelDC ),
-	gui:unlock_bitmap( BackbufferDC ).
+	gui_widget:unlock( TargetPanelDC ),
+	gui_bitmap:unlock( BackbufferDC ).
 
 
 

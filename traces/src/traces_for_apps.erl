@@ -57,9 +57,12 @@
 % Shorthands:
 
 -type module_name() :: basic_utils:module_name().
+
 -type aggregator_pid() :: class_TraceAggregator:aggregator_pid().
--type initialize_supervision() ::
-		class_TraceAggregator:initialize_supervision().
+
+-type initialise_supervision() ::
+		class_TraceAggregator:initialise_supervision().
+
 
 
 % @doc Starts the specified application.
@@ -79,7 +82,7 @@
 %
 % The resulting trace aggregator will be registered globally (only).
 %
--spec app_start( module_name(), initialize_supervision() ) -> aggregator_pid().
+-spec app_start( module_name(), initialise_supervision() ) -> aggregator_pid().
 app_start( ModuleName, InitTraceSupervisor ) ->
 	app_start( ModuleName, InitTraceSupervisor, _DisableExitTrapping=true ).
 
@@ -100,7 +103,7 @@ app_start( ModuleName, InitTraceSupervisor ) ->
 %
 % The resulting trace aggregator will be registered globally (only).
 %
--spec app_start( module_name(), initialize_supervision(), boolean() ) ->
+-spec app_start( module_name(), initialise_supervision(), boolean() ) ->
 						aggregator_pid().
 % All values possible for InitTraceSupervisor here:
 app_start( ModuleName, InitTraceSupervisor, DisableExitTrapping ) ->
@@ -123,7 +126,7 @@ app_start( ModuleName, InitTraceSupervisor, DisableExitTrapping ) ->
 % is executed from a supervisor (see traces_bridge_sup:init/1), whose trapping
 % of EXITs shall not be altered (otherwise, for example, shutdowns may freeze).
 %
--spec app_start( module_name(), initialize_supervision(), boolean(),
+-spec app_start( module_name(), initialise_supervision(), boolean(),
 				 naming_utils:registration_scope() ) -> aggregator_pid().
 % All values possible for InitTraceSupervisor here:
 app_start( ModuleName, InitTraceSupervisor, DisableExitTrapping,
@@ -178,22 +181,18 @@ app_start( ModuleName, InitTraceSupervisor, DisableExitTrapping,
 
 	% So we trigger the supervisor launch by ourselves:
 	%
-	% (ex: InitTraceSupervisor could have been set to 'later')
-	case ( not AppIsBatch ) andalso ( InitTraceSupervisor =:= true ) of
-
-		true ->
+	% (e.g. InitTraceSupervisor could have been set to 'later')
+	( not AppIsBatch ) andalso ( InitTraceSupervisor =:= true ) andalso
+		begin
 			TraceAggregatorPid ! { launchTraceSupervisor, [], self() },
 			receive
 
 				{ wooper_result, _SupervisorPid } ->
 					ok
 
-			end;
+			end
 
-		false ->
-			ok
-
-	end,
+		end,
 
 	TraceAggregatorPid.
 
@@ -212,15 +211,7 @@ app_stop( ModuleName, TraceAggregatorPid, WaitForTraceSupervisor ) ->
 	%trace_utils:info_fmt( "Application stopping (aggregator: ~w, wait "
 	%    "supervisor: ~ts).", [ TraceAggregatorPid, WaitForTraceSupervisor] ),
 
-	case WaitForTraceSupervisor of
-
-		true ->
-			class_TraceSupervisor:wait_for();
-
-		false ->
-			ok
-
-	end,
+	WaitForTraceSupervisor andalso class_TraceSupervisor:wait_for(),
 
 	%trace_utils:info( "Going for immediate stop of Traces." ),
 

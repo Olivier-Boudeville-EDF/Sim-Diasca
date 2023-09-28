@@ -79,7 +79,7 @@
 % This is the class-specific object state, each instance of this class will have
 % its own state_holder, quite similar to the 'C++' this pointer.
 %
-% Constant data (ex: the virtual table) are referenced by each class instance,
+% Constant data (e.g. the virtual table) are referenced by each class instance,
 % they are not duplicated (pointer to a virtual table shared by all class
 % instances rather than deep copy).
 %
@@ -109,10 +109,14 @@
 	% Just a key in the persistent_term registry:
 	%virtual_table_key :: wooper:class_key(),
 
+	% Class-level table telling, for each method supported by this class, which
+	% module (parent class) implements it.
+	%
 	% Now directly a reference within the persistent_term registry:
 	virtual_table :: ?wooper_table_type:?wooper_table_type(),
 
-	attribute_table :: maybe( ?wooper_table_type:?wooper_table_type() ),
+	% Holds the instance-specific attribute-based key/value state:
+	attribute_table :: ?wooper_table_type:?wooper_table_type(),
 
 	% Only means that we know to access the actual class name:
 	%
@@ -121,7 +125,7 @@
 	%
 	% To be used, instead of ?MODULE or alike.
 	%
-	actual_class :: basic_utils:module_name(),
+	actual_class :: wooper:classname(),
 
 	request_sender :: maybe( pid() ) } ).
 

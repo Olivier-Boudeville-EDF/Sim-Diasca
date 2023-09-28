@@ -202,7 +202,7 @@ Compiling module sql_support.erl : can't find include file "sqlite3.hrl"
 ........................................................................
 
 - ``USE_SQLITE`` not set to ``true`` in ``myriad/GNUmakevars.inc``
-- ``erlang-sqlite3`` backend not correctly installed (ex: ``SQLITE3_BASE`` not pointing to a right path in ``myriad/GNUmakevars.inc``)
+- ``erlang-sqlite3`` backend not correctly installed (e.g. ``SQLITE3_BASE`` not pointing to a right path in ``myriad/GNUmakevars.inc``)
 
 
 

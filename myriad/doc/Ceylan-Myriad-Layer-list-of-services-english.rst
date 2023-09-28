@@ -28,7 +28,7 @@ In future versions of this document, following topics will be discussed:
 
 - HDF5 support
 - REST support
-- third-party language bindings (ex: Python, Java, maybe in the future Haskell; C/C++ is to be tackled by our `Seaplus <http://seaplus.esperide.org>`_ project)
+- third-party language bindings (e.g. Python, Java, maybe in the future Haskell; C/C++ is to be tackled by our `Seaplus <http://seaplus.esperide.org>`_ project)
 - RDF support
 
 Even if this document does not constitute an exhaustive walk-through, each of them is detailed in turn below.

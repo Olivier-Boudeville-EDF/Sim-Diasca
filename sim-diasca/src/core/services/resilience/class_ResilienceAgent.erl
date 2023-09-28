@@ -825,11 +825,11 @@ read_probe( File, _AgentPid, _LocalInstanceTracker ) ->
 
 	{ ok, << ContentSize:32 >> } = file_utils:read( File, SizeOfSize ),
 
-	{ ok, BinStateContent } = file_utils:read( File, ContentSize ),
+	{ ok, _BinStateContent } = file_utils:read( File, ContentSize ),
 
 	{ ok, << CommandSize:32 >> } = file_utils:read( File, SizeOfSize ),
 
-	BinCommand = case CommandSize of
+	_BinCommand = case CommandSize of
 
 		 0 ->
 			undefined;
@@ -842,7 +842,7 @@ read_probe( File, _AgentPid, _LocalInstanceTracker ) ->
 
 	{ ok, << DataSize:32 >> } = file_utils:read( File, SizeOfSize ),
 
-	BinData = case DataSize of
+	_BinData = case DataSize of
 
 		0 ->
 			undefined;
@@ -853,7 +853,7 @@ read_probe( File, _AgentPid, _LocalInstanceTracker ) ->
 
 	end,
 
-	ReaderPid = self(),
+	_ReaderPid = self(),
 
 	% As anyway the probe will have its own process, let's delegate the work to
 	% this process as soon as possible:
@@ -875,9 +875,12 @@ read_probe( File, _AgentPid, _LocalInstanceTracker ) ->
 			"becoming ~p.",
 			[ TotalSize, ContentSize, CommandSize, DataSize, self() ] ),
 
+		% Deactivated, as the API was improved:
 		% Will never return:
-		class_Probe:deserialise( BinStateContent, BinCommand, BinData,
-								 ReaderPid )
+		%class_Probe:deserialise( BinStateContent, BinCommand, BinData,
+		%                         ReaderPid )
+
+		throw( not_implemented_yet)
 
 				   end ).
 

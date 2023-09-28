@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2022 Olivier Boudeville
+% Copyright (C) 2003-2023 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -41,3 +41,9 @@
 % representable IEEE 754 floating-point value)
 %
 -define( infinity, 3.402823e+38 ).
+
+
+% Should these constants be evaluated only at runtime otherwise:
+
+% math:sqrt(2*math:pi()):
+-define( sqrt_2_pi, 2.5066282746310002 ).

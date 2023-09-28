@@ -86,7 +86,7 @@
 % vertex to the found one.
 %
 -spec find_breadth_first( vertex(), predicate(), feeder() ) ->
-								'not_found' | [ vertex() ].
+								'no_path_found' | [ vertex() ].
 find_breadth_first( InitialVertex, Predicate, Feeder ) ->
 	find_breadth_first( InitialVertex, Predicate, Feeder, _UserData=undefined ).
 
@@ -103,7 +103,7 @@ find_breadth_first( InitialVertex, Predicate, Feeder ) ->
 % graph structure (see graph_utils_test.erl).
 %
 -spec find_breadth_first( vertex(), predicate(), feeder(),
-				basic_utils:user_data() ) -> 'not_found' | [ vertex() ].
+				basic_utils:user_data() ) -> 'no_path_found' | [ vertex() ].
 find_breadth_first( InitialVertex, Predicate, Feeder, UserData ) ->
 
 	% We rely on a queue, to examine vertices at increasing ranges
@@ -151,29 +151,22 @@ find_bfs_helper( Predicate, Feeder, CandidateQueue, ExploredList, UserData ) ->
 					Children = Feeder( Vertex, UserData ),
 
 					SelectedChildren = [ C || C <- Children,
-								  not ?list_impl:is_member( C, ExploredList ) ],
+						not ?list_impl:is_member( C, ExploredList ) ],
 
-					%io:format( "Vertex ~p not suitable, enqueuing ~w.~n",
-					%			[ Vertex, SelectedChildren ] ),
+					%trace_utils:debug_fmt( "Vertex ~p not suitable, "
+					%  "enqueuing ~w.~n", [ Vertex, SelectedChildren ] ),
 
 					% Uncomment if wanting to check the cycle management:
 
-					% case SelectedChildren of
-
-					%	Children ->
-					%		ok;
-
-					%	_ ->
-					%		io:format( "Removed: ~w.~n", [ lists:subtract(
-					%						 Children, SelectedChildren ) ] )
-
-					% end,
+					% SelectedChildren =:= Children orelse
+					%     trace_utils:debug_fmt( "Removed: ~w.~n",
+					%  [ lists:subtract( Children, SelectedChildren ) ] ),
 
 					NewQueue = lists:foldl( fun( C, Q ) ->
-													queue:in( [ C | Path ], Q )
+												queue:in( [ C | Path ], Q )
 											end,
-								 _Acc0=PoppedQueue,
-								 _List=SelectedChildren ),
+											_Acc0=PoppedQueue,
+											_List=SelectedChildren ),
 
 					NewExplored = ?list_impl:add( Vertex, ExploredList ),
 

@@ -1,7 +1,7 @@
 % Copyright (C) 2012-2023 EDF R&D
-
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
@@ -10,11 +10,11 @@
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2012.
 
@@ -185,9 +185,9 @@
 % for N, i.e. that will store information on the behalf of N
 %
 %
-% Ex: with a resilience level of k=3, to node 'a' may be associated the secured
-% nodes [g, h, i] (they rely on 'a'), while the securing nodes may be ['b', 'c',
-% 'd'] ('a' rely on them).
+% For example with a resilience level of k=3, to node 'a' may be associated the
+% secured nodes [g, h, i] (they rely on 'a'), while the securing nodes may be
+% ['b', 'c', 'd'] ('a' rely on them).
 
 
 -type k_record() :: #k_record{}.
@@ -455,7 +455,7 @@ construct_common( State ) ->
 	erlang:link( ManagerPid ),
 
 	BaseState = class_EngineBaseObject:construct( State,
-							?trace_categorize("Resilience Manager") ),
+		?trace_categorize("Resilience manager") ),
 
 	% Ensures also it is a singleton indeed:
 	naming_utils:register_as( ?resilience_manager_name, ?registration_scope ),
@@ -694,7 +694,7 @@ nodedown( State, Node ) ->
 		[ _Latest={ Tick, Diasca } | _RestOfHistory ] ->
 
 			% As multiple 'nodedown' messages may be received almost at once
-			% (ex: a part of the network may have collapsed), we try first to
+			% (e.g. a part of the network may have collapsed), we try first to
 			% establish the full list of down nodes before going for a rollback,
 			% in order to reduce the risk that it fails or must be performed
 			% multiple times because of 'node down' messages not processed yet:
@@ -894,17 +894,17 @@ recreate_simulation_services( SurvivingNodes, _CrashedNodes, State ) ->
 	% specific constructor for that)
 
 	% To adapt to current known system state:
-	Context = { SurvivingNodes, ?getAttr(start_timestamp),
-				?getAttr(engine_root_dir), ?getAttr(available_hosts) },
+	_Context = { SurvivingNodes, ?getAttr(start_timestamp),
+				 ?getAttr(engine_root_dir), ?getAttr(available_hosts) },
 
 	% SimIdentifiers shall be retrieved as well:
 	SimIdentifiers = to_do,
 
 	throw( SimIdentifiers ),
 
-	_DeploymentManagerPid = class_DeploymentManager:synchronous_new_link(
-		?getAttr(simulation_settings), ?getAttr(deployment_settings),
-		?getAttr(load_balancing_settings), SimIdentifiers, Context ),
+	%_DeploymentManagerPid = class_DeploymentManager:synchronous_new_link(
+	%   ?getAttr(simulation_settings), ?getAttr(deployment_settings),
+	%   ?getAttr(load_balancing_settings), SimIdentifiers, Context ),
 
 	State.
 
@@ -1359,10 +1359,10 @@ build_k_map( ResilienceLevel, ProtectedNodes ) ->
 			% Let's suppose we have 5 nodes L = [a, b, c, d, e] and k=3.
 			%
 			% a would be secured by [b, c, d], b by [c, d, e] and so on, and
-			% reverse dependencies (ex: c securing a, b and another node) would
+			% reverse dependencies (e.g. c securing a, b and another node) would
 			% be recorded at the same time.
 			%
-			% For that we simply, given a node (ex: a) select the k next
+			% For that we simply, given a node (e.g. a) select the k next
 			% elements in L, transforming the list into a ring, whose next
 			% element after its last is its first again, and so one (as if the
 			% list was actually the infinite one [a, b, c, d, e, a, b, ...]).

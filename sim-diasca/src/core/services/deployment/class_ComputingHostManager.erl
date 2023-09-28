@@ -51,11 +51,11 @@
 	  "(operating-system) user with which we should connect to that host" },
 
 	{ node_name, string_node_name(),
-	  "the managed, short node name (ex: 'my_node'), i.e. it is not "
+	  "the managed, short node name (e.g. 'my_node'), i.e. it is not "
 	  "fully-qualified" },
 
 	{ full_node_name, atom_node_name(),
-	  "the fully-qualified node name (ex: 'my_node@foo.org') to be used "
+	  "the fully-qualified node name (e.g. 'my_node@foo.org') to be used "
 	  "by other nodes in order to target the corresponding node" },
 
 	{ node_naming_mode, net_utils:node_naming_mode(), "the node naming "
@@ -142,7 +142,8 @@
 
 
 % Must be included before class_TraceEmitter header:
--define( trace_emitter_categorization, "Core.Deployment.ComputingHostManager" ).
+-define( trace_emitter_categorization,
+		 "Core.Deployment.Computing host manager" ).
 
 
 % Allows to use macros for trace sending:
@@ -156,7 +157,6 @@
 % Shorthands:
 
 -type count() :: basic_utils:count().
--type user_name() :: basic_utils:user_name().
 -type exit_reason() :: basic_utils:exit_reason().
 
 -type ustring() :: text_utils:ustring().
@@ -168,7 +168,6 @@
 -type bin_file_path() :: file_utils:bin_file_path().
 -type bin_directory_path() :: file_utils:bin_directory_path().
 
-
 -type time_out() :: time_utils:time_out().
 
 -type atom_node_name() :: net_utils:atom_node_name().
@@ -176,6 +175,7 @@
 -type string_host_name() :: net_utils:string_host_name().
 -type tcp_port() :: net_utils:tcp_port().
 
+-type user_name() :: system_utils:user_name().
 -type command() :: system_utils:command().
 
 
@@ -184,7 +184,7 @@
 
 
 % If connecting from X@a to Y@b, the connection may fail or wait for a user
-% input (ex: modal window popped through SSH ask pass, if password-less
+% input (e.g. modal window popped through SSH ask pass, if password-less
 % authentication failed) and thus stay stuck in system_utils:run_command/1,
 % indefinitively or long enough to be rejected (no way of stopping this command
 % by message or time-out).
@@ -229,8 +229,8 @@
 % - NodeOptions={NodeBaseName, NodeNamingNode, NodeCleanupWanted, NodeCookie,
 % NodeSchedulerCount}, a tuple made of:
 %
-%  - NodeName, the base node name (a plain string, ex: "my_node"), without any
-%   host name
+%  - NodeName, the base node name (a plain string, e.g. "my_node"), without any
+%  host name
 %
 %   - NodeNamingNode, a node naming mode (i.e. short or long names)
 %
@@ -250,7 +250,7 @@
 %   - EpmdPort is the EPMD port specification, with can be either the
 %   'undefined' atom or the port number; note that if a non-default EPMD port is
 %   specified for a new node, this implies that the current node usually has to
-%   itself respect the same non-standard convention (ex: see the FIREWALL_OPT
+%   itself respect the same non-standard convention (e.g. see the FIREWALL_OPT
 %   make option in myriad/GNUmakevars.inc), otherwise available nodes will not
 %   be found
 %
@@ -282,16 +282,15 @@
 %
 -spec construct( wooper:state(),
 
-		{ 'localhost' | string_host_name(), user_name() },
+	{ 'localhost' | string_host_name(), user_name() },
 
-		{ atom_node_name(), net_utils:node_naming_mode(),
-		  'false' | bin_file_path(), net_utils:cookie(), maybe( count() ) },
+	{ atom_node_name(), net_utils:node_naming_mode(),
+	  'false' | bin_file_path(), net_utils:cookie(), maybe( count() ) },
 
-		{ maybe( tcp_port() ), 'no_restriction' | net_utils:tcp_port_range() },
+	{ maybe( tcp_port() ), 'no_restriction' | net_utils:tcp_port_range() },
 
-		{ deployment_manager_pid(), milliseconds(),
-		  milliseconds(), bin_string(),
-		  [ bin_directory_path() ], sim_diasca:sii() } )
+	{ deployment_manager_pid(), milliseconds(), milliseconds(), bin_string(),
+	  [ bin_directory_path() ], sim_diasca:sii() } )
 
 				-> wooper:state().
 construct( State,
@@ -344,37 +343,30 @@ construct( State,
 	EmitterName = "Host manager for " ++ NonDottedMessageHostname,
 
 	TraceState = class_EngineBaseObject:construct( State,
-								?trace_categorize(EmitterName) ),
+		?trace_categorize(EmitterName) ),
 
 	% As it may explain many connection issues (we waited to be able to send
 	% traces):
 	%
-	case Hostname of
+	Hostname =:= localhost andalso
+		case net_utils:get_naming_compliant_hostname( NodeNamingNode ) of
 
-		localhost ->
-			case net_utils:get_naming_compliant_hostname( NodeNamingNode ) of
+			ActualHostname ->
+				ok;
 
-				ActualHostname ->
-					ok;
+			OtherHostname ->
+				?send_warning_fmt( TraceState,
+					"Apparently the local hostname can resolve in different"
+					" versions: '~ts' as determined internally, "
+					"and '~ts' as deduced from the node name. "
+					"Such inconsistencies may prevent the node "
+					"interconnection.",
+					[ OtherHostname, ActualHostname ] )
 
-				OtherHostname ->
-					?send_warning_fmt( TraceState,
-						"Apparently the local hostname can resolve in different"
-						" versions: '~ts' as determined internally, "
-						"and '~ts' as deduced from the node name. "
-						"Such inconsistencies may prevent the node "
-						"interconnection.",
-						[ OtherHostname, ActualHostname ] )
-
-			end;
-
-		_ ->
-			ok
-
-	end,
+		end,
 
 	CompleteNodeName = net_utils:get_complete_node_name( NodeName,
-									ActualHostname, NodeNamingNode ),
+		ActualHostname, NodeNamingNode ),
 
 	% EPMD possibly undefined:
 	?send_debug_fmt( TraceState, "Creating a computing host manager for "
@@ -394,12 +386,12 @@ construct( State,
 		% The name of the user the with which we should connect to that node:
 		{ user_name, Username },
 
-		% Node name (a plain string); this is just the node name, ex: "my_node",
-		% i.e. it is not fully-qualified.
+		% Node name (a plain string); this is just the node name,
+		% e.g. "my_node", i.e. it is not fully-qualified.
 		%
 		{ node_name, NodeName },
 
-		% Fully-qualified node name (stored as an atom), ex:
+		% Fully-qualified node name (stored as an atom), e.g.
 		% 'Sim-Diasca-MyTest-MyUserName-MySII-computing-node@MyHost.foobar.org',
 		% to be used by other nodes, to target the corresponding node.
 		%
@@ -694,8 +686,7 @@ onDeploymentReady( State, HostInfo ) ->
 
 		TimeOutString ->
 			?info_fmt( "(already too late even to report that the "
-					   "deployment succeeded: ~ts)", [ TimeOutString ] ),
-			ok
+					   "deployment succeeded: ~ts)", [ TimeOutString ] )
 
 	end,
 
@@ -927,12 +918,10 @@ declare_deployment_failure( Reason, State ) ->
 
 
 		TimeOutString ->
-
 			?warning_fmt( "Deployment failed for host '~ts' with user '~ts' "
 				"(reason: ~ts; ~ts), notifying the deployment manager and "
 				"terminating.", [ ManagedHostname, LocalUsername, ReasonString,
-								  TimeOutString ] ),
-			ok
+								  TimeOutString ] )
 
 	end,
 
@@ -1251,7 +1240,7 @@ launch_erlang_node( State ) ->
 	% For local launches, command explicitly launched with a dedicated blocked
 	% process (previously: using os:cmd/1 with '&') in the background, hence no
 	% return code nor command output actually expected - except for some basic
-	% (ex: syntax) errors.
+	% (e.g. syntax) errors.
 	%
 	% For remote launches, the ssh option for background launches is used, yet
 	% we still have some return code and a command output, hence we do not
@@ -1832,7 +1821,7 @@ send_deployment_agent( State ) ->
 	% the use of an erlc in a different version than the initial build)
 	%
 	% Such pioneer modules may be reported as lacking should, for example, a
-	% computing host be specified incorrectly (ex: based on its IP address,
+	% computing host be specified incorrectly (e.g. based on its IP address,
 	% rather than on its expected FQDN).
 	%
 	ModulesToDeploy = [ text_utils, basic_utils, file_utils, net_utils,

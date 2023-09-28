@@ -26,7 +26,6 @@
 % Creation date: Sunday, July 30, 2017.
 
 
-
 % @doc Gathering of various facilities regarding the management of <b>binary,
 % bit-level operations</b>, like cyclic redundancy check (CRC) calculations.
 %
@@ -35,17 +34,327 @@
 -module(bin_utils).
 
 
+% Binary basics (see also the 'binary' standard module):
+-export([ create_binary/1, concatenate/1, concatenate/2, concatenate/3,
+		  replicate/2 ]).
+
+
+% Serialisation:
+-export([ tuples_to_float32s_binary/1, tuples_to_float32s_binary/2,
+		  concatenate_as_float32s/1, concatenate_as_float32s/2,
+
+		  tuples_to_int32s_binary/1, tuples_to_int32s_binary/2,
+		  concatenate_as_int32s/1, concatenate_as_int32s/2,
+
+		  tuples_to_uint32s_binary/1, tuples_to_uint32s_binary/2,
+		  concatenate_as_uint32s/1, concatenate_as_uint32s/2 ]).
+
+
 -export([ get_crc8_table/0, compute_crc8_checksum/1 ]).
+
+
+
+-type buffer() :: binary().
+% A (binary) buffer, a series of bytes.
 
 -type crc8_checksum() :: byte().
 
--export_type([ crc8_checksum/0 ]).
+
+-export_type([ buffer/0, crc8_checksum/0 ]).
 
 
 % Erlang pointers about bit-related operations:
 % - http://erlang.org/doc/programming_examples/bit_syntax.html
 % - http://erlang.org/doc/reference_manual/expressions.html#bit_syntax
 % - http://learnyousomeerlang.com/starting-out-for-real#bit-syntax
+% - https://cheatography.com/fylke/cheat-sheets/erlang-binaries/
+
+
+% Shorthands:
+
+-type count() :: basic_utils:count().
+
+-type tuple( T ) :: type_utils:tuple( T ).
+
+-type byte_size() :: system_utils:byte_size().
+
+
+
+% @doc Creates a (binary) buffer of the specified size, containing only zeroes.
+%
+% Possibly useful in order to provide a buffer to non-allocating functions (like
+% gl:getDebugMessageLog/2 was wrongly believed to be).
+%
+-spec create_binary( byte_size() ) -> buffer().
+create_binary( ByteCount ) ->
+
+	% Maybe a better solution exists:
+	Bin = <<0:(8*ByteCount)/integer>>,
+
+	cond_utils:if_defined( myriad_check_binaries,
+		basic_utils:assert_equal( ByteCount, byte_size( Bin ) ) ),
+
+	cond_utils:if_defined( myriad_debug_binaries,
+		trace_utils:debug_fmt( "Created a binary of ~B bytes:~n  ~p",
+							   [ ByteCount, Bin ] ) ),
+
+	Bin.
+
+
+
+% @doc Concatenates the specified binaries into the returned one.
+%
+% Note: mostly added for documentation purpose; can/should be inlined by the
+% developer.
+%
+-spec concatenate( binary(), binary() ) -> binary().
+concatenate( Bin1, Bin2 ) ->
+	<<Bin1/binary, Bin2/binary>>.
+
+
+% @doc Concatenates the specified binaries into the returned one.
+-spec concatenate( [ binary() ] ) -> binary().
+concatenate( BinStrs ) ->
+
+	% Could have been instead:
+	%erlang:iolist_to_binary( BinStrs ).
+
+	lists:foldr( fun concatenate/2, _InitAcc= <<>>, _List=BinStrs ).
+
+
+
+% @doc Concatenates to the specified original binary (on its right) the
+% specified number of copies of the second specified binary.
+%
+-spec concatenate( binary(), count(), binary() ) -> binary().
+concatenate( OrigBin, ReplicationCount, ToReplicateBin ) ->
+	% Avoids too many transient copies:
+	concat_helper( ReplicationCount, ToReplicateBin, OrigBin ).
+
+
+concat_helper( _ReplicationCount=0, _ToReplicateBin, Bin ) ->
+	Bin;
+
+concat_helper( ReplicationCount, ToReplicateBin, Bin ) ->
+	NewBin = <<Bin/binary, ToReplicateBin/binary>>,
+	concat_helper( ReplicationCount-1, ToReplicateBin, NewBin ).
+
+
+
+% @doc Returns the binary obtained when concatenating the specified binary the
+% specified number of times.
+%
+-spec replicate( binary(), count() ) -> binary().
+replicate( Bin, Count ) ->
+	replicate( Bin, Count, _Acc= <<>> ).
+
+
+% (helper)
+replicate( _Bin, _Count=0, Acc ) ->
+	Acc;
+
+replicate( Bin, Count, Acc ) ->
+	replicate( Bin, Count-1, <<Bin/binary, Acc/binary>> ).
+
+
+
+
+% Serialisation section.
+
+% Binary comprehensions could be used as well, like in:
+%to_buffer( Points ) ->
+%   << <<X:?F32, Y:?F32, Z:?F32>> || { X, Y, Z } <- Points >>.
+
+
+
+% Float serialisation subsection.
+
+
+% @doc Returns the binary obtained by serialising in-order all floats specified
+% as tuples of arbitrary size, as 32-bit floats, based on the native endianess.
+%
+% Example: Bin = tuples_to_float32s_binary([{0.0, 1.0}, {0.5, 0.5, 0.5}])
+%
+% Typically useful to create suitable OpenGL arrays from heterogenous tuples
+% aggregating vertices, normals, colors, etc. on a per vertex attribute basis.
+%
+-spec tuples_to_float32s_binary( [ tuple( float() ) ] ) -> binary().
+tuples_to_float32s_binary( Tuples ) ->
+	tuples_to_float32s_binary( Tuples, _AccBin= <<>> ).
+
+
+
+% @doc Returns the binary obtained by appending (on the right) to the specified
+% one the in-order serialisation of all floats specified as tuples of arbitrary
+% size, as 32-bit floats, based on the native endianess.
+%
+% Example: FullBin = tuples_to_float32s_binary([{0.0, 1.0}, {0.5, 0.5, 0.5}],
+%                                              Bin)
+%
+% Typically useful to create suitable OpenGL arrays from heterogenous tuples
+% aggregating vertices, normals, colors, etc. on a per vertex attribute basis.
+%
+-spec tuples_to_float32s_binary( [ tuple( float() ) ], binary() ) -> binary().
+tuples_to_float32s_binary( _Tuples=[], Bin ) ->
+	Bin;
+
+% Hopefully as fast as reasonably possible:
+tuples_to_float32s_binary( _Tuples=[ Tuple | T ], Bin ) ->
+	Floats = tuple_to_list( Tuple ),
+	NewBin = concatenate_as_float32s( Floats, Bin ),
+	tuples_to_float32s_binary( T, NewBin ).
+
+
+
+% @doc Concatenates the specified floats as 32-bit floats, based on the native
+% endianess.
+%
+-spec concatenate_as_float32s( [ float() ] ) -> binary().
+concatenate_as_float32s( Floats ) ->
+	concatenate_as_float32s( Floats, _Bin= <<>> ).
+
+
+% @doc Concatenates the specified floats after (not before) the specified
+% binary.
+%
+-spec concatenate_as_float32s( [ float() ], binary() ) -> binary().
+concatenate_as_float32s( _Floats=[], Bin ) ->
+	Bin;
+
+concatenate_as_float32s( _Floats=[ F | T ], Bin ) ->
+	% Binaries are best appended (i.e. on their the right):
+	%
+	% (note that no exception will be thrown if any F is an integer)
+
+	cond_utils:if_defined( myriad_check_binaries,
+		basic_utils:assert( is_float( F ) ) ),
+
+	NewBin = <<Bin/binary, F:32/float-native>>,
+	concatenate_as_float32s( T, NewBin ).
+
+
+
+% Integer serialisation subsection.
+
+% @doc Returns the binary obtained by serialising in-order all integers
+% specified as tuples of arbitrary size, as 32-bit signed integers, based on the
+% native endianess.
+%
+% Example: Bin = tuples_to_int32s_binary([{40,50}, {5, 10, -15}]).
+%
+-spec tuples_to_int32s_binary( [ tuple( integer() ) ] ) -> binary().
+tuples_to_int32s_binary( Tuples ) ->
+	tuples_to_int32s_binary( Tuples, _AccBin= <<>> ).
+
+
+% @doc Returns the binary obtained by appending (on the right) to the specified
+% one the in-order serialisation of all integers specified as tuples of
+% arbitrary size, as 32-bit signed integers, based on the native endianess.
+%
+% Example: FullBin = tuples_to_int32s_binary([{40,50}, {5, 10, -15}], Bin).
+%
+-spec tuples_to_int32s_binary( [ tuple( integer() ) ], binary() ) -> binary().
+tuples_to_int32s_binary( _Tuples=[], Bin ) ->
+	Bin;
+
+% Hopefully as fast as reasonably possible:
+tuples_to_int32s_binary( _Tuples=[ Tuple | T ], Bin ) ->
+	Ints = tuple_to_list( Tuple ),
+	NewBin = concatenate_as_int32s( Ints, Bin ),
+	tuples_to_int32s_binary( T, NewBin ).
+
+
+
+% @doc Concatenates the specified integers as 32-bit integers, based on the
+% native endianess.
+%
+-spec concatenate_as_int32s( [ integer() ] ) -> binary().
+concatenate_as_int32s( Ints ) ->
+	concatenate_as_int32s( Ints, _Bin= <<>> ).
+
+
+% @doc Concatenates the specified integers after (not before) the specified
+% binary.
+%
+-spec concatenate_as_int32s( [ integer() ], binary() ) -> binary().
+concatenate_as_int32s( _Ints=[], Bin ) ->
+	Bin;
+
+concatenate_as_int32s( _Ints=[ I | T ], Bin ) ->
+	% Binaries are best appended (i.e. on their the right):
+	%
+	% (note that an exception will be thrown if any I is a float)
+	%
+	NewBin = <<Bin/binary, I:32/integer-signed-native>>,
+	concatenate_as_int32s( T, NewBin ).
+
+
+
+% Unsigned integer serialisation subsection.
+
+
+% @doc Returns the binary obtained by serialising in-order all positive or null
+% integers specified as tuples of arbitrary size, as 32-bit unsigned integers,
+% based on the native endianess.
+%
+% Example: Bin = tuples_to_uint32s_binary([{40,50}, {5, 10, 15}])
+%
+% Typically useful to create suitable OpenGL arrays from indices.
+%
+-spec tuples_to_uint32s_binary( [ tuple( non_neg_integer() ) ] ) -> binary().
+tuples_to_uint32s_binary( Tuples ) ->
+	tuples_to_uint32s_binary( Tuples, _AccBin= <<>> ).
+
+
+% @doc Returns the binary obtained by appending (on the right) to the specified
+% one the in-order serialisation of all integers specified as tuples of
+% arbitrary size, as 32-bit unsigned integers, based on the native endianess.
+%
+% Example: FullBin = tuples_to_uint32s_binary([{40,50}, {5, 10, 15}], Bin).
+%
+% Typically useful to create suitable OpenGL arrays from indices.
+%
+tuples_to_uint32s_binary( _Tuples=[], AccBin ) ->
+	AccBin;
+
+% Hopefully as fast as reasonably possible:
+tuples_to_uint32s_binary( _Tuples=[ Tuple | T ], AccBin ) ->
+	Ints = tuple_to_list( Tuple ),
+	NewAccBin = concatenate_as_uint32s( Ints, AccBin ),
+	tuples_to_uint32s_binary( T, NewAccBin ).
+
+
+
+% @doc Concatenates the specified positive or null integers as 32-bit unsigned
+% integers, based on the native endianess.
+%
+-spec concatenate_as_uint32s( [ non_neg_integer() ] ) -> binary().
+concatenate_as_uint32s( Ints ) ->
+	concatenate_as_uint32s( Ints, _Bin= <<>> ).
+
+
+% @doc Concatenates the specified positive or null integers after (not before)
+% the specified binary.
+%
+-spec concatenate_as_uint32s( [ non_neg_integer() ], binary() ) -> binary().
+concatenate_as_uint32s( _UInts=[], Bin ) ->
+	Bin;
+
+concatenate_as_uint32s( _UInts=[ UI | T ], Bin ) ->
+	% Binaries are best appended (i.e. on their the right):
+	%
+	% (note that an exception will be thrown if any UI is a float, but not if it
+	% is a negative integer)
+
+	cond_utils:if_defined( myriad_check_binaries,
+						   basic_utils:assert( UI >= 0 ) ),
+
+	NewBin = <<Bin/binary, UI:32/integer-unsigned-native>>,
+	concatenate_as_uint32s( T, NewBin ).
+
+
+
+% CRC section.
 
 
 % @doc Returns the table used to compute CRC8.

@@ -23,6 +23,7 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2007.
 
 
 % @doc A test of WOOPER <b>attribute management</b>.
@@ -49,7 +50,6 @@
 % @doc Constructs a test instance.
 -spec construct( wooper:state() ) -> wooper:state().
 construct( State ) ->
-
 	% Class-specific attributes:
 	setAttribute( State, test_attribute, true ).
 
@@ -102,11 +102,12 @@ test( State ) ->
 	UndefState = setAttribute( PoppedState, test_undef, undefined ),
 	%UndefState = setAttribute( PoppedState, test_undef, not_undefined ),
 
-	not_crashing_examples( UndefState ),
-	%crashing_examples( UndefState ),
+	_Unmatched = not_crashing_examples( UndefState ),
+				 %crashing_examples( UndefState ),
 
 	test_facilities:display(
 		"Successful ending of attribute management test." ),
+
 	wooper:return_state_result( SubState, test_ok ).
 
 

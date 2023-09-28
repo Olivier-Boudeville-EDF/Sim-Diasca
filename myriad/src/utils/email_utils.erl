@@ -40,11 +40,11 @@
 
 
 -type email_address() :: ustring().
-% Electronic address for email (ex: "john@hello.org").
+% Electronic address for email (e.g. "john@hello.org").
 
 
 -type bin_email_address() :: bin_string().
-% Binary email address (ex: `<<"john@hello.org">>').
+% Binary email address (e.g. `<<"john@hello.org">>').
 
 
 % Shorthands:

@@ -57,11 +57,13 @@
 
 		  to_string/1 ]).
 
+% Apparently having bijective_table/N opaque causes problems (subtypes being
+% violated by the success typing), so:
 
--opaque bijective_table() :: bijective_table( any(), any() ).
+-type bijective_table() :: bijective_table( any(), any() ).
 
 
--opaque bijective_table( F, S ) :: { table:table( F, S ), table:table( S, F ) }.
+-type bijective_table( F, S ) :: { table:table( F, S ), table:table( S, F ) }.
 % Internally, two tables used, one for each direction of conversion.
 
 
@@ -316,7 +318,7 @@ to_string( _BijTable={ FirstToSecondTable, _SecondToFirstTable } ) ->
 				[ table:size( FirstToSecondTable ),
 				  text_utils:strings_to_string(
 					[ text_utils:format( "~p <-> ~p", [ F, S ] )
-									|| { F, S } <- Elems ] ) ] )
+						|| { F, S } <- Elems ] ) ] )
 
 
 	end.

@@ -49,7 +49,7 @@
 %
 % One may instead select, from the command-line, a specific backend thanks to
 % the following option: --use-ui-backend BACKEND_NAME, where BACKEND_NAME is the
-% name of the associated backend (ex: text_ui, term_ui or gui).
+% name of the associated backend (e.g. text_ui, term_ui or gui).
 %
 % For example: make ui_run CMD_LINE_OPT="--use-ui-backend text_ui"
 %
@@ -71,36 +71,159 @@
 % When offering the user a choice within a range of options, choice designators
 % (possibly atoms, like 'do_save' or 'do_exit') can be used (see for example
 % choose_designated_item/*) to designate and handle a logical choice made by the
-% user regardless of how it was introduced (ex: possibly in different languages,
-% according to the locale).
+% user regardless of how it was introduced (e.g. possibly in different
+% languages, according to the locale).
 %
 % Another possibility is to designate choices based on their index (numerical
-% order), see for example choose_numbered_item/*).
+% order), see for example choose_numbered_item/*.
 
 
 % Implementation notes:
 %
-% Each backend is to store its current state into a specific state record (ex:
+% Each backend is to store its current state into a specific state record (e.g.
 % of type term_ui_state() ), kept under a separate, backend-specific key (see
 % ui_name_key) in the process dictionary.
 %
 % Among the fields of these backend records, one is the settings table (see the
 % setting_table() type). It allows the developer to specify all kinds of
-% settings (ex: default window size), which may or may not be accommodated by a
+% settings (e.g. default window size), which may or may not be accommodated by a
 % given backend.
 
 % There are in the interfaces very similar primitives to deal with internal
 % settings, like set/{1,2} and set_setting/{2,3}. They all have a purpose, some
 % variations relying on an explicit state, others not.
 
--include("ui.hrl").
+
+% Only for defines now:
+-include("myriad_ui.hrl").
+
+
+
+-type ui_options() :: [ any() ].
+% Options to initialise a user interface.
+
+
+-export_type([ ui_options/0 ]).
+
+
+
+% Defines that are common, transverse to all user interface backends.
+
+
+-type text() :: text_utils:any_string().
+% Any text, as a plain or binary (Unicode, UTF-8) string.
+%
+% Could usually be a more general (notably as recursive lists as such elements),
+% and more complex for the user, unicode:chardata(), yet this would have to be
+% systematically type-checked beforehand.
+
+
+-type label() :: text().
+% A label, for example of a button.
+
+-type prompt() :: text().
+% A prompt, typically of an interpreter.
+
+-type title() :: text().
+% A title, typically of a document.
+
+-type caption() :: text().
+% A caption, typically of a window.
+
+-type message() :: text().
+% A message, typically displayed by a dialog, or sent as a trace.
+
+
+-type binary_choice() :: 'yes' | 'no'.
+
+
+-type choice_text() :: text().
+% The text of a choice.
+
+
+-type choice_designator() :: term() | 'ui_cancel'.
+% Designator of a choice (regardless of the choice labels, locales, etc.).
+%
+% (usually an atom, but possibly an integer or anything else)
+%
+% Note that there is a reserved designator (i.e. one that shall never be
+% specified among the user ones) that is the 'ui_cancel' atom, which is returned
+% by a backend whenever the user chose to cancel the operation rather than
+% selecting one of the available options.
+
+
+-type choice_index() :: basic_utils:count().
+% The index of a choice (starting at 1).
+
+
+-type choice_element() :: { choice_designator(), choice_text() }.
+% A description of an item of choice.
+
+
+-type choice_spec() :: [ choice_element() ].
+% A description of a choice offered to the user.
+%
+% Useful to define the interface wanted and to interpret its outcome.
+
+
+-export_type([ text/0, label/0, prompt/0, title/0, caption/0, message/0,
+			   binary_choice/0,
+			   choice_text/0, choice_designator/0, choice_index/0,
+			   choice_element/0, choice_spec/0 ]).
+
+
+
+
+% As soon as an interface (thanks to a given backend) gets rich enough, many
+% optional settings can be specified.
+%
+% Rather than having them all listed as separate function parameters or than
+% using records (knowing that different kinds of dialogs call for different
+% settings), we chose to rely on a more flexible parameter table, in which
+% parameters will be looked-up (their values will apply, otherwise default
+% behaviour will be retained).
+
+
+-type ui_setting_key() :: 'backtitle' | 'title'.
+% The known per-setting keys.
+
+
+-type ui_setting_value() :: term().
+% The setting-specific values.
+
+
+-type ui_setting_entry() :: { ui_setting_key(), ui_setting_value() }.
+% For setting-specific entries.
+
+
+-type common_entry() :: backtitle_entry() | title_entry().
+% Parameter keys that are common to all dialogs.
+
+
+-type backtitle_entry() :: { 'backtitle', title() }.
+% For back-titles.
+
+
+-type title_entry() :: { 'title', title() }.
+% For (front) titles.
+
+
+-type setting_table() ::
+	?ui_table:?ui_table( ui_setting_key(), ui_setting_value() ).
+% A table storing UI settings (either top-level or backend-specific).
+
+
+-export_type([ ui_setting_key/0, ui_setting_value/0, ui_setting_entry/0,
+			   common_entry/0, backtitle_entry/0, title_entry/0,
+			   setting_table/0 ]).
 
 
 % Describes the interactivity mode of a user interface:
 -type interactivity_mode() :: 'batch' | 'interactive'.
 
-
 -export_type([ interactivity_mode/0 ]).
+
+
 
 
 -export([ start/0, start/1, start/2 ]).
@@ -514,6 +637,7 @@ get_text_as_maybe_integer( Prompt, UIState ) ->
 read_text_as_maybe_integer( Prompt ) ->
 	UIModule = get_backend_name(),
 	UIModule:read_text_as_maybe_integer( Prompt ).
+
 
 
 % @doc Returns the user-entered text after specified prompt, once translated to
@@ -952,7 +1076,7 @@ settings_to_string( SettingTable ) ->
 			SetPairs = lists:sort( ?ui_table:enumerate( SettingTable ) ),
 
 			SetStrings = [ text_utils:format( "'~ts' set to ~p",
-										[ K, V ] ) || { K, V } <- SetPairs ],
+								[ K, V ] ) || { K, V } <- SetPairs ],
 
 			text_utils:format( "with ~B settings recorded: ~ts",
 				[ Count, text_utils:strings_to_string( SetStrings ) ] )

@@ -35,7 +35,7 @@
 % rendering, resizing and closing.
 %
 % This test relies on the OpenGL 1.x compatibility mode, as opposed to more
-% modern versions of OpenGL (ex: 3.1) that rely on shaders and GLSL.
+% modern versions of OpenGL (e.g. 3.1) that rely on shaders and GLSL.
 %
 % See the gui_opengl.erl tested module.
 %
@@ -50,9 +50,8 @@
 % Directly inspired from https://www.glprogramming.com/red/chapter01.html
 
 
-% For GL/GLU defines:
--include("gui_opengl.hrl").
-% For user code: -include_lib("myriad/include/gui_opengl.hrl").
+% For GL/GLU defines; the sole include that MyriadGUI user code shall reference:
+-include_lib("myriad/include/myriad_gui.hrl").
 
 
 % For run/0 export and al:
@@ -66,8 +65,8 @@
 %
 -record( my_gui_state, {
 
-	% The main window of this test:
-	parent :: window(),
+	% The main frame of this test:
+	main_frame :: frame(),
 
 	% The OpenGL canvas on which rendering will be done:
 	canvas :: gl_canvas(),
@@ -76,7 +75,7 @@
 	context :: gl_context(),
 
 	% Here just a boolean; in more complex cases, would be a maybe OpenGL state
-	% (ex: to store the loaded textures):
+	% (e.g. to store the loaded textures):
 	%
 	opengl_initialised = false :: boolean() } ).
 
@@ -84,15 +83,24 @@
 % Test-specific overall GUI state.
 
 
+-export([ get_myriad_blue/0 ]).
+
 
 % Shorthands:
 
-%-type dimensions() :: gui:dimensions().
--type window() :: gui:window().
+-type frame() :: gui:frame().
 
--type gl_canvas() :: gui:opengl_canvas().
--type gl_context() :: gui:opengl_context().
+-type render_rgb_color() :: gui_color:render_rgb_color().
 
+-type gl_canvas() :: gui_opengl:gl_canvas().
+-type gl_context() :: gui_opengl:gl_context().
+
+
+
+% Defined for convenience and sharing with other tests.
+-spec get_myriad_blue() -> render_rgb_color().
+get_myriad_blue() ->
+	[ 0.05, 0.2, 0.67 ].
 
 
 % @doc Runs the OpenGL test if possible.
@@ -128,8 +136,9 @@ run_actual_test() ->
 
 	% Could be batched (see gui:batch/1) to be more effective:
 	InitialGUIState = init_test_gui(),
+	%InitialGUIState = gui:batch( fun() -> init_test_gui() end ),
 
-	gui:show( InitialGUIState#my_gui_state.parent ),
+	gui_frame:show( InitialGUIState#my_gui_state.main_frame ),
 
 	% OpenGL will be initialised only when the corresponding frame will be ready
 	% (that is once first reported as resized):
@@ -149,11 +158,15 @@ run_actual_test() ->
 -spec init_test_gui() -> my_gui_state().
 init_test_gui() ->
 
-	MainFrame = gui:create_frame( "MyriadGUI Minimal OpenGL Test",
+	MainFrame = gui_frame:create( "MyriadGUI Minimal OpenGL Test",
 								  _Size={ 500, 250 } ),
 
-	% Using default GL attributes:
-	GLCanvas = gui_opengl:create_canvas( _Parent=MainFrame ),
+	% This test may request additionally an OpenGL debug context:
+	%GLAttrs = gui_opengl:get_default_canvas_attributes(),
+	GLAttrs = [ debug_context | gui_opengl:get_default_canvas_attributes() ],
+
+	GLCanvas = gui_opengl:create_canvas( _Parent=MainFrame,
+		_CanvasAttrs=[ { gl_attributes, GLAttrs } ] ),
 
 	% Created, yet not bound yet (must wait for the main frame to be shown):
 	GLContext = gui_opengl:create_context( GLCanvas ),
@@ -167,7 +180,7 @@ init_test_gui() ->
 	gui:subscribe_to_events( { onRepaintNeeded, GLCanvas } ),
 
 	% No OpenGL state yet (GL context cannot be set as current yet):
-	#my_gui_state{ parent=MainFrame, canvas=GLCanvas, context=GLContext }.
+	#my_gui_state{ main_frame=MainFrame, canvas=GLCanvas, context=GLContext }.
 
 
 
@@ -191,7 +204,7 @@ gui_main_loop( GUIState ) ->
 			RepaintedGUIState = case GUIState#my_gui_state.opengl_initialised of
 
 				true ->
-					gui:enable_repaint( GLCanvas ),
+					gui_widget:enable_repaint( GLCanvas ),
 					render(),
 					gui_opengl:swap_buffers( GLCanvas ),
 					GUIState;
@@ -213,7 +226,7 @@ gui_main_loop( GUIState ) ->
 		  [ _ParentWindow, _ParentWindowId, _NewParentSize, _EventContext ] } ->
 
 			%trace_utils:debug_fmt( "Resizing of the parent window "
-			%   (main frame) "to ~w detected.", [ NewParentSize ] ),
+			%  "(main frame) to ~w detected.", [ NewParentSize ] ),
 
 			ResizedGUIState = case GUIState#my_gui_state.opengl_initialised of
 
@@ -236,7 +249,8 @@ gui_main_loop( GUIState ) ->
 		{ onShown, [ ParentWindow, _ParentWindowId, _EventContext ] } ->
 
 			trace_utils:debug_fmt( "Parent window (main frame) just shown "
-				"(initial size of ~w).", [ gui:get_size( ParentWindow ) ] ),
+				"(initial size of ~w).",
+				[ gui_widget:get_size( ParentWindow ) ] ),
 
 			% Optional yet better:
 			gui:unsubscribe_from_events( { onShown, ParentWindow } ),
@@ -252,8 +266,12 @@ gui_main_loop( GUIState ) ->
 
 		{ onWindowClosed, [ ParentWindow, _ParentWindowId, _EventContext ] } ->
 			trace_utils:info( "Main frame closed, test success." ),
+
+			% Very final check, while there is still an OpenGL context:
+			gui_opengl:check_error(),
+
 			% No more recursing:
-			gui:destruct_window( ParentWindow );
+			gui_window:destruct( ParentWindow );
 
 
 		OtherEvent ->
@@ -277,10 +295,16 @@ initialise_opengl( GUIState=#my_gui_state{ canvas=GLCanvas,
 
 	% Initial size of canvas is typically 20x20 pixels:
 	trace_utils:debug_fmt( "Initialising OpenGL (whereas canvas is of initial "
-						   "size ~w).", [ gui:get_size( GLCanvas ) ] ),
+						   "size ~w).", [ gui_widget:get_size( GLCanvas ) ] ),
 
 	% So done only once:
 	gui_opengl:set_context_on_shown( GLCanvas, GLContext ),
+
+	test_opengl_debug_context(),
+
+	%Exts = gui_opengl:get_supported_extensions(),
+	%trace_utils:info_fmt( "~B OpenGL extensions supported: ~ts",
+	%   [ length( Exts ), text_utils:atoms_to_listed_string( Exts ) ] ),
 
 	% These settings will not change afterwards here (set once for all):
 
@@ -326,7 +350,7 @@ initialise_opengl( GUIState=#my_gui_state{ canvas=GLCanvas,
 on_main_frame_resized( GUIState=#my_gui_state{ canvas=GLCanvas } ) ->
 
 	% Maximises the canvas in the main frame:
-	{ CanvasWidth, CanvasHeight } = gui:maximise_in_parent( GLCanvas ),
+	{ CanvasWidth, CanvasHeight } = gui_widget:maximise_in_parent( GLCanvas ),
 
 	%trace_utils:debug_fmt( "New client canvas size: {~B,~B}.",
 	%                       [ CanvasWidth, CanvasHeight ] ),
@@ -341,11 +365,11 @@ on_main_frame_resized( GUIState=#my_gui_state{ canvas=GLCanvas } ) ->
 	% (Erlang) asynchronous message to be sent from this user process and to be
 	% received and applied by the process of the target window, whereas a GL
 	% (NIF-based) operation is immediate; without a sufficient delay, the
-	% rendering will thus take place according to the former (ex: minimised)
+	% rendering will thus take place according to the former (e.g. minimised)
 	% canvas size, not according to the one that was expected to be already
 	% resized.
 	%
-	gui:sync( GLCanvas ),
+	gui_widget:sync( GLCanvas ),
 
 	% Any OpenGL reset to be done because of the resizing should take place
 	% here.
@@ -387,6 +411,50 @@ render() ->
 	% function is meant to remain pure OpenGL.
 	%
 	% gl:flush/0 done when swapping buffers.
+
+	ok.
+
+
+
+% Tests the OpenGL debug context.
+-spec test_opengl_debug_context() -> void().
+test_opengl_debug_context() ->
+
+	% Actually already enabled:
+	%false = gui_opengl:is_debug_context_enabled(),
+
+	gui_opengl:enable_all_debug_context_reporting(),
+	true = gui_opengl:is_debug_context_enabled(),
+
+	[] = gui_opengl:get_debug_context_messages(),
+
+	gui_opengl:insert_debug_context_message( _MsgId=5,
+		_Msg="Testing debug context.", _MsgSeverity=high,
+		_MsgSource=third_party, _MsgType=other ),
+
+	[ Msg1 ] = gui_opengl:get_debug_context_messages(),
+
+	trace_utils:debug_fmt( "First debug context message: ~ts",
+		[ gui_opengl:debug_context_message_to_string( Msg1 ) ] ),
+
+	gui_opengl:insert_debug_context_message( 6, "Second message.", medium,
+		third_party, deprecated_behaviour ),
+
+	gui_opengl:insert_debug_context_message( 8, "Third message.", low,
+		application, type_error ),
+
+	Msgs = [ _Msg2, _Msg3 ] = gui_opengl:get_debug_context_messages(),
+
+	trace_utils:debug_fmt( "Next two debug context messages: ~ts",
+		[ gui_opengl:debug_context_messages_to_string( Msgs ) ] ),
+
+	[] = gui_opengl:get_debug_context_messages(),
+
+	true = gui_opengl:is_debug_context_enabled(),
+	gui_opengl:disable_all_debug_context_reporting(),
+
+	% Still enabled:
+	%false = gui_opengl:is_debug_context_enabled(),
 
 	ok.
 

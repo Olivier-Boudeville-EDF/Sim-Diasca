@@ -82,7 +82,7 @@
 % A raw string containing XML (including markup), typically at least an extract
 % of an XML document.
 %
-% Ex: "<birds> <bird species="crow">Arthur</bird> </birds>".
+% For example "<birds> <bird species="crow">Arthur</bird> </birds>".
 
 
 -type xml_document() :: xml_content().
@@ -92,20 +92,20 @@
 -type xml_tag() :: atom().
 % An XML tag; we recommend to use Upper CamelCase (PascalCase) for their name.
 %
-% Ex: 'AccountLog' in: <AccountLog level="red">Hello</AccountLog>.
+% For example 'AccountLog' in: <AccountLog level="red">Hello</AccountLog>.
 
 
 -type xml_attribute_name() :: atom().
 % The name of an attribute of a XML tag; we recommend to use (lower) camelCase
 % for them.
 %
-% Ex: 'refCount' in: <Account refCount="4"> ...</Account>
+% For example 'refCount' in: <Account refCount="4"> ...</Account>
 
 
 -type xml_attribute_value() :: io_list() | atom() | integer().
 % The value of an attribute of a XML tag.
 %
-% Ex: "4" in: <Account refCount="4"> ...</Account>
+% For example "4" in: <Account refCount="4"> ...</Account>
 
 
 -type attribute_record() :: #xmlAttribute{}.
@@ -116,7 +116,7 @@
 						 | attribute_record().
 % The description of an attribute of a XML tag.
 %
-% Ex: {refCount,"4"} in: <Account refCount="4"> ...</Account>
+% For example {refCount,"4"} in: <Account refCount="4"> ...</Account>
 
 
 
@@ -315,8 +315,8 @@ xml_to_string( XMLContent ) ->
 -spec xml_to_string( xml_content(), xml_prolog_value() ) -> ustring().
 xml_to_string( XMLContent, PrologValue ) ->
 
-   % See
-   % https://www.erlang.org/doc/apps/xmerl/xmerl_ug.html#example--create-xml-out-of-arbitrary-data:
+	% See
+	% https://www.erlang.org/doc/apps/xmerl/xmerl_ug.html#example--create-xml-out-of-arbitrary-data:
 
 	%trace_utils:debug_fmt( "XML content to serialise:~n ~p", [ XMLContent ] ),
 

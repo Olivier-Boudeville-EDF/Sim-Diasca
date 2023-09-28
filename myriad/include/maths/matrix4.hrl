@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2022 Olivier Boudeville
+% Copyright (C) 2009-2023 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -23,6 +23,7 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2009.
 
 
 % The classical, canonical 4x4 matrix representation is:
@@ -32,32 +33,32 @@
 % M = | M31 M32 M33 M34 |
 %     | M41 M42 M43 M44 |
 %
-% This corresponds to this record specialised for 4D. Coordinates are listed row
-% per row.
+% This corresponds to the following record specialised for 4D. Coordinates are
+% listed row per row.
 %
 % A shorthand for these record and corresponding type could be m4.
 %
 -record( matrix4, {
 
-  m11 :: linear:coordinate(),
-  m12 :: linear:coordinate(),
-  m13 :: linear:coordinate(),
-  m14 :: linear:coordinate(),
+	m11 :: linear:coordinate(),
+	m12 :: linear:coordinate(),
+	m13 :: linear:coordinate(),
+	m14 :: linear:coordinate(),
 
-  m21 :: linear:coordinate(),
-  m22 :: linear:coordinate(),
-  m23 :: linear:coordinate(),
-  m24 :: linear:coordinate(),
+	m21 :: linear:coordinate(),
+	m22 :: linear:coordinate(),
+	m23 :: linear:coordinate(),
+	m24 :: linear:coordinate(),
 
-  m31 :: linear:coordinate(),
-  m32 :: linear:coordinate(),
-  m33 :: linear:coordinate(),
-  m34 :: linear:coordinate(),
+	m31 :: linear:coordinate(),
+	m32 :: linear:coordinate(),
+	m33 :: linear:coordinate(),
+	m34 :: linear:coordinate(),
 
-  m41 :: linear:coordinate(),
-  m42 :: linear:coordinate(),
-  m43 :: linear:coordinate(),
-  m44 :: linear:coordinate() } ).
+	m41 :: linear:coordinate(),
+	m42 :: linear:coordinate(),
+	m43 :: linear:coordinate(),
+	m44 :: linear:coordinate() } ).
 
 
 
@@ -70,7 +71,7 @@
 %
 % and T = transpose(| Tx Ty Tz |).
 %
-% This corresponds to, by blocks:
+% This corresponds to, by blocks (and as floats):
 %
 % M = | M3 T |
 %     |  0 1 |
@@ -88,17 +89,17 @@
 %
 -record( compact_matrix4, {
 
-  m11 :: linear:coordinate(),
-  m12 :: linear:coordinate(),
-  m13 :: linear:coordinate(),
-  tx  :: linear:coordinate(),
+	m11 :: linear:coordinate(),
+	m12 :: linear:coordinate(),
+	m13 :: linear:coordinate(),
+	tx  :: linear:coordinate(),
 
-  m21 :: linear:coordinate(),
-  m22 :: linear:coordinate(),
-  m23 :: linear:coordinate(),
-  ty  :: linear:coordinate(),
+	m21 :: linear:coordinate(),
+	m22 :: linear:coordinate(),
+	m23 :: linear:coordinate(),
+	ty  :: linear:coordinate(),
 
-  m31 :: linear:coordinate(),
-  m32 :: linear:coordinate(),
-  m33 :: linear:coordinate(),
-  tz  :: linear:coordinate() } ).
+	m31 :: linear:coordinate(),
+	m32 :: linear:coordinate(),
+	m33 :: linear:coordinate(),
+	tz  :: linear:coordinate() } ).

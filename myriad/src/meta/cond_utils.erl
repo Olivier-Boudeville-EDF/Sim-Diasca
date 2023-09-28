@@ -39,7 +39,7 @@
 % of the pseudo-functions (such as cond_utils:if_debug/1) meant to be replaced
 % at compile time by user-specified conditional code.
 %
-% Note that if the if_* conditions (ex: if_debug/1) are not fulfilled, the
+% Note that if the if_* conditions (e.g. if_debug/1) are not fulfilled, the
 % specified conditional code is dismissed as a whole, it is not even replaced
 % for example by an 'ok' atom (this may matter if this conditional is the only
 % expression in a case clause for example, in which case a compilation failure
@@ -79,7 +79,7 @@
 % For example, if defining that variable as:
 % ERLANG_COMPILER_TOKEN_OPT := -Dmy_test_token -Dmy_other_test_token=51
 %
-% then a parse-transform (ex: the Myriad one) would be automatically called as:
+% then a parse-transform (e.g. the Myriad one) would be automatically called as:
 %     parse_transform( InputAST, Options ) -> ...
 %
 % and this option list would contain, among other elements:
@@ -123,7 +123,7 @@
 %
 % As we cannot do that with such a compile attribute (those corresponding to
 % '-define(...)' do not end up at all in the AST), one has to stick to the -D
-% command-line option (ex: -Dmy_test_token=200).
+% command-line option (e.g. -Dmy_test_token=200).
 
 
 
@@ -144,13 +144,13 @@
 % A token (defined through the command-line), whose definition enables the
 % conditional execution of associated code.
 %
-% Ex: a 'debug_gui' token would enable, if defined, associated code, like in:
-% cond_utils:if_defined(debug_gui, [f(), A=B, g(C)]).
+% For example a 'debug_gui' token would enable, if defined, associated code,
+% like in: cond_utils:if_defined(debug_gui, [f(), A=B, g(C)]).
 
 
 -type value() :: term().
 % An (immediate) value associated to a token can actually of various types
-% (ex: atom, integer; as a form of course), as translated by the compiler.
+% (e.g. atom, integer; as a form of course), as translated by the compiler.
 
 
 -type expression() :: any().
@@ -196,7 +196,7 @@ get_token_table_from( OptionTable ) ->
 	% The 'd' compile option must correspond to the compilation defines:
 	case ?table:lookup_entry( _K='d', OptionTable ) of
 
-		% Ex: L=[my_test_token, {my_other_test_token,51}]
+		% For example L=[my_test_token, {my_other_test_token,51}]:
 		{ value, L } ->
 			% Returns a filled table:
 			register_tokens( L, EmptyTable );
@@ -213,7 +213,7 @@ register_tokens( _L=[], TokenTable ) ->
 	TokenTable;
 
 register_tokens( _L=[ { Token, Value } | T ], TokenTable )
-  when is_atom( Token ) ->
+								when is_atom( Token ) ->
 	% Crashes if a token is defined more than once (must be abnormal):
 	NewTokenTable = ?table:add_new_entry( Token, Value, TokenTable ),
 	register_tokens( T, NewTokenTable );

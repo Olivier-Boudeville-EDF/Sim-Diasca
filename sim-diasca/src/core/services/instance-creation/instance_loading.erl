@@ -31,7 +31,7 @@
 
 
 % Must be included before class_TraceEmitter header:
--define( trace_emitter_categorization, "Core.LoadBalancing.Instances." ).
+-define( trace_emitter_categorization, "Core.Load balancing.Instances." ).
 -define( loader_cat, ?trace_emitter_categorization ++ "Loading" ).
 -define( reader_cat, ?trace_emitter_categorization ++ "Creating" ).
 
@@ -44,7 +44,7 @@
 
 % Design notes:
 %
-% Now the load-balancing service provides all actor-specific information (ex:
+% Now the load-balancing service provides all actor-specific information (e.g.
 % AAI and seeding) at their creation.
 %
 % Currently only one initialisation stream (typically: file) can be managed at
@@ -1108,7 +1108,7 @@ parse_creation_line( _LineInfo={ LineNumber, BinLine }, BinFilename,
 
 
 		% Here we must have the first double quotes of a user identifier being
-		% declared (ex: "John" <- ....):
+		% declared (e.g. "John" <- ....):
 		%
 		_L=[ $" | T ] ->
 
@@ -1316,8 +1316,8 @@ create_instance_from( CreationClause, IdInfo,
 					% directly with a WOOPER new operator.
 					%
 					% However we prefer that all these creations are managed the
-					% same (ex: w.r.t. to linking); thus we will go in all cases
-					% for a two-step creation.
+					% same (e.g. w.r.t. to linking); thus we will go in all
+					% cases for a two-step creation.
 
 					% First, selects the user id to be used in order to place
 					% the upcoming instance:

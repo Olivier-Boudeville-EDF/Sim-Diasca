@@ -31,13 +31,13 @@ Defining a token
 
 A *token* (a compilation-time symbol) may or may not defined.
 
-To define ``my_token``, simply ensure that a ``-Dmy_token`` command-line option is specified to the compiler (ex: refer to ``ERLANG_COMPILER_TOKEN_OPT``, in ``GNUmakevars.inc``, for an example of definition for these flags).
+To define ``my_token``, simply ensure that a ``-Dmy_token`` command-line option is specified to the compiler (e.g. refer to ``ERLANG_COMPILER_TOKEN_OPT``, in ``GNUmakevars.inc``, for an example of definition for these flags).
 
-To define ``my_token`` *and* set it to the integer value ``127``, use the ``-Dmy_token=127`` command-line option. Values can also be floats (ex: ``-Dmy_token=3.14``) or atoms (ex: ``-Dmy_token=some_atom``).
+To define ``my_token`` *and* set it to the integer value ``127``, use the ``-Dmy_token=127`` command-line option. Values can also be floats (e.g. ``-Dmy_token=3.14``) or atoms (e.g. ``-Dmy_token=some_atom``).
 
 A special token is ``myriad_debug_mode``; if it is defined at all (and possibly associated to any value), the debug mode of Myriad is enabled.
 
-We recommend that layers built on top of Myriad define their own token for debug mode (ex: ``foobar_debug_mode``), to be able to finely select appropriate debug modes (of course all kinds of modes and configuration settings can be considered as well).
+We recommend that layers built on top of Myriad define their own token for debug mode (e.g. ``foobar_debug_mode``), to be able to finely select appropriate debug modes (of course all kinds of modes and configuration settings can be considered as well).
 
 
 
@@ -51,7 +51,7 @@ Injecting a *single* expression (i.e. not multiple ones) is not a limitation: no
 
 .. [#] A previous implementation of ``cond_utils`` allowed to specify the code to inject either as an expression or as a *list* of expressions.
 
-	   It was actually a mistake, as a single expression to return can be itself a list (ex: ``["red", "blue"]``), which bears a different semantics and should not be interpreted as a list of expressions to evaluate. For example, the result from the code to inject may be bound to a variable, in which case we expect ``A=["red", "blue"]`` rather than ``A="red", "blue"`` (this latter term being constructed but not used).
+	   It was actually a mistake, as a single expression to return can be itself a list (e.g. ``["red", "blue"]``), which bears a different semantics and should not be interpreted as a list of expressions to evaluate. For example, the result from the code to inject may be bound to a variable, in which case we expect ``A=["red", "blue"]`` rather than ``A="red", "blue"`` (this latter term being constructed but not used).
 
 	   So the following code injection *is* faulty (a ``begin/end`` block was meant, not a list):
 
@@ -235,7 +235,7 @@ Refer to `cond_utils_test.erl <https://github.com/Olivier-Boudeville/Ceylan-Myri
 Controlling assertions
 ----------------------
 
-It may be convenient that, depending on a compile-time token (ex: in debug mode, typically triggered thanks to the ``-Dmyriad_debug_mode`` compilation flag), *assertions* (expressions expected to evaluate to the atom ``true``) are enabled, whereas they shall be dismissed as a whole should that token not be defined.
+It may be convenient that, depending on a compile-time token (e.g. in debug mode, typically triggered thanks to the ``-Dmyriad_debug_mode`` compilation flag), *assertions* (expressions expected to evaluate to the atom ``true``) are enabled, whereas they shall be dismissed as a whole should that token not be defined.
 
 To define an assertion enabled in debug mode, use ``assert/1``, like in:
 
@@ -267,9 +267,9 @@ This may be useful for example to control, on a per-theme basis, the level of ch
  cond_utils:assert(debug_gui,2,more_involved_testing()),
  cond_utils:assert(debug_gui,3,paranoid_testing()),
 
-Note that, in this case, a given level of checking should include the one just below it (ex: ``more_involved_testing()`` should call ``basic_testing()``).
+Note that, in this case, a given level of checking should include the one just below it (e.g. ``more_involved_testing()`` should call ``basic_testing()``).
 
-Finally, if assertions are too limited (ex: because they lead to unused variables depending on a token being defined or not), using one of the ``cond_utils:if*`` primitives relying on two branches (one expression if a condition is true, another if not) should sufficient to overcome such issue.
+Finally, if assertions are too limited (e.g. because they lead to unused variables depending on a token being defined or not), using one of the ``cond_utils:if*`` primitives relying on two branches (one expression if a condition is true, another if not) should be sufficient to overcome such issue.
 
 
 Usage Hints
@@ -277,7 +277,7 @@ Usage Hints
 
 For tokens, at least currently they must be defined as immediate values (atoms); even using a mute variable, like for the ``_Default=my_token`` expression, or a variable, is not supported (at least yet).
 
-Note that, for primitives that may not inject code at all (ex: ``if_debug/1``), if their conditions are not fulfilled, the specified conditional code is dismissed as a whole, it is not even replaced for example by an ``ok`` atom; this may matter if this conditional is the only expression in a case clause for example, in which case a compilation failure like "*internal error in core; crash reason: function_clause in function v3_core:cexprs/3 called as v3_core:cexprs[...]*" will be reported (the compiler sees unexpectedly a clause not having even a single expression).
+Note that, for primitives that may not inject code at all (e.g. ``if_debug/1``), if their conditions are not fulfilled, the specified conditional code is dismissed as a whole, it is not even replaced for example by an ``ok`` atom; this may matter if this conditional is the only expression in a case clause for example, in which case a compilation failure like "*internal error in core; crash reason: function_clause in function v3_core:cexprs/3 called as v3_core:cexprs[...]*" will be reported (the compiler sees unexpectedly a clause not having even a single expression).
 
 A related issue may happen when switching conditional flags: it will select/deselect in-code expressions at compile time, and may lead functions and/or variables to become unused, and thus may trigger at least warnings [#]_.
 

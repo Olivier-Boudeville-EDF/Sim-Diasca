@@ -19,7 +19,7 @@ This **toolbox layer** provides its (generally lightweight, simple) services jus
 
 These services tend to stay away from introducing any new **dependency**; however many supports (of OpenGL, JSON, Protobuf, SQL, HDF5, etc.; also in terms of GUI or integration with other languages) may be useful, and are to rely on well-chosen and well-integrated backends.
 
-So, should a key, generic service need a third-party prerequisite (ex: library to manage a complex data format, or to process specific data), that dependency should be made **fully optional** (see the `Third-Party Dependencies`_ section for more details), in a logic of containment: if, for any reason, a dependency has to be replaced, the goal is that the user code can remain, as much as realistically possible, happily unaware of it - only the Myriad integration layer being impacted.
+So, should a key, generic service need a third-party prerequisite (e.g. library to manage a complex data format, or to process specific data), that dependency should be made **fully optional** (see the `Third-Party Dependencies`_ section for more details), in a logic of containment: if, for any reason, a dependency has to be replaced, the goal is that the user code can remain, as much as realistically possible, happily unaware of it - only the Myriad integration layer being impacted.
 
 The purpose of Myriad is not to fully integrate the many backends it *may* rely on (it would be an unachievable task) but, once a proper integration base has been defined for a given backend, to pragmatically increase its coverage based on the actual needs.
 

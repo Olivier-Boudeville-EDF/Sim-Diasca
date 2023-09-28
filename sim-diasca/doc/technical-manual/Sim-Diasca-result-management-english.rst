@@ -41,7 +41,7 @@ Results of interest are automatically transferred there (otherwise one would hav
 .. [#] An effort is made to generate names for result directories that can hardly collide, as for example in the context of parametric studies a launcher script may trigger, from the same location and on behalf of the same user, the execution of multiple simulation cases per second. The identifier mentioned here is the ``SII``, detailed in the *What is the Simulation Instance Identifier?* section of the *Sim-Diasca Developer Guide*.
 
 
-.. [#] All computing nodes uses a temporary directory for their work, which includes extracting the deployment archive to access to the simulation input data and code, and storing locally the results being produced. The name of this directory (by default placed under ``/tmp/``) is forged in order to be reasonably unique (ex: ``sim-diasca-My_Case-boudevil-2015-12-10-at-10h-05m-59s-1f793a6ba507``), to avoid clashes between simulations that would run concurrently on shared computing hosts.
+.. [#] All computing nodes uses a temporary directory for their work, which includes extracting the deployment archive to access to the simulation input data and code, and storing locally the results being produced. The name of this directory (by default placed under ``/tmp/``) is forged in order to be reasonably unique (e.g. ``sim-diasca-My_Case-boudevil-2015-12-10-at-10h-05m-59s-1f793a6ba507``), to avoid clashes between simulations that would run concurrently on shared computing hosts.
 
 
 
@@ -60,7 +60,7 @@ Following mode of operation allows to handle results:
 
 #. when the creation of result producers (typically probes instantiated from models or scenarios) is considered (either initially or at simulation-time), it is declared automatically to the result manager, which is then able to tell whether a given result producer is wanted or not (then only the necessary producers will be created and fed); this allows a given model to support any number of probes, and to enable only the relevant ones on a per-simulation case basis
 
-#. in the course of the simulation, result producers gather sample data, performing immediate or deferred writes (their volume usually exceeds the capacities of the overall distributed RAM), potentially terminating at any time and then performing operations on these data (ex: generating plots from them)
+#. in the course of the simulation, result producers gather sample data, performing immediate or deferred writes (their volume usually exceeds the capacities of the overall distributed RAM), potentially terminating at any time and then performing operations on these data (e.g. generating plots from them)
 
 #. when (if) the simulation ends successfully, the result manager automatically requests the relevant results from all relevant producers, and copy them in the result directory (more precisely, it generates them only if appropriate, like in the case of plots, and send them in a compressed from over the network, to the user node)
 
@@ -71,7 +71,7 @@ Result Specification
 
 Which results are wanted is generally specified directly from the simulation case, among the simulation settings.
 
-The selection is based on the **names** of the result producers to enable, since it is the only way the user can refer to them *a priori* (ex: of course no PID can be statically anticipated in the simulation case).
+The selection is based on the **names** of the result producers to enable, since it is the only way the user can refer to them *a priori* (e.g. of course no PID can be statically anticipated in the simulation case).
 
 In the result specification, a simulation case may require:
 
@@ -92,7 +92,7 @@ For more information on the pattern format, see the `re module <http://erlang.or
 
 The detailed supported syntax is specified in the ``sim-diasca/src/core/src/scheduling/class_TimeManager.hrl`` header file; see the ``result_specification`` field of the ``simulation_settings`` record. Examples can be found in the cases available in the ``mock-simulators`` directory.
 
-Relying on these simulation settings allows to define which results are expected *statically*, which is fine for most uses. However, under some circumstances, it may be convenient to set or modify the result specification *dynamically* (ex: if it is difficult to anticipate on the name of a probe or whether it is actually wanted).
+Relying on these simulation settings allows to define which results are expected *statically*, which is fine for most uses. However, under some circumstances, it may be convenient to set or modify the result specification *dynamically* (e.g. if it is difficult to anticipate on the name of a probe or whether it is actually wanted).
 
 Thus result specification can be also modified at simulation-time, thanks to method calls (see the ``{add,remove,set}{Targeted,Blacklisted}Pattern*/2`` methods of ``class_ResultManager``).
 
@@ -103,9 +103,9 @@ Early Disabling of Results
 
 All results could be generated in all cases, and only be retrieved if requested.
 
-However a better approach could be to collect data samples and process them (ex: in graphical plots) only if needed.
+However a better approach could be to collect data samples and process them (e.g. in graphical plots) only if needed.
 
-A still better approach is needed: as the result manager is able to tell directly whether a result is wanted, it will be able to disable unwanted results from the start, i.e. reject any attempt of creating a result producer (ex: a probe) whose results are not wanted by the user.
+A still better approach is needed: as the result manager is able to tell directly whether a result is wanted, it will be able to disable unwanted results from the start, i.e. reject any attempt of creating a result producer (e.g. a probe) whose results are not wanted by the user.
 
 As a consequence, a classical, model-level probe may be created thanks to the ``class_Probe:declare_result_probe/6`` static method, which will return either the PID of this newly created probe (if the name of that probe is acknowledged as a wanted result by the result manager), or the ``non_wanted_probe`` atom.
 
@@ -120,7 +120,7 @@ Often, many models are able to define various probes, and the corresponding numb
 
 A large number of result producers may therefore exist, even after having selected (thanks to the result specification) only a subset of them.
 
-The consequence is that the parallel, distributed result generation cannot be triggered as a whole, lest the most loaded computing nodes will simply crash (ex: RAM exhausted).
+The consequence is that the parallel, distributed result generation cannot be triggered as a whole, lest the most loaded computing nodes will simply crash (e.g. RAM exhausted).
 
 The result manager therefore implements a flow control mechanism, ensuring that all possible computing nodes work at full speed, while not being too much overloaded. Basically, at any time, up to twice as many generations are requested as there are cores on a given computing host. Any generation completion yields the requesting of another pending one (if any).
 

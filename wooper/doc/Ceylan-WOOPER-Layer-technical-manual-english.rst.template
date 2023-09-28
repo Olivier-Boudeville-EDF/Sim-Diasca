@@ -68,7 +68,7 @@ The latest version of this documentation is to be found at the `official WOOPER 
 
 
 .. contents:: **Table of Contents**
-  :depth: 3
+  :depth: 4
 
 
 
@@ -272,7 +272,7 @@ Although applying blindly an OOP approach while using languages based on other p
 
 Examples of this kind of systems are multi-agent simulations. If they often need massive concurrency, robustness, distribution, etc. (Erlang is particularly suitable for that), the various types of agents have also often to rely on similar kinds of states and behaviours, while still being able to be further specialised on a per-type basis.
 
-The example_ mentioned through the current guide is an illustration [#]_ of the interacting lives of numerous animals of various species. Obviously, they have to share behaviours (ex: all ovoviviparous beings may lay eggs, all creatures can live and die, all have an age, etc.), which cannot be mapped easily (read: automatically) to Erlang concepts without adding some generic constructs.
+The example_ mentioned through the current guide is an illustration [#]_ of the interacting lives of numerous animals of various species. Obviously, they have to share behaviours (e.g. all ovoviviparous beings may lay eggs, all creatures can live and die, all have an age, etc.), which cannot be mapped easily (read: automatically) to Erlang concepts without adding some generic constructs.
 
 .. [#] This example is not a *simulation*, it is just a multi-agent system. For real, massive, discrete-time simulations of complex systems in Erlang (using WOOPER), one may refer to `Sim-Diasca <https://github.com/Olivier-Boudeville-EDF/Sim-Diasca>`_ instead (a free software discrete-time simulation engine).
 
@@ -331,7 +331,7 @@ A class should not be implemented without adding at least a short description of
 
 Doing so allows that information to be available to humans and tools alike [#]_.
 
-.. [#] More generally, over time we tend to see any remaining comment as a potential candidate to "metadata promotion". This way, the corresponding information can be used in multiple contexts (ex: when generating documentation from code).
+.. [#] More generally, over time we tend to see any remaining comment as a potential candidate to "metadata promotion". This way, the corresponding information can be used in multiple contexts (e.g. when generating documentation from code).
 
 
 
@@ -365,7 +365,7 @@ As for our cat, this superb animal could be modelled both as a mammal (itself a 
  -define(superclasses,[class_Mammal,class_ViviparousBeing]).
 
 
-.. [#] Neither of them is a subset of the other, these are mostly unrelated concepts, at least in the context of that example! (ex: a platypus is a mammal, but not a viviparous being, right?).
+.. [#] Neither of them is a subset of the other, these are mostly unrelated concepts, at least in the context of that example! (e.g. a platypus is a mammal, but not a viviparous being, right?).
 
 
 The superclasses (direct mother classes) of a given class can be known thanks to its ``get_superclasses/0`` static method [#]_ (automatically defined by WOOPER):
@@ -468,9 +468,9 @@ This ``State`` variable defined by WOOPER can be somehow compared to the ``self`
 
  More generally a member method can be declared with:
 
- - just its name and full arity (including the ``State`` parameter), ex: ``{getMewVolume,1}``
- - its name, full arity, and one qualifier, ex: ``{getWhiskerColor,1,public}``
- - its name, full arity, and a list of qualifiers, ex: ``{canEat,2, [public,final]}``
+ - just its name and full arity (including the ``State`` parameter), e.g. ``{getMewVolume,1}``
+ - its name, full arity, and one qualifier, e.g. ``{getWhiskerColor,1,public}``
+ - its name, full arity, and a list of qualifiers, e.g. ``{canEat,2, [public,final]}``
 
 
  Known method qualifiers are:
@@ -552,7 +552,7 @@ The three methods previously discussed would indeed be called that way:
 Method Name
 ...........
 
-Methods are designated by their name (as an atom), i.e. the one specified when defining them (ex: ``canEat``).
+Methods are designated by their name (as an atom), i.e. the one specified when defining them (e.g. ``canEat``).
 
 We recommend that their name is spelled in CamelCase and remains short and descriptive, and start with a verb, like in: ``getColor``, ``computeSum``, ``registerDefaultSettings``, etc.
 
@@ -576,7 +576,7 @@ The method name is always the first information given when calling it (typically
 Method Parameters
 .................
 
-All methods are free to change the state of their instance and possibly to trigger any side-effect (ex: sending a message, writing a file, kidnapping Santa Claus, etc.).
+All methods are free to change the state of their instance and possibly to trigger any side-effect (e.g. sending a message, writing a file, kidnapping Santa Claus, etc.).
 
 As detailed below, there are two kinds of member methods:
 
@@ -719,7 +719,7 @@ A summary could be:
 |                                   | convention.                |                  |
 +-----------------------------------+----------------------------+------------------+
 
-.. Note:: As mentioned above, failure detection may better be done through the use of (Erlang) links, either explicitly set (with ``erlang:link/1``) or, preferably (ex: to avoid race conditions), with a linked variation of the ``new`` operator (ex: ``new_link/N``), as discussed later in this document.
+.. Note:: As mentioned above, failure detection may better be done through the use of (Erlang) links, either explicitly set (with ``erlang:link/1``) or, preferably (e.g. to avoid race conditions), with a linked variation of the ``new`` operator (e.g. ``new_link/N``), as discussed later in this document.
 		  So a reader in a hurry may want to skip these considerations and directly jump to the `Method Definition`_ section.
 
 
@@ -880,16 +880,18 @@ More precisely, depending on its returning a specific result, the method signatu
 
 Note that all clauses of a given method must end directly with such a method terminator; this is so not only to be clearer for the reader, but also for WOOPER itself, so that it can determine the type of method at hand.
 
-Finally, a recommended good practice is to add a type specification (see `Dialyzer <http://erlang.org/doc/man/dialyzer.html>`_) to each method definition, which allows to indicate even more clearly whether it is a request or a oneway, whether it is a ``const`` method, etc. Comments are surely welcome additions as well.
+Finally, a recommended good practice is to add a type specification (see `Dialyzer <http://erlang.org/doc/man/dialyzer.html>`_) to each method definition, which allows to indicate even more clearly whether it is a request or a oneway, whether it is a ``const`` method, etc.; more generally WOOPER is fully compatible with the `type-checking tools used by Myriad <https://myriad.esperide.org/#type-checking-myriad>`_.
+
+Method-level comments are surely welcome additions as well, and may be considered as mandatory.
 
 
 
 For Requests
-............
+____________
 
 
 Requests in general
-___________________
+*******************
 
 
 Requests will use ``wooper:return_state_result(NewState,Result)`` to terminate their clauses: the new state will be kept by the instance, whereas the result will be sent to the caller. Hence ``wooper:return_state_result/2`` means that the method returns a state **and** a result.
@@ -928,7 +930,7 @@ Then we may call it, in the case of a cat having 2 male kitten and 3 female ones
 
 
 Const Requests
-______________
+**************
 
 Some clauses of a request may return an unchanged state. It is then a ``const`` clause, and rather than using the  ``wooper:return_state_result/2`` request terminator, it shall use the ``wooper:const_return_result/1`` one.
 
@@ -954,7 +956,7 @@ Note that ``State`` can be used as always, and that even there it is not reporte
 
 
 Sender PID
-__________
+**********
 
 Requests can access to one more information than oneways: the PID of the caller that sent the request. As WOOPER takes care automatically of sending back the result to the caller, having the request know explicitly the caller is usually not useful, thus the caller PID does not appear explicitly in request signatures, among the actual parameters.
 
@@ -991,8 +993,26 @@ Note that:
 - the ``getSender/0`` macro should only be used for requests, as of course the sender PID has no meaning in the case of oneways; if that macro is called nevertheless from a oneway, then it returns the atom ``undefined``.
 
 
+Failsafe Request Calls
+**********************
+
+Whereas some `WOOPER integrated calls`_ include a time-out, in the general case when a request call is made by a client process, this client will wait *indefinitely* for the result from the corresponding requested (active) instance.
+
+It may be desirable instead that this waiting gets interrupted, should a crash of said instance be detected. This can be done by having a **link** between the client process (which may or may not trap EXIT messages) and the requested instance. Such a link can be created at instance creation (e.g. with ``new link``) or later.
+
+Another, often more appropriate, way for the client to be notified is to **monitor** the requested instance: if this last one crashes while being monitored, the monitoring processes (hence possibly the client process) will receive a ``DOWN`` message and possibly generate an exit call. This way a clent will never block waiting for a crashed instance [#]_.
+
+In the future, the API for `WOOPER integrated calls`_ may include ``execute_monitired_request/{2,3,4}`` functions.
+
+See also our `process monitors`_ section, so that a WOOPER instance can monitor processes (possibly other WOOPER - active - instances).
+
+
+.. [#] Similarly to a `gen_server:call/{2,3} <https://www.erlang.org/doc/man/gen_server#call-2>`_, which automatically monitors the server process and thus can exit the calling process with an exit term containing ``Reason = timeout`` if appropriate.
+
+
+
 Request Type Specifications
-___________________________
+***************************
 
 Using them is not mandatory, yet is very much recommended, and WOOPER provides suitable constructs for that.
 
@@ -1024,14 +1044,14 @@ Of course, should type specifications be used, they must be correct; WOOPER will
 
 
 For Oneways
-...........
+___________
 
 
 After relevant adaptations, most of the conventions for requests apply to oneways.
 
 
 Oneways in general
-__________________
+******************
 
 Oneways will use ``wooper:return_state(NewState)`` to terminate their clauses: the new state will be kept by the instance, and no result will be returned to the caller (which is not even known - hence no ``getSender/0`` macro applies to oneways either).
 
@@ -1053,7 +1073,7 @@ This oneway can be called that way:
 
 
 Const Oneways
-_____________
+*************
 
 Even if it is less frequent than for requests, oneways may also be ``const``, i.e. may leave the state unchanged, and consequently are only called for side-effects; for example, rather than specifying:
 
@@ -1076,7 +1096,7 @@ A oneway whose clauses are all ``const`` is itself a const oneway.
 
 
 Oneway Type Specifications
-__________________________
+**************************
 
 The type specification of a oneway should rely, for its return type, either on ``oneway_return()`` or on ``const_oneway_return()``, depending on its constness (no result to account for in either case).
 
@@ -1096,10 +1116,10 @@ Making the previous examples more complete:
 
 
 Usefulness Of the Method Terminators
-....................................
+____________________________________
 
 
-The actual definition of the method terminators (ex: ``wooper:return_state_result/2``, ``wooper:return_state/1``) is actually quite straightforward.
+The actual definition of the method terminators (e.g. ``wooper:return_state_result/2``, ``wooper:return_state/1``) is actually quite straightforward.
 
 For example ``wooper:return_state_result(AState,AResult)`` will simply translate into ``{AState,AResult}``, and ``wooper:return_state(AState)`` will translate into ``AState``.
 
@@ -1174,9 +1194,9 @@ When implementing a method of a class, one may want to call other methods **of t
 
 For example, when developing the ``declareBirthday/1`` oneway of ``class_Mammal`` (which, among other things, is expected to increment the mammal age), one may want to perform a call to its ``setAge/2`` oneway (possibly introduced by an ancestor class like ``class_Creature``, or possibly overridden directly in ``class_Mammal``) on the current instance.
 
-One *could* refer to this method respectively as a function exported by that ancestor (ex: called as ``class_Creature:setAge(...)``) or that is local to the current module (a direct ``setAge(...)`` local call designating then ``class_Mammal:setAge/2``).
+One *could* refer to this method respectively as a function exported by that ancestor (e.g. called as ``class_Creature:setAge(...)``) or that is local to the current module (a direct ``setAge(...)`` local call designating then ``class_Mammal:setAge/2``).
 
-However, in the future, child classes of ``class_Mammal`` may be introduced (ex: ``class_Cat``), and they might define their own version of ``setAge/2``.
+However, in the future, child classes of ``class_Mammal`` may be introduced (e.g. ``class_Cat``), and they might define their own version of ``setAge/2``.
 
 Instead of hardcoding which version of that method shall be called (like in the two previous cases, which establish statically the intended version to call), a developer may desire - if not expect - that, for a cat or for any specialised version thereof, ``declareBirthday/1`` calls automatically the "right" ``setAge/2`` method (i.e. the lastly overridden one in the inheritance graph). Possibly any ``class_Cat:setAge/2`` - not the version of ``class_Creature`` or ``class_Mammal``.
 
@@ -1363,7 +1383,7 @@ See also the section about `Methods Not Returning Anything of Interest`_, which 
 
 Finally, having static methods leaves little interest to defining and exporting one's standard, plain (helper) functions; when doing so, one should wonder whether a static method could not be a solution at least as good.
 
-So the main purpose left to helpers is to factor out common, framework-internal code (not targeted at users) across methods (and possibly classes), especially when it involves an instance state (ex: ``display_foo(Color,Index,State) ->...``).
+So the main purpose left to helpers is to factor out common, framework-internal code (not targeted at users) across methods (and possibly classes), especially when it involves an instance state (e.g. ``display_foo(Color,Index,State) ->...``).
 
 
 :raw-latex:`\pagebreak`
@@ -1440,15 +1460,15 @@ where:
 
 .. _`attribute declaration`:
 
-- ``Name`` is the name of that attribute, as an atom (ex: ``fur_color``)
-- ``Type`` corresponds to the `type specification <http://erlang.org/doc/reference_manual/typespec.html>`_ of that attribute (ex: ``[atom()]``, ``foo:color_index()``); note that the Erlang parser will not support the ``|`` (i.e. union) operator, like in ``'foo'|integer()``; we recommend to use the ``union`` variadic pseudo-function instead (with any arity greater or equal to 2), like in: ``union('foo',integer())``
+- ``Name`` is the name of that attribute, as an atom (e.g. ``fur_color``)
+- ``Type`` corresponds to the `type specification <http://erlang.org/doc/reference_manual/typespec.html>`_ of that attribute (e.g. ``[atom()]``, ``foo:color_index()``); note that the Erlang parser will not support the ``|`` (i.e. union) operator, like in ``'foo'|integer()``; we recommend to use the ``union`` variadic pseudo-function instead (with any arity greater or equal to 2), like in: ``union('foo',integer())``
 - ``QualifierInfo`` is detailed just below
-- ``Description`` is a plain string describing the purpose of this attribute; this is a comment aimed only at humans, which preferably does not start with a capital letter and does not end with a dot (ex: ``"describes the color of the fur of this animal (not including whiskers)"`` or a shorter, maybe better, ``"color of the fur of this animal (not including whiskers)"``)
+- ``Description`` is a plain string describing the purpose of this attribute; this is a comment aimed only at humans, which preferably does not start with a capital letter and does not end with a dot (e.g. ``"describes the color of the fur of this animal (not including whiskers)"`` or a shorter, maybe better, ``"color of the fur of this animal (not including whiskers)"``)
 
 
 .. comment We would have preferred that, instead of ``'integer()'``, one could have specified directly ``integer()``, yet this does not seem possible with parse-transforms, as in the latter case it would trigger a parse error earlier in the transformation process.
 
-		  This error could be intercepted in the AST (ex: ``{error,{24,erl_parse,"bad attribute"}},``), however the content of the original ``-attributes(...)`` parse attribute, short of being successfully parsed, would not be available in the AST, and thus would be lost for good (the WOOPER parse transform would not have access to any information thereof). So, at least currently, attribute types have to be specified as atoms.
+		  This error could be intercepted in the AST (e.g. ``{error,{24,erl_parse,"bad attribute"}},``), however the content of the original ``-attributes(...)`` parse attribute, short of being successfully parsed, would not be available in the AST, and thus would be lost for good (the WOOPER parse transform would not have access to any information thereof). So, at least currently, attribute types have to be specified as atoms.
 
 
 A **qualifier information** is either a single qualifier, or a list of qualifiers.
@@ -1520,9 +1540,9 @@ Finally, a full example of the declaration of class attributes can be:
 
 .. More generally an attribute can be declared with:
 
-.. comment - just its name, ex: ``whisker_color``
-.. comment - a pair made of its name and a single qualifier, ex: ``{fur_color,protected}``
-.. comment - a pair made of its name and a list of qualifiers, ex: ``{mew_volume,[private,{const,35}]}``
+.. comment - just its name, e.g. ``whisker_color``
+.. comment - a pair made of its name and a single qualifier, e.g. ``{fur_color,protected}``
+.. comment - a pair made of its name and a list of qualifiers, e.g. ``{mew_volume,[private,{const,35}]}``
 
 
 .. comment Known attribute qualifiers are:
@@ -1566,7 +1586,7 @@ This is a dynamic datastructure, allowing attributes to be added, removed or mod
 
 This table, among other elements, is itself stored in the overall instance state, i.e. in the variable designated by ``State`` specified at the beginning of each member method (and constructors, and destructor), on which the process corresponding to active instances is looping, and whose type is ``wooper:state()``.
 
-For clarity, we strongly advise to suffix the name of the various state variables used with ``State`` (ex: ``RegisteredState``, ``FinalState``, etc.).
+For clarity, we strongly advise to suffix the name of the various state variables used with ``State`` (e.g. ``RegisteredState``, ``FinalState``, etc.).
 
 
 .. comment In experimental, post-1.x versions of WOOPER, the attributes that defined (among other information) the state of an instance used to be transformed into a class-specific, inheritance-aware, predetermined **record**.
@@ -1648,9 +1668,9 @@ For example, ``AgeState = setAttribute(State, age, 3)`` will return a new state,
 
 .. comment (whether or not this attribute was already defined in ``State``).
 
-Therefore, during the execution of a method, any number of states can be defined (ex: ``State``, ``InitialisedState``, ``AgeState``, etc.) before all, but the one that is returned, are garbage-collected.
+Therefore, during the execution of a method, any number of states can be defined (e.g. ``State``, ``InitialisedState``, ``AgeState``, etc.) before all, but the one that is returned, are garbage-collected.
 
-Note that the corresponding state duplication remains efficient both in terms of processing and memory, as the different underlying state structures (ex: ``State`` and ``AgeState``) actually **share** all their terms except the one modified - thanks to the immutability of Erlang variables that allows to reference rather than copy, be these datastructures tables, records, or anything else.
+Note that the corresponding state duplication remains efficient both in terms of processing and memory, as the different underlying state structures (e.g. ``State`` and ``AgeState``) actually **share** all their terms except the one modified - thanks to the immutability of Erlang variables that allows to reference rather than copy, be these datastructures tables, records, or anything else.
 
 In various cases, notably in constructors, one needs to define a series of attributes in a row, but chaining ``setAttribute/3`` calls with intermediate states that have each to be named is not really convenient.
 
@@ -1995,14 +2015,14 @@ Its type specification is:
 
 For example, if the ``my_list_attribute`` attribute was already set to ``[see_you, goodbye]`` in ``State``, then after ``NewState = appendToAttribute(State, my_list_attribute, hello)``, the ``my_list_attribute`` attribute defined in ``NewState`` will be equal to ``[hello, see_you, goodbye]``, all other attributes being unchanged.
 
-Calling ``appendToAttribute/3`` on a non-existing attribute will trigger a a ``badmatch`` runtime error. If the attribute exists, but is not a list, an ill-formed list will be created (ex: ``[8|false]`` when appending 8 to ``false``, which is not a list).
+Calling ``appendToAttribute/3`` on a non-existing attribute will trigger a a ``badmatch`` runtime error. If the attribute exists, but is not a list, an ill-formed list will be created (e.g. ``[8|false]`` when appending 8 to ``false``, which is not a list).
 
 
 .. comment With the hashtable-based version of WOOPER:
 
 .. comment - if the target attribute does not exist, will trigger ``{{badmatch,undefined},[{hashtable,appendToEntry,3},..``.
 
-.. comment - if it exists but is not already a list, it will not crash but will create an ill-formed list (ex: ``[8|false]`` when appending 8 to ``false``, which is not a list).
+.. comment - if it exists but is not already a list, it will not crash but will create an ill-formed list (e.g. ``[8|false]`` when appending 8 to ``false``, which is not a list).
 
 
 
@@ -2140,15 +2160,15 @@ A `diamond-shaped inheritance <http://en.wikipedia.org/wiki/Diamond_problem>`_ o
 
 This may happen when, like in `the WOOPER example <#wooper-example>`_ presented later in this document:
 
-- a very general "root" class (ex: ``class_Creature``) sits at the top of at least a part of the hierarchy [#]_
-- various child classes derive from it (ex: ``class_Mammal`` and a ``class_OvoviviparousBeing`` may derive from ``class_Creature`` for obvious reasons)
-- a more concrete class (ex: ``class_Platypus``) has to derive from at least two of these child classes (since a platypus happens to be both a mammal and an ovoviviparous being)
+- a very general "root" class (e.g. ``class_Creature``) sits at the top of at least a part of the hierarchy [#]_
+- various child classes derive from it (e.g. ``class_Mammal`` and a ``class_OvoviviparousBeing`` may derive from ``class_Creature`` for obvious reasons)
+- a more concrete class (e.g. ``class_Platypus``) has to derive from at least two of these child classes (since a platypus happens to be both a mammal and an ovoviviparous being)
 
 .. [#] For example, it might be the case with `class_TraceEmitter <https://github.com/Olivier-Boudeville/Ceylan-Traces/blob/master/src/class_TraceEmitter.erl>`_ if relying on `Ceylan-Traces <https://traces.esperide.org/>`_, or `class_Actor <https://github.com/Olivier-Boudeville-EDF/Sim-Diasca/blob/main/sim-diasca/src/core/services/scheduling/class_Actor.erl>`_ if using `Sim-Diasca <https://github.com/Olivier-Boudeville-EDF/Sim-Diasca>`_, as such base classes are rather ubiquitous in their respective contexts.
 
 Then the concrete class will end up deriving more than once from the same root class (here: ``class_Platypus`` will derive indirectly from ``class_Creature`` twice).
 
-Diamond-shaped inheritance may lead to issues in terms of state management (ex: attributes having possibly in turn to be defined more than once), behaviour (multiple implementations having to be selected for some methods) and initialisation (extraneous constructor and destructor calls being made).
+Diamond-shaped inheritance may lead to issues in terms of state management (e.g. attributes having possibly in turn to be defined more than once), behaviour (multiple implementations having to be selected for some methods) and initialisation (extraneous constructor and destructor calls being made).
 
 
 
@@ -2251,7 +2271,7 @@ WOOPER also provides a few `general-purpose interfaces <https://github.com/Olivi
   .. Various Composition Approaches
   .. ______________________________
   ..
-  .. In most OOP languages (ex: C++), such a composition that is used to convey, say, a ``Describable`` trait, would translate to having classes (e.g. ``Foobar``) declare a member variable (for example named ``my_description``) of type pointer to, say, a ``Description`` object.
+  .. In most OOP languages (e.g. C++), such a composition that is used to convey, say, a ``Describable`` trait, would translate to having classes (e.g. ``Foobar``) declare a member variable (for example named ``my_description``) of type pointer to, say, a ``Description`` object.
   ..
   .. An instance of the Foobar class would then be deemed Describable iff its ``my_description``  member variable would be set to a non-null pointer. Doing so may be considered more flexible than for example having Foobar be a child class of a Describable interface (as (1) this eliminates a use of multiple inheritance, and (2) allows some instances of Foobar to be Describable, whereas others not).
   ..
@@ -2268,7 +2288,7 @@ WOOPER also provides a few `general-purpose interfaces <https://github.com/Olivi
   .. .. Note:: Doing so allows classes to support or not any number of traits. If desired, this form of composition may be further extended to be instance-level rather than class-level, so that *instance-optional* traits can be supported. This means that an instance of a given class may, depending on its construction parameters, enable or not specific extra traits.
   ..
   ..
-  .. Said differently, we depart here from standard composition by adding any trait-specific attribute(s) directly in the state of the instance having to implement that trait (among its other attributes), instead of having always-defined attributes that may or may not enable that trait. So, for a trait (whether instance-optional or not) to be implemented, the usual WOOPER convention that the attributes of a class shall be unconditionally defined must be relaxed: from the point of view of the trait implementation (e.g. in ``class_Describable``), trait-related attributes (ex: ``my_description``) *may or may not be defined at all* (depending on whether or not a given instance supports that trait).
+  .. Said differently, we depart here from standard composition by adding any trait-specific attribute(s) directly in the state of the instance having to implement that trait (among its other attributes), instead of having always-defined attributes that may or may not enable that trait. So, for a trait (whether instance-optional or not) to be implemented, the usual WOOPER convention that the attributes of a class shall be unconditionally defined must be relaxed: from the point of view of the trait implementation (e.g. in ``class_Describable``), trait-related attributes (e.g. ``my_description``) *may or may not be defined at all* (depending on whether or not a given instance supports that trait).
   ..
   .. Such a scheme allows all classes to support any number of optional traits at no cost (no code dependency, no potentially useless attribute introduced, no entangled multiple inheritance); this is the sole purpose of the WOOPER built-in ``hasAttribute/2`` and ``getMaybeAttribute/2`` functions.
   ..
@@ -2377,7 +2397,7 @@ The ``new_link`` operator behaves exactly as the ``new`` operator, except that i
 The ``new`` and ``new_link`` operators are automatically defined by WOOPER (thanks to a relevant parse transform), but they rely on their corresponding, class-specific, user-defined ``construct`` operator (only WOOPER is expected to make use of it). More precisely, for each of the ``construct/N+1`` operator defined by the class developer, WOOPER creates a full set of corresponding ``new`` variations, including ``new/N`` and ``new_link/N``.
 
 
-At least one ``construct`` operator must be defined by the class developer (otherwise WOOPER will raise a compile-time error), knowing that any number of them can then be defined, each with its own arity (ex: ``construct/1, construct/2, construct/3``, etc.), and each with possibly multiple clauses that will be, as usual, selected at runtime based on pattern-matching.
+At least one ``construct`` operator must be defined by the class developer (otherwise WOOPER will raise a compile-time error), knowing that any number of them can then be defined, each with its own arity (e.g. ``construct/1, construct/2, construct/3``, etc.), and each with possibly multiple clauses that will be, as usual, selected at runtime based on pattern-matching.
 
 ``construct`` operators may not be exported explicitly by the class developer, as WOOPER will automatically take care of that if necessary.
 
@@ -2447,7 +2467,7 @@ Note that, should the instance creation fail, the caller of a synchronous new wo
 
 This is why the ``synchronous_timed_new*`` operators have been introduced: if the caller-side time-out [#]_ expires while waiting for the created instance to answer, then they will throw an appropriate exception:
 
-- either ``{synchronous_time_out,Classname}`` if it was a node-local creation (where ``Classname`` is the name of the class corresponding to the instance to create; ex: ``class_Cat``)
+- either ``{synchronous_time_out,Classname}`` if it was a node-local creation (where ``Classname`` is the name of the class corresponding to the instance to create; e.g. ``class_Cat``)
 - or ``{remote_synchronous_time_out,Node,Classname}``, where ``Node`` is the name of the node (as an atom) on which the instance was to be created
 
 .. [#] Depending on whether or not the class to instantiate was compiled in debug mode, the time-out is to last by default for, respectively, 5 seconds (shorter, to ease debugging) or for 30 minutes (longer, to favour robustness).
@@ -2601,7 +2621,7 @@ We saw that, when implementing a constructor (``construct/N``), like in all othe
 
 Conversely, with WOOPER, when defining a destructor for a class (``destruct/1``), one only has to specify what are the *specific* operations and state changes (if any) that are required so that an instance of that class is deleted: the proper calling of the destructors of mother classes across the inheritance graph is automatically taken in charge by WOOPER.
 
-Once the user-specified actions have been processed by the destructor (ex: releasing a resource, unsubscribing from a registry, deleting other instances, closing properly a file, etc.), it is expected to return an updated state, which will be given in turn to the destructors of the instance direct mother classes.
+Once the user-specified actions have been processed by the destructor (e.g. releasing a resource, unsubscribing from a registry, deleting other instances, closing properly a file, etc.), it is expected to return an updated state, which will be given in turn to the destructors of the instance direct mother classes.
 
 WOOPER will automatically make use of any user-defined destructor, otherwise the default one will be used, doing nothing (i.e. returning the exact same state that it was given).
 
@@ -2630,7 +2650,7 @@ More precisely, either the class implementer does not define at all a ``destruct
 	 State.
 
 
-In both cases (default or user-defined destructor), when the instance will be deleted (ex: ``MyInstance ! delete`` is issued), WOOPER will take care of:
+In both cases (default or user-defined destructor), when the instance will be deleted (e.g. ``MyInstance ! delete`` is issued), WOOPER will take care of:
 
 - calling any user-defined destructor for that class
 - then calling the ones of the direct mother classes, which will in turn call the ones of their mother classes, and so on
@@ -2730,7 +2750,7 @@ WOOPER offers a rather complete support for **serialisation and deserialisation*
 
 For that the ``class_Serialisable`` interface provides all default yet overridable primitives, including:
 
-- "serialisation hooks" (ex: the ``onPreSerialisation/2`` request), meant to accommodate any class-specific transformation that shall happen prior to each operation
+- "serialisation hooks" (e.g. the ``onPreSerialisation/2`` request), meant to accommodate any class-specific transformation that shall happen prior to each operation
 
 - entry transformers, that are generally specific to a project but transverse to most if not all its classes, so that values of attributes can be recursively scanned for transient terms (like a PID, a reference), which are generally replaced with restoration markers at serialisation time, and recreated appropriately at deserialisation time
 
@@ -2765,7 +2785,7 @@ An update protocol is proposed, with all support defined so that, for a given cl
 #. then the module corresponding to that class is reloaded (possibly after having been recompiled), being soft-purged (and possibly hard-purged if needed)
 #. then all its instances perform (concurrently) any state update that they need in order to support the new version
 
-In practice, for a given class (e.g. ``class_TestUpgradable``), various versions thereof may be introduced over time (ex: ``1.2.3``, then ``1.2.4``). Each version of a given class is free to override the default implementations of the ``upgradeVersion/4`` and ``downgradeVersion/4`` methods, as inherited from the ``class_Upgradable`` interface, in order to account for all changes introduced between two versions (e.g. attributes being added or removed, changing types, having their value transformed).
+In practice, for a given class (e.g. ``class_TestUpgradable``), various versions thereof may be introduced over time (e.g. ``1.2.3``, then ``1.2.4``). Each version of a given class is free to override the default implementations of the ``upgradeVersion/4`` and ``downgradeVersion/4`` methods, as inherited from the ``class_Upgradable`` interface, in order to account for all changes introduced between two versions (e.g. attributes being added or removed, changing types, having their value transformed).
 
 Refer to `class_Upgradable_test <https://github.com/Olivier-Boudeville/Ceylan-WOOPER/tree/master/test/interfaces/class_Upgradable_test.erl>`_ for a full test thereof.
 
@@ -2854,7 +2874,7 @@ So we would like to use ``wooper:return_state_result/2`` for the second clause a
 
 The answer is quite simple: all WOOPER method terminators being actually no-op, they are replaced at compilation-time by the actual terms they were given.
 
-So a terminator taking only a state as parameter is replaced literally by this state (ex: ``wooper:return_state(FooState)`` is actually ``FooState``), while one taking two returns a pair (ex: ``wooper:return_state_result(FooState,Res)`` is actually ``{FooState,Res}``). No black magic here!
+So a terminator taking only a state as parameter is replaced literally by this state (e.g. ``wooper:return_state(FooState)`` is actually ``FooState``), while one taking two returns a pair (e.g. ``wooper:return_state_result(FooState,Res)`` is actually ``{FooState,Res}``). No black magic here!
 
 Therefore the implementation we target could be best [#]_ written as:
 
@@ -2875,6 +2895,8 @@ Therefore the implementation we target could be best [#]_ written as:
 
 .. [#] ``wooper:executeRequest/3`` could be used instead of matching the result of ``wooper:return_state_result/2`` and breaking its opaqueness - but (even it is a matter of taste here) we prefer the more direct and efficient approach that was presented. Note though that in general they do not bear the same semantics: ``wooper:executeRequest/3`` calls a possibly overridden version of the specified method, whereas a direct call targets specifically the class-local version of that method.
 
+
+.. _`WOOPER integrated calls`:
 
 Integrated Call APIs
 --------------------
@@ -2907,13 +2929,13 @@ Sometimes, in the context of *active instances*, it may be more convenient to re
 So the ``wooper`` module provides facilities in order to execute:
 
 - a given **request** **sequentially** on **multiple callees**: ``send_request_in_turn/3`` or, if wanting that a time-out applies, ``send_request_in_turn/4``
-- the same for a **oneway** sending (off-band, through a direct message sending) a user-specified **acknowledgement term** (ex: a conventional atom): ``send_acknowledged_oneway_in_turn/5``
+- the same for a **oneway** sending (off-band, through a direct message sending) a user-specified **acknowledgement term** (e.g. a conventional atom): ``send_acknowledged_oneway_in_turn/5``
 - a given **request**, whose only result in a user-specified **acknowledgement term**, in **parallel** on **multiple callees**: ``send_requests_and_wait_acks/4`` or, if wanting that a time-out applies, ``send_requests_and_wait_acks/5``
 - a given **request** in **parallel** on **multiple callees**, obtaining back an **unordered** list of their results: ``obtain_results_for_requests/3``
 - a **series of requests** on a **single** callee: ``send_request_series/2`` (just for the sending) and ``obtain_results_for_request_series/2`` (to include also the collecting of their ordered results)
 
 
-Many more flavours can be considered (ex: for active/passive instances, requests or oneways, with or without time-out, synchronisable or not, etc.) and may be supported in the future, on a per-need basis.
+Many more flavours can be considered (e.g. for active/passive instances, requests or oneways, with or without time-out, synchronisable or not, etc.) and may be supported in the future, on a per-need basis.
 
 However it may be more convenient to compose any extra multi-call that is needed thanks to the various basic helpers that are provided in the ``wooper`` module in order to send calls or to collect their results. Doing so allows for example to perform interleaving (triggering concurrent calls as soon as possible, collecting their results as late as possible) and maximise the overall parallelism.
 
@@ -2967,7 +2989,7 @@ More precisely, such a clause is considered licit yet not giving information abo
 
 Otherwise (all clauses always throw), the class developer will have to give a hint about the actual nature of that function - thanks to a type specification.
 
-For example, if defining the API of an abstract class (say, an ``AbstractShape`` class) whereas, for a given method signature (ex: ``getArea/1``), there is no meaningful default implementation, one may for example write:
+For example, if defining the API of an abstract class (say, an ``AbstractShape`` class) whereas, for a given method signature (e.g. ``getArea/1``), there is no meaningful default implementation, one may for example write:
 
 .. code:: erlang
 
@@ -3078,11 +3100,11 @@ For example:
 .. code:: erlang
 
  -spec onWOOPERExitReceived(wooper:state(),basic_utils:pid_or_port(),
-			  basic_utils:exit_reason()) -> const_oneway_return().
+			basic_utils:exit_reason()) -> const_oneway_return().
  onWOOPERExitReceived(State,PidOrPort,ExitReason) ->
-	   io:format("MyClass EXIT handler ignored signal '~p' "
-				 "from ~w.~n", [ExitReason,PidOrPort]),
-	   wooper:const_return().
+	io:format("MyClass EXIT handler ignored signal '~p' "
+			  "from ~w.~n", [ExitReason,PidOrPort]),
+	wooper:const_return().
 
 may result in an output like::
 
@@ -3096,6 +3118,9 @@ It will just notify the signal to the user, by displaying a message like::
  WOOPER default EXIT handler for instance <0.36.0> of class class_Cat
    ignored signal 'normal' from <0.40.0>.
 
+
+
+.. _`process monitors`:
 
 
 ``DOWN`` Messages for Process Monitors
@@ -3139,6 +3164,9 @@ For example:
   [class_Mammal,class_OvoviviparousBeing]
 
 
+When having at hand the state of an instance (so either from its methods and/or for a passive instance), various helpers in the ``wooper`` module can be used (e.g. ``get_classname/1``, ``get_all_superclasses/1``, ``is_instance_of/2``, ``check_instance_of/2``, ``get_attribute_pairs/1``, ``state_to_string/1``, ``get_class_filename/1``). They are mostly intended for testing, as a good OOP design generally does not rely on such primitives.
+
+
 
 Developer Guidelines
 --------------------
@@ -3170,7 +3198,7 @@ For examples of re-use of WOOPER by upper layers, one may refer to `Ceylan-Trace
 OTP Guidelines
 ..............
 
-For server-like activities, it may be useful to have instances of WOOPER classes (ex: ``class_Foobar``) behave like OTP workers in supervision trees.
+For server-like activities, it may be useful to have instances of WOOPER classes (e.g. ``class_Foobar``) behave like OTP workers in supervision trees.
 
 Exactly like by default any Erlang process is not able to readily take part to an OTP supervision tree [#]_, a WOOPER instance must specifically support such an integration.
 
@@ -3180,10 +3208,10 @@ A `supervisor bridge <https://erlang.org/doc/man/supervisor_bridge.html>`_ (i.e.
 
 .. [#] Otherwise, as we understand it, should WOOPER instances be directly declared in a supervision tree as mere workers, they would have to implement typically the ``gen_server`` behaviour, which implies relying on ``handle_{call,cast,info}`` functions and on a behaviour-specific main loop - rather than on the counterpart method-based facilities offered by WOOPER.
 
-	   A consequence is the need for an extra, mostly idle process sitting between such a supervised WOOPER instance and its supervisor. In some cases (ex: a webserver processing each request based on a WOOPER instance), this overhead would be excessive; then defining a WOOPER-specific supervisor, able to handle directly its WOOPER instances as workers, could be devised.
+	   A consequence is the need for an extra, mostly idle process sitting between such a supervised WOOPER instance and its supervisor. In some cases (e.g. a webserver processing each request based on a WOOPER instance), this overhead would be excessive; then defining a WOOPER-specific supervisor, able to handle directly its WOOPER instances as workers, could be devised.
 
 
-Rather than declaring the corresponding behaviour and its implemented API directly in the target class (ex: in ``class_Foobar``), we recommend for *clarity* (as, even if the bridge was declared in the same module, it would be still an intermediate, autonomous process sitting between the OTP supervisor and the WOOPER instance of interest) and for *separation of concerns* (leaving an OTP integration as an optional feature) to introduce a specific module for that, like done with `traces_bridge_sup <https://github.com/Olivier-Boudeville/Ceylan-Traces/blob/master/src/traces_bridge_sup.erl>`_ for `class_TraceAggregator.erl <https://github.com/Olivier-Boudeville/Ceylan-Traces/blob/master/src/class_TraceAggregator.erl>`_ or `us_common_config_bridge_sup <https://github.com/Olivier-Boudeville/us-common/blob/master/src/us_common_config_bridge_sup.erl>`_ for `class_USConfigServer.erl <https://github.com/Olivier-Boudeville/us-common/blob/master/src/class_USConfigServer.erl>`_.
+Rather than declaring the corresponding behaviour and its implemented API directly in the target class (e.g. in ``class_Foobar``), we recommend for *clarity* (as, even if the bridge was declared in the same module, it would be still an intermediate, autonomous process sitting between the OTP supervisor and the WOOPER instance of interest) and for *separation of concerns* (leaving an OTP integration as an optional feature) to introduce a specific module for that, like done with `traces_bridge_sup <https://github.com/Olivier-Boudeville/Ceylan-Traces/blob/master/src/traces_bridge_sup.erl>`_ for `class_TraceAggregator.erl <https://github.com/Olivier-Boudeville/Ceylan-Traces/blob/master/src/class_TraceAggregator.erl>`_ or `us_common_config_bridge_sup <https://github.com/Olivier-Boudeville/us-common/blob/master/src/us_common_config_bridge_sup.erl>`_ for `class_USConfigServer.erl <https://github.com/Olivier-Boudeville/us-common/blob/master/src/class_USConfigServer.erl>`_.
 
 However, when the purpose of a given class is solely to integrate within an OTP application through a supervision tree, one may of course have the bridge directly defined in the WOOPER class the interfacing of which it is enabling; see `class_USSensorManager.erl <https://github.com/Olivier-Boudeville/us-main/blob/master/src/class_USSensorManager.erl>`_ for an example thereof.
 
@@ -3299,7 +3327,7 @@ When defining a **static method**:
 - each of its clause should terminate with ``wooper:return_static(R)`` or with ``wooper:return_static_void()``
 
 
-Finding it difficult not to mix the keywords for spec return types (ex: ``request_return/1``) and method terminators (ex: ``wooper:return_state_result/2``)?
+Finding it difficult not to mix the keywords for spec return types (e.g. ``request_return/1``) and method terminators (e.g. ``wooper:return_state_result/2``)?
 
 A mnemonic could be that a spec return type designates a returned *term* (hence for example a ``request_return/1`` - more generally such types always end with ``_return``) whereas a method terminator designates an *action* (returning a state and a result, hence to ``wooper:return_state_result/2`` for example).
 
@@ -3314,7 +3342,7 @@ For Nedit users, a WOOPER-aware `nedit.rc <https://github.com/Olivier-Boudeville
 
 
 
-Similarity With other Languages
+Similarity With Other Languages
 -------------------------------
 
 WOOPER is in some ways adding features quite similar to the ones available with other languages, including Python (simple multiple inheritance, implied ``self/State`` parameter, attribute dictionaries/associative tables, etc.) while still offering the major strengths of Erlang (concurrency, distribution, functional paradigm) and not hurting too much the overall performances (mainly thanks to the prebuilt attribute and method tables).
@@ -3331,13 +3359,13 @@ The main limitations that existed beforehand were (from the most recently allevi
 
 - the per-instance memory footprint has been reduced by sharing the "virtual table" of a given class between all its instances, thanks to ``persistent_term``
 - the efficiency of the per-instance associative table to store the attribute values has been improved by switching from our hashtable implementation to a map-based one
-- the macro-based constructor declarations were too cumbersome and limiting (ex: a single constructor per class was supported); this is fully addressed thanks to the WOOPER parse transform now
+- the macro-based constructor declarations were too cumbersome and limiting (e.g. a single constructor per class was supported); this is fully addressed thanks to the WOOPER parse transform now
 
-We expect the upcoming JIT compilation to benefit a lot to WOOPER, with no change having to be operated at its level.
+We expect the now default JIT compilation to benefit a lot to WOOPER, with no change having to be operated at its level.
 
 As always, there is certainly room for improvement, to grind a bit more runtime performances and/or to further reduce the per-instance memory footprint. Profiling actions welcome!
 
-.. comment - some syntactical elements are still too cumbersome (ex: the ``wooper_cons
+.. comment - some syntactical elements are still too cumbersome (e.g. the ``wooper_cons
 
 .. Both of these limitations are to be removed over time thanks to metaprogramming (based on parse transforms).
 
@@ -3400,7 +3428,7 @@ Here are a few examples of tests:
 - `class_Platypus_test.erl <https://github.com/Olivier-Boudeville/Ceylan-WOOPER/tree/master/priv/examples/class_Platypus_test.erl>`__
 
 
-To run a test (ex: ``class_Cat_test.erl``), when WOOPER has already been compiled, one just has to enter, from the corresponding directory: ``make class_Cat_run``.
+To run a test (e.g. ``class_Cat_test.erl``), when WOOPER has already been compiled, one just has to enter, from the corresponding directory: ``make class_Cat_run``.
 
 
 
@@ -3425,9 +3453,9 @@ There are always welcome, and in some corner cases they are also needed by WOOPE
 
 
 
-The **naming conventions** (ex: ``CamelCase`` / ``snake_case``) shall be respected; notably, helper functions and static methods (which, from an Erlang point of view, are mostly just exported functions) should be named like C functions, in ``snake_case`` (ex: ``compute_sum``) rather than being written in CamelCase (ex: no helper function should be named ``computeSum``), to avoid mixing up these different kinds of code.
+The **naming conventions** (e.g. ``CamelCase`` / ``snake_case``) shall be respected; notably, helper functions and static methods (which, from an Erlang point of view, are mostly just exported functions) should be named like C functions, in ``snake_case`` (e.g. ``compute_sum``) rather than being written in CamelCase (e.g. no helper function should be named ``computeSum``), to avoid mixing up these different kinds of code.
 
-To further separate helper functions from instance methods, an helper function taking a ``State`` parameter should better place it at the end of its parameter list rather than in first position (ex: ``compute_sum(X,Y,State)`` rather than ``compute_sum(State,X,Y)``).
+To further separate helper functions from instance methods, an helper function taking a ``State`` parameter should better place it at the end of its parameter list rather than in first position (e.g. ``compute_sum(X,Y,State)`` rather than ``compute_sum(State,X,Y)``).
 
 In a method body, the various state variables being introduced should be properly named, i.e. their name should start with a self-documenting prefix followed by the ``State`` suffix, like in: ``SeededState=setAttribute(State,seed,{1,7,11})``.
 
@@ -3435,7 +3463,7 @@ In a method body, the various state variables being introduced should be properl
 
 Some more general (mostly unrelated) **Erlang-level conventions** that we like:
 
-- when, in code, more than one parameter is specified in a function signature, parameter names can be surrounded by spaces (ex: ``f( Color )``, or ``g( Age, Height )``)
+- when, in code, more than one parameter is specified in a function signature, parameter names can be surrounded by spaces (e.g. ``f( Color )``, or ``g( Age, Height )``)
 
 - functions should be separated by (at least) three newlines, whereas clauses for a given function should be separated by one or two newlines, depending on their size
 
@@ -3509,22 +3537,22 @@ A basic rule of thumb in all languages is to enable all warnings and eradicate t
 
 This is still more valid when using WOOPER, whose proper use should never result in any warning being issued by the compiler.
 
-Notably warnings about unused variables are precious in order to catch mistakes when state variables are not being properly taken care of (ex: when a state is defined but never re-used later).
+Notably warnings about unused variables are precious in order to catch mistakes when state variables are not being properly taken care of (e.g. when a state is defined but never re-used later).
 
 
 
 Runtime Errors
 ..............
 
-Most errors while using WOOPER should result in relatively clear messages (ex: ``wooper_method_failed`` or ``wooper_method_faulty_return``), associated with all relevant runtime information that was available to WOOPER, including context and stacktrace.
+Most errors while using WOOPER should result in relatively clear messages (e.g. ``wooper_method_failed`` or ``wooper_method_faulty_return``), associated with all relevant runtime information that was available to WOOPER, including context and stacktrace.
 
-Another way of overcoming WOOPER issues is to activate the debug mode for all WOOPER-enabled compiled modules (ex: uncomment ``-define(wooper_debug_mode,).`` in ``wooper.hrl`` or, preferably, ensure in ``GNUmakevars.inc`` that ``ENABLE_DEBUG`` has been set to true), and recompile your classes.
+Another way of overcoming WOOPER issues is to activate the debug mode for all WOOPER-enabled compiled modules (e.g. uncomment ``-define(wooper_debug_mode,).`` in ``wooper.hrl`` or, preferably, ensure in ``GNUmakevars.inc`` that ``ENABLE_DEBUG`` has been set to true), and recompile your classes.
 
 The debug mode tries to perform extensive checking on all WOOPER entry points, from incoming messages to the user class itself, catching mistakes from the class developer as well as from the class user.
 
 For example, the validity of states returned by a constructor, by each method and by the destructor is checked, as the one of states specified to the ``execute*`` constructs.
 
-If it is not enough to clear things up, an additional step can be to add, on a per-class basis (ex: in ``class_Cat.erl``), before the WOOPER include, ``-define(wooper_log_wanted,).``.
+If it is not enough to clear things up, an additional step can be to add, on a per-class basis (e.g. in ``class_Cat.erl``), before the WOOPER include, ``-define(wooper_log_wanted,).``.
 
 Then all incoming method calls will be traced, for easier debugging. It is seldom necessary to go till this level of detail.
 
@@ -3593,7 +3621,7 @@ You most probably forgot to build the ``myriad`` directory that contains, among 
 
 Check that you have a ``map_hashtable.beam`` file indeed, and that it can be found from the paths specified to the virtual machine.
 
-Note that the WOOPER code designates this module as the ``table`` one (ex: ``table:new()``), for a better substituability (this is obtained thanks to a parse-transform provided by ``Ceylan-Myriad``) .
+Note that the WOOPER code designates this module as the ``table`` one (e.g. ``table:new()``), for a better substituability (this is obtained thanks to a parse-transform provided by ``Ceylan-Myriad``) .
 
 
 
@@ -3787,7 +3815,7 @@ Once `Myriad <https://myriad.esperide.org>`_ and WOOPER itself have been built (
 The testing shall complete successfully (if it is not the case, see our support_ section).
 
 .. Note:: WOOPER is built and tested at each commit through `continuous integration <https://github.com/Olivier-Boudeville/Ceylan-WOOPER/actions?query=workflow%3A%22Erlang+CI%22>`_, and the same holds for its only prerequisite (`Myriad <https://myriad.esperide.org>`_).
-		  Reciprocally this procedure applies to the projects based on it, directly (ex: `Traces <https://traces.esperide.org/>`_) or not (ex: `US-Web <https://us-web.esperide.org/>`_), so in terms of usability, confidence should be high.
+		  Reciprocally this procedure applies to the projects based on it, directly (e.g. `Traces <https://traces.esperide.org/>`_) or not (e.g. `US-Web <https://us-web.esperide.org/>`_), so in terms of usability, confidence should be high.
 
 
 
@@ -3821,7 +3849,7 @@ It has been a large rewriting of this layer, with much improvements notably:
 - multiple different-arity constructors per class are supported now
 - no more ``wooper_construct_parameters``, longer ``wooper_construct_export`` or ``wooper_construct_export`` defines
 - automatic detection and export of constructors, any destructor and methods
-- WOOPER method terminators introduced (ex: ``wooper:return_state_result/2``, instead of the ``wooper_return_state_result`` macro)
+- WOOPER method terminators introduced (e.g. ``wooper:return_state_result/2``, instead of the ``wooper_return_state_result`` macro)
 - the ``class_attributes`` optional parse attribute define introduced (``-define(class_attributes,[...]).``
 - ``execute*With`` renamed as ``execute*As`` (clearer)
 - convenience method wrappers such as ``wooper:execute_request/3`` have their parameters reordered (target - either a PID or a passive instance - comes first now)
@@ -3963,7 +3991,7 @@ WOOPER is the second level of a software stack beginning with Erlang and then My
 
 If the initial versions of WOOPER were mostly based on macros and headers, newer ones rely on the Erlang way of doing metaprogramming, namely parse-transforms.
 
-More precisely, the sources of a user-defined class are transformed by the standard Erlang toolchain (``erlc`` compiler) into an AST (*Abstract Syntax Tree*), which is first transformed by WOOPER (ex: to generate the new operators, to export any destructor, etc.) and then by Myriad (ex: to support newer types such as ``void/0``, ``maybe/1`` or ``table/2``), which also provides much of the AST transformation support.
+More precisely, the sources of a user-defined class are transformed by the standard Erlang toolchain (``erlc`` compiler) into an AST (*Abstract Syntax Tree*), which is first transformed by WOOPER (e.g. to generate the new operators, to export any destructor, etc.) and then by Myriad (e.g. to support newer types such as ``void/0``, ``maybe/1`` or ``table/2``), which also provides much of the AST transformation support.
 
 
 
@@ -4091,9 +4119,9 @@ Issues & Planned Enhancements
 - integrate automatic persistent storage of instance states, for example in Mnesia databases
 - integrate specific constructs for code reflection
 - check that a class specified in ``execute*As`` is indeed a (direct or not) mother class of this one, at least in debug mode
-- check that the declared attributes are legit (existing, not reserved, etc.) and their access as well (ex: regarding constness)
+- check that the declared attributes are legit (existing, not reserved, etc.) and their access as well (e.g. regarding constness)
 - support qualifier-based declarations of methods and attributes (``public``, ``protected``, ``private``, ``final``, ``const``, ``pure``, etc.)
-- generate automatically a graphical class diagram out of the sources of a set of projects (ex: using `PlantUML <http://plantuml.com/>`_)
+- generate automatically a graphical class diagram out of the sources of a set of projects (e.g. using `PlantUML <http://plantuml.com/>`_)
 
 .. For WOOPER versions 2.0 and more recent:
 
@@ -4104,7 +4132,7 @@ Issues & Planned Enhancements
 
 .. - is **wooper_main_loop** (in ``wooper.hrl``) really tail-recursive? I think so
 
-.. - would there be a **more efficient** implementation of hashtables? (ex: using proplists, process dictionary, generated modules, dict or ETS-based?); more generally speaking, some profiling could be done to further increase overall performances
+.. - would there be a **more efficient** implementation of hashtables? (e.g. using proplists, process dictionary, generated modules, dict or ETS-based?); more generally speaking, some profiling could be done to further increase overall performances
 
 - ensure that all instances of a given class *reference* the same table dedicated to the method look-ups, and do not have each their own private *copy* of it (mere referencing is expected to result from single-assignment); storing a per-class direct method mapping could also be done with prebuilt modules: ``class_Cat`` would rely on an automatically generated ``class_Cat_mt`` (for "method table") module, which would just be used in order to convert a method name in the name of the module that should be called in the context of that class, inheritance-wise; or, preferably, this information could be added directly to ``class_Cat``; note that this should be the case now that the use of ``persistent_term`` has been integrated
 
@@ -4136,7 +4164,7 @@ This allows the use of the WOOPER code in as wide a variety of software projects
 
 Being triple-licensed means that someone (the licensee) who modifies and/or distributes it can choose which of the available sets of licence terms he is operating under.
 
-We hope that enhancements will be back-contributed (ex: thanks to merge requests), so that everyone will be able to benefit from them.
+We hope that enhancements will be back-contributed (e.g. thanks to merge requests), so that everyone will be able to benefit from them.
 
 
 

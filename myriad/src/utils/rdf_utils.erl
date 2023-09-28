@@ -54,7 +54,7 @@
 
 
 
--type iri() :: text_utils:bin_string().
+-type iri() :: bin_string().
 % International Resource Identifier, in charge of, well, identifying a resource.
 %
 % This is a generalization of the URIs (Uniform Resource Identifier), allowing
@@ -65,7 +65,7 @@
 
 
 
--type string_iri() :: text_utils:ustring().
+-type string_iri() :: ustring().
 % Version of an IRI specified (typically by the user) as a plain (Unicode)
 % string.
 
@@ -124,8 +124,11 @@
 		  vocabulary_to_string/1, vocabulary_to_string/2 ]).
 
 
+
 % Shorthands:
+
 -type ustring() :: text_utils:ustring().
+-type bin_string() :: text_utils:bin_string().
 
 
 

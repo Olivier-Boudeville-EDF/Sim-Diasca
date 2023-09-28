@@ -33,11 +33,15 @@
 	vertices = [] :: [ point3:any_vertex3() ],
 
 
+	% The types of the faces from which this mesh is made:
+	face_type :: mesh:face_type(),
+
+
 	% The faces defining that mesh, based on the indices of vertices:
 	faces = [] :: [ mesh:indexed_face() ],
 
 
-	% To which geometric element (ex: per vertex, per face) the next normals
+	% To which geometric element (e.g. per vertex, per face) the next normals
 	% correspond:
 	%
 	normal_type :: mesh:normal_type(),
@@ -53,6 +57,7 @@
 
 
 	% Bounding volume information:
+	%
 	% (can be for example a right-cuboid or a sphere)
 	%
 	bounding_volume :: maybe( bounding_volume:bounding_volume() ) } ).

@@ -22,9 +22,9 @@ Some General Technical Considerations First
 
 In the context of interest here, a scheduler is a software component of a simulation engine that is specifically in charge of the management of the simulation time.
 
-Its purpose is to preserve the simulation properties (ex: uncoupling of the virtual time from the wall-clock one, respect of causality, management of concurrent events, management of stochastic behaviours, guarantee of total reproducibility, providing of some form of "ergodicity" - more on that later) while performing a correct evaluation of the model instances involved in that simulation.
+Its purpose is to preserve the simulation properties (e.g. uncoupling of the virtual time from the wall-clock one, respect of causality, management of concurrent events, management of stochastic behaviours, guarantee of total reproducibility, providing of some form of "ergodicity" - more on that later) while performing a correct evaluation of the model instances involved in that simulation.
 
-It must induce as little constraint on the models as possible (ex: in terms of fan-in, fan-out, look-ahead, etc.) and, as a bonus, it can evaluate them efficiently.
+It must induce as little constraint on the models as possible (e.g. in terms of fan-in, fan-out, look-ahead, etc.) and, as a bonus, it can evaluate them efficiently.
 
 A scheduler can certainly be "ad hoc" (written in a per-simulation basis), but in the general cases we do not consider that this is a relevant option. Indeed much duplication of efforts would be involved, as such a scheduling feature would have to be repeatedly
 developed, from a simulation case to another, most probably in a very limited and limiting way.
@@ -163,7 +163,7 @@ Pros:
 
 Cons:
 
-- not strictly as simple as one could think, but doable (ex: reordering of events must be managed, management of stochastic values must be properly thought of, induced latency may either add some constraints to the implementation of models or require a more complex approach to time management)
+- not strictly as simple as one could think, but doable (e.g. reordering of events must be managed, management of stochastic values must be properly thought of, induced latency may either add some constraints to the implementation of models or require a more complex approach to time management)
 
 - a value of the time step must be chosen appropriately (although we could imagine that advanced engines could determine it automatically, based on the needs expressed by each model)
 
@@ -253,7 +253,7 @@ Architecture
 
 In Sim-Diasca, the scheduling service is implemented thanks to an arbitrarily deep hierarchy of distributed time managers. Their role is to agree on the progress of simulation time and to allow model instances (actors) to be evaluated as much as possible in parallel.
 
-More precisely, the simulation time is split according to a fundamental simulation frequency (ex: 50 Hz, or vastly inferior ones for yearly temporalities) which defines the finest tick granularity (ex: 20 milliseconds) on which model instances are free to develop their behaviour, however erratic and complex they may be.
+More precisely, the simulation time is split according to a fundamental simulation frequency (e.g. 50 Hz, or vastly inferior ones for yearly temporalities) which defines the finest tick granularity (e.g. 20 milliseconds) on which model instances are free to develop their behaviour, however erratic and complex they may be.
 
 Of course the time management service may then be able to perform "time-warp", i.e. to skip any series of ticks that it can determine as being idle.
 
@@ -344,16 +344,16 @@ Other settings could have been imagined (balanced tree of computing hosts, one t
 Actual Fine-Grain Scheduling
 ............................
 
-The simulation time is discretised into fundamental time steps (``ticks``, which are positive, unbounded integers) of equal duration in virtual time (ex: 10ms, for a simulation running at 100 Hz) that are increased monotonically.
+The simulation time is discretised into fundamental time steps (``ticks``, which are positive, unbounded integers) of equal duration in virtual time (e.g. 10ms, for a simulation running at 100 Hz) that are increased monotonically.
 
 
-From the user-specified simulation start date (ex: ``Monday, March 10, 2014 at 3:15:36 PM``), a simulation initial tick ``Tinitial`` is defined (ex: ``Tinitial = 6311390400000``).
+From the user-specified simulation start date (e.g. ``Monday, March 10, 2014 at 3:15:36 PM``), a simulation initial tick ``Tinitial`` is defined (e.g. ``Tinitial = 6311390400000``).
 
 :raw-html:`<center><img src="xkcd-unique_date.png" id="responsive-image-tiny"></img></center>`
 :raw-latex:`\includegraphics[scale=0.6]{xkcd-unique_date.png}`
 
 
-``Tick offsets`` can be used instead of absolute ticks; these offsets are defined as a difference between two ticks, and represent a duration (ex: at 100Hz, ``Toffset=15000`` will correspond to a duration of 2 minutes and 30 seconds in virtual time).
+``Tick offsets`` can be used instead of absolute ticks; these offsets are defined as a difference between two ticks, and represent a duration (e.g. at 100Hz, ``Toffset=15000`` will correspond to a duration of 2 minutes and 30 seconds in virtual time).
 
 Internally, actors use mostly tick offsets defined relatively to the simulation initial tick.
 
@@ -366,7 +366,7 @@ So the full timestamp for an event is a Tick-Diasca pair, typically noted as ``{
 Diascas allows to manage causality despite parallelism: effects will always happen *strictly later* than their cause, i.e. at the very least on the diasca immediately following the one of the cause, if not in later diascas or even ticks, depending on the intended timing of the causal mechanism: causes can follow effects either immediately or after any specified duration in virtual time [#]_.
 
 
-.. [#] Durations shall been specified by modellers regardless of a simulation frequency, in absolute terms (ex: "6 minutes and 20 seconds"), rather than directly as a number of ticks: the engine is indeed able to convert the former to the latter at runtime, and to stop automatically if the conversion resulted in a rounding error higher than a threshold (either the default one, or a user-specified one for that duration). As much as possible, models should be uncoupled from the simulation frequency.
+.. [#] Durations shall been specified by modellers regardless of a simulation frequency, in absolute terms (e.g. "6 minutes and 20 seconds"), rather than directly as a number of ticks: the engine is indeed able to convert the former to the latter at runtime, and to stop automatically if the conversion resulted in a rounding error higher than a threshold (either the default one, or a user-specified one for that duration). As much as possible, models should be uncoupled from the simulation frequency.
 
 This is what happens when an actor A1 sends a message to an actor A2 at tick T, diasca D (i.e. at {T,D}). A2 will process this message at {T,D+1}. If needing to send back an answer, it may do it directly (while still at {T,D+1}), and A1 will be able to process it at {T,D+2}.
 
@@ -416,7 +416,7 @@ Once started, a simulation must evaluate on which condition it should stop. This
 Need for Higher-Level Actor Identifiers
 .......................................
 
-When actors are created, usually the underlying software platform (ex: the multi-agent system, the distribution back-end, the virtual machine, the broker, etc.) is able to associate to each actor a unique *technical distributed identifier* (ex: a platform-specific process identifier, a networked address, etc.) which allows to send messages to this actor regardless of the location where it is instantiated.
+When actors are created, usually the underlying software platform (e.g. the multi-agent system, the distribution back-end, the virtual machine, the broker, etc.) is able to associate to each actor a unique *technical distributed identifier* (e.g. a platform-specific process identifier, a networked address, etc.) which allows to send messages to this actor regardless of the location where it is instantiated.
 
 However, as the reordering algorithms rely - at least partly - onto the senders of the messages to sort them, the technical distributed identifiers are not enough here.
 
@@ -437,9 +437,9 @@ Being able to rely on a load balancer to create actors over the distributed reso
 
 Moreover, as already mentioned, it is the natural place to assign actor identifiers.
 
-The usual case is when multiple actors (ex: deployment policies) need to create new actors simultaneously (at the same tick).
+The usual case is when multiple actors (e.g. deployment policies) need to create new actors simultaneously (at the same tick).
 
-In any case the creating actors will rely on the engine-provided API (ex: in ``class_Actor``, for creations in the course of the simulation, ``create_actor/3`` and ``create_placed_actor/4`` shall be used), which will result in sending actor messages to the load balancer, which is itself a (purely passive) actor, scheduled by a time manager. These creation requests will be therefore reordered as usual, and processed one by one.
+In any case the creating actors will rely on the engine-provided API (e.g. in ``class_Actor``, for creations in the course of the simulation, ``create_actor/3`` and ``create_placed_actor/4`` shall be used), which will result in sending actor messages to the load balancer, which is itself a (purely passive) actor, scheduled by a time manager. These creation requests will be therefore reordered as usual, and processed one by one.
 
 As for initial actor creations, still in ``class_Actor``, different solutions exist as well:
 
@@ -461,7 +461,7 @@ Actor - Time Manager Relationships
 
 We have seen how a load balancer creates an actor and waits for its construction to be over.
 
-During this phase, that actor will have to interact with its (local) time manager: first the actor will request the scheduling settings (ex: what is the fundamental simulation frequency), then it will subscribe to its time manager (telling it how it is to be scheduled: step by step, passively, periodically, etc.), which will then answer by specifying all the necessary information for the actor to enter the simulation: what will be the current tick, whether the simulation mode targets reproducibility or ergodicity (in this latter case, an appropriate seed will be given to the actor), etc.
+During this phase, that actor will have to interact with its (local) time manager: first the actor will request the scheduling settings (e.g. what is the fundamental simulation frequency), then it will subscribe to its time manager (telling it how it is to be scheduled: step by step, passively, periodically, etc.), which will then answer by specifying all the necessary information for the actor to enter the simulation: what will be the current tick, whether the simulation mode targets reproducibility or ergodicity (in this latter case, an appropriate seed will be given to the actor), etc.
 
 These exchanges will be based on direct (non-actor) messages, as their order does not matter and as they all take place during the same simulation tick, since the load balancer is itself a scheduled actor that will not terminate its tick as long as the actors have not finished their creation.
 
@@ -496,7 +496,7 @@ For instance, quite often models need some random variables to define their init
 
 Therefore the complete initialisation of such an actor cannot be achieved from its constructor only, and it needs an appropriate mechanism to determine at which point it is finally ready.
 
-Moreover, as the start-up of an actor may itself depend on the start-up of other actors (ex: the low-voltage mesh needs to wait also for its associated stochastic deployment policy to be ready, before being able in turn to live its life), Sim-Diasca provides a general mechanism that allows any actor to:
+Moreover, as the start-up of an actor may itself depend on the start-up of other actors (e.g. the low-voltage mesh needs to wait also for its associated stochastic deployment policy to be ready, before being able in turn to live its life), Sim-Diasca provides a general mechanism that allows any actor to:
 
 - wait for any number of other actors to be ready
 
@@ -521,7 +521,7 @@ It will detect whenever the simulation is stalled and notify the user, telling h
 
 There could different reasons why an actor does not report its end of tick, notably:
 
-- its internal logic may be incorrectly implemented, resulting in that actor being unable to terminate properly (ex: infinite loop)
+- its internal logic may be incorrectly implemented, resulting in that actor being unable to terminate properly (e.g. infinite loop)
 
 - the lingering actor (actor A) might be actually waiting for the acknowledgement from another actor (actor B) to which that actor A sent an actor message this tick
 
@@ -576,7 +576,7 @@ Therefore the engine mostly takes care of simulation time, regardless of any act
 *Units* of Virtual Time Versus Simulation *Ticks*
 _________________________________________________
 
-Virtual time can be expressed according to various forms (ex: a full time and date), but the canonical one is the **tick**, a quantum of virtual time whose duration is set by the simulation user (see the ``tick_duration`` field of the ``simulation_settings`` record). For example the duration (in virtual time) of each tick can be set to 20ms to define a simulation running at 50Hz.
+Virtual time can be expressed according to various forms (e.g. a full time and date), but the canonical one is the **tick**, a quantum of virtual time whose duration is set by the simulation user (see the ``tick_duration`` field of the ``simulation_settings`` record). For example the duration (in virtual time) of each tick can be set to 20ms to define a simulation running at 50Hz.
 
 **Ticks** are absolute ticks (the number of ticks corresponding to the duration, initially evaluated in gregorian seconds, between year 0 and the specified date and time), ans as such are often larger integers.
 
@@ -585,9 +585,9 @@ For better clarity and performances, the simulation engine makes heavy use of **
 Note that one can sometimes see expressions like ``this happened at tick #123``. The dash character (``#``) implies that this must be actually understood as a tick offset, not as an (absolute) tick.
 
 
-Models should define all durations in terms of (non-tick) time units, as actual, plain durations (ex: 15 virtual seconds), rather than directly in ticks or tick offsets (like ``#143232``). Indeed these former durations are absolute, context-less, whereas the corresponding number of simulation ticks depends on the simulation frequency: one surely does not want to have to update all the timings used in all models as soon as the overall simulation frequency has been modified.
+Models should define all durations in terms of (non-tick) time units, as actual, plain durations (e.g. 15 virtual seconds), rather than directly in ticks or tick offsets (like ``#143232``). Indeed these former durations are absolute, context-less, whereas the corresponding number of simulation ticks depends on the simulation frequency: one surely does not want to have to update all the timings used in all models as soon as the overall simulation frequency has been modified.
 
-So the recommended approach for models (implemented in child classes of ``class_Actor``) is to define, first, durations in time units (ex: 15s), and then only to convert them, as soon as an actor is created (i.e. at simulation-time), into a corresponding number of ticks (ex: at 2Hz, 15s becomes 30 ticks) thanks to the ``class_Actor:convert_seconds_to_ticks/{2,3}`` helper functions [#]_.
+So the recommended approach for models (implemented in child classes of ``class_Actor``) is to define, first, durations in time units (e.g. 15s), and then only to convert them, as soon as an actor is created (i.e. at simulation-time), into a corresponding number of ticks (e.g. at 2Hz, 15s becomes 30 ticks) thanks to the ``class_Actor:convert_seconds_to_ticks/{2,3}`` helper functions [#]_.
 
 .. [#] A corresponding method (``convertSecondsToTicks/2``) could be used instead, however this method has virtually no chance of being overloaded any day, so using the helper functions is not a problem.
 
@@ -636,7 +636,7 @@ ______________
 
 By default when a simulation is run, it starts at a fixed initial date, in virtual time [#]_, i.e. Friday, January 1, 2010, at midnight. Of course this default date is generally to be set explicitly by the simulation case, for example thanks to the ``setInitialTick/2`` or ``setInitialSimulationDate/3`` methods. These timings are the one of the simulation as a whole.
 
-.. [#] This arbitrary date was previously set to the current real time, so that the simulations started from the present time of the user. However we could then have variations in the results despite reproducible simulations, if using models depending on the absolute (virtual) date (ex: in the simulation, ``each 1st of April, do something``).
+.. [#] This arbitrary date was previously set to the current real time, so that the simulations started from the present time of the user. However we could then have variations in the results despite reproducible simulations, if using models depending on the absolute (virtual) date (e.g. in the simulation, ``each 1st of April, do something``).
 
 Simulations will always start at tick offset #0 (constant offset against a possibly user-defined absolute tick) and diasca 0.
 
@@ -663,7 +663,7 @@ An actor determines its own scheduling by calling oneways [#]_ helper functions 
 - ``declareTermination/1``, to trigger the termination of this actor
 
 
-.. [#] Note that corresponding helper functions are also defined (ex: ``class_Actor:add_spontaneous_tick/2``); they can be called directly if the user is sure that he will never need to override their oneway counterpart.
+.. [#] Note that corresponding helper functions are also defined (e.g. ``class_Actor:add_spontaneous_tick/2``); they can be called directly if the user is sure that he will never need to override their oneway counterpart.
 
 
 
@@ -679,13 +679,13 @@ On each tick the engine will automatically instantiate as many diascas as needed
 
 So the model writer should consider diascas to be opaque values that just represent the "happened before" relationship, to account for causality; thanks to these logical moments which occur during the same slot of simulated time, effects always happen strictly after their causes.
 
-As a consequence, the model writer should not base a behaviour onto a specific diasca (ex: "at diasca 7, do this"); the model should send information to other instances or request updates from them (in both cases thanks to other messages) instead.
+As a consequence, the model writer should not base a behaviour onto a specific diasca (e.g. "at diasca 7, do this"); the model should send information to other instances or request updates from them (in both cases thanks to other messages) instead.
 
 So, for example, if an actor asks another for a piece for information, it should just expect that, in a later diasca (or even tick, depending on the timeliness of the interaction), the target actor will send it a message back with this information.
 
 The point is that if the model-level protocol implies that a target actor is expected to send back an answer, it *must* do so, but at any later, unspecified time; not necessarily exactly two diascas after the request was sent: we are in the context of asynchronous message passing.
 
-This allows for example an actor to forward the request to another, to fetch information from other actors, or simply to wait the duration needed (in virtual time) to account for any modelled processing time for that request (ex: "travelling from A to B shall last for 17 minutes").
+This allows for example an actor to forward the request to another, to fetch information from other actors, or simply to wait the duration needed (in virtual time) to account for any modelled processing time for that request (e.g. "travelling from A to B shall last for 17 minutes").
 
 
 When actor decides it is to leave the simulation and be deleted, it has to ensure that:
@@ -718,7 +718,7 @@ By default there is exactly one time manager per computing host, federating in a
 
 One of these time managers is selected (by the deployment manager) as the root time manager, to be the one in charge of the control of the virtual time. The other time managers are then its direct children (so the height of the scheduling tree is by default equal to 1).
 
-Other kinds of trees could be chosen: they might be unbalanced, have a different heights (ex: to account for multiple clusters/processors/cores), etc., as shown in the physical diagram below:
+Other kinds of trees could be chosen: they might be unbalanced, have a different heights (e.g. to account for multiple clusters/processors/cores), etc., as shown in the physical diagram below:
 
 :raw-html:`<center><img src="Sim-Diasca-physical-dispatching-english.png" id="responsive-image-large"></img></center>`
 :raw-latex:`\includegraphics[scale=0.24]{Sim-Diasca-physical-dispatching-english.png}`
@@ -763,17 +763,17 @@ In the special case of the simulation set-up, during which the initial state of 
 Advanced Scheduling
 ...................
 
-Each model may have its own temporality (ex: a climate model should imply a reactivity a lot lower than the one of an ant), and the most reactive models somehow dictate the fundamental frequency of the simulation.
+Each model may have its own temporality (e.g. a climate model should imply a reactivity a lot lower than the one of an ant), and the most reactive models somehow dictate the fundamental frequency of the simulation.
 
 A synchronous simulation must then be able to rely on a fundamental frequency as high as needed for the most reactive models, yet designed so that the other models, sometimes based on time-scales many orders of magnitude larger, can be still efficiently evaluated; scalability-wise, scheduling all actors at all ticks is clearly not an option (short of wasting huge simulation resources).
 
-Moreover most models could not simply accommodate a sub-frequency of their choice (ex: being run at 2 Hz where the fundamental frequency is 100 Hz): their behaviour is not even periodic, as in the general case it may be fully erratic (ex: determined from one scheduling to the next) or passive (only triggered by incoming actor messages).
+Moreover most models could not simply accommodate a sub-frequency of their choice (e.g. being run at 2 Hz where the fundamental frequency is 100 Hz): their behaviour is not even periodic, as in the general case it may be fully erratic (e.g. determined from one scheduling to the next) or passive (only triggered by incoming actor messages).
 
 So Sim-Diasca offers not only a full control on the scheduling of models, with the possibility of declaring or withdrawing ticks for their spontaneous behaviours, but also can evaluate model instances in a rather efficient way: this is done fully in parallel, only the relevant actors are scheduled, and jumps over any idle determined to be idle are automatically performed (based on a consensus established by the time managers onto the next virtual time of interest; if running in batch, non-interactive, mode).
 
 With this approach, and despite the synchronous simulation context (i.e. the use of a fixed, constant time step), the constraints applied to models are very close to the ones associated to event-driven simulations: the difference between these two approaches is then blurred, and we have here the best of both worlds (expressiveness and performance).
 
-Finally, models ought to rely as much as possible on durations (in virtual time) that are expressed in absolute units (ex: "I will wait for 2 hours and a half") instead of in a frequency-dependent way (ex: "I will wait for 147 ticks"): the conversion is done automatically at runtime by the engine (with a mechanism to handle acceptable thresholds in terms of relative errors due to the conversions), and the model specifications can be defined as independently as possible from the fundamental frequency chosen by the simulation case.
+Finally, models ought to rely as much as possible on durations (in virtual time) that are expressed in absolute units (e.g. "I will wait for 2 hours and a half") instead of in a frequency-dependent way (e.g. "I will wait for 147 ticks"): the conversion is done automatically at runtime by the engine (with a mechanism to handle acceptable thresholds in terms of relative errors due to the conversions), and the model specifications can be defined as independently as possible from the fundamental frequency chosen by the simulation case.
 
 
 
@@ -814,9 +814,9 @@ The virtual time is quantised, i.e. chunked into slices of equal durations (this
 
 For example, if the user specifies a tick duration of 20ms, then all durations will be multiples of 20ms (possibly 0ms - instant actions are supported) and the simulation will run at 50Hz.
 
-Note that, for the models to be as much as possible uncoupled from the simulation frequency, they should express their timings in terms of actual "absolute" durations (ex: 100ms), rather than in terms of a number of ticks (ex: 5 ticks, at 50Hz).
+Note that, for the models to be as much as possible uncoupled from the simulation frequency, they should express their timings in terms of actual "absolute" durations (e.g. 100ms), rather than in terms of a number of ticks (e.g. 5 ticks, at 50Hz).
 
-This way, changing the simulation frequency (ex: setting it to 100Hz) will not imply that all models need to have their internal timing settings updated accordingly; indeed the engine is able to convert at runtime such actual durations into the relevant number of ticks, and will automatically ensure that the relative quantification error that is then induced stays below a threshold (either the default one or a user-defined one). If the quantification error is too high, the simulation will just report it and stop.
+This way, changing the simulation frequency (e.g. setting it to 100Hz) will not imply that all models need to have their internal timing settings updated accordingly; indeed the engine is able to convert at runtime such actual durations into the relevant number of ticks, and will automatically ensure that the relative quantification error that is then induced stays below a threshold (either the default one or a user-defined one). If the quantification error is too high, the simulation will just report it and stop.
 
 
 Spontaneous Behaviours & Triggered Actions
@@ -851,8 +851,8 @@ Next Steps: Time Generalization
 
 We plan to support the following time-related generalizations:
 
-- to provide more flexibility and granularity, ticks could be of a parametrised type, i.e. a user-decided, simulation-specific type (ex: they could be floats instead of being integers), provided that they respect a (simple) contract specified by the engine; see ``class_TimeManager:tick()`` for more details
-- to allow for recursive, imbricated/nested actors (actors containing, or being made of actors) and time refinement, diascas could be tuples (ex: ``{17,5,0}``, ``{17,5,1}``, etc. being between ``{17,5}`` and ``{17,6}``, themselves being between ``17`` and ``18``); see ``class_TimeManager:diasca()`` for more details
+- to provide more flexibility and granularity, ticks could be of a parametrised type, i.e. a user-decided, simulation-specific type (e.g. they could be floats instead of being integers), provided that they respect a (simple) contract specified by the engine; see ``class_TimeManager:tick()`` for more details
+- to allow for recursive, imbricated/nested actors (actors containing, or being made of actors) and time refinement, diascas could be tuples (e.g. ``{17,5,0}``, ``{17,5,1}``, etc. being between ``{17,5}`` and ``{17,6}``, themselves being between ``17`` and ``18``); see ``class_TimeManager:diasca()`` for more details
 
 
 

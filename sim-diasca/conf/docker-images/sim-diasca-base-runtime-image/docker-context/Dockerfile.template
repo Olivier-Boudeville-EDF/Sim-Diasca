@@ -1,7 +1,7 @@
 # This is a recipe in order to create a Docker image that provides a
 # ready-to-use *base* runtime environment for Sim-Diasca, i.e. comprising the
 # tools for the build and execution of Sim-Diasca (notably Erlang), Sim-Diasca
-# itself (both as sources and prebuilt binaries), and nothing more (ex: no
+# itself (both as sources and prebuilt binaries), and nothing more (e.g. no
 # LogMX, no ErlPort, etc.).
 
 
@@ -18,13 +18,13 @@
 # Indeed this template shall be updated regarding notably the following tags in
 # order to become a proper Dockerfile (the '_TAG' suffix has been removed from
 # the next symbols so that they are not substituted):
-#  - PARENT_IMAGE (ex: "debian:buster")
-#  - ERLANG_VERSION (ex: "24.2")
+#  - PARENT_IMAGE (e.g. "debian:buster")
+#  - ERLANG_VERSION (e.g. "24.2")
 
 
 # Parent image, from which this image will derive.
 #
-# Ex: 'debian:bullseye' (Debian 11), possibly obtained from an
+# For example 'debian:bullseye' (Debian 11), possibly obtained from an
 # organisation-specific registry distributing adapted versions:
 #
 FROM PARENT_IMAGE_TAG
@@ -79,7 +79,7 @@ RUN echo "Installing Sim-Diasca in base directory '${SD_BASE}'."
 RUN mkdir -p "${SD_BASE}"
 
 # Preferring importing from context rather than cloning, as various Git origins
-# (ex: internal or public, and any branch of interest) may be considered:
+# (e.g. internal or public, and any branch of interest) may be considered:
 
 #RUN cd ${SD_BASE} && git clone https://xxx/sim-diasca.git
 

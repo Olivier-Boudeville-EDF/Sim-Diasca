@@ -1,21 +1,21 @@
 % Copyright (C) 2012-2023 EDF R&D
-
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2012.
 
@@ -358,7 +358,7 @@ check_incinerable( WasteType ) ->
 
 
 % @doc Adds the specified quantity (in terms of mass) of waste (of specified
-% type) to specified tank.
+% type) to the specified tank.
 %
 % Note: useful to perform checkings, and notably to ensure the waste type is
 % correctly updated if needed.
@@ -369,45 +369,48 @@ add_waste_to_tank( _Tank, _MassToAdd, _WasteType=none ) ->
 
 add_waste_to_tank( Tank=#waste_tank{ current_mass_stored=CurrentMass,
 									 max_mass_stored=MaxMass },
-				   MassToAdd, _WasteType )
-  when CurrentMass + MassToAdd > MaxMass + ?epsilon ->
-	throw( { too_large_addition_to_tank, MassToAdd, Tank } );
-
-
-add_waste_to_tank( Tank=#waste_tank{ current_mass_stored=0.0 },
-					MassToAdd, WasteType ) ->
-	% No more empty now, type must be updated:
-	Tank#waste_tank{ current_mass_stored=MassToAdd, current_type=WasteType };
-
-
-% Here we fill it more:
-add_waste_to_tank( Tank=#waste_tank{ current_mass_stored=CurrentMass,
-									 max_mass_stored=MaxMass,
-									 current_type=CurrentWasteType },
 				   MassToAdd, WasteType ) ->
 
-	% Optional checking:
-	case can_be_mixed( WasteType, CurrentWasteType ) of
+	CandidateMass = CurrentMass + MassToAdd,
+
+	case math_utils:is_greater( CandidateMass, MaxMass ) of
 
 		true ->
-			ok;
+			throw( { too_large_addition_to_tank, MassToAdd, Tank } );
 
 		false ->
-			throw( { incompatible_waste_type_added, WasteType, Tank } )
+			case math_utils:is_null( CurrentMass ) of
 
-	end,
+				true ->
+					% No more empty now, type must be updated:
+					Tank#waste_tank{ current_mass_stored=MassToAdd,
+									 current_type=WasteType };
 
-	% Waste stays in its current type:
-	NewCandidateMass = CurrentMass + MassToAdd,
+				% Here we fill it more:
+				false ->
+					CurrentWasteType = Tank#waste_tank.current_type,
 
-	% Beware to rounding errors:
-	case math_utils:are_relatively_close( NewCandidateMass, MaxMass ) of
+					% Optional checking:
+					can_be_mixed( WasteType, CurrentWasteType ) orelse
+						throw( { incompatible_waste_type_added, WasteType,
+								 Tank } ),
 
-		true ->
-			Tank#waste_tank{ current_mass_stored=MaxMass };
+					% Waste stays in its current type:
 
-		false ->
-			Tank#waste_tank{ current_mass_stored=NewCandidateMass }
+					% Beware to rounding errors (CandidateMass<MaxMass):
+					case math_utils:are_relatively_close( CandidateMass,
+														  MaxMass ) of
+
+						true ->
+							Tank#waste_tank{ current_mass_stored=MaxMass };
+
+						false ->
+							Tank#waste_tank{
+								current_mass_stored=CandidateMass }
+
+					end
+
+			end
 
 	end.
 
@@ -458,14 +461,17 @@ remove_waste_from_tank( Tank=#waste_tank{ current_mass_stored=CurrentMass },
 % @doc Returns whether the specified tank is empty.
 -spec is_tank_empty( waste_tank() ) -> boolean().
 is_tank_empty( Tank ) ->
-	% No relative comparison needed, as exact by design:
-	Tank#waste_tank.current_mass_stored =:= 0.0.
+	% No relative comparison needed, as exact by design, yet wanting to avoid
+	% compiler warnings about +/- 0.0:
+	%
+	math_utils:is_null( Tank#waste_tank.current_mass_stored ).
 
 
 % @doc Returns whether the specified tank is full.
 -spec is_tank_full( waste_tank() ) -> boolean().
 is_tank_full( Tank ) ->
-	Tank#waste_tank.current_mass_stored =:= Tank#waste_tank.max_mass_stored.
+	math_utils:are_equal( Tank#waste_tank.current_mass_stored,
+						  Tank#waste_tank.max_mass_stored ).
 
 
 

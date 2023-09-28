@@ -41,7 +41,7 @@
 % window-related events.
 %
 % This test relies on the OpenGL 1.x compatibility mode, as opposed to more
-% modern versions of OpenGL (ex: 3.1) that rely on shaders and GLSL.
+% modern versions of OpenGL (e.g. 3.1) that rely on shaders and GLSL.
 %
 % See the gui_opengl.erl tested module and
 % https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller for the
@@ -55,9 +55,8 @@
 % Inspired from https://www.glprogramming.com/red/chapter01.html
 
 
-% For GL/GLU defines:
--include("gui_opengl.hrl").
-% For user code: -include_lib("myriad/include/gui_opengl.hrl").
+% For GL/GLU defines; the sole include that MyriadGUI user code shall reference:
+-include_lib("myriad/include/myriad_gui.hrl").
 
 
 % For run/0 export and al:
@@ -67,14 +66,13 @@
 
 -record( model_state, {
 
-	spin_angle = 0.0 :: unit_utils:degrees(),
 	% The current angle of the spinning square.
+	spin_angle = 0.0 :: unit_utils:degrees(),
 
-	scheduling_period :: milliseconds()
 	% The (approximate) number of milliseconds between two schedulings of the
 	% model.
-
-} ).
+	%
+	scheduling_period :: milliseconds() } ).
 
 -type model_state() :: #model_state{}.
 % Stores the current state of the Model, that is its logic, which here mostly
@@ -85,8 +83,8 @@
 
 -record( view_state, {
 
-	% The main window of this test:
-	parent :: window(),
+	% The main frame of this test:
+	main_frame :: frame(),
 
 	% The OpenGL canvas on which rendering will be done:
 	canvas :: gl_canvas(),
@@ -101,19 +99,19 @@
 	%
 	opengl_state :: maybe( texture() ),
 
-	model_pid :: model_pid(),
 	% The model must be known, in order to fetch relevant information from it.
+	model_pid :: model_pid(),
 
-	controller_pid :: controller_pid(),
 	% The controller process is kept, even if not necessary once the view
 	% notified it of the main frame (so that the controller can detect its
 	% closing).
+	%
+	controller_pid :: controller_pid(),
 
-	scheduling_period :: milliseconds()
 	% The (approximate) number of milliseconds between two schedulings of the
 	% view.
-
-} ).
+	%
+	scheduling_period :: milliseconds() } ).
 
 -type view_state() :: #view_state{}.
 % Stores the current state of the View, that is all relevant rendering
@@ -125,17 +123,16 @@
 
 -record( controller_state, {
 
-	model_pid :: model_pid(),
 	% The model is known, in order to be notified of any relevant information.
+	model_pid :: model_pid(),
 
-	view_pid :: view_pid(),
 	% The view is known, in order to notify it of any termination.
+	view_pid :: view_pid(),
 
-	test_pid :: test_pid()
-	% The PID of the test process, to control it (ex: if user requested to
+	% The PID of the test process, to control it (e.g. if user requested to
 	% exit).
-
-} ).
+	%
+	test_pid :: test_pid() } ).
 
 -type controller_state() :: #controller_state{}.
 % Stores the current state of the Controller, that is its inputs.
@@ -153,7 +150,7 @@
 
 % Shorthands:
 
--type window() :: gui:window().
+-type frame() :: gui_frame:frame().
 
 -type any_hertz() :: unit_utils:any_hertz().
 -type milliseconds() :: unit_utils:milliseconds().
@@ -163,8 +160,8 @@
 -type controller_pid() :: gui:controller_pid().
 
 
--type gl_canvas() :: gui:opengl_canvas().
--type gl_context() :: gui:opengl_context().
+-type gl_canvas() :: gui_opengl:gl_canvas().
+-type gl_context() :: gui_opengl:gl_context().
 -type texture() :: gui_opengl:texture().
 
 
@@ -342,7 +339,14 @@ handle_pending_model_requests( ModelState ) ->
 								   [ self()] ),
 
 			% No specific termination for models:
-			SenderPid ! model_terminated
+			SenderPid ! model_terminated;
+
+		OtherEvent ->
+			trace_utils:warning_fmt( "[~w] Model ignored the following "
+				"event:~n ~w", [ self(), OtherEvent ] ),
+
+			handle_pending_model_requests( ModelState )
+
 
 	after 0 ->
 
@@ -355,6 +359,9 @@ handle_pending_model_requests( ModelState ) ->
 % View section.
 
 % @doc Runs the view; initialises it and runs its main loop.
+%
+% No OpenGL outside of the view!
+%
 -spec run_view( any_hertz(), model_pid(), controller_pid() ) -> no_return().
 run_view( EvalFrequency, ModelPid, ControllerPid ) ->
 
@@ -364,7 +371,7 @@ run_view( EvalFrequency, ModelPid, ControllerPid ) ->
 
 	GUIViewState = init_test_gui(),
 
-	MainFrame = GUIViewState#view_state.parent,
+	MainFrame = GUIViewState#view_state.main_frame,
 
 	ControllerPid ! { notifyViewInformation,
 						[ self(), MainFrame, gui:get_backend_environment() ] },
@@ -381,7 +388,7 @@ run_view( EvalFrequency, ModelPid, ControllerPid ) ->
 		[ self(), EvalFrequency, Period ] ),
 
 	% OpenGL will be initialised only when the corresponding frame will be ready
-	% (that is once reported as shown):
+	% (that is once it is reported as shown):
 	%
 	view_main_loop( InitialViewState ).
 
@@ -401,7 +408,7 @@ run_view( EvalFrequency, ModelPid, ControllerPid ) ->
 init_test_gui() ->
 
 	% Initial square size preferred to avoid distortion of the square:
-	MainFrame = gui:create_frame( "MyriadGUI MVC OpenGL Test", { 400, 400 } ),
+	MainFrame = gui_frame:create( "MyriadGUI MVC OpenGL Test", { 400, 400 } ),
 
 	% Using default GL attributes:
 	GLCanvas = gui_opengl:create_canvas( _Parent=MainFrame ),
@@ -419,10 +426,10 @@ init_test_gui() ->
 	%
 	gui:subscribe_to_events( { onRepaintNeeded, GLCanvas } ),
 
-	gui:show( MainFrame ),
+	gui_frame:show( MainFrame ),
 
 	% No OpenGL state yet (GL context not set as current yet):
-	#view_state{ parent=MainFrame, canvas=GLCanvas, context=GLContext }.
+	#view_state{ main_frame=MainFrame, canvas=GLCanvas, context=GLContext }.
 
 
 
@@ -457,8 +464,9 @@ view_main_loop( ViewState=#view_state{ scheduling_period=MsPeriod } ) ->
 
 % @doc Handles any view-level pending events.
 -spec handle_pending_view_events( view_state() ) ->
-				view_state() | 'view_terminated'.
-handle_pending_view_events( ViewState=#view_state{ parent=ParentWindow } ) ->
+									view_state() | 'view_terminated'.
+%handle_pending_view_events( ViewState=#view_state{ main_frame=MainFrame } ) ->
+handle_pending_view_events( ViewState ) ->
 
 	% Matching the least-often received messages last:
 	receive
@@ -480,7 +488,7 @@ handle_pending_view_events( ViewState=#view_state{ parent=ParentWindow } ) ->
 					ViewState;
 
 				_GLState ->
-					gui:enable_repaint( GLCanvas ),
+					gui_widget:enable_repaint( GLCanvas ),
 					% Includes the GL flushing and the buffer swaping:
 					render_view( ViewState ),
 					ViewState
@@ -492,7 +500,7 @@ handle_pending_view_events( ViewState=#view_state{ parent=ParentWindow } ) ->
 		% For a window, the first resizing event happens (just) before its
 		% onShown one:
 		%
-		{ onResized, [ ParentWindow, _ParentWindowId, NewParentSize,
+		{ onResized, [ _ParentWindow, _ParentWindowId, NewParentSize,
 					   _EventContext ] } ->
 
 			trace_utils:debug_fmt( "Resizing of the parent window to ~w "
@@ -519,7 +527,8 @@ handle_pending_view_events( ViewState=#view_state{ parent=ParentWindow } ) ->
 		{ onShown, [ ParentWindow, _ParentWindowId, _EventContext ] } ->
 
 			trace_utils:debug_fmt( "Parent window just shown "
-				"(initial size of ~w).", [ gui:get_size( ParentWindow ) ] ),
+				"(initial size of ~w).",
+				[ gui_widget:get_size( ParentWindow ) ] ),
 
 			NewViewState = initialise_opengl( ViewState ),
 
@@ -533,9 +542,15 @@ handle_pending_view_events( ViewState=#view_state{ parent=ParentWindow } ) ->
 
 		% Sent by the controller:
 		{ onViewTermination, SenderPid } ->
+
 			trace_utils:info_fmt( "[~w] View notified of termination.",
 								  [ self() ] ),
-			gui:destruct_window( ViewState#view_state.parent ),
+
+			% Very final check, while there is still an OpenGL context:
+			gui_opengl:check_error(),
+
+			gui_frame:destruct( ViewState#view_state.main_frame ),
+
 			gui:stop(),
 			SenderPid ! view_terminated;
 
@@ -545,6 +560,7 @@ handle_pending_view_events( ViewState=#view_state{ parent=ParentWindow } ) ->
 				"event:~n ~w", [ self(), OtherEvent ] ),
 
 			handle_pending_view_events( ViewState )
+
 
 	after 0 ->
 
@@ -564,14 +580,14 @@ initialise_opengl( ViewState=#view_state{ canvas=GLCanvas,
 	% Initial size of canvas is typically 20x20 pixels:
 	trace_utils:debug_fmt(
 		"[~w] Initialising OpenGL (whereas canvas is of initial size ~w).",
-		[ self(), gui:get_size( GLCanvas ) ] ),
+		[ self(), gui_widget:get_size( GLCanvas ) ] ),
 
 	gui_opengl:set_context_on_shown( GLCanvas, GLContext ),
 
 	% These settings will not change afterwards (set once for all):
 
-	% Clears in black:
-	gl:clearColor( 0.0, 0.0, 0.0, 0.0 ),
+	% Clears in grey rather than black:
+	gl:clearColor( 0.5, 0.5, 0.5, 0.0 ),
 
 	% No smooth shading wanted here:
 	gl:shadeModel( ?GL_FLAT ),
@@ -591,16 +607,25 @@ initialise_opengl( ViewState=#view_state{ canvas=GLCanvas,
 	%
 	% (here does not depend on viewport size, so can be done once now)
 	%
-	gl:ortho( -50.0, 50.0, -50.0, 50.0, -1.0, 1.0 ),
+	gl:ortho( _Left=-50.0, _Right=50.0, _Bottom=-50.0, _Top=50.0,
+			  _Near=-1.0, _Far=1.0 ),
 
 	%trace_utils:debug_fmt( "Managing a resize of the main frame to ~w.",
 	%                       [ gui:get_size( MainFrame ) ] ),
 
 	gl:enable( ?GL_TEXTURE_2D ),
 
-	%Texture = gui_opengl:load_texture_from_file(
-	%   gui_opengl_test:get_logo_image_path() ),
-	Texture=fixme,
+	ImagePath = file_utils:join(
+		gui_opengl_direct_integration_test:get_test_image_directory(),
+		"myriad-space-time-referential.png" ),
+
+	% Not directly 'Texture = gui_texture:load_from_file(ImgPath)' as we want to
+	% flip the image:
+
+	Image = gui_image:load_from_file( ImagePath ),
+	MirroredImage = gui_image:mirror( Image, _Orientation=horizontal ),
+	Texture = gui_texture:create_from_image( MirroredImage ),
+	gui_image:destruct_multiple( [ Image, MirroredImage ] ),
 
 	InitViewState = ViewState#view_state{ opengl_state=Texture },
 
@@ -622,7 +647,7 @@ on_main_frame_resized( ViewState=#view_state{ canvas=GLCanvas } ) ->
 	%basic_utils:check_defined( Texture ),
 
 	% Maximises then canvas in the main frame:
-	{ CanvasWidth, CanvasHeight } = gui:maximise_in_parent( GLCanvas ),
+	{ CanvasWidth, CanvasHeight } = gui_widget:maximise_in_parent( GLCanvas ),
 
 	trace_utils:debug_fmt( "[~w] View with a new client canvas size: {~B,~B}.",
 						   [ self(), CanvasWidth, CanvasHeight ] ),
@@ -634,14 +659,14 @@ on_main_frame_resized( ViewState=#view_state{ canvas=GLCanvas } ) ->
 	% (Erlang) asynchronous message to be sent from this user process and to be
 	% received and applied by the process of the target window, whereas a GL
 	% (NIF-based) operation is immediate; without a sufficient delay, the
-	% rendering will thus take place according to the former (ex: minimised)
+	% rendering will thus take place according to the former (e.g. minimised)
 	% canvas size, not according to the one that was expected to be already
 	% resized. Here it does not matter much as the canvas is regularly redrawn
 	% (not rendered only once).
 	%
 	% (actual rendering and buffer swapping to be done just afterwards)
 	%
-	gui:sync( GLCanvas ),
+	gui_widget:sync( GLCanvas ),
 
 	% Lower-left corner and size of the viewport in the current window:
 	gl:viewport( 0, 0, CanvasWidth, CanvasHeight ),
@@ -663,19 +688,30 @@ render_view( #view_state{ opengl_state=undefined } ) ->
 	ok;
 
 render_view( #view_state{ canvas=GLCanvas,
-						  opengl_state=_Texture,
+						  opengl_state=#texture{ id=TextureId,
+												 width=Width,
+												 height=Height,
+												 min_x=MinXt,
+												 min_y=MinYt,
+												 max_x=MaxXt,
+												 max_y=MaxYt },
 						  model_pid=ModelPid } ) ->
 
 	%trace_utils:debug_fmt( "[~w] View rendering now.", [ self() ] ),
 
 	% Trying to interleave as much as possible:
+
+	% (here, by design, even when terminating, the view is stopped synchronously
+	% before the model is; otherwise the next call could never receive an
+	% answer)
+	%
 	ModelPid ! { getSpinAngle, _Args=[], self() },
 
 	gl:clear( ?GL_COLOR_BUFFER_BIT ),
 
 	gl:pushMatrix(),
 
-	MidEdgeLen = 25.0,
+	_MidEdgeLen = 25.0,
 
 	% In answer to getSpinAngle:
 	CurrentAngle = receive
@@ -694,10 +730,27 @@ render_view( #view_state{ canvas=GLCanvas,
 	%
 	gl:rotatef( CurrentAngle, 0.0, 0.0, 1.0 ),
 
-	%gl:bindTexture( ?GL_TEXTURE_2D, Texture#texture.id ),
-	%gui_opengl:render_texture( Texture, 0, 0 ),
+	gui_texture:set_as_current_from_id( TextureId ),
 
-	gl:rectf( -MidEdgeLen, -MidEdgeLen, MidEdgeLen, MidEdgeLen ),
+	%gl:rectf( -MidEdgeLen, -MidEdgeLen, MidEdgeLen, MidEdgeLen ),
+
+	% Not using 'gui_texture:render(Texture, {0,0}),' as we want smaller
+	% dimensions:
+
+	gl:'begin'( ?GL_TRIANGLE_STRIP ),
+
+	Xp = Yp = 0,
+
+	OtherXp = Xp + Width div 4,
+	OtherYp = Yp + Height div 4,
+
+	% Associating a (2D) texture coordinate to each vertex:
+	gl:texCoord2f( MinXt, MinYt ), gl:vertex2i( Xp,      Yp ),
+	gl:texCoord2f( MaxXt, MinYt ), gl:vertex2i( OtherXp, Yp ),
+	gl:texCoord2f( MinXt, MaxYt ), gl:vertex2i( Xp,      OtherYp ),
+	gl:texCoord2f( MaxXt, MaxYt ), gl:vertex2i( OtherXp, OtherYp ),
+
+	gl:'end'(),
 
 	gl:popMatrix(),
 
@@ -717,7 +770,7 @@ render_view( #view_state{ canvas=GLCanvas,
 %
 % No specific polling frequency applies.
 %
-% A more complex controller would manage user entries (ex: mouse, keyboard,
+% A more complex controller would manage user entries (mouse, keyboard,
 % joystick, etc.).
 %
 -spec run_controller( model_pid(), test_pid() ) -> no_return().
@@ -731,7 +784,7 @@ run_controller( ModelPid, TestPid ) ->
 		{ notifyViewInformation, [ ViewPid, MainFrame, BackendEnv ] } ->
 
 			trace_utils:debug_fmt( "[~w] Controller received view-related "
-				"information.", [ self() ] ),
+								   "information.", [ self() ] ),
 
 			% So that this controller can interact with the backend used by a
 			% MyriadGUI:
@@ -771,23 +824,29 @@ controller_main_loop( ControllerState ) ->
 			trace_utils:info_fmt( "[~w] Controller notified of the "
 				"closing of the main frame, test success.", [ self() ] ),
 
-			ControllerState#controller_state.model_pid
-				! { onModelTermination, self() },
-
-			receive
-
-				model_terminated ->
-					ok
-
-			end,
-
-			ControllerState#controller_state.view_pid
-				 ! { onViewTermination, self() },
-
+			% We stop (synchronously) the view *before* the model, as the view
+			% sends (blocking) requests to it (see the sending of a getSpinAngle
+			% message in render_view/1) and thus could end up waiting for an
+			% answer that would never be received:
+			%
+			ControllerState#controller_state.view_pid !
+				{ onViewTermination, self() },
 
 			receive
 
 				view_terminated ->
+					%trace_utils:debug( "Ack received for view termination" ),
+					ok
+
+			end,
+
+			ControllerState#controller_state.model_pid !
+				{ onModelTermination, self() },
+
+			receive
+
+				model_terminated ->
+					%trace_utils:debug( "Ack received for model termination" ),
 					ok
 
 			end,

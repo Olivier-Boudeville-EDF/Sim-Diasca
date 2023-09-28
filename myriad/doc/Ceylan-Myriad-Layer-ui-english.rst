@@ -5,23 +5,23 @@
 .. _`MyriadGUI`:
 
 
-MyriadGUI: Helpers For User Interface Programming
-=================================================
+MyriadUI: Helpers For User Interface Programming
+================================================
 
 Some services have been defined, in ``myriad/src/user-interface``, in order to handle more easily interactions with the user, i.e. to provide a user interface.
 
 .. Note The user-interface services, as a whole, are currently *not* functional. A rewriting thereof as been started yet has not completed yet.
 
-The spirit of **MyriadGUI** is to offer, as much as possible, a high-level API (refer to the ``ui`` module) that can be seamlessly instrumented at runtime by different backends, depending on availability (ex: is this dependency installed?) and context (ex: is the program running in a terminal, or are graphical outputs possible?).
+The spirit of **MyriadUI** is to offer, as much as possible, a high-level API (refer to the ``ui`` module) that can be seamlessly instrumented at runtime by different backends, depending on availability (e.g. is this dependency installed?) and context (e.g. is the program running in a terminal, or are graphical outputs possible?).
 
 Unless the user forces the use of a given backend, the most advanced one that is locally available will be automatically selected.
 
 An objective is to shelter user code from:
 
 - the actual UI backend that will be selected ultimately on a given host
-- the rise and fall of the various backends (thinking for example to ``gs`` having been quickly deprecated in favour of ``wx``); the idea is then that any new backend could be integrated, with *little to no change* in already-written code relying on MyriadGUI
+- the rise and fall of the various backends (thinking for example to ``gs`` having been quickly deprecated in favour of ``wx``); the idea is then that any new backend could be integrated, with *little to no change* in already-written code relying on MyriadUI
 
-Of course not all features of all backends can be integrated (they have not the same expressivity, a common base must be enforced [#]_) and creating a uniform interface over all sorts of vastly different ways of displaying and interacting with the user would require a lot of efforts. So MyriadGUI follows a pragmatic route: defining first basic, relevant, user-centric conventions and services able to cover most needs and to federate (hopefully) most backends, and to incrementally augment its implementation coverage on a per-need basis. As a consequence, efforts have been made so that adding any lacking element can be done at low cost.
+Of course not all features of all backends can be integrated (they have not the same expressivity, a common base must be enforced [#]_) and creating a uniform interface over all sorts of vastly different ways of displaying and interacting with the user would require a lot of efforts. So MyriadUI follows a pragmatic route: defining first basic, relevant, user-centric conventions and services able to cover most needs and to federate (hopefully) most backends, and to incrementally augment its implementation coverage on a per-need basis. As a consequence, efforts have been made so that adding any lacking element can be done at low cost.
 
 .. [#] Yet optional, additional features may be defined, and each backend may choose to provide them or ignore them.
 
@@ -46,7 +46,7 @@ The user interfaces provided by Myriad are stateful, they rely on a **state** th
 
 We tested the two approaches and preferred the latter (implicit) one, which was found considerably more flexible and thus finally fully superseded the (former) explicit one.
 
-We made our best so that a lower-level API interface (relying on a more basic backend) is **strictly included** in the higher-level ones (ex: ``term_ui`` adds concepts - like the one of window or box - to the line-based ``text_ui``; similarly ``gui`` is richer than ``term_ui``), in order that any program using a given user interface may use any of the next, upper ones as well (provided implicit states are used), in the following order: the ``text_ui`` API is included in the one of ``term_ui``, which is itself included in the one of ``gui``.
+We made our best so that a lower-level API interface (relying on a more basic backend) is **strictly included** in the higher-level ones (e.g. ``term_ui`` adds concepts - like the one of window or box - to the line-based ``text_ui``; similarly ``gui`` is richer than ``term_ui``), in order that any program using a given user interface may use any of the next, upper ones as well (provided implicit states are used), in the following order: the ``text_ui`` API is included in the one of ``term_ui``, which is itself included in the one of ``gui``.
 
 We also defined the **settings table**, which is a table gathering all the settings specified by the developer, which the current user interface does its best to accommodate.
 
@@ -105,7 +105,7 @@ It is located in ``{src,test}/user-interface/textual``; see ``term_ui.erl`` for 
 Graphical User Interface: ``gui``
 ---------------------------------
 
-The ``gui`` modules provide features like 2D/3D rendering, event handling, input management (keyboard/mouse), canvas services (basic or OpenGL), and the various related staples (management of images, texts and fonts, colors, window manager, etc.); refer to `the gui sources <https://github.com/Olivier-Boudeville/Ceylan-Myriad/tree/master/src/user-interface/graphical>`_ for more complete information.
+The MyriadGUI modules (``gui*``) provide features like 2D/3D rendering, event handling, input management (keyboard/mouse), canvas services (basic or OpenGL - with textures, shaders, etc.), and the various related staples (management of images, texts and fonts, colors, window manager, etc.); refer to `the MyriadGUI sources <https://github.com/Olivier-Boudeville/Ceylan-Myriad/tree/master/src/user-interface/graphical>`_ for more complete information.
 
 
 
@@ -118,7 +118,7 @@ Base GUI Backend
 
 This interface used to rely on (now deprecated) ``gs``, and now relies on `wx <http://erlang.org/doc/man/wx.html>`_ [#]_ [#]_ (a port of `wxWidgets <https://www.wxwidgets.org/>`_, which belongs to the same category as GTK or Qt). For the base dialogs, `Zenity <https://en.wikipedia.org/wiki/Zenity>`_ could have been an option.
 
-.. [#] What are the main differences between MyriadGUI and wx? The MyriadGUI API is backend-agnostic (no trace of wx when using it), a bit higher-level (ex: user-defined widget identifiers being atoms rather than integer constants; relying on more flexible options; integrating a few workarounds), and based on fewer modules. However, as a strict subset of wx, it is by design less complete - yet it is quite easy to extend on a per-need basis.
+.. [#] What are the main differences between MyriadGUI and wx? The MyriadGUI API is backend-agnostic (no trace of wx when using it), a bit higher-level (e.g. user-defined widget identifiers being atoms rather than integer constants; relying on more flexible options; integrating a few workarounds), and based on fewer modules. However, as a strict subset of wx, it is by design less complete - yet it is quite easy to extend on a per-need basis.
 
 .. [#] Maybe later it will be based on HTML 5 (although we are not big fans of light clients and of using browsers for everything), possibly relying some day for that on the `Nitrogen web framework <http://nitrogenproject.com/>`_, on `N2O <https://ws.n2o.dev/>`_ or on any other relevant HTML5 framework.
 
@@ -142,9 +142,14 @@ As a consequence, `wxWidgets <https://www.wxwidgets.org/>`_ must be available on
 Purpose of ``gui``
 ******************
 
-The goal is to provide a small, lightweight API (including message types) that are higher-level than ``wx``, and do not depend on any particular GUI backend (such as ``wx``, ``gs``, etc.; so none of their includes, records, types or functions leak in the user realm), to avoid that user programs become obsolete too quickly because of the UI backend they rely on.
+The goal is to provide a small, lightweight API (including message types) that are higher-level than ``wx`` and OpenGL (more integrated, more typed, possibly clearer, having more runtime checks - that can be toggled at build time), and do not depend on any particular GUI backend (such as ``wx``, ``gs``, etc.; so none of their includes, records, types or functions leak in the user realm), to avoid that user programs become obsolete too quickly because of the UI backend they rely on.
 
-So for example the messages received by the user programs do not mention ``wx``, and respect only MyriadGUI conventions. These conventions are in line with the `WOOPER ones <https://wooper.esperide.org/#method-invocation>`_, enabling (in a fully optional manner) the user code to rely on WOOPER if wanted.
+So for example the messages received by the user programs do not mention ``wx``, and respect only MyriadGUI conventions. These conventions are in line with the `WOOPER ones <https://wooper.esperide.org/#method-invocation>`_, enabling (in a fully optional manner) the user code to rely on WOOPER if wanted [#]_.
+
+.. [#] Inspired from MyriadGUI, one could consider creating WOOPERGUI, which would provide basically the same services, yet relying on inheritance on the Erlang side as well.
+
+	   That way for example a frame would be a special case (hence a child class) of window, and frames would automatically inherit all window operations; so the user would have just to handle a frame by itself, without having to take into account the fact that some operations of interest are actually defined at the window level instead.
+
 
 The usual mode of operation is the following:
 
@@ -153,13 +158,13 @@ The usual mode of operation is the following:
 
 
 1. From a user process (a test, an application, etc.), the GUI support is first started, with ``gui:start/{0,1}``
-2. Then the various widgets (windows, frames, panels, buttons, etc.) are created (ex: thanks to ``MainFrame = gui:create_frame(...``) and the user process subscribes to the events it is interested in (as a combination of an event type and a widget-as-an-event-emitter; for example:
+2. Then the various widgets (windows, frames, panels, buttons, etc.) are created (e.g. thanks to ``MainFrame = gui:create_frame(...``) and the user process subscribes to the events it is interested in (as a combination of an event type and a widget-as-an-event-emitter; for example:
 
 .. code:: erlang
 
  gui:subscribe_to_events({onWindowClosed, MainFrame})
 
-3. The user process also triggers any relevant operation (ex: clearing widgets, setting various parameters), generally shows at least a main frame and records the GUI state that it needs for future use (typically containing at least the MyriadGUI references of the widgets that it created)
+3. The user process also triggers any relevant operation (e.g. clearing widgets, setting various parameters), generally shows at least a main frame and records the GUI state that it needs for future use (typically containing at least the MyriadGUI references of the widgets that it created)
 4. Then the user process enters its own (GUI-specific) main loop, from which it will receive the events that it subscribed to, and to which it will react by performing application-specific operations and/or GUI-related operations (creating, modifying, deleting widgets). Generally at least one condition is defined in order to leave that main loop and stop the GUI (``gui:stop/0``)
 
 Such a scheme based on a "man-in-the-middle" (the MyriadGUI process) is necessary to abstract out for example the types of messages induced by a given GUI backend. If performances should not be an issue for user interaction, the integration must be carefully designed, notably because a 3-actor cooperation (user code, MyriadGUI one, backend one) opens the possibility of race conditions to occur (notably some operations, like event subscribing, must then be made synchronous, as the user process may trigger direct interactions with the backend; see implementation notes for more details).
@@ -201,6 +206,8 @@ In order to render 3D content, Myriad relies on `OpenGL <https://en.wikipedia.or
 
 Sophisticated 3D rendering is not necessarily an area where Erlang shines (perhaps, on the context of a client/server multimedia application, the client could rely on an engine like `Godot <https://en.wikipedia.org/wiki/Godot_(game_engine)>`_ instead), yet at least some level of rendering capabilities is convenient whenever performing 3D computations, implementing a server-side 3D logic, processing meshes, etc.
 
+MyriadGUI offers a basic support of old-style OpenGL (from its version 1.1 until version 3.0, when this API was still relying on ``glBegin``, ``glMatrix``, etc.; now available through the compatibility profile) and of modern OpenGL (the one based on shaders, GLSL, etc., with the core profile).
+
 One may refer to our `3D mini-HOWTO <https://howtos.esperide.org/ThreeDimensional.html>`_ for general information regarding these topics.
 
 
@@ -232,7 +239,9 @@ Shaders can be defined, in GLSL (see `this page <https://www.khronos.org/opengl/
 
 Myriad recommends using the ``vertex.glsl`` extension for vertex shaders, the ``.tess-ctrl.glsl`` one for tessellation control shaders and ``.tess-eval.glsl`` for tessellation evaluation ones, ``.geometry.glsl`` for geometry shaders, ``fragment.glsl`` for fragment shaders and finally ``.compute.glsl`` for compute shaders.
 
-The many OpenGL defines are available when having included ``gui_opengl.hrl`` (ex: as ``?GL_QUAD_STRIP``).
+The many OpenGL defines are available when having included ``gui_opengl.hrl`` (e.g. as ``?GL_QUAD_STRIP``).
+
+Quite many higher-level primitives are provided, like ``gui_shader:assign_new_vbo_from_attribute_series/2``, which in one operation merges automatically an arbitrary number of vertex attribute series (vertices, normals, texture coordinates, etc.) of arbitrary component types and counts in a suitable VBO, and declares appropriately and enables the corresponding vertex attributes.
 
 These utilities directly relate to Myriad's `spatial services and conventions`_ and to its support of the `glTF file format`_.
 
@@ -252,15 +261,29 @@ Various tests offer usage examples of the MyriadGUI API for 3D rendering:
 - ``gui_opengl_mvc_test.erl`` proposes a MVC architecture (`Model-View-Controller <https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller>`_) where these three elements are uncoupled in separate processes yet are properly interlinked, the view relying on the MyriadGUI OpenGL support
 - ``gui_opengl_minimal_shader_test.erl`` showcases the use of more recent OpenGL APIs (3.3 core [#]_), with GLSL shaders defined in ``gui_opengl_minimal_shader.{vertex,fragment}.glsl``
 
-.. [#] Not compatible with all GPUs; notably Intel ones may only support older versions (ex: 2.1).
+.. [#] Not compatible with all GPUs; notably Intel ones may only support older versions (e.g. 2.1).
 
 .. Note:: Almost all OpenGL operations require that an OpenGL context already exists. When it is done, all GL/GLU operations can be done as usual.
 
-		 So the point of MyriadGUI here is mostly to create a suitable OpenGL context, to offer a few additional, higher-level, stricter constructs to ease the integration and use (ex: for the compilation of the various types of shaders and the linking of GLSL programs), and to connect this rendering capability to the rest of the GUI (ex: regarding event management).
+		 So the point of MyriadGUI here is mostly to create a suitable OpenGL context, to offer a few additional, higher-level, stricter constructs to ease the integration and use (e.g. for the compilation of the various types of shaders and the linking of GLSL programs), and to connect this rendering capability to the rest of the GUI (e.g. regarding event management).
 
-		 Modern OpenGL is supported (ex: version 4.6), even though the compatibility context allows to use the API of OpenGL version 1.1.
+		 Modern OpenGL is supported (e.g. version 4.6), even though the compatibility context allows to use the API of OpenGL version 1.1.
 
 		 See the `HOWTO section about OpenGL <https://howtos.esperide.org/ThreeDimensional.html#opengl-corner>`_ for more explanations.
+
+
+
+Actual Use
+__________
+
+The MyriadGUI modules can be readily used.
+
+The recommended way of, if needed, using the MyriadGUI includes is:
+
+.. code:: erlang
+
+ % The sole include that MyriadGUI user code shall reference:
+ -include_lib("myriad/include/myriad_gui.hrl").
 
 
 
@@ -273,14 +296,32 @@ Setting the ``myriad_debug_opengl_support`` flag will result in more runtime inf
 
 
 
+Checking GLSL Shaders
+_____________________
+
+One's shader can be checked thanks to ``glslangValidator``, the *OpenGL / OpenGL ES Reference Compiler*.
+
+For example, in order to check a vertex shader named ``foo.vertex.glsl``, just run ``make check-foo.vertex.glsl``; the GLSL reference compiler does not return output if it detects no error.
+
+Refer to `our HOWTO section <https://howtos.esperide.org/ThreeDimensional.html#reference-glsl-compiler>`_ for more information.
+
+
+
+Troubleshooting
+_______________
+
+Your textures include strange pure green areas? Most probably that your texture coordinates are wrong, as pure green is the default padding color that MyriadGUI uses (see the ``padding_color`` define in the ``gui_texture`` module) so that the dimensions of textures are powers of two.
+
+
+
 
 Internal Implementation
 _______________________
 
 MyriadGUI is a wrapper on top of wx. What are the main differences between MyriadGUI and wx?
 
-- preferred namings introduced (ex: ``onWindowClosed`` events found clearer than ``close_window`` ones)
-- widget identifiers are user-defined atoms in MyriadGUI (ex: ``my_widget_id``) rather than numerical constants (ex: ``-define(MY_WIDGET_ID, 2051)``) that have, with wx, to be defined, shared, uniquified accross user modules
+- preferred namings introduced (e.g. ``onWindowClosed`` events found clearer than ``close_window`` ones)
+- widget identifiers are user-defined atoms in MyriadGUI (e.g. ``my_widget_id``) rather than numerical constants (e.g. ``-define(MY_WIDGET_ID, 2051)``) that have, with wx, to be defined, shared, uniquified accross user modules
 - by default, events will propagate or be trapped by user-defined handlers depending on the type of these events (most of them being propagated by default; of course the user is able to override these defaults, either at subscription-time - using the ``propagate_event`` or ``trap_event`` option, or in one's handler - using the ``gui:propagate_event/1`` or ``gui:trap_event/1`` function); this contrasts with wx, in which by default all subscribed events are trapped, regardless of their type (then forgetting to propagate them explicitly may result in built-in mechanisms of wx to be disabled, like when resizing)
 - code using MyriadGUI will not depend on wx, opening the possibility that, should the main Erlang GUI backend change, user code is nevertheless preserved
 
@@ -297,9 +338,9 @@ As for the ``wx`` module (see the `wx availability`_ section), it provides a con
 
 These Erlang-native services can be easily tested by running ``wx:demo()`` from any Erlang shell and selecting then ``gl`` in the left example menu.
 
-These platform-specific / backend-specific (ex: wx or not, and which version thereof, ex: wxWidget 2.8 vs 3.0 API) services shall remain fully invisible from MyriadGUI user code, so that it remains sheltered for good from any change at their level.
+These platform-specific / backend-specific (e.g. wx or not, and which version thereof, e.g. wxWidget 2.8 vs 3.0 API) services shall remain fully invisible from MyriadGUI user code, so that it remains sheltered for good from any change at their level.
 
-The goal is to wrap only the dependencies that may change in the future (ex: wx); doing so for the ones considered (for good reasons) stable (such as gl or glu) would have no specific interest.
+The goal is to wrap only the dependencies that may change in the future (e.g. wx); doing so for the ones considered (for good reasons) stable (such as gl or glu) would have no specific interest.
 
 
 .. _`multimedia`:
@@ -339,9 +380,9 @@ Formerly, a port of `SDL <https://www.libsdl.org/>`_, `esdl <https://github.com/
 Audio User Interface
 --------------------
 
-If the 2D/3D rendering can be done through ``wx``, apparently the **audio capabilities** (ex: `[1] <https://docs.wxwidgets.org/3.0/group__group__class__media.html>`_, `[2] <https://docs.wxwidgets.org/3.0/classwx_sound.html>`_) of wxWidgets have not been made available to Erlang.
+If the 2D/3D rendering can be done through ``wx``, apparently the **audio capabilities** (e.g. `[1] <https://docs.wxwidgets.org/3.0/group__group__class__media.html>`_, `[2] <https://docs.wxwidgets.org/3.0/classwx_sound.html>`_) of wxWidgets have not been made available to Erlang.
 
-So an Erlang program needing audio output (ex: sound special effects, musics) and/or input (ex: microphone) will have to rely on another option, possibly in link, for audio rendering, to 3D-ready `eopenal <https://github.com/edescourtis/eopenal>`_ - an (Erlang) binding of `OpenAL <https://en.wikipedia.org/wiki/OpenAL>`_, or to a lower-level `SDL-based solution`_. Contributions welcome!
+So an Erlang program needing audio output (e.g. sound special effects, musics) and/or input (e.g. microphone) will have to rely on another option, possibly in link, for audio rendering, to 3D-ready `eopenal <https://github.com/edescourtis/eopenal>`_ - an (Erlang) binding of `OpenAL <https://en.wikipedia.org/wiki/OpenAL>`_, or to a lower-level `SDL-based solution`_. Contributions welcome!
 
 Currently only very basic support for audio output is available, as ``audio_utils:playback_file/{2,3}``.
 

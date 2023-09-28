@@ -1,21 +1,21 @@
 % Copyright (C) 2010-2023 EDF R&D
-
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2010.
 
@@ -28,7 +28,7 @@
 
 -define( class_description,
 		 "This service allows to declare, keep track of, retrieve, make "
-		 "available, possibly post-process (ex: generating appropriate "
+		 "available, possibly post-process (e.g. generating appropriate "
 		 "rendering) the results of the simulation. "
 		 "These are the subset of the simulation outputs that the user wants "
 		 "to obtain from the simulation. "
@@ -276,7 +276,7 @@
 -record( graph_probe_entry, {
 
 	% The PID of the corresponding graph stream probe:
-	probe_pid :: class_GraphStreamProbe:probe_pid(),
+	probe_pid :: class_GraphStreamProbe:graph_stream_probe_pid(),
 
 	% Tells whether this probe is to be tracked as a result:
 	is_tracked :: boolean() } ).
@@ -308,7 +308,7 @@
 
 
 % Must be included before class_TraceEmitter header:
--define( trace_emitter_categorization, "Core.ResultManagement" ).
+-define( trace_emitter_categorization, "Core.Result management" ).
 
 
 % For app_info*:
@@ -367,8 +367,8 @@
 % As a consequence we have to look-up these names in tables maintained for
 % different producer types, and ensure that no ambiguity remains.
 
-% So there are tables per producer type (ex: basic_probe_table) that convert its
-% name into its information (PID, settings, etc.).
+% So there are tables per producer type (e.g. basic_probe_table) that convert
+% its name into its information (PID, settings, etc.).
 
 
 % Flow control had to be added for the result generation, otherwise simulations
@@ -388,9 +388,10 @@
 % This flow control does apply to the datalogger as a whole, which still
 % performs its result generation task in a sequential, non-distributed way.
 
-% Finally, non-tracked producers (ex: the probes of the performance tracker) are
-% not driven by the result manager (the load they induce should be negligible,
-% and they have to be generated whether or not the simulation succeeds).
+% Finally, non-tracked producers (e.g. the probes of the performance tracker)
+% are not driven by the result manager (the load they induce should be
+% negligible, and they have to be generated whether or not the simulation
+% succeeds).
 
 % There is also a pid_to_queue table, to associate back the PID of a producer to
 % the result queue that is in charge of it.
@@ -434,7 +435,7 @@ construct( State, ResultSpecification, DataLoggerEnabled,
 
 	% First the direct mother classes:
 	TraceState = class_EngineBaseObject:construct( State,
-							?trace_categorize("Result Manager") ),
+		?trace_categorize("Result manager") ),
 
 	% As a result manager may receive a larger number of messages:
 	erlang:process_flag( message_queue_data, off_heap ),
@@ -1810,8 +1811,8 @@ simulation_succeeded( State ) ->
 	% as they are running on different VMs with different working directories
 	% (by default, under '/tmp').
 	%
-	% But producers created from the simulation case (ex: a probe created from a
-	% test) are in the same VM as the result manager, and thus share the same
+	% But producers created from the simulation case (e.g. a probe created from
+	% a test) are in the same VM as the result manager, and thus share the same
 	% current working directory.
 	%
 	% If we went to the output directory, then the .dat file could have been
@@ -1852,7 +1853,7 @@ simulation_succeeded( State ) ->
 
 		_ ->
 			?info_fmt( "All results successfully gathered, "
-			   "notifying all listeners (~p).", [ Listeners ] )
+				"notifying all listeners (~p).", [ Listeners ] )
 
 	end,
 
@@ -1882,10 +1883,10 @@ trigger_virtual_probe_results( State ) ->
 	case ?getAttr(result_spec) of
 
 		no_output ->
-		   State;
+			State;
 
 		all_basic_probes_only ->
-		   State;
+			State;
 
 		% Includes: all_outputs, all_virtual_probes_only, hence always involves
 		% results from the data-logger:
@@ -1896,7 +1897,7 @@ trigger_virtual_probe_results( State ) ->
 			DataloggerPid = class_DataLogger:get_main_datalogger(),
 
 			DataloggerPid ! { sendResults,
-						[ ?getAttr(datalogger_default_options) ], self() },
+				[ ?getAttr(datalogger_default_options) ], self() },
 
 
 			% Then registers this generation:
@@ -1909,7 +1910,7 @@ trigger_virtual_probe_results( State ) ->
 			% induce a lot of processing).
 
 			{ DataloggerQueue, OtherQueues } = extract_queue_by_node(
-					DataloggerNode, ?getAttr(result_queues) ),
+				DataloggerNode, ?getAttr(result_queues) ),
 
 			NewPidToQueueTable = table:add_entry( _K=DataloggerPid,
 				_V=DataloggerQueue#result_queue.id, ?getAttr(pid_to_queue) ),
@@ -2139,7 +2140,7 @@ wait_and_exhaust_queues( Queues, PidToQueueTable, TotalProducerCount,
 		{ wooper_result, { ProducerPid, archive, BinArchive } } ->
 
 			Filenames = file_utils:zipped_term_to_unzipped_files( BinArchive,
-												?getAttr(result_dir) ),
+				?getAttr(result_dir) ),
 
 			?info_fmt( "Received an archive from producer ~w, following "
 				"files were extracted (while in directory '~ts'): ~ts",
@@ -2167,7 +2168,7 @@ wait_and_exhaust_queues( Queues, PidToQueueTable, TotalProducerCount,
 
 		{ wooper_result, { ProducerPid, no_result } } ->
 
-			% A producer may have nothing to report (ex: the data-logger):
+			% A producer may have nothing to report (e.g. the data-logger):
 			?info_fmt( "Producer ~w notified that it had no result "
 					   "to provide.", [ ProducerPid ] ),
 
@@ -2182,7 +2183,7 @@ wait_and_exhaust_queues( Queues, PidToQueueTable, TotalProducerCount,
 	end,
 
 	{ NewQueues, NewPidToQueueTable } = update_queues_after_result(
-			 ActualProducerPid, PidToQueueTable, ProbeTable, Queues ),
+		ActualProducerPid, PidToQueueTable, ProbeTable, Queues ),
 
 	wait_and_exhaust_queues( NewQueues, NewPidToQueueTable,
 		TotalProducerCount - 1, ProbeTable, ProducerTimeout, State ).
@@ -2268,12 +2269,12 @@ browseResultReports( State ) ->
 		true ->
 			ResultDir = ?getAttr(result_dir),
 
-			% As all results may be non-graphical (ex: only *.dat):
+			% As all results may be non-graphical (e.g. only *.dat):
 			{ Files, _Symlinks, _Directories, _OtherFiles, _Devices } =
 				file_utils:list_dir_elements( ResultDir ),
 
 			case file_utils:filter_by_extensions( Files,
-							file_utils:get_image_extensions() ) of
+					file_utils:get_image_extensions() ) of
 
 				[] ->
 					trace_utils:notice( "(results matched the specification, "
@@ -2282,7 +2283,7 @@ browseResultReports( State ) ->
 
 				[ _ ] ->
 					trace_utils:notice(
-					  "(displaying a single graphical result)" ),
+						"(displaying a single graphical result)" ),
 
 					executable_utils:browse_images_in( ResultDir );
 
@@ -2381,7 +2382,7 @@ get_result_directory() ->
 
 % @doc Triggers the browsing of simulation reports.
 %
-% Allows to request the automatic displaying of graphical reports (ex: plots
+% Allows to request the automatic displaying of graphical reports (e.g. plots
 % from plots) depending on the batch mode being enabled or not, and to wait for
 % it.
 %
@@ -2399,7 +2400,7 @@ browse_reports() ->
 % @doc Triggers the browsing of simulation reports, with possibly a display of
 % them.
 %
-% Allows to request the automatic displaying of graphical reports (ex: plots
+% Allows to request the automatic displaying of graphical reports (e.g. plots
 % from plots) depending on the batch mode being enabled or not, and to wait for
 % it.
 %
@@ -2437,7 +2438,7 @@ browse_reports( TriggerBasicDisplay ) ->
 	ResultManagerPid = class_ResultManager:get_result_manager(),
 
 	% All simulation test cases are expected to register themselves as
-	% simulation listeners (ex: at simulation start), thus they should be
+	% simulation listeners (e.g. at simulation start), thus they should be
 	% notified also about the simulation success (if any).
 
 	case executable_utils:is_batch() of
@@ -2481,7 +2482,7 @@ browse_reports( TriggerBasicDisplay ) ->
 			receive
 
 				% All simulation test cases are expected to register themselves
-				% as simulation listeners (ex: at simulation start), thus they
+				% as simulation listeners (e.g. at simulation start), thus they
 				% should be notified also about the simulation success (if any).
 				%
 				simulation_succeeded ->
@@ -2581,7 +2582,7 @@ create_mockup_environment() ->
 			naming_utils:register_as( ?instance_tracker_name, local_only ),
 			naming_utils:register_as( ?result_manager_name, global_only ),
 
-		   create_mockup_environment_loop()
+			create_mockup_environment_loop()
 
 		end ),
 

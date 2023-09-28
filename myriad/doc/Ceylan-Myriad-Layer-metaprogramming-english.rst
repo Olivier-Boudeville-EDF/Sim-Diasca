@@ -15,7 +15,7 @@ These developments are gathered in the ``src/meta`` directory, providing notably
 
 - ``meta_utils.{e,h}rl``: basic primitives to **transform ASTs**, with a bit of testing (``meta_utils_test``)
 - ``type_utils``: a still rather basic toolbox to **manage data types** - whether built-in, compound or parametrised (expressed as strings, as terms, etc.)
-- ``ast_*`` modules to handle the various **elements that can be found in an AST** (ex: ``ast_expression``, ``ast_type``, ``ast_pattern``, etc.)
+- ``ast_*`` modules to handle the various **elements that can be found in an AST** (e.g. ``ast_expression``, ``ast_type``, ``ast_pattern``, etc.)
 
 
 Finally, a few usage examples of these facilities are:
@@ -45,7 +45,7 @@ For that, following changes are operated:
 
 
 
-More generally, Myriad offers the support to traverse *any* AST (the whole Erlang grammar is supported, in its abstract form) and to **transform** it (ex: an expression being removed, transformed or replaced by other expressions), with the ability for the user to define his own type/call replacement mappings, or more general transformation functions to be triggered when specified elements are found in the AST (ex: remote calls with relevant MFA).
+More generally, Myriad offers the support to traverse *any* AST (the whole Erlang grammar is supported, in its abstract form) and to **transform** it (e.g. an expression being removed, transformed or replaced by other expressions), with the ability for the user to define his own type/call replacement mappings, or more general transformation functions to be triggered when specified elements are found in the AST (e.g. remote calls with relevant MFA).
 
 The traversal may be done in a stateful manner, i.e. any user-defined transformation will be able to access (read/write) any state of its own in the course of the traversal.
 

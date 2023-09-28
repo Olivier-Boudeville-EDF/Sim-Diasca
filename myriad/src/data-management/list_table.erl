@@ -52,8 +52,9 @@
 %
 % They are to provide the same API (signatures and contracts).
 %
-% See also: `list_utils.erl' and our quite similar yet less useful
-% `option_list.erl'.
+% See also: `list_utils.erl' if having to deal with tagged lists, that is: lists
+% possibly containing pairs and also single atoms (e.g. see
+% list_utils:extract_{atom,pair}_*/*).
 %
 -module(list_table).
 
@@ -65,7 +66,9 @@
 		  remove_entry/2, remove_entries/2,
 		  lookup_entry/2, has_entry/2,
 		  extract_entry/2, extract_entry_with_default/3,
-		  extract_entry_if_existing/2, extract_entries/2,
+		  extract_entry_if_existing/2,
+		  extract_entries/2, extract_entries_if_existing/2,
+		  extract_entries_with_defaults/2,
 		  get_value/2, get_value_with_default/3,
 		  get_values/2, get_all_values/2,
 		  add_to_entry/3, subtract_from_entry/3, toggle_entry/2,
@@ -84,6 +87,8 @@
 -type key() :: hashtable:key().
 
 -type value() :: hashtable:value().
+
+-type default_value() :: hashtable:default_value().
 
 -type entry() :: hashtable:entry().
 
@@ -140,10 +145,12 @@ new() ->
 
 
 % @doc Returns an empty table dimensioned for the specified expected number of
-% entries / an table containing the specified (initial) entries.
+% entries / a table containing the specified (initial) entries, whose keys are
+% checked for uniqueness.
 %
 -spec new( entry_count() | entries() ) -> list_table().
 new( ExpectedNumberOfEntries ) when is_integer( ExpectedNumberOfEntries ) ->
+	% ExpectedNumberOfEntries not relevant for this implementation:
 	[];
 
 new( InitialEntries ) when is_list( InitialEntries ) ->
@@ -152,11 +159,11 @@ new( InitialEntries ) when is_list( InitialEntries ) ->
 	% only contains pairs and, more importantly, that there is no key
 	% duplication in our (then) inner list:
 	%
-	add_entries( InitialEntries, [] ).
+	add_new_entries( InitialEntries, _InitTable=[] ).
 
 
 
-% @doc Adds specified key/value pair into the specified table.
+% @doc Adds the specified key/value pair in the specified table.
 %
 % If there is already a pair with this key, then its previous value will be
 % replaced by the specified one.
@@ -167,7 +174,7 @@ add_entry( Key, Value, Table ) ->
 
 
 
-% @doc Adds specified list of key/value pairs into the specified table.
+% @doc Adds the specified list of key/value pairs in the specified table.
 %
 % If there is already a pair with this key, then its previous value will be
 % replaced by the specified one.
@@ -184,7 +191,7 @@ add_entries( [ Other | _Rest ], _Table ) ->
 
 
 
-% @doc Adds specified key/value pair into the specified table, expecting this
+% @doc Adds the specified key/value pair in the specified table, expecting this
 % key not to be already defined in this table.
 %
 -spec add_new_entry( key(), value(), list_table() ) -> list_table().
@@ -205,7 +212,7 @@ add_new_entry( Key, Value, Table ) ->
 
 
 
-% @doc Adds specified list of key/value pairs into the specified table,
+% @doc Adds the specified list of key/value pairs in the specified table,
 % expecting that none of these keys is already defined in this table (otherwise
 % an exception is thrown).
 %
@@ -250,7 +257,8 @@ remove_entries( Keys, Table ) ->
 
 
 
-% @doc Looks-up specified entry (designated by its key) in specified table.
+% @doc Looks-up the specified entry (designated by its key) in the specified
+% table.
 %
 % Returns either 'key_not_found' if no such key is registered in the table, or
 % {value, Value}, with Value being the value associated to the specified key.
@@ -270,8 +278,8 @@ lookup_entry( Key, Table ) ->
 	end.
 
 
-% @doc Tells whether the specified key exists in the table: returns true or
-% false.
+% @doc Tells whether the specified key exists in the specified table: returns
+% true or false.
 %
 -spec has_entry( key(), list_table() ) -> boolean().
 has_entry( Key, Table ) ->
@@ -369,33 +377,95 @@ extract_entry_if_existing( Key, Table ) ->
 
 
 
-% @doc Extracts specified entries from specified table, that is returns their
-% associated values (in-order) and removes these entries from the returned
+% @doc Extracts the specified entries from the specified table, that is returns
+% their associated values (in-order) and removes these entries from the returned
 % table.
 %
 % Each key/value pair is expected to exist already, otherwise an exception is
 % raised (typically {badkey, KeyNotFound}).
 %
-% Ex: {[RedValue, GreenValue, BlueValue], ExtractedTable} =
-%         list_table:extract_entries([red, green, blue], MyTable)
+% For example: {[RedValue, GreenValue, BlueValue], ShrunkTable} =
+%   list_table:extract_entries([red, green, blue], MyTable)
 %
 -spec extract_entries( [ key() ], list_table() ) ->
 										{ [ value() ], list_table() }.
-extract_entries( Keys, ListHashtable ) ->
+extract_entries( Keys, ListTable ) ->
+
 	{ RevValues, FinalTable } = lists:foldl(
 		fun( K, { AccValues, AccTable } ) ->
-			{ V, NewAccTable } = extract_entry( K, AccTable ),
-			{ [ V | AccValues ], NewAccTable }
+			{ V, ShrunkTable } = extract_entry( K, AccTable ),
+			{ [ V | AccValues ], ShrunkTable }
 		end,
-		_Acc0={ [], ListHashtable },
+		_Acc0={ [], ListTable },
 		_List=Keys ),
 
 	{ lists:reverse( RevValues ), FinalTable }.
 
 
 
-% @doc Looks for specified entry in specified table and, if found, returns the
-% associated value; otherwise returns the specified default value.
+% @doc Extracts the specified entries (if any) from the specified table, that is
+% returns them (in-order), and removes them from the returned table.
+%
+% If a key is not present in the table, it is skipped.
+%
+% For example, if no 'green' key exists in MyTable:
+% {[{red,RedValue}, {blue,BlueValue}], ShrunkTable} =
+%   list_table:extract_entries_if_existing([red, green, blue], MyTable)
+%
+-spec extract_entries_if_existing( [ key() ], list_table() ) ->
+										{ entries(), list_table() }.
+extract_entries_if_existing( Keys, ListTable ) ->
+
+	{ RevEntries, FinalTable } = lists:foldl(
+
+		fun( _Elem=Key, Acc={ Values, AccTable } ) ->
+
+			case extract_entry_if_existing( Key, AccTable ) of
+
+				false ->
+					Acc;
+
+				{ V, ShrunkTable } ->
+					{ [ _E={ Key, V } | Values ], ShrunkTable }
+
+			end
+
+		end,
+
+		_Acc0={ [], ListTable },
+		_List=Keys ),
+
+	{ lists:reverse( RevEntries ), FinalTable }.
+
+
+
+% @doc Extracts the specified entries from the specified table, that is returns
+% their associated values (in-order) if found, otherwise their specified default
+% value, and removes these entries from the returned table.
+%
+% For example: {[RedMaybeDefValue, GreenMaybeDefValue, BlueMaybeDefValue],
+% ShrunkTable} = list_table:extract_entries([{red,RedDefault},
+% {green,GreenDefault}, {blue,BlueDefault}], MyTable)
+%
+-spec extract_entries_with_defaults( [ { key(), default_value()} ],
+				list_table() ) -> { [ value() ], list_table() }.
+extract_entries_with_defaults( KeyDefPairs, ListTable ) ->
+
+	{ RevValues, FinalTable } = lists:foldl(
+		fun( { K, DefK }, { AccValues, AccTable } ) ->
+			{ V, ShrunkTable } =
+				extract_entry_with_default( K, DefK, AccTable ),
+			{ [ V | AccValues ], ShrunkTable }
+		end,
+		_Acc0={ [], ListTable },
+		_List=KeyDefPairs ),
+
+	{ lists:reverse( RevValues ), FinalTable }.
+
+
+
+% @doc Looks for the specified entry in the specified table and, if found,
+% returns its associated value; otherwise returns the specified default value.
 %
 -spec get_value_with_default( key(), value(), list_table() ) -> value().
 get_value_with_default( Key, DefaultValue, Table ) ->
@@ -418,22 +488,22 @@ get_value_with_default( Key, DefaultValue, Table ) ->
 % The key/value pairs are expected to exist already, otherwise an exception is
 % thrown.
 %
-% Ex: [Color=red, Age=23, Mass=51] = list_table:get_values([color, age, mass],
-%    [{color, red}, {mass,51}, {age, 23}])
+% For example [Color=red, Age=23, Mass=51] = list_table:get_values(
+%    [color, age, mass], [{color, red}, {mass,51}, {age, 23}])
 %
 -spec get_values( [ key() ], list_table() ) -> [ value() ].
 get_values( Keys, Table ) ->
 
 	{ RevValues, _FinalTable } = lists:foldl(
 
-				fun( _Elem=Key, _Acc={ Values, AccTable } ) ->
+		fun( _Elem=Key, _Acc={ Values, AccTable } ) ->
 
-					{ Value, ShrunkTable } = extract_entry( Key, AccTable ),
-					{ [ Value | Values ], ShrunkTable }
+			{ Value, ShrunkTable } = extract_entry( Key, AccTable ),
+			{ [ Value | Values ], ShrunkTable }
 
-				end,
-				_Acc0={ [], Table },
-				_List=Keys ),
+		end,
+		_Acc0={ [], Table },
+		_List=Keys ),
 
 	lists:reverse( RevValues ).
 
@@ -446,8 +516,8 @@ get_values( Keys, Table ) ->
 % The key/value pairs are expected to exist already, otherwise an exception is
 % thrown.
 %
-% Ex: [Color=red, Age=23, Mass=51] = list_table:get_all_values(
-%               [color, age, mass], [{color, red}, {mass, 51}, {age, 23}])
+% For example [Color=red, Age=23, Mass=51] = list_table:get_all_values(
+%   [color, age, mass], [{color, red}, {mass, 51}, {age, 23}])
 %
 -spec get_all_values( [ key() ], list_table() ) -> [ value() ].
 get_all_values( Keys, Table ) ->
@@ -481,7 +551,7 @@ get_all_values( Keys, Table ) ->
 % duplicate the whole content in memory).
 %
 % Note: as the fun may return modified keys, the whole structure of the table
-% may change (ex: different buckets used for replaced entries, colliding keys
+% may change (e.g. different buckets used for replaced entries, colliding keys
 % resulting in having less entries afterwards, etc.).
 %
 % One may request the returned table to be optimised after this call.
@@ -617,13 +687,13 @@ merge( TableBase, TableAdd ) ->
 % ReferenceKey instead (in addition to any value that would already be
 % associated to it).
 %
-% Useful for example to gather into a single entry the values associated to
+% Useful for example to gather in a single entry the values associated to
 % aliases in terms of command-line options, like the values associated to a
 % '--length' command-line option (hence associated to the '-length' key) and
 % also to the '-l' and '--len' alias command-line options (hence associated to
 % the 'l' and '-len' keys).
 %
-% Ex: MergedTable = merge_in_key('-length', ['l', '-len'], MyTable).
+% For example MergedTable = merge_in_key('-length', ['l', '-len'], MyTable).
 %
 -spec merge_in_key( key(), [ key() ], list_table() ) -> list_table().
 merge_in_key( _ReferenceKey, _AlternateKeys=[], Table ) ->
@@ -648,7 +718,7 @@ merge_in_key( ReferenceKey, _AlternateKeys=[ K | T ], Table ) ->
 % @doc Performs a key merge, as merge_in_key/3, however not for a single
 % reference key / aliases entries, but for a set thereof.
 %
-% Ex: MergedTable = merge_in_keys([{'-length', [ 'l', '-len' ]},
+% For example MergedTable = merge_in_keys([{'-length', [ 'l', '-len' ]},
 %                                  {'-help', [ 'h' ]} ], MyTable).
 %
 -spec merge_in_keys( list_table(), list_table() ) -> list_table().
@@ -661,12 +731,12 @@ merge_in_keys( _KeyAssoc=[ { K, AltKeys } | T ], Table ) ->
 
 
 
-% @doc Appends specified element to the value, supposed to be a list, associated
-% to specified key.
+% @doc Appends the specified element to the value, supposed to be a list,
+% associated to the specified key.
 %
 % An exception is thrown if the key does not exist.
 %
-% Note: no check is performed to ensure the value is a list indeed, and the
+% Note: no check is performed to ensure that the value is a list indeed, and the
 % '[|]' operation will not complain if not.
 %
 -spec append_to_existing_entry( key(), term(), list_table() ) -> list_table().
@@ -684,8 +754,8 @@ append_to_existing_entry( Key, Element, Table ) ->
 
 
 
-% @doc Appends specified elements to the value, supposed to be a list,
-% associated to specified key.
+% @doc Appends the specified elements to the value, supposed to be a list,
+% associated to the specified key.
 %
 % An exception is thrown if the key does not exist.
 %
@@ -705,8 +775,8 @@ append_list_to_existing_entry( Key, Elements, Table ) ->
 
 
 
-% @doc Appends specified element to the value, supposed to be a list, associated
-% to specified key.
+% @doc Appends the specified element to the value, supposed to be a list,
+% associated to the specified key.
 %
 % If that key does not already exist, it will be created and associated to a
 % list containing only the specified element.
@@ -729,8 +799,8 @@ append_to_entry( Key, Element, Table ) ->
 
 
 
-% @doc Appends specified elements to the value, supposed to be a list,
-% associated to specified key.
+% @doc Appends the specified elements to the value, supposed to be a list,
+% associated to the specified key.
 %
 % If that key does not already exist, it will be created and associated to a
 % list containing only the specified elements.
@@ -772,7 +842,7 @@ delete_from_entry( Key, Element, Table ) ->
 
 
 
-% @doc Pops the head of the value (supposed to be a list) associated to
+% @doc Pops the head of the value (supposed to be a list) associated to the
 % specified key, and returns a pair made of the popped head and of the new
 % table.
 %
@@ -795,7 +865,7 @@ pop_from_entry( Key, Table ) ->
 % @doc Returns a flat list whose elements are all the key/value pairs of the
 % table, in no particular order.
 %
-% Ex: [{K1,V1}, {K2,V2}, ...].
+% For example [{K1,V1}, {K2,V2}, ...].
 %
 -spec enumerate( list_table() ) -> entries().
 enumerate( Table ) ->
@@ -838,7 +908,8 @@ keys( Table ) ->
 
 % @doc Returns a list containing all the values of this table.
 %
-% Ex: useful if the key was used as an index to generate this table first.
+% For example useful if the key was used as an index to generate this table
+% first.
 %
 -spec values( list_table() ) -> [ value() ].
 values( Table ) ->

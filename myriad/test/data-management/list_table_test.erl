@@ -21,14 +21,13 @@
 % along with this library.
 % If not, see <http://www.gnu.org/licenses/> and
 % <http://www.mozilla.org/MPL/>.
-
-% Creation date: Tuesday, December 23, 2014
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: Tuesday, December 23, 2014.
 
 
 
-% Unit tests for the list-based table implementation.
+% @doc Unit tests for the list-based table implementation.
 %
 % See the list_table.erl tested module.
 %
@@ -39,10 +38,10 @@
 -include("test_facilities.hrl").
 
 
--define(MyFirstKey,  'MyFirstKey').
--define(MySecondKey, 'MySecondKey').
--define(MyThirdKey,  'MyThirdKey').
--define(MyFourthKey, 'MyFourthKey').
+-define( MyFirstKey,  'MyFirstKey'  ).
+-define( MySecondKey, 'MySecondKey' ).
+-define( MyThirdKey,  'MyThirdKey'  ).
+-define( MyFourthKey, 'MyFourthKey' ).
 
 
 
@@ -77,7 +76,7 @@ run() ->
 							 [ list_table:to_string( MyH4 ), MyH4Size ] ),
 
 	test_facilities:display( "Looking up for ~ts: ~p", [ ?MyFirstKey,
-			list_table:lookup_entry( ?MyFirstKey, MyH4 ) ] ),
+		list_table:lookup_entry( ?MyFirstKey, MyH4 ) ] ),
 
 	{ value, MyFirstValue } = list_table:lookup_entry( ?MyFirstKey, MyH4 ),
 
@@ -89,13 +88,25 @@ run() ->
 							 "the same initial table." ),
 	{ MyFirstValue, MyH5 } = list_table:extract_entry( ?MyFirstKey, MyH4 ),
 
+
+	% No k2 defined:
+	MyListTable = [ { k3, c }, { k5, e }, { k4, d}, { k1, a } ],
+
+	% Neither k4 nor k53 requested:
+	ReqKeysWithDefs = [ { k1, 1 }, { k2, 2 }, { k3, 3 } ],
+
+	{ [ a, 2, c ], [ { k5, e }, { k4, d } ] } =
+		list_table:extract_entries_with_defaults( ReqKeysWithDefs,
+												  MyListTable ),
+
+
 	test_facilities:display( "Looking up for ~ts: ~p", [ ?MyFirstKey,
 		list_table:lookup_entry( ?MyFirstKey, MyH5 ) ] ),
 
 	key_not_found = list_table:lookup_entry( ?MyFirstKey, MyH5 ),
 
 	[ MySecondValue, MyFirstValue ] = list_table:get_all_values(
-										[ ?MySecondKey, ?MyFirstKey ], MyH4 ),
+		[ ?MySecondKey, ?MyFirstKey ], MyH4 ),
 
 	% remove_entry can also be used if the specified key is not here, will
 	% return an identical table.
@@ -125,7 +136,7 @@ run() ->
 												MyH7 ),
 
 	MyH9 = list_table:append_list_to_existing_entry( ?MyFourthKey,
-								 [ third_element, fourth_element ], MyH8 ),
+		[ third_element, fourth_element ], MyH8 ),
 
 	list_table:display( MyH9 ),
 
@@ -137,7 +148,7 @@ run() ->
 				io:format( " - hello value '~p'!~n", [ V ] ),
 				% Unchanged here:
 				V
-	end,
+			   end,
 
 	list_table:map_on_values( FunValue, MyH4 ),
 
@@ -159,7 +170,7 @@ run() ->
 							 "count the number of entries." ),
 
 	FunCount = fun( _Entry, AccCount ) ->
-					   AccCount + 1
+				AccCount + 1
 			   end,
 
 	InitialCount = 0,
@@ -184,6 +195,6 @@ run() ->
 	Keys = [ ?MyFirstKey, ?MyThirdKey ],
 
 	test_facilities:display( "Listing the entries for keys ~p:~n ~p",
-					[ Keys, list_table:select_entries( Keys, MyH11 ) ] ),
+		[ Keys, list_table:select_entries( Keys, MyH11 ) ] ),
 
 	test_facilities:stop().

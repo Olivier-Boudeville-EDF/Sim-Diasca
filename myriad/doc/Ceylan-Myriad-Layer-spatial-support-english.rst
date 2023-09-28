@@ -41,7 +41,7 @@ Linear Conventions
 
 Dimensions are non-null (a zero dimension has little interest). Dimension 1 corresponds to scalar and is not special-cased (hence one shall preferably use directly scalars if able to determine that being in a single dimension context).
 
-A linear-related **index** (ex: of a coordinate of a point, a vector or a matrix) starts at ``1`` (not 0), as by default all indices_ in Myriad.
+A linear-related **index** (e.g. of a coordinate of a point, a vector or a matrix) starts at ``1`` (not 0), as by default all indices_ in Myriad.
 
 .. Coordinates can be specified as ``linear:any_coordinate/0``, i.e. either ``linear:integer_coordinate/0`` (meaning ``integer/0``) or, more often ``linear:coordinate/0``, i.e. ``float/0`` (hence double-precision floating point values); internally all coordinates are ``float/0``.
 
@@ -50,15 +50,15 @@ A linear-related **index** (ex: of a coordinate of a point, a vector or a matrix
 The vast majority of the linear operations can be carried by modules operating either on:
 
 - **arbitrary** dimensions (as high as needed, and freely chosen by the user, at compile-time or runtime)
-- **specialised** dimensions, namely 2D, 3D or 4D; their interest lies in efficiency (these specialised constructs are designed to induce less computing and smaller memory footprints) and in the definition of dimension-specific operators (ex: the cross-products in 3D)
+- **specialised** dimensions, namely 2D, 3D or 4D; their interest lies in efficiency (these specialised constructs are designed to induce less computing and smaller memory footprints) and in the definition of dimension-specific operators (e.g. the cross-products in 3D)
 
 
 Points can therefore be of arbitrary dimension (then they are taken in charge by the ``point`` module), or can be specialised for 2D, 3D or 4D (then they are taken in charge by the ``point{2,3,4}`` modules).
 
 
-.. As for vectors, they are to be specified by the user as *lists* of any-coordinates, i.e. integer or floating-point ones, possibly mixed (ex: ``[0.0, -7, 3.22]``); this directly corresponds their internal representation, in order to better accommodate arbitrary dimensions and linear operations.
+.. As for vectors, they are to be specified by the user as *lists* of any-coordinates, i.e. integer or floating-point ones, possibly mixed (e.g. ``[0.0, -7, 3.22]``); this directly corresponds their internal representation, in order to better accommodate arbitrary dimensions and linear operations.
 
-As for **vectors**, they are to be specified by the user as *lists* of floating-point coordinates (ex: :math:`\vec{V} = \begin{bmatrix} 0.0 \\ -7.3 \\ 3.22\end{bmatrix}` translating to ``V=[0.0, -7.3, 3.22]``); this directly corresponds to their internal representation, in order to better accommodate linear operations (being a special case of matrices).
+As for **vectors**, they are to be specified by the user as *lists* of floating-point coordinates (e.g. :math:`\vec{V} = \begin{bmatrix} 0.0 \\ -7.3 \\ 3.22\end{bmatrix}` translating to ``V=[0.0, -7.3, 3.22]``); this directly corresponds to their internal representation, in order to better accommodate linear operations (being a special case of matrices).
 
 So vectors also can be of arbitrary dimension (then they are taken in charge by the ``vector`` module), or can be specialised for 2D, 3D or 4D (then they are taken in charge by the ``vector{2,3,4}`` modules).
 
@@ -88,7 +88,7 @@ With Myriad, such a matrix may be expressed:
 - as one of arbitrary dimension (designated from now on as an "*arbitrary matrix*"), corresponding to the ``matrix:matrix/0`` type; internally such matrices are nested lists: a list of ``m`` rows, each being a list of ``n`` elements, hence defined in `row-major order <https://en.wikipedia.org/wiki/Row-_and_column-major_order>`_ (not column-major one)
 - if being square and of a well-known dimension among 2, 3 or 4 (special cases defined for convenience and performance), as a value belonging to the ``matrix{2,3,4}/0`` types (which are records like ``#matrix4{}``, whose fields are named according to the matrix elements, such as ``m41``); they are designated hereafter as "*specialised matrices*"
 - in a symbolic way, such as ``identity_4`` (meaning the identity 4x4 matrix)
-- for some dimensions (ex: 3D or 4D), extra representations exist (compact 4x4 matrices, made of a 3x3 matrix and a vector3, in the context of homogeneous operations)
+- for some dimensions (e.g. 3D or 4D), extra representations exist (compact 4x4 matrices, made of a 3x3 matrix and a vector3, in the context of homogeneous operations)
 
 
 Taking as an example a 2x2 matrix like:
@@ -159,10 +159,10 @@ They notably provide a higher-level, more convenient counterpart to 3x3 rotation
 Note that:
 
 - we call a container *type-homogeneous* iff all the coordinates that it gathers are all either integer or floating-point ones
-- new instances (ex: of points, matrices, vectors, quaternions) may be:
+- new instances (e.g. of points, matrices, vectors, quaternions) may be:
 
   - either literally specified, with a term directly corresponding to their internal form
-  - or based on a ``new`` operator (ex: ``matrix:new/1``), in which case with a higher-level user-term (ex: a matrix with integer coordinates, in which case they will be automatically converted to floats)
+  - or based on a ``new`` operator (e.g. ``matrix:new/1``), in which case with a higher-level user-term (e.g. a matrix with integer coordinates, in which case they will be automatically converted to floats)
 - for clarity and in order to provide them with specified operations (like dot product), we preferred defining vectors as a separate type from the matrix one (even if a vector can be seen as a 1-column matrix)
 - by default, for least surprise, coordinates are displayed in full, i.e. *not* rounded (refer to the ``printout_{width,precision}`` defines in ``linear.hrl``)
 - the procedure to check the validity of computations is the following:
@@ -174,7 +174,7 @@ Note that:
 
 - the most common operations are defined for each datatype: creating, modifying, comparing, displaying and, whenever appropriate: adding, subtracting, scaling, multiplying, rotating, measuring, transposing, reversing, etc.
 - operations are not implemented defensively, in the sense that a base runtime error will be triggered if a type or a size does not match, rather than being tested explicitly (anyway generally no useful extra context could then be specifically reported)
-- additional runtime checks (ex: to check whether parameters expected to be unit vectors are normalised indeed) can nevertheless be enabled by setting the ``myriad_check_linear`` flag (refer to ``GNUmakevars.inc``)
+- additional runtime checks (e.g. to check whether parameters expected to be unit vectors are normalised indeed) can nevertheless be enabled by setting the ``myriad_check_linear`` flag (refer to ``GNUmakevars.inc``)
 - for `homogeneous coordinates <https://en.wikipedia.org/wiki/Homogeneous_coordinates#Use_in_computer_graphics_and_computer_vision>`_: any implicit homogeneous `w` coordinate is ``1.0``
 - most operations here involve floating-point coordinates, rather than integer ones; as an Erlang's ``float()`` is a double-precision one, it requires more resources (CPU and memory footprint) than a basic, single-precision one; for applications not requiring extra precision, maybe the Erlang VM could be compiled in order to rely on single-precision floats instead
 
@@ -203,7 +203,7 @@ By default, we consider right-handed Cartesian coordinate systems (like OpenGL; 
 
 .. _`2D referential`:
 
-In 2D, typically for on-screen coordinates (ex: when drawing in a canvas), the corresponding projected referential applies, based on the X and Y axes, the origin being in the top-left corner, and all Z coordinates being zero [#]_:
+In 2D, typically for on-screen coordinates (e.g. when drawing in a canvas), the corresponding projected referential applies, based on the X and Y axes, the origin being in the top-left corner, and all Z coordinates being zero [#]_:
 
 :raw-html:`<center><img src="myriad-2D-referential.png" id="responsive-image-xsmall"></img></center>`
 :raw-latex:`\begin{figure}[h] \centering \includegraphics[scale=0.7]{myriad-2D-referential} \end{figure}`
@@ -218,6 +218,14 @@ For each of the spatial dimensions of interest, generally ``1.0`` corresponds to
 .. [#] Then for more human-sized distances, a scale of one light-nanosecond (10^-9 second) might be more convenient, as it corresponds almost to 30 cm.
 
 For **all angles**, the default unit is the `radian <https://en.wikipedia.org/wiki/Radian>`_ (:math:`2π` radians is equal to 360 degrees), and the positive rotation is counterclockwise.
+
+By default (see ``gui_opengl_transformation_shader_test.erl`` for an example thereof):
+
+- the **viewpoint** ("camera") is pointing down the Z axis, its vertical ("up" on its screen) vector being +Y; so an horizontal line on the screen drawn from left to right goes along the +X axis, whereas a vertical, bottom to top (vertical) line goes along the +Y axis
+- in terms of **projections**:
+
+  - with an **orthographic** one: the viewing volume is a cube within ``[-1.0, 1.0]`` in all dimensions; so for example a square whose edge length is 1.0, centered at the origin and pertaining to the X-Y plane will disappear as soon as its ``Z > 1.0`` or ``Z < -1.0``
+  - with a **perspective** one: the same square will appear as soon as it is sufficiently far from the camera; more precisely, in the aforementioned test, the square starts at ``Z=0.0``, whereas for the camera the minimum viewable distance along the -Z axis is ``ZNear=0.1``; so the square shall move further down the Z axis so that the camera starts to see it (first at full size when its ``Z=ZNear``), until, as its Z still decreases, the square shrinks progressively in the distance
 
 
 For **face culling**, front-facing is determined by relying on a counter-clockwise order winding order of triangles (like default OpenGL's `GL_CCW <https://www.khronos.org/opengl/wiki/Face_Culling>`_):
@@ -248,7 +256,7 @@ We consider that **clip space** ranges in ``[-1.0, 1.0]`` (like OpenGL conventio
 
 
 .. As a consequence, for GML, we are "RH_NO" (RIGHT_HANDED and
-   NEGATIVE_ONE_TO_ONE); ex: GLM_CLIP_CONTROL_RH_NO.
+   NEGATIVE_ONE_TO_ONE); e.g. GLM_CLIP_CONTROL_RH_NO.
    GLM is column major (like, often, implicitly OpenGL).
    A GLM 4x4 matrix is an array of 4 vec4s. Each vec4 represents a column of the matrix.
    For example matrix[3] is the last column of the matrix.
@@ -269,4 +277,4 @@ Elements of interest can be:
 Possible Enhancements
 .....................
 
-In the future, the most usual spatial types such as ``matrix`` and ``vector`` may be shortened in Myriad-based code as respectively ``m`` and ``v``, the Myriad parse transform being then in charge of expanding accordingly (ex: a in-code shorthand ``m3:new/0`` becoming ``matrix3:new/0`` to the eyes of the compiler).
+In the future, the most usual spatial types such as ``matrix`` and ``vector`` may be shortened in Myriad-based code as respectively ``m`` and ``v``, the Myriad parse transform being then in charge of expanding accordingly (e.g. a in-code shorthand ``m3:new/0`` becoming ``matrix3:new/0`` to the eyes of the compiler).

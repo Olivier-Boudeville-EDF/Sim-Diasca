@@ -108,9 +108,10 @@
 		  add/2, add/1, cross_product/2,
 		  are_close/2, are_equal/2,
 		  square_magnitude/1, magnitude/1, negate/1, scale/2, normalise/1,
-		  dot_product/2,
+		  dot_product/2, are_orthogonal/2, check_orthogonal/2,
 		  is_unitary/1,
-		  check/1, check_integer/1, check_unit_vector/1, check_unit_vectors/1,
+		  check/1, check_vector/1, check_vectors/1,
+		  check_integer/1, check_unit_vector/1, check_unit_vectors/1,
 		  to_string/1, to_compact_string/1, to_basic_string/1,
 		  to_user_string/1, list_to_string/1 ] ).
 
@@ -128,7 +129,7 @@
 -type user_coordinate() :: linear:user_coordinate().
 
 -type distance() :: linear:distance().
--type square_distance() :: linear:square_distance().
+-type any_square_distance() :: linear:any_square_distance().
 
 -type any_point3() :: any_point3().
 
@@ -268,10 +269,10 @@ add( _Vectors=[ VFirst | VOthers ]  ) ->
 
 
 % @doc Returns the cross-product of the two specified vectors, that is the
-% results of a regular 3D cross product of the input vectors.
+% result of a regular 3D cross product of these input vectors.
 %
 -spec cross_product( vector3(), vector3() ) -> vector3().
-cross_product( _P1=[X1,Y1,Z1], _P2=[X2,Y2,Z2] ) ->
+cross_product( _V1=[X1,Y1,Z1], _V2=[X2,Y2,Z2] ) ->
 	[ Y1*Z2 - Z1*Y2, Z1*X2 - X1*Z2, X1*Y2 - Y1*X2 ].
 
 
@@ -297,7 +298,7 @@ are_equal( _V1=[X1,Y1,Z1], _V2=[X2,Y2,Z2] ) ->
 
 
 % @doc Returns the square of the magnitude of the 3D specified vector.
--spec square_magnitude( vector3() ) -> square_distance().
+-spec square_magnitude( vector3() ) -> any_square_distance().
 square_magnitude( _V=[X,Y,Z] ) ->
 	X*X + Y*Y + Z*Z.
 
@@ -319,7 +320,7 @@ negate( _V=[X,Y,Z] ) ->
 
 
 % @doc Scales the specified 3D vector of the specified scalar factor.
--spec scale( vector3(), factor() ) -> vector3().
+-spec scale( any_vector3(), factor() ) -> vector3().
 scale( _V=[X,Y,Z], Factor ) ->
 	[ Factor*X, Factor*Y, Factor*Z ].
 
@@ -348,6 +349,22 @@ dot_product( _V1=[ X1, Y1, Z1 ], _V2=[ X2, Y2, Z2 ] ) ->
 	X1*X2 + Y1*Y2 + Z1*Z2.
 
 
+% @doc Returns whether the two specified vectors are orthogonal.
+-spec are_orthogonal( vector3(), vector3() ) -> boolean().
+are_orthogonal( V1, V2 ) ->
+	math_utils:is_null( dot_product( V1, V2 ) ).
+
+
+
+% @doc Checks that the two specified vectors are orthogonal: throws an exception
+% if not.
+%
+-spec check_orthogonal( vector3(), vector3() ) -> boolean().
+check_orthogonal( V1, V2 ) ->
+	are_orthogonal( V1, V2 ) orelse
+		throw( { not_orthogonal, V1, V2, dot_product( V1, V2 ) } ).
+
+
 
 % @doc Returns whether the specified vector is unitary, that is whether it is of
 % magnitude 1.0.
@@ -362,8 +379,21 @@ is_unitary( V ) ->
 % @doc Checks that the specified 3D vector is legit, and returns it.
 -spec check( vector3() ) -> vector3().
 check( V ) ->
+	check_vector( V ).
+
+
+% @doc Checks that the specified 3D vector is legit, and returns it.
+-spec check_vector( vector3() ) -> vector3().
+check_vector( V ) ->
 	3 = length( V ),
 	type_utils:check_floats( V ).
+
+
+% @doc Checks that the specified 3D vectors are legit, and returns them.
+-spec check_vectors( [ vector3() ] ) -> [ vector3() ].
+check_vectors( Vs ) ->
+	[ check_vector( V ) || V <- Vs ],
+	Vs.
 
 
 

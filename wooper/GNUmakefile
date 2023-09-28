@@ -1,12 +1,12 @@
 WOOPER_TOP = .
 
 
-.PHONY: help help-intro help-wooper                                        \
+.PHONY: help help-wooper                                                   \
 		all register-version-in-header register-wooper list-beam-dirs      \
 		add-prerequisite-plts link-plt                                     \
 		release release-zip release-bz2 release-xz                         \
 		prepare-release clean-release clean-archive stats                  \
-		info-context info-versions info-paths                              \
+		info-context info-versions                                         \
 		info-compile info-conditionals info-deps
 
 
@@ -25,11 +25,6 @@ WOOPER_RELEASES = $(WOOPER_RELEASE_ARCHIVE_BZ2) \
 
 # First target for default:
 help: help-intro help-wooper
-
-
-help-intro:
-	@echo " Following main make targets are available for package $(PACKAGE_NAME):"
-
 
 help-wooper:
 	@cd $(MYRIAD_TOP) && $(MAKE) -s help-myriad
@@ -119,10 +114,6 @@ info-context: info-platform info-versions info-source-layout
 info-versions:
 	@echo "MYRIAD_VERSION = $(MYRIAD_VERSION)"
 	@echo "WOOPER_VERSION = $(WOOPER_VERSION)"
-
-
-info-paths:
-	@echo "BEAM_PATH_OPT = $(BEAM_PATH_OPT)"
 
 
 info-compile: info-compile-wooper

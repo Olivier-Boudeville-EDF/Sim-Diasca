@@ -1,29 +1,29 @@
 % Copyright (C) 2008-2023 EDF R&D
-
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2008.
 
 
 % @doc <b>Benchmarking case</b> obtained from the soda deterministic example
 % case.
 %
 % See also:
-%
 % - class_SodaVendingMachine.erl
 % - class_DeterministicThirstyCustomer.erl
 % - soda_full_loading_test.erl for the same simulated case using instance
@@ -113,7 +113,7 @@ create_vending_machines( Count, Acc ) ->
 	CanCost = float( class_RandomManager:get_uniform_value( 6 ) ),
 
 	SVMPid = class_Actor:create_initial_actor( class_SodaVendingMachine,
-					[ MachineName, InitialCanCount, CanCost ] ),
+		[ MachineName, InitialCanCount, CanCost ] ),
 
 	create_vending_machines( Count-1, [ SVMPid | Acc ] ).
 
@@ -161,11 +161,11 @@ create_deterministic_customer( CustomerCount, VendingMachines ) ->
 	ElectedMachineIndex =
 		class_RandomManager:get_uniform_value( length( VendingMachines ) ),
 
-	ElectedMachine = list_utils:get_element_at( VendingMachines,
-												ElectedMachineIndex ),
+	ElectedMachine = 
+		list_utils:get_element_at( VendingMachines, ElectedMachineIndex ),
 
-	RepletionDuration = 250 + round( class_RandomManager:get_exponential_value(
-										_Lamba=0.05 ) ),
+	RepletionDuration = 250 + 
+		round( class_RandomManager:get_exponential_1p_value( _Lamba=0.05 ) ),
 
 	InitialBudget = 15.0 + class_RandomManager:get_uniform_value( 200 ),
 
@@ -188,10 +188,10 @@ create_stochastic_customer( CustomerCount, VendingMachines ) ->
 		class_RandomManager:get_uniform_value( length( VendingMachines ) ),
 
 	ElectedMachine =
-		list_utils:get_element_at( VendingMachines,	ElectedMachineIndex ),
+		list_utils:get_element_at( VendingMachines, ElectedMachineIndex ),
 
 	MaxDuration = 250 + class_RandomManager:get_positive_integer_gaussian_value(
-							_Mu=5, _Sigma=1.0 ),
+		_Mu=5, _Sigma=1.0 ),
 
 	RepletionDuration = { uniform, MaxDuration },
 

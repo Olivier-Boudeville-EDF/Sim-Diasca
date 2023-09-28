@@ -48,7 +48,7 @@ This last point implies that the resources of a fault-tolerant simulation *must*
 .. [#] Currently, hosts that departed the simulation cannot join back. As a consequence, the remaining ones must be able to cope with the load. Therefore the simulation user ought to allocate a little more resources than strictly necessary initially, to compensate for the *sum* of all later losses, as they will not be redeemed. The extra hosts introduced in this case behave as spare ones, except that they do not remain idle until a host crashes: they participate to the simulation from its very start, to further smooth the computing load.
 
 
-Note that this resilience applies only to the random "workers", i.e. to the average computing hosts. For example, if the host of the root time manager is lost, the simulation will crash, regardless of the value of k. Depending on the optional services that are enabled (ex: performance tracker, data-logger, data-exchanger, etc.) other single points of failures may be introduced, as they tend to be deployed on different hosts (trade-off between load-balancing and resilience) [#]_. Currently, depending on the aforementioned enabled services, very few single points of failure remain (typically up to three, compared to a total number of computing hosts that may exceed several hundreds, if not thousands in the near future).
+Note that this resilience applies only to the random "workers", i.e. to the average computing hosts. For example, if the host of the root time manager is lost, the simulation will crash, regardless of the value of k. Depending on the optional services that are enabled (e.g. performance tracker, data-logger, data-exchanger, etc.) other single points of failures may be introduced, as they tend to be deployed on different hosts (trade-off between load-balancing and resilience) [#]_. Currently, depending on the aforementioned enabled services, very few single points of failure remain (typically up to three, compared to a total number of computing hosts that may exceed several hundreds, if not thousands in the near future).
 
 .. [#] Most, if not all, services could be made resilient; we simply started with the key ones. As we are able to store most of the reproducible simulation state and reconstruct the purely technical, transient information, a given simulation might even survive the loss of *all* its computing nodes, and restart later from a blank state, just based on its serialisation data.
 
@@ -143,7 +143,7 @@ The states then collected require more than a mere serialisation, as some elemen
 
 This is notably the case for the PIDs that are stored in the state of an instance (i.e. in the value of an attribute, just by itself or possibly as a part of an arbitrarily complex data-structure).
 
-Either such a PID belongs to a lower layer (``Myriad``, ``WOOPER`` or ``Traces``), or it is related directly to Sim-Diasca, corresponding typically to a simulation agent of a distributed service (ex: a local time manager, data exchanger or instance tracker), to a model instance (an actor) or to a result producer (a probe).
+Either such a PID belongs to a lower layer (``Myriad``, ``WOOPER`` or ``Traces``), or it is related directly to Sim-Diasca, corresponding typically to a simulation agent of a distributed service (e.g. a local time manager, data exchanger or instance tracker), to a model instance (an actor) or to a result producer (a probe).
 
 As PIDs are technical, contextual, non-reproducible identifiers (somewhat akin to pointers), they must be translated into a more abstract form prior to serialisation, to allow for a later proper deserialisation; otherwise these "pointers" would not mean anything for the deserialising mechanism:
 
@@ -172,7 +172,7 @@ Multiple steps of this procedure are instrumented thanks to WOOPER; notably:
 
 - to do so, each of them retrieves references (PID) of all local actors (from the corresponding local time manager), local simulation agents and local probes; then each of these instances is requested to serialise itself
 
-- such a serialisation involves transforming its current state, notably replacing PID (that are transient) by higher-level, reproducible identifiers (the conversion being performed by a distributed instance tracking service); for that, the underlying data-structure of each attribute value (ex: nested records in lists of tuples containing in some positions PID) is discovered at runtime, and recursively traversed and translated with much help from nested higher-order functions and closures; it results finally into a compact, binary representation of the state of each instance
+- such a serialisation involves transforming its current state, notably replacing PID (that are transient) by higher-level, reproducible identifiers (the conversion being performed by a distributed instance tracking service); for that, the underlying data-structure of each attribute value (e.g. nested records in lists of tuples containing in some positions PID) is discovered at runtime, and recursively traversed and translated with much help from nested higher-order functions and closures; it results finally into a compact, binary representation of the state of each instance
 
 - on each node (thus, in a distributed way), these serialisations are driven by worker processes (i.e. in parallel, to take also advantage of all local cores), and the resulting serialised content is sent to a local writer process (in charge of writing the serialisation file), tailored not to be a bottleneck; reciprocally, the deserialisation is based on as many parallel processes (for reading, recreating and relinking instances) as there are serialisation files to read locally
 
@@ -255,7 +255,7 @@ So the path must be specified at the *beginning* of the file, rather than later.
 
 Simulations can then run on the user host and the 10 additional ones.
 
-Then their failure can be simulated from the command-line, using tools provided by the vendor of the virtual infrastructure (ex: ``VBoxManage controlvm`` with `VirtualBox <https://www.virtualbox.org/>`_, with VMWare vSphere command-line interface, etc.) or UNIX brutal kills through SSH.
+Then their failure can be simulated from the command-line, using tools provided by the vendor of the virtual infrastructure (e.g. ``VBoxManage controlvm`` with `VirtualBox <https://www.virtualbox.org/>`_, with VMWare vSphere command-line interface, etc.) or UNIX brutal kills through SSH.
 
 Of course once the initial testing and troubleshooting has been done thanks to this setting, real-life situations (involving notably network links to be unplugged at random moments while a simulation is running) must be reproduced.
 

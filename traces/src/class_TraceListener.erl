@@ -51,7 +51,7 @@
 -define( class_attributes, [
 
 	{ trace_filename, file_utils:file_path(),
-	  "the name of the file where traces are to be stored (ex: *.traces)" },
+	  "the name of the file where traces are to be stored (e.g. *.traces)" },
 
 	{ trace_file, file_utils:file_path(),
 	  "the actual file where traces are written" },
@@ -169,10 +169,10 @@ construct( State, TraceAggregatorPid, CloseListenerPid ) ->
 	ManagedState = manage_send_traces( CompressedFilename, State ),
 
 	SetState = setAttributes( ManagedState, [
-				{ trace_aggregator_pid, TraceAggregatorPid },
-				{ temp_dir, TempDir },
-				{ supervision_waiter_pid, undefined },
-				{ close_listener_pid, CloseListenerPid } ] ),
+		{ trace_aggregator_pid, TraceAggregatorPid },
+		{ temp_dir, TempDir },
+		{ supervision_waiter_pid, undefined },
+		{ close_listener_pid, CloseListenerPid } ] ),
 
 	EndState = executeOneway( SetState, monitor ),
 
@@ -200,8 +200,8 @@ construct( State, TraceAggregatorPid, MinTCPPort, MaxTCPPort,
 		[ ?LogPrefix, self(), TraceAggregatorPid, MinTCPPort, MaxTCPPort ] ),
 
 	trace_utils:debug_fmt(
-	  "~ts Requesting from aggregator a trace synchronization.",
-	  [ ?LogPrefix ] ),
+		"~ts Requesting from aggregator a trace synchronization.",
+		[ ?LogPrefix ] ),
 
 	TraceAggregatorPid ! { addTraceListener, self() },
 
@@ -238,14 +238,14 @@ manage_send_traces( CompressedFilename, State ) ->
 	file_utils:remove_file( CompressedFilename ),
 
 	%trace_utils:info_fmt( "~ts Received from aggregator a trace "
-	%                      "synchronization for file '~ts', reused for "
-	%                      "later traces.", [ ?LogPrefix, TraceFilename ] ),
+	%   "synchronization for file '~ts', reused for "
+	%"later traces.", [ ?LogPrefix, TraceFilename ] ),
 
 	% Will write in it newly received traces (sent through messages); now
 	% preferring the (more efficient) raw mode:
 	%
 	File = file_utils:open( TraceFilename,
-			[ append | class_TraceAggregator:get_trace_file_base_options() ] ),
+		[ append | class_TraceAggregator:get_trace_file_base_options() ] ),
 
 	setAttributes( State, [ { trace_filename, TraceFilename },
 							{ trace_file, File } ] ).
@@ -304,17 +304,12 @@ monitor( State ) ->
 
 	Filename = ?getAttr(trace_filename),
 
-	case file_utils:is_existing_file( Filename ) of
-
-		true ->
-			ok;
-
-		false ->
+	file_utils:is_existing_file( Filename ) orelse
+		begin
 			trace_utils:error_fmt( "class_TraceListener:monitor/1 "
 				"unable to find trace file '~ts'.", [ Filename ] ),
-			trace_file_not_found
-
-	end,
+			throw( { trace_file_not_found, Filename } )
+		end,
 
 	trace_utils:notice_fmt( "~ts Trace listener will monitor file '~ts' "
 							"with LogMX now.", [ ?LogPrefix, Filename ] ),
@@ -355,7 +350,7 @@ monitor( State ) ->
 % To be called by the trace aggregator.
 %
 -spec addTrace( wooper:state(), text_utils:bin_string() ) ->
-						const_oneway_return().
+								const_oneway_return().
 addTrace( State, NewTrace ) ->
 
 	% Write to file:
@@ -370,7 +365,7 @@ addTrace( State, NewTrace ) ->
 
 	% Not the following, which would break the encoding of Unicode messages:
 	%Content = text_utils:format( "~ts",
-	%               [ text_utils:binary_to_string( NewTrace ) ] ),
+	%   [ text_utils:binary_to_string( NewTrace ) ] ),
 	% file_utils:write( ?getAttr(trace_file), Content ),
 
 	% A correct form is instead:

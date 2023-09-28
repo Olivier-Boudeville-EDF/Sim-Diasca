@@ -1,22 +1,23 @@
 % Copyright (C) 2012-2023 EDF R&D
-
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2012.
 
 
 % @doc Class modelling a <b>waste loading point</b>.
@@ -187,60 +188,63 @@ get_waste_from_tanks( _WasteType, RemainingFreeMass, _WasteTanks=[], AccTanks,
 
 
 get_waste_from_tanks( WasteType, RemainingFreeMass, _WasteTanks=[
-						Tank=#waste_tank{ current_mass_stored=0.0 } | T ],
-					  AccTanks, LoadedWasteType ) ->
+		Tank=#waste_tank{ current_mass_stored=CurrentTankMass } | T ],
+		AccTanks, LoadedWasteType ) ->
 
-	% An empty tank is of no use here, continuing the iterating:
-	get_waste_from_tanks( WasteType, RemainingFreeMass,  T, [ Tank | AccTanks ],
-						  LoadedWasteType );
-
-
-get_waste_from_tanks( WasteType, RemainingFreeMass, _WasteTanks=[
-			Tank=#waste_tank{ current_type=TankWasteType,
-							  current_mass_stored=CurrentTankMass } | T ],
-					  AccTanks, LoadedWasteType ) ->
-
-
-	% Non-empty tank here:
-	case waste_utils:can_be_mixed( WasteType, TankWasteType ) of
+	case math_utils:is_null( CurrentTankMass ) of
 
 		true ->
+			% An empty tank is of no use here, continuing iterating:
+			get_waste_from_tanks( WasteType, RemainingFreeMass, T,
+								  [ Tank | AccTanks ], LoadedWasteType );
 
-			% Yes, so let's empty this tank as much as possible:
-			case CurrentTankMass > RemainingFreeMass of
+		% Non-empty tank here:
+		false ->
+			TankWasteType = Tank#waste_tank.current_type,
+
+			case waste_utils:can_be_mixed( WasteType, TankWasteType ) of
 
 				true ->
 
-					% Here we will saturate the truck with this tank:
-					UpdatedTank = waste_utils:remove_waste_from_tank( Tank,
-										RemainingFreeMass ),
+					% Yes, so let's empty this tank as much as possible:
+					case CurrentTankMass > RemainingFreeMass of
 
-					% Truck full, hence no need to recurse more:
-					NewTanks = [ UpdatedTank | T ] ++ AccTanks,
+						true ->
 
-					% We update the type as well, otherwise we could keep the
-					% one of the possibly empty truck which would then be
-					% 'none':
-					%
-					{ NewTanks, _NoMoreMass=0.0, TankWasteType };
+							% Here we will saturate the truck with this tank:
+							UpdatedTank = waste_utils:remove_waste_from_tank(
+								Tank, RemainingFreeMass ),
 
-				false ->
-					% Here we will fully deplete the tank:
-					UpdatedTank = waste_utils:remove_waste_from_tank( Tank,
-										CurrentTankMass ),
+							% Truck full, hence no need to recurse more:
+							NewTanks = [ UpdatedTank | T ] ++ AccTanks,
 
-					NewRemainingFreeMass = RemainingFreeMass - CurrentTankMass,
+							% We update the type as well, otherwise we could
+							% keep the one of the possibly empty truck which
+							% would then be 'none':
+							%
+							{ NewTanks, _NoMoreMass=0.0, TankWasteType };
 
-					% Same remark for the update of waste type:
-					get_waste_from_tanks( WasteType, NewRemainingFreeMass,  T,
+						false ->
+							% Here we will fully deplete the tank:
+							UpdatedTank = waste_utils:remove_waste_from_tank(
+								Tank, CurrentTankMass ),
+
+							NewRemainingFreeMass =
+								RemainingFreeMass - CurrentTankMass,
+
+							% Same remark for the update of waste type:
+							get_waste_from_tanks( WasteType,
+								NewRemainingFreeMass, T,
 								[ UpdatedTank | AccTanks ], TankWasteType )
 
-			end ;
+					end ;
 
-		false ->
-			% Unmatching waste type for this tank, let's continue then:
-			get_waste_from_tanks( WasteType, RemainingFreeMass,  T,
-								  [ Tank | AccTanks ], LoadedWasteType )
+				false ->
+					% Unmatching waste type for this tank, let's continue then:
+					get_waste_from_tanks( WasteType, RemainingFreeMass,  T,
+						[ Tank | AccTanks ], LoadedWasteType )
+
+			end
 
 	end.
 

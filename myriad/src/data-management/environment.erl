@@ -59,7 +59,7 @@
 %
 % The server process corresponding to an environment is locally registered; as a
 % consequence it can be designated either directly through its PID or through
-% its conventional (atom) registration name (like in
+% its conventional (atom) registration name (like 'my_foobar_env_server' in
 % `environment:get(my_first_color, my_foobar_env_server'). No specific global
 % registration of servers is made.
 %
@@ -69,10 +69,11 @@
 % concurrently to create the same environment server), and also to be able to
 % request that the server is also linked to the calling process.
 %
-% An environment is best designated as a PID, otherwise as a registered name,
-% otherwise from any filename that it uses.
+% See our 'preferences' module, corresponding to the user preferences, which is
+% implemented as a specific case of environment.
 %
-% See also the resource module for the sharing of any kind of data resource.
+% See also the (unrelated) resource module for the sharing of any kind of data
+% resource.
 %
 -module(environment).
 
@@ -84,6 +85,8 @@
 % its associated filename). The former approach is a bit more effective, but
 % the later one is more robust (the server can be transparently
 % restarted/upgraded).
+%
+% An environment may also be designated from any filename that it uses.
 
 
 % About the caching of environment entries:
@@ -97,8 +100,8 @@
 % cached entries, and when updating a cached key from a client process the
 % corresponding environment server is updated in turn. However note that any
 % other client process caching that key will not be aware of this change until
-% it requests an update to this environment server (as such servers do not keep
-% track of their clients).
+% it explicitly requests an update to this environment server (as such servers
+% do not keep track of their clients).
 %
 % So a client process should cache a key mainly if no other is expected to
 % update that key, i.e. typically if the associated value is const, or if this
@@ -106,10 +109,10 @@
 % other organisation ensures, possibly thanks to sync/1, that its cache is kept
 % consistent with the corresponding environment server).
 %
-% As soon as a key is declared to be cached, its value is set in the cache;
-% there is thus always an actual value associated to a cached key (i.e. it is
-% never a maybe-value because of the cache), and thus cached values are allowed
-% to be set to 'undefined'.
+% As soon as a key is declared to be cached, its value has to be set in the
+% cache; there is thus always an actual value associated to a cached key
+% (i.e. it is never a maybe-value because of the cache), and thus cached values
+% are allowed to be set to 'undefined'.
 %
 % Two ways of setting values are provided:
 %  - regular set/{2,3,4}, where new values are unconditionally assigned
@@ -117,7 +120,7 @@
 %  one, and sent to the environment iff not matching
 %
 % This last option allows, for the cost of an extra comparison, to potentially
-% prevent useless message sendings (to the environment server).
+% prevent useless message sendings to the environment server.
 %
 % Multiple environments may be used concurrently. A specific case of environment
 % corresponds to the user preferences. See our preferences module for that.
@@ -650,7 +653,8 @@ start( ServerRegName, AnyFilePath ) when is_atom( ServerRegName ) ->
 			% of this server:
 			%
 			?myriad_spawn( fun() ->
-							server_run( CallerPid, ServerRegName, BinFilePath )
+							server_run( CallerPid, ServerRegName, BinFilePath,
+										_MaybeDefaultEntries=[] )
 						   end ),
 
 			receive
@@ -694,7 +698,7 @@ start_link( ServerRegName, AnyFilePath ) when is_atom( ServerRegName ) ->
 
 			?myriad_spawn_link( fun() ->
 									server_run( CallerPid, ServerRegName,
-												BinFilePath )
+										BinFilePath, _MaybeDefaultEntries=[] )
 								end ),
 
 			receive
@@ -889,6 +893,7 @@ get( KeyMaybes, FilePath ) when is_list( FilePath ) ->
 	EnvSrvPid = start( FilePath ),
 	get( KeyMaybes, EnvSrvPid );
 
+% Hence EnvPid expected to be a PID here:
 get( Keys, EnvPid ) when is_list( Keys ) ->
 	case process_dictionary:get( ?env_dictionary_key ) of
 
@@ -1713,7 +1718,7 @@ uncache( EnvPid ) ->
 
 				% At least one environment remaining:
 				{ _EnvPair, ShrunkAllEnvTable } ->
-					process_directionary:put( EnvDictKey, ShrunkAllEnvTable )
+					process_dictionary:put( EnvDictKey, ShrunkAllEnvTable )
 
 			end
 
@@ -2101,18 +2106,10 @@ server_run( SpawnerPid, RegistrationName, BinFilePath, MaybeDefaultEntries ) ->
 
 
 % (helper)
--spec get_value_maybes( key(), entries() ) -> value();
-					  ( [ key() ], entries() ) -> [ value() ].
+-spec get_value_maybes( key(), table() ) -> value();
+					  ( [ key() ], table() ) -> [ value() ].
 get_value_maybes( Key, Table ) when is_atom( Key ) ->
-	case table:lookup_entry( Key, Table ) of
-
-		key_not_found ->
-			undefined;
-
-		{ value, V } ->
-			V
-
-	end;
+	table:get_value_with_default( Key, _Def=undefined, Table );
 
 get_value_maybes( Keys, Table ) ->
 	get_value_maybes( Keys, Table, _Acc=[] ).
@@ -2129,7 +2126,7 @@ get_value_maybes( _Keys=[ K | T ], Table, Acc ) ->
 
 
 % (helper)
--spec ensure_binaries( [ key() ], entries() ) -> entries().
+-spec ensure_binaries( [ key() ], table() ) -> table().
 ensure_binaries( Keys, Table ) ->
 	AnyStrs = table:get_values( Keys, Table ),
 	BinStrs = text_utils:ensure_binaries( AnyStrs ),
@@ -2219,11 +2216,14 @@ server_main_loop( Table, EnvRegName, MaybeBinFilePath ) ->
 
 
 		{ store, BinTargetFilePath } ->
+
 			cond_utils:if_defined( myriad_debug_environments,
 				trace_utils:debug_fmt( "Storing environment state "
 					"in specified file '~ts'.", [ BinTargetFilePath ] ) ),
+
 			file_utils:write_etf_file( table:enumerate( Table ),
 									   BinTargetFilePath ),
+
 			server_main_loop( Table, EnvRegName, BinTargetFilePath );
 
 
@@ -2252,7 +2252,7 @@ server_main_loop( Table, EnvRegName, MaybeBinFilePath ) ->
 							text_utils:format( " (associated to file '~ts')",
 											   [ BinfilePath ] )
 
-							 end;
+							end;
 
 				L ->
 

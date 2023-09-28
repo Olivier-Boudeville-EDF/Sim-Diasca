@@ -21,7 +21,7 @@
 % along with this library.
 % If not, see <http://www.gnu.org/licenses/> and
 % <http://www.mozilla.org/MPL/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Tuesday, December 2, 2014.
 
@@ -71,7 +71,8 @@
 		  remove_entries/2, remove_existing_entries/2,
 		  lookup_entry/2, has_entry/2,
 		  extract_entry/2, extract_entry_with_default/3,
-		  extract_entry_if_existing/2, extract_entries/2,
+		  extract_entry_if_existing/2,
+		  extract_entries/2, extract_entries_if_existing/2,
 		  get_value/2, get_values/2, get_value_with_default/3,
 		  get_all_values/2,
 		  add_to_entry/3, subtract_from_entry/3, toggle_entry/2,
@@ -151,6 +152,7 @@
 
 -type void() :: basic_utils:void().
 -type accumulator() :: basic_utils:accumulator().
+
 -type ustring() :: text_utils:ustring().
 
 
@@ -173,8 +175,8 @@ singleton( Key, Value ) ->
 
 
 
-% @doc Creates a table, either from specified initial entries or (solely for API
-% interoperability) from specified target number of entries.
+% @doc Creates a table, either from the specified initial entries or (solely for
+% API interoperability) from the specified target number of entries.
 %
 % As map tables manage by themselves their size, no need to specify any target
 % size. This clause is only defined so that we can transparently switch APIs
@@ -184,6 +186,7 @@ singleton( Key, Value ) ->
 % and the previous values are ignored.
 %
 % Throws bad argument (bad_arg) if a non-pair term is found in this list.
+%
 -spec new( entries() | entry_count() ) -> map_hashtable().
 new( ExpectedNumberOfEntries ) when is_integer( ExpectedNumberOfEntries ) ->
 	#{};
@@ -193,7 +196,7 @@ new( InitialEntries ) when is_list( InitialEntries ) ->
 
 
 
-% @doc Creates a table from specified list of key/values pairs, expecting no
+% @doc Creates a table from the specified list of key/values pairs, expecting no
 % duplicate in the keys, otherwise throwing an exception.
 %
 % Allows to safely load entries in a table without risking a silent overwrite of
@@ -239,7 +242,7 @@ new_from_unique_entries( InitialEntries ) when is_list( InitialEntries ) ->
 
 
 
-% @doc Adds specified key/value pair into the specified map hashtable.
+% @doc Adds the specified key/value pair into the specified map hashtable.
 %
 % If there is already a pair with this key, then its previous value will be
 % replaced by the specified one (hence does not check whether or not the key
@@ -252,7 +255,7 @@ add_entry( Key, Value, MapHashtable ) ->
 
 
 
-% @doc Adds specified list of key/value pairs into the specified map table.
+% @doc Adds the specified list of key/value pairs into the specified map table.
 %
 % If there is already a pair with this key, then its previous value will be
 % replaced by the specified one (hence does not check whether or not keys
@@ -269,8 +272,9 @@ add_entries( Entries, MapHashtable ) ->
 
 
 
-% @doc Adds specified key/value pair into the specified map hashtable, provided
-% the value is not undefined. Useful to add a maybe-entry to a map.
+% @doc Adds the specified key/value pair into the specified map hashtable,
+% provided that the value is not undefined. Useful to add a maybe-entry to a
+% map.
 %
 % If there is already a pair with this key, then its previous value will be
 % replaced by the specified one (hence does not check whether or not the key
@@ -286,9 +290,9 @@ add_maybe_entry( Key, MaybeValue, MapHashtable ) ->
 
 
 
-% @doc Adds specified list of key/value pairs into the specified map table, each
-% entry being added iff its value is not undefined. Useful to add maybe-entries
-% to a map.
+% @doc Adds the specified list of key/value pairs into the specified map table,
+% each entry being added iff its value is not undefined. Useful to add
+% maybe-entries to a map.
 %
 % If there is already a pair with this key, then its previous value will be
 % replaced by the specified one (hence does not check whether or not keys
@@ -304,8 +308,8 @@ add_maybe_entries( MaybeEntries, MapHashtable ) ->
 
 
 
-% @doc Adds specified key/value pair into the specified map hashtable, expecting
-% this key not to be already defined in this table.
+% @doc Adds the specified key/value pair into the specified map hashtable,
+% expecting this key not to be already defined in this table.
 %
 -spec add_new_entry( key(), value(), map_hashtable() ) -> map_hashtable().
 add_new_entry( Key, Value, MapHashtable ) ->
@@ -325,7 +329,7 @@ add_new_entry( Key, Value, MapHashtable ) ->
 
 
 
-% @doc Adds specified list of key/value pairs into the specified map table,
+% @doc Adds the specified list of key/value pairs into the specified map table,
 % expecting that none of these keys is already defined in this table (otherwise
 % an exception is thrown).
 %
@@ -364,8 +368,8 @@ update_entry( Key, Value, MapHashtable ) ->
 
 
 
-% @doc Updates specified list of keys with specified values in specified map
-% hashtable.
+% @doc Updates the specified list of keys with the specified values in the
+% specified map hashtable.
 %
 % For each of the listed keys, a corresponding pair is expected to already exist
 % in this table.
@@ -393,11 +397,11 @@ update_existing_entries( Entries, MapHashtable ) ->
 
 	% Should be optimised:
 	lists:foldl( fun( { K, V }, Map ) when is_map_key( K, Map ) ->
-						 Map#{ K => V };
+						Map#{ K => V };
 
 					% K not present, thus ignore entry:
 					( _E, Map ) ->
-						 Map
+						Map
 				 end,
 				 _Acc0=MapHashtable,
 				 _List=Entries ).
@@ -457,8 +461,8 @@ remove_existing_entry( Key, MapHashtable ) ->
 
 
 
-% @doc Removes specified key/value pairs, as designated by the keys, from the
-% specified table.
+% @doc Removes the specified key/value pairs, as designated by the keys, from
+% the specified table.
 %
 % Specifying a non-existing key is accepted.
 %
@@ -467,15 +471,15 @@ remove_existing_entry( Key, MapHashtable ) ->
 -spec remove_entries( [ key() ], map_hashtable() ) -> map_hashtable().
 remove_entries( Keys, MapHashtable ) ->
 	lists:foldl( fun( K, AccTable ) ->
-					 maps:remove( K, AccTable )
+					maps:remove( K, AccTable )
 				 end,
 				 _InitAcc=MapHashtable,
 				 _List=Keys ).
 
 
 
-% @doc Removes specified key/value pairs, as designated by the keys, from the
-% specified table.
+% @doc Removes the specified key/value pairs, as designated by the keys, from
+% the specified table.
 %
 % Throws an exception if a key is not found.
 %
@@ -484,14 +488,15 @@ remove_entries( Keys, MapHashtable ) ->
 -spec remove_existing_entries( [ key() ], map_hashtable() ) -> map_hashtable().
 remove_existing_entries( Keys, MapHashtable ) ->
 	lists:foldl( fun( K, AccTable ) ->
-					 remove_existing_entry( K, AccTable )
+					remove_existing_entry( K, AccTable )
 				 end,
 				 _InitAcc=MapHashtable,
 				 _List=Keys ).
 
 
 
-% @doc Looks-up specified entry (designated by its key) in specified map table.
+% @doc Looks-up the specified entry (designated by its key) in the specified map
+% table.
 %
 % Returns either 'key_not_found' if no such key is registered in the table, or
 % {value, Value}, with Value being the value associated to the specified key.
@@ -518,9 +523,7 @@ lookup_entry( Key, MapHashtable ) ->
 
 
 
-% @doc Tells whether the specified key exists in the table: returns true or
-% false.
-%
+% @doc Tells whether the specified key exists in the table.
 -spec has_entry( key(), map_hashtable() ) -> boolean().
 has_entry( Key, MapHashtable ) ->
 	maps:is_key( Key, MapHashtable ).
@@ -537,7 +540,7 @@ has_entry( Key, MapHashtable ) ->
 % returns it directly.
 %
 % The key/value pair is expected to exist already in the table, otherwise an
-% exception ({bad_key, Key}) is raised.
+% exception is raised.
 %
 -spec get_value( key(), map_hashtable() ) -> value().
 %get_value( Key, #{ Key := Value } ) ->
@@ -550,7 +553,7 @@ get_value( Key, MapHashtable ) ->
 	catch
 
 		error:{ badkey, _K } ->
-			trace_utils:error_fmt( "No key '~p' found in following table "
+			trace_utils:error_fmt( "No key '~p' found in the following table "
 				"(process: ~w): ~ts",
 				[ Key, self(), to_string( MapHashtable ) ] ),
 			throw( { key_not_found, Key } )
@@ -565,8 +568,8 @@ get_value( Key, MapHashtable ) ->
 % The key/value pairs are expected to exist already in the table, otherwise an
 % exception is raised.
 %
-% Ex: [Color, Age, Mass] =
-%           map_hashtable:get_values([color, age, mass], MyMapTable])
+% For example [Color, Age, Mass] =
+%   map_hashtable:get_values([color, age, mass], MyMapTable)
 %
 -spec get_values( [ key() ], map_hashtable() ) -> [ value() ].
 get_values( Keys, Hashtable ) ->
@@ -591,6 +594,9 @@ get_values( Keys, Hashtable ) ->
 %
 % Allows to perform in a single operation a look-up followed by a fetch.
 %
+% A popular default value is 'undefined', so that this function can be
+% considered a returning a maybe(value()).
+%
 -spec get_value_with_default( key(), value(), map_hashtable() ) -> value().
 get_value_with_default( Key, DefaultValue, MapHashtable ) ->
 
@@ -613,8 +619,8 @@ get_value_with_default( Key, DefaultValue, MapHashtable ) ->
 % The key/value pairs are expected to exist already, otherwise an exception is
 % raised.
 %
-% Ex: [Color=red, Age=23, Mass=51] = map_hashtable:get_all_values([color,
-%                       age, mass], [{color, red}, {mass, 51}, {age, 23}])
+% For example [Color=red, Age=23, Mass=51] = map_hashtable:get_all_values(
+%    [color, age, mass], [{color, red}, {mass, 51}, {age, 23}])
 %
 -spec get_all_values( [ key() ], map_hashtable() ) -> [ value() ].
 get_all_values( Keys, Hashtable ) ->
@@ -711,8 +717,8 @@ extract_entry_if_existing( Key, MapHashtable ) ->
 % Each key/value pair is expected to exist already, otherwise an exception is
 % raised (typically {badkey, KeyNotFound}).
 %
-% Ex: {[RedValue, GreenValue, BlueValue], ShrunkTable} =
-%         map_hashtable:extract_entries([red, green, blue], MyTable)
+% For example {[RedValue, GreenValue, BlueValue], ShrunkTable} =
+%   map_hashtable:extract_entries([red, green, blue], MyTable)
 %
 -spec extract_entries( [ key() ], map_hashtable() ) ->
 							{ [ value() ], map_hashtable() }.
@@ -726,6 +732,42 @@ extract_entries( Keys, MapHashtable ) ->
 		_List=Keys ),
 
 	{ lists:reverse( RevValues ), FinalTable }.
+
+
+
+% @doc Extracts the specified entries (if any) from the specified table, that is
+% returns them (in-order), and removes them from the returned table.
+%
+% If a key is not present in the table, it is skipped.
+%
+% For example, if no 'green' key exists in MyTable:
+% {[{red,RedValue}, {blue,BlueValue}], ShrunkTable} =
+%   map_hashtable:extract_entries_if_existing([red, green, blue], MyTable)
+%
+-spec extract_entries_if_existing( [ key() ], map_hashtable() ) ->
+										{ entries(), map_hashtable() }.
+extract_entries_if_existing( Keys, ListTable ) ->
+
+	{ RevEntries, FinalTable } = lists:foldl(
+
+		fun( _Elem=Key, Acc={ Values, AccTable } ) ->
+
+			case extract_entry_if_existing( Key, AccTable ) of
+
+				false ->
+					Acc;
+
+				{ V, ShrunkTable } ->
+					{ [ _E={ Key, V } | Values ], ShrunkTable }
+
+			end
+
+		end,
+
+		_Acc0={ [], ListTable },
+		_List=Keys ),
+
+	{ lists:reverse( RevEntries ), FinalTable }.
 
 
 
@@ -799,8 +841,8 @@ map_on_values( Fun, MapHashtable ) ->
 
 
 
-% @doc Folds specified anonymous function on all key/value pairs of the
-% specified map hashtable, based on specified initial accumulator.
+% @doc Folds the specified anonymous function on all key/value pairs of the
+% specified map hashtable, based on the specified initial accumulator.
 %
 % The order of transformation for entries is not specified.
 %
@@ -813,8 +855,8 @@ fold( Fun, InitialAcc, Table ) ->
 
 
 
-% @doc Folds specified anonymous function on all entries of the specified map
-% hashtable.
+% @doc Folds the specified anonymous function on all entries of the specified
+% map hashtable.
 %
 % The order of transformation for entries is not specified.
 %
@@ -840,18 +882,18 @@ fold_on_entries( Fun, InitialAcc, MapHashtable ) ->
 
 
 
-% @doc Adds specified value to the value, supposed to be numerical, associated
-% to specified key.
+% @doc Adds the specified value to the value, supposed to be numerical,
+% associated to the specified key.
 %
 % An exception is thrown if the key does not exist, a bad arithm is triggered if
 % no addition can be performed on the associated value.
 %
 -spec add_to_entry( key(), number(), map_hashtable() ) -> map_hashtable().
 % add_to_entry( Key, Value, MapHashtable=#{ Key => BaseValue } ) ->
-%	MapHashtable#{ Key => BaseValue + Value };
+%   MapHashtable#{ Key => BaseValue + Value };
 %
 % add_to_entry( _Key, _Value, _MapHashtable ) ->
-%	throw( { key_not_found, Key } ).
+%   throw( { key_not_found, Key } ).
 %
 add_to_entry( Key, Value, MapHashtable ) ->
 
@@ -867,8 +909,8 @@ add_to_entry( Key, Value, MapHashtable ) ->
 
 
 
-% @doc Subtracts specified value to the value, supposed to be numerical,
-% associated to specified key.
+% @doc Subtracts the specified value to the value, supposed to be numerical,
+% associated to the specified key.
 %
 % An exception is thrown if the key does not exist, a bad arithm is triggered if
 % no subtraction can be performed on the associated value.
@@ -895,8 +937,8 @@ subtract_from_entry( Key, Value, MapHashtable ) ->
 
 
 
-% @doc Toggles the boolean value associated with specified key: if true will be
-% false, if false will be true.
+% @doc Toggles the boolean value associated with the specified key: if true will
+% be false, if false will be true.
 %
 % An exception is thrown if the key does not exist or if its associated value is
 % not a boolean.
@@ -908,16 +950,8 @@ subtract_from_entry( Key, Value, MapHashtable ) ->
 % toggle_entry( Key, MapHashtable=#{ Key => false } ) ->
 %   MapHashtable#{ Key => true }.
 toggle_entry( Key, MapHashtable )->
-
-	case maps:get( Key, MapHashtable ) of
-
-		true ->
-			maps:put( Key, false, MapHashtable );
-
-		false ->
-			maps:put( Key, true, MapHashtable )
-
-	end.
+	V = maps:get( Key, MapHashtable ),
+	maps:put( Key, not V, MapHashtable ).
 
 
 
@@ -1000,8 +1034,8 @@ optimise( Hashtable ) ->
 
 
 
-% @doc Appends specified element to the value, supposed to be a list, associated
-% to specified key, which must already exist in that table.
+% @doc Appends the specified element to the value, supposed to be a list,
+% associated to the specified key, which must already exist in that table.
 %
 % An exception is thrown if the key does not exist.
 %
@@ -1024,8 +1058,8 @@ append_to_existing_entry( Key, Element, MapHashtable ) ->
 
 
 
-% @doc Appends specified elements to the value, supposed to be a list,
-% associated to specified key.
+% @doc Appends the specified elements to the value, supposed to be a list,
+% associated to the specified key.
 %
 % An exception is thrown if the key does not exist.
 %
@@ -1040,8 +1074,8 @@ append_list_to_existing_entry( Key, Elements, Hashtable ) ->
 
 
 
-% @doc Appends specified element to the value, supposed to be a list, associated
-% to specified key.
+% @doc Appends the specified element to the value, supposed to be a list,
+% associated to the specified key.
 %
 % If that key does not already exist, it will be created and associated to a
 % list containing only the specified element.
@@ -1061,8 +1095,8 @@ append_to_entry( Key, Element, MapHashtable ) ->
 
 
 
-% @doc Appends specified elements to the value, supposed to be a list,
-% associated to specified key.
+% @doc Appends the specified elements to the value, supposed to be a list,
+% associated to the specified key.
 %
 % If that key does not already exist, it will be created and associated to a
 % list containing only the specified elements.
@@ -1083,11 +1117,11 @@ append_list_to_entry( Key, Elements, MapHashtable ) ->
 
 
 
-% @doc Concatenes (on the left) specified list to the value, supposed to be a
-% list as well, associated to specified key.
+% @doc Concatenes (on the left) the specified list to the value, supposed to be
+% a list as well, associated to the specified key.
 %
 % If that key does not already exist, it will be created and associated to the
-% specified list (as if beforehand the key was associated to an empty list)
+% specified list (as if beforehand the key was associated to an empty list).
 %
 -spec concat_to_entry( key(), list(), map_hashtable() ) -> map_hashtable().
 concat_to_entry( Key, ListToConcat, MapHashtable )
@@ -1095,7 +1129,7 @@ concat_to_entry( Key, ListToConcat, MapHashtable )
 
 	case lookup_entry( Key, MapHashtable ) of
 
-		'key_not_found' ->
+		key_not_found ->
 			add_entry( Key, ListToConcat, MapHashtable );
 
 		{ value, CurrentList } ->
@@ -1105,21 +1139,20 @@ concat_to_entry( Key, ListToConcat, MapHashtable )
 
 
 
-% @doc Concatenes (on the left) specified lists to the values, supposed to be
-% lists as well, associated to specified keys, the input being thus a list of
-% key/list-value pairs.
+% @doc Concatenes (on the left) the specified lists to the values, supposed to
+% be lists as well, associated to the specified keys, the input being thus a
+% list of key/list-value pairs.
 %
 % If a key does not already exist, it will be created and associated to the
 % specified list (as if beforehand the key was associated to an empty list)
 %
-% Ex: concat_list_to_entries( [{hello, [1, 2]}, {world, [4]}],
-%                             MyTable ).
+% For example: concat_list_to_entries( [{hello, [1, 2]}, {world, [4]}],
+%                                      MyTable ).
 %
 -spec concat_list_to_entries( list_table:list_table(), map_hashtable() ) ->
 										map_hashtable().
 concat_list_to_entries( KeyListValuePairs, MapHashtable )
 							when is_list( KeyListValuePairs ) ->
-
 	lists:foldl( fun( { Key, ListToConcat }, AccTable ) ->
 					concat_to_entry( Key, ListToConcat, AccTable )
 				 end,
@@ -1129,7 +1162,7 @@ concat_list_to_entries( KeyListValuePairs, MapHashtable )
 
 
 % @doc Deletes the first match of the specified element in the value associated
-% to specified key, this value being assumed to be a list.
+% to the specified key, this value being assumed to be a list.
 %
 % An exception is thrown if the key does not exist.
 %
@@ -1151,7 +1184,7 @@ delete_from_entry( Key, Element, MapHashtable ) ->
 
 
 % @doc Deletes the first match of the specified element in the value associated
-% to specified key, this value being assumed to be a list.
+% to the specified key, this value being assumed to be a list.
 %
 % An exception is thrown if the key does not exist, or if the element is not in
 % the targeted list.
@@ -1167,7 +1200,7 @@ delete_existing_from_entry( Key, Element, MapHashtable ) ->
 
 
 
-% @doc Pops the head of the value (supposed to be a list) associated to
+% @doc Pops the head of the value (supposed to be a list) associated to thet
 % specified key, and returns a pair made of the popped head and the new
 % hashtable.
 %
@@ -1179,9 +1212,7 @@ delete_existing_from_entry( Key, Element, MapHashtable ) ->
 %   throw( { key_not_found, Key } ).
 %
 pop_from_entry( Key, MapHashtable ) ->
-
 	[ H | T ] = maps:get( Key, MapHashtable ),
-
 	{ H, maps:put( Key, T, MapHashtable ) }.
 
 
@@ -1189,7 +1220,7 @@ pop_from_entry( Key, MapHashtable ) ->
 % @doc Returns a flat list whose elements are all the key/value pairs of the
 % hashtable, in no particular order.
 %
-% Ex: [{K1,V1}, {K2,V2}, ...].
+% For example [{K1,V1}, {K2,V2}, ...].
 %
 -spec enumerate( map_hashtable() ) -> entries().
 enumerate( MapHashtable ) ->
@@ -1217,8 +1248,8 @@ keys( MapHashtable ) ->
 % @doc Returns a list (in no particular order) containing all the values of this
 % hashtable.
 %
-% Ex: useful if the key was used as an index to generate this table first (no
-% information loss).
+% For example useful if the key was used as an index to generate this table
+% first (no information loss).
 %
 -spec values( map_hashtable() ) -> [ value() ].
 values( MapHashtable ) ->
@@ -1257,7 +1288,7 @@ size( MapHashtable ) ->
 -spec to_string( map_hashtable() ) -> ustring().
 to_string( MapHashtable ) ->
 	% Newer, better default (was: 'user_friendly'):
-	to_string( MapHashtable, full ).
+	to_string( MapHashtable, _DescriptionType=full ).
 
 
 

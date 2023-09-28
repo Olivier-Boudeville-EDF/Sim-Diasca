@@ -56,6 +56,11 @@
 % An (internal) 4D vector, with (exactly) 4 floating-point coordinates.  They
 % are typically referenced as [X, Y, Z, W]. This last axis can also be
 % designated as the T axis.
+%
+% Such a vector can also be considered as an homogeneous vector, whose last
+% coordinate, W, is then an homogeneous coordinate. If W is zero, the vector is
+% just a direction vector. Otherwise, it is used to divide all other coordinates
+% (unless it is already kept equal to 1.0).
 
 
 -type integer_vector4() :: [ integer_coordinate() ].
@@ -116,7 +121,7 @@
 -type user_coordinate() :: linear:user_coordinate().
 
 -type distance() :: linear:distance().
--type square_distance() :: linear:square_distance().
+-type any_square_distance() :: linear:any_square_distance().
 
 -type any_point4() :: any_point4().
 
@@ -125,7 +130,7 @@
 % @doc Returns a 4D vector corresponding to the user-specified one.
 -spec new( user_vector4() ) -> vector4().
 %new( UserVector ) when is_tuple( UserVector ) ->
-%	new( tuple_to_list( UserVector ) );
+%   new( tuple_to_list( UserVector ) );
 % Throws bad_generator anyway if a tuple:
 new( UserVector ) -> %when is_list( UserVector ) ->
 	[ type_utils:ensure_float( UC ) || UC <- UserVector ].
@@ -257,7 +262,7 @@ are_equal( _V1=[X1,Y1,Z1,W1], _V2=[X2,Y2,Z2,W2] ) ->
 
 
 % @doc Returns the square of the magnitude of the specified 4D vector.
--spec square_magnitude( vector4() ) -> square_distance().
+-spec square_magnitude( vector4() ) -> any_square_distance().
 square_magnitude( _V=[X,Y,Z,W] ) ->
 	X*X + Y*Y + Z*Z + W*W.
 
@@ -279,7 +284,7 @@ negate( _V=[X,Y,Z,W] ) ->
 
 
 % @doc Scales the specified 4D vector of the specified scalar factor.
--spec scale( vector4(), factor() ) -> vector4().
+-spec scale( any_vector4(), factor() ) -> vector4().
 scale( _V=[X,Y,Z,W], Factor ) ->
 	[ Factor*X, Factor*Y, Factor*Z, Factor*W ].
 

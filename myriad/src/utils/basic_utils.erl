@@ -54,10 +54,13 @@
 
 
 % Miscellaneous functions.
--export([ size/1,
-		  get_process_info/1, get_process_info/2,
+-export([ get_process_info/1, get_process_info/2,
 		  display_process_info/1,
 		  checkpoint/1,
+
+		  assert/1, assert_true/1, assert_false/1,
+		  assert_equal/2, assert_different/2,
+
 		  display/1, display/2, display_timed/2, display_timed/3,
 		  display_error/1, display_error/2,
 		  throw_diagnosed/1, throw_diagnosed/2,
@@ -132,7 +135,7 @@
 
 
 -type level() :: non_neg_integer().
-% Allows to count levels (ex: indentation ones, nesting ones).
+% Allows to count levels (e.g. indentation ones, nesting ones).
 
 
 -type bit_mask() :: integer().
@@ -180,7 +183,7 @@
 
 
 -type error_tuploid() :: error_tuploid( error_reason() ).
-% An error pseudo-tuple, i.e. an error tuple (ex: {invalid_name,1.0}) or a
+% An error pseudo-tuple, that is an error tuple (e.g. {invalid_name,1.0}) or a
 % single error term (instead of a tuple with a single element), preferably an
 % atom (like 'invalid_password'). Typically to be thrown.
 %
@@ -206,7 +209,7 @@
 % The most classical way of reporting an error.
 
 -type error_term() :: tagged_error() | error_reason().
-% A (possibly tagged) error term. Ex: 'badarg'.
+% A (possibly tagged) error term. For example 'badarg'.
 
 
 -type diagnosed_error_term() :: { 'error', diagnosed_error_reason() }.
@@ -235,8 +238,8 @@
 % cannot discriminate between a value that happens to be set to 'undefined'
 % versus a value not defined at all.
 %
-% Quite often, variables (ex: record fields) are set to 'undefined' before being
-% set later.
+% Quite often, variables (e.g. record fields) are set to 'undefined' before
+% being set later.
 
 
 -type safe_maybe( T ) :: { 'just', T } | 'nothing'.
@@ -333,8 +336,8 @@
 
 
 -type zero_index() :: non_neg_integer().
-% For the indices that may be null, typically starting at zero (ex: in some file
-% formats). Whenever possible, prefer positive_index/0.
+% For the indices that may be null, typically starting at zero (e.g. in some
+% file formats). Whenever possible, prefer positive_index/0.
 
 
 -type module_name() :: atom().
@@ -360,7 +363,7 @@
 
 
 -type layer_name() :: ustring().
-% The name of a layer (ex: "Myriad").
+% The name of a layer (e.g. "Myriad").
 
 
 -type record_name() :: atom().
@@ -370,12 +373,6 @@
 -type field_name() :: atom().
 % The name of a field of a record.
 
-
--type user_name() :: nonempty_string().
-% To store (UNIX-like) user names.
-
--type atom_user_name() :: atom().
-% To store (UNIX-like) user names.
 
 
 -type activation_switch() :: 'enable' | 'disable'.
@@ -433,7 +430,6 @@
 			   positive_index/0, zero_index/0,
 			   module_name/0, function_name/0, argument/0, arguments/0,
 			   command_spec/0, layer_name/0, record_name/0, field_name/0,
-			   user_name/0, atom_user_name/0,
 			   activation_switch/0,
 			   comparison_result/0, execution_target/0, execution_context/0,
 			   exception_class/0, exception_term/0, status_code/0,
@@ -474,7 +470,8 @@
 
 
 % Even if not exported:
--type process_info_result_item() :: erlang:process_info_result_item().
+%-type process_info_result_item() :: erlang:process_info_result_item().
+-type process_info_result_item() :: any().
 
 
 
@@ -550,7 +547,7 @@ stop_on_failure( StatusCode ) ->
 % @doc Identity function: returns its argument as it is.
 %
 % Useful to avoid having the compiler being too smart by notifying annoying,
-% spurious messages (ex: no clause will ever match) in some tests.
+% spurious messages (e.g. no clause will ever match) in some tests.
 %
 -spec identity( term() ) -> term().
 identity( Term ) ->
@@ -623,7 +620,8 @@ are_all_defined( _Elems=[ _E | T ] ) ->
 % Useful to define, for debugging purposes, terms that will be (temporarily)
 % unused without blocking the compilation.
 %
-% Ex: basic_utils:ignore_unused(A) or basic_utils:ignore_unused([A, B, C]).
+% For example basic_utils:ignore_unused(A) or basic_utils:ignore_unused([A, B,
+% C]).
 %
 -spec ignore_unused( any() ) -> void().
 ignore_unused( _Term ) ->
@@ -1256,15 +1254,6 @@ send_to_pid_set( Message, { Pid, NewIterator }, Count ) ->
 % Miscellaneous functions.
 
 
-% @doc Returns the number of bytes used by specified term.
--spec size( term() ) -> byte_size().
-size( Term ) ->
-	system_utils:get_size( Term ).
-
-
-
-
-
 % @doc Returns all general information regarding specified process (which is
 % local or not), provided it is still alive (otherwise returns undefined).
 %
@@ -1413,9 +1402,103 @@ checkpoint( Number ) ->
 
 
 
-% @doc Displays specified string on the standard output of the console, ensuring
-% as much as possible this message is output synchronously, so that it can be
-% output on the console even if the virtual machine is to crash just after.
+% Assert subsection.
+%
+% For counterparts that can be conditionally defined at compilation time, see
+% cond_utils:assert/*.
+
+
+% @doc Asserts that the specified (runtime) expression is true, otherwise throws
+% an exception.
+%
+-spec assert( term() ) -> void().
+assert( _Expr=true ) ->
+	ok;
+
+assert( Other ) ->
+	interpret_failed_assertion( "'~p' is not true", [ Other ] ),
+	throw( { assert_failed, Other } ).
+
+
+
+% Code of assert/1 duplicated rather than being called, as a nested call would
+% change the depth of the stacktrace:
+
+
+% @doc Asserts that the specified (runtime) expression is true, otherwise throws
+% an exception.
+%
+% Defined for consistency with assert_false/1.
+%
+-spec assert_true( term() ) -> void().
+assert_true( _Expr=true ) ->
+	ok;
+
+assert_true( Other ) ->
+	interpret_failed_assertion( "'~p' is not true", [ Other ] ),
+	throw( { assert_failed, Other } ).
+
+
+% @doc Asserts that the specified (runtime) expression is false, otherwise
+% throws an exception.
+%
+-spec assert_false( term() ) -> void().
+assert_false( _Expr=false ) ->
+	ok;
+
+assert_false( Other ) ->
+	interpret_failed_assertion( "'~p' is not false", [ Other ] ),
+	throw( { assert_false_failed, Other } ).
+
+
+% @doc Asserts that the specified (runtime) expressions compare equal, otherwise
+% throws an exception.
+%
+% Sometimes searched as check_equal/2.
+%
+-spec assert_equal( term(), term() ) -> void().
+assert_equal( Expr, Expr ) ->
+	ok;
+
+assert_equal( Expr1, Expr2 ) ->
+	interpret_failed_assertion( "'~p' is not equal to '~p'", [ Expr1, Expr2 ] ),
+	throw( { assert_equal_failed, Expr1, Expr2 } ).
+
+
+% @doc Asserts that the specified (runtime) expressions compare different,
+% otherwise throws an exception.
+%
+-spec assert_different( term(), term() ) -> void().
+assert_different( Expr, Expr ) ->
+	interpret_failed_assertion( "both elements are equal to '~p'", [ Expr ] ),
+	throw( { assert_different_failed, Expr } );
+
+assert_different( _Expr1, _Expr2 ) ->
+	ok.
+
+
+% (helper)
+interpret_failed_assertion( FormatStr, FormatValues ) ->
+	Msg = text_utils:format( FormatStr, FormatValues ),
+	interpret_failed_assertion( Msg ).
+
+
+% (helper)
+interpret_failed_assertion( Msg ) ->
+
+	{ Mod, Func, Arity, [ { file, SrcFile }, { line, Line } ] } =
+		hd( code_utils:get_stacktrace( _SkipLastElemCount=2 ) ),
+
+	trace_utils:error_fmt( "Assertion failed in ~ts:~ts/~B "
+		"(file ~ts, line ~B): ~ts.", [ Mod, Func, Arity, SrcFile, Line, Msg ] ).
+
+
+
+
+% @doc Displays the specified string on the standard output of the console,
+% ensuring as much as possible that this message is output synchronously, so
+% that it can be fully processed (typically displayed) by the console even if
+% the virtual machine is to crash just after.
 %
 -spec display( ustring() ) -> void().
 display( Message ) ->
@@ -1480,10 +1563,10 @@ display_timed( Message, TimeOut ) ->
 
 
 
-% @doc Displays specified format string filled according to specified values on
-% the standard output of the console, ensuring as much as possible this message
-% is output synchronously, so that it can be output on the console even if the
-% virtual machine is to crash just after.
+% @doc Displays the specified format string filled according to specified values
+% on the standard output of the console, ensuring as much as possible this
+% message is output synchronously, so that it can be output on the console even
+% if the virtual machine is to crash just after.
 %
 -spec display_timed( format_string(), format_values(), time_out() ) -> void().
 display_timed( Format, Values, TimeOut ) ->
@@ -1498,10 +1581,10 @@ display_timed( Format, Values, TimeOut ) ->
 
 
 
-% @doc Displays specified string on the standard error output of the console,
-% ensuring as much as possible this message is output synchronously, so that it
-% can be output on the console even if the virtual machine is to crash just
-% after.
+% @doc Displays the specified string on the standard error output of the
+% console, ensuring as much as possible this message is output synchronously, so
+% that it can be output on the console even if the virtual machine is to crash
+% just after.
 %
 -spec display_error( ustring() ) -> void().
 display_error( Message ) ->
@@ -1520,8 +1603,8 @@ display_error( Message ) ->
 
 
 
-% @doc Triggers specified diagnosed error: reports first its embedded diagnosis,
-% then throws this error as an exception.
+% @doc Triggers the specified diagnosed error: reports first its embedded
+% diagnosis, then throws this error as an exception.
 %
 % Typical use:
 %
@@ -1545,9 +1628,9 @@ throw_diagnosed( _DiagnosedReason={ ErrorTuploid, ErrorMsg } ) ->
 
 
 
-% @doc Triggers specified diagnosed error, augmented by specified term: reports
-% first its embedded diagnosis, then throws this error, as an augmented tuploid,
-% as an exception.
+% @doc Triggers the specified diagnosed error, augmented by specified term:
+% reports first its embedded diagnosis, then throws this error, as an augmented
+% tuploid, as an exception.
 %
 % Typical use:
 %
@@ -1572,8 +1655,8 @@ throw_diagnosed( _DiagnosedReason={ ErrorTuploid, ErrorMsg },
 
 
 
-% @doc Displays specified format string filled according to specified values on
-% the standard error output of the console, ensuring as much as possible this
+% @doc Displays the specified format string filled according to specified values
+% on the standard error output of the console, ensuring as much as possible this
 % message is output synchronously, so that it can be output on the console even
 % if the virtual machine is to crash just after.
 %
@@ -1584,9 +1667,9 @@ display_error( Format, Values ) ->
 
 
 
-% @doc Displays, for debugging purposes, specified string, ensuring as much as
-% possible this message is output synchronously, so that it can be output on the
-% console even if the virtual machine is to crash just after.
+% @doc Displays, for debugging purposes, the specified string, ensuring as much
+% as possible this message is output synchronously, so that it can be output on
+% the console even if the virtual machine is to crash just after.
 %
 -spec debug( ustring() ) -> void().
 debug( Message ) ->
@@ -1596,8 +1679,8 @@ debug( Message ) ->
 
 
 
-% @doc Displays, for debugging purposes, specified format string filled
-% according to specified values, ensuring as much as possible this message is
+% @doc Displays, for debugging purposes, the specified format string filled
+% according tothe specified values, ensuring as much as possible this message is
 % output synchronously, so that it can be output on the console even if the
 % virtual machine is to crash just after.
 %
@@ -1607,9 +1690,9 @@ debug( Format, Values ) ->
 
 
 
-% @doc Parses specified textual version.
+% @doc Parses the specified textual version.
 %
-% Ex: "4.2.1" should become {4,2,1}, and "2.3" should become {2,3}.
+% For example "4.2.1" should become {4,2,1}, and "2.3" should become {2,3}.
 %
 -spec parse_version( ustring() ) -> any_version().
 parse_version( VersionString ) ->
@@ -1622,7 +1705,7 @@ parse_version( VersionString ) ->
 
 
 
-% @doc Checks that specified term is a three-digit version, and returns it.
+% @doc Checks that the specified term is a three-digit version, and returns it.
 -spec check_three_digit_version( term() ) -> three_digit_version().
 check_three_digit_version( T={ A, B, C } ) when is_integer( A )
 				andalso is_integer( B ) andalso is_integer( C ) ->
@@ -1653,7 +1736,7 @@ check_any_version( V ) ->
 
 
 % @doc Compares the two specified any-versions (expected to be of the same
-% size), which describe two version numbers (ex: {0,1,0} and {0,1,7}) and
+% size), which describe two version numbers (e.g. {0,1,0} and {0,1,7}) and
 % returns either first_bigger, second_bigger, or equal.
 %
 % The two compared versions must have the same number of digits.
@@ -1688,7 +1771,7 @@ compare_versions( A, B ) when tuple_size( A ) =:= tuple_size( B ) ->
 % Reasonably unique (add the PID of the Erlang process if concurrent creations
 % may happen), and suitable for file creation.
 %
-% Ex: "myriad-596330--576460741437" (negative monotonic time).
+% For example "myriad-596330--576460741437" (negative monotonic time).
 %
 -spec get_unix_process_specific_string() -> ustring().
 get_unix_process_specific_string() ->
@@ -1727,7 +1810,7 @@ get_process_specific_value( Pid ) ->
 	PidAsText = lists:flatten( io_lib:format( "~w", [ Pid ] ) ),
 
 	%io:format( "PID: ~w.~n", [ self() ] ) ,
-	% Ex: ["<0","33","0>"]:
+	% For example ["<0","33","0>"]:
 	[ [ $< | First ], Second, Third ] = string:tokens( PidAsText, "." ),
 
 	% We add 1 to x and z as they might be null:
@@ -1761,7 +1844,7 @@ get_process_specific_value( Pid ) ->
 % [Min,Max[.
 %
 % Useful for example when a large number of similar processes try to access to
-% the same resource (ex: a set of file descriptors) at the same time: they can
+% the same resource (e.g. a set of file descriptors) at the same time: they can
 % rely on some random waiting based on that process-specific value in order to
 % smooth the accesses over time. Reproducibility does not matter here.
 %

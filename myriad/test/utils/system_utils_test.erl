@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2022 Olivier Boudeville
+% Copyright (C) 2007-2022 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -23,9 +23,10 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2007.
 
 
-% Unit tests for the system utils toolbox.
+% @doc Unit tests for the system utils toolbox.
 %
 % See the system_utils.erl tested module.
 %
@@ -78,8 +79,8 @@ run() ->
 	UsedMemory = system_utils:get_memory_used_by_vm(),
 
 	test_facilities:display( "Determining the total memory used "
-							 "by this Erlang VM: ~B bytes, which is ~ts.",
-			[ UsedMemory, system_utils:interpret_byte_size( UsedMemory ) ] ),
+		"by this Erlang VM: ~B bytes, which is ~ts.",
+		[ UsedMemory, system_utils:interpret_byte_size( UsedMemory ) ] ),
 
 
 	{ UsedRAM, _TotalRAM } = system_utils:get_total_memory_used(),
@@ -138,7 +139,7 @@ run() ->
 		"'~ts', in terms of units",
 		[ X, system_utils:interpret_byte_size( X ),
 		  system_utils:interpret_byte_size_with_unit( X ) ] )
-	  || X <- SizesToInterpret ],
+			|| X <- SizesToInterpret ],
 
 	test_facilities:display(
 	  "Evaluating the size in memory of a few terms:" ),
@@ -158,7 +159,7 @@ run() ->
 	test_facilities:display(
 		"Plain string-binary size ratio for sentence '~ts': factor x~f.",
 		[ AFullSentence, system_utils:get_size( AFullSentence ) /
-			  system_utils:get_size( BinaryVersion ) ] ),
+			system_utils:get_size( BinaryVersion ) ] ),
 
 
 	test_facilities:display( "Getting memory summary:" ),
@@ -178,20 +179,33 @@ run() ->
 												  FinalCounters ) ] ),
 
 	 { UserPercent, NicePercent, SystemPercent, IdlePercent, OtherPercent } =
-	  system_utils:compute_detailed_cpu_usage( InitialCounters, FinalCounters ),
+		system_utils:compute_detailed_cpu_usage( InitialCounters,
+												 FinalCounters ),
 
 	test_facilities:display( "The detailed CPU usage: user = ~f%, "
 		"nice = ~f%, system = ~f%, idle = ~f%, other = ~f%.",
 		[ UserPercent, NicePercent, SystemPercent, IdlePercent,
 		  OtherPercent ] ),
 
-	MountPoints = system_utils:get_mount_points(),
-	test_facilities:display( "Displaying information about the local, "
-		"actual (non-pseudo) mount points ~p:", [ MountPoints ] ),
+	% Test should not fail because of a local system (mis)configuration:
+	CanFail = false,
 
-	[ test_facilities:display( " - information for filesystem '~ts': ~ts~n",
-		[ M, system_utils:filesystem_info_to_string(
-		   system_utils:get_filesystem_info( M ) ) ] ) || M <- MountPoints ],
+	case system_utils:get_mount_points( CanFail ) of
+
+		undefined ->
+			test_facilities:display( "Mount points could not be determined, "
+									 "no extra information requested." );
+
+		MountPoints ->
+			test_facilities:display( "Displaying information about the local, "
+				"actual (non-pseudo) mount points ~p:", [ MountPoints ] ),
+
+			[ test_facilities:display( " - information for filesystem '~ts': "
+				"~ts~n", [ M, system_utils:filesystem_info_to_string(
+					system_utils:get_filesystem_info( M, CanFail ) ) ] )
+						|| M <- MountPoints ]
+
+	end,
 
 	test_facilities:display( "Full system information: ~ts",
 							 [ system_utils:get_system_description() ] ),

@@ -98,7 +98,7 @@
 
 	% The display time format to use if the x axis is a timestamped one:
 	x_ticks_timestamp_time_format ::
-						maybe( class_Probe:timestamp_time_format() ),
+		maybe( class_Probe:timestamp_time_format() ),
 
 
 	% Fine control of the major (labeled) ticks on the ordinate axis (as a

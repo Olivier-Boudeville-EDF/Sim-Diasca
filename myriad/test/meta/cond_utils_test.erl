@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2023 Olivier Boudeville
+% Copyright (C) 2018-2023 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -23,10 +23,10 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
-% Creation date: Tuesday, December 25, 2018
+% Creation date: Tuesday, December 25, 2018.
 
 
-% Unit tests for the cond_utils services.
+% @doc Unit tests for the <b>cond_utils</b> services.
 %
 % See the cond_utils.erl tested module.
 %
@@ -37,7 +37,7 @@
 -include("test_facilities.hrl").
 
 
-% Tokens may only be defined on the command-line (ex: see
+% Tokens may only be defined on the command-line (e.g. see
 % ERLANG_COMPILER_TOKEN_OPT in GNUmakevars.inc for that).
 %
 % Based on the settings specified in GNUmakevars.inc, we expect:

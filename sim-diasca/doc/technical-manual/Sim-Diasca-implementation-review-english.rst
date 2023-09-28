@@ -26,7 +26,7 @@ The **state** of a machine will be defined by largely similar variables [#]_:
 | ``can_cost``      | Integer    | Cost of a can for a customer.     |
 +-------------------+------------+-----------------------------------+
 
-.. [#] Note that this is the specification-level state of the machine. For technical and simulation-related reasons, the actual state may comprise additional instance-level attributes (ex: a trace identifier, a reference to a probe, etc.).
+.. [#] Note that this is the specification-level state of the machine. For technical and simulation-related reasons, the actual state may comprise additional instance-level attributes (e.g. a trace identifier, a reference to a probe, etc.).
 
 In terms of **behaviour**, a machine will sell soda on request (being mostly passive), until it runs out of cans. Any number of cans can be bought at any time by any customer, provided there are enough cans left in the machine and that the customer can afford it.
 
@@ -190,7 +190,7 @@ There is a lot of room for improvement in that simple test case:
 
 	- money could be collected coin-per-coin until the cost of a can is reached
 	- the ordering of a soda could last for longer than one simulation tick, and the duration could depend on the outcome of the transaction
-	- here we considered that one simulation tick corresponded to 1 virtual minute, we should instead make the duration independent from the scheduler frequency (ex: by using ``class_Actor:convertSecondsToTicks/2``)
+	- here we considered that one simulation tick corresponded to 1 virtual minute, we should instead make the duration independent from the scheduler frequency (e.g. by using ``class_Actor:convertSecondsToTicks/2``)
 	- more than one can could be bought at once (i.e. in one interaction)
 	- multiple kinds of sodas could be offered
 	- the machine could request spontaneously the operating staff to renew its stock

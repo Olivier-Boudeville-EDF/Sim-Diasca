@@ -1,25 +1,28 @@
 % Copyright (C) 2008-2023 EDF R&D
-
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2008.
 
 
-% @doc Class modelling <b>failure behaviours</b>, typically of equipments.
+% @doc Class modelling <b>failure behaviours</b>, typically of pieces of
+% equipment.
+%
 -module(class_FailureModel).
 
 
@@ -69,9 +72,9 @@
 %
 % - {uniform, N} for uniform laws (positive integer)
 %
-% - {exponential, Lambda} for exponential laws (floating-point)
+% - {exponential_1p, Lambda} for exponential laws (floating-point)
 %
-% - {positive_integer_exponential, Lambda} for exponential laws (positive
+% - {positive_integer_exponential_1p, Lambda} for exponential laws (positive
 % integer)
 %
 % - {gaussian, Mu, Sigma} for gaussian laws
@@ -85,8 +88,8 @@ construct( State, ActorSettings, FailureModelName, RandomProfile ) ->
 	% First the direct mother classes:
 	% (this particular random list stores only one profile, the failure one)
 	StochasticState = class_StochasticActor:construct( State, ActorSettings,
-			 ?trace_categorize(FailureModelName),
-			 [ { failure_profile, RandomProfile } ] ),
+		?trace_categorize(FailureModelName),
+		[ { failure_profile, RandomProfile } ] ),
 
 	% Then the class-specific actions:
 

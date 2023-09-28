@@ -23,6 +23,7 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2007.
 
 
 % Modular WOOPER header gathering all serialisation-related functions.
@@ -70,7 +71,7 @@
 %
 -spec serialise( wooper:state(), wooper_serialisation:entry_transformer(),
 				 basic_utils:user_data() ) -> const_request_return(
-	   { wooper_serialisation:bin_serialisation(), basic_utils:user_data() } ).
+	   { class_Serialisable:bin_serialisation(), basic_utils:user_data() } ).
 serialise( State, _EntryTransformer=undefined, UserData ) ->
 
 	% Here no entry transformer is to be used, raw serialisation.
@@ -78,7 +79,7 @@ serialise( State, _EntryTransformer=undefined, UserData ) ->
 	% Hooks may be defined on a per-class basis:
 
 	PreState = #state_holder{ attribute_table=AttributeTable,
-					actual_class=Classname } = pre_serialise_hook( State ),
+		actual_class=Classname } = pre_serialise_hook( State ),
 
 	io:format( " - serialising, with no transformer, instance ~p "
 			   "of class ~ts~n", [ self(), Classname ] ),
@@ -102,8 +103,8 @@ serialise( State, _EntryTransformer=undefined, UserData ) ->
 	% Retrieving all attribute key/value pairs (sorting is probably a bit
 	% cleaner):
 	%
-	Entries = lists:sort( [ RandomAttribute |
-							?wooper_table_type:enumerate( AttributeTable )  ] ),
+	Entries = lists:sort(
+		[ RandomAttribute |	?wooper_table_type:enumerate( AttributeTable )  ] ),
 
 	% By default returns {Classname, Entries}:
 	FullContent = post_serialise_hook( Classname, Entries, PreState ),
@@ -128,7 +129,7 @@ serialise( State, EntryTransformer, UserData ) ->
 	% Hooks may be defined on a per-class basis:
 
 	PreState = #state_holder{ attribute_table=AttributeTable,
-					actual_class=Classname } = pre_serialise_hook( State ),
+		actual_class=Classname } = pre_serialise_hook( State ),
 
 	io:format( " - serialising, with transformer, instance ~p of class ~ts~n",
 			   [ self(), Classname ] ),
@@ -158,7 +159,7 @@ serialise( State, EntryTransformer, UserData ) ->
 
 	% Applying the entry transformer on each of them:
 	{ TransformedEntries, FinalUserData } = lists:foldl( EntryTransformer,
-					  _Acc0={ _ResultingEntries=[], UserData }, _List=Entries ),
+		_Acc0={ _ResultingEntries=[], UserData }, _List=Entries ),
 
 	%io:format( "Transformed entries:~n~p~n", [ TransformedEntries ] ),
 
@@ -219,8 +220,8 @@ pre_serialise_hook( State ) ->
 % (we do not want to return a state, as we do not want that a state modified by
 % the serialisation be mistakenly used afterwards)
 %
--spec post_serialise_hook( classname(),
-		wooper_serialisation:term_serialisation(), wooper:state() ) -> term().
+-spec post_serialise_hook( classname(), class_Serialisable:serialisation(),
+						   wooper:state() ) -> term().
 post_serialise_hook( Classname, Entries, _State ) ->
 	{ Classname, Entries }.
 
@@ -231,7 +232,7 @@ post_serialise_hook( Classname, Entries, _State ) ->
 % Default version corresponding to post_serialise_hook/3.
 %
 -spec pre_deserialise_hook( term(), basic_utils:user_data() ) ->
-									wooper_serialisation:term_serialisation().
+								class_Serialisable:serialisation()().
 pre_deserialise_hook( _SerialisationTerm={ _Classname, Entries }, _UserData ) ->
 	Entries.
 

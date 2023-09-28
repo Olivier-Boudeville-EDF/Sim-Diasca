@@ -81,9 +81,14 @@
 -type rot_matrix3() :: canonical_matrix3().
 % A matrix describing a 3D rotation.
 
+-type tuple_matrix3() :: % Not exported yet: gl:m9() | gl:m6().
+						 type_utils:tuple( coordinate(), 9 )
+					   | type_utils:tuple( coordinate(), 6 ).
+% A tuple of 6 or 9 coordinates.
+
 
 -export_type([ user_matrix3/0, matrix3/0, canonical_matrix3/0,
-			   compact_matrix3/0, rot_matrix3/0 ]).
+			   compact_matrix3/0, rot_matrix3/0, tuple_matrix3/0 ]).
 
 
 -export([ new/1, new/2, null/0, identity/0, translation/1, scaling/1,

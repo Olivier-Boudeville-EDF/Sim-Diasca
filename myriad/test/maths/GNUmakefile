@@ -1,6 +1,9 @@
 MYRIAD_TOP = ../..
 
-.PHONY: clean-local
+.PHONY: all clean clean-local
+
+# Default do-nothing rule needed:
+all:
 
 clean: clean-local
 

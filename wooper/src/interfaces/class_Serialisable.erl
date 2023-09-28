@@ -85,7 +85,7 @@
 				{ attribute_entry(), user_data() } ).
 % Any function that is able to transform entries of the state of an instance.
 %
-% An entry transformer may be used for a smarter serialisation (ex: PID-aware),
+% An entry transformer may be used for a smarter serialisation (e.g. PID-aware),
 % in which case this function could be a functor holding a bijective table in
 % charge of converting PIDs in entries into stable identifiers (e.g. see
 % class_Identifiable).
@@ -150,7 +150,7 @@
 % entries, may replace transient values (refer to the 'About serialised
 % elements' section) so that serialisation terms are context-free.
 %
-% Application-specific markers can also be defined, ex:
+% Application-specific markers can also be defined, e.g.
 % -define( resilience_marker, foobar_resilience_marker ).
 
 
@@ -161,11 +161,18 @@
 % asynchronous loadings only have a PID to return first.
 
 
+-type user_data() :: basic_utils:user_data().
+% Any user-specified data that can be used when (de)serialising.
+%
+% Can be here anything (e.g. 'undefined') and/or be completly ignored.
+
+
 -export_type([ serialisable_pid/0, entry_transformer/0,
 			   %state_transformer_fun/0,
 			   extra_data/0, instance_record/0,
 			   serialisation/0, bin_serialisation/0,
-			   restoration_marker/0, load_info/0 ]).
+			   restoration_marker/0, load_info/0,
+			   user_data/0 ]).
 
 
 
@@ -211,9 +218,10 @@
 %
 % This includes at least the value of all WOOPER attributes, knowing that these
 % terms may reference transient values that cannot be reproducibly recreated
-% (ex: PID, references, open files or sockets) just by themselves; we introduced
-% hooks/methods that can be overridden, and the support of any user-specified
-% entry transformers, so that an application can manage them as wanted.
+% (e.g. PID, references, open files or sockets) just by themselves; we
+% introduced hooks/methods that can be overridden, and the support of any
+% user-specified entry transformers, so that an application can manage them as
+% wanted.
 %
 % As we do not have a typed (class-specific) state (record-like) data-structure
 % or, currently, a reliable way of ensuring that all instances of a given class
@@ -237,7 +245,7 @@
 % that may have to be restored and thus saved.
 %
 % The base WOOPER serialisation mechanisms do not account for these
-% process-level currently (ex: links may be dictated by the application logic
+% process-level currently (e.g. links may be dictated by the application logic
 % and thus may not have to be stored), except one: the current random state of
 % the serialised process, as known of Myriad's random_utils, which is
 % transparently managed by WOOPER so that the deserialisation will lead to
@@ -302,8 +310,8 @@
 % - support also WOOPER passive
 
 
-% Can be here anything (ex: 'undefined') and/or be completly ignored:
--type user_data() :: basic_utils:user_data().
+
+% Shorthands:
 
 -type node_name() :: net_utils:node_name().
 
@@ -533,8 +541,9 @@ performStateSerialisation( State, ToSerialiseState, MaybeEntryTransformer,
 		executeRequest( State, serialiseTerm, [ InstanceRecord, ETUserData ] ),
 
 	% NewInstanceState is generally the initial 'State'; we do not want to
-	% continue with any state forged for the serialisation (ex: with transformed
-	% local processes), we want to continue as we were before the serialisation!
+	% continue with any state forged for the serialisation (e.g. with
+	% transformed local processes), we want to continue as we were before the
+	% serialisation!
 	%
 	wooper:return_state_result( NewInstanceState, ResPair ).
 
@@ -1166,7 +1175,7 @@ get_file_restoration_marker() ->
 
 
 % @doc Returns the restoration marker for internal, local terms that must escape
-% the serialisation/deserialisation processes (ex: typically because they are
+% the serialisation/deserialisation processes (e.g. typically because they are
 % large and may be recreated afterwards).
 %
 -spec get_term_restoration_marker() -> static_return( restoration_marker() ).

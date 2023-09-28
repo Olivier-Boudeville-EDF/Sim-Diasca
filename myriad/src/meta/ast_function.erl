@@ -279,7 +279,7 @@ transform_function( FunctionInfo=#function_info{ clauses=ClauseDefs,
 transform_function_spec( { 'attribute', FileLoc, SpecType,
 						   { FunId, SpecList } }, Transforms ) ?rec_guard ->
 
-	% Ex for '-spec f( type_a() ) -> type_b().':
+	% For example for '-spec f( type_a() ) -> type_b().':
 
 	% SpecList = [ {type,652,'fun',
 	% [{type,652,product,[{user_type,652,type_a,[]}]},
@@ -342,7 +342,8 @@ transform_function_type( { 'type', FileLocFirst, 'fun',
 		ast_type:transform_types( [ ResultType | ParamTypes ], Transforms ),
 
 	NewTypeSpec = { 'type', FileLocFirst, 'fun',
-	  [ { 'type', FileLocSecond, 'product', NewParamTypes }, NewResultType ] },
+		[ { 'type', FileLocSecond, 'product', NewParamTypes },
+		  NewResultType ] },
 
 	{ NewTypeSpec, NewTransforms };
 
@@ -471,7 +472,7 @@ get_located_forms_for( FunctionExportTable, FunctionTable ) ->
 
 				% Should a function declare that it is exported as a given
 				% location that happens to correspond to a registered export
-				% declaration (ex: the default one), we ensure that this
+				% declaration (e.g. the default one), we ensure that this
 				% function is indeed exported there (auto-export):
 				%
 				NewAccExportTable = update_export_table( Name, Arity,
@@ -553,7 +554,7 @@ get_function_export_forms( FunctionExportTable ) ->
 % @doc Returns a textual description of the specified function clauses, using
 % the specified indentation level.
 %
--spec clauses_to_string( meta_utils:clause_def(),
+-spec clauses_to_string( [ meta_utils:clause_def() ],
 						 text_utils:indentation_level() ) -> ustring().
 clauses_to_string( _Clauses=[], _IndentationLevel ) ->
 	"no function clause defined";

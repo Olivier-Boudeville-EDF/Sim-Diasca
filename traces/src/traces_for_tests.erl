@@ -78,7 +78,7 @@
 % sitting in the mailbox of the app process).
 %
 -spec test_start( module_name(),
-		class_TraceAggregator:initialize_supervision() ) -> aggregator_pid().
+		class_TraceAggregator:initialise_supervision() ) -> aggregator_pid().
 % All values possible for InitTraceSupervisor here:
 test_start( ModuleName, InitTraceSupervisor ) ->
 
@@ -122,22 +122,19 @@ test_start( ModuleName, InitTraceSupervisor ) ->
 
 	% So we trigger the supervisor launch by ourselves:
 	%
-	% (ex: InitTraceSupervisor could have been set to 'later')
-	case ( not TestIsBatch ) andalso ( InitTraceSupervisor =:= true ) of
-
-		true ->
+	% (e.g. InitTraceSupervisor could have been set to 'later')
+	%
+	( not TestIsBatch ) andalso ( InitTraceSupervisor =:= true ) andalso
+		begin
 			TraceAggregatorPid ! { launchTraceSupervisor, [], self() },
 			receive
 
 				{ wooper_result, _SupervisorPid } ->
 					ok
 
-			end;
+			end
 
-		false ->
-			ok
-
-	end,
+		end,
 
 	TraceAggregatorPid.
 
@@ -154,15 +151,7 @@ test_stop( ModuleName, TraceAggregatorPid, WaitForTraceSupervisor ) ->
 	%trace_utils:info_fmt( "Test stopping (aggregator: ~w, wait supervisor: "
 	%    "~ts).", [ TraceAggregatorPid, WaitForTraceSupervisor] ),
 
-	case WaitForTraceSupervisor of
-
-		true ->
-			class_TraceSupervisor:wait_for();
-
-		false ->
-			ok
-
-	end,
+	WaitForTraceSupervisor andalso class_TraceSupervisor:wait_for(),
 
 	%trace_utils:info( "Going for immediate stop." ),
 

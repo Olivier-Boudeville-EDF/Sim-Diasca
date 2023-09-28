@@ -66,11 +66,11 @@ draw_exponential_values( Count, Table, Lambda, RandomManagerPid ) ->
 	% Wanting a random value in ]1, ?table_span]:
 	receive
 
-		{ wooper_result, { positive_integer_exponential_value, Value } }
+		{ wooper_result, { positive_integer_exponential_1p_value, Value } }
 				when Value > ?table_span ; Value =< 0 ->
 			draw_exponential_values( Count, Table, Lambda, RandomManagerPid );
 
-		{ wooper_result, { positive_integer_exponential_value, Value } } ->
+		{ wooper_result, { positive_integer_exponential_1p_value, Value } } ->
 			NewCount = element( Value, Table ) + 1,
 			draw_exponential_values( Count - 1,
 				setelement( Value, Table, NewCount ), Lambda, RandomManagerPid )

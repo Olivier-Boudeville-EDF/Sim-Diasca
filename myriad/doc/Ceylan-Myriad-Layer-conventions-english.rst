@@ -31,7 +31,7 @@ The main editors integrate the *Language Server Protocol* (also known as LSP), r
 
 Source files should be formatted for a 80-character width: no character should be present after the 79th column of a line.
 
-Except in very specific cases, only ASCII code should be used (ex: no accentuated characters).
+Except in very specific cases, only ASCII code should be used (e.g. no accentuated characters).
 
 Tabulations should be preferred to series of spaces, and the text should be formatted according to 4-character tabulations.
 
@@ -63,15 +63,15 @@ For example::
 
 The most obvious conventions are:
 
-- the **settings of the build chain** should be used (ex: with regard to compiler flags) and adapted/completed if needed; the (possibly-specialised) ``GNUmakesettings.inc``,  ``GNUmakerules.inc`` and ``GNUmakevars.inc`` files should be relied upon
+- the **settings of the build chain** should be used (e.g. with regard to compiler flags) and adapted/completed if needed; the (possibly-specialised) ``GNUmakesettings.inc``,  ``GNUmakerules.inc`` and ``GNUmakevars.inc`` files should be relied upon
 
 - **no warning should be tolerated**; anyway our build chain treats warnings as (blocking) errors
 
-- **test cases** should be developed alongside most if not all modules; ex: if developing ``src/foobar.erl``, then probably the ``test/foobar_test.erl`` testing code should be developed, after or, even preferably, before the implementation of the tested code; test success should be evaluated automatically, by the code (ex: thanks to pattern matching), not by the person running the test (ex: who would have to compare visually the actual results with the expected ones); in some cases, only **integrated tests** can be devised in practice; tests should be gathered in **test suites**, that should be runnable automatically (``make test``, recursively through child directories) and fail loudly (and in a blocking manner) at the first error met
+- **test cases** should be developed alongside most if not all modules; e.g. if developing ``src/foobar.erl``, then probably the ``test/foobar_test.erl`` testing code should be developed, after or, even preferably, before the implementation of the tested code; test success should be evaluated automatically, by the code (e.g. thanks to pattern matching), not by the person running the test (e.g. who would have to compare visually the actual results with the expected ones); in some cases, only **integrated tests** can be devised in practice; tests should be gathered in **test suites**, that should be runnable automatically (``make test``, recursively through child directories) and fail loudly (and in a blocking manner) at the first error met
 
 - **multiple levels of quality documentation** should be made available to the code user, and probably be written in parallel to the code; there are at least three documentation levels:
 
-  - lower-level documentation: code should always be **densely commented**, with documentation headers added to all functions, inlined comments (not paraphrasing the code) and self-describing symbols: function names, variable names (ex: ``RegisteredState = ...`` to be preferred to ``NewState = ...``), etc.; more generally all names shall be long enough to be descriptive (clarity preferred over compactness); type specifications also pertain to this low-level documentation effort
+  - lower-level documentation: code should always be **densely commented**, with documentation headers added to all functions, inlined comments (not paraphrasing the code) and self-describing symbols: function names, variable names (e.g. ``RegisteredState = ...`` to be preferred to ``NewState = ...``), etc.; more generally all names shall be long enough to be descriptive (clarity preferred over compactness); type specifications also pertain to this low-level documentation effort
 
   - higher-level **design and/or implementation notes**: they should be available as a set of paragraphs in each source file, before the function definitions, to describe the context and constraints, and help understanding how the features are implemented, and why
 
@@ -81,9 +81,9 @@ The most obvious conventions are:
 
 - **indentation** should respect, as already explained, the 80-character width and 4-space tabulation; however the default built-in Erlang indentation mode of ``emacs`` can hardly be used for that, as it leads to huge width offsets (we may in the future provide a variation of the ``elisp`` code for the emacs indentation rules)
 
-- **spacing homogeneity** across source files should be enforced; for example three blank lines should exist between two function definitions, one between the clauses of any given function (possibly two in case of longer clauses); for the sake of "visual parsing", arguments should be separated by spaces (ex: ``f( X ) -> ...``, not ``f(X) -> ...``), especially if they are a bit complex (``f( A={U,V}, B, _C ) -> ...``, not ``f(A={U,V},B,_C) -> ...`` or the usual ``f(A={U,V}, B, _C) -> ...``)
+- **spacing homogeneity** across source files should be enforced; for example three blank lines should exist between two function definitions, one between the clauses of any given function (possibly two in case of longer clauses); for the sake of "visual parsing", arguments should be separated by spaces (e.g. ``f( X ) -> ...``, not ``f(X) -> ...``), especially if they are a bit complex (``f( A={U,V}, B, _C ) -> ...``, not ``f(A={U,V},B,_C) -> ...`` or the usual ``f(A={U,V}, B, _C) -> ...``)
 
-- for **type-related conventions**, at least all exported functions shall have a ``-spec`` declaration; if an actual type is referenced more than once (notably in a given module), a specific user-defined type shall be defined; types shall be defined in "semantic" terms rather than on technical ones (ex: ``-type temperature() :: ...`` than ``float()``; developers may refer to, or enrich, ``myriad/src/utils/unit_utils.erl`` for that)
+- for **type-related conventions**, at least all exported functions shall have a ``-spec`` declaration; if an actual type is referenced more than once (notably in a given module), a specific user-defined type shall be defined; types shall be defined in "semantic" terms rather than on technical ones (e.g. ``-type temperature() :: ...`` than ``float()``; developers may refer to, or enrich, ``myriad/src/utils/unit_utils.erl`` for that)
 
 - the **latest stable version of Erlang** should be used, preferably built thanks to our ``myriad/conf/install-erlang.sh`` script
 
@@ -99,9 +99,9 @@ The most obvious conventions are:
 
 - the use of ``case ... of ... end`` should be preferred to the use of ``if`` (never used in our code base)
 
-- we also prefer that the various patterns of a case are indented with exactly one tabulation, and that the closing ``end`` lies as much as possible on the left (ex: if having specified ``MyVar = case ... end``, then ``end`` should begin at the same column as ``MyVar``); the same applies to ``try ... catch ... end`` clauses
+- we also prefer that the various patterns of a case are indented with exactly one tabulation, and that the closing ``end`` lies as much as possible on the left (e.g. if having specified ``MyVar = case ... end``, then ``end`` should begin at the same column as ``MyVar``); the same applies to ``try ... catch ... end`` clauses
 
-- when a term is ignored, instead of using simply ``_``, one should define a **named mute variable** in order to provide more information about this term (ex: ``_TimeManagerPid``); one should then to accidental matching of such names (now a warning is emitted)
+- when a term is ignored, instead of using simply ``_``, one should define a **named mute variable** in order to provide more information about this term (e.g. ``_TimeManagerPid``); one should then to accidental matching of such names (now a warning is emitted)
 
 - some conventional variable names are, and may be, extensively used: ``Res`` for result, ``H`` and ``T`` for respectively the head and tail of a list on which we recursively iterate
 
@@ -109,14 +109,14 @@ The most obvious conventions are:
 
 - indices shall, as much as possible, start at index ``1`` (rather than 0); this is a general Erlang convention (`for lists <https://erlang.org/doc/man/lists.html#description>`_, like with ``lists:nth/2``, for tuples, etc. - unlike `arrays <https://erlang.org/doc/man/array.html#description>`_, though); see ``basic_utils:positive_index/0``
 
-- when needing an **associative table**, use the ``table`` pseudo-module; a key/value pair shall be designated as a table *entry* (ex: variable named as ``RoadEntry``)
+- when needing an **associative table**, use the ``table`` pseudo-module; a key/value pair shall be designated as a table *entry* (e.g. variable named as ``RoadEntry``)
 
 - regarding the in-code management of **text**:
 
   - if a text is to be rather static (constant) and/or if it is to be exchanged between processes, then it should be a UTF8 ``binary``, and its type shall be declared as ``text_utils:bin_string()``
   - other, a plain string (``text_utils:ustring()``) shall be used
 
-- when defining a non-trivial datastructure, a **record** shall be used (rather than, say, a mere ad-hoc tuple or a map of undocumented structure...), a corresponding **type** should be then defined (ex: a ``foobar`` record leading to a ``foobar()`` type), and a **function to describe it** as text shall be provided (ex: ``-spec foobar_to_string(foobar()) -> text_utils:string()``)
+- when defining a non-trivial datastructure, a **record** shall be used (rather than, say, a mere ad-hoc tuple or a map of undocumented structure...), a corresponding **type** should be then defined (e.g. a ``foobar`` record leading to a ``foobar()`` type), and a **function to describe it** as text shall be provided (e.g. ``-spec foobar_to_string(foobar()) -> text_utils:string()``)
 
   - **mute variables** should be used as well to document actual parameters; for example ``f(3,7,10)`` could preferably be written as a clearer ``f(_Min=3,_Max=7,_Deviation=10)``
 
@@ -127,7 +127,7 @@ The most obvious conventions are:
 
 - type shorthands may be defined; for example, if using repeatedly within a module ``text_utils:ustring()``, a local, non-exported type shorthand (``-type ustring() :: text_utils:ustring()``) may be defined so that all other uses of this type become simply ``ustring()`` in this module
 
-As not all typos may be detected at compilation-time (ex: wrong spelling for a module), we recommend, for source code, the use of additional static checkers, as discussed in the `type-checking`_ section.
+As not all typos may be detected at compilation-time (e.g. wrong spelling for a module), we recommend, for source code, the use of additional static checkers, as discussed in the `type-checking`_ section.
 
 
 .. _`execution target`:
@@ -137,7 +137,7 @@ Execution Targets
 
 Two execution target modes have been defined:
 
-- ``development`` (the default): meant to simplify the task of developers and maintainers by reporting as much information and context as possible, even at the expense of some performances and reliability (ex: no retry in case of failure, shorter time-outs not to wait too long in case of errors, more checks, etc.)
+- ``development`` (the default): meant to simplify the task of developers and maintainers by reporting as much information and context as possible, even at the expense of some performances and reliability (e.g. no retry in case of failure, shorter time-outs not to wait too long in case of errors, more checks, etc.)
 - ``production``: mostly the reciprocal of the ``development`` mode, whose purpose is to favor efficient, bullet-proof operations
 
 These execution targets are *compile-time* modes, i.e. they are set once for all when building the layer at hand (probably based, if using OTP, on the rebar corresponding modes - respectively ``dev`` and ``prod``).

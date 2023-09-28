@@ -23,9 +23,10 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2016.
 
 
-% Unit tests for the management of units.
+% @doc Unit tests for the management of units.
 %
 % See the unit_utils.erl tested module.
 %
@@ -34,7 +35,6 @@
 
 % For run/0 export and al:
 -include("test_facilities.hrl").
-
 
 
 test_parse( InputString, ExpectedString ) ->
@@ -47,7 +47,6 @@ test_parse( InputString, ExpectedString ) ->
 
 	test_facilities:display( " + '~ts' translated as '~ts'.",
 							 [ InputString, ResultString ] ),
-
 
 	ExpectedString = ResultString.
 

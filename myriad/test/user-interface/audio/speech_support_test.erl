@@ -26,7 +26,7 @@
 % Creation date: Tuesday, November 30, 2021.
 
 
-% This is a test of Myriad's <b>speech support</b>, more precisely the
+% @doc This is a test of Myriad's <b>speech support</b>, more precisely the
 % generation of Text-to-Speech (TTS) audio content.
 %
 % See the speech_support.erl tested module.
@@ -139,8 +139,8 @@ test_list_voices( SpeechState ) ->
 get_french_test_speech_settings() ->
 
 	% FrenchVoiceInfoId = pair:second(
-	%                hd( table:enumerate( FrenchVoiceTable ) ) ),
-	FrenchVoiceInfoId = { azure, "fr-FR-DeniseNeural" },
+	%    hd( table:enumerate( FrenchVoiceTable ) ) ),
+	FrenchVoiceInfoId = { azure, <<"fr-FR-DeniseNeural">> },
 
 	% Implicit for this voice:
 	%  - FrenchLangLocale = <<"fr-FR">>,
@@ -158,8 +158,8 @@ get_french_test_speech_settings() ->
 get_english_test_speech_settings() ->
 	% EnglishVoiceInfoId = pair:second(
 	%                hd( table:enumerate( EnglishVoiceTable ) ) ),
-	% EnglishVoiceInfoId = { azure, "en-GB-RyanNeural" },
-	EnglishVoiceInfoId = { azure, "en-US-JennyNeural" },
+	% EnglishVoiceInfoId = { azure, <<"en-GB-RyanNeural">> },
+	EnglishVoiceInfoId = { azure, <<"en-US-JennyNeural">> },
 
 	% For the test of styles (roleplays not tested here, applies only to Chinese
 	% voices):

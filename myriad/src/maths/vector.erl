@@ -130,7 +130,7 @@
 -type any_coordinate() :: linear:any_coordinate().
 
 -type distance() :: linear:distance().
--type square_distance() :: linear:square_distance().
+-type any_square_distance() :: linear:any_square_distance().
 
 -type point() :: point:point().
 -type any_point() :: point:any_point().
@@ -254,7 +254,7 @@ are_equal( _V1=[ C1 | T1 ], _V2=[ C2 | T2 ] ) ->
 
 
 % @doc Returns the square of the magnitude of the specified vector.
--spec square_magnitude( vector() ) -> square_distance().
+-spec square_magnitude( vector() ) -> any_square_distance().
 square_magnitude( V ) ->
 	square_magnitude( V, _Acc=0.0 ).
 

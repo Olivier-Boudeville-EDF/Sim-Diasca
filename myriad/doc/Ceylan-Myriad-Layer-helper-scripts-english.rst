@@ -51,6 +51,11 @@ Searching for Erlang elements
 
   | Usage: find-record-definition.sh [-h|--help] A_RECORD_NAME [A_DIR]: attempts to find the definition of the specified Erlang record from the specified directory (if any), otherwise from the current one.
 
+`kill-beam.sh <https://github.com/Olivier-Boudeville/Ceylan-Myriad/blob/master/src/scripts/kill-beam.sh>`_
+  To kill carefully-selected Erlang VM instance(s).
+
+  | Usage: kill-beam.sh [-h|--help]: interactively terminates otherwise kills the user-selected Erlang (BEAM) virtual machines that were launched thanks to '-eval'.
+
 
 
 Regarding Typing
@@ -112,8 +117,8 @@ Miscellaneous
   | Detailed options:
   |		-v: be verbose
   |		-c a_cookie: specify a cookie, otherwise no cookie will be specifically set
-  |		--sn a_short_node_name: distributed node using specified short name (ex: 'my_short_name')
-  |		--ln a_long_node_name: distributed node using specified long name (ex: 'my_long_name')
+  |		--sn a_short_node_name: distributed node using specified short name (e.g. 'my_short_name')
+  |		--ln a_long_node_name: distributed node using specified long name (e.g. 'my_long_name')
   |		--nn an_ignored_node_name: non-distributed node, specified name ignored (useful to just switch the naming options)
   |		--tcp-range min_port max_port: specify a TCP port range for inter-node communication (useful for firewalling issues)
   |		--epmd-port new_port: specify a specific EPMD port (default: 4369); only relevant if the VM is to be distributed (using short or long names), initially or at runtime
@@ -121,9 +126,9 @@ Miscellaneous
   |		--max-process-count max_count: specify the maximum number of processes per VM (default: 400000)
   |		--busy-limit size: specify the distribution buffer busy limit, in kB (default: 1024)
   |		--async-thread-count thread_count: specify the number of asynchronous threads for driver calls (default: 128)
-  |		--background: run the launched interpreter in the background (ideal to run as a daemon, ex: on a server)
+  |		--background: run the launched interpreter in the background (ideal to run as a daemon, e.g. on a server)
   |		--daemon: run the node as a daemon (relies on run_erl and implies --background)
-  |		--non-interactive: run the launched interpreter with no shell nor input reading (ideal to run through a job manager, ex: on a cluster)
+  |		--non-interactive: run the launched interpreter with no shell nor input reading (ideal to run through a job manager, e.g. on a cluster)
   |		--eval 'an Erlang expression': start by evaluating this expression
   |		--no-auto-start: disable the automatic execution at VM start-up
   |		-h or --help: display this help
@@ -164,7 +169,7 @@ These scripts are mostly unrelated to Erlang, yet are useful to be available fro
 `generate-docutils.sh <https://github.com/Olivier-Boudeville/Ceylan-Myriad/blob/master/src/scripts/generate-docutils.sh>`_
   Generates a proper PDF and/or HTML file from specified RST (`reStructuredText <https://en.wikipedia.org/wiki/ReStructuredText>`_) one (main, standalone script).
 
-  | Usage: generate-docutils.sh <target rst file> [--pdf|--all|<comma-separated path(s) to CSS file to be used, ex: common/css/XXX.css,other.css>] [--icon-file ICON_FILENAME]
+  | Usage: generate-docutils.sh <target rst file> [--pdf|--all|<comma-separated path(s) to CSS file to be used, e.g. common/css/XXX.css,other.css>] [--icon-file ICON_FILENAME]
 
   | Generates a final document from  specified docutils source file (*.rst).
 
@@ -176,7 +181,7 @@ These scripts are mostly unrelated to Erlang, yet are useful to be available fro
 
   | Usage: generate-pdf-from-rst.sh RST_FILE: generates a PDF file from the specified RST file, overwriting any past file with that name.
 
-  | Ex: 'generate-pdf-from-rst.sh my_file.rst' will attempt to generate a new 'my_file.pdf' file.
+  | For instance 'generate-pdf-from-rst.sh my_file.rst' will attempt to generate a new 'my_file.pdf' file.
 
 
 

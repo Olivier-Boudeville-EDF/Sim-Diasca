@@ -23,9 +23,10 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2016.
 
 
-% Unit tests for the <b>ui (user-interface) toolbox</b>.
+% @doc Unit tests for the <b>ui (user-interface) toolbox</b>.
 %
 % See the ui.erl tested module.
 %

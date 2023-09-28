@@ -111,6 +111,16 @@
 ).
 
 
+-define( case_stop_no_supervisor,
+	% Consistent with case_start above:
+	%
+	% (not binding even a mute variable, would have been:
+	% _WaitForTraceSupervisor=false)
+	%
+	traces_for_cases:case_stop( ?MODULE, TraceAggregatorPid, false )
+).
+
+
 -else. % tracing_activated
 
 
@@ -152,12 +162,13 @@
 
 	% Consistent with case_start above:
 	%
-	% (not binding even a mute variable, would have been:
-	% _WaitForTraceSupervisor=false; not a call to case_immediate_stop/3 either)
+	% (not a call to case_immediate_stop/3 either)
 	%
 	traces_for_cases:case_immediate_stop( ?MODULE, TraceAggregatorPid )
 ).
 
+
+-define( case_stop_no_supervisor, ?case_stop ).
 
 -endif. % tracing_activated
 
@@ -219,7 +230,7 @@ case_failed( Reason ) ->
 
 
 % @doc Handles a case failure, using specified first string as an advertised
-% reason with format characters (ex: '~w') and specified list as actual values
+% reason with format characters (e.g. '~w') and specified list as actual values
 % to be formatted.
 %
 -spec case_failed( text_utils:format_string(), text_utils:format_values() ) ->

@@ -122,8 +122,8 @@ manage_superclasses( ClassInfo=#class_info{ class={ Classname, _ClassLocForm },
 											functions=FunctionTable } ) ->
 
 	% Following searching through parse attributes is not done anymore, as now
-	% we rely exclusively on a define instead (i.e. -define( superclasses, [ A,
-	% B ]):
+	% we rely exclusively on a define instead (i.e. -define( superclasses, [A,
+	% B]):
 
 	%{ Superclasses, RegisteredClassInfo } =
 	%   % Looking first for any '-superclasses(...).' parse attribute:
@@ -171,4 +171,4 @@ manage_superclasses( ClassInfo=#class_info{ class={ Classname, _ClassLocForm },
 
 	%trace_utils:debug_fmt( "Detected superclasses: ~p", [ SuperNames ] ),
 
-	ClassInfo#class_info{ superclasses={ SuperNames, _LocForm=undefined } }.
+	ClassInfo#class_info{ superclasses=SuperNames }.

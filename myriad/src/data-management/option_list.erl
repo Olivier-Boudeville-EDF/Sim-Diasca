@@ -22,13 +22,13 @@
 % If not, see <http://www.gnu.org/licenses/> and
 % <http://www.mozilla.org/MPL/>.
 %
-% Creation date: Saturday, February 20, 2010.
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: Saturday, February 20, 2010.
 
 
 % @doc An implementation of <b>option lists</b>, loosely based on `proplist'.
 %
-% Note that our option lists only have {Key,Value} pairs (ex: no entry is made
+% Note that our option lists only have {Key,Value} pairs (e.g. no entry is made
 % of a single atom).
 %
 % See `option_list_test.erl' for the corresponding test.
@@ -198,6 +198,6 @@ enumerate( OptionList ) ->
 to_string( OptionList ) ->
 
 	Strings = [ text_utils:format( "~p: ~p", [ K, V ] )
-				|| { K, V } <- OptionList ],
+				    || { K, V } <- OptionList ],
 
 	text_utils:strings_to_string( Strings ).

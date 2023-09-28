@@ -41,13 +41,13 @@
 
 
 % Version of this tool:
--define( merge_script_version, "0.1.4" ).
+-define( merge_script_version, "0.1.5" ).
 
 
 % Centralised:
 -define( merge_file_options,
 		 % We do not want to include the '{encoding,utf8}' option as, strangely
-		 % enough, we were not able to write the proper content in file (ex: a
+		 % enough, we were not able to write the proper content in file (e.g. a
 		 % filename including 'cœur' was incorrectly written as 'cÅur' whereas
 		 % properly displayed on the console - hence whereas correct); we
 		 % suspected a double Unicode conversion yet could not overcome this
@@ -55,6 +55,16 @@
 		 %
 		 % So now we write directly our own Unicode content:
 		 [ write, raw ] ).
+
+
+% More control that a mere hashing_utils:get_recommended_algorithm():
+%
+% (not used for cryptographic purpose here, hence deemed sufficient, a good
+% compromise between selectivity / efficiency / compactness / readability)
+%
+% Note that changing algorithm will invalidate all past cached merge files.
+%
+-define( hashing_algorithm, sha1 ).
 
 
 -define( default_log_filename, "merge-tree.log" ).
@@ -79,9 +89,7 @@
 -type ustring() :: text_utils:ustring().
 -type format_string() :: text_utils:format_string().
 
-
-% Thus a binary:
--type sha1() :: hash_utils:sha1_sum().
+-type binary_hash() :: hash_utils:binary_hash().
 
 -type command_line_option() :: shell_utils:command_line_option().
 -type command_line_value() :: shell_utils:command_line_value().
@@ -129,24 +137,24 @@
 	%
 	timestamp :: posix_seconds(),
 
-	% SHA1 sum (as a binary) of the content of that file:
-	sha1_sum :: sha1() } ).
+	% Hash of the content of that file:
+	hash :: binary_hash() } ).
 
 -type file_data() :: #file_data{}.
 % Data associated (in-memory) to a given file-like element.
 
 
 
--type sha1_table() :: table( sha1(), [ file_data() ] ).
-% Table referencing file entries based on their SHA1.
+-type hash_table() :: table( binary_hash(), [ file_data() ] ).
+% Table referencing file entries based on their Hash.
 %
-% (a list of exactly one file_data record per SHA1 key, once the tree is
+% (a list of exactly one file_data record per Hash key, once the tree is
 % uniquified)
 
 
 
--type sha1_entry() :: { sha1(), [ file_data() ] }.
-% Pair entries of a sha1_table/0.
+-type hash_entry() :: { binary_hash(), [ file_data() ] }.
+% Pair entries of a hash_table/0.
 
 
 % Data associated to a content tree.
@@ -160,10 +168,10 @@
 	% Base, absolute (binary) path of the root of that tree in the filesystem:
 	root :: bin_directory_path(),
 
-	% Each key is the SHA1 sum of a file content, each value is a list of the
-	% file entries whose content matches that sum (hence are supposed the same).
+	% Each key is the hash of a file content, each value is a list of the file
+	% entries whose content matches that hash (hence are supposed the same).
 	%
-	entries = table:new() :: sha1_table(),
+	entries = table:new() :: hash_table(),
 
 	% Total count of the regular files found in this tree:
 	file_count = 0 :: count(),
@@ -188,7 +196,7 @@
 
 
 % As read from merge cache files:
--type file_info() :: { 'file_info', SHA1 :: sha1(), Path :: file_path(),
+-type file_info() :: { 'file_info', Hash :: binary_hash(), Path :: file_path(),
 					   Size :: byte_size(), Timestamp :: posix_seconds() }.
 
 
@@ -272,16 +280,16 @@ get_usage() ->
 	  "   (8) '"?exec_name" -h' or '"?exec_name" -~ts'\n\n"
 	  "   Ensures, for the first form, that all the changes in a possibly more up-to-date, \"newer\" tree (INPUT_TREE) are merged back to the reference tree (REFERENCE_TREE), whence the input tree may have derived. Once executed, only a refreshed, complemented reference tree will exist, as the input tree will have been removed: all its original content (i.e. its content that was not already in the reference tree) will have been transferred in the reference tree.\n"
 	  "   In the reference tree, in-tree duplicated content will be either kept as it is, or removed as a whole (to keep only one copy thereof), or replaced by symbolic links in order to keep only a single reference version of each actual content.\n"
-	  "   At the root of the reference tree, a '", ?merge_cache_filename, "' file will be stored, in order to avoid any later recomputations of the checksums of the files that it contains, should they have not changed. As a result, once a merge is done, the reference tree may contain an uniquified version of the union of the two specified trees, and the input tree will not exist anymore.\n\n"
+	  "   At the root of the reference tree, a '", ?merge_cache_filename, "' file will be stored, in order to avoid any later recomputations of the hashes of the files that it contains, should they have not changed. As a result, once a merge is done, the reference tree may contain an uniquified version of the union of the two specified trees, and the input tree will not exist anymore.\n\n"
 	  "   For the second form (-~ts option), the content of the two specified trees are equalized, meaning that they will each contain the union of their respective content? Typically useful to maintain mirrors on different disks.\n\n"
 	  "   For the third form (-~ts option), the specified tree will simply be inspected for duplicates, and a corresponding '", ?merge_cache_filename, "' file will be created at its root (to be potentially reused by a later operation).\n\n"
-	  "   For the fourth form (-~ts option), an attempt to rebuild an updated '", ?merge_cache_filename, "' file will be performed, computing only the checksum of the files that were not already referenced, or whose timestamp or size changed.\n\n"
+	  "   For the fourth form (-~ts option), an attempt to rebuild an updated '", ?merge_cache_filename, "' file will be performed, computing only the hashes of the files that were not already referenced, or whose timestamp or size changed.\n\n"
 	  "   For the fifth form (-~ts option), a rebuild even lighter than the previous rescan of '", ?merge_cache_filename, "' will be done, checking only sizes (not timestamps), and updating these timestamps.\n\n"
 	  "   For the sixth form (-~ts option), the specified tree will be scanned first (see the corresponding operation), and then the user will be offered various actions regarding found duplicates (being kept as are, or removed, or replaced with symbolic links to a single copy per content), and once done a corresponding up-to-date '", ?merge_cache_filename, "' file will be created at its root (to be potentially reused by a later operation).\n\n"
 	  "   For the seventh form (-~ts option), the specified tree will be compared to the one referenced in the cache file, reporting content differences.\n\n"
 	  "   For the eighth form (-h or -~ts option), displays this help.\n\n"
 	  "   Note that the -~ts A_BASE_DIR option can be specified by the user to designate the base directory of all relative paths mentioned.\n"
-	  "   When a cache file is found, it can be either ignored (and thus recreated) or re-used, either as it is or after a weak check, where only file existence, sizes and timestamps are then verified (not checksums)." ] ),
+	  "   When a cache file is found, it can be either ignored (and thus recreated) or re-used, either as it is or after a weak check, where only file existence, sizes and timestamps are then verified (not hashes)." ] ),
 	 [ ?input_opt, ?reference_opt, ?equalize_opt, ?scan_opt, ?rescan_opt,
 	   ?resync_opt, ?uniquify_opt, ?check_opt, ?help_opt,
 	   ?equalize_opt, ?scan_opt, ?rescan_opt, ?resync_opt, ?uniquify_opt,
@@ -377,7 +385,7 @@ main( ArgTable ) ->
 			BinBaseDir = text_utils:ensure_binary( BaseDir ),
 
 			case list_table:extract_entry_with_default( ?reference_opt,
-										undefined, BaseArgTable ) of
+					undefined, BaseArgTable ) of
 
 				{ [ [ RefTreePath ] ], NoRefArgTable }
 								when is_list( RefTreePath ) ->
@@ -452,7 +460,7 @@ handle_non_reference_option( ArgumentTable, BinBaseDir ) ->
 				{ undefined, NoScanArgTable } ->
 
 					case list_table:extract_entry_with_default( ?rescan_opt,
-												undefined, NoScanArgTable ) of
+							undefined, NoScanArgTable ) of
 
 						% Not a rescan either:
 						{ undefined, NoRescanArgTable } ->
@@ -520,7 +528,7 @@ handle_neither_scan_options( ArgTable, BinBaseDir ) ->
 		{ undefined, NoResyncArgTable } ->
 
 			case list_table:extract_entry_with_default( ?uniquify_opt,
-											undefined, NoResyncArgTable ) of
+					undefined, NoResyncArgTable ) of
 
 				{ undefined, NoUniqArgTable } ->
 
@@ -928,7 +936,7 @@ scan( BinTreePath, AnalyzerRing, UserState ) ->
 					UpTreeData = update_content_tree( BinTreePath, AnalyzerRing,
 													  UserState ),
 
-					% We leave an up-to-date cache file (ex: if a mismatching
+					% We leave an up-to-date cache file (e.g. if a mismatching
 					% root directory had to be updated):
 					%
 					write_cache_file( UpTreeData, UserState ),
@@ -1071,7 +1079,7 @@ perform_rescan( BinUserTreePath, CacheFilePath, AnalyzerRing, UserState ) ->
 
 	CacheTimestamp = file_utils:get_last_modification_time( CacheFilePath ),
 
-	ReadTreeData=#tree_data{ root=BinCachedTreePath, entries=SHA1Table } =
+	ReadTreeData=#tree_data{ root=BinCachedTreePath, entries=HashTable } =
 		read_cache_file( CacheFilePath, UserState ),
 
 	ActualBinTreePath = case BinUserTreePath of
@@ -1131,7 +1139,7 @@ perform_rescan( BinUserTreePath, CacheFilePath, AnalyzerRing, UserState ) ->
 	FilteredBinFiles = text_utils:ensure_binaries( FilteredFiles ),
 
 	rescan_files( _FileSet=set_utils:from_list( FilteredBinFiles ),
-		table:enumerate( SHA1Table ), ObtainedTreeData,
+		table:enumerate( HashTable ), ObtainedTreeData,
 		ActualBinTreePath, AnalyzerRing, CacheTimestamp, _Notifications=[],
 		UserState ).
 
@@ -1140,7 +1148,7 @@ perform_rescan( BinUserTreePath, CacheFilePath, AnalyzerRing, UserState ) ->
 % @doc Rescans specified content files, using for that the specified analyzers,
 % returning the corresponding tree data.
 %
--spec rescan_files( set( bin_file_path() ), [ sha1_entry() ],
+-spec rescan_files( set( bin_file_path() ), [ hash_entry() ],
 		tree_data(), bin_directory_path(), analyzer_ring(), posix_seconds(),
 		[ ustring() ], user_state() ) -> { tree_data(), [ ustring() ] }.
 % All known entries exhausted; maybe extra files were in the filesystem:
@@ -1205,12 +1213,12 @@ rescan_files( FileSet, _Entries=[], TreeData, BinTreePath, AnalyzerRing,
 	end;
 
 % Extracting next recorded file_data elements:
-rescan_files( FileSet, _Entries=[ { SHA1, FileDatas } | T ], TreeData,
+rescan_files( FileSet, _Entries=[ { Hash, FileDatas } | T ], TreeData,
 		BinTreePath, AnalyzerRing, CacheTimestamp, Notifications, UserState ) ->
 
 	% Not using a ring for punctual updates:
 	{ NewFileSet, NewTreeData, ExtraNotifications } =
-		check_file_datas_for_scan( FileDatas, SHA1, FileSet, TreeData,
+		check_file_datas_for_scan( FileDatas, Hash, FileSet, TreeData,
 			BinTreePath, _NewFileDatas=[], _ExtraNotifications=[], UserState ),
 
 	rescan_files( NewFileSet, T, NewTreeData, BinTreePath, AnalyzerRing,
@@ -1218,19 +1226,19 @@ rescan_files( FileSet, _Entries=[ { SHA1, FileDatas } | T ], TreeData,
 
 
 
-% @doc Integrates specified file entries into specified tree data.
+% @doc Integrates the specified file entries into the specified tree data.
 -spec integrate_extra_files( [ file_data() ], tree_data(), user_state() ) ->
 									tree_data().
 integrate_extra_files( _ExtraFileDatas=[], TreeData, _UserState ) ->
 	TreeData;
 
 integrate_extra_files(
-  _ExtraFileDatas=[ FileData=#file_data{ path=FilePath, sha1_sum=SHA1 } | T ],
+  _ExtraFileDatas=[ FileData=#file_data{ path=FilePath, hash=Hash } | T ],
   TreeData=#tree_data{ entries=Entries,
 					   file_count=FileCount },
   UserState ) ->
 
-	NewFileDatas = case table:lookup_entry( SHA1, Entries ) of
+	NewFileDatas = case table:lookup_entry( Hash, Entries ) of
 
 		key_not_found ->
 			trace_debug( "Extra file '~ts' has a unique content.",
@@ -1245,7 +1253,7 @@ integrate_extra_files(
 
 	end,
 
-	NewEntries = table:add_entry( SHA1, NewFileDatas, Entries ),
+	NewEntries = table:add_entry( Hash, NewFileDatas, Entries ),
 
 	NewTreeData = TreeData#tree_data{ entries=NewEntries,
 									  file_count=FileCount+1 },
@@ -1257,26 +1265,26 @@ integrate_extra_files(
 % @doc Checks whether the file data elements seem up to date: still existing,
 % not more recent than cache filename, and of the same size as referenced.
 %
-check_file_datas_for_scan( _FileDatas=[], SHA1, FileSet,
+check_file_datas_for_scan( _FileDatas=[], Hash, FileSet,
 		TreeData=#tree_data{ entries=PrevEntries,
 							 file_count=PrevFileCount },
 		_BinTreePath, FileDatas, ExtraNotifications, _UserState ) ->
 
 	NewEntryCount = length( FileDatas ),
 
-	OldEntryCount = length( table:get_value( SHA1, PrevEntries ) ),
+	OldEntryCount = length( table:get_value( Hash, PrevEntries ) ),
 
 	DiffEntryCount = NewEntryCount - OldEntryCount,
 
 	% To be replenished through FileDatas:
-	WipedEntries = table:remove_entry( SHA1, PrevEntries ),
+	WipedEntries = table:remove_entry( Hash, PrevEntries ),
 
-	% We should not assign the elements in FileDatas to SHA1 - their checksum
-	% might differ now! So:
+	% We should not assign the elements in FileDatas to Hash - their hash might
+	% differ now! So:
 
 	NewEntries = lists:foldl(
-		fun( FD=#file_data{ sha1_sum=ThisSHA1 }, AccEntries ) ->
-			table:append_to_entry( ThisSHA1, FD, AccEntries )
+		fun( FD=#file_data{ hash=ThisHash }, AccEntries ) ->
+			table:append_to_entry( ThisHash, FD, AccEntries )
 		end,
 		_Acc0=WipedEntries,
 		_List=FileDatas ),
@@ -1292,8 +1300,8 @@ check_file_datas_for_scan( _FileDatas=[
 										 type=regular,
 										 size=RecordedSize,
 										 timestamp=RecordedTimestamp,
-										 sha1_sum=SHA1 } | T ],
-						   SHA1, FileSet, TreeData, BinTreePath, FileDatas,
+										 hash=Hash } | T ],
+						   Hash, FileSet, TreeData, BinTreePath, FileDatas,
 						   ExtraNotifications, UserState ) ->
 
 	FullPath = file_utils:bin_join( BinTreePath, RelativeBinFilename ),
@@ -1315,7 +1323,7 @@ check_file_datas_for_scan( _FileDatas=[
 			end,
 
 			% Let's forget this file_data then:
-			check_file_datas_for_scan( T, SHA1, FileSet, TreeData, BinTreePath,
+			check_file_datas_for_scan( T, Hash, FileSet, TreeData, BinTreePath,
 				FileDatas, [ NewNotif | ExtraNotifications ], UserState );
 
 		% Here the iterated file still exists as a regular one, let's check
@@ -1330,7 +1338,7 @@ check_file_datas_for_scan( _FileDatas=[
 					case file_utils:get_size( FullPath ) of
 
 						% Same size, in the context of a (light) rescan we
-						% consider that the SHA1 must be the same as well then:
+						% consider that the Hash must be the same as well then:
 						%
 						RecordedSize ->
 							{ FileData, ExtraNotifications };
@@ -1354,7 +1362,8 @@ check_file_datas_for_scan( _FileDatas=[
 						type=regular,
 						size=OtherSize,
 						timestamp=RecordedTimestamp,
-						sha1_sum=hash_utils:compute_file_sha1_sum( FullPath ) },
+						hash=hash_utils:get_file_hash( FullPath,
+													   ?hashing_algorithm ) },
 
 							{ NewFileData, [ NewNotif | ExtraNotifications ] }
 
@@ -1376,13 +1385,14 @@ check_file_datas_for_scan( _FileDatas=[
 						type=regular,
 						size=file_utils:get_size( FullPath ),
 						timestamp=OtherTimestamp,
-						sha1_sum=hash_utils:compute_file_sha1_sum( FullPath ) },
+						hash=hash_utils:get_file_hash( FullPath,
+													   ?hashing_algorithm ) },
 
 					{ NewFileData, [ NewNotif | ExtraNotifications ] }
 
 			end,
 
-			check_file_datas_for_scan( T, SHA1, ShrunkFileSet, TreeData,
+			check_file_datas_for_scan( T, Hash, ShrunkFileSet, TreeData,
 				BinTreePath, [ UpdatedFileData | FileDatas ], UpdatedNotifs,
 				UserState )
 
@@ -1468,7 +1478,7 @@ perform_resync( BinUserTreePath, CacheFilePath, AnalyzerRing, UserState ) ->
 
 	% Very similar to perform_rescan/4:
 
-	ReadTreeData = #tree_data{ root=BinCachedTreePath, entries=SHA1Table } =
+	ReadTreeData = #tree_data{ root=BinCachedTreePath, entries=HashTable } =
 		read_cache_file( CacheFilePath, UserState ),
 
 	ActualBinTreePath = case BinUserTreePath of
@@ -1532,7 +1542,7 @@ perform_resync( BinUserTreePath, CacheFilePath, AnalyzerRing, UserState ) ->
 	FilteredBinFiles = text_utils:ensure_binaries( FilteredFiles ),
 
 	resync_files( _FileSet=set_utils:from_list( FilteredBinFiles ),
-		table:enumerate( SHA1Table ), ObtainedTreeData,
+		table:enumerate( HashTable ), ObtainedTreeData,
 		ActualBinTreePath, AnalyzerRing, _Notifications=[], UserState ).
 
 
@@ -1540,7 +1550,7 @@ perform_resync( BinUserTreePath, CacheFilePath, AnalyzerRing, UserState ) ->
 % @doc Resyncs specified content files, using for that the specified analyzers,
 % returning the corresponding tree data.
 %
--spec resync_files( set( bin_file_path() ), [ sha1_entry() ],
+-spec resync_files( set( bin_file_path() ), [ hash_entry() ],
 		tree_data(), bin_directory_path(), analyzer_ring(), [ ustring() ],
 		user_state() ) -> { tree_data(), [ ustring() ] }.
 % All known entries exhausted; maybe extra files were in the filesystem:
@@ -1601,12 +1611,12 @@ resync_files( FileSet, _Entries=[], TreeData, BinTreePath, AnalyzerRing,
 	end;
 
 % Extracting next recorded file_data elements:
-resync_files( FileSet, _Entries=[ { SHA1, FileDatas } | T ], TreeData,
+resync_files( FileSet, _Entries=[ { Hash, FileDatas } | T ], TreeData,
 			  BinTreePath, AnalyzerRing, Notifications, UserState ) ->
 
 	% Not using a ring for punctual updates:
 	{ NewFileSet, NewTreeData, ExtraNotifications } =
-		check_file_datas_for_sync( FileDatas, SHA1, FileSet, TreeData,
+		check_file_datas_for_sync( FileDatas, Hash, FileSet, TreeData,
 			BinTreePath, _NewFileDatas=[], _ExtraNotifications=[], UserState ),
 
 	resync_files( NewFileSet, T, NewTreeData, BinTreePath, AnalyzerRing,
@@ -1618,26 +1628,26 @@ resync_files( FileSet, _Entries=[ { SHA1, FileDatas } | T ], TreeData,
 % of the same size as referenced (timestamp ignored on purpose, not compared to
 % cache filename).
 %
-check_file_datas_for_sync( _FileDatas=[], SHA1, FileSet,
+check_file_datas_for_sync( _FileDatas=[], Hash, FileSet,
 		TreeData=#tree_data{ entries=PrevEntries,
 							 file_count=PrevFileCount },
 		_BinTreePath, NewFileDatas, ExtraNotifications, _UserState ) ->
 
 	NewEntryCount = length( NewFileDatas ),
 
-	OldEntryCount = length( table:get_value( SHA1, PrevEntries ) ),
+	OldEntryCount = length( table:get_value( Hash, PrevEntries ) ),
 
 	DiffEntryCount = NewEntryCount - OldEntryCount,
 
 	% To be replenished through FileDatas:
-	WipedEntries = table:remove_entry( SHA1, PrevEntries ),
+	WipedEntries = table:remove_entry( Hash, PrevEntries ),
 
-	% We should not assign the elements in NewFileDatas to SHA1 - their checksum
+	% We should not assign the elements in NewFileDatas to Hash - their hash
 	% might differ now! So:
 
 	NewEntries = lists:foldl(
-		fun( FD=#file_data{ sha1_sum=ThisSHA1 }, AccEntries ) ->
-			table:append_to_entry( ThisSHA1, FD, AccEntries )
+		fun( FD=#file_data{ hash=ThisHash }, AccEntries ) ->
+			table:append_to_entry( ThisHash, FD, AccEntries )
 		end,
 		_Acc0=WipedEntries,
 		_List=NewFileDatas ),
@@ -1652,8 +1662,8 @@ check_file_datas_for_sync( _FileDatas=[
 					FileData=#file_data{ path=RelativeBinFilename,
 										 type=regular,
 										 size=RecordedSize,
-										 sha1_sum=SHA1 } | T ],
-						   SHA1, FileSet, TreeData, BinTreePath, NewFileDatas,
+										 hash=Hash } | T ],
+						   Hash, FileSet, TreeData, BinTreePath, NewFileDatas,
 						   ExtraNotifications, UserState ) ->
 
 	FullPath = file_utils:bin_join( BinTreePath, RelativeBinFilename ),
@@ -1675,7 +1685,7 @@ check_file_datas_for_sync( _FileDatas=[
 			end,
 
 			% Let's forget this file_data then:
-			check_file_datas_for_sync( T, SHA1, FileSet, TreeData, BinTreePath,
+			check_file_datas_for_sync( T, Hash, FileSet, TreeData, BinTreePath,
 				NewFileDatas, [ NewNotif | ExtraNotifications ], UserState );
 
 		% Here the iterated file still exists as a regular one, let's check
@@ -1687,7 +1697,7 @@ check_file_datas_for_sync( _FileDatas=[
 				case file_utils:get_size( FullPath ) of
 
 						% Same size, in the context of a (light) resync we
-						% consider that the SHA1 must be the same as well then:
+						% consider that the hash must be the same as well then:
 						%
 						RecordedSize ->
 							{ FileData, ExtraNotifications };
@@ -1712,23 +1722,24 @@ check_file_datas_for_sync( _FileDatas=[
 						size=OtherSize,
 						timestamp=
 							file_utils:get_last_modification_time( FullPath ),
-						sha1_sum=hash_utils:compute_file_sha1_sum( FullPath ) },
+						hash=hash_utils:get_file_hash( FullPath,
+													   ?hashing_algorithm ) },
 
 							{ NewFileData, [ NewNotif | ExtraNotifications ] }
 
 				end,
 
-			check_file_datas_for_sync( T, SHA1, ShrunkFileSet, TreeData,
+			check_file_datas_for_sync( T, Hash, ShrunkFileSet, TreeData,
 				BinTreePath, [ UpdatedFileData | NewFileDatas ], UpdatedNotifs,
 				UserState )
 
 	end;
 
 check_file_datas_for_sync( _FileDatas=[ #file_data{ path=RelativeBinFilename,
-													sha1_sum=SHA1 } | _T ],
-						   OtherSHA1, _FileSet, _TreeData, _BinTreePath,
+													hash=Hash } | _T ],
+						   OtherHash, _FileSet, _TreeData, _BinTreePath,
 						   _NewFileDatas, _ExtraNotifications, _UserState ) ->
-	throw( { unmatching_sha1, SHA1, OtherSHA1, RelativeBinFilename } ).
+	throw( { unmatching_hash, Hash, OtherHash, RelativeBinFilename } ).
 
 
 
@@ -1874,11 +1885,11 @@ merge_trees( InputTree=#tree_data{ root=InputRootDir,
 									   entries=ReferenceEntries },
 			 UserState ) ->
 
-	InputSHA1Set = set_utils:new( table:keys( InputEntries ) ),
-	ReferenceSHA1Set = set_utils:new( table:keys( ReferenceEntries ) ),
+	InputHashSet = set_utils:new( table:keys( InputEntries ) ),
+	ReferenceHashSet = set_utils:new( table:keys( ReferenceEntries ) ),
 
 	% Returns the elements in input but not in references:
-	LackingInRefSet = set_utils:difference( InputSHA1Set, ReferenceSHA1Set ),
+	LackingInRefSet = set_utils:difference( InputHashSet, ReferenceHashSet ),
 
 	ui:set_setting( backtitle,
 			text_utils:format( "Merging in ~ts...", [ ReferenceRootDir ] ) ),
@@ -1908,7 +1919,7 @@ merge_trees( InputTree=#tree_data{ root=InputRootDir,
 			% (probably preferably) be uniquified on the fly:
 
 			ContentInBothSets =
-				set_utils:intersection( InputSHA1Set, ReferenceSHA1Set ),
+				set_utils:intersection( InputHashSet, ReferenceHashSet ),
 
 			case clear_input_tree( InputTree, LackingCount, ContentInBothSets,
 					InputRootDir, ReferenceRootDir, UserState ) of
@@ -1931,36 +1942,36 @@ merge_trees( InputTree=#tree_data{ root=InputRootDir,
 % @doc Purges specified tree from specified content, removing it from the
 % filesystem and returning the corresponding, updated, tree data.
 %
--spec purge_tree_from( tree_data(), set( sha1() ), user_state() ) ->
+-spec purge_tree_from( tree_data(), set( binary_hash() ), user_state() ) ->
 								tree_data().
 purge_tree_from( Tree=#tree_data{ root=BinRootDir,
 								  entries=Entries,
 								  file_count=FileCount },
-				 SHA1ToPurge, UserState ) ->
+				 HashToPurge, UserState ) ->
 
-	SHA1s = set_utils:to_list( SHA1ToPurge ),
+	Hashs = set_utils:to_list( HashToPurge ),
 
 	{ PurgedEntries, RemoveCount } =
-		purge_helper( SHA1s, Entries, BinRootDir, _RemoveCount=0, UserState ),
+		purge_helper( Hashs, Entries, BinRootDir, _RemoveCount=0, UserState ),
 
 	Tree#tree_data{ entries=PurgedEntries,
 					file_count=FileCount-RemoveCount }.
 
 
 % (helper)
-purge_helper( _SHA1s=[], Entries, _BinRootDir, RemoveCount, _UserState ) ->
+purge_helper( _Hashs=[], Entries, _BinRootDir, RemoveCount, _UserState ) ->
 	{ Entries, RemoveCount };
 
-purge_helper( _SHA1s=[ SHA1 | T ], Entries, BinRootDir, RemoveCount,
+purge_helper( _Hashs=[ Hash | T ], Entries, BinRootDir, RemoveCount,
 			  UserState ) ->
 
-	{ FileDatas, PurgedEntries } = table:extract_entry( SHA1, Entries ),
+	{ FileDatas, PurgedEntries } = table:extract_entry( Hash, Entries ),
 
 	FilesToRemove = [ file_utils:bin_join( BinRootDir, FD#file_data.path )
 								|| FD <- FileDatas ],
 
 	trace_debug( "Removing following files corresponding to non-original "
-		"input content of SHA1 ~ts: ~ts", [ sha1_to_string( SHA1 ),
+		"input content of Hash ~ts: ~ts", [ hash_to_string( Hash ),
 			text_utils:strings_to_string( FilesToRemove ) ], UserState ),
 
 	remove_files( FilesToRemove, UserState ),
@@ -1973,7 +1984,7 @@ purge_helper( _SHA1s=[ SHA1 | T ], Entries, BinRootDir, RemoveCount,
 % @doc Removes specified content from specified input tree. Returns the
 % resulting tree, or 'undefined' if it became empty.
 %
--spec clear_input_tree( tree_data(), count(), set( sha1() ),
+-spec clear_input_tree( tree_data(), count(), set( binary_hash() ),
 			bin_directory_path(), bin_directory_path(), user_state() ) ->
 								maybe( tree_data() ).
 clear_input_tree( InputTree, LackingCount, ContentToClear, InputRootDir,
@@ -2143,18 +2154,18 @@ integrate_content_to_merge(
 
 
 
-% @doc Copies the contents, specified through their SHA1, from the source tree
+% @doc Copies the contents, specified through their hashes, from the source tree
 % to the target one, and returns a corresponding updated version of this target
 % tree.
 %
-% Note: this SHA1 is not expected to already exist in the target tree.
+% Note: this Hash is not expected to already exist in the target tree.
 %
--spec copy_content( [ sha1() ], bin_directory_path(), sha1_table(), tree_data(),
-					user_state() ) -> tree_data().
-copy_content( SHA1sToCopy, SourceRootDir, SourceEntries,
+-spec copy_content( [ binary_hash() ], bin_directory_path(), hash_table(),
+					tree_data(), user_state() ) -> tree_data().
+copy_content( HashsToCopy, SourceRootDir, SourceEntries,
 			  TargetTree=#tree_data{ root=TargetRootDir }, UserState ) ->
 
-	ContentCount = length( SHA1sToCopy ),
+	ContentCount = length( HashsToCopy ),
 
 	trace_debug( case ContentCount of
 
@@ -2171,24 +2182,24 @@ copy_content( SHA1sToCopy, SourceRootDir, SourceEntries,
 	end, UserState ),
 
 	% Returns an updated TargetTree:
-	copy_content_helper( SHA1sToCopy, SourceRootDir, SourceEntries,
+	copy_content_helper( HashsToCopy, SourceRootDir, SourceEntries,
 						 TargetTree, UserState ).
 
 
 
 % (helper)
-copy_content_helper( _SHA1sToCopy=[], _SourceRootDir, _SourceEntries,
+copy_content_helper( _HashsToCopy=[], _SourceRootDir, _SourceEntries,
 					 TargetTree, _UserState ) ->
 	TargetTree;
 
-copy_content_helper( _SHA1sToCopy=[ SHA1 | T ], SourceRootDir,
+copy_content_helper( _HashsToCopy=[ Hash | T ], SourceRootDir,
 		SourceEntries,
 		TargetTree=#tree_data{ root=TargetRootDir,
 							   entries=TargetEntries,
 							   file_count=FileCount }, UserState ) ->
 
 	% Selects a suitable target filename; first found one is good:
-	[ SourceFileData | _ ] = table:get_value( SHA1, SourceEntries ),
+	[ SourceFileData | _ ] = table:get_value( Hash, SourceEntries ),
 	SourceFilePath = SourceFileData#file_data.path,
 
 	{ ActualAbsTargetPath, ActualTargetPath } = safe_copy( SourceRootDir,
@@ -2201,7 +2212,7 @@ copy_content_helper( _SHA1sToCopy=[ SHA1 | T ], SourceRootDir,
 	NewTargetFileData = SourceFileData#file_data{ path=ActualTargetPath,
 												  timestamp=TargetTimestamp },
 
-	NewTargetEntries = table:add_new_entry( SHA1, [ NewTargetFileData ],
+	NewTargetEntries = table:add_new_entry( Hash, [ NewTargetFileData ],
 											TargetEntries ),
 
 	NewTargetTree = TargetTree#tree_data{ entries=NewTargetEntries,
@@ -2215,9 +2226,9 @@ copy_content_helper( _SHA1sToCopy=[ SHA1 | T ], SourceRootDir,
 % @doc Moves, in the context of a merge, all specified content in the reference
 % tree, and returns an updated view thereof.
 %
--spec move_content_to_integrate( [ sha1() ], bin_directory_path(), sha1_table(),
-		bin_directory_path(), sha1_table(), bin_directory_path(), count(),
-		user_state() ) -> sha1_table().
+-spec move_content_to_integrate( [ binary_hash() ], bin_directory_path(),
+		hash_table(), bin_directory_path(), hash_table(), bin_directory_path(),
+		count(), user_state() ) -> hash_table().
 move_content_to_integrate( ToIntegrate, InputRootDir, InputEntries,
 		ReferenceRootDir, ReferenceEntries, TargetSubPath, TotalContentCount,
 		UserState ) ->
@@ -2230,9 +2241,9 @@ move_content_to_integrate( ToIntegrate, InputRootDir, InputEntries,
 % @doc Moves as a whole all specified content in the reference tree, and returns
 % an updated view thereof.
 %
--spec move_content_to_integrate( [ sha1() ], bin_directory_path(), sha1_table(),
-		bin_directory_path(), sha1_table(), bin_directory_path(),
-		count(), count(), user_state() ) -> sha1_table().
+-spec move_content_to_integrate( [ binary_hash() ], bin_directory_path(),
+		hash_table(), bin_directory_path(), hash_table(), bin_directory_path(),
+		count(), count(), user_state() ) -> hash_table().
 % Moves finished here:
 move_content_to_integrate( _ToMove=[], InputRootDir, InputEntries,
 		ReferenceRootDir, ReferenceEntries, TargetSubPath, _ContentCount,
@@ -2259,14 +2270,14 @@ move_content_to_integrate( _ToMove=[], InputRootDir, InputEntries,
 	ReferenceEntries;
 
 
-move_content_to_integrate( _ToMove=[ SHA1 | T ], InputRootDir, InputEntries,
+move_content_to_integrate( _ToMove=[ Hash | T ], InputRootDir, InputEntries,
 		ReferenceRootDir, ReferenceEntries, TargetSubPath,
 		ContentCount, TotalContentCount, UserState ) ->
 
 	ui:set_setting( title, text_utils:format( "Merging content ~B/~B",
 									[ ContentCount, TotalContentCount ] ) ),
 
-	{ FileDatas, NewInputEntries } = table:extract_entry( SHA1, InputEntries ),
+	{ FileDatas, NewInputEntries } = table:extract_entry( Hash, InputEntries ),
 
 	ElectedFileData = case FileDatas of
 
@@ -2313,7 +2324,7 @@ move_content_to_integrate( _ToMove=[ SHA1 | T ], InputRootDir, InputEntries,
 	end,
 
 	% With a check:
-	SHA1 = ElectedFileData#file_data.sha1_sum,
+	Hash = ElectedFileData#file_data.hash,
 
 	SourceRelPath = ElectedFileData#file_data.path,
 
@@ -2328,7 +2339,7 @@ move_content_to_integrate( _ToMove=[ SHA1 | T ], InputRootDir, InputEntries,
 
 	% New content in reference:
 	NewReferenceEntries =
-		table:add_new_entry( SHA1, [ NewFileData ], ReferenceEntries ),
+		table:add_new_entry( Hash, [ NewFileData ], ReferenceEntries ),
 
 	move_content_to_integrate( T, InputRootDir, NewInputEntries,
 		ReferenceRootDir, NewReferenceEntries, TargetSubPath,
@@ -2349,54 +2360,54 @@ equalize( FirstTreeData=#tree_data{ root=FirstRootPath,
 	IsFirstUniquified = is_uniquified( FirstTreeData ),
 	IsSecondUniquified = is_uniquified( SecondTreeData ),
 
-	FirstSHA1s = table:keys( FirstEntryTable ),
-	SecondSHA1s = table:keys( SecondEntryTable ),
+	FirstHashs = table:keys( FirstEntryTable ),
+	SecondHashs = table:keys( SecondEntryTable ),
 
-	case list_utils:differences( FirstSHA1s, SecondSHA1s ) of
+	case list_utils:differences( FirstHashs, SecondHashs ) of
 
-		{ _OnlyInFirstSHA1=[], _OnlyInSecondSHA1=[] } ->
+		{ _OnlyInFirstHash=[], _OnlyInSecondHash=[] } ->
 
 			ui:display( "Both trees have exactly the same ~ts (and ~ts).",
-				[ count_content( FirstSHA1s ),
+				[ count_content( FirstHashs ),
 				  interpret_uniqueness( IsFirstUniquified, IsSecondUniquified,
 										FirstRootPath, SecondRootPath ) ] ),
 
 			{ FirstTreeData, SecondTreeData };
 
 
-		{ OnlyInFirstSHA1, _OnlyInSecondSHA1=[] } ->
+		{ OnlyInFirstHash, _OnlyInSecondHash=[] } ->
 
 			ui:display( "The first tree ('~ts') has ~ts that the second "
 				"has not (and ~ts); copying this content.~n~n~ts",
-				[ FirstRootPath, count_content( OnlyInFirstSHA1 ),
+				[ FirstRootPath, count_content( OnlyInFirstHash ),
 				  uniquified_to_string( IsFirstUniquified ),
-				  list_lacking_content( OnlyInFirstSHA1, FirstEntryTable,
+				  list_lacking_content( OnlyInFirstHash, FirstEntryTable,
 					"second", _MaybeRootPath=undefined,
 					_MaybeDeltaFile=undefined ) ] ),
 
-			NewSecondTreeData = copy_content( OnlyInFirstSHA1, FirstRootPath,
+			NewSecondTreeData = copy_content( OnlyInFirstHash, FirstRootPath,
 				FirstEntryTable, SecondTreeData, UserState ),
 
 			{ FirstTreeData, NewSecondTreeData };
 
 
-		{ _OnlyInFirstSHA1=[], OnlyInSecondSHA1 } ->
+		{ _OnlyInFirstHash=[], OnlyInSecondHash } ->
 
 			ui:display( "The second tree ('~ts') has ~ts that the first "
 				"has not (and ~ts); copying this content.~n~n~ts",
-				[ SecondRootPath, count_content( OnlyInSecondSHA1 ),
+				[ SecondRootPath, count_content( OnlyInSecondHash ),
 				  uniquified_to_string( IsSecondUniquified ),
-				  list_lacking_content( OnlyInSecondSHA1, SecondEntryTable,
+				  list_lacking_content( OnlyInSecondHash, SecondEntryTable,
 					"first", _MaybeRootPath=undefined,
 					_MaybeDeltaFile=undefined ) ] ),
 
-			NewFirstTreeData = copy_content( OnlyInSecondSHA1, SecondRootPath,
+			NewFirstTreeData = copy_content( OnlyInSecondHash, SecondRootPath,
 				SecondEntryTable, FirstTreeData, UserState ),
 
 			{ NewFirstTreeData, SecondTreeData };
 
 
-		{ OnlyInFirstSHA1, OnlyInSecondSHA1 } ->
+		{ OnlyInFirstHash, OnlyInSecondHash } ->
 
 			MaybeRootPath = undefined,
 			MaybeDeltaFile = undefined,
@@ -2405,19 +2416,19 @@ equalize( FirstTreeData=#tree_data{ root=FirstRootPath,
 				"and the second has ~ts that the first has not (and ~ts). "
 				"~n~n~ts~n~ts~nCompleting both trees with the content "
 				"they lack.",
-				[ count_content( OnlyInFirstSHA1 ),
-				  count_content( OnlyInSecondSHA1 ),
+				[ count_content( OnlyInFirstHash ),
+				  count_content( OnlyInSecondHash ),
 				  interpret_uniqueness( IsFirstUniquified,
 					IsSecondUniquified, FirstRootPath, SecondRootPath ),
-				  list_lacking_content( OnlyInSecondSHA1, SecondEntryTable,
+				  list_lacking_content( OnlyInSecondHash, SecondEntryTable,
 					"first", MaybeRootPath, MaybeDeltaFile ),
-				  list_lacking_content( OnlyInFirstSHA1, FirstEntryTable,
+				  list_lacking_content( OnlyInFirstHash, FirstEntryTable,
 					"second", MaybeRootPath, MaybeDeltaFile ) ] ),
 
-			NewFirstTreeData = copy_content( OnlyInSecondSHA1, SecondRootPath,
+			NewFirstTreeData = copy_content( OnlyInSecondHash, SecondRootPath,
 				SecondEntryTable, FirstTreeData, UserState ),
 
-			NewSecondTreeData = copy_content( OnlyInFirstSHA1, FirstRootPath,
+			NewSecondTreeData = copy_content( OnlyInFirstHash, FirstRootPath,
 				NewFirstTreeData#tree_data.entries, SecondTreeData, UserState ),
 
 			{ NewFirstTreeData, NewSecondTreeData }
@@ -2459,7 +2470,7 @@ check_against( AbsTreePath, AbsCachePath, AnalyzerRing, UserState ) ->
 	ToCheckTreeData = resync( AbsTreePath, AnalyzerRing, UserState ),
 	IsToCheckUniquified = is_uniquified( ToCheckTreeData ),
 	ToCheckEntries = ToCheckTreeData#tree_data.entries,
-	ToCheckSHA1s = table:keys( ToCheckEntries ),
+	ToCheckHashs = table:keys( ToCheckEntries ),
 	LocalHostname = ToCheckTreeData#tree_data.hostname,
 
 	% Cache file:
@@ -2467,7 +2478,7 @@ check_against( AbsTreePath, AbsCachePath, AnalyzerRing, UserState ) ->
 	AbsReadTreePath = ReadTreeData#tree_data.root,
 	IsReadUniquified = is_uniquified( ReadTreeData ),
 	ReadEntries = ReadTreeData#tree_data.entries,
-	ReadSHA1s = table:keys( ReadEntries ),
+	ReadHashs = table:keys( ReadEntries ),
 
 	ReadHostname = ReadTreeData#tree_data.hostname,
 
@@ -2484,22 +2495,22 @@ check_against( AbsTreePath, AbsCachePath, AnalyzerRing, UserState ) ->
 
 	ui:set_setting( title, Title ),
 
-	InBothSHA1s = list_utils:intersection( ToCheckSHA1s, ReadSHA1s ),
+	InBothHashs = list_utils:intersection( ToCheckHashs, ReadHashs ),
 
 	UniqStr = interpret_uniqueness( IsToCheckUniquified, IsReadUniquified,
 									AbsTreePath, AbsReadTreePath ),
 
-	case list_utils:differences( ToCheckSHA1s, ReadSHA1s ) of
+	case list_utils:differences( ToCheckHashs, ReadHashs ) of
 
-		{ _OnlyInCheckedSHA1s=[], _OnlyInCachedSHA1s=[] } ->
+		{ _OnlyInCheckedHashs=[], _OnlyInCachedHashs=[] } ->
 			ui:display( "The checked tree '~ts' and  '~ts' "
 				"(as represented by its cache file '~ts') have exactly the "
 				"same content (~ts), and ~ts.",
 				[ AbsTreePath, AbsReadTreePath, AbsCachePath,
-				  count_content( InBothSHA1s ), UniqStr ] );
+				  count_content( InBothHashs ), UniqStr ] );
 
 
-		{ OnlyInCheckedSHA1s, _OnlyInCachedSHA1s=[] } ->
+		{ OnlyInCheckedHashs, _OnlyInCachedHashs=[] } ->
 
 			{ DeltaFilePath, DeltaFile } = prepare_delta( LocalHostname,
 				AbsTreePath, ReadHostname, AbsReadTreePath ),
@@ -2510,13 +2521,13 @@ check_against( AbsTreePath, AbsCachePath, AnalyzerRing, UserState ) ->
 				"additionally ~ts.~n~nIts extra content will be written in "
 				"'~ts'.~n~n~ts",
 				[ AbsTreePath, AbsReadTreePath, AbsCachePath,
-				  count_content( InBothSHA1s ), UniqStr,
-				  count_content( OnlyInCheckedSHA1s ), DeltaFilePath,
-				  list_lacking_content( OnlyInCheckedSHA1s, ToCheckEntries,
+				  count_content( InBothHashs ), UniqStr,
+				  count_content( OnlyInCheckedHashs ), DeltaFilePath,
+				  list_lacking_content( OnlyInCheckedHashs, ToCheckEntries,
 					_OtherTreeDesc="cached", AbsTreePath, DeltaFile ) ] );
 
 
-		{ _OnlyInCheckedSHA1s=[], OnlyInCachedSHA1s } ->
+		{ _OnlyInCheckedHashs=[], OnlyInCachedHashs } ->
 
 			{ DeltaFilePath, DeltaFile } = prepare_delta( ReadHostname,
 				AbsReadTreePath, LocalHostname, AbsTreePath ),
@@ -2526,13 +2537,13 @@ check_against( AbsTreePath, AbsCachePath, AnalyzerRing, UserState ) ->
 				"they have in common ~ts (~ts), and checked tree lacks ~ts.~n~n"
 				"This lacking content will be written in '~ts'.~n~n~ts",
 				[ AbsTreePath, AbsReadTreePath, AbsCachePath,
-				  count_content( InBothSHA1s ), UniqStr,
-				  count_content( OnlyInCachedSHA1s ), DeltaFilePath,
-				  list_lacking_content( OnlyInCachedSHA1s, ReadEntries,
+				  count_content( InBothHashs ), UniqStr,
+				  count_content( OnlyInCachedHashs ), DeltaFilePath,
+				  list_lacking_content( OnlyInCachedHashs, ReadEntries,
 					_OtherTreeDesc="checked", AbsReadTreePath, DeltaFile ) ] );
 
 
-		{ OnlyInCheckedSHA1s, OnlyInCachedSHA1s } ->
+		{ OnlyInCheckedHashs, OnlyInCachedHashs } ->
 
 			{ LackingInCacheDeltaFilePath, LackingInCacheDeltaFile } =
 				prepare_delta( LocalHostname, AbsTreePath, ReadHostname,
@@ -2549,14 +2560,14 @@ check_against( AbsTreePath, AbsCachePath, AnalyzerRing, UserState ) ->
 				"The extra content in checked tree will be written in '~ts', "
 				"while the extra content in cached tree will be written "
 				"in '~ts'.~n~n~ts~n~ts",
-				[ count_content( InBothSHA1s ), UniqStr, AbsTreePath,
-				  count_content( OnlyInCheckedSHA1s ), AbsReadTreePath,
-				  AbsCachePath, count_content( OnlyInCachedSHA1s ),
+				[ count_content( InBothHashs ), UniqStr, AbsTreePath,
+				  count_content( OnlyInCheckedHashs ), AbsReadTreePath,
+				  AbsCachePath, count_content( OnlyInCachedHashs ),
 				  LackingInCacheDeltaFilePath, LackingInCheckedDeltaFilePath,
-				  list_lacking_content( OnlyInCheckedSHA1s, ToCheckEntries,
+				  list_lacking_content( OnlyInCheckedHashs, ToCheckEntries,
 					_FirstTreeDesc="cached", AbsTreePath,
 					LackingInCacheDeltaFile ),
-				  list_lacking_content( OnlyInCachedSHA1s, ReadEntries,
+				  list_lacking_content( OnlyInCachedHashs, ReadEntries,
 					_SecondTreeDesc="checked", AbsReadTreePath,
 					LackingInCheckedDeltaFile ) ] )
 
@@ -2571,7 +2582,7 @@ check_against( AbsTreePath, AbsCachePath, AnalyzerRing, UserState ) ->
 						 bin_directory_path(), user_state() ) -> void().
 preserve_symlinks( InputRootDir, TargetRootDir, TargetSubPath, UserState ) ->
 
-	% There may still be symbolic links in the input tree (ex: that were either
+	% There may still be symbolic links in the input tree (e.g. that were either
 	% added the user or created by this tool when electing a reference file and
 	% replacing duplicates by links).
 
@@ -2627,13 +2638,13 @@ preserve_symlinks( InputRootDir, TargetRootDir, TargetSubPath, UserState ) ->
 %
 % Returns the updated reference entries.
 %
--spec cherry_pick_content_to_merge( [ sha1() ], bin_directory_path(),
-	sha1_table(), bin_directory_path(), sha1_table(), bin_directory_path(),
-	user_state() ) -> sha1_table().
-cherry_pick_content_to_merge( SHA1sToPick, InputRootDir, InputEntries,
+-spec cherry_pick_content_to_merge( [ binary_hash() ], bin_directory_path(),
+	hash_table(), bin_directory_path(), hash_table(), bin_directory_path(),
+	user_state() ) -> hash_table().
+cherry_pick_content_to_merge( HashsToPick, InputRootDir, InputEntries,
 		ReferenceRootDir, ReferenceEntries, TargetSubPath, UserState ) ->
 
-	TotalContentCount = length( SHA1sToPick ),
+	TotalContentCount = length( HashsToPick ),
 
 	PickChoices = [ { move, text_utils:format( "Move this content "
 								"in reference tree (in its '~ts' directory)",
@@ -2641,7 +2652,7 @@ cherry_pick_content_to_merge( SHA1sToPick, InputRootDir, InputEntries,
 					{ delete, "Delete this content" },
 					{ abort, "Abort merge" } ],
 
-	cherry_pick_files_to_merge( SHA1sToPick, InputRootDir, InputEntries,
+	cherry_pick_files_to_merge( HashsToPick, InputRootDir, InputEntries,
 		ReferenceRootDir, ReferenceEntries, TargetSubPath, PickChoices,
 		_Count=1, TotalContentCount, UserState ).
 
@@ -2650,7 +2661,7 @@ cherry_pick_content_to_merge( SHA1sToPick, InputRootDir, InputEntries,
 % @doc Allows the user to cherry-pick the files that shall be copied (others
 % being removed; so no need to update source tree).
 %
-cherry_pick_files_to_merge( _SHA1sToPick=[], InputRootDir, _InputEntries,
+cherry_pick_files_to_merge( _HashsToPick=[], InputRootDir, _InputEntries,
 		ReferenceRootDir, ReferenceEntries, TargetSubPath, _PickChoices,
 		_Count, _TotalContentCount, UserState ) ->
 
@@ -2666,16 +2677,16 @@ cherry_pick_files_to_merge( _SHA1sToPick=[], InputRootDir, _InputEntries,
 	ReferenceEntries;
 
 
-cherry_pick_files_to_merge( _SHA1sToPick=[ SHA1 | T ], InputRootDir,
+cherry_pick_files_to_merge( _HashsToPick=[ Hash | T ], InputRootDir,
 		InputEntries, ReferenceRootDir, ReferenceEntries, TargetSubPath,
 		PickChoices, Count, TotalContentCount, UserState ) ->
 
-	% In all cases all files for this SHA1 shall be removed from input tree:
+	% In all cases all files for this Hash shall be removed from input tree:
 
 	ui:set_setting( title, text_utils:format( "Cherry-picking content ~B/~B",
 											  [ Count, TotalContentCount ] ) ),
 
-	NewReferenceEntries = case table:get_value( SHA1, InputEntries ) of
+	NewReferenceEntries = case table:get_value( Hash, InputEntries ) of
 
 		[ SingleFileData=#file_data{ path=ContentPath } ] ->
 
@@ -2704,7 +2715,7 @@ cherry_pick_files_to_merge( _SHA1sToPick=[ SHA1 | T ], InputRootDir,
 									path=MovedRelPath,
 									timestamp=NewTimestamp },
 
-					table:add_new_entry( SHA1, [ NewFileData ],
+					table:add_new_entry( Hash, [ NewFileData ],
 										 ReferenceEntries );
 
 				delete ->
@@ -2779,8 +2790,8 @@ cherry_pick_files_to_merge( _SHA1sToPick=[ SHA1 | T ], InputRootDir,
 
 					remove_files( ToRemoveFullPaths, UserState ),
 
-					NewTimestamp =
-					  file_utils:get_last_modification_time( MovedAbsRelPath ),
+					NewTimestamp = file_utils:get_last_modification_time( 
+						MovedAbsRelPath ),
 
 					% Any will do:
 					FileData = hd( MultipleFileData ),
@@ -2788,7 +2799,7 @@ cherry_pick_files_to_merge( _SHA1sToPick=[ SHA1 | T ], InputRootDir,
 					NewFileData = FileData#file_data{ path=MovedRelPath,
 													  timestamp=NewTimestamp },
 
-					table:add_new_entry( SHA1, [ NewFileData ],
+					table:add_new_entry( Hash, [ NewFileData ],
 										 ReferenceEntries );
 
 				delete ->
@@ -2810,7 +2821,7 @@ cherry_pick_files_to_merge( _SHA1sToPick=[ SHA1 | T ], InputRootDir,
 
 						no ->
 							% Going back to the beginning of this step:
-							cherry_pick_files_to_merge( SHA1, InputRootDir,
+							cherry_pick_files_to_merge( Hash, InputRootDir,
 								InputEntries, ReferenceRootDir,
 								ReferenceEntries, TargetSubPath, PickChoices,
 								Count, TotalContentCount, UserState )
@@ -2838,20 +2849,20 @@ cherry_pick_files_to_merge( _SHA1sToPick=[ SHA1 | T ], InputRootDir,
 
 % @doc Deletes all specified content.
 %
-% Does it on a per-content basic rather than doing nothing before the input tree
-% is removed as whole, as more control is preferred (to check that the final
-% input tree has been indeed emptied of all content).
+% Does it on a per-content basis, rather than doing nothing before the input
+% tree is removed as whole, as more control is preferred (to check that the
+% final input tree has been indeed emptied of all content).
 %
--spec delete_content_to_merge( [ sha1() ], directory_path(), sha1_table(),
-							   user_state() ) -> sha1_table().
-delete_content_to_merge( SHA1sToDelete, InputRootDir, InputEntries,
+-spec delete_content_to_merge( [ binary_hash() ], directory_path(),
+							   hash_table(), user_state() ) -> void().
+delete_content_to_merge( HashsToDelete, InputRootDir, InputEntries,
 						 UserState ) ->
 
 	Paths = [ begin
-				FileDatas = table:get_value( SHA1, InputEntries ),
+				FileDatas = table:get_value( Hash, InputEntries ),
 				[ file_utils:bin_join( InputRootDir, P )
 					|| #file_data{ path=P } <- FileDatas ]
-			  end || SHA1 <- SHA1sToDelete ],
+			  end || Hash <- HashsToDelete ],
 
 	remove_files( [ get_cache_path_for( InputRootDir )
 					| list_utils:flatten_once( Paths ) ], UserState ),
@@ -2922,7 +2933,7 @@ safe_move( SourceRootDir, SourceRelPath, TargetRootDir, TargetSubPath,
 
 			% Nothing simpler than:
 			FixedRelTargetPath = file_utils:make_relative( FixedAbsTargetPath,
-											_RefDir=TargetRootDir ),
+				_RefDir=TargetRootDir ),
 
 			{ FixedAbsTargetPath, FixedRelTargetPath };
 
@@ -2976,7 +2987,7 @@ safe_copy( SourceRootDir, SourceRelPath, TargetRootDir, UserState ) ->
 
 			% Nothing simpler than:
 			FixedRelTargetPath = file_utils:make_relative( FixedAbsTargetPath,
-											_RefDir=TargetRootDir ),
+				_RefDir=TargetRootDir ),
 
 			{ FixedAbsTargetPath, FixedRelTargetPath };
 
@@ -3018,14 +3029,14 @@ safe_delete( FilePath, UserState ) ->
 
 
 % @doc Returns the number of files referenced in specified table.
--spec get_file_count_from( sha1_table() ) -> count().
-get_file_count_from( SHA1Table ) ->
+-spec get_file_count_from( hash_table() ) -> count().
+get_file_count_from( HashTable ) ->
 
 	lists:foldl( fun( FileDataList, Acc ) ->
 					Acc + length( FileDataList )
 				 end,
 				 _Acc0=0,
-				 _List=table:values( SHA1Table ) ).
+				 _List=table:values( HashTable ) ).
 
 
 
@@ -3222,7 +3233,7 @@ find_newest_timestamp_from( RootPath, CacheFilePath ) ->
 	CacheFilename = file_utils:get_last_path_element( CacheFilePath ),
 
 	ActualFileRelPaths = list_utils:delete_existing( CacheFilename,
-										find_regular_files_from( RootPath ) ),
+		find_regular_files_from( RootPath ) ),
 
 	%trace_bridge:debug_fmt( "ActualFileRelPaths: ~p", [ ActualFileRelPaths ] ),
 
@@ -3275,7 +3286,7 @@ handle_newest_timestamp( NewestTimestamp, ContentFiles, CacheFilePath,
 						 BinTreePath, AnalyzerRing, UserState ) ->
 
 	NewestString = time_utils:timestamp_to_string(
-						time_utils:from_posix_timestamp( NewestTimestamp ) ),
+		time_utils:from_posix_timestamp( NewestTimestamp ) ),
 
 	case file_utils:get_last_modification_time( CacheFilePath ) of
 
@@ -3413,7 +3424,7 @@ write_cache_header( File ) ->
 		"% at ~ts.~n~n"
 		"% Structure of the cached file entries (sorted according to their "
 		"path):~n"
-		"% first the 'file_info' tag, then the SHA1 of the file of interest,~n"
+		"% first the 'file_info' tag, then the Hash of the file of interest,~n"
 		"% its path (relative to the root entry), its size (in bytes) and~n"
 		"% finally its POSIX timestamp.~n~n" ,
 		[ ScriptName, ?merge_script_version,
@@ -3438,8 +3449,8 @@ write_tree_data( MergeFile, #tree_data{ root=BinRootDir,
 	% Converting file_data records into file_info elements to be stored
 	% in-file (serialised):
 	%
-	EntryContent = lists:foldl( fun( { SHA1, FileData }, Acc ) ->
-									get_file_content_for( SHA1, FileData )
+	EntryContent = lists:foldl( fun( { Hash, FileData }, Acc ) ->
+									get_file_content_for( Hash, FileData )
 											++ Acc
 								end,
 								_Acc0=[],
@@ -3462,21 +3473,21 @@ write_entries( _File, _Content=[] ) ->
 	ok;
 
 write_entries( File,
-			   _Content=[ { SHA1, RelativePath, Size, Timestamp } | T ] ) ->
+			   _Content=[ { Hash, RelativePath, Size, Timestamp } | T ] ) ->
 
 	% To check Unicode:
 	%io:format("Writing '~ts'.~n", [ RelativePath ] ),
 
-	% For easier interpretation, we now store SHA1 as hexadecimal in strings
-	% instead of direct integers:
+	% For easier interpretation, we now store hashes as hexadecimal in strings
+	% (instead of initially direct integers, then binaries):
 
-	% If ever some SHA1 were shorter than 40 (+3 for the quotes and the comma)
+	% If ever some Hash were shorter than 40 (+3 for the quotes and the comma)
 	% characters (alignment for readability):
 	%
-	TargetSHA1Width = 43,
+	TargetHashWidth = 43,
 
-	SHA1Str = text_utils:pad_string_left( text_utils:format( "\"~ts\",",
-				[ sha1_to_string( SHA1 ) ] ), TargetSHA1Width ),
+	HashStr = text_utils:pad_string_left( text_utils:format( "\"~ts\",",
+		[ hash_to_string( Hash ) ] ), TargetHashWidth ),
 
 	% 'file_info', to better separate from 'file_data':
 	%
@@ -3504,7 +3515,7 @@ write_entries( File,
 	end,
 
 	EntryToWrite = text_utils:format( "{file_info, ~ts ~ts, ~B, ~B}.~n",
-								[ SHA1Str, PathToWrite, Size, Timestamp ] ),
+		[ HashStr, PathToWrite, Size, Timestamp ] ),
 
 	ToWrite = case MaybeComment of
 
@@ -3522,15 +3533,15 @@ write_entries( File,
 
 
 
-% @doc Checking on the SHA1:
-get_file_content_for( SHA1, FileDataElems ) ->
+% @doc Checking on the Hash:
+get_file_content_for( Hash, FileDataElems ) ->
 	% Storage format a bit different from working one:
-	[ { SHA1, RelativePath, Size, Timestamp }
+	[ { Hash, RelativePath, Size, Timestamp }
 		|| #file_data{ path=RelativePath,
 					   % type: not to store
 					   size=Size,
 					   timestamp=Timestamp,
-					   sha1_sum=RecSHA1 } <- FileDataElems, RecSHA1 =:= SHA1 ].
+					   hash=RecHash } <- FileDataElems, RecHash =:= Hash ].
 
 
 
@@ -3696,7 +3707,7 @@ scan_files( _Files=[ Filename | T ], TreeData=#tree_data{ root=BinAbsTreePath },
 
 % @doc Manages specified received file data, and returns an updated tree data.
 -spec manage_received_data( file_data(), tree_data() ) -> tree_data().
-manage_received_data( FileData=#file_data{ type=Type, sha1_sum=Sum },
+manage_received_data( FileData=#file_data{ type=Type, hash=Hash },
 					  TreeData=#tree_data{ entries=Entries,
 										   file_count=FileCount,
 										   directory_count=DirCount,
@@ -3707,14 +3718,14 @@ manage_received_data( FileData=#file_data{ type=Type, sha1_sum=Sum },
 	%trace_debug( "Data received: ~ts",
 	%             [ file_data_to_string( FileData ) ] ),
 
-	% Ensures that we associate a list to each SHA1 sum:
-	NewEntries = case table:lookup_entry( Sum, Entries ) of
+	% Ensures that we associate a list to each hash:
+	NewEntries = case table:lookup_entry( Hash, Entries ) of
 
 		key_not_found ->
-			table:add_entry( Sum, [ FileData ], Entries );
+			table:add_entry( Hash, [ FileData ], Entries );
 
-		{ value, SumEntries } ->
-			table:add_entry( Sum, [ FileData | SumEntries ], Entries )
+		{ value, HashEntries } ->
+			table:add_entry( Hash, [ FileData | HashEntries ], Entries )
 
 	end,
 
@@ -3791,8 +3802,8 @@ analyze_loop() ->
 						size=file_utils:get_size( BinFilePath ),
 						timestamp=file_utils:get_last_modification_time(
 												BinFilePath ),
-						sha1_sum=hash_utils:compute_file_sha1_sum( BinFilePath )
-								 },
+						hash=hash_utils:get_file_hash( BinFilePath,
+													   ?hashing_algorithm ) },
 
 					% To avoid overheating:
 					timer:sleep( 50 ),
@@ -3838,7 +3849,8 @@ analyze_loop() ->
 				type=file_utils:get_type_of( BinFilePath ),
 				size=file_utils:get_size( BinFilePath ),
 				timestamp=file_utils:get_last_modification_time( BinFilePath ),
-				sha1_sum=hash_utils:compute_file_sha1_sum( BinFilePath ) },
+				hash=hash_utils:get_file_hash( BinFilePath,
+											   ?hashing_algorithm ) },
 
 			SenderPid ! { file_checked, FileData },
 			analyze_loop();
@@ -3928,15 +3940,15 @@ deduplicate_tree( TreeData=#tree_data{ root=BinRootDir,
 % and the number of files (usually only extra duplicates, sometimes *all* files
 % corresponding to a given content) that have been removed.
 %
--spec manage_duplicates( sha1_table(), bin_directory_path(), user_state() ) ->
-								{ sha1_table(), count() }.
+-spec manage_duplicates( hash_table(), bin_directory_path(), user_state() ) ->
+								{ hash_table(), count() }.
 manage_duplicates( EntryTable, BinRootDir, UserState ) ->
 
 	ContentEntries = table:enumerate( EntryTable ),
 
 	% We could have forced that no duplication at all exists afterwards (and
-	% then a given SHA1 sum would be associated to exactly one content), however
-	% it would be too strict, hence we kept a list associated to each SHA1 sum.
+	% then a given hash would be associated to exactly one content), however it
+	% would be too strict, hence we kept a list associated to each hash.
 	%
 	% Two passes: one to establish and count the duplications, another to solve
 	% them; returns a list of duplications, and a content table referencing all
@@ -4004,36 +4016,36 @@ manage_duplicates( EntryTable, BinRootDir, UserState ) ->
 % @doc Filters the duplications from specified content entries: returns the
 % actual duplications in a list, put the unique files in a new table.
 %
--spec filter_duplications( [ sha1_entry() ] ) ->
-									{ [ sha1_entry() ], sha1_table() }.
-filter_duplications( SHA1Entries ) ->
+-spec filter_duplications( [ hash_entry() ] ) ->
+									{ [ hash_entry() ], hash_table() }.
+filter_duplications( HashEntries ) ->
 	% Far better than a fold:
-	filter_duplications( SHA1Entries, _Acc={ _DupEntries=[], table:new() } ).
+	filter_duplications( HashEntries, _Acc={ _DupEntries=[], table:new() } ).
 
 
 % Returns {AccDupEntries, AccUniqueTable}:
-filter_duplications( _SHA1Entry=[], Acc ) ->
+filter_duplications( _HashEntry=[], Acc ) ->
 	Acc;
 
 % By design V is never empty:
-filter_duplications( _SHA1Entry=[ { Sha1Key, V=[ _SingleContent ] } | T ],
+filter_duplications( _HashEntry=[ { HashKey, V=[ _SingleContent ] } | T ],
 					 _Acc={ AccDupEntries, AccUniqueTable } ) ->
 	% Single content, hence unique (and an extraneous checking):
-	NewTable = table:add_new_entry( Sha1Key, V, AccUniqueTable ),
+	NewTable = table:add_new_entry( HashKey, V, AccUniqueTable ),
 	filter_duplications( T, { AccDupEntries, NewTable } );
 
-% SHA1Entry is {Sha1Key, V} with at least two elements in V here:
-filter_duplications( _SHA1Entries=[ SHA1Entry | T ],
+% HashEntry is {HashKey, V} with at least two elements in V here:
+filter_duplications( _HashEntries=[ HashEntry | T ],
 					 _Acc={ AccDupEntries, AccUniqueTable } ) ->
 	% So at least one duplicate here:
-	NewDupEntries = [ SHA1Entry | AccDupEntries ],
+	NewDupEntries = [ HashEntry | AccDupEntries ],
 	filter_duplications( T, { NewDupEntries, AccUniqueTable } ).
 
 
 
 % @doc Processes the spotted duplications by asking the user.
--spec process_duplications( [ sha1_entry() ], count(), sha1_table(),
-			bin_directory_path(), user_state() ) -> { sha1_table(), count() }.
+-spec process_duplications( [ hash_entry() ], count(), hash_table(),
+			bin_directory_path(), user_state() ) -> { hash_table(), count() }.
 process_duplications( DuplicationCases, TotalDupCaseCount, UniqueTable,
 					  BinRootDir, UserState ) ->
 
@@ -4050,7 +4062,7 @@ process_duplications( DuplicationCases, TotalDupCaseCount, UniqueTable,
 
 
 
-% Helper returning {UpdatedTable :: sha1_table(), RemoveCount :: count()}:
+% Helper returning {UpdatedTable :: hash_table(), RemoveCount :: count()}:
 process_duplications_helper( _DupCases=[], _TotalDupCount,
 		_Acc={ AccTable, _AccDupCount, AccRemoveCount }, _BinRootDir,
 		_UserState ) ->
@@ -4060,11 +4072,11 @@ process_duplications_helper( _DupCases=[], _TotalDupCount,
 
 	{ AccTable, AccRemoveCount };
 
-process_duplications_helper( _DupCases=[ { Sha1Key, DuplicateList } | T ],
+process_duplications_helper( _DupCases=[ { HashKey, DuplicateList } | T ],
 		TotalDupCount, _Acc={ AccTable, AccDupCount, AccRemoveCount },
 		BinRootDir, UserState ) ->
 
-	Size = check_duplicates( Sha1Key, DuplicateList ),
+	Size = check_duplicates( HashKey, DuplicateList ),
 
 	% Returns an updated table and a list of the files containing that content:
 	{ NewAccTable, RemainingFileEntries } = case manage_duplication_case(
@@ -4072,10 +4084,10 @@ process_duplications_helper( _DupCases=[ { Sha1Key, DuplicateList } | T ],
 			UserState ) of
 
 		[] ->
-			{ table:remove_entry( Sha1Key, AccTable ), [] };
+			{ table:remove_entry( HashKey, AccTable ), [] };
 
 		SelectFileEnts ->
-			{ table:add_entry( Sha1Key, SelectFileEnts, AccTable ),
+			{ table:add_entry( HashKey, SelectFileEnts, AccTable ),
 			  SelectFileEnts }
 
 	end,
@@ -4090,33 +4102,33 @@ process_duplications_helper( _DupCases=[ { Sha1Key, DuplicateList } | T ],
 
 
 
-% @doc Checks a duplication set: same SHA1 sum and also size must be found for
-% all file entries (would most probably detect any SHA1 collision, however
-% unlikely it maybe); returns the (common) size.
+% @doc Checks a duplication set: same hash and also size must be found for all
+% file entries (would most probably detect any hash collision, however unlikely
+% it maybe); returns the (common) size.
 %
--spec check_duplicates( sha1(), [ file_data() ] ) -> byte_size().
-% Not possible: check_duplicates( _SHA1Sum, _DuplicateList=[] ) ->
+-spec check_duplicates( binary_hash(), [ file_data() ] ) -> byte_size().
+% Not possible: check_duplicates( _Hash, _DuplicateList=[] ) ->
 %	ok;
 
 % Use the first element to determine the (common) size:
-check_duplicates( SHA1Sum, _DuplicateList=[
-	   #file_data{ path=FirstPath, sha1_sum=SHA1Sum, size=Size } | T ] ) ->
-	check_duplicates( SHA1Sum, FirstPath, Size, T ).
+check_duplicates( Hash, _DuplicateList=[
+	   #file_data{ path=FirstPath, hash=Hash, size=Size } | T ] ) ->
+	check_duplicates( Hash, FirstPath, Size, T ).
 
 
 % (helper)
-check_duplicates( _SHA1Sum, _FirstPath, Size, _DuplicateList=[] ) ->
+check_duplicates( _Hash, _FirstPath, Size, _DuplicateList=[] ) ->
 	Size;
 
-check_duplicates( SHA1Sum, FirstPath, Size, _DuplicateList=[
-		#file_data{ sha1_sum=SHA1Sum, size=Size } | T ] ) ->
-	check_duplicates( SHA1Sum, FirstPath, Size, T );
+check_duplicates( Hash, FirstPath, Size, _DuplicateList=[
+		#file_data{ hash=Hash, size=Size } | T ] ) ->
+	check_duplicates( Hash, FirstPath, Size, T );
 
-% (and a different SHA1 sum would trigger a case clause)
-check_duplicates( SHA1Sum, FirstPath, Size, _DuplicateList=[
-	  #file_data{ path=OtherPath, sha1_sum=SHA1Sum, size=OtherSize } | _T ] ) ->
+% (and a different hash would trigger a case clause)
+check_duplicates( Hash, FirstPath, Size, _DuplicateList=[
+	  #file_data{ path=OtherPath, hash=Hash, size=OtherSize } | _T ] ) ->
 
-	throw( { sha1_collision_detected, SHA1Sum, { FirstPath, Size },
+	throw( { hash_collision_detected, Hash, { FirstPath, Size },
 				{ OtherPath, OtherSize } } ).
 
 
@@ -4310,8 +4322,8 @@ manage_duplication_case( FileEntries, DuplicationCaseCount, TotalDupCaseCount,
 % duplicate filenames and by transforming the others into symlinks pointing to
 % it.
 %
--spec auto_deduplicate( [ sha1_entry() ], count(), sha1_table(),
-			bin_directory_path(), user_state() ) -> { sha1_table(), count() }.
+-spec auto_deduplicate( [ hash_entry() ], count(), hash_table(),
+			bin_directory_path(), user_state() ) -> { hash_table(), count() }.
 auto_deduplicate( DuplicationCases, _TotalDupCaseCount, UniqueTable, BinRootDir,
 				  UserState ) ->
 
@@ -4327,7 +4339,7 @@ auto_dedup( _DuplicationCases=[], AccTable, AccRemoveCount, _BinRootDir,
 			_UserState ) ->
 	{ AccTable, AccRemoveCount };
 
-auto_dedup( _DuplicationCases=[ { Sha1Key, DuplicateList } | T ], AccTable,
+auto_dedup( _DuplicationCases=[ { HashKey, DuplicateList } | T ], AccTable,
 			AccRemoveCount, BinRootDir, UserState ) ->
 
 	% [{count(), file_path(), file_data()}] (ties are broken by second element
@@ -4364,7 +4376,7 @@ auto_dedup( _DuplicationCases=[ { Sha1Key, DuplicateList } | T ], AccTable,
 
 	  end || LnkPath <- SymLnkPaths ],
 
-	NewAccTable = table:add_entry( Sha1Key, [ RefFD ], AccTable ),
+	NewAccTable = table:add_entry( HashKey, [ RefFD ], AccTable ),
 
 	auto_dedup( T, NewAccTable, AccRemoveCount + length( OtherFDTriplets ),
 				BinRootDir, UserState ).
@@ -4562,16 +4574,16 @@ create_links_to( TargetFilePath, _LinkPaths= [ Link | T ], BinRootDir ) ->
 		file_utils:make_relative( TargetFilePath, LinkDir ),
 
 	file_utils:create_link( RelativeTargetFilePath,
-								file_utils:bin_join( BinRootDir, Link ) ),
+							file_utils:bin_join( BinRootDir, Link ) ),
 
 	create_links_to( TargetFilePath, T, BinRootDir ).
 
 
 
-% @doc Performs a quick check (i.e. with no checksum computed of the file
-% contents) of the specified tree, against the specified cache file: check that
-% both file sets match (no extra element on either size) and that the cached and
-% actual file sizes match as well.
+% @doc Performs a quick check (i.e. with no hash computed of the file contents)
+% of the specified tree, against the specified cache file: check that both file
+% sets match (no extra element on either size) and that the cached and actual
+% file sizes match as well.
 %
 -spec quick_cache_check( file_path(), [ file_path() ], bin_directory_path(),
 					analyzer_ring(), user_state() ) -> maybe( tree_data() ).
@@ -4651,7 +4663,7 @@ quick_cache_check_helper( BinFQDN, ContentFiles, BinActualTreePath,
 	CachedFileCount = length( FileInfos ),
 
 	CachedFilePairs = [ { Path, Size }
-			|| { file_info, _SHA1, Path, Size, _Timestamp } <- FileInfos ],
+			|| { file_info, _Hash, Path, Size, _Timestamp } <- FileInfos ],
 
 	case ActualFileCount of
 
@@ -4760,12 +4772,10 @@ quick_cache_check_helper( BinFQDN, ContentFiles, BinActualTreePath,
 
 
 
-% @doc Builds the entry table from specified terms.
--spec build_entry_table( [ file_info() ] ) -> sha1_table().
+% @doc Builds the entry table from the specified terms.
+-spec build_entry_table( [ file_info() ] ) -> hash_table().
 build_entry_table( FileInfos ) ->
-
 	EntryTable = table:new(),
-
 	build_entry_table( FileInfos, EntryTable ).
 
 
@@ -4773,19 +4783,19 @@ build_entry_table( FileInfos ) ->
 build_entry_table( _FileInfos=[], EntryTable ) ->
 	EntryTable;
 
-build_entry_table(
-  _FileInfos=[ { file_info, SHA1Str, BinRelativePath, Size, Timestamp } | T  ],
-  EntryTable ) ->
+build_entry_table( _FileInfos=[ { file_info, HashStr, BinRelativePath, Size,
+								  Timestamp } | T  ],
+				   EntryTable ) ->
 
-	SHA1 = text_utils:hexastring_to_integer( SHA1Str, _ExpectPrefix=false ),
+	BinHash = text_utils:hexastring_to_binary( HashStr ),
 
 	FileData = #file_data{ path=BinRelativePath,
 						   type=regular,
 						   size=Size,
 						   timestamp=Timestamp,
-						   sha1_sum=SHA1 },
+						   hash=BinHash },
 
-	NewEntryTable = table:append_to_entry( SHA1, FileData, EntryTable ),
+	NewEntryTable = table:append_to_entry( BinHash, FileData, EntryTable ),
 
 	build_entry_table( T, NewEntryTable );
 
@@ -4893,14 +4903,14 @@ prepare_delta( FirstHostname, FirstRootPath, SecondHostname,
 % @doc Returns a textual description of specified lacking cached content, and
 % writes a corresponding information in specified opened file (if any).
 %
--spec list_lacking_content( [ sha1() ], sha1_table(), ustring(),
+-spec list_lacking_content( [ binary_hash() ], hash_table(), ustring(),
 			maybe( bin_directory_path() ), maybe( file() ) ) -> ustring().
-list_lacking_content( _SHA1s=[ SHA1 ], SHA1Table, OtherTreeDesc, MaybeRootPath,
+list_lacking_content( _Hashs=[ Hash ], HashTable, OtherTreeDesc, MaybeRootPath,
 					  MaybeDeltaFile ) ->
 
 	Str = text_utils:format_ellipsed( "The content lacking in ~ts tree is ~ts.",
 		[ OtherTreeDesc,
-		  describe_content( SHA1, SHA1Table, MaybeRootPath, MaybeDeltaFile ) ],
+		  describe_content( Hash, HashTable, MaybeRootPath, MaybeDeltaFile ) ],
 		?max_text_length ),
 
 	MaybeDeltaFile =:= undefined orelse file_utils:close( MaybeDeltaFile ),
@@ -4908,14 +4918,14 @@ list_lacking_content( _SHA1s=[ SHA1 ], SHA1Table, OtherTreeDesc, MaybeRootPath,
 	Str;
 
 
-list_lacking_content( SHA1s, SHA1Table, OtherTreeDesc, MaybeRootPath,
+list_lacking_content( Hashs, HashTable, OtherTreeDesc, MaybeRootPath,
 					  MaybeDeltaFile ) ->
 
 	Str = text_utils:format_ellipsed(
 		"The contents lacking in ~ts tree are: ~ts",
 		[ OtherTreeDesc, text_utils:strings_to_enumerated_string(
-			[ describe_content( S, SHA1Table, MaybeRootPath, MaybeDeltaFile )
-				|| S <- SHA1s ] ) ], ?max_text_length ),
+			[ describe_content( S, HashTable, MaybeRootPath, MaybeDeltaFile )
+				|| S <- Hashs ] ) ], ?max_text_length ),
 
 	MaybeDeltaFile =:= undefined orelse file_utils:close( MaybeDeltaFile ),
 
@@ -4924,9 +4934,9 @@ list_lacking_content( SHA1s, SHA1Table, OtherTreeDesc, MaybeRootPath,
 
 
 % (helper)
-describe_content( SHA1, SHA1Table, RootPath, MaybeDeltaFile ) ->
+describe_content( Hash, HashTable, RootPath, MaybeDeltaFile ) ->
 
-	{ ContentPath, Str } = case table:get_value( SHA1, SHA1Table ) of
+	{ ContentPath, Str } = case table:get_value( Hash, HashTable ) of
 
 		[ _SingleFileData=#file_data{ path=UniqContentPath } ] ->
 			{ UniqContentPath,
@@ -5000,7 +5010,7 @@ uniquified_to_string( false ) ->
 
 
 % @doc Returns a textual description of the count of the specified content.
--spec count_content( [ sha1() ] | count() ) -> ustring().
+-spec count_content( [ binary_hash() ] | count() ) -> ustring().
 count_content( L ) when is_list( L ) ->
 	count_content( length( L ) );
 
@@ -5201,36 +5211,36 @@ tree_data_to_string( TreeData, _Verbose=true ) ->
 
 	Entries = table:enumerate( TreeData#tree_data.entries ),
 
-	SHA1Strings = [
+	HashStrings = [
 		begin
 			Bins = [ FD#file_data.path || FD <- FDs ],
-			text_utils:format( "for SHA1 ~ts: ~ts", [
-				sha1_to_string( SHA1 ),
+			text_utils:format( "for Hash ~ts: ~ts", [
+				hash_to_string( Hash ),
 				text_utils:binaries_to_string( Bins, _Indent=1 ) ] )
-		end || { SHA1, FDs } <- Entries ],
+		end || { Hash, FDs } <- Entries ],
 
-	DetailString = text_utils:strings_to_enumerated_string( SHA1Strings ),
+	DetailString = text_utils:strings_to_enumerated_string( HashStrings ),
 
 	tree_data_to_string( TreeData, false ) ++ DetailString.
 
 
 
-% @doc Returns a textual description of specified file data.
+% @doc Returns a textual description of the specified file data.
 -spec file_data_to_string( file_data() ) -> ustring().
 file_data_to_string( #file_data{ path=Path,
 								 size=Size,
 								 timestamp=Timestamp,
-								 sha1_sum=Sum } ) ->
+								 hash=Hash } ) ->
 
 	SizeString = system_utils:interpret_byte_size_with_unit( Size ),
 
-	text_utils:format( "file '~ts' whose size is ~ts, SHA1 sum is ~ts and "
-		"timestamp is ~p", [ Path, SizeString, Sum, Timestamp ] ).
+	text_utils:format( "file '~ts' whose size is ~ts, hash is ~ts and "
+		"timestamp is ~p", [ Path, SizeString, Hash, Timestamp ] ).
 
 
-% @doc Returns a textual description of specified SHA1.
--spec sha1_to_string( sha1() ) -> ustring().
-sha1_to_string( SHA1 ) ->
+% @doc Returns a textual description of the specified Hash.
+-spec hash_to_string( binary_hash() ) -> ustring().
+hash_to_string( Hash ) ->
 	% Mimics the output of the sha1sum executable:
 	text_utils:to_lowercase(
-		text_utils:binary_to_hexastring( SHA1, _AddPrefix=false ) ).
+		text_utils:binary_to_hexastring( Hash, _AddPrefix=false ) ).

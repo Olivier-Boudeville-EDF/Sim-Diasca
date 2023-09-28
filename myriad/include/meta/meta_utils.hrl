@@ -26,7 +26,6 @@
 % Creation date: Tuesday, December 30, 2014.
 
 
-
 % For all modules being bootstrap ones, the 'table' pseudo-module is not
 % available (as these modules are not processed by the 'Myriad' parse
 % transform).

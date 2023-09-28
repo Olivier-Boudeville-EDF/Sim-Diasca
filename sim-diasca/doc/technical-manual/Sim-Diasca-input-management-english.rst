@@ -36,7 +36,7 @@ A simple example would be when two actors (A and B) have to know each other init
 
 Furthermore, in order to designate instances, most simulation projects tend to rely on identifier conventions of their own, that are specific to these simulations and may be of approximately any datatype.
 
-For example some projects will rely on numerical instance identifiers (ex: ``1275411``), other may use names (ex: ``1600 Pennsylvania Ave NW, Washington, DC 2050012, United State``) while some simulations could rely on more complex data structures (ex: ``(12,3.0,45)``, whatever this may mean).
+For example some projects will rely on numerical instance identifiers (e.g. ``1275411``), other may use names (e.g. ``1600 Pennsylvania Ave NW, Washington, DC 2050012, United State``) while some simulations could rely on more complex data structures (e.g. ``(12,3.0,45)``, whatever this may mean).
 
 Qualities of an input management system include:
 
@@ -249,7 +249,7 @@ We can see that no placement hint could be specified in the creation lines above
 
 Indeed, with data-based initialisations, placement derives naturally from user identifiers:
 
-- if a user identifier is specified (ex: ``"My Foo" <- {class_Foo,[...]}``), then this identifier (``"My Foo"``) will be used as a placement hint
+- if a user identifier is specified (e.g. ``"My Foo" <- {class_Foo,[...]}``), then this identifier (``"My Foo"``) will be used as a placement hint
 
 - if no user identifier is specified:
 
@@ -257,9 +257,9 @@ Indeed, with data-based initialisations, placement derives naturally from user i
 
   - if no placement hint is specified either:
 
-	- if no user identifier is referenced either (ex: ``{class_Foo,["Hello world!",1.4]}.``), then the corresponding instance will be placed according to the default policy of the load balancer
+	- if no user identifier is referenced either (e.g. ``{class_Foo,["Hello world!",1.4]}.``), then the corresponding instance will be placed according to the default policy of the load balancer
 
-	- if at least one user identifier is referenced (ex: ``{class_Foo,[2,{user_id,"AA"},0.0,{user_id,"BB"}, my_atom]}.``), then the corresponding instance will be placed according to the first user identifier found when parsing the construction parameters; so, in this example, this ``class_Foo`` instance would be created on the same computing node on which the instance designated by user identifier ``"AA"`` will be
+	- if at least one user identifier is referenced (e.g. ``{class_Foo,[2,{user_id,"AA"},0.0,{user_id,"BB"}, my_atom]}.``), then the corresponding instance will be placed according to the first user identifier found when parsing the construction parameters; so, in this example, this ``class_Foo`` instance would be created on the same computing node on which the instance designated by user identifier ``"AA"`` will be
 
 This allows an automatic, implicit placement of instances which by design are likely to interact.
 

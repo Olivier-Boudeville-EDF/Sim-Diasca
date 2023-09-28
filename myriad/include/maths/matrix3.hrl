@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2022 Olivier Boudeville
+% Copyright (C) 2009-2023 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -23,6 +23,7 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2009.
 
 
 % The classical, canonical 3x3 matrix representation is:
@@ -31,24 +32,24 @@
 % M = | M21 M22 M23 |
 %     | M31 M32 M33 |
 %
-% This corresponds to this record specialised for 3D. Coordinates are listed row
-% per row.
+% This corresponds to the following record specialised for 3D. Coordinates are
+% listed row per row.
 %
-% A shorthand for these record and corresponding type could be m3.
+% horthand for these record and corresponding type could be m3.
 %
 -record( matrix3, {
 
-  m11 :: linear:coordinate(),
-  m12 :: linear:coordinate(),
-  m13 :: linear:coordinate(),
+	m11 :: linear:coordinate(),
+	m12 :: linear:coordinate(),
+	m13 :: linear:coordinate(),
 
-  m21 :: linear:coordinate(),
-  m22 :: linear:coordinate(),
-  m23 :: linear:coordinate(),
+	m21 :: linear:coordinate(),
+	m22 :: linear:coordinate(),
+	m23 :: linear:coordinate(),
 
-  m31 :: linear:coordinate(),
-  m32 :: linear:coordinate(),
-  m33 :: linear:coordinate() } ).
+	m31 :: linear:coordinate(),
+	m32 :: linear:coordinate(),
+	m33 :: linear:coordinate() } ).
 
 
 
@@ -60,7 +61,7 @@
 %
 % and T = transpose(| Tx Ty |).
 %
-% This corresponds to, by blocks:
+% This corresponds to, by blocks (and as floats):
 %
 % M = | M2 T |
 %     |  0 1 |
@@ -77,10 +78,10 @@
 %
 -record( compact_matrix3, {
 
-  m11 :: linear:coordinate(),
-  m12 :: linear:coordinate(),
-  tx  :: linear:coordinate(),
+	m11 :: linear:coordinate(),
+	m12 :: linear:coordinate(),
+	tx  :: linear:coordinate(),
 
-  m21 :: linear:coordinate(),
-  m22 :: linear:coordinate(),
-  ty  :: linear:coordinate() } ).
+	m21 :: linear:coordinate(),
+	m22 :: linear:coordinate(),
+	ty  :: linear:coordinate() } ).

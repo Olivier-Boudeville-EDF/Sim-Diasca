@@ -114,9 +114,11 @@ construct( State ) ->
 % @doc Returns the description of this Describable.
 -spec getDescription( wooper:state() ) -> const_request_return( description() ).
 getDescription( State=#state_holder{ actual_class=Classname } ) ->
+
 	% This is a default implementation that may be kept as is:
-	Desc = Classname:to_string( State ),
-	wooper:const_return_result( Desc ).
+	BinDesc = text_utils:string_to_binary( Classname:to_string( State ) ),
+
+	wooper:const_return_result( BinDesc ).
 
 
 

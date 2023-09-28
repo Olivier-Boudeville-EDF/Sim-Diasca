@@ -1,13 +1,13 @@
 MYRIAD_TOP = .
 
 
-.PHONY: help help-intro help-myriad help-hints help-batch                     \
+.PHONY: help help-myriad help-hints help-batch                                \
 		register-version-in-header register-myriad list-beam-dirs             \
 		add-prerequisite-plts prepare-base-plt add-erlhdf5-plt add-jsx-plt    \
 		add-sqlite3-plt link-plt clean-ast-outputs clean-local stats          \
 		info-context info-versions info-paths                                 \
 		info-settings info-json info-sql                                      \
-		info-parse-transform-local info-conditionals
+		info-parse-transform-local info-conditionals info-glsl
 
 
 #MODULES_DIRS = contrib src doc conf
@@ -31,10 +31,6 @@ include $(MYRIAD_TOP)/GNUmakesettings.inc
 #
 BASE_PLT := "$(PLT_FILE)"
 
-
-
-help-intro:
-	@echo " Following main make targets are available for package $(PACKAGE_NAME):"
 
 
 help-myriad:
@@ -88,8 +84,8 @@ add-prerequisite-plts: prepare-base-plt \
 
 # So that in all cases we start by the same PLT name:
 prepare-base-plt:
-	@echo "Copying predecessor PLT $(PREDECESSOR_PLT) as $(PLT_FILE)"
-	@/bin/cp -f "$(PREDECESSOR_PLT)" "$(PLT_FILE)"
+	@echo "Copying predecessor PLT $(PREDECESSOR_PLT_FILE) as $(PLT_FILE)"
+	@/bin/cp -f "$(PREDECESSOR_PLT_FILE)" "$(PLT_FILE)"
 
 
 # First prerequisite operates on predecessor (here, the Erlang PLT):
@@ -129,39 +125,13 @@ stats:
 	@$(MAKE_CODE_STATS) $(MYRIAD_TOP)
 
 
-# Typically useful to know the software context for continuous integration:
-info-context: info-platform info-versions info-source-layout
 
+# Note that all info-* targets that are not specific to Myriad shall be in
+# GNUmakerules-explicit.inc so that they can be inherited by deriving layers.
 
 info-versions:
 	@echo "MYRIAD_VERSION = $(MYRIAD_VERSION)"
 	@echo "ERLANG_TARGET_VERSION = $(ERLANG_TARGET_VERSION)"
-
-
-info-paths:
-	@echo "BEAM_PATH_OPT = $(BEAM_PATH_OPT)"
-	@echo "PREDECESSOR_LAYER_TOP = $(PREDECESSOR_LAYER_TOP)"
-
-
-
-info-settings: info-json info-sql info-protobuf
-	@echo "USE_HDF5       = $(USE_HDF5)"
-	@echo "USE_REST       = $(USE_REST)"
-
-
-info-json:
-	@echo "USE_JSON       = $(USE_JSON)"
-	@echo "USE_JSX        = $(USE_JSX)"
-	@echo "USE_JIFFY      = $(USE_JIFFY)"
-
-
-info-sql:
-	@echo "USE_SQL         = $(USE_SQL)"
-	@echo "USE_SQLITE      = $(USE_SQLITE)"
-	@echo "USE_POSTGRESQL  = $(USE_POSTGRESQL)"
-	@echo "SQLITE3_BASE    = $(SQLITE3_BASE)"
-	@echo "POSTGRESQL_BASE = $(POSTGRESQL_BASE)"
-	@echo "SQL_OPTS        = $(SQL_OPTS)"
 
 
 info-parse-transform: info-parse-transform-local
@@ -172,3 +142,8 @@ info-parse-transform-local:
 info-conditionals:
 	@echo "MYRIAD_DEBUG_FLAGS = $(MYRIAD_DEBUG_FLAGS)"
 	@echo "MYRIAD_CHECK_FLAGS = $(MYRIAD_CHECK_FLAGS)"
+
+
+info-glsl:
+	@echo "GLSL_REF_COMPILER = $(GLSL_REF_COMPILER)"
+	@echo "GLSL_REF_COMPILER_OPT = $(GLSL_REF_COMPILER_OPT)"

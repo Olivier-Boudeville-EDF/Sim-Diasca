@@ -26,7 +26,7 @@
 % Creation date: Sunday, July 14, 2019.
 
 
-% Module implementing the <b>root (OTP) supervisor</b> of WOOPER.
+% @doc Module implementing the <b>root (OTP) supervisor</b> of WOOPER.
 %
 % In practice, it will supervise a single process, the one of the (singleton)
 % WOOPER class manager (which implements the gen_server behaviour).
@@ -62,12 +62,12 @@ start_link() ->
 
 
 % @doc Callback to initialise this supervisor.
--spec init( boolean() ) -> { 'ok',
-	   { supervisor:sup_flags(), [ supervisor:child_spec() ] } } | 'ignore'.
+-spec init( 'undefined' ) -> { 'ok',
+		{ supervisor:sup_flags(), [ supervisor:child_spec() ] } } | 'ignore'.
 init( Args=undefined ) ->
 
 	trace_utils:debug_fmt(
-	  "Initializing the WOOPER root supervisor (args: ~p).", [ Args ] ),
+		"Initializing the WOOPER root supervisor (args: ~p).", [ Args ] ),
 
 	ExecTarget= wooper:get_execution_target(),
 
@@ -75,7 +75,7 @@ init( Args=undefined ) ->
 	% Never expected to fail, though:
 	%
 	SupSettings = otp_utils:get_supervisor_settings(
-					_RestartStrategy=one_for_one, ExecTarget ),
+		_RestartStrategy=one_for_one, ExecTarget ),
 
 	% The WOOPER class manager is a rather basic gen_server:
 	ClassManagerChildSpec = #{
@@ -96,7 +96,6 @@ init( Args=undefined ) ->
 		type => worker,
 
 		modules => [ wooper_class_manager ] },
-
 
 	ChildrenSpec = [ ClassManagerChildSpec ],
 

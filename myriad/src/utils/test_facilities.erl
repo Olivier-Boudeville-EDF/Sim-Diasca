@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2022 Olivier Boudeville
+% Copyright (C) 2009-2023 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -23,6 +23,7 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2009.
 
 
 % @doc This module defines a few <b>basic facilities for tests</b>, at the level
@@ -79,7 +80,7 @@ start_common() ->
 	% To avoid that special characters are not displayed properly:
 	system_utils:force_unicode_support(),
 
-	% We want to ensure that the standard logger behaves synchronously (ex: not
+	% We want to ensure that the standard logger behaves synchronously (e.g. not
 	% wanting an error trace to be lost because we crashed on purpose the VM
 	% just after an error was reported whereas it happened not to have been
 	% notified already - since a corresponding message was not sent yet, or was
@@ -103,30 +104,30 @@ stop() ->
 display( Message ) ->
 	% Carriage return already added in basic_utils:display/1:
 	% (empty list added so that ~n are automatically converted)
-	basic_utils:display( lists:flatten( Message ), _ValueList=[] ).
+	basic_utils:display( lists:flatten( Message ), _Values=[] ).
 
 
 
 % @doc Displays a test message, once formatted.
 %
-% FormatString is an io:format-style format string, ValueList is the
+% FormatString is an io:format-style format string, Values is the
 % corresponding list of field values.
 %
 -spec display( format_string(), format_values() ) -> void().
-display( FormatString, ValueList ) ->
-	basic_utils:display( FormatString, ValueList ).
+display( FormatString, Values ) ->
+	basic_utils:display( FormatString, Values ).
 
 
 % @doc Displays a test message, once formatted.
 %
 % Defined for consistency.
 %
-% FormatString is an io:format-style format string, ValueList is the
+% FormatString is an io:format-style format string, Values is the
 % corresponding list of field values.
 %
 -spec display_fmt( format_string(), format_values() ) -> void().
-display_fmt( FormatString, ValueList ) ->
-	basic_utils:display( FormatString, ValueList ).
+display_fmt( FormatString, Values ) ->
+	basic_utils:display( FormatString, Values ).
 
 
 % Comment out to be able to use the interpreter after the test:
@@ -165,8 +166,8 @@ finished() ->
 
 	basic_utils:display( "(test finished, interpreter still running)~n"
 		"(if the Erlang shell is not available, ensure that "
-		"no '-noinput' VM command-line option is used;~n"
-		" see EXEC_INTERNAL_OPTIONS in Ceylan-Myriad's "
+		"no '-noinput' VM command-line option is used;~n "
+		"see EXEC_INTERNAL_OPTIONS in Ceylan-Myriad's "
 		"GNUmakevars.inc for that)", _Necessary=[] ),
 
 	%system_utils:await_output_completion(),
@@ -180,7 +181,7 @@ finished() ->
 
 % @doc To be called whenever a test is to fail (crash on error) immediately.
 %
-% Ex: test_facilities:fail( "server on strike" )
+% For example: test_facilities:fail( "server on strike" )
 %
 -spec fail( ustring() ) -> no_return().
 fail( Reason ) ->
@@ -207,17 +208,17 @@ fail( Reason ) ->
 
 % @doc To be called whenever a test is to fail (crash on error) immediately.
 %
-% FormatString is an io:format-style format string, ValueList is the
+% FormatString is an io:format-style format string, Values is the
 % corresponding list of field values.
 %
-% Ex: test_facilities:fail("server ~ts on strike", ["foobar.org"])
+% For example: test_facilities:fail("server ~ts on strike", ["foobar.org"])
 %
 -spec fail( format_string(), format_values() ) -> no_return().
-fail( FormatString, ValueList ) ->
+fail( FormatString, Values ) ->
 
 	% For some reason, erlang:error is unable to interpret strings as strings,
 	% they are always output as unreadable lists.
 
-	ReasonMessage = text_utils:format( FormatString, ValueList ),
+	ReasonMessage = text_utils:format( FormatString, Values ),
 
 	fail( ReasonMessage ).

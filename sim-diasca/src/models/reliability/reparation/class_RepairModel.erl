@@ -1,25 +1,26 @@
 % Copyright (C) 2008-2023 EDF R&D
-
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2008.
 
 
-% @doc Class modelling the <b>reparation behaviour</b> of equipments.
+% @doc Class modelling the <b>reparation behaviour</b> of pieces of equipment.
 -module(class_RepairModel).
 
 
@@ -69,9 +70,9 @@
 %
 % - {uniform, N} for uniform laws (positive integer)
 %
-% - {exponential, Lambda} for exponential laws (floating-point)
+% - {exponential_1p, Lambda} for exponential laws (floating-point)
 %
-% - {positive_integer_exponential, Lambda} for exponential laws (positive
+% - {positive_integer_exponential_1p, Lambda} for exponential laws (positive
 % integer)
 %
 % - {gaussian, Mu, Sigma} for gaussian laws
@@ -140,7 +141,7 @@ getNextRepair( State, EquipmentPid ) ->
 	%
 	RepairDurationInTicks = erlang:max( 2,
 		class_Actor:convert_seconds_to_ticks( RepairDurationInSeconds,
-						_MaxRelativeError=0.5, State ) ),
+			_MaxRelativeError=0.5, State ) ),
 
 	% FailureDuration is in seconds, converting to ticks:
 	%
@@ -158,6 +159,7 @@ getNextRepair( State, EquipmentPid ) ->
 
 	% Answer can be returned directly, as this method is triggered by reordered
 	% actor messages, like its answer will be (at next tick):
+	%
 	SentState = class_Actor:send_actor_message( EquipmentPid,
 		{ setNextRepair, RepairTickOffset }, State ),
 

@@ -32,7 +32,7 @@ However, surely that, rather than reporting "this does not work!", we would pref
 - your version of Sim-Diasca and of other tools (including Erlang)
 - your platform (hardware and software)
 - the detailed error message (preferably including stack trace, context and prior outputs, even if it is long)
-- the trace output, i.e. the full trace file (ex: ``my_case_test.traces``), which is a very valuable source of troubleshooting information
+- the trace output, i.e. the full trace file (e.g. ``my_case_test.traces``), which is a very valuable source of troubleshooting information
 
 
 

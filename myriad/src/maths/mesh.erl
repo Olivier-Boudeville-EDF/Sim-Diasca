@@ -42,10 +42,10 @@
 
 
 -type indice() :: linear:indice().
-% The indice of an element (ex: vertex, normal, texture coordinate), typically
+% The indice of an element (e.g. vertex, normal, texture coordinate), typically
 % in a data container such as a list or a binary buffer.
 %
-% As always in Myriad, indices start at 1 (ex: as opposed to zero-based indexes
+% As always in Myriad, indices start at 1 (e.g. as opposed to zero-based indexes
 % such as glTF).
 
 
@@ -53,15 +53,19 @@
 % The indice of a vertex in a container thereof.
 
 
+-type face_type() :: 'triangle' | 'quad'.
+% The type of the faces of a mesh.
+
+
 -type indexed_face() :: [ vertex_indice() ].
-% Describes the face of a mesh, based on a list of vertices (for example 3 of
+% Describes a face of a mesh, based on a list of vertices (for example 3 of
 % them, to define a triangle).
 %
 % Note that usually the vertex order matters (regarding culling).
 
 
 -type indexed_triangle() ::
-			{ vertex_indice(), vertex_indice(), vertex_indice() }.
+	{ vertex_indice(), vertex_indice(), vertex_indice() }.
 % Made of the corresponding three vertices.
 %
 % Note that usually the vertex order matters (regarding culling).
@@ -75,19 +79,17 @@
 % Defines how a coloring shall be applied to a face.
 
 
--type texture_coordinate2() :: point2:any_point2().
-% A (2D) texture coordinate (hence with two U/V components); not a vector per
-% se.
+-type rendering_info() ::
 
+	'none'
 
--type rendering_info() :: 'none'
+| { 'wireframe', EdgeColor :: render_rgb_color(),
+	HiddenFaceRemoval :: boolean() }
 
-		| { 'wireframe', EdgeColor :: render_rgb_color(),
-			HiddenFaceRemoval :: boolean() }
-
-		| { 'color', face_coloring_type(), [ render_rgb_color() ] }.
-	  % | { 'texture', ...
+| { 'color', face_coloring_type(), [ render_rgb_color() ] }.
+% | { 'texture', ...
 % Defines how a mesh shall be rendered.
+
 
 -type vertex_count() :: count().
 -type normal_count() :: count().
@@ -96,9 +98,9 @@
 
 
 -export_type([ mesh/0, indice/0, vertex_indice/0,
-			   indexed_face/0, indexed_triangle/0,
+			   face_type/0, indexed_face/0, indexed_triangle/0,
 			   normal_type/0,
-			   face_coloring_type/0, texture_coordinate2/0,
+			   face_coloring_type/0,
 			   rendering_info/0,
 			   vertex_count/0, normal_count/0, edge_count/0, face_count/0 ]).
 
@@ -108,13 +110,17 @@
 
 
 % Construction-related section.
--export([ create_mesh/5 ]).
+-export([ create_mesh/6 ]).
 
 
 % Operations on meshes.
 -export([ indexed_face_to_triangle/1,
 		  indexed_faces_to_triangles/1,
 		  to_string/1, to_compact_string/1 ]).
+
+
+% Other operations:
+-export([ get_vertex_count_for_face_type/1 ]).
 
 
 % Color-related section.
@@ -152,19 +158,36 @@
 % rendering information are the specified ones, with no specific bounding volume
 % set.
 %
--spec create_mesh( [ vertex3() ], [ indexed_face() ], normal_type(),
-				   [ unit_normal3() ], rendering_info() ) -> mesh().
-create_mesh( Vertices, Faces, NormalType, Normals, RenderingInfo ) ->
+-spec create_mesh( [ vertex3() ], face_type(), [ indexed_face() ],
+				   normal_type(), [ unit_normal3() ], rendering_info() ) ->
+								mesh().
+create_mesh( Vertices, FaceType, Faces, NormalType, Normals, RenderingInfo ) ->
 
 	cond_utils:if_defined( myriad_check_mesh,
-						   vector3:check_unit_vectors( Normals ) ),
+		begin
+			ExpectedVertexCount = get_vertex_count_for_face_type( FaceType ),
+			[ ExpectedVertexCount = length( F ) || F <- Faces ],
+			vector3:check_unit_vectors( Normals )
+		end ),
 
 	#mesh{ vertices=Vertices,
+		   face_type=FaceType,
 		   faces=Faces,
 		   normal_type=NormalType,
 		   normals=Normals,
 		   rendering_info=RenderingInfo }.
 
+
+
+% @doc Returns the number of vertices per face to be expected for the specified
+% face type.
+%
+-spec get_vertex_count_for_face_type( face_type() ) -> count().
+get_vertex_count_for_face_type( _FaceType=triangle ) ->
+	3;
+
+get_vertex_count_for_face_type( _FaceType=quad ) ->
+	4.
 
 
 
@@ -216,20 +239,21 @@ to_string( #mesh{ vertices=Vertices,
 	end,
 
 	text_utils:format( "mesh defined by:~n"
-	  " - ~B vertices: ~w~n"
-	  " - ~B faces: ~w~n"
-	  " - ~B ~ts normals: ~w~n"
-	  " - ~ts"
-	  " - bounding volume: ~ts~n",
-	  [ length( Vertices ), Vertices, length( Faces ), Faces,
-		length( Normals ), normal_type_to_string( NormalType ), Normals,
-		rendering_info_to_string( RenderingInfo ), BVStr ] ).
+	    " - ~B vertices: ~w~n"
+	    " - ~B faces: ~w~n"
+	    " - ~B ~ts normals: ~w~n"
+	    " - ~ts"
+	    " - bounding volume: ~ts~n",
+	    [ length( Vertices ), Vertices, length( Faces ), Faces,
+		  length( Normals ), normal_type_to_string( NormalType ), Normals,
+		  rendering_info_to_string( RenderingInfo ), BVStr ] ).
 
 
 
 % @doc Returns a compact textual description of the specified mesh.
 -spec to_compact_string( mesh() ) -> ustring().
 to_compact_string( #mesh{ vertices=Vertices,
+						  face_type=FaceType,
 						  faces=Faces,
 						  normal_type=NormalType,
 						  normals=Normals,
@@ -246,11 +270,11 @@ to_compact_string( #mesh{ vertices=Vertices,
 
 	end,
 
-	text_utils:format( "mesh with ~B vertices, ~B faces, "
+	text_utils:format( "mesh with ~B vertices, ~B faces of type ~ts, "
 		"~B ~ts normals, with ~ts and ~ts~n",
-	  [ length( Vertices ), length( Faces ), length( Normals ),
-		normal_type_to_string( NormalType ),
-		rendering_info_to_compact_string( RenderingInfo ), BVStr ] ).
+		[ length( Vertices ), length( Faces ), face_type_to_string( FaceType ),
+		  length( Normals ), normal_type_to_string( NormalType ),
+		  rendering_info_to_compact_string( RenderingInfo ), BVStr ] ).
 
 
 
@@ -299,7 +323,16 @@ rendering_info_to_compact_string( _RI={ color, ColoringType, Colors } ) ->
 
 
 
+% @doc Returns a textual description of the specified face type.
+-spec face_type_to_string( face_type() ) -> ustring().
+face_type_to_string( triangle ) ->
+	"triangle";
 
+face_type_to_string( quad ) ->
+	"quad".
+
+
+% @doc Returns a textual description of the specified normal type.
 -spec normal_type_to_string( normal_type() ) -> ustring().
 normal_type_to_string( per_vertex ) ->
 	"per-vertex";

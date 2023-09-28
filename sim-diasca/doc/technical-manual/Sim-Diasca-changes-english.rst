@@ -93,14 +93,14 @@ Released on Tuesday, February 9, 2010; main changes were:
 
  - in WOOPER:
 
-   - when a timed synchronous creation of an instance fails, an exception is directly raised (ex: ``{synchronous_time_out,?MODULE}`` is thrown), instead of just returning the ``time_out`` atom), to avoid a late detection of the problem
+   - when a timed synchronous creation of an instance fails, an exception is directly raised (e.g. ``{synchronous_time_out,?MODULE}`` is thrown), instead of just returning the ``time_out`` atom), to avoid a late detection of the problem
 
  - in Sim-Diasca:
 
    - fixed a very infrequent scheduling error which could happen due to a race condition between a ``schedule_trigger`` message and the next ``top`` message (bug caught thanks to the newer actor-side checking mechanisms)
    - better in-depth checking of scheduling correctness (most complete checks performed)
    - last diagrams were updated
-   - documentation updated a bit (ex: newer hints)
+   - documentation updated a bit (e.g. newer hints)
    - the load balancer is now an actor as well, thus actor creations at simulation-time are themselves reproducible, and thus context-free full reproducibility should be guaranteed
 
 
@@ -112,7 +112,7 @@ Released on Thursday, April 8, 2010.
 
 Main changes were:
 
- - in ``Myriad``, among a large number of other helper functions, now sorted in topic-based subdirectories, smart automatic waiting for file descriptors has been added ; selection of compilation options improved (ex: warning are now treated as errors, at last)
+ - in ``Myriad``, among a large number of other helper functions, now sorted in topic-based subdirectories, smart automatic waiting for file descriptors has been added ; selection of compilation options improved (e.g. warning are now treated as errors, at last)
 
  - in ``WOOPER``, error messages were still more clarified and better pretty-printed, and all the state management functions (like setAttribute/3) are now fully inlined by the compiler, thanks to proper and specific compilation directives (thus no performance penalty at all compared to the legacy macros)
 
@@ -242,7 +242,7 @@ Most significant changes were:
 
    - all variations of placement hints added and tested
 
-   - probe reports can now rely on rotated abscissa labels (xtic), so that the texts corresponding to large tick values are parallel and do not overlap, however long they are (see ``class_Probe:setRotatedTickLabels/1``); large ticks are now displayed as integers, instead of being rounded with an unwanted scientific notation; a probe-specific tick offset can also be defined, to avoid that reports deal with larger ticks (ex: tick offsets can then be used, instead of absolute simulation ticks), see ``class_Probe:setTickOffset/2`` and the soda vending machines as an example
+   - probe reports can now rely on rotated abscissa labels (xtic), so that the texts corresponding to large tick values are parallel and do not overlap, however long they are (see ``class_Probe:setRotatedTickLabels/1``); large ticks are now displayed as integers, instead of being rounded with an unwanted scientific notation; a probe-specific tick offset can also be defined, to avoid that reports deal with larger ticks (e.g. tick offsets can then be used, instead of absolute simulation ticks), see ``class_Probe:setTickOffset/2`` and the soda vending machines as an example
 
 
 
@@ -263,13 +263,13 @@ Size: 3.9MB.
 
 Most significant changes were:
 
- - all layers: tests, applications, traces facilities have been improved (ex: no more macros) and integrated
+ - all layers: tests, applications, traces facilities have been improved (e.g. no more macros) and integrated
 
  - in ``Myriad``:
 
    - support for smart exceptions has been added (but is currently disabled due to a bug in their parse transform)
 
-   - support for basic stats (ex: file count, line count split in empty/code/comment ratios) added (run ``make stats`` for the Sim-Diasca root)
+   - support for basic stats (e.g. file count, line count split in empty/code/comment ratios) added (run ``make stats`` for the Sim-Diasca root)
 
    - user-defined code paths are transformed now into absolute ones, so that the current directory can be changed while still being able to load newly referenced modules; as a consequence, far longer paths were displayed on the console, thus the verbose mode for the Erlang launcher has been disabled (add '-v' to the ``ERL_PARAMETERIZED_LAUNCHER`` definition in ``myriad/GNUmakevars.inc`` to restore this behaviour for debugging)
 
@@ -278,7 +278,7 @@ Most significant changes were:
 
   - all cluster scripts massively improved, extended and fixed
 
-  - various settings (ex: thread pool size, process limit, inter-tick time-out of the VM, etc.) are now better managed for the computing nodes (their value is automatically set to the one of the user node, thus uniform settings can better be enforced in a simpler and safer way)
+  - various settings (e.g. thread pool size, process limit, inter-tick time-out of the VM, etc.) are now better managed for the computing nodes (their value is automatically set to the one of the user node, thus uniform settings can better be enforced in a simpler and safer way)
 
   - the deadlock-detection mechanism (triggered in case of simulation stall) has been rewritten, on a purely asynchronous manner; previously it could cause itself transient deadlocks which could increase the effect of simulation stalls, if an actor sent a (blocking) request whereas the time-manager was nudging it (it was a synchronous operation with a time-out)
 
@@ -288,11 +288,11 @@ Most significant changes were:
 
   - the user-specified simulation frequency is now better managed (well-checked, absolutely, and the actual one is validated also relatively against the specified one, based on a user-specified tolerance)
 
-  - performance tracker has been improved and integrated to the engine (ex: see the ``enable_performance_tracker`` field in the deployment settings)
+  - performance tracker has been improved and integrated to the engine (e.g. see the ``enable_performance_tracker`` field in the deployment settings)
 
   - names have been homogenised, notably ``testFailed/1`` became ``test_failed/1``, ``testFinished/0`` became ``test_finished/0``, etc., and most macros for test or simulation cases are now better named and implemented as functions, whenever possible
 
-  - the host configuration file (ex: ``sim-diasca-host-candidates.txt``) can now support the specification of a per-host user name, notably to support cases where the login of a simulation user depends on the host
+  - the host configuration file (e.g. ``sim-diasca-host-candidates.txt``) can now support the specification of a per-host user name, notably to support cases where the login of a simulation user depends on the host
 
   - all computing nodes are now fully set-up and deployed in parallel, rather than one after the other; this is especially useful if having numerous nodes, as detecting them, network-wise, and having them process a deployment archive can last for some time, for each of these nodes; this induced major changes (see newly introduced class_ComputingHostManager); the issue of lingering nodes blocking sometimes some hosts has been fixed as well
 
@@ -322,7 +322,7 @@ Most significant changes will be:
 
    - all main loops of spawned processes are spawned thanks to (correct) closures now, to avoid having to export the corresponding functions
 
-   - two overall execution targets, 'development' (the default) and 'production' are defined now, they allow to configure the whole software stack according to these profiles (ex: in production mode, debug checkings and traces are removed, some operations cannot fail on time-out anymore, etc.); ex: ``make clean all EXECUTION_TARGET=production``; note that this is a compile-time setting, not a runtime one; native compilation is currently enabled in production mode, but may not be in the future, depending on the feedback
+   - two overall execution targets, 'development' (the default) and 'production' are defined now, they allow to configure the whole software stack according to these profiles (e.g. in production mode, debug checkings and traces are removed, some operations cannot fail on time-out anymore, etc.); e.g. ``make clean all EXECUTION_TARGET=production``; note that this is a compile-time setting, not a runtime one; native compilation is currently enabled in production mode, but may not be in the future, depending on the feedback
 
    - detailed type specifications have been added everywhere (each function of each module of each layer); process initially partly automated thanks to our ``add-deduced-type-specs.escript`` script
 
@@ -342,7 +342,7 @@ Most significant changes will be:
 
    - the automatic hashtable tuning has been integrated in WOOPER, it is done on the instance state hashtable as soon as its construction is over (as by convention no new attribute is expected to be defined then), on the class-wide virtual tables, and on the hashtable allowing the class manager to serve the virtual tables of the various classes
 
-   - default synchronous time-outs better defined, depending on debug mode being enabled or not; this debug mode is no more to be specified in ``wooper.hrl``, instead of modifying a source file, one may specify it at the makefile-level (ex: ``make ENABLE_DEBUG=true``)
+   - default synchronous time-outs better defined, depending on debug mode being enabled or not; this debug mode is no more to be specified in ``wooper.hrl``, instead of modifying a source file, one may specify it at the makefile-level (e.g. ``make ENABLE_DEBUG=true``)
 
    - a generic WOOPER proxy instance has been defined, for very specific cases (see ``wooper_instance_proxy.erl``)
 
@@ -353,7 +353,7 @@ Most significant changes will be:
 
  - in ``Traces``:
 
-   - includes, exports and function definitions have been re-arranged to work in all combinations of contexts (ex: from a test with traces, from an application without, with or without batch mode, etc.)
+   - includes, exports and function definitions have been re-arranged to work in all combinations of contexts (e.g. from a test with traces, from an application without, with or without batch mode, etc.)
 
    - now the activation/deactivation of traces is done through makefiles, rather than by changing the source code directly: instead of commenting/decommenting a define in ``class_TraceEmitter.hrl``, one must set ENABLE_TRACES to false if wanting to disable them; in all other cases, they will be activated (beware to typos); for example "make TARGET ENABLE_TRACES=false" will disable them, whereas they will be enabled with "make TARGET ENABLE_TRACES=true" and with "make TARGET"; this trace setting will be kept if this make command is to recurse in other directories
 
@@ -374,7 +374,7 @@ Most significant changes will be:
 
    - in addition to the currently supported scheduling possibilities for an actor at a given tick (``none``, ``triggered``, ``spontaneous``, and ``twofold``), ``instant_spontaneous`` is now supported, allowing to dynamically (i.e. during the same tick) convert a triggered tick into a twofold one, i.e. allowing to plan conditionally during the processing of the actor messages a spontaneous tick which was not anticipated and will follow immediately; this is useful for example if an arbitrary number of actor messages of a given type could be received during a tick, whereas having to perform some processing which depends on all of them simultaneously, thus needing to do so only once all have been received for sure (none can appear afterwards); an ``instant_spontaneous`` action will be executed if at least one call to the ``class_Actor:request_instant_spontaneous_action/1`` function is made during the processing of an actor message, in the context of a triggered tick
 
-   - now the result manager, at simulation start, sums up in traces the number, type and names of all selected result producers (ex: basic probes, virtual ones)
+   - now the result manager, at simulation start, sums up in traces the number, type and names of all selected result producers (e.g. basic probes, virtual ones)
 
    - simulation milestone management, both with regard to wallclock time and to simulation time, has been implemented, allowing to perform all kinds of operations then; currently: some tracking of the memory footprint of simulation agent is performed, as well as some house-keeping, garbage-collector wise
 
@@ -382,7 +382,7 @@ Most significant changes will be:
 
    - a troubleshooting mode has been introduced, to further help model debugging
 
-   - major update of probes, notably to properly support zones (ex: for the performance tracker) and probe types (result or facility)
+   - major update of probes, notably to properly support zones (e.g. for the performance tracker) and probe types (result or facility)
 
    - performance tracker cleaned-up and improved
 
@@ -413,10 +413,10 @@ Most significant changes were:
    - more records have been used, to better structure exchanged tuples
 
 
- - in ``Myriad``: many additions; utility functions have been dispatched into more numerous modules (ex: ``list_utils``, ``random_utils``, etc.)
+ - in ``Myriad``: many additions; utility functions have been dispatched into more numerous modules (e.g. ``list_utils``, ``random_utils``, etc.)
 
 
- - in ``WOOPER``: error output has been further improved (ex: attributes sorted alphabetically, their values being truncated if appropriate, etc.)
+ - in ``WOOPER``: error output has been further improved (e.g. attributes sorted alphabetically, their values being truncated if appropriate, etc.)
 
 
  - in ``Sim-Diasca``:
@@ -438,7 +438,7 @@ Mostly a bug-fixing version.
 
 Most significant changes were:
 
- - in general: all mechanisms tested and updated (ex: production mode), full code checked against Dialyzer
+ - in general: all mechanisms tested and updated (e.g. production mode), full code checked against Dialyzer
 
  - in ``Myriad``: various minor additions; in GUI, ``gs`` has been fully replaced by ``wx``
 
@@ -448,7 +448,7 @@ Most significant changes were:
 
    - now the temporary deployment directories created on each computing node have far fewer chances of colliding; for example ``/tmp/sim-diasca-My_Simulation_Case-boudevil`` became now ``/tmp/sim-diasca-My_Simulation_Case-boudevil-2012-12-7-at-13h-56m-03s-1f793a6ba507``, which is a lot safer ; such directories are automatically deleted when results are collected
 
-   - similarly, result directories are more unique now, ex::
+   - similarly, result directories are more unique now, e.g.:
 
 	``Sim-Diasca_My_Test-on-2012-12-10-at-10h-05m-31s-by-boudevil-1f793a6ba507``
 
@@ -456,7 +456,7 @@ Most significant changes were:
 
    - various meta-data of interest (that can be enriched by the user) are automatically passed to all kinds of probes, so that they are written in their data files
 
- - in ``Mock-Simulator``: the full *City-Example* benchmarking case has been added (code and documentation), and tested; this is a fairly involved (ex: see ``class_WasteTruck.erl``), representative and scalable test case that can be shared with Sim-Diasca
+ - in ``Mock-Simulator``: the full *City-Example* benchmarking case has been added (code and documentation), and tested; this is a fairly involved (e.g. see ``class_WasteTruck.erl``), representative and scalable test case that can be shared with Sim-Diasca
 
 
 
@@ -466,13 +466,13 @@ Version 2.2.0
 Released on Thursday, June 27, 2013.
 
 
- - in general: we switched from SVN to GIT, and rewrote many rules (ex: to generate releases) accordingly, relying on an improved layout
+ - in general: we switched from SVN to GIT, and rewrote many rules (e.g. to generate releases) accordingly, relying on an improved layout
 
  - in ``Myriad``:
 
    - a very fast file sending system has been added (see in ``send_file/2`` and ``receive_file/{1,2,3}`` in ``net_utils``)
 
-   - the way the Erlang VM is launched by the automatic make rules (through ``launch-erl.sh``) has been changed, from running ``erl -eval`` to using ``run_erl``; reason: otherwise the VM would halt as soon as the first exception is triggered (ex: ``noconnection``), while we need it to resist
+   - the way the Erlang VM is launched by the automatic make rules (through ``launch-erl.sh``) has been changed, from running ``erl -eval`` to using ``run_erl``; reason: otherwise the VM would halt as soon as the first exception is triggered (e.g. ``noconnection``), while we need it to resist
 
  - in ``Sim-Diasca``:
 
@@ -496,9 +496,7 @@ Internal version only, focusing on improving the k-crash resistance.
 Version 2.2.2
 -------------
 
-Not realised yet.
-
- - in ``Mock-Simulators``: the plural is used now (simulatorS), as the example set is expected to grow
+In ``Mock-Simulators``: the plural is used now (simulatorS), as the example set is expected to grow.
 
 
 
@@ -513,6 +511,6 @@ Next features to come, maybe in that order:
 
   - WOOPER 2.0 integration (a bit complex, as, first, the WOOPER 2.0 version must be fully satisfying before being integrated; will take some time)
 
-  - integration of more and more complex test cases, to resolve all issues (including large-scale simulations), starting by the soda vending machine test case to a far more involved scalability test (see the 'City Example', in the ``mock-simulators`` directory
+  - integration of more and more complex test cases, to resolve all issues (including large-scale simulations), starting by the soda vending machine test case to a far more involved scalability test (see the 'City Example', in the ``mock-simulators`` directory)
 
   - tune for maximum scalability

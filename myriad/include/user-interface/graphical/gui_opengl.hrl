@@ -63,6 +63,9 @@
 -include_lib("wx/include/gl.hrl").
 -include_lib("wx/include/glu.hrl").
 
+-include("gui_texture.hrl").
+
+
 % -else.
 
 % If one day these wx-related defines are not available and no other option is
@@ -75,38 +78,3 @@
 % extensions.
 %
 -define( gl_info_ets_name, myriad_opengl_info ).
-
-
-% For the base alpha coordinates (clearer):
-
--define( alpha_fully_opaque,      1.0 ).
--define( alpha_fully_transparent, 0.0 ).
-
-
-
-% Corresponds to an OpenGL texture.
--record( texture, {
-
-	% The identifier (OpenGL "name") of that texture.
-	id :: gui_opengl:texture_id(),
-
-
-	% The pixel width of this texture:
-	width :: gui:length(),
-
-	% The pixel height of this texture:
-	height :: gui:length(),
-
-
-	% The minimum abscissa of this texture relatively to its color buffer.
-	min_x :: gui_opengl:length_factor(),
-
-	% The minimum ordinate of this texture relatively to its color buffer.
-	min_y :: gui_opengl:length_factor(),
-
-
-	% The maximum abscissa of this texture relatively to its color buffer.
-	max_x :: gui_opengl:length_factor(),
-
-	% The maximum ordinate of this texture relatively to its color buffer.
-	max_y :: gui_opengl:length_factor() } ).

@@ -35,6 +35,8 @@ jobs:
         echo "## Updating packages"
         apt-get update
         apt-get install --assume-yes tree
+        # So that include_lib("myriad/include/xx.hrl") are found:
+        cd .. && ln -s Ceylan-Myriad myriad && cd myriad
         rebar3 compile
         echo " - building from: $(pwd)"
         echo " - content of parent directory: $(ls .. 2>/dev/null | tr '\n' ' ')"

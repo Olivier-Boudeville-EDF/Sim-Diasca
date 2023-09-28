@@ -27,7 +27,7 @@
 
 
 % @doc Gathering of various convenient facilities regarding the management of
-% the <b>shells and command lines</b> (ex: specified arguments).
+% the <b>shells and command lines</b> (e.g. specified arguments).
 %
 % See shell_utils_test.erl for the corresponding test.
 %
@@ -42,7 +42,7 @@
 % Implementation notes:
 %
 % It does not seem possible with sh to properly pass arguments that contain at
-% least a space (ex: my-script.sh "has a space"), regardless of the use of $@
+% least a space (e.g. my-script.sh "has a space"), regardless of the use of $@
 % and IFS; for bash, refer to
 % https://unix.stackexchange.com/questions/472589/pass-to-command-preserving-quotes
 % for more information; this is not a limitation induced by Erlang or this
@@ -56,8 +56,12 @@
 % The command-line is mostly managed like init:get_argument/1.
 
 
+-type command_line_element() :: ustring().
+% Any element of a command-line, typically option name or value.
+
+
 -type actual_command_line_option() :: atom().
-% The name of a command-line option; ex: '-color', for an actual option that is
+% The name of a command-line option; e.g. '-color', for an actual option that is
 % "--color". For the init standard module, this is named a "flag".
 
 
@@ -84,7 +88,7 @@
 
 
 -type command_line_values() :: [ command_line_value() ].
-% The command-line values specified after an occurrence of a given option (ex:
+% The command-line values specified after an occurrence of a given option (e.g.
 % ["blue", "red"]).
 
 
@@ -94,8 +98,8 @@
 % The association between a command-line option and the various values
 % associated to its various occurrences, in a (non-unique) argument table.
 %
-% Ex: if arguments were "--color blue red [...] --color yellow", then the
-% corresponding argument entry is {'-color', [["blue", "red"], ["yellow"]]}
+% For example if arguments were "--color blue red [...] --color yellow", then
+% the corresponding argument entry is {'-color', [["blue", "red"], ["yellow"]]}
 % (i.e. with, associated to a command-line option, a list whose elements are
 % *lists* of strings; in their order on the command-line).
 %
@@ -170,7 +174,8 @@
 
 
 
--export_type([ command_line_option/0, command_line_value/0,
+-export_type([ command_line_element/0,
+			   command_line_option/0, command_line_value/0,
 			   command_line_argument/0,
 			   argument_table/0, unique_argument_table/0,
 			   actual_value_count/0, value_count/0, value_spec/0,
@@ -230,7 +235,7 @@
 %
 -spec protect_from_shell( any_string() ) -> any_string().
 protect_from_shell( ArgString ) when is_list( ArgString ) ->
-	% Simple approaches not sufficient (ex: "echo 'aaa\'bbb'"):
+	% Simple approaches not sufficient (e.g. "echo 'aaa\'bbb'"):
 	protect_from_shell_helper( ArgString, _Acc=[] );
 
 protect_from_shell( ArgBinString ) when is_binary( ArgBinString ) ->
@@ -267,7 +272,7 @@ protect_from_shell_helper( _Text=[ C | T ], Acc ) ->
 % Note:
 %
 % - only the arguments specified on the command-line after the '-extra' marker
-% will be taken into account; ex:
+% will be taken into account; e.g.
 %    make ui_run CMD_LINE_OPT="-a -extra some_value -b --use-ui-backend text_ui"
 % (here "-a" and, of course, "-extra", will be ignored)
 %
@@ -301,7 +306,7 @@ get_argument_table() ->
 % may be specified more than once in the command-line; non-option arguments are
 % collected as well (refer to the no_option_key define).
 %
-% Note: switches to the Unicode encoding (ex: use "~tp" then).
+% Note: switches to the Unicode encoding (e.g. use "~tp" then).
 %
 -spec get_argument_table_from_strings( [ ustring() ] ) -> argument_table().
 get_argument_table_from_strings( ArgStrings ) ->
@@ -324,7 +329,7 @@ get_arguments_from_strings( _Args=[], OptionTable ) ->
 get_arguments_from_strings( _Args=[ [ $- | Option ] | T ], OptionTable ) ->
 	manage_option( Option, _RemainingArgs=T, OptionTable );
 
-% Apparently can happen (ex: with releases run with erlexec):
+% Apparently can happen (e.g. with releases run with erlexec):
 get_arguments_from_strings( _Args=[ _Dropped="" | T ], OptionTable ) ->
 	%trace_utils:warning( "Dropping an empty argument." ),
 	get_arguments_from_strings( T, OptionTable );
@@ -413,7 +418,7 @@ collect_values_for_option( _Args=[ OptValue | T ], AccValues ) ->
 
 
 % @doc Returns a canonical argument table, obtained from the specified single
-% string containing all options, verbatim; ex: "--color red --set-foo".
+% string containing all options, verbatim; e.g. "--color red --set-foo".
 %
 % Note: useful for testing, to introduce specific command lines.
 %

@@ -81,7 +81,7 @@
 
 
 -type located_form() :: { ast_location(), form() }.
-% When processing an AST (ex: read from a BEAM file), the order of the forms
+% When processing an AST (e.g. read from a BEAM file), the order of the forms
 % matters (for example to report compile errors, which are relative to a context
 % defined by the last '-file' attribute previously encountered, i.e. like
 % {attribute,40,file,{"foo.erl",40}}). So even if we store forms in tables
@@ -148,7 +148,7 @@
 
 	  | 'end_marker'.       % End of the AST stream / source file
 % Known section markers (insertion points), listed in their expected order of
-% appearance in an AST stream (ex: a source file). All markers are expected to
+% appearance in an AST stream (e.g. a source file). All markers are expected to
 % be set (located) as soon as the scan of an AST into a module_info has been
 % done.
 %
@@ -161,19 +161,19 @@
 % There may or may not be actual forms at such locations in the corresponding
 % AST: to preserve their order, markers may point to locations that have been
 % generated, i.e. that have not been directly obtained that the initial scan
-% (ex: inserted between an actual one and the logical end of the AST).
+% (e.g. inserted between an actual one and the logical end of the AST).
 
 
 
 % Tables to be found in the module_info record:
 
 -type compile_option_name() :: atom().
-% Ex: inline, export_all, etc.
+% For example inline, export_all, etc.
 
 
 -type compile_option_value() :: term().
 % In some cases (at least when it is specified from the command-line), a
-% compilation option is a triplet (ex: -Dmy_other_test_token=51 is translated,
+% compilation option is a triplet (e.g. -Dmy_other_test_token=51 is translated,
 % in terms of a parse-transform option, as: {d,my_other_test_token,51}).
 %
 % The value associated to the option name ('d') is then:
@@ -189,16 +189,16 @@
 									maybe( [ compile_option_value() ] ) ).
 % For easy access to compilation information:
 %
-% Note that an option specified without a value (ex: -Dmy_token on the command
+% Note that an option specified without a value (e.g. -Dmy_token on the command
 % line) will be associated to the 'undefined' value.
 
 
 -type attribute_name() :: atom().
-% The name of a (parse-level) attribute (ex: '-my_attribute( my_value ).').
+% The name of a (parse-level) attribute (e.g. '-my_attribute( my_value ).').
 
 
 -type attribute_value() :: term().
-% The value of a (parse-level) attribute (ex: '-my_attribute( my_value ).').
+% The value of a (parse-level) attribute (e.g. '-my_attribute( my_value ).').
 
 
 -type attribute() :: { attribute_name(), attribute_value() }.
@@ -387,6 +387,11 @@
 % Local shorthands:
 
 -type maybe( T ) :: basic_utils:maybe( T ).
+
+-type ustring() :: text_utils:ustring().
+
+-type bin_file_path() :: file_utils:bin_file_path().
+
 -type ast() :: ast_base:ast().
 -type file_loc() :: ast_base:file_loc().
 -type form() :: ast_base:form().
@@ -394,9 +399,8 @@
 -type type_id() :: type_utils:type_id().
 -type function_id() :: meta_utils:function_id().
 
--type ustring() :: text_utils:ustring().
--type indentation_level() :: text_utils:indentation_level().
 
+-type indentation_level() :: text_utils:indentation_level().
 
 
 
@@ -500,7 +504,7 @@ located_ast_to_string( AST ) ->
 	% Raw, not sorted on purpose:
 	Strings = [ text_utils:format( "at ~ts: ~p",
 					[ id_utils:sortable_id_to_string( ASTLoc ), Form ] )
-				|| { ASTLoc, Form } <- AST ],
+						|| { ASTLoc, Form } <- AST ],
 
 	text_utils:strings_to_string( Strings ).
 
@@ -536,11 +540,11 @@ extract_module_info_from_ast( AST ) ->
 	% useful here anyway.
 
 	% Finally we have not real freedom in terms of output, as we prefer to
-	% respect the native display format of the error messages so that tools (ex:
+	% respect the native display format of the error messages so that tools (e.g.
 	% emacs, possible erlide and all) are still able to manage them.
 
 	% Useless: would report pre-transform errors that would be solved after
-	% transformation (ex: void() not existing)
+	% transformation (e.g. void() not existing)
 	%pre_check_ast( AST ),
 
 	ModuleInfo = ast_scan:scan( AST ),
@@ -635,7 +639,7 @@ check_module_include( #module_info{ includes=Includes,
 
 	case length( IncludeDefs ) of
 
-		% Includes are filtered (ex: for duplicates):
+		% Includes are filtered (e.g. for duplicates):
 		L when L < Len ->
 			ast_utils:raise_usage_error( "mismatch regarding includes, "
 				"having ~B includes (~p) and ~B include definitions (~p).",
@@ -713,7 +717,7 @@ check_module_functions( #module_info{ functions=Functions }, ModuleName ) ->
 	FunInfos = ?table:enumerate( Functions ),
 
 	[ check_function( FunId, FunInfo, ModuleName )
-			|| { FunId, FunInfo } <- FunInfos ].
+		|| { FunId, FunInfo } <- FunInfos ].
 
 
 
@@ -753,7 +757,7 @@ check_function( _FunId, _FunInfo=#function_info{ clauses=[], exported=[] },
 	%                             pair:to_list( FunId ), ModuleName );
 
 	%trace_utils:warning_fmt( "Function spec without a definition for ~ts/~B.",
-	%						  pair:to_list( FunId ) );
+	%                         pair:to_list( FunId ) );
 
 	ok;
 
@@ -768,56 +772,56 @@ check_function( FunId, _FunInfo=#function_info{ name=SecondName,
 				ModuleName ) ->
 	ast_utils:raise_usage_error(
 		"function definition mismatch for ~ts/~B vs ~ts/~B",
-		pair:to_list( FunId ) ++ [ { SecondName, SecondArity } ],
+		pair:to_list( FunId ) ++ [ SecondName, SecondArity ],
 		ModuleName ).
 
 
 
-% @doc Recomposes an AST from specified module information.
+% @doc Recomposes an AST from the specified module information.
 -spec recompose_ast_from_module_info( module_info() ) -> ast().
 recompose_ast_from_module_info( #module_info{
 
-			% Between parentheses: fields unused here, hence not bound.
+		% Between parentheses: fields unused here, hence not bound.
 
-			% Note: one should regularly check that all relevant fields of
-			% module_info() are indeed read here, so that they are reinjected
-			% as expected in the output AST.
+		% Note: one should regularly check that all relevant fields of
+		% module_info() are indeed read here, so that they are reinjected as
+		% expected in the output AST.
 
-			module={ _ModuleName, ModuleLocDef },
+		module={ _ModuleName, ModuleLocDef },
 
-			% (compilation_options)
-			compilation_option_defs=CompileOptLocDefs,
+		% (compilation_options)
+		compilation_option_defs=CompileOptLocDefs,
 
-			parse_attributes=ParseAttributeTable,
+		parse_attributes=ParseAttributeTable,
 
-			remote_spec_defs=RemoteSpecLocDefs,
+		remote_spec_defs=RemoteSpecLocDefs,
 
-			% (includes)
-			include_defs=IncludeLocDefs,
+		% (includes)
+		include_defs=IncludeLocDefs,
 
-			type_exports=TypeExportTable,
+		type_exports=TypeExportTable,
 
-			types=TypeTable,
+		types=TypeTable,
 
-			records=RecordTable,
+		records=RecordTable,
 
-			% (function_imports)
-			function_imports_defs=ImportLocDefs,
+		% (function_imports)
+		function_imports_defs=ImportLocDefs,
 
-			function_exports=FunctionExportTable,
+		function_exports=FunctionExportTable,
 
-			% The main part of the AST:
-			functions=FunctionTable,
+		% The main part of the AST:
+		functions=FunctionTable,
 
-			optional_callbacks_defs=OptCallbacksLocDefs,
+		optional_callbacks_defs=OptCallbacksLocDefs,
 
-			last_file_location=LastFileLocLocDef,
+		last_file_location=LastFileLocLocDef,
 
-			markers=MarkerTable,
+		markers=MarkerTable,
 
-			errors=[],
+		errors=[],
 
-			unhandled_forms=UnhandledLocForms } ) ->
+		unhandled_forms=UnhandledLocForms } ) ->
 
 	ParseAttributeLocDefs =
 		get_parse_attributes_located_definitions( ParseAttributeTable ),
@@ -828,8 +832,8 @@ recompose_ast_from_module_info( #module_info{
 	RecordLocDefs = ast_record:get_located_forms_for( RecordTable ),
 
 	% Auto-exports functions if relevant:
-	{ FunExportLocDefs, FunctionLocDefs } =
-	  ast_function:get_located_forms_for( FunctionExportTable, FunctionTable ),
+	{ FunExportLocDefs, FunctionLocDefs } = ast_function:get_located_forms_for(
+		FunctionExportTable, FunctionTable ),
 
 
 	% We used to start from a sensible order so that inserted forms do not end
@@ -1092,7 +1096,7 @@ split_at_location( ASTLoc, _LocForms=[ { ASTLoc, BaseForm } | T ], Acc ) ->
 
 % Skips base located forms until matching (ASTLoc not reached yet):
 split_at_location( ASTLoc, _LocForms=[ { OtherASTLoc, Form } | T ], Acc )
-  when OtherASTLoc < ASTLoc ->
+						when OtherASTLoc < ASTLoc ->
 	split_at_location( ASTLoc, T, [ Form | Acc ] );
 
 % Here, implicitly, OtherLoc just went past Loc, so:
@@ -1262,7 +1266,7 @@ get_parse_attributes_located_definitions( ParseAttributeTable ) ->
 	%    || { _Value, LocForm } <- ?table:values( ParseAttributeTable ) ],
 
 	ParseAttributeLocDefs = get_parse_attr_loc_defs(
-								?table:values( ParseAttributeTable ), _Acc=[] ),
+		?table:values( ParseAttributeTable ), _Acc=[] ),
 
 	%trace_utils:debug_fmt( "For ParseAttributeTable: ~ts, returning "
 	%   "ParseAttributeLocDefs = ~p",
@@ -1352,33 +1356,34 @@ module_info_to_string( #module_info{
 	ModuleString = module_entry_to_string( ModuleEntry, DoIncludeForms ),
 
 	Infos = [ compilation_options_to_string( CompileTable, CompileOptDefs,
-									DoIncludeForms, NextIndentationLevel ),
+				DoIncludeForms, NextIndentationLevel ),
 
 			  optional_callbacks_to_string( OptCallbacksDefs, DoIncludeForms,
-											NextIndentationLevel ),
+				NextIndentationLevel ),
 
 			  parse_attribute_table_to_string( ParseAttributeTable,
-								DoIncludeForms, NextIndentationLevel ),
+				DoIncludeForms, NextIndentationLevel ),
 
 			  remote_spec_definitions_to_string( RemoteSpecDefs, DoIncludeForms,
-												 NextIndentationLevel ),
+				NextIndentationLevel ),
 
 			  includes_to_string( Includes, IncludeDefs, DoIncludeForms,
-								  NextIndentationLevel ),
+				NextIndentationLevel ),
 
 			  % No form to manage:
-			  type_exports_to_string( TypeExportTable, NextIndentationLevel ),
+			  type_exports_to_string( TypeExportTable, DoIncludeForms,
+				NextIndentationLevel ),
 
 			  types_to_string( TypeTable, DoIncludeForms,
-							   NextIndentationLevel ),
+				NextIndentationLevel ),
 
 			  records_to_string( RecordTable, NextIndentationLevel ),
 
 			  function_imports_to_string( FunctionImportTable,
-				  FunctionImportDefs, DoIncludeForms, NextIndentationLevel ),
+				FunctionImportDefs, DoIncludeForms, NextIndentationLevel ),
 
 			  functions_to_string( FunctionTable, DoIncludeForms,
-								   NextIndentationLevel ),
+				NextIndentationLevel ),
 
 			  last_file_loc_to_string( LastFileLocLocDef ),
 
@@ -1387,7 +1392,7 @@ module_info_to_string( #module_info{
 			  errors_to_string( Errors, NextIndentationLevel ),
 
 			  unhandled_forms_to_string( UnhandledForms, DoIncludeForms,
-										 NextIndentationLevel ) ],
+				NextIndentationLevel ) ],
 
 	text_utils:format( "Information about module ~ts: ~ts", [ ModuleString,
 		text_utils:strings_to_string( Infos, IndentationLevel ) ] ).
@@ -1487,8 +1492,8 @@ compilation_options_to_string( CompileTable, CompileOptDefs, DoIncludeForms,
 							|| { OptName, OptValue } <- CompileOpts ],
 
 			OptString = text_utils:format( "~B compile option(s) defined: ~ts",
-							[ length( CompileOpts ),
-								text_utils:strings_to_string( CompStrings,
+				[ length( CompileOpts ),
+				  text_utils:strings_to_string( CompStrings,
 												IndentationLevel ) ] ),
 
 			OptString ++ forms_to_string( CompileOptDefs, DoIncludeForms,
@@ -1559,18 +1564,18 @@ parse_attribute_table_to_string( ParseAttributeTable, DoIncludeForms,
 				end || { AttrName, AttrEntries } <- ParseAttributes ] ),
 
 			BaseString = text_utils:format(
-							"~B parse attribute(s) defined: ~ts",
-							[ length( ParseAttributes ), ParseAttrString ] ),
+				"~B parse attribute(s) defined: ~ts",
+				[ length( ParseAttributes ), ParseAttrString ] ),
 
 			% To avoid collecting forms uselessly:
 			case DoIncludeForms of
 
 				true ->
-					Forms =
-						[ F || { _AName, { _AValue, F } } <- ParseAttributes ],
+					LocForms = [ LocF
+						|| { _AName, { _AValue, LocF } } <- ParseAttributes ],
 
-					BaseString ++ forms_to_string( Forms, _DoIncludeForms=true,
-												   IndentationLevel + 1 );
+					BaseString ++ forms_to_string( LocForms,
+						_DoIncludeForms=true, IndentationLevel+1 );
 
 				false ->
 					BaseString
@@ -1605,7 +1610,7 @@ remote_spec_definitions_to_string( RemoteSpecDefs, DoIncludeForms,
 % @doc Returns a textual representation of the specified includes, based on a
 % default indentation level.
 %
--spec includes_to_string( [ file_utils:bin_file_path() ], [ located_form() ],
+-spec includes_to_string( [ bin_file_path() ], [ located_form() ],
 						  boolean() ) -> ustring().
 includes_to_string( Includes, IncludeDefs, DoIncludeForms ) ->
 	includes_to_string( Includes, IncludeDefs, DoIncludeForms,
@@ -1615,8 +1620,8 @@ includes_to_string( Includes, IncludeDefs, DoIncludeForms ) ->
 % @doc Returns a textual representation of the specified includes, with
 % specified indentation level.
 %
--spec includes_to_string( [ file_utils:bin_file_path() ],
-		  [ located_form() ], boolean(), indentation_level() ) -> ustring().
+-spec includes_to_string( [ bin_file_path() ], [ located_form() ], boolean(),
+						  indentation_level() ) -> ustring().
 includes_to_string( _Includes=[], _IncludeDefs, _DoIncludeForms,
 					_IndentationLevel ) ->
 	"no file included";
@@ -1625,8 +1630,8 @@ includes_to_string( Includes, IncludeDefs, DoIncludeForms,
 					IndentationLevel ) ->
 
 	IncludeString = text_utils:strings_to_sorted_string(
-				[ text_utils:format( "~ts", [ Inc ] ) || Inc <- Includes ],
-				IndentationLevel ),
+		[ text_utils:format( "~ts", [ Inc ] ) || Inc <- Includes ],
+		IndentationLevel ),
 
 	% Possibly with duplicates:
 	text_utils:format( "~B file include(s): ~ts",
@@ -1739,7 +1744,7 @@ records_to_string( RecordTable, IndentationLevel ) ->
 					% generally:
 					%
 					FieldString = text_utils:strings_to_enumerated_string(
-									FieldStrings, IndentationLevel + 2 ),
+						FieldStrings, IndentationLevel + 2 ),
 
 					text_utils:format( "record '~ts' having ~B fields: ~ts",
 						[ RecordName, length( FieldStrings ), FieldString ] )
@@ -1821,7 +1826,7 @@ functions_to_string( FunctionTable, DoIncludeForms, IndentationLevel ) ->
 					text_utils:format( "~B function(s) defined: ~ts",
 						[ length( FunctionStrings ),
 						  text_utils:strings_to_sorted_string( FunctionStrings,
-											IndentationLevel ) ] )
+							IndentationLevel ) ] )
 
 			 end
 
@@ -1870,7 +1875,7 @@ markers_to_string( MarkerTable, IndentationLevel ) ->
 				"increasing locations: ~ts",
 				[ length( MarkPairs ), text_utils:strings_to_string(
 			[ text_utils:format( "marker '~ts' pointing to ~ts",
-						 [ Marker, id_utils:sortable_id_to_string( Loc ) ] )
+				[ Marker, id_utils:sortable_id_to_string( Loc ) ] )
 			  || { Marker, Loc } <- SortedMarkPairs ],
 											IndentationLevel ) ] )
 
@@ -1923,8 +1928,8 @@ unhandled_forms_to_string( UnhandledForms, _DoIncludeForms=true,
 -spec fields_to_strings( field_table() ) -> [ ustring() ].
 fields_to_strings( FieldTable ) ->
 	[ field_to_string( FieldName, FieldType, DefaultValue )
-	  || { FieldName, { FieldType, DefaultValue, _FirstFileLoc,
-						_SecondFileLoc } } <- FieldTable ].
+		|| { FieldName, { FieldType, DefaultValue, _FirstFileLoc,
+						  _SecondFileLoc } } <- FieldTable ].
 
 
 
@@ -2295,19 +2300,19 @@ interpret_options( OptionList,
 scan_options( _OptionList=[], OptionTable ) ->
 	OptionTable;
 
-% Ex: {d,myriad_debug_mode}
+% For example {d,myriad_debug_mode}
 scan_options( _OptionList=[ { Name, Value } | T ], OptionTable ) ->
 	NewOptionTable = ?table:append_to_entry( _K=Name, Value, OptionTable ),
 	scan_options( T, NewOptionTable );
 
-% Ex: {d,my_second_test_token,200}
+% For example {d,my_second_test_token,200}
 scan_options( _OptionList=[ { Name, BaseValue, OtherValue } | T ],
 			  OptionTable ) ->
 	NewOptionTable = ?table:append_to_entry( _K=Name, { BaseValue, OtherValue },
 											 OptionTable ),
 	scan_options( T, NewOptionTable );
 
-% Ex: report_errors
+% For example report_errors
 scan_options( _OptionList=[ Name | T ], OptionTable ) when is_atom( Name ) ->
 
 	% No clash wanted, throws an exception is the same key appears more than

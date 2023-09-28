@@ -1,22 +1,23 @@
 % Copyright (C) 2011-2023 EDF R&D
-
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2011.
 
 
 % @doc The data exchanger offers to actors <b>extra communication patterns</b>
@@ -138,7 +139,7 @@
 
 
 % Must be included before class_EngineBaseObject header:
--define( trace_emitter_categorization, "Core.DataExchange" ).
+-define( trace_emitter_categorization, "Core.Data exchange" ).
 
 
 % Allows to use macros for trace sending:
@@ -239,7 +240,7 @@
 % The exchanger is not a specialised actor, it just interacts with data writers
 % and readers, and with the root time manager.
 
-% Settings can be defined from the code (ex: sending messages from the
+% Settings can be defined from the code (e.g. sending messages from the
 % simulation case to the exchanger), but they can be read also from file(s). In
 % this case there would be two possibilities: either we can read the content
 % from the root exchanger, and send data from it as messages, or we include this
@@ -320,7 +321,8 @@
 				 { data_exchanger_pid(), node_type() }
 				 | { [ file_path() ], time_manager_pid() } ) -> wooper:state().
 construct( State, ExchangerName, { ConfigurationFiles, RootTimeManagerPid } )
-  when is_list( ConfigurationFiles ) andalso is_pid( RootTimeManagerPid ) ->
+		when is_list( ConfigurationFiles )
+			 andalso is_pid( RootTimeManagerPid ) ->
 
 	% We construct the root exchanger here:
 
@@ -343,18 +345,18 @@ construct( State, ExchangerName, { ConfigurationFiles, RootTimeManagerPid } )
 
 	{ Message, ReadState } = case ConfigurationFiles of
 
-			[] ->
-				{ "with no configuration file to read.", CommonState };
+		[] ->
+			{ "with no configuration file to read.", CommonState };
 
-			_ ->
-				Mes = text_utils:format(
-					"that will read following configuration file(s): ~ts",
-					[ text_utils:strings_to_string( ConfigurationFiles ) ] ),
+		_ ->
+			Mes = text_utils:format(
+				"that will read following configuration file(s): ~ts",
+				[ text_utils:strings_to_string( ConfigurationFiles ) ] ),
 
-				ParseState = parse_files( ConfigurationFiles,
-						_NodeType=computing_node, CommonState ),
+			ParseState = parse_files( ConfigurationFiles,
+				_NodeType=computing_node, CommonState ),
 
-				{ Mes, ParseState }
+			{ Mes, ParseState }
 
 	end,
 
@@ -369,8 +371,8 @@ construct( State, ExchangerName, { ConfigurationFiles, RootTimeManagerPid } )
 	end,
 
 	?send_info( ReadState,
-				text_utils:format( "Creating a root data exchanger ~ts~n"
-					"(with JSON support ~ts).", [ Message, JSONStatus ] ) ),
+		text_utils:format( "Creating a root data exchanger ~ts~n"
+			"(with JSON support ~ts).", [ Message, JSONStatus ] ) ),
 
 	% Returns an updated state:
 	setAttributes( ReadState, [
@@ -382,7 +384,7 @@ construct( State, ExchangerName, { ConfigurationFiles, RootTimeManagerPid } )
 
 
 construct( State, ExchangerName, { ParentExchangerPid, NodeType } )
-  when is_pid( ParentExchangerPid ) andalso is_atom( NodeType ) ->
+		when is_pid( ParentExchangerPid ) andalso is_atom( NodeType ) ->
 
 	% We construct a child exchanger here, requests answer early:
 
@@ -420,7 +422,7 @@ construct( State, ExchangerName, { ParentExchangerPid, NodeType } )
 	end,
 
 	?send_debug_fmt( NewState, "Data table after construction: ~ts",
-			  [ table:to_string( getAttribute( NewState, data_table ) ) ] ),
+		[ table:to_string( getAttribute( NewState, data_table ) ) ] ),
 
 	setAttributes( NewState, [
 		% To be kept for possible future own child exchangers:
@@ -583,7 +585,7 @@ onInterDiascaBegin( State ) ->
 	% as such here, thus ignored:
 	%
 	{ NewState, _Res } = executeRequestInTree( State,
-			_RequestName=commitDataHelper, _Params=[ PendingCommits ] ),
+		_RequestName=commitDataHelper, _Params=[ PendingCommits ] ),
 
 	FinalState = setAttributes( NewState, [
 		{ interdiasca_requested, false },
@@ -775,7 +777,7 @@ modifyInitialData( State, Key, Value, Qualifier ) ->
 
 
 % @doc Returns the values (without the qualifiers) associated to the specified
-% keys as a list of key/value pairs (ex: [{K1,V1}, {K2,V2}]), or throws an
+% keys as a list of key/value pairs (e.g. [{K1,V1}, {K2,V2}]), or throws an
 % exception.
 %
 % Preferably to be called on a local data exchanger; the simulation must not be
@@ -831,7 +833,7 @@ readInitialData( State, Key ) when is_atom( Key ) ->
 
 
 % @doc Returns the values associated to the specified keys as a list of
-% key/value/qualifier triplets (ex: [{K1,V1,Q1}, {K2,V2,Q2}]), or throws an
+% key/value/qualifier triplets (e.g. [{K1,V1,Q1}, {K2,V2,Q2}]), or throws an
 % exception.
 %
 % Preferably to be called on a local data exchanger; the simulation must not be
@@ -959,7 +961,7 @@ defineData( State, EntryList ) ->
 			% with already-existing commits, or with the other entries:
 			%
 			NewPendingCommits =
-						add_commits( DefinitionList, PendingCommits ),
+				add_commits( DefinitionList, PendingCommits ),
 
 			NotifiedState = manage_inter_diasca_notification( State ),
 
@@ -1021,7 +1023,7 @@ defineData( State, Key, Value, Qualifier ) ->
 			PendingCommits = ?getAttr(pending_commits),
 
 			NewPendingCommits =
-					   add_commit( DefinitionEntry, PendingCommits ),
+				add_commit( DefinitionEntry, PendingCommits ),
 
 			NotifiedState = manage_inter_diasca_notification( State ),
 
@@ -1098,7 +1100,7 @@ modifyData( State, EntryList ) ->
 			% already-existing commits, or with the other triplets:
 			%
 			NewPendingCommits =
-						add_commits( DefinitionList, PendingCommits ),
+				add_commits( DefinitionList, PendingCommits ),
 
 			NotifiedState = manage_inter_diasca_notification( State ),
 
@@ -1147,8 +1149,8 @@ modifyData( State, Key, Value ) ->
 			% No other already recorded commit should exist for that key:
 			PendingCommits = ?getAttr(pending_commits),
 
-			NewPendingCommits = add_commit( DefinitionEntry,
-											PendingCommits ),
+			NewPendingCommits =
+				add_commit( DefinitionEntry, PendingCommits ),
 
 			NotifiedState = manage_inter_diasca_notification( State ),
 
@@ -1196,7 +1198,7 @@ modifyData( State, Key, Value, Qualifier ) ->
 			PendingCommits = ?getAttr(pending_commits),
 
 			NewPendingCommits =
-					   add_commit( DefinitionEntry, PendingCommits ),
+				add_commit( DefinitionEntry, PendingCommits ),
 
 			NotifiedState = manage_inter_diasca_notification( State ),
 
@@ -1210,7 +1212,7 @@ modifyData( State, Key, Value, Qualifier ) ->
 
 
 % @doc Returns the values associated to the specified keys as a list of
-% key/value pairs (ex: [{K1,V1}, {K2,V2}]), or throws an exception.
+% key/value pairs (e.g. [{K1,V1}, {K2,V2}]), or throws an exception.
 %
 % Preferably to be called on a local data exchanger; the simulation must not be
 % started yet.
@@ -1259,7 +1261,7 @@ readData( State, Key ) when is_atom( Key ) ->
 
 
 % @doc Returns the values associated to the specified keys as a list of
-% key/value/qualifier triplets (ex: [ {K1,V1,Q1}, {K2,V2,Q2} ]), or throws an
+% key/value/qualifier triplets (e.g. [{K1,V1,Q1}, {K2,V2,Q2}]), or throws an
 % exception.
 %
 % Preferably to be called on a local data exchanger; the simulation must not be
@@ -1487,14 +1489,14 @@ get_local_exchanger() ->
 get_root_exchanger() ->
 
 	Pid = naming_utils:get_registered_pid_for( ?root_data_exchanger_name,
-										 _RegistrationType=global ),
+											   _RegistrationType=global ),
 
 	wooper:return_static( Pid ).
 
 
 
 % @doc Returns an opaque datatype that allows to make use of the data-exchange
-% service from a simulation case (ex: a test case).
+% service from a simulation case (e.g. a test case).
 %
 -spec get_case_exchange_settings() -> static_return( exchange_settings() ).
 get_case_exchange_settings() ->
@@ -1531,7 +1533,8 @@ get_case_exchange_settings() ->
 	% it globally also as 'data-exchanger dedicated to the simulation case'. So:
 
 	PseudoLocalExchangerPid = case naming_utils:is_registered(
-		  get_global_name_of_exchanger_for_case(), _RegistrationType=global ) of
+			get_global_name_of_exchanger_for_case(),
+			_RegistrationType=global ) of
 
 		not_registered ->
 			% The simulation-case specific name could not be registered, as it
@@ -1603,7 +1606,7 @@ get_actor_exchange_settings() ->
 -spec define_initial_data( key(), value(), qualifier(), exchange_settings() ) ->
 									static_void_return().
 define_initial_data( Key, Value, Qualifier,
-			_ExchangeSettings={ RootExchangerPid, _LocalExchangerPid } ) ->
+		_ExchangeSettings={ RootExchangerPid, _LocalExchangerPid } ) ->
 
 	RootExchangerPid ! { defineInitialData, [ Key, Value, Qualifier ], self() },
 
@@ -1629,7 +1632,7 @@ define_initial_data( Key, Value, Qualifier,
 				exchange_settings() | qualifier() ) -> static_void_return().
 define_initial_data( Key, Value,
 					_ExchangeSettings={ RootExchangerPid, _LocalExchangerPid } )
-  when is_pid( RootExchangerPid ) ->
+								when is_pid( RootExchangerPid ) ->
 
 	% No qualifier here.
 
@@ -1675,7 +1678,7 @@ define_initial_data( Key, Value, Qualifier ) ->
 						 ( key(), value() ) -> static_void_return().
 define_initial_data( EntryList,
 			_ExchangeSettings={ RootExchangerPid, _LocalExchangerPid } )
-  when is_list( EntryList ) andalso is_pid( RootExchangerPid ) ->
+		when is_list( EntryList ) andalso is_pid( RootExchangerPid ) ->
 
 	RootExchangerPid ! { defineInitialData, [ EntryList ], self() },
 
@@ -1739,7 +1742,7 @@ define_initial_data( EntryList ) when is_list( EntryList ) ->
 -spec modify_initial_data( key(), value(), qualifier(), exchange_settings() ) ->
 											static_void_return().
 modify_initial_data( Key, Value, Qualifier,
-			_ExchangeSettings={ RootExchangerPid, _LocalExchangerPid } ) ->
+		_ExchangeSettings={ RootExchangerPid, _LocalExchangerPid } ) ->
 
 	RootExchangerPid ! { modifyInitialData, [ Key, Value, Qualifier ], self() },
 
@@ -1766,8 +1769,9 @@ modify_initial_data( Key, Value, Qualifier,
 -spec modify_initial_data( key(), value(),
 				exchange_settings() | qualifier() ) -> static_void_return().
 modify_initial_data( Key, Value,
-					_ExchangeSettings={ RootExchangerPid, _LocalExchangerPid } )
-  when is_pid( RootExchangerPid ) ->
+					 _ExchangeSettings={ RootExchangerPid,
+										 _LocalExchangerPid } )
+		when is_pid( RootExchangerPid ) ->
 
 	% No qualifier here.
 
@@ -1896,7 +1900,7 @@ read_initial_data( Key ) ->
 % ...].
 %
 -spec read_initial_data( key(), exchange_settings() ) ->
-							   static_return( value() ).
+										static_return( value() ).
 read_initial_data( Key,
 		_ExchangeSettings={ _RootExchangerPid, LocalExchangerPid } ) ->
 
@@ -1920,7 +1924,7 @@ read_initial_data( Key,
 % specify its result to next data-exchange calls).
 %
 -spec read_qualified_initial_data( key() ) ->
-										 static_return( qualified_value() ).
+										static_return( qualified_value() ).
 read_qualified_initial_data( Key ) ->
 	Value = read_qualified_initial_data( Key, get_case_exchange_settings() ),
 	wooper:return_static( Value ).
@@ -2178,7 +2182,7 @@ define_data_recursive( EntryList, State ) when is_list( EntryList ) ->
 	% as such here, thus ignored:
 	%
 	{ NewState, _Res } = executeRequestInTree( State,
-			_RequestName=defineDataHelper, _Params=[ EntryList ] ),
+		_RequestName=defineDataHelper, _Params=[ EntryList ] ),
 
 	NewState;
 
@@ -2198,7 +2202,7 @@ define_data_recursive( Entry, State ) ->
 	% as such here, thus ignored:
 	%
 	{ NewState, _Res } = executeRequestInTree( State,
-			_RequestName=defineDataHelper, _Params=Entry ),
+		_RequestName=defineDataHelper, _Params=Entry ),
 
 	NewState.
 
@@ -2218,7 +2222,7 @@ modify_data_recursive( EntryList, State ) when is_list( EntryList ) ->
 	% as such here, thus ignored:
 	%
 	{ NewState, _Res } = executeRequestInTree( State,
-			_RequestName=modifyDataHelper, _Params=[ EntryList ] ),
+		_RequestName=modifyDataHelper, _Params=[ EntryList ] ),
 
 	NewState;
 
@@ -2236,7 +2240,7 @@ modify_data_recursive( Entry, State ) ->
 	% as such here, thus ignored:
 	%
 	{ NewState, _Res } = executeRequestInTree( State,
-			_RequestName=modifyDataHelper, _Params=[ Entry ] ),
+		_RequestName=modifyDataHelper, _Params=[ Entry ] ),
 
 	NewState.
 
@@ -2311,7 +2315,7 @@ common_construct( ExchangerName, State ) ->
 
 	% First the direct mother classes:
 	TraceState = class_EngineBaseObject:construct( State,
-										?trace_categorize(ExchangerName) ),
+		?trace_categorize(ExchangerName) ),
 
 	% As a data exchanger may receive a larger number of messages:
 	erlang:process_flag( message_queue_data, off_heap ),
@@ -2380,8 +2384,8 @@ parse_files( FileList, NodeType, State ) ->
 
 	%trace_utils:debug_fmt( "BasePath = ~ts.", [ BasePath ] ),
 
-	AbsolutePathList = [ file_utils:join( BasePath, Path )
-						 || Path <- FileList ],
+	AbsolutePathList =
+		[ file_utils:join( BasePath, Path ) || Path <- FileList ],
 
 	JsonParserState = ?getAttr(json_parser_state),
 
@@ -2534,7 +2538,7 @@ executeRequestInTree( State, MethodName, Parameters ) ->
 	% (note: this reason does not apply anymore, {NewState,Result} is always
 	% returned)
 	{ NewState, { _Self, Res } } = executeRequest( State,
-					executeRequestInTreeHelper, [ MethodName, Parameters ] ),
+		executeRequestInTreeHelper, [ MethodName, Parameters ] ),
 
 	%trace_utils:debug_fmt( "executeRequestInTree out for ~ts with "
 	%                       "parameters ~p.", [ MethodName, Parameters ] ),
@@ -2551,8 +2555,8 @@ executeRequestInTreeHelper( State, MethodName, Parameters ) ->
 
 	% Depth-first, as we want to parallelise as much as possible:
 
-	RequestMessage = { executeRequestInTreeHelper, [ MethodName, Parameters ],
-					   self() },
+	RequestMessage =
+		{ executeRequestInTreeHelper, [ MethodName, Parameters ], self() },
 
 	Children = ?getAttr(child_exchangers),
 
@@ -2575,7 +2579,7 @@ executeRequestInTreeHelper( State, MethodName, Parameters ) ->
 	% anymore:
 	%
 	wooper:return_state_result( ExecutedState,
-									{ self(), [ LocalRes | ChildRes ] } ).
+								{ self(), [ LocalRes | ChildRes ] } ).
 
 
 
@@ -2610,7 +2614,7 @@ wait_for_tree( WaitedPidList, Acc ) ->
 
 	after 2000 ->
 
-			trace_utils:warning_fmt( "No answer from ~p.", [ WaitedPidList ] ),
-			wait_for_tree( WaitedPidList, Acc )
+		trace_utils:warning_fmt( "No answer from ~p.", [ WaitedPidList ] ),
+		wait_for_tree( WaitedPidList, Acc )
 
 	end.

@@ -69,7 +69,7 @@
 % On type names and signatures.
 
 % A type T (whether built-in or user-defined) is designated directly by its name
-% T, as an atom. Ex: written as "count", refered to as: count.
+% T, as an atom. For example written as "count", refered to as: count.
 
 % There are reserved type-related names (atoms), which correspond to:
 %  - built-in types: atom, integer, float, boolean, string, any, none
@@ -80,7 +80,8 @@
 % (if any) it depends upon.
 
 % For monomorphic types (ie types that are not parametrised by other types),
-% their signature is their sole name. Ex: "foo" ("foo()" is also accepted).
+% their signature is their sole name. For example "foo" ("foo()" is also
+% accepted).
 
 % The signature of polymorphic types (ie types that are parametrised by other
 % types) is made of their name immediately followed by a list of the names of
@@ -99,7 +100,7 @@
 % On built-in types.
 
 
-% The type 'atom' designates the set of (possibly user-defined) symbols (ex:
+% The type 'atom' designates the set of (possibly user-defined) symbols (e.g.
 % 'true' or 'foo'). In a type definition, such a symbol consists on the atom
 % itself, and is always written enclosed in single quotes ("'foo'"), in order to
 % distinguish it from the user-defined types (as one may define a type named
@@ -279,7 +280,7 @@
 % Describes the name of a type (without the names of the types it depends on,
 % for polymorphic ones).
 %
-% Ex: 'my_count'.
+% For example 'my_count'.
 
 
 -type type_arity() :: count().
@@ -305,7 +306,7 @@
 									| 'reference'
 									| 'tuple'.
 % The "most precise" description of a primitive, in which:
-% - simple types (ex: 'boolean' and 'atom') coexist (despite overlapping)
+% - simple types (e.g. 'boolean' and 'atom') coexist (despite overlapping)
 % - 'number' and 'bitstring' are not used (as they derive respectively from
 % float()|integer() and binary())
 %
@@ -317,8 +318,8 @@
 % is an union able to contain a ieee754_8 datatype, aliased to the 'double' C
 % datatype.
 %
-% Polymorphic types (ex: lists) are described with no mention of the types they
-% may depend on (ex: 'list' can be specified, not 'list(float())' or anything
+% Polymorphic types (e.g. lists) are described with no mention of the types they
+% may depend on (e.g. 'list' can be specified, not 'list(float())' or anything
 % like that).
 
 
@@ -333,8 +334,8 @@
 % Textual type description: type-as-a-string, inspired from the syntax used for
 % type specifications ([http://erlang.org/doc/reference_manual/typespec.html]),
 % yet different. Notably, monomorphic types do not end with empty parentheses
-% (ex: "integer", not "integer()") and atoms are always surrounded by simple
-% quotes (ex: "'an_atom'|'another_one'").
+% (e.g. "integer", not "integer()") and atoms are always surrounded by simple
+% quotes (e.g. "'an_atom'|'another_one'").
 %
 % For example: "[{float, boolean}]".
 
@@ -365,12 +366,12 @@
 % merely used), then (non-empty) parentheses could be introduced
 %
 % - be able to nevertheless *use* polymorphic types, as they are certainly
-% useful (ex: maps/associative tables, lists, etc.); a problem is that, in terms
-% (as opposed to in the textual counterpart), parentheses cannot be used to
-% express these polymorphic types (not only they denote function calls, but also
-% are not legit components of a term); therefore the convention chosen here is
-% to specify types as pairs, the first element being the name of the type, the
-% second one being the (ordered) list of the types it depends on; then the
+% useful (e.g. maps/associative tables, lists, etc.); a problem is that, in
+% terms (as opposed to in the textual counterpart), parentheses cannot be used
+% to express these polymorphic types (not only they denote function calls, but
+% also are not legit components of a term); therefore the convention chosen here
+% is to specify types as pairs, the first element being the name of the type,
+% the second one being the (ordered) list of the types it depends on; then the
 % textual type "a( T1, T2 )" is translated to the {a,[T1,T2]} type term; most
 % types being "monomorphic", they are represented as {my_simple_type,[]} (which
 % cannot be abbreviated by only the 'my_simple_type' atom, as it would lead to
@@ -422,7 +423,7 @@
 %
 % Experiment with ast_utils:string_to_form/1 and have fun!
 %
-% Ex: "-type a() :: [foobar()]." yields: '{attribute,1,type, {a,{type,1,
+% For example "-type a() :: [foobar()]." yields: '{attribute,1,type, {a,{type,1,
 %    list,[{user_type,1,foobar,[]}]},[]}}'.
 %
 % See also [http://erlang.org/doc/apps/erts/absform.html].
@@ -538,12 +539,22 @@
 % more information.
 
 
--export_type([ ]).
+-type positive_float() :: float().
+% A float that is strictly positive.
 
+-type non_negative_float() :: float().
+% A float that is positive or null.
 
 
 -type record() :: tuple().
 % Designates a record instance, to discriminate from a mere tuple.
+
+
+-type record_tag() :: atom().
+% The first (atom) element of the tuple corresponding to a record instance.  For
+% example #my_point{ x=1, y=2 } is actually {my_point, 1, 2} and thus my_point
+% is the corresponding record tag.
+
 
 
 % Tuploids. See also augment_tuploid/2.
@@ -568,7 +579,16 @@
 
 -type tuple( _T ) :: tuple().
 % Designates an uniform tuple (of unspecified size), that is a tuple whose
-% elements are all of the specified type.
+% elements are all of the specified type T.
+
+
+-type tuple( _T, _S ) :: tuple().
+% Designates an uniform tuple of the specified size, that is a tuple whose
+% S elements are all of the type T.
+
+
+-type counters() :: tuple( count() ).
+% A tuple containing counters.
 
 
 % Not needed or useful as map() is a built-in type:
@@ -577,6 +597,9 @@
 -type map( _K, _V ) :: map().
 % As (maps:)map/2 does not even exist apparently, at least not since 18.0.
 
+
+-type pid_ref() :: naming_utils:local_designator().
+% Any kind of reference onto a process.
 
 
 -type permanent_term() :: integer() | float() | atom() | boolean() | binary()
@@ -616,17 +639,20 @@
 			   int8/0, int16/0, int32/0, int64/0,
 			   float32/0, float64/0,
 
+			   positive_float/0, non_negative_float/0,
+
 			   record/0,
 			   tuploid/0, tuploid/1,
-			   pair/0, triplet/0, tuple/1,
+			   pair/0, triplet/0, tuple/1, tuple/2,
 			   map/2,
+			   pid_ref/0,
 			   permanent_term/0, transient_term/0 ]).
 
 
 % Note: currently, only a very basic, ad hoc type support ("hand-made look-up
 % tables") is provided.
 %
-% Later we would like to really parse any type description (ex:
+% Later we would like to really parse any type description (e.g.
 % "[{float,[boolean]}]") and be able to manage it as type() (including the
 % checking of terms against types).
 
@@ -645,37 +671,15 @@
 
 
 
-% Conversion:
--export([ ensure_integer/1, ensure_rounded_integer/1,
-		  ensure_float/1, ensure_positive_float/1,
-		  ensure_number/1, ensure_boolean/1,
-		  ensure_string/1, ensure_binary/1 ]).
+% We distinguish here check_* functions, that check that their argument is of a
+% given type (and return that argument, unchanged) and ensure_* functions, which
+% perform a check and, if necessary, a (legit) cast, hence may return a value
+% whose type is different from the one of their argument.
 
 
-% Sharing:
--export([ share/1, share/2, share/3 ]).
-
-
-% Boolean predicates, that is checking that returns not the checked value but
-% whether it could be successfully be checked.
-%
-% Most of such boolean predicates can be directly implemented thanks to guard
-% expressions (e.g. 'is_pid(T)' or 'X >= 1'), and thus are not specifically
-% defined here.
-%
-% These predicate are more convenient to trigger application-specific feedback
-% that the next term-returning checkings of the next section.
-%
--export([ are_numbers/1, are_maybe_numbers/1,
-		  are_integers/1, are_maybe_integers/1,
-		  are_floats/1, are_maybe_floats/1,
-		  are_positive_floats/1,
-		  are_binaries/1 ]).
-
-
-
-% Term-returning checkings: if the specified term could be successfully checked,
-% returns it (as opposed to a predicate returning a boolean value).
+% Term-returning pure checkings: if the specified term could be successfully
+% checked, returns it (as opposed to a predicate returning a boolean value), so
+% that it can be chained, i.e. passed as an argument to a function.
 %
 % We prefer the "'positive' vs 'strictly positive'" naming, deemed clearer than
 % the "'non_neg' vs 'positive'" one, this 'positive' excluding zero.
@@ -687,11 +691,13 @@
 % check_all_undefined/1, are_all_defined/1, check_defined/1,
 % check_not_undefined/1, check_all_defined/1.
 %
+% For comparisons (equality checks), refer to {basic,cond}_utils:check_equal/2
+% for example, depending on whether such a check should be conditional.
+%
 -export([ check_atom/1, check_atoms/1,
 		  check_boolean/1, check_booleans/1,
 
-		  check_pid/1, check_maybe_pid/1,
-
+		  check_pid/1, check_maybe_pid/1, check_pids/1,
 
 		  check_number/1, check_maybe_number/1,
 		  check_positive_number/1,
@@ -721,8 +727,45 @@
 		  check_map/1, check_tuple/1 ]).
 
 
+% Checks with potential conversions:
+-export([ ensure_integer/1,
+		  ensure_rounded_integer/1,
+		  ensure_floored_integer/1, ensure_ceiled_integer/1,
+
+		  ensure_float/1, ensure_positive_float/1,
+		  ensure_string/1, ensure_binary/1 ]).
+
+
+% Sharing:
+-export([ share/1, share/2, share/3 ]).
+
+
+% Boolean predicates, that is checking that returns not the checked value but
+% whether it could be successfully be checked.
+%
+% Most of such boolean predicates can be directly implemented thanks to guard
+% expressions (e.g. 'is_pid(T)' or 'X >= 1'), and thus are not specifically
+% defined here.
+%
+% These predicate are more convenient to trigger application-specific feedback
+% that the next term-returning checkings of the next section.
+%
+-export([ are_numbers/1, are_maybe_numbers/1,
+		  are_integers/1, are_maybe_integers/1,
+		  are_floats/1, are_maybe_floats/1,
+		  are_positive_floats/1,
+		  are_binaries/1 ]).
+
+
+
+% Counter section:
+-export([ initialise_counters/1, initialise_counters/2,
+		  increment_counter/2, add_to_counter/3 ]).
+
+
 % Specials for datatypes:
--export([ augment_tuploid/2 ]).
+-export([ get_record_tag/1, get_last_tuple_element/1, augment_tuploid/2 ]).
+
 
 
 % Work in progress:
@@ -733,6 +776,7 @@
 
 -type count() :: basic_utils:count().
 -type level() :: basic_utils:level().
+-type positive_index() :: basic_utils:positive_index().
 
 -type ustring() :: text_utils:ustring().
 
@@ -823,26 +867,31 @@ parse_nesting( _TypeDescription, _NestingDepth ) ->
 %
 -spec type_to_description( type() ) -> type_description().
 % First, simple types, in alphabetical order:
+type_to_description( _Type=any ) ->
+	"any";
+
 type_to_description( _Type=atom ) ->
 	"atom";
 
-type_to_description( _Type=integer ) ->
-	"integer";
-
-type_to_description( _Type=float ) ->
-	"float";
+type_to_description( _Type=binary ) ->
+	"binary";
 
 type_to_description( _Type=boolean ) ->
 	"boolean";
 
-type_to_description( _Type=string ) ->
-	"string";
+type_to_description( _Type=float ) ->
+	"float";
 
-type_to_description( _Type=any ) ->
-	"any";
+type_to_description( _Type=integer ) ->
+	"integer";
 
 type_to_description( _Type=none ) ->
 	"none";
+
+type_to_description( _Type=string ) ->
+	"string";
+
+
 
 
 % Then polymorphic constructs:
@@ -867,7 +916,7 @@ type_to_description( _Type={ union, TypeList } ) when is_list( TypeList ) ->
 
 type_to_description( Type ) ->
 
-	% Could be misleading (ex: any() not matching any()):
+	% Could be misleading (e.g. any() not matching any()):
 	%"any".
 
 	%text_utils:format( "~p", [ Type ] ).
@@ -978,7 +1027,7 @@ interpret_type_of( Term, MaxNestingLevel ) when MaxNestingLevel >= 0 ->
 
 
 
-% @doc Returns a string describing, in a user-friendly manner, the type of the
+% Returns a string describing, in a user-friendly manner, the type of the
 % specified term, describing any nested subterms up to the specified level.
 %
 -spec interpret_type_helper( term(), level(), level() ) -> ustring().
@@ -1040,7 +1089,7 @@ interpret_type_helper( Term, CurrentNestingLevel, MaxNestingLevel )
 				_ ->
 					Elems = [ interpret_type_helper( E,
 								CurrentNestingLevel+1, MaxNestingLevel )
-										|| E <- Term ],
+									|| E <- Term ],
 
 					text_utils:format( "list of ~B elements: ~ts",
 						[ length( Term ),
@@ -1270,7 +1319,6 @@ is_homogeneous_full_helper( _Elems=[], Type ) ->
 	{ true, Type };
 
 is_homogeneous_full_helper( _Elems=[ H | T ], Type ) ->
-
 	case get_type_of( H ) of
 
 		Type ->
@@ -1375,10 +1423,43 @@ ensure_rounded_integer( N ) ->
 
 
 
+% @doc Ensures that the specified term is an integer, and returns it.
+%
+% If it is a float, will return a floored (rounded-down integer) version of it.
+%
+-spec ensure_floored_integer( number() ) -> integer().
+ensure_floored_integer( N ) when is_integer( N ) ->
+	N;
+
+ensure_floored_integer( N ) when is_float( N ) ->
+	math_utils:floor( N );
+
+ensure_floored_integer( N ) ->
+	throw( { cannot_coerce_to_integer, N } ).
+
+
+
+% @doc Ensures that the specified term is an integer, and returns it.
+%
+% If it is a float, will return a ceiled (rounded-up integer) version of it.
+%
+-spec ensure_ceiled_integer( number() ) -> integer().
+ensure_ceiled_integer( N ) when is_integer( N ) ->
+	N;
+
+ensure_ceiled_integer( N ) when is_float( N ) ->
+	math_utils:ceiling( N );
+
+ensure_ceiled_integer( N ) ->
+	throw( { cannot_coerce_to_integer, N } ).
+
+
 
 % @doc Ensures that the specified term is a float, and returns it.
 %
 % If it is an integer, will return a floating-point version of it.
+%
+% Yet float/1 mostly suffices (as it can can operate on floats).
 %
 -spec ensure_float( number() ) -> float().
 ensure_float( N ) when is_float( N ) ->
@@ -1409,26 +1490,6 @@ ensure_positive_float( Other ) ->
 
 
 
-% @doc Ensures that the specified term is a number, and returns it.
--spec ensure_number( number() ) -> number().
-ensure_number( N ) when is_number( N ) ->
-	N;
-
-ensure_number( N ) ->
-	throw( { not_a_number, N } ).
-
-
-
-% @doc Ensures that the specified term is a boolean, and returns it.
--spec ensure_boolean( term() ) -> boolean().
-ensure_boolean( B ) when is_boolean( B ) ->
-	B;
-
-ensure_boolean( B ) ->
-	throw( { not_a_boolean, B } ).
-
-
-
 % @doc Ensures that the specified term is a string, and returns it.
 -spec ensure_string( term() ) -> ustring().
 ensure_string( S ) ->
@@ -1451,13 +1512,13 @@ ensure_binary( S ) ->
 % possibly smaller in memory).
 %
 % Presumably useful on platforms where the size of a pointer is lower than the
-% one of the subterms (ex: an Erlang float, i.e. a double), when some subterms
+% one of the subterms (e.g. an Erlang float, i.e. a double), when some subterms
 % may be equal (by value), yet are duplicated (not defined once and pointed to
 % multiple times).
 %
-% Such a deduplication may happen typically on homogeneous tuples (ex: vectors),
-% when received as messages for example, or when read from any external source
-% (ex: from file).
+% Such a deduplication may happen typically on homogeneous tuples
+% (e.g. vectors), when received as messages for example, or when read from any
+% external source (e.g. from file).
 %
 % Directly inspired from wings_utils:share/*.
 %
@@ -1536,7 +1597,7 @@ share( Other ) ->
 % of its elements, if they are equal.
 %
 % Presumably useful on platforms where the size of a pointer is lower than the
-% one of the subterms (ex: an Erlang float, i.e. a double), when some subterms
+% one of the subterms (e.g. an Erlang float, i.e. a double), when some subterms
 % may be equal (by value), yet are duplicated (not defined once and pointed to
 % multiple times).
 %
@@ -1555,7 +1616,7 @@ share( X, Y ) ->
 % sharing of its elements, if they are equal.
 %
 % Presumably useful on platforms where the size of a pointer is lower than the
-% one of the subterms (ex: an Erlang float, i.e. a double), when some subterms
+% one of the subterms (e.g. an Erlang float, i.e. a double), when some subterms
 % may be equal (by value), yet are duplicated (not defined once and pointed to
 % multiple times).
 %
@@ -1749,6 +1810,14 @@ check_maybe_pid( undefined ) ->
 check_maybe_pid( Other ) ->
 	throw( { not_maybe_pid, Other } ).
 
+
+
+% @doc Checks that the specified term is a list of PIDs indeed, and returns it.
+-spec check_pids( term() ) -> [ pid() ].
+check_pids( Pids )  ->
+	% Possibly a bit quicker that way:
+	[ check_pid( P ) || P <- Pids ],
+	Pids.
 
 
 
@@ -2071,14 +2140,65 @@ check_tuple( Other ) ->
 
 
 
-% @doc Augments the specified tuploid with specified term, placed as new last
-% element.
+% @doc Returns the tag of the specified record instance.
+-spec get_record_tag( record() ) -> record_tag().
+get_record_tag( RecordTuple ) ->
+	element( _Index=1, RecordTuple ).
+
+
+
+
+% Counters subsection.
 %
-% Ex: augment_tuploid(a, 2.0) = {a, 2.0}
+% Maybe a counter_utils module will exist some day.
+%
+% See also the 'counters' standard module (see
+% https://www.erlang.org/doc/man/counters.html) for shared (cross-process)
+% atomic counters.
+
+
+% @doc Initialises the specified number of counters to zero.
+-spec initialise_counters( count() ) -> counters().
+initialise_counters( Count ) ->
+	initialise_counters( Count, _InitValue=0 ).
+
+
+% @doc Initialises the specified number of counters to the specified (initial)
+% value.
+%
+-spec initialise_counters( count(), integer() ) -> counters().
+initialise_counters( Count, InitValue ) ->
+	list_to_tuple( list_utils:duplicate( InitValue, Count ) ).
+
+
+% @doc Increments the specified counter.
+-spec increment_counter( positive_index(), counters() ) -> counters().
+increment_counter( CounterIndex, Counters ) ->
+	add_to_counter( _ToAdd=1, CounterIndex, Counters ).
+
+
+% @doc Adds the specified value to the specified counter.
+-spec add_to_counter( number(), positive_index(), counters() ) -> counters().
+add_to_counter( ToAdd, CounterIndex, Counters ) ->
+	NewElem = element( CounterIndex, Counters ) + ToAdd,
+	setelement( CounterIndex, Counters, NewElem ).
+
+
+
+% @doc Returns the last element of the specified tuple.
+-spec get_last_tuple_element( tuple() ) -> term().
+get_last_tuple_element( Tuple ) ->
+	element( size( Tuple ), Tuple ).
+
+
+% @doc Augments the specified tuploid with the specified term, placed as new
+% last element.
+%
+% For example augment_tuploid(a, 2.0) = {a, 2.0}
 %     augment_tuploid({foo, 42}, 2.0) = {foo, 42, 2.0}
 %
 % Useful typically to augment returned error tuploids (either a single error
-% term such as 'invalid_name', or a tuple like '{invalid_name,"Arnold"}' with
+% term such as 'invalid_name', or a tuple like '{invalid_name,"Arnold"}') with
 % caller-local information, to obtain in all cases a tuploid (a tuple here) with
 % this extra information.
 %

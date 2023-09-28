@@ -1,13 +1,13 @@
 # This is a recipe in order to create a Docker image that provides an
 # environment appropriate to the *generation of the Sim-Diasca documentation*,
-# notably in the context of continuous integration (ex: a GitLab one).
+# notably in the context of continuous integration (e.g. a GitLab one).
 #
 # It contains thus relevant prerequisites (including the RST toolchain), Erlang
 # itself (for the edoc-based generation of the Sim-Diasca API documentation),
 # and Sim-Diasca (notably as sources).
 #
 # This image is not specifically designed to be run interactively, but to
-# integrate to a continuous integration scheme (ex: GitLab CI).
+# integrate to a continuous integration scheme (e.g. GitLab CI).
 
 
 # This IMAGE_DESCRIPTION_TAG image has for Docker tag 'IMAGE_NAME_TAG', and
@@ -25,13 +25,13 @@
 # Indeed this template shall be updated regarding notably the following tags in
 # order to become a proper Dockerfile (the '_TAG' suffix has been removed from
 # the next symbols so that they are not substituted):
-#  - PARENT_IMAGE (ex: "sim-diasca:base-runtime", in its relevant version)
-#  - ERLANG_VERSION (ex: "24.2")
+#  - PARENT_IMAGE (e.g. "sim-diasca:base-runtime", in its relevant version)
+#  - ERLANG_VERSION (e.g. "24.2")
 
 
 # Parent image, from which this image will derive.
 #
-# Ex: 'sim-diasca/base-runtime:latest', possibly obtained from an
+# For example 'sim-diasca/base-runtime:latest', possibly obtained from an
 # organisation-specific registry distributing adapted versions:
 #
 FROM PARENT_IMAGE_TAG

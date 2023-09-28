@@ -1,26 +1,27 @@
 % Copyright (C) 2008-2023 EDF R&D
-
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2008.
 
 
-% @doc Class modelling the reparation behaviour of equipments according to a
-% uniform law.
+% @doc Class modelling the reparation behaviour of pieces of equipment according
+% to a uniform law.
 %
 -module(class_UniformRepairModel).
 
@@ -44,6 +45,7 @@
 
 % Allows to use macros for trace sending:
 -include("sim_diasca_for_actors.hrl").
+
 
 
 % @doc Constructs a uniform repair model actor.
@@ -76,8 +78,8 @@ construct( State, ActorSettings,
 		?trace_categorize("Uniform repair model"), { uniform, MaxTTR } ),
 
 	?send_info_fmt( RepairState,
-		"Creating an uniform repair model "
-		"whose maximum time-to-repair is ~B seconds.", [ MaxTTR ] ),
+		"Creating an uniform repair model whose maximum time-to-repair "
+		"is ~B seconds.", [ MaxTTR ] ),
 
 	RepairState.
 

@@ -1,32 +1,32 @@
 % Copyright (C) 2008-2023 EDF R&D
-
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2008.
 
 
-
-% @doc Unit tests for the interaction between the random manager and stochastic
-% actors.
+% @doc Unit tests for the interaction between the <b>random manager and
+% stochastic actors</b>.
 %
 % See the class_RandomManager.erl and class_TestStochasticActor.erl tested
 % modules.
 %
--module(randomManagerAndStochasticActorPair_test).
+-module(random_laws_and_stochastic_actor_test).
 
 
 % For facilities common to all cases:
@@ -42,8 +42,7 @@ run() ->
 
 	% Prefer reusing most default settings:
 	SimulationSettings = #simulation_settings{
-							simulation_name="Stochastic Actor Test" },
-
+		simulation_name="Stochastic Actor Test" },
 
 	DeploymentSettings = #deployment_settings{},
 
@@ -51,32 +50,32 @@ run() ->
 
 	% A deployment manager is created directly on the user node:
 	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-								DeploymentSettings, LoadBalancingSettings ),
+		DeploymentSettings, LoadBalancingSettings ),
 
 	% The random laws the test actor will rely on:
-	% ({RandomLawName, RandomSettings})
+	% ({RandomLawName, RandomSpec})
 	%
-	RandomLaws = [ { my_first_uniform,  {uniform,     5} },
-				   { my_second_uniform, {uniform,   100} },
-				   { my_gaussian,       {gaussian, 50,2} },
-				   { my_exponential,    {exponential,80} } ],
+	LawDescs = [ { my_first_uniform,  { uniform, 5, 15 } },
+				 { my_second_uniform, { integer_uniform, 0, 100 } },
+				 { my_exponential,    { exponential_1p, 80 } },
+				 { my_gaussian,       { gaussian, 50, 2 } } ],
 
 
 	% Creates an actor that will automatically subscribe itself to the manager
 	% and that will terminate on specified tick:
 	%
 	class_Actor:create_initial_actor( class_TestStochasticActor,
-		[ "Cartman", RandomLaws, _CartmanTerminationProbability=20 ] ),
+		[ "Cartman", LawDescs, _CartmanTerminationProbability=20 ] ),
 
 	% Other actors:
 	class_Actor:create_initial_actor( class_TestStochasticActor,
-		[ "Kenny", RandomLaws, _KennyTerminationProbability=99 ] ),
+		[ "Kenny", LawDescs, _KennyTerminationProbability=99 ] ),
 
 	class_Actor:create_initial_actor( class_TestStochasticActor,
-		[ "Kyle", RandomLaws, _KyleTerminationProbability=10 ] ),
+		[ "Kyle", LawDescs, _KyleTerminationProbability=10 ] ),
 
 	class_Actor:create_initial_actor( class_TestStochasticActor,
-		[ "Stan", RandomLaws, _StanTerminationProbability=0 ] ),
+		[ "Stan", LawDescs, _StanTerminationProbability=0 ] ),
 
 
 	% A TestStochasticActor requesting - and consuming - no law was successfully
@@ -90,7 +89,7 @@ run() ->
 	RootTimeManagerPid = test_receive(),
 
 	?test_notice_fmt( "Starting simulation, "
-					  "for a stop at tick offset ~B.", [ StopTick ] ),
+					  "for a stop at tick offset #~B.", [ StopTick ] ),
 
 	RootTimeManagerPid ! { start, [ StopTick, self() ] },
 

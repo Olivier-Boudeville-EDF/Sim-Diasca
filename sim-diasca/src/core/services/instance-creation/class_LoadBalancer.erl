@@ -180,7 +180,7 @@
 
 
 % Must be included before class_TraceEmitter header:
--define( trace_emitter_categorization, "Core.LoadBalancing" ).
+-define( trace_emitter_categorization, "Core.Load balancing" ).
 
 % For WOOPER, actor types, etc.:
 -include("sim_diasca_for_actors.hrl").
@@ -250,8 +250,8 @@
 % During a simulation, there is a bijection between actor identifiers and the
 % PID of their corresponding Erlang processes.
 %
-% From a simulation to another, actor PIDs will most probably change (ex: if the
-% number of computing nodes varies, or if the placement policy in use takes
+% From a simulation to another, actor PIDs will most probably change (e.g. if
+% the number of computing nodes varies, or if the placement policy in use takes
 % dynamically into account the load of the computers), but a given actor should
 % always have the same actor identifier assigned to it.
 
@@ -270,14 +270,14 @@
 % with its name (preferentially when subscribing to its time manager).
 %
 % Having to send its name, the actor can go a little further and provide all the
-% information needed at once (ex: classname), and the load balancer does not
+% information needed at once (e.g. classname), and the load balancer does not
 % need anymore to be involved there, simplifying the overall applicative
 % protocol.
 
 
 % Previously the seeding of each actor was done by its local time manager. Now,
 % as anyway the load balancer is able to send information to each actor when
-% creating it (ex: its AAI), its seed is specified as well, and thus managed by
+% creating it (e.g. its AAI), its seed is specified as well, and thus managed by
 % the load balancer.
 %
 % This design is simpler, and easily allows for a seeding that does not depend
@@ -296,7 +296,7 @@
 
 
 % The load balancer is both a simulation agent and an actor; this requires, in
-% some cases, extra care (ex: when deserialising a simulation, or when stopping
+% some cases, extra care (e.g. when deserialising a simulation, or when stopping
 % it).
 
 
@@ -314,7 +314,7 @@
 % default) to stream-based initialisation: the AAI assigned to instances read
 % from file then increment from base_actor_identifier onward, based on the line
 % number of their definition in the read file. As not all lines of these files
-% correspond to creation requests (ex: blank lines or comments), some AAIs may
+% correspond to creation requests (e.g. blank lines or comments), some AAIs may
 % never be assigned (that is not a problem).
 
 
@@ -356,9 +356,9 @@
 % in-order, no specific tag applies.
 %
 
-% Creating actors (ex: A2, A3) from constructors (ex: from the one of A1) cannot
-% be done, as A1 is by design not synchronised yet to the simulation (hence it
-% cannot send an actor message to the load balancer for that).
+% Creating actors (e.g. A2, A3) from constructors (e.g. from the one of A1)
+% cannot be done, as A1 is by design not synchronised yet to the simulation
+% (hence it cannot send an actor message to the load balancer for that).
 %
 % If, in the future, this was allowed, then the 3 following paragraphs would
 % apply:
@@ -399,7 +399,7 @@
 
 
 -type initiator_pid() :: pid().
-% The PID of a process requesting an actor creation (ex: the simulation case, a
+% The PID of a process requesting an actor creation (e.g. the simulation case, a
 % scenario, another initial actor).
 
 
@@ -553,19 +553,16 @@ construct( State, PlacementPolicy, Nodes, NodeAvailabilityTolerance,
 
 	end,
 
-	SelectedCount = length( SelectedComputingNodeRecords ),
-
 	?send_info_fmt( TraceState,
 		"Creating a load balancer whose placement policy is ~p, "
-		"whose node tolerance is ~p, "
-		"whose ~B validated computing nodes are:~n~ts",
-		[ PlacementPolicy, NodeAvailabilityTolerance, SelectedCount,
+		"whose node tolerance is ~p, using ~ts",
+		[ PlacementPolicy, NodeAvailabilityTolerance,
 		  compute_nodes_to_string( SelectedComputingNodeRecords ) ] ),
 
 	% Commented out, as this information is already given by the deployment
 	% manager:
 	%
-	%	case SelectedCount of
+	%	case length( SelectedComputingNodeRecords ) of
 	%
 	%		1 ->
 	%			trace_utils:info_fmt(
@@ -777,11 +774,11 @@ onInstancesLoaded( State ) ->
 %
 % Oneway parameters are:
 %
-% - ActorClassname is the classname of the actor to create (ex:
+% - ActorClassname is the classname of the actor to create (e.g.
 % 'class_TestActor')
 %
 % - ActorConstructionParameters is the list of parameters that will be used to
-% construct that actor (ex: ["MyActorName", 50])
+% construct that actor (e.g. ["MyActorName", 50])
 %
 % The actor will be created with following parameters: first its target node,
 % then its AAI, then all the parameters in ActorConstructionParameters.
@@ -802,8 +799,8 @@ createInitialActor( State, ActorClassname, ActorConstructionParameters,
 		throw( { initial_creation_whereas_simulation_started, ActorClassname,
 				 ActorConstructionParameters, InitiatorPid } ),
 
-	% Checks that we are not involved in the reading of an initialisation file:
-	undefined = ?getAttr(base_actor_identifier),
+	check_nested_initial_creations(
+		[ { ActorClassname, ActorConstructionParameters } ], State ),
 
 	{ SelectedState, SelectedNode } = select_node_by_heuristic( State ),
 
@@ -831,13 +828,13 @@ createInitialActor( State, ActorClassname, ActorConstructionParameters,
 %
 % Oneway parameters are:
 %
-% - ActorClassname is the classname of the actor to create (ex:
+% - ActorClassname is the classname of the actor to create (e.g.
 % 'class_TestActor')
 %
 % - ActorConstructionParameters is the list of parameters that will be used to
-% construct that actor (ex: ["MyActorName", 50])
+% construct that actor (e.g. ["MyActorName", 50])
 %
-% - PlacementHint can be any Erlang term (ex: an atom); it allows to create all
+% - PlacementHint can be any Erlang term (e.g. an atom); it allows to create all
 % actors (both initial or simulation-time ones) for which the same placement
 % hint was specified on the same computing node, for best performances when they
 % are to be tightly coupled
@@ -860,6 +857,9 @@ createInitialPlacedActor( State, ActorClassname, ActorConstructionParameters,
 	class_Actor:is_running( State ) andalso
 		throw( { initial_creation_whereas_simulation_started, ActorClassname,
 				 ActorConstructionParameters, InitiatorPid } ),
+
+	check_nested_initial_creations(
+		[ { ActorClassname, ActorConstructionParameters } ], State ),
 
 	% Checks that we are not involved in the reading of an initialisation file:
 	undefined = ?getAttr(base_actor_identifier),
@@ -906,6 +906,8 @@ createInitialActors( State, InstanceCreationSpecs, InitiatorPid ) ->
 	class_Actor:is_running( State ) andalso
 		throw( { initial_creations_whereas_simulation_started,
 				 InstanceCreationSpecs, InitiatorPid } ),
+
+	check_nested_initial_creations( InstanceCreationSpecs, State ),
 
 	% Checks that we are not involved in the reading of an initialisation file:
 	undefined = ?getAttr(base_actor_identifier),
@@ -987,6 +989,42 @@ createInitialActors( State, InstanceCreationSpecs, InitiatorPid ) ->
 	% spawn_successful/2.
 
 	wooper:return_state( FinalState ).
+
+
+
+% @doc Checks whether an attempt of nested initial creation is done, and whether
+% it is legit.
+%
+-spec check_nested_initial_creations( [ instance_creation_spec() ],
+									  wooper:state() ) -> void().
+check_nested_initial_creations( InstCreationSpecs, State ) ->
+
+	% Checks that we are not already involved in the reading of an
+	% initialisation file (this might happen if such a file lists an instance
+	% that creates itself initial actors; refer to the design notes of the
+	% instance_loading module for further information):
+	%
+	cond_utils:if_defined(
+
+		simdiasca_allow_reproducible_nested_initial_creations,
+
+		% So here a single actor creator process is expected to exist, in order
+		% that initial creations remain reproducible:
+		%
+		basic_utils:ignore_unused( [ InstCreationSpecs, State ] ),
+
+		% Here no nested initial creations are permitted, so we check that no
+		% initial actor is created from one found in an initialisation file:
+		%
+		?getAttr(base_actor_identifier) =:= undefined orelse
+			begin
+				?error_fmt( "A nested initial actor creation has been "
+					"detected, whereas the engine was no built with the "
+					"'simdiasca_allow_reproducible_nested_initial_creations' "
+					"token. The nested creation specification was:~n  ~p",
+					[ InstCreationSpecs ] ),
+				throw( nested_initial_actor_creations_not_enabled )
+			end ).
 
 
 
@@ -1094,11 +1132,11 @@ prepare_creations( Classname, ConstructionParameters, SelectedNode,
 %
 % Method parameters are:
 %
-% - ActorClassname is the classname of the actor to create (ex:
+% - ActorClassname is the classname of the actor to create (e.g.
 % 'class_TestActor')
 %
 % - ActorConstructionParameters is the list of parameters that will be used to
-% construct that actor (ex: ["MyActorName", 50])
+% construct that actor (e.g. ["MyActorName", 50])
 %
 % - SendingActorPid is the PID of the sender
 %
@@ -1139,11 +1177,11 @@ createRuntimeActor( State, ActorClassname, ActorConstructionParameters,
 %
 % Method parameters are:
 %
-% - ActorClassname is the classname of the actor to create (ex:
+% - ActorClassname is the classname of the actor to create (e.g.
 % 'class_TestActor')
 %
 % - ActorConstructionParameters is the list of parameters that will be used to
-% construct that actor (ex: ["MyActorName", 50])
+% construct that actor (e.g. ["MyActorName", 50])
 %
 % - ActorTag is the user-defined tag to discriminate between its actor creations
 %
@@ -1172,7 +1210,7 @@ createRuntimeActor( State, ActorClassname, ActorConstructionParameters,
 
 	% We could send back directly to the initiator that the corresponding actor
 	% is created (and its PID), yet the actual creation may spread over multiple
-	% diascas (ex: if itself performing nested creations) and we prefer
+	% diascas (e.g. if itself performing nested creations) and we prefer
 	% validating a bit later, rather than propagating a faulty PID), so the
 	% initiator and the created actor will be notified later, only when the
 	% spawn will be reported as successful, i.e. once the construction
@@ -1204,13 +1242,13 @@ createRuntimeActor( State, ActorClassname, ActorConstructionParameters,
 %
 % Method parameters are:
 %
-% - ActorClassname is the classname of the actor to create (ex:
+% - ActorClassname is the classname of the actor to create (e.g.
 % 'class_TestActor')
 %
 % - ActorConstructionParameters is the list of parameters that will be used to
-% construct that actor (ex: ["MyActorName", 50])
+% construct that actor (e.g. ["MyActorName", 50])
 %
-% - PlacementHint can be any Erlang term (ex: an atom); it allows to create all
+% - PlacementHint can be any Erlang term (e.g. an atom); it allows to create all
 % actors (both initial or simulation-time ones) for which the same placement
 % hint was specified on the same computing node, for best performances when they
 % are to be tightly coupled
@@ -1254,15 +1292,15 @@ createRuntimePlacedActor( State, ActorClassname, ActorConstructionParameters,
 %
 % Method parameters are:
 %
-% - ActorClassname is the classname of the actor to create (ex:
+% - ActorClassname is the classname of the actor to create (e.g.
 % 'class_TestActor')
 %
 % - ActorConstructionParameters is the list of parameters that will be used to
-% construct that actor (ex: ["MyActorName", 50])
+% construct that actor (e.g. ["MyActorName", 50])
 %
 % - ActorTag is the user-defined tag to discriminate between its actor creations
 %
-% - PlacementHint can be any Erlang term (ex: an atom); it allows to create all
+% - PlacementHint can be any Erlang term (e.g. an atom); it allows to create all
 % actors (both initial or simulation-time ones) for which the same placement
 % hint was specified on the same computing node, for best performances when they
 % are to be tightly coupled
@@ -1799,7 +1837,7 @@ settings_to_string( #load_balancing_settings{ placement_policy=Placement } ) ->
 -spec get_registration_name() ->
 				static_return( naming_utils:registration_name() ).
 get_registration_name() ->
-	% Ex: 'sim_diasca_load_balancer':
+	% For example 'sim_diasca_load_balancer':
 	wooper:return_static( ?load_balancer_name ).
 
 
@@ -2060,23 +2098,18 @@ inspect_computing_nodes( [ NodeName | OtherNodes ], NodeAvailabilityTolerance,
 
 
 
+% (helper)
 compute_nodes_to_string( _ComputeNodes=[] ) ->
-	"(no computing node)";
+	"no computing node";
 
 compute_nodes_to_string( _ComputeNodes=[ N ] ) ->
-	"a single computing node, " ++ compute_node_to_string( N );
+	text_utils:format( "a single computing node, ~ts",
+					   [ compute_node_to_string( N ) ] );
 
 compute_nodes_to_string( ComputeNodes ) ->
-	compute_nodes_to_string( ComputeNodes, [] ).
-
-
-% (helper)
-compute_nodes_to_string( _ComputeNodes=[], Acc ) ->
-	Acc;
-
-compute_nodes_to_string( _ComputeNodes=[ H | T ], Acc ) ->
-	compute_nodes_to_string( T,
-		" + " ++ compute_node_to_string( H ) ++ "\n" ++ Acc ).
+	text_utils:format( "~B computing nodes: ~ts",
+		[ length( ComputeNodes ), text_utils:strings_to_string(
+			[ compute_node_to_string( N ) || N <- ComputeNodes ] ) ] ).
 
 
 % Helper:

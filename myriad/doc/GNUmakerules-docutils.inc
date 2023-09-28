@@ -16,7 +16,7 @@
 
 # Content typically to be deployed to webservers:
 #
-# /bin/ls is used so that any lacking element in a layer (ex: no api-doc
+# /bin/ls is used so that any lacking element in a layer (e.g. no api-doc
 # generated, no MathJax available) does not trigger an error.
 #
 WEB_CONTENT = $$(/bin/ls -d *.html *.css *.png *.pdf api-doc mathjax 2>/dev/null)
@@ -228,7 +228,7 @@ VIEW_PDF := no
 # Generates a module-specific documentation, typically from the directory in
 # which that module is defined.
 #
-# Ex: make ../../doc/api-doc/app_facilities.html
+# For instance: make ../../doc/api-doc/app_facilities.html
 #
 $(API_DOC_ROOT)/%.html: %.erl
 	@echo "    Generating edoc documentation for module '$<' in $@"
@@ -363,7 +363,10 @@ make-doc-repository:
 
 ifndef MATHJAX_ROOT
   MATHJAX_ROOT="/usr/share/mathjax"
-  #MATHJAX_ROOT="$HOME/Software/Mathjax"
+endif
+
+ifndef MATHJAX_ALT_ROOT
+  MATHJAX_ALT_ROOT="$$HOME/Software/MathJax"
 endif
 
 
@@ -373,7 +376,7 @@ endif
 # See myriad/src/scripts/generate-docutils.sh for more details.
 #
 create-mathjax-symlink:
-	@if [ -e "${MATHJAX_ROOT}" ]; then ln -sf "${MATHJAX_ROOT}" mathjax; else echo "  Error, no pre-existing MathJax install found (no '${MATHJAX_ROOT}'; consider installation with 'pacman -Sy mathjax' or alike)." 1>&2; exit 75; fi
+	@if [ -e "$(MATHJAX_ROOT)" ]; then actual_mathjax_root="$(MATHJAX_ROOT)"; elif [ -e "$(MATHJAX_ALT_ROOT)" ]; then actual_mathjax_root="$(MATHJAX_ALT_ROOT)"; else echo "  Error, no pre-existing MathJax install found (neither '$(MATHJAX_ROOT)' nor '$(MATHJAX_ALT_ROOT)' found); consider installation with 'pacman -Sy mathjax' or alike)." 1>&2; exit 7; fi; echo "Selecting MathJax installation in '$${actual_mathjax_root}'." ; ln -sf "$${actual_mathjax_root}" mathjax;
 
 
 check-mathjax:
@@ -423,7 +426,7 @@ clean-generated:
 
 
 
-# Some .png must be kept (ex: dia-exported ones).
+# Some .png must be kept (e.g. dia-exported ones).
 clean-dot:
 	-@if [ $$(basename $$PWD) != "doc" ]; then \
 	/bin/rm -f $(STATE_MACHINES_DIAGRAMS) *.map; fi

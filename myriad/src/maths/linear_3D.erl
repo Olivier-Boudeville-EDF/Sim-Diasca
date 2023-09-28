@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2022 Olivier Boudeville
+% Copyright (C) 2010-2023 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -79,6 +79,7 @@
 -type factor() :: math_utils:factor().
 
 -type point3() :: point3:point3().
+-type any_point3() :: point3:any_point3().
 
 -type normal3() :: vector3:normal3().
 -type unit_normal3() :: vector3:unit_normal3().
@@ -125,7 +126,7 @@
 -export_type([ shape/0 ]).
 
 
--export([ get_origin/0 ]).
+-export([ get_origin/0, compute_smallest_enclosing_cuboid/1 ]).
 
 
 % @doc Returns the origin of this referential.
@@ -133,3 +134,14 @@
 get_origin() ->
 	Zero = 0.0,
 	{ Zero, Zero, Zero }.
+
+
+
+% @doc Computes the smallest cuboid that encloses the specified list of points.
+%
+% Returns {TopLeft, BottomRight}.
+%
+-spec compute_smallest_enclosing_cuboid( [ any_point3() ] ) ->
+					{ any_point3(), any_point3(), any_point3() }.
+compute_smallest_enclosing_cuboid( _Points ) ->
+	throw( to_implement ).

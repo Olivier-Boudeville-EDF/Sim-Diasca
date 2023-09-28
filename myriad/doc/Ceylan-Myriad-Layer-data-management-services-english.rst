@@ -54,9 +54,9 @@ As a mere convention, when one set is dealing with internal identifiers and the 
 
 Finally, a way of **generating read-only associative tables** whose key/value pairs can be read very efficiently from any number (potentially extremely large) of readers (processes) is provided with ``const_table.erl`` (refer to ``const_table_test.erl`` for a test thereof).
 
-No ETS table, replication (ex: per-process table copy) or message sending is involved: thanks to meta-programming, a module is generated on-the-fly, exporting as many functions as there are different keys in the table of interest. Calling a function corresponding to a key returns its associated value.
+No ETS table, replication (e.g. per-process table copy) or message sending is involved: thanks to meta-programming, a module is generated on-the-fly, exporting as many functions as there are different keys in the table of interest. Calling a function corresponding to a key returns its associated value.
 
-More precisely, a module name (ex: ``foobar``) and a list of ``{atom(), type_utils:permanent_term()}`` [#]_ entries shall be provided to ``const_table:generate_in_{memory,file}/2``; then, for each key/value pair in the specified table (ex: ``{baz, 42.0}``), a 0-arity function is generated and exported in that module, as if we had:
+More precisely, a module name (e.g. ``foobar``) and a list of ``{atom(), type_utils:permanent_term()}`` [#]_ entries shall be provided to ``const_table:generate_in_{memory,file}/2``; then, for each key/value pair in the specified table (e.g. ``{baz, 42.0}``), a 0-arity function is generated and exported in that module, as if we had:
 
 .. code:: erlang
 
@@ -75,7 +75,7 @@ More precisely, a module name (ex: ``foobar``) and a list of ``{atom(), type_uti
 
 Then third-party code can call for example ``foobar:foo()`` and have ``42.0`` returned. This is presumably the most efficient way of sharing constants in Erlang between many processes (supposedly at least on par with `persistent_term <https://www.erlang.org/doc/man/persistent_term.html>`_).
 
-Note that with ``generate_in_memory/2`` no actual module file is created (ex: no ``foobar.beam`` file is ever written in the filesystem): the operation remains fully in-memory (RAM). With ``generate_in_file/{2,3}`` a suitable module file is written on disk, so that the corresponding module can be loaded in the future like any other module.
+Note that with ``generate_in_memory/2`` no actual module file is created (e.g. no ``foobar.beam`` file is ever written in the filesystem): the operation remains fully in-memory (RAM). With ``generate_in_file/{2,3}`` a suitable module file is written on disk, so that the corresponding module can be loaded in the future like any other module.
 
 Keys must be atoms, and the table of interest shall be immutable (const), even if, thanks to hot code upgrade, one may imagine updating the table at will, having any number of successive versions of it.
 
@@ -84,7 +84,7 @@ Generating a table of the same name more than once should be done with care, as 
 Finally, two extra table types exist:
 
 - ``const_bijective_table``, like a crossbreeding of ``const_table`` and ``bijective_table``, to rely on module-supported const, bijective tables: a list of ``{type_utils:permanent_term(), type_utils:permanent_term()}`` entries can then provided so that a corresponding module (e.g. ``foobar``) is generated (either in-memory or as a file) that allows to resolve any element of a pair into the other one, thanks to two functions, ``foobar:get_first_for/1`` and ``foobar:get_second_for/1``, automatically defined in that module; this is especially useful as soon as having non-small, const, bijective tables (since typing all information twice, one in a first direction and one in the other, is time-consuming and error-prone); refer to ``const_bijective_table_test.erl`` for an example and a test thereof
-- ``const_bijective_topics`` is the same as the previous type, except that it allows *multiple* of such (const, bijective) tables (named "topics" here) to be defined in the same module (e.g. ``foobar``); for that, each of such tables is designated by a topic (an atom, like: ``colour``, ``bar_identifier`` or ``font_style``) that is associated to a declared list of corresponding entries (here also each with no duplicate); then, for each of these topics (e.g. ``colour``), two functions are automatically defined: ``foobar:get_first_for_colour/1`` and ``foobar:get_second_for_colour/1``, returning respective elements of the specified pair, for the specified topic; refer to ``const_bijective_topics_test.erl`` for an example and a test thereof; the ability of defining multiple const, bijective tables in a single generated module can be useful typically when developping a binding (e.g. for a GUI) or when translating protocols (e.g. between a third-party library and internal conventions); refer to `Ceylan-Oceanic <http://oceanic.esperide.org>`_ for an example thereof, including about its build integration (based on the ``EXTRA_BEAM_FILES`` make variable)
+- ``const_bijective_topics`` is the same as the previous type, except that it allows *multiple* of such (const, bijective) tables (named "topics" here) to be defined in the same module (e.g. ``foobar``); for that, each of such tables is designated by a topic (an atom, like: ``colour``, ``bar_identifier`` or ``font_style``) that is associated to a declared list of corresponding entries (here also each with no duplicate); then, for each of these topics (e.g. ``colour``), two functions are automatically defined: ``foobar:get_first_for_colour/1`` and ``foobar:get_second_for_colour/1``, returning respective elements of the specified pair, for the specified topic; extra options can be set, in order to generate strict conversions or ones returning a maybe-type (typically so that they cannot be crashed), or to generate only one-way conversions (should either collection of elements have duplicates); refer to ``const_bijective_topics_test.erl`` for an example and a test thereof; the ability of defining multiple const, bijective tables in a single generated module can be useful typically when developping a binding (e.g. for a GUI, see `gui_constants.erl <https://github.com/Olivier-Boudeville/Ceylan-Myriad/blob/master/src/user-interface/graphical/gui_constants.erl>`_) or when translating protocols (e.g. between a third-party library and internal conventions); refer to `Ceylan-Oceanic <http://oceanic.esperide.org>`_ for an example thereof, including about its build integration (based on the ``EXTRA_BEAM_FILES`` make variable)
 
 
 
@@ -311,7 +311,7 @@ Refer to the `Myriad-level Third-Party Dependencies`_ section for further inform
 For Pure Erlang uses: the ETF File Format
 .........................................
 
-For many needs in terms of Erlang internal data storage (ex: regarding configuration settings), we recommend the use of the file format that `file:consult/1 <https://erlang.org/doc/man/file.html#consult-1>`_  can directly read, that we named, for reference purpose, ``ETF`` (for *Erlang Term Format* [#]_). We recommend that ETF files have for extension ``.etf``, like in: ``~/.ceylan-settings.etf`` (see also our support for `user preferences`_).
+For many needs in terms of Erlang internal data storage (e.g. regarding configuration settings), we recommend the use of the file format that `file:consult/1 <https://erlang.org/doc/man/file.html#consult-1>`_  can directly read, that we named, for reference purpose, ``ETF`` (for *Erlang Term Format* [#]_). We recommend that ETF files have for extension ``.etf``, like in: ``~/.ceylan-settings.etf`` (see also our support for `user preferences`_).
 
 .. [#] Not to be mixed up with the `Erlang External Term Format <https://www.erlang.org/doc/apps/erts/erl_ext_dist.html>`_, which is used for serialisation_.
 
@@ -319,7 +319,7 @@ For many needs in terms of Erlang internal data storage (ex: regarding configura
 ETF is just a text format for which:
 
 - a line starting with a ``%`` character is considered to be a comment, and is thus ignored
-- other lines are terminated by a dot, and correspond each to an Erlang term (ex: ``{base_log_dir, "/var/log"}.``)
+- other lines are terminated by a dot, and correspond each to an Erlang term (e.g. ``{base_log_dir, "/var/log"}.``)
 
 Note that no mute variable can be used there (e.g. ``_Name="James Bond"`` cannot be specified in such a file; only terms like ``"James Bond"`` can be parsed); so, in order to add any information of interest, one shall use comment lines instead.
 
@@ -343,7 +343,7 @@ ETF files are notably used as **configuration files**. In this case following ex
 - entries are pairs:
 
   - whose first element is an atom
-  - their second element can be any value, typically of algebraic types; if a string value is included, for readability purpose it shall preferably be specified as a plain one (ex: ``"James Bond"``) rather than a binary one (ex: ``<<"James Bond">>``); it is up to the reading logic to accommodate both forms; it is tolerated to reference, in the comments of these configuration files, types that actually include *binary* strings (not plain ones, even though plain ones are used in the configuration files)
+  - their second element can be any value, typically of algebraic types; if a string value is included, for readability purpose it shall preferably be specified as a plain one (e.g. ``"James Bond"``) rather than a binary one (e.g. ``<<"James Bond">>``); it is up to the reading logic to accommodate both forms; it is tolerated to reference, in the comments of these configuration files, types that actually include *binary* strings (not plain ones, even though plain ones are used in the configuration files)
 
 
 .. _`glTF file format`:
@@ -404,7 +404,7 @@ Erlang supports, out of the box, `three main ASN.1 encodings <https://www.erlang
 Our preference goes towards first UPER, then PER. A strength of ASN.1 is the expected ability to switch encodings easily; so, should the OER encoding (*Octet Encoding Rules*; faster to decode/encode than BER and PER, and almost as compact as PER) be supported in the future, it could be adopted "transparently".
 
 
-An issue of this approach is that, beyond Erlang, the (U)PER encoding does not seem so widely available as free software: besides commercial offers (like `this one <https://www.obj-sys.com/products/asn1c/index.php>`_), some languages could be covered to some extent (ex: `Python <https://github.com/eerimoq/asn1tools>`_, Java with `[1] <https://github.com/alexvoronov/gcdc-asn1/tree/master/asn1-uper>`_ or `[2] <https://github.com/ericsson-mts/mts-asn1>`_), but for example no such solution could be found for the .NET language family (ex: for C#); also the complexity of the encoding may lead to solutions supporting only a subset of the standard.
+An issue of this approach is that, beyond Erlang, the (U)PER encoding does not seem so widely available as free software: besides commercial offers (like `this one <https://www.obj-sys.com/products/asn1c/index.php>`_), some languages could be covered to some extent (e.g. `Python <https://github.com/eerimoq/asn1tools>`_, Java with `[1] <https://github.com/alexvoronov/gcdc-asn1/tree/master/asn1-uper>`_ or `[2] <https://github.com/ericsson-mts/mts-asn1>`_), but for example no such solution could be found for the .NET language family (e.g. for C#); also the complexity of the encoding may lead to solutions supporting only a subset of the standard.
 
 So, at least for the moment, we chose Protobuf.
 
@@ -443,7 +443,7 @@ Then, so that ``protoc-erl`` is available on the shell, one may add in one's ``~
 Our preferred settings (configurable, yet by default enforced natively by Myriad's build system) are: (between parentheses, the gbp API counterpart to the ``protoc-erl`` command-line options)
 
 - ``proto3`` version rather than ``proto2`` (so ``{proto_defs_version,3}``)
-- messages shall be decoded as tuples/records rather than maps (so not specifying the ``-maps`` / ``maps`` option, not even ``-mapfields-as-maps``) for a better compactness and a clearer, more statically-defined structure - even if it implies including the generated ``*.hrl`` files in the user code and complexifying the build (ex: tests having to compile with or without a Protobuff backend available, with or without generated headers; refer to ``protobuf_support_test.erl`` for a full, integrated example)
+- messages shall be decoded as tuples/records rather than maps (so not specifying the ``-maps`` / ``maps`` option, not even ``-mapfields-as-maps``) for a better compactness and a clearer, more statically-defined structure - even if it implies including the generated ``*.hrl`` files in the user code and complexifying the build (e.g. tests having to compile with or without a Protobuff backend available, with or without generated headers; refer to ``protobuf_support_test.erl`` for a full, integrated example)
 - decoded strings should be returned as binaries rather than plain ones (so specifying the ``-strbin`` / ``strings_as_binaries`` option)
 - ``-pkgs`` /  ``use_packages`` (and ``{pkg_name, {prefix, "MyPackage"}``) to prefix a message name by its package (regardless of the ``.proto`` filename in which it is defined)
 - ``-rename msg_fqname:snake_case`` then ``-rename msg_fqname:dots_to_underscores`` (in that order), so that a message type named ``Person`` defined in package ``myriad.protobuf.test`` results in the definition of a ``myriad_protobuf_test_person()`` type and in a ``#myriad_protobuf_test_person{}`` record
@@ -489,7 +489,7 @@ References:
 For Basic, Old-School Ciphering
 ...............................
 
-The spirit here is to go another route than modern public-key cryptography: the classic, basic, chained, symmetric cryptography techniques used in this section apply to contexts where a preliminary, safe exchange *can* happen between peers (ex: based on a real-life communication).
+The spirit here is to go another route than modern public-key cryptography: the classic, basic, chained, symmetric cryptography techniques used in this section apply to contexts where a preliminary, safe exchange *can* happen between peers (e.g. based on a real-life communication).
 
 Then any number of passes of low-key, unfashioned algorithms (including one based on a Mealy machine) are applied to the data that is to cypher or decypher.
 

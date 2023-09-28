@@ -33,6 +33,26 @@
 % https://github.com/libsdl-org/SDL/blob/main/src/events/SDL_keyboard.c).
 
 % Many thanks to both projects.
+%
+% However our tests showed that, for some reasons, such keycodes do not match
+% the actual ones. For example, hitting 'a' produces keycode 65, not keycode 97
+% (which is $a; note also that 0x65 is not 97 either, but 101); 'b' produces
+% keycode 66, not keycode 98, etc.
+
+% So finally we defined our own keycodes from experience; for example (noting
+% 'generated key: scancode/keycode'):
+%
+% Keyboard layout: \ Label of the key being pressed:
+%            A          Q         B
+%  US    Q: 24/81    A: 38/65   B: 56/66
+%  FR    A: 24/65    Q: 38/81   B: 56/66
+%
+% We can see that scancodes are stable whereas keycodes depend on the current
+% keyboard layout.
+%
+% Depending on the layout, some characters cannot be obtained from a single
+% keypress, and the check is made more problematic.
+
 
 % Refer to the implementation notes in gui_keyboard.erl for all related
 % information, notably for the differences between scancodes and keycodes.
@@ -46,9 +66,24 @@
 % naming it 'SUPER' (see https://en.wikipedia.org/wiki/Windows_key).
 
 
+% Preferably not to be included directly; include at least the more general
+% 'myriad_ui.hrl' instead.
+
+
 % Include guard:
 -ifndef(__MYRIAD_UI_KEYBOARD_KEYCODES_HRL__).
 -define(__MYRIAD_UI_KEYBOARD_KEYCODES_HRL__, 1).
+
+
+% Warning: we are not sure at all that with wx some keycodes can be deduced from
+% scancodes.
+
+
+% Structure of a keycode define, using 'MYR_K_q' as an example:
+% - 'MYR' for Myriad, to avoid any define clash with third-party
+% - 'K' for keycode (as opposed to scancode)
+% - 'q' for the 'q' key
+
 
 % Mask of 0b100-0000-0000-0000-0000-0000-0000-0000:
 -define(MYR_K_SCANCODE_MASK, (1 bsl 30)).
@@ -60,76 +95,79 @@
 % Definitions of all known keycodes (a.k.a. on-keyboard characters that can be
 % selected):
 
--define(MYR_K_RETURN, $\r).
--define(MYR_K_ESCAPE, $\033).
--define(MYR_K_BACKSPACE, $\b).
--define(MYR_K_TAB, $\t).
--define(MYR_K_SPACE, $ ).
--define(MYR_K_EXCLAIM, $!).
--define(MYR_K_QUOTEDBL, $").
--define(MYR_K_HASH, $#).
--define(MYR_K_PERCENT, $%).
--define(MYR_K_DOLLAR, $$).
--define(MYR_K_AMPERSAND, $&).
--define(MYR_K_QUOTE, $').
--define(MYR_K_LEFTPAREN, $().
--define(MYR_K_RIGHTPAREN, $)).
--define(MYR_K_ASTERISK, $*).
--define(MYR_K_PLUS, $+).
--define(MYR_K_COMMA, $,).
--define(MYR_K_MINUS, $-).
--define(MYR_K_PERIOD, $.).
--define(MYR_K_SLASH, $/).
--define(MYR_K_0, $0).
--define(MYR_K_1, $1).
--define(MYR_K_2, $2).
--define(MYR_K_3, $3).
--define(MYR_K_4, $4).
--define(MYR_K_5, $5).
--define(MYR_K_6, $6).
--define(MYR_K_7, $7).
--define(MYR_K_8, $8).
--define(MYR_K_9, $9).
--define(MYR_K_COLON, $:).
--define(MYR_K_SEMICOLON, $;).
--define(MYR_K_LESS, $<).
--define(MYR_K_EQUALS, $=).
--define(MYR_K_GREATER, $>).
--define(MYR_K_QUESTION, $?).
--define(MYR_K_AT, $@).
--define(MYR_K_LEFTBRACKET, $[).
--define(MYR_K_BACKSLASH, $\\).
--define(MYR_K_RIGHTBRACKET, $]).
--define(MYR_K_CARET, $^).
--define(MYR_K_UNDERSCORE, $_).
--define(MYR_K_BACKQUOTE, $`).
--define(MYR_K_a, $a).
--define(MYR_K_b, $b).
--define(MYR_K_c, $c).
--define(MYR_K_d, $d).
--define(MYR_K_e, $e).
--define(MYR_K_f, $f).
--define(MYR_K_g, $g).
--define(MYR_K_h, $h).
--define(MYR_K_i, $i).
--define(MYR_K_j, $j).
--define(MYR_K_k, $k).
--define(MYR_K_l, $l).
--define(MYR_K_m, $m).
--define(MYR_K_n, $n).
--define(MYR_K_o, $o).
--define(MYR_K_p, $p).
--define(MYR_K_q, $q).
--define(MYR_K_r, $r).
--define(MYR_K_s, $s).
--define(MYR_K_t, $t).
--define(MYR_K_u, $u).
--define(MYR_K_v, $v).
--define(MYR_K_w, $w).
--define(MYR_K_x, $x).
--define(MYR_K_y, $y).
--define(MYR_K_z, $z).
--define(MYR_K_CAPSLOCK, ?MYR_SCANCODE_TO_KEYCODE(?MYR_SCANCODE_CAPSLOCK)).
+-define(MYR_K_RETURN, $\r).      % 13
+-define(MYR_K_ESCAPE, $\033).    % 27
+-define(MYR_K_BACKSPACE, $\b).   % 22
+-define(MYR_K_TAB, $\t).         % 23
+-define(MYR_K_SPACE, $ ).        % 32
+-define(MYR_K_EXCLAIM, $!).      % 33
+
+% Double-quote:
+-define(MYR_K_QUOTEDBL, $").     % 34
+
+-define(MYR_K_HASH, $#).         % 35
+-define(MYR_K_PERCENT, $%).      % 37
+-define(MYR_K_DOLLAR, $$).       % 36
+-define(MYR_K_AMPERSAND, $&).    % 38
+-define(MYR_K_QUOTE, $').        % 39
+-define(MYR_K_LEFTPAREN, $().    % 40
+-define(MYR_K_RIGHTPAREN, $)).   % 41
+-define(MYR_K_ASTERISK, $*).     % 42
+-define(MYR_K_PLUS, $+).         % 43
+-define(MYR_K_COMMA, $,).        % 44
+-define(MYR_K_MINUS, $-).        % 45
+-define(MYR_K_PERIOD, $.).       % 46
+-define(MYR_K_SLASH, $/).        % 47
+-define(MYR_K_0, $0).            % 48
+-define(MYR_K_1, $1).            % 49
+-define(MYR_K_2, $2).            % 50
+-define(MYR_K_3, $3).            % 51
+-define(MYR_K_4, $4).            % 52
+-define(MYR_K_5, $5).            % 53
+-define(MYR_K_6, $6).            % 54
+-define(MYR_K_7, $7).            % 55
+-define(MYR_K_8, $8).            % 56
+-define(MYR_K_9, $9).            % 57
+-define(MYR_K_COLON, $:).        % 58
+-define(MYR_K_SEMICOLON, $;).    % 59
+-define(MYR_K_LESS, $<).         % 60
+-define(MYR_K_EQUALS, $=).       % 61
+-define(MYR_K_GREATER, $>).      % 62
+-define(MYR_K_QUESTION, $?).     % 63
+-define(MYR_K_AT, $@).           % 64
+-define(MYR_K_LEFTBRACKET, $[).  % 91
+-define(MYR_K_BACKSLASH, $\\).   % 92
+-define(MYR_K_RIGHTBRACKET, $]). % 93
+-define(MYR_K_CARET, $^).        % 94
+-define(MYR_K_UNDERSCORE, $_).   % 95
+-define(MYR_K_BACKQUOTE, $`).    % 96
+-define(MYR_K_a, 65). % Not 97=$a
+-define(MYR_K_b, 66). % Not $b
+-define(MYR_K_c, 67).
+-define(MYR_K_d, 68).
+-define(MYR_K_e, 69).
+-define(MYR_K_f, 70).
+-define(MYR_K_g, 71).
+-define(MYR_K_h, 72).
+-define(MYR_K_i, 73).
+-define(MYR_K_j, 74).
+-define(MYR_K_k, 75).
+-define(MYR_K_l, 76).
+-define(MYR_K_m, 77).
+-define(MYR_K_n, 78).
+-define(MYR_K_o, 79).
+-define(MYR_K_p, 80).
+-define(MYR_K_q, 81).
+-define(MYR_K_r, 82).
+-define(MYR_K_s, 83).
+-define(MYR_K_t, 84).
+-define(MYR_K_u, 85).
+-define(MYR_K_v, 86).
+-define(MYR_K_w, 87).
+-define(MYR_K_x, 88).
+-define(MYR_K_y, 89).
+-define(MYR_K_z, 90).
+-define(MYR_K_CAPSLOCK, 66 ). % ?MYR_SCANCODE_TO_KEYCODE(?MYR_SCANCODE_CAPSLOCK)).
 -define(MYR_K_F1, ?MYR_SCANCODE_TO_KEYCODE(?MYR_SCANCODE_F1)).
 -define(MYR_K_F2, ?MYR_SCANCODE_TO_KEYCODE(?MYR_SCANCODE_F2)).
 -define(MYR_K_F3, ?MYR_SCANCODE_TO_KEYCODE(?MYR_SCANCODE_F3)).
@@ -172,7 +210,10 @@
 -define(MYR_K_KP_9, ?MYR_SCANCODE_TO_KEYCODE(?MYR_SCANCODE_KP_9)).
 -define(MYR_K_KP_0, ?MYR_SCANCODE_TO_KEYCODE(?MYR_SCANCODE_KP_0)).
 -define(MYR_K_KP_PERIOD, ?MYR_SCANCODE_TO_KEYCODE(?MYR_SCANCODE_KP_PERIOD)).
--define(MYR_K_APPLICATION, ?MYR_SCANCODE_TO_KEYCODE(?MYR_SCANCODE_APPLICATION)).
+
+% No MYR_SCANCODE_APPLICATION set:
+%-define(MYR_K_APPLICATION, ?MYR_SCANCODE_TO_KEYCODE(?MYR_SCANCODE_APPLICATION)).
+
 -define(MYR_K_POWER, ?MYR_SCANCODE_TO_KEYCODE(?MYR_SCANCODE_POWER)).
 -define(MYR_K_KP_EQUALS, ?MYR_SCANCODE_TO_KEYCODE(?MYR_SCANCODE_KP_EQUALS)).
 -define(MYR_K_F13, ?MYR_SCANCODE_TO_KEYCODE(?MYR_SCANCODE_F13)).

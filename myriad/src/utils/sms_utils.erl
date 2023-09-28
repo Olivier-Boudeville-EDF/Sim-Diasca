@@ -45,7 +45,10 @@
 %% -*- coding: utf-8 -*-
 
 
+
 % This module should use the web_utils one and adapt to newer SMS gateways.
+%
+% We consider that the JSON parser in user does not need to be started.
 
 
 % Currently supported SMS providers (HTTP gateways):
@@ -90,8 +93,8 @@
 
 
 -type service_class() ::
-		% Only sensible for the 'verysms' provider:
-		'eco' | 'pro'.
+	% Only sensible for the 'verysms' provider:
+	'eco' | 'pro'.
 % Service class of a SMS being sent.
 
 
@@ -312,20 +315,21 @@ send( _Provider=verysms, _ServiceClass=eco, Username, Password, Message,
 
 	EcoURL = "http://www.verysms.fr/api_sendsms.php",
 
-	FullData = [ { 'user', Username },
-				 { 'pass', Password },
-				 { 'dest', Recipient },
-				 { 'flash', "" },
-				 { 'type', "" },
-				 { 'url', "" },
-				 { 'msg', Message },
-				 { 'origine', SenderDescription } ],
+	JsonString = json_utils:to_json( #{
+		<<"user">> => Username,
+		<<"pass">> => Password,
+		<<"dest">> => Recipient,
+		<<"flash">> => "",
+		<<"type">> => "",
+		<<"url">> => "",
+		<<"msg">> => Message,
+		<<"origine">> => SenderDescription } ),
 
 	% For this provider, web_utils:escape_as_html_content/1 must be used instead
 	% of web_utils:encode_as_url/1:
 	%
 	Request = { EcoURL, _Headers=[], _ContentType=get_mime_type(),
-				_Body=web_utils:escape_as_html_content( FullData ) },
+				_Body=JsonString },
 
 	execute_request( Request, Username, Password, Recipient );
 
@@ -346,25 +350,26 @@ send( _Provider=verysms, _ServiceClass=pro, Username, Password, Message,
 
 	ProURL = "http://www.verysms.fr/api_sendsmspro.php",
 
-	FullData = [ { 'user', Username },
-				 { 'pass', Password },
-				 { 'dest', Recipient },
-				 { 'flash', "" },
-				 { 'type', "" },
-				 { 'url', "" },
-				 { 'msg', Message },
-				 { 'senderID', SenderDescription },
-				 { 'origine', "ceylan" },
-				 { 'idSending', "1" } ],
+	JsonString = json_utils:to_json( #{
+		<<"user">> => Username,
+		<<"pass">> => Password,
+		<<"dest">> => Recipient,
+		<<"flash">> => "",
+		<<"type">> => "",
+		<<"url">> => "",
+		<<"msg">> => Message,
+		<<"senderID">> => SenderDescription,
+		<<"origine">> => "ceylan",
+		<<"idSending">> => "1" } ),
 
 	% For this provider, web_utils:escape_as_html_content/1 must be used instead
 	% of web_utils:encode_as_url/1:
 	%
 	Request = { ProURL, _Headers=[], _ContentType=get_mime_type(),
-				_Body=web_utils:escape_as_html_content( FullData ) },
+				_Body=JsonString },
 
 	% In pro mode, if no sender description is specified, will be "38200":
-	%% FullData = case SenderDescription of
+	%% JsonString = case SenderDescription of
 
 	%%	[] ->
 	%%		List;
@@ -490,15 +495,12 @@ get_credits_for( _Account=#sms_account{ provider=verysms, user_name=Username,
 
 	CreditURL = "http://www.verysms.fr/credit.php",
 
-	FullData = [ { 'user', Username },
-				 { 'pass', Password } ],
-
+	JsonString = json_utils:to_json( #{
+		<<"user">> => Username,
+		<<"pass">> => Password } ),
 
 	Request = { CreditURL, _ReqHeaders=[], _ContentType=get_mime_type(),
-				 % For this provider, web_utils:encode_as_url/1 apparently did
-				 % not work, web_utils:escape_as_url/1 shall be used instead:
-				 %
-				_ReqBody=web_utils:escape_as_url( FullData ) },
+				_ReqBody=JsonString },
 
 	case httpc:request( _Method=post, Request, _HTTPOptions=[], _Options=[] ) of
 

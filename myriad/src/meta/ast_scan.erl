@@ -3,7 +3,7 @@
 % This file is part of the Ceylan-Myriad library.
 %
 % This library is free software: you can redistribute it and/or modify
-% it under the terms of the GNU Lesser General Public License or
+% it under the terms of the GNU Les605
 % the GNU General Public License, as they are published by the Free Software
 % Foundation, either version 3 of these Licenses, or (at your option)
 % any later version.
@@ -81,8 +81,8 @@
 % each bullet.
 %
 % Note: we used to traverse the AST recursively, "blindly", i.e. without
-% expecting the intended structure of AST elements (ex: the structure of a tuple
-% corresponding to a 'receive' statement).
+% expecting the intended structure of AST elements (e.g. the structure of a
+% tuple corresponding to a 'receive' statement).
 %
 % Then, for a more complete control, we match the AST against its intended,
 % "official" structure, as defined in
@@ -120,7 +120,7 @@
 %
 % Knowing that forms may have to be added, moved, updated, removed, etc. during
 % the transformation of an AST, positioning forms at specified points in an AST
-% stream is not straightforward (ex: the mere index of a form in the AST is not
+% stream is not straightforward (e.g. the mere index of a form in the AST is not
 % stable, as any addition before this form would require this index to be
 % updated); moreover being able to keep track of their original order (to which
 % the parse transform tries to stick as much as possible) is certainly a safe
@@ -154,7 +154,7 @@
 % stored in marker 'export_functions_marker'.
 %
 % However, depending on the AST content, markers may not be set, or may even not
-% be sorted according to our canonical order (ex: 'export_functions_marker' may
+% be sorted according to our canonical order (e.g. 'export_functions_marker' may
 % be set before 'export_types_marker', it is still legit compilation-wise).
 
 
@@ -219,7 +219,7 @@ scan( AST ) ->
 
 			% If wanting instead to ignore errors, at least at this step, no
 			% halting could be done, and this module info be returned; however
-			% bogus error are bound to be reported afterwards (ex: injected
+			% bogus error are bound to be reported afterwards (e.g. injected
 			% functions with no clause), so not halting the compilation would
 			% have little interest:
 			%
@@ -232,7 +232,7 @@ scan( AST ) ->
 % @doc Reports specified error, using the same format as erlc, so that tools can
 % parse these errors as well.
 %
-% Ex: foo.erl:102: can't find include file "bar.hrl"
+% For example foo.erl:102: can't find include file "bar.hrl"
 %
 -spec report_error( { scan_context(), basic_utils:error_reason() } ) ->
 							basic_utils:void().
@@ -243,7 +243,7 @@ report_error( { Context, Error } ) ->
 
 	ErrorString = case Error of
 
-		% Ex: Msg="head mismatch"
+		% For example Msg="head mismatch"
 		{ parse_error, Msg } when is_list( Msg ) ->
 			%text_utils:format( "parse error: ~ts", [ Msg ] );
 			text_utils:format( "~ts", [ Msg ] );
@@ -253,7 +253,9 @@ report_error( { Context, Error } ) ->
 			text_utils:format( "undefined macro variable '~ts'",
 							   [ VariableName ] );
 
-		% Ex: a wrong use of a record, such as R#my_rec instead of R=#myrec:
+		% For example a wrong use of a record, such as R#my_rec instead of
+		% R=#myrec:
+		%
 		{ unexpected_pattern, Pattern } ->
 			text_utils:format( "unexpected pattern: ~p", [ Pattern ] );
 
@@ -267,28 +269,28 @@ report_error( { Context, Error } ) ->
 				when is_atom( MacroName ) andalso is_integer( Arity ) ->
 			text_utils:format( "undefined macro ~ts/~B", [ MacroName, Arity ] );
 
-		% Ex: DirectiveName=ifdef
+		% For example DirectiveName=ifdef
 		{ epp_error, { bad, DirectiveName } } when is_atom( DirectiveName )  ->
 			text_utils:format( "invalid '~ts' preprocessor directive",
 							   [ DirectiveName ] );
 
-		% Ex: Problem="unbalanced"
+		% For example Problem="unbalanced"
 		{ epp_error, { illegal, Problem, DirectiveName } }
 						when is_atom( DirectiveName )  ->
 			text_utils:format( "illegal ~ts '~ts' preprocessor directive",
 							   [ Problem, DirectiveName ] );
 
-		% Ex: MacroName=debug
+		% For example MacroName=debug
 		{ epp_error, { mismatch, MacroName } } ->
 			text_utils:format( "mismatch regarding macro '~ts' (wrong arity?)",
 							   [ MacroName ] );
 
-		% Ex: MacroName=send_info_fmt
+		% For example MacroName=send_info_fmt
 		{ epp_error, { arg_error, MacroName } } ->
 			text_utils:format( "argument error in macro '~ts' "
-							   "(ex: non-closed parenthesis?)", [ MacroName ] );
+				"(e.g. non-closed parenthesis?)", [ MacroName ] );
 
-		% Ex: HeaderPath="myriad/include/ast_info.hrl"
+		% For example HeaderPath="myriad/include/ast_info.hrl"
 		{ epp_error, { include, lib, HeaderPath } } ->
 			text_utils:format( "could not find include_lib header file '~ts'",
 							   [ HeaderPath ] );
@@ -893,16 +895,9 @@ scan_forms( _AST=[ _Form={ 'attribute', FileLoc, 'record',
 	ast_type:check_record_name( RecordName, Context ),
 
 	% Finally we let the compiler complain:
-	%case ?table:has_entry( RecordName, RecordTable ) of
-	%
-	%	true ->
-	%		ast_utils:raise_error(
-	%		  [ multiple_definitions_for_record, RecordName ], Context );
-	%
-	%	false ->
-	%		ok
-	%
-	%end,
+	%?table:has_entry( RecordName, RecordTable ) orelse
+	%   ast_utils:raise_error(
+	%       [ multiple_definitions_for_record, RecordName ], Context ),
 
 	FieldTable = scan_field_descriptions( DescFields, CurrentFileReference ),
 
@@ -947,7 +942,7 @@ scan_forms( _AST=[ _Form={ 'attribute', FileLoc, TypeDesignator,
 		when TypeDesignator =:= 'type' orelse TypeDesignator =:= 'opaque' ->
 
 	%ast_utils:display_debug( "type declaration for ~p: ~p", [
-	%                        TypeName, Form ] ),
+	%                         TypeName, Form ] ),
 
 	Context = { CurrentFileReference, FileLoc },
 
@@ -955,15 +950,7 @@ scan_forms( _AST=[ _Form={ 'attribute', FileLoc, TypeDesignator,
 	ast_type:check_type_definition( TypeDef, Context ),
 	ast_type:check_type_variables( TypeVariables, Context ),
 
-	IsOpaque = case TypeDesignator of
-
-		type ->
-			false;
-
-		_Opaque ->
-			true
-
-	end,
+	IsOpaque = not ( TypeDesignator =:= type ),
 
 	TypeArity = length( TypeVariables ),
 
@@ -1122,7 +1109,7 @@ scan_forms( _AST=[ _Form={ 'attribute', FileLoc, 'export_type', TypeIds } | T ],
 % We may have here full or regular inlining (single function or list thereof),
 % and possibly other options.
 %
-% Note that options can also be specified through the command line (ex:
+% Note that options can also be specified through the command line (e.g.
 % "-Dmyriad_debug_mode").
 %
 scan_forms( _AST=[ Form={ 'attribute', FileLoc, 'compile', CompileInfo } | T ],
@@ -1152,9 +1139,9 @@ scan_forms( _AST=[ Form={ 'attribute', FileLoc, 'compile', CompileInfo } | T ],
 % sections matched)
 %
 scan_forms(
-  [ Form={ 'attribute', FileLoc, AttributeName, AttributeValue } | T ],
-			M=#module_info{ parse_attributes=ParseAttributeTable },
-			NextASTLoc, CurrentFileReference ) ->
+		[ Form={ 'attribute', FileLoc, AttributeName, AttributeValue } | T ],
+		M=#module_info{ parse_attributes=ParseAttributeTable },	NextASTLoc,
+		CurrentFileReference ) ->
 
 	%ast_utils:display_debug( "Parse attribute definition for '~p': ~p",
 	%                         [ AttributeName, AttributeValue ] ),
@@ -1375,7 +1362,7 @@ scan_forms( _AST=[ Form={ 'eof', _FileLoc } ],
 
 	% Reconstructs the supposedly deduced module filename:
 	BinModFilename = text_utils:string_to_binary(
-						atom_to_list( ModuleName ) ++ ".erl" ),
+		atom_to_list( ModuleName ) ++ ".erl" ),
 
 	% Due to the removal of include duplicates, can be listed only up to once:
 	NoModInc = lists:delete( BinModFilename, Inc ),

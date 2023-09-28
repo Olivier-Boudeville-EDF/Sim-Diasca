@@ -38,9 +38,9 @@
 
 % Shorthands:
 
--type frame() :: gui:frame().
--type menu() :: gui:menu().
--type menu_bar() :: gui:menu_bar().
+-type frame() :: gui_frame:frame().
+-type menu() :: gui_menu:menu().
+-type menu_bar() :: gui_menu:menu_bar().
 
 
 -type my_test_state() :: { frame(), menu() }.
@@ -48,17 +48,18 @@
 % right click on the main frame, and this frame whose closing is awaited for.
 
 
+
 -spec create_named_ids_dropdown( menu_bar() ) -> menu().
 create_named_ids_dropdown( MenuBar ) ->
 
 	% Named drop-down:
-	NamedMenu = gui:create_menu(),
+	NamedMenu = gui_menu:create(),
 
-	[ gui:add_item( NamedMenu, N,
-					_Label=text_utils:format( "I am named &'~ts'", [ N ] ) )
-								|| N <- gui:get_standard_item_names() ],
+	[ gui_menu:add_item( NamedMenu, N,
+		_Label=text_utils:format( "I am named &'~ts'", [ N ] ) )
+								|| N <- gui_menu:get_standard_item_names() ],
 
-	gui:add_menu( MenuBar, NamedMenu, "&Named menu" ),
+	gui_menu:add_menu( MenuBar, NamedMenu, "&Named menu" ),
 
 	NamedMenu.
 
@@ -68,13 +69,13 @@ create_named_ids_dropdown( MenuBar ) ->
 create_numerical_ids_dropdown( MenuBar ) ->
 
 	% Numerical drop-down:
-	NumMenu = gui:create_menu(),
+	NumMenu = gui_menu:create(),
 
-	[ gui:add_item( NumMenu, N,
+	[ gui_menu:add_item( NumMenu, N,
 					_Label=text_utils:format( "I am id #~B", [ N ] ) )
 								|| N <- lists:seq( 4999, 5206 ) ],
 
-	gui:add_menu( MenuBar, NumMenu, "&Numerical menu" ),
+	gui_menu:add_menu( MenuBar, NumMenu, "&Numerical menu" ),
 
 	NumMenu.
 
@@ -83,41 +84,45 @@ create_numerical_ids_dropdown( MenuBar ) ->
 -spec create_popup_menu() -> { menu(), menu(), menu() }.
 create_popup_menu() ->
 
-	PopupMenu = gui:create_menu(),
+	PopupMenu = gui_menu:create(),
 
 	% No name specified, so they will rely on an arbitrary integer identifier:
-	_A = gui:add_item( PopupMenu, _Label="Item A" ),
-	_B = gui:add_item( PopupMenu, _Id=undefined, "Item B" ),
+	_A = gui_menu:add_item( PopupMenu, _Label="Item A" ),
+	_B = gui_menu:add_item( PopupMenu, _Id=undefined, "Item B" ),
 
-	gui:add_separator( PopupMenu ),
+	gui_menu:add_separator( PopupMenu ),
 
-	FirstSubMenu = gui:create_menu(),
+	FirstSubMenu = gui_menu:create(),
 
 	% Defining here named identifiers rathen than auto-set numerical ones:
-	_C = gui:append_submenu( PopupMenu, item_c, "Item C", FirstSubMenu ),
+	_C = gui_menu:append_submenu( PopupMenu, item_c, "Item C", FirstSubMenu ),
 
-	SecondSubMenu = gui:create_menu(),
+	SecondSubMenu = gui_menu:create(),
 
-	_D = gui:append_submenu( PopupMenu, item_d, "Item D", SecondSubMenu,
-							 "I am D's help" ),
+	_D = gui_menu:append_submenu( PopupMenu, item_d, "Item D", SecondSubMenu,
+								  "I am D's help" ),
 
 
-	_E = gui:add_checkable_item( FirstSubMenu, _EId=item_e, "Item E" ),
-	_F = gui:add_checkable_item( FirstSubMenu, _FId=item_f, "Item F",
-								 "I am F's help" ),
-	_G = gui:add_checkable_item( FirstSubMenu, _GId=item_g, "Item G" ),
+	_E = gui_menu:add_checkable_item( FirstSubMenu, _EId=item_e, "Item E" ),
+	_F = gui_menu:add_checkable_item( FirstSubMenu, _FId=item_f, "Item F",
+									  "I am F's help" ),
+	_G = gui_menu:add_checkable_item( FirstSubMenu, _GId=item_g, "Item G" ),
 
 	% E let as it is.
-	gui:set_checkable_menu_item( FirstSubMenu, item_f, _SetAsChecked=true ),
-	gui:set_checkable_menu_item( FirstSubMenu, item_g, false ),
+	gui_menu:set_checkable_item( FirstSubMenu, item_f,
+									  _SetAsChecked=true ),
 
-	_H = gui:add_radio_item( PopupMenu, undefined, "Item H" ),
-	_I = gui:add_radio_item( PopupMenu, undefined, "Item I", "I am I's help" ),
+	gui_menu:set_checkable_item( FirstSubMenu, item_g, false ),
 
-	_J = gui:add_separator( PopupMenu ),
+	_H = gui_menu:add_radio_item( PopupMenu, undefined, "Item H" ),
 
-	gui:set_menu_item_status( PopupMenu, item_c, enabled ),
-	gui:set_menu_item_status( PopupMenu, item_d, disabled ),
+	_I = gui_menu:add_radio_item( PopupMenu, undefined, "Item I",
+								  "I am I's help" ),
+
+	_J = gui_menu:add_separator( PopupMenu ),
+
+	gui_menu:set_item_status( PopupMenu, item_c, enabled ),
+	gui_menu:set_item_status( PopupMenu, item_d, disabled ),
 
 	{ PopupMenu, FirstSubMenu, SecondSubMenu }.
 
@@ -132,20 +137,21 @@ run_gui_test() ->
 
 	gui:start(),
 
-	Frame = gui:create_frame( "This is the overall frame for menu testing" ),
+	Frame = gui_frame:create( "This is the overall frame for menu testing" ),
 
 
-	MenuBar = gui:create_menu_bar(),
+	MenuBar = gui_menu:create_bar(),
 
 	test_facilities:display( "If you spot a menu item of interest in "
 		"the 'Numerical menu' dropdown that is not in 'Named menu', "
-		"feel free to add it to MyriadGUI." ),
+		"feel free to add it to MyriadGUI "
+		"(refer to the gui and the gui_constants modules)." ),
 
 	NameMenu = create_named_ids_dropdown( MenuBar ),
 
 	NumMenu = create_numerical_ids_dropdown( MenuBar ),
 
-	gui:set_menu_bar( Frame, MenuBar ),
+	gui_menu:set_menu_bar( MenuBar, Frame ),
 
 	{ PopupMenu, FirstSubMenu, SecondSubMenu } = create_popup_menu(),
 
@@ -155,7 +161,7 @@ run_gui_test() ->
 		{ [ onMouseRightButtonReleased, onWindowClosed ], Frame },
 		{ onItemSelected, AllMenus } ] ),
 
-	gui:show( Frame ),
+	gui_frame:show( Frame ),
 
 	test_main_loop( _InitialState={ Frame, PopupMenu } ).
 
@@ -175,8 +181,8 @@ test_main_loop( State={ Frame, PopupMenu } ) ->
 
 		{ onMouseRightButtonReleased, [ Frame, _FrameId, _Context ] } ->
 			%trace_utils:debug_fmt( "onMouseRightButtonReleased for frame ~w.",
-			%						[ Frame ] ),
-			gui:activate_popup_menu( Frame, PopupMenu ),
+			%                       [ Frame ] ),
+			gui_menu:activate_as_popup( Frame, PopupMenu ),
 			test_main_loop( State );
 
 		{ onItemSelected, [ _Menu, _ItemId=exit_menu_item, _Context ] } ->
@@ -184,13 +190,13 @@ test_main_loop( State={ Frame, PopupMenu } ) ->
 
 		{ onItemSelected, [ _Menu, ItemId, _Context ] } ->
 			%trace_utils:debug_fmt( "Received for menu ~w: ~w",
-			%                       [  Menu, Context ] ),
+			%                       [ Menu, Context ] ),
 			trace_utils:info_fmt( "Menu item '~w' selected.", [ ItemId ] ),
 			test_main_loop( State );
 
 		{ onWindowClosed, [ Frame, _FrameId, _Context ] } ->
 			trace_utils:info( "Main frame has been closed; test success." ),
-			gui:destruct_window( Frame ),
+			gui_frame:destruct( Frame ),
 			gui:stop();
 
 		Other ->

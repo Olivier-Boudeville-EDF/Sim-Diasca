@@ -53,8 +53,8 @@
 
 
 -type random_profile() :: { 'uniform', pos_integer() }
-						| { 'exponential', float() }
-						| { 'positive_integer_exponential', pos_integer() }
+						| { 'exponential_1p', float() }
+						| { 'positive_integer_exponential_1p', pos_integer() }
 						| { 'gaussian', float(), float() }
 						| { 'positive_integer_gaussian', number(), number() }.
 

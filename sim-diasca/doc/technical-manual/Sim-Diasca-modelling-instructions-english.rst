@@ -38,9 +38,9 @@ An attribute has a name and a value, which can be of any data type, usually made
 
 For an actor, acting corresponds mostly to:
 
-- changing its private state (ex: changing the value of an attribute)
-- sending messages to other actors (ex: to notify them that some event occurred)
-- possibly, triggering side-effects (ex: sending a message to the distributed trace system)
+- changing its private state (e.g. changing the value of an attribute)
+- sending messages to other actors (e.g. to notify them that some event occurred)
+- possibly, triggering side-effects (e.g. sending a message to the distributed trace system)
 
 
 .. Note:: Please refer to the Sim-Diasca Developer Guide for more implementation-level information about actors.
@@ -146,7 +146,7 @@ When an actor A sends during tick ``N`` an actor message to actor B, B will proc
 
 A corollary is then that if A requests an information from B during tick ``N``, A will process that information during tick ``N+2``.
 
-Moreover during a tick an actor may receive multiple messages from multiple actors. No assumption should be made on their processing order within that tick, as the simulation algorithm will have reordered them to ensure the respect of the simulation properties (ex: reproducibility or ergodicity).
+Moreover during a tick an actor may receive multiple messages from multiple actors. No assumption should be made on their processing order within that tick, as the simulation algorithm will have reordered them to ensure the respect of the simulation properties (e.g. reproducibility or ergodicity).
 
 
 
@@ -188,7 +188,7 @@ The actual creation of an actor in the course of the simulation is made of a few
 
   - the creating actor processes the notification of the created instance, which includes its PID
 
-  - the created actor is notified that the simulation has started for it (it is necessary as it could have been created before the simulation was started) and is scheduled for the first time; it is up to its model to determine whether this actor is ready to develop its behaviour immediately, as it may not have achieved its full initialisation yet (ex: it may be waiting for other actors to be themselves ready, and/or it might need to set some stochastic values to complete its initialisation, etc.)
+  - the created actor is notified that the simulation has started for it (it is necessary as it could have been created before the simulation was started) and is scheduled for the first time; it is up to its model to determine whether this actor is ready to develop its behaviour immediately, as it may not have achieved its full initialisation yet (e.g. it may be waiting for other actors to be themselves ready, and/or it might need to set some stochastic values to complete its initialisation, etc.)
 
   - as soon as the created actor deems it is itself ready (maybe from its first scheduled tick, maybe on later ticks), automatically any related actions will be triggered, and any actors waiting for that actor will be notified that it is ready now; then on the next tick the actor will be free to develop its normal behaviour; by default during its first scheduled tick an actor will not wait for any other actor, and therefore will call directly its (possibly overridden) ``onReady`` method; it will then be ready to develop its actual behaviour only on next tick (``N+3``)
 
@@ -251,7 +251,7 @@ Main Choices In Terms Of Actor Modelling
 Fundamental Frequency
 ---------------------
 
-As discussed previously, the root time manager in charge of a simulation will maintain its virtual time based on the fundamental overall frequency the simulation user specified: this frequency (ex: 50 Hz) directly dictates the duration in virtual time between two successive engine ticks (ex: 20 ms).
+As discussed previously, the root time manager in charge of a simulation will maintain its virtual time based on the fundamental overall frequency the simulation user specified: this frequency (e.g. 50 Hz) directly dictates the duration in virtual time between two successive engine ticks (e.g. 20 ms).
 
 Therefore once this root time manager will have determined that all the actors to be scheduled this tick (the ones having to process actor message(s) and/or having to develop their behaviour on that tick) have reported that they have finished taking that current tick into account, it will then just increment the simulation tick, since the corresponding virtual 20 ms will have elapsed, and then declare that a new tick just has just begun.
 
@@ -352,7 +352,8 @@ Triggered Behaviour: Receiving of an Actor Message
 
 For example if an actor A needs to set the color of an actor B, then it may send to it an actor message specifying ``{setColor,red}``. Then, B will process it at the next diasca: its ``setColor`` method (actor oneway) will be automatically called and, based on the transmitted parameter, B will be able to update its state, for example by setting its ``color`` attribute to ``red``.
 
-Should B receive an actor message requesting an answer (ex: ``getColor``), it would do so by sending back another actor message to A, like ``{notifyColor,red}``.
+Should B receive an actor message requesting an answer (e.g. ``getColor``), it would do so by sending back another actor message to A, like ``{notifyColor,red}``.
+
 
 
 Spontaneous Behaviour

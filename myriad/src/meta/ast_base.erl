@@ -71,7 +71,7 @@
 
 -type source_context() ::
 		{ file_utils:filename(), basic_utils:maybe( file_loc() ) }.
-% In-source context (typically to report errors); ex: `{"foo.erl",{112,4}}'.
+% In-source context (typically to report errors); e.g. `{"foo.erl",{112,4}}'.
 
 
 -export_type([ form_location/0, file_reference/0, line/0, column/0, file_loc/0,
@@ -88,11 +88,11 @@
 
 
 -type form() :: erl_parse:abstract_form() | erl_parse:form_info().
-% Abstract form, part of an AST (ex: `{attribute,40,file,{"foo.erl",40}}').
+% Abstract form, part of an AST (e.g. `{attribute,40,file,{"foo.erl",40}}').
 
 
 -type form_element() :: any().
-% An element (a part) of a form (ex: a clause of a function definition).
+% An element (a part) of a form (e.g. a clause of a function definition).
 
 
 -type ast() :: [ form() ].

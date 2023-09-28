@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2022 Olivier Boudeville
+% Copyright (C) 2010-2023 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -23,6 +23,7 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: Thursday, February 11, 2010.
 
 
 
@@ -82,10 +83,10 @@
 
 
 
-% The basic builtin shell commands and related executables (ex: cat, awk, grep,
+% The basic builtin shell commands and related executables (e.g. cat, awk, grep,
 % df) are not so easy to manage, as, from a distribution to another, they tend
-% to sit in different locations (ex: /bin/, /usr/bin) and/or to be aliased or
-% symlinked (ex: /usr/bin/awk being gawk). Depending also on the user
+% to sit in different locations (e.g. /bin/, /usr/bin) and/or to be aliased or
+% symlinked (e.g. /usr/bin/awk being gawk). Depending also on the user
 % environment, different conventions apply.
 %
 % These commands could be referred to directly as 'awk' or 'grep', yet it may be
@@ -112,6 +113,7 @@
 
 % "/bin/free" should be valid as well:
 -define( free, " \\free " ).
+
 
 % "/bin/grep" should be valid as well:
 -define( grep, " \\grep " ).

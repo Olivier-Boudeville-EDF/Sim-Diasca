@@ -23,6 +23,7 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2011.
 
 
 % This header tends to be included in a lot of places:
@@ -30,7 +31,7 @@
 -define(data_types_hrl_guard,).
 
 
-% The *_impl macros (ex: list_impl, set_impl) allow to select once for all the
+% The *_impl macros (e.g. list_impl, set_impl) allow to select once for all the
 % datatypes whose use is promoted internally, possibly with additional
 % operations offered (see {list,set}_utils.erl).
 
@@ -39,9 +40,9 @@
 % List section.
 %
 
-% When needing random access to a potentially long list (ex: removing a specific
-% element), using a plain list is less efficient than using more advanced
-% containers.
+% When needing random access to a potentially long list (e.g. removing a
+% specific element), using a plain list is less efficient than using more
+% advanced containers.
 
 
 % Expected supported API-related conventions from any list_impl variant:

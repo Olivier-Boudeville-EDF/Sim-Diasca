@@ -148,7 +148,7 @@
 %
 -record( gltf_attributes, {
 
-	position   :: gltf_support:accessor_index(),
+	position   :: maybe( gltf_support:accessor_index() ),
 	normal     :: maybe( gltf_support:accessor_index() ),
 	tangent    :: maybe( gltf_support:accessor_index() ),
 	texcoord_0 :: maybe( gltf_support:accessor_index() )

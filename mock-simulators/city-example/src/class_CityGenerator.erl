@@ -1,22 +1,23 @@
 % Copyright (C) 2012-2023 EDF R&D
-
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2012.
 
 
 % @doc Class modelling the <b>generation of cities</b>.
@@ -111,8 +112,6 @@
 
 -type meters() :: unit_utils:meters().
 
-%-type point3() :: point3:point3().
-
 
 
 % @doc Constructs a city generator, from the specified city description (refer
@@ -122,8 +121,8 @@
 -spec construct( wooper:state(), city_description(), gis_pid() ) ->
 												wooper:state().
 construct( State, CityDescription=#city_description{
-					 name=Name,
-					 dimensions=Dimensions }, GISPid ) ->
+					name=Name,
+					dimensions=Dimensions }, GISPid ) ->
 
 	% Otherwise a non-constant seed will be assigned, and the reproducibility of
 	% the generated instance definitions is lost:
@@ -131,14 +130,14 @@ construct( State, CityDescription=#city_description{
 	random_utils:start_random_source( default_seed ),
 
 	EmitterName = ?trace_categorize(
-					text_utils:format( "City Generator for ~ts", [ Name ] ) ),
+		text_utils:format( "City Generator for ~ts", [ Name ] ) ),
 
 	EmitterState = class_EngineBaseObject:construct( State, EmitterName ),
 
 	LoadBalancerPid = class_LoadBalancer:get_balancer(),
 
 	LocationGeneratorPid = class_LocationGenerator:new_link(
-								"City Location Generator", Dimensions ),
+		"City Location Generator", Dimensions ),
 
 	setAttributes( EmitterState, [
 		{ dimensions, Dimensions },
@@ -420,7 +419,7 @@ writeInitialisation( State, File ) ->
 	RoadEndpointsForJunctions = add_roads_for( JuncPids, GISPid ),
 
 	RoadEndpointsForConnectivity = force_connectivity(
-			IncPids ++ LandPids ++ ResPids ++ IndusPids, GISPid ),
+		IncPids ++ LandPids ++ ResPids ++ IndusPids, GISPid ),
 
 	% We add connection roads to ensure that the road network is fully connected
 	% (otherwise for example no landfill could be reached from an incinerator,
@@ -553,12 +552,11 @@ generate_city( #city_description{
 			[ IncineratorCount ], State ),
 
 	IncineratorDefs = class_Incinerator:generate_definitions( IncineratorCount,
-										LocationGeneratorPid, GISPid ),
+		LocationGeneratorPid, GISPid ),
 
 	%trace_utils:debug_fmt( "IncineratorDefs = ~p", [ IncineratorDefs ] ),
 
-	report( " - creating these ~B incinerators", [ IncineratorCount ],
-			State ),
+	report( " - creating these ~B incinerators", [ IncineratorCount ], State ),
 
 	Incinerators = class_Actor:create_initial_actors( IncineratorDefs,
 													  LoadBalancerPid ),
@@ -580,7 +578,7 @@ generate_city( #city_description{
 			State ),
 
 	LandfillDefs = class_Landfill:generate_definitions( LandfillCount,
-										LocationGeneratorPid, GISPid ),
+		LocationGeneratorPid, GISPid ),
 
 	%trace_utils:debug_fmt( "LandfillDefs = ~p", [ LandfillDefs ] ),
 
@@ -598,7 +596,7 @@ generate_city( #city_description{
 			[ IndustrialSourceCount ], State ),
 
 	IndustrialSourceDefs = class_IndustrialWasteSource:generate_definitions(
-						IndustrialSourceCount, LocationGeneratorPid, GISPid ),
+		IndustrialSourceCount, LocationGeneratorPid, GISPid ),
 
 	%trace_utils:debug_fmt( "IndustrialSourceDefs = ~p",
 	%                      [ IndustrialSourceDefs ] ),
@@ -616,7 +614,7 @@ generate_city( #city_description{
 			[ ResidentialSourceCount ], State ),
 
 	ResidentialSourceDefs = class_ResidentialWasteSource:generate_definitions(
-						ResidentialSourceCount, LocationGeneratorPid, GISPid ),
+		ResidentialSourceCount, LocationGeneratorPid, GISPid ),
 
 	%trace_utils:debug_fmt( "ResidentialSourceCount = ~p",
 	%                      [ ResidentialSourceCount ] ),
@@ -624,8 +622,8 @@ generate_city( #city_description{
 	report( " - creating these ~B residential waste sources",
 			[ ResidentialSourceCount ], State ),
 
-	ResidentialSources = class_Actor:create_initial_actors(
-							ResidentialSourceDefs, LoadBalancerPid ),
+	ResidentialSources = class_Actor:create_initial_actors(	
+		ResidentialSourceDefs, LoadBalancerPid ),
 
 	GISPid ! { declarePOIs, [ ResidentialSources ], self() },
 
@@ -634,7 +632,7 @@ generate_city( #city_description{
 			[ RoadJunctionCount ], State ),
 
 	RoadJunctionDefs = class_RoadJunction:generate_definitions(
-						RoadJunctionCount, LocationGeneratorPid, GISPid ),
+		RoadJunctionCount, LocationGeneratorPid, GISPid ),
 
 	%trace_utils:debug_fmt( "RoadJunctionDefs = ~p", [ RoadJunctionDefs ] ),
 
@@ -749,7 +747,7 @@ generate_road_network( Incinerators, Landfills, ResidentialSources,
 	report( "    + forcing POI connectivity", State ),
 
 	CompletionRoadDefs = force_connectivity( Incinerators ++ Landfills
-						++ ResidentialSources ++ IndustrialSources, GISPid ),
+		++ ResidentialSources ++ IndustrialSources, GISPid ),
 
 	% We could/should add connection roads to ensure that the road network is
 	% fully connected (otherwise for example no landfill could be reached from
@@ -865,8 +863,8 @@ find_and_create_outbound( Junction, Count, CurrentOutbounds, GISPid ) ->
 %
 find_and_create_inbound( Junction, Count, CurrentInbounds, GISPid ) ->
 
-	GISPid ! { searchNearestPointsOfInterest, [ Junction,
-					_ExcludedPOIs=CurrentInbounds, Count ], self() },
+	GISPid ! { searchNearestPointsOfInterest, 
+			   [ Junction, _ExcludedPOIs=CurrentInbounds, Count ], self() },
 
 	receive
 

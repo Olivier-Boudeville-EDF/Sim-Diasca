@@ -38,7 +38,7 @@
 
 % Implementation notes:
 %
-% The functions based on an HTTP client (ex: request/6, get/3, post/3, post/4,
+% The functions based on an HTTP client (e.g. request/6, get/3, post/3, post/4,
 % post/5, download_file/2) rely here on the Erlang-native 'httpc' module, a
 % fairly low-level, basic HTTP/1.1.
 %
@@ -71,7 +71,7 @@
 
 
 -type path() :: ustring().
-% Path of an URL (ex: 'access/login').
+% Path of an URL (e.g. 'access/login').
 
 
 % For the (deprecated) url_info record:
@@ -117,13 +117,15 @@
 -type headers() :: headers_as_list() | headers_as_maps().
 
 
-% Even if httpc:http_option/0 is not exported:
--type http_option() :: httpc:http_option().
+-type http_option() :: % Not exported yet: httpc:http_option().
+					   any().
+
 
 -type options_for_httpc() :: [ http_option() ].
 
 -type list_options() :: [ { atom(), term() } ].
--type map_options() :: maps:maps( atom(), term() ).
+-type map_options() :: % Not exported yet: maps:maps( atom(), term() ).
+					   table().
 
 -type http_options() :: options_for_httpc() | map_options().
 
@@ -142,13 +144,13 @@
 -type media_type() :: unicode:chardata().
 % A media type (formerly known as "MIME type").
 %
-% Ex: "audio/ogg".
+% For example "audio/ogg".
 %
 % Refer to [https://en.wikipedia.org/wiki/Media_type].
 
 
 -type html_element() :: any_string().
-% Ex: "<p>Hello!</p>".
+% For example "<p>Hello!</p>".
 
 
 -type http_status_class() ::
@@ -185,7 +187,7 @@
 -type service_endpoint() :: bin_string().
 % The full, readily usable endpoint of a given service.
 %
-% Ex:
+% For example
 % `<<"https://francecentral.api.cognitive.microsoft.com/sts/v1.0/issuetoken">>'.
 
 
@@ -193,12 +195,12 @@
 % The API endpoint (with no deployment-related prefix such as
 % "https://francecentral.") of a given service.
 %
-% Ex: `<<"api.cognitive.microsoft.com/sts/v1.0/issuetoken">>'.
+% For example `<<"api.cognitive.microsoft.com/sts/v1.0/issuetoken">>'.
 
 
 -type instance_key() :: bin_string().
 % The key of an instance hosted by a cloud provider.
-% Ex: `<<"a59c98302e7f4a22be4b355125df8e9">>'.
+% For example `<<"a59c98302e7f4a22be4b355125df8e9">>'.
 
 
 -type cloud_instance_info() :: azure_instance_info().
@@ -212,12 +214,12 @@
 
 -type azure_instance_key() :: instance_key().
 % The key of a Microsoft Azure instance.
-% Ex: `<<"a59c98302e7f4a22be4b355125df8e9">>'.
+% For example `<<"a59c98302e7f4a22be4b355125df8e9">>'.
 
 
 -type azure_instance_location() :: bin_string().
 % The location of a Microsoft Azure instance.
-% Ex: `<<"francecentral">>'.
+% For example `<<"francecentral">>'.
 
 
 
@@ -264,7 +266,7 @@
 % HTTP-related operations:
 -export([ start/0, start/1,
 		  request/6, get/3, post/3, post/4, post/5,
-		  download_file/2,
+		  download_file/2, download_file/3,
 		  stop/0 ]).
 
 
@@ -346,7 +348,7 @@ encode_as_url( [ { Key, Value } | T ], _Acc=[] ) ->
 
 encode_as_url( [ { Key, Value } | T ], Acc ) ->
 	encode_as_url( T, Acc ++ "&" ++ encode_element_as_url( Key ) ++ "="
-				   ++ encode_element_as_url( Value ) ).
+						  ++ encode_element_as_url( Value ) ).
 
 
 % @doc Encodes specified element so that it can be used in an URL.
@@ -420,7 +422,7 @@ escape_char( C ) ->
 % @doc Returns the last element, the final path "filename" pointed by specified
 % URL.
 %
-% Ex: "hello.txt" = web_utils:get_last_path_element(
+% For example "hello.txt" = web_utils:get_last_path_element(
 %                         "http://www.foobar.org/baz/hello.txt" )
 %
 -spec get_last_path_element( url() ) -> file_name().
@@ -475,7 +477,10 @@ string_to_url_info( String ) ->
 
 		} = string_to_uri_map( String ),
 
-	#url_info{ protocol=Scheme, host_identifier=Host, port=MaybePort,
+	% Hope for the best:
+	SchemeStr = text_utils:string_to_atom( Scheme ),
+
+	#url_info{ protocol=SchemeStr, host_identifier=Host, port=MaybePort,
 			   path=Path }.
 
 
@@ -947,7 +952,7 @@ start( Option ) ->
 % For HTTPS requests, we recommend that the HttpOptions include a {ssl,
 % web_utils:get_ssl_verify_options()} pair.
 %
-% For more advanced uses (ex: re-using of permanent connections, HTTP/2, etc.),
+% For more advanced uses (e.g. re-using of permanent connections, HTTP/2, etc.),
 % consider relying on Gun or Shotgun.
 %
 -spec request( method(), uri(), headers(), http_options(), maybe( bin_body() ),
@@ -965,7 +970,7 @@ request( _Method=post, Uri, Headers, HttpOptions, MaybeBody,
 		 MaybeContentType ) ->
 	post( Uri, Headers, HttpOptions, MaybeBody, MaybeContentType );
 
-% Not supported (yet): head |  put | trace | options | delete | patch:
+% Not supported (yet): head | put | trace | options | delete | patch:
 request( Method, Uri, _Headers, _HttpOptions, _MaybeBody, _MaybeContentType ) ->
 	throw( { invalid_method, Method, Uri } ).
 
@@ -978,7 +983,7 @@ request( Method, Uri, _Headers, _HttpOptions, _MaybeBody, _MaybeContentType ) ->
 % For HTTPS requests, we recommend that the HttpOptions include a {ssl,
 % web_utils:get_ssl_verify_options()} pair.
 %
-% For more advanced uses (ex: re-using of permanent connections, HTTP/2, etc.),
+% For more advanced uses (e.g. re-using of permanent connections, HTTP/2, etc.),
 % consider relying on Gun or Shotgun.
 %
 -spec get( uri(), headers(), http_options() ) -> request_result().
@@ -1008,7 +1013,7 @@ get( Uri, Headers, HttpOptions ) ->
 
 	case httpc:request( _Method=get, Req, HttpOptionsForHttpc, Options ) of
 
-		% Ex: HttpVersion="HTTP/1.1", StatusCode=200, ReqReason="OK".
+		% For example HttpVersion="HTTP/1.1", StatusCode=200, ReqReason="OK".
 		{ ok, { _StatusLine={ ReqHttpVersion, ReqStatusCode, ReqReason },
 				ReqHeaders, ReqBody } } ->
 
@@ -1042,7 +1047,7 @@ get( Uri, Headers, HttpOptions ) ->
 % For HTTPS requests, we recommend that the HttpOptions include a {ssl,
 % web_utils:get_ssl_verify_options()} pair.
 %
-% For more advanced uses (ex: re-using of permanent connections, HTTP/2, etc.),
+% For more advanced uses (e.g. re-using of permanent connections, HTTP/2, etc.),
 % consider relying on Gun or Shotgun.
 %
 -spec post( uri(), headers(), http_options() ) -> request_result().
@@ -1062,7 +1067,7 @@ post( Uri, Headers, HttpOptions ) ->
 % For HTTPS requests, we recommend that the HttpOptions include a {ssl,
 % web_utils:get_ssl_verify_options()} pair.
 %
-% For more advanced uses (ex: re-using of permanent connections, HTTP/2, etc.),
+% For more advanced uses (e.g. re-using of permanent connections, HTTP/2, etc.),
 % consider relying on Gun or Shotgun.
 %
 -spec post( uri(), headers(), http_options(), maybe( body() ) ) ->
@@ -1083,7 +1088,7 @@ post( Uri, Headers, HttpOptions, MaybeBody ) ->
 % For HTTPS requests, we recommend that the HttpOptions include a {ssl,
 % web_utils:get_ssl_verify_options()} pair.
 %
-% For more advanced uses (ex: re-using of permanent connections, HTTP/2, etc.),
+% For more advanced uses (e.g. re-using of permanent connections, HTTP/2, etc.),
 % consider relying on Gun or Shotgun.
 %
 -spec post( uri(), headers(), http_options(), maybe( body() ),
@@ -1134,7 +1139,7 @@ post( Uri, Headers, HttpOptions, MaybeBody, MaybeContentType ) ->
 
 	case httpc:request( _Method=post, Req, HttpOptionsForHttpc, Options ) of
 
-		% Ex: HttpVersion="HTTP/1.1", StatusCode=200, ReqReason="OK".
+		% For example HttpVersion="HTTP/1.1", StatusCode=200, ReqReason="OK".
 		{ ok, { _StatusLine={ ReqHttpVersion, ReqStatusCode, ReqReason },
 				ReqHeaders, ReqBody } } ->
 
@@ -1184,13 +1189,13 @@ to_httpc_options( HttpOptions ) when is_list( HttpOptions ) ->
 	HttpOptions;
 
 to_httpc_options( HttpOptionMap ) when is_map( HttpOptionMap ) ->
-	% We have to recursively transform maps into lists (ex: for {ssl,Opts}):
+	% We have to recursively transform maps into lists (e.g. for {ssl,Opts}):
 	[ { K, case is_map( V ) of
 
-			   true ->
+				true ->
 					maps:to_list( V );
 
-			   false ->
+				false ->
 					V
 
 		   end } || { K, V } <- maps:to_list( HttpOptionMap ) ].
@@ -1202,7 +1207,7 @@ to_httpc_options( HttpOptionMap ) when is_map( HttpOptionMap ) ->
 % directory (under its name in URL), with no specific HTTP options, and returns
 % the corresponding full path of that file.
 %
-% Ex: web_utils:download_file(_Url="https://foobar.org/baz.txt",
+% For example web_utils:download_file(_Url="https://foobar.org/baz.txt",
 %   _TargetDir="/tmp") shall result in a "/tmp/baz.txt" file.
 %
 % Starts, if needed, the HTTP and SSL supports as a side effect.
@@ -1222,7 +1227,7 @@ download_file( Url, TargetDir ) ->
 % any Man-in-the-Middle attack about any target HTTPS server (in addition to TLS
 % protection against "casual" eavesdroppers).
 %
-% Ex: web_utils:download_file(_Url="https://foobar.org/baz.txt",
+% For example web_utils:download_file(_Url="https://foobar.org/baz.txt",
 %   _TargetDir="/tmp", HttpOptions  shall result in a "/tmp/baz.txt" file.
 %
 % Starts, if needed, the HTTP and SSL supports as a side effect.
@@ -1235,8 +1240,8 @@ download_file( Url, TargetDir, HttpOptions ) ->
 
 	#{ scheme := Scheme, path := UrlPath } = case uri_string:parse( Url ) of
 
-		{ error, Error } ->
-			throw( { invalid_url, Url, Error } );
+		{ error, AtomReason, ExtraInfo } ->
+			throw( { invalid_url, Url, AtomReason, ExtraInfo } );
 
 		M ->
 			M
@@ -1271,7 +1276,7 @@ download_file( Url, TargetDir, HttpOptions ) ->
 		{ ok, saved_to_file } ->
 			FilePath;
 
-		% Ex: {ok, { {"HTTP/1.1", 404, "Not Found" } } }
+		% For example {ok, { {"HTTP/1.1", 404, "Not Found" } } }
 		{ ok, { { _HTTTP, ErrorCode, Msg }, _RecHeaders, _Body } } ->
 
 			%trace_bridge:error_fmt( "Downloading from '~ts' failed; "

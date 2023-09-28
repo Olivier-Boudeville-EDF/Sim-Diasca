@@ -45,7 +45,7 @@
 % UUID section.
 
 -type uuid() :: ustring().
-% A string UUID (ex: "ed64ffd4-74ee-43dc-adba-be37ed8735aa").
+% A string UUID (e.g. "ed64ffd4-74ee-43dc-adba-be37ed8735aa").
 
 -export_type([ uuid/0 ]).
 
@@ -146,8 +146,8 @@
 			| term().
 % Any type of identifier.
 %
-% Identifiers may be transient (ex: PIDs are unique during the life of a VM) or
-% permanent (ex: UUID), local to a node or global.
+% Identifiers may be transient (e.g. PIDs are unique during the life of a VM) or
+% permanent (e.g. UUID), local to a node or global.
 %
 % Besides being each unique, all of them are expected to be directly comparable
 % thanks to the base, Erlang term order.
@@ -290,7 +290,7 @@ get_next_sortable_id( Id ) ->
 % Note: most probably the most useful function in order to create new sortable
 % identifiers.
 %
-% Ex: get_sortable_id_between([1,7,1], [1,7,2]) may return [1,7,1,1].
+% For example get_sortable_id_between([1,7,1], [1,7,2]) may return [1,7,1,1].
 %
 -spec get_sortable_id_between( sortable_id(), sortable_id() ) -> sortable_id().
 get_sortable_id_between( Id, Id ) ->
@@ -335,7 +335,7 @@ get_sortable_id_between( _Lower=[ H | Tl ], _Higher=[ H | Th ], Acc ) ->
 
 % Here they are wrongly ordered:
 get_sortable_id_between( Lower=[ Hl | _Tl ], Higher=[ Hh | _Th ], Acc )
-  when Hl > Hh ->
+												when Hl > Hh ->
 	CommonPrefix = lists:reverse( Acc ),
 	LowerId = CommonPrefix ++ Lower,
 	HigherId = CommonPrefix ++ Higher,
@@ -347,15 +347,15 @@ get_sortable_id_between( _Lower=[ Hl ], _Higher, Acc ) ->
 	% By design higher than LowerId, lower than HigherId, and not the immediate
 	% next element to LowerId:
 	%
-	% (ex: if Lower = [1,4,5,8,2] and Higher = [1,4,5,8,3,...], returning:
+	% (e.g. if Lower = [1,4,5,8,2] and Higher = [1,4,5,8,3,...], returning:
 	% [1,4,5,8,2,1]
 	%
 	lists:reverse( [ 1, Hl | Acc ] );
 
 % Here Hl < Hh, and we are not at the end of Lower:
 get_sortable_id_between( _Lower=[ Hl, Hlnext | _Tl ], _Higher, Acc ) ->
-	% Ex: if Lower = [1,4,5,8,2,X,...] and Higher = [1,4,5,8,3,...], returning:
-	% [1,4,5,8,2,X+1] (which is at least as short as both)
+	% For example if Lower = [1,4,5,8,2,X,...] and Higher = [1,4,5,8,3,...],
+	% returning: [1,4,5,8,2,X+1] (which is at least as short as both)
 	%
 	lists:reverse( [ Hlnext+1, Hl | Acc ] );
 
@@ -459,10 +459,10 @@ get_successor_sortable_id( SortId ) ->
 -spec get_higher_same_depth_sortable_id( sortable_id() ) -> sortable_id().
 get_higher_same_depth_sortable_id( SortId ) ->
 
-	% Ex: we have SortId = [1,4,2]; we want to return [1,4,3] (rather
+	% For example we have SortId = [1,4,2]; we want to return [1,4,3] (rather
 	% than, say, [1,4,2,1]):
 
-	% Ex: Last is 2, RevOthers is [4,1]
+	% For example Last is 2, RevOthers is [4,1]
 	[ Last | RevOthers ] = lists:reverse( SortId ),
 
 	lists:reverse( [ Last+1 | RevOthers ] ).
@@ -478,7 +478,7 @@ get_higher_same_depth_sortable_id( SortId ) ->
 -spec get_higher_next_depth_sortable_id( sortable_id() ) -> sortable_id().
 get_higher_next_depth_sortable_id( SortId ) ->
 
-	% Ex: we have SortId = [1,4,2]; we want to return [1,4,2,1] (rather
+	% For example we have SortId = [1,4,2]; we want to return [1,4,2,1] (rather
 	% than, say, [1,4,3]):
 
 	Reversed = lists:reverse( SortId ),
@@ -486,9 +486,9 @@ get_higher_next_depth_sortable_id( SortId ) ->
 	% We add 1 as finer coordinate, not 0, so that we can always perform an
 	% insertion *before* a sortable identifier that we produce that way.
 	%
-	% Ex: otherwise, no identifier could be inserted between [0] and [0,0]; thus
-	% the "basic next identifier" of [0] is [0,1] instead, and we can still
-	% insert for example [0,0,1] between them.
+	% For example otherwise, no identifier could be inserted between [0] and
+	% [0,0]; thus the "basic next identifier" of [0] is [0,1] instead, and we
+	% can still insert for example [0,0,1] between them.
 	%
 	lists:reverse( [ 1 | Reversed ] ).
 
@@ -499,10 +499,10 @@ get_higher_next_depth_sortable_id( SortId ) ->
 % appropriately sorted), so that the order of these elements is respected by
 % their identifiers in the returned table.
 %
-% Ex: if `ElementsToIdentify=['a', 'b', 'c', 'd']' and, in IdentifierTable, 'a'
-% is associated to La and 'd' to Ld, supposing `La < Ld', whereas 'b' and 'c'
-% are not already associated, then the returned table will also associate some
-% Lc to 'c' and some Ld to 'd' so that `La < Lb < Lc < Ld'.
+% For example if `ElementsToIdentify=['a', 'b', 'c', 'd']' and, in
+% IdentifierTable, 'a' is associated to La and 'd' to Ld, supposing `La < Ld',
+% whereas 'b' and 'c' are not already associated, then the returned table will
+% also associate some Lc to 'c' and some Ld to 'd' so that `La < Lb < Lc < Ld'.
 %
 % Throws an exception if no correct mapping could be devised.
 %
@@ -580,32 +580,46 @@ assign_sorted_identifiers( _ElementsToIdentify=[ E | T ], IdentifierTable ) ->
 -spec find_lowest_identifier_in( [ identifiable_element() ],
 				identifier_table() ) -> basic_utils:maybe( sortable_id() ).
 find_lowest_identifier_in( Elements, IdentifierTable ) ->
-	LowestId = find_lowest_identifier_in( Elements, IdentifierTable,
-										  _LowestId=undefined ),
-	trace_utils:debug_fmt( "- lowest identifier found in ~ts is: ~ts",
-						   [ identifier_table_to_string( IdentifierTable ),
-							 sortable_id_to_string( LowestId ) ] ),
-	LowestId.
+
+	MaybeLowestId = find_lowest_identifier_in( Elements, IdentifierTable,
+											   _MaybeLowestId=undefined ),
+
+	% No cond_utils (pioneer module):
+	%case MaybeLowestId of
+
+	%   undefined ->
+	%       trace_utils:debug( "- no lowest identifier found" );
+
+	%   LowestId ->
+	%        trace_utils:debug_fmt(
+	%           "- lowest identifier found in ~ts is: ~ts",
+	%           [ identifier_table_to_string( IdentifierTable ),
+	%             sortable_id_to_string( LowestId ) ] )
+
+	%end,
+
+	MaybeLowestId.
 
 
-find_lowest_identifier_in( _Elements=[], _IdentifierTable, LowestId ) ->
+find_lowest_identifier_in( _Elements=[], _IdentifierTable, MaybeLowestId ) ->
 	% Possibly 'undefined':
-	LowestId;
+	MaybeLowestId;
 
-find_lowest_identifier_in( _Elements=[ E | T ], IdentifierTable, LowestId ) ->
+find_lowest_identifier_in( _Elements=[ E | T ], IdentifierTable,
+						   MaybeLowestId ) ->
 
 	case ?table:lookup_entry( E, IdentifierTable ) of
 
 		key_not_found ->
-			find_lowest_identifier_in( T, IdentifierTable, LowestId );
+			find_lowest_identifier_in( T, IdentifierTable, MaybeLowestId );
 
 		{ value, Id } ->
-			NewLowestId = case LowestId of
+			NewLowestId = case MaybeLowestId of
 
 				undefined ->
 					Id;
 
-				_ ->
+				LowestId ->
 					erlang:min( LowestId, Id )
 
 			end,
@@ -691,7 +705,7 @@ assign_in_turn_ids( LowerId, HigherId, _ElemsToIdentify=[ E | T ],
 
 
 
-% @doc Returns a textual representation of specified sortable identifier.
+% @doc Returns a textual representation of the specified sortable identifier.
 -spec sortable_id_to_string( sortable_id() ) -> ustring().
 sortable_id_to_string( _Id=?lower_bound_id ) ->
 	"lower bound";

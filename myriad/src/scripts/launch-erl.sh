@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2008-2022 Olivier Boudeville
+# Copyright (C) 2008-2023 Olivier Boudeville
 #
 # Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 #
@@ -14,12 +14,12 @@
 
 # Previously the specified code was run with 'erl -eval [...]'. This was simple,
 # however none of the execution facilities offered by the 'init' module ("-s",
-# "-eval" and "-run") allows to run a VM that would resist exceptions (ex: the
+# "-eval" and "-run") allows to run a VM that would resist exceptions (e.g. the
 # first remote node to crash would trigger a 'noconnection' exception that would
 # make the launched node crash).
 #
 # So we allowed to switch to using run_erl, which is more heavyweight but
-# restores the resistance to exceptions (ex: relying on pipes).
+# restores the resistance to exceptions (e.g. relying on pipes).
 
 # Using run_erl allows to have the VM be able to resist to the crash of others;
 # however then some tests may either actually fail whereas returning success, or
@@ -63,8 +63,8 @@ Usage: $(basename $0) [-v] [-c a_cookie] [--sn a_short_node_name | --ln a_long_n
 Detailed options:
 	-v: be verbose
 	-c a_cookie: specify a cookie, otherwise no cookie will be specifically set
-	--sn a_short_node_name: distributed node using specified short name (ex: 'my_short_name')
-	--ln a_long_node_name: distributed node using specified long name (ex: 'my_long_name')
+	--sn a_short_node_name: distributed node using specified short name (e.g. 'my_short_name')
+	--ln a_long_node_name: distributed node using specified long name (e.g. 'my_long_name')
 	--nn an_ignored_node_name: non-distributed node; the specified name is ignored (useful to just switch the node naming options at runtime)
 	--hostname a_hostname: specify the hostname to be used (typically a FQDN for long node names, and a short hostname for short node names)
 	--tcp-range min_port max_port: specify a TCP port range for inter-node communication (useful for firewalling issues)
@@ -73,9 +73,9 @@ Detailed options:
 	--max-process-count max_count: specify the maximum number of processes per VM (default: ${max_process_count})
 	--busy-limit size: specify the distribution buffer busy limit, in kB (default: 1024)
 	--async-thread-count thread_count: specify the number of asynchronous threads for driver calls (default: ${asynch_thread_count})
-	--background: run the launched interpreter in the background (ideal to run as a daemon, ex: on a server)
+	--background: run the launched interpreter in the background (ideal to run as a daemon, e.g. on a server)
 	--daemon: run the node as a daemon (relies on run_erl and implies --background)
-	--non-interactive: run the launched interpreter with no shell nor input reading (ideal to run through a job manager, ex: on a cluster)
+	--non-interactive: run the launched interpreter with no shell nor input reading (ideal to run through a job manager, e.g. on a cluster)
 	--eval 'an Erlang expression': start by evaluating this expression
 	--no-auto-start: disable the automatic execution at VM start-up
 	-h or --help: display this help
@@ -91,14 +91,14 @@ Example: $(basename $0) -v --ln ceylan --eval 'class_TimeManager_test:run()'"
 
 
 # Note that the BEAM dirs/paths are realpath'ed by this script, which may result
-# some checks (ex: for the JSON backend) to wrongly conclude that some BEAM
+# some checks (e.g. for the JSON backend) to wrongly conclude that some BEAM
 # files can be found in more than one location in the code path.
 #
 # Moreover the specified paths shall preferably match the one otp_utils would
 # elect, for a better homogeneity.
 
 
-# Should the Erlang VM crash, the terminal (console) may not recover well (ex:
+# Should the Erlang VM crash, the terminal (console) may not recover well (e.g.
 # no more echoing of the typed characters)
 #
 # (obtained thanks to a diff of 'stty --all' before and after the issue)
@@ -122,7 +122,7 @@ reset_keyboard()
 cmd_file="launch-erl-input-command.sh"
 
 # Typically this cmd_file shall be edited so that quotes are added back to the
-# -eval command (ex: '-eval foobar_test:run()'):
+# -eval command (e.g. '-eval foobar_test:run()'):
 #
 #echo "$0 $*" > ${cmd_file} && chmod +x ${cmd_file} && echo "(input launch command stored in ${cmd_file})"
 
@@ -149,7 +149,20 @@ be_verbose=1
 use_tcp_range=1
 autostart=0
 in_background=1
+
+# Tells whether requesting user input is allowed, both for the launched program
+# and also for this script (typically to offer a post-mortem analysis, after a
+# crash vs a synchronous yet never-blocking behaviour):
+#
 non_interactive=1
+
+
+# Often left disabled (hence at 1), since most crashes require only Erlang-level
+# debugging:
+#
+#investigate_post_mortem=0
+investigate_post_mortem=1
+
 
 # Erlang defaults (see http://erlang.org/doc/man/erl.html#+zdbbl):
 busy_limit=1024
@@ -316,7 +329,10 @@ while [ $# -gt 0 ] && [ ${do_stop} -eq 1 ]; do
 	if [ "$1" = "--daemon" ]; then
 		#echo "(running in daemon mode)"
 		use_run_erl=0
-		#in_background=0
+
+		# Should not be implied anymore, as would lead to unwanted consequences:
+		# in_background=0
+
 		token_eaten=0
 	fi
 
@@ -347,7 +363,7 @@ while [ $# -gt 0 ] && [ ${do_stop} -eq 1 ]; do
 			# No parent created:
 			if ! mkdir "${log_dir}"; then
 
-				echo " Error, creating of specified log directory '${log_dir}' failed." 1>&2
+				echo " Error, the creation of the specified log directory '${log_dir}' failed." 1>&2
 				exit 15
 
 			fi
@@ -514,10 +530,10 @@ log_opt="+W w"
 
 # First we ensure that the epmd program will be started with relaxed command
 # checking (refer to http://erlang.org/doc/man/epmd.html), otherwise we will not
-# be able to specifically unregister crashed nodes (ex: from node-cleaner.sh,
+# be able to specifically unregister crashed nodes (e.g. from node-cleaner.sh,
 # refer to its embedded comments for more details):
 #
-# ('export ERL_EPMD_RELAXED_COMMAND_CHECK' would not suffice, no available in
+# ('export ERL_EPMD_RELAXED_COMMAND_CHECK' would not suffice, not available in
 # 'env' and not seen from epmd either)
 #
 export ERL_EPMD_RELAXED_COMMAND_CHECK=1
@@ -576,7 +592,7 @@ else
 fi
 
 
-# Needed to adapt to the platform at hand (ex: at least on Windows with MSYS,
+# Needed to adapt to the platform at hand (e.g. at least on Windows with MSYS,
 # some command like hostname accept different options):
 #
 os_short_name="$(uname |cut -c 1-4)"
@@ -825,18 +841,18 @@ fi
 
 
 
-# Uncomment to see the actual runtime settings:
-
-# Log to text file:
-#echo "$0 running final command: ${final_command}, with use_run_erl = $use_run_erl" > launch-erl-command.txt
-
-# Log to console:
-#echo; echo "##### $0 running final command: '${final_command}', with use_run_erl = $use_run_erl"csc
-
 
 if [ $use_run_erl -eq 0 ]; then
 
 	#echo "run_erl command: ${final_command}"
+
+	# Uncomment to see the actual runtime settings:
+
+	# Log to text file:
+	#echo "$0 running final command with run_erl: ${final_command}, with use_run_erl = ${use_run_erl}" > launch-erl-command.txt
+
+	# Log to console:
+	#echo; echo "##### $0 running final command with run_erl: '${final_command}', with use_run_erl = ${use_run_erl}"
 
 	if [ ${be_verbose} -eq 0 ]; then
 
@@ -869,6 +885,12 @@ else
 
 	# Not using run_erl here, direct launch (the current default):
 
+	# Log to text file:
+	#echo "$0 running final command (directly with eval): ${command}" > launch-erl-command.txt
+
+	# Log to console:
+	#echo; echo "##### $0 running final command (directly with eval): '${command}'"
+
 	# We used to define above a final_command variable that comprised ${erl},
 	# yet on Windows, no matter the quoting that we tried, we did not succeed in
 	# having the shell see '/c/Program Files/erl-XXX/bin/erl' as a single path
@@ -879,18 +901,111 @@ else
 
 	if [ ${be_verbose} -eq 0 ]; then
 
-		echo "Launching (directly): ${final_command}"
+		echo "Executing: ${erl} ${to_eval} ${command}"
 
 	fi
 
-	#${command}
-	#echo "${erl}" ${to_eval} ${command}
 	"${erl}" ${to_eval} ${command}
+
+	res=$?
+	#echo "Execution result: ${res}."
+
+	if [ ! $res -eq 0 ]; then
+
+		if [ $non_interactive -eq 1 ]; then
+
+			if [ $investigate_post_mortem -eq 0 ]; then
+
+				core_exec="$(which coredumpctl 2>/dev/null)"
+
+				if [ ! -x "${core_exec}" ]; then
+
+					echo "(no 'coredumpctl' tool available, no post-mortem investigation performed)" 1>&2
+
+					exit 105
+
+				fi
+
+				# Especially useful whenever crashing one's OpenGL driver:
+				echo "This execution of the Erlang VM failed. Shall we run a post-mortem investigation? (y/n) [n]" 1>&2
+				read answer
+				if [ "${answer}" = "y" ]; then
+
+					# We want to select a proper coredump (if any).
+					#
+
+					# ('coredumpctl list' would list all known core dumps from
+					# oldest to most recent; see
+					# https://howtos.esperide.org/GNULinux.html#process-related-post-mortem-investigations
+					# for more information)
+
+
+					echo "Analysing latest-found Erlang VM coredump (use the 'bt' command to print the backtrace; 'q' to quit):"
+
+					#echo "erl = ${erl}"
+
+					# As we need [...]/lib/erlang/erts-xx.y/bin/beam.smp rather
+					# than [...]/bin/erl:
+					#
+					base_erl_install="$(dirname $(dirname ${erl}))"
+
+					# Expecting exactly one erts-* directory to be found:
+					beam_exec="$(/bin/ls -1 ${base_erl_install}/lib/erlang/erts-*/bin/beam.smp 2>/dev/null)"
+
+					if [ -z "${beam_exec}" ]; then
+
+						echo "(the actual beam.smp executable could not be located in '${base_erl_install}')" 1>&2
+						exit 112
+
+					fi
+
+					beam_exec_count="$(echo ${beam_exec}| wc -l)"
+					if [ ! "${beam_exec_count}" = "1" ]; then
+
+						echo "(could not locate the actual single beam.smp executable in '${base_erl_install}', got '${beam_exec_count}')" 1>&2
+						exit 114
+
+					fi
+
+					# As the paths must match exactly (despite symlinks such as
+					# Erlang-current-install masking Erlang-x.y directories):
+					#
+					real_beam_exec="$(realpath ${beam_exec})"
+
+					if [ ! -x "${real_beam_exec}" ]; then
+
+						echo "(could not locate the actual real beam.smp executable, got '${real_beam_exec}')" 1>&2
+						exit 116
+
+					fi
+
+					# Yet a crash does not always creates a core (e.g. if using
+					# xkill; even if ulimit is "unlimited"):
+					#
+					#echo "${core_exec}" debug "${real_beam_exec}"
+					"${core_exec}" debug "${real_beam_exec}"
+
+					exit $?
+
+				else
+
+					echo "(no coredump analysis wanted)"
+					exit 100
+
+				fi
+
+			fi
+
+		else
+
+			echo "This (non-interactive) execution of the Erlang VM failed." 1>&2
+
+		fi
+
+	fi
 
 fi
 
-
-res=$?
 
 # However run_erl may return 0 despite errors:
 if [ ! ${res} -eq 0 ]; then
@@ -923,6 +1038,7 @@ if [ ${use_run_erl} -eq 0 ] && [ ${autostart} -eq 0 ]; then
 
 	# Number of seconds before time-out:
 	wait_max=60
+	#wait_max=8
 
 	wait_count=0
 

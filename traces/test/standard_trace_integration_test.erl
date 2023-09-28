@@ -26,7 +26,9 @@
 % Creation date: Sunday, December 6, 2020.
 
 
-% Test of the integration of the standard Erlang logs into the Traces subsystem.
+% @doc Test of the integration of the standard Erlang logs into the Traces
+% subsystem.
+%
 -module(standard_trace_integration_test).
 
 
@@ -36,9 +38,13 @@
 
 
 
-% Runs the test.
+% @doc Runs the test.
 %
 % Sort of a counterpart of Myriad's trace_utils_test.erl.
+%
+% Not that if this test fails because it is not able to remove an handler, it
+% might be the sign that some traces could not be properly sent. This should be
+% displayed in the traces themselves.
 %
 -spec run() -> no_return().
 run() ->
@@ -68,7 +74,6 @@ run() ->
 	?test_warning( "The next badarith error is intentional." ),
 
 	_CrasherPid = spawn(
-
 		fun() ->
 			?test_notice_fmt( "Hello from crasher test process ~w.",
 							  [ self() ] ),

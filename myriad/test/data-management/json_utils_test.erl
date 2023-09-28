@@ -23,9 +23,10 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2015.
 
 
-% Unit tests for the <b>JSON services</b>.
+% @doc Unit tests for the <b>JSON services</b>.
 %
 % For a more proper testing, each JSON backend shall be tested separately.
 %
@@ -196,7 +197,7 @@ run_stateful_testing( ParserState ) ->
 			end,
 
 			% Note that, if the actual JSON encoding of a given Erlang term
-			% depends on the parser backend (ex: the order of JSON keys might
+			% depends on the parser backend (e.g. the order of JSON keys might
 			% differ), for each parser, for each valid Erlang term T, we expect
 			% that from_json( to_json( T ) ) = T:
 			%
@@ -254,8 +255,7 @@ compare_with_if_available( JsonDecodedTerm, BackendName ) ->
 
 			false ->
 				test_facilities:display_fmt( "No comparison done with backend "
-					"'~ts' (as not found available).", [ BackendName ] ),
-				ok;
+					"'~ts' (as not found available).", [ BackendName ] );
 
 			_ ->
 			BackendState = json_utils:start_parser( BackendName ),
@@ -270,9 +270,7 @@ compare_with_if_available( JsonDecodedTerm, BackendName ) ->
 					% one:
 					%
 					test_facilities:display_fmt( "Comparison success with "
-						"backend '~ts'.", [ BackendName ] ),
-
-					ok;
+						"backend '~ts'.", [ BackendName ] );
 
 				_ ->
 					% Might be a too strong property:
@@ -307,8 +305,7 @@ run() ->
 				"not testing further stateful support.~n  Note: refer to "
 				"GNUmakevars.inc in order to install and enable a "
 				"suitable parser.~n  Then, to trigger an actual testing "
-				"thereof, run: 'make json_utils_run USE_JSON=false'." ),
-			ok;
+				"thereof, run: 'make json_utils_run USE_JSON=false'." );
 
 		_ ->
 			test_facilities:display( "Default available parser backend "

@@ -32,7 +32,7 @@ More generally, the ability to run on HPC [#]_ clusters (``[S7]``)  improves a l
 
 .. [#] HPC meaning *High Performance Computing* here.
 
-We made significant use of `PBS-based <http://en.wikipedia.org/wiki/Portable_Batch_System>`_ clusters, then of ones relying on `SLURM <https://slurm.schedmd.com/>`_. A lightweight abstraction layer has been built over both (see ``sim-diasca/conf/clusters/sim-diasca-launcher.sh``). Other cluster scripts have been developed to respectively deploy, launch and collect results for *sets* of experiments (ex: automating the launching of 72 simulations, to perform some parametric studies).
+We made significant use of `PBS-based <http://en.wikipedia.org/wiki/Portable_Batch_System>`_ clusters, then of ones relying on `SLURM <https://slurm.schedmd.com/>`_. A lightweight abstraction layer has been built over both (see ``sim-diasca/conf/clusters/sim-diasca-launcher.sh``). Other cluster scripts have been developed to respectively deploy, launch and collect results for *sets* of experiments (e.g. automating the launching of 72 simulations, to perform some parametric studies).
 
 
 

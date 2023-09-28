@@ -23,7 +23,7 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
-% Creation date: Wednesday, December 24, 2014
+% Creation date: Wednesday, December 24, 2014.
 
 
 % @doc Class introduced notably to test <b>inheritance</b>.
@@ -37,7 +37,7 @@
 
 
 % Determines what are the direct mother classes of this class (if any):
-% (one of these two lines may or may not be uncommented)
+% (one of these two lines may be uncommented)
 %-superclasses([]).
 %-define( superclasses, [] ).
 

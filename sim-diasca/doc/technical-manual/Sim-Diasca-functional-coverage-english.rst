@@ -134,7 +134,7 @@ Based on the property list discussed in `List of Spotted Potential Properties Fo
 |                        |                   | A simulation stall/deadlock      |
 |                        |                   | detection and diagnosis system   |
 |                        |                   | will be triggered if ever issues |
-|                        |                   | arise (ex: faulty model).        |
+|                        |                   | arise (e.g. faulty model).       |
 +------------------------+-------------------+----------------------------------+
 
 

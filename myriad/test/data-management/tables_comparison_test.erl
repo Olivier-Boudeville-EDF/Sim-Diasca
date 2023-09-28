@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2022 Olivier Boudeville
+% Copyright (C) 2003-2023 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -24,11 +24,11 @@
 %
 % Authors: Jingxuan Ma [jingxuan (dot) ma (at) edf (dot) fr]
 %          Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2003.
 
 
-% Tests for comparing and illustrating the differences of following types of
-% hashtables:
-%
+% @doc Tests for comparing and illustrating the differences of following types
+% of <b>associative tables</b>:
 % - hashtable
 % - tracked hashtable
 % - lazy hashtable
@@ -52,10 +52,10 @@
 -include("test_facilities.hrl").
 
 
--define(MyFirstKey,  'MyFirstKey').
--define(MySecondKey, 'MySecondKey').
--define(MyThirdKey,  'MyThirdKey').
--define(MyFourthKey, 'MyFourthKey').
+-define( my_first_key,  'MyFirstKey'   ).
+-define( my_second_key, 'MySecondKey ' ).
+-define( my_third_key,  'MyThirdKey'   ).
+-define( my_fourth_key, 'MyFourthKey ' ).
 
 
 -export([ run_basic_tests/0, run_performance_tests/0 ]).
@@ -80,7 +80,7 @@ display_separator() ->
 
 
 
-% Performs the same set of operations of an instance of each type of hashtable.
+% @doc Performs the same set of operations of an instance of each type of table.
 run_basic_tests() ->
 
 	% Tests for each kind of table should be separated.
@@ -125,13 +125,13 @@ run_basic_tests() ->
 
 	test_facilities:display( "Adding entries in hash table:" ),
 	MyH2 = hashtable:new( 4 ),
-	MyH3 = hashtable:add_entry( ?MyFirstKey, "MyFirstValue", MyH2 ),
+	MyH3 = hashtable:add_entry( ?my_first_key, "MyFirstValue", MyH2 ),
 	false = hashtable:is_empty( MyH3 ),
 
-	MyH4 = hashtable:add_entry( ?MySecondKey, "MySecondValue", MyH3 ),
+	MyH4 = hashtable:add_entry( ?my_second_key, "MySecondValue", MyH3 ),
 	false = hashtable:is_empty( MyH4 ),
 
-	MyH5 = hashtable:add_entry( ?MyThirdKey, [1,2,3], MyH4 ),
+	MyH5 = hashtable:add_entry( ?my_third_key, [1,2,3], MyH4 ),
 	false = hashtable:is_empty( MyH5 ),
 	hashtable:display( MyH5 ),
 
@@ -141,13 +141,14 @@ run_basic_tests() ->
 
 	test_facilities:display( "Adding entries in tracked hashtable:"),
 	MyTH2 = tracked_hashtable:new(4 ),
-	MyTH3 = tracked_hashtable:add_entry( ?MyFirstKey, "MyFirstValue", MyTH2 ),
+	MyTH3 = tracked_hashtable:add_entry( ?my_first_key, "MyFirstValue", MyTH2 ),
 	false = tracked_hashtable:is_empty( MyTH3 ),
 
-	MyTH4 = tracked_hashtable:add_entry( ?MySecondKey, "MySecondValue", MyTH3 ),
+	MyTH4 = tracked_hashtable:add_entry( ?my_second_key, "MySecondValue",
+										 MyTH3 ),
 	false = tracked_hashtable:is_empty( MyTH4 ),
 
-	MyTH5 = tracked_hashtable:add_entry( ?MyThirdKey, [1,2,3], MyTH4 ),
+	MyTH5 = tracked_hashtable:add_entry( ?my_third_key, [1,2,3], MyTH4 ),
 	false = tracked_hashtable:is_empty( MyTH5 ),
 	tracked_hashtable:display( "Tracked hashtable: ", MyTH5 ),
 
@@ -157,13 +158,13 @@ run_basic_tests() ->
 
 	test_facilities:display( "Adding entries in lazy hashtable:" ),
 	MyLH2 = lazy_hashtable:new( 4 ),
-	MyLH3 = lazy_hashtable:add_entry( ?MyFirstKey, "MyFirstValue", MyLH2 ),
+	MyLH3 = lazy_hashtable:add_entry( ?my_first_key, "MyFirstValue", MyLH2 ),
 	false = lazy_hashtable:is_empty( MyLH3 ),
 
-	MyLH4 = lazy_hashtable:add_entry( ?MySecondKey, "MySecondValue", MyLH3 ),
+	MyLH4 = lazy_hashtable:add_entry( ?my_second_key, "MySecondValue", MyLH3 ),
 	false = lazy_hashtable:is_empty( MyLH4 ),
 
-	MyLH5 = lazy_hashtable:add_entry( ?MyThirdKey, [1,2,3], MyLH4 ),
+	MyLH5 = lazy_hashtable:add_entry( ?my_third_key, [1,2,3], MyLH4 ),
 	false = lazy_hashtable:is_empty( MyLH5 ),
 	lazy_hashtable:display( "Lazy hashtable: ", MyLH5 ),
 
@@ -173,26 +174,26 @@ run_basic_tests() ->
 
 	test_facilities:display( "Adding entries in map hashtable:" ),
 	MyMH2 = map_hashtable:new( 4 ),
-	MyMH3 = map_hashtable:add_entry( ?MyFirstKey, "MyFirstValue", MyMH2 ),
+	MyMH3 = map_hashtable:add_entry( ?my_first_key, "MyFirstValue", MyMH2 ),
 	false = map_hashtable:is_empty( MyMH3 ),
 
-	MyMH4 = map_hashtable:add_entry( ?MySecondKey, "MySecondValue", MyMH3 ),
+	MyMH4 = map_hashtable:add_entry( ?my_second_key, "MySecondValue", MyMH3 ),
 	false = map_hashtable:is_empty( MyMH4 ),
 
-	MyMH5 = map_hashtable:add_entry( ?MyThirdKey, [1,2,3], MyMH4 ),
+	MyMH5 = map_hashtable:add_entry( ?my_third_key, [1,2,3], MyMH4 ),
 	false = map_hashtable:is_empty( MyMH5 ),
 	map_hashtable:display( "Map hashtable: ", MyMH5 ),
 
 
 	test_facilities:display( "Adding entries in list hashtable:" ),
 	MyL2 = list_table:new( 4 ),
-	MyL3 = list_table:add_entry( ?MyFirstKey, "MyFirstValue", MyL2 ),
+	MyL3 = list_table:add_entry( ?my_first_key, "MyFirstValue", MyL2 ),
 	false = list_table:is_empty( MyL3 ),
 
-	MyL4 = list_table:add_entry( ?MySecondKey, "MySecondValue", MyL3 ),
+	MyL4 = list_table:add_entry( ?my_second_key, "MySecondValue", MyL3 ),
 	false = list_table:is_empty( MyL4 ),
 
-	MyL5 = list_table:add_entry( ?MyThirdKey, [1,2,3], MyL4 ),
+	MyL5 = list_table:add_entry( ?my_third_key, [1,2,3], MyL4 ),
 	false = list_table:is_empty( MyL5 ),
 	list_table:display( "List hashtable: ", MyL5 ),
 
@@ -201,17 +202,17 @@ run_basic_tests() ->
 
 
 	test_facilities:display( "Looking up for ~ts in hashtable: ~p",
-		   [ ?MyFirstKey, hashtable:lookup_entry( ?MyFirstKey, MyH5 ) ] ),
+		   [ ?my_first_key, hashtable:lookup_entry( ?my_first_key, MyH5 ) ] ),
 
-	{ value, "MyFirstValue" } = hashtable:lookup_entry( ?MyFirstKey, MyH5 ),
+	{ value, "MyFirstValue" } = hashtable:lookup_entry( ?my_first_key, MyH5 ),
 
 	test_facilities:display( "Removing that entry." ),
-	MyH6 = hashtable:remove_entry( ?MyFirstKey, MyH5 ),
+	MyH6 = hashtable:remove_entry( ?my_first_key, MyH5 ),
 	false = hashtable:is_empty( MyH6 ),
-	test_facilities:display( "Looking up for ~ts hashtable: ~p", [ ?MyFirstKey,
-		hashtable:lookup_entry( ?MyFirstKey, MyH6 ) ] ),
+	test_facilities:display( "Looking up for ~ts hashtable: ~p",
+		[ ?my_first_key, hashtable:lookup_entry( ?my_first_key, MyH6 ) ] ),
 
-	key_not_found = hashtable:lookup_entry( ?MyFirstKey, MyH6 ),
+	key_not_found = hashtable:lookup_entry( ?my_first_key, MyH6 ),
 
 	% remove_entry can also be used if the specified key is not here, will
 	% return an identical table.
@@ -220,21 +221,21 @@ run_basic_tests() ->
 
 
 	test_facilities:display( "Looking up for ~ts in tracked hashtable: ~p",
-		[ ?MyFirstKey,
-		  tracked_hashtable:lookup_entry( ?MyFirstKey, MyTH5 ) ] ),
+		[ ?my_first_key,
+		  tracked_hashtable:lookup_entry( ?my_first_key, MyTH5 ) ] ),
 
 	{ value, "MyFirstValue" } =
-		tracked_hashtable:lookup_entry( ?MyFirstKey, MyTH5 ),
+		tracked_hashtable:lookup_entry( ?my_first_key, MyTH5 ),
 
 	test_facilities:display( "Removing that entry." ),
-	MyTH6 = tracked_hashtable:remove_entry( ?MyFirstKey, MyTH5 ),
+	MyTH6 = tracked_hashtable:remove_entry( ?my_first_key, MyTH5 ),
 	false = tracked_hashtable:is_empty( MyTH6 ),
 
 	test_facilities:display( "Looking up for ~ts in tracked hashtable: ~p",
-		[ ?MyFirstKey,
-		  tracked_hashtable:lookup_entry( ?MyFirstKey, MyTH6 ) ] ),
+		[ ?my_first_key,
+		  tracked_hashtable:lookup_entry( ?my_first_key, MyTH6 ) ] ),
 
-	key_not_found = tracked_hashtable:lookup_entry( ?MyFirstKey, MyTH6 ),
+	key_not_found = tracked_hashtable:lookup_entry( ?my_first_key, MyTH6 ),
 
 	% remove_entry can also be used if the specified key is not here, will
 	% return an identical table.
@@ -243,18 +244,20 @@ run_basic_tests() ->
 
 
 	test_facilities:display( "Looking up for ~ts in lazy hashtable: ~p",
-		[ ?MyFirstKey, lazy_hashtable:lookup_entry( ?MyFirstKey, MyLH5 ) ] ),
+		[ ?my_first_key,
+		  lazy_hashtable:lookup_entry( ?my_first_key, MyLH5 ) ] ),
 
-	{ value, "MyFirstValue" } = lazy_hashtable:lookup_entry( ?MyFirstKey,
-														   MyLH5 ),
+	{ value, "MyFirstValue" } =
+		lazy_hashtable:lookup_entry( ?my_first_key, MyLH5 ),
 
 	test_facilities:display( "Removing that entry." ),
-	MyLH6 = lazy_hashtable:remove_entry( ?MyFirstKey, MyLH5 ),
+	MyLH6 = lazy_hashtable:remove_entry( ?my_first_key, MyLH5 ),
 	false = lazy_hashtable:is_empty( MyLH6 ),
 	test_facilities:display( "Looking up for ~ts in lazy hashtable: ~p",
-		[ ?MyFirstKey, lazy_hashtable:lookup_entry( ?MyFirstKey, MyLH6 ) ] ),
+		[ ?my_first_key,
+		  lazy_hashtable:lookup_entry( ?my_first_key, MyLH6 ) ] ),
 
-	key_not_found = lazy_hashtable:lookup_entry( ?MyFirstKey, MyLH6 ),
+	key_not_found = lazy_hashtable:lookup_entry( ?my_first_key, MyLH6 ),
 
 	% remove_entry can also be used if the specified key is not here, will
 	% return an identical table.
@@ -264,34 +267,34 @@ run_basic_tests() ->
 
 
 	test_facilities:display( "Looking up for ~ts in map hashtable: ~p",
-		[ ?MyFirstKey, map_hashtable:lookup_entry( ?MyFirstKey, MyMH5 ) ] ),
+		[ ?my_first_key, map_hashtable:lookup_entry( ?my_first_key, MyMH5 ) ] ),
 
 	{ value, "MyFirstValue" } =
-		map_hashtable:lookup_entry( ?MyFirstKey, MyMH5 ),
+		map_hashtable:lookup_entry( ?my_first_key, MyMH5 ),
 
 	test_facilities:display( "Removing that entry." ),
-	MyMH6 = map_hashtable:remove_entry( ?MyFirstKey, MyMH5 ),
+	MyMH6 = map_hashtable:remove_entry( ?my_first_key, MyMH5 ),
 	false = map_hashtable:is_empty( MyMH6 ),
 	test_facilities:display( "Looking up for ~ts in map hashtable: ~p",
-		[ ?MyFirstKey, map_hashtable:lookup_entry( ?MyFirstKey, MyMH6 ) ] ),
+		[ ?my_first_key, map_hashtable:lookup_entry( ?my_first_key, MyMH6 ) ] ),
 
-	key_not_found = map_hashtable:lookup_entry( ?MyFirstKey, MyMH6 ),
+	key_not_found = map_hashtable:lookup_entry( ?my_first_key, MyMH6 ),
 
 
 	test_facilities:display( "Looking up for ~ts in list hashtable: ~p",
-		[ ?MyFirstKey, list_table:lookup_entry( ?MyFirstKey, MyL5 ) ] ),
+		[ ?my_first_key, list_table:lookup_entry( ?my_first_key, MyL5 ) ] ),
 
-	{ value, "MyFirstValue" } = list_table:lookup_entry( ?MyFirstKey,
+	{ value, "MyFirstValue" } = list_table:lookup_entry( ?my_first_key,
 															MyL5 ),
 
 	test_facilities:display( "Removing that entry." ),
-	MyL6 = list_table:remove_entry( ?MyFirstKey, MyL5 ),
+	MyL6 = list_table:remove_entry( ?my_first_key, MyL5 ),
 	false = list_table:is_empty( MyL6 )
 		,
 	test_facilities:display( "Looking up for ~ts in list hashtable: ~p",
-		[ ?MyFirstKey, list_table:lookup_entry( ?MyFirstKey, MyL6 ) ] ),
+		[ ?my_first_key, list_table:lookup_entry( ?my_first_key, MyL6 ) ] ),
 
-	key_not_found = list_table:lookup_entry( ?MyFirstKey, MyL6 ),
+	key_not_found = list_table:lookup_entry( ?my_first_key, MyL6 ),
 
 	% remove_entry can also be used if the specified key is not here, will
 	% return an identical table.
@@ -304,7 +307,7 @@ run_basic_tests() ->
 
 	test_facilities:display( "Testing double key registering." ),
 
-	MyH7 = hashtable:add_entry( ?MyThirdKey, anything, MyH6 ),
+	MyH7 = hashtable:add_entry( ?my_third_key, anything, MyH6 ),
 	hashtable:display( MyH7 ),
 
 	test_facilities:display( "Enumerating the hash table: ~p",
@@ -313,10 +316,11 @@ run_basic_tests() ->
 	test_facilities:display( "Listing the hash table keys: ~p",
 		[ hashtable:keys( MyH6 ) ] ),
 
-	true = list_utils:unordered_compare( [ ?MySecondKey, ?MyThirdKey ],
+	true = list_utils:unordered_compare( [ ?my_second_key, ?my_third_key ],
 										 hashtable:keys( MyH6 ) ),
 
-	MyH8 = hashtable:add_entries( [ {?MyThirdKey,3}, {?MyFourthKey,4} ], MyH7 ),
+	MyH8 = hashtable:add_entries( [ {?my_third_key,3}, {?my_fourth_key,4} ],
+								  MyH7 ),
 
 	MyH9 = hashtable:merge( MyH4, MyH8 ),
 	test_facilities:display( "Merged table: ~ts, size of buckets is ~B.",
@@ -326,14 +330,14 @@ run_basic_tests() ->
 	test_facilities:display( "The optimised table: ~ts size of buckets is ~B.",
 		[ hashtable:to_string( MyH10 ), hashtable:get_bucket_count( MyH10 ) ] ),
 
-	Keys = [ ?MyFirstKey, ?MyThirdKey ],
+	Keys = [ ?my_first_key, ?my_third_key ],
 
 	test_facilities:display( "Listing the entries for keys in table ~p:"
 		"~n ~p", [ Keys, hashtable:select_entries( Keys, MyH10 ) ] ),
 
 
 
-	MyTH7 = tracked_hashtable:add_entry( ?MyThirdKey, anything, MyTH6 ),
+	MyTH7 = tracked_hashtable:add_entry( ?my_third_key, anything, MyTH6 ),
 	tracked_hashtable:display( MyTH7 ),
 
 	test_facilities:display( "Enumerating the tracked hash table: ~p.",
@@ -342,25 +346,25 @@ run_basic_tests() ->
 	test_facilities:display( "Listing the tracked table keys: ~p.",
 		[ tracked_hashtable:keys( MyTH6 ) ] ),
 
-	true = list_utils:unordered_compare( [ ?MySecondKey,?MyThirdKey ],
+	true = list_utils:unordered_compare( [ ?my_second_key,?my_third_key ],
 										 tracked_hashtable:keys( MyTH6 ) ),
 
 	MyTH8 = tracked_hashtable:add_entries(
-							[ {?MyThirdKey,3}, {?MyFourthKey,4} ], MyTH7 ),
+		[ {?my_third_key,3}, {?my_fourth_key,4} ], MyTH7 ),
 
 	MyTH9 = tracked_hashtable:merge( MyTH4, MyTH8 ),
 
 	test_facilities:display( "Merged tracked table: ~ts",
-				[ tracked_hashtable:to_string( MyTH9 ) ] ),
+							 [ tracked_hashtable:to_string( MyTH9 ) ] ),
 
-	Keys = [ ?MyFirstKey, ?MyThirdKey ],
+	Keys = [ ?my_first_key, ?my_third_key ],
 
 	test_facilities:display( "Listing the entries for keys ~p in tracked table:"
 		" ~n ~p", [ Keys, tracked_hashtable:select_entries( Keys, MyTH9 ) ] ),
 
 
 
-	MyLH7 = lazy_hashtable:add_entry( ?MyThirdKey, anything, MyLH6 ),
+	MyLH7 = lazy_hashtable:add_entry( ?my_third_key, anything, MyLH6 ),
 	lazy_hashtable:display( MyLH7 ),
 
 	test_facilities:display( "Enumerating the lazy table: ~p.",
@@ -369,18 +373,18 @@ run_basic_tests() ->
 	test_facilities:display( "Listing the lazy table keys: ~p.",
 		[ lazy_hashtable:keys( MyLH6 ) ] ),
 
-	true = list_utils:unordered_compare( [ ?MySecondKey, ?MyThirdKey ],
+	true = list_utils:unordered_compare( [ ?my_second_key, ?my_third_key ],
 										 lazy_hashtable:keys( MyLH6 ) ),
 
 	MyLH8 = lazy_hashtable:add_entries(
-			[ {?MyThirdKey,3}, {?MyFourthKey,4} ], MyLH7 ),
+		[ {?my_third_key,3}, {?my_fourth_key,4} ], MyLH7 ),
 
 	MyLH9 = lazy_hashtable:merge( MyLH4, MyLH8 ),
 
 	test_facilities:display( "Merged lazy table: ~ts",
-			[ lazy_hashtable:to_string( MyLH9 ) ] ),
+		[ lazy_hashtable:to_string( MyLH9 ) ] ),
 
-	Keys = [ ?MyFirstKey, ?MyThirdKey ],
+	Keys = [ ?my_first_key, ?my_third_key ],
 
 	test_facilities:display( "Listing the entries for keys in lazy table ~p:"
 		"~n ~p", [ Keys, lazy_hashtable:select_entries( Keys, MyLH9 ) ] ),
@@ -388,7 +392,7 @@ run_basic_tests() ->
 
 
 
-	MyMH7 = map_hashtable:add_entry( ?MyThirdKey, anything, MyMH6 ),
+	MyMH7 = map_hashtable:add_entry( ?my_third_key, anything, MyMH6 ),
 	map_hashtable:display( MyMH7 ),
 
 	test_facilities:display( "Enumerating the map table: ~p.",
@@ -397,11 +401,11 @@ run_basic_tests() ->
 	test_facilities:display( "Listing the map table keys: ~p.",
 		[ map_hashtable:keys( MyMH6 ) ] ),
 
-	true = list_utils:unordered_compare( [ ?MySecondKey, ?MyThirdKey ],
+	true = list_utils:unordered_compare( [ ?my_second_key, ?my_third_key ],
 										 map_hashtable:keys( MyMH6 ) ),
 
 	MyMH8 = map_hashtable:add_entries(
-			[ {?MyThirdKey,3}, {?MyFourthKey,4} ], MyMH7 ),
+			[ {?my_third_key,3}, {?my_fourth_key,4} ], MyMH7 ),
 
 	MyMH9 = map_hashtable:merge( MyMH4, MyMH8 ),
 
@@ -409,14 +413,14 @@ run_basic_tests() ->
 	test_facilities:display( "Merged map table: ~ts",
 							 [ map_hashtable:to_string( MyMH9 ) ] ),
 
-	Keys = [ ?MyFirstKey, ?MyThirdKey ],
+	Keys = [ ?my_first_key, ?my_third_key ],
 
 	test_facilities:display( "Listing the entries for keys in map table ~p:"
 		"~n ~p", [ Keys, map_hashtable:select_entries( Keys, MyMH9 ) ] ),
 
 
 
-	MyL7 = list_table:add_entry( ?MyThirdKey, anything, MyL6 ),
+	MyL7 = list_table:add_entry( ?my_third_key, anything, MyL6 ),
 	list_table:display( MyL7 ),
 
 	test_facilities:display( "Enumerating the list table: ~p.",
@@ -425,19 +429,19 @@ run_basic_tests() ->
 	test_facilities:display( "Listing the list table keys: ~p.",
 		[ list_table:keys( MyL6 ) ] ),
 
-	true = list_utils:unordered_compare( [ ?MySecondKey, ?MyThirdKey ],
+	true = list_utils:unordered_compare( [ ?my_second_key, ?my_third_key ],
 										 list_table:keys( MyL6 ) ),
 
 	MyL8 = list_table:add_entries(
-			[ {?MyThirdKey,3}, {?MyFourthKey,4} ], MyL7 ),
+		[ {?my_third_key,3}, {?my_fourth_key,4} ], MyL7 ),
 
 	MyL9 = list_table:merge( MyL4, MyL8 ),
 
 
 	test_facilities:display( "Merged list table: ~ts",
-			[ list_table:to_string( MyL9 ) ] ),
+		[ list_table:to_string( MyL9 ) ] ),
 
-	Keys = [ ?MyFirstKey, ?MyThirdKey ],
+	Keys = [ ?my_first_key, ?my_third_key ],
 
 	test_facilities:display( "Listing the entries for keys in list table ~p:"
 		"~n ~p", [ Keys, list_table:select_entries( Keys, MyL9 ) ] ).
@@ -474,9 +478,9 @@ get_pairs( Series, Count, Acc ) ->
 	],
 
 	ToAdd = [ { text_utils:string_to_atom( lists:flatten( K ) ), V }
-			  || { K, V } <- ToAddStrings ],
+					|| { K, V } <- ToAddStrings ],
 
-	get_pairs( Series - 1, Count + length( ToAdd ), ToAdd ++ Acc ).
+	get_pairs( Series-1, Count + length( ToAdd ), ToAdd ++ Acc ).
 
 
 
@@ -488,8 +492,7 @@ get_other_pairs( Pairs ) ->
 
 get_other_pairs( _Pairs=[], Acc ) ->
 
-	NewPairs = get_pairs( _Series=?series_count, _Count=length( Acc ) + 1,
-						  [] ),
+	NewPairs = get_pairs( _Series=?series_count, _Count=length( Acc ) + 1, [] ),
 
 	list_utils:random_permute( Acc ++ NewPairs );
 
@@ -606,13 +609,13 @@ run_performance_tests() ->
 
 	% Do it 5 times at blank to avoid transition effects:
 	_FedTablesWithTimings = [ [ feed_table( T, M, Pairs )
-					 || { M, T } <- EmptyTables ] || _C <- lists:seq( 1, 5 ) ],
+		|| { M, T } <- EmptyTables ] || _C <- lists:seq( 1, 5 ) ],
 
 	FedTablesWithTimings = [ feed_table( T, M, Pairs )
-							 || { M, T } <- EmptyTables ],
+		|| { M, T } <- EmptyTables ],
 
 	FedTimeStrings = [ text_utils:format( "for ~ts: ~.3f ms", [ M, Timing ] )
-				   || { M, _T, Timing } <- FedTablesWithTimings ],
+		|| { M, _T, Timing } <- FedTablesWithTimings ],
 
 	test_facilities:display( "~nFeed durations: ~ts",
 				[ text_utils:strings_to_string( FedTimeStrings ) ] ),
@@ -620,8 +623,9 @@ run_performance_tests() ->
 
 
 	FedSizeStrings = [ text_utils:format( "for ~ts: ~ts", [ M,
-		 system_utils:interpret_byte_size_with_unit( basic_utils:size( T ) ) ] )
-					   || { M, T, _Timing } <- FedTablesWithTimings ],
+		system_utils:interpret_byte_size_with_unit(
+			system_utils:get_size( T ) ) ] )
+				|| { M, T, _Timing } <- FedTablesWithTimings ],
 
 	test_facilities:display( "~nSizes: ~ts",
 			   [ text_utils:strings_to_string( FedSizeStrings ) ] ),
@@ -630,32 +634,33 @@ run_performance_tests() ->
 	OtherPairs = get_other_pairs( Pairs ),
 
 	test_facilities:display(
-	  "~n~nUpdating these tables with ~B key/value pairs "
-	  "(equal mix of updated and new keys).", [ length( OtherPairs ) ] ),
+		"~n~nUpdating these tables with ~B key/value pairs "
+		"(equal mix of updated and new keys).", [ length( OtherPairs ) ] ),
 
 	FedTables = [ { M, T } || { M, T, _Timing } <- FedTablesWithTimings ],
 
 	UpdatedTablesWithTimings = [ update_table( T, M, OtherPairs )
-							   || { M, T } <- FedTables ],
+						|| { M, T } <- FedTables ],
 
 
 	UpTimeStrings = [ text_utils:format( "for ~ts: ~.3f ms", [ M, Timing ] )
-					  || { M, _T, Timing } <- UpdatedTablesWithTimings ],
+		|| { M, _T, Timing } <- UpdatedTablesWithTimings ],
 
 	test_facilities:display( "~nUpdate durations: ~ts",
-			   [ text_utils:strings_to_string( UpTimeStrings ) ] ),
+		[ text_utils:strings_to_string( UpTimeStrings ) ] ),
 
 
 	UpSizeStrings = [ text_utils:format( "for ~ts: ~ts", [ M,
-		system_utils:interpret_byte_size_with_unit( basic_utils:size( T ) ) ] )
-					  || { M, T, _Timing } <- UpdatedTablesWithTimings ],
+		system_utils:interpret_byte_size_with_unit(
+			system_utils:get_size( T ) ) ] )
+				|| { M, T, _Timing } <- UpdatedTablesWithTimings ],
 
 	test_facilities:display( "~nSizes: ~ts",
-				[ text_utils:strings_to_string( UpSizeStrings ) ] ),
+		[ text_utils:strings_to_string( UpSizeStrings ) ] ),
 
 
 	test_facilities:display(
-	  "~nBenchmarking look-ups (with no optimisation)." ),
+		"~nBenchmarking look-ups (with no optimisation)." ),
 
 	ShuffledPairs = list_utils:random_permute( OtherPairs ),
 
@@ -667,7 +672,7 @@ run_performance_tests() ->
 						|| { M, Timing } <- LookedUpTimings ],
 
 	test_facilities:display( "~nLook-up durations: ~ts",
-				[ text_utils:strings_to_string( LookedUpStrings ) ] ),
+		[ text_utils:strings_to_string( LookedUpStrings ) ] ),
 
 
 	OptimisedTables = [ { M, M:optimise( T ), undefined }
@@ -678,35 +683,33 @@ run_performance_tests() ->
 	  "~nBenchmarking look-ups (after optimisation)." ),
 
 	NewLookedUpTimings = [ benchmark_look_ups( T, M, ShuffledPairs )
-						   || { M, T, _Timings } <- OptimisedTables ],
+							|| { M, T, _Timings } <- OptimisedTables ],
 
 	NewLookedUpStrings = [ text_utils:format( "for ~ts: ~.1f microsec",
 											  [ M, 1000 * Timing ] )
-						   || { M, Timing } <- NewLookedUpTimings ],
+							|| { M, Timing } <- NewLookedUpTimings ],
 
 	test_facilities:display( "~nLook-up durations: ~ts",
-			   [ text_utils:strings_to_string( NewLookedUpStrings ) ] ),
+		[ text_utils:strings_to_string( NewLookedUpStrings ) ] ),
 
 
 	FinalTablesWithTimings = UpdatedTablesWithTimings,
 
 	AllListedTables = [ { _, FirstList } | Others ] =
 		[ { M, lists:sort( M:enumerate( T ) ) }
-		  || { M, T, _Timing } <- FinalTablesWithTimings ],
+			|| { M, T, _Timing } <- FinalTablesWithTimings ],
 
-	Hashes = [ { M, erlang:phash2( L ) }
-			   || { M, L } <- AllListedTables ],
+	Hashes = [ { M, erlang:phash2( L ) } || { M, L } <- AllListedTables ],
 
 	%test_facilities:display( "Checking content: ~ts",
-	%    [ text_utils:strings_to_string(
-	%									  [ io_lib:format( "for ~ts: ~ts",
-	%												 [ M, M:to_string( T ) ] )
-	%			   || { M, T, _Timing } <- FinalTablesWithTimings ] ) ] ),
+	%    [ text_utils:strings_to_string( [ io_lib:format( "for ~ts: ~ts",
+	%                                        [ M, M:to_string( T ) ] )
+	%       || { M, T, _Timing } <- FinalTablesWithTimings ] ) ] ),
 
 	test_facilities:display( "~nChecking hashes: ~ts",
 		[ text_utils:strings_to_string(
 			[ io_lib:format( "for ~ts: ~p", [ M, H ] )
-			  || { M, H } <- Hashes ] ) ] ),
+				|| { M, H } <- Hashes ] ) ] ),
 
 	test_facilities:display( "~nChecking final states: ok" ),
 

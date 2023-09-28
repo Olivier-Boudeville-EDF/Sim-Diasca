@@ -39,6 +39,10 @@
 % For printout_*, inline_size, etc.:
 -include("linear.hrl").
 
+% For the F32 define:
+-include("type_utils.hrl").
+
+
 -compile( inline ).
 -compile( { inline_size, ?inline_size } ).
 
@@ -82,6 +86,8 @@
 
 -export([ new/1, new/2, new_integer/2, null/0,
 		  from_vector/1, to_vector/1, to_any_vector/1,
+		  to_buffer/1,
+
 		  roundify/1,
 		  get_center/2, get_integer_center/2,
 		  translate/2, scale/2, vectorize/2,
@@ -178,6 +184,16 @@ to_vector( { X, Y } ) ->
 -spec to_any_vector( any_point2() ) -> any_vector2().
 to_any_vector( { X, Y } ) ->
 	[ X, Y ].
+
+
+
+% @doc Returns a binary buffer of floats, corresponding to the specified points.
+%
+% Typically suitable for OpenGL.
+%
+-spec to_buffer( [ any_point2() ] ) -> binary().
+to_buffer( Points ) ->
+	<< <<X:?F32, Y:?F32>> || { X, Y } <- Points >>.
 
 
 

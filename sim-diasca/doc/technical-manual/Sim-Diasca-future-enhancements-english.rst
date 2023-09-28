@@ -22,7 +22,7 @@ These requirements are lacking or are only poorly supported with the Sim-Diasca 
 Actor Creation
 --------------
 
-An actor can be created either from a simulation launcher (ex: a test case), most often before the simulation started, or by another actor, usually in the course of simulation.
+An actor can be created either from a simulation launcher (e.g. a test case), most often before the simulation started, or by another actor, usually in the course of simulation.
 
 In both cases, these creations should lead to a totally reproducible simulation, moreover with no regard for the technical context (like the sets of computers being used).
 
@@ -36,7 +36,7 @@ Load Balancing
 
 The load balancer, which is a singleton, will create actors remotely, on one of the available nodes, based on its balancing policy.
 
-A priori the load balancer does not strictly need to create actors synchronously (as it will serialize their AAI assignment), but it needs anyway to return to the caller a notification that the created actors are ready, so that the caller can continue its operations without race conditions (ex: for a creating actor, it means finishing its own tick). Otherwise one could not be sure for example that the created actor managed to properly subscribe to its time manager during the same tick.
+A priori the load balancer does not strictly need to create actors synchronously (as it will serialize their AAI assignment), but it needs anyway to return to the caller a notification that the created actors are ready, so that the caller can continue its operations without race conditions (e.g. for a creating actor, it means finishing its own tick). Otherwise one could not be sure for example that the created actor managed to properly subscribe to its time manager during the same tick.
 
 
 As actors may have to be created either before or in the course of a simulation, there are two ways of telling the load balancer to spawn them:
@@ -49,7 +49,7 @@ As actors may have to be created either before or in the course of a simulation,
 Some more advanced load-balancing policies are interesting to provide, for example: the more instances interact, the closer they should be placed, the ideal situation being to have them run on the same computing node; the mere possibility of providing a hint to the load-balancer helps already a lot.
 
 
-Indeed, this is just a matter of passing to the load balancer the same extra parameter, any Erlang term (ex: an atom like ``house_111452``), to the load-balancer when creating all actors corresponding to a given home (here the #111452). If having N candidate computing nodes, in that case the load balancer would bypass its default placement policy and always choose the ``N1 = hash(house_111452) rem N`` node (i.e. the hash value of the specified placement hint, modulo the number of nodes), ensuring all devices of that home - expected to be tightly linked - will be placed on the same node, ``N1``. This could lead to a rather uniform distribution across nodes, while minimising very effectively the network traffic.
+Indeed, this is just a matter of passing to the load balancer the same extra parameter, any Erlang term (e.g. an atom like ``house_111452``), to the load-balancer when creating all actors corresponding to a given home (here the #111452). If having N candidate computing nodes, in that case the load balancer would bypass its default placement policy and always choose the ``N1 = hash(house_111452) rem N`` node (i.e. the hash value of the specified placement hint, modulo the number of nodes), ensuring all devices of that home - expected to be tightly linked - will be placed on the same node, ``N1``. This could lead to a rather uniform distribution across nodes, while minimising very effectively the network traffic.
 
 
 Actor Identifiers
@@ -268,7 +268,7 @@ Once the entries are sorted in increasing AAI order (element #2), knowing that a
    {pd,1,7},
    {pa,5,8}]
 
-.. [#] Knowing that two different actors may send the same exact message to a given actor (ex: ``{setColor,red}``).
+.. [#] Knowing that two different actors may send the same exact message to a given actor (e.g. ``{setColor,red}``).
 
 So, at the end, the reordering ensured that messages are always sorted by increasing AAI and, when multiple messages share the same AAI (i.e. they were sent by the same actor), these messages are always sorted identically (i.e. according to an increasing message order).
 
@@ -296,7 +296,7 @@ The load balancer will then select the eligible computing nodes, which are the s
 - the corresponding host must be up and running
 - it must be available from the network (ping)
 - a properly configured and named Erlang VM either can be launched on that node (with a password-less SSH connection) or is already launched
-- a two-way connection must be established with it (ex: the security cookie must match)
+- a two-way connection must be established with it (e.g. the security cookie must match)
 
 
 
@@ -350,7 +350,7 @@ Load Balancing Approaches
 
 Instead of an hardcoded placement, a load balancer can perform:
 
-- either a ``static`` balancing, i.e. actors will be created regardless of the actual machine loads, with *a priori* rules (ex: round-robin)
+- either a ``static`` balancing, i.e. actors will be created regardless of the actual machine loads, with *a priori* rules (e.g. round-robin)
 
 - or a ``dynamic`` one, i.e. thanks to heuristics the load balancer will try to dispatch the induced load as evenly as possible among the computing nodes, based on the measurement of their actual load over time
 
@@ -394,7 +394,7 @@ Reproducible Actor Identifiers
 
 When running on reproducible mode, the arbitrary order enforced on concurrent messages received by a given actor at any given tick can be based on the actual message content, thanks to a hashing function, but in order to resolve the hash collisions we have to take into account the message sender as well.
 
-Otherwise, when an actor A would be interacting with two instances B1 and B2 of a same class, B1 and B2 could quite possibly send the same message to A at the same tick (ex: ``{setColor,red}``). Then the content of the messages would be identical, their hash too, and the simulator would not be able to decide on their ordering.
+Otherwise, when an actor A would be interacting with two instances B1 and B2 of a same class, B1 and B2 could quite possibly send the same message to A at the same tick (e.g. ``{setColor,red}``). Then the content of the messages would be identical, their hash too, and the simulator would not be able to decide on their ordering.
 
 Thus we need to rely on the sender information to perform a proper sorting of messages, but, unfortunately, if using a load balancer or if not using it but having to run on a changing computing infrastructure, Pid will not be suitable for that, short of being themselves reproducible.
 
@@ -474,7 +474,7 @@ There is a number of more advanced topics that we hope to tackle in the next mon
 Among them, there is:
 
 - up to what point meta-programming can help further enhance the engine?
-- could there be a more high-level modelling language that could ease the work of domain experts (ex: UML-based graphical editors helping them to define models as if they were sequential) while still being automatically mappable to a massively concurrent simulation engine like Sim-Diasca?
+- could there be a more high-level modelling language that could ease the work of domain experts (e.g. UML-based graphical editors helping them to define models as if they were sequential) while still being automatically mappable to a massively concurrent simulation engine like Sim-Diasca?
 - could hybrid simulations (i.e. simulations that have elements both in discrete time and in continuous time) be supported by Sim-Diasca ? A first step would be to support the continuous-time paradigm alongside the discrete one, before trying to merge them; for example, energy-related systems may have to be simulated partly with differential equations that cannot be easily solved nor discretised, partly with more event-based behaviours, and of course both themes would likely need to be coupled for more integrated simulations
 
 
@@ -482,7 +482,7 @@ Among them, there is:
 Miscellaneous
 =============
 
-- improvement of random generator: use of the ``crypto`` module or other good-quality random source (ex: Linux entropy pool) and a pseudo-random number generator (ex: a Fast Mersenne Twister)
+- improvement of random generator: use of the ``crypto`` module or other good-quality random source (e.g. Linux entropy pool) and a pseudo-random number generator (e.g. a Fast Mersenne Twister)
 
 - use an enhanced version of WOOPER tailored for speed and low memory footprint (based on parse transforms)
 

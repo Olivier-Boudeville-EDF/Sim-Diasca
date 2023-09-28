@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2022 Olivier Boudeville
+% Copyright (C) 2003-2023 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -40,21 +40,15 @@
 -record( canvas_state, {
 
 	% Receives repaint, resize, etc. events:
-	panel :: gui:panel(),
+	panel :: gui_panel:panel(),
 
 	% Displayed area:
-	bitmap :: gui:bitmap(),
+	bitmap :: gui_bitmap:bitmap(),
 
 	% Actual place for rendering:
-	back_buffer :: gui:back_buffer(),
+	back_buffer :: gui_render:back_buffer(),
 
 	% As apparently we cannot retrieve the size of the underlying bitmap and
 	% back buffer (typically useful when the panel may have been resized):
 	%
-	size :: gui:size()
-
-}).
-
-
--type canvas_state() :: #canvas_state{}.
-% The actual canvas type we are to use.
+	size :: gui:size() }).

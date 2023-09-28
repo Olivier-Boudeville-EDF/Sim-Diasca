@@ -49,12 +49,13 @@
 % For default_registration_scope:
 -include("class_TraceAggregator.hrl").
 
+
 % @doc Starts the Traces services.
 %
 % Note: RestartType and StartArgs at least currently ignored.
 %
 -spec start( application:start_type(), StartArgs :: term() ) -> { 'ok', pid() }
-		| { 'ok', pid(), State :: term() } | { 'error', Reason :: term() }.
+		| { 'ok', pid() } | { 'error', Reason :: term() }.
 start( RestartType, StartArgs ) ->
 
 	% See any {is_batch, boolean()} entry for the 'traces' application in any

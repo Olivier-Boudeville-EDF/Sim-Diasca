@@ -26,9 +26,10 @@
 % Creation date: Friday, July 31, 2015.
 
 
-% <b>Unit tests for the HDF5 low-level support</b>, i.e. relying directly on our
-% erlhdf5 fork (https://github.com/Olivier-Boudeville-EDF/erlhdf5) rather than
-% on our higher-level hdf5_support module.
+% @doc <b>Unit tests for the HDF5 low-level support</b>, that is relying
+% directly on our erlhdf5 fork
+% (https://github.com/Olivier-Boudeville-EDF/erlhdf5) rather than on our
+% higher-level hdf5_support module.
 %
 % Note: if there was not the initialisation phase (relying here on
 % hdf5_support), this test would be directly in the erlhdf5 tree.
@@ -68,11 +69,11 @@ get_data( one_dim_integer ) ->
 	FinalExpectedData = [ 1, 2, 3 ] ++ PartialUpdateData
 		++ [ 7, 8, 9, 10, 11, 12 ],
 
-	% A priori, the size of a small integer (ex: 500) is 4 bytes according to
+	% A priori, the size of a small integer (e.g. 500) is 4 bytes according to
 	% HDF, yet Erlang (on 64 bit) may see it as 8 bytes. Here we compare with
 	% the binding:
 	%
-	%ElemSize = basic_utils:size( element( 1, hd( InitialData ) ) ),
+	%ElemSize = system_utils:get_size( element( 1, hd( InitialData ) ) ),
 	ElemSize = hdf5_support:get_size( native_integer ),
 
 	{ InitialData, FullUpdateData, PartialUpdateData, FinalExpectedData,
@@ -92,11 +93,11 @@ get_data( one_dim_long_float ) ->
 	FinalExpectedData = [ 1.8, nan, 3.8 ] ++ PartialUpdateData
 		++ [ 7.8, 8.8, 9.8, 10.8, 11.8, 12.8 ],
 
-	% A priori, the size of a small integer (ex: 500) is 4 bytes according to
+	% A priori, the size of a small integer (e.g. 500) is 4 bytes according to
 	% HDF, yet Erlang (on 64 bit) may see it as 8 bytes. Here we compare with
 	% the binding:
 	%
-	%ElemSize = basic_utils:size( element( 1, hd( InitialData ) ) ),
+	%ElemSize = system_utils:get_size( element( 1, hd( InitialData ) ) ),
 	ElemSize = hdf5_support:get_size( native_long_float ),
 
 	{ InitialData, FullUpdateData, PartialUpdateData, FinalExpectedData,
@@ -119,14 +120,14 @@ get_data( two_dim_integer ) ->
 
 	FinalExpectedData = [ {   1,   2,   3 } ] ++
 						   PartialUpdateData ++ [
-						   {   7,   8,   9 },
-						   {  10,  11,  12 } ],
+							{   7,   8,   9 },
+							{  10,  11,  12 } ],
 
-	% A priori, the size of a small integer (ex: 500) is 4 bytes according to
+	% A priori, the size of a small integer (e.g. 500) is 4 bytes according to
 	% HDF, yet Erlang (on 64 bit) may see it as 8 bytes. Here we compare with
 	% the binding:
 	%
-	%ElemSize = basic_utils:size( element( 1, hd( InitialData ) ) ),
+	%ElemSize = system_utils:get_size( element( 1, hd( InitialData ) ) ),
 	ElemSize = hdf5_support:get_size( native_integer ),
 
 	{ InitialData, FullUpdateData, PartialUpdateData, FinalExpectedData,
@@ -152,11 +153,11 @@ get_data( two_dim_long_float ) ->
 						   {   7.2,   8.2,  9.2 },
 						   {  10.2,   nan,  inf } ],
 
-	% A priori, the size of a float (ex: 500.2) is 4 bytes according to HDF, yet
-	% Erlang (on 64 bit) may see it as 24 bytes (!). Here we compare with the
-	% binding:
+	% A priori, the size of a float (e.g. 500.2) is 4 bytes according to HDF,
+	% yet Erlang (on 64 bit) may see it as 24 bytes (!). Here we compare with
+	% the binding:
 	%
-	%ElemSize = basic_utils:size( element( 1, hd( InitialData ) ) ),
+	%ElemSize = system_utils:get_size( element( 1, hd( InitialData ) ) ),
 	ElemSize = hdf5_support:get_size( native_long_float ),
 
 	{ InitialData, FullUpdateData, PartialUpdateData, FinalExpectedData,
@@ -280,8 +281,8 @@ run( TestFixture ) ->
 
 	end,
 
-	% Ex: with bidimensional data, 2D array of TupleSize elements on TupleCount
-	% lines (tuples):
+	% For example with bidimensional data, 2D array of TupleSize elements on
+	% TupleCount lines (tuples):
 
 	Rank = size( BindingDims ),
 
@@ -405,7 +406,7 @@ run( TestFixture ) ->
 	{ Offset, Stride, Count, Block } =
 		get_hyperslab_settings( TestFixture, TupleSize ),
 
-	% Then just updates a part of the data (ex: in two dimensions, the second
+	% Then just updates a part of the data (e.g. in two dimensions, the second
 	% row, i.e. tuple), thanks to an hyperslab: this is done thanks to
 	% H5Sselect_hyperslab, which operates on a dataspace, the one of the in-file
 	% dataset (dataspace that is modified by this call):
@@ -427,14 +428,14 @@ run( TestFixture ) ->
 	%       HDF5 "hdf_test.h5" {
 	%           %       GROUP "/" {
 	%          DATASET "my-dataset" {
-	%			  DATATYPE  H5T_STD_I32LE
-	%			  DATASPACE  SIMPLE { ( 4, 3 ) / ( 4, 3 ) }
-	%			  DATA {
-	%			  (0,0): 1, 2, 3,
-	%			  (1,0): 100, 101, 102,
-	%			  (2,0): 7, 8, 9,
-	%			  (3,0): 10, 11, 12
-	%			  }
+	%             DATATYPE  H5T_STD_I32LE
+	%             DATASPACE  SIMPLE { ( 4, 3 ) / ( 4, 3 ) }
+	%             DATA {
+	%             (0,0): 1, 2, 3,
+	%             (1,0): 100, 101, 102,
+	%             (2,0): 7, 8, 9,
+	%             (3,0): 10, 11, 12
+	%}
 	%          }
 	%       }
 	%    }

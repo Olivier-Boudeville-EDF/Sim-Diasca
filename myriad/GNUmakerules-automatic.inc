@@ -60,7 +60,7 @@
 # target, or even preferably, is listed in the EXTRA_BEAM_FILES make
 # variable. Refer to Ceylan-Oceanic for an example thereof.
 #
-%_generated.beam: %.erl %.beam
+%_generated.beam: %_constants.erl %.beam
 	@echo "		Generating support modules based on $<"
 	@#echo $(ERL_PARAMETERIZED_LAUNCHER) $(NODE_NAMING) $$(echo $< | sed 's|\.erl$$||1')-generator-for-$$USER --eval $$(echo $@ | sed 's|_generated\.beam$$|:generate_support_modules()|1') $(ALL_CMD_LINE_OPTIONS)
 	@$(ERL_PARAMETERIZED_LAUNCHER) $(NODE_NAMING) $$(echo $< | sed 's|\.erl$$||1')-generator-for-$$USER --eval $$(echo $@ | sed 's|_generated\.beam$$|:generate_support_modules()|1') $(ALL_CMD_LINE_OPTIONS)
@@ -115,7 +115,7 @@
 ifeq ($(USE_PROTOBUF),true)
 
 # Single execution, two targets generated:
-# Not compatible with older make (ex: 4.1): %.erl %.hrl &: %.proto
+# Not compatible with older make (e.g. 4.1): %.erl %.hrl &: %.proto
 %.erl %.hrl: %.proto
 	@echo "		Generating $@ from Protobuf spec $<"
 	@"$(PB_COMPILER)" $(PB_OPT) $< $(GPB_SUFFIX_OPT)
@@ -143,6 +143,23 @@ endif
 	@$(ERL_PARAMETERIZED_LAUNCHER) $(NODE_NAMING) $@-$$USER --eval $$(echo $@|sed 's|_exec$$|_app:exec()|1') $(ALL_CMD_LINE_OPTIONS)
 
 
+# 'X_non_interactive_exec' becomes 'X_app:exec()' and is launched as a
+# non-interactive application (typically to remain synchronous yet not to block
+# systemctl because of a prompt offering a post-mortem study after a crash):
+#
+%_non_interactive_exec: %_app.beam %.beam
+	@echo "		Executing application $^ (first form, in a non-interactive variant)"
+	@#echo $(ERL_PARAMETERIZED_LAUNCHER) $(NODE_NAMING) $@-$$USER --eval $$(echo $@|sed 's|_exec$$|_app:exec()|1') $(ALL_CMD_LINE_OPTIONS)
+	@$(ERL_PARAMETERIZED_LAUNCHER) $(NODE_NAMING) $@-$$USER --eval $$(echo $@|sed 's|_exec$$|_app:exec()|1') --non-interactive $(ALL_CMD_LINE_OPTIONS)
+
+
+%_non_interactive_exec: %_app.beam
+	@echo "		Executing application $^ (second form, in a non-interactive variant)"
+	@#echo $(ERL_PARAMETERIZED_LAUNCHER) $(NODE_NAMING) $@-$$USER --eval $$(echo $@|sed 's|_exec$$|_app:exec()|1') $(ALL_CMD_LINE_OPTIONS)
+	@$(ERL_PARAMETERIZED_LAUNCHER) $(NODE_NAMING) $@-$$USER --eval $$(echo $@|sed 's|_exec$$|_app:exec()|1') --non-interactive $(ALL_CMD_LINE_OPTIONS)
+
+
+
 # To run in the background (somewhat like a daemon):
 #
 # Note: the specified long name (with $(NODE_NAMING)) has its '_background'
@@ -162,14 +179,14 @@ endif
 
 
 # The two sets of rules below are functional, yet they use very different
-# solutions (run_erl/eval) that can tested independently.
+# solutions (run_erl/eval) that can be tested independently.
 
 
 # To run an application as a service.
 #
 # Exactly like when running as %_exec_background, except services are shared
 # hence their node name must no depend on any user name; they are directly named
-# as their core target (ex: 'make X_exec_service' results in a node named
+# as their core target (e.g. 'make X_exec_service' results in a node named
 # 'X@LOCALHOSTNAME').
 #
 # (these rules uses run_erl, that runs in the background)
@@ -182,6 +199,7 @@ endif
 
 %_exec_service: %_app.beam
 	@echo "		Executing application $^ as a service (second form)"
+	@#echo $(ERL_PARAMETERIZED_LAUNCHER) $(NODE_NAMING) $$(echo $@|sed 's|_exec_service$$||1') --daemon --eval $$(echo $@|sed 's|_exec_service$$|_app:exec()|1') $(ALL_CMD_LINE_OPTIONS)
 	@$(ERL_PARAMETERIZED_LAUNCHER) $(NODE_NAMING) $$(echo $@|sed 's|_exec_service$$||1') --daemon --eval $$(echo $@|sed 's|_exec_service$$|_app:exec()|1') $(ALL_CMD_LINE_OPTIONS)
 
 
@@ -313,3 +331,38 @@ endif
 %.plt: %.beam
 	@echo "    Checking module '$<' against relevant PLT ($(PLT_FILE))"
 	@"$(DIALYZER)" $(DIALYZER_OPTS) --plt $(PLT_FILE) $<
+
+
+
+# GLSL shader section.
+
+# The GLSL reference compiler does not return output if it detects no error.
+
+check-%.vertex.glsl: %.vertex.glsl
+	@echo "    Checking vertex shader $<"
+	@$(GLSL_REF_COMPILER) $(GLSL_REF_COMPILER_OPT) -S vert $<
+
+
+check-%.tess-ctrl.glsl: %.tess-ctrl.glsl
+	@echo "    Checking tessellation control shader $<"
+	@$(GLSL_REF_COMPILER) $(GLSL_REF_COMPILER_OPT) -S tesc $<
+
+
+check-%.tess-eval.glsl: %.tess-eval.glsl
+	@echo "    Checking tessellation evaluation shader $<"
+	@$(GLSL_REF_COMPILER) $(GLSL_REF_COMPILER_OPT) -S tese $<
+
+
+check-%.geometry.glsl: %.geometry.glsl
+	@echo "    Checking geometry shader $<"
+	@$(GLSL_REF_COMPILER) $(GLSL_REF_COMPILER_OPT) -S geom $<
+
+
+check-%.fragment.glsl: %.fragment.glsl
+	@echo "    Checking fragment shader $<"
+	@$(GLSL_REF_COMPILER) $(GLSL_REF_COMPILER_OPT) -S frag $<
+
+
+check-%.compute.glsl: %.compute.glsl
+	@echo "    Checking compute shader $<"
+	@$(GLSL_REF_COMPILER) $(GLSL_REF_COMPILER_OPT) -S comp $<

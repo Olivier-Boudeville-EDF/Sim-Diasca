@@ -59,7 +59,7 @@
 
 % Dialog-specific section.
 %
-% These dialogs will take advantage of the current locale (ex: 'OK' vs
+% These dialogs will take advantage of the current locale (e.g. 'OK' vs
 % 'Accepter').
 %
 % See also: test-dialog.sh for a live demo.
@@ -73,49 +73,49 @@
 
 % 'msgbox' dialog: a modal window to be dismissed by hitting Enter
 %
-% - ex: LANG= dialog --title "Hello" --msgbox 'Hello world!' 6 20
+% - e.g. LANG= dialog --title "Hello" --msgbox 'Hello world!' 6 20
 %   (validated after Enter is pressed)
 
 
 % 'yesno' (yes/no) dialog: a modal window offering two possibilities
 %
-% - ex: LANG= dialog --title "Message" --yesno "Are you having\n fun?" 6 25
+% - e.g. LANG= dialog --title "Message" --yesno "Are you having\n fun?" 6 25
 %   (exit status: 0 if Yes, 1 otherwise (No or interrupted))
 
 
 % 'infobox' dialog: a window displayed once
 %
-% - ex: LANG= dialog --infobox "Please wait" 10 30 ; sleep 4
+% - e.g. LANG= dialog --infobox "Please wait" 10 30 ; sleep 4
 %   (disappears after sleep)
 
 
 % 'pause' dialog: pauses for a number of seconds
 %
-% - ex: LANG= dialog --pause "Pausing" 10 30 4
+% - e.g. LANG= dialog --pause "Pausing" 10 30 4
 %   (disappears once pause is over)
 
 
 % 'inputbox' dialog: a request for the user to type an echoed string
 %
-% - ex: LANG= dialog --inputbox "Enter your name:" 8 40
+% - e.g. LANG= dialog --inputbox "Enter your name:" 8 40
 %   (input written to standard error, possibly redirected)
 
 
 % 'passwordbox' dialog: a request for the user to type a non-echoed string
 %
-% - ex: LANG= dialog  --passwordbox "Enter some password:" 8 40
+% - e.g. LANG= dialog  --passwordbox "Enter some password:" 8 40
 %   (no input echoed, but written to standard error, possibly redirected)
 
 
 % 'textbox' dialog: displays the content of a file
 %
-% - ex: LANG= dialog --textbox /etc/profile 22 70
+% - e.g. LANG= dialog --textbox /etc/profile 22 70
 
 
 % 'menu' dialog: allows to select one option among a set (quite similar to
 % radiolist, yet no default can be specified)
 %
-% - ex: LANG= dialog --menu "Choose one:" 10 30 3 1 red 2 green 3 blue
+% - e.g. LANG= dialog --menu "Choose one:" 10 30 3 1 red 2 green 3 blue
 %   (choice index written to standard error, possibly redirected)
 
 
@@ -123,53 +123,53 @@
 % menu); potentially a bit misleading as, if hitting the Enter key, the selected
 % item will be the starred one, not necessarily the currently selected one...
 %
-% - ex: LANG= dialog --radiolist "Select CPU type:" 10 40 4 1 386SX off 2 386DX
+% - e.g. LANG= dialog --radiolist "Select CPU type:" 10 40 4 1 386SX off 2 386DX
 % on 3 486SX off 4 486DX off 2>${result_file}
 %   (choice index written to standard error, possibly redirected)
 
 
 % 'treeview' dialog: allows to select a tree element
 %
-% - ex: LANG= dialog --treeview "Select tree element:" 10 40 5 1 a on 1 2 b on 2
-% 3 c off 1 4 d on 3
+% - e.g. LANG= dialog --treeview "Select tree element:" 10 40 5 1 a on 1 2 b on
+% 2 3 c off 1 4 d on 3
 %   (element written to standard error, possibly redirected)
 
 
 % 'checklist' dialog: allows to select non-exclusive options, thanks to a set of
 % radio buttons with defaults
 %
-% - ex: LANG= dialog --checklist "Choose toppings:" 10 40 3 1 Cheese on 2
+% - e.g. LANG= dialog --checklist "Choose toppings:" 10 40 3 1 Cheese on 2
 % "Tomato Sauce" on 3 Anchovies off
 %   (choice indexes written to standard error, possibly redirected)
 
 
 % 'calendar' dialog: allows to select a date
 %
-% - ex: LANG= dialog --calendar "Select a date:"  10 40 17 5 1977
+% - e.g. LANG= dialog --calendar "Select a date:"  10 40 17 5 1977
 %   (date written to standard error, possibly redirected)
 
 
 % 'timebox' dialog: allows to select a time
 %
-% - ex: LANG= dialog --timebox "Select a time:"  10 40
+% - e.g. LANG= dialog --timebox "Select a time:"  10 40
 %   (time written to standard error, possibly redirected)
 
 
 % 'fselect' dialog: allows to select a file
 %
-% - ex: LANG= dialog --fselect / 10 40
+% - e.g. LANG= dialog --fselect / 10 40
 %   (file path written to standard error, possibly redirected)
 
 
 % 'dselect' dialog: allows to select a directory
 %
-% - ex: LANG= dialog --dselect / 10 40
+% - e.g. LANG= dialog --dselect / 10 40
 %   (directory path written to standard error, possibly redirected)
 
 
 % 'gauge' dialog: display percentage values
 %
-% - ex: LANG= dialog --gauge "My gauge:" 10 20 12
+% - e.g. LANG= dialog --gauge "My gauge:" 10 20 12
 
 
 
@@ -205,7 +205,7 @@
 
 % Also useful:
 %
-% - 'dialog --print-maxsize' (ex: MaxSize: 35, 123)
+% - 'dialog --print-maxsize' (e.g. MaxSize: 35, 123)
 % - 'dialog --clear'
 
 
@@ -301,7 +301,7 @@
 	% Generally little use of console outputs for this backend:
 	log_console = false :: boolean(),
 
-	log_file = undefined :: maybe( file_utils:file() ),
+	log_file = undefined :: maybe( file() ),
 	settings :: setting_table() } ).
 
 
@@ -309,7 +309,7 @@
 
 
 % For common, transverse defines:
--include("ui.hrl").
+-include("ui_base.hrl").
 
 
 % For control codes:
@@ -317,6 +317,9 @@
 
 
 -export_type([ ui_state/0 ]).
+
+% The key used by this module to store its state in the process dictionaty:
+-define( state_key, term_ui_state ).
 
 
 % Shorthands:
@@ -326,27 +329,34 @@
 -type format_values() :: text_utils:format_values().
 
 -type file_path() :: file_utils:file_path().
+-type file() :: file_utils:file().
 
+-type text() :: ui:text() .
+-type label() :: ui:label() .
+-type prompt() :: ui:prompt().
+-type message() :: ui:message().
 
-% The key used by this module to store its state in the process dictionaty:
--define( state_key, term_ui_state ).
+-type setting_table() :: ui:setting_table().
+
+-type ui_options() :: ui:ui_options().
+
+-type ui_setting_key() :: ui:ui_setting_key().
+-type ui_setting_value() :: ui:ui_setting_value().
+-type ui_setting_entry() :: ui:ui_setting_entry().
+
+-type choice_designator() :: ui:choice_designator().
+-type choice_index() :: ui:choice_index().
+-type choice_text() :: ui:choice_text().
+-type choice_element() :: ui:choice_element().
+-type binary_choice() :: ui:binary_choice().
 
 
 
 % @doc Tells whether this user-interface backend is available.
 -spec is_available() -> boolean().
 is_available() ->
-
-	case lookup_dialog_tool() of
-
-		undefined ->
-			false;
-
-		% { T, TPath }:
-		_ ->
-			true
-
-	end.
+   % Cannot be simplified (no 'true but { T, TPath }):
+	not( lookup_dialog_tool() =:= false ).
 
 
 
@@ -449,7 +459,7 @@ init_state_with_dimensions( Tool=dialog, DialogPath ) ->
 	case system_utils:run_command( Cmd, Env, _WorkingDir=undefined,
 								   PortOpts ) of
 
-		% Ex: Result="MaxSize: 28, 107"
+		% For example Result="MaxSize: 28, 107"
 		{ _ExitStatus=0, _Result="MaxSize: " ++ SizeString } ->
 
 			% Here, SizeString="28, 107".
@@ -461,7 +471,7 @@ init_state_with_dimensions( Tool=dialog, DialogPath ) ->
 			Width = text_utils:string_to_integer( WidthString ),
 
 			DimSettings = ?ui_table:new(
-							[ { max_height, Height }, { max_width, Width } ] ),
+				[ { max_height, Height }, { max_width, Width } ] ),
 
 			#term_ui_state{ dialog_tool=Tool,
 							dialog_tool_path=DialogPath,
@@ -793,6 +803,11 @@ add_separation() ->
 
 
 
+% Text input:
+%  - the get_text variations allow to obtain directly a raw text from the user
+%  - the read_text variations will loop until a suitable text entry is entered
+
+
 % @doc Returns the user-entered text, based on an implicit state.
 %
 % (const)
@@ -813,7 +828,7 @@ get_text( Prompt,
 		  #term_ui_state{ dialog_tool_path=ToolPath,
 						  settings=SettingTable } ) ->
 
-	% Ex: dialog --backtitle "AA" --inputbox "Enter your name:" 8 40 2>
+	% For example dialog --backtitle "AA" --inputbox "Enter your name:" 8 40 2>
 	% foobar.txt
 
 	% Single quotes induce no specific issues (as are enclosed in double ones)
@@ -1012,8 +1027,8 @@ ask_yes_no( Prompt, BinaryDefault ) ->
 ask_yes_no( Prompt, BinaryDefault, #term_ui_state{ dialog_tool_path=ToolPath,
 												   settings=SettingTable } ) ->
 
-	% Ex: dialog --backtitle "AA" --title "BB" --defaultno --yesno "Having\n
-	% fun?" 6 25
+	% For example dialog --backtitle "AA" --title "BB" --defaultno --yesno
+	% "Having\n fun?" 6 25
 
 	% Single quotes induce no specific issues (as are enclosed in double ones)
 	EscapedPrompt = text_utils:escape_double_quotes( Prompt ),
@@ -1032,7 +1047,7 @@ ask_yes_no( Prompt, BinaryDefault, #term_ui_state{ dialog_tool_path=ToolPath,
 		get_dialog_settings_for_return_code( SettingTable ),
 
 	DialogString = text_utils:format( "~ts --yesno \"~ts\" ~ts",
-						[ DefaultChoiceOpt, EscapedPrompt, SuffixString ] ),
+		[ DefaultChoiceOpt, EscapedPrompt, SuffixString ] ),
 
 	CmdStrings = [ ToolPath, SettingString, DialogString ],
 
@@ -1111,7 +1126,7 @@ choose_designated_item( Prompt, Choices,
 	% Command: dialog --menu <text> <height> <width> <menu height> <tag1>
 	% <item1>...
 	%
-	% Ex: dialog --menu "Hello" 0 0 0 1 One 2 Two 3 Three
+	% For example dialog --menu "Hello" 0 0 0 1 One 2 Two 3 Three
 	%
 	% (no default choice can be defined)
 
@@ -1249,8 +1264,8 @@ choose_designated_item_with_default( Prompt, Choices, DefaultChoiceDesignator,
 	% Command: dialog --radiolist <text> <height> <width> <list height> <tag1>
 	% <item1> <status1>...
 	%
-	% Ex: dialog --radiolist "Select CPU type:" 10 40 10 1 386SX off 2 386DX on
-	% 3 486SX off 4 486DX off
+	% For example dialog --radiolist "Select CPU type:" 10 40 10 1 386SX off 2
+	% 386DX on 3 486SX off 4 486DX off
 
 	% (very much inspired from choose_designated_item/3)
 
@@ -1260,7 +1275,7 @@ choose_designated_item_with_default( Prompt, Choices, DefaultChoiceDesignator,
 		throw( { disallowed_choice_designator, ui_cancel } ),
 
 	DefaultChoiceIndex = case list_utils:get_maybe_index_of(
-								DefaultChoiceDesignator, Designators ) of
+			DefaultChoiceDesignator, Designators ) of
 
 		undefined ->
 			throw( { default_designator_not_among_choices,
@@ -1411,7 +1426,7 @@ choose_numbered_item( Prompt, Choices, UIState ) ->
 % Note that index zero can also be returned, corresponding to the 'ui_cancel'
 % atom, should the user prefer to cancel that operation.
 %
--spec choose_numbered_item_with_default( [ choice_text() ], choice_index() ) ->
+-spec choose_numbered_item_with_default( [ choice_text() ], choice_text() ) ->
 												choice_index().
 choose_numbered_item_with_default( Choices, DefaultChoiceText ) ->
 	choose_numbered_item_with_default( Choices, DefaultChoiceText,
@@ -1429,7 +1444,7 @@ choose_numbered_item_with_default( Choices, DefaultChoiceText ) ->
 % Note that index zero can also be returned, corresponding to the 'ui_cancel'
 % atom, should the user prefer to cancel that operation.
 %
--spec choose_numbered_item_with_default( [ choice_text() ], choice_index(),
+-spec choose_numbered_item_with_default( [ choice_text() ], choice_text(),
 											ui_state() ) -> choice_index();
 									   ( prompt(), [ choice_text() ],
 											choice_index() ) -> choice_index().
@@ -1470,7 +1485,7 @@ choose_numbered_item_with_default( Prompt, Choices, DefaultChoiceText,
 	ChoiceElements = lists:zip( lists:seq( 1, length( Choices ) ), Choices ),
 
 	DefaultChoiceIndex =
-		case list_utils:get_maybe_index_of( DefaultChoiceText, Choices ) of
+			case list_utils:get_maybe_index_of( DefaultChoiceText, Choices ) of
 
 		undefined ->
 			throw( { default_not_among_choices, DefaultChoiceText, Choices } );
@@ -1524,9 +1539,9 @@ trace( Message, UIState ) when is_record( UIState, term_ui_state ) ->
 			ok;
 
 		LogFile ->
-			text_ui:display( LogFile, TraceMessage )
+			io:format( LogFile, TraceMessage, [] )
 
-end;
+	end;
 
 trace( FormatString, Values ) ->
 	trace( text_utils:format( FormatString, Values ) ).
@@ -1677,7 +1692,7 @@ get_dialog_settings_for_return_code( SettingTable ) ->
 	{ SettingsString, SuffixString } = get_dialog_base_settings( SettingTable ),
 
 	{ SettingsString, text_utils:format( "~ts ~ts",
-						[ SuffixString, get_redirect_string_for_code() ] ) }.
+		[ SuffixString, get_redirect_string_for_code() ] ) }.
 
 
 
@@ -1700,7 +1715,7 @@ get_dialog_settings_for_file_return( SettingTable ) ->
 get_dialog_base_settings( SettingTable ) ->
 
 	TitleOpt = case ?ui_table:get_value_with_default( 'title',
-								_Default=undefined, SettingTable ) of
+			_Default=undefined, SettingTable ) of
 
 		undefined ->
 			"";
@@ -1712,7 +1727,7 @@ get_dialog_base_settings( SettingTable ) ->
 	end,
 
 	BacktitleOpt = case ?ui_table:get_value_with_default( 'backtitle',
-									_BackDefault=undefined, SettingTable ) of
+			_BackDefault=undefined, SettingTable ) of
 
 		undefined ->
 			"";
@@ -1816,9 +1831,7 @@ set_settings( SettingEntries ) ->
 -spec set_settings( [ ui_setting_entry() ], ui_state() ) -> ui_state().
 set_settings( SettingEntries,
 			  UIState=#term_ui_state{ settings=SettingTable } ) ->
-
 	NewSettingTable = ?ui_table:add_entries( SettingEntries, SettingTable ),
-
 	UIState#term_ui_state{ settings=NewSettingTable }.
 
 

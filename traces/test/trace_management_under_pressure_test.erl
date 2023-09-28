@@ -46,18 +46,18 @@
 
 
 
-send_traces( _TraceEmitter, _SequenceCount=0 ) ->
+send_traces( _TraceEmitters, _SequenceCount=0 ) ->
 	ok;
 
-send_traces( TraceEmitter, SequenceCount ) ->
+send_traces( TraceEmitters, SequenceCount ) ->
 
-	test_facilities:display( "Pressure test sending set of traces, "
-							 "remaining: ~B.", [ SequenceCount ] ),
+	%test_facilities:display( "Pressure test sending set of traces, "
+	%                         "remaining: ~B.", [ SequenceCount ] ),
 
 	% We do not want 'ok' answers on purpose, to speed up the sending:
-	TraceEmitter ! sendAsyncTraces,
+	[ TE ! sendAsyncTraces || TE <- TraceEmitters ],
 
-	send_traces( TraceEmitter, SequenceCount-1 ).
+	send_traces( TraceEmitters, SequenceCount-1 ).
 
 
 
@@ -90,21 +90,31 @@ run() ->
 
 	end,
 
-
-	test_facilities:display( "Creating a TestTraceEmitter." ),
-
 	Name = "I am a test emitter of traces",
+
+	%EmitterCount = 100,
+	%EmitterCount = 20,
+	EmitterCount = 2,
+
+	test_facilities:display( "Creating ~B instances of TestTraceEmitters.",
+							 [ EmitterCount ] ),
 
 	% Should not trigger the launch of another global aggregator:
 	% (as test_start triggers a *synchronous* aggregator):
-	MyTraceEmitter = class_TestTraceEmitter:synchronous_new_link(Name),
+	%
+	MyTraceEmitters = [
+		begin
+			EmitterName = text_utils:format( "~ts #~B", [ Name, C ] ),
+			class_TestTraceEmitter:synchronous_new_link( EmitterName )
+		end || C <- lists:seq( 1, EmitterCount ) ],
 
-	?test_emergency( "This is a test of the emergency severity for tests." ),
-	?test_alert(     "This is a test of the alert severity for tests." ),
-	?test_critical(  "This is a test of the critical severity for tests." ),
-	?test_error(     "This is a test of the error severity for tests." ),
-	?test_warning(   "This is a test of the warning severity for tests." ),
-	?test_notice(    "This is a test of the notice severity for tests." ),
+	% No console output wanted, as biasing:
+	%?test_emergency( "This is a test of the emergency severity for tests." ),
+	%?test_alert(     "This is a test of the alert severity for tests." ),
+	%?test_critical(  "This is a test of the critical severity for tests." ),
+	%?test_error(     "This is a test of the error severity for tests." ),
+	%?test_warning(   "This is a test of the warning severity for tests." ),
+	%?test_notice(    "This is a test of the notice severity for tests." ),
 	?test_info(      "This is a test of the info severity for tests." ),
 	?test_debug(     "This is a test of the debug severity for tests." ),
 	?test_void(      "This is a test of the void severity for tests." ),
@@ -120,30 +130,36 @@ run() ->
 	% (count was set to 500 previously, but synchronized console outputs are too
 	% slow for that now)
 	%
-	send_traces( MyTraceEmitter, _SequenceCount=5 ),
+	SequenceCount = 5,
+	%SequenceCount = 15,
+	%SequenceCount = 100,
+
+	send_traces( MyTraceEmitters, SequenceCount ),
 
 	test_facilities:display( "All traces sent." ),
 
-	ExpectedFirstBinaryName = text_utils:string_to_binary( Name ),
+	ExpectedFirstBinaryName = <<"I am a test emitter of traces #1">>,
 
-	MyTraceEmitter ! { getName, [], self() },
+	FirstEmitterPid = hd( MyTraceEmitters ),
+
+	FirstEmitterPid ! { getName, [], self() },
 	ExpectedFirstBinaryName = test_receive(),
 	?test_info( "Correct name returned." ),
 
 	NewName = "This is my new name",
 
-	MyTraceEmitter ! { setName, [ NewName ] },
+	FirstEmitterPid ! { setName, [ NewName ] },
 
 	ExpectedSecondBinaryName = text_utils:string_to_binary( NewName ),
 
-	MyTraceEmitter ! { getName, [], self() },
+	FirstEmitterPid ! { getName, [], self() },
 	ExpectedSecondBinaryName = test_receive(),
 
 	?test_info( "Correct new name returned." ),
 
 	test_facilities:display( "Deleting this TestTraceEmitter." ),
 
-	MyTraceEmitter ! delete,
+	[ TE ! delete || TE <- MyTraceEmitters ],
 
 	% Test target here:
 	?test_stop,

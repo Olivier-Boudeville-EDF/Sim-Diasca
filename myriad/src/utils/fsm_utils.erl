@@ -1,4 +1,4 @@
-% Copyright (C) 2003-2022 Olivier Boudeville
+% Copyright (C) 2007-2023 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -26,7 +26,7 @@
 % Creation date: August 30, 2007.
 
 
-% Gathering of various Finite State Machine related facilities.
+% @doc Gathering of various Finite State Machine related facilities.
 %
 % Should rely on gen_statem.
 %
@@ -39,26 +39,36 @@
 
 -export([ create_blank_fsm_state/0, setFsmAttribute/3, getFsmAttribute/2 ]).
 
+% As these types are not exported by gen_statem:
+
+-type callback_mode() :: 'state_functions' | 'handle_event_function'.
+
+-type state_enter() :: 'state_enter'.
+
+-type callback_mode_ret() ::
+		callback_mode() | [ callback_mode() | state_enter() ].
 
 
-% Approximate average attribute count for a given FSM state instance.
--define( FSMAttributeCountUpperBound, 5 ).
+-type state_callback_result( _T) :: term().
+
+-export_type([ callback_mode/0, callback_mode_ret/0,
+			   state_callback_result/1 ]).
 
 
 
-% Creates an attribute table appropriate to store a FSM state.
+% @doc Creates an attribute table appropriate to store a FSM state.
 %
 % setFsmAttribute, getFsmAttribute and getFsmAttr are to be used with these
 % variables too.
 %
 -spec create_blank_fsm_state() -> table:table().
 create_blank_fsm_state() ->
-	table:new( ?FSMAttributeCountUpperBound ).
+	table:new().
 
 
 
 
-% Sets specified FSM state attribute.
+% @doc Sets the specified FSM state attribute.
 -spec setFsmAttribute( table:table(), table:key(), table:value() ) ->
 								table:table().
 setFsmAttribute( FsmState, AttributeName, AttributeValue ) ->
@@ -66,14 +76,9 @@ setFsmAttribute( FsmState, AttributeName, AttributeValue ) ->
 
 
 
-
-% Retrieves specified FSM state attribute.
-%
-% Returns either a {value,Value} pair, if the attribute is found, or
-% 'attribute_not_found'.
-%
+% @doc Retrieves the specified FSM state attribute.
 -spec getFsmAttribute( table:table(), table:key() ) ->
-								table:value() | 'attribute_not_found'.
+				{ 'value', table:value() } | 'attribute_not_found'.
 getFsmAttribute( FsmState, AttributeName ) ->
 
 	case table:lookup_entry( AttributeName, FsmState ) of
@@ -81,7 +86,7 @@ getFsmAttribute( FsmState, AttributeName ) ->
 		key_not_found->
 			attribute_not_found ;
 
-		Other ->
-			Other
+		VPair ->
+			VPair
 
 	end.

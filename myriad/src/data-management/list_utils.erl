@@ -28,6 +28,9 @@
 
 % @doc Gathering of various facilities about <b>lists</b>.
 %
+% This includes the addition of general-purpose functions operating on lists,
+% and the support of tagged lists (a special case of proplist).
+
 % See list_utils_test.erl for the corresponding test.
 %
 % See also: set_utils.erl and list_table.erl.
@@ -53,19 +56,24 @@
 -export([ ensure_list/1, ensure_atoms/1, ensure_tuples/1, ensure_pids/1,
 		  ensure_proplist/1,
 		  are_integers/1, check_integers/1, are_pids/1, are_atoms/1,
-		  check_strictly_ascending/1 ]).
+		  check_strictly_ascending/1,
+		  are_equal/1, check_equal/1 ]).
 
 
 % Basic list operations:
 -export([ get_element_at/2, set_element_at/3, insert_element_at/3,
 		  extract_element_at/2, extract_element_if_existing/2,
+
 		  remove_first_elements/2, remove_element_at/2, remove_last_element/1,
 		  heads/2,
 		  get_last_element/1, extract_last_element/1,
+		  get_min_max/1,
 		  get_index_of/2, get_maybe_index_of/2, split_at/2, group_by/2,
 		  uniquify/1, uniquify_ordered/1,
 		  ensure_is_once_in/2,
-		  duplicate/2, has_duplicates/1, count_occurrences/1, get_duplicates/1,
+		  duplicate/2,
+		  has_duplicates/1, count_occurrences/1, get_duplicates/1,
+		  duplicate_info_to_string/1,
 		  union/2, intersection/2,
 		  difference/2, differences/2,
 		  cartesian_product/1,
@@ -84,17 +92,22 @@
 -export([ dispatch_in/2, add_as_heads/2, insert_at_all_places/2 ]).
 
 
-% For list of tuples (ex: typically used by the HDF5 binding), extended flatten
-% and al:
+% For lists of tuples (e.g. typically used by the HDF5 binding), extended
+% flatten and al:
 %
--export([ determine_tuple_info/1, flatten_tuples/1, reconstruct_tuples/2 ]).
-
+-export([ determine_tuple_info/1, flatten_tuples/1, reconstruct_tuples/2,
+		  zipn/1 ]).
 
 
 % Random operations on lists:
 -export([ random_permute/1, random_permute_reciprocal/1,
 		  draw_element/1, draw_element/2, draw_element_weighted/1,
 		  draw_elements_from/2, extract_elements_from/2 ]).
+
+
+% For tagged lists:
+-export([ extract_atom_if_existing/2, extract_atom_with_default/3,
+		  extract_pair_if_existing/2, extract_pair_with_default/3 ]).
 
 
 -type element() :: term().
@@ -107,19 +120,38 @@
 % Note: different from maybe(list()).
 
 
--export_type([ maybe_list/1 ]).
+-type duplicate_info() :: [ { element(), count() } ].
+% A list of elements reported as duplicated, together with the number (at least
+% two) of times they were present in a given container.
+
+
+-type tagged_list() :: tagged_list( element() ).
+
+-type tagged_list( T ) :: [ atom() | { Key :: atom(), T } ].
+% A tagged list is a specific case of proplist, whose tuples are only pairs.
+%
+% This allows for example supporting the extraction of elements.
+
+
+-export_type([ maybe_list/1, duplicate_info/0, proplist/0,
+			   tagged_list/0, tagged_list/1 ]).
 
 
 
 % Shorthands:
 
+
 -type proplist() :: proplists:proplist().
+% A list whose elements can be atoms or tuples (not only pairs) whose first
+% element is an atom.
+
 
 -type count() :: basic_utils:count().
 
 -type positive_index() :: basic_utils:positive_index().
 % These indexes start at 1.
 
+-type ustring() :: text_utils:ustring().
 
 
 % Section for the checking of lists.
@@ -289,7 +321,8 @@ set_element_at( Element, _List=[ H | T ], Index, Acc ) ->
 
 
 
-% @doc Inserts specified element at specified position in the specified list.
+% @doc Inserts the specified element at the specified position in the specified
+% list.
 %
 % For example: insert_element_at(foo, [a, b, c, d], 3) will return
 % [a, b, foo, c, d].
@@ -318,7 +351,7 @@ insert_element_at( Element, _List=[ H | T ], Index, Acc ) ->
 
 
 
-% @doc Extracts element from the specified list, at the specified index.
+% @doc Extracts the element of the specified list at the specified index.
 %
 % Returns that element and the resulting, shrunk list.
 %
@@ -365,6 +398,8 @@ extract_element_if_existing( Elem, _List=[ Elem | T ], Acc ) ->
 
 extract_element_if_existing( Elem, _List=[ H | T ], Acc ) ->
 	extract_element_if_existing( Elem, T, [ H | Acc ] ).
+
+
 
 
 
@@ -505,6 +540,67 @@ extract_last_element( List ) ->
 %
 %extract_last_element( _List=[ H | T ], Acc ) ->
 %  extract_last_element( T, [ H | Acc ] ).
+
+
+
+% @doc Returns the minimum and maximum values found in the specified list, based
+% on the native term order.
+%
+-spec get_min_max( list() ) -> { element(), element() }.
+get_min_max( _L=[] ) ->
+	throw( empty_list );
+
+% At least an element, hence there will be extremas:
+get_min_max( L ) ->
+	get_min_max( L, _MaybeMin=undefined, _MaybeMax=undefined ).
+
+
+% (helper)
+get_min_max( _L=[], Min, Max ) ->
+	{ Min, Max };
+
+get_min_max( _L=[ E | T ], _MaybeMin=undefined, _MaybeMax=undefined ) ->
+	get_min_max( T, E, E );
+
+% Here MaybeMax is not undefined:
+get_min_max( _L=[ E | T ], _MaybeMin=undefined, Max ) when E > Max ->
+	get_min_max( T, E, E );
+
+% Here E =< Max:
+get_min_max( _L=[ E | T ], _MaybeMin=undefined, Max )  ->
+	get_min_max( T, E, Max );
+
+% Here MaybeMin is not undefined:
+get_min_max( _L=[ E | T ], Min, _MaybeMax=undefined ) when E < Min ->
+	get_min_max( T, E, E );
+
+% Here E >= Min:
+get_min_max( _L=[ E | T ], Min, _MaybeMax=undefined )  ->
+	get_min_max( T, Min, E );
+
+% Here Min and Max are defined:
+get_min_max( _L=[ E | T ], Min, Max ) ->
+	NewMin = case E < Min of
+
+		true ->
+			E;
+
+		false ->
+			Min
+
+	end,
+
+	NewMax = case E > Max of
+
+		true ->
+			E;
+
+		false ->
+			Max
+
+	end,
+
+	get_min_max( T, NewMin, NewMax ).
 
 
 
@@ -698,15 +794,21 @@ has_duplicates( List ) ->
 %
 -spec count_occurrences( list() ) -> [ { element(), count() } ].
 count_occurrences( List ) ->
-	count_occurrences( List, _Acc=[] ).
+	%trace_utils:debug_fmt( "Counting occurrences in a list of size ~B.",
+	%                       [ length( List ) ] ),
+	R = count_occurrences( List, _Acc=[] ),
+	%trace_utils:debug_fmt( "~B different values listed.", [ length( R ) ] ),
+	R.
+
+
 
 count_occurrences( _List=[], Acc ) ->
 	Acc;
 
 count_occurrences( _List=[ Term | T ], Acc ) ->
 
-	% trace_utils:debug_fmt( "Inquiring about term '~p' into ~p.",
-	%                        [ Term, T ] ),
+	%trace_utils:debug_fmt( "Inquiring about term '~p' into ~p.",
+	%                       [ Term, T ] ),
 
 	case count_and_filter_term( Term, _InitialList=T, _FilteredList=[],
 								_InitialCount=0 ) of
@@ -723,10 +825,10 @@ count_occurrences( _List=[ Term | T ], Acc ) ->
 
 
 
-% @doc Returns the duplicates in the specified list: returns an (unordered) list
-% of {DuplicatedTerm,DuplicationCount} pairs, where each duplicated term (that
-% is a term present more than once) is specified, alongside the total number of
-% occurrences of that term in the specified list.
+% @doc Returns the duplicates found in the specified list: returns an
+% (unordered) list of {DuplicatedTerm,DuplicationCount} pairs, where each
+% duplicated term (that is a term present more than once) is specified,
+% alongside the total number of occurrences of that term in the specified list.
 %
 % Note: as a consequence, a term that is not in the specified list, or that is
 % present there only once, will not be referenced in the returned list; use
@@ -739,7 +841,7 @@ count_occurrences( _List=[ Term | T ], Acc ) ->
 % Use lists:keysort(2, list_utils:get_duplicates(L)) to sort duplicates by
 % increasing number of occurrences (e.g. [{d,2},{a,2},{b,3}] here).
 %
--spec get_duplicates( list() ) -> [ { element(), count() } ].
+-spec get_duplicates( list() ) -> duplicate_info().
 get_duplicates( List ) ->
 	get_duplicates( List, _Acc=[] ).
 
@@ -781,6 +883,19 @@ count_and_filter_term( Term, _List=[ OtherTerm | H ], FilteredList,
 					   CurrentCount ) ->
 	count_and_filter_term( Term, H, [ OtherTerm | FilteredList ],
 						   CurrentCount ).
+
+
+
+% @doc Returns a textual description of the specified duplicate information.
+-spec duplicate_info_to_string( duplicate_info() ) -> ustring().
+duplicate_info_to_string( _DupPairs=[] ) ->
+	"no duplication";
+
+duplicate_info_to_string( DupPairs ) ->
+	text_utils:strings_to_listed_string(
+		[ text_utils:format( "the element '~p' is present ~ts",
+				[ Elem, text_utils:repetition_to_string( Count ) ] )
+			|| { Elem, Count } <- DupPairs ] ).
 
 
 
@@ -965,10 +1080,11 @@ remove_first_occurrences( _ElementsToRemove=[ E | T ], List ) ->
 
 
 
-% @doc Deletes the first matching of specified element from specified list,
-% returning whether an element has been removed: either the 'not_found' atom (in
-% which case the list remained the same) or the corresponding new list (same
-% order and content, except first occurrence removed).
+% @doc Deletes the first matching of the specified element from the specified
+% list, returning whether an element has been removed, that is either the
+% 'not_found' atom (in which case the list remained the same) or the
+% corresponding new list (same order and content, except that the first
+% occurrence of the specified element was removed).
 %
 % Note: allows to perform only one traversal of the list (compared for example
 % to a lists:member/2 then a lists:delete/2).
@@ -1160,8 +1276,8 @@ are_atoms( _ ) ->
 % ascending (Erlang) term order.
 %
 % In many cases, the actual type of these elements shall be checked beforehand
-% (ex: see type_utils:check_{integers,floats}/1) to ensure that comparisons make
-% sense (ex: float versus atom).
+% (e.g. see type_utils:check_{integers,floats}/1) to ensure that comparisons
+% make sense (e.g. float versus atom).
 %
 -spec check_strictly_ascending( list() ) -> boolean().
 check_strictly_ascending( _List=[] ) ->
@@ -1180,6 +1296,46 @@ check_strictly_ascending( _List=[ H | T ], LastSeen ) when H > LastSeen ->
 
 check_strictly_ascending( _List, _LastSeen ) ->
 	false.
+
+
+
+% @doc Returns whether all the elements of the specified list are equal.
+-spec are_equal( list() ) -> boolean().
+are_equal( [] ) ->
+	true;
+
+are_equal( [ H | T ] ) ->
+	are_equal( _Ref=H, T ).
+
+
+% (helper)
+are_equal( _Ref, [] ) ->
+	true;
+
+are_equal( Ref, [ Ref | T ] ) ->
+	are_equal( Ref, T );
+
+% Not matched:
+are_equal( _Ref, _ ) ->
+	false.
+
+
+
+% @doc Checks that all the elements of the specified list are equal.
+%
+% Returns this list if true, otherwise throws an exception.
+%
+-spec check_equal( list() ) -> list().
+check_equal( L ) ->
+	case are_equal( L ) of
+
+		true ->
+			L;
+
+		false ->
+			throw( { not_all_equal, L } )
+
+	end.
 
 
 
@@ -1327,6 +1483,7 @@ flatten_tuples( List ) ->
 	flatten_tuples( List, _Acc=[] ).
 
 
+% (helper)
 flatten_tuples( _List=[], Acc ) ->
 	lists:reverse( Acc );
 
@@ -1357,6 +1514,58 @@ reconstruct_tuples( _List=[], _TupleSize, Acc ) ->
 reconstruct_tuples( List, TupleSize, Acc ) ->
 	{ TupleAsList, T } = lists:split( _Count=TupleSize, List ),
 	reconstruct_tuples( T, TupleSize, [ list_to_tuple( TupleAsList ) | Acc ] ).
+
+
+
+% @doc Performs a generalization of zip2, zip3: takes one element at a time of
+% each of the input lists, and adds it to a corresponding tuple.
+%
+% For example, list_utils:zipn([_L1=[a,b,c], _L2=[1,2,3],
+% _L3=[true,false,undefined]]) will return a list containing triplets (as there
+% are 3 lists), whose elements are taken from each of the input lists, in order:
+% [[a,1,true],[b,2,false],[c,3,undefined]].
+%
+-spec zipn( [ list() ] ) -> list( tuple() ).
+zipn( ListOfLists ) ->
+
+	cond_utils:if_defined( myriad_check_lists,
+		begin
+			Lens = [ length( L ) || L <- ListOfLists ],
+			are_equal( Lens ) orelse
+				throw( { lists_of_different_lengths, Lens, ListOfLists } )
+		end ),
+
+	zipn_helper( ListOfLists, _Acc=[] ).
+
+
+zipn_helper( ListOfLists, Acc ) ->
+	case extract_first_elements( ListOfLists ) of
+
+		{ FirstElems, RemLists } ->
+			zipn_helper( RemLists, [ FirstElems | Acc ] );
+
+		all_exhausted ->
+			lists:reverse( Acc )
+
+	end.
+
+
+% (helper)
+% If the first list is found exhausted, we suppose that all of them are:
+extract_first_elements( _ListOfLists=[ _First=[] | _T ] ) ->
+	all_exhausted;
+
+extract_first_elements( ListOfLists ) ->
+	extract_elems( ListOfLists, _AccFirstElems=[], _AccRemLists=[] ).
+
+
+% (helper)
+extract_elems( _ListOfLists=[], AccFirstElems, AccRemLists ) ->
+	{ lists:reverse( AccFirstElems ), lists:reverse( AccRemLists ) };
+
+extract_elems( _ListOfLists=[ _L=[F|TL] | T ], AccFirstElems, AccRemLists ) ->
+	extract_elems( T, [ F | AccFirstElems ], [ TL | AccRemLists ] ).
+
 
 
 
@@ -1575,3 +1784,132 @@ extract_elements_from( RemainingElems, Count, AccExtract ) ->
 
 	extract_elements_from( ShrunkRemainingElems, Count-1,
 						   [ DrawnElem | AccExtract ] ).
+
+
+
+
+
+% Section for tagged lists.
+%
+% Complementary to list_table, which only considers lists containing only pairs
+% (not single atoms - and thus would choke if it found a non-pair element).
+
+
+
+% @doc Extracts, from the specified tagged list, the (first occurrence of the)
+% of the specified atom: either returns 'not_found' if such an atom was not
+% found, or the tagged list obtained when the first occurrence of that atom has
+% been removed.
+%
+-spec extract_atom_if_existing( atom(), tagged_list() ) ->
+			'not_found' | tagged_list().
+extract_atom_if_existing( Atom, TaggedList ) ->
+	extract_atom_if_existing_helper( Atom, TaggedList, _Acc=[] ).
+
+
+% Not found at all:
+extract_atom_if_existing_helper( _Atom, _TaggedList=[], _Acc ) ->
+	not_found;
+
+% First atom found:
+extract_atom_if_existing_helper( Atom, _TaggedList=[ Atom | T ], Acc ) ->
+	lists:reverse( Acc ) ++ T;
+
+% Other is another atom or a pair:
+extract_atom_if_existing_helper( Atom, _TaggedList=[ Other | T ], Acc ) ->
+	extract_atom_if_existing_helper( Atom, T, [ Other | Acc ] ).
+
+
+
+% @doc Extracts, from the specified tagged list, the (first occurrence of the)
+% specified atom if found, otherwise returns the specified default; in all cases
+% returns an element (extracted or default) and a corresponding tagged list.
+%
+% So either returns the specified atom if found, or the specified default,
+% together with the resulting tagged list (which is either the original tagged
+% list if the default is returned, or a shrunk tagged list if an actual
+% extraction could be done).
+%
+-spec extract_atom_with_default( atom(), element(), tagged_list() ) ->
+										{ element(), tagged_list() }.
+extract_atom_with_default( Atom, DefaultValue, TaggedList ) ->
+	extract_atom_with_default_helper( Atom, DefaultValue, TaggedList,
+									  _Acc=[] ).
+
+
+% Not found at all:
+extract_atom_with_default_helper( _Atom, DefaultValue, _TaggedList=[], Acc ) ->
+	{ DefaultValue, lists:reverse( Acc ) };
+
+% First atom found (no is_atom/1 guard needed):
+extract_atom_with_default_helper( Atom, _DefaultValue,
+								  _TaggedList=[ Atom | T ], Acc ) ->
+	{ Atom, lists:reverse( Acc ) ++ T };
+
+% Other is another atom or a pair:
+extract_atom_with_default_helper( Atom, DefaultValue,
+								  _TaggedList=[ Other | T ], Acc ) ->
+	extract_atom_with_default_helper( Atom, DefaultValue, T, [ Other | Acc ] ).
+
+
+
+% @doc Extracts, from the specified tagged list, the (first occurrence of the)
+% key/value pair specified based on its first atom element (its key): either
+% returns false if no such pair was found, or returns the value associated to
+% the specified atom (thus in second position of the corresponding pair),
+% together with the rest of the specified tagged list.
+%
+-spec extract_pair_if_existing( atom(), tagged_list() ) ->
+			'false' | { element(), tagged_list() }.
+extract_pair_if_existing( KeyAtom, TaggedList ) ->
+	extract_pair_if_existing_helper( KeyAtom, TaggedList, _Acc=[] ).
+
+
+% Not found at all:
+extract_pair_if_existing_helper( _KeyAtom, _TaggedList=[], _Acc ) ->
+	false;
+
+% First pair found:
+extract_pair_if_existing_helper( KeyAtom, _TaggedList=[ { KeyAtom, V } | T ],
+								 Acc ) ->
+	{ V, lists:reverse( Acc ) ++ T };
+
+% Other is atom or pair:
+extract_pair_if_existing_helper( KeyAtom, _TaggedList=[ Other | T ], Acc ) ->
+	extract_pair_if_existing_helper( KeyAtom, T, [ Other | Acc ] ).
+
+
+
+% @doc Extracts, from the specified tagged list, the (first occurrence of the)
+% key/value pair specified based on its first atom element (its key) if found,
+% otherwise returns for this element the specified default; in all cases returns
+% an element (extracted or default) and a corresponding tagged list.
+%
+% So either returns that default if no such pair was found, or returns the value
+% associated to the specified key atom (thus in second position of the
+% corresponding pair), together with the resulting tagged list (which is either
+% the original tagged list if the default is returned, or a shrunk tagged list
+% if an actual extraction could be done).
+%
+-spec extract_pair_with_default( atom(), element(), tagged_list() ) ->
+										{ element(), tagged_list() }.
+extract_pair_with_default( KeyAtom, DefaultValue, TaggedList ) ->
+	extract_pair_with_default_helper( KeyAtom, DefaultValue, TaggedList,
+									  _Acc=[] ).
+
+
+% Not found at all:
+extract_pair_with_default_helper( _KeyAtom, DefaultValue,
+								  _TaggedList=[], Acc ) ->
+	{ DefaultValue, lists:reverse( Acc ) };
+
+% First pair found:
+extract_pair_with_default_helper( KeyAtom, _DefaultValue,
+								  _TaggedList=[ { KeyAtom, V } | T ], Acc ) ->
+	{ V, lists:reverse( Acc ) ++ T };
+
+% Other is atom or pair:
+extract_pair_with_default_helper( KeyAtom, DefaultValue,
+								  _TaggedList=[ Other | T ], Acc ) ->
+	extract_pair_with_default_helper( KeyAtom, DefaultValue, T,
+									  [ Other | Acc ] ).

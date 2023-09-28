@@ -11,7 +11,7 @@ Management of Units
 Motivation
 ----------
 
-A value of a given type (ex: a float) can actually correspond to quantities as different as meters and kilowatts per hour.
+A value of a given type (e.g. a float) can actually correspond to quantities as different as meters and kilowatts per hour.
 
 Therefore **units shall preferably be specified alongside with values being processed**, and a language to express, check and convert these units must be retained. Of course units are of interest as other metadata are - such as accuracy, semantics, etc.
 
@@ -87,12 +87,12 @@ So one may use the following **built-in units**, whose symbol [#]_ is specified 
 
 - the **special** units (they generally cannot map directly to any SI unit, yet can be handled separately), designating:
 
-  - month [``month``] (correspondence to base time units unspecified, as this duration is not constant; ex: a month can be 29, 30 or 31 days)
-  - year [``year``] (correspondence to base time units unspecified, as this duration is not constant; ex: a year can be 365, 366 or 365.25 days, etc.)
+  - month [``month``] (correspondence to base time units unspecified, as this duration is not constant; e.g. a month can be 29, 30 or 31 days)
+  - year [``year``] (correspondence to base time units unspecified, as this duration is not constant; e.g. a year can be 365, 366 or 365.25 days, etc.)
   - degree Celsius, for temperature relative to 273.15 K [``°C``] (see note below)
-  - dimension-less quantities (ex: an index) [``dimensionless``] (most probably clearer than ``m/m``)
-  - a count, i.e. a dimensionless number, generally a positive integer [``count``] (ex: ``14``), considered as an alias of ``dimensionless``
-  - a ratio, i.e. a dimensionless floating-point value, generally displayed as a percentage [``ratio``] (ex: ``-12.9%``); another alias of ``dimensionless``
+  - dimension-less quantities (e.g. an index) [``dimensionless``] (most probably clearer than ``m/m``)
+  - a count, i.e. a dimensionless number, generally a positive integer [``count``] (e.g. ``14``), considered as an alias of ``dimensionless``
+  - a ratio, i.e. a dimensionless floating-point value, generally displayed as a percentage [``ratio``] (e.g. ``-12.9%``); another alias of ``dimensionless``
   - currencies, either [``$``] (US Dollar) or [``euros``] (Euro), whose exchange rates of course vary
   - values whose unit has not been specified [``unspecified_unit``]
 
@@ -130,7 +130,7 @@ So one may use the following **built-in units**, whose symbol [#]_ is specified 
 
    There is a problem with temperatures, as they can be expressed at least in kelvins or degrees Celsius, whereas the two corresponding scales do not match, since there is an offset: ``[K] = [°C] + 273.15``.
 
-   As a result, unit conversions would require updating as well the corresponding value, and, more generally, they should be treated as fully distinct units (ex: ``kW/°C`` cannot be automatically converted in terms of SI base units, i.e. using ``K``).
+   As a result, unit conversions would require updating as well the corresponding value, and, more generally, they should be treated as fully distinct units (e.g. ``kW/°C`` cannot be automatically converted in terms of SI base units, i.e. using ``K``).
 
    This is why we "degraded" Celsius degrees, from a derived unit to a special one.
 
@@ -155,14 +155,14 @@ The resulting type shall be specified as a string, containing a series of built-
 
 
 
-Finally, exponents can be used as a shorthand for both operators (ex: ``kg.m^2.s^-1``, instead of ``kg.m.m/s``). They should be specified explicitly, thanks to the caret character (``"^"``); for example ``"m^2/s"``, not ``"m²/s"``.
+Finally, exponents can be used as a shorthand for both operators (e.g. ``kg.m^2.s^-1``, instead of ``kg.m.m/s``). They should be specified explicitly, thanks to the caret character (``"^"``); for example ``"m^2/s"``, not ``"m²/s"``.
 
 
 If deemed both safe and useful, we may consider in the future performing:
 
 - symbolic unit checking (i.e. determining that a derived unit such as ``N.s`` (newton.second) is actually, in canonical SI units, ``m^2.kg.s^-1``), and thus that values of these two types can safely be used indifferently in computations
 
-- automatic value conversions (ex: converting ``km/hour`` into ``m/s``), provided that the overall computational precision is not significantly deteriorated
+- automatic value conversions (e.g. converting ``km/hour`` into ``m/s``), provided that the overall computational precision is not significantly deteriorated
 
 
 The corresponding mechanisms (type information, conversion functions, unit checking and transformation, etc.) are defined in ``unit_utils.erl`` and tested in ``unit_utils_test.erl``,  in the ``myriad/src/utils`` directory.
@@ -191,7 +191,7 @@ A typical example:
 Possible Improvements Regarding Dimensional Analysis
 ----------------------------------------------------
 
-Some programming languages provide systems to manage dimensional information (ex: for physical quantities), generally through add-ons or libraries (rarely as a built-in feature).
+Some programming languages provide systems to manage dimensional information (e.g. for physical quantities), generally through add-ons or libraries (rarely as a built-in feature).
 
 A first level of support is to provide, like here, an API to manage units. Other levels can be:
 

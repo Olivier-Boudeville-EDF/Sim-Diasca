@@ -150,14 +150,14 @@
 -type directory_path() :: file_utils:directory_path().
 
 -type command_output() :: system_utils:command_output().
--type command_line_argument() :: system_utils:command_line_argument().
+-type command_line_argument() :: shell_utils:command_line_argument().
 
 
 
-% @doc Looks-up specified executable program, whose name is specified as a
-% string (ex: "gcc") in the current user PATH.
+% @doc Looks-up the specified executable program, whose name is specified as a
+% string (e.g. "gcc") in the current user PATH.
 %
-% Returns an absolute filename of the executable program (ex: "/usr/bin/gcc"),
+% Returns an absolute filename of the executable program (e.g. "/usr/bin/gcc"),
 % or the 'false' atom if it was not found.
 %
 -spec lookup_executable( executable_name() ) -> executable_path() | 'false'.
@@ -172,14 +172,14 @@ lookup_executable( ExecutableName ) ->
 
 
 
-% @doc Looks-up specified executable program, whose name is specified as a
-% string (ex: "gcc") in the current user PATH, augmented of the specified list
+% @doc Looks-up the specified executable program, whose name is specified as a
+% string (e.g. "gcc") in the current user PATH, augmented of the specified list
 % of directories (whose existence is not checked), placed at first position.
 %
-% Returns an absolute filename of the executable program (ex: "/usr/bin/gcc"),
+% Returns an absolute filename of the executable program (e.g. "/usr/bin/gcc"),
 % or the 'false' atom if it was not found.
 %
-% Ex: lookup_executable("my-foo-program", [".", "/tmp"])
+% For example lookup_executable("my-foo-program", [".", "/tmp"])
 %
 -spec lookup_executable( executable_name(), [ directory_path() ] ) ->
 								executable_path() | 'false'.
@@ -203,11 +203,12 @@ lookup_executable( ExecutableName, ExtraDirs ) ->
 
 
 
-% @doc Finds specified executable program, whose name is specified as a string
-% (ex: "gcc") in the current user PATH.
+% @doc Finds the specified executable program, whose name is specified as a
+% string (e.g. "gcc") in the current user PATH.
 %
-% Returns an absolute filename of the executable program (ex: "/usr/bin/gcc") or
-% throws an exception {executable_not_found,ExecutableName} if it was not found.
+% Returns an absolute filename of the executable program (e.g. "/usr/bin/gcc")
+% or throws an exception {executable_not_found,ExecutableName} if it was not
+% found.
 %
 -spec find_executable( executable_name() ) -> executable_path().
 find_executable( ExecutableName ) ->
@@ -362,7 +363,7 @@ playback_audio_file( AudioFilePath, DoBlock ) ->
 
 
 
-% @doc Displays (without blocking) to the user the specified PNG, using an
+% @doc Displays (without blocking) to the user the specified PNG file, using an
 % external viewer.
 %
 % Returns the text output by the tool (if any).
@@ -444,7 +445,7 @@ get_ssh_mute_option() ->
 % Section about default tools.
 
 
-% For each supported third-party feature X (ex: X=image_viewer), two functions
+% For each supported third-party feature X (e.g. X=image_viewer), two functions
 % are to be defined:
 %
 %  - get_default_X_name() -> ustring() that returns the name of the tool (useful
@@ -648,7 +649,7 @@ get_default_trace_viewer_path() ->
 % @doc Returns an absolute path to the root directory of the current Erlang
 % installation.
 %
-% Ex: if 'erl' is to be found in
+% For example if 'erl' is to be found in
 % ~/Software/Erlang/Erlang-current-install/bin/erl, will return:
 % ~/Software/Erlang/Erlang-current-install.
 %
@@ -729,7 +730,7 @@ get_gnuplot_path() ->
 
 
 
-% @doc Returns, as a tuple (ex: {4,2} for the 4.2 version), the gnuplot version
+% @doc Returns, as a tuple (e.g. {4,2} for the 4.2 version), the gnuplot version
 % actually available by default (in the PATH) on this computer.
 %
 -spec get_current_gnuplot_version() -> basic_utils:two_digit_version().
@@ -739,7 +740,7 @@ get_current_gnuplot_version() ->
 
 
 
-% @doc Returns, as a tuple (ex: {4,2} for the 4.2 version), the gnuplot version
+% @doc Returns, as a tuple (e.g. {4,2} for the 4.2 version), the gnuplot version
 % actually available on this computer.
 %
 -spec get_current_gnuplot_version( executable_path() ) ->
@@ -845,7 +846,7 @@ get_default_java_runtime() ->
 %
 % Indeed, we expect that in $(ERLANG_ROOT)/lib/erlang/ a symbolic link named
 % 'jinterface' has been specifically created in order to point to the directory
-% of the corresponding version of JInterface (ex: lib/jinterface-1.8/); our
+% of the corresponding version of JInterface (e.g. lib/jinterface-1.8/); our
 % install-erlang.sh script automatically enforces that convention.
 %
 -spec get_default_jinterface_path() -> file_path().

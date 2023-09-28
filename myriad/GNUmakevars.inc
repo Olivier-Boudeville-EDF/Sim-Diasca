@@ -133,6 +133,9 @@ endif
 #    handled
 #  - web_exchanges: http/https exchanges
 #  - strings: notably for mismatches between plain and binary ones
+#  - binaries: how binaries are created, used, matched
+#  - lists: how lists are processed
+#  - datastructures: how (non-list) datastructures are processed
 #  - registration: regarding naming registering
 #  - csv_support: the support of CSV files
 #  - sql_support: the support of SQL (database) operations
@@ -140,19 +143,27 @@ endif
 #  - environments: about the sharing/caching of application information
 #  - resources: about the management of resources
 #  - files: about the management of files
+#  - traces: for Myriad-level traces
+#  - random: about stochastic sample draws and probability density functions
+#  - math: for math-related operations
 #
 #  - user_interface: all support regarding user interfaces of all sorts
-#  - repaint_logic: how MyriadGUI manages repaints
-#  - events: how MyriadGUI manages interface-related events
-#  - canvas: how MyriadGUI manages canvases
-#  - instances: how MyriadGUI manages widget instances
-#  - memory: how MyriadGUI manages memory allocated and related lower-level
+#  - gui_repaint_logic: how MyriadGUI manages repaints
+#  - gui_events: how MyriadGUI manages interface-related events
+#  - gui_canvas: how MyriadGUI manages canvases
+#  - gui_font: about font support
+#  - gui_instances: how MyriadGUI manages widget instances
+#  - gui_memory: how MyriadGUI manages memory allocated and related lower-level
 #    operations
+#  - gui_id: about widget identifiers
+#  - gui_performance: about the runtime performance monitoring of MyriadGUI
 #
 #  - linear: for operations on vectors, matrices, etc.
 #  - mesh: for the management of (3D) meshes
 #  - bounding_spaces: for computations of bounding spaces (surfaces, volumes)
 #  - opengl: outcome of OpenGL-related operations
+#  - textures: regarding the (OpenGL) texture management
+#  - shaders: regarding the GLSL shaders and programs
 #  - gltf_support: for the support of the glTF 2.0 format
 #
 # Defining debug flags (at least the most verbose are by default commented-out):
@@ -165,13 +176,19 @@ ifeq ($(ENABLE_DEBUG),true)
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_otp_integration
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_web_exchanges
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_strings
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_binaries
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_lists
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_datastructures
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_registration
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_csv_support
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_sql_support
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_protobuf_support
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_environments
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_resources
-	MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_files
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_files
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_traces
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_random
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_math
 
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_user_interface
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_gui_repaint_logic
@@ -180,11 +197,15 @@ ifeq ($(ENABLE_DEBUG),true)
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_gui_font
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_gui_instances
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_gui_memory
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_gui_id
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_gui_performance
 
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_linear
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_mesh
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_bounding_spaces
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_opengl
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_textures
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_shaders
 	#MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_gltf_support
 
 endif
@@ -195,12 +216,16 @@ ifeq ($(EXECUTION_TARGET),development)
 	#MYRIAD_CHECK_FLAGS += -Dmyriad_check_code_generation
 	#MYRIAD_CHECK_FLAGS += -Dmyriad_check_waited_operations
 	#MYRIAD_CHECK_FLAGS += -Dmyriad_check_strings
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_check_binaries
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_check_lists
 	#MYRIAD_CHECK_FLAGS += -Dmyriad_check_protobuf_support
+	#MYRIAD_CHECK_FLAGS += -Dmyriad_check_files
 	#MYRIAD_CHECK_FLAGS += -Dmyriad_check_user_interface
-	#MYRIAD_DEBUG_FLAGS += -Dmyriad_check_opengl
 	#MYRIAD_CHECK_FLAGS += -Dmyriad_check_linear
 	#MYRIAD_CHECK_FLAGS += -Dmyriad_check_mesh
-	#MYRIAD_CHECK_FLAGS += -Dmyriad_check_files
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_check_opengl
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_check_textures
+	#MYRIAD_DEBUG_FLAGS += -Dmyriad_check_shaders
 
 endif
 
@@ -221,7 +246,7 @@ endif
 
 
 
-# Allows to add stacktraces to the most commonly exceptions raised (ex:
+# Allows to add stacktraces to the most commonly exceptions raised (e.g.
 # {not_a_string, Term}), independently of debug settings:
 #
 # (useful in contexts where stacktraces tend to vanish)
@@ -240,7 +265,7 @@ ERLANG_COMPILER_OPT_BASE += $(MYRIAD_DEBUG_FLAGS)             \
 
 
 
-# Useful to target for example the root of the current layer (ex: to locate the
+# Useful to target for example the root of the current layer (e.g. to locate the
 # relevant, layer-local '_build' directory):
 #
 ifndef LAYER_TOP
@@ -271,7 +296,7 @@ endif
 # The uniquely-defined version of this layer, for all uses (including rebar and
 # hex):
 #
-MYRIAD_VERSION := 1.0.30
+MYRIAD_VERSION := 1.0.32
 
 
 # PROJECT_VERSION should be defined on a per-project basis.
@@ -309,7 +334,7 @@ ARCHIVE_ROOT := $$HOME/Archives/$(PROJECT_NAME)
 # For full archives (including untracked files and VCS state):
 ARCHIVE_FILE := $(ARCHIVE_ROOT)/$$(date +'%Y%m%d')-$(PROJECT_NAME).tar.xz
 
-# For archives as considered by the VCS system (ex: non-staged files are not
+# For archives as considered by the VCS system (e.g. non-staged files are not
 # archived here):
 #
 VCS_ARCHIVE_FILE := $(ARCHIVE_ROOT)/$$(date +'%Y%m%d')-$(PROJECT_NAME).git-bundle
@@ -333,7 +358,7 @@ PROJECT_RELEASE_ARCHIVE_BZ2 := $(PROJECT_RELEASE_BASE).tar.bz2
 PROJECT_RELEASE_ARCHIVE_XZ  := $(PROJECT_RELEASE_BASE).tar.xz
 
 
-# Useful to define a Make variable without setting a value to it (ex: in order
+# Useful to define a Make variable without setting a value to it (e.g. in order
 # to be able to specifically define at a given layer a variable MY_VAR, to
 # prevent that, at the layer below, a 'ifndef MY_VAR' is triggered; see
 # BOOTSTRAP_MODULES in Ceylan-Traces for an example of it):
@@ -349,7 +374,7 @@ empty =
 # If wanting to install that package, following installation prefix is used.
 #
 # INSTALLATION_PREFIX should be defined on a per-project basis, or be overridden
-# on the command line (ex: 'make install INSTALLATION_PREFIX=/tmp'):
+# on the command line (e.g. 'make install INSTALLATION_PREFIX=/tmp'):
 
 ifndef INSTALLATION_PREFIX
 	INSTALLATION_PREFIX := $$HOME/Software
@@ -590,8 +615,9 @@ ifeq ($(USE_JSON),true)
 		# Unfortunately, this build will not result in a proper
 		# ~/Software/jsx/jsx-current-install/ebin directory to be
 		# created. However this is not a problem, as Myriad is able to overcome
-		# this issue; yet for the sake of clarity/completeness one may create such a
-		# directory with:
+		# this issue; yet for the sake of clarity/completeness one may create
+		# such a directory with:
+		#
 		# $ cd ~/Software/jsx/jsx-current-install
 		#     && ln -s _build/default/lib/jsx/ebin/
 
@@ -599,31 +625,105 @@ ifeq ($(USE_JSON),true)
 		# Actually not used, as decided at runtime rather than at compile time:
 		#JSON_OPT = -Duse_jsx_json_backend
 
-
-		# A rebar convention, if jsx is listed in rebar.config (and then is a
-		# sibling prerequisite of Myriad):
+		# If the relevant USE_* variables are set to true, in the case of
+		# multiple dependencies involving Myriad, the same JSX lookup would be
+		# repeatedly done with different paths, possibly resulting in having the
+		# same install declared more than once in BEAM_DIRS, leading to a
+		# pseudo-clash of BEAM files (e.g. jsx.beam) being detected at runtime
+		# and thus resulting in a failure. So instead we ensure that
+		# dependencies are detected and added only once:
 		#
-		JSX_REBAR_BASE := $(MYRIAD_TOP)/../jsx
-		JSX_REBAR_INSTALL_BASE := $(JSX_REBAR_BASE)
+		# Note that JSX_TOP should never be set without having checked that this
+		# directory exists indeed, except in one case: JSX_TOP may be set to a
+		# bogus/empty value if jsx is to be found at runtime as an OTP
+		# application or a dependency thereof (see otp_utils): as it will then
+		# be automatically found, the make system should not register extra
+		# paths, to avoid clashes.
+		#
+		ifndef JSX_TOP
 
-		# A convention of our own that one may want to respect:
-		JSX_SOFTWARE_BASE := $$HOME/Software/jsx/jsx-current-install
-		JSX_SOFTWARE_INSTALL_BASE := $(JSX_SOFTWARE_BASE)/_build/default/lib/jsx
+			# A rebar convention, if jsx is listed in rebar.config and is among
+			# the _checkouts projects of the current layer:
+			#
+			JSX_REBAR_CHECKOUTS_BASE = $(LAYER_TOP)/_checkouts/jsx
+			JSX_REBAR_CHECKOUTS_EBIN = $(JSX_REBAR_CHECKOUTS_BASE)/ebin
 
-		# No includes for JSX:
-		#INC += -I$(JSX_REBAR_INSTALL_BASE)/include -I$(JSX_SOFTWARE_INSTALL_BASE)/include
+			# If there is a jsx install at the same level as the Myriad one
+			# (rebar or not):
+			#
+			JSX_SIBLING_BASE := $(MYRIAD_TOP)/../jsx
 
-		# ($(JSX_*_INSTALL_BASE)/ebin/*.beam found at runtime)
+			# Another rebar-related path, when Myriad is itself a dependency,
+			# and jsx is another one:
+			#
+			JSX_REBAR_AS_DEP_BASE := $(JSX_SIBLING_BASE)
+			JSX_REBAR_AS_DEP_EBIN := $(JSX_REBAR_AS_DEP_BASE)/ebin
 
-		BEAM_DIRS += $(JSX_REBAR_INSTALL_BASE)/ebin
-		ABS_BEAM_DIRS += $(JSX_SOFTWARE_INSTALL_BASE)/ebin
+			# Still rebar, if Myriad is the top-level package:
+			JSX_REBAR_DIRECT_INSTALL_BASE := $(JSX_SIBLING_BASE)/_build/default/lib/jsx
+			JSX_REBAR_DIRECT_INSTALL_EBIN := $(JSX_REBAR_DIRECT_INSTALL_BASE)/ebin
 
+			# A convention of our own (absolute path) that one may want to
+			# respect: (note: no $$HOME, no quotes either)
+			#
+			JSX_SOFTWARE_BASE := $(HOME)/Software/jsx/jsx-current-install
+			JSX_SOFTWARE_EBIN := $(JSX_SOFTWARE_BASE)/ebin
+
+			# No includes for JSX:
+			#INC += -I$(JSX_REBAR_CHECKOUTS_BASE)/include -I$(JSX_REBAR_AS_DEP_BASE)/include -I$(JSX_REBAR_DIRECT_INSTALL_BASE)/include -I$(JSX_SOFTWARE_BASE)/include
+			# ($(JSX_*_BASE)/ebin/*.beam found at runtime)
+
+			# Options in order to locate a proper jsx (embedded or userspace):
+			# (most likely first)
+			#
+			ifneq "$(wildcard $(JSX_REBAR_CHECKOUTS_EBIN))" ""
+				JSX_TOP = $(JSX_REBAR_CHECKOUTS_BASE)
+				BEAM_DIRS += $(JSX_REBAR_CHECKOUTS_EBIN)
+			else
+				# With rebar3, the build order is not known a priori, and any
+				# jsx/ebin directory is created only when jsx is built; so we
+				# cannot test it when building a dependency relying on jsx, and
+				# we test only the jsx root directory instead, expecting it to
+				# be built afterwards; yet then we cannot discriminate a future
+				# jsx/ebin from a jsx/_build/default/lib/jsx/ebin one; so the
+				# new convention was to use USE_JSON=false at build time or an
+				# already set JSX_TOP (possibly to just '$(space)'), yet
+				# proceeding like that was not satisfactory.
+				#
+				# So now we investigate a bit further by checking a file
+				# (e.g. 'LICENSE') known to be at the root of a proper jsx
+				# root.
+				#
+				ifneq "$(wildcard $(JSX_REBAR_AS_DEP_BASE)/LICENSE)" ""
+				#ifneq "$(wildcard $(JSX_REBAR_AS_DEP_EBIN))" ""
+					JSX_TOP = $(JSX_REBAR_AS_DEP_BASE)
+					BEAM_DIRS += $(JSX_REBAR_AS_DEP_EBIN)
+				else
+					ifneq "$(wildcard $(JSX_REBAR_DIRECT_INSTALL_EBIN))" ""
+						JSX_TOP = $(JSX_REBAR_DIRECT_INSTALL_BASE)
+						BEAM_DIRS += $(JSX_REBAR_DIRECT_INSTALL_EBIN)
+					else
+						ifneq "$(wildcard $(JSX_SOFTWARE_EBIN))" ""
+							JSX_TOP = $(JSX_SOFTWARE_BASE)
+							ABS_BEAM_DIRS += $(JSX_SOFTWARE_EBIN)
+						else
+							# No trailing dot shall be specified here
+							# (as it is automatically added):
+							#
+							FORCE_EVAL := $(error Unable to find a JSX installation base (looked to $(JSX_REBAR_CHECKOUTS_EBIN) first, then $(JSX_REBAR_AS_DEP_EBIN), $(JSX_REBAR_DIRECT_INSTALL_EBIN) and finally $(JSX_SOFTWARE_EBIN), from $(PWD)))
+						endif
+					endif
+				endif
+			endif
+		endif
 	endif
 
 	ifeq ($(USE_JIFFY),true)
 
 		# The Jiffy JSON parser is available at
 		# https://github.com/davisp/jiffy.
+
+		# To be updated like jsx above if used.
 
 		# Install obtained thanks to:
 		#
@@ -788,9 +888,8 @@ ifeq ($(USE_SQL),true)
 
 
 	# Deactivated by default, as requires specific prerequisites:
-	#
-	# - the SQLite 3 library, ex: sqlite3 and sqlite3-dev packages in Debian, sqlite
-	#    on Arch Linux
+	# - the SQLite 3 library, e.g. sqlite3 and sqlite3-dev packages in Debian,
+	#    sqlite on Arch Linux
 	# - the SQLite 3 Erlang binding we retained, erlang-sqlite3 (cf
 	#    https://github.com/alexeyr/erlang-sqlite3.git)
 	#
@@ -878,7 +977,7 @@ ifeq ($(USE_JAVA_BINDING),true)
 	# The path pointing to the target JInterface JAR (OtpErlang.jar), only
 	# needed at compilation-time:
 	#
-	# Ex: cd [...]/Erlang-current-install/lib/erlang &&
+	# For example: cd [...]/Erlang-current-install/lib/erlang &&
 	#     ln -s lib/jinterface-1.8.1 jinterface-current-install
 	#
 	JINTERFACE_ROOT = $(ERLANG_ROOT)/lib/erlang/jinterface
@@ -911,9 +1010,11 @@ ifndef BASE_MAKEFILE
 endif
 
 
-# Overriding BASE_PLT is useful to take into account third-party prerequisites:
-ifndef BASE_PLT
-	BASE_PLT = $(PREDECESSOR_PLT)
+# Overriding BASE_PLT_FILES is useful to take into account extra third-party
+# prerequisites:
+#
+ifndef BASE_PLT_FILES
+	BASE_PLT_FILES = $(PREDECESSOR_PLT_FILE)
 endif
 
 
@@ -1089,7 +1190,7 @@ ERLANG_BIN_ROOT := $(shell dirname "$(ERLANG_COMPILER)")
 ERLANG_ROOT := $(shell dirname "$(ERLANG_BIN_ROOT)")
 
 
-# Note that at least some versions of dialyzer (ex: the one shipped with 17.1)
+# Note that at least some versions of Dialyzer (e.g. the one shipped with 17.1)
 # will not deference anymore symlinks (if Erlang.plt pointing to Erlang-17.1.plt
 # for example, it will not be found; this is managed in our installation
 # script):
@@ -1223,15 +1324,15 @@ ifndef BOOTSTRAP_MODULES
 	META_SRC_FILES = $(wildcard $(MYRIAD_TOP)/src/meta/*.erl)
 
 	# As they do not need to be specifically bootstrapped:
-	EXCLUDED_FROM_BOOTSTRAPPED_META =                                    \
-				$(MYRIAD_TOP)/src/meta/myriad_parse_transform.erl        \
-				$(MYRIAD_TOP)/src/meta/myriad_parse_transform_test.erl   \
-				$(MYRIAD_TOP)/src/meta/example_parse_transform.erl       \
-				$(MYRIAD_TOP)/src/meta/minimal_parse_transform_test.erl  \
-				$(MYRIAD_TOP)/src/meta/simple_parse_transform_target.erl \
-				$(MYRIAD_TOP)/src/meta/ast_generation_test.erl           \
-				$(MYRIAD_TOP)/src/meta/meta_utils_test.erl               \
-				$(MYRIAD_TOP)/src/meta/cond_utils_test.erl               \
+	EXCLUDED_FROM_BOOTSTRAPPED_META =                                   \
+		$(MYRIAD_TOP)/src/meta/myriad_parse_transform.erl               \
+		$(MYRIAD_TOP)/src/meta/myriad_parse_transform_test.erl          \
+		$(MYRIAD_TOP)/src/meta/example_parse_transform.erl              \
+		$(MYRIAD_TOP)/src/meta/myriad_minimal_parse_transform_test.erl  \
+		$(MYRIAD_TOP)/src/meta/simple_parse_transform_target.erl        \
+		$(MYRIAD_TOP)/src/meta/ast_generation_test.erl                  \
+		$(MYRIAD_TOP)/src/meta/meta_utils_test.erl                      \
+		$(MYRIAD_TOP)/src/meta/cond_utils_test.erl                      \
 
 
 
@@ -1273,8 +1374,8 @@ endif
 #
 # Note: such variables were meant to be overridden by each upper layer, yet
 # generally these layers require the *addition* (not replacement) of new rules
-# (ex: to manage classes) to the base ones (to be still able to compile standard
-# modules).
+# (e.g. to manage classes) to the base ones (to be still able to compile
+# standard modules).
 #
 ifndef PARSE_TRANSFORM_DIRS
 	PARSE_TRANSFORM_DIRS = $(MYRIAD_TOP)/src/meta
@@ -1289,10 +1390,15 @@ DEBUG_INFO_KEY_OPT = +'{debug_info_key,$(DEBUG_INFO_KEY)}'
 # General (base, transverse) compilation options that should be used for all
 # modules (third-party included):
 #
-# -v/+verbose caused inlining to be too verbose, ex:
+# -v/+verbose caused inlining to be too verbose, e.g.
 # "Old inliner: threshold=0 functions=[{setAttribute,3},.."
 #
-ERLANG_COMPILER_GENERAL_OPT += -b beam $(DEBUG_INFO_KEY_OPT)
+# myriad_debug_info_key is defined, so that the modules that we generate rely on
+# the same key as the ones normally built, in order that the Core Erlang of the
+# whole can be read by tools (e.g. Dialyzer):
+#
+ERLANG_COMPILER_GENERAL_OPT += -b beam $(DEBUG_INFO_KEY_OPT) \
+							   -Dmyriad_debug_info_key=\"$(DEBUG_INFO_KEY)\"
 
 
 # Variable defined to be re-usable by upper layers, so that compiling their own
@@ -1303,12 +1409,12 @@ ERLANG_COMPILER_GENERAL_OPT += -b beam $(DEBUG_INFO_KEY_OPT)
 # _build/default/lib/myriad/ebin directory, not anymore within the
 # _build/default/lib/myriad/src tree)
 #
-ERLANG_COMPILER_PARSE_TRANSFORM_OPT_FOR_MYRIAD =                \
-					-pz $(MYRIAD_TOP)/src/utils                 \
-					-pz $(MYRIAD_TOP)/src/meta                  \
-					-pz $(MYRIAD_TOP)/src/data-management       \
-					-pz $(MYRIAD_TOP)/ebin                      \
-					'+{parse_transform,myriad_parse_transform}'
+ERLANG_COMPILER_PARSE_TRANSFORM_OPT_FOR_MYRIAD = \
+	-pz $(MYRIAD_TOP)/src/utils                  \
+	-pz $(MYRIAD_TOP)/src/meta                   \
+	-pz $(MYRIAD_TOP)/src/data-management        \
+	-pz $(MYRIAD_TOP)/ebin                       \
+	'+{parse_transform,myriad_parse_transform}'
 
 
 # To apply a parse transform, not only it must be already compiled, but also,
@@ -1324,18 +1430,18 @@ ERLANG_COMPILER_PARSE_TRANSFORM_OPT_FOR_MYRIAD =                \
 #
 #ifndef ERLANG_COMPILER_PARSE_TRANSFORM_OPT
 
-	   # We need src/{utils,meta,data-management} in the path, as the 'Myriad'
-	   # parse transform uses meta modules that use map_hashtable (which is thus
-	   # bootstrapped as well).
+	# We need src/{utils,meta,data-management} in the path, as the 'Myriad'
+	# parse transform uses meta modules that use map_hashtable (which is thus
+	# bootstrapped as well).
 
-	   # Note: if, when compiling a module, the following error message is
-	   # issued: "undefined parse transform 'myriad_parse_transform'", then it
-	   # is most probably that the code of the parse transform actually calls,
-	   # directly or not, a non-existing code (typically a function of a module
-	   # to be built later)
+	# Note: if, when compiling a module, the following error message is
+	# issued: "undefined parse transform 'myriad_parse_transform'", then it
+	# is most probably that the code of the parse transform actually calls,
+	# directly or not, a non-existing code (typically a function of a module
+	# to be built later)
 
-	   #ERLANG_COMPILER_PARSE_TRANSFORM_OPT = \
-	   #	$(ERLANG_COMPILER_PARSE_TRANSFORM_OPT_FOR_MYRIAD)
+	#ERLANG_COMPILER_PARSE_TRANSFORM_OPT = \
+	#	$(ERLANG_COMPILER_PARSE_TRANSFORM_OPT_FOR_MYRIAD)
 
 #endif
 
@@ -1422,7 +1528,7 @@ ERLANG_COMPILER_OPT_FOR_BOOTSTRAPPED = $(ERLANG_COMPILER_OPT_FOR_PT) \
 									   $(BOOTSTRAP_INCLUDES)
 
 
-# Conditionally defined so that upper layers may update (ex: adding pz
+# Conditionally defined so that upper layers may update (e.g. adding pz
 # directories) or redefine these settings as a whole.
 #
 # As for ERLANG_COMPILER_EXTRA_OPTS, this variable is useful for mere additions,
@@ -1474,27 +1580,41 @@ JAVA := $$(which java)
 
 
 
+# EPMD section.
+#
+# See also the 'launch-epmd' make target.
+
+EPMD := $$(PATH=$(ERLANG_USUAL_ROOT)/bin:$$PATH which epmd 2>/dev/null)
+
+# EPMD_PORT used through 'export':
+EPMD_OPT := -relaxed_command_check
 
 # Erlang Default (only used in a node that is distributed):
 #EPMD_PORT := 4369
 
-# 'Myriad' default, to force correct port management:
-#
-# Note: if modifying this port definition, upper layers may have to modify that
-# accordingly.
-#
-# Notably, if a VM is ultimately started with the --nn option (i.e. not
-# distributed), enabling distribution at runtime (see
-# net_utils:enable_distribution/2) will lead this VM to expect an EPMD at the
-# port specified here (thus this information is taken into account in all cases,
-# even when starting non-distributed)
-#
-# Always test with a prior 'killall epmd' on all hosts involved, and use 'epmd
-# -d -port XXXX' to check whether there is an EPMD at that port (this is the
-# case iff 'there is already a epmd running at port XXXX' is output)
-#
-EPMD_PORT := 4506
-#EPMD_PORT := 4514
+ifndef EPMD_PORT
+
+	# 'Myriad' default, to force correct port management:
+
+	# Note: if modifying this port definition, upper layers may have to modify
+	# that accordingly.
+
+	# Notably, if a VM is ultimately started with the --nn option (i.e. not
+	# distributed), enabling distribution at runtime (see
+	# net_utils:enable_distribution/2) will lead this VM to expect an EPMD at
+	# the port specified here (thus this information is taken into account in
+	# all cases, even when starting non-distributed)
+
+	# Always test with a prior 'killall epmd' on all hosts involved, and use
+	# 'epmd -d -port XXXX' to check whether there is an EPMD at that port (this
+	# is the case iff 'there is already a epmd running at port XXXX' is output)
+
+	# (see also the 'launch-epmd' and 'list-epmd-names' targets)
+
+	EPMD_PORT := 4506
+	#EPMD_PORT := 4514
+
+endif
 
 
 # We can force the launched VM to use TCP/IP connections in a range of ports
@@ -1535,7 +1655,8 @@ endif
 # (previously, after issuing the warning, an 'exit' was done, yet it resulted in
 # the full BEAM_PATH_OPT variable being nullified, and thus executions were
 # failing with various random undef errors; just displaying a warning now;
-# re-add temporarily an exit if wanting to spot faulty paths through a test suite)
+# re-add temporarily an exit if wanting to spot faulty paths through a test
+# suite)
 #
 BEAM_PATH_OPT = $$(for d in $(BEAM_DIRS) $(ABS_BEAM_DIRS); do real_d=$$(realpath $$d 2>/dev/null); if [ -d "$${real_d}" ]; then echo "--beam-dir $${real_d}"; else echo "Warning: the '$${d}' BEAM directory does not exist (from $$(pwd)), hence was not set in the code path." 1>&2 ; fi; done)
 
@@ -1587,7 +1708,7 @@ ERL_PARAMETERIZED_LAUNCHER = $(ERL_LAUNCHER) $(HOSTNAME_OPT) $(FIREWALL_OPT)  \
 # Previously the short names were preferred, as they seemed to resist to
 # non-existing or, more probably, improperly configured, DNS systems.
 #
-# However other issues may arise with them (ex: an inappropriate domain being
+# However other issues may arise with them (e.g. an inappropriate domain being
 # taken by Erlang from /etc/resolv.conf), so we went back to the (supposedly
 # more precise) long names.
 #
@@ -1648,8 +1769,8 @@ endif
 # Regarding the VM-specific command-line options, we used to rely on '-noshell'
 # rather than on '-noinput', as no shell was wanted by default for executions,
 # since executables are supposed to interact by themselves with the user.
-# However, at least for some uses (ex: term_ui, relying on /bin/dialog), we
-# *need* to have -noinput and not to have -noshell, while others (ex: text_ui,
+# However, at least for some uses (e.g. term_ui, relying on /bin/dialog), we
+# *need* to have -noinput and not to have -noshell, while others (e.g. text_ui,
 # relying on io:get_line/1) require the opposite.
 #
 # So we finally designed a work-around (see system_utils:get_line/1) to stick
@@ -1705,10 +1826,17 @@ ALL_CMD_LINE_OPTIONS := $(EXEC_INTERNAL_OPTIONS) -extra $(EXEC_EXTERNAL_OPTIONS)
 ALL_CMD_LINE_OPTIONS_FOR_SHELL := $(INTERNAL_OPTIONS) -start-verbatim-options -extra $(EXEC_EXTERNAL_OPTIONS) $(CMD_LINE_OPT) --provide-shell
 
 
+# GLSL reference compiler for shaders:
+GLSL_REF_COMPILER := $$(which glslangValidator 2>/dev/null)
+
+#GLSL_REF_COMPILER_OPT := -m
+GLSL_REF_COMPILER_OPT :=
+
+
 ## Documentation section.
 
 # Available in Ceylan-Hull:
-DOC_TRACKER := $$(which track-make-automatic-source.sh)
+DOC_TRACKER := $$(which track-make-automatic-source.sh 2>/dev/null)
 
 
 # PROJECT_ICON is a path to an icon file that will be copied on HTML generation:
@@ -1758,7 +1886,7 @@ API_DOC_ALT_ROOT := $(LAYER_TOP)/doc/api-doc-alt
 # variable known to be set/used by rebar.
 #
 # Note: for clarity (typically for variables to be defined by upper layers),
-# some variables are instead suffixed by "_FOR_REBAR" (ex: VERSION_FOR_REBAR).
+# some variables are instead suffixed by "_FOR_REBAR" (e.g. VERSION_FOR_REBAR).
 
 # Toggle for additional logs (this is a rebar-specific variable):
 REBAR_DEBUG =
@@ -1894,7 +2022,7 @@ ifndef SYNC_TOOL
 		SSH_OPT := -e "ssh -p $(SSH_PORT)"
 	endif
 
-	SYNC_BASE_OPT := -rlpD -vz $(SSH_OPT)
+	SYNC_BASE_OPT := -rlpD -vz $(SSH_OPT) --exclude '.git'
 
 
 	# General-purpose, mostly to synchronise a remote webserver in terms of
@@ -1939,8 +2067,8 @@ DIALYZER := $$(PATH=$(ERLANG_USUAL_ROOT)/bin:$$PATH which dialyzer 2>/dev/null)
 # ~/.erlang.crypt; refer to the 'self-check-against-plt' target for further
 # details.
 #
-DIALYZER_OPTS := $(DIALYZER_ESSENTIAL_OPTS)  \
-				 $(DIALYZER_CONTEXTUAL_OPTS)
+DIALYZER_OPTS = $(DIALYZER_ESSENTIAL_OPTS)  \
+				# By default disabled: $(DIALYZER_CONTEXTUAL_OPTS)
 
 
 # These Dialyzer options are nearly always useful.
@@ -1950,7 +2078,7 @@ DIALYZER_OPTS := $(DIALYZER_ESSENTIAL_OPTS)  \
 #
 # -Wmissing_return: warns about functions whose specification explicitly
 #  includes types that the function cannot return; this may happen if a function
-#  obeys to a more general API
+#  obeys to a more general API, so this option may be commented-out
 #
 # -Wno_opaque: disables the warnings about breaking the opaqueness of a type
 #  defined in another module; these warnings are left enabled (hence this option
@@ -1965,12 +2093,17 @@ DIALYZER_OPTS := $(DIALYZER_ESSENTIAL_OPTS)  \
 #  actual culprit function (not A, but B or a function ultimately called by B);
 #  generally these warnings do not teach much
 #
-DIALYZER_ESSENTIAL_OPTS := -Wextra_return -Wmissing_return -Wno_return
+# -Wno_unused: disables the warnings about unused and unexported functions; if a
+#  function A is to call a function B, yet A always crashes before, B will
+#  unfortunately be considered unused; as the compiler is supposed to catch
+#  functions that are neither used locally nor exported, these warnings can be
+#  disabled, and thus this option can be retained
+#
+DIALYZER_ESSENTIAL_OPTS := -Wextra_return -Wno_return -Wno_unused
 
 
-
-# Such Dialyzer options may not be always useful (so they might be at least
-# temporarily disabled).
+# Such Dialyzer options may not be always useful (so now they are disabled by
+# default).
 #
 # -Werror_handling: warns about functions that only return by an exception; this
 #  may be normal (e.g. when a function is meant to be overridden one way or
@@ -1980,35 +2113,33 @@ DIALYZER_ESSENTIAL_OPTS := -Wextra_return -Wmissing_return -Wno_return
 #  be relevant, as improper lists have their use (they allow for an increased
 #  compactness, see http://howtos.esperide.org/Erlang.html#improper-lists)
 #
-# -Wno_unused: disables the warnings about unused and unexported functions; if a
-#  function A is to call a function B, yet A always crashes before, B will
-#  unfortunately be considered unused; as the compiler is supposed to catch
-#  functions that are neither used locally nor exported, these warnings can be
-#  disabled, and thus this option can be retained
-#
-# -Wunderspecs: enables warnings about functions whose specification allows
-#  arguments that the function actually cannot handle (hence arguments complying
-#  with its spec may make this function crash); either the spec shall be
-#  restricted or the function shall be generalised
-#
 # -Wunmatched_returns: enables warnings about function calls that ignore a
 #  structured return value or do not match against one of many possible return
 #  values (however, no warnings are included if the possible return values are a
 #  union of atoms or a union of numbers); may be useful to ensure that all cases
 #  are covered
 #
-DIALYZER_CONTEXTUAL_OPTS := -Werror_handling -Wno_improper_lists -Wno_unused -Wunderspecs
+DIALYZER_CONTEXTUAL_OPTS := -Werror_handling -Wno_improper_lists -Wunmatched_returns
 
 
 # Such options are not deemed useful in our context; ad hoc, function-level
 # suppressions are usually better.
 #
 # -Wno_missing_calls: disables warnings about calls to missing (not defined, or
-#  not exported functions; such warnings are quite useful, so this option is not
-#  even retained here
+#  not exported functions); such warnings are quite useful, so this option is
+#  not even retained here
 #
 # -Wno_fail_call: disables warnings about failing calls; such warnings are quite
 #  useful, so this option is not even retained here
+#
+# -Wunderspecs: may enable warnings about functions whose specification allows
+#  arguments that the function actually cannot handle (hence arguments complying
+#  with its spec may make this function crash); either the spec shall be
+#  restricted, or the function shall be generalised; this is a real error if it
+#  applies to the function parameters (as opposed to its result); in practice it
+#  may cause messages like "Type specification f(A) -> X is a supertype of the
+#  success typing: f(A) -> Y" where Y is included in X; this is true but
+#  generally uninteresting
 #
 # -Woverspecs: enables warnings about functions whose specification does not
 #  include arguments that the function actually could handle (hence, according
@@ -2016,7 +2147,7 @@ DIALYZER_CONTEXTUAL_OPTS := -Werror_handling -Wno_improper_lists -Wno_unused -Wu
 #  acceptable for this function); so the spec could be generalised, or the
 #  function could be restricted, or, often, this warning may be ignored as a
 #  whole, considering that this restriction is legit (so the overspecs option
-#  matters a lot less than underspecs)
+#  matters a lot less than underspecs and is generally of little interest)
 #
 # -Wspecdiffs: enables warnings about functions whose specification is different
 #  from the success typing; union of underspecs, overspecs: detection of
@@ -2047,7 +2178,7 @@ DIALYZER_CONTEXTUAL_OPTS := -Werror_handling -Wno_improper_lists -Wno_unused -Wu
 #  command-line Dialyzer; current this option is not retained; presumably
 #  optional dependencies would be a problem if used
 #
-DIALYZER_DISABLED_OPTS := -Woverspecs -Wno_contracts
+DIALYZER_DISABLED_OPTS := -Wunderspecs -Woverspecs -Wno_contracts
 
 
 # To use a generic rule to produce it (unless already defined):
@@ -2057,20 +2188,23 @@ endif
 
 
 
-# A third-party, open-source quite complementary to Dializer; see
+# Gradualizer is a third-party, open-source quite complementary to Dialyzer; see
 # https://github.com/josefs/Gradualizer
 #
 # To install it, we recommend the following procedure:
 # $ cd ~/Software
+# $ mkdir gradualizer && cd gradualizer
 # $ git clone https://github.com/josefs/Gradualizer.git
-# $ cd Gradualizer/
-# $ make escript
+# $ cd Gradualizer && make escript
 #
-# Then ensure that ~/Software/Gradualizer/bin is in your PATH so that
-# 'gradualizer' can be run directly.
+# Then ensure that ~/Software/gradualizer/Gradualizer/bin is in your PATH so
+# that 'gradualizer' can be run directly.
+#
+# We also recommend to update it regularly, as it is still in active
+# development; for that, run from the root of its clone:
+# 'git pull && make clean escript'
 #
 GRADUALIZER := $$(which gradualizer 2>/dev/null)
-
 
 
 # These Gradualizer options are nearly always useful.
@@ -2091,21 +2225,26 @@ GRADUALIZER_ESSENTIAL_OPTS := --infer --fmt_location verbose --fancy --color alw
 # temporarily disabled).
 #
 # --stop_on_first_error: useful to fix errors one by one, without being
-#  overwhelmed; yet may crash some versions of Gradualizer
+# overwhelmed; yet may crash some versions of Gradualizer
 #
-#GRADUALIZER_CONTEXTUAL_OPTS := --stop_on_first_error
-GRADUALIZER_CONTEXTUAL_OPTS :=
+GRADUALIZER_CONTEXTUAL_OPTS := --stop_on_first_error
+#GRADUALIZER_CONTEXTUAL_OPTS :=
 
 
 # Refer to 'gradualizer --help' for further guidance.
-#
 GRADUALIZER_OPTS := $(GRADUALIZER_ESSENTIAL_OPTS)  \
-					$(GRADUALIZER_CONTEXTUAL_OPTS)
+					$(GRADUALIZER_CONTEXTUAL_OPTS) \
+					$(OVERALL_PA_OPTS)
 
+
+# eqWAlizer is provided by WhatsApp:
+EQWALIZER := $$(which elp 2>/dev/null)
+
+EQWALIZER_OPTS = --project $(LAYER_TOP)/conf/$(PROJECT_SHORT_NAME)-for-eqwalizer.json
 
 
 # Designates the target(s), files and/or directories, that shall be checked,
-# typically by Gradualizer.
+# typically by a static checking tool (e.g. Gradualizer).
 #
 # Note that:
 #
@@ -2119,7 +2258,9 @@ GRADUALIZER_OPTS := $(GRADUALIZER_ESSENTIAL_OPTS)  \
 # can be overridden from the command-line, like in: 'make check-static-typing
 # TARGETS_TO_CHECK="foo.beam bar.beam"'.
 #
-TARGETS_TO_CHECK := $(wildcard *.beam)
+#TARGETS_TO_CHECK := $(wildcard *.beam)
+TARGETS_TO_CHECK := $$(find . -name '*.beam' 2>/dev/null)
+
 
 
 
@@ -2145,8 +2286,8 @@ BATCH_OPT := 'CMD_LINE_OPT="--batch"'
 # For 'Myriad', it is the PLT of Erlang/OTP (possibly enriched by
 # prerequisites):
 #
-ifndef PREDECESSOR_PLT
-	PREDECESSOR_PLT = $(ERLANG_PLT_FILE)
+ifndef PREDECESSOR_PLT_FILE
+	PREDECESSOR_PLT_FILE = $(ERLANG_PLT_FILE)
 endif
 
 
@@ -2157,7 +2298,9 @@ MAKE_CODE_STATS := $(MYRIAD_TOP)/src/scripts/make-code-stats.sh
 
 # Defining the top directory of the predecessor layer allows to write generic
 # rules (not depending on its actual name) able to automatically descend the
-# layer stack (ex: to copy their respective BEAM files in their respective ebin)
-# without defining specific make targets at each layer:
-
-#PREDECESSOR_LAYER_TOP :=
+# layer stack (e.g. to copy their respective BEAM files in their respective
+# ebin) without defining specific make targets at each layer:
+#
+ifndef PREDECESSOR_LAYER_TOPS
+	PREDECESSOR_LAYER_TOPS =
+endif

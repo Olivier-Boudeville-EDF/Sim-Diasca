@@ -20,7 +20,7 @@ Questions, Metrics & Models
    Only some basic, general considerations about modelling are given here. To focus on the actual modelling that shall be operated in practice with the engine, one should refer to the *Sim-Diasca Modeller Guide*.
 
 
-Depending on the question one is asking about the target system (ex: "*What is the mean duration of that service request?*") or on the properties that one wants to evaluate (ex: robustness, availability, cost, etc.), **metrics** (a.k.a. *system observables*), which are often macroscopic, system-wide, have to be defined. For example: round-trip time elapsed for a service request, or yearly total operational cost for the GPRS infrastructure.
+Depending on the question one is asking about the target system (e.g. "*What is the mean duration of that service request?*") or on the properties that one wants to evaluate (e.g. robustness, availability, cost, etc.), **metrics** (a.k.a. *system observables*), which are often macroscopic, system-wide, have to be defined. For example: round-trip time elapsed for a service request, or yearly total operational cost for the GPRS infrastructure.
 
 These specific metrics will have to be computed and monitored appropriately during the corresponding simulations.
 

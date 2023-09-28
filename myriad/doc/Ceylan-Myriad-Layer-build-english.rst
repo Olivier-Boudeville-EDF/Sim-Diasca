@@ -11,11 +11,11 @@ Various elements are defined at the ``myriad`` level to set-up an appropriate bu
 
 This includes:
 
-- a set of pre-defined Make **variables**, describing various settings that will be reused by generic rules (ex: to compile modules with relevant flags, to create source archives, to install an application, to manage the various paths, to perform test checking, to generate archives, installs and releases, etc.); these variables are defined in ``myriad/GNUmakevars.inc``
+- a set of pre-defined Make **variables**, describing various settings that will be reused by generic rules (e.g. to compile modules with relevant flags, to create source archives, to install an application, to manage the various paths, to perform test checking, to generate archives, installs and releases, etc.); these variables are defined in ``myriad/GNUmakevars.inc``
 
 - a set of generic **rules**, to compile and run various modules and tests, to generate various elements of documentation, etc.; these rules are defined (still from the `myriad <https://github.com/Olivier-Boudeville/Ceylan-Myriad>`_ root directory), in:
 
-  - ``GNUmakerules-automatic.inc``, for all rules that apply generically to some kinds of targets (ex: all source files)
+  - ``GNUmakerules-automatic.inc``, for all rules that apply generically to some kinds of targets (e.g. all source files)
   - ``GNUmakerules-explicit.inc``, for all "direct" (explicitly designated) rules, that are not pattern-based
   - ``doc/GNUmakerules-docutils.inc``, for all documentation-related rules
 

@@ -1,4 +1,4 @@
-% Copyright (C) 20022-2022 Olivier Boudeville
+% Copyright (C) 2022-2023 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %

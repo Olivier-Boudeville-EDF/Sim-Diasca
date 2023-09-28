@@ -1,4 +1,4 @@
-.PHONY: help help-traces                                                \
+.PHONY: help help-intro-local help-traces                               \
 	all all-pre-hook-local overall-version-file all-bindings            \
 	prerequisites rebuild generate-all-plt                              \
 	generate-list-of-all-types link-host-candidates test-production     \
@@ -83,14 +83,14 @@ PLT_TARGETS = $(PREREQUISITES_DIRS) $(SIM_DIASCA_TOP) $(MOCK_DIRS)
 
 
 # Default target:
-help: help-intro help-root
+help: help-intro-local help-root
 
 
 include $(ROOT_TOP)/GNUmakesettings.inc
 
 
 
-help-intro:
+help-intro-local:
 	@echo " Following main make targets are available from this root of the Sim-Diasca code base:"
 	@echo "  - 'rebuild':       cleans, builds and generates list of all types"
 	@echo "  - 'release':       generates a source release for the $(SIM_DIASCA_VERSION) version "
@@ -430,12 +430,12 @@ update-third-party-mirror:
 
 
 stats:
-	@echo "Statistics of the Sim-Diasca core itself only:"
-	@$(MAKE_CODE_STATS) $(SIM_DIASCA_TOP)
+	@echo "Statistics for the full Sim-Diasca distribution:"
+	@$(MAKE_CODE_STATS) $(ROOT_TOP)
 
 
 stats-full: stats
-	@echo "Statistics of the Sim-Diasca lower-layers:"
+	@echo "Statistics of each Sim-Diasca layer:"
 	@$(MAKE_CODE_STATS) $(TRACES_TOP)
 	@$(MAKE_CODE_STATS) $(WOOPER_TOP)
 	@$(MAKE_CODE_STATS) $(MYRIAD_TOP)
@@ -462,7 +462,9 @@ info-local-files:
 	@echo "VERSION_FILE = $(VERSION_FILE)"
 
 
-info-paths:
+info-paths: info-paths-local
+
+info-paths-local:
 	@echo "ROOT_TOP               = $(ROOT_TOP)"
 	@echo "MYRIAD_TOP             = $(MYRIAD_TOP)"
 	@echo "WOOPER_TOP             = $(WOOPER_TOP)"

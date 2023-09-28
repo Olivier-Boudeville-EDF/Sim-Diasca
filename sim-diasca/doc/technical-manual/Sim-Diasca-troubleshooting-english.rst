@@ -21,7 +21,7 @@ Troubleshooting Principles
 First at all, everything is done so that:
 
 - the simulation crashes as soon as a problem occurs (in the engine, in the models and/or in the simulation case), so that there is not silent error
-- in debug mode, many additional runtime checkings are performed (ex: with regard to actor scheduling, termination, etc.)
+- in debug mode, many additional runtime checkings are performed (e.g. with regard to actor scheduling, termination, etc.)
 
 
 As a consequence, models in development will crash early and often, and the diagnosis should be quite easy to obtain, thanks to the detailed crash information being given.
@@ -81,7 +81,7 @@ then it is the symptom that a similarly-named Erlang virtual machine is already 
 
 .. [#] This can happen if for example you issued ``CTRL-Z`` then put that task in the background (``bg``) and forgot that it was still running.
 
-	Note that Sim-Diasca includes various mechanisms to ensure that no two runs can silently interfere by mistake (ex: using UUID-based cookies, uniquely named directories according to case, user and a generated identifier, etc.).
+	Note that Sim-Diasca includes various mechanisms to ensure that no two runs can silently interfere by mistake (e.g. using UUID-based cookies, uniquely named directories according to case, user and a generated identifier, etc.).
 
 
 
@@ -163,7 +163,7 @@ The corresponding symptom is an exception being thrown during deployment and inc
 
 This may happen when running distributed simulations whereas hostname resolution is somehow failing.
 
-For example, we encountered sometimes faulty network configurations (ex: w.r.t. to a stale domain name) where a host contacted as ``foo.bar.org`` was responding as ``foo.other.org``, and thus was never reported as available.
+For example, we encountered sometimes faulty network configurations (e.g. w.r.t. to a stale domain name) where a host contacted as ``foo.bar.org`` was responding as ``foo.other.org``, and thus was never reported as available.
 
 In other cases, a computing host was designated (either in a host file or directly in the simulation case) not, as expected, by its name (preferably FQDN) but, incorrectly, by its IP address (which is disallowed, see the ``computing_hosts`` field of the ``deployment_settings`` record).
 
@@ -172,13 +172,13 @@ In other cases, a computing host was designated (either in a host file or direct
 **Issue #5**: Execution seems to be blocked right after having been triggered.
 ------------------------------------------------------------------------------
 
-This may happen (albeit now on very rare cases; or, possibly, never anymore) if using a virtualized environment (ex: VMWare or VirtualBox). Indeed there used to be, with some unspecified configurations, a general problem related to timers and message receiving, and apparently Sim-Diasca was not the culprit here (as unrelated applications were affected similarly). Erlang was maybe not guilty either, as possibly related issues were reported on the VMWare side.
+This may happen (albeit now on very rare cases; or, possibly, never anymore) if using a virtualized environment (e.g. VMWare or VirtualBox). Indeed there used to be, with some unspecified configurations, a general problem related to timers and message receiving, and apparently Sim-Diasca was not the culprit here (as unrelated applications were affected similarly). Erlang was maybe not guilty either, as possibly related issues were reported on the VMWare side.
 
 Anyway, because of these problems and of the incurred performance penalty, *the use of virtualized environments should be avoided* here; at least one should develop and test one's simulation on a real hardware before considering running it in a virtualized form.
 
 Another cause of a launched computing node not being found and resulting in a time-out might be an inconsistent name resolution (see issue #3).
 
-For example, beware of specifying in ``/etc/resolv.conf`` a wrong domain in the ``domain`` entry (ex: ``bar.org`` instead of ``foo.org``) . Otherwise your user node may try to reach ``A_COMPUTING_NODE_NAME@HOST.foo.org`` whereas this one will believe its own name actually is ``A_COMPUTING_NODE_NAME@HOST.bar.org`` and thus will not respond - leading to Sim-Diasca freezing at start-up before automatically timing-out. If in doubt and having the relevant permissions, one may comment-out the ``domain`` information, at least for a first troubleshooting.
+For example, beware of specifying in ``/etc/resolv.conf`` a wrong domain in the ``domain`` entry (e.g. ``bar.org`` instead of ``foo.org``) . Otherwise your user node may try to reach ``A_COMPUTING_NODE_NAME@HOST.foo.org`` whereas this one will believe its own name actually is ``A_COMPUTING_NODE_NAME@HOST.bar.org`` and thus will not respond - leading to Sim-Diasca freezing at start-up before automatically timing-out. If in doubt and having the relevant permissions, one may comment-out the ``domain`` information, at least for a first troubleshooting.
 
 
 
@@ -202,7 +202,7 @@ So: just remove then, from the overall Sim-Diasca codebase, all build trees that
 **Issue #7**: At start-up, the rebuild of the simulator codebase fails, although the code is correct.
 -----------------------------------------------------------------------------------------------------
 
-This may happen if at least one source file (ex: ``myFile.erl``) is being edited without having been saved yet: some editors then create a temporary file like ``~myFile.erl`` or ``.#myFile.erl`` in the same directory. The make system will try to rebuild that file, but the compilation will fail necessarily, as this filename will not match the module name. A proper error message should have been sent in the simulation traces.
+This may happen if at least one source file (e.g. ``myFile.erl``) is being edited without having been saved yet: some editors then create a temporary file like ``~myFile.erl`` or ``.#myFile.erl`` in the same directory. The make system will try to rebuild that file, but the compilation will fail necessarily, as this filename will not match the module name. A proper error message should have been sent in the simulation traces.
 
 
 
@@ -224,7 +224,7 @@ This could happen when multiple BEAM versions of the same module can be found fr
 
 The problem is that the deployment manager will scan for all BEAMs from the deployment root, and include them in the deployment archive. As a result, on each computing node, any BEAM found in ``foo_directory-hidden`` will be deployed as well and, depending on the code path, ``foo_directory-hidden/a_module.beam`` may be found before ``foo_directory/a_module.beam`` (unfortunately this tends to be often the case). As a consequence, the previous version of the code (the hidden one) would be wrongly executed.
 
-The solution is to avoid to perform back-ups directly in the source tree (ex: use ``git stash``) or, at the very least, to copy them once all BEAMs have been removed, to avoid that they silently collide.
+The solution is to avoid to perform back-ups directly in the source tree (e.g. use ``git stash``) or, at the very least, to copy them once all BEAMs have been removed, to avoid that they silently collide.
 
 Another possible cause of not seeing a change when running Sim-Diasca (at least, not the first time it is then run) is to modify a source file without recompiling it afterwards: Sim-Diasca, during its deployment, will then recompile the whole (thus updating any BEAM file that requires it), yet the previous version of the BEAM may have already been loaded by the user node (and possibly sent over the network to other nodes). These changes would be visible only from the second run, not the first one. To avoid that, one should recompile a module when having modified it - anyway after a change we have to check that the module still compiles, isn't it?
 
@@ -260,10 +260,10 @@ Most efficient solutions to increase speed are:
 
 - increase your computing resources (more nodes, more powerful, better network, etc.); check that you are never hitting the swap and, more generally, try to ensure that computing nodes stay well below a high load (performances in that case degrade swiftly)
 - make (a better) use of advanced scheduling (models seldom require all the same evaluation frequency)
-- selectively tune your models (ex: use ``etop`` and the traces to spot the most-demanding ones)
+- selectively tune your models (e.g. use ``etop`` and the traces to spot the most-demanding ones)
 - switch to more "exotic" solutions, like native compilation or the use of `NIFs <http://erlang.org/doc/tutorial/nif.html>`_ (i.e. *Native Implemented Functions*)
 - ultimately, if at all possible, reduce your problem size
-- improve your algorithms (ex: choose better data-structures):
+- improve your algorithms (e.g. choose better data-structures):
 
 :raw-html:`<center><img src="xkcd-algorithms.png" id="responsive-image-medium"></img></center>`
 :raw-latex:`\includegraphics[scale=0.5]{xkcd-algorithms.png}`
@@ -386,7 +386,7 @@ So chances are that this corresponds to a user implementation error.
 
 This typically happens after a first failed launch: a virtual machine bearing the same name is already running on the background, thus preventing another one to be launched. The solution may be as simple as a brutal, yet efficient, ``killall -9 beam.smp``.
 
-This issue used to occur more frequently when the default launching mode was set to rely on ``run_erl`` (rather than a direct start from the command-line). No more ``{error_logger,T,"Protocol: ~tp: the name X@Ya seems to be in use by another Erlang node",["inet_tcp"]}`` was reported by the VM (as discussed in issue #1) yet, strangely enough, the issue discussed here could happen during the mass running of tests (ex: when executing ``make test`` from the root). ``run_erl`` was suspected here.
+This issue used to occur more frequently when the default launching mode was set to rely on ``run_erl`` (rather than a direct start from the command-line). No more ``{error_logger,T,"Protocol: ~tp: the name X@Ya seems to be in use by another Erlang node",["inet_tcp"]}`` was reported by the VM (as discussed in issue #1) yet, strangely enough, the issue discussed here could happen during the mass running of tests (e.g. when executing ``make test`` from the root). ``run_erl`` was suspected here.
 
 
 
@@ -395,11 +395,11 @@ This issue used to occur more frequently when the default launching mode was set
 
 One may run, in reproducible mode, a simulation twice, and unfortunately realize that results happen to differ.
 
-Whether or not the technical setting changed (ex: local run versus a distributed one), it is abnormal and surely disturbing - moreover it tends to be among the issues that are the most difficult to investigate.
+Whether or not the technical setting changed (e.g. local run versus a distributed one), it is abnormal and surely disturbing - moreover it tends to be among the issues that are the most difficult to investigate.
 
 Of course the engine might be the culprit, yet, for the moment at least, every time that reproducibility was lost, the cause was found to lie in the simulation itself, not in the engine.
 
-The actual culprit could be the simulation case (ex: see `Randomness Pitfalls`_) or the models. For example the implementor must remind that simulations are executed so that they are reproducible, while PIDs are expected to change from one run to another (a bit like pointers). Hence no operation, except equality testing, shall be performed on them. For reliable, stable actor identifiers, one must use AAIs instead.
+The actual culprit could be the simulation case (e.g. see `Randomness Pitfalls`_) or the models. For example the implementor must remind that simulations are executed so that they are reproducible, while PIDs are expected to change from one run to another (a bit like pointers). Hence no operation, except equality testing, shall be performed on them. For reliable, stable actor identifiers, one must use AAIs instead.
 
 .. Note::
 
@@ -419,9 +419,9 @@ To considerably increase the chances of spotting that different outcomes stem fr
 
 In some cases the generated documentation encountered problems, typically the table of contents of the technical manual was empty.
 
-This may come from some tools that insert Unicode characters (typically ``U+FEFF``) that are invisible in most editors (ex: ``emacs``) yet that are not supported by the documentation generators (based on docutils and the RST syntax).
+This may come from some tools that insert Unicode characters (typically ``U+FEFF``) that are invisible in most editors (e.g. ``emacs``) yet that are not supported by the documentation generators (based on docutils and the RST syntax).
 
-A solution is to check the output of the documentation tools (ex: ``rubber``) or to use editors like ``nedit``, which displays these characters that shall be removed.
+A solution is to check the output of the documentation tools (e.g. ``rubber``) or to use editors like ``nedit``, which displays these characters that shall be removed.
 
 
 

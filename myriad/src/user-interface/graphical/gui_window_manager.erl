@@ -35,7 +35,7 @@
 
 
 -type window_name() :: atom().
-% The name of a window, typically designating its role (ex: 'top_frame').
+% The name of a window, typically designating its role (e.g. 'top_frame').
 
 
 -export_type([ window_name/0 ]).
@@ -47,7 +47,7 @@
 -compile( { inline, [ get_env/1 ] } ).
 
 % For gui_env_reg_name:
--include("gui.hrl").
+-include("gui_base.hrl").
 
 
 % Shorthands:
@@ -62,7 +62,7 @@
 %
 -spec is_maximised() -> boolean().
 is_maximised() ->
-   gui:is_maximised( get_env( top_level_window ) ).
+	gui:is_maximised( get_env( top_level_window ) ).
 
 
 % @doc Maximises or restores the application - that is its top-level window.

@@ -44,13 +44,15 @@ run() ->
 
 	test_facilities:display( "Creating a test Describable." ),
 
-	UserDescription = "King Of Brittain",
+	MyDescribable = class_Describable:new_link(),
 
-	MyDescribable = class_Describable:new_link( UserDescription ),
+	% Previously description was stored by the describable and thus could be
+	% checked, set, etc.
 
 	MyDescribable ! { getDescription, [], self() },
 
-	BinDescription = text_utils:string_to_binary( UserDescription ),
+	BinDescription = text_utils:string_to_binary(
+		class_Describable:to_string( undefined ) ),
 
 	% Check:
 	BinDescription = receive
@@ -62,25 +64,6 @@ run() ->
 
 	test_facilities:display( "Correct description returned: '~ts'.",
 							 [ BinDescription ] ),
-
-
-	NewBinDescription = <<"King of the United Kingdom">>,
-
-	MyDescribable ! { setDescription, [ NewBinDescription ] },
-
-	MyDescribable ! { getDescription, [], self() },
-
-	% Check:
-	NewBinDescription = receive
-
-		{ wooper_result, SecondDesc } ->
-			SecondDesc
-
-	end,
-
-	test_facilities:display( "Correct new description returned: '~ts'.",
-							 [ NewBinDescription ] ),
-
 
 	wooper:delete_synchronously_instance( MyDescribable ),
 

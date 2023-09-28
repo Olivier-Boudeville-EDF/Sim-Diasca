@@ -1,0 +1,28 @@
+// This is a configuration file for the eqWAlizer type checker.
+// To be used with Myriad's 'check-with-eqwalizer' make target.
+
+{
+  "apps": [myriad],
+  "deps": [],       // 3rd party dependencies (not type-checked), defaults to []
+  "root": "."       // Defaults to ""
+}
+
+
+{
+  "name": "myriad",
+  "dir": ".",                      // Relative to project root
+
+  // Not wanting the tool to operate on sources, but on BEAMs:
+  "src_dirs": ["src"],             // Relative to app dir, defaults to ["src"]
+
+  "extra_src_dirs": [],            // Relative to app dir, defaults to []
+
+  // A single path, not a list thereof (so refer to the 'copy-beams-to-ebin'
+  // make target):
+  "ebin": "ebin",                  // Relative to app dir, defaults to "ebin"
+
+  // Symlinks to all .hrl there:
+  "include_dirs": ["include"],     // Relative to app dir, defaults to []
+
+  "macros": []                     // Defaults to []
+}

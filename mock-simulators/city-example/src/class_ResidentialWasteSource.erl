@@ -1,22 +1,23 @@
 % Copyright (C) 2012-2023 EDF R&D
-
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2012.
 
 
 % @doc Class modelling a <b>residential waste source</b>.
@@ -113,10 +114,10 @@ construct( State, ActorSettings, Name, Location, ProductionType,
 			{ gaussian, _Mu=ProductionQuantity, _Sigma=2.0 } } ] ),
 
 	ProductionTickDuration = class_Actor:convert_seconds_to_ticks(
-				ProductionDuration, ?city_max_relative_error, ActorState ),
+		ProductionDuration, ?city_max_relative_error, ActorState ),
 
 	AddedState = class_StochasticActor:add_law( production_duration_law,
-		{ positive_integer_exponential, _Lamba=1/ProductionTickDuration },
+		{ positive_integer_exponential_1p, _Lamba=1/ProductionTickDuration },
 		ActorState ),
 
 	% One tank per residential source, initially empty:
@@ -132,7 +133,7 @@ construct( State, ActorSettings, Name, Location, ProductionType,
 	WasteCapacity = [ Tank ],
 
 	LoadingState = class_WasteLoadingPoint:construct( AddedState,
-											Location, WasteCapacity ),
+													  Location, WasteCapacity ),
 
 	POIState = class_PointOfInterest:construct( LoadingState, Name, Location,
 												GISPid ),
@@ -208,7 +209,7 @@ actSpontaneous( State ) ->
 			   [ ProducedMass, NewProductionDuration ] ),
 
 	ActualAddedMass = case Tank#waste_tank.max_mass_stored -
-									Tank#waste_tank.current_mass_stored  of
+								Tank#waste_tank.current_mass_stored  of
 
 		Margin when Margin < ProducedMass ->
 
@@ -236,7 +237,7 @@ actSpontaneous( State ) ->
 	% been rejected by the result manager:
 	%
 	class_Probe:send_data( ?getAttr(probe_ref), CurrentTickOffset,
-					{ Tank#waste_tank.current_mass_stored + ActualAddedMass } ),
+		{ Tank#waste_tank.current_mass_stored + ActualAddedMass } ),
 
 	PlanState = class_Actor:add_spontaneous_tick( NextProductionTick,
 												  MassState ),
@@ -264,7 +265,7 @@ loadWaste( State, WasteType, MaxWantedMass, WasteLoaderPid ) ->
 
 	% First call the parent base implementation:
 	ParentState = executeOnewayAs( State, class_WasteLoadingPoint, loadWaste,
-							[ WasteType, MaxWantedMass, WasteLoaderPid ] ),
+		[ WasteType, MaxWantedMass, WasteLoaderPid ] ),
 
 	% Then update the probe:
 
@@ -293,7 +294,7 @@ compute_production_parameters( State ) ->
 
 	% We do no want waste to be consumed!
 	AdditionalMass = case class_StochasticActor:get_random_value_from(
-										production_quantity_law, State ) of
+			production_quantity_law, State ) of
 
 		M when M < 0 ->
 			-M;
@@ -365,16 +366,16 @@ define_residential_waste_sources( ResidentialSourceCount, GISInfo, Acc ) ->
 							  [ ResidentialSourceCount ] ),
 
 	ProductionType = list_utils:draw_element(
-						waste_utils:get_incinerable_waste_types() ),
+		waste_utils:get_incinerable_waste_types() ),
 
 	% 60 kg on average, before being set to at least 10 kg:
 	ProductionQuantity = max( 0.01,
-		class_RandomManager:get_exponential_value( _ProdLambda=1/0.06 ) ),
+		class_RandomManager:get_exponential_1p_value( _ProdLambda=1/0.06 ) ),
 
 	% 500 kg on average:
 	LocalStorage = 0.3 +
-		class_RandomManager:get_positive_integer_exponential_value(
-															_StoreLambda=0.2 ),
+		class_RandomManager:get_positive_integer_exponential_1p_value(
+			_StoreLambda=0.2 ),
 
 	% Twice per week (homes are therefore synchronized and will remain so), in
 	% seconds:
@@ -422,7 +423,7 @@ merge_parameters( _Params=[ { Name, ProductionType, ProductionQuantity,
 to_string( State ) ->
 
 	DurationInSeconds = class_Actor:convert_ticks_to_seconds(
-							?getAttr(production_duration), State ),
+		?getAttr(production_duration), State ),
 
 	% One one tank per source:
 	[ WasteTank ] = ?getAttr(waste_capacity),

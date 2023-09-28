@@ -65,8 +65,8 @@
 
 -type module_name() :: basic_utils:module_name().
 
--type initialize_supervision() ::
-		class_TraceAggregator:initialize_supervision().
+-type initialise_supervision() ::
+	class_TraceAggregator:initialise_supervision().
 
 
 
@@ -79,7 +79,7 @@
 % most probably remain unnoticed (just leading to an EXIT message happily
 % sitting in the mailbox of the case process).
 %
--spec case_start( module_name(), initialize_supervision() ) -> aggregator_pid().
+-spec case_start( module_name(), initialise_supervision() ) -> aggregator_pid().
 case_start( ModuleName, InitTraceSupervisor ) ->
 
 	% Allows to support both OTP conventions and ad hoc, automatic ones:
@@ -139,7 +139,7 @@ case_start( ModuleName, InitTraceSupervisor ) ->
 %
 % Returns TraceAggregatorPid.
 %
--spec case_start( module_name(), initialize_supervision(),
+-spec case_start( module_name(), initialise_supervision(),
 				  traces:trace_supervision_type() ) -> aggregator_pid().
 % Clause generally not used by simulation cases:
 case_start( ModuleName, _InitTraceSupervisor=true, TraceType ) ->
@@ -150,7 +150,7 @@ case_start( ModuleName, _InitTraceSupervisor=true, TraceType ) ->
 
 	% For a simulation case, we do not consider to launch the trace supervisor
 	% this early, as we would need to change its trace filename, which is not
-	% supported on some back-ends (ex: LogMX).
+	% supported on some back-ends (e.g. LogMX).
 
 	?case_notice_fmt( "Starting case ~ts.", [ ModuleName ] ),
 
@@ -228,15 +228,7 @@ case_stop( ModuleName, TraceAggregatorPid, WaitForTraceSupervisor ) ->
 	%trace_utils:info_fmt( "Case stopping (aggregator: ~w, wait supervisor: "
 	%    "~ts).", [ TraceAggregatorPid, WaitForTraceSupervisor] ),
 
-	case WaitForTraceSupervisor of
-
-		true ->
-			class_TraceSupervisor:wait_for();
-
-		false ->
-			ok
-
-	end,
+	WaitForTraceSupervisor andalso class_TraceSupervisor:wait_for(),
 
 	%trace_utils:info( "Going for immediate stop." ),
 

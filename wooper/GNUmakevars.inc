@@ -104,7 +104,7 @@ ERLANG_COMPILER_OPT_BASE += $(WOOPER_DEBUG_FLAGS)               \
 
 
 
-# Useful to target for example the root of the current layer (ex: to locate the
+# Useful to target for example the root of the current layer (e.g. to locate the
 # relevant, layer-local '_build' directory):
 #
 ifndef LAYER_TOP
@@ -135,7 +135,7 @@ endif
 # The uniquely-defined version of this layer, for all uses (including rebar and
 # hex):
 #
-WOOPER_VERSION := 2.0.21
+WOOPER_VERSION := 2.0.23
 
 
 # PROJECT_VERSION should be defined on a per-project basis.
@@ -191,7 +191,7 @@ INC += -I$(WOOPER_SRC)/interfaces
 WOOPER_REBAR_BUILD_BASE = $(MYRIAD_REBAR_BUILD_DIR)/lib/wooper
 
 
-# When building WOOPER in an OTP context from its usual (GIT) root (ex: with
+# When building WOOPER in an OTP context from its usual (Git) root (e.g. with
 # 'make rebar3-application'), the BEAMs of Myriad are to be found in the OTP
 # build tree - rather than in a supposedly fully-built usual root for Myriad:
 #
@@ -349,8 +349,8 @@ WOOPER_PLT_FILE := $(WOOPER_TOP)/Ceylan-WOOPER.plt
 # This is the merged PLT of the level just below in the software stack.
 # For 'WOOPER', it is the PLT of 'Myriad':
 #
-ifndef PREDECESSOR_PLT
-	PREDECESSOR_PLT = $(MYRIAD_PLT_FILE)
+ifndef PREDECESSOR_PLT_FILE
+	PREDECESSOR_PLT_FILE = $(MYRIAD_PLT_FILE)
 endif
 
 
@@ -377,8 +377,8 @@ endif
 # them and if all the packages mentioned here are themselves dependencies (in
 # which case they are all sitting together in the _checkouts child directory).
 #
-# Note also we rely on the names of build roots (ex: myriad) as opposed to
-# project/repository names (ex: Ceylan-Myriad):
+# Note also we rely on the names of build roots (e.g. myriad) as opposed to
+# project/repository names (e.g. Ceylan-Myriad):
 #
 # First priority is an existing checkout directory:
 ifneq ($(wildcard $(WOOPER_TOP)/_checkouts/myriad/.),)

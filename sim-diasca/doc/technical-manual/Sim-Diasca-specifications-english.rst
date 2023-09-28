@@ -59,9 +59,9 @@ Such a simulator could allow indeed to:
 
 - **help validating project strategies**, for example regarding the roll-out: "*If meters are installed without any particular order, what is the ratio of meters whose proper operation could be directly validated at installation-time?*"
 
-- **quantify the costs of the system** to establish its value analysis, by evaluating the total investments costs (ex: for an installed concentrator) and operational costs (ex: for GPRS communication costs, which may be partly proportional to the actual exchanged volumes)
+- **quantify the costs of the system** to establish its value analysis, by evaluating the total investments costs (e.g. for an installed concentrator) and operational costs (e.g. for GPRS communication costs, which may be partly proportional to the actual exchanged volumes)
 
-- better **secure the ability of the system to evolve**, for example by evaluating *a priori* the impact of a change in the functional or technical perimeter: "*Should this new service be offered, what would be its technical feasibility (ex: in terms of embedded processing or telecom link) and what would be the consequences on the overall properties and performance of the system?*"
+- better **secure the ability of the system to evolve**, for example by evaluating *a priori* the impact of a change in the functional or technical perimeter: "*Should this new service be offered, what would be its technical feasibility (e.g. in terms of embedded processing or telecom link) and what would be the consequences on the overall properties and performance of the system?*"
 
 - **ease the test** of all or part of the system, for example by recreating the environment of an actual component thanks to the simulation, and by assessing the correctness of the behaviour of the component with regard to a set of test interactions, which comply or not to the specifications
 
@@ -79,8 +79,8 @@ Beyond the operational context of the aforementioned projects, such a simulator 
 - R&D studies of alternative architectures for a metering system, for example:
 
   - offering different services
-  - and/or based on other choices in terms of software architecture (ex: showing a different dispatching of the processing on the various devices)
-  - and/or using different infrastructures (ex: mesh networks)
+  - and/or based on other choices in terms of software architecture (e.g. showing a different dispatching of the processing on the various devices)
+  - and/or using different infrastructures (e.g. mesh networks)
 
 - other target systems, like the one developed by the EDF supplier, instead of the one developed by ERDF, the monopolistic distributor
 
@@ -163,7 +163,7 @@ More precisely, in our case the objective was to rely on a framework, made of a 
 
 - **reproducible**, so that different executions of the simulation take place identically, no matter their execution context, i.e. not depending on scheduling, dispatching of processing, available resources, number and nature of computing nodes, capacity of the network, etc.
 
-- **intensely concurrent**, as already mentioned, thus supporting a high degree of parallelism (taking advantage of multicores and SMP [#]_) and able to be distributed over HPC [#]_ solutions like clusters or supercomputers (ex: ``Bluegene``)
+- **intensely concurrent**, as already mentioned, thus supporting a high degree of parallelism (taking advantage of multicores and SMP [#]_) and able to be distributed over HPC [#]_ solutions like clusters or supercomputers (e.g. ``Bluegene``)
 
 - **potentially of very large scale**, as already mentioned, to be able to simulate systems made of many thousands, if not millions, of interacting elements
 
@@ -211,7 +211,7 @@ ________________________________
 
 - **P4** Ability to simulate the system when it is in static/steady/nominal state
 
-- **P5** Ability to simulate the system when it is in any dynamic/transient/abnormal state, for example when being deployed, or under unexpected circumstances (ex: cascading failures), or during migration between versions
+- **P5** Ability to simulate the system when it is in any dynamic/transient/abnormal state, for example when being deployed, or under unexpected circumstances (e.g. cascading failures), or during migration between versions
 
 - **P6** Ability to support stochastic actors, whose behaviours depend on a set of various random variables based on various probabilistic distributions (opens to Monte Carlo computations)
 
@@ -231,7 +231,7 @@ _________________________________________
 Related to the Size of the System That Can Be Simulated
 _______________________________________________________
 
-- **P11** Ability to process, algorithm-wise (in terms of logic and expressiveness, not depending on the way we dispatch processing), in parallel most, if not all, models, instead of having them evaluated sequentially (ex: 5 million models running simultaneously rather than having 5 million models to walk through, one after the other)
+- **P11** Ability to process, algorithm-wise (in terms of logic and expressiveness, not depending on the way we dispatch processing), in parallel most, if not all, models, instead of having them evaluated sequentially (e.g. 5 million models running simultaneously rather than having 5 million models to walk through, one after the other)
 
 - **P12** Ability to take advantage of parallel computational resources, like SMP (multi-processors) and multicores (i.e. to dispatch a simulation over a set of local processing units)
 
@@ -258,7 +258,7 @@ Related to the Technical Characteristics of the Simulator Itself
 ________________________________________________________________
 
 
-- **P19** Ability to interface easily to third-party tools (ex: to an emulation layer of a specific protocol, to post-processing tools, etc.)
+- **P19** Ability to interface easily to third-party tools (e.g. to an emulation layer of a specific protocol, to post-processing tools, etc.)
 
 - **P20** Use of free software tools (thus that can be modified/fixed/enhanced/shared/freely used), preferably well-known
 
@@ -269,6 +269,6 @@ ______________________
 
 These properties and features were not listed in the initial requirements, but over time proved to be key points as well:
 
-- **P21** Support for a complete result management, which allows mainly the user to specify what are the results expected from the simulation (preferably producing them, and only them) and then automatically collects and retrieves them to the user node, efficiently (ex: post-processing them concurrently on the computing nodes, and sending corresponding compressed data over the network) and conveniently (ex: gathering everything in a experiment-specific directory on the user node, and allowing to browse them automatically if not in batch mode)
+- **P21** Support for a complete result management, which allows mainly the user to specify what are the results expected from the simulation (preferably producing them, and only them) and then automatically collects and retrieves them to the user node, efficiently (e.g. post-processing them concurrently on the computing nodes, and sending corresponding compressed data over the network) and conveniently (e.g. gathering everything in a experiment-specific directory on the user node, and allowing to browse them automatically if not in batch mode)
 
 - **P22** A basic support for simulation reliability is to be provided: first of all, results will be produced if and only if the simulation not only terminates, but terminates on a success; otherwise, as soon as any of its elements fail (including model instances), the simulation should crash immediately and completely (as a whole); any abnormal slow-down should be reported, and a diagnosis system should be provided, notably to help the debugging of models (who are the lingering instances, what are they doing, who are they waiting for, etc.)

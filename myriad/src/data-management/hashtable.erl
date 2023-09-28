@@ -121,7 +121,7 @@
 -define( default_bullet, " + " ).
 
 % The default expected number of entries:
--define(default_entry_count,32).
+-define( default_entry_count, 32 ).
 
 
 
@@ -130,6 +130,10 @@
 
 
 -type value() :: term().
+% Any value associated to a key.
+
+-type default_value() :: term().
+% A default value, associated to a key.
 
 -type entry() :: { key(), value() }.
 -type entry( K, V ) :: { K, V }.
@@ -167,7 +171,7 @@
 -type description_type() :: bullet() | 'user_friendly' | 'full' | 'internal'.
 
 
--export_type([ key/0, value/0, entry/0, entry/2, atom_entry/0,
+-export_type([ key/0, value/0, default_value/0, entry/0, entry/2, atom_entry/0,
 			   entries/0, entries/2, maybe_entry/0, maybe_entries/0,
 			   entry_count/0, bucket/0, bucket/2, bucket_count/0,
 			   hashtable/0, bullet/0, description_type/0 ]).

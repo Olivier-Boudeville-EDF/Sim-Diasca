@@ -23,25 +23,28 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2007.
 
 
 % Modular WOOPER header gathering the class-related primitives (function
 % definitions).
 
 
-% Note: functions below (ex: getClassname/1) are "verbatim" methods: rather than
-% being generated through a parse-transform (which would bring no added value),
-% it is actually more convenient to inject their code thanks to a header file.
-% However these verbatim methods shall not be considered as built-in, as we want
-% to have them registered (known of the WOOPER parse transforms) as methods (ex:
-% so that they are themselves transformed, since they use method terminators).
+% Note: functions below (e.g. getClassname/1) are "verbatim" methods: rather
+% than being generated through a parse-transform (which would bring no added
+% value), it is actually more convenient to inject their code thanks to a header
+% file.  However these verbatim methods shall not be considered as built-in, as
+% we want to have them registered (known of the WOOPER parse transforms) as
+% methods (e.g. so that they are themselves transformed, since they use method
+% terminators).
 
 
 % @doc Request returning the classname of the instance.
 %
 % Always accurate, in all constructors, methods and destructors.
 %
--spec getClassname( wooper:state() ) -> const_request_return( classname() ).
+-spec getClassname( wooper:state() ) ->
+							const_request_return( wooper:classname() ).
 getClassname( State ) ->
 	wooper:const_return_result( State#state_holder.actual_class ).
 
@@ -52,7 +55,7 @@ getClassname( State ) ->
 % Always accurate, in all constructors, methods and destructors.
 %
 -spec getSuperclasses( wooper:state() ) ->
-								const_request_return( [ classname() ] ).
+							const_request_return( [ wooper:classname() ] ).
 getSuperclasses( State ) ->
 	ActualModule = State#state_holder.actual_class,
 	SuperClasses = ActualModule:get_superclasses(),
@@ -70,7 +73,7 @@ getSuperclasses( State ) ->
 % defined.
 %
 -spec wooper_get_instance_description( wooper:state() ) ->
-							 const_request_return( text_utils:ustring() ).
+								const_request_return( text_utils:ustring() ).
 wooper_get_instance_description( State ) ->
 	wooper:const_return_result( wooper:instance_to_string( State ) ).
 

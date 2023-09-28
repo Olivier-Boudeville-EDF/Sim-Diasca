@@ -1,22 +1,23 @@
 % Copyright (C) 2012-2023 EDF R&D
-
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2012.
 
 
 % @doc Class modelling an <b>industrial waste source</b>.
@@ -114,10 +115,10 @@ construct( State, ActorSettings, Name, Location, ProductionType,
 		  { gaussian, _Mu=ProductionQuantity, _Sigma=1.0 } } ] ),
 
 	ProductionTickDuration = class_Actor:convert_seconds_to_ticks(
-					ProductionDuration, ?city_max_relative_error, ActorState ),
+		ProductionDuration, ?city_max_relative_error, ActorState ),
 
 	AddedState = class_StochasticActor:add_law( production_duration_law,
-		{ positive_integer_exponential, _Lamba=1/ProductionTickDuration },
+		{ positive_integer_exponential_1p, _Lamba=1/ProductionTickDuration },
 		ActorState ),
 
 	% One tank per industrial source, initially empty:
@@ -214,7 +215,7 @@ actSpontaneous( State ) ->
 			   [ ProducedMass, NewProductionDuration ] ),
 
 	ActualAddedMass = case Tank#waste_tank.max_mass_stored -
-								Tank#waste_tank.current_mass_stored  of
+			Tank#waste_tank.current_mass_stored  of
 
 		Margin when Margin < ProducedMass ->
 
@@ -242,7 +243,7 @@ actSpontaneous( State ) ->
 	% been rejected by the result manager:
 	%
 	class_Probe:send_data( ?getAttr(probe_ref), CurrentTickOffset,
-					{ Tank#waste_tank.current_mass_stored + ActualAddedMass } ),
+		{ Tank#waste_tank.current_mass_stored + ActualAddedMass } ),
 
 	PlanState =
 		class_Actor:add_spontaneous_tick( NextProductionTick, MassState ),
@@ -301,7 +302,7 @@ compute_production_parameters( State ) ->
 
 	% We do no want waste to be consumed!
 	AdditionalMass = case class_StochasticActor:get_random_value_from(
-										production_quantity_law, State ) of
+			production_quantity_law, State ) of
 
 		M when M < 0 ->
 			-M;
@@ -334,9 +335,9 @@ generate_definitions( IndustrialSourceCount, LocationGeneratorPid, GISInfo ) ->
 
 	% Triggers the location generation request in parallel:
 	LocationGeneratorPid ! { generateNonAdjacentLocations,
-			   [ IndustrialSourceCount,
-				 get_min_distance_between_industrial_sources_and_others(),
-				 get_min_distance_between_two_industrial_sources() ], self() },
+		[ IndustrialSourceCount,
+		  get_min_distance_between_industrial_sources_and_others(),
+		  get_min_distance_between_two_industrial_sources() ], self() },
 
 	CreationSpecs = define_industrial_waste_sources( IndustrialSourceCount,
 													 GISInfo, _Acc=[] ),
@@ -371,21 +372,21 @@ define_industrial_waste_sources( IndustrialSourceCount, GISInfo, Acc ) ->
 							  [ IndustrialSourceCount ] ),
 
 	ProductionType = list_utils:draw_element(
-	  waste_utils:get_incinerable_waste_types() ),
+		waste_utils:get_incinerable_waste_types() ),
 
 	% 25 tons on average, before being set to at least 400 kg:
 	ProductionQuantity = max( 0.4,
-		class_RandomManager:get_exponential_value( _ProdLambda=0.5 ) ),
+		class_RandomManager:get_exponential_1p_value( _ProdLambda=0.5 ) ),
 
 	% 26 tons on average:
 	LocalStorage = 20 +
-		class_RandomManager:get_positive_integer_exponential_value(
-														_StoreLambda=1/6 ),
+		class_RandomManager:get_positive_integer_exponential_1p_value(
+			_StoreLambda=1/6 ),
 
 	% 8 hours on average, in seconds:
 	ProductionDuration = 2 * 60 * 60 +
 		class_RandomManager:get_positive_integer_gaussian_value(
-						_Mean=6*60*60, _StdDeviation=20000 ),
+			_Mean=6*60*60, _StdDeviation=20000 ),
 
 	% Location to be added later:
 	NewAcc = [ { Name, ProductionType, float(ProductionQuantity),
@@ -412,7 +413,7 @@ merge_parameters( _Params=[ { Name, ProductionType, ProductionQuantity,
 
 	NewIndustrialSourceDef = { class_IndustrialWasteSource, [ Name,
 			{ wgs84_cartesian, Loc }, ProductionType, ProductionQuantity,
-						LocalStorage, ProductionDuration, GISInfo ] },
+			LocalStorage, ProductionDuration, GISInfo ] },
 
 	merge_parameters( Tp, Tl, [ NewIndustrialSourceDef | Acc ], GISInfo ).
 

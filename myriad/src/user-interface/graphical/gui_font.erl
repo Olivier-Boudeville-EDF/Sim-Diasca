@@ -30,7 +30,7 @@
 -module(gui_font).
 
 
--type font() :: wxFont:wxFont().
+-opaque font() :: wxFont:wxFont().
 % Designates a font object.
 
 
@@ -66,12 +66,19 @@
 % A font option.
 
 
+-opaque font_data() :: wxFontData:wxFontData().
+% Actual (opaque) data corresponding to a font.
+%
+% A wx object.
+
+
 -export_type([ font/0, font_size/0, point_size/0, font_family/0, font_style/0,
-			   font_weight/0, text_encoding/0, font_option/0 ]).
+			   font_weight/0, text_encoding/0, font_option/0, font_data/0 ]).
 
 
 % Font-related operations.
 -export([ create/1, create/2, create/3, create/4, create/5, destruct/1,
+		  get_platform_dependent_description/1, get_user_friendly_description/1,
 		  get_text_extent/2 ]).
 
 
@@ -98,7 +105,6 @@
 % Shorthands:
 
 -type ustring() :: text_utils:ustring().
-
 -type any_string() :: text_utils:any_string().
 
 -type dimensions() :: gui:dimensions().
@@ -175,6 +181,25 @@ destruct( Font ) ->
 
 
 
+% @doc Returns the platform-dependent complete description the specified font.
+%
+% For example, "Sans 10".
+%
+-spec get_platform_dependent_description( font() ) -> ustring().
+get_platform_dependent_description( Font ) ->
+	wxFont:getNativeFontInfoDesc( Font ).
+
+
+% @doc Returns a user-friendly description of the specified font.
+%
+% For example, "Sans 10".
+%
+-spec get_user_friendly_description( font() ) -> ustring().
+get_user_friendly_description( Font ) ->
+	wxFont:getNativeFontInfoUserDesc( Font ).
+
+
+
 % @doc Returns the extent used by the rendering of the specified single-line
 % text with the specified font.
 %
@@ -206,6 +231,12 @@ get_text_extent( Text, Font ) ->
 
 	Dims.
 
+
+
+% Helpers.
+
+
+% Next constants will have to be integrated in gui_constants.
 
 
 % @doc Converts the specified font family into a wx one.

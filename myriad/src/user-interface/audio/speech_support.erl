@@ -26,8 +26,8 @@
 % Creation date: Monday, November 29, 2021.
 
 
-% @doc Gathering of various facilities regarding <b>speech support</b>, i.e. TTS
-% (Text to Speech), in order to obtain an audio content corresponding to a
+% @doc Gathering of various facilities regarding <b>speech support</b>, that is
+% TTS (Text to Speech), in order to obtain an audio content corresponding to a
 % specified text.
 %
 -module(speech_support).
@@ -70,7 +70,7 @@
 %  - '<break strength="S" />' with S in ['none', 'x-weak', 'weak', 'medium'
 %  (default), 'strong', 'x-strong']; can be added at any place in the text
 %
-%  - '<break time="D" />' with D in seconds (ex: "2s") or milliseconds (ex:
+%  - '<break time="D" />' with D in seconds (e.g. "2s") or milliseconds (e.g.
 %  "500ms")
 %
 %  - '<mstts:silence type="Leading|Tailing|Sentenceboundary" value="D"/>";
@@ -103,17 +103,17 @@
 
 % About speech referentials.
 %
-% A multilangual application has to support multiple language locales (ex:
+% A multilangual application has to support multiple language locales (e.g.
 % English, French, Japanese, etc.).
 %
 % We define here a "logical speech", corresponding to a speech of a given
 % semantics (meaning), regardless to its translation into a set of locales.
 
-% For that, generally a reference locale is generally elected (ex: "en-US"), and
-% each logical speech is first defined in terms of that locale, as a SSML text
-% (ex: "Hello world!"). Then, in the context of a given locale, this logical
-% speech is to be translated in a corresponding locale-specific SSML text (ex:
-% "Salut le monde !"), and then generated as an audio content.
+% For that, generally a reference locale is generally elected (e.g. "en-US"),
+% and each logical speech is first defined in terms of that locale, as a SSML
+% text (e.g. "Hello world!"). Then, in the context of a given locale, this
+% logical speech is to be translated in a corresponding locale-specific SSML
+% text (e.g. "Salut le monde !"), and then generated as an audio content.
 %
 % See for that create_referential/1 and record_logical_speech/5
 
@@ -133,19 +133,19 @@
 
 
 -type voice_id() :: { tts_provider(), voice_id_at_provider() }.
-% The absolute (reference) identifier of a voice (ex: {azure,
+% The absolute (reference) identifier of a voice (e.g. {azure,
 % `<<"fr-FR-DeniseNeural">>'}.
 
 
 -type voice_id_at_provider() :: bin_string().
-% The identifier of a voice (ex: `<<"fr-FR-DeniseNeural">>',
+% The identifier of a voice (e.g. `<<"fr-FR-DeniseNeural">>',
 % `<<"ar-SA-Naayf">>') in the context of a specific TTS provider.
 
 
 -type voice_name() :: bin_string().
 % The full name (just informative) of a voice.
 %
-% Ex: `<<"Foobar Server Speech Text to Speech Voice (xr-XG, Yoda)">>'.
+% For example `<<"Foobar Server Speech Text to Speech Voice (xr-XG, Yoda)">>'.
 
 
 -type voice_type() :: 'normal'  % Basic.
@@ -158,8 +158,8 @@
 
 
 -type language_locale() :: bin_locale().
-% The language locale to be used (ex: `<<"fr-FR">>'), knowing that for example a
-% voice may speak in multiple languages (ex: "Jenny Multilingual").
+% The language locale to be used (e.g. `<<"fr-FR">>'), knowing that for example
+% a voice may speak in multiple languages (e.g. "Jenny Multilingual").
 
 
 % Not existing apparently: 'general' | 'senior' | 'child'
@@ -254,13 +254,13 @@
 
 -type speech_base_name() :: bin_path_element().
 % A short name to designate a logical speech, able to be used as a prefix of a
-% filename; ex: `<<"welcome-new-recruits">>'). Not an identifier, but preferably
-% unique.
+% filename; e.g. `<<"welcome-new-recruits">>'). Not an identifier, but
+% preferably unique.
 
 
 -type any_speech_base_name() :: any_path_element().
 % A short name (any kind of string) to designate a logical speech, able to be
-% used as a prefix of a filename; ex: "welcome-new-recruits"). Not an
+% used as a prefix of a filename; e.g. "welcome-new-recruits"). Not an
 % identifier, but preferably unique.
 
 
@@ -484,7 +484,7 @@ get_audio_format_string( #audio_stream_settings{
 
 	end,
 
-	% Hope for the best (ex: <<"ogg-24khz-16bit-mono-opus">>):
+	% Hope for the best (e.g. <<"ogg-24khz-16bit-mono-opus">>):
 	BinFormat = text_utils:bin_format( "~ts-~Bkhz-~ts-~ts-~ts",
 		[ ContainerFormat, StdSamplingRate, BitStr, ChannelLayout,
 		  AudioFormat ] ),
@@ -525,8 +525,8 @@ start( SpeechState=#speech_state{ audio_settings=AudioSettings },
 %
 -spec list_voices( speech_state() ) -> voice_table().
 list_voices( #speech_state{ cloud_instance_info=#azure_instance_info{
-								instance_key=InstKey,
-								instance_location=InstLoc },
+									instance_key=InstKey,
+									instance_location=InstLoc },
 							json_parser_state=ParserState,
 							http_options=HTTPOptions } ) ->
 
@@ -558,7 +558,7 @@ list_voices( #speech_state{ cloud_instance_info=#azure_instance_info{
 			throw( { unable_to_list_voices, HTTPErrorCode } );
 
 		{ error, ErrorReason } ->
-			% Ex: no Internet access
+			% For example no Internet access
 			trace_utils:error_fmt( "Failed to list voices; reason:~n ~p",
 								   [ ErrorReason ] ),
 
@@ -612,7 +612,7 @@ register_voices( TTSProvider, _JsonTerm=[ VoiceMap | T ], VoiceTable ) ->
 	% Now managing optional information:
 
 	{ Styles, StyleShrunkVMap } = case table:extract_entry_if_existing(
-						<<"StyleList">>, ExtractedVoiceMap ) of
+			<<"StyleList">>, ExtractedVoiceMap ) of
 
 		false ->
 			{ undefined, ExtractedVoiceMap };
@@ -623,7 +623,7 @@ register_voices( TTSProvider, _JsonTerm=[ VoiceMap | T ], VoiceTable ) ->
 	end,
 
 	{ SecLocales, SecLocShrunkVMap } = case table:extract_entry_if_existing(
-						<<"SecondaryLocaleList">> , StyleShrunkVMap ) of
+			<<"SecondaryLocaleList">> , StyleShrunkVMap ) of
 
 		false ->
 			{ [], StyleShrunkVMap };
@@ -634,7 +634,7 @@ register_voices( TTSProvider, _JsonTerm=[ VoiceMap | T ], VoiceTable ) ->
 	end,
 
 	{ Roles, RoleShrunkVMap } = case table:extract_entry_if_existing(
-						<<"RolePlayList">>, SecLocShrunkVMap ) of
+			<<"RolePlayList">>, SecLocShrunkVMap ) of
 
 		false ->
 			{ [], SecLocShrunkVMap };
@@ -741,7 +741,7 @@ filter_by_locale( SpokenLocale, VoiceTable ) ->
 % current directory; the corresponding audio path is returned; the corresponding
 % filename (relative to the elected directory) is returned.
 %
-% Ex: if BaseName is "hello-world", the current directory is
+% For example if BaseName is "hello-world", the current directory is
 % /home/bond/my-speeches", and the audio settings imply a Ogg container format
 % with an Opus audio format and the fr-FR locale, the specified speech will be
 % stored in "/home/bond/my-speeches/hello-world-fr-FR.ogg.opus".
@@ -750,7 +750,8 @@ filter_by_locale( SpokenLocale, VoiceTable ) ->
 % form" to define it, refer to the "Defining one's XML document" in
 % xml_utils.erl for further details. Also spaces shall exist around tags.
 %
-% Ex: record_speech(["Hello ", {prosody, [{volume, "+20.00%"}], [" John"]},...
+% For example record_speech(["Hello ", {prosody, [{volume, "+20.00%"}], ["
+% John"]},...
 %
 % See record_speech/5 for further details.
 %
@@ -767,7 +768,7 @@ record_speech( SSMLText, BaseName, SpeechState ) ->
 % specified directory (otherwise in the current one); the corresponding filename
 % (relative to the elected directory) is returned.
 %
-% Ex: if BaseName is "hello-world", the specified directory is
+% For example if BaseName is "hello-world", the specified directory is
 % /home/bond/my-speeches", and the audio settings imply a Ogg container format
 % with an Opus audio format and the fr-FR locale, the specified speech will be
 % stored in "/home/bond/my-speeches/hello-world-fr-FR.ogg.opus".
@@ -776,7 +777,8 @@ record_speech( SSMLText, BaseName, SpeechState ) ->
 % form" to define it, refer to the "Defining one's XML document" in
 % xml_utils.erl for further details.
 %
-% Ex: record_speech(["Hello ", {prosody, [{volume, "+20.00%"}], [" John"]},...
+% For example record_speech(["Hello ", {prosody, [{volume, "+20.00%"}], ["
+% John"]},...
 %
 % See record_speech/5 for further details.
 %
@@ -799,7 +801,7 @@ record_speech( SSMLText, BaseName, MaybeOutputDir,
 % directory (otherwise in the current one); the corresponding filename (relative
 % to the elected directory) is returned.
 %
-% Ex: if BaseName is "hello-world", the specified directory is
+% For example if BaseName is "hello-world", the specified directory is
 % "/home/bond/my-speeches", and the audio settings imply a Ogg container format
 % with an Opus audio format and the fr-FR locale, the specified speech will be
 % stored in "/home/bond/my-speeches/hello-world-fr-FR.ogg.opus".
@@ -808,7 +810,8 @@ record_speech( SSMLText, BaseName, MaybeOutputDir,
 % form" to define it, refer to the "Defining one's XML document" in
 % xml_utils.erl for further details.
 %
-% Ex: record_speech(["Hello ", {prosody, [{volume, "+20.00%"}], [" John"]},...
+% For example record_speech(["Hello ", {prosody, [{volume, "+20.00%"}], ["
+% John"]},...
 %
 % Restrictions:
 % - the text-to-speech must be an XML document, yet may be as simple as "Hello
@@ -1056,15 +1059,8 @@ create_referential( BaseDir, RefLocale, AudioSettings )
 
 	BinBaseDir = text_utils:ensure_binary( BaseDir ),
 
-	case file_utils:is_existing_directory_or_link( BinBaseDir ) of
-
-		true ->
-			ok;
-
-		false ->
-			throw( { non_existing_referential_base_dir, BaseDir } )
-
-	end,
+	file_utils:is_existing_directory_or_link( BinBaseDir ) orelse
+		throw( { non_existing_referential_base_dir, BaseDir } ),
 
 	#speech_referential{ speech_table=table:new(),
 						 reference_locale=text_utils:ensure_binary( RefLocale ),
@@ -1110,8 +1106,8 @@ record_logical_speech( AnyBaseName, UserSpeechInfos,
 		table:add_new_entry( ThisLogSpeechId, LogSpeech, SpeechTable ),
 
 	NewSpeechRef = SpeechRef#speech_referential{
-						speech_table=NewSpeechTable,
-						next_speech_id=ThisLogSpeechId+1 },
+		speech_table=NewSpeechTable,
+		next_speech_id=ThisLogSpeechId+1 },
 
 	{ ThisLogSpeechId,
 	  SpeechState#speech_state{ speech_referential=NewSpeechRef } }.
@@ -1287,8 +1283,8 @@ voice_info_to_string( #voice_info{
 
 		SecLocs ->
 			text_utils:format( "and supporting ~B secondary locales: ~ts",
-							   [ length( SecLocs ),
-				text_utils:binaries_to_listed_string( SecLocs ) ] )
+			   [ length( SecLocs ),
+				 text_utils:binaries_to_listed_string( SecLocs ) ] )
 
 	end,
 
@@ -1485,7 +1481,7 @@ stop( _SpeechState=#speech_state{ json_parser_state=ParserState } ) ->
 
 % @doc Returns the file extension corresponding to the specified audio settings.
 %
-% Ex: "ogg.opus".
+% For example "ogg.opus".
 %
 -spec get_extension_for( audio_stream_settings() ) -> extension().
 get_extension_for( #audio_stream_settings{ container_format=ContainerFormat,

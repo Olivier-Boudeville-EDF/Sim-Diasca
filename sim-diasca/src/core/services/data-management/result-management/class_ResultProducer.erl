@@ -75,26 +75,26 @@
 
 
 -type producer_nature() ::
-		maybe( 'basic_probe' | 'virtual_probe' | 'web_probe'
-			 | 'graph_stream_probe' ).
+	maybe( 'basic_probe' | 'virtual_probe' | 'web_probe'
+		 | 'graph_stream_probe' ).
 % Describes the precise nature of a result producer.
 
 
 
 -type producer_result() ::
-		{ producer_pid(), 'archive', binary() }
-	  | { producer_pid(), 'raw', { file_utils:bin_file_name(), binary() } }
-	  | { producer_pid(), 'no_result' }.
+	{ producer_pid(), 'archive', binary() }
+  | { producer_pid(), 'raw', { file_utils:bin_file_name(), binary() } }
+  | { producer_pid(), 'no_result' }.
 % Possible terms returned by a producer in terms of results.
 %
 % It is:
 %
 % - {self(), archive, BinArchive} where BinArchive is a binary corresponding to
-% a ZIP archive of a set of files (ex: data and command files)
+% a ZIP archive of a set of files (e.g. data and command files)
 %
 % - or {self(), raw, {BinFilename, BinContent}} where BinFilename is the
 % filename (as a binary) of the transferred file, and BinContent is a binary of
-% its content (ex: a PNG file - which should better not be transferred as an
+% its content (e.g. a PNG file - which should better not be transferred as an
 % one-file archive)
 %
 % - or {self(), no_result} should no result be to return
@@ -111,7 +111,8 @@
 
 
 % Must be included before class_TraceEmitter header:
--define( trace_emitter_categorization, "Core.ResultManagement.ResultProducer" ).
+-define( trace_emitter_categorization,
+		 "Core.Result management.Result producer" ).
 
 
 % Allows to use macros for trace sending:
@@ -138,7 +139,7 @@ construct( State, ProducerName ) ->
 
 	% First the direct mother classes:
 	TraceState = class_EngineBaseObject:construct( State,
-									?trace_categorize(ProducerName) ),
+		?trace_categorize(ProducerName) ),
 
 	TrackerPid = class_InstanceTracker:get_local_tracker(),
 
@@ -241,11 +242,11 @@ getEnableStatus( State ) ->
 % It is expected to return either:
 %
 % - {self(), archive, BinArchive} where BinArchive is a binary corresponding to
-% a ZIP archive of a set of files (ex: data and command file)
+% a ZIP archive of a set of files (e.g. data and command file)
 %
 % - or {self(), raw, {BinFilename, BinContent}} where BinFilename is the
 % filename (as a binary) of the transferred file, and BinContent is a binary of
-% its content (ex: a PNG file, which should better not be transferred as an
+% its content (e.g. a PNG file, which should better not be transferred as an
 % archive)
 %
 % - or {self(), no_result} should no result be to return

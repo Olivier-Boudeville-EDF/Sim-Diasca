@@ -26,36 +26,65 @@
 % Creation date: Monday, February 15, 2010.
 
 
-% @doc Gathering of various facilities for <b>text rendering</b>.
+% @doc Gathering of various facilities for <b>text input and display</b>.
+%
+% See also the corresponding dialogs: gui_dialog:text_entry_dialog() and
+% gui_dialog:message_dialog().
+%
 -module(gui_text).
 
 
-
-% Operations for static labels-related.
--export([ create_static/2, create_static/3, create_static/4 ]).
-
-
-
--type static_text() :: wxStaticText:wxStaticText().
-
--type style_option() :: 'align_left' | 'center' | 'align_right'
-					  | 'no_autoresize'.
+-opaque static_text_display() :: wxStaticText:wxStaticText().
+% A widget displaying a text; a text display behaves like a panel dedicated
+% to the rendering of a text.
 
 
--type text_option() ::   { 'pos', point() }
-					   | { 'size', size() }
-					   | { 'style', [ style_option() ] }.
+-type static_display_option() ::
+	{ 'position', point() }
+  | { 'size', size() }
+  | { 'style', [ static_display_style() ] }.
+% An option for the creation of a static text display.
 
 
--type text_options() :: [ text_option() ].
+-type static_display_style() ::
+	'align_left'   % Align the text to the left.
+  | 'align_right'  % Align the text to the right.
+  | 'center'       % Center the text (horizontally).
+  | 'fixed_size'   % No auto-resize.
+  | 'ellipsize_begin'     % Any shrinking done from the start of the text.
+  | 'ellipsize_middle'    % Any shrinking done at the middle of the text.
+  | 'ellipsize_end'.      % Any shrinking done at the end of the text.
+% A style element of a static text display.
+%
+% See also [http://docs.wxwidgets.org/stable/classwx_static_text.html].
 
 
--export_type([ static_text/0, style_option/0, text_option/0, text_options/0 ]).
+-export_type([ static_text_display/0,
+			   static_display_option/0, static_display_style/0 ]).
+
+
+-type text() :: ui:text().
+% Any kind of GUI-related text.
+
+
+-type help_info() :: text().
+% A text for help information.
+
+
+% Other text-related types:
+-export_type([ text/0, help_info/0 ]).
+
+
+% Operations related to static texts to display:
+-export([ create_static_display/2, create_static_display/3,
+		  create_static_display/4,
+		  destruct_static_display/1 ]).
+
 
 
 
 % For related defines:
--include("gui.hrl").
+-include("gui_base.hrl").
 
 % For related, internal, wx-related defines:
 -include("gui_internal_defines.hrl").
@@ -63,87 +92,83 @@
 
 % Shorthands:
 
--type bit_mask() :: basic_utils:bit_mask().
+-type maybe_list( T ) :: list_utils:maybe_list( T ).
 
--type ustring() :: text_utils:ustring().
-
--type window() :: gui:window().
--type id() :: gui:id().
-
+-type label() :: gui:label().
+-type parent() :: gui:parent().
 -type point() :: gui:point().
 -type size() :: gui:size().
 
+-type id() :: gui_id:id().
 
-
-% @doc Creates a static text, based on specified identifier and plain string.
--spec create_static( window(), ustring() ) -> static_text().
-create_static( Parent, Label ) ->
-	create_static( _DefaultId=-1, Parent, Label ).
+-type wx_opt_pair() :: gui_wx_backend:wx_opt_pair().
 
 
 
-% @doc Creates a static text, based on specified identifier and plain string.
--spec create_static( id(), window(), ustring() ) -> static_text().
-create_static( Id, Parent, Label ) ->
-	create_static( Id, Parent, Label, _Options=[] ).
+% Text display section.
+
+
+% @doc Creates a static text display, based on the specified label.
+-spec create_static_display( label(), parent() ) -> static_text_display().
+create_static_display( Label, Parent ) ->
+	create_static_display( Label, gui_id:get_any_id(), Parent ).
 
 
 
-% @doc Creates a static text, based on specified identifier, plain string and
-% options.
+% @doc Creates a static text display, based on the specified label and
+% identifier.
 %
--spec create_static( id(), window(), ustring(), text_options() ) ->
-												static_text().
-create_static( Id, Parent, Label, Options ) ->
-
-	ActualOpts = get_text_options( Options ),
-
-	wxStaticText:new( Parent, Id, Label, ActualOpts ).
+-spec create_static_display( label(), id(), parent() ) -> static_text_display().
+create_static_display( Label, Id, Parent ) ->
+	create_static_display( Label, Id, _Options=[], Parent ).
 
 
 
-% @doc Converts specified text options into the appropriate back-end specific
-% options.
+% @doc Creates a static text display, based on the specified label, identifier
+% and option(s).
 %
-% (helper)
-%
-get_text_options( _Options=[] ) ->
-	[];
-
-get_text_options( Options ) ->
-	get_text_options( Options, _Acc=[] ).
+-spec create_static_display( label(), id(),
+	maybe_list( static_display_option() ), parent() ) -> static_text_display().
+create_static_display( Label, Id, Options, Parent ) ->
+	WxOpts = to_wx_static_display_opts( Options ),
+	wxStaticText:new( Parent, Id, Label, WxOpts ).
 
 
-get_text_options( _Opts= [ { style, S } | T ], Acc ) ->
-	get_text_options( T, [ { style, style_option_to_bitmask( S ) } | Acc ] );
-
-
-get_text_options( [ H | T ], Acc ) ->
-	get_text_options( T, [ H | Acc ] ).
+% @doc Destructs the specified static text display.
+-spec destruct_static_display( static_text_display() ) -> void().
+destruct_static_display( StaticTextDisplay ) ->
+	wxStaticText:destroy( StaticTextDisplay ).
 
 
 
-% @doc Converts specified text style into the appropriate back-end specific bit
-% mask.
+
+% @doc Converts the specified static text option(s) into the appropriate
+% back-end specific options.
 %
 % (helper)
 %
--spec style_option_to_bitmask( style_option() | [ style_option() ] ) ->
-														bit_mask().
-style_option_to_bitmask( StyleList ) when is_list( StyleList ) ->
+-spec to_wx_static_display_opts( maybe_list( static_display_option() ) ) ->
+											[ wx_opt_pair() ].
+to_wx_static_display_opts( Options ) when is_list( Options )->
+	[ to_wx_static_text_opt( O ) || O <- Options ];
 
-	lists:foldl( fun( S, Acc ) -> style_option_to_bitmask( S ) bor Acc end,
-				 _InitialAcc=0,
-				 _List=StyleList );
+% Probably a pair:
+to_wx_static_display_opts( Opt ) ->
+	to_wx_static_display_opts( [ Opt ] ).
 
-style_option_to_bitmask( _Style=align_left ) ->
-	?wxALIGN_LEFT;
 
-style_option_to_bitmask( _Style=center ) ->
-	?wxALIGN_CENTER;
+% (helper)
+-spec to_wx_static_text_opt( static_display_option() ) -> wx_opt_pair().
+to_wx_static_text_opt( _Opt={ position, Pos } ) ->
+	{ pos, Pos };
 
-style_option_to_bitmask( _Style=align_right ) ->
-	?wxALIGN_RIGHT;
+to_wx_static_text_opt( Opt={ size, _S } ) ->
+	Opt;
 
-style_option_to_bitmask( _Style=no_autoresize ) ->
-	?wxST_NO_AUTORESIZE.
+to_wx_static_text_opt( _Opts={ style, Styles } ) ->
+	WxStyle = lists:foldl( fun( S, Acc ) ->
+		gui_generated:get_second_for_static_text_display_style( S ) bor Acc end,
+		_InitialAcc=0,
+		_List=Styles ),
+
+	{ style, WxStyle }.

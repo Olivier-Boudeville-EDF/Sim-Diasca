@@ -1,21 +1,21 @@
 % Copyright (C) 2008-2023 EDF R&D
-
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2008.
 
@@ -26,9 +26,10 @@
 % Basic actors may also directly generate their random values (see
 % class_RandomManager.erl for that).
 %
-% Important note: this way of managing random values is deprecated, since a full
-% stochastic support is now available to all instances of class_Actor. As a
-% consequence, this class is itself scheduled for deprecation and removal.
+% Important note: this way of managing random values through inheritance is
+% mostly deprecated, since a full stochastic support is now available to all
+% instances of class_Actor. This class is now mostly useful for its static
+% methods.
 %
 -module(class_StochasticActor).
 
@@ -46,8 +47,9 @@
 % The attributes that are specific to a stochastic actor are:
 -define( class_attributes, [
 
-	{ random_laws, [ law_entry() ],
-	  "a list of all the available random laws for that stochastic actor" } ]).
+	% 'sd_' prefix, as considered as a Sim-Diasca builtin:
+	{ sd_random_laws, list_table( law_identifier(), random_law_data() ),
+	  "a table of all random laws available to this stochastic actor" } ]).
 
 
 
@@ -59,10 +61,6 @@
 
 % Must be included before class_TraceEmitter header:
 -define( trace_emitter_categorization, "Actor.StochasticActor" ).
-
-
-% For WOOPER, actor types, etc.:
--include("sim_diasca_for_actors.hrl").
 
 
 
@@ -89,14 +87,40 @@
 
 % Request identifiers allow to designate a particular law of a stochastic actor.
 
-
 -type law_identifier() :: term().
-% Designates a model-specific random law (usually an atom), so that can once a
-% law is defined we can request random values out of it:
+% Designates, as an identifier, a model-specific random law (usually an atom),
+% so that can once a law has been defined the model can readily obtain random
+% samples from it.
+%
+% Law identifiers are themselves model-specific.
 
 
--type law_entry() :: { law_identifier(), class_RandomManager:random_law() }.
+-type law_description() :: { law_identifier(), random_law_spec() }.
+% Describes a random law to be used by this stochastic actor.
+
+
+-type law_entry() :: { law_identifier(), random_law_data() }.
 % Describes a law entry set in this stochastic actor.
+%
+% Entries are stored in a table, registered in an conventional attribute of this
+% actor.
+
+
+-export_type([ law_entry/0 ]).
+
+
+
+% For WOOPER, actor types, etc.:
+-include("sim_diasca_for_actors.hrl").
+
+
+% Shorthands:
+
+%-type list_table( K, V ) :: list_table:list_table( K, V).
+
+-type random_law_spec() :: random_utils:random_law_spec().
+-type random_law_data() :: random_utils:random_law_data().
+-type sample() :: random_utils:sample().
 
 
 
@@ -105,46 +129,48 @@
 % - ActorSettings corresponds to the engine settings for this actor, as
 % determined by the load-balancer
 %
-% - StochasticActorName the name of this stochastic actor
+% - StochasticActorName is the name of this stochastic actor
 %
-% - ListOfRandomLaws is a list of pairs, each pair being in the form of:
-% {attribute_name_of_law, RandomType} where:
+% - RandomLawDescs is a list of pairs, each pair being in the form of
+% {AttributeNameOfLaw, RandomSpec}, where:
 %
-%  - attribute_name_of_law is a random law identifier (preferably as an atom),
-%  it can be chosen freely (avoid collision, though!); ex:
+%  - AttributeNameOfLaw is a random law identifier (preferably as an atom),
+%  it can be chosen freely (avoid collision, though!); e.g.
 %  'my_first_uniform_law'
 %
-%  - RandomType is a tuple which describes the corresponding random law; its
-%  first element is the name of the random law (ex: uniform, exponential,
+%  - RandomSpec is a tuple that specifies the corresponding random law; its
+%  first element is the name of the random law (e.g. uniform, exponential,
 %  gaussian, etc.) and the following elements are the corresponding settings for
 %  that law
 %
-% For example, ListOfRandomLaws may be [ { test_first_uniform, {uniform,5} } ].
+% For example, RandomLawDescs may be [{test_first_uniform, {uniform,5,15}}].
 %
-% See also: get_random_value_from/2 for more details
+% See also: get_random_value_from/2 for more details.
 %
 -spec construct( wooper:state(), class_Actor:actor_settings(),
-				 class_Actor:name(), [ law_entry() ] ) -> wooper:state().
-construct( State, ActorSettings, StochasticActorName, ListOfRandomLaws ) ->
+				 class_Actor:name(), [ law_description() ] ) -> wooper:state().
+construct( State, ActorSettings, StochasticActorName, RandomLawDescs ) ->
 
 	% First the direct mother classes:
 	ActorState = class_Actor:construct( State, ActorSettings,
-								?trace_categorize(StochasticActorName) ),
+		?trace_categorize(StochasticActorName) ),
 
 	% Then the class-specific actions:
 
-	% Now we have an initialized actor, hence properly seeded.
+	% Now we have an initialised actor, hence properly seeded.
 
-	[ check_law_definition( LawDef )
-			|| { _LawId, LawDef } <- ListOfRandomLaws ],
+	RandomLawEntries = list_table:new(
+		[ { LawId, random_utils:initialise_law( LawSpec ) }
+			|| { LawId, LawSpec } <- RandomLawDescs ] ),
 
-	% random_laws is the list of random laws, each element being like
-	% {attribute_name_of_law, RandomType}:
+	% random_laws is a list of initialised random law data, each element being
+	% like {attribute_name_of_law, RandomData}:
 	%
-	StartingState = setAttribute( ActorState, random_laws, ListOfRandomLaws ),
+	StartingState =
+		setAttribute( ActorState, sd_random_laws, RandomLawEntries ),
 
 	% ?send_info_fmt( StartingState, "Creating a stochastic actor "
-	%                 "with random laws ~p.", [ ListOfRandomLaws ] ),
+	%                 "with random laws ~p.", [ RandomLawEntries ] ),
 
 	StartingState.
 
@@ -178,41 +204,21 @@ destruct( State ) ->
 % Helper section.
 
 
-% @doc Returns a new random value from the random law which specified by its
+% @doc Returns a new random value from the random law that is specified by its
 % identifier (as declared at creation).
 %
-% State is unchanged hence not returned.
+% State is unchanged, hence not returned.
 %
 % Returns the random value.
 %
 % (helper)
 %
--spec get_random_value_from( law_identifier(), wooper:state() ) -> number().
+-spec get_random_value_from( law_identifier(), wooper:state() ) -> sample().
 get_random_value_from( LawIdentifier, State ) ->
 
-	case get_law_settings_for( LawIdentifier, ?getAttr(random_laws) ) of
+	LawData = list_table:get_value( LawIdentifier, ?getAttr(sd_random_laws) ),
 
-		{ uniform, N } ->
-			class_RandomManager:get_uniform_value( N );
-
-		{ exponential, Lambda } ->
-			class_RandomManager:get_exponential_value( Lambda );
-
-		{ positive_integer_exponential, Lambda } ->
-			class_RandomManager:get_positive_integer_exponential_value(
-																	   Lambda );
-
-		{ gaussian, Mu, Sigma } ->
-			class_RandomManager:get_gaussian_value( Mu, Sigma );
-
-		{ positive_integer_gaussian, Mu, Sigma } ->
-			class_RandomManager:get_positive_integer_gaussian_value( Mu,
-																	Sigma );
-
-		OtherLaw ->
-			throw( { unexpected_random_law, OtherLaw, LawIdentifier } )
-
-	end.
+	random_utils:get_sample_from( LawData ).
 
 
 
@@ -223,31 +229,27 @@ get_random_value_from( LawIdentifier, State ) ->
 %
 % (helper)
 %
--spec add_law( law_identifier(), class_RandomManager:random_law(),
-			   wooper:state() ) -> wooper:state().
-add_law( LawIdentifier, LawDefinition, State ) ->
+-spec add_law( law_identifier(), random_law_spec(), wooper:state() ) ->
+											wooper:state().
+add_law( LawIdentifier, LawSpec, State ) ->
 
-	check_law_definition( LawDefinition ),
+	LawData = random_utils:initialise_law( LawSpec ),
 
-	CurrentLaws = ?getAttr(random_laws),
+	NewLaws = list_table:add_entry( _K=LawIdentifier, _V=LawData,
+									?getAttr(sd_random_laws) ),
 
-	% Removes any previous entry to avoid lists that may grow too much:
-	ExpurgedLaws = lists:keydelete( _Key=LawIdentifier, _Index=1, CurrentLaws ),
-
-	NewLaws = [ { LawIdentifier, LawDefinition } | ExpurgedLaws ],
-
-	setAttribute( State, random_laws, NewLaws ).
+	setAttribute( State, sd_random_laws, NewLaws ).
 
 
 
-% @doc Removes specified random law from the known laws.
+% @doc Removes the specified random law from the known laws.
 %
 % (helper)
 %
 -spec remove_law( law_identifier(), wooper:state() ) -> wooper:state().
 remove_law( LawIdentifier, State ) ->
 
-	CurrentLaws = ?getAttr(random_laws),
+	CurrentLaws = ?getAttr(sd_random_laws),
 
 	Key = LawIdentifier,
 
@@ -257,55 +259,10 @@ remove_law( LawIdentifier, State ) ->
 
 		true ->
 			NewLaws = lists:keydelete( Key, Index, CurrentLaws ),
-			setAttribute( State, random_laws, NewLaws );
+			setAttribute( State, sd_random_laws, NewLaws );
 
 		false ->
 			throw( { unknown_random_law_to_remove, LawIdentifier,
 					 CurrentLaws } )
 
 	end.
-
-
-
-% @doc Returns the settings of the random law specified by its identifier.
-%
-% (helper)
-%
-get_law_settings_for( LawIdentifier, [] ) ->
-	throw( { unknown_random_law_identifier, LawIdentifier } );
-
-get_law_settings_for( LawIdentifier,
-		[ { LawIdentifier, Settings } | _OtherLaws ] ) ->
-	Settings;
-
-get_law_settings_for( LawIdentifier,
-		[ { _OtherLawIdentifier, _Settings } | OtherLaws ] ) ->
-	get_law_settings_for( LawIdentifier, OtherLaws ).
-
-
-
-% @doc Checks that specified law definition is correct.
-%
-% Note: usually this checking can also be done statically by Dialyzer.
-%
-check_law_definition( { uniform, N } ) when is_integer( N ) andalso N > 0 ->
-	ok;
-
-check_law_definition( { exponential, Lambda } )
-								when is_number( Lambda ) andalso Lambda > 0 ->
-	ok;
-
-check_law_definition( { positive_integer_exponential, Lambda } )
-								when is_number( Lambda) andalso Lambda > 0 ->
-	ok;
-
-check_law_definition( { gaussian, Mu, Sigma } )
-		when is_number( Mu ) andalso is_number( Sigma ) andalso Sigma >= 0 ->
-	ok;
-
-check_law_definition( { positive_integer_gaussian, Mu, Sigma } )
-		when is_number( Mu ) andalso is_number( Sigma ) andalso Sigma >= 0 ->
-	ok;
-
-check_law_definition( UnexpectedLaw ) ->
-	throw( { invalid_random_law, UnexpectedLaw } ).

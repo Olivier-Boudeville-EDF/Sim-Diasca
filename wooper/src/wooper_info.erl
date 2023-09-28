@@ -27,8 +27,8 @@
 
 
 % Defined now here, as the rebar-based build system would not allow us to define
-% per-module rules (ex: this module shall itself be compiled by the Myriad parse
-% transform).
+% per-module rules (e.g. this module shall itself be compiled by the Myriad
+% parse transform).
 %
 -compile( {parse_transform, myriad_parse_transform } ).
 
@@ -44,8 +44,8 @@
 -type class_info() :: #class_info{}.
 
 
-% The description of a class:
 -type class_description() :: ustring().
+% The description of a class.
 
 
 -type superclasses() :: [ wooper:classname() ].
@@ -68,15 +68,15 @@
 
 -type attribute_spec() ::
 
-		wooper:attribute_name()
+	wooper:attribute_name()
 
-	  | { wooper:attribute_name(), attribute_description() }
+  | { wooper:attribute_name(), attribute_description() }
 
-	  | { wooper:attribute_name(), wooper:attribute_type(),
-		  attribute_description() }
+  | { wooper:attribute_name(), wooper:attribute_type(),
+	  attribute_description() }
 
-	  | { wooper:attribute_name(), wooper:attribute_type(),
-		  attribute_qualifiers(), attribute_description() }.
+  | { wooper:attribute_name(), wooper:attribute_type(),
+	  attribute_qualifiers(), attribute_description() }.
 % How attributes are to be specified by the user.
 
 
@@ -344,39 +344,39 @@ class_info_to_string( #class_info{
 									  NextIndentationLevel ),
 
 			  class_specific_attributes_to_string( AttributeTable,
-										DoIncludeForms, NextIndentationLevel ),
+				DoIncludeForms, NextIndentationLevel ),
 
 			  inherited_attributes_to_string( InheritedAttributes,
-										DoIncludeForms, NextIndentationLevel ),
+				DoIncludeForms, NextIndentationLevel ),
 
 			  ast_info:compilation_options_to_string( CompileOpts,
-						CompileOptDefs, DoIncludeForms, NextIndentationLevel ),
+				CompileOptDefs, DoIncludeForms, NextIndentationLevel ),
 
 			  ast_info:optional_callbacks_to_string( OptCallbacksDefs,
-									DoIncludeForms, NextIndentationLevel ),
+				DoIncludeForms, NextIndentationLevel ),
 
 			  DebugString,
 
 			  ast_info:parse_attribute_table_to_string( ParseAttributeTable,
-										DoIncludeForms, NextIndentationLevel ),
+				DoIncludeForms, NextIndentationLevel ),
 
 			  ast_info:remote_spec_definitions_to_string( RemoteSpecDefs,
-										DoIncludeForms, NextIndentationLevel ),
+				DoIncludeForms, NextIndentationLevel ),
 
 			  ast_info:includes_to_string( Includes, IncludeDefs,
-										DoIncludeForms, NextIndentationLevel ),
+				DoIncludeForms, NextIndentationLevel ),
 
 			  % No form to manage:
 			  ast_info:type_exports_to_string( TypeExportTable,
-											   NextIndentationLevel ),
+				_DoIncludeForms=false, NextIndentationLevel ),
 
 			  ast_info:types_to_string( TypeTable, DoIncludeForms,
-										NextIndentationLevel ),
+				NextIndentationLevel ),
 
 			  ast_info:records_to_string( RecordTable, NextIndentationLevel ),
 
 			  ast_info:function_imports_to_string( FunctionImportTable,
-					FunctionImportDefs, DoIncludeForms, NextIndentationLevel ),
+				FunctionImportDefs, DoIncludeForms, NextIndentationLevel ),
 
 			  ast_info:functions_to_string( FunctionTable, DoIncludeForms,
 											NextIndentationLevel ),
@@ -385,7 +385,7 @@ class_info_to_string( #class_info{
 									  NextIndentationLevel ),
 
 			  "regarding new operators, " ++ ast_info:functions_to_string(
-				   NewOperatorTable, DoIncludeForms, NextIndentationLevel ),
+					NewOperatorTable, DoIncludeForms, NextIndentationLevel ),
 
 			  destructor_to_string( DestructorInfo, DoIncludeForms,
 									NextIndentationLevel ),
@@ -399,14 +399,14 @@ class_info_to_string( #class_info{
 			  static_methods_to_string( StaticTable, DoIncludeForms,
 										NextIndentationLevel ),
 
-			  ast_info:last_line_to_string( LastLineLocDef ),
+			  ast_info:last_file_loc_to_string( LastLineLocDef ),
 
 			  ast_info:markers_to_string( MarkerTable, NextIndentationLevel ),
 
 			  ast_info:errors_to_string( Errors, NextIndentationLevel ),
 
 			  ast_info:unhandled_forms_to_string( UnhandledForms,
-								DoIncludeForms, NextIndentationLevel ) ],
+				DoIncludeForms, NextIndentationLevel ) ],
 
 		text_utils:format( "Information about class ~ts: ~ts",
 			[ ClassnameString,
@@ -427,7 +427,7 @@ class_entry_to_string( _ClassEntry={ ThisClassname, _ClassLocDef },
 	text_utils:atom_to_string( ThisClassname );
 
 class_entry_to_string( _ClassEntry={ ThisClassname,
-						_ClassLocDef={ _Loc, Form } }, _DoIncludeForms=true ) ->
+					   _ClassLocDef={ _Loc, Form } }, _DoIncludeForms=true ) ->
 	text_utils:format( "~ts (represented as form '~p')",
 					   [ ThisClassname, Form ] ).
 
@@ -492,7 +492,7 @@ inherited_attributes_to_string( AttributeTable, DoIncludeForms,
 		AttrInfos ->
 
 			AttrStrings = [ attribute_info_to_string( AttrInfo, DoIncludeForms )
-							|| AttrInfo <- AttrInfos ],
+								|| AttrInfo <- AttrInfos ],
 
 			text_utils:format( "~B known inherited attribute(s): ~ts",
 				[ length( AttrInfos ),
@@ -574,8 +574,8 @@ requests_to_string( RequestTable, DoIncludeForms, IndentationLevel ) ->
 		ReqInfos ->
 
 			ReqString = text_utils:strings_to_string( [ request_info_to_string(
-							ReqInfo, DoIncludeForms, IndentationLevel )
-										|| ReqInfo <- ReqInfos ],
+				ReqInfo, DoIncludeForms, IndentationLevel )
+					|| ReqInfo <- ReqInfos ],
 													  IndentationLevel ),
 
 			text_utils:format( "~B request(s) defined: ~ts",
@@ -634,8 +634,8 @@ oneways_to_string( OnewayTable, DoIncludeForms, IndentationLevel ) ->
 		OnwInfos ->
 
 			OnwString = text_utils:strings_to_string( [ oneway_info_to_string(
-							OnwInfo, DoIncludeForms, IndentationLevel )
-										|| OnwInfo <- OnwInfos ],
+				OnwInfo, DoIncludeForms, IndentationLevel )
+					|| OnwInfo <- OnwInfos ],
 													  IndentationLevel ),
 
 			text_utils:format( "~B oneway(s) defined: ~ts",
@@ -696,7 +696,7 @@ static_methods_to_string( StaticTable, DoIncludeForms, IndentationLevel ) ->
 
 			StatString = text_utils:strings_to_string( [
 				static_method_info_to_string( StatInfo, DoIncludeForms,
-								IndentationLevel ) || StatInfo <- StatInfos ],
+					IndentationLevel ) || StatInfo <- StatInfos ],
 													   IndentationLevel ),
 
 			text_utils:format( "~B static method(s) defined: ~ts",
@@ -816,15 +816,15 @@ get_state_builtins() ->
 %
 -spec get_execution_builtins() -> [ function_id() ].
 get_execution_builtins() ->
-	[ {executeRequest,2},
-	  {executeRequest,3},
-	  {executeRequestAs,3},
-	  {executeRequestAs,4},
+	[ { executeRequest, 2 },
+	  { executeRequest, 3 },
+	  { executeRequestAs, 3 },
+	  { executeRequestAs, 4 },
 
-	  {executeOneway,2},
-	  {executeOneway,3},
-	  {executeOnewayAs,3},
-	  {executeOnewayAs,4} ].
+	  { executeOneway, 2 },
+	  { executeOneway, 3 },
+	  { executeOnewayAs, 3 },
+	  { executeOnewayAs, 4 } ].
 
 
 
@@ -833,45 +833,45 @@ get_execution_builtins() ->
 %
 -spec get_inner_builtins() -> [ function_id() ].
 get_inner_builtins() ->
-	[ {wooper_main_loop,1},
-	  {wooper_lookup_method,3},
+	[ { wooper_main_loop, 1 },
+	  { wooper_lookup_method, 3 },
 
-	  {wooper_execute_method,3},
-	  {wooper_execute_method_as,4},
-	  {wooper_effective_method_execution,4},
+	  { wooper_execute_method, 3 },
+	  { wooper_execute_method_as, 4 },
+	  { wooper_effective_method_execution, 4 },
 
-	  {wooper_handle_local_request_execution,3},
-	  {wooper_handle_local_request_execution_as,4},
-	  {wooper_handle_remote_request_execution,4},
+	  { wooper_handle_local_request_execution, 3 },
+	  { wooper_handle_local_request_execution_as, 4 },
+	  { wooper_handle_remote_request_execution, 4 },
 
-	  {wooper_handle_local_oneway_execution,3},
-	  {wooper_handle_local_oneway_execution_as,4},
-	  {wooper_handle_remote_oneway_execution,3},
+	  { wooper_handle_local_oneway_execution, 3 },
+	  { wooper_handle_local_oneway_execution_as, 4 },
+	  { wooper_handle_remote_oneway_execution, 3 },
 
-	  {chain_parent_destructors,1},
-	  {trigger_destruct_error,4},
+	  { chain_parent_destructors, 1 },
+	  { trigger_destruct_error, 4 },
 
-	  {wooper_destruct,1} ].
+	  { wooper_destruct, 1 } ].
 
 
 
 % @doc Returns the function identifiers of the WOOPER helper builtins.
 -spec get_helper_builtins() -> [ function_id() ].
 get_helper_builtins() ->
-	[ {is_wooper_debug,0} ].
+	[ {is_wooper_debug,0 } ].
 
 
 
 % @doc Returns the function identifiers of the WOOPER serialisation builtins.
 -spec get_serialisation_builtins() -> [ function_id() ].
 get_serialisation_builtins() ->
-	[ {pre_serialise_hook,1},
-	  {serialise,3},
+	[ { pre_serialise_hook, 1 },
+	  { serialise, 3 },
 
-	  {post_deserialise_hook,1},
-	  {post_serialise_hook,3},
+	  { post_deserialise_hook, 1 },
+	  { post_serialise_hook, 3 },
 
-	  {pre_deserialise_hook,2} ].
+	  { pre_deserialise_hook, 2 } ].
 
 
 

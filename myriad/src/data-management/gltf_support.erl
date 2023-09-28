@@ -22,8 +22,8 @@
 % If not, see <http://www.gnu.org/licenses/> and
 % <http://www.mozilla.org/MPL/>.
 %
-% Creation date: Monday, October 4, 2021.
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: Monday, October 4, 2021.
 
 
 % @doc Gathering of various facilities about the <b>glTF 2.0</b> file format (GL
@@ -52,8 +52,8 @@
 %
 % In terms of orientation, conventions may differ; Myriad considers that the
 % "up" direction is the +Z axis direction, whereas glTF defines +Y as "up"; as a
-% consequence (Myriad, Z-up) coordinates (ex: point3:point3()) will be
-% transformed here in Y-up ones (ex: point3:yup_point3()). Refer to the design
+% consequence (Myriad, Z-up) coordinates (e.g. point3:point3()) will be
+% transformed here in Y-up ones (e.g. point3:yup_point3()). Refer to the design
 % notes in linear_3D.erl for more details.
 
 
@@ -74,7 +74,7 @@
 % accessor.
 
 % Types are now prefixed by 'gltf_' to avoid risks of shorthand-related
-% confusion with similar types defined in Myriad (ex: gltf_mesh() is used, not
+% confusion with similar types defined in Myriad (e.g. gltf_mesh() is used, not
 % mesh() that could be mesh:mesh()).
 
 
@@ -272,7 +272,7 @@
 % The (Myriad) datatype of a component of an accessor, for instance 'uint16'.
 
 -type gltf_component_type() :: gltf_enum().
-% A glTF lower-level type identifier. Ex: '5120' for sint8.
+% A glTF lower-level type identifier. For example '5120' for sint8.
 
 
 -type component_value() :: number().
@@ -280,8 +280,8 @@
 
 
 -type gltf_topology_type() :: gltf_enum().
-% Lower-level glTF topology ("mode") of a primitive (ex: corresponding to point,
-% line_loop, etc.).
+% Lower-level glTF topology ("mode") of a primitive (e.g. corresponding to
+% point, line_loop, etc.).
 
 
 -type gltf_topology() :: [ gltf_indexed_triangle() ].
@@ -490,14 +490,14 @@
 
 %-type quaternion() :: quaternion:quaternion().
 
--type texture_coordinate2() :: mesh:texture_coordinate2().
+-type uv_point() :: gui_texture:uv_point().
 
 
 % Local types:
 
 -type final_type() :: 'point' | 'vector'.
-% As, when decoding, we prefer discriminating points (ex: vertices) from vectors
-% (ex: normals).
+% As, when decoding, we prefer discriminating points (e.g. vertices) from
+% vectors (e.g. normals).
 
 
 % No index() here (they are uint16 scalar()):
@@ -713,9 +713,9 @@ add_camera_to_content( CameraType, CameraNode,
 					   Content=#gltf_content{ nodes=Nodes,
 											  camera_types=CameraTypes },
 					   BaseName )
-  when ( is_record( CameraType, gltf_orthographic_camera )
-		 orelse is_record( CameraType, gltf_perspective_camera ) )
-	   andalso is_record( CameraNode, gltf_node ) ->
+		when ( is_record( CameraType, gltf_orthographic_camera )
+			   orelse is_record( CameraType, gltf_perspective_camera ) )
+			 andalso is_record( CameraNode, gltf_node ) ->
 
 	% As these indexes start at 0:
 	CameraTypeIndex = length( CameraTypes ),
@@ -882,9 +882,9 @@ add_material_to_content( Material,
 -spec add_camera_type_to_content( gltf_camera_type(), gltf_content() ) ->
 									{ camera_type_index(), gltf_content() }.
 add_camera_type_to_content( CameraType,
-		Content=#gltf_content{ camera_types=CameraTypes } )
-  when is_record( CameraType, gltf_orthographic_camera )
-	   orelse is_record( CameraType, gltf_perspective_camera ) ->
+			Content=#gltf_content{ camera_types=CameraTypes } )
+		when is_record( CameraType, gltf_orthographic_camera )
+			 orelse is_record( CameraType, gltf_perspective_camera ) ->
 
 	CameraTypeIndex = length( CameraTypes ),
 
@@ -1061,18 +1061,18 @@ get_basic_light( LightName ) ->
 	% light-emitting mesh could/should be added for this light to become
 	% functional:
 
-	LightRotQuaternion = [ 0.16907575726509094,
+	LightRotQuaternion = { 0.16907575726509094,
 						   0.7558803558349609,
 						   -0.27217137813568115,
-						   0.570947527885437 ],
+						   0.570947527885437 },
 
-	LightPosition = [ 4.076245307922363,
+	LightPositionVec = [ 4.076245307922363,
 					  5.903861999511719,
 					  -1.0054539442062378 ],
 
 	#gltf_node{ name=LightName,
 				rotation=LightRotQuaternion,
-				translation=LightPosition }.
+				translation=LightPositionVec }.
 
 
 
@@ -1123,10 +1123,10 @@ get_basic_perspective_camera_type() ->
 -spec get_basic_camera_node() -> gltf_node().
 get_basic_camera_node() ->
 
-	CameraRotQuaternion = [ 0.483536034822464,
+	CameraRotQuaternion = { 0.483536034822464,
 							0.33687159419059753,
 							-0.20870360732078552,
-							0.7804827094078064 ],
+							0.7804827094078064 },
 
 	CameraPosition = [ 7.358891487121582,
 					   4.958309173583984,
@@ -1228,7 +1228,7 @@ raw_buffer_to_gltf_buffer_embedded( BinContent ) ->
 raw_buffer_to_gltf_buffer_embedded( BinContent, MaybeBufferName ) ->
 
 	Base64Uri = "data:application/octet-stream;base64,"
-					++ base64:encode_to_string( BinContent ),
+		++ base64:encode_to_string( BinContent ),
 
 	ByteCount = size( BinContent ),
 
@@ -1389,9 +1389,9 @@ gltf_material_to_json( #gltf_material{ name=MaybeName,
 % @doc Converts the specified glTF roughness into a JSON counterpart.
 -spec gltf_roughness_to_json( gltf_pbr_metallic_roughness() ) -> json_term().
 gltf_roughness_to_json( #gltf_pbr_metallic_roughness{
-							base_color_factor=BaseRenderColor,
-							metallic_factor=MetalF,
-							roughness_factor=RoughF } ) ->
+		base_color_factor=BaseRenderColor,
+		metallic_factor=MetalF,
+		roughness_factor=RoughF } ) ->
 
 	table:new( [ { <<"baseColorFactor">>, tuple_to_list( BaseRenderColor ) },
 				 { <<"metallicFactor">>, MetalF },
@@ -1436,8 +1436,8 @@ gltf_camera_type_to_json( #gltf_perspective_camera{
 								  { <<"znear">>, ZNear } ] ),
 
 	PerspTable = table:add_maybe_entries( [
-					{ <<"aspectRatio">>, MaybeAspectRatio },
-					{ <<"zfar">>, MaybeZFar } ], BasePerspTable ),
+		{ <<"aspectRatio">>, MaybeAspectRatio },
+		{ <<"zfar">>, MaybeZFar } ], BasePerspTable ),
 
 	BaseTable = table:new( [ { <<"type">>, <<"perspective">> },
 							 { <<"perspective">>, PerspTable } ] ),
@@ -1659,7 +1659,7 @@ json_to_gltf_buffer( JsonTerm ) ->
 % https://www.khronos.org/registry/glTF/specs/2.0/glTF-2.0.html#accessor-data-types
 %
 -spec get_element_type_associations() ->
-					 bijective_table( element_type(), gltf_element_type() ).
+					bijective_table( element_type(), gltf_element_type() ).
 get_element_type_associations() ->
 	% glTF has no notion of points/vertices (just vectors):
 	bijective_table:new( [ { scalar, <<"SCALAR">> },
@@ -1788,7 +1788,7 @@ get_buffer_view_target_associations() ->
 % one.
 %
 -spec buffer_view_target_to_gltf( buffer_view_target() ) ->
-										   gltf_buffer_view_target().
+											gltf_buffer_view_target().
 buffer_view_target_to_gltf( BufferViewTarget ) ->
 	bijective_table:get_second_for( BufferViewTarget,
 									get_buffer_view_target_associations() ).
@@ -1796,7 +1796,7 @@ buffer_view_target_to_gltf( BufferViewTarget ) ->
 
 % @doc Converts a (lower-level) glTF buffer-view target into a Myriad-level one.
 -spec gltf_to_buffer_view_target( gltf_buffer_view_target() ) ->
-										   buffer_view_target().
+											buffer_view_target().
 gltf_to_buffer_view_target( GltfBufferViewTarget ) ->
 	bijective_table:get_first_for( GltfBufferViewTarget,
 								   get_buffer_view_target_associations() ).
@@ -1825,7 +1825,7 @@ decode_primitive( MeshIndex, PrimitiveIndex, #gltf_content{
 						   [ PrimitiveIndex, MeshIndex ] ),
 
 	_Mesh = #gltf_mesh{ primitives=Primitives } =
-					list_utils:get_element_at( Meshes, MeshIndex+1 ),
+		list_utils:get_element_at( Meshes, MeshIndex+1 ),
 
 	Prim = #gltf_primitive{ attributes=Attributes } =
 		list_utils:get_element_at( Primitives, PrimitiveIndex+1 ),
@@ -1893,8 +1893,9 @@ decode_primitive( MeshIndex, PrimitiveIndex, #gltf_content{
 
 	{ Indexes, IndexesBufferTable } = case Prim#gltf_primitive.indexes of
 
+		% FIXME: most probably faulty
 		undefined ->
-			Tex0BufferTable;
+			{ _Indxs=[], Tex0BufferTable };
 
 		IndexesPositionAccessorIndex ->
 
@@ -1981,7 +1982,7 @@ decode_normals( AccessorIndex, Accessors, Buffers, BufferViews,
 % @doc Decodes the texture coordinates defined in the specified glTF content.
 -spec decode_texture_coordinates( accessor_index(), [ gltf_accessor() ],
 		[ gltf_buffer() ], [ gltf_buffer_view() ], buffer_table() ) ->
-				{ [ specialised_texture_coordinates() ], buffer_table() }.
+			{ [ specialised_texture_coordinates() ], buffer_table() }.
 decode_texture_coordinates( AccessorIndex, Accessors, Buffers, BufferViews,
 							BufferTable ) ->
 
@@ -2167,7 +2168,7 @@ add_primitive( MaybePrimName, Vertices, Normals, TexCoords,
 	TargetMeshPos = MeshIndex+1,
 
 	Mesh = #gltf_mesh{ primitives=Primitives }
-				= list_utils:get_element_at( Meshes, TargetMeshPos ),
+		= list_utils:get_element_at( Meshes, TargetMeshPos ),
 
 	NewPrimitives = list_utils:append_at_end( NewPrimitive, Primitives ),
 
@@ -2219,7 +2220,7 @@ integrate_vertices( Vertices, MaybeName, PrimBufferIndex, Buffer,
 
 	{ MinVec, MaxVec } = compute_gltf_extremas( YupVertices ),
 
-	PosElementType = point3,
+	PosElementType = vector3,
 	PosComponentType = float32,
 
 	PosCount = length( YupVertices ),
@@ -2323,9 +2324,8 @@ integrate_normals( Normals, MaybeName, PrimBufferIndex, Buffer,
 % @doc Integrates the specified texture coordinates (if any) in the specified
 % buffer and content, which are returned.
 %
--spec integrate_texture_coordinates( [ texture_coordinate2() ],
-			maybe( object_name() ), buffer_index(), raw_buffer(), byte_offset(),
-			gltf_content() ) ->
+-spec integrate_texture_coordinates( [ uv_point() ], maybe( object_name() ),
+			buffer_index(), raw_buffer(), byte_offset(), gltf_content() ) ->
 		{ maybe( accessor_index() ), raw_buffer(), byte_offset(),
 		  gltf_content() }.
 integrate_texture_coordinates( _TexCoords=[], _MaybeName, _PrimBufferIndex,
@@ -2391,8 +2391,8 @@ integrate_texture_coordinates( TexCoords, MaybeName, PrimBufferIndex, Buffer,
 %
 -spec integrate_indexes( [ gltf_index() ], maybe( object_name() ),
 		buffer_index(), raw_buffer(), byte_offset(), gltf_content() ) ->
-				{ maybe( accessor_index() ), raw_buffer(), byte_offset(),
-				  gltf_content() }.
+			{ maybe( accessor_index() ), raw_buffer(), byte_offset(),
+			  gltf_content() }.
 integrate_indexes( _Indexes=[], _MaybeName, _PrimBufferIndex, Buffer,
 				   BufferOffset, Content ) ->
 	% Do not define empty elements, glTF importers may not support that:
@@ -2437,6 +2437,7 @@ integrate_indexes( Indexes, MaybeName, PrimBufferIndex, Buffer,
 
 	NewBufferViews = list_utils:append_at_end( IdxBufferView, BufferViews ),
 
+	% FIXME: Indexes not expected, instead: [specialised_type()]
 	NewBuffer = append_to_buffer( IdxElementType, IdxComponentType, Indexes,
 								  Buffer ),
 
@@ -2451,7 +2452,7 @@ integrate_indexes( Indexes, MaybeName, PrimBufferIndex, Buffer,
 % @doc Returns a pair of vectors whose coordinates reflect the overall minimum
 % and maximum values found in the specified list of points.
 %
--spec compute_gltf_extremas( [ point3() ] ) -> { point3(), point3() }.
+-spec compute_gltf_extremas( [ point3() ] ) -> { vector3(), vector3() }.
 % No wanting to let 'undefined' go through:
 compute_gltf_extremas( _Points=[] )->
 	throw( no_points );
@@ -2566,7 +2567,7 @@ get_buffer_view_binary( BufferViewIndex, BufferViews, Buffers, BufferTable ) ->
 
 
 % @doc Returns an appropriate object name (if any), based on specified string
-% and deriving name (ex: the one of a primitive).
+% and deriving name (e.g. the one of a primitive).
 %
 -spec forge_maybe_name( ustring(), maybe( object_name() ) ) ->
 													maybe( object_name() ).
@@ -2647,8 +2648,7 @@ append_to_buffer( _ElementType=vector3, _ComponentType=float32, Elements,
 	append_all_float32_little( ComponentFloats, Bin );
 
 append_to_buffer( ElementType, _ComponentType=float32, Elements, Bin )
-		when ElementType =:= vector2
-	  orelse ElementType =:= vector4 ->
+		when ElementType =:= vector2 orelse ElementType =:= vector4 ->
 	ComponentFloats = list_utils:flatten_once( Elements ),
 	%trace_utils:debug_fmt( "Appending following floats for vectors:~n~p",
 	%                       [ ComponentFloats ] ),
@@ -2853,7 +2853,7 @@ extract_all_uint16_little( Bin ) ->
 extract_all_uint16_little( _Bin= <<>>, Acc ) ->
 	lists:reverse( Acc );
 
-extract_all_uint16_little( _Bin= <<UI:16/little-unsigned-integer,Rest/binary>>,
+extract_all_uint16_little( _Bin= <<UI:16/little-unsigned-integer, Rest/binary>>,
 						   Acc ) ->
 	extract_all_uint16_little( Rest, [ UI | Acc ] ).
 
@@ -2871,7 +2871,7 @@ extract_all_float32_little( Bin ) ->
 extract_all_float32_little( _Bin= <<>>, Acc ) ->
 	lists:reverse( Acc );
 
-extract_all_float32_little( _Bin= <<F:32/float-little,Rest/binary>>, Acc ) ->
+extract_all_float32_little( _Bin= <<F:32/float-little, Rest/binary>>, Acc ) ->
 	extract_all_float32_little( Rest, [ F | Acc ] ).
 
 

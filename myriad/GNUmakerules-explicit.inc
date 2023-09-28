@@ -20,7 +20,8 @@
 			install-src install-include install-examples install-test        \
 			install-doc info-install info-install-locations                  \
 			info-install-content create-myriad-checkout                      \
-			rebar3-application set-rebar-conf set-rebar-conf-for-hex         \
+			rebar3-application rebar3-upgrade-lock                           \
+			set-rebar-conf set-rebar-conf-for-hex                            \
 			rebar3-release rebar3-development-release                        \
 			rebar3-production-release rebar3-hide-unsupported-sources        \
 			rebar3-restore-unsupported-sources                               \
@@ -30,17 +31,18 @@
 			rebar3-update rebar3-compile rebar3-create-tree                  \
 			rebar3-populate-build-tree rebar3-create-app-file                \
 			rebar3-copy-beams rebar3-clean rebar3-real-clean                 \
-			rebar-test-clean                                                 \
+			rebar3-test-clean                                                \
 			rebar3-cache-clean rebar3-info rebar3-hex-publish                \
 			rebar3-local-update                                              \
 			test-hex-package                                                 \
 			generate-protobuf                                                \
-			sync-to-server                                                   \
+			sync-sources-to-server sync-all-to-server                        \
 			generate-api-doc generate-api-alt-doc copy-static-content        \
 			clean-api-doc clean-api-alt-doc                                  \
 			generate-list-of-erlang-types generate-list-of-local-types       \
 			generate-local-plt self-check-against-plt write-debug-key-file   \
-			check check-hook help-erl                                        \
+			check check-hook check-with-dialyzer check-with-gradualizer      \
+			help-intro help-erl                                              \
 			clean clean-erlang clean-layer-ebin clean-python clean-protobuf  \
 			clean-database clean-recurse clean-outputs clean-ast-debug       \
 			real-clean track                                                 \
@@ -80,7 +82,7 @@ all: all-pre-hook all-parse-transforms create-include-links
 # purpose.
 #
 # Also deactivated, as any dependency in _build would then be lost, whereas we
-# might use on our native build system while still relying on them (ex: for
+# might use on our native build system while still relying on them (e.g. for
 # LEEC): -@/bin/rm -rf $(MYRIAD_REBAR_BUILD_ROOT)
 #
 # (thus use the rebar3-real-clean target instead, if wanting to remove
@@ -255,7 +257,7 @@ test-recurse:
 
 # To run tests in interactive mode, possibly with a specific UI backend:
 #
-# (ex: 'make test-interactive UI_TEST_BACKEND=text_ui' or by modifying this
+# (e.g. 'make test-interactive UI_TEST_BACKEND=text_ui' or by modifying this
 # variable directly in GNUmakevars.inc)
 #
 test-interactive: #all test-interactive-recurse
@@ -280,6 +282,25 @@ doc-recurse:
 # Not used any more now that all beams are always built:
 build-tests: $(BEAM_FILES)
 	@for t in $(TEST_TARGETS); do $(MAKE) -s $$t CMD_LINE_OPT="${CMD_LINE_OPT}"; done
+
+
+
+# Used in order to have one's EPMD instances with proper port and options
+# (rather than to have it automatically launched):
+#
+# (settings will apply provided that a prior instance of EPMD does not exist at
+# that port)
+#
+launch-epmd:
+	@echo "Launching (relaxed) EPMD daemon on port $(EPMD_PORT)."
+	@export ERL_EPMD_RELAXED_COMMAND_CHECK=1; export ERL_EPMD_PORT=$(EPMD_PORT); $(EPMD) -relaxed_command_check -daemon
+
+
+list-epmd-names:
+	@echo "Listing the registrations known of any EPMD instance running on port $(EPMD_PORT):"
+	@export ERL_EPMD_PORT=$(EPMD_PORT); $(EPMD) -names
+
+
 
 
 launch: Emakefile
@@ -555,13 +576,14 @@ create-myriad-checkout:
 # executing 'rebar3 deps' or 'rebar3 lock' is not sufficient by itself;
 # beforehand one has to update or remove at least any _build tree and any
 # rebar.lock.
+#
 # Prior to committing a new rebar.lock, check that the 'ref' values that it
 # mentions do match indeed the actual (probably latest) intended Git commit of
 # the corresponding dependencies.
 #
 # (creating a ebin/*.app file is necessary at this point, otherwise no module
 # will be compiled, leading to an empty application; the same applies - silently
-# - if the conf/*.app.src, hence the ebin/*.app file, are invalid - ex: cannot
+# - if the conf/*.app.src, hence the ebin/*.app file, are invalid - e.g. cannot
 # be parsed)
 #
 # ('remove-rebar-conf' target not kept, as rebar.config shall not be deleted in
@@ -572,8 +594,13 @@ rebar3-application: rebar3-real-clean clean rebar3-update set-rebar-conf \
 					rebar3-create-app-file
 	@echo "  Triggering the overall creation by rebar3 of an OTP application corresponding to $(PROJECT_NAME)"
 	-@/bin/rm -f rebar.lock 2>/dev/null
-	@$(REBAR_DEBUG) rebar3 compile
+	@$(REBAR_DEBUG) $(MYRIAD_REBAR_EXEC) compile
 	@$(MAKE) -s rebar3-restore-unsupported-sources
+
+
+# Upgrades the rebar.lock file, regarding the dependencies of the current layer.
+rebar3-upgrade-lock:
+	@$(MYRIAD_REBAR_EXEC) upgrade --all
 
 
 # If making a rebar application or release, a symlink suffices, yet not if
@@ -686,7 +713,7 @@ rebar3-production-release: pre-release
 
 
 # Needed to update local package information according to (server-side) hex,
-# otherwise rebar could stick locally to obsolete package versions (ex: if
+# otherwise rebar could stick locally to obsolete package versions (e.g. if
 # having just published a new version of a dependency)
 #
 rebar3-update:
@@ -701,7 +728,7 @@ rebar3-update:
 
 
 # This (now obsolete) overall target used to be called (thanks to a pre-hook)
-# when running directly 'rebar3 compile' or indirectly (ex: 'rebar3 release')
+# when running directly 'rebar3 compile' or indirectly (e.g. 'rebar3 release')
 #
 # (note: we used to copy sources before compiling and copying BEAM files, so
 # that rebar3 would not try to recompile modules by itself)
@@ -779,7 +806,7 @@ rebar3-populate-build-tree:
 # (otherwise nothing is built), a release (otherwise dependency not reachable),
 # and probably an hex package as well.
 #
-# Apparently, at least in some cases (ex: generating a standalone release), an
+# Apparently, at least in some cases (e.g. generating a standalone release), an
 # (updated) *.app.src file is looked-up in src (not in ebin - try to create
 # syntax error in it to check), so we add a symbolic link there as well.
 #
@@ -811,18 +838,18 @@ rebar3-clean: clean-include-links rebar3-restore-unsupported-sources
 
 
 # Adding _build for increased safety:
-rebar3-real-clean: rebar3-clean rebar-test-clean rebar3-cache-clean
+rebar3-real-clean: rebar3-clean rebar3-test-clean rebar3-cache-clean
 	@echo "  Removing any prior rebar3 build root ($(MYRIAD_REBAR_BUILD_ROOT)), hence for all profiles"
 	-@/bin/rm -rf $(MYRIAD_REBAR_BUILD_ROOT) _build
 
 
-rebar-test-clean:
+rebar3-test-clean:
 	@echo  "  Cleaning rebar3+hex test directory $(MYRIAD_REBAR_TEST_DIR)"
 	-@/bin/rm -rf $(MYRIAD_REBAR_TEST_DIR)/_build
 	-@/bin/rm -f $(MYRIAD_REBAR_TEST_DIR)/rebar.lock
 
 
-# Otherwise could reuse wrong cached versions (ex: 1.O.6.tar instead of
+# Otherwise could reuse wrong cached versions (e.g. 1.O.6.tar instead of
 # 1.0.7.tar), or a former version of a recently-submitted package:
 # (actually triggering the rebar3-update target should suffice)
 #
@@ -850,7 +877,7 @@ rebar3-info:
 # ones for applications or releases. Now that we defined an (optional) rebar
 # build, a specific rebar.config for the generation of hex packages is not
 # needed anymore, and some targets below were simplified / are not used anymore
-# (ex: no more hook needed).
+# (e.g. no more hook needed).
 
 
 # The simplest studying approach was to use the build of another hex package
@@ -891,7 +918,7 @@ rebar3-info:
 # recompilation (hex does not take into account the .app.src file, hence does
 # not rely on explicitly-specified modules to build)
 #
-# - remove rebar.lock, otherwise a past Myriad dep (ex: Git-based) may be reused
+# - remove rebar.lock, otherwise a past Myriad dep (e.g. Git-based) may be reused
 #
 # - afterwards we restore the ebin/*.app and rebar.config files for standard
 # releases, in order to avoid having them considered as deleted by GIT
@@ -916,7 +943,7 @@ rebar3-hex-publish: rebar3-clean clean set-rebar-conf-for-hex rebar3-create-app-
 rebar3-local-update:
 
 
-test-hex-package: rebar-test-clean
+test-hex-package: rebar3-test-clean
 	@echo "  Testing $(PROJECT_NAME) hex package ('$(PROJECT_NAME_FOR_REBAR)' package, version $(VERSION_FOR_REBAR)) in $(MYRIAD_REBAR_TEST_DIR) using $(MYRIAD_REBAR_EXEC)"
 	@cd conf && $(MAKE) -s rebar-for-testing.config && /bin/cp -f rebar-for-testing.config $(MYRIAD_REBAR_TEST_DIR)/rebar.config
 	@cd $(MYRIAD_REBAR_TEST_DIR) && $(MYRIAD_REBAR_EXEC) update && $(MYRIAD_REBAR_EXEC) compile
@@ -929,19 +956,40 @@ test-hex-package: rebar-test-clean
 generate-protobuf: $(PROTOBUF_GENERATED_ERL_FILES)
 
 
-# Synchronises the sources of the current layer to the specified server
-# location.
+# To synchronise the selected source content of the current layer, from the
+# local tree to the specified server location, with no VCS commit involved.
+#
+# Note that files removed from the local sources will remain in the target
+# server.
+#
+# If the source tree is built and up to date, no need to (re)build on the server
+# (if homogeneous in terms of Erlang versions).
 #
 # A rebuild is triggered just before, as the BEAM files are transferred as well:
 # at arrival timestamps may not be respected, and we want the right BEAMs to be
 # executed.
 #
-# Note that only the source files are synchronised (e.g. not the makefiles, not
-# the configuration files, etc.).
+# Note that, here, only the content of the 'src' and 'include' tree is
+# synchronised (e.g. not the makefiles, not the configuration files, etc. that
+# are elsewhere); see the next 'sync-all-to-server' server.
 #
-sync-to-server: all
-	@echo " Synchronising the $$(basename $$(pwd)) layer to $(WEB_SRV):$(CEYLAN_SYNC_TARGET_ROOT)"
+sync-sources-to-server: all
+	@echo " Synchronising the selected source content of the $$(basename $$(pwd)) layer to $(WEB_SRV):$(CEYLAN_SYNC_TARGET_ROOT)"
 	@if [ -n "$(WEB_SRV)" ]; then if [ -n "$(CEYLAN_SYNC_TARGET_ROOT)" ]; then $(SYNC_TOOL) $(SYNC_OPT) src include $(WEB_SRV):$(CEYLAN_SYNC_TARGET_ROOT)/$$(basename $$(pwd)); else echo "Error, no CEYLAN_SYNC_TARGET_ROOT variable set." 1>&2; exit 4; fi; else echo "Error, no WEB_SRV variable set." 1>&2; exit 5; fi
+	@echo "(source synchronisation to $(WEB_SRV):$(CEYLAN_SYNC_TARGET_ROOT) done)"
+
+
+# To synchronise the full content of the current layer to the specified server
+# location, with no VCS commit involved.
+#
+# A rebuild is triggered just before, as the BEAM files are transferred as well:
+# at arrival timestamps may not be respected, and we want the right BEAMs to be
+# executed.
+#
+sync-all-to-server: all
+	@echo " Synchronising the full content of the $$(basename $$(pwd)) layer to $(WEB_SRV):$(CEYLAN_SYNC_TARGET_ROOT)"
+	@if [ -n "$(WEB_SRV)" ]; then if [ -n "$(CEYLAN_SYNC_TARGET_ROOT)" ]; then $(SYNC_TOOL) $(SYNC_OPT) $(LAYER_TOP) $(WEB_SRV):$(CEYLAN_SYNC_TARGET_ROOT)/$$(basename $$(pwd)); else echo "Error, no CEYLAN_SYNC_TARGET_ROOT variable set." 1>&2; exit 4; fi; else echo "Error, no WEB_SRV variable set." 1>&2; exit 5; fi
+	@echo "(full synchronisation to $(WEB_SRV):$(CEYLAN_SYNC_TARGET_ROOT) done)"
 
 
 
@@ -989,7 +1037,8 @@ clean-api-alt-doc:
 # Allows to generate a file listing all the types defined in the specified
 # Erlang source tree.
 #
-# Ex: 'make generate-list-of-erlang-types ERLANG_SOURCE_ROOT=~/otp_src_R15B/'
+# For example 'make generate-list-of-erlang-types
+# ERLANG_SOURCE_ROOT=~/otp_src_R15B/'
 #
 generate-list-of-erlang-types:
 	@if [ -z "$$ERLANG_SOURCE_ROOT" ]; then echo "  Error, no ERLANG_SOURCE_ROOT variable specified."; exit 15; fi; if [ ! -d "$$ERLANG_SOURCE_ROOT" ]; then echo "  Error, specified directory (ERLANG_SOURCE_ROOT=$$ERLANG_SOURCE_ROOT) does not exist."; exit 16; fi; target_file="declared-types-in-Erlang.txt"; erl="$(ERLANG_INTERPRETER)"; target_path=$$(echo $$erl|sed "s|/bin/erl$$|/$$target_file|1"); echo "  Generating the list of types declared in the Erlang runtime..." &&  $(MYRIAD_TOP)/src/scripts/list-available-types.sh "$$ERLANG_SOURCE_ROOT" > $$target_path && echo "  Types have been collected in '$$target_path'."
@@ -1016,8 +1065,8 @@ $(PLT_FILE): generate-local-plt
 # _checkouts)
 #
 generate-local-plt: add-prerequisite-plts
-	@echo "    Generating PLT for $(PACKAGE_NAME) ($(PLT_FILE)), based on $(BASE_PLT)"
-	@$(DIALYZER) --add_to_plt --output_plt $(PLT_FILE) -r $(PACKAGE_TOP)/src $(PACKAGE_TOP)/test --plt $(BASE_PLT); if [ $$? -eq 1 ]; then exit 5; else exit 0; fi
+	@echo "    Generating PLT for $(PACKAGE_NAME) ($(PLT_FILE)), based on $(BASE_PLT_FILES)"
+	@$(DIALYZER) --add_to_plt --output_plt $(PLT_FILE) -r $(PACKAGE_TOP)/src $(PACKAGE_TOP)/test --plts $$(realpath $(BASE_PLT_FILES)); if [ $$? -eq 1 ]; then exit 5; else exit 0; fi
 
 
 # Made to be enriched (with child targets) on a per-layer basis:
@@ -1026,7 +1075,7 @@ add-prerequisite-plts:
 
 
 # If Dialyzer complains that it cannot get Core Erlang code for a set of BEAM
-# files (ex: with "Recompile with +debug_info or analyze starting from source
+# files (e.g. with "Recompile with +debug_info or analyze starting from source
 # code"), then the element lacking is most probably not the +debug_info switch
 # when compiling these BEAMs, but the debug_info key when running Dialyzer
 # itself.
@@ -1052,10 +1101,34 @@ write-debug-key-file:
 # Far easier target name to remember:
 # (hook added to block this target if not relevant from the current location)
 #
-check: check-hook clean all test generate-local-plt self-check-against-plt
+check: check-hook clean all test
+
+
+# We suppose here that the PLT of all layers below has already been generated:
+check-with-dialyzer: check-with-dialyzer-hook all generate-local-plt self-check-against-plt
+
+# For any special operation:
+check-with-dialyzer-hook:
+
+
+check-with-gradualizer: all
+	@echo "  Checking BEAMs in $$(basename $$(pwd)) with Gradualizer"
+	@#echo $(GRADUALIZER) $(GRADUALIZER_OPTS) -- $(TARGETS_TO_CHECK)
+	@$(GRADUALIZER) $(GRADUALIZER_OPTS) -- $(TARGETS_TO_CHECK)
+
+
+# Not functional yet:
+check-with-eqwalizer: all copy-beams-to-ebin
+	@echo "  Checking BEAMs in $$(basename $$(pwd)) with eqWAlizer"
+	@$(EQWALIZER) eqwalize-all $(EQWALIZER_OPTS)
+
 
 
 check-hook:
+
+# For use by all layers:
+help-intro:
+	@echo " Following main make targets are available for package $(PACKAGE_NAME):"
 
 
 help-erl:
@@ -1185,6 +1258,20 @@ $$(lsb_release --all 2>/dev/null)"
 	@echo " - local Erlang version: $$(erl -eval '{ok, Version} = file:read_file(filename:join([code:root_dir(), "releases", erlang:system_info(otp_release), "OTP_VERSION"])), io:fwrite(Version), halt().' -noshell)"
 
 
+
+# Note that all info-* targets that are not specific to Myriad shall be listed
+# here, so that they can be inherited by deriving layers.
+
+
+# Typically useful to know the software context for continuous integration:
+info-context: info-platform info-versions info-source-layout
+
+
+info-settings: info-json info-sql info-protobuf
+	@echo "USE_HDF5       = $(USE_HDF5)"
+	@echo "USE_REST       = $(USE_REST)"
+
+
 # Returns the Erlang version that is to be installed by Myriad, i.e. its
 # currently supported one (this is the only place where an Erlang version shall
 # be defined):
@@ -1200,6 +1287,13 @@ info-source-layout:
 	@echo " - content of _build/default/lib directory: $$(ls _build/default/lib 2>/dev/null)"
 
 
+info-paths:
+	@echo "BEAM_PATH_OPT          = $(BEAM_PATH_OPT)"
+	@echo "LAYER_TOP              = $(LAYER_TOP)"
+	@echo "PREDECESSOR_LAYER_TOPS = $(PREDECESSOR_LAYER_TOPS)"
+
+
+
 info: info-files
 	@echo "HOSTNAME_FOR_NODE      = $(HOSTNAME_FOR_NODE)"
 	@echo "BEAM_DIRS              = $(BEAM_DIRS)"
@@ -1208,8 +1302,6 @@ info: info-files
 	@echo "PROJECT_NAME           = $(PROJECT_NAME)"
 	@echo "PROJECT_VERSION        = $(PROJECT_VERSION)"
 	@echo "PACKAGE_NAME           = $(PACKAGE_NAME)"
-	@echo "PLT_FILE               = $(PLT_FILE)"
-	@echo "PREDECESSOR_PLT        = $(PREDECESSOR_PLT)"
 
 
 info-files:
@@ -1219,6 +1311,7 @@ info-files:
 	@echo "TEST_TARGETS    = $(TEST_TARGETS)"
 	@echo "ERLANG_PLT_FILE = $(ERLANG_PLT_FILE)"
 	@echo "PLT_FILE        = $(PLT_FILE)"
+	@echo "PREDECESSOR_PLT_FILE   = $(PREDECESSOR_PLT_FILE)"
 
 
 info-meta:
@@ -1231,6 +1324,9 @@ info-erlang:
 	@echo "ERLANG_COMPILER_OPT    = $(ERLANG_COMPILER_OPT)"
 	@echo "ERLANG_INTERPRETER     = $(ERLANG_INTERPRETER)"
 	@echo "ERLANG_INTERPRETER_OPT = $(ERLANG_INTERPRETER_OPT)"
+	@echo "EPMD                   = $(EPMD)"
+	@echo "EPMD_OPT               = $(EPMD_OPT)"
+	@echo "EPMD_PORT              = $(EPMD_PORT)"
 	@echo "ERLANG_ROOT            = $(ERLANG_ROOT)"
 	@echo "ERLANG_SRC             = $(ERLANG_SRC)"
 	@echo "VM_TEST_NAME           = $(VM_TEST_NAME)"
@@ -1272,9 +1368,13 @@ info-sync:
 info-check:
 	@echo "DIALYZER = $(DIALYZER)"
 	@echo "DIALYZER_OPTS = $(DIALYZER_OPTS)"
+	@echo "PLT_FILE = $(PLT_FILE)"
+	@echo "BASE_PLT_FILES = $(BASE_PLT_FILES)"
 	@echo "GRADUALIZER = $(GRADUALIZER)"
 	@echo "GRADUALIZER_OPTS = $(GRADUALIZER_OPTS)"
-
+	@echo "EQWALIZER = $(EQWALIZER)"
+	@echo "EQWALIZER_OPTS = $(EQWALIZER_OPTS)"
+	@echo "TARGETS_TO_CHECK = $(TARGETS_TO_CHECK)"
 
 
 # Useful to extract information to be specified in a parallel rebar.config:
@@ -1324,6 +1424,25 @@ info-parse-transform:
 	@echo "ERLANG_COMPILER_OPT_FOR_PT = $(ERLANG_COMPILER_OPT_FOR_PT)"
 	@echo "ERLANG_COMPILER_PARSE_TRANSFORM_OPT = $(ERLANG_COMPILER_PARSE_TRANSFORM_OPT)"
 
+
+info-json:
+	@echo "USE_JSON                      = $(USE_JSON)"
+	@echo "USE_JSX                       = $(USE_JSX)"
+	@echo "USE_JIFFY                     = $(USE_JIFFY)"
+	@echo "JSX_TOP                       = $(JSX_TOP)"
+	@echo "JSX_REBAR_CHECKOUTS_EBIN      = $(JSX_REBAR_CHECKOUTS_EBIN)"
+	@echo "JSX_REBAR_AS_DEP_EBIN         = $(JSX_REBAR_AS_DEP_EBIN)"
+	@echo "JSX_REBAR_DIRECT_INSTALL_EBIN = $(JSX_REBAR_DIRECT_INSTALL_EBIN)"
+	@echo "JSX_SOFTWARE_EBIN             = $(JSX_SOFTWARE_EBIN)"
+
+
+info-sql:
+	@echo "USE_SQL         = $(USE_SQL)"
+	@echo "USE_SQLITE      = $(USE_SQLITE)"
+	@echo "USE_POSTGRESQL  = $(USE_POSTGRESQL)"
+	@echo "SQLITE3_BASE    = $(SQLITE3_BASE)"
+	@echo "POSTGRESQL_BASE = $(POSTGRESQL_BASE)"
+	@echo "SQL_OPTS        = $(SQL_OPTS)"
 
 info-doc:
 	@echo "API_DOC_GENERATOR = $(API_DOC_GENERATOR)"

@@ -79,7 +79,7 @@
 -type issue_info() :: { file_loc(), module(), issue_description() }.
 % Full information about a compilation-related issue.
 %
-% The module is the one emitting that issue (ex: erl_lint).
+% The module is the one emitting that issue (e.g. erl_lint).
 
 
 -type issue_report() :: { file_name(), [ issue_info() ] }.
@@ -138,6 +138,7 @@
 -type void() :: basic_utils:void().
 -type module_name() :: basic_utils:module_name().
 -type maybe(T) :: basic_utils:maybe(T).
+-type error_reason() :: basic_utils:error_reason().
 
 -type ustring() :: text_utils:ustring().
 -type format_string() :: text_utils:format_string().
@@ -174,7 +175,7 @@ check_ast( AST ) ->
 	%               [{68,erl_lint,{undefined_type,{void,0}}}]}]
 
 	% Finally interpret_issue_reports/1 directly used to output the issues;
-	% however some are legit (ex: 'type void() undefined'), so we must let them
+	% however some are legit (e.g. 'type void() undefined'), so we must let them
 	% go through:
 	%
 	case erl_lint:module( AST ) of
@@ -212,9 +213,9 @@ check_ast( AST ) ->
 
 % @doc Interprets the specified list of issue reports.
 -spec interpret_issue_reports( [ issue_report() ] ) -> void().
-interpret_issue_reports( _IssueReports=[] ) ->
-	% Should never happen:
-	display_info( "(no remark emitted)" );
+%interpret_issue_reports( _IssueReports=[] ) ->
+%	% Should never happen:
+%	display_info( "(no remark emitted)" );
 
 % No need to further special-case the number of issue reports, as it is not
 % meaningful (one may include an arbitrary long list):
@@ -399,9 +400,9 @@ erl_to_ast( ErlSourceFilename, PreprocessorOptions ) ->
 -spec beam_to_ast( file_name() ) -> ast().
 beam_to_ast( BeamFilename ) ->
 
-	% We do not use functions from other Myriad modules here (ex: file_utils) as
-	% they are not expected to be built yet (they will be built with the myriad
-	% parse transform afterwards).
+	% We do not use functions from other Myriad modules here (e.g. file_utils)
+	% as they are not expected to be built yet (they will be built with the
+	% myriad parse transform afterwards).
 	%
 	case file:read_link_info( BeamFilename ) of
 
@@ -471,8 +472,8 @@ beam_to_ast( BeamFilename ) ->
 % Section to manage ASTs and forms.
 
 
-% @doc Converts the specified Erlang term (ex: the float '42.0') into a
-% corresponding form (ex: '{float, _FileLoc={0,1}, 42.0}').
+% @doc Converts the specified Erlang term (e.g. the float '42.0') into a
+% corresponding form (e.g. '{float, _FileLoc={0,1}, 42.0}').
 %
 -spec term_to_form( term() ) -> form().
 term_to_form( Term ) ->
@@ -498,9 +499,9 @@ term_to_form( Term ) ->
 % @doc Converts a list of names of variables into the corresponding AST, at
 % the specified in-file location.
 %
-% Ex: if wanting to specify '[V1, Alpha, A]', we have: variable_names_to_ast(
-% ["V1", "Alpha", "A"], _FileLoc=0) = [ {cons,0, {var,0,'V1'},
-% {cons,0,{var,0,'Alpha'}, {cons,0,{var,0,'A'}, {nil,0}}}}]
+% For example if wanting to specify '[V1, Alpha, A]', we have:
+% variable_names_to_ast( ["V1", "Alpha", "A"], _FileLoc=0) = [ {cons,0,
+% {var,0,'V1'}, {cons,0,{var,0,'Alpha'}, {cons,0,{var,0,'A'}, {nil,0}}}}]
 %
 -spec variable_names_to_ast( [ ustring() ], file_loc() ) -> ast().
 variable_names_to_ast( VariableNames, FileLoc ) ->
@@ -518,7 +519,7 @@ variable_names_to_ast( VariableNames, FileLoc ) ->
 % corresponding abstract form (using the default in-file location applying to
 % generated code).
 %
-% Ex: string_to_form("f() -> hello_world.") may return
+% For example string_to_form("f() -> hello_world.") may return
 %   {function, {0,1}, f, 0, [{clause, {0,1}, [], [],
 %       [ {atom, {0,1}, hello_world} ] } ] }
 %
@@ -531,7 +532,7 @@ string_to_form( FormString ) ->
 % @doc Converts the specified source code of a form (that is, a string) into its
 % corresponding abstract form, at the specified in-file location.
 %
-% Ex: string_to_form("f() -> hello_world.", 42) may return
+% For example string_to_form("f() -> hello_world.", 42) may return
 %   {function, 42, f, 0, [{clause, 42, [], [], [{atom,42,hello_world}]}]}
 %
 -spec string_to_form( ustring(), file_loc() ) -> form().
@@ -540,8 +541,8 @@ string_to_form( FormString, FileLoc ) ->
 	% First get Erlang tokens from that string:
 	Tokens = case erl_scan:string( FormString, FileLoc ) of
 
-		% Ex: [{atom,1,f}, {'(',1},{')',1}, {'->',1}, {atom,1,hello_world},
-		%      {dot,1}].
+		% For example [{atom,1,f}, {'(',1},{')',1}, {'->',1},
+		% {atom,1,hello_world}, {dot,1}].
 		%
 		{ ok, Toks, _EndLocation } ->
 			%display_debug( "Tokens: ~p", [ Toks ] ),
@@ -570,7 +571,7 @@ string_to_form( FormString, FileLoc ) ->
 % string) into its corresponding AST (using the default in-file location
 % applying to generated code).
 %
-% Ex: string_to_expressions("[{a, 1}, foobar]") may return:
+% For example string_to_expressions("[{a, 1}, foobar]") may return:
 %   [{cons,  {0,1}, {tuple,  {0,1}, [{atom, {0,1},a}, {integer, {0,1},1}]},
 %    {cons,  {0,1}, {atom, {0,1},foobar}, {nil, {0,1}}}}]
 %
@@ -584,7 +585,7 @@ string_to_expressions( ExpressionString ) ->
 % @doc Converts the specified source code of a term (that is, a string) and a
 % location into the corresponding abstract form.
 %
-% Ex: string_to_expressions("[{a, 1}, foobar]", _Loc=42) may return
+% For example string_to_expressions("[{a, 1}, foobar]", _Loc=42) may return
 %   [ {cons, 42, {tuple, 42, [ {atom,42,a}, {integer,42,1} ]},
 %     {cons, 42, {atom,42,foobar}, {nil,42} }}]
 %
@@ -595,8 +596,8 @@ string_to_expressions( ExpressionString, FileLoc ) ->
 	% First get Erlang tokens from that string:
 	Tokens = case erl_scan:string( ExpressionString, FileLoc ) of
 
-		% Ex: [ {'[',42}, {'{',42}, {atom,42,a}, {',',42}, {integer,42,1},
-		% {'}',42}, {',',42}, {atom,42,foobar}, {']',42}]
+		% For example [ {'[',42}, {'{',42}, {atom,42,a}, {',',42},
+		% {integer,42,1}, {'}',42}, {',',42}, {atom,42,foobar}, {']',42}]
 		%
 		{ ok, Toks, _EndFileLoc } ->
 			%display_debug( "Tokens: ~p (at ~p)", [ Toks, EndFileLoc ] ),
@@ -624,7 +625,7 @@ string_to_expressions( ExpressionString, FileLoc ) ->
 % @doc Converts the specified source code of a term (that is, a string) into its
 % corresponding value.
 %
-% Ex: string_to_value("[{tiger,[lion,leopard]}]") returns the
+% For example string_to_value("[{tiger,[lion,leopard]}]") returns the
 % [{tiger, [lion,leopard]}] term.
 %
 -spec string_to_value( ustring() ) -> term().
@@ -812,7 +813,7 @@ raise_error( ErrorTerm ) ->
 % @doc Raises an error, with specified context, thanks to the specified term
 % (often, a list of error elements), from the Myriad layer.
 %
-% Ex: raise_error([invalid_module_name, Other], _Context=112) shall
+% For example raise_error([invalid_module_name, Other], _Context=112) shall
 % result in throwing {invalid_module_name, Other, {line, 112}}.
 %
 % Note:
@@ -832,7 +833,7 @@ raise_error( ErrorTerm, Context ) ->
 % @doc Raises an error, with specified context, from the specified layer
 % (expected to be above Myriad).
 %
-% Ex: raise_error([invalid_module_name, Other], _Context=112,
+% For example raise_error([invalid_module_name, Other], _Context=112,
 % _OriginLayer="FooLayer") shall result in throwing {invalid_module_name, Other,
 % {line, 112}}.
 %
@@ -982,10 +983,10 @@ interpret_stack_trace( _StackTrace=[ H | T ], Acc, Count ) ->
 % specified source context, to stop the build on failure and report adequately
 % the actual error to the user.
 %
--spec raise_usage_error( format_string(), format_values(), file_name() ) ->
-								no_return().
-raise_usage_error( ErrorFormatString, ErrorValues, Filename ) ->
-	raise_usage_error( ErrorFormatString, ErrorValues, Filename,
+-spec raise_usage_error( format_string(), format_values(),
+						 file_name() | module_name() ) -> no_return().
+raise_usage_error( ErrorFormatString, ErrorValues, FileOrModname ) ->
+	raise_usage_error( ErrorFormatString, ErrorValues, FileOrModname,
 					   _ActualFileLoc=?default_generation_location ).
 
 
@@ -994,11 +995,11 @@ raise_usage_error( ErrorFormatString, ErrorValues, Filename ) ->
 % specified source context, to stop the build on failure and report adequately
 % the actual error to the user.
 %
--spec raise_usage_error( format_string(), format_values(), file_name(),
-						 maybe( file_loc() ) ) -> no_return().
-raise_usage_error( ErrorFormatString, ErrorValues, Filename,
+-spec raise_usage_error( format_string(), format_values(),
+			file_name() | module_name(), maybe( file_loc() ) ) -> no_return().
+raise_usage_error( ErrorFormatString, ErrorValues, FileOrModname,
 				   _FileLoc=undefined ) ->
-	raise_usage_error( ErrorFormatString, ErrorValues, Filename,
+	raise_usage_error( ErrorFormatString, ErrorValues, FileOrModname,
 					   _ActualFileLoc=?default_generation_location );
 
 raise_usage_error( ErrorFormatString, ErrorValues, ModuleName, FileLoc )
@@ -1027,8 +1028,7 @@ raise_usage_error( ErrorFormatString, ErrorValues, Filename, FileLoc ) ->
 % originating from the specified location in the source file of the module being
 % compiled.
 %
--spec get_error_form( basic_utils:error_reason(), module_name(), file_loc() ) ->
-							form().
+-spec get_error_form( error_reason(), module_name(), file_loc() ) -> form().
 get_error_form( ErrorTerm, FormatErrorModule, FileLoc ) ->
 
 	% Actually the most standard way of reporting an error seems to insert a
@@ -1053,7 +1053,7 @@ get_error_form( ErrorTerm, FormatErrorModule, FileLoc ) ->
 % applied) and allows to convert error terms (that are, here, related to
 % parse-transforms) into textual messages that can be output by the build chain.
 %
--spec format_error( basic_utils:error_reason() ) -> ustring().
+-spec format_error( error_reason() ) -> ustring().
 format_error( ErrorTerm ) ->
 	% Of course this is just an example:
 	text_utils:format( "my ast_utils error reported: ~ts", [ ErrorTerm ] ).
@@ -1136,7 +1136,7 @@ format_file_loc( Line ) ->
 
 
 % @doc Returns an alternative textual description of specified in-file location
-% (ex: in order to name variables in AST).
+% (e.g. in order to name variables in AST).
 %
 -spec format_file_loc_alt( file_loc() ) -> ustring().
 format_file_loc_alt( { Line, Column } ) ->
@@ -1182,7 +1182,7 @@ file_loc_to_explicative_term( Line ) ->
 
 
 
-% @doc Writes specified AST into specified (text) file.
+% @doc Writes the specified AST into the specified (text) file.
 %
 % Useful for example to determine differences between ASTs.
 %

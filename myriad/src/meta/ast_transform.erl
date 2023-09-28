@@ -204,8 +204,8 @@
 
 
 -type expression_replacement_function() :: fun(
-  ( line(), ast_expression:function_ref_expression(),
-	ast_expression:params_expression(), ast_transforms() ) ->
+		( line(), ast_expression:function_ref_expression(),
+		  ast_expression:params_expression(), ast_transforms() ) ->
 					{ [ ast_expression() ], ast_transforms() } ).
 % User-supplied function to define how expressions shall be replaced.
 %
@@ -226,7 +226,7 @@
 %
 % Note: a full ast_transforms record (not a mere transformation state) is used
 % as input (and output) of these transformation functions so that they can
-% trigger in turn recursive transformation calls (ex: to
+% trigger in turn recursive transformation calls (e.g. to
 % ast_expression:transform_expressions/2) by themselves.
 
 
@@ -239,7 +239,7 @@
 -type transform_formatter() :: fun( ( format_string(), format_values() ) ->
 											ustring() ).
 % Designates a function able to properly format typically the output of
-% expression transformation (ex: when exiting an
+% expression transformation (e.g. when exiting an
 % ast_expression:transform_expression/2 clause).
 
 
@@ -289,15 +289,15 @@
 
 -type transform_fun() :: transform_fun( ast_base:ast_element() ).
 % Designates the transformation functions that are used to transform differently
-% a kind of form (ex: the one of a bistring, a record, etc.) depending on the
-% context (ex: in a guard, in an expression, etc.).
+% a kind of form (e.g. the one of a bistring, a record, etc.) depending on the
+% context (e.g. in a guard, in an expression, etc.).
 
 
 -type transform_fun( TargetType ) :: fun( ( TargetType, ast_transforms() ) ->
 											{ TargetType, ast_transforms() } ).
 % Designates the transformation functions that are used to transform differently
-% a kind of form (ex: the one of a bistring, a record, etc.) depending on the
-% context (ex: in a guard, in an expression, etc.).
+% a kind of form (e.g. the one of a bistring, a record, etc.) depending on the
+% context (e.g. in a guard, in an expression, etc.).
 
 
 -export_type([ transform_fun/0, transform_fun/1 ]).
@@ -327,10 +327,12 @@
 -type ast_clause() :: ast_clause:ast_clause().
 
 
+
 % Implementation notes:
 %
 % We denote here all polymorphic types (list, tuple, map, etc.) as container
 % types.
+
 
 
 %% Type replacement section.
@@ -338,7 +340,7 @@
 
 % @doc Returns a table describing local type replacements.
 %
-% Ex: [ { { void, 0 }, basic_utils },
+% For example [ { { void, 0 }, basic_utils },
 %       { { my_maybe, 1 }, { basic_utils, maybe } },
 %       % First clause will never match due to arity:
 %       { { '_', 3 }, fun( other_void, 0 ) ->
@@ -405,7 +407,7 @@ get_local_type_repl_helper(_Replacements=[
 
 % @doc Returns a table describing remote type replacements.
 %
-% Ex: [ { { a_module, void, 0 }, basic_utils },
+% For example [ { { a_module, void, 0 }, basic_utils },
 %       { { a_module, my_maybe, 1 }, { basic_utils, maybe } },
 %       % First clause will never match due to arity:
 %       { { '_', '_', 3 }, fun( other_void, 0 ) ->
@@ -475,7 +477,7 @@ get_remote_type_repl_helper( _Replacements=[
 
 % @doc Returns a table describing local call replacements.
 %
-% Ex: [ { { halt, 0 }, basic_utils },
+% For example [ { { halt, 0 }, basic_utils },
 %       { { setAttributes, 1 }, { some_utils, set_attr } },
 %       % First clause will never match due to arity:
 %       { { '_', 3 }, fun( my_fun, 0 ) ->
@@ -544,7 +546,7 @@ get_local_call_repl_helper( _Replacements=[
 
 % @doc Returns a table describing remote call replacements.
 %
-% Ex: [ { { a_module, void, 0 }, basic_utils },
+% For example [ { { a_module, void, 0 }, basic_utils },
 %       { { a_module, my_maybe, 1 }, { basic_utils, maybe } },
 %       % First clause will never match due to arity:
 %       { { '_', '_', 3 }, fun( other_void, 0 ) ->
@@ -719,7 +721,8 @@ ast_transforms_to_string( #ast_transforms{
 
 
 % @doc The default transform_formatter() to be used.
--spec default_formatter( format_string(), format_values() ) -> ustring().
+-spec default_formatter( format_string(), format_values() ) ->
+								basic_utils:maybe( ustring() ).
 default_formatter( _FormatString, _FormatValue ) ->
 	%text_utils:format( "[Myriad-Transforms] " ++ FormatString, FormatValue ).
-	ok.
+	undefined.

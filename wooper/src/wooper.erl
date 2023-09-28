@@ -43,6 +43,7 @@
 
 % Very generic:
 -export([ get_classname/1, get_all_superclasses/1,
+		  is_instance_of/2, check_instance_of/2,
 		  get_attribute_pairs/1, state_to_string/1,
 		  get_class_filename/1 ]).
 
@@ -107,7 +108,7 @@
 
 % Traps to detect any method terminator that would be left untransformed.
 %
-% Note: neither exported or even defined anymore, as now WOOPER checks at
+% Note: neither exported nor even defined anymore, as now WOOPER checks at
 % compile time whether a given wooper:SomeFun(...) call is a terminator.
 %
 -export([ return_state_result/2, return_state/1, return_static/1,
@@ -185,7 +186,7 @@
 
 
 -type classname() :: atom().
-% An atom prefixed with 'class_'.
+% An atom prefixed with 'class_'; could be basic_utils:module_name() as well.
 
 
 -type class_key() :: term().
@@ -280,7 +281,7 @@
 % For method specs:
 
 -type request_return( T ) :: { state(), request_result( T ) }.
--type const_request_return( T ) :: request_result( T ).
+-type const_request_return( T ) :: request_return( T ).
 
 -type oneway_return() :: state().
 -type const_oneway_return() :: void().
@@ -677,15 +678,15 @@ execute_const_oneway( PassiveInstance, OnewayName )
 				when is_record( PassiveInstance, ?passive_record )
 					 andalso is_atom( OnewayName ) ->
 
-	% Matching PassiveInstance:
+	% Forcing the match with PassiveInstance:
 	{ PassiveInstance, wooper_method_returns_void } =
 		wooper_execute_method( OnewayName, _OnewayArgs=[], PassiveInstance ).
 
 -else. % wooper_debug_mode
 
 execute_const_oneway( PassiveInstance, OnewayName )
-  when is_record( PassiveInstance, ?passive_record )
-	   andalso is_atom( OnewayName ) ->
+				when is_record( PassiveInstance, ?passive_record )
+					 andalso is_atom( OnewayName ) ->
 
 	% Reckless:
 	%{ _ExpectedSamePassiveInstance, wooper_method_returns_void } =
@@ -1632,10 +1633,10 @@ execute_oneway( PassiveInstance, OnewayName )
 					when is_record( PassiveInstance, ?passive_record )
 						 andalso is_atom( OnewayName ) ->
 
-	{ NewPassiveInstance, { wooper_method_returns_void, R } } =
+	{ NewPassiveInstance, wooper_method_returns_void } =
 		wooper_execute_method( OnewayName, _OnewayArgs=[], PassiveInstance ),
 
-	{ NewPassiveInstance, R }.
+	NewPassiveInstance.
 
 
 
@@ -1962,12 +1963,12 @@ get_classname( _State=#state_holder{ actual_class=Classname } ) ->
 % state is specified, or of the specified classname.
 %
 % Note that:
-% - superclasses will be returned bredth-first in the inheritance tree
+% - superclasses will be returned breadth-first in the inheritance tree
 % - in case of diamond-shaped inheritance, a given superclass may be listed more
 % than once (list_utils:uniquify/1 may then be used)
 %
 % For example wooper:get_all_superclasses(class_Platypus) =
-%       [class_Mammal,class_OvoviviparousBeing,class_Creature, class_Creature].
+%   [class_Mammal,class_OvoviviparousBeing,class_Creature, class_Creature].
 %
 % Not static to avoid making class modules heavier.
 %
@@ -1985,6 +1986,27 @@ get_all_superclasses( Classname ) ->
 
 	DirectSuperclasses ++ list_utils:flatten_once(
 		[ get_all_superclasses( C ) || C <- DirectSuperclasses ] ).
+
+
+
+% @doc Tells whether this instance is an instance of the specified class
+% (directly or indirectly, through inheritance).
+%
+% Mostly useful for sanity checks (defining ad hoc member methods is usually
+% preferred).
+%
+-spec is_instance_of( classname(), wooper:state() ) -> boolean().
+is_instance_of( Classname, State ) ->
+	lists:member( Classname, get_all_superclasses( State ) ).
+
+
+% @doc Checks that this instance is an instance of the specified class,
+% otherwise throws an exception.
+%
+-spec check_instance_of( classname(), wooper:state() ) -> void().
+check_instance_of( Classname, State ) ->
+	is_instance_of( Classname, State ) orelse
+		throw( { not_instance_of, Classname, get_classname( State ) } ).
 
 
 

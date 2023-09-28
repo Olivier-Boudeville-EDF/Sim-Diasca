@@ -91,8 +91,10 @@
 -type iterator() :: ?set_impl:iter().
 % Internally, a kind of enumeration (list) of the elements in the set.
 
+-type next_iteration() :: { element(), iterator() } | 'none'.
 
--export_type([ set/0, set/1, element/0, iterator/0 ]).
+
+-export_type([ set/0, set/1, element/0, iterator/0, next_iteration/0 ]).
 
 
 % Shorthands:
@@ -253,18 +255,12 @@ is_set( Term ) ->
 	?set_impl:is_set( Term ).
 
 
-% @doc Ensures that the specified term is a set, throws an exception if not.
+% @doc Ensures that the specified term is a set and returns it; throws an
+% exception if not.
+%
 -spec check_set( term() ) -> void().
 check_set( Term ) ->
-	case is_set( Term ) of
-
-		true ->
-			ok;
-
-		false ->
-			throw( { not_a_set, Term } )
-
-	end.
+	is_set( Term ) orelse throw( { not_a_set, Term } ).
 
 
 % @doc Tells whether the first set is a subset of the second, that is if each
@@ -338,7 +334,7 @@ iterator( Set ) ->
 %
 % Allows the iterators to be gone through.
 %
--spec next( iterator() ) -> { element(), iterator() } | 'none'.
+-spec next( iterator() ) -> next_iteration().
 next( Iterator ) ->
 	?set_impl:next( Iterator ).
 
@@ -398,9 +394,8 @@ to_string( Set ) ->
 			"empty set";
 
 		1 ->
-			[ Elem ] = ?set_impl:to_list( Set ),
 			text_utils:format( "set containing a single element: ~p",
-							   [ Elem ] );
+							   ?set_impl:to_list( Set ) );
 
 		S ->
 			ElemStrings = [ text_utils:format( "~p", [ E ] )

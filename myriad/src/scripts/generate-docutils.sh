@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2010-2021 Olivier Boudeville
+# Copyright (C) 2010-2023 Olivier Boudeville
 #
 # This file is part of the Ceylan-Myriad library.
 # Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
@@ -20,7 +20,7 @@
 # errors...
 
 
-usage="Usage: $(basename $0) <target rst file> [--pdf|--all|<comma-separated path(s) to CSS file to be used, ex: common/css/XXX.css,other.css>] [--icon-file ICON_FILENAME]
+usage="Usage: $(basename $0) <target rst file> [--pdf|--all|<comma-separated path(s) to CSS file to be used, e.g. common/css/XXX.css,other.css>] [--icon-file ICON_FILENAME]
 
 Generates a final document from specified docutils source file (*.rst).
 By default, only the HTML output will be enabled (using any specified CSS file).
@@ -47,7 +47,8 @@ docutils_html_opt="${docutils_common_opt} --cloak-email-addresses --link-stylesh
 
 # --math-output=HTML: not the right matrices
 
-# --math-output=MathJax: requires MathJax files or outbound accesses Adds:
+# --math-output=MathJax: requires MathJax files or outbound accesses
+# Adds:
 # <script type="text/javascript"
 # src="file:/usr/share/javascript/mathjax/MathJax.js?config=TeX-AMS_CHTML"></script>
 # (not existing by default, corresponding to MathJax version 2, not version 3)
@@ -263,13 +264,13 @@ manage_rst_to_html()
 	# So finally it had to be specified literally:
 	#
 
-	# It supposes that MathJax is installed (ex: 'pacman -Sy mathjax' or,
-	# typically: 'cd ~/Software && git clone
-	# https://github.com/mathjax/MathJax.git MathJax) and that typically a local
-	# symlink points to it (see the 'create-mathjax-symlink' make target): 'ln
-	# -s /usr/share/mathjax' or 'ln -s $HOME/Software/MathJax mathjax';
-	# otherwise we default to a basic, non-MathJax output and the '* Unknown
-	# equation environment bmatrix' error is likely:
+	# It supposes that MathJax is installed (for that refer to
+	# https://howtos.esperide.org/DocGeneration.html#rendering-mathematical-elements)
+	# and that typically a local symlink points to it (see the
+	# 'create-mathjax-symlink' make target): 'ln -s /usr/share/mathjax' or 'ln
+	# -s $HOME/Software/MathJax mathjax'; otherwise we default to a basic,
+	# non-MathJax output and the '* Unknown equation environment bmatrix' error
+	# is likely:
 	#
 	if [ -e "mathjax" ]; then
 
@@ -481,8 +482,8 @@ if [ ${do_generate_pdf} -eq 0 ]; then
 	target_pdf_file="$(echo ${rst_file} | sed 's|.rst$|.pdf|1')"
 	#echo "target_pdf_file = ${target_pdf_file}"
 
-	# PDF generator will not find includes (ex: images) if not already
-	# in target dir:
+	# PDF generator will not find includes (e.g. images) if not already in
+	# target dir:
 	#
 	current_dir="$(pwd)"
 	target_dir="$(dirname ${target_pdf_file})"

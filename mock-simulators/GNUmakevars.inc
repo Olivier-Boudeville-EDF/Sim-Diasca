@@ -43,7 +43,7 @@ ifndef PROJECT_NAME
 endif
 
 
-MOCK_SIMULATORS_VERSION := 0.1
+MOCK_SIMULATORS_VERSION := 1.0.1
 
 # PROJECT_VERSION should be defined on a per-project basis.
 ifndef PROJECT_VERSION
@@ -100,16 +100,16 @@ endif
 
 BEAM_DIRS += $(MOCK_SIMULATORS_BEAM)
 
-# Actually not used, as defined on a per-simulator basis:
 
 # For later reuse in the next layer of the software stack:
-#MOCK_SIMULATORS_PLT_FILE := $(MOCK_SIMULATORS_TOP)/mock-simulators.plt
+#MOCK_SIMULATORS_PLT_FILE := $(MOCK_SIMULATORS_TOP)/Mock-Simulators.plt
 
 # This is the merged PLT of the level just below in the software stack.
-# For Mock Simulators, it is the PLT of Sim-Diasca:
-#ifndef PREDECESSOR_PLT
-#   PREDECESSOR_PLT = $(SIM_DIASCA_PLT_FILE)
-#endif
+# For all actual Mock Simulators, it is the PLT of Sim-Diasca:
+#
+ifndef PREDECESSOR_PLT_FILE
+	PREDECESSOR_PLT_FILE = $(SIM_DIASCA_PLT_FILE)
+endif
 
 
 # We define the path to the Sim-Diasca layer (possibly available as a symbolic

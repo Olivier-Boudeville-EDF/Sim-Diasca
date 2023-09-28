@@ -47,7 +47,10 @@
 
 -type ustring() :: text_utils:ustring().
 
+-type random_law() :: random_utils:random_law().
+
 -type machine_pid() :: class_SodaVendingMachine:machine_pid().
+
 
 
 
@@ -60,7 +63,7 @@
 	{ can_cost, maybe( amount() ), "the cost of a can from this machine (as a "
 	  "floating-point number of euros)" },
 
-	{ repletion_law, class_RandomManager:random_law(),
+	{ repletion_law, random_law(),
 	  "the random law describing the duration, in minutes, before a customer "
 	  "becomes thirsty again, once he has just drunk a can" },
 
@@ -105,8 +108,8 @@
 % - InitialBudget is the amount of money this actor has in his pocket initially
 %
 -spec construct( wooper:state(), class_Actor:actor_settings(),
-		class_Actor:name(), machine_pid(), class_RandomManager:random_law(),
-		amount() ) -> wooper:state().
+		class_Actor:name(), machine_pid(), random_law(), amount() ) ->
+			wooper:state().
 construct( State, ActorSettings, CustomerName, KnownMachinePid,
 		   RepletionDurationLaw, InitialBudget ) ->
 

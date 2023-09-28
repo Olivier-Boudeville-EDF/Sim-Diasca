@@ -1,7 +1,7 @@
 MOCK_SIMULATORS_TOP = .
 
 
-.PHONY: help help-intro help-mock-simulators                                   \
+.PHONY: help help-mock-simulators                                              \
 		register-version-in-header register-mock demo                          \
 		clean-host-candidate-files generate-local-plt generate-local-plt-local
 
@@ -14,10 +14,6 @@ BASE_MAKEFILE = true
 
 
 help: help-intro help-mock-simulators
-
-
-help-intro:
-	@echo " Following main make targets are available for package $(PACKAGE_NAME):"
 
 
 help-mock-simulators:

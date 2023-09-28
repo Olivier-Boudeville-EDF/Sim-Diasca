@@ -1,22 +1,23 @@
 % Copyright (C) 2014-2023 EDF R&D
-
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2014.
 
 
 % @doc <b>Manager of the Sim-Diasca plugins</b>, which allows third-party tools
@@ -49,7 +50,7 @@
 
 
 % Must be included before class_TraceEmitter header:
--define( trace_emitter_categorization, "Core.PluginManagement" ).
+-define( trace_emitter_categorization, "Core.Plugin management" ).
 
 
 % Allows to use macros for trace sending:
@@ -96,7 +97,7 @@
 construct( State, PluginDirectories ) ->
 
 	TraceState = class_EngineBaseObject:construct( State,
-									?trace_categorize("Plugin Manager") ),
+		?trace_categorize("Plugin manager") ),
 
 	% Then the class-specific actions:
 
@@ -303,7 +304,7 @@ get_plugins_from_dir( DirectoryPath ) ->
 	% paths:
 	%
 	Modules = [ file_utils:replace_extension( _Filename=B,
-			_SourceExtension=".beam", _TargetExtension="" ) || B <- Beams ],
+		_SourceExtension=".beam", _TargetExtension="" ) || B <- Beams ],
 
 	% Full paths needed:
 	[ file_utils:join( DirectoryPath, M ) || M <- Modules ].
@@ -459,7 +460,7 @@ notify_case_specific_event( CaseSpecificEvent, EventParameter, State ) ->
 notify( Event ) ->
 
 	PluginManagerPid = naming_utils:get_registered_pid_for(
-							?plugin_manager_name, _Scope=?look_up_scope ),
+		?plugin_manager_name, _Scope=?look_up_scope ),
 
 
 	PluginManagerPid ! { notifyEvent, [ Event ], self() },
@@ -506,7 +507,7 @@ notify_if_registered( Event ) ->
 notify_simulator_start() ->
 
 	PluginManagerPid = naming_utils:get_registered_pid_for(
-								?plugin_manager_name, _Scope=?look_up_scope ),
+		?plugin_manager_name, _Scope=?look_up_scope ),
 
 	% Starts with blank changes:
 	PluginManagerPid ! { notifySimulatorStart, [], self() },
@@ -525,8 +526,7 @@ notify_simulator_start() ->
 notify( Event, Parameters ) ->
 
 	PluginManagerPid = naming_utils:get_registered_pid_for(
-						?plugin_manager_name, _Scope=?look_up_scope ),
-
+		?plugin_manager_name, _Scope=?look_up_scope ),
 
 	PluginManagerPid ! { notifyParametrisedEvent, [ Event, Parameters ],
 						 self() },
@@ -546,10 +546,10 @@ notify( Event, Parameters ) ->
 notify_case_specific( Event, EventParameter ) ->
 
 	PluginManagerPid = naming_utils:get_registered_pid_for(
-						?plugin_manager_name, _Scope=?look_up_scope ),
+		?plugin_manager_name, _Scope=?look_up_scope ),
 
-	PluginManagerPid ! { notifyCaseSpecificEvent, [ Event, EventParameter ],
-						 self() },
+	PluginManagerPid !
+		{ notifyCaseSpecificEvent, [ Event, EventParameter ], self() },
 
 	receive
 

@@ -23,6 +23,7 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2007.
 
 
 % @doc <b>Inheritance-related</b> child test class.
@@ -266,7 +267,7 @@ get_static_info( A, B ) ->
 % Helper function.
 
 
-% @doc Just to show it can exist.
+% @doc Just to show that it can exist.
 -spec example_fun() -> 'ok'.
 example_fun() ->
 	ok.

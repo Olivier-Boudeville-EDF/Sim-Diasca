@@ -273,7 +273,7 @@
 		  read_data/2, read_qualified_data/2 ]).
 
 
-% Exported for specialised actors (ex: broadcasting ones):
+% Exported for specialised actors (e.g. broadcasting ones):
 -export([ check_spontaneous_tick_consistency/2,
 		  check_diasca_consistency/3,
 		  validate_scheduling_outcome/1,
@@ -334,9 +334,9 @@
 
 
 -type next_actor_action() ::
-		diasca_maybe()
-	  | { 'terminating', termination_delay(), diasca_maybe() }
-	  | { 'terminated', diasca_maybe() }.
+	diasca_maybe()
+  | { 'terminating', termination_delay(), diasca_maybe() }
+  | { 'terminated', diasca_maybe() }.
 % Used by actors internally, to record the new next action that they plan (in
 % their next_action attribute); this can be:
 %
@@ -352,13 +352,13 @@
 
 -type next_reported_action() ::
 
-		diasca_maybe()
+	diasca_maybe()
 
-		% No need for diasca_maybe(), as implies new_diasca_needed:
-	  | 'terminating'
+	% No need for diasca_maybe(), as implies new_diasca_needed:
+  | 'terminating'
 
-	  | { 'terminating_unlimited', diasca_maybe() }
-	  | { 'terminated', diasca_maybe() }.
+  | { 'terminating_unlimited', diasca_maybe() }
+  | { 'terminated', diasca_maybe() }.
 % Used by actors in their dialog with their time manager, to notify it of the
 % next action they plan: respectively, either nothing, or needing a new diasca
 % to manage messages, or terminating with intermediary diascas, or terminating
@@ -467,7 +467,7 @@
 % does not need the waiting mechanism any more. Its unique known downside,
 % versus the former centralised random service, is that simulations will be
 % totally reproducible iff they are evaluated by the same number of computing
-% nodes; this is acceptable.
+% nodes; this is deemed acceptable.
 %
 % Therefore the mechanism to manage wait graphs is not used anymore, and
 % class_Actor is sufficient in all cases (no real reason to rely on
@@ -587,7 +587,7 @@
 % We considered the possibility of introducing a unique primitive for actor
 % creation that would cover both cases (creations that would be initial or not);
 % however we deemed that their respective natures are too different to be
-% transparently hidden (ex: done from any process/only from an actor,
+% transparently hidden (e.g. done from any process/only from an actor,
 % instantaneous/deferred (returning directly a PID/updating a state and
 % triggering a later callback call), etc.; at worst, an actor may determine
 % whether the simulation is already started (see is_running/1) or not, and then
@@ -634,7 +634,7 @@
 % synchronisation.
 %
 % More precisely: created actors have to initialize themselves, and not all
-% relevant information are always available at their creation (ex: simulation
+% relevant information are always available at their creation (e.g. simulation
 % starting tick). For any late, model-specific, set-up, knowing that their
 % simulationStarted/3 method is not meant to be overridden (it is used privately
 % by the engine, notably to tell the actor about the simulation initial tick and
@@ -780,11 +780,10 @@ get_trace_timestamp( TickOffset, Diasca, State ) ->
 % actor, as assigned by the load balancer
 %
 % - ActorInit is a human-readable name for that actor (as a plain string); it is
-% preferably not too long, and without whitespaces
-%
-% Developer note: the engine, through child classes, may call this constructor
-% not with a single name (ActorName), but with a ActorInit={ActorName,
-% TraceCategorization} pair.
+% preferably not too long, and without whitespaces; the engine, through child
+% classes, may call this constructor not with a single name (ActorName), but
+% with a ActorInit={ActorName, TraceCategorization} pair instead, see this
+% name() type
 %
 -spec construct( wooper:state(), actor_settings(), name() ) -> wooper:state().
 construct( State,
@@ -1149,6 +1148,7 @@ beginTick( State, NewTickOffset ) ->
 		{ current_tick_offset, NewTickOffset },
 		{ current_diasca, 0 },
 
+		% This offet is correct, we are still in setAttributes/3:
 		cond_utils:if_defined( exec_target_is_production,
 			{ trace_timestamp, { NewTickOffset, 0 } },
 			{ trace_timestamp,
@@ -1204,7 +1204,6 @@ validate_scheduling_outcome( State ) ->
 			validate_new_ticks( AddedTicks, WithdrawnTicks,
 								?getAttr(current_tick_offset) );
 
-
 		new_diasca_needed ->
 			validate_new_ticks( AddedTicks, WithdrawnTicks,
 								?getAttr(current_tick_offset) );
@@ -1253,7 +1252,7 @@ validate_new_ticks( AddedTicks, WithdrawnTicks, CurrentTickOffset ) ->
 	WithdrawnTicks =:= [] orelse
 		begin
 
-			lists:min( WithdrawnTicks ) > CurrentTickOffset  orelse
+			lists:min( WithdrawnTicks ) > CurrentTickOffset orelse
 				begin
 					FaultyWithdrawnTicks =
 						[ T || T <- WithdrawnTicks, T =< CurrentTickOffset ],
@@ -2139,8 +2138,8 @@ receiveActorMessage( State, MessageTickOffset, MessageTargetDiasca,
 	%
 	% A typical example of it is when implementing a model that may send actor
 	% messages from its destructor. This shall never be done, as if for any
-	% reason an instance thereof is deleted from a non-synchronised context (ex:
-	% at simulation end, any lingering actor is deleted that way), this
+	% reason an instance thereof is deleted from a non-synchronised context
+	% (e.g.  at simulation end, any lingering actor is deleted that way), this
 	% destructed instance will send such actor messages with an outdated
 	% timestamp corresponding to the last time this actor was synchronised, and
 	% the following error will be raised on the side of the receiving actor:
@@ -2239,7 +2238,7 @@ receiveActorMessage( State, MessageTickOffset, MessageTargetDiasca,
 	% We have here to specify the diasca at which this actor should be
 	% triggered, as the time manager of this receiving actor may not have
 	% already received the 'begin' message for the diasca from which the sending
-	% actor acted (ex: if the sending actor is scheduled by the root time
+	% actor acted (e.g. if the sending actor is scheduled by the root time
 	% manager whereas this receiving actor is on another node).
 	%
 	% Indeed, when the time manager of this receiving actor receives such a
@@ -2531,7 +2530,7 @@ getHostingNode( State ) ->
 % floating point value) into an integer (rounded) number of simulation ticks,
 % which is at least equal to one tick.
 %
-% Ex: convertSecondsToTicks( State, 0.001 )
+% For example convertSecondsToTicks( State, 0.001 ).
 % Note: the convert_seconds_to_ticks helper function can be used as well.
 %
 -spec convertSecondsToTicks( wooper:state(), unit_utils:any_seconds() ) ->
@@ -2673,7 +2672,7 @@ get_abstract_identifier( State ) ->
 % Useful to be able to look-up and read third-party (simulation-specific)
 % deployed data.
 %
-% Ex: "/tmp/sim-diasca-My_Case-boudevil-2012-12-7-at-13h-56m-03s-1f79"
+% For example "/tmp/sim-diasca-My_Case-boudevil-2012-12-7-at-13h-56m-03s-1f79"
 % "3a6ba507/deployed-elements" may be returned.
 %
 % (helper function)
@@ -2705,7 +2704,8 @@ get_deployed_root_directory( _State ) ->
 % threshold in terms of relative error, and thus may fail at runtime, should it
 % be deemed too inaccurate.
 %
-% Ex: TickCount = class_Actor:convert_seconds_to_ticks(_Secs=0.001, State)
+% For example TickCount = class_Actor:convert_seconds_to_ticks(_Secs=0.001,
+% State).
 %
 % This function can be called as soon as the class_Actor constructor has been
 % executed.
@@ -2728,7 +2728,7 @@ convert_seconds_to_ticks( Seconds, State ) ->
 % threshold in terms of relative error, and thus may fail, should it be deemed
 % to inaccurate.
 %
-% Ex: TickCount = class_Actor:convert_seconds_to_ticks_explicit(_Secs=5,
+% For example TickCount = class_Actor:convert_seconds_to_ticks_explicit(_Secs=5,
 %                                       _TickDur=0.01)
 %
 % This function can be called as soon as the class_Actor constructor has been
@@ -2767,7 +2767,7 @@ convert_seconds_to_ticks( Seconds, MaxRelativeError, State ) ->
 % For example, to limit the relative error to 5%, use MaxRelativeError=0.05.
 %
 % Helper introduced to be exported, so that it may be used by non-actors as well
-% (ex: WOOPER helper instances).
+% (e.g. WOOPER helper instances).
 %
 -spec convert_seconds_to_ticks_explicit( any_seconds(), percent(),
 										 virtual_seconds() ) -> tick_duration().
@@ -2821,7 +2821,7 @@ convert_seconds_to_ticks_explicit( Seconds, _MaxRelativeError,
 % floating point value) into an integer (strictly positive, rounded) number of
 % simulation ticks, which is at least equal to one tick.
 %
-% Ex: TickCount = convert_seconds_to_non_null_ticks(_Secs=0.001, State)
+% For example TickCount = convert_seconds_to_non_null_ticks(_Secs=0.001, State)
 %
 % (helper function)
 %
@@ -2850,7 +2850,7 @@ convert_seconds_to_non_null_ticks( Seconds, State ) ->
 % maximum relative error and then ensuring the returned duration is at least
 % equal to one tick.
 %
-% Ex: TickCount = convert_seconds_to_non_null_ticks(_Secs=0.001,
+% For example TickCount = convert_seconds_to_non_null_ticks(_Secs=0.001,
 %                   _MaxRelativeError=0.01, State)
 %
 % (helper function)
@@ -3160,7 +3160,7 @@ get_current_tick( State ) ->
 % diasca, hence the +1.
 %
 % The actor message is a oneway call: it is described by the name of the actor
-% oneway to trigger on the target actor (specified as an atom, ex: 'setColor')
+% oneway to trigger on the target actor (specified as an atom, e.g. 'setColor')
 % on the next diasca, and by a (possibly empty) list of the corresponding
 % arguments; so the call is either 'my_oneway' or
 % '{my_oneway,SingleNonListParameter}' or '{my_oneway,[Arg1,...]}'.
@@ -3280,7 +3280,7 @@ send_actor_message( Unexpected, _ActorOneway, _State ) ->
 % diasca, hence the +1.
 %
 % The actor message is a oneway call: it is described by the name of the actor
-% oneway to trigger on the target actor (specified as an atom, ex: 'setColor')
+% oneway to trigger on the target actor (specified as an atom, e.g. 'setColor')
 % on the next diasca, and by a (possibly empty) list of the corresponding
 % arguments; so the call is either 'my_oneway' or
 % '{my_oneway, SingleNonListParameter}' or '{my_oneway, [ Arg1, ...]}'.
@@ -3321,21 +3321,23 @@ send_actor_messages( _ActorPids=[], _ActorOneway, State ) ->
 	% No target, no state change wanted:
 	State;
 
-send_actor_messages( ActorPids, ActorOneway, State ) ->
+send_actor_messages( ActorPids, ActorOneway, State )
+											when is_list( ActorPids ) ->
 
 	cond_utils:if_defined( simdiasca_debug_model_behaviours,
-		trace_utils:debug_fmt( "  ~w sending an actor message to ~w "
-			"at {~p,~p}: ~p",
-			[ self(), ActorPids, ?getAttr(current_tick_offset),
-			  ?getAttr(current_diasca), ActorOneway ] ) ),
+		trace_utils:debug_fmt( "Actor ~w sending an actor message "
+			"to ~B actors (~w) at {~p,~p}: ~p",
+			[ self(), length( ActorPids ), ActorPids,
+			  ?getAttr(current_tick_offset), ?getAttr(current_diasca),
+			  ActorOneway ] ) ),
 
 	% The simulation shall be already started:
 	cond_utils:if_defined( simdiasca_check_model_behaviours,
 						   true = is_running( State ) ),
 
 	ActorMessage = { receiveActorMessage,
-				[ ?getAttr(current_tick_offset), ?getAttr(current_diasca)+1,
-				  ActorOneway, self(), ?getAttr(actor_abstract_id) ] },
+		[ ?getAttr(current_tick_offset), ?getAttr(current_diasca)+1,
+		  ActorOneway, self(), ?getAttr(actor_abstract_id) ] },
 
 	[ ActorPid ! ActorMessage || ActorPid <- ActorPids ],
 
@@ -3379,7 +3381,10 @@ send_actor_messages( ActorPids, ActorOneway, State ) ->
 	%
 	setAttributes( State, [
 		{ waited_acks, ActorPids ++ ?getAttr(waited_acks) },
-		{ next_action, NewAction } ] ).
+		{ next_action, NewAction } ] );
+
+send_actor_messages( Other, _ActorOneway, _State ) ->
+	throw( { not_pids, Other } ).
 
 
 
@@ -3615,7 +3620,7 @@ execute_reordered_oneways( _Messages=[
 					Arity = length( Args ),
 
 					DiagnoseString = code_utils:interpret_undef_exception( M, F,
-																	Arity ),
+						Arity ),
 
 					% Call needed for newline:
 					text_utils:format( "undef exception raised: ~ts "
@@ -3640,8 +3645,8 @@ execute_reordered_oneways( _Messages=[
 			LocString = locate_error( hd( FullStackTrace ),
 				ActorClassname, OnewayName, OnewayArity ),
 
-			SimLogicalTimestamp = { CurrentTickOffset, _CurrentDiasca }
-				= get_current_logical_timestamp( State ),
+			SimLogicalTimestamp = { CurrentTickOffset, _CurrentDiasca }	=
+				get_current_logical_timestamp( State ),
 
 			SimUserTimestamp =
 				convert_tick_offset_to_timestamp( CurrentTickOffset, State ),
@@ -3667,7 +3672,7 @@ execute_reordered_oneways( _Messages=[
 										aai=SenderAAI } } ->
 						text_utils:format( ", corresponding to "
 							"a ~ts instance named '~ts'",
-						   [ SenderActorClass, SenderActorName ] )
+							[ SenderActorClass, SenderActorName ] )
 
 				% Time-out, sending actor does not seem to answer:
 				after 5000 ->
@@ -3793,14 +3798,14 @@ execute_reordered_oneways( _Messages=[
 
 % Standalone parameter here:
 execute_reordered_oneways( _Messages=[
-	   { SenderPid, SenderAAI, { OnewayName, OnewaySingleNonListArg } }
+		{ SenderPid, SenderAAI, { OnewayName, OnewaySingleNonListArg } }
 									| MessageTuples ], State ) ->
 
 	% Parameter put in a list:
 	Oneway = { OnewayName, [ OnewaySingleNonListArg ] },
 
 	execute_reordered_oneways(
-	  [ { SenderPid, SenderAAI, Oneway } | MessageTuples ], State );
+		[ { SenderPid, SenderAAI, Oneway } | MessageTuples ], State );
 
 % No parameter here:
 execute_reordered_oneways( _Messages=[
@@ -3984,7 +3989,7 @@ insert_in_agenda( TickOffset, [ H | _T ]=Agenda, FirstAgendaEntries )
 
 % Here TickOffset > H:
 insert_in_agenda( TickOffset, [ H | T ], FirstAgendaEntries ) ->
-		% (implied: 'when H < TickOffset ->')
+				  % (implied: 'when H < TickOffset ->')
 	% We shall continue, still in lower offsets:
 	insert_in_agenda( TickOffset, T, [ H | FirstAgendaEntries ] ).
 
@@ -4012,7 +4017,7 @@ split_messages_over_time( _Messages=[], _CurrentTickOffset, _CurrentDiasca,
 split_messages_over_time(
 		[ H=#actor_message{ tick_offset=MessageTickOffset } | T ],
 		CurrentTickOffset, CurrentDiasca, CurrentOnes, FutureOnes, PastOnes )
-  when MessageTickOffset < CurrentTickOffset ->
+								when MessageTickOffset < CurrentTickOffset ->
 	split_messages_over_time( T, CurrentTickOffset, CurrentDiasca, CurrentOnes,
 							  FutureOnes, [ H | PastOnes ] );
 
@@ -4080,7 +4085,7 @@ split_messages_over_time( [ #actor_message{ sender_pid=Pid, sender_aai=Aai,
 % by other actors only).
 %
 % The single method parameter is ActorClassname, which is the classname of the
-% actor to create (ex: 'class_TestActor'). No specific actor construction
+% actor to create (e.g. 'class_TestActor'). No specific actor construction
 % parameter is used here.
 %
 % Returns the PID of the newly created (initial) actor, or throws an exception.
@@ -4120,11 +4125,11 @@ create_initial_actor( ActorClassname ) ->
 %
 % Method parameters are:
 %
-% - ActorClassname is the classname of the actor to create (ex:
+% - ActorClassname is the classname of the actor to create (e.g.
 % 'class_TestActor')
 %
 % - ActorConstructionParameters is the list of parameters that will be used to
-% construct that actor (ex: [ "MyActorName", 50 ]), knowing that the first two
+% construct that actor (e.g. [ "MyActorName", 50 ]), knowing that the first two
 % actual parameters (the initial state and the actor settings) are automatically
 % added by the engine
 %
@@ -4226,13 +4231,13 @@ create_initial_actor( ActorClassname, ActorConstructionParameters,
 %
 % Method parameters are:
 %
-% - ActorClassname is the classname of the actor to create (ex:
+% - ActorClassname is the classname of the actor to create (e.g.
 % 'class_TestActor')
 %
 % - ActorConstructionParameters is the list of parameters that will be used to
-% construct that actor (ex: [ "MyActorName", 50 ])
+% construct that actor (e.g. [ "MyActorName", 50 ])
 %
-% - PlacementHint can be any Erlang term (ex: an atom); it allows to create all
+% - PlacementHint can be any Erlang term (e.g. an atom); it allows to create all
 % actors (both initial or simulation-time ones) for which the same placement
 % hint was specified on the same computing node, for best performances
 %
@@ -4454,11 +4459,11 @@ is_running( State ) ->
 %
 % Parameters are:
 %
-% - ActorClassname is the classname of the actor to create (ex: the
+% - ActorClassname is the classname of the actor to create (e.g. the
 % 'class_TestActor' atom)
 %
 % - ActorConstructionParameters is the list of parameters that will be used to
-% construct that actor (ex: [ "MyActorName", 50 ])
+% construct that actor (e.g. [ "MyActorName", 50 ])
 %
 % Note: if wanting to create an actor before the simulation is started, then
 % create_initial_actor/{1,2,3} or create_initial_placed_actor/{2,3,4} must be
@@ -4521,13 +4526,13 @@ create_actor( ActorClassname, ActorConstructionParameters, State )
 %
 % Parameters are:
 %
-% - ActorClassname is the classname of the actor to create (ex:
+% - ActorClassname is the classname of the actor to create (e.g.
 % the 'class_TestActor' atom)
 %
 % - ActorConstructionParameters is the list of parameters that will be used to
-% construct that actor (ex: ["MyActorName", 50])
+% construct that actor (e.g. ["MyActorName", 50])
 %
-% - CreatedActorTag can be any term chosen by the user (ex: an atom like
+% - CreatedActorTag can be any term chosen by the user (e.g. an atom like
 % 'my_building_147')
 %
 % Note: if wanting to create an actor before the simulation is started, then
@@ -4542,8 +4547,8 @@ create_actor( ActorClassname, ActorConstructionParameters, State )
 -spec create_actor( classname(), [ method_argument() ], tag(),
 					wooper:state() ) -> wooper:state().
 create_actor( ActorClassname, ActorConstructionParameters, ActorTag, State )
-  when is_atom( ActorClassname )
-	   andalso is_list( ActorConstructionParameters ) ->
+			when is_atom( ActorClassname )
+				 andalso is_list( ActorConstructionParameters ) ->
 
 	% The checking that the simulation is already running is done in
 	% send_actor_message/3.
@@ -4651,13 +4656,13 @@ create_actors( ActorConstructionList, State )
 %
 % Helper parameters are:
 %
-% - ActorClassname is the classname of the actor to create (ex:
+% - ActorClassname is the classname of the actor to create (e.g.
 % 'class_TestActor')
 %
 % - ActorConstructionParameters is the list of parameters that will be used to
-% construct that actor (ex: ["MyActorName", 50])
+% construct that actor (e.g. ["MyActorName", 50])
 %
-% - PlacementHint can be any Erlang term (ex: an atom); it allows to create all
+% - PlacementHint can be any Erlang term (e.g. an atom); it allows to create all
 % actors (both initial or simulation-time ones) for which the same placement
 % hint was specified on the same computing node, for best performances
 %
@@ -4705,16 +4710,16 @@ create_placed_actor( ActorClassname, ActorConstructionParameters,
 %
 % Helper parameters are:
 %
-% - ActorClassname is the classname of the actor to create (ex:
+% - ActorClassname is the classname of the actor to create (e.g.
 % 'class_TestActor')
 %
 % - ActorConstructionParameters is the list of parameters that will be used to
-% construct that actor (ex: ["MyActorName", 50])
+% construct that actor (e.g. ["MyActorName", 50])
 %
-% - CreatedActorTag can be any term chosen by the user (ex: an atom like
+% - CreatedActorTag can be any term chosen by the user (e.g. an atom like
 % 'my_building_147')
 %
-% - PlacementHint can be any Erlang term (ex: an atom); it allows to create all
+% - PlacementHint can be any Erlang term (e.g. an atom); it allows to create all
 % actors (both initial or simulation-time ones) for which the same placement
 % hint was specified on the same computing node, for best performances
 %
@@ -4832,7 +4837,7 @@ declare_probe( NameOptions, CurveNames, Zones, Title, MaybeXLabel, YLabel,
 		MaybeXLabel, YLabel, ExtraSettingsTable, TickDuration );
 
 declare_probe( NameOptions, CurveNames, Zones, Title, MaybeXLabel, YLabel,
-			   ExtraSettingsTable, State ) ->
+		ExtraSettingsTable, State ) ->
 
 	% If this fails, the specified state must not be the one of an actor:
 	TickDuration = ?getAttr(simulation_tick_duration),
@@ -5110,7 +5115,7 @@ apply_reordering( MessagesForCurrentDiasca, constant_arbitrary_order ) ->
 	%
 	% Sorts the incoming messages based first on the message (element 3), then,
 	% if necessary on the sender AAI (element 2), if ever two messages had an
-	% identical hash (ex: same message sent by different actors), so that the
+	% identical hash (e.g. same message sent by different actors), so that the
 	% reproducibility is ensured (as there is a bijection between AAI and PID,
 	% PID do not need to be taken into account; and if an actor sends the same
 	% message to the same actor more than once at the same diasca, their
@@ -5119,18 +5124,18 @@ apply_reordering( MessagesForCurrentDiasca, constant_arbitrary_order ) ->
 	% Therefore the PID - which is only a technical identifier - is ignored
 	% here.
 	%
-	% Ex: if having a message list L = [ {Pa,5,5}, {Pb,4,5}, {Pc,6,5}, {Pd,1,7},
-	% {Pe,10,5}, {Pf,2,5}, {Pg,3,5}, {Ph,7,5}, {Ph,7,1}, {Pa,5,8}, {Pa,5,1} ]
-	% then 'lists:keysort( 3, lists:keysort(2,L) )' returns:
-	% [ {Pa,5,1}, {Ph,7,1}, {Pf,2,5}, {Pg,3,5}, {Pb,4,5}, {Pa,5,5}, {Pc,6,5},
+	% For example if having a message list L = [{Pa,5,5}, {Pb,4,5}, {Pc,6,5},
+	% {Pd,1,7}, {Pe,10,5}, {Pf,2,5}, {Pg,3,5}, {Ph,7,5}, {Ph,7,1}, {Pa,5,8},
+	% {Pa,5,1}] then 'lists:keysort( 3, lists:keysort(2,L) )' returns:
+	% [{Pa,5,1}, {Ph,7,1}, {Pf,2,5}, {Pg,3,5}, {Pb,4,5}, {Pa,5,5}, {Pc,6,5},
 	% {Ph,7,5}, {Pe,10,5}, {Pd,1,7}, {Pa,5,8}] (P stands for 'PID'), i.e. the
 	% list is sorted first according to its third member (the message, here an
 	% integer), then to its second (the AAI).
 	%
-	% Note also that the first sort (chronologically) yields:
-	% lists:keysort(2,L) = [ {Pd,1,7}, {Pf,2,5}, {Pg,3,5}, {Pb,4,5}, {Pa,5,5},
-	% {Pa,5,8}, {Pa,5,1}, {Pc,6,5}, {Ph,7,5}, {Ph,7,1}, {Pe,10,5} ]. i.e.
-	% it is sorted in ascending AAI order.
+	% Note also that the first sort (chronologically) yields: lists:keysort(2,L)
+	% = [{Pd,1,7}, {Pf,2,5}, {Pg,3,5}, {Pb,4,5}, {Pa,5,5}, {Pa,5,8}, {Pa,5,1},
+	% {Pc,6,5}, {Ph,7,5}, {Ph,7,1}, {Pe,10,5}]. i.e.  it is sorted in ascending
+	% AAI order.
 	%
 	% Note also that using keysort implies relying not on the hash value of the
 	% term, but on the natural order of Erlang terms.

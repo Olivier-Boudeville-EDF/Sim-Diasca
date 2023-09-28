@@ -35,7 +35,7 @@
 % rendering, resizing and closing.
 %
 % This test relies on the OpenGL 1.x compatibility mode, as opposed to more
-% modern versions of OpenGL (ex: 3.1) that rely on shaders and GLSL.
+% modern versions of OpenGL (e.g. 3.1) that rely on shaders and GLSL.
 %
 % See the gui_opengl.erl tested module.
 %
@@ -50,9 +50,8 @@
 % Directly inspired from https://www.glprogramming.com/red/chapter01.html
 
 
-% For GL/GLU defines:
--include("gui_opengl.hrl").
-% For user code: -include_lib("myriad/include/gui_opengl.hrl").
+% For GL/GLU defines; the sole include that MyriadGUI user code shall reference:
+-include_lib("myriad/include/myriad_gui.hrl").
 
 
 % For run/0 export and al:
@@ -66,8 +65,8 @@
 %
 -record( my_gui_state, {
 
-	% The main window of this test:
-	parent :: window(),
+	% The main frame of this test:
+	main_frame :: frame(),
 
 	% The OpenGL canvas on which rendering will be done:
 	canvas :: gl_canvas(),
@@ -76,7 +75,7 @@
 	context :: gl_context(),
 
 	% Here just a boolean; in more complex cases, would be a maybe OpenGL state
-	% (ex: to store the loaded textures):
+	% (e.g. to store the loaded textures):
 	%
 	opengl_initialised = false :: boolean() } ).
 
@@ -87,13 +86,13 @@
 
 % Shorthands:
 
--type window() :: gui:window().
+-type frame() :: gui_frame:frame().
 
 -type width() :: gui:width().
 -type height() :: gui:height().
 
--type gl_canvas() :: gui:opengl_canvas().
--type gl_context() :: gui:opengl_context().
+-type gl_canvas() :: gui_opengl:gl_canvas().
+-type gl_context() :: gui_opengl:gl_context().
 
 
 
@@ -111,7 +110,7 @@ run_opengl_test() ->
 
 		GlxInfoStr ->
 			test_facilities:display( "Checking whether OpenGL hardware "
-				"acceleration is available: ~ts",
+				"acceleration is available: ~ts.",
 				[ gui_opengl:is_hardware_accelerated( GlxInfoStr ) ] ),
 			run_actual_test()
 
@@ -123,15 +122,18 @@ run_opengl_test() ->
 -spec run_actual_test() -> void().
 run_actual_test() ->
 
-	test_facilities:display( "This test will display a white rectangle "
-		"on a black background, and will adjust to screen resizes." ),
+	test_facilities:display( "This test will display a white upright triangle "
+		"on a black background with a line-rendered 'FUN' label "
+		"(with red, green and blue characters), and will adjust to screen "
+		"resizes (the triangle will be scaled with the viewport, "
+		"whereas the text will remain fixed size)." ),
 
 	gui:start(),
 
 	% Could be batched (see gui:batch/1) to be more effective:
 	InitialGUIState = init_test_gui(),
 
-	gui:show( InitialGUIState#my_gui_state.parent ),
+	gui_frame:show( InitialGUIState#my_gui_state.main_frame ),
 
 	% OpenGL will be initialised only when the corresponding frame will be ready
 	% (that is once first reported as resized):
@@ -152,7 +154,7 @@ run_actual_test() ->
 init_test_gui() ->
 
 	MainFrame =
-		gui:create_frame( "MyriadGUI OpenGL 2D Test", _Size={ 500, 250 } ),
+		gui_frame:create( "MyriadGUI OpenGL 2D Test", _Size={ 500, 250 } ),
 
 	% Using default GL attributes:
 	GLCanvas = gui_opengl:create_canvas( _Parent=MainFrame ),
@@ -163,13 +165,14 @@ init_test_gui() ->
 	gui:subscribe_to_events( { [ onResized, onShown, onWindowClosed ],
 							   MainFrame } ),
 
-	% Needed, otherwise if that frame is moved out of the screen or if another
-	% windows overlaps, the OpenGL canvas gets garbled and thus must be redrawn:
+	% Needed as well, otherwise if that frame is moved out of the screen or if
+	% another window overlaps, the OpenGL canvas gets garbled and thus must be
+	% redrawn:
 	%
 	gui:subscribe_to_events( { onRepaintNeeded, GLCanvas } ),
 
 	% No OpenGL state yet (GL context cannot be set as current yet):
-	#my_gui_state{ parent=MainFrame, canvas=GLCanvas, context=GLContext }.
+	#my_gui_state{ main_frame=MainFrame, canvas=GLCanvas, context=GLContext }.
 
 
 
@@ -192,9 +195,10 @@ gui_main_loop( GUIState ) ->
 			RepaintedGUIState = case GUIState#my_gui_state.opengl_initialised of
 
 				true ->
-					gui:enable_repaint( GLCanvas ),
+					gui_widget:enable_repaint( GLCanvas ),
 					% Simpler than storing these at each resize:
-					{ CanvasWidth, CanvasHeight } = gui:get_size( GLCanvas ),
+					{ CanvasWidth, CanvasHeight } =
+						gui_widget:get_size( GLCanvas ),
 					render( CanvasWidth, CanvasHeight ),
 					gui_opengl:swap_buffers( GLCanvas ),
 					GUIState;
@@ -209,14 +213,14 @@ gui_main_loop( GUIState ) ->
 			gui_main_loop( RepaintedGUIState );
 
 
-		% For a window, the first resizing event happens (just) before its
+		% For a window, the first resizing event happens immediately before its
 		% onShown one:
 		%
 		{ onResized, [ _ParentWindow, _ParentWindowId, _NewParentSize,
 					   _EventContext ] } ->
 
 			%trace_utils:debug_fmt( "Resizing of the parent window "
-			%   (main frame) "to ~w detected.", [ NewParentSize ] ),
+			%   "(main frame) to ~w detected.", [ NewParentSize ] ),
 
 			ResizedGUIState = case GUIState#my_gui_state.opengl_initialised of
 
@@ -239,7 +243,8 @@ gui_main_loop( GUIState ) ->
 		{ onShown, [ ParentWindow, _ParentWindowId, _EventContext ] } ->
 
 			trace_utils:debug_fmt( "Parent window (main frame) just shown "
-				"(initial size of ~w).", [ gui:get_size( ParentWindow ) ] ),
+				"(initial size of ~w).",
+				[ gui_widget:get_size( ParentWindow ) ] ),
 
 			% Done once for all:
 			InitGUIState = initialise_opengl( GUIState ),
@@ -247,10 +252,15 @@ gui_main_loop( GUIState ) ->
 			gui_main_loop( InitGUIState );
 
 
-		{ onWindowClosed, [ ParentWindow, _ParentWindowId, _EventContext ] } ->
+		{ onWindowClosed,
+				[ _ParentWindow=MainFrame, _ParentWindowId, _EventContext ] } ->
 			trace_utils:info( "Main frame closed, test success." ),
+
+			% Very final check, while there is still an OpenGL context:
+			gui_opengl:check_error(),
+
 			% No more recursing:
-			gui:destruct_window( ParentWindow );
+			gui_frame:destruct( MainFrame );
 
 
 		OtherEvent ->
@@ -259,7 +269,7 @@ gui_main_loop( GUIState ) ->
 
 			gui_main_loop( GUIState )
 
-	% No 'after': no spontaneous action taken, in the absence of events.
+	% No 'after': no spontaneous action taken here, in the absence of events.
 
 	end.
 
@@ -276,7 +286,7 @@ initialise_opengl( GUIState=#my_gui_state{ canvas=GLCanvas,
 
 	% Initial size of canvas is typically 20x20 pixels:
 	trace_utils:debug_fmt( "Initialising OpenGL (whereas canvas is of initial "
-						   "size ~w).", [ gui:get_size( GLCanvas ) ] ),
+						   "size ~w).", [ gui_widget:get_size( GLCanvas ) ] ),
 
 	% So done only once:
 	gui_opengl:set_context_on_shown( GLCanvas, GLContext ),
@@ -307,12 +317,12 @@ initialise_opengl( GUIState=#my_gui_state{ canvas=GLCanvas,
 on_main_frame_resized( GUIState=#my_gui_state{ canvas=GLCanvas } ) ->
 
 	% Maximises the canvas in the main frame:
-	{ CanvasWidth, CanvasHeight } = gui:maximise_in_parent( GLCanvas ),
+	{ CanvasWidth, CanvasHeight } = gui_widget:maximise_in_parent( GLCanvas ),
 
 	%trace_utils:debug_fmt( "New client canvas size: {~B,~B}.",
 	%                       [ CanvasWidth, CanvasHeight ] ),
 
-	% Lower-left corner and size of the viewport in the current window:
+	% Lower-left corner and size of the viewport in the current canvas:
 	gl:viewport( 0, 0, CanvasWidth, CanvasHeight ),
 
 	% Apparently, at least on a test setting, a race condition (discovered
@@ -322,11 +332,13 @@ on_main_frame_resized( GUIState=#my_gui_state{ canvas=GLCanvas } ) ->
 	% (Erlang) asynchronous message to be sent from this user process and to be
 	% received and applied by the process of the target window, whereas a GL
 	% (NIF-based) operation is immediate; without a sufficient delay, the
-	% rendering will thus take place according to the former (ex: minimised)
+	% rendering will thus take place according to the former (e.g. minimised)
 	% canvas size, not according to the one that was expected to be already
 	% resized.
 	%
-	gui:sync( GLCanvas ),
+	% (actually returns {CanvasWidth, CanvasHeight})
+	%
+	gui_widget:sync( GLCanvas ),
 
 	% Multiplies the current modelview matrix by an orthographic matrix, a
 	% perspective matrix that produces a parallel projection based on 6 clipping

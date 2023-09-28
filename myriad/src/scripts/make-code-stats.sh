@@ -1,13 +1,14 @@
 #!/bin/sh
 
-# Copyright (C) 2010-2022 Olivier Boudeville
+# Copyright (C) 2010-2023 Olivier Boudeville
 #
 # Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 
 # This file is part of the Ceylan-Myriad library.
 
 
-usage="Usage: $(basename $0) [-h|--help] [SOURCE_DIRECTORY]: evaluates various simple metrics of the Erlang code found from any specified root directory, otherwise from the current one.
+usage="Usage: $(basename $0) [-h|--help] [--lang LANGUAGE] [SOURCE_DIRECTORY]: evaluates various simple metrics of the code found from any specified root directory, otherwise from the current one.
+Default language is 'Erlang'. Other supported languages are: 'Java'.
 "
 
 if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
@@ -17,7 +18,35 @@ if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
 
 fi
 
-bc=$(which bc 2>/dev/null)
+
+
+lang="Erlang"
+
+if [ "$1" = "--lang" ]; then
+
+	lang="$2"
+	shift
+	shift
+
+fi
+
+case ${lang} in
+
+	"Erlang")
+		;;
+
+	"Java")
+		;;
+
+	*)
+		echo "  Error, unsupported language '${lang}'." 1>&2
+		exit 10
+
+esac
+
+#echo "Selected language: '${lang}'."
+
+bc="$(which bc 2>/dev/null)"
 
 if [ ! -x "${bc}" ]; then
 
@@ -58,7 +87,7 @@ fi
 
 if [ -n "$2" ]; then
 
-	echo "  Error, only one parameter needed.
+	echo "  Error, an argument is lacking.
 ${usage}" 1>&2
 	exit 20
 
@@ -68,30 +97,21 @@ fi
 cd "${root_dir}"
 
 # Sometimes in /bin, sometimes in /usr/bin, etc.:
-find=$(which find 2>/dev/null)
-wc=$(which wc 2>/dev/null)
-expr=$(which expr 2>/dev/null)
+find="$(which find 2>/dev/null)"
+wc="$(which wc 2>/dev/null)"
+expr="$(which expr 2>/dev/null)"
 
-cat=/bin/cat
-grep=/bin/grep
+cat="/bin/cat"
+grep="/bin/grep"
 
 
-# We used to use -L to follow symlinks (not desirable here)
+# We used to use -L to follow symlinks (not desirable here, not wanting to evade
+# from the target source tree)
 #
 # Only regular files are selected, as includes in a tree may be symlinked in a
-# top-level 'include' directory.
-#
-# Rebar-related extra roots ('./_*', like _build, _checkouts, etc.) are
-# excluded.
-#
-hrl_files=$(${find} . \( -type f -o -path './_*' -prune \) -a -name '*.hrl' -print)
-erl_files=$(${find} . \( -type f -o -path './_*' -prune \) -a -name '*.erl' -print)
+# top-level 'include' directory, and we do not want them to be counted more than
+# once.
 
-#echo "hrl_files = ${hrl_files}"
-#echo "erl_files = ${erl_files}"
-
-hrl_count=$(echo ${hrl_files} | ${wc} -w)
-erl_count=$(echo ${erl_files} | ${wc} -w)
 
 tmp_file=".tmp-code-stats.txt"
 
@@ -100,16 +120,52 @@ if [ -f "${tmp_file}" ]; then
 fi
 
 
-target_files="${hrl_files} ${erl_files}"
-#echo "target_files = $target_files"
+if [ "${lang}" = "Erlang" ]; then
 
 
-if [ "$target_files" = " " ]; then
+	# Rebar-related extra roots ('./_*', like _build, _checkouts, etc.) are
+	# excluded.
+	#
+	hrl_files=$(${find} . \( -type f -o -path './_*' -prune \) -a -name '*.hrl' -print)
+	erl_files=$(${find} . \( -type f -o -path './_*' -prune \) -a -name '*.erl' -print)
 
-	echo "  Error, no Erlang source file found from '${root_dir}'." 1>&2
-	exit 25
+	#echo "hrl_files = ${hrl_files}"
+	#echo "erl_files = ${erl_files}"
+
+	hrl_count="$(echo ${hrl_files} | ${wc} -w)"
+	erl_count="$(echo ${erl_files} | ${wc} -w)"
+
+	target_files="${hrl_files} ${erl_files}"
+
+
+	if [ "${target_files}" = " " ]; then
+
+		echo "  Error, no Erlang source file found from '${root_dir}'." 1>&2
+		exit 25
+
+	fi
+
+elif [ "${lang}" = "Java" ]; then
+
+	java_files=$(${find} . \( -type f -o -path './_*' -prune \) -a -name '*.java' -print)
+
+	#echo "java_files = ${java_files}"
+
+	java_count="$(echo ${java_files} | ${wc} -w)"
+
+	target_files="${java_files}"
+
+	if [ "${target_files}" = " " ]; then
+
+		echo "  Error, no Java source file found from '${root_dir}'." 1>&2
+		exit 26
+
+	fi
 
 fi
+
+#echo "target_files = ${target_files}"
+
 
 # Very basic, yet simple and reliable:
 for f in ${target_files}; do
@@ -123,7 +179,7 @@ full_line_count=$(${cat} "${tmp_file}" | wc -l)
 
 if [ $full_line_count -eq 0 ]; then
 
-	echo "  Error, no Erlang source code found from '${root_dir}'." 1>&2
+	echo "  Error, no ${lang} source code found from '${root_dir}'." 1>&2
 	exit 35
 
 fi
@@ -139,14 +195,28 @@ empty_percentage=$(echo "scale=1; 100 * ${empty_line_count} / ${full_line_count}
 comment_percentage=$(echo "scale=1; 100 * ${comment_line_count} / ${full_line_count}" | ${bc})
 code_percentage=$(echo "scale=1 ; 100 * ${code_line_count} / ${full_line_count}" | ${bc})
 
-echo "In the Erlang source code found from ${root_dir}, we have:"
-echo "  + ${erl_count} source files (*.erl), ${hrl_count} header files (*.hrl)"
+echo "In the ${lang} source code found from ${root_dir}, we have:"
+
+if [ "${lang}" = "Erlang" ]; then
+
+	echo "  + ${erl_count} source files (*.erl), ${hrl_count} header files (*.hrl)"
+
+elif [ "${lang}" = "Java" ]; then
+
+	echo "  + ${java_count} source files (*.java)"
+
+fi
+
 echo "  + a grand total of ${full_line_count} lines:"
 
 echo "    - ${empty_line_count} of which (${empty_percentage}%) are blank lines"
-echo "    - ${comment_line_count} of which (${comment_percentage}%) are comments"
-echo "    - ${code_line_count} of which (${code_percentage}%) are code"
 
+if [ "${lang}" = "Erlang" ]; then
+
+	echo "    - ${comment_line_count} of which (${comment_percentage}%) are comments"
+	echo "    - ${code_line_count} of which (${code_percentage}%) are code"
+
+fi
 
 if [ -f "${tmp_file}" ]; then
 	/bin/rm -f "${tmp_file}"

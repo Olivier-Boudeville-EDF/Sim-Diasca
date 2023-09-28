@@ -15,6 +15,9 @@ doc/Ceylan-Traces-Layer-technical-manual-english.rst
 doc/api-doc/
 doc/mathjax
 
+# Former trace files:
+*.traces.previous
+
 # For Emacs temporary files:
 *.#*
 

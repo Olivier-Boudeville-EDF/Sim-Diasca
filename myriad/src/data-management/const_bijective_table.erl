@@ -59,12 +59,12 @@
 % (the 'maybe' one is not enabled unconditionally as it slows down very slightly
 % the strict functions, whereas it may be useless)
 %
-% No ETS table, replication (ex: per-user table copy) or message sending is
+% No ETS table, replication (e.g. per-user table copy) or message sending is
 % involved: thanks to metaprogramming (parse transform), a module is generated
 % on-the-fly, exporting two functions designed to access either of the elements
 % of the entries of interest.
 %
-% More precisely, a module name (ex: 'foobar') and a list of `{any(), any()}'
+% More precisely, a module name (e.g. 'foobar') and a list of `{any(), any()}'
 % entries must be provided to the `const_bijective_table:generate*/*' functions;
 % any element E of any pair in the resulting table (e.g. 42.0 in `{'baz',
 % 42.0}') can then be accessed thanks to foobar:get_{first|second}_for/1
@@ -91,7 +91,9 @@
 % - const_bijective_table_test.erl for an usage example and testing thereof
 % - bijective_table.erl for a runtime, mutable, term-based bijective table
 % - const_bijective_topics.erl, to generate modules able to share multiple
-% tables (not a single one like this one)
+% tables (not a single one like this one); no conversion direction is managed
+% here, as if a single direction is wanted, the const_table shall be used
+% instead
 % - const_table.erl, for a constant, "simple" (oneway) associative table
 %
 -module(const_bijective_table).
@@ -127,7 +129,7 @@
 % all numbers of entries - but as long as this is not tested this remains an
 % assumption.
 %
-% We also used to rely on const_bijective_topics:generate_forms/4 but this
+% We also used to rely on const_bijective_topics:generate_forms/5 but this
 % proved unappropriate, as it generates for example get_first_for_TOPIC/1
 % whereas we want here to generate get_first_for/1 (note the absence of a last
 % '_'); we cannot drop this '_' in const_bijective_topics, and specify '_TOPIC'
@@ -146,8 +148,9 @@
 -type permanent_term() :: type_utils:permanent_term().
 
 -type form() :: ast_base:form().
-
 -type file_loc() :: ast_base:file_loc().
+
+-type clause_def() :: meta_utils:clause_def().
 
 -type element_lookup() :: const_bijective_topics:element_lookup().
 
@@ -158,7 +161,7 @@
 % functions ('strict' look-up) in order to access either element of the recorded
 % pairs.
 %
-% Note that no actual module file is generated (ex: no 'foobar.beam'), the
+% Note that no actual module file is generated (e.g. no 'foobar.beam'), the
 % operation remains fully in-memory.
 %
 -spec generate_in_memory( module_name(), entries() ) -> void().
@@ -179,7 +182,7 @@ generate_in_memory( ModuleName, Entries ) ->
 % 'maybe' element look-up is not recommended if either of the first and second
 % sets contains the 'undefined' atom, as it leads to ambiguity.
 %
-% Note that no actual module file is generated (ex: no 'foobar.beam'), the
+% Note that no actual module file is generated (e.g. no 'foobar.beam'), the
 % operation remains fully in-memory.
 %
 -spec generate_in_memory( module_name(), entries(), element_lookup() ) ->
@@ -386,7 +389,7 @@ generate_table_forms( ModuleName, Entries, ElementLookup ) ->
 %
 generate_fun_forms( Entries, _ElementLookup=strict, FileLoc ) ->
 
-	% Like const_bijective_topics:generate_forms/4:
+	% Mostly like const_bijective_topics:generate_forms/5:
 
 	RevEntries = lists:reverse( Entries ),
 
@@ -402,7 +405,7 @@ generate_fun_forms( Entries, _ElementLookup=strict, FileLoc ) ->
 
 generate_fun_forms( Entries, _ElementLookup=maybe, FileLoc ) ->
 
-	% Like const_bijective_topics:generate_forms/4:
+	% Mostly like const_bijective_topics:generate_forms/5:
 
 	RevEntries = lists:reverse( Entries ),
 
@@ -547,7 +550,8 @@ generate_strict_calling_clauses( ErrorAtom, MaybeFunName, FileLoc ) ->
 % Thus results in { {nocatch, {first_not_found, MyUnexpectedValue} },
 % [{my_generated_module, get_second_for,1,[]}, ...
 %
--spec catch_all_clause( error_type(), element_lookup(), file_loc() ) -> form().
+-spec catch_all_clause( error_type(), element_lookup(), file_loc() ) ->
+								clause_def().
 catch_all_clause( ErrorAtom, _Lookup=strict, FileLoc ) ->
 
 	% Corresponds to a clause:

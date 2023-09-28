@@ -36,11 +36,11 @@
 -type ast_expression() :: ast_base:ast_element().
 % The description of an expression in an AST, with in-file location information.
 %
-% Ex: '{integer, {97,1}, 2}' or '{match, 117, {var,117,'A'}, {atom, 117,
+% For example '{integer, {97,1}, 2}' or '{match, 117, {var,117,'A'}, {atom, 117,
 % foobar}}', etc.
 %
 % Note that an expression is different from a pattern: even if they share at
-% least some types of forms, they are to be interpreted differently (ex: their
+% least some types of forms, they are to be interpreted differently (e.g. their
 % sub-elements are of the same kind as they are, and at least some rules
 % differ).
 
@@ -79,7 +79,7 @@
 % form).
 
 % Allowing the definition of transformation functions allows to give full
-% control to the user-specified transformations (ex: w.r.t. to recursion in
+% control to the user-specified transformations (e.g. w.r.t. to recursion in
 % parameters).
 
 
@@ -117,13 +117,13 @@
 
 
 -type expression_kind() :: 'call' | 'if' | 'case' | 'match' | 'bin'
-		| 'unary_op' | 'binary_op' | 'simple_receive' | 'receive_with_after'
-		| 'try' | 'remote' | 'catch' | 'cons' | 'lc' | 'bc' | 'tuple'
-		| 'map_creation' | 'map_field_assoc' | 'map_field_exact'
-		| 'record_creation' | 'record_index' | 'record_field'
-		| 'record_field_other' | 'record_update' | 'block' | 'fun_definition'
-		| 'fun_local' | 'fun_mfa_old' | 'fun_mfa' | 'var' | 'nil' | 'named_fun'
-		| 'atomic_literal'.
+	| 'unary_op' | 'binary_op' | 'simple_receive' | 'receive_with_after'
+	| 'try' | 'remote' | 'catch' | 'cons' | 'lc' | 'bc' | 'tuple'
+	| 'map_creation' | 'map_field_assoc' | 'map_field_exact'
+	| 'record_creation' | 'record_index' | 'record_field'
+	| 'record_field_other' | 'record_update' | 'block' | 'fun_definition'
+	| 'fun_local' | 'fun_mfa_old' | 'fun_mfa' | 'var' | 'nil' | 'named_fun'
+	| 'atomic_literal'.
 % Allows to designate any kind of AST expression.
 
 
@@ -186,7 +186,7 @@
 % [http://erlang.org/doc/apps/erts/absform.html].
 %
 -spec transform_expression( ast_expression(), ast_transforms() ) ->
-									{ [ ast_expression() ], ast_transforms() }.
+								{ [ ast_expression() ], ast_transforms() }.
 
 
 % Function call found:
@@ -225,8 +225,7 @@ transform_expression( ?e={ 'call', FileLoc, FunctionRef, Params },
 					% recursing in the parameters if needed - which is probably
 					% the case)
 					%
-					CallTransformFun( FileLoc, FunctionRef, Params,
-									  Transforms )
+					CallTransformFun( FileLoc, FunctionRef, Params, Transforms )
 
 			end
 
@@ -451,13 +450,13 @@ transform_expression( ?e={ 'op', FileLoc, Operator, LeftOperand, RightOperand },
 	end,
 
 	{ NewRightOperand, RightTransforms } =
-			case transform_expression( RightOperand, LeftTransforms ) of
+		case transform_expression( RightOperand, LeftTransforms ) of
 
-				{ [ NewRightOp ], RightTransfs } ->
-					{ NewRightOp, RightTransfs };
+			{ [ NewRightOp ], RightTransfs } ->
+				{ NewRightOp, RightTransfs };
 
-				{ [], _RightTransfs } ->
-					throw( { no_right_operand, RightOperand, FileLoc } )
+			{ [], _RightTransfs } ->
+				throw( { no_right_operand, RightOperand, FileLoc } )
 
 	end,
 
@@ -539,7 +538,7 @@ transform_expression( ?e={ 'receive', FileLoc, ReceiveClauses, AfterTest,
 
 				key_not_found ->
 					transform_receive_with_after( FileLoc, ReceiveClauses,
-								AfterTest, AfterExpressions, Transforms );
+						AfterTest, AfterExpressions, Transforms );
 
 				{ value, ReceiveTransformFun } ->
 					% Returns directly {NewExprs, NewTransforms}:
@@ -1169,7 +1168,7 @@ transform_expression( E={ 'fun', _FileLoc,
 % Since R15, fun M:F/A can be obtained through variables.
 %
 transform_expression( ?e={ 'fun', FileLoc,
-				_F={ 'function', ModuleName, FunctionName, FunctionArity } },
+		_F={ 'function', ModuleName, FunctionName, FunctionArity } },
 					  Transforms ) ?rec_guard ->
 
 	?log_enter( "Transforming remote fun expression ~p...", [ E ] ),
@@ -1186,7 +1185,7 @@ transform_expression( ?e={ 'fun', FileLoc,
 		transform_expression( FunctionArity, NameTransforms ),
 
 	NewExpr = { 'fun', FileLoc,
-			{ 'function', NewModuleName, NewFunctionName, NewFunctionArity } },
+		{ 'function', NewModuleName, NewFunctionName, NewFunctionArity } },
 
 	Res = { [ NewExpr ], ArityTransforms },
 
@@ -1280,7 +1279,7 @@ transform_expression( E={ AtomicLiteralType, _FileLoc, _Value },
 
 % Partial catch-all:
 transform_expression( Expression, Transforms )
-  when is_record( Transforms, ast_transforms ) ->
+								when is_record( Transforms, ast_transforms ) ->
 
 	% Was incorrect, as patterns are not a special case of expressions:
 
@@ -1333,7 +1332,7 @@ transform_call( FileLoc, FunctionRef, Params, Transforms ) ?rec_guard ->
 	NewArity = length( tuple_to_list( NewParams ) ),
 
 	{ [ FinalFunctionRef ], FinalTransforms } = transform_call_expression(
-						TransformedFunctionRef, NewArity, ParamsTransforms ),
+		TransformedFunctionRef, NewArity, ParamsTransforms ),
 
 	NewExpr = { 'call', FileLoc, FinalFunctionRef, NewParams },
 
@@ -1400,7 +1399,7 @@ transform_match( FileLoc, MatchPattern, MatchExpression,
 		transform_expression( MatchExpression, PatternTransforms ),
 
 	%ast_utils:display_debug( "New match expression:~p",
-	%						  [ NewMatchExpression ] ),
+	%                         [ NewMatchExpression ] ),
 
 	NewExpr = { 'match', FileLoc, NewMatchPattern, NewMatchExpression },
 
@@ -1632,18 +1631,18 @@ transform_qualifier( _Qualifier=Expression, Transforms ) ?rec_guard ->
 transform_record_field_inits( RecordFieldInits, Transforms ) ?rec_guard ->
 
 	%ast_utils:display_trace( "Transforming record field init ~p.",
-	%						  [ RecordFieldInits ] ),
+	%                         [ RecordFieldInits ] ),
 
 	% An expression is transformed into a *list* of expressions:
 	{ ExprLists, NewTransforms } = lists:mapfoldl(
 		fun transform_record_field_init/2, _Acc0=Transforms,
-									_List=RecordFieldInits ),
+		_List=RecordFieldInits ),
 
 	% We do not want expressions to remain nested over two levels:
 	OneLevelExprList = merge_expression_lists( ExprLists ),
 
 	%ast_utils:display_trace( "record field inits ~n~p transformed as:~n~p",
-	%						  [ RecordFieldInits, OneLevelExprList ] ),
+	%                         [ RecordFieldInits, OneLevelExprList ] ),
 
 	{ OneLevelExprList, NewTransforms }.
 
@@ -1688,23 +1687,51 @@ transform_record_field_updates( RecordFieldUpdates, Transforms ) ?rec_guard ->
 						   _Acc0=Transforms, _List=RecordFieldUpdates ).
 
 	%ast_utils:display_debug( "transformed record field updates: ~p",
-	%						 [ element( 1, Res ) ] ),
+	%                         [ element( 1, Res ) ] ),
 
 	%Res.
 
 
-transform_record_field_update( { 'record_field', FileLocField,
-		FieldNameASTAtom={ atom, _FileLocAtom, _FieldName }, FieldValue },
-							   Transforms ) ?rec_guard ->
+% (helper)
+%
+% We had introduced the support only of this special case, presumably because a
+% more generic form was rejected, yet the abstract format allows any expression
+% also for the field name:
+%
+% transform_record_field_update( { 'record_field', FileLocField,
+%       FieldNameASTAtom={ atom, _FileLocAtom, _FieldNameExpr },
+%       FieldValueExpr },
+%                                Transforms ) ?rec_guard ->
 
-	{ [ NewFieldValue ], NewTransforms } =
-		transform_expression( FieldValue, Transforms ),
+%   { [ NewFieldValueExpr ], NewTransforms } =
+%       transform_expression( FieldValueExpr, Transforms ),
 
-	NewExpr = { record_field, FileLocField, FieldNameASTAtom, NewFieldValue },
+%   NewExpr = { record_field, FileLocField, FieldNameASTAtom,
+%               NewFieldValueExpr },
+
+%   % Single expression here by design:
+%   { NewExpr, NewTransforms };
+
+transform_record_field_update( { 'record_field', FileLocField, FieldNameExpr,
+								 FieldValueExpr }, Transforms ) ->
+
+	{ [ NewFieldNameExpr ], NewTransforms } =
+		transform_expression( FieldNameExpr, Transforms ),
+
+	{ [ NewFieldValueExpr ], NewTransforms } =
+		transform_expression( FieldValueExpr, Transforms ),
+
+	NewExpr = { record_field, FileLocField, NewFieldNameExpr,
+				NewFieldValueExpr },
 
 	% Single expression here by design:
 	{ NewExpr, NewTransforms }.
 
+
+%transform_record_field_update( { 'record_field', FileLocField, FieldNameExpr,
+%                               FieldValue }, _Transforms ) ->
+%   throw( { unsupported_field_name, FieldNameExpr, FileLocField,
+%            FieldValue } ).
 
 
 
@@ -1764,7 +1791,7 @@ transform_call_expression( OriginalExpr={ 'remote', FileLocRemote,
 						%   { NewModuleName, FunName };
 
 						{ value, TransformFun }
-						  when is_function( TransformFun ) ->
+										when is_function( TransformFun ) ->
 							TransformFun( FunctionName, Arity );
 
 						key_not_found ->
@@ -1774,15 +1801,15 @@ transform_call_expression( OriginalExpr={ 'remote', FileLocRemote,
 							% set, actual arity is not deemed relevant)
 
 							case ?table:lookup_entry( { ModuleName,
-									   _AnyFunctionName='_', AnyArity },
+									_AnyFunctionName='_', AnyArity },
 													  RemoteReplaceTable ) of
 
-								{ value,
-								  { NewModuleName, _NewFunctionName='_' } } ->
+								{ value, { NewModuleName,
+										   _NewFunctionName='_' } } ->
 									{ NewModuleName, FunctionName } ;
 
-								{ value,
-								  E={ _NewModuleName, _NewFunctionName } } ->
+								{ value, E={ _NewModuleName,
+											 _NewFunctionName } } ->
 									E;
 
 									% Same function name, only module
@@ -1793,7 +1820,7 @@ transform_call_expression( OriginalExpr={ 'remote', FileLocRemote,
 									%    { NewModuleName, FunName };
 
 								{ value, TransformFun }
-								  when is_function( TransformFun ) ->
+										when is_function( TransformFun ) ->
 									TransformFun( FunctionName, Arity );
 
 								key_not_found ->
@@ -1897,7 +1924,7 @@ transform_call_expression( CallExpr={ 'atom', FileLocFun, FunName }, Arity,
 						%   { NewModuleName, FunName };
 
 						{ value, TransformFun }
-						  when is_function( TransformFun ) ->
+								when is_function( TransformFun ) ->
 							TransformFun( FunName, Arity );
 
 						key_not_found ->
@@ -1926,6 +1953,8 @@ transform_call_expression( CallExpr={ 'atom', FileLocFun, FunName }, Arity,
 	{ [ NewExpr ], Transforms };
 
 
-% Ex: happens with a line like: 'MyNode = MyContentFun( Content, "hello" )'.
+% For example happens with a line like: 'MyNode = MyContentFun(Content,
+% "hello")'.
+%
 transform_call_expression( CallExpr, _Arity, Transforms ) ?rec_guard ->
 	transform_expression( CallExpr, Transforms ).

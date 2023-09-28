@@ -71,7 +71,7 @@
 % transform as a mere function called from a test case is strongly recommended
 
 % To ease troubleshooting: enable the writing to file of the input and output
-% ASTs, and compare them (ex: 'meld Myriad-input-AST-sorted.txt
+% ASTs, and compare them (e.g. 'meld Myriad-input-AST-sorted.txt
 % Myriad-output-AST-sorted.txt').
 
 
@@ -111,7 +111,7 @@
 % - replacing all calls and type specifications referring to the 'table'
 % pseudo-type (either itself prefixed with the 'table' module - that does not
 % exist, or as a local pseudo-type) into counterparts referring to the default,
-% actual type of associative table that we currently use instead (ex: we have
+% actual type of associative table that we currently use instead (e.g. we have
 % hashtable, lazy_hashtable, tracked_hashtable, map_hashtable, etc.) - unless
 % the table type to be used is explicitly specified in the target, transformed
 % module
@@ -148,20 +148,20 @@
 
 
 
-% @doc Runs the Myriad parse transform defined here in a standalone way
-% (ie without being triggered by the usual, integrated compile process).
+% @doc Runs the Myriad parse transform defined here in a standalone way (that is
+% without being triggered by the usual, integrated compile process).
 %
 % This allows to benefit from all compilation error and warning messages,
 % whereas they are seldom available from a code directly run as a parse
-% transform (ex: 'undefined parse transform 'foobar'' as soon as a function or a
-% module is not found).
+% transform (e.g. 'undefined parse transform 'foobar'' as soon as a function or
+% a module is not found).
 %
 -spec run_standalone( file_utils:file_name() ) -> { ast(), module_info() }.
 run_standalone( FileToTransform ) ->
 
 	AST = ast_utils:erl_to_ast( FileToTransform ),
 
-	% Options like : [ report_warnings, {d,myriad_debug_mode}, beam,
+	% Options like : report_warnings, {d,myriad_debug_mode}, beam,
 	% report_errors, {cwd,"X"}, {outdir,Y"}, {i,"A"},{i,"B"}, debug_info, etc.
 	% are probably not all set, but it is unlikely to be a problem here.
 	%
@@ -307,9 +307,9 @@ transform_module_info( ModuleInfo ) when is_record( ModuleInfo, module_info ) ->
 %
 -spec get_myriad_ast_transforms_for( module_info() ) -> ast_transforms().
 get_myriad_ast_transforms_for(
-  #module_info{ module=ModuleEntry,
-				compilation_options=CompileOptTable,
-				parse_attributes=ParseAttributes } ) ->
+			#module_info{ module=ModuleEntry,
+						  compilation_options=CompileOptTable,
+						  parse_attributes=ParseAttributes } ) ->
 
 	% We will be replacing here all calls to the 'table' pseudo-module by calls
 	% to the actual module that may be designated by a specific parse attribute,
@@ -324,7 +324,7 @@ get_myriad_ast_transforms_for(
 	%                               {atom,FileLoc4,FunctionName}},
 	%              ListArgs}
 
-	% The same kind of conversion for the type specifications (ex: function
+	% The same kind of conversion for the type specifications (e.g. function
 	% specs, type definitions, etc.) is done.
 
 
@@ -448,7 +448,7 @@ get_actual_table_type( ParseAttributeTable ) ->
 % - diagnosed_fallible(TSuccess, TFailure) with
 %     basic_utils:diagnosed_fallible(TSuccess, TFailure)
 %
-% - table/N (ex: table() or table(K,V)) with DesiredTableType/N (ex:
+% - table/N (e.g. table() or table(K,V)) with DesiredTableType/N (e.g.
 % DesiredTableType:DesiredTableType() or DesiredTableType:DesiredTableType(K,V))
 % (as if table() was a local, hence builtin, type)
 %
@@ -492,7 +492,7 @@ get_local_type_transforms( DesiredTableType ) ->
 %
 % Regarding remote types, we want to replace:
 %  - table:table/N with DesiredTableType:DesiredTableType/N (N=0 or N=2)
-%  - table:T with DesiredTableType:T (ex: table:value())
+%  - table:T with DesiredTableType:T (e.g. table:value())
 %
 % (as these substitutions overlap, a lambda function is provided)
 %
@@ -540,7 +540,7 @@ get_remote_call_transforms() ->
 % to define a full-blown call transform fun (to perform a more radical
 % transformation), instead of a mere mapping, and also instead of a
 % remote_call_replacement fun/4 - which would not be able to take into account
-% the value of arguments (ex: the specified token), since being just being
+% the value of arguments (e.g. the specified token), since being just being
 % parametrised by an arity.
 %
 -spec get_ast_global_transforms( module_name() ) -> ast_transform_table() .
@@ -622,10 +622,10 @@ get_ast_global_transforms( DesiredTableType ) ->
 		  _Params=[ {var,FileLoc,VarName}, _ExprForm ],
 		  _Transforms ) ->
 			ast_utils:display_error(
-			  "A token used with cond_utils:if_defined/2 must be an immediate "
-			  "value (precisely an atom), not a (runtime) variable like '~ts' "
-			  "(at ~ts).",
-			  [ VarName, ast_utils:file_loc_to_string( FileLoc ) ] ),
+				"A token used with cond_utils:if_defined/2 must be an "
+				"immediate value (precisely an atom), not a (runtime) "
+				"variable like '~ts' (at ~ts).",
+				[ VarName, ast_utils:file_loc_to_string( FileLoc ) ] ),
 			ast_utils:raise_error( { non_immediate_token, VarName,
 				ast_utils:file_loc_to_explicative_term( FileLoc ) } );
 
@@ -636,9 +636,10 @@ get_ast_global_transforms( DesiredTableType ) ->
 		  _Params=[ _Other, _Expr ],
 		  _Transforms ) ->
 			ast_utils:display_error(
-			  "A token used with cond_utils:if_defined/2 must be an immediate "
-			  "value (precisely an atom), not a runtime construct like the one "
-			  "at ~ts.", [ ast_utils:file_loc_to_string( FileLoc ) ] ),
+				"A token used with cond_utils:if_defined/2 must be an "
+				"immediate value (precisely an atom), not a runtime "
+				"construct like the one at ~ts.",
+				[ ast_utils:file_loc_to_string( FileLoc ) ] ),
 			ast_utils:raise_error( { non_immediate_token,
 				ast_utils:file_loc_to_explicative_term( FileLoc ) } );
 
@@ -657,7 +658,7 @@ get_ast_global_transforms( DesiredTableType ) ->
 		  Transforms=#ast_transforms{ transformation_state=TokenTable } ) ->
 
 			%ast_utils:display_debug( "Call to cond_utils:if_defined/3 found, "
-			%						 "for token '~p'.", [ Token ] ),
+			%                         "for token '~p'.", [ Token ] ),
 
 			case ?table:lookup_entry( Token, TokenTable ) of
 
@@ -1134,7 +1135,7 @@ get_ast_global_transforms( DesiredTableType ) ->
 
 			% Just swap the 'table' module with the desired one:
 			NewFunctionRef = { remote, FileLoc1,
-					{atom,FileLoc2,DesiredTableType}, FunNameForm },
+				{atom,FileLoc2,DesiredTableType}, FunNameForm },
 
 			% We have to recurse as well in parameters, as they may themselves
 			% contain calls to 'table' as well, like in:
@@ -1196,13 +1197,13 @@ get_ast_global_transforms( DesiredTableType ) ->
 %   %
 %   Exprs = ast_generation:form_to_list( ExprFormList ),
 %
-%   % This injected code may need to be transformed (ex: if referencing the
+%   % This injected code may need to be transformed (e.g. if referencing the
 %   % table module), so:
 %   %
 %   ast_expression:transform_expressions( Exprs, Transforms );
 
 
-% Other, non-list (ex: call, match pattern, etc.) expression parameter, which
+% Other, non-list (e.g. call, match pattern, etc.) expression parameter, which
 % used to be unsupported; the constraint of having a list of expressions has
 % been relaxed, a single expression is accepted as well (actually now it is the
 % only option):
@@ -1247,7 +1248,7 @@ inject_match_expression( ExpressionForm, Transforms, FileLoc ) ->
 	% We have to ensure that the name of the variable that we bind in the second
 	% clause is reasonably unique, otherwise, should more than one assert be
 	% found by the compiler in a given scope, it would deem that this variable
-	% name (ex: 'Other') would be unsafe in 'case' (and of course this name
+	% name (e.g. 'Other') would be unsafe in 'case' (and of course this name
 	% should not clash with user-defined ones). So:
 	%
 	VarName = list_to_atom( lists:flatten(

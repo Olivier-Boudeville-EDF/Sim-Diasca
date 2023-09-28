@@ -102,7 +102,7 @@ ifndef PROJECT_NAME
 endif
 
 
-SIM_DIASCA_BASE_VERSION := 2.4.5
+SIM_DIASCA_BASE_VERSION := 2.4.6
 
 #SIM_DIASCA_VERSION := $(SIM_DIASCA_BASE_VERSION)-beta-$(date '+%Y%m%d-%Hh%M')
 #SIM_DIASCA_VERSION := $(SIM_DIASCA_BASE_VERSION)-for-foobar
@@ -118,7 +118,7 @@ endif
 ifndef PROJECT_RELEASE_DATE
 	# To be set only at release time:
 	#PROJECT_RELEASE_DATE := "(not set yet)"
-	PROJECT_RELEASE_DATE := "Thursday, January 5, 2023"
+	PROJECT_RELEASE_DATE := "Thursday, September 28, 2023"
 endif
 
 
@@ -357,7 +357,8 @@ SPATIAL_BEAM := $(SPATIAL_BASE_DIR)
 # Used to be 'BEAM_DIRS := ... $(BEAM_DIRS)', but it led to multiple duplicates
 # (multiple inclusions?)
 #
-BEAM_DIRS += $(CORE_BEAM) $(SERVICES_BEAM)                                    \
+# See Myriad counterpart variable (MYRIAD_BEAM_DIRS) for explanations:
+SIM_DIASCA_BEAM_DIRS += $(CORE_BEAM) $(SERVICES_BEAM)                         \
 	$(BINDINGS_BEAM) $(CASE_SUPPORT_BEAM) $(DATAFLOW_BEAM)                    \
 	$(DATA_EXCHANGE_BEAM) $(DATA_STORAGE_BEAM) $(WEB_BEAM) $(DEPLOYMENT_BEAM) \
 	$(INSTANCE_CREATION_BEAM) $(PERFORMANCE_TRACKER_BEAM) $(PLUGINS_BEAM)     \
@@ -369,7 +370,12 @@ BEAM_DIRS += $(CORE_BEAM) $(SERVICES_BEAM)                                    \
 	$(DATAFLOW_PYTHON_BINDING_BEAM) $(MOCKUP_BEAM)                            \
 	$(GENERIC_BEAM) $(MESH_BEAM) $(SPACE_BEAM) $(EQUIPMENT_BEAM)              \
 	$(FAILURE_BEAM) $(REPARATION_BEAM) $(POST_PROCESSING_BEAM)                \
-	$(SPATIAL_BEAM)
+	$(SPATIAL_BEAM)                                                           \
+	$(SIM_DIASCA_TOP)/..
+
+
+# We rely on the prerequisites as well:
+BEAM_DIRS += $(SIM_DIASCA_BEAM_DIRS)
 
 
 
@@ -474,10 +480,6 @@ endif
 ifndef PROJECT_ICON
 	PROJECT_ICON := $(SIM_DIASCA_TOP)/doc/common-elements/edf-related/sim-diasca-icon.png
 endif
-
-
-# For later reuse in the next layer of the software stack:
-SIM_DIASCA_PLT_FILE := $(SIM_DIASCA_TOP)/sim-diasca.plt
 
 
 # The configuration file to list the potential distributed hosts:
@@ -659,10 +661,16 @@ IMAGE_ALT_PUSH_TARGET = "$(IMAGE_ALT_TAGLESS)"
 OVERRIDE_WOOPER_BUILD_RULES := true
 
 
+
+# For later reuse in the next layer of the software stack:
+SIM_DIASCA_PLT_FILE := $(SIM_DIASCA_TOP)/Sim-Diasca.plt
+
+
 # This is the merged PLT of the level just below in the software stack.
 # For Sim-Diasca, it is the PLT of 'Traces':
-ifndef PREDECESSOR_PLT
-   PREDECESSOR_PLT = $(TRACES_PLT_FILE)
+#
+ifndef PREDECESSOR_PLT_FILE
+	PREDECESSOR_PLT_FILE = $(TRACES_PLT_FILE)
 endif
 
 

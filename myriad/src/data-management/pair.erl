@@ -29,7 +29,8 @@
 % @doc Minor utilities to manage <b>pairs</b> (that is 2-element tuples).
 -module(pair).
 
--export([ first/1, second/1, swap/1, to_list/1, to_string/1 ]).
+-export([ first/1, firsts/1, second/1, seconds/1,
+		  swap/1, check_list/1, to_list/1, to_string/1 ]).
 
 -compile( { inline, [ first/1, second/1, swap/1 ] } ).
 
@@ -47,11 +48,31 @@ first( { X, _Y } ) ->
 	X.
 
 
+% @doc Returns the first elements of the specified list of pairs, in-order.
+%
+% Does not check whether non-pairs exist in the input list.
+%
+-spec firsts( [ pair() ] ) -> [ element() ].
+firsts( Pairs ) ->
+	cond_utils:if_defined( myriad_debug_datastructures, check_list( Pairs ) ),
+	[ X || { X, _Y } <- Pairs ].
+
+
 
 % @doc Returns the second element of the specified pair.
 -spec second( pair() ) -> element().
 second( { _X, Y } ) ->
 	Y.
+
+
+% @doc Returns the second elements of the specified list of pairs, in-order.
+%
+% Does not check whether non-pairs exist in the input list.
+%
+-spec seconds( [ pair() ] ) -> [ element() ].
+seconds( Pairs ) ->
+	cond_utils:if_defined( myriad_debug_datastructures, check_list( Pairs ) ),
+	[ Y || { _X, Y } <- Pairs ].
 
 
 
@@ -61,6 +82,24 @@ second( { _X, Y } ) ->
 -spec swap( pair() ) -> pair().
 swap( { X, Y } ) ->
 	{ Y, X }.
+
+
+
+% @doc Throws an exception if the specified list is not a list of pairs.
+-spec check_list( term() ) -> void().
+check_list( Term ) ->
+	check_list( Term, Term ).
+
+
+% (helper)
+check_list( [], _Term ) ->
+	true;
+
+check_list( [ { _X, _Y } | T  ], Term ) ->
+	check_list( T, Term );
+
+check_list( Other, Term ) ->
+	throw( { not_list_of_pairs, Other, Term } ).
 
 
 

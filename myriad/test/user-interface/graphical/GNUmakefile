@@ -1,6 +1,6 @@
 MYRIAD_TOP = ../../..
 
-.PHONY: all run test-all
+.PHONY: all run
 
 MODULES_DIRS = opengl
 
@@ -10,8 +10,9 @@ all:
 
 run: gui_overall_run
 
-
-test-all: all gui_minimal_run gui_simple_run gui_overall_run
+# Run test-interactive to, well, perform actual interactive testing of base
+# MyriadGUI services. Go to the 'opengl' subdirectory for all OpenGL-related
+# testing.
 
 
 include $(MYRIAD_TOP)/GNUmakesettings.inc

@@ -33,8 +33,8 @@
 		 " - to centralize, on the user behalf, most simulation information "
 		 "and settings"
 		 " - to determine on which host and node all other simulation agents "
-		 "(ex: the load balancer, the root time manager, etc.) should run, and "
-		 "then to launch them accordingly, with the help of managers of "
+		 "(e.g. the load balancer, the root time manager, etc.) should run, "
+		 "and then to launch them accordingly, with the help of managers of "
 		 "computing hosts" ).
 
 
@@ -382,8 +382,8 @@
 
 % Shorthands:
 
--type user_name() :: basic_utils:user_name().
--type atom_user_name() :: basic_utils:atom_user_name().
+-type user_name() :: system_utils:user_name().
+-type atom_user_name() :: system_utils:atom_user_name().
 
 -type ustring() :: text_utils:ustring().
 -type bin_string() :: text_utils:bin_string().
@@ -499,7 +499,7 @@ construct( State,
 	monitor_utils:monitor_nodes( _NewSubscription=true ),
 
 	% So that the deployment manager is able to react to the failure of
-	% processes implementing simulation services (ex: time managers):
+	% processes implementing simulation services (e.g. time managers):
 	%
 	erlang:process_flag( trap_exit, true ),
 
@@ -557,7 +557,8 @@ construct( State,
 								 LoadBalancingSettings ),
 
 	% The 'make' executable is expected to be found in the path, knowing that
-	% its location depends on the distribution (ex: /bin/make or /usr/bin/make).
+	% its location depends on the distribution (e.g. /bin/make or
+	% /usr/bin/make).
 	%
 	% (needed for the purpose of rebuilding the deployed content)
 	%
@@ -786,7 +787,7 @@ construct( State, SimulationSettings, DeploymentSettings, LoadBalancingSettings,
 	% shall be updated w.r.t. to many new features. Consider it as being
 	% currently non-functional as a whole.
 
-	% Redeployment, hence many different steps (ex: no simulation package, no
+	% Redeployment, hence many different steps (e.g. no simulation package, no
 	% resilience infrastructure to launch, etc.) are to be taken:
 
 	UserSettings = { SimulationName, _SimInteractivityMode,
@@ -954,7 +955,7 @@ get_additional_beam_dirs( #deployment_settings{
 		end || Elem <- Languages ],
 
 
-	% Adds the BEAM paths required by the external dependencies (ex: language
+	% Adds the BEAM paths required by the external dependencies (e.g. language
 	% bindings) that are going to be used by the simulation:
 	%
 	Dirs = [ file_utils:resolve_any_path( D )
@@ -1300,9 +1301,9 @@ destruct( State ) ->
 -spec shutdown_services( wooper:state() ) -> wooper:state().
 shutdown_services( State ) ->
 
-	% We shutdown services step-by-step, from the top-level (ex: time manager)
-	% to the bottom-ones (ex: data exchanger), avoiding to have in the same
-	% level (thus in parallel deletion) coupled services (ex: time manager and
+	% We shutdown services step-by-step, from the top-level (e.g. time manager)
+	% to the bottom-ones (e.g. data exchanger), avoiding to have in the same
+	% level (thus in parallel deletion) coupled services (e.g. time manager and
 	% load balancer - which is an actor).
 	%
 	% (distributed services will remove by themselves all their agents, based on
@@ -1887,7 +1888,7 @@ activateDatabase( State ) ->
 					|| HostManagerPid <- DatabaseAgents ],
 
 			% Allows to use the database directly from this user node as well
-			% (ex: for a test case which would need a virtual probe)
+			% (e.g. for a test case which would need a virtual probe)
 			%
 			ok = application:start( mnesia ),
 
@@ -1971,7 +1972,7 @@ notifyResilienceAgents( State, ResilienceAgentPidList ) ->
 -spec get_registration_name() ->
 							static_return( naming_utils:registration_name() ).
 get_registration_name() ->
-	% Ex: sim_diasca_deployment_manager
+	% For instance sim_diasca_deployment_manager:
 	wooper:return_static( ?deployment_manager_name ).
 
 
@@ -2056,7 +2057,7 @@ shutdown( DeploymentManagerPid ) ->
 
 	% We disabled the time-out for deployment shutdown (thus we finally kept it
 	% as a synchronous operation), as otherwise not only some processings could
-	% be interrupted (ex: trace aggregation), but also compute nodes would thus
+	% be interrupted (e.g. trace aggregation), but also compute nodes would thus
 	% linger (not stopping then, even if their work was over), blocking next
 	% runs of the same case.
 
@@ -2673,7 +2674,7 @@ create_data_exchangers( RootDataExchangerNode, ConfigurationFileList,
 			%   "node (~ts) "is created now, on ~ts.", [ UserNode, UserHost ] ),
 
 			% Note however that this data-exchanger will be the only one not to
-			% be created on a computing host, thus may behave differently (ex:
+			% be created on a computing host, thus may behave differently (e.g.
 			% the local path of configuration files is specifically managed):
 			%
 			Pid = class_DataExchanger:synchronous_timed_new_link(
@@ -2736,7 +2737,7 @@ check_configuration_file_list( _FileList=[ Elem | _T ] ) ->
 -spec node_to_host( atom_node_name() ) -> net_utils:string_host_name().
 node_to_host( NodeName ) ->
 
-	% Ex: returns "Data_Exchange_test-john@foobar":
+	% For example returns "Data_Exchange_test-john@foobar":
 	StringNodeName = text_utils:atom_to_string( NodeName ),
 
 	% Returns "foobar":
@@ -3455,7 +3456,7 @@ get_hosts_from_file( HostFile, DefaultUsername ) ->
 
 			throw( { invalid_host_file_content, HostFile, { line, Line } } );
 
-		% Often the element is not clear (ex: ''.''):
+		% Often the element is not clear (e.g. ''.''):
 		{ error, _Reason={ Line, erl_parse,
 							[ "syntax error before: ", Elem ] } } ->
 
@@ -3644,13 +3645,13 @@ set_up_computing_nodes( BaseNodeName, HostUserList, InterNodeSeconds,
 % - C3: the user host must be further loaded as little as possible (as, if it is
 % included in the simulation, it will include the user node *and* a computing
 % node, and possibly the trace supervisor and other user applications; it may
-% also be less powerful than the computing hosts, ex: it could be the laptop of
+% also be less powerful than the computing hosts, e.g. it could be the laptop of
 % the user)
 %
 % - C4: the rest of the agents should be spread as evenly as possible on all
 % other hosts
 %
-% Note that a simulation case (ex: a test case) may need as well to interact
+% Note that a simulation case (e.g. a test case) may need as well to interact
 % directly with the data-exchanger service. Instead of replicating a possibly
 % already-existing data-exchanger local to the user node (if that node was
 % requested to be included), we will use that host-local data-exchanger if
@@ -3697,17 +3698,17 @@ dispatch_agents( NodeList, NodeNamingMode ) ->
 
 	%trace_utils:debug_fmt( "dispatch_agents: NodeList is ~p.", [ NodeList ] ),
 
-	% We usually want a short hostname (ex: 'foobar', not a FQDN like
+	% We usually want a short hostname (e.g. 'foobar', not a FQDN like
 	% 'foobar.baz.org').
 	%
 	% Returns a string:
 	UserHost = net_utils:get_naming_compliant_hostname( net_utils:localhost(),
 														NodeNamingMode ),
 
-	% The initial node list contains a list of Node@Host atoms (ex:
+	% The initial node list contains a list of Node@Host atoms (e.g.
 	% 'Data_Exchange_test-john@foobar'), we transform it into a list of
-	% { Node@Host, HostString } pairs for easier and more efficient reorderings:
-	% (ex: { 'Data_Exchange_test-john@foobar', "foobar" }).
+	% {Node@Host, HostString} pairs for easier and more efficient reorderings:
+	% (e.g. {'Data_Exchange_test-john@foobar', "foobar"}).
 	%
 	NodePairList = [ { N, node_to_host( N ) } || N <- NodeList ],
 
@@ -4454,12 +4455,12 @@ set_up_time_management( TroubleShootingMode, InteractivityMode, TickDuration,
 	% Hack to avoid that the local PID of the root time manager is the same as
 	% the ones of the child managers: as the same series of simulation processes
 	% (including the time manager) may be created on each node, their PID may be
-	% difficult to discriminate (ex: all time managers may end up as <XXX.86.0>,
-	% so a local <0.86.0> may actually mean <6919.86.0>, <6811.86.0>, etc.,
-	% additionally the first part of the PID, for a given node, depends on the
-	% node that examine it, i.e. the same PID will be displayed differently by
-	% two remote nodes, as it is actually the atom slot integer for the node
-	% name, with generally varies from a node to another.
+	% difficult to discriminate (e.g. all time managers may end up as
+	% <XXX.86.0>, so a local <0.86.0> may actually mean <6919.86.0>,
+	% <6811.86.0>, etc., additionally the first part of the PID, for a given
+	% node, depends on the node that examine it, i.e. the same PID will be
+	% displayed differently by two remote nodes, as it is actually the atom slot
+	% integer for the node name, with generally varies from a node to another.
 	%
 	% So this spawn allows the root time manager to be <*.87.0> while all child
 	% time managers remain <*.86.0>:
@@ -4755,7 +4756,7 @@ set_up_load_balancing( PlacementPolicy, SelectedNodes,
 	%   _AckAtom=load_balancer_set ),
 
 	% We must notify the time manager in charge of the load balancer that it
-	% must manage this special actor (ex: it is the only one to be created with
+	% must manage this special actor (e.g. it is the only one to be created with
 	% a non-empty agenda for bootstrapping purposes).
 	%
 	% We must also notify the root time manager of the PID of this load
@@ -5622,7 +5623,7 @@ standardise_deploy_element( { ElementPath, ElementType, Option } )
 standardise_deploy_element( { ElementPath, code, OptionList } ) ->
 
 	% We do not add ".py" next to ".beam" here as, even in the engine,
-	% duplicates (ex: __init__.py, from bindings/python/api) would be detected:
+	% duplicates (e.g. __init__.py, from bindings/python/api) would be detected:
 	%
 	StandardOpts = standardise_deploy_options( OptionList,
 								_Acc={ [], [], [ ".beam" ], [] } ),
@@ -5969,7 +5970,7 @@ rebuild_directory( Directory, State ) ->
 	% reasons, a rebuild may be triggered whereas all BEAMs are available and
 	% valid.
 
-	% This may become a problem especially if the local Erlang environment (ex:
+	% This may become a problem especially if the local Erlang environment (e.g.
 	% on a server) is different (typically older) than the build Erlang
 	% environment (typically in a cutting-edge developer machine).
 	%
@@ -6068,7 +6069,7 @@ rebuild_file( Filename, State ) ->
 
 
 
-% @doc Waits for the database event (ex: onDatabaseStarted) to be reported by
+% @doc Waits for the database event (e.g. onDatabaseStarted) to be reported by
 % all specified processes (generally deployment agents). No time-out managed
 % here.
 %

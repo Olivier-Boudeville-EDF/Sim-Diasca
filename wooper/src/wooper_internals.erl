@@ -47,7 +47,7 @@
 -type format_values() :: text_utils:format_values().
 
 
--type file_loc() :: ast_utils:file_loc().
+-type file_loc() :: ast_base:file_loc().
 
 -type ast_transforms() :: ast_transform:ast_transforms().
 
@@ -118,9 +118,9 @@ raise_usage_error( ErrorFormatString, ErrorFormatValues ) ->
 % failure and report adequately the actual error to the user.
 %
 -spec raise_usage_error( ustring(), ast_transforms(), maybe( file_loc() ) ) ->
-							   no_return();
+								no_return();
 					   ( ustring(), classname(), maybe( file_loc() ) ) ->
-							   no_return();
+								no_return();
 					   ( format_string(), format_values(), classname() ) ->
 								no_return().
 raise_usage_error( ErrorString,

@@ -37,20 +37,20 @@
 % Following convention is supposed to apply for testing: all applications
 % (i.e. the tested one and its prerequisites) are expected to have their build
 % trees (typically GIT clones) located in the same parent directory (as
-% siblings), each named as its application (ex: "myriad" root directory for the
+% siblings), each named as its application (e.g. "myriad" root directory for the
 % myriad application, not for example "Ceylan-Myriad"), so that, from the build
 % tree of a tested application, the build trees of its prerequisites can be
-% found (ex: as "../myriad").
+% found (e.g. as "../myriad").
 %
 -module(otp_utils).
 
 
 -type application_name() :: atom().
-% Name of an OTP application (ex: 'myriad').
+% Name of an OTP application (e.g. 'myriad').
 
 
--type string_application_name() :: atom().
-% Name of an OTP application as a string (ex: "myriad").
+-type string_application_name() :: ustring().
+% Name of an OTP application as a string (e.g. "myriad").
 
 
 -type any_application_name() :: application_name() | string_application_name().
@@ -70,10 +70,10 @@
 
 
 -type application_run_context() ::
-		% If using Ceylan native build/run system:
-		'as_native'
-		% If using an OTP release (hence OTP applications as well):
-	  | 'as_otp_release'.
+	% If using Ceylan native build/run system:
+	'as_native'
+	% If using an OTP release (hence OTP applications as well):
+  | 'as_otp_release'.
 % Designates how an (OTP) application is run.
 
 
@@ -92,8 +92,8 @@
 % Data specified to be used in a continue callback.
 
 
--type termination_reason() :: 'normal' | 'shutdown' | { 'shutdown', term() }
-							| term().
+-type termination_reason() ::
+	'normal' | 'shutdown' | { 'shutdown', term() } | term().
 % Denotes the reason for stopping.
 
 
@@ -107,12 +107,16 @@
 % gen_server:handle_{cast,continue,info}/2.
 
 
+-type supervisor_restart() :: % Not exported yet: supervisor:restart().
+							  any().
+
+
 -export_type([ application_name/0, string_application_name/0,
 			   any_application_name/0, restart_type/0,
 			   supervisor_pid/0, worker_pid/0,
 			   application_run_context/0, supervisor_settings/0,
 			   otp_state/0, continue_data/0, termination_reason/0,
-			   handle_return/0 ]).
+			   handle_return/0, supervisor_restart/0 ]).
 
 
 -export([ get_string_application_name/1,
@@ -226,10 +230,10 @@
 
 % About the reporting of application failures.
 %
-% When the top-level user initial process has started the applications (ex: with
-% start_application{,s}/{1,2,3}) and one of them fails, this process will
-% apparently not be notified of that crash (and by default it will not even know
-% the PID of the root supervisors involved).
+% When the top-level user initial process has started the applications
+% (e.g. with start_application{,s}/{1,2,3}) and one of them fails, this process
+% will apparently not be notified of that crash (and by default it will not even
+% know the PID of the root supervisors involved).
 %
 % While it is certainly relevant in a production context (where that process
 % shall resist application-level issues, and where separation of concerns is
@@ -316,13 +320,13 @@ prepare_for_execution( AppName, BaseDir ) ->
 % seems able to support non-active applications, and for active ones to trigger
 % by itself the right start call.
 %
-% Application information is now cached, so that base applications (ex: kernel)
+% Application information is now cached, so that base applications (e.g. kernel)
 % are not repeatedly searched, but just once.
 %
 -spec prepare_for_execution( application_name() | [ application_name() ],
 		directory_path(), [ application_name() ] ) -> [ application_name() ].
 prepare_for_execution( AppName, BaseDir, BlacklistedApps )
-											when is_atom( AppName ) ->
+			when is_atom( AppName ) ->
 	prepare_for_execution( [ AppName ], BaseDir, BlacklistedApps );
 
 prepare_for_execution( AppNames, BaseDir, BlacklistedApps )
@@ -359,16 +363,17 @@ prepare_for_execution( AppNames, BaseDir, BlacklistedApps )
 
 
 
-% Manages specified application and, recursively, all its prerequisites (direct
-% or not), if any: checks that their .app specification can be found, that they
-% are built, updates the code path accordingly and lists the active ones.
+% Manages the specified application and, recursively, all its prerequisites
+% (direct or not), if any: checks that their .app specification can be found,
+% that they are built, updates the code path accordingly and lists the active
+% ones.
 %
 % Called recursively (through prepare_for_execution/3).
 %
 % (helper)
 %
--spec prepare_for_exec( application_name(), abs_directory_path(),
-			[ application_name() ], app_table(), [ application_name() ] ) ->
+-spec prepare_for_exec( [ application_name() ], abs_directory_path(),
+			[ application_name() ], [ application_name() ], app_table() ) ->
 								{ [ application_name() ], app_table() }.
 prepare_for_exec( _AppNames=[], _AbsBaseDir, _BlacklistedApps, AccDeps,
 				  AppTable ) ->
@@ -384,47 +389,28 @@ prepare_for_exec( [ AppName | T ], AbsBaseDir, BlacklistedApps, AccDeps,
 	case lists:member( AppName, BlacklistedApps ) of
 
 		false ->
-			case get_app_info( AppName, AbsBaseDir, AppTable ) of
+			{ #app_info{ root_dir=BinAppBaseDir, spec=AppEntries },
+			  DirectAppTable } = get_app_info( AppName, AbsBaseDir, AppTable ),
 
-				undefined ->
+			% All checks already performed, ebin directory already added in the
+			% code path when generating application information (we need to
+			% include this ebin path in the VM code path so that the
+			% corresponding .app file and also the BEAM files of that
+			% application can be found by OTP when starting it).
+			%
+			DepAppNames = list_table:get_value_with_default( applications,
+				_DefNoDep=[], AppEntries ),
 
-					trace_bridge:error_fmt( "No application information found "
-						"for the '~ts' OTP application (searched in turn in "
-						"local ebin, rebar3 _checkouts or _build directory, "
-						"through any sibling applications or as a standard "
-						"application; this execution thus cannot be performed "
-						"(one may run beforehand, if relevant, "
-						"'make rebar3-compile' at the root of the ~ts source "
-						"tree for a more relevant testing).",
-						[ AppName, AbsBaseDir ] ),
+			?debug_fmt( "Preparing for the execution of application "
+				"'~ts', whose direct dependencies are: ~w.",
+				[ AppName, DepAppNames ] ),
 
-					throw( { lacking_app, no_relevant_directory_found, AppName,
-							 AbsBaseDir } );
+			{ CompleteDepApps, DepAppTable } = prepare_for_exec( DepAppNames,
+				BinAppBaseDir, BlacklistedApps, _NestedAppDeps=[],
+				DirectAppTable ),
 
-				{ #app_info{ root_dir=BinAppBaseDir, spec=AppEntries },
-				  DirectAppTable } ->
-
-					% All checks already performed, ebin directory already added
-					% in the code path when generating application information
-					% (we need to include this ebin path in the VM code path so
-					% that the corresponding .app file and also the BEAM files
-					% of that application can be found by OTP when starting it).
-					%
-					DepAppNames = list_table:get_value_with_default(
-						applications, _DefNoDep=[], AppEntries ),
-
-					?debug_fmt( "Preparing for the execution of application "
-						"'~ts', whose direct dependencies are: ~w.",
-						[ AppName, DepAppNames ] ),
-
-					{ CompleteDepApps, DepAppTable } = prepare_for_exec(
-						DepAppNames, BinAppBaseDir, BlacklistedApps,
-						_NestedAppDeps=[], DirectAppTable ),
-
-					prepare_for_exec( T, AbsBaseDir, BlacklistedApps,
-						[ AppName | CompleteDepApps ] ++ AccDeps, DepAppTable )
-
-			end;
+			prepare_for_exec( T, AbsBaseDir, BlacklistedApps,
+				[ AppName | CompleteDepApps ] ++ AccDeps, DepAppTable );
 
 		true ->
 			?debug_fmt( "Ignoring application '~ts', as it is blacklisted.",
@@ -502,7 +488,7 @@ generate_app_info( AppName, AbsBaseDir, AppTable ) ->
 				"on '~ts'.", [ AppName, ThisAppFilePath ] ),
 
 	{ AppFilePath, EBinDir, NewBaseDir } =
-		case file_utils:is_existing_file_or_link( ThisAppFilePath ) of
+			case file_utils:is_existing_file_or_link( ThisAppFilePath ) of
 
 		true ->
 			?info_fmt( "Using, for the application '~ts', the directly "
@@ -512,12 +498,12 @@ generate_app_info( AppName, AbsBaseDir, AppTable ) ->
 		% Trying location #2.1, if this application is in a local checkout:
 		false ->
 			CheckBaseDir = file_utils:join(
-							[ AbsBaseDir, "_checkouts", AppNameStr ] ),
+				[ AbsBaseDir, "_checkouts", AppNameStr ] ),
 
 			CheckLocalEBinDir = file_utils:join( CheckBaseDir, "ebin" ),
 
 			CheckLocalAppPath =
-					file_utils:join( CheckLocalEBinDir, AppFilename ),
+				file_utils:join( CheckLocalEBinDir, AppFilename ),
 
 			?debug_fmt( "[2.1] Application '~ts' not found directly "
 				"in local ebin, trying in local checkout, based on '~ts'.",
@@ -651,49 +637,9 @@ try_next_locations( AppName, AppNameStr, AppFilename, DepEBinDir, DepAppPath,
 								[ AppName, SibBuildAppPath ] ),
 							{ SibBuildAppPath, SibBuildEbinDir, SibBaseDir };
 
-						% Trying #5, i.e. as a standard OTP application:
 						false ->
-							?debug_fmt( "[5] Application '~ts' not found as a "
-								"sibling, trying as a standard OTP "
-								"application.", [ AppName ] ),
-
-							case code:lib_dir( AppName ) of
-
-								{ error, bad_name } ->
-									trace_bridge:error_fmt( "Application '~ts' "
-										"not found in any of the supported "
-										"locations.", [ AppName ] ),
-									throw( { application_not_found, AppName,
-										text_utils:ensure_string( AbsBaseDir )
-										   } );
-
-								AbsStdPath ->
-									StdEbinDir =
-										file_utils:join( AbsStdPath, "ebin" ),
-
-									StdAppPath = file_utils:join( StdEbinDir,
-																  AppFilename ),
-
-									case file_utils:is_existing_file(
-												StdAppPath ) of
-
-										true ->
-											?info_fmt( "Using, for the "
-												"application '~ts', "
-												"the OTP '~ts' file.",
-												[ AppName, StdAppPath ] ),
-
-											{ StdAppPath, StdEbinDir,
-											  AbsStdPath };
-
-										% Abnormal:
-										false ->
-											throw( { otp_app_file_not_found,
-													 StdAppPath } )
-
-									end
-
-							end
+							try_last_locations( AppName, AppFilename,
+												AbsBaseDir )
 
 					end
 
@@ -702,8 +648,55 @@ try_next_locations( AppName, AppNameStr, AppFilename, DepEBinDir, DepAppPath,
 	end.
 
 
+% Trying #5, i.e. as a standard OTP application:
+%
+% (helper)
+try_last_locations( AppName, AppFilename, AbsBaseDir ) ->
 
-% @doc Returns a string version of specified application name.
+	?debug_fmt( "[5] Application '~ts' not found as a sibling, "
+				"trying as a standard OTP application.", [ AppName ] ),
+
+	case code:lib_dir( AppName ) of
+
+		{ error, bad_name } ->
+			trace_bridge:error_fmt( "Application '~ts' not found in any of "
+				"the supported locations.", [ AppName ] ),
+			throw( { application_not_found, AppName,
+					 text_utils:ensure_string( AbsBaseDir ) } );
+
+		AbsStdPath ->
+			StdEbinDir = file_utils:join( AbsStdPath, "ebin" ),
+
+			StdAppPath = file_utils:join( StdEbinDir, AppFilename ),
+
+			case file_utils:is_existing_file(StdAppPath ) of
+
+				true ->
+					?info_fmt( "Using, for the application '~ts', "
+							   "the OTP '~ts' file.", [ AppName, StdAppPath ] ),
+
+					{ StdAppPath, StdEbinDir, AbsStdPath };
+
+				% Abnormal:
+				false ->
+					trace_bridge:error_fmt( "No application information found "
+						"for the '~ts' OTP application (searched in turn in "
+						"local ebin, rebar3 _checkouts or _build directory, "
+						"through any sibling applications or as a standard "
+						"application; this execution thus cannot be performed "
+						"(one may run beforehand, if relevant, "
+						"'make rebar3-compile' at the root of the ~ts source "
+						"tree for a more relevant testing).",
+						[ AppName, AbsBaseDir ] ),
+					throw( { otp_app_file_not_found, AppName, StdAppPath } )
+
+			end
+
+	end.
+
+
+
+% @doc Returns a string version of the specified application name.
 -spec get_string_application_name( application_name() ) ->
 										string_application_name().
 get_string_application_name( AppName ) ->
@@ -717,8 +710,8 @@ get_string_application_name( AppName ) ->
 -spec get_build_ebin_from_lib( directory_path(), string_application_name() ) ->
 									directory_path().
 get_build_ebin_from_lib( BaseDir, AppNameStr ) ->
-	file_utils:join( [ BaseDir, "_build", "default", "lib", AppNameStr,
-					   "ebin" ] ).
+	file_utils:join(
+		[ BaseDir, "_build", "default", "lib", AppNameStr, "ebin" ] ).
 
 
 % @doc Returns the ebin in 'checkouts' directory in the _build tree from
@@ -864,7 +857,7 @@ interpret_app_file( AppFilePath, AppName, EBinPath, BaseDir ) ->
 		[ { application, AppName, Entries } ] ->
 
 			ActiveInfo = list_table:get_value_with_default( mod,
-												_Def=undefined, Entries ),
+				_Def=undefined, Entries ),
 
 			% To check whether this application is compiled, we cannot rely on
 			% the 'mod' entry, which is defined only for *active* applications,
@@ -1097,7 +1090,8 @@ stop_application( _AppName=kernel ) ->
 stop_application( AppName ) ->
 
 	?info_fmt( "Stopping the '~ts' OTP application.", [ AppName ] ),
-	%trace_utils:debug_fmt( "Stopping the '~ts' application.", [ AppName ] ),
+	%trace_utils:debug_fmt( "Stopping the '~ts' OTP application.",
+	%   [ AppName ] ),
 
 	case application:stop( AppName ) of
 
@@ -1217,10 +1211,10 @@ get_child_supervisor_settings(
 % layer, based on Myriad's basic_utils.hrl), as otherwise the one that would
 % apply is the one of Myriad - not the one of the calling layer.
 %
--spec get_restart_setting( execution_target() ) -> supervisor:restart().
+-spec get_restart_setting( execution_target() ) -> supervisor_restart().
 get_restart_setting( _ExecutionTarget=development ) ->
 	% In development, failing as clearly as possible; here at least so that
-	% tests fail in case of problem (ex: if no configuration file is found):
+	% tests fail in case of problem (e.g. if no configuration file is found):
 	%
 	_NeverRestarted=temporary;
 
@@ -1272,8 +1266,9 @@ application_run_context_to_string( _AppRunContext=as_otp_release ) ->
 % under $OTPROOT/lib or on a directory referred to with environment variable
 % ERL_LIBS.
 %
-% Ex: "/home/bond/Software/Erlang/Erlang-24.2/lib/erlang/lib/mnesia-4.20.1" =
-%               otp_utils:get_application_root( mnesia ).
+% For example
+% "/home/bond/Software/Erlang/Erlang-24.2/lib/erlang/lib/mnesia-4.20.1" =
+% otp_utils:get_application_root( mnesia ).
 %
 % For this look-up, it is expected that an application named 'foobar' defined a
 % module of the same name (which is thus expected to be compiled as

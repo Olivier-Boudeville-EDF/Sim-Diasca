@@ -37,13 +37,14 @@
 
 % User-related functions.
 -export([ get_user_name/0, get_user_name_safe/0, get_user_name_string/0,
-		  get_user_id/0, get_group_id/0,
+		  get_user_id/0,
+		  get_user_info/0, get_user_info_safe/0,
 		  get_user_home_directory/0, get_user_home_directory/1,
 		  get_user_home_directory_string/0 ]).
 
 
 % Group-related functions.
--export([ get_group_name/0 ]).
+-export([ get_group_id/0, get_group_name/0, get_group_name_safe/0 ]).
 
 
 % Unicode-related support.
@@ -114,8 +115,9 @@
 		  compute_detailed_cpu_usage/2, get_cpu_usage_counters/0,
 
 		  get_disk_usage/0, get_disk_usage_string/0,
-		  get_mount_points/0,
-		  get_known_pseudo_filesystems/0, get_filesystem_info/1,
+		  get_mount_points/0, get_mount_points/1,
+		  get_known_pseudo_filesystems/0,
+		  get_filesystem_info/1, get_filesystem_info/2,
 		  filesystem_info_to_string/1,
 
 		  get_default_temporary_directory/0, get_current_directory_string/0,
@@ -134,11 +136,34 @@
 -define( library_search_path_variable, "LD_LIBRARY_PATH" ).
 
 
+% Finally not generalised as would impact too many functions as a whole:
+
+-define( trace_debug, io:format ).
+-define( trace_debug_fmt, io:format ).
+
+%-define( trace_debug, trace_utils:debug ).
+%-define( trace_debug_fmt, trace_utils:debug_fmt ).
+
+
+-define( trace_error, io:format ).
+-define( trace_error_fmt, io:format ).
+
+%-define( trace_error, trace_utils:error ).
+%-define( trace_error_fmt, trace_utils:error_fmt ).
+
+
+
+
 % Implementation notes:
 %
 % The use of text_utils (instead of io_lib) has not been generalised, as this
 % module may be a pioneer one, and thus as such should be as autonomous as
 % possible.
+
+% Piping commands (for example with '?cat "/proc/meminfo |" ?grep [...]') is a
+% problem, as it may silently ignore the failure of the first command run thanks
+% to the pipe. No real solution has been found, knowing that 'pipefail' is
+% apparently Bash-specific.
 
 
 -type os_family() :: 'unix' | 'win32'.
@@ -151,7 +176,7 @@
 				 | atom().
 % More precise categorization of an operating system.
 %
-% Generally using portable facilities (ex: file_utils) shall be preferred to
+% Generally using portable facilities (e.g. file_utils) shall be preferred to
 % matching any value of that type.
 %
 % Unix system are designated by the name returned by `uname -s', but in lower
@@ -165,7 +190,7 @@
 % Prerequisite-related section.
 
 -type package_name() :: ustring().
-% Name of a (third-party) prerequisite package (ex: "ErlPort", "jsx", etc.).
+% Name of a (third-party) prerequisite package (e.g. "ErlPort", "jsx", etc.).
 
 
 -export_type([ package_name/0, os_family/0, os_name/0, os_type/0 ]).
@@ -197,7 +222,7 @@
 
 
 -opaque cpu_usage_info() ::
-		{ integer(), integer(), integer(), integer(), integer() }.
+	{ integer(), integer(), integer(), integer(), integer() }.
 
 
 -type cpu_usage_percentages() ::
@@ -232,13 +257,13 @@
 
 -record( fs_info, {
 
-	% Device name (ex: /dev/sda5):
+	% Device name (e.g. /dev/sda5):
 	filesystem :: directory_path(),
 
-	% Mount point (ex: /boot):
+	% Mount point (e.g. /boot):
 	mount_point :: directory_path(),
 
-	% Filesystem type (ex: 'ext4'):
+	% Filesystem type (e.g. 'ext4'):
 	type :: filesystem_type(),
 
 	% Used size, in bytes:
@@ -346,8 +371,11 @@
 
 % Basic authentication information:
 
--type user_name() :: ustring().
-% For example in UNIX terms.
+-type user_name() :: nonempty_string().
+% To store (UNIX-like) user names.
+
+-type atom_user_name() :: atom().
+% To store (UNIX-like) user names.
 
 
 -type password() :: ustring().
@@ -391,7 +419,10 @@
 
 			   encoding/0, encoding_option/0, encoding_options/0,
 
-			   user_name/0, password/0, basic_credential/0, group_name/0,
+			   user_name/0, atom_user_name/0,
+			   password/0, basic_credential/0,
+			   group_name/0,
+
 			   user_id/0, group_id/0, os_pid/0 ]).
 
 
@@ -423,7 +454,7 @@
 
 
 
-% User-related functions.
+% User-related subsection.
 
 
 % @doc Returns the name of the current user, as a plain string.
@@ -443,16 +474,16 @@ get_user_name() ->
 	% Another option:
 	% case os:getenv( "USER" ) of
 
-	%	false ->
+	%   false ->
 
-	%		trace_utils:error( "The name of the user could not be "
-	%						   "obtained from the shell environment "
-	%						   "(no USER variable defined)." ),
+	%       trace_utils:error( "The name of the user could not be "
+	%           "obtained from the shell environment "
+	%           "(no USER variable defined)." ),
 
-	%		throw( user_name_not_found_in_environment );
+	%       throw( user_name_not_found_in_environment );
 
-	%	UserName ->
-	%		UserName
+	%   UserName ->
+	%       UserName
 
 	%end.
 
@@ -462,7 +493,7 @@ get_user_name() ->
 %
 % Not expected to fail.
 %
--spec get_user_name_safe() -> ustring().
+-spec get_user_name_safe() -> user_name().
 get_user_name_safe() ->
 
 	try
@@ -484,7 +515,7 @@ get_user_name_safe() ->
 %
 % Cannot crash.
 %
--spec get_user_name_string() -> ustring().
+-spec get_user_name_string() -> user_name().
 get_user_name_string() ->
 
 	try
@@ -516,19 +547,19 @@ get_user_id() ->
 
 
 
-% @doc Returns the (system) group identifier of the current user.
--spec get_group_id() -> group_id().
-get_group_id() ->
+% @doc Returns the system information regarding the current user.
+-spec get_user_info() -> { user_name(), group_name() }.
+get_user_info() ->
+	{ get_user_name(), get_group_name() }.
 
-	case run_command( ?id "-g" ) of
 
-		{ _ExitCode=0, Output } ->
-			text_utils:string_to_integer( Output );
-
-		{ ExitCode, ErrorOutput } ->
-			throw( { group_id_inquiry_failed, ExitCode, ErrorOutput } )
-
-	end.
+% @doc Returns the system information regarding the current user.
+%
+% Not expected to fail.
+%
+-spec get_user_info_safe() -> { user_name(), group_name() }.
+get_user_info_safe() ->
+	{ get_user_name_safe(), get_group_name_safe() }.
 
 
 
@@ -561,8 +592,10 @@ get_user_home_directory() ->
 
 
 
-% @doc Returns the home directory of the specified user, as a plain string.
--spec get_user_home_directory( basic_utils:user_name() ) -> directory_path().
+% @doc Returns the home directory of the specified user, as a plain string,
+% according to the most usual UNIX conventions.
+%
+-spec get_user_home_directory( user_name() ) -> directory_path().
 get_user_home_directory( Username ) ->
 	text_utils:format( "/home/~ts", [ Username ] ).
 
@@ -589,8 +622,26 @@ get_user_home_directory_string() ->
 
 
 
-% @doc Returns the name of the current group, as a plain string.
--spec get_group_name() -> ustring().
+% Group subsection.
+
+
+% @doc Returns the (system) group identifier of the current user.
+-spec get_group_id() -> group_id().
+get_group_id() ->
+
+	case run_command( ?id "-g" ) of
+
+		{ _ExitCode=0, Output } ->
+			text_utils:string_to_integer( Output );
+
+		{ ExitCode, ErrorOutput } ->
+			throw( { group_id_inquiry_failed, ExitCode, ErrorOutput } )
+
+	end.
+
+
+% @doc Returns the name of the group of the current user, as a plain string.
+-spec get_group_name() -> group_name().
 get_group_name() ->
 
 	case run_command( ?id "-gn" ) of
@@ -600,6 +651,25 @@ get_group_name() ->
 
 		{ ExitCode, ErrorOutput } ->
 			throw( { group_inquiry_failed, ExitCode, ErrorOutput } )
+
+	end.
+
+
+% @doc Returns the name of the group of the current user, as a plain string.
+%
+% Not expected to fail.
+%
+-spec get_group_name_safe() -> group_name().
+get_group_name_safe() ->
+
+	try
+
+		get_group_name()
+
+	catch
+
+		_ ->
+			"(unknown group)"
 
 	end.
 
@@ -656,14 +726,14 @@ force_unicode_support() ->
 % Lower-level services.
 
 
-% @doc Awaits the completion of an output operation (ex: io:format/2).
+% @doc Awaits the completion of an output operation (e.g. io:format/2).
 %
 % Especially useful when displaying an error message on the standard output and
 % then immediately halting the VM, in order to avoid a race condition between
 % the displaying and the halting.
 %
 % We use a relatively short waiting here, just out of safety. It may be in some
-% cases insufficient (ex: for error traces to be sent, received and stored
+% cases insufficient (e.g. for error traces to be sent, received and stored
 % *before* the VM is halted after a throw/1 that may be executed just after).
 %
 % In this case, await_output_completion/1 should be used, with a larger delay.
@@ -1094,7 +1164,7 @@ read_port( Port, Data ) ->
 			port_terminated
 
 
-		% Other messages should not be intercepted (ex: they could be in
+		% Other messages should not be intercepted (e.g. they could be in
 		% relation to other ongoing ports):
 		%
 		%Other ->
@@ -1131,7 +1201,7 @@ get_line( Prompt, GetLineScriptPath ) ->
 
 	io:format( Prompt ),
 
-	% We have to execute a real executable (ex: not a shell builtin):
+	% We have to execute a real executable (e.g. not a shell builtin):
 	Cmd = GetLineScriptPath ++ " 1>&4",
 
 	Env = get_standard_environment(),
@@ -1260,7 +1330,7 @@ monitor_port( Port, Data ) ->
 					port_close( Port ),
 
 					Output = text_utils:remove_ending_carriage_return(
-								lists:flatten( lists:reverse( Data ) ) ),
+						lists:flatten( lists:reverse( Data ) ) ),
 
 					{ ExitStatus, Output }
 
@@ -1279,7 +1349,7 @@ monitor_port( Port, Data ) ->
 
 
 
-% @doc Evaluates specified shell (ex: sh, bash, etc - not Erlang) expression,
+% @doc Evaluates specified shell (e.g. sh, bash, etc - not Erlang) expression,
 % in a standard environment.
 %
 % No return code is available with this approach, only the output of the
@@ -1291,7 +1361,7 @@ evaluate_shell_expression( Expression ) ->
 
 
 
-% @doc Evaluates specified shell (ex: sh, bash, etc - not Erlang) expression,
+% @doc Evaluates specified shell (e.g. sh, bash, etc - not Erlang) expression,
 % in specified environment.
 %
 % No return code is available with this approach, only the output of the
@@ -1661,7 +1731,7 @@ set_environment_variable( VarName, VarValue ) ->
 
 	% Hopefully a string or 'false':
 	%trace_utils:debug_fmt( "Setting environment variable '~ts' to '~ts'.",
-	%					   [ VarName, VarValue ] ),
+	%                       [ VarName, VarValue ] ),
 
 	os:putenv( VarName, VarValue ).
 
@@ -1852,8 +1922,8 @@ environment_to_string( Environment ) ->
 % @doc Returns the version information of the current Erlang interpreter
 % (actually the one of the whole environment, including the VM) being used.
 %
-% Returns a full version name (ex: "R13B04") or, if not available, a shorter one
-% (ex: "R11B").
+% Returns a full version name (e.g. "R13B04") or, if not available, a shorter
+% one (e.g. "R11B").
 %
 -spec get_interpreter_version() -> ustring().
 get_interpreter_version() ->
@@ -1866,16 +1936,16 @@ get_interpreter_version() ->
 			try list_to_integer( StringVersion ) of
 
 				V ->
-					% Ex: V=17 Newer release (ex: 17.0-rc1) do not comply to the
-					% traditional scheme, applying it for uniformity and maybe a
-					% bit of nostalgia:
+					% For example V=17 Newer release (e.g. 17.0-rc1) does not
+					% comply to the traditional scheme, applying it for
+					% uniformity and maybe a bit of nostalgia:
 					%
 					lists:flatten( io_lib:format( "R~BB", [ V ] ) )
 
 			catch
 
 				_:_ ->
-					% Ex: StringVersion="R13B04":
+					% For example StringVersion="R13B04":
 					StringVersion
 
 			end
@@ -1885,7 +1955,7 @@ get_interpreter_version() ->
 		_:_ ->
 			% Here we revert to another (older) solution:
 			{ _OTPInfos, StringVersion } = init:script_id(),
-			% Ex: StringVersion="R11B"
+			% For example StringVersion="R11B"
 			StringVersion
 
 	end.
@@ -1912,7 +1982,7 @@ get_operating_system_type() ->
 
 
 % @doc Returns the version information (as a 2 or 3-part tuple) corresponding to
-% the specified Erlang standard application (ex: for 'kernel', could return
+% the specified Erlang standard application (e.g. for 'kernel', could return
 % {3,0} or {2,16,3}).
 %
 % Throws an exception if the information could not be retrieved.
@@ -1922,7 +1992,7 @@ get_application_version( ApplicationName ) ->
 
 	case application:get_key( ApplicationName, vsn ) of
 
-		% Ex: "3.0" or "2.16.3":
+		% For example "3.0" or "2.16.3":
 		{ ok, VsnString } ->
 			basic_utils:parse_version( VsnString );
 
@@ -1969,6 +2039,16 @@ get_size_of_vm_word_string() ->
 %
 % The (flat) size of on-heap terms is incremented to account for the top term
 % word (which is kept in a register or on the stack).
+%
+% Note that the size/1 BIF is not optimized by the JIT, and its use can result
+% in worse types for Dialyzer. When one knows that the value being tested must
+% be a tuple, tuple_size/1 should always be preferred.
+%
+% When one knows that the value being tested must be a binary, byte_size/1
+% should be preferred, provided the value is not a bitstring (that are accepted
+% by byte_size/1, which rounds up size to a whole number of bytes) - so
+% is_binary/1 shall be used beforehand (note that the compiler removes redundant
+% calls to is_binary/1).
 %
 % See also [https://www.erlang.org/doc/efficiency_guide/advanced.html].
 %
@@ -2117,14 +2197,14 @@ interpret_byte_size_with_unit( Size ) ->
 % Returns a { Unit, Value } pair, in which:
 %
 % - Unit is the largest size unit that can be selected so that the specified
-% size if worth at least 1 unit of it (ex: we do not want a value 0.9, at least
+% size if worth at least 1 unit of it (e.g. we do not want a value 0.9, at least
 % 1.0 is wanted); Unit can be 'gib', for GiB (Gibibytes), 'mib', for MiB
 % (Mebibytes), 'kib' for KiB (Kibibytes), or 'byte', for Byte
 %
 % - Value is the converted byte size, in the specified returned unit, expressed
 % either as an integer (for bytes) or as a float
 %
-% Ex: 1023 (bytes) translates to {byte, 1023}, 1025 translates to {kib,
+% For example 1023 (bytes) translates to {byte, 1023}, 1025 translates to {kib,
 % 1.0009765625}.
 %
 % Note that the returned value cannot be expected to be exact (rounded),
@@ -2244,7 +2324,7 @@ get_total_physical_memory_string() ->
 	try
 
 		io_lib:format( "total physical memory: ~ts",
-					  [ interpret_byte_size( get_total_physical_memory() ) ] )
+					   [ interpret_byte_size( get_total_physical_memory() ) ] )
 
 	catch _AnyClass:Exception ->
 
@@ -2268,10 +2348,12 @@ get_total_physical_memory_on( Node ) ->
 	% First check the expected unit is returned, by pattern-matching:
 	UnitCommand = ?cat "/proc/meminfo |" ?grep "'MemTotal:' |"
 		?awk "'{print $3}'",
+
 	"kB\n" = rpc:call( Node, os, cmd, [ UnitCommand ] ),
 
 	ValueCommand = ?cat "/proc/meminfo |" ?grep "'MemTotal:' |"
 		?awk "'{print $2}'",
+
 	ValueCommandOutput = rpc:call( Node, os, cmd, [ ValueCommand ] ),
 
 	% The returned value of following command is like "12345\n", in bytes:
@@ -2315,8 +2397,8 @@ get_total_memory_used() ->
 	% We have: H = C + D + E + F, and G = A - H. D is never used (obsolete).
 	% We return here { G, A }, thus { G, G+H }.
 
-	% Avoid locale and greps 'buffers/cache:' (ex: on Debian) as well as
-	% 'buff/cache' (ex: on Arch)
+	% Avoid locale and greps 'buffers/cache:' (e.g. on Debian) as well as
+	% 'buff/cache' (e.g. on Arch)
 	%MemoryInfo = os:cmd( "LANG= free -b | grep '/cache' "
 	%                     "| awk '{print $3,$4}'" ),
 
@@ -2346,7 +2428,7 @@ get_total_memory_used() ->
 	% So finally we preferred /proc/meminfo, used first to get MemTotal:
 	%
 	TotalString = case run_command( ?cat "/proc/meminfo |"
-						?grep "'^MemTotal:' |" ?awk "'{print $2,$3}'" ) of
+			?grep "'^MemTotal:' |" ?awk "'{print $2,$3}'" ) of
 
 		{ _TotalExitCode=0, TotalOutput } ->
 			%io:format( "TotalOutput: '~p'~n", [ TotalOutput ] ),
@@ -2366,7 +2448,7 @@ get_total_memory_used() ->
 	%
 	FreeString = case run_command(
 			?cat "/proc/meminfo |" ?grep "'^MemAvailable:' |"
-						?awk "'{print $2,$3}'" )  of
+			?awk "'{print $2,$3}'" )  of
 
 		{ _AvailExitCode=0, MemAvailOutput } ->
 			%io:format( "## using MemAvailable~n" ),
@@ -2374,7 +2456,7 @@ get_total_memory_used() ->
 
 		{ _AvailExitCode, _AvailErrorOutput } ->
 
-			% In some cases (ex: Debian 6.0), no 'MemAvailable' is defined, we
+			% In some cases (e.g. Debian 6.0), no 'MemAvailable' is defined, we
 			% use 'MemFree' instead (we consider they are synonymous):
 
 			%io:format( "## using MemFree~n" ),
@@ -2420,7 +2502,6 @@ get_total_memory_used() ->
 		_ ->
 
 			[ Free, "kB" ] = string:tokens( FreeString, " " ),
-
 			text_utils:string_to_integer( Free ) * 1024
 
 	end,
@@ -2455,8 +2536,9 @@ get_ram_status_string() ->
 		end
 
 	catch _AnyClass:Exception ->
-			io_lib:format( "no RAM information could be obtained (~p)",
-						   [ Exception ] )
+
+		io_lib:format( "no RAM information could be obtained (~p)",
+					   [ Exception ] )
 
 	end.
 
@@ -2490,8 +2572,8 @@ get_swap_status() ->
 
 
 	SwapFreeString = case run_command(
-							?cat "/proc/meminfo |" ?grep "'^SwapFree:' |"
-							?awk "'{print $2,$3}'" ) of
+			?cat "/proc/meminfo |" ?grep "'^SwapFree:' |"
+			?awk "'{print $2,$3}'" ) of
 
 		{ _FreeExitCode=0, FreeOutput } ->
 			FreeOutput;
@@ -2551,7 +2633,7 @@ get_swap_status_string() ->
 get_core_count() ->
 
 	CoreString = case run_command(
-						?cat "/proc/cpuinfo |" ?grep "-c processor" ) of
+			?cat "/proc/cpuinfo |" ?grep "-c processor" ) of
 
 		{ _ExitCode=0, Output } ->
 			Output;
@@ -2699,7 +2781,7 @@ compute_detailed_cpu_usage( _StartCounters={ U1, N1, S1, I1, O1 },
 	case User + Nice + System + Idle + Other of
 
 		% Yes, this happens:
-		0.0 ->
+		0 ->
 			undefined;
 
 		Sum ->
@@ -2741,7 +2823,7 @@ get_cpu_usage_counters() ->
 
 	% grep more versatile than: '| head -n 1':
 	StatString = case run_command(
-						?cat "/proc/stat |" ?grep "'cpu '" ) of
+			?cat "/proc/stat |" ?grep "'cpu '" ) of
 
 		{ _ExitCode=0, Output } ->
 			Output;
@@ -2751,7 +2833,7 @@ get_cpu_usage_counters() ->
 
 	end,
 
-	% Ex: cpu  1331302 11435 364777 150663306 82509 249 3645 0 0
+	% For example cpu  1331302 11435 364777 150663306 82509 249 3645 0 0
 
 	% Tells the time spent in user mode, user mode with low priority (nice),
 	% system mode, and the idle task.
@@ -2783,8 +2865,7 @@ get_disk_usage() ->
 			Output;
 
 		{ ExitCode, ErrorOutput } ->
-			throw( { disk_usage_inquiry_failed, ExitCode,
-					 ErrorOutput } )
+			throw( { disk_usage_inquiry_failed, ExitCode, ErrorOutput } )
 
 	end.
 
@@ -2802,8 +2883,9 @@ get_disk_usage_string() ->
 		io_lib:format( "current disk usage:~n~ts", [ get_disk_usage() ] )
 
 	catch _AnyClass:Exception ->
-			io_lib:format( "no disk usage information could be obtained (~p)",
-						   [ Exception ] )
+
+		io_lib:format( "no disk usage information could be obtained "
+			"(cause: ~p)", [ Exception ] )
 
 	end.
 
@@ -2813,7 +2895,6 @@ get_disk_usage_string() ->
 % @doc Returns a list of the known types of pseudo-filesystems.
 -spec get_known_pseudo_filesystems() -> [ pseudo_filesystem_type() ].
 get_known_pseudo_filesystems() ->
-
 	% A list of all current filesystems can be obtained thanks to: 'df -T'.
 	[ tmpfs, devtmpfs ].
 
@@ -2822,16 +2903,29 @@ get_known_pseudo_filesystems() ->
 % @doc Returns a list of the current, local mount points (excluding the
 % pseudo-filesystems).
 %
+% This function may throw an exception.
+%
 -spec get_mount_points() -> [ directory_path() ].
 get_mount_points() ->
+	get_mount_points( _CanFail=true ).
+
+
+% @doc Returns a list of the current, local mount points (excluding the
+% pseudo-filesystems), throwing an exception on error if requested, otherwise
+% displaying an error trace and returning 'undefined'.
+%
+-spec get_mount_points( boolean() ) -> maybe( [ directory_path() ] ).
+get_mount_points( CanFail ) ->
 
 	FirstCmd = ?df "-h --local --output=target"
-		++ get_exclude_pseudo_fs_opt() ++ " |" ?grep "-v 'Mounted on'",
+		++ get_exclude_pseudo_fs_opt() ++ " 2>/dev/null |" ?grep
+		"-v 'Mounted on'",
 
 	case run_command( FirstCmd ) of
 
 		{ _FirstExitCode=0, ResAsOneString } ->
-			%io:format( "## using direct df~n" ),
+			%trace_utils:debug_fmt( "(using direct df, with '~ts')",
+			%                       [ FirstCmd ] ),
 			text_utils:split_per_element( ResAsOneString, "\n" );
 
 		{ _FirstExitCode, _FirstErrorOutput } ->
@@ -2844,12 +2938,23 @@ get_mount_points() ->
 			case run_command( SecondCmd ) of
 
 				{ _SecondExitCode=0, ResAsOneString } ->
-					%io:format( "## using legacy df~n" ),
+					%trace_utils:debug_fmt( "(using legacy df, with '~ts')",
+					%                       [ SecondCmd ] ),
 					text_utils:split_per_element( ResAsOneString, "\n" );
 
 				{ SecondExitCode, SecondErrorOutput } ->
-					throw( { mount_point_inquiry_failed, SecondExitCode,
-							 SecondErrorOutput } )
+					case CanFail of
+
+						true ->
+							throw( { mount_point_inquiry_failed, SecondExitCode,
+									 SecondErrorOutput } );
+
+						false ->
+							?trace_error_fmt( "Unable to list mount "
+								"points:~n~ts", [ SecondErrorOutput ] ),
+							undefined
+
+					end
 
 			end
 
@@ -2865,12 +2970,28 @@ get_exclude_pseudo_fs_opt() ->
 	text_utils:join( _Sep=" ", Excludes ).
 
 
-% @doc Returns information about the specified filesystem.
--spec get_filesystem_info( any_directory_path() ) -> fs_info().
-get_filesystem_info( BinFilesystemPath ) when is_binary( BinFilesystemPath ) ->
-	get_filesystem_info( text_utils:binary_to_string( BinFilesystemPath ) );
 
-get_filesystem_info( FilesystemPath ) ->
+% @doc Returns information about the specified filesystem.
+%
+% May throw an exception.
+%
+-spec get_filesystem_info( any_directory_path() ) -> fs_info().
+get_filesystem_info( AnyFilesystemPath ) ->
+	get_filesystem_info( AnyFilesystemPath, _CanFail=true ).
+
+
+% @doc Returns information about the specified filesystem, throwing an exception
+% on error if requested, otherwise displaying an error trace and returning
+% 'undefined'.
+%
+-spec get_filesystem_info( any_directory_path(), boolean() ) ->
+											maybe( fs_info() ).
+get_filesystem_info( BinFilesystemPath, CanFail )
+								when is_binary( BinFilesystemPath ) ->
+	get_filesystem_info( text_utils:binary_to_string( BinFilesystemPath ),
+						 CanFail );
+
+get_filesystem_info( FilesystemPath, CanFail ) ->
 
 	Cmd = ?df "--block-size=1K --local " ++ get_exclude_pseudo_fs_opt()
 		++ " --output=source,target,fstype,used,avail,iused,iavail '"
@@ -2886,7 +3007,7 @@ get_filesystem_info( FilesystemPath ) ->
 
 				[ Fs, Mount, Type, USize, ASize, Uinodes, Ainodes ] ->
 
-					%io:format( "## using direct df~n" ),
+					%trace_utils:debug( "(using direct df)" ),
 
 					% df outputs kiB, not kB:
 					#fs_info{
@@ -2902,24 +3023,24 @@ get_filesystem_info( FilesystemPath ) ->
 							text_utils:string_to_integer( Ainodes ) };
 
 				_ ->
-					get_filesystem_info_alternate( FilesystemPath )
+					get_filesystem_info_alternate( FilesystemPath, CanFail )
 
 			end;
 
 		{ _ExitCode, _ErrorOutput } ->
-			get_filesystem_info_alternate( FilesystemPath )
+			get_filesystem_info_alternate( FilesystemPath, CanFail )
 
 	end.
 
 
 
 % Alternate version, if the base version failed.
-get_filesystem_info_alternate( FilesystemPath ) ->
+get_filesystem_info_alternate( FilesystemPath, CanFail ) ->
 
 	% df must have failed, probably outdated and not understanding --output,
 	% defaulting to a less precise syntax:
 
-	%trace_utils:debug_fmt( "## using alternate df~n" ),
+	%trace_utils:debug( "(using alternate df)" ),
 
 	Cmd = ?df "--block-size=1K --local "
 		++ get_exclude_pseudo_fs_opt() ++ " "
@@ -2952,8 +3073,19 @@ get_filesystem_info_alternate( FilesystemPath ) ->
 			end;
 
 		{ _ExitCode, ErrorOutput } ->
-			throw( { filesystem_inquiry_failed, FilesystemPath,
-					 ErrorOutput } )
+			case CanFail of
+
+				true ->
+					throw( { filesystem_inquiry_failed, FilesystemPath,
+							 ErrorOutput } );
+
+				false ->
+					?trace_error_fmt( "Unable to obtain successfully "
+						"information about filesystem '~ts':~n~ts",
+						[ FilesystemPath, ErrorOutput ] ),
+					undefined
+
+			end
 
 	end.
 
@@ -3022,8 +3154,8 @@ get_current_directory_string() ->
 
 	catch _AnyClass:Exception ->
 
-			io_lib:format( "no information about the current directory "
-						   "could be obtained (~p)", [ Exception ] )
+		io_lib:format( "no information about the current directory "
+					   "could be obtained (~p)", [ Exception ] )
 
 	end.
 
@@ -3057,8 +3189,8 @@ get_resource_limits_string() ->
 
 	catch _AnyClass:Exception ->
 
-			io_lib:format( "no information about the current ulimit settings "
-						   "could be obtained (~p)", [ Exception ] )
+		io_lib:format( "no information about the current ulimit settings "
+					   "could be obtained (~p)", [ Exception ] )
 
 	end.
 
@@ -3073,7 +3205,6 @@ get_operating_system_description() ->
 	case file_utils:is_existing_file_or_link( OSfile ) of
 
 		true ->
-
 			case run_command( ?cat ++ OSfile ++ " |" ?grep "PRETTY_NAME |"
 					?sed "'s|^PRETTY_NAME=\"||1' |"
 					?sed "'s|\"$||1' 2>/dev/null" ) of
@@ -3167,17 +3298,11 @@ get_system_description() ->
 %
 -spec has_graphical_output() -> boolean().
 has_graphical_output() ->
-
 	% Currently relying on this X-related variable:
-	case get_environment_variable( "DISPLAY" ) of
-
-		false ->
-			false;
-
-		_ ->
-			true
-
-	end.
+	%
+	% (cannot be further simplified, 'true' never returned)
+	%
+	not( get_environment_variable( "DISPLAY" ) =:= false ).
 
 
 
@@ -3192,9 +3317,9 @@ has_graphical_output() ->
 % all (third-party) dependencies to be '~/Software/'.
 %
 % We expect to have then the name of each prerequisite specified in CamelCase;
-% ex: '~/Software/Foobar/'.
+% e.g. '~/Software/Foobar/'.
 %
-% Finally, each version thereof shall be installed in that directory (ex: a
+% Finally, each version thereof shall be installed in that directory (e.g. a
 % clone of the Foobar repository that could be named
 % '~/Software/Foobar/foobar-20170601'), and be designated by a symbolic link
 % named 'Foobar-current-install', still defined in '~/Software/Foobar'.
@@ -3239,7 +3364,7 @@ get_dependency_base_directory( PackageName="ErlPort" ) ->
 				[ get_software_base_directory(), PackageName, "erlport" ],
 
 			DefaultDir = file_utils:normalise_path(
-							file_utils:join( PathComponents ) ),
+				file_utils:join( PathComponents ) ),
 
 			case file_utils:is_existing_directory_or_link( DefaultDir ) of
 
@@ -3307,7 +3432,7 @@ get_dependency_base_directory( PackageName ) ->
 
 
 % @doc Returns the (expected, conventional) code installation directory of the
-% specified third-party, prerequisite, Erlang package (ex: "Foobar").
+% specified third-party, prerequisite, Erlang package (e.g. "Foobar").
 %
 -spec get_dependency_code_directory( package_name() ) -> directory_path().
 get_dependency_code_directory( PackageName ) ->

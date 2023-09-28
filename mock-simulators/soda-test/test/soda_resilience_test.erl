@@ -1,22 +1,23 @@
 % Copyright (C) 2008-2023 EDF R&D
-
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2008.
 
 
 % @doc Test case for <b>resilience</b> obtained from the soda benchmarking case.
@@ -60,8 +61,8 @@
 		class_StochasticThirstyCustomer:customer_pid().
 
 
--type customer_pid() :: deterministic_customer_pid()
-					  | stochastic_customer_pid().
+-type customer_pid() ::
+		deterministic_customer_pid() | stochastic_customer_pid().
 
 
 % @doc Returns the main settings to choose the size of this test.
@@ -113,7 +114,7 @@ create_vending_machines( Count, Acc ) ->
 	% On average, a machine will hold 200 cans initially:
 	InitialCanCount = 120
 		+ class_RandomManager:get_positive_integer_gaussian_value(
-							_Mu=80, _Sigma=5.0 ),
+			_Mu=80, _Sigma=5.0 ),
 
 	% Any can of this machine will cost anything between 1 euro and 6 euros
 	% (bounds included):
@@ -121,7 +122,7 @@ create_vending_machines( Count, Acc ) ->
 	CanCost = float( class_RandomManager:get_uniform_value( 6 ) ),
 
 	SVMPid = class_Actor:create_initial_actor( class_SodaVendingMachine,
-					[ MachineName, InitialCanCount, CanCost ] ),
+		[ MachineName, InitialCanCount, CanCost ] ),
 
 	create_vending_machines( Count-1, [ SVMPid | Acc ] ).
 
@@ -167,18 +168,18 @@ create_deterministic_customer( VendingMachines, CustomerCount ) ->
 									  [ CustomerCount ] ),
 
 	ElectedMachineIndex = class_RandomManager:get_uniform_value(
-							length( VendingMachines ) ),
+		length( VendingMachines ) ),
 
 	ElectedMachine = list_utils:get_element_at( VendingMachines,
 												ElectedMachineIndex ),
 
-	RepletionDuration = 250 + round( class_RandomManager:get_exponential_value(
-										_Lamba=0.05 ) ),
+	RepletionDuration = 250
+		+ round( class_RandomManager:get_exponential_1p_value( _Lamba=0.05 ) ),
 
 	InitialBudget = 15.0 + class_RandomManager:get_uniform_value( 200 ),
 
 	class_Actor:create_initial_actor( class_DeterministicThirstyCustomer,
-	  [ CustomerName, ElectedMachine, RepletionDuration, InitialBudget ] ).
+		[ CustomerName, ElectedMachine, RepletionDuration, InitialBudget ] ).
 
 
 
@@ -198,14 +199,14 @@ create_stochastic_customer( VendingMachines, CustomerCount ) ->
 												ElectedMachineIndex ),
 
 	MaxDuration = 250 + class_RandomManager:get_positive_integer_gaussian_value(
-							 _Mu=5, _Sigma=1.0 ),
+		_Mu=5, _Sigma=1.0 ),
 
 	RepletionDuration = { uniform, MaxDuration },
 
 	InitialBudget = 10.0 + class_RandomManager:get_uniform_value( 200 ),
 
 	class_Actor:create_initial_actor( class_StochasticThirstyCustomer,
-		  [ CustomerName, ElectedMachine, RepletionDuration, InitialBudget ] ).
+		[ CustomerName, ElectedMachine, RepletionDuration, InitialBudget ] ).
 
 
 
@@ -224,17 +225,13 @@ run( Scale ) ->
 
 	% Use default simulation settings (50Hz, batch reproducible):
 	SimulationSettings = #simulation_settings{
-							simulation_name="Soda Resilience Test",
-							result_specification=no_output },
+		simulation_name="Soda Resilience Test",
+		result_specification=no_output },
 
 	HostCandidatesFile = "sim-diasca-host-candidates.txt",
 
-	case file_utils:is_existing_file( HostCandidatesFile ) of
-
-		true ->
-			ok;
-
-		false ->
+	file_utils:is_existing_file( HostCandidatesFile ) orelse
+		begin
 			?notify_warning( "No host specification file found, "
 				"hence this resilience test would not be "
 				"able to run, stopping it." ),
@@ -245,7 +242,7 @@ run( Scale ) ->
 
 			exit( 0 )
 
-	end,
+		end,
 
 	DeploymentSettings = #deployment_settings{
 

@@ -491,7 +491,7 @@ freeze_instances( InstancePids, TargetVersion, MaybeExtraData ) ->
 % lingering on the old code shall be killed, or if the update shall just be
 % considered as having failed.
 %
-% The first soft-purge will succeed even if an instance (ex: agent C in
+% The first soft-purge will succeed even if an instance (e.g. agent C in
 % class_Upgradable_test) was not updated, yet the next module reloading will
 % fail, as the class will *not* be updated. If ignoring that failure, the old
 % code will attempt to operate on newer instance states, which of course should
@@ -555,10 +555,11 @@ request_instances_to_update( Instances ) ->
 % instance-specific state changes.
 %
 % Sends back to the caller first a freeze_notification() message, then, once
-% requested to update and having attempted to do so, a update_outcome() message.
+% requested to update and having attempted to do so, an update_outcome()
+% message.
 %
 -spec manage_version_change( any_version(), extra_data(), pid(),
-							 wooper:state() ) -> wooper:state().
+							 wooper:state() ) -> 'deleted'. % no_return().
 manage_version_change( TargetVersion, MaybeExtraData, CallerPid, State ) ->
 
 	ActualClassMod = State#state_holder.actual_class,

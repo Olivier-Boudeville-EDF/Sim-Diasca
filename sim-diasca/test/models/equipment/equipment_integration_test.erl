@@ -1,26 +1,27 @@
 % Copyright (C) 2008-2023 EDF R&D
-
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2008.
 
 
-% @doc Integration tests for the interaction between the time manager, an
-% equipment and failure and repair models.
+% @doc Integration tests for the interaction between <b>an equipment and failure
+% and repair models</b>.
 %
 % See class_TimeManager.erl, class_Equipment.erl, class_FailureModel.erl,
 % class_RepairModel.erl, class_ExponentialFailureModel.erl,
@@ -34,14 +35,15 @@
 
 
 
-% @doc Creates a series of Count equipments, named accordingly, stopping at 100.
+% @doc Creates a series of Count equipments, named accordingly, stopping at tick
+% offsets starting from 100.
 %
 % Returns a list of the corresponding PIDs.
 %
-createEquipment( _Count=0, _FailureModelPid, _RepairModelPid ) ->
+create_equipments( _Count=0, _FailureModelPid, _RepairModelPid ) ->
 	[];
 
-createEquipment( Count, FailureModelPid, RepairModelPid ) ->
+create_equipments( Count, FailureModelPid, RepairModelPid ) ->
 
 	ActorName = text_utils:format( "Test-Equipment-~B", [ Count ] ),
 
@@ -49,7 +51,7 @@ createEquipment( Count, FailureModelPid, RepairModelPid ) ->
 		[ ActorName, _StopTick=100+Count, FailureModelPid, RepairModelPid ] ),
 
 	[ NewActorPid
-		| createEquipment( Count-1, FailureModelPid, RepairModelPid ) ].
+		| create_equipments( Count-1, FailureModelPid, RepairModelPid ) ].
 
 
 
@@ -66,12 +68,12 @@ run() ->
 	% Use default simulation settings (50Hz, batch reproducible):
 	SimulationSettings = #simulation_settings{
 
-	  simulation_name="Sim-Diasca Equipment Integration Test"
+		simulation_name="Sim-Diasca Equipment Integration Test"
 
-	  % We leave it to the default specification (all_outputs):
-	  % result_specification =
-	  %   [ { targeted_patterns, [ {".*", [data_and_rendering]} ] },
-	  %     { blacklisted_patterns, [ "^Second" ] } ]
+		% We leave it to the default specification (all_outputs):
+		% result_specification =
+		%   [ { targeted_patterns, [ {".*", [data_and_rendering]} ] },
+		%     { blacklisted_patterns, [ "^Second" ] } ]
 
 	},
 
@@ -79,13 +81,14 @@ run() ->
 	%
 	% (see the sim-diasca-host-candidates-sample.txt example in the
 	% sim-diasca/conf directory)
+	%
 	DeploymentSettings = #deployment_settings{},
 
 	% Default load balancing settings (round-robin placement heuristic):
 	LoadBalancingSettings = #load_balancing_settings{},
 
 	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-									DeploymentSettings, LoadBalancingSettings ),
+		DeploymentSettings, LoadBalancingSettings ),
 
 
 	?test_info( "Creating an exponential failure model." ),
@@ -96,22 +99,24 @@ run() ->
 
 	?test_info( "Creating a gaussian failure model." ),
 
-	% Parameters are {MTTFday,MTTFhour,MTTFminute,MTTFsecond},MTTFStdDeviation:
+	% Parameters are {MTTFday, MTTFhour, MTTFminute, MTTFsecond},
+	% MTTFStdDeviation:
+	%
 	MyGaussianFailureModel = class_Actor:create_initial_actor(
-								class_GaussianFailureModel, [ {0,0,0,3}, 3 ] ),
+		class_GaussianFailureModel, [ {0,0,0,3}, 3 ] ),
 
 
 	?test_info( "Creating a uniform repair model." ),
 
-	% Parameters are MaxTTRday,MaxTTRhour,MaxTTRminute,MaxTTRsecond:
+	% Parameters are MaxTTRday, MaxTTRhour, MaxTTRminute, MaxTTRsecond:
 	MyUniformRepairModel = class_Actor:create_initial_actor(
-							 class_UniformRepairModel, [ {0,0,0,5} ] ),
+		class_UniformRepairModel, [ {0,0,0,5} ] ),
 
 	?test_info( "Creating a gaussian repair model." ),
 
-	% Parameters are {MTTRday,MTTRhour,MTTRminute,MTTRsecond},MTTFStdDeviation:
+	% Parameters are {MTTRday,MTTRhour,MTTRminute,MTTRsecond}, MTTFStdDeviation:
 	MyGaussianRepairModel = class_Actor:create_initial_actor(
-								class_GaussianRepairModel, [ {0,0,0,10}, 2 ] ),
+		class_GaussianRepairModel, [ {0,0,0,10}, 2 ] ),
 
 
 
@@ -179,8 +184,8 @@ run() ->
 	EquimentCount = 10,
 	%EquimentCount = 5000,
 
-	Equipments = createEquipment( EquimentCount, MyGaussianFailureModel,
-								  MyUniformRepairModel ),
+	Equipments = create_equipments( EquimentCount, MyGaussianFailureModel,
+									MyUniformRepairModel ),
 
 	?test_notice_fmt( "Created equipments: ~p.", [ Equipments ] ),
 

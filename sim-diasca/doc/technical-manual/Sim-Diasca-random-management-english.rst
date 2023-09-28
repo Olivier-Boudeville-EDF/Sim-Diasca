@@ -8,12 +8,11 @@ Sim-Diasca Management of Probabilistic Laws
 Principles
 ==========
 
-Quite often models rely on the use of stochastic variables.
+Quite often models rely on the use of stochastic variables, i.e. variables from which values can be drawn according to their associated `Probability Density Function <https://en.wikipedia.org/wiki/Probability_density_function>`_.
 
 Such variables - respecting a given probabilistic law - are very useful to model the behaviours of simulation actors.
 
-For example, in terms of reliability, the approach is generally to define per-equipment average constants like the *Mean Time To Failure* (MTTF) and the *Mean Time To Repair* [#]_ (MTTR), and to express reliability models thanks to stochastic laws parameterised by these constants (in that case: exponential and Gaussian laws, respectively).
-
+For example, in terms of reliability, an approach may be to define per-equipment average constants like the *Mean Time To Failure* (MTTF) and the *Mean Time To Repair* [#]_ (MTTR), and to express reliability models thanks to stochastic laws parameterised by these constants (for the previous example, these would be two exponential laws).
 
 .. [#] MTTR is also known as *Mean Time To Recovery*.
 
@@ -24,7 +23,7 @@ For example, when wanting to simulate a wide range of different low-voltage mesh
 
 - load a set of externally-defined descriptions of real meshes coming from the field (should such descriptions be available, accurate and numerous enough)
 
-- or, more easily, one can *generate* these different meshes according to some probabilistic rules, which would give, for example, the number of supply points of a given mesh, depending on its profile (ex: rural, urban, etc.), so that the pool of generated meshes follows the real-life statistics
+- or, more easily, one can *generate* these different meshes according to some probabilistic rules, which would give, for example, the number of supply points of a given mesh, depending on its profile (e.g. rural, urban, etc.), so that the pool of generated meshes follows the real-life statistics
 
 
 The objective here is therefore to provide model developers with all the facilities needed to easily specify and implement stochastic models, in full compliance with the aforementioned simulation properties. This involves a little more than that:
@@ -38,9 +37,11 @@ The objective here is therefore to provide model developers with all the facilit
 Built-in Random Distributions
 =============================
 
-Although any probabilistic distribution (i.e. probability density) can be defined and added to the framework, Sim-Diasca provides some built-in distributions, listed below, that are among the most common.
+Although any probabilistic distribution (i.e. probability density) may be defined and added to the framework, Sim-Diasca provides some built-in distributions, listed below, that are among the most common, notably in the domain of reliability studies.
 
-They are proposed by the ``RandomManager``, a specific technical component helping to manage stochastic variables in the context of a distributed simulation, notably so that causality and reproducibility are preserved.
+In technical terms, they are defined in Myriad's `random_utils <https://github.com/Olivier-Boudeville/Ceylan-Myriad/blob/master/src/utils/random_utils.erl>`_, and used to be gathered in the ``RandomManager``; nowadays using one's PDF is considerably simpler, as any actor can directly define any number of random laws and simply draw samples from them. Alternatively, a model may derive from the ``StochasticActor`` class in order to more conveniently define and access to its random laws.
+
+.. a specific technical component helping to manage stochastic variables in the context of a distributed simulation, notably so that causality and reproducibility are preserved.
 
 
 Uniform Law
@@ -83,6 +84,21 @@ This results in the following curve:
 :raw-latex:`\includegraphics[scale=0.6]{RandomManager-Gaussian_probe.png}`
 
 The Sim-Diasca white noise generator is used to generate this Gaussian law as well.
+
+
+
+Extra Reliability-Oriented Laws
+-------------------------------
+
+A total of about 20 random laws are supported (uniform, exponential, gaussian, Gamma, Weibull, Gumbell, etc.; this includes `all distributions defined from here <https://reliability.readthedocs.io/en/latest/API/Distributions.html>`_), some with a few variations (with integer samples rather than floating-point ones, yiedling only positive values, etc.), each defined based on a set of parameters.
+
+Even if some laws (uniform, exponential, gaussian) may be obtained by a direct use of the per-actor embedded random generator, most are computed through `inverse transform sampling <https://en.wikipedia.org/wiki/Inverse_transform_sampling>`_ (precisely the `alias method <https://en.wikipedia.org/wiki/Alias_method>`_, once the PDF has been discretised).
+
+These laws are typically considered by the Python `Reliability <https://reliability.readthedocs.io>`_ library as candidate blueprints that may fit actual data: such libraries will attempt to determine the best choice in terms of function and associated parameters to match as closely as possible the input data.
+
+.. Note::
+
+  Another option, should the history/feedback be deep enough, would be, instead of fitting it and discretising the obtained function, to use that feedback directly as the PDF from which samples are to be drawn.
 
 
 
@@ -198,12 +214,12 @@ Randomness Pitfalls
 
 All model instances are automatically correctly seeded, so all probabilistic laws can be readily used from them with no effort.
 
-However, in some cases (typically for initialisation purposes, in the simulation case) it may be useful to rely on basic processes, WOOPER or not (i.e. not actors), and some of them might have to be stochastic (ex: when generating a given road network following specific constraints). **These helper processes should have their random source explicitly seeded** (using ``random_utils:start_random_source/{1,3}`` for that), otherwise a non-constant seed will be assigned to each of them, and it will break reproducibility.
+However, in some cases (typically for initialisation purposes, in the simulation case) it may be useful to rely on basic processes, WOOPER or not (i.e. not actors), and some of them might have to be stochastic (e.g. when generating a given road network following specific constraints). **These helper processes should have their random source explicitly seeded** (using ``random_utils:start_random_source/{1,3}`` for that), otherwise a non-constant seed will be assigned to each of them, and it will break reproducibility.
 
-Another potential cause of issue is the change of a random source: if not explicitly seeded, some of them will default on a constant seed (ex: ``random``) while others not (ex: ``rand``, the current default source).
+Another potential cause of issue is the change of a random source: if not explicitly seeded, some of them will default on a constant seed (e.g. ``random``) while others not (e.g. ``rand``, the current default source).
 
 As a result, **all non-actor processes having to generate, directly or not, random values shall be explicitly seeded**, typically thanks to:
 
 .. code:: erlang
 
-  random_utils:start_random_source( default_seed )
+ random_utils:start_random_source( default_seed )

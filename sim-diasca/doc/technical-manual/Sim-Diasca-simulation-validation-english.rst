@@ -26,6 +26,6 @@ Therefore, before using it to learn new facts, one must validate it adequately.
 Validation can be done thanks to multiple non-exclusive approaches, mostly based on the produced results:
 
 - having field experts review virtual experiments about known situations
-- computing coarse orders of magnitude with other approaches (ex: spreadsheet-based estimations not involving time aspects)
+- computing coarse orders of magnitude with other approaches (e.g. spreadsheet-based estimations not involving time aspects)
 - checking the results against an actual (in real-life) test bed, provided that early prototypes are available
-- comparing a representative set of outputs to the one produced by a reference simulator (ex: validating the telecom aspects of a business simulation against an industrial-grade telecom-specific simulator)
+- comparing a representative set of outputs to the one produced by a reference simulator (e.g. validating the telecom aspects of a business simulation against an industrial-grade telecom-specific simulator)

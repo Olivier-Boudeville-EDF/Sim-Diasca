@@ -27,11 +27,12 @@
 
 
 % @doc Gathering of facilities for the management of any kind of <b>data
-% resources</b>, typically a content (ex: image, sound) read from file, or
+% resources</b>, typically a content (e.g. image, sound) read from file, or
 % generated as a term, and to be stored in a suitable <b>resource
 % referential</b>, possibly made available thanks to a <b>resource server</b>.
 %
-% See also the environment module for the caching of application environments.
+% See also the (unrelated) environment module for the caching of application
+% environments.
 %
 -module(resource).
 
@@ -51,7 +52,7 @@
 % resource server allows to share resources between processes. Thanks to the
 % sharing of (large-enough) binaries, this operation makes sense.
 %
-% The API exposed by this module (ex: get/2) can be used for any resource
+% The API exposed by this module (e.g. get/2) can be used for any resource
 % holder, referential or server. In this last case, one may also directly
 % perform the message sending and retrieving in order to favor process
 % interleaving.
@@ -64,7 +65,7 @@
 -type resource_file_id() :: bin_file_path().
 % An identifier of a file resource, that is a resource that can be read directly
 % from a filesystem, as a path either absolute or relative to an (implicit)
-% resource root directory. Ex: `<<"images/hello.png">>'.
+% resource root directory. For example: `<<"images/hello.png">>'.
 
 
 -type resource_file_id_string() :: file_path().
@@ -80,7 +81,7 @@
 % A logical, user-introduced resource identifier (e.g. 'my_splash_content'),
 % which does not correspond (at least directly) to a resource that can be read
 % directly from a filesystem; it is thus opaque, explicitly registered by the
-% user, and refer to any term (ex: a generated bitmap).
+% user, and refer to any term (e.g. a generated bitmap).
 %
 % Using a symbol (an atom) so that it cannot be mixed up with an actual path.
 

@@ -1,22 +1,23 @@
 % Copyright (C) 2016-2023 EDF R&D
-
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2012.
 
 
 % @doc Example of transportation-related <b>dataflow unit</b>.
@@ -30,8 +31,6 @@
 
 % Determines what are the direct mother classes of this class (if any):
 -define( superclasses, [ class_DataflowProcessingUnit ] ).
-
-
 
 
 
@@ -276,10 +275,10 @@ activate( State ) ->
 	% Updating correspondingly the relevant output ports:
 
 	EnergyValue = class_Dataflow:create_channel_value( EnergyNeeded,
-						[ ?energy_demand_semantics ], "kW.h", "float" ),
+		[ ?energy_demand_semantics ], "kW.h", "float" ),
 
 	PollutionValue = class_Dataflow:create_channel_value( PollutionExhausted,
-						[ ?pollution_emission_semantics ], "g.cm^-3", "float" ),
+		[ ?pollution_emission_semantics ], "g.cm^-3", "float" ),
 
 	SetState = class_DataflowBlock:set_output_port_values( [
 		{ "energy_needed", EnergyValue },
@@ -326,29 +325,37 @@ compute_transportation_metrics( AdultCount, ChildCount, AverageJourney,
 
 
 
-% @doc Computes the energy needed for specified transportation.
+% @doc Computes the energy needed for the specified transportation.
 %
 % (helper)
 %
 -spec compute_energy_needed( adult_count(), child_count(), average_journey(),
 		 area_type(), math_utils:probability() ) -> energy_demand().
 compute_energy_needed( AdultCount, ChildCount, AverageJourney, _AreaType=rural,
-					   _VehicleSharingProbability=0.0 ) ->
-	( AdultCount + ChildCount ) * 1.12 * AverageJourney;
+					   VehicleSharingProbability ) ->
+	case math_utils:is_null( VehicleSharingProbability ) of
+
+		true ->
+			( AdultCount + ChildCount ) * 1.12 * AverageJourney;
+
+		false ->
+			( 1.4 * AdultCount + 1.2 * ChildCount ) * AverageJourney /
+				( VehicleSharingProbability * ( AdultCount + ChildCount + 2 ) )
+
+	end;
 
 compute_energy_needed( AdultCount, ChildCount, AverageJourney, _AreaType=urban,
-					   _VehicleSharingProbability=0.0 ) ->
-	( AdultCount + ChildCount ) * 0.7 * AverageJourney;
-
-compute_energy_needed( AdultCount, ChildCount, AverageJourney, _AreaType=rural,
 					   VehicleSharingProbability ) ->
-	( 1.4 * AdultCount + 1.2 * ChildCount ) * AverageJourney /
-		( VehicleSharingProbability * ( AdultCount + ChildCount + 2 ) );
+	case math_utils:is_null( VehicleSharingProbability ) of
 
-compute_energy_needed( AdultCount, ChildCount, AverageJourney, _AreaType=urban,
-					   VehicleSharingProbability ) ->
-	0.65 * compute_energy_needed( AdultCount, ChildCount, AverageJourney, rural,
-								  VehicleSharingProbability ).
+		true ->
+			( AdultCount + ChildCount ) * 0.7 * AverageJourney;
+
+		false ->
+			0.65 * compute_energy_needed( AdultCount, ChildCount, 
+				AverageJourney, rural, VehicleSharingProbability )
+
+	end.
 
 
 

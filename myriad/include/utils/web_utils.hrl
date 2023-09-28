@@ -23,6 +23,7 @@
 % <http://www.mozilla.org/MPL/>.
 %
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
+% Creation date: 2015.
 
 
 % Information regarding an instance hosted by the Microsoft Azure cloud
@@ -51,14 +52,14 @@
 %
 -record( url_info, {
 
-	% Protocol (scheme) of the URL (ex: 'https'):
+	% Protocol (scheme) of the URL (e.g. 'https'):
 	protocol = 'http' :: web_utils:protocol_type(),
 
-	% Host of the server (ex: 'www.foo.org'):
+	% Host of the server (e.g. 'www.foo.org'):
 	host_identifier :: net_utils:host_identifier(),
 
-	% Ex: 8081; possibly undefined.
+	% For example 8081; possibly undefined.
 	port = 80 :: maybe( net_utils:net_port() ),
 
-	% Ex: 'access/login'.
+	% For example 'access/login'.
 	path :: web_utils:path() } ).

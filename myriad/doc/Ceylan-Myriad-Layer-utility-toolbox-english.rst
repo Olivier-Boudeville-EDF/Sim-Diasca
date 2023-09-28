@@ -24,7 +24,7 @@ These helpers (code and typing information) are thematically aggregated in modul
 - services to manage the **execution of other programs** (``executable_utils.erl``), to:
 
   - locate said executables
-  - to execute functional services (ex: display a PDF) regardless of the actual executable involved
+  - to execute functional services (e.g. display a PDF) regardless of the actual executable involved
 - a few **test-related facilities**, in ``test_facilities.erl``
 - services to handle more easily the (UNIX) shells and also the command-line arguments (a bit like ``getopt``), regardless of the interpreter or escript context (``shell_utils.erl``)
 

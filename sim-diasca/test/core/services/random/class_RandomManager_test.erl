@@ -1,22 +1,23 @@
 % Copyright (C) 2008-2023 EDF R&D
-
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
+% Creation date: 2008.
 
 
 % @doc Overall unit tests for the <b>RandomManager class</b> implementation.
@@ -107,11 +108,11 @@ draw_exponential_values( Count, Table, Lambda, RandomManagerPid ) ->
 	% Wanting a random value in ]1, ?table_span]:
 	receive
 
-		{ wooper_result, { positive_integer_exponential_value, Value } }
+		{ wooper_result, { positive_integer_exponential_1p_value, Value } }
 				when Value > ?table_span orelse Value =< 0 ->
 			draw_exponential_values( Count, Table, Lambda, RandomManagerPid );
 
-		{ wooper_result, { positive_integer_exponential_value, Value } } ->
+		{ wooper_result, { positive_integer_exponential_1p_value, Value } } ->
 			NewCount = element( Value, Table ) + 1,
 			draw_exponential_values( Count-1,
 				setelement( Value, Table, NewCount ), Lambda, RandomManagerPid )

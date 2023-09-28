@@ -85,19 +85,19 @@
 %
 % For each distribution law, following variations are available:
 %
-% - a simple non-synchronized method (ex: getUniformValue/2), returning one
+% - a simple non-synchronized method (i.e. getUniformValue/2), returning one
 % value to the caller PID (not necessarily an actor)
 %
-% - a simple synchronized method (ex: getUniformValue/3), returning one value to
-% the caller actor
+% - a simple synchronized method (i.e. getUniformValue/3), returning one value
+% to the caller actor
 %
-% - a more complex synchronized method (ex: getUniformValues/3) [note the final
+% - a more complex synchronized method (i.e. getUniformValues/3) [note the final
 % 's'), returning a series of values and an identifier to the caller actor so
 % that the caller is able to track multiple distributions simulatenously
 %
 % The last two cases use actor oneways, they send their answer through a oneway
 % actor call to the caller actor, calling corresponding set*Value/ set*Values
-% actor method (ex: setUniformValue).
+% actor method (i.e. setUniformValue).
 %
 % The uniform law can be based either on the random module (random:uniform/1) or
 % on the crypto module (crypto:rand_uniform/2). The two forms yield different
@@ -109,7 +109,7 @@
 % Exponential and Gaussian laws generate by default floating-point numbers.
 %
 % For convenience, counterparts returning positive integer values have been
-% defined (ex: getGaussianValue/getPositiveIntegerGaussianValue).
+% defined (i.e. getGaussianValue/getPositiveIntegerGaussianValue).
 
 
 % Where a random manager should be registered.
@@ -157,7 +157,7 @@ construct( State, SeedInformations, IsPrivate ) ->
 
 	% First the direct mother classes:
 	TraceState = class_EngineBaseObject:construct( State,
-										?trace_categorize("RandomManager") ),
+		?trace_categorize("RandomManager") ),
 
 	class_InstanceTracker:register_agent( State ),
 
@@ -238,8 +238,9 @@ destruct( State ) ->
 % All these functions are doubled, to support the request of one random value or
 % a given number of values.
 %
-% Finally, distributions that may return floating-point values (ex: exponential,
-% Gaussian) have also versions that return positive integer values.
+% Finally, distributions that may return floating-point values
+% (i.e. exponential, Gaussian) have also versions that return positive integer
+% values.
 
 
 
@@ -272,7 +273,7 @@ one_of( ListOfThings ) ->
 % state in the process dictionary.
 %
 -spec getUniformValue( wooper:state(), integer(), integer() ) ->
-					const_request_return( { 'uniform_value', integer() } ).
+				const_request_return( { 'uniform_value', integer() } ).
 getUniformValue( State, Nmin, Nmax ) ->
 
 	Value = random_utils:get_uniform_value( Nmin, Nmax ),
@@ -396,7 +397,7 @@ get_uniform_floating_point_value( Nmin, Nmax ) ->
 				const_request_return( { 'exponential_value', float() } ).
 getExponentialValue( State, Lambda ) ->
 
-	Value = random_utils:get_exponential_value( Lambda ),
+	Value = random_utils:get_exponential_1p_value( Lambda ),
 
 	%?debug_fmt( "Returning exponential value ~w.", [ Value ] ),
 
@@ -409,10 +410,9 @@ getExponentialValue( State, Lambda ) ->
 %
 % See the random_utils module for further details.
 %
--spec get_exponential_value( rate() ) ->
-									static_return( non_neg_integer() ).
-get_exponential_value( Lambda ) ->
-	Value = random_utils:get_exponential_value( Lambda ),
+-spec get_exponential_1p_value( rate() ) -> static_return( float() ).
+get_exponential_1p_value( Lambda ) ->
+	Value = random_utils:get_exponential_1p_value( Lambda ),
 	wooper:return_static( Value ).
 
 
@@ -423,17 +423,17 @@ get_exponential_value( Lambda ) ->
 % See the random_utils module for further details.
 %
 -spec getPositiveIntegerExponentialValue( wooper:state(), rate() ) ->
-	const_request_return( { 'positive_integer_exponential_value',
-							non_neg_integer() } ).
+	const_request_return(
+		{ 'positive_integer_exponential_1p_value', non_neg_integer() } ).
 getPositiveIntegerExponentialValue( State, Lambda ) ->
 
-	Value = random_utils:get_positive_integer_exponential_value( Lambda ),
+	Value = random_utils:get_positive_integer_exponential_1p_value( Lambda ),
 
 	%?debug_fmt( "Returning positive integer exponential value ~w.",
 	%            [ Value ] ),
 
 	wooper:const_return_result(
-		{ positive_integer_exponential_value, Value } ).
+		{ positive_integer_exponential_1p_value, Value } ).
 
 
 
@@ -442,10 +442,10 @@ getPositiveIntegerExponentialValue( State, Lambda ) ->
 %
 % See the random_utils module for further details.
 %
--spec get_positive_integer_exponential_value( rate() ) ->
+-spec get_positive_integer_exponential_1p_value( rate() ) ->
 									static_return( non_neg_integer() ).
-get_positive_integer_exponential_value( Lambda ) ->
-	Value = random_utils:get_positive_integer_exponential_value( Lambda ),
+get_positive_integer_exponential_1p_value( Lambda ) ->
+	Value = random_utils:get_positive_integer_exponential_1p_value( Lambda ),
 	wooper:return_static( Value ).
 
 
@@ -455,10 +455,10 @@ get_positive_integer_exponential_value( Lambda ) ->
 %
 % See the random_utils module for further details.
 %
--spec get_exponential_values( rate(), count() ) ->
-											static_return( [ float() ] ).
-get_exponential_values( Lambda, Count ) ->
-	V = random_utils:get_exponential_values( Lambda, Count ),
+-spec get_exponential_1p_values( rate(), count() ) ->
+									static_return( [ float() ] ).
+get_exponential_1p_values( Lambda, Count ) ->
+	V = random_utils:get_exponential_1p_values( Lambda, Count ),
 	wooper:return_static( V ).
 
 
@@ -466,10 +466,10 @@ get_exponential_values( Lambda, Count ) ->
 % @doc Returns a list of Count (positive) integer exponential values according
 % to the specified Lambda rate parameter.
 %
--spec get_positive_integer_exponential_values( rate(), count() ) ->
-										static_return( [ pos_integer() ] ).
-get_positive_integer_exponential_values( Lambda, Count ) ->
-	V = random_utils:generate_positive_integer_exponential_list( Lambda,
+-spec get_positive_integer_exponential_1p_values( rate(), count() ) ->
+									static_return( [ pos_integer() ] ).
+get_positive_integer_exponential_1p_values( Lambda, Count ) ->
+	V = random_utils:get_positive_integer_exponential_1p_values( Lambda,
 																 Count ),
 	wooper:return_static( V ).
 
@@ -562,7 +562,7 @@ getPositiveIntegerGaussianValue( State, Mu, Sigma ) ->
 % they are non-negative.
 %
 -spec get_positive_integer_gaussian_value( mean(), standard_deviation() ) ->
-												static_return( pos_integer() ).
+									static_return( pos_integer() ).
 get_positive_integer_gaussian_value( Mu, Sigma ) ->
 	V = random_utils:get_positive_integer_gaussian_value( Mu, Sigma ),
 	wooper:return_static( V ).
@@ -631,7 +631,7 @@ getManager() ->
 
 	% Waits gracefully for the random manager to exist:
 	ManagerPid = naming_utils:wait_for_global_registration_of(
-					?random_manager_name ),
+		?random_manager_name ),
 
 	wooper:return_static( ManagerPid ).
 

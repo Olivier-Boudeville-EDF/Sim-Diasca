@@ -287,8 +287,8 @@ is_convex( [ V={X,Y} | T ], _Previous={Xp,Yp}, Sign ) ->
 -spec set_edge_color( color(), polygon() ) -> polygon().
 set_edge_color( Color, Polygon ) ->
 	Polygon#polygon{ rendering=option_list:set(
-			_Entry={ edge_color, gui_color:get_color( Color ) },
-			_OptionList=Polygon#polygon.rendering ) }.
+		_Entry={ edge_color, gui_color:get_color( Color ) },
+		_OptionList=Polygon#polygon.rendering ) }.
 
 
 
@@ -308,8 +308,8 @@ get_edge_color( Polygon ) ->
 -spec set_fill_color( color(), polygon() ) -> polygon().
 set_fill_color( Color, Polygon ) ->
 	Polygon#polygon{ rendering=option_list:set(
-			_Entry={ fill_color, gui_color:get_color( Color ) },
-			_OptionList=Polygon#polygon.rendering ) }.
+		_Entry={ fill_color, gui_color:get_color( Color ) },
+		_OptionList=Polygon#polygon.rendering ) }.
 
 
 
@@ -360,7 +360,7 @@ render( Polygon, Canvas ) ->
 
 				DrawColor ->
 					%trace_utils:debug_fmt( "DrawColor = ~p.", [ DrawColor ] ),
-					gui:set_draw_color( Canvas, DrawColor )
+					gui_canvas:set_draw_color( Canvas, DrawColor )
 
 			end,
 
@@ -370,19 +370,19 @@ render( Polygon, Canvas ) ->
 					ok;
 
 				FillColor ->
-					gui:set_fill_color( Canvas, FillColor )
+					gui_canvas:set_fill_color( Canvas, FillColor )
 
 			end,
 
-			gui:draw_polygon( Canvas, Vertices ),
+			gui_canvas:draw_polygon( Canvas, Vertices ),
 
 			case Polygon#polygon.bounding_surface of
 
 				#circle{ center=Center, square_radius=SquareRadius } ->
 					IntCenter = point2:roundify( Center ),
-					gui:draw_circle( Canvas, IntCenter,
-									 round( math:sqrt( SquareRadius ) ) ),
-					gui:draw_cross( Canvas, IntCenter, _EdgeLength=4 );
+					gui_canvas:draw_circle( Canvas, IntCenter,
+						round( math:sqrt( SquareRadius ) ) ),
+					gui_canvas:draw_cross( Canvas, IntCenter, _EdgeLength=4 );
 
 				undefined ->
 					ok
@@ -408,10 +408,10 @@ to_string( Polygon ) ->
 	end,
 
 	text_utils:format( "polygon defined by:~n"
-	  " - vertices: ~w~n - edge color: ~w~n - fill color: ~w~n"
-	  " - bounding surface: ~ts~n",
-	  [ Polygon#polygon.vertices, get_edge_color( Polygon ),
-		get_fill_color( Polygon ), BSText ] ).
+		" - vertices: ~w~n - edge color: ~w~n - fill color: ~w~n"
+		" - bounding surface: ~ts~n",
+		[ Polygon#polygon.vertices, get_edge_color( Polygon ),
+		  get_fill_color( Polygon ), BSText ] ).
 
 
 

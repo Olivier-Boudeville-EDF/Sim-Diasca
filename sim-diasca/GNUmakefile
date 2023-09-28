@@ -1,11 +1,11 @@
 SIM_DIASCA_TOP = .
 
 
-.PHONY: help help-intro help-sim-diasca                               \
+.PHONY: help help-sim-diasca                                          \
 		all register-version-in-header register-sim-diasca            \
-		info-local info-tools info-network info-versions              \
-		info-conditionals                                             \
+		list-beam-dirs list-beam-dirs add-prerequisite-plts link-plt  \
 		clean clean-local clean-host-candidate-files stats            \
+		info-local info-tools info-network info-versions              \
 		info-context info-versions info-sim-diasca info-compile       \
 		info-conditionals info-deps
 
@@ -19,10 +19,6 @@ BASE_MAKEFILE = true
 
 # Default target:
 help: help-intro help-sim-diasca
-
-
-help-intro:
-	@echo " Following main make targets are available for package $(PACKAGE_NAME):"
 
 
 # Not relevant enough:@cd $(TRACES_TOP) && $(MAKE) -s help-traces
@@ -40,7 +36,6 @@ help-sim-diasca:
 
 
 
-
 register-version-in-header:
 	@if [ -z "$(VERSION_FILE)" ]; then \
 	echo "  Error, no version file defined." 1>&2; exit 53; else \
@@ -49,6 +44,23 @@ register-version-in-header:
 
 register-sim-diasca:
 	@echo "-define( sim_diasca_version, \"$(SIM_DIASCA_VERSION)\" )." >> $(VERSION_FILE)
+
+
+# Useful to extract internal layout for re-use in upper layers:
+list-beam-dirs:
+	@for d in $(SIM_DIASCA_BEAM_DIRS); do echo $$(readlink -f $$d); done
+
+
+add-prerequisite-plts: link-plt
+
+
+# As upper layers may rely on the 'sim-diasca' naming:
+link-plt:
+	@if [ ! "$(PLT_FILE)" = "$(SIM_DIASCA_PLT_FILE)" ]; then /bin/ln -s --force $(PLT_FILE) $(SIM_DIASCA_PLT_FILE); fi
+
+
+stats:
+	@$(MAKE_CODE_STATS) $(SIM_DIASCA_TOP)
 
 
 info-local:
@@ -90,9 +102,6 @@ clean-local:
 clean-host-candidate-files:
 	@find src -name "$(SIM_DIASCA_HOST_FILE)" -exec /bin/rm -f '{}' ';'
 
-
-stats:
-	@$(MAKE_CODE_STATS) $(SIM_DIASCA_TOP)
 
 
 # Typically useful to know the software context for continuous integration:

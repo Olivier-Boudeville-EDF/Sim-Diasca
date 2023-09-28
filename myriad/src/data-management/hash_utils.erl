@@ -150,8 +150,8 @@
 						| 'sha3_512'.
 % Designates (as an atom) a known (cryptographic) hashing algorithm.
 %
-% Not relying on crypto:hash_algorithm() (not clear/complete enough); mostly
-% translated from 'openssl list -1 -digest-algorithms'.
+% Not relying on crypto:hash_algorithm() (not clear/complete enough; moreover
+% not exported); mostly translated from 'openssl list -1 -digest-algorithms'.
 
 
 -type integer_hash() :: non_neg_integer().
@@ -234,7 +234,8 @@
 % preferably in different locations.
 
 
--export_type([ integer_hash/0, portable_integer_hash/0, binary_hash/0,
+-export_type([ hash_algorithm/0, integer_hash/0, portable_integer_hash/0,
+			   binary_hash/0,
 			   md5_sum/0, sha1_sum/0, sha2_sum/0, sha2_512_sum/0, sha3_sum/0,
 			   sha_sum/0,
 			   any_hash/0,
@@ -482,7 +483,9 @@ get_openssl_algorithm( Alg ) ->
 % @doc Converts an hashing algorithm into one known of the 'crypto' Erlang
 % module (typically used for the hashing of terms).
 %
--spec get_crypto_algorithm( hash_algorithm() ) -> crypto:hash_algorithm().
+-spec get_crypto_algorithm( hash_algorithm() ) ->
+	% Not exported yet: crypto:hash_algorithm().
+	hash_algorithm().
 get_crypto_algorithm( _Alg=md5 ) -> md5;
 get_crypto_algorithm( _Alg=sha1 ) -> sha;
 

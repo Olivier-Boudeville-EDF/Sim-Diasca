@@ -1,21 +1,21 @@
 % Copyright (C) 2008-2023 EDF R&D
-
+%
 % This file is part of Sim-Diasca.
-
+%
 % Sim-Diasca is free software: you can redistribute it and/or modify
 % it under the terms of the GNU Lesser General Public License as
 % published by the Free Software Foundation, either version 3 of
 % the License, or (at your option) any later version.
-
+%
 % Sim-Diasca is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 % GNU Lesser General Public License for more details.
-
+%
 % You should have received a copy of the GNU Lesser General Public
 % License along with Sim-Diasca.
 % If not, see <http://www.gnu.org/licenses/>.
-
+%
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) edf (dot) fr]
 % Creation date: 2008.
 
@@ -135,7 +135,7 @@
 % ("recursive, imbricated/nested actors") and consequently a support for time
 % refinement (a diasca will be a id_utils:sortable_id/0).
 %
-% In this context, a diasca is either an usual diasca (ex: D=17, 18, etc.) or a
+% In this context, a diasca is either an usual diasca (e.g. D=17, 18, etc.) or a
 % tuple of positive integers allowing to introduce any number of diascas between
 % any two of them.
 %
@@ -157,7 +157,7 @@
 -type virtual_seconds() :: unit_utils:float_seconds().
 % Units of virtual seconds, i.e. seconds in simulation time.
 %
-% Note: these are strictly positive floating-point values; ex: 0.001 seconds
+% Note: these are strictly positive floating-point values; e.g. 0.001 seconds
 % (1ms).
 
 
@@ -190,6 +190,7 @@
 -type any_seconds() :: unit_utils:any_seconds().
 -type milliseconds() :: unit_utils:milliseconds().
 
+% Already declared: -type attribute_entry() :: wooper:attribute_entry().
 
 -type actor_pid() :: class_Actor:actor_pid().
 -type actor_count() :: class_Actor:actor_count().
@@ -537,7 +538,7 @@
 
 	{ interdiasca_listeners, [ logical_time_listener_pid() ],
 	  "a list containing the PIDs of all registered inter-diasca listeners "
-	  "(ex: typically including the root data-exchanger)" },
+	  "(e.g. typically including the root data-exchanger)" },
 
 	{ resilience_manager_pid, maybe( resilence_manager_pid() ),
 	  "the PID of the resilience manager" },
@@ -567,7 +568,7 @@
 
 
 % Must be included before class_TraceEmitter header:
--define( trace_emitter_categorization, "Core.TimeManagement" ).
+-define( trace_emitter_categorization, "Core.Time management" ).
 
 
 % Allows to use macros for trace sending from static methods:
@@ -594,15 +595,15 @@
 
 % To have the PID information about the emitter:
 %-define( display_console( FormatString, Values ),
-%		 trace_utils:debug_fmt( "[~w] " ++ FormatString,
-%								[ self() | Values ] ) ).
+%         trace_utils:debug_fmt( "[~w] " ++ FormatString,
+%                                [ self() | Values ] ) ).
 
 % To additionally discriminate between PIDs having the same middle number, based
 % on node:
 %
 %-define( display_console( FormatString, Values ),
-%		 trace_utils:debug_fmt( "[~w on ~ts] " ++ FormatString,
-%								[ self(), node() | Values ] ) ).
+%         trace_utils:debug_fmt( "[~w on ~ts] " ++ FormatString,
+%                                [ self(), node() | Values ] ) ).
 
 % To additionally discriminate between PIDs having the same middle number, based
 % on host:
@@ -657,7 +658,7 @@
 % - the general architecture of the time manager relies on the fact that:
 %
 %   - the communication from a time manager to an actor is fully asynchronous
-%   (non-blocking; ex: triggerNameNotification/2 oneway)
+%   (non-blocking; e.g. triggerNameNotification/2 oneway)
 %
 %   - the communication from an actor to its time manager can (and usually
 %   should) be synchronous (once again: not true the other way round)
@@ -689,9 +690,9 @@
 % (actors_to_trigger_in_{one,two}_diasca(s)), which are sets (as no duplicate
 % shall exist, and terminating actors have to be picked from them)
 %
-% - all other actor-related lists (ex: waiting lists) are expected to hold
+% - all other actor-related lists (e.g. waiting lists) are expected to hold
 % possibly a very large number of elements (as usually one element corresponds
-% to one actor), and some random access in them is required (ex: to remove a
+% to one actor), and some random access in them is required (e.g. to remove a
 % particular actor from a waiting list); moreover they are actually sets (not
 % ordered, not having duplicates: generally we do not want to send a message
 % more than once to an actor), therefore we preferred to use more advanced
@@ -749,7 +750,7 @@
 % of computing hosts (as otherwise the random series driven by the corresponding
 % time managers would differ); instead, now the (centralised) load-balancer
 % takes care of actor seeding, with no real overhead as it has to send other
-% information (ex: AAI) to them anyway.
+% information (e.g. AAI) to them anyway.
 
 
 
@@ -838,7 +839,7 @@ get_trace_timestamp( TickOffset, Diasca, State ) ->
 % for example, if the specified duration is 0.02s, then each simulation step
 % will last for 20ms (in simulation time) and the simulation frequency will be
 % 50Hz; models can be scheduled at a sub-multiple of this fundamental frequency
-% if needed (ex: 16.7Hz, i.e. every 60ms, hence here every 3 ticks)
+% if needed (e.g. 16.7Hz, i.e. every 60ms, hence here every 3 ticks)
 %
 % - SimInteractivityMode, among:
 %
@@ -878,7 +879,7 @@ construct( State, SimulationTickDuration, SimInteractivityMode,
 
 	% First the direct mother classes, then this class-specific actions:
 	TraceState = class_EngineBaseObject:construct( State,
-										?trace_categorize("Time Manager") ),
+		?trace_categorize("Time Manager") ),
 
 
 	% We raise here the priority of all time managers, not specifically for
@@ -989,7 +990,7 @@ construct( State, SimulationTickDuration, SimInteractivityMode,
 	SimulationFrequency = 1 / ActualSimulationTickDuration,
 
 	TickDurationString = time_utils:duration_to_string(
-								round( 1000 * ActualSimulationTickDuration ) ),
+		round( 1000 * ActualSimulationTickDuration ) ),
 
 	?send_info_fmt( CategorizedState,
 		"Creating a " ++ Description ++ " in ~w mode with an actual "
@@ -1029,7 +1030,7 @@ construct( State, SimulationTickDuration, SimInteractivityMode,
 						"(i.e. ~ts) to which the interactive scale factor of "
 						"x~p applies.",
 						[ RoundDuration, time_utils:duration_to_string(
-								round( RoundDuration ) ),
+							round( RoundDuration ) ),
 						  ActualSimulationTickDuration, TickDurationString,
 						  ?scale_factor_for_interactive_time ] ),
 					RoundDuration
@@ -1851,8 +1852,8 @@ getAllLocalActors( State ) ->
 % @doc Merges the specified serialisation entries into the state of this time
 % manager.
 %
--spec mergeWith( wooper:state(), wooper_serialisation:term_serialisation() ) ->
-					request_return( 'merged' ).
+-spec mergeWith( wooper:state(), [ attribute_entry() ] ) ->
+								request_return( 'merged' ).
 mergeWith( State, Entries ) ->
 
 	ToMergeAgenda = option_list:get( spontaneous_agenda, Entries ),
@@ -2947,7 +2948,7 @@ notifyTriggeredWatchdogCompleted( State, WatchdogTickOffset, WatchdogDiasca ) ->
 	% answer, even in a distributed context!
 	%
 	wooper:return_state(
-				manage_possible_end_of_diasca( AcknowledgedState ) ).
+		manage_possible_end_of_diasca( AcknowledgedState ) ).
 
 
 
@@ -3141,7 +3142,7 @@ getTextualTimings( State ) ->
 % into an integer (rounded, non-negative) number of ticks, using the target time
 % manager.
 %
-% Ex: TimeManager ! {convertSecondsToTicks, 0.02, self()}.
+% For example TimeManager ! {convertSecondsToTicks, 0.02, self()}.
 % Returns the appropriate (integer) number of ticks.
 %
 % Note that, due to rounding, depending on the current frequency of the time
@@ -3165,7 +3166,7 @@ convertSecondsToTicks( State, Seconds ) ->
 % time manager and ensuring that, if ever the rounding would have led to a
 % zero-tick duration, a duration of one tick is returned instead.
 %
-% Ex: TimeManager ! {convertSecondsToNonNullTickDuration, 0.02, self()}.
+% For example TimeManager ! {convertSecondsToNonNullTickDuration, 0.02, self()}.
 % Returns the appropriate (integer, strictly positive) number of ticks.
 %
 % Useful to ensure that under no circumstances a duration can be null, in order
@@ -3240,7 +3241,8 @@ convertTicksToPreciseDuration( State, Ticks ) ->
 %
 % Note: this method could not be named 'register', as it is a reserved word.
 %
-% Ex: MyTimeManager ! {subscribe, [MyAAI, MyBinName, MyClassname], self()}
+% For example MyTimeManager ! {subscribe, [MyAAI, MyBinName, MyClassname],
+% self()}
 %
 % The current timestamp of manager cannot be returned, as it may not be started
 % yet (in which case there is not even a current time).
@@ -3268,7 +3270,7 @@ subscribe( State, AbstractActorIdentifier, ActorBinName, Classname ) ->
 			LocalInstanceTracker = class_InstanceTracker:get_local_tracker(),
 
 			LocalInstanceTracker ! { registerActor, [ AbstractActorIdentifier,
-						ActorBinName, CallerPid, Classname ] }
+				ActorBinName, CallerPid, Classname ] }
 
 		end,
 
@@ -3299,7 +3301,7 @@ subscribe( State, AbstractActorIdentifier, ActorBinName, Classname ) ->
 			%?debug_fmt( "Subscribing actor ~w.", [ CallerPid ] ),
 
 			AddedState = setAttribute( State, known_local_actors,
-							set_utils:add( CallerPid, LocalActors ) ),
+				set_utils:add( CallerPid, LocalActors ) ),
 
 			% If the simulation is already running, notifies directly the actor,
 			% otherwise does nothing, as it will be done when starting:
@@ -3369,7 +3371,7 @@ subscribe( State, AbstractActorIdentifier, ActorBinName, Classname ) ->
 % Returns time_unsubscribed if the operation succeeded (subscribed and was not
 % subscribed yet).
 %
-% Ex: MyTimeManager ! {unsubscribe, [], self()}
+% For example MyTimeManager ! {unsubscribe, [], self()}
 %
 -spec unsubscribe( wooper:state() ) -> request_return( 'time_unsubscribed' ).
 unsubscribe( State ) ->
@@ -3438,7 +3440,7 @@ scheduleTrigger( State, TriggerTickOffset, TriggerDiasca ) ->
 
 					% Expected not already registered:
 					UpdatedDiascaActors = set_utils:add_as_new(
-							ActorToSchedule, CurrentDiascaActors ),
+						ActorToSchedule, CurrentDiascaActors ),
 
 					setAttribute( State, actors_to_trigger_in_one_diasca,
 								  UpdatedDiascaActors );
@@ -3454,7 +3456,7 @@ scheduleTrigger( State, TriggerTickOffset, TriggerDiasca ) ->
 
 					% Expected not already registered:
 					UpdatedDiascaActors = set_utils:add_as_new( ActorToSchedule,
-														FutureDiascaActors ),
+						FutureDiascaActors ),
 
 					% We now know what is the next timestamp (hopefully):
 					NextTimestamp =
@@ -3658,7 +3660,7 @@ onSimulationStallDetected( State ) ->
 
 			ManagerDescriptions = [
 				text_utils:format( "~w (on node ~ts)", [ M, node( M ) ] )
-						|| M <- set_utils:to_list( WaitedChildManagers ) ],
+					|| M <- set_utils:to_list( WaitedChildManagers ) ],
 
 			text_utils:format(
 				"still waiting for following ~B child time manager(s): ~ts",
@@ -3964,7 +3966,7 @@ get_local_diagnosis( State ) ->
 		+ set_utils:size( TriggeredActors ),
 
 	% Never perform blocking operations with actors from the time manager,
-	% otherwise deadlocks could occur (ex: with scheduleTrigger/3, which can
+	% otherwise deadlocks could occur (e.g. with scheduleTrigger/3, which can
 	% happen approximately at any time).
 	%
 	case WaitedActorCount of
@@ -4061,7 +4063,7 @@ get_wait_explanation( WaitedActors, Count, State ) ->
 
 			[ text_utils:string_to_binary( Header ) |
 			  prepare_wait_explanation( WaitedActorList, LocalTrackerPid,
-					RootTrackerPid, ?getAttr(current_tick_offset), _Acc=[] ) ]
+				RootTrackerPid, ?getAttr(current_tick_offset), _Acc=[] ) ]
 
 	end.
 
@@ -4355,7 +4357,7 @@ get_registration_name() ->
 	% We used to prefer using unique names (even if they actually remained,
 	% each, node-local).
 	%
-	% Ex: sim_diasca_time_manager_for_testSimulation@myhost.mydomain.org
+	% For example sim_diasca_time_manager_for_testSimulation@myhost.mydomain.org
 	%list_to_atom( atom_to_list( ?time_manager_name ) ++ "_for_"
 	%   ++ atom_to_list( node() ) ).
 
@@ -4549,7 +4551,7 @@ stop_timer( State ) ->
 % sent regularly, otherwise requests the specified time manager to display some
 % information explaining the possible causes of the simulation stall.
 %
-% Note: apparently, loosing network connectivity (ex: putting the local network
+% Note: apparently, loosing network connectivity (e.g. putting the local network
 % interface down in the course of the simulation) does not lead to having a
 % non-suspended watchdog ever kicking in (stale VM?).
 %
@@ -4559,8 +4561,8 @@ stop_timer( State ) ->
 		milliseconds(), milliseconds(), milliseconds(), milliseconds() ) ->
 								no_return().
 watchdog_main_loop( TimeManagerPid, DelayBeforeFirstStall,
-					DelayBetweenNextStalls, DelayBeforeFailed, NextPeriod,
-					AccumulatedDuration ) ->
+		DelayBetweenNextStalls, DelayBeforeFailed, NextPeriod,
+		AccumulatedDuration ) ->
 
 	?display_console( "Watchdog ~w running (first stall delay: ~B ms, then "
 		"~B ms; shutdown delay: ~B ms, next period: ~B ms, "
@@ -4611,8 +4613,8 @@ watchdog_main_loop( TimeManagerPid, DelayBeforeFirstStall,
 							  "for tick offset #~B.", [ NewTickOffset ] ),
 
 			% Acknowledges it immediately:
-			TimeManagerPid ! { notifySpontaneousWatchdogCompleted,
-							   NewTickOffset },
+			TimeManagerPid !
+				{ notifySpontaneousWatchdogCompleted, NewTickOffset },
 
 			% Resets the idle timer:
 			watchdog_main_loop( TimeManagerPid, DelayBeforeFirstStall,
@@ -4796,8 +4798,8 @@ stop_watchdog( State ) ->
 % @doc The wallclock tracker allows to monitor the simulation progress over real
 % time, and to trigger wallclock milestones.
 %
-% One such tracker is used for a whole simulation (ex: not one per node), and is
-% connected to the root time manager.
+% One such tracker is used for a whole simulation (e.g. not one per node), and
+% is connected to the root time manager.
 %
 % Period is in wall-clock milliseconds.
 %
@@ -4926,7 +4928,7 @@ time_tracker_main_loop( PreviousDisplayTime, PreviousSimTimestamp,
 
 				true ->
 					DisplayedTimestamp = display_normal_progress_line( Timings,
-								Counts, LoadBalancerPid, RootTimeManagerPid ),
+						Counts, LoadBalancerPid, RootTimeManagerPid ),
 					{ CurrentTime, DisplayedTimestamp };
 
 				false ->
@@ -5004,7 +5006,7 @@ display_console_line(
 			 CurrentTickOffset, CurrentDiasca, RealDateString, RealTimeString },
   _Counts={ TotalActorCount, TotalScheduleCount, TotalProcessCount } ) ->
 
-	% Ex: '|S:       (not started)|T:             0|D:     0|
+	% For example '|S:       (not started)|T:             0|D:     0|
 	%  R:   3/9/2012 17:47:39|A:           0|S:           0|P:           34 |
 
 	% Room for 999999999999 actors, i.e. 10^12 actors!
@@ -5059,7 +5061,7 @@ display_normal_progress_line( Timings, Counts, LoadBalancerPid,
 display_diasca_in_progress( SimTimestamp ) ->
 
 	BaseText = text_utils:format( "diasca ~p still in progress at ~ts",
-					[ SimTimestamp, time_utils:get_textual_timestamp() ] ),
+		[ SimTimestamp, time_utils:get_textual_timestamp() ] ),
 
 	BaseTextWidth = length( BaseText ),
 
@@ -5319,7 +5321,8 @@ format_real_time_date() ->
 % threshold in terms of relative error, and thus may fail at runtime, should it
 % be deemed too inaccurate.
 %
-% Ex: TickCount = class_TimeManager:convert_seconds_to_ticks(_Secs=0.001, State)
+% For example TickCount =
+% class_TimeManager:convert_seconds_to_ticks(_Secs=0.001, State)
 %
 % (helper function)
 %
@@ -5498,7 +5501,7 @@ init( State ) ->
 	% want the start outputs to show InitialTick instead:
 	%
 	Timings = get_textual_timings(
-				addToAttribute( PostStartedState, current_tick_offset, 1 ) ),
+		addToAttribute( PostStartedState, current_tick_offset, 1 ) ),
 
 	?notice_fmt( "Simulation started at ~ts with a simulation frequency "
 		"of approximately ~fHz (period of exactly ~ts). ~ts",
@@ -5710,7 +5713,7 @@ start_actors_by_chunks( InitialActors, StartMessage ) ->
 	% ditched here) of the set:
 	%
 	FinalCount = start_actors_by_chunks( set_utils:next( Iterator ), WaitedSet,
-						_WaitedCount=0, StartMessage, _TotalCount=0 ),
+		_WaitedCount=0, StartMessage, _TotalCount=0 ),
 
 	% Checking:
 	ExpectedCount = FinalCount,
@@ -6264,7 +6267,7 @@ wait_for_serialisation_end( ActorsReturned, Serialised, State ) ->
 		{ serialise, [ EntryTransformer, UserData ], CallerPid } ->
 
 			{ NewState, Res } = executeRequest( State, serialise,
-											[ EntryTransformer, UserData ] ),
+				[ EntryTransformer, UserData ] ),
 
 			CallerPid ! { wooper_result, Res },
 
@@ -6425,8 +6428,8 @@ check_waited_count_consistency( State ) ->
 
 	% Either we are at diasca 0 or not:
 	( WaitedSpontaneous =/= 0 andalso WaitedTriggered =/= 0 ) andalso
-			throw( { spontaneous_trigger_mismatch, WaitedSpontaneous,
-					 WaitedTriggered } ),
+		throw( { spontaneous_trigger_mismatch, WaitedSpontaneous,
+				 WaitedTriggered } ),
 
 	WaitedChildren = set_utils:size( ?getAttr(waited_child_managers) ),
 
@@ -6675,7 +6678,7 @@ manage_new_tick( NewTickOffset, State ) ->
 
 	TickPeriod = ?getAttr(tick_milestone_period),
 
-	% Each 1000 simulated ticks (ex: after 20 seconds of simulated time at 50
+	% Each 1000 simulated ticks (e.g. after 20 seconds of simulated time at 50
 	% Hz), let's trigger a simulation milestone:
 	%
 	% FIXME_WALLCLOCK: we can miss such deadlines if jumping over them...
@@ -6781,7 +6784,7 @@ manage_new_diasca( TickOffset, NewDiasca, State ) ->
 		true ->
 			% Only the root time manager has a watchdog:
 			?getAttr(watchdog_pid) !
-						{ beginWatchdogDiasca, [ TickOffset, NewDiasca ] },
+				{ beginWatchdogDiasca, [ TickOffset, NewDiasca ] },
 
 			% We now consider that only the root time manager is to report the
 			% progress, and we have only the information for previous diasca:
@@ -7138,7 +7141,7 @@ add_to_agenda( ActorPid, _AddedSpontaneousTicks=[ TickOffset | T ],
 	add_to_agenda( ActorPid, T, CurrentTickOffset, NewAgenda );
 
 add_to_agenda( ActorPid, _AddedSpontaneousTicks=[ TickOffset | _T ],
-			CurrentTickOffset, _Agenda ) when TickOffset > CurrentTickOffset ->
+		CurrentTickOffset, _Agenda ) when TickOffset > CurrentTickOffset ->
 	throw( { tick_to_add_in_the_past, ActorPid, TickOffset,
 			 CurrentTickOffset } ).
 
@@ -7353,7 +7356,7 @@ terminate_running_actors( ActorsToSkip, State ) ->
 	SkipActorSet = set_utils:from_list( ActorsToSkip ),
 
 	% Not calling their simulationEnded/1 here, as we want to delete them
-	% synchronously (ex: otherwise their could be a race condition in which the
+	% synchronously (e.g. otherwise their could be a race condition in which the
 	% local instance tracker would alreagy be deleted, hence unregistered, where
 	% actors are still being deleted)
 
@@ -7369,7 +7372,7 @@ terminate_running_actors( ActorsToSkip, State ) ->
 
 	% We used to rely on synchronous deletions, however, typically at simulation
 	% tear-down, among all these actors they may exist some that own others in
-	% that TargetActors list (ex: a planning owning plannable elements, since
+	% that TargetActors list (e.g. a planning owning plannable elements, since
 	% they must be deallocated whenever their planning is itself deallocated);
 	% as a result these owned actors would be deleted twice: one because they
 	% belong to this TargetActors list, and one because their owner (also in
@@ -7525,8 +7528,8 @@ schedule_as_spontaneous_for( TickOffset, Actor, SpontaneousAgenda ) ->
 %
 % We arrived at the end of the list, not found, insert at last position:
 insert_as_spontaneous_for( Tick, Actor, _BeginList=[], ReversedEndList ) ->
-	lists:reverse( [ { Tick, set_utils:singleton( Actor ) }
-						| ReversedEndList ] );
+	lists:reverse(
+		[ { Tick, set_utils:singleton( Actor ) } | ReversedEndList ] );
 
 
 % The tick has already an entry; adding this actor (in a set, hence this actor
@@ -7686,8 +7689,8 @@ launch_timer( State ) ->
 		throw( { invalid_tick_duration, TickDuration } ),
 
 	% duration_to_string/1 expects milliseconds:
-	TickDurationString = time_utils:duration_to_string(
-							erlang:round( TickDuration * 1000 ) ),
+	TickDurationString =
+		time_utils:duration_to_string( erlang:round( TickDuration * 1000 ) ),
 
 	Frequency = 1 / TickDuration,
 
@@ -7810,7 +7813,7 @@ onPostDeserialisation( _State, _UserData ) ->
 % @doc Merges specified entries coming from deserialisation into the local time
 % manager.
 %
--spec merge_local_with( wooper_serialisation:term_serialisation() ) -> void().
+-spec merge_local_with( [ attribute_entry() ] ) -> void().
 merge_local_with( SerialisedEntries ) ->
 
 	RegistrationName = get_registration_name(),

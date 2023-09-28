@@ -32,7 +32,7 @@ The ``Myriad`` services are to be used by this layer itself (for its inner worki
 
 The general rule is that a layer may depend on (i.e. make use of) all layers *below* it (not only the one just preceding it), but cannot refer to any layer *above* it (it should be literally unaware of their existence).
 
-So, in a bottom-up view, generally a software stack mentioned here begins with the operating system (typically GNU/Linux), then `Erlang/OTP <http://erlang.org>`_, then ``Myriad``, then any layer(s) built on top of them (ex: `WOOPER <http://wooper.esperide.org>`_).
+So, in a bottom-up view, generally a software stack mentioned here begins with the operating system (typically GNU/Linux), then `Erlang/OTP <http://erlang.org>`_, then ``Myriad``, then any layer(s) built on top of them (e.g. `WOOPER <http://wooper.esperide.org>`_).
 
 Of course a given layer does not mask the layers below; for example programs using the ``Myriad`` layer typically use also a lot the services brought by the `Erlang base libraries <http://erlang.org/erldoc>`_.
 
@@ -53,6 +53,8 @@ We do our best to test, at least lightly, each element provided. All services of
 
  $ make foo_run
 
-Note that however we have not reached the discipline level of an exhaustive ``eunit`` test suite for each service (most of them being almost trivial).
+Note that however we have not reached the discipline level of an exhaustive ``eunit`` test suite for each service (most of them being mostly trivial).
 
-The `Dialyzer <http://erlang.org/doc/apps/dialyzer/dialyzer_chapter.html>`_ static analysis tool is regularly run on the code base (see the ``generate-local-plt`` and ``self-check-against-plt`` generic Make targets for that).
+See also the `type-checking`_ section.
+
+

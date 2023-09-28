@@ -54,7 +54,7 @@
 
 
 
-% In general terms: if the method is not found or if its execution fails (ex:
+% In general terms: if the method is not found or if its execution fails (e.g.
 % making a faulty return):
 %
 % - if the method is *called* (from outside) as a oneway, then an error trace is
@@ -135,7 +135,7 @@
 % Note: atom and state checking in guards should be superfluous.
 %
 -spec wooper_execute_method( method_name(), method_arguments(),
-			wooper:state() ) -> { wooper:state(), method_internal_result() }.
+	wooper:state() ) -> { wooper:state(), method_internal_result() }.
 
 
 
@@ -207,9 +207,9 @@ wooper_execute_method( MethodAtom, Parameters, State )
 				_ ->
 
 					% This is a request, returns the state and an error term,
-					% and rely on the calling function (ex: wooper_main_loop) to
-					% crash *after* having performed any relevant action (ex:
-					% send back a relevant answer):
+					% and rely on the calling function (e.g. wooper_main_loop)
+					% to crash *after* having performed any relevant action
+					% (e.g. send back a relevant answer):
 					%
 					wooper:log_error(
 						"request ~ts:~ts/~B not found, parameters were:~n~p~n",
@@ -276,9 +276,9 @@ wooper_execute_method( MethodAtom, Parameters, State ) ->
 				_ ->
 
 					% This is a request, returns the state and an error term,
-					% and rely on the calling function (ex: wooper_main_loop) to
-					% crash after having performed any relevant action (ex: send
-					% back a relevant answer):
+					% and rely on the calling function (e.g. wooper_main_loop)
+					% to crash after having performed any relevant action
+					% (e.g. send back a relevant answer):
 					%
 					wooper:log_error(
 						"request ~ts:~ts/~B not found, parameters were:~n~p~n",
@@ -298,7 +298,7 @@ wooper_execute_method( MethodAtom, Parameters, State ) ->
 
 
 
-% @doc Looks-up specified method (Method/Arity, ex: toString/1) to be found in
+% @doc Looks-up specified method (Method/Arity, e.g. toString/1) to be found in
 % inheritance tree.
 %
 % Returns either {'value', Module} with Module corresponding to the class that
@@ -320,28 +320,87 @@ wooper_lookup_method( State, MethodAtom, Arity ) ->
 
 % Section for wooper_execute_method_as/4.
 %
-% (same implementation in debug or not)
+% (same implementation whether in debug mode or not)
 
 
-% @doc Looks-up specified method (Method/Arity, ex: toString/1) to be found in
-% the inheritance tree of specified parent class.
+-compile( { inline, [ wooper_execute_method_as/4 ] } ).
+
+
+% @doc Looks-up the specified method (Method/Arity, e.g. toString/1) to be found
+% in the inheritance tree of the specified parent class (thus not necessarily
+% directly implemented in this parenet class).
 %
-% Returns either {'value', Module} with Module corresponding to the class that
-% implements that method, or 'key_not_found'.
+% Returns either {'value', Module} with Module corresponding to the actual class
+% that implements that method, or 'key_not_found'.
 %
 % Note: uses the pre-built virtual table for this class.
 %
 % (helper)
 %
-wooper_execute_method_as( Classname, MethodAtom, Parameters, State )
-				when is_atom( Classname ) andalso is_atom( MethodAtom )
-					 andalso is_list( Parameters )
-					 andalso is_record( State, state_holder ) ->
+wooper_execute_method_as( ParentClassname, MethodAtom, Parameters, State )
+		when is_atom( ParentClassname ) andalso is_atom( MethodAtom )
+			 andalso is_list( Parameters )
+			 andalso is_record( State, state_holder ) ->
 
-	% One check should be added: Classname must be a super-class
-	% (direct or not) of the actual class.
+	% One check should be added: ParentClassname must be a superclass (direct or
+	% not) of the actual class.
+
+	% We cannot just apply directly this method to Classname, as this method may
+	% not be defined in that class but be inherited from a parent class; so the
+	% virtual table of the parent class must be obtained first.
 	%
-	wooper_effective_method_execution( Classname, MethodAtom, State,
+	% We could use wooper:retrieve_virtual_table_key/1, but we prefer avoiding
+	% such overhead (any message exchange):
+
+	ParentKey = wooper_utils:get_persistent_key_for( ParentClassname ),
+
+	ParentVirtualTable = case persistent_term:get( ParentKey,
+												   _Default=undefined ) of
+
+		% This parent class was not seen yet:
+		undefined ->
+			% A lot more expensive, but necessary and sufficient:
+			_SameParentKey =
+				wooper_class_manager:get_table_key( ParentClassname ),
+
+			% This time shall be good:
+			case persistent_term:get( ParentKey, _Def=undefined ) of
+
+				% Abnormal:
+				undefined ->
+					throw( { no_virtual_table_obtained_for, ParentClassname } );
+
+				VTable ->
+					VTable
+
+			end;
+
+		CachedVTable ->
+			CachedVTable
+
+	end,
+
+	%trace_utils:debug_fmt( "Virtual table obtained for class '~ts':~n ~p",
+	%                       [ ParentClassname, ParentVirtualTable ] ),
+
+	Arity = length( Parameters ) +1,
+
+	ImplementingClassname = case ?wooper_table_type:lookup_entry(
+			{ MethodAtom, Arity }, ParentVirtualTable ) of
+
+		{ value, CName } ->
+			CName;
+
+		key_not_found ->
+			trace_bridge:error_fmt( "No ~ts/~B method found in the context "
+				"of class '~ts' (supposedly parent of '~ts').",
+				[ MethodAtom, Arity, ParentClassname, ?MODULE ] ),
+			throw( { method_not_found, { MethodAtom, Arity },
+					 ParentClassname, ?MODULE } )
+
+	end,
+
+	wooper_effective_method_execution( ImplementingClassname, MethodAtom, State,
 									   Parameters ).
 
 
@@ -373,8 +432,8 @@ wooper_execute_method_as( Classname, MethodAtom, Parameters, State )
 wooper_effective_method_execution( SelectedModule, MethodAtom, State,
 								   Parameters ) ->
 
-	%trace_utils:debug_fmt( "WOOPER: effective execution of ~p:~p.",
-	%                       [ SelectedModule, MethodAtom ] ),
+	%trace_utils:debug_fmt( "WOOPER: effective execution of ~ts:~ts/~B",
+	%   [ SelectedModule, MethodAtom, length( Parameters ) + 1 ] ),
 
 	% Of course the executed method may throw, we let exceptions propagate:
 	case apply( SelectedModule, MethodAtom, [ State | Parameters ] ) of
@@ -440,8 +499,8 @@ wooper_effective_method_execution( SelectedModule, MethodAtom, State,
 wooper_effective_method_execution( SelectedModule, MethodAtom, State,
 								   Parameters ) ->
 
-	%trace_utils:debug_fmt( "WOOPER: effective execution of ~p:~p.~n",
-	%						[ SelectedModule, MethodAtom ] ),
+	%trace_utils:debug_fmt( "WOOPER: effective execution of ~ts:~ts/~B",
+	%   [ SelectedModule, MethodAtom, length( Parameters ) + 1 ] ),
 
 	case apply( SelectedModule, MethodAtom, [ State | Parameters ] ) of
 
@@ -600,7 +659,7 @@ wooper_handle_remote_request_execution( RequestAtom, State, ArgumentList,
 % state and the corresponding result.
 %
 % A specific function is used for *local* request executions, as they must have
-% a different structure (ex: not sending messages back, restoring the previous
+% a different structure (e.g. not sending messages back, restoring the previous
 % request_sender, not catching exceptions).
 %
 -spec wooper_handle_local_request_execution( method_name(), wooper:state(),
@@ -645,7 +704,7 @@ wooper_handle_local_request_execution( RequestAtom, State, ArgumentList ) ->
 	end,
 
 	ReturnedState = RequestState#state_holder{
-						request_sender=PreviousRequestSender },
+		request_sender=PreviousRequestSender },
 
 	{ ReturnedState, ActualResult }.
 
@@ -666,7 +725,7 @@ wooper_handle_local_request_execution( RequestAtom, State, ArgumentList ) ->
 
 
 	ReturnedState = RequestState#state_holder{
-						request_sender=PreviousRequestSender },
+		request_sender=PreviousRequestSender },
 
 	{ ReturnedState, ActualResult }.
 
@@ -680,9 +739,9 @@ wooper_handle_local_request_execution( RequestAtom, State, ArgumentList ) ->
 
 
 
-% @doc Executes the specified locally-triggered request, using an explicit class
-% to select its implementation: returns an updated state and the corresponding
-% result.
+% @doc Executes the specified locally-triggered request, using an
+% explicitly-specified parent class to select its implementation: returns an
+% updated state and the corresponding result.
 %
 % Only local calls can select their implementation class.
 %
@@ -699,7 +758,7 @@ wooper_handle_local_request_execution( RequestAtom, State, ArgumentList ) ->
 
 % In debug mode, we perform additional checkings:
 wooper_handle_local_request_execution_as( RequestAtom, State, ArgumentList,
-										  Classname ) ->
+										  ParentClassname ) ->
 
 	% Due to nesting, can be licitly 'undefined' or a PID:
 	PreviousRequestSender = State#state_holder.request_sender,
@@ -707,8 +766,8 @@ wooper_handle_local_request_execution_as( RequestAtom, State, ArgumentList,
 	SenderAwareState = State#state_holder{ request_sender=self() },
 
 	% Local request, hence no try/catch:
-	{ RequestState, Result } = wooper_execute_method_as( Classname,
-								RequestAtom, ArgumentList, SenderAwareState ),
+	{ RequestState, Result } = wooper_execute_method_as( ParentClassname,
+		RequestAtom, ArgumentList, SenderAwareState ),
 
 	ActualResult = case Result of
 
@@ -722,14 +781,14 @@ wooper_handle_local_request_execution_as( RequestAtom, State, ArgumentList,
 				"its call, it was expected to be a request.~n"
 				"Either the request implementation is incorrect or it is a "
 				"oneway that has been incorrectly called as a request.",
-				[ Classname, RequestAtom, length( ArgumentList )+1,
+				[ ParentClassname, RequestAtom, length( ArgumentList )+1,
 				  ArgumentList ], State ),
 			throw( { oneway_request_mismatch, RequestAtom, ArgumentList } )
 
 	end,
 
 	ReturnedState = RequestState#state_holder{
-						request_sender=PreviousRequestSender },
+		request_sender=PreviousRequestSender },
 
 	{ ReturnedState, ActualResult }.
 
@@ -751,7 +810,7 @@ wooper_handle_local_request_execution_as( RequestAtom, State, ArgumentList,
 								  SenderAwareState ),
 
 	ReturnedState = RequestState#state_holder{
-						request_sender=PreviousRequestSender },
+		request_sender=PreviousRequestSender },
 
 	{ ReturnedState, ActualResult }.
 
@@ -963,10 +1022,13 @@ wooper_handle_local_oneway_execution( OnewayAtom, State, ArgumentList ) ->
 % Section for wooper_handle_local_oneway_execution_as/4.
 
 
-% @doc Executes the specified locally-triggered oneway, using an explicit class
-% to select its implementation, and returns an updated state.
+% @doc Executes the specified locally-triggered oneway, using an
+% explicitly-specified parent class to select its implementation, and returns an
+% updated state.
 %
-% No 'when is_list(ArgumentList) -> ...' as the caller must have ensured that
+% Only local calls can select their implementation class.
+%
+% No 'when is_list(ArgumentList) -> ...', as the caller must have ensured that
 % we have already a list.
 %
 -spec wooper_handle_local_oneway_execution_as( method_name(), wooper:state(),
@@ -981,16 +1043,15 @@ wooper_handle_local_oneway_execution( OnewayAtom, State, ArgumentList ) ->
 
 % In debug mode, we perform additional checkings:
 wooper_handle_local_oneway_execution_as( OnewayAtom, State, ArgumentList,
-										 Classname ) ->
+										 ParentClassname ) ->
 
 	% Due to nesting, can be licitly 'undefined' or a PID:
 	PreviousRequestSender = State#state_holder.request_sender,
 
 	SenderAwareState = State#state_holder{ request_sender=undefined },
 
-	case wooper_execute_method_as( Classname, OnewayAtom,
+	case wooper_execute_method_as( ParentClassname, OnewayAtom,
 								   ArgumentList, SenderAwareState ) of
-
 
 		% This is the normal, expected case:
 		{ OnewayState, wooper_method_returns_void } ->
@@ -1010,7 +1071,7 @@ wooper_handle_local_oneway_execution_as( OnewayAtom, State, ArgumentList,
 				"Either the oneway implementation is incorrect "
 				"or it is a request that has been incorrectly "
 				"called as a oneway.",
-				[ Classname, OnewayAtom, length( ArgumentList )+1,
+				[ ParentClassname, OnewayAtom, length( ArgumentList )+1,
 				  ArgumentList, UnexpectedResult ], State ),
 
 			throw( { oneway_request_mismatch, OnewayAtom, ArgumentList } )
@@ -1023,7 +1084,7 @@ wooper_handle_local_oneway_execution_as( OnewayAtom, State, ArgumentList,
 
 % Not in debug mode, hence minimum checking:
 wooper_handle_local_oneway_execution_as( OnewayAtom, State, ArgumentList,
-										 Classname ) ->
+										 ParentClassname ) ->
 
 	% Due to nesting, can be licitly 'undefined' or a PID:
 	PreviousRequestSender = State#state_holder.request_sender,
@@ -1031,8 +1092,8 @@ wooper_handle_local_oneway_execution_as( OnewayAtom, State, ArgumentList,
 	SenderAwareState = State#state_holder{ request_sender=undefined },
 
 	% Result expected to be 'wooper_method_returns_void' here:
-	{ OnewayState, _Result } = wooper_execute_method_as( Classname,
-								OnewayAtom, ArgumentList, SenderAwareState ),
+	{ OnewayState, _Result } = wooper_execute_method_as( ParentClassname,
+		OnewayAtom, ArgumentList, SenderAwareState ),
 
 	OnewayState#state_holder{ request_sender=PreviousRequestSender }.
 
