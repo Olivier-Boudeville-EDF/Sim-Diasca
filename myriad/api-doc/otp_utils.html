@@ -24,10 +24,10 @@ dedicated OTP release for that.</p>
  Following convention is supposed to apply for testing: all applications
  (i.e. the tested one and its prerequisites) are expected to have their build
  trees (typically GIT clones) located in the same parent directory (as
- siblings), each named as its application (ex: "myriad" root directory for the
+ siblings), each named as its application (e.g. "myriad" root directory for the
  myriad application, not for example "Ceylan-Myriad"), so that, from the build
  tree of a tested application, the build trees of its prerequisites can be
- found (ex: as "../myriad").
+ found (e.g. as "../myriad").
 
 <h2><a name="types">Data Types</a></h2>
 
@@ -46,7 +46,7 @@ dedicated OTP release for that.</p>
 
 <h3 class="typedecl"><a name="type-application_name">application_name()</a></h3>
 <p><tt>application_name() = atom()</tt></p>
-<p> Name of an OTP application (ex: 'myriad').</p>
+<p> Name of an OTP application (e.g. 'myriad').</p>
 
 <h3 class="typedecl"><a name="type-application_run_context">application_run_context()</a></h3>
 <p><tt>application_run_context() = as_native | as_otp_release</tt></p>
@@ -91,12 +91,16 @@ dedicated OTP release for that.</p>
 
 
 <h3 class="typedecl"><a name="type-string_application_name">string_application_name()</a></h3>
-<p><tt>string_application_name() = atom()</tt></p>
-<p> Name of an OTP application as a string (ex: "myriad").</p>
+<p><tt>string_application_name() = <a href="#type-ustring">ustring()</a></tt></p>
+<p> Name of an OTP application as a string (e.g. "myriad").</p>
 
 <h3 class="typedecl"><a name="type-supervisor_pid">supervisor_pid()</a></h3>
 <p><tt>supervisor_pid() = pid()</tt></p>
 <p> The PID of an OTP supervisor.</p>
+
+<h3 class="typedecl"><a name="type-supervisor_restart">supervisor_restart()</a></h3>
+<p><tt>supervisor_restart() = any()</tt></p>
+
 
 <h3 class="typedecl"><a name="type-supervisor_settings">supervisor_settings()</a></h3>
 <p><tt>supervisor_settings() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/supervisor.html#type-sup_flags">supervisor:sup_flags()</a></tt></p>
@@ -135,7 +139,7 @@ based on specified module (expected to belong to that application), being
 silent (no trace) if requested.</td></tr>
 <tr><td valign="top"><a href="#get_restart_setting-1">get_restart_setting/1</a></td><td>Returns default, base restart settings depending on the specified 
 execution target.</td></tr>
-<tr><td valign="top"><a href="#get_string_application_name-1">get_string_application_name/1</a></td><td>Returns a string version of specified application name.</td></tr>
+<tr><td valign="top"><a href="#get_string_application_name-1">get_string_application_name/1</a></td><td>Returns a string version of the specified application name.</td></tr>
 <tr><td valign="top"><a href="#get_supervisor_settings-2">get_supervisor_settings/2</a></td><td>Returns the supervisor-level settings corresponding to the specified 
 restart strategy and execution context.</td></tr>
 <tr><td valign="top"><a href="#prepare_for_execution-2">prepare_for_execution/2</a></td><td>Prepares the VM environment so that the specified top-level prerequisite
@@ -197,7 +201,8 @@ top directory, a.k.a. its "library directory"), for an application located
 under $OTPROOT/lib or on a directory referred to with environment variable 
 ERL_LIBS.</p>
 
- <p>Ex: "/home/bond/Software/Erlang/Erlang-24.2/lib/erlang/lib/mnesia-4.20.1" =               
+ <p>For example 
+"/home/bond/Software/Erlang/Erlang-24.2/lib/erlang/lib/mnesia-4.20.1" = 
 otp_utils:get_application_root( mnesia ).</p>
 
  For this look-up, it is expected that an application named 'foobar' defined a
@@ -253,7 +258,7 @@ silent (no trace) if requested.</p>
 
 <h3 class="function"><a name="get_restart_setting-1">get_restart_setting/1</a></h3>
 <div class="spec">
-<p><tt>get_restart_setting(ExecutionTarget::<a href="#type-execution_target">execution_target()</a>) -&gt; <a href="http://www.erlang.org/edoc/doc/stdlib/doc/supervisor.html#type-restart">supervisor:restart()</a></tt><br></p>
+<p><tt>get_restart_setting(ExecutionTarget::<a href="#type-execution_target">execution_target()</a>) -&gt; <a href="#type-supervisor_restart">supervisor_restart()</a></tt><br></p>
 <p> </p>
 </div><p><p>Returns default, base restart settings depending on the specified 
 execution target.</p>
@@ -268,7 +273,7 @@ execution target.</p>
 <div class="spec">
 <p><tt>get_string_application_name(AppName::<a href="#type-application_name">application_name()</a>) -&gt; <a href="#type-string_application_name">string_application_name()</a></tt><br></p>
 <p> </p>
-</div><p>Returns a string version of specified application name.</p>
+</div><p>Returns a string version of the specified application name.</p>
 
 <h3 class="function"><a name="get_supervisor_settings-2">get_supervisor_settings/2</a></h3>
 <div class="spec">
@@ -335,7 +340,7 @@ start module/arguments; this is not necessary though, as application:start/1
 seems able to support non-active applications, and for active ones to trigger 
 by itself the right start call.</p>
 
- Application information is now cached, so that base applications (ex: kernel)
+ Application information is now cached, so that base applications (e.g. kernel)
  are not repeatedly searched, but just once.
 </p>
 

@@ -28,15 +28,15 @@ is bound to result in a badarg.</p>
 being generated and used at runtime) and/or be generated and stored in an 
 actual BEAM file, for a later direct (re)loading thereof.</p>
 
- <p>No ETS table, replication (ex: per-user table copy) or message sending is 
+ <p>No ETS table, replication (e.g. per-user table copy) or message sending is 
 involved: thanks to meta-programming, a module is generated on-the-fly, 
 exporting as many functions as there are different keys in the entries of 
 interest; calling a function corresponding to a key returns the associated 
 value.</p>
 
- More precisely, a module name (ex: 'foobar') and a list of <code>{atom(), any()}</code>
+ More precisely, a module name (e.g. 'foobar') and a list of <code>{atom(), any()}</code>
  entries are provided to the <code>const_table:generate*/*</code> functions; for each
- key/value pair in the specified entries (ex: <code>{</code>baz', 42.0}'), a 0-arity
+ key/value pair in the specified entries (e.g. <code>{</code>baz', 42.0}'), a 0-arity
  function is generated and exported in that module, as if we had:<pre> -module(foobar).
 
  [...]
@@ -158,7 +158,7 @@ key.</p>
 entries by exporting as many functions named according to the keys, and 
 returning the value corresponding to the selected key.</p>
 
- Note that no actual module file is generated (ex: no 'foobar.beam'), the
+ Note that no actual module file is generated (e.g. no 'foobar.beam'), the
  operation remains fully in-memory.
 </p>
 <hr>

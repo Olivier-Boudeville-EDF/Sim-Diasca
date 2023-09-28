@@ -61,7 +61,7 @@ format.</p>
 
 <h3 class="typedecl"><a name="type-form">form()</a></h3>
 <p><tt>form() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/erl_parse.html#type-abstract_form">erl_parse:abstract_form()</a> | <a href="http://www.erlang.org/edoc/doc/stdlib/doc/erl_parse.html#type-form_info">erl_parse:form_info()</a></tt></p>
-<p> Abstract form, part of an AST (ex: <code>{attribute,40,file,{"foo.erl",40}}</code>).</p>
+<p> Abstract form, part of an AST (e.g. <code>{attribute,40,file,{"foo.erl",40}}</code>).</p>
 
 <h3 class="typedecl"><a name="type-form_context">form_context()</a></h3>
 <p><tt>form_context() = <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>(<a href="#type-file_loc">file_loc()</a>)</tt></p>
@@ -69,7 +69,7 @@ format.</p>
 
 <h3 class="typedecl"><a name="type-form_element">form_element()</a></h3>
 <p><tt>form_element() = any()</tt></p>
-<p> An element (a part) of a form (ex: a clause of a function definition).</p>
+<p> An element (a part) of a form (e.g. a clause of a function definition).</p>
 
 <h3 class="typedecl"><a name="type-form_location">form_location()</a></h3>
 <p><tt>form_location() = <a href="id_utils.html#type-sortable_id">id_utils:sortable_id()</a></tt></p>
@@ -85,7 +85,7 @@ later, according to their original position in a source AST.</p>
 
 <h3 class="typedecl"><a name="type-source_context">source_context()</a></h3>
 <p><tt>source_context() = {<a href="file_utils.html#type-filename">file_utils:filename()</a>, <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>(<a href="#type-file_loc">file_loc()</a>)}</tt></p>
-<p> In-source context (typically to report errors); ex: <code>{"foo.erl",{112,4}}</code>.</p>
+<p> In-source context (typically to report errors); e.g. <code>{"foo.erl",{112,4}}</code>.</p>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

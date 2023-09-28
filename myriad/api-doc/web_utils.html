@@ -48,7 +48,7 @@
 <p><p> The API endpoint (with no deployment-related prefix such as 
 "https://francecentral.") of a given service.</p>
 
- Ex: <code>&lt;&lt;"api.cognitive.microsoft.com/sts/v1.0/issuetoken"&gt;&gt;</code>.</p>
+ For example <code>&lt;&lt;"api.cognitive.microsoft.com/sts/v1.0/issuetoken"&gt;&gt;</code>.</p>
 
 <h3 class="typedecl"><a name="type-azure_instance_info">azure_instance_info()</a></h3>
 <p><tt>azure_instance_info() = #azure_instance_info{instance_key = <a href="web_utils.html#type-azure_instance_key">web_utils:azure_instance_key()</a>, instance_location = <a href="web_utils.html#type-azure_instance_location">web_utils:azure_instance_location()</a>}</tt></p>
@@ -58,12 +58,12 @@
 <h3 class="typedecl"><a name="type-azure_instance_key">azure_instance_key()</a></h3>
 <p><tt>azure_instance_key() = <a href="#type-instance_key">instance_key()</a></tt></p>
 <p> The key of a Microsoft Azure instance.
- Ex: <code>&lt;&lt;"a59c98302e7f4a22be4b355125df8e9"&gt;&gt;</code>.</p>
+ For example <code>&lt;&lt;"a59c98302e7f4a22be4b355125df8e9"&gt;&gt;</code>.</p>
 
 <h3 class="typedecl"><a name="type-azure_instance_location">azure_instance_location()</a></h3>
 <p><tt>azure_instance_location() = <a href="#type-bin_string">bin_string()</a></tt></p>
 <p> The location of a Microsoft Azure instance.
- Ex: <code>&lt;&lt;"francecentral"&gt;&gt;</code>.</p>
+ For example <code>&lt;&lt;"francecentral"&gt;&gt;</code>.</p>
 
 <h3 class="typedecl"><a name="type-bin_body">bin_body()</a></h3>
 <p><tt>bin_body() = binary()</tt></p>
@@ -120,10 +120,10 @@
 
 <h3 class="typedecl"><a name="type-html_element">html_element()</a></h3>
 <p><tt>html_element() = <a href="#type-any_string">any_string()</a></tt></p>
-<p> Ex: "<p>Hello!</p>".</p>
+<p> For example "<p>Hello!</p>".</p>
 
 <h3 class="typedecl"><a name="type-http_option">http_option()</a></h3>
-<p><tt>http_option() = <a href="http://www.erlang.org/edoc/doc/inets/doc/httpc.html#type-http_option">httpc:http_option()</a></tt></p>
+<p><tt>http_option() = any()</tt></p>
 
 
 <h3 class="typedecl"><a name="type-http_options">http_options()</a></h3>
@@ -141,7 +141,7 @@
 <h3 class="typedecl"><a name="type-instance_key">instance_key()</a></h3>
 <p><tt>instance_key() = <a href="#type-bin_string">bin_string()</a></tt></p>
 <p> The key of an instance hosted by a cloud provider.
- Ex: <code>&lt;&lt;"a59c98302e7f4a22be4b355125df8e9"&gt;&gt;</code>.</p>
+ For example <code>&lt;&lt;"a59c98302e7f4a22be4b355125df8e9"&gt;&gt;</code>.</p>
 
 <h3 class="typedecl"><a name="type-json_body">json_body()</a></h3>
 <p><tt>json_body() = <a href="#type-body">body()</a></tt></p>
@@ -156,14 +156,14 @@
 
 
 <h3 class="typedecl"><a name="type-map_options">map_options()</a></h3>
-<p><tt>map_options() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/maps.html#type-maps">maps:maps</a>(atom(), term())</tt></p>
+<p><tt>map_options() = <a href="#type-table">table()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-media_type">media_type()</a></h3>
 <p><tt>media_type() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/unicode.html#type-chardata">unicode:chardata()</a></tt></p>
 <p><p> A media type (formerly known as "MIME type").</p>
 
- <p>Ex: "audio/ogg".</p>
+ <p>For example "audio/ogg".</p>
 
  Refer to <a href="https://en.wikipedia.org/wiki/Media_type" target="_top"><tt>https://en.wikipedia.org/wiki/Media_type</tt></a>.</p>
 
@@ -208,7 +208,7 @@
 <p><tt>service_endpoint() = <a href="#type-bin_string">bin_string()</a></tt></p>
 <p><p> The full, readily usable endpoint of a given service.</p>
 
- Ex:
+ For example
  <code>&lt;&lt;"https://francecentral.api.cognitive.microsoft.com/sts/v1.0/issuetoken"&gt;&gt;</code>.</p>
 
 <h3 class="typedecl"><a name="type-ssl_opt">ssl_opt()</a></h3>
@@ -243,6 +243,9 @@
 <table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#cloud_instance_info_to_string-1">cloud_instance_info_to_string/1</a></td><td>Returns a textual description of the specified cloud instance.</td></tr>
 <tr><td valign="top"><a href="#download_file-2">download_file/2</a></td><td>Downloads the file designated by the specified URL, in the specified 
 directory (under its name in URL), with no specific HTTP options, and returns 
+the corresponding full path of that file.</td></tr>
+<tr><td valign="top"><a href="#download_file-3">download_file/3</a></td><td>Downloads the file designated by specified URL, in the specified 
+directory (under its name in URL), with specified HTTP options, and returns 
 the corresponding full path of that file.</td></tr>
 <tr><td valign="top"><a href="#encode_as_url-1">encode_as_url/1</a></td><td>Encodes specified list of {Key, Value} pairs so that it can used into an 
 URL.</td></tr>
@@ -301,8 +304,26 @@ fragment.</td></tr>
 directory (under its name in URL), with no specific HTTP options, and returns 
 the corresponding full path of that file.</p>
 
- <p>Ex: web_utils:download_file(_Url="https://foobar.org/baz.txt",   
+ <p>For example web_utils:download_file(_Url="https://foobar.org/baz.txt",   
 _TargetDir="/tmp") shall result in a "/tmp/baz.txt" file.</p>
+
+ Starts, if needed, the HTTP and SSL supports as a side effect.
+</p>
+
+<h3 class="function"><a name="download_file-3">download_file/3</a></h3>
+<div class="spec">
+<p><tt>download_file(Url::<a href="#type-url">url()</a>, TargetDir::<a href="#type-any_directory_path">any_directory_path()</a>, HttpOptions::<a href="#type-http_options">http_options()</a>) -&gt; <a href="#type-file_path">file_path()</a></tt><br></p>
+<p> </p>
+</div><p><p>Downloads the file designated by specified URL, in the specified 
+directory (under its name in URL), with specified HTTP options, and returns 
+the corresponding full path of that file.</p>
+
+ <p>Popular settings are HttpOptions = [{ssl,get_ssl_verify_options()}] to avoid 
+any Man-in-the-Middle attack about any target HTTPS server (in addition to TLS 
+protection against "casual" eavesdroppers).</p>
+
+ <p>For example web_utils:download_file(_Url="https://foobar.org/baz.txt",   
+_TargetDir="/tmp", HttpOptions  shall result in a "/tmp/baz.txt" file.</p>
 
  Starts, if needed, the HTTP and SSL supports as a side effect.
 </p>
@@ -373,7 +394,7 @@ URL.</p>
  <p>For HTTPS requests, we recommend that the HttpOptions include a {ssl, 
 web_utils:get_ssl_verify_options()} pair.</p>
 
- For more advanced uses (ex: re-using of permanent connections, HTTP/2, etc.),
+ For more advanced uses (e.g. re-using of permanent connections, HTTP/2, etc.),
  consider relying on Gun or Shotgun.
 </p>
 
@@ -400,7 +421,7 @@ web_utils:get_ssl_verify_options()} pair.</p>
 </div><p><p>Returns the last element, the final path "filename" pointed by specified 
 URL.</p>
 
- Ex: "hello.txt" = web_utils:get_last_path_element(
+ For example "hello.txt" = web_utils:get_last_path_element(
                          "http://www.foobar.org/baz/hello.txt" )
 </p>
 
@@ -473,7 +494,7 @@ connections:</p>
  <p>For HTTPS requests, we recommend that the HttpOptions include a {ssl, 
 web_utils:get_ssl_verify_options()} pair.</p>
 
- For more advanced uses (ex: re-using of permanent connections, HTTP/2, etc.),
+ For more advanced uses (e.g. re-using of permanent connections, HTTP/2, etc.),
  consider relying on Gun or Shotgun.
 </p>
 
@@ -492,7 +513,7 @@ rather than string ones.</p>
  <p>For HTTPS requests, we recommend that the HttpOptions include a {ssl, 
 web_utils:get_ssl_verify_options()} pair.</p>
 
- For more advanced uses (ex: re-using of permanent connections, HTTP/2, etc.),
+ For more advanced uses (e.g. re-using of permanent connections, HTTP/2, etc.),
  consider relying on Gun or Shotgun.
 </p>
 
@@ -511,7 +532,7 @@ rather than string ones.</p>
  <p>For HTTPS requests, we recommend that the HttpOptions include a {ssl, 
 web_utils:get_ssl_verify_options()} pair.</p>
 
- For more advanced uses (ex: re-using of permanent connections, HTTP/2, etc.),
+ For more advanced uses (e.g. re-using of permanent connections, HTTP/2, etc.),
  consider relying on Gun or Shotgun.
 </p>
 
@@ -526,7 +547,7 @@ web_utils:get_ssl_verify_options()} pair.</p>
  <p>For HTTPS requests, we recommend that the HttpOptions include a {ssl, 
 web_utils:get_ssl_verify_options()} pair.</p>
 
- For more advanced uses (ex: re-using of permanent connections, HTTP/2, etc.),
+ For more advanced uses (e.g. re-using of permanent connections, HTTP/2, etc.),
  consider relying on Gun or Shotgun.
 </p>
 

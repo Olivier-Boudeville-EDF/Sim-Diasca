@@ -1,0 +1,207 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module gui_frame</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module gui_frame</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various facilities for <b>frames</b>, which are windows 
+whose size and position can usually be changed by the user.
+
+
+<h2><a name="description">Description</a></h2><p>Gathering of various facilities for <b>frames</b>, which are windows 
+whose size and position can usually be changed by the user.</p>
+
+ See also the gui_window module.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-frame">frame()</a></h3>
+<p><b>abstract datatype</b>: <tt>frame()</tt></p>
+<p><p> A frame is a window whose size and position can usually be changed by the 
+user.</p>
+
+ <p>Note that a frame is a top_level_window(), a window() and an event_handler(), 
+and thus can use their methods.</p>
+
+ At least on some platforms, while initialising a frame, an older graphical
+ content can be seen for a short while, before the first repaint. No amount of
+ wxWindow:{clearBackground,refresh,update}/1 or buffer swapping was able to
+ hide it.</p>
+
+<h3 class="typedecl"><a name="type-frame_style">frame_style()</a></h3>
+<p><tt>frame_style() = default | caption | minimize_icon | maximize_icon | close_icon | stay_on_top | system_menu | resize_border | tool_window | no_taskbar | float_on_parent | shaped</tt></p>
+
+
+<h3 class="typedecl"><a name="type-id">id()</a></h3>
+<p><tt>id() = <a href="gui_id.html#type-id">gui_id:id()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-parent">parent()</a></h3>
+<p><tt>parent() = <a href="gui.html#type-parent">gui:parent()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-position">position()</a></h3>
+<p><tt>position() = <a href="gui.html#type-position">gui:position()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-size">size()</a></h3>
+<p><tt>size() = <a href="gui.html#type-size">gui:size()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-title">title()</a></h3>
+<p><tt>title() = <a href="gui.html#type-title">gui:title()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-top_level_frame">top_level_frame()</a></h3>
+<p><b>abstract datatype</b>: <tt>top_level_frame()</tt></p>
+<p> A top-level (application-wide) frame.</p>
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#create-0">create/0</a></td><td>Creates a frame, with default title, identifier, parent, position, size 
+and style.</td></tr>
+<tr><td valign="top"><a href="#create-1">create/1</a></td><td>Creates a titled frame, with default position, size, style, identifier
+ and parent.</td></tr>
+<tr><td valign="top"><a href="#create-2">create/2</a></td><td>Creates a frame, with the specified title and size, and default
+ identifier and parent.</td></tr>
+<tr><td valign="top"><a href="#create-3">create/3</a></td><td>Creates a frame, with default position, size and style.</td></tr>
+<tr><td valign="top"><a href="#create-4">create/4</a></td><td>Creates a frame, with the specified title, position, size and style, and
+ with a default parent.</td></tr>
+<tr><td valign="top"><a href="#create-6">create/6</a></td><td>Creates a frame, with the specified title, position, size and style, and
+ with the specified parent.</td></tr>
+<tr><td valign="top"><a href="#create_top_level-1">create_top_level/1</a></td><td>Creates a top-level frame, with default position, size, style and
+ identifier.</td></tr>
+<tr><td valign="top"><a href="#create_top_level-2">create_top_level/2</a></td><td>Creates a top-level frame, with the specified size, and a default
+ identifier.</td></tr>
+<tr><td valign="top"><a href="#create_top_level-4">create_top_level/4</a></td><td>Creates a top-level frame, with the specified title, position, size and
+ style.</td></tr>
+<tr><td valign="top"><a href="#destruct-1">destruct/1</a></td><td>Destructs the specified frame.</td></tr>
+<tr><td valign="top"><a href="#is_fullscreen-1">is_fullscreen/1</a></td><td>Returns whether the specified top-level frame is fullscreen.</td></tr>
+<tr><td valign="top"><a href="#set_fullscreen-2">set_fullscreen/2</a></td><td>Shows the specified top-level frame to fullscreen (if true) or restores 
+it to its normal state (if false).</td></tr>
+<tr><td valign="top"><a href="#show-1">show/1</a></td><td>Shows (renders) the specified frame.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="create-0">create/0</a></h3>
+<div class="spec">
+<p><tt>create() -&gt; <a href="#type-frame">frame()</a></tt><br></p>
+<p> </p>
+</div><p><p>Creates a frame, with default title, identifier, parent, position, size 
+and style.</p>
+
+ Note: this version apparently does not correctly initialise the frame;
+ following error is indeed reported: "wxWidgets Assert failure:
+ ./src/gtk/toplevel.cpp(988): \"m_widget\" in Show() : invalid frame".
+</p>
+
+<h3 class="function"><a name="create-1">create/1</a></h3>
+<div class="spec">
+<p><tt>create(Title::<a href="#type-title">title()</a>) -&gt; <a href="#type-frame">frame()</a></tt><br></p>
+<p> </p>
+</div><p>Creates a titled frame, with default position, size, style, identifier
+ and parent.
+</p>
+
+<h3 class="function"><a name="create-2">create/2</a></h3>
+<div class="spec">
+<p><tt>create(Title::<a href="#type-title">title()</a>, Size::<a href="#type-size">size()</a>) -&gt; <a href="#type-frame">frame()</a></tt><br></p>
+<p> </p>
+</div><p>Creates a frame, with the specified title and size, and default
+ identifier and parent.
+</p>
+
+<h3 class="function"><a name="create-3">create/3</a></h3>
+<div class="spec">
+<p><tt>create(Title::<a href="#type-title">title()</a>, Id::<a href="#type-id">id()</a>, MaybeParent::<a href="#type-maybe">maybe</a>(<a href="#type-parent">parent()</a>)) -&gt; <a href="#type-frame">frame()</a></tt><br></p>
+<p> </p>
+</div><p>Creates a frame, with default position, size and style.</p>
+
+<h3 class="function"><a name="create-4">create/4</a></h3>
+<div class="spec">
+<p><tt>create(Title::<a href="#type-title">title()</a>, Position::<a href="#type-position">position()</a>, Size::<a href="#type-size">size()</a>, Styles::[<a href="#type-frame_style">frame_style()</a>]) -&gt; <a href="#type-frame">frame()</a></tt><br></p>
+<p> </p>
+</div><p>Creates a frame, with the specified title, position, size and style, and
+ with a default parent.
+</p>
+
+<h3 class="function"><a name="create-6">create/6</a></h3>
+<div class="spec">
+<p><tt>create(Title::<a href="#type-title">title()</a>, Position::<a href="#type-position">position()</a>, Size::<a href="#type-size">size()</a>, Styles::[<a href="#type-frame_style">frame_style()</a>], Id::<a href="#type-id">id()</a>, MaybeParent::<a href="#type-maybe">maybe</a>(<a href="#type-parent">parent()</a>)) -&gt; <a href="#type-frame">frame()</a></tt><br></p>
+<p> </p>
+</div><p>Creates a frame, with the specified title, position, size and style, and
+ with the specified parent.
+</p>
+
+<h3 class="function"><a name="create_top_level-1">create_top_level/1</a></h3>
+<div class="spec">
+<p><tt>create_top_level(Title::<a href="#type-title">title()</a>) -&gt; <a href="#type-top_level_frame">top_level_frame()</a></tt><br></p>
+<p> </p>
+</div><p>Creates a top-level frame, with default position, size, style and
+ identifier.
+</p>
+
+<h3 class="function"><a name="create_top_level-2">create_top_level/2</a></h3>
+<div class="spec">
+<p><tt>create_top_level(Title::<a href="#type-title">title()</a>, Size::<a href="#type-size">size()</a>) -&gt; <a href="#type-top_level_frame">top_level_frame()</a></tt><br></p>
+<p> </p>
+</div><p>Creates a top-level frame, with the specified size, and a default
+ identifier.
+</p>
+
+<h3 class="function"><a name="create_top_level-4">create_top_level/4</a></h3>
+<div class="spec">
+<p><tt>create_top_level(Title::<a href="#type-title">title()</a>, Position::<a href="#type-position">position()</a>, Size::<a href="#type-size">size()</a>, Style::<a href="#type-frame_style">frame_style()</a>) -&gt; <a href="#type-top_level_frame">top_level_frame()</a></tt><br></p>
+<p> </p>
+</div><p>Creates a top-level frame, with the specified title, position, size and
+ style.
+</p>
+
+<h3 class="function"><a name="destruct-1">destruct/1</a></h3>
+<div class="spec">
+<p><tt>destruct(Frame::<a href="#type-frame">frame()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Destructs the specified frame.</p>
+
+<h3 class="function"><a name="is_fullscreen-1">is_fullscreen/1</a></h3>
+<div class="spec">
+<p><tt>is_fullscreen(TopLvlFrame::<a href="#type-top_level_frame">top_level_frame()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Returns whether the specified top-level frame is fullscreen.</p>
+
+<h3 class="function"><a name="set_fullscreen-2">set_fullscreen/2</a></h3>
+<div class="spec">
+<p><tt>set_fullscreen(TopLvlFrame::<a href="#type-top_level_frame">top_level_frame()</a>, ForceFullscreen::boolean()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Shows the specified top-level frame to fullscreen (if true) or restores 
+it to its normal state (if false).</p>
+
+ <p>Showing a frame full screen also actually shows the frame if it is not already 
+shown. Any menu bar is then hidden.</p>
+
+ Returns (supposedly) whether the operation succeeded.
+</p>
+
+<h3 class="function"><a name="show-1">show/1</a></h3>
+<div class="spec">
+<p><tt>show(FrameMaybeList::<a href="#type-frame">frame()</a> | [<a href="#type-frame">frame()</a>]) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p><p>Shows (renders) the specified frame.</p>
+
+ <p>Returns whether anything had to be done.</p>
+
+ This is the place where all widgets resolve their positions, sizes and
+ contents.
+</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

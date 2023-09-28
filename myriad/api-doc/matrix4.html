@@ -21,17 +21,13 @@
 
 <h2><a name="types">Data Types</a></h2>
 
-<h3 class="typedecl"><a name="type-any_degrees">any_degrees()</a></h3>
-<p><tt>any_degrees() = <a href="unit_utils.html#type-any_degrees">unit_utils:any_degrees()</a></tt></p>
-
-
 <h3 class="typedecl"><a name="type-canonical_matrix4">canonical_matrix4()</a></h3>
 <p><tt>canonical_matrix4() = #matrix4{m11 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m12 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m13 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m14 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m21 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m22 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m23 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m24 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m31 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m32 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m33 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m34 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m41 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m42 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m43 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m44 = <a href="linear.html#type-coordinate">linear:coordinate()</a>}</tt></p>
 <p> Alias for 4x4 canonical matrices.</p>
 
 <h3 class="typedecl"><a name="type-compact_matrix4">compact_matrix4()</a></h3>
 <p><tt>compact_matrix4() = #compact_matrix4{m11 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m12 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m13 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, tx = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m21 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m22 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m23 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, ty = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m31 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m32 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, m33 = <a href="linear.html#type-coordinate">linear:coordinate()</a>, tz = <a href="linear.html#type-coordinate">linear:coordinate()</a>}</tt></p>
-<p> Aliases for 4x4 compact matrices.</p>
+<p> Alias for 4x4 compact matrices.</p>
 
 <h3 class="typedecl"><a name="type-coordinate">coordinate()</a></h3>
 <p><tt>coordinate() = <a href="linear.html#type-coordinate">linear:coordinate()</a></tt></p>
@@ -45,13 +41,15 @@
 <p><tt>dimensions() = <a href="matrix.html#type-dimensions">matrix:dimensions()</a></tt></p>
 
 
-<h3 class="typedecl"><a name="type-distance">distance()</a></h3>
-<p><tt>distance() = <a href="linear.html#type-distance">linear:distance()</a></tt></p>
-
-
 <h3 class="typedecl"><a name="type-factor">factor()</a></h3>
 <p><tt>factor() = <a href="math_utils.html#type-factor">math_utils:factor()</a></tt></p>
 
+
+<h3 class="typedecl"><a name="type-homogeneous_matrix4">homogeneous_matrix4()</a></h3>
+<p><tt>homogeneous_matrix4() = identity_4 | <a href="#type-compact_matrix4">compact_matrix4()</a></tt></p>
+<p><p> A matrix4 that corresponds to an homogeneous one.</p>
+
+ So we do not expect canonical matrices here.</p>
 
 <h3 class="typedecl"><a name="type-matrix">matrix()</a></h3>
 <p><tt>matrix() = <a href="matrix.html#type-matrix">matrix:matrix()</a></tt></p>
@@ -63,7 +61,7 @@
 
 <h3 class="typedecl"><a name="type-matrix4">matrix4()</a></h3>
 <p><tt>matrix4() = identity_4 | <a href="#type-canonical_matrix4">canonical_matrix4()</a> | <a href="#type-compact_matrix4">compact_matrix4()</a></tt></p>
-
+<p> A 4x4 matrix.</p>
 
 <h3 class="typedecl"><a name="type-point3">point3()</a></h3>
 <p><tt>point3() = <a href="point3.html#type-point3">point3:point3()</a></tt></p>
@@ -77,10 +75,6 @@
 <p><tt>radians() = <a href="unit_utils.html#type-radians">unit_utils:radians()</a></tt></p>
 
 
-<h3 class="typedecl"><a name="type-ratio">ratio()</a></h3>
-<p><tt>ratio() = <a href="math_utils.html#type-ratio">math_utils:ratio()</a></tt></p>
-
-
 <h3 class="typedecl"><a name="type-rot_matrix4">rot_matrix4()</a></h3>
 <p><tt>rot_matrix4() = <a href="#type-canonical_matrix4">canonical_matrix4()</a></tt></p>
 <p> A matrix describing a 4D rotation.</p>
@@ -89,13 +83,18 @@
 <p><tt>scalar() = <a href="linear.html#type-scalar">linear:scalar()</a></tt></p>
 
 
-<h3 class="typedecl"><a name="type-signed_distance">signed_distance()</a></h3>
-<p><tt>signed_distance() = <a href="linear.html#type-signed_distance">linear:signed_distance()</a></tt></p>
+<h3 class="typedecl"><a name="type-transition_matrix4">transition_matrix4()</a></h3>
+<p><tt>transition_matrix4() = <a href="#type-homogeneous_matrix4">homogeneous_matrix4()</a></tt></p>
+<p><p> An homogeneous matrix4 that corresponds to a transition from a 3D referential 
+to another.</p>
 
+ It can be represented as an orthogonal compact matrix, made of the following
+ four (3D) rows, in that order: I, J, K and O, for the three unit axes and the
+ origin.</p>
 
 <h3 class="typedecl"><a name="type-tuple_matrix4">tuple_matrix4()</a></h3>
-<p><tt>tuple_matrix4() = <a href="http://www.erlang.org/edoc/doc/wx/doc/gl.html#type-m12">gl:m12()</a> | <a href="http://www.erlang.org/edoc/doc/wx/doc/gl.html#type-m16">gl:m16()</a></tt></p>
-<p> A tuple of 12 or 16 floats.</p>
+<p><tt>tuple_matrix4() = <a href="type_utils.html#type-tuple">type_utils:tuple</a>(<a href="#type-coordinate">coordinate()</a>, 12) | <a href="type_utils.html#type-tuple">type_utils:tuple</a>(<a href="#type-coordinate">coordinate()</a>, 16)</tt></p>
+<p> A tuple of 12 or 16 coordinates.</p>
 
 <h3 class="typedecl"><a name="type-unit_vector3">unit_vector3()</a></h3>
 <p><tt>unit_vector3() = <a href="vector3.html#type-unit_vector3">vector3:unit_vector3()</a></tt></p>
@@ -135,12 +134,13 @@ specified matrix M: returns M.V or M.P.</td></tr>
 <tr><td valign="top"><a href="#column-2">column/2</a></td><td>Returns the specified column of the specified matrix.</td></tr>
 <tr><td valign="top"><a href="#comatrix-1">comatrix/1</a></td><td>Returns the comatrix of the specified matrix (that is the matrix of its
  cofactors).</td></tr>
+<tr><td valign="top"><a href="#compact_column-2">compact_column/2</a></td><td>Returns the specified column of the specified compactmatrix.</td></tr>
 <tr><td valign="top"><a href="#compact_from_columns-4">compact_from_columns/4</a></td><td>Returns the 4x4 compact matrix whose columns correspond to the specified 
 3 vectors and 1 point (all expressed as 3D ones).</td></tr>
 <tr><td valign="top"><a href="#determinant-1">determinant/1</a></td><td>Returns the determinant of the specified matrix.</td></tr>
 <tr><td valign="top"><a href="#dimension-0">dimension/0</a></td><td>Returns the dimension of these matrices.</td></tr>
 <tr><td valign="top"><a href="#dimensions-0">dimensions/0</a></td><td>Returns the dimensions of these matrices.</td></tr>
-<tr><td valign="top"><a href="#from_3D-2">from_3D/2</a></td><td>Returns the 4x4 compact matrix obtained from specified 3x3 matrix and
+<tr><td valign="top"><a href="#from_3D-2">from_3D/2</a></td><td>Returns the 4x4 compact matrix obtained from the specified 3x3 matrix and
  3D (translation) vector.</td></tr>
 <tr><td valign="top"><a href="#from_arbitrary-1">from_arbitrary/1</a></td><td>Returns the 4x4 matrix corresponding to the specified
  arbitrary-dimensioned matrix.</td></tr>
@@ -153,8 +153,10 @@ vectors.</td></tr>
 <tr><td valign="top"><a href="#from_rows-4">from_rows/4</a></td><td>Returns the 4x4 matrix whose rows correspond to the specified 4 4D 
 vectors.</td></tr>
 <tr><td valign="top"><a href="#from_tuple-1">from_tuple/1</a></td><td>Returns a matrix corresponding to the specified tuple-based one.</td></tr>
-<tr><td valign="top"><a href="#frustum-6">frustum/6</a></td><td>Returns a matrix for perspective projection corresponding to the 
-specified settings.</td></tr>
+<tr><td valign="top"><a href="#get_column_i-1">get_column_i/1</a></td><td>Returns the first (3D) column of the specified transition matrix.</td></tr>
+<tr><td valign="top"><a href="#get_column_j-1">get_column_j/1</a></td><td>Returns the second (3D) column of the specified transition matrix.</td></tr>
+<tr><td valign="top"><a href="#get_column_k-1">get_column_k/1</a></td><td>Returns the third (3D) column of the specified transition matrix.</td></tr>
+<tr><td valign="top"><a href="#get_column_o-1">get_column_o/1</a></td><td>Returns the fourth (3D) column of the specified transition matrix.</td></tr>
 <tr><td valign="top"><a href="#get_element-3">get_element/3</a></td><td>Returns the element at specified row and column of the specified matrix.</td></tr>
 <tr><td valign="top"><a href="#identity-0">identity/0</a></td><td>Returns the identity (4x4) matrix.</td></tr>
 <tr><td valign="top"><a href="#inverse-1">inverse/1</a></td><td>Returns the inverse of the specified matrix, if it is invertible (that is
@@ -166,17 +168,38 @@ specified settings.</td></tr>
 <tr><td valign="top"><a href="#new-3">new/3</a></td><td>Returns a 4D compact matrix corresponding to the user-specified
  row vectors.</td></tr>
 <tr><td valign="top"><a href="#null-0">null/0</a></td><td>Returns the null (4x4) matrix.</td></tr>
-<tr><td valign="top"><a href="#orthographic-6">orthographic/6</a></td><td>Returns a matrix for orthographic projection corresponding to the 
-specified settings.</td></tr>
-<tr><td valign="top"><a href="#perspective-4">perspective/4</a></td><td>Returns a matrix for perspective projection corresponding to the 
-specified settings.</td></tr>
+<tr><td valign="top"><a href="#rotate_homogeneous-3">rotate_homogeneous/3</a></td><td>Updates the specified matrix, considered to be an homogeneous 
+transformation one, by applying on its right the specified rotation.</td></tr>
 <tr><td valign="top"><a href="#rotation-2">rotation/2</a></td><td>Returns the (4x4) homogeneous (thus compact) matrix corresponding to a 
 rotation of the specified angle around the 3D axis specified as a unit vector, 
 and to no translation.</td></tr>
 <tr><td valign="top"><a href="#row-2">row/2</a></td><td>Returns the specified row of the specified matrix.</td></tr>
-<tr><td valign="top"><a href="#scale-2">scale/2</a></td><td>Scales specified (4D) matrix of the specified factor.</td></tr>
+<tr><td valign="top"><a href="#scale-2">scale/2</a></td><td>Scales the specified (4D) matrix of the specified factor.</td></tr>
+<tr><td valign="top"><a href="#scale_homogeneous-2">scale_homogeneous/2</a></td><td>Updates the specified matrix, considered to be an homogeneous
+ transformation one, by applying the specified (uniform) shearing factor to the
+ top-left 3x3 matrix (rightmost column not modified).</td></tr>
+<tr><td valign="top"><a href="#scale_homogeneous_x-2">scale_homogeneous_x/2</a></td><td>Updates the specified matrix, considered to be an homogeneous
+ transformation one, by applying the specified (uniform) shearing factor to the
+ leftmost column (X) of the top-left 3x3 matrix (rightmost column of the 4x4
+ matrix not modified).</td></tr>
+<tr><td valign="top"><a href="#scale_homogeneous_y-2">scale_homogeneous_y/2</a></td><td>Updates the specified matrix, considered to be an homogeneous
+ transformation one, by applying the specified (uniform) shearing factor to the
+ middle column (Y) of the top-left 3x3 matrix (rightmost column of the 4x4
+ matrix not modified).</td></tr>
+<tr><td valign="top"><a href="#scale_homogeneous_z-2">scale_homogeneous_z/2</a></td><td>Updates the specified matrix, considered to be an homogeneous
+ transformation one, by applying the specified (uniform) shearing factor to the
+ righttmost column (Z) of the top-left 3x3 matrix (rightmost column of the 4x4
+ matrix not modified).</td></tr>
 <tr><td valign="top"><a href="#scaling-1">scaling/1</a></td><td>Returns the (4x4) homogeneous (thus compact) matrix corresponding to the
  scaling of the specified factors.</td></tr>
+<tr><td valign="top"><a href="#set_column_i-2">set_column_i/2</a></td><td>Returns the specified transition matrix once its first (3D) column has
+ been updated with the specified one.</td></tr>
+<tr><td valign="top"><a href="#set_column_j-2">set_column_j/2</a></td><td>Returns the specified transition matrix once its second (3D) column has
+ been updated with the specified one.</td></tr>
+<tr><td valign="top"><a href="#set_column_k-2">set_column_k/2</a></td><td>Returns the specified transition matrix once its third (3D) column has
+ been updated with the specified one.</td></tr>
+<tr><td valign="top"><a href="#set_column_o-2">set_column_o/2</a></td><td>Returns the specified transition matrix once its fourth (3D) column has
+ been updated with the specified one.</td></tr>
 <tr><td valign="top"><a href="#set_element-4">set_element/4</a></td><td>Returns a matrix identical to the specified one except that its specified
  element at specified location has been set to the specified value.</td></tr>
 <tr><td valign="top"><a href="#sub-2">sub/2</a></td><td>Returns the subtraction of the two specified matrices: M = Ma - Mb.</td></tr>
@@ -186,6 +209,10 @@ and to no translation.</td></tr>
 <tr><td valign="top"><a href="#to_compact-1">to_compact/1</a></td><td>Returns the compact form of the specified (4x4) matrix.</td></tr>
 <tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td>Returns a textual representation of the specified (4x4) matrix.</td></tr>
 <tr><td valign="top"><a href="#to_tuple-1">to_tuple/1</a></td><td>Returns a tuple-based version of the specified matrix.</td></tr>
+<tr><td valign="top"><a href="#transition-4">transition/4</a></td><td>Returns the 4x4 matrix from the current referential to one in which the 
+origin and axes of the current referential are expressed.</td></tr>
+<tr><td valign="top"><a href="#translate_homogeneous-2">translate_homogeneous/2</a></td><td>Updates the translation part of the specified matrix, considered to be an 
+homogeneous transformation one, by adding it the specified vector.</td></tr>
 <tr><td valign="top"><a href="#translation-1">translation/1</a></td><td>Returns the (4x4) homogeneous (thus compact) matrix corresponding to a
  translation of the specified vector.</td></tr>
 <tr><td valign="top"><a href="#transpose-1">transpose/1</a></td><td>Returns the transpose of the specified matrix.</td></tr>
@@ -244,6 +271,12 @@ coordinate resulting from the application of that extended point.</p>
  cofactors).
 </p>
 
+<h3 class="function"><a name="compact_column-2">compact_column/2</a></h3>
+<div class="spec">
+<p><tt>compact_column(ColumnCount::<a href="#type-dimension">dimension()</a>, Compact_matrix4::<a href="#type-compact_matrix4">compact_matrix4()</a>) -&gt; <a href="#type-vector3">vector3()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the specified column of the specified compactmatrix.</p>
+
 <h3 class="function"><a name="compact_from_columns-4">compact_from_columns/4</a></h3>
 <div class="spec">
 <p><tt>compact_from_columns(Va::<a href="#type-vector3">vector3()</a>, Vb::<a href="#type-vector3">vector3()</a>, Vc::<a href="#type-vector3">vector3()</a>, P::<a href="#type-point3">point3()</a>) -&gt; <a href="#type-compact_matrix4">compact_matrix4()</a></tt><br></p>
@@ -286,7 +319,7 @@ coordinate resulting from the application of that extended point.</p>
 <div class="spec">
 <p><tt>from_3D(Matrix3::<a href="#type-matrix3">matrix3()</a>, Vec3::<a href="#type-vector3">vector3()</a>) -&gt; <a href="#type-compact_matrix4">compact_matrix4()</a></tt><br></p>
 <p> </p>
-</div><p>Returns the 4x4 compact matrix obtained from specified 3x3 matrix and
+</div><p>Returns the 4x4 compact matrix obtained from the specified 3x3 matrix and
  3D (translation) vector.
 </p>
 
@@ -351,25 +384,31 @@ vectors.</p>
  The elements are expected to be already floats().
 </p>
 
-<h3 class="function"><a name="frustum-6">frustum/6</a></h3>
+<h3 class="function"><a name="get_column_i-1">get_column_i/1</a></h3>
 <div class="spec">
-<p><tt>frustum(Left::<a href="#type-coordinate">coordinate()</a>, Right::<a href="#type-coordinate">coordinate()</a>, Bottom::<a href="#type-coordinate">coordinate()</a>, Top::<a href="#type-coordinate">coordinate()</a>, ZNear::<a href="#type-distance">distance()</a>, ZFar::<a href="#type-distance">distance()</a>) -&gt; <a href="#type-matrix4">matrix4()</a></tt><br></p>
+<p><tt>get_column_i(CptMatrix::<a href="#type-transition_matrix4">transition_matrix4()</a>) -&gt; <a href="#type-unit_vector3">unit_vector3()</a></tt><br></p>
 <p> </p>
-</div><p><p>Returns a matrix for perspective projection corresponding to the 
-specified settings.</p>
+</div><p>Returns the first (3D) column of the specified transition matrix.</p>
 
- <p>Parameters are:  
-- Left and Right are the coordinates for the left and right vertical clipping 
-planes  
-- Bottom and Top are the coordinates for the bottom and top horizontal 
-clipping planes  
-- ZNear specifies the distance from the viewer to the near clipping plane  
-(always strictly positive)  
-- ZFar specifies the distance from the viewer to the far clipping plane  
-(always positive)</p>
+<h3 class="function"><a name="get_column_j-1">get_column_j/1</a></h3>
+<div class="spec">
+<p><tt>get_column_j(CptMatrix::<a href="#type-transition_matrix4">transition_matrix4()</a>) -&gt; <a href="#type-unit_vector3">unit_vector3()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the second (3D) column of the specified transition matrix.</p>
 
- Note that the context is a right-handed referential with a clip space in
- [-1.0, 1.0].
+<h3 class="function"><a name="get_column_k-1">get_column_k/1</a></h3>
+<div class="spec">
+<p><tt>get_column_k(CptMatrix::<a href="#type-transition_matrix4">transition_matrix4()</a>) -&gt; <a href="#type-unit_vector3">unit_vector3()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the third (3D) column of the specified transition matrix.</p>
+
+<h3 class="function"><a name="get_column_o-1">get_column_o/1</a></h3>
+<div class="spec">
+<p><tt>get_column_o(CptMatrix::<a href="#type-transition_matrix4">transition_matrix4()</a>) -&gt; <a href="#type-vector3">vector3()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the fourth (3D) column of the specified transition matrix.</p>
+
+ This one is generally not a unit vector.
 </p>
 
 <h3 class="function"><a name="get_element-3">get_element/3</a></h3>
@@ -398,7 +437,7 @@ clipping planes
 <p> </p>
 </div><p><p>Multiplies (in-order) the specified matrices.</p>
 
- Ex: mult([Ma, Mb, Mc]) = mult(mult(Ma,Mb),Mc) = Ma.Mb.Mc
+ For example mult([Ma, Mb, Mc]) = mult(mult(Ma,Mb),Mc) = Ma.Mb.Mc
 </p>
 
 <h3 class="function"><a name="mult-2">mult/2</a></h3>
@@ -429,48 +468,14 @@ clipping planes
 <p> </p>
 </div><p>Returns the null (4x4) matrix.</p>
 
-<h3 class="function"><a name="orthographic-6">orthographic/6</a></h3>
+<h3 class="function"><a name="rotate_homogeneous-3">rotate_homogeneous/3</a></h3>
 <div class="spec">
-<p><tt>orthographic(Left::<a href="#type-coordinate">coordinate()</a>, Right::<a href="#type-coordinate">coordinate()</a>, Bottom::<a href="#type-coordinate">coordinate()</a>, Top::<a href="#type-coordinate">coordinate()</a>, ZNear::<a href="#type-signed_distance">signed_distance()</a>, ZFar::<a href="#type-signed_distance">signed_distance()</a>) -&gt; <a href="#type-compact_matrix4">compact_matrix4()</a></tt><br></p>
+<p><tt>rotate_homogeneous(HM::<a href="#type-homogeneous_matrix4">homogeneous_matrix4()</a>, UnitAxis::<a href="#type-unit_vector3">unit_vector3()</a>, RadAngle::<a href="#type-radians">radians()</a>) -&gt; <a href="#type-homogeneous_matrix4">homogeneous_matrix4()</a></tt><br></p>
 <p> </p>
-</div><p><p>Returns a matrix for orthographic projection corresponding to the 
-specified settings.</p>
+</div><p><p>Updates the specified matrix, considered to be an homogeneous 
+transformation one, by applying on its right the specified rotation.</p>
 
- <p>Parameters are:  
-- Left and Right are the coordinates for the left and right vertical clipping 
-planes  
-- Bottom and Top are the coordinates for the bottom and top horizontal 
-clipping planes  
-- ZNear and ZFar are the signed distances to the nearer and farther depth  
-clipping planes; these values are negative if the plane is to be behind the  
-viewer</p>
-
- Note that the context is a right-handed referential with a clip space in
- [-1.0, 1.0].
-</p>
-
-<h3 class="function"><a name="perspective-4">perspective/4</a></h3>
-<div class="spec">
-<p><tt>perspective(FoVYAngle::<a href="#type-any_degrees">any_degrees()</a>, AspectRatio::<a href="#type-ratio">ratio()</a>, ZNear::<a href="#type-distance">distance()</a>, ZFar::<a href="#type-distance">distance()</a>) -&gt; <a href="#type-matrix4">matrix4()</a></tt><br></p>
-<p> </p>
-</div><p><p>Returns a matrix for perspective projection corresponding to the 
-specified settings.</p>
-
- <p>Parameters are:  
-- FoVYAngle is the field of view angle, in degrees, in the Y (vertical)  
-direction  
-- AspectRatio determines the field of view in the X (horizontal) direction:  
-AspectRatio = Width/Height  
-- ZNear specifies the distance from the viewer to the near clipping plane  
-(always strictly positive)  
-- ZFar specifies the distance from the viewer to the far clipping plane  
-(always positive)</p>
-
- <p>Ex: Mp = matrix4:perspective( _FoVYAngle=60.0,   
-_AspectRatio=WindowWidth/WindowHeight, _ZNear=1.0, _ZFar=100.0 )</p>
-
- Note that the context is a right-handed referential with a clip space in
- [-1.0, 1.0].
+ Returns therefore HM.RotM.
 </p>
 
 <h3 class="function"><a name="rotation-2">rotation/2</a></h3>
@@ -498,7 +503,46 @@ specified axis points towards it.</p>
 <div class="spec">
 <p><tt>scale(Compact_matrix4::<a href="#type-matrix4">matrix4()</a>, Factor::<a href="#type-factor">factor()</a>) -&gt; <a href="#type-matrix4">matrix4()</a></tt><br></p>
 <p> </p>
-</div><p>Scales specified (4D) matrix of the specified factor.</p>
+</div><p>Scales the specified (4D) matrix of the specified factor.</p>
+
+<h3 class="function"><a name="scale_homogeneous-2">scale_homogeneous/2</a></h3>
+<div class="spec">
+<p><tt>scale_homogeneous(HM::<a href="#type-homogeneous_matrix4">homogeneous_matrix4()</a>, Factor::<a href="#type-factor">factor()</a>) -&gt; <a href="#type-compact_matrix4">compact_matrix4()</a></tt><br></p>
+<p> </p>
+</div><p>Updates the specified matrix, considered to be an homogeneous
+ transformation one, by applying the specified (uniform) shearing factor to the
+ top-left 3x3 matrix (rightmost column not modified).
+</p>
+
+<h3 class="function"><a name="scale_homogeneous_x-2">scale_homogeneous_x/2</a></h3>
+<div class="spec">
+<p><tt>scale_homogeneous_x(HM::<a href="#type-homogeneous_matrix4">homogeneous_matrix4()</a>, Factor::<a href="#type-factor">factor()</a>) -&gt; <a href="#type-compact_matrix4">compact_matrix4()</a></tt><br></p>
+<p> </p>
+</div><p>Updates the specified matrix, considered to be an homogeneous
+ transformation one, by applying the specified (uniform) shearing factor to the
+ leftmost column (X) of the top-left 3x3 matrix (rightmost column of the 4x4
+ matrix not modified).
+</p>
+
+<h3 class="function"><a name="scale_homogeneous_y-2">scale_homogeneous_y/2</a></h3>
+<div class="spec">
+<p><tt>scale_homogeneous_y(HM::<a href="#type-homogeneous_matrix4">homogeneous_matrix4()</a>, Factor::<a href="#type-factor">factor()</a>) -&gt; <a href="#type-compact_matrix4">compact_matrix4()</a></tt><br></p>
+<p> </p>
+</div><p>Updates the specified matrix, considered to be an homogeneous
+ transformation one, by applying the specified (uniform) shearing factor to the
+ middle column (Y) of the top-left 3x3 matrix (rightmost column of the 4x4
+ matrix not modified).
+</p>
+
+<h3 class="function"><a name="scale_homogeneous_z-2">scale_homogeneous_z/2</a></h3>
+<div class="spec">
+<p><tt>scale_homogeneous_z(HM::<a href="#type-homogeneous_matrix4">homogeneous_matrix4()</a>, Factor::<a href="#type-factor">factor()</a>) -&gt; <a href="#type-compact_matrix4">compact_matrix4()</a></tt><br></p>
+<p> </p>
+</div><p>Updates the specified matrix, considered to be an homogeneous
+ transformation one, by applying the specified (uniform) shearing factor to the
+ righttmost column (Z) of the top-left 3x3 matrix (rightmost column of the 4x4
+ matrix not modified).
+</p>
 
 <h3 class="function"><a name="scaling-1">scaling/1</a></h3>
 <div class="spec">
@@ -507,6 +551,38 @@ specified axis points towards it.</p>
 <p> </p>
 </div><p>Returns the (4x4) homogeneous (thus compact) matrix corresponding to the
  scaling of the specified factors.
+</p>
+
+<h3 class="function"><a name="set_column_i-2">set_column_i/2</a></h3>
+<div class="spec">
+<p><tt>set_column_i(CptMatrix::<a href="#type-transition_matrix4">transition_matrix4()</a>, Column::<a href="#type-unit_vector3">unit_vector3()</a>) -&gt; <a href="#type-unit_vector3">unit_vector3()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the specified transition matrix once its first (3D) column has
+ been updated with the specified one.
+</p>
+
+<h3 class="function"><a name="set_column_j-2">set_column_j/2</a></h3>
+<div class="spec">
+<p><tt>set_column_j(CptMatrix::<a href="#type-transition_matrix4">transition_matrix4()</a>, Column::<a href="#type-unit_vector3">unit_vector3()</a>) -&gt; <a href="#type-unit_vector3">unit_vector3()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the specified transition matrix once its second (3D) column has
+ been updated with the specified one.
+</p>
+
+<h3 class="function"><a name="set_column_k-2">set_column_k/2</a></h3>
+<div class="spec">
+<p><tt>set_column_k(CptMatrix::<a href="#type-transition_matrix4">transition_matrix4()</a>, Column::<a href="#type-unit_vector3">unit_vector3()</a>) -&gt; <a href="#type-unit_vector3">unit_vector3()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the specified transition matrix once its third (3D) column has
+ been updated with the specified one.
+</p>
+
+<h3 class="function"><a name="set_column_o-2">set_column_o/2</a></h3>
+<div class="spec">
+<p><tt>set_column_o(CptMatrix::<a href="#type-transition_matrix4">transition_matrix4()</a>, Column::<a href="#type-unit_vector3">unit_vector3()</a>) -&gt; <a href="#type-unit_vector3">unit_vector3()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the specified transition matrix once its fourth (3D) column has
+ been updated with the specified one.
 </p>
 
 <h3 class="function"><a name="set_element-4">set_element/4</a></h3>
@@ -558,6 +634,29 @@ specified axis points towards it.</p>
 <p><tt>to_tuple(M::<a href="#type-matrix4">matrix4()</a>) -&gt; <a href="#type-tuple_matrix4">tuple_matrix4()</a></tt><br></p>
 <p> </p>
 </div><p>Returns a tuple-based version of the specified matrix.</p>
+
+<h3 class="function"><a name="transition-4">transition/4</a></h3>
+<div class="spec">
+<p><tt>transition(Origin::<a href="#type-point3">point3()</a>, X::<a href="#type-unit_vector3">unit_vector3()</a>, Y::<a href="#type-unit_vector3">unit_vector3()</a>, Z::<a href="#type-unit_vector3">unit_vector3()</a>) -&gt; <a href="#type-transition_matrix4">transition_matrix4()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the 4x4 matrix from the current referential to one in which the 
+origin and axes of the current referential are expressed.</p>
+
+ Refer to
+ http://howtos.esperide.org/ThreeDimensional.html#computing-transition-matrices
+ for further details.
+</p>
+
+<h3 class="function"><a name="translate_homogeneous-2">translate_homogeneous/2</a></h3>
+<div class="spec">
+<p><tt>translate_homogeneous(HM::<a href="#type-homogeneous_matrix4">homogeneous_matrix4()</a>, VT::<a href="#type-vector3">vector3()</a>) -&gt; <a href="#type-homogeneous_matrix4">homogeneous_matrix4()</a></tt><br></p>
+<p> </p>
+</div><p><p>Updates the translation part of the specified matrix, considered to be an 
+homogeneous transformation one, by adding it the specified vector.</p>
+
+ A lot more efficient than creating a dedicated translation matrix Mt and
+ returning HM.Mt.
+</p>
 
 <h3 class="function"><a name="translation-1">translation/1</a></h3>
 <div class="spec">

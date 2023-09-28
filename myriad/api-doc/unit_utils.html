@@ -19,11 +19,11 @@ one.
 first in a simple, ad hoc, limited form, then on a more formal, heavyweight 
 one.</p>
 
- <p>All kinds of units are listed here, alongside the reference ones (ex: the 
+ <p>All kinds of units are listed here, alongside the reference ones (e.g. the 
 meter is the unit of length in the International System of Units).</p>
 
- <p>One objective is to be able to specify, instead of mere values (ex: "1.14"), 
-values with units (ex: "1.14 km/h"), and possibly to convert them into a 
+ <p>One objective is to be able to specify, instead of mere values (e.g. "1.14"), 
+values with units (e.g. "1.14 km/h"), and possibly to convert them into a 
 canonical form transparently, for automated checking and exact conversion.</p>
 
  <p>See unit_utils_test.erl for the corresponding test.</p>
@@ -135,8 +135,16 @@ here</p>
 <p><tt>day() = integer()</tt></p>
 
 
+<h3 class="typedecl"><a name="type-day_in_the_year">day_in_the_year()</a></h3>
+<p><tt>day_in_the_year() = 1..366</tt></p>
+<p> Day in the (possibly leap) year.</p>
+
 <h3 class="typedecl"><a name="type-days">days()</a></h3>
 <p><tt>days() = integer()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-declination">declination()</a></h3>
+<p><tt>declination() = <a href="#type-degrees">degrees()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-degrees">degrees()</a></h3>
@@ -205,7 +213,7 @@ here</p>
 
 <h3 class="typedecl"><a name="type-exponent">exponent()</a></h3>
 <p><tt>exponent() = integer()</tt></p>
-<p> Exponentiation of a unit (ex: 2 for square meters, m^2).</p>
+<p> Exponentiation of a unit (e.g. 2 for square meters, m^2).</p>
 
 <h3 class="typedecl"><a name="type-float_second">float_second()</a></h3>
 <p><tt>float_second() = float()</tt></p>
@@ -270,8 +278,8 @@ here</p>
 <p><p> A geographic coordinate that specifies the north-south position of a point on 
 the surface of the Earth or another celestial body.</p>
 
- It is an angular measurement, usually expressed in degrees: latitude is given
- as an angle that ranges from -90° at the south pole to 90° at the north pole,
+ It is an angular measurement, expressed here in degrees: latitude is given as
+ an angle that ranges from -90° at the south pole to 90° at the north pole,
  with 0° at the Equator.</p>
 
 <h3 class="typedecl"><a name="type-length_reference_unit">length_reference_unit()</a></h3>
@@ -295,16 +303,16 @@ the surface of the Earth or another celestial body.</p>
 
 <h3 class="typedecl"><a name="type-litre">litre()</a></h3>
 <p><tt>litre() = float()</tt></p>
-
+<p> Thus dm^3.</p>
 
 <h3 class="typedecl"><a name="type-longitude">longitude()</a></h3>
 <p><tt>longitude() = <a href="#type-degrees">degrees()</a></tt></p>
 <p><p> A geographic coordinate that specifies the east-west position of a point on 
 the surface of the Earth, or another celestial body.</p>
 
- It is an angular measurement, usually expressed in degrees: longitude is given
- as an angle that ranges from 0° at the Prime Meridian to +180° eastward and
- -180° westward.</p>
+ It is an angular measurement, expressed here in degrees: longitude is given as
+ an angle that ranges from 0° at the Prime Meridian to +180° eastward and -180°
+ westward.</p>
 
 <h3 class="typedecl"><a name="type-magnitude_order">magnitude_order()</a></h3>
 <p><tt>magnitude_order() = integer()</tt></p>
@@ -400,8 +408,8 @@ the surface of the Earth, or another celestial body.</p>
 
 <h3 class="typedecl"><a name="type-non_standard_unit_symbol">non_standard_unit_symbol()</a></h3>
 <p><tt>non_standard_unit_symbol() = atom()</tt></p>
-<p> For non-SI units that cannot be anticipated (ex: teqCO2, singaporean dollar of
- 2012, number of people, etc.).</p>
+<p> For non-SI units that cannot be anticipated (e.g. teqCO2, singaporean dollar
+ of 2012, number of people, etc.).</p>
 
 <h3 class="typedecl"><a name="type-numerical_value">numerical_value()</a></h3>
 <p><tt>numerical_value() = float()</tt></p>
@@ -409,12 +417,13 @@ the surface of the Earth, or another celestial body.</p>
 
 <h3 class="typedecl"><a name="type-position">position()</a></h3>
 <p><tt>position() = {<a href="#type-latitude">latitude()</a>, <a href="#type-longitude">longitude()</a>}</tt></p>
-<p> A position on a round celestial body, typically the Earth.
+<p><p> A position on a round celestial body, typically the Earth.</p>
+
  No altitude/elevation.</p>
 
 <h3 class="typedecl"><a name="type-prefix_symbol">prefix_symbol()</a></h3>
 <p><tt>prefix_symbol() = <a href="#type-ustring">ustring()</a></tt></p>
-<p> Symbol of metric prefix (ex: "da" for 'deca').</p>
+<p> Symbol of metric prefix (e.g. "da" for 'deca').</p>
 
 <h3 class="typedecl"><a name="type-radians">radians()</a></h3>
 <p><tt>radians() = float()</tt></p>
@@ -442,7 +451,7 @@ the surface of the Earth, or another celestial body.</p>
 <p><tt>special_unit_symbol() = dimensionless | '$' | euros | unspecified_unit</tt></p>
 <p><p> The special units, designating:</p>
 
- <p>- dimension-less quantities (ex: a count), [dimensionless] (most probably 
+ <p>- dimension-less quantities (e.g. a count), [dimensionless] (most probably 
 clearer than m/m)</p>
 
  <p>- currencies, either [$] (US Dollar) or [euros] (Euro)</p>
@@ -483,7 +492,7 @@ clearer than m/m)</p>
 
 <h3 class="typedecl"><a name="type-unit_string">unit_string()</a></h3>
 <p><tt>unit_string() = <a href="#type-ustring">ustring()</a></tt></p>
-<p><p> String containing a unit, in standard form (ex: "km/h", "mW.m^-3").</p>
+<p><p> String containing a unit, in standard form (e.g. "km/h", "mW.m^-3").</p>
 
  Read the 'Management of Units' section of the technical manual of the Myriad
  Layer for more information.</p>
@@ -560,12 +569,10 @@ integer number of milliseconds.</td></tr>
 <tr><td valign="top"><a href="#meters_per_second_to_km_per_hour-1">meters_per_second_to_km_per_hour/1</a></td><td>Converts m/s to km/h.</td></tr>
 <tr><td valign="top"><a href="#meters_to_string-1">meters_to_string/1</a></td><td>Returns a textual, user-friendly, short (possibly rounded) description of 
 the specified distance.</td></tr>
-<tr><td valign="top"><a href="#parse_unit-1">parse_unit/1</a></td><td>Parses specified string, expected to contain a unit (ex: "kW.m/h^2"), and
- returns a canonical unit.</td></tr>
+<tr><td valign="top"><a href="#parse_unit-1">parse_unit/1</a></td><td>Parses the specified string, expected to contain a unit
+ (e.g.</td></tr>
 <tr><td valign="top"><a href="#parse_value_with_unit-1">parse_value_with_unit/1</a></td><td>Parses specified string (expected to be a unit_string()) containing a 
-value and its unit (ex: "-8.15 kW.m/h^2"), and returns them in a 
-program-tractable form, that is a pair made of the value (as a float) and the 
-corresponding unit, in canonical form.</td></tr>
+value and its unit (e.g.</td></tr>
 <tr><td valign="top"><a href="#position_to_string-1">position_to_string/1</a></td><td>Returns a textual description of the specified position.</td></tr>
 <tr><td valign="top"><a href="#pure_unit_to_string-1">pure_unit_to_string/1</a></td><td>Returns a textual representation of the raw unit only (factor and order 
 ignored) for the specified canonical unit.</td></tr>
@@ -628,7 +635,7 @@ order of magnitude.</p>
 and that this prefix is represented as "k".</p>
 
  We can see that a symbol may span over multiple characters (ex : "da") and
- even use non-ASCII characters (ex: "µ").
+ even use non-ASCII characters (e.g. "µ").
 </p>
 
 <h3 class="function"><a name="human_time_to_milliseconds-5">human_time_to_milliseconds/5</a></h3>
@@ -639,8 +646,9 @@ and that this prefix is represented as "k".</p>
 humans, typically obtained from time_utils:duration_to_string/1) into an 
 integer number of milliseconds.</p>
 
- Ex: "1 day, 12 hours, 31 minutes, 9 seconds and 235 milliseconds" translates
- to {1, 12, 31, 9, 235} which, applied to this function, returns milliseconds.
+ For example "1 day, 12 hours, 31 minutes, 9 seconds and 235 milliseconds"
+ translates to {1, 12, 31, 9, 235} which, applied to this function, returns
+ milliseconds.
 </p>
 
 <h3 class="function"><a name="is_canonical_unit-1">is_canonical_unit/1</a></h3>
@@ -691,8 +699,8 @@ the specified distance.</p>
 <div class="spec">
 <p><tt>parse_unit(UnitString::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-canonical_unit">canonical_unit()</a></tt><br></p>
 <p> </p>
-</div><p>Parses specified string, expected to contain a unit (ex: "kW.m/h^2"), and
- returns a canonical unit.
+</div><p>Parses the specified string, expected to contain a unit
+ (e.g. "kW.m/h^2"), and returns a canonical unit.
 </p>
 
 <h3 class="function"><a name="parse_value_with_unit-1">parse_value_with_unit/1</a></h3>
@@ -700,7 +708,7 @@ the specified distance.</p>
 <p><tt>parse_value_with_unit(InputString::<a href="#type-ustring">ustring()</a>) -&gt; {<a href="#type-numerical_value">numerical_value()</a>, <a href="#type-canonical_unit">canonical_unit()</a>}</tt><br></p>
 <p> </p>
 </div><p><p>Parses specified string (expected to be a unit_string()) containing a 
-value and its unit (ex: "-8.15 kW.m/h^2"), and returns them in a 
+value and its unit (e.g. "-8.15 kW.m/h^2"), and returns them in a 
 program-tractable form, that is a pair made of the value (as a float) and the 
 corresponding unit, in canonical form.</p>
 
@@ -708,18 +716,18 @@ corresponding unit, in canonical form.</p>
 
  <p>- any leading or trimming whitespace are ignored</p>
 
- <p>- a number, either as an integer (ex: "17") or as a floating point value (ex: 
-"17.0" or "2.2017764e+0"), possibly negative (hence starting with an optional 
-minus, ex: "-8.15")</p>
+ <p>- a number, either as an integer (e.g. "17") or as a floating point value 
+(e.g.  "17.0" or "2.2017764e+0"), possibly negative (hence starting with an 
+optional minus, e.g. "-8.15")</p>
 
  <p>- at least one whitespace</p>
 
- <p>- a unit (ex: "kW.m/h^2")</p>
+ <p>- a unit (e.g. "kW.m/h^2")</p>
 
  <p>Knowing that: 
-- a built-in unit is a base, derived, widely used, or special unit (ex: 'W') 
-- a prefixed unit is a built-in unit with a prefix (ex: 'kW') 
-- a unit component is a prefixed unit with an exponent (ex: 'km^-2') 
+- a built-in unit is a base, derived, widely used, or special unit (e.g. 'W') 
+- a prefixed unit is a built-in unit with a prefix (e.g. 'kW') 
+- a unit component is a prefixed unit with an exponent (e.g. 'km^-2') 
 - a unit operator is either '.' (dot, for multiply) or '/' (slash, for divide)</p>
 
  The general format of a unit is then: a series of unit components with one

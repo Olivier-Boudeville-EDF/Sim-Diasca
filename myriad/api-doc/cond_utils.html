@@ -38,8 +38,8 @@
 <p><p> A token (defined through the command-line), whose definition enables the 
 conditional execution of associated code.</p>
 
- Ex: a 'debug_gui' token would enable, if defined, associated code, like in:
- cond_utils:if_defined(debug_gui, [f(), A=B, g(C)]).</p>
+ For example a 'debug_gui' token would enable, if defined, associated code,
+ like in: cond_utils:if_defined(debug_gui, [f(), A=B, g(C)]).</p>
 
 <h3 class="typedecl"><a name="type-token_expr_table">token_expr_table()</a></h3>
 <p><tt>token_expr_table() = [{<a href="#type-token">token()</a>, <a href="#type-expression">expression()</a>}]</tt></p>
@@ -54,7 +54,7 @@ conditional execution of associated code.</p>
 <h3 class="typedecl"><a name="type-value">value()</a></h3>
 <p><tt>value() = term()</tt></p>
 <p> An (immediate) value associated to a token can actually of various types
- (ex: atom, integer; as a form of course), as translated by the compiler.</p>
+ (e.g. atom, integer; as a form of course), as translated by the compiler.</p>
 
 <h3 class="typedecl"><a name="type-void">void()</a></h3>
 <p><tt>void() = <a href="basic_utils.html#type-void">basic_utils:void()</a></tt></p>

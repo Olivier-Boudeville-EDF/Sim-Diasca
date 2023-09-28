@@ -15,11 +15,11 @@
 
 <h2><a name="description">Description</a></h2><p>Management of (higher-level) <b>widget identifiers</b>.</p>
 
- <p>User-defined identifiers can be introduced in order to simplify the 
-GUI-related processings.</p>
+ <p>User-defined, atom-based identifiers can be introduced in order to simplify 
+the GUI-related processings.</p>
 
  They can be managed thanks to a separate server (process), or directly through
- an embedded allocation table.
+ an embedded allocation table (like the MyriadGUI main loop).
 
 <h2><a name="types">Data Types</a></h2>
 
@@ -31,191 +31,332 @@ GUI-related processings.</p>
 <p><tt>bijective_table(F, S) = <a href="bijective_table.html#type-bijective_table">bijective_table:bijective_table</a>(F, S)</tt></p>
 
 
+<h3 class="typedecl"><a name="type-button_backend_id">button_backend_id()</a></h3>
+<p><tt>button_backend_id() = <a href="#type-backend_id">backend_id()</a></tt></p>
+<p> A backend-level button identifier.</p>
+
+<h3 class="typedecl"><a name="type-button_id">button_id()</a></h3>
+<p><tt>button_id() = <a href="#type-id">id()</a></tt></p>
+<p> An identifier of a button.</p>
+
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
 <p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-id">id()</a></h3>
 <p><tt>id() = <a href="#type-maybe">maybe</a>(<a href="#type-backend_id">backend_id()</a>) | <a href="#type-name_id">name_id()</a></tt></p>
-<p><p> Backend-specific object identifier.</p>
+<p><p> Object identifier, backend-specific or not.</p>
 
  <p>Defined here so that no user-level datastructure (like the event_context 
 public record) bears any trace of any GUI actual backend.</p>
 
- <p>'undefined' means that any identifier may be used, as chosen by the backend 
-rather than by the user.</p>
+ <p>An 'undefined' value means that any identifier may be used, as chosen by the 
+backend rather than by the user.</p>
 
- May not be defined if the actual event comes from MyriadGUI itself (and thus
- not wx).</p>
+ <p>May not be defined if the actual event comes from MyriadGUI itself (and thus 
+not wx).</p>
+
+ As a consequence, such an identifier can be 'undefined', 'my_action_id', 147,
+ and thus shall better be printed as "~w" (see id_to_string/1).</p>
 
 <h3 class="typedecl"><a name="type-id_allocator_pid">id_allocator_pid()</a></h3>
 <p><tt>id_allocator_pid() = pid()</tt></p>
-<p> The PID of a MyriadGUI allocator of unique object identifiers.</p>
+<p> The PID of a MyriadGUI allocator of (unique) object identifiers.</p>
+
+<h3 class="typedecl"><a name="type-id_allocator_ref">id_allocator_ref()</a></h3>
+<p><tt>id_allocator_ref() = <a href="#type-pid_ref">pid_ref()</a></tt></p>
+<p> Any kind of reference onto a MyriadGUI allocator of (unique) object
+ identifiers.</p>
 
 <h3 class="typedecl"><a name="type-id_name_alloc_table">id_name_alloc_table()</a></h3>
 <p><tt>id_name_alloc_table() = <a href="#type-bijective_table">bijective_table</a>(<a href="#type-name_id">name_id()</a>, <a href="#type-backend_id">backend_id()</a>)</tt></p>
-<p> A table to convert between name identifiers and backend ones.</p>
+<p> A table to convert between (MyriadGUI) name identifiers and backend ones.</p>
 
 <h3 class="typedecl"><a name="type-myriad_instance_id">myriad_instance_id()</a></h3>
 <p><tt>myriad_instance_id() = <a href="#type-count">count()</a></tt></p>
-<p><p> Myriad-specific instance identifier, corresponding a reference in the internal 
-MyriadGUI type table.</p>
+<p><p> Myriad-specific instance identifier, corresponding to a Myriad object 
+reference in the internal MyriadGUI type table.</p>
 
- This is a different identifier from id() or backend_id(): it is not a
- standalone, user-level symbol to be used to designate directly an instance,
- but a part of its internal technical reference (similar in spirit to the
- integer in wx object references, like {wx_ref,35,wxFrame,[]}).</p>
+ This is a different identifier from id(), name_id() or backend_id(): it is not
+ a standalone, user-level symbol to be used to designate directly an instance,
+ but a part of its internal technical reference, like in {myriad_object_ref,
+ myr_canvas, CanvasId} (similar in spirit to the integer in wx object
+ references, like {wx_ref, 35, wxFrame, []}).</p>
 
 <h3 class="typedecl"><a name="type-name_id">name_id()</a></h3>
 <p><tt>name_id() = atom()</tt></p>
-<p><p> A higher-level, user-defined identifier of a widget (ex: 'my_file_menu_id'), 
-as a name (an atom internally translated transparently to a relevant wx_id()).</p>
+<p><p> A higher-level, user-defined identifier of a widget as a name (an atom, 
+e.g. 'my_file_menu_id'); internally translated transparently to a relevant 
+backend identifier (wx_id()).</p>
 
  The 'undefined' atom is reserved.</p>
+
+<h3 class="typedecl"><a name="type-pid_ref">pid_ref()</a></h3>
+<p><tt>pid_ref() = <a href="type_utils.html#type-pid_ref">type_utils:pid_ref()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
 
 <h3 class="typedecl"><a name="type-wx_id">wx_id()</a></h3>
 <p><tt>wx_id() = <a href="gui_wx_backend.html#type-wx_id">gui_wx_backend:wx_id()</a></tt></p>
 <p> Just an integer.</p>
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#allocate_id-0">allocate_id/0</a></td><td>Returns a new, original (never used) unnamed backend object identifier,
- obtained from the MyriadGUI identifier allocator.</td></tr>
-<tr><td valign="top"><a href="#allocate_id-1">allocate_id/1</a></td><td>Returns a new, original (never used) unnamed backend object identifier,
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#allocate_backend_id-0">allocate_backend_id/0</a></td><td>Returns a new, original (never used) unnamed backend object identifier,
+ obtained from the MyriadGUI identifier allocator (if any).</td></tr>
+<tr><td valign="top"><a href="#allocate_backend_id-1">allocate_backend_id/1</a></td><td>Returns a new, original (never used) unnamed backend object identifier,
  obtained from the specified identifier allocator.</td></tr>
-<tr><td valign="top"><a href="#allocate_ids-1">allocate_ids/1</a></td><td>Returns the specified number of new, original (never used) unnamed
- backend object identifiers, obtained from the MyriadGUI identifier allocator.</td></tr>
-<tr><td valign="top"><a href="#allocate_ids-2">allocate_ids/2</a></td><td>the specified number of new, original (never used) unnamed backend object
- identifiers, obtained from the specified identifier allocator.</td></tr>
-<tr><td valign="top"><a href="#create_id_allocator-0">create_id_allocator/0</a></td><td>Uses the calling process so that it becomes the identifier allocator.</td></tr>
-<tr><td valign="top"><a href="#declare_id-1">declare_id/1</a></td><td>Declares the specified named identifier, so that it becomes registered by 
-the MyriadGUI identifier allocator, and returns the associated backend object 
-identifier.</td></tr>
-<tr><td valign="top"><a href="#declare_id-2">declare_id/2</a></td><td>Declares the specified named identifier, so that it becomes registered by 
+<tr><td valign="top"><a href="#allocate_backend_ids-1">allocate_backend_ids/1</a></td><td>Returns the specified number of new, original (never used) unnamed
+ backend object identifiers, obtained from the MyriadGUI identifier allocator
+ (if any).</td></tr>
+<tr><td valign="top"><a href="#allocate_backend_ids-2">allocate_backend_ids/2</a></td><td>Returns the specified number of new, original (never used) unnamed
+ backend object identifiers, obtained from the specified identifier allocator.</td></tr>
+<tr><td valign="top"><a href="#declare_any_id-1">declare_any_id/1</a></td><td>Returns a backend-specific widget identifier associated to the specified 
+new identifier, expected not to have already been declared.</td></tr>
+<tr><td valign="top"><a href="#declare_name_id-1">declare_name_id/1</a></td><td>Declares the specified named identifier, so that it becomes registered by 
+the MyriadGUI identifier allocator (if any), and returns the associated 
+backend object identifier.</td></tr>
+<tr><td valign="top"><a href="#declare_name_id-2">declare_name_id/2</a></td><td>Declares the specified named identifier, so that it becomes registered by 
 the specified identifier allocator, and returns the associated backend object 
 identifier.</td></tr>
-<tr><td valign="top"><a href="#declare_ids-1">declare_ids/1</a></td><td>Declares the specified named identifiers, so that they become registered 
-by the MyriadGUI identifier allocator.</td></tr>
-<tr><td valign="top"><a href="#declare_ids-2">declare_ids/2</a></td><td>Declares the specified named identifiers, so that they become registered 
+<tr><td valign="top"><a href="#declare_name_id_internal-3">declare_name_id_internal/3</a></td><td>Declares the specified name identifier internally (directly from the 
+current process), possibly enriching the specified name allocation table, 
+returning updated information, notably the corresponding backend identifier.</td></tr>
+<tr><td valign="top"><a href="#declare_name_ids-1">declare_name_ids/1</a></td><td>Declares the specified named identifiers, so that they become registered 
+by the MyriadGUI identifier allocator (if any).</td></tr>
+<tr><td valign="top"><a href="#declare_name_ids-2">declare_name_ids/2</a></td><td>Declares the specified named identifiers, so that they become registered 
 by the specified identifier allocator.</td></tr>
+<tr><td valign="top"><a href="#embody_as_id_allocator-0">embody_as_id_allocator/0</a></td><td>Uses the calling process so that it becomes the identifier allocator.</td></tr>
+<tr><td valign="top"><a href="#get_any_id-0">get_any_id/0</a></td><td>Returns an unconstrained identifier, whose value is left free.</td></tr>
+<tr><td valign="top"><a href="#get_best_button_id_internal-2">get_best_button_id_internal/2</a></td><td>Tries to resolve the specified lower-level, backend-specific identifier
+ supposedly of a button internally (directly from the current process): returns
+ any corresponding named one, otherwise returns that backend identifier as it
+ is.</td></tr>
+<tr><td valign="top"><a href="#get_best_id-1">get_best_id/1</a></td><td>Returns the best (highest-level) identifier for the specified backend
+ one, from the MyriadGUI identifier allocator (if any): if able to determine a
+ name identifier for it, returns it, otherwise returns said backend identifier
+ as it is.</td></tr>
+<tr><td valign="top"><a href="#get_best_id-2">get_best_id/2</a></td><td>Returns the best (highest-level) identifier for the specified backend
+ one, from the specified identifier allocator: if able to determine a name
+ identifier for it, returns it, otherwise returns said backend identifier as it
+ is.</td></tr>
+<tr><td valign="top"><a href="#get_best_id_internal-2">get_best_id_internal/2</a></td><td>Tries to resolve the specified lower-level, backend-specific identifier,
+ internally (directly from the current process): returns any corresponding
+ named one, otherwise returns that backend identifier as it is.</td></tr>
+<tr><td valign="top"><a href="#get_best_menu_item_id_internal-2">get_best_menu_item_id_internal/2</a></td><td>Tries to resolve the specified lower-level, backend-specific identifier
+ supposedly of a menu item, internally (directly from the current process):
+ returns any corresponding named one, otherwise returns that backend identifier
+ as it is.</td></tr>
 <tr><td valign="top"><a href="#get_first_allocatable_id-0">get_first_allocatable_id/0</a></td><td>Returns the first backend-specific widget identifier that may be
  allocated by MyriadGUI.</td></tr>
-<tr><td valign="top"><a href="#get_id_allocator_pid-0">get_id_allocator_pid/0</a></td><td>Returns the PID of the unique backend identifier allocator.</td></tr>
 <tr><td valign="top"><a href="#get_initial_allocation_table-0">get_initial_allocation_table/0</a></td><td>Returns the initial allocation table for named identifiers.</td></tr>
-<tr><td valign="top"><a href="#resolve_id-1">resolve_id/1</a></td><td>Returns the low-level backend object identifier corresponding to the
+<tr><td valign="top"><a href="#get_maybe_name_id-1">get_maybe_name_id/1</a></td><td>Returns any MyriadGUI name identifier associated to the specified 
+backend-specific widget identifier.</td></tr>
+<tr><td valign="top"><a href="#id_to_string-1">id_to_string/1</a></td><td>Returns a textual representation of the specified object identifier.</td></tr>
+<tr><td valign="top"><a href="#maybe_resolve_backend_id-1">maybe_resolve_backend_id/1</a></td><td>Tries to resolve the specified backend identifier into a named one,
+ otherwise returns 'undefined', based on the MyriadGUI identifier allocator (if
+ any).</td></tr>
+<tr><td valign="top"><a href="#maybe_resolve_backend_id_internal-2">maybe_resolve_backend_id_internal/2</a></td><td>Tries to resolve the specified backend-specific identifier into a 
+higher-level named identifier, internally (directly from the current process): 
+returns any corresponding named one.</td></tr>
+<tr><td valign="top"><a href="#resolve_any_id-1">resolve_any_id/1</a></td><td>Returns a backend identifier corresponding to the specified identifier of 
+any type (MyriadGUI name identifier, possibly an undefined one, or already a 
+backend identifier).</td></tr>
+<tr><td valign="top"><a href="#resolve_named_id-1">resolve_named_id/1</a></td><td>Returns the low-level backend object identifier corresponding to the
  specified named identifier, which is expected to be already registered by the
- MyriadGUI identifier allocator.</td></tr>
-<tr><td valign="top"><a href="#resolve_id-2">resolve_id/2</a></td><td>Returns the low-level backend object identifier corresponding to the
+ MyriadGUI identifier allocator (if any).</td></tr>
+<tr><td valign="top"><a href="#resolve_named_id-2">resolve_named_id/2</a></td><td>Returns the low-level backend object identifier corresponding to the
  specified named identifier, which is expected to be already registered by the
  specified identifier allocator.</td></tr>
-<tr><td valign="top"><a href="#resolve_ids-1">resolve_ids/1</a></td><td>Returns the low-level backend object identifiers corresponding to the
+<tr><td valign="top"><a href="#resolve_named_id_internal-2">resolve_named_id_internal/2</a></td><td>Resolves the specified name identifier into a backend one, internally 
+(directly from the current process), from the specified name allocation table.</td></tr>
+<tr><td valign="top"><a href="#resolve_named_ids-1">resolve_named_ids/1</a></td><td>Returns the low-level backend object identifiers corresponding to the
  specified named identifiers, which are expected to be already registered by
- the MyriadGUI identifier allocator.</td></tr>
-<tr><td valign="top"><a href="#resolve_ids-2">resolve_ids/2</a></td><td>Returns the low-level backend object identifiers corresponding to the
+ the MyriadGUI identifier allocator (if any).</td></tr>
+<tr><td valign="top"><a href="#resolve_named_ids-2">resolve_named_ids/2</a></td><td>Returns the low-level backend object identifiers corresponding to the
  specified named identifiers, which are expected to be already registered by
  the specified identifier allocator.</td></tr>
-<tr><td valign="top"><a href="#try_resolve_id-1">try_resolve_id/1</a></td><td>Tries to resolve the specified lower-level, backend-specific identifier:
- returns any corresponding named one, otherwise returns that backend identifier
- as it is.</td></tr>
-<tr><td valign="top"><a href="#try_resolve_id-2">try_resolve_id/2</a></td><td>Tries to resolve the specified lower-level, backend-specific identifier:
- returns any corresponding named one, otherwise returns that backend identifier
- as it is.</td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
-<h3 class="function"><a name="allocate_id-0">allocate_id/0</a></h3>
+<h3 class="function"><a name="allocate_backend_id-0">allocate_backend_id/0</a></h3>
 <div class="spec">
-<p><tt>allocate_id() -&gt; <a href="#type-backend_id">backend_id()</a></tt><br></p>
+<p><tt>allocate_backend_id() -&gt; <a href="#type-backend_id">backend_id()</a></tt><br></p>
 <p> </p>
 </div><p>Returns a new, original (never used) unnamed backend object identifier,
- obtained from the MyriadGUI identifier allocator.
+ obtained from the MyriadGUI identifier allocator (if any).
 </p>
 
-<h3 class="function"><a name="allocate_id-1">allocate_id/1</a></h3>
+<h3 class="function"><a name="allocate_backend_id-1">allocate_backend_id/1</a></h3>
 <div class="spec">
-<p><tt>allocate_id(IdAllocPid::<a href="#type-id_allocator_pid">id_allocator_pid()</a>) -&gt; <a href="#type-backend_id">backend_id()</a></tt><br></p>
+<p><tt>allocate_backend_id(IdAllocRef::<a href="#type-id_allocator_ref">id_allocator_ref()</a>) -&gt; <a href="#type-backend_id">backend_id()</a></tt><br></p>
 <p> </p>
 </div><p>Returns a new, original (never used) unnamed backend object identifier,
  obtained from the specified identifier allocator.
 </p>
 
-<h3 class="function"><a name="allocate_ids-1">allocate_ids/1</a></h3>
+<h3 class="function"><a name="allocate_backend_ids-1">allocate_backend_ids/1</a></h3>
 <div class="spec">
-<p><tt>allocate_ids(Count::<a href="#type-count">count()</a>) -&gt; [<a href="#type-backend_id">backend_id()</a>]</tt><br></p>
+<p><tt>allocate_backend_ids(Count::<a href="#type-count">count()</a>) -&gt; [<a href="#type-backend_id">backend_id()</a>]</tt><br></p>
 <p> </p>
 </div><p>Returns the specified number of new, original (never used) unnamed
- backend object identifiers, obtained from the MyriadGUI identifier allocator.
+ backend object identifiers, obtained from the MyriadGUI identifier allocator
+ (if any).
 </p>
 
-<h3 class="function"><a name="allocate_ids-2">allocate_ids/2</a></h3>
+<h3 class="function"><a name="allocate_backend_ids-2">allocate_backend_ids/2</a></h3>
 <div class="spec">
-<p><tt>allocate_ids(Count::<a href="#type-count">count()</a>, IdAllocPid::<a href="#type-id_allocator_pid">id_allocator_pid()</a>) -&gt; [<a href="#type-backend_id">backend_id()</a>]</tt><br></p>
+<p><tt>allocate_backend_ids(Count::<a href="#type-count">count()</a>, IdAllocRef::<a href="#type-id_allocator_ref">id_allocator_ref()</a>) -&gt; [<a href="#type-backend_id">backend_id()</a>]</tt><br></p>
 <p> </p>
-</div><p>the specified number of new, original (never used) unnamed backend object
- identifiers, obtained from the specified identifier allocator.
+</div><p>Returns the specified number of new, original (never used) unnamed
+ backend object identifiers, obtained from the specified identifier allocator.
 </p>
 
-<h3 class="function"><a name="create_id_allocator-0">create_id_allocator/0</a></h3>
+<h3 class="function"><a name="declare_any_id-1">declare_any_id/1</a></h3>
 <div class="spec">
-<p><tt>create_id_allocator() -&gt; no_return()</tt><br></p>
+<p><tt>declare_any_id(Id::<a href="#type-id">id()</a>) -&gt; <a href="#type-backend_id">backend_id()</a></tt><br></p>
 <p> </p>
-</div><p><p>Uses the calling process so that it becomes the identifier allocator.</p>
+</div><p><p>Returns a backend-specific widget identifier associated to the specified 
+new identifier, expected not to have already been declared.</p>
 
- <p>At least currently, with wx, no service seems to be provided in order to 
-generate unique user-level wx_id(), so we provide ours.</p>
-
- <p>Otherwise the user would have to hardcode its own identifiers (ex: for menu 
-items), which is fragile and error-prone.</p>
-
- Note that the standard name/id associations (typically the standard menu
- items, like 'undo_menu_item') are reserved and automatically registered.
+ Specifying a name identifier requires interacting with the MyriadGUI process
+ in charge of the identifier allocation.
 </p>
 
-<h3 class="function"><a name="declare_id-1">declare_id/1</a></h3>
+<h3 class="function"><a name="declare_name_id-1">declare_name_id/1</a></h3>
 <div class="spec">
-<p><tt>declare_id(NameId::<a href="#type-name_id">name_id()</a>) -&gt; <a href="#type-backend_id">backend_id()</a></tt><br></p>
+<p><tt>declare_name_id(NameId::<a href="#type-name_id">name_id()</a>) -&gt; <a href="#type-backend_id">backend_id()</a></tt><br></p>
 <p> </p>
 </div><p><p>Declares the specified named identifier, so that it becomes registered by 
-the MyriadGUI identifier allocator, and returns the associated backend object 
-identifier.</p>
+the MyriadGUI identifier allocator (if any), and returns the associated 
+backend object identifier.</p>
 
  Note that the standard name/id association (typically the standard menu items
- like 'undo_menu_item') are reserved and already registered.
+ like 'undo_menu_item') are reserved (but not already registered).
 </p>
 
-<h3 class="function"><a name="declare_id-2">declare_id/2</a></h3>
+<h3 class="function"><a name="declare_name_id-2">declare_name_id/2</a></h3>
 <div class="spec">
-<p><tt>declare_id(NameId::<a href="#type-name_id">name_id()</a>, IdAllocPid::<a href="#type-id_allocator_pid">id_allocator_pid()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>declare_name_id(NameId::<a href="#type-name_id">name_id()</a>, IdAllocRef::<a href="#type-id_allocator_ref">id_allocator_ref()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p><p>Declares the specified named identifier, so that it becomes registered by 
 the specified identifier allocator, and returns the associated backend object 
 identifier.</p>
 
+ Note that the standard name/id association (typically the standard menu items
+ like 'undo_menu_item') are reserved (but not already registered).
+</p>
+
+<h3 class="function"><a name="declare_name_id_internal-3">declare_name_id_internal/3</a></h3>
+<div class="spec">
+<p><tt>declare_name_id_internal(NameId::<a href="#type-name_id">name_id()</a>, NextId::<a href="#type-backend_id">backend_id()</a>, NameTable::<a href="#type-id_name_alloc_table">id_name_alloc_table()</a>) -&gt; {<a href="#type-backend_id">backend_id()</a>, <a href="#type-backend_id">backend_id()</a>, <a href="#type-id_name_alloc_table">id_name_alloc_table()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Declares the specified name identifier internally (directly from the 
+current process), possibly enriching the specified name allocation table, 
+returning updated information, notably the corresponding backend identifier.</p>
+
+ Typically called directly through the MyriadGUI main loop (thus without
+ involving messages), which takes care of the identifier management as well.
+</p>
+
+<h3 class="function"><a name="declare_name_ids-1">declare_name_ids/1</a></h3>
+<div class="spec">
+<p><tt>declare_name_ids(NameIds::[<a href="#type-name_id">name_id()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Declares the specified named identifiers, so that they become registered 
+by the MyriadGUI identifier allocator (if any).</p>
+
  Note that the standard name/id associations (typically the standard menu
  items, like 'undo_menu_item') are reserved and automatically registered.
 </p>
 
-<h3 class="function"><a name="declare_ids-1">declare_ids/1</a></h3>
+<h3 class="function"><a name="declare_name_ids-2">declare_name_ids/2</a></h3>
 <div class="spec">
-<p><tt>declare_ids(NameIds::[<a href="#type-name_id">name_id()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
-<p> </p>
-</div><p><p>Declares the specified named identifiers, so that they become registered 
-by the MyriadGUI identifier allocator.</p>
-
- <p>Note that the standard name/id associations (typically the standard menu 
-items, like 'undo_menu_item') are reserved and automatically registered.</p>
-
-</p>
-
-<h3 class="function"><a name="declare_ids-2">declare_ids/2</a></h3>
-<div class="spec">
-<p><tt>declare_ids(NameIds::[<a href="#type-name_id">name_id()</a>], IdAllocPid::<a href="#type-id_allocator_pid">id_allocator_pid()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>declare_name_ids(NameIds::[<a href="#type-name_id">name_id()</a>], IdAllocRef::<a href="#type-id_allocator_ref">id_allocator_ref()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p><p>Declares the specified named identifiers, so that they become registered 
 by the specified identifier allocator.</p>
 
  Note that the standard name/id associations (typically the standard menu
  items, like 'undo_menu_item') are reserved and automatically registered.
+</p>
+
+<h3 class="function"><a name="embody_as_id_allocator-0">embody_as_id_allocator/0</a></h3>
+<div class="spec">
+<p><tt>embody_as_id_allocator() -&gt; no_return()</tt><br></p>
+<p> </p>
+</div><p><p>Uses the calling process so that it becomes the identifier allocator.</p>
+
+ <p>At least currently, with wx, no service seems to be provided in order to 
+generate unique user-level wx_id(), so we provide ours.</p>
+
+ <p>Otherwise the user would have to hardcode their own identifiers (e.g. for menu 
+items), which is fragile and error-prone.</p>
+
+ <p>Note that the standard name/id associations (typically the standard buttons / 
+menu items, like 'zoom_factor_one' or 'undo_menu_item') are reserved and 
+automatically registered.</p>
+
+ This created identifier allocator shall be best looked-up thanks to the
+ gui:get_id_allocator_pid/{0,1} functions.
+</p>
+
+<h3 class="function"><a name="get_any_id-0">get_any_id/0</a></h3>
+<div class="spec">
+<p><tt>get_any_id() -&gt; <a href="#type-id">id()</a></tt><br></p>
+<p> </p>
+</div><p>Returns an unconstrained identifier, whose value is left free.</p>
+
+<h3 class="function"><a name="get_best_button_id_internal-2">get_best_button_id_internal/2</a></h3>
+<div class="spec">
+<p><tt>get_best_button_id_internal(BackendId::<a href="#type-backend_id">backend_id()</a>, NameTable::<a href="#type-id_name_alloc_table">id_name_alloc_table()</a>) -&gt; <a href="#type-id">id()</a></tt><br></p>
+<p> </p>
+</div><p>Tries to resolve the specified lower-level, backend-specific identifier
+ supposedly of a button internally (directly from the current process): returns
+ any corresponding named one, otherwise returns that backend identifier as it
+ is.
+</p>
+
+<h3 class="function"><a name="get_best_id-1">get_best_id/1</a></h3>
+<div class="spec">
+<p><tt>get_best_id(BackendId::<a href="#type-backend_id">backend_id()</a>) -&gt; <a href="#type-id">id()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the best (highest-level) identifier for the specified backend
+ one, from the MyriadGUI identifier allocator (if any): if able to determine a
+ name identifier for it, returns it, otherwise returns said backend identifier
+ as it is.
+</p>
+
+<h3 class="function"><a name="get_best_id-2">get_best_id/2</a></h3>
+<div class="spec">
+<p><tt>get_best_id(BackendId::<a href="#type-backend_id">backend_id()</a>, IdAllocRef::<a href="#type-id_allocator_ref">id_allocator_ref()</a>) -&gt; <a href="#type-id">id()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the best (highest-level) identifier for the specified backend
+ one, from the specified identifier allocator: if able to determine a name
+ identifier for it, returns it, otherwise returns said backend identifier as it
+ is.
+</p>
+
+<h3 class="function"><a name="get_best_id_internal-2">get_best_id_internal/2</a></h3>
+<div class="spec">
+<p><tt>get_best_id_internal(NameId::<a href="#type-backend_id">backend_id()</a>, NameTable::<a href="#type-id_name_alloc_table">id_name_alloc_table()</a>) -&gt; <a href="#type-id">id()</a></tt><br></p>
+<p> </p>
+</div><p>Tries to resolve the specified lower-level, backend-specific identifier,
+ internally (directly from the current process): returns any corresponding
+ named one, otherwise returns that backend identifier as it is.
+</p>
+
+<h3 class="function"><a name="get_best_menu_item_id_internal-2">get_best_menu_item_id_internal/2</a></h3>
+<div class="spec">
+<p><tt>get_best_menu_item_id_internal(BackendId::<a href="#type-backend_id">backend_id()</a>, NameTable::<a href="#type-id_name_alloc_table">id_name_alloc_table()</a>) -&gt; <a href="#type-id">id()</a></tt><br></p>
+<p> </p>
+</div><p>Tries to resolve the specified lower-level, backend-specific identifier
+ supposedly of a menu item, internally (directly from the current process):
+ returns any corresponding named one, otherwise returns that backend identifier
+ as it is.
 </p>
 
 <h3 class="function"><a name="get_first_allocatable_id-0">get_first_allocatable_id/0</a></h3>
@@ -226,70 +367,107 @@ by the specified identifier allocator.</p>
  allocated by MyriadGUI.
 </p>
 
-<h3 class="function"><a name="get_id_allocator_pid-0">get_id_allocator_pid/0</a></h3>
-<div class="spec">
-<p><tt>get_id_allocator_pid() -&gt; <a href="#type-id_allocator_pid">id_allocator_pid()</a></tt><br></p>
-<p> </p>
-</div><p>Returns the PID of the unique backend identifier allocator.</p>
-
 <h3 class="function"><a name="get_initial_allocation_table-0">get_initial_allocation_table/0</a></h3>
 <div class="spec">
 <p><tt>get_initial_allocation_table() -&gt; <a href="#type-id_name_alloc_table">id_name_alloc_table()</a></tt><br></p>
 <p> </p>
 </div><p>Returns the initial allocation table for named identifiers.</p>
 
-<h3 class="function"><a name="resolve_id-1">resolve_id/1</a></h3>
+<h3 class="function"><a name="get_maybe_name_id-1">get_maybe_name_id/1</a></h3>
 <div class="spec">
-<p><tt>resolve_id(NameId::<a href="#type-name_id">name_id()</a>) -&gt; <a href="#type-backend_id">backend_id()</a></tt><br></p>
+<p><tt>get_maybe_name_id(BackendId::<a href="#type-backend_id">backend_id()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-name_id">name_id()</a>)</tt><br></p>
+<p> </p>
+</div><p><p>Returns any MyriadGUI name identifier associated to the specified 
+backend-specific widget identifier.</p>
+
+ Not exactly the reciprocal of resolve_any_id/1.
+</p>
+
+<h3 class="function"><a name="id_to_string-1">id_to_string/1</a></h3>
+<div class="spec">
+<p><tt>id_to_string(BackendId::<a href="#type-id">id()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual representation of the specified object identifier.</p>
+
+<h3 class="function"><a name="maybe_resolve_backend_id-1">maybe_resolve_backend_id/1</a></h3>
+<div class="spec">
+<p><tt>maybe_resolve_backend_id(BackendId::<a href="#type-backend_id">backend_id()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-name_id">name_id()</a>)</tt><br></p>
+<p> </p>
+</div><p>Tries to resolve the specified backend identifier into a named one,
+ otherwise returns 'undefined', based on the MyriadGUI identifier allocator (if
+ any).
+</p>
+
+<h3 class="function"><a name="maybe_resolve_backend_id_internal-2">maybe_resolve_backend_id_internal/2</a></h3>
+<div class="spec">
+<p><tt>maybe_resolve_backend_id_internal(BackendId::<a href="#type-backend_id">backend_id()</a>, NameTable::<a href="#type-id_name_alloc_table">id_name_alloc_table()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-name_id">name_id()</a>)</tt><br></p>
+<p> </p>
+</div><p><p>Tries to resolve the specified backend-specific identifier into a 
+higher-level named identifier, internally (directly from the current process): 
+returns any corresponding named one.</p>
+
+ Looks up either, for stock identifiers, first the button table, then the menu
+ item one or, for MyriadGUI ones, the specified name allocation table.
+</p>
+
+<h3 class="function"><a name="resolve_any_id-1">resolve_any_id/1</a></h3>
+<div class="spec">
+<p><tt>resolve_any_id(BackendId::<a href="#type-id">id()</a>) -&gt; <a href="#type-backend_id">backend_id()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns a backend identifier corresponding to the specified identifier of 
+any type (MyriadGUI name identifier, possibly an undefined one, or already a 
+backend identifier).</p>
+
+ Throws an exception should the resolution fail.
+</p>
+
+<h3 class="function"><a name="resolve_named_id-1">resolve_named_id/1</a></h3>
+<div class="spec">
+<p><tt>resolve_named_id(NameId::<a href="#type-name_id">name_id()</a>) -&gt; <a href="#type-backend_id">backend_id()</a></tt><br></p>
 <p> </p>
 </div><p>Returns the low-level backend object identifier corresponding to the
  specified named identifier, which is expected to be already registered by the
- MyriadGUI identifier allocator.
+ MyriadGUI identifier allocator (if any).
 </p>
 
-<h3 class="function"><a name="resolve_id-2">resolve_id/2</a></h3>
+<h3 class="function"><a name="resolve_named_id-2">resolve_named_id/2</a></h3>
 <div class="spec">
-<p><tt>resolve_id(NameId::<a href="#type-name_id">name_id()</a>, IdAllocPid::<a href="#type-id_allocator_pid">id_allocator_pid()</a>) -&gt; <a href="#type-backend_id">backend_id()</a></tt><br></p>
+<p><tt>resolve_named_id(NameId::<a href="#type-name_id">name_id()</a>, IdAllocRef::<a href="#type-id_allocator_ref">id_allocator_ref()</a>) -&gt; <a href="#type-backend_id">backend_id()</a></tt><br></p>
 <p> </p>
 </div><p>Returns the low-level backend object identifier corresponding to the
  specified named identifier, which is expected to be already registered by the
  specified identifier allocator.
 </p>
 
-<h3 class="function"><a name="resolve_ids-1">resolve_ids/1</a></h3>
+<h3 class="function"><a name="resolve_named_id_internal-2">resolve_named_id_internal/2</a></h3>
 <div class="spec">
-<p><tt>resolve_ids(NameIds::[<a href="#type-name_id">name_id()</a>]) -&gt; [<a href="#type-backend_id">backend_id()</a>]</tt><br></p>
+<p><tt>resolve_named_id_internal(NameId::<a href="#type-name_id">name_id()</a>, NameTable::<a href="#type-id_name_alloc_table">id_name_alloc_table()</a>) -&gt; <a href="#type-backend_id">backend_id()</a></tt><br></p>
+<p> </p>
+</div><p><p>Resolves the specified name identifier into a backend one, internally 
+(directly from the current process), from the specified name allocation table.</p>
+
+ <p>Throws an exception if no corresponding backend identifier can be found.</p>
+
+ Typically called directly through the MyriadGUI main loop (thus without
+ involving messages), which takes care of the identifier management as well.
+</p>
+
+<h3 class="function"><a name="resolve_named_ids-1">resolve_named_ids/1</a></h3>
+<div class="spec">
+<p><tt>resolve_named_ids(NameIds::[<a href="#type-name_id">name_id()</a>]) -&gt; [<a href="#type-backend_id">backend_id()</a>]</tt><br></p>
 <p> </p>
 </div><p>Returns the low-level backend object identifiers corresponding to the
  specified named identifiers, which are expected to be already registered by
- the MyriadGUI identifier allocator.
+ the MyriadGUI identifier allocator (if any).
 </p>
 
-<h3 class="function"><a name="resolve_ids-2">resolve_ids/2</a></h3>
+<h3 class="function"><a name="resolve_named_ids-2">resolve_named_ids/2</a></h3>
 <div class="spec">
-<p><tt>resolve_ids(NameIds::[<a href="#type-name_id">name_id()</a>], IdAllocPid::<a href="#type-id_allocator_pid">id_allocator_pid()</a>) -&gt; [<a href="#type-backend_id">backend_id()</a>]</tt><br></p>
+<p><tt>resolve_named_ids(NameIds::[<a href="#type-name_id">name_id()</a>], IdAllocRef::<a href="#type-id_allocator_ref">id_allocator_ref()</a>) -&gt; [<a href="#type-backend_id">backend_id()</a>]</tt><br></p>
 <p> </p>
 </div><p>Returns the low-level backend object identifiers corresponding to the
  specified named identifiers, which are expected to be already registered by
  the specified identifier allocator.
-</p>
-
-<h3 class="function"><a name="try_resolve_id-1">try_resolve_id/1</a></h3>
-<div class="spec">
-<p><tt>try_resolve_id(BackendId::<a href="#type-backend_id">backend_id()</a>) -&gt; <a href="#type-id">id()</a></tt><br></p>
-<p> </p>
-</div><p>Tries to resolve the specified lower-level, backend-specific identifier:
- returns any corresponding named one, otherwise returns that backend identifier
- as it is.
-</p>
-
-<h3 class="function"><a name="try_resolve_id-2">try_resolve_id/2</a></h3>
-<div class="spec">
-<p><tt>try_resolve_id(BackendId::<a href="#type-backend_id">backend_id()</a>, NameTable::<a href="#type-id_name_alloc_table">id_name_alloc_table()</a>) -&gt; <a href="#type-id">id()</a></tt><br></p>
-<p> </p>
-</div><p>Tries to resolve the specified lower-level, backend-specific identifier:
- returns any corresponding named one, otherwise returns that backend identifier
- as it is.
 </p>
 <hr>
 

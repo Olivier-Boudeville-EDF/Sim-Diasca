@@ -10,11 +10,13 @@
 <hr>
 
 <h1>Module speech_support</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various facilities regarding <b>speech support</b>, i.e.
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various facilities regarding <b>speech support</b>, that is
+ TTS (Text to Speech), in order to obtain an audio content corresponding to a
+ specified text.
 
 
-<h2><a name="description">Description</a></h2>Gathering of various facilities regarding <b>speech support</b>, i.e. TTS
- (Text to Speech), in order to obtain an audio content corresponding to a
+<h2><a name="description">Description</a></h2>Gathering of various facilities regarding <b>speech support</b>, that is
+ TTS (Text to Speech), in order to obtain an audio content corresponding to a
  specified text.
 
 <h2><a name="types">Data Types</a></h2>
@@ -45,7 +47,7 @@
 <h3 class="typedecl"><a name="type-any_speech_base_name">any_speech_base_name()</a></h3>
 <p><tt>any_speech_base_name() = <a href="#type-any_path_element">any_path_element()</a></tt></p>
 <p> A short name (any kind of string) to designate a logical speech, able to be
- used as a prefix of a filename; ex: "welcome-new-recruits"). Not an
+ used as a prefix of a filename; e.g. "welcome-new-recruits"). Not an
  identifier, but preferably unique.</p>
 
 <h3 class="typedecl"><a name="type-audio_stream_settings">audio_stream_settings()</a></h3>
@@ -82,8 +84,8 @@
 
 <h3 class="typedecl"><a name="type-language_locale">language_locale()</a></h3>
 <p><tt>language_locale() = <a href="#type-bin_locale">bin_locale()</a></tt></p>
-<p> The language locale to be used (ex: <code>&lt;&lt;"fr-FR"&gt;&gt;</code>), knowing that for example a
- voice may speak in multiple languages (ex: "Jenny Multilingual").</p>
+<p> The language locale to be used (e.g. <code>&lt;&lt;"fr-FR"&gt;&gt;</code>), knowing that for example
+ a voice may speak in multiple languages (e.g. "Jenny Multilingual").</p>
 
 <h3 class="typedecl"><a name="type-locale_table">locale_table()</a></h3>
 <p><tt>locale_table() = <a href="#type-table">table</a>(<a href="#type-language_locale">language_locale()</a>, <a href="#type-actual_speech_info">actual_speech_info()</a>)</tt></p>
@@ -102,8 +104,8 @@
 <h3 class="typedecl"><a name="type-speech_base_name">speech_base_name()</a></h3>
 <p><tt>speech_base_name() = <a href="#type-bin_path_element">bin_path_element()</a></tt></p>
 <p> A short name to designate a logical speech, able to be used as a prefix of a
- filename; ex: <code>&lt;&lt;"welcome-new-recruits"&gt;&gt;</code>). Not an identifier, but preferably
- unique.</p>
+ filename; e.g. <code>&lt;&lt;"welcome-new-recruits"&gt;&gt;</code>). Not an identifier, but
+ preferably unique.</p>
 
 <h3 class="typedecl"><a name="type-speech_id">speech_id()</a></h3>
 <p><tt>speech_id() = <a href="#type-count">count()</a></tt></p>
@@ -173,12 +175,12 @@ automatically escaped here.</p>
 
 <h3 class="typedecl"><a name="type-voice_id">voice_id()</a></h3>
 <p><tt>voice_id() = {<a href="#type-tts_provider">tts_provider()</a>, <a href="#type-voice_id_at_provider">voice_id_at_provider()</a>}</tt></p>
-<p> The absolute (reference) identifier of a voice (ex: {azure,
+<p> The absolute (reference) identifier of a voice (e.g. {azure,
  <code>&lt;&lt;"fr-FR-DeniseNeural"&gt;&gt;</code>}.</p>
 
 <h3 class="typedecl"><a name="type-voice_id_at_provider">voice_id_at_provider()</a></h3>
 <p><tt>voice_id_at_provider() = <a href="#type-bin_string">bin_string()</a></tt></p>
-<p> The identifier of a voice (ex: <code>&lt;&lt;"fr-FR-DeniseNeural"&gt;&gt;</code>,
+<p> The identifier of a voice (e.g. <code>&lt;&lt;"fr-FR-DeniseNeural"&gt;&gt;</code>,
  <code>&lt;&lt;"ar-SA-Naayf"&gt;&gt;</code>) in the context of a specific TTS provider.</p>
 
 <h3 class="typedecl"><a name="type-voice_info">voice_info()</a></h3>
@@ -189,7 +191,7 @@ automatically escaped here.</p>
 <p><tt>voice_name() = <a href="#type-bin_string">bin_string()</a></tt></p>
 <p><p> The full name (just informative) of a voice.</p>
 
- Ex: <code>&lt;&lt;"Foobar Server Speech Text to Speech Voice (xr-XG, Yoda)"&gt;&gt;</code>.</p>
+ For example <code>&lt;&lt;"Foobar Server Speech Text to Speech Voice (xr-XG, Yoda)"&gt;&gt;</code>.</p>
 
 <h3 class="typedecl"><a name="type-voice_table">voice_table()</a></h3>
 <p><tt>voice_table() = <a href="#type-table">table</a>(<a href="#type-voice_id">voice_id()</a>, <a href="#type-voice_info">voice_info()</a>)</tt></p>
@@ -381,7 +383,7 @@ to forge the filename in which the generated audio will be stored, in the
 current directory; the corresponding audio path is returned; the corresponding 
 filename (relative to the elected directory) is returned.</p>
 
- <p>Ex: if BaseName is "hello-world", the current directory is 
+ <p>For example if BaseName is "hello-world", the current directory is 
 /home/bond/my-speeches", and the audio settings imply a Ogg container format 
 with an Opus audio format and the fr-FR locale, the specified speech will be 
 stored in "/home/bond/my-speeches/hello-world-fr-FR.ogg.opus".</p>
@@ -390,7 +392,8 @@ stored in "/home/bond/my-speeches/hello-world-fr-FR.ogg.opus".</p>
 form" to define it, refer to the "Defining one's XML document" in 
 xml_utils.erl for further details. Also spaces shall exist around tags.</p>
 
- <p>Ex: record_speech(["Hello ", {prosody, [{volume, "+20.00%"}], [" John"]},...</p>
+ <p>For example record_speech(["Hello ", {prosody, [{volume, "+20.00%"}], [" 
+John"]},...</p>
 
  See record_speech/5 for further details.
 </p>
@@ -405,7 +408,7 @@ to forge the filename in which the generated audio will be stored, in the
 specified directory (otherwise in the current one); the corresponding filename 
 (relative to the elected directory) is returned.</p>
 
- <p>Ex: if BaseName is "hello-world", the specified directory is 
+ <p>For example if BaseName is "hello-world", the specified directory is 
 /home/bond/my-speeches", and the audio settings imply a Ogg container format 
 with an Opus audio format and the fr-FR locale, the specified speech will be 
 stored in "/home/bond/my-speeches/hello-world-fr-FR.ogg.opus".</p>
@@ -414,7 +417,8 @@ stored in "/home/bond/my-speeches/hello-world-fr-FR.ogg.opus".</p>
 form" to define it, refer to the "Defining one's XML document" in 
 xml_utils.erl for further details.</p>
 
- <p>Ex: record_speech(["Hello ", {prosody, [{volume, "+20.00%"}], [" John"]},...</p>
+ <p>For example record_speech(["Hello ", {prosody, [{volume, "+20.00%"}], [" 
+John"]},...</p>
 
  See record_speech/5 for further details.
 </p>
@@ -429,7 +433,7 @@ filename in which the generated audio will be stored, in the specified
 directory (otherwise in the current one); the corresponding filename (relative 
 to the elected directory) is returned.</p>
 
- <p>Ex: if BaseName is "hello-world", the specified directory is 
+ <p>For example if BaseName is "hello-world", the specified directory is 
 "/home/bond/my-speeches", and the audio settings imply a Ogg container format 
 with an Opus audio format and the fr-FR locale, the specified speech will be 
 stored in "/home/bond/my-speeches/hello-world-fr-FR.ogg.opus".</p>
@@ -438,7 +442,8 @@ stored in "/home/bond/my-speeches/hello-world-fr-FR.ogg.opus".</p>
 form" to define it, refer to the "Defining one's XML document" in 
 xml_utils.erl for further details.</p>
 
- <p>Ex: record_speech(["Hello ", {prosody, [{volume, "+20.00%"}], [" John"]},...</p>
+ <p>For example record_speech(["Hello ", {prosody, [{volume, "+20.00%"}], [" 
+John"]},...</p>
 
  Restrictions:
  - the text-to-speech must be an XML document, yet may be as simple as "Hello

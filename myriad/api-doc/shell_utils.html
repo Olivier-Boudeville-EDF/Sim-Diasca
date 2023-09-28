@@ -11,11 +11,11 @@
 
 <h1>Module shell_utils</h1>
 <ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various convenient facilities regarding the management of
- the <b>shells and command lines</b> (ex: specified arguments).
+ the <b>shells and command lines</b> (e.g.
 
 
 <h2><a name="description">Description</a></h2><p>Gathering of various convenient facilities regarding the management of
- the <b>shells and command lines</b> (ex: specified arguments).</p>
+ the <b>shells and command lines</b> (e.g. specified arguments).</p>
 
  See shell_utils_test.erl for the corresponding test.
 
@@ -23,7 +23,7 @@
 
 <h3 class="typedecl"><a name="type-actual_command_line_option">actual_command_line_option()</a></h3>
 <p><tt>actual_command_line_option() = atom()</tt></p>
-<p> The name of a command-line option; ex: '-color', for an actual option that is
+<p> The name of a command-line option; e.g. '-color', for an actual option that is
  "--color". For the init standard module, this is named a "flag".</p>
 
 <h3 class="typedecl"><a name="type-actual_value_count">actual_value_count()</a></h3>
@@ -62,14 +62,18 @@ in such argument tables.</p>
 <p><p> The association between a command-line option and the various values 
 associated to its various occurrences, in a (non-unique) argument table.</p>
 
- <p>Ex: if arguments were "--color blue red [...] --color yellow", then the 
-corresponding argument entry is {'-color', [["blue", "red"], ["yellow"]]} 
+ <p>For example if arguments were "--color blue red [...] --color yellow", then 
+the corresponding argument entry is {'-color', [["blue", "red"], ["yellow"]]} 
 (i.e. with, associated to a command-line option, a list whose elements are 
 *lists* of strings; in their order on the command-line).</p>
 
  Note that keys are atoms (with one leading dash removed), and it is advisable
  to use only the executable_utils module support rather than mixing and
  matching it with the one of the 'init' module (different keys).</p>
+
+<h3 class="typedecl"><a name="type-command_line_element">command_line_element()</a></h3>
+<p><tt>command_line_element() = <a href="#type-ustring">ustring()</a></tt></p>
+<p> Any element of a command-line, typically option name or value.</p>
 
 <h3 class="typedecl"><a name="type-command_line_option">command_line_option()</a></h3>
 <p><tt>command_line_option() = <a href="#type-actual_command_line_option">actual_command_line_option()</a> | '(none)'</tt></p>
@@ -82,7 +86,7 @@ corresponding argument entry is {'-color', [["blue", "red"], ["yellow"]]}
 
 <h3 class="typedecl"><a name="type-command_line_values">command_line_values()</a></h3>
 <p><tt>command_line_values() = [<a href="#type-command_line_value">command_line_value()</a>]</tt></p>
-<p> The command-line values specified after an occurrence of a given option (ex:
+<p> The command-line values specified after an occurrence of a given option (e.g.
  ["blue", "red"]).</p>
 
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
@@ -152,7 +156,7 @@ executable.</td></tr>
 otherwise returns 'undefined') its various in-order lists of associated 
 values, from the specified argument table.</td></tr>
 <tr><td valign="top"><a href="#generate_argument_table-1">generate_argument_table/1</a></td><td>Returns a canonical argument table, obtained from the specified single 
-string containing all options, verbatim; ex: "--color red --set-foo".</td></tr>
+string containing all options, verbatim; e.g.</td></tr>
 <tr><td valign="top"><a href="#get_argument_table-0">get_argument_table/0</a></td><td>Returns a canonical argument table, obtained from the user command-line 
 arguments supplied to the interpreter.</td></tr>
 <tr><td valign="top"><a href="#get_argument_table_from_strings-1">get_argument_table_from_strings/1</a></td><td>Returns the specified command-line arguments (simply transmitted as a 
@@ -274,7 +278,7 @@ corresponding argument table.</p>
 <p><tt>generate_argument_table(ArgString::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-argument_table">argument_table()</a></tt><br></p>
 <p> </p>
 </div><p><p>Returns a canonical argument table, obtained from the specified single 
-string containing all options, verbatim; ex: "--color red --set-foo".</p>
+string containing all options, verbatim; e.g. "--color red --set-foo".</p>
 
  Note: useful for testing, to introduce specific command lines.
 </p>
@@ -289,7 +293,7 @@ arguments supplied to the interpreter.</p>
  <p>Note:</p>
 
  <p>- only the arguments specified on the command-line after the '-extra' marker 
-will be taken into account; ex:    
+will be taken into account; e.g.    
 make ui_run CMD_LINE_OPT="-a -extra some_value -b --use-ui-backend text_ui" 
 (here "-a" and, of course, "-extra", will be ignored)</p>
 
@@ -310,7 +314,7 @@ user/system flags (that is for all its non-plain options).</p>
 may be specified more than once in the command-line; non-option arguments are 
 collected as well (refer to the no_option_key define).</p>
 
- Note: switches to the Unicode encoding (ex: use "~tp" then).
+ Note: switches to the Unicode encoding (e.g. use "~tp" then).
 </p>
 
 <h3 class="function"><a name="get_command_arguments_for_option-1">get_command_arguments_for_option/1</a></h3>

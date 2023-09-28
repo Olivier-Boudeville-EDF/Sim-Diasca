@@ -23,8 +23,8 @@
 <p><tt>aggregator_pid() = <a href="class_TraceAggregator.html#type-aggregator_pid">class_TraceAggregator:aggregator_pid()</a></tt></p>
 
 
-<h3 class="typedecl"><a name="type-initialize_supervision">initialize_supervision()</a></h3>
-<p><tt>initialize_supervision() = <a href="class_TraceAggregator.html#type-initialize_supervision">class_TraceAggregator:initialize_supervision()</a></tt></p>
+<h3 class="typedecl"><a name="type-initialise_supervision">initialise_supervision()</a></h3>
+<p><tt>initialise_supervision() = <a href="class_TraceAggregator.html#type-initialise_supervision">class_TraceAggregator:initialise_supervision()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-module_name">module_name()</a></h3>
@@ -62,7 +62,7 @@ aggregator, and finishing on the shell.</p>
 
 <h3 class="function"><a name="app_start-2">app_start/2</a></h3>
 <div class="spec">
-<p><tt>app_start(ModuleName::<a href="#type-module_name">module_name()</a>, InitTraceSupervisor::<a href="#type-initialize_supervision">initialize_supervision()</a>) -&gt; <a href="#type-aggregator_pid">aggregator_pid()</a></tt><br></p>
+<p><tt>app_start(ModuleName::<a href="#type-module_name">module_name()</a>, InitTraceSupervisor::<a href="#type-initialise_supervision">initialise_supervision()</a>) -&gt; <a href="#type-aggregator_pid">aggregator_pid()</a></tt><br></p>
 <p> </p>
 </div><p><p>Starts the specified application.</p>
 
@@ -84,7 +84,7 @@ sitting in the mailbox of the app process).</p>
 
 <h3 class="function"><a name="app_start-3">app_start/3</a></h3>
 <div class="spec">
-<p><tt>app_start(ModuleName::<a href="#type-module_name">module_name()</a>, InitTraceSupervisor::<a href="#type-initialize_supervision">initialize_supervision()</a>, DisableExitTrapping::boolean()) -&gt; <a href="#type-aggregator_pid">aggregator_pid()</a></tt><br></p>
+<p><tt>app_start(ModuleName::<a href="#type-module_name">module_name()</a>, InitTraceSupervisor::<a href="#type-initialise_supervision">initialise_supervision()</a>, DisableExitTrapping::boolean()) -&gt; <a href="#type-aggregator_pid">aggregator_pid()</a></tt><br></p>
 <p> </p>
 </div><p><p>Starts specified (Myriad - not specifically related to OTP) application, 
 deciding whether EXIT messages shall be trapped.</p>
@@ -104,7 +104,7 @@ of EXITs shall not be altered (otherwise, for example, shutdowns may freeze).</p
 
 <h3 class="function"><a name="app_start-4">app_start/4</a></h3>
 <div class="spec">
-<p><tt>app_start(ModuleName::<a href="#type-module_name">module_name()</a>, InitTraceSupervisor::<a href="#type-initialize_supervision">initialize_supervision()</a>, DisableExitTrapping::boolean(), AggRegScope::<a href="naming_utils.html#type-registration_scope">naming_utils:registration_scope()</a>) -&gt; <a href="#type-aggregator_pid">aggregator_pid()</a></tt><br></p>
+<p><tt>app_start(ModuleName::<a href="#type-module_name">module_name()</a>, InitTraceSupervisor::<a href="#type-initialise_supervision">initialise_supervision()</a>, DisableExitTrapping::boolean(), AggRegScope::<a href="naming_utils.html#type-registration_scope">naming_utils:registration_scope()</a>) -&gt; <a href="#type-aggregator_pid">aggregator_pid()</a></tt><br></p>
 <p> </p>
 </div><p><p>Starts specified (Myriad - not specifically related to OTP) application, 
 deciding whether EXIT messages shall be trapped and the registration scope of 

@@ -30,6 +30,10 @@
 <p><tt>any_point3() = <a href="#type-any_point3">any_point3()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-any_square_distance">any_square_distance()</a></h3>
+<p><tt>any_square_distance() = <a href="linear.html#type-any_square_distance">linear:any_square_distance()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-any_vector3">any_vector3()</a></h3>
 <p><tt>any_vector3() = <a href="#type-vector3">vector3()</a> | <a href="#type-integer_vector3">integer_vector3()</a></tt></p>
 <p> A 3D vector, with any types of numerical coordinates.
@@ -61,10 +65,6 @@
 <p><p> A 3D vector orthogonal to a plane.</p>
 
  Defined for documentation purpose.</p>
-
-<h3 class="typedecl"><a name="type-square_distance">square_distance()</a></h3>
-<p><tt>square_distance() = <a href="linear.html#type-square_distance">linear:square_distance()</a></tt></p>
-
 
 <h3 class="typedecl"><a name="type-texture_vector3">texture_vector3()</a></h3>
 <p><tt>texture_vector3() = <a href="#type-vector3">vector3()</a></tt></p>
@@ -115,12 +115,17 @@
 <tr><td valign="top"><a href="#are_equal-2">are_equal/2</a></td><td>Returns whether the two specified 3D vectors are equal, that is if they
  could be considered as representing the same vector (equality operator on
  vectors).</td></tr>
+<tr><td valign="top"><a href="#are_orthogonal-2">are_orthogonal/2</a></td><td>Returns whether the two specified vectors are orthogonal.</td></tr>
 <tr><td valign="top"><a href="#check-1">check/1</a></td><td>Checks that the specified 3D vector is legit, and returns it.</td></tr>
 <tr><td valign="top"><a href="#check_integer-1">check_integer/1</a></td><td>Checks that the specified 3D integer vector is legit, and returns it.</td></tr>
+<tr><td valign="top"><a href="#check_orthogonal-2">check_orthogonal/2</a></td><td>Checks that the two specified vectors are orthogonal: throws an exception
+ if not.</td></tr>
 <tr><td valign="top"><a href="#check_unit_vector-1">check_unit_vector/1</a></td><td>Checks that the specified 3D vector is normalised, and returns it.</td></tr>
 <tr><td valign="top"><a href="#check_unit_vectors-1">check_unit_vectors/1</a></td><td>Checks that the specified 3D vectors are normalised, and returns them.</td></tr>
+<tr><td valign="top"><a href="#check_vector-1">check_vector/1</a></td><td>Checks that the specified 3D vector is legit, and returns it.</td></tr>
+<tr><td valign="top"><a href="#check_vectors-1">check_vectors/1</a></td><td>Checks that the specified 3D vectors are legit, and returns them.</td></tr>
 <tr><td valign="top"><a href="#cross_product-2">cross_product/2</a></td><td>Returns the cross-product of the two specified vectors, that is the
- results of a regular 3D cross product of the input vectors.</td></tr>
+ result of a regular 3D cross product of these input vectors.</td></tr>
 <tr><td valign="top"><a href="#dot_product-2">dot_product/2</a></td><td>Returns the dot-product of the two specified 3D vectors: D = V1.V2.</td></tr>
 <tr><td valign="top"><a href="#from_point-1">from_point/1</a></td><td>Returns a 3D vector corresponding to the specified 3D point.</td></tr>
 <tr><td valign="top"><a href="#is_unitary-1">is_unitary/1</a></td><td>Returns whether the specified vector is unitary, that is whether it is of
@@ -199,6 +204,12 @@ vector; full float precision is shown.</td></tr>
  vectors).
 </p>
 
+<h3 class="function"><a name="are_orthogonal-2">are_orthogonal/2</a></h3>
+<div class="spec">
+<p><tt>are_orthogonal(V1::<a href="#type-vector3">vector3()</a>, V2::<a href="#type-vector3">vector3()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Returns whether the two specified vectors are orthogonal.</p>
+
 <h3 class="function"><a name="check-1">check/1</a></h3>
 <div class="spec">
 <p><tt>check(V::<a href="#type-vector3">vector3()</a>) -&gt; <a href="#type-vector3">vector3()</a></tt><br></p>
@@ -210,6 +221,14 @@ vector; full float precision is shown.</td></tr>
 <p><tt>check_integer(V::<a href="#type-integer_vector3">integer_vector3()</a>) -&gt; <a href="#type-integer_vector3">integer_vector3()</a></tt><br></p>
 <p> </p>
 </div><p>Checks that the specified 3D integer vector is legit, and returns it.</p>
+
+<h3 class="function"><a name="check_orthogonal-2">check_orthogonal/2</a></h3>
+<div class="spec">
+<p><tt>check_orthogonal(V1::<a href="#type-vector3">vector3()</a>, V2::<a href="#type-vector3">vector3()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Checks that the two specified vectors are orthogonal: throws an exception
+ if not.
+</p>
 
 <h3 class="function"><a name="check_unit_vector-1">check_unit_vector/1</a></h3>
 <div class="spec">
@@ -223,12 +242,24 @@ vector; full float precision is shown.</td></tr>
 <p> </p>
 </div><p>Checks that the specified 3D vectors are normalised, and returns them.</p>
 
+<h3 class="function"><a name="check_vector-1">check_vector/1</a></h3>
+<div class="spec">
+<p><tt>check_vector(V::<a href="#type-vector3">vector3()</a>) -&gt; <a href="#type-vector3">vector3()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that the specified 3D vector is legit, and returns it.</p>
+
+<h3 class="function"><a name="check_vectors-1">check_vectors/1</a></h3>
+<div class="spec">
+<p><tt>check_vectors(Vs::[<a href="#type-vector3">vector3()</a>]) -&gt; [<a href="#type-vector3">vector3()</a>]</tt><br></p>
+<p> </p>
+</div><p>Checks that the specified 3D vectors are legit, and returns them.</p>
+
 <h3 class="function"><a name="cross_product-2">cross_product/2</a></h3>
 <div class="spec">
-<p><tt>cross_product(P1::<a href="#type-vector3">vector3()</a>, P2::<a href="#type-vector3">vector3()</a>) -&gt; <a href="#type-vector3">vector3()</a></tt><br></p>
+<p><tt>cross_product(V1::<a href="#type-vector3">vector3()</a>, V2::<a href="#type-vector3">vector3()</a>) -&gt; <a href="#type-vector3">vector3()</a></tt><br></p>
 <p> </p>
 </div><p>Returns the cross-product of the two specified vectors, that is the
- results of a regular 3D cross product of the input vectors.
+ result of a regular 3D cross product of these input vectors.
 </p>
 
 <h3 class="function"><a name="dot_product-2">dot_product/2</a></h3>
@@ -309,13 +340,13 @@ vector; full float precision is shown.</td></tr>
 
 <h3 class="function"><a name="scale-2">scale/2</a></h3>
 <div class="spec">
-<p><tt>scale(V::<a href="#type-vector3">vector3()</a>, Factor::<a href="#type-factor">factor()</a>) -&gt; <a href="#type-vector3">vector3()</a></tt><br></p>
+<p><tt>scale(V::<a href="#type-any_vector3">any_vector3()</a>, Factor::<a href="#type-factor">factor()</a>) -&gt; <a href="#type-vector3">vector3()</a></tt><br></p>
 <p> </p>
 </div><p>Scales the specified 3D vector of the specified scalar factor.</p>
 
 <h3 class="function"><a name="square_magnitude-1">square_magnitude/1</a></h3>
 <div class="spec">
-<p><tt>square_magnitude(V::<a href="#type-vector3">vector3()</a>) -&gt; <a href="#type-square_distance">square_distance()</a></tt><br></p>
+<p><tt>square_magnitude(V::<a href="#type-vector3">vector3()</a>) -&gt; <a href="#type-any_square_distance">any_square_distance()</a></tt><br></p>
 <p> </p>
 </div><p>Returns the square of the magnitude of the 3D specified vector.</p>
 

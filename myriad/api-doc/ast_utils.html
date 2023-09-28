@@ -39,6 +39,10 @@ a different set of conventions).</p>
 <p><tt>directory_name() = <a href="file_utils.html#type-directory_name">file_utils:directory_name()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-error_reason">error_reason()</a></h3>
+<p><tt>error_reason() = <a href="basic_utils.html#type-error_reason">basic_utils:error_reason()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-file_loc">file_loc()</a></h3>
 <p><tt>file_loc() = <a href="ast_base.html#type-file_loc">ast_base:file_loc()</a></tt></p>
 
@@ -79,7 +83,7 @@ a different set of conventions).</p>
 <p><tt>issue_info() = {<a href="#type-file_loc">file_loc()</a>, module(), <a href="#type-issue_description">issue_description()</a>}</tt></p>
 <p><p> Full information about a compilation-related issue.</p>
 
- The module is the one emitting that issue (ex: erl_lint).</p>
+ The module is the one emitting that issue (e.g. erl_lint).</p>
 
 <h3 class="typedecl"><a name="type-issue_report">issue_report()</a></h3>
 <p><tt>issue_report() = {<a href="#type-file_name">file_name()</a>, [<a href="#type-issue_info">issue_info()</a>]}</tt></p>
@@ -165,7 +169,7 @@ AST, based on specified preprocessor (eep) options.</td></tr>
  (typically to output the usual, canonical reference expected by most tools,
  often to report compilation issues).</td></tr>
 <tr><td valign="top"><a href="#format_file_loc_alt-1">format_file_loc_alt/1</a></td><td>Returns an alternative textual description of specified in-file location
- (ex: in order to name variables in AST).</td></tr>
+ (e.g.</td></tr>
 <tr><td valign="top"><a href="#get_error_form-3">get_error_form/3</a></td><td>Returns an AST form in order to raise a (compile-time, standard) error 
 when applying a parse transform, to stop the build on failure and report the 
 actual error.</td></tr>
@@ -197,11 +201,10 @@ generated code).</td></tr>
 corresponding abstract form, at the specified in-file location.</td></tr>
 <tr><td valign="top"><a href="#string_to_value-1">string_to_value/1</a></td><td>Converts the specified source code of a term (that is, a string) into its 
 corresponding value.</td></tr>
-<tr><td valign="top"><a href="#term_to_form-1">term_to_form/1</a></td><td>Converts the specified Erlang term (ex: the float '42.0') into a
- corresponding form (ex: '{float, _FileLoc={0,1}, 42.0}').</td></tr>
+<tr><td valign="top"><a href="#term_to_form-1">term_to_form/1</a></td><td>Converts the specified Erlang term (e.g.</td></tr>
 <tr><td valign="top"><a href="#variable_names_to_ast-2">variable_names_to_ast/2</a></td><td>Converts a list of names of variables into the corresponding AST, at 
 the specified in-file location.</td></tr>
-<tr><td valign="top"><a href="#write_ast_to_file-2">write_ast_to_file/2</a></td><td>Writes specified AST into specified (text) file.</td></tr>
+<tr><td valign="top"><a href="#write_ast_to_file-2">write_ast_to_file/2</a></td><td>Writes the specified AST into the specified (text) file.</td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
@@ -420,7 +423,7 @@ AST, based on specified preprocessor (eep) options.</p>
 
 <h3 class="function"><a name="format_error-1">format_error/1</a></h3>
 <div class="spec">
-<p><tt>format_error(ErrorTerm::<a href="basic_utils.html#type-error_reason">basic_utils:error_reason()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><tt>format_error(ErrorTerm::<a href="#type-error_reason">error_reason()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
 <p> </p>
 </div><p>This function (whose name is standard, conventional) is to be defined on
  a per-module basis (typically in the module defining the parse transform being
@@ -442,12 +445,12 @@ AST, based on specified preprocessor (eep) options.</p>
 <p><tt>format_file_loc_alt(Line::<a href="#type-file_loc">file_loc()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
 <p> </p>
 </div><p>Returns an alternative textual description of specified in-file location
- (ex: in order to name variables in AST).
+ (e.g. in order to name variables in AST).
 </p>
 
 <h3 class="function"><a name="get_error_form-3">get_error_form/3</a></h3>
 <div class="spec">
-<p><tt>get_error_form(ErrorTerm::<a href="basic_utils.html#type-error_reason">basic_utils:error_reason()</a>, FormatErrorModule::<a href="#type-module_name">module_name()</a>, FileLoc::<a href="#type-file_loc">file_loc()</a>) -&gt; <a href="#type-form">form()</a></tt><br></p>
+<p><tt>get_error_form(ErrorTerm::<a href="#type-error_reason">error_reason()</a>, FormatErrorModule::<a href="#type-module_name">module_name()</a>, FileLoc::<a href="#type-file_loc">file_loc()</a>) -&gt; <a href="#type-form">form()</a></tt><br></p>
 <p> </p>
 </div><p><p>Returns an AST form in order to raise a (compile-time, standard) error 
 when applying a parse transform, to stop the build on failure and report the 
@@ -507,7 +510,7 @@ Erlang toolchain)</p>
 </div><p><p>Raises an error, with specified context, thanks to the specified term 
 (often, a list of error elements), from the Myriad layer.</p>
 
- <p>Ex: raise_error([invalid_module_name, Other], _Context=112) shall 
+ <p>For example raise_error([invalid_module_name, Other], _Context=112) shall 
 result in throwing {invalid_module_name, Other, {line, 112}}.</p>
 
  <p>Note:</p>
@@ -527,7 +530,7 @@ Erlang toolchain)</p>
 </div><p><p>Raises an error, with specified context, from the specified layer 
 (expected to be above Myriad).</p>
 
- <p>Ex: raise_error([invalid_module_name, Other], _Context=112, 
+ <p>For example raise_error([invalid_module_name, Other], _Context=112, 
 _OriginLayer="FooLayer") shall result in throwing {invalid_module_name, Other, 
 {line, 112}}.</p>
 
@@ -542,7 +545,7 @@ Erlang toolchain)</p>
 
 <h3 class="function"><a name="raise_usage_error-3">raise_usage_error/3</a></h3>
 <div class="spec">
-<p><tt>raise_usage_error(ErrorFormatString::<a href="#type-format_string">format_string()</a>, ErrorValues::<a href="#type-format_values">format_values()</a>, Filename::<a href="#type-file_name">file_name()</a>) -&gt; no_return()</tt><br></p>
+<p><tt>raise_usage_error(ErrorFormatString::<a href="#type-format_string">format_string()</a>, ErrorValues::<a href="#type-format_values">format_values()</a>, FileOrModname::<a href="#type-file_name">file_name()</a> | <a href="#type-module_name">module_name()</a>) -&gt; no_return()</tt><br></p>
 <p> </p>
 </div><p>Raises a (compile-time, relatively standard) user-related error, with
  specified source context, to stop the build on failure and report adequately
@@ -551,7 +554,7 @@ Erlang toolchain)</p>
 
 <h3 class="function"><a name="raise_usage_error-4">raise_usage_error/4</a></h3>
 <div class="spec">
-<p><tt>raise_usage_error(ErrorFormatString::<a href="#type-format_string">format_string()</a>, ErrorValues::<a href="#type-format_values">format_values()</a>, Filename::<a href="#type-file_name">file_name()</a>, FileLoc::<a href="#type-maybe">maybe</a>(<a href="#type-file_loc">file_loc()</a>)) -&gt; no_return()</tt><br></p>
+<p><tt>raise_usage_error(ErrorFormatString::<a href="#type-format_string">format_string()</a>, ErrorValues::<a href="#type-format_values">format_values()</a>, FileOrModname::<a href="#type-file_name">file_name()</a> | <a href="#type-module_name">module_name()</a>, FileLoc::<a href="#type-maybe">maybe</a>(<a href="#type-file_loc">file_loc()</a>)) -&gt; no_return()</tt><br></p>
 <p> </p>
 </div><p>Raises a (compile-time, relatively standard) user-related error, with
  specified source context, to stop the build on failure and report adequately
@@ -566,7 +569,7 @@ Erlang toolchain)</p>
 string) into its corresponding AST (using the default in-file location 
 applying to generated code).</p>
 
- Ex: string_to_expressions("[{a, 1}, foobar]") may return:
+ For example string_to_expressions("[{a, 1}, foobar]") may return:
    [{cons,  {0,1}, {tuple,  {0,1}, [{atom, {0,1},a}, {integer, {0,1},1}]},
     {cons,  {0,1}, {atom, {0,1},foobar}, {nil, {0,1}}}}]
 </p>
@@ -578,7 +581,7 @@ applying to generated code).</p>
 </div><p><p>Converts the specified source code of a term (that is, a string) and a 
 location into the corresponding abstract form.</p>
 
- <p>Ex: string_to_expressions("[{a, 1}, foobar]", _Loc=42) may return   
+ <p>For example string_to_expressions("[{a, 1}, foobar]", _Loc=42) may return   
 [ {cons, 42, {tuple, 42, [ {atom,42,a}, {integer,42,1} ]},     
 {cons, 42, {atom,42,foobar}, {nil,42} }}]</p>
 
@@ -592,7 +595,7 @@ location into the corresponding abstract form.</p>
 corresponding abstract form (using the default in-file location applying to 
 generated code).</p>
 
- Ex: string_to_form("f() -&gt; hello_world.") may return
+ For example string_to_form("f() -&gt; hello_world.") may return
    {function, {0,1}, f, 0, [{clause, {0,1}, [], [],
        [ {atom, {0,1}, hello_world} ] } ] }
 </p>
@@ -604,7 +607,7 @@ generated code).</p>
 </div><p><p>Converts the specified source code of a form (that is, a string) into its 
 corresponding abstract form, at the specified in-file location.</p>
 
- Ex: string_to_form("f() -&gt; hello_world.", 42) may return
+ For example string_to_form("f() -&gt; hello_world.", 42) may return
    {function, 42, f, 0, [{clause, 42, [], [], [{atom,42,hello_world}]}]}
 </p>
 
@@ -615,7 +618,7 @@ corresponding abstract form, at the specified in-file location.</p>
 </div><p><p>Converts the specified source code of a term (that is, a string) into its 
 corresponding value.</p>
 
- Ex: string_to_value("[{tiger,[lion,leopard]}]") returns the
+ For example string_to_value("[{tiger,[lion,leopard]}]") returns the
  [{tiger, [lion,leopard]}] term.
 </p>
 
@@ -623,8 +626,8 @@ corresponding value.</p>
 <div class="spec">
 <p><tt>term_to_form(Term::term()) -&gt; <a href="#type-form">form()</a></tt><br></p>
 <p> </p>
-</div><p>Converts the specified Erlang term (ex: the float '42.0') into a
- corresponding form (ex: '{float, _FileLoc={0,1}, 42.0}').
+</div><p>Converts the specified Erlang term (e.g. the float '42.0') into a
+ corresponding form (e.g. '{float, _FileLoc={0,1}, 42.0}').
 </p>
 
 <h3 class="function"><a name="variable_names_to_ast-2">variable_names_to_ast/2</a></h3>
@@ -634,16 +637,16 @@ corresponding value.</p>
 </div><p><p>Converts a list of names of variables into the corresponding AST, at 
 the specified in-file location.</p>
 
- Ex: if wanting to specify '[V1, Alpha, A]', we have: variable_names_to_ast(
- ["V1", "Alpha", "A"], _FileLoc=0) = [ {cons,0, {var,0,'V1'},
- {cons,0,{var,0,'Alpha'}, {cons,0,{var,0,'A'}, {nil,0}}}}]
+ For example if wanting to specify '[V1, Alpha, A]', we have:
+ variable_names_to_ast( ["V1", "Alpha", "A"], _FileLoc=0) = [ {cons,0,
+ {var,0,'V1'}, {cons,0,{var,0,'Alpha'}, {cons,0,{var,0,'A'}, {nil,0}}}}]
 </p>
 
 <h3 class="function"><a name="write_ast_to_file-2">write_ast_to_file/2</a></h3>
 <div class="spec">
 <p><tt>write_ast_to_file(AST::<a href="#type-ast">ast()</a>, Filename::<a href="#type-file_name">file_name()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p><p>Writes specified AST into specified (text) file.</p>
+</div><p><p>Writes the specified AST into the specified (text) file.</p>
 
  Useful for example to determine differences between ASTs.
 </p>

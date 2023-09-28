@@ -11,17 +11,16 @@
 
 <h1>Module resource</h1>
 <ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of facilities for the management of any kind of <b>data
- resources</b>, typically a content (ex: image, sound) read from file, or
- generated as a term, and to be stored in a suitable <b>resource
- referential</b>, possibly made available thanks to a <b>resource server</b>.
+ resources</b>, typically a content (e.g.
 
 
 <h2><a name="description">Description</a></h2><p>Gathering of facilities for the management of any kind of <b>data
- resources</b>, typically a content (ex: image, sound) read from file, or
+ resources</b>, typically a content (e.g. image, sound) read from file, or
  generated as a term, and to be stored in a suitable <b>resource
  referential</b>, possibly made available thanks to a <b>resource server</b>.</p>
 
- See also the environment module for the caching of application environments.
+ See also the (unrelated) environment module for the caching of application
+ environments.
 
 <h2><a name="types">Data Types</a></h2>
 
@@ -57,7 +56,7 @@
 <p><tt>resource_file_id() = <a href="#type-bin_file_path">bin_file_path()</a></tt></p>
 <p> An identifier of a file resource, that is a resource that can be read directly
  from a filesystem, as a path either absolute or relative to an (implicit)
- resource root directory. Ex: <code>&lt;&lt;"images/hello.png"&gt;&gt;</code>.</p>
+ resource root directory. For example: <code>&lt;&lt;"images/hello.png"&gt;&gt;</code>.</p>
 
 <h3 class="typedecl"><a name="type-resource_file_id_string">resource_file_id_string()</a></h3>
 <p><tt>resource_file_id_string() = <a href="#type-file_path">file_path()</a></tt></p>
@@ -77,7 +76,7 @@
 <p><p> A logical, user-introduced resource identifier (e.g. 'my_splash_content'), 
 which does not correspond (at least directly) to a resource that can be read 
 directly from a filesystem; it is thus opaque, explicitly registered by the 
-user, and refer to any term (ex: a generated bitmap).</p>
+user, and refer to any term (e.g. a generated bitmap).</p>
 
  Using a symbol (an atom) so that it cannot be mixed up with an actual path.</p>
 

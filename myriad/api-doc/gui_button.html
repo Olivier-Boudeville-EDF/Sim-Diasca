@@ -1,0 +1,191 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module gui_button</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module gui_button</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various facilities for <b>button management</b>.
+
+
+<h2><a name="description">Description</a></h2>Gathering of various facilities for <b>button management</b>.
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-bitmap">bitmap()</a></h3>
+<p><tt>bitmap() = <a href="gui_image.html#type-bitmap">gui_image:bitmap()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-bitmap_button">bitmap_button()</a></h3>
+<p><b>abstract datatype</b>: <tt>bitmap_button()</tt></p>
+<p> Designates an actual button instance displaying a bitmap instead of the usual
+ label.</p>
+
+<h3 class="typedecl"><a name="type-button">button()</a></h3>
+<p><b>abstract datatype</b>: <tt>button()</tt></p>
+<p><p> Designates an actual button instance.</p>
+
+ When such a button is clicked, it emits an onButtonClicked event.</p>
+
+<h3 class="typedecl"><a name="type-button_id">button_id()</a></h3>
+<p><tt>button_id() = <a href="gui_id.html#type-button_id">gui_id:button_id()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-button_option">button_option()</a></h3>
+<p><tt>button_option() = {label, <a href="#type-label">label()</a>} | {style, [<a href="#type-button_style">button_style()</a>]} | {position, <a href="#type-point">point()</a>} | {size, <a href="#type-dimensions">dimensions()</a>}</tt></p>
+<p> An option for the creation of a button.</p>
+
+<h3 class="typedecl"><a name="type-button_ref">button_ref()</a></h3>
+<p><tt>button_ref() = <a href="#type-button">button()</a> | <a href="#type-button_id">button_id()</a></tt></p>
+<p> Any kind of reference onto a button.</p>
+
+<h3 class="typedecl"><a name="type-button_style">button_style()</a></h3>
+<p><tt>button_style() = left_justified | right_justified | top_justified | bottom_justified | exact_fit | flat</tt></p>
+<p> A style element of a button, see
+ <a href="http://docs.wxwidgets.org/stable/classwx_button.html" target="_top"><tt>http://docs.wxwidgets.org/stable/classwx_button.html</tt></a>.</p>
+
+<h3 class="typedecl"><a name="type-dimensions">dimensions()</a></h3>
+<p><tt>dimensions() = <a href="gui.html#type-dimensions">gui:dimensions()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-id">id()</a></h3>
+<p><tt>id() = <a href="gui_id.html#type-id">gui_id:id()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-label">label()</a></h3>
+<p><tt>label() = <a href="gui.html#type-label">gui:label()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-maybe_list">maybe_list()</a></h3>
+<p><tt>maybe_list(T) = <a href="list_utils.html#type-maybe_list">list_utils:maybe_list</a>(T)</tt></p>
+
+
+<h3 class="typedecl"><a name="type-parent">parent()</a></h3>
+<p><tt>parent() = <a href="gui.html#type-parent">gui:parent()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-point">point()</a></h3>
+<p><tt>point() = <a href="gui.html#type-point">gui:point()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-position">position()</a></h3>
+<p><tt>position() = <a href="gui.html#type-position">gui:position()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-size">size()</a></h3>
+<p><tt>size() = <a href="gui.html#type-size">gui:size()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-toggle_button">toggle_button()</a></h3>
+<p><b>abstract datatype</b>: <tt>toggle_button()</tt></p>
+<p><p> Designates a toggle button, that is a button that, when clicked by the user, 
+stays pressed.</p>
+
+ <p>It is therefore similar to a checkbox in functionality, but looks like a 
+button.</p>
+
+ When such a toggle button is clicked, it emits an onButtonToggled event.</p>
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#create-2">create/2</a></td><td>Creates a (labelled) button, with the specified parent.</td></tr>
+<tr><td valign="top"><a href="#create-3">create/3</a></td><td>Creates a (labelled) button, with the specified identifier and parent.</td></tr>
+<tr><td valign="top"><a href="#create-4">create/4</a></td><td>Creates a (labelled) button, with the specified identifier, option(s) and 
+parent.</td></tr>
+<tr><td valign="top"><a href="#create-6">create/6</a></td><td>Creates a button, with parent and most settings specified.</td></tr>
+<tr><td valign="top"><a href="#create_bitmap-3">create_bitmap/3</a></td><td>Creates a button with the specified identifier and that displays the
+ specified bitmap.</td></tr>
+<tr><td valign="top"><a href="#create_multiple-2">create_multiple/2</a></td><td>Creates (labelled) buttons, with their (single, common) parent specified.</td></tr>
+<tr><td valign="top"><a href="#create_toggle-3">create_toggle/3</a></td><td>Creates a (labelled) toggle button with the specified identifier and
+ parent.</td></tr>
+<tr><td valign="top"><a href="#create_toggle-4">create_toggle/4</a></td><td>Creates a (labelled) toggle button, with the specified identifier, 
+option(s) and parent.</td></tr>
+<tr><td valign="top"><a href="#destruct-1">destruct/1</a></td><td>Destructs the specified button.</td></tr>
+<tr><td valign="top"><a href="#set_label-2">set_label/2</a></td><td>Sets the label of the specified button.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="create-2">create/2</a></h3>
+<div class="spec">
+<p><tt>create(Label::<a href="#type-label">label()</a>, Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-button">button()</a></tt><br></p>
+<p> </p>
+</div><p>Creates a (labelled) button, with the specified parent.</p>
+
+<h3 class="function"><a name="create-3">create/3</a></h3>
+<div class="spec">
+<p><tt>create(Label::<a href="#type-label">label()</a>, Id::<a href="#type-id">id()</a>, Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-button">button()</a></tt><br></p>
+<p> </p>
+</div><p>Creates a (labelled) button, with the specified identifier and parent.</p>
+
+<h3 class="function"><a name="create-4">create/4</a></h3>
+<div class="spec">
+<p><tt>create(Label::<a href="#type-label">label()</a>, Id::<a href="#type-id">id()</a>, Opts::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-button_option">button_option()</a>), Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-button">button()</a></tt><br></p>
+<p> </p>
+</div><p><p>Creates a (labelled) button, with the specified identifier, option(s) and 
+parent.</p>
+
+ No 'label' option is to be specified among the options.
+</p>
+
+<h3 class="function"><a name="create-6">create/6</a></h3>
+<div class="spec">
+<p><tt>create(Label::<a href="#type-label">label()</a>, Position::<a href="#type-position">position()</a>, Size::<a href="#type-size">size()</a>, Styles::[<a href="#type-button_style">button_style()</a>], Id::<a href="#type-id">id()</a>, Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-button">button()</a></tt><br></p>
+<p> </p>
+</div><p><p>Creates a button, with parent and most settings specified.</p>
+
+ (internal use only)
+</p>
+
+<h3 class="function"><a name="create_bitmap-3">create_bitmap/3</a></h3>
+<div class="spec">
+<p><tt>create_bitmap(Bitmap::<a href="#type-bitmap">bitmap()</a>, Id::<a href="#type-id">id()</a>, Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-bitmap_button">bitmap_button()</a></tt><br></p>
+<p> </p>
+</div><p>Creates a button with the specified identifier and that displays the
+ specified bitmap.
+</p>
+
+<h3 class="function"><a name="create_multiple-2">create_multiple/2</a></h3>
+<div class="spec">
+<p><tt>create_multiple(Labels::[<a href="#type-label">label()</a>], Parent::<a href="#type-parent">parent()</a>) -&gt; [<a href="#type-button">button()</a>]</tt><br></p>
+<p> </p>
+</div><p>Creates (labelled) buttons, with their (single, common) parent specified.</p>
+
+<h3 class="function"><a name="create_toggle-3">create_toggle/3</a></h3>
+<div class="spec">
+<p><tt>create_toggle(Label::<a href="#type-label">label()</a>, Id::<a href="#type-id">id()</a>, Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-toggle_button">toggle_button()</a></tt><br></p>
+<p> </p>
+</div><p>Creates a (labelled) toggle button with the specified identifier and
+ parent.
+</p>
+
+<h3 class="function"><a name="create_toggle-4">create_toggle/4</a></h3>
+<div class="spec">
+<p><tt>create_toggle(Label::<a href="#type-label">label()</a>, Id::<a href="#type-id">id()</a>, Opts::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-button_option">button_option()</a>), Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-toggle_button">toggle_button()</a></tt><br></p>
+<p> </p>
+</div><p><p>Creates a (labelled) toggle button, with the specified identifier, 
+option(s) and parent.</p>
+
+ No 'label' option is to be specified among the options.
+</p>
+
+<h3 class="function"><a name="destruct-1">destruct/1</a></h3>
+<div class="spec">
+<p><tt>destruct(Button::<a href="#type-button">button()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Destructs the specified button.</p>
+
+<h3 class="function"><a name="set_label-2">set_label/2</a></h3>
+<div class="spec">
+<p><tt>set_label(Button::<a href="#type-button">button()</a>, Label::<a href="#type-label">label()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Sets the label of the specified button.</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

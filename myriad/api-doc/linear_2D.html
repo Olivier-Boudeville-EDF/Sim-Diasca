@@ -98,7 +98,8 @@
 
 <h2><a name="index">Function Index</a></h2>
 <table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#abs_angle_deg-3">abs_angle_deg/3</a></td><td>Returns the angle, in canonical degrees, between the vector AB and AC.</td></tr>
-<tr><td valign="top"><a href="#abs_angle_rad-3">abs_angle_rad/3</a></td><td>Returns the angle, in radians, between the vector AB and AC.</td></tr>
+<tr><td valign="top"><a href="#abs_angle_rad-3">abs_angle_rad/3</a></td><td>Returns the angle, in radians in the range [0, Pi], between the vector AB 
+and AC.</td></tr>
 <tr><td valign="top"><a href="#angle_deg-3">angle_deg/3</a></td><td>Returns the signed (oriented) angle, in canonical degrees, between the 
 vector AB and AC.</td></tr>
 <tr><td valign="top"><a href="#angle_rad-3">angle_rad/3</a></td><td>Returns the signed (oriented) angle, in radians, between the vector AB 
@@ -147,7 +148,8 @@ points.</td></tr>
 <p><tt>abs_angle_rad(A::<a href="#type-point2">point2()</a>, B::<a href="#type-point2">point2()</a>, C::<a href="#type-point2">point2()</a>) -&gt; <a href="#type-radians">radians()</a></tt><br></p><p><tt>abs_angle_rad(A::<a href="#type-integer_point2">integer_point2()</a>, B::<a href="#type-integer_point2">integer_point2()</a>, C::<a href="#type-integer_point2">integer_point2()</a>) -&gt; <a href="#type-radians">radians()</a></tt><br></p>
 <p> </p>
 <p> </p>
-</div><p><p>Returns the angle, in radians, between the vector AB and AC.</p>
+</div><p><p>Returns the angle, in radians in the range [0, Pi], between the vector AB 
+and AC.</p>
 
  Note: with this function we cannot tell whether one vector is ahead of the
  other, ie if we should use the returned angle or its opposite to go from AB

@@ -67,20 +67,20 @@
 <p><tt>xml_attribute() = {<a href="#type-xml_attribute_name">xml_attribute_name()</a>, <a href="#type-xml_attribute_value">xml_attribute_value()</a>} | <a href="#type-attribute_record">attribute_record()</a></tt></p>
 <p><p> The description of an attribute of a XML tag.</p>
 
- Ex: {refCount,"4"} in: <Account refCount="4"> ...</Account></p>
+ For example {refCount,"4"} in: <Account refCount="4"> ...</Account></p>
 
 <h3 class="typedecl"><a name="type-xml_attribute_name">xml_attribute_name()</a></h3>
 <p><tt>xml_attribute_name() = atom()</tt></p>
 <p><p> The name of an attribute of a XML tag; we recommend to use (lower) camelCase 
 for them.</p>
 
- Ex: 'refCount' in: <Account refCount="4"> ...</Account></p>
+ For example 'refCount' in: <Account refCount="4"> ...</Account></p>
 
 <h3 class="typedecl"><a name="type-xml_attribute_value">xml_attribute_value()</a></h3>
 <p><tt>xml_attribute_value() = <a href="#type-io_list">io_list()</a> | atom() | integer()</tt></p>
 <p><p> The value of an attribute of a XML tag.</p>
 
- Ex: "4" in: <Account refCount="4"> ...</Account></p>
+ For example "4" in: <Account refCount="4"> ...</Account></p>
 
 <h3 class="typedecl"><a name="type-xml_content">xml_content()</a></h3>
 <p><tt>xml_content() = [<a href="#type-xml_element">xml_element()</a>]</tt></p>
@@ -156,14 +156,14 @@ parent of the user-specified content.</p>
 <p><tt>xml_tag() = atom()</tt></p>
 <p><p> An XML tag; we recommend to use Upper CamelCase (PascalCase) for their name.</p>
 
- Ex: 'AccountLog' in: <AccountLog level="red">Hello</AccountLog>.</p>
+ For example 'AccountLog' in: <AccountLog level="red">Hello</AccountLog>.</p>
 
 <h3 class="typedecl"><a name="type-xml_text">xml_text()</a></h3>
 <p><tt>xml_text() = <a href="#type-ustring">ustring()</a></tt></p>
 <p><p> A raw string containing XML (including markup), typically at least an extract 
 of an XML document.</p>
 
- Ex: "<birds> <bird species="crow">Arthur</bird> </birds>".</p>
+ For example "<birds> <bird species="crow">Arthur</bird> </birds>".</p>
 
 <h2><a name="index">Function Index</a></h2>
 <table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#get_default_prolog-0">get_default_prolog/0</a></td><td>Returns the default prolog value, corresponding to:

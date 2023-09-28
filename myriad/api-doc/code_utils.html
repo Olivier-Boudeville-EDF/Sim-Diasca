@@ -92,7 +92,7 @@
 
 
 <h3 class="typedecl"><a name="type-md5_sum">md5_sum()</a></h3>
-<p><tt>md5_sum() = <a href="executable_utils.html#type-md5_sum">executable_utils:md5_sum()</a></tt></p>
+<p><tt>md5_sum() = <a href="hash_utils.html#type-md5_sum">hash_utils:md5_sum()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-module_name">module_name()</a></h3>
@@ -111,7 +111,7 @@
 <p><tt>stack_info() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(atom(), term()) | <a href="list_table.html#type-list_table">list_table:list_table</a>(atom(), term())</tt></p>
 <p><p> The last element of a stack item.</p>
 
- Ex: [{file,file_path()}, {line, meta_utils:line()}].</p>
+ For example [{file,file_path()}, {line, meta_utils:line()}].</p>
 
 <h3 class="typedecl"><a name="type-stack_item">stack_item()</a></h3>
 <p><tt>stack_item() = {<a href="#type-module_name">module_name()</a>, <a href="#type-function_name">function_name()</a>, arity(), <a href="#type-stack_info">stack_info()</a>}</tt></p>
@@ -192,7 +192,7 @@ module.</td></tr>
 <tr><td valign="top"><a href="#interpret_shortened_stacktrace-1">interpret_shortened_stacktrace/1</a></td><td>Returns a "smart" textual representation of the current stacktrace, once 
 specified extra depth has been skipped (not counting this call).</td></tr>
 <tr><td valign="top"><a href="#interpret_stacktrace-0">interpret_stacktrace/0</a></td><td>Returns a "smart" textual representation of the current stacktrace.</td></tr>
-<tr><td valign="top"><a href="#interpret_stacktrace-1">interpret_stacktrace/1</a></td><td>Returns a "smart" textual representation of specified stacktrace.</td></tr>
+<tr><td valign="top"><a href="#interpret_stacktrace-1">interpret_stacktrace/1</a></td><td>Returns a "smart" textual representation of the specified stacktrace.</td></tr>
 <tr><td valign="top"><a href="#interpret_stacktrace-2">interpret_stacktrace/2</a></td><td>Returns a "smart", complete textual description of the specified error
  stacktrace, including any argument-level analysis of the failure, listing just
  the filename of the corresponding source files (no full path wanted).</td></tr>
@@ -221,6 +221,8 @@ it was already set (otherwise does nothing).</td></tr>
 <tr><td valign="top"><a href="#resolve_code_path-1">resolve_code_path/1</a></td><td>Resolves the specified resolvable code path: returns a plain, immediately
  usable code path (of course preserving path order).</td></tr>
 <tr><td valign="top"><a href="#stack_info_to_string-1">stack_info_to_string/1</a></td><td>Returns a textual description of specified stack information.</td></tr>
+<tr><td valign="top"><a href="#study_function_availability-3">study_function_availability/3</a></td><td>Reports whether the specified function is available, and if not returns
+ details in order to facilitate any diagnosis.</td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
@@ -333,7 +335,7 @@ so that they are ready for future use, using a default time-out.</p>
 
  If an exception is thrown with 'badfile' being reported as the error, this may
  be caused by a version mistmatch between the Erlang environments in the source
- and at least one of the remote target hosts (ex: ERTS 5.5.2 vs 5.8.2).
+ and at least one of the remote target hosts (e.g. ERTS 5.5.2 vs 5.8.2).
 </p>
 
 <h3 class="function"><a name="deploy_modules-3">deploy_modules/3</a></h3>
@@ -349,7 +351,7 @@ the 'infinity' atom.</p>
 
  If an exception is thrown with 'badfile' being reported as the error, this may
  be caused by a version mistmatch between the Erlang environments in the source
- and at least one of the remote target hosts (ex: ERTS 5.5.2 vs 5.8.2).
+ and at least one of the remote target hosts (e.g. ERTS 5.5.2 vs 5.8.2).
 </p>
 
 <h3 class="function"><a name="display_stacktrace-0">display_stacktrace/0</a></h3>
@@ -418,7 +420,7 @@ can be copied or simply symlinked from any directory, and will be usable
 (regarding the get_beam_dirs_for* functions) from there as such (i.e. with no 
 specific extra prerequisite to take into account).</p>
 
- Ex: get_beam_dirs_for( "CEYLAN_MYRIAD" ).
+ For example get_beam_dirs_for( "CEYLAN_MYRIAD" ).
 </p>
 
 <h3 class="function"><a name="get_beam_dirs_for_myriad-0">get_beam_dirs_for_myriad/0</a></h3>
@@ -487,7 +489,7 @@ alphabetical order.</p>
 <p> </p>
 </div><p><p>Returns the root directory of Erlang/OTP, where it is installed.</p>
 
- Ex: "/home/joe/Software/Erlang/Erlang-23.1/lib/erlang" or
+ For example "/home/joe/Software/Erlang/Erlang-23.1/lib/erlang" or
  "/usr/local/otp/lib".
 </p>
 
@@ -562,7 +564,7 @@ specified extra depth has been skipped (not counting this call).</p>
 <div class="spec">
 <p><tt>interpret_stacktrace(Stacktrace::<a href="#type-stack_trace">stack_trace()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
 <p> </p>
-</div><p>Returns a "smart" textual representation of specified stacktrace.</p>
+</div><p>Returns a "smart" textual representation of the specified stacktrace.</p>
 
 <h3 class="function"><a name="interpret_stacktrace-2">interpret_stacktrace/2</a></h3>
 <div class="spec">
@@ -575,7 +577,7 @@ specified extra depth has been skipped (not counting this call).</p>
 
 <h3 class="function"><a name="interpret_undef_exception-3">interpret_undef_exception/3</a></h3>
 <div class="spec">
-<p><tt>interpret_undef_exception(ModuleName::<a href="#type-module_name">module_name()</a>, FunctionName::<a href="basic_utils.html#type-function_name">basic_utils:function_name()</a>, Arity::arity()) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><tt>interpret_undef_exception(ModuleName::<a href="#type-module_name">module_name()</a>, FunctionName::<a href="#type-function_name">function_name()</a>, Arity::arity()) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
 <p> </p>
 </div><p>Interprets an undef exception, typically after it has been raised.</p>
 
@@ -589,11 +591,14 @@ path.</p>
  <p>Returns either a list of its absolute, canonicalised, unordered paths that 
 include this BEAM file (if being available at least once), or 'not_found'.</p>
 
- Note:
-  - hence this function does not return a boolean
-  - the returned list (if any) of paths respects the order in the code path; as
-  a result, its first element corresponds to the path of the BEAM file that
-  would be loaded for the specified module
+ <p>Note:  
+- hence this function does not return a boolean  
+- the returned list (if any) of paths respects the order in the code path; as  
+a result, its first element corresponds to the path of the BEAM file that  
+would be loaded for the specified module</p>
+
+ See also interpret_undef_exception/3 for a direct feedback about the
+ availability of a given MFA.
 </p>
 
 <h3 class="function"><a name="is_loaded_module_same_on_filesystem-1">is_loaded_module_same_on_filesystem/1</a></h3>
@@ -718,6 +723,14 @@ it was already set (otherwise does nothing).</p>
 <p><tt>stack_info_to_string(StackInfo::<a href="#type-stack_info">stack_info()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
 <p> </p>
 </div><p>Returns a textual description of specified stack information.</p>
+
+<h3 class="function"><a name="study_function_availability-3">study_function_availability/3</a></h3>
+<div class="spec">
+<p><tt>study_function_availability(ModuleName::<a href="#type-module_name">module_name()</a>, FunctionName::<a href="#type-function_name">function_name()</a>, Arity::arity()) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Reports whether the specified function is available, and if not returns
+ details in order to facilitate any diagnosis.
+</p>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

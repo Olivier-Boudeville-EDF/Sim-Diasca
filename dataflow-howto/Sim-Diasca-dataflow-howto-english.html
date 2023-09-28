@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.13.1: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.16: http://docutils.sourceforge.net/" />
 <title>Sim-Diasca Dataflow HOWTO</title>
 <meta content="Sim-Diasca, dataflow, how-to, block" name="keywords" />
 <link rel="stylesheet" href="pygments-default.css" type="text/css" />
@@ -31,9 +31,9 @@
 </tr>
 <tr class="field"><th class="field-name">Creation Date:</th><td class="field-body">Thursday, February 25, 2016</td>
 </tr>
-<tr class="field"><th class="field-name">Lastly updated:</th><td class="field-body">Thursday, January 5, 2023</td>
+<tr class="field"><th class="field-name">Lastly updated:</th><td class="field-body">Thursday, September 28, 2023</td>
 </tr>
-<tr class="field"><th class="field-name">Version:</th><td class="field-body">2.4.5</td>
+<tr class="field"><th class="field-name">Version:</th><td class="field-body">2.4.6</td>
 </tr>
 <tr class="field"><th class="field-name">Status:</th><td class="field-body">Stable</td>
 </tr>
@@ -49,7 +49,7 @@
 <p></p>
 <p><span class="raw-html"><a name="sim_diasca_toc"></a></span></p>
 <div class="contents topic" id="table-of-contents">
-<p class="topic-title first"><strong>Table of Contents</strong></p>
+<p class="topic-title"><strong>Table of Contents</strong></p>
 <ul class="simple">
 <li><a class="reference internal" href="#foreword" id="id87">Foreword</a></li>
 <li><a class="reference internal" href="#usual-organization-of-the-model-evaluation" id="id88">Usual Organization of the Model Evaluation</a></li>
@@ -920,7 +920,7 @@ $ deactivate
     <span class="n">unit</span><span class="o">.</span><span class="n">ProcessingUnit</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">my_input_specs</span><span class="p">,</span>
       <span class="n">my_output_specs</span><span class="p">,</span><span class="n">ActivationPolicy</span><span class="o">.</span><span class="n">on_new_set</span><span class="p">)</span>
 
-  <span class="k">def</span> <span class="nf">activate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="bp">None</span><span class="p">:</span>
+  <span class="k">def</span> <span class="nf">activate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Automatically called by the dataflow, as requested by
        the selected activation policy.&quot;&quot;&quot;</span>
 
@@ -1011,10 +1011,10 @@ $ deactivate
     <span class="bp">self</span><span class="o">.</span><span class="n">register_output_ports</span><span class="p">(</span><span class="n">output_specs</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">activation_policy</span><span class="o">=</span><span class="n">validate_activation_policy</span><span class="p">(</span><span class="n">activation_policy</span><span class="p">)</span>
 
-  <span class="k">def</span> <span class="nf">register_input_ports</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">specs</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="n">InputPortSpec</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="bp">None</span><span class="p">:</span>
+  <span class="k">def</span> <span class="nf">register_input_ports</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">specs</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="n">InputPortSpec</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="p">[</span><span class="o">...</span><span class="p">]</span>
 
-  <span class="k">def</span> <span class="nf">register_output_ports</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">specs</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="n">OutputPortSpec</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="bp">None</span><span class="p">:</span>
+  <span class="k">def</span> <span class="nf">register_output_ports</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">specs</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="n">OutputPortSpec</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="p">[</span><span class="o">...</span><span class="p">]</span>
 
   <span class="k">def</span> <span class="nf">validate_activation_policy</span><span class="p">(</span><span class="n">policy</span><span class="p">:</span><span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ActivationPolicy</span><span class="p">:</span>
@@ -1030,11 +1030,11 @@ $ deactivate
     &quot;&quot;&quot;</span>
     <span class="p">[</span><span class="o">...</span><span class="p">]</span>
 
-  <span class="k">def</span> <span class="nf">set_output_port_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">:</span><span class="n">OutputPortName</span><span class="p">,</span><span class="n">PortValue</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="bp">None</span><span class="p">:</span>
+  <span class="k">def</span> <span class="nf">set_output_port_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">:</span><span class="n">OutputPortName</span><span class="p">,</span><span class="n">PortValue</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="p">[</span><span class="o">...</span><span class="p">]</span>
 
 
-  <span class="k">def</span> <span class="nf">activate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="bp">None</span><span class="p">:</span>
+  <span class="k">def</span> <span class="nf">activate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Evaluates the processing borne by that unit.
 
     Once a unit gets activated, it is typically expected that it reads

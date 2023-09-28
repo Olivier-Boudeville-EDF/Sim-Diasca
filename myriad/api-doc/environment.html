@@ -44,7 +44,7 @@ application or component.</p>
 
  <p>The server process corresponding to an environment is locally registered; as a
  consequence it can be designated either directly through its PID or through
- its conventional (atom) registration name (like in
+ its conventional (atom) registration name (like 'my_foobar_env_server' in
  <code>environment:get(my_first_color, my_foobar_env_server</code>). No specific global 
 registration of servers is made.</p>
 
@@ -54,10 +54,11 @@ to avoid any risk of race conditions (should multiple processes attempt
 concurrently to create the same environment server), and also to be able to 
 request that the server is also linked to the calling process.</p>
 
- <p>An environment is best designated as a PID, otherwise as a registered name, 
-otherwise from any filename that it uses.</p>
+ <p>See our 'preferences' module, corresponding to the user preferences, which is 
+implemented as a specific case of environment.</p>
 
- See also the resource module for the sharing of any kind of data resource.
+ See also the (unrelated) resource module for the sharing of any kind of data
+ resource.
 
 <h2><a name="types">Data Types</a></h2>
 

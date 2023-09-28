@@ -1,0 +1,333 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module gui_window</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module gui_window</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various facilities for <b>windows</b>.
+
+
+<h2><a name="description">Description</a></h2><p>Gathering of various facilities for <b>windows</b>.</p>
+
+ <p>A window may be a top-level of not, a frame, a splitter window, etc.</p>
+
+ <p>A window is a special case of widget, which is the most general form of 
+graphical component.</p>
+
+ See also:
+ - the gui_window_manager module regarding the insertion of windows in their
+ environment
+ - the gui_frame module
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-any_file_path">any_file_path()</a></h3>
+<p><tt>any_file_path() = <a href="file_utils.html#type-any_file_path">file_utils:any_file_path()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-bit_mask">bit_mask()</a></h3>
+<p><tt>bit_mask() = <a href="basic_utils.html#type-bit_mask">basic_utils:bit_mask()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-icon_name_id">icon_name_id()</a></h3>
+<p><tt>icon_name_id() = <a href="#type-standard_icon_name_id">standard_icon_name_id()</a> | <a href="#type-id">id()</a></tt></p>
+<p> The identifier of an icon.</p>
+
+<h3 class="typedecl"><a name="type-id">id()</a></h3>
+<p><tt>id() = <a href="gui_id.html#type-id">gui_id:id()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-maybe_list">maybe_list()</a></h3>
+<p><tt>maybe_list(T) = <a href="list_utils.html#type-maybe_list">list_utils:maybe_list</a>(T)</tt></p>
+
+
+<h3 class="typedecl"><a name="type-orientation">orientation()</a></h3>
+<p><tt>orientation() = <a href="#type-orientation">orientation()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-os_type">os_type()</a></h3>
+<p><tt>os_type() = <a href="system_utils.html#type-os_type">system_utils:os_type()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-parent">parent()</a></h3>
+<p><tt>parent() = <a href="gui.html#type-parent">gui:parent()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-point">point()</a></h3>
+<p><tt>point() = <a href="gui.html#type-point">gui:point()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-sash_gravity">sash_gravity()</a></h3>
+<p><tt>sash_gravity() = number()</tt></p>
+<p><p> Tells how much the first pane of a splitter window is to grow while resizing 
+it:  
+- 0.0: only the bottom/right window is automatically resized  
+- 0.5: both windows grow by equal size  
+- 1.0: only left/top window grows</p>
+
+ Gravity should be a value between 0.0 and 1.0; its default value is 0.0.</p>
+
+<h3 class="typedecl"><a name="type-size">size()</a></h3>
+<p><tt>size() = <a href="gui.html#type-size">gui:size()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-splitter">splitter()</a></h3>
+<p><tt>splitter() = #splitter{splitter_window = <a href="gui_window.html#type-splitter_window">gui_window:splitter_window()</a>, orientation = <a href="gui.html#type-orientation">gui:orientation()</a>, first_pane = <a href="#type-maybe">maybe</a>(<a href="gui_window.html#type-window">gui_window:window()</a>), second_pane = <a href="#type-maybe">maybe</a>(<a href="gui_window.html#type-window">gui_window:window()</a>)}</tt></p>
+<p><p> Represents a window able to be split into two panes.</p>
+
+ Information regarding the (fixed, static) horizontal or vertical splitting of
+ a window into two ones.</p>
+
+<h3 class="typedecl"><a name="type-splitter_window">splitter_window()</a></h3>
+<p><b>abstract datatype</b>: <tt>splitter_window()</tt></p>
+<p> A window able to be split into two panes; it may thus manage up to two
+ subwindows.</p>
+
+<h3 class="typedecl"><a name="type-standard_icon_name_id">standard_icon_name_id()</a></h3>
+<p><tt>standard_icon_name_id() = asterisk_icon | stop_icon | information_icon | question_icon | error_icon | warning_icon | hand_icon | exclamation_icon</tt></p>
+<p> The name identifiers of the standard icons.</p>
+
+<h3 class="typedecl"><a name="type-title">title()</a></h3>
+<p><tt>title() = <a href="gui.html#type-title">gui:title()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-top_level_window">top_level_window()</a></h3>
+<p><b>abstract datatype</b>: <tt>top_level_window()</tt></p>
+<p><p> A top-level (application-wide) window.</p>
+
+ The top-level window is a base class common to frames and dialogs; so such a
+ window is typically a frame (including any main one) or a dialog.</p>
+
+<h3 class="typedecl"><a name="type-window">window()</a></h3>
+<p><b>abstract datatype</b>: <tt>window()</tt></p>
+<p><p> Any kind of window.</p>
+
+ <p>Base, most general class for all windows (for example, a frame is a window 
+whose size and position can usually be changed by the user).</p>
+
+ This corresponds to "real" windows - not to any widget, as wx/WxWidgets call
+ windows.</p>
+
+<h3 class="typedecl"><a name="type-window_option">window_option()</a></h3>
+<p><tt>window_option() = {position, <a href="#type-point">point()</a>} | {size, <a href="#type-size">size()</a>} | {style, [<a href="#type-window_style">window_style()</a>]}</tt></p>
+<p> Window-specific options (quite common).</p>
+
+<h3 class="typedecl"><a name="type-window_style">window_style()</a></h3>
+<p><tt>window_style() = default_border | simple_border | sunken_border | raised_border | static_border | theme_border | no_border | double_border | transparent | tab_traversable | grab_all_keys | with_vertical_scrollbar | with_horizontal_scrollbar | never_hide_scrollbars | clip_children | full_repaint_on_resize</tt></p>
+
+
+<h3 class="typedecl"><a name="type-wx_window_option">wx_window_option()</a></h3>
+<p><tt>wx_window_option() = term()</tt></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#center_on_screen-1">center_on_screen/1</a></td><td>Centers the specified top-level window on screen.</td></tr>
+<tr><td valign="top"><a href="#center_on_screen-2">center_on_screen/2</a></td><td>Centers the specified top-level window on screen, along the specified
+ orientation(s).</td></tr>
+<tr><td valign="top"><a href="#create-0">create/0</a></td><td>Creates a basic window.</td></tr>
+<tr><td valign="top"><a href="#create-1">create/1</a></td><td>Creates a basic window of the specified size.</td></tr>
+<tr><td valign="top"><a href="#create_splitter-4">create_splitter/4</a></td><td>Creates a splitter of the specified orientation, in the specified window,
+ based on the specified sash gravity and pane size, returning a corresponding
+ splitter record so that the up to two subwindows can be declared afterwards.</td></tr>
+<tr><td valign="top"><a href="#create_splitter-5">create_splitter/5</a></td><td>Creates a splitter of the specified orientation, in the specified window,
+ based on the specified sash gravity and pane size, according to the specified
+ OS, returning a corresponding splitter record so that the up to two subwindows
+ can be declared afterwards.</td></tr>
+<tr><td valign="top"><a href="#destruct-1">destruct/1</a></td><td>Destructs the specified window.</td></tr>
+<tr><td valign="top"><a href="#get_title-1">get_title/1</a></td><td>Returns the title of the specified top-level window.</td></tr>
+<tr><td valign="top"><a href="#hide-1">hide/1</a></td><td>Hides the specified window.</td></tr>
+<tr><td valign="top"><a href="#is_active-1">is_active/1</a></td><td>Returns whether the specified top-level window is currently active, that
+ is if the user is currently interacting with it.</td></tr>
+<tr><td valign="top"><a href="#is_fullscreen-1">is_fullscreen/1</a></td><td>Returns whether the specified top-level window is fullscreen.</td></tr>
+<tr><td valign="top"><a href="#is_maximised-1">is_maximised/1</a></td><td>Tells whether the specified top-level window is maximised.</td></tr>
+<tr><td valign="top"><a href="#maximize-1">maximize/1</a></td><td>Maximises the specified top-level window.</td></tr>
+<tr><td valign="top"><a href="#record_as_top_level-1">record_as_top_level/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_fullscreen-2">set_fullscreen/2</a></td><td>Shows the specified top-level window to fullscreen (if true) or restores 
+it to its normal state (if false).</td></tr>
+<tr><td valign="top"><a href="#set_icon-2">set_icon/2</a></td><td>Sets the icon of the specified top-level window.</td></tr>
+<tr><td valign="top"><a href="#set_title-2">set_title/2</a></td><td>Sets the title of the specified top-level window.</td></tr>
+<tr><td valign="top"><a href="#set_unique_pane-2">set_unique_pane/2</a></td><td>Sets the specified splitter in a single pane configuration, using for
+ that the specified window.</td></tr>
+<tr><td valign="top"><a href="#show-1">show/1</a></td><td>Shows (renders) the specified window (or subclass thereof).</td></tr>
+<tr><td valign="top"><a href="#to_wx_window_options-1">to_wx_window_options/1</a></td><td>Converts the specified MyriadGUI window option(s) into the appropriate 
+wx-specific options.</td></tr>
+<tr><td valign="top"><a href="#window_styles_to_bitmask-1">window_styles_to_bitmask/1</a></td><td>Converts the specified MyriadGUI window style elements into the 
+appropriate wx-specific bit mask.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="center_on_screen-1">center_on_screen/1</a></h3>
+<div class="spec">
+<p><tt>center_on_screen(TopLvlWin::<a href="#type-top_level_window">top_level_window()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Centers the specified top-level window on screen.</p>
+
+<h3 class="function"><a name="center_on_screen-2">center_on_screen/2</a></h3>
+<div class="spec">
+<p><tt>center_on_screen(TopLvlWin::<a href="#type-top_level_window">top_level_window()</a>, Orientation::<a href="#type-orientation">orientation()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Centers the specified top-level window on screen, along the specified
+ orientation(s).
+</p>
+
+<h3 class="function"><a name="create-0">create/0</a></h3>
+<div class="spec">
+<p><tt>create() -&gt; <a href="#type-window">window()</a></tt><br></p>
+<p> </p>
+</div><p>Creates a basic window.</p>
+
+<h3 class="function"><a name="create-1">create/1</a></h3>
+<div class="spec">
+<p><tt>create(Size::<a href="#type-size">size()</a>) -&gt; <a href="#type-window">window()</a></tt><br></p>
+<p> </p>
+</div><p>Creates a basic window of the specified size.</p>
+
+<h3 class="function"><a name="create_splitter-4">create_splitter/4</a></h3>
+<div class="spec">
+<p><tt>create_splitter(ParentWindow::<a href="#type-window">window()</a>, Orientation::<a href="#type-orientation">orientation()</a>, SashGravity::<a href="#type-sash_gravity">sash_gravity()</a>, PaneSize::<a href="#type-size">size()</a>) -&gt; <a href="#type-splitter">splitter()</a></tt><br></p>
+<p> </p>
+</div><p>Creates a splitter of the specified orientation, in the specified window,
+ based on the specified sash gravity and pane size, returning a corresponding
+ splitter record so that the up to two subwindows can be declared afterwards.
+</p>
+
+<h3 class="function"><a name="create_splitter-5">create_splitter/5</a></h3>
+<div class="spec">
+<p><tt>create_splitter(ParentWindow::<a href="#type-window">window()</a>, Orientation::<a href="#type-orientation">orientation()</a>, SashGravity::<a href="#type-sash_gravity">sash_gravity()</a>, PaneSize::<a href="#type-size">size()</a>, OSType::<a href="#type-os_type">os_type()</a>) -&gt; <a href="#type-splitter">splitter()</a></tt><br></p>
+<p> </p>
+</div><p>Creates a splitter of the specified orientation, in the specified window,
+ based on the specified sash gravity and pane size, according to the specified
+ OS, returning a corresponding splitter record so that the up to two subwindows
+ can be declared afterwards.
+</p>
+
+<h3 class="function"><a name="destruct-1">destruct/1</a></h3>
+<div class="spec">
+<p><tt>destruct(Window::<a href="#type-window">window()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Destructs the specified window.</p>
+
+<h3 class="function"><a name="get_title-1">get_title/1</a></h3>
+<div class="spec">
+<p><tt>get_title(TopLevelWindow::<a href="#type-top_level_window">top_level_window()</a>) -&gt; <a href="#type-title">title()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the title of the specified top-level window.</p>
+
+<h3 class="function"><a name="hide-1">hide/1</a></h3>
+<div class="spec">
+<p><tt>hide(Window::<a href="#type-window">window()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p><p>Hides the specified window.</p>
+
+ Returns whether anything had to be done.
+</p>
+
+<h3 class="function"><a name="is_active-1">is_active/1</a></h3>
+<div class="spec">
+<p><tt>is_active(TopLvlWin::<a href="#type-top_level_window">top_level_window()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Returns whether the specified top-level window is currently active, that
+ is if the user is currently interacting with it.
+</p>
+
+<h3 class="function"><a name="is_fullscreen-1">is_fullscreen/1</a></h3>
+<div class="spec">
+<p><tt>is_fullscreen(TopLvlWin::<a href="#type-top_level_window">top_level_window()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Returns whether the specified top-level window is fullscreen.</p>
+
+<h3 class="function"><a name="is_maximised-1">is_maximised/1</a></h3>
+<div class="spec">
+<p><tt>is_maximised(TopLevelWindow::<a href="#type-top_level_window">top_level_window()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Tells whether the specified top-level window is maximised.</p>
+
+<h3 class="function"><a name="maximize-1">maximize/1</a></h3>
+<div class="spec">
+<p><tt>maximize(TopLevelWindow::<a href="#type-top_level_window">top_level_window()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Maximises the specified top-level window.</p>
+
+<h3 class="function"><a name="record_as_top_level-1">record_as_top_level/1</a></h3>
+<div class="spec">
+<p><tt>record_as_top_level(Window::<a href="#type-window">window()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="set_fullscreen-2">set_fullscreen/2</a></h3>
+<div class="spec">
+<p><tt>set_fullscreen(TopLvlWin::<a href="#type-top_level_window">top_level_window()</a>, ForceFullscreen::boolean()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Shows the specified top-level window to fullscreen (if true) or restores 
+it to its normal state (if false).</p>
+
+ <p>Showing a window full screen also actually shows the window if it is not 
+already shown. Any menu bar is then hidden.</p>
+
+ Returns (supposedly) whether the operation succeeded.
+</p>
+
+<h3 class="function"><a name="set_icon-2">set_icon/2</a></h3>
+<div class="spec">
+<p><tt>set_icon(TopLvlWin::<a href="#type-top_level_window">top_level_window()</a>, IconPath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Sets the icon of the specified top-level window.</p>
+
+<h3 class="function"><a name="set_title-2">set_title/2</a></h3>
+<div class="spec">
+<p><tt>set_title(TopLevelWindow::<a href="#type-top_level_window">top_level_window()</a>, Title::<a href="#type-title">title()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Sets the title of the specified top-level window.</p>
+
+<h3 class="function"><a name="set_unique_pane-2">set_unique_pane/2</a></h3>
+<div class="spec">
+<p><tt>set_unique_pane(Splitter::<a href="#type-splitter">splitter()</a>, WindowPane::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Sets the specified splitter in a single pane configuration, using for
+ that the specified window.
+</p>
+
+<h3 class="function"><a name="show-1">show/1</a></h3>
+<div class="spec">
+<p><tt>show(Windows::<a href="#type-window">window()</a> | [<a href="#type-window">window()</a>]) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p><p>Shows (renders) the specified window (or subclass thereof).</p>
+
+ <p>Returns whether anything had to be done.</p>
+
+ This is the place where all widgets resolve their positions, sizes and
+ contents.
+</p>
+
+<h3 class="function"><a name="to_wx_window_options-1">to_wx_window_options/1</a></h3>
+<div class="spec">
+<p><tt>to_wx_window_options(Options::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-window_option">window_option()</a>)) -&gt; [<a href="#type-wx_window_option">wx_window_option()</a>]</tt><br></p>
+<p> </p>
+</div><p><p>Converts the specified MyriadGUI window option(s) into the appropriate 
+wx-specific options.</p>
+
+ (exported helper)
+</p>
+
+<h3 class="function"><a name="window_styles_to_bitmask-1">window_styles_to_bitmask/1</a></h3>
+<div class="spec">
+<p><tt>window_styles_to_bitmask(StyleOpts::[<a href="#type-window_style">window_style()</a>]) -&gt; <a href="#type-bit_mask">bit_mask()</a></tt><br></p>
+<p> </p>
+</div><p><p>Converts the specified MyriadGUI window style elements into the 
+appropriate wx-specific bit mask.</p>
+
+ (helper)
+</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

@@ -11,12 +11,12 @@
 
 <h1>Module traces</h1>
 <ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Module gathering all code, common to tests and applications, that allows
- to <b>lighten the trace macros, share defines and types, or manage log
+ to <b>lighten the trace macros, share defines and types, manage log
  handlers</b>.
 
 
 <h2><a name="description">Description</a></h2>Module gathering all code, common to tests and applications, that allows
- to <b>lighten the trace macros, share defines and types, or manage log
+ to <b>lighten the trace macros, share defines and types, manage log
  handlers</b>.
 
 <h2><a name="types">Data Types</a></h2>
@@ -29,17 +29,37 @@
 <p><tt>app_timestamp() = <a href="trace_utils.html#type-trace_timestamp">trace_utils:trace_timestamp()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-bin_emitter_categorization">bin_emitter_categorization()</a></h3>
+<p><tt>bin_emitter_categorization() = <a href="#type-bin_string">bin_string()</a></tt></p>
+<p> For example <code>&lt;&lt;"topics.sports.basketball"&gt;&gt;</code>.</p>
+
+<h3 class="typedecl"><a name="type-bin_emitter_name">bin_emitter_name()</a></h3>
+<p><tt>bin_emitter_name() = <a href="#type-bin_string">bin_string()</a></tt></p>
+<p> Name of a trace emitter.</p>
+
+<h3 class="typedecl"><a name="type-bin_location">bin_location()</a></h3>
+<p><tt>bin_location() = <a href="#type-bin_string">bin_string()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-bin_message">bin_message()</a></h3>
+<p><tt>bin_message() = <a href="trace_utils.html#type-trace_bin_message">trace_utils:trace_bin_message()</a></tt></p>
+<p> An actual (binary) trace message.</p>
+
+<h3 class="typedecl"><a name="type-bin_message_categorization">bin_message_categorization()</a></h3>
+<p><tt>bin_message_categorization() = <a href="trace_utils.html#type-trace_bin_message_categorization">trace_utils:trace_bin_message_categorization()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-bin_string">bin_string()</a></h3>
 <p><tt>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></tt></p>
 
 
-<h3 class="typedecl"><a name="type-emitter_any_categorization">emitter_any_categorization()</a></h3>
-<p><tt>emitter_any_categorization() = <a href="#type-emitter_categorization">emitter_categorization()</a> | <a href="#type-emitter_bin_categorization">emitter_bin_categorization()</a></tt></p>
-<p> Any kind of categorization of a trace emitter.</p>
+<h3 class="typedecl"><a name="type-bin_time">bin_time()</a></h3>
+<p><tt>bin_time() = <a href="#type-bin_string">bin_string()</a></tt></p>
+<p> A (binary) trace time.</p>
 
-<h3 class="typedecl"><a name="type-emitter_bin_categorization">emitter_bin_categorization()</a></h3>
-<p><tt>emitter_bin_categorization() = <a href="#type-bin_string">bin_string()</a></tt></p>
-<p> Ex: <code>&lt;&lt;"topics.sports.basketball"&gt;&gt;</code>.</p>
+<h3 class="typedecl"><a name="type-emitter_any_categorization">emitter_any_categorization()</a></h3>
+<p><tt>emitter_any_categorization() = <a href="#type-emitter_categorization">emitter_categorization()</a> | <a href="#type-bin_emitter_categorization">bin_emitter_categorization()</a></tt></p>
+<p> Any kind of categorization of a trace emitter.</p>
 
 <h3 class="typedecl"><a name="type-emitter_categorization">emitter_categorization()</a></h3>
 <p><tt>emitter_categorization() = <a href="#type-ustring">ustring()</a></tt></p>
@@ -48,7 +68,7 @@
  <p>It is a plain string listing increasingly detailed trace sub-categories, 
 separated by dots.</p>
 
- Ex: "topics.sports.basketball"</p>
+ For example "topics.sports.basketball".</p>
 
 <h3 class="typedecl"><a name="type-emitter_info">emitter_info()</a></h3>
 <p><tt>emitter_info() = {<a href="#type-emitter_name">emitter_name()</a>, <a href="#type-emitter_categorization">emitter_categorization()</a>}</tt></p>
@@ -56,7 +76,7 @@ separated by dots.</p>
 
 <h3 class="typedecl"><a name="type-emitter_name">emitter_name()</a></h3>
 <p><tt>emitter_name() = <a href="#type-ustring">ustring()</a></tt></p>
-
+<p> Name of a trace emitter.</p>
 
 <h3 class="typedecl"><a name="type-file_name">file_name()</a></h3>
 <p><tt>file_name() = <a href="file_utils.html#type-file_name">file_utils:file_name()</a></tt></p>
@@ -68,15 +88,15 @@ separated by dots.</p>
 
 <h3 class="typedecl"><a name="type-location">location()</a></h3>
 <p><tt>location() = <a href="#type-ustring">ustring()</a></tt></p>
-
+<p> The location (free text, typically host) of a trace emitter.</p>
 
 <h3 class="typedecl"><a name="type-message">message()</a></h3>
-<p><tt>message() = <a href="#type-ustring">ustring()</a></tt></p>
-<p> A trace message.</p>
+<p><tt>message() = <a href="trace_utils.html#type-trace_message">trace_utils:trace_message()</a></tt></p>
+<p> An actual trace message.</p>
 
 <h3 class="typedecl"><a name="type-message_categorization">message_categorization()</a></h3>
-<p><tt>message_categorization() = <a href="#type-ustring">ustring()</a> | uncategorized</tt></p>
-<p> A message may or may not (which is the default) by categorized.</p>
+<p><tt>message_categorization() = <a href="trace_utils.html#type-trace_message_categorization">trace_utils:trace_message_categorization()</a></tt></p>
+
 
 <h3 class="typedecl"><a name="type-priority">priority()</a></h3>
 <p><tt>priority() = <a href="trace_utils.html#type-trace_priority">trace_utils:trace_priority()</a></tt></p>
@@ -84,7 +104,7 @@ separated by dots.</p>
 
 <h3 class="typedecl"><a name="type-time">time()</a></h3>
 <p><tt>time() = <a href="#type-ustring">ustring()</a></tt></p>
-
+<p> A trace time.</p>
 
 <h3 class="typedecl"><a name="type-trace_severity">trace_severity()</a></h3>
 <p><tt>trace_severity() = <a href="trace_utils.html#type-trace_severity">trace_utils:trace_severity()</a></tt></p>

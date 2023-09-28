@@ -1,0 +1,467 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module gui_texture</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module gui_texture</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various facilities for the <b>support of (OpenGL)
+ textures</b>, mostly 2D ones, either old-style (compatibility one) or
+ according to current, modern OpenGL.
+
+
+<h2><a name="description">Description</a></h2>Gathering of various facilities for the <b>support of (OpenGL)
+ textures</b>, mostly 2D ones, either old-style (compatibility one) or
+ according to current, modern OpenGL.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-any_file_path">any_file_path()</a></h3>
+<p><tt>any_file_path() = <a href="file_utils.html#type-any_file_path">file_utils:any_file_path()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-brush">brush()</a></h3>
+<p><tt>brush() = <a href="gui_render.html#type-brush">gui_render:brush()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-byte_size">byte_size()</a></h3>
+<p><tt>byte_size() = <a href="system_utils.html#type-byte_size">system_utils:byte_size()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-color_buffer">color_buffer()</a></h3>
+<p><tt>color_buffer() = <a href="gui_color.html#type-color_buffer">gui_color:color_buffer()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-color_by_decimal">color_by_decimal()</a></h3>
+<p><tt>color_by_decimal() = <a href="gui_color.html#type-color_by_decimal">gui_color:color_by_decimal()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-coordinate">coordinate()</a></h3>
+<p><tt>coordinate() = <a href="gui.html#type-coordinate">gui:coordinate()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-dimensions">dimensions()</a></h3>
+<p><tt>dimensions() = <a href="gui.html#type-dimensions">gui:dimensions()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-enum">enum()</a></h3>
+<p><tt>enum() = <a href="gui_opengl.html#type-enum">gui_opengl:enum()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-font">font()</a></h3>
+<p><tt>font() = <a href="gui_font.html#type-font">gui_font:font()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-gl_color_format">gl_color_format()</a></h3>
+<p><tt>gl_color_format() = 1 | 2 | 3 | 4 | 6406 | 32827 | 32828 | 32829 | 32830 | 6409 | 32831 | 32832 | 32833 | 32834 | 6410 | 32835 | 32836 | 32837 | 32838 | 32839 | 32840 | 32841 | 32842 | 32843 | 32844 | 32845 | 10768 | 6407 | 32847 | 32848 | 32849 | 32850 | 32851 | 32852 | 6408 | 32853 | 32854 | 32855 | 32856 | 32857 | 32858 | 32859</tt></p>
+<p> An OpenGL color format (e.g. ?GL_RGBA), which specifies the number of color
+ components in a texture.</p>
+
+<h3 class="typedecl"><a name="type-gl_mipmap_filtering_mode">gl_mipmap_filtering_mode()</a></h3>
+<p><tt>gl_mipmap_filtering_mode() = 9984 | 9985 | 9986 | 9987</tt></p>
+
+
+<h3 class="typedecl"><a name="type-gl_pixel_format">gl_pixel_format()</a></h3>
+<p><tt>gl_pixel_format() = 6400 | 6403 | 6404 | 6405 | 6406 | 6407 | 6408 | 6409 | 6410</tt></p>
+<p> A format of a pixel data.</p>
+
+<h3 class="typedecl"><a name="type-gl_texture_filtering_mode">gl_texture_filtering_mode()</a></h3>
+<p><tt>gl_texture_filtering_mode() = 9728 | 9729 | <a href="#type-enum">enum()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-gl_texture_wrapping_mode">gl_texture_wrapping_mode()</a></h3>
+<p><tt>gl_texture_wrapping_mode() = 10497 | 33648 | 33071 | 33069</tt></p>
+
+
+<h3 class="typedecl"><a name="type-height">height()</a></h3>
+<p><tt>height() = <a href="gui.html#type-height">gui:height()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-image">image()</a></h3>
+<p><tt>image() = <a href="gui_image.html#type-image">gui_image:image()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-image_format">image_format()</a></h3>
+<p><tt>image_format() = <a href="gui_image.html#type-image_format">gui_image:image_format()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-maybe_list">maybe_list()</a></h3>
+<p><tt>maybe_list(T) = <a href="list_utils.html#type-maybe_list">list_utils:maybe_list</a>(T)</tt></p>
+
+
+<h3 class="typedecl"><a name="type-mipmap_level">mipmap_level()</a></h3>
+<p><tt>mipmap_level() = non_neg_integer()</tt></p>
+<p><p> Uses to designate a level of scale regarding a given texture.</p>
+
+ <p>A mipmap is a collection of texture images in which each subsequent texture is 
+twice as small compared to the previous one. Use gl:generateMipmap/1 to 
+generate scaled down version of a given texture.</p>
+
+ 0 is the base level (full, original size).</p>
+
+<h3 class="typedecl"><a name="type-pixel_format">pixel_format()</a></h3>
+<p><tt>pixel_format() = <a href="gui_color.html#type-pixel_format">gui_color:pixel_format()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-position">position()</a></h3>
+<p><tt>position() = <a href="gui.html#type-position">gui:position()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-texture">texture()</a></h3>
+<p><tt>texture() = #texture{id = <a href="gui_texture.html#type-texture_id">gui_texture:texture_id()</a>, width = <a href="gui.html#type-length">gui:length()</a>, height = <a href="gui.html#type-length">gui:length()</a>, min_x = <a href="gui_opengl.html#type-length_factor">gui_opengl:length_factor()</a>, min_y = <a href="gui_opengl.html#type-length_factor">gui_opengl:length_factor()</a>, max_x = <a href="gui_opengl.html#type-length_factor">gui_opengl:length_factor()</a>, max_y = <a href="gui_opengl.html#type-length_factor">gui_opengl:length_factor()</a>}</tt></p>
+<p> Information regarding a (2D) texture.</p>
+
+<h3 class="typedecl"><a name="type-texture_dimension">texture_dimension()</a></h3>
+<p><tt>texture_dimension() = 3552 | 3553 | 32879</tt></p>
+<p><p> The dimensionality of a texture.</p>
+
+ Most textures are 2D ones.</p>
+
+<h3 class="typedecl"><a name="type-texture_id">texture_id()</a></h3>
+<p><tt>texture_id() = non_neg_integer()</tt></p>
+<p> An OpenGL texture "name" (meant to be unique), an identifier thereof.</p>
+
+<h3 class="typedecl"><a name="type-texture_unit">texture_unit()</a></h3>
+<p><tt>texture_unit() = <a href="#type-enum">enum()</a></tt></p>
+<p> Actually ?GL_TEXTUREn, where n is an integer
+ in [0, ?GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS-1]
+ (the initial value is GL_TEXTURE0)</p>
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-uv_coordinate">uv_coordinate()</a></h3>
+<p><tt>uv_coordinate() = float()</tt></p>
+<p><p> A texture UV (or {S,T}) coordinate. They do not depend on resolution, and 
+generally are in [0.0, 1.0]. They are used to sample the source image (texels) 
+in order to fill a given polygon to texture with corresponding pixels / 
+fragments.</p>
+
+ OpenGL expects the 0.0 coordinate on the Y axis to be on the bottom side of
+ the image, yet images usually have 0.0 at the top of this axis, so images may
+ have to be flipped upside-down first, when loaded.</p>
+
+<h3 class="typedecl"><a name="type-uv_point">uv_point()</a></h3>
+<p><tt>uv_point() = {<a href="#type-uv_coordinate">uv_coordinate()</a>, <a href="#type-uv_coordinate">uv_coordinate()</a>}</tt></p>
+<p><p> Designates a point in a (2D) texture; not a vector per se.</p>
+
+ <p>Texture coordinates start at {0.0, 0.0} for the lower left corner of a 
+texture image to {1.0, 1.0} for its upper right corner.</p>
+
+ The fragment shader interpolates the texture coordinates for each fragment.</p>
+
+<h3 class="typedecl"><a name="type-width">width()</a></h3>
+<p><tt>width() = <a href="gui.html#type-width">gui:width()</a></tt></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#apply_basic_settings_on_current-0">apply_basic_settings_on_current/0</a></td><td>Sets basic parameters on the currently active (2D) texture.</td></tr>
+<tr><td valign="top"><a href="#assign_current-4">assign_current/4</a></td><td>Assigns the specified settings and buffer to the currently active (2D)
+ texture, and applies basic settings on it.</td></tr>
+<tr><td valign="top"><a href="#create_from_image-1">create_from_image/1</a></td><td>Creates a texture from the specified image instance, applies the default 
+texture settings on it, and makes it the currently active texture.</td></tr>
+<tr><td valign="top"><a href="#create_from_image-2">create_from_image/2</a></td><td>Creates a texture from the specified image instance, flipping its Y-axis 
+according to OpenGL conventions, generating mipmaps if requested, applies the 
+default texture settings on it, and makes it the currently active texture.</td></tr>
+<tr><td valign="top"><a href="#create_from_text-4">create_from_text/4</a></td><td>Creates a texture corresponding to the specified text, rendered with the
+ specified font, brush and color, applies the default texture settings on it,
+ and makes it the currently active texture.</td></tr>
+<tr><td valign="top"><a href="#create_from_text-5">create_from_text/5</a></td><td>Creates a texture corresponding to the specified text, rendered with the
+ specified font, brush and color, flipping it vertically (upside down) if
+ requested, applies the default texture settings on it, and makes it the
+ currently active texture.</td></tr>
+<tr><td valign="top"><a href="#destruct-1">destruct/1</a></td><td>Destructs (that is: deletes) the specified texture(s).</td></tr>
+<tr><td valign="top"><a href="#generate_id-0">generate_id/0</a></td><td>Returns a new, unique, texture identifier.</td></tr>
+<tr><td valign="top"><a href="#generate_mipmaps-0">generate_mipmaps/0</a></td><td>Generates mipmaps for the currently active (2D) texture.</td></tr>
+<tr><td valign="top"><a href="#generate_mipmaps-1">generate_mipmaps/1</a></td><td>Generates mipmaps for the currently active texture.</td></tr>
+<tr><td valign="top"><a href="#generate_mipmaps_for_id-1">generate_mipmaps_for_id/1</a></td><td>Generates mipmaps for the texture whose identifier is specified.</td></tr>
+<tr><td valign="top"><a href="#get_color_buffer-1">get_color_buffer/1</a></td><td>Returns the RGB or RGBA color buffer corresponding to the specified 
+image.</td></tr>
+<tr><td valign="top"><a href="#get_color_buffer-3">get_color_buffer/3</a></td><td>Returns the RGB or RGBA color buffer corresponding to the specified 
+image, once padded according to the specified current and target dimensions.</td></tr>
+<tr><td valign="top"><a href="#get_dimensions-1">get_dimensions/1</a></td><td>Returns texture dimensions that are suitable for a (2D) content of the
+ specified dimensions.</td></tr>
+<tr><td valign="top"><a href="#get_dimensions-2">get_dimensions/2</a></td><td>Returns texture dimensions that are suitable for a (2D) content of the
+ specified dimensions.</td></tr>
+<tr><td valign="top"><a href="#get_pixel_size-1">get_pixel_size/1</a></td><td>Returns the number of bytes used by each pixel of the specified GL
+ format.</td></tr>
+<tr><td valign="top"><a href="#gl_pixel_format_to_pixel_format-1">gl_pixel_format_to_pixel_format/1</a></td><td>Returns our "standard" pixel format corresponding to the specified GL
+ one.</td></tr>
+<tr><td valign="top"><a href="#load_from_file-1">load_from_file/1</a></td><td>Creates a texture from the specified image file, applies the default 
+texture settings on it, and makes it the currently active texture.</td></tr>
+<tr><td valign="top"><a href="#load_from_file-2">load_from_file/2</a></td><td>Creates a texture from the specified image file of the specified type,
+ applies the default texture settings on it, and makes it the currently active
+ texture.</td></tr>
+<tr><td valign="top"><a href="#recalibrate_coordinates_for-2">recalibrate_coordinates_for/2</a></td><td>Recalibrates the specified texture coordinates, supposed to correspond to
+ an original texture, to the specified one, which is typically padded, hence of
+ different dimensions.</td></tr>
+<tr><td valign="top"><a href="#render-2">render/2</a></td><td>Renders the specified texture, at the specified position.</td></tr>
+<tr><td valign="top"><a href="#render-3">render/3</a></td><td>Renders the specified texture, at the specified position.</td></tr>
+<tr><td valign="top"><a href="#set_as_current-1">set_as_current/1</a></td><td>Sets the specified (2D) texture as the currently active one.</td></tr>
+<tr><td valign="top"><a href="#set_as_current_from_id-1">set_as_current_from_id/1</a></td><td>Sets the specified (2D) texture identifier as the currently active 
+one.</td></tr>
+<tr><td valign="top"><a href="#set_basic_general_settings-0">set_basic_general_settings/0</a></td><td>Sets basic, general parameters regarding (2D) textures.</td></tr>
+<tr><td valign="top"><a href="#set_current_texture_unit-1">set_current_texture_unit/1</a></td><td>Sets the current texture unit.</td></tr>
+<tr><td valign="top"><a href="#set_new_as_current-0">set_new_as_current/0</a></td><td>Creates a texture identifier, sets it as the currently active (2D) one,
+ and returns it.</td></tr>
+<tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td></td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="apply_basic_settings_on_current-0">apply_basic_settings_on_current/0</a></h3>
+<div class="spec">
+<p><tt>apply_basic_settings_on_current() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Sets basic parameters on the currently active (2D) texture.</p>
+
+ Refer to set_basic_general_settings/0 for overall settings (transverse to all
+ texture instances).
+</p>
+
+<h3 class="function"><a name="assign_current-4">assign_current/4</a></h3>
+<div class="spec">
+<p><tt>assign_current(TexWidth::<a href="#type-width">width()</a>, TexHeight::<a href="#type-height">height()</a>, PixelFormat::<a href="#type-gl_pixel_format">gl_pixel_format()</a>, ColorBuffer::<a href="#type-color_buffer">color_buffer()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Assigns the specified settings and buffer to the currently active (2D)
+ texture, and applies basic settings on it.
+</p>
+
+<h3 class="function"><a name="create_from_image-1">create_from_image/1</a></h3>
+<div class="spec">
+<p><tt>create_from_image(Image::<a href="#type-image">image()</a>) -&gt; <a href="#type-texture">texture()</a></tt><br></p>
+<p> </p>
+</div><p><p>Creates a texture from the specified image instance, applies the default 
+texture settings on it, and makes it the currently active texture.</p>
+
+ <p>The image instance is safe to be deallocated afterwards.</p>
+
+ Mipmaps are automatically generated.
+</p>
+
+<h3 class="function"><a name="create_from_image-2">create_from_image/2</a></h3>
+<div class="spec">
+<p><tt>create_from_image(Image::<a href="#type-image">image()</a>, GenMipmaps::boolean()) -&gt; <a href="#type-texture">texture()</a></tt><br></p>
+<p> </p>
+</div><p><p>Creates a texture from the specified image instance, flipping its Y-axis 
+according to OpenGL conventions, generating mipmaps if requested, applies the 
+default texture settings on it, and makes it the currently active texture.</p>
+
+ The image instance is safe to be deallocated afterwards.
+</p>
+
+<h3 class="function"><a name="create_from_text-4">create_from_text/4</a></h3>
+<div class="spec">
+<p><tt>create_from_text(Text::<a href="#type-ustring">ustring()</a>, Font::<a href="#type-font">font()</a>, Brush::<a href="#type-brush">brush()</a>, Color::<a href="#type-color_by_decimal">color_by_decimal()</a>) -&gt; <a href="#type-texture">texture()</a></tt><br></p>
+<p> </p>
+</div><p>Creates a texture corresponding to the specified text, rendered with the
+ specified font, brush and color, applies the default texture settings on it,
+ and makes it the currently active texture.
+</p>
+
+<h3 class="function"><a name="create_from_text-5">create_from_text/5</a></h3>
+<div class="spec">
+<p><tt>create_from_text(Text::<a href="#type-ustring">ustring()</a>, Font::<a href="#type-font">font()</a>, Brush::<a href="#type-brush">brush()</a>, TextColor::<a href="#type-color_by_decimal">color_by_decimal()</a>, Flip::boolean()) -&gt; <a href="#type-texture">texture()</a></tt><br></p>
+<p> </p>
+</div><p>Creates a texture corresponding to the specified text, rendered with the
+ specified font, brush and color, flipping it vertically (upside down) if
+ requested, applies the default texture settings on it, and makes it the
+ currently active texture.
+</p>
+
+<h3 class="function"><a name="destruct-1">destruct/1</a></h3>
+<div class="spec">
+<p><tt>destruct(Textures::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-texture">texture()</a>)) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Destructs (that is: deletes) the specified texture(s).</p>
+
+<h3 class="function"><a name="generate_id-0">generate_id/0</a></h3>
+<div class="spec">
+<p><tt>generate_id() -&gt; <a href="#type-texture_id">texture_id()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a new, unique, texture identifier.</p>
+
+<h3 class="function"><a name="generate_mipmaps-0">generate_mipmaps/0</a></h3>
+<div class="spec">
+<p><tt>generate_mipmaps() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Generates mipmaps for the currently active (2D) texture.</p>
+
+<h3 class="function"><a name="generate_mipmaps-1">generate_mipmaps/1</a></h3>
+<div class="spec">
+<p><tt>generate_mipmaps(TexDim::<a href="#type-texture_dimension">texture_dimension()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Generates mipmaps for the currently active texture.</p>
+
+<h3 class="function"><a name="generate_mipmaps_for_id-1">generate_mipmaps_for_id/1</a></h3>
+<div class="spec">
+<p><tt>generate_mipmaps_for_id(TextureId::<a href="#type-texture_id">texture_id()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Generates mipmaps for the texture whose identifier is specified.</p>
+
+<h3 class="function"><a name="get_color_buffer-1">get_color_buffer/1</a></h3>
+<div class="spec">
+<p><tt>get_color_buffer(Image::<a href="#type-image">image()</a>) -&gt; <a href="#type-color_buffer">color_buffer()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the RGB or RGBA color buffer corresponding to the specified 
+image.</p>
+
+ The returned buffer shall be "const", in the sense of being neither
+ deallocated nor assigned to any image.
+</p>
+
+<h3 class="function"><a name="get_color_buffer-3">get_color_buffer/3</a></h3>
+<div class="spec">
+<p><tt>get_color_buffer(Image::<a href="#type-image">image()</a>, CurrentDimensions::<a href="#type-dimensions">dimensions()</a>, TargetDimensions::<a href="#type-dimensions">dimensions()</a>) -&gt; <a href="#type-color_buffer">color_buffer()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the RGB or RGBA color buffer corresponding to the specified 
+image, once padded according to the specified current and target dimensions.</p>
+
+ The returned buffer shall be "const", in the sense of being neither
+ deallocated nor assigned to any image.
+</p>
+
+<h3 class="function"><a name="get_dimensions-1">get_dimensions/1</a></h3>
+<div class="spec">
+<p><tt>get_dimensions(Dims::<a href="#type-dimensions">dimensions()</a>) -&gt; <a href="#type-dimensions">dimensions()</a></tt><br></p>
+<p> </p>
+</div><p>Returns texture dimensions that are suitable for a (2D) content of the
+ specified dimensions.
+</p>
+
+<h3 class="function"><a name="get_dimensions-2">get_dimensions/2</a></h3>
+<div class="spec">
+<p><tt>get_dimensions(Width::<a href="#type-width">width()</a>, Height::<a href="#type-height">height()</a>) -&gt; <a href="#type-dimensions">dimensions()</a></tt><br></p>
+<p> </p>
+</div><p>Returns texture dimensions that are suitable for a (2D) content of the
+ specified dimensions.
+</p>
+
+<h3 class="function"><a name="get_pixel_size-1">get_pixel_size/1</a></h3>
+<div class="spec">
+<p><tt>get_pixel_size(GLPixFormat::<a href="#type-gl_pixel_format">gl_pixel_format()</a>) -&gt; <a href="#type-byte_size">byte_size()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the number of bytes used by each pixel of the specified GL
+ format.
+</p>
+
+<h3 class="function"><a name="gl_pixel_format_to_pixel_format-1">gl_pixel_format_to_pixel_format/1</a></h3>
+<div class="spec">
+<p><tt>gl_pixel_format_to_pixel_format(GLPixFormat::<a href="#type-gl_pixel_format">gl_pixel_format()</a>) -&gt; <a href="#type-pixel_format">pixel_format()</a></tt><br></p>
+<p> </p>
+</div><p>Returns our "standard" pixel format corresponding to the specified GL
+ one.
+</p>
+
+<h3 class="function"><a name="load_from_file-1">load_from_file/1</a></h3>
+<div class="spec">
+<p><tt>load_from_file(ImagePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-texture">texture()</a></tt><br></p>
+<p> </p>
+</div><p><p>Creates a texture from the specified image file, applies the default 
+texture settings on it, and makes it the currently active texture.</p>
+
+ Prefer load_from_file/2 if applicable.
+</p>
+
+<h3 class="function"><a name="load_from_file-2">load_from_file/2</a></h3>
+<div class="spec">
+<p><tt>load_from_file(ImageFormat::<a href="#type-image_format">image_format()</a>, ImagePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-texture">texture()</a></tt><br></p>
+<p> </p>
+</div><p>Creates a texture from the specified image file of the specified type,
+ applies the default texture settings on it, and makes it the currently active
+ texture.
+</p>
+
+<h3 class="function"><a name="recalibrate_coordinates_for-2">recalibrate_coordinates_for/2</a></h3>
+<div class="spec">
+<p><tt>recalibrate_coordinates_for(TexCoords::[<a href="#type-uv_point">uv_point()</a>], Texture::<a href="#type-texture">texture()</a>) -&gt; [<a href="#type-uv_point">uv_point()</a>]</tt><br></p>
+<p> </p>
+</div><p>Recalibrates the specified texture coordinates, supposed to correspond to
+ an original texture, to the specified one, which is typically padded, hence of
+ different dimensions.
+</p>
+
+<h3 class="function"><a name="render-2">render/2</a></h3>
+<div class="spec">
+<p><tt>render(Texture::<a href="#type-texture">texture()</a>, Pos::<a href="#type-position">position()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Renders the specified texture, at the specified position.</p>
+
+<h3 class="function"><a name="render-3">render/3</a></h3>
+<div class="spec">
+<p><tt>render(Texture::<a href="#type-texture">texture()</a>, Xp::<a href="#type-coordinate">coordinate()</a>, Yp::<a href="#type-coordinate">coordinate()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Renders the specified texture, at the specified position.</p>
+
+<h3 class="function"><a name="set_as_current-1">set_as_current/1</a></h3>
+<div class="spec">
+<p><tt>set_as_current(Texture::<a href="#type-texture">texture()</a>) -&gt; <a href="#type-texture_id">texture_id()</a></tt><br></p>
+<p> </p>
+</div><p><p>Sets the specified (2D) texture as the currently active one.</p>
+
+ Returns, if useful, its identifier.
+</p>
+
+<h3 class="function"><a name="set_as_current_from_id-1">set_as_current_from_id/1</a></h3>
+<div class="spec">
+<p><tt>set_as_current_from_id(TextureId::<a href="#type-texture_id">texture_id()</a>) -&gt; <a href="#type-texture_id">texture_id()</a></tt><br></p>
+<p> </p>
+</div><p><p>Sets the specified (2D) texture identifier as the currently active 
+one.</p>
+
+ <p>From now on, all operations done regarding (2D) textures (that is the 
+?GL_TEXTURE_2D target) will be applied to this texture, that moreover will be 
+registered in the currently active texture unit.</p>
+
+ <p>Lower-level, defined to centralise calls.</p>
+
+ Returns, if useful, the specified identifier.
+</p>
+
+<h3 class="function"><a name="set_basic_general_settings-0">set_basic_general_settings/0</a></h3>
+<div class="spec">
+<p><tt>set_basic_general_settings() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Sets basic, general parameters regarding (2D) textures.</p>
+
+ Refer to apply_basic_settings_on_current/0 to define basic settings to a given
+ texture instance.
+</p>
+
+<h3 class="function"><a name="set_current_texture_unit-1">set_current_texture_unit/1</a></h3>
+<div class="spec">
+<p><tt>set_current_texture_unit(TexUnit::<a href="#type-texture_unit">texture_unit()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Sets the current texture unit.</p>
+
+ <p>The next texture that will be set current will be associated to this texture 
+unit.</p>
+
+ The initial (default) value is ?GL_TEXTURE0.
+</p>
+
+<h3 class="function"><a name="set_new_as_current-0">set_new_as_current/0</a></h3>
+<div class="spec">
+<p><tt>set_new_as_current() -&gt; <a href="#type-texture_id">texture_id()</a></tt><br></p>
+<p> </p>
+</div><p>Creates a texture identifier, sets it as the currently active (2D) one,
+ and returns it.
+</p>
+
+<h3 class="function"><a name="to_string-1">to_string/1</a></h3>
+<div class="spec">
+<p><tt>to_string(Texture::<a href="#type-texture">texture()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

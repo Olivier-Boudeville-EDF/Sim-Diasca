@@ -76,7 +76,7 @@ object, structured according to the Erlang external term format.</p>
 <p><tt>entry_transformer() = fun((<a href="#type-attribute_entry">attribute_entry()</a>, <a href="#type-user_data">user_data()</a>) -&gt; {<a href="#type-attribute_entry">attribute_entry()</a>, <a href="#type-user_data">user_data()</a>})</tt></p>
 <p><p> Any function that is able to transform entries of the state of an instance.</p>
 
- <p>An entry transformer may be used for a smarter serialisation (ex: PID-aware), 
+ <p>An entry transformer may be used for a smarter serialisation (e.g. PID-aware), 
 in which case this function could be a functor holding a bijective table in 
 charge of converting PIDs in entries into stable identifiers (e.g. see 
 class_Identifiable).</p>
@@ -144,7 +144,7 @@ instance.</p>
 
 
 <h3 class="typedecl"><a name="type-request_return">request_return()</a></h3>
-<p><tt>request_return(T) = <a href="wooper.html#type-request_result">wooper:request_result</a>(T)</tt></p>
+<p><tt>request_return(T) = <a href="wooper.html#type-request_return">wooper:request_return</a>(T)</tt></p>
 
 
 <h3 class="typedecl"><a name="type-requests_outcome">requests_outcome()</a></h3>
@@ -157,7 +157,7 @@ instance.</p>
 entries, may replace transient values (refer to the 'About serialised 
 elements' section) so that serialisation terms are context-free.</p>
 
- Application-specific markers can also be defined, ex:
+ Application-specific markers can also be defined, e.g.
  -define( resilience_marker, foobar_resilience_marker ).</p>
 
 <h3 class="typedecl"><a name="type-serialisable_pid">serialisable_pid()</a></h3>
@@ -172,7 +172,9 @@ elements' section) so that serialisation terms are context-free.</p>
 
 <h3 class="typedecl"><a name="type-user_data">user_data()</a></h3>
 <p><tt>user_data() = <a href="basic_utils.html#type-user_data">basic_utils:user_data()</a></tt></p>
+<p><p> Any user-specified data that can be used when (de)serialising.</p>
 
+ Can be here anything (e.g. 'undefined') and/or be completly ignored.</p>
 
 <h2><a name="index">Function Index</a></h2>
 <table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#addKeyValueToAttribute-4">addKeyValueToAttribute/4</a></td><td></td></tr>
@@ -466,7 +468,7 @@ interface.</p>
 
 <h3 class="function"><a name="wooper_execute_method_as-4">wooper_execute_method_as/4</a></h3>
 <div class="spec">
-<p><tt>wooper_execute_method_as(Classname::<a href="#type-classname">classname()</a>, MethodAtom::<a href="#type-method_name">method_name()</a>, Parameters::<a href="#type-method_arguments">method_arguments()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</tt><br></p>
+<p><tt>wooper_execute_method_as(ParentClassname::<a href="#type-classname">classname()</a>, MethodAtom::<a href="#type-method_name">method_name()</a>, Parameters::<a href="#type-method_arguments">method_arguments()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</tt><br></p>
 <p> </p>
 </div>
 

@@ -19,6 +19,10 @@
 
 <h2><a name="types">Data Types</a></h2>
 
+<h3 class="typedecl"><a name="type-any_point3">any_point3()</a></h3>
+<p><tt>any_point3() = <a href="point3.html#type-any_point3">point3:any_point3()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-factor">factor()</a></h3>
 <p><tt>factor() = <a href="math_utils.html#type-factor">math_utils:factor()</a></tt></p>
 
@@ -63,10 +67,20 @@
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#get_origin-0">get_origin/0</a></td><td>Returns the origin of this referential.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#compute_smallest_enclosing_cuboid-1">compute_smallest_enclosing_cuboid/1</a></td><td>Computes the smallest cuboid that encloses the specified list of points.</td></tr>
+<tr><td valign="top"><a href="#get_origin-0">get_origin/0</a></td><td>Returns the origin of this referential.</td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="compute_smallest_enclosing_cuboid-1">compute_smallest_enclosing_cuboid/1</a></h3>
+<div class="spec">
+<p><tt>compute_smallest_enclosing_cuboid(Points::[<a href="#type-any_point3">any_point3()</a>]) -&gt; {<a href="#type-any_point3">any_point3()</a>, <a href="#type-any_point3">any_point3()</a>, <a href="#type-any_point3">any_point3()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Computes the smallest cuboid that encloses the specified list of points.</p>
+
+ Returns {TopLeft, BottomRight}.
+</p>
 
 <h3 class="function"><a name="get_origin-0">get_origin/0</a></h3>
 <div class="spec">

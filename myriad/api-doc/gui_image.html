@@ -11,13 +11,13 @@
 
 <h1>Module gui_image</h1>
 <ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathers all elements relative to the management of <b>images</b> 
-(including bitmaps, icons, etc.), for loadaing, modifying, saving, scaling, 
+(including icons, etc.), for loading, modifying, saving, scaling, 
 resizing, clipping, etc., in link to MyriadGUI, and in a platform-independent 
 way.
 
 
 <h2><a name="description">Description</a></h2><p>Gathers all elements relative to the management of <b>images</b> 
-(including bitmaps, icons, etc.), for loadaing, modifying, saving, scaling, 
+(including icons, etc.), for loading, modifying, saving, scaling, 
 resizing, clipping, etc., in link to MyriadGUI, and in a platform-independent 
 way.</p>
 
@@ -29,37 +29,36 @@ platform-specific, readily-usable graphical content.</p>
 
 <h2><a name="types">Data Types</a></h2>
 
-<h3 class="typedecl"><a name="type-alpha_buffer">alpha_buffer()</a></h3>
-<p><tt>alpha_buffer() = <a href="gui_color.html#type-alpha_buffer">gui_color:alpha_buffer()</a></tt></p>
-
-
 <h3 class="typedecl"><a name="type-any_file_path">any_file_path()</a></h3>
 <p><tt>any_file_path() = <a href="file_utils.html#type-any_file_path">file_utils:any_file_path()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-any_image_path">any_image_path()</a></h3>
+<p><tt>any_image_path() = <a href="#type-any_file_path">any_file_path()</a></tt></p>
+<p> Any kind of path to an image.</p>
+
+<h3 class="typedecl"><a name="type-bin_file_path">bin_file_path()</a></h3>
+<p><tt>bin_file_path() = <a href="file_utils.html#type-bin_file_path">file_utils:bin_file_path()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-bin_image_path">bin_image_path()</a></h3>
+<p><tt>bin_image_path() = <a href="#type-bin_file_path">bin_file_path()</a></tt></p>
+<p> A path to an image, as a binary string.</p>
+
 <h3 class="typedecl"><a name="type-bitmap">bitmap()</a></h3>
-<p><tt>bitmap() = <a href="http://www.erlang.org/edoc/doc/wx/doc/wxBitmap.html#type-wxBitmap">wxBitmap:wxBitmap()</a></tt></p>
-<p><p> Platform-dependent bitmap, either monochrome or colour (with or without alpha 
-channel).</p>
+<p><tt>bitmap() = <a href="gui_bitmap.html#type-bitmap">gui_bitmap:bitmap()</a></tt></p>
 
- Intended to be a wrapper of whatever is the native image format, which is
- quickest/easiest to draw to a display context.</p>
-
-<h3 class="typedecl"><a name="type-bitmap_display">bitmap_display()</a></h3>
-<p><b>abstract datatype</b>: <tt>bitmap_display()</tt></p>
-<p> A widget displaying a bitmap; a bitmap display behaves like a panel dedicated
- to the rendering of a bitmap.</p>
 
 <h3 class="typedecl"><a name="type-color_by_decimal">color_by_decimal()</a></h3>
 <p><tt>color_by_decimal() = <a href="gui_color.html#type-color_by_decimal">gui_color:color_by_decimal()</a></tt></p>
 
 
-<h3 class="typedecl"><a name="type-device_context">device_context()</a></h3>
-<p><tt>device_context() = <a href="gui.html#type-device_context">gui:device_context()</a></tt></p>
-
-
 <h3 class="typedecl"><a name="type-dimensions">dimensions()</a></h3>
 <p><tt>dimensions() = <a href="gui.html#type-dimensions">gui:dimensions()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-file_path">file_path()</a></h3>
+<p><tt>file_path() = <a href="file_utils.html#type-file_path">file_utils:file_path()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-height">height()</a></h3>
@@ -71,289 +70,133 @@ channel).</p>
 <p> A small rectangular bitmap usually used for denoting a minimised application.</p>
 
 <h3 class="typedecl"><a name="type-image">image()</a></h3>
-<p><tt>image() = <a href="http://www.erlang.org/edoc/doc/wx/doc/wxImage.html#type-wxImage">wxImage:wxImage()</a></tt></p>
+<p><b>abstract datatype</b>: <tt>image()</tt></p>
 <p><p> An image is a bitmap buffer of RGB bytes with an optional buffer for the alpha 
 bytes.</p>
 
- It is thus generic, independent from platforms and image file formats.</p>
+ It is thus generic, independent from platforms and image file formats (as
+ opposed to bitmaps).</p>
 
 <h3 class="typedecl"><a name="type-image_format">image_format()</a></h3>
-<p><tt>image_format() = png | jpeg</tt></p>
-<p><p> Designates a file format able to store images.</p>
+<p><tt>image_format() = png | jpeg | bmp | gif | pcx | tiff | tga | pnm | iff | xpm | ico | cur | ani</tt></p>
+<p><p> Designates a supported file format able to store images.</p>
 
  <p>We prefer telling explicitly the type rather than trying to guess it from the 
 extension of a filename, as it is clearer and more reliable.</p>
 
- Refer to
- https://docs.wxwidgets.org/3.1/gdicmn_8h.html#a90a1eb6d85b5044a99b706fd979f27f5
- for more image formats.</p>
+ <p>Refer to 
+https://docs.wxwidgets.org/stable/gdicmn_8h.html#a90a1eb6d85b5044a99b706fd979f27f5 
+for more image formats and to 
+https://docs.wxwidgets.org/stable/classwx_image.html for the available image 
+handlers (e.g. BMP, PNG, JPEG, GIF, PCX, TIFF, TGA).</p>
+
+ We recommend PNG for bitmap-like images (as lossless) and JPEG for
+ snapshot-like image (as is lossy but compact).</p>
+
+<h3 class="typedecl"><a name="type-image_path">image_path()</a></h3>
+<p><tt>image_path() = <a href="#type-file_path">file_path()</a></tt></p>
+<p> A path to an image, as a plain string.</p>
 
 <h3 class="typedecl"><a name="type-image_quality">image_quality()</a></h3>
 <p><tt>image_quality() = normal | high</tt></p>
-<p> The requested quality for an image operation (ex: for a scaling).</p>
+<p> The requested quality for an image operation (e.g. for a scaling).</p>
 
-<h3 class="typedecl"><a name="type-label">label()</a></h3>
-<p><tt>label() = <a href="gui.html#type-label">gui:label()</a></tt></p>
-
-
-<h3 class="typedecl"><a name="type-point">point()</a></h3>
-<p><tt>point() = <a href="gui.html#type-point">gui:point()</a></tt></p>
+<h3 class="typedecl"><a name="type-maybe_list">maybe_list()</a></h3>
+<p><tt>maybe_list(T) = <a href="list_utils.html#type-maybe_list">list_utils:maybe_list</a>(T)</tt></p>
 
 
-<h3 class="typedecl"><a name="type-raw_bitmap">raw_bitmap()</a></h3>
-<p><tt>raw_bitmap() = #raw_bitmap{dimensions = <a href="gui.html#type-dimensions">gui:dimensions()</a>, pixels = binary()}</tt></p>
-<p><p> A record describing a raw, ready-to-use, bitmap, as a term, possibly loaded 
-from file, or generated, etc., as opposed to an image (which respects a format 
-like PNG or JPEG, has metadata, etc.).</p>
+<h3 class="typedecl"><a name="type-orientation">orientation()</a></h3>
+<p><tt>orientation() = <a href="gui.html#type-orientation">gui:orientation()</a></tt></p>
 
- Note: currently not used, as a bitmap() offers all services needed.</p>
 
 <h3 class="typedecl"><a name="type-rgba_color_buffer">rgba_color_buffer()</a></h3>
 <p><tt>rgba_color_buffer() = <a href="gui_color.html#type-rgba_color_buffer">gui_color:rgba_color_buffer()</a></tt></p>
-
-
-<h3 class="typedecl"><a name="type-size">size()</a></h3>
-<p><tt>size() = <a href="gui.html#type-size">gui:size()</a></tt></p>
-
-
-<h3 class="typedecl"><a name="type-standard_bitmap_name_id">standard_bitmap_name_id()</a></h3>
-<p><tt>standard_bitmap_name_id() = <a href="gui.html#type-standard_bitmap_name_id">gui:standard_bitmap_name_id()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-standard_icon_name_id">standard_icon_name_id()</a></h3>
 <p><tt>standard_icon_name_id() = <a href="gui.html#type-standard_icon_name_id">gui:standard_icon_name_id()</a></tt></p>
 
 
-<h3 class="typedecl"><a name="type-text_display">text_display()</a></h3>
-<p><b>abstract datatype</b>: <tt>text_display()</tt></p>
-<p> A widget displaying a text; a text display behaves like a panel dedicated
- to the rendering of a text.</p>
-
-<h3 class="typedecl"><a name="type-text_display_option">text_display_option()</a></h3>
-<p><tt>text_display_option() = {pos, <a href="#type-point">point()</a>} | {size, <a href="#type-size">size()</a>} | {style, [<a href="#type-text_display_style_opt">text_display_style_opt()</a>]}</tt></p>
-<p> Text display specific options.</p>
-
-<h3 class="typedecl"><a name="type-text_display_style_opt">text_display_style_opt()</a></h3>
-<p><tt>text_display_style_opt() = align_left | align_right | center | fixed_size | ellipsize_beginning | ellipsize_middle | ellipsize_end</tt></p>
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-width">width()</a></h3>
 <p><tt>width() = <a href="gui.html#type-width">gui:width()</a></tt></p>
 
 
-<h3 class="typedecl"><a name="type-window">window()</a></h3>
-<p><tt>window() = <a href="gui.html#type-window">gui:window()</a></tt></p>
-
-
-<h3 class="typedecl"><a name="type-window_option">window_option()</a></h3>
-<p><tt>window_option() = <a href="gui.html#type-window_option">gui:window_option()</a></tt></p>
-
-
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#blit-5">blit/5</a></td><td>Blits (copies) the specified area of the source device context at the 
-specified position in the target device context.</td></tr>
-<tr><td valign="top"><a href="#blit-6">blit/6</a></td><td>Blits (copies) the specified area of the source device context at the 
-specified position in the target device context.</td></tr>
-<tr><td valign="top"><a href="#clear_device_context-1">clear_device_context/1</a></td><td>Clears the specified device context, using the current background brush.</td></tr>
-<tr><td valign="top"><a href="#colorize-2">colorize/2</a></td><td>Returns a colourized image, that is an image of the specified color,
- modulated by the specified alpha coordinates.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#colorize-2">colorize/2</a></td><td>Returns a colorized image, that is an image of the specified color,
+ modulated by the alpha coordinates found in the specified RGBA buffer.</td></tr>
 <tr><td valign="top"><a href="#create_bitmap-1">create_bitmap/1</a></td><td>Returns a bitmap created from the specified image path.</td></tr>
-<tr><td valign="top"><a href="#create_bitmap_display-2">create_bitmap_display/2</a></td><td>Creates a bitmap display from the specified bitmap.</td></tr>
-<tr><td valign="top"><a href="#create_bitmap_display-3">create_bitmap_display/3</a></td><td>Creates a bitmap display from the specified bitmap and with the specified
- options.</td></tr>
-<tr><td valign="top"><a href="#create_blank_bitmap-1">create_blank_bitmap/1</a></td><td>Returns a blank bitmap of the specified size.</td></tr>
-<tr><td valign="top"><a href="#create_blank_bitmap-2">create_blank_bitmap/2</a></td><td>Returns a blank bitmap of the specified size.</td></tr>
-<tr><td valign="top"><a href="#create_blank_bitmap_for-1">create_blank_bitmap_for/1</a></td><td>Returns a blank bitmap whose size is the client one of the specified
- window.</td></tr>
-<tr><td valign="top"><a href="#create_from_file-1">create_from_file/1</a></td><td>Creates an image instance whose content is read from the specified file,
- trying to auto-detect the image format of that file.</td></tr>
-<tr><td valign="top"><a href="#create_from_file-2">create_from_file/2</a></td><td>Creates an image instance whose content is read from the specified file,
- expecting the image format of the file to be specified one.</td></tr>
-<tr><td valign="top"><a href="#create_text_display-2">create_text_display/2</a></td><td>Creates a text display from the specified label.</td></tr>
-<tr><td valign="top"><a href="#create_text_display-3">create_text_display/3</a></td><td>Creates a text display from the specified label and with the specified
- options.</td></tr>
-<tr><td valign="top"><a href="#destruct-1">destruct/1</a></td><td>Declares that the specified instance can be destructed.</td></tr>
-<tr><td valign="top"><a href="#destruct_bitmap-1">destruct_bitmap/1</a></td><td>Destructs the specified bitmap (which must not be locked).</td></tr>
-<tr><td valign="top"><a href="#destruct_bitmap_display-1">destruct_bitmap_display/1</a></td><td>Destructs the specified bitmap display.</td></tr>
-<tr><td valign="top"><a href="#destruct_text_display-1">destruct_text_display/1</a></td><td>Destructs the specified text display.</td></tr>
-<tr><td valign="top"><a href="#draw_bitmap-3">draw_bitmap/3</a></td><td>Draws the specified bitmap in the specified device context, at the
- specified position.</td></tr>
-<tr><td valign="top"><a href="#getSize-1">getSize/1</a></td><td>Returns the size of this image.</td></tr>
-<tr><td valign="top"><a href="#get_standard_bitmap-1">get_standard_bitmap/1</a></td><td>Returns the standard bitmap corresponding to the specified identifier.</td></tr>
+<tr><td valign="top"><a href="#destruct-1">destruct/1</a></td><td>Declares that the specified image can be destructed.</td></tr>
+<tr><td valign="top"><a href="#destruct_multiple-1">destruct_multiple/1</a></td><td>Declares that the specified images can be destructed.</td></tr>
+<tr><td valign="top"><a href="#get_size-1">get_size/1</a></td><td>Returns the size of this image.</td></tr>
 <tr><td valign="top"><a href="#get_standard_icon-1">get_standard_icon/1</a></td><td>Returns the standard icon corresponding to the specified identifier.</td></tr>
+<tr><td valign="top"><a href="#has_alpha-1">has_alpha/1</a></td><td>Tells whether the specified image has an alpha channel.</td></tr>
 <tr><td valign="top"><a href="#load-2">load/2</a></td><td>Loads the image stored in the specified file in the specified image
  instance, trying to auto-detect the image format of that file.</td></tr>
 <tr><td valign="top"><a href="#load-3">load/3</a></td><td>Loads the image stored in the specified file into the specified image
  instance, expecting the image format of the file to be the specified one.</td></tr>
-<tr><td valign="top"><a href="#lock_bitmap-1">lock_bitmap/1</a></td><td>Locks the specified bitmap, so that direct access to its content can be 
-done, through the returned device context.</td></tr>
-<tr><td valign="top"><a href="#lock_window-1">lock_window/1</a></td><td>Locks the specified window, so that direct access to its content can be 
-done, through the returned device context.</td></tr>
+<tr><td valign="top"><a href="#load_from_file-1">load_from_file/1</a></td><td>Creates an image instance whose content is read from the specified file,
+ trying to auto-detect the image format of that file.</td></tr>
+<tr><td valign="top"><a href="#load_from_file-2">load_from_file/2</a></td><td>Creates an image instance whose content is read from the specified file,
+ expecting the image format of the file to be specified one.</td></tr>
+<tr><td valign="top"><a href="#mirror-2">mirror/2</a></td><td>Flips the specified image: returns a new image, corresponding to the
+ specified one once mirrored as requested.</td></tr>
+<tr><td valign="top"><a href="#save-2">save/2</a></td><td>Saves the image stored in the specified image instance in the specified
+ file, trying to auto-detect the image format for that file, based on its
+ extension.</td></tr>
+<tr><td valign="top"><a href="#save-3">save/3</a></td><td>Saves the image stored in the specified image instance in the specified
+ file, according to the specified image format.</td></tr>
 <tr><td valign="top"><a href="#scale-3">scale/3</a></td><td>Scales the specified image to the specified dimensions, with a default
  quality.</td></tr>
 <tr><td valign="top"><a href="#scale-4">scale/4</a></td><td>Scales the specified image to the specified dimensions, with specified
  quality.</td></tr>
-<tr><td valign="top"><a href="#unlock_bitmap-1">unlock_bitmap/1</a></td><td>Unlocks the specified bitmap, based on the specified device context
- obtained from a previous locking.</td></tr>
-<tr><td valign="top"><a href="#unlock_window-1">unlock_window/1</a></td><td>Unlocks the specified window, based on the specified device context
- obtained from a previous locking.</td></tr>
+<tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td>Returns a textual representation of the specified image.</td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
-<h3 class="function"><a name="blit-5">blit/5</a></h3>
-<div class="spec">
-<p><tt>blit(SourceDC::<a href="#type-device_context">device_context()</a>, SrcTopLeft::<a href="#type-point">point()</a>, Size::<a href="#type-dimensions">dimensions()</a>, TargetDC::<a href="#type-device_context">device_context()</a>, TgtTopLeft::<a href="#type-point">point()</a>) -&gt; boolean()</tt><br></p>
-<p> </p>
-</div><p><p>Blits (copies) the specified area of the source device context at the 
-specified position in the target device context.</p>
-
- Returns a boolean of unspecified meaning.
-</p>
-
-<h3 class="function"><a name="blit-6">blit/6</a></h3>
-<div class="spec">
-<p><tt>blit(SourceDC::<a href="#type-device_context">device_context()</a>, SrcTopLeft::<a href="#type-point">point()</a>, Width::<a href="#type-width">width()</a>, Height::<a href="#type-height">height()</a>, TargetDC::<a href="#type-device_context">device_context()</a>, TgtTopLeft::<a href="#type-point">point()</a>) -&gt; boolean()</tt><br></p>
-<p> </p>
-</div><p><p>Blits (copies) the specified area of the source device context at the 
-specified position in the target device context.</p>
-
- Returns a boolean of unspecified meaning.
-</p>
-
-<h3 class="function"><a name="clear_device_context-1">clear_device_context/1</a></h3>
-<div class="spec">
-<p><tt>clear_device_context(DC::<a href="#type-device_context">device_context()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
-<p> </p>
-</div><p>Clears the specified device context, using the current background brush.
- If none was set, a solid white brush is used.
-</p>
-
 <h3 class="function"><a name="colorize-2">colorize/2</a></h3>
 <div class="spec">
-<p><tt>colorize(AlphaBuffer::<a href="#type-color_by_decimal">color_by_decimal()</a>, Color::<a href="#type-alpha_buffer">alpha_buffer()</a>) -&gt; <a href="#type-rgba_color_buffer">rgba_color_buffer()</a></tt><br></p>
+<p><tt>colorize(SrcBuffer::<a href="#type-rgba_color_buffer">rgba_color_buffer()</a>, Color::<a href="#type-color_by_decimal">color_by_decimal()</a>) -&gt; <a href="#type-rgba_color_buffer">rgba_color_buffer()</a></tt><br></p>
 <p> </p>
-</div><p>Returns a colourized image, that is an image of the specified color,
- modulated by the specified alpha coordinates.
+</div><p>Returns a colorized image, that is an image of the specified color,
+ modulated by the alpha coordinates found in the specified RGBA buffer.
 </p>
 
 <h3 class="function"><a name="create_bitmap-1">create_bitmap/1</a></h3>
 <div class="spec">
-<p><tt>create_bitmap(ImagePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-bitmap">bitmap()</a></tt><br></p>
+<p><tt>create_bitmap(ImagePath::<a href="#type-any_image_path">any_image_path()</a>) -&gt; <a href="#type-bitmap">bitmap()</a></tt><br></p>
 <p> </p>
 </div><p>Returns a bitmap created from the specified image path.</p>
 
-<h3 class="function"><a name="create_bitmap_display-2">create_bitmap_display/2</a></h3>
-<div class="spec">
-<p><tt>create_bitmap_display(Parent::<a href="#type-window">window()</a>, Bitmap::<a href="#type-bitmap">bitmap()</a>) -&gt; <a href="#type-bitmap_display">bitmap_display()</a></tt><br></p>
-<p> </p>
-</div><p>Creates a bitmap display from the specified bitmap.</p>
-
-<h3 class="function"><a name="create_bitmap_display-3">create_bitmap_display/3</a></h3>
-<div class="spec">
-<p><tt>create_bitmap_display(Parent::<a href="#type-window">window()</a>, Bitmap::<a href="#type-bitmap">bitmap()</a>, Options::[<a href="#type-window_option">window_option()</a>]) -&gt; <a href="#type-bitmap_display">bitmap_display()</a></tt><br></p>
-<p> </p>
-</div><p>Creates a bitmap display from the specified bitmap and with the specified
- options.
-</p>
-
-<h3 class="function"><a name="create_blank_bitmap-1">create_blank_bitmap/1</a></h3>
-<div class="spec">
-<p><tt>create_blank_bitmap(Dimensions::<a href="#type-dimensions">dimensions()</a>) -&gt; <a href="#type-bitmap">bitmap()</a></tt><br></p>
-<p> </p>
-</div><p>Returns a blank bitmap of the specified size.</p>
-
-<h3 class="function"><a name="create_blank_bitmap-2">create_blank_bitmap/2</a></h3>
-<div class="spec">
-<p><tt>create_blank_bitmap(Width::<a href="#type-width">width()</a>, Height::<a href="#type-height">height()</a>) -&gt; <a href="#type-bitmap">bitmap()</a></tt><br></p>
-<p> </p>
-</div><p>Returns a blank bitmap of the specified size.</p>
-
-<h3 class="function"><a name="create_blank_bitmap_for-1">create_blank_bitmap_for/1</a></h3>
-<div class="spec">
-<p><tt>create_blank_bitmap_for(Window::<a href="#type-window">window()</a>) -&gt; <a href="#type-bitmap">bitmap()</a></tt><br></p>
-<p> </p>
-</div><p>Returns a blank bitmap whose size is the client one of the specified
- window.
-</p>
-
-<h3 class="function"><a name="create_from_file-1">create_from_file/1</a></h3>
-<div class="spec">
-<p><tt>create_from_file(AnyImagePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-image">image()</a></tt><br></p>
-<p> </p>
-</div><p>Creates an image instance whose content is read from the specified file,
- trying to auto-detect the image format of that file.
-</p>
-
-<h3 class="function"><a name="create_from_file-2">create_from_file/2</a></h3>
-<div class="spec">
-<p><tt>create_from_file(ImageFormat::<a href="#type-image_format">image_format()</a>, AnyImagePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-image">image()</a></tt><br></p>
-<p> </p>
-</div><p>Creates an image instance whose content is read from the specified file,
- expecting the image format of the file to be specified one.
-</p>
-
-<h3 class="function"><a name="create_text_display-2">create_text_display/2</a></h3>
-<div class="spec">
-<p><tt>create_text_display(Parent::<a href="#type-window">window()</a>, Label::<a href="#type-label">label()</a>) -&gt; <a href="#type-text_display">text_display()</a></tt><br></p>
-<p> </p>
-</div><p>Creates a text display from the specified label.</p>
-
-<h3 class="function"><a name="create_text_display-3">create_text_display/3</a></h3>
-<div class="spec">
-<p><tt>create_text_display(Parent::<a href="#type-window">window()</a>, Label::<a href="#type-label">label()</a>, Options::[<a href="#type-window_option">window_option()</a>]) -&gt; <a href="#type-text_display">text_display()</a></tt><br></p>
-<p> </p>
-</div><p>Creates a text display from the specified label and with the specified
- options.
-</p>
-
 <h3 class="function"><a name="destruct-1">destruct/1</a></h3>
 <div class="spec">
-<p><tt>destruct(Image::<a href="#type-image">image()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>destruct(Image::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-image">image()</a>)) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p><p>Declares that the specified instance can be destructed.</p>
+</div><p><p>Declares that the specified image can be destructed.</p>
 
- Such it can be reference-counted, it may or may not result in an actual
+ As it can be reference-counted, this may or may not result in an actual
  deallocation.
 </p>
 
-<h3 class="function"><a name="destruct_bitmap-1">destruct_bitmap/1</a></h3>
+<h3 class="function"><a name="destruct_multiple-1">destruct_multiple/1</a></h3>
 <div class="spec">
-<p><tt>destruct_bitmap(Bitmap::<a href="#type-bitmap">bitmap()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>destruct_multiple(Images::[<a href="#type-image">image()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p>Destructs the specified bitmap (which must not be locked).</p>
+</div><p><p>Declares that the specified images can be destructed.</p>
 
-<h3 class="function"><a name="destruct_bitmap_display-1">destruct_bitmap_display/1</a></h3>
-<div class="spec">
-<p><tt>destruct_bitmap_display(BitmapDisplay::<a href="#type-bitmap_display">bitmap_display()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
-<p> </p>
-</div><p>Destructs the specified bitmap display.</p>
-
-<h3 class="function"><a name="destruct_text_display-1">destruct_text_display/1</a></h3>
-<div class="spec">
-<p><tt>destruct_text_display(TextDisplay::<a href="#type-text_display">text_display()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
-<p> </p>
-</div><p>Destructs the specified text display.</p>
-
-<h3 class="function"><a name="draw_bitmap-3">draw_bitmap/3</a></h3>
-<div class="spec">
-<p><tt>draw_bitmap(SourceBitmap::<a href="#type-bitmap">bitmap()</a>, TargetDC::<a href="#type-device_context">device_context()</a>, PosInTarget::<a href="#type-point">point()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
-<p> </p>
-</div><p>Draws the specified bitmap in the specified device context, at the
- specified position.
+ As it can be reference-counted, this may or may not result in actual
+ deallocations.
 </p>
 
-<h3 class="function"><a name="getSize-1">getSize/1</a></h3>
+<h3 class="function"><a name="get_size-1">get_size/1</a></h3>
 <div class="spec">
-<p><tt>getSize(Image::<a href="#type-image">image()</a>) -&gt; <a href="#type-dimensions">dimensions()</a></tt><br></p>
+<p><tt>get_size(Image::<a href="#type-image">image()</a>) -&gt; <a href="#type-dimensions">dimensions()</a></tt><br></p>
 <p> </p>
 </div><p>Returns the size of this image.</p>
-
-<h3 class="function"><a name="get_standard_bitmap-1">get_standard_bitmap/1</a></h3>
-<div class="spec">
-<p><tt>get_standard_bitmap(StdBitmapId::<a href="#type-standard_bitmap_name_id">standard_bitmap_name_id()</a>) -&gt; <a href="#type-bitmap">bitmap()</a></tt><br></p>
-<p> </p>
-</div><p>Returns the standard bitmap corresponding to the specified identifier.</p>
 
 <h3 class="function"><a name="get_standard_icon-1">get_standard_icon/1</a></h3>
 <div class="spec">
@@ -361,9 +204,15 @@ specified position in the target device context.</p>
 <p> </p>
 </div><p>Returns the standard icon corresponding to the specified identifier.</p>
 
+<h3 class="function"><a name="has_alpha-1">has_alpha/1</a></h3>
+<div class="spec">
+<p><tt>has_alpha(Image::<a href="#type-image">image()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Tells whether the specified image has an alpha channel.</p>
+
 <h3 class="function"><a name="load-2">load/2</a></h3>
 <div class="spec">
-<p><tt>load(Image::<a href="#type-image">image()</a>, ImagePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>load(Image::<a href="#type-image">image()</a>, ImagePath::<a href="#type-any_image_path">any_image_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p>Loads the image stored in the specified file in the specified image
  instance, trying to auto-detect the image format of that file.
@@ -371,30 +220,51 @@ specified position in the target device context.</p>
 
 <h3 class="function"><a name="load-3">load/3</a></h3>
 <div class="spec">
-<p><tt>load(Image::<a href="#type-image">image()</a>, ImageFormat::<a href="#type-image_format">image_format()</a>, ImagePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>load(Image::<a href="#type-image">image()</a>, ImageFormat::<a href="#type-image_format">image_format()</a>, ImagePath::<a href="#type-any_image_path">any_image_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p>Loads the image stored in the specified file into the specified image
  instance, expecting the image format of the file to be the specified one.
 </p>
 
-<h3 class="function"><a name="lock_bitmap-1">lock_bitmap/1</a></h3>
+<h3 class="function"><a name="load_from_file-1">load_from_file/1</a></h3>
 <div class="spec">
-<p><tt>lock_bitmap(Bitmap::<a href="#type-bitmap">bitmap()</a>) -&gt; <a href="#type-device_context">device_context()</a></tt><br></p>
+<p><tt>load_from_file(AnyImagePath::<a href="#type-any_image_path">any_image_path()</a>) -&gt; <a href="#type-image">image()</a></tt><br></p>
 <p> </p>
-</div><p><p>Locks the specified bitmap, so that direct access to its content can be 
-done, through the returned device context.</p>
-
- Once the desired changes will have been made, this bitmap must be unlocked.
+</div><p>Creates an image instance whose content is read from the specified file,
+ trying to auto-detect the image format of that file.
 </p>
 
-<h3 class="function"><a name="lock_window-1">lock_window/1</a></h3>
+<h3 class="function"><a name="load_from_file-2">load_from_file/2</a></h3>
 <div class="spec">
-<p><tt>lock_window(Window::<a href="#type-window">window()</a>) -&gt; <a href="#type-device_context">device_context()</a></tt><br></p>
+<p><tt>load_from_file(ImageFormat::<a href="#type-image_format">image_format()</a>, AnyImagePath::<a href="#type-any_image_path">any_image_path()</a>) -&gt; <a href="#type-image">image()</a></tt><br></p>
 <p> </p>
-</div><p><p>Locks the specified window, so that direct access to its content can be 
-done, through the returned device context.</p>
+</div><p>Creates an image instance whose content is read from the specified file,
+ expecting the image format of the file to be specified one.
+</p>
 
- Once the desired changes will have been made, this window must be unlocked.
+<h3 class="function"><a name="mirror-2">mirror/2</a></h3>
+<div class="spec">
+<p><tt>mirror(Image::<a href="#type-image">image()</a>, Orientation::<a href="#type-orientation">orientation()</a>) -&gt; <a href="#type-image">image()</a></tt><br></p>
+<p> </p>
+</div><p>Flips the specified image: returns a new image, corresponding to the
+ specified one once mirrored as requested.
+</p>
+
+<h3 class="function"><a name="save-2">save/2</a></h3>
+<div class="spec">
+<p><tt>save(Image::<a href="#type-image">image()</a>, ImagePath::<a href="#type-any_image_path">any_image_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Saves the image stored in the specified image instance in the specified
+ file, trying to auto-detect the image format for that file, based on its
+ extension.
+</p>
+
+<h3 class="function"><a name="save-3">save/3</a></h3>
+<div class="spec">
+<p><tt>save(Image::<a href="#type-image">image()</a>, ImageFormat::<a href="#type-image_format">image_format()</a>, ImagePath::<a href="#type-any_image_path">any_image_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Saves the image stored in the specified image instance in the specified
+ file, according to the specified image format.
 </p>
 
 <h3 class="function"><a name="scale-3">scale/3</a></h3>
@@ -413,21 +283,11 @@ done, through the returned device context.</p>
  quality.
 </p>
 
-<h3 class="function"><a name="unlock_bitmap-1">unlock_bitmap/1</a></h3>
+<h3 class="function"><a name="to_string-1">to_string/1</a></h3>
 <div class="spec">
-<p><tt>unlock_bitmap(DC::<a href="#type-device_context">device_context()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>to_string(Image::<a href="#type-image">image()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
 <p> </p>
-</div><p>Unlocks the specified bitmap, based on the specified device context
- obtained from a previous locking.
-</p>
-
-<h3 class="function"><a name="unlock_window-1">unlock_window/1</a></h3>
-<div class="spec">
-<p><tt>unlock_window(DC::<a href="#type-device_context">device_context()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
-<p> </p>
-</div><p>Unlocks the specified window, based on the specified device context
- obtained from a previous locking.
-</p>
+</div><p>Returns a textual representation of the specified image.</p>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

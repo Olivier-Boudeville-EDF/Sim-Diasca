@@ -42,6 +42,25 @@ resource consumption at all) thanks to the cond_utils:if_defined* primitives.</p
 
 <h2><a name="types">Data Types</a></h2>
 
+<h3 class="typedecl"><a name="type-bin_string">bin_string()</a></h3>
+<p><tt>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-trace_bin_message">trace_bin_message()</a></h3>
+<p><tt>trace_bin_message() = <a href="#type-bin_string">bin_string()</a></tt></p>
+<p> An actual (binary)  trace message.</p>
+
+<h3 class="typedecl"><a name="type-trace_bin_message_categorization">trace_bin_message_categorization()</a></h3>
+<p><tt>trace_bin_message_categorization() = <a href="#type-bin_string">bin_string()</a> | atom()</tt></p>
+<p><p> A message may or may not (which is the default and general case - resulting in 
+the use of the 'uncategorized' atom) be categorized.</p>
+
+ <p>Note that the 'bin_' prefix may be a bit misleading here, as an atom can still 
+be used.</p>
+
+ Atoms are supported as well, as a limited number of message categorization
+ generally applies.</p>
+
 <h3 class="typedecl"><a name="type-trace_format">trace_format()</a></h3>
 <p><tt>trace_format() = <a href="text_utils.html#type-format_string">text_utils:format_string()</a></tt></p>
 <p> A format with quantifiers (such as ~p).</p>
@@ -51,8 +70,14 @@ resource consumption at all) thanks to the cond_utils:if_defined* primitives.</p
 <p> An actual trace message.</p>
 
 <h3 class="typedecl"><a name="type-trace_message_categorization">trace_message_categorization()</a></h3>
-<p><tt>trace_message_categorization() = atom()</tt></p>
-<p> Categorization of a trace message.</p>
+<p><tt>trace_message_categorization() = <a href="#type-ustring">ustring()</a> | atom()</tt></p>
+<p><p> Categorization of a trace message.</p>
+
+ <p>A message may or may not (which is the default and general case - resulting in 
+the use of the 'uncategorized' atom) be categorized.</p>
+
+ Atoms are supported as well, as a limited number of message categorization
+ generally applies.</p>
 
 <h3 class="typedecl"><a name="type-trace_priority">trace_priority()</a></h3>
 <p><tt>trace_priority() = 0..7</tt></p>
@@ -64,9 +89,12 @@ resource consumption at all) thanks to the cond_utils:if_defined* primitives.</p
 
 <h3 class="typedecl"><a name="type-trace_timestamp">trace_timestamp()</a></h3>
 <p><tt>trace_timestamp() = any()</tt></p>
-<p> An applicative timestamp for a trace; it can be anything (ex: integer() |
- 'none'), no constraint applies on purpose, so that any kind of
- application-specific timestamps can be elected.</p>
+<p><p> An applicative timestamp for a trace; it can be anything (e.g. integer() | 
+'none'), no constraint applies on purpose, so that any kind of 
+application-specific timestamps can be elected.</p>
+
+ Textual timestamps shall better be binaries or atoms rather than plain
+ strings.</p>
 
 <h3 class="typedecl"><a name="type-trace_values">trace_values()</a></h3>
 <p><tt>trace_values() = <a href="text_utils.html#type-format_values">text_utils:format_values()</a></tt></p>
@@ -130,6 +158,8 @@ terms of the newer standard logger).</td></tr>
 <tr><td valign="top"><a href="#notice_categorized_timed-3">notice_categorized_timed/3</a></td><td>Outputs specified notice message, with specified message categorization
  and time information.</td></tr>
 <tr><td valign="top"><a href="#notice_fmt-2">notice_fmt/2</a></td><td>Outputs specified formatted notice message.</td></tr>
+<tr><td valign="top"><a href="#safer_display-1">safer_display/1</a></td><td>Displays the specified message.</td></tr>
+<tr><td valign="top"><a href="#safer_display-2">safer_display/2</a></td><td>Displays the specified format-based message, in a safer way.</td></tr>
 <tr><td valign="top"><a href="#set_handler-0">set_handler/0</a></td><td>Replaces the current (probably default) logger handler with this Myriad
  one (registered as the 'default' handler).</td></tr>
 <tr><td valign="top"><a href="#set_logger_format_max_depth-1">set_logger_format_max_depth/1</a></td><td>Sets the logger maximum depth when formatting messages.</td></tr>
@@ -243,7 +273,7 @@ terms of the newer standard logger).</td></tr>
 
  Defined notably to perform integrated operations (a trace being sent through
  both a basic system and a more advanced one), in order that the trace macros
- of upper layers (ex: send_alert_fmt/3, in the Traces layer) do not need to
+ of upper layers (e.g. send_alert_fmt/3, in the Traces layer) do not need to
  bind variables in their body (which may trigger bad matches as soon as more
  than once trace is sent in the same scope).
 </p>
@@ -257,7 +287,7 @@ specified message categorization.</p>
 
  Defined notably to perform integrated operations (a trace being sent through
  both a basic system and a more advanced one), in order that the trace macros
- of upper layers (ex: send_alert_fmt/3, in the Traces layer) do not need to
+ of upper layers (e.g. send_alert_fmt/3, in the Traces layer) do not need to
  bind variables in their body (which may trigger bad matches as soon as more
  than once trace is sent in the same scope).
 </p>
@@ -271,7 +301,7 @@ categorization and timestamp.</p>
 
  Defined notably to perform integrated operations (a trace being sent through
  both a basic system and a more advanced one), in order that the trace macros
- of upper layers (ex: send_alert_fmt/3, in the Traces layer) do not need to
+ of upper layers (e.g. send_alert_fmt/3, in the Traces layer) do not need to
  bind variables in their body (which may trigger bad matches as soon as more
  than once trace is sent in the same scope).
 </p>
@@ -420,6 +450,26 @@ terms of the newer standard logger).</p>
 <p><tt>notice_fmt(Format::<a href="#type-trace_format">trace_format()</a>, Values::<a href="#type-trace_values">trace_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p>Outputs specified formatted notice message.</p>
+
+<h3 class="function"><a name="safer_display-1">safer_display/1</a></h3>
+<div class="spec">
+<p><tt>safer_display(Message::<a href="#type-trace_message">trace_message()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Displays the specified message.</p>
+
+ Note: adds a carriage-return/line-feed at the end of the message.
+</p>
+
+<h3 class="function"><a name="safer_display-2">safer_display/2</a></h3>
+<div class="spec">
+<p><tt>safer_display(Format::<a href="#type-trace_format">trace_format()</a>, Values::<a href="#type-trace_values">trace_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Displays the specified format-based message, in a safer way.</p>
+
+ <p>Useful when debugging.</p>
+
+ Note: adds a carriage-return/line-feed at the end of the message.
+</p>
 
 <h3 class="function"><a name="set_handler-0">set_handler/0</a></h3>
 <div class="spec">

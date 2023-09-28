@@ -32,6 +32,10 @@ ASTs.</p>
 <p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-counters">counters()</a></h3>
+<p><tt>counters() = <a href="#type-tuple">tuple</a>(<a href="#type-count">count()</a>)</tt></p>
+<p> A tuple containing counters.</p>
+
 <h3 class="typedecl"><a name="type-explicit_type">explicit_type()</a></h3>
 <p><tt>explicit_type() = <a href="#type-type">type()</a></tt></p>
 <p> An explicit type is a type that has been fully resolved in terms of built-in
@@ -109,6 +113,10 @@ more information.</p>
  number of the parentheses that have been opened and not closed yet) and B is
  the bracket depth (ie the same principle, for "[]" instead of for "()").</p>
 
+<h3 class="typedecl"><a name="type-non_negative_float">non_negative_float()</a></h3>
+<p><tt>non_negative_float() = float()</tt></p>
+<p> A float that is positive or null.</p>
+
 <h3 class="typedecl"><a name="type-pair">pair()</a></h3>
 <p><tt>pair() = <a href="pair.html#type-pair">pair:pair()</a></tt></p>
 
@@ -124,6 +132,18 @@ terms.</p>
 
  Permanent terms are the opposite of transient ones.</p>
 
+<h3 class="typedecl"><a name="type-pid_ref">pid_ref()</a></h3>
+<p><tt>pid_ref() = <a href="naming_utils.html#type-local_designator">naming_utils:local_designator()</a></tt></p>
+<p> Any kind of reference onto a process.</p>
+
+<h3 class="typedecl"><a name="type-positive_float">positive_float()</a></h3>
+<p><tt>positive_float() = float()</tt></p>
+<p> A float that is strictly positive.</p>
+
+<h3 class="typedecl"><a name="type-positive_index">positive_index()</a></h3>
+<p><tt>positive_index() = <a href="basic_utils.html#type-positive_index">basic_utils:positive_index()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-primitive_type_description">primitive_type_description()</a></h3>
 <p><tt>primitive_type_description() = atom | binary | boolean | float | function | integer | list | map | pid | port | record | reference | tuple</tt></p>
 
@@ -131,6 +151,12 @@ terms.</p>
 <h3 class="typedecl"><a name="type-record">record()</a></h3>
 <p><tt>record() = tuple()</tt></p>
 <p> Designates a record instance, to discriminate from a mere tuple.</p>
+
+<h3 class="typedecl"><a name="type-record_tag">record_tag()</a></h3>
+<p><tt>record_tag() = atom()</tt></p>
+<p> The first (atom) element of the tuple corresponding to a record instance.  For
+ example #my_point{ x=1, y=2 } is actually {my_point, 1, 2} and thus my_point
+ is the corresponding record tag.</p>
 
 <h3 class="typedecl"><a name="type-sint16">sint16()</a></h3>
 <p><tt>sint16() = -32768..32767</tt></p>
@@ -168,9 +194,14 @@ transient term.</p>
 
 
 <h3 class="typedecl"><a name="type-tuple">tuple()</a></h3>
+<p><tt>tuple(_T, _S) = tuple()</tt></p>
+<p> Designates an uniform tuple of the specified size, that is a tuple whose
+ S elements are all of the type T.</p>
+
+<h3 class="typedecl"><a name="type-tuple">tuple()</a></h3>
 <p><tt>tuple(_T) = tuple()</tt></p>
 <p> Designates an uniform tuple (of unspecified size), that is a tuple whose
- elements are all of the specified type.</p>
+ elements are all of the specified type T.</p>
 
 <h3 class="typedecl"><a name="type-tuploid">tuploid()</a></h3>
 <p><tt>tuploid(T) = tuple() | T</tt></p>
@@ -202,12 +233,12 @@ hence non-polymorphic) type (like "-type a() :: ...", not "-type a(T) ::
 merely used), then (non-empty) parentheses could be introduced</p>
 
  <p>- be able to nevertheless *use* polymorphic types, as they are certainly 
-useful (ex: maps/associative tables, lists, etc.); a problem is that, in terms 
-(as opposed to in the textual counterpart), parentheses cannot be used to 
-express these polymorphic types (not only they denote function calls, but also 
-are not legit components of a term); therefore the convention chosen here is 
-to specify types as pairs, the first element being the name of the type, the 
-second one being the (ordered) list of the types it depends on; then the 
+useful (e.g. maps/associative tables, lists, etc.); a problem is that, in 
+terms (as opposed to in the textual counterpart), parentheses cannot be used 
+to express these polymorphic types (not only they denote function calls, but 
+also are not legit components of a term); therefore the convention chosen here 
+is to specify types as pairs, the first element being the name of the type, 
+the second one being the (ordered) list of the types it depends on; then the 
 textual type "a( T1, T2 )" is translated to the {a,[T1,T2]} type term; most 
 types being "monomorphic", they are represented as {my_simple_type,[]} (which 
 cannot be abbreviated by only the 'my_simple_type' atom, as it would lead to 
@@ -259,7 +290,7 @@ instance of a specified type</p>
 
  <p>Experiment with ast_utils:string_to_form/1 and have fun!</p>
 
- <p>Ex: "-type a() :: [foobar()]." yields: '{attribute,1,type, {a,{type,1,    
+ <p>For example "-type a() :: [foobar()]." yields: '{attribute,1,type, {a,{type,1,    
 list,[{user_type,1,foobar,[]}]},[]}}'.</p>
 
  <p>See also <a href="http://erlang.org/doc/apps/erts/absform.html" target="_top"><tt>http://erlang.org/doc/apps/erts/absform.html</tt></a>.</p>
@@ -287,8 +318,8 @@ will return the expected: {list, [{tuple, [{float, []}, {boolean, []}]}]}</p>
 <p><p> Textual type description: type-as-a-string, inspired from the syntax used for
  type specifications (<a href="http://erlang.org/doc/reference_manual/typespec.html" target="_top"><tt>http://erlang.org/doc/reference_manual/typespec.html</tt></a>), 
 yet different. Notably, monomorphic types do not end with empty parentheses 
-(ex: "integer", not "integer()") and atoms are always surrounded by simple 
-quotes (ex: "'an_atom'|'another_one'").</p>
+(e.g. "integer", not "integer()") and atoms are always surrounded by simple 
+quotes (e.g. "'an_atom'|'another_one'").</p>
 
  For example: "[{float, boolean}]".</p>
 
@@ -301,7 +332,7 @@ quotes (ex: "'an_atom'|'another_one'").</p>
 <p><p> Describes the name of a type (without the names of the types it depends on, 
 for polymorphic ones).</p>
 
- Ex: 'my_count'.</p>
+ For example 'my_count'.</p>
 
 <h3 class="typedecl"><a name="type-uint16">uint16()</a></h3>
 <p><tt>uint16() = 0..65535</tt></p>
@@ -325,7 +356,8 @@ for polymorphic ones).</p>
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#are_binaries-1">are_binaries/1</a></td><td>Returns whether the specified term is a list of binaries.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add_to_counter-3">add_to_counter/3</a></td><td>Adds the specified value to the specified counter.</td></tr>
+<tr><td valign="top"><a href="#are_binaries-1">are_binaries/1</a></td><td>Returns whether the specified term is a list of binaries.</td></tr>
 <tr><td valign="top"><a href="#are_floats-1">are_floats/1</a></td><td>Returns whether the specified term is a list of floats.</td></tr>
 <tr><td valign="top"><a href="#are_integers-1">are_integers/1</a></td><td>Returns whether the specified term is a list of integers.</td></tr>
 <tr><td valign="top"><a href="#are_maybe_floats-1">are_maybe_floats/1</a></td><td>Returns whether the specified term is a list of maybe-floats.</td></tr>
@@ -335,8 +367,8 @@ for polymorphic ones).</p>
 <tr><td valign="top"><a href="#are_positive_floats-1">are_positive_floats/1</a></td><td>Returns whether the specified term is a list of positive floats.</td></tr>
 <tr><td valign="top"><a href="#are_types_identical-2">are_types_identical/2</a></td><td>Tells whether the two specified types are the same (ie designate the same
  actual type, are aliases).</td></tr>
-<tr><td valign="top"><a href="#augment_tuploid-2">augment_tuploid/2</a></td><td>Augments the specified tuploid with specified term, placed as new last 
-element.</td></tr>
+<tr><td valign="top"><a href="#augment_tuploid-2">augment_tuploid/2</a></td><td>Augments the specified tuploid with the specified term, placed as new 
+last element.</td></tr>
 <tr><td valign="top"><a href="#check_atom-1">check_atom/1</a></td><td>Checks that the specified term is an atom indeed, and returns it.</td></tr>
 <tr><td valign="top"><a href="#check_atoms-1">check_atoms/1</a></td><td>Checks that the specified term is a list of atoms indeed, and returns it.</td></tr>
 <tr><td valign="top"><a href="#check_binaries-1">check_binaries/1</a></td><td>Checks that the specified term is a list of binaries indeed, and returns
@@ -374,6 +406,7 @@ element.</td></tr>
 <tr><td valign="top"><a href="#check_numbers-1">check_numbers/1</a></td><td>Checks that the specified term is a list of numbers indeed, and returns
  it.</td></tr>
 <tr><td valign="top"><a href="#check_pid-1">check_pid/1</a></td><td>Checks that the specified term is a PID indeed, and returns it.</td></tr>
+<tr><td valign="top"><a href="#check_pids-1">check_pids/1</a></td><td>Checks that the specified term is a list of PIDs indeed, and returns it.</td></tr>
 <tr><td valign="top"><a href="#check_positive_float-1">check_positive_float/1</a></td><td>Checks that the specified term is a positive (or null) float indeed, and
  returns it.</td></tr>
 <tr><td valign="top"><a href="#check_positive_floats-1">check_positive_floats/1</a></td><td>Checks that the specified term is a list of positive (or null) floats
@@ -392,10 +425,10 @@ element.</td></tr>
 <tr><td valign="top"><a href="#description_to_type-1">description_to_type/1</a></td><td>Returns the actual type corresponding to specified type description: 
 parses the specified string to determine the type described therein.</td></tr>
 <tr><td valign="top"><a href="#ensure_binary-1">ensure_binary/1</a></td><td>Ensures that the specified term is a binary string, and returns it.</td></tr>
-<tr><td valign="top"><a href="#ensure_boolean-1">ensure_boolean/1</a></td><td>Ensures that the specified term is a boolean, and returns it.</td></tr>
+<tr><td valign="top"><a href="#ensure_ceiled_integer-1">ensure_ceiled_integer/1</a></td><td>Ensures that the specified term is an integer, and returns it.</td></tr>
 <tr><td valign="top"><a href="#ensure_float-1">ensure_float/1</a></td><td>Ensures that the specified term is a float, and returns it.</td></tr>
+<tr><td valign="top"><a href="#ensure_floored_integer-1">ensure_floored_integer/1</a></td><td>Ensures that the specified term is an integer, and returns it.</td></tr>
 <tr><td valign="top"><a href="#ensure_integer-1">ensure_integer/1</a></td><td>Ensures that the specified term is an integer, and returns it.</td></tr>
-<tr><td valign="top"><a href="#ensure_number-1">ensure_number/1</a></td><td>Ensures that the specified term is a number, and returns it.</td></tr>
 <tr><td valign="top"><a href="#ensure_positive_float-1">ensure_positive_float/1</a></td><td>Ensures that the specified term is a positive (possibly null) float, and 
 returns it.</td></tr>
 <tr><td valign="top"><a href="#ensure_rounded_integer-1">ensure_rounded_integer/1</a></td><td>Ensures that the specified term is an integer, and returns it.</td></tr>
@@ -404,12 +437,18 @@ returns it.</td></tr>
 found in an AST like, like 'undefined' in: {atom,42,undefined}).</td></tr>
 <tr><td valign="top"><a href="#get_elementary_types-0">get_elementary_types/0</a></td><td>Returns a list of the elementary, "atomic" types.</td></tr>
 <tr><td valign="top"><a href="#get_immediate_types-0">get_immediate_types/0</a></td><td>Returns a list of the possible types for immediate values.</td></tr>
+<tr><td valign="top"><a href="#get_last_tuple_element-1">get_last_tuple_element/1</a></td><td>Returns the last element of the specified tuple.</td></tr>
 <tr><td valign="top"><a href="#get_low_level_type_size-1">get_low_level_type_size/1</a></td><td>Returns the number of bytes used by each value of the specified low-level
  type.</td></tr>
+<tr><td valign="top"><a href="#get_record_tag-1">get_record_tag/1</a></td><td>Returns the tag of the specified record instance.</td></tr>
 <tr><td valign="top"><a href="#get_simple_builtin_types-0">get_simple_builtin_types/0</a></td><td>Returns a list of the built-in, non-polymorphic types that can be
  typically found in AST forms.</td></tr>
 <tr><td valign="top"><a href="#get_type_of-1">get_type_of/1</a></td><td>Returns an atom describing, as precisely as possible, the overall type of 
 the specified primitive term.</td></tr>
+<tr><td valign="top"><a href="#increment_counter-2">increment_counter/2</a></td><td>Increments the specified counter.</td></tr>
+<tr><td valign="top"><a href="#initialise_counters-1">initialise_counters/1</a></td><td>Initialises the specified number of counters to zero.</td></tr>
+<tr><td valign="top"><a href="#initialise_counters-2">initialise_counters/2</a></td><td>Initialises the specified number of counters to the specified (initial)
+ value.</td></tr>
 <tr><td valign="top"><a href="#interpret_type_of-1">interpret_type_of/1</a></td><td>Returns a string describing, in a user-friendly manner, the type of the
  specified term (up to one level of nesting detailed).</td></tr>
 <tr><td valign="top"><a href="#interpret_type_of-2">interpret_type_of/2</a></td><td>Returns a string describing, in a user-friendly manner, the type of the
@@ -440,6 +479,12 @@ whitespaces) corresponding to specified type.</td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="add_to_counter-3">add_to_counter/3</a></h3>
+<div class="spec">
+<p><tt>add_to_counter(ToAdd::number(), CounterIndex::<a href="#type-positive_index">positive_index()</a>, Counters::<a href="#type-counters">counters()</a>) -&gt; <a href="#type-counters">counters()</a></tt><br></p>
+<p> </p>
+</div><p>Adds the specified value to the specified counter.</p>
 
 <h3 class="function"><a name="are_binaries-1">are_binaries/1</a></h3>
 <div class="spec">
@@ -501,14 +546,14 @@ whitespaces) corresponding to specified type.</td></tr>
 <div class="spec">
 <p><tt>augment_tuploid(Tuploid::<a href="#type-tuploid">tuploid()</a>, ExtraTerm::term()) -&gt; <a href="#type-tuploid">tuploid()</a></tt><br></p>
 <p> </p>
-</div><p><p>Augments the specified tuploid with specified term, placed as new last 
-element.</p>
+</div><p><p>Augments the specified tuploid with the specified term, placed as new 
+last element.</p>
 
- <p>Ex: augment_tuploid(a, 2.0) = {a, 2.0}     
+ <p>For example augment_tuploid(a, 2.0) = {a, 2.0}     
 augment_tuploid({foo, 42}, 2.0) = {foo, 42, 2.0}</p>
 
  Useful typically to augment returned error tuploids (either a single error
- term such as 'invalid_name', or a tuple like '{invalid_name,"Arnold"}' with
+ term such as 'invalid_name', or a tuple like '{invalid_name,"Arnold"}') with
  caller-local information, to obtain in all cases a tuploid (a tuple here) with
  this extra information.
 </p>
@@ -686,6 +731,12 @@ augment_tuploid({foo, 42}, 2.0) = {foo, 42, 2.0}</p>
 <p> </p>
 </div><p>Checks that the specified term is a PID indeed, and returns it.</p>
 
+<h3 class="function"><a name="check_pids-1">check_pids/1</a></h3>
+<div class="spec">
+<p><tt>check_pids(Pids::term()) -&gt; [pid()]</tt><br></p>
+<p> </p>
+</div><p>Checks that the specified term is a list of PIDs indeed, and returns it.</p>
+
 <h3 class="function"><a name="check_positive_float-1">check_positive_float/1</a></h3>
 <div class="spec">
 <p><tt>check_positive_float(Float::term()) -&gt; float()</tt><br></p>
@@ -765,11 +816,14 @@ parses the specified string to determine the type described therein.</p>
 <p> </p>
 </div><p>Ensures that the specified term is a binary string, and returns it.</p>
 
-<h3 class="function"><a name="ensure_boolean-1">ensure_boolean/1</a></h3>
+<h3 class="function"><a name="ensure_ceiled_integer-1">ensure_ceiled_integer/1</a></h3>
 <div class="spec">
-<p><tt>ensure_boolean(B::term()) -&gt; boolean()</tt><br></p>
+<p><tt>ensure_ceiled_integer(N::number()) -&gt; integer()</tt><br></p>
 <p> </p>
-</div><p>Ensures that the specified term is a boolean, and returns it.</p>
+</div><p><p>Ensures that the specified term is an integer, and returns it.</p>
+
+ If it is a float, will return a ceiled (rounded-up integer) version of it.
+</p>
 
 <h3 class="function"><a name="ensure_float-1">ensure_float/1</a></h3>
 <div class="spec">
@@ -777,7 +831,18 @@ parses the specified string to determine the type described therein.</p>
 <p> </p>
 </div><p><p>Ensures that the specified term is a float, and returns it.</p>
 
- If it is an integer, will return a floating-point version of it.
+ <p>If it is an integer, will return a floating-point version of it.</p>
+
+ Yet float/1 mostly suffices (as it can can operate on floats).
+</p>
+
+<h3 class="function"><a name="ensure_floored_integer-1">ensure_floored_integer/1</a></h3>
+<div class="spec">
+<p><tt>ensure_floored_integer(N::number()) -&gt; integer()</tt><br></p>
+<p> </p>
+</div><p><p>Ensures that the specified term is an integer, and returns it.</p>
+
+ If it is a float, will return a floored (rounded-down integer) version of it.
 </p>
 
 <h3 class="function"><a name="ensure_integer-1">ensure_integer/1</a></h3>
@@ -788,12 +853,6 @@ parses the specified string to determine the type described therein.</p>
 
  If it is a float, will return a truncated (integer) version of it.
 </p>
-
-<h3 class="function"><a name="ensure_number-1">ensure_number/1</a></h3>
-<div class="spec">
-<p><tt>ensure_number(N::number()) -&gt; number()</tt><br></p>
-<p> </p>
-</div><p>Ensures that the specified term is a number, and returns it.</p>
 
 <h3 class="function"><a name="ensure_positive_float-1">ensure_positive_float/1</a></h3>
 <div class="spec">
@@ -858,6 +917,12 @@ Rep(L) = {string,LINE,[C_1, ..., C_k]}."</p>
 <p> </p>
 </div><p>Returns a list of the possible types for immediate values.</p>
 
+<h3 class="function"><a name="get_last_tuple_element-1">get_last_tuple_element/1</a></h3>
+<div class="spec">
+<p><tt>get_last_tuple_element(Tuple::tuple()) -&gt; term()</tt><br></p>
+<p> </p>
+</div><p>Returns the last element of the specified tuple.</p>
+
 <h3 class="function"><a name="get_low_level_type_size-1">get_low_level_type_size/1</a></h3>
 <div class="spec">
 <p><tt>get_low_level_type_size(X1::<a href="#type-low_level_type">low_level_type()</a>) -&gt; <a href="#type-byte_size">byte_size()</a></tt><br></p>
@@ -865,6 +930,12 @@ Rep(L) = {string,LINE,[C_1, ..., C_k]}."</p>
 </div><p>Returns the number of bytes used by each value of the specified low-level
  type.
 </p>
+
+<h3 class="function"><a name="get_record_tag-1">get_record_tag/1</a></h3>
+<div class="spec">
+<p><tt>get_record_tag(RecordTuple::<a href="#type-record">record()</a>) -&gt; <a href="#type-record_tag">record_tag()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the tag of the specified record instance.</p>
 
 <h3 class="function"><a name="get_simple_builtin_types-0">get_simple_builtin_types/0</a></h3>
 <div class="spec">
@@ -892,6 +963,26 @@ may be seen of being of multiple types).</p>
 
  The lowest-level/most precising typing can be obtained with the (undocumented)
  erts_internal:term_type/1 function.
+</p>
+
+<h3 class="function"><a name="increment_counter-2">increment_counter/2</a></h3>
+<div class="spec">
+<p><tt>increment_counter(CounterIndex::<a href="#type-positive_index">positive_index()</a>, Counters::<a href="#type-counters">counters()</a>) -&gt; <a href="#type-counters">counters()</a></tt><br></p>
+<p> </p>
+</div><p>Increments the specified counter.</p>
+
+<h3 class="function"><a name="initialise_counters-1">initialise_counters/1</a></h3>
+<div class="spec">
+<p><tt>initialise_counters(Count::<a href="#type-count">count()</a>) -&gt; <a href="#type-counters">counters()</a></tt><br></p>
+<p> </p>
+</div><p>Initialises the specified number of counters to zero.</p>
+
+<h3 class="function"><a name="initialise_counters-2">initialise_counters/2</a></h3>
+<div class="spec">
+<p><tt>initialise_counters(Count::<a href="#type-count">count()</a>, InitValue::integer()) -&gt; <a href="#type-counters">counters()</a></tt><br></p>
+<p> </p>
+</div><p>Initialises the specified number of counters to the specified (initial)
+ value.
 </p>
 
 <h3 class="function"><a name="interpret_type_of-1">interpret_type_of/1</a></h3>
@@ -977,13 +1068,13 @@ it once the sharing of its sub-terms has been favored (equal term, but
 possibly smaller in memory).</p>
 
  <p>Presumably useful on platforms where the size of a pointer is lower than the 
-one of the subterms (ex: an Erlang float, i.e. a double), when some subterms 
+one of the subterms (e.g. an Erlang float, i.e. a double), when some subterms 
 may be equal (by value), yet are duplicated (not defined once and pointed to 
 multiple times).</p>
 
- <p>Such a deduplication may happen typically on homogeneous tuples (ex: vectors), 
-when received as messages for example, or when read from any external source 
-(ex: from file).</p>
+ <p>Such a deduplication may happen typically on homogeneous tuples 
+(e.g. vectors), when received as messages for example, or when read from any 
+external source (e.g. from file).</p>
 
  Directly inspired from wings_utils:share/*.
 </p>
@@ -996,7 +1087,7 @@ when received as messages for example, or when read from any external source
 of its elements, if they are equal.</p>
 
  <p>Presumably useful on platforms where the size of a pointer is lower than the 
-one of the subterms (ex: an Erlang float, i.e. a double), when some subterms 
+one of the subterms (e.g. an Erlang float, i.e. a double), when some subterms 
 may be equal (by value), yet are duplicated (not defined once and pointed to 
 multiple times).</p>
 
@@ -1011,7 +1102,7 @@ multiple times).</p>
 sharing of its elements, if they are equal.</p>
 
  <p>Presumably useful on platforms where the size of a pointer is lower than the 
-one of the subterms (ex: an Erlang float, i.e. a double), when some subterms 
+one of the subterms (e.g. an Erlang float, i.e. a double), when some subterms 
 may be equal (by value), yet are duplicated (not defined once and pointed to 
 multiple times).</p>
 

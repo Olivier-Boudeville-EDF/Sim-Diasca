@@ -36,7 +36,7 @@
 
 
 <h3 class="typedecl"><a name="type-app_info_map">app_info_map()</a></h3>
-<p><tt>app_info_map() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/filename.html#type-basedir_opts">filename:basedir_opts()</a></tt></p>
+<p><tt>app_info_map() = any()</tt></p>
 <p> Needed by some standard functions in the filename module.</p>
 
 <h3 class="typedecl"><a name="type-format_string">format_string()</a></h3>
@@ -98,7 +98,7 @@ immediately.</td></tr>
 </div><p><p>To be called whenever an application is to fail (crash on error) 
 immediately.</p>
 
- Ex: <code>app_facilities:fail( "server on strike" )</code>
+ For example <code>app_facilities:fail( "server on strike" )</code>
 </p>
 
 <h3 class="function"><a name="fail-2">fail/2</a></h3>
@@ -108,7 +108,7 @@ immediately.</p>
 <br>
 <tt>ValueList</tt>: <p>the corresponding list of field values.</p>
 
- Ex: <code>app_facilities:fail("server ~ts on strike", ["foobar.org"])</code>.
+ For example <code>app_facilities:fail("server ~ts on strike", ["foobar.org"])</code>.
 <br>
 </p>
 </div><p>To be called whenever an application is to fail (crash on error)

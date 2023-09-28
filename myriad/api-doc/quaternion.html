@@ -161,7 +161,8 @@ quaternion.</td></tr>
 <p><tt>from_vector3(V::<a href="#type-vector3">vector3()</a>) -&gt; <a href="#type-vector_quaternion">vector_quaternion()</a></tt><br></p>
 <p> </p>
 </div><p>Returns the quaternion obtained from the specified 3D vector, that is the
- vector (a.k.a. imaginary) quaternion whose vector part is this one.</p>
+ vector (a.k.a. imaginary) quaternion whose vector part is this one.
+</p>
 
 <h3 class="function"><a name="inverse-1">inverse/1</a></h3>
 <div class="spec">
@@ -236,9 +237,12 @@ magnitude).</p>
 </div><p><p>Returns the specified vector once rotated according to the specified 
 unitary quaternion.</p>
 
- Another option, if multiple vectors have to be rotated, is to go through the
- corresponding 3x3 matrix, computed once for all:
-    matrix3:apply( quaternion:to_rot_matrix3( Q ), V )
+ <p>Another option, if multiple vectors have to be rotated, is to go through the 
+corresponding 3x3 matrix, computed once for all:    
+matrix3:apply(quaternion:to_rot_matrix3(Q), V)</p>
+
+ A quaternion-based approach allows to avoid the problem of gimbal lock (see
+ https://en.wikipedia.org/wiki/Gimbal_lock).
 </p>
 
 <h3 class="function"><a name="rotation-2">rotation/2</a></h3>

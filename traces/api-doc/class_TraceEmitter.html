@@ -116,6 +116,11 @@ separator).</p>
 <p><tt>oneway_return() = <a href="wooper.html#type-oneway_return">wooper:oneway_return()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-preformatted_trace">preformatted_trace()</a></h3>
+<p><tt>preformatted_trace() = <a href="#type-bin_string">bin_string()</a></tt></p>
+<p> A preformatted trace that can be sent to the trace aggregator and directly
+ stored/written by it.</p>
+
 <h3 class="typedecl"><a name="type-request_name">request_name()</a></h3>
 <p><tt>request_name() = <a href="wooper.html#type-request_name">wooper:request_name()</a></tt></p>
 
@@ -129,7 +134,7 @@ separator).</p>
 
 
 <h3 class="typedecl"><a name="type-request_return">request_return()</a></h3>
-<p><tt>request_return(T) = <a href="wooper.html#type-request_result">wooper:request_result</a>(T)</tt></p>
+<p><tt>request_return(T) = <a href="wooper.html#type-request_return">wooper:request_return</a>(T)</tt></p>
 
 
 <h3 class="typedecl"><a name="type-requests_outcome">requests_outcome()</a></h3>
@@ -186,18 +191,22 @@ tick offset), or the atom 'none' if the emitter time is not known.</td></tr>
 <tr><td valign="top"><a href="#register_bridge-1">register_bridge/1</a></td><td>Declares additionally a trace bridge in the process of this emitter 
 instance.</td></tr>
 <tr><td valign="top"><a href="#removeAttribute-2">removeAttribute/2</a></td><td></td></tr>
-<tr><td valign="top"><a href="#send-3">send/3</a></td><td>Sends a trace from that emitter.</td></tr>
-<tr><td valign="top"><a href="#send-4">send/4</a></td><td>Sends specified trace message.</td></tr>
-<tr><td valign="top"><a href="#send-5">send/5</a></td><td></td></tr>
-<tr><td valign="top"><a href="#send_safe-3">send_safe/3</a></td><td>Sends a trace from that emitter, echoing it through basic traces as well.</td></tr>
-<tr><td valign="top"><a href="#send_safe-4">send_safe/4</a></td><td>Sends specified trace message.</td></tr>
-<tr><td valign="top"><a href="#send_safe-5">send_safe/5</a></td><td>Sends specified synchronised trace message (the synchronisation answer is 
-requested and waited) that is furthermore echoed.</td></tr>
-<tr><td valign="top"><a href="#send_synchronised-3">send_synchronised/3</a></td><td>Sends a synchronised trace message (the synchronisation answer is 
-requested and waited).</td></tr>
-<tr><td valign="top"><a href="#send_synchronised-4">send_synchronised/4</a></td><td></td></tr>
-<tr><td valign="top"><a href="#send_synchronised-5">send_synchronised/5</a></td><td>Sends specified synchronised trace message (the synchronisation answer is 
-requested and waited).</td></tr>
+<tr><td valign="top"><a href="#send-3">send/3</a></td><td>Sends the specified (unsynchronised) trace message from this emitter.</td></tr>
+<tr><td valign="top"><a href="#send-4">send/4</a></td><td>Sends the specified (unsynchronised) trace message from this emitter.</td></tr>
+<tr><td valign="top"><a href="#send-5">send/5</a></td><td>Sends the specified (unsynchronised) trace message from this emitter.</td></tr>
+<tr><td valign="top"><a href="#send_categorized_emitter-4">send_categorized_emitter/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#send_named_emitter-4">send_named_emitter/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#send_safe-3">send_safe/3</a></td><td>Sends the specified (unsynchronised) trace message from this emitter, 
+echoing it through basic traces as well.</td></tr>
+<tr><td valign="top"><a href="#send_safe-4">send_safe/4</a></td><td>Sends the specified (unsynchronised) trace message from this emitter.</td></tr>
+<tr><td valign="top"><a href="#send_safe-5">send_safe/5</a></td><td>Sends the specified synchronised trace message that is furthermore 
+echoed, from this emitter.</td></tr>
+<tr><td valign="top"><a href="#send_synchronised-3">send_synchronised/3</a></td><td>Sends the specified synchronised trace message (the synchronisation 
+answer is requested and waited) from this emitter.</td></tr>
+<tr><td valign="top"><a href="#send_synchronised-4">send_synchronised/4</a></td><td>Sends the specified synchronised trace message (the synchronisation 
+answer is requested and waited) from this emitter.</td></tr>
+<tr><td valign="top"><a href="#send_synchronised-5">send_synchronised/5</a></td><td>Sends the specified synchronised trace message (the synchronisation 
+answer is requested and awaited) from this emitter.</td></tr>
 <tr><td valign="top"><a href="#setAttribute-3">setAttribute/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#setAttributes-2">setAttributes/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#set_categorization-2">set_categorization/2</a></td><td>Sets the categorization of this trace emitter.</td></tr>
@@ -489,7 +498,7 @@ need to send traces.</p>
 <div class="spec">
 <p><tt>send(TraceSeverity::<a href="#type-trace_severity">trace_severity()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, Message::<a href="#type-message">message()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p><p>Sends a trace from that emitter.</p>
+</div><p><p>Sends the specified (unsynchronised) trace message from this emitter.</p>
 
  <p>Message is a plain string.</p>
 
@@ -503,10 +512,7 @@ categorization.</p>
 <div class="spec">
 <p><tt>send(TraceSeverity::<a href="#type-trace_severity">trace_severity()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, Message::<a href="#type-message">message()</a>, MessageCategorization::<a href="#type-message_categorization">message_categorization()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p><p>Sends specified trace message.</p>
-
- <p>Message is a plain string, MessageCategorization as well unless it is the 
-'uncategorized' atom.</p>
+</div><p><p>Sends the specified (unsynchronised) trace message from this emitter.</p>
 
  <p>All information available but the timestamp, determining its availability.</p>
 
@@ -517,13 +523,31 @@ categorization.</p>
 <div class="spec">
 <p><tt>send(TraceSeverity::<a href="#type-trace_severity">trace_severity()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, Message::<a href="#type-message">message()</a>, MessageCategorization::<a href="#type-message_categorization">message_categorization()</a>, AppTimestamp::<a href="#type-app_timestamp">app_timestamp()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
+</div><p><p>Sends the specified (unsynchronised) trace message from this emitter.</p>
+
+ <p>By far the most used sending primitive.</p>
+
+ (helper)
+</p>
+
+<h3 class="function"><a name="send_categorized_emitter-4">send_categorized_emitter/4</a></h3>
+<div class="spec">
+<p><tt>send_categorized_emitter(TraceSeverity::<a href="#type-trace_severity">trace_severity()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, Message::<a href="#type-message">message()</a>, EmitterCategorization::<a href="#type-emitter_categorization">emitter_categorization()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="send_named_emitter-4">send_named_emitter/4</a></h3>
+<div class="spec">
+<p><tt>send_named_emitter(TraceSeverity::<a href="#type-trace_severity">trace_severity()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, Message::<a href="#type-message">message()</a>, EmitterName::<a href="#type-emitter_name">emitter_name()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
 </div>
 
 <h3 class="function"><a name="send_safe-3">send_safe/3</a></h3>
 <div class="spec">
 <p><tt>send_safe(TraceSeverity::<a href="#type-trace_severity">trace_severity()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, Message::<a href="#type-message">message()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p><p>Sends a trace from that emitter, echoing it through basic traces as well.</p>
+</div><p><p>Sends the specified (unsynchronised) trace message from this emitter, 
+echoing it through basic traces as well.</p>
 
  <p>Message is a plain string.</p>
 
@@ -537,7 +561,7 @@ categorization.</p>
 <div class="spec">
 <p><tt>send_safe(TraceSeverity::<a href="#type-trace_severity">trace_severity()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, Message::<a href="#type-message">message()</a>, MessageCategorization::<a href="#type-message_categorization">message_categorization()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p><p>Sends specified trace message.</p>
+</div><p><p>Sends the specified (unsynchronised) trace message from this emitter.</p>
 
  <p>All information available but the timestamp, determining its availability.</p>
 
@@ -548,11 +572,11 @@ categorization.</p>
 <div class="spec">
 <p><tt>send_safe(TraceSeverity::<a href="#type-trace_severity">trace_severity()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, Message::<a href="#type-message">message()</a>, MessageCategorization::<a href="#type-message_categorization">message_categorization()</a>, AppTimestamp::<a href="#type-app_timestamp">app_timestamp()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p><p>Sends specified synchronised trace message (the synchronisation answer is 
-requested and waited) that is furthermore echoed.</p>
+</div><p><p>Sends the specified synchronised trace message that is furthermore 
+echoed, from this emitter.</p>
 
  <p>Sends all types of synchronised traces (the synchronisation answer is 
-requested and waited).</p>
+requested and awaited).</p>
 
  (helper)
 </p>
@@ -561,8 +585,8 @@ requested and waited).</p>
 <div class="spec">
 <p><tt>send_synchronised(TraceSeverity::<a href="#type-trace_severity">trace_severity()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, Message::<a href="#type-message">message()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p><p>Sends a synchronised trace message (the synchronisation answer is 
-requested and waited).</p>
+</div><p><p>Sends the specified synchronised trace message (the synchronisation 
+answer is requested and waited) from this emitter.</p>
 
  <p>All information are available here, except the trace timestamp and the message 
 categorization.</p>
@@ -574,14 +598,20 @@ categorization.</p>
 <div class="spec">
 <p><tt>send_synchronised(TraceSeverity::<a href="#type-trace_severity">trace_severity()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, Message::<a href="#type-message">message()</a>, MessageCategorization::<a href="#type-message_categorization">message_categorization()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div>
+</div><p><p>Sends the specified synchronised trace message (the synchronisation 
+answer is requested and waited) from this emitter.</p>
+
+ <p>All information available but the timestamp, determining its availability.</p>
+
+ (helper)
+</p>
 
 <h3 class="function"><a name="send_synchronised-5">send_synchronised/5</a></h3>
 <div class="spec">
 <p><tt>send_synchronised(TraceSeverity::<a href="#type-trace_severity">trace_severity()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>, Message::<a href="#type-message">message()</a>, MessageCategorization::<a href="#type-message_categorization">message_categorization()</a>, AppTimestamp::<a href="#type-app_timestamp">app_timestamp()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p><p>Sends specified synchronised trace message (the synchronisation answer is 
-requested and waited).</p>
+</div><p><p>Sends the specified synchronised trace message (the synchronisation 
+answer is requested and awaited) from this emitter.</p>
 
  (helper)
 </p>
@@ -660,7 +690,7 @@ the same category, which is a lot clearer when browsing traces afterwards.</p>
 
 <h3 class="function"><a name="wooper_execute_method_as-4">wooper_execute_method_as/4</a></h3>
 <div class="spec">
-<p><tt>wooper_execute_method_as(Classname::<a href="#type-classname">classname()</a>, MethodAtom::<a href="#type-method_name">method_name()</a>, Parameters::<a href="#type-method_arguments">method_arguments()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</tt><br></p>
+<p><tt>wooper_execute_method_as(ParentClassname::<a href="#type-classname">classname()</a>, MethodAtom::<a href="#type-method_name">method_name()</a>, Parameters::<a href="#type-method_arguments">method_arguments()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</tt><br></p>
 <p> </p>
 </div>
 

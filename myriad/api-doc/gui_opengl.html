@@ -26,18 +26,21 @@ through wxWidgets.</p>
 
 <h2><a name="types">Data Types</a></h2>
 
+<h3 class="typedecl"><a name="type-actual_debug_severity">actual_debug_severity()</a></h3>
+<p><tt>actual_debug_severity() = low | medium | high</tt></p>
+<p> The severity of debug messages to enable or disable.</p>
+
+<h3 class="typedecl"><a name="type-actual_debug_source">actual_debug_source()</a></h3>
+<p><tt>actual_debug_source() = api | window_system | shader_compiler | third_party | application | other</tt></p>
+
+
+<h3 class="typedecl"><a name="type-actual_debug_type">actual_debug_type()</a></h3>
+<p><tt>actual_debug_type() = type_error | deprecated_behaviour | undefined_behaviour | portability | performance | marker | push_group | pop_group | other</tt></p>
+
+
 <h3 class="typedecl"><a name="type-any_error">any_error()</a></h3>
 <p><b>abstract datatype</b>: <tt>any_error()</tt></p>
-<p> An error code reported by OpenGL or GLU.</p>
-
-<h3 class="typedecl"><a name="type-any_file_path">any_file_path()</a></h3>
-<p><tt>any_file_path() = <a href="file_utils.html#type-any_file_path">file_utils:any_file_path()</a></tt></p>
-
-
-<h3 class="typedecl"><a name="type-attribute_name">attribute_name()</a></h3>
-<p><tt>attribute_name() = <a href="#type-ustring">ustring()</a></tt></p>
-<p> The name of a user-defined attribute, meant to be set through an associated
- index.</p>
+<p> An error code reported by the graphic subsystem, OpenGL or GLU.</p>
 
 <h3 class="typedecl"><a name="type-bin_string">bin_string()</a></h3>
 <p><tt>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></tt></p>
@@ -47,74 +50,93 @@ through wxWidgets.</p>
 <p><tt>bit_size() = <a href="system_utils.html#type-bit_size">system_utils:bit_size()</a></tt></p>
 
 
-<h3 class="typedecl"><a name="type-brush">brush()</a></h3>
-<p><tt>brush() = <a href="gui.html#type-brush">gui:brush()</a></tt></p>
+<h3 class="typedecl"><a name="type-buffer">buffer()</a></h3>
+<p><tt>buffer() = <a href="gui.html#type-buffer">gui:buffer()</a></tt></p>
 
 
-<h3 class="typedecl"><a name="type-buffer_id">buffer_id()</a></h3>
-<p><tt>buffer_id() = non_neg_integer()</tt></p>
-<p> The identifier of a buffer, i.e. a "buffer object name".</p>
+<h3 class="typedecl"><a name="type-buffer_access_pattern">buffer_access_pattern()</a></h3>
+<p><tt>buffer_access_pattern() = stream | static | dynamic</tt></p>
+
+
+<h3 class="typedecl"><a name="type-buffer_access_usage">buffer_access_usage()</a></h3>
+<p><tt>buffer_access_usage() = draw | read | copy</tt></p>
+
+
+<h3 class="typedecl"><a name="type-buffer_usage_hint">buffer_usage_hint()</a></h3>
+<p><tt>buffer_usage_hint() = {<a href="#type-buffer_access_usage">buffer_access_usage()</a>, <a href="#type-buffer_access_pattern">buffer_access_pattern()</a>}</tt></p>
+<p><p> Hint given to the GL implementation regarding how a buffer will be 
+accessed.</p>
+
+ This enables the GL implementation to possibly make more intelligent decisions
+ that may significantly impact buffer object performance.</p>
 
 <h3 class="typedecl"><a name="type-byte_size">byte_size()</a></h3>
 <p><tt>byte_size() = <a href="system_utils.html#type-byte_size">system_utils:byte_size()</a></tt></p>
 
 
-<h3 class="typedecl"><a name="type-color_by_decimal">color_by_decimal()</a></h3>
-<p><tt>color_by_decimal() = <a href="gui_color.html#type-color_by_decimal">gui_color:color_by_decimal()</a></tt></p>
+<h3 class="typedecl"><a name="type-debug_context_message">debug_context_message()</a></h3>
+<p><tt>debug_context_message() = {<a href="#type-debug_message_id">debug_message_id()</a>, Message::<a href="#type-bin_string">bin_string()</a>, <a href="#type-actual_debug_severity">actual_debug_severity()</a>, <a href="#type-actual_debug_source">actual_debug_source()</a>, <a href="#type-actual_debug_type">actual_debug_type()</a>}</tt></p>
+<p> A message in the debug context, with its metadata.</p>
+
+<h3 class="typedecl"><a name="type-debug_message_id">debug_message_id()</a></h3>
+<p><tt>debug_message_id() = integer()</tt></p>
+<p> Any application-level identifier assigned to a debug message.</p>
+
+<h3 class="typedecl"><a name="type-debug_selector">debug_selector()</a></h3>
+<p><tt>debug_selector() = enable | disable</tt></p>
+<p> To filter debug messages.</p>
+
+<h3 class="typedecl"><a name="type-debug_severity">debug_severity()</a></h3>
+<p><tt>debug_severity() = <a href="#type-actual_debug_severity">actual_debug_severity()</a> | all</tt></p>
+<p> The severity of debug messages to enable or disable.</p>
+
+<h3 class="typedecl"><a name="type-debug_source">debug_source()</a></h3>
+<p><tt>debug_source() = <a href="#type-actual_debug_source">actual_debug_source()</a> | all</tt></p>
 
 
-<h3 class="typedecl"><a name="type-compute_shader_id">compute_shader_id()</a></h3>
-<p><tt>compute_shader_id() = <a href="#type-shader_id">shader_id()</a></tt></p>
-<p> The identifier of a compute shader, to run on a programmable compute
- processor.</p>
-
-<h3 class="typedecl"><a name="type-coordinate">coordinate()</a></h3>
-<p><tt>coordinate() = <a href="gui.html#type-coordinate">gui:coordinate()</a></tt></p>
-
-
-<h3 class="typedecl"><a name="type-count">count()</a></h3>
-<p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+<h3 class="typedecl"><a name="type-debug_type">debug_type()</a></h3>
+<p><tt>debug_type() = <a href="#type-actual_debug_type">actual_debug_type()</a> | all</tt></p>
 
 
 <h3 class="typedecl"><a name="type-device_context_attribute">device_context_attribute()</a></h3>
-<p><tt>device_context_attribute() = rgba | bgra | double_buffer | {min_red_size, <a href="#type-bit_size">bit_size()</a>} | {min_green_size, <a href="#type-bit_size">bit_size()</a>} | {min_blue_size, <a href="#type-bit_size">bit_size()</a>} | {depth_buffer_size, <a href="#type-bit_size">bit_size()</a>} | use_core_profile</tt></p>
-
-
-<h3 class="typedecl"><a name="type-dimensions">dimensions()</a></h3>
-<p><tt>dimensions() = <a href="gui.html#type-dimensions">gui:dimensions()</a></tt></p>
+<p><tt>device_context_attribute() = rgba | bgra | double_buffer | {min_red_size, <a href="#type-bit_size">bit_size()</a>} | {min_green_size, <a href="#type-bit_size">bit_size()</a>} | {min_blue_size, <a href="#type-bit_size">bit_size()</a>} | {depth_buffer_size, <a href="#type-bit_size">bit_size()</a>} | use_core_profile | debug_context</tt></p>
 
 
 <h3 class="typedecl"><a name="type-enum">enum()</a></h3>
 <p><tt>enum() = non_neg_integer()</tt></p>
 <p> A value belonging to an OpenGL enumeration.</p>
 
+<h3 class="typedecl"><a name="type-f">f()</a></h3>
+<p><tt>f() = float()</tt></p>
+
+
 <h3 class="typedecl"><a name="type-factor">factor()</a></h3>
 <p><tt>factor() = <a href="math_utils.html#type-factor">math_utils:factor()</a></tt></p>
 <p> A floating-point factor, typically in [0.0,1.0].</p>
-
-<h3 class="typedecl"><a name="type-font">font()</a></h3>
-<p><tt>font() = <a href="gui_font.html#type-font">gui_font:font()</a></tt></p>
-
-
-<h3 class="typedecl"><a name="type-fragment_shader_id">fragment_shader_id()</a></h3>
-<p><tt>fragment_shader_id() = <a href="#type-shader_id">shader_id()</a></tt></p>
-<p> The identifier of a fragment shader, to run on a programmable fragment
- processor.</p>
-
-<h3 class="typedecl"><a name="type-geometry_shader_id">geometry_shader_id()</a></h3>
-<p><tt>geometry_shader_id() = <a href="#type-shader_id">shader_id()</a></tt></p>
-<p> The identifier of a geometry shader, to run on a programmable geometry
- processor.</p>
 
 <h3 class="typedecl"><a name="type-gl_base_type">gl_base_type()</a></h3>
 <p><tt>gl_base_type() = 5120 | 5121 | 5123 | 5122 | 5125 | 5124 | 5126 | 5130</tt></p>
 <p> The GL base numerical types.</p>
 
+<h3 class="typedecl"><a name="type-gl_boolean">gl_boolean()</a></h3>
+<p><tt>gl_boolean() = 1 | 0</tt></p>
+
+
+<h3 class="typedecl"><a name="type-gl_buffer">gl_buffer()</a></h3>
+<p><tt>gl_buffer() = <a href="#type-buffer">buffer()</a></tt></p>
+<p> Any type of OpenGL buffer.</p>
+
+<h3 class="typedecl"><a name="type-gl_buffer_id">gl_buffer_id()</a></h3>
+<p><tt>gl_buffer_id() = non_neg_integer()</tt></p>
+<p> The identifier of an (OpenGL) buffer, i.e. a "buffer object name".</p>
+
 <h3 class="typedecl"><a name="type-gl_canvas">gl_canvas()</a></h3>
 <p><b>abstract datatype</b>: <tt>gl_canvas()</tt></p>
-<p> An OpenGL-based, back-buffered canvas (not to be mixed with a basic
- gui:canvas/0 one), to which an OpenGL context shall be set in order to execute
- OpenGL commands.</p>
+<p><p> An OpenGL-based, back-buffered canvas (not to be mixed with a basic 
+gui_canvas:canvas/0 one), to which an OpenGL context shall be set in order to 
+execute OpenGL commands.</p>
+
+ Any OpenGL canvas is not resized when its containers are resized.</p>
 
 <h3 class="typedecl"><a name="type-gl_canvas_option">gl_canvas_option()</a></h3>
 <p><tt>gl_canvas_option() = {gl_attributes, [<a href="#type-device_context_attribute">device_context_attribute()</a>]} | <a href="gui_wx_backend.html#type-other_wx_device_context_attribute">gui_wx_backend:other_wx_device_context_attribute()</a></tt></p>
@@ -122,8 +144,25 @@ through wxWidgets.</p>
 
 <h3 class="typedecl"><a name="type-gl_context">gl_context()</a></h3>
 <p><b>abstract datatype</b>: <tt>gl_context()</tt></p>
-<p> An OpenGL context represents the state of an OpenGL state machine and the
- connection between OpenGL and the running system.</p>
+<p><p> An OpenGL context represents the state of an OpenGL state machine and the 
+connection between OpenGL and the running system.</p>
+
+ Such a context always uses physical pixels, even on the platforms where the
+ window() base widget uses logical pixels. So dimensions like client sizes may
+ have to be multiplied by the content scale factor before being used with
+ functions like glViewport().</p>
+
+<h3 class="typedecl"><a name="type-gl_debug_severity">gl_debug_severity()</a></h3>
+<p><tt>gl_debug_severity() = 37192 | 37191 | 37190 | 4352</tt></p>
+<p> all of them</p>
+
+<h3 class="typedecl"><a name="type-gl_debug_source">gl_debug_source()</a></h3>
+<p><tt>gl_debug_source() = 33350 | 33351 | 33352 | 33353 | 33354 | 33355 | 4352</tt></p>
+<p> all of them</p>
+
+<h3 class="typedecl"><a name="type-gl_debug_type">gl_debug_type()</a></h3>
+<p><tt>gl_debug_type() = 33356 | 33357 | 33358 | 33359 | 33360 | 33384 | 33385 | 33386 | 33361 | 4352</tt></p>
+<p> all of them</p>
 
 <h3 class="typedecl"><a name="type-gl_error">gl_error()</a></h3>
 <p><b>abstract datatype</b>: <tt>gl_error()</tt></p>
@@ -131,17 +170,51 @@ through wxWidgets.</p>
 
 <h3 class="typedecl"><a name="type-gl_extension">gl_extension()</a></h3>
 <p><tt>gl_extension() = atom()</tt></p>
-<p> An OpenGL extension.</p>
+<p><p> Designates an OpenGL extension.</p>
+
+ For example: 'GL_ARB_shader_atomic_counters'.</p>
+
+<h3 class="typedecl"><a name="type-gl_matrix2">gl_matrix2()</a></h3>
+<p><tt>gl_matrix2() = {<a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>}</tt></p>
+<p> A 2x2 (float) matrix (hence with 4 elements), according to the conventions of
+ the gl module.</p>
+
+<h3 class="typedecl"><a name="type-gl_matrix3">gl_matrix3()</a></h3>
+<p><tt>gl_matrix3() = {<a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>}</tt></p>
+<p> A 3x3 (float) matrix (hence with 9 elements), according to the conventions of
+ the gl module.</p>
+
+<h3 class="typedecl"><a name="type-gl_matrix4">gl_matrix4()</a></h3>
+<p><tt>gl_matrix4() = {<a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>}</tt></p>
+<p> A 4x4 (float) matrix (hence with 16 elements), according to the conventions of
+ the gl module.</p>
 
 <h3 class="typedecl"><a name="type-gl_profile">gl_profile()</a></h3>
 <p><tt>gl_profile() = core | compatibility</tt></p>
-<p> Deprecated functions are allowed
- An OpenGL profile, typically as queried from a driver. Profiles are defined
- relatively to a particular version of OpenGL.</p>
+<p><p> Deprecated functions are allowed 
+An OpenGL profile, typically as queried from a driver. Profiles are defined 
+relatively to a particular version of OpenGL.</p>
+
+ Apparently the 'compatibility' profile is the default one.</p>
+
+<h3 class="typedecl"><a name="type-gl_vector2">gl_vector2()</a></h3>
+<p><tt>gl_vector2() = {<a href="#type-f">f()</a>, <a href="#type-f">f()</a>}</tt></p>
+<p> A.k.a. point2:point2().
+ A 2D (float) vector, according to the conventions of the gl module.</p>
+
+<h3 class="typedecl"><a name="type-gl_vector3">gl_vector3()</a></h3>
+<p><tt>gl_vector3() = {<a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>}</tt></p>
+<p> A.k.a. point3:point3().
+ A 3D (float) vector, according to the conventions of the gl module.</p>
+
+<h3 class="typedecl"><a name="type-gl_vector4">gl_vector4()</a></h3>
+<p><tt>gl_vector4() = {<a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>, <a href="#type-f">f()</a>}</tt></p>
+<p> A.k.a. point4:point4().
+ A (float) 4D vector, according to the conventions of the gl module.</p>
 
 <h3 class="typedecl"><a name="type-gl_version">gl_version()</a></h3>
 <p><tt>gl_version() = <a href="basic_utils.html#type-three_digit_version">basic_utils:three_digit_version()</a></tt></p>
-<p> An OpenGL version (major/minor/path) typically as queried from a driver.</p>
+<p> An OpenGL version (major/minor/path), typically as queried from a driver.</p>
 
 <h3 class="typedecl"><a name="type-glu_error">glu_error()</a></h3>
 <p><b>abstract datatype</b>: <tt>glu_error()</tt></p>
@@ -149,7 +222,7 @@ through wxWidgets.</p>
 
 <h3 class="typedecl"><a name="type-glu_id">glu_id()</a></h3>
 <p><b>abstract datatype</b>: <tt>glu_id()</tt></p>
-<p> An identifier (actually a pointer) returned by GLU (ex: when creating a
+<p> An identifier (actually a pointer) returned by GLU (e.g. when creating a
  quadrics). A null value usually means that there was not enough memory to
  allocate the object.</p>
 
@@ -157,27 +230,25 @@ through wxWidgets.</p>
 <p><tt>glxinfo_report() = [<a href="#type-ustring">ustring()</a>]</tt></p>
 <p> A report issued by the glxinfo executable.</p>
 
-<h3 class="typedecl"><a name="type-image">image()</a></h3>
-<p><tt>image() = <a href="gui_image.html#type-image">gui_image:image()</a></tt></p>
-
-
-<h3 class="typedecl"><a name="type-image_format">image_format()</a></h3>
-<p><tt>image_format() = <a href="gui_image.html#type-image_format">gui_image:image_format()</a></tt></p>
-
-
 <h3 class="typedecl"><a name="type-info_table_id">info_table_id()</a></h3>
 <p><tt>info_table_id() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/ets.html#type-tid">ets:tid()</a></tt></p>
 <p> The identifier of an ETS-based OpenGL information table, registering the
- following static information for an easier/more efficient lookup:
+ following static information for an easier/more efficient (frequent) lookup:
   - {gl_version, gl_version()}
-  - {gl_profiles, [gl_profile()]}
+  - {gl_profile, gl_profile()}
   - all extensions detected as supported by the current card (an atom entry
   each)</p>
 
 <h3 class="typedecl"><a name="type-length_factor">length_factor()</a></h3>
 <p><tt>length_factor() = <a href="math_utils.html#type-factor">math_utils:factor()</a></tt></p>
-<p> A floating-point factor, typically in [0.0,1.0], typically to designate
- widths, heights, etc.</p>
+<p><p> A floating-point factor, typically in [0.0,1.0], typically to designate 
+widths, heights, etc. when they have been normalised.</p>
+
+ <p>Typically, for textures, dimensions are powers of two, and a length factor is 
+the ratio between the real, original texture dimension and the actual one of 
+its buffer (a power of two).</p>
+
+ This is the coordinate type of UV coordinates.</p>
 
 <h3 class="typedecl"><a name="type-matrix4">matrix4()</a></h3>
 <p><tt>matrix4() = <a href="matrix4.html#type-matrix4">matrix4:matrix4()</a></tt></p>
@@ -185,32 +256,24 @@ through wxWidgets.</p>
 
 <h3 class="typedecl"><a name="type-matrix_stack">matrix_stack()</a></h3>
 <p><tt>matrix_stack() = 5888 | 5889 | 5890 | 6144</tt></p>
-<p> The various matrix stacks available, a.k.a. as the current matrix mode.</p>
+<p> The various matrix stacks available, a.k.a. the current matrix mode.</p>
 
 <h3 class="typedecl"><a name="type-mesh">mesh()</a></h3>
 <p><tt>mesh() = <a href="mesh.html#type-mesh">mesh:mesh()</a></tt></p>
 
 
-<h3 class="typedecl"><a name="type-mipmap_level">mipmap_level()</a></h3>
-<p><tt>mipmap_level() = non_neg_integer()</tt></p>
-<p> 0 is the base level.</p>
-
 <h3 class="typedecl"><a name="type-platform_identifier">platform_identifier()</a></h3>
 <p><tt>platform_identifier() = {<a href="#type-vendor_name">vendor_name()</a>, <a href="#type-renderer_name">renderer_name()</a>}</tt></p>
 <p> Uniquely identifies an (OpenGL driver) platform; does not change from release
- to release and should be used by platform-recognition algorithms.</p>
+ to release, and should be used by platform-recognition algorithms.</p>
 
-<h3 class="typedecl"><a name="type-point3">point3()</a></h3>
-<p><tt>point3() = <a href="point3.html#type-point3">point3:point3()</a></tt></p>
-
-
-<h3 class="typedecl"><a name="type-position">position()</a></h3>
-<p><tt>position() = <a href="gui.html#type-position">gui:position()</a></tt></p>
+<h3 class="typedecl"><a name="type-polygon_facing_mode">polygon_facing_mode()</a></h3>
+<p><tt>polygon_facing_mode() = 1028 | 1029 | 1032</tt></p>
 
 
-<h3 class="typedecl"><a name="type-program_id">program_id()</a></h3>
-<p><tt>program_id() = non_neg_integer()</tt></p>
-<p> The identifier of GLSL, shader-based program.</p>
+<h3 class="typedecl"><a name="type-rasterization_mode">rasterization_mode()</a></h3>
+<p><tt>rasterization_mode() = 6912 | 6913 | 6914</tt></p>
+<p> The default, for both front- and back-facing polygons</p>
 
 <h3 class="typedecl"><a name="type-renderer_name">renderer_name()</a></h3>
 <p><tt>renderer_name() = <a href="#type-bin_string">bin_string()</a></tt></p>
@@ -218,28 +281,6 @@ through wxWidgets.</p>
 particular configuration of a hardware platform).</p>
 
  For example: <code>&lt;&lt;"FOOBAR Frobinator GTX 1060 6GB/PCIe/SSE2"&gt;&gt;</code>.</p>
-
-<h3 class="typedecl"><a name="type-shader_id">shader_id()</a></h3>
-<p><tt>shader_id() = non_neg_integer()</tt></p>
-<p> The identifier of (any kind of) a shader.</p>
-
-<h3 class="typedecl"><a name="type-tessellation_control_shader_id">tessellation_control_shader_id()</a></h3>
-<p><tt>tessellation_control_shader_id() = <a href="#type-shader_id">shader_id()</a></tt></p>
-<p> The identifier of a tessellation shader, to run on a programmable tessellation
- processor in the control stage.</p>
-
-<h3 class="typedecl"><a name="type-tessellation_evaluation_shader_id">tessellation_evaluation_shader_id()</a></h3>
-<p><tt>tessellation_evaluation_shader_id() = <a href="#type-shader_id">shader_id()</a></tt></p>
-<p> The identifier of a tessellation shader, to run on a programmable tessellation
- processor in the evaluation stage.</p>
-
-<h3 class="typedecl"><a name="type-texture">texture()</a></h3>
-<p><tt>texture() = #texture{id = <a href="gui_opengl.html#type-texture_id">gui_opengl:texture_id()</a>, width = <a href="gui.html#type-length">gui:length()</a>, height = <a href="gui.html#type-length">gui:length()</a>, min_x = <a href="gui_opengl.html#type-length_factor">gui_opengl:length_factor()</a>, min_y = <a href="gui_opengl.html#type-length_factor">gui_opengl:length_factor()</a>, max_x = <a href="gui_opengl.html#type-length_factor">gui_opengl:length_factor()</a>, max_y = <a href="gui_opengl.html#type-length_factor">gui_opengl:length_factor()</a>}</tt></p>
-<p> Information regarding to a (2D) texture.</p>
-
-<h3 class="typedecl"><a name="type-texture_id">texture_id()</a></h3>
-<p><tt>texture_id() = non_neg_integer()</tt></p>
-<p> An OpenGL texture "name" (meant to be unique), an identifier.</p>
 
 <h3 class="typedecl"><a name="type-three_digit_version">three_digit_version()</a></h3>
 <p><tt>three_digit_version() = <a href="basic_utils.html#type-three_digit_version">basic_utils:three_digit_version()</a></tt></p>
@@ -253,22 +294,9 @@ particular configuration of a hardware platform).</p>
 <p><tt>two_or_three_digit_version() = <a href="#type-two_digit_version">two_digit_version()</a> | <a href="#type-three_digit_version">three_digit_version()</a></tt></p>
 
 
-<h3 class="typedecl"><a name="type-user_attribute">user_attribute()</a></h3>
-<p><tt>user_attribute() = {<a href="#type-vertex_attribute_index">vertex_attribute_index()</a>, <a href="#type-attribute_name">attribute_name()</a>}</tt></p>
-<p> A user-defined attribute variable, meant to be associated to a generic vertex
- attribute index in a GLSL program.</p>
-
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
 <p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
 
-
-<h3 class="typedecl"><a name="type-vao_id">vao_id()</a></h3>
-<p><tt>vao_id() = non_neg_integer()</tt></p>
-<p> The identifier of a Vertex Array Object (VAO).</p>
-
-<h3 class="typedecl"><a name="type-vbo_id">vbo_id()</a></h3>
-<p><tt>vbo_id() = <a href="#type-buffer_id">buffer_id()</a></tt></p>
-<p> The identifier of a Vertex Buffer Object (VBO).</p>
 
 <h3 class="typedecl"><a name="type-vendor">vendor()</a></h3>
 <p><tt>vendor() = nvidia | amd | intel | unknown</tt></p>
@@ -284,14 +312,6 @@ the corresponding OpenGL implementation.</p>
 
  For example: <code>&lt;&lt;"FOOBAR Corporation"&gt;&gt;</code>.</p>
 
-<h3 class="typedecl"><a name="type-vertex_attribute_index">vertex_attribute_index()</a></h3>
-<p><tt>vertex_attribute_index() = non_neg_integer()</tt></p>
-<p> The index of a vertex attribute, in a VBO.</p>
-
-<h3 class="typedecl"><a name="type-vertex_shader_id">vertex_shader_id()</a></h3>
-<p><tt>vertex_shader_id() = <a href="#type-shader_id">shader_id()</a></tt></p>
-<p> The identifier of a vertex shader, to run on a programmable vertex processor.</p>
-
 <h3 class="typedecl"><a name="type-window">window()</a></h3>
 <p><tt>window() = <a href="gui.html#type-window">gui:window()</a></tt></p>
 
@@ -299,60 +319,59 @@ the corresponding OpenGL implementation.</p>
 <h2><a name="index">Function Index</a></h2>
 <table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#are_extensions_supported-1">are_extensions_supported/1</a></td><td>Tells whether the specified OpenGL extensions are (all) supported.</td></tr>
 <tr><td valign="top"><a href="#are_extensions_supported-2">are_extensions_supported/2</a></td><td>Tells whether the specified OpenGL extensions are (all) supported.</td></tr>
-<tr><td valign="top"><a href="#bind_vertex_buffer_object-2">bind_vertex_buffer_object/2</a></td><td>Binds the specified vertices in a new vertex object buffer (VBO) whose
- identifier is returned.</td></tr>
-<tr><td valign="top"><a href="#check_error-0">check_error/0</a></td><td>Checks whether an OpenGL-related error occurred; if yes, displays 
-information regarding it, and throws an exception.</td></tr>
+<tr><td valign="top"><a href="#boolean_to_gl-1">boolean_to_gl/1</a></td><td>Converts a MyriadGUI hint about buffer usage to OpenGL conventions.</td></tr>
+<tr><td valign="top"><a href="#buffer_usage_hint_to_gl-1">buffer_usage_hint_to_gl/1</a></td><td>Converts a MyriadGUI hint about buffer usage to OpenGL conventions.</td></tr>
+<tr><td valign="top"><a href="#check_error-0">check_error/0</a></td><td>Checks whether an OpenGL-related error occurred previously (since last 
+check, otherwise since OpenGL initialisation); if yes, displays information 
+regarding it, and throws an exception.</td></tr>
+<tr><td valign="top"><a href="#check_error-1">check_error/1</a></td><td>Checks whether an OpenGL-related error occurred previously (since last 
+check, otherwise since OpenGL initialisation); if yes, displays information 
+regarding it, and throws an exception if requested: DoThrowOnError tells 
+whether the detection of an OpenGL shall throw an exception or only output an 
+error message in the console.</td></tr>
+<tr><td valign="top"><a href="#check_gl_debug_context_error-0">check_gl_debug_context_error/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#check_gl_debug_context_error-1">check_gl_debug_context_error/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#check_gl_error-0">check_gl_error/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#check_gl_error-1">check_gl_error/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#check_requirements-1">check_requirements/1</a></td><td>Checks the OpenGL requirements of this program against the local support,
  regarding the minimum OpenGL version; displays an error message and throws an
  exception if this requirement is not met.</td></tr>
 <tr><td valign="top"><a href="#check_requirements-2">check_requirements/2</a></td><td>Checks the OpenGL requirements of this program against the local support,
- regarding the minimum OpenGL version, the required profile; displays an error
- message and throws an exception if a requirement is not met.</td></tr>
+ regarding the minimum OpenGL version and the specified profile; displays an
+ error message and throws an exception if a requirement is not met.</td></tr>
 <tr><td valign="top"><a href="#check_requirements-3">check_requirements/3</a></td><td>Checks the OpenGL requirements of this program against the local support,
- regarding the minimum OpenGL version, the required profile and extensions;
+ regarding the minimum OpenGL version, the specified profile and extensions;
  displays an error message and throws an exception if a requirement is not met.</td></tr>
-<tr><td valign="top"><a href="#compile_compute_shader-1">compile_compute_shader/1</a></td><td>Loads and compiles a compute shader from the specified source file 
-(whose extension is typically .compute.glsl), and returns its identifier.</td></tr>
-<tr><td valign="top"><a href="#compile_fragment_shader-1">compile_fragment_shader/1</a></td><td>Loads and compiles a fragment shader from the specified source file 
-(whose extension is typically fragment.glsl), and returns its identifier.</td></tr>
-<tr><td valign="top"><a href="#compile_geometry_shader-1">compile_geometry_shader/1</a></td><td>Loads and compiles a geometry shader from the specified source file 
-(whose extension is typically .geometry.glsl), and returns its identifier.</td></tr>
-<tr><td valign="top"><a href="#compile_tessellation_control_shader-1">compile_tessellation_control_shader/1</a></td><td>Loads and compiles a tessellation control shader from the specified 
-source file (whose extension is typically .tess-ctrl.glsl), and returns its 
-identifier.</td></tr>
-<tr><td valign="top"><a href="#compile_tessellation_evaluation_shader-1">compile_tessellation_evaluation_shader/1</a></td><td>Loads and compiles a tessellation evaluation shader from the specified 
-source file (whose extension is typically .tess-eval.glsl), and returns its 
-identifier.</td></tr>
-<tr><td valign="top"><a href="#compile_vertex_shader-1">compile_vertex_shader/1</a></td><td>Loads and compiles a vertex shader from the specified source file (whose 
-extension is typically .vertex.glsl), and returns its identifier.</td></tr>
-<tr><td valign="top"><a href="#create_canvas-1">create_canvas/1</a></td><td>Creates and returns an OpenGL canvas with specified parent widget and 
+<tr><td valign="top"><a href="#create_canvas-1">create_canvas/1</a></td><td>Creates and returns an OpenGL canvas with the specified parent widget and 
 default settings: RGBA and double-buffering.</td></tr>
-<tr><td valign="top"><a href="#create_canvas-2">create_canvas/2</a></td><td>Creates and returns an OpenGL canvas with specified parent widget and 
+<tr><td valign="top"><a href="#create_canvas-2">create_canvas/2</a></td><td>Creates and returns an OpenGL canvas with the specified parent widget and 
 options.</td></tr>
 <tr><td valign="top"><a href="#create_context-1">create_context/1</a></td><td>Returns the OpenGL context obtained from the specified OpenGL canvas; it
  is created but not bound yet (not set as current, hence not usable yet, no
  OpenGL command can be issued yet).</td></tr>
-<tr><td valign="top"><a href="#create_texture_from_text-4">create_texture_from_text/4</a></td><td>Creates a texture corresponding to the specified text, rendered with
- specified font, brush and color.</td></tr>
-<tr><td valign="top"><a href="#create_texture_from_text-5">create_texture_from_text/5</a></td><td>Creates a texture corresponding to the specified text, rendered with
- specified font, brush and color, flipping it vertically if requested.</td></tr>
-<tr><td valign="top"><a href="#delete_texture-1">delete_texture/1</a></td><td>Deletes the specified texture.</td></tr>
-<tr><td valign="top"><a href="#delete_textures-1">delete_textures/1</a></td><td>Deletes the specified textures.</td></tr>
-<tr><td valign="top"><a href="#enter_2d_mode-1">enter_2d_mode/1</a></td><td>Enters in 2D mode for the specified window: applies relevant general 
-state changes, and specific to modelview (which is reset) and to projection (a 
-projection matrix relevant for 2D operations is applied).</td></tr>
-<tr><td valign="top"><a href="#generate_program-1">generate_program/1</a></td><td>Generates a GLSL program from the (already loaded and compiled) shaders 
-whose identifiers are specified, with no user-specified attributes defined: 
-links these shaders in a corresponding program, and returns its identifier.</td></tr>
-<tr><td valign="top"><a href="#generate_program-2">generate_program/2</a></td><td>Generates a GLSL program from the (already loaded and compiled) shaders 
-whose identifiers are specified, with user-specified attributes: links these 
-shaders in a corresponding program, and returns its identifier.</td></tr>
-<tr><td valign="top"><a href="#generate_program_from-2">generate_program_from/2</a></td><td>Generates a GLSL program from the shaders whose source files are
- specified: loads and compiles the specified vertex and fragment shaders (with
- no user-specified attributes defined), links them in a corresponding program,
- and returns its identifier.</td></tr>
-<tr><td valign="top"><a href="#generate_texture_id-0">generate_texture_id/0</a></td><td>Returns a new, unique, texture identifier.</td></tr>
+<tr><td valign="top"><a href="#debug_context_message_to_string-1">debug_context_message_to_string/1</a></td><td>Returns a textual description of the specified debug context message.</td></tr>
+<tr><td valign="top"><a href="#debug_context_messages_to_string-1">debug_context_messages_to_string/1</a></td><td>Returns a textual description of the specified debug context messages.</td></tr>
+<tr><td valign="top"><a href="#disable_all_debug_context_reporting-0">disable_all_debug_context_reporting/0</a></td><td>Disables all reporting regarding the OpenGL debug context.</td></tr>
+<tr><td valign="top"><a href="#disable_debug_context_reporting-3">disable_debug_context_reporting/3</a></td><td>Specifies how the reporting of debug messages in a debug context shall be 
+done, by disabling the specified message source, type and severity.</td></tr>
+<tr><td valign="top"><a href="#enable_all_debug_context_reporting-0">enable_all_debug_context_reporting/0</a></td><td>Enables all reporting regarding the OpenGL debug context.</td></tr>
+<tr><td valign="top"><a href="#enable_debug_context_reporting-3">enable_debug_context_reporting/3</a></td><td>Specifies how the reporting of debug messages in a debug context shall be 
+done, by enabling the specified message source, type and severity.</td></tr>
+<tr><td valign="top"><a href="#enter_2d_mode-1">enter_2d_mode/1</a></td><td>Enters in 2D mode for the specified window (typically an OpenGL canvas): 
+applies relevant general state changes, and specific to modelview (which is 
+reset) and to projection (a projection matrix relevant for 2D operations is 
+applied).</td></tr>
+<tr><td valign="top"><a href="#generate_support_modules-0">generate_support_modules/0</a></td><td>To be called by the 'gui_opengl_generated.beam' automatic make target in
+ order to generate, here, a (single) module to share the MyriadGUI OpenGL
+ constants.</td></tr>
+<tr><td valign="top"><a href="#get_component_size-1">get_component_size/1</a></td><td>Returns the size of a component the specified GL type, once it is
+ serialised (typically in a buffer - and regardless of the Erlang datatypes).</td></tr>
+<tr><td valign="top"><a href="#get_debug_context_messages-0">get_debug_context_messages/0</a></td><td>Fetches and removes from the OpenGL debug context all messages found, of
+ any source, type and severity.</td></tr>
+<tr><td valign="top"><a href="#get_debug_context_messages-3">get_debug_context_messages/3</a></td><td>Fetches and removes from the OpenGL debug context all messages found of 
+the specified source, type and severity.</td></tr>
+<tr><td valign="top"><a href="#get_default_canvas_attributes-0">get_default_canvas_attributes/0</a></td><td>Returns a list of the default attributes for the creation of OpenGL 
+canvases.</td></tr>
 <tr><td valign="top"><a href="#get_glxinfo_strings-0">get_glxinfo_strings/0</a></td><td>Returns the list of strings (if any) returned by glxinfo when requesting 
 basic information.</td></tr>
 <tr><td valign="top"><a href="#get_matrix-1">get_matrix/1</a></td><td>Returns the current OpenGL matrix at the top of the specified stack, as a
@@ -360,16 +379,11 @@ basic information.</td></tr>
 <tr><td valign="top"><a href="#get_platform_identifier-0">get_platform_identifier/0</a></td><td>Returns the platform driver identifier.</td></tr>
 <tr><td valign="top"><a href="#get_renderer_name-0">get_renderer_name/0</a></td><td>Returns the name of the OpenGL renderer of the current driver (typically 
 specific to a particular configuration of a hardware platform).</td></tr>
-<tr><td valign="top"><a href="#get_shading_language_version-0">get_shading_language_version/0</a></td><td>Returns the version /release number of the currently used OpenGL 
-shading language.</td></tr>
-<tr><td valign="top"><a href="#get_size-2">get_size/2</a></td><td>Returns the number of bytes used by the specified number of elements of
- the specified GL type.</td></tr>
 <tr><td valign="top"><a href="#get_support_description-0">get_support_description/0</a></td><td>Returns a synthetic string describing the host-local OpenGL support, also
  known as the current GL connection.</td></tr>
 <tr><td valign="top"><a href="#get_supported_extensions-0">get_supported_extensions/0</a></td><td>Returns a list of the supported extensions.</td></tr>
-<tr><td valign="top"><a href="#get_supported_profiles-0">get_supported_profiles/0</a></td><td>Returns a list of the supported OpenGL profiles.</td></tr>
-<tr><td valign="top"><a href="#get_texture_dimensions-1">get_texture_dimensions/1</a></td><td>Returns texture dimensions that are suitable for a (2D) content of the
- specified dimensions.</td></tr>
+<tr><td valign="top"><a href="#get_supported_profile-0">get_supported_profile/0</a></td><td>Returns whether the specified OpenGL profile is supported.</td></tr>
+<tr><td valign="top"><a href="#get_supported_profile-1">get_supported_profile/1</a></td><td>Returns whether the specified OpenGL profile is supported.</td></tr>
 <tr><td valign="top"><a href="#get_unsupported_extensions-1">get_unsupported_extensions/1</a></td><td>Returns a list of the specified OpenGL extensions that are not supported.</td></tr>
 <tr><td valign="top"><a href="#get_unsupported_extensions-2">get_unsupported_extensions/2</a></td><td>Returns a list of the specified OpenGL extensions that are not supported.</td></tr>
 <tr><td valign="top"><a href="#get_vendor-0">get_vendor/0</a></td><td>Returns the identifier of the OpenGL vendor of the current driver, that 
@@ -384,28 +398,26 @@ OpenGL implementation, based on a cached value in ETS.</td></tr>
 a string (if any) returned by the driver.</td></tr>
 <tr><td valign="top"><a href="#init_info_table-0">init_info_table/0</a></td><td>Initialises the OpenGL information ETS table storing (caching) related
  static versions, profiles and extensions.</td></tr>
+<tr><td valign="top"><a href="#insert_debug_context_message-5">insert_debug_context_message/5</a></td><td>Inserts the specified message in the OpenGL debug context.</td></tr>
 <tr><td valign="top"><a href="#interpret_error-1">interpret_error/1</a></td><td>Returns a (textual) diagnosis regarding the specified OpenGL-related
  (including GLU) error.</td></tr>
+<tr><td valign="top"><a href="#is_debug_context_enabled-0">is_debug_context_enabled/0</a></td><td>Tells whether the OpenGL debug context is enabled on this host.</td></tr>
+<tr><td valign="top"><a href="#is_debug_context_supported-0">is_debug_context_supported/0</a></td><td>Tells whether the OpenGL debug context is supported on this host.</td></tr>
 <tr><td valign="top"><a href="#is_extension_supported-1">is_extension_supported/1</a></td><td>Tells whether the specified OpenGL extension is supported.</td></tr>
 <tr><td valign="top"><a href="#is_extension_supported-2">is_extension_supported/2</a></td><td>Tells whether the specified OpenGL extension is supported.</td></tr>
 <tr><td valign="top"><a href="#is_hardware_accelerated-0">is_hardware_accelerated/0</a></td><td>Tells whether OpenGL hardware acceleration is available on this host,
  based on the glxinfo executable.</td></tr>
 <tr><td valign="top"><a href="#is_hardware_accelerated-1">is_hardware_accelerated/1</a></td><td>Tells whether OpenGL hardware acceleration is available on this host,
  based on the specified glxinfo report.</td></tr>
-<tr><td valign="top"><a href="#is_profile_supported-1">is_profile_supported/1</a></td><td>Returns whether the specified OpenGL profile is supported.</td></tr>
 <tr><td valign="top"><a href="#is_version_compatible_with-1">is_version_compatible_with/1</a></td><td>Tells whether the current OpenGL version is compatible with the specified
  one, that is whether the current one matches, or is more recent than, the
  specified one.</td></tr>
 <tr><td valign="top"><a href="#is_version_compatible_with-2">is_version_compatible_with/2</a></td><td>Tells whether the current OpenGL version is compatible with the specified
  one, that is whether the current one matches, or is more recent than, the
  specified one.</td></tr>
-<tr><td valign="top"><a href="#leave_2d_mode-0">leave_2d_mode/0</a></td><td>Leaves the 2D mode, resets modelview and projection matrices.</td></tr>
-<tr><td valign="top"><a href="#load_texture_from_file-1">load_texture_from_file/1</a></td><td>Creates a texture from the specified image file.</td></tr>
-<tr><td valign="top"><a href="#load_texture_from_file-2">load_texture_from_file/2</a></td><td>Creates a texture from the specified image file of the specified type.</td></tr>
-<tr><td valign="top"><a href="#load_texture_from_image-1">load_texture_from_image/1</a></td><td>Creates a texture from the specified image instance.</td></tr>
+<tr><td valign="top"><a href="#leave_2d_mode-0">leave_2d_mode/0</a></td><td>Leaves the 2D mode, resets the modelview and projection matricesn and the
+ GL attributes.</td></tr>
 <tr><td valign="top"><a href="#render_mesh-1">render_mesh/1</a></td><td>Renders the specified mesh in a supposedly appropriate OpenGL context.</td></tr>
-<tr><td valign="top"><a href="#render_texture-2">render_texture/2</a></td><td>Renders the specified texture, at the specified position.</td></tr>
-<tr><td valign="top"><a href="#render_texture-3">render_texture/3</a></td><td>Renders the specified texture, at the specified position.</td></tr>
 <tr><td valign="top"><a href="#secure_info_table-0">secure_info_table/0</a></td><td>Returns the OpenGL information ETS table, possibly after having created
  it if necessary.</td></tr>
 <tr><td valign="top"><a href="#set_context-2">set_context/2</a></td><td>Sets the specified (OpenGL) context to the specified (OpenGL) canvas, so
@@ -413,8 +425,12 @@ a string (if any) returned by the driver.</td></tr>
 <tr><td valign="top"><a href="#set_context_on_shown-2">set_context_on_shown/2</a></td><td>Sets the specified (OpenGL) context to the specified (OpenGL) canvas once 
 its window is shown, so that it applies to the next operations (OpenGL calls) 
 made on it.</td></tr>
+<tr><td valign="top"><a href="#set_debug_context_reporting-4">set_debug_context_reporting/4</a></td><td>Specifies how the reporting of debug messages shall be done in a debug 
+context, by adding a filter based on the specified message source, type and 
+severity.</td></tr>
 <tr><td valign="top"><a href="#set_matrix-1">set_matrix/1</a></td><td>Replaces the current OpenGL matrix (top of the currently selected stack,
  see matrix_stack/0) with the specified matrix4 instance.</td></tr>
+<tr><td valign="top"><a href="#set_polygon_raster_mode-2">set_polygon_raster_mode/2</a></td><td>Set the polygon rasterization mode.</td></tr>
 <tr><td valign="top"><a href="#swap_buffers-1">swap_buffers/1</a></td><td>Swaps the double-buffer of the corresponding OpenGL canvas (making the 
 back-buffer the front-buffer and vice versa), so that the output of the 
 previous OpenGL commands is displayed on this window.</td></tr>
@@ -434,24 +450,69 @@ previous OpenGL commands is displayed on this window.</td></tr>
 <p> </p>
 </div><p>Tells whether the specified OpenGL extensions are (all) supported.</p>
 
-<h3 class="function"><a name="bind_vertex_buffer_object-2">bind_vertex_buffer_object/2</a></h3>
+<h3 class="function"><a name="boolean_to_gl-1">boolean_to_gl/1</a></h3>
 <div class="spec">
-<p><tt>bind_vertex_buffer_object(Vertices::[<a href="#type-point3">point3()</a>], UsageHint::<a href="#type-enum">enum()</a>) -&gt; <a href="#type-vbo_id">vbo_id()</a></tt><br></p>
+<p><tt>boolean_to_gl(X1::boolean()) -&gt; <a href="#type-gl_boolean">gl_boolean()</a></tt><br></p>
 <p> </p>
-</div><p>Binds the specified vertices in a new vertex object buffer (VBO) whose
- identifier is returned.
-</p>
+</div><p>Converts a MyriadGUI hint about buffer usage to OpenGL conventions.</p>
+
+<h3 class="function"><a name="buffer_usage_hint_to_gl-1">buffer_usage_hint_to_gl/1</a></h3>
+<div class="spec">
+<p><tt>buffer_usage_hint_to_gl(UsageHint::<a href="#type-buffer_usage_hint">buffer_usage_hint()</a>) -&gt; <a href="#type-enum">enum()</a></tt><br></p>
+<p> </p>
+</div><p><p>Converts a MyriadGUI hint about buffer usage to OpenGL conventions.</p>
+
+ See https://registry.khronos.org/OpenGL-Refpages/gl4/html/glBufferData.xhtml.</p>
 
 <h3 class="function"><a name="check_error-0">check_error/0</a></h3>
 <div class="spec">
 <p><tt>check_error() -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p><p>Checks whether an OpenGL-related error occurred; if yes, displays 
-information regarding it, and throws an exception.</p>
+</div><p><p>Checks whether an OpenGL-related error occurred previously (since last 
+check, otherwise since OpenGL initialisation); if yes, displays information 
+regarding it, and throws an exception.</p>
 
- Note that an OpenGL must already exist, otherwise a no_gl_context error will
- be triggered.
+ Note that an OpenGL context must already exist and be set as current (see
+ set_context*/2), otherwise a no_gl_context error will be triggered.
 </p>
+
+<h3 class="function"><a name="check_error-1">check_error/1</a></h3>
+<div class="spec">
+<p><tt>check_error(DoThrowOnError::boolean()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Checks whether an OpenGL-related error occurred previously (since last 
+check, otherwise since OpenGL initialisation); if yes, displays information 
+regarding it, and throws an exception if requested: DoThrowOnError tells 
+whether the detection of an OpenGL shall throw an exception or only output an 
+error message in the console.</p>
+
+ Note that an OpenGL context must already exist and be set as current (see
+ set_context*/2), otherwise a no_gl_context error will be triggered.
+</p>
+
+<h3 class="function"><a name="check_gl_debug_context_error-0">check_gl_debug_context_error/0</a></h3>
+<div class="spec">
+<p><tt>check_gl_debug_context_error() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="check_gl_debug_context_error-1">check_gl_debug_context_error/1</a></h3>
+<div class="spec">
+<p><tt>check_gl_debug_context_error(DoThrowOnError::boolean()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="check_gl_error-0">check_gl_error/0</a></h3>
+<div class="spec">
+<p><tt>check_gl_error() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="check_gl_error-1">check_gl_error/1</a></h3>
+<div class="spec">
+<p><tt>check_gl_error(DoThrowOnError::boolean()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div>
 
 <h3 class="function"><a name="check_requirements-1">check_requirements/1</a></h3>
 <div class="spec">
@@ -467,8 +528,8 @@ information regarding it, and throws an exception.</p>
 <p><tt>check_requirements(MinOpenGLVersion::<a href="#type-two_or_three_digit_version">two_or_three_digit_version()</a>, RequiredProfile::<a href="#type-gl_profile">gl_profile()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p>Checks the OpenGL requirements of this program against the local support,
- regarding the minimum OpenGL version, the required profile; displays an error
- message and throws an exception if a requirement is not met.
+ regarding the minimum OpenGL version and the specified profile; displays an
+ error message and throws an exception if a requirement is not met.
 </p>
 
 <h3 class="function"><a name="check_requirements-3">check_requirements/3</a></h3>
@@ -476,83 +537,15 @@ information regarding it, and throws an exception.</p>
 <p><tt>check_requirements(MinOpenGLVersion::<a href="#type-two_or_three_digit_version">two_or_three_digit_version()</a>, RequiredProfile::<a href="#type-gl_profile">gl_profile()</a>, RequiredExtensions::[<a href="#type-gl_extension">gl_extension()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p>Checks the OpenGL requirements of this program against the local support,
- regarding the minimum OpenGL version, the required profile and extensions;
+ regarding the minimum OpenGL version, the specified profile and extensions;
  displays an error message and throws an exception if a requirement is not met.
-</p>
-
-<h3 class="function"><a name="compile_compute_shader-1">compile_compute_shader/1</a></h3>
-<div class="spec">
-<p><tt>compile_compute_shader(ComputeShaderPath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-compute_shader_id">compute_shader_id()</a></tt><br></p>
-<p> </p>
-</div><p><p>Loads and compiles a compute shader from the specified source file 
-(whose extension is typically .compute.glsl), and returns its identifier.</p>
-
- Will have to be explicitly deleted (with gl:DeleteShader/1) once not useful
- anymore.
-</p>
-
-<h3 class="function"><a name="compile_fragment_shader-1">compile_fragment_shader/1</a></h3>
-<div class="spec">
-<p><tt>compile_fragment_shader(FragmentShaderPath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-fragment_shader_id">fragment_shader_id()</a></tt><br></p>
-<p> </p>
-</div><p><p>Loads and compiles a fragment shader from the specified source file 
-(whose extension is typically fragment.glsl), and returns its identifier.</p>
-
- Will have to be explicitly deleted (with gl:DeleteShader/1) once not useful
- anymore.
-</p>
-
-<h3 class="function"><a name="compile_geometry_shader-1">compile_geometry_shader/1</a></h3>
-<div class="spec">
-<p><tt>compile_geometry_shader(GeometryShaderPath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-geometry_shader_id">geometry_shader_id()</a></tt><br></p>
-<p> </p>
-</div><p><p>Loads and compiles a geometry shader from the specified source file 
-(whose extension is typically .geometry.glsl), and returns its identifier.</p>
-
- Will have to be explicitly deleted (with gl:DeleteShader/1) once not useful
- anymore.
-</p>
-
-<h3 class="function"><a name="compile_tessellation_control_shader-1">compile_tessellation_control_shader/1</a></h3>
-<div class="spec">
-<p><tt>compile_tessellation_control_shader(TessCtrlShaderPath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-tessellation_control_shader_id">tessellation_control_shader_id()</a></tt><br></p>
-<p> </p>
-</div><p><p>Loads and compiles a tessellation control shader from the specified 
-source file (whose extension is typically .tess-ctrl.glsl), and returns its 
-identifier.</p>
-
- Will have to be explicitly deleted (with gl:DeleteShader/1) once not useful
- anymore.
-</p>
-
-<h3 class="function"><a name="compile_tessellation_evaluation_shader-1">compile_tessellation_evaluation_shader/1</a></h3>
-<div class="spec">
-<p><tt>compile_tessellation_evaluation_shader(TessEvalShaderPath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-tessellation_evaluation_shader_id">tessellation_evaluation_shader_id()</a></tt><br></p>
-<p> </p>
-</div><p><p>Loads and compiles a tessellation evaluation shader from the specified 
-source file (whose extension is typically .tess-eval.glsl), and returns its 
-identifier.</p>
-
- Will have to be explicitly deleted (with gl:DeleteShader/1) once not useful
- anymore.
-</p>
-
-<h3 class="function"><a name="compile_vertex_shader-1">compile_vertex_shader/1</a></h3>
-<div class="spec">
-<p><tt>compile_vertex_shader(VertexShaderPath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-vertex_shader_id">vertex_shader_id()</a></tt><br></p>
-<p> </p>
-</div><p><p>Loads and compiles a vertex shader from the specified source file (whose 
-extension is typically .vertex.glsl), and returns its identifier.</p>
-
- Will have to be explicitly deleted (with gl:DeleteShader/1) once not useful
- anymore.
 </p>
 
 <h3 class="function"><a name="create_canvas-1">create_canvas/1</a></h3>
 <div class="spec">
 <p><tt>create_canvas(Parent::<a href="#type-window">window()</a>) -&gt; <a href="#type-gl_canvas">gl_canvas()</a></tt><br></p>
 <p> </p>
-</div><p><p>Creates and returns an OpenGL canvas with specified parent widget and 
+</div><p><p>Creates and returns an OpenGL canvas with the specified parent widget and 
 default settings: RGBA and double-buffering.</p>
 
  Note: not to be mixed up with gui:create_canvas/1, which creates a basic
@@ -563,14 +556,17 @@ default settings: RGBA and double-buffering.</p>
 <div class="spec">
 <p><tt>create_canvas(Parent::<a href="#type-window">window()</a>, Opts::[<a href="#type-gl_canvas_option">gl_canvas_option()</a>]) -&gt; <a href="#type-gl_canvas">gl_canvas()</a></tt><br></p>
 <p> </p>
-</div><p><p>Creates and returns an OpenGL canvas with specified parent widget and 
+</div><p><p>Creates and returns an OpenGL canvas with the specified parent widget and 
 options.</p>
 
- <p>If the device context attributes are not set, following default apply: RGBA 
-and double-buffering.</p>
+ <p>If the device context attributes are not set (i.e. no gl_attributes entry), 
+following defaults apply: RGBA and double-buffering.</p>
 
- Note: not to be mixed up with gui:create_canvas/1, which creates a basic
- (non-OpenGL) canvas.
+ <p>Note: not to be mixed up with gui:create_canvas/1, which creates a basic 
+(non-OpenGL) canvas.</p>
+
+ Note also that using the use_core_profile attribute will result in also
+ requesting OpenGL at least version 3.0.
 </p>
 
 <h3 class="function"><a name="create_context-1">create_context/1</a></h3>
@@ -582,82 +578,113 @@ and double-buffering.</p>
  OpenGL command can be issued yet).
 </p>
 
-<h3 class="function"><a name="create_texture_from_text-4">create_texture_from_text/4</a></h3>
+<h3 class="function"><a name="debug_context_message_to_string-1">debug_context_message_to_string/1</a></h3>
 <div class="spec">
-<p><tt>create_texture_from_text(Text::<a href="#type-ustring">ustring()</a>, Font::<a href="#type-font">font()</a>, Brush::<a href="#type-brush">brush()</a>, Color::<a href="#type-color_by_decimal">color_by_decimal()</a>) -&gt; <a href="#type-texture">texture()</a></tt><br></p>
+<p><tt>debug_context_message_to_string(X1::<a href="#type-debug_context_message">debug_context_message()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
 <p> </p>
-</div><p>Creates a texture corresponding to the specified text, rendered with
- specified font, brush and color.
+</div><p>Returns a textual description of the specified debug context message.</p>
+
+<h3 class="function"><a name="debug_context_messages_to_string-1">debug_context_messages_to_string/1</a></h3>
+<div class="spec">
+<p><tt>debug_context_messages_to_string(Msgs::[<a href="#type-debug_context_message">debug_context_message()</a>]) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of the specified debug context messages.</p>
+
+<h3 class="function"><a name="disable_all_debug_context_reporting-0">disable_all_debug_context_reporting/0</a></h3>
+<div class="spec">
+<p><tt>disable_all_debug_context_reporting() -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Disables all reporting regarding the OpenGL debug context.</p>
+
+<h3 class="function"><a name="disable_debug_context_reporting-3">disable_debug_context_reporting/3</a></h3>
+<div class="spec">
+<p><tt>disable_debug_context_reporting(TargetSource::<a href="#type-debug_source">debug_source()</a>, MessageType::<a href="#type-debug_type">debug_type()</a>, MessageSeverity::<a href="#type-debug_severity">debug_severity()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Specifies how the reporting of debug messages in a debug context shall be 
+done, by disabling the specified message source, type and severity.</p>
+
+ Although debug messages may be enabled in a non-debug context, the quantity
+ and detail of such messages may be substantially inferior to those in a debug
+ context. In particular, a valid implementation of the debug message queue in a
+ non-debug context may produce no messages at all.
 </p>
 
-<h3 class="function"><a name="create_texture_from_text-5">create_texture_from_text/5</a></h3>
+<h3 class="function"><a name="enable_all_debug_context_reporting-0">enable_all_debug_context_reporting/0</a></h3>
 <div class="spec">
-<p><tt>create_texture_from_text(Text::<a href="#type-ustring">ustring()</a>, Font::<a href="#type-font">font()</a>, Brush::<a href="#type-brush">brush()</a>, Color::<a href="#type-color_by_decimal">color_by_decimal()</a>, Flip::boolean()) -&gt; <a href="#type-texture">texture()</a></tt><br></p>
+<p><tt>enable_all_debug_context_reporting() -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p>Creates a texture corresponding to the specified text, rendered with
- specified font, brush and color, flipping it vertically if requested.
+</div><p>Enables all reporting regarding the OpenGL debug context.</p>
+
+<h3 class="function"><a name="enable_debug_context_reporting-3">enable_debug_context_reporting/3</a></h3>
+<div class="spec">
+<p><tt>enable_debug_context_reporting(TargetSource::<a href="#type-debug_source">debug_source()</a>, MessageType::<a href="#type-debug_type">debug_type()</a>, MessageSeverity::<a href="#type-debug_severity">debug_severity()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Specifies how the reporting of debug messages in a debug context shall be 
+done, by enabling the specified message source, type and severity.</p>
+
+ Although debug messages may be enabled in a non-debug context, the quantity
+ and detail of such messages may be substantially inferior to those in a debug
+ context. In particular, a valid implementation of the debug message queue in a
+ non-debug context may produce no messages at all.
 </p>
-
-<h3 class="function"><a name="delete_texture-1">delete_texture/1</a></h3>
-<div class="spec">
-<p><tt>delete_texture(Texture::<a href="#type-texture">texture()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
-<p> </p>
-</div><p>Deletes the specified texture.</p>
-
-<h3 class="function"><a name="delete_textures-1">delete_textures/1</a></h3>
-<div class="spec">
-<p><tt>delete_textures(Textures::[<a href="#type-texture">texture()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
-<p> </p>
-</div><p>Deletes the specified textures.</p>
 
 <h3 class="function"><a name="enter_2d_mode-1">enter_2d_mode/1</a></h3>
 <div class="spec">
 <p><tt>enter_2d_mode(Window::<a href="#type-window">window()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p><p>Enters in 2D mode for the specified window: applies relevant general 
-state changes, and specific to modelview (which is reset) and to projection (a 
-projection matrix relevant for 2D operations is applied).</p>
+</div><p><p>Enters in 2D mode for the specified window (typically an OpenGL canvas): 
+applies relevant general state changes, and specific to modelview (which is 
+reset) and to projection (a projection matrix relevant for 2D operations is 
+applied).</p>
 
  Refer to https://myriad.esperide.org/#2d-referential for more details.
 </p>
 
-<h3 class="function"><a name="generate_program-1">generate_program/1</a></h3>
+<h3 class="function"><a name="generate_support_modules-0">generate_support_modules/0</a></h3>
 <div class="spec">
-<p><tt>generate_program(ShaderIds::[<a href="#type-shader_id">shader_id()</a>]) -&gt; <a href="#type-program_id">program_id()</a></tt><br></p>
+<p><tt>generate_support_modules() -&gt; no_return()</tt><br></p>
 <p> </p>
-</div><p><p>Generates a GLSL program from the (already loaded and compiled) shaders 
-whose identifiers are specified, with no user-specified attributes defined: 
-links these shaders in a corresponding program, and returns its identifier.</p>
-
- Deletes the specified shaders once the program is generated.
+</div><p>To be called by the 'gui_opengl_generated.beam' automatic make target in
+ order to generate, here, a (single) module to share the MyriadGUI OpenGL
+ constants.
 </p>
 
-<h3 class="function"><a name="generate_program-2">generate_program/2</a></h3>
+<h3 class="function"><a name="get_component_size-1">get_component_size/1</a></h3>
 <div class="spec">
-<p><tt>generate_program(ShaderIds::[<a href="#type-shader_id">shader_id()</a>], UserAttributes::[<a href="#type-user_attribute">user_attribute()</a>]) -&gt; <a href="#type-program_id">program_id()</a></tt><br></p>
+<p><tt>get_component_size(GLType::<a href="#type-gl_base_type">gl_base_type()</a>) -&gt; <a href="#type-byte_size">byte_size()</a></tt><br></p>
 <p> </p>
-</div><p><p>Generates a GLSL program from the (already loaded and compiled) shaders 
-whose identifiers are specified, with user-specified attributes: links these 
-shaders in a corresponding program, and returns its identifier.</p>
-
- Deletes the specified shaders once the program is generated.
+</div><p>Returns the size of a component the specified GL type, once it is
+ serialised (typically in a buffer - and regardless of the Erlang datatypes).
 </p>
 
-<h3 class="function"><a name="generate_program_from-2">generate_program_from/2</a></h3>
+<h3 class="function"><a name="get_debug_context_messages-0">get_debug_context_messages/0</a></h3>
 <div class="spec">
-<p><tt>generate_program_from(VertexShaderPath::<a href="#type-any_file_path">any_file_path()</a>, FragmentShaderPath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-program_id">program_id()</a></tt><br></p>
+<p><tt>get_debug_context_messages() -&gt; [<a href="#type-debug_context_message">debug_context_message()</a>]</tt><br></p>
 <p> </p>
-</div><p>Generates a GLSL program from the shaders whose source files are
- specified: loads and compiles the specified vertex and fragment shaders (with
- no user-specified attributes defined), links them in a corresponding program,
- and returns its identifier.
+</div><p>Fetches and removes from the OpenGL debug context all messages found, of
+ any source, type and severity.
 </p>
 
-<h3 class="function"><a name="generate_texture_id-0">generate_texture_id/0</a></h3>
+<h3 class="function"><a name="get_debug_context_messages-3">get_debug_context_messages/3</a></h3>
 <div class="spec">
-<p><tt>generate_texture_id() -&gt; <a href="#type-texture_id">texture_id()</a></tt><br></p>
+<p><tt>get_debug_context_messages(MsgSource::<a href="#type-debug_source">debug_source()</a>, MsgType::<a href="#type-debug_type">debug_type()</a>, MsgSeverity::<a href="#type-debug_severity">debug_severity()</a>) -&gt; [<a href="#type-debug_context_message">debug_context_message()</a>]</tt><br></p>
 <p> </p>
-</div><p>Returns a new, unique, texture identifier.</p>
+</div><p><p>Fetches and removes from the OpenGL debug context all messages found of 
+the specified source, type and severity.</p>
+
+ To sort the returned messages by application identifiers, just use
+ <code>lists:sort(_Index=1, DbcContextMsgs)</code>.
+</p>
+
+<h3 class="function"><a name="get_default_canvas_attributes-0">get_default_canvas_attributes/0</a></h3>
+<div class="spec">
+<p><tt>get_default_canvas_attributes() -&gt; [<a href="#type-device_context_attribute">device_context_attribute()</a>]</tt><br></p>
+<p> </p>
+</div><p><p>Returns a list of the default attributes for the creation of OpenGL 
+canvases.</p>
+
+ To be used with create_canvas/*.
+</p>
 
 <h3 class="function"><a name="get_glxinfo_strings-0">get_glxinfo_strings/0</a></h3>
 <div class="spec">
@@ -702,24 +729,6 @@ specific to a particular configuration of a hardware platform).</p>
  Only available if a current OpenGL context is set.
 </p>
 
-<h3 class="function"><a name="get_shading_language_version-0">get_shading_language_version/0</a></h3>
-<div class="spec">
-<p><tt>get_shading_language_version() -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
-<p> </p>
-</div><p><p>Returns the version /release number of the currently used OpenGL 
-shading language.</p>
-
- Example: "4.60 FOOBAR".
-</p>
-
-<h3 class="function"><a name="get_size-2">get_size/2</a></h3>
-<div class="spec">
-<p><tt>get_size(Count::<a href="#type-count">count()</a>, GLType::<a href="#type-gl_base_type">gl_base_type()</a>) -&gt; <a href="#type-byte_size">byte_size()</a></tt><br></p>
-<p> </p>
-</div><p>Returns the number of bytes used by the specified number of elements of
- the specified GL type.
-</p>
-
 <h3 class="function"><a name="get_support_description-0">get_support_description/0</a></h3>
 <div class="spec">
 <p><tt>get_support_description() -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
@@ -734,22 +743,31 @@ shading language.</p>
 <p> </p>
 </div><p><p>Returns a list of the supported extensions.</p>
 
- Ex: 390 extensions like 'GL_AMD_multi_draw_indirect',
- 'GL_AMD_seamless_cubemap_per_texture', etc.
+ For example 390 extensions like 'GL_AMD_multi_draw_indirect',
+ 'GL_AMD_seamless_cubemap_per_texture', etc. may be reported by modern
+ cards/drivers.
 </p>
 
-<h3 class="function"><a name="get_supported_profiles-0">get_supported_profiles/0</a></h3>
+<h3 class="function"><a name="get_supported_profile-0">get_supported_profile/0</a></h3>
 <div class="spec">
-<p><tt>get_supported_profiles() -&gt; [<a href="#type-gl_profile">gl_profile()</a>]</tt><br></p>
+<p><tt>get_supported_profile() -&gt; <a href="#type-gl_profile">gl_profile()</a></tt><br></p>
 <p> </p>
-</div><p>Returns a list of the supported OpenGL profiles.</p>
+</div><p><p>Returns whether the specified OpenGL profile is supported.</p>
 
-<h3 class="function"><a name="get_texture_dimensions-1">get_texture_dimensions/1</a></h3>
+ <p>Only supported on GL contexts with version 3.0 and above.</p>
+
+ Only available if a current OpenGL context is set.
+</p>
+
+<h3 class="function"><a name="get_supported_profile-1">get_supported_profile/1</a></h3>
 <div class="spec">
-<p><tt>get_texture_dimensions(Dims::<a href="#type-dimensions">dimensions()</a>) -&gt; <a href="#type-dimensions">dimensions()</a></tt><br></p>
+<p><tt>get_supported_profile(Tid::<a href="#type-info_table_id">info_table_id()</a>) -&gt; <a href="#type-gl_profile">gl_profile()</a></tt><br></p>
 <p> </p>
-</div><p>Returns texture dimensions that are suitable for a (2D) content of the
- specified dimensions.
+</div><p><p>Returns whether the specified OpenGL profile is supported.</p>
+
+ <p>Only supported on GL contexts with version 3.0 and above.</p>
+
+ Only available if a current OpenGL context is set.
 </p>
 
 <h3 class="function"><a name="get_unsupported_extensions-1">get_unsupported_extensions/1</a></h3>
@@ -825,7 +843,8 @@ convenient).</p>
 </div><p><p>Returns the full version of the currently used OpenGL implementation, as 
 a string (if any) returned by the driver.</p>
 
- <p>Example: <code>"4.6.0 FOOBAR 495.44"</code>.</p>
+ <p>Example: <code>"4.6.0 FOOBAR 495.44"</code>, or <code>"4.6 (Compatibility Profile) Mesa
+ 23.0.2"</code>.</p>
 
  Only available if a current OpenGL context is set.
 </p>
@@ -838,12 +857,37 @@ a string (if any) returned by the driver.</p>
  static versions, profiles and extensions.
 </p>
 
+<h3 class="function"><a name="insert_debug_context_message-5">insert_debug_context_message/5</a></h3>
+<div class="spec">
+<p><tt>insert_debug_context_message(MsgId::<a href="#type-debug_message_id">debug_message_id()</a>, Msg::<a href="#type-ustring">ustring()</a>, MsgSeverity::<a href="#type-actual_debug_severity">actual_debug_severity()</a>, MsgSource::<a href="#type-actual_debug_source">actual_debug_source()</a>, MsgType::<a href="#type-actual_debug_type">actual_debug_type()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Inserts the specified message in the OpenGL debug context.</p>
+
+ User-specified messages shall be, in terms of source, either 'application' or
+ 'third_party'.
+</p>
+
 <h3 class="function"><a name="interpret_error-1">interpret_error/1</a></h3>
 <div class="spec">
 <p><tt>interpret_error(OtherCode::<a href="#type-any_error">any_error()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
 <p> </p>
 </div><p>Returns a (textual) diagnosis regarding the specified OpenGL-related
  (including GLU) error.
+</p>
+
+<h3 class="function"><a name="is_debug_context_enabled-0">is_debug_context_enabled/0</a></h3>
+<div class="spec">
+<p><tt>is_debug_context_enabled() -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Tells whether the OpenGL debug context is enabled on this host.</p>
+
+<h3 class="function"><a name="is_debug_context_supported-0">is_debug_context_supported/0</a></h3>
+<div class="spec">
+<p><tt>is_debug_context_supported() -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p><p>Tells whether the OpenGL debug context is supported on this host.</p>
+
+ Always true with OpenGL version 4.3 or higher.
 </p>
 
 <h3 class="function"><a name="is_extension_supported-1">is_extension_supported/1</a></h3>
@@ -874,19 +918,6 @@ a string (if any) returned by the driver.</p>
  based on the specified glxinfo report.
 </p>
 
-<h3 class="function"><a name="is_profile_supported-1">is_profile_supported/1</a></h3>
-<div class="spec">
-<p><tt>is_profile_supported(Other::<a href="#type-gl_profile">gl_profile()</a>) -&gt; boolean()</tt><br></p>
-<p> </p>
-</div><p><p>Returns whether the specified OpenGL profile is supported.</p>
-
- <p>Only supported on GL contexts with version 3.0 and above.</p>
-
- <p>Only available if a current OpenGL context is set.</p>
-
- Note: the current implementation may not be relevant.
-</p>
-
 <h3 class="function"><a name="is_version_compatible_with-1">is_version_compatible_with/1</a></h3>
 <div class="spec">
 <p><tt>is_version_compatible_with(TargetVersion::<a href="#type-two_or_three_digit_version">two_or_three_digit_version()</a>) -&gt; boolean()</tt><br></p>
@@ -909,30 +940,8 @@ a string (if any) returned by the driver.</p>
 <div class="spec">
 <p><tt>leave_2d_mode() -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p>Leaves the 2D mode, resets modelview and projection matrices.</p>
-
-<h3 class="function"><a name="load_texture_from_file-1">load_texture_from_file/1</a></h3>
-<div class="spec">
-<p><tt>load_texture_from_file(ImagePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-texture">texture()</a></tt><br></p>
-<p> </p>
-</div><p><p>Creates a texture from the specified image file.</p>
-
- Prefer load_texture_from_file/2 if applicable.
-</p>
-
-<h3 class="function"><a name="load_texture_from_file-2">load_texture_from_file/2</a></h3>
-<div class="spec">
-<p><tt>load_texture_from_file(ImageFormat::<a href="#type-image_format">image_format()</a>, ImagePath::<a href="#type-any_file_path">any_file_path()</a>) -&gt; <a href="#type-texture">texture()</a></tt><br></p>
-<p> </p>
-</div><p>Creates a texture from the specified image file of the specified type.</p>
-
-<h3 class="function"><a name="load_texture_from_image-1">load_texture_from_image/1</a></h3>
-<div class="spec">
-<p><tt>load_texture_from_image(Image::<a href="#type-image">image()</a>) -&gt; <a href="#type-texture">texture()</a></tt><br></p>
-<p> </p>
-</div><p><p>Creates a texture from the specified image instance.</p>
-
- The image instance is safe to be deallocated afterwards.
+</div><p>Leaves the 2D mode, resets the modelview and projection matricesn and the
+ GL attributes.
 </p>
 
 <h3 class="function"><a name="render_mesh-1">render_mesh/1</a></h3>
@@ -943,18 +952,6 @@ a string (if any) returned by the driver.</p>
 
  See gui_opengl_test.erl for an usage example.
 </p>
-
-<h3 class="function"><a name="render_texture-2">render_texture/2</a></h3>
-<div class="spec">
-<p><tt>render_texture(Texture::<a href="#type-texture">texture()</a>, Pos::<a href="#type-position">position()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
-<p> </p>
-</div><p>Renders the specified texture, at the specified position.</p>
-
-<h3 class="function"><a name="render_texture-3">render_texture/3</a></h3>
-<div class="spec">
-<p><tt>render_texture(Texture::<a href="#type-texture">texture()</a>, Xp::<a href="#type-coordinate">coordinate()</a>, Yp::<a href="#type-coordinate">coordinate()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
-<p> </p>
-</div><p>Renders the specified texture, at the specified position.</p>
 
 <h3 class="function"><a name="secure_info_table-0">secure_info_table/0</a></h3>
 <div class="spec">
@@ -984,6 +981,20 @@ made on it.</p>
  gui_opengl_test.erl for an example thereof.
 </p>
 
+<h3 class="function"><a name="set_debug_context_reporting-4">set_debug_context_reporting/4</a></h3>
+<div class="spec">
+<p><tt>set_debug_context_reporting(TargetSource::<a href="#type-debug_source">debug_source()</a>, MessageType::<a href="#type-debug_type">debug_type()</a>, MessageSeverity::<a href="#type-debug_severity">debug_severity()</a>, DebugSelector::<a href="#type-debug_selector">debug_selector()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Specifies how the reporting of debug messages shall be done in a debug 
+context, by adding a filter based on the specified message source, type and 
+severity.</p>
+
+ Although debug messages may be enabled in a non-debug context, the quantity
+ and detail of such messages may be substantially inferior to those in a debug
+ context. In particular, a valid implementation of the debug message queue in a
+ non-debug context may produce no messages at all.
+</p>
+
 <h3 class="function"><a name="set_matrix-1">set_matrix/1</a></h3>
 <div class="spec">
 <p><tt>set_matrix(M::<a href="#type-matrix4">matrix4()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
@@ -991,6 +1002,12 @@ made on it.</p>
 </div><p>Replaces the current OpenGL matrix (top of the currently selected stack,
  see matrix_stack/0) with the specified matrix4 instance.
 </p>
+
+<h3 class="function"><a name="set_polygon_raster_mode-2">set_polygon_raster_mode/2</a></h3>
+<div class="spec">
+<p><tt>set_polygon_raster_mode(FacingMode::<a href="#type-polygon_facing_mode">polygon_facing_mode()</a>, RasterMode::<a href="#type-rasterization_mode">rasterization_mode()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Set the polygon rasterization mode.</p>
 
 <h3 class="function"><a name="swap_buffers-1">swap_buffers/1</a></h3>
 <div class="spec">

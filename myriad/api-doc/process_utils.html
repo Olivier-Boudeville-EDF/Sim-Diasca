@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module process_utils</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module process_utils</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various convenient facilities regarding <b>(Erlang)
+ processes</b>.
+
+
+<h2><a name="description">Description</a></h2><p>Gathering of various convenient facilities regarding <b>(Erlang)
+ processes</b>.</p>
+
+ See process_utils_test.erl for the corresponding test.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-any_string">any_string()</a></h3>
+<p><tt>any_string() = <a href="text_utils.html#type-any_string">text_utils:any_string()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-count">count()</a></h3>
+<p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-milliseconds">milliseconds()</a></h3>
+<p><tt>milliseconds() = <a href="time_utils.html#type-milliseconds">time_utils:milliseconds()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-monitor_pid">monitor_pid()</a></h3>
+<p><tt>monitor_pid() = pid()</tt></p>
+<p> The PID of a monitoring process.</p>
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#spawn_message_queue_monitor-1">spawn_message_queue_monitor/1</a></td><td>Spawns a process monitoring the length of the message queue of the 
+specified process: returns the PID of an helper process that displays a 
+warning message if, during a periodic sampling each two seconds, this length 
+is above 1000.</td></tr>
+<tr><td valign="top"><a href="#spawn_message_queue_monitor-2">spawn_message_queue_monitor/2</a></td><td>Spawns a process monitoring the length of the message queue of the 
+specified process: returns the PID of an helper process that displays a 
+warning message (with any description thereof supplied) if, during a periodic 
+sampling each two seconds, this length is above 1000.</td></tr>
+<tr><td valign="top"><a href="#spawn_message_queue_monitor-4">spawn_message_queue_monitor/4</a></td><td>Spawns a process monitoring the length of the message queue of the 
+specified process: returns the PID of an helper process that displays a 
+warning message (with any description thereof supplied) if, during a periodic 
+sampling, this length is above the specified threshold.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="spawn_message_queue_monitor-1">spawn_message_queue_monitor/1</a></h3>
+<div class="spec">
+<p><tt>spawn_message_queue_monitor(MonitoredPid::pid()) -&gt; <a href="#type-monitor_pid">monitor_pid()</a></tt><br></p>
+<p> </p>
+</div><p><p>Spawns a process monitoring the length of the message queue of the 
+specified process: returns the PID of an helper process that displays a 
+warning message if, during a periodic sampling each two seconds, this length 
+is above 1000.</p>
+
+ The 'terminate' atom shall be sent to the returned PID in order to terminate
+ the corresponding monitoring process.
+</p>
+
+<h3 class="function"><a name="spawn_message_queue_monitor-2">spawn_message_queue_monitor/2</a></h3>
+<div class="spec">
+<p><tt>spawn_message_queue_monitor(MonitoredPid::pid(), MaybeMonitoredProcessDesc::<a href="#type-maybe">maybe</a>(<a href="#type-any_string">any_string()</a>)) -&gt; <a href="#type-monitor_pid">monitor_pid()</a></tt><br></p>
+<p> </p>
+</div><p><p>Spawns a process monitoring the length of the message queue of the 
+specified process: returns the PID of an helper process that displays a 
+warning message (with any description thereof supplied) if, during a periodic 
+sampling each two seconds, this length is above 1000.</p>
+
+ The 'terminate' atom shall be sent to the returned PID in order to terminate
+ the corresponding monitoring process.
+</p>
+
+<h3 class="function"><a name="spawn_message_queue_monitor-4">spawn_message_queue_monitor/4</a></h3>
+<div class="spec">
+<p><tt>spawn_message_queue_monitor(MonitoredPid::pid(), MaybeMonitoredProcessDesc::<a href="#type-maybe">maybe</a>(<a href="#type-any_string">any_string()</a>), MsgThreshold::<a href="#type-count">count()</a>, SamplingPeriod::<a href="#type-milliseconds">milliseconds()</a>) -&gt; <a href="#type-monitor_pid">monitor_pid()</a></tt><br></p>
+<p> </p>
+</div><p><p>Spawns a process monitoring the length of the message queue of the 
+specified process: returns the PID of an helper process that displays a 
+warning message (with any description thereof supplied) if, during a periodic 
+sampling, this length is above the specified threshold.</p>
+
+ The 'terminate' atom shall be sent to the returned PID in order to terminate
+ the corresponding monitoring process.
+</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

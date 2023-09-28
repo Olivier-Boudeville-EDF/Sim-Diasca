@@ -73,7 +73,7 @@
 
 <h3 class="typedecl"><a name="type-json_term">json_term()</a></h3>
 <p><tt>json_term() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(<a href="#type-decoded_json_key">decoded_json_key()</a>, <a href="#type-decoded_json_value">decoded_json_value()</a>) | integer() | float() | binary() | atom() | term()</tt></p>
-<p> An (Erlang) term corresponding to a JSON document (ex: a decoded one, or one
+<p> An (Erlang) term corresponding to a JSON document (e.g. a decoded one, or one
  not encoded yet), at least often a map whose keys are binary strings and whose
  values are json_term() or basic types such as integers, floats, strings,
  etc.).</p>
@@ -342,7 +342,7 @@ available).</p>
 </div><p><p>Converts (encodes) specified JSON-compliant Erlang term into a JSON 
 counterpart element, using the looked-up default JSON backend for that.</p>
 
- Ex: <code>json_utils:to_json( #{
+ For example <code>json_utils:to_json( #{
    &lt;&lt;"protected"&gt;&gt; =&gt; Protected,
    &lt;&lt;"payload"&gt;&gt; =&gt; Payload,
    &lt;&lt;"signature"&gt;&gt; =&gt; EncSigned} )</code>.
@@ -355,7 +355,7 @@ counterpart element, using the looked-up default JSON backend for that.</p>
 </div><p><p>Converts (encodes) specified Erlang term into a JSON counterpart element, 
 using directly the JSON backend designated by the specified parser state.</p>
 
- Ex: <code>json_utils:to_json(#{
+ For example <code>json_utils:to_json(#{
    &lt;&lt;"protected"&gt;&gt; =&gt; Protected,
    &lt;&lt;"payload"&gt;&gt; =&gt; Payload,
    &lt;&lt;"signature"&gt;&gt; =&gt; EncSigned }, _ParserName=jsx )</code>.
@@ -368,7 +368,7 @@ using directly the JSON backend designated by the specified parser state.</p>
 </div><p><p>Converts (encodes) specified JSON-compliant Erlang term into a JSON file, 
 using the looked-up default JSON backend for that.</p>
 
- Ex: <code>json_utils:to_json_file(#{
+ For example <code>json_utils:to_json_file(#{
    &lt;&lt;"protected"&gt;&gt; =&gt; Protected,
    &lt;&lt;"payload"&gt;&gt; =&gt; Payload,
    &lt;&lt;"signature"&gt;&gt; =&gt; EncSigned}, TargetJsonFilePath )</code>.
@@ -381,7 +381,7 @@ using the looked-up default JSON backend for that.</p>
 </div><p><p>Converts (encodes) specified JSON-compliant Erlang term into a JSON file, 
 using the specified JSON backend for that.</p>
 
- Ex: <code>json_utils:to_json_file(#{
+ For example <code>json_utils:to_json_file(#{
    &lt;&lt;"protected"&gt;&gt; =&gt; Protected,
    &lt;&lt;"payload"&gt;&gt; =&gt; Payload,
    &lt;&lt;"signature"&gt;&gt; =&gt; EncSigned}, TargetJsonFilePath, ParserState )</code>.

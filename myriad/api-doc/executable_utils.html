@@ -25,7 +25,7 @@ for the management of the shells and command lines.</p>
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-command_line_argument">command_line_argument()</a></h3>
-<p><tt>command_line_argument() = <a href="system_utils.html#type-command_line_argument">system_utils:command_line_argument()</a></tt></p>
+<p><tt>command_line_argument() = <a href="shell_utils.html#type-command_line_argument">shell_utils:command_line_argument()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-command_output">command_output()</a></h3>
@@ -61,21 +61,19 @@ for the management of the shells and command lines.</p>
 directory (specified as a plain string).</td></tr>
 <tr><td valign="top"><a href="#can_generate_png_from_graph-0">can_generate_png_from_graph/0</a></td><td>Returns whether a PNG file can be generated from a graph file: either
  confirms it, or returns an hint why not.</td></tr>
-<tr><td valign="top"><a href="#display_pdf_file-1">display_pdf_file/1</a></td><td>Displays (without blocking) to the user the specified PNG, using an 
+<tr><td valign="top"><a href="#display_pdf_file-1">display_pdf_file/1</a></td><td>Displays (without blocking) to the user the specified PNG file, using an 
 external viewer.</td></tr>
 <tr><td valign="top"><a href="#display_png_file-1">display_png_file/1</a></td><td>Displays (without blocking) to the user the specified PNG, using an 
 external viewer.</td></tr>
 <tr><td valign="top"><a href="#display_text_file-1">display_text_file/1</a></td><td>Displays, with blocking, a text file.</td></tr>
 <tr><td valign="top"><a href="#display_wide_text_file-2">display_wide_text_file/2</a></td><td>Displays, with blocking, a wide text file.</td></tr>
-<tr><td valign="top"><a href="#find_executable-1">find_executable/1</a></td><td>Finds specified executable program, whose name is specified as a string 
-(ex: "gcc") in the current user PATH.</td></tr>
+<tr><td valign="top"><a href="#find_executable-1">find_executable/1</a></td><td>Finds the specified executable program, whose name is specified as a 
+string (e.g.</td></tr>
 <tr><td valign="top"><a href="#generate_png_from_graph_file-2">generate_png_from_graph_file/2</a></td><td>Generates a PNG file from specified graph file.</td></tr>
 <tr><td valign="top"><a href="#generate_png_from_graph_file-3">generate_png_from_graph_file/3</a></td><td>Generates a PNG image file from specified graph file, that must respect 
 the dot (graphviz) syntax.</td></tr>
-<tr><td valign="top"><a href="#get_current_gnuplot_version-0">get_current_gnuplot_version/0</a></td><td>Returns, as a tuple (ex: {4,2} for the 4.2 version), the gnuplot version
- actually available by default (in the PATH) on this computer.</td></tr>
-<tr><td valign="top"><a href="#get_current_gnuplot_version-1">get_current_gnuplot_version/1</a></td><td>Returns, as a tuple (ex: {4,2} for the 4.2 version), the gnuplot version
- actually available on this computer.</td></tr>
+<tr><td valign="top"><a href="#get_current_gnuplot_version-0">get_current_gnuplot_version/0</a></td><td>Returns, as a tuple (e.g.</td></tr>
+<tr><td valign="top"><a href="#get_current_gnuplot_version-1">get_current_gnuplot_version/1</a></td><td>Returns, as a tuple (e.g.</td></tr>
 <tr><td valign="top"><a href="#get_default_audio_player_info-0">get_default_audio_player_info/0</a></td><td>Returns the name and absolute path to the default audio player.</td></tr>
 <tr><td valign="top"><a href="#get_default_audio_player_name-0">get_default_audio_player_name/0</a></td><td>Returns the name of the default audio player.</td></tr>
 <tr><td valign="top"><a href="#get_default_audio_player_options-1">get_default_audio_player_options/1</a></td><td>Returns a list of the command-line options suitable for the specified
@@ -126,11 +124,10 @@ namely 'OtpErlang.jar'.</td></tr>
 <tr><td valign="top"><a href="#get_ssh_mute_option-0">get_ssh_mute_option/0</a></td><td>Returns a string to be inserted into a command-line call to ssh/scp so 
 that it can run as much as possible non-interactively.</td></tr>
 <tr><td valign="top"><a href="#is_batch-0">is_batch/0</a></td><td>Tells whether the program is run in batch mode.</td></tr>
-<tr><td valign="top"><a href="#lookup_executable-1">lookup_executable/1</a></td><td>Looks-up specified executable program, whose name is specified as a 
-string (ex: "gcc") in the current user PATH.</td></tr>
-<tr><td valign="top"><a href="#lookup_executable-2">lookup_executable/2</a></td><td>Looks-up specified executable program, whose name is specified as a 
-string (ex: "gcc") in the current user PATH, augmented of the specified list 
-of directories (whose existence is not checked), placed at first position.</td></tr>
+<tr><td valign="top"><a href="#lookup_executable-1">lookup_executable/1</a></td><td>Looks-up the specified executable program, whose name is specified as a 
+string (e.g.</td></tr>
+<tr><td valign="top"><a href="#lookup_executable-2">lookup_executable/2</a></td><td>Looks-up the specified executable program, whose name is specified as a 
+string (e.g.</td></tr>
 <tr><td valign="top"><a href="#playback_audio_file-1">playback_audio_file/1</a></td><td>Plays the specified audio file, in a non-blocking (in the background) 
 way.</td></tr>
 <tr><td valign="top"><a href="#playback_audio_file-2">playback_audio_file/2</a></td><td>Plays the specified audio file, either in a blocking or in a non-blocking 
@@ -161,7 +158,7 @@ directory (specified as a plain string)</p>
 <div class="spec">
 <p><tt>display_pdf_file(PDFFilename::<a href="#type-file_path">file_path()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p><p>Displays (without blocking) to the user the specified PNG, using an 
+</div><p><p>Displays (without blocking) to the user the specified PNG file, using an 
 external viewer.</p>
 
  <p>Returns the text output by the tool (if any).</p>
@@ -207,11 +204,12 @@ external viewer.</p>
 <div class="spec">
 <p><tt>find_executable(ExecutableName::<a href="#type-executable_name">executable_name()</a>) -&gt; <a href="#type-executable_path">executable_path()</a></tt><br></p>
 <p> </p>
-</div><p><p>Finds specified executable program, whose name is specified as a string 
-(ex: "gcc") in the current user PATH.</p>
+</div><p><p>Finds the specified executable program, whose name is specified as a 
+string (e.g. "gcc") in the current user PATH.</p>
 
- Returns an absolute filename of the executable program (ex: "/usr/bin/gcc") or
- throws an exception {executable_not_found,ExecutableName} if it was not found.
+ Returns an absolute filename of the executable program (e.g. "/usr/bin/gcc")
+ or throws an exception {executable_not_found,ExecutableName} if it was not
+ found.
 </p>
 
 <h3 class="function"><a name="generate_png_from_graph_file-2">generate_png_from_graph_file/2</a></h3>
@@ -247,7 +245,7 @@ dot output an error or a warning</p>
 <div class="spec">
 <p><tt>get_current_gnuplot_version() -&gt; <a href="basic_utils.html#type-two_digit_version">basic_utils:two_digit_version()</a></tt><br></p>
 <p> </p>
-</div><p>Returns, as a tuple (ex: {4,2} for the 4.2 version), the gnuplot version
+</div><p>Returns, as a tuple (e.g. {4,2} for the 4.2 version), the gnuplot version
  actually available by default (in the PATH) on this computer.
 </p>
 
@@ -255,7 +253,7 @@ dot output an error or a warning</p>
 <div class="spec">
 <p><tt>get_current_gnuplot_version(GnuplotPath::<a href="#type-executable_path">executable_path()</a>) -&gt; <a href="basic_utils.html#type-two_digit_version">basic_utils:two_digit_version()</a></tt><br></p>
 <p> </p>
-</div><p>Returns, as a tuple (ex: {4,2} for the 4.2 version), the gnuplot version
+</div><p>Returns, as a tuple (e.g. {4,2} for the 4.2 version), the gnuplot version
  actually available on this computer.
 </p>
 
@@ -311,7 +309,7 @@ dot output an error or a warning</p>
 </div><p><p>Returns an absolute path to the root directory of the current Erlang 
 installation.</p>
 
- Ex: if 'erl' is to be found in
+ For example if 'erl' is to be found in
  ~/Software/Erlang/Erlang-current-install/bin/erl, will return:
  ~/Software/Erlang/Erlang-current-install.
 </p>
@@ -388,7 +386,7 @@ with ERLANG_ROOT being typically ~/Software/Erlang/Erlang-current-install.</p>
 
  Indeed, we expect that in $(ERLANG_ROOT)/lib/erlang/ a symbolic link named
  'jinterface' has been specifically created in order to point to the directory
- of the corresponding version of JInterface (ex: lib/jinterface-1.8/); our
+ of the corresponding version of JInterface (e.g. lib/jinterface-1.8/); our
  install-erlang.sh script automatically enforces that convention.
 </p>
 
@@ -604,10 +602,10 @@ searched for such an is_batch key.</p>
 <div class="spec">
 <p><tt>lookup_executable(ExecutableName::<a href="#type-executable_name">executable_name()</a>) -&gt; <a href="#type-executable_path">executable_path()</a> | false</tt><br></p>
 <p> </p>
-</div><p><p>Looks-up specified executable program, whose name is specified as a 
-string (ex: "gcc") in the current user PATH.</p>
+</div><p><p>Looks-up the specified executable program, whose name is specified as a 
+string (e.g. "gcc") in the current user PATH.</p>
 
- Returns an absolute filename of the executable program (ex: "/usr/bin/gcc"),
+ Returns an absolute filename of the executable program (e.g. "/usr/bin/gcc"),
  or the 'false' atom if it was not found.
 </p>
 
@@ -615,14 +613,14 @@ string (ex: "gcc") in the current user PATH.</p>
 <div class="spec">
 <p><tt>lookup_executable(ExecutableName::<a href="#type-executable_name">executable_name()</a>, ExtraDirs::[<a href="#type-directory_path">directory_path()</a>]) -&gt; <a href="#type-executable_path">executable_path()</a> | false</tt><br></p>
 <p> </p>
-</div><p><p>Looks-up specified executable program, whose name is specified as a 
-string (ex: "gcc") in the current user PATH, augmented of the specified list 
+</div><p><p>Looks-up the specified executable program, whose name is specified as a 
+string (e.g. "gcc") in the current user PATH, augmented of the specified list 
 of directories (whose existence is not checked), placed at first position.</p>
 
- <p>Returns an absolute filename of the executable program (ex: "/usr/bin/gcc"), 
+ <p>Returns an absolute filename of the executable program (e.g. "/usr/bin/gcc"), 
 or the 'false' atom if it was not found.</p>
 
- Ex: lookup_executable("my-foo-program", [".", "/tmp"])
+ For example lookup_executable("my-foo-program", [".", "/tmp"])
 </p>
 
 <h3 class="function"><a name="playback_audio_file-1">playback_audio_file/1</a></h3>

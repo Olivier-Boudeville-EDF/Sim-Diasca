@@ -32,6 +32,10 @@
 <p><tt>any_point() = <a href="point.html#type-any_point">point:any_point()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-any_square_distance">any_square_distance()</a></h3>
+<p><tt>any_square_distance() = <a href="linear.html#type-any_square_distance">linear:any_square_distance()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-any_vector">any_vector()</a></h3>
 <p><tt>any_vector() = <a href="#type-vector">vector()</a> | <a href="#type-integer_vector">integer_vector()</a></tt></p>
 <p> A vector of any dimension, with any types of numerical coordinates.</p>
@@ -73,10 +77,6 @@
 <h3 class="typedecl"><a name="type-specialised_vector">specialised_vector()</a></h3>
 <p><tt>specialised_vector() = <a href="vector2.html#type-vector2">vector2:vector2()</a> | <a href="vector3.html#type-vector3">vector3:vector3()</a> | <a href="vector4.html#type-vector4">vector4:vector4()</a></tt></p>
 <p> A specialised vector that is of one of the specifically supported dimensions.</p>
-
-<h3 class="typedecl"><a name="type-square_distance">square_distance()</a></h3>
-<p><tt>square_distance() = <a href="linear.html#type-square_distance">linear:square_distance()</a></tt></p>
-
 
 <h3 class="typedecl"><a name="type-unit_normal">unit_normal()</a></h3>
 <p><tt>unit_normal() = <a href="#type-unit_vector">unit_vector()</a></tt></p>
@@ -258,7 +258,7 @@ vector; full float precision is shown.</td></tr>
 
 <h3 class="function"><a name="square_magnitude-1">square_magnitude/1</a></h3>
 <div class="spec">
-<p><tt>square_magnitude(V::<a href="#type-vector">vector()</a>) -&gt; <a href="#type-square_distance">square_distance()</a></tt><br></p>
+<p><tt>square_magnitude(V::<a href="#type-vector">vector()</a>) -&gt; <a href="#type-any_square_distance">any_square_distance()</a></tt><br></p>
 <p> </p>
 </div><p>Returns the square of the magnitude of the specified vector.</p>
 

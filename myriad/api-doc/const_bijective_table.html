@@ -49,12 +49,12 @@ the specified element not be found in the table</p>
  <p>(the 'maybe' one is not enabled unconditionally as it slows down very slightly 
 the strict functions, whereas it may be useless)</p>
 
- <p>No ETS table, replication (ex: per-user table copy) or message sending is 
+ <p>No ETS table, replication (e.g. per-user table copy) or message sending is 
 involved: thanks to metaprogramming (parse transform), a module is generated 
 on-the-fly, exporting two functions designed to access either of the elements 
 of the entries of interest.</p>
 
- <p>More precisely, a module name (ex: 'foobar') and a list of <code>{any(), any()}</code>
+ <p>More precisely, a module name (e.g. 'foobar') and a list of <code>{any(), any()}</code>
  entries must be provided to the <code>const_bijective_table:generate*/*</code> functions;
  any element E of any pair in the resulting table (e.g. 42.0 in <code>{</code>baz', 
 42.0}') can then be accessed thanks to foobar:get_{first|second}_for/1 
@@ -81,7 +81,9 @@ recursion or message-waiting construct), this is not expected to happen.</p>
  - const_bijective_table_test.erl for an usage example and testing thereof
  - bijective_table.erl for a runtime, mutable, term-based bijective table
  - const_bijective_topics.erl, to generate modules able to share multiple
- tables (not a single one like this one)
+ tables (not a single one like this one); no conversion direction is managed
+ here, as if a single direction is wanted, the const_table shall be used
+ instead
  - const_table.erl, for a constant, "simple" (oneway) associative table
 
 <h2><a name="types">Data Types</a></h2>
@@ -222,7 +224,7 @@ specified entries by exporting suitably-generated get_{first,second}_for/1
 functions ('strict' look-up) in order to access either element of the recorded 
 pairs.</p>
 
- Note that no actual module file is generated (ex: no 'foobar.beam'), the
+ Note that no actual module file is generated (e.g. no 'foobar.beam'), the
  operation remains fully in-memory.
 </p>
 
@@ -242,7 +244,7 @@ the get_maybe_{first,second}_for/1 functions will be available. Selecting that
 'maybe' element look-up is not recommended if either of the first and second 
 sets contains the 'undefined' atom, as it leads to ambiguity.</p>
 
- Note that no actual module file is generated (ex: no 'foobar.beam'), the
+ Note that no actual module file is generated (e.g. no 'foobar.beam'), the
  operation remains fully in-memory.
 </p>
 <hr>

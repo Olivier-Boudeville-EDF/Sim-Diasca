@@ -151,7 +151,7 @@ message.</p>
 
 
 <h3 class="typedecl"><a name="type-request_return">request_return()</a></h3>
-<p><tt>request_return(T) = <a href="wooper.html#type-request_result">wooper:request_result</a>(T)</tt></p>
+<p><tt>request_return(T) = <a href="wooper.html#type-request_return">wooper:request_return</a>(T)</tt></p>
 
 
 <h3 class="typedecl"><a name="type-requests_outcome">requests_outcome()</a></h3>
@@ -444,14 +444,15 @@ interface.</p>
 
 <h3 class="function"><a name="manage_version_change-4">manage_version_change/4</a></h3>
 <div class="spec">
-<p><tt>manage_version_change(TargetVersion::<a href="#type-any_version">any_version()</a>, MaybeExtraData::<a href="#type-extra_data">extra_data()</a>, CallerPid::pid(), State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; <a href="wooper.html#type-state">wooper:state()</a></tt><br></p>
+<p><tt>manage_version_change(TargetVersion::<a href="#type-any_version">any_version()</a>, MaybeExtraData::<a href="#type-extra_data">extra_data()</a>, CallerPid::pid(), State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; deleted</tt><br></p>
 <p> </p>
 </div><p><p>Takes in charge the instance-side part of the version update protocol: 
 freezes until the class has been updated, and then applies the corresponding 
 instance-specific state changes.</p>
 
  Sends back to the caller first a freeze_notification() message, then, once
- requested to update and having attempted to do so, a update_outcome() message.
+ requested to update and having attempted to do so, an update_outcome()
+ message.
 </p>
 
 <h3 class="function"><a name="popFromAttribute-2">popFromAttribute/2</a></h3>
@@ -532,7 +533,7 @@ should it implement the Upgradable interface.</p>
 
 <h3 class="function"><a name="wooper_execute_method_as-4">wooper_execute_method_as/4</a></h3>
 <div class="spec">
-<p><tt>wooper_execute_method_as(Classname::<a href="#type-classname">classname()</a>, MethodAtom::<a href="#type-method_name">method_name()</a>, Parameters::<a href="#type-method_arguments">method_arguments()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</tt><br></p>
+<p><tt>wooper_execute_method_as(ParentClassname::<a href="#type-classname">classname()</a>, MethodAtom::<a href="#type-method_name">method_name()</a>, Parameters::<a href="#type-method_arguments">method_arguments()</a>, State::<a href="wooper.html#type-state">wooper:state()</a>) -&gt; {<a href="wooper.html#type-state">wooper:state()</a>, <a href="#type-method_internal_result">method_internal_result()</a>}</tt><br></p>
 <p> </p>
 </div>
 

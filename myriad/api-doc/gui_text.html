@@ -10,14 +10,34 @@
 <hr>
 
 <h1>Module gui_text</h1>
-<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various facilities for <b>text rendering</b>.
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various facilities for <b>text input and display</b>.
 
 
-<h2><a name="description">Description</a></h2>Gathering of various facilities for <b>text rendering</b>.
+<h2><a name="description">Description</a></h2><p>Gathering of various facilities for <b>text input and display</b>.</p>
+
+ See also the corresponding dialogs: gui_dialog:text_entry_dialog() and
+ gui_dialog:message_dialog().
+
 <h2><a name="types">Data Types</a></h2>
 
+<h3 class="typedecl"><a name="type-help_info">help_info()</a></h3>
+<p><tt>help_info() = <a href="#type-text">text()</a></tt></p>
+<p> A text for help information.</p>
+
 <h3 class="typedecl"><a name="type-id">id()</a></h3>
-<p><tt>id() = <a href="gui.html#type-id">gui:id()</a></tt></p>
+<p><tt>id() = <a href="gui_id.html#type-id">gui_id:id()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-label">label()</a></h3>
+<p><tt>label() = <a href="gui.html#type-label">gui:label()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-maybe_list">maybe_list()</a></h3>
+<p><tt>maybe_list(T) = <a href="list_utils.html#type-maybe_list">list_utils:maybe_list</a>(T)</tt></p>
+
+
+<h3 class="typedecl"><a name="type-parent">parent()</a></h3>
+<p><tt>parent() = <a href="gui.html#type-parent">gui:parent()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-point">point()</a></h3>
@@ -28,58 +48,61 @@
 <p><tt>size() = <a href="gui.html#type-size">gui:size()</a></tt></p>
 
 
-<h3 class="typedecl"><a name="type-static_text">static_text()</a></h3>
-<p><tt>static_text() = <a href="http://www.erlang.org/edoc/doc/wx/doc/wxStaticText.html#type-wxStaticText">wxStaticText:wxStaticText()</a></tt></p>
+<h3 class="typedecl"><a name="type-static_display_option">static_display_option()</a></h3>
+<p><tt>static_display_option() = {position, <a href="#type-point">point()</a>} | {size, <a href="#type-size">size()</a>} | {style, [<a href="#type-static_display_style">static_display_style()</a>]}</tt></p>
+<p> An option for the creation of a static text display.</p>
+
+<h3 class="typedecl"><a name="type-static_display_style">static_display_style()</a></h3>
+<p><tt>static_display_style() = align_left | align_right | center | fixed_size | ellipsize_begin | ellipsize_middle | ellipsize_end</tt></p>
 
 
-<h3 class="typedecl"><a name="type-style_option">style_option()</a></h3>
-<p><tt>style_option() = align_left | center | align_right | no_autoresize</tt></p>
+<h3 class="typedecl"><a name="type-static_text_display">static_text_display()</a></h3>
+<p><b>abstract datatype</b>: <tt>static_text_display()</tt></p>
+<p> A widget displaying a text; a text display behaves like a panel dedicated
+ to the rendering of a text.</p>
 
-
-<h3 class="typedecl"><a name="type-text_option">text_option()</a></h3>
-<p><tt>text_option() = {pos, <a href="#type-point">point()</a>} | {size, <a href="#type-size">size()</a>} | {style, [<a href="#type-style_option">style_option()</a>]}</tt></p>
-
-
-<h3 class="typedecl"><a name="type-text_options">text_options()</a></h3>
-<p><tt>text_options() = [<a href="#type-text_option">text_option()</a>]</tt></p>
-
-
-<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
-<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
-
-
-<h3 class="typedecl"><a name="type-window">window()</a></h3>
-<p><tt>window() = <a href="gui.html#type-window">gui:window()</a></tt></p>
-
+<h3 class="typedecl"><a name="type-text">text()</a></h3>
+<p><tt>text() = <a href="ui.html#type-text">ui:text()</a></tt></p>
+<p> Any kind of GUI-related text.</p>
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#create_static-2">create_static/2</a></td><td>Creates a static text, based on specified identifier and plain string.</td></tr>
-<tr><td valign="top"><a href="#create_static-3">create_static/3</a></td><td>Creates a static text, based on specified identifier and plain string.</td></tr>
-<tr><td valign="top"><a href="#create_static-4">create_static/4</a></td><td>Creates a static text, based on specified identifier, plain string and
- options.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#create_static_display-2">create_static_display/2</a></td><td>Creates a static text display, based on the specified label.</td></tr>
+<tr><td valign="top"><a href="#create_static_display-3">create_static_display/3</a></td><td>Creates a static text display, based on the specified label and
+ identifier.</td></tr>
+<tr><td valign="top"><a href="#create_static_display-4">create_static_display/4</a></td><td>Creates a static text display, based on the specified label, identifier
+ and option(s).</td></tr>
+<tr><td valign="top"><a href="#destruct_static_display-1">destruct_static_display/1</a></td><td>Destructs the specified static text display.</td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
 
-<h3 class="function"><a name="create_static-2">create_static/2</a></h3>
+<h3 class="function"><a name="create_static_display-2">create_static_display/2</a></h3>
 <div class="spec">
-<p><tt>create_static(Parent::<a href="#type-window">window()</a>, Label::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-static_text">static_text()</a></tt><br></p>
+<p><tt>create_static_display(Label::<a href="#type-label">label()</a>, Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-static_text_display">static_text_display()</a></tt><br></p>
 <p> </p>
-</div><p>Creates a static text, based on specified identifier and plain string.</p>
+</div><p>Creates a static text display, based on the specified label.</p>
 
-<h3 class="function"><a name="create_static-3">create_static/3</a></h3>
+<h3 class="function"><a name="create_static_display-3">create_static_display/3</a></h3>
 <div class="spec">
-<p><tt>create_static(Id::<a href="#type-id">id()</a>, Parent::<a href="#type-window">window()</a>, Label::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-static_text">static_text()</a></tt><br></p>
+<p><tt>create_static_display(Label::<a href="#type-label">label()</a>, Id::<a href="#type-id">id()</a>, Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-static_text_display">static_text_display()</a></tt><br></p>
 <p> </p>
-</div><p>Creates a static text, based on specified identifier and plain string.</p>
-
-<h3 class="function"><a name="create_static-4">create_static/4</a></h3>
-<div class="spec">
-<p><tt>create_static(Id::<a href="#type-id">id()</a>, Parent::<a href="#type-window">window()</a>, Label::<a href="#type-ustring">ustring()</a>, Options::<a href="#type-text_options">text_options()</a>) -&gt; <a href="#type-static_text">static_text()</a></tt><br></p>
-<p> </p>
-</div><p>Creates a static text, based on specified identifier, plain string and
- options.
+</div><p>Creates a static text display, based on the specified label and
+ identifier.
 </p>
+
+<h3 class="function"><a name="create_static_display-4">create_static_display/4</a></h3>
+<div class="spec">
+<p><tt>create_static_display(Label::<a href="#type-label">label()</a>, Id::<a href="#type-id">id()</a>, Options::<a href="#type-maybe_list">maybe_list</a>(<a href="#type-static_display_option">static_display_option()</a>), Parent::<a href="#type-parent">parent()</a>) -&gt; <a href="#type-static_text_display">static_text_display()</a></tt><br></p>
+<p> </p>
+</div><p>Creates a static text display, based on the specified label, identifier
+ and option(s).
+</p>
+
+<h3 class="function"><a name="destruct_static_display-1">destruct_static_display/1</a></h3>
+<div class="spec">
+<p><tt>destruct_static_display(StaticTextDisplay::<a href="#type-static_text_display">static_text_display()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Destructs the specified static text display.</p>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

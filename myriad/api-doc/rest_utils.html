@@ -29,7 +29,7 @@
 
 <h3 class="typedecl"><a name="type-content_type">content_type()</a></h3>
 <p><tt>content_type() = <a href="#type-ustring">ustring()</a></tt></p>
-<p> Content type (ex: "text/html;charset=utf-8", "application/json").</p>
+<p> Content type (e.g. "text/html;charset=utf-8", "application/json").</p>
 
 <h3 class="typedecl"><a name="type-context">context()</a></h3>
 <p><tt>context() = {<a href="web_utils.html#type-url_info">web_utils:url_info()</a>, <a href="#type-headers">headers()</a>}</tt></p>
@@ -68,13 +68,13 @@
 
 
 <h3 class="typedecl"><a name="type-request">request()</a></h3>
-<p><tt>request() = {<a href="web_utils.html#type-url">web_utils:url()</a>, <a href="#type-headers">headers()</a>, <a href="#type-content_type">content_type()</a>, <a href="#type-body">body()</a>} | {<a href="web_utils.html#type-url">web_utils:url()</a>, <a href="#type-headers">headers()</a>}</tt></p>
+<p><tt>request() = {<a href="#type-url">url()</a>, <a href="#type-headers">headers()</a>, <a href="#type-content_type">content_type()</a>, <a href="#type-body">body()</a>} | {<a href="#type-url">url()</a>, <a href="#type-headers">headers()</a>}</tt></p>
 <p> Type of a request for httpc:request, see
  <a href="http://erlang.org/doc/man/httpc.html" target="_top"><tt>http://erlang.org/doc/man/httpc.html</tt></a>.</p>
 
 <h3 class="typedecl"><a name="type-result">result()</a></h3>
-<p><tt>result() = {<a href="#type-status_line">status_line()</a>, <a href="#type-headers">headers()</a>, <a href="#type-body">body()</a>} | {<a href="#type-status_code">status_code()</a>, <a href="#type-body">body()</a>} | reference()</tt></p>
-<p> Type of a result from httpc:request, see
+<p><tt>result() = {<a href="#type-status_line">status_line()</a>, <a href="#type-headers">headers()</a>, <a href="#type-body">body()</a>} | {<a href="#type-status_code">status_code()</a>, <a href="#type-body">body()</a>} | {<a href="#type-status_code">status_code()</a>, {reason_phrased_body, <a href="#type-ustring">ustring()</a>, <a href="#type-body">body()</a>}} | reference()</tt></p>
+<p> Type of a result extended from httpc:request, see
  <a href="http://erlang.org/doc/man/httpc.html" target="_top"><tt>http://erlang.org/doc/man/httpc.html</tt></a>.</p>
 
 <h3 class="typedecl"><a name="type-retries_count">retries_count()</a></h3>
@@ -91,6 +91,10 @@
 
 <h3 class="typedecl"><a name="type-status_line">status_line()</a></h3>
 <p><tt>status_line() = {<a href="#type-ustring">ustring()</a>, <a href="#type-status_code">status_code()</a>, <a href="#type-ustring">ustring()</a>}</tt></p>
+
+
+<h3 class="typedecl"><a name="type-url">url()</a></h3>
+<p><tt>url() = <a href="web_utils.html#type-url">web_utils:url()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
@@ -214,7 +218,7 @@ the standard 'httpc' module of Erlang.</td></tr>
 
 <h3 class="function"><a name="http_request-1">http_request/1</a></h3>
 <div class="spec">
-<p><tt>http_request(URL::<a href="web_utils.html#type-url">web_utils:url()</a>) -&gt; {<a href="#type-status_code">status_code()</a>, term()}</tt><br></p>
+<p><tt>http_request(URL::<a href="#type-url">url()</a>) -&gt; {<a href="#type-status_code">status_code()</a>, term()}</tt><br></p>
 <p> </p>
 </div><p>Sends a HTTP GET requests, as an alternate solution as suggested by the
  standard 'httpc' module of Erlang.

@@ -118,15 +118,15 @@ terms.</p>
 
 <h3 class="typedecl"><a name="type-variable_name">variable_name()</a></h3>
 <p><tt>variable_name() = atom()</tt></p>
-<p> The name of a variable (ex: 'X', or '_' in some cases).</p>
+<p> The name of a variable (e.g. 'X', or '_' in some cases).</p>
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add_function-3">add_function/3</a></td><td>Registers (includes exporting) specified (spec-less) function in
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add_function-3">add_function/3</a></td><td>Registers (includes exporting) the specified (spec-less) function in the
  specified module.</td></tr>
-<tr><td valign="top"><a href="#add_function-4">add_function/4</a></td><td>Registers (includes exporting) specified (spec-less) function in
+<tr><td valign="top"><a href="#add_function-4">add_function/4</a></td><td>Registers (includes exporting) the specified (spec-less) function in the
  specified module.</td></tr>
-<tr><td valign="top"><a href="#add_type-2">add_type/2</a></td><td>Registers the specified, fully-described type in specified module.</td></tr>
-<tr><td valign="top"><a href="#apply_ast_transforms-2">apply_ast_transforms/2</a></td><td>Applies specified AST transformations (mostly depth-first) to the 
+<tr><td valign="top"><a href="#add_type-2">add_type/2</a></td><td>Registers the specified, fully-described type in the specified module.</td></tr>
+<tr><td valign="top"><a href="#apply_ast_transforms-2">apply_ast_transforms/2</a></td><td>Applies the specified AST transformations (mostly depth-first) to the 
 specified module information.</td></tr>
 <tr><td valign="top"><a href="#check_potential_call-3">check_potential_call/3</a></td><td>Checks whether a potential upcoming call to the specified MFA
  (Module,Function,Arguments) has a chance of succeeding.</td></tr>
@@ -134,12 +134,13 @@ specified module information.</td></tr>
  specified module is exported.</td></tr>
 <tr><td valign="top"><a href="#get_compile_base_opts-0">get_compile_base_opts/0</a></td><td>Returns the recommended base compilation options to be used for
  code generation (that is the compilation of forms).</td></tr>
+<tr><td valign="top"><a href="#get_debug_info_settings-0">get_debug_info_settings/0</a></td><td>Returns suitable settings for the debug_info chunk in generated code.</td></tr>
 <tr><td valign="top"><a href="#is_function_exported-3">is_function_exported/3</a></td><td>Tells whether the specified function (name with arity) is exported by the
  specified module.</td></tr>
 <tr><td valign="top"><a href="#list_exported_functions-1">list_exported_functions/1</a></td><td>Lists (in the order of their definition) all the functions ({Name,Arity})
  that are exported by the specified module, expected to be found in the code
  path.</td></tr>
-<tr><td valign="top"><a href="#remove_function-2">remove_function/2</a></td><td>Unregisters specified function from specified module.</td></tr>
+<tr><td valign="top"><a href="#remove_function-2">remove_function/2</a></td><td>Unregisters the specified function from the specified module.</td></tr>
 <tr><td valign="top"><a href="#remove_type-2">remove_type/2</a></td><td>Unregisters specified type from specified module.</td></tr>
 <tr><td valign="top"><a href="#transform_term-4">transform_term/4</a></td><td>Transforms "blindly" (that is with no a-priori knowledge about its 
 structure) the specified arbitrary term (possibly with nested subterms, as the 
@@ -154,7 +155,7 @@ instance by the result of that function.</td></tr>
 <div class="spec">
 <p><tt>add_function(FunId::<a href="#type-function_id">function_id()</a>, Clauses::[<a href="#type-clause_def">clause_def()</a>], ModuleInfo::<a href="#type-module_info">module_info()</a>) -&gt; <a href="#type-module_info">module_info()</a></tt><br></p>
 <p> </p>
-</div><p>Registers (includes exporting) specified (spec-less) function in
+</div><p>Registers (includes exporting) the specified (spec-less) function in the
  specified module.
 </p>
 
@@ -162,7 +163,7 @@ instance by the result of that function.</td></tr>
 <div class="spec">
 <p><tt>add_function(FunctionName::<a href="basic_utils.html#type-function_name">basic_utils:function_name()</a>, FunctionArity::<a href="meta_utils.html#type-function_arity">meta_utils:function_arity()</a>, Clauses::[<a href="#type-clause_def">clause_def()</a>], ModuleInfo::<a href="#type-module_info">module_info()</a>) -&gt; <a href="#type-module_info">module_info()</a></tt><br></p>
 <p> </p>
-</div><p>Registers (includes exporting) specified (spec-less) function in
+</div><p>Registers (includes exporting) the specified (spec-less) function in the
  specified module.
 </p>
 
@@ -170,13 +171,13 @@ instance by the result of that function.</td></tr>
 <div class="spec">
 <p><tt>add_type(TypeInfo::<a href="#type-type_info">type_info()</a>, ModuleInfo::<a href="#type-module_info">module_info()</a>) -&gt; <a href="#type-module_info">module_info()</a></tt><br></p>
 <p> </p>
-</div><p>Registers the specified, fully-described type in specified module.</p>
+</div><p>Registers the specified, fully-described type in the specified module.</p>
 
 <h3 class="function"><a name="apply_ast_transforms-2">apply_ast_transforms/2</a></h3>
 <div class="spec">
 <p><tt>apply_ast_transforms(ModuleInfo::<a href="#type-module_info">module_info()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="#type-module_info">module_info()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
 <p> </p>
-</div><p><p>Applies specified AST transformations (mostly depth-first) to the 
+</div><p><p>Applies the specified AST transformations (mostly depth-first) to the 
 specified module information.</p>
 
  (helper)
@@ -206,6 +207,12 @@ specified module information.</p>
  code generation (that is the compilation of forms).
 </p>
 
+<h3 class="function"><a name="get_debug_info_settings-0">get_debug_info_settings/0</a></h3>
+<div class="spec">
+<p><tt>get_debug_info_settings() -&gt; [tuple()]</tt><br></p>
+<p> </p>
+</div><p>Returns suitable settings for the debug_info chunk in generated code.</p>
+
 <h3 class="function"><a name="is_function_exported-3">is_function_exported/3</a></h3>
 <div class="spec">
 <p><tt>is_function_exported(ModuleName::<a href="#type-module_name">module_name()</a>, FunctionName::<a href="#type-function_name">function_name()</a>, Arity::arity()) -&gt; boolean()</tt><br></p>
@@ -227,7 +234,7 @@ specified module information.</p>
 <div class="spec">
 <p><tt>remove_function(FunInfo::<a href="#type-function_info">function_info()</a>, ModuleInfo::<a href="#type-module_info">module_info()</a>) -&gt; <a href="#type-module_info">module_info()</a></tt><br></p>
 <p> </p>
-</div><p>Unregisters specified function from specified module.</p>
+</div><p>Unregisters the specified function from the specified module.</p>
 
 <h3 class="function"><a name="remove_type-2">remove_type/2</a></h3>
 <div class="spec">
@@ -250,9 +257,9 @@ instance by the result of that function.</p>
 
  <p>Returns an updated term, with these replacements made.</p>
 
- <p>Ex: the input term could be <code>T={a, ["foo", {c, [2.0, 45]}]}</code> and the function
- might replace, for example, floats by <code>&lt;&lt;bar&gt;&gt;</code>; then <code>{a, ["foo", {c,
- [&lt;&lt;bar&gt;&gt;, 45]}]}</code> would be returned.</p>
+ <p>For example the input term could be <code>T={a, ["foo", {c, [2.0, 45]}]}</code> and the
+ function might replace, for example, floats by <code>&lt;&lt;bar&gt;&gt;</code>; then <code>{a, ["foo",
+ {c, [&lt;&lt;bar&gt;&gt;, 45]}]}</code> would be returned.</p>
 
  <p>Note: the transformed terms are themselves recursively transformed, to ensure 
 nesting is managed. Of course this implies that the term transform should not 

@@ -31,12 +31,16 @@
 <p><tt>any_iri() = <a href="#type-iri">iri()</a> | <a href="#type-string_iri">string_iri()</a></tt></p>
 <p> Any type of IRI.</p>
 
+<h3 class="typedecl"><a name="type-bin_string">bin_string()</a></h3>
+<p><tt>bin_string() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-content">content()</a></h3>
 <p><tt>content() = [<a href="#type-triple">triple()</a>]</tt></p>
 
 
 <h3 class="typedecl"><a name="type-iri">iri()</a></h3>
-<p><tt>iri() = <a href="text_utils.html#type-bin_string">text_utils:bin_string()</a></tt></p>
+<p><tt>iri() = <a href="#type-bin_string">bin_string()</a></tt></p>
 <p><p> International Resource Identifier, in charge of, well, identifying a resource.</p>
 
  <p>This is a generalization of the URIs (Uniform Resource Identifier), allowing
@@ -66,7 +70,7 @@
  the subject and the object (directed edge).</p>
 
 <h3 class="typedecl"><a name="type-string_iri">string_iri()</a></h3>
-<p><tt>string_iri() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><tt>string_iri() = <a href="#type-ustring">ustring()</a></tt></p>
 <p> Version of an IRI specified (typically by the user) as a plain (Unicode)
  string.</p>
 

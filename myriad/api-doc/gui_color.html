@@ -17,18 +17,28 @@
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-alpha_buffer">alpha_buffer()</a></h3>
-<p><tt>alpha_buffer() = binary()</tt></p>
-<p><p> A buffer of pixel alpha coordinates, from the top-left pixel to bottom-right 
-one, row per row.</p>
+<p><tt>alpha_buffer() = <a href="#type-buffer">buffer()</a></tt></p>
+<p><p> A buffer of (only) pixel alpha coordinates, from the top-left pixel to 
+bottom-right one, row per row.</p>
 
  Useful for direct image manipulation.</p>
 
 <h3 class="typedecl"><a name="type-alpha_coordinate">alpha_coordinate()</a></h3>
 <p><tt>alpha_coordinate() = <a href="#type-color_coordinate">color_coordinate()</a></tt></p>
-<p> An alpha-transparency color coordinate.</p>
+<p><p> An alpha-transparency color coordinate.</p>
+
+ From 0.0 (full transparent) to 1.0 (solid); same as OpenGL conventions.</p>
 
 <h3 class="typedecl"><a name="type-any_color_by_decimal">any_color_by_decimal()</a></h3>
 <p><tt>any_color_by_decimal() = <a href="#type-color_by_decimal">color_by_decimal()</a> | <a href="#type-color_by_decimal_with_alpha">color_by_decimal_with_alpha()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-buffer">buffer()</a></h3>
+<p><tt>buffer() = <a href="gui.html#type-buffer">gui:buffer()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-byte_size">byte_size()</a></h3>
+<p><tt>byte_size() = <a href="system_utils.html#type-byte_size">system_utils:byte_size()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-color">color()</a></h3>
@@ -38,27 +48,41 @@ one, row per row.</p>
 <h3 class="typedecl"><a name="type-color_buffer">color_buffer()</a></h3>
 <p><tt>color_buffer() = <a href="#type-rgb_color_buffer">rgb_color_buffer()</a> | <a href="#type-rgba_color_buffer">rgba_color_buffer()</a></tt></p>
 <p><p> A buffer of pixel colors coded as a sequence of RGB or RGBA binary elements 
-(ex: RGBRGBRGB..., or RGBARGBARGBA...), from the top-left pixel to 
+(e.g. RGBRGBRGB..., or RGBARGBARGBA...), from the top-left pixel to 
 bottom-right one, row per row.</p>
 
  Useful for direct image manipulation.</p>
 
 <h3 class="typedecl"><a name="type-color_by_decimal">color_by_decimal()</a></h3>
 <p><tt>color_by_decimal() = {Red::byte(), Green::byte(), Blue::byte()}</tt></p>
-<p> RGB (integer, in [0;255]) color; no alpha coordinate here.</p>
+<p> RGB (integer coordinates, in [0;255]) color; no alpha coordinate here.</p>
 
 <h3 class="typedecl"><a name="type-color_by_decimal_with_alpha">color_by_decimal_with_alpha()</a></h3>
 <p><tt>color_by_decimal_with_alpha() = {Red::byte(), Green::byte(), Blue::byte(), Alpha::byte()}</tt></p>
-<p> RGBA (integer, in [0;255]) color.</p>
+<p> RGBA (integer coordinates, in [0;255]) color.</p>
 
 <h3 class="typedecl"><a name="type-color_by_name">color_by_name()</a></h3>
 <p><tt>color_by_name() = atom()</tt></p>
-<p> A color, as designated by an atom (ex: 'aliceblue'); possibly a logical color.</p>
+<p> A color, as designated by an atom (e.g. 'aliceblue'); possibly a logical
+ color.</p>
 
 <h3 class="typedecl"><a name="type-color_coordinate">color_coordinate()</a></h3>
 <p><tt>color_coordinate() = float()</tt></p>
-<p> Color coordinate, in [0.0,1.0].
- For example used and clamped by OpenGL.</p>
+<p><p> Color coordinate, floating-point in [0.0, 1.0].</p>
+
+ For example as used and clamped by OpenGL.</p>
+
+<h3 class="typedecl"><a name="type-color_data">color_data()</a></h3>
+<p><b>abstract datatype</b>: <tt>color_data()</tt></p>
+<p><p> A wx object representing information regarding a color.</p>
+
+ For example {wx_ref,92,wxColourData,[]}.</p>
+
+<h3 class="typedecl"><a name="type-color_depth">color_depth()</a></h3>
+<p><tt>color_depth() = <a href="system_utils.html#type-bit_size">system_utils:bit_size()</a></tt></p>
+<p><p> A color depth, as a positive number of bits.</p>
+
+ For example the color depth of a monochrome display is 1.</p>
 
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
 <p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
@@ -66,7 +90,11 @@ bottom-right one, row per row.</p>
 
 <h3 class="typedecl"><a name="type-logical_color">logical_color()</a></h3>
 <p><tt>logical_color() = <a href="#type-color_by_name">color_by_name()</a></tt></p>
-<p> A logicial color, like 'window_frame_color'.</p>
+<p> A logical color, like 'window_frame_color'.</p>
+
+<h3 class="typedecl"><a name="type-pixel_format">pixel_format()</a></h3>
+<p><tt>pixel_format() = rgb | rgba</tt></p>
+<p> A specification of a pixel format.</p>
 
 <h3 class="typedecl"><a name="type-render_color">render_color()</a></h3>
 <p><tt>render_color() = <a href="#type-render_rgb_color">render_rgb_color()</a> | <a href="#type-render_rgba_color">render_rgba_color()</a></tt></p>
@@ -95,14 +123,14 @@ function.</p>
  For example useful with OpenGL.</p>
 
 <h3 class="typedecl"><a name="type-rgb_color_buffer">rgb_color_buffer()</a></h3>
-<p><tt>rgb_color_buffer() = binary()</tt></p>
+<p><tt>rgb_color_buffer() = <a href="#type-buffer">buffer()</a></tt></p>
 <p><p> A buffer of pixel colors coded as a sequence of RGB binary elements 
 (RGBRGBRGB), from the top-left pixel to bottom-right one, row per row.</p>
 
  Useful for direct image manipulation.</p>
 
 <h3 class="typedecl"><a name="type-rgba_color_buffer">rgba_color_buffer()</a></h3>
-<p><tt>rgba_color_buffer() = binary()</tt></p>
+<p><tt>rgba_color_buffer() = <a href="#type-buffer">buffer()</a></tt></p>
 <p><p> A buffer of pixel colors coded as a sequence of RGBA binary elements 
 (RGBARGBARGBA), from the top-left pixel to bottom-right one, row per row.</p>
 
@@ -119,7 +147,9 @@ directly as a triplet of color components.</td></tr>
 <tr><td valign="top"><a href="#get_colors-0">get_colors/0</a></td><td>Returns a list of known {color_name, ColorDefinition} associations.</td></tr>
 <tr><td valign="top"><a href="#get_logical_color-1">get_logical_color/1</a></td><td>Returns the RGB definition of the specified logical color.</td></tr>
 <tr><td valign="top"><a href="#get_logical_colors-0">get_logical_colors/0</a></td><td>Returns the known logical colors.</td></tr>
-<tr><td valign="top"><a href="#get_random_colors-1">get_random_colors/1</a></td><td>Returns a list of the specified number of different colors.</td></tr>
+<tr><td valign="top"><a href="#get_pixel_size-1">get_pixel_size/1</a></td><td>Returns the number of bytes used by each pixel of the specified format.</td></tr>
+<tr><td valign="top"><a href="#get_random_colors-1">get_random_colors/1</a></td><td>Returns a random list of the specified number of different colors.</td></tr>
+<tr><td valign="top"><a href="#pixel_format_to_string-1">pixel_format_to_string/1</a></td><td>Returns a textual description of the specified pixel format.</td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
@@ -152,7 +182,7 @@ directly as a triplet of color components.</p>
 <p> </p>
 </div><p><p>Returns the RGB definition of the specified logical color.</p>
 
- Note that the underlying GUI backend must be initialised and usable by this
+ Note that the underlying GUI backend shall be initialised and usable by this
  process first.
 </p>
 
@@ -162,11 +192,23 @@ directly as a triplet of color components.</p>
 <p> </p>
 </div><p>Returns the known logical colors.</p>
 
+<h3 class="function"><a name="get_pixel_size-1">get_pixel_size/1</a></h3>
+<div class="spec">
+<p><tt>get_pixel_size(PixelFormat::<a href="#type-pixel_format">pixel_format()</a>) -&gt; <a href="#type-byte_size">byte_size()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the number of bytes used by each pixel of the specified format.</p>
+
 <h3 class="function"><a name="get_random_colors-1">get_random_colors/1</a></h3>
 <div class="spec">
 <p><tt>get_random_colors(ColorCount::<a href="#type-count">count()</a>) -&gt; [<a href="#type-color_by_decimal">color_by_decimal()</a>]</tt><br></p>
 <p> </p>
-</div><p>Returns a list of the specified number of different colors.</p>
+</div><p>Returns a random list of the specified number of different colors.</p>
+
+<h3 class="function"><a name="pixel_format_to_string-1">pixel_format_to_string/1</a></h3>
+<div class="spec">
+<p><tt>pixel_format_to_string(PixelFormat::<a href="#type-pixel_format">pixel_format()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of the specified pixel format.</p>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>

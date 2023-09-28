@@ -31,6 +31,10 @@ are corresponding to.</p>
 <p><tt>manager_pid() = pid()</tt></p>
 
 
+<h3 class="typedecl"><a name="type-start_return">start_return()</a></h3>
+<p><tt>start_return() = {ok, Child::<a href="#type-manager_pid">manager_pid()</a>}</tt></p>
+
+
 <h3 class="typedecl"><a name="type-state">state()</a></h3>
 <p><tt>state() = <a href="table.html#type-table">table:table()</a></tt></p>
 <p> State kept by the manager (a table of per-class tables).</p>
@@ -56,8 +60,8 @@ are corresponding to.</p>
 <tr><td valign="top"><a href="#handle_cast-2">handle_cast/2</a></td><td>Handles OTP-based oneways (gen_server callback).</td></tr>
 <tr><td valign="top"><a href="#handle_info-2">handle_info/2</a></td><td>Handles OTP-based info requests (gen_server callback).</td></tr>
 <tr><td valign="top"><a href="#init-1">init/1</a></td><td>Inits the manager (gen_server callback).</td></tr>
-<tr><td valign="top"><a href="#ping-1">ping/1</a></td><td>Pings specified WOOPER instance, designated by its PID or registered name 
-(locally, otherwise, if not found, globally).</td></tr>
+<tr><td valign="top"><a href="#ping-1">ping/1</a></td><td>Pings the specified WOOPER instance, designated by its PID or registered 
+name (locally, otherwise, if not found, globally).</td></tr>
 <tr><td valign="top"><a href="#start-0">start/0</a></td><td>Starts a new, blank, class manager, with no listening client, and returns
  its PID.</td></tr>
 <tr><td valign="top"><a href="#start-1">start/1</a></td><td>Starts a new, blank, class manager, with possibly a listening client, and
@@ -169,15 +173,15 @@ client, and returns its PID.</td></tr>
 <div class="spec">
 <p><tt>ping(Target::<a href="naming_utils.html#type-registration_name">naming_utils:registration_name()</a> | <a href="wooper.html#type-instance_pid">wooper:instance_pid()</a>) -&gt; pong | pang</tt><br></p>
 <p> </p>
-</div><p><p>Pings specified WOOPER instance, designated by its PID or registered name 
-(locally, otherwise, if not found, globally).</p>
+</div><p><p>Pings the specified WOOPER instance, designated by its PID or registered 
+name (locally, otherwise, if not found, globally).</p>
 
  Returns pong if it could be successfully ping'ed, otherwise returns pang.
 </p>
 
 <h3 class="function"><a name="start-0">start/0</a></h3>
 <div class="spec">
-<p><tt>start() -&gt; <a href="#type-manager_pid">manager_pid()</a></tt><br></p>
+<p><tt>start() -&gt; <a href="#type-start_return">start_return()</a></tt><br></p>
 <p> </p>
 </div><p>Starts a new, blank, class manager, with no listening client, and returns
  its PID.
@@ -185,7 +189,7 @@ client, and returns its PID.</td></tr>
 
 <h3 class="function"><a name="start-1">start/1</a></h3>
 <div class="spec">
-<p><tt>start(MaybeClientPid::<a href="#type-maybe">maybe</a>(pid())) -&gt; <a href="#type-manager_pid">manager_pid()</a></tt><br></p>
+<p><tt>start(MaybeClientPid::<a href="#type-maybe">maybe</a>(pid())) -&gt; <a href="#type-start_return">start_return()</a></tt><br></p>
 <p> </p>
 </div><p>Starts a new, blank, class manager, with possibly a listening client, and
  returns its PID.
@@ -193,7 +197,7 @@ client, and returns its PID.</td></tr>
 
 <h3 class="function"><a name="start_link-0">start_link/0</a></h3>
 <div class="spec">
-<p><tt>start_link() -&gt; <a href="#type-manager_pid">manager_pid()</a></tt><br></p>
+<p><tt>start_link() -&gt; <a href="#type-start_return">start_return()</a></tt><br></p>
 <p> </p>
 </div><p>Starts and links a new, blank, class manager, with no listening client,
  and returns its PID.
@@ -201,7 +205,7 @@ client, and returns its PID.</td></tr>
 
 <h3 class="function"><a name="start_link-1">start_link/1</a></h3>
 <div class="spec">
-<p><tt>start_link(MaybeClientPid::<a href="#type-maybe">maybe</a>(pid())) -&gt; <a href="#type-manager_pid">manager_pid()</a></tt><br></p>
+<p><tt>start_link(MaybeClientPid::<a href="#type-maybe">maybe</a>(pid())) -&gt; <a href="#type-start_return">start_return()</a></tt><br></p>
 <p> </p>
 </div><p><p>Starts and links a new, blank, class manager, with possibly a listening 
 client, and returns its PID.</p>

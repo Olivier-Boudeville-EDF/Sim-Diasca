@@ -50,10 +50,6 @@ operations.</p>
 <p><tt>atom_node_name() = <a href="net_utils.html#type-atom_node_name">net_utils:atom_node_name()</a></tt></p>
 
 
-<h3 class="typedecl"><a name="type-atom_user_name">atom_user_name()</a></h3>
-<p><tt>atom_user_name() = atom()</tt></p>
-<p> To store (UNIX-like) user names.</p>
-
 <h3 class="typedecl"><a name="type-base_outcome">base_outcome()</a></h3>
 <p><tt>base_outcome() = ok | <a href="#type-error_term">error_term()</a></tt></p>
 
@@ -129,7 +125,7 @@ operations.</p>
 
 <h3 class="typedecl"><a name="type-error_term">error_term()</a></h3>
 <p><tt>error_term() = <a href="#type-tagged_error">tagged_error()</a> | <a href="#type-error_reason">error_reason()</a></tt></p>
-<p> A (possibly tagged) error term. Ex: 'badarg'.</p>
+<p> A (possibly tagged) error term. For example 'badarg'.</p>
 
 <h3 class="typedecl"><a name="type-error_tuploid">error_tuploid()</a></h3>
 <p><tt>error_tuploid(T) = <a href="type_utils.html#type-tuploid">type_utils:tuploid</a>(T)</tt></p>
@@ -137,7 +133,7 @@ operations.</p>
 
 <h3 class="typedecl"><a name="type-error_tuploid">error_tuploid()</a></h3>
 <p><tt>error_tuploid() = <a href="#type-error_tuploid">error_tuploid</a>(<a href="#type-error_reason">error_reason()</a>)</tt></p>
-<p><p> An error pseudo-tuple, i.e. an error tuple (ex: {invalid_name,1.0}) or a 
+<p><p> An error pseudo-tuple, that is an error tuple (e.g. {invalid_name,1.0}) or a 
 single error term (instead of a tuple with a single element), preferably an 
 atom (like 'invalid_password'). Typically to be thrown.</p>
 
@@ -194,8 +190,8 @@ be of the expected type (as long as it has not been checked).</p>
 <p><tt>field_name() = atom()</tt></p>
 <p> The name of a field of a record.</p>
 
-<h3 class="typedecl"><a name="type-finite_second_time_out">finite_second_time_out()</a></h3>
-<p><tt>finite_second_time_out() = <a href="time_utils.html#type-finite_second_time_out">time_utils:finite_second_time_out()</a></tt></p>
+<h3 class="typedecl"><a name="type-finite_time_out">finite_time_out()</a></h3>
+<p><tt>finite_time_out() = <a href="time_utils.html#type-finite_time_out">time_utils:finite_time_out()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-fixme">fixme()</a></h3>
@@ -222,11 +218,11 @@ be of the expected type (as long as it has not been checked).</p>
 
 <h3 class="typedecl"><a name="type-layer_name">layer_name()</a></h3>
 <p><tt>layer_name() = <a href="#type-ustring">ustring()</a></tt></p>
-<p> The name of a layer (ex: "Myriad").</p>
+<p> The name of a layer (e.g. "Myriad").</p>
 
 <h3 class="typedecl"><a name="type-level">level()</a></h3>
 <p><tt>level() = non_neg_integer()</tt></p>
-<p> Allows to count levels (ex: indentation ones, nesting ones).</p>
+<p> Allows to count levels (e.g. indentation ones, nesting ones).</p>
 
 <h3 class="typedecl"><a name="type-maybe">maybe()</a></h3>
 <p><tt>maybe(T) = T | undefined</tt></p>
@@ -236,8 +232,8 @@ be of the expected type (as long as it has not been checked).</p>
 cannot discriminate between a value that happens to be set to 'undefined' 
 versus a value not defined at all.</p>
 
- Quite often, variables (ex: record fields) are set to 'undefined' before being
- set later.</p>
+ Quite often, variables (e.g. record fields) are set to 'undefined' before
+ being set later.</p>
 
 <h3 class="typedecl"><a name="type-message">message()</a></h3>
 <p><tt>message() = any()</tt></p>
@@ -269,7 +265,7 @@ versus a value not defined at all.</p>
  convention that Myriad enforces as much as possible.</p>
 
 <h3 class="typedecl"><a name="type-process_info_result_item">process_info_result_item()</a></h3>
-<p><tt>process_info_result_item() = <a href="http://www.erlang.org/edoc/doc/erts/doc/erlang.html#type-process_info_result_item">erlang:process_info_result_item()</a></tt></p>
+<p><tt>process_info_result_item() = any()</tt></p>
 
 
 <h3 class="typedecl"><a name="type-reason">reason()</a></h3>
@@ -325,10 +321,6 @@ or that may not be set at all.</p>
 <p><tt>user_data() = <a href="#type-external_data">external_data()</a></tt></p>
 <p> Designates user-specified data (users shall not be trusted either).</p>
 
-<h3 class="typedecl"><a name="type-user_name">user_name()</a></h3>
-<p><tt>user_name() = nonempty_string()</tt></p>
-<p> To store (UNIX-like) user names.</p>
-
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
 <p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
 
@@ -361,12 +353,22 @@ toolchain:</p>
 
 <h3 class="typedecl"><a name="type-zero_index">zero_index()</a></h3>
 <p><tt>zero_index() = non_neg_integer()</tt></p>
-<p> For the indices that may be null, typically starting at zero (ex: in some file
- formats). Whenever possible, prefer positive_index/0.</p>
+<p> For the indices that may be null, typically starting at zero (e.g. in some
+ file formats). Whenever possible, prefer positive_index/0.</p>
 
 <h2><a name="index">Function Index</a></h2>
 <table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#are_all_defined-1">are_all_defined/1</a></td><td>Returns whether all the elements specified are defined (that is are not
  equal to the 'undefined' atom).</td></tr>
+<tr><td valign="top"><a href="#assert-1">assert/1</a></td><td>Asserts that the specified (runtime) expression is true, otherwise throws
+ an exception.</td></tr>
+<tr><td valign="top"><a href="#assert_different-2">assert_different/2</a></td><td>Asserts that the specified (runtime) expressions compare different,
+ otherwise throws an exception.</td></tr>
+<tr><td valign="top"><a href="#assert_equal-2">assert_equal/2</a></td><td>Asserts that the specified (runtime) expressions compare equal, otherwise 
+throws an exception.</td></tr>
+<tr><td valign="top"><a href="#assert_false-1">assert_false/1</a></td><td>Asserts that the specified (runtime) expression is false, otherwise
+ throws an exception.</td></tr>
+<tr><td valign="top"><a href="#assert_true-1">assert_true/1</a></td><td>Asserts that the specified (runtime) expression is true, otherwise throws 
+an exception.</td></tr>
 <tr><td valign="top"><a href="#check_all_defined-1">check_all_defined/1</a></td><td>Checks that all elements of the specified list are "defined" (not
  'undefined'); returns that list.</td></tr>
 <tr><td valign="top"><a href="#check_all_undefined-1">check_all_undefined/1</a></td><td>Checks that all elements of the specified list are equal to 'undefined';
@@ -376,37 +378,37 @@ toolchain:</p>
  returns that term.</td></tr>
 <tr><td valign="top"><a href="#check_no_pending_message-0">check_no_pending_message/0</a></td><td>Ensures that no message is pending in the mailbox of this process.</td></tr>
 <tr><td valign="top"><a href="#check_not_undefined-1">check_not_undefined/1</a></td><td>Checks that specified term is not 'undefined'; returns that term.</td></tr>
-<tr><td valign="top"><a href="#check_three_digit_version-1">check_three_digit_version/1</a></td><td>Checks that specified term is a three-digit version, and returns it.</td></tr>
+<tr><td valign="top"><a href="#check_three_digit_version-1">check_three_digit_version/1</a></td><td>Checks that the specified term is a three-digit version, and returns it.</td></tr>
 <tr><td valign="top"><a href="#check_undefined-1">check_undefined/1</a></td><td>Checks that specified term is 'undefined', and returns it.</td></tr>
 <tr><td valign="top"><a href="#checkpoint-1">checkpoint/1</a></td><td>Displays a numbered checkpoint.</td></tr>
 <tr><td valign="top"><a href="#compare_versions-2">compare_versions/2</a></td><td>Compares the two specified any-versions (expected to be of the same 
-size), which describe two version numbers (ex: {0,1,0} and {0,1,7}) and 
-returns either first_bigger, second_bigger, or equal.</td></tr>
+size), which describe two version numbers (e.g.</td></tr>
 <tr><td valign="top"><a href="#crash-0">crash/0</a></td><td>Crashes the current process immediately.</td></tr>
 <tr><td valign="top"><a href="#crash-1">crash/1</a></td><td>Crashes the current process immediately, displaying the specified term.</td></tr>
 <tr><td valign="top"><a href="#create_uniform_tuple-2">create_uniform_tuple/2</a></td><td>Creates a tuple of specified size, all elements having the same,
  specified, value.</td></tr>
-<tr><td valign="top"><a href="#debug-1">debug/1</a></td><td>Displays, for debugging purposes, specified string, ensuring as much as
- possible this message is output synchronously, so that it can be output on the
- console even if the virtual machine is to crash just after.</td></tr>
-<tr><td valign="top"><a href="#debug-2">debug/2</a></td><td>Displays, for debugging purposes, specified format string filled
- according to specified values, ensuring as much as possible this message is
+<tr><td valign="top"><a href="#debug-1">debug/1</a></td><td>Displays, for debugging purposes, the specified string, ensuring as much
+ as possible this message is output synchronously, so that it can be output on
+ the console even if the virtual machine is to crash just after.</td></tr>
+<tr><td valign="top"><a href="#debug-2">debug/2</a></td><td>Displays, for debugging purposes, the specified format string filled
+ according tothe specified values, ensuring as much as possible this message is
  output synchronously, so that it can be output on the console even if the
  virtual machine is to crash just after.</td></tr>
 <tr><td valign="top"><a href="#describe_term-1">describe_term/1</a></td><td>Describes specified term in a controlled manner.</td></tr>
-<tr><td valign="top"><a href="#display-1">display/1</a></td><td>Displays specified string on the standard output of the console, ensuring
- as much as possible this message is output synchronously, so that it can be
- output on the console even if the virtual machine is to crash just after.</td></tr>
+<tr><td valign="top"><a href="#display-1">display/1</a></td><td>Displays the specified string on the standard output of the console,
+ ensuring as much as possible that this message is output synchronously, so
+ that it can be fully processed (typically displayed) by the console even if
+ the virtual machine is to crash just after.</td></tr>
 <tr><td valign="top"><a href="#display-2">display/2</a></td><td>Displays the specified format string filled according to the specified
  values on the standard output of the console, ensuring as much as possible
  that this message is output synchronously, so that it can be output on the
  console even if the virtual machine is to crash just after.</td></tr>
-<tr><td valign="top"><a href="#display_error-1">display_error/1</a></td><td>Displays specified string on the standard error output of the console,
- ensuring as much as possible this message is output synchronously, so that it
- can be output on the console even if the virtual machine is to crash just
- after.</td></tr>
-<tr><td valign="top"><a href="#display_error-2">display_error/2</a></td><td>Displays specified format string filled according to specified values on
- the standard error output of the console, ensuring as much as possible this
+<tr><td valign="top"><a href="#display_error-1">display_error/1</a></td><td>Displays the specified string on the standard error output of the
+ console, ensuring as much as possible this message is output synchronously, so
+ that it can be output on the console even if the virtual machine is to crash
+ just after.</td></tr>
+<tr><td valign="top"><a href="#display_error-2">display_error/2</a></td><td>Displays the specified format string filled according to specified values
+ on the standard error output of the console, ensuring as much as possible this
  message is output synchronously, so that it can be output on the console even
  if the virtual machine is to crash just after.</td></tr>
 <tr><td valign="top"><a href="#display_process_info-1">display_process_info/1</a></td><td>Displays information about the process(es) identified by specified
@@ -415,10 +417,10 @@ returns either first_bigger, second_bigger, or equal.</td></tr>
  ensuring as much as possible that this message is output synchronously, so
  that it can be output on the console even if the virtual machine is to crash
  just after.</td></tr>
-<tr><td valign="top"><a href="#display_timed-3">display_timed/3</a></td><td>Displays specified format string filled according to specified values on
- the standard output of the console, ensuring as much as possible this message
- is output synchronously, so that it can be output on the console even if the
- virtual machine is to crash just after.</td></tr>
+<tr><td valign="top"><a href="#display_timed-3">display_timed/3</a></td><td>Displays the specified format string filled according to specified values
+ on the standard output of the console, ensuring as much as possible this
+ message is output synchronously, so that it can be output on the console even
+ if the virtual machine is to crash just after.</td></tr>
 <tr><td valign="top"><a href="#enter_infinite_loop-0">enter_infinite_loop/0</a></td><td>Makes the current process enter in an infinite, mostly idle loop.</td></tr>
 <tr><td valign="top"><a href="#flush_pending_messages-0">flush_pending_messages/0</a></td><td>Flushes all the messages still in the mailbox of this process.</td></tr>
 <tr><td valign="top"><a href="#flush_pending_messages-1">flush_pending_messages/1</a></td><td>Flushes all the messages still in the mailbox of this process that
@@ -459,10 +461,9 @@ about them on the console.</td></tr>
  voice.</td></tr>
 <tr><td valign="top"><a href="#notify_user-2">notify_user/2</a></td><td>Notifies the user of the specified message, with log output and synthetic 
 voice.</td></tr>
-<tr><td valign="top"><a href="#parse_version-1">parse_version/1</a></td><td>Parses specified textual version.</td></tr>
+<tr><td valign="top"><a href="#parse_version-1">parse_version/1</a></td><td>Parses the specified textual version.</td></tr>
 <tr><td valign="top"><a href="#send_to_pid_set-2">send_to_pid_set/2</a></td><td>Sends the specified message to all elements (supposed to be PID) of the 
 specified set, and returns the number of sent messages.</td></tr>
-<tr><td valign="top"><a href="#size-1">size/1</a></td><td>Returns the number of bytes used by specified term.</td></tr>
 <tr><td valign="top"><a href="#speak-1">speak/1</a></td><td>Speaks the specified message, using espeak.</td></tr>
 <tr><td valign="top"><a href="#stop-0">stop/0</a></td><td>Stops smoothly the underlying VM, with a normal, success status code (0).</td></tr>
 <tr><td valign="top"><a href="#stop-1">stop/1</a></td><td>Stops smoothly, synchronously the underlying VM, with specified error 
@@ -471,11 +472,11 @@ code.</td></tr>
 <tr><td valign="top"><a href="#stop_on_failure-1">stop_on_failure/1</a></td><td>Stops smoothly the underlying VM, with a default error status code (1).</td></tr>
 <tr><td valign="top"><a href="#stop_on_success-0">stop_on_success/0</a></td><td>Stops smoothly, synchronously the underlying VM, with a normal, success
  status code (0).</td></tr>
-<tr><td valign="top"><a href="#throw_diagnosed-1">throw_diagnosed/1</a></td><td>Triggers specified diagnosed error: reports first its embedded diagnosis, 
-then throws this error as an exception.</td></tr>
-<tr><td valign="top"><a href="#throw_diagnosed-2">throw_diagnosed/2</a></td><td>Triggers specified diagnosed error, augmented by specified term: reports 
-first its embedded diagnosis, then throws this error, as an augmented tuploid, 
-as an exception.</td></tr>
+<tr><td valign="top"><a href="#throw_diagnosed-1">throw_diagnosed/1</a></td><td>Triggers the specified diagnosed error: reports first its embedded 
+diagnosis, then throws this error as an exception.</td></tr>
+<tr><td valign="top"><a href="#throw_diagnosed-2">throw_diagnosed/2</a></td><td>Triggers the specified diagnosed error, augmented by specified term: 
+reports first its embedded diagnosis, then throws this error, as an augmented 
+tuploid, as an exception.</td></tr>
 <tr><td valign="top"><a href="#trigger_oom-0">trigger_oom/0</a></td><td>Triggers a OOM crash, that is a "Out of Memory" error.</td></tr>
 <tr><td valign="top"><a href="#wait_for-2">wait_for/2</a></td><td>Waits (indefinitively) for the specified count of the specified message
  to be received.</td></tr>
@@ -487,7 +488,8 @@ acknowledgement message, expected to be in the form of {AckReceiveAtom,
 WaitedSenderPid}.</td></tr>
 <tr><td valign="top"><a href="#wait_for_acks-5">wait_for_acks/5</a></td><td>Waits until receiving from all expected senders the specified 
 acknowledgement message, expected to be in the form of {AckReceiveAtom, 
-WaitedSenderPid}, ensuring a check is performed at least at specified period.</td></tr>
+WaitedSenderPid}, ensuring that a check is performed at least at specified 
+period.</td></tr>
 <tr><td valign="top"><a href="#wait_for_acks_nothrow-3">wait_for_acks_nothrow/3</a></td><td>Waits until receiving from all the expected senders the specified 
 acknowledgement message, expected to be in the form of {AckReceiveAtom, 
 WaitedSenderPid}.</td></tr>
@@ -511,6 +513,50 @@ ToAdd, WaitedSenderPid}.</td></tr>
 <p> </p>
 </div><p>Returns whether all the elements specified are defined (that is are not
  equal to the 'undefined' atom).
+</p>
+
+<h3 class="function"><a name="assert-1">assert/1</a></h3>
+<div class="spec">
+<p><tt>assert(Expr::term()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Asserts that the specified (runtime) expression is true, otherwise throws
+ an exception.
+</p>
+
+<h3 class="function"><a name="assert_different-2">assert_different/2</a></h3>
+<div class="spec">
+<p><tt>assert_different(Expr::term(), Expr2::term()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Asserts that the specified (runtime) expressions compare different,
+ otherwise throws an exception.
+</p>
+
+<h3 class="function"><a name="assert_equal-2">assert_equal/2</a></h3>
+<div class="spec">
+<p><tt>assert_equal(Expr::term(), Expr2::term()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Asserts that the specified (runtime) expressions compare equal, otherwise 
+throws an exception.</p>
+
+ Sometimes searched as check_equal/2.
+</p>
+
+<h3 class="function"><a name="assert_false-1">assert_false/1</a></h3>
+<div class="spec">
+<p><tt>assert_false(Expr::term()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Asserts that the specified (runtime) expression is false, otherwise
+ throws an exception.
+</p>
+
+<h3 class="function"><a name="assert_true-1">assert_true/1</a></h3>
+<div class="spec">
+<p><tt>assert_true(Expr::term()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Asserts that the specified (runtime) expression is true, otherwise throws 
+an exception.</p>
+
+ Defined for consistency with assert_false/1.
 </p>
 
 <h3 class="function"><a name="check_all_defined-1">check_all_defined/1</a></h3>
@@ -564,7 +610,7 @@ ToAdd, WaitedSenderPid}.</td></tr>
 <div class="spec">
 <p><tt>check_three_digit_version(T::term()) -&gt; <a href="#type-three_digit_version">three_digit_version()</a></tt><br></p>
 <p> </p>
-</div><p>Checks that specified term is a three-digit version, and returns it.</p>
+</div><p>Checks that the specified term is a three-digit version, and returns it.</p>
 
 <h3 class="function"><a name="check_undefined-1">check_undefined/1</a></h3>
 <div class="spec">
@@ -586,7 +632,7 @@ ToAdd, WaitedSenderPid}.</td></tr>
 <p><tt>compare_versions(A::<a href="#type-any_version">any_version()</a>, B::<a href="#type-any_version">any_version()</a>) -&gt; equal | first_bigger | second_bigger</tt><br></p>
 <p> </p>
 </div><p><p>Compares the two specified any-versions (expected to be of the same 
-size), which describe two version numbers (ex: {0,1,0} and {0,1,7}) and 
+size), which describe two version numbers (e.g. {0,1,0} and {0,1,7}) and 
 returns either first_bigger, second_bigger, or equal.</p>
 
  The two compared versions must have the same number of digits.
@@ -622,17 +668,17 @@ returns either first_bigger, second_bigger, or equal.</p>
 <div class="spec">
 <p><tt>debug(Message::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p>Displays, for debugging purposes, specified string, ensuring as much as
- possible this message is output synchronously, so that it can be output on the
- console even if the virtual machine is to crash just after.
+</div><p>Displays, for debugging purposes, the specified string, ensuring as much
+ as possible this message is output synchronously, so that it can be output on
+ the console even if the virtual machine is to crash just after.
 </p>
 
 <h3 class="function"><a name="debug-2">debug/2</a></h3>
 <div class="spec">
 <p><tt>debug(Format::<a href="#type-format_string">format_string()</a>, Values::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p>Displays, for debugging purposes, specified format string filled
- according to specified values, ensuring as much as possible this message is
+</div><p>Displays, for debugging purposes, the specified format string filled
+ according tothe specified values, ensuring as much as possible this message is
  output synchronously, so that it can be output on the console even if the
  virtual machine is to crash just after.
 </p>
@@ -647,9 +693,10 @@ returns either first_bigger, second_bigger, or equal.</p>
 <div class="spec">
 <p><tt>display(Message::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p>Displays specified string on the standard output of the console, ensuring
- as much as possible this message is output synchronously, so that it can be
- output on the console even if the virtual machine is to crash just after.
+</div><p>Displays the specified string on the standard output of the console,
+ ensuring as much as possible that this message is output synchronously, so
+ that it can be fully processed (typically displayed) by the console even if
+ the virtual machine is to crash just after.
 </p>
 
 <h3 class="function"><a name="display-2">display/2</a></h3>
@@ -666,18 +713,18 @@ returns either first_bigger, second_bigger, or equal.</p>
 <div class="spec">
 <p><tt>display_error(Message::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p>Displays specified string on the standard error output of the console,
- ensuring as much as possible this message is output synchronously, so that it
- can be output on the console even if the virtual machine is to crash just
- after.
+</div><p>Displays the specified string on the standard error output of the
+ console, ensuring as much as possible this message is output synchronously, so
+ that it can be output on the console even if the virtual machine is to crash
+ just after.
 </p>
 
 <h3 class="function"><a name="display_error-2">display_error/2</a></h3>
 <div class="spec">
 <p><tt>display_error(Format::<a href="#type-format_string">format_string()</a>, Values::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p>Displays specified format string filled according to specified values on
- the standard error output of the console, ensuring as much as possible this
+</div><p>Displays the specified format string filled according to specified values
+ on the standard error output of the console, ensuring as much as possible this
  message is output synchronously, so that it can be output on the console even
  if the virtual machine is to crash just after.
 </p>
@@ -704,10 +751,10 @@ returns either first_bigger, second_bigger, or equal.</p>
 <div class="spec">
 <p><tt>display_timed(Format::<a href="#type-format_string">format_string()</a>, Values::<a href="#type-format_values">format_values()</a>, TimeOut::<a href="#type-time_out">time_out()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p>Displays specified format string filled according to specified values on
- the standard output of the console, ensuring as much as possible this message
- is output synchronously, so that it can be output on the console even if the
- virtual machine is to crash just after.
+</div><p>Displays the specified format string filled according to specified values
+ on the standard output of the console, ensuring as much as possible this
+ message is output synchronously, so that it can be output on the console even
+ if the virtual machine is to crash just after.
 </p>
 
 <h3 class="function"><a name="enter_infinite_loop-0">enter_infinite_loop/0</a></h3>
@@ -815,7 +862,7 @@ having to generate an integer identifier corresponding to a given process.</p>
 [Min,Max[.</p>
 
  Useful for example when a large number of similar processes try to access to
- the same resource (ex: a set of file descriptors) at the same time: they can
+ the same resource (e.g. a set of file descriptors) at the same time: they can
  rely on some random waiting based on that process-specific value in order to
  smooth the accesses over time. Reproducibility does not matter here.
 </p>
@@ -830,7 +877,7 @@ the VM), based on its operating system PID and on millisecond-precise time.</p>
  <p>Reasonably unique (add the PID of the Erlang process if concurrent creations 
 may happen), and suitable for file creation.</p>
 
- Ex: "myriad-596330--576460741437" (negative monotonic time).
+ For example "myriad-596330--576460741437" (negative monotonic time).
 </p>
 
 <h3 class="function"><a name="identity-1">identity/1</a></h3>
@@ -840,7 +887,7 @@ may happen), and suitable for file creation.</p>
 </div><p><p>Identity function: returns its argument as it is.</p>
 
  Useful to avoid having the compiler being too smart by notifying annoying,
- spurious messages (ex: no clause will ever match) in some tests.
+ spurious messages (e.g. no clause will ever match) in some tests.
 </p>
 
 <h3 class="function"><a name="ignore_unused-1">ignore_unused/1</a></h3>
@@ -852,7 +899,8 @@ may happen), and suitable for file creation.</p>
  <p>Useful to define, for debugging purposes, terms that will be (temporarily) 
 unused without blocking the compilation.</p>
 
- Ex: basic_utils:ignore_unused(A) or basic_utils:ignore_unused([A, B, C]).
+ For example basic_utils:ignore_unused(A) or basic_utils:ignore_unused([A, B,
+ C]).
 </p>
 
 <h3 class="function"><a name="is_alive-1">is_alive/1</a></h3>
@@ -936,9 +984,9 @@ voice.</p>
 <div class="spec">
 <p><tt>parse_version(VersionString::<a href="#type-ustring">ustring()</a>) -&gt; <a href="#type-any_version">any_version()</a></tt><br></p>
 <p> </p>
-</div><p><p>Parses specified textual version.</p>
+</div><p><p>Parses the specified textual version.</p>
 
- Ex: "4.2.1" should become {4,2,1}, and "2.3" should become {2,3}.
+ For example "4.2.1" should become {4,2,1}, and "2.3" should become {2,3}.
 </p>
 
 <h3 class="function"><a name="send_to_pid_set-2">send_to_pid_set/2</a></h3>
@@ -950,12 +998,6 @@ specified set, and returns the number of sent messages.</p>
 
  (helper)
 </p>
-
-<h3 class="function"><a name="size-1">size/1</a></h3>
-<div class="spec">
-<p><tt>size(Term::term()) -&gt; <a href="#type-byte_size">byte_size()</a></tt><br></p>
-<p> </p>
-</div><p>Returns the number of bytes used by specified term.</p>
 
 <h3 class="function"><a name="speak-1">speak/1</a></h3>
 <div class="spec">
@@ -1006,8 +1048,8 @@ code.</p>
 <div class="spec">
 <p><tt>throw_diagnosed(DiagnosedReason::<a href="#type-diagnosed_error_reason">diagnosed_error_reason()</a>) -&gt; no_return()</tt><br></p>
 <p> </p>
-</div><p><p>Triggers specified diagnosed error: reports first its embedded diagnosis, 
-then throws this error as an exception.</p>
+</div><p><p>Triggers the specified diagnosed error: reports first its embedded 
+diagnosis, then throws this error as an exception.</p>
 
  <p>Typical use:</p>
 
@@ -1029,9 +1071,9 @@ basic_utils:throw_diagnosed( DiagnosedReason )</p>
 <div class="spec">
 <p><tt>throw_diagnosed(DiagnosedReason::<a href="#type-diagnosed_error_reason">diagnosed_error_reason()</a>, ExtraErrorTerm::term()) -&gt; no_return()</tt><br></p>
 <p> </p>
-</div><p><p>Triggers specified diagnosed error, augmented by specified term: reports 
-first its embedded diagnosis, then throws this error, as an augmented tuploid, 
-as an exception.</p>
+</div><p><p>Triggers the specified diagnosed error, augmented by specified term: 
+reports first its embedded diagnosis, then throws this error, as an augmented 
+tuploid, as an exception.</p>
 
  <p>Typical use:</p>
 
@@ -1080,7 +1122,7 @@ duration between two receivings exceed the specified time-out.</p>
 
 <h3 class="function"><a name="wait_for_acks-4">wait_for_acks/4</a></h3>
 <div class="spec">
-<p><tt>wait_for_acks(WaitedSenders::[pid()], MaxDurationInSeconds::<a href="#type-time_out">time_out()</a>, AckReceiveAtom::atom(), ThrowAtom::atom()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>wait_for_acks(WaitedSenders::[pid()], MaxMsDuration::<a href="#type-time_out">time_out()</a>, AckReceiveAtom::atom(), ThrowAtom::atom()) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p><p>Waits until receiving from all expected senders the specified 
 acknowledgement message, expected to be in the form of {AckReceiveAtom, 
@@ -1095,11 +1137,12 @@ time-out can be disabled if set to 'infinity').</p>
 
 <h3 class="function"><a name="wait_for_acks-5">wait_for_acks/5</a></h3>
 <div class="spec">
-<p><tt>wait_for_acks(WaitedSenders::[pid()], MaxDurationInSeconds::<a href="#type-time_out">time_out()</a>, Period::<a href="#type-ms_period">ms_period()</a>, AckReceiveAtom::atom(), ThrowAtom::atom()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>wait_for_acks(WaitedSenders::[pid()], MaxMsDuration::<a href="#type-time_out">time_out()</a>, Period::<a href="#type-ms_period">ms_period()</a>, AckReceiveAtom::atom(), ThrowAtom::atom()) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p><p>Waits until receiving from all expected senders the specified 
 acknowledgement message, expected to be in the form of {AckReceiveAtom, 
-WaitedSenderPid}, ensuring a check is performed at least at specified period.</p>
+WaitedSenderPid}, ensuring that a check is performed at least at specified 
+period.</p>
 
  <p>Throws a {ThrowAtom, StillWaitedSenders} exception on time-out.</p>
 
@@ -1108,7 +1151,7 @@ WaitedSenderPid}, ensuring a check is performed at least at specified period.</p
 
 <h3 class="function"><a name="wait_for_acks_nothrow-3">wait_for_acks_nothrow/3</a></h3>
 <div class="spec">
-<p><tt>wait_for_acks_nothrow(WaitedSenders::[pid()], MaxDurationInSeconds::<a href="#type-finite_second_time_out">finite_second_time_out()</a>, AckReceiveAtom::atom()) -&gt; [pid()]</tt><br></p>
+<p><tt>wait_for_acks_nothrow(WaitedSenders::[pid()], MaxMsDuration::<a href="#type-finite_time_out">finite_time_out()</a>, AckReceiveAtom::atom()) -&gt; [pid()]</tt><br></p>
 <p> </p>
 </div><p><p>Waits until receiving from all the expected senders the specified 
 acknowledgement message, expected to be in the form of {AckReceiveAtom, 
@@ -1123,7 +1166,7 @@ answer within the specified time-out.</p>
 
 <h3 class="function"><a name="wait_for_acks_nothrow-4">wait_for_acks_nothrow/4</a></h3>
 <div class="spec">
-<p><tt>wait_for_acks_nothrow(WaitedSenders::[pid()], MaxDurationInSeconds::<a href="#type-finite_second_time_out">finite_second_time_out()</a>, Period::<a href="#type-ms_period">ms_period()</a>, AckReceiveAtom::atom()) -&gt; [pid()]</tt><br></p>
+<p><tt>wait_for_acks_nothrow(WaitedSenders::[pid()], MaxMsDuration::<a href="#type-finite_time_out">finite_time_out()</a>, Period::<a href="#type-ms_period">ms_period()</a>, AckReceiveAtom::atom()) -&gt; [pid()]</tt><br></p>
 <p> </p>
 </div><p><p>Waits until receiving from all the expected senders the specified 
 acknowledgement message, expected to be in the form of {AckReceiveAtom, 
@@ -1138,7 +1181,7 @@ answer within the specified time-out.</p>
 
 <h3 class="function"><a name="wait_for_many_acks-4">wait_for_many_acks/4</a></h3>
 <div class="spec">
-<p><tt>wait_for_many_acks(WaitedSenders::<a href="#type-set">set</a>(pid()), MaxDurationInSeconds::<a href="#type-finite_second_time_out">finite_second_time_out()</a>, AckReceiveAtom::atom(), ThrowAtom::atom()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>wait_for_many_acks(WaitedSenders::<a href="#type-set">set</a>(pid()), MaxMsDuration::<a href="#type-finite_time_out">finite_time_out()</a>, AckReceiveAtom::atom(), ThrowAtom::atom()) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p><p>Waits until receiving from all expected (numerous) senders the specified 
 acknowledgement message.</p>
@@ -1151,7 +1194,7 @@ acknowledgement message.</p>
 
 <h3 class="function"><a name="wait_for_many_acks-5">wait_for_many_acks/5</a></h3>
 <div class="spec">
-<p><tt>wait_for_many_acks(WaitedSenders::<a href="#type-set">set</a>(pid()), MaxDurationInSeconds::<a href="#type-finite_second_time_out">finite_second_time_out()</a>, Period::<a href="#type-ms_period">ms_period()</a>, AckReceiveAtom::atom(), ThrowAtom::atom()) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>wait_for_many_acks(WaitedSenders::<a href="#type-set">set</a>(pid()), MaxMsDuration::<a href="#type-finite_time_out">finite_time_out()</a>, Period::<a href="#type-ms_period">ms_period()</a>, AckReceiveAtom::atom(), ThrowAtom::atom()) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p><p>Waits until receiving from all expected (numerous) senders the specified 
 acknowledgement message.</p>

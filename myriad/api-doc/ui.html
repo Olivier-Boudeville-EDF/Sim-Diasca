@@ -34,31 +34,48 @@ at hand.</p>
 
 <h3 class="typedecl"><a name="type-backtitle_entry">backtitle_entry()</a></h3>
 <p><tt>backtitle_entry() = {backtitle, <a href="#type-title">title()</a>}</tt></p>
-
+<p> For back-titles.</p>
 
 <h3 class="typedecl"><a name="type-binary_choice">binary_choice()</a></h3>
 <p><tt>binary_choice() = yes | no</tt></p>
 
 
+<h3 class="typedecl"><a name="type-caption">caption()</a></h3>
+<p><tt>caption() = <a href="#type-text">text()</a></tt></p>
+<p> A caption, typically of a window.</p>
+
 <h3 class="typedecl"><a name="type-choice_designator">choice_designator()</a></h3>
 <p><tt>choice_designator() = term() | ui_cancel</tt></p>
+<p><p> Designator of a choice (regardless of the choice labels, locales, etc.).</p>
 
+ <p>(usually an atom, but possibly an integer or anything else)</p>
+
+ Note that there is a reserved designator (i.e. one that shall never be
+ specified among the user ones) that is the 'ui_cancel' atom, which is returned
+ by a backend whenever the user chose to cancel the operation rather than
+ selecting one of the available options.</p>
 
 <h3 class="typedecl"><a name="type-choice_element">choice_element()</a></h3>
 <p><tt>choice_element() = {<a href="#type-choice_designator">choice_designator()</a>, <a href="#type-choice_text">choice_text()</a>}</tt></p>
-
+<p> A description of an item of choice.</p>
 
 <h3 class="typedecl"><a name="type-choice_index">choice_index()</a></h3>
 <p><tt>choice_index() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+<p> The index of a choice (starting at 1).</p>
 
+<h3 class="typedecl"><a name="type-choice_spec">choice_spec()</a></h3>
+<p><tt>choice_spec() = [<a href="#type-choice_element">choice_element()</a>]</tt></p>
+<p><p> A description of a choice offered to the user.</p>
+
+ Useful to define the interface wanted and to interpret its outcome.</p>
 
 <h3 class="typedecl"><a name="type-choice_text">choice_text()</a></h3>
 <p><tt>choice_text() = <a href="#type-text">text()</a></tt></p>
-
+<p> The text of a choice.</p>
 
 <h3 class="typedecl"><a name="type-common_entry">common_entry()</a></h3>
 <p><tt>common_entry() = <a href="#type-backtitle_entry">backtitle_entry()</a> | <a href="#type-title_entry">title_entry()</a></tt></p>
-
+<p> Parameter keys that are common to all dialogs.</p>
 
 <h3 class="typedecl"><a name="type-format_string">format_string()</a></h3>
 <p><tt>format_string() = <a href="text_utils.html#type-format_string">text_utils:format_string()</a></tt></p>
@@ -74,47 +91,51 @@ at hand.</p>
 
 <h3 class="typedecl"><a name="type-label">label()</a></h3>
 <p><tt>label() = <a href="#type-text">text()</a></tt></p>
-
+<p> A label, for example of a button.</p>
 
 <h3 class="typedecl"><a name="type-message">message()</a></h3>
 <p><tt>message() = <a href="#type-text">text()</a></tt></p>
-
+<p> A message, typically displayed by a dialog, or sent as a trace.</p>
 
 <h3 class="typedecl"><a name="type-prompt">prompt()</a></h3>
 <p><tt>prompt() = <a href="#type-text">text()</a></tt></p>
-
+<p> A prompt, typically of an interpreter.</p>
 
 <h3 class="typedecl"><a name="type-setting_table">setting_table()</a></h3>
 <p><tt>setting_table() = <a href="list_table.html#type-list_table">list_table:list_table</a>(<a href="#type-ui_setting_key">ui_setting_key()</a>, <a href="#type-ui_setting_value">ui_setting_value()</a>)</tt></p>
-
+<p> A table storing UI settings (either top-level or backend-specific).</p>
 
 <h3 class="typedecl"><a name="type-text">text()</a></h3>
-<p><tt>text() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+<p><tt>text() = <a href="text_utils.html#type-any_string">text_utils:any_string()</a></tt></p>
+<p><p> Any text, as a plain or binary (Unicode, UTF-8) string.</p>
 
+ Could usually be a more general (notably as recursive lists as such elements),
+ and more complex for the user, unicode:chardata(), yet this would have to be
+ systematically type-checked beforehand.</p>
 
 <h3 class="typedecl"><a name="type-title">title()</a></h3>
 <p><tt>title() = <a href="#type-text">text()</a></tt></p>
-
+<p> A title, typically of a document.</p>
 
 <h3 class="typedecl"><a name="type-title_entry">title_entry()</a></h3>
 <p><tt>title_entry() = {title, <a href="#type-title">title()</a>}</tt></p>
-
+<p> For (front) titles.</p>
 
 <h3 class="typedecl"><a name="type-ui_options">ui_options()</a></h3>
 <p><tt>ui_options() = [any()]</tt></p>
-
+<p> Options to initialise a user interface.</p>
 
 <h3 class="typedecl"><a name="type-ui_setting_entry">ui_setting_entry()</a></h3>
 <p><tt>ui_setting_entry() = {<a href="#type-ui_setting_key">ui_setting_key()</a>, <a href="#type-ui_setting_value">ui_setting_value()</a>}</tt></p>
-
+<p> For setting-specific entries.</p>
 
 <h3 class="typedecl"><a name="type-ui_setting_key">ui_setting_key()</a></h3>
 <p><tt>ui_setting_key() = backtitle | title</tt></p>
-
+<p> The known per-setting keys.</p>
 
 <h3 class="typedecl"><a name="type-ui_setting_value">ui_setting_value()</a></h3>
 <p><tt>ui_setting_value() = term()</tt></p>
-
+<p> The setting-specific values.</p>
 
 <h3 class="typedecl"><a name="type-ui_state">ui_state()</a></h3>
 <p><tt>ui_state() = any()</tt></p>

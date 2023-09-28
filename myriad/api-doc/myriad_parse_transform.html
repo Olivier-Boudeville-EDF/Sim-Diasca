@@ -39,8 +39,8 @@
 <table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#apply_myriad_transform-2">apply_myriad_transform/2</a></td><td>Applies the Myriad parse-transform.</td></tr>
 <tr><td valign="top"><a href="#parse_transform-2">parse_transform/2</a></td><td>The parse transform itself, transforming the specified (Myriad-based) 
 Abstract Format code into another (Erlang-compliant) one.</td></tr>
-<tr><td valign="top"><a href="#run_standalone-1">run_standalone/1</a></td><td>Runs the Myriad parse transform defined here in a standalone way 
-(ie without being triggered by the usual, integrated compile process).</td></tr>
+<tr><td valign="top"><a href="#run_standalone-1">run_standalone/1</a></td><td>Runs the Myriad parse transform defined here in a standalone way (that is 
+without being triggered by the usual, integrated compile process).</td></tr>
 <tr><td valign="top"><a href="#transform_module_info-1">transform_module_info/1</a></td><td>Transforms (at the Myriad level) specified module information.</td></tr>
 </table>
 
@@ -85,13 +85,13 @@ encrypt_debug_info, {debug_info_key,"Ceylan-Myriad"} ]</p>
 <div class="spec">
 <p><tt>run_standalone(FileToTransform::<a href="file_utils.html#type-file_name">file_utils:file_name()</a>) -&gt; {<a href="#type-ast">ast()</a>, <a href="#type-module_info">module_info()</a>}</tt><br></p>
 <p> </p>
-</div><p><p>Runs the Myriad parse transform defined here in a standalone way 
-(ie without being triggered by the usual, integrated compile process).</p>
+</div><p><p>Runs the Myriad parse transform defined here in a standalone way (that is 
+without being triggered by the usual, integrated compile process).</p>
 
  This allows to benefit from all compilation error and warning messages,
  whereas they are seldom available from a code directly run as a parse
- transform (ex: 'undefined parse transform 'foobar'' as soon as a function or a
- module is not found).
+ transform (e.g. 'undefined parse transform 'foobar'' as soon as a function or
+ a module is not found).
 </p>
 
 <h3 class="function"><a name="transform_module_info-1">transform_module_info/1</a></h3>

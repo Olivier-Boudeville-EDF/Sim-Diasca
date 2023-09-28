@@ -73,10 +73,10 @@
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add_function-4">add_function/4</a></td><td>Adds specified function into the corresponding table.</td></tr>
-<tr><td valign="top"><a href="#add_oneway-4">add_oneway/4</a></td><td>Adds specified oneway into the corresponding table.</td></tr>
-<tr><td valign="top"><a href="#add_request-4">add_request/4</a></td><td>Adds specified request into the corresponding table.</td></tr>
-<tr><td valign="top"><a href="#add_static_method-4">add_static_method/4</a></td><td>Adds specified static method into the corresponding table.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add_function-4">add_function/4</a></td><td>Adds the specified function into the specified corresponding table.</td></tr>
+<tr><td valign="top"><a href="#add_oneway-4">add_oneway/4</a></td><td>Adds the specified oneway into the specified corresponding table.</td></tr>
+<tr><td valign="top"><a href="#add_request-4">add_request/4</a></td><td>Adds the specified request into the specified corresponding table.</td></tr>
+<tr><td valign="top"><a href="#add_static_method-4">add_static_method/4</a></td><td>Adds the specified static method in the specified corresponding table.</td></tr>
 <tr><td valign="top"><a href="#apply_wooper_transform-2">apply_wooper_transform/2</a></td><td>Transforms specified AST for WOOPER.</td></tr>
 <tr><td valign="top"><a href="#check_class_info-1">check_class_info/1</a></td><td>Ensures that the described class respects appropriate constraints for
  WOOPER generation, besides the ones checked during the AST exploration and the
@@ -106,25 +106,25 @@ specified preprocessor options.</td></tr>
 <div class="spec">
 <p><tt>add_function(Name::<a href="meta_utils.html#type-function_name">meta_utils:function_name()</a>, Arity::arity(), Form::<a href="#type-form">form()</a>, FunctionTable::<a href="#type-function_table">function_table()</a>) -&gt; <a href="#type-function_table">function_table()</a></tt><br></p>
 <p> </p>
-</div><p>Adds specified function into the corresponding table.</p>
+</div><p>Adds the specified function into the specified corresponding table.</p>
 
 <h3 class="function"><a name="add_oneway-4">add_oneway/4</a></h3>
 <div class="spec">
 <p><tt>add_oneway(Name::<a href="wooper.html#type-oneway_name">wooper:oneway_name()</a>, Arity::arity(), Form::<a href="#type-form">form()</a>, OnewayTable::<a href="#type-oneway_table">oneway_table()</a>) -&gt; <a href="#type-oneway_table">oneway_table()</a></tt><br></p>
 <p> </p>
-</div><p>Adds specified oneway into the corresponding table.</p>
+</div><p>Adds the specified oneway into the specified corresponding table.</p>
 
 <h3 class="function"><a name="add_request-4">add_request/4</a></h3>
 <div class="spec">
 <p><tt>add_request(Name::<a href="wooper.html#type-request_name">wooper:request_name()</a>, Arity::arity(), Form::<a href="#type-form">form()</a>, RequestTable::<a href="#type-request_table">request_table()</a>) -&gt; <a href="#type-request_table">request_table()</a></tt><br></p>
 <p> </p>
-</div><p>Adds specified request into the corresponding table.</p>
+</div><p>Adds the specified request into the specified corresponding table.</p>
 
 <h3 class="function"><a name="add_static_method-4">add_static_method/4</a></h3>
 <div class="spec">
 <p><tt>add_static_method(Name::<a href="wooper.html#type-static_name">wooper:static_name()</a>, Arity::arity(), Form::<a href="#type-form">form()</a>, StaticTable::<a href="#type-static_table">static_table()</a>) -&gt; <a href="#type-static_table">static_table()</a></tt><br></p>
 <p> </p>
-</div><p>Adds specified static method into the corresponding table.</p>
+</div><p>Adds the specified static method in the specified corresponding table.</p>
 
 <h3 class="function"><a name="apply_wooper_transform-2">apply_wooper_transform/2</a></h3>
 <div class="spec">
@@ -204,8 +204,8 @@ specific preprocessor option.</p>
 
  This allows to benefit from all compilation error and warning messages,
  whereas they are seldom available from a code directly run as a parse
- transform (ex: 'undefined parse transform 'foobar'' as soon as a function or a
- module is not found).
+ transform (e.g. 'undefined parse transform 'foobar'' as soon as a function or
+ a module is not found).
 </p>
 
 <h3 class="function"><a name="run_standalone-2">run_standalone/2</a></h3>
@@ -218,8 +218,8 @@ specified preprocessor options.</p>
 
  This allows to benefit from all compilation error and warning messages,
  whereas they are seldom available from a code directly run as a parse
- transform (ex: 'undefined parse transform 'foobar'' as soon as a function or a
- module is not found).
+ transform (e.g. 'undefined parse transform 'foobar'' as soon as a function or
+ a module is not found).
 </p>
 <hr>
 

@@ -19,8 +19,16 @@
 
 <h2><a name="types">Data Types</a></h2>
 
-<h3 class="typedecl"><a name="type-event_translation_table">event_translation_table()</a></h3>
-<p><tt>event_translation_table() = <a href="gui_event.html#type-event_translation_table">gui_event:event_translation_table()</a></tt></p>
+<h3 class="typedecl"><a name="type-backend_keyboard_event">backend_keyboard_event()</a></h3>
+<p><tt>backend_keyboard_event() = <a href="#type-wxKey">wxKey()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-code_pair">code_pair()</a></h3>
+<p><tt>code_pair() = {<a href="#type-scancode">scancode()</a>, <a href="#type-keycode">keycode()</a>}</tt></p>
+<p> A pair of codes corresponding to an event regarding a given key.</p>
+
+<h3 class="typedecl"><a name="type-event_context">event_context()</a></h3>
+<p><tt>event_context() = <a href="gui.html#type-event_context">gui:event_context()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-key_status">key_status()</a></h3>
@@ -31,7 +39,7 @@
 <p><tt>key_transition() = key_down | key_up</tt></p>
 <p><p> Corresponds to a (punctual) state transition of a key.</p>
 
- Note that key down/up transitions are not paired (ex: if a key is maintained
+ Note that key down/up transitions are not paired (e.g. if a key is maintained
  in a pressed state, many key down events will be generated, but only one key
  up will be reported at the end, when the key is released).</p>
 
@@ -45,7 +53,8 @@
 corresponding to a given character, wherever that key may be on the user's 
 actual keyboard (which notably depends on its layout of choice).</p>
 
- <p>A modifier does not generate a keycode just by itself.</p>
+ <p>A modifier does not generate a keycode just by itself, as it is taken into 
+account whenever generating a keycode.</p>
 
  Refer to the corresponding MYR_K_* defines.</p>
 
@@ -63,11 +72,15 @@ keyboard, regardless of the character labelled on the user's actual keyboard.</p
 
  <p>These locations are designated according to the characters that would be 
 printed on a virtual, canonical US QWERTY keyboard, taken as a reference, or 
-to non-printable special keys (ex: the Home key, the Insert one).</p>
+to non-printable special keys (e.g. the Home key, the Insert one).</p>
 
- <p>A modifier generates a scancode just by itself.</p>
+ <p>A modifier generates a scancode just by itself, as it is a button by itself.</p>
 
  Refer to the corresponding MYR_SCANCODE_* defines.</p>
+
+<h3 class="typedecl"><a name="type-uchar">uchar()</a></h3>
+<p><tt>uchar() = <a href="text_utils.html#type-uchar">text_utils:uchar()</a></tt></p>
+
 
 <h3 class="typedecl"><a name="type-uint32">uint32()</a></h3>
 <p><tt>uint32() = <a href="type_utils.html#type-uint32">type_utils:uint32()</a></tt></p>
@@ -86,12 +99,38 @@ to non-printable special keys (ex: the Home key, the Insert one).</p>
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#is_key_pressed-1">is_key_pressed/1</a></td><td>Tells whether the specified key, designated as a scancode, is pressed.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#event_context_to_code_pair-1">event_context_to_code_pair/1</a></td><td>Returns the scancode/keycode pair corresponding to the key referenced in
+ the specified event context corresponding to the receiving of a
+ keyboard-related event message (onCharEntered, onKeyPressed, etc.), thus
+ expected to include a backend keyboard event.</td></tr>
+<tr><td valign="top"><a href="#event_context_to_keycode-1">event_context_to_keycode/1</a></td><td>Returns the keycode corresponding to the character referenced in the 
+specified event context corresponding to the receiving of a keyboard-related 
+event message (onCharEntered, onKeyPressed, etc.), thus expected to include a 
+backend keyboard event.</td></tr>
+<tr><td valign="top"><a href="#event_context_to_maybe_uchar-1">event_context_to_maybe_uchar/1</a></td><td>Returns the Unicode char corresponding to the printable character (if 
+any) referenced in the specified event context corresponding to the receiving 
+of a keyboard-related event message (onCharEntered, onKeyPressed, etc.), thus 
+expected to include a backend keyboard event.</td></tr>
+<tr><td valign="top"><a href="#event_context_to_scancode-1">event_context_to_scancode/1</a></td><td>Returns the scancode corresponding to the key (interpreted as a "button 
+code" rather than as any character) referenced in the specified event context 
+corresponding to the receiving of a keyboard-related event message 
+(onCharEntered, onKeyPressed, etc.), thus expected to include a backend 
+keyboard event.</td></tr>
+<tr><td valign="top"><a href="#get_backend_event-1">get_backend_event/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_code_pair-1">get_code_pair/1</a></td><td>Returns the scancode and keycode corresponding to the key referenced in
+ the specified backend keyboard event.</td></tr>
+<tr><td valign="top"><a href="#get_keycode-1">get_keycode/1</a></td><td>Returns the keycode corresponding to the character referenced in the 
+specified backend keyboard event.</td></tr>
+<tr><td valign="top"><a href="#get_maybe_uchar-1">get_maybe_uchar/1</a></td><td>Returns the Unicode char corresponding to the printable character (if 
+any) referenced in the specified backend keyboard event.</td></tr>
+<tr><td valign="top"><a href="#get_scancode-1">get_scancode/1</a></td><td>Returns the scancode corresponding to the key (interpreted as a "button 
+code" rather than as any character) referenced in the specified backend 
+keyboard event.</td></tr>
+<tr><td valign="top"><a href="#is_key_pressed-1">is_key_pressed/1</a></td><td>Tells whether the specified key, designated as a keycode, is pressed.</td></tr>
 <tr><td valign="top"><a href="#is_modkey_pressed-1">is_modkey_pressed/1</a></td><td>Tells whether the specified key, designated as a scancode comprising a
  modifier, is pressed.</td></tr>
 <tr><td valign="top"><a href="#key_event_to_string-1">key_event_to_string/1</a></td><td>Returns a textual description of the specified key event, of type
  gui_wx_event_info().</td></tr>
-<tr><td valign="top"><a href="#key_event_to_string-2">key_event_to_string/2</a></td><td>Returns a textual description of the specified key event.</td></tr>
 <tr><td valign="top"><a href="#myr_keycode_to_wx-1">myr_keycode_to_wx/1</a></td><td>Returns the wx keycode corresponding to the specified MyriadGUI one.</td></tr>
 <tr><td valign="top"><a href="#to_lower-2">to_lower/2</a></td><td>Returns the specified key, once the specified pressed modifier has been
  taken into account.</td></tr>
@@ -100,11 +139,121 @@ to non-printable special keys (ex: the Home key, the Insert one).</p>
 
 <h2><a name="functions">Function Details</a></h2>
 
+<h3 class="function"><a name="event_context_to_code_pair-1">event_context_to_code_pair/1</a></h3>
+<div class="spec">
+<p><tt>event_context_to_code_pair(EventContext::<a href="#type-event_context">event_context()</a>) -&gt; <a href="#type-code_pair">code_pair()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the scancode/keycode pair corresponding to the key referenced in
+ the specified event context corresponding to the receiving of a
+ keyboard-related event message (onCharEntered, onKeyPressed, etc.), thus
+ expected to include a backend keyboard event.
+</p>
+
+<h3 class="function"><a name="event_context_to_keycode-1">event_context_to_keycode/1</a></h3>
+<div class="spec">
+<p><tt>event_context_to_keycode(EventContext::<a href="#type-event_context">event_context()</a>) -&gt; <a href="#type-keycode">keycode()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the keycode corresponding to the character referenced in the 
+specified event context corresponding to the receiving of a keyboard-related 
+event message (onCharEntered, onKeyPressed, etc.), thus expected to include a 
+backend keyboard event.</p>
+
+ Refer to get_keycode/1 for further details.
+</p>
+
+<h3 class="function"><a name="event_context_to_maybe_uchar-1">event_context_to_maybe_uchar/1</a></h3>
+<div class="spec">
+<p><tt>event_context_to_maybe_uchar(EventContext::<a href="#type-event_context">event_context()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-uchar">uchar()</a>)</tt><br></p>
+<p> </p>
+</div><p><p>Returns the Unicode char corresponding to the printable character (if 
+any) referenced in the specified event context corresponding to the receiving 
+of a keyboard-related event message (onCharEntered, onKeyPressed, etc.), thus 
+expected to include a backend keyboard event.</p>
+
+ Refer to get_maybe_uchar/1 for further details.
+</p>
+
+<h3 class="function"><a name="event_context_to_scancode-1">event_context_to_scancode/1</a></h3>
+<div class="spec">
+<p><tt>event_context_to_scancode(EventContext::<a href="#type-event_context">event_context()</a>) -&gt; <a href="#type-scancode">scancode()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the scancode corresponding to the key (interpreted as a "button 
+code" rather than as any character) referenced in the specified event context 
+corresponding to the receiving of a keyboard-related event message 
+(onCharEntered, onKeyPressed, etc.), thus expected to include a backend 
+keyboard event.</p>
+
+ Refer to get_scancode/1 for further details.
+</p>
+
+<h3 class="function"><a name="get_backend_event-1">get_backend_event/1</a></h3>
+<div class="spec">
+<p><tt>get_backend_event(Event_context::<a href="#type-event_context">event_context()</a>) -&gt; <a href="#type-backend_keyboard_event">backend_keyboard_event()</a></tt><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_code_pair-1">get_code_pair/1</a></h3>
+<div class="spec">
+<p><tt>get_code_pair(WxKey::<a href="#type-backend_keyboard_event">backend_keyboard_event()</a>) -&gt; <a href="#type-code_pair">code_pair()</a></tt><br></p>
+<p> </p>
+</div><p>Returns the scancode and keycode corresponding to the key referenced in
+ the specified backend keyboard event.
+</p>
+
+<h3 class="function"><a name="get_keycode-1">get_keycode/1</a></h3>
+<div class="spec">
+<p><tt>get_keycode(WxKey::<a href="#type-backend_keyboard_event">backend_keyboard_event()</a>) -&gt; <a href="#type-keycode">keycode()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the keycode corresponding to the character referenced in the 
+specified backend keyboard event.</p>
+
+ <p>Keycodes depend on the current keyboard layout and are location-independent 
+(they designate a logical key, wherever it actually is on the keyboard); they 
+should be used to handle special characters (non-printable special keys such 
+as cursor arrows keys, HOME, INS, etc.) when no relevant Unicode character 
+applies.</p>
+
+ <p>For Latin-1 keys, these values happen to match, for compatibility reasons, the 
+ones returned by get_unicode_char/1 (the keycode of non-special keys is 
+an ASCII code, which means it will depend on the current keyboard layout); yet 
+this does not work for Unicode characters in general.</p>
+
+ See also the corresponding MYR_K_* keycode defines.
+</p>
+
+<h3 class="function"><a name="get_maybe_uchar-1">get_maybe_uchar/1</a></h3>
+<div class="spec">
+<p><tt>get_maybe_uchar(WxKey::<a href="#type-backend_keyboard_event">backend_keyboard_event()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-uchar">uchar()</a>)</tt><br></p>
+<p> </p>
+</div><p><p>Returns the Unicode char corresponding to the printable character (if 
+any) referenced in the specified backend keyboard event.</p>
+
+ <p>Works for any printable key, including non-Latin-1 characters that can be 
+entered when using national keyboard layouts.</p>
+
+ Returns 'undefined' when the key corresponds to a non-printable character
+ (e.g. PRINTSCREEN or SCROLLLOCK).
+</p>
+
+<h3 class="function"><a name="get_scancode-1">get_scancode/1</a></h3>
+<div class="spec">
+<p><tt>get_scancode(WxKey::<a href="#type-backend_keyboard_event">backend_keyboard_event()</a>) -&gt; <a href="#type-scancode">scancode()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the scancode corresponding to the key (interpreted as a "button 
+code" rather than as any character) referenced in the specified backend 
+keyboard event.</p>
+
+ <p>So scancodes are location-dependent, do not depend on the current keyboard 
+layout and do not specifically correspond to a given character.</p>
+
+ See also the corresponding MYR_SCANCODE_* scancode defines.
+</p>
+
 <h3 class="function"><a name="is_key_pressed-1">is_key_pressed/1</a></h3>
 <div class="spec">
 <p><tt>is_key_pressed(Keycode::<a href="#type-keycode">keycode()</a>) -&gt; boolean()</tt><br></p>
 <p> </p>
-</div><p>Tells whether the specified key, designated as a scancode, is pressed.</p>
+</div><p>Tells whether the specified key, designated as a keycode, is pressed.</p>
 
 <h3 class="function"><a name="is_modkey_pressed-1">is_modkey_pressed/1</a></h3>
 <div class="spec">
@@ -116,17 +265,11 @@ to non-printable special keys (ex: the Home key, the Insert one).</p>
 
 <h3 class="function"><a name="key_event_to_string-1">key_event_to_string/1</a></h3>
 <div class="spec">
-<p><tt>key_event_to_string(WxKeyEvent::<a href="#type-wxKey">wxKey()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><tt>key_event_to_string(WxKey::<a href="#type-wxKey">wxKey()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
 <p> </p>
 </div><p>Returns a textual description of the specified key event, of type
  gui_wx_event_info().
 </p>
-
-<h3 class="function"><a name="key_event_to_string-2">key_event_to_string/2</a></h3>
-<div class="spec">
-<p><tt>key_event_to_string(WxKey::<a href="#type-wxKey">wxKey()</a>, EventTranslationTable::<a href="#type-event_translation_table">event_translation_table()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
-<p> </p>
-</div><p>Returns a textual description of the specified key event.</p>
 
 <h3 class="function"><a name="myr_keycode_to_wx-1">myr_keycode_to_wx/1</a></h3>
 <div class="spec">

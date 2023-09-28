@@ -37,6 +37,10 @@
 <p><tt>ast_record_field_definition() = <a href="#type-ast_record_field_definition">ast_record_field_definition</a>(<a href="ast_base.html#type-ast_element">ast_base:ast_element()</a>)</tt></p>
 <p> AST definition for a field of a record, when creating it.</p>
 
+<h3 class="typedecl"><a name="type-ast_record_field_init">ast_record_field_init()</a></h3>
+<p><tt>ast_record_field_init() = any()</tt></p>
+
+
 <h3 class="typedecl"><a name="type-ast_transforms">ast_transforms()</a></h3>
 <p><tt>ast_transforms() = <a href="ast_transform.html#type-ast_transforms">ast_transform:ast_transforms()</a></tt></p>
 
@@ -111,13 +115,12 @@
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#get_located_forms_for-1">get_located_forms_for/1</a></td><td>Returns located forms corresponding to specified record table.</td></tr>
-<tr><td valign="top"><a href="#transform_record_definitions-2">transform_record_definitions/2</a></td><td>Transforms the specified record definitions (ex: coming for the 'records'
- field of a module_info record), according to specified transforms.</td></tr>
-<tr><td valign="top"><a href="#transform_record_field_definition-2">transform_record_field_definition/2</a></td><td>Transforms specified record field definition.</td></tr>
-<tr><td valign="top"><a href="#transform_record_field_definitions-2">transform_record_field_definitions/2</a></td><td>Transforms specified record fields, at creation, applying to each record 
-field the specified function to perform the relevant transformations (that 
-depends on the context; ex: if being in a guard, in an expression).</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#get_located_forms_for-1">get_located_forms_for/1</a></td><td>Returns the located forms corresponding to specified record table.</td></tr>
+<tr><td valign="top"><a href="#transform_record_definitions-2">transform_record_definitions/2</a></td><td>Transforms the specified record definitions (e.g.</td></tr>
+<tr><td valign="top"><a href="#transform_record_field_definition-2">transform_record_field_definition/2</a></td><td>Transforms the specified record field definition.</td></tr>
+<tr><td valign="top"><a href="#transform_record_field_definitions-2">transform_record_field_definitions/2</a></td><td>Transforms the specified record fields, at creation, applying to each 
+record field the specified function to perform the relevant transformations 
+(that depends on the context; e.g.</td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
@@ -126,32 +129,32 @@ depends on the context; ex: if being in a guard, in an expression).</td></tr>
 <div class="spec">
 <p><tt>get_located_forms_for(RecordTable::<a href="#type-record_table">record_table()</a>) -&gt; [<a href="#type-located_form">located_form()</a>]</tt><br></p>
 <p> </p>
-</div><p>Returns located forms corresponding to specified record table.</p>
+</div><p>Returns the located forms corresponding to specified record table.</p>
 
 <h3 class="function"><a name="transform_record_definitions-2">transform_record_definitions/2</a></h3>
 <div class="spec">
 <p><tt>transform_record_definitions(RecordTable::<a href="ast_info.html#type-record_table">ast_info:record_table()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="ast_info.html#type-record_table">ast_info:record_table()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
 <p> </p>
-</div><p>Transforms the specified record definitions (ex: coming for the 'records'
- field of a module_info record), according to specified transforms.
+</div><p>Transforms the specified record definitions (e.g. coming for the
+ 'records' field of a module_info record), according to specified transforms.
 </p>
 
 <h3 class="function"><a name="transform_record_field_definition-2">transform_record_field_definition/2</a></h3>
 <div class="spec">
 <p><tt>transform_record_field_definition(RF::<a href="#type-ast_record_field_definition">ast_record_field_definition()</a>, Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {<a href="#type-ast_record_field_definition">ast_record_field_definition()</a>, <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
 <p> </p>
-</div><p><p>Transforms specified record field definition.</p>
+</div><p><p>Transforms the specified record field definition.</p>
 
- Ex: {record_field, FILE_LOC, Rep(Field_k), Rep(Gt_k)}.
+ For example {record_field, FILE_LOC, Rep(Field_k), Rep(Gt_k)}.
 </p>
 
 <h3 class="function"><a name="transform_record_field_definitions-2">transform_record_field_definitions/2</a></h3>
 <div class="spec">
-<p><tt>transform_record_field_definitions(RecordFields::[<a href="#type-ast_record_field_definition">ast_record_field_definition()</a>], Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; [<a href="#type-ast_record_field_definition">ast_record_field_definition()</a>]</tt><br></p>
+<p><tt>transform_record_field_definitions(RecordFields::[<a href="#type-ast_record_field_definition">ast_record_field_definition()</a>], Transforms::<a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {[<a href="#type-ast_record_field_definition">ast_record_field_definition()</a>], <a href="#type-ast_transforms">ast_transforms()</a>}</tt><br></p>
 <p> </p>
-</div><p><p>Transforms specified record fields, at creation, applying to each record 
-field the specified function to perform the relevant transformations (that 
-depends on the context; ex: if being in a guard, in an expression).</p>
+</div><p><p>Transforms the specified record fields, at creation, applying to each 
+record field the specified function to perform the relevant transformations 
+(that depends on the context; e.g. if being in a guard, in an expression).</p>
 
  (counterpart of record_inits/1 in erl_id_trans)
 </p>

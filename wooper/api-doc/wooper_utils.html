@@ -10,23 +10,25 @@
 <hr>
 
 <h1>Module wooper_utils</h1>
-<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Module containing some <b>extra facilities</b> for WOOPER users and
+ internal use.
 
+
+<h2><a name="description">Description</a></h2>Module containing some <b>extra facilities</b> for WOOPER users and
+ internal use.
 
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-camelcase_type">camelcase_type()</a></h3>
 <p><tt>camelcase_type() = atom()</tt></p>
-<p> Ex: 'apple' or 'travelling_salesman'.</p>
+<p> For example 'apple' or 'travelling_salesman'.</p>
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
 <p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#camelcase_type_to_wooper_class-1">camelcase_type_to_wooper_class/1</a></td><td>Converts a simple type specified in CamelCase (ex: 'apple' or
- 'travelling_salesman') into its corresponding WOOPER classname (ex:
- 'class_Apple' of 'class_TravellingSalesman').</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#camelcase_type_to_wooper_class-1">camelcase_type_to_wooper_class/1</a></td><td>Converts a simple type specified in CamelCase (e.g.</td></tr>
 <tr><td valign="top"><a href="#get_java_package_and_class_for-1">get_java_package_and_class_for/1</a></td><td>Returns (as atoms) the Java package (if any) and class that correspond to 
 the specified WOOPER classname.</td></tr>
 <tr><td valign="top"><a href="#get_persistent_key_for-1">get_persistent_key_for/1</a></td><td>Returns the key (as a term) associated to specified classname in the
@@ -40,8 +42,7 @@ PEP8 convention.</td></tr>
  startup procedure.</td></tr>
 <tr><td valign="top"><a href="#start_for_test-0">start_for_test/0</a></td><td>Starts WOOPER for a testing possibly involving an OTP-based startup
  procedure.</td></tr>
-<tr><td valign="top"><a href="#wooper_class_to_camelcase_type-1">wooper_class_to_camelcase_type/1</a></td><td>Converts a WOOPER classname (ex: 'class_Apple') into its corresponding
- simple type in CamelCase (ex: 'apple').</td></tr>
+<tr><td valign="top"><a href="#wooper_class_to_camelcase_type-1">wooper_class_to_camelcase_type/1</a></td><td>Converts a WOOPER classname (e.g.</td></tr>
 <tr><td valign="top"><a href="#wooper_class_to_java_class-1">wooper_class_to_java_class/1</a></td><td>Deduces the Java equivalent name of an Erlang class whose name follows 
 the WOOPER conventions.</td></tr>
 <tr><td valign="top"><a href="#wooper_class_to_pep8_class-1">wooper_class_to_pep8_class/1</a></td><td>Deduces the Python equivalent name, according to the PEP8 convention, of 
@@ -54,8 +55,8 @@ an Erlang class whose name follows the WOOPER conventions.</td></tr>
 <div class="spec">
 <p><tt>camelcase_type_to_wooper_class(CamelcaseType::<a href="#type-camelcase_type">camelcase_type()</a>) -&gt; <a href="wooper.html#type-classname">wooper:classname()</a></tt><br></p>
 <p> </p>
-</div><p>Converts a simple type specified in CamelCase (ex: 'apple' or
- 'travelling_salesman') into its corresponding WOOPER classname (ex:
+</div><p>Converts a simple type specified in CamelCase (e.g. 'apple' or
+ 'travelling_salesman') into its corresponding WOOPER classname (e.g.
  'class_Apple' of 'class_TravellingSalesman').
 </p>
 
@@ -89,7 +90,7 @@ undefined,  MyExample } returned.</p>
 </div><p><p>Deduces the Erlang equivalent name, according to the WOOPER conventions, 
 of a class that is actually implemented in Java.</p>
 
- Ex: 'MyFoobarExample' resulting in 'class_MyFoobarExample'.
+ For example 'MyFoobarExample' resulting in 'class_MyFoobarExample'.
 </p>
 
 <h3 class="function"><a name="pep8_class_to_wooper_class-1">pep8_class_to_wooper_class/1</a></h3>
@@ -100,7 +101,7 @@ of a class that is actually implemented in Java.</p>
 of a class that is actually implemented in Python and whose name follows the 
 PEP8 convention.</p>
 
- Ex: 'MyFoobarExample' resulting in 'class_MyFoobarExample'.
+ For example 'MyFoobarExample' resulting in 'class_MyFoobarExample'.
 </p>
 
 <h3 class="function"><a name="start_for_app-0">start_for_app/0</a></h3>
@@ -123,8 +124,8 @@ PEP8 convention.</p>
 <div class="spec">
 <p><tt>wooper_class_to_camelcase_type(WOOPERClassname::<a href="wooper.html#type-classname">wooper:classname()</a>) -&gt; <a href="#type-camelcase_type">camelcase_type()</a></tt><br></p>
 <p> </p>
-</div><p>Converts a WOOPER classname (ex: 'class_Apple') into its corresponding
- simple type in CamelCase (ex: 'apple').
+</div><p>Converts a WOOPER classname (e.g. 'class_Apple') into its corresponding
+ simple type in CamelCase (e.g. 'apple').
 </p>
 
 <h3 class="function"><a name="wooper_class_to_java_class-1">wooper_class_to_java_class/1</a></h3>
@@ -134,7 +135,7 @@ PEP8 convention.</p>
 </div><p><p>Deduces the Java equivalent name of an Erlang class whose name follows 
 the WOOPER conventions.</p>
 
- Ex: "class_MyFoobarExample" resulting in "MyFoobarExample".
+ For example "class_MyFoobarExample" resulting in "MyFoobarExample".
 </p>
 
 <h3 class="function"><a name="wooper_class_to_pep8_class-1">wooper_class_to_pep8_class/1</a></h3>
@@ -144,7 +145,7 @@ the WOOPER conventions.</p>
 </div><p><p>Deduces the Python equivalent name, according to the PEP8 convention, of 
 an Erlang class whose name follows the WOOPER conventions.</p>
 
- Ex: "class_MyFoobarExample" resulting in "MyFoobarExample".
+ For example "class_MyFoobarExample" resulting in "MyFoobarExample".
 </p>
 <hr>
 

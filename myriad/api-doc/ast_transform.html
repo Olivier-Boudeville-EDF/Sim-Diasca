@@ -46,7 +46,7 @@
 
  Note: a full ast_transforms record (not a mere transformation state) is used
  as input (and output) of these transformation functions so that they can
- trigger in turn recursive transformation calls (ex: to
+ trigger in turn recursive transformation calls (e.g. to
  ast_expression:transform_expressions/2) by themselves.</p>
 
 <h3 class="typedecl"><a name="type-ast_transforms">ast_transforms()</a></h3>
@@ -166,20 +166,20 @@ function name of the call is not to change.</p>
 <h3 class="typedecl"><a name="type-transform_formatter">transform_formatter()</a></h3>
 <p><tt>transform_formatter() = fun((<a href="#type-format_string">format_string()</a>, <a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-ustring">ustring()</a>)</tt></p>
 <p> Designates a function able to properly format typically the output of
- expression transformation (ex: when exiting an
+ expression transformation (e.g. when exiting an
  ast_expression:transform_expression/2 clause).</p>
 
 <h3 class="typedecl"><a name="type-transform_fun">transform_fun()</a></h3>
 <p><tt>transform_fun(TargetType) = fun((TargetType, <a href="#type-ast_transforms">ast_transforms()</a>) -&gt; {TargetType, <a href="#type-ast_transforms">ast_transforms()</a>})</tt></p>
 <p> Designates the transformation functions that are used to transform differently
- a kind of form (ex: the one of a bistring, a record, etc.) depending on the
- context (ex: in a guard, in an expression, etc.).</p>
+ a kind of form (e.g. the one of a bistring, a record, etc.) depending on the
+ context (e.g. in a guard, in an expression, etc.).</p>
 
 <h3 class="typedecl"><a name="type-transform_fun">transform_fun()</a></h3>
 <p><tt>transform_fun() = <a href="#type-transform_fun">transform_fun</a>(<a href="ast_base.html#type-ast_element">ast_base:ast_element()</a>)</tt></p>
 <p> Designates the transformation functions that are used to transform differently
- a kind of form (ex: the one of a bistring, a record, etc.) depending on the
- context (ex: in a guard, in an expression, etc.).</p>
+ a kind of form (e.g. the one of a bistring, a record, etc.) depending on the
+ context (e.g. in a guard, in an expression, etc.).</p>
 
 <h3 class="typedecl"><a name="type-transform_trigger">transform_trigger()</a></h3>
 <p><tt>transform_trigger() = <a href="ast_expression.html#type-expression_kind">ast_expression:expression_kind()</a> | clause | body</tt></p>
@@ -241,7 +241,7 @@ type name is not to change.</p>
 
 <h3 class="function"><a name="default_formatter-2">default_formatter/2</a></h3>
 <div class="spec">
-<p><tt>default_formatter(FormatString::<a href="#type-format_string">format_string()</a>, FormatValue::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><tt>default_formatter(FormatString::<a href="#type-format_string">format_string()</a>, FormatValue::<a href="#type-format_values">format_values()</a>) -&gt; <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>(<a href="#type-ustring">ustring()</a>)</tt><br></p>
 <p> </p>
 </div><p>The default transform_formatter() to be used.</p>
 
@@ -251,7 +251,7 @@ type name is not to change.</p>
 <p> </p>
 </div><p><p>Returns a table describing local call replacements.</p>
 
- <p>Ex: [ { { halt, 0 }, basic_utils },       
+ <p>For example [ { { halt, 0 }, basic_utils },       
 { { setAttributes, 1 }, { some_utils, set_attr } },       
 % First clause will never match due to arity:       
 { { '_', 3 }, fun( my_fun, 0 ) -&gt;                                   
@@ -279,7 +279,7 @@ it is just the addition (prefix) of a module, as a remote call</p>
 <p> </p>
 </div><p><p>Returns a table describing local type replacements.</p>
 
- <p>Ex: [ { { void, 0 }, basic_utils },       
+ <p>For example [ { { void, 0 }, basic_utils },       
 { { my_maybe, 1 }, { basic_utils, maybe } },       
 % First clause will never match due to arity:       
 { { '_', 3 }, fun( other_void, 0 ) -&gt;                                    
@@ -307,7 +307,7 @@ is just the addition (prefix) of a module, as a remote type</p>
 <p> </p>
 </div><p><p>Returns a table describing remote call replacements.</p>
 
- <p>Ex: [ { { a_module, void, 0 }, basic_utils },       
+ <p>For example [ { { a_module, void, 0 }, basic_utils },       
 { { a_module, my_maybe, 1 }, { basic_utils, maybe } },       
 % First clause will never match due to arity:       
 { { '_', '_', 3 }, fun( other_void, 0 ) -&gt;                                    
@@ -333,7 +333,7 @@ end }
 <p> </p>
 </div><p><p>Returns a table describing remote type replacements.</p>
 
- <p>Ex: [ { { a_module, void, 0 }, basic_utils },       
+ <p>For example [ { { a_module, void, 0 }, basic_utils },       
 { { a_module, my_maybe, 1 }, { basic_utils, maybe } },       
 % First clause will never match due to arity:       
 { { '_', '_', 3 }, fun( other_void, 0 ) -&gt;                                    

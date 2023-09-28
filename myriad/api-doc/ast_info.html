@@ -60,7 +60,7 @@ specified form.</p>
 
 <h3 class="typedecl"><a name="type-attribute_name">attribute_name()</a></h3>
 <p><tt>attribute_name() = atom()</tt></p>
-<p> The name of a (parse-level) attribute (ex: '-my_attribute( my_value ).').</p>
+<p> The name of a (parse-level) attribute (e.g. '-my_attribute( my_value ).').</p>
 
 <h3 class="typedecl"><a name="type-attribute_table">attribute_table()</a></h3>
 <p><tt>attribute_table() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(<a href="#type-attribute_name">attribute_name()</a>, [{<a href="#type-attribute_value">attribute_value()</a>, <a href="#type-located_form">located_form()</a>}])</tt></p>
@@ -72,7 +72,11 @@ from its name.</p>
 
 <h3 class="typedecl"><a name="type-attribute_value">attribute_value()</a></h3>
 <p><tt>attribute_value() = term()</tt></p>
-<p> The value of a (parse-level) attribute (ex: '-my_attribute( my_value ).').</p>
+<p> The value of a (parse-level) attribute (e.g. '-my_attribute( my_value ).').</p>
+
+<h3 class="typedecl"><a name="type-bin_file_path">bin_file_path()</a></h3>
+<p><tt>bin_file_path() = <a href="file_utils.html#type-bin_file_path">file_utils:bin_file_path()</a></tt></p>
+
 
 <h3 class="typedecl"><a name="type-compile_option_entry">compile_option_entry()</a></h3>
 <p><tt>compile_option_entry() = <a href="#type-compile_option_name">compile_option_name()</a> | {<a href="#type-compile_option_name">compile_option_name()</a>, <a href="#type-compile_option_value">compile_option_value()</a>}</tt></p>
@@ -80,19 +84,19 @@ from its name.</p>
 
 <h3 class="typedecl"><a name="type-compile_option_name">compile_option_name()</a></h3>
 <p><tt>compile_option_name() = atom()</tt></p>
-<p> Ex: inline, export_all, etc.</p>
+<p> For example inline, export_all, etc.</p>
 
 <h3 class="typedecl"><a name="type-compile_option_table">compile_option_table()</a></h3>
 <p><tt>compile_option_table() = <a href="map_hashtable.html#type-map_hashtable">map_hashtable:map_hashtable</a>(<a href="#type-compile_option_name">compile_option_name()</a>, <a href="#type-maybe">maybe</a>([<a href="#type-compile_option_value">compile_option_value()</a>]))</tt></p>
 <p><p> For easy access to compilation information:</p>
 
- Note that an option specified without a value (ex: -Dmy_token on the command
+ Note that an option specified without a value (e.g. -Dmy_token on the command
  line) will be associated to the 'undefined' value.</p>
 
 <h3 class="typedecl"><a name="type-compile_option_value">compile_option_value()</a></h3>
 <p><tt>compile_option_value() = term()</tt></p>
 <p><p> In some cases (at least when it is specified from the command-line), a 
-compilation option is a triplet (ex: -Dmy_other_test_token=51 is translated, 
+compilation option is a triplet (e.g. -Dmy_other_test_token=51 is translated, 
 in terms of a parse-transform option, as: {d,my_other_test_token,51}).</p>
 
  The value associated to the option name ('d') is then:
@@ -160,7 +164,7 @@ identifiers of the functions to declare exported there.</p>
 
 <h3 class="typedecl"><a name="type-located_form">located_form()</a></h3>
 <p><tt>located_form() = {<a href="#type-ast_location">ast_location()</a>, <a href="#type-form">form()</a>}</tt></p>
-<p><p> When processing an AST (ex: read from a BEAM file), the order of the forms 
+<p><p> When processing an AST (e.g. read from a BEAM file), the order of the forms 
 matters (for example to report compile errors, which are relative to a context 
 defined by the last '-file' attribute previously encountered, i.e. like 
 {attribute,40,file,{"foo.erl",40}}). So even if we store forms in tables 
@@ -184,7 +188,7 @@ same order.</p>
 
 
 <h3 class="typedecl"><a name="type-module_info">module_info()</a></h3>
-<p><tt>module_info() = #module_info{module = <a href="#type-module_entry">module_entry()</a>, compilation_options = <a href="ast_info.html#type-compile_option_table">ast_info:compile_option_table()</a>, compilation_option_defs = [<a href="ast_info.html#type-located_form">ast_info:located_form()</a>], parse_attributes = <a href="ast_info.html#type-attribute_table">ast_info:attribute_table()</a>, remote_spec_defs = [<a href="ast_info.html#type-located_form">ast_info:located_form()</a>], includes = [<a href="file_utils.html#type-bin_file_path">file_utils:bin_file_path()</a>], include_defs = [<a href="ast_info.html#type-located_form">ast_info:located_form()</a>], type_exports = <a href="ast_info.html#type-type_export_table">ast_info:type_export_table()</a>, types = <a href="ast_info.html#type-type_table">ast_info:type_table()</a>, records = <a href="ast_info.html#type-record_table">ast_info:record_table()</a>, function_imports = <a href="ast_info.html#type-function_import_table">ast_info:function_import_table()</a>, function_imports_defs = [<a href="ast_info.html#type-located_form">ast_info:located_form()</a>], function_exports = <a href="ast_info.html#type-function_export_table">ast_info:function_export_table()</a>, functions = <a href="ast_info.html#type-function_table">ast_info:function_table()</a>, optional_callbacks_defs = [<a href="ast_info.html#type-located_form">ast_info:located_form()</a>], last_file_location = <a href="ast_info.html#type-located_form">ast_info:located_form()</a>, markers = <a href="ast_info.html#type-section_marker_table">ast_info:section_marker_table()</a>, errors = [<a href="ast_info.html#type-error">ast_info:error()</a>], unhandled_forms = [<a href="ast_info.html#type-located_form">ast_info:located_form()</a>]}</tt></p>
+<p><tt>module_info() = #module_info{module = <a href="#type-module_entry">module_entry()</a>, compilation_options = <a href="ast_info.html#type-compile_option_table">ast_info:compile_option_table()</a>, compilation_option_defs = [<a href="ast_info.html#type-located_form">ast_info:located_form()</a>], parse_attributes = <a href="ast_info.html#type-attribute_table">ast_info:attribute_table()</a>, remote_spec_defs = [<a href="ast_info.html#type-located_form">ast_info:located_form()</a>], includes = [<a href="file_utils.html#type-bin_file_path">file_utils:bin_file_path()</a>], include_defs = [<a href="ast_info.html#type-located_form">ast_info:located_form()</a>], type_exports = <a href="ast_info.html#type-type_export_table">ast_info:type_export_table()</a>, types = <a href="ast_info.html#type-type_table">ast_info:type_table()</a>, records = <a href="ast_info.html#type-record_table">ast_info:record_table()</a>, function_imports = <a href="ast_info.html#type-function_import_table">ast_info:function_import_table()</a>, function_imports_defs = [<a href="ast_info.html#type-located_form">ast_info:located_form()</a>], function_exports = <a href="ast_info.html#type-function_export_table">ast_info:function_export_table()</a>, functions = <a href="ast_info.html#type-function_table">ast_info:function_table()</a>, optional_callbacks_defs = [<a href="ast_info.html#type-located_form">ast_info:located_form()</a>], last_file_location = <a href="basic_utils.html#type-maybe">basic_utils:maybe</a>(<a href="ast_info.html#type-located_form">ast_info:located_form()</a>), markers = <a href="ast_info.html#type-section_marker_table">ast_info:section_marker_table()</a>, errors = [<a href="ast_info.html#type-error">ast_info:error()</a>], unhandled_forms = [<a href="ast_info.html#type-located_form">ast_info:located_form()</a>]}</tt></p>
 
 
 <h3 class="typedecl"><a name="type-record_definition">record_definition()</a></h3>
@@ -320,7 +324,7 @@ forms if requested, and with specified indentation level.</td></tr>
  based on a default indentation level.</td></tr>
 <tr><td valign="top"><a href="#parse_attribute_table_to_string-3">parse_attribute_table_to_string/3</a></td><td>Returns a textual representation of the specified parse-attribute table,
  with specified indentation level.</td></tr>
-<tr><td valign="top"><a href="#recompose_ast_from_module_info-1">recompose_ast_from_module_info/1</a></td><td>Recomposes an AST from specified module information.</td></tr>
+<tr><td valign="top"><a href="#recompose_ast_from_module_info-1">recompose_ast_from_module_info/1</a></td><td>Recomposes an AST from the specified module information.</td></tr>
 <tr><td valign="top"><a href="#records_to_string-1">records_to_string/1</a></td><td>Returns a textual representation of the specified records, based on a
  default indentation level.</td></tr>
 <tr><td valign="top"><a href="#records_to_string-2">records_to_string/2</a></td><td>Returns a textual representation of the specified records, with specified 
@@ -597,7 +601,7 @@ and using specified indentation level.</p>
 
 <h3 class="function"><a name="includes_to_string-3">includes_to_string/3</a></h3>
 <div class="spec">
-<p><tt>includes_to_string(Includes::[<a href="file_utils.html#type-bin_file_path">file_utils:bin_file_path()</a>], IncludeDefs::[<a href="#type-located_form">located_form()</a>], DoIncludeForms::boolean()) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><tt>includes_to_string(Includes::[<a href="#type-bin_file_path">bin_file_path()</a>], IncludeDefs::[<a href="#type-located_form">located_form()</a>], DoIncludeForms::boolean()) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
 <p> </p>
 </div><p>Returns a textual representation of the specified includes, based on a
  default indentation level.
@@ -605,7 +609,7 @@ and using specified indentation level.</p>
 
 <h3 class="function"><a name="includes_to_string-4">includes_to_string/4</a></h3>
 <div class="spec">
-<p><tt>includes_to_string(Includes::[<a href="file_utils.html#type-bin_file_path">file_utils:bin_file_path()</a>], IncludeDefs::[<a href="#type-located_form">located_form()</a>], DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><tt>includes_to_string(Includes::[<a href="#type-bin_file_path">bin_file_path()</a>], IncludeDefs::[<a href="#type-located_form">located_form()</a>], DoIncludeForms::boolean(), IndentationLevel::<a href="#type-indentation_level">indentation_level()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
 <p> </p>
 </div><p>Returns a textual representation of the specified includes, with
  specified indentation level.
@@ -726,7 +730,7 @@ forms if requested, and with specified indentation level.</p>
 <div class="spec">
 <p><tt>recompose_ast_from_module_info(Module_info::<a href="#type-module_info">module_info()</a>) -&gt; <a href="#type-ast">ast()</a></tt><br></p>
 <p> </p>
-</div><p>Recomposes an AST from specified module information.</p>
+</div><p>Recomposes an AST from the specified module information.</p>
 
 <h3 class="function"><a name="records_to_string-1">records_to_string/1</a></h3>
 <div class="spec">

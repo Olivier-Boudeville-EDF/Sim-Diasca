@@ -15,15 +15,18 @@
 
 <h2><a name="description">Description</a></h2><p>Gathering of various facilities about <b>lists</b>.</p>
 
- <p>See list_utils_test.erl for the corresponding test.</p>
-
- See also: set_utils.erl and list_table.erl.
-
+ This includes the addition of general-purpose functions operating on lists,
+ and the support of tagged lists (a special case of proplist).
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
 <p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
 
+
+<h3 class="typedecl"><a name="type-duplicate_info">duplicate_info()</a></h3>
+<p><tt>duplicate_info() = [{<a href="#type-element">element()</a>, <a href="#type-count">count()</a>}]</tt></p>
+<p> A list of elements reported as duplicated, together with the number (at least
+ two) of times they were present in a given container.</p>
 
 <h3 class="typedecl"><a name="type-element">element()</a></h3>
 <p><tt>element() = term()</tt></p>
@@ -41,6 +44,21 @@
 
 <h3 class="typedecl"><a name="type-proplist">proplist()</a></h3>
 <p><tt>proplist() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/proplists.html#type-proplist">proplists:proplist()</a></tt></p>
+<p> A list whose elements can be atoms or tuples (not only pairs) whose first
+ element is an atom.</p>
+
+<h3 class="typedecl"><a name="type-tagged_list">tagged_list()</a></h3>
+<p><tt>tagged_list(T) = [atom() | {Key::atom(), T}]</tt></p>
+<p><p> A tagged list is a specific case of proplist, whose tuples are only pairs.</p>
+
+ This allows for example supporting the extraction of elements.</p>
+
+<h3 class="typedecl"><a name="type-tagged_list">tagged_list()</a></h3>
+<p><tt>tagged_list() = <a href="#type-tagged_list">tagged_list</a>(<a href="#type-element">element()</a>)</tt></p>
+
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -48,10 +66,12 @@
 <tr><td valign="top"><a href="#append_at_end-2">append_at_end/2</a></td><td>Appends specified element at the end of specified list, without changing 
 the order of the list.</td></tr>
 <tr><td valign="top"><a href="#are_atoms-1">are_atoms/1</a></td><td>Returns whether the specified list contains only atoms.</td></tr>
+<tr><td valign="top"><a href="#are_equal-1">are_equal/1</a></td><td>Returns whether all the elements of the specified list are equal.</td></tr>
 <tr><td valign="top"><a href="#are_integers-1">are_integers/1</a></td><td>Returns whether the specified list contains only integers.</td></tr>
 <tr><td valign="top"><a href="#are_pids-1">are_pids/1</a></td><td>Returns whether the specified list contains only PIDs.</td></tr>
 <tr><td valign="top"><a href="#cartesian_product-1">cartesian_product/1</a></td><td>Returns the cartesian product of the specified lists (collected in a 
 top-level list).</td></tr>
+<tr><td valign="top"><a href="#check_equal-1">check_equal/1</a></td><td>Checks that all the elements of the specified list are equal.</td></tr>
 <tr><td valign="top"><a href="#check_integers-1">check_integers/1</a></td><td>Checks that specified argument is a list of integers.</td></tr>
 <tr><td valign="top"><a href="#check_strictly_ascending-1">check_strictly_ascending/1</a></td><td>Checks that the terms in the specified list are in strict (no duplicates) 
 ascending (Erlang) term order.</td></tr>
@@ -67,10 +87,11 @@ deleted, whether or not there is any.</td></tr>
 <tr><td valign="top"><a href="#delete_existing_elements-2">delete_existing_elements/2</a></td><td>Returns a copy of the specified list where the first element matching
  each of the specified elements is deleted, ensuring that at least one of these
  elements exists (as opposed to lists:delete/2).</td></tr>
-<tr><td valign="top"><a href="#delete_if_existing-2">delete_if_existing/2</a></td><td>Deletes the first matching of specified element from specified list, 
-returning whether an element has been removed: either the 'not_found' atom (in 
-which case the list remained the same) or the corresponding new list (same 
-order and content, except first occurrence removed).</td></tr>
+<tr><td valign="top"><a href="#delete_if_existing-2">delete_if_existing/2</a></td><td>Deletes the first matching of the specified element from the specified 
+list, returning whether an element has been removed, that is either the 
+'not_found' atom (in which case the list remained the same) or the 
+corresponding new list (same order and content, except that the first 
+occurrence of the specified element was removed).</td></tr>
 <tr><td valign="top"><a href="#determine_tuple_info-1">determine_tuple_info/1</a></td><td>Determines tuple-related information about specified datastructure:
  returns {TupleCount, TupleSize}, supposing the list is made of tuples of
  uniform sizes.</td></tr>
@@ -99,6 +120,7 @@ next drawing operates on the resulting shortened list, so that any element is
 drawn up to once.</td></tr>
 <tr><td valign="top"><a href="#duplicate-2">duplicate/2</a></td><td>Returns a list made of the specified number of occurrences of the
  specified element.</td></tr>
+<tr><td valign="top"><a href="#duplicate_info_to_string-1">duplicate_info_to_string/1</a></td><td>Returns a textual description of the specified duplicate information.</td></tr>
 <tr><td valign="top"><a href="#ensure_atoms-1">ensure_atoms/1</a></td><td>Ensures that the specified argument is a list of atoms: encloses any atom
  in a list of its own if not already a list, or check that this list is only
  populated of atoms; respects any original order.</td></tr>
@@ -116,7 +138,14 @@ its own if not already a list; respects any original order.</td></tr>
 <tr><td valign="top"><a href="#ensure_tuples-1">ensure_tuples/1</a></td><td>Ensures that the specified argument is a list of tuples: encloses any
  tuple in a list of its own if not already a list, or check that this list is
  only populated of tuples; respects any original order.</td></tr>
-<tr><td valign="top"><a href="#extract_element_at-2">extract_element_at/2</a></td><td>Extracts element from the specified list, at the specified index.</td></tr>
+<tr><td valign="top"><a href="#extract_atom_if_existing-2">extract_atom_if_existing/2</a></td><td>Extracts, from the specified tagged list, the (first occurrence of the)
+ of the specified atom: either returns 'not_found' if such an atom was not
+ found, or the tagged list obtained when the first occurrence of that atom has
+ been removed.</td></tr>
+<tr><td valign="top"><a href="#extract_atom_with_default-3">extract_atom_with_default/3</a></td><td>Extracts, from the specified tagged list, the (first occurrence of the) 
+specified atom if found, otherwise returns the specified default; in all cases 
+returns an element (extracted or default) and a corresponding tagged list.</td></tr>
+<tr><td valign="top"><a href="#extract_element_at-2">extract_element_at/2</a></td><td>Extracts the element of the specified list at the specified index.</td></tr>
 <tr><td valign="top"><a href="#extract_element_if_existing-2">extract_element_if_existing/2</a></td><td>Extracts the (first occurrence of the) specified element from the
  specified list, if existing there, then returning the shrunk list (with that
  element removed, and in its original order), otherwise returning false.</td></tr>
@@ -128,6 +157,15 @@ list so that the next extracting operates on the resulting shortened list
 <tr><td valign="top"><a href="#extract_last_element-1">extract_last_element/1</a></td><td>Extracts the last element of the specified (non-empty) list, returning a 
 pair made of that element and of the remainder of the list (in its original 
 order).</td></tr>
+<tr><td valign="top"><a href="#extract_pair_if_existing-2">extract_pair_if_existing/2</a></td><td>Extracts, from the specified tagged list, the (first occurrence of the)
+ key/value pair specified based on its first atom element (its key): either
+ returns false if no such pair was found, or returns the value associated to
+ the specified atom (thus in second position of the corresponding pair),
+ together with the rest of the specified tagged list.</td></tr>
+<tr><td valign="top"><a href="#extract_pair_with_default-3">extract_pair_with_default/3</a></td><td>Extracts, from the specified tagged list, the (first occurrence of the) 
+key/value pair specified based on its first atom element (its key) if found, 
+otherwise returns for this element the specified default; in all cases returns 
+an element (extracted or default) and a corresponding tagged list.</td></tr>
 <tr><td valign="top"><a href="#filter_out_undefined-1">filter_out_undefined/1</a></td><td>Removes (filters out) all elements equal to 'undefined'; preserves order.</td></tr>
 <tr><td valign="top"><a href="#flatten_once-1">flatten_once/1</a></td><td>Flattens specified list of lists only once (that is on a single level), 
 as opposed to indefinitively (as done recursively by lists:flatten/1); 
@@ -135,10 +173,10 @@ provides more control than a recursive counterpart.</td></tr>
 <tr><td valign="top"><a href="#flatten_tuples-1">flatten_tuples/1</a></td><td>Flattens a list of tuples into a simple list of their elements, without 
 tuples and in the same order.</td></tr>
 <tr><td valign="top"><a href="#get_all_permutations-1">get_all_permutations/1</a></td><td>Returns a list of all the permutations of the specified list.</td></tr>
-<tr><td valign="top"><a href="#get_duplicates-1">get_duplicates/1</a></td><td>Returns the duplicates in the specified list: returns an (unordered) list 
-of {DuplicatedTerm,DuplicationCount} pairs, where each duplicated term (that 
-is a term present more than once) is specified, alongside the total number of 
-occurrences of that term in the specified list.</td></tr>
+<tr><td valign="top"><a href="#get_duplicates-1">get_duplicates/1</a></td><td>Returns the duplicates found in the specified list: returns an 
+(unordered) list of {DuplicatedTerm,DuplicationCount} pairs, where each 
+duplicated term (that is a term present more than once) is specified, 
+alongside the total number of occurrences of that term in the specified list.</td></tr>
 <tr><td valign="top"><a href="#get_element_at-2">get_element_at/2</a></td><td>Returns the element in the list at the specified index, in
  <code>[1..length(List)]</code>.</td></tr>
 <tr><td valign="top"><a href="#get_index_of-2">get_index_of/2</a></td><td>Returns the index, in <code>[1..length(List)]</code>, of the (first occurrence of 
@@ -147,6 +185,8 @@ the) specified element in the specified list.</td></tr>
 <tr><td valign="top"><a href="#get_maybe_index_of-2">get_maybe_index_of/2</a></td><td>Returns the index, in <code>[1..length(List)]</code>, of the (first occurrence of 
 the) specified element in the specified list, or 'undefined' if the element is 
 not found.</td></tr>
+<tr><td valign="top"><a href="#get_min_max-1">get_min_max/1</a></td><td>Returns the minimum and maximum values found in the specified list, based
+ on the native term order.</td></tr>
 <tr><td valign="top"><a href="#group_by-2">group_by/2</a></td><td>Splits the specified list by groups of Count elements.</td></tr>
 <tr><td valign="top"><a href="#has_duplicates-1">has_duplicates/1</a></td><td>Tells whether there are in the specified list elements that are present
  more than once.</td></tr>
@@ -155,7 +195,8 @@ list, and of its remainder (tail).</td></tr>
 <tr><td valign="top"><a href="#insert_at_all_places-2">insert_at_all_places/2</a></td><td>Returns all the lists obtained from the specified one L, when inserting 
 the specified element at each possible place in L (including before and 
 after).</td></tr>
-<tr><td valign="top"><a href="#insert_element_at-3">insert_element_at/3</a></td><td>Inserts specified element at specified position in the specified list.</td></tr>
+<tr><td valign="top"><a href="#insert_element_at-3">insert_element_at/3</a></td><td>Inserts the specified element at the specified position in the specified 
+list.</td></tr>
 <tr><td valign="top"><a href="#intercalate-2">intercalate/2</a></td><td>Intercalates the specified term between all elements of the specified 
 list.</td></tr>
 <tr><td valign="top"><a href="#intersection-2">intersection/2</a></td><td>Returns the intersection of the two specified lists, that is the list of 
@@ -195,6 +236,8 @@ in the kept elements is preserved.</td></tr>
 <tr><td valign="top"><a href="#unordered_compare-2">unordered_compare/2</a></td><td>Compares the two specified lists with no regard to the order of their
  elements: returns true iff they have the exact same elements (differentiating
  between 1 and 1.0 for example), possibly in a different order.</td></tr>
+<tr><td valign="top"><a href="#zipn-1">zipn/1</a></td><td>Performs a generalization of zip2, zip3: takes one element at a time of 
+each of the input lists, and adds it to a corresponding tuple.</td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
@@ -232,6 +275,12 @@ the order of the list.</p>
  Considers that an empty list complies.
 </p>
 
+<h3 class="function"><a name="are_equal-1">are_equal/1</a></h3>
+<div class="spec">
+<p><tt>are_equal(T::list()) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Returns whether all the elements of the specified list are equal.</p>
+
 <h3 class="function"><a name="are_integers-1">are_integers/1</a></h3>
 <div class="spec">
 <p><tt>are_integers(T::term()) -&gt; boolean()</tt><br></p>
@@ -261,6 +310,15 @@ top-level list).</p>
      [[a,d,f], [a,e,f], [b,d,f], [b,e,f], [c,d,f], [c,e,f]]
 </p>
 
+<h3 class="function"><a name="check_equal-1">check_equal/1</a></h3>
+<div class="spec">
+<p><tt>check_equal(L::list()) -&gt; list()</tt><br></p>
+<p> </p>
+</div><p><p>Checks that all the elements of the specified list are equal.</p>
+
+ Returns this list if true, otherwise throws an exception.
+</p>
+
 <h3 class="function"><a name="check_integers-1">check_integers/1</a></h3>
 <div class="spec">
 <p><tt>check_integers(Any::term()) -&gt; <a href="#type-void">void()</a></tt><br></p>
@@ -278,8 +336,8 @@ top-level list).</p>
 ascending (Erlang) term order.</p>
 
  In many cases, the actual type of these elements shall be checked beforehand
- (ex: see type_utils:check_{integers,floats}/1) to ensure that comparisons make
- sense (ex: float versus atom).
+ (e.g. see type_utils:check_{integers,floats}/1) to ensure that comparisons
+ make sense (e.g. float versus atom).
 </p>
 
 <h3 class="function"><a name="count_occurrences-1">count_occurrences/1</a></h3>
@@ -327,10 +385,11 @@ deleted, whether or not there is any.</p>
 <div class="spec">
 <p><tt>delete_if_existing(Elem::<a href="#type-element">element()</a>, List::list()) -&gt; not_found | list()</tt><br></p>
 <p> </p>
-</div><p><p>Deletes the first matching of specified element from specified list, 
-returning whether an element has been removed: either the 'not_found' atom (in 
-which case the list remained the same) or the corresponding new list (same 
-order and content, except first occurrence removed).</p>
+</div><p><p>Deletes the first matching of the specified element from the specified 
+list, returning whether an element has been removed, that is either the 
+'not_found' atom (in which case the list remained the same) or the 
+corresponding new list (same order and content, except that the first 
+occurrence of the specified element was removed).</p>
 
  Note: allows to perform only one traversal of the list (compared for example
  to a lists:member/2 then a lists:delete/2).
@@ -441,6 +500,12 @@ drawn up to once.</p>
  specified element.
 </p>
 
+<h3 class="function"><a name="duplicate_info_to_string-1">duplicate_info_to_string/1</a></h3>
+<div class="spec">
+<p><tt>duplicate_info_to_string(DupPairs::<a href="#type-duplicate_info">duplicate_info()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of the specified duplicate information.</p>
+
 <h3 class="function"><a name="ensure_atoms-1">ensure_atoms/1</a></h3>
 <div class="spec">
 <p><tt>ensure_atoms(Atom) -&gt; any()</tt></p>
@@ -498,11 +563,35 @@ its own if not already a list; respects any original order.</p>
  only populated of tuples; respects any original order.
 </p>
 
+<h3 class="function"><a name="extract_atom_if_existing-2">extract_atom_if_existing/2</a></h3>
+<div class="spec">
+<p><tt>extract_atom_if_existing(Atom::atom(), TaggedList::<a href="#type-tagged_list">tagged_list()</a>) -&gt; not_found | <a href="#type-tagged_list">tagged_list()</a></tt><br></p>
+<p> </p>
+</div><p>Extracts, from the specified tagged list, the (first occurrence of the)
+ of the specified atom: either returns 'not_found' if such an atom was not
+ found, or the tagged list obtained when the first occurrence of that atom has
+ been removed.
+</p>
+
+<h3 class="function"><a name="extract_atom_with_default-3">extract_atom_with_default/3</a></h3>
+<div class="spec">
+<p><tt>extract_atom_with_default(Atom::atom(), DefaultValue::<a href="#type-element">element()</a>, TaggedList::<a href="#type-tagged_list">tagged_list()</a>) -&gt; {<a href="#type-element">element()</a>, <a href="#type-tagged_list">tagged_list()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Extracts, from the specified tagged list, the (first occurrence of the) 
+specified atom if found, otherwise returns the specified default; in all cases 
+returns an element (extracted or default) and a corresponding tagged list.</p>
+
+ So either returns the specified atom if found, or the specified default,
+ together with the resulting tagged list (which is either the original tagged
+ list if the default is returned, or a shrunk tagged list if an actual
+ extraction could be done).
+</p>
+
 <h3 class="function"><a name="extract_element_at-2">extract_element_at/2</a></h3>
 <div class="spec">
 <p><tt>extract_element_at(List::list(), Index::<a href="#type-positive_index">positive_index()</a>) -&gt; {<a href="#type-element">element()</a>, list()}</tt><br></p>
 <p> </p>
-</div><p><p>Extracts element from the specified list, at the specified index.</p>
+</div><p><p>Extracts the element of the specified list at the specified index.</p>
 
  <p>Returns that element and the resulting, shrunk list.</p>
 
@@ -545,6 +634,33 @@ order).</p>
 
  Note: not computationnally efficient, usually having to retrieve the last
  element suggests a bad code design.
+</p>
+
+<h3 class="function"><a name="extract_pair_if_existing-2">extract_pair_if_existing/2</a></h3>
+<div class="spec">
+<p><tt>extract_pair_if_existing(KeyAtom::atom(), TaggedList::<a href="#type-tagged_list">tagged_list()</a>) -&gt; false | {<a href="#type-element">element()</a>, <a href="#type-tagged_list">tagged_list()</a>}</tt><br></p>
+<p> </p>
+</div><p>Extracts, from the specified tagged list, the (first occurrence of the)
+ key/value pair specified based on its first atom element (its key): either
+ returns false if no such pair was found, or returns the value associated to
+ the specified atom (thus in second position of the corresponding pair),
+ together with the rest of the specified tagged list.
+</p>
+
+<h3 class="function"><a name="extract_pair_with_default-3">extract_pair_with_default/3</a></h3>
+<div class="spec">
+<p><tt>extract_pair_with_default(KeyAtom::atom(), DefaultValue::<a href="#type-element">element()</a>, TaggedList::<a href="#type-tagged_list">tagged_list()</a>) -&gt; {<a href="#type-element">element()</a>, <a href="#type-tagged_list">tagged_list()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Extracts, from the specified tagged list, the (first occurrence of the) 
+key/value pair specified based on its first atom element (its key) if found, 
+otherwise returns for this element the specified default; in all cases returns 
+an element (extracted or default) and a corresponding tagged list.</p>
+
+ So either returns that default if no such pair was found, or returns the value
+ associated to the specified key atom (thus in second position of the
+ corresponding pair), together with the resulting tagged list (which is either
+ the original tagged list if the default is returned, or a shrunk tagged list
+ if an actual extraction could be done).
 </p>
 
 <h3 class="function"><a name="filter_out_undefined-1">filter_out_undefined/1</a></h3>
@@ -591,12 +707,12 @@ tuples and in the same order.</p>
 
 <h3 class="function"><a name="get_duplicates-1">get_duplicates/1</a></h3>
 <div class="spec">
-<p><tt>get_duplicates(List::list()) -&gt; [{<a href="#type-element">element()</a>, <a href="#type-count">count()</a>}]</tt><br></p>
+<p><tt>get_duplicates(List::list()) -&gt; <a href="#type-duplicate_info">duplicate_info()</a></tt><br></p>
 <p> </p>
-</div><p><p>Returns the duplicates in the specified list: returns an (unordered) list 
-of {DuplicatedTerm,DuplicationCount} pairs, where each duplicated term (that 
-is a term present more than once) is specified, alongside the total number of 
-occurrences of that term in the specified list.</p>
+</div><p><p>Returns the duplicates found in the specified list: returns an 
+(unordered) list of {DuplicatedTerm,DuplicationCount} pairs, where each 
+duplicated term (that is a term present more than once) is specified, 
+alongside the total number of occurrences of that term in the specified list.</p>
 
  <p>Note: as a consequence, a term that is not in the specified list, or that is 
 present there only once, will not be referenced in the returned list; use 
@@ -668,6 +784,14 @@ not found.</p>
    undefined = get_maybe_index_of(xxx, [foo, ugh, bar, baz])
 </p>
 
+<h3 class="function"><a name="get_min_max-1">get_min_max/1</a></h3>
+<div class="spec">
+<p><tt>get_min_max(L::list()) -&gt; {<a href="#type-element">element()</a>, <a href="#type-element">element()</a>}</tt><br></p>
+<p> </p>
+</div><p>Returns the minimum and maximum values found in the specified list, based
+ on the native term order.
+</p>
+
 <h3 class="function"><a name="group_by-2">group_by/2</a></h3>
 <div class="spec">
 <p><tt>group_by(Count::<a href="#type-count">count()</a>, List::list()) -&gt; [list()]</tt><br></p>
@@ -715,7 +839,8 @@ after).</p>
 <div class="spec">
 <p><tt>insert_element_at(Element::<a href="#type-element">element()</a>, List::list(), Index::<a href="#type-positive_index">positive_index()</a>) -&gt; list()</tt><br></p>
 <p> </p>
-</div><p><p>Inserts specified element at specified position in the specified list.</p>
+</div><p><p>Inserts the specified element at the specified position in the specified 
+list.</p>
 
  For example: insert_element_at(foo, [a, b, c, d], 3) will return
  [a, b, foo, c, d].
@@ -944,6 +1069,19 @@ in the kept elements is preserved.</p>
 </div><p>Compares the two specified lists with no regard to the order of their
  elements: returns true iff they have the exact same elements (differentiating
  between 1 and 1.0 for example), possibly in a different order.
+</p>
+
+<h3 class="function"><a name="zipn-1">zipn/1</a></h3>
+<div class="spec">
+<p><tt>zipn(ListOfLists::[list()]) -&gt; [tuple()]</tt><br></p>
+<p> </p>
+</div><p><p>Performs a generalization of zip2, zip3: takes one element at a time of 
+each of the input lists, and adds it to a corresponding tuple.</p>
+
+ For example, list_utils:zipn([_L1=[a,b,c], _L2=[1,2,3],
+ _L3=[true,false,undefined]]) will return a list containing triplets (as there
+ are 3 lists), whose elements are taken from each of the input lists, in order:
+ [[a,1,true],[b,2,false],[c,3,undefined]].
 </p>
 <hr>
 

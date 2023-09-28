@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.13.1: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.16: http://docutils.sourceforge.net/" />
 <title>Sim-Diasca Installation Guide</title>
 <meta content="Sim-Diasca, massive, simulation, multi-agent, installation" name="keywords" />
 <link rel="stylesheet" href="pygments-default.css" type="text/css" />
@@ -32,9 +32,9 @@
 </tr>
 <tr class="field"><th class="field-name">Creation date:</th><td class="field-body">Monday, February 8, 2010</td>
 </tr>
-<tr class="field"><th class="field-name">Lastly updated:</th><td class="field-body">Thursday, January 5, 2023</td>
+<tr class="field"><th class="field-name">Lastly updated:</th><td class="field-body">Thursday, September 28, 2023</td>
 </tr>
-<tr class="field"><th class="field-name">Version:</th><td class="field-body">2.4.5</td>
+<tr class="field"><th class="field-name">Version:</th><td class="field-body">2.4.6</td>
 </tr>
 <tr class="field"><th class="field-name">Status:</th><td class="field-body">Stable</td>
 </tr>
@@ -50,7 +50,7 @@
 <p></p>
 <p><span class="raw-html"><a name="sim_diasca_toc"></a></span></p>
 <div class="contents topic" id="table-of-contents">
-<p class="topic-title first"><strong>Table of Contents</strong></p>
+<p class="topic-title"><strong>Table of Contents</strong></p>
 <ul class="simple">
 <li><a class="reference internal" href="#objective-context" id="id46">Objective &amp; Context</a></li>
 <li><a class="reference internal" href="#basic-system-wide-network-settings" id="id47">Basic System-wide Network Settings</a><ul>
@@ -345,7 +345,7 @@ the Erlang mode for that.</td>
 </tr>
 <tr><td>Nedit</td>
 <td><tt class="docutils literal">nedit</tt></td>
-<td>Optional</td>
+<td>Very optional</td>
 <td>To edit Sim-Diasca sources with a dedicated
 WOOPER-aware syntax highlighting</td>
 </tr>
@@ -436,11 +436,14 @@ Sim-Diasca-enabled LogMX parser.</td>
 <p>The choice in terms of text editor is a matter of taste, any should be suitable (including <tt class="docutils literal">Emacs</tt> or IDEs like <a class="reference external" href="https://erlide.org">Erlide</a>, based on <a class="reference external" href="http://www.eclipse.org/">Eclipse</a>).</p>
 <p>Finally, users of Debian-based distributions (Jeesie, Wheezy) could just start with the following command to install the main prerequisite packages:</p>
 <pre class="code bash literal-block">
-$ sudo apt-get install bzip2 coreutils build-essential g++       <span class="se">\
+<span class="c1"># Depending on version, libwxgtk3.0-dev could/should be replaced
+# with libwxgtk-webview3.0-gtk3-dev:
+#
+</span>$ sudo apt-get install bzip2 coreutils build-essential g++       <span class="se">\
 </span>  libncurses5-dev openssl libssl-dev libwxgtk3.0-dev             <span class="se">\
 </span>  libgl1-mesa-dev libglu1-mesa-dev libpng3                       <span class="se">\
-</span>  python-docutils eog evince gcc gnuplot  gnuplot-x11            <span class="se">\
-</span>  geeqie graphviz uuid-runtime make mplayer nedit subversion ant <span class="se">\
+</span>  python-docutils eog evince gcc gnuplot gnuplot-x11             <span class="se">\
+</span>  geeqie graphviz uuid-runtime make mplayer ant                  <span class="se">\
 </span>  openjdk-8-jdk texlive python3
 </pre>
 <div class="admonition note">

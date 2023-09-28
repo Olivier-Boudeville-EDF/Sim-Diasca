@@ -34,8 +34,8 @@ any two of them.</p>
 <p><tt>id() = <a href="#type-uuid">uuid()</a> | <a href="#type-integer_id">integer_id()</a> | <a href="#type-sortable_id">sortable_id()</a> | pid() | reference() | term()</tt></p>
 <p><p> Any type of identifier.</p>
 
- <p>Identifiers may be transient (ex: PIDs are unique during the life of a VM) or 
-permanent (ex: UUID), local to a node or global.</p>
+ <p>Identifiers may be transient (e.g. PIDs are unique during the life of a VM) or 
+permanent (e.g. UUID), local to a node or global.</p>
 
  Besides being each unique, all of them are expected to be directly comparable
  thanks to the base, Erlang term order.</p>
@@ -104,7 +104,7 @@ human-readable as possible.</p>
 
 <h3 class="typedecl"><a name="type-uuid">uuid()</a></h3>
 <p><tt>uuid() = <a href="#type-ustring">ustring()</a></tt></p>
-<p> A string UUID (ex: "ed64ffd4-74ee-43dc-adba-be37ed8735aa").</p>
+<p> A string UUID (e.g. "ed64ffd4-74ee-43dc-adba-be37ed8735aa").</p>
 
 <h2><a name="index">Function Index</a></h2>
 <table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#assign_sorted_identifiers-2">assign_sorted_identifiers/2</a></td><td>Assigns sorted identifiers to the specified elements not being already 
@@ -134,7 +134,7 @@ specified ones, which are presumably ordered (first being lower than second).</t
 that is the one that is immediately superior to it.</td></tr>
 <tr><td valign="top"><a href="#identifier_table_to_string-1">identifier_table_to_string/1</a></td><td>Returns a textual representation of specified table of sortable
  identifiers.</td></tr>
-<tr><td valign="top"><a href="#sortable_id_to_string-1">sortable_id_to_string/1</a></td><td>Returns a textual representation of specified sortable identifier.</td></tr>
+<tr><td valign="top"><a href="#sortable_id_to_string-1">sortable_id_to_string/1</a></td><td>Returns a textual representation of the specified sortable identifier.</td></tr>
 <tr><td valign="top"><a href="#sortable_ids_to_string-1">sortable_ids_to_string/1</a></td><td>Returns a textual representation of specified sortable identifiers.</td></tr>
 </table>
 
@@ -149,10 +149,10 @@ identified (in the specified table, supposedly having its initial elements
 appropriately sorted), so that the order of these elements is respected by 
 their identifiers in the returned table.</p>
 
- <p>Ex: if <code>ElementsToIdentify=[</code>a', 'b', 'c', 'd']' and, in IdentifierTable, 'a'
- is associated to La and 'd' to Ld, supposing <code>La &lt; Ld</code>, whereas 'b' and 'c'
- are not already associated, then the returned table will also associate some
- Lc to 'c' and some Ld to 'd' so that <code>La &lt; Lb &lt; Lc &lt; Ld</code>.</p>
+ <p>For example if <code>ElementsToIdentify=[</code>a', 'b', 'c', 'd']' and, in
+ IdentifierTable, 'a' is associated to La and 'd' to Ld, supposing <code>La &lt; Ld</code>,
+ whereas 'b' and 'c' are not already associated, then the returned table will
+ also associate some Lc to 'c' and some Ld to 'd' so that <code>La &lt; Lb &lt; Lc &lt; Ld</code>.</p>
 
  <p>Throws an exception if no correct mapping could be devised.</p>
 
@@ -228,7 +228,7 @@ specified ones, which are presumably ordered (first being lower than second).</p
  <p>Note: most probably the most useful function in order to create new sortable 
 identifiers.</p>
 
- Ex: get_sortable_id_between([1,7,1], [1,7,2]) may return [1,7,1,1].
+ For example get_sortable_id_between([1,7,1], [1,7,2]) may return [1,7,1,1].
 </p>
 
 <h3 class="function"><a name="get_sortable_id_lower_bound-0">get_sortable_id_lower_bound/0</a></h3>
@@ -272,7 +272,7 @@ inserted between these two - which defeats the purpose of this datatype.</p>
 <div class="spec">
 <p><tt>sortable_id_to_string(Id::<a href="#type-sortable_id">sortable_id()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
 <p> </p>
-</div><p>Returns a textual representation of specified sortable identifier.</p>
+</div><p>Returns a textual representation of the specified sortable identifier.</p>
 
 <h3 class="function"><a name="sortable_ids_to_string-1">sortable_ids_to_string/1</a></h3>
 <div class="spec">

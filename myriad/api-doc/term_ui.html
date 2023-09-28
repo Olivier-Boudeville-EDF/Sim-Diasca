@@ -27,32 +27,24 @@ with colors, dialog boxes, etc., relying on the 'dialog' or 'whiptail' tools.</p
 
 <h2><a name="types">Data Types</a></h2>
 
-<h3 class="typedecl"><a name="type-backtitle_entry">backtitle_entry()</a></h3>
-<p><tt>backtitle_entry() = {backtitle, <a href="#type-title">title()</a>}</tt></p>
-
-
 <h3 class="typedecl"><a name="type-binary_choice">binary_choice()</a></h3>
-<p><tt>binary_choice() = yes | no</tt></p>
+<p><tt>binary_choice() = <a href="ui.html#type-binary_choice">ui:binary_choice()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-choice_designator">choice_designator()</a></h3>
-<p><tt>choice_designator() = term() | ui_cancel</tt></p>
+<p><tt>choice_designator() = <a href="ui.html#type-choice_designator">ui:choice_designator()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-choice_element">choice_element()</a></h3>
-<p><tt>choice_element() = {<a href="#type-choice_designator">choice_designator()</a>, <a href="#type-choice_text">choice_text()</a>}</tt></p>
+<p><tt>choice_element() = <a href="ui.html#type-choice_element">ui:choice_element()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-choice_index">choice_index()</a></h3>
-<p><tt>choice_index() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+<p><tt>choice_index() = <a href="ui.html#type-choice_index">ui:choice_index()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-choice_text">choice_text()</a></h3>
-<p><tt>choice_text() = <a href="#type-text">text()</a></tt></p>
-
-
-<h3 class="typedecl"><a name="type-common_entry">common_entry()</a></h3>
-<p><tt>common_entry() = <a href="#type-backtitle_entry">backtitle_entry()</a> | <a href="#type-title_entry">title_entry()</a></tt></p>
+<p><tt>choice_text() = <a href="ui.html#type-choice_text">ui:choice_text()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-dialog_locale">dialog_locale()</a></h3>
@@ -69,6 +61,10 @@ with colors, dialog boxes, etc., relying on the 'dialog' or 'whiptail' tools.</p
 <p><tt>dialog_tool() = dialog | whiptail</tt></p>
 
 
+<h3 class="typedecl"><a name="type-file">file()</a></h3>
+<p><tt>file() = <a href="file_utils.html#type-file">file_utils:file()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-file_path">file_path()</a></h3>
 <p><tt>file_path() = <a href="file_utils.html#type-file_path">file_utils:file_path()</a></tt></p>
 
@@ -82,51 +78,43 @@ with colors, dialog boxes, etc., relying on the 'dialog' or 'whiptail' tools.</p
 
 
 <h3 class="typedecl"><a name="type-label">label()</a></h3>
-<p><tt>label() = <a href="#type-text">text()</a></tt></p>
+<p><tt>label() = <a href="ui.html#type-label">ui:label()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-message">message()</a></h3>
-<p><tt>message() = <a href="#type-text">text()</a></tt></p>
+<p><tt>message() = <a href="ui.html#type-message">ui:message()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-prompt">prompt()</a></h3>
-<p><tt>prompt() = <a href="#type-text">text()</a></tt></p>
+<p><tt>prompt() = <a href="ui.html#type-prompt">ui:prompt()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-setting_table">setting_table()</a></h3>
-<p><tt>setting_table() = <a href="list_table.html#type-list_table">list_table:list_table</a>(<a href="#type-ui_setting_key">ui_setting_key()</a>, <a href="#type-ui_setting_value">ui_setting_value()</a>)</tt></p>
+<p><tt>setting_table() = <a href="ui.html#type-setting_table">ui:setting_table()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-text">text()</a></h3>
-<p><tt>text() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
-
-
-<h3 class="typedecl"><a name="type-title">title()</a></h3>
-<p><tt>title() = <a href="#type-text">text()</a></tt></p>
-
-
-<h3 class="typedecl"><a name="type-title_entry">title_entry()</a></h3>
-<p><tt>title_entry() = {title, <a href="#type-title">title()</a>}</tt></p>
+<p><tt>text() = <a href="ui.html#type-text">ui:text()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-ui_options">ui_options()</a></h3>
-<p><tt>ui_options() = [any()]</tt></p>
+<p><tt>ui_options() = <a href="ui.html#type-ui_options">ui:ui_options()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-ui_setting_entry">ui_setting_entry()</a></h3>
-<p><tt>ui_setting_entry() = {<a href="#type-ui_setting_key">ui_setting_key()</a>, <a href="#type-ui_setting_value">ui_setting_value()</a>}</tt></p>
+<p><tt>ui_setting_entry() = <a href="ui.html#type-ui_setting_entry">ui:ui_setting_entry()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-ui_setting_key">ui_setting_key()</a></h3>
-<p><tt>ui_setting_key() = backtitle | title</tt></p>
+<p><tt>ui_setting_key() = <a href="ui.html#type-ui_setting_key">ui:ui_setting_key()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-ui_setting_value">ui_setting_value()</a></h3>
-<p><tt>ui_setting_value() = term()</tt></p>
+<p><tt>ui_setting_value() = <a href="ui.html#type-ui_setting_value">ui:ui_setting_value()</a></tt></p>
 
 
 <h3 class="typedecl"><a name="type-ui_state">ui_state()</a></h3>
-<p><tt>ui_state() = #term_ui_state{dialog_tool = <a href="#type-dialog_tool">dialog_tool()</a>, dialog_tool_path = <a href="#type-file_path">file_path()</a>, locale = <a href="#type-dialog_locale">dialog_locale()</a>, log_console = boolean(), log_file = <a href="#type-maybe">maybe</a>(<a href="file_utils.html#type-file">file_utils:file()</a>), settings = <a href="#type-setting_table">setting_table()</a>}</tt></p>
+<p><tt>ui_state() = #term_ui_state{dialog_tool = <a href="#type-dialog_tool">dialog_tool()</a>, dialog_tool_path = <a href="#type-file_path">file_path()</a>, locale = <a href="#type-dialog_locale">dialog_locale()</a>, log_console = boolean(), log_file = <a href="#type-maybe">maybe</a>(<a href="#type-file">file()</a>), settings = <a href="#type-setting_table">setting_table()</a>}</tt></p>
 
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
@@ -411,7 +399,7 @@ designator provided), and returns its index.</p>
 
 <h3 class="function"><a name="choose_numbered_item_with_default-2">choose_numbered_item_with_default/2</a></h3>
 <div class="spec">
-<p><tt>choose_numbered_item_with_default(Choices::[<a href="#type-choice_text">choice_text()</a>], DefaultChoiceText::<a href="#type-choice_index">choice_index()</a>) -&gt; <a href="#type-choice_index">choice_index()</a></tt><br></p>
+<p><tt>choose_numbered_item_with_default(Choices::[<a href="#type-choice_text">choice_text()</a>], DefaultChoiceText::<a href="#type-choice_text">choice_text()</a>) -&gt; <a href="#type-choice_index">choice_index()</a></tt><br></p>
 <p> </p>
 </div><p><p>Selects, based on an implicit state, using a default prompt, an item 
 among the specified ones, with a default item being specified, and returns its 
@@ -423,7 +411,7 @@ index.</p>
 
 <h3 class="function"><a name="choose_numbered_item_with_default-3">choose_numbered_item_with_default/3</a></h3>
 <div class="spec">
-<p><tt>choose_numbered_item_with_default(Choices::[<a href="#type-choice_text">choice_text()</a>], DefaultChoiceText::<a href="#type-choice_index">choice_index()</a>, UIState::<a href="#type-ui_state">ui_state()</a>) -&gt; <a href="#type-choice_index">choice_index()</a></tt><br></p><p><tt>choose_numbered_item_with_default(Choices::<a href="#type-prompt">prompt()</a>, DefaultChoiceText::[<a href="#type-choice_text">choice_text()</a>], UIState::<a href="#type-choice_index">choice_index()</a>) -&gt; <a href="#type-choice_index">choice_index()</a></tt><br></p>
+<p><tt>choose_numbered_item_with_default(Choices::[<a href="#type-choice_text">choice_text()</a>], DefaultChoiceText::<a href="#type-choice_text">choice_text()</a>, UIState::<a href="#type-ui_state">ui_state()</a>) -&gt; <a href="#type-choice_index">choice_index()</a></tt><br></p><p><tt>choose_numbered_item_with_default(Choices::<a href="#type-prompt">prompt()</a>, DefaultChoiceText::[<a href="#type-choice_text">choice_text()</a>], UIState::<a href="#type-choice_index">choice_index()</a>) -&gt; <a href="#type-choice_index">choice_index()</a></tt><br></p>
 <p> </p>
 <p> </p>
 </div><p><p>Selects, based on an explicit state, using a default prompt, an item 

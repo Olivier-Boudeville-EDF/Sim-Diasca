@@ -30,9 +30,9 @@ an advanced trace system), and with no change in the source code of these user
 modules to be operated.</p>
 
  <p>It is useful to provide native, integrated, higher-level logging to basic
- libraries (ex: Ceylan-LEEC, see <a href="http://leec.esperide.org" target="_top"><tt>http://leec.esperide.org</tt></a>), should their user 
-require it - while being able to remain lean and mean if wanted (e.g while 
-keeping the dependency to Ceylan-Traces optional).</p>
+ libraries (e.g. Ceylan-LEEC, see <a href="http://leec.esperide.org" target="_top"><tt>http://leec.esperide.org</tt></a>), should their 
+user require it - while being able to remain lean and mean if wanted (e.g 
+while keeping the dependency to Ceylan-Traces optional).</p>
 
  <p>Switching to a more advanced trace system (typically Ceylan-Traces) is just a 
 matter of having the process of interest call the register/3 function below.</p>
@@ -61,7 +61,7 @@ _BridgePid=class_TraceAggregator:get_aggregator() ),</p>
 
 <h3 class="typedecl"><a name="type-bridge_info">bridge_info()</a></h3>
 <p><b>abstract datatype</b>: <tt>bridge_info()</tt></p>
-<p> The bridging information stored in the target process dictionary.</p>
+<p> A bridging information stored in a target process dictionary.</p>
 
 <h3 class="typedecl"><a name="type-bridge_pid">bridge_pid()</a></h3>
 <p><tt>bridge_pid() = pid()</tt></p>
@@ -69,8 +69,11 @@ _BridgePid=class_TraceAggregator:get_aggregator() ),</p>
 
 <h3 class="typedecl"><a name="type-bridge_spec">bridge_spec()</a></h3>
 <p><b>abstract datatype</b>: <tt>bridge_spec()</tt></p>
-<p> Typically the information transmitted by a trace emitter when creating a
- lower-level process that may or may not use advanced logging.</p>
+<p><p> Typically the information transmitted by a trace emitter when creating a 
+lower-level process that may or may not use advanced logging.</p>
+
+ Note that this type is opaque; use get_bridge_spec/{2,3} to obtain an instance
+ thereof.</p>
 
 <h3 class="typedecl"><a name="type-format_string">format_string()</a></h3>
 <p><tt>format_string() = <a href="text_utils.html#type-format_string">text_utils:format_string()</a></tt></p>
@@ -114,8 +117,8 @@ _BridgePid=class_TraceAggregator:get_aggregator() ),</p>
 <tr><td valign="top"><a href="#get_bridge_info-0">get_bridge_info/0</a></td><td>Returns the bridge information of the current process.</td></tr>
 <tr><td valign="top"><a href="#get_bridge_spec-2">get_bridge_spec/2</a></td><td>Returns the information to pass to a process so that it can register to
  the corresponding trace bridge and use it automatically from then.</td></tr>
-<tr><td valign="top"><a href="#get_bridge_spec-3">get_bridge_spec/3</a></td><td>Returns the information to pass to a process so that it can register to
- the corresponding trace bridge and use it automatically from then.</td></tr>
+<tr><td valign="top"><a href="#get_bridge_spec-3">get_bridge_spec/3</a></td><td>Returns the information to pass to a process so that it can register to 
+the corresponding trace bridge and use it automatically from then.</td></tr>
 <tr><td valign="top"><a href="#info-1">info/1</a></td><td>Outputs specified info message.</td></tr>
 <tr><td valign="top"><a href="#info_fmt-2">info_fmt/2</a></td><td>Outputs specified info message to format.</td></tr>
 <tr><td valign="top"><a href="#notice-1">notice/1</a></td><td>Outputs specified notice message.</td></tr>
@@ -222,8 +225,10 @@ completed.</td></tr>
 <div class="spec">
 <p><tt>get_bridge_spec(TraceEmitterName::<a href="#type-any_string">any_string()</a>, TraceCategory::<a href="#type-any_string">any_string()</a>, BridgePid::<a href="#type-bridge_pid">bridge_pid()</a>) -&gt; <a href="#type-bridge_spec">bridge_spec()</a></tt><br></p>
 <p> </p>
-</div><p>Returns the information to pass to a process so that it can register to
- the corresponding trace bridge and use it automatically from then.
+</div><p><p>Returns the information to pass to a process so that it can register to 
+the corresponding trace bridge and use it automatically from then.</p>
+
+ Allows not to break the opaqueness of the bridge_spec() type.
 </p>
 
 <h3 class="function"><a name="info-1">info/1</a></h3>

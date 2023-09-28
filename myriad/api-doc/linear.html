@@ -22,7 +22,7 @@
 
 <h3 class="typedecl"><a name="type-any_distance">any_distance()</a></h3>
 <p><tt>any_distance() = number()</tt></p>
-<p> Distance between two points (ex: to express lengths).</p>
+<p> Distance between two points (e.g. to express lengths).</p>
 
 <h3 class="typedecl"><a name="type-any_radius">any_radius()</a></h3>
 <p><tt>any_radius() = <a href="#type-any_distance">any_distance()</a></tt></p>
@@ -38,7 +38,7 @@
 <p> Area of a surface.</p>
 
 <h3 class="typedecl"><a name="type-bounding_space">bounding_space()</a></h3>
-<p><tt>bounding_space() = <a href="bounding_surface.html#type-bounding_surface">bounding_surface:bounding_surface()</a> | <a href="bounding_volume.html#type-ounding_volume">bounding_volume:ounding_volume()</a></tt></p>
+<p><tt>bounding_space() = <a href="bounding_surface.html#type-bounding_surface">bounding_surface:bounding_surface()</a> | <a href="bounding_volume.html#type-bounding_volume">bounding_volume:bounding_volume()</a></tt></p>
 <p> A bounding space, for a given dimensionality.</p>
 
 <h3 class="typedecl"><a name="type-coordinate">coordinate()</a></h3>
@@ -52,20 +52,20 @@
 
 <h3 class="typedecl"><a name="type-dimension">dimension()</a></h3>
 <p><tt>dimension() = <a href="#type-count">count()</a></tt></p>
-<p> The dimension of a space (ex: number of rows or columns for a matrix).</p>
+<p> The dimension of a space (e.g. number of rows or columns for a matrix).</p>
 
 <h3 class="typedecl"><a name="type-distance">distance()</a></h3>
 <p><tt>distance() = float()</tt></p>
-
+<p> Distance (as floating-point) between two points (e.g. to express lengths).</p>
 
 <h3 class="typedecl"><a name="type-indexed_triangle">indexed_triangle()</a></h3>
 <p><tt>indexed_triangle() = {<a href="#type-indice">indice()</a>, <a href="#type-indice">indice()</a>, <a href="#type-indice">indice()</a>}</tt></p>
 <p> A definition of a triangle, based on the indices of its three vertices, in a
- vertex container (ex: a list).</p>
+ vertex container (e.g. a list).</p>
 
 <h3 class="typedecl"><a name="type-indice">indice()</a></h3>
 <p><tt>indice() = <a href="basic_utils.html#type-positive_index">basic_utils:positive_index()</a></tt></p>
-<p> The indice/index of an element (ex: of a vertex in an array thereof).</p>
+<p> The indice/index of an element (e.g. of a vertex in an array thereof).</p>
 
 <h3 class="typedecl"><a name="type-integer_coordinate">integer_coordinate()</a></h3>
 <p><tt>integer_coordinate() = integer()</tt></p>
@@ -73,7 +73,7 @@
 
 <h3 class="typedecl"><a name="type-integer_distance">integer_distance()</a></h3>
 <p><tt>integer_distance() = integer()</tt></p>
-<p> Integer distance between two points (ex: to express lengths).</p>
+<p> Integer distance between two points (e.g. to express lengths).</p>
 
 <h3 class="typedecl"><a name="type-integer_radius">integer_radius()</a></h3>
 <p><tt>integer_radius() = <a href="#type-integer_distance">integer_distance()</a></tt></p>
@@ -154,7 +154,9 @@
 
 <h3 class="typedecl"><a name="type-square_distance">square_distance()</a></h3>
 <p><tt>square_distance() = float()</tt></p>
-
+<p> Square of a distance between two points, as a floating-point value (cheaper to
+ compute, when applying the square root operator is not needed, like when
+ comparing distances).</p>
 
 <h3 class="typedecl"><a name="type-user_coordinate">user_coordinate()</a></h3>
 <p><tt>user_coordinate() = number()</tt></p>

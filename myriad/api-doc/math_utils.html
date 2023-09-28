@@ -21,16 +21,41 @@
 
 <h2><a name="types">Data Types</a></h2>
 
+<h3 class="typedecl"><a name="type-abscissa">abscissa()</a></h3>
+<p><tt>abscissa() = float()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-any_abscissa">any_abscissa()</a></h3>
+<p><tt>any_abscissa() = <a href="#type-abscissa">abscissa()</a> | <a href="#type-integer_abscissa">integer_abscissa()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-any_degrees">any_degrees()</a></h3>
+<p><tt>any_degrees() = <a href="unit_utils.html#type-any_degrees">unit_utils:any_degrees()</a></tt></p>
+
+
 <h3 class="typedecl"><a name="type-any_factor">any_factor()</a></h3>
 <p><tt>any_factor() = number()</tt></p>
-<p> A factor, typically in [0.0,1.0], that is a multiplier involved in an
+<p> A factor, typically in [0.0, 1.0], that is a multiplier involved in an
  equation.</p>
+
+<h3 class="typedecl"><a name="type-bound">bound()</a></h3>
+<p><tt>bound() = float()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-bounds">bounds()</a></h3>
+<p><tt>bounds() = {MinBound::<a href="#type-bound">bound()</a>, MaxBound::<a href="#type-bound">bound()</a>}</tt></p>
+<p> An interval, based on upper and lower (floating-point) bounds, typically of a
+ compact support.</p>
 
 <h3 class="typedecl"><a name="type-conversion_type">conversion_type()</a></h3>
 <p><tt>conversion_type() = exact | absolute | {absolute, float()} | relative | {relative, float()}</tt></p>
 <p> Describes a desired conversion, which is either exact or approximate, based on
  an absolute or relative comparison, with a default epsilon threshold or a
  user-defined one.</p>
+
+<h3 class="typedecl"><a name="type-count">count()</a></h3>
+<p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+
 
 <h3 class="typedecl"><a name="type-degrees">degrees()</a></h3>
 <p><tt>degrees() = <a href="unit_utils.html#type-degrees">unit_utils:degrees()</a></tt></p>
@@ -40,10 +65,26 @@
 <p><tt>dimensionless() = <a href="unit_utils.html#type-dimensionless">unit_utils:dimensionless()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-epsilon">epsilon()</a></h3>
+<p><tt>epsilon() = float()</tt></p>
+<p> A smaller, positive floating-point value.</p>
+
 <h3 class="typedecl"><a name="type-factor">factor()</a></h3>
 <p><tt>factor() = <a href="#type-dimensionless">dimensionless()</a></tt></p>
-<p> A floating-point factor, typically in [0.0,1.0], that is a multiplier involved
- in an equation.</p>
+<p> A floating-point factor, typically in [0.0, 1.0], that is a multiplier
+ involved in an equation.</p>
+
+<h3 class="typedecl"><a name="type-float_result_value">float_result_value()</a></h3>
+<p><tt>float_result_value() = float()</tt></p>
+<p> A floating-point value obtained when evaluating a function.</p>
+
+<h3 class="typedecl"><a name="type-float_to_float_fun">float_to_float_fun()</a></h3>
+<p><tt>float_to_float_fun() = fun((float()) -&gt; float())</tt></p>
+<p> A function returning a float from an integer.</p>
+
+<h3 class="typedecl"><a name="type-float_to_integer_fun">float_to_integer_fun()</a></h3>
+<p><tt>float_to_integer_fun() = fun((float()) -&gt; integer())</tt></p>
+<p> A function returning an integer from a float.</p>
 
 <h3 class="typedecl"><a name="type-infinite_number">infinite_number()</a></h3>
 <p><tt>infinite_number() = '-infinity' | number() | infinity</tt></p>
@@ -58,14 +99,35 @@
 <p><tt>int_degrees() = <a href="unit_utils.html#type-int_degrees">unit_utils:int_degrees()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-integer_abscissa">integer_abscissa()</a></h3>
+<p><tt>integer_abscissa() = integer()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-integer_bound">integer_bound()</a></h3>
+<p><tt>integer_bound() = integer()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-integer_bounds">integer_bounds()</a></h3>
+<p><tt>integer_bounds() = {MinBound::<a href="#type-integer_bound">integer_bound()</a>, MaxBound::<a href="#type-integer_bound">integer_bound()</a>}</tt></p>
+<p> An interval, based on upper and lower integer bounds, typically of a compact
+ support.</p>
+
 <h3 class="typedecl"><a name="type-integer_factor">integer_factor()</a></h3>
 <p><tt>integer_factor() = integer()</tt></p>
-<p> An integer factor, typically in [0.0,1.0], that is a multiplier involved in an
- equation.</p>
+<p> An integer factor, typically in [0.0, 1.0], that is a multiplier involved in
+ an equation.</p>
 
 <h3 class="typedecl"><a name="type-integer_percent">integer_percent()</a></h3>
 <p><tt>integer_percent() = integer()</tt></p>
 <p> For integer percentages (in [0..100] generally).</p>
+
+<h3 class="typedecl"><a name="type-integer_to_float_fun">integer_to_float_fun()</a></h3>
+<p><tt>integer_to_float_fun() = fun((integer()) -&gt; float())</tt></p>
+<p> A function returning a float from an integer.</p>
+
+<h3 class="typedecl"><a name="type-integer_to_integer_fun">integer_to_integer_fun()</a></h3>
+<p><tt>integer_to_integer_fun() = fun((integer()) -&gt; integer())</tt></p>
+<p> A function returning an integer from an integer.</p>
 
 <h3 class="typedecl"><a name="type-non_negative_factor">non_negative_factor()</a></h3>
 <p><tt>non_negative_factor() = <a href="#type-factor">factor()</a></tt></p>
@@ -74,6 +136,14 @@
 <h3 class="typedecl"><a name="type-non_zero_integer">non_zero_integer()</a></h3>
 <p><tt>non_zero_integer() = pos_integer() | neg_integer()</tt></p>
 
+
+<h3 class="typedecl"><a name="type-number_to_float_fun">number_to_float_fun()</a></h3>
+<p><tt>number_to_float_fun() = fun((number()) -&gt; float())</tt></p>
+<p> A function returning a float from a number (typically a float).</p>
+
+<h3 class="typedecl"><a name="type-number_to_integer_fun">number_to_integer_fun()</a></h3>
+<p><tt>number_to_integer_fun() = fun((number()) -&gt; integer())</tt></p>
+<p> A function returning an integer from a number (typically a float).</p>
 
 <h3 class="typedecl"><a name="type-percent">percent()</a></h3>
 <p><tt>percent() = <a href="#type-ratio">ratio()</a></tt></p>
@@ -91,14 +161,14 @@
 
 <h3 class="typedecl"><a name="type-probability">probability()</a></h3>
 <p><tt>probability() = float()</tt></p>
-<p> For probabilities, typically ranging in [0.0,1.0].</p>
+<p> For probabilities, typically ranging in [0.0, 1.0].</p>
 
 <h3 class="typedecl"><a name="type-probability_like">probability_like()</a></h3>
 <p><tt>probability_like() = number()</tt></p>
 <p><p> A non-negative number (an integer or floating-point) that can be translated to 
-a normalised probability by scaling it to [0.0,1.0].</p>
+a normalised probability by scaling it to [0.0, 1.0].</p>
 
- Ex: if considering two exclusive events whose
+ For example if considering two exclusive events whose
  respective likeliness is quantified as 20 and 30, then these probability-like
  elements can be translated to actual (normalised) probabilities of
  20/(20+30)=0.4 and 0.6.</p>
@@ -126,8 +196,8 @@ a normalised probability by scaling it to [0.0,1.0].</p>
 <h2><a name="index">Function Index</a></h2>
 <table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#are_close-2">are_close/2</a></td><td>Returns true iff the two specified floating-point numbers are deemed 
 close enough to be equal, based on default epsilon threshold.</td></tr>
-<tr><td valign="top"><a href="#are_close-3">are_close/3</a></td><td>Returns true iff the two specified floating-point numbers are deemed
- close enough to be equal, based on specified epsilon threshold.</td></tr>
+<tr><td valign="top"><a href="#are_close-3">are_close/3</a></td><td>Returns true iff the two specified floating-point numbers are deemed 
+close enough to be equal, based on specified epsilon threshold.</td></tr>
 <tr><td valign="top"><a href="#are_equal-2">are_equal/2</a></td><td>Returns true iff the two specified floating-point numbers are deemed 
 close enough to be equal, based on default epsilon threshold.</td></tr>
 <tr><td valign="top"><a href="#are_equal-3">are_equal/3</a></td><td>Returns true iff the two specified floating-point numbers are deemed 
@@ -136,45 +206,108 @@ close enough to be equal, based on specified epsilon threshold.</td></tr>
 close enough, relatively, to be equal.</td></tr>
 <tr><td valign="top"><a href="#are_relatively_close-3">are_relatively_close/3</a></td><td>Returns true iff the two specified (usually floating-point) numbers are 
 deemed close enough, relatively, to be equal.</td></tr>
-<tr><td valign="top"><a href="#canonify-1">canonify/1</a></td><td>Canonifies specified angle in degrees, ie ensures the returned value that
- corresponds to the specified angle is in the [0;360[ interval.</td></tr>
-<tr><td valign="top"><a href="#ceiling-1">ceiling/1</a></td><td>Returns the smallest integer bigger than the specified floating-point 
-value.</td></tr>
+<tr><td valign="top"><a href="#are_within_bounds-2">are_within_bounds/2</a></td><td>Tells whether the specified candidate bounds are within (are included in; 
+non-strictly, that is bounds being allowed to be equal) the full ones.</td></tr>
+<tr><td valign="top"><a href="#bounds_to_string-1">bounds_to_string/1</a></td><td>Returns a textual description of the specified bounds.</td></tr>
+<tr><td valign="top"><a href="#canonicalise_bounds-1">canonicalise_bounds/1</a></td><td>Checks that the specified term corresponds to correct (floating-point)
+ bounds, and returns it once canonicalised.</td></tr>
+<tr><td valign="top"><a href="#canonicalise_integer_bounds-1">canonicalise_integer_bounds/1</a></td><td>Checks that the specified term corresponds to correct bounds, and returns
+ it once canonicalised.</td></tr>
+<tr><td valign="top"><a href="#canonify-1">canonify/1</a></td><td>Canonifies the specified angle in degrees, ie ensures the returned value
+ that corresponds to the specified angle is in the [0;360[ interval.</td></tr>
+<tr><td valign="top"><a href="#ceiling-1">ceiling/1</a></td><td>Rounds up the specified floating-point value: returns the smallest 
+integer bigger than the specified floating-point value.</td></tr>
 <tr><td valign="top"><a href="#check_percent_basic_range-1">check_percent_basic_range/1</a></td><td>Checks that the specified percentage is in the usual [0.0, 1.0] range.</td></tr>
 <tr><td valign="top"><a href="#clamp-2">clamp/2</a></td><td>Clamps the specified possibly-infinite number within the specified
  possibly-infinite range.</td></tr>
-<tr><td valign="top"><a href="#clamp-3">clamp/3</a></td><td>Clamps specified value between specified bounds: the returned value V is 
-in [Min, Max].</td></tr>
-<tr><td valign="top"><a href="#float_to_integer-1">float_to_integer/1</a></td><td>Converts specified float to integer.</td></tr>
-<tr><td valign="top"><a href="#float_to_integer-2">float_to_integer/2</a></td><td>Converts specified float to integer, using specified conversion
+<tr><td valign="top"><a href="#clamp-3">clamp/3</a></td><td>Clamps the specified value between specified bounds: the returned value 
+is in [Min, Max].</td></tr>
+<tr><td valign="top"><a href="#compute_integer_support-1">compute_integer_support/1</a></td><td>Returns an evaluation of the (supposedly finite, compact, to some extent 
+centered around zero) support of the specified function, taking one integer 
+and returning a floating-point value, as an interval with no bound 
+restriction.</td></tr>
+<tr><td valign="top"><a href="#compute_integer_support-3">compute_integer_support/3</a></td><td>Returns an evaluation of the (supposedly finite, compact, to some extent 
+centered around zero) support of the specified integer-returning function, as 
+an interval complying to the specified bound restriction (to limit it in a 
+given interval, possibly because this function is not defined out of it).</td></tr>
+<tr><td valign="top"><a href="#compute_integer_support-4">compute_integer_support/4</a></td><td>Returns an evaluation of the (supposedly finite, compact, to some extent 
+centered around the specified origin) support of the specified 
+integer-returning function, as an interval complying to the specified bound 
+restriction (to limit it in a given interval, possibly because this function 
+is not defined out of it).</td></tr>
+<tr><td valign="top"><a href="#compute_support-1">compute_support/1</a></td><td>Returns an evaluation of the (supposedly finite, compact, to some extent 
+centered around zero) support of the specified function, taking one 
+floating-point value and returning one, as an interval with no bound 
+restriction.</td></tr>
+<tr><td valign="top"><a href="#compute_support-3">compute_support/3</a></td><td>Returns an evaluation of the (supposedly finite, compact, to some extent 
+centered around zero) support of the specified function, taking one 
+floating-point value and returning one, as an interval complying to the 
+specified bound restriction (to limit it in a given interval, possibly because 
+this function is not defined out of it).</td></tr>
+<tr><td valign="top"><a href="#compute_support-4">compute_support/4</a></td><td>Returns an evaluation of the (supposedly finite, compact, to some extent 
+centered around the specified origin) support of the specified function, 
+taking one floating-point value and returning one, as an interval complying to 
+the specified bound restriction (to limit it in a given interval, possibly 
+because this function is not defined out of it).</td></tr>
+<tr><td valign="top"><a href="#degrees_to_radians-1">degrees_to_radians/1</a></td><td>Converts the specified angle in degrees into the same angle expressed in
+ radians.</td></tr>
+<tr><td valign="top"><a href="#evaluate-2">evaluate/2</a></td><td>Evaluates the specified function as the specified abscissa, and returns
+ the corresponding value if it could be computed, otherwise returns 'undefined'
+ (this happens when typically 'badarith' is thrown due to an operation failing,
+ like for math:pow(1000,1000).</td></tr>
+<tr><td valign="top"><a href="#factorial-1">factorial/1</a></td><td>Returns the factorial of the argument N, that is: N!.</td></tr>
+<tr><td valign="top"><a href="#float_to_integer-1">float_to_integer/1</a></td><td>Converts the specified float to integer.</td></tr>
+<tr><td valign="top"><a href="#float_to_integer-2">float_to_integer/2</a></td><td>Converts the specified float to integer, using the specified conversion
  tolerance.</td></tr>
-<tr><td valign="top"><a href="#floor-1">floor/1</a></td><td>Returns the biggest integer smaller than the specified 
-floating-point value.</td></tr>
+<tr><td valign="top"><a href="#floor-1">floor/1</a></td><td>Rounds down the specified floating-point value: returns the biggest 
+integer smaller than the specified floating-point value.</td></tr>
+<tr><td valign="top"><a href="#gamma-1">gamma/1</a></td><td>Evaluates the well-known Gamma function for the specified value (integer 
+or floating-point: no need felt for one operating on complex numbers).</td></tr>
 <tr><td valign="top"><a href="#get_next_power_of_two-1">get_next_power_of_two/1</a></td><td>Returns the smallest power of two that is greater or equal to the 
 specified integer.</td></tr>
 <tr><td valign="top"><a href="#get_relative_difference-2">get_relative_difference/2</a></td><td>Returns the relative difference between the two specified numbers.</td></tr>
+<tr><td valign="top"><a href="#int_pow-2">int_pow/2</a></td><td>Returns the power of the specified number X to the specified positive 
+integer N: X^N.</td></tr>
+<tr><td valign="top"><a href="#integer_bounds_to_string-1">integer_bounds_to_string/1</a></td><td>Returns a textual description of the specified integer bounds.</td></tr>
+<tr><td valign="top"><a href="#is_greater-2">is_greater/2</a></td><td>Returns whether X is greater than Y (with a small margin), both being 
+expected to be floats.</td></tr>
+<tr><td valign="top"><a href="#is_greater-3">is_greater/3</a></td><td>Returns whether X is greater than Y, with the specified margin, both 
+being expected to be floats.</td></tr>
+<tr><td valign="top"><a href="#is_lower-2">is_lower/2</a></td><td>Returns whether X is lower than Y (with a small margin), both being 
+expected to be floats.</td></tr>
+<tr><td valign="top"><a href="#is_lower-3">is_lower/3</a></td><td>Returns whether X is lower than Y (with a small margin), both being 
+expected to be floats.</td></tr>
 <tr><td valign="top"><a href="#is_null-1">is_null/1</a></td><td>Returns true iff the specified number (floating-point or even integer) is
  deemed close enough to zero to be null.</td></tr>
+<tr><td valign="top"><a href="#is_null-2">is_null/2</a></td><td>Returns true iff the specified number (floating-point or even integer) is
+ deemed close enough (based on specified epsilon) to zero to be null.</td></tr>
 <tr><td valign="top"><a href="#is_null_number-1">is_null_number/1</a></td><td>Returns true iff the specified number is deemed close enough to zero to
  be null.</td></tr>
+<tr><td valign="top"><a href="#is_within_bounds-2">is_within_bounds/2</a></td><td>Tells whether the specified number is within (is included in;
+ non-strictlyy, that is this number being allowed to be equal to one bound) the
+ specified bounds.</td></tr>
+<tr><td valign="top"><a href="#ln-1">ln/1</a></td><td>Returns the natural logarithm (that is the log in base e) of the 
+specified number.</td></tr>
 <tr><td valign="top"><a href="#modulo-2">modulo/2</a></td><td>Returns the positive remainder of the division of X by Y, in [0;Y[.</td></tr>
-<tr><td valign="top"><a href="#normalise-2">normalise/2</a></td><td>Normalises, in the specified list of tuples, the elements at the 
-specified index (expected to be numbers, whose sum is non-null), so that their 
-sum is equal to 1.0.</td></tr>
+<tr><td valign="top"><a href="#normalise-2">normalise/2</a></td><td>Normalises, in the specified list of tuples (possibly just pairs), the 
+elements at the specified index (expected to be numbers, whose sum is 
+non-null), so that their sum becomes equal to 1.0.</td></tr>
 <tr><td valign="top"><a href="#probability_like_to_string-1">probability_like_to_string/1</a></td><td>Returns a textual description of the specified probability.</td></tr>
 <tr><td valign="top"><a href="#probability_to_string-1">probability_to_string/1</a></td><td>Returns a textual description of the specified probability.</td></tr>
-<tr><td valign="top"><a href="#radian_to_degree-1">radian_to_degree/1</a></td><td>Converts specified angle in radian into the same angle expressed in
+<tr><td valign="top"><a href="#radians_to_degrees-1">radians_to_degrees/1</a></td><td>Converts the specified angle in radians into the same angle expressed in
  degrees.</td></tr>
-<tr><td valign="top"><a href="#round_after-2">round_after/2</a></td><td>Rounds the specified floating-point number at specified offset after the 
-decimal point.</td></tr>
+<tr><td valign="top"><a href="#round_after-2">round_after/2</a></td><td>Rounds the specified floating-point number at the specified offset after 
+the decimal point.</td></tr>
 <tr><td valign="top"><a href="#sample-4">sample/4</a></td><td>Samples the specified function taking a single numerical argument, by
  evaluating it on every point in turn from Start until up to Stop, with
  specified increment: returns the ordered list of the corresponding values that
  it took.</td></tr>
-<tr><td valign="top"><a href="#sample_as_pairs-4">sample_as_pairs/4</a></td><td>Samples the specified function taking a single numerical argument, by
- evaluating it on every point in turn from Start until up to Stop, with
- specified increment: returns the ordered list of the corresponding {X,f(X)}
- pairs that it took.</td></tr>
+<tr><td valign="top"><a href="#sample_as_pairs-4">sample_as_pairs/4</a></td><td>Samples uniformly the specified function taking a single numerical
+ argument, by evaluating it on every point in turn from Start until up to Stop,
+ with specified increment: returns the ordered list of the corresponding
+ {X,f(X)} pairs that it took.</td></tr>
+<tr><td valign="top"><a href="#sign-1">sign/1</a></td><td>Returns the sign of the specified value, either as 1 or -1.</td></tr>
+<tr><td valign="top"><a href="#square-1">square/1</a></td><td>Returns the square of the specified number.</td></tr>
 <tr><td valign="top"><a href="#squarify-1">squarify/1</a></td><td>Returns the square, augmented of a little margin, of the specified
  element.</td></tr>
 </table>
@@ -194,10 +327,13 @@ close enough to be equal, based on default epsilon threshold.</p>
 
 <h3 class="function"><a name="are_close-3">are_close/3</a></h3>
 <div class="spec">
-<p><tt>are_close(X::number(), Y::number(), Epsilon::number()) -&gt; boolean()</tt><br></p>
+<p><tt>are_close(X::number(), Y::number(), Epsilon::<a href="#type-epsilon">epsilon()</a>) -&gt; boolean()</tt><br></p>
 <p> </p>
-</div><p>Returns true iff the two specified floating-point numbers are deemed
- close enough to be equal, based on specified epsilon threshold.
+</div><p><p>Returns true iff the two specified floating-point numbers are deemed 
+close enough to be equal, based on specified epsilon threshold.</p>
+
+ Note that such absolute tolerance comparison fails when X and Y become large,
+ so generally are_relatively_close/2 shall be preferred.
 </p>
 
 <h3 class="function"><a name="are_equal-2">are_equal/2</a></h3>
@@ -212,7 +348,7 @@ close enough to be equal, based on default epsilon threshold.</p>
 
 <h3 class="function"><a name="are_equal-3">are_equal/3</a></h3>
 <div class="spec">
-<p><tt>are_equal(X::number(), Y::number(), Epsilon::number()) -&gt; boolean()</tt><br></p>
+<p><tt>are_equal(X::number(), Y::number(), Epsilon::<a href="#type-epsilon">epsilon()</a>) -&gt; boolean()</tt><br></p>
 <p> </p>
 </div><p><p>Returns true iff the two specified floating-point numbers are deemed 
 close enough to be equal, based on specified epsilon threshold.</p>
@@ -234,33 +370,65 @@ close enough, relatively, to be equal.</p>
 
 <h3 class="function"><a name="are_relatively_close-3">are_relatively_close/3</a></h3>
 <div class="spec">
-<p><tt>are_relatively_close(X::number(), Y::number(), Epsilon::number()) -&gt; boolean()</tt><br></p>
+<p><tt>are_relatively_close(X::number(), Y::number(), Epsilon::<a href="#type-epsilon">epsilon()</a>) -&gt; boolean()</tt><br></p>
 <p> </p>
 </div><p><p>Returns true iff the two specified (usually floating-point) numbers are 
 deemed close enough, relatively, to be equal.</p>
 
  <p>The difference between these numbers, divided by their average (a.k.a. the 
 relative error), must be smaller than the specified epsilon threshold, 
-ie the maximum tolerance.</p>
+that is the maximum tolerance.</p>
 
- Ex: to know whether X and Y are equal with a 5% tolerance, use:
+ For example to know whether X and Y are equal with a 5% tolerance, use:
  math_utils:are_relatively_close(X, Y, _Tolerance=0.05).
+</p>
+
+<h3 class="function"><a name="are_within_bounds-2">are_within_bounds/2</a></h3>
+<div class="spec">
+<p><tt>are_within_bounds(CandidateBounds::<a href="#type-bounds">bounds()</a>, FullBounds::<a href="#type-bounds">bounds()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p><p>Tells whether the specified candidate bounds are within (are included in; 
+non-strictly, that is bounds being allowed to be equal) the full ones.</p>
+
+ Note: one should ensure that well-typed bounds are indeed specified.
+</p>
+
+<h3 class="function"><a name="bounds_to_string-1">bounds_to_string/1</a></h3>
+<div class="spec">
+<p><tt>bounds_to_string(Bounds::<a href="#type-bounds">bounds()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of the specified bounds.</p>
+
+<h3 class="function"><a name="canonicalise_bounds-1">canonicalise_bounds/1</a></h3>
+<div class="spec">
+<p><tt>canonicalise_bounds(B::term()) -&gt; <a href="#type-bounds">bounds()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that the specified term corresponds to correct (floating-point)
+ bounds, and returns it once canonicalised.
+</p>
+
+<h3 class="function"><a name="canonicalise_integer_bounds-1">canonicalise_integer_bounds/1</a></h3>
+<div class="spec">
+<p><tt>canonicalise_integer_bounds(B::term()) -&gt; <a href="#type-integer_bounds">integer_bounds()</a></tt><br></p>
+<p> </p>
+</div><p>Checks that the specified term corresponds to correct bounds, and returns
+ it once canonicalised.
 </p>
 
 <h3 class="function"><a name="canonify-1">canonify/1</a></h3>
 <div class="spec">
 <p><tt>canonify(AngleInDegrees::number()) -&gt; <a href="#type-int_degrees">int_degrees()</a></tt><br></p>
 <p> </p>
-</div><p>Canonifies specified angle in degrees, ie ensures the returned value that
- corresponds to the specified angle is in the [0;360[ interval.
+</div><p>Canonifies the specified angle in degrees, ie ensures the returned value
+ that corresponds to the specified angle is in the [0;360[ interval.
 </p>
 
 <h3 class="function"><a name="ceiling-1">ceiling/1</a></h3>
 <div class="spec">
 <p><tt>ceiling(X::number()) -&gt; integer()</tt><br></p>
 <p> </p>
-</div><p><p>Returns the smallest integer bigger than the specified floating-point 
-value.</p>
+</div><p><p>Rounds up the specified floating-point value: returns the smallest 
+integer bigger than the specified floating-point value.</p>
 
  Note: used to be deprecated in favor of math:ceil/1, yet we prefer the version
  here, which returns an integer rather than a float.
@@ -287,28 +455,149 @@ value.</p>
 <div class="spec">
 <p><tt>clamp(Min::number(), Max::number(), Value::number()) -&gt; number()</tt><br></p>
 <p> </p>
-</div><p><p>Clamps specified value between specified bounds: the returned value V is 
-in [Min, Max].</p>
+</div><p><p>Clamps the specified value between specified bounds: the returned value 
+is in [Min, Max].</p>
 
  We expect that <code>Min &lt;= Max</code>.
 </p>
+
+<h3 class="function"><a name="compute_integer_support-1">compute_integer_support/1</a></h3>
+<div class="spec">
+<p><tt>compute_integer_support(Fun::<a href="#type-integer_to_float_fun">integer_to_float_fun()</a>) -&gt; <a href="#type-integer_bounds">integer_bounds()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns an evaluation of the (supposedly finite, compact, to some extent 
+centered around zero) support of the specified function, taking one integer 
+and returning a floating-point value, as an interval with no bound 
+restriction.</p>
+
+ <p>This simple heuristics assumes that this function vanishes at infinity, and 
+starts looking around zero.</p>
+
+ Typically useful to properly discretise probability density functions.
+</p>
+
+<h3 class="function"><a name="compute_integer_support-3">compute_integer_support/3</a></h3>
+<div class="spec">
+<p><tt>compute_integer_support(Fun::<a href="#type-integer_to_float_fun">integer_to_float_fun()</a>, MaybeMin::<a href="#type-maybe">maybe</a>(<a href="#type-integer_bound">integer_bound()</a>), MaybeMax::<a href="#type-maybe">maybe</a>(<a href="#type-integer_bound">integer_bound()</a>)) -&gt; <a href="#type-integer_bounds">integer_bounds()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns an evaluation of the (supposedly finite, compact, to some extent 
+centered around zero) support of the specified integer-returning function, as 
+an interval complying to the specified bound restriction (to limit it in a 
+given interval, possibly because this function is not defined out of it).</p>
+
+ <p>This simple heuristics assumes that this function vanishes at infinity, and 
+starts looking around zero.</p>
+ 
+ Typically useful to properly discretise probability density functions.
+</p>
+
+<h3 class="function"><a name="compute_integer_support-4">compute_integer_support/4</a></h3>
+<div class="spec">
+<p><tt>compute_integer_support(Fun::<a href="#type-integer_to_float_fun">integer_to_float_fun()</a>, AnyOrigin::<a href="#type-any_abscissa">any_abscissa()</a>, MaybeMin::<a href="#type-maybe">maybe</a>(<a href="#type-integer_bound">integer_bound()</a>), MaybeMax::<a href="#type-maybe">maybe</a>(<a href="#type-integer_bound">integer_bound()</a>)) -&gt; <a href="#type-integer_bounds">integer_bounds()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns an evaluation of the (supposedly finite, compact, to some extent 
+centered around the specified origin) support of the specified 
+integer-returning function, as an interval complying to the specified bound 
+restriction (to limit it in a given interval, possibly because this function 
+is not defined out of it).</p>
+
+ <p>This simple heuristics assumes that this function vanishes at infinity, and 
+starts looking around zero.</p>
+ 
+ Typically useful to properly discretise probability density functions.
+</p>
+
+<h3 class="function"><a name="compute_support-1">compute_support/1</a></h3>
+<div class="spec">
+<p><tt>compute_support(Fun::<a href="#type-float_to_float_fun">float_to_float_fun()</a>) -&gt; <a href="#type-bounds">bounds()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns an evaluation of the (supposedly finite, compact, to some extent 
+centered around zero) support of the specified function, taking one 
+floating-point value and returning one, as an interval with no bound 
+restriction.</p>
+
+ <p>This simple heuristics assumes that this function vanishes at infinity; starts 
+looking around zero, based on a default epsilon.</p>
+
+ Typically useful to properly discretise probability density functions (with
+ floating-point samples).
+</p>
+
+<h3 class="function"><a name="compute_support-3">compute_support/3</a></h3>
+<div class="spec">
+<p><tt>compute_support(Fun::<a href="#type-float_to_float_fun">float_to_float_fun()</a>, MaybeMin::<a href="#type-maybe">maybe</a>(<a href="#type-bound">bound()</a>), MaybeMax::<a href="#type-maybe">maybe</a>(<a href="#type-bound">bound()</a>)) -&gt; <a href="#type-bounds">bounds()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns an evaluation of the (supposedly finite, compact, to some extent 
+centered around zero) support of the specified function, taking one 
+floating-point value and returning one, as an interval complying to the 
+specified bound restriction (to limit it in a given interval, possibly because 
+this function is not defined out of it).</p>
+
+ <p>This simple heuristics assumes that this function vanishes at infinity; starts 
+looking around zero, based on a default epsilon.</p>
+
+ Typically useful to properly discretise probability density functions (with
+ floating-point samples).
+</p>
+
+<h3 class="function"><a name="compute_support-4">compute_support/4</a></h3>
+<div class="spec">
+<p><tt>compute_support(Fun::<a href="#type-float_to_float_fun">float_to_float_fun()</a>, Origin::<a href="#type-abscissa">abscissa()</a>, MaybeMin::<a href="#type-maybe">maybe</a>(<a href="#type-bound">bound()</a>), MaybeMax::<a href="#type-maybe">maybe</a>(<a href="#type-bound">bound()</a>)) -&gt; <a href="#type-bounds">bounds()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns an evaluation of the (supposedly finite, compact, to some extent 
+centered around the specified origin) support of the specified function, 
+taking one floating-point value and returning one, as an interval complying to 
+the specified bound restriction (to limit it in a given interval, possibly 
+because this function is not defined out of it).</p>
+
+ <p>This simple heuristics assumes that this function vanishes at infinity; starts 
+looking around zero, based on a default epsilon.</p>
+
+ Typically useful to properly discretise probability density functions (with
+ floating-point samples).
+</p>
+
+<h3 class="function"><a name="degrees_to_radians-1">degrees_to_radians/1</a></h3>
+<div class="spec">
+<p><tt>degrees_to_radians(AngleInDegrees::<a href="#type-any_degrees">any_degrees()</a>) -&gt; <a href="#type-radians">radians()</a></tt><br></p>
+<p> </p>
+</div><p>Converts the specified angle in degrees into the same angle expressed in
+ radians.
+</p>
+
+<h3 class="function"><a name="evaluate-2">evaluate/2</a></h3>
+<div class="spec">
+<p><tt>evaluate(Fun::<a href="#type-float_to_float_fun">float_to_float_fun()</a>, Abs::<a href="#type-abscissa">abscissa()</a>) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-float_result_value">float_result_value()</a>)</tt><br></p>
+<p> </p>
+</div><p>Evaluates the specified function as the specified abscissa, and returns
+ the corresponding value if it could be computed, otherwise returns 'undefined'
+ (this happens when typically 'badarith' is thrown due to an operation failing,
+ like for math:pow(1000,1000).
+</p>
+
+<h3 class="function"><a name="factorial-1">factorial/1</a></h3>
+<div class="spec">
+<p><tt>factorial(N::non_neg_integer()) -&gt; pos_integer()</tt><br></p>
+<p> </p>
+</div><p>Returns the factorial of the argument N, that is: N!.</p>
 
 <h3 class="function"><a name="float_to_integer-1">float_to_integer/1</a></h3>
 <div class="spec">
 <p><tt>float_to_integer(F::float()) -&gt; integer()</tt><br></p>
 <p> </p>
-</div><p><p>Converts specified float to integer.</p>
+</div><p><p>Converts the specified float to integer.</p>
 
  <p>The float must exactly match the integer value.</p>
 
- Ex: float_to_integer(5.0) = 5, while float_to_integer(5.0000001) will crash.
+ For example float_to_integer(5.0) = 5, while float_to_integer(5.0000001) will
+ crash.
 </p>
 
 <h3 class="function"><a name="float_to_integer-2">float_to_integer/2</a></h3>
 <div class="spec">
 <p><tt>float_to_integer(F::float(), ConversionType::<a href="#type-conversion_type">conversion_type()</a>) -&gt; integer()</tt><br></p>
 <p> </p>
-</div><p>Converts specified float to integer, using specified conversion
+</div><p>Converts the specified float to integer, using the specified conversion
  tolerance.
 </p>
 
@@ -316,11 +605,32 @@ in [Min, Max].</p>
 <div class="spec">
 <p><tt>floor(X::number()) -&gt; integer()</tt><br></p>
 <p> </p>
-</div><p><p>Returns the biggest integer smaller than the specified 
-floating-point value.</p>
+</div><p><p>Rounds down the specified floating-point value: returns the biggest 
+integer smaller than the specified floating-point value.</p>
 
  Note: used to be deprecated in favor of math:floor/1, yet we prefer the
  version here, which returns an integer rather than a float.
+</p>
+
+<h3 class="function"><a name="gamma-1">gamma/1</a></h3>
+<div class="spec">
+<p><tt>gamma(I::pos_integer()) -&gt; pos_integer()</tt><br></p><p><tt>gamma(I::float()) -&gt; float()</tt><br></p>
+<p> </p>
+<p> </p>
+</div><p><p>Evaluates the well-known Gamma function for the specified value (integer 
+or floating-point: no need felt for one operating on complex numbers).</p>
+
+
+              <p>+infinity             
+/ 
+gamma (z) = | t^(z-1).exp (-t).dt            
+/         
+t=0</p>
+
+ <p>Exact results are returned for integer values, approximated ones for 
+floating-point ones.</p>
+
+ Refer to https://en.wikipedia.org/wiki/Gamma_function for more information.
 </p>
 
 <h3 class="function"><a name="get_next_power_of_two-1">get_next_power_of_two/1</a></h3>
@@ -330,17 +640,77 @@ floating-point value.</p>
 </div><p><p>Returns the smallest power of two that is greater or equal to the 
 specified integer.</p>
 
- Ex: math_utils:get_next_power_of_two( 5 ) = 8.
+ For example math_utils:get_next_power_of_two(5) = 8.
 </p>
 
 <h3 class="function"><a name="get_relative_difference-2">get_relative_difference/2</a></h3>
 <div class="spec">
-<p><tt>get_relative_difference(X::number(), Y::number()) -&gt; float() | difference_not_computable</tt><br></p>
+<p><tt>get_relative_difference(X::number(), Y::number()) -&gt; float()</tt><br></p>
 <p> </p>
 </div><p><p>Returns the relative difference between the two specified numbers.</p>
 
  We consider that if both number are null, then their relative difference is
  also null.
+</p>
+
+<h3 class="function"><a name="int_pow-2">int_pow/2</a></h3>
+<div class="spec">
+<p><tt>int_pow(X::number(), N::non_neg_integer()) -&gt; number()</tt><br></p>
+<p> </p>
+</div><p><p>Returns the power of the specified number X to the specified positive 
+integer N: X^N.</p>
+
+ <p>Designed for integer exponents, as opposed to math:pow/1.</p>
+
+ Refer to
+ https://stackoverflow.com/questions/38533797/how-to-calculate-5262144-in-erlang/38534076#38534076
+ for a presumably faster version.
+</p>
+
+<h3 class="function"><a name="integer_bounds_to_string-1">integer_bounds_to_string/1</a></h3>
+<div class="spec">
+<p><tt>integer_bounds_to_string(Bounds::<a href="#type-bounds">bounds()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual description of the specified integer bounds.</p>
+
+<h3 class="function"><a name="is_greater-2">is_greater/2</a></h3>
+<div class="spec">
+<p><tt>is_greater(X::float(), Y::float()) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p><p>Returns whether X is greater than Y (with a small margin), both being 
+expected to be floats.</p>
+
+ No is_greater_or_equal/2 makes sense with floats.
+</p>
+
+<h3 class="function"><a name="is_greater-3">is_greater/3</a></h3>
+<div class="spec">
+<p><tt>is_greater(X::float(), Y::float(), Epsilon::<a href="#type-epsilon">epsilon()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p><p>Returns whether X is greater than Y, with the specified margin, both 
+being expected to be floats.</p>
+
+ No is_greater_or_equal/3 makes sense with floats.
+</p>
+
+<h3 class="function"><a name="is_lower-2">is_lower/2</a></h3>
+<div class="spec">
+<p><tt>is_lower(X::float(), Y::float()) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p><p>Returns whether X is lower than Y (with a small margin), both being 
+expected to be floats.</p>
+
+ No is_lower_or_equal/2 makes sense with floats.
+</p>
+
+<h3 class="function"><a name="is_lower-3">is_lower/3</a></h3>
+<div class="spec">
+<p><tt>is_lower(X::float(), Y::float(), Epsilon::<a href="#type-epsilon">epsilon()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p><p>Returns whether X is lower than Y (with a small margin), both being 
+expected to be floats.</p>
+
+ No is_lower_or_equal/3 makes sense with floats.
 </p>
 
 <h3 class="function"><a name="is_null-1">is_null/1</a></h3>
@@ -351,12 +721,47 @@ specified integer.</p>
  deemed close enough to zero to be null.
 </p>
 
+<h3 class="function"><a name="is_null-2">is_null/2</a></h3>
+<div class="spec">
+<p><tt>is_null(X::number(), Epsilon::<a href="#type-epsilon">epsilon()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Returns true iff the specified number (floating-point or even integer) is
+ deemed close enough (based on specified epsilon) to zero to be null.
+</p>
+
 <h3 class="function"><a name="is_null_number-1">is_null_number/1</a></h3>
 <div class="spec">
 <p><tt>is_null_number(I::number()) -&gt; boolean()</tt><br></p>
 <p> </p>
 </div><p>Returns true iff the specified number is deemed close enough to zero to
  be null.
+</p>
+
+<h3 class="function"><a name="is_within_bounds-2">is_within_bounds/2</a></h3>
+<div class="spec">
+<p><tt>is_within_bounds(Number::number(), Bounds::<a href="#type-bounds">bounds()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Tells whether the specified number is within (is included in;
+ non-strictlyy, that is this number being allowed to be equal to one bound) the
+ specified bounds.
+</p>
+
+<h3 class="function"><a name="ln-1">ln/1</a></h3>
+<div class="spec">
+<p><tt>ln(X::number()) -&gt; float()</tt><br></p>
+<p> </p>
+</div><p><p>Returns the natural logarithm (that is the log in base e) of the 
+specified number.</p>
+
+ <p>The natural logarithm n of x&gt;0 is the power to which e would have to be raised 
+to equal x: n = ln(x) or e^n = x.</p>
+
+ <p>Logarithms in other bases (here: than e) differ only by a constant multiplier 
+from the natural logarithm, and can be defined in terms of the latter: for a 
+base 'b', logb(x) = ln(x)/ln(b) = ln(x)*logb(e).</p>
+
+ Note that math:log/1 is x -&gt; ln(x), whereas math:log10/1 is the standard base
+ 10 log.
 </p>
 
 <h3 class="function"><a name="modulo-2">modulo/2</a></h3>
@@ -373,11 +778,13 @@ specified integer.</p>
 <div class="spec">
 <p><tt>normalise(DataTuples::[tuple()], Index::<a href="#type-positive_index">positive_index()</a>) -&gt; [tuple()]</tt><br></p>
 <p> </p>
-</div><p><p>Normalises, in the specified list of tuples, the elements at the 
-specified index (expected to be numbers, whose sum is non-null), so that their 
-sum is equal to 1.0.</p>
+</div><p><p>Normalises, in the specified list of tuples (possibly just pairs), the 
+elements at the specified index (expected to be numbers, whose sum is 
+non-null), so that their sum becomes equal to 1.0.</p>
 
- Ex: normalise([{a,3}, {"hello",5}, {1,2}], _Index=2)
+ <p>Typically useful for probabilities.</p>
+
+ For example normalise([{a,3}, {"hello",5}, {1,2}], _Index=2)
                  = [{a,0.3}, {"hello",0.5}, {1,0.2}]
 </p>
 
@@ -393,27 +800,27 @@ sum is equal to 1.0.</p>
 <p> </p>
 </div><p>Returns a textual description of the specified probability.</p>
 
-<h3 class="function"><a name="radian_to_degree-1">radian_to_degree/1</a></h3>
+<h3 class="function"><a name="radians_to_degrees-1">radians_to_degrees/1</a></h3>
 <div class="spec">
-<p><tt>radian_to_degree(AngleInRadians::<a href="#type-radians">radians()</a>) -&gt; <a href="#type-degrees">degrees()</a></tt><br></p>
+<p><tt>radians_to_degrees(AngleInRadians::<a href="#type-radians">radians()</a>) -&gt; <a href="#type-degrees">degrees()</a></tt><br></p>
 <p> </p>
-</div><p>Converts specified angle in radian into the same angle expressed in
+</div><p>Converts the specified angle in radians into the same angle expressed in
  degrees.
 </p>
 
 <h3 class="function"><a name="round_after-2">round_after/2</a></h3>
 <div class="spec">
-<p><tt>round_after(F::float(), DigitCount::<a href="basic_utils.html#type-count">basic_utils:count()</a>) -&gt; float()</tt><br></p>
+<p><tt>round_after(F::float(), DigitCount::<a href="#type-count">count()</a>) -&gt; float()</tt><br></p>
 <p> </p>
-</div><p><p>Rounds the specified floating-point number at specified offset after the 
-decimal point.</p>
+</div><p><p>Rounds the specified floating-point number at the specified offset after 
+the decimal point.</p>
 
- Ex: round_after(12.3456, _DigitCount3) = 12.346.
+ For example round_after(12.3456, _DigitCount3) = 12.346.
 </p>
 
 <h3 class="function"><a name="sample-4">sample/4</a></h3>
 <div class="spec">
-<p><tt>sample(Fun::fun((number()) -&gt; T), Start::number(), Stop::number(), Increment::number()) -&gt; [T]</tt><br></p>
+<p><tt>sample(Fun::fun((number()) -&gt; T), StartPoint::number(), StopPoint::number(), Increment::number()) -&gt; [T]</tt><br></p>
 <p> </p>
 </div><p>Samples the specified function taking a single numerical argument, by
  evaluating it on every point in turn from Start until up to Stop, with
@@ -423,12 +830,27 @@ decimal point.</p>
 
 <h3 class="function"><a name="sample_as_pairs-4">sample_as_pairs/4</a></h3>
 <div class="spec">
-<p><tt>sample_as_pairs(Fun::fun((number()) -&gt; T), Start::number(), Stop::number(), Increment::number()) -&gt; [{number(), T}]</tt><br></p>
+<p><tt>sample_as_pairs(Fun::fun((number()) -&gt; T), StartPoint::number(), StopPoint::number(), Increment::number()) -&gt; [{number(), T}]</tt><br></p>
 <p> </p>
-</div><p>Samples the specified function taking a single numerical argument, by
- evaluating it on every point in turn from Start until up to Stop, with
- specified increment: returns the ordered list of the corresponding {X,f(X)}
- pairs that it took.
+</div><p>Samples uniformly the specified function taking a single numerical
+ argument, by evaluating it on every point in turn from Start until up to Stop,
+ with specified increment: returns the ordered list of the corresponding
+ {X,f(X)} pairs that it took.
+</p>
+
+<h3 class="function"><a name="sign-1">sign/1</a></h3>
+<div class="spec">
+<p><tt>sign(N::number()) -&gt; 1 | -1</tt><br></p>
+<p> </p>
+</div><p>Returns the sign of the specified value, either as 1 or -1.</p>
+
+<h3 class="function"><a name="square-1">square/1</a></h3>
+<div class="spec">
+<p><tt>square(N::number()) -&gt; number()</tt><br></p>
+<p> </p>
+</div><p><p>Returns the square of the specified number.</p>
+
+ Always useful.
 </p>
 
 <h3 class="function"><a name="squarify-1">squarify/1</a></h3>

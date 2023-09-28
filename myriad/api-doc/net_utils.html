@@ -89,7 +89,7 @@
 
 <h3 class="typedecl"><a name="type-domain_name">domain_name()</a></h3>
 <p><tt>domain_name() = nonempty_string()</tt></p>
-<p> A domain name (ex: "foo.baz.org").</p>
+<p> A domain name (e.g. "foo.baz.org").</p>
 
 <h3 class="typedecl"><a name="type-environment">environment()</a></h3>
 <p><tt>environment() = <a href="system_utils.html#type-environment">system_utils:environment()</a></tt></p>
@@ -192,7 +192,7 @@
 
 <h3 class="typedecl"><a name="type-subdomain">subdomain()</a></h3>
 <p><tt>subdomain() = nonempty_string()</tt></p>
-<p> An element of a domain name (ex: "foo" in "bar.foo.baz.org").</p>
+<p> An element of a domain name (e.g. "foo" in "bar.foo.baz.org").</p>
 
 <h3 class="typedecl"><a name="type-tcp_port">tcp_port()</a></h3>
 <p><tt>tcp_port() = <a href="#type-net_port">net_port()</a></tt></p>
@@ -326,9 +326,9 @@ being supposed to use send_file/2.</td></tr>
 name, trying first to use long names, otherwise short names, doing its best to 
 avoid that the operation fails; in case of success, returns the enabled naming 
 mode, otherwise throws an exception.</td></tr>
-<tr><td valign="top"><a href="#send_file-2">send_file/2</a></td><td>Sends specified file (probably over the network) to the specified
- recipient PID, supposed to have already called one of the receive_file/{1,2,3}
- functions.</td></tr>
+<tr><td valign="top"><a href="#send_file-2">send_file/2</a></td><td>Sends the specified file (most probably over the network) to the 
+specified recipient PID, supposed to have already called one of the 
+receive_file/{1,2,3} functions.</td></tr>
 <tr><td valign="top"><a href="#set_cookie-1">set_cookie/1</a></td><td>Sets the Erlang cookie for the current node, as well as for the one of
  all unknown nodes.</td></tr>
 <tr><td valign="top"><a href="#set_cookie-2">set_cookie/2</a></td><td>Sets the Erlang cookie for the specified node.</td></tr>
@@ -340,7 +340,7 @@ reliable and synchronous operation.</td></tr>
 only when it cannot be ping'ed anymore: it is a reliable and synchronous 
 operation.</td></tr>
 <tr><td valign="top"><a href="#split_fqdn-1">split_fqdn/1</a></td><td>Returns, from the specified FQDN, the corresponding actual host and its 
-full domain.</td></tr>
+full domain if possible, otherwise jsut 'none_found'.</td></tr>
 <tr><td valign="top"><a href="#wait_unavailable-3">wait_unavailable/3</a></td><td>Waits until specified node is unavailable, for the specified number of
  attempts between which the specified duration will be waited .</td></tr>
 </table>
@@ -499,9 +499,9 @@ operation will fail).</p>
 to be used to target it from another node, with respect to the local hostname 
 and node naming conventions.</p>
 
- Ex: for a node name "foo", the local hostname may be determined as "bar.org",
- and with short names, we may specify "foo@bar" to target the corresponding
- node with these conventions (neither with a mere "foo" nor with
+ For example for a node name "foo", the local hostname may be determined as
+ "bar.org", and with short names, we may specify "foo@bar" to target the
+ corresponding node with these conventions (neither with a mere "foo" nor with
  "foo@bar.org").
 </p>
 
@@ -513,9 +513,9 @@ and node naming conventions.</p>
 to be used to target it from another node, with respect to the specified node 
 naming conventions.</p>
 
- Ex: for a node name "foo", a hostname "bar.org", with short names, we may
- specify "foo@bar" to target the corresponding node with these conventions (not
- a mere "foo", neither "foo@bar.org").
+ For example for a node name "foo", a hostname "bar.org", with short names, we
+ may specify "foo@bar" to target the corresponding node with these conventions
+ (not a mere "foo", neither "foo@bar.org").
 </p>
 
 <h3 class="function"><a name="get_cookie-0">get_cookie/0</a></h3>
@@ -554,7 +554,7 @@ the 'undefined' atom or the TCP port number.</p>
 
  Note that if a non-default EPMD port is specified for a new node, this implies
  that the current node usually has to itself respect the same non-standard
- convention (ex: see the FIREWALL_OPT make option in myriad/GNUmakevars.inc),
+ convention (e.g. see the FIREWALL_OPT make option in myriad/GNUmakevars.inc),
  otherwise available nodes will not be found.
 </p>
 
@@ -566,7 +566,7 @@ the 'undefined' atom or the TCP port number.</p>
 hostname), the corresponding actual "atomic" hostname (that is with no domain 
 involved), as a plain string.</p>
 
- Ex: "garfield" = get_hostname("garfield.baz.foobar.org")
+ For example "garfield" = get_hostname("garfield.baz.foobar.org")
                 = get_hostname("garfield").
 </p>
 
@@ -710,8 +710,8 @@ Erlang node with the specified TCP port restriction, which can be either the
 standard port, if needed.</p>
 
  If an EPMD instance is already launched for that port, no extra instance will
- be launched, the former one remaining the active one; there is up to one EPMD
- instance per port.
+ be launched, the former one remaining the active one (possibly with different
+ other settings); there is up to one EPMD instance per port.
 </p>
 
 <h3 class="function"><a name="launch_epmd-1">launch_epmd/1</a></h3>
@@ -721,9 +721,12 @@ standard port, if needed.</p>
 </div><p><p>Launches as a daemon (in the background) an EPMD instance on the 
 specified port, if needed.</p>
 
- If an EPMD instance is already launched for that port, no extra instance will
- be launched, the former one remaining the active one; there is up to one EPMD
- instance per port.
+ <p>If an EPMD instance is already launched for that port, no extra instance will 
+be launched, the former one remaining the active one (possibly with different 
+other settings); there is up to one EPMD instance per port.</p>
+
+ The actual EPMD port configured for Myriad (refer to the EPMD_PORT make
+ variable) does not seem to be easily available from an Erlang program.
 </p>
 
 <h3 class="function"><a name="localhost-0">localhost/0</a></h3>
@@ -872,9 +875,12 @@ distribution of nodes may fail for varied reasons.</p>
 <div class="spec">
 <p><tt>send_file(FilePath::<a href="#type-file_path">file_path()</a>, RecipientPid::pid()) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p>Sends specified file (probably over the network) to the specified
- recipient PID, supposed to have already called one of the receive_file/{1,2,3}
- functions.
+</div><p><p>Sends the specified file (most probably over the network) to the 
+specified recipient PID, supposed to have already called one of the 
+receive_file/{1,2,3} functions.</p>
+
+ The operation will be done filesystem-to-filesystem, hence no specific return
+ is made.
 </p>
 
 <h3 class="function"><a name="set_cookie-1">set_cookie/1</a></h3>
@@ -930,12 +936,13 @@ operation.</p>
 
 <h3 class="function"><a name="split_fqdn-1">split_fqdn/1</a></h3>
 <div class="spec">
-<p><tt>split_fqdn(FQDNStr::<a href="#type-string_fqdn">string_fqdn()</a>) -&gt; {<a href="#type-host_name">host_name()</a>, <a href="#type-domain_name">domain_name()</a>}</tt><br></p>
+<p><tt>split_fqdn(FQDNStr::<a href="#type-string_fqdn">string_fqdn()</a>) -&gt; none_found | {<a href="#type-host_name">host_name()</a>, <a href="#type-domain_name">domain_name()</a>}</tt><br></p>
 <p> </p>
 </div><p><p>Returns, from the specified FQDN, the corresponding actual host and its 
-full domain.</p>
+full domain if possible, otherwise jsut 'none_found'.</p>
 
- Ex: {"garfield", "baz.foobar.org"} = split_fqdn("garfield.baz.foobar.org")
+ For example {"garfield", "baz.foobar.org"} =
+ split_fqdn("garfield.baz.foobar.org")
 </p>
 
 <h3 class="function"><a name="wait_unavailable-3">wait_unavailable/3</a></h3>

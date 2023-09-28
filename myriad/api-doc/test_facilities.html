@@ -52,23 +52,23 @@
 
 <h3 class="function"><a name="display-2">display/2</a></h3>
 <div class="spec">
-<p><tt>display(FormatString::<a href="#type-format_string">format_string()</a>, ValueList::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>display(FormatString::<a href="#type-format_string">format_string()</a>, Values::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p><p>Displays a test message, once formatted.</p>
 
- FormatString is an io:format-style format string, ValueList is the
+ FormatString is an io:format-style format string, Values is the
  corresponding list of field values.
 </p>
 
 <h3 class="function"><a name="display_fmt-2">display_fmt/2</a></h3>
 <div class="spec">
-<p><tt>display_fmt(FormatString::<a href="#type-format_string">format_string()</a>, ValueList::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p><tt>display_fmt(FormatString::<a href="#type-format_string">format_string()</a>, Values::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
 </div><p><p>Displays a test message, once formatted.</p>
 
  <p>Defined for consistency.</p>
 
- FormatString is an io:format-style format string, ValueList is the
+ FormatString is an io:format-style format string, Values is the
  corresponding list of field values.
 </p>
 
@@ -78,19 +78,19 @@
 <p> </p>
 </div><p><p>To be called whenever a test is to fail (crash on error) immediately.</p>
 
- Ex: test_facilities:fail( "server on strike" )
+ For example: test_facilities:fail( "server on strike" )
 </p>
 
 <h3 class="function"><a name="fail-2">fail/2</a></h3>
 <div class="spec">
-<p><tt>fail(FormatString::<a href="#type-format_string">format_string()</a>, ValueList::<a href="#type-format_values">format_values()</a>) -&gt; no_return()</tt><br></p>
+<p><tt>fail(FormatString::<a href="#type-format_string">format_string()</a>, Values::<a href="#type-format_values">format_values()</a>) -&gt; no_return()</tt><br></p>
 <p> </p>
 </div><p><p>To be called whenever a test is to fail (crash on error) immediately.</p>
 
- <p>FormatString is an io:format-style format string, ValueList is the 
+ <p>FormatString is an io:format-style format string, Values is the 
 corresponding list of field values.</p>
 
- Ex: test_facilities:fail("server ~ts on strike", ["foobar.org"])
+ For example: test_facilities:fail("server ~ts on strike", ["foobar.org"])
 </p>
 
 <h3 class="function"><a name="finished-0">finished/0</a></h3>

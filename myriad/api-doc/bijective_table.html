@@ -33,11 +33,11 @@ corresponding module.</p>
 <h2><a name="types">Data Types</a></h2>
 
 <h3 class="typedecl"><a name="type-bijective_table">bijective_table()</a></h3>
-<p><b>abstract datatype</b>: <tt>bijective_table(F, S)</tt></p>
+<p><tt>bijective_table(F, S) = {<a href="table.html#type-table">table:table</a>(F, S), <a href="table.html#type-table">table:table</a>(S, F)}</tt></p>
 <p> Internally, two tables used, one for each direction of conversion.</p>
 
 <h3 class="typedecl"><a name="type-bijective_table">bijective_table()</a></h3>
-<p><b>abstract datatype</b>: <tt>bijective_table()</tt></p>
+<p><tt>bijective_table() = <a href="#type-bijective_table">bijective_table</a>(any(), any())</tt></p>
 
 
 <h3 class="typedecl"><a name="type-entries">entries()</a></h3>

@@ -50,6 +50,10 @@ your actual need is a set!</p>
 <p><tt>iterator() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/gb_sets.html#type-iter">gb_sets:iter()</a></tt></p>
 <p> Internally, a kind of enumeration (list) of the elements in the set.</p>
 
+<h3 class="typedecl"><a name="type-next_iteration">next_iteration()</a></h3>
+<p><tt>next_iteration() = {<a href="#type-element">element()</a>, <a href="#type-iterator">iterator()</a>} | none</tt></p>
+
+
 <h3 class="typedecl"><a name="type-set">set()</a></h3>
 <p><tt>set(T) = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/gb_sets.html#type-set">gb_sets:set</a>(T)</tt></p>
 <p> For homogeneous sets.</p>
@@ -72,7 +76,8 @@ your actual need is a set!</p>
  specified plain list have been added.</td></tr>
 <tr><td valign="top"><a href="#are_equal-2">are_equal/2</a></td><td>Tells whether the two specified sets are equal (meaning that they contain 
 exactly the same elements).</td></tr>
-<tr><td valign="top"><a href="#check_set-1">check_set/1</a></td><td>Ensures that the specified term is a set, throws an exception if not.</td></tr>
+<tr><td valign="top"><a href="#check_set-1">check_set/1</a></td><td>Ensures that the specified term is a set and returns it; throws an
+ exception if not.</td></tr>
 <tr><td valign="top"><a href="#delete-2">delete/2</a></td><td>Removes the specified element (if any) from the specified set, and 
 returns the resulting set.</td></tr>
 <tr><td valign="top"><a href="#delete_existing-2">delete_existing/2</a></td><td>Ensures that the specified element was indeed in the specified set before 
@@ -154,7 +159,9 @@ exactly the same elements).</p>
 <div class="spec">
 <p><tt>check_set(Term::term()) -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p>Ensures that the specified term is a set, throws an exception if not.</p>
+</div><p>Ensures that the specified term is a set and returns it; throws an
+ exception if not.
+</p>
 
 <h3 class="function"><a name="delete-2">delete/2</a></h3>
 <div class="spec">
@@ -280,7 +287,7 @@ unordered and containing duplicates).</p>
 
 <h3 class="function"><a name="next-1">next/1</a></h3>
 <div class="spec">
-<p><tt>next(Iterator::<a href="#type-iterator">iterator()</a>) -&gt; {<a href="#type-element">element()</a>, <a href="#type-iterator">iterator()</a>} | none</tt><br></p>
+<p><tt>next(Iterator::<a href="#type-iterator">iterator()</a>) -&gt; <a href="#type-next_iteration">next_iteration()</a></tt><br></p>
 <p> </p>
 </div><p><p>Returns the next element and iterator, as obtained from the specified 
 iterator.</p>

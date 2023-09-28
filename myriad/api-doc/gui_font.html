@@ -25,8 +25,14 @@
 
 
 <h3 class="typedecl"><a name="type-font">font()</a></h3>
-<p><tt>font() = <a href="http://www.erlang.org/edoc/doc/wx/doc/wxFont.html#type-wxFont">wxFont:wxFont()</a></tt></p>
+<p><b>abstract datatype</b>: <tt>font()</tt></p>
 <p> Designates a font object.</p>
+
+<h3 class="typedecl"><a name="type-font_data">font_data()</a></h3>
+<p><b>abstract datatype</b>: <tt>font_data()</tt></p>
+<p><p> Actual (opaque) data corresponding to a font.</p>
+
+ A wx object.</p>
 
 <h3 class="typedecl"><a name="type-font_family">font_family()</a></h3>
 <p><tt>font_family() = default_font_family | decorative | roman | script | swiss | modern | teletype</tt></p>
@@ -92,8 +98,10 @@
 <tr><td valign="top"><a href="#create-5">create/5</a></td><td>Creates a font object from specified requirements, to determine the
  appearance of rendered text.</td></tr>
 <tr><td valign="top"><a href="#destruct-1">destruct/1</a></td><td>Destructs the specified font.</td></tr>
+<tr><td valign="top"><a href="#get_platform_dependent_description-1">get_platform_dependent_description/1</a></td><td>Returns the platform-dependent complete description the specified font.</td></tr>
 <tr><td valign="top"><a href="#get_text_extent-2">get_text_extent/2</a></td><td>Returns the extent used by the rendering of the specified single-line
  text with the specified font.</td></tr>
+<tr><td valign="top"><a href="#get_user_friendly_description-1">get_user_friendly_description/1</a></td><td>Returns a user-friendly description of the specified font.</td></tr>
 <tr><td valign="top"><a href="#to_wx_font_family-1">to_wx_font_family/1</a></td><td>Converts the specified font family into a wx one.</td></tr>
 <tr><td valign="top"><a href="#to_wx_font_style-1">to_wx_font_style/1</a></td><td>Converts the specified font style into a wx one.</td></tr>
 <tr><td valign="top"><a href="#to_wx_font_weight-1">to_wx_font_weight/1</a></td><td>Converts the specified font weight into a wx one.</td></tr>
@@ -147,12 +155,30 @@
 <p> </p>
 </div><p>Destructs the specified font.</p>
 
+<h3 class="function"><a name="get_platform_dependent_description-1">get_platform_dependent_description/1</a></h3>
+<div class="spec">
+<p><tt>get_platform_dependent_description(Font::<a href="#type-font">font()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the platform-dependent complete description the specified font.</p>
+
+ For example, "Sans 10".
+</p>
+
 <h3 class="function"><a name="get_text_extent-2">get_text_extent/2</a></h3>
 <div class="spec">
 <p><tt>get_text_extent(Text::<a href="#type-ustring">ustring()</a>, Font::<a href="#type-font">font()</a>) -&gt; <a href="#type-dimensions">dimensions()</a></tt><br></p>
 <p> </p>
 </div><p>Returns the extent used by the rendering of the specified single-line
  text with the specified font.
+</p>
+
+<h3 class="function"><a name="get_user_friendly_description-1">get_user_friendly_description/1</a></h3>
+<div class="spec">
+<p><tt>get_user_friendly_description(Font::<a href="#type-font">font()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns a user-friendly description of the specified font.</p>
+
+ For example, "Sans 10".
 </p>
 
 <h3 class="function"><a name="to_wx_font_family-1">to_wx_font_family/1</a></h3>

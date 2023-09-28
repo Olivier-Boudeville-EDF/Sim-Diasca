@@ -39,19 +39,20 @@ being required, etc.).</p>
 
 <h3 class="typedecl"><a name="type-field_count">field_count()</a></h3>
 <p><tt>field_count() = <a href="#type-count">count()</a></tt></p>
-<p> Number of fields in a row.</p>
+<p> A number of fields in a row.</p>
 
 <h3 class="typedecl"><a name="type-mixed_content">mixed_content()</a></h3>
-<p><tt>mixed_content() = [<a href="#type-row">row()</a> | [<a href="#type-value">value()</a>]]</tt></p>
-<p> A CSV content, as an (ordered) list of rows that match a row spec (ex:
- expected number of fields) or not (then represented as a mere list of values).</p>
+<p><tt>mixed_content() = [<a href="#type-row">row()</a> | {non_matching, <a href="#type-row_number">row_number()</a>, <a href="#type-row">row()</a>}]</tt></p>
+<p> A CSV content, as an (ordered) list of rows that match a row spec (e.g.
+ expected number of fields) or not (then represented as a "non-matching"
+ triplet.</p>
 
 <h3 class="typedecl"><a name="type-reading_outcome">reading_outcome()</a></h3>
-<p><tt>reading_outcome() = {Rows::<a href="#type-content">content()</a>, <a href="#type-row_count">row_count()</a>, <a href="#type-field_count">field_count()</a>}</tt></p>
+<p><tt>reading_outcome() = {Rows::<a href="#type-content">content()</a>, RowCount::<a href="#type-row_count">row_count()</a>, FieldCount::<a href="#type-field_count">field_count()</a>}</tt></p>
 <p> The result of the parsing of a CSV file, comprised of:
  - the corresponding content, as an ordered list of rows
  - the number of rows found
- - the number of fields they all have</p>
+ - the number of fields each row has</p>
 
 <h3 class="typedecl"><a name="type-row">row()</a></h3>
 <p><tt>row() = tuple()</tt></p>
@@ -63,7 +64,12 @@ A row of a CSV content, as a tuple of values.</p>
 
 <h3 class="typedecl"><a name="type-row_count">row_count()</a></h3>
 <p><tt>row_count() = <a href="#type-count">count()</a></tt></p>
-<p> Number of rows.</p>
+<p> A count of rows.</p>
+
+<h3 class="typedecl"><a name="type-row_number">row_number()</a></h3>
+<p><tt>row_number() = <a href="#type-count">count()</a></tt></p>
+<p> The number of a row in a row stream (akin to a line number in a file).
+ Starts at #1.</p>
 
 <h3 class="typedecl"><a name="type-separator">separator()</a></h3>
 <p><tt>separator() = char()</tt></p>
@@ -83,6 +89,9 @@ A row of a CSV content, as a tuple of values.</p>
 <tr><td valign="top"><a href="#check_all_empty-1">check_all_empty/1</a></td><td>Checks that specified row or list of values (typically coming from a row
  of unspecified field count) contains only empty values (empty strings).</td></tr>
 <tr><td valign="top"><a href="#content_to_string-1">content_to_string/1</a></td><td>Returns a textual representation of the specified content.</td></tr>
+<tr><td valign="top"><a href="#describe_non_matching_rows_in-1">describe_non_matching_rows_in/1</a></td><td>Describes the non-matching triplets listed in the specified mixed
+ content: returns the number of non-matching rows, an overall description
+ thereof, and an ordered list of these rows.</td></tr>
 <tr><td valign="top"><a href="#get_usual_separators-0">get_usual_separators/0</a></td><td>Returns the most usual separators used in CSV files.</td></tr>
 <tr><td valign="top"><a href="#interpret_file-1">interpret_file/1</a></td><td>Interprets the specified file, with no prior knowledge about the 
 separator or the number of fields per row.</td></tr>
@@ -126,6 +135,15 @@ CSV file, using the specified separator for that.</td></tr>
 <p> </p>
 </div><p>Returns a textual representation of the specified content.</p>
 
+<h3 class="function"><a name="describe_non_matching_rows_in-1">describe_non_matching_rows_in/1</a></h3>
+<div class="spec">
+<p><tt>describe_non_matching_rows_in(MixedContent::<a href="#type-mixed_content">mixed_content()</a>) -&gt; {<a href="#type-row_count">row_count()</a>, <a href="#type-ustring">ustring()</a>, [<a href="#type-row">row()</a>]}</tt><br></p>
+<p> </p>
+</div><p>Describes the non-matching triplets listed in the specified mixed
+ content: returns the number of non-matching rows, an overall description
+ thereof, and an ordered list of these rows.
+</p>
+
 <h3 class="function"><a name="get_usual_separators-0">get_usual_separators/0</a></h3>
 <div class="spec">
 <p><tt>get_usual_separators() -&gt; [<a href="#type-separator">separator()</a>]</tt><br></p>
@@ -148,11 +166,7 @@ separator is prepended):</p>
  <p>- FieldCount is the number of fields in each row, as determined thanks to the 
 first non-dropped row</p>
 
- <p>- MixedContent is a list (respecting the in-file order) whose elements are 
-either a list of the specified number of fields, or a pair whose first element 
-is the 'non_matching' atom, and whose second element is a list whose elements 
-were obtained based on the same separator - yet in a different number than the 
-expected one</p>
+ <p>- MixedContent: refer to interpret_file/3 for a detailed description</p>
 
  <p>- MatchingCount is the number of rows that match the row spec (i.e. the 
 specified number of fields), based on the detected separator</p>
@@ -177,11 +191,7 @@ prepended):</p>
  <p>- FieldCount is the number of fields in each row, as determined thanks to the 
 first non-dropped row</p>
 
- <p>- MixedContent is a list (respecting the in-file order) whose elements are 
-either a list of the specified number of fields, or a pair whose first element 
-is the 'non_matching' atom, and whose second element is a list whose elements 
-were obtained based on the same separator - yet in a different number than the 
-expected one</p>
+ <p>- MixedContent: refer to interpret_file/3 for a detailed description</p>
 
  <p>- MatchingCount is the number of rows that match the row spec (i.e. the 
 specified number of fields), based on the specified separator</p>
@@ -201,11 +211,12 @@ number of fields per row.</p>
 
  <p>Returns {MixedContent, MatchingCount, UnmatchCount, DropCount}, where:</p>
 
- <p>- MixedContent is a list (respecting the in-file order) whose elements are 
-either a list of the specified number of fields, or a pair whose first element 
-is the 'non_matching' atom, and whose second element is a list whose elements 
-were obtained based on the same separator - yet in a different number than the 
-expected one</p>
+ <p>- MixedContent is a list (respecting the in-file order), each element of which 
+being either a row (that is a tuple of the legit number of values), or a 
+triplet whose first element is the 'non_matching' atom, whose second element 
+is the in-file number of the corresponding row and whose third element is the 
+corresponding row (hence a tuple whose elements were obtained based on the 
+same separator - yet in a different number than the expected one)</p>
 
  <p>- MatchingCount is the number of rows that match the row spec (i.e. the 
 specified number of fields), based on the specified separator</p>

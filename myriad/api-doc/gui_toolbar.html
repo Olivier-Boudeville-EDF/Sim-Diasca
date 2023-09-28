@@ -1,0 +1,179 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module gui_toolbar</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module gui_toolbar</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various facilities for <b>toolbar management</b>.
+
+
+<h2><a name="description">Description</a></h2><p>Gathering of various facilities for <b>toolbar management</b>.</p>
+
+ <p>A tool bar is a bar of buttons and/or other controls usually placed below the 
+menu bar in a frame.</p>
+
+ Use our gui_frame_bars_test.erl test in order to display all known tools.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-bitmap">bitmap()</a></h3>
+<p><tt>bitmap() = <a href="gui_bitmap.html#type-bitmap">gui_bitmap:bitmap()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-control">control()</a></h3>
+<p><tt>control() = <a href="gui_widget.html#type-control">gui_widget:control()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-frame">frame()</a></h3>
+<p><tt>frame() = <a href="gui_window.html#type-frame">gui_window:frame()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-help_info">help_info()</a></h3>
+<p><tt>help_info() = <a href="gui_text.html#type-help_info">gui_text:help_info()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-id">id()</a></h3>
+<p><tt>id() = <a href="gui_id.html#type-id">gui_id:id()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-label">label()</a></h3>
+<p><tt>label() = <a href="gui.html#type-label">gui:label()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-separator">separator()</a></h3>
+<p><tt>separator() = <a href="#type-wx_object">wx_object()</a></tt></p>
+<p> A separator for spacing groups of tools.</p>
+
+<h3 class="typedecl"><a name="type-tool">tool()</a></h3>
+<p><tt>tool() = <a href="#type-wx_object">wx_object()</a></tt></p>
+<p> A tool, as an element of a toolbar.</p>
+
+<h3 class="typedecl"><a name="type-tool_kind">tool_kind()</a></h3>
+<p><tt>tool_kind() = <a href="gui_menu.html#type-menu_item_kind">gui_menu:menu_item_kind()</a></tt></p>
+<p> The kind of a tool in a toolbar.</p>
+
+<h3 class="typedecl"><a name="type-toolbar">toolbar()</a></h3>
+<p><b>abstract datatype</b>: <tt>toolbar()</tt></p>
+<p><p> A bar of image-based buttons and/or other controls usually placed below the 
+menu bar of a frame.</p>
+
+ A toolbar emits menu commands in the same way that a frame menubar does.</p>
+
+<h3 class="typedecl"><a name="type-toolbar_style">toolbar_style()</a></h3>
+<p><tt>toolbar_style() = top | bottom | left | right | flat | dockable | no_icons | text | no_divider | no_align | horizontal_layout | no_tooltips | default</tt></p>
+<p> A style element of a toolbar.</p>
+
+<h3 class="typedecl"><a name="type-wx_enum">wx_enum()</a></h3>
+<p><tt>wx_enum() = <a href="gui_wx_backend.html#type-wx_enum">gui_wx_backend:wx_enum()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-wx_object">wx_object()</a></h3>
+<p><tt>wx_object() = <a href="gui.html#type-wx_object">gui:wx_object()</a></tt></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add_control-2">add_control/2</a></td><td>Adds the specified control to the specified toolbar.</td></tr>
+<tr><td valign="top"><a href="#add_separator-1">add_separator/1</a></td><td>Adds a separator to the specified toolbar, and returns that separator.</td></tr>
+<tr><td valign="top"><a href="#add_tool-5">add_tool/5</a></td><td>Adds the specified tool, represented by the specified bitmap, with the 
+specified identifier (if any) and any short help, to the specified toolbar.</td></tr>
+<tr><td valign="top"><a href="#add_tool-7">add_tool/7</a></td><td>Adds the specified tool, represented by the specified enabled/disabled 
+bitmaps, with the specified identifier (if any) and any short/long helps, to 
+the specified toolbar.</td></tr>
+<tr><td valign="top"><a href="#create-1">create/1</a></td><td>Creates a toolbar in the specified frame.</td></tr>
+<tr><td valign="top"><a href="#create-3">create/3</a></td><td>Creates a toolbar in the specified frame, with the specified identifier 
+(if any) and style.</td></tr>
+<tr><td valign="top"><a href="#set-2">set/2</a></td><td>Sets the specified toolbar in the specified frame.</td></tr>
+<tr><td valign="top"><a href="#to_wx_tool_kind-1">to_wx_tool_kind/1</a></td><td>Converts the specified kind of tool into a wx-specific one.</td></tr>
+<tr><td valign="top"><a href="#update_tools-1">update_tools/1</a></td><td>Updates the specified toolbar so that it takes into account any new
+ tools; returns whether an update had to be done.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="add_control-2">add_control/2</a></h3>
+<div class="spec">
+<p><tt>add_control(Toolbar::<a href="#type-toolbar">toolbar()</a>, Control::<a href="#type-control">control()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Adds the specified control to the specified toolbar.</p>
+
+<h3 class="function"><a name="add_separator-1">add_separator/1</a></h3>
+<div class="spec">
+<p><tt>add_separator(Toolbar::<a href="#type-toolbar">toolbar()</a>) -&gt; <a href="#type-separator">separator()</a></tt><br></p>
+<p> </p>
+</div><p><p>Adds a separator to the specified toolbar, and returns that separator.</p>
+
+ update_tools/1 should be called once additions have been done, so that they
+ are taken into account.
+</p>
+
+<h3 class="function"><a name="add_tool-5">add_tool/5</a></h3>
+<div class="spec">
+<p><tt>add_tool(Toolbar::<a href="#type-toolbar">toolbar()</a>, Id::<a href="#type-id">id()</a>, Label::<a href="#type-label">label()</a>, Bitmap::<a href="#type-bitmap">bitmap()</a>, MaybeShortHelp::<a href="#type-maybe">maybe</a>(<a href="#type-help_info">help_info()</a>)) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Adds the specified tool, represented by the specified bitmap, with the 
+specified identifier (if any) and any short help, to the specified toolbar.</p>
+
+ update_tools/1 should be called once additions have been done, so that they
+ are taken into account.
+</p>
+
+<h3 class="function"><a name="add_tool-7">add_tool/7</a></h3>
+<div class="spec">
+<p><tt>add_tool(Toolbar::<a href="#type-toolbar">toolbar()</a>, Id::<a href="#type-id">id()</a>, Label::<a href="#type-label">label()</a>, BitmapIfEnabled::<a href="#type-bitmap">bitmap()</a>, BitmapIfDisabled::<a href="#type-bitmap">bitmap()</a>, MaybeShortHelp::<a href="#type-maybe">maybe</a>(<a href="#type-help_info">help_info()</a>), MaybeLongHelp::<a href="#type-maybe">maybe</a>(<a href="#type-help_info">help_info()</a>)) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p><p>Adds the specified tool, represented by the specified enabled/disabled 
+bitmaps, with the specified identifier (if any) and any short/long helps, to 
+the specified toolbar.</p>
+
+ update_tools/1 should be called once additions have been done, so that they
+ are taken into account.
+</p>
+
+<h3 class="function"><a name="create-1">create/1</a></h3>
+<div class="spec">
+<p><tt>create(Frame::<a href="#type-frame">frame()</a>) -&gt; <a href="#type-toolbar">toolbar()</a></tt><br></p>
+<p> </p>
+</div><p>Creates a toolbar in the specified frame.</p>
+
+<h3 class="function"><a name="create-3">create/3</a></h3>
+<div class="spec">
+<p><tt>create(Frame::<a href="#type-frame">frame()</a>, Id::<a href="#type-id">id()</a>, ToolbarStyles::[<a href="#type-toolbar_style">toolbar_style()</a>]) -&gt; <a href="#type-toolbar">toolbar()</a></tt><br></p>
+<p> </p>
+</div><p><p>Creates a toolbar in the specified frame, with the specified identifier 
+(if any) and style.</p>
+
+ Apparently up to one toolbar can be associated to a frame (e.g. no top and
+ left toolbars allowed simultaneously).
+</p>
+
+<h3 class="function"><a name="set-2">set/2</a></h3>
+<div class="spec">
+<p><tt>set(Frame::<a href="#type-frame">frame()</a>, Toolbar::<a href="#type-toolbar">toolbar()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Sets the specified toolbar in the specified frame.</p>
+
+<h3 class="function"><a name="to_wx_tool_kind-1">to_wx_tool_kind/1</a></h3>
+<div class="spec">
+<p><tt>to_wx_tool_kind(ToolKind::<a href="#type-tool_kind">tool_kind()</a>) -&gt; <a href="#type-wx_enum">wx_enum()</a></tt><br></p>
+<p> </p>
+</div><p>Converts the specified kind of tool into a wx-specific one.</p>
+
+<h3 class="function"><a name="update_tools-1">update_tools/1</a></h3>
+<div class="spec">
+<p><tt>update_tools(Toolbar::<a href="#type-toolbar">toolbar()</a>) -&gt; boolean()</tt><br></p>
+<p> </p>
+</div><p>Updates the specified toolbar so that it takes into account any new
+ tools; returns whether an update had to be done.
+</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

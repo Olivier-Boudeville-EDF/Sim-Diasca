@@ -1,0 +1,165 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module projection</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module projection</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various facilities for <b>projection management</b>.
+
+
+<h2><a name="description">Description</a></h2>Gathering of various facilities for <b>projection management</b>.
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-compact_matrix4">compact_matrix4()</a></h3>
+<p><tt>compact_matrix4() = <a href="matrix4.html#type-compact_matrix4">matrix4:compact_matrix4()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-coordinate">coordinate()</a></h3>
+<p><tt>coordinate() = <a href="linear.html#type-coordinate">linear:coordinate()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-distance">distance()</a></h3>
+<p><tt>distance() = <a href="linear.html#type-distance">linear:distance()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-matrix4">matrix4()</a></h3>
+<p><tt>matrix4() = <a href="matrix4.html#type-matrix4">matrix4:matrix4()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-orthographic_settings">orthographic_settings()</a></h3>
+<p><tt>orthographic_settings() = #orthographic_settings{left = <a href="linear.html#type-coordinate">linear:coordinate()</a>, right = <a href="linear.html#type-coordinate">linear:coordinate()</a>, bottom = <a href="linear.html#type-coordinate">linear:coordinate()</a>, top = <a href="linear.html#type-coordinate">linear:coordinate()</a>, z_near = <a href="linear.html#type-signed_distance">linear:signed_distance()</a>, z_far = <a href="linear.html#type-signed_distance">linear:signed_distance()</a>}</tt></p>
+
+
+<h3 class="typedecl"><a name="type-perspective_settings">perspective_settings()</a></h3>
+<p><tt>perspective_settings() = #perspective_settings{fov_y_angle = <a href="unit_utils.html#type-radians">unit_utils:radians()</a>, aspect_ratio = <a href="math_utils.html#type-ratio">math_utils:ratio()</a>, z_near = <a href="linear.html#type-distance">linear:distance()</a>, z_far = <a href="linear.html#type-distance">linear:distance()</a>}</tt></p>
+
+
+<h3 class="typedecl"><a name="type-projection_settings">projection_settings()</a></h3>
+<p><tt>projection_settings() = <a href="#type-orthographic_settings">orthographic_settings()</a> | <a href="#type-perspective_settings">perspective_settings()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-radians">radians()</a></h3>
+<p><tt>radians() = <a href="unit_utils.html#type-radians">unit_utils:radians()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-ratio">ratio()</a></h3>
+<p><tt>ratio() = <a href="math_utils.html#type-ratio">math_utils:ratio()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-signed_distance">signed_distance()</a></h3>
+<p><tt>signed_distance() = <a href="linear.html#type-signed_distance">linear:signed_distance()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#frustum-6">frustum/6</a></td><td>Returns a matrix for perspective projection corresponding to the 
+specified settings.</td></tr>
+<tr><td valign="top"><a href="#orthographic-1">orthographic/1</a></td><td>Returns a matrix for orthographic projection corresponding to the
+ specified settings.</td></tr>
+<tr><td valign="top"><a href="#orthographic-6">orthographic/6</a></td><td>Returns a matrix for orthographic projection corresponding to the 
+specified settings.</td></tr>
+<tr><td valign="top"><a href="#perspective-1">perspective/1</a></td><td>Returns a matrix for perspective projection corresponding to the
+ specified settings.</td></tr>
+<tr><td valign="top"><a href="#perspective-4">perspective/4</a></td><td>Returns a matrix for perspective projection corresponding to the 
+specified settings.</td></tr>
+<tr><td valign="top"><a href="#projection-1">projection/1</a></td><td>Returns a matrix for projection corresponding to the specified settings.</td></tr>
+<tr><td valign="top"><a href="#settings_to_string-1">settings_to_string/1</a></td><td>Returns a textual (approximate) representation of the specified
+ projection settings.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="frustum-6">frustum/6</a></h3>
+<div class="spec">
+<p><tt>frustum(Left::<a href="#type-coordinate">coordinate()</a>, Right::<a href="#type-coordinate">coordinate()</a>, Bottom::<a href="#type-coordinate">coordinate()</a>, Top::<a href="#type-coordinate">coordinate()</a>, ZNear::<a href="#type-distance">distance()</a>, ZFar::<a href="#type-distance">distance()</a>) -&gt; <a href="#type-matrix4">matrix4()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns a matrix for perspective projection corresponding to the 
+specified settings.</p>
+
+ <p>Parameters are:  
+- Left and Right are the coordinates for the left and right vertical clipping 
+planes  
+- Bottom and Top are the coordinates for the bottom and top horizontal 
+clipping planes  
+- ZNear specifies the distance from the viewer to the near clipping plane  
+(always strictly positive)  
+- ZFar specifies the distance from the viewer to the far clipping plane  
+(always positive)</p>
+
+ Note that the context is a right-handed referential with a clip space in
+ [-1.0, 1.0].
+</p>
+
+<h3 class="function"><a name="orthographic-1">orthographic/1</a></h3>
+<div class="spec">
+<p><tt>orthographic(Orthographic_settings::<a href="#type-orthographic_settings">orthographic_settings()</a>) -&gt; <a href="#type-compact_matrix4">compact_matrix4()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a matrix for orthographic projection corresponding to the
+ specified settings.
+</p>
+
+<h3 class="function"><a name="orthographic-6">orthographic/6</a></h3>
+<div class="spec">
+<p><tt>orthographic(Left::<a href="#type-coordinate">coordinate()</a>, Right::<a href="#type-coordinate">coordinate()</a>, Bottom::<a href="#type-coordinate">coordinate()</a>, Top::<a href="#type-coordinate">coordinate()</a>, ZNear::<a href="#type-signed_distance">signed_distance()</a>, ZFar::<a href="#type-signed_distance">signed_distance()</a>) -&gt; <a href="#type-compact_matrix4">compact_matrix4()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns a matrix for orthographic projection corresponding to the 
+specified settings.</p>
+
+ <p>Parameters are:  
+- Left and Right are the coordinates for the left and right vertical clipping 
+planes  
+- Bottom and Top are the coordinates for the bottom and top horizontal 
+clipping planes  
+- ZNear and ZFar are the signed distances to the nearer and farther depth  
+clipping planes; these values are negative if the plane is to be behind the  
+viewer</p>
+
+ Note that the context is a right-handed referential with a clip space in
+ [-1.0, 1.0].
+</p>
+
+<h3 class="function"><a name="perspective-1">perspective/1</a></h3>
+<div class="spec">
+<p><tt>perspective(Perspective_settings::<a href="#type-perspective_settings">perspective_settings()</a>) -&gt; <a href="#type-compact_matrix4">compact_matrix4()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a matrix for perspective projection corresponding to the
+ specified settings.
+</p>
+
+<h3 class="function"><a name="perspective-4">perspective/4</a></h3>
+<div class="spec">
+<p><tt>perspective(FoVYAngle::<a href="#type-radians">radians()</a>, AspectRatio::<a href="#type-ratio">ratio()</a>, ZNear::<a href="#type-distance">distance()</a>, ZFar::<a href="#type-distance">distance()</a>) -&gt; <a href="#type-matrix4">matrix4()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns a matrix for perspective projection corresponding to the 
+specified settings.</p>
+
+ Parameters are:</p>
+
+<h3 class="function"><a name="projection-1">projection/1</a></h3>
+<div class="spec">
+<p><tt>projection(Settings::<a href="#type-projection_settings">projection_settings()</a>) -&gt; <a href="#type-matrix4">matrix4()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a matrix for projection corresponding to the specified settings.</p>
+
+<h3 class="function"><a name="settings_to_string-1">settings_to_string/1</a></h3>
+<div class="spec">
+<p><tt>settings_to_string(Orthographic_settings::<a href="#type-projection_settings">projection_settings()</a>) -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p> </p>
+</div><p>Returns a textual (approximate) representation of the specified
+ projection settings.
+</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

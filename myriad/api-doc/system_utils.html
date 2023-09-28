@@ -41,6 +41,10 @@ facilities.</p>
 <p><tt>application_name() = <a href="otp_utils.html#type-application_name">otp_utils:application_name()</a></tt></p>
 
 
+<h3 class="typedecl"><a name="type-atom_user_name">atom_user_name()</a></h3>
+<p><tt>atom_user_name() = atom()</tt></p>
+<p> To store (UNIX-like) user names.</p>
+
 <h3 class="typedecl"><a name="type-basic_credential">basic_credential()</a></h3>
 <p><tt>basic_credential() = {<a href="#type-user_name">user_name()</a>, <a href="#type-password">password()</a>}</tt></p>
 
@@ -199,7 +203,7 @@ two: "--color" and "red".</p>
 
 <h3 class="typedecl"><a name="type-package_name">package_name()</a></h3>
 <p><tt>package_name() = <a href="#type-ustring">ustring()</a></tt></p>
-<p> Name of a (third-party) prerequisite package (ex: "ErlPort", "jsx", etc.).</p>
+<p> Name of a (third-party) prerequisite package (e.g. "ErlPort", "jsx", etc.).</p>
 
 <h3 class="typedecl"><a name="type-password">password()</a></h3>
 <p><tt>password() = <a href="#type-ustring">ustring()</a></tt></p>
@@ -233,8 +237,8 @@ two: "--color" and "red".</p>
 <p> The user identifier (uid) of a filesystem element.</p>
 
 <h3 class="typedecl"><a name="type-user_name">user_name()</a></h3>
-<p><tt>user_name() = <a href="#type-ustring">ustring()</a></tt></p>
-<p> For example in UNIX terms.</p>
+<p><tt>user_name() = nonempty_string()</tt></p>
+<p> To store (UNIX-like) user names.</p>
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
 <p><tt>ustring() = <a href="text_utils.html#type-ustring">text_utils:ustring()</a></tt></p>
@@ -255,7 +259,7 @@ respecting the specified path order.</td></tr>
 <tr><td valign="top"><a href="#add_paths_for_library_lookup-1">add_paths_for_library_lookup/1</a></td><td>Adds the specified directories to the system's library search paths 
 (typically the LD_LIBRARY_PATH environment variable), in first position, 
 respecting the specified path order.</td></tr>
-<tr><td valign="top"><a href="#await_output_completion-0">await_output_completion/0</a></td><td>Awaits the completion of an output operation (ex: io:format/2).</td></tr>
+<tr><td valign="top"><a href="#await_output_completion-0">await_output_completion/0</a></td><td>Awaits the completion of an output operation (e.g.</td></tr>
 <tr><td valign="top"><a href="#await_output_completion-1">await_output_completion/1</a></td><td>Awaits the completion of a io:format request, with a specified time-out, 
 in milliseconds.</td></tr>
 <tr><td valign="top"><a href="#compute_cpu_usage_between-2">compute_cpu_usage_between/2</a></td><td>Returns an aggregated view of the CPU usage (a float in [0;100]) based on 
@@ -283,17 +287,14 @@ appropriate size unit.</td></tr>
 with specified environment, in current directory.</td></tr>
 <tr><td valign="top"><a href="#evaluate_background_shell_expression-2">evaluate_background_shell_expression/2</a></td><td>Executes asynchronously, in the background, specified shell expression 
 with specified environment, in current directory.</td></tr>
-<tr><td valign="top"><a href="#evaluate_shell_expression-1">evaluate_shell_expression/1</a></td><td>Evaluates specified shell (ex: sh, bash, etc - not Erlang) expression, 
-in a standard environment.</td></tr>
-<tr><td valign="top"><a href="#evaluate_shell_expression-2">evaluate_shell_expression/2</a></td><td>Evaluates specified shell (ex: sh, bash, etc - not Erlang) expression, 
-in specified environment.</td></tr>
+<tr><td valign="top"><a href="#evaluate_shell_expression-1">evaluate_shell_expression/1</a></td><td>Evaluates specified shell (e.g.</td></tr>
+<tr><td valign="top"><a href="#evaluate_shell_expression-2">evaluate_shell_expression/2</a></td><td>Evaluates specified shell (e.g.</td></tr>
 <tr><td valign="top"><a href="#filesystem_info_to_string-1">filesystem_info_to_string/1</a></td><td>Returns a textual description of the specified filesystem information.</td></tr>
 <tr><td valign="top"><a href="#force_unicode_support-0">force_unicode_support/0</a></td><td>Forces the enabling of Unicode support.</td></tr>
 <tr><td valign="top"><a href="#get_actual_expression-2">get_actual_expression/2</a></td><td>Returns the full, actual shell expression corresponding to specified
  expression and environment.</td></tr>
 <tr><td valign="top"><a href="#get_application_version-1">get_application_version/1</a></td><td>Returns the version information (as a 2 or 3-part tuple) corresponding to 
-the specified Erlang standard application (ex: for 'kernel', could return 
-{3,0} or {2,16,3}).</td></tr>
+the specified Erlang standard application (e.g.</td></tr>
 <tr><td valign="top"><a href="#get_core_count-0">get_core_count/0</a></td><td>Returns the number of cores available on the local host.</td></tr>
 <tr><td valign="top"><a href="#get_core_count_string-0">get_core_count_string/0</a></td><td>Returns a textual description of the number of the local processing 
 cores.</td></tr>
@@ -308,7 +309,7 @@ needing to open a file for writing - should such an option be used.</td></tr>
 <tr><td valign="top"><a href="#get_dependency_base_directory-1">get_dependency_base_directory/1</a></td><td>Returns the (expected, conventional) base installation directory of the
  specified third-party, prerequisite package (e.g.</td></tr>
 <tr><td valign="top"><a href="#get_dependency_code_directory-1">get_dependency_code_directory/1</a></td><td>Returns the (expected, conventional) code installation directory of the
- specified third-party, prerequisite, Erlang package (ex: "Foobar").</td></tr>
+ specified third-party, prerequisite, Erlang package (e.g.</td></tr>
 <tr><td valign="top"><a href="#get_disk_usage-0">get_disk_usage/0</a></td><td>Returns the current usage of disks, as a human-readable string.</td></tr>
 <tr><td valign="top"><a href="#get_disk_usage_string-0">get_disk_usage_string/0</a></td><td>Returns a textual description of the current disk usage.</td></tr>
 <tr><td valign="top"><a href="#get_environment-0">get_environment/0</a></td><td>Returns the current shell environment, sorted by variable names.</td></tr>
@@ -321,8 +322,12 @@ needing to open a file for writing - should such an option be used.</td></tr>
 <tr><td valign="top"><a href="#get_environment_variable_for_library_lookup-0">get_environment_variable_for_library_lookup/0</a></td><td>Returns the environment variable (if any) used by the system for the
  lookup of (shared) libraries.</td></tr>
 <tr><td valign="top"><a href="#get_filesystem_info-1">get_filesystem_info/1</a></td><td>Returns information about the specified filesystem.</td></tr>
+<tr><td valign="top"><a href="#get_filesystem_info-2">get_filesystem_info/2</a></td><td>Returns information about the specified filesystem, throwing an exception
+ on error if requested, otherwise displaying an error trace and returning
+ 'undefined'.</td></tr>
 <tr><td valign="top"><a href="#get_group_id-0">get_group_id/0</a></td><td>Returns the (system) group identifier of the current user.</td></tr>
-<tr><td valign="top"><a href="#get_group_name-0">get_group_name/0</a></td><td>Returns the name of the current group, as a plain string.</td></tr>
+<tr><td valign="top"><a href="#get_group_name-0">get_group_name/0</a></td><td>Returns the name of the group of the current user, as a plain string.</td></tr>
+<tr><td valign="top"><a href="#get_group_name_safe-0">get_group_name_safe/0</a></td><td>Returns the name of the group of the current user, as a plain string.</td></tr>
 <tr><td valign="top"><a href="#get_hdf5_unavailability_hint-0">get_hdf5_unavailability_hint/0</a></td><td>Returns a string explaining what to do in order to have the HDF5 support
  available.</td></tr>
 <tr><td valign="top"><a href="#get_interpreter_version-0">get_interpreter_version/0</a></td><td>Returns the version information of the current Erlang interpreter 
@@ -342,8 +347,11 @@ needing to open a file for writing - should such an option be used.</td></tr>
 <tr><td valign="top"><a href="#get_memory_used_by_vm-0">get_memory_used_by_vm/0</a></td><td>Returns the total memory used, in bytes, by this instance of the Erlang
  VM, that is the total amount of memory currently allocated by the Erlang
  processes and by this emulator.</td></tr>
-<tr><td valign="top"><a href="#get_mount_points-0">get_mount_points/0</a></td><td>Returns a list of the current, local mount points (excluding the
- pseudo-filesystems).</td></tr>
+<tr><td valign="top"><a href="#get_mount_points-0">get_mount_points/0</a></td><td>Returns a list of the current, local mount points (excluding the 
+pseudo-filesystems).</td></tr>
+<tr><td valign="top"><a href="#get_mount_points-1">get_mount_points/1</a></td><td>Returns a list of the current, local mount points (excluding the
+ pseudo-filesystems), throwing an exception on error if requested, otherwise
+ displaying an error trace and returning 'undefined'.</td></tr>
 <tr><td valign="top"><a href="#get_operating_system_description-0">get_operating_system_description/0</a></td><td>Returns a string describing the current operating system.</td></tr>
 <tr><td valign="top"><a href="#get_operating_system_description_string-0">get_operating_system_description_string/0</a></td><td>Returns a textual description of the operating system being used.</td></tr>
 <tr><td valign="top"><a href="#get_operating_system_family-0">get_operating_system_family/0</a></td><td>Returns the family of the local operating system.</td></tr>
@@ -379,9 +387,12 @@ installed RAM, in bytes.</td></tr>
  in bytes.</td></tr>
 <tr><td valign="top"><a href="#get_total_physical_memory_string-0">get_total_physical_memory_string/0</a></td><td>Returns a textual description of the total installed physical memory.</td></tr>
 <tr><td valign="top"><a href="#get_user_home_directory-0">get_user_home_directory/0</a></td><td>Returns the home directory of the current user, as a plain string.</td></tr>
-<tr><td valign="top"><a href="#get_user_home_directory-1">get_user_home_directory/1</a></td><td>Returns the home directory of the specified user, as a plain string.</td></tr>
+<tr><td valign="top"><a href="#get_user_home_directory-1">get_user_home_directory/1</a></td><td>Returns the home directory of the specified user, as a plain string,
+ according to the most usual UNIX conventions.</td></tr>
 <tr><td valign="top"><a href="#get_user_home_directory_string-0">get_user_home_directory_string/0</a></td><td>Returns a textual description of the home directory of the current user.</td></tr>
 <tr><td valign="top"><a href="#get_user_id-0">get_user_id/0</a></td><td>Returns the (system) identifier of the current user.</td></tr>
+<tr><td valign="top"><a href="#get_user_info-0">get_user_info/0</a></td><td>Returns the system information regarding the current user.</td></tr>
+<tr><td valign="top"><a href="#get_user_info_safe-0">get_user_info_safe/0</a></td><td>Returns the system information regarding the current user.</td></tr>
 <tr><td valign="top"><a href="#get_user_name-0">get_user_name/0</a></td><td>Returns the name of the current user, as a plain string.</td></tr>
 <tr><td valign="top"><a href="#get_user_name_safe-0">get_user_name_safe/0</a></td><td>Returns the name of the current user, as a plain string.</td></tr>
 <tr><td valign="top"><a href="#get_user_name_string-0">get_user_name_string/0</a></td><td>Returns a textual description of the name of the current user.</td></tr>
@@ -552,14 +563,14 @@ respecting the specified path order.</p>
 <div class="spec">
 <p><tt>await_output_completion() -&gt; <a href="#type-void">void()</a></tt><br></p>
 <p> </p>
-</div><p><p>Awaits the completion of an output operation (ex: io:format/2).</p>
+</div><p><p>Awaits the completion of an output operation (e.g. io:format/2).</p>
 
  <p>Especially useful when displaying an error message on the standard output and 
 then immediately halting the VM, in order to avoid a race condition between 
 the displaying and the halting.</p>
 
  <p>We use a relatively short waiting here, just out of safety. It may be in some 
-cases insufficient (ex: for error traces to be sent, received and stored 
+cases insufficient (e.g. for error traces to be sent, received and stored 
 *before* the VM is halted after a throw/1 that may be executed just after).</p>
 
  In this case, await_output_completion/1 should be used, with a larger delay.
@@ -634,14 +645,14 @@ appropriate size unit.</p>
  <p>Returns a { Unit, Value } pair, in which:</p>
 
  <p>- Unit is the largest size unit that can be selected so that the specified 
-size if worth at least 1 unit of it (ex: we do not want a value 0.9, at least 
+size if worth at least 1 unit of it (e.g. we do not want a value 0.9, at least 
 1.0 is wanted); Unit can be 'gib', for GiB (Gibibytes), 'mib', for MiB 
 (Mebibytes), 'kib' for KiB (Kibibytes), or 'byte', for Byte</p>
 
  <p>- Value is the converted byte size, in the specified returned unit, expressed 
 either as an integer (for bytes) or as a float</p>
 
- <p>Ex: 1023 (bytes) translates to {byte, 1023}, 1025 translates to {kib, 
+ <p>For example 1023 (bytes) translates to {byte, 1023}, 1025 translates to {kib, 
 1.0009765625}.</p>
 
  Note that the returned value cannot be expected to be exact (rounded),
@@ -692,7 +703,7 @@ with specified environment, in current directory.</p>
 <div class="spec">
 <p><tt>evaluate_shell_expression(Expression::<a href="#type-shell_expression">shell_expression()</a>) -&gt; <a href="#type-expression_outcome">expression_outcome()</a></tt><br></p>
 <p> </p>
-</div><p><p>Evaluates specified shell (ex: sh, bash, etc - not Erlang) expression, 
+</div><p><p>Evaluates specified shell (e.g. sh, bash, etc - not Erlang) expression, 
 in a standard environment.</p>
 
  No return code is available with this approach, only the output of the
@@ -703,7 +714,7 @@ in a standard environment.</p>
 <div class="spec">
 <p><tt>evaluate_shell_expression(Expression::<a href="#type-shell_expression">shell_expression()</a>, Environment::<a href="#type-environment">environment()</a>) -&gt; <a href="#type-expression_outcome">expression_outcome()</a></tt><br></p>
 <p> </p>
-</div><p><p>Evaluates specified shell (ex: sh, bash, etc - not Erlang) expression, 
+</div><p><p>Evaluates specified shell (e.g. sh, bash, etc - not Erlang) expression, 
 in specified environment.</p>
 
  No return code is available with this approach, only the output of the
@@ -735,7 +746,7 @@ in specified environment.</p>
 <p><tt>get_application_version(ApplicationName::<a href="#type-application_name">application_name()</a>) -&gt; <a href="#type-any_version">any_version()</a></tt><br></p>
 <p> </p>
 </div><p><p>Returns the version information (as a 2 or 3-part tuple) corresponding to 
-the specified Erlang standard application (ex: for 'kernel', could return 
+the specified Erlang standard application (e.g. for 'kernel', could return 
 {3,0} or {2,16,3}).</p>
 
  Throws an exception if the information could not be retrieved.
@@ -829,7 +840,7 @@ needing to open a file for writing - should such an option be used.</p>
 <p><tt>get_dependency_code_directory(PackageName::<a href="#type-package_name">package_name()</a>) -&gt; <a href="#type-directory_path">directory_path()</a></tt><br></p>
 <p> </p>
 </div><p>Returns the (expected, conventional) code installation directory of the
- specified third-party, prerequisite, Erlang package (ex: "Foobar").
+ specified third-party, prerequisite, Erlang package (e.g. "Foobar").
 </p>
 
 <h3 class="function"><a name="get_disk_usage-0">get_disk_usage/0</a></h3>
@@ -887,9 +898,21 @@ needing to open a file for writing - should such an option be used.</p>
 
 <h3 class="function"><a name="get_filesystem_info-1">get_filesystem_info/1</a></h3>
 <div class="spec">
-<p><tt>get_filesystem_info(BinFilesystemPath::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; <a href="#type-fs_info">fs_info()</a></tt><br></p>
+<p><tt>get_filesystem_info(AnyFilesystemPath::<a href="#type-any_directory_path">any_directory_path()</a>) -&gt; <a href="#type-fs_info">fs_info()</a></tt><br></p>
 <p> </p>
-</div><p>Returns information about the specified filesystem.</p>
+</div><p><p>Returns information about the specified filesystem.</p>
+
+ May throw an exception.
+</p>
+
+<h3 class="function"><a name="get_filesystem_info-2">get_filesystem_info/2</a></h3>
+<div class="spec">
+<p><tt>get_filesystem_info(BinFilesystemPath::<a href="#type-any_directory_path">any_directory_path()</a>, CanFail::boolean()) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-fs_info">fs_info()</a>)</tt><br></p>
+<p> </p>
+</div><p>Returns information about the specified filesystem, throwing an exception
+ on error if requested, otherwise displaying an error trace and returning
+ 'undefined'.
+</p>
 
 <h3 class="function"><a name="get_group_id-0">get_group_id/0</a></h3>
 <div class="spec">
@@ -899,9 +922,18 @@ needing to open a file for writing - should such an option be used.</p>
 
 <h3 class="function"><a name="get_group_name-0">get_group_name/0</a></h3>
 <div class="spec">
-<p><tt>get_group_name() -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><tt>get_group_name() -&gt; <a href="#type-group_name">group_name()</a></tt><br></p>
 <p> </p>
-</div><p>Returns the name of the current group, as a plain string.</p>
+</div><p>Returns the name of the group of the current user, as a plain string.</p>
+
+<h3 class="function"><a name="get_group_name_safe-0">get_group_name_safe/0</a></h3>
+<div class="spec">
+<p><tt>get_group_name_safe() -&gt; <a href="#type-group_name">group_name()</a></tt><br></p>
+<p> </p>
+</div><p><p>Returns the name of the group of the current user, as a plain string.</p>
+
+ Not expected to fail.
+</p>
 
 <h3 class="function"><a name="get_hdf5_unavailability_hint-0">get_hdf5_unavailability_hint/0</a></h3>
 <div class="spec">
@@ -918,8 +950,8 @@ needing to open a file for writing - should such an option be used.</p>
 </div><p><p>Returns the version information of the current Erlang interpreter 
 (actually the one of the whole environment, including the VM) being used.</p>
 
- Returns a full version name (ex: "R13B04") or, if not available, a shorter one
- (ex: "R11B").
+ Returns a full version name (e.g. "R13B04") or, if not available, a shorter
+ one (e.g. "R11B").
 </p>
 
 <h3 class="function"><a name="get_json_unavailability_hint-0">get_json_unavailability_hint/0</a></h3>
@@ -981,8 +1013,19 @@ needing to open a file for writing - should such an option be used.</p>
 <div class="spec">
 <p><tt>get_mount_points() -&gt; [<a href="#type-directory_path">directory_path()</a>]</tt><br></p>
 <p> </p>
+</div><p><p>Returns a list of the current, local mount points (excluding the 
+pseudo-filesystems).</p>
+
+ This function may throw an exception.
+</p>
+
+<h3 class="function"><a name="get_mount_points-1">get_mount_points/1</a></h3>
+<div class="spec">
+<p><tt>get_mount_points(CanFail::boolean()) -&gt; <a href="#type-maybe">maybe</a>([<a href="#type-directory_path">directory_path()</a>])</tt><br></p>
+<p> </p>
 </div><p>Returns a list of the current, local mount points (excluding the
- pseudo-filesystems).
+ pseudo-filesystems), throwing an exception on error if requested, otherwise
+ displaying an error trace and returning 'undefined'.
 </p>
 
 <h3 class="function"><a name="get_operating_system_description-0">get_operating_system_description/0</a></h3>
@@ -1064,6 +1107,16 @@ global heap (and reference-counted).</p>
 
  <p>The (flat) size of on-heap terms is incremented to account for the top term 
 word (which is kept in a register or on the stack).</p>
+
+ <p>Note that the size/1 BIF is not optimized by the JIT, and its use can result 
+in worse types for Dialyzer. When one knows that the value being tested must 
+be a tuple, tuple_size/1 should always be preferred.</p>
+
+ <p>When one knows that the value being tested must be a binary, byte_size/1 
+should be preferred, provided the value is not a bitstring (that are accepted 
+by byte_size/1, which rounds up size to a whole number of bytes) - so 
+is_binary/1 shall be used beforehand (note that the compiler removes redundant 
+calls to is_binary/1).</p>
 
  See also <a href="https://www.erlang.org/doc/efficiency_guide/advanced.html" target="_top"><tt>https://www.erlang.org/doc/efficiency_guide/advanced.html</tt></a>.
 </p>
@@ -1177,9 +1230,11 @@ installed RAM, in bytes.</p>
 
 <h3 class="function"><a name="get_user_home_directory-1">get_user_home_directory/1</a></h3>
 <div class="spec">
-<p><tt>get_user_home_directory(Username::<a href="basic_utils.html#type-user_name">basic_utils:user_name()</a>) -&gt; <a href="#type-directory_path">directory_path()</a></tt><br></p>
+<p><tt>get_user_home_directory(Username::<a href="#type-user_name">user_name()</a>) -&gt; <a href="#type-directory_path">directory_path()</a></tt><br></p>
 <p> </p>
-</div><p>Returns the home directory of the specified user, as a plain string.</p>
+</div><p>Returns the home directory of the specified user, as a plain string,
+ according to the most usual UNIX conventions.
+</p>
 
 <h3 class="function"><a name="get_user_home_directory_string-0">get_user_home_directory_string/0</a></h3>
 <div class="spec">
@@ -1196,6 +1251,21 @@ installed RAM, in bytes.</p>
 <p> </p>
 </div><p>Returns the (system) identifier of the current user.</p>
 
+<h3 class="function"><a name="get_user_info-0">get_user_info/0</a></h3>
+<div class="spec">
+<p><tt>get_user_info() -&gt; {<a href="#type-user_name">user_name()</a>, <a href="#type-group_name">group_name()</a>}</tt><br></p>
+<p> </p>
+</div><p>Returns the system information regarding the current user.</p>
+
+<h3 class="function"><a name="get_user_info_safe-0">get_user_info_safe/0</a></h3>
+<div class="spec">
+<p><tt>get_user_info_safe() -&gt; {<a href="#type-user_name">user_name()</a>, <a href="#type-group_name">group_name()</a>}</tt><br></p>
+<p> </p>
+</div><p><p>Returns the system information regarding the current user.</p>
+
+ Not expected to fail.
+</p>
+
 <h3 class="function"><a name="get_user_name-0">get_user_name/0</a></h3>
 <div class="spec">
 <p><tt>get_user_name() -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
@@ -1204,7 +1274,7 @@ installed RAM, in bytes.</p>
 
 <h3 class="function"><a name="get_user_name_safe-0">get_user_name_safe/0</a></h3>
 <div class="spec">
-<p><tt>get_user_name_safe() -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><tt>get_user_name_safe() -&gt; <a href="#type-user_name">user_name()</a></tt><br></p>
 <p> </p>
 </div><p><p>Returns the name of the current user, as a plain string.</p>
 
@@ -1213,7 +1283,7 @@ installed RAM, in bytes.</p>
 
 <h3 class="function"><a name="get_user_name_string-0">get_user_name_string/0</a></h3>
 <div class="spec">
-<p><tt>get_user_name_string() -&gt; <a href="#type-ustring">ustring()</a></tt><br></p>
+<p><tt>get_user_name_string() -&gt; <a href="#type-user_name">user_name()</a></tt><br></p>
 <p> </p>
 </div><p><p>Returns a textual description of the name of the current user.</p>
 

@@ -1,0 +1,161 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module gui_statusbar</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module gui_statusbar</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>Gathering of various facilities for the management of <b>status bars</b>,
+ a thin space at the bottom of a frame where texts are typically displayed.
+
+
+<h2><a name="description">Description</a></h2>Gathering of various facilities for the management of <b>status bars</b>,
+ a thin space at the bottom of a frame where texts are typically displayed.
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-count">count()</a></h3>
+<p><tt>count() = <a href="basic_utils.html#type-count">basic_utils:count()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-field_count">field_count()</a></h3>
+<p><tt>field_count() = <a href="#type-count">count()</a></tt></p>
+<p> A number of fields, typically in a status bar.</p>
+
+<h3 class="typedecl"><a name="type-field_index">field_index()</a></h3>
+<p><tt>field_index() = <a href="#type-positive_index">positive_index()</a></tt></p>
+<p> The index (1 or more) of a field in a status bar.</p>
+
+<h3 class="typedecl"><a name="type-field_width">field_width()</a></h3>
+<p><tt>field_width() = integer()</tt></p>
+<p><p> The width of a field in a status bar.</p>
+
+ If positive, designates a fixed width, in pixels.
+ If negative, designates a width ratio among all variable-width fields.</p>
+
+<h3 class="typedecl"><a name="type-format_string">format_string()</a></h3>
+<p><tt>format_string() = <a href="text_utils.html#type-format_string">text_utils:format_string()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-format_values">format_values()</a></h3>
+<p><tt>format_values() = <a href="text_utils.html#type-format_values">text_utils:format_values()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-frame">frame()</a></h3>
+<p><tt>frame() = <a href="gui_window.html#type-frame">gui_window:frame()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-positive_index">positive_index()</a></h3>
+<p><tt>positive_index() = <a href="basic_utils.html#type-positive_index">basic_utils:positive_index()</a></tt></p>
+
+
+<h3 class="typedecl"><a name="type-status_bar">status_bar()</a></h3>
+<p><b>abstract datatype</b>: <tt>status_bar()</tt></p>
+<p><p> A thin space at the bottom of a frame where texts are typically displayed.</p>
+
+ They are very useful to trace events, and can be split in separate fields.</p>
+
+<h3 class="typedecl"><a name="type-status_bar_style">status_bar_style()</a></h3>
+<p><tt>status_bar_style() = normal | flat | raised | sunken</tt></p>
+<p> A style element of a status bar.</p>
+
+<h3 class="typedecl"><a name="type-text">text()</a></h3>
+<p><tt>text() = <a href="gui_text.html#type-text">gui_text:text()</a></tt></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#create-1">create/1</a></td><td>Creates and attaches a status bar at the bottom of the specified frame.</td></tr>
+<tr><td valign="top"><a href="#create-2">create/2</a></td><td>Creates and attaches a status bar of the specified style at the bottom of
+ the specified frame.</td></tr>
+<tr><td valign="top"><a href="#destruct-1">destruct/1</a></td><td>Destructs the specified status bar.</td></tr>
+<tr><td valign="top"><a href="#push_field_text-3">push_field_text/3</a></td><td>Pushes the specified text in the specified field of the specified status
+ bar.</td></tr>
+<tr><td valign="top"><a href="#push_field_text-4">push_field_text/4</a></td><td>Pushes the specified formatted text in the specified status bar.</td></tr>
+<tr><td valign="top"><a href="#push_text-2">push_text/2</a></td><td>Pushes the specified text in the (first field of the) specified status
+ bar.</td></tr>
+<tr><td valign="top"><a href="#push_text-3">push_text/3</a></td><td>Pushes the specified formatted text in the (first field of the) specified
+ status bar.</td></tr>
+<tr><td valign="top"><a href="#set_field_count-2">set_field_count/2</a></td><td>Sets the number of fields in which the specified status bar is to be
+ (evenly) split.</td></tr>
+<tr><td valign="top"><a href="#set_field_widths-2">set_field_widths/2</a></td><td>Sets the width of the fields of the specified status bar (and thus
+ determines their number as well).</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="create-1">create/1</a></h3>
+<div class="spec">
+<p><tt>create(Frame::<a href="#type-frame">frame()</a>) -&gt; <a href="#type-status_bar">status_bar()</a></tt><br></p>
+<p> </p>
+</div><p>Creates and attaches a status bar at the bottom of the specified frame.</p>
+
+<h3 class="function"><a name="create-2">create/2</a></h3>
+<div class="spec">
+<p><tt>create(Frame::<a href="#type-frame">frame()</a>, StatusBarStyles::[<a href="#type-status_bar_style">status_bar_style()</a>]) -&gt; <a href="#type-status_bar">status_bar()</a></tt><br></p>
+<p> </p>
+</div><p>Creates and attaches a status bar of the specified style at the bottom of
+ the specified frame.
+</p>
+
+<h3 class="function"><a name="destruct-1">destruct/1</a></h3>
+<div class="spec">
+<p><tt>destruct(StatusBar::<a href="#type-status_bar">status_bar()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Destructs the specified status bar.</p>
+
+<h3 class="function"><a name="push_field_text-3">push_field_text/3</a></h3>
+<div class="spec">
+<p><tt>push_field_text(StatusBar::<a href="#type-status_bar">status_bar()</a>, Text::<a href="#type-text">text()</a>, FieldIndex::<a href="#type-field_index">field_index()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Pushes the specified text in the specified field of the specified status
+ bar.
+</p>
+
+<h3 class="function"><a name="push_field_text-4">push_field_text/4</a></h3>
+<div class="spec">
+<p><tt>push_field_text(StatusBar::<a href="#type-status_bar">status_bar()</a>, FormatString::<a href="#type-format_string">format_string()</a>, FormatValues::<a href="#type-format_values">format_values()</a>, FieldIndex::<a href="#type-field_index">field_index()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Pushes the specified formatted text in the specified status bar.</p>
+
+<h3 class="function"><a name="push_text-2">push_text/2</a></h3>
+<div class="spec">
+<p><tt>push_text(StatusBar::<a href="#type-status_bar">status_bar()</a>, Text::<a href="#type-text">text()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Pushes the specified text in the (first field of the) specified status
+ bar.
+</p>
+
+<h3 class="function"><a name="push_text-3">push_text/3</a></h3>
+<div class="spec">
+<p><tt>push_text(StatusBar::<a href="#type-status_bar">status_bar()</a>, FormatString::<a href="#type-format_string">format_string()</a>, FormatValues::<a href="#type-format_values">format_values()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Pushes the specified formatted text in the (first field of the) specified
+ status bar.
+</p>
+
+<h3 class="function"><a name="set_field_count-2">set_field_count/2</a></h3>
+<div class="spec">
+<p><tt>set_field_count(StatusBar::<a href="#type-status_bar">status_bar()</a>, FieldCount::<a href="#type-field_count">field_count()</a>) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Sets the number of fields in which the specified status bar is to be
+ (evenly) split.
+</p>
+
+<h3 class="function"><a name="set_field_widths-2">set_field_widths/2</a></h3>
+<div class="spec">
+<p><tt>set_field_widths(StatusBar::<a href="#type-status_bar">status_bar()</a>, FieldWidths::[<a href="#type-field_width">field_width()</a>]) -&gt; <a href="#type-void">void()</a></tt><br></p>
+<p> </p>
+</div><p>Sets the width of the fields of the specified status bar (and thus
+ determines their number as well).
+</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

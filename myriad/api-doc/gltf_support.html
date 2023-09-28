@@ -100,7 +100,7 @@ matrices.</p>
 <p> A typed view into a (glTF) buffer view that contains raw binary data.</p>
 
 <h3 class="typedecl"><a name="type-gltf_attributes">gltf_attributes()</a></h3>
-<p><tt>gltf_attributes() = #gltf_attributes{position = <a href="gltf_support.html#type-accessor_index">gltf_support:accessor_index()</a>, normal = <a href="#type-maybe">maybe</a>(<a href="gltf_support.html#type-accessor_index">gltf_support:accessor_index()</a>), tangent = <a href="#type-maybe">maybe</a>(<a href="gltf_support.html#type-accessor_index">gltf_support:accessor_index()</a>), texcoord_0 = <a href="#type-maybe">maybe</a>(<a href="gltf_support.html#type-accessor_index">gltf_support:accessor_index()</a>)}</tt></p>
+<p><tt>gltf_attributes() = #gltf_attributes{position = <a href="#type-maybe">maybe</a>(<a href="gltf_support.html#type-accessor_index">gltf_support:accessor_index()</a>), normal = <a href="#type-maybe">maybe</a>(<a href="gltf_support.html#type-accessor_index">gltf_support:accessor_index()</a>), tangent = <a href="#type-maybe">maybe</a>(<a href="gltf_support.html#type-accessor_index">gltf_support:accessor_index()</a>), texcoord_0 = <a href="#type-maybe">maybe</a>(<a href="gltf_support.html#type-accessor_index">gltf_support:accessor_index()</a>)}</tt></p>
 <p> The (glTF) attributes of a primitive, corresponding to the vertex attributes
  used in the draw calls.</p>
 
@@ -127,7 +127,7 @@ matrices.</p>
 
 <h3 class="typedecl"><a name="type-gltf_component_type">gltf_component_type()</a></h3>
 <p><tt>gltf_component_type() = <a href="#type-gltf_enum">gltf_enum()</a></tt></p>
-<p> A glTF lower-level type identifier. Ex: '5120' for sint8.</p>
+<p> A glTF lower-level type identifier. For example '5120' for sint8.</p>
 
 <h3 class="typedecl"><a name="type-gltf_content">gltf_content()</a></h3>
 <p><tt>gltf_content() = #gltf_content{default_scene = <a href="#type-maybe">maybe</a>(<a href="gltf_support.html#type-scene_index">gltf_support:scene_index()</a>), scenes = [<a href="gltf_support.html#type-gltf_scene">gltf_support:gltf_scene()</a>], nodes = [<a href="gltf_support.html#type-gltf_node">gltf_support:gltf_node()</a>], materials = [<a href="gltf_support.html#type-gltf_material">gltf_support:gltf_material()</a>], camera_types = [<a href="gltf_support.html#type-gltf_camera_type">gltf_support:gltf_camera_type()</a>], meshes = [<a href="gltf_support.html#type-gltf_mesh">gltf_support:gltf_mesh()</a>], accessors = [<a href="gltf_support.html#type-gltf_accessor">gltf_support:gltf_accessor()</a>], buffers = [<a href="gltf_support.html#type-gltf_buffer">gltf_support:gltf_buffer()</a>], buffer_views = [<a href="gltf_support.html#type-gltf_buffer_view">gltf_support:gltf_buffer_view()</a>]}</tt></p>
@@ -208,8 +208,8 @@ matrices.</p>
 
 <h3 class="typedecl"><a name="type-gltf_topology_type">gltf_topology_type()</a></h3>
 <p><tt>gltf_topology_type() = <a href="#type-gltf_enum">gltf_enum()</a></tt></p>
-<p> Lower-level glTF topology ("mode") of a primitive (ex: corresponding to point,
- line_loop, etc.).</p>
+<p> Lower-level glTF topology ("mode") of a primitive (e.g. corresponding to
+ point, line_loop, etc.).</p>
 
 <h3 class="typedecl"><a name="type-gltf_vertex_index">gltf_vertex_index()</a></h3>
 <p><tt>gltf_vertex_index() = <a href="#type-gltf_index">gltf_index()</a></tt></p>
