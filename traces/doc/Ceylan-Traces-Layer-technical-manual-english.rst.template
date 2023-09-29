@@ -483,9 +483,6 @@ One can find `here <https://github.com/Olivier-Boudeville/Ceylan-Traces/tree/mas
 
 .. _`max memory`:
 
-
-.. _`max memory`:
-
 An important setting is how much memory (RAM) is allowed for that tool (see the ``MAX_MEMORY`` entry in `startup.conf <https://github.com/Olivier-Boudeville/Ceylan-Traces/blob/master/conf/logmx/startup.conf>`_).
 
 

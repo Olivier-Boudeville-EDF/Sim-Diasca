@@ -28,7 +28,7 @@
 
 -define( class_description,
 		 "Test of the Stochastic Actor class, regarding random management."
-		 "To be used with randomManagerAndStochasticActorPair_test.erl." ).
+		 "To be used with random_laws_and_stochastic_actor_test.erl." ).
 
 
 % The attributes that are specific to this class are:

@@ -244,7 +244,7 @@
 % An height, as a number (integer or floating-point) of pixels.
 
 
--type coordinate() :: integer_coordinate().
+-type coordinate() :: linear:integer_coordinate().
 % Here, for a GUI, coordinates are an integer number of pixels.
 
 
@@ -384,12 +384,12 @@
 -type label() :: ui:label().
 % A label, typically of a widget.
 %
-% Control characters can be used (e.g. "\n", "\t"), and shortcuts/accelerators
-% (with a "&" prefix): all "&" characters in the label are special and indicate
-% that the following character is a mnemonic for this control and can be used to
-% activate it from the keyboard (typically by using Alt key in combination with
-% it). To insert a literal ampersand character, you need to double it, i.e. to
-% use "&&".
+% Control characters can be used (e.g. `"\n"', `"\t"'), and
+% shortcuts/accelerators (with a `"&"' prefix): all `"&"' characters in the
+% label are special and indicate that the following character is a mnemonic for
+% this control and can be used to activate it from the keyboard (typically by
+% using Alt key in combination with it). To insert a literal ampersand
+% character, you need to double it, i.e. to use `"&&"'.
 
 
 -type event_callback() :: gui_event:event_callback().
@@ -795,7 +795,6 @@
 
 -type integer_distance() :: linear:integer_distance().
 -type any_distance() :: linear:any_distance().
--type coordinate() :: linear:integer_coordinate().
 
 
 -type gui_env_pid() :: environment:env_pid().
