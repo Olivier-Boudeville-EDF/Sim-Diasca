@@ -254,7 +254,7 @@ export-internal:
 export-public: clean-public-doc-branch create-public-referential
 	@echo "  Exporting the public Sim-Diasca documentation to official website in $(SIM_DIASCA_WEB_MIRROR_BRANCH)"
 	@/bin/cp -rfH $(DOC_TARGET_PUBLIC_DIR)/* $(SIM_DIASCA_PUBLIC_WEB_BRANCH) && cd $(SIM_DIASCA_PUBLIC_WEB_BRANCH) && git add . && git merge -s ours && git commit -m "Sim-Diasca public doc updated." && git push && git pull --ff-only
-	@echo "Public version exported in $(SIM_DIASCA_PUBLIC_WEB_BRANCH)."
+	@echo "Public version exported in $(SIM_DIASCA_PUBLIC_WEB_BRANCH) and pushed to public website."
 
 
 clean-public-doc-branch:
